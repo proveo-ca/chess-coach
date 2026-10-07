@@ -1,8 +1,8 @@
 # ML Adjutant — R3 native-seam addendum
 
-Status: **PROPOSAL / NOT APPROVED / NOT IMPLEMENTED.** Executor selected **“Review seam addendum (Recommended)”** after the read-only R3 architecture consultation. That selection authorizes drafting and review. It does not accept the proposed normative changes below. R3 implementation remains blocked on the exact seam decision. No collection, fitting, calibration, transfer, training, evidence publication or registry activation is authorized.
+Status: **REVIEW-BLOCKED PROPOSAL / NOT APPROVED / NOT IMPLEMENTED.** Executor selected **“Review seam addendum (Recommended)”** after the read-only R3 architecture consultation. That selection authorizes drafting and review. It does not accept the proposed normative changes below. Architecture, adversarial, security and spec first passes returned **READY FOR EXECUTOR SEAM DECISION: no**. Discovery authority and an unrepresentable native ownership transition require direction before another closing review. R3 implementation remains blocked. No collection, fitting, calibration, transfer, training, evidence publication or registry activation is authorized.
 
-Authority: [original contracts](ml-adjutant-r3-contracts.md) §§3–7, [primary-owner migration](ml-adjutant-spec-file-migration.md), and [R3 roadmap](PLAN-ml-adjutant.md#immediate-ordered-next-actions--train-the-first-broader-adjutant). The original frozen contract, economic amendment, corrective annex and historical evidence remain unchanged. The sections below become effective only after an actual Executor acceptance of this addendum.
+Authority: [original contracts](ml-adjutant-r3-contracts.md) §§3–7, [primary-owner migration](ml-adjutant-spec-file-migration.md), and [R3 roadmap](PLAN-ml-adjutant.md#immediate-ordered-next-actions--train-the-first-broader-adjutant). The original frozen contract, [economic amendment](ml-adjutant-r4-economic-amendment.md), [corrective annex](ml-adjutant-r4-economic-corrective-annex.md) and historical evidence remain unchanged. This blocked revision cannot become effective by acceptance of its current text. A corrected revision requires positive closing reviews and actual exact-text Executor acceptance. Design acceptance alone does not authorize implementation; a later decision can grant both only if it names both grants.
 
 ## 1. Exact proposed scope
 
@@ -15,7 +15,20 @@ Authority: [original contracts](ml-adjutant-r3-contracts.md) §§3–7, [primary
 | §7 | Define a total recipient event merge consistent with native causal execution and existing income boundaries. |
 | §8 | Define bounded transactional publication and duplicate behavior. |
 
-This proposal changes no native rule, normal native function signature/result, public event variant, public ID grammar, observation/history version, Configuration key, Versions key, generator, feature registry or policy horizon. Its private record refinements retain `engine-provenance-v1`. Its explicit path-authority narrowing is a proposed amendment, not a claim that the original text already supplied these rules.
+This proposal changes no native rule, normal native function signature/result, public event variant, public ID grammar, observation/history version, Configuration key, Versions key, generator, feature registry or policy horizon. Its private record refinements retain `engine-provenance-v1`. The reviewed discovery proposal both removes some original checkpoint coverage and introduces reconstructed live-context overlay authority. It is not merely a narrowing. Review rejected that authority; §6.3 awaits replacement rather than acceptance.
+
+### 1.1 Explicit proposed supersession map
+
+| Frozen rule | Proposed replacement | Unchanged remainder |
+|---|---|---|
+| [Contracts §3](ml-adjutant-r3-contracts.md#3-package-ownership-exports-and-dependency-closure), prohibition on a public host export | §3 enumerates companion names on existing host-only core `.`. This is a scoped export amendment. | No host subpath, deep import, wildcard, model reexport or Node core dependency. |
+| [Contracts §5](ml-adjutant-r3-contracts.md#5-native-causal-provenance--profiles-abc), companion End invocation | §2 fixes the comparison to the existing post-Begin native End with `skipTurnStartChecks:true`. | Normal native APIs/results and original companion input keys. |
+| §5, entity table/counter and unspecified private allocation | §§4–5 close private state, IDs, bindings, ordering and local keys. | No private keys become policy inputs; parent reexecution supplies authority. |
+| §5, creation then death within a frame | §5 requires atomic replacement birth/crush, followed by a distinct actual newborn-death frame. | Actual creation remains necessary; no birth inferred from payment. |
+| §5, actual path images and blanket checkpoint coverage | §§5–6 distinguish nonprojectable evaluated probes from committed occurrences. §6.3's reconstructed discovery proposal is review-blocked and has no accepted replacement. | No animation-derived witness; native output parity; complete actual identity accounting. |
+| [Contracts §6](ml-adjutant-r3-contracts.md#6-public-boundaries-ids-snapshot-and-event-union), intermediate causal-image and transient-history authority | §6.3 proposed refreshed cursor authority and omitted uncertified cursors. Review rejected it. The required replacement remains an open design decision. | Actual enemy destruction plus authorized causal visibility; no CC/mine/fog-disappearance unit witness. |
+| §6, canonical own-ID order inside an atomic frame | §7 retains combined own unit/mine ID order and fixes placement of vision, CC, dispositions, enemy witnesses and income. | Native causal suborder per identity; seq assigned after authorization. |
+| [Contracts §7](ml-adjutant-r3-contracts.md#7-receipt-ledger-conservation-and-transactional-reconciliation), transactional replay/session rules | §8 makes last-byte-identical replay/no-reissue and older-nonlast rejection explicit. | No session/producer authentication from JSON; conservation and atomic history advancement. |
 
 ## 2. Fixed post-Begin companion
 
@@ -76,7 +89,7 @@ EngineProvenance={
 }
 ```
 
-Initialization requires a valid bounded native state: turn `0..45`, unique occupied squares, exactly one CC per side, gas/gasIncome `0..3` and at most three mines per side. Parser success alone does not establish these preconditions. Initialization sets `callOrdinal=0`, `initialTurn=turn`, and empty resolved/query/certificate arrays. It sets stage from `scOutcome`, not phase alone.
+Initialization requires a valid bounded native state: turn `0..45`, unique occupied squares, exactly one CC per side, gas/gasIncome `0..3`, at most three mines per side and unique mine squares within each side. Opposing mines may share a square where native rules allow it. Duplicate same-side mine locations fail seam preflight; they cannot receive unique frozen opening IDs. This does not change native parsing or promise support for every native-parsed snapshot. Initialization sets `callOrdinal=0`, `initialTurn=turn`, and empty resolved/query/certificate arrays. It sets stage from `scOutcome`, not phase alone.
 
 Each successful wrapper increments `callOrdinal` once and replaces `lastCall`. Begin clears resolved actions and emits no path query/certificate. Let `s=floor(callOrdinal/2)`:
 
@@ -112,23 +125,42 @@ Bindings cover every committed action exactly once in merged contiguous native `
 
 Bind the primary effective actor at its actual native execution site: native B order/origin; C after B rewriting; F after native origin selection. A B-created C actor uses its explicit birth ID. A replacement at the execution origin uses the actual replacement ID. A skipped action or absent actor uses null. Fire-and-forget Charon can retain a source action with null actor. A fizzle after selecting a live actor retains that actor ID. These associations add no rules guard.
 
-Every affected entity retains its own actual ID independently of the primary actor. `sourceActionSeq:null` means a native automatic effect without a queued source, never an unknown substitute for a known source. Later automatic effects use the native-established source association where one exists. Ambiguous actual identity/source fails infrastructure validation.
+Every affected entity retains its own actual ID independently of the primary actor. `sourceActionSeq:null` means a native automatic effect without a queued source, never an unknown substitute for a known source. Later automatic effects use the native-established source association where one exists. Ambiguous actual identity/source fails infrastructure validation. Return `resolvedActions` in the original contiguous source-sequence order after collecting execution-site associations.
 
 ## 5. Trace structure, bytes and bounds
 
 Frames retain the original exact fields `{sourceEffectKey,phase,before,after,effects,beforeVisibilityKey,afterVisibilityKey}`. Effects retain their original variants and `sourceActionSeq`; destruction adds the original causal visibility key. Frame phases remain unchanged.
 
-Keys are `engine:call:<callOrdinal>:frame:<ordinal>` and `engine:call:<callOrdinal>:image:<ordinal>`. Per-kind ordinals are zero-based and contiguous. All references resolve locally. Frames follow actual semantic native commit order, including a C movement commit after deferred path application. They do not follow animation order or a sorted phase registry.
+Keys use the successful call's incremented output ordinal: `engine:call:<callOrdinal>:frame:<ordinal>` and `engine:call:<callOrdinal>:image:<ordinal>`. Per-kind ordinals are zero-based and contiguous. Output references resolve within that output companion. Frames follow actual semantic native commit order, including a C movement commit after deferred path application. They do not follow animation order or a sorted phase registry.
+
+Incoming provenance can retain `lastCall` references to the previously checked output. Do not resolve those previous keys against the next call's new arrays. Validate their closed shape/key grammar at wrapper entry; the trusted host binds the entire incoming record to its previously fully checked companion. Validate the prior references when checking that prior companion. The next wrapper replaces `lastCall`. A standalone reusable record never establishes the missing prior companion's authority.
 
 Apply each frame atomically by identity. Preserve simultaneous swaps and multi-removal. Validate occupancy after the frame, not after serial public events. Scratch-map copying and ghost cleanup produce no duplicate effect. Collision cues alone produce no movement effect. Creation/transformation initializes mode from native state without fabricating a toggle.
 
-Split an actual birth and that entity's later death into distinct frames. The death's causal image contains the live created identity. A crush and replacement birth may share a frame because they involve different IDs. All victims in an atomic multi-removal use one common pre-effect image.
+Split an actual birth and that entity's later death into distinct frames. The death's causal image contains the live created identity. A native replacement write MUST place its occupant destruction and replacement birth in one atomic frame. It cannot create an intermediate empty-square observation. All victims in an atomic multi-removal use one common pre-effect image.
+
+Mandatory semantic frame boundaries are:
+
+| Native operation | Frame partition |
+|---|---|
+| Deployment replacement write | One frame for crush, birth and materialized disposition; one later frame for actual newborn mine death/removal. |
+| Unit relocation | One frame for actual occupancy transfer; a later landed-live frame for actual arrival mine destruction/removal. |
+| Jump/mutual collision or C removal wave | One atomic frame for that operation's affected identities; no sequential victim observations. |
+| Native Tank toggle or valid same-side promotion write | One frame per actual mode/transform write. |
+| Deferred successful application | One atomic frame for application capture/CC damage and native relocation; subsequent approach-mine mutation is a distinct frame. |
+| Own mine creation/removal or CC damage outside the above | One frame per actual native semantic mutation, including its inherently simultaneous effects. |
+| Skipped paid deployment | One disposition-only frame at its actual skip/return branch. |
+| Scratch-map synchronization | No semantic frame. |
+
+Within a private atomic frame, sort entity effect blocks by private ID bytes across units/mines; preserve native emission order within one identity. Emit CC effects after entity blocks in side order `w,b`; preserve each side's causal order. Emit deployment dispositions last by source action sequence. This ordering describes an atomic mutation, not serial occupancy updates.
+
+The native side-changing promotion identified in §10.1 has no frame representation under the frozen effect/event union. The table does not silently classify it as a valid same-side transform or provenance ambiguity. Its disposition remains a blocking decision.
 
 Every accepted deploy supplies one disposition. Actual creation supplies its ID even if it later dies. Native skipped/fizzled deployment supplies null. Terminal-C F skips emit disposition-only F frames at the actual skip branch; they execute no F action.
 
 An ordinary frame contains an effect or disposition. A successful deferred application may use an equal-state zero-effect frame as a certificate anchor. At most two such extra frames exist. Probes and scratch synchronization create no frame.
 
-For each frame, emit before-frame, any certified discovery cursors, then after-frame checkpoints. Before/after images equal the frame states. All causal checkpoints precede the destruction commit. Each emitted checkpoint has one image with the same contiguous ordinal. Equal states at different occurrences retain distinct local keys. Every image has a checkpoint; every frame and certificate key resolves locally.
+For each frame, emit before-frame, any certified discovery cursors, then after-frame checkpoints. Before/after images equal the frame states. All causal checkpoints precede the destruction commit. Each emitted checkpoint has one image with the same contiguous ordinal. Equal states at different occurrences retain distinct local keys. Every image has a checkpoint; every frame and certificate key resolves within the corresponding output companion.
 
 ### 5.1 Structural ceilings
 
@@ -201,7 +233,9 @@ The mode mask uses canonical squares `a1,…,h8`; index `i` occupies bit `7-(i%8
 
 Consumption records the final native disposition. `not-deferred` supplied no deferred approach. `deferred-skipped` supplied an approach that skipped or returned `fired:false`. Applied statuses require `fired:true` and exactly one matching certificate. Other statuses have no certificate.
 
-### 6.3 Discovery certificate and chronology
+### 6.3 Reviewed discovery certificate proposal — BLOCKED
+
+The following records the reviewed proposal, not an acceptable normative replacement. Architecture found an undefined certification viewer and a mode/image mismatch. Adversarial/security review found refreshed-overlay knowledge expansion and hidden-state eligibility channels. The proposed cursor coverage also changes memory/`everLit`, not only casualty witnesses. §10.1 records the blocking counterexamples. Do not implement, accept or describe this subsection as ready until a replacement resolves those findings.
 
 ```text
 DiscoveryCertificate={
@@ -261,7 +295,7 @@ Settled debit prefix: traverse the recipient's accepted own actions by own-array
 
 Consume checkpoints in execution order. Emit a nonempty public cell delta at before-frame and certified path checkpoints. Immediately before an after-frame checkpoint emit its authorized effects, then that checkpoint's nonempty cell delta. Frames do not overlap. After-frame order equals frame order.
 
-Inside a frame emit: own-unit blocks by recipient-public ID; own-mine blocks by recipient-public ID; own CC-life changes in native causal order; unmaterialized deployments by accepted-action ordinal; witnessed enemy losses by canonical `(square,type)` order. Preserve native causal order within an identity block. Allocate own creation IDs in actual creation order before this presentation sort. A materialized disposition closes via `own-unit-created`; add no public disposition variant. Deduplicate actual enemy destruction lifecycles privately. Never sort public witnesses by hidden IDs.
+Inside a frame emit: combined own-unit/own-mine blocks by recipient-public ID bytes; own CC-life changes in native causal order; unmaterialized deployments by accepted-action ordinal; witnessed enemy losses by canonical `(square,type)` order. This preserves the original canonical own-ID ordering across both identity kinds. Preserve native causal order within an identity block. Allocate own creation IDs in actual creation order before this presentation sort. A materialized disposition closes via `own-unit-created`; add no public disposition variant. Deduplicate actual enemy destruction lifecycles privately. Never sort public witnesses by hidden IDs.
 
 Every delta contains changed canonical-square-ordered cells only. Compare with the same recipient's previous accepted projection. Fold transient-inclusive memory/`everLit` through the original reducer. Piece-only reveals do not add `everLit`. Remove empty deltas and unauthorized effects before assigning contiguous recipient seq. Private keys/counts never enter DTOs or public allocation.
 
@@ -271,7 +305,7 @@ Fold final snapshot cells through the same observation reducer without inventing
 
 ## 8. Transaction and replay
 
-Stage the native companion, resource facts, private→public identity maps, recipient counters, events, ledger/mine/vision state, snapshot/history and canonical bytes together. Whole-pair commit permits staging, not partial public publication. Commit the successor only after full validation and required host verification. Failures preserve previous public state/counters and private diagnostics; they publish no partial history or learning return.
+Stage the native companion, resource facts, private→public identity maps, recipient counters, events, ledger/mine/vision state, snapshot/history and canonical bytes together. Whole-pair commit permits staging, not partial public publication. Commit the successor only after full validation and required host verification. Provenance, authorization, reconciliation and publication-integrity failures preserve previous public state/counters and private diagnostics; they publish no partial history or learning return. R3 implements no learner. This does not supersede the original later eligibility rules for proved native/challenge failures and their verified ACKed prefixes.
 
 The last canonical batch is idempotent only when bytes and SHA-256 both match. Return its already-checked state; reissue no IDs, callbacks, receipts, income or seq advancement. A conflicting last duplicate fails. An older nonlast ordinal fails sequence validation. Identical pure wrapper inputs produce the same output without ambient counters.
 
@@ -285,12 +319,12 @@ No fixture, test file or passing result is claimed here. The proposed persisted 
 
 | Proposed test filepath | Independent purpose |
 |---|---|
-| `packages/starchess-core/src/__tests__/provenance.test.ts` | Full traced/untraced native equality; turn-45/terminal chips; private counters; births/deaths; atomic swaps/collisions; B/C/F actor/source association; skipped F disposition. |
+| `packages/starchess-core/src/__tests__/provenance.test.ts` | Full traced/untraced native equality; turn-45/terminal chips; private counters; atomic replacement and later newborn death; swaps/collisions; B/C/F actor/source association; skipped F disposition; explicit approved disposition of native ownership-changing promotion. |
 | `packages/starchess-core/src/__tests__/provenanceQueries.test.ts` | Actual helper prefix/memoization; 4/24/2/12 ceilings; captured mode/mine epochs; certificate predicates; correct causal images and no speculative/ghost observations. |
 | `packages/starchess-arena/src/__tests__/challengeObservationV2.test.ts` | Closed schemas, canonical bounded bytes, detached copies and exact V1 preservation. |
 | `packages/starchess-arena/src/__tests__/challengeEconomicLedger.test.ts` | Exact paid conservation, transactional identities/mines/vision, wrong/gapped/conflicting batches and idempotence. |
 | `packages/starchess-arena/src/__tests__/challengeBoundariesV2.test.ts` | Exact initial/open/settled schedule, total merge, debit/receipt disposition, capped zero income and parent reexecution. |
-| `packages/starchess-arena/src/__tests__/challengeProvenancePrivacy.test.ts` | Hidden-state/probe/private-counter twins, no mode/mines epoch mixing, forged images/certificates/bindings and model-closure exclusion. |
+| `packages/starchess-arena/src/__tests__/challengeProvenancePrivacy.test.ts` | Hidden cursor-occupancy and retired enemy-mode twins; refreshed-board disclosure; probe/private-counter twins; no mode/mines epoch mixing; forged images/certificates/bindings and model-closure exclusion. |
 
 Required counterexamples include adjacent-ally virtual overwrite; stationary siege probe; discovery square occupied after ordinary movement; failed/superseded path application; dead C-wave vision source; stale `afterMove`; collision before mine arrival; create-then-mine-death versus unmaterialized F. They are source-derived fixture obligations, not executed exploit results.
 
@@ -302,8 +336,28 @@ Implementation checks include all three package typechecks, strict test-file typ
 |---|---|---|
 | Architect consultation | `ses_eec78096cffeMkpMxeH0Yz2wt6` | Read-only author guidance for wrapper, root access, private records, digest, merge and bounds; not an independent final verdict. |
 | Backend consultation | `ses_eec780908ffeZeOvzGT0ah2tLD` | Read-only source-derived probe/commit distinction and causal-image proposal; no tests or native execution. |
-| Adversarial review | Pending | Persisted addendum and cited source; no implementation claim. |
-| Security review | Pending | Probe authorization, private identity/digest, hidden-input channels and trust boundary. |
-| Spec review | Pending | Frozen-body preservation, exact supersession and stage/lifecycle accuracy. |
+| Architecture first pass | `ses_eec78096cffeMkpMxeH0Yz2wt6` | **READY FOR EXECUTOR SEAM DECISION: no**. Four HIGH: native ownership change, cursor mode representation, certificate viewer/mapping and optional frame partition. Author consultation is not a closing clearance. |
+| Adversarial first pass | `ses_eec4b5d28ffeFSK3KuDIKfzBdv` | **READY FOR EXECUTOR SEAM DECISION: no / READY TO MERGE: no**. Four HIGH: optional replacement partition, reusable prior-reference scope, duplicate opening mine locations and refreshed discovery authority. Two MEDIUM: lost transient knowledge coverage and own-ID ordering. |
+| Security first pass | `ses_eec4b5c3dffeuiVNlh9BpgideH` | **READY FOR EXECUTOR SEAM DECISION: no**. Two HIGH: hidden-occupancy eligibility channel and synthetic/stale-mode discovery authority. |
+| Spec first pass | `ses_eec7808f6ffed4yCzKVOuYK5fZ` | **SPEC STATUS: blocked / READY FOR EXECUTOR SEAM DECISION: no**. Two HIGH: exact supersession map and undefined certification viewer. Two MEDIUM: private array/key ordering and missing closing architecture gate. |
+| Closing architecture/adversarial/security/spec rereviews | Pending | Resolve the substantive decisions, replace §6.3, and rereview the exact revision. |
 
-No Executor acceptance of the proposed normative text has occurred. No reviewer pass, implementation, calibrated readiness or operation permission follows from this draft. After positive reviews and lead document checks, present the exact addendum for the seam decision before implementing R3.
+All first-pass reviewers read source/content without tests, hashes or native execution. The lead revised replacement partition, opening mine uniqueness, prior-reference validation scope, private array/key order, combined public own-ID order, supersession mapping and lifecycle wording. Those revisions are not closing-review passes. Original NO verdicts remain intact.
+
+### 10.1 Unresolved substantive findings
+
+**[Inference] The following counterexamples derive from inspected source and read-only reviews; no fixture/exploit has executed.**
+
+| ID | Severity / origin | Concrete conflict | Required decision |
+|---|---|---|---|
+| R3-SEAM-01 | HIGH / architect | White B held stim `e7→e8` plus C `e7→f8`; Black B deploy from CC `f7→e8` crushes White's mover and creates a paid Black Marine. Held fallback later calls White's promotion helper on the live Black replacement. `applyGasPromotion` writes White type/color without checking the replaced actor's side. Frozen `unit-transform` and authorized lineage/receipt variants encode no ownership transfer. | Separately review a native-fix proposal; or define an explicit unsupported-case boundary without full R3 readiness; or amend ownership/ledger schemas. Do not fabricate birth/death, relabel the transition ambiguous or silently change native behavior. |
+| R3-SEAM-02 | HIGH / security | White Mecha `a1→h8` against Marine `h8`; Black Hoverbike `f5→d4` versus `f5→d6`. Native deferred capture succeeds in both, but the hidden occupancy of a prefix square controls whether §6.3 emits discovery deltas/witnesses. Original/final recipient observations can match. | Replace hidden-state-conditioned full-board overlay authorization with an exact noninterfering discovery rule or an explicitly approved committed-image-only scope. |
+| R3-SEAM-03 | HIGH / security + architect | A crushed enemy siege Tank can leave a square mask consumed by a virtual own Tank. Keeping the mask transfers enemy mode into overlay vision; normalizing it can make certificate success reveal the hidden mode. The proposed overlay's unit mode can also disagree with the mask used to certify it. | Specify one representable authorized discovery context; do not treat stale square-mode computation or its certificate result as recipient knowledge. |
+| R3-SEAM-04 | HIGH / adversarial | Native queries precede ordinary movement. Rebuilding their cursor from later live state can disclose a Battleship that moved `h5→b5`, which neither the original probe nor the actual origin/final vision observed. | Do not call refreshed overlay authority merely a narrowing. Review an exact consumed-fact or committed-observation replacement. |
+| R3-SEAM-05 | HIGH / architect + spec | One global private certificate uses undefined “recipient” vision and lacks exact query/application association constraints. | A replacement must identify its acting viewer, source action, unique native consumed query, frame and recomputed status. No recipient-dependent private global status. |
+
+Source anchors: [held promotion and B replacement](../../packages/starchess-core/src/resolve/submit-turn.ts) (`applyGasPromotion`, `heldExtraSteps` fallback, `placeUnit`); [probe patches](../../packages/starchess-core/src/board/vision.ts) (`pathRevealSteps`); [ordinary movement and deferred capture](../../packages/starchess-core/src/resolve/resolve-turn.ts) (`moveWave`, `applyPathRevealAttack`, `phase3`).
+
+The ownership and visibility directions are independent choices. A narrowly authorized consumed-discovery-fact design, a committed-image-only design, or a separately amended native observation seam all require exact-text review before acceptance. Native-fix, unsupported-case and ownership-schema directions also require explicit scope. Current proposed records/ceilings may require revision after those choices.
+
+No Executor acceptance of the proposed normative text has occurred. No reviewer pass, implementation, calibrated readiness or operation permission follows from this draft. Ask for direction on the unresolved findings, not acceptance of the review-blocked text. After a corrected revision receives positive closing reviews and lead document checks, present its exact seam decision before implementing R3.
