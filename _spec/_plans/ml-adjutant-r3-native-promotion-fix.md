@@ -107,8 +107,9 @@ This correction supplies no R4 estimator/features, R5 readiness, calibrated mode
 |---|---|---|
 | Architect author consultation | `ses_eec78096cffeMkpMxeH0Yz2wt6` | Read-only guard/fixture/carrier guidance; no native execution. |
 | Closing architecture/backend review | Pending | Exact guard, reachable fixture, scoped behavior and preserved replacement handling. |
-| Closing adversarial/security review | Pending | Exact persisted proposal paired with revised consumed-fact seam. |
+| Earlier paired security/spec review | `ses_eec4b5c3dffeuiVNlh9BpgideH`, `ses_eec7808f6ffed4yCzKVOuYK5fZ` | Target-only pair cleared at design level before later mine/dependency revisions; no executed fixture. |
+| Closing adversarial/security review of latest pair | Pending | Exact persisted proposal paired with final multiplicity/count/dependency seam. |
 | Spec review | Pending | Explicit native amendment, immutable history and stage/approval boundaries. |
 | Executor exact-text acceptance / build authorization | Pending | Direction selection is neither grant. |
 
-No positive closing verdict, source change or executed fixture is claimed.
+Final closing clearance for the latest paired revision remains pending. No source change or executed fixture is claimed.

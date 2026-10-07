@@ -1,6 +1,6 @@
 # ML Adjutant — R3 native-seam addendum
 
-Status: **REVISED / MINE-INVENTORY DECISION BLOCKED / NOT APPROVED / NOT IMPLEMENTED.** Executor selected **“Review seam addendum (Recommended)”**, then **“Native-fix proposal (Recommended)”** and **“Consumed facts (Recommended)”** after negative first-pass reviews. Those selections authorize drafting/review, not acceptance or source edits. Target-only authority and the [native-promotion proposal](ml-adjutant-r3-native-promotion-fix.md) received positive security review. Architecture/adversarial rereviews found native-created same-side mine multiplicity without a complete projection/planning law. That choice and final positive reviews/exact acceptance remain pending. R3 implementation remains blocked. No collection, fitting, calibration, transfer, training, evidence publication or registry activation is authorized.
+Status: **REVISED PROPOSAL / FINAL REVIEW PENDING / NOT APPROVED / NOT IMPLEMENTED.** Executor selected **“Review seam addendum (Recommended)”**, then **“Native-fix proposal (Recommended)”**, **“Consumed facts (Recommended)”**, and **“Support multiplicity (Recommended)”**. Those selections authorize drafting/review, not acceptance or source edits. Target-only authority and the [native-promotion proposal](ml-adjutant-r3-native-promotion-fix.md) received earlier positive security review. The latest revision adds exact mine multiplicity/order/projection and a single counted V2-history candidate entry. Final paired review/exact acceptance remain pending. R3 implementation remains blocked. No collection, fitting, calibration, transfer, training, evidence publication or registry activation is authorized.
 
 Authority: [original contracts](ml-adjutant-r3-contracts.md) §§3–7, [primary-owner migration](ml-adjutant-spec-file-migration.md), and [R3 roadmap](PLAN-ml-adjutant.md#immediate-ordered-next-actions--train-the-first-broader-adjutant). The original frozen contract, [economic amendment](ml-adjutant-r4-economic-amendment.md), [corrective annex](ml-adjutant-r4-economic-corrective-annex.md) and historical evidence remain unchanged. This revision requires positive closing reviews and actual exact-text Executor acceptance before it takes effect. Design acceptance alone does not authorize implementation; a later decision can grant both only if it names both grants.
 
@@ -11,10 +11,12 @@ Authority: [original contracts](ml-adjutant-r3-contracts.md) §§3–7, [primary
 | §2 | Define the unchanged End companion signature as the post-Begin settlement seam, with the existing native `skipTurnStartChecks:true` invocation. |
 | §3 | Permit named host-only companion exports through existing core `.`, while retaining the exact two-subpath export map and excluding the seam from model closures. |
 | §§4–5 | Close the private record, identity issuance, source bindings, local references and digest bytes. |
+| §4.4 | Preserve actual mine multiplicity and native occurrence order; distinguish unique locations from entity quantity. |
 | §6 | Keep speculative probes private; authorize only the exact target operand of a successfully consumed native discovery operation. |
 | §7 | Define a total recipient event merge consistent with native causal execution and existing income boundaries. |
 | §8 | Define bounded transactional publication and duplicate behavior. |
 | §9.1 | Explicitly bind future R4 innovations, support, features and provenance to the amended public history semantics. |
+| §9.2 | Add a V2-history candidate entry and counted pure planning constructor as R3 integration dependencies; preserve legacy V1 behavior. |
 
 The paired [promotion correction](ml-adjutant-r3-native-promotion-fix.md) is the sole proposed native behavior amendment. Companion parity uses that explicitly accepted resolver if the correction receives approval. Normal native API/result schemas, public event fields/ID grammar, observation/history version, Configuration/Versions keys, generator, feature registry and policy horizon stay unchanged. Private records retain `engine-provenance-v1`.
 
@@ -27,6 +29,8 @@ The target-only law explicitly changes authorization semantics: a successfully c
 | [Contracts §3](ml-adjutant-r3-contracts.md#3-package-ownership-exports-and-dependency-closure), prohibition on a public host export | §3 enumerates companion names on existing host-only core `.`. This is a scoped export amendment. | No host subpath, deep import, wildcard, model reexport or Node core dependency. |
 | [Contracts §5](ml-adjutant-r3-contracts.md#5-native-causal-provenance--profiles-abc), companion End invocation | §2 fixes the comparison to the existing post-Begin native End with `skipTurnStartChecks:true`. | Normal native APIs/results and original companion input keys. |
 | §5, entity table/counter and unspecified private allocation | §§4–5 close private state, IDs, bindings, ordering and local keys. | No private keys become policy inputs; parent reexecution supplies authority. |
+| §5, closed FrameImage `{entities,ccLives}` | §4.4 adds private `nativeMineOrder` to FrameImage and provenance for native occurrence selection. | Unit uniqueness, per-side entry cap, private-only identities and complete digest binding. |
+| §§6–7, square-sorted own mine lineages/audit and snapshot reconciliation | §4.4 retains every live mine ID; orders by `(square,id)` and reconciles unique `own.mines` locations separately from quantity. Initial own mine locations remain unique. | Existing public DTO fields, opening/created ID grammar, no paid-unit mine basis. |
 | §5, creation then death within a frame | §5 requires atomic replacement birth/crush, followed by a distinct actual newborn-death frame. | Actual creation remains necessary; no birth inferred from payment. |
 | §5, actual path images and blanket checkpoint coverage | §§5–6 keep probes private, use committed before/after images and add separately bound consumed-target proofs without cursor images. | No animation-derived witness; complete native identity accounting. |
 | [Contracts §6](ml-adjutant-r3-contracts.md#6-public-boundaries-ids-snapshot-and-event-union), ONLY geometric causal-image authorization | §6.3 permits committed geometric witness OR the associated acting-side consumed capture proof. The real causal preimage still proves identity, not fabricated geometric visibility. | Actual native destruction/type/cost/dedup; no CC/mine/fog-disappearance unit witness. |
@@ -34,6 +38,7 @@ The target-only law explicitly changes authorization semantics: a successfully c
 | §6, memory retained on unknown cells | An authorized enemy-unit-loss event clears an existing same-square/same-type sighting before later vision updates. This closes consumed and geometric casualty sightings uniformly. | No fabricated `lit:null`, enemy identity tracking or subsequent-occupant disclosure. |
 | §6, canonical own-ID order inside an atomic frame | §7 retains combined own unit/mine ID order and fixes placement of vision, CC, dispositions, enemy witnesses and income. | Native causal suborder per identity; seq assigned after authorization. |
 | [Contracts §7](ml-adjutant-r3-contracts.md#7-receipt-ledger-conservation-and-transactional-reconciliation), transactional replay/session rules | §8 makes last-byte-identical replay/no-reissue and older-nonlast rejection explicit. | No session/producer authentication from JSON; conservation and atomic history advancement. |
+| R2 V1 generator bridge / future history composition | §9.2 adds only `composeCandidatesFromHistoryV2` on existing `/candidates` plus counted constructor/type on core `/planning-v1`. Amended inference uses that history entry. | Legacy V1 function/bytes, CandidateBatchV3, diagnostics B, 512/2048/four slots and native promotion/deploy grammar. |
 
 ## 2. Fixed post-Begin companion
 
@@ -89,6 +94,7 @@ EngineProvenance={
   callOrdinal:Int[0,2*R],
   unitCounter:Int[0,U+2*R],mineCounter:Int[0,2*M+2*G*R],
   entities:EngineEntity[0..70],ccLives:{w:Int[0,3],b:Int[0,3]},
+  nativeMineOrder:MineId[0..6],
   resolvedActions:ResolvedActionBinding[0..8],
   lastCall:{queries:PathQueryRecord[0..4],consumedFacts:ConsumedTargetProof[0..2]}
 }
@@ -131,6 +137,20 @@ Bindings cover every committed action exactly once in merged contiguous native `
 Bind the primary effective actor at its actual native lookup site: native B order/origin; C after B rewriting; F after native origin selection. Record the actual live entity returned by that lookup, including a replacement, even when a subsequent side/type/occupancy guard skips the effect. Null means the native path never reached an actor lookup or that lookup returned no entity. A terminal-skip action therefore uses null; an own Tank replaced by an own Marine before F siegeMode retains the Marine lookup ID even though the type guard skips. Fire-and-forget Charon retains its source even without an actor. The association never grants side/type permission or proves the actor caused an effect; affected identities bind independently. These records add no rules guard.
 
 Every affected entity retains its own actual ID independently of the primary actor. `sourceActionSeq:null` means a native automatic effect without a queued source, never an unknown substitute for a known source. Later automatic effects use the native-established source association where one exists. Ambiguous actual identity/source fails infrastructure validation. Return `resolvedActions` in the original contiguous source-sequence order after collecting execution-site associations.
+
+### 4.4 Mine multiplicity, order and removal
+
+Each actual native mine-array occurrence is one entity. Continuation allows same-side same-square multiplicity. The native cap remains three entries per side, not three locations. Keep the initialization-only uniqueness requirement and existing opening ID grammar. Actual appends allocate one new private/public own mine ID and increment the creation counter even at an already occupied own mine location or before immediate removal.
+
+`ownMineLineage` and `OwnMineAuditState.liveOwnMines` each contain every live own `{mineId,square}` in dense arrays of length `0..3`. IDs are unique; squares may repeat. Order by canonical square, then mine-ID UTF-8 bytes. Reconcile those arrays exactly by identity/location. Require `own.mines=canonicalSortUnique(ownMineLineage.map(x=>x.square))`. Unique location projection does not encode capacity. Retired IDs remain sorted unique and never reused. Mines receive no paid-unit basis.
+
+Add exactly `nativeMineOrder:MineId[0..6]` to EngineProvenance AND every FrameImage. It contains all and only that state's mine IDs exactly once in native input-array order. Resolving them to `{color:entity.side,at:entity.square}` reproduces that native array. Initialize order from actual input occurrences while issuing IDs in the separately specified canonical initialization order. Append at actual birth; apply actual native filters to ordered occurrence bindings; preserve survivor order. Copied maps/arrays preserve occurrence association, not new identities. Query bases inherit FrameImage order; captured vision mine arrays preserve actual argument order and multiplicity. Native order enters canonical digest bytes and never public DTOs.
+
+Native `mineAt` selects the first array occurrence at a square, including a friendly entry before a hostile entry. Bind that selection by input occurrence index, not inferred color/square continuity. For non-inert `withoutMine`, let `spent=hit.kind==='detonated'?(hit.chaseFrom??hit.at):hit.at`; remove EVERY actual input occurrence at `spent`, across both sides, exactly as the native square filter does. Inert removes none. Other explicit native square filters remove all corresponding occurrences. Record one removal per actual ID in one atomic mutation. Public own events retire each affected own ID; a location remains until no live own occurrence remains. Presentation sorting never changes native selection/removal order. Scratch synchronization performs no repeated retirement.
+
+Live limits remain six total/70 frame entities; creation at most six/End and removal at most twelve/End, charging each initial or born entity once. One native removal can retire six co-located mines. This law changes representation/count transport, not native duplicate creation or refund rules.
+
+Source: [native mine array/count/first lookup](../../packages/starchess-core/src/board/mines.ts), [actual all-square removal](../../packages/starchess-core/src/board/mine-contact.ts), [F append/rewrite](../../packages/starchess-core/src/resolve/submit-turn.ts), [location-only V1 observation](../../packages/starchess-arena/src/challenge/observation.ts).
 
 ## 5. Trace structure, bytes and bounds
 
@@ -350,6 +370,8 @@ No fixture, test file or passing result is claimed here. The proposed persisted 
 | `packages/starchess-core/src/__tests__/provenanceQueries.test.ts` | Actual helper prefix/memoization; 4-query/24-evaluation/2-fact ceilings; captured mode/mine epochs; exact branch-carried association; consumed descriptors versus actual lifecycle; no speculative/ghost observations. |
 | `packages/starchess-arena/src/__tests__/challengeObservationV2.test.ts` | Closed schemas, canonical bounded bytes, detached copies and exact V1 preservation. |
 | `packages/starchess-arena/src/__tests__/challengeEconomicLedger.test.ts` | Exact paid conservation, transactional identities/mines/vision, wrong/gapped/conflicting batches and idempotence. |
+| `packages/starchess-core/src/__tests__/provenanceMines.test.ts` | Actual stacked mine births; first-occurrence friendly/hostile order; all-matching native removals; private occurrence order; no duplicate lifecycle from synchronization. |
+| `packages/starchess-training/src/__tests__/candidatesHistoryV2.test.ts` | Derived live quantity versus unique locations, prefix reservations/root availability, count-field forgery rejection and exact V1 parity for equivalent unique inventories. |
 | `packages/starchess-arena/src/__tests__/challengeBoundariesV2.test.ts` | Exact initial/open/settled schedule, total merge, debit/receipt disposition, capped zero income and parent reexecution. |
 | `packages/starchess-arena/src/__tests__/challengeProvenancePrivacy.test.ts` | Hidden prefix-occupancy and retired enemy-mode twins; target-only moved-Battleship exclusion; descriptor-preserving identity substitution; consumed capture→mine/F replacement memory closure; nonacting recipient isolation; forged proof/image/binding; model-closure exclusion. |
 
@@ -371,6 +393,39 @@ This proposed paired authority changes the public-input semantics consumed by fu
 
 This disposition changes inputs and source-law binding, not the probabilistic architecture, bin tree, feature calculus, policy horizon, optimizer or operational permission. R5 must persist public-only casualty-memory replay, `Y1/Y2/Y3`, anonymous-frontier preservation and novelty/stale-memory regressions under the accepted pair. The economic amendment and annex remain frozen outside this explicit dependency scope.
 
+### 9.2 Exact V2-history count transport and generator dependency
+
+Add one runtime export on existing training `/candidates`:
+
+```ts
+composeCandidatesFromHistoryV2(history: AuthorizedHistory): CandidateBatchV3;
+```
+
+Retain `composeCandidatesFromObservationV1` signature and bytes for unchanged valid V1 inputs. Retain composition-v3, candidate codec v1 and diagnostics B. Add no package subpath, Configuration/Versions key, count callback, override or public prepared-call entry. Existing R2 source/allowlist/evidence bytes remain historical; current implementation/audits will receive a separately reviewed additive delta.
+
+V1 knows locations and cannot certify actual mine quantity under multiplicity. Amended episode-v2 generation and parent recomputation use ONLY the history entry, with no fallback to V1. This is a minimal R3 integration dependency before amended candidate decisions, not R4 belief/features or training.
+
+On existing core `/planning-v1`, retain `PlanningKnowledge` and legacy `knownAppendFailure` behavior. Add exactly:
+
+```ts
+type CountedPlanningKnowledge =
+  Readonly<PlanningKnowledge> & Readonly<{ownMineCount:number}>;
+countedPlanningKnowledge(
+  knowledge: PlanningKnowledge,
+  ownMineInventorySquares: readonly Square[],
+): CountedPlanningKnowledge;
+```
+
+Inventory squares are dense `0..3` valid squares with repetition allowed. Their location set equals `knowledge.ownMines`. Return exactly the existing five fields plus runtime-readonly `ownMineCount=ownMineInventorySquares.length`; accept no supplied count override. Copy planning maps/sets and their DTO values into detached constructor-owned state. The constructor validates, not authenticates.
+
+The history entry validates/detaches the exact four-key history, V2 snapshot, ledger equality, recipient consistency, live mine ID/order/multiplicity law and everLit. Derive inventory solely from `currentAuthorizedSnapshotV2.ownMineLineage.map(x=>x.square)`. Build current known pieces/unknown mask/mine locations/own siege modes from that snapshot, not stale memory. The parent independently checks the quantity equals its checked boundary's live mine audit length. Audit state stays private; no extra history field or function argument carries it.
+
+Reuse existing primitives, prefix `{actions,anchors,mineAnchors}`, lanes, FIFO/depth cursors, canonical field/key order, profile B ownership, redistribution, pass, four actions, 512 uniques, 2048 attempts, hashing/collision checks and diagnostic identities. Extract one private prepared traversal shared by V1 legacy knowledge/count=`ownMines.size` and V2 counted knowledge/count=live lineage length. Do not run V1 traversal and filter its completed output.
+
+At root probes AND every lane append keep guard priority `actor,shape,timing,resources,mineCap,ownOccupancy`. After resources, for spiderMine reject `mineCap` iff `ownMineCount+state.mineAnchors.length>=MAX_MINES_PER_SIDE`. Then compute the current action's native append-time anchor and reject `ownOccupancy` when it is an existing own location or prior stored reservation. Each valid mine append reserves ONE additional entity and its stored append-time location. Count every reservation without deduplication; do not subtract hypothetical removals or recompute previous anchors after later C. Legacy location-based cap cannot exceed this counted cap because actual count is at least unique locations.
+
+Required fixtures: three IDs/one location makes Spider inactive; two IDs/one location allows one further reservation; resources precede cap; duplicate current/reserved anchor becomes ownOccupancy unless cap fails first; root/lane guards use the same count; unique equivalent inventories reproduce entire V1 candidate/diagnostic bytes. Reject forged count/history fields, malformed lineage, inconsistent location projection and private audit mismatch. Preserve F-before-C native multiplicity without retrovalidating stored anchors.
+
 ## 10. Review and decision ledger
 
 | Review | Task | Scope / disposition |
@@ -389,7 +444,8 @@ This disposition changes inputs and source-law binding, not the probabilistic ar
 | Target-only spec rereview | `ses_eec7808f6ffed4yCzKVOuYK5fZ` | **READY FOR EXECUTOR PAIRED DESIGN DECISION: yes**, conditioned on other closing reviews and fresh document checks; design unaccepted. This verdict precedes subsequent mine/dependency revisions. |
 | Target-only adversarial rereview | `ses_eec4b5d28ffeFSK3KuDIKfzBdv` | **READY FOR EXECUTOR PAIRED DESIGN DECISION: no / READY TO MERGE: no**. One new HIGH: same-side mine multiplicity from admitted execution. Two MEDIUM: lookup-versus-skip actor association and sequenced fixture staging wording. |
 | Target-only architecture rereview | `ses_eec78096cffeMkpMxeH0Yz2wt6` | **READY FOR EXECUTOR PAIRED DESIGN DECISION: no**. Two HIGH: mine multiplicity closure and explicit downstream R4 input disposition. Promotion/target-only ownership/cursor issues resolved within stated scope. |
-| Closing architecture/backend/adversarial/security/spec rereviews of final mine/dependency revision | Pending | Mine-inventory direction and its exact amended law must be settled first. |
+| Mine multiplicity/count author guidance | `ses_eec780908ffeZeOvzGT0ah2tLD`, `ses_eec78096cffeMkpMxeH0Yz2wt6` | Read-only ordered occurrence/projection/removal law and one additive history entry/count constructor after Executor direction. Architect reports §9.1 resolves earlier R4-disposition HIGH at design level; this is not final paired clearance. |
+| Closing architecture/backend/adversarial/security/spec rereviews of final mine/dependency revision | Pending | Exact §§4.4/9.1/9.2 and paired correction require final review. |
 
 All first-pass reviewers read source/content without tests, hashes or native execution. The lead revised replacement partition, opening mine uniqueness, prior-reference scope, private ordering, combined public own-ID order, supersession and lifecycle wording. Executor then selected native-fix and consumed-fact drafting directions. The lead replaced the rejected certificate/overlay law and its dependent carriers/bounds with §6.3 target-only proofs plus the paired guard proposal. Those revisions are not closing-review passes. Original NO verdicts remain intact.
 
@@ -407,7 +463,7 @@ All first-pass reviewers read source/content without tests, hashes or native exe
 
 Source anchors: [held promotion and B replacement](../../packages/starchess-core/src/resolve/submit-turn.ts) (`applyGasPromotion`, `heldExtraSteps` fallback, `placeUnit`); [probe patches](../../packages/starchess-core/src/board/vision.ts) (`pathRevealSteps`); [ordinary movement and deferred capture](../../packages/starchess-core/src/resolve/resolve-turn.ts) (`moveWave`, `applyPathRevealAttack`, `phase3`).
 
-### 10.2 New mine-inventory blocker
+### 10.2 Mine-inventory finding and proposed disposition
 
 **[Inference] Two read-only reviews found accepted native queues that create multiple same-side mines at one square. No fixture has executed.**
 
@@ -417,10 +473,10 @@ Another appends C toward an enemy CC before F mine: intended C movement provides
 
 Current native arrays retain both mines while V1 observation/planning retain unique square locations. Opening-only uniqueness cannot prevent this admitted result. The unresolved relationships are actual native mine count, live mine IDs/same-square ordering, `ownMineLineage`/audit state, retained unique `own.mines` locations and generator count/feasibility guards.
 
-The available direction proposals are: explicit multiplicity with exact planning-count transport; an explicit unsupported-result boundary with no full R3 readiness; or a separately scoped native mine-rule correction. Do not silently deduplicate, add an unapproved native guard, or claim unchanged V1 location-set generation enforces the full actual inventory cap. §4's initialization-only uniqueness and existing mine reconciliation are not a closed runtime law until this direction is settled.
+Executor selected **Support multiplicity** for drafting/review. §4.4 records every native mine occurrence, private order, actual removal and unique public locations. §9.2 transports actual live quantity into one additive history-entry generator while preserving V1 compatibility. No new native mine guard or deduplication rule is proposed. Closing review remains pending; direction selection is not acceptance of these exact additions.
 
 Executor selected two drafting directions, not exact acceptance: native promotion correction and consumed-discovery facts. Their current exact texts require closing review and the later design decision. The original unsafe overlay text was replaced; its first-pass negative verdicts and counterexample obligations remain recorded above. No unselected unsupported-case, ownership-schema or native-observation design became a runtime alternative.
 
-No Executor acceptance of the proposed normative text has occurred. Prior scoped positive verdicts do not clear the later mine-inventory blocker/revision. After its direction is settled and the final pair receives positive closing reviews/document checks, present the exact seam/native design decision before implementing R3.
+No Executor acceptance of the proposed normative text has occurred. Earlier positive verdicts precede the latest multiplicity/count/dependency revision. After final paired positive reviews and document checks, present both exact proposals for design acceptance and a separately explicit implementation grant before changing source.
 
 Lead document checks of the preceding blocked-record revision returned PASS for `git diff --no-index --check /dev/null _spec/_plans/ml-adjutant-r3-seam-addendum.md`, `git diff --check`, and `git diff --cached --check`. They do not check this later target-only revision. Package tests and native reproductions did not run because the accepted scope was drafting/read-only review. Repeat document checks after subsequent edits.
