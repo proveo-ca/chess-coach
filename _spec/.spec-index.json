@@ -6,6 +6,9 @@
       "covers": [
         "packages/starchess-training/**",
         "packages/starchess-arena/src/authorized/v1/**",
+        "packages/starchess-arena/src/authorized/v2/**",
+        "packages/starchess-arena/src/events.ts",
+        "packages/starchess-arena/src/challenge/r3*.ts",
         "packages/starchess-arena/src/intent-codec-v1.ts",
         "packages/starchess-arena/src/observations.ts",
         "packages/starchess-arena/src/challengeContract/**",
@@ -31,6 +34,8 @@
         "packages/starchess-core/src/resolve/submit-turn.ts",
         "packages/starchess-core/src/index.ts",
         "packages/starchess-core/src/planning-v1.ts",
+        "packages/starchess-core/src/rules/counted-planning.ts",
+        "packages/starchess-core/src/__tests__/countedPlanning.test.ts",
         "packages/starchess-core/src/__tests__/planning-v1.test.ts",
         "packages/starchess-core/src/replay/packed.ts",
         "packages/starchess-core/src/__tests__/packed.test.ts",
@@ -341,9 +346,26 @@
       "spec": "_spec/packages/starchess-core/resolve-turn-activity.puml",
       "covers": [
         "packages/starchess-core/src/resolve/resolve-turn.ts",
+        "packages/starchess-core/src/resolve/provenance*.ts",
+        "packages/starchess-core/src/board/vision.ts",
+        "packages/starchess-core/src/board/ray-scan.ts",
+        "packages/starchess-core/src/__tests__/provenance*.test.ts",
         "packages/starchess-core/src/__tests__/tank/**",
         "packages/starchess-core/src/__tests__/collision/fogVacatedTarget.test.ts",
         "packages/starchess-core/src/__tests__/mine/mineContactRoutes.test.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/packages/starchess-core/submit-turn-activity.puml",
+      "covers": [
+        "packages/starchess-core/src/resolve/submit-turn.ts",
+        "packages/starchess-core/src/resolve/resolve-turn.ts",
+        "packages/starchess-core/src/resolve/provenance*.ts",
+        "packages/starchess-core/src/index.ts",
+        "packages/starchess-core/src/__tests__/provenance*.test.ts",
+        "packages/starchess-core/src/__tests__/gasPromotionOwnership.test.ts",
+        "packages/starchess-core/src/__tests__/mine/**"
       ],
       "fingerprint": null
     },

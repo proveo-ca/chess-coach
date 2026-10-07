@@ -1,9 +1,9 @@
 # Adjutant evolution — from strategies to learned opponent
 
-Status: **learning roadmap only; NOT training-ready. R0 historical assurance CLOSED; R2 CLOSED within authorized V1/bounded V3 and current hermetic evidence assurance. R3 paired design ACCEPTED and implementation/local verification AUTHORIZED; R3–R5 implementation/readiness before explicit R6 remain PENDING.**
+Status: **learning roadmap only; NOT training-ready. R0 historical assurance CLOSED; R2 CLOSED within authorized V1/bounded V3 and its preserved assurance generation. R3 design ACCEPTED; source IMPLEMENTED / authorized LOCAL VERIFICATION IN PROGRESS. R3 closure and R4–R5 implementation/readiness before explicit R6 remain PENDING.**
 Scope: how Single Player’s opponent (`packages/starchess-core/src/ai/adjutant.ts`) grows from named strategy algorithms → a composed heuristic → something that learns, without rewriting the StarChess rules engine.
 
-**R3 authority:** actual Executor TUI response **“Accept + build locally (Recommended)”** grants both exact-text acceptance of the seam/promotion pair and scoped R3 implementation/local verification. The [outside-snapshot authority record](_spec/_plans/ml-adjutant-r3-seam-addendum.md#executor-acceptance-and-scoped-local-build-authority) retains the supplied pre-metadata whole-file identities and exact scope. Implementation, native parity and readiness remain pending actual verification; no collection, fitting, calibration, transfer, training, evidence publication or registry activation is granted.
+**R3 authority:** actual Executor TUI response **“Accept + build locally (Recommended)”** grants both exact-text acceptance of the seam/promotion pair and scoped R3 implementation/local verification. The [authority record](_spec/_plans/ml-adjutant-r3-seam-addendum.md#executor-acceptance-and-scoped-local-build-authority) retains the accepted pre-metadata identities. The [current execution record](_spec/_plans/ml-adjutant-r3-seam-addendum.md#current-r3-local-implementation--verification-in-progress) distinguishes implemented source and scoped reported local gates from pending full arena/inventory/spec closure. No collection, fitting, calibration, transfer, training, evidence publication or registry activation is granted.
 
 The preparatory catalog is implemented and verified separately from this learning roadmap;
 the verification record includes the existing full-app lint baseline exception:
@@ -108,7 +108,9 @@ Current policy/assurance boundary:
 
 The independent delayed-swap native mine synchronization is implemented under Executor's **“Apply Native sync-fix proposal”**, with verification/review progress in the [scoped execution record](_spec/_plans/ml-adjutant-r3-seam-addendum.md#independent-native-delayed-swap-synchronization) and [resolver diagram](_spec/packages/starchess-core/resolve-turn-activity.puml).
 
-The larger [R3 seam](_spec/_plans/ml-adjutant-r3-seam-addendum.md#executor-acceptance-and-scoped-local-build-authority) and [promotion correction](_spec/_plans/ml-adjutant-r3-native-promotion-fix.md#executor-acceptance-and-local-build-status) are now separately ACCEPTED with local implementation/verification AUTHORIZED. Their implementation/readiness remains pending; the independent mine fix supplies no larger-seam implementation proof.
+The larger [R3 seam](_spec/_plans/ml-adjutant-r3-seam-addendum.md#current-r3-local-implementation--verification-in-progress) and [promotion correction](_spec/_plans/ml-adjutant-r3-native-promotion-fix.md#executor-acceptance-and-local-build-status) are ACCEPTED with source IMPLEMENTED and authorized local verification IN PROGRESS. Full arena verification, final source inventory and the implementation spec gate remain pending. The independent mine fix remains separate from these integrated local results.
+
+Current runtime owners: [Begin/End pipeline](_spec/packages/starchess-core/submit-turn-activity.puml), [classical mutation sites](_spec/packages/starchess-core/resolve-turn-activity.puml) and [counted V2-history candidate boundary](_spec/packages/starchess-training/candidate-generation.puml). Separate native-provenance/economic-boundary diagrams await the missing repo template; this documentation pass is not a final spec-gate PASS.
 
 Executor chose **Broader first trained ranker**:
 [`ml-adjutant-r4-weights.md`](_spec/_plans/ml-adjutant-r4-weights.md).

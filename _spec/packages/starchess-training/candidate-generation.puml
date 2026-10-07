@@ -1,6 +1,9 @@
-' purpose: Approved R2 V1 bridge, V3 bounded generation, and private native admission boundary.
+' purpose: Legacy V1 and additive R3 counted-history inputs share bounded composition V3.
 ' covers: packages/starchess-training/**
 ' covers: packages/starchess-arena/src/authorized/v1/**
+' covers: packages/starchess-arena/src/authorized/v2/**
+' covers: packages/starchess-arena/src/events.ts
+' covers: packages/starchess-arena/src/challenge/r3*.ts
 ' covers: packages/starchess-arena/src/intent-codec-v1.ts
 ' covers: packages/starchess-arena/src/observations.ts
 ' covers: packages/starchess-arena/src/challengeContract/**
@@ -26,6 +29,8 @@
 ' covers: packages/starchess-core/src/resolve/submit-turn.ts
 ' covers: packages/starchess-core/src/index.ts
 ' covers: packages/starchess-core/src/planning-v1.ts
+' covers: packages/starchess-core/src/rules/counted-planning.ts
+' covers: packages/starchess-core/src/__tests__/countedPlanning.test.ts
 ' covers: packages/starchess-core/src/__tests__/planning-v1.test.ts
 ' covers: packages/starchess-core/src/replay/packed.ts
 ' covers: packages/starchess-core/src/__tests__/packed.test.ts
@@ -43,7 +48,14 @@
 ' covers: pnpm-workspace.yaml
 ' covers: _spec/evidence/ml-adjutant-r2-refresh/**
 ' covers: _spec/evidence/ml-adjutant-r2-closure.json
-' status: R2 CLOSED within authorized V1/bounded composition V3 and current hermetic assurance; all11/publication/post-publication reviews complete. No learned acceptance or training.
+' status: R2 CLOSED within its preserved generation; R3 V2/count source implemented, final local verification/inventory/spec gate pending. No learned acceptance or training.
+' related: _spec/_plans/ml-adjutant-r3-seam-addendum.md (accepted contract and outside-snapshot execution record)
+' R3 source: /events and V2 DTO/reducer are pure; r3Session/r3Projection/r3Private and core provenance remain host-only.
+' R3 integration surface: r3Session exposes checked history; the caller invokes generation. No wired episode-v2 learner is claimed.
+' R3 generator: composeCandidatesFromHistoryV2 derives live mine quantity, including repeated locations; V1 retains ownMines.size.
+' R3 guard: resources, then actual count + stored reservations >=3, then location collision; root and lane use the same guard.
+' R3 closure: five model roots, including arena /events; lead-reported current PASS is not final whole-inventory or R3 closure.
+' R3 native exception: accepted promotion guard changes native values; historical R2 parity does not certify the changed source.
 ' closure record: _spec/evidence/ml-adjutant-r2-closure.json is outside immutable57-artifact bundle; read only, no evidence/source/control bytes changed by this docs pass.
 ' current verification: complete new generation core475/arena1944/training57/Node109/actual infra6 all PASS, zero failure/skip/pending/todo;54+54 equal/original migration parity; public-v2 four roots/28 workspace/two dependency files PASS.
 ' current publication:57 payloads +completion marker, committed/durability confirmed; marker65bc6bb200514b446ad6939412922bde1cfa00d76225495e309fbd165c81b0c3, source image37b4ec38caa50f15d02dec1c4dbdb45b0c29a7bdeb3a4c21f7ccea54e66ee2a9; exact identities in closure record/plan.
@@ -68,9 +80,10 @@
 ' packed JSON: own __proto__ next fields remain stored, not misclassified as rebuildable; packed canonical equality preserves own keys and unpacked ordinary Object.prototype.
 ' registry: ACTION_KINDS is frozen at declaration in canonical native order K.
 ' native costs: TUI-approved Freeze native tables; UNIT_COST and SPECIAL_REGISTRY plus every nested gasCost/actorHint entry use Object.freeze at declaration; authoritative native values/lookup unchanged.
-' exports: core {'.':'./src/index.ts','./planning-v1':'./src/planning-v1.ts'}; arena {'.':'./src/index.ts','./observations':'./src/observations.ts','./intent-codec-v1':'./src/intent-codec-v1.ts'}; training {'./candidates':'./src/candidates.ts'}; no extra keys.
+' historical R2 exports: core {'.':'./src/index.ts','./planning-v1':'./src/planning-v1.ts'}; arena {'.':'./src/index.ts','./observations':'./src/observations.ts','./intent-codec-v1':'./src/intent-codec-v1.ts'}; training {'./candidates':'./src/candidates.ts'}.
+' current R3 exports: arena additionally exposes './events':'./src/events.ts'; core root adds only host provenance; core/planning-v1 adds counted constructor/type; training/candidates adds the V2-history function.
 ' exports: every conditional workspace branch recursively targets the canonical approved file, including node/default and unselected branches; browser selection alone is insufficient.
-' closure: four model audit roots are core './planning-v1', arena './observations' and './intent-codec-v1', training './candidates'; core '.' / coreRoot and arena '.' remain host-only, captured and inventoried.
+' historical R2 closure: four model roots; current R3 adds arena './events' as the fifth. Core '.' / coreRoot and arena '.' remain host-only, captured and inventoried.
 ' closure: authorized/model runtime and type imports use core/planning-v1; direct deep-core exceptions removed. Full native coreRoot and fflate stay outside the public model closure.
 ' SHA amendment: exact jssha 3.3.2, import jssha/sha256 -> dist/sha256.mjs, BSD-3-Clause; synchronous SHA-256 returns Uint8Array(32). Historical noble2.4 selection overridden, not erased.
 ' SHA policy: no vendor constructor exceptions, patched dependency or tree-shaking assumption; scan the installed runtime module with unchanged guards and reject every jsSHA runtime import edge.
@@ -119,17 +132,20 @@
 ' readiness: scoped R2 CLOSED, not training-ready; frozen README/control/source remain unchanged. Historical failure/allowance comments above retain pre-closure events, not current pending gates.
 ' historical recovery checkpoint: cc6 recovery/strict fixture repairs preceded complete new closed generation; old markers/partial runs never authorized acceptance.
 ' recovery: R0 records/partial logs are immutable history; absent archives/tmp images and old markers cannot authorize current tests or closure.
-' future: H=1 calibrated turn-aware 4 deployed + 3 banked =7 excludes CC; versioned belief/features/calibration remain pending, no learned policy or SGD.
+' future: H=1 turn-aware 4 deployed + 3 banked =7 excludes CC; economic design is CLOSED/FROZEN, belief/features/calibration runtime remains pending, no learned policy or SGD.
 ' rendering: no shell/renderer available; no checkonly success claimed.
 @startuml candidate-generation
 !include ../../themes/proveo.puml
-title StarChess R2 · Authorized V1 and bounded generation V3 · CLOSED assurance / no training
+title StarChess R3 · Counted V2 history / legacy V1 · Bounded composition V3
 
 skinparam packageStyle rectangle
 
 package "packages/starchess-arena" {
   component "src/challenge/observation.ts\nprivate host projection" as PROJECT <<host>>
-  component "src/observations.ts\n/observations · AuthorizedObservationV1\npure validation / encoding" as OBS <<app>>
+  component "src/observations.ts\n/observations · V1 + AuthorizedSnapshotV2\npure validation / encoding" as OBS <<app>>
+  component "src/authorized/v2/*\nsrc/events.ts · /events\nledger / memory / checked history" as EVENTS <<app>>
+  component "src/challenge/r3Session.ts\nsrc/challenge/r3Private.ts\nprivate stage / reexecute / commit" as R3HOST <<host>>
+  component "src/challenge/r3Projection.ts\nrecipient projection / causal authority" as R3PROJECT <<host>>
   component "src/intent-codec-v1.ts\n/intent-codec-v1 · EncodedCandidate\npure key / spend / codec" as CODEC <<app>>
   component "src/challengeContract/validation.ts\ninspectDto / detached bounded copy" as DTO <<app>>
   component "src/challengeContract/candidateCodec.ts\nlegacy baseline adapter" as LEGACY <<app>>
@@ -141,13 +157,14 @@ package "packages/starchess-core" {
   component "src/planning-v1.ts\n/planning-v1 · narrow native barrel" as PLANNING <<app>>
   component "src/index.ts\n. / coreRoot · full native host barrel" as CORE_HOST <<host>>
   component "src/rules/planning-intents.ts\nsrc/rules/planning-order.ts\nshared native pure helpers" as NATIVE <<app>>
+  component "src/rules/counted-planning.ts\ncountedPlanningKnowledge\ndetached readonly quantity" as COUNTED <<app>>
   component "src/rules/constants.ts\nsrc/rules/specials/registry.ts\nfrozen native UNIT_COST / SPECIAL_REGISTRY" as COSTS <<app>>
   component "src/resolve/submit-turn.ts\nactual after-B rewrite / native resolve" as RESOLVE <<app>>
 }
 
 package "packages/starchess-training\nprivate @chess-coach/starchess-training 0.0.1" {
-  component "src/candidates.ts · /candidates\ncomposeCandidatesFromObservationV1\nCandidateBatchV3" as GEN <<app>>
-  component "src/composition.ts\neight lanes · cyclic depth / FIFO" as LANES <<app>>
+  component "src/candidates.ts · /candidates\ncomposeCandidatesFromObservationV1\ncomposeCandidatesFromHistoryV2" as GEN <<app>>
+  component "src/composition.ts\nprivate composePrepared\neight lanes · cyclic depth / FIFO" as LANES <<app>>
   component "src/domain.ts\nappend-time own prefix\nstored anchors / mine reservations" as PREFIX <<app>>
 }
 
@@ -163,12 +180,20 @@ database "_spec/evidence/ml-adjutant-r2-refresh\n57 payloads +completion marker 
 
 PROJECT ARROW_MAIN OBS : authorized projection only
 OBS ARROW_MAIN GEN : validated detached V1 input
+R3HOST ARROW_MAIN CORE_HOST : trusted native companions / reexecution
+R3HOST ARROW_MAIN R3PROJECT : staged recipients / causal records
+R3PROJECT ARROW_MAIN EVENTS : validate / reconcile / advanceHistory
+EVENTS ARROW_MAIN R3HOST : checked AuthorizedHistory
+R3HOST ARROW_OPTIONAL GEN : checked history available; caller invokes generator
+GEN ARROW_OPTIONAL OBS : V2 snapshot / ledger / everLit validation
+GEN ARROW_OPTIONAL COUNTED : quantity from ownMineLineage
 OBS ARROW_OPTIONAL DTO : inspect before schema reads
 CODEC ARROW_OPTIONAL DTO : inspect public actions / spend / decode
 GEN ARROW_MAIN LANES : deterministic bounded traversal
 LANES ARROW_MAIN PREFIX : one counted append per visit
 PREFIX ARROW_OPTIONAL PLANNING : geometry / matching / anchors / costs
 PLANNING ARROW_OPTIONAL NATIVE : identical native helper exports
+PLANNING ARROW_OPTIONAL COUNTED : additive pure constructor / type
 PLANNING ARROW_OPTIONAL COSTS : unchanged native resource guards
 CORE_HOST ARROW_OPTIONAL RESOLVE : private native execution
 CORE_HOST ARROW_CLOUD FFLATE : host record packing
@@ -265,8 +290,18 @@ note bottom of COSTS
 end note
 
 note right of PREFIX
-  Current own + prior drops >=3: mineCap
-  Stored anchor collision: ownOccupancy
+  V1: unique locations; V2: live identity count
+  Count + reservations >=3 before anchor collision
+end note
+
+note right of COUNTED
+  Repeated inventory squares retained
+  Derived count only / no caller override
+end note
+
+note bottom of R3HOST
+  Private session / reentry authority checks
+  Compare bytes, native result and both batches
 end note
 
 note bottom of SHA
@@ -285,14 +320,14 @@ note bottom of CORE_HOST
 end note
 
 note bottom of VERIFY
-  Inventory v2 / pins v3 / verification v3
-  Complete fresh eleven commands: PASS
-  Actual full tests: 475 / 1944 / 57
+  Historical R2 accepted generation
+  Eleven commands: 475 / 1944 / 57
+  Current R3 whole inventory: pending
 end note
 
 note top of VERIFY
-  All11 PASS; Node109 /actual infra6 PASS
-  54+54 equal; original migration parity
+  Historical R2: Node109 / actual infra6 PASS
+  Historical 54+54 / original migration parity
   Zero fail/skip/pending/todo
   Earlier failed generations are history only
 end note
@@ -329,13 +364,13 @@ note right of VERIFY
   Candidate flow: targets/holders/default/rest
   Sparse callee effects; caller mutations retained
   Deduplicated bounded fixed-point propagation
-  Scoped source-freeze reviews: both YES
+  Historical R2 source-freeze reviews: both YES
 end note
 
 note left of VERIFY
   Approved finite Vitest allowances only
   Assertions/floors/model permits unchanged
-  Current frozen PASS; doc PlantUML with lead
+  R2 frozen PASS; current diagram check pending
 end note
 
 note top of IMPORT
@@ -346,8 +381,8 @@ note top of IMPORT
 end note
 
 note left of CLOSURE
-  public-closure-v2: four model audit roots
-  Reported PASS: 28 workspace + 2 dep files
+  public-closure-v2: five current model roots
+  Current PASS: lead-reported / not rerun here
   jsSHA runtime edges: zero
   No vendor exception, patch or tree shaking
 end note
@@ -361,8 +396,8 @@ note bottom of INFRA
 end note
 
 note right of INFRA
-  Six exact ordered titles; five static + Docker
-  Actual current capture6/6 PASS; no skips
+  R2: six ordered titles; five static + Docker
+  Historical capture6/6 PASS; no skips
   Independent image/control joins complete
 end note
 
@@ -429,7 +464,9 @@ note bottom of PUBLISHED
 end note
 
 legend bottom
-  R2 CLOSED only within authorized V1/bounded V3 and current hermetic assurance.
+  R3 sources are implemented; final local verification/inventory/spec gate is pending.
+  Current history generation derives actual mine quantity; V1 behavior stays separate.
+  R2 CLOSED only within its unchanged historical V1/bounded V3 assurance generation.
   Complete NEW generation: all11/core475/arena1944/training57/Node109/actual infra6 PASS.
   54+54 equal semantic reruns and original migration parity; zero fail/skip/pending/todo.
   57 marker-bound payloads committed, durability confirmed; no stitched old commands.
@@ -443,7 +480,7 @@ legend bottom
   R0/failed generations remain separate history; private tmp reports are not current pins.
   Published57 payloads/marker/source/control and outside-bundle closure record unchanged here.
   Final doc PlantUML check belongs to lead; no renderer/test/hash execution by spec-keeper.
-  Calibrated economy amendment/R3 ledger/R4 features/R5 readiness remain before explicitR6.
+  R3 runtime closure / R4 belief/features / R5 readiness remain before explicitR6.
   H=1; artifact null/eligible false/learnedPass false; weights NONE, registrydisabled, no training.
 endlegend
 @enduml

@@ -1,5 +1,5 @@
 <!-- Approval/disposition metadata: outside the accepted R3 proposal snapshot. -->
-**CURRENT DISPOSITION: R3 PAIRED DESIGN ACCEPTED; R3 IMPLEMENTATION / LOCAL VERIFICATION AUTHORIZED; IMPLEMENTATION / READINESS PENDING.** Executor actually selected **“Accept + build locally (Recommended)”** after presentation of the exact paired targets below. That response grants both exact-text design acceptance and the scoped local build/verification permission; closing-review YES verdicts did not supply either grant.
+**CURRENT DISPOSITION: R3 PAIRED DESIGN ACCEPTED; R3 SOURCE IMPLEMENTED / LOCAL VERIFICATION IN PROGRESS; R3 CLOSURE / READINESS PENDING.** Executor actually selected **“Accept + build locally (Recommended)”** after presentation of the exact paired targets below. That response grants both exact-text design acceptance and the scoped local build/verification permission; closing-review YES verdicts did not supply either grant. The [outside-snapshot execution record](#current-r3-local-implementation--verification-in-progress) distinguishes implemented source, attributed local results and the remaining gates.
 
 ## Executor acceptance and scoped local-build authority
 
@@ -19,9 +19,9 @@ The scoped local grant covers:
 
 The accepted [§1.1 supersession map](#11-explicit-proposed-supersession-map) now governs the named original-contract exceptions. Accepted [§9.1](#91-explicit-downstream-r4-disposition) supplies only the specified downstream public-input/native-source binding precedence; [§9.2](#92-exact-v2-history-count-transport-and-generator-dependency) supplies the additive counted-history integration. Original frozen contracts and both protected R4 economic bodies remain intact outside that scope. Historical R2 assurance/evidence is not rewritten or reused as proof of the changed source/authorization law.
 
-No collection, fitting, calibration, transfer, training, evidence publication or registry activation is granted. R4 belief/features implementation, aggregate R5 readiness and R6–R8 execution remain later gates. The independent delayed-swap mine synchronization retains its separate implemented/verified scope; it does not prove the larger R3 implementation. No new implementation result or implementation-review completion is recorded here.
+No collection, fitting, calibration, transfer, training, evidence publication or registry activation is granted. R4 belief/features implementation, aggregate R5 readiness and R6–R8 execution remain later gates. The independent delayed-swap mine synchronization retains its separate implemented/verified scope; it does not prove the larger R3 implementation. Current local implementation/review results are attributed only in the outside-snapshot execution record; they do not close R3 or R5 readiness.
 
-The lead must verify retained snapshot identity against the supplied acceptance targets and run final documentation whitespace checks after this metadata/roadmap synchronization. Those post-acceptance checks remain pending; this pass executes no commands, tests, hashes or renderers.
+The lead reports direct extraction/hash checks of both accepted snapshots returned PASS. This pass does not recompute those identities. Final documentation whitespace checks after the current execution-record/diagram synchronization remain pending; this pass executes no commands, tests, hashes or renderers.
 <!-- BEGIN ACCEPTED R3 SEAM WHOLE-FILE SNAPSHOT -->
 # ML Adjutant — R3 native-seam addendum
 
@@ -567,3 +567,54 @@ Reviewers used read-only document/source inspection. They executed no commands, 
 
 This current record supersedes only the earlier pending closing-review statements and negative current design-gate dispositions. Preserve every historical verdict, counterexample and scope. The independent mine synchronization remains separately implemented and reviewed. R3-SEAM-01–05 and the later multiplicity/count/dependency issues have design-level closing clearance; their meaningful implementation regressions remain required under §§9–9.2 and the promotion proposal. Exact acceptance of both proposals and an explicit build/local-verification grant remain Executor decisions before source changes. R3 implementation/readiness and downstream R4/R5 remain pending.
 <!-- END ACCEPTED R3 SEAM WHOLE-FILE SNAPSHOT -->
+
+<!-- Execution metadata: outside the unchanged accepted whole-file snapshot. -->
+## Current R3 local implementation — verification in progress
+
+Status: **SOURCE IMPLEMENTED; SCOPED LOCAL IMPLEMENTATION REVIEWS REPORTED READY; FINAL LOCAL VERIFICATION / INVENTORY / IMPLEMENTATION SPEC GATE PENDING. NOT R3 COMPLETE / NOT R5 READY.** This records the supplied lead handoff and current read-only source inspection, not independently executed tests or a new acceptance grant. The accepted proposal snapshot, original370/amended418 definitions, both protected economic bodies and historical evidence remain unchanged by this pass.
+
+### Implemented boundaries inspected
+
+- Core `resolve/provenance.ts`, `provenance-{types,recorder,validation}.ts` provide root-only companion calls over native Begin/End kernels. End uses post-Begin `skipTurnStartChecks:true`. Actual carriers/mutation sites retain identities, atomic frames, mine occurrence order and branch-bound consumed-target proofs; speculative evaluations stay private. `applyGasPromotion` now checks the current own Marine/color; same-side replacement lineage remains supported.
+- Arena `authorized/v2/{types,schema,observation,batch,reducer}.ts` and public `observations.ts` / `events.ts` provide closed detached V2 DTOs, bounded canonical bytes, ledger/mine/memory reconciliation and checked history. Intrinsic byte reads avoid caller byte-length/iterator hooks; own `__proto__` data is preserved for validation rather than silently dropped. Pure reducers validate public facts; they authenticate no session or producer.
+- Host-private `challenge/r3Projection.ts`, `r3Session.ts`, `r3Private.ts` stage recipients, replay native companions independently, compare complete native values/private bytes/both public batches, and commit only the checked successor. Session-chain authority is rechecked after untrusted inspection and before commit. Projection applies committed geometric vision plus exact acting-side consumed targets, clears authorized casualty sightings, retires each mine occurrence and emits one final settlement income event including zero. These modules do not become model imports. Existing V1 challenge operation remains separate; no learner/episode-v2 training rollout is claimed.
+- Core `rules/counted-planning.ts` derives quantity from dense inventory occurrences and exposes detached readonly planning state on `/planning-v1`. Training `/candidates` adds `composeCandidatesFromHistoryV2`; both V1 and V2 use private `composePrepared`. V2 derives quantity from live mine lineage, including repeated squares; resources precede the counted cap and anchor collision at root and lane append. CandidateBatchV3, diagnostics B, 512/2048/four slots and legacy V1 behavior remain scoped invariants. The V2 path encodes codec-v1 candidates directly; it fabricates no V1 observation or income carrier.
+
+### Supplied local verification — exact attribution
+
+| Check / scope | Supplied result and method |
+|---|---|
+| Core full suite | Agent-reported **548 tests / 61 files PASS**; not rerun by spec-keeper. |
+| Training full suite | Agent-reported **85 tests / 5 files PASS**; not rerun by spec-keeper. |
+| Pure V2 + V1 focused suites | **169 PASS**, supplied agent result; not a full arena result. |
+| Host R3 focused suites | **75 PASS**, supplied agent result; includes real-native boundary/privacy tests. |
+| Three normal package typechecks + entire strict invoice | Lead supplies **actual PASS** for core/arena/training and the full strict test/script invoice; no commands ran in this spec pass. |
+| Current public closure | Lead-reported **PASS, five roots**, including arena `/events`; current source confirms the five-root roster. This is not final whole-inventory PASS. |
+| Full arena suite | **RUNNING / no final result supplied** at this handoff. |
+| Whole source inventory / final private-helper anchor | **IN PROGRESS / no final PASS supplied**. |
+| Accepted proposal snapshots | Lead reports direct extraction/hash **PASS for both accepted targets**; no independent recomputation here. |
+| Protected-body identity / final docs / PlantUML / implementation spec gate | **PENDING** for this final documentation pass; no PASS invented. |
+
+### Supplied implementation reviews — scoped, not readiness closure
+
+| Scope | Task | Lead-supplied disposition |
+|---|---|---|
+| Native implementation | `ses_eeab8fe08ffesuK4wG5ME5R75X` | Native general implementation landed; not a final integrated assurance verdict. |
+| Native adversarial | `ses_eea9b7545ffe49Pz3rU23IroFw` | Reported **READY: yes** after initial HIGH atomic CC-capture and MEDIUM terminal-Begin findings were fixed. |
+| Native security | `ses_eea9b752dffefihbDjC9joP7wU` | Reported **READY: yes** for native scope. |
+| Pure V2 security | `ses_eea74fa3dffePjEel6b3p1V3zn` | Reported **READY: yes** after two MEDIUM byte-failure findings and the subsequent `__proto__` cross-boundary fix. |
+| Host R3 security | `ses_eea3644b1ffeKDLYM4u4mBmDJS` | Reported **READY: yes** after two HIGH findings covering byte-getter reentry and `__proto__` handling. |
+| Integrated adversarial | `ses_eea3644c9ffedIMzxe0ZHrDQpS` | Reported **READY: yes** after HIGH reentry and three MEDIUM byte-cap / `__proto__` / stable-history-error findings were fixed. |
+| Final implementation spec gate | Pending | Current diagram/document maintenance does not supply the closing implementation verdict. |
+
+These records add current scoped implementation progress without rewriting any earlier design/implementation finding or borrowing historical R2/R0 suite results. The lead owns the actual review/test artifacts and final verification handoff.
+
+### Runtime spec maintenance and remaining gates
+
+Updated current owners: [native rank pipeline](../packages/starchess-core/submit-turn-activity.puml), [classical mutation sites](../packages/starchess-core/resolve-turn-activity.puml), and [V1/V2 counted candidate boundary](../packages/starchess-training/candidate-generation.puml). Their spec-side coverage/index includes the current modules and persisted regressions. No source `SPEC:` pointer is required for that coverage, and no source edit is requested here.
+
+The natural separate concern destinations are `_spec/packages/starchess-core/native-provenance.puml` and `_spec/packages/starchess-arena/authorized-economic-boundaries.puml`. They are **pending authoring**, not existing diagrams: `_spec/template.txt` is absent. Supply the proveo template once before creating those files; do not invent stubs or source citations to absent diagrams. Source inspection confirms the native provenance and authorized economic boundary modules are separate owners, not per-package diagram filler.
+
+After that input, finish the two owners and their index entries, validate/render all changed diagrams, complete full arena verification and the final whole-inventory/private-helper anchor audit, and obtain the final implementation spec gate. No source note-ratchet definition was found; the only `specNotesEnforced`/`TestSpecNotesFitTheBox` hits were historical planning prose, not a runnable test/list. Existing edited notes now fit the 2–5-line/50-column box; newly authored notes are short structural labels. This source/test boundary is not changed by spec-keeper.
+
+R4 belief/features/data, weights, calibration and aggregate R5 readiness remain pending. No historical evidence is refreshed or published, no training is run and no registry entry is activated by this local R3 record.

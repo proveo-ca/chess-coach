@@ -1,12 +1,16 @@
-@startuml resolve-turn-activity
-' SPEC: _spec/packages/starchess-core/resolve-turn-activity.puml
-' purpose: resolveTurn control flow — how one classical plan is classified into a
-' bucket, and what each phase then does with those buckets.
+' purpose: Classical resolution and the committed R3 provenance mutation sites.
 ' covers: packages/starchess-core/src/resolve/resolve-turn.ts
+' covers: packages/starchess-core/src/resolve/provenance*.ts
+' covers: packages/starchess-core/src/board/vision.ts
+' covers: packages/starchess-core/src/board/ray-scan.ts
+' covers: packages/starchess-core/src/__tests__/provenance*.test.ts
 ' covers: packages/starchess-core/src/__tests__/tank/**
 ' covers: packages/starchess-core/src/__tests__/collision/fogVacatedTarget.test.ts
 ' covers: packages/starchess-core/src/__tests__/mine/mineContactRoutes.test.ts
 ' see also: _spec/packages/starchess-core/gas-phase-vacancy.puml
+' related: _spec/_plans/ml-adjutant-r3-seam-addendum.md (accepted law and outside-snapshot execution record)
+' R3 source is implemented; final local verification, inventory and spec gate remain pending.
+@startuml resolve-turn-activity
 !include ../../themes/proveo.puml
 
 skinparam defaultTextAlignment left
@@ -16,6 +20,11 @@ title StarChess Core · ""resolveTurn"" — plan classification and phase run
 start
 :Read ""placement"" once (""start"" map), clamp ""ccLives"",\ncollect plans white-then-black (""plansOf"");
 :Buckets for this pass:\n""attacks"" · ""moveCollisions"" · ""occupy"" · ""quiets""\n""pathRevealPending"" · ""deadSquares"";
+:Optional ""ProvenanceRecorder"": bind actual native carriers\nand source sequences; preserve mine occurrence order;
+note right
+  Actual carriers / mutation sites
+  No square-continuity identity inference
+end note
 
 partition "Classify — an ordered rule list, first match wins" {
   :build ""PlanContext"" once: actor · target · ""visible0"" · ""leaps"" ·\nsieged flags · a **memoised** ""scanRay"";
@@ -67,6 +76,7 @@ partition "Classify — an ordered rule list, first match wins" {
   end note
 
   :path discovery requires a fogged start target\nand positive intermediate ""pathRevealSteps"";
+  :record actual query inputs and evaluated prefix privately;\ncarry query ordinal through the selected deferred branch;\nvirtual mover patches create no frame or observation image;
   note right
     Intermediate evaluation excludes the origin.
     Deferred classification additionally requires
@@ -82,7 +92,7 @@ partition "Classify — an ordered rule list, first match wins" {
 }
 
 partition "Phase 1 — attack" {
-  :remove ""deadSquares"" → **afterAttack** snapshot;
+  :record the entire C attack-removal wave atomically;\nall victims share one live causal preimage;\nremove ""deadSquares"" → **afterAttack** snapshot;
 }
 
 partition "Phase 2 — move (""moveWave"": plan every landing, then time them)" {
@@ -110,12 +120,14 @@ mid-edge (reported on the lower-named square);
     :``land`` each mover as planned;
   endif
   :``land``: destination still held by an enemy → capture + occupy, **unless**\nanother mover already landed there (""destinationsWritten"", phase 3 only)\n→ **both die**, tile empty, no cue;
+  :record actual victim retirement / mine clearing / relocation\nas one frame, including Command Center captures;
   :""mineContact"" over ""[extraStepFrom?, …pathContactSquares, dest]""
 (mode **walk**) — one ordered scan answers chase **and** walk-over.
 A plan carrying ""extraStepTo"" **stands down**: its landing is one hop
 further, so the phase-4 arrival owns the contact list
 (""mine-contact.puml"" · one walk per marine);
   :land the mover, stamp ""destinationsWritten"", defer promotion;
+  :arrival mine mutation gets a distinct landed-live frame;\nretire every actual mine occurrence removed by the square filter;
   :""detonated"" → blast at the landing tile, mover dies, no promotion\nand no occupy left behind; ""chaseFrom"" set when the mine was woken\nmid-path (the first mine touched wins);
   :→ **afterMove** snapshot;
 }
@@ -128,6 +140,11 @@ partition "Phase 3 — fog approaches" {
     remain native execution responsibilities.
   end note
   :fired → ""pathRevealAttacks"" (the only mid-resolve king HP chip);
+  :commit capture + relocation or CC damage + relocation atomically;\nrecord one associated acting-side consumed-target proof;
+  note right
+    Successful consumed target only
+    No prefix / incidental observation authority
+  end note
   :the approach **walked** its ray — ""mineContact"" over that walk takes\nthe mover on its landing tile → ""pathRevealMineTriggers"".\nThe shot already fired, so capture / HP chip stand;
 }
 
@@ -137,6 +154,7 @@ partition "Delayed landings — fogged aims and skipped approaches" {
   :clear a departed ghost from the working board;
   if (live reciprocal pair selected?) then (yes)
     :swap both actors and resolve destination mine contacts;
+    :record both moves atomically, then actual mine deaths;\nscratch synchronization adds no duplicate lifecycle effect;
     :copy resulting placement and remaining ""mines""\ninto ""phase3"" → **afterAll** retains removals;
     note right
       Copy surviving mines with the new placement.
@@ -151,6 +169,7 @@ partition "Delayed landings — fogged aims and skipped approaches" {
 
 partition "Phase 4 — promotion" {
   :pawns that survived every phase promote on the ""afterAll"" board;
+  :record the actual live same-side lineage transformation;
 }
 :return the four lists + the three snapshots;
 note right

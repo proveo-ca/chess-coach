@@ -89,6 +89,45 @@ const order = (a: string, b: string): number => a < b ? -1 : a > b ? 1 : 0;
 const excludedTest = (path: string): boolean =>
   [CORE, ARENA, TRAINING].some((root) => path.startsWith(`${root}/src/`)) && path.split("/").includes("__tests__");
 const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
+const HOST_PRIVATE_ANCHORS = new Map<string, string>([
+  ["R3_PRIVATE_CAP", "5225945d51379d9c4bb543873d843d859de432554cdc6804dcc3bc7851a0a943"],
+  ["isProxy", "e8ca8ec98e6d4a9ae861e4c53c1c2121fe01dee8939ad63b7fe9f6d6a8db6a20"],
+  ["isArray", "7328ec54f4b9051e1ce091e59c0130f4c07d0b47dfcdead4d9b365b60c8fd5b8"],
+  ["isView", "264ecd8811f2e314834ecfcf682fbca8055f5c2e17f461a5093d134f24c9d053"],
+  ["getPrototype", "1cb7253f4690393a67ce460c92e1607066e127831834ccab08260b528bf73723"],
+  ["descriptor", "8adb3e80638cdf7120fa7e7e495b77f5aa6ef04715c1c1eacaa28fca7fb8f124"],
+  ["ownKeys", "f8d1311040ee6b1e2569bd4b85a2c5b14529121afefa0b35a828d9f91c271935"],
+  ["apply", "5f8e4d5d04dd59fadf4ff07f3963aef38be131ad0e915eb79e3e5c3b734a805f"],
+  ["define", "89e0556ac41d2043aa341a66cb7dda92866420274db5117bdf6f4d90ccc484ea"],
+  ["create", "fe5ae9eac5e507dd18679f8fb04b6e34d3ba049ee27c0aae176defb313b93ce9"],
+  ["objectPrototype", "b74ad2ab6dcb9e67b43c2faa78e9254d91b5eb88f3c498071877a0d99f92847b"],
+  ["arrayPrototype", "bd4bbe178c1064345e7487a05160128e0f24eb8bcb0d075d33ca8ab9f2fc4dc6"],
+  ["Uint8", "69dc1916ffbd458eac74fde69ad703a66264e2bd5f3607ec72ee93a3785cb7ae"],
+  ["bytePrototype", "3991fbe2a68a1b24dcb3eb8d798139f57141e6fbd1d2fa817d372cee09ff55db"],
+  ["bufferPrototype", "019ecef545fef406c44d4de46185965b813e27bd2240a36b97982e69ff1327fe"],
+  ["typedPrototype", "884bf515341a6c613e0450d71629d8982041d102b21a86b98905a9bdfe1ac8f4"],
+  ["typedName", "c0478fcdfd143b4fd47caeff4e54e31e1f08b4bfcb8fa57591ec22f57e841ccb"],
+  ["typedByteLength", "9d31d635af336cb8b84a2763095a288c7150d14f6fd02ff994d0e7ed2b7f0d4b"],
+  ["typedSet", "3e086f83c85c6081c9746e99f1a3957d84e5f5feb01a5db134555452151465d6"],
+  ["privateByteLength", "0a74b4416f0952bbe25ef845c668fb0bc3492724e42b09a37ba3a862cbe7aaf6"],
+  ["copyR3PrivateBytes", "f21984e1f0b8d357e3cdba7587b4dc62101c0b1ef3519f4758509137e24a02a2"],
+  ["equalR3PrivateBytes", "c897e95b4e86f261418b35d3c18dc0f5833892dc0e693bf6b1b7916a3b8fdacb"],
+  ["plain", "7b68ee4aa3e13b8c2331e5fa0b30cece5b986cb47ca7b5b1ec9ad504ec1d68dd"],
+  ["data", "1deda2680c70b835b2355a1b3ccf6d4b411d07fcb1467f1b85a5b71dc4607247"],
+  ["readR3Record", "552dd7bbcb989852240202b1cf8f1e009a38e48cd96ce78bb894af55e4f4bf3d"],
+  ["readR3Array", "e54bac346fe9725ca5afef4f60e9e1e5234f98e176255cf1946343b0c63ad683"],
+  ["arrayCaps", "831aaa09f282fea15805064d1bbe2ee52ac002e25f546d779d7f5be59cc8b675"],
+  ["detachR3Data", "f011cd1e6fc0f74c54a40b460a29c0b40c5da24cff8685344a5155ef6dd95b4b"],
+  ["shapes", "a3fa9a5fc53f2397030d814938c4683cb59fb0edecdf5699c562686d684a9948"],
+  ["arrays", "a2216ec696e970c18e73b700a0adf98be272598e00fd6ffbb0235b3a7acd5f2f"],
+  ["children", "274a58c03d0752da9812ff5a4b098d3cc1247dd0dcbcea35e104f702243077fa"],
+  ["enums", "88efe8eba49d871a91d532b4022308f173a35932571abd88db460d06c8857871"],
+  ["numbers", "60c4220283c90414189125b4b7ea16737ef9561263f70dc14214c367bff37ec9"],
+  ["id", "58eb381d7d8487cd1de12577ef9d1f84ddf22a9c937b7a7b20ddaa58591b89e7"],
+  ["localKey", "3430b2aa161bb5e7c73aadb9bfc0b244084c961130c77be5565fac98426579f9"],
+  ["scalar", "64e73ccd8c3bb30bee83de1b18f8f8408653f69876735fcaf34e4850b8856ce6"],
+  ["encodeR3Provenance", "89ed332059a7b66b5e61e1018007892a71a18cefd100e21ae92b44dbd1b98df9"],
+]);
 const REVIEWED_INSPECT_DTO = `inspectDto = (value: unknown, path = "$"): unknown => {
   const state = { seenWeakMap: new WeakMap<object, { copy: unknown; height: number }>(), ancestors: new Set<object>(), visits: 0, textbytes: 0 };
   const countText = (text: string, at: string): void => {
@@ -775,6 +814,10 @@ export const collectSourceInventory = (
         if (ts.isIdentifier(target)) {
           const symbol = binding(target);
           const declaration = typeof symbol === "string" ? undefined : symbol.valueDeclaration;
+          if (file.path === `${ARENA}/src/challenge/r3Private.ts` &&
+              (typeof symbol === "string" && ["Object", "Array", "Reflect", "ArrayBuffer", "Uint8Array", "Buffer", "Number", "String", "Symbol", "JSON"].includes(symbol) ||
+               declaration && ts.isVariableDeclaration(declaration) && declaration.parent.parent.parent === source && ts.isIdentifier(declaration.name) && HOST_PRIVATE_ANCHORS.has(declaration.name.text) ||
+               declaration && ts.isImportSpecifier(declaration) && ["nodeTypes", "fail", "integer"].includes(declaration.name.text))) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${target.text}`);
           if (file.path === `${TRAINING}/src/composition.ts` && declaration &&
               (ts.isVariableDeclaration(declaration) && declaration.parent.parent.parent === source && ts.isIdentifier(declaration.name) && declaration.name.text === "historyFailure" ||
                ts.isClassDeclaration(declaration) && declaration.parent === source && declaration.name?.text === "ContractError")) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${target.text}`);
@@ -1605,6 +1648,91 @@ export const collectSourceInventory = (
     };
     const validationIntrinsicsChanged = (): boolean => [...memberMutationTargets, ...arrayMutatorTargets].some((target) => validationIntrinsicRoot(target)) ||
       ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol", "Uint8Array", "ArrayBuffer", "globalThis", "global", "window", "self"].some((name) => numericAssignments.has(name) || nonNumericWrites.has(name));
+    const hostPrivateFile = file.path === `${ARENA}/src/challenge/r3Private.ts` && file.partition === "arena-host";
+    const hostDeclarations = hostPrivateFile ? source.statements.filter(ts.isVariableStatement).flatMap((statement) => [...statement.declarationList.declarations]) : [];
+    const hostCaptureRequested = hostDeclarations.some((entry) => ts.isIdentifier(entry.name) && ["getPrototype", "descriptor", "typedPrototype", "typedName", "typedByteLength"].includes(entry.name.text));
+    const hostDeclaration = (node: ts.Node): ts.VariableDeclaration | undefined => {
+      for (let current: ts.Node | undefined = node; current; current = current.parent) {
+        if (ts.isVariableDeclaration(current) && current.parent.parent.parent === source && ts.isIdentifier(current.name) && HOST_PRIVATE_ANCHORS.has(current.name.text)) return current;
+      }
+      return undefined;
+    };
+    const hostSymbols = new Set<ts.Symbol | string>();
+    for (const entry of hostDeclarations) if (ts.isIdentifier(entry.name) && HOST_PRIVATE_ANCHORS.has(entry.name.text)) hostSymbols.add(binding(entry.name));
+    const hostImportTexts = [
+      'import { types as nodeTypes } from "node:util";',
+      'import type { ProvenanceCompanion } from "@chess-coach/starchess-core";',
+      'import { fail, integer } from "../authorized/v2/schema";',
+    ];
+    const hostImports = hostPrivateFile ? source.statements.filter(ts.isImportDeclaration) : [];
+    const hostImportSymbols = new Set<ts.Symbol | string>();
+    for (const entry of hostImports) {
+      const named = entry.importClause?.namedBindings;
+      if (named && ts.isNamedImports(named)) for (const item of named.elements) {
+        if (["nodeTypes", "fail", "integer"].includes(item.name.text)) hostImportSymbols.add(binding(item.name));
+      }
+    }
+    const hostIntrinsicTarget = (node: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
+      const value = origin(node);
+      if (seen.has(value)) return false;
+      const next = new Set([...seen, value]);
+      if (ts.isIdentifier(value)) return hostImportSymbols.has(binding(value)) ||
+        ["Object", "Array", "Reflect", "ArrayBuffer", "Uint8Array", "Buffer", "Number", "String", "Symbol", "Map", "Set", "JSON", "globalThis", "global"].includes(value.text) && typeof binding(value) === "string";
+      if (ts.isCallExpression(value) && value.arguments[0]) {
+        const method = property(origin(value.expression));
+        if (method && objectNamespace(method.receiver) && ["getPrototypeOf", "getOwnPropertyDescriptor"].includes(method.name ?? "")) return hostIntrinsicTarget(value.arguments[0], next);
+      }
+      const member = property(value);
+      return !!(member && hostIntrinsicTarget(member.receiver, next));
+    };
+    const hostExports = new Set(["R3_PRIVATE_CAP", "copyR3PrivateBytes", "equalR3PrivateBytes", "readR3Record", "detachR3Data", "encodeR3Provenance"]);
+    const hostGlobals = new Set(["Object", "Array", "Reflect", "ArrayBuffer", "Uint8Array", "Buffer", "Number", "String", "Symbol", "JSON", "Map", "Set", "RegExp"]);
+    const hostGlobalReferences = (node: ts.Node): boolean => {
+      if (ts.isIdentifier(node) && !ts.isPartOfTypeNode(node) && !sourceIsName(node) && !sourceIsDeclaration(node) && hostGlobals.has(node.text) && typeof binding(node) !== "string") return false;
+      let valid = true;
+      ts.forEachChild(node, (child) => { if (!hostGlobalReferences(child)) valid = false; });
+      return valid;
+    };
+    let hostContextVerified: boolean | undefined;
+    const hostPrivateContext = (): boolean => {
+      if (hostContextVerified !== undefined) return hostContextVerified;
+      hostContextVerified = hostPrivateFile && hostCaptureRequested && hostImports.length === hostImportTexts.length &&
+        hostImportTexts.every((text) => hostImports.some((entry) => entry.getText(source) === text)) &&
+        [...HOST_PRIVATE_ANCHORS].every(([name, digest]) => {
+          const entries = hostDeclarations.filter((entry) => ts.isIdentifier(entry.name) && entry.name.text === name);
+          const entry = entries[0];
+          const symbol = entry && ts.isIdentifier(entry.name) ? binding(entry.name) : undefined;
+          return entries.length === 1 && typeof symbol !== "string" && symbol?.declarations?.length === 1 &&
+            ts.isVariableDeclarationList(entry!.parent) && (entry!.parent.flags & ts.NodeFlags.Const) !== 0 && entry!.parent.declarations.length === 1 &&
+            Boolean(ts.getCombinedModifierFlags(entry!) & ts.ModifierFlags.Export) === hostExports.has(name) &&
+            hash(entry!.getText(source)) === digest && hostGlobalReferences(entry!) && !numericAssignments.has(symbol) && !nonNumericWrites.has(symbol);
+        }) && [...hostImportSymbols].every((symbol) => typeof symbol !== "string" && symbol.declarations?.length === 1 && !numericAssignments.has(symbol) && !nonNumericWrites.has(symbol)) &&
+        ![...memberMutationTargets, ...arrayMutatorTargets].some((target) => hostIntrinsicTarget(target)) &&
+        !["Object", "Array", "Reflect", "ArrayBuffer", "Uint8Array", "Buffer", "Number", "String", "Symbol", "Map", "Set", "JSON"].some((name) => numericAssignments.has(name) || nonNumericWrites.has(name));
+      return hostContextVerified;
+    };
+    const hostReflectionUses = new Map<string, readonly string[]>([
+      ["getPrototype", ["Object.getPrototypeOf"]],
+      ["descriptor", ["Object.getOwnPropertyDescriptor"]],
+      ["typedPrototype", ["getPrototype(bytePrototype)"]],
+      ["typedName", ["descriptor(typedPrototype, Symbol.toStringTag)"]],
+      ["typedByteLength", ['descriptor(typedPrototype, "byteLength")']],
+      ["privateByteLength", ["getPrototype(input)", "apply(typedName, input, [])", "apply(typedByteLength, input, [])"]],
+      ["copyR3PrivateBytes", ["apply(typedSet, result, [input])"]],
+      ["plain", ["getPrototype(input)"]],
+      ["data", ["descriptor(input, key)"]],
+      ["readR3Array", ['descriptor(source, "length")', "descriptor(source, String(index))"]],
+      ["detachR3Data", ["getPrototype(source)"]],
+    ]);
+    const reviewedHostPrivateReflection = (node: ts.Node): boolean => {
+      const declaration = hostDeclaration(node);
+      if (!declaration || !ts.isIdentifier(declaration.name) || !hostPrivateContext()) return false;
+      if (ts.isIdentifier(node) && node === declaration.name && ["getPrototype", "descriptor"].includes(node.text)) return true;
+      const allowed = hostReflectionUses.get(declaration.name.text);
+      if (!allowed) return false;
+      if (ts.isPropertyAccessExpression(node)) return declaration.initializer === node && allowed.includes(node.getText(source));
+      return ts.isIdentifier(node) && ts.isCallExpression(node.parent) && node.parent.expression === node && allowed.includes(node.parent.getText(source));
+    };
     const byteIntrinsicAnchors = new Map<string, readonly [string, readonly string[]]>([
       ["typedArrayPrototype", ["d8b2a7d37da68bfbd8b3c496c5642775060ea5a5f72c287246c5b3171d092d14", ["Object.getPrototypeOf(Uint8Array.prototype)"]]],
       ["typedArrayName", ["75fcb7c4e68ebf8d0cff37db9248ff097daabb020ec70a1d690f8b99bd9214a7", ["Object.getOwnPropertyDescriptor(typedArrayPrototype, Symbol.toStringTag)"]]],
@@ -1780,6 +1908,22 @@ export const collectSourceInventory = (
       return ts.isArrowFunction(value) || ts.isFunctionExpression(value) || ts.isIdentifier(value) && callableType(dataType(value));
     };
     const visit = (node: ts.Node): void => {
+      if (hostPrivateFile && hostCaptureRequested) {
+        if (ts.isVariableDeclaration(node) && node.parent.parent.parent === source && ts.isIdentifier(node.name) && HOST_PRIVATE_ANCHORS.has(node.name.text) && !hostPrivateContext()) {
+          throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${node.name.text}`);
+        }
+        if (ts.isIdentifier(node) && !ts.isPartOfTypeNode(node) && !sourceIsName(node) && !sourceIsDeclaration(node) &&
+            (hostSymbols.has(binding(node)) || hostImportSymbols.has(binding(node)))) {
+          if (!hostDeclaration(node) || !hostPrivateContext()) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${node.text}`);
+          if (["getPrototype", "descriptor", "apply"].includes(node.text) && !reviewedHostPrivateReflection(node)) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${node.text}`);
+          if (["typedName", "typedByteLength", "typedSet"].includes(node.text)) {
+            const call = node.parent;
+            if (!ts.isCallExpression(call) || call.arguments[0] !== node || !ts.isIdentifier(call.expression) || call.expression.text !== "apply" || !reviewedHostPrivateReflection(call.expression)) {
+              throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${node.text}`);
+            }
+          }
+        }
+      }
       if (file.path === `${ARENA}/src/authorized/v2/schema.ts` && ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) &&
           node.parent.parent.parent === source && byteIntrinsicAnchors.has(node.name.text) && !reviewedByteIntrinsic(node)) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${node.name.text}`);
       if (file.path === `${CORE}/src/resolve/provenance-validation.ts` && ts.isFunctionDeclaration(node) && node.parent === source && node.name &&
@@ -1818,7 +1962,8 @@ export const collectSourceInventory = (
       const reflected = value ? property(origin(node as ts.Expression)) : undefined;
       const descriptorSeam = reflected && ["getPrototypeOf", "getOwnPropertyDescriptors"].includes(reflected.name ?? "") &&
         objectNamespace(origin(reflected.receiver)) && reviewedDescriptor(node) && ts.isCallExpression(node.parent) && node.parent.expression === node;
-      const validationDescriptorSeam = reviewedValidationDescriptor(node) || reviewedNativeValidationDescriptor(node) || reviewedByteIntrinsic(node);
+      const validationDescriptorSeam = reviewedValidationDescriptor(node) || reviewedNativeValidationDescriptor(node) || reviewedByteIntrinsic(node) ||
+        hostPrivateFile && hostCaptureRequested && reviewedHostPrivateReflection(node);
       if (reflected && (reflectionNamespace(origin(reflected.receiver)) && ["get", "getOwnPropertyDescriptor", undefined].includes(reflected.name) ||
           objectNamespace(origin(reflected.receiver)) && ["getOwnPropertyDescriptor", "getPrototypeOf", "getOwnPropertyDescriptors", undefined].includes(reflected.name)) &&
           !descriptorSeam && !reviewedArrayDescriptor(node) && !validationDescriptorSeam) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);

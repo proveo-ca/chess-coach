@@ -1,5 +1,5 @@
 <!-- Approval/disposition metadata: outside the accepted R3 promotion snapshot. -->
-**CURRENT DISPOSITION: PAIRED R3 DESIGN ACCEPTED; PROMOTION IMPLEMENTATION / LOCAL VERIFICATION AUTHORIZED; IMPLEMENTATION / READINESS PENDING.** Executor actually selected **“Accept + build locally (Recommended)”** for this correction and the exact paired seam target.
+**CURRENT DISPOSITION: PAIRED R3 DESIGN ACCEPTED; PROMOTION SOURCE IMPLEMENTED / LOCAL VERIFICATION IN PROGRESS; R3 CLOSURE / READINESS PENDING.** Executor actually selected **“Accept + build locally (Recommended)”** for this correction and the exact paired seam target. The [current outside-snapshot execution record](ml-adjutant-r3-seam-addendum.md#current-r3-local-implementation--verification-in-progress) attributes local counts and review scopes without claiming final readiness.
 
 ## Executor acceptance and local-build status
 
@@ -7,7 +7,7 @@ Accepted pre-metadata whole-file SHA-256: `d70d4ff803121ef13f6a401b58edb7ec34dff
 
 The existing accepted text remains between the snapshot markers below without a normative rewrite. Its proposal-stage status and pending acceptance/build clauses remain historical; this outside-snapshot record supersedes only those lifecycle statements. The actual grant permits the exact guard, its meaningful persisted regression/controls, affected local verification and scoped spec maintenance. It grants no broader movement/ownership repair and no collection, fitting, calibration, transfer, training, evidence publication or registry activation.
 
-Implementation/native parity and implementation reviews remain pending until actual verification; no fixture execution or R3 readiness closure is recorded here. The independent native mine synchronization remains separately implemented/reviewed. Post-acceptance snapshot-identity and documentation whitespace checks remain pending with the lead; this pass executes no commands or hashes.
+The current source contains the own-Marine/color guard and persisted ownership regression. The outside-snapshot execution record attributes the supplied native review/core-suite results; full integrated local verification and R3 readiness closure remain pending. The independent native mine synchronization remains separately implemented/reviewed. Lead-reported accepted-snapshot extraction/hash checks passed; final documentation/diagram checks remain pending. This pass executes no commands or hashes.
 <!-- BEGIN ACCEPTED R3 PROMOTION WHOLE-FILE SNAPSHOT -->
 # ML Adjutant — R3 native gas-promotion correction
 

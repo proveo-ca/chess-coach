@@ -508,8 +508,95 @@ const nativeValidationFixture = (): string => {
   put(root, path, declarations.map(node => node.getText(source)).join("\n"));
   return root;
 };
+const hostPrivateFixture = (): string => {
+  const root = v2Fixture();
+  const path = `${ARENA}/src/challenge/r3Private.ts`;
+  put(root, path, readFileSync(join(repository, path), "utf8"));
+  return root;
+};
 
 describe("partitioned challenge source inventory", () => {
+  it("audits the exact R3 host-private captures and helpers while retaining host classification", () => {
+    const root = hostPrivateFixture();
+    const path = `${ARENA}/src/challenge/r3Private.ts`;
+    const inventory = collectSourceInventory(root);
+    expect(inventory.audit.passed).toBe(true);
+    expect(inventory.groups["arena-host"].map(file => file.path)).toContain(path);
+    expect(inventory.entrypoints).not.toContain(path);
+  });
+  it.each([
+    ['getPrototype = Object.getPrototypeOf', 'getPrototype = Reflect.get'],
+    ['descriptor = Object.getOwnPropertyDescriptor', 'descriptor = Object.getOwnPropertyDescriptors'],
+    ['typedName = descriptor(typedPrototype, Symbol.toStringTag)!.get!', 'typedName = descriptor(Object, "constructor")!.value'],
+    ['isProxy(input) || !isView(input)', '!isView(input)'],
+    ['length > R3_PRIVATE_CAP', 'false'],
+    ['prototype !== bytePrototype && prototype !== bufferPrototype', 'false'],
+    ['prototype !== objectPrototype && prototype !== null', 'false'],
+    ['!Object.hasOwn(field, "value")', 'false'],
+    ['!field.enumerable', 'false'],
+    ['keys.length !== fields.length', 'false'],
+    ['length > max', 'false'],
+    ['getPrototype(source)', 'getPrototype(() => {})'],
+    ['["effects", 1152]', '["effects", 11520]'],
+    ['["piece", ["type", "color"]]', '["piece", ["type", "color", "extra"]]'],
+    ['apply(typedSet, result, [input])', 'apply(untrustedCallee, result, [input])'],
+    ['const getPrototype =', 'export const getPrototype ='],
+    ['const descriptor =', 'let descriptor ='],
+  ])("rejects changed R3 host-private declaration/helper/domain anchors: %s", (before, after) => {
+    const root = hostPrivateFixture();
+    const path = `${ARENA}/src/challenge/r3Private.ts`;
+    const original = readFileSync(join(root, path), "utf8");
+    expect(original).toContain(before);
+    put(root, path, original.replace(before, after));
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+  });
+  it.each([
+    'getPrototype=(()=>null) as any;',
+    'descriptor=(()=>({value:()=>{}})) as any;',
+    'apply=((fn:any)=>fn()) as any;',
+    'plain=(()=>Object.prototype) as any;',
+    'getPrototype(()=>{});',
+    'descriptor(Object,"constructor");',
+    'const alias=getPrototype;alias(()=>{});',
+    'const alias=descriptor;alias(()=>{},"constructor");',
+    'getPrototype.call(null,()=>{});',
+    'apply(typedName,new Uint8Array(),[]);',
+    'apply(untrustedCallee,null,[]);',
+    'Reflect.apply(getPrototype,null,[()=>{}]);',
+    'export {getPrototype};',
+    'const holder={getPrototype};holder.getPrototype(()=>{});',
+    'export function extra(value:unknown){return getPrototype(value);}',
+    'export function extra(value:unknown,key:PropertyKey){return descriptor(value as object,key);}',
+    'Object.getOwnPropertyDescriptor(Object.prototype,"constructor");',
+    'Object.defineProperty(typedPrototype,"byteLength",{get(){return 0;}});',
+    'Object.getPrototypeOf=(()=>null) as any;',
+    'Uint8Array.prototype.set=(()=>{}) as any;',
+    'nodeTypes.isProxy=(()=>false) as any;',
+    'shapes.set("piece",["type","color","extra"]);',
+    'const Object={getPrototypeOf:()=>null} as any;',
+    'const getProxy=()=>Object.getPrototypeOf(()=>{});getProxy().constructor("return process")();',
+    'const factory:any=()=>()=>{};factory()[["con","structor"].join("")]("return process")();',
+  ])("rejects R3 host-private rebinding, outside-context uses, mutated intrinsics and unrelated prototype/dynamic probes: %s", code => {
+    const root = hostPrivateFixture();
+    const path = `${ARENA}/src/challenge/r3Private.ts`;
+    put(root, path, `${readFileSync(join(root, path), "utf8")}\n${code}`);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+  });
+  it("keeps unrelated host-private statements under the generic audit instead of exempting the file", () => {
+    const root = hostPrivateFixture();
+    const path = `${ARENA}/src/challenge/r3Private.ts`;
+    const original = readFileSync(join(root, path), "utf8");
+    put(root, path, `${original}\nexport const unrelatedData={value:1};`);
+    expect(collectSourceInventory(root).audit.passed).toBe(true);
+    put(root, path, `${original}\nexport function unrelated(value:object,key:string){return (value as any)[key];}`);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+  });
+  it("rejects host-private captures and helper bodies copied to a different host file", () => {
+    const root = hostPrivateFixture();
+    const original = `${ARENA}/src/challenge/r3Private.ts`;
+    put(root, `${ARENA}/src/challenge/r3PrivateClone.ts`, readFileSync(join(root, original), "utf8"));
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+  });
   it("audits R3 native descriptor-before-read helpers in core-rules without promoting them to model roots", () => {
     const root = nativeValidationFixture();
     const path = `${CORE}/src/resolve/provenance-validation.ts`;
@@ -1488,6 +1575,18 @@ describe("static browser public closure", () => {
   it("keeps r3Private out of runtime and erased model closure", async () => {
     const root = fixture();
     put(root, `${ARENA}/src/challenge/r3Private.ts`, 'import {types} from "node:util"; export const isProxy=types.isProxy;');
+    for (const code of [
+      'export * from "./challenge/r3Private";',
+      'export type {Hidden} from "./challenge/r3Private";',
+      'type Hidden=import("./challenge/r3Private").Hidden;',
+    ]) {
+      put(root, `${ARENA}/src/events.ts`, code);
+      expect(() => collectSourceInventory(root)).toThrow("Forbidden partition edge");
+      await expect(check(root)).rejects.toThrow("Host/baseline in public closure");
+    }
+  });
+  it("denies the actual anchored host-private module from runtime and erased model roots", async () => {
+    const root = hostPrivateFixture();
     for (const code of [
       'export * from "./challenge/r3Private";',
       'export type {Hidden} from "./challenge/r3Private";',
