@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { parseScFen } from "@chess-coach/starchess-core";
 import { observe } from "../challenge/observation";
 import { decodeObservation, encodeObservation, validateObservation, decodeObservationV1, encodeObservationV1, validateObservationV1 } from "../observations";
@@ -104,6 +104,67 @@ describe("authorized V2 observation contracts", () => {
     expect(() => decodeObservation(new Uint8Array([0xff]))).toThrow("JSON: $");
     expect(() => decodeObservation(new Uint8Array(1_048_577))).toThrow("SIZE: $");
     expect(() => decodeObservation(new TextEncoder().encode("\ufeff" + text))).toThrow(ContractError);
+  });
+  it("checks intrinsic byte length before decoding or parsing an oversized decorated Uint8Array", () => {
+    const canonical = encodeObservation(fixture());
+    const input = new Uint8Array(1_048_577);
+    input.fill(32); input.set(canonical);
+    let reads = 0;
+    Object.defineProperty(input, "byteLength", { get: () => { reads++; return canonical.byteLength; } });
+    const decode = vi.spyOn(TextDecoder.prototype, "decode"), parse = vi.spyOn(JSON, "parse");
+    try {
+      let error: unknown;
+      try { decodeObservation(input); } catch (caught) { error = caught; }
+      expect.soft(error).toMatchObject({ name: "ContractError", code: "SIZE", path: "$" });
+      expect.soft(reads).toBe(0);
+      expect.soft(decode).not.toHaveBeenCalled();
+      expect.soft(parse).not.toHaveBeenCalled();
+    } finally { decode.mockRestore(); parse.mockRestore(); }
+  });
+  it("compares actual same-length physical bytes without dispatching a caller every override", () => {
+    const canonical = encodeObservation(fixture()), envelope = JSON.parse(new TextDecoder().decode(canonical));
+    const input = new TextEncoder().encode(JSON.stringify({ observation: envelope.observation, codecVersion: envelope.codecVersion }));
+    expect(input.byteLength).toBe(canonical.byteLength);
+    expect(input).not.toEqual(canonical);
+    let calls = 0;
+    Object.defineProperty(input, "every", { value: () => { calls++; return true; } });
+    let error: unknown;
+    try { decodeObservation(input); } catch (caught) { error = caught; }
+    expect.soft(error).toBeInstanceOf(ContractError);
+    expect.soft(calls).toBe(0);
+  });
+  it.each(["byteLength", "length", "buffer", "byteOffset", "every", "subarray", "slice", "set", "constructor", Symbol.iterator, Symbol.toPrimitive, Symbol.toStringTag])(
+    "never reads a decorated byte input's %s accessor", key => {
+      const input = encodeObservation(fixture());
+      let reads = 0;
+      Object.defineProperty(input, key, { get: () => { reads++; throw new Error("caller accessor ran"); } });
+      let result: AuthorizedSnapshotV2 | undefined, error: unknown;
+      try { result = decodeObservation(input); } catch (caught) { error = caught; }
+      expect.soft(reads).toBe(0);
+      if (error !== undefined) expect(error).toBeInstanceOf(ContractError);
+      else expect(result).toEqual(fixture());
+    },
+  );
+  it.each(["every", "subarray", "slice", "set", "constructor", "valueOf", "toString", Symbol.iterator, Symbol.toPrimitive])(
+    "never invokes a decorated byte input's callable %s property", key => {
+      const input = encodeObservation(fixture());
+      let calls = 0;
+      Object.defineProperty(input, key, { value: () => { calls++; throw new Error("caller method ran"); } });
+      let result: AuthorizedSnapshotV2 | undefined, error: unknown;
+      try { result = decodeObservation(input); } catch (caught) { error = caught; }
+      expect.soft(calls).toBe(0);
+      if (error !== undefined) expect(error).toBeInstanceOf(ContractError);
+      else expect(result).toEqual(fixture());
+    },
+  );
+  it("decodes a bounded offset view from an oversized backing buffer using only its actual bytes", () => {
+    const canonical = encodeObservation(fixture()), backing = new Uint8Array(1_048_577);
+    backing.fill(255); backing.set(canonical, 19);
+    const input = new Uint8Array(backing.buffer, 19, canonical.byteLength);
+    expect(decodeObservation(input)).toEqual(fixture());
+    const exactCap = new Uint8Array(1_048_576);
+    exactCap.fill(32); exactCap.set(canonical);
+    expect(() => decodeObservation(exactCap)).toThrow("JSON: $");
   });
   it("accepts allowed bounded V2 batches beyond the legacy 8192-node budget", () => {
     const snapshot = fixture();

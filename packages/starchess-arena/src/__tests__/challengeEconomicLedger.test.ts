@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { advanceHistory, reconcileBoundary, validateBoundaryBatch } from "../events";
 import { ContractError } from "../challengeContract/validation";
 import type { AuthorizedBoundaryBatch, AuthorizedEvent, AuthorizedHistory, AuthorizedSnapshotV2, EconomicState, OwnMineLineage, OwnUnitLineage, ReconciledBoundaryState, Sighting, Square } from "../observations";
@@ -117,6 +117,41 @@ describe("pure authorized boundary economic ledger", () => {
     expect(() => reconcileBoundary(settle, f.open)).toThrow("SEQUENCE: $");
     expect(() => reconcileBoundary(null, f.open)).toThrow("SEQUENCE: $");
   });
+  it.each(["replay", "history"] as const)("caps decorated lastBatchBytes before decoding or parsing for %s", operation => {
+    const initialBatch = initial(), state = reconcileBoundary(null, initialBatch);
+    const input = new Uint8Array(1_048_577);
+    input.fill(32); input.set(state.lastBatchBytes);
+    let reads = 0;
+    Object.defineProperty(input, "byteLength", { get: () => { reads++; return state.lastBatchBytes.byteLength; } });
+    const decorated = { ...state, lastBatchBytes: input };
+    const decode = vi.spyOn(TextDecoder.prototype, "decode"), parse = vi.spyOn(JSON, "parse");
+    try {
+      let error: unknown;
+      try {
+        if (operation === "replay") reconcileBoundary(decorated, initialBatch);
+        else advanceHistory(null, decorated);
+      } catch (caught) { error = caught; }
+      expect.soft(error).toMatchObject({ name: "ContractError", code: "SIZE", path: "$" });
+      expect.soft(reads).toBe(0);
+      expect.soft(decode).not.toHaveBeenCalled();
+      expect.soft(parse).not.toHaveBeenCalled();
+    } finally { decode.mockRestore(); parse.mockRestore(); }
+  });
+  it.each(["byteLength", "length", "buffer", "byteOffset", "every", "subarray", "slice", "set", "constructor", Symbol.iterator, Symbol.toPrimitive, Symbol.toStringTag])(
+    "never reads replay lastBatchBytes' %s accessor", key => {
+      const initialBatch = initial(), state = reconcileBoundary(null, initialBatch), input = state.lastBatchBytes.slice();
+      let reads = 0;
+      Object.defineProperty(input, key, { get: () => { reads++; throw new Error("caller accessor ran"); } });
+      const decorated = { ...state, lastBatchBytes: input };
+      for (const operation of [() => reconcileBoundary(decorated, initialBatch), () => advanceHistory(null, decorated)]) {
+        let result: ReconciledBoundaryState | AuthorizedHistory | undefined, error: unknown;
+        try { result = operation(); } catch (caught) { error = caught; }
+        expect.soft(reads).toBe(0);
+        if (error !== undefined) expect(error).toBeInstanceOf(ContractError);
+        else expect("snapshot" in result! ? result!.snapshot : result!.currentAuthorizedSnapshotV2).toEqual(state.snapshot);
+      }
+    },
+  );
   it.each([
     ["missing disposition", (b: Mutable<AuthorizedBoundaryBatch>) => { b.events.splice(5, 1); }],
     ["wrong birth ID", (b: Mutable<AuthorizedBoundaryBatch>) => Object.assign(b.events[5]!, { lineageId: "w:unit:created:2" })],
