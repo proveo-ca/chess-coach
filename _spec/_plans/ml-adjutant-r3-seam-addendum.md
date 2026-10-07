@@ -1,6 +1,6 @@
 # ML Adjutant — R3 native-seam addendum
 
-Status: **REVISED PROPOSAL / CLOSING REVIEW PENDING / NOT APPROVED / NOT IMPLEMENTED.** Executor selected **“Review seam addendum (Recommended)”**, then **“Native-fix proposal (Recommended)”** and **“Consumed facts (Recommended)”** after negative first-pass reviews. Those selections authorize drafting/review. They do not accept the normative changes or authorize source edits. The revised target-only law replaces rejected discovery overlays; the [native-promotion proposal](ml-adjutant-r3-native-promotion-fix.md) addresses the ownership conflict. Positive closing reviews and exact-text acceptance remain pending. R3 implementation remains blocked. No collection, fitting, calibration, transfer, training, evidence publication or registry activation is authorized.
+Status: **REVISED / MINE-INVENTORY DECISION BLOCKED / NOT APPROVED / NOT IMPLEMENTED.** Executor selected **“Review seam addendum (Recommended)”**, then **“Native-fix proposal (Recommended)”** and **“Consumed facts (Recommended)”** after negative first-pass reviews. Those selections authorize drafting/review, not acceptance or source edits. Target-only authority and the [native-promotion proposal](ml-adjutant-r3-native-promotion-fix.md) received positive security review. Architecture/adversarial rereviews found native-created same-side mine multiplicity without a complete projection/planning law. That choice and final positive reviews/exact acceptance remain pending. R3 implementation remains blocked. No collection, fitting, calibration, transfer, training, evidence publication or registry activation is authorized.
 
 Authority: [original contracts](ml-adjutant-r3-contracts.md) §§3–7, [primary-owner migration](ml-adjutant-spec-file-migration.md), and [R3 roadmap](PLAN-ml-adjutant.md#immediate-ordered-next-actions--train-the-first-broader-adjutant). The original frozen contract, [economic amendment](ml-adjutant-r4-economic-amendment.md), [corrective annex](ml-adjutant-r4-economic-corrective-annex.md) and historical evidence remain unchanged. This revision requires positive closing reviews and actual exact-text Executor acceptance before it takes effect. Design acceptance alone does not authorize implementation; a later decision can grant both only if it names both grants.
 
@@ -14,6 +14,7 @@ Authority: [original contracts](ml-adjutant-r3-contracts.md) §§3–7, [primary
 | §6 | Keep speculative probes private; authorize only the exact target operand of a successfully consumed native discovery operation. |
 | §7 | Define a total recipient event merge consistent with native causal execution and existing income boundaries. |
 | §8 | Define bounded transactional publication and duplicate behavior. |
+| §9.1 | Explicitly bind future R4 innovations, support, features and provenance to the amended public history semantics. |
 
 The paired [promotion correction](ml-adjutant-r3-native-promotion-fix.md) is the sole proposed native behavior amendment. Companion parity uses that explicitly accepted resolver if the correction receives approval. Normal native API/result schemas, public event fields/ID grammar, observation/history version, Configuration/Versions keys, generator, feature registry and policy horizon stay unchanged. Private records retain `engine-provenance-v1`.
 
@@ -65,7 +66,7 @@ Source: [native options and checks](../../packages/starchess-core/src/resolve/su
 
 Core's package export map stays exactly `{'.':'./src/index.ts','./planning-v1':'./src/planning-v1.ts'}`. Core `.` adds named runtime exports `initializeProvenance`, `beginTurnWithProvenance`, and `endTurnWithProvenance`.
 
-The associated root type exports are exactly `EngineProvenance`, `EngineEntity`, `ActionBindings`, `ResolvedActionBinding`, `TrustedEffectFrame`, `VisibilityImage`, `VisibilityCheckpoint`, and `ProvenanceCompanion`. Query/certificate helper types stay implementation-private.
+The associated root type exports are exactly `EngineProvenance`, `EngineEntity`, `ActionBindings`, `ResolvedActionBinding`, `TrustedEffectFrame`, `VisibilityImage`, `VisibilityCheckpoint`, and `ProvenanceCompanion`. Query/consumed-proof helper types stay implementation-private.
 
 Here “private” means host-only and excluded from model dependency closure. This proposes a scoped amendment to the original prohibition on a public host export. It grants no new host subpath, wildcard, cross-package relative/deep import or `/planning-v1` export. Arena host modules consume named core-root imports. Arena `/observations`, `/events`, training `/candidates` and future model entries cannot import/reexport the seam. Both public-closure and source-inventory audits reject runtime and type-only model edges to core `.` and private provenance implementations. Core remains browser-pure.
 
@@ -127,7 +128,7 @@ ResolvedActionBinding = same fields + {effectiveActorId:UnitId|null}
 
 Bindings cover every committed action exactly once in merged contiguous native `seq` order. Side and accepted own-array ordinal match the committed intents. All planning ordinals equal the pre-settlement host ordinal. Create bindings only after successful whole-pair commit.
 
-Bind the primary effective actor at its actual native execution site: native B order/origin; C after B rewriting; F after native origin selection. A B-created C actor uses its explicit birth ID. A replacement at the execution origin uses the actual replacement ID. A skipped action or absent actor uses null. Fire-and-forget Charon can retain a source action with null actor. A fizzle after selecting a live actor retains that actor ID. These associations add no rules guard.
+Bind the primary effective actor at its actual native lookup site: native B order/origin; C after B rewriting; F after native origin selection. Record the actual live entity returned by that lookup, including a replacement, even when a subsequent side/type/occupancy guard skips the effect. Null means the native path never reached an actor lookup or that lookup returned no entity. A terminal-skip action therefore uses null; an own Tank replaced by an own Marine before F siegeMode retains the Marine lookup ID even though the type guard skips. Fire-and-forget Charon retains its source even without an actor. The association never grants side/type permission or proves the actor caused an effect; affected identities bind independently. These records add no rules guard.
 
 Every affected entity retains its own actual ID independently of the primary actor. `sourceActionSeq:null` means a native automatic effect without a queued source, never an unknown substitute for a known source. Later automatic effects use the native-established source association where one exists. Ambiguous actual identity/source fails infrastructure validation. Return `resolvedActions` in the original contiguous source-sequence order after collecting execution-site associations.
 
@@ -356,6 +357,20 @@ Required counterexamples include adjacent-ally virtual overwrite; stationary sie
 
 Implementation checks include all three package typechecks, strict test-file typechecking, core/arena/training suites, exact public-closure checks and affected inventory/isolation regressions. Preserve immutable R2 evidence and its checks. A new assurance generation requires its own namespace/authorization. Local R3 tests do not close aggregate R5 readiness.
 
+### 9.1 Explicit downstream R4 disposition
+
+This proposed paired authority changes the public-input semantics consumed by future R4. Preserve the economic protected bodies; acceptance of this addendum supplies only the scoped input-law precedence below. It does not implement R4, alter the 418 registry or authorize data/calibration operations.
+
+| Frozen consumer / definition | Required use of the amended R3 boundary |
+|---|---|
+| Economic amendment public observation/current-board constraints and calibration lit bins | Use final snapshot geometric cells only. A transient normalized consumed target is not a blanket geometric lit mask or final lit-bin count. |
+| Economic amendment §§4–5 ordered `Y1/Y2/Y3` innovation reduction | Replay amended public events and memory order. Consumed singleton assertions can contribute to `Y1`; actual authorized deaths to `Y2`. Clear same-square/type remembered sightings at death before later deltas; compute `Y3` from that resulting running public memory, without fabricating a lit-empty innovation. |
+| Economic amendment promotion/Marine observations and corrective annex A4 persistent support | A consumed Marine assertion is an authorized transient anchor. Casualty square-memory clearing never deletes all persistent anonymous witnessed/unlocated frontier possibilities. Apply A4's existing death/possibility reduction, without inventing an enemy ID. |
+| Original contracts §§9–10 novelty/stale approach | Retain every historical feature name/index/formula/mask/scale. Their `everLit` includes only geometric lit and approved singleton targets; stale memory uses amended public casualty clearing. Incidental removed prefix sights do not reappear through feature projection. |
+| Future estimator/recipe/native/source/provenance binding and R5 truth containment/calibration | Bind the paired accepted authorization law and corrected native source independently. Recompute support, innovations and verification from that law. Historical source/evidence or a model fitted under older observation authority cannot certify it. Add no Configuration/Versions key or automatic fitted-artifact migration. |
+
+This disposition changes inputs and source-law binding, not the probabilistic architecture, bin tree, feature calculus, policy horizon, optimizer or operational permission. R5 must persist public-only casualty-memory replay, `Y1/Y2/Y3`, anonymous-frontier preservation and novelty/stale-memory regressions under the accepted pair. The economic amendment and annex remain frozen outside this explicit dependency scope.
+
 ## 10. Review and decision ledger
 
 | Review | Task | Scope / disposition |
@@ -370,7 +385,11 @@ Implementation checks include all three package typechecks, strict test-file typ
 | Native-fix author consultation | `ses_eec78096cffeMkpMxeH0Yz2wt6` | Read-only live Marine/color guard and exact fixture proposal after Executor's direction selection. |
 | Consumed-fact author consultation | `ses_eec780908ffeZeOvzGT0ah2tLD` | Read-only query-derived target/type agreement, actual lifecycle binding, sparse projection and noninterference proposal. |
 | Consumed-fact security guidance | `ses_eec4b5c3dffeuiVNlh9BpgideH` | Advisory criteria for target-only authority, no occupancy/mode/ID-equality gate and explicit target-sighting closure; not a closing verdict. |
-| Closing architecture/backend/adversarial/security/spec rereviews | Pending | Exact revised target-only text and paired native correction; no current closing clearance. |
+| Target-only security rereview | `ses_eec4b5c3dffeuiVNlh9BpgideH` | **READY FOR EXECUTOR PAIRED DESIGN DECISION: yes**; original two security HIGHs resolved at design level, no new security HIGH/BLOCKER. Read-only paired text/source; no native execution. This verdict precedes subsequent mine/dependency wording revisions. |
+| Target-only spec rereview | `ses_eec7808f6ffed4yCzKVOuYK5fZ` | **READY FOR EXECUTOR PAIRED DESIGN DECISION: yes**, conditioned on other closing reviews and fresh document checks; design unaccepted. This verdict precedes subsequent mine/dependency revisions. |
+| Target-only adversarial rereview | `ses_eec4b5d28ffeFSK3KuDIKfzBdv` | **READY FOR EXECUTOR PAIRED DESIGN DECISION: no / READY TO MERGE: no**. One new HIGH: same-side mine multiplicity from admitted execution. Two MEDIUM: lookup-versus-skip actor association and sequenced fixture staging wording. |
+| Target-only architecture rereview | `ses_eec78096cffeMkpMxeH0Yz2wt6` | **READY FOR EXECUTOR PAIRED DESIGN DECISION: no**. Two HIGH: mine multiplicity closure and explicit downstream R4 input disposition. Promotion/target-only ownership/cursor issues resolved within stated scope. |
+| Closing architecture/backend/adversarial/security/spec rereviews of final mine/dependency revision | Pending | Mine-inventory direction and its exact amended law must be settled first. |
 
 All first-pass reviewers read source/content without tests, hashes or native execution. The lead revised replacement partition, opening mine uniqueness, prior-reference scope, private ordering, combined public own-ID order, supersession and lifecycle wording. Executor then selected native-fix and consumed-fact drafting directions. The lead replaced the rejected certificate/overlay law and its dependent carriers/bounds with §6.3 target-only proofs plus the paired guard proposal. Those revisions are not closing-review passes. Original NO verdicts remain intact.
 
@@ -388,8 +407,20 @@ All first-pass reviewers read source/content without tests, hashes or native exe
 
 Source anchors: [held promotion and B replacement](../../packages/starchess-core/src/resolve/submit-turn.ts) (`applyGasPromotion`, `heldExtraSteps` fallback, `placeUnit`); [probe patches](../../packages/starchess-core/src/board/vision.ts) (`pathRevealSteps`); [ordinary movement and deferred capture](../../packages/starchess-core/src/resolve/resolve-turn.ts) (`moveWave`, `applyPathRevealAttack`, `phase3`).
 
+### 10.2 New mine-inventory blocker
+
+**[Inference] Two read-only reviews found accepted native queues that create multiple same-side mines at one square. No fixture has executed.**
+
+One source-derived fixture starts with White Hoverbike a3, own mine b5 and CC e1; Black CC e8. Append White F spiderMine from a3 BEFORE White C a3→b5. Admission checks original anchor a3. C lands on b5 without detonating the own mine. F rewrites its actual anchor to b5 and appends a second own mine; native count two remains within cap three.
+
+Another appends C toward an enemy CC before F mine: intended C movement provides an append-time empty anchor, native C drops, and actual F anchor reverts onto an existing own mine.
+
+Current native arrays retain both mines while V1 observation/planning retain unique square locations. Opening-only uniqueness cannot prevent this admitted result. The unresolved relationships are actual native mine count, live mine IDs/same-square ordering, `ownMineLineage`/audit state, retained unique `own.mines` locations and generator count/feasibility guards.
+
+The available direction proposals are: explicit multiplicity with exact planning-count transport; an explicit unsupported-result boundary with no full R3 readiness; or a separately scoped native mine-rule correction. Do not silently deduplicate, add an unapproved native guard, or claim unchanged V1 location-set generation enforces the full actual inventory cap. §4's initialization-only uniqueness and existing mine reconciliation are not a closed runtime law until this direction is settled.
+
 Executor selected two drafting directions, not exact acceptance: native promotion correction and consumed-discovery facts. Their current exact texts require closing review and the later design decision. The original unsafe overlay text was replaced; its first-pass negative verdicts and counterexample obligations remain recorded above. No unselected unsupported-case, ownership-schema or native-observation design became a runtime alternative.
 
-No Executor acceptance of the proposed normative text has occurred. No closing reviewer pass, implementation, calibrated readiness or operation permission follows from this revision. After positive closing reviews and lead document checks, present the paired exact texts for the seam/native design decision before implementing R3.
+No Executor acceptance of the proposed normative text has occurred. Prior scoped positive verdicts do not clear the later mine-inventory blocker/revision. After its direction is settled and the final pair receives positive closing reviews/document checks, present the exact seam/native design decision before implementing R3.
 
 Lead document checks of the preceding blocked-record revision returned PASS for `git diff --no-index --check /dev/null _spec/_plans/ml-adjutant-r3-seam-addendum.md`, `git diff --check`, and `git diff --cached --check`. They do not check this later target-only revision. Package tests and native reproductions did not run because the accepted scope was drafting/read-only review. Repeat document checks after subsequent edits.

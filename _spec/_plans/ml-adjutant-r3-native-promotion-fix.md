@@ -50,7 +50,9 @@ Black: CC f7, Marine f8
 Mines: none; siege flags: none
 ```
 
-Run Begin. Stage both queues against that same opened state. Commit White's intents then Black's intents using normal native append. Call End with `skipTurnStartChecks:true`.
+Run Begin. Stage both queues against that same opened state using per-seat intents WITHOUT `seq`. For the array below, remove `seq` and group by color to obtain those staging inputs. Commit White's intents then Black's intents using normal native append. Call End with `skipTurnStartChecks:true`.
+
+Expected merged committed queue AFTER successful native append:
 
 ```json
 [
