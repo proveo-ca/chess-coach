@@ -1494,6 +1494,101 @@ describe("static browser public closure", () => {
     const { checkPublicClosure } = await import(/* @vite-ignore */ script);
     return checkPublicClosure(root);
   };
+  it("R3 review regression: rejects lexical Reflect substitution without changing byte anchors", async () => {
+    const root = v2Fixture();
+    const path = `${ARENA}/src/authorized/v2/schema.ts`;
+    put(root, path, `${readFileSync(join(root, path), "utf8")}\nconst Reflect={ownKeys:globalThis.Reflect.ownKeys,apply:(fn:any)=>fn===typedArrayName?"Uint8Array":0};`);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
+  });
+  it("R3 review regression: rejects RegExp prototype mutation used by host scalar validators", () => {
+    const root = hostPrivateFixture();
+    const path = `${ARENA}/src/challenge/r3Private.ts`;
+    put(root, path, `${readFileSync(join(root, path), "utf8")}\nRegExp.prototype.test=(()=>true) as any;`);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+  });
+  it("R3 review regression: rejects mutable object declaration and rebinding with unchanged declaration text", async () => {
+    const root = v2Fixture();
+    const path = `${ARENA}/src/authorized/v2/schema.ts`;
+    const original = readFileSync(join(root, path), "utf8");
+    expect(original).toContain("export const object =");
+    put(root, path, `${original.replace("export const object =", "export let object =")}\nobject=(v:any)=>v;`);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
+  });
+  it("R3 review regression: resolves Function.call mutation target before byte intrinsic capture", async () => {
+    const root = v2Fixture();
+    const path = `${ARENA}/src/authorized/v2/schema.ts`;
+    const original = readFileSync(join(root, path), "utf8");
+    const mutation = 'Object.defineProperty.call(null,Uint8Array.prototype,"set",{value:()=>{}});';
+    put(root, path, original.replace("const typedArrayPrototype =", `${mutation}\nconst typedArrayPrototype =`));
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
+  });
+  it("R3 review regression: rejects interfile intrinsic poisoning from a non-anchor model root", async () => {
+    const root = v2Fixture();
+    const path = `${ARENA}/src/events.ts`;
+    put(root, path, `${readFileSync(join(root, path), "utf8")}\nArray.prototype.includes=(()=>true) as any;`);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
+  });
+  it("R3 review regression: rejects a distinct arena zero-SHA instance instead of overwriting its digest record", async () => {
+    const root = v2Fixture();
+    const arenaBase = `${ARENA}/node_modules/jssha`, trainingBase = `${TRAINING}/node_modules/jssha`;
+    const manifest = readFileSync(join(root, arenaBase, "package.json"), "utf8");
+    put(root, `${trainingBase}/package.json`, manifest);
+    put(root, `${trainingBase}/dist/sha256.mjs`, "export default class SHA {};");
+    put(root, `${arenaBase}/dist/sha256.mjs`, 'export default class SHA{update(){}getHash(){return new Uint8Array(32);}}');
+    put(root, `${TRAINING}/src/candidates.ts`, 'import SHA from "jssha/sha256";export {SHA};');
+    await expect(check(root)).rejects.toThrow("Ambiguous dependency instance: jssha@3.3.2");
+  });
+  it("rejects distinct identical SHA installations and accepts a genuinely shared resolved instance", async () => {
+    const root = v2Fixture();
+    const arenaBase = `${ARENA}/node_modules/jssha`, trainingBase = `${TRAINING}/node_modules/jssha`;
+    put(root, `${trainingBase}/package.json`, readFileSync(join(root, arenaBase, "package.json"), "utf8"));
+    put(root, `${trainingBase}/dist/sha256.mjs`, readFileSync(join(root, arenaBase, "dist/sha256.mjs"), "utf8"));
+    put(root, `${TRAINING}/src/candidates.ts`, 'import "jssha/sha256";');
+    await expect(check(root)).rejects.toThrow("Ambiguous dependency instance: jssha@3.3.2");
+    rmSync(join(root, trainingBase), { recursive: true });
+    symlinkSync(join(root, arenaBase), join(root, trainingBase));
+    const report = await check(root);
+    expect(report.dependencyFiles).toHaveLength(2);
+    expect(report.edges).toEqual(expect.arrayContaining([
+      expect.objectContaining({ importer: `${ARENA}/src/authorized/v2/reducer.ts`, specifier: "jssha/sha256" }),
+      expect.objectContaining({ importer: `${TRAINING}/src/candidates.ts`, specifier: "jssha/sha256" }),
+    ]));
+  });
+  it.each([
+    'Object.defineProperty.apply(null,[Uint8Array.prototype,"set",{value:()=>{}}]);',
+    'Reflect.apply(Object.defineProperty,null,[Uint8Array.prototype,"set",{value:()=>{}}]);',
+    'const set=Object.defineProperty;set.call(null,Uint8Array.prototype,"set",{value:()=>{}});',
+    'const set=Object.defineProperty.bind(null,Uint8Array.prototype,"set",{value:()=>{}});set();',
+    'Object.defineProperty.call.call(Object.defineProperty,null,Uint8Array.prototype,"set",{value:()=>{}});',
+    'Reflect.apply.call(null,Object.defineProperty,null,[Uint8Array.prototype,"set",{value:()=>{}}]);',
+    'const prototype=Uint8Array.prototype;Reflect.defineProperty(prototype,"set",{value:()=>{}});',
+  ])("rejects indirect intrinsic mutation with its actual dispatch target: %s", async code => {
+    const root = v2Fixture();
+    const path = `${ARENA}/src/events.ts`;
+    put(root, path, `${readFileSync(join(root, path), "utf8")}\n${code}`);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
+  });
+  it.each(["RegExp.prototype.test", "Number.isSafeInteger", "JSON.parse", "String.prototype.startsWith", "Array.prototype.includes", "Reflect.apply"])("rejects scalar intrinsic poisoning outside anchor files: %s", async target => {
+    const root = v2Fixture();
+    put(root, `${ARENA}/src/events.ts`, `${target}=(()=>true) as any;`);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
+  });
+  it.each([
+    'const args:any[]=[{},"set",{value:()=>{}}];args[0]=Uint8Array.prototype;Object.defineProperty.apply(null,args);',
+    'Object.defineProperty.apply(null,unknownArguments());',
+    'Reflect.apply(Object.defineProperty,null,unknownArguments());',
+  ])("rejects unproven or rewritten metadata-dispatch argument vectors: %s", async code => {
+    const root = v2Fixture();
+    put(root, `${ARENA}/src/events.ts`, code);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
+  });
   it("keeps R3 approved native descriptor validation excluded from runtime and erased model closure", async () => {
     const root = nativeValidationFixture();
     for (const code of [

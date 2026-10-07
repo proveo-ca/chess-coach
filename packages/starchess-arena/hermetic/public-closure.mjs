@@ -19,6 +19,7 @@ const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const order = (a, b) => a < b ? -1 : a > b ? 1 : 0;
 const plain = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
 const conditions = new Set(["browser", "module", "import", "default"]);
+const intrinsicNames = new Set(["Object", "Array", "Reflect", "Number", "String", "Boolean", "BigInt", "Math", "RegExp", "Map", "Set", "WeakMap", "WeakSet", "Symbol", "JSON", "ArrayBuffer", "SharedArrayBuffer", "DataView", "Uint8Array", "Uint8ClampedArray", "Int8Array", "Uint16Array", "Int16Array", "Uint32Array", "Int32Array", "Float32Array", "Float64Array", "BigInt64Array", "BigUint64Array", "Buffer", "TextEncoder", "TextDecoder", "Error", "TypeError", "RangeError", "SyntaxError", "ReferenceError", "URIError", "EvalError", "AggregateError", "Promise", "Date", "Proxy"]);
 const select = (value) => {
   if (typeof value === "string") return value;
   if (!plain(value)) throw new Error("Unsupported export conditions");
@@ -80,6 +81,7 @@ export const checkPublicClosure = (root = repository) => {
   const edges = [];
   const visited = new Set();
   const dependencyPackages = new Map();
+  const dependencyInstances = new Map();
   const packageName = (specifier) => specifier.startsWith("@") ? specifier.split("/").slice(0, 2).join("/") : specifier.split("/")[0];
   const sourceOwner = (path) => [...manifests.keys()].find((owner) => within(join(root, owner), path));
   const resolveFile = (path, base) => {
@@ -134,6 +136,10 @@ export const checkPublicClosure = (root = repository) => {
     if (manifest.dependencies?.jssha !== "3.3.2") throw new Error("SHA dependency must declare exact 3.3.2");
     const packagePath = join(dependency?.base ?? join(root, owner), "node_modules", name);
     const base = realpathSync(packagePath);
+    const identity = "jssha@3.3.2";
+    const priorBase = dependencyInstances.get(identity);
+    if (priorBase && priorBase !== base) throw new Error(`Ambiguous dependency instance: ${identity}`);
+    dependencyInstances.set(identity, base);
     let resolvedPackage = dependencyPackages.get(base);
     if (!resolvedPackage) {
       const path = safe(join(base, "package.json"), base);
@@ -422,6 +428,7 @@ export const checkPublicClosure = (root = repository) => {
     };
     const arrayMutatorTargets = [];
     const memberMutationTargets = [];
+    const intrinsicMutationTargets = [];
     const invocationMutationRoots = new Set();
     const mutationCalls = [];
     let mutationNodeCount = 0;
@@ -451,21 +458,69 @@ export const checkPublicClosure = (root = repository) => {
       return ts.isIdentifier(ctor) && ["Error", "TypeError", "RangeError", "SyntaxError", "ReferenceError", "URIError", "EvalError", "AggregateError"].includes(ctor.text) &&
         globalReference(ctor) && ![...provenance(value.expression)].some((root) => mutatedRoots.has(root));
     };
+    const literalArguments = (node) => {
+      if (node && [...provenance(node)].some((root) => mutatedRoots.has(root))) return undefined;
+      const value = node && origin(node);
+      return value && ts.isArrayLiteralExpression(value) && !value.elements.some(ts.isSpreadElement) ? [...value.elements] : undefined;
+    };
+    const mutationInvocation = (expression, args, depth = 0) => {
+      if (depth > 16) return undefined;
+      const value = origin(expression);
+      if (ts.isCallExpression(value)) {
+        const bound = property(origin(value.expression));
+        if (bound?.name === "bind") return mutationInvocation(bound.receiver, [...value.arguments.slice(1), ...args], depth + 1);
+      }
+      const method = property(value);
+      if (!method) return undefined;
+      if (method.name === "call") {
+        const receiver = property(origin(method.receiver));
+        if (receiver?.name === "call" && args[0]) return mutationInvocation(args[0], args.slice(2), depth + 1);
+        return mutationInvocation(method.receiver, args.slice(1), depth + 1);
+      }
+      if (method.name === "apply" && builtinNamespace(method.receiver, "Reflect")) {
+        const supplied = literalArguments(args[2]);
+        return supplied && args[0] ? mutationInvocation(args[0], supplied, depth + 1)
+          : args[0] && mutationInvocation(args[0], [], depth + 1) !== undefined ? null : undefined;
+      }
+      if (method.name === "apply") {
+        const supplied = literalArguments(args[1]);
+        return supplied ? mutationInvocation(method.receiver, supplied, depth + 1)
+          : mutationInvocation(method.receiver, [], depth + 1) !== undefined ? null : undefined;
+      }
+      const object = builtinNamespace(method.receiver, "Object") && ["assign", "defineProperty", "defineProperties", "setPrototypeOf", "freeze", "seal", "preventExtensions"].includes(method.name);
+      const reflect = builtinNamespace(method.receiver, "Reflect") && ["set", "deleteProperty", "defineProperty", "setPrototypeOf", "preventExtensions"].includes(method.name);
+      return object || reflect ? args[0] ?? null : undefined;
+    };
+    const intrinsicTarget = (node, seen = new Set()) => {
+      const value = origin(node);
+      if (seen.has(value)) return false;
+      const next = new Set([...seen, value]);
+      if (ts.isIdentifier(value)) return intrinsicNames.has(value.text) && globalReference(value);
+      if (ts.isCallExpression(value)) {
+        const method = property(origin(value.expression));
+        if (method && builtinNamespace(method.receiver, "Object") && ["getPrototypeOf", "getOwnPropertyDescriptor", "freeze"].includes(method.name) && value.arguments[0]) return intrinsicTarget(value.arguments[0], next);
+      }
+      const member = property(value);
+      return Boolean(member && (intrinsicNames.has(member.name) && hostRoot(member.receiver) || intrinsicTarget(member.receiver, next)));
+    };
     const scanMutations = (node) => {
       mutationNodeCount++;
       const writes = (target, numeric = false) => {
         if (ts.isIdentifier(target)) {
           const symbol = binding(target) ?? target.text;
           const declaration = symbol?.valueDeclaration;
+          if (typeof symbol === "string" && intrinsicNames.has(symbol)) intrinsicMutationTargets.push(target);
           if (id === `${TRAINING}/src/composition.ts` && declaration &&
               (ts.isVariableDeclaration(declaration) && declaration.parent.parent.parent === source && ts.isIdentifier(declaration.name) && declaration.name.text === "historyFailure" ||
                ts.isClassDeclaration(declaration) && declaration.parent === source && declaration.name?.text === "ContractError")) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${target.text}`);
           if (id === `${ARENA}/src/authorized/v2/schema.ts` && ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol", "Uint8Array", "ArrayBuffer"].includes(symbol)) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${target.text}`);
           if (id === `${ARENA}/src/authorized/v2/schema.ts` && declaration && ts.isVariableDeclaration(declaration) && declaration.parent.parent.parent === source &&
               ts.isIdentifier(declaration.name) && ["typedArrayPrototype", "typedArrayName", "typedArrayByteLength", "typedArraySet", "checkedByteLength", "copyBytes", "byteEqual", "parseBytes"].includes(declaration.name.text)) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${target.text}`);
+          if (id === `${ARENA}/src/authorized/v2/schema.ts` && declaration && ts.isVariableDeclaration(declaration) && declaration.parent.parent.parent === source &&
+              ts.isIdentifier(declaration.name) && ["object", "tag", "array"].includes(declaration.name.text)) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${target.text}`);
           mutatedRoots.add(symbol); if (!numeric) nonNumericWrites.add(symbol); if (["Array", "Object", "String", "Number", "Boolean", "JSON"].includes(symbol)) arrayIntrinsicsMutated = true;
         }
-        else if (ts.isPropertyAccessExpression(target) || ts.isElementAccessExpression(target)) markMutation(target);
+        else if (ts.isPropertyAccessExpression(target) || ts.isElementAccessExpression(target)) { intrinsicMutationTargets.push(target); markMutation(target); }
         else if (ts.isParenthesizedExpression(target) || ts.isAsExpression(target) || ts.isNonNullExpression(target) || ts.isTypeAssertionExpression(target)) writes(target.expression);
         else if (ts.isArrayLiteralExpression(target)) for (const child of target.elements) writes(child);
         else if (ts.isObjectLiteralExpression(target)) for (const child of target.properties) writes(child);
@@ -488,6 +543,8 @@ export const checkPublicClosure = (root = repository) => {
       if (ts.isDeleteExpression(node)) writes(node.expression);
       if ((ts.isForOfStatement(node) || ts.isForInStatement(node)) && !ts.isVariableDeclarationList(node.initializer)) writes(node.initializer);
       if (ts.isCallExpression(node)) {
+        const actualTarget = mutationInvocation(node.expression, node.arguments);
+        if (actualTarget) intrinsicMutationTargets.push(actualTarget);
         mutationCalls.push(node);
         const member = property(origin(node.expression));
         const mutator = (expression) => {
@@ -542,6 +599,12 @@ export const checkPublicClosure = (root = repository) => {
       ts.forEachChild(node, scanMutations);
     };
     scanMutations(source);
+    for (const call of mutationCalls) {
+      const target = mutationInvocation(call.expression, call.arguments);
+      if (target === null) throw new Error(`Code constructor acquisition in public closure: ${id} -> unresolved mutation target`);
+      if (target) intrinsicMutationTargets.push(target);
+    }
+    if (intrinsicMutationTargets.some((target) => intrinsicTarget(target))) throw new Error(`Code constructor acquisition in public closure: ${id} -> intrinsic mutation`);
     arrayIntrinsicsMutated ||= arrayMutatorTargets.some((target) => !freshError(target));
     const staleInvocationSource = (node) => {
       const roots = [...provenance(node)];
@@ -1184,10 +1247,10 @@ export const checkPublicClosure = (root = repository) => {
       if (id !== `${ARENA}/src/challengeContract/validation.ts`) return false;
       const failDeclaration = source.statements.filter(ts.isVariableStatement).flatMap((statement) => [...statement.declarationList.declarations])
         .find((declaration) => ts.isIdentifier(declaration.name) && declaration.name.text === "fail");
-      if (failDeclaration?.getText(source) !== 'fail = (path: string, code = "SCHEMA"): never => { throw new ContractError(path, code); }') return false;
+      if (failDeclaration?.getText(source) !== 'fail = (path: string, code = "SCHEMA"): never => { throw new ContractError(path, code); }' || !checkedAnchorDeclaration(failDeclaration)) return false;
       for (let declaration = node; declaration; declaration = declaration.parent) {
         if (ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && declaration.name.text === "inspectDto") {
-          return sha256(declaration.getText(source)) === "d8652cde892c49aca2285f14a6720c718d622fb5cf3cfc97308c118d7ae46008";
+          return checkedAnchorDeclaration(declaration) && sha256(declaration.getText(source)) === "d8652cde892c49aca2285f14a6720c718d622fb5cf3cfc97308c118d7ae46008";
         }
       }
       return false;
@@ -1198,7 +1261,7 @@ export const checkPublicClosure = (root = repository) => {
       if (!ts.isCallExpression(call) || call.expression !== node || call.getText(source) !== "Object.getOwnPropertyDescriptor(value, String(index))") return false;
       for (let declaration = call; declaration; declaration = declaration.parent) {
         if (ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && declaration.name.text === "array") {
-          return declaration.getText(source) === `array = (value: unknown, path: string, max = 64): unknown[] => {
+          return checkedAnchorDeclaration(declaration) && declaration.getText(source) === `array = (value: unknown, path: string, max = 64): unknown[] => {
   if (!Array.isArray(value) || value.length > max || Reflect.ownKeys(value).length !== value.length + 1) return fail(path, "ARRAY");
   for (let index = 0; index < value.length; index++) {
     const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
@@ -1224,8 +1287,25 @@ export const checkPublicClosure = (root = repository) => {
       const member = property(value);
       return Boolean(member && validationIntrinsicRoot(member.receiver, new Set([...seen, value])));
     };
-    const validationIntrinsicsChanged = () => [...memberMutationTargets, ...arrayMutatorTargets].some((target) => validationIntrinsicRoot(target)) ||
+    const validationIntrinsicsChanged = () => [...memberMutationTargets, ...arrayMutatorTargets, ...intrinsicMutationTargets].some((target) => validationIntrinsicRoot(target)) ||
       ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol", "Uint8Array", "ArrayBuffer", "globalThis", "global", "window", "self"].some((name) => numericAssignments.has(name) || nonNumericWrites.has(name));
+    const anchorGlobals = intrinsicNames;
+    const checkedAnchorCache = new WeakMap();
+    const checkedAnchorDeclaration = (declaration) => {
+      if (checkedAnchorCache.has(declaration)) return checkedAnchorCache.get(declaration);
+      if (!ts.isVariableDeclaration(declaration) || !ts.isIdentifier(declaration.name) || declaration.parent.parent.parent !== source ||
+          !(declaration.parent.flags & ts.NodeFlags.Const)) return false;
+      const symbol = binding(declaration.name);
+      if (symbol?.declarations?.length !== 1 || numericAssignments.has(symbol) || nonNumericWrites.has(symbol)) return false;
+      let valid = true;
+      const scan = (node) => {
+        if (ts.isIdentifier(node) && valueUse(node) && anchorGlobals.has(node.text) && !globalReference(node)) valid = false;
+        ts.forEachChild(node, scan);
+      };
+      scan(declaration);
+      checkedAnchorCache.set(declaration, valid);
+      return valid;
+    };
     const byteIntrinsicAnchors = new Map([
       ["typedArrayPrototype", ["d8b2a7d37da68bfbd8b3c496c5642775060ea5a5f72c287246c5b3171d092d14", ["Object.getPrototypeOf(Uint8Array.prototype)"]]],
       ["typedArrayName", ["75fcb7c4e68ebf8d0cff37db9248ff097daabb020ec70a1d690f8b99bd9214a7", ["Object.getOwnPropertyDescriptor(typedArrayPrototype, Symbol.toStringTag)"]]],
@@ -1236,15 +1316,17 @@ export const checkPublicClosure = (root = repository) => {
       ["byteEqual", ["8d4f9bea85e3eec7eae6410a11f8419fb49fa882bfbcb34a8a02871856f491df", []]],
       ["parseBytes", ["a3d76ef5193831bbaf1177c43d9cdef66c99814e22efdb8d1964a64b86a05e88", []]],
     ]);
+    let byteContextValid;
     const reviewedByteIntrinsic = (node) => {
       if (id !== `${ARENA}/src/authorized/v2/schema.ts`) return false;
       const declarations = source.statements.filter(ts.isVariableStatement).flatMap((statement) => [...statement.declarationList.declarations]);
-      if (validationIntrinsicsChanged() || ![...byteIntrinsicAnchors].every(([name, [digest]]) => {
+      byteContextValid ??= !validationIntrinsicsChanged() && [...byteIntrinsicAnchors].every(([name, [digest]]) => {
         const entries = declarations.filter((entry) => ts.isIdentifier(entry.name) && entry.name.text === name);
         const entry = entries[0];
         const symbol = entry && binding(entry.name);
-        return entries.length === 1 && sha256(entry.getText(source)) === digest && !numericAssignments.has(symbol) && !nonNumericWrites.has(symbol);
-      })) return false;
+        return entries.length === 1 && checkedAnchorDeclaration(entry) && sha256(entry.getText(source)) === digest && !numericAssignments.has(symbol) && !nonNumericWrites.has(symbol);
+      });
+      if (!byteContextValid) return false;
       const definitionNode = ts.isVariableDeclaration(node);
       if (!definitionNode && (!ts.isPropertyAccessExpression(node) || !builtinNamespace(node.expression, "Object") ||
           !ts.isCallExpression(node.parent) || node.parent.expression !== node)) return false;
@@ -1290,7 +1372,7 @@ export const checkPublicClosure = (root = repository) => {
             sha256(error.getText(source)) !== "4e4027ca9cd7c79cc0f90b22f75fecdd9d950c7d3cb8177b21f5685a0e876e88") return false;
         const failureSymbol = binding(failure.name), errorSymbol = binding(error.name);
         if (failureSymbol?.declarations?.length !== 1 || errorSymbol?.declarations?.length !== 1 ||
-            [...memberMutationTargets, ...arrayMutatorTargets].some((target) => { const roots = provenance(target); return roots.has(failureSymbol) || roots.has(errorSymbol); })) return false;
+            [...memberMutationTargets, ...arrayMutatorTargets, ...intrinsicMutationTargets].some((target) => { const roots = provenance(target); return roots.has(failureSymbol) || roots.has(errorSymbol); })) return false;
       }
       if (v2 && !imports.some((entry) => entry.getText(source) === 'import { fail, MAX_CODEC_BYTES } from "../../challengeContract/validation";') ||
           counted && !declarations.some((entry) => entry.getText(source) === 'fail = (): never => { throw new TypeError("Invalid counted planning knowledge"); }') ||
@@ -1299,7 +1381,7 @@ export const checkPublicClosure = (root = repository) => {
         const anchor = ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && new Map(Object.entries(anchors)).get(declaration.name.text);
         if (anchor) {
           const [digest, calls] = anchor;
-          return declaration.parent.parent.parent === source && sha256(declaration.getText(source)) === digest && (declarationNode || calls.includes(call));
+          return checkedAnchorDeclaration(declaration) && sha256(declaration.getText(source)) === digest && (declarationNode || calls.includes(call));
         }
       }
       return false;
@@ -1317,7 +1399,7 @@ export const checkPublicClosure = (root = repository) => {
       if (!anchor || validationIntrinsicsChanged()) return false;
       for (let declaration = node; declaration; declaration = declaration.parent) {
         if (ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && declaration.name.text === anchor[0]) {
-          return declaration.parent.parent.parent === source && sha256(declaration.getText(source)) === anchor[1];
+          return checkedAnchorDeclaration(declaration) && sha256(declaration.getText(source)) === anchor[1];
         }
       }
       return false;

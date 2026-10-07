@@ -89,6 +89,7 @@ const order = (a: string, b: string): number => a < b ? -1 : a > b ? 1 : 0;
 const excludedTest = (path: string): boolean =>
   [CORE, ARENA, TRAINING].some((root) => path.startsWith(`${root}/src/`)) && path.split("/").includes("__tests__");
 const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
+const INTRINSIC_NAMES = new Set(["Object", "Array", "Reflect", "Number", "String", "Boolean", "BigInt", "Math", "RegExp", "Map", "Set", "WeakMap", "WeakSet", "Symbol", "JSON", "ArrayBuffer", "SharedArrayBuffer", "DataView", "Uint8Array", "Uint8ClampedArray", "Int8Array", "Uint16Array", "Int16Array", "Uint32Array", "Int32Array", "Float32Array", "Float64Array", "BigInt64Array", "BigUint64Array", "Buffer", "TextEncoder", "TextDecoder", "Error", "TypeError", "RangeError", "SyntaxError", "ReferenceError", "URIError", "EvalError", "AggregateError", "Promise", "Date", "Proxy"]);
 const HOST_PRIVATE_ANCHORS = new Map<string, string>([
   ["R3_PRIVATE_CAP", "5225945d51379d9c4bb543873d843d859de432554cdc6804dcc3bc7851a0a943"],
   ["isProxy", "e8ca8ec98e6d4a9ae861e4c53c1c2121fe01dee8939ad63b7fe9f6d6a8db6a20"],
@@ -792,6 +793,7 @@ export const collectSourceInventory = (
     };
     const arrayMutatorTargets: ts.Expression[] = [];
     const memberMutationTargets: ts.Expression[] = [];
+    const intrinsicMutationTargets: ts.Expression[] = [];
     const invocationMutationRoots = new Set<ts.Expression | ts.Symbol | string>();
     const mutationCalls: ts.CallExpression[] = [];
     let mutationNodeCount = 0;
@@ -822,12 +824,58 @@ export const collectSourceInventory = (
       return ts.isIdentifier(ctor) && ["Error", "TypeError", "RangeError", "SyntaxError", "ReferenceError", "URIError", "EvalError", "AggregateError"].includes(ctor.text) &&
         typeof binding(ctor) === "string" && ![...provenance(value.expression)].some((root) => mutatedRoots.has(root));
     };
+    const literalArguments = (node: ts.Expression | undefined): ts.Expression[] | undefined => {
+      if (node && [...provenance(node)].some((root) => mutatedRoots.has(root))) return undefined;
+      const value = node && origin(node);
+      return value && ts.isArrayLiteralExpression(value) && !value.elements.some((entry) => ts.isSpreadElement(entry) || ts.isOmittedExpression(entry)) ? [...value.elements] as ts.Expression[] : undefined;
+    };
+    const mutationInvocation = (expression: ts.Expression, args: readonly ts.Expression[], depth = 0): ts.Expression | null | undefined => {
+      if (depth > 16) return undefined;
+      const value = origin(expression);
+      if (ts.isCallExpression(value)) {
+        const bound = property(origin(value.expression));
+        if (bound?.name === "bind") return mutationInvocation(bound.receiver, [...value.arguments.slice(1), ...args], depth + 1);
+      }
+      const method = property(value);
+      if (!method) return undefined;
+      if (method.name === "call") {
+        const receiver = property(origin(method.receiver));
+        if (receiver?.name === "call" && args[0]) return mutationInvocation(args[0], args.slice(2), depth + 1);
+        return mutationInvocation(method.receiver, args.slice(1), depth + 1);
+      }
+      if (method.name === "apply" && reflectionNamespace(origin(method.receiver))) {
+        const supplied = literalArguments(args[2]);
+        return supplied && args[0] ? mutationInvocation(args[0], supplied, depth + 1)
+          : args[0] && mutationInvocation(args[0], [], depth + 1) !== undefined ? null : undefined;
+      }
+      if (method.name === "apply") {
+        const supplied = literalArguments(args[1]);
+        return supplied ? mutationInvocation(method.receiver, supplied, depth + 1)
+          : mutationInvocation(method.receiver, [], depth + 1) !== undefined ? null : undefined;
+      }
+      const object = objectNamespace(origin(method.receiver)) && ["assign", "defineProperty", "defineProperties", "setPrototypeOf", "freeze", "seal", "preventExtensions"].includes(method.name ?? "");
+      const reflect = reflectionNamespace(origin(method.receiver)) && ["set", "deleteProperty", "defineProperty", "setPrototypeOf", "preventExtensions"].includes(method.name ?? "");
+      return object || reflect ? args[0] ?? null : undefined;
+    };
+    const intrinsicTarget = (node: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
+      const value = origin(node);
+      if (seen.has(value)) return false;
+      const next = new Set([...seen, value]);
+      if (ts.isIdentifier(value)) return INTRINSIC_NAMES.has(value.text) && typeof binding(value) === "string";
+      if (ts.isCallExpression(value)) {
+        const method = property(origin(value.expression));
+        if (method && objectNamespace(origin(method.receiver)) && ["getPrototypeOf", "getOwnPropertyDescriptor", "freeze"].includes(method.name ?? "") && value.arguments[0]) return intrinsicTarget(value.arguments[0], next);
+      }
+      const member = property(value);
+      return !!(member && (INTRINSIC_NAMES.has(member.name ?? "") && hostRoot(member.receiver) || intrinsicTarget(member.receiver, next)));
+    };
     const scanMutations = (node: ts.Node): void => {
       mutationNodeCount++;
       const writes = (target: ts.Node, numeric = false): void => {
         if (ts.isIdentifier(target)) {
           const symbol = binding(target);
           const declaration = typeof symbol === "string" ? undefined : symbol.valueDeclaration;
+          if (typeof symbol === "string" && INTRINSIC_NAMES.has(symbol)) intrinsicMutationTargets.push(target);
           if (file.path === `${ARENA}/src/challenge/r3Private.ts` &&
               (typeof symbol === "string" && ["Object", "Array", "Reflect", "ArrayBuffer", "Uint8Array", "Buffer", "Number", "String", "Symbol", "JSON"].includes(symbol) ||
                declaration && ts.isVariableDeclaration(declaration) && declaration.parent.parent.parent === source && ts.isIdentifier(declaration.name) && HOST_PRIVATE_ANCHORS.has(declaration.name.text) ||
@@ -841,9 +889,11 @@ export const collectSourceInventory = (
                ts.isClassDeclaration(declaration) && declaration.name?.text === "ProvenanceError")) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${target.text}`);
           if (file.path === `${ARENA}/src/authorized/v2/schema.ts` && declaration && ts.isVariableDeclaration(declaration) && declaration.parent.parent.parent === source &&
               ts.isIdentifier(declaration.name) && ["typedArrayPrototype", "typedArrayName", "typedArrayByteLength", "typedArraySet", "checkedByteLength", "copyBytes", "byteEqual", "parseBytes"].includes(declaration.name.text)) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${target.text}`);
+          if (file.path === `${ARENA}/src/authorized/v2/schema.ts` && declaration && ts.isVariableDeclaration(declaration) && declaration.parent.parent.parent === source &&
+              ts.isIdentifier(declaration.name) && ["object", "tag", "array"].includes(declaration.name.text)) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${target.text}`);
           mutatedRoots.add(symbol); if (!numeric) nonNumericWrites.add(symbol); if (typeof symbol === "string" && ["Array", "Object", "String", "Number", "Boolean", "JSON"].includes(symbol)) arrayIntrinsicsMutated = true;
         }
-        else if (ts.isPropertyAccessExpression(target) || ts.isElementAccessExpression(target)) markMutation(target);
+        else if (ts.isPropertyAccessExpression(target) || ts.isElementAccessExpression(target)) { intrinsicMutationTargets.push(target); markMutation(target); }
         else if (ts.isParenthesizedExpression(target) || ts.isAsExpression(target) || ts.isNonNullExpression(target) || ts.isTypeAssertionExpression(target)) writes(target.expression);
         else if (ts.isArrayLiteralExpression(target)) for (const child of target.elements) writes(child);
         else if (ts.isObjectLiteralExpression(target)) for (const child of target.properties) writes(child);
@@ -866,6 +916,8 @@ export const collectSourceInventory = (
       if (ts.isDeleteExpression(node)) writes(node.expression);
       if ((ts.isForOfStatement(node) || ts.isForInStatement(node)) && !ts.isVariableDeclarationList(node.initializer)) writes(node.initializer);
       if (ts.isCallExpression(node)) {
+        const actualTarget = mutationInvocation(node.expression, node.arguments);
+        if (actualTarget) intrinsicMutationTargets.push(actualTarget);
         mutationCalls.push(node);
         const member = property(origin(node.expression));
         const mutator = (expression: ts.Expression): boolean => {
@@ -919,6 +971,12 @@ export const collectSourceInventory = (
       ts.forEachChild(node, scanMutations);
     };
     scanMutations(source);
+    for (const call of mutationCalls) {
+      const target = mutationInvocation(call.expression, call.arguments);
+      if (target === null) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> unresolved mutation target`);
+      if (target) intrinsicMutationTargets.push(target);
+    }
+    if (intrinsicMutationTargets.some((target) => intrinsicTarget(target))) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> intrinsic mutation`);
     arrayIntrinsicsMutated ||= arrayMutatorTargets.some((target) => !freshError(target));
     const staleInvocationSource = (node: ts.Expression): boolean => {
       const roots = [...provenance(node)];
@@ -1622,9 +1680,9 @@ export const collectSourceInventory = (
       if (file.path !== `${ARENA}/src/challengeContract/validation.ts`) return false;
       const failDeclaration = source.statements.filter(ts.isVariableStatement).flatMap((statement) => [...statement.declarationList.declarations])
         .find((declaration) => ts.isIdentifier(declaration.name) && declaration.name.text === "fail");
-      if (failDeclaration?.getText(source) !== 'fail = (path: string, code = "SCHEMA"): never => { throw new ContractError(path, code); }') return false;
+      if (failDeclaration?.getText(source) !== 'fail = (path: string, code = "SCHEMA"): never => { throw new ContractError(path, code); }' || !checkedAnchorDeclaration(failDeclaration)) return false;
       for (let declaration: ts.Node | undefined = node; declaration; declaration = declaration.parent) {
-        if (ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && declaration.name.text === "inspectDto") return declaration.getText(source) === REVIEWED_INSPECT_DTO;
+        if (ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && declaration.name.text === "inspectDto") return checkedAnchorDeclaration(declaration) && declaration.getText(source) === REVIEWED_INSPECT_DTO;
       }
       return false;
     };
@@ -1634,7 +1692,7 @@ export const collectSourceInventory = (
       if (!ts.isCallExpression(call) || call.expression !== node || call.getText(source) !== "Object.getOwnPropertyDescriptor(value, String(index))") return false;
       for (let declaration: ts.Node | undefined = call; declaration; declaration = declaration.parent) {
         if (ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && declaration.name.text === "array") {
-          return declaration.getText(source) === `array = (value: unknown, path: string, max = 64): unknown[] => {
+          return checkedAnchorDeclaration(declaration) && declaration.getText(source) === `array = (value: unknown, path: string, max = 64): unknown[] => {
   if (!Array.isArray(value) || value.length > max || Reflect.ownKeys(value).length !== value.length + 1) return fail(path, "ARRAY");
   for (let index = 0; index < value.length; index++) {
     const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
@@ -1660,8 +1718,26 @@ export const collectSourceInventory = (
       const member = property(value);
       return !!(member && validationIntrinsicRoot(member.receiver, new Set([...seen, value])));
     };
-    const validationIntrinsicsChanged = (): boolean => [...memberMutationTargets, ...arrayMutatorTargets].some((target) => validationIntrinsicRoot(target)) ||
+    const validationIntrinsicsChanged = (): boolean => [...memberMutationTargets, ...arrayMutatorTargets, ...intrinsicMutationTargets].some((target) => validationIntrinsicRoot(target)) ||
       ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol", "Uint8Array", "ArrayBuffer", "globalThis", "global", "window", "self"].some((name) => numericAssignments.has(name) || nonNumericWrites.has(name));
+    const anchorGlobals = INTRINSIC_NAMES;
+    const checkedAnchorCache = new WeakMap<ts.Node, boolean>();
+    const checkedAnchorDeclaration = (declaration: ts.Node): declaration is ts.VariableDeclaration => {
+      const cached = checkedAnchorCache.get(declaration);
+      if (cached !== undefined) return cached;
+      if (!ts.isVariableDeclaration(declaration) || !ts.isIdentifier(declaration.name) || declaration.parent.parent.parent !== source ||
+          !ts.isVariableDeclarationList(declaration.parent) || !(declaration.parent.flags & ts.NodeFlags.Const)) return false;
+      const symbol = binding(declaration.name);
+      if (typeof symbol === "string" || symbol.declarations?.length !== 1 || numericAssignments.has(symbol) || nonNumericWrites.has(symbol)) return false;
+      let valid = true;
+      const scan = (node: ts.Node): void => {
+        if (ts.isIdentifier(node) && !ts.isPartOfTypeNode(node) && !sourceIsName(node) && !sourceIsDeclaration(node) && anchorGlobals.has(node.text) && typeof binding(node) !== "string") valid = false;
+        ts.forEachChild(node, scan);
+      };
+      scan(declaration);
+      checkedAnchorCache.set(declaration, valid);
+      return valid;
+    };
     const hostPrivateFile = file.path === `${ARENA}/src/challenge/r3Private.ts` && file.partition === "arena-host";
     const hostDeclarations = hostPrivateFile ? source.statements.filter(ts.isVariableStatement).flatMap((statement) => [...statement.declarationList.declarations]) : [];
     const hostCaptureRequested = hostDeclarations.some((entry) => ts.isIdentifier(entry.name) && ["getPrototype", "descriptor", "typedPrototype", "typedName", "typedByteLength"].includes(entry.name.text));
@@ -1721,7 +1797,7 @@ export const collectSourceInventory = (
             Boolean(ts.getCombinedModifierFlags(entry!) & ts.ModifierFlags.Export) === hostExports.has(name) &&
             hash(entry!.getText(source)) === digest && hostGlobalReferences(entry!) && !numericAssignments.has(symbol) && !nonNumericWrites.has(symbol);
         }) && [...hostImportSymbols].every((symbol) => typeof symbol !== "string" && symbol.declarations?.length === 1 && !numericAssignments.has(symbol) && !nonNumericWrites.has(symbol)) &&
-        ![...memberMutationTargets, ...arrayMutatorTargets].some((target) => hostIntrinsicTarget(target)) &&
+        ![...memberMutationTargets, ...arrayMutatorTargets, ...intrinsicMutationTargets].some((target) => hostIntrinsicTarget(target)) &&
         !["Object", "Array", "Reflect", "ArrayBuffer", "Uint8Array", "Buffer", "Number", "String", "Symbol", "Map", "Set", "JSON"].some((name) => numericAssignments.has(name) || nonNumericWrites.has(name));
       return hostContextVerified;
     };
@@ -1757,15 +1833,17 @@ export const collectSourceInventory = (
       ["byteEqual", ["8d4f9bea85e3eec7eae6410a11f8419fb49fa882bfbcb34a8a02871856f491df", []]],
       ["parseBytes", ["a3d76ef5193831bbaf1177c43d9cdef66c99814e22efdb8d1964a64b86a05e88", []]],
     ]);
+    let byteContextValid: boolean | undefined;
     const reviewedByteIntrinsic = (node: ts.Node): boolean => {
       if (file.path !== `${ARENA}/src/authorized/v2/schema.ts`) return false;
       const declarations = source.statements.filter(ts.isVariableStatement).flatMap((statement) => [...statement.declarationList.declarations]);
-      if (validationIntrinsicsChanged() || ![...byteIntrinsicAnchors].every(([name, [digest]]) => {
+      byteContextValid ??= !validationIntrinsicsChanged() && [...byteIntrinsicAnchors].every(([name, [digest]]) => {
         const entries = declarations.filter((entry) => ts.isIdentifier(entry.name) && entry.name.text === name);
         const entry = entries[0];
         const symbol = entry && ts.isIdentifier(entry.name) ? binding(entry.name) : undefined;
-        return entries.length === 1 && hash(entry!.getText(source)) === digest && !numericAssignments.has(symbol!) && !nonNumericWrites.has(symbol!);
-      })) return false;
+        return entries.length === 1 && checkedAnchorDeclaration(entry!) && hash(entry!.getText(source)) === digest && !numericAssignments.has(symbol!) && !nonNumericWrites.has(symbol!);
+      });
+      if (!byteContextValid) return false;
       const definitionNode = ts.isVariableDeclaration(node);
       if (!definitionNode && (!ts.isPropertyAccessExpression(node) || !objectNamespace(node.expression) ||
           !ts.isCallExpression(node.parent) || node.parent.expression !== node)) return false;
@@ -1791,7 +1869,7 @@ export const collectSourceInventory = (
       if (failures.length !== 1 || errors.length !== 1 || !failureBinding || typeof failureBinding === "string" ||
           failureBinding.declarations?.length !== 1 || numericAssignments.has(failureBinding) || nonNumericWrites.has(failureBinding) ||
           !errorBinding || typeof errorBinding === "string" || errorBinding.declarations?.length !== 1 ||
-          [...memberMutationTargets, ...arrayMutatorTargets].some((target) => { const roots = provenance(target); return roots.has(failureBinding) || roots.has(errorBinding); }) ||
+          [...memberMutationTargets, ...arrayMutatorTargets, ...intrinsicMutationTargets].some((target) => { const roots = provenance(target); return roots.has(failureBinding) || roots.has(errorBinding); }) ||
           hash(failure!.getText(source)) !== "bfef157ef09f5027307ef47ef8b705ec506d05bc183e93715a1358b6f41f5d0b" ||
           hash(errors[0]!.getText(source)) !== "34d01e49bf084ee840e9a0267339462c5e467faa6558e285b2c7af634efb5b04" ||
           validationIntrinsicsChanged()) return false;
@@ -1875,7 +1953,7 @@ export const collectSourceInventory = (
             !ts.isIdentifier(failure!.name) || !error!.name) return false;
         const failureSymbol = binding(failure!.name), errorSymbol = binding(error!.name);
         if (typeof failureSymbol === "string" || typeof errorSymbol === "string" || failureSymbol.declarations?.length !== 1 || errorSymbol.declarations?.length !== 1 ||
-            [...memberMutationTargets, ...arrayMutatorTargets].some((target) => { const roots = provenance(target); return roots.has(failureSymbol) || roots.has(errorSymbol); })) return false;
+            [...memberMutationTargets, ...arrayMutatorTargets, ...intrinsicMutationTargets].some((target) => { const roots = provenance(target); return roots.has(failureSymbol) || roots.has(errorSymbol); })) return false;
       }
       if (v2 && !imports.some((entry) => entry.getText(source) === 'import { fail, MAX_CODEC_BYTES } from "../../challengeContract/validation";') ||
           counted && !declarations.some((entry) => entry.getText(source) === 'fail = (): never => { throw new TypeError("Invalid counted planning knowledge"); }') ||
@@ -1884,7 +1962,7 @@ export const collectSourceInventory = (
         const anchor = ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && new Map(Object.entries(anchors)).get(declaration.name.text);
         if (anchor) {
           const [digest, calls] = anchor;
-          return declaration.parent.parent.parent === source && hash(declaration.getText(source)) === digest && (declarationNode || call !== undefined && calls.includes(call));
+          return checkedAnchorDeclaration(declaration) && hash(declaration.getText(source)) === digest && (declarationNode || call !== undefined && calls.includes(call));
         }
       }
       return false;
@@ -1902,7 +1980,7 @@ export const collectSourceInventory = (
       if (!anchor || validationIntrinsicsChanged()) return false;
       for (let declaration: ts.Node | undefined = node; declaration; declaration = declaration.parent) {
         if (ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && declaration.name.text === anchor[0]) {
-          return declaration.parent.parent.parent === source && hash(declaration.getText(source)) === anchor[1];
+          return checkedAnchorDeclaration(declaration) && hash(declaration.getText(source)) === anchor[1];
         }
       }
       return false;
