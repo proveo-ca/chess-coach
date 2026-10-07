@@ -245,11 +245,29 @@ export function pathRevealSteps(
   target: Square,
   opts?: PathVisionOpts,
 ): number | null {
+  return pathRevealStepsKernel(placement, from, intentTo, viewer, target, opts);
+}
+
+export type PathQueryTap = {
+  step: (mid: Square, visible: boolean) => void;
+  returned: (value: number | null) => void;
+};
+
+export function pathRevealStepsKernel(
+  placement: string,
+  from: Square,
+  intentTo: Square,
+  viewer: StarChessColor,
+  target: Square,
+  opts?: PathVisionOpts,
+  tap?: PathQueryTap,
+): number | null {
+  const returned = (value: number | null) => { tap?.returned(value); return value; };
   const mids = rayBetween(from, intentTo);
-  if (mids.length === 0) return null;
+  if (mids.length === 0) return returned(null);
   const base = placementToMap(placement);
   const piece = base.get(from);
-  if (!piece || piece.color !== viewer) return null;
+  if (!piece || piece.color !== viewer) return returned(null);
 
   for (let i = 0; i < mids.length; i++) {
     const mid = mids[i]!;
@@ -257,9 +275,11 @@ export function pathRevealSteps(
     board.delete(from);
     board.set(mid, piece);
     const v = getSideVision(board, viewer, opts);
-    if (v.litSquares.has(target) || v.revealedPieces.has(target)) return i + 1;
+    const visible = v.litSquares.has(target) || v.revealedPieces.has(target);
+    tap?.step(mid, visible);
+    if (visible) return returned(i + 1);
   }
-  return null;
+  return returned(null);
 }
 
 /**

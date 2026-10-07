@@ -21,9 +21,11 @@ import type {
   ScPendingCCShot,
   SpawnPiece,
 } from "../model/types";
-import { scanRay, type RayContact } from "../board/ray-scan";
+import { scanRayKernel, type RayContact } from "../board/ray-scan";
 import { moverContact, timedMover, type MoverContact } from "../board/move-timing";
-import { pathRevealSteps } from "../board/vision";
+import { pathRevealStepsKernel } from "../board/vision";
+import type { ProvenanceRecorder } from "./provenance-recorder";
+import type { MineId } from "./provenance-types";
 
 export type { ClassicalPlan };
 
@@ -153,8 +155,18 @@ export const applyPathRevealAttack = (
   snap: PathRevealSnap,
   a: ResolveAttack,
 ): PathRevealApply => {
+  return applyPathRevealAttackKernel(snap, a);
+};
+
+const applyPathRevealAttackKernel = (
+  snap: PathRevealSnap,
+  a: ResolveAttack,
+  recorder?: ProvenanceRecorder,
+  queryOrdinal?: number,
+): PathRevealApply => {
   if (a.kind !== "capture" || !a.pathRevealFrom) return { ...snap, fired: false };
   const map = placementToMap(snap.placement);
+  recorder?.board(map);
   const actor = map.get(a.pathRevealFrom);
   if (!actor || actor.color !== a.color || actor.type !== a.piece) {
     return { ...snap, fired: false };
@@ -162,6 +174,14 @@ export const applyPathRevealAttack = (
   const occ = map.get(a.to);
   if (!occ || occ.color !== a.victim.color || occ.type !== a.victim.piece) {
     return { ...snap, fired: false };
+  }
+  if (recorder) {
+    const seq = recorder.queries[queryOrdinal!]!.sourceActionSeq;
+    const frame = recorder.frame("C-path-reveal", () => {
+      recorder.destroy(occ, seq);
+      recorder.move(actor, a.pathRevealFrom!, a.to, seq);
+    });
+    recorder.consume(queryOrdinal!, frame, actor, occ, "capture");
   }
   map.delete(a.pathRevealFrom);
   map.delete(a.to);
@@ -178,10 +198,20 @@ export const applyPathRevealCCShot = (
   snap: PathRevealSnap & { ccLives: Record<StarChessColor, number> },
   a: Extract<ResolveAttack, { kind: "ccShot" }>,
 ): PathRevealApply & { ccLives: Record<StarChessColor, number> } => {
+  return applyPathRevealCCShotKernel(snap, a);
+};
+
+const applyPathRevealCCShotKernel = (
+  snap: PathRevealSnap & { ccLives: Record<StarChessColor, number> },
+  a: Extract<ResolveAttack, { kind: "ccShot" }>,
+  recorder?: ProvenanceRecorder,
+  queryOrdinal?: number,
+): PathRevealApply & { ccLives: Record<StarChessColor, number> } => {
   if (!a.pathRevealFrom || a.stopAt == null) {
     return { ...snap, ccLives: { ...snap.ccLives }, fired: false };
   }
   const map = placementToMap(snap.placement);
+  recorder?.board(map);
   const actor = map.get(a.pathRevealFrom);
   if (!actor || actor.color !== a.color || actor.type !== a.piece) {
     return { ...snap, ccLives: { ...snap.ccLives }, fired: false };
@@ -202,6 +232,14 @@ export const applyPathRevealCCShot = (
     b: clampLives(snap.ccLives.b),
   };
   ccLives[a.target] = clampLives(ccLives[a.target] - 1);
+  if (recorder) {
+    const seq = recorder.queries[queryOrdinal!]!.sourceActionSeq;
+    const frame = recorder.frame("C-path-reveal", () => {
+      recorder.move(actor, a.pathRevealFrom!, a.stopAt!, seq);
+      recorder.damage(a.target, ccLives[a.target], seq);
+    });
+    recorder.consume(queryOrdinal!, frame, actor, commandCenter, "cc-shot");
+  }
   return {
     placement: mapToPlacement(map),
     mines: [...snap.mines],
@@ -270,7 +308,22 @@ export const applyPendingCCShots = (input: {
   mines: ScMine[];
   attacks: ResolveAttack[];
 } => {
+  return applyPendingCCShotsKernel(input);
+};
+
+export const applyPendingCCShotsKernel = (input: {
+  placement: string;
+  ccLives: Record<StarChessColor, number>;
+  pending: readonly ScPendingCCShot[];
+  mines?: readonly ScMine[];
+}, recorder?: ProvenanceRecorder): {
+  placement: string;
+  ccLives: Record<StarChessColor, number>;
+  mines: ScMine[];
+  attacks: ResolveAttack[];
+} => {
   const map = placementToMap(input.placement);
+  recorder?.board(map);
   const lives = {
     w: clampLives(input.ccLives.w),
     b: clampLives(input.ccLives.b),
@@ -288,6 +341,7 @@ export const applyPendingCCShots = (input: {
     piece: ScPiece["type"],
   ): StarChessColor | undefined => {
     const hit = mineContact({ mines, color, piece, squares: [at], mode: "attack" });
+    recorder?.mineContact(hit, null, mines);
     mines = withoutMine(mines, hit);
     return hit.kind === "cleared" ? hit.mineColor : undefined;
   };
@@ -307,8 +361,13 @@ export const applyPendingCCShots = (input: {
     const blocker = leaps ? null : firstBlockerOnRay(map, shot.from, shot.to);
     if (blocker) {
       const victim = map.get(blocker)!;
-      map.delete(blocker);
-      const mineColor = clearOnCapture(blocker, shot.color, actor.type);
+      let mineColor: StarChessColor | undefined;
+      const apply = () => {
+        recorder?.destroy(victim, null);
+        map.delete(blocker);
+        mineColor = clearOnCapture(blocker, shot.color, actor.type);
+      };
+      if (recorder) recorder.frame("turn-open", apply); else apply();
       attacks.push({
         kind: "capture",
         piece: actor.type,
@@ -326,6 +385,7 @@ export const applyPendingCCShots = (input: {
     const hit = shot.color === "w" ? "b" : "w";
     const livesAfter = clampLives(lives[hit] - 1);
     lives[hit] = livesAfter;
+    recorder?.frame("turn-open", () => recorder.damage(hit, livesAfter, null));
     attacks.push({
       kind: "ccShot",
       piece: actor.type,
@@ -391,7 +451,34 @@ export const clearDepartedGhost = (
 };
 
 export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
+  return resolveTurnKernel(input);
+};
+
+export const resolveTurnKernel = (
+  input: ResolveTurnInput,
+  recorder?: ProvenanceRecorder,
+  sources: Record<StarChessColor, number | null> = { w: null, b: null },
+  nativeSiegedSet?: ReadonlySet<Square>,
+): ResolveTurnResult => {
   const start = placementToMap(input.placement);
+  recorder?.board(start);
+  const queryBase = recorder?.image();
+  const seqFor = (plan: ClassicalPlan) => sources[plan.color];
+  const scanQueries = new Map<ClassicalPlan, number>();
+  const approachQueries = new Map<ResolveAttack, number>();
+  const waveVictims = new Map<Square, { piece: ScPiece; seq: number | null }>();
+  const removedMines: { ids: MineId[]; seq: number | null }[] = [];
+  const pendingMineIds = new Set<MineId>();
+  const rememberMine = (hit: MineContact, seq: number | null) => {
+    if (!recorder || hit.kind === "inert") return;
+    const ids = recorder.mineRemovalIds(mines, hit, recorder.nativeMineOrder.filter(id => !pendingMineIds.has(id)));
+    ids.forEach(id => pendingMineIds.add(id));
+    removedMines.push({ ids, seq });
+  };
+  const flushMines = () => {
+    for (const removal of removedMines) recorder?.mineRemove(removal.ids, removal.seq);
+    removedMines.length = 0; pendingMineIds.clear();
+  };
   const lives = {
     w: clampLives(input.ccLives.w),
     b: clampLives(input.ccLives.b),
@@ -419,14 +506,35 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     at: Square,
     color: StarChessColor,
     piece: ScPiece["type"],
+    seq: number | null,
   ): StarChessColor | undefined => {
     const hit = mineContact({ mines, color, piece, squares: [at], mode: "attack" });
+    rememberMine(hit, seq);
     mines = withoutMine(mines, hit);
     return hit.kind === "cleared" ? hit.mineColor : undefined;
   };
 
+  const queryFor = (plan: ClassicalPlan, target: Square, site: "scan-ray" | "reveal-to") => {
+    if (!recorder) return undefined;
+    const bytes = new Uint8Array(8);
+    for (const at of nativeSiegedSet ?? []) {
+      const index = (at.charCodeAt(0) - 97) * 8 + Number(at[1]) - 1;
+      bytes[Math.floor(index / 8)]! |= 1 << (7 - index % 8);
+    }
+    return recorder.query({
+      sourceActionSeq: seqFor(plan)!, site, base: queryBase!, from: plan.from, to: plan.to,
+      side: plan.color, target,
+      visionInputs: {
+        modeSource: input.pathVisionOpts?.tankModeFor ? "native-sieged-set" : "default-tank",
+        siegeMaskHex: [...bytes].map(byte => byte.toString(16).padStart(2, "0")).join(""),
+        mineSource: input.pathVisionOpts?.mines === undefined ? "absent" : "provided",
+        mines: (input.pathVisionOpts?.mines ?? []).map(mine => ({ ...mine })),
+      },
+    });
+  };
+
   const scanFor = (plan: ClassicalPlan) =>
-    scanRay({
+    scanRayKernel({
       board: start,
       placement: input.placement,
       from: plan.from,
@@ -434,6 +542,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       color: plan.color,
       canSee,
       visionOpts: input.pathVisionOpts,
+    }, target => {
+      const query = queryFor(plan, target, "scan-ray");
+      if (query) scanQueries.set(plan, query.ordinal);
+      return query;
     });
 
   type PlanContext = {
@@ -454,7 +566,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     | { kind: "capture"; at: Square; victim: ScPiece; fogged?: boolean }
     | { kind: "mineClear"; at: Square; mineColor: StarChessColor }
     | { kind: "shelling"; at: Square }
-    | { kind: "approach"; shot: ResolveAttack };
+    | { kind: "approach"; shot: ResolveAttack; queryOrdinal?: number };
 
   type PlanRule = {
     name: string;
@@ -477,7 +589,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           delayed.push({ ...plan, to: out.at });
           return;
         }
-        const mineColor = clearOnCapture(out.at, plan.color, actor.type);
+        const mineColor = clearOnCapture(out.at, plan.color, actor.type, seqFor(plan));
         const hit: ResolveAttack = {
           kind: "capture",
           piece: actor.type,
@@ -491,6 +603,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         };
         (out.fogged ? moveCollisions : attacks).push(hit);
         deadSquares.add(out.at);
+        waveVictims.set(out.at, { piece: start.get(out.at)!, seq: seqFor(plan) });
         occupy.push({ ...plan, to: out.at });
         return;
       }
@@ -503,6 +616,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           to: out.at,
           mineColor: out.mineColor,
         });
+        rememberMine({ kind: "cleared", at: out.at, mineColor: out.mineColor }, seqFor(plan));
         mines = mines.filter((m) => m.at !== out.at);
         if (!ctx.siegedTank) occupy.push(plan);
         return;
@@ -516,6 +630,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         });
         return;
       case "approach":
+        if (recorder && out.queryOrdinal !== undefined) {
+          approachQueries.set(out.shot, out.queryOrdinal);
+          recorder.deferred(out.queryOrdinal);
+        }
         pathRevealPending.push(out.shot);
         if (out.shot.kind === "capture" || out.shot.kind === "ccShot") {
           delayed.push(plan);
@@ -535,6 +653,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     if (c.becomesVisible) {
       return {
         kind: "approach",
+        queryOrdinal: scanQueries.get(ctx.plan),
         shot: {
           kind: "capture",
           piece: ctx.actor.type,
@@ -551,15 +670,19 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     return { kind: "capture", at: c.at, victim: c.occ };
   };
 
-  const revealTo = (ctx: PlanContext, target: Square): number | null =>
-    pathRevealSteps(
+  const revealTo = (ctx: PlanContext, target: Square) => {
+    const query = queryFor(ctx.plan, target, "reveal-to");
+    const steps = pathRevealStepsKernel(
       input.placement,
       ctx.plan.from,
       ctx.plan.to,
       ctx.plan.color,
       target,
       input.pathVisionOpts,
+      query,
     );
+    return { steps, queryOrdinal: query?.ordinal };
+  };
 
   const RULES: readonly PlanRule[] = [
     {
@@ -597,11 +720,13 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         const victim = start.get(blocker)!;
         if (victim.color === plan.color || victim.type === "k") return { kind: "drop" };
         const startVisible = canSee(plan.color, blocker);
-        const reveal = leaps ? null : revealTo(ctx, blocker);
+        const revealed = leaps ? null : revealTo(ctx, blocker);
+        const reveal = revealed?.steps ?? null;
         if (!startVisible && reveal != null && reveal > 0) {
           const mids = rayBetween(plan.from, plan.to);
           return {
             kind: "approach",
+            queryOrdinal: revealed?.queryOrdinal,
             shot: {
               kind: "capture",
               piece: actor.type,
@@ -656,7 +781,8 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         const { plan, actor, target, visible0, leaps } = ctx;
         if (!target || target.color === plan.color) return null;
         const victim = { piece: target.type, color: target.color };
-        const revealSteps = !visible0 && !leaps ? revealTo(ctx, plan.to) : null;
+        const revealed = !visible0 && !leaps ? revealTo(ctx, plan.to) : null;
+        const revealSteps = revealed?.steps ?? null;
         const lightsUp = revealSteps != null && revealSteps > 0;
         if (!visible0 && !lightsUp) {
           if (ctx.siegedTank) return { kind: "drop" };
@@ -666,6 +792,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           const mids = rayBetween(plan.from, plan.to);
           return {
             kind: "approach",
+            queryOrdinal: revealed?.queryOrdinal,
             shot: {
               kind: "capture",
               piece: actor.type,
@@ -721,6 +848,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         if (contact.becomesVisible) {
           return {
             kind: "approach",
+            queryOrdinal: scanQueries.get(plan),
             shot: {
               kind: "ccShot",
               piece: actor.type,
@@ -761,6 +889,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
 
   for (const plan of plans) {
     const actor = start.get(plan.from);
+    recorder?.bind(seqFor(plan), actor);
     if (!actor || actor.color !== plan.color) continue;
 
     let scanned: ReturnType<typeof scanFor> | null = null;
@@ -785,6 +914,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   }
 
   const mid = new Map(start);
+  recorder?.frame("C-attack", () => {
+    for (const victim of waveVictims.values()) recorder.destroy(victim.piece, victim.seq);
+    flushMines();
+  });
   for (const sqDead of deadSquares) mid.delete(sqDead);
 
   const afterAttack = {
@@ -871,6 +1004,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     const occ = board.get(dest);
     if (occ && occ.color !== plan.color && occ.type !== "k") {
       if (destinationsWritten.has(dest)) {
+        recorder?.frame("C-move", () => {
+          recorder.destroy(occ, seqFor(plan));
+          recorder.destroy(piece, seqFor(plan));
+        });
         moveCollisions.push({
           kind: "capture",
           piece: piece.type,
@@ -905,7 +1042,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         return;
       }
       board.delete(dest);
-      const collisionMine = clearOnCapture(dest, plan.color, piece.type);
+      const collisionMine = clearOnCapture(dest, plan.color, piece.type, seqFor(plan));
       moveCollisions.push({
         kind: "capture",
         piece: piece.type,
@@ -921,6 +1058,12 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     }
 
     const trip = walkContact(landing);
+
+    recorder?.frame("C-move", () => {
+      if (occ && occ.color !== plan.color && occ.type !== "k") recorder.destroy(occ, seqFor(plan));
+      flushMines();
+      recorder.move(piece, plan.from, dest, seqFor(plan));
+    });
 
     board.delete(plan.from);
     board.set(dest, piece);
@@ -947,6 +1090,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     }
 
     if (trip.kind === "detonated") {
+      recorder?.frame("C-move", () => {
+        recorder.destroy(piece, seqFor(plan));
+        recorder.mineContact(trip, seqFor(plan), mines);
+      });
       mineTriggers.push({
         kind: "mineBlast",
         piece: piece.type,
@@ -982,6 +1129,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   const collide = (a: Landing, b: Landing, contact: MoverContact) => {
     const [rammer, held] = contact.first === "a" ? [b, a] : [a, b];
     const at = contact.at;
+    recorder?.frame("C-move", () => {
+      recorder.destroy(a.piece, seqFor(b.plan));
+      recorder.destroy(b.piece, seqFor(a.plan));
+    });
     moveCollisions.push(
       {
         kind: "capture",
@@ -1013,7 +1164,11 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   };
 
   const ccTakes = (cc: Landing, other: Landing, at: Square) => {
-    const mineColor = clearOnCapture(at, cc.plan.color, cc.piece.type);
+    const mineColor = clearOnCapture(at, cc.plan.color, cc.piece.type, seqFor(cc.plan));
+    recorder?.frame("C-move", () => {
+      recorder.destroy(other.piece, seqFor(cc.plan));
+      flushMines();
+    });
     moveCollisions.push({
       kind: "capture",
       piece: cc.piece.type,
@@ -1089,6 +1244,16 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   const applyApproachMine = (a: ResolveApproach): StarChessColor | undefined => {
     const trip = approachMineContact(a, phase3.mines);
     if (trip.kind === "inert") return undefined;
+    const seq = recorder ? recorder.queries[approachQueries.get(a)!]!.sourceActionSeq : null;
+    recorder?.frame("C-path-reveal", () => {
+      if (trip.kind === "detonated") {
+        const liveBoard = placementToMap(phase3.placement);
+        recorder.board(liveBoard);
+        const victim = liveBoard.get(trip.at);
+        if (victim) recorder.destroy(victim, seq);
+      }
+      recorder.mineContact(trip, seq, phase3.mines);
+    });
     if (trip.kind === "cleared") {
       // Fired upon, so the mover lands alive and only the mine is spent.
       phase3 = { ...phase3, mines: withoutMine(phase3.mines, trip) };
@@ -1119,7 +1284,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     if ((input.siegedTanks ?? []).includes(a.pathRevealFrom)) continue;
     if (destinationsWritten.has(a.pathRevealFrom)) continue;
     if (a.kind === "capture") {
-      const applied = applyPathRevealAttack(phase3, a);
+      const applied = applyPathRevealAttackKernel(phase3, a, recorder, approachQueries.get(a));
       if (!applied.fired) continue;
       firedFrom.add(a.pathRevealFrom!);
       phase3 = {
@@ -1131,7 +1296,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       pathRevealAttacks.push(approachMine ? { ...a, mineColor: approachMine } : a);
       continue;
     }
-    const applied = applyPathRevealCCShot(phase3, a);
+    const applied = applyPathRevealCCShotKernel(phase3, a, recorder, approachQueries.get(a));
     if (!applied.fired) continue;
     phase3 = {
       placement: applied.placement,
@@ -1141,6 +1306,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     lives.w = applied.ccLives.w;
     lives.b = applied.ccLives.b;
     const fired = { ...a, livesAfter: applied.ccLives[a.target] };
+    if (recorder) approachQueries.set(fired, approachQueries.get(a)!);
     applyApproachMine(fired);
     pathRevealAttacks.push(fired);
   }
@@ -1172,6 +1338,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       const actorA = livePiece;
       const actorB = board.get(cross.from);
       if (!actorB || actorB.color !== cross.color) continue;
+      recorder?.frame("C-move", () => {
+        recorder.move(actorA, plan.from, cross.from, seqFor(plan));
+        recorder.move(actorB, cross.from, plan.from, seqFor(cross));
+      });
       board.delete(plan.from);
       board.delete(cross.from);
       board.set(cross.from, actorA);
@@ -1196,6 +1366,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           mode: "walk",
         });
         if (trip.kind !== "detonated") continue;
+        recorder?.frame("C-move", () => {
+          recorder.destroy(actor, seqFor(color === plan.color ? plan : cross));
+          recorder.mineContact(trip, seqFor(color === plan.color ? plan : cross), mines);
+        });
         board.delete(to);
         pmap.delete(to);
         mines = withoutMine(mines, trip);
@@ -1267,11 +1441,13 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   };
 
   const promoBoard = placementToMap(phase3.placement);
+  recorder?.board(promoBoard);
   const promotions: ResolvePromotion[] = [];
   for (const promo of pendingPromos) {
     if (moversDead.has(promo.at)) continue;
     const landed = promoBoard.get(promo.at);
     if (!landed || landed.type !== "p" || landed.color !== promo.color) continue;
+    recorder?.frame("C-promotion", () => recorder.transform(landed, promo.unit, sources[promo.color]));
     promoBoard.set(promo.at, { type: promo.unit, color: promo.color });
     promotions.push(promo);
   }

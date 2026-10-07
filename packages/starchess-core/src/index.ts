@@ -196,6 +196,12 @@ export {
   orderBHeadsFirst,
 } from "./resolve/submit-turn";
 
+export { initializeProvenance, beginTurnWithProvenance, endTurnWithProvenance } from "./resolve/provenance";
+export type {
+  EngineProvenance, EngineEntity, ActionBindings, ResolvedActionBinding,
+  TrustedEffectFrame, VisibilityImage, VisibilityCheckpoint, ProvenanceCompanion,
+} from "./resolve/provenance-types";
+
 export {
   hasExactCCPair,
   snapFromPlacement,
