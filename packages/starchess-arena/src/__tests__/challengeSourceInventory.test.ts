@@ -1585,17 +1585,15 @@ describe("static browser public closure", () => {
       await expect(check(root)).rejects.toThrow("Host/baseline in public closure");
     }
   });
-  it("denies the actual anchored host-private module from runtime and erased model roots", async () => {
+  it.each([
+    'export * from "./challenge/r3Private";',
+    'export type {Hidden} from "./challenge/r3Private";',
+    'type Hidden=import("./challenge/r3Private").Hidden;',
+  ])("denies the actual anchored host-private module from model roots: %s", async code => {
     const root = hostPrivateFixture();
-    for (const code of [
-      'export * from "./challenge/r3Private";',
-      'export type {Hidden} from "./challenge/r3Private";',
-      'type Hidden=import("./challenge/r3Private").Hidden;',
-    ]) {
-      put(root, `${ARENA}/src/events.ts`, code);
-      expect(() => collectSourceInventory(root)).toThrow("Forbidden partition edge");
-      await expect(check(root)).rejects.toThrow("Host/baseline in public closure");
-    }
+    put(root, `${ARENA}/src/events.ts`, code);
+    expect(() => collectSourceInventory(root)).toThrow("Forbidden partition edge");
+    await expect(check(root)).rejects.toThrow("Host/baseline in public closure");
   });
   it.each([
     [`${CORE}/src/rules/counted-planning.ts`, 'Object.hasOwn(descriptor, "value")', 'true'],

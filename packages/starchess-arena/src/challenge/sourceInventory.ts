@@ -401,6 +401,20 @@ export const collectSourceInventory = (
     const host = ts.createCompilerHost(bindingOptions);
     host.getSourceFile = (path) => path === file.path ? source : undefined;
     const checker = ts.createProgram([file.path], bindingOptions, host).getTypeChecker();
+    if (file.path === `${ARENA}/src/challenge/r3Private.ts`) {
+      const globals = new Set(["Object", "Array", "Reflect", "ArrayBuffer", "Uint8Array", "Buffer", "Number", "String", "Symbol", "JSON", "Map", "Set", "RegExp"]);
+      const shadows = source.statements.some((statement) => {
+        if (ts.isVariableStatement(statement)) return statement.declarationList.declarations.some((entry) => ts.isIdentifier(entry.name) && globals.has(entry.name.text));
+        if (ts.isFunctionDeclaration(statement) || ts.isClassDeclaration(statement)) return !!statement.name && globals.has(statement.name.text);
+        if (ts.isImportDeclaration(statement)) {
+          const named = statement.importClause?.namedBindings;
+          return !!statement.importClause?.name && globals.has(statement.importClause.name.text) || named !== undefined &&
+            (ts.isNamespaceImport(named) ? globals.has(named.name.text) : named.elements.some((entry) => globals.has(entry.name.text)));
+        }
+        return false;
+      });
+      if (shadows) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> intrinsic shadow`);
+    }
     let dataChecker: ts.TypeChecker | undefined;
     const dataNodes = new Map<string, ts.Node>();
     const nodeKey = (node: ts.Node): string => `${node.pos}:${node.end}:${node.kind}`;
