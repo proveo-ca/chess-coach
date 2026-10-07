@@ -1,6 +1,6 @@
 # ML Adjutant — R3 native-seam addendum
 
-Status: **R3 SEAM PROPOSAL NOT APPROVED / NOT IMPLEMENTED; INDEPENDENT NATIVE MINE SYNC FIX IMPLEMENTED / REVIEW PENDING.** Executor selected **“Review seam addendum (Recommended)”**, then **“Native-fix proposal (Recommended)”**, **“Consumed facts (Recommended)”**, and **“Support multiplicity (Recommended)”** for drafting/review. Executor subsequently instructed **“Apply Native sync-fix proposal”**, authorizing the independent delayed-swap mine synchronization and regression below. That fix does not accept or implement the larger seam, target-only authority, multiplicity/count bridge or earlier promotion proposal. Their final paired review/exact acceptance remain pending. No collection, fitting, calibration, transfer, training, evidence publication or registry activation is authorized.
+Status: **R3 SEAM PROPOSAL NOT APPROVED / NOT IMPLEMENTED; INDEPENDENT NATIVE MINE SYNC FIX IMPLEMENTED / VERIFIED / SCOPED REVIEWS READY.** Executor selected **“Review seam addendum (Recommended)”**, then **“Native-fix proposal (Recommended)”**, **“Consumed facts (Recommended)”**, and **“Support multiplicity (Recommended)”** for drafting/review. Executor subsequently instructed **“Apply Native sync-fix proposal”**, authorizing the independent delayed-swap mine synchronization and regression below. That fix does not accept or implement the larger seam, target-only authority, multiplicity/count bridge or earlier promotion proposal. Their final paired review/exact acceptance remain pending. No collection, fitting, calibration, transfer, training, evidence publication or registry activation is authorized.
 
 Authority: [original contracts](ml-adjutant-r3-contracts.md) §§3–7, [primary-owner migration](ml-adjutant-spec-file-migration.md), and [R3 roadmap](PLAN-ml-adjutant.md#immediate-ordered-next-actions--train-the-first-broader-adjutant). The original frozen contract, [economic amendment](ml-adjutant-r4-economic-amendment.md), [corrective annex](ml-adjutant-r4-economic-corrective-annex.md) and historical evidence remain unchanged. This revision requires positive closing reviews and actual exact-text Executor acceptance before it takes effect. Design acceptance alone does not authorize implementation; a later decision can grant both only if it names both grants.
 
@@ -25,7 +25,11 @@ Current-state diagram: [resolve-turn-activity.puml](../packages/starchess-core/r
 | App collision/mine suites | **18 passed / 4 files**. |
 | Public model closure audit | **PASS**, current four model roots / `public-closure-v2`. |
 | Resolver diagram | **PASS** for `plantuml -checkonly` and SVG rendering into a temporary directory. |
-| Adversarial / security / spec implementation reviews | Pending. |
+| Adversarial implementation review | `ses_eeb0722edffeEA6BhBrTcMRPIn`: **READY TO MERGE: yes**, no concrete findings for the scoped synchronization fix. |
+| Security implementation review | `ses_eeb0722cbffexp3ESomOgr4gaC`: **READY TO MERGE: yes**, no identified security finding for the scoped fix. |
+| Spec implementation gate | `ses_eeb131b47ffemJixmaLARXqNuw`: **SPEC STATUS: in-sync**, no remaining scoped blockers. |
+
+Reviewers inspected the exact seven-file diff and current source/specs without executing tests, renderers or hashes. Their initial missing-diff handoff blockers cleared after the lead supplied a byte-identity-checked diff. The spec gate's unmatched legacy coverage and oversized-note blockers cleared by repointing to the actual Tank tests and decomposing the edited diagram's notes. The lead reran diagram validation/rendering after those changes. These implementation verdicts apply only to this independent native correction; earlier larger-seam NO/YES records retain their original scope.
 
 This outside-body record supersedes §10.3's unselected-direction and pre-source-edit statements ONLY for this independent synchronization fix. Those source-derived pre-execution paragraphs remain historical. Their stated stale-inventory path now has executed regression proof and a source correction. No full R3 design/readiness closure or fresh hermetic evidence generation follows.
 
