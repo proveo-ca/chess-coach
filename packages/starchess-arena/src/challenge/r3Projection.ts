@@ -305,5 +305,6 @@ export const projectR3Boundary = (input: {
   });
   const boundary = reconcileBoundary(prior ?? null, batch);
   const history = advanceHistory(previous?.history ?? null, boundary);
+  if (history.currentAuthorizedSnapshotV2.ownMineLineage.length !== boundary.ownMineAuditState.liveOwnMines.length) fail("$.ownMineLineage", "CONSISTENCY");
   return freeze({ batch, boundary, history });
 };

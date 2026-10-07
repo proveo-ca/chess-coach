@@ -15,7 +15,7 @@ import {
   copyRecipientPrivate, newRecipientPrivate, projectR3Boundary, reconcileR3NativeImage,
   type R3Recipient, type R3RecipientPrivate,
 } from "./r3Projection";
-import type { AuthorizedBoundaryBatch, Side } from "../authorized/v2/types";
+import type { AuthorizedBoundaryBatch, AuthorizedHistory, Side } from "../authorized/v2/types";
 
 type NativeResult = BeginScTurnResult | EndScTurnResult;
 type Companion = ProvenanceCompanion<NativeResult>;
@@ -127,14 +127,15 @@ const ownStages = (state: PrivateState, value: Readonly<Record<Side, StagedQueue
   const pair = object(value, "$.successfulOwnStages", ["w", "b"]);
   const result = {} as Record<Side, StagedQueue>;
   for (const side of SIDES) {
-    const stage = object(pair[side], `$.successfulOwnStages.${side}`, ["side", "intents", "gasAfter", "spend"]);
+    const stage = object(side === "w" ? pair.w : pair.b, `$.successfulOwnStages.${side}`, ["side", "intents", "gasAfter", "spend"]);
     if (stage.side !== side) fail("$.successfulOwnStages", "SIDE");
     array(stage.intents, "$.intents", 4, action => action);
     const intents = inspectDto(stage.intents, "$.intents") as StagedQueue["intents"];
     const checked = stageQueue(state.session.snapshot, state.session.bank, side, intents, state.session.planningOrdinal);
     if (!checked.ok) return fail("$.successfulOwnStages", "PROTOCOL");
     if (!isDeepStrictEqual(checked.staged, { ...stage, intents })) fail("$.successfulOwnStages", "CONSERVATION");
-    result[side] = checked.staged;
+    if (side === "w") result.w = checked.staged;
+    else result.b = checked.staged;
   }
   return result;
 };
@@ -203,6 +204,16 @@ const execute = (state: PrivateState, phase: "turn-open" | "settled", pair: Read
 
 export const stageR3Begin = (binding: R3Binding, session: R3Session): R3StagedTransition => execute(authority(binding, session), "turn-open", null).transition;
 export const stageR3Settlement = (binding: R3Binding, session: R3Session, successfulOwnStages: Readonly<Record<Side, StagedQueue>>): R3StagedTransition => execute(authority(binding, session), "settled", successfulOwnStages).transition;
+export const readR3PlanningHistory = (binding: R3Binding, session: R3Session, side: Side): AuthorizedHistory => {
+  const state = authority(binding, session);
+  if (side !== "w" && side !== "b") return fail("$.side", "SIDE");
+  if (state.session.provenance.stage !== "after-begin" || scOutcome(state.session.snapshot)) fail("$.session", "PROTOCOL");
+  const recipient = sideValue(state.session.recipients, side);
+  const snapshot = recipient.history.currentAuthorizedSnapshotV2;
+  if (snapshot.ownMineLineage.length !== recipient.boundary.ownMineAuditState.liveOwnMines.length ||
+    !isDeepStrictEqual(snapshot, recipient.boundary.snapshot)) fail("$.ownMineLineage", "CONSISTENCY");
+  return recipient.history;
+};
 
 const checkTransition = (binding: R3Binding, transition: R3StagedTransition): void => {
   const value = object(transition, "$.transition", ["binding", "phase", "ordinal", "successfulOwnStages", "companion", "provenanceBytes", "digest", "batches"]);
@@ -217,7 +228,8 @@ const checkTransition = (binding: R3Binding, transition: R3StagedTransition): vo
   if (typeof digest.sha256 !== "string" || !/^[a-f0-9]{64}$/.test(digest.sha256)) fail("$.digest.sha256", "SCHEMA");
   if (!(value.provenanceBytes instanceof Uint8Array) || value.provenanceBytes.byteLength > HOST_CAP) fail("$.provenanceBytes", "SIZE");
   const batches = object(value.batches, "$.batches", ["w", "b"]);
-  for (const side of SIDES) validateBoundaryBatch(batches[side]);
+  validateBoundaryBatch(batches.w);
+  validateBoundaryBatch(batches.b);
 };
 const compareTransition = (claimed: R3StagedTransition, expected: R3StagedTransition): void => {
   if (claimed.phase !== expected.phase || claimed.ordinal !== expected.ordinal || !isDeepStrictEqual(claimed.successfulOwnStages, expected.successfulOwnStages)) fail("$.transition", "DUPLICATE");

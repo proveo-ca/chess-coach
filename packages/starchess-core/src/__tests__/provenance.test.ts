@@ -5,6 +5,7 @@ import {
   initializeProvenance, parseScFen, placementToMap, scMovesFor, type ActionBindings, type EngineProvenance,
   type ScActionInput, type ScFenSnapshot,
 } from "../index";
+import { validateProvenance } from "../resolve/provenance-validation";
 
 function run(fen: string, actions: ScActionInput[]) {
   const opening = parseScFen(fen);
@@ -73,6 +74,29 @@ describe("native provenance lifecycle", () => {
       [{ kind: "cc-lives-change", side: "b", before: 1, after: 0, sourceActionSeq: null }],
       [{ kind: "cc-lives-change", side: "w", before: 1, after: 0, sourceActionSeq: null }],
     ]);
+  });
+
+  it("rejects a turn-cap-only terminal Begin while accepting the actual terminal End", () => {
+    const { ended } = run("SCFEN|7k/8/8/8/8/8/8/K7|44|33|P|G:33:33|Q:w:;b:", []);
+    expect(() => validateProvenance(ended.provenance)).not.toThrow();
+    const forged: EngineProvenance = { ...ended.provenance, callOrdinal: 1 };
+    expect(forged).toMatchObject({ initialTurn: 44, turn: 45, callOrdinal: 1, stage: "terminal", ccLives: { w: 3, b: 3 } });
+    const unchanged = structuredClone(forged);
+    expect(() => validateProvenance(forged)).toThrow("SEQUENCE: $.provenance.stage");
+    expect(forged).toStrictEqual(unchanged);
+  });
+
+  it.each([
+    { initialLives: "31", expectedLives: { w: 2, b: 0 } },
+    { initialLives: "13", expectedLives: { w: 0, b: 2 } },
+    { initialLives: "11", expectedLives: { w: 0, b: 0 } },
+  ])("accepts a real terminal Begin at turn 44 with lives $initialLives", ({ initialLives, expectedLives }) => {
+    const snapshot = parseScFen(`SCFEN|8/8/8/8/8/8/8/Kk6|44|${initialLives}|P|G:33:33|Q:w:;b:`);
+    const began = beginTurnWithProvenance({ snapshot, provenance: initializeProvenance(snapshot) });
+    expect(began.nativeResult).toStrictEqual(beginScTurn(snapshot));
+    expect(began.provenance).toMatchObject({ initialTurn: 44, turn: 45, callOrdinal: 1, stage: "terminal", ccLives: expectedLives });
+    expect(() => validateProvenance(began.provenance)).not.toThrow();
+    expect(began.provenance.lastCall).toStrictEqual({ queries: [], consumedFacts: [] });
   });
 
   it("clears previous End query references on the next Begin", () => {
@@ -195,6 +219,32 @@ describe("actual identity effects", () => {
     expect(ended.frames[0]?.effects.map(e => e.kind)).toStrictEqual(["unit-destroy", "unit-destroy"]);
     expect(ended.provenance.nativeMineOrder).toStrictEqual(["engine:mine:1"]);
     expect(ended.frames[0]?.before.entities.filter(e => e.kind === "unit" && e.type === "p").map(e => e.square)).toStrictEqual(["e2", "e4"]);
+  });
+
+  it("commits a CC contact capture and its relocation in one causal frame", () => {
+    const { ended } = run("SCFEN|7k/8/8/8/8/8/4r3/3K4|0|33|P|G:11:11|Q:w:;b:", [
+      { kind: "classical", timing: "C", color: "w", from: "d1", to: "d2" },
+      { kind: "classical", timing: "C", color: "b", from: "e2", to: "a2" },
+    ]);
+    expect(ended.nativeResult.next.placement).toBe("7k/8/8/8/8/8/3K4/8");
+    expect(ended.frames).toHaveLength(1);
+    const frame = ended.frames[0]!;
+    expect(frame.phase).toBe("C-move");
+    expect(frame.before.entities).toStrictEqual([
+      { id: "engine:unit:1", kind: "unit", side: "w", type: "k", square: "d1", tankMode: null },
+      { id: "engine:unit:2", kind: "unit", side: "b", type: "r", square: "e2", tankMode: "tank" },
+      { id: "engine:unit:3", kind: "unit", side: "b", type: "k", square: "h8", tankMode: null },
+    ]);
+    expect(frame.effects).toStrictEqual([
+      { kind: "unit-move", entityId: "engine:unit:1", from: "d1", to: "d2", sourceActionSeq: 0 },
+      { kind: "unit-destroy", entity: { id: "engine:unit:2", kind: "unit", side: "b", type: "r", square: "e2", tankMode: "tank" }, sourceActionSeq: 0, causalBeforeVisibilityKey: frame.beforeVisibilityKey },
+    ]);
+    expect(frame.after.entities).toStrictEqual([
+      { id: "engine:unit:1", kind: "unit", side: "w", type: "k", square: "d2", tankMode: null },
+      { id: "engine:unit:3", kind: "unit", side: "b", type: "k", square: "h8", tankMode: null },
+    ]);
+    expect(ended.visibilityImages.map(image => image.state)).toStrictEqual([frame.before, frame.after]);
+    expect(ended.provenance.lastCall.consumedFacts).toStrictEqual([]);
   });
 
   it("retains a fire-and-forget source after its Mecha dies", () => {
