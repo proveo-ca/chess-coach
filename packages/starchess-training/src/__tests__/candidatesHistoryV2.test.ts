@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { describe, expect, it, vi } from "vitest";
 import { advanceHistory, reconcileBoundary } from "@chess-coach/starchess-arena/events";
 import { ACTION_KINDS } from "@chess-coach/starchess-arena/intent-codec-v1";
+import * as codec from "@chess-coach/starchess-arena/intent-codec-v1";
 import {
   type AuthorizedBoundaryBatch, type AuthorizedEvent, type AuthorizedHistory, type AuthorizedObservationV1,
   type AuthorizedSnapshotV2, type EconomicState, type OwnMineLineage, type ReconciledBoundaryState,
@@ -111,10 +112,72 @@ const asV1 = (history: AuthorizedHistory): AuthorizedObservationV1 => {
   return { version: "challenge-observation-v1", side, turn, own, cells, memory };
 };
 const guarded = (history: AuthorizedHistory) => {
-  const o = asV1(history);
-  const knowledge = countedPlanningKnowledge(planningKnowledge(o), history.currentAuthorizedSnapshotV2.ownMineLineage.map(x => x.square));
-  return { o, knowledge, failure: (state: PrefixState, action: Parameters<typeof appendFailure>[3]) => appendFailure(o, knowledge, state, action) };
+  const facts = history.currentAuthorizedSnapshotV2;
+  const knowledge = countedPlanningKnowledge(planningKnowledge(facts), facts.ownMineLineage.map(x => x.square));
+  return { knowledge, failure: (state: PrefixState, action: Parameters<typeof appendFailure>[3]) => appendFailure(facts, knowledge, state, action) };
 };
+
+describe("V2 zero-income candidate encoding", () => {
+  it.each(["w", "b"] as const)("encodes and decodes pass and hand-authored nonpass keys using the actual recipient, %s", side => {
+    const o = observation([[side === "w" ? "a1" : "h8", "k"]], { side, minerals: 0, gas: 0 });
+    o.own.gasIncome = 0;
+    const history = initial(o).history;
+    const before = JSON.stringify(history);
+    const decoder = vi.spyOn(codec, "decodeCandidate");
+    try {
+      const batch = composeV2(history);
+      const expectedKeys = side === "w" ? [
+        "[]",
+        '[{"color":"w","from":"a1","kind":"classical","timing":"C","to":"a2"}]',
+        '[{"color":"w","from":"a1","kind":"classical","timing":"C","to":"b1"}]',
+        '[{"color":"w","from":"a1","kind":"classical","timing":"C","to":"b2"}]',
+      ] : [
+        "[]",
+        '[{"color":"b","from":"h8","kind":"classical","timing":"C","to":"g7"}]',
+        '[{"color":"b","from":"h8","kind":"classical","timing":"C","to":"g8"}]',
+        '[{"color":"b","from":"h8","kind":"classical","timing":"C","to":"h7"}]',
+      ];
+      expect(batch.candidates.map(x => x.key)).toEqual(expectedKeys);
+      expect(decoder.mock.calls[0]).toEqual([
+        { version: "challenge-candidate-codec-v1", key: "[]", actions: [], ownSpend: { minerals: 0, gas: 0 } }, side,
+      ]);
+      expect(decoder.mock.calls.every(([, recipient]) => recipient === side)).toBe(true);
+      for (const candidate of batch.candidates) {
+        expect(candidate.ownSpend).toEqual({ minerals: 0, gas: 0 });
+        expect(codec.decodeCandidate(candidate, side)).toEqual(candidate);
+        expect(codec.decodeCandidate(JSON.stringify(candidate), side)).toEqual(candidate);
+        expect(Object.isFrozen(candidate.actions)).toBe(true);
+      }
+      expect(batch.diagnostics.activeFamilies).toEqual(["classical"]);
+      expect(JSON.stringify(history)).toBe(before);
+      expect(() => composeV1(o)).toThrow("$.own.gasIncome");
+      const invalid = clone(history);
+      invalid.currentAuthorizedSnapshotV2.own.gas = 1;
+      expect(() => composeV2(invalid)).toThrow("$.own.gas");
+    } finally {
+      decoder.mockRestore();
+    }
+  });
+
+  it.each(["w", "b"] as const)("keeps actual zero resources at root and continuations with all seven actor families, %s", side => {
+    const o = allActors(side);
+    o.own.gas = 0;
+    o.own.gasIncome = 0;
+    const history = initial(o).history;
+    const guard = vi.spyOn(domain, "appendFailure");
+    try {
+      const batch = composeV2(history);
+      expect(batch.candidates.some(x => x.actions.length > 0)).toBe(true);
+      expect(batch.candidates.every(x => x.actions.every(a => a.kind === "classical") && x.ownSpend.gas === 0)).toBe(true);
+      expect(batch.diagnostics.activeFamilies).toEqual(["classical"]);
+      expect(batch.diagnostics.pruned.resources).toBeGreaterThan(0);
+      expect(guard.mock.calls.some(([, , state]) => state.actions.length > 0)).toBe(true);
+      expect(guard.mock.calls.every(([facts]) => facts.side === side && facts.own.gas === 0 && facts.own.gasIncome === 0)).toBe(true);
+    } finally {
+      guard.mockRestore();
+    }
+  });
+});
 
 describe("reconciled V2 history count transport", () => {
   it.each([2, 3])("transports %i live entities to both availability probes and continuation appends", count => {
