@@ -110,14 +110,14 @@ Executor chose **Broader first trained ranker**:
 [`ml-adjutant-r4-weights.md`](_spec/_plans/ml-adjutant-r4-weights.md).
 FIRST Phase 3 training requires a separately versioned combination generator and v2 authorized
 economic/positional interactions, own-loss lineage ledger, and confirmed opponent-loss lower bounds with fog uncertainty.
-The selected **turn-aware calibrated belief** also requires a versioned amendment before training.
+The selected **turn-aware calibrated belief** uses the CLOSED/FROZEN versioned economic amendment and scoped corrective annex.
 Its public turn-0 prior is **4 surviving deployed combat replacement + 3 banked minerals = 7**, excluding CC; endowed opening units have paid basis **0**.
 Compare known own surviving combat replacement material against the authorized-history estimate of enemy surviving deployed combat replacement material under equivalent valuation.
 Keep deployed material and inferred enemy bank as separate components; neither is an exact hidden-state or historical-payment oracle.
 Use native `incomeForTurn(t)` and `applyStoredIncome` at actual income-grant boundaries, not planning ordinals, frame counts, or turn changes alone.
-Exact belief architecture, calibration data/objective/thresholds, and versioned feature amendment remain **PENDING**; the prior frozen **370**-field v2 contract does not supply a calibrated model.
-The [canonical economic gate](_spec/_plans/PLAN-ml-adjutant.md#selected-economic-extension--pre-training-gate) and [R1 amendment contract](_spec/_plans/ml-adjutant-r3-contracts.md#21-selected-economic-extension--amendment-pending) own the details; do not duplicate or silently amend their recipe here.
-R2 is CLOSED; calibrated R1 amendment and remaining R3–R5 implementation/readiness must close before explicit R6 training approval. R7 artifact/runtime validation precedes R8 learned acceptance.
+Exact belief architecture, calibration data/objective/thresholds, and the versioned **418**-field amendment are **CLOSED/FROZEN future design**; R3–R5 implementation, calibration and readiness remain **PENDING**. Neither the prior frozen **370**-field v2 contract nor design closure supplies a calibrated model.
+The [canonical economic gate](_spec/_plans/PLAN-ml-adjutant.md#selected-economic-extension--pre-training-gate) and [closed R1 amendment contract](_spec/_plans/ml-adjutant-r3-contracts.md#21-economic-extension--future-design-closed) own the details; do not duplicate or silently amend their recipe here.
+R2 is CLOSED and amended R1 future design is CLOSED/FROZEN; remaining R3–R5 implementation/readiness and separate execution approvals precede explicit R6 training approval. R7 artifact/runtime validation precedes R8 learned acceptance.
 Current named feature arrays (ranker 158 / action 64 / observation 1623) have **no weights** and are not adequate
 for that first trained ranker. Start at H=1; three conditional simultaneous planning windows are separate future work.
 Training, learned models/artifacts, and browser rollout remain unimplemented; registry entries stay EMPTY/unavailable.
