@@ -1483,7 +1483,7 @@ describe("static browser public closure", () => {
     [`${CORE}/src/rules/counted-planning.ts`, 'throw new TypeError("Invalid counted planning knowledge");', 'return undefined as never;'],
     [`${TRAINING}/src/composition.ts`, 'Object.hasOwn(descriptor, "value")', 'true'],
     [`${TRAINING}/src/composition.ts`, 'length > 64', 'false'],
-    [`${TRAINING}/src/composition.ts`, 'throw new TypeError("Invalid authorized history V2");', 'return undefined as never;'],
+    [`${TRAINING}/src/composition.ts`, 'throw new ContractError(path, code);', 'return undefined as never;'],
   ])("rejects R3 changes to counted-planning/history validation anchors: %s %s", async (path, before, after) => {
     const root = await currentGraphFixture();
     const original = readFileSync(join(root, path!), "utf8");
