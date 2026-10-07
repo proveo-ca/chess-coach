@@ -1294,6 +1294,51 @@ describe("static browser public closure", () => {
     const { checkPublicClosure } = await import(/* @vite-ignore */ script);
     return checkPublicClosure(root);
   };
+  let currentGraph: Promise<{ sourceFiles: { path: string }[] }> | undefined;
+  const currentGraphFixture = async (): Promise<string> => {
+    const root = fixture();
+    currentGraph ??= check(repository);
+    for (const file of (await currentGraph).sourceFiles) put(root, file.path, readFileSync(join(repository, file.path), "utf8"));
+    for (const owner of [CORE, ARENA, TRAINING]) put(root, `${owner}/package.json`, readFileSync(join(repository, owner, "package.json"), "utf8"));
+    for (const owner of [ARENA, TRAINING]) {
+      const target = join(root, owner, "node_modules/jssha");
+      mkdirSync(dirname(target), { recursive: true });
+      symlinkSync(join(repository, TRAINING, "node_modules/jssha"), target);
+    }
+    return root;
+  };
+  it("audits the current R3 pure graph in both checks while keeping native provenance outside the model roots", async () => {
+    const root = await currentGraphFixture();
+    expect(collectSourceInventory(root).audit.passed).toBe(true);
+    const report = await check(root);
+    expect(report.verifiedPaths).toContain(`${CORE}/src/rules/counted-planning.ts`);
+    expect(report.verifiedPaths.some((path: string) => path.startsWith(`${CORE}/src/resolve/`) || path.startsWith(`${ARENA}/src/challenge/r3`))).toBe(false);
+  }, 120000);
+  it.each([
+    [`${CORE}/src/rules/counted-planning.ts`, 'Object.hasOwn(descriptor, "value")', 'true'],
+    [`${CORE}/src/rules/counted-planning.ts`, 'length > MAX_MINES_PER_SIDE', 'false'],
+    [`${CORE}/src/rules/counted-planning.ts`, 'Object.getPrototypeOf(value) !== Map.prototype', 'false'],
+    [`${CORE}/src/rules/counted-planning.ts`, 'Object.getPrototypeOf(value) !== Set.prototype', 'false'],
+    [`${CORE}/src/rules/counted-planning.ts`, 'map[Symbol.iterator]', 'map[["con","structor"].join("") as any]'],
+    [`${CORE}/src/rules/counted-planning.ts`, 'throw new TypeError("Invalid counted planning knowledge");', 'return undefined as never;'],
+    [`${TRAINING}/src/composition.ts`, 'Object.hasOwn(descriptor, "value")', 'true'],
+    [`${TRAINING}/src/composition.ts`, 'length > 64', 'false'],
+    [`${TRAINING}/src/composition.ts`, 'throw new TypeError("Invalid authorized history V2");', 'return undefined as never;'],
+  ])("rejects R3 changes to counted-planning/history validation anchors: %s %s", async (path, before, after) => {
+    const root = await currentGraphFixture();
+    const original = readFileSync(join(root, path!), "utf8");
+    expect(original).toContain(before);
+    put(root, path!, original.replace(before!, after!));
+    expect(() => collectSourceInventory(root)).toThrow(/Unsupported code constructor acquisition/);
+    await expect(check(root)).rejects.toThrow(/Code constructor acquisition in public closure/);
+  }, 30000);
+  it.each(['Map.prototype.entries=(()=>[]) as any;', 'Set.prototype.values=(()=>[]) as any;', 'Object.getPrototypeOf=(()=>null) as any;', 'Array.prototype[Symbol.iterator]=function*(){yield "constructor";};'])("rejects R3 intrinsic mutation beside exact descriptor helpers: %s", async code => {
+    const root = await currentGraphFixture();
+    const path = `${CORE}/src/rules/counted-planning.ts`;
+    put(root, path, `${readFileSync(join(root, path), "utf8")}\n${code}`);
+    expect(() => collectSourceInventory(root)).toThrow(/Unsupported code constructor acquisition/);
+    await expect(check(root)).rejects.toThrow(/Code constructor acquisition in public closure/);
+  }, 30000);
   it("audits the actual R3 V2 leaf graph against the exact events export", async () => {
     const report = await check(v2Fixture());
     expect(report.entries.map((entry: { subpath: string }) => entry.subpath)).toEqual(["./planning-v1", "./observations", "./intent-codec-v1", "./events", "./candidates"]);

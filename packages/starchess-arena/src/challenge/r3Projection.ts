@@ -17,6 +17,7 @@ import type { StagedQueue } from "./admission";
 type Image = TrustedEffectFrame["before"];
 type Effect = TrustedEffectFrame["effects"][number];
 type EventInput = AuthorizedEvent extends infer E ? E extends AuthorizedEvent ? Omit<E, "seq"> : never : never;
+const sideValue = <T>(values: Readonly<{ w: T; b: T }>, side: Side): T => side === "w" ? values.w : values.b;
 export type R3Recipient = Readonly<{
   batch: AuthorizedBoundaryBatch; boundary: ReconciledBoundaryState; history: AuthorizedHistory;
 }>;
@@ -140,7 +141,7 @@ export const projectR3Boundary = (input: {
   };
   if (phase === "initial") {
     for (const kind of ["unit", "mine"] as const) {
-      const own = provenance.entities.filter(entity => entity.side === side && entity.kind === kind).sort((a, b) => a.square.localeCompare(b.square));
+      const own = provenance.entities.filter(entity => entity.side === side && entity.kind === kind).sort((a, b) => a.square < b.square ? -1 : a.square > b.square ? 1 : 0);
       for (const entity of own) {
         const id = `${side}:${kind}:opening:${entity.square}`;
         privateState.lineage.set(entity.id, id);
@@ -177,7 +178,7 @@ export const projectR3Boundary = (input: {
         emit({ kind: "own-gas-debited", actionRef, gas: cost });
       }
     });
-    if (spend !== input.ownStage.spend || prior.snapshot.own.minerals - spend !== input.committedBank[side] ||
+    if (spend !== input.ownStage.spend || prior.snapshot.own.minerals - spend !== sideValue(input.committedBank, side) ||
       prior.snapshot.own.gas - gas !== input.ownStage.gasAfter) fail("$.staging", "CONSERVATION");
   }
   const effectEvent = (effect: Effect, frame: TrustedEffectFrame): EventInput | null => {
@@ -270,7 +271,7 @@ export const projectR3Boundary = (input: {
       delta(projectR3Cells(after.state, side), after.turn);
     }
   }
-  if (phase === "settled") emit({ kind: "own-income", actualCreditedMinerals: bank[side] - input.committedBank![side] });
+  if (phase === "settled") emit({ kind: "own-income", actualCreditedMinerals: sideValue(bank, side) - sideValue(input.committedBank!, side) });
   if (pending.size) fail("$.receipts", "CONSERVATION");
   const cells = projectR3Cells(provenance, side);
   fold(cells, snapshot.turn);
@@ -294,7 +295,7 @@ export const projectR3Boundary = (input: {
     snapshot: {
       version: "challenge-observation-v2", side, turn: snapshot.turn,
       own: {
-        minerals: bank[side], gas: snapshot.gas[side], gasIncome: snapshot.gasIncome[side], ccLives: snapshot.ccLives[side],
+        minerals: sideValue(bank, side), gas: sideValue(snapshot.gas, side), gasIncome: sideValue(snapshot.gasIncome, side), ccLives: sideValue(snapshot.ccLives, side),
         pieces: ownUnitLineage.map(unit => ({ square: unit.square, piece: { type: unit.type, color: side } })),
         mines: [...new Set(ownMineLineage.map(mine => mine.square))].sort(),
         siegedTanks: actualUnits.filter(entity => entity.kind === "unit" && entity.tankMode === "siege").map(entity => entity.square).sort(),

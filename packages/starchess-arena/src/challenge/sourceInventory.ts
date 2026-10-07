@@ -1577,13 +1577,28 @@ export const collectSourceInventory = (
       }
       return false;
     };
+    const validationIntrinsicRoot = (node: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
+      const value = origin(node);
+      if (seen.has(value)) return false;
+      if (ts.isIdentifier(value)) return ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol"].includes(value.text) && typeof binding(value) === "string";
+      const member = property(value);
+      return !!(member && validationIntrinsicRoot(member.receiver, new Set([...seen, value])));
+    };
+    const validationIntrinsicsChanged = (): boolean => memberMutationTargets.some((target) => validationIntrinsicRoot(target)) ||
+      ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol"].some((name) => nonNumericWrites.has(name));
+    const validationNames = new Map([
+      [`${ARENA}/src/authorized/v2/schema.ts`, ["object", "tag", "array"]],
+      [`${CORE}/src/rules/counted-planning.ts`, ["record", "inventory", "readMap", "readSet"]],
+      [`${TRAINING}/src/composition.ts`, ["validateHistory"]],
+    ]);
     const reviewedValidationDescriptor = (node: ts.Node): boolean => {
       const v2 = file.path === `${ARENA}/src/authorized/v2/schema.ts`;
       const counted = file.path === `${CORE}/src/rules/counted-planning.ts`;
       const history = file.path === `${TRAINING}/src/composition.ts`;
-      if ((!v2 && !counted && !history) || !ts.isPropertyAccessExpression(node) ||
-          !ts.isCallExpression(node.parent) || node.parent.expression !== node) return false;
-      const call = node.parent.getText(source);
+      const declarationNode = ts.isVariableDeclaration(node);
+      if ((!v2 && !counted && !history) || !declarationNode && (!ts.isPropertyAccessExpression(node) ||
+          !ts.isCallExpression(node.parent) || node.parent.expression !== node)) return false;
+      const call = declarationNode ? undefined : node.parent.getText(source);
       const anchors: Record<string, readonly [string, readonly string[]]> = v2 ? {
         object: ["cbae30e75c79871605332af369a8bc90b967c5764f310f809eb3bc178700b5ef", ["Object.getPrototypeOf(value)", "Object.getOwnPropertyDescriptor(value, key)"]],
         tag: ["71273fcd58c4a1bcc137ec5f1f1afb783d2bdbdc7a63aa9d635632a6e53e022e", ["Object.getPrototypeOf(value)", "Object.getOwnPropertyDescriptor(value, key)"]],
@@ -1601,17 +1616,17 @@ export const collectSourceInventory = (
       if (v2 && !imports.some((entry) => entry.getText(source) === 'import { fail, MAX_CODEC_BYTES } from "../../challengeContract/validation";') ||
           counted && !declarations.some((entry) => entry.getText(source) === 'fail = (): never => { throw new TypeError("Invalid counted planning knowledge"); }') ||
           history && !declarations.some((entry) => entry.getText(source) === 'historyFailure = (): never => { throw new TypeError("Invalid authorized history V2"); }') ||
-          memberMutationTargets.some((target) => arrayIntrinsicRoot(target)) || ["Object", "Array", "Reflect", "Number", "String"].some((name) => nonNumericWrites.has(name))) return false;
+          validationIntrinsicsChanged()) return false;
       for (let declaration: ts.Node | undefined = node; declaration; declaration = declaration.parent) {
         const anchor = ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && new Map(Object.entries(anchors)).get(declaration.name.text);
         if (anchor) {
           const [digest, calls] = anchor;
-          return declaration.parent.parent.parent === source && hash(declaration.getText(source)) === digest && calls.includes(call);
+          return declaration.parent.parent.parent === source && hash(declaration.getText(source)) === digest && (declarationNode || call !== undefined && calls.includes(call));
         }
       }
       return false;
     };
-    const reviewedV2DataAccess = (node: ts.Node): boolean => {
+    const reviewedDataAccess = (node: ts.Node): boolean => {
       const anchors = new Map([
         [`${ARENA}/src/authorized/v2/schema.ts`, [["canonical", "68e1d2acef686f11b36d33e2d3101c8a3a482ec290b0076f5b3645cd3060ea68", "r[k]"]]],
         [`${ARENA}/src/authorized/v2/observation.ts`, [["readSnapshot", "3b8145712ce2dda71f8d675789ac8d7858c002a6f5339de373e141ead9465701", "cells[SQUARES.indexOf(at)]"]]],
@@ -1621,7 +1636,7 @@ export const collectSourceInventory = (
         ]],
       ]);
       const anchor = anchors.get(file.path)?.find((entry) => node.getText(source) === entry[2]);
-      if (!anchor || node.getText(source) !== anchor[2] || memberMutationTargets.some((target) => arrayIntrinsicRoot(target))) return false;
+      if (!anchor || validationIntrinsicsChanged()) return false;
       for (let declaration: ts.Node | undefined = node; declaration; declaration = declaration.parent) {
         if (ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && declaration.name.text === anchor[0]) {
           return declaration.parent.parent.parent === source && hash(declaration.getText(source)) === anchor[1];
@@ -1644,6 +1659,8 @@ export const collectSourceInventory = (
       return ts.isArrowFunction(value) || ts.isFunctionExpression(value) || ts.isIdentifier(value) && callableType(dataType(value));
     };
     const visit = (node: ts.Node): void => {
+      if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && validationNames.get(file.path)?.includes(node.name.text) &&
+          !reviewedValidationDescriptor(node)) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${node.name.text}`);
       if (file.path === `${ARENA}/src/challengeContract/validation.ts` && ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) &&
           node.name.text === "inspectDto" && !reviewedDescriptor(node)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isMetaProperty(node) && node.keywordToken === ts.SyntaxKind.ImportKeyword) {
@@ -1674,11 +1691,11 @@ export const collectSourceInventory = (
       const reflected = value ? property(origin(node as ts.Expression)) : undefined;
       const descriptorSeam = reflected && ["getPrototypeOf", "getOwnPropertyDescriptors"].includes(reflected.name ?? "") &&
         objectNamespace(origin(reflected.receiver)) && reviewedDescriptor(node) && ts.isCallExpression(node.parent) && node.parent.expression === node;
-      const v2DescriptorSeam = reviewedValidationDescriptor(node);
+      const validationDescriptorSeam = reviewedValidationDescriptor(node);
       if (reflected && (reflectionNamespace(origin(reflected.receiver)) && ["get", "getOwnPropertyDescriptor", undefined].includes(reflected.name) ||
           objectNamespace(origin(reflected.receiver)) && ["getOwnPropertyDescriptor", "getPrototypeOf", "getOwnPropertyDescriptors", undefined].includes(reflected.name)) &&
-          !descriptorSeam && !reviewedArrayDescriptor(node) && !v2DescriptorSeam) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
-      if (["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(accessed?.name ?? "") && !descriptorSeam && !v2DescriptorSeam) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+          !descriptorSeam && !reviewedArrayDescriptor(node) && !validationDescriptorSeam) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      if (["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(accessed?.name ?? "") && !descriptorSeam && !validationDescriptorSeam) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed && objectNamespace(accessed.receiver) && accessed.name === undefined) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed && reflectionNamespace(accessed.receiver) && !["ownKeys", "apply", "has", "set", "deleteProperty"].includes(accessed.name ?? "")) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       const boundName = ts.isBindingElement(node) ? node.propertyName ? ownName(node.propertyName) : ts.isIdentifier(node.name) ? node.name.text : undefined : undefined;
@@ -1698,7 +1715,7 @@ export const collectSourceInventory = (
            ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken, ts.SyntaxKind.LessThanLessThanToken,
            ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken]
           .includes((wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind));
-      if (ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(wrappedUse(node).parent) && !reviewedDescriptor(node) && !reviewedV2DataAccess(node) && unsafeComputedReceiver(node.expression, new Set(),
+      if (ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(wrappedUse(node).parent) && !reviewedDescriptor(node) && !reviewedDataAccess(node) && unsafeComputedReceiver(node.expression, new Set(),
           /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression))) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${node.getText(source)}`);
       const hostProcess = (receiver: ts.Expression): boolean => {
         const expression = origin(unwrap(receiver));

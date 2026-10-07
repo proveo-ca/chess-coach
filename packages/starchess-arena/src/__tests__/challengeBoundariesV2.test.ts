@@ -144,6 +144,36 @@ describe("R3 real-native scheduled boundaries and conservation", () => {
     expect(completed.recipients.w.boundary.economicState).toMatchObject({ ownPaidDebits: 1, ownPaidSurviving: 1, ownPaidDestroyed: 0 });
   });
 
+  it("sorts atomic own crush/birth blocks by public IDs without enforcing transient occupancy", () => {
+    const binding = {};
+    const open = begin(binding, initializeR3Session(binding, snapshot("7k/8/8/8/8/8/4R3/4K3", 21), { w: 3, b: 3 }));
+    const completed = settle(binding, open, [
+      { kind: "siegeMode", timing: "F", color: "w", from: "e2" },
+      { kind: "deploy", timing: "B", color: "w", from: "e1", to: "e2", unit: "p" },
+    ]).session;
+    expect(events(completed).filter(event => ["own-unit-created", "own-unit-destroyed"].includes(event.kind))).toEqual([
+      expect.objectContaining({ kind: "own-unit-created", lineageId: "w:unit:created:1", square: "e2" }),
+      expect.objectContaining({ kind: "own-unit-destroyed", id: "w:unit:opening:e2", square: "e2", retiredPaidBasis: 0 }),
+    ]);
+    expect(events(completed).filter(event => event.kind === "own-unit-mode-changed")).toEqual([]);
+    expect(completed.provenance.resolvedActions[0].effectiveActorId).toBe(completed.provenance.entities.find(entity => entity.kind === "unit" && entity.square === "e2")?.id);
+    expect(completed.recipients.w.boundary.economicState).toMatchObject({ ownPaidDebits: 1, ownPaidSurviving: 1, ownPaidDestroyed: 0, ownReplacementDestroyed: 5 });
+  });
+
+  it.each([true, false])("preserves native first-occurrence selection with friendly-first=%s", friendlyFirst => {
+    const binding = {};
+    const opening = snapshot("7k/8/8/8/8/8/4P3/K7", 21);
+    opening.mines = friendlyFirst ? [{ color: "w", at: "e3" }, { color: "b", at: "e3" }] : [{ color: "b", at: "e3" }, { color: "w", at: "e3" }];
+    const completed = settle(binding, begin(binding, initializeR3Session(binding, opening, { w: 3, b: 3 })), [
+      { kind: "stimStep", timing: "B", color: "w", from: "e2", to: "e3" },
+    ]).session;
+    expect(events(completed).filter(event => event.kind === "own-unit-destroyed")).toHaveLength(friendlyFirst ? 0 : 1);
+    expect(events(completed).filter(event => event.kind === "own-mine-removed")).toHaveLength(friendlyFirst ? 0 : 1);
+    expect(events(completed, "b").filter(event => event.kind === "own-mine-removed")).toHaveLength(friendlyFirst ? 0 : 1);
+    expect(completed.snapshot.mines ?? []).toEqual(friendlyFirst ? opening.mines : []);
+    expect(completed.recipients.w.boundary.economicState.enemyLoss.confirmedUnitCount).toBe(0);
+  });
+
   it("reconciles simultaneous delayed swaps and landed-live mine deaths", () => {
     const binding = {};
     const open = begin(binding, initializeR3Session(binding, snapshot("r3k3/8/8/8/8/8/8/R3K3", 1, "|S:a1a8|M:w:a1h4;b:a8h5"), { w: 3, b: 3 }));
@@ -236,6 +266,19 @@ describe("R3 independent parent authority and atomic commit", () => {
     expect(transition.digest).toEqual({ byteLength: encoded.length, sha256: createHash("sha256").update(encoded).digest("hex") });
   });
 
+  it("binds prior consumed-proof references to the checked End companion before the next Begin", () => {
+    const binding = {};
+    const open = begin(binding, initializeR3Session(binding, snapshot("4k3/8/p7/8/8/8/8/R3K3"), { w: 3, b: 3 }));
+    const completed = settle(binding, open, [{ kind: "classical", timing: "C", color: "w", from: "a1", to: "a8" }]).session;
+    expect(completed.provenance.lastCall.consumedFacts[0].causalBeforeVisibilityKey).toBe("engine:call:2:image:0");
+    expect(completed.previousCompanion?.provenance).toBe(completed.provenance);
+    const next = begin(binding, completed);
+    expect(next.provenance.lastCall).toEqual({ queries: [], consumedFacts: [] });
+    expect(next.provenance.resolvedActions).toEqual([]);
+    expect(next.recipients.w.batch).toMatchObject({ ordinal: 3, phase: "turn-open", planningOrdinal: 1 });
+    expect(settle(binding, next).session.recipients.w.batch.ordinal).toBe(4);
+  });
+
   it.each(["proof", "image", "binding", "native", "public", "raw", "length", "hash", "gap", "initial"])("rejects forged %s atomically", variant => {
     const binding = {};
     const open = begin(binding, initializeR3Session(binding, snapshot("4k3/8/p7/8/8/8/8/R3K3"), { w: 3, b: 3 }));
@@ -272,9 +315,11 @@ describe("R3 independent parent authority and atomic commit", () => {
     expect(() => stageR3Begin(other, initial)).toThrow("SESSION");
     expect(() => verifyAndCommitR3(binding, initial, transition)).toThrow("SESSION");
     expect(() => stageR3Begin(binding, { ...initial })).toThrow("SESSION");
+    expect(() => initializeR3Session(binding, snapshot(), { w: 4, b: 3 })).toThrow("SESSION");
     const open = begin(binding, initial);
     expect(() => stageR3Begin(binding, initial)).toThrow("SEQUENCE");
     const completed = settle(binding, open).session;
+    expect(() => initializeR3Session(binding, snapshot(), { w: 3, b: 3 })).toThrow("SESSION");
     expect(() => verifyAndCommitR3(binding, completed, { ...transition, binding })).toThrow("SEQUENCE");
   });
 
@@ -312,5 +357,55 @@ describe("R3 independent parent authority and atomic commit", () => {
     const open = verifyAndCommitR3(binding, initial, transition);
     expect(open.recipients.w.batch.ordinal).toBe(1);
     expect(bytes(initial.recipients.w.batch)).toEqual(initial.recipients.w.boundary.lastBatchBytes);
+  });
+
+  it("rejects opening/native-result/action getters without evaluating them", () => {
+    const binding = {};
+    let calls = 0;
+    const opening = snapshot();
+    Object.defineProperty(opening, "turn", { get: () => { calls++; return 0; }, enumerable: true });
+    expect(() => initializeR3Session(binding, opening, { w: 3, b: 3 })).toThrow("SCHEMA");
+    expect(calls).toBe(0);
+    const initial = initializeR3Session(binding, snapshot(), { w: 3, b: 3 });
+    const staged = stageR3Begin(binding, initial);
+    const bad = copy(staged) as any;
+    Object.defineProperty(bad.companion.nativeResult.next, "turn", { get: () => { calls++; return 0; }, enumerable: true });
+    expect(() => verifyAndCommitR3(binding, initial, bad)).toThrow("SCHEMA");
+    expect(calls).toBe(0);
+    const open = verifyAndCommitR3(binding, initial, staged);
+    const accepted = pair(open, [{ kind: "deploy", timing: "B", color: "w", from: "a1", to: "a2", unit: "p" }]);
+    Object.defineProperty(accepted.w.intents[0], "from", { get: () => { calls++; return "a1"; }, enumerable: true });
+    expect(() => stageR3Settlement(binding, open, accepted)).toThrow("SCHEMA");
+    expect(calls).toBe(0);
+  });
+
+  it("preserves optional native own-property presence and array order during verification", () => {
+    const binding = {};
+    const open = begin(binding, initializeR3Session(binding, snapshot("7k/8/8/8/8/8/4P3/K7", 21), { w: 3, b: 3 }));
+    const staged = stageR3Settlement(binding, open, pair(open, [
+      { kind: "classical", timing: "C", color: "w", from: "e2", to: "e3" },
+      { kind: "stimStep", timing: "F", color: "w", from: "e2", to: "e3" },
+    ]));
+    const bad = copy(staged) as any;
+    bad.companion.nativeResult.next.extra = undefined;
+    expect(() => verifyAndCommitR3(binding, open, bad)).toThrow(/PROVENANCE|SCHEMA/);
+    const reordered = copy(staged) as any;
+    reordered.companion.nativeResult.queue.reverse();
+    expect(() => verifyAndCommitR3(binding, open, reordered)).toThrow("PROVENANCE");
+    const completed = verifyAndCommitR3(binding, open, staged);
+    expect(completed.recipients.w.batch.snapshot.ownUnitLineage.find(unit => unit.type === "p")?.square).toBe("e4");
+  });
+
+  it("checks private raw and nested cardinality caps before accepting a transition", () => {
+    const binding = {};
+    const initial = initializeR3Session(binding, snapshot(), { w: 3, b: 3 });
+    const staged = stageR3Begin(binding, initial);
+    const raw = copy(staged) as any;
+    raw.provenanceBytes = new Uint8Array(16_777_217);
+    expect(() => verifyAndCommitR3(binding, initial, raw)).toThrow("SIZE");
+    const oversized = copy(staged) as any;
+    oversized.companion.frames = Array.from({ length: 1153 }, () => ({}));
+    expect(() => verifyAndCommitR3(binding, initial, oversized)).toThrow("CARDINALITY");
+    expect(verifyAndCommitR3(binding, initial, staged).recipients.w.batch.ordinal).toBe(1);
   });
 });

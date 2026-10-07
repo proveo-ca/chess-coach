@@ -6,6 +6,8 @@ import { fileURLToPath } from "node:url";
 import ts from "typescript";
 import { describe, expect, it } from "vitest";
 import * as observations from "../observations";
+import * as events from "../events";
+import { array, object, tag } from "../authorized/v2/schema";
 
 const arena = resolve(fileURLToPath(new URL("../../", import.meta.url)));
 const core = resolve(arena, "../starchess-core");
@@ -49,6 +51,38 @@ describe("public V1 bridge isolation", () => {
       expect(require.resolve(`@chess-coach/starchess-arena/${subpath}`)).toBe(join(arena, "src", `${subpath}.ts`));
     }
     expect(Object.keys(observations).sort()).toEqual(["decodeObservation", "decodeObservationV1", "encodeObservation", "encodeObservationV1", "validateObservation", "validateObservationV1"]);
+    expect(Object.keys(events).sort()).toEqual(["advanceHistory", "reconcileBoundary", "validateBoundaryBatch"]);
+    expect(manifest.dependencies.jssha).toBe("3.3.2");
+  });
+
+  it("rejects accessors in the exact reviewed V2 descriptor helpers without calling them", () => {
+    let calls = 0;
+    const getter = () => { calls++; throw new Error("accessor ran"); };
+    const record = Object.defineProperty({}, "kind", { enumerable: true, get: getter });
+    expect(() => object(record, "$", ["kind"])).toThrow("SCHEMA");
+    expect(() => tag(record, "$", "kind")).toThrow("SCHEMA");
+    const values = Object.defineProperty(["value"], "0", { enumerable: true, get: getter });
+    expect(() => array(values, "$", 3, x => x)).toThrow("ARRAY");
+    expect(calls).toBe(0);
+  });
+
+  it("keeps descriptor helpers strict about prototypes, symbols, enumeration and dense array bounds", () => {
+    for (const value of [
+      Object.assign(Object.create({ inherited: true }), { kind: "value" }),
+      Object.defineProperty({}, "kind", { value: "value" }),
+      { kind: "value", [Symbol("extra")]: true },
+      { kind: "value", extra: true },
+      () => "value",
+    ]) expect(() => object(value, "$", ["kind"])).toThrow();
+    expect(() => tag(Object.create({ kind: "value" }), "$", "kind")).toThrow();
+    for (const value of [new Array(2), [0, 1, 2, 3], Object.assign([0], { extra: true }), Object.assign([0], { [Symbol("extra")]: true }), Object.setPrototypeOf([0], {})]) {
+      expect(() => array(value, "$", 3, x => x)).toThrow();
+    }
+    const input = Object.assign(Object.create(null), { kind: "value" });
+    const detached = object(input, "$", ["kind"]);
+    expect(detached).toEqual({ kind: "value" });
+    expect(detached).not.toBe(input);
+    expect(array([0, 1], "$", 2, x => x, 2)).toEqual([0, 1]);
   });
 
   it.each(["observations.ts", "intent-codec-v1.ts"])("keeps %s runtime closure free of Node imports and arena host/baseline modules", (entry) => {

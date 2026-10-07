@@ -1201,13 +1201,28 @@ export const checkPublicClosure = (root = repository) => {
       }
       return false;
     };
+    const validationIntrinsicRoot = (node, seen = new Set()) => {
+      const value = origin(node);
+      if (seen.has(value)) return false;
+      if (ts.isIdentifier(value)) return ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol"].includes(value.text) && globalReference(value);
+      const member = property(value);
+      return Boolean(member && validationIntrinsicRoot(member.receiver, new Set([...seen, value])));
+    };
+    const validationIntrinsicsChanged = () => memberMutationTargets.some((target) => validationIntrinsicRoot(target)) ||
+      ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol"].some((name) => nonNumericWrites.has(name));
+    const validationNames = new Map([
+      [`${ARENA}/src/authorized/v2/schema.ts`, ["object", "tag", "array"]],
+      [`${CORE}/src/rules/counted-planning.ts`, ["record", "inventory", "readMap", "readSet"]],
+      [`${TRAINING}/src/composition.ts`, ["validateHistory"]],
+    ]);
     const reviewedValidationDescriptor = (node) => {
       const v2 = id === `${ARENA}/src/authorized/v2/schema.ts`;
       const counted = id === `${CORE}/src/rules/counted-planning.ts`;
       const history = id === `${TRAINING}/src/composition.ts`;
-      if ((!v2 && !counted && !history) || !ts.isPropertyAccessExpression(node) ||
-          !ts.isCallExpression(node.parent) || node.parent.expression !== node) return false;
-      const call = node.parent.getText(source);
+      const declarationNode = ts.isVariableDeclaration(node);
+      if ((!v2 && !counted && !history) || !declarationNode && (!ts.isPropertyAccessExpression(node) ||
+          !ts.isCallExpression(node.parent) || node.parent.expression !== node)) return false;
+      const call = declarationNode ? undefined : node.parent.getText(source);
       const anchors = v2 ? {
         object: ["cbae30e75c79871605332af369a8bc90b967c5764f310f809eb3bc178700b5ef", ["Object.getPrototypeOf(value)", "Object.getOwnPropertyDescriptor(value, key)"]],
         tag: ["71273fcd58c4a1bcc137ec5f1f1afb783d2bdbdc7a63aa9d635632a6e53e022e", ["Object.getPrototypeOf(value)", "Object.getOwnPropertyDescriptor(value, key)"]],
@@ -1225,17 +1240,17 @@ export const checkPublicClosure = (root = repository) => {
       if (v2 && !imports.some((entry) => entry.getText(source) === 'import { fail, MAX_CODEC_BYTES } from "../../challengeContract/validation";') ||
           counted && !declarations.some((entry) => entry.getText(source) === 'fail = (): never => { throw new TypeError("Invalid counted planning knowledge"); }') ||
           history && !declarations.some((entry) => entry.getText(source) === 'historyFailure = (): never => { throw new TypeError("Invalid authorized history V2"); }') ||
-          memberMutationTargets.some((target) => arrayIntrinsicRoot(target)) || ["Object", "Array", "Reflect", "Number", "String"].some((name) => nonNumericWrites.has(name))) return false;
+          validationIntrinsicsChanged()) return false;
       for (let declaration = node; declaration; declaration = declaration.parent) {
         const anchor = ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && new Map(Object.entries(anchors)).get(declaration.name.text);
         if (anchor) {
           const [digest, calls] = anchor;
-          return declaration.parent.parent.parent === source && sha256(declaration.getText(source)) === digest && calls.includes(call);
+          return declaration.parent.parent.parent === source && sha256(declaration.getText(source)) === digest && (declarationNode || calls.includes(call));
         }
       }
       return false;
     };
-    const reviewedV2DataAccess = (node) => {
+    const reviewedDataAccess = (node) => {
       const anchors = new Map([
         [`${ARENA}/src/authorized/v2/schema.ts`, [["canonical", "68e1d2acef686f11b36d33e2d3101c8a3a482ec290b0076f5b3645cd3060ea68", "r[k]"]]],
         [`${ARENA}/src/authorized/v2/observation.ts`, [["readSnapshot", "3b8145712ce2dda71f8d675789ac8d7858c002a6f5339de373e141ead9465701", "cells[SQUARES.indexOf(at)]"]]],
@@ -1245,7 +1260,7 @@ export const checkPublicClosure = (root = repository) => {
         ]],
       ]);
       const anchor = anchors.get(id)?.find((entry) => node.getText(source) === entry[2]);
-      if (!anchor || node.getText(source) !== anchor[2] || memberMutationTargets.some((target) => arrayIntrinsicRoot(target))) return false;
+      if (!anchor || validationIntrinsicsChanged()) return false;
       for (let declaration = node; declaration; declaration = declaration.parent) {
         if (ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && declaration.name.text === anchor[0]) {
           return declaration.parent.parent.parent === source && sha256(declaration.getText(source)) === anchor[1];
@@ -1283,6 +1298,8 @@ export const checkPublicClosure = (root = repository) => {
       return ts.isArrowFunction(value) || ts.isFunctionExpression(value) || ts.isIdentifier(value) && callableType(dataType(value));
     };
     const scan = (node) => {
+      if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && validationNames.get(id)?.includes(node.name.text) &&
+          !reviewedValidationDescriptor(node)) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${node.name.text}`);
       if (id === `${ARENA}/src/challengeContract/validation.ts` && ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) &&
           node.name.text === "inspectDto" && !reviewedDescriptor(node)) throw new Error(`Code constructor acquisition in public closure: ${id}`);
       if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) {
@@ -1325,7 +1342,7 @@ export const checkPublicClosure = (root = repository) => {
       if (ts.isBindingElement(node) && (["constructor", "__proto__", "eval", "Function", "process", "setTimeout", "setInterval", "setImmediate", "getOwnPropertyDescriptor", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(boundName ?? "") ||
           bound?.name === "get" && builtinNamespace(bound.receiver, "Reflect") || node.propertyName && ts.isComputedPropertyName(node.propertyName))) throw new Error(`Code constructor acquisition in public closure: ${id}`);
       if (["constructor", "__proto__"].includes(member?.name) ||
-          ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(node.parent) && !reviewedDescriptor(node) && !reviewedV2DataAccess(node) && unsafeComputedReceiver(node.expression, new Set(),
+          ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(node.parent) && !reviewedDescriptor(node) && !reviewedDataAccess(node) && unsafeComputedReceiver(node.expression, new Set(),
             /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression))) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${node.getText(source)}`);
       if (ts.isIdentifier(node) && !ts.isPartOfTypeNode(node)) {
         const parent = node.parent;

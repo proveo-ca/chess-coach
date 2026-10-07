@@ -213,6 +213,20 @@ describe("R3 target-only recipient privacy against real native counterexamples",
     expect(result.session.recipients.w.boundary.economicState.enemyLoss.confirmedUnitCount).toBe(0);
   });
 
+  it("authorizes both sides' mutual C casualties from one live common preimage", () => {
+    const result = run(board([["a1", "k", "w"], ["e2", "p", "w"], ["d3", "p", "b"], ["h8", "k", "b"]], 0),
+      [move("w", "e2", "d3")], [move("b", "d3", "e2")]);
+    expect(result.transition.companion.frames).toHaveLength(1);
+    expect(result.transition.companion.frames[0].effects.map(effect => effect.kind)).toEqual(["unit-destroy", "unit-destroy"]);
+    for (const side of ["w", "b"] as const) {
+      expect(events(result.session, side).filter(event => event.kind === "own-unit-destroyed")).toHaveLength(1);
+      expect(events(result.session, side).filter(event => event.kind === "enemy-unit-destruction-witnessed")).toHaveLength(1);
+      expect(result.session.recipients[side].batch.snapshot.memory).toEqual([]);
+      expect(result.session.recipients[side].boundary.economicState.enemyLoss.confirmedUnitCount).toBe(1);
+    }
+    expect(result.transition.companion.provenance.lastCall.consumedFacts).toEqual([]);
+  });
+
   it("publishes no speculative image or stale afterMove board as a visibility boundary", () => {
     const result = run(board([["a1", "r", "w"], ["e1", "k", "w"], ["a6", "p", "b"], ["h8", "k", "b"]], 0), [move("w", "a1", "a8")]);
     const native = result.transition.companion.nativeResult;
