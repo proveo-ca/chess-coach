@@ -15,7 +15,8 @@ it("compiles source import descriptors and confines production to the approved p
     "PlanningKnowledge", "ScActionInput", "SpawnPiece", "Square",
     "countedPlanningKnowledge", "CountedPlanningKnowledge", "MAX_MINES_PER_SIDE",
   ]);
-  const observations = new Set(["AuthorizedObservationV1", "AuthorizedHistory", "validateObservationV1", "validateObservation"]);
+  const observations = new Set(["AuthorizedObservationV1", "AuthorizedSnapshotV2", "AuthorizedHistory", "validateObservationV1", "validateObservation"]);
+  const codec = new Set(["ACTION_KINDS", "decodeCandidate", "encodeCandidate", "requestedSpend", "validateActions", "EncodedCandidate"]);
   const imports = new Set<string>();
   for (const file of files) {
     const source = readFileSync(new URL(`../${file}.ts`, import.meta.url), "utf8");
@@ -27,11 +28,12 @@ it("compiles source import descriptors and confines production to the approved p
       const module = (statement.moduleSpecifier as ts.StringLiteral).text;
       imports.add(module);
       expect(external.has(module) || files.some((name) => module === `./${name}`)).toBe(true);
-      if ((module === "@chess-coach/starchess-core/planning-v1" || module === "@chess-coach/starchess-arena/observations") && ts.isImportDeclaration(statement)) {
+      if ((module === "@chess-coach/starchess-core/planning-v1" || module === "@chess-coach/starchess-arena/observations" || module === "@chess-coach/starchess-arena/intent-codec-v1") && ts.isImportDeclaration(statement)) {
         const bindings = statement.importClause?.namedBindings;
         expect(bindings && ts.isNamedImports(bindings)).toBe(true);
         if (bindings && ts.isNamedImports(bindings)) {
-          const approved = module === "@chess-coach/starchess-core/planning-v1" ? native : observations;
+          const approved = module === "@chess-coach/starchess-core/planning-v1" ? native
+            : module === "@chess-coach/starchess-arena/observations" ? observations : codec;
           for (const item of bindings.elements) expect(approved.has((item.propertyName ?? item.name).text)).toBe(true);
         }
       }

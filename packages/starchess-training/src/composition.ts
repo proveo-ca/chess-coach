@@ -1,9 +1,11 @@
 // SPEC: _spec/packages/starchess-training/candidate-generation.puml
 import {
   validateObservation, validateObservationV1,
-  type AuthorizedHistory, type AuthorizedObservationV1,
+  type AuthorizedHistory, type AuthorizedObservationV1, type AuthorizedSnapshotV2,
 } from "@chess-coach/starchess-arena/observations";
-import { ACTION_KINDS, encodeCandidate, type EncodedCandidate } from "@chess-coach/starchess-arena/intent-codec-v1";
+import {
+  ACTION_KINDS, decodeCandidate, encodeCandidate, requestedSpend, validateActions, type EncodedCandidate,
+} from "@chess-coach/starchess-arena/intent-codec-v1";
 import { countedPlanningKnowledge, type PlanningKnowledge, type ScActionInput, type Square } from "@chess-coach/starchess-core/planning-v1";
 import type { CandidateBatchV3, CandidateDiagnostics, CandidateKind, CandidateLane } from "./contracts";
 import { appendFailure, appendState, emptyPrefix, planningKnowledge, primitiveDomain, type PrefixState } from "./domain";
@@ -12,6 +14,7 @@ import { compareBytes, KeyIndex, type Digest } from "./identity";
 type Node = { state: PrefixState; cursor: Generator<ScActionInput> };
 type Frontier = { nodes: (Node | undefined)[]; head: number };
 type Lane = { id: CandidateLane; frontiers: Frontier[]; depthCursor: number; exhausted: boolean };
+type PlanningFacts = Pick<AuthorizedSnapshotV2, "side" | "own" | "cells">;
 export type RuntimeCounters = Readonly<{
   roots: number;
   continuationNodes: number;
@@ -38,7 +41,10 @@ export type DomainFactory = (
   knowledge: PlanningKnowledge, state: PrefixState, onlyFamily?: CandidateKind, lane?: CandidateLane,
 ) => Generator<ScActionInput>;
 
-const composePrepared = (observation: AuthorizedObservationV1, knowledge: PlanningKnowledge, domain: DomainFactory, digest?: Digest): {
+const composePrepared = (
+  facts: PlanningFacts, knowledge: PlanningKnowledge, domain: DomainFactory,
+  encodeForPrepared: (actions: readonly ScActionInput[]) => EncodedCandidate, digest?: Digest,
+): {
   batch: CandidateBatchV3; runtime: RuntimeCounters;
 } => {
   const runtime = {
@@ -52,7 +58,7 @@ const composePrepared = (observation: AuthorizedObservationV1, knowledge: Planni
       runtime.availabilityPulls++;
       const next = cursor.next();
       if (next.done) return false;
-      if (appendFailure(observation, knowledge, root, next.value) === null) {
+      if (appendFailure(facts, knowledge, root, next.value) === null) {
         cursor.return(undefined);
         return true;
       }
@@ -79,7 +85,7 @@ const composePrepared = (observation: AuthorizedObservationV1, knowledge: Planni
       })),
     };
   });
-  const pass = encodeCandidate(observation, []);
+  const pass = encodeForPrepared([]);
   const index = new KeyIndex(digest);
   const retained: { candidate: EncodedCandidate; bytes: Uint8Array }[] = [{ candidate: pass, bytes: index.bytes(pass.key) }];
   index.add(retained[0]!.bytes);
@@ -141,7 +147,7 @@ const composePrepared = (observation: AuthorizedObservationV1, knowledge: Planni
       runtime.appendAttempts++;
       lane.depthCursor = (attempt.depth + 1) % 4;
       const { node, action } = attempt;
-      const failure = appendFailure(observation, knowledge, node.state, action);
+      const failure = appendFailure(facts, knowledge, node.state, action);
       if (failure) {
         switch (failure) {
           case "actor": d.pruned.actor++; break;
@@ -168,7 +174,7 @@ const composePrepared = (observation: AuthorizedObservationV1, knowledge: Planni
         d.ownerSkipped++;
         continue;
       }
-      const candidate = encodeCandidate(observation, child.actions);
+      const candidate = encodeForPrepared(child.actions);
       const bytes = index.bytes(candidate.key);
       if (index.has(bytes)) { d.duplicates++; continue; }
       const pool = pools[i]!;
@@ -204,12 +210,20 @@ export const composeKernel = (input: AuthorizedObservationV1, domain: DomainFact
   batch: CandidateBatchV3; runtime: RuntimeCounters;
 } => {
   const observation = validateObservationV1(input);
-  return composePrepared(observation, planningKnowledge(observation), domain, digest);
+  return composePrepared(observation, planningKnowledge(observation), domain, actions => encodeCandidate(observation, actions), digest);
 };
 
 export const composeWithRuntime = (input: AuthorizedObservationV1, digest?: Digest): {
   batch: CandidateBatchV3; runtime: RuntimeCounters;
 } => composeKernel(input, primitiveDomain, digest);
+
+const encodeHistoryCandidate = (side: PlanningFacts["side"], input: readonly ScActionInput[]): EncodedCandidate => {
+  const actions = validateActions(input, side);
+  const key = JSON.stringify(actions.map(action => Object.fromEntries(
+    Object.entries(action).filter(([, value]) => value !== undefined).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0),
+  )));
+  return decodeCandidate({ version: "challenge-candidate-codec-v1", key, actions, ownSpend: requestedSpend(actions) }, side);
+};
 
 const historyFailure = (): never => { throw new TypeError("Invalid authorized history V2"); };
 const validateHistory = (input: unknown): AuthorizedHistory => {
@@ -247,10 +261,6 @@ const validateHistory = (input: unknown): AuthorizedHistory => {
 export const composeHistory = (input: AuthorizedHistory): CandidateBatchV3 => {
   const history = validateHistory(input);
   const snapshot = history.currentAuthorizedSnapshotV2;
-  const observation = validateObservationV1({
-    version: "challenge-observation-v1", side: snapshot.side, turn: snapshot.turn,
-    own: snapshot.own, cells: snapshot.cells, memory: snapshot.memory,
-  });
-  const knowledge = countedPlanningKnowledge(planningKnowledge(observation), snapshot.ownMineLineage.map(mine => mine.square));
-  return composePrepared(observation, knowledge, primitiveDomain).batch;
+  const knowledge = countedPlanningKnowledge(planningKnowledge(snapshot), snapshot.ownMineLineage.map(mine => mine.square));
+  return composePrepared(snapshot, knowledge, primitiveDomain, actions => encodeHistoryCandidate(snapshot.side, actions)).batch;
 };

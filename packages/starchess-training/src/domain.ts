@@ -1,5 +1,5 @@
 // SPEC: _spec/packages/starchess-training/candidate-generation.puml
-import type { AuthorizedObservationV1 } from "@chess-coach/starchess-arena/observations";
+import type { AuthorizedSnapshotV2 } from "@chess-coach/starchess-arena/observations";
 import { ACTION_KINDS, requestedSpend } from "@chess-coach/starchess-arena/intent-codec-v1";
 import {
   appendTimeSpecialAnchor, charonDiagonalSquaresFromSquare, classicalActorAt,
@@ -15,6 +15,7 @@ export const SQUARES: readonly Square[] = Object.freeze(
 const UNITS: readonly SpawnPiece[] = ["p", "n", "b", "r", "q"];
 const PROMOTIONS: readonly SpawnPiece[] = ["n", "b", "r", "q"];
 const ACTORS = { deploy: "k", stimStep: "p", spiderMine: "n", charonMissiles: "b", siegeMode: "r", tacticalJump: "q" } as const;
+type PlanningFacts = Pick<AuthorizedSnapshotV2, "side" | "own" | "cells">;
 
 export type PrefixState = {
   actions: readonly ScActionInput[];
@@ -22,7 +23,7 @@ export type PrefixState = {
   mineAnchors: readonly Square[];
 };
 export const emptyPrefix = (): PrefixState => ({ actions: [], anchors: [], mineAnchors: [] });
-export const planningKnowledge = (observation: AuthorizedObservationV1): PlanningKnowledge => ({
+export const planningKnowledge = (observation: PlanningFacts): PlanningKnowledge => ({
   side: observation.side,
   knownPieces: new Map(observation.cells.flatMap((cell) =>
     cell.visibility !== "unknown" && cell.piece ? [[cell.square, cell.piece] as const] : [])),
@@ -100,7 +101,7 @@ export function* primitiveDomain(
 }
 
 export const appendFailure = (
-  observation: AuthorizedObservationV1,
+  observation: PlanningFacts,
   knowledge: PlanningKnowledge | CountedPlanningKnowledge,
   state: PrefixState,
   action: ScActionInput,

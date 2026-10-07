@@ -236,7 +236,7 @@ const applyPathRevealCCShotKernel = (
     const seq = recorder.queryAt(queryOrdinal!).sourceActionSeq;
     const frame = recorder.frame("C-path-reveal", () => {
       recorder.move(actor, a.pathRevealFrom!, a.stopAt!, seq);
-      recorder.damage(a.target, ccLives[a.target], seq);
+      recorder.damage(a.target, a.target === "w" ? ccLives.w : ccLives.b, seq);
     });
     recorder.consume(queryOrdinal!, frame, actor, commandCenter, "cc-shot");
   }
@@ -463,7 +463,7 @@ export const resolveTurnKernel = (
   const start = placementToMap(input.placement);
   recorder?.board(start);
   const queryBase = recorder?.image();
-  const seqFor = (plan: ClassicalPlan) => sources[plan.color];
+  const seqFor = (plan: ClassicalPlan) => plan.color === "w" ? sources.w : sources.b;
   const scanQueries = new Map<ClassicalPlan, number>();
   const approachQueries = new Map<ResolveAttack, number>();
   const waveVictims = new Map<Square, { piece: ScPiece; seq: number | null }>();
@@ -1302,7 +1302,7 @@ export const resolveTurnKernel = (
     };
     lives.w = applied.ccLives.w;
     lives.b = applied.ccLives.b;
-    const fired = { ...a, livesAfter: applied.ccLives[a.target] };
+    const fired = { ...a, livesAfter: a.target === "w" ? applied.ccLives.w : applied.ccLives.b };
     if (recorder) approachQueries.set(fired, approachQueries.get(a)!);
     applyApproachMine(fired);
     pathRevealAttacks.push(fired);
@@ -1444,7 +1444,7 @@ export const resolveTurnKernel = (
     if (moversDead.has(promo.at)) continue;
     const landed = promoBoard.get(promo.at);
     if (!landed || landed.type !== "p" || landed.color !== promo.color) continue;
-    recorder?.frame("C-promotion", () => recorder.transform(landed, promo.unit, sources[promo.color]));
+    recorder?.frame("C-promotion", () => recorder.transform(landed, promo.unit, promo.color === "w" ? sources.w : sources.b));
     promoBoard.set(promo.at, { type: promo.unit, color: promo.color });
     promotions.push(promo);
   }
