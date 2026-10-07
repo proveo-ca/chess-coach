@@ -7,6 +7,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./observations": "./src/observations.ts",
+    "./events": "./src/events.ts",
     "./intent-codec-v1": "./src/intent-codec-v1.ts"
   },
   "scripts": {
@@ -16,7 +17,8 @@
     "challenge": "tsx src/cli/challenge.ts"
   },
   "dependencies": {
-    "@chess-coach/starchess-core": "workspace:*"
+    "@chess-coach/starchess-core": "workspace:*",
+    "jssha": "3.3.2"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

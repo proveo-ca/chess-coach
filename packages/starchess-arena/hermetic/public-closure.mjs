@@ -10,8 +10,9 @@ const CORE = "packages/starchess-core";
 const ARENA = "packages/starchess-arena";
 const TRAINING = "packages/starchess-training";
 const authorized = new Set([
-  "src/observations.ts", "src/intent-codec-v1.ts",
+  "src/observations.ts", "src/events.ts", "src/intent-codec-v1.ts",
   ...["types", "canonical", "squares", "observationCodec"].map((name) => `src/authorized/v1/${name}.ts`),
+  ...["types", "schema", "observation", "batch", "reducer"].map((name) => `src/authorized/v2/${name}.ts`),
   ...["validation", "candidateWire", "observationCodec"].map((name) => `src/challengeContract/${name}.ts`),
 ]);
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
@@ -57,7 +58,7 @@ export const checkPublicClosure = (root = repository) => {
   const manifests = new Map([CORE, ARENA, TRAINING].map((owner) => [owner, readJson(join(root, owner, "package.json"))]));
   const publicExports = new Map([
     [CORE, { ".": "./src/index.ts", "./planning-v1": "./src/planning-v1.ts" }],
-    [ARENA, { ".": "./src/index.ts", "./intent-codec-v1": "./src/intent-codec-v1.ts", "./observations": "./src/observations.ts" }],
+    [ARENA, { ".": "./src/index.ts", "./intent-codec-v1": "./src/intent-codec-v1.ts", "./observations": "./src/observations.ts", "./events": "./src/events.ts" }],
     [TRAINING, { "./candidates": "./src/candidates.ts" }],
   ]);
   const canonicalBranches = (value, target) => typeof value === "string" ? value === target
@@ -1198,6 +1199,26 @@ export const checkPublicClosure = (root = repository) => {
       }
       return false;
     };
+    const reviewedV2Descriptor = (node) => {
+      if (id !== `${ARENA}/src/authorized/v2/schema.ts` || !ts.isPropertyAccessExpression(node) ||
+          !ts.isCallExpression(node.parent) || node.parent.expression !== node) return false;
+      const call = node.parent.getText(source);
+      const anchors = {
+        object: ["cbae30e75c79871605332af369a8bc90b967c5764f310f809eb3bc178700b5ef", ["Object.getPrototypeOf(value)", "Object.getOwnPropertyDescriptor(value, key)"]],
+        tag: ["71273fcd58c4a1bcc137ec5f1f1afb783d2bdbdc7a63aa9d635632a6e53e022e", ["Object.getPrototypeOf(value)", "Object.getOwnPropertyDescriptor(value, key)"]],
+        array: ["9984d20eae9a6f3e932ab3aa61b39a4174481887e46bfff00bf704e05e25821f", ["Object.getPrototypeOf(value)", 'Object.getOwnPropertyDescriptor(value, "length")', "Object.getOwnPropertyDescriptor(value, String(i))"]],
+      };
+      const imports = source.statements.filter(ts.isImportDeclaration);
+      if (!imports.some((entry) => entry.getText(source) === 'import { fail, MAX_CODEC_BYTES } from "../../challengeContract/validation";') ||
+          !["Object", "Array", "Reflect", "Number", "String", "fail"].every((name) => !mutatedRoots.has(name)) || arrayIntrinsicsMutated) return false;
+      for (let declaration = node; declaration; declaration = declaration.parent) {
+        if (ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && Object.hasOwn(anchors, declaration.name.text)) {
+          const [digest, calls] = anchors[declaration.name.text];
+          return declaration.parent.parent.parent === source && sha256(declaration.getText(source)) === digest && calls.includes(call);
+        }
+      }
+      return false;
+    };
     function wrappedUse(node) {
       const parent = node.parent;
       return (ts.isParenthesizedExpression(parent) || ts.isAsExpression(parent) || ts.isNonNullExpression(parent) || ts.isTypeAssertionExpression(parent) || ts.isSatisfiesExpression(parent)) && parent.expression === node ||
@@ -1264,7 +1285,7 @@ export const checkPublicClosure = (root = repository) => {
         reviewedDescriptor(node) && ts.isCallExpression(node.parent) && node.parent.expression === node;
       if (reflected && (builtinNamespace(reflected.receiver, "Reflect") && ["get", "getOwnPropertyDescriptor", undefined].includes(reflected.name) ||
           builtinNamespace(reflected.receiver, "Object") && ["getOwnPropertyDescriptor", "getPrototypeOf", "getOwnPropertyDescriptors", undefined].includes(reflected.name)) &&
-          !descriptorSeam && !reviewedArrayDescriptor(node)) throw new Error(`Code constructor acquisition in public closure: ${id}`);
+          !descriptorSeam && !reviewedArrayDescriptor(node) && !reviewedV2Descriptor(node)) throw new Error(`Code constructor acquisition in public closure: ${id}`);
       const boundName = ts.isBindingElement(node) ? node.propertyName ? ownName(node.propertyName) : ts.isIdentifier(node.name) ? node.name.text : undefined : undefined;
       const bound = ts.isBindingElement(node) ? bindingMember(node) : undefined;
       if (ts.isBindingElement(node) && (["constructor", "__proto__", "eval", "Function", "process", "setTimeout", "setInterval", "setImmediate", "getOwnPropertyDescriptor", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(boundName ?? "") ||
@@ -1287,7 +1308,7 @@ export const checkPublicClosure = (root = repository) => {
     scan(source);
   };
   const entries = [
-    [CORE, "./planning-v1"], [ARENA, "./observations"], [ARENA, "./intent-codec-v1"], [TRAINING, "./candidates"],
+    [CORE, "./planning-v1"], [ARENA, "./observations"], [ARENA, "./intent-codec-v1"], [ARENA, "./events"], [TRAINING, "./candidates"],
   ].map(([owner, subpath]) => {
     const path = resolveFile(resolve(root, owner, exportTarget(manifests.get(owner), subpath)), root);
     visit(path);

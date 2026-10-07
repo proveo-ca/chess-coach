@@ -13,6 +13,7 @@ it("compiles source import descriptors and confines production to the approved p
     "appendTimeSpecialAnchor", "charonDiagonalSquaresFromSquare", "classicalActorAt",
     "classicalRewriteCoordinatesAfterB", "isScMoveShape", "knownAppendFailure", "marineSingleTarget", "spawnCCAnchorFromMap",
     "PlanningKnowledge", "ScActionInput", "SpawnPiece", "Square",
+    "countedPlanningKnowledge", "CountedPlanningKnowledge", "MAX_MINES_PER_SIDE",
   ]);
   const imports = new Set<string>();
   for (const file of files) {

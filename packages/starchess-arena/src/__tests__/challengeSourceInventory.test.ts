@@ -450,12 +450,12 @@ const fixture = (): string => {
   }
   put(root, `${CORE}/package.json`, JSON.stringify({ name: "@chess-coach/starchess-core", exports: { ".": "./src/index.ts", "./planning-v1": "./src/planning-v1.ts" }, dependencies: { fflate: "^0.8.3" } }));
   put(root, `${ARENA}/package.json`, JSON.stringify({ name: "@chess-coach/starchess-arena", exports: {
-    ".": "./src/index.ts", "./observations": "./src/observations.ts", "./intent-codec-v1": "./src/intent-codec-v1.ts",
-  }, dependencies: { "@chess-coach/starchess-core": "workspace:*" }, devDependencies: { tsx: "^4.19.5", typescript: "~5.9.3" } }));
+    ".": "./src/index.ts", "./observations": "./src/observations.ts", "./intent-codec-v1": "./src/intent-codec-v1.ts", "./events": "./src/events.ts",
+  }, dependencies: { "@chess-coach/starchess-core": "workspace:*", jssha: "3.3.2" }, devDependencies: { tsx: "^4.19.5", typescript: "~5.9.3" } }));
   put(root, `${TRAINING}/package.json`, JSON.stringify({ name: "@chess-coach/starchess-training", exports: { "./candidates": "./src/candidates.ts" }, dependencies: {
     "@chess-coach/starchess-core": "workspace:*", "@chess-coach/starchess-arena": "workspace:*", jssha: "3.3.2",
   } }));
-  for (const path of [`${CORE}/src/index.ts`, `${CORE}/src/planning-v1.ts`, `${CORE}/src/seeds.ts`, `${ARENA}/src/index.ts`, `${ARENA}/src/observations.ts`, `${ARENA}/src/intent-codec-v1.ts`, `${TRAINING}/src/candidates.ts`, `${ARENA}/src/challenge/worker.ts`, `${ARENA}/src/challenge/sourceInventory.ts`, `${ARENA}/src/challengeContract/codec.ts`]) put(root, path, "export {};\n");
+  for (const path of [`${CORE}/src/index.ts`, `${CORE}/src/planning-v1.ts`, `${CORE}/src/seeds.ts`, `${ARENA}/src/index.ts`, `${ARENA}/src/observations.ts`, `${ARENA}/src/events.ts`, `${ARENA}/src/intent-codec-v1.ts`, `${TRAINING}/src/candidates.ts`, `${ARENA}/src/challenge/worker.ts`, `${ARENA}/src/challenge/sourceInventory.ts`, `${ARENA}/src/challengeContract/codec.ts`]) put(root, path, "export {};\n");
   put(root, `${ARENA}/src/cli/challenge.ts`, 'import "@chess-coach/starchess-core";\n');
   put(root, `${ARENA}/src/challenge/supervisor.ts`, 'import { createRequire } from "node:module";\ncreateRequire(import.meta.url).resolve("tsx");\nnew URL("./worker.ts", import.meta.url);\n');
   put(root, "scripts/challenge-contract-evidence.ts", `import "../${ARENA}/src/challengeContract/codec";\n`);
@@ -1214,11 +1214,11 @@ describe("partitioned challenge source inventory", () => {
 
   it("allows model public seams and coordinator host edges without widening pure partitions", () => {
     const root = fixture();
-    put(root, `${TRAINING}/src/candidates.ts`, 'import "@chess-coach/starchess-core/planning-v1"; import "@chess-coach/starchess-arena/observations"; import "@chess-coach/starchess-arena/intent-codec-v1"; import "jssha/sha256";');
+    put(root, `${TRAINING}/src/candidates.ts`, 'import "@chess-coach/starchess-core/planning-v1"; import "@chess-coach/starchess-arena/observations"; import "@chess-coach/starchess-arena/intent-codec-v1"; import "@chess-coach/starchess-arena/events"; import "jssha/sha256";');
     put(root, `${TRAINING}/src/coordinator/run.ts`, 'import "@chess-coach/starchess-arena"; import "node:fs"; import "../candidates";');
     const inventory = collectSourceInventory(root);
     expect(inventory.groups["training-model"].map((file) => file.path)).toEqual([`${TRAINING}/src/candidates.ts`]);
-    expect(inventory.entrypoints).toEqual(expect.arrayContaining([`${TRAINING}/src/candidates.ts`, `${ARENA}/src/observations.ts`, `${ARENA}/src/intent-codec-v1.ts`]));
+    expect(inventory.entrypoints).toEqual(expect.arrayContaining([`${TRAINING}/src/candidates.ts`, `${ARENA}/src/observations.ts`, `${ARENA}/src/intent-codec-v1.ts`, `${ARENA}/src/events.ts`]));
     expect(inventory.audit.edges).toContainEqual(expect.objectContaining({ importer: `${TRAINING}/src/candidates.ts`, specifier: "jssha/sha256", targetKind: "external" }));
   });
 
@@ -1327,11 +1327,11 @@ describe("static browser public closure", () => {
     put(root, path, minifiedNumericRead.replace("consume(words[index])", 'index=["con","structor"].join("");consume(words[index])'));
     await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
   });
-  it("audits the real four-root public graph and standalone SHA runtime", async () => {
+  it("audits the real five-root public graph and standalone SHA runtime", async () => {
     const report = await check(repository);
     expect(report.version).toBe("public-closure-v2");
     expect(report.passed).toBe(true);
-    expect(report.entries).toHaveLength(4);
+    expect(report.entries).toHaveLength(5);
     expect(report.entries[0].subpath).toBe("./planning-v1");
     expect(report.verifiedPaths).not.toContain(`${CORE}/src/index.ts`);
     expect(report.dependencyFiles.map((file: {path: string}) => file.path)).toEqual(["jssha@3.3.2/dist/sha256.mjs", "jssha@3.3.2/package.json"]);
@@ -1495,7 +1495,7 @@ describe("static browser public closure", () => {
     const first = await check(root);
     expect(first.passed).toBe(true);
     expect(first.version).toBe("public-closure-v2");
-    expect(first.entries).toHaveLength(4);
+    expect(first.entries).toHaveLength(5);
     expect(first.verifiedPaths).toContain(`${ARENA}/src/authorized/v1/types.ts`);
     expect(await check(root)).toEqual(first);
     put(root, `${ARENA}/src/authorized/v1/types.ts`, "export type Observation = string;");
@@ -1511,6 +1511,7 @@ describe("static browser public closure", () => {
     [CORE, "./planning-v1", "./src/planning-v1.ts"],
     [ARENA, ".", "./src/index.ts"],
     [ARENA, "./observations", "./src/observations.ts"],
+    [ARENA, "./events", "./src/events.ts"],
     [ARENA, "./intent-codec-v1", "./src/intent-codec-v1.ts"],
     [TRAINING, "./candidates", "./src/candidates.ts"],
   ])("rejects node and default alternatives for every canonical workspace export: %s %s", async (owner, subpath, target) => {

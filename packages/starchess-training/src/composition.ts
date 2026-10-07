@@ -1,7 +1,10 @@
 // SPEC: _spec/packages/starchess-training/candidate-generation.puml
-import { validateObservationV1, type AuthorizedObservationV1 } from "@chess-coach/starchess-arena/observations";
+import {
+  validateObservation, validateObservationV1,
+  type AuthorizedHistory, type AuthorizedObservationV1,
+} from "@chess-coach/starchess-arena/observations";
 import { ACTION_KINDS, encodeCandidate, type EncodedCandidate } from "@chess-coach/starchess-arena/intent-codec-v1";
-import type { PlanningKnowledge, ScActionInput } from "@chess-coach/starchess-core/planning-v1";
+import { countedPlanningKnowledge, type PlanningKnowledge, type ScActionInput, type Square } from "@chess-coach/starchess-core/planning-v1";
 import type { CandidateBatchV3, CandidateDiagnostics, CandidateKind, CandidateLane } from "./contracts";
 import { appendFailure, appendState, emptyPrefix, planningKnowledge, primitiveDomain, type PrefixState } from "./domain";
 import { compareBytes, KeyIndex, type Digest } from "./identity";
@@ -35,11 +38,9 @@ export type DomainFactory = (
   knowledge: PlanningKnowledge, state: PrefixState, onlyFamily?: CandidateKind, lane?: CandidateLane,
 ) => Generator<ScActionInput>;
 
-export const composeKernel = (input: AuthorizedObservationV1, domain: DomainFactory, digest?: Digest): {
+const composePrepared = (observation: AuthorizedObservationV1, knowledge: PlanningKnowledge, domain: DomainFactory, digest?: Digest): {
   batch: CandidateBatchV3; runtime: RuntimeCounters;
 } => {
-  const observation = validateObservationV1(input);
-  const knowledge = planningKnowledge(observation);
   const runtime = {
     roots: 8, continuationNodes: 0, peakLiveNodes: 8, domainCursors: 8,
     cursorPulls: 0, availabilityPulls: 0, appendAttempts: 0, maximumQueueLength: 0,
@@ -199,6 +200,57 @@ export const composeKernel = (input: AuthorizedObservationV1, domain: DomainFact
   };
 };
 
+export const composeKernel = (input: AuthorizedObservationV1, domain: DomainFactory, digest?: Digest): {
+  batch: CandidateBatchV3; runtime: RuntimeCounters;
+} => {
+  const observation = validateObservationV1(input);
+  return composePrepared(observation, planningKnowledge(observation), domain, digest);
+};
+
 export const composeWithRuntime = (input: AuthorizedObservationV1, digest?: Digest): {
   batch: CandidateBatchV3; runtime: RuntimeCounters;
 } => composeKernel(input, primitiveDomain, digest);
+
+const historyFailure = (): never => { throw new TypeError("Invalid authorized history V2"); };
+const validateHistory = (input: unknown): AuthorizedHistory => {
+  if (!input || typeof input !== "object" || Array.isArray(input)) return historyFailure();
+  const proto = Object.getPrototypeOf(input);
+  if (proto !== Object.prototype && proto !== null) return historyFailure();
+  const keys = ["version", "currentAuthorizedSnapshotV2", "economicState", "everLit"];
+  const ownKeys = Reflect.ownKeys(input);
+  if (ownKeys.length !== keys.length || ownKeys.some(key => typeof key !== "string" || !keys.includes(key))) return historyFailure();
+  const r: Record<string, unknown> = {};
+  for (const key of keys) {
+    const descriptor = Object.getOwnPropertyDescriptor(input, key);
+    if (!descriptor || !Object.hasOwn(descriptor, "value") || !descriptor.enumerable) return historyFailure();
+    r[key] = descriptor.value;
+  }
+  if (r.version !== "challenge-history-v2") return historyFailure();
+  const snapshot = validateObservation(r.currentAuthorizedSnapshotV2);
+  const economicState = validateObservation({ ...snapshot, economicState: r.economicState }).economicState;
+  if (JSON.stringify(economicState) !== JSON.stringify(snapshot.economicState)) return historyFailure();
+  if (!Array.isArray(r.everLit) || Object.getPrototypeOf(r.everLit) !== Array.prototype) return historyFailure();
+  const length = Object.getOwnPropertyDescriptor(r.everLit, "length")?.value;
+  if (!Number.isSafeInteger(length) || length < 0 || length > 64 || Reflect.ownKeys(r.everLit).length !== length + 1) return historyFailure();
+  const everLit: Square[] = [];
+  for (let i = 0; i < length; i++) {
+    const descriptor = Object.getOwnPropertyDescriptor(r.everLit, String(i));
+    if (!descriptor || !Object.hasOwn(descriptor, "value") || !descriptor.enumerable) return historyFailure();
+    const at: unknown = descriptor.value;
+    if (typeof at !== "string" || !/^[a-h][1-8]$/.test(at) || (i > 0 && everLit[i - 1]! >= at)) return historyFailure();
+    everLit.push(at as Square);
+  }
+  if (snapshot.cells.some(cell => cell.visibility === "lit" && !everLit.includes(cell.square))) return historyFailure();
+  return freeze({ version: "challenge-history-v2", currentAuthorizedSnapshotV2: snapshot, economicState, everLit });
+};
+
+export const composeHistory = (input: AuthorizedHistory): CandidateBatchV3 => {
+  const history = validateHistory(input);
+  const snapshot = history.currentAuthorizedSnapshotV2;
+  const observation = validateObservationV1({
+    version: "challenge-observation-v1", side: snapshot.side, turn: snapshot.turn,
+    own: snapshot.own, cells: snapshot.cells, memory: snapshot.memory,
+  });
+  const knowledge = countedPlanningKnowledge(planningKnowledge(observation), snapshot.ownMineLineage.map(mine => mine.square));
+  return composePrepared(observation, knowledge, primitiveDomain).batch;
+};

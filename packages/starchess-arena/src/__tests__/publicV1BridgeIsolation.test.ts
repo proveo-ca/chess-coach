@@ -43,18 +43,19 @@ describe("public V1 bridge isolation", () => {
   it("publishes exactly the selected arena subpaths through real package resolution", () => {
     const manifest = JSON.parse(readFileSync(join(arena, "package.json"), "utf8"));
     expect(manifest.exports).toEqual({
-      ".": "./src/index.ts", "./observations": "./src/observations.ts", "./intent-codec-v1": "./src/intent-codec-v1.ts",
+      ".": "./src/index.ts", "./observations": "./src/observations.ts", "./intent-codec-v1": "./src/intent-codec-v1.ts", "./events": "./src/events.ts",
     });
-    for (const subpath of ["observations", "intent-codec-v1"]) {
+    for (const subpath of ["observations", "intent-codec-v1", "events"]) {
       expect(require.resolve(`@chess-coach/starchess-arena/${subpath}`)).toBe(join(arena, "src", `${subpath}.ts`));
     }
-    expect(Object.keys(observations).sort()).toEqual(["decodeObservationV1", "encodeObservationV1", "validateObservationV1"]);
+    expect(Object.keys(observations).sort()).toEqual(["decodeObservation", "decodeObservationV1", "encodeObservation", "encodeObservationV1", "validateObservation", "validateObservationV1"]);
   });
 
   it.each(["observations.ts", "intent-codec-v1.ts"])("keeps %s runtime closure free of Node imports and arena host/baseline modules", (entry) => {
     const allowedArena = new Set([
       "observations.ts", "intent-codec-v1.ts", "authorized/v1/canonical.ts", "authorized/v1/squares.ts",
       "authorized/v1/observationCodec.ts", "challengeContract/candidateWire.ts", "challengeContract/validation.ts",
+      "authorized/v2/observation.ts", "authorized/v2/schema.ts",
     ].map((path) => join(arena, "src", path)));
     const seen = new Set<string>();
     const visit = (path: string): void => {

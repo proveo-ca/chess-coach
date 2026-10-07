@@ -3,6 +3,8 @@ export type { Square } from "./model/square";
 export type { PieceColor, ScActionInput, SpawnPiece } from "./model/types";
 export type { ScPiece } from "./board/placement";
 export type { PlanningKnowledge } from "./rules/planning-intents";
+export type { CountedPlanningKnowledge } from "./rules/counted-planning";
+export { countedPlanningKnowledge } from "./rules/counted-planning";
 export { appendTimeSpecialAnchor, classicalActorAt, knownAppendFailure } from "./rules/planning-intents";
 export { classicalRewriteCoordinatesAfterB } from "./rules/planning-order";
 export { isScMoveShape } from "./board/moves";

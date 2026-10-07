@@ -4,8 +4,8 @@ import { ACTION_KINDS, requestedSpend } from "@chess-coach/starchess-arena/inten
 import {
   appendTimeSpecialAnchor, charonDiagonalSquaresFromSquare, classicalActorAt,
   classicalRewriteCoordinatesAfterB, isScMoveShape, knownAppendFailure,
-  marineSingleTarget, spawnCCAnchorFromMap,
-  type PlanningKnowledge, type ScActionInput, type SpawnPiece, type Square,
+  marineSingleTarget, MAX_MINES_PER_SIDE, spawnCCAnchorFromMap,
+  type CountedPlanningKnowledge, type PlanningKnowledge, type ScActionInput, type SpawnPiece, type Square,
 } from "@chess-coach/starchess-core/planning-v1";
 import type { CandidateKind, PruningReason } from "./contracts";
 
@@ -101,7 +101,7 @@ export function* primitiveDomain(
 
 export const appendFailure = (
   observation: AuthorizedObservationV1,
-  knowledge: PlanningKnowledge,
+  knowledge: PlanningKnowledge | CountedPlanningKnowledge,
   state: PrefixState,
   action: ScActionInput,
 ): PruningReason | null => {
@@ -110,7 +110,8 @@ export const appendFailure = (
   const spend = requestedSpend([...state.actions, action]);
   if (spend.minerals > observation.own.minerals || spend.gas > observation.own.gas) return "resources";
   if (action.kind === "spiderMine") {
-    if (knowledge.ownMines.size + state.mineAnchors.length >= 3) return "mineCap";
+    const ownMineCount = "ownMineCount" in knowledge ? knowledge.ownMineCount : knowledge.ownMines.size;
+    if (ownMineCount + state.mineAnchors.length >= MAX_MINES_PER_SIDE) return "mineCap";
     const anchor = appendTimeSpecialAnchor(state.actions, observation.side, action.from, action.timing);
     if (knowledge.ownMines.has(anchor) || state.mineAnchors.includes(anchor)) return "ownOccupancy";
   }

@@ -55,8 +55,9 @@ const CORE = "packages/starchess-core";
 const ARENA = "packages/starchess-arena";
 const TRAINING = "packages/starchess-training";
 const AUTHORIZED = new Set([
-  `${ARENA}/src/observations.ts`, `${ARENA}/src/intent-codec-v1.ts`,
+  `${ARENA}/src/observations.ts`, `${ARENA}/src/events.ts`, `${ARENA}/src/intent-codec-v1.ts`,
   ...["types", "canonical", "squares", "observationCodec"].map((name) => `${ARENA}/src/authorized/v1/${name}.ts`),
+  ...["types", "schema", "observation", "batch", "reducer"].map((name) => `${ARENA}/src/authorized/v2/${name}.ts`),
   ...["candidateWire", "validation", "observationCodec"].map((name) => `${ARENA}/src/challengeContract/${name}.ts`),
 ]);
 export const SOURCE_PARTITION_EDGES: Readonly<Record<SourcePartition, readonly SourcePartition[]>> = Object.freeze({
@@ -211,10 +212,17 @@ export const collectSourceInventory = (
   const manifests = new Map(["", CORE, ARENA, TRAINING].map((path) => [path, json(path ? `${path}/package.json` : "package.json")]));
   const canonicalBranches = (value: unknown, target: string): boolean => typeof value === "string" ? value === target
     : object(value) && Object.keys(value).length > 0 && Object.values(value).every((branch) => canonicalBranches(branch, target));
-  const coreExports = manifests.get(CORE)!.exports;
-  if (!object(coreExports) || Object.keys(coreExports).sort().join(",") !== ".,./planning-v1" ||
-      !canonicalBranches(coreExports["."], "./src/index.ts") || !canonicalBranches(coreExports["./planning-v1"], "./src/planning-v1.ts")) {
-    throw new Error(`Unsupported workspace export map: ${CORE}`);
+  const publicExports = new Map([
+    [CORE, { ".": "./src/index.ts", "./planning-v1": "./src/planning-v1.ts" }],
+    [ARENA, { ".": "./src/index.ts", "./observations": "./src/observations.ts", "./intent-codec-v1": "./src/intent-codec-v1.ts", "./events": "./src/events.ts" }],
+    [TRAINING, { "./candidates": "./src/candidates.ts" }],
+  ]);
+  for (const [owner, expected] of publicExports) {
+    const exports = manifests.get(owner)!.exports;
+    if (!object(exports) || Object.keys(exports).sort().join(",") !== Object.keys(expected).sort().join(",") ||
+        Object.entries(expected).some(([subpath, target]) => !canonicalBranches(exports[subpath], target))) {
+      throw new Error(`Unsupported workspace export map: ${owner}`);
+    }
   }
   const selectExport = (value: unknown): string | undefined => {
     if (typeof value === "string") return value;
@@ -325,6 +333,7 @@ export const collectSourceInventory = (
     }
     const partition = listed.get(importer)!.partition;
     if (["arena-authorized", "training-model"].includes(partition) && target === `${CORE}/src/index.ts`) throw new Error(`Forbidden core root edge: ${importer} -> ${target}`);
+    if (["arena-authorized", "training-model"].includes(partition) && target.startsWith(`${CORE}/src/`) && /\/src\/(?:scfen|replay|commands|resolve)\//.test(target)) throw new Error(`Forbidden native model edge: ${importer} -> ${target}`);
     if (kind === "dynamic" && PURE.has(partition)) throw new Error(`Forbidden dynamic import edge: ${importer} -> ${specifier}`);
     const inventorySeam = importer === `${ARENA}/src/challenge/evidence.ts` && target === `${ARENA}/src/challenge/sourceInventory.ts` && kind === "import";
     if (targetKind === "source" && !SOURCE_PARTITION_EDGES[partition].includes(listed.get(target)!.partition) && !inventorySeam) {
@@ -1565,6 +1574,26 @@ export const collectSourceInventory = (
       }
       return false;
     };
+    const reviewedV2Descriptor = (node: ts.Node): boolean => {
+      if (file.path !== `${ARENA}/src/authorized/v2/schema.ts` || !ts.isPropertyAccessExpression(node) ||
+          !ts.isCallExpression(node.parent) || node.parent.expression !== node) return false;
+      const call = node.parent.getText(source);
+      const anchors: Record<string, readonly [string, readonly string[]]> = {
+        object: ["cbae30e75c79871605332af369a8bc90b967c5764f310f809eb3bc178700b5ef", ["Object.getPrototypeOf(value)", "Object.getOwnPropertyDescriptor(value, key)"]],
+        tag: ["71273fcd58c4a1bcc137ec5f1f1afb783d2bdbdc7a63aa9d635632a6e53e022e", ["Object.getPrototypeOf(value)", "Object.getOwnPropertyDescriptor(value, key)"]],
+        array: ["9984d20eae9a6f3e932ab3aa61b39a4174481887e46bfff00bf704e05e25821f", ["Object.getPrototypeOf(value)", 'Object.getOwnPropertyDescriptor(value, "length")', "Object.getOwnPropertyDescriptor(value, String(i))"]],
+      };
+      const imports = source.statements.filter(ts.isImportDeclaration);
+      if (!imports.some((entry) => entry.getText(source) === 'import { fail, MAX_CODEC_BYTES } from "../../challengeContract/validation";') ||
+          !["Object", "Array", "Reflect", "Number", "String", "fail"].every((name) => !mutatedRoots.has(name)) || arrayIntrinsicsMutated) return false;
+      for (let declaration: ts.Node | undefined = node; declaration; declaration = declaration.parent) {
+        if (ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && Object.hasOwn(anchors, declaration.name.text)) {
+          const [digest, calls] = anchors[declaration.name.text]!;
+          return declaration.parent.parent.parent === source && hash(declaration.getText(source)) === digest && calls.includes(call);
+        }
+      }
+      return false;
+    };
     const timerReference = (node: ts.Expression): boolean => {
       const expression = origin(node), member = property(expression);
       return ts.isIdentifier(expression) && ["setTimeout", "setInterval", "setImmediate"].includes(expression.text) && typeof binding(expression) === "string" ||
@@ -1610,10 +1639,11 @@ export const collectSourceInventory = (
       const reflected = value ? property(origin(node as ts.Expression)) : undefined;
       const descriptorSeam = reflected && ["getPrototypeOf", "getOwnPropertyDescriptors"].includes(reflected.name ?? "") &&
         objectNamespace(origin(reflected.receiver)) && reviewedDescriptor(node) && ts.isCallExpression(node.parent) && node.parent.expression === node;
+      const v2DescriptorSeam = reviewedV2Descriptor(node);
       if (reflected && (reflectionNamespace(origin(reflected.receiver)) && ["get", "getOwnPropertyDescriptor", undefined].includes(reflected.name) ||
           objectNamespace(origin(reflected.receiver)) && ["getOwnPropertyDescriptor", "getPrototypeOf", "getOwnPropertyDescriptors", undefined].includes(reflected.name)) &&
-          !descriptorSeam && !reviewedArrayDescriptor(node)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
-      if (["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(accessed?.name ?? "") && !descriptorSeam) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+          !descriptorSeam && !reviewedArrayDescriptor(node) && !v2DescriptorSeam) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      if (["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(accessed?.name ?? "") && !descriptorSeam && !v2DescriptorSeam) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed && objectNamespace(accessed.receiver) && accessed.name === undefined) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed && reflectionNamespace(accessed.receiver) && !["ownKeys", "apply", "has", "set", "deleteProperty"].includes(accessed.name ?? "")) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       const boundName = ts.isBindingElement(node) ? node.propertyName ? ownName(node.propertyName) : ts.isIdentifier(node.name) ? node.name.text : undefined : undefined;
@@ -1737,6 +1767,7 @@ export const collectSourceInventory = (
     }
   };
   auditPlanning(`${CORE}/src/planning-v1.ts`);
+  for (const file of files) if (["arena-authorized", "training-model"].includes(file.partition)) auditPlanning(file.path);
   edges.sort((a, b) => order(canonical(a), canonical(b)));
   const groups = Object.fromEntries(SOURCE_PARTITIONS.map((partition) => [partition, files.filter((file) => file.partition === partition)])) as SourceInventoryV2["groups"];
   const partitionSha256 = Object.fromEntries(Object.entries(groups).map(([partition, records]) => [partition, hash(canonical(records))])) as SourceInventoryV2["partitionSha256"];
