@@ -11,7 +11,7 @@ Authority: [original contracts](ml-adjutant-r3-contracts.md) §§3–7, [primary
 | §2 | Define the unchanged End companion signature as the post-Begin settlement seam, with the existing native `skipTurnStartChecks:true` invocation. |
 | §3 | Permit named host-only companion exports through existing core `.`, while retaining the exact two-subpath export map and excluding the seam from model closures. |
 | §§4–5 | Close the private record, identity issuance, source bindings, local references and digest bytes. |
-| §6 | Separate speculative rule-evaluation probes from committed observation occurrences; narrow the original blanket path-image promise. |
+| §6 | Propose a probe/committed-observation distinction; replace the review-rejected discovery authority before acceptance. |
 | §7 | Define a total recipient event merge consistent with native causal execution and existing income boundaries. |
 | §8 | Define bounded transactional publication and duplicate behavior. |
 
@@ -63,7 +63,7 @@ Core's package export map stays exactly `{'.':'./src/index.ts','./planning-v1':'
 
 The associated root type exports are exactly `EngineProvenance`, `EngineEntity`, `ActionBindings`, `ResolvedActionBinding`, `TrustedEffectFrame`, `VisibilityImage`, `VisibilityCheckpoint`, and `ProvenanceCompanion`. Query/certificate helper types stay implementation-private.
 
-Here “private” means host-only and excluded from model dependency closure. This explicitly clarifies the original prohibition on a public host export. It grants no new host subpath, wildcard, cross-package relative/deep import or `/planning-v1` export. Arena host modules consume named core-root imports. Arena `/observations`, `/events`, training `/candidates` and future model entries cannot import/reexport the seam. Both public-closure and source-inventory audits reject runtime and type-only model edges to core `.` and private provenance implementations. Core remains browser-pure.
+Here “private” means host-only and excluded from model dependency closure. This proposes a scoped amendment to the original prohibition on a public host export. It grants no new host subpath, wildcard, cross-package relative/deep import or `/planning-v1` export. Arena host modules consume named core-root imports. Arena `/observations`, `/events`, training `/candidates` and future model entries cannot import/reexport the seam. Both public-closure and source-inventory audits reject runtime and type-only model edges to core `.` and private provenance implementations. Core remains browser-pure.
 
 ## 4. Closed private provenance and source identity
 
@@ -128,6 +128,8 @@ Bind the primary effective actor at its actual native execution site: native B o
 Every affected entity retains its own actual ID independently of the primary actor. `sourceActionSeq:null` means a native automatic effect without a queued source, never an unknown substitute for a known source. Later automatic effects use the native-established source association where one exists. Ambiguous actual identity/source fails infrastructure validation. Return `resolvedActions` in the original contiguous source-sequence order after collecting execution-site associations.
 
 ## 5. Trace structure, bytes and bounds
+
+**Discovery-dependent records, frame anchors, cursor clauses and ceilings in §§4–7 remain subject to replacement of review-rejected §6.3.** They are not independently settled parts of this draft. The eventual visibility direction must update all dependent private carriers, digest obligations, checkpoint limits and public merge rules together.
 
 Frames retain the original exact fields `{sourceEffectKey,phase,before,after,effects,beforeVisibilityKey,afterVisibilityKey}`. Effects retain their original variants and `sourceActionSeq`; destruction adds the original causal visibility key. Frame phases remain unchanged.
 
@@ -263,7 +265,7 @@ Insert certified cursor occurrences between the actual frame-before checkpoint a
 
 Cursor overlays advance no turn, planning ordinal, resource, ID counter or committed identity. Emit no `unit-move` or mode toggle for a cursor. Apply actual native movement from the actual origin, not discovery. Add no artificial return-to-origin observation. Use `point:'path-visibility'` and the application frame key. Phases follow actual native execution, not query evaluation order.
 
-For certified capture, the final cursor image is the victim's causal image. If certification fails, use the actual native frame-before image with no discovery-derived authority. This expressly narrows the original unconditional intermediate-image promise. The native outcome remains identical. Missing visibility proof suppresses only the enemy-loss witness; own confirmed accounting still follows actual destruction.
+Under this rejected proposal, certified capture would use the final cursor as causal image; failed certification would use actual native frame-before without discovery-derived authority. This would remove transient memory/`everLit` coverage as well as some loss witnesses and would introduce refreshed-overlay authority. Review did not accept either change. Actual own destruction accounting remains required regardless of the later accepted visibility direction.
 
 ### 6.4 Native causal cases
 
@@ -340,6 +342,7 @@ Implementation checks include all three package typechecks, strict test-file typ
 | Adversarial first pass | `ses_eec4b5d28ffeFSK3KuDIKfzBdv` | **READY FOR EXECUTOR SEAM DECISION: no / READY TO MERGE: no**. Four HIGH: optional replacement partition, reusable prior-reference scope, duplicate opening mine locations and refreshed discovery authority. Two MEDIUM: lost transient knowledge coverage and own-ID ordering. |
 | Security first pass | `ses_eec4b5c3dffeuiVNlh9BpgideH` | **READY FOR EXECUTOR SEAM DECISION: no**. Two HIGH: hidden-occupancy eligibility channel and synthetic/stale-mode discovery authority. |
 | Spec first pass | `ses_eec7808f6ffed4yCzKVOuYK5fZ` | **SPEC STATUS: blocked / READY FOR EXECUTOR SEAM DECISION: no**. Two HIGH: exact supersession map and undefined certification viewer. Two MEDIUM: private array/key ordering and missing closing architecture gate. |
+| Spec blocked-record check | `ses_eec7808f6ffed4yCzKVOuYK5fZ` | **READY TO PRESENT BLOCKER DIRECTIONS: yes / SPEC STATUS: blocked**. Confirms faithful blocked lifecycle and source-derived ownership conflict; does not clear discovery semantics or authorize acceptance. |
 | Closing architecture/adversarial/security/spec rereviews | Pending | Resolve the substantive decisions, replace §6.3, and rereview the exact revision. |
 
 All first-pass reviewers read source/content without tests, hashes or native execution. The lead revised replacement partition, opening mine uniqueness, prior-reference validation scope, private array/key order, combined public own-ID order, supersession mapping and lifecycle wording. Those revisions are not closing-review passes. Original NO verdicts remain intact.
@@ -361,3 +364,5 @@ Source anchors: [held promotion and B replacement](../../packages/starchess-core
 The ownership and visibility directions are independent choices. A narrowly authorized consumed-discovery-fact design, a committed-image-only design, or a separately amended native observation seam all require exact-text review before acceptance. Native-fix, unsupported-case and ownership-schema directions also require explicit scope. Current proposed records/ceilings may require revision after those choices.
 
 No Executor acceptance of the proposed normative text has occurred. No reviewer pass, implementation, calibrated readiness or operation permission follows from this draft. Ask for direction on the unresolved findings, not acceptance of the review-blocked text. After a corrected revision receives positive closing reviews and lead document checks, present its exact seam decision before implementing R3.
+
+Lead document checks after the blocked-record revision: `git diff --no-index --check /dev/null _spec/_plans/ml-adjutant-r3-seam-addendum.md`, `git diff --check`, and `git diff --cached --check` returned PASS. These are whitespace checks, not semantic/native verification. Package tests and native reproductions did not run because the accepted scope was drafting/read-only review. Repeat document checks after subsequent edits.
