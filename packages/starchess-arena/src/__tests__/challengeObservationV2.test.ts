@@ -5,6 +5,7 @@ import { decodeObservation, encodeObservation, validateObservation, decodeObserv
 import { validateBoundaryBatch } from "../events";
 import { encodeObservation as legacyEncode, decodeObservation as legacyDecode, validateObservation as legacyValidate } from "../authorized/v1/observationCodec";
 import { ContractError } from "../challengeContract/validation";
+import { bytes as canonicalBytes, object as readObject } from "../authorized/v2/schema";
 import type { AuthorizedSnapshotV2, ObservedCell, Square } from "../observations";
 
 const fixture = (): AuthorizedSnapshotV2 => {
@@ -95,6 +96,35 @@ describe("authorized V2 observation contracts", () => {
       (() => { const x = mutable(); Object.assign(x, { [Symbol("secret")]: 1 }); return x; })(),
     ];
     hazards.forEach(x => expect(() => validateObservation(x)).toThrow(ContractError));
+  });
+  it.each([false, true])("preserves own __proto__ data without installing a setter-bearing prototype (null input prototype: %s)", nullPrototype => {
+    let setterCalls = 0;
+    const prototypeValue = {};
+    Object.defineProperty(prototypeValue, "next", { enumerable: true, set: () => { setterCalls++; } });
+    const next = { preserved: true };
+    const input = Object.fromEntries([["__proto__", prototypeValue], ["next", next]]);
+    if (nullPrototype) Object.setPrototypeOf(input, null);
+    const result = readObject(input, "$", ["__proto__", "next"]);
+    expect.soft(setterCalls).toBe(0);
+    expect.soft(result).not.toBe(input);
+    expect.soft(Object.getPrototypeOf(result)).toBe(Object.prototype);
+    expect.soft(Object.keys(result)).toEqual(["__proto__", "next"]);
+    expect.soft(Object.getOwnPropertyDescriptor(result, "__proto__")).toEqual({ value: prototypeValue, writable: true, enumerable: true, configurable: true });
+    expect.soft(Object.getOwnPropertyDescriptor(result, "next")).toEqual({ value: next, writable: true, enumerable: true, configurable: true });
+    expect.soft(Object.getPrototypeOf(input)).toBe(nullPrototype ? null : Object.prototype);
+    expect(() => readObject(input, "$", ["next"])).toThrow("SCHEMA: $");
+  });
+  it("retains legitimate __proto__ data in canonical bytes and rejects it as an extra model field", () => {
+    const input = JSON.parse('{"__proto__":{"kept":true},"next":7}');
+    const result = readObject(input, "$", ["__proto__", "next"]);
+    const other = readObject(JSON.parse('{"__proto__":{"kept":false},"next":7}'), "$", ["__proto__", "next"]);
+    expect.soft(Object.getPrototypeOf(result)).toBe(Object.prototype);
+    expect.soft(Object.hasOwn(result, "__proto__")).toBe(true);
+    expect.soft(canonicalBytes(result)).toEqual(new TextEncoder().encode('{"__proto__":{"kept":true},"next":7}'));
+    expect.soft(canonicalBytes(result)).not.toEqual(canonicalBytes(other));
+    const snapshot = mutable();
+    Object.defineProperty(snapshot, "__proto__", { value: { kept: true }, enumerable: true });
+    expect(() => validateObservation(snapshot)).toThrow("SCHEMA: $");
   });
   it("rejects noncanonical physical bytes, invalid UTF-8, duplicate keys and preparse overflow", () => {
     const text = new TextDecoder().decode(encodeObservation(fixture())), envelope = JSON.parse(text);

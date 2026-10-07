@@ -10,13 +10,13 @@ export const object = (value: unknown, path: string, keys: readonly string[]): R
   if (proto !== Object.prototype && proto !== null) return fail(path);
   const ownKeys = Reflect.ownKeys(value);
   if (ownKeys.length !== keys.length || ownKeys.some(key => typeof key !== "string" || !keys.includes(key))) return fail(path);
-  const result: Record<string, unknown> = {};
+  const entries: [string, unknown][] = [];
   for (const key of keys) {
     const descriptor = Object.getOwnPropertyDescriptor(value, key);
     if (!descriptor || !Object.hasOwn(descriptor, "value") || !descriptor.enumerable) return fail(`${path}.${key}`);
-    result[key] = descriptor.value;
+    entries.push([key, descriptor.value]);
   }
-  return result;
+  return Object.fromEntries(entries);
 };
 export const tag = (value: unknown, path: string, key: string): unknown => {
   if (!value || typeof value !== "object" || Array.isArray(value)) return fail(path);
