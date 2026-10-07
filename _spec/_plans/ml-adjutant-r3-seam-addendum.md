@@ -1,8 +1,8 @@
 # ML Adjutant — R3 native-seam addendum
 
-Status: **REVIEW-BLOCKED PROPOSAL / NOT APPROVED / NOT IMPLEMENTED.** Executor selected **“Review seam addendum (Recommended)”** after the read-only R3 architecture consultation. That selection authorizes drafting and review. It does not accept the proposed normative changes below. Architecture, adversarial, security and spec first passes returned **READY FOR EXECUTOR SEAM DECISION: no**. Discovery authority and an unrepresentable native ownership transition require direction before another closing review. R3 implementation remains blocked. No collection, fitting, calibration, transfer, training, evidence publication or registry activation is authorized.
+Status: **REVISED PROPOSAL / CLOSING REVIEW PENDING / NOT APPROVED / NOT IMPLEMENTED.** Executor selected **“Review seam addendum (Recommended)”**, then **“Native-fix proposal (Recommended)”** and **“Consumed facts (Recommended)”** after negative first-pass reviews. Those selections authorize drafting/review. They do not accept the normative changes or authorize source edits. The revised target-only law replaces rejected discovery overlays; the [native-promotion proposal](ml-adjutant-r3-native-promotion-fix.md) addresses the ownership conflict. Positive closing reviews and exact-text acceptance remain pending. R3 implementation remains blocked. No collection, fitting, calibration, transfer, training, evidence publication or registry activation is authorized.
 
-Authority: [original contracts](ml-adjutant-r3-contracts.md) §§3–7, [primary-owner migration](ml-adjutant-spec-file-migration.md), and [R3 roadmap](PLAN-ml-adjutant.md#immediate-ordered-next-actions--train-the-first-broader-adjutant). The original frozen contract, [economic amendment](ml-adjutant-r4-economic-amendment.md), [corrective annex](ml-adjutant-r4-economic-corrective-annex.md) and historical evidence remain unchanged. This blocked revision cannot become effective by acceptance of its current text. A corrected revision requires positive closing reviews and actual exact-text Executor acceptance. Design acceptance alone does not authorize implementation; a later decision can grant both only if it names both grants.
+Authority: [original contracts](ml-adjutant-r3-contracts.md) §§3–7, [primary-owner migration](ml-adjutant-spec-file-migration.md), and [R3 roadmap](PLAN-ml-adjutant.md#immediate-ordered-next-actions--train-the-first-broader-adjutant). The original frozen contract, [economic amendment](ml-adjutant-r4-economic-amendment.md), [corrective annex](ml-adjutant-r4-economic-corrective-annex.md) and historical evidence remain unchanged. This revision requires positive closing reviews and actual exact-text Executor acceptance before it takes effect. Design acceptance alone does not authorize implementation; a later decision can grant both only if it names both grants.
 
 ## 1. Exact proposed scope
 
@@ -11,11 +11,13 @@ Authority: [original contracts](ml-adjutant-r3-contracts.md) §§3–7, [primary
 | §2 | Define the unchanged End companion signature as the post-Begin settlement seam, with the existing native `skipTurnStartChecks:true` invocation. |
 | §3 | Permit named host-only companion exports through existing core `.`, while retaining the exact two-subpath export map and excluding the seam from model closures. |
 | §§4–5 | Close the private record, identity issuance, source bindings, local references and digest bytes. |
-| §6 | Propose a probe/committed-observation distinction; replace the review-rejected discovery authority before acceptance. |
+| §6 | Keep speculative probes private; authorize only the exact target operand of a successfully consumed native discovery operation. |
 | §7 | Define a total recipient event merge consistent with native causal execution and existing income boundaries. |
 | §8 | Define bounded transactional publication and duplicate behavior. |
 
-This proposal changes no native rule, normal native function signature/result, public event variant, public ID grammar, observation/history version, Configuration key, Versions key, generator, feature registry or policy horizon. Its private record refinements retain `engine-provenance-v1`. The reviewed discovery proposal both removes some original checkpoint coverage and introduces reconstructed live-context overlay authority. It is not merely a narrowing. Review rejected that authority; §6.3 awaits replacement rather than acceptance.
+The paired [promotion correction](ml-adjutant-r3-native-promotion-fix.md) is the sole proposed native behavior amendment. Companion parity uses that explicitly accepted resolver if the correction receives approval. Normal native API/result schemas, public event fields/ID grammar, observation/history version, Configuration/Versions keys, generator, feature registry and policy horizon stay unchanged. Private records retain `engine-provenance-v1`.
+
+The target-only law explicitly changes authorization semantics: a successfully consumed native target fact supplements committed geometric visibility. It removes incidental full-prefix discovery coverage. It changes the meaning of a normalized singleton `lit` target and clears a matching remembered sighting on an authorized enemy death. It does not authorize a synthetic board, geometric ray clearance or incidental cells. The original frozen rules do not already permit these exceptions.
 
 ### 1.1 Explicit proposed supersession map
 
@@ -25,8 +27,10 @@ This proposal changes no native rule, normal native function signature/result, p
 | [Contracts §5](ml-adjutant-r3-contracts.md#5-native-causal-provenance--profiles-abc), companion End invocation | §2 fixes the comparison to the existing post-Begin native End with `skipTurnStartChecks:true`. | Normal native APIs/results and original companion input keys. |
 | §5, entity table/counter and unspecified private allocation | §§4–5 close private state, IDs, bindings, ordering and local keys. | No private keys become policy inputs; parent reexecution supplies authority. |
 | §5, creation then death within a frame | §5 requires atomic replacement birth/crush, followed by a distinct actual newborn-death frame. | Actual creation remains necessary; no birth inferred from payment. |
-| §5, actual path images and blanket checkpoint coverage | §§5–6 distinguish nonprojectable evaluated probes from committed occurrences. §6.3's reconstructed discovery proposal is review-blocked and has no accepted replacement. | No animation-derived witness; native output parity; complete actual identity accounting. |
-| [Contracts §6](ml-adjutant-r3-contracts.md#6-public-boundaries-ids-snapshot-and-event-union), intermediate causal-image and transient-history authority | §6.3 proposed refreshed cursor authority and omitted uncertified cursors. Review rejected it. The required replacement remains an open design decision. | Actual enemy destruction plus authorized causal visibility; no CC/mine/fog-disappearance unit witness. |
+| §5, actual path images and blanket checkpoint coverage | §§5–6 keep probes private, use committed before/after images and add separately bound consumed-target proofs without cursor images. | No animation-derived witness; complete native identity accounting. |
+| [Contracts §6](ml-adjutant-r3-contracts.md#6-public-boundaries-ids-snapshot-and-event-union), ONLY geometric causal-image authorization | §6.3 permits committed geometric witness OR the associated acting-side consumed capture proof. The real causal preimage still proves identity, not fabricated geometric visibility. | Actual native destruction/type/cost/dedup; no CC/mine/fog-disappearance unit witness. |
+| §6, geometric-only vision deltas / transient lit history | §6.3 normalizes one consumed target to `lit` and adds only that square to authorized memory/everLit. No prefix or incidental observations. | Final snapshot uses native geometric cells; ordinary piece-only reveal stays outside everLit. |
+| §6, memory retained on unknown cells | An authorized enemy-unit-loss event clears an existing same-square/same-type sighting before later vision updates. This closes consumed and geometric casualty sightings uniformly. | No fabricated `lit:null`, enemy identity tracking or subsequent-occupant disclosure. |
 | §6, canonical own-ID order inside an atomic frame | §7 retains combined own unit/mine ID order and fixes placement of vision, CC, dispositions, enemy witnesses and income. | Native causal suborder per identity; seq assigned after authorization. |
 | [Contracts §7](ml-adjutant-r3-contracts.md#7-receipt-ledger-conservation-and-transactional-reconciliation), transactional replay/session rules | §8 makes last-byte-identical replay/no-reissue and older-nonlast rejection explicit. | No session/producer authentication from JSON; conservation and atomic history advancement. |
 
@@ -51,7 +55,7 @@ endTurnWithProvenance(input: {
 
 The Begin reference invocation is `beginScTurn(input.snapshot)`. The End reference invocation is `endScTurn(input.snapshot,{skipTurnStartChecks:true})`. End accepts only a successfully whole-pair-committed snapshot after a checked nonterminal Begin. The companion accepts no options field. The normal native APIs retain both existing invocation modes.
 
-`nativeResult` equals the complete reference result before normalization, serialization or projection. Equality includes array order, own-property presence, optional fields and every intermediate native result object. The recorder does not decorate, freeze or rewrite the native result. It detaches and freezes the private records separately. Native errors retain their original class/code/message. Provenance failures publish no companion or boundary. Core imports no arena modules.
+`nativeResult` equals the complete reference result before normalization, serialization or projection. If approved, the paired promotion guard changes that reference resolver's values as explicitly scoped in its proposal. Equality includes array order, own-property presence, optional fields and every intermediate native result object. The recorder does not decorate, freeze or rewrite the native result. It detaches and freezes the private records separately. Native errors retain their original class/code/message. Provenance failures publish no companion or boundary. Core imports no arena modules.
 
 The host enforces `initialize → begin → successful pair commit → end → begin → …`. Initialization requires an empty queue. Begin requires stage `before-begin`, native phase `P`, an empty queue and nonterminal `scOutcome`. End requires stage `after-begin`, phase `P`, the matching committed queue and matching bindings. A terminal opening receives initialization and the initial boundary only. A terminal Begin receives its scheduled turn-open boundary and no decision or End. Stages never authenticate a producer/session.
 
@@ -85,13 +89,13 @@ EngineProvenance={
   unitCounter:Int[0,U+2*R],mineCounter:Int[0,2*M+2*G*R],
   entities:EngineEntity[0..70],ccLives:{w:Int[0,3],b:Int[0,3]},
   resolvedActions:ResolvedActionBinding[0..8],
-  lastCall:{queries:PathQueryRecord[0..4],discoveries:DiscoveryCertificate[0..2]}
+  lastCall:{queries:PathQueryRecord[0..4],consumedFacts:ConsumedTargetProof[0..2]}
 }
 ```
 
-Initialization requires a valid bounded native state: turn `0..45`, unique occupied squares, exactly one CC per side, gas/gasIncome `0..3`, at most three mines per side and unique mine squares within each side. Opposing mines may share a square where native rules allow it. Duplicate same-side mine locations fail seam preflight; they cannot receive unique frozen opening IDs. This does not change native parsing or promise support for every native-parsed snapshot. Initialization sets `callOrdinal=0`, `initialTurn=turn`, and empty resolved/query/certificate arrays. It sets stage from `scOutcome`, not phase alone.
+Initialization requires a valid bounded native state: turn `0..45`, unique occupied squares, exactly one CC per side, gas/gasIncome `0..3`, at most three mines per side and unique mine squares within each side. Opposing mines may share a square where native rules allow it. Duplicate same-side mine locations fail seam preflight; they cannot receive unique frozen opening IDs. This does not change native parsing or promise support for every native-parsed snapshot. Initialization sets `callOrdinal=0`, `initialTurn=turn`, and empty resolved/query/consumed-fact arrays. It sets stage from `scOutcome`, not phase alone.
 
-Each successful wrapper increments `callOrdinal` once and replaces `lastCall`. Begin clears resolved actions and emits no path query/certificate. Let `s=floor(callOrdinal/2)`:
+Each successful wrapper increments `callOrdinal` once and replaces `lastCall`. Begin clears resolved actions and emits no path query/consumed fact. Let `s=floor(callOrdinal/2)`:
 
 | State | Relationship |
 |---|---|
@@ -129,8 +133,6 @@ Every affected entity retains its own actual ID independently of the primary act
 
 ## 5. Trace structure, bytes and bounds
 
-**Discovery-dependent records, frame anchors, cursor clauses and ceilings in §§4–7 remain subject to replacement of review-rejected §6.3.** They are not independently settled parts of this draft. The eventual visibility direction must update all dependent private carriers, digest obligations, checkpoint limits and public merge rules together.
-
 Frames retain the original exact fields `{sourceEffectKey,phase,before,after,effects,beforeVisibilityKey,afterVisibilityKey}`. Effects retain their original variants and `sourceActionSeq`; destruction adds the original causal visibility key. Frame phases remain unchanged.
 
 Keys use the successful call's incremented output ordinal: `engine:call:<callOrdinal>:frame:<ordinal>` and `engine:call:<callOrdinal>:image:<ordinal>`. Per-kind ordinals are zero-based and contiguous. Output references resolve within that output companion. Frames follow actual semantic native commit order, including a C movement commit after deferred path application. They do not follow animation order or a sorted phase registry.
@@ -156,13 +158,13 @@ Mandatory semantic frame boundaries are:
 
 Within a private atomic frame, sort entity effect blocks by private ID bytes across units/mines; preserve native emission order within one identity. Emit CC effects after entity blocks in side order `w,b`; preserve each side's causal order. Emit deployment dispositions last by source action sequence. This ordering describes an atomic mutation, not serial occupancy updates.
 
-The native side-changing promotion identified in §10.1 has no frame representation under the frozen effect/event union. The table does not silently classify it as a valid same-side transform or provenance ambiguity. Its disposition remains a blocking decision.
+The native side-changing promotion identified in §10.1 is addressed only by the separately accepted paired correction. Do not model its old behavior as an ambiguous identity, new birth/death or ownership-transfer event.
 
 Every accepted deploy supplies one disposition. Actual creation supplies its ID even if it later dies. Native skipped/fizzled deployment supplies null. Terminal-C F skips emit disposition-only F frames at the actual skip branch; they execute no F action.
 
-An ordinary frame contains an effect or disposition. A successful deferred application may use an equal-state zero-effect frame as a certificate anchor. At most two such extra frames exist. Probes and scratch synchronization create no frame.
+Every frame contains an actual effect or deployment disposition. A successful deferred capture has a real destruction; a successful CC shot has real damage in the fixed nonterminal seam. Consumed facts create no separate frame or zero-effect anchor. Probes and scratch synchronization create no frame.
 
-For each frame, emit before-frame, any certified discovery cursors, then after-frame checkpoints. Before/after images equal the frame states. All causal checkpoints precede the destruction commit. Each emitted checkpoint has one image with the same contiguous ordinal. Equal states at different occurrences retain distinct local keys. Every image has a checkpoint; every frame and certificate key resolves within the corresponding output companion.
+For each frame, emit before-frame then after-frame checkpoints. Before/after images equal the frame states. All causal checkpoints precede destruction commit. Each checkpoint has one image with the same contiguous ordinal. Equal states at different occurrences retain distinct keys. Every image has a checkpoint; every frame and consumed-proof key resolves within the corresponding output companion. No synthetic cursor or path-prefix checkpoint exists.
 
 ### 5.1 Structural ceilings
 
@@ -172,22 +174,23 @@ For each frame, emit before-frame, any certified discovery cursors, then after-f
 | Path helper queries | 4 |
 | Intermediate evaluations per query / total | 6 / 24 |
 | Successful deferred applications | 2 |
-| Certified discovery cursors per application / total | 6 / 12 |
+| Consumed target facts / target cells per fact | 2 / 1 |
 | Actual unit creations / destructions | 2 / 66 |
 | Committed unit moves / transforms / mode changes | 520 / 8 / 530 |
 | Mine creations / removals | 6 / 12 |
 | CC-life changes / deployment dispositions | 6 / 2 |
 | Total effects | 1152 |
-| Frames | 1154 |
-| Before/after checkpoints | 2308 |
-| All checkpoints / images | 2320 / 2320 |
+| Frames | 1152 |
+| Before/after checkpoints | 2304 |
+| All checkpoints / images | 2304 / 2304 |
+| Synthetic cursor images | 0 |
 | Entities per image | 70 |
 
-Each of two native classical plans permits one memoized scan query and one reveal query. Rays have at most six intermediates. Begin has no path allowance. The movement envelope is `Q*(U+1)`; the mode envelope adds `Q+2`. These conservative structural envelopes grant no permission to add records. Actual records/counts must equal native reexecution. A query patch, observation cursor and synchronization count as no identity effect.
+Each of two native classical plans permits one memoized scan query and one reveal query. Rays have at most six intermediates. Each plan selects at most one outcome, so End has at most two consumed facts. Begin has no query/fact allowance. The movement envelope is `Q*(U+1)`; the mode envelope adds `Q+2`. These conservative structural envelopes grant no permission to add records. Actual records/counts must equal native reexecution. A query patch and synchronization count as no identity effect.
 
 ### 5.2 Canonical digest
 
-The companion keeps its exact five fields. Digest input stays exactly `{provenance,frames,visibilityImages,visibilityCheckpoints}`. Query diagnostics and certificates enter through `provenance.lastCall`. Add no root field, self-hash, Versions key or profile-B persistence codec.
+The companion keeps its exact five fields. Digest input stays exactly `{provenance,frames,visibilityImages,visibilityCheckpoints}`. Queries and consumed proofs enter through `provenance.lastCall`. Add no root field, self-hash, Versions key or profile-B persistence codec.
 
 Canonical JSON sorts object keys and preserves array order. Integers have canonical finite JSON values. Encode UTF-8 without BOM, whitespace, LF or undefined. Require exact raw-byte re-encoding equality. SHA-256 covers these physical bytes externally. The host compares its independently reexecuted `{byteLength,sha256}`; native results and public batches still receive separate comparisons.
 
@@ -201,7 +204,7 @@ Retain the 16,777,216-byte private host/completion cap. Check raw length and nes
 |---|---|---|
 | Evaluation probe | Compact `lastCall.queries` | Never. |
 | Committed state | Frame before/after images | Apply recipient vision. |
-| Committed discovery | Certified application cursor images | Apply recipient vision. |
+| Consumed discovery fact | `lastCall.consumedFacts` with exact application association | Acting-side target only under §6.3. |
 | Scratch synchronization | Native bookkeeping | Never. |
 
 Helper evaluation or consumption is not occurrence authority. A successful Boolean, animation cue or equal placement string never authenticates an observation. Parent reexecution reproduces the classification. Scheduled final snapshot folding covers empty wrappers without invented probe/checkpoint counts.
@@ -220,8 +223,7 @@ PathQueryRecord={
   base:FrameImage,from:Square,to:Square,side:Side,target:Square,
   visionInputs:CapturedVisionInputs,evaluatedSteps:QueryEvaluation[0..6],
   returnedStep:Int[1,6]|null,
-  consumption:'not-deferred'|'deferred-skipped'|
-              'applied-certified'|'applied-uncertified'
+  consumption:'not-deferred'|'deferred-skipped'|'applied-consumed'
 }
 ```
 
@@ -233,47 +235,69 @@ Capture the exact query placement-source state with native-carried IDs. It can p
 
 The mode mask uses canonical squares `a1,…,h8`; index `i` occupies bit `7-(i%8)` of byte `floor(i/8)`. Encode eight bytes as 16 lowercase hex characters. Capture all native-carrier square memberships, including empty/non-Tank squares that a virtual Tank can occupy. Do not invoke an arbitrary mode callback 64 extra times. This seam supports the native-owned set/default only. Default mode requires zero mask. Absent mines require an empty list; supplied mines preserve actual array order and per-side cap. Query overrides can be stale computational inputs, not live ledger facts.
 
-Consumption records the final native disposition. `not-deferred` supplied no deferred approach. `deferred-skipped` supplied an approach that skipped or returned `fired:false`. Applied statuses require `fired:true` and exactly one matching certificate. Other statuses have no certificate.
+Consumption records the final native disposition. `not-deferred` supplied no deferred approach. `deferred-skipped` supplied an approach that skipped or returned `fired:false`. `applied-consumed` requires `fired:true` and exactly one matching consumed-target proof. Other statuses have no proof. Source query association is branch-carried, not reconstructed by coordinate matching.
 
-### 6.3 Reviewed discovery certificate proposal — BLOCKED
+### 6.3 Consumed target facts — proposed replacement
 
-The following records the reviewed proposal, not an acceptable normative replacement. Architecture found an undefined certification viewer and a mode/image mismatch. Adversarial/security review found refreshed-overlay knowledge expansion and hidden-state eligibility channels. The proposed cursor coverage also changes memory/`everLit`, not only casualty witnesses. §10.1 records the blocking counterexamples. Do not implement, accept or describe this subsection as ready until a replacement resolves those findings.
+A successfully consumed deferred capture or CC shot authorizes exactly its queried target to the native query's acting side. Require the exact resolver-owned positive query, its association with the selected native branch, completed native skip/operand guards, and application `fired:true`. Successful consumption issues a proof even when the public target delta is empty.
+
+Do not gate the fact on intervening occupancy, query/application ID equality, returned-step value, discovery coordinate, mode mask or recomputed visibility. Do not build an overlay. Failed/skipped/superseded/unconsumed approaches issue no fact. A subsequent approach mine cannot revoke an already successful target operation.
 
 ```text
-DiscoveryCertificate={
-  queryOrdinal:Int[0,3],operation:'capture'|'cc-shot',frameKey:FrameKey,
-  actorEntityId:UnitId,targetEntityId:UnitId,landing:Square,
-  visionInputs:CapturedVisionInputs,status:'certified'|'uncertified',
-  cursorImageKeys:ImageKey[0..6]
+ConsumedTargetProof={
+  queryOrdinal:Int[0,3],sourceActionSeq:Int[0,7],side:Side,
+  operation:'capture'|'cc-shot',frameKey:FrameKey,
+  causalBeforeVisibilityKey:ImageKey,
+  evaluationActorId:UnitId,evaluationTargetId:UnitId,
+  appliedActorId:UnitId,appliedTargetId:UnitId,
+  turn:Int[0,44],
+  targetCell:{square:Square,visibility:'lit',piece:{type:UnitType,color:Side}}
 }
 ```
 
-A certificate exists only for an actually successful deferred application. It records the actual selected actor/target IDs and native landing: capture target or CC `stopAt`. Its vision inputs use the actual live preoperation context and mines, never the query's stale overrides.
+Proofs follow application-frame execution order. They have unique query/frame associations, at most one per side/End. Query, selected classical action, application frame, side and source sequence agree. The turn equals End input turn. The causal key equals the ordinary committed frame-before key. Evaluation IDs refer to captured query operands; applied IDs refer to the actual consumed native operands. Every `applied-consumed` query has exactly one proof, and other dispositions have none. Parent reexecution reconstructs all fields.
 
-Certify exactly when all these predicates hold:
+#### Branch association and target value
 
-1. The associated query returned positive step `m`.
-2. Actual actor and target equal their query-base identities.
-3. Actual preoperation positions/types satisfy the successful operation's native association.
-4. The first `m` queried intermediates form a prefix of the native route to landing.
-5. Every cursor square is unit-empty in the actual live preoperation board.
-6. Recomputed actual-context recipient vision at the final cursor lights or reveals the actual target.
+| Selected native branch | Exact consumed query | Target operand |
+|---|---|---|
+| `rayContactOutcome` capture approach | Contact's `scan-ray` query | `contact.at`, contact victim descriptor. |
+| `enemyCCSquare` blocker-capture approach | That branch's `reveal-to` query | Blocker, not authored CC destination. |
+| `targetOnDestination` capture approach | That branch's `reveal-to` query | `plan.to`, target victim descriptor. |
+| `slideIntoFog` CC-shot approach | CC contact's `scan-ray` query | CC contact square, opposing `k`. |
 
-Validate the whole certificate before admitting any cursor. A certified certificate names exactly `m` images in prefix order. An uncertified certificate names none. Missing/ambiguous actual identity aborts; an ordinary false certificate predicate does not alter or abort native execution.
+Carry the query ordinal through native internal branch/application association without decorating normal result schemas. Cached scan reuse keeps its original association. Do not retrospectively choose a positive query by matching coordinates.
 
-Insert certified cursor occurrences between the actual frame-before checkpoint and its semantic commit, after native application establishes success. Construct each cursor independently from the same authoritative frame-before state by relocating the actual actor only in the observation overlay. Preserve the live target, other entities, CC lives and current mines. Evaluate mode at the overlay square using the actual-context mask.
+For capture, target square equals query target and operation `to`. Target type/color equals the selected operation's query-derived victim descriptor and actual frame-before victim. The helper's `fired:true` guarantees actual actor/victim descriptor checks. Capture type is a spawn type and color is the opposite side. For CC shot, the validated target is opposing `k` at the queried square; target side agrees with the native damage target.
 
-Cursor overlays advance no turn, planning ordinal, resource, ID counter or committed identity. Emit no `unit-move` or mode toggle for a cursor. Apply actual native movement from the actual origin, not discovery. Add no artificial return-to-origin observation. Use `point:'path-visibility'` and the application frame key. Phases follow actual native execution, not query evaluation order.
+Different evaluation/application IDs with the same validated descriptors neither suppress the fact nor publish an identity status. Bind actual destruction/dedup to the applied target, never the evaluation target. Incorrectly claimed IDs/descriptors/source associations fail provenance integrity; inequality between two correctly recorded IDs is not an integrity failure. Read no later replacement/F occupant for this fact.
 
-Under this rejected proposal, certified capture would use the final cursor as causal image; failed certification would use actual native frame-before without discovery-derived authority. This would remove transient memory/`everLit` coverage as well as some loss witnesses and would introduce refreshed-overlay authority. Review did not accept either change. Actual own destruction accounting remains required regardless of the later accepted visibility direction.
+#### Recipient projection and casualty closure
+
+Normalize the one target to `visibility:'lit'` independent of the query's lit-versus-revealed mechanism. This explicitly authorizes full identification of that one cell; it asserts neither geometric illumination, empty route nor neighboring vision.
+
+For the acting recipient, after ordinary frame-before projection and immediately before authorized application effects, patch only the target in the accepted projection. Emit existing `vision-witness` with `[targetCell]` iff the cell changes. Fold its sighting at the proof turn and add only that square to `everLit`. An unchanged target emits no new event; ordinary final snapshot folding refreshes an unchanged current sighting. Facts produce no extra public refresh when no cell change occurs. All public memory changes must be derivable from public events/snapshot alone.
+
+The other recipient receives no consumed fact or consumed-derived loss witness. It retains ordinary committed vision and own lifecycle/accounting. No recipient-specific query reevaluation occurs.
+
+Authorize an actual enemy destruction when either original committed geometric visibility proves it OR a consumed proof has matching acting recipient, capture operation, application frame, actual victim ID, square and type/color. The real causal preimage still contains the live victim. This is an explicit exception to the original ONLY `getSideVision` witness rule; do not invent geometric visibility in that preimage. Both authorities deduplicate to one witness. Native spawn replacement cost and paid lower bound zero remain unchanged. CC facts create no unit-loss witness. The proof grants no authority to subsequent mine death, collisions or unrelated casualties.
+
+On every authorized `enemy-unit-destruction-witnessed`, clear an existing memory sighting with the same square/type before processing later vision updates. This public reducer rule closes consumed and ordinary witnessed deaths uniformly; it tracks no enemy identity and discloses no later occupant. Do not manufacture `lit:null`. An actual later authorized sighting can repopulate memory. Final snapshot cells still come from native geometry; final memory/everLit reflect only accepted public events and snapshot.
+
+#### Exact noninterference and lost coverage
+
+Let `D` be recipient-filtered ordered successful facts `(side,turn,operation,targetSquare,targetType,targetColor)`. For valid trusted executions with identical preceding recipient state, ordinary authorized committed projections/lifecycle/resource facts and `D`, require byte-identical public batches, memory, everLit, loss projection, IDs and seq. Publication depends on none of query ordinal, ID equality, step/discovery, prefix occupancy, stale mode/mine inputs, probe mechanism or unrelated evaluated/refreshed entities. Private digests may differ.
+
+Successful step-3/step-5 and hidden-prefix occupancy twins with the same `D` produce the same target fact and witness. The law does not hide a different actual native success/target descriptor or independently authorized committed observation.
+
+Lost coverage is explicit: no evaluated/prefix images, incidental sightings, virtual own positions, empty cells, ray clearance, surrounding lighting or unrelated Battleship reveals. No masked overlay recovers them. Target-only facts add at most two singleton deltas across both recipients per End, no images/checkpoints/frames, and no new public fields. This exception requires exact-text approval.
 
 ### 6.4 Native causal cases
 
 | Operation | Causal pre-destruction image |
 |---|---|
 | C attack wave | One common live pre-wave image containing every wave victim, vision source and pre-wave mine. |
-| Certified deferred capture | Final certified discovery cursor with mover at discovery and actual victim alive at target. |
-| Uncertified executed deferred capture | Actual native pre-mutation image. |
+| Successfully consumed deferred capture | Actual committed pre-mutation image for identity; target-only proof can separately authorize the acting-side casualty. |
 | Ordinary landing capture | Live pre-capture image; arriving actor stays at its last distinct native position. |
 | Mutual/jump collision | Common live pre-removal image; participants occupy distinct pre-effect positions. |
 | Arrival/chase mine | Landed live victim immediately before removal; spending mine still exists. |
@@ -295,7 +319,7 @@ Initial boundary: own-unit endowments by canonical square, then own-mine endowme
 
 Settled debit prefix: traverse the recipient's accepted own actions by own-array ordinal. For deploy emit paid receipt, then gas debit. For every other special emit gas debit. Classical emits no debit. Use exact native `UNIT_COST` and `specialGasCost`; cross-check committed mineral/gas deltas. All debits precede native effects. Action refs carry ordinal `p`; settled snapshot/batch carries `p+1`.
 
-Consume checkpoints in execution order. Emit a nonempty public cell delta at before-frame and certified path checkpoints. Immediately before an after-frame checkpoint emit its authorized effects, then that checkpoint's nonempty cell delta. Frames do not overlap. After-frame order equals frame order.
+Consume checkpoints in execution order. Emit the nonempty committed before-frame delta. At a consumed application, emit its acting-side target-only delta next. Immediately before after-frame, emit authorized effects in the order below, then its nonempty committed after-frame delta. Frames do not overlap. After-frame order equals frame order. Consumed facts add no checkpoint.
 
 Inside a frame emit: combined own-unit/own-mine blocks by recipient-public ID bytes; own CC-life changes in native causal order; unmaterialized deployments by accepted-action ordinal; witnessed enemy losses by canonical `(square,type)` order. This preserves the original canonical own-ID ordering across both identity kinds. Preserve native causal order within an identity block. Allocate own creation IDs in actual creation order before this presentation sort. A materialized disposition closes via `own-unit-created`; add no public disposition variant. Deduplicate actual enemy destruction lifecycles privately. Never sort public witnesses by hidden IDs.
 
@@ -322,11 +346,11 @@ No fixture, test file or passing result is claimed here. The proposed persisted 
 | Proposed test filepath | Independent purpose |
 |---|---|
 | `packages/starchess-core/src/__tests__/provenance.test.ts` | Full traced/untraced native equality; turn-45/terminal chips; private counters; atomic replacement and later newborn death; swaps/collisions; B/C/F actor/source association; skipped F disposition; explicit approved disposition of native ownership-changing promotion. |
-| `packages/starchess-core/src/__tests__/provenanceQueries.test.ts` | Actual helper prefix/memoization; 4/24/2/12 ceilings; captured mode/mine epochs; certificate predicates; correct causal images and no speculative/ghost observations. |
+| `packages/starchess-core/src/__tests__/provenanceQueries.test.ts` | Actual helper prefix/memoization; 4-query/24-evaluation/2-fact ceilings; captured mode/mine epochs; exact branch-carried association; consumed descriptors versus actual lifecycle; no speculative/ghost observations. |
 | `packages/starchess-arena/src/__tests__/challengeObservationV2.test.ts` | Closed schemas, canonical bounded bytes, detached copies and exact V1 preservation. |
 | `packages/starchess-arena/src/__tests__/challengeEconomicLedger.test.ts` | Exact paid conservation, transactional identities/mines/vision, wrong/gapped/conflicting batches and idempotence. |
 | `packages/starchess-arena/src/__tests__/challengeBoundariesV2.test.ts` | Exact initial/open/settled schedule, total merge, debit/receipt disposition, capped zero income and parent reexecution. |
-| `packages/starchess-arena/src/__tests__/challengeProvenancePrivacy.test.ts` | Hidden cursor-occupancy and retired enemy-mode twins; refreshed-board disclosure; probe/private-counter twins; no mode/mines epoch mixing; forged images/certificates/bindings and model-closure exclusion. |
+| `packages/starchess-arena/src/__tests__/challengeProvenancePrivacy.test.ts` | Hidden prefix-occupancy and retired enemy-mode twins; target-only moved-Battleship exclusion; descriptor-preserving identity substitution; consumed capture→mine/F replacement memory closure; nonacting recipient isolation; forged proof/image/binding; model-closure exclusion. |
 
 Required counterexamples include adjacent-ally virtual overwrite; stationary siege probe; discovery square occupied after ordinary movement; failed/superseded path application; dead C-wave vision source; stale `afterMove`; collision before mine arrival; create-then-mine-death versus unmaterialized F. They are source-derived fixture obligations, not executed exploit results.
 
@@ -343,26 +367,29 @@ Implementation checks include all three package typechecks, strict test-file typ
 | Security first pass | `ses_eec4b5c3dffeuiVNlh9BpgideH` | **READY FOR EXECUTOR SEAM DECISION: no**. Two HIGH: hidden-occupancy eligibility channel and synthetic/stale-mode discovery authority. |
 | Spec first pass | `ses_eec7808f6ffed4yCzKVOuYK5fZ` | **SPEC STATUS: blocked / READY FOR EXECUTOR SEAM DECISION: no**. Two HIGH: exact supersession map and undefined certification viewer. Two MEDIUM: private array/key ordering and missing closing architecture gate. |
 | Spec blocked-record check | `ses_eec7808f6ffed4yCzKVOuYK5fZ` | **READY TO PRESENT BLOCKER DIRECTIONS: yes / SPEC STATUS: blocked**. Confirms faithful blocked lifecycle and source-derived ownership conflict; does not clear discovery semantics or authorize acceptance. |
-| Closing architecture/adversarial/security/spec rereviews | Pending | Resolve the substantive decisions, replace §6.3, and rereview the exact revision. |
+| Native-fix author consultation | `ses_eec78096cffeMkpMxeH0Yz2wt6` | Read-only live Marine/color guard and exact fixture proposal after Executor's direction selection. |
+| Consumed-fact author consultation | `ses_eec780908ffeZeOvzGT0ah2tLD` | Read-only query-derived target/type agreement, actual lifecycle binding, sparse projection and noninterference proposal. |
+| Consumed-fact security guidance | `ses_eec4b5c3dffeuiVNlh9BpgideH` | Advisory criteria for target-only authority, no occupancy/mode/ID-equality gate and explicit target-sighting closure; not a closing verdict. |
+| Closing architecture/backend/adversarial/security/spec rereviews | Pending | Exact revised target-only text and paired native correction; no current closing clearance. |
 
-All first-pass reviewers read source/content without tests, hashes or native execution. The lead revised replacement partition, opening mine uniqueness, prior-reference validation scope, private array/key order, combined public own-ID order, supersession mapping and lifecycle wording. Those revisions are not closing-review passes. Original NO verdicts remain intact.
+All first-pass reviewers read source/content without tests, hashes or native execution. The lead revised replacement partition, opening mine uniqueness, prior-reference scope, private ordering, combined public own-ID order, supersession and lifecycle wording. Executor then selected native-fix and consumed-fact drafting directions. The lead replaced the rejected certificate/overlay law and its dependent carriers/bounds with §6.3 target-only proofs plus the paired guard proposal. Those revisions are not closing-review passes. Original NO verdicts remain intact.
 
-### 10.1 Unresolved substantive findings
+### 10.1 First-pass findings and replacement disposition
 
 **[Inference] The following counterexamples derive from inspected source and read-only reviews; no fixture/exploit has executed.**
 
-| ID | Severity / origin | Concrete conflict | Required decision |
+| ID | Severity / origin | First-pass conflict | Proposed replacement / current disposition |
 |---|---|---|---|
-| R3-SEAM-01 | HIGH / architect | White B held stim `e7→e8` plus C `e7→f8`; Black B deploy from CC `f7→e8` crushes White's mover and creates a paid Black Marine. Held fallback later calls White's promotion helper on the live Black replacement. `applyGasPromotion` writes White type/color without checking the replaced actor's side. Frozen `unit-transform` and authorized lineage/receipt variants encode no ownership transfer. | Separately review a native-fix proposal; or define an explicit unsupported-case boundary without full R3 readiness; or amend ownership/ledger schemas. Do not fabricate birth/death, relabel the transition ambiguous or silently change native behavior. |
-| R3-SEAM-02 | HIGH / security | White Mecha `a1→h8` against Marine `h8`; Black Hoverbike `f5→d4` versus `f5→d6`. Native deferred capture succeeds in both, but the hidden occupancy of a prefix square controls whether §6.3 emits discovery deltas/witnesses. Original/final recipient observations can match. | Replace hidden-state-conditioned full-board overlay authorization with an exact noninterfering discovery rule or an explicitly approved committed-image-only scope. |
-| R3-SEAM-03 | HIGH / security + architect | A crushed enemy siege Tank can leave a square mask consumed by a virtual own Tank. Keeping the mask transfers enemy mode into overlay vision; normalizing it can make certificate success reveal the hidden mode. The proposed overlay's unit mode can also disagree with the mask used to certify it. | Specify one representable authorized discovery context; do not treat stale square-mode computation or its certificate result as recipient knowledge. |
-| R3-SEAM-04 | HIGH / adversarial | Native queries precede ordinary movement. Rebuilding their cursor from later live state can disclose a Battleship that moved `h5→b5`, which neither the original probe nor the actual origin/final vision observed. | Do not call refreshed overlay authority merely a narrowing. Review an exact consumed-fact or committed-observation replacement. |
-| R3-SEAM-05 | HIGH / architect + spec | One global private certificate uses undefined “recipient” vision and lacks exact query/application association constraints. | A replacement must identify its acting viewer, source action, unique native consumed query, frame and recomputed status. No recipient-dependent private global status. |
+| R3-SEAM-01 | HIGH / architect | Held White gas promotion can recolor a paid Black replacement; frozen lineage/events encode no ownership transfer. | Executor selected native-fix drafting. Paired proposal adds only actual own-Marine/color eligibility at the write. Exact acceptance/build and closing review remain pending. |
+| R3-SEAM-02 | HIGH / security | Mecha a1→h8 with hidden Hoverbike f5→d4 versus f5→d6 can produce identical successful captures but different overlay eligibility/public knowledge. | Target-only proof has no hidden-prefix occupancy gate. Re-review pending. |
+| R3-SEAM-03 | HIGH / security + architect | Retired enemy siege membership can alter a virtual own Tank's step/mode/status and public coverage. | No overlay/certificate or mask-based publication gate. Normalize identical consumed target facts independent of step/mechanism. Re-review pending. |
+| R3-SEAM-04 | HIGH / adversarial | Refreshing the query board after ordinary movement can disclose an unrelated Battleship h5→b5. | Publish query-derived target descriptor only, value-confirmed by successful native application; no unrelated cells. Re-review pending. |
+| R3-SEAM-05 | HIGH / architect + spec | Global certificate had an undefined recipient and incomplete source/query association. | Acting side is exact native `query.side`; explicit branch-carried query, classical source and application binding; no global certificate. Re-review pending. |
 
 Source anchors: [held promotion and B replacement](../../packages/starchess-core/src/resolve/submit-turn.ts) (`applyGasPromotion`, `heldExtraSteps` fallback, `placeUnit`); [probe patches](../../packages/starchess-core/src/board/vision.ts) (`pathRevealSteps`); [ordinary movement and deferred capture](../../packages/starchess-core/src/resolve/resolve-turn.ts) (`moveWave`, `applyPathRevealAttack`, `phase3`).
 
-The ownership and visibility directions are independent choices. A narrowly authorized consumed-discovery-fact design, a committed-image-only design, or a separately amended native observation seam all require exact-text review before acceptance. Native-fix, unsupported-case and ownership-schema directions also require explicit scope. Current proposed records/ceilings may require revision after those choices.
+Executor selected two drafting directions, not exact acceptance: native promotion correction and consumed-discovery facts. Their current exact texts require closing review and the later design decision. The original unsafe overlay text was replaced; its first-pass negative verdicts and counterexample obligations remain recorded above. No unselected unsupported-case, ownership-schema or native-observation design became a runtime alternative.
 
-No Executor acceptance of the proposed normative text has occurred. No reviewer pass, implementation, calibrated readiness or operation permission follows from this draft. Ask for direction on the unresolved findings, not acceptance of the review-blocked text. After a corrected revision receives positive closing reviews and lead document checks, present its exact seam decision before implementing R3.
+No Executor acceptance of the proposed normative text has occurred. No closing reviewer pass, implementation, calibrated readiness or operation permission follows from this revision. After positive closing reviews and lead document checks, present the paired exact texts for the seam/native design decision before implementing R3.
 
-Lead document checks after the blocked-record revision: `git diff --no-index --check /dev/null _spec/_plans/ml-adjutant-r3-seam-addendum.md`, `git diff --check`, and `git diff --cached --check` returned PASS. These are whitespace checks, not semantic/native verification. Package tests and native reproductions did not run because the accepted scope was drafting/read-only review. Repeat document checks after subsequent edits.
+Lead document checks of the preceding blocked-record revision returned PASS for `git diff --no-index --check /dev/null _spec/_plans/ml-adjutant-r3-seam-addendum.md`, `git diff --check`, and `git diff --cached --check`. They do not check this later target-only revision. Package tests and native reproductions did not run because the accepted scope was drafting/read-only review. Repeat document checks after subsequent edits.
