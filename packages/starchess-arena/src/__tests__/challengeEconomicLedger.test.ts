@@ -131,10 +131,11 @@ describe("pure authorized boundary economic ledger", () => {
         if (operation === "replay") reconcileBoundary(decorated, initialBatch);
         else advanceHistory(null, decorated);
       } catch (caught) { error = caught; }
+      const decodeCalls = decode.mock.calls.length, parseCalls = parse.mock.calls.length;
       expect.soft(error).toMatchObject({ name: "ContractError", code: "SIZE", path: "$" });
       expect.soft(reads).toBe(0);
-      expect.soft(decode).not.toHaveBeenCalled();
-      expect.soft(parse).not.toHaveBeenCalled();
+      expect.soft(decodeCalls).toBe(0);
+      expect.soft(parseCalls).toBe(0);
     } finally { decode.mockRestore(); parse.mockRestore(); }
   });
   it.each(["byteLength", "length", "buffer", "byteOffset", "every", "subarray", "slice", "set", "constructor", Symbol.iterator, Symbol.toPrimitive, Symbol.toStringTag])(
@@ -152,6 +153,21 @@ describe("pure authorized boundary economic ledger", () => {
       }
     },
   );
+  it("parses, compares and returns the same detached replay bytes despite later caller mutation", () => {
+    const initialBatch = initial(), state = reconcileBoundary(null, initialBatch), expected = state.lastBatchBytes.slice();
+    const originalDecode = TextDecoder.prototype.decode;
+    const decode = vi.spyOn(TextDecoder.prototype, "decode").mockImplementation(function (this: TextDecoder, buffer, options) {
+      const text = originalDecode.call(this, buffer, options);
+      state.lastBatchBytes.fill(0);
+      return text;
+    });
+    try {
+      const replay = reconcileBoundary(state, initialBatch);
+      expect(replay.snapshot).toEqual(state.snapshot);
+      expect(replay.lastBatchBytes).toEqual(expected);
+      expect(replay.lastBatchBytes).not.toBe(state.lastBatchBytes);
+    } finally { decode.mockRestore(); }
+  });
   it.each([
     ["missing disposition", (b: Mutable<AuthorizedBoundaryBatch>) => { b.events.splice(5, 1); }],
     ["wrong birth ID", (b: Mutable<AuthorizedBoundaryBatch>) => Object.assign(b.events[5]!, { lineageId: "w:unit:created:2" })],

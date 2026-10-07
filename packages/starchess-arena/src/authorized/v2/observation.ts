@@ -1,5 +1,5 @@
 import { UNIT_COST } from "@chess-coach/starchess-core/planning-v1";
-import { actionRef, array, byteEqual, bytes, cell, equal, fail, freeze, id, integer, literal, object, ordered, parseBytes, piece, replacement, side, spawn, square, squares, SQUARES, tag, unitType, version } from "./schema";
+import { actionRef, array, byteEqual, bytes, cell, copyBytes, equal, fail, freeze, id, integer, literal, object, ordered, parseBytes, piece, replacement, side, spawn, square, squares, SQUARES, tag, unitType, version } from "./schema";
 import type { AuthorizedHistory, AuthorizedSnapshotV2, EconomicState, OwnMineLineage, OwnUnitLineage, PaidReceipt, Side, Sighting } from "./types";
 
 export const readEconomicState = (value: unknown, p: string, color: Side): EconomicState => {
@@ -137,10 +137,11 @@ export const validateObservation = (value: unknown): AuthorizedSnapshotV2 => {
 };
 export const encodeObservation = (snapshot: AuthorizedSnapshotV2): Uint8Array => bytes({ codecVersion: "challenge-observation-codec-v2", observation: readSnapshot(snapshot) });
 export const decodeObservation = (input: Uint8Array): AuthorizedSnapshotV2 => {
-  const r = object(parseBytes(input), "$", ["codecVersion", "observation"]);
+  const copy = copyBytes(input);
+  const r = object(parseBytes(copy), "$", ["codecVersion", "observation"]);
   version(r.codecVersion, "$.codecVersion", "challenge-observation-codec-v2");
   const snapshot = readSnapshot(r.observation);
-  if (!byteEqual(input, encodeObservation(snapshot))) fail("$", "JSON");
+  if (!byteEqual(copy, encodeObservation(snapshot))) fail("$", "JSON");
   return freeze(snapshot);
 };
 export const readHistory = (value: unknown): AuthorizedHistory => {

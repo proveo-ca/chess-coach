@@ -2,7 +2,7 @@ import jsSHA from "jssha/sha256";
 import { specialGasCost } from "@chess-coach/starchess-core/planning-v1";
 import { readBatch, validateBoundaryBatch } from "./batch";
 import { readEconomicState, readHistory, readMineLineage, readSnapshot } from "./observation";
-import { array, byteEqual, bytes, equal, fail, freeze, id, integer, object, ordered, parseBytes, replacement, squares } from "./schema";
+import { array, byteEqual, bytes, copyBytes, equal, fail, freeze, id, integer, object, ordered, parseBytes, replacement, squares } from "./schema";
 import type { AuthorizedBoundaryBatch, AuthorizedEvent, AuthorizedHistory, EconomicState, ObservedCell, OwnMineLineage, OwnUnitLineage, PaidReceipt, ReconciledBoundaryState, Sighting, Square } from "./types";
 
 const hash = (input: Uint8Array): Uint8Array => {
@@ -28,9 +28,8 @@ const readState = (value: unknown): ReconciledBoundaryState => {
     created.some((_, i) => !created.includes(`${snapshot.side}:mine:created:${i + 1}`))) fail("$.ownMineAuditState", "IDENTITY");
   const everLit = squares(r.everLit, "$.everLit");
   if (snapshot.cells.some(x => x.visibility === "lit" && !everLit.includes(x.square))) fail("$.everLit", "CONSISTENCY");
-  if (!(r.lastBatchBytes instanceof Uint8Array)) fail("$.lastBatchBytes");
-  const batch = readBatch(parseBytes(r.lastBatchBytes as Uint8Array));
-  const lastBatchBytes = new Uint8Array(r.lastBatchBytes as Uint8Array);
+  const lastBatchBytes = copyBytes(r.lastBatchBytes as Uint8Array, "$.lastBatchBytes");
+  const batch = readBatch(parseBytes(lastBatchBytes));
   if (!byteEqual(lastBatchBytes, bytes(batch))) fail("$.lastBatchBytes", "JSON");
   const ordinal = integer(r.ordinal, "$.ordinal", 0, 128);
   const planningOrdinal = integer(r.planningOrdinal, "$.planningOrdinal", 0, 64);

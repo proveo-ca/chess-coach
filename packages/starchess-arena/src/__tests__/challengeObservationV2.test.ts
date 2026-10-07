@@ -115,10 +115,11 @@ describe("authorized V2 observation contracts", () => {
     try {
       let error: unknown;
       try { decodeObservation(input); } catch (caught) { error = caught; }
+      const decodeCalls = decode.mock.calls.length, parseCalls = parse.mock.calls.length;
       expect.soft(error).toMatchObject({ name: "ContractError", code: "SIZE", path: "$" });
       expect.soft(reads).toBe(0);
-      expect.soft(decode).not.toHaveBeenCalled();
-      expect.soft(parse).not.toHaveBeenCalled();
+      expect.soft(decodeCalls).toBe(0);
+      expect.soft(parseCalls).toBe(0);
     } finally { decode.mockRestore(); parse.mockRestore(); }
   });
   it("compares actual same-length physical bytes without dispatching a caller every override", () => {
@@ -165,6 +166,18 @@ describe("authorized V2 observation contracts", () => {
     const exactCap = new Uint8Array(1_048_576);
     exactCap.fill(32); exactCap.set(canonical);
     expect(() => decodeObservation(exactCap)).toThrow("JSON: $");
+  });
+  it("uses one detached byte snapshot for parsing and canonical equality", () => {
+    const input = encodeObservation(fixture()), originalDecode = TextDecoder.prototype.decode;
+    const decode = vi.spyOn(TextDecoder.prototype, "decode").mockImplementation(function (this: TextDecoder, buffer, options) {
+      const text = originalDecode.call(this, buffer, options);
+      input.fill(0);
+      return text;
+    });
+    try {
+      expect(decodeObservation(input)).toEqual(fixture());
+      expect(input.every(x => x === 0)).toBe(true);
+    } finally { decode.mockRestore(); }
   });
   it("accepts allowed bounded V2 batches beyond the legacy 8192-node budget", () => {
     const snapshot = fixture();

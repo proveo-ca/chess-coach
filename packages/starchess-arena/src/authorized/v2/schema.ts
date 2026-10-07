@@ -122,10 +122,31 @@ export const bytes = (value: unknown): Uint8Array => {
   if (encoded.byteLength > MAX_CODEC_BYTES) return fail("$", "SIZE");
   return encoded;
 };
-export const byteEqual = (a: Uint8Array, b: Uint8Array): boolean => a.length === b.length && a.every((x, i) => x === b[i]);
+const typedArrayPrototype = Object.getPrototypeOf(Uint8Array.prototype);
+const typedArrayName = Object.getOwnPropertyDescriptor(typedArrayPrototype, Symbol.toStringTag)!.get!;
+const typedArrayByteLength = Object.getOwnPropertyDescriptor(typedArrayPrototype, "byteLength")!.get!;
+const typedArraySet = Uint8Array.prototype.set;
+const checkedByteLength = (input: Uint8Array, path = "$"): number => {
+  if (!ArrayBuffer.isView(input) || Reflect.apply(typedArrayName, input, []) !== "Uint8Array") return fail(path);
+  const length = Reflect.apply(typedArrayByteLength, input, []) as number;
+  if (length > MAX_CODEC_BYTES) return fail("$", "SIZE");
+  return length;
+};
+export const copyBytes = (input: Uint8Array, path = "$"): Uint8Array => {
+  const length = checkedByteLength(input, path);
+  const copy = new Uint8Array(length);
+  try { Reflect.apply(typedArraySet, copy, [input]); }
+  catch { return fail(path); }
+  return copy;
+};
+export const byteEqual = (a: Uint8Array, b: Uint8Array): boolean => {
+  const length = checkedByteLength(a);
+  if (length !== checkedByteLength(b)) return false;
+  for (let i = 0; i < length; i++) if (a[i] !== b[i]) return false;
+  return true;
+};
 export const parseBytes = (input: Uint8Array): unknown => {
-  if (!(input instanceof Uint8Array)) return fail("$");
-  if (input.byteLength > MAX_CODEC_BYTES) return fail("$", "SIZE");
-  try { return JSON.parse(new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(input)); }
+  const copy = copyBytes(input);
+  try { return JSON.parse(new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(copy)); }
   catch { return fail("$", "JSON"); }
 };
