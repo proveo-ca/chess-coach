@@ -1,6 +1,6 @@
 # ML Adjutant — R3 native gas-promotion correction
 
-Status: **PROPOSAL / NOT APPROVED / NOT IMPLEMENTED.** Executor selected **“Native-fix proposal (Recommended)”** for the source-derived ownership conflict recorded in [R3 seam finding R3-SEAM-01](ml-adjutant-r3-seam-addendum.md#101-first-pass-findings-and-replacement-disposition). That selection authorizes drafting/review, not native changes or test execution. Exact-text acceptance and explicit build authorization remain pending.
+Status: **PROPOSAL / NOT APPROVED / NOT IMPLEMENTED; CLOSING PAIRED DESIGN REVIEWS READY.** Executor selected **“Native-fix proposal (Recommended)”** for the source-derived ownership conflict recorded in [R3 seam finding R3-SEAM-01](ml-adjutant-r3-seam-addendum.md#101-first-pass-findings-and-replacement-disposition). Executor now selected **“R3 first (Recommended)”** for closing reviews of the latest pair. Those selections authorize drafting/review, not native changes or test execution. Latest paired architecture/backend/adversarial/security/spec reviews are positive in [the current closing record](ml-adjutant-r3-seam-addendum.md#104-current-paired-closing-review--acceptance-pending). Exact-text acceptance and explicit build authorization remain pending.
 
 ## 1. Exact scope
 
@@ -106,10 +106,10 @@ This correction supplies no R4 estimator/features, R5 readiness, calibrated mode
 | Review | Task / status | Scope |
 |---|---|---|
 | Architect author consultation | `ses_eec78096cffeMkpMxeH0Yz2wt6` | Read-only guard/fixture/carrier guidance; no native execution. |
-| Closing architecture/backend review | Pending | Exact guard, reachable fixture, scoped behavior and preserved replacement handling. |
+| Closing architecture/backend review | `ses_eeada7ff3ffeiPNlpZT0kbloww`, `ses_eeada7f05ffeM79kkkxFKjTXza` | Both **READY TO ACCEPT R3 DESIGN: yes** for the final normative pair, including exact guard, source-derived fixture, scoped behavior and preserved replacement handling. |
 | Earlier paired security/spec review | `ses_eec4b5c3dffeuiVNlh9BpgideH`, `ses_eec7808f6ffed4yCzKVOuYK5fZ` | Target-only pair cleared at design level before later mine/dependency revisions; no executed fixture. |
-| Closing adversarial/security review of latest pair | Pending | Exact persisted proposal paired with final multiplicity/count/dependency seam. |
-| Spec review | Pending | Explicit native amendment, immutable history and stage/approval boundaries. |
+| Closing adversarial/security review of latest pair | `ses_eead30fcbffe9I3wofA5BNssK5`, `ses_eead30fb7ffeilMqJijGBd1oi5` | Both **READY TO ACCEPT R3 DESIGN: yes**; adversarial also **READY TO MERGE: yes**; no remaining concrete findings. |
+| Spec closing review | `ses_eead30fa1ffewiP3i4fIMfuLjV` | Initial **no / blocked** on two paired/root-plan MEDIUM wording findings; after correction, **READY TO ACCEPT R3 DESIGN: yes / SPEC STATUS: in-sync**, none remaining. |
 | Executor exact-text acceptance / build authorization | Pending | Direction selection is neither grant. |
 
-Final closing clearance for the latest paired revision remains pending. No source change or executed fixture is claimed.
+All five closing reviewers reread the final normative pair after the generator-scope and root-plan lifecycle corrections. They used read-only document/source inspection without commands, native fixtures, tests, hashes, renderers or Docker execution. [The paired closing record](ml-adjutant-r3-seam-addendum.md#104-current-paired-closing-review--acceptance-pending) owns the actual verdicts and preserves historical pending/negative review scope. Lead document checks of the final ledger metadata remain pending. Exact Executor acceptance and explicit build/local-verification authorization remain pending. No source change, executed fixture or R3 readiness closure is claimed.
