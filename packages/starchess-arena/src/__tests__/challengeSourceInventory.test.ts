@@ -1302,6 +1302,95 @@ describe("static browser public closure", () => {
     }
     expect(report.edges).toContainEqual(expect.objectContaining({ importer: `${ARENA}/src/authorized/v2/reducer.ts`, specifier: "jssha/sha256" }));
   });
+  it.each(["types", "schema", "observation", "batch", "reducer"])("rejects R3 runtime and erased private edges from V2 %s", async (name) => {
+    const root = fixture();
+    const path = `${ARENA}/src/authorized/v2/${name}.ts`;
+    put(root, `${ARENA}/src/events.ts`, `export * from "./authorized/v2/${name}";`);
+    put(root, `${CORE}/src/resolve/provenance-types.ts`, "export type Hidden = number;");
+    put(root, `${ARENA}/src/challenge/r3Session.ts`, "export type Hidden = number;");
+    for (const target of ["@chess-coach/starchess-core", "../../../../starchess-core/src/resolve/provenance-types", "../../challenge/r3Session", "../../../../starchess-core/src/seeds"]) {
+      for (const code of [`import "${target}";`, `import type {Hidden} from "${target}";`, `export type {Hidden} from "${target}";`, `type Hidden = import("${target}").Hidden;`]) {
+        put(root, path, code);
+        expect(() => collectSourceInventory(root)).toThrow(/Forbidden core root edge|Forbidden native model edge|Forbidden partition edge|Forbidden deep private edge/);
+        await expect(check(root)).rejects.toThrow(/Native core in public closure|Host\/baseline in public closure|Deep private cross-package import/);
+      }
+    }
+  });
+  it.each(["types", "schema", "observation", "batch", "reducer"])("retains R3 import/probe/prototype guards in V2 %s", async (name) => {
+    const root = fixture();
+    const path = `${ARENA}/src/authorized/v2/${name}.ts`;
+    put(root, `${ARENA}/src/events.ts`, `export * from "./authorized/v2/${name}";`);
+    for (const code of [
+      'import "node:fs";',
+      'import type {Stats} from "node:fs";',
+      'const probe = Reflect.get; probe(() => {}, "constructor");',
+      'Object.getPrototypeOf(() => {});',
+      'Object.getOwnPropertyDescriptor(() => {}, "constructor");',
+      'const fn:any=()=>{}; fn[["con","structor"].join("")]("return process")();',
+      'Array.prototype.includes=(()=>true) as any; const fn:any=unknownFactory(); const key=["con","structor"].join(""); if(["data"].includes(key))fn[key]("return process")();',
+      'import.meta.url = "file:///escape.mjs";',
+    ]) {
+      put(root, path, code);
+      expect(() => collectSourceInventory(root)).toThrow(/Forbidden builtin edge|Unsupported code constructor acquisition|Unsupported import metadata mutation/);
+      await expect(check(root)).rejects.toThrow(/Node builtin in public closure|Code constructor acquisition in public closure|Import metadata in public closure/);
+    }
+  });
+  it.each([
+    ["schema", 'Object.getPrototypeOf(value)', 'Object.getPrototypeOf(() => {})'],
+    ["schema", 'Object.hasOwn(descriptor, "value")', 'true'],
+    ["schema", '!descriptor.enumerable', 'false'],
+    ["schema", 'canonical(r[k])', '(r[k] as any)("return process")'],
+    ["observation", 'cells[SQUARES.indexOf(at)]', 'cells[unknownKeyFactory()]'],
+  ])("rejects R3 modifications inside content-bound validation/data anchors: %s %s", async (name, before, after) => {
+    const root = v2Fixture();
+    const path = `${ARENA}/src/authorized/v2/${name}.ts`;
+    const original = readFileSync(join(root, path), "utf8");
+    expect(original).toContain(before);
+    put(root, path, original.replace(before!, after!));
+    expect(() => collectSourceInventory(root)).toThrow(/Unsupported code constructor acquisition/);
+    await expect(check(root)).rejects.toThrow(/Code constructor acquisition in public closure/);
+  });
+  it.each([
+    'export const escaped = Object.getOwnPropertyDescriptor;',
+    'export function probe(value:unknown,key:string){return Object.getOwnPropertyDescriptor(value,key);}',
+    'export function prototype(value:unknown){return Object.getPrototypeOf(value);}',
+    'export function dataProbe(value:object,key:string){return (value as any)[key];}',
+    'Array.prototype.includes=(()=>true) as any;',
+  ])("rejects R3 extra descriptor/data accessors and prototype mutations beside approved helpers: %s", async (code) => {
+    const root = v2Fixture();
+    const path = `${ARENA}/src/authorized/v2/schema.ts`;
+    put(root, path, `${readFileSync(join(root, path), "utf8")}\n${code}`);
+    expect(() => collectSourceInventory(root)).toThrow(/Unsupported code constructor acquisition/);
+    await expect(check(root)).rejects.toThrow(/Code constructor acquisition in public closure/);
+  });
+  it.each([CORE, ARENA, TRAINING])("rejects R3 fabricated export maps in both audits: %s", async (owner) => {
+    const root = fixture();
+    const path = `${owner}/package.json`;
+    const original = JSON.parse(readFileSync(join(root, path), "utf8"));
+    for (const subpath of ["./resolve", "./r3Session", "./authorized/v2/*"]) {
+      put(root, path, JSON.stringify({ ...original, exports: { ...original.exports, [subpath]: "./src/index.ts" } }));
+      expect(() => collectSourceInventory(root)).toThrow("Unsupported workspace export map");
+      await expect(check(root)).rejects.toThrow("Unapproved public export map");
+    }
+  });
+  it.each(["^3.3.2", "3.3.1", "latest"])("rejects R3 arena runtime and erased SHA pin drift: %s", async (pin) => {
+    const root = fixture();
+    const path = `${ARENA}/package.json`;
+    const manifest = JSON.parse(readFileSync(join(root, path), "utf8"));
+    manifest.dependencies.jssha = pin;
+    put(root, path, JSON.stringify(manifest));
+    for (const code of ['import "jssha/sha256";', 'import type SHA from "jssha/sha256";']) {
+      put(root, `${ARENA}/src/events.ts`, code);
+      expect(() => collectSourceInventory(root)).toThrow("Forbidden SHA dependency edge");
+      await expect(check(root)).rejects.toThrow("SHA dependency must declare exact 3.3.2");
+    }
+  });
+  it("rejects R3 erased alternative SHA subpaths even under the exact pin", async () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/events.ts`, 'import type SHA from "jssha/sha1";');
+    expect(() => collectSourceInventory(root)).toThrow("Forbidden SHA dependency edge");
+    await expect(check(root)).rejects.toThrow("Unreviewed SHA export");
+  });
   it.each(deferredMutations)("tracks public parameter effects: $name", async ({effect}) => {
     const root = fixture();
     put(root, `${CORE}/src/planning-v1.ts`, deferredMutationProbe(effect));

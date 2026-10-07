@@ -202,6 +202,8 @@ export const checkPublicClosure = (root = repository) => {
       if (typeOnly && !specifier.startsWith(".") && !byName.has(packageName(specifier)) && !isBuiltin(specifier) && !specifier.startsWith("node:")) {
         const manifest = dependency?.manifest ?? manifests.get(sourceOwner(path));
         const name = packageName(specifier);
+        if (name === "jssha" && specifier !== "jssha/sha256") throw new Error(`Unreviewed SHA export: ${specifier}`);
+        if (name === "jssha" && manifest?.dependencies?.jssha !== "3.3.2") throw new Error("SHA dependency must declare exact 3.3.2");
         if (![manifest?.dependencies, manifest?.devDependencies].some((declared) => typeof declared?.[name] === "string")) throw new Error(`Undeclared public type dependency: ${id} -> ${specifier}`);
         edges.push({ importer: id, specifier, target: specifier, kind, typeOnly: true, targetKind: "erased-external" });
         return;

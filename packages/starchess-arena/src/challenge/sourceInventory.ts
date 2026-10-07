@@ -333,6 +333,8 @@ export const collectSourceInventory = (
       }
     }
     const partition = listed.get(importer)!.partition;
+    if (["arena-authorized", "training-model"].includes(partition) && targetKind === "external" && name === "jssha" &&
+        (specifier !== "jssha/sha256" || !object(manifest.dependencies) || manifest.dependencies.jssha !== "3.3.2")) throw new Error(`Forbidden SHA dependency edge: ${importer} -> ${specifier}`);
     if (["arena-authorized", "training-model"].includes(partition) && target === `${CORE}/src/index.ts`) throw new Error(`Forbidden core root edge: ${importer} -> ${target}`);
     if (["arena-authorized", "training-model"].includes(partition) && target.startsWith(`${CORE}/src/`) && /\/src\/(?:scfen|replay|commands|resolve)\//.test(target)) throw new Error(`Forbidden native model edge: ${importer} -> ${target}`);
     if (kind === "dynamic" && PURE.has(partition)) throw new Error(`Forbidden dynamic import edge: ${importer} -> ${specifier}`);
