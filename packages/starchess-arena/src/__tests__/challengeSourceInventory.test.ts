@@ -479,8 +479,35 @@ const importedFixture = (code: string): string => {
   put(root, `${TRAINING}/src/candidates.ts`, code);
   return root;
 };
+const v2Fixture = (): string => {
+  const root = fixture();
+  for (const name of ["types", "schema", "observation", "batch", "reducer"]) {
+    const path = `${ARENA}/src/authorized/v2/${name}.ts`;
+    put(root, path, readFileSync(join(repository, path), "utf8"));
+  }
+  const validation = `${ARENA}/src/challengeContract/validation.ts`;
+  put(root, validation, readFileSync(join(repository, validation), "utf8"));
+  put(root, `${ARENA}/src/observations.ts`, 'export * from "./authorized/v2/observation";');
+  put(root, `${ARENA}/src/events.ts`, readFileSync(join(repository, `${ARENA}/src/events.ts`), "utf8"));
+  put(root, `${CORE}/src/planning-v1.ts`, 'export type Square = `${"a"|"b"|"c"|"d"|"e"|"f"|"g"|"h"}${1|2|3|4|5|6|7|8}`; export type PieceColor = "w"|"b"; export type ScActionInput = {}; export const UNIT_COST={p:1,n:3,b:3,r:5,q:9,k:0}; export const specialGasCost=()=>1;');
+  const base = `${ARENA}/node_modules/jssha`;
+  put(root, `${base}/package.json`, JSON.stringify({ name: "jssha", version: "3.3.2", exports: { "./sha256": { import: "./dist/sha256.mjs" } } }));
+  put(root, `${base}/dist/sha256.mjs`, "export default class SHA {};");
+  return root;
+};
 
 describe("partitioned challenge source inventory", () => {
+  it("classifies the exact R3 V2 files and leaves new private challenge files host-only", () => {
+    const root = v2Fixture();
+    put(root, `${ARENA}/src/challenge/r3Session.ts`, 'import "@chess-coach/starchess-core";');
+    put(root, `${ARENA}/src/authorized/v2/unapproved.ts`, "export {};");
+    const inventory = collectSourceInventory(root);
+    for (const name of ["types", "schema", "observation", "batch", "reducer"]) {
+      expect(inventory.groups["arena-authorized"].map(file => file.path)).toContain(`${ARENA}/src/authorized/v2/${name}.ts`);
+    }
+    expect(inventory.groups["arena-host"].map(file => file.path)).toEqual(expect.arrayContaining([`${ARENA}/src/challenge/r3Session.ts`, `${ARENA}/src/authorized/v2/unapproved.ts`]));
+    expect(inventory.entrypoints).toContain(`${ARENA}/src/events.ts`);
+  });
   it.each(deferredMutations)("tracks parameter effects: $name", ({effect}) => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, deferredMutationProbe(effect));
@@ -1267,6 +1294,14 @@ describe("static browser public closure", () => {
     const { checkPublicClosure } = await import(/* @vite-ignore */ script);
     return checkPublicClosure(root);
   };
+  it("audits the actual R3 V2 leaf graph against the exact events export", async () => {
+    const report = await check(v2Fixture());
+    expect(report.entries.map((entry: { subpath: string }) => entry.subpath)).toEqual(["./planning-v1", "./observations", "./intent-codec-v1", "./events", "./candidates"]);
+    for (const name of ["types", "schema", "observation", "batch", "reducer"]) {
+      expect(report.verifiedPaths).toContain(`${ARENA}/src/authorized/v2/${name}.ts`);
+    }
+    expect(report.edges).toContainEqual(expect.objectContaining({ importer: `${ARENA}/src/authorized/v2/reducer.ts`, specifier: "jssha/sha256" }));
+  });
   it.each(deferredMutations)("tracks public parameter effects: $name", async ({effect}) => {
     const root = fixture();
     put(root, `${CORE}/src/planning-v1.ts`, deferredMutationProbe(effect));

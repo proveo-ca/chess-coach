@@ -163,12 +163,12 @@ export const projectR3Boundary = (input: {
     return id;
   };
   if (phase === "settled") {
-    if (!input.ownStage || !input.committedBank || !prior) fail("$.staging", "PROTOCOL");
+    if (!input.ownStage || !input.committedBank || !prior) return fail("$.staging", "PROTOCOL");
     let spend = 0, gas = 0;
     input.ownStage.intents.forEach((action, acceptedActionOrdinal) => {
       const actionRef = { planningOrdinal: planningOrdinal - 1, acceptedActionOrdinal };
       if (action.kind === "deploy") {
-        if (!action.unit || !action.to) fail("$.staging", "PROVENANCE");
+        if (!action.unit || !action.to) return fail("$.staging", "PROVENANCE");
         spend += UNIT_COST[action.unit];
         emit({ kind: "own-paid-receipt", receiptId: `${side}:receipt:${planningOrdinal - 1}:${acceptedActionOrdinal}`, actionRef, unit: action.unit, requestedSquare: action.to, minerals: UNIT_COST[action.unit] });
       }
@@ -262,7 +262,7 @@ export const projectR3Boundary = (input: {
         const consumed = facts.some(proof => proof.operation === "capture" && proof.appliedTargetId === effect.entity.id && proof.causalBeforeVisibilityKey === before.key &&
           proof.targetCell.square === effect.entity.square && proof.targetCell.piece.type === effect.entity.type && proof.targetCell.piece.color === effect.entity.side);
         if ((!geometric && !consumed) || privateState.witnessed.has(effect.entity.id)) continue;
-        if (effect.entity.type === "k") fail("$.destruction", "PROVENANCE");
+        if (effect.entity.type === "k") return fail("$.destruction", "PROVENANCE");
         const witnessId = `${side}:witness:${++privateState.witnessCounter}`;
         privateState.witnessed.set(effect.entity.id, witnessId);
         emit({ kind: "enemy-unit-destruction-witnessed", witnessId, square: effect.entity.square, type: effect.entity.type, replacementLowerBound: UNIT_COST[effect.entity.type], paidLowerBound: 0 });
@@ -276,7 +276,7 @@ export const projectR3Boundary = (input: {
   fold(cells, snapshot.turn);
   const ownUnitLineage = [...units.values()].sort((a, b) => a.square < b.square ? -1 : a.square > b.square ? 1 : 0);
   const ownMineLineage = [...mines.values()].sort((a, b) => `${a.square}:${a.mineId}` < `${b.square}:${b.mineId}` ? -1 : 1);
-  const actualUnits = provenance.entities.filter(entity => entity.kind === "unit" && entity.side === side);
+  const actualUnits = provenance.entities.filter((entity): entity is Extract<EngineEntity, { kind: "unit" }> => entity.kind === "unit" && entity.side === side);
   const actualMines = provenance.entities.filter(entity => entity.kind === "mine" && entity.side === side);
   if (actualUnits.length !== units.size || actualMines.length !== mines.size || actualUnits.some(entity => {
     const unit = units.get(publicId(entity.id)); return !unit || unit.square !== entity.square || unit.type !== entity.type;

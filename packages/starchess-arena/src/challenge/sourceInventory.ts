@@ -219,8 +219,9 @@ export const collectSourceInventory = (
   ]);
   for (const [owner, expected] of publicExports) {
     const exports = manifests.get(owner)!.exports;
+    const branches = new Map(object(exports) ? Object.entries(exports) : []);
     if (!object(exports) || Object.keys(exports).sort().join(",") !== Object.keys(expected).sort().join(",") ||
-        Object.entries(expected).some(([subpath, target]) => !canonicalBranches(exports[subpath], target))) {
+        Object.entries(expected).some(([subpath, target]) => !canonicalBranches(branches.get(subpath), target))) {
       throw new Error(`Unsupported workspace export map: ${owner}`);
     }
   }
@@ -1574,22 +1575,54 @@ export const collectSourceInventory = (
       }
       return false;
     };
-    const reviewedV2Descriptor = (node: ts.Node): boolean => {
-      if (file.path !== `${ARENA}/src/authorized/v2/schema.ts` || !ts.isPropertyAccessExpression(node) ||
+    const reviewedValidationDescriptor = (node: ts.Node): boolean => {
+      const v2 = file.path === `${ARENA}/src/authorized/v2/schema.ts`;
+      const counted = file.path === `${CORE}/src/rules/counted-planning.ts`;
+      const history = file.path === `${TRAINING}/src/composition.ts`;
+      if ((!v2 && !counted && !history) || !ts.isPropertyAccessExpression(node) ||
           !ts.isCallExpression(node.parent) || node.parent.expression !== node) return false;
       const call = node.parent.getText(source);
-      const anchors: Record<string, readonly [string, readonly string[]]> = {
+      const anchors: Record<string, readonly [string, readonly string[]]> = v2 ? {
         object: ["cbae30e75c79871605332af369a8bc90b967c5764f310f809eb3bc178700b5ef", ["Object.getPrototypeOf(value)", "Object.getOwnPropertyDescriptor(value, key)"]],
         tag: ["71273fcd58c4a1bcc137ec5f1f1afb783d2bdbdc7a63aa9d635632a6e53e022e", ["Object.getPrototypeOf(value)", "Object.getOwnPropertyDescriptor(value, key)"]],
         array: ["9984d20eae9a6f3e932ab3aa61b39a4174481887e46bfff00bf704e05e25821f", ["Object.getPrototypeOf(value)", 'Object.getOwnPropertyDescriptor(value, "length")', "Object.getOwnPropertyDescriptor(value, String(i))"]],
+      } : counted ? {
+        record: ["a2e4ba72aff3962a17956cfed244188ca0022d10836e97ed480a221f765a46dd", ["Object.getPrototypeOf(value)", "Object.getOwnPropertyDescriptor(value, key)"]],
+        inventory: ["0c8c1a1cf66a0f30a8be64654ae0850573d3e2bc72bdd6b1651fbbbde38a3646", ["Object.getPrototypeOf(value)", 'Object.getOwnPropertyDescriptor(value, "length")', "Object.getOwnPropertyDescriptor(value, String(i))"]],
+        readMap: ["318d771321985067dcd99a8464de19040854c3dec98101fef0312731ed8f7789", ["Object.getPrototypeOf(value)"]],
+        readSet: ["16ae0d17c4858336e74dcb2cd740129df1f2a081f0a56852450622c330bf8c60", ["Object.getPrototypeOf(value)"]],
+      } : {
+        validateHistory: ["7c6d19e2e1db913ae24f633f679a321d59fb8ac77619ae26433b59afcffaa13f", ["Object.getPrototypeOf(input)", "Object.getOwnPropertyDescriptor(input, key)", "Object.getPrototypeOf(r.everLit)", 'Object.getOwnPropertyDescriptor(r.everLit, "length")', "Object.getOwnPropertyDescriptor(r.everLit, String(i))"]],
       };
       const imports = source.statements.filter(ts.isImportDeclaration);
-      if (!imports.some((entry) => entry.getText(source) === 'import { fail, MAX_CODEC_BYTES } from "../../challengeContract/validation";') ||
-          !["Object", "Array", "Reflect", "Number", "String", "fail"].every((name) => !mutatedRoots.has(name)) || arrayIntrinsicsMutated) return false;
+      const declarations = source.statements.filter(ts.isVariableStatement).flatMap((statement) => [...statement.declarationList.declarations]);
+      if (v2 && !imports.some((entry) => entry.getText(source) === 'import { fail, MAX_CODEC_BYTES } from "../../challengeContract/validation";') ||
+          counted && !declarations.some((entry) => entry.getText(source) === 'fail = (): never => { throw new TypeError("Invalid counted planning knowledge"); }') ||
+          history && !declarations.some((entry) => entry.getText(source) === 'historyFailure = (): never => { throw new TypeError("Invalid authorized history V2"); }') ||
+          memberMutationTargets.some((target) => arrayIntrinsicRoot(target)) || ["Object", "Array", "Reflect", "Number", "String"].some((name) => nonNumericWrites.has(name))) return false;
       for (let declaration: ts.Node | undefined = node; declaration; declaration = declaration.parent) {
-        if (ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && Object.hasOwn(anchors, declaration.name.text)) {
-          const [digest, calls] = anchors[declaration.name.text]!;
+        const anchor = ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && new Map(Object.entries(anchors)).get(declaration.name.text);
+        if (anchor) {
+          const [digest, calls] = anchor;
           return declaration.parent.parent.parent === source && hash(declaration.getText(source)) === digest && calls.includes(call);
+        }
+      }
+      return false;
+    };
+    const reviewedV2DataAccess = (node: ts.Node): boolean => {
+      const anchors = new Map([
+        [`${ARENA}/src/authorized/v2/schema.ts`, [["canonical", "68e1d2acef686f11b36d33e2d3101c8a3a482ec290b0076f5b3645cd3060ea68", "r[k]"]]],
+        [`${ARENA}/src/authorized/v2/observation.ts`, [["readSnapshot", "3b8145712ce2dda71f8d675789ac8d7858c002a6f5339de373e141ead9465701", "cells[SQUARES.indexOf(at)]"]]],
+        [`${CORE}/src/rules/counted-planning.ts`, [
+          ["readonlyMap", "8e3075a3f7ad51c68c1f9cc3c26fb678709a826e3d1e1a0b8afc72981317e85d", "map[Symbol.iterator]"],
+          ["readonlySet", "c18f8c541b3b3d4bcce9ad63e515bf150dfa20eb4defb055dce900c18a4dcd31", "set[Symbol.iterator]"],
+        ]],
+      ]);
+      const anchor = anchors.get(file.path)?.find((entry) => node.getText(source) === entry[2]);
+      if (!anchor || node.getText(source) !== anchor[2] || memberMutationTargets.some((target) => arrayIntrinsicRoot(target))) return false;
+      for (let declaration: ts.Node | undefined = node; declaration; declaration = declaration.parent) {
+        if (ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && declaration.name.text === anchor[0]) {
+          return declaration.parent.parent.parent === source && hash(declaration.getText(source)) === anchor[1];
         }
       }
       return false;
@@ -1639,7 +1672,7 @@ export const collectSourceInventory = (
       const reflected = value ? property(origin(node as ts.Expression)) : undefined;
       const descriptorSeam = reflected && ["getPrototypeOf", "getOwnPropertyDescriptors"].includes(reflected.name ?? "") &&
         objectNamespace(origin(reflected.receiver)) && reviewedDescriptor(node) && ts.isCallExpression(node.parent) && node.parent.expression === node;
-      const v2DescriptorSeam = reviewedV2Descriptor(node);
+      const v2DescriptorSeam = reviewedValidationDescriptor(node);
       if (reflected && (reflectionNamespace(origin(reflected.receiver)) && ["get", "getOwnPropertyDescriptor", undefined].includes(reflected.name) ||
           objectNamespace(origin(reflected.receiver)) && ["getOwnPropertyDescriptor", "getPrototypeOf", "getOwnPropertyDescriptors", undefined].includes(reflected.name)) &&
           !descriptorSeam && !reviewedArrayDescriptor(node) && !v2DescriptorSeam) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
@@ -1663,7 +1696,7 @@ export const collectSourceInventory = (
            ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken, ts.SyntaxKind.LessThanLessThanToken,
            ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken]
           .includes((wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind));
-      if (ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(wrappedUse(node).parent) && !reviewedDescriptor(node) && unsafeComputedReceiver(node.expression, new Set(),
+      if (ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(wrappedUse(node).parent) && !reviewedDescriptor(node) && !reviewedV2DataAccess(node) && unsafeComputedReceiver(node.expression, new Set(),
           /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression))) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${node.getText(source)}`);
       const hostProcess = (receiver: ts.Expression): boolean => {
         const expression = origin(unwrap(receiver));

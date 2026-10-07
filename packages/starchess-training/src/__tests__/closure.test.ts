@@ -15,6 +15,7 @@ it("compiles source import descriptors and confines production to the approved p
     "PlanningKnowledge", "ScActionInput", "SpawnPiece", "Square",
     "countedPlanningKnowledge", "CountedPlanningKnowledge", "MAX_MINES_PER_SIDE",
   ]);
+  const observations = new Set(["AuthorizedObservationV1", "AuthorizedHistory", "validateObservationV1", "validateObservation"]);
   const imports = new Set<string>();
   for (const file of files) {
     const source = readFileSync(new URL(`../${file}.ts`, import.meta.url), "utf8");
@@ -26,11 +27,12 @@ it("compiles source import descriptors and confines production to the approved p
       const module = (statement.moduleSpecifier as ts.StringLiteral).text;
       imports.add(module);
       expect(external.has(module) || files.some((name) => module === `./${name}`)).toBe(true);
-      if (module === "@chess-coach/starchess-core/planning-v1" && ts.isImportDeclaration(statement)) {
+      if ((module === "@chess-coach/starchess-core/planning-v1" || module === "@chess-coach/starchess-arena/observations") && ts.isImportDeclaration(statement)) {
         const bindings = statement.importClause?.namedBindings;
         expect(bindings && ts.isNamedImports(bindings)).toBe(true);
         if (bindings && ts.isNamedImports(bindings)) {
-          for (const item of bindings.elements) expect(native.has((item.propertyName ?? item.name).text)).toBe(true);
+          const approved = module === "@chess-coach/starchess-core/planning-v1" ? native : observations;
+          for (const item of bindings.elements) expect(approved.has((item.propertyName ?? item.name).text)).toBe(true);
         }
       }
     }
