@@ -19,6 +19,13 @@ type EventInput = AuthorizedEvent extends infer E ? E extends AuthorizedEvent ? 
 type Session = { state: ReconciledBoundaryState; history: AuthorizedHistory };
 type Mutable<T> = T extends readonly (infer V)[] ? Mutable<V>[] : T extends object ? { -readonly [K in keyof T]: Mutable<T[K]> } : T;
 const clone = <T>(value: T): Mutable<T> => structuredClone(value) as Mutable<T>;
+const expectContractError = (call: () => unknown, path: string, code: string): void => {
+  let thrown: unknown;
+  try { call(); } catch (error) { thrown = error; }
+  expect(thrown).toBeInstanceOf(Error);
+  expect(thrown).not.toBeInstanceOf(TypeError);
+  expect(thrown).toMatchObject({ name: "ContractError", path, code, message: `${code}: ${path}` });
+};
 const ledger = (side: "w" | "b"): EconomicState => ({
   version: "challenge-economic-ledger-v1", side,
   ownPaidDebits: 0, ownPaidSurviving: 0, ownPaidDestroyed: 0, ownPaidWasted: 0, ownReplacementDestroyed: 0,
@@ -319,6 +326,91 @@ describe("V1 complete-byte preservation", () => {
 });
 
 describe("closed history validation and detachment", () => {
+  it("reports stable schema errors for primitive, array and inherited roots", () => {
+    const history = initial(observation()).history;
+    for (const value of [undefined, null, false, 0, NaN, "{}", Symbol("history"), () => history, [], new Date(), Object.create(history)]) {
+      expectContractError(() => composeV2(value as AuthorizedHistory), "$", "SCHEMA");
+    }
+  });
+
+  it("reports exact history schema/version/ledger error paths and codes", () => {
+    const history = initial(observation()).history;
+    const cases: { mutate: (h: Mutable<AuthorizedHistory>) => void; path: string; code: string }[] = [
+      { mutate: h => { Object.assign(h, { ownMineCount: 0 }); }, path: "$", code: "SCHEMA" },
+      { mutate: h => { Object.assign(h, { [Symbol("extra")]: 0 }); }, path: "$", code: "SCHEMA" },
+      { mutate: h => { delete (h as Partial<Mutable<AuthorizedHistory>>).version; }, path: "$", code: "SCHEMA" },
+      { mutate: h => { Object.defineProperty(h, "version", { enumerable: false }); }, path: "$.version", code: "SCHEMA" },
+      { mutate: h => { Object.assign(h, { version: "challenge-history-v1" }); }, path: "$.version", code: "VERSION" },
+      { mutate: h => { h.economicState.enemyLoss.confirmedUnitCount = 1; h.economicState.enemyLoss.replacementLowerBound = 1; }, path: "$.economicState", code: "CONSISTENCY" },
+      { mutate: h => { h.economicState.side = "b"; }, path: "$.economicState.side", code: "SIDE" },
+      { mutate: h => { Object.assign(h.economicState, { ownMineCount: 0 }); }, path: "$.economicState", code: "SCHEMA" },
+      { mutate: h => { h.economicState = Object.create(h.economicState); }, path: "$.economicState", code: "SCHEMA" },
+    ];
+    for (const { mutate, path, code } of cases) {
+      const value = clone(history);
+      mutate(value);
+      expectContractError(() => composeV2(value), path, code);
+    }
+  });
+
+  it("distinguishes malformed, oversized, unordered and inconsistent everLit", () => {
+    const history = initial(observation()).history;
+    const cases: { mutate: (h: Mutable<AuthorizedHistory>) => void; path: string; code: string }[] = [
+      { mutate: h => { Object.assign(h, { everLit: { 0: "a1", length: 1 } }); }, path: "$.everLit", code: "ARRAY" },
+      { mutate: h => { Object.setPrototypeOf(h.everLit, {}); }, path: "$.everLit", code: "ARRAY" },
+      { mutate: h => { h.everLit = Array.from({ length: 65 }, () => "a1"); }, path: "$.everLit", code: "CARDINALITY" },
+      { mutate: h => { delete h.everLit[0]; }, path: "$.everLit", code: "ARRAY" },
+      { mutate: h => { Object.assign(h.everLit, { ownMineCount: 0 }); }, path: "$.everLit", code: "ARRAY" },
+      { mutate: h => { Object.defineProperty(h.everLit, "0", { enumerable: false }); }, path: "$.everLit[0]", code: "ARRAY" },
+      { mutate: h => { h.everLit[0] = "z9" as Square; }, path: "$.everLit[0]", code: "SCHEMA" },
+      { mutate: h => { Object.assign(h.everLit, { 0: 1 }); }, path: "$.everLit[0]", code: "SCHEMA" },
+      { mutate: h => { h.everLit.reverse(); }, path: "$.everLit", code: "ORDER" },
+      { mutate: h => { h.everLit[1] = h.everLit[0]!; }, path: "$.everLit", code: "ORDER" },
+      { mutate: h => { h.everLit = h.everLit.slice(1); }, path: "$.everLit", code: "CONSISTENCY" },
+    ];
+    for (const { mutate, path, code } of cases) {
+      const value = clone(history);
+      mutate(value);
+      expectContractError(() => composeV2(value), path, code);
+    }
+  });
+
+  it("reports descriptor errors without evaluating root, ledger or everLit getters", () => {
+    const history = initial(observation()).history;
+    let reads = 0;
+    const getter = () => { reads++; throw new Error("getter executed"); };
+    for (const key of ["version", "currentAuthorizedSnapshotV2", "economicState", "everLit"]) {
+      const value = clone(history);
+      Object.defineProperty(value, key, { enumerable: true, get: getter });
+      expectContractError(() => composeV2(value), `$.${key}`, "SCHEMA");
+    }
+    const lit = clone(history);
+    Object.defineProperty(lit.everLit, "0", { enumerable: true, get: getter });
+    expectContractError(() => composeV2(lit), "$.everLit[0]", "ARRAY");
+    const economic = clone(history);
+    Object.defineProperty(economic.economicState, "ownPaidDebits", { enumerable: true, get: getter });
+    expectContractError(() => composeV2(economic), "$.economicState.ownPaidDebits", "SCHEMA");
+    const extra = clone(history);
+    Object.defineProperty(extra, "ownMineCount", { enumerable: true, get: getter });
+    expectContractError(() => composeV2(extra), "$", "SCHEMA");
+    expect(reads).toBe(0);
+  });
+
+  it("preserves V1 codec error paths, codes and messages", () => {
+    const o = observation();
+    Object.assign(o, { version: "challenge-observation-v2" });
+    expectContractError(() => composeV1(o), "$.version", "VERSION");
+    const zero = observation();
+    zero.own.gas = 0;
+    zero.own.gasIncome = 0;
+    expectContractError(() => composeV1(zero), "$.own.gasIncome", "NUMBER");
+    let reads = 0;
+    const accessor = observation();
+    Object.defineProperty(accessor, "version", { enumerable: true, get: () => { reads++; return "challenge-observation-v1"; } });
+    expectContractError(() => composeV1(accessor), "$", "SCHEMA");
+    expect(reads).toBe(0);
+  });
+
   it("ignores stale enemy memory when building current knowledge", () => {
     const session = initial(observation([["h8", "k"], ["a1", "q"]], { enemy: [["e5", "p"]] }));
     const current = clone(session.state.snapshot);

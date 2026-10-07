@@ -22,6 +22,9 @@ it("compiles source import descriptors and confines production to the approved p
     const source = readFileSync(new URL(`../${file}.ts`, import.meta.url), "utf8");
     const ast = ts.createSourceFile(`${file}.ts`, source, ts.ScriptTarget.ES2022, true, ts.ScriptKind.TS);
     for (const statement of ast.statements) {
+      if (ts.isClassDeclaration(statement) && statement.name?.text === "ContractError") {
+        expect(ts.getCombinedModifierFlags(statement) & ts.ModifierFlags.Export).toBe(0);
+      }
       if (!ts.isImportDeclaration(statement) && !ts.isExportDeclaration(statement)) continue;
       if (!statement.moduleSpecifier) continue;
       expect(ts.isStringLiteral(statement.moduleSpecifier)).toBe(true);

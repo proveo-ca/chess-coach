@@ -225,36 +225,44 @@ const encodeHistoryCandidate = (side: PlanningFacts["side"], input: readonly ScA
   return decodeCandidate({ version: "challenge-candidate-codec-v1", key, actions, ownSpend: requestedSpend(actions) }, side);
 };
 
-const historyFailure = (): never => { throw new TypeError("Invalid authorized history V2"); };
+class ContractError extends Error {
+  constructor(readonly path: string, readonly code: string) {
+    super(`${code}: ${path}`);
+    this.name = "ContractError";
+  }
+}
+const historyFailure = (path: string, code = "SCHEMA"): never => { throw new ContractError(path, code); };
 const validateHistory = (input: unknown): AuthorizedHistory => {
-  if (!input || typeof input !== "object" || Array.isArray(input)) return historyFailure();
+  if (!input || typeof input !== "object" || Array.isArray(input)) return historyFailure("$");
   const proto = Object.getPrototypeOf(input);
-  if (proto !== Object.prototype && proto !== null) return historyFailure();
+  if (proto !== Object.prototype && proto !== null) return historyFailure("$");
   const keys = ["version", "currentAuthorizedSnapshotV2", "economicState", "everLit"];
   const ownKeys = Reflect.ownKeys(input);
-  if (ownKeys.length !== keys.length || ownKeys.some(key => typeof key !== "string" || !keys.includes(key))) return historyFailure();
+  if (ownKeys.length !== keys.length || ownKeys.some(key => typeof key !== "string" || !keys.includes(key))) return historyFailure("$");
   const r: Record<string, unknown> = {};
   for (const key of keys) {
     const descriptor = Object.getOwnPropertyDescriptor(input, key);
-    if (!descriptor || !Object.hasOwn(descriptor, "value") || !descriptor.enumerable) return historyFailure();
+    if (!descriptor || !Object.hasOwn(descriptor, "value") || !descriptor.enumerable) return historyFailure(`$.${key}`);
     r[key] = descriptor.value;
   }
-  if (r.version !== "challenge-history-v2") return historyFailure();
+  if (r.version !== "challenge-history-v2") return historyFailure("$.version", "VERSION");
   const snapshot = validateObservation(r.currentAuthorizedSnapshotV2);
   const economicState = validateObservation({ ...snapshot, economicState: r.economicState }).economicState;
-  if (JSON.stringify(economicState) !== JSON.stringify(snapshot.economicState)) return historyFailure();
-  if (!Array.isArray(r.everLit) || Object.getPrototypeOf(r.everLit) !== Array.prototype) return historyFailure();
+  if (JSON.stringify(economicState) !== JSON.stringify(snapshot.economicState)) return historyFailure("$.economicState", "CONSISTENCY");
+  if (!Array.isArray(r.everLit) || Object.getPrototypeOf(r.everLit) !== Array.prototype) return historyFailure("$.everLit", "ARRAY");
   const length = Object.getOwnPropertyDescriptor(r.everLit, "length")?.value;
-  if (!Number.isSafeInteger(length) || length < 0 || length > 64 || Reflect.ownKeys(r.everLit).length !== length + 1) return historyFailure();
+  if (!Number.isSafeInteger(length) || length < 0 || length > 64) return historyFailure("$.everLit", "CARDINALITY");
+  if (Reflect.ownKeys(r.everLit).length !== length + 1) return historyFailure("$.everLit", "ARRAY");
   const everLit: Square[] = [];
   for (let i = 0; i < length; i++) {
     const descriptor = Object.getOwnPropertyDescriptor(r.everLit, String(i));
-    if (!descriptor || !Object.hasOwn(descriptor, "value") || !descriptor.enumerable) return historyFailure();
+    if (!descriptor || !Object.hasOwn(descriptor, "value") || !descriptor.enumerable) return historyFailure(`$.everLit[${i}]`, "ARRAY");
     const at: unknown = descriptor.value;
-    if (typeof at !== "string" || !/^[a-h][1-8]$/.test(at) || (i > 0 && everLit[i - 1]! >= at)) return historyFailure();
+    if (typeof at !== "string" || !/^[a-h][1-8]$/.test(at)) return historyFailure(`$.everLit[${i}]`);
+    if (i > 0 && everLit[i - 1]! >= at) return historyFailure("$.everLit", "ORDER");
     everLit.push(at as Square);
   }
-  if (snapshot.cells.some(cell => cell.visibility === "lit" && !everLit.includes(cell.square))) return historyFailure();
+  if (snapshot.cells.some(cell => cell.visibility === "lit" && !everLit.includes(cell.square))) return historyFailure("$.everLit", "CONSISTENCY");
   return freeze({ version: "challenge-history-v2", currentAuthorizedSnapshotV2: snapshot, economicState, everLit });
 };
 
