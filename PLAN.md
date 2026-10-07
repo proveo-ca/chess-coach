@@ -1,7 +1,9 @@
 # Adjutant evolution — from strategies to learned opponent
 
-Status: **learning roadmap only; NOT training-ready. R0 historical assurance CLOSED; R2 CLOSED within authorized V1/bounded V3 and current hermetic evidence assurance. Calibrated economy/R3–R5 readiness before explicit R6 remain pending.**  
+Status: **learning roadmap only; NOT training-ready. R0 historical assurance CLOSED; R2 CLOSED within authorized V1/bounded V3 and current hermetic evidence assurance. R3 paired design ACCEPTED and implementation/local verification AUTHORIZED; R3–R5 implementation/readiness before explicit R6 remain PENDING.**
 Scope: how Single Player’s opponent (`packages/starchess-core/src/ai/adjutant.ts`) grows from named strategy algorithms → a composed heuristic → something that learns, without rewriting the StarChess rules engine.
+
+**R3 authority:** actual Executor TUI response **“Accept + build locally (Recommended)”** grants both exact-text acceptance of the seam/promotion pair and scoped R3 implementation/local verification. The [outside-snapshot authority record](_spec/_plans/ml-adjutant-r3-seam-addendum.md#executor-acceptance-and-scoped-local-build-authority) retains the supplied pre-metadata whole-file identities and exact scope. Implementation, native parity and readiness remain pending actual verification; no collection, fitting, calibration, transfer, training, evidence publication or registry activation is granted.
 
 The preparatory catalog is implemented and verified separately from this learning roadmap;
 the verification record includes the existing full-app lint baseline exception:
@@ -37,7 +39,7 @@ Both reviewed persisted source/evidence read-only, not independent suite/archive
 Recorded marker SHA-256 is **`65bc6bb200514b446ad6939412922bde1cfa00d76225495e309fbd165c81b0c3`**. Exact source/dependency/source-control/archive identities are in the closure JSON and [closed R2 contract](_spec/_plans/r2-generator-v3.md#current-r2-closure--completed-new-generation); external archive **134552576 bytes** stays outside57 payloads, its export envelope is retained inside them.
 The [generator](_spec/packages/starchess-training/candidate-generation.puml) and [assurance](_spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml) diagrams retain the durable design: authorized V1 only, bounded512/2048/four-slot V3, narrow core planning-v1/four model roots, host-private native admission, no fallback, no hidden-state inputs, unchanged costs/codecs/grammar/permits/resources. Report cap omissions remain honest, not exhaustive legality/coverage or a winning claim.
 Native baseline remains **corpus0 wins/2 losses/16 queue rejections; live0 wins/36 losses**. Supported source audits do not prove arbitrary-JS purity, and hashes prove byte identity rather than producer authenticity. `modelArtifact:null`, eligiblefalse/learnedPassfalse/trainingfalse; weights NONE, `machine-learning` disabled, no learned acceptance/registry activation.
-R2 is complete, but **calibrated-economy amendment +R3 ledger/provenance +R4 features +R5 readiness** remain before explicit **R6**; R7 artifact/runtime precedes R8 learned acceptance. Future recipe profiles remain unchanged.
+R2 is complete and amended R1 future design is CLOSED/FROZEN. R3 paired design/local build is accepted/authorized, but **R3 ledger/provenance implementation +R4 belief/features +R5 readiness** remain before explicit **R6**; R7 artifact/runtime precedes R8 learned acceptance. Future recipe profiles remain unchanged outside accepted R3 scoped precedence.
 No source, hermetic README, tests/packages/controls or immutable57 payloads/marker/outside-bundle closure record changed here. Lead validates diagrams once after final docs; no renderer/test/hash execution by spec-keeper. Caller owns the final Upgrade Complete outcome.
 
 <details>
@@ -106,6 +108,8 @@ Current policy/assurance boundary:
 
 The independent delayed-swap native mine synchronization is implemented under Executor's **“Apply Native sync-fix proposal”**, with verification/review progress in the [scoped execution record](_spec/_plans/ml-adjutant-r3-seam-addendum.md#independent-native-delayed-swap-synchronization) and [resolver diagram](_spec/packages/starchess-core/resolve-turn-activity.puml).
 
+The larger [R3 seam](_spec/_plans/ml-adjutant-r3-seam-addendum.md#executor-acceptance-and-scoped-local-build-authority) and [promotion correction](_spec/_plans/ml-adjutant-r3-native-promotion-fix.md#executor-acceptance-and-local-build-status) are now separately ACCEPTED with local implementation/verification AUTHORIZED. Their implementation/readiness remains pending; the independent mine fix supplies no larger-seam implementation proof.
+
 Executor chose **Broader first trained ranker**:
 [`ml-adjutant-r4-weights.md`](_spec/_plans/ml-adjutant-r4-weights.md).
 FIRST Phase 3 training requires a separately versioned combination generator and v2 authorized
@@ -117,7 +121,7 @@ Keep deployed material and inferred enemy bank as separate components; neither i
 Use native `incomeForTurn(t)` and `applyStoredIncome` at actual income-grant boundaries, not planning ordinals, frame counts, or turn changes alone.
 Exact belief architecture, calibration data/objective/thresholds, and the versioned **418**-field amendment are **CLOSED/FROZEN future design**; R3–R5 implementation, calibration and readiness remain **PENDING**. Neither the prior frozen **370**-field v2 contract nor design closure supplies a calibrated model.
 The [canonical economic gate](_spec/_plans/PLAN-ml-adjutant.md#selected-economic-extension--pre-training-gate) and [closed R1 amendment contract](_spec/_plans/ml-adjutant-r3-contracts.md#21-economic-extension--future-design-closed) own the details; do not duplicate or silently amend their recipe here.
-R2 is CLOSED and amended R1 future design is CLOSED/FROZEN; remaining R3–R5 implementation/readiness and separate execution approvals precede explicit R6 training approval. R7 artifact/runtime validation precedes R8 learned acceptance.
+R2 is CLOSED and amended R1 future design is CLOSED/FROZEN. R3's scoped local build/verification grant is complete; R3–R5 implementation/readiness still precedes explicit R6 training approval, and R4/R5 operations need their separate approvals. R7 artifact/runtime validation precedes R8 learned acceptance.
 Current named feature arrays (ranker 158 / action 64 / observation 1623) have **no weights** and are not adequate
 for that first trained ranker. Start at H=1; three conditional simultaneous planning windows are separate future work.
 Training, learned models/artifacts, and browser rollout remain unimplemented; registry entries stay EMPTY/unavailable.

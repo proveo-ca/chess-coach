@@ -1,3 +1,28 @@
+<!-- Approval/disposition metadata: outside the accepted R3 proposal snapshot. -->
+**CURRENT DISPOSITION: R3 PAIRED DESIGN ACCEPTED; R3 IMPLEMENTATION / LOCAL VERIFICATION AUTHORIZED; IMPLEMENTATION / READINESS PENDING.** Executor actually selected **“Accept + build locally (Recommended)”** after presentation of the exact paired targets below. That response grants both exact-text design acceptance and the scoped local build/verification permission; closing-review YES verdicts did not supply either grant.
+
+## Executor acceptance and scoped local-build authority
+
+| Accepted pre-metadata whole-file target | Supplied SHA-256 |
+|---|---|
+| `_spec/_plans/ml-adjutant-r3-seam-addendum.md` | `393c0fd0233a82cbc5519fe41cc4f27bbb4e3a70631be42438b39c4210c3b653` |
+| `_spec/_plans/ml-adjutant-r3-native-promotion-fix.md` | `d70d4ff803121ef13f6a401b58edb7ec34dff0b5a63e5aaf88481afa187a8f0b` |
+
+These identities record the actual acceptance targets supplied by the lead. They are not hashes of the metadata-bearing files, independently recomputed hashes, or runtime evidence. The existing pre-metadata text is retained between the snapshot markers below; this metadata changes no accepted normative sentence. The snapshot's proposal-stage status, conditional approval language and pending acceptance/build statements remain historical. This outside-snapshot record now governs those lifecycle statements only; it preserves every earlier review verdict, counterexample and implementation obligation.
+
+The scoped local grant covers:
+
+- Native generic provenance companions and the paired `applyGasPromotion` own-Marine/color guard, with parity against the corrected native resolver and preserved same-side replacement lineage.
+- Arena authorized V2 snapshots/history, boundary events, lineage/mine audit state, receipt/loss ledger, target-only authority, casualty memory, transactional reconciliation and independent host verification.
+- The V2-history counted candidate entry, pure counted planning constructor, scoped exports and public-closure/source-inventory audits, with the accepted legacy V1 compatibility and generator limits.
+- Required persisted tests, affected local verification and scoped specification maintenance under accepted §§9–9.2 and the paired [promotion correction](ml-adjutant-r3-native-promotion-fix.md#executor-acceptance-and-local-build-status).
+
+The accepted [§1.1 supersession map](#11-explicit-proposed-supersession-map) now governs the named original-contract exceptions. Accepted [§9.1](#91-explicit-downstream-r4-disposition) supplies only the specified downstream public-input/native-source binding precedence; [§9.2](#92-exact-v2-history-count-transport-and-generator-dependency) supplies the additive counted-history integration. Original frozen contracts and both protected R4 economic bodies remain intact outside that scope. Historical R2 assurance/evidence is not rewritten or reused as proof of the changed source/authorization law.
+
+No collection, fitting, calibration, transfer, training, evidence publication or registry activation is granted. R4 belief/features implementation, aggregate R5 readiness and R6–R8 execution remain later gates. The independent delayed-swap mine synchronization retains its separate implemented/verified scope; it does not prove the larger R3 implementation. No new implementation result or implementation-review completion is recorded here.
+
+The lead must verify retained snapshot identity against the supplied acceptance targets and run final documentation whitespace checks after this metadata/roadmap synchronization. Those post-acceptance checks remain pending; this pass executes no commands, tests, hashes or renderers.
+<!-- BEGIN ACCEPTED R3 SEAM WHOLE-FILE SNAPSHOT -->
 # ML Adjutant — R3 native-seam addendum
 
 Status: **R3 SEAM PROPOSAL NOT APPROVED / NOT IMPLEMENTED; CLOSING PAIRED DESIGN REVIEWS READY; INDEPENDENT NATIVE MINE SYNC FIX IMPLEMENTED / VERIFIED / SCOPED REVIEWS READY.** Executor selected **“Review seam addendum (Recommended)”**, then **“Native-fix proposal (Recommended)”**, **“Consumed facts (Recommended)”**, and **“Support multiplicity (Recommended)”** for drafting/review. Executor subsequently instructed **“Apply Native sync-fix proposal”**, authorizing the independent delayed-swap mine synchronization and regression below. Executor now selected **“R3 first (Recommended)”** to complete closing reviews before exact acceptance and build authorization. The independent fix does not accept or implement the larger seam, target-only authority, multiplicity/count bridge or earlier promotion proposal. Latest paired architecture/backend/adversarial/security/spec reviews are positive in [§10.4](#104-current-paired-closing-review--acceptance-pending); exact acceptance and explicit build authorization remain pending. No collection, fitting, calibration, transfer, training, evidence publication or registry activation is authorized.
@@ -538,6 +563,7 @@ Actual Executor selection **“R3 first (Recommended)”** authorizes closing re
 
 All five closing reviewers reread the final normative pair after the two documentation corrections. §1 now distinguishes retained legacy V1/composition-v3 invariants from §9.2's additive V2-history/count transport. Root `PLAN.md` now distinguishes the CLOSED/FROZEN amended418 future design from pending R3–R5 implementation, calibration and readiness. These corrections change no source, feature formula or operation permission.
 
-Reviewers used read-only document/source inspection. They executed no commands, native fixtures, tests, hashes, renderers or Docker operations. Their design clearance supplies no runtime/native parity, resource, calibration or readiness result. Lead document checks of the final ledger metadata remain pending.
+Reviewers used read-only document/source inspection. They executed no commands, native fixtures, tests, hashes, renderers or Docker operations. Their design clearance supplies no runtime/native parity, resource, calibration or readiness result. Spec-keeper's final ledger-only pass returned **SPEC STATUS: in-sync / READY TO PRESENT EXACT R3 ACCEPTANCE: yes** with no metadata findings. Lead directly executed `git diff --check` and `git diff --cached --check` after ledger persistence; both returned **PASS**. The lead repeats both checks after recording these observed results before presenting acceptance.
 
 This current record supersedes only the earlier pending closing-review statements and negative current design-gate dispositions. Preserve every historical verdict, counterexample and scope. The independent mine synchronization remains separately implemented and reviewed. R3-SEAM-01–05 and the later multiplicity/count/dependency issues have design-level closing clearance; their meaningful implementation regressions remain required under §§9–9.2 and the promotion proposal. Exact acceptance of both proposals and an explicit build/local-verification grant remain Executor decisions before source changes. R3 implementation/readiness and downstream R4/R5 remain pending.
+<!-- END ACCEPTED R3 SEAM WHOLE-FILE SNAPSHOT -->

@@ -22,6 +22,8 @@ Both protected bodies remain frozen approval snapshots except the Executor-autho
 | Final lifecycle-metadata whitespace checks | **COMPLETE:** lead executed `git diff --check` and `git diff --cached --check` after final R1 lifecycle edits; both **PASS**, observed through actual lead tools. No current approval step or documentation-check TODO remains. Spec-keeper runs no commands or staging operations. |
 | Implementation, fitting, measurements, R3–R5 readiness and explicit R6 permission | Later gates; not supplied or authorized by this document. |
 
+**Accepted R3 input-law dependency — outside-body precedence:** Executor's actual **“Accept + build locally (Recommended)”** accepted the [seam/promotion pair](ml-adjutant-r3-seam-addendum.md#executor-acceptance-and-scoped-local-build-authority). Future consumers use its accepted [§9.1 public-input/native-source binding law](ml-adjutant-r3-seam-addendum.md#91-explicit-downstream-r4-disposition) and [§9.2 counted-history generation](ml-adjutant-r3-seam-addendum.md#92-exact-v2-history-count-transport-and-generator-dependency) at amended decision sites. This supplies only the named input-law dependency, not an economic architecture/418 feature/optimizer change or R4 implementation/data/calibration permission. R3 local build/verification is authorized separately; implementation/readiness remains pending. The protected body and historical evidence remain unchanged.
+
 <!-- BEGIN APPROVED NORMATIVE BODY -->
 # R1 economic and promotion amendment — exact-text draft
 
