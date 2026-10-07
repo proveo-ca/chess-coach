@@ -15,6 +15,8 @@ import {
   copyRecipientPrivate, newRecipientPrivate, projectR3Boundary, reconcileR3NativeImage,
   type R3Recipient, type R3RecipientPrivate,
 } from "./r3Projection";
+import { copyR3PrivateBytes, detachR3Data, encodeR3Provenance, equalR3PrivateBytes, readR3Record, R3_PRIVATE_CAP } from "./r3Private";
+export { copyR3PrivateBytes, encodeR3Provenance, equalR3PrivateBytes } from "./r3Private";
 import type { AuthorizedBoundaryBatch, AuthorizedHistory, Side } from "../authorized/v2/types";
 
 type NativeResult = BeginScTurnResult | EndScTurnResult;
@@ -37,7 +39,7 @@ type PrivateState = {
 };
 const sessions = new WeakMap<R3Session, PrivateState>();
 const bindings = new WeakMap<R3Binding, { opening: ScFenSnapshot; bank: Bank; started: boolean }>();
-const HOST_CAP = 16_777_216;
+const HOST_CAP = R3_PRIVATE_CAP;
 const SIDES = ["w", "b"] as const;
 const sideValue = <T>(values: Readonly<{ w: T; b: T }>, side: Side): T => side === "w" ? values.w : values.b;
 const hash = (input: Uint8Array): string => createHash("sha256").update(input).digest("hex");
@@ -48,57 +50,6 @@ const authority = (binding: R3Binding, session: R3Session): PrivateState => {
   return state;
 };
 
-export const encodeR3Provenance = (companion: Pick<Companion, "provenance" | "frames" | "visibilityImages" | "visibilityCheckpoints">): Uint8Array => {
-  const root = object(companion, "$.private", ["provenance", "frames", "visibilityImages", "visibilityCheckpoints"]);
-  const chunks: string[] = [];
-  const ancestors = new Set<object>();
-  let length = 0, visits = 0, totalEffects = 0;
-  const append = (text: string): void => {
-    length += Buffer.byteLength(text, "utf8");
-    if (length > HOST_CAP) fail("$.private", "SIZE");
-    chunks.push(text);
-  };
-  const limits = new Map<string, number>([
-    ["entities", 70], ["nativeMineOrder", 6], ["resolvedActions", 8], ["queries", 4], ["consumedFacts", 2],
-    ["evaluatedSteps", 6], ["mines", 6], ["frames", 1152], ["effects", 1152], ["visibilityImages", 2304], ["visibilityCheckpoints", 2304],
-  ]);
-  const visit = (value: unknown, path: string, key: string, depth: number): void => {
-    if (++visits > 4_000_000 || depth > 16) fail(path, "SIZE");
-    if (value === null || typeof value === "boolean") { append(JSON.stringify(value)); return; }
-    if (typeof value === "string") {
-      if (value.length > 256) fail(path, "SIZE");
-      append(JSON.stringify(value)); return;
-    }
-    if (typeof value === "number") { integer(value, path); append(JSON.stringify(value)); return; }
-    if (!value || typeof value !== "object" || ancestors.has(value)) return fail(path, "SCHEMA");
-    ancestors.add(value);
-    if (Array.isArray(value)) {
-      const entries = array(value, path, limits.get(key) ?? 2304, value => value);
-      if (key === "effects" && (totalEffects += entries.length) > 1152) fail(path, "CARDINALITY");
-      append("[");
-      for (const [index, entry] of entries.entries()) {
-        if (index) append(",");
-        visit(entry, `${path}[${index}]`, "", depth + 1);
-      }
-      append("]");
-    } else {
-      const keys = Reflect.ownKeys(value);
-      if (keys.length > 32 || keys.some(key => typeof key !== "string" || key.length > 64)) fail(path, "SCHEMA");
-      const record = object(value, path, keys as string[]);
-      const entries = Object.entries(record).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0);
-      append("{");
-      for (const [index, [key, entry]] of entries.entries()) {
-        if (index) append(",");
-        append(`${JSON.stringify(key)}:`);
-        visit(entry, `${path}.${key}`, key, depth + 1);
-      }
-      append("}");
-    }
-    ancestors.delete(value);
-  };
-  visit(root, "$.private", "", 0);
-  return new Uint8Array(Buffer.from(chunks.join(""), "utf8"));
-};
 const privateBytes = (companion: Companion): Uint8Array => encodeR3Provenance({
   provenance: companion.provenance, frames: companion.frames,
   visibilityImages: companion.visibilityImages, visibilityCheckpoints: companion.visibilityCheckpoints,
@@ -144,10 +95,10 @@ export const initializeR3Session = (binding: R3Binding, openingSnapshot: ScFenSn
   if (!binding || typeof binding !== "object") fail("$.binding", "SESSION");
   const registered = bindings.get(binding);
   if (registered?.started) fail("$.binding", "SESSION");
-  const b = object(openingBank, "$.bank", ["w", "b"]);
+  const b = readR3Record(openingBank, "$.bank", ["w", "b"]);
   const bank = { w: integer(b.w, "$.bank.w", 0, 12), b: integer(b.b, "$.bank.b", 0, 12) };
-  const provenance = initializeProvenance(openingSnapshot);
-  const snapshot = structuredClone(openingSnapshot);
+  const snapshot = detachR3Data(openingSnapshot, "$.snapshot") as ScFenSnapshot;
+  const provenance = initializeProvenance(snapshot);
   if (registered && (!isDeepStrictEqual(snapshot, registered.opening) || !isDeepStrictEqual(bank, registered.bank))) fail("$.binding", "SESSION");
   reconcileR3NativeImage(snapshot, provenance);
   const recipients = { w: newRecipientPrivate(), b: newRecipientPrivate() };
@@ -202,8 +153,19 @@ const execute = (state: PrivateState, phase: "turn-open" | "settled", pair: Read
   return { transition, successor: { binding: state.binding, session, recipients, lastTransition: transition, chain: state.chain } };
 };
 
-export const stageR3Begin = (binding: R3Binding, session: R3Session): R3StagedTransition => execute(authority(binding, session), "turn-open", null).transition;
-export const stageR3Settlement = (binding: R3Binding, session: R3Session, successfulOwnStages: Readonly<Record<Side, StagedQueue>>): R3StagedTransition => execute(authority(binding, session), "settled", successfulOwnStages).transition;
+export const stageR3Begin = (binding: R3Binding, session: R3Session): R3StagedTransition => {
+  const result = execute(authority(binding, session), "turn-open", null);
+  authority(binding, session);
+  return result.transition;
+};
+export const stageR3Settlement = (binding: R3Binding, session: R3Session, successfulOwnStages: Readonly<Record<Side, StagedQueue>>): R3StagedTransition => {
+  const state = authority(binding, session);
+  const detached = detachR3Data(successfulOwnStages, "$.successfulOwnStages") as Readonly<Record<Side, StagedQueue>>;
+  authority(binding, session);
+  const result = execute(state, "settled", detached);
+  authority(binding, session);
+  return result.transition;
+};
 export const readR3PlanningHistory = (binding: R3Binding, session: R3Session, side: Side): AuthorizedHistory => {
   const state = authority(binding, session);
   if (side !== "w" && side !== "b") return fail("$.side", "SIDE");
@@ -215,9 +177,12 @@ export const readR3PlanningHistory = (binding: R3Binding, session: R3Session, si
   return recipient.history;
 };
 
-const checkTransition = (binding: R3Binding, transition: R3StagedTransition): void => {
-  const value = object(transition, "$.transition", ["binding", "phase", "ordinal", "successfulOwnStages", "companion", "provenanceBytes", "digest", "batches"]);
-  if (value.binding !== binding) fail("$.binding", "SESSION");
+const checkTransition = (binding: R3Binding, transition: R3StagedTransition): R3StagedTransition => {
+  const source = readR3Record(transition, "$.transition", ["binding", "phase", "ordinal", "successfulOwnStages", "companion", "provenanceBytes", "digest", "batches"]);
+  if (source.binding !== binding) fail("$.binding", "SESSION");
+  const provenanceBytes = copyR3PrivateBytes(source.provenanceBytes);
+  const detached = detachR3Data({ phase: source.phase, ordinal: source.ordinal, successfulOwnStages: source.successfulOwnStages, companion: source.companion, digest: source.digest, batches: source.batches }, "$.transition") as Omit<R3StagedTransition, "binding" | "provenanceBytes">;
+  const value: R3StagedTransition = Object.freeze({ ...freeze(detached), binding, provenanceBytes });
   if (value.phase !== "turn-open" && value.phase !== "settled") fail("$.phase", "SCHEMA");
   integer(value.ordinal, "$.ordinal", 1, 128);
   if (value.phase === "turn-open" ? value.successfulOwnStages !== null : value.successfulOwnStages === null) fail("$.successfulOwnStages", "SCHEMA");
@@ -226,15 +191,17 @@ const checkTransition = (binding: R3Binding, transition: R3StagedTransition): vo
   const digest = object(value.digest, "$.digest", ["byteLength", "sha256"]);
   integer(digest.byteLength, "$.digest.byteLength", 0, HOST_CAP);
   if (typeof digest.sha256 !== "string" || !/^[a-f0-9]{64}$/.test(digest.sha256)) fail("$.digest.sha256", "SCHEMA");
-  if (!(value.provenanceBytes instanceof Uint8Array) || value.provenanceBytes.byteLength > HOST_CAP) fail("$.provenanceBytes", "SIZE");
   const batches = object(value.batches, "$.batches", ["w", "b"]);
   validateBoundaryBatch(batches.w);
   validateBoundaryBatch(batches.b);
+  const encoded = privateBytes(value.companion);
+  if (!equalR3PrivateBytes(encoded, provenanceBytes) || digest.byteLength !== encoded.length || digest.sha256 !== hash(provenanceBytes)) fail("$.companion", "PROVENANCE");
+  return value;
 };
 const compareTransition = (claimed: R3StagedTransition, expected: R3StagedTransition): void => {
   if (claimed.phase !== expected.phase || claimed.ordinal !== expected.ordinal || !isDeepStrictEqual(claimed.successfulOwnStages, expected.successfulOwnStages)) fail("$.transition", "DUPLICATE");
   const encoded = privateBytes(claimed.companion);
-  if (!byteEqual(encoded, claimed.provenanceBytes) || !byteEqual(claimed.provenanceBytes, expected.provenanceBytes) ||
+  if (!equalR3PrivateBytes(encoded, claimed.provenanceBytes) || !equalR3PrivateBytes(claimed.provenanceBytes, expected.provenanceBytes) ||
     claimed.digest.byteLength !== expected.digest.byteLength || claimed.digest.sha256 !== expected.digest.sha256 || hash(claimed.provenanceBytes) !== claimed.digest.sha256) fail("$.companion", "PROVENANCE");
   assertNativeEqual(claimed.companion.nativeResult, expected.companion.nativeResult);
   if (!isDeepStrictEqual(claimed.companion.nativeResult, expected.companion.nativeResult)) fail("$.nativeResult", "PROVENANCE");
@@ -246,16 +213,19 @@ const compareTransition = (claimed: R3StagedTransition, expected: R3StagedTransi
 };
 export const verifyAndCommitR3 = (binding: R3Binding, previous: R3Session, claimed: R3StagedTransition): R3Session => {
   const state = authority(binding, previous);
-  checkTransition(binding, claimed);
+  const checked = checkTransition(binding, claimed);
+  authority(binding, previous);
   const ordinal = previous.recipients.w.batch.ordinal;
-  if (claimed.ordinal === ordinal) {
+  if (checked.ordinal === ordinal) {
     if (!state.lastTransition) return fail("$.ordinal", "SEQUENCE");
-    compareTransition(claimed, state.lastTransition);
+    compareTransition(checked, state.lastTransition);
+    authority(binding, previous);
     return previous;
   }
-  if (claimed.ordinal !== ordinal + 1) fail("$.ordinal", "SEQUENCE");
-  const expected = execute(state, claimed.phase, claimed.successfulOwnStages);
-  compareTransition(claimed, expected.transition);
+  if (checked.ordinal !== ordinal + 1) fail("$.ordinal", "SEQUENCE");
+  const expected = execute(state, checked.phase, checked.successfulOwnStages);
+  compareTransition(checked, expected.transition);
+  authority(binding, previous);
   sessions.set(expected.successor.session, expected.successor);
   state.chain.current = expected.successor.session;
   bindings.get(binding)!.started = true;

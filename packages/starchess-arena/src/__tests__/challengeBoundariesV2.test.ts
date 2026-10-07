@@ -2,14 +2,14 @@
 import { createHash } from "node:crypto";
 import { describe, expect, it, vi } from "vitest";
 import * as core from "@chess-coach/starchess-core";
-import { beginScTurn, endScTurn, parseScFen, type ScActionInput, type ScFenSnapshot } from "@chess-coach/starchess-core";
+import { beginScTurn, endScTurn, parseScFen, type ScActionInput, type ScFenSnapshot, type TrustedEffectFrame, type VisibilityImage, type VisibilityCheckpoint } from "@chess-coach/starchess-core";
 import { commitPair, stageQueue, type StagedQueue } from "../challenge/admission";
 import {
-  encodeR3Provenance, initializeR3Session, stageR3Begin, stageR3Settlement, verifyAndCommitR3,
+  copyR3PrivateBytes, encodeR3Provenance, equalR3PrivateBytes as equalPrivateFixtureBytes, initializeR3Session, stageR3Begin, stageR3Settlement, verifyAndCommitR3,
   type R3Session, type R3StagedTransition,
 } from "../challenge/r3Session";
 import { validateBoundaryBatch } from "../authorized/v2/batch";
-import { byteEqual, bytes } from "../authorized/v2/schema";
+import { byteEqual, bytes, canonical } from "../authorized/v2/schema";
 import type { Bank } from "../run/bank";
 
 const snapshot = (placement = "7k/8/8/8/8/8/8/K7", turn = 0, extras = "", lives = "33") => {
@@ -35,6 +35,23 @@ const rehash = (transition: R3StagedTransition): R3StagedTransition => {
   return { ...transition, provenanceBytes, digest: { byteLength: provenanceBytes.length, sha256: createHash("sha256").update(provenanceBytes).digest("hex") } };
 };
 const events = (session: R3Session, side: "w" | "b" = "w") => session.recipients[side].batch.events;
+const boundedPrivateTrace = () => {
+  const native = core.initializeProvenance(snapshot("PPPPPPPk/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP/RPPPPPPP/KPPPPPPP"));
+  let image: TrustedEffectFrame["before"] = { entities: native.entities, ccLives: native.ccLives, nativeMineOrder: native.nativeMineOrder };
+  const actor = native.entities.find(entity => entity.kind === "unit" && entity.type === "r")!;
+  if (actor.kind !== "unit") throw new Error("fixture Tank");
+  const frames: TrustedEffectFrame[] = [], visibilityImages: VisibilityImage[] = [], visibilityCheckpoints: VisibilityCheckpoint[] = [];
+  for (let index = 0; index < 100; index++) {
+    const before = index % 2 === 0 ? "tank" : "siege", after = before === "tank" ? "siege" : "tank";
+    const next = { ...image, entities: image.entities.map(entity => entity.id === actor.id ? { ...actor, tankMode: after } : entity) } as TrustedEffectFrame["after"];
+    const frameKey = `engine:call:2:frame:${index}`, beforeKey = `engine:call:2:image:${2 * index}`, afterKey = `engine:call:2:image:${2 * index + 1}`;
+    frames.push({ sourceEffectKey: frameKey, phase: "B", before: image, after: next, effects: [{ kind: "tank-mode-change", entityId: actor.id, before, after, sourceActionSeq: 0 }], beforeVisibilityKey: beforeKey, afterVisibilityKey: afterKey });
+    visibilityImages.push({ key: beforeKey, ordinal: 2 * index, turn: 0, phase: "B", state: image }, { key: afterKey, ordinal: 2 * index + 1, turn: 0, phase: "B", state: next });
+    visibilityCheckpoints.push({ ordinal: 2 * index, imageKey: beforeKey, frameKey, point: "before-frame" }, { ordinal: 2 * index + 1, imageKey: afterKey, frameKey, point: "after-frame" });
+    image = next;
+  }
+  return { provenance: { ...native, turn: 1, stage: "before-begin" as const, callOrdinal: 2, entities: image.entities, resolvedActions: [{ sourceActionSeq: 0, side: "w" as const, actionRef: { planningOrdinal: 0, acceptedActionOrdinal: 0 }, effectiveActorId: actor.id }] }, frames, visibilityImages, visibilityCheckpoints };
+};
 
 describe("R3 real-native scheduled boundaries and conservation", () => {
   it("publishes only initial/open/settled boundaries with zero opening basis", () => {
@@ -408,4 +425,154 @@ describe("R3 independent parent authority and atomic commit", () => {
     expect(() => verifyAndCommitR3(binding, initial, oversized)).toThrow("CARDINALITY");
     expect(verifyAndCommitR3(binding, initial, staged).recipients.w.batch.ordinal).toBe(1);
   });
+
+  it("rejects byte-length getter nested commits without dispatch or advancement", () => {
+    const binding = {};
+    const open = begin(binding, initializeR3Session(binding, snapshot(undefined, 21), { w: 3, b: 3 }));
+    const staged = stageR3Settlement(binding, open, pair(open));
+    const nested = stageR3Settlement(binding, open, pair(open, [{ kind: "deploy", timing: "B", color: "w", from: "a1", to: "a2", unit: "p" }]));
+    const bad = copy(staged);
+    let calls = 0;
+    Object.defineProperty(bad.provenanceBytes, "byteLength", { enumerable: true, get() {
+      calls++;
+      if (calls === 1) begin(binding, verifyAndCommitR3(binding, open, nested));
+      return staged.provenanceBytes.length;
+    } });
+    expect(() => verifyAndCommitR3(binding, open, bad)).toThrow(/SCHEMA|ARRAY/);
+    expect(calls).toBe(0);
+    expect(open.recipients.w.boundary.economicState.receipts).toHaveLength(0);
+    expect(verifyAndCommitR3(binding, open, staged).bank.w).toBe(6);
+  });
+
+  it("checks native-result accessors before any independent native execution", () => {
+    const binding = {};
+    const open = begin(binding, initializeR3Session(binding, snapshot(), { w: 3, b: 3 }));
+    const staged = stageR3Settlement(binding, open, pair(open));
+    const bad = copy(staged);
+    let calls = 0;
+    Object.defineProperty(bad.companion.nativeResult.next, "turn", { enumerable: true, get() { calls++; return 1; } });
+    const spy = vi.spyOn(core, "endTurnWithProvenance");
+    try {
+      expect(() => verifyAndCommitR3(binding, open, bad)).toThrow("SCHEMA");
+      expect(calls).toBe(0);
+      expect(spy).not.toHaveBeenCalled();
+    } finally { spy.mockRestore(); }
+    expect(verifyAndCommitR3(binding, open, staged).planningOrdinal).toBe(1);
+  });
+
+  it("does not overwrite a successor committed during independent reexecution", () => {
+    const binding = {};
+    const open = begin(binding, initializeR3Session(binding, snapshot(undefined, 21), { w: 3, b: 3 }));
+    const outer = stageR3Settlement(binding, open, pair(open, [{ kind: "deploy", timing: "B", color: "w", from: "a1", to: "b2", unit: "p" }]));
+    const inner = stageR3Settlement(binding, open, pair(open, [{ kind: "deploy", timing: "B", color: "w", from: "a1", to: "a2", unit: "p" }]));
+    let nested: R3Session | undefined;
+    const original = core.endTurnWithProvenance;
+    const spy = vi.spyOn(core, "endTurnWithProvenance").mockImplementationOnce(input => {
+      nested = verifyAndCommitR3(binding, open, inner);
+      return original(input);
+    });
+    try { expect(() => verifyAndCommitR3(binding, open, outer)).toThrow("SEQUENCE"); }
+    finally { spy.mockRestore(); }
+    expect(nested).toBeDefined();
+    expect(nested!.recipients.w.batch.snapshot.ownUnitLineage.find(unit => unit.id === "w:unit:created:1")?.square).toBe("a2");
+    expect(() => stageR3Begin(binding, nested!)).not.toThrow();
+    expect(() => stageR3Settlement(binding, open, pair(open))).toThrow("SEQUENCE");
+  });
+
+  it.each(["byteLength", "length", "every", "iterator"])("rejects overridable private byte %s without callback dispatch", field => {
+    const binding = {};
+    const initial = initializeR3Session(binding, snapshot(), { w: 3, b: 3 });
+    const staged = stageR3Begin(binding, initial), bad = copy(staged);
+    let calls = 0;
+    if (field === "every") Object.defineProperty(bad.provenanceBytes, field, { enumerable: true, value: () => { calls++; return true; } });
+    else Object.defineProperty(bad.provenanceBytes, field === "iterator" ? Symbol.iterator : field, { enumerable: true, get() { calls++; return staged.provenanceBytes.length; } });
+    expect(() => verifyAndCommitR3(binding, initial, bad)).toThrow(/SCHEMA|ARRAY/);
+    expect(calls).toBe(0);
+    expect(verifyAndCommitR3(binding, initial, staged).recipients.w.batch.ordinal).toBe(1);
+  });
+
+  it("rejects caller proxies without invoking prototype/descriptor traps", () => {
+    const binding = {};
+    const initial = initializeR3Session(binding, snapshot(), { w: 3, b: 3 });
+    const staged = stageR3Begin(binding, initial), bad = copy(staged) as { -readonly [K in keyof R3StagedTransition]: R3StagedTransition[K] };
+    let calls = 0;
+    bad.companion = new Proxy(bad.companion, { getPrototypeOf(target) { calls++; return Reflect.getPrototypeOf(target); }, ownKeys(target) { calls++; return Reflect.ownKeys(target); } });
+    expect(() => verifyAndCommitR3(binding, initial, bad)).toThrow("SCHEMA");
+    expect(calls).toBe(0);
+    expect(verifyAndCommitR3(binding, initial, staged).recipients.w.batch.ordinal).toBe(1);
+  });
+
+  it.each(["header", "private", "public", "stages", "function"])("detaches the entire caller %s before reexecution without callbacks", part => {
+    const binding = {};
+    const open = begin(binding, initializeR3Session(binding, snapshot(), { w: 3, b: 3 }));
+    const staged = stageR3Settlement(binding, open, pair(open));
+    const bad = copy(staged) as any;
+    let calls = 0;
+    const getter = { enumerable: true, get() { calls++; return 0; } };
+    if (part === "header") Object.defineProperty(bad, "phase", getter);
+    if (part === "private") Object.defineProperty(bad.companion.provenance, "turn", getter);
+    if (part === "public") Object.defineProperty(bad.batches.b.snapshot, "memory", getter);
+    if (part === "stages") Object.defineProperty(bad.successfulOwnStages.w, "spend", getter);
+    if (part === "function") bad.companion.nativeResult.next.extra = { toJSON() { calls++; return null; } };
+    const saved = structuredClone({ snapshot: open.snapshot, bank: open.bank, provenance: open.provenance, recipients: open.recipients });
+    const spy = vi.spyOn(core, "endTurnWithProvenance");
+    try {
+      expect(() => verifyAndCommitR3(binding, open, bad)).toThrow("SCHEMA");
+      expect(calls).toBe(0);
+      expect(spy).not.toHaveBeenCalled();
+    } finally { spy.mockRestore(); }
+    expect({ snapshot: open.snapshot, bank: open.bank, provenance: open.provenance, recipients: open.recipients }).toEqual(saved);
+    expect(verifyAndCommitR3(binding, open, staged).planningOrdinal).toBe(1);
+  });
+
+  it("uses intrinsic byte brands and actual lengths for private copy/equality caps", () => {
+    let calls = 0;
+    const spoof = Object.create(Uint8Array.prototype);
+    Object.defineProperty(spoof, "byteLength", { get() { calls++; return 1; } });
+    expect(() => copyR3PrivateBytes(spoof)).toThrow("SCHEMA");
+    expect(() => equalPrivateFixtureBytes(spoof, new Uint8Array(1))).toThrow("SCHEMA");
+    const oversized = new Uint8Array(16_777_217);
+    Object.defineProperty(oversized, "byteLength", { get() { calls++; return 1; } });
+    expect(() => copyR3PrivateBytes(oversized)).toThrow("SIZE");
+    expect(() => equalPrivateFixtureBytes(oversized, new Uint8Array(1))).toThrow("SIZE");
+    expect(() => copyR3PrivateBytes(new Uint16Array(1))).toThrow("SCHEMA");
+    expect(calls).toBe(0);
+  });
+
+  it.each(["plain-data", "inherited-setter", "oversized-data"])("rejects nested own __proto__ %s without callbacks or dropped fields", variant => {
+    const binding = {};
+    const initial = initializeR3Session(binding, snapshot(), { w: 3, b: 3 });
+    const staged = stageR3Begin(binding, initial);
+    const record = { provenance: staged.companion.provenance, frames: staged.companion.frames, visibilityImages: staged.companion.visibilityImages, visibilityCheckpoints: staged.companion.visibilityCheckpoints };
+    let calls = 0;
+    const payload = Object.create(null);
+    Object.defineProperty(payload, "turn", { enumerable: true, set() { calls++; } });
+    const poisoned = {};
+    Object.defineProperty(poisoned, "__proto__", { enumerable: true, value: variant === "oversized-data" ? "x".repeat(16_777_217) : variant === "inherited-setter" ? payload : { ignored: true } });
+    for (const [key, value] of Object.entries(record.provenance)) Object.defineProperty(poisoned, key, { enumerable: true, value });
+    const malformed = { ...record, provenance: poisoned as typeof record.provenance };
+    expect(() => encodeR3Provenance(malformed)).toThrow(/SCHEMA|SIZE/);
+    expect(calls).toBe(0);
+    expect(() => verifyAndCommitR3(binding, initial, { ...staged, companion: { ...staged.companion, provenance: malformed.provenance } })).toThrow(/SCHEMA|SIZE/);
+    expect(calls).toBe(0);
+    expect(verifyAndCommitR3(binding, initial, staged).recipients.w.batch.ordinal).toBe(1);
+  });
+
+  it("verifies and replays bounded private codec serialization above 2MiB within the private cap", () => {
+    const record = boundedPrivateTrace();
+    const encoded = encodeR3Provenance(record);
+    expect(encoded.byteLength).toBeGreaterThan(2_097_152);
+    expect(encoded.byteLength).toBeLessThanOrEqual(16_777_216);
+    const independent = new Uint8Array(Buffer.from(canonical(record), "utf8"));
+    expect(equalPrivateFixtureBytes(encoded, independent)).toBe(true);
+    const detached = copyR3PrivateBytes(encoded);
+    expect(detached === encoded).toBe(false);
+    expect(equalPrivateFixtureBytes(detached, independent)).toBe(true);
+    const replay = encodeR3Provenance(structuredClone(record));
+    expect(equalPrivateFixtureBytes(copyR3PrivateBytes(replay), detached)).toBe(true);
+    expect(createHash("sha256").update(detached).digest("hex")).toBe(createHash("sha256").update(replay).digest("hex"));
+    independent[independent.length - 1] ^= 1;
+    expect(equalPrivateFixtureBytes(detached, independent)).toBe(false);
+    expect(() => byteEqual(encoded, encoded)).toThrow("SIZE");
+  }, 30_000);
 });
