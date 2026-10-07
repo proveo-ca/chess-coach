@@ -26,6 +26,7 @@ export function record(value: unknown, keys: readonly string[], path: string, op
 
 function array(value: unknown, cap: number, path: string): asserts value is unknown[] {
   if (!Array.isArray(value) || value.length > cap) fail(path, "CARDINALITY");
+  if (Object.getPrototypeOf(value) !== Array.prototype) fail(path, "ARRAY");
   const keys = Reflect.ownKeys(value);
   if (keys.length !== value.length + 1) fail(path, "ARRAY");
   for (let i = 0; i < value.length; i++) {

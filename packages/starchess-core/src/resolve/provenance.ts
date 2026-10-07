@@ -73,13 +73,15 @@ function finish<R extends BeginScTurnResult | EndScTurnResult>(recorder: Provena
     const frame = recorder.frames.find(frame => frame.sourceEffectKey === proof.frameKey);
     const actor = frame?.before.entities.find(e => e.id === proof.appliedActorId);
     const target = frame?.before.entities.find(e => e.id === proof.appliedTargetId);
-    if (!frame || frame.beforeVisibilityKey !== proof.causalBeforeVisibilityKey || !actor || actor.kind !== "unit" || actor.side !== proof.side || !target || target.kind !== "unit" || target.square !== proof.targetCell.square || target.side !== proof.targetCell.piece.color || target.type !== proof.targetCell.piece.type) fail("$.consumedFacts", "PROVENANCE");
+    const query = provenance.lastCall.queries[proof.queryOrdinal]!;
+    const evaluationActor = query.base.entities.find(e => e.id === proof.evaluationActorId);
+    if (!frame || frame.beforeVisibilityKey !== proof.causalBeforeVisibilityKey || !actor || actor.kind !== "unit" || actor.side !== proof.side || actor.square !== query.from || !evaluationActor || evaluationActor.kind !== "unit" || actor.type !== evaluationActor.type || !target || target.kind !== "unit" || target.square !== proof.targetCell.square || target.side !== proof.targetCell.piece.color || target.type !== proof.targetCell.piece.type) fail("$.consumedFacts", "PROVENANCE");
     if (!frame.effects.some(effect => effect.sourceActionSeq === proof.sourceActionSeq && (proof.operation === "capture" ? effect.kind === "unit-destroy" && effect.entity.id === proof.appliedTargetId : effect.kind === "cc-lives-change" && effect.side === target.side))) fail("$.consumedFacts.effect", "PROVENANCE");
   }
   const privateRecords = freezeDetached({ frames: recorder.frames, visibilityImages: recorder.visibilityImages, visibilityCheckpoints: recorder.visibilityCheckpoints });
   const json = JSON.stringify({ provenance, ...privateRecords });
   if (json.length > 16_777_216 || new TextEncoder().encode(json).byteLength > 16_777_216) fail("$", "SIZE");
-  return { nativeResult, provenance, ...privateRecords };
+  return Object.freeze({ nativeResult, provenance, ...privateRecords });
 }
 
 export function beginTurnWithProvenance(input: { snapshot: ScFenSnapshot; provenance: EngineProvenance }): ProvenanceCompanion<BeginScTurnResult> {

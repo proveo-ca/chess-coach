@@ -134,7 +134,10 @@ export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
   return beginScTurnKernel(snapshot);
 };
 
-export const beginScTurnKernel = (snapshot: ScFenSnapshot, recorder?: ProvenanceRecorder): BeginScTurnResult => {
+export const beginScTurnKernel = (
+  snapshot: ScFenSnapshot,
+  recorder?: ProvenanceRecorder,
+): BeginScTurnResult => {
   if (snapshot.phase !== "P") {
     throw new Error(`beginScTurn requires phase P (got ${snapshot.phase})`);
   }
@@ -254,7 +257,14 @@ const byTiming = (actions: readonly ScAction[], timing: "B" | "C" | "F") =>
       return a.seq - b.seq;
     });
 
-const relocate = (placement: string, from: Square, to: Square, recorder?: ProvenanceRecorder, phase: FramePhase = "B", seq: number | null = null): string => {
+const relocate = (
+  placement: string,
+  from: Square,
+  to: Square,
+  recorder?: ProvenanceRecorder,
+  phase: FramePhase = "B",
+  seq: number | null = null,
+): string => {
   const map = placementToMap(placement);
   recorder?.board(map);
   const piece = map.get(from);
@@ -987,7 +997,7 @@ export const endScTurnKernel = (
 
     if (a.kind === "siegeMode") {
       if (!actor || actor.type !== "r") continue;
-        if (toggleTankSiege(placement, sieged, a.color, at, recorder, "F", a.seq)) {
+      if (toggleTankSiege(placement, sieged, a.color, at, recorder, "F", a.seq)) {
         siegedThisTurn.push(at);
         log.special("specialAfter", rewritten);
       }
