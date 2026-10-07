@@ -221,8 +221,8 @@ describe("actual identity effects", () => {
     expect(ended.frames[0]?.before.entities.filter(e => e.kind === "unit" && e.type === "p").map(e => e.square)).toStrictEqual(["e2", "e4"]);
   });
 
-  it("commits a CC contact capture and its relocation in one causal frame", () => {
-    const { ended } = run("SCFEN|7k/8/8/8/8/8/4r3/3K4|0|33|P|G:11:11|Q:w:;b:", [
+  it.each([false, true])("commits a CC contact capture and relocation atomically with mine=%s", mined => {
+    const { ended } = run(`SCFEN|7k/8/8/8/8/8/4r3/3K4|0|33|P|G:11:11|Q:w:;b:${mined ? "|M:w:;b:d2" : ""}`, [
       { kind: "classical", timing: "C", color: "w", from: "d1", to: "d2" },
       { kind: "classical", timing: "C", color: "b", from: "e2", to: "a2" },
     ]);
@@ -231,19 +231,24 @@ describe("actual identity effects", () => {
     const frame = ended.frames[0]!;
     expect(frame.phase).toBe("C-move");
     expect(frame.before.entities).toStrictEqual([
+      ...(mined ? [{ id: "engine:mine:1", kind: "mine", side: "b", square: "d2" }] : []),
       { id: "engine:unit:1", kind: "unit", side: "w", type: "k", square: "d1", tankMode: null },
       { id: "engine:unit:2", kind: "unit", side: "b", type: "r", square: "e2", tankMode: "tank" },
       { id: "engine:unit:3", kind: "unit", side: "b", type: "k", square: "h8", tankMode: null },
     ]);
     expect(frame.effects).toStrictEqual([
+      ...(mined ? [{ kind: "mine-remove", entityId: "engine:mine:1", sourceActionSeq: 0 }] : []),
       { kind: "unit-move", entityId: "engine:unit:1", from: "d1", to: "d2", sourceActionSeq: 0 },
-      { kind: "unit-destroy", entity: { id: "engine:unit:2", kind: "unit", side: "b", type: "r", square: "e2", tankMode: "tank" }, sourceActionSeq: 0, causalBeforeVisibilityKey: frame.beforeVisibilityKey },
+      { kind: "unit-destroy", entity: { id: "engine:unit:2", kind: "unit", side: "b", type: "r", square: "e2", tankMode: "tank" }, sourceActionSeq: 0, causalBeforeVisibilityKey: "engine:call:2:image:0" },
     ]);
     expect(frame.after.entities).toStrictEqual([
       { id: "engine:unit:1", kind: "unit", side: "w", type: "k", square: "d2", tankMode: null },
       { id: "engine:unit:3", kind: "unit", side: "b", type: "k", square: "h8", tankMode: null },
     ]);
     expect(ended.visibilityImages.map(image => image.state)).toStrictEqual([frame.before, frame.after]);
+    expect(frame.before.nativeMineOrder).toStrictEqual(mined ? ["engine:mine:1"] : []);
+    expect(frame.after.nativeMineOrder).toStrictEqual([]);
+    expect(ended.nativeResult.next.mines).toBeUndefined();
     expect(ended.provenance.lastCall.consumedFacts).toStrictEqual([]);
   });
 

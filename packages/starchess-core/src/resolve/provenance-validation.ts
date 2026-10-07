@@ -237,9 +237,10 @@ export function validateProvenance(value: unknown): asserts value is EngineProve
   validateImage({ entities: value.entities, ccLives: value.ccLives, nativeMineOrder: value.nativeMineOrder }, "$.provenance.image");
   for (const e of value.entities as FrameImage["entities"]) id(e.id, e.kind, e.kind === "unit" ? value.unitCounter : value.mineCounter, "$.entity.id");
   oneOf(value.stage, ["before-begin", "after-begin", "terminal"], "$.stage");
-  const terminal = scOutcome({ turn: value.turn, ccLives: value.ccLives as { w: number; b: number } }) !== null;
+  const ccLives = value.ccLives as { w: number; b: number };
+  const terminal = scOutcome({ turn: value.turn, ccLives }) !== null;
   const odd = value.callOrdinal % 2 === 1;
-  if ((value.stage === "terminal") !== terminal || (value.stage === "before-begin" && odd) || (value.stage === "after-begin" && !odd) || value.turn !== value.initialTurn + settlements + (terminal && odd ? 1 : 0) || (!terminal && settlements >= remaining)) fail("$.provenance.stage", "SEQUENCE");
+  if ((value.stage === "terminal") !== terminal || (terminal && odd && ccLives.w !== 0 && ccLives.b !== 0) || (value.stage === "before-begin" && odd) || (value.stage === "after-begin" && !odd) || value.turn !== value.initialTurn + settlements + (terminal && odd ? 1 : 0) || (!terminal && settlements >= remaining)) fail("$.provenance.stage", "SEQUENCE");
   array(value.resolvedActions, 8, "$.resolvedActions");
   const ordinals = { w: 0, b: 0 };
   for (let i = 0; i < value.resolvedActions.length; i++) {

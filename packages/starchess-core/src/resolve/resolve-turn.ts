@@ -176,7 +176,7 @@ const applyPathRevealAttackKernel = (
     return { ...snap, fired: false };
   }
   if (recorder) {
-    const seq = recorder.queries[queryOrdinal!]!.sourceActionSeq;
+    const seq = recorder.queryAt(queryOrdinal!).sourceActionSeq;
     const frame = recorder.frame("C-path-reveal", () => {
       recorder.destroy(occ, seq);
       recorder.move(actor, a.pathRevealFrom!, a.to, seq);
@@ -233,7 +233,7 @@ const applyPathRevealCCShotKernel = (
   };
   ccLives[a.target] = clampLives(ccLives[a.target] - 1);
   if (recorder) {
-    const seq = recorder.queries[queryOrdinal!]!.sourceActionSeq;
+    const seq = recorder.queryAt(queryOrdinal!).sourceActionSeq;
     const frame = recorder.frame("C-path-reveal", () => {
       recorder.move(actor, a.pathRevealFrom!, a.stopAt!, seq);
       recorder.damage(a.target, ccLives[a.target], seq);
@@ -999,7 +999,7 @@ export const resolveTurnKernel = (
           mode: "walk",
         });
 
-  const land = (landing: Landing) => {
+  const land = (landing: Landing, captured?: ScPiece) => {
     const { plan, piece, dest } = landing;
     const occ = board.get(dest);
     if (occ && occ.color !== plan.color && occ.type !== "k") {
@@ -1060,6 +1060,7 @@ export const resolveTurnKernel = (
     const trip = walkContact(landing);
 
     recorder?.frame("C-move", () => {
+      if (captured) recorder.destroy(captured, seqFor(plan));
       if (occ && occ.color !== plan.color && occ.type !== "k") recorder.destroy(occ, seqFor(plan));
       flushMines();
       recorder.move(piece, plan.from, dest, seqFor(plan));
@@ -1165,10 +1166,6 @@ export const resolveTurnKernel = (
 
   const ccTakes = (cc: Landing, other: Landing, at: Square) => {
     const mineColor = clearOnCapture(at, cc.plan.color, cc.piece.type, seqFor(cc.plan));
-    recorder?.frame("C-move", () => {
-      recorder.destroy(other.piece, seqFor(cc.plan));
-      flushMines();
-    });
     moveCollisions.push({
       kind: "capture",
       piece: cc.piece.type,
@@ -1188,7 +1185,7 @@ export const resolveTurnKernel = (
       from: other.plan.from,
       to: at,
     });
-    land(cc);
+    land(cc, other.piece);
   };
 
   const moveWave = (wave: readonly (readonly [ClassicalPlan, RelocateMode])[]) => {
@@ -1244,7 +1241,7 @@ export const resolveTurnKernel = (
   const applyApproachMine = (a: ResolveApproach): StarChessColor | undefined => {
     const trip = approachMineContact(a, phase3.mines);
     if (trip.kind === "inert") return undefined;
-    const seq = recorder ? recorder.queries[approachQueries.get(a)!]!.sourceActionSeq : null;
+    const seq = recorder ? recorder.queryAt(approachQueries.get(a)!).sourceActionSeq : null;
     recorder?.frame("C-path-reveal", () => {
       if (trip.kind === "detonated") {
         const liveBoard = placementToMap(phase3.placement);

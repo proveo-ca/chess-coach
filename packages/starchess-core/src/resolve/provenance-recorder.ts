@@ -164,15 +164,22 @@ export class ProvenanceRecorder {
 
   mineRemovalIds(mines: readonly ScMine[], hit: MineContact, order: readonly MineId[] = this.nativeMineOrder): MineId[] {
     if (mines.length !== order.length) fail("$.mine-carrier", "CONSISTENCY");
-    for (let i = 0; i < mines.length; i++) {
-      const entity = this.entities.get(order[i]!);
-      if (!entity || entity.kind !== "mine" || entity.side !== mines[i]!.color || entity.square !== mines[i]!.at) fail("$.mine-carrier", "CONSISTENCY");
+    const spent = hit.kind === "inert" ? null : hit.kind === "detonated" ? hit.chaseFrom ?? hit.at : hit.at;
+    const removed: MineId[] = [];
+    let selectedColor: StarChessColor | undefined;
+    let index = 0;
+    for (const mine of mines) {
+      const entity = this.entities.get(order[index]!);
+      if (!entity || entity.kind !== "mine" || entity.side !== mine.color || entity.square !== mine.at) fail("$.mine-carrier", "CONSISTENCY");
+      if (mine.at === spent) {
+        selectedColor ??= mine.color;
+        removed.push(entity.id);
+      }
+      index += 1;
     }
     if (hit.kind === "inert") return [];
-    const spent = hit.kind === "detonated" ? hit.chaseFrom ?? hit.at : hit.at;
-    const selected = mines.findIndex(mine => mine.at === spent);
-    if (selected < 0 || mines[selected]!.color !== hit.mineColor) fail("$.mine-selection", "PROVENANCE");
-    return order.filter((_, index) => mines[index]!.at === spent);
+    if (selectedColor !== hit.mineColor) fail("$.mine-selection", "PROVENANCE");
+    return removed;
   }
 
   mineRemove(ids: readonly MineId[], seq: number | null): void {
@@ -212,10 +219,15 @@ export class ProvenanceRecorder {
     }, returned: value => { query.returnedStep = value; } };
   }
 
-  deferred(ordinal: number): void { this.queries[ordinal]!.consumption = "deferred-skipped"; }
+  queryAt(ordinal: number): MutableQuery {
+    for (const [index, query] of this.queries.entries()) if (index === ordinal) return query;
+    return fail("$.lastCall.queries", "PROVENANCE");
+  }
+
+  deferred(ordinal: number): void { this.queryAt(ordinal).consumption = "deferred-skipped"; }
 
   consume(ordinal: number, frame: TrustedEffectFrame | null, actor: ScPiece, target: ScPiece, operation: "capture" | "cc-shot"): void {
-    const query = this.queries[ordinal];
+    const query = this.queryAt(ordinal);
     if (!query || query.returnedStep === null || !frame || query.consumption !== "deferred-skipped") fail("$.consumedFacts", "PROVENANCE");
     const evaluationActor = query.base.entities.find(e => e.kind === "unit" && e.square === query.from);
     const evaluationTarget = query.base.entities.find(e => e.kind === "unit" && e.square === query.target);
