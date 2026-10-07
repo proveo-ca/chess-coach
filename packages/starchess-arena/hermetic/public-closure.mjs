@@ -454,7 +454,14 @@ export const checkPublicClosure = (root = repository) => {
     const scanMutations = (node) => {
       mutationNodeCount++;
       const writes = (target, numeric = false) => {
-        if (ts.isIdentifier(target)) { const symbol = binding(target) ?? target.text; mutatedRoots.add(symbol); if (!numeric) nonNumericWrites.add(symbol); if (["Array", "Object", "String", "Number", "Boolean", "JSON"].includes(symbol)) arrayIntrinsicsMutated = true; }
+        if (ts.isIdentifier(target)) {
+          const symbol = binding(target) ?? target.text;
+          const declaration = symbol?.valueDeclaration;
+          if (id === `${ARENA}/src/authorized/v2/schema.ts` && ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol", "Uint8Array", "ArrayBuffer"].includes(symbol)) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${target.text}`);
+          if (id === `${ARENA}/src/authorized/v2/schema.ts` && declaration && ts.isVariableDeclaration(declaration) && declaration.parent.parent.parent === source &&
+              ts.isIdentifier(declaration.name) && ["typedArrayPrototype", "typedArrayName", "typedArrayByteLength", "typedArraySet", "checkedByteLength", "copyBytes", "byteEqual", "parseBytes"].includes(declaration.name.text)) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${target.text}`);
+          mutatedRoots.add(symbol); if (!numeric) nonNumericWrites.add(symbol); if (["Array", "Object", "String", "Number", "Boolean", "JSON"].includes(symbol)) arrayIntrinsicsMutated = true;
+        }
         else if (ts.isPropertyAccessExpression(target) || ts.isElementAccessExpression(target)) markMutation(target);
         else if (ts.isParenthesizedExpression(target) || ts.isAsExpression(target) || ts.isNonNullExpression(target) || ts.isTypeAssertionExpression(target)) writes(target.expression);
         else if (ts.isArrayLiteralExpression(target)) for (const child of target.elements) writes(child);
@@ -1204,12 +1211,47 @@ export const checkPublicClosure = (root = repository) => {
     const validationIntrinsicRoot = (node, seen = new Set()) => {
       const value = origin(node);
       if (seen.has(value)) return false;
-      if (ts.isIdentifier(value)) return ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol"].includes(value.text) && globalReference(value);
+      if (ts.isIdentifier(value)) return ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol", "Uint8Array", "ArrayBuffer", "globalThis", "global", "window", "self"].includes(value.text) && globalReference(value);
+      if (ts.isCallExpression(value)) {
+        const method = property(value.expression);
+        if (method && ["getPrototypeOf", "getOwnPropertyDescriptor"].includes(method.name) && builtinNamespace(method.receiver, "Object") && value.arguments[0]) {
+          return validationIntrinsicRoot(value.arguments[0], new Set([...seen, value]));
+        }
+      }
       const member = property(value);
       return Boolean(member && validationIntrinsicRoot(member.receiver, new Set([...seen, value])));
     };
-    const validationIntrinsicsChanged = () => memberMutationTargets.some((target) => validationIntrinsicRoot(target)) ||
-      ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol"].some((name) => nonNumericWrites.has(name));
+    const validationIntrinsicsChanged = () => [...memberMutationTargets, ...arrayMutatorTargets].some((target) => validationIntrinsicRoot(target)) ||
+      ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol", "Uint8Array", "ArrayBuffer", "globalThis", "global", "window", "self"].some((name) => numericAssignments.has(name) || nonNumericWrites.has(name));
+    const byteIntrinsicAnchors = new Map([
+      ["typedArrayPrototype", ["d8b2a7d37da68bfbd8b3c496c5642775060ea5a5f72c287246c5b3171d092d14", ["Object.getPrototypeOf(Uint8Array.prototype)"]]],
+      ["typedArrayName", ["75fcb7c4e68ebf8d0cff37db9248ff097daabb020ec70a1d690f8b99bd9214a7", ["Object.getOwnPropertyDescriptor(typedArrayPrototype, Symbol.toStringTag)"]]],
+      ["typedArrayByteLength", ["1e010d6adc37fef32ea456ae25ae0e6883edcef2e70360848a5da9196529574e", ['Object.getOwnPropertyDescriptor(typedArrayPrototype, "byteLength")']]],
+      ["typedArraySet", ["478fdf2348bff8de1bb369cdb2b4e0044a1aba98a30bf7259e694b198404facb", []]],
+      ["checkedByteLength", ["68460b229537b644bb0618c83afbb220817916cada1719bc55bcf73a843cbbad", []]],
+      ["copyBytes", ["b316bf4bfdc21109c17eaabec0135f46ae19c2b0b4af1c5e2463ace1eb6ba207", []]],
+      ["byteEqual", ["8d4f9bea85e3eec7eae6410a11f8419fb49fa882bfbcb34a8a02871856f491df", []]],
+      ["parseBytes", ["a3d76ef5193831bbaf1177c43d9cdef66c99814e22efdb8d1964a64b86a05e88", []]],
+    ]);
+    const reviewedByteIntrinsic = (node) => {
+      if (id !== `${ARENA}/src/authorized/v2/schema.ts`) return false;
+      const declarations = source.statements.filter(ts.isVariableStatement).flatMap((statement) => [...statement.declarationList.declarations]);
+      if (validationIntrinsicsChanged() || ![...byteIntrinsicAnchors].every(([name, [digest]]) => {
+        const entries = declarations.filter((entry) => ts.isIdentifier(entry.name) && entry.name.text === name);
+        const entry = entries[0];
+        const symbol = entry && binding(entry.name);
+        return entries.length === 1 && sha256(entry.getText(source)) === digest && !numericAssignments.has(symbol) && !nonNumericWrites.has(symbol);
+      })) return false;
+      const definitionNode = ts.isVariableDeclaration(node);
+      if (!definitionNode && (!ts.isPropertyAccessExpression(node) || !builtinNamespace(node.expression, "Object") ||
+          !ts.isCallExpression(node.parent) || node.parent.expression !== node)) return false;
+      const call = definitionNode ? undefined : node.parent.getText(source);
+      for (let declaration = node; declaration; declaration = declaration.parent) {
+        const anchor = ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && byteIntrinsicAnchors.get(declaration.name.text);
+        if (anchor) return declaration.parent.parent.parent === source && (definitionNode || anchor[1].includes(call));
+      }
+      return false;
+    };
     const validationNames = new Map([
       [`${ARENA}/src/authorized/v2/schema.ts`, ["object", "tag", "array"]],
       [`${CORE}/src/rules/counted-planning.ts`, ["record", "inventory", "readMap", "readSet"]],
@@ -1298,7 +1340,9 @@ export const checkPublicClosure = (root = repository) => {
       return ts.isArrowFunction(value) || ts.isFunctionExpression(value) || ts.isIdentifier(value) && callableType(dataType(value));
     };
     const scan = (node) => {
-      if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && validationNames.get(id)?.includes(node.name.text) &&
+      if (id === `${ARENA}/src/authorized/v2/schema.ts` && ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) &&
+          node.parent.parent.parent === source && byteIntrinsicAnchors.has(node.name.text) && !reviewedByteIntrinsic(node)) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${node.name.text}`);
+      if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.parent.parent.parent === source && validationNames.get(id)?.includes(node.name.text) &&
           !reviewedValidationDescriptor(node)) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${node.name.text}`);
       if (id === `${ARENA}/src/challengeContract/validation.ts` && ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) &&
           node.name.text === "inspectDto" && !reviewedDescriptor(node)) throw new Error(`Code constructor acquisition in public closure: ${id}`);
@@ -1336,7 +1380,7 @@ export const checkPublicClosure = (root = repository) => {
         reviewedDescriptor(node) && ts.isCallExpression(node.parent) && node.parent.expression === node;
       if (reflected && (builtinNamespace(reflected.receiver, "Reflect") && ["get", "getOwnPropertyDescriptor", undefined].includes(reflected.name) ||
           builtinNamespace(reflected.receiver, "Object") && ["getOwnPropertyDescriptor", "getPrototypeOf", "getOwnPropertyDescriptors", undefined].includes(reflected.name)) &&
-          !descriptorSeam && !reviewedArrayDescriptor(node) && !reviewedValidationDescriptor(node)) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${node.getText(source)}`);
+          !descriptorSeam && !reviewedArrayDescriptor(node) && !reviewedValidationDescriptor(node) && !reviewedByteIntrinsic(node)) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${node.getText(source)}`);
       const boundName = ts.isBindingElement(node) ? node.propertyName ? ownName(node.propertyName) : ts.isIdentifier(node.name) ? node.name.text : undefined : undefined;
       const bound = ts.isBindingElement(node) ? bindingMember(node) : undefined;
       if (ts.isBindingElement(node) && (["constructor", "__proto__", "eval", "Function", "process", "setTimeout", "setInterval", "setImmediate", "getOwnPropertyDescriptor", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(boundName ?? "") ||

@@ -2,10 +2,12 @@ import { cpSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, symli
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import ts from "typescript";
 import { afterEach, describe, expect, it } from "vitest";
 import { canonical } from "../challenge/config";
 import { sha256 } from "../challenge/corpus";
 import { collectSourceInventory, SOURCE_PARTITIONS, type SourceInventoryV1 } from "../challenge/sourceInventory";
+import { freezeDetached, record as nativeRecord } from "../../../starchess-core/src/resolve/provenance-validation";
 
 const CORE = "packages/starchess-core";
 const ARENA = "packages/starchess-arena";
@@ -495,8 +497,108 @@ const v2Fixture = (): string => {
   put(root, `${base}/dist/sha256.mjs`, "export default class SHA {};");
   return root;
 };
+const nativeValidationFixture = (): string => {
+  const root = fixture();
+  const path = `${CORE}/src/resolve/provenance-validation.ts`;
+  const source = ts.createSourceFile(path, readFileSync(join(repository, path), "utf8"), ts.ScriptTarget.Latest, true);
+  const names = new Set(["ProvenanceError", "fail", "record", "array", "freezeDetached", "oneOf", "binding", "validateImage", "validateBindings"]);
+  const declarations = source.statements.filter((node): node is ts.FunctionDeclaration | ts.ClassDeclaration =>
+    (ts.isFunctionDeclaration(node) || ts.isClassDeclaration(node)) && node.name !== undefined && names.has(node.name.text));
+  expect(declarations).toHaveLength(names.size);
+  put(root, path, declarations.map(node => node.getText(source)).join("\n"));
+  return root;
+};
 
 describe("partitioned challenge source inventory", () => {
+  it("audits R3 native descriptor-before-read helpers in core-rules without promoting them to model roots", () => {
+    const root = nativeValidationFixture();
+    const path = `${CORE}/src/resolve/provenance-validation.ts`;
+    const inventory = collectSourceInventory(root);
+    expect(inventory.audit.passed).toBe(true);
+    expect(inventory.groups["core-rules"].map(file => file.path)).toContain(path);
+    expect(inventory.entrypoints).not.toContain(path);
+  });
+  it("rejects R3 native descriptor helpers copied to an unapproved core source path", () => {
+    const root = nativeValidationFixture();
+    put(root, `${CORE}/src/rules/native-clone.ts`, readFileSync(join(root, `${CORE}/src/resolve/provenance-validation.ts`), "utf8"));
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+  });
+  it.each([
+    ['proto !== Object.prototype && proto !== null', 'false'],
+    ['Object.getPrototypeOf(value)', 'Object.getPrototypeOf(() => {})'],
+    ['Object.getOwnPropertyDescriptors(value)', 'Object.getOwnPropertyDescriptors(Object)'],
+    ['!("value" in descriptor)', 'false'],
+    ['!descriptor.enumerable', 'false'],
+    ['Object.getPrototypeOf(value) !== Array.prototype', 'false'],
+    ['keys.length !== value.length + 1', 'false'],
+    ['Object.getOwnPropertyDescriptor(value, String(i))', 'Object.getOwnPropertyDescriptor(() => {}, "constructor")'],
+    ['throw new ProvenanceError(path, code);', 'return undefined as never;'],
+    ['readonly name = "ContractError";', 'readonly name = "Error";'],
+  ])("rejects R3 changed native validation anchors: %s", (before, after) => {
+    const root = nativeValidationFixture();
+    const path = `${CORE}/src/resolve/provenance-validation.ts`;
+    const original = readFileSync(join(root, path), "utf8");
+    expect(original).toContain(before);
+    put(root, path, original.replace(before, after));
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+  });
+  it.each([
+    ['oneOf(entity.side, ["w", "b"], `${path}.entity.side`);', ''],
+    ['cc[side]++', 'cc[side as "constructor"]++'],
+    ['if (!values.includes(value)) fail(path);', 'if (false) fail(path);'],
+    ['oneOf(value.side, ["w", "b"], `${path}.side`);', ''],
+    ['origins[action.color]', 'origins[unknownKeyFactory()]'],
+  ])("rejects R3 weakened native descriptor-before-read counter contexts: %s", (before, after) => {
+    const root = nativeValidationFixture();
+    const path = `${CORE}/src/resolve/provenance-validation.ts`;
+    const original = readFileSync(join(root, path), "utf8");
+    expect(original).toContain(before);
+    put(root, path, original.replace(before, after));
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+  });
+  it.each([
+    'export const probe=Object.getOwnPropertyDescriptors;',
+    'export function probe(input:unknown){return Object.getPrototypeOf(input);}',
+    'export function probe(input:unknown,index:number){return Object.getOwnPropertyDescriptor(input,String(index));}',
+    'export function probe(input:unknown){return Object.getOwnPropertyDescriptors(input);}',
+    'const {getPrototypeOf:probe}=Object; probe(()=>{});',
+    'const fn:any=()=>{}; fn[["con","structor"].join("")]("return process")();',
+    'const obj={get value(){return ()=>{};}}; (obj.value as any)[["con","structor"].join("")]("return process")();',
+    'Object.defineProperty(Object.prototype,"value",{get(){return ()=>{};}});',
+    'Object.getPrototypeOf=(()=>null) as any;',
+    'Object.setPrototypeOf(ProvenanceError.prototype,{get constructor(){return ()=>{};}});',
+    'fail=(()=>undefined) as any;',
+  ])("rejects R3 extra unbound descriptor probes, accessor/callable escapes and intrinsic mutations in the native validator: %s", code => {
+    const root = nativeValidationFixture();
+    const path = `${CORE}/src/resolve/provenance-validation.ts`;
+    put(root, path, `${readFileSync(join(root, path), "utf8")}\n${code}`);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+  });
+  it("rejects native accessor, inherited, sparse and callable DTO hazards without evaluating getters", () => {
+    let calls = 0;
+    const getter = () => { calls++; throw new Error("getter ran"); };
+    for (const input of [
+      Object.defineProperty({}, "value", { enumerable: true, get: getter }),
+      Object.create({ get value() { return getter(); } }),
+      Object.defineProperty({}, "value", { value: 1 }),
+      () => 1,
+    ]) expect(() => nativeRecord(input, ["value"], "$")).toThrow();
+    for (const input of [
+      { value: () => 1 },
+      { value: Object.defineProperty({}, "nested", { enumerable: true, get: getter }) },
+      { value: Object.defineProperty([0], "0", { enumerable: true, get: getter }) },
+      { value: new Array(2) },
+      { value: Object.create({ inherited: 1 }) },
+    ]) expect(() => freezeDetached(input)).toThrow();
+    expect(calls).toBe(0);
+    const input: { value: { nested: number }[] } = Object.assign(Object.create(null), { value: [{ nested: 1 }] });
+    nativeRecord(input, ["value"], "$");
+    const copy = freezeDetached(input);
+    expect(copy).toEqual(input);
+    expect(copy).not.toBe(input);
+    expect(copy.value).not.toBe(input.value);
+    expect(Object.isFrozen(copy.value[0])).toBe(true);
+  });
   it("classifies the exact R3 V2 files and leaves new private challenge files host-only", () => {
     const root = v2Fixture();
     put(root, `${ARENA}/src/challenge/r3Session.ts`, 'import "@chess-coach/starchess-core";');
@@ -1294,6 +1396,64 @@ describe("static browser public closure", () => {
     const { checkPublicClosure } = await import(/* @vite-ignore */ script);
     return checkPublicClosure(root);
   };
+  it("keeps R3 approved native descriptor validation excluded from runtime and erased model closure", async () => {
+    const root = nativeValidationFixture();
+    for (const code of [
+      'export * from "./resolve/provenance-validation";',
+      'export type {Hidden} from "./resolve/provenance-validation";',
+      'type Hidden=import("./resolve/provenance-validation").Hidden;',
+    ]) {
+      put(root, `${CORE}/src/planning-v1.ts`, code);
+      expect(() => collectSourceInventory(root)).toThrow("Forbidden native planning edge");
+      await expect(check(root)).rejects.toThrow("Native core in public closure");
+    }
+  });
+  it.each([
+    ['Object.getPrototypeOf(Uint8Array.prototype)', 'Object.getPrototypeOf(() => {})'],
+    ['Object.getOwnPropertyDescriptor(typedArrayPrototype, Symbol.toStringTag)', 'Object.getOwnPropertyDescriptor(Object, "constructor")'],
+    ['Object.getOwnPropertyDescriptor(typedArrayPrototype, "byteLength")', 'Object.getOwnPropertyDescriptor(typedArrayPrototype, "constructor")'],
+    ['Reflect.apply(typedArrayByteLength, input, []) as number', 'input.byteLength'],
+    ['if (length > MAX_CODEC_BYTES) return fail("$", "SIZE");', 'if (false) return fail("$", "SIZE");'],
+    ['Reflect.apply(typedArrayName, input, []) !== "Uint8Array"', 'false'],
+    ['Reflect.apply(typedArraySet, copy, [input])', 'copy.set(input)'],
+    ['const copy = copyBytes(input);', 'const copy = input;'],
+  ])("rejects R3 changed byte-intrinsic capture, brand, size and detached-input anchors: %s", async (before, after) => {
+    const root = v2Fixture();
+    const path = `${ARENA}/src/authorized/v2/schema.ts`;
+    const original = readFileSync(join(root, path), "utf8");
+    expect(original).toContain(before);
+    put(root, path, original.replace(before, after));
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
+  });
+  it.each([
+    'export const escapedByteGetter=Object.getOwnPropertyDescriptor(typedArrayPrototype,"byteLength")!.get;',
+    'export function byteProbe(value:object,key:string){return Object.getOwnPropertyDescriptor(value,key);}',
+    'typedArrayByteLength=(()=>0) as any;',
+    'checkedByteLength=(()=>0) as any;',
+    'Object.defineProperty(typedArrayPrototype,"byteLength",{get(){return 0;}});',
+    'Uint8Array.prototype.set=(()=>{}) as any;',
+    'Uint8Array=class {} as any;',
+    'globalThis.Object={getPrototypeOf:()=>null} as any;',
+    'const {getPrototypeOf:probe}=Object; probe(Uint8Array.prototype);',
+  ])("rejects R3 unbound byte accessor probes, aliases and captured-intrinsic mutations: %s", async code => {
+    const root = v2Fixture();
+    const path = `${ARENA}/src/authorized/v2/schema.ts`;
+    put(root, path, `${readFileSync(join(root, path), "utf8")}\n${code}`);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
+  });
+  it("preserves R3 lexical byte-helper shadows without granting descriptor access in their scope", async () => {
+    const root = v2Fixture();
+    const path = `${ARENA}/src/authorized/v2/schema.ts`;
+    const original = readFileSync(join(root, path), "utf8");
+    put(root, path, `${original}\nfunction local(){let checkedByteLength=0;checkedByteLength+=1;return checkedByteLength;}`);
+    expect(collectSourceInventory(root).audit.passed).toBe(true);
+    expect((await check(root)).passed).toBe(true);
+    put(root, path, `${original}\nfunction local(){const typedArrayPrototype=Object.getPrototypeOf(()=>{});return typedArrayPrototype;}`);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
+  });
   let currentGraph: Promise<{ sourceFiles: { path: string }[] }> | undefined;
   const currentGraphFixture = async (): Promise<string> => {
     const root = fixture();

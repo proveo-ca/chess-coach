@@ -772,7 +772,17 @@ export const collectSourceInventory = (
     const scanMutations = (node: ts.Node): void => {
       mutationNodeCount++;
       const writes = (target: ts.Node, numeric = false): void => {
-        if (ts.isIdentifier(target)) { const symbol = binding(target); mutatedRoots.add(symbol); if (!numeric) nonNumericWrites.add(symbol); if (typeof symbol === "string" && ["Array", "Object", "String", "Number", "Boolean", "JSON"].includes(symbol)) arrayIntrinsicsMutated = true; }
+        if (ts.isIdentifier(target)) {
+          const symbol = binding(target);
+          const declaration = typeof symbol === "string" ? undefined : symbol.valueDeclaration;
+          if (file.path === `${ARENA}/src/authorized/v2/schema.ts` && typeof symbol === "string" && ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol", "Uint8Array", "ArrayBuffer"].includes(symbol)) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${target.text}`);
+          if (file.path === `${CORE}/src/resolve/provenance-validation.ts` && declaration?.parent === source &&
+              (ts.isFunctionDeclaration(declaration) && declaration.name && ["fail", "record", "array", "oneOf", "binding"].includes(declaration.name.text) ||
+               ts.isClassDeclaration(declaration) && declaration.name?.text === "ProvenanceError")) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${target.text}`);
+          if (file.path === `${ARENA}/src/authorized/v2/schema.ts` && declaration && ts.isVariableDeclaration(declaration) && declaration.parent.parent.parent === source &&
+              ts.isIdentifier(declaration.name) && ["typedArrayPrototype", "typedArrayName", "typedArrayByteLength", "typedArraySet", "checkedByteLength", "copyBytes", "byteEqual", "parseBytes"].includes(declaration.name.text)) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${target.text}`);
+          mutatedRoots.add(symbol); if (!numeric) nonNumericWrites.add(symbol); if (typeof symbol === "string" && ["Array", "Object", "String", "Number", "Boolean", "JSON"].includes(symbol)) arrayIntrinsicsMutated = true;
+        }
         else if (ts.isPropertyAccessExpression(target) || ts.isElementAccessExpression(target)) markMutation(target);
         else if (ts.isParenthesizedExpression(target) || ts.isAsExpression(target) || ts.isNonNullExpression(target) || ts.isTypeAssertionExpression(target)) writes(target.expression);
         else if (ts.isArrayLiteralExpression(target)) for (const child of target.elements) writes(child);
@@ -1580,31 +1590,77 @@ export const collectSourceInventory = (
     const validationIntrinsicRoot = (node: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
       const value = origin(node);
       if (seen.has(value)) return false;
-      if (ts.isIdentifier(value)) return ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol"].includes(value.text) && typeof binding(value) === "string";
+      if (ts.isIdentifier(value)) return ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol", "Uint8Array", "ArrayBuffer", "globalThis", "global", "window", "self"].includes(value.text) && typeof binding(value) === "string";
+      if (ts.isCallExpression(value)) {
+        const method = property(value.expression);
+        if (method && ["getPrototypeOf", "getOwnPropertyDescriptor"].includes(method.name ?? "") && objectNamespace(method.receiver) && value.arguments[0]) {
+          return validationIntrinsicRoot(value.arguments[0], new Set([...seen, value]));
+        }
+      }
       const member = property(value);
       return !!(member && validationIntrinsicRoot(member.receiver, new Set([...seen, value])));
     };
-    const validationIntrinsicsChanged = (): boolean => memberMutationTargets.some((target) => validationIntrinsicRoot(target)) ||
-      ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol"].some((name) => nonNumericWrites.has(name));
+    const validationIntrinsicsChanged = (): boolean => [...memberMutationTargets, ...arrayMutatorTargets].some((target) => validationIntrinsicRoot(target)) ||
+      ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol", "Uint8Array", "ArrayBuffer", "globalThis", "global", "window", "self"].some((name) => numericAssignments.has(name) || nonNumericWrites.has(name));
+    const byteIntrinsicAnchors = new Map<string, readonly [string, readonly string[]]>([
+      ["typedArrayPrototype", ["d8b2a7d37da68bfbd8b3c496c5642775060ea5a5f72c287246c5b3171d092d14", ["Object.getPrototypeOf(Uint8Array.prototype)"]]],
+      ["typedArrayName", ["75fcb7c4e68ebf8d0cff37db9248ff097daabb020ec70a1d690f8b99bd9214a7", ["Object.getOwnPropertyDescriptor(typedArrayPrototype, Symbol.toStringTag)"]]],
+      ["typedArrayByteLength", ["1e010d6adc37fef32ea456ae25ae0e6883edcef2e70360848a5da9196529574e", ['Object.getOwnPropertyDescriptor(typedArrayPrototype, "byteLength")']]],
+      ["typedArraySet", ["478fdf2348bff8de1bb369cdb2b4e0044a1aba98a30bf7259e694b198404facb", []]],
+      ["checkedByteLength", ["68460b229537b644bb0618c83afbb220817916cada1719bc55bcf73a843cbbad", []]],
+      ["copyBytes", ["b316bf4bfdc21109c17eaabec0135f46ae19c2b0b4af1c5e2463ace1eb6ba207", []]],
+      ["byteEqual", ["8d4f9bea85e3eec7eae6410a11f8419fb49fa882bfbcb34a8a02871856f491df", []]],
+      ["parseBytes", ["a3d76ef5193831bbaf1177c43d9cdef66c99814e22efdb8d1964a64b86a05e88", []]],
+    ]);
+    const reviewedByteIntrinsic = (node: ts.Node): boolean => {
+      if (file.path !== `${ARENA}/src/authorized/v2/schema.ts`) return false;
+      const declarations = source.statements.filter(ts.isVariableStatement).flatMap((statement) => [...statement.declarationList.declarations]);
+      if (validationIntrinsicsChanged() || ![...byteIntrinsicAnchors].every(([name, [digest]]) => {
+        const entries = declarations.filter((entry) => ts.isIdentifier(entry.name) && entry.name.text === name);
+        const entry = entries[0];
+        const symbol = entry && ts.isIdentifier(entry.name) ? binding(entry.name) : undefined;
+        return entries.length === 1 && hash(entry!.getText(source)) === digest && !numericAssignments.has(symbol!) && !nonNumericWrites.has(symbol!);
+      })) return false;
+      const definitionNode = ts.isVariableDeclaration(node);
+      if (!definitionNode && (!ts.isPropertyAccessExpression(node) || !objectNamespace(node.expression) ||
+          !ts.isCallExpression(node.parent) || node.parent.expression !== node)) return false;
+      const call = definitionNode ? undefined : node.parent.getText(source);
+      for (let declaration: ts.Node | undefined = node; declaration; declaration = declaration.parent) {
+        const anchor = ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && byteIntrinsicAnchors.get(declaration.name.text);
+        if (anchor) return declaration.parent.parent.parent === source && (definitionNode || call !== undefined && anchor[1].includes(call));
+      }
+      return false;
+    };
     const nativeValidationAnchors = new Map<string, readonly [string, readonly string[]]>([
       ["record", ["a4b6dee4fb865f799a4ec83854d34d2c2cf91ca129646740e12b0c6539c0ca35", ["Object.getPrototypeOf(value)", "Object.getOwnPropertyDescriptors(value)"]]],
       ["array", ["8b2f100721f779ededab1e82459b895ee13f6470a7e53bb57a69ecd888097b68", ["Object.getPrototypeOf(value)", "Object.getOwnPropertyDescriptor(value, String(i))"]]],
     ]);
-    const reviewedNativeValidationDescriptor = (node: ts.Node): boolean => {
+    const nativeValidationContext = (): boolean => {
       if (file.path !== `${CORE}/src/resolve/provenance-validation.ts`) return false;
-      const definitionNode = ts.isFunctionDeclaration(node);
-      if (!definitionNode && (!ts.isPropertyAccessExpression(node) || !objectNamespace(node.expression) ||
-          !ts.isCallExpression(node.parent) || node.parent.expression !== node)) return false;
       const functions = source.statements.filter(ts.isFunctionDeclaration);
       const failures = functions.filter((entry) => entry.name?.text === "fail");
       const errors = source.statements.filter(ts.isClassDeclaration).filter((entry) => entry.name?.text === "ProvenanceError");
       const failure = failures[0];
       const failureBinding = failure?.name && binding(failure.name);
+      const errorBinding = errors[0]?.name && binding(errors[0].name);
       if (failures.length !== 1 || errors.length !== 1 || !failureBinding || typeof failureBinding === "string" ||
-          failureBinding.declarations?.length !== 1 || nonNumericWrites.has(failureBinding) ||
+          failureBinding.declarations?.length !== 1 || numericAssignments.has(failureBinding) || nonNumericWrites.has(failureBinding) ||
+          !errorBinding || typeof errorBinding === "string" || errorBinding.declarations?.length !== 1 ||
+          [...memberMutationTargets, ...arrayMutatorTargets].some((target) => { const roots = provenance(target); return roots.has(failureBinding) || roots.has(errorBinding); }) ||
           hash(failure!.getText(source)) !== "bfef157ef09f5027307ef47ef8b705ec506d05bc183e93715a1358b6f41f5d0b" ||
           hash(errors[0]!.getText(source)) !== "34d01e49bf084ee840e9a0267339462c5e467faa6558e285b2c7af634efb5b04" ||
           validationIntrinsicsChanged()) return false;
+      return [...nativeValidationAnchors].every(([name, [digest]]) => {
+        const definitions = functions.filter((entry) => entry.name?.text === name);
+        return definitions.length === 1 && hash(definitions[0]!.getText(source)) === digest;
+      });
+    };
+    const reviewedNativeValidationDescriptor = (node: ts.Node): boolean => {
+      if (file.path !== `${CORE}/src/resolve/provenance-validation.ts`) return false;
+      const definitionNode = ts.isFunctionDeclaration(node);
+      if (!definitionNode && (!ts.isPropertyAccessExpression(node) || !objectNamespace(node.expression) ||
+          !ts.isCallExpression(node.parent) || node.parent.expression !== node) || !nativeValidationContext()) return false;
+      const functions = source.statements.filter(ts.isFunctionDeclaration);
       const call = definitionNode ? undefined : node.parent.getText(source);
       for (let declaration: ts.Node | undefined = node; declaration; declaration = declaration.parent) {
         if (!ts.isFunctionDeclaration(declaration) || !declaration.name) continue;
@@ -1615,6 +1671,26 @@ export const collectSourceInventory = (
           return declaration.parent === source && functions.filter((entry) => entry.name?.text === name).length === 1 &&
             hash(declaration.getText(source)) === digest && (definitionNode || call !== undefined && calls.includes(call));
         }
+      }
+      return false;
+    };
+    const reviewedNativeDataAccess = (node: ts.Node): boolean => {
+      if (file.path !== `${CORE}/src/resolve/provenance-validation.ts` || !ts.isElementAccessExpression(node) || !nativeValidationContext()) return false;
+      const functions = source.statements.filter(ts.isFunctionDeclaration);
+      const choices = functions.filter((entry) => entry.name?.text === "oneOf");
+      if (choices.length !== 1 || hash(choices[0]!.getText(source)) !== "b38101004dfc9a5c364c07ea0203af48ef419908a31283e84bdcbd57387fe921") return false;
+      const bindings = functions.filter((entry) => entry.name?.text === "binding");
+      if (bindings.length !== 1 || hash(bindings[0]!.getText(source)) !== "9d72e66d190fd63a8baa0547350bc6dc6e79ee88bde80d9112dd258d293dce8f") return false;
+      const anchors = new Map<string, readonly [string, readonly string[]]>([
+        ["validateImage", ["f625d124325e9cb6009f17a50f103724db60dbae6da434be551fd4edf974430b", ["cc[side]", "mines[side]"]]],
+        ["validateBindings", ["c38f87cb7c20768f2fca114142b7f4229afe36b596c87406678606c9dcbfdc3c", ["ordinals[action.color]", "classical[action.color]", "origins[action.color]", "deploys[action.color]"]]],
+        ["validateQuery", ["9f7138ff9d7a94492c0f7c627b8bab6086b7bd29b63a8dcc7019c7b45ba5a171", ['counts[mine.color as "w" | "b"]']]],
+        ["validateProvenance", ["25687ee2bdb987c102e0eadab9dfba48e1bf8d2ff81ab0cecb9cce262489487a", ["ordinals[bound.side]"]]],
+      ]);
+      for (let declaration: ts.Node | undefined = node; declaration; declaration = declaration.parent) {
+        if (!ts.isFunctionDeclaration(declaration) || !declaration.name) continue;
+        const anchor = anchors.get(declaration.name.text);
+        if (anchor) return declaration.parent === source && hash(declaration.getText(source)) === anchor[0] && anchor[1].includes(node.getText(source));
       }
       return false;
     };
@@ -1691,11 +1767,13 @@ export const collectSourceInventory = (
       return ts.isArrowFunction(value) || ts.isFunctionExpression(value) || ts.isIdentifier(value) && callableType(dataType(value));
     };
     const visit = (node: ts.Node): void => {
-      if (file.path === `${CORE}/src/resolve/provenance-validation.ts` && ts.isFunctionDeclaration(node) && node.name &&
+      if (file.path === `${ARENA}/src/authorized/v2/schema.ts` && ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) &&
+          node.parent.parent.parent === source && byteIntrinsicAnchors.has(node.name.text) && !reviewedByteIntrinsic(node)) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${node.name.text}`);
+      if (file.path === `${CORE}/src/resolve/provenance-validation.ts` && ts.isFunctionDeclaration(node) && node.parent === source && node.name &&
           nativeValidationAnchors.has(node.name.text) && !reviewedNativeValidationDescriptor(node)) {
         throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${node.name.text}`);
       }
-      if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && validationNames.get(file.path)?.includes(node.name.text) &&
+      if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.parent.parent.parent === source && validationNames.get(file.path)?.includes(node.name.text) &&
           !reviewedValidationDescriptor(node)) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${node.name.text}`);
       if (file.path === `${ARENA}/src/challengeContract/validation.ts` && ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) &&
           node.name.text === "inspectDto" && !reviewedDescriptor(node)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
@@ -1727,7 +1805,7 @@ export const collectSourceInventory = (
       const reflected = value ? property(origin(node as ts.Expression)) : undefined;
       const descriptorSeam = reflected && ["getPrototypeOf", "getOwnPropertyDescriptors"].includes(reflected.name ?? "") &&
         objectNamespace(origin(reflected.receiver)) && reviewedDescriptor(node) && ts.isCallExpression(node.parent) && node.parent.expression === node;
-      const validationDescriptorSeam = reviewedValidationDescriptor(node) || reviewedNativeValidationDescriptor(node);
+      const validationDescriptorSeam = reviewedValidationDescriptor(node) || reviewedNativeValidationDescriptor(node) || reviewedByteIntrinsic(node);
       if (reflected && (reflectionNamespace(origin(reflected.receiver)) && ["get", "getOwnPropertyDescriptor", undefined].includes(reflected.name) ||
           objectNamespace(origin(reflected.receiver)) && ["getOwnPropertyDescriptor", "getPrototypeOf", "getOwnPropertyDescriptors", undefined].includes(reflected.name)) &&
           !descriptorSeam && !reviewedArrayDescriptor(node) && !validationDescriptorSeam) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
@@ -1751,7 +1829,7 @@ export const collectSourceInventory = (
            ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken, ts.SyntaxKind.LessThanLessThanToken,
            ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken]
           .includes((wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind));
-      if (ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(wrappedUse(node).parent) && !reviewedDescriptor(node) && !reviewedDataAccess(node) && unsafeComputedReceiver(node.expression, new Set(),
+      if (ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(wrappedUse(node).parent) && !reviewedDescriptor(node) && !reviewedDataAccess(node) && !reviewedNativeDataAccess(node) && unsafeComputedReceiver(node.expression, new Set(),
           /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression))) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${node.getText(source)}`);
       const hostProcess = (receiver: ts.Expression): boolean => {
         const expression = origin(unwrap(receiver));
