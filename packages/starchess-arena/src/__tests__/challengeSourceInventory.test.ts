@@ -610,6 +610,17 @@ describe("partitioned challenge source inventory", () => {
     expect(inventory.groups["arena-host"].map(file => file.path)).toEqual(expect.arrayContaining([`${ARENA}/src/challenge/r3Session.ts`, `${ARENA}/src/authorized/v2/unapproved.ts`]));
     expect(inventory.entrypoints).toContain(`${ARENA}/src/events.ts`);
   });
+  it("classifies r3Private as arena-host and permits its declared Node utility and core-root imports", () => {
+    const root = fixture();
+    const path = `${ARENA}/src/challenge/r3Private.ts`;
+    put(root, path, 'import {types as nodeTypes} from "node:util"; import type {ProvenanceCompanion} from "@chess-coach/starchess-core"; export const isProxy=nodeTypes.isProxy;');
+    const inventory = collectSourceInventory(root);
+    expect(inventory.groups["arena-host"].map(file => file.path)).toContain(path);
+    expect(inventory.groups["arena-authorized"].map(file => file.path)).not.toContain(path);
+    expect(inventory.entrypoints).not.toContain(path);
+    expect(inventory.audit.edges).toContainEqual(expect.objectContaining({ importer: path, specifier: "node:util", targetKind: "builtin" }));
+    expect(inventory.audit.edges).toContainEqual(expect.objectContaining({ importer: path, specifier: "@chess-coach/starchess-core", typeOnly: true }));
+  });
   it.each(deferredMutations)("tracks parameter effects: $name", ({effect}) => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, deferredMutationProbe(effect));
@@ -1474,6 +1485,19 @@ describe("static browser public closure", () => {
     expect(report.verifiedPaths).toContain(`${CORE}/src/rules/counted-planning.ts`);
     expect(report.verifiedPaths.some((path: string) => path.startsWith(`${CORE}/src/resolve/`) || path.startsWith(`${ARENA}/src/challenge/r3`))).toBe(false);
   }, 120000);
+  it("keeps r3Private out of runtime and erased model closure", async () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/r3Private.ts`, 'import {types} from "node:util"; export const isProxy=types.isProxy;');
+    for (const code of [
+      'export * from "./challenge/r3Private";',
+      'export type {Hidden} from "./challenge/r3Private";',
+      'type Hidden=import("./challenge/r3Private").Hidden;',
+    ]) {
+      put(root, `${ARENA}/src/events.ts`, code);
+      expect(() => collectSourceInventory(root)).toThrow("Forbidden partition edge");
+      await expect(check(root)).rejects.toThrow("Host/baseline in public closure");
+    }
+  });
   it.each([
     [`${CORE}/src/rules/counted-planning.ts`, 'Object.hasOwn(descriptor, "value")', 'true'],
     [`${CORE}/src/rules/counted-planning.ts`, 'length > MAX_MINES_PER_SIDE', 'false'],
@@ -1484,6 +1508,8 @@ describe("static browser public closure", () => {
     [`${TRAINING}/src/composition.ts`, 'Object.hasOwn(descriptor, "value")', 'true'],
     [`${TRAINING}/src/composition.ts`, 'length > 64', 'false'],
     [`${TRAINING}/src/composition.ts`, 'throw new ContractError(path, code);', 'return undefined as never;'],
+    [`${TRAINING}/src/composition.ts`, 'this.name = "ContractError";', 'this.name = "TypeError";'],
+    [`${TRAINING}/src/composition.ts`, 'historyFailure("$.version", "VERSION")', 'historyFailure("$.version", "SCHEMA")'],
   ])("rejects R3 changes to counted-planning/history validation anchors: %s %s", async (path, before, after) => {
     const root = await currentGraphFixture();
     const original = readFileSync(join(root, path!), "utf8");
@@ -1491,6 +1517,20 @@ describe("static browser public closure", () => {
     put(root, path!, original.replace(before!, after!));
     expect(() => collectSourceInventory(root)).toThrow(/Unsupported code constructor acquisition/);
     await expect(check(root)).rejects.toThrow(/Code constructor acquisition in public closure/);
+  }, 30000);
+  it.each([
+    'historyFailure=(()=>undefined) as any;',
+    'ContractError=class {} as any;',
+    'Object.setPrototypeOf(ContractError.prototype,{get constructor(){return ()=>{};}});',
+    'export const probe=Object.getOwnPropertyDescriptor;',
+    'export function probe(value:object,key:string){return Object.getOwnPropertyDescriptor(value,key);}',
+    'Array.prototype.includes=(()=>true) as any;',
+  ])("rejects extra history accessors, fail/error binding changes and intrinsic mutations: %s", async code => {
+    const root = await currentGraphFixture();
+    const path = `${TRAINING}/src/composition.ts`;
+    put(root, path, `${readFileSync(join(root, path), "utf8")}\n${code}`);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
   }, 30000);
   it.each(['Map.prototype.entries=(()=>[]) as any;', 'Set.prototype.values=(()=>[]) as any;', 'Object.getPrototypeOf=(()=>null) as any;', 'Array.prototype[Symbol.iterator]=function*(){yield "constructor";};'])("rejects R3 intrinsic mutation beside exact descriptor helpers: %s", async code => {
     const root = await currentGraphFixture();
@@ -1544,6 +1584,7 @@ describe("static browser public closure", () => {
     ["schema", 'Object.getPrototypeOf(value)', 'Object.getPrototypeOf(() => {})'],
     ["schema", 'Object.hasOwn(descriptor, "value")', 'true'],
     ["schema", '!descriptor.enumerable', 'false'],
+    ["schema", 'return Object.fromEntries(entries);', 'return Object.assign({}, Object.fromEntries(entries));'],
     ["schema", 'canonical(r[k])', '(r[k] as any)("return process")'],
     ["observation", 'cells[SQUARES.indexOf(at)]', 'cells[unknownKeyFactory()]'],
   ])("rejects R3 modifications inside content-bound validation/data anchors: %s %s", async (name, before, after) => {
@@ -1663,6 +1704,7 @@ describe("static browser public closure", () => {
     expect(report.entries).toHaveLength(5);
     expect(report.entries[0].subpath).toBe("./planning-v1");
     expect(report.verifiedPaths).not.toContain(`${CORE}/src/index.ts`);
+    expect(report.verifiedPaths).not.toContain(`${ARENA}/src/challenge/r3Private.ts`);
     expect(report.dependencyFiles.map((file: {path: string}) => file.path)).toEqual(["jssha@3.3.2/dist/sha256.mjs", "jssha@3.3.2/package.json"]);
     expect(report.edges.some((edge: {importer: string}) => edge.importer.startsWith("jssha@"))).toBe(false);
   }, 120000);

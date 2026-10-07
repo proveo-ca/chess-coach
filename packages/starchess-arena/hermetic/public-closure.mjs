@@ -457,6 +457,9 @@ export const checkPublicClosure = (root = repository) => {
         if (ts.isIdentifier(target)) {
           const symbol = binding(target) ?? target.text;
           const declaration = symbol?.valueDeclaration;
+          if (id === `${TRAINING}/src/composition.ts` && declaration &&
+              (ts.isVariableDeclaration(declaration) && declaration.parent.parent.parent === source && ts.isIdentifier(declaration.name) && declaration.name.text === "historyFailure" ||
+               ts.isClassDeclaration(declaration) && declaration.parent === source && declaration.name?.text === "ContractError")) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${target.text}`);
           if (id === `${ARENA}/src/authorized/v2/schema.ts` && ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol", "Uint8Array", "ArrayBuffer"].includes(symbol)) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${target.text}`);
           if (id === `${ARENA}/src/authorized/v2/schema.ts` && declaration && ts.isVariableDeclaration(declaration) && declaration.parent.parent.parent === source &&
               ts.isIdentifier(declaration.name) && ["typedArrayPrototype", "typedArrayName", "typedArrayByteLength", "typedArraySet", "checkedByteLength", "copyBytes", "byteEqual", "parseBytes"].includes(declaration.name.text)) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${target.text}`);
@@ -1279,9 +1282,18 @@ export const checkPublicClosure = (root = repository) => {
       };
       const imports = source.statements.filter(ts.isImportDeclaration);
       const declarations = source.statements.filter(ts.isVariableStatement).flatMap((statement) => [...statement.declarationList.declarations]);
+      if (history) {
+        const failures = declarations.filter((entry) => ts.isIdentifier(entry.name) && entry.name.text === "historyFailure");
+        const errors = source.statements.filter(ts.isClassDeclaration).filter((entry) => entry.name?.text === "ContractError");
+        const failure = failures[0], error = errors[0];
+        if (failures.length !== 1 || errors.length !== 1 || failure.getText(source) !== 'historyFailure = (path: string, code = "SCHEMA"): never => { throw new ContractError(path, code); }' ||
+            sha256(error.getText(source)) !== "4e4027ca9cd7c79cc0f90b22f75fecdd9d950c7d3cb8177b21f5685a0e876e88") return false;
+        const failureSymbol = binding(failure.name), errorSymbol = binding(error.name);
+        if (failureSymbol?.declarations?.length !== 1 || errorSymbol?.declarations?.length !== 1 ||
+            [...memberMutationTargets, ...arrayMutatorTargets].some((target) => { const roots = provenance(target); return roots.has(failureSymbol) || roots.has(errorSymbol); })) return false;
+      }
       if (v2 && !imports.some((entry) => entry.getText(source) === 'import { fail, MAX_CODEC_BYTES } from "../../challengeContract/validation";') ||
           counted && !declarations.some((entry) => entry.getText(source) === 'fail = (): never => { throw new TypeError("Invalid counted planning knowledge"); }') ||
-          history && !declarations.some((entry) => entry.getText(source) === 'historyFailure = (path: string, code = "SCHEMA"): never => { throw new ContractError(path, code); }') ||
           validationIntrinsicsChanged()) return false;
       for (let declaration = node; declaration; declaration = declaration.parent) {
         const anchor = ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && new Map(Object.entries(anchors)).get(declaration.name.text);

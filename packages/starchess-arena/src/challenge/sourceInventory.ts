@@ -775,6 +775,9 @@ export const collectSourceInventory = (
         if (ts.isIdentifier(target)) {
           const symbol = binding(target);
           const declaration = typeof symbol === "string" ? undefined : symbol.valueDeclaration;
+          if (file.path === `${TRAINING}/src/composition.ts` && declaration &&
+              (ts.isVariableDeclaration(declaration) && declaration.parent.parent.parent === source && ts.isIdentifier(declaration.name) && declaration.name.text === "historyFailure" ||
+               ts.isClassDeclaration(declaration) && declaration.parent === source && declaration.name?.text === "ContractError")) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${target.text}`);
           if (file.path === `${ARENA}/src/authorized/v2/schema.ts` && typeof symbol === "string" && ["Object", "Array", "Reflect", "Number", "String", "Map", "Set", "Symbol", "Uint8Array", "ArrayBuffer"].includes(symbol)) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${target.text}`);
           if (file.path === `${CORE}/src/resolve/provenance-validation.ts` && declaration?.parent === source &&
               (ts.isFunctionDeclaration(declaration) && declaration.name && ["fail", "record", "array", "oneOf", "binding"].includes(declaration.name.text) ||
@@ -1721,9 +1724,19 @@ export const collectSourceInventory = (
       };
       const imports = source.statements.filter(ts.isImportDeclaration);
       const declarations = source.statements.filter(ts.isVariableStatement).flatMap((statement) => [...statement.declarationList.declarations]);
+      if (history) {
+        const failures = declarations.filter((entry) => ts.isIdentifier(entry.name) && entry.name.text === "historyFailure");
+        const errors = source.statements.filter(ts.isClassDeclaration).filter((entry) => entry.name?.text === "ContractError");
+        const failure = failures[0], error = errors[0];
+        if (failures.length !== 1 || errors.length !== 1 || failure!.getText(source) !== 'historyFailure = (path: string, code = "SCHEMA"): never => { throw new ContractError(path, code); }' ||
+            hash(error!.getText(source)) !== "4e4027ca9cd7c79cc0f90b22f75fecdd9d950c7d3cb8177b21f5685a0e876e88" ||
+            !ts.isIdentifier(failure!.name) || !error!.name) return false;
+        const failureSymbol = binding(failure!.name), errorSymbol = binding(error!.name);
+        if (typeof failureSymbol === "string" || typeof errorSymbol === "string" || failureSymbol.declarations?.length !== 1 || errorSymbol.declarations?.length !== 1 ||
+            [...memberMutationTargets, ...arrayMutatorTargets].some((target) => { const roots = provenance(target); return roots.has(failureSymbol) || roots.has(errorSymbol); })) return false;
+      }
       if (v2 && !imports.some((entry) => entry.getText(source) === 'import { fail, MAX_CODEC_BYTES } from "../../challengeContract/validation";') ||
           counted && !declarations.some((entry) => entry.getText(source) === 'fail = (): never => { throw new TypeError("Invalid counted planning knowledge"); }') ||
-          history && !declarations.some((entry) => entry.getText(source) === 'historyFailure = (path: string, code = "SCHEMA"): never => { throw new ContractError(path, code); }') ||
           validationIntrinsicsChanged()) return false;
       for (let declaration: ts.Node | undefined = node; declaration; declaration = declaration.parent) {
         const anchor = ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && new Map(Object.entries(anchors)).get(declaration.name.text);

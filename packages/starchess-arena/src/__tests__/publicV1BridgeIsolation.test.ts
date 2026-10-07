@@ -66,6 +66,39 @@ describe("public V1 bridge isolation", () => {
     expect(calls).toBe(0);
   });
 
+  it("reconstructs an own __proto__ data property without invoking the inherited setter", () => {
+    const original = Object.getOwnPropertyDescriptor(Object.prototype, "__proto__")!;
+    let calls = 0;
+    Object.defineProperty(Object.prototype, "__proto__", {
+      ...original,
+      set(this: object, value: unknown) { calls++; original.set!.call(this, value); },
+    });
+    try {
+      const input = JSON.parse('{"__proto__":{"polluted":true},"kind":"safe"}');
+      const result = object(input, "$", ["__proto__", "kind"]);
+      expect(calls).toBe(0);
+      expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
+      expect(Object.hasOwn(result, "__proto__")).toBe(true);
+      expect(Object.getOwnPropertyDescriptor(result, "__proto__")).toEqual({
+        value: input["__proto__"], enumerable: true, configurable: true, writable: true,
+      });
+      expect(Object.hasOwn(Object.prototype, "polluted")).toBe(false);
+      expect(result).not.toBe(input);
+    } finally {
+      Object.defineProperty(Object.prototype, "__proto__", original);
+    }
+  });
+
+  it("rejects extra and own __proto__ accessors without invoking either getter", () => {
+    let calls = 0;
+    const getter = () => { calls++; throw new Error("accessor ran"); };
+    const extra = Object.defineProperty({ kind: "safe" }, "extra", { enumerable: true, get: getter });
+    const ownProto = Object.defineProperty({}, "__proto__", { enumerable: true, get: getter });
+    expect(() => object(extra, "$", ["kind"])).toThrow("SCHEMA");
+    expect(() => object(ownProto, "$", ["__proto__"])).toThrow("SCHEMA");
+    expect(calls).toBe(0);
+  });
+
   it("keeps descriptor helpers strict about prototypes, symbols, enumeration and dense array bounds", () => {
     for (const value of [
       Object.assign(Object.create({ inherited: true }), { kind: "value" }),
