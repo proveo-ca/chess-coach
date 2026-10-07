@@ -104,6 +104,8 @@ Current policy/assurance boundary:
 
 ### First-training prerequisites — still pending
 
+The independent delayed-swap native mine synchronization is implemented under Executor's **“Apply Native sync-fix proposal”**, with verification/review progress in the [scoped execution record](_spec/_plans/ml-adjutant-r3-seam-addendum.md#independent-native-delayed-swap-synchronization) and [resolver diagram](_spec/packages/starchess-core/resolve-turn-activity.puml).
+
 Executor chose **Broader first trained ranker**:
 [`ml-adjutant-r4-weights.md`](_spec/_plans/ml-adjutant-r4-weights.md).
 FIRST Phase 3 training requires a separately versioned combination generator and v2 authorized

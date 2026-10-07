@@ -1,8 +1,33 @@
 # ML Adjutant — R3 native-seam addendum
 
-Status: **REVISED PROPOSAL / NATIVE MINE-CARRIER DIRECTION BLOCKED / NOT APPROVED / NOT IMPLEMENTED.** Executor selected **“Review seam addendum (Recommended)”**, then **“Native-fix proposal (Recommended)”**, **“Consumed facts (Recommended)”**, and **“Support multiplicity (Recommended)”**. Those selections authorize drafting/review, not acceptance or source edits. Latest architecture/backend/security reviews returned paired design YES. Adversarial review found a delayed-swap path that removes mines from one working carrier but returns them in authoritative `afterAll`, which conflicts with mandatory filter-to-retirement accounting. Its disposition remains open. Spec review requested the confined A4 reference correction recorded below. Final review/exact acceptance remain pending. R3 implementation remains blocked. No collection, fitting, calibration, transfer, training, evidence publication or registry activation is authorized.
+Status: **R3 SEAM PROPOSAL NOT APPROVED / NOT IMPLEMENTED; INDEPENDENT NATIVE MINE SYNC FIX IMPLEMENTED / REVIEW PENDING.** Executor selected **“Review seam addendum (Recommended)”**, then **“Native-fix proposal (Recommended)”**, **“Consumed facts (Recommended)”**, and **“Support multiplicity (Recommended)”** for drafting/review. Executor subsequently instructed **“Apply Native sync-fix proposal”**, authorizing the independent delayed-swap mine synchronization and regression below. That fix does not accept or implement the larger seam, target-only authority, multiplicity/count bridge or earlier promotion proposal. Their final paired review/exact acceptance remain pending. No collection, fitting, calibration, transfer, training, evidence publication or registry activation is authorized.
 
 Authority: [original contracts](ml-adjutant-r3-contracts.md) §§3–7, [primary-owner migration](ml-adjutant-spec-file-migration.md), and [R3 roadmap](PLAN-ml-adjutant.md#immediate-ordered-next-actions--train-the-first-broader-adjutant). The original frozen contract, [economic amendment](ml-adjutant-r4-economic-amendment.md), [corrective annex](ml-adjutant-r4-economic-corrective-annex.md) and historical evidence remain unchanged. This revision requires positive closing reviews and actual exact-text Executor acceptance before it takes effect. Design acceptance alone does not authorize implementation; a later decision can grant both only if it names both grants.
+
+## Independent native delayed-swap synchronization
+
+Actual Executor instruction: **“Apply Native sync-fix proposal”**. This authorizes the existing delayed reciprocal-swap branch to copy surviving working `mines` into `phase3.mines` alongside placement, plus native admission/End regression and scoped specification maintenance.
+
+Source implementation: [resolve-turn.ts](../../packages/starchess-core/src/resolve/resolve-turn.ts), delayed reciprocal branch. Its `phase3` assignment now includes `mines:[...mines]`. `afterAll` and subsequent native settlement receive the spent-mine removals. Existing movement/contact decisions, blast payloads and mine survivor order/multiplicity remain intact. This changes returned native values for the formerly stale inventory; it introduces no new mine-contact rule or identity birth.
+
+Persisted native end-to-end regression: [mineContactRoutes.test.ts](../../packages/starchess-core/src/__tests__/mine/mineContactRoutes.test.ts), **delayed reciprocal swaps preserve the remaining mine inventory**. Six cases use real SCFEN parsing, `addScAction` for both seats and default `endScTurn`: each unilateral blast, both blasts, unrelated survivor order, unrelated duplicate occurrences and a no-contact control. They check exact returned inventories/boards/blasts, unchanged CC lives and unmodified input/earlier snapshots.
+
+Current-state diagram: [resolve-turn-activity.puml](../packages/starchess-core/resolve-turn-activity.puml). Its coverage/index includes the persisted regression.
+
+| Current verification / review | Tool-observed result |
+|---|---|
+| Pre-fix focused mine-contact suite | **5 failed / 24 passed / 29 total**. The five blast fixtures retained spent mines in final state; the no-contact control passed. Native admission/moves/blasts reached the intended branch. |
+| Post-fix full core suite | **481 passed / 56 files; zero failures**. Includes all 29 mine-contact tests and six new cases. |
+| Core / arena / training package typechecks | **PASS** for all three. |
+| Full strict core/arena test and script TypeScript invoice | **PASS**, using unmodified `strictInputs` with `/app` paths mapped to the current workspace. |
+| Focused arena native admission/lifecycle/observation/resource/replay suites | **152 passed / 9 files**. |
+| Full training package suite | **57 passed / 4 files**. |
+| App collision/mine suites | **18 passed / 4 files**. |
+| Public model closure audit | **PASS**, current four model roots / `public-closure-v2`. |
+| Resolver diagram | **PASS** for `plantuml -checkonly` and SVG rendering into a temporary directory. |
+| Adversarial / security / spec implementation reviews | Pending. |
+
+This outside-body record supersedes §10.3's unselected-direction and pre-source-edit statements ONLY for this independent synchronization fix. Those source-derived pre-execution paragraphs remain historical. Their stated stale-inventory path now has executed regression proof and a source correction. No full R3 design/readiness closure or fresh hermetic evidence generation follows.
 
 ## 1. Exact proposed scope
 

@@ -4,6 +4,8 @@
 ' bucket, and what each phase then does with those buckets.
 ' covers: packages/starchess-core/src/resolve/resolve-turn.ts
 ' covers: packages/starchess-core/src/__tests__/rook/**
+' covers: packages/starchess-core/src/__tests__/collision/fogVacatedTarget.test.ts
+' covers: packages/starchess-core/src/__tests__/mine/mineContactRoutes.test.ts
 ' see also: _spec/packages/starchess-core/gas-phase-vacancy.puml
 !include ../../themes/proveo.puml
 
@@ -112,11 +114,22 @@ partition "Phase 3 — fog approaches" {
   :the approach **walked** its ray — ""mineContact"" over that walk takes\nthe mover on its landing tile → ""pathRevealMineTriggers"".\nThe shot already fired, so capture / HP chip stand;
 }
 
-partition "Delayed landings — fogged aims whose victim vacated" {
+partition "Delayed landings — fogged aims and skipped approaches" {
   :sync ""mines"" to the phase-3 epoch, order the pair so a plan\nlanding on the other's origin runs second (mutual swap lands both);
   :skip fired approaches (""firedFrom""), dead or moved actors,\nand destinations a phase-3 actor now owns (fizzle);
-  :a destination holding a ghost the snapshot lost is cleared,\nthen ""relocate"" with occupy trust — victim still home means\na single move-phase collision, never a second kill;
-  :mirror the landing onto the phase-3 snapshot (move / blast /\ncollision, ""chaseFrom""-aware mine filter) → **afterMove** snapshot;
+  :clear a departed ghost from the working board;
+  if (live reciprocal pair selected?) then (yes)
+    :swap both actors and resolve destination mine contacts;
+    :copy resulting placement and remaining ""mines""\ninto ""phase3"" → **afterAll** retains removals;
+    note right
+      Copy surviving mines with the new placement.
+      Final output retains spent-mine removals.
+      Preserve survivor order and duplicate entries.
+    end note
+  else (no)
+    :""relocate"" with occupy trust — victim still home means\na single move-phase collision, never a second kill;
+    :mirror the landing onto the phase-3 snapshot (move / blast /\ncollision, ""chaseFrom""-aware mine filter) → **afterMove** snapshot;
+  endif
 }
 
 partition "Phase 4 — promotion" {

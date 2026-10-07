@@ -8,7 +8,7 @@
  * The contract is one line: **a hostile mine detonates the moment an enemy unit
  * arrives on it or crosses it, wherever that arrival comes from.** Allied mines
  * stay inert underfoot on every one of those routes, and Command Centers stay immune.
- * // SPEC: _spec/packages/starchess-core/resolve.puml
+ * // SPEC: _spec/packages/starchess-core/resolve.puml, _spec/packages/starchess-core/resolve-turn-activity.puml
  */
 import { describe, expect, it } from "vitest";
 
@@ -18,7 +18,9 @@ import {
   parseScFen,
   placementToMap,
   type ScAction,
+  type ScActionInput,
   type ScFenSnapshot,
+  type ScMine,
 } from "../../index";
 
 type Resolved = ReturnType<typeof endScTurn>;
@@ -388,6 +390,83 @@ describe("marine path contact — the front step walks its path", () => {
     assertNoMineEvent(r);
     expect(pieceAt(r, "e4")).toEqual({ type: "p", color: "w" });
     expect(mineOn(r, "e3")).toEqual({ color: "w", at: "e3" });
+  });
+});
+
+describe("delayed reciprocal swaps preserve the remaining mine inventory", () => {
+  const whiteBlast = {
+    kind: "mineBlast", piece: "r", color: "w", from: "a1", to: "a8",
+    mineColor: "b", victim: { piece: "r", color: "w" },
+  };
+  const blackBlast = {
+    kind: "mineBlast", piece: "r", color: "b", from: "a8", to: "a1",
+    mineColor: "w", victim: { piece: "r", color: "b" },
+  };
+  const unrelated: ScMine[] = [{ color: "w", at: "h4" }, { color: "b", at: "h5" }];
+  const cases = [
+    {
+      name: "spends the black destination mine", mines: "w:;b:a8",
+      triggers: [whiteBlast], remaining: [], whiteSurvives: false, blackSurvives: true,
+    },
+    {
+      name: "spends the white destination mine", mines: "w:a1;b:",
+      triggers: [blackBlast], remaining: [], whiteSurvives: true, blackSurvives: false,
+    },
+    {
+      name: "spends both destination mines", mines: "w:a1;b:a8",
+      triggers: [whiteBlast, blackBlast], remaining: [], whiteSurvives: false, blackSurvives: false,
+    },
+    {
+      name: "preserves unrelated mines and their order", mines: "w:a1h4;b:a8h5",
+      triggers: [whiteBlast, blackBlast], remaining: unrelated, whiteSurvives: false, blackSurvives: false,
+    },
+    {
+      name: "preserves unrelated duplicate occurrences", mines: "w:a1h4h4;b:a8",
+      triggers: [whiteBlast, blackBlast], remaining: [unrelated[0], unrelated[0]],
+      whiteSurvives: false, blackSurvives: false,
+    },
+    {
+      name: "keeps the inventory when neither landing triggers a mine", mines: "w:h4;b:h5",
+      triggers: [], remaining: unrelated, whiteSurvives: true, blackSurvives: true,
+    },
+  ];
+
+  it.each(cases)("$name", ({ mines, triggers, remaining, whiteSurvives, blackSurvives }) => {
+    let snapshot = parseScFen(
+      `SCFEN|r3k3/8/8/8/8/8/8/R3K3|1|33|P|G:11:11|Q:w:;b:|S:a1a8|M:${mines}`,
+    );
+    const initialMines = structuredClone(snapshot.mines ?? []);
+    const actions: ScActionInput[] = [
+      { timing: "C", kind: "classical", color: "w", from: "a1", to: "a8" },
+      { timing: "C", kind: "classical", color: "b", from: "a8", to: "a1" },
+    ];
+    for (const action of actions) snapshot = addScAction({ snapshot, action }).snapshot;
+    const input = structuredClone(snapshot);
+    expect(snapshot.queue?.actions).toHaveLength(2);
+
+    const r = endScTurn(snapshot);
+
+    expect(r.resolved.moves).toEqual([
+      { piece: "r", color: "w", from: "a1", to: "a8" },
+      { piece: "r", color: "b", from: "a8", to: "a1" },
+    ]);
+    expect(r.resolved.mineTriggers).toEqual(triggers);
+    expect(r.resolved.attacks).toEqual([]);
+    expect(r.resolved.pathRevealAttacks).toEqual([]);
+    expect(r.resolved.pathRevealMineTriggers).toEqual([]);
+    expect(r.resolved.moveCollisions).toEqual([]);
+    for (const board of [r.resolved.afterMove, r.resolved.afterAll, r.next]) {
+      expect(board.mines ?? []).toEqual(remaining);
+      const pieces = placementToMap(board.placement);
+      expect(pieces.get("a8")).toEqual(whiteSurvives ? { type: "r", color: "w" } : undefined);
+      expect(pieces.get("a1")).toEqual(blackSurvives ? { type: "r", color: "b" } : undefined);
+      expect(pieces.get("e1")).toEqual({ type: "k", color: "w" });
+      expect(pieces.get("e8")).toEqual({ type: "k", color: "b" });
+      expect(board.ccLives).toEqual({ w: 3, b: 3 });
+    }
+    expect(r.afterB.mines).toEqual(initialMines);
+    expect(r.resolved.afterAttack.mines).toEqual(initialMines);
+    expect(snapshot).toEqual(input);
   });
 });
 

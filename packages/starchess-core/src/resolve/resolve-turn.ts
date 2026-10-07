@@ -1210,7 +1210,11 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           ...(trip.chaseFrom ? { chaseFrom: trip.chaseFrom } : {}),
         });
       }
-      phase3 = { ...phase3, placement: mapToPlacement(pmap) };
+      phase3 = {
+        ...phase3,
+        placement: mapToPlacement(pmap),
+        mines: [...mines],
+      };
       firedFrom.add(plan.from);
       firedFrom.add(cross.from);
       continue;

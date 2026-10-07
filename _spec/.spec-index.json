@@ -342,7 +342,8 @@
       "covers": [
         "packages/starchess-core/src/resolve/resolve-turn.ts",
         "packages/starchess-core/src/__tests__/rook/**",
-        "packages/starchess-core/src/__tests__/collision/fogVacatedTarget.test.ts"
+        "packages/starchess-core/src/__tests__/collision/fogVacatedTarget.test.ts",
+        "packages/starchess-core/src/__tests__/mine/mineContactRoutes.test.ts"
       ],
       "fingerprint": null
     },
