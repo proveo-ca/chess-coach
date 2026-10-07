@@ -227,26 +227,31 @@ describe("actual identity effects", () => {
       { kind: "classical", timing: "C", color: "b", from: "e2", to: "a2" },
     ]);
     expect(ended.nativeResult.next.placement).toBe("7k/8/8/8/8/8/3K4/8");
-    expect(ended.frames).toHaveLength(1);
-    const frame = ended.frames[0]!;
+    expect(ended.frames).toHaveLength(mined ? 2 : 1);
+    const frame = ended.frames[mined ? 1 : 0]!;
     expect(frame.phase).toBe("C-move");
     expect(frame.before.entities).toStrictEqual([
-      ...(mined ? [{ id: "engine:mine:1", kind: "mine", side: "b", square: "d2" }] : []),
       { id: "engine:unit:1", kind: "unit", side: "w", type: "k", square: "d1", tankMode: null },
       { id: "engine:unit:2", kind: "unit", side: "b", type: "r", square: "e2", tankMode: "tank" },
       { id: "engine:unit:3", kind: "unit", side: "b", type: "k", square: "h8", tankMode: null },
     ]);
     expect(frame.effects).toStrictEqual([
-      ...(mined ? [{ kind: "mine-remove", entityId: "engine:mine:1", sourceActionSeq: 0 }] : []),
       { kind: "unit-move", entityId: "engine:unit:1", from: "d1", to: "d2", sourceActionSeq: 0 },
-      { kind: "unit-destroy", entity: { id: "engine:unit:2", kind: "unit", side: "b", type: "r", square: "e2", tankMode: "tank" }, sourceActionSeq: 0, causalBeforeVisibilityKey: "engine:call:2:image:0" },
+      { kind: "unit-destroy", entity: { id: "engine:unit:2", kind: "unit", side: "b", type: "r", square: "e2", tankMode: "tank" }, sourceActionSeq: 0, causalBeforeVisibilityKey: mined ? "engine:call:2:image:2" : "engine:call:2:image:0" },
     ]);
     expect(frame.after.entities).toStrictEqual([
       { id: "engine:unit:1", kind: "unit", side: "w", type: "k", square: "d2", tankMode: null },
       { id: "engine:unit:3", kind: "unit", side: "b", type: "k", square: "h8", tankMode: null },
     ]);
-    expect(ended.visibilityImages.map(image => image.state)).toStrictEqual([frame.before, frame.after]);
-    expect(frame.before.nativeMineOrder).toStrictEqual(mined ? ["engine:mine:1"] : []);
+    expect(ended.visibilityImages.slice(mined ? 2 : 0).map(image => image.state)).toStrictEqual([frame.before, frame.after]);
+    if (mined) {
+      const cleared = ended.frames[0]!;
+      expect(cleared.phase).toBe("C-attack");
+      expect(cleared.effects).toStrictEqual([{ kind: "mine-remove", entityId: "engine:mine:1", sourceActionSeq: 0 }]);
+      expect(cleared.before.nativeMineOrder).toStrictEqual(["engine:mine:1"]);
+      expect(cleared.after).toStrictEqual(frame.before);
+    }
+    expect(frame.before.nativeMineOrder).toStrictEqual([]);
     expect(frame.after.nativeMineOrder).toStrictEqual([]);
     expect(ended.nativeResult.next.mines).toBeUndefined();
     expect(ended.provenance.lastCall.consumedFacts).toStrictEqual([]);
