@@ -4,13 +4,13 @@
  */
 
 import type { Square } from "../model/square";
-import type { TankMode, ScAction } from "../model/types";
+import type { TankMode, ScActionInput } from "../model/types";
 
 /** Whether `from` is sieged after applying all B `siegeMode` toggles in `actions`. */
 export const isTankSiegedAfterB = (
   from: Square,
   siegedTanks: readonly Square[] | undefined,
-  actions: readonly ScAction[] | undefined,
+  actions: readonly ScActionInput[] | undefined,
 ): boolean => {
   let sieged = (siegedTanks ?? []).includes(from);
   for (const a of actions ?? []) {
@@ -24,5 +24,5 @@ export const isTankSiegedAfterB = (
 export const tankModeAfterB = (
   from: Square,
   siegedTanks: readonly Square[] | undefined,
-  actions: readonly ScAction[] | undefined,
+  actions: readonly ScActionInput[] | undefined,
 ): TankMode => (isTankSiegedAfterB(from, siegedTanks, actions) ? "siege" : "tank");

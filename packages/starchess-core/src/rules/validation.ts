@@ -8,13 +8,22 @@
 import type { Square } from "chess.js";
 
 import { placementToMap } from "../board/placement";
-import { charonDiagonalSquares } from "./specials/mechaCharon";
+import { charonDiagonalSquaresFromSquare } from "./specials/mechaCharon";
 import { minesFor, MAX_MINES_PER_SIDE, mineAt } from "../board/mines";
 import { isTankSiegedAfterB } from "../board/siege";
 import { hasExactCCPair } from "../scfen/codec";
 import { spawnCCAnchor } from "./specials/adjacent";
 import { marineSingleTarget } from "./specials/stimStep";
-import type { ScAction, ScActionInput, ScFenSnapshot, StarChessColor } from "../model/types";
+import type { ScAction, ScActionInput, ScFenSnapshot } from "../model/types";
+import {
+  appendTimeSpecialAnchor,
+  classicalActorAt,
+  classifyClassicalVacancy,
+  gasPairKey,
+  type ClassicalVacancy,
+} from "./planning-intents";
+
+export { classifyClassicalVacancy, gasPairKey, type ClassicalVacancy } from "./planning-intents";
 
 export class ScValidateError extends Error {
   readonly code: "SC_BASELINE_FEN" | "SC_SPECIAL";
@@ -24,32 +33,6 @@ export class ScValidateError extends Error {
     this.name = "ScValidateError";
   }
 }
-
-export type ClassicalVacancy = {
-  bOrigins: ReadonlySet<Square>;
-  transit: ReadonlySet<Square>;
-  gasPairs: ReadonlySet<string>;
-};
-
-export const gasPairKey = (from: Square, to: Square): string => `${from}:${to}`;
-
-export const classifyClassicalVacancy = (
-  actions: readonly ScAction[] | undefined,
-  color: StarChessColor,
-): ClassicalVacancy => {
-  const bOrigins = new Set<Square>();
-  const transit = new Set<Square>();
-  const gasPairs = new Set<string>();
-  for (const a of actions ?? []) {
-    if (a.timing !== "B" || a.color !== color) continue;
-    if (a.kind !== "stimStep" && a.kind !== "tacticalJump") continue;
-    if (!a.to) continue;
-    bOrigins.add(a.from);
-    transit.add(a.to);
-    gasPairs.add(gasPairKey(a.from, a.to));
-  }
-  return { bOrigins, transit, gasPairs };
-};
 
 /** SCFEN placement invariants — not chess.js FEN validation. */
 export const assertBaselineFen = (snap: ScFenSnapshot): void => {
@@ -87,39 +70,7 @@ export const assertClassicalBaseline = (
     );
   }
   const map = placementToMap(snap.placement);
-  let piece = map.get(action.from);
-  // Same-turn B relocates/spawns the actor onto `from` before classical.
-  if (!piece || piece.color !== action.color) {
-    const b = (snap.queue?.actions ?? []).find(
-      (a) =>
-        a.timing === "B" &&
-        a.color === action.color &&
-        a.to === action.from &&
-        (a.kind === "deploy" || a.kind === "stimStep" || a.kind === "tacticalJump"),
-    );
-    if (b && b.timing === "B" && b.kind === "deploy" && b.unit) {
-      piece = { type: b.unit, color: action.color };
-    } else if (b && b.timing === "B" && (b.kind === "stimStep" || b.kind === "tacticalJump")) {
-      // Actor still lives on B.from in the planning placement.
-      const origin = map.get(b.from);
-      if (origin && origin.color === action.color) piece = origin;
-    }
-  }
-  // Also accept C authored on the pre-B square when B will move that piece
-  // (UI clicks before B resolve; endScTurn rewrites C by B's vector).
-  if (!piece || piece.color !== action.color) {
-    const bFrom = (snap.queue?.actions ?? []).find(
-      (a) =>
-        a.timing === "B" &&
-        a.color === action.color &&
-        a.from === action.from &&
-        (a.kind === "stimStep" || a.kind === "tacticalJump"),
-    );
-    if (bFrom) {
-      const origin = map.get(action.from);
-      if (origin && origin.color === action.color) piece = origin;
-    }
-  }
+  const piece = classicalActorAt(map, snap.queue?.actions ?? [], action.color, action.from);
   if (!piece || piece.color !== action.color) {
     throw new ScValidateError(
       "SC_BASELINE_FEN",
@@ -218,32 +169,10 @@ export const assertSpecialLegal = (
       if (!action.to) {
         throw new ScValidateError("SC_SPECIAL", "Charon needs aim square");
       }
-      // Free aim: any on-board Mecha diagonal is queueable. Whether the shot
-      // kills (first ship on the ray) or fizzles off-board is resolve's call.
-      // F after a same-mecha classical fires from the post-move square, so
-      // validate the diagonal from there (project the C onto a map copy).
-      let origin = action.from;
-      let originMap = map;
-      if (action.timing === "F") {
-        const c = (snap.queue?.actions ?? []).find(
-          (a) =>
-            a.timing === "C" &&
-            a.kind === "classical" &&
-            a.color === action.color &&
-            a.from === action.from,
-        );
-        if (c && c.timing === "C") {
-          const projected = new Map(map);
-          const mecha = projected.get(action.from);
-          if (mecha) {
-            projected.delete(action.from);
-            projected.set(c.to, mecha);
-          }
-          origin = c.to;
-          originMap = projected;
-        }
-      }
-      if (!charonDiagonalSquares(originMap, origin).includes(action.to)) {
+      const origin = appendTimeSpecialAnchor(
+        snap.queue?.actions ?? [], action.color, action.from, action.timing,
+      );
+      if (!charonDiagonalSquaresFromSquare(origin).includes(action.to)) {
         throw new ScValidateError("SC_SPECIAL", "Charon aim must be on a Mecha diagonal");
       }
       break;
@@ -339,7 +268,9 @@ export const assertSpecialLegal = (
             a.color === action.color &&
             a.from === action.from,
         );
-        const dest = c?.to;
+        const dest = c ? appendTimeSpecialAnchor(
+          snap.queue?.actions ?? [], action.color, action.from, action.timing,
+        ) : undefined;
         if (dest) at = dest;
       }
       if (mineAt(snap.mines, at)) {

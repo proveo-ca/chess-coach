@@ -70,9 +70,9 @@ export const buildAdjutantCtx = (
     // An adjacent enemy Command Center (CC) counts: face-to-face command centers (CCs) chip each other.
     ccThreatened: isSquareAttackedBy(map, commandCenter, enemy),
     sieged,
-    gas: snap.gas[us],
+    gas: Object.entries(snap.gas).find(([side]) => side === us)![1],
     posture,
-    weights: WEIGHTS[posture],
+    weights: Object.entries(WEIGHTS).find(([name]) => name === posture)![1],
     vision,
     intel: gatherCCFocusIntel(map, vision.litSquares, vision.revealedPieces, enemy),
     tactical: buildTacticalBoard(map, us, enemy, commandCenter, sieged),

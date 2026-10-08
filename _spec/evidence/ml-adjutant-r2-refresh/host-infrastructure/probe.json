@@ -1,0 +1,142 @@
+{
+  "passed": true,
+  "freshTemporaryRoot": true,
+  "sourceOnlyInventoryFiles": 1,
+  "commands": [
+    {
+      "executable": "/app/packages/starchess-arena/node_modules/.bin/tsx",
+      "args": [
+        "/tmp/test/source-only-inventory.ts"
+      ],
+      "cwd": "/tmp/test",
+      "started": "2026-10-06T09:04:59.040Z",
+      "finished": "2026-10-06T09:04:59.277Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logs": {
+        "stdout": {
+          "path": "/app/_spec/evidence/ml-adjutant-r2-refresh/logs/inventory.stdout.log",
+          "bytes": 39,
+          "observedBytes": 39,
+          "truncated": false,
+          "sha256": "da68acbd37cfb21c8a76b6428924672bc974b8b1fc2a924ba9eb2a8f250107d3"
+        },
+        "stderr": {
+          "path": "/app/_spec/evidence/ml-adjutant-r2-refresh/logs/inventory.stderr.log",
+          "bytes": 0,
+          "observedBytes": 0,
+          "truncated": false,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "executable": "/app/packages/starchess-arena/node_modules/.bin/tsx",
+      "args": [
+        "/tmp/test/direct.ts"
+      ],
+      "cwd": "/tmp/test",
+      "started": "2026-10-06T09:04:59.278Z",
+      "finished": "2026-10-06T09:04:59.456Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logs": {
+        "stdout": {
+          "path": "/app/_spec/evidence/ml-adjutant-r2-refresh/logs/tsx.stdout.log",
+          "bytes": 0,
+          "observedBytes": 0,
+          "truncated": false,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "/app/_spec/evidence/ml-adjutant-r2-refresh/logs/tsx.stderr.log",
+          "bytes": 0,
+          "observedBytes": 0,
+          "truncated": false,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "executable": "/app/packages/starchess-arena/node_modules/.bin/vitest",
+      "args": [
+        "run",
+        "--config",
+        "/tmp/test/config.mts",
+        "--configLoader",
+        "native",
+        "--reporter=default",
+        "--reporter=json",
+        "--outputFile",
+        "/app/_spec/evidence/ml-adjutant-r2-refresh/vitest-probe.json"
+      ],
+      "cwd": "/tmp/test",
+      "started": "2026-10-06T09:04:59.456Z",
+      "finished": "2026-10-06T09:04:59.880Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logs": {
+        "stdout": {
+          "path": "/app/_spec/evidence/ml-adjutant-r2-refresh/logs/vitest.stdout.log",
+          "bytes": 516,
+          "observedBytes": 516,
+          "truncated": false,
+          "sha256": "01e919855ec6d5d8c1409a9294d6ecf7094a95a9139803c32f8cf2f5512778f3"
+        },
+        "stderr": {
+          "path": "/app/_spec/evidence/ml-adjutant-r2-refresh/logs/vitest.stderr.log",
+          "bytes": 0,
+          "observedBytes": 0,
+          "truncated": false,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "tests": {
+        "path": "/app/_spec/evidence/ml-adjutant-r2-refresh/vitest-probe.json",
+        "sha256": "9da83ab20c7c8899e90b6e569ff2a474b5f1ae56c5fbd5fb72afa32cbcf29988",
+        "success": true,
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "pending": 0,
+        "todo": 0
+      }
+    }
+  ],
+  "closure": {
+    "tools": {
+      "node": "22.23.2",
+      "pnpm": "10.33.0"
+    },
+    "packages": {
+      "starchess-core": {
+        "fflate": "0.8.3",
+        "chess.js": "1.4.0",
+        "typescript": "5.9.3",
+        "vitest": "4.1.10"
+      },
+      "starchess-arena": {
+        "@chess-coach/starchess-core": "0.0.1",
+        "@types/node": "22.20.1",
+        "tsx": "4.23.12",
+        "typescript": "5.9.3",
+        "vitest": "4.1.10"
+      },
+      "starchess-training": {
+        "@chess-coach/starchess-arena": "0.0.1",
+        "@chess-coach/starchess-core": "0.0.1",
+        "jssha": "3.3.2",
+        "@types/node": "22.20.1",
+        "typescript": "5.9.3",
+        "vitest": "4.1.10"
+      }
+    },
+    "lockSha256": "10d9c8945a151b402511082911ddf8a3bbc19ff4c55a14a5df8ef0d1afb13b83"
+  },
+  "installedSha256": "e8c074b623cdc4c5b00debe00f68865c56e34eba91250979342129b290951d83",
+  "frozenStoreSha256": "89d5c3d854da88cbb419344bceb70f952394e2e38ebc014ed6449cdae44a58ae",
+  "toolsSha256": "45d37ff19cfad55687cec847b0888cf0cc2fb3b66b49472b454b3ada55b77270"
+}

@@ -1,0 +1,546 @@
+{
+  "version": 1,
+  "kind": "dependency-build",
+  "image": "sha256:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1",
+  "pins": {
+    "platform": "linux/amd64",
+    "baseTag": "docker.io/library/node:22.23.2-bookworm-slim",
+    "baseIndexDigest": "sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+    "basePlatformDigest": "sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2",
+    "node": "22.23.2",
+    "nodeBinarySha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
+    "pnpm": "10.33.0",
+    "pnpmTarball": "https://registry.npmjs.org/pnpm/-/pnpm-10.33.0.tgz",
+    "pnpmIntegrity": "sha512-EFaLtKavtYyes2MNqQzJUWQXq+vT+rvmc58K55VyjaFJHp21pUTHatjrdXD1xLs9bGN7LLQb/c20f6gjyGSTGQ==",
+    "pnpmSha256": "bfcc1bcbad279b13a516c446a75b3c58b6904b45d57a1951411015e50b751a80",
+    "dockerInit": "0.19.0",
+    "dockerInitGitCommit": "de40ad0"
+  },
+  "host": {
+    "Client": {
+      "Platform": {
+        "Name": "Docker Engine - Community"
+      },
+      "Version": "29.7.2",
+      "ApiVersion": "1.55",
+      "DefaultAPIVersion": "1.55",
+      "GitCommit": "a7dcaa6",
+      "GoVersion": "go1.26.5",
+      "Os": "linux",
+      "Arch": "amd64",
+      "BuildTime": "Wed Aug  5 18:28:40 2026",
+      "Context": "default"
+    },
+    "Server": {
+      "Platform": {
+        "Name": "Docker Engine - Community"
+      },
+      "Version": "29.7.2",
+      "ApiVersion": "1.55",
+      "MinAPIVersion": "1.40",
+      "Os": "linux",
+      "Arch": "amd64",
+      "Components": [
+        {
+          "Name": "Engine",
+          "Version": "29.7.2",
+          "Details": {
+            "ApiVersion": "1.55",
+            "Arch": "amd64",
+            "BuildTime": "Wed Aug  5 18:28:40 2026",
+            "Experimental": "false",
+            "GitCommit": "6a43e3d",
+            "GoVersion": "go1.26.5",
+            "KernelVersion": "7.0.12",
+            "MinAPIVersion": "1.40",
+            "Module": "github.com/moby/moby/v2",
+            "ModuleVersion": "v2.0.0+unknown",
+            "Os": "linux"
+          }
+        },
+        {
+          "Name": "containerd",
+          "Version": "v2.3.3",
+          "Details": {
+            "GitCommit": "aad11006b869517fcd3009450b6f82da282e1a9b"
+          }
+        },
+        {
+          "Name": "runc",
+          "Version": "1.4.3",
+          "Details": {
+            "GitCommit": "v1.4.3-0-gbb14dabe"
+          }
+        },
+        {
+          "Name": "docker-init",
+          "Version": "0.19.0",
+          "Details": {
+            "GitCommit": "de40ad0"
+          }
+        }
+      ],
+      "GitCommit": "6a43e3d",
+      "GoVersion": "go1.26.5",
+      "KernelVersion": "7.0.12",
+      "BuildTime": "2026-08-05T18:28:40.000000000+00:00"
+    }
+  },
+  "buildArguments": [
+    "build",
+    "--platform",
+    "linux/amd64",
+    "--pull=false",
+    "--target",
+    "dependencies",
+    "--no-cache",
+    "--iidfile",
+    "/tmp/opencode/starchess-hermetic-build-JpMDRd/image-id",
+    "--file",
+    "/tmp/opencode/starchess-hermetic-build-JpMDRd/context/Dockerfile",
+    "/tmp/opencode/starchess-hermetic-build-JpMDRd/context"
+  ],
+  "imageInspection": {
+    "Id": "sha256:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1",
+    "RepoTags": [],
+    "RepoDigests": [],
+    "Comment": "buildkit.dockerfile.v0",
+    "Created": "2026-10-06T05:59:40.60912829Z",
+    "Config": {
+      "Env": [
+        "PATH=/opt/pnpm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "NODE_VERSION=22.23.2",
+        "YARN_VERSION=1.22.22",
+        "CI=true",
+        "PNPM_HOME=/tmp/pnpm",
+        "HOME=/tmp/home",
+        "XDG_CACHE_HOME=/tmp/cache",
+        "XDG_CONFIG_HOME=/tmp/config",
+        "XDG_DATA_HOME=/tmp/data",
+        "TMPDIR=/tmp",
+        "npm_config_update_notifier=false"
+      ],
+      "Entrypoint": [
+        "docker-entrypoint.sh"
+      ],
+      "Cmd": [
+        "node"
+      ],
+      "WorkingDir": "/app"
+    },
+    "Architecture": "amd64",
+    "Os": "linux",
+    "Size": 133779839,
+    "RootFS": {
+      "Type": "layers",
+      "Layers": [
+        "sha256:34467cc93912af891dfee8a3902adf9b4f355a9bca4eaa46f658d1181a21de0d",
+        "sha256:fa308e2890c6e8792de63890c6311ed9fd21e6390db51e340b6085a1b23852e1",
+        "sha256:e05e1884319cd6aba2cbbc7a2afb655ca032bc83988020a9088439cac50dca76",
+        "sha256:c518045d8fcb97604685082962ab1cf5647e0baa5d33dd8e4c7ac5e05118a513",
+        "sha256:a483d4ed4858cfb9b72c8b6175ad924777e38b5695f4e26b860ace4d652273ad",
+        "sha256:c572c0b1dad9b245e822bab5f040d5ca324001475eea79040be0db48ea717dfa",
+        "sha256:7c843a0fb0d131aa4a638a7f3e6f8bb5e9fa046e1a000dbb332f12bac611b239",
+        "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+        "sha256:077d81355e1f9ae225e07eaf21c12215e49c701448c0776693b435adcb8bd2c5",
+        "sha256:ca89cc398f8927a573f449d4bcd06ee042a9c041096ccf367c108d2c933f8bd7",
+        "sha256:93ba9a4732a12ccba96597a1bf5ac8b7214485217daf0404d8c216228a4ae9c9",
+        "sha256:8bb9a520e1f25ce97336e57170d9e4139d07ab9de5362c3bd6009bcf24db2f15",
+        "sha256:363de315797d8933cbffddf0a7a459a7e4229a30f5c53c855a269061d1d7ea00",
+        "sha256:eb8a61a01db479dd2107839fea5f52e997b63bd5fcfff1475cec68a2f1e39c6d"
+      ]
+    },
+    "Metadata": {
+      "LastTagTime": "2026-10-06T05:59:42.964168634Z"
+    },
+    "Descriptor": {
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "digest": "sha256:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1",
+      "size": 856
+    },
+    "Identity": {
+      "Build": [
+        {
+          "Ref": "q6rm38epvjfn2obrrvfyf4vaa",
+          "CreatedAt": "2026-10-06T05:59:44.4402225Z"
+        }
+      ]
+    }
+  },
+  "measurements": {
+    "dependencies": {
+      "manifestSha256": "2f3200a1c757131e1d791c516d5b778090b4d5cc9ce4938b7cb1ece3d2fc4ae4",
+      "installedSha256": "e8c074b623cdc4c5b00debe00f68865c56e34eba91250979342129b290951d83",
+      "frozenStoreSha256": "89d5c3d854da88cbb419344bceb70f952394e2e38ebc014ed6449cdae44a58ae",
+      "toolTreeSha256": "45d37ff19cfad55687cec847b0888cf0cc2fb3b66b49472b454b3ada55b77270"
+    },
+    "tools": {
+      "manifestSha256": "b5018a4772899feab9269c5ce26204853f291e5bb79afa137447c68f41e8a8b2",
+      "actual": {
+        "pins": {
+          "platform": "linux/amd64",
+          "baseTag": "docker.io/library/node:22.23.2-bookworm-slim",
+          "baseIndexDigest": "sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+          "basePlatformDigest": "sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2",
+          "node": "22.23.2",
+          "nodeBinarySha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
+          "pnpm": "10.33.0",
+          "pnpmTarball": "https://registry.npmjs.org/pnpm/-/pnpm-10.33.0.tgz",
+          "pnpmIntegrity": "sha512-EFaLtKavtYyes2MNqQzJUWQXq+vT+rvmc58K55VyjaFJHp21pUTHatjrdXD1xLs9bGN7LLQb/c20f6gjyGSTGQ==",
+          "pnpmSha256": "bfcc1bcbad279b13a516c446a75b3c58b6904b45d57a1951411015e50b751a80",
+          "dockerInit": "0.19.0",
+          "dockerInitGitCommit": "de40ad0"
+        },
+        "node": "22.23.2",
+        "pnpm": "10.33.0",
+        "artifact": {
+          "integrity": "sha512-EFaLtKavtYyes2MNqQzJUWQXq+vT+rvmc58K55VyjaFJHp21pUTHatjrdXD1xLs9bGN7LLQb/c20f6gjyGSTGQ==",
+          "sha256": "bfcc1bcbad279b13a516c446a75b3c58b6904b45d57a1951411015e50b751a80",
+          "bytes": 4533784
+        }
+      }
+    },
+    "capture": {
+      "manifestSha256": "808ea22e27e0cc0f37cf6c9970226257e0313c30a05620ec8f9540d63930875c",
+      "inputs": [
+        {
+          "path": "pnpm-lock.yaml",
+          "sha256": "10d9c8945a151b402511082911ddf8a3bbc19ff4c55a14a5df8ef0d1afb13b83"
+        },
+        {
+          "path": "packages/starchess-core/package.json",
+          "sha256": "b837e00355f118f8c7ec23d65ee0933996adb9b91cc53318747f75435970998d"
+        },
+        {
+          "path": "packages/starchess-arena/package.json",
+          "sha256": "602f929a507a1c7806e850543d030de83091bd8f7413ca9520f34f641cce6e7b"
+        },
+        {
+          "path": "packages/starchess-training/package.json",
+          "sha256": "4ab1d9bc0f417b08a340afd9820b631eb6224b6f7eaceebf65498df25046f2a5"
+        }
+      ],
+      "controlSha256": "bbca2b58e15ca902cedc718e99333f372f092602bbd4c09317149cbb6f302385"
+    },
+    "closure": {
+      "manifestSha256": "a37ec86f100477cca5370fefa0d9b38667a77323d5e4d22be633557babd7da1b",
+      "actual": {
+        "tools": {
+          "node": "22.23.2",
+          "pnpm": "10.33.0"
+        },
+        "packages": {
+          "starchess-core": {
+            "fflate": "0.8.3",
+            "chess.js": "1.4.0",
+            "typescript": "5.9.3",
+            "vitest": "4.1.10"
+          },
+          "starchess-arena": {
+            "@chess-coach/starchess-core": "0.0.1",
+            "@types/node": "22.20.1",
+            "tsx": "4.23.12",
+            "typescript": "5.9.3",
+            "vitest": "4.1.10"
+          },
+          "starchess-training": {
+            "@chess-coach/starchess-arena": "0.0.1",
+            "@chess-coach/starchess-core": "0.0.1",
+            "jssha": "3.3.2",
+            "@types/node": "22.20.1",
+            "typescript": "5.9.3",
+            "vitest": "4.1.10"
+          }
+        },
+        "lockSha256": "10d9c8945a151b402511082911ddf8a3bbc19ff4c55a14a5df8ef0d1afb13b83"
+      }
+    },
+    "method": "host-scanned-unstarted-container-tar-v1",
+    "interpreter": {
+      "path": "/usr/local/bin/node",
+      "sha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
+      "bytes": 124836408
+    }
+  },
+  "capture": {
+    "version": 1,
+    "dependenciesOnly": true,
+    "excludedNames": [
+      "node_modules",
+      ".git",
+      ".pnpm-store",
+      ".cache",
+      ".vite",
+      ".vite-temp",
+      "coverage",
+      "dist",
+      ".DS_Store"
+    ],
+    "dependencyFiles": [
+      {
+        "path": "pnpm-lock.yaml",
+        "sha256": "10d9c8945a151b402511082911ddf8a3bbc19ff4c55a14a5df8ef0d1afb13b83"
+      },
+      {
+        "path": "packages/starchess-core/package.json",
+        "sha256": "b837e00355f118f8c7ec23d65ee0933996adb9b91cc53318747f75435970998d"
+      },
+      {
+        "path": "packages/starchess-arena/package.json",
+        "sha256": "602f929a507a1c7806e850543d030de83091bd8f7413ca9520f34f641cce6e7b"
+      },
+      {
+        "path": "packages/starchess-training/package.json",
+        "sha256": "4ab1d9bc0f417b08a340afd9820b631eb6224b6f7eaceebf65498df25046f2a5"
+      }
+    ],
+    "workspace": {
+      "originalSha256": "0803c2d19cdf6aad850b39abe2fcb2bf6f7a909a405f359c99744dcca53465d4",
+      "acquisition": "packages:\n  - packages/starchess-core\n  - packages/starchess-arena\n  - packages/starchess-training\nallowBuilds:\n  esbuild: true\n"
+    },
+    "optionalConfigs": [
+      {
+        "path": ".npmrc",
+        "present": false
+      },
+      {
+        "path": ".pnpmfile.cjs",
+        "present": false
+      },
+      {
+        "path": "pnpmfile.cjs",
+        "present": false
+      },
+      {
+        "path": "tsconfig.json",
+        "present": false
+      },
+      {
+        "path": "tsconfig.base.json",
+        "present": false
+      },
+      {
+        "path": "vitest.config.ts",
+        "present": false
+      },
+      {
+        "path": "vite.config.ts",
+        "present": false
+      },
+      {
+        "path": "nx.json",
+        "present": true
+      }
+    ],
+    "control": {
+      "algorithm": "sha256(JSON.stringify(entries))",
+      "sha256": "bbca2b58e15ca902cedc718e99333f372f092602bbd4c09317149cbb6f302385",
+      "entries": [
+        {
+          "path": ".",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "Dockerfile",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1586,
+          "sha256": "e629248060f7db84fe04d68cd8533f5b291fe800f77febcac7c32bfafad98f5a"
+        },
+        {
+          "path": "README.md",
+          "mode": "644",
+          "type": "file",
+          "bytes": 20549,
+          "sha256": "c90ea6faf243b078cce8b1cc2df2f1e08505ae0a5cb4cee88f5d55169a2e8f05"
+        },
+        {
+          "path": "acquire-tool.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1479,
+          "sha256": "65a2558585c2cf3ac64f4dabd086088b8537a03828d66c2ec28b0a91e31d40d4"
+        },
+        {
+          "path": "closure.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3159,
+          "sha256": "aed0c3a489ce7c2ca563cc843cef48b509d23f3d5deb83358bf8c297764d8e8b"
+        },
+        {
+          "path": "context.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 7716,
+          "sha256": "08b427e9764984811a2359d083d1baec9bf1287c2de14b58f99c07b7f1998e2a"
+        },
+        {
+          "path": "evidence-bundle.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 12213,
+          "sha256": "ef5003d8bfd76b4ed559bff8ada35381ea79f48f74e866b90a5146a21916b60e"
+        },
+        {
+          "path": "evidence-bundle.test.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 19498,
+          "sha256": "7e74e7f9896137997395396cc82b3615e832b80f9dfda90a664e2f57adf67bdd"
+        },
+        {
+          "path": "evidence-limits.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 303,
+          "sha256": "45fcbeec6661c7246c4251149bc1ee14250e4d8427dbeaf1d4e3685edbed8b83"
+        },
+        {
+          "path": "image-measurement.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 17481,
+          "sha256": "aa3f29391ab75cc151511d838d9b191a31b78a26661af6133d4350fa612ffbf7"
+        },
+        {
+          "path": "image-measurement.test.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 24809,
+          "sha256": "a6588d5834df881ad921436ca22a65c7c7f2ca1b51b9d409b485579f26402dae"
+        },
+        {
+          "path": "infra.test.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 20449,
+          "sha256": "c0ddc3d4cb98b48e3d4396f164261f8f36b38af045c73b3d657a9e5c963d4cbb"
+        },
+        {
+          "path": "logged-command.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3388,
+          "sha256": "13ac5942f885da870c18f84503b3d9ea3d98332893e975c85937375b4b1eb1c4"
+        },
+        {
+          "path": "manifest.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2602,
+          "sha256": "106557db63888302f5c2f17be2447bf818ac542c238460b0c8f57387b424e0ae"
+        },
+        {
+          "path": "pins.json",
+          "mode": "644",
+          "type": "file",
+          "bytes": 755,
+          "sha256": "088f415fb8e59694efaf591e1b5a97d42c1fdc5cd89e2eed7d6ce82c1f2e25a2"
+        },
+        {
+          "path": "policy.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3442,
+          "sha256": "928520db0550d0dc21772acb5d8caf57306ea7b2082d72b93bf577a02f7cd889"
+        },
+        {
+          "path": "probe.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4142,
+          "sha256": "86898587f6c49d72a348883e1164d8f0dc5567d1730c67bfc15d6e455ebce53e"
+        },
+        {
+          "path": "public-closure.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 92431,
+          "sha256": "55f4c58053de4499ec32352bd8df20e7befe169d3b6784a33ef13842103ccd25"
+        },
+        {
+          "path": "run.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 11963,
+          "sha256": "2d9e4718716decd3c457fe1bbfbd684fd46e0ca2434dff1b0f2474633fc630c6"
+        },
+        {
+          "path": "runtime.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6953,
+          "sha256": "4dc8d48589a6f010c6e76817265f9c09c5e68c85ec85c32e4b3e5f52b03ed6e3"
+        },
+        {
+          "path": "tar.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 15341,
+          "sha256": "f58da1cf8b84af73975950633265f084c1b1b226f61c79ac88a9e211a1da4d0b"
+        },
+        {
+          "path": "tar.test.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 17988,
+          "sha256": "6a136d3feb536b8f0af224f48cf8804b8d65c62b010c71802706f6dbe066a88e"
+        },
+        {
+          "path": "verification-plan.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3037,
+          "sha256": "f31494f354dba19b9a529fd0824bf3583bfb5f16b9d2622a793d0f8757d80898"
+        },
+        {
+          "path": "workspace-policy.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1090,
+          "sha256": "41380ac12f43f340312791b8dbba77e90dbcefaf7f286a37d26881a1deb64ede"
+        }
+      ]
+    }
+  },
+  "buildLog": {
+    "executable": "docker",
+    "args": [
+      "build",
+      "--platform",
+      "linux/amd64",
+      "--pull=false",
+      "--target",
+      "dependencies",
+      "--no-cache",
+      "--iidfile",
+      "/tmp/opencode/starchess-hermetic-build-JpMDRd/image-id",
+      "--file",
+      "/tmp/opencode/starchess-hermetic-build-JpMDRd/context/Dockerfile",
+      "/tmp/opencode/starchess-hermetic-build-JpMDRd/context"
+    ],
+    "started": "2026-10-06T05:59:32.313Z",
+    "finished": "2026-10-06T05:59:44.480Z",
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "logs": {
+      "stdout": {
+        "path": "/tmp/opencode/starchess-hermetic-build-JpMDRd/build.stdout.log",
+        "bytes": 0,
+        "observedBytes": 0,
+        "truncated": false,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/opencode/starchess-hermetic-build-JpMDRd/build.stderr.log",
+        "bytes": 4882,
+        "observedBytes": 4882,
+        "truncated": false,
+        "sha256": "4a7c58cb184ef522e6d28d036dcda76eb1601012c890266b89f0ab9137e26483"
+      }
+    }
+  }
+}

@@ -1,0 +1,494 @@
+{
+  "version": "hermetic-verification-v2",
+  "passed": true,
+  "assurance": {
+    "dependencies": {
+      "tools": {
+        "node": "22.23.2",
+        "pnpm": "10.33.0"
+      },
+      "packages": {
+        "starchess-core": {
+          "fflate": "0.8.3",
+          "chess.js": "1.4.0",
+          "typescript": "5.9.3",
+          "vitest": "4.1.10"
+        },
+        "starchess-arena": {
+          "@chess-coach/starchess-core": "0.0.1",
+          "@types/node": "22.20.1",
+          "tsx": "4.23.12",
+          "typescript": "5.9.3",
+          "vitest": "4.1.10"
+        }
+      },
+      "lockSha256": "0c27c2b6f4bf1ffbe9822c5a0be8fda591c63d16ef1eedc43cfbac538cc72508"
+    },
+    "installedSha256": "baf5abc375a9d8630cc3b35f02e0b2f75634d5735d8928e2c30c6196960ad7a7",
+    "frozenStoreSha256": "ed01b5f697337fabd7489cf2c60bb027fd3285572ad26bb513db0af6bcb0058f",
+    "toolsSha256": "45d37ff19cfad55687cec847b0888cf0cc2fb3b66b49472b454b3ada55b77270",
+    "sourceSha256": "b2b9e360fd5c2ecc0fbad667d5155ac56c3efd8603f3c09941982dadc5372147"
+  },
+  "commands": [
+    {
+      "executable": "/app/packages/starchess-arena/node_modules/.bin/tsx",
+      "args": [
+        "/app/packages/starchess-arena/src/cli/challenge.ts",
+        "--suite",
+        "all",
+        "--rerun",
+        "--out",
+        "/app/_spec/evidence/ml-adjutant-phase2/baseline-report.json"
+      ],
+      "cwd": "/app",
+      "started": "2026-10-03T06:35:47.932Z",
+      "finished": "2026-10-03T06:36:19.321Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logs": {
+        "stdout": {
+          "path": "/app/_spec/evidence/ml-adjutant-phase2/logs/command-01.stdout.log",
+          "bytes": 571,
+          "observedBytes": 571,
+          "truncated": false,
+          "sha256": "2b78d87e942b01a340132cca056114eb0ca9b0ff13e269393e9b5aeecd3e0d60"
+        },
+        "stderr": {
+          "path": "/app/_spec/evidence/ml-adjutant-phase2/logs/command-01.stderr.log",
+          "bytes": 0,
+          "observedBytes": 0,
+          "truncated": false,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "executable": "/app/packages/starchess-arena/node_modules/.bin/tsx",
+      "args": [
+        "/app/scripts/challenge-contract-evidence.ts"
+      ],
+      "cwd": "/app",
+      "started": "2026-10-03T06:36:19.336Z",
+      "finished": "2026-10-03T06:36:28.718Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logs": {
+        "stdout": {
+          "path": "/app/_spec/evidence/ml-adjutant-phase2/logs/command-02.stdout.log",
+          "bytes": 174,
+          "observedBytes": 174,
+          "truncated": false,
+          "sha256": "d7b2689cc70e17adfbce9de763e6fa12820801109dadf41b59123809ddab010e"
+        },
+        "stderr": {
+          "path": "/app/_spec/evidence/ml-adjutant-phase2/logs/command-02.stderr.log",
+          "bytes": 0,
+          "observedBytes": 0,
+          "truncated": false,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "executable": "/app/packages/starchess-core/node_modules/.bin/tsc",
+      "args": [
+        "-p",
+        "tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": "/app/packages/starchess-core",
+      "started": "2026-10-03T06:36:28.718Z",
+      "finished": "2026-10-03T06:36:30.145Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logs": {
+        "stdout": {
+          "path": "/app/_spec/evidence/ml-adjutant-phase2/logs/command-03.stdout.log",
+          "bytes": 0,
+          "observedBytes": 0,
+          "truncated": false,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "/app/_spec/evidence/ml-adjutant-phase2/logs/command-03.stderr.log",
+          "bytes": 0,
+          "observedBytes": 0,
+          "truncated": false,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "executable": "/app/packages/starchess-arena/node_modules/.bin/tsc",
+      "args": [
+        "-p",
+        "tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": "/app/packages/starchess-arena",
+      "started": "2026-10-03T06:36:30.145Z",
+      "finished": "2026-10-03T06:36:32.566Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logs": {
+        "stdout": {
+          "path": "/app/_spec/evidence/ml-adjutant-phase2/logs/command-04.stdout.log",
+          "bytes": 0,
+          "observedBytes": 0,
+          "truncated": false,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "/app/_spec/evidence/ml-adjutant-phase2/logs/command-04.stderr.log",
+          "bytes": 0,
+          "observedBytes": 0,
+          "truncated": false,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "executable": "/app/packages/starchess-arena/node_modules/.bin/tsc",
+      "args": [
+        "--noEmit",
+        "--target",
+        "ES2022",
+        "--module",
+        "ESNext",
+        "--moduleResolution",
+        "Bundler",
+        "--strict",
+        "--skipLibCheck",
+        "/app/packages/starchess-arena/src/__tests__/challengeCandidateCodec.test.ts",
+        "/app/packages/starchess-arena/src/__tests__/challengeContractAdmission.test.ts",
+        "/app/packages/starchess-arena/src/__tests__/challengeContractCoverage.test.ts",
+        "/app/packages/starchess-arena/src/__tests__/challengeCorpus.test.ts",
+        "/app/packages/starchess-arena/src/__tests__/challengeEvidence.test.ts",
+        "/app/packages/starchess-arena/src/__tests__/challengeEvidenceImport.test.ts",
+        "/app/packages/starchess-arena/src/__tests__/challengeFeatures.test.ts",
+        "/app/packages/starchess-arena/src/__tests__/challengeLifecycle.test.ts",
+        "/app/packages/starchess-arena/src/__tests__/challengeObservation.test.ts",
+        "/app/packages/starchess-arena/src/__tests__/challengeObservationCodec.test.ts",
+        "/app/packages/starchess-arena/src/__tests__/challengePinMigration.test.ts",
+        "/app/packages/starchess-arena/src/__tests__/challengePublication.test.ts",
+        "/app/packages/starchess-arena/src/__tests__/challengeSourceInventory.test.ts",
+        "/app/packages/starchess-arena/src/__tests__/challengeSuites.test.ts",
+        "/app/packages/starchess-arena/src/__tests__/challengeWatchdog.test.ts",
+        "/app/packages/starchess-arena/src/__tests__/observationIsolation.test.ts",
+        "/app/packages/starchess-arena/src/__tests__/resourceLedger.test.ts",
+        "/app/packages/starchess-arena/src/__tests__/strictRecordedQueues.test.ts",
+        "/app/scripts/challenge-contract-evidence.ts",
+        "/app/scripts/challenge-validate-baseline.ts"
+      ],
+      "cwd": "/app/packages/starchess-arena",
+      "started": "2026-10-03T06:36:32.567Z",
+      "finished": "2026-10-03T06:36:35.632Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logs": {
+        "stdout": {
+          "path": "/app/_spec/evidence/ml-adjutant-phase2/logs/command-05.stdout.log",
+          "bytes": 0,
+          "observedBytes": 0,
+          "truncated": false,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "/app/_spec/evidence/ml-adjutant-phase2/logs/command-05.stderr.log",
+          "bytes": 0,
+          "observedBytes": 0,
+          "truncated": false,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "executable": "/app/packages/starchess-core/node_modules/.bin/vitest",
+      "args": [
+        "run",
+        "--config",
+        "/tmp/starchess-core.vitest.mts",
+        "--configLoader",
+        "native",
+        "--maxWorkers",
+        "2",
+        "--reporter=default",
+        "--reporter=json",
+        "--outputFile",
+        "/app/_spec/evidence/ml-adjutant-phase2/vitest-starchess-core.json"
+      ],
+      "cwd": "/app/packages/starchess-core",
+      "started": "2026-10-03T06:36:35.632Z",
+      "finished": "2026-10-03T06:36:41.614Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logs": {
+        "stdout": {
+          "path": "/app/_spec/evidence/ml-adjutant-phase2/logs/command-06.stdout.log",
+          "bytes": 6705,
+          "observedBytes": 6705,
+          "truncated": false,
+          "sha256": "928131ea02d765aff1927332175a60e6fbaab2b60b3ca9fb585ad62a93b1afa1"
+        },
+        "stderr": {
+          "path": "/app/_spec/evidence/ml-adjutant-phase2/logs/command-06.stderr.log",
+          "bytes": 0,
+          "observedBytes": 0,
+          "truncated": false,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "tests": {
+        "path": "/app/_spec/evidence/ml-adjutant-phase2/vitest-starchess-core.json",
+        "sha256": "1b3fb90162fc89f8638ac025728daf03112701f69701aa0ee43301b3b8ed9ddb",
+        "success": true,
+        "total": 426,
+        "passed": 426,
+        "failed": 0,
+        "pending": 0,
+        "todo": 0
+      }
+    },
+    {
+      "executable": "/app/packages/starchess-arena/node_modules/.bin/vitest",
+      "args": [
+        "run",
+        "--config",
+        "/tmp/starchess-arena.vitest.mts",
+        "--configLoader",
+        "native",
+        "--maxWorkers",
+        "2",
+        "--reporter=default",
+        "--reporter=json",
+        "--outputFile",
+        "/app/_spec/evidence/ml-adjutant-phase2/vitest-starchess-arena.json"
+      ],
+      "cwd": "/app/packages/starchess-arena",
+      "started": "2026-10-03T06:36:41.615Z",
+      "finished": "2026-10-03T06:40:33.104Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logs": {
+        "stdout": {
+          "path": "/app/_spec/evidence/ml-adjutant-phase2/logs/command-07.stdout.log",
+          "bytes": 12297,
+          "observedBytes": 12297,
+          "truncated": false,
+          "sha256": "f5d5be0bf5d306d0e81d783e4c02bb27fc7c4ae2fb33fdaba4b0718dd48f5ce0"
+        },
+        "stderr": {
+          "path": "/app/_spec/evidence/ml-adjutant-phase2/logs/command-07.stderr.log",
+          "bytes": 0,
+          "observedBytes": 0,
+          "truncated": false,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "tests": {
+        "path": "/app/_spec/evidence/ml-adjutant-phase2/vitest-starchess-arena.json",
+        "sha256": "aab36808dbb94583b27b5515f54839399cbffad4d6d8a53fb65460bb98e3a92c",
+        "success": true,
+        "total": 689,
+        "passed": 689,
+        "failed": 0,
+        "pending": 0,
+        "todo": 0
+      }
+    },
+    {
+      "executable": "/usr/local/bin/node",
+      "args": [
+        "--test",
+        "/app/packages/starchess-arena/hermetic/evidence-bundle.test.mjs",
+        "/app/packages/starchess-arena/hermetic/image-measurement.test.mjs",
+        "/app/packages/starchess-arena/hermetic/tar.test.mjs"
+      ],
+      "cwd": "/app",
+      "started": "2026-10-03T06:40:33.106Z",
+      "finished": "2026-10-03T06:40:34.445Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "logs": {
+        "stdout": {
+          "path": "/app/_spec/evidence/ml-adjutant-phase2/logs/command-08.stdout.log",
+          "bytes": 17950,
+          "observedBytes": 17950,
+          "truncated": false,
+          "sha256": "4ed381062edc61d61e93ac42367844a2e4e4d105e6dccff0263bdd6f601f503b"
+        },
+        "stderr": {
+          "path": "/app/_spec/evidence/ml-adjutant-phase2/logs/command-08.stderr.log",
+          "bytes": 0,
+          "observedBytes": 0,
+          "truncated": false,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "baseline-report.json",
+      "mode": "644",
+      "type": "file",
+      "bytes": 2568237,
+      "sha256": "c608561e510e5d06366fb0a787d4077c5a8ca3ce0e73811eac47970aea07a86e"
+    },
+    {
+      "path": "contract-report.json",
+      "mode": "644",
+      "type": "file",
+      "bytes": 338310,
+      "sha256": "19ff3ee11c43ecaaadc14b69190e32ed8f4fc61f1fd10647fa5635a78c1ed2fd"
+    },
+    {
+      "path": "coverage.json",
+      "mode": "644",
+      "type": "file",
+      "bytes": 129641,
+      "sha256": "f3c81dd7204c11ffc853cb6a60d073a6edf03b42bc9d6bdffcfa1176602cedac"
+    },
+    {
+      "path": "logs/command-01.stderr.log",
+      "mode": "644",
+      "type": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "logs/command-01.stdout.log",
+      "mode": "644",
+      "type": "file",
+      "bytes": 571,
+      "sha256": "2b78d87e942b01a340132cca056114eb0ca9b0ff13e269393e9b5aeecd3e0d60"
+    },
+    {
+      "path": "logs/command-02.stderr.log",
+      "mode": "644",
+      "type": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "logs/command-02.stdout.log",
+      "mode": "644",
+      "type": "file",
+      "bytes": 174,
+      "sha256": "d7b2689cc70e17adfbce9de763e6fa12820801109dadf41b59123809ddab010e"
+    },
+    {
+      "path": "logs/command-03.stderr.log",
+      "mode": "644",
+      "type": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "logs/command-03.stdout.log",
+      "mode": "644",
+      "type": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "logs/command-04.stderr.log",
+      "mode": "644",
+      "type": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "logs/command-04.stdout.log",
+      "mode": "644",
+      "type": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "logs/command-05.stderr.log",
+      "mode": "644",
+      "type": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "logs/command-05.stdout.log",
+      "mode": "644",
+      "type": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "logs/command-06.stderr.log",
+      "mode": "644",
+      "type": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "logs/command-06.stdout.log",
+      "mode": "644",
+      "type": "file",
+      "bytes": 6705,
+      "sha256": "928131ea02d765aff1927332175a60e6fbaab2b60b3ca9fb585ad62a93b1afa1"
+    },
+    {
+      "path": "logs/command-07.stderr.log",
+      "mode": "644",
+      "type": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "logs/command-07.stdout.log",
+      "mode": "644",
+      "type": "file",
+      "bytes": 12297,
+      "sha256": "f5d5be0bf5d306d0e81d783e4c02bb27fc7c4ae2fb33fdaba4b0718dd48f5ce0"
+    },
+    {
+      "path": "logs/command-08.stderr.log",
+      "mode": "644",
+      "type": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "logs/command-08.stdout.log",
+      "mode": "644",
+      "type": "file",
+      "bytes": 17950,
+      "sha256": "4ed381062edc61d61e93ac42367844a2e4e4d105e6dccff0263bdd6f601f503b"
+    },
+    {
+      "path": "pin-migration.json",
+      "mode": "644",
+      "type": "file",
+      "bytes": 19418,
+      "sha256": "bf1ef0da189f45b3b49f7807d811456fd9b942d4f9c8dd3b42ddec0ebcaaf1b9"
+    },
+    {
+      "path": "vitest-starchess-arena.json",
+      "mode": "644",
+      "type": "file",
+      "bytes": 257781,
+      "sha256": "aab36808dbb94583b27b5515f54839399cbffad4d6d8a53fb65460bb98e3a92c"
+    },
+    {
+      "path": "vitest-starchess-core.json",
+      "mode": "644",
+      "type": "file",
+      "bytes": 141097,
+      "sha256": "1b3fb90162fc89f8638ac025728daf03112701f69701aa0ee43301b3b8ed9ddb"
+    }
+  ]
+}

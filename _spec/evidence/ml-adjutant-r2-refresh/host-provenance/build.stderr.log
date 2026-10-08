@@ -1,0 +1,73 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.62kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/starchess-hermetic-dependencies:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [frozen 1/1] FROM docker.io/library/starchess-hermetic-dependencies:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1@sha256:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1
+#4 resolve docker.io/library/starchess-hermetic-dependencies:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1@sha256:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1 done
+#4 CACHED
+
+#5 [internal] load build context
+#5 transferring context: 5.29MB 0.0s done
+#5 DONE 0.0s
+
+#6 [runtime 1/4] COPY runtime/ /app/
+#6 DONE 0.0s
+
+#7 [runtime 2/4] COPY capture.json /hermetic-evidence/capture.json
+#7 DONE 0.0s
+
+#8 [runtime 3/4] RUN --network=none mkdir -p /app/_spec/evidence/ml-adjutant-r2-refresh && node /hermetic/manifest.mjs source && node /hermetic/closure.mjs dependencies
+#8 0.766 {
+#8 0.766   "tools": {
+#8 0.766     "node": "22.23.2",
+#8 0.766     "pnpm": "10.33.0"
+#8 0.766   },
+#8 0.766   "packages": {
+#8 0.766     "starchess-core": {
+#8 0.766       "fflate": "0.8.3",
+#8 0.766       "chess.js": "1.4.0",
+#8 0.766       "typescript": "5.9.3",
+#8 0.766       "vitest": "4.1.10"
+#8 0.766     },
+#8 0.766     "starchess-arena": {
+#8 0.766       "@chess-coach/starchess-core": "0.0.1",
+#8 0.766       "@types/node": "22.20.1",
+#8 0.766       "tsx": "4.23.12",
+#8 0.766       "typescript": "5.9.3",
+#8 0.766       "vitest": "4.1.10"
+#8 0.766     },
+#8 0.766     "starchess-training": {
+#8 0.766       "@chess-coach/starchess-arena": "0.0.1",
+#8 0.766       "@chess-coach/starchess-core": "0.0.1",
+#8 0.766       "jssha": "3.3.2",
+#8 0.766       "@types/node": "22.20.1",
+#8 0.766       "typescript": "5.9.3",
+#8 0.766       "vitest": "4.1.10"
+#8 0.766     }
+#8 0.766   },
+#8 0.766   "lockSha256": "10d9c8945a151b402511082911ddf8a3bbc19ff4c55a14a5df8ef0d1afb13b83"
+#8 0.766 }
+#8 DONE 0.8s
+
+#9 [runtime 4/4] WORKDIR /app
+#9 DONE 0.0s
+
+#10 exporting to image
+#10 exporting layers 0.1s done
+#10 exporting manifest sha256:d2b1d35a8de172c00a9491f7c1fc1da0899e11b5d0c79c45f8dad750eb5f98a0
+#10 exporting manifest sha256:d2b1d35a8de172c00a9491f7c1fc1da0899e11b5d0c79c45f8dad750eb5f98a0 done
+#10 exporting config sha256:1958d8ebc9b3ee0a2a3087a7aaedccf11f154f82a647bf26790ad3d8c76e3156 done
+#10 exporting attestation manifest sha256:fd68c8b0e07529a287e8293a9d32d12ae41c5c9294a8677319f7d1e34cc10a48 done
+#10 exporting manifest list sha256:37b4ec38caa50f15d02dec1c4dbdb45b0c29a7bdeb3a4c21f7ccea54e66ee2a9 done
+#10 naming to moby-dangling@sha256:37b4ec38caa50f15d02dec1c4dbdb45b0c29a7bdeb3a4c21f7ccea54e66ee2a9 done
+#10 unpacking to moby-dangling@sha256:37b4ec38caa50f15d02dec1c4dbdb45b0c29a7bdeb3a4c21f7ccea54e66ee2a9 0.0s done
+#10 DONE 0.2s

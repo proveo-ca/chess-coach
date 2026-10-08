@@ -1,0 +1,575 @@
+' purpose: Authorized policy codecs and features, source provenance, and hermetic verification.
+' covers: packages/starchess-arena/src/authorized/v1/**
+' covers: packages/starchess-arena/src/observations.ts
+' covers: packages/starchess-arena/src/intent-codec-v1.ts
+' covers: packages/starchess-arena/src/challengeContract/**
+' covers: packages/starchess-arena/src/challenge/**
+' covers: packages/starchess-arena/src/challenge/sourceInventory.ts
+' covers: packages/starchess-arena/src/__tests__/challenge*.test.ts
+' covers: packages/starchess-arena/src/__tests__/challengeSourceInventory.test.ts
+' covers: packages/starchess-arena/src/__tests__/challengeEvidenceImport.test.ts
+' covers: packages/starchess-arena/src/__tests__/challengeSuites.test.ts
+' covers: packages/starchess-arena/src/__tests__/challengeContractCoverage.test.ts
+' covers: packages/starchess-arena/src/__tests__/*V1Bridge*.test.ts
+' covers: packages/starchess-arena/src/__tests__/r2CompositionEvidence.test.ts
+' covers: packages/starchess-arena/package.json
+' covers: packages/starchess-training/**
+' covers: packages/starchess-core/package.json
+' covers: packages/starchess-core/src/**
+' covers: packages/starchess-core/src/planning-v1.ts
+' covers: packages/starchess-core/src/__tests__/planning-v1.test.ts
+' covers: packages/starchess-core/src/replay/packed.ts
+' covers: packages/starchess-core/src/__tests__/packed.test.ts
+' covers: scripts/**
+' covers: scripts/challenge-import-evidence.mjs
+' covers: scripts/challenge-validate-baseline.ts
+' covers: scripts/challenge-infrastructure-evidence.mjs
+' covers: packages/starchess-arena/hermetic/**
+' covers: packages/starchess-arena/hermetic/public-closure.mjs
+' covers: packages/starchess-arena/hermetic/verification-plan.mjs
+' covers: packages/starchess-arena/hermetic/policy.mjs
+' covers: packages/starchess-arena/hermetic/evidence-bundle.mjs
+' covers: _spec/evidence/ml-adjutant-phase2/*.json
+' covers: _spec/evidence/ml-adjutant-r0-refresh/**
+' covers: _spec/evidence/ml-adjutant-r0-closure.json
+' covers: _spec/evidence/ml-adjutant-r2-refresh/**
+' covers: _spec/evidence/ml-adjutant-r2-closure.json
+' status: R2 CLOSED within its preserved authorized-observation V1/bounded composition V3 assurance generation. R2/R3 source retained active; fresh assembled-source/integration verification pending, not learned acceptance or training.
+' recovery: _spec/_plans/recovery-pr47.md; identities/counts/publication below retain original generation scope, not current integrated PR/Main proof. Full R4 blocked; failed raw foundations archive-only, no HIGH waiver.
+' historical R2 closure authority: _spec/evidence/ml-adjutant-r2-closure.json outside immutable57-payload bundle; committed/durability confirmed, marker65bc6bb200514b446ad6939412922bde1cfa00d76225495e309fbd165c81b0c3.
+' historical R2 identities: sourceImage sha256:37b4ec38caa50f15d02dec1c4dbdb45b0c29a7bdeb3a4c21f7ccea54e66ee2a9; dependencyImage sha256:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1.
+' historical R2 byte records: captured source7b08a6606e0a7ba9a1136253cc0329e9a9296e1ff80d36d20440a2606157d194; controlbbca2b58e15ca902cedc718e99333f372f092602bbd4c09317149cbb6f302385; external archivef626892248ecea1446db0d295bf3eb0ae42a668a10ab1e484ebde1e9a89d9ef1/134552576 bytes; export envelope retained, archive external.
+' historical R2 acceptance: all11 PASS/core475/arena1944/training57/Node109/actual infra6, zero fail/skip/pending/todo;54+54 equal/original migration parity; public-v2 four roots/28 sources/two jsSHA dependency files PASS; host14 post-publication then-current-pin/coverage checks PASS reported.
+' POST-PUBLICATION final reviews: adversarial ses_ef1bd904effeNnwLrxzq5IFMTc/security ses_ef292c512ffeiNMZ7KVQloY4sj READY TO CLOSE R2: yes; read-only persisted source/evidence inspection, not independent suite/archive-hash reruns.
+' host import: lead reports independent eight-input validation/current source/public graph/composition/coverage/archive ordered layers/official Node bytes/dependency/control/infra joins returned ok before exclusive publication. Spec-keeper reads records, executes no tests/hash tools.
+' limitations: supported source audits are not arbitrary-JS purity, hashes are byte identity not producer authenticity, report omissions are bounded not exhaustive/winning coverage; modelArtifact null/eligiblefalse/learnedPassfalse/trainingfalse/machine-learning disabled.
+' related: _spec/packages/starchess-training/candidate-generation.puml (current V1 bridge/V3 generator; four native promotions, five deploy units)
+' related: _spec/_plans/r2-generator-v3.md (normative current bridge/verification vectors and recovery boundary)
+' related: _spec/_plans/PLAN-ml-adjutant.md
+' related: _spec/_plans/ml-adjutant-r8-challenge.md
+' related: _spec/_plans/ml-adjutant-r4-weights.md
+' related: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml (execution contracts; original assurance records are historical)
+' related: _spec/_plans/ml-adjutant-r0-execution-revisions.md (historical v1 inventory/v2 pins/eight-command R0 closure)
+' historical recovery checkpoint: cc6/strict fixture repairs preceded the complete new closed generation; old/partial markers never authorized acceptance.
+' recovery: R0 records/partial logs remain historical; archived logs/tmp images absent; old markers cannot authorize current tests, live pins or closure.
+' decision: FIRST Phase 3 training requires broader versioned combinations and v2 authorized economic/positional interactions; horizon 1.
+' later: three conditional planning windows are a separate future milestone; no training/model/artifact/registry activation here.
+' boundary: codec representability is not proposal completeness or private host admission.
+' boundary: baselineScore remains handcrafted and excluded from features; no learned weights exist.
+' legacy JSON: canonical sorting preserves own __proto__ data properties via Object.fromEntries; detached results retain ordinary Object.prototype / Array.prototype, not a null-prototype redesign.
+' packed JSON: own __proto__ next fields remain stored, not misclassified as rebuildable; packed canonical equality preserves own keys and unpacked ordinary Object.prototype.
+' boundary: a selected proposal receives one private whole-queue admission, never hidden probes or rescue.
+' pin scope: project source inventory excludes tests; separate hermetic capture retains source/tests, dependency/store/tool bytes.
+' import audit: lexical fixed-point binding IDs; static types, wrappers, namespace aliases, literal calls and declared esbuild closure; fail closed on unsupported escapes/unknown-extension CJS.
+' import audit: supported createRequire bases are own import.meta.url and the exact closure.mjs package anchor /app/packages/starchess-arena/package.json, with external-only edges for that anchor.
+' import audit: reject unsupported loader APIs/alternate factories, import-metadata mutation/escape, eval/reflective constructor acquisition, wrapper erasure/mutable alias escapes and unsupported destructuring; no arbitrary-JS sandbox proof.
+' import audit: own function-member computed constructors reject through any/wrappers/nested aliases/methods/getters; ordinary data indexing and the exact DTO descriptor seam remain valid.
+' import audit: numeric/string/constant array indices and nested destructuring preserve callable origins even through any; paired array/data-control fixtures add62 assertions, no blanket bracket-access ban.
+' import audit: separate noLib/noResolve lexical AST and lazy full dataType AST preserve binding IDs; workspace inference resolves approved targets with resolvedUsingTsExtension=false, not runtime loader permission.
+' import audit: factory/member mutation provenance rejects callable/unproven receivers; bounded numeric/literal keys and type-checked ordinary maps retain data access, including reviewed data mutations; 106 paired factory/mutation/data assertions added.
+' reviewed guard: literal for-of keys require pristine Array intrinsics including Symbol.iterator; both audits reach a bounded alias/member/caller mutation fixed point and conservatively retain candidate identities through destructuring assignment targets, object-held functions, default/rest and sparse callee shapes.
+' reviewed bound: fail closed after mutationNodeCount * 6 + 1 passes; wrapper/argument recursion bounded at16; sparse invocation arguments do not grant dense-array proof.
+' historical scoped source-freeze reviews: preliminary YES in the same sessions; actual final post-publication READY verdicts/current acceptance are above, not inferred from those preliminary approvals.
+' historical Env delta reviews: scoped unique-definition repair, not formal JS purity or training authorization; later complete new evidence independently closed the R2 cycle.
+' host lookup: own Object.entries(...).find reads replace parameter-derived native side/bank/table indexing while preserving valid native values; full native host remains private to models.
+' admission: original stageQueue intent/resource checks and whole native addScAction staging remain; commitPair preserves stage gas/spend/resource checks, no fallback.
+' public exports: all conditional workspace leaves, including node/default/unselected branches, must equal canonical approved targets; static-only pure closures reject every runtime dynamic import.
+' historical R2 public exports: core {'.':'./src/index.ts','./planning-v1':'./src/planning-v1.ts'}; four model audit roots core './planning-v1', arena './observations' + './intent-codec-v1', training './candidates'. Additive R3 fifth '/events' ownership lives in candidate-generation and authorized-economic-boundaries.
+' public boundary: authorized/model runtime + type imports retargeted to planning-v1, no deep-core exceptions; full native coreRoot and arena root stay host-only/captured/inventoried; fflate stays core host dependency, not model closure.
+' SHA: approved exact jssha3.3.2 / jssha/sha256 / BSD-3-Clause, synchronous SHA-256 -> Uint8Array(32); historical noble2.4 selected choice overridden; no vendor constructor exception, patch or tree-shaking assumption.
+' import audit seam: challengeContract/validation.ts owns reviewed dense-array descriptor checks and exact inspectDto snapshot validation; this does not permit arbitrary reflective loader acquisition.
+' historical R0 assurance: _spec/evidence/ml-adjutant-r0-refresh/image-assurance.json; original closure record _spec/evidence/ml-adjutant-r0-closure.json unchanged.
+' historical R0 image: sha256:3550d1cc2b98d9ae757937a9e45e1ba89b6e84459106a491a61af9e183968f72
+' historical R0 dependency image: sha256:8c5f7da07b82554325e64b8c99f36fa43ac213b470f8537a819ff464c2f657d6
+' historical R0 captured source SHA-256: b2b9e360fd5c2ecc0fbad667d5155ac56c3efd8603f3c09941982dadc5372147
+' historical R0 marker SHA-256: 33ac25cc582ee154179b3321091368858a6c0d65ee36df4eec02e85f8ff1d34d; 24 artifacts, original commit/durability report only.
+' historical R0 archive (not recovered): external /tmp/opencode/starchess-hermetic-export-E2QdWc/image.tar; SHA-256 e349f9abd08a6e9b205778920a47538544a9b71a6542653f7de93616deab3833; 133682176 bytes.
+' measured official-base Node 22.23.2 binary SHA-256: 3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327; 124836408 bytes (~124.84 MB); host byte/tree measurement, no image-resident Node/proxy JSON authority.
+' assurance: historical source image sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d passed network-none, read-only, nonroot; it does not measure R0 repairs.
+' assurance: historical dependency image sha256:4c9d45b04f325a2d912cb34ebc982f139f057a2f2fb6d779ac2ef59f29ea987d; not a current R2 dependency image.
+' assurance: official Node 22.23.2 bookworm-slim platform digest sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2.
+' historical evidence: Phase 2 baseline-report.json SHA-256 5de86d94caaa626402b73ac9fa8f6bbc7a9b111e69a8b3801461380635cbd87f
+' historical archive: external /tmp/opencode/starchess-hermetic-export-k1KYQO/image.tar SHA-256 64d6277f439f7cdfb82ecb2c6a230f735c5c7f3588d7f13082a30b430e6d07f7
+' relocation: pre-rename archive and post-rename _spec/evidence/ml-adjutant-phase2/verification.json are immutable history; neither measures current R0 repairs.
+' relocation proof: lead reports 20 archived runtime artifact checksums, 122 source files reconstructed by reversing only SPEC-name replacements, and 54 equal old/current semantic rerun comparisons.
+' historical verification: image core 426/426, arena 434/434, typechecks/strict TS passed; historical infra 5/5 actual Docker and focused 7 tests/2 files.
+' historical R0 verification: core 426/426, arena 689/689, zero failed/pending/todo; 107 Node tests, no skips; 54 executions + 54 reruns, semantic/migration parity true; eight exact commands/three static checks include both scripts.
+' historical R0 host checks: actual Docker infrastructure 5/5 on then-new dependency image; host post-publication 13/13 including then-live source pins, no skips.
+' prior R2 counts469/811/50/arena1564/1276/1650 remain history. Current floors v3 and actual full PASS475/1944/57 are supplied by complete new frozen reports; earlier failure comments below are historical only.
+' reported host checks: public-closure-v2 PASS four roots/28 workspace/2 jsSHA dep files/zero external runtime imports; full core475 incl planning identity/legacy+packed ownproto, full training57 incl independent SHA/collision tests, source-inventory1177 (913 +264), three typechecks, whole strict invoice and Node109 PASS per Executor, not executed here.
+' delta checkpoint: Executor reports75 focused tests PASS,+30 assertions,3 JS syntax checks/all strict/arena-types/diff PASS; old uncached dependency/source builds and actual6 infra TAP/one Vitest probe passed but envelope capture REJECTED on override-Env order; failed-attempt history only, no reuse after controls changed.
+' historical post-Env failed attempt: dependency987a49.../source757266.../actual6 capture PASS, commands1-7 PASS but arena1703/2/239 failed and9-11 not run. Partial labels/results never authorized current acceptance.
+' failed-generation metadata: /tmp/opencode/starchess-hermetic-run-yuYpvM is temporary evidence only, not persisted identity/publication. Error/status metadata remains separate from acceptable verification.
+' budget approval: read-only architect ses_ef028270 proposal TUI-approved; only import diagnostic beforeAll240000ms and fresh-pin/coverage-pin reproduction tests180000ms, all assertions/floors/model permits/resources retained; no proven new frozen PASS.
+' subsequent retry: Executor reports source prefixd2fb... under2CPU, commands1-7 PASS incl54+54/four static/core475; arena8 FAILED1943 PASS/1 positive publication timeout/0 skipped; all prior239 skipped tests executed, commands9-11 not run. Logical checks148219ms exceed unchanged120000ms positive-test budget; prefix not full pin.
+' test-only equivalence: user-approved native Buffer.equals retains exact byte/length comparison and strict true/missing-artifact rejection; readPublishedBundle validates once, not twice. Scoped security/adversarial YES reported without new IDs; host positive1/types/whole strict/diff PASS is not frozen PASS or R2 acceptance.
+' historical timing scope: byte-equivalent optimization kept the then120000ms positive-test limit; it preserves assertions, not constrained-time success. Earlier failures/host passes remain historical; marker/hash/provenance validation unchanged.
+' historical last failed checkpoint:2fae1... commands1-7 PASS/arena1942/2timeouts/0skips,239 prior blocked assertions executed,9-11 not run. Complete NEW current generation supersedes it; no stitched acceptance or private tmp-pins.
+' current finite framework allowance: four240000ms complete-validation tests and prior hook240000/pin180000 scopes retained, all assertions/no-cache/independent safety preserved. Current complete generation passed them, not a universal timing guarantee.
+' independent safety: child validator120000ms and evidence caps, model planning/startup/match budgets, production/Node deadlines, floors475/1944/57 and Docker2CPU/4GiB/network-none unchanged; framework allowance is not a production safety-limit amendment.
+' historical R2 closed scope: source37b4ec.../measured dependency987a49... complete all11/actual6/54+54/archive/import/exclusive57 publication and post-publication closing reviews; old failures remain separate, never stitched. R3 is active with earlier local proof and pending current integration verification; R4 blocked after archival/global R5 readiness remains beforeR6, no weights/training/registry activation.
+' fixture: immutable six-JSON snapshots/fresh validators remain; initial three240000/180000 exceptions plus four complete-validation tests240000ms only. Other test/child/model safety budgets and2CPU/4GiB/network-none unchanged; no caches/filters/dropped assertions.
+' phase1 pins: baseline 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b; verification 55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508. Unchanged.
+' historical R0 final reviews: adversarial ses_efe0ed67dffew2su1gZIUaDy23 and security ses_efe0ed520ffeOEg3kd6jAtN33i both READY TO CLOSE R0: yes; source/captured-record review, no independent execution/hash recomputation.
+' historical review: ses_f07c45365ffew0wJ58yFHXAye5 READY TO MERGE: no; earlier scoped/rename-only READY verdicts remain history, not current closure authority.
+' historical completed R0 gate: pre-freeze reviews -> frozen image/actual Docker/full core+arena+static/54+54 -> validated publication -> both final reviews READY.
+' publication selection: completion-marker logical commit, not atomic pointer/native directory rename; no atomic directory visibility claim.
+' historical host destination: _spec/evidence/ml-adjutant-r0-refresh; original bytes unchanged, no current marker authority. Phase 1/2 and pre-rename bytes remain immutable.
+' current runtime/host target: _spec/evidence/ml-adjutant-r2-refresh; committed/durability-confirmed57-artifact publication outside captured source, no fallback. Marker-bound generation is immutable.
+' fixture fallback: local tests use validated fresh R2 if available, else byte-locked historical Phase 2; old R0 markers/absent logs never authorize current pins.
+' validator inputs: baseline, original, originalVerification, migration, coverage, contract, r2report, frozenRoot; exactly eight.
+' command inventory: hermetic-verification-v3 exactly eleven; three package typechecks/full suites, strict command 6 all core/arena tests plus both scripts; command 10 three Node files; command 11 node scripts/check-public-closure.mjs.
+' infrastructure: separate trusted host actual6 recapture binds independently measured current dependency image; runtime-only retry may reuse unchanged acquired dependency identity, never stale/rebound capture. No Docker socket/network/capabilities enter restricted execution.
+' infrastructure: six exact ordered identities plus mandatory r2-infrastructure-verification-v1; explicit replacement child env fixed PATH/private HOME/empty DOCKER_CONFIG/image only, exact recorded equality, no inherited preload/Docker endpoint/credential overrides.
+' Env amendment: TUI-approved unique valid key/value equality; shared policy.sameEnvironment binds both source/probe initial/final Env to independently measured image defaults + only HERMETIC_OUTPUT_DIRECTORY, permitting Docker reorder; reject duplicate/bare/malformed keys, extras/missing/changed values and image/container NODE/LD preloads.
+' Env retention: original Env vectors/inspections remain retained; immutable image Config including Env order stays exactly bound, not normalized by container semantic comparison.
+' infrastructure: immutable comparison binds Id/Os/Architecture/Variant/Config/RootFS, excludes mutable RepoTags/RepoDigests/Metadata/GraphDriver/Size; legitimate tagging preserves identity and full recorded inspections remain byte-retained.
+' infrastructure: support private0700 host-owned canonical /tmp/opencode without widening; negative public-output fixture runs outside that private tree; six top-level titles unchanged.
+' acquisition: mandatory original uncached dependency-build envelope binds measured image/controls/inputs/argv/logs and must not contain frozenDependency; a matching immutable acquired image/original record may serve runtime-only retry after independent equality checks, never a rebound or cached acquisition substitute.
+' source container: both inspections require exact runtime.mjs entrypoint/Cmd verify/cwd app/unique Env definitions equal independent image defaults plus output; reject interpreter/linker preloads independently of policy/success.
+' publication: retain host-provenance/{acquisition,build,execution,export}.json and every acquisition/build/execution log; references alone to temporary host files are insufficient.
+' capture modes: generated capture.json and acquisition workspace YAML explicitly 0644; child directories 0755 under umask077; preserve private scratch root.
+' schemas: inventory challenge-source-inventory-v2, pins challenge-execution-pins-v3, composition challenge-composition-v3; public-closure-v2 stdout bound as public-closure-report.json.
+' trust: publication requires canonical parent/private host-owned ancestor without malicious same-UID mutation.
+' permissions: Executor approved _spec/evidence ancestor mode 0700; historical evidence file bytes unchanged.
+' current local publication permission: TUI approved restore ONLY _spec/evidence0700, historical bytes unchanged, exclusive new R2 namespace after verification; no chmod or publication performed by spec-keeper.
+' historical failed run location (not recovered): /tmp/opencode/starchess-hermetic-run-Bv2jRa; default 5s test timeout repaired to 30s with unchanged assertions; policy deadlines unchanged.
+' future gates: calibrated turn-aware material belief remains H=1, public opening 4 deployed + 3 banked = 7 excludes CC and endowed paid basis; R1 versioned amendment/R4/R5 calibration before R6. Native causal frames are not H3 search. Prior 370-field v2 is not a supplied calibrated model.
+' rendering: earlier checkonly is historical; current checkonly not run by spec-keeper (no shell tool).
+' readiness: scoped R2 CLOSED after complete fresh1944/all11/infra/publication/post-publication reviews, not training-ready. README/control/source bytes and57 artifacts/marker/closure record unchanged here. Historical pending/failure comments above do not reopen accepted current gates.
+@startuml ml-adjutant-policy-contracts
+!include ../../themes/proveo.puml
+title StarChess arena · R2 CLOSED · bounded V1/V3 hermetic assurance / no training
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+component "src/challenge/observation.ts\nAuthorizedObservation / side sightings" as OBSERVE <<app>>
+component "src/challenge/baseline.ts\nbaseline-v1 proposals / fixed scores" as BASELINE <<app>>
+component "src/challenge/admission.ts\nstageQueue / commitPair" as ADMISSION <<host>>
+component "src/observations.ts · /observations\nAuthorizedObservationV1" as PUBLIC_OBS <<app>>
+component "src/intent-codec-v1.ts · /intent-codec-v1\npure EncodedCandidate / key / spend" as PUBLIC_CODEC <<app>>
+component "packages/starchess-training/src/candidates.ts\n/candidates · CandidateBatchV3" as GENERATOR <<app>>
+component "packages/starchess-core/src/planning-v1.ts\n/planning-v1 · authorized native primitives" as PLANNING <<app>>
+component "packages/starchess-core/src/index.ts\n. / coreRoot · captured host-only native" as CORE_HOST <<host>>
+
+package "packages/starchess-arena/src/challengeContract" {
+  component "validation.ts\nContractError / strict schema" as VALIDATE <<app>>
+  component "observationCodec.ts facade\n../authorized/v1/observationCodec.ts" as OBS_CODEC <<app>>
+  component "candidateWire.ts\npure V1 wire / key / spend / comparator" as CAND_CODEC <<app>>
+  component "candidateCodec.ts facade\nlegacy wire / encodeBaselineCandidates" as LEGACY_CODEC <<app>>
+  component "features.ts\nFEATURE_SCHEMA / encodeFeatures" as FEATURES <<app>>
+  component "coverage.ts\nmeasureCoverage / historical population" as COVERAGE <<host>>
+}
+
+package "packages/starchess-arena/src/challenge" {
+  component "sourceInventory.ts\nv2 graph / binding + typed data audit" as INVENTORY <<host>>
+  component "evidence.ts\nexecutionPins v3 / runBaselineSuite" as PINS <<host>>
+  component "pinMigration.ts\ncreateMigration / compareBaselineReports" as MIGRATION <<host>>
+}
+
+component "scripts/challenge-contract-evidence.ts\ncontract / migration / coverage reports" as DIAGNOSTIC <<host>>
+database "_spec/evidence/ml-adjutant-phase1\nimmutable baseline / verification bytes" as ORIGINAL <<db>>
+database "_spec/evidence/ml-adjutant-phase2\nhistorical baseline / verification" as EVIDENCE <<db>>
+component "scripts/challenge-import-evidence.mjs\nexact command / test-output binding" as IMPORTER <<host>>
+component "scripts/challenge-validate-baseline.ts\neight-input authoritative validation" as HOST_VALIDATE <<host>>
+component "scripts/r2-composition-evidence.ts\nprimitive / retained membership and omissions" as R2_REPORT <<host>>
+component "scripts/check-public-closure.mjs\npublic-closure-v2 · exact stdout" as PUBLIC_CHECK <<host>>
+component "scripts/challenge-infrastructure-evidence.mjs\nsix exact identities / scrubbed host child" as HOST_INFRA <<host>>
+
+package "packages/starchess-arena/hermetic" {
+  component "pins.json / Dockerfile\nNode platform + binary pin / pnpm bytes" as IMAGE_PINS <<host>>
+  component "context.mjs / manifest.mjs\nallowlist capture / artifact manifests" as CAPTURE <<host>>
+  component "closure.mjs / probe.mjs\ndependency closure / runtime checks" as PROBES <<host>>
+  component "run.mjs / policy.mjs\nimage-ID selection / restricted container" as RUNNER <<host>>
+  component "runtime.mjs\nverify / baseline / diagnostics / checks" as RUNTIME <<host>>
+  component "verification-plan.mjs\nv3 eleven-command manifest / assertion floors" as COMMANDS <<host>>
+  component "public-closure.mjs\npublic export resolution / static graph" as PUBLIC_GRAPH <<host>>
+  component "policy.mjs\nsameEnvironment · unique Env definitions" as ENV <<host>>
+  component "evidence-limits.mjs\nshared bounded-evidence limits" as LIMITS <<host>>
+  component "tar.mjs\nUSTAR / PAX / Docker-save / OCI binding" as TAR <<host>>
+  component "image-measurement.mjs\nunstarted container / host tree scan" as MEASUREMENT <<host>>
+  component "evidence-bundle.mjs\npublishBundleExclusive / readPublishedBundle" as BUNDLE <<host>>
+}
+database "R2 host publication · COMMITTED\n_spec/evidence/ml-adjutant-r2-refresh\n57 payloads · durability confirmed" as REFRESH <<db>>
+database "_spec/evidence/ml-adjutant-r2-closure.json\nCLOSED identity record · outside bundle" as CLOSURE_RECORD <<db>>
+
+OBSERVE ARROW_MAIN OBS_CODEC : authorized facts only
+PUBLIC_OBS ARROW_MAIN OBS_CODEC : pure V1 validation / bytes
+PUBLIC_CODEC ARROW_MAIN CAND_CODEC : pure V1 wire; no baseline closure
+PUBLIC_OBS ARROW_MAIN GENERATOR : validated detached V1 only
+GENERATOR ARROW_MAIN PUBLIC_CODEC : keys / spend / unchanged 65 ceiling
+PUBLIC_OBS ARROW_OPTIONAL PLANNING : authorized runtime + types
+PUBLIC_CODEC ARROW_OPTIONAL PLANNING : authorized runtime + types
+GENERATOR ARROW_OPTIONAL PLANNING : shared native functions / types
+INVENTORY ARROW_OPTIONAL CORE_HOST : retain full host graph / capture
+BASELINE ARROW_MAIN LEGACY_CODEC : singleton queues and pass
+LEGACY_CODEC ARROW_MAIN CAND_CODEC : shared wire; baseline adapter stays private
+VALIDATE ARROW_OPTIONAL OBS_CODEC : versions / unknowns / consistency
+VALIDATE ARROW_OPTIONAL CAND_CODEC : kind / timing / derived spend
+OBS_CODEC ARROW_MAIN FEATURES : validated observation
+CAND_CODEC ARROW_MAIN FEATURES : ordered intent rows
+OBS_CODEC ARROW_MAIN COVERAGE : historical authorized observations
+CAND_CODEC ARROW_MAIN COVERAGE : reference membership / representability
+FEATURES ARROW_MAIN COVERAGE : named finite arrays
+CAND_CODEC ARROW_OPTIONAL ADMISSION : selected queue; admission stays private
+INVENTORY ARROW_MAIN PINS : six ownership partitions / runtime / graph hashes
+PINS ARROW_MAIN DIAGNOSTIC : current pins and baseline binding
+COVERAGE ARROW_MAIN DIAGNOSTIC : deterministic measurements
+ORIGINAL ARROW_MAIN MIGRATION : original byte pins
+MIGRATION ARROW_MAIN DIAGNOSTIC : 54 original/current semantic comparisons
+IMAGE_PINS ARROW_MAIN CAPTURE : frozen dependency toolchain
+CAPTURE ARROW_MAIN PROBES : source / installed tree / store / tools
+RUNNER ARROW_MAIN RUNTIME : restricted image execution contract
+PROBES ARROW_OPTIONAL RUNTIME : pre/post immutable manifests
+RUNTIME ARROW_MAIN PINS : frozen 54 executions + 54 reruns
+RUNTIME ARROW_MAIN DIAGNOSTIC : generated baseline input
+COMMANDS ARROW_MAIN RUNTIME : eleven exact vectors / three package floors
+RUNTIME ARROW_MAIN PUBLIC_CHECK : command 11 · trusted Node
+PUBLIC_CHECK ARROW_MAIN PUBLIC_GRAPH : approved public static closure
+DIAGNOSTIC ARROW_MAIN R2_REPORT : both-seat four-promotion fixtures
+R2_REPORT ARROW_MAIN GENERATOR : bounded generated membership
+R2_REPORT ARROW_MAIN HOST_VALIDATE : independent report remeasurement
+PUBLIC_CHECK ARROW_MAIN IMPORTER : stdout bound to standalone report
+RUNTIME ARROW_MAIN IMPORTER : working outputs / eleven exact commands
+MIGRATION ARROW_MAIN HOST_VALIDATE : original-byte semantic parity
+ORIGINAL ARROW_MAIN HOST_VALIDATE : immutable original pins
+CAPTURE ARROW_MAIN IMPORTER : current / build capture identity
+RUNNER ARROW_MAIN IMPORTER : acquisition / build / execution envelopes
+HOST_INFRA ARROW_MAIN IMPORTER : mandatory independent Docker evidence
+HOST_INFRA ARROW_OPTIONAL ENV : probe initial / final Env
+IMPORTER ARROW_OPTIONAL ENV : source initial / final Env
+MEASUREMENT ARROW_MAIN IMPORTER : independent source / dependency / tool identity
+TAR ARROW_MAIN IMPORTER : archive config / ordered layers / diffIDs
+LIMITS ARROW_OPTIONAL TAR : scan / expansion / metadata budgets
+LIMITS ARROW_OPTIONAL MEASUREMENT : copied archive / retained budgets
+LIMITS ARROW_OPTIONAL IMPORTER : bounded reads before parsing
+LIMITS ARROW_OPTIONAL BUNDLE : file / inventory limits
+IMPORTER ARROW_MAIN HOST_VALIDATE : seven byte inputs + captured root
+HOST_VALIDATE ARROW_MAIN INVENTORY : rebuild captured-root inventory
+HOST_VALIDATE ARROW_MAIN COVERAGE : recompute twice; exact contract
+HOST_VALIDATE ARROW_MAIN IMPORTER : replay / 54 hashes / summary / accounting
+IMPORTER ARROW_MAIN BUNDLE : validated artifact bytes only
+BUNDLE ARROW_MAIN REFRESH : exclusive marker-bound publication / confirmed
+REFRESH ARROW_OPTIONAL CLOSURE_RECORD : records closed identity / no training
+EVIDENCE ARROW_OPTIONAL ORIGINAL : immutable history, not fresh R0 pins
+
+note bottom of FEATURES
+  challenge-features-v1
+  observation = 1623; action = 64
+  ranker = 158; weights = NONE
+end note
+
+note bottom of CAND_CODEC
+  Seven action kinds; ordered B/C/F intents
+  MAX_QUEUE_ACTIONS = 65: encoding only
+  baselineScore: separate, handcrafted
+end note
+
+note bottom of COVERAGE
+  Historical membership is representability,
+  not a winning-coverage claim. Exact queues
+  cover 18 of 282 and singleton intents
+  cover 204 of 576, while codec and feature
+  encodings each cover all 282.
+end note
+
+note bottom of INVENTORY
+  core-rules / arena-authorized / arena-host
+  training-model / training-coordinator
+  verification-tooling; tests captured separately
+end note
+
+note right of INVENTORY
+  Lexical IDs / fixed-point aliases
+  Static types / wrappers / namespace IDs
+  Supported literal loader calls only
+  Fail closed: escapes / unknown-extension CJS
+  Typed data AST separate from lexical bindings
+end note
+
+note top of INVENTORY
+  dataType: independent parsed data AST
+  Workspace type inference: extension flag false
+  Real-graph test deadline: 120000 ms
+end note
+
+note bottom of PLANNING
+  Native implementation identity preserved
+  No private deep-core import exceptions
+end note
+
+note bottom of CORE_HOST
+  Full native and fflate remain host-owned
+  Excluded from four model audit roots
+end note
+
+note bottom of RUNNER
+  Network none; root filesystem read-only
+  UID 10001; capabilities dropped
+  Writable evidence + temporary storage
+  No runtime dependency installation
+end note
+
+note right of RUNNER
+  Original R0: historically CLOSED
+  A01-A15: original 7 HIGH + 8 MEDIUM resolved
+  Both final reviews: READY TO CLOSE R0: yes
+  No arbitrary-JavaScript sandbox proof
+end note
+
+note bottom of RUNTIME
+  Historical R2 eleven-command generation: PASS
+  Actual full tests: 475 /1944 /57
+  Node109 /actual infra6 PASS; no skips
+  54+54 equal; original migration parity
+  Independent host import/publication complete
+end note
+
+note top of RUNTIME
+  All11 PASS; zero fail/pending/todo/skip
+  Earlier failed generations remain separate
+  No stitched passing command fragments
+end note
+
+note right of RUNTIME
+  Complete validation gets a finite test budget
+  because exact byte checks cannot bound its
+  runtime under container limits. Independent
+  child limits and model permits remain fixed,
+  so framework timeouts still reject a generation.
+end note
+
+note right of COMMANDS
+  Import diagnostic beforeAll:240000ms only
+  Fresh-pin / coverage-pin tests:180000ms only
+  Four complete-validation tests:240000ms only
+  All assertions/floors retained; no filters
+  Independent child/model/resource limits fixed
+end note
+
+note left of IMPORTER
+  Four complete-validation tests:240000ms only
+  Native Buffer.equals: exact bytes + length
+  Missing artifact cannot satisfy strict true
+  Equivalent bytes do not prove runtime fit
+end note
+
+note left of BUNDLE
+  Native Buffer equality checks every byte and
+  length without costly object traversal.
+  Read the validated bundle once, then keep each
+  missing-file rejection and provenance check
+  instead of relaxing the publication gate.
+end note
+
+note left of INVENTORY
+  Parameter writes propagate to caller arguments
+  because declared types cannot prove safe
+  runtime keys. A deduplicated worklist reaches
+  a bounded fixed point before the audit accepts
+  numeric access proofs.
+end note
+
+note bottom of EVIDENCE
+  Historical phase2 bundle: immutable in place
+  Phase 1 original bytes / pins unchanged
+  Image archive stays outside the repo
+end note
+
+note bottom of LIMITS
+  fileBytes = 16777216 (16 MiB)
+  retainedBytes = 67108864 (64 MiB)
+  archiveBytes = 536870912 (512 MiB)
+  scanBytes = 2147483648 (2 GiB)
+end note
+
+note right of LIMITS
+  metadataBytes = 16777216 (16 MiB)
+  entries = 262144; pathBytes = 4096
+end note
+
+note bottom of TAR
+  Layer hashes must match each ordered diffID
+  rather than a set of unique references.
+  An identical empty layer may recur at matching
+  positions, but duplicate actual entry paths
+  still invalidate the archive.
+end note
+
+note bottom of MEASUREMENT
+  Host measurement builds source and
+  dependency manifests from an unstarted
+  container. Inspection and copied tar streams
+  bind that identity without executing binaries
+  from the measured image.
+end note
+
+note bottom of HOST_VALIDATE
+  Full roster / trace / replay / 54 rerun hashes
+  Full migration parity / summary / accounting
+  Captured-root source inventory
+  Coverage recomputed twice / exact contract
+end note
+
+note bottom of IMPORTER
+  hermetic-verification-v3: eleven exact commands
+  executable / cwd / full args / log bytes
+  Vitest: recount actual assertions
+  Full tests.path == exact output; hash bound
+end note
+
+note top of IMPORTER
+  Mandatory --acquisition + --infrastructure
+  Exact uncached dependency-build argv / logs
+  Both source inspections: entrypoint/Cmd/cwd/Env
+  Four host envelopes + declared logs retained
+end note
+
+note bottom of HOST_INFRA
+  Explicit fixed PATH + immutable image identity
+  Private HOME / fresh empty DOCKER_CONFIG
+  Exact recorded env; no inherited overrides
+  Private 0700 scratch parent supported
+end note
+
+note right of HOST_INFRA
+  Probe Env = daemon dependency image Env + output
+  Both inspections: unique key/value equality
+  Independent daemon inspection: capture + import
+  Reject preloads, including dependency image Env
+end note
+
+note left of HOST_INFRA
+  Stable image: Id/Os/Architecture/Variant
+  Config + RootFS: exact equality
+  Tags/digests/storage metadata: not identity
+  Recorded full inspection bytes: retained
+  Immutable image Config.Env order: bound
+end note
+
+note bottom of ENV
+  Same measured image defaults + sole output
+  Duplicate/bare/extra/changed definitions: reject
+  NODE/LD preloads: reject, including image Env
+  Original container/image Env vectors retained
+end note
+
+note right of ENV
+  Docker can reorder Env when applying the output
+  override. Compare unique keys and exact values
+  against the measured image plus output, while
+  rejecting duplicate keys and preloads without
+  normalizing away malformed entries.
+end note
+
+note bottom of CAPTURE
+  Generated capture/workspace files: chmod 0644
+  Captured child directories: chmod 0755
+  Host umask 077; private scratch root preserved
+end note
+
+note top of CAPTURE
+  New source/same dependency identities measured
+  Exact source/control/input joins retained
+  Current actual6 Docker capture complete
+  Source/control and published bytes immutable
+end note
+
+note bottom of PUBLIC_GRAPH
+  Every workspace branch: canonical target
+  Factory/member mutation provenance: tracked
+  Array/any/destructuring origins: traced
+  Numeric/bounded/typed data indices: allowed
+  Callable/unproven computed receivers: reject
+end note
+
+note top of PUBLIC_GRAPH
+  public-closure-v2: four model audit roots
+  Reported PASS: 28 workspace + 2 dep files
+  jsSHA runtime edges: zero
+  No vendor exception, patch or tree shaking
+end note
+
+note right of PUBLIC_GRAPH
+  Literal array keys require pristine intrinsics
+  because a replaced iterator can yield
+  constructor names. Audits revoke the exemption
+  after mutation rather than trusting the apparent
+  contents of the array.
+end note
+
+note bottom of ADMISSION
+  Whole-queue native addScAction admission
+  Original stage/resource checks; no fallback
+end note
+
+note left of PUBLIC_GRAPH
+  Candidate flow: destructuring targets / holders
+  Default / rest / sparse callee effects retained
+  Alias/member/caller fixed point: bounded
+  Source-freeze final reviews: both YES
+end note
+
+note left of RUNTIME
+  R2 CLOSED; framework/child limits unchanged
+  POST-PUBLICATION closing reviews: both YES
+  Final doc PlantUML check belongs to lead
+end note
+
+note bottom of CLOSURE_RECORD
+  Record is outside the immutable bundle
+  Artifact null /eligible false /weights NONE
+  Registry disabled; training not authorized
+end note
+
+note top of BUNDLE
+  Exclusive mkdir / all files fsynced
+  Deep nested directories then root synced
+  Atomic marker link: .publication-complete
+  Logical commit; temp unlink; sync root/parent
+end note
+
+note bottom of BUNDLE
+  Readers can see files before the marker
+  link commits the complete inventory.
+  They must check its schema and all hashes
+  because visible directories do not prove
+  that publication has finished.
+end note
+
+note right of BUNDLE
+  Once the marker commits, a failed sync
+  must retain all bytes rather than erase
+  the bundle. Errors report committed state
+  and unconfirmed durability so callers
+  can plan recovery without a blind retry.
+end note
+
+legend bottom
+  Fresh current integration verification is pending; no integrated PR/Main runtime PASS is claimed.
+  R2 CLOSED only within its preserved historical authorized V1/bounded V3 assurance generation.
+  Original complete R2 generation all11/core475/arena1944/training57/Node109/actual infra6 PASS.
+  Zero fail/skip/pending/todo;54+54 equal semantic reruns and original migration parity.
+  Host importer independently validated eight inputs/current source/public graph/composition/coverage,
+  ordered archive layers/official Node bytes and measured dependency/control/infrastructure joins.
+  Published57 payloads +completion marker: committed/durability confirmed; host14 checks PASS.
+  Both POST-PUBLICATION READY TO CLOSE R2: yes; IDs/method/exact identities in header and plan.
+  Reviewers read persisted source/evidence, not independent suite/archive-hash reruns.
+  Spec-keeper reads records only; no shell/tests/hash recomputation/rendering occurs here.
+  External archive134552576 bytes; its export envelope is among57 payloads, archive is not.
+  Outside-bundle closure JSON is a separate read-only identity record, not a58th payload.
+  Source/control/tests/README/packages/57 payloads/marker/closure record untouched by these docs.
+  Old R0 and failed generations stay historical; no command stitching or tmp-pins substitute.
+  Marker commits logically, not atomic directory visibility; readers verify schema/inventory/hashes.
+  Supported syntax audits are not arbitrary-JS purity; content hashes do not authenticate producers.
+  Actual bounded primitive/retained omissions remain visible, not exhaustive/winning coverage.
+  Native corpus0 wins/2 losses/16 queue rejections and live0 wins/36 losses preserve original semantics.
+  Finite framework allowances/child safety/model permits/2CPU/4GiB/network-none remain unchanged.
+  R2/R3 source remains active with revision-scoped proof; amended economic design stays frozen.
+  Raw R4 foundations are archived; full R4 blocked on ingress, no HIGH waiver.
+  R4 belief/features and global R5 readiness remain before explicitR6; R7 precedes R8.
+  H=1; artifact null/eligible false/learnedPass false; weights NONE, registrydisabled, no training.
+  Final doc PlantUML validation belongs to lead after final writes; caller owns Upgrade Complete.
+endlegend
+@enduml

@@ -3,7 +3,7 @@ import type { Square } from "chess.js";
 
 import { rayBetween } from "./mines";
 import type { ScPiece } from "./placement";
-import { pathRevealSteps, type PathVisionOpts } from "./vision";
+import { pathRevealSteps, pathRevealStepsKernel, type PathQueryTap, type PathVisionOpts } from "./vision";
 import type { StarChessColor } from "../model/types";
 
 export type RayContact = {
@@ -33,19 +33,24 @@ export type RayScanInput = {
 };
 
 export const scanRay = (input: RayScanInput): RayScan => {
+  return scanRayKernel(input);
+};
+
+export const scanRayKernel = (input: RayScanInput, query?: (target: Square) => PathQueryTap | undefined): RayScan => {
   const mids = rayBetween(input.from, input.intentTo);
   for (let i = 0; i < mids.length; i += 1) {
     const at = mids[i]!;
     const occ = input.board.get(at);
     if (!occ) continue;
     const startVisible = input.canSee(input.color, at);
-    const revealSteps = pathRevealSteps(
+    const revealSteps = pathRevealStepsKernel(
       input.placement,
       input.from,
       input.intentTo,
       input.color,
       at,
       input.visionOpts,
+      query?.(at),
     );
     const becomesVisible =
       !startVisible && revealSteps != null && revealSteps > 0;

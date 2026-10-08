@@ -14,7 +14,7 @@ const record = (
   players: { w: string; b: string },
   outcome: ArenaGameRecord["outcome"],
   turns: number,
-  status: ArenaGameRecord["meta"] extends { status?: infer S } ? S : "finished",
+  status: NonNullable<ArenaGameRecord["meta"]>["status"],
 ): ArenaGameRecord => ({
   id,
   startedAt: "2026-08-29T00:00:00.000Z",
@@ -49,7 +49,7 @@ describe("summarize", () => {
 
   it("an aborted run counts as a draw for both sides (no win)", () => {
     const board = summarize([
-      record("a", { w: "naive", b: "strategic" }, { winner: null, draw: false }, 12, "aborted"),
+      record("a", { w: "naive", b: "strategic" }, { winner: null, draw: true }, 12, "aborted"),
     ]);
     const naive = board.rows.find((r) => r.script === "naive")!;
     expect(naive).toMatchObject({ wins: 0, losses: 0, draws: 1 });

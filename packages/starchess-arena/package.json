@@ -5,15 +5,20 @@
   "type": "module",
   "main": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./observations": "./src/observations.ts",
+    "./events": "./src/events.ts",
+    "./intent-codec-v1": "./src/intent-codec-v1.ts"
   },
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "cli": "tsx src/cli/main.ts"
+    "cli": "tsx src/cli/main.ts",
+    "challenge": "tsx src/cli/challenge.ts"
   },
   "dependencies": {
-    "@chess-coach/starchess-core": "workspace:*"
+    "@chess-coach/starchess-core": "workspace:*",
+    "jssha": "3.3.2"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

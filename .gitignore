@@ -28,6 +28,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+!_spec/evidence/**/logs/
+!_spec/evidence/**/logs/**
+!_spec/evidence/**/*.log
 
 # Test / coverage output
 coverage/

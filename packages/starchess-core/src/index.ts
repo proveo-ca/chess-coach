@@ -113,10 +113,11 @@ export {
   canMarineDoubleStep,
 } from "./rules/specials/stimStep";
 
-export { adjacentSquares, spawnCCAnchor } from "./rules/specials/adjacent";
+export { adjacentSquares, spawnCCAnchor, spawnCCAnchorFromMap } from "./rules/specials/adjacent";
 
 export {
   charonDiagonalSquares,
+  charonDiagonalSquaresFromSquare,
   charonDiagonalSquaresFromPlacement,
   charonStrikeTarget,
   charonTargetShips,
@@ -149,6 +150,15 @@ export {
   gasPairKey,
   type ClassicalVacancy,
 } from "./rules/validation";
+
+export {
+  classicalActorAt,
+  appendTimeSpecialAnchor,
+  knownAppendFailure,
+  type PlanningKnowledge,
+  type KnownAppendFailure,
+} from "./rules/planning-intents";
+export { classicalRewriteCoordinatesAfterB } from "./rules/planning-order";
 
 export {
   AddScActionError,
@@ -185,6 +195,12 @@ export {
   rewriteClassicalAfterB,
   orderBHeadsFirst,
 } from "./resolve/submit-turn";
+
+export { initializeProvenance, beginTurnWithProvenance, endTurnWithProvenance } from "./resolve/provenance";
+export type {
+  EngineProvenance, EngineEntity, ActionBindings, ResolvedActionBinding,
+  TrustedEffectFrame, VisibilityImage, VisibilityCheckpoint, ProvenanceCompanion,
+} from "./resolve/provenance-types";
 
 export {
   hasExactCCPair,

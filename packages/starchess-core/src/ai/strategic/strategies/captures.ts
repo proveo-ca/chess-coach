@@ -120,7 +120,7 @@ const score = (ev: MoveEval, ctx: StrategicCtx): number => {
         mines: snap.mines,
         color: enemy,
         cc: targetCC,
-        gas: snap.gasIncome[enemy],
+        gas: Object.entries(snap.gasIncome).find(([side]) => side === enemy)![1],
         minerals: enemyBankCeiling(snap.turn + 1),
       },
       move.to,
@@ -152,4 +152,3 @@ export const captures: StrategicStrategy = {
   generate: charonStrikes,
   score,
 };
-

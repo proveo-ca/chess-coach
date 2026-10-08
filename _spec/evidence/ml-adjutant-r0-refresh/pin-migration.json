@@ -1,0 +1,487 @@
+{
+  "version": "challenge-pin-migration-v1",
+  "originalBaselineSha256": "940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b",
+  "originalVerificationSha256": "55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508",
+  "currentBaselineSha256": "c608561e510e5d06366fb0a787d4077c5a8ca3ce0e73811eac47970aea07a86e",
+  "passed": true,
+  "scheduledMatches": 54,
+  "exactSchedule": true,
+  "executionIntegrity": true,
+  "deterministicRerun": true,
+  "semanticParity": true,
+  "comparisons": [
+    {
+      "key": "white-trace-01",
+      "originalSha256": "62ebdce783f9e430125749eb0d6c6b7b05e2c9b27d99ca92c6a464f61b28a1ca",
+      "currentSha256": "62ebdce783f9e430125749eb0d6c6b7b05e2c9b27d99ca92c6a464f61b28a1ca",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "white-trace-02",
+      "originalSha256": "20248ca3f86ba159e8079e82ef69283986240f4809109a008c04bf28c77a6685",
+      "currentSha256": "20248ca3f86ba159e8079e82ef69283986240f4809109a008c04bf28c77a6685",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "white-trace-03",
+      "originalSha256": "7843d5abe02907032b7e79fc9719d3784455fa0b21d0904055490024cc9f048e",
+      "currentSha256": "7843d5abe02907032b7e79fc9719d3784455fa0b21d0904055490024cc9f048e",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "white-trace-04",
+      "originalSha256": "86a015a5cb123b5f0611ede98fb66f0bacd38f2cd92f2a581b843636df3e6637",
+      "currentSha256": "86a015a5cb123b5f0611ede98fb66f0bacd38f2cd92f2a581b843636df3e6637",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "white-trace-05",
+      "originalSha256": "d254bdaa27e75ba7d615502c58129cb5c52bc7acdc8efd80a671b35decd91ce5",
+      "currentSha256": "d254bdaa27e75ba7d615502c58129cb5c52bc7acdc8efd80a671b35decd91ce5",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "white-trace-06",
+      "originalSha256": "e08472128746b3630ccc219b7e7be49e542d0da6cccee757d59de68b961c604c",
+      "currentSha256": "e08472128746b3630ccc219b7e7be49e542d0da6cccee757d59de68b961c604c",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "white-trace-07",
+      "originalSha256": "1f0c15a00cf1e9f69a9b7686a4f6c5ad64f38e4f48a2a9d98b16d28cba7097da",
+      "currentSha256": "1f0c15a00cf1e9f69a9b7686a4f6c5ad64f38e4f48a2a9d98b16d28cba7097da",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "white-trace-08",
+      "originalSha256": "905b934f289d93336d0139668490bf936a3f3ff0646858f67c732b5c980a2b1f",
+      "currentSha256": "905b934f289d93336d0139668490bf936a3f3ff0646858f67c732b5c980a2b1f",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "white-trace-09",
+      "originalSha256": "07ad93eaabdb4c4f125f294069bd9ca5d83bff0c4957d08e6aa14e824b457604",
+      "currentSha256": "07ad93eaabdb4c4f125f294069bd9ca5d83bff0c4957d08e6aa14e824b457604",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "white-trace-10",
+      "originalSha256": "45c5f58864f875d2be3483d0f85fe2d9427e89aa503d1c5c5b88c56831d62f92",
+      "currentSha256": "45c5f58864f875d2be3483d0f85fe2d9427e89aa503d1c5c5b88c56831d62f92",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "white-trace-11",
+      "originalSha256": "b6920a47da74cdc152790b657ffaf52b312aa01076a6dfbb783e71b2b05b42df",
+      "currentSha256": "b6920a47da74cdc152790b657ffaf52b312aa01076a6dfbb783e71b2b05b42df",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "white-trace-12",
+      "originalSha256": "a4d7143033cf079d17690a8d1f78ac017e1d70c4517035d88a9eb8462e28b5ef",
+      "currentSha256": "a4d7143033cf079d17690a8d1f78ac017e1d70c4517035d88a9eb8462e28b5ef",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "white-trace-13",
+      "originalSha256": "02dba90c7009814a4630e9202f9f4c1709f537f0f3133927a2de45e023d19bec",
+      "currentSha256": "02dba90c7009814a4630e9202f9f4c1709f537f0f3133927a2de45e023d19bec",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "white-trace-14",
+      "originalSha256": "f0c79c51b3529d71a1415ded9fd37f2185125a6424ccfa7f01adb4498c7839bb",
+      "currentSha256": "f0c79c51b3529d71a1415ded9fd37f2185125a6424ccfa7f01adb4498c7839bb",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "white-trace-15",
+      "originalSha256": "7773d937abb1eea70886c03825332e6e018caa2bf841b7211085181dbbc0e595",
+      "currentSha256": "7773d937abb1eea70886c03825332e6e018caa2bf841b7211085181dbbc0e595",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "white-trace-16",
+      "originalSha256": "3b09b638b4e7130c9da34c81b3ccccbb05bee9b3845e2bb3e3ef2ba0490eda2d",
+      "currentSha256": "3b09b638b4e7130c9da34c81b3ccccbb05bee9b3845e2bb3e3ef2ba0490eda2d",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "white-trace-17",
+      "originalSha256": "81917d19c73bceb6b7687e44258ddd49f3ecd8c14a8a6140de8b67b8ccb252be",
+      "currentSha256": "81917d19c73bceb6b7687e44258ddd49f3ecd8c14a8a6140de8b67b8ccb252be",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "white-trace-18",
+      "originalSha256": "44cb41604bd812a89d48e693512a592c9e554d4a1a182759efd72bf761882a19",
+      "currentSha256": "44cb41604bd812a89d48e693512a592c9e554d4a1a182759efd72bf761882a19",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-0",
+      "originalSha256": "22b18f0894974f12adf7180ea294569c200caae4e91bfde2f5f873bb43656662",
+      "currentSha256": "22b18f0894974f12adf7180ea294569c200caae4e91bfde2f5f873bb43656662",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-1",
+      "originalSha256": "801e20dec7846b50820aefd644b3ffc3cd103332a98031987c6a585e1abfb693",
+      "currentSha256": "801e20dec7846b50820aefd644b3ffc3cd103332a98031987c6a585e1abfb693",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-2",
+      "originalSha256": "6bfa34f1186db817906ef2bc4968fab8c1782a499f6548cc5cc33c2d570b5e55",
+      "currentSha256": "6bfa34f1186db817906ef2bc4968fab8c1782a499f6548cc5cc33c2d570b5e55",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-3",
+      "originalSha256": "970ab55839b1db6e66e2183dbcc1d5df012f3c4a381a68d564f3823c200b7e71",
+      "currentSha256": "970ab55839b1db6e66e2183dbcc1d5df012f3c4a381a68d564f3823c200b7e71",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-4",
+      "originalSha256": "e1390352e94e32466020077485b5bd59623720c96de28c3370be0dfa49c48cd1",
+      "currentSha256": "e1390352e94e32466020077485b5bd59623720c96de28c3370be0dfa49c48cd1",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-5",
+      "originalSha256": "9c8c4d95209e5ab08b97a9f5bb62d8942f12a2a81f3eb719cee091bd1e8d55a8",
+      "currentSha256": "9c8c4d95209e5ab08b97a9f5bb62d8942f12a2a81f3eb719cee091bd1e8d55a8",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-6",
+      "originalSha256": "1d84f2654459625128b0c8498d7ce0d82144c776deac1ee35e4c07290b426990",
+      "currentSha256": "1d84f2654459625128b0c8498d7ce0d82144c776deac1ee35e4c07290b426990",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-7",
+      "originalSha256": "9856d362d50a22fa781a5f084d6466ce760204e6cb3025994182c76657b837ba",
+      "currentSha256": "9856d362d50a22fa781a5f084d6466ce760204e6cb3025994182c76657b837ba",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-8",
+      "originalSha256": "4bd53f8dd823f0d58827e9b7c68055d0371be96520b032ed1e4b0b637cbacd9d",
+      "currentSha256": "4bd53f8dd823f0d58827e9b7c68055d0371be96520b032ed1e4b0b637cbacd9d",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-9",
+      "originalSha256": "bc2f74e0a8d11aee201d8db5d88b8ae932a02c12ac46c49a2ecc3c76b89dd391",
+      "currentSha256": "bc2f74e0a8d11aee201d8db5d88b8ae932a02c12ac46c49a2ecc3c76b89dd391",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-10",
+      "originalSha256": "f555af14792781bda6dbbc6db090ccd202a2602b3dddbbc366c399e3fd77b698",
+      "currentSha256": "f555af14792781bda6dbbc6db090ccd202a2602b3dddbbc366c399e3fd77b698",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-11",
+      "originalSha256": "17d4b5c20170f8a3e58fd9de5f286392b28c56fa8bbed690a1dc488861dd9337",
+      "currentSha256": "17d4b5c20170f8a3e58fd9de5f286392b28c56fa8bbed690a1dc488861dd9337",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-12",
+      "originalSha256": "2edb12594d512a4b40dd734eb41d93d35b590d137c035a41334515d175d4b999",
+      "currentSha256": "2edb12594d512a4b40dd734eb41d93d35b590d137c035a41334515d175d4b999",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-13",
+      "originalSha256": "e78947e6360152850b8b31b5bd150eafc02253a919c142887f9307a0d5d42248",
+      "currentSha256": "e78947e6360152850b8b31b5bd150eafc02253a919c142887f9307a0d5d42248",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-14",
+      "originalSha256": "329b5cd0bb4453771950cc04b89af34fb6ca5d74ba02651586ac27f5e3b1707c",
+      "currentSha256": "329b5cd0bb4453771950cc04b89af34fb6ca5d74ba02651586ac27f5e3b1707c",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-15",
+      "originalSha256": "fcf4309f2e460bcdde4e0e53541c586ad6a92aa86a06c06dbc1ce736a5562aa3",
+      "currentSha256": "fcf4309f2e460bcdde4e0e53541c586ad6a92aa86a06c06dbc1ce736a5562aa3",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-16",
+      "originalSha256": "6563fcf0cc68801219c4ff65d0b2127ed4c685b60371a5a4424db440e8c1f623",
+      "currentSha256": "6563fcf0cc68801219c4ff65d0b2127ed4c685b60371a5a4424db440e8c1f623",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-w-17",
+      "originalSha256": "d48a4bf7d9b8d103739fbb821ee8b435aee64423ffd24d74d61ef83352586b76",
+      "currentSha256": "d48a4bf7d9b8d103739fbb821ee8b435aee64423ffd24d74d61ef83352586b76",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-0",
+      "originalSha256": "bc2c9efd36058a472bf00e4a73ecd8a3e88473fc1ae48131e778c5c76599ab91",
+      "currentSha256": "bc2c9efd36058a472bf00e4a73ecd8a3e88473fc1ae48131e778c5c76599ab91",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-1",
+      "originalSha256": "e13e8280156f31532823738d6ccce9f8ab5d02d63bc2a1047e34a31c37714267",
+      "currentSha256": "e13e8280156f31532823738d6ccce9f8ab5d02d63bc2a1047e34a31c37714267",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-2",
+      "originalSha256": "4526e02cd3923ece3d622284fe6a3cf972ca02690c9c574cefc16ef044e0dcc7",
+      "currentSha256": "4526e02cd3923ece3d622284fe6a3cf972ca02690c9c574cefc16ef044e0dcc7",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-3",
+      "originalSha256": "eedd79e34641b3d51eeccfed95fdc94b3e82893c15b3816f3f4e821062d4b38d",
+      "currentSha256": "eedd79e34641b3d51eeccfed95fdc94b3e82893c15b3816f3f4e821062d4b38d",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-4",
+      "originalSha256": "887f087aa45f67f1ab212f7fc4c5ad878f5385a37752249e89543c9d4195567c",
+      "currentSha256": "887f087aa45f67f1ab212f7fc4c5ad878f5385a37752249e89543c9d4195567c",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-5",
+      "originalSha256": "d6d4e8aadc1ef93c43114dfa1963603dfa23d4c8c537a775997a5358deb04f05",
+      "currentSha256": "d6d4e8aadc1ef93c43114dfa1963603dfa23d4c8c537a775997a5358deb04f05",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-6",
+      "originalSha256": "d1399ffb8736b5526520a00583c8b154e83a35dde67f2e4e64efbd41d8d7b04e",
+      "currentSha256": "d1399ffb8736b5526520a00583c8b154e83a35dde67f2e4e64efbd41d8d7b04e",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-7",
+      "originalSha256": "d45b08c472197ed66a17931713a00ad5540c9592ad956d50c3550d1f3afe83d3",
+      "currentSha256": "d45b08c472197ed66a17931713a00ad5540c9592ad956d50c3550d1f3afe83d3",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-8",
+      "originalSha256": "129e8390cd7cb6629d184c91df0a9fc89d62317b7ac0169aadb5da7f3796aaf7",
+      "currentSha256": "129e8390cd7cb6629d184c91df0a9fc89d62317b7ac0169aadb5da7f3796aaf7",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-9",
+      "originalSha256": "001fc26aa49b86bf67fa5c412d1e4a7e17f66ed1c3045f53229e2ec201723afa",
+      "currentSha256": "001fc26aa49b86bf67fa5c412d1e4a7e17f66ed1c3045f53229e2ec201723afa",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-10",
+      "originalSha256": "dfd8da77e1ba7cdc0e077d4f0e167d6c26075535d4182c64a758c6abd4d1b11d",
+      "currentSha256": "dfd8da77e1ba7cdc0e077d4f0e167d6c26075535d4182c64a758c6abd4d1b11d",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-11",
+      "originalSha256": "deab457d1c073140b8d2792ff108b1f4c2ea7885817dd937ea3e8ca7f194c005",
+      "currentSha256": "deab457d1c073140b8d2792ff108b1f4c2ea7885817dd937ea3e8ca7f194c005",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-12",
+      "originalSha256": "ab4ef9fccf35fdb9a829d1ef2f646ed048c741235eab8c07e19b14ea9d0a0bc3",
+      "currentSha256": "ab4ef9fccf35fdb9a829d1ef2f646ed048c741235eab8c07e19b14ea9d0a0bc3",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-13",
+      "originalSha256": "472507ba2a53974de1d1fe4b9ed82aa0731ea1cfba541da174f03a41d93b47bd",
+      "currentSha256": "472507ba2a53974de1d1fe4b9ed82aa0731ea1cfba541da174f03a41d93b47bd",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-14",
+      "originalSha256": "dd53d4a5ad88c7534d7448726b6ad3575f9f7596b9b1766860f5f6222f4fe8a9",
+      "currentSha256": "dd53d4a5ad88c7534d7448726b6ad3575f9f7596b9b1766860f5f6222f4fe8a9",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-15",
+      "originalSha256": "ad25c2d6dcfcdc11e4f91f6e4b1db2941d9b92dc9a8323abe8b6254e73276c3d",
+      "currentSha256": "ad25c2d6dcfcdc11e4f91f6e4b1db2941d9b92dc9a8323abe8b6254e73276c3d",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-16",
+      "originalSha256": "5cca387ac65913884ad494e89a1d029beaa34b3795c00c8ed1002919b16b4157",
+      "currentSha256": "5cca387ac65913884ad494e89a1d029beaa34b3795c00c8ed1002919b16b4157",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    },
+    {
+      "key": "live-b-17",
+      "originalSha256": "18a2da13bbc07a4a5fca18756d94858ca3476b20c98a8942c51ea4cae5a012e1",
+      "currentSha256": "18a2da13bbc07a4a5fca18756d94858ca3476b20c98a8942c51ea4cae5a012e1",
+      "equal": true,
+      "originalIntegrity": true,
+      "currentIntegrity": true
+    }
+  ],
+  "fromPinFormat": "phase1-legacy-digests",
+  "toPinFormat": "challenge-execution-pins-v2",
+  "inventorySha256": "7ae1e19bd5feb38e4f1d4f51cb5f7ee2c3cd79bdfeb1d287db4e1ac2e67732ad",
+  "importAuditSha256": "107a5c3501244cadfd1a71c22a4a718a2ccab0ef99d2e7800736831b4364562a",
+  "newlyCoveredPaths": [
+    "packages/starchess-arena/hermetic/Dockerfile",
+    "packages/starchess-arena/hermetic/README.md",
+    "packages/starchess-arena/hermetic/acquire-tool.mjs",
+    "packages/starchess-arena/hermetic/closure.mjs",
+    "packages/starchess-arena/hermetic/context.mjs",
+    "packages/starchess-arena/hermetic/evidence-bundle.mjs",
+    "packages/starchess-arena/hermetic/evidence-bundle.test.mjs",
+    "packages/starchess-arena/hermetic/evidence-limits.mjs",
+    "packages/starchess-arena/hermetic/image-measurement.mjs",
+    "packages/starchess-arena/hermetic/image-measurement.test.mjs",
+    "packages/starchess-arena/hermetic/infra.test.mjs",
+    "packages/starchess-arena/hermetic/logged-command.mjs",
+    "packages/starchess-arena/hermetic/manifest.mjs",
+    "packages/starchess-arena/hermetic/pins.json",
+    "packages/starchess-arena/hermetic/policy.mjs",
+    "packages/starchess-arena/hermetic/probe.mjs",
+    "packages/starchess-arena/hermetic/run.mjs",
+    "packages/starchess-arena/hermetic/runtime.mjs",
+    "packages/starchess-arena/hermetic/tar.mjs",
+    "packages/starchess-arena/hermetic/tar.test.mjs",
+    "packages/starchess-arena/src/challengeContract/candidateCodec.ts",
+    "packages/starchess-arena/src/challengeContract/coverage.ts",
+    "packages/starchess-arena/src/challengeContract/features.ts",
+    "packages/starchess-arena/src/challengeContract/observationCodec.ts",
+    "packages/starchess-arena/src/challengeContract/validation.ts",
+    "packages/starchess-arena/src/compare/compare.ts",
+    "packages/starchess-arena/src/feed/nodeStockfishFeed.ts",
+    "packages/starchess-arena/src/feed/types.ts",
+    "packages/starchess-arena/src/index.ts",
+    "packages/starchess-arena/src/record/record.ts",
+    "packages/starchess-arena/src/seeds.ts",
+    "scripts/challenge-contract-evidence.ts",
+    "scripts/challenge-import-evidence.mjs",
+    "scripts/challenge-preserve-history.mjs",
+    "scripts/challenge-validate-baseline.ts"
+  ]
+}

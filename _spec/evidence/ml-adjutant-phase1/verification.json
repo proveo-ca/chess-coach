@@ -1,0 +1,27 @@
+{
+  "version": "phase1-independent-verification-v1",
+  "baselineReport": "_spec/evidence/ml-adjutant-phase1/baseline-report.json",
+  "baselineReportSha256": "940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b",
+  "verification": [
+    { "command": "plantuml -checkonly _spec/packages/starchess-arena/ml-adjutant-phase1.puml", "result": "passed" },
+    { "command": "pnpm --filter @chess-coach/starchess-arena typecheck", "result": "passed" },
+    { "command": "pnpm --filter @chess-coach/starchess-arena test", "result": "passed", "files": 17, "tests": 164 },
+    { "command": "pnpm --filter @chess-coach/starchess-core typecheck", "result": "passed" },
+    { "command": "pnpm --filter @chess-coach/starchess-core test", "result": "passed", "files": 53, "tests": 426 },
+    { "command": "pnpm exec tsc --noEmit --target ES2022 --module ESNext --moduleResolution Bundler --strict --skipLibCheck src/__tests__/challenge*.test.ts src/__tests__/strictRecordedQueues.test.ts src/__tests__/resourceLedger.test.ts src/__tests__/observationIsolation.test.ts", "workdir": "packages/starchess-arena", "result": "passed" },
+    { "command": "pnpm --filter @chess-coach/starchess-arena challenge --suite all --rerun --out ../../_spec/evidence/ml-adjutant-phase1/baseline-report.json", "result": "passed", "scheduledMatches": 54, "rerunMatches": 54, "semanticComparisonsEqual": 54 }
+  ],
+  "integrityTests": [
+    { "path": "packages/starchess-arena/src/__tests__/challengeCorpus.test.ts", "purpose": "Source/manifest pins, extraction, explicit empty queues, chip ordinals, private selection and exhaustive schedule", "sha256": "0af7a9b96abc0734c535d21c7b84877078d1787cc2e5dd175dc2e479e964e0b4", "result": "passed" },
+    { "path": "packages/starchess-arena/src/__tests__/strictRecordedQueues.test.ts", "purpose": "Atomic rejection, order/sequence, gas, no retries, intent frustration versus missing-actor rejection", "sha256": "f2f37c3d761b7a6b6e9d87cb27dc708f00d1799be60322ce70639b562a3f2ad2", "result": "passed" },
+    { "path": "packages/starchess-arena/src/__tests__/resourceLedger.test.ts", "purpose": "Exact deployment affordability/debits, income tiers, live ledger continuity and cap", "sha256": "b6213c0614e839f73bdcbcdeffa7bba92b705a12956c4c4c457dfea0526dec40", "result": "passed" },
+    { "path": "packages/starchess-arena/src/__tests__/challengeLifecycle.test.ts", "purpose": "Terminal-first and chip handling, exhaustion and genuine turn-45 outcomes", "sha256": "96466fa041ad6c3eb7db381ea8d612b08631bad73faf29b099530ea36d994dda", "result": "passed" },
+    { "path": "packages/starchess-arena/src/__tests__/observationIsolation.test.ts", "purpose": "Both-seat precommit inputs, snapshot/context mutation isolation and private trace invariance", "sha256": "0b1a23b290b806241115d1adb206c3f602ea6cfc364e09fa01617d0dfe6cef07", "result": "passed" },
+    { "path": "packages/starchess-arena/src/__tests__/challengeObservation.test.ts", "purpose": "Hidden-state proposal/ranking invariance, authorized sightings and Battleship pings", "sha256": "0eb4e0d8e0886de0717d5380f2ca4e2f8d486c7be1cf598ae3305f13b2331230", "result": "passed" },
+    { "path": "packages/starchess-arena/src/__tests__/challengeWatchdog.test.ts", "purpose": "Real-child hangs/crashes, fixed deadlines, bounded JSONL pipes before deserialization, accepted-ply failure counters and reaping", "sha256": "5108b1aa411e09a1c0f2bc6d0729bfcce0c018d2c5a882c702ec01ae8f51ef27", "result": "passed" },
+    { "path": "packages/starchess-arena/src/__tests__/challengeEvidence.test.ts", "purpose": "Semantic determinism, production worker, strict trace identity, authoritative reexecution and forged outcome/resource rejection", "sha256": "9eebc1183c635c03ac3c8443ad8ebf7e566dd3a52aa1d20f96ab3d584c7badbe", "result": "passed" },
+    { "path": "packages/starchess-arena/src/__tests__/challengeSuites.test.ts", "purpose": "Persisted 54-case execution with complete host-private trace references, current source/runtime pins and all rerun semantic hashes", "sha256": "91a8177d64998dd4585cd8f3cfb1fcb56956d060584a215251c1b00e8b97f544", "result": "passed" },
+    { "path": "packages/starchess-arena/src/__tests__/challengePublication.test.ts", "purpose": "Atomic durable publication, failed serialization cleanup and exclusive preservation", "sha256": "39019f7403f28da46c5f99ca96339b03f7a4c5264f0ed58c509b2efe88e89be5", "result": "passed" }
+  ],
+  "scope": "Phase 1 non-learned baseline; numerical features and weight training remain unimplemented"
+}

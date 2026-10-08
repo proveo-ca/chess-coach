@@ -1,0 +1,31 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.10 [39m[90m/app/packages/starchess-training[39m
+
+ [32m✓[39m src/__tests__/domain.test.ts [2m([22m[2m23 tests[22m[2m)[22m[32m 36[2mms[22m[39m
+[90mstdout[2m | src/__tests__/composition-kernel.test.ts[2m > [22m[2mprivate kernel policy with finite independent C/B-jump subsets[2m > [22m[2mfills all three funding pools and stops at exactly 512 identities before the attempt cap
+[22m[39mExecutor, synthetic kernel capacity {"attemptedExtensions":555,"uniqueIncludingPass":512,"pools":[168,0,0,0,0,0,168,175]}
+
+ [32m✓[39m src/__tests__/composition-kernel.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 3125[2mms[22m[39m
+     [33m[2m✓[22m[39m fills all three funding pools and stops at exactly 512 identities before the attempt cap [33m 532[2mms[22m[39m
+     [33m[2m✓[22m[39m redistributes early proven shared exhaustion in ordered rounds only to live families [33m 514[2mms[22m[39m
+     [33m[2m✓[22m[39m routes a later exhausted family's unused capacity through exhausted shared to the remaining family [33m 346[2mms[22m[39m
+     [33m[2m✓[22m[39m gives capacity precedence when both fixed caps coincide and never consumes attempt 2049 [33m 995[2mms[22m[39m
+     [33m[2m✓[22m[39m closes a suspended root and depth cursors at the attempt cap without pulling action 2049 [33m 736[2mms[22m[39m
+ [32m✓[39m src/__tests__/closure.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 189[2mms[22m[39m
+[90mstdout[2m | src/__tests__/candidates.test.ts[2m > [22m[2mbounded work, memory, and funding[2m > [22m[2mmeasures dense authorized capped work and publishes runtime counters within the 10-second planning deadline
+[22m[39mExecutor, candidate runtime {"fixture":"emptyBudget","candidates":4,"elapsedMs":17.48,"stopReason":"exhausted","roots":8,"continuationNodes":24,"peakLiveNodes":32,"domainCursors":32,"cursorPulls":1448,"availabilityPulls":37,"appendAttempts":1416,"maximumQueueLength":1}
+Executor, candidate runtime {"fixture":"tinyBudget","candidates":31,"elapsedMs":29.76,"stopReason":"attempt-cap","roots":8,"continuationNodes":240,"peakLiveNodes":208,"domainCursors":248,"cursorPulls":2088,"availabilityPulls":7,"appendAttempts":2048,"maximumQueueLength":2}
+Executor, candidate runtime {"fixture":"allFamilies","candidates":131,"elapsedMs":81.84,"stopReason":"attempt-cap","roots":8,"continuationNodes":1096,"peakLiveNodes":1104,"domainCursors":1104,"cursorPulls":2048,"availabilityPulls":7,"appendAttempts":2048,"maximumQueueLength":2}
+Executor, candidate runtime {"fixture":"mineComposition","candidates":38,"elapsedMs":44.37,"stopReason":"attempt-cap","roots":8,"continuationNodes":280,"peakLiveNodes":256,"domainCursors":288,"cursorPulls":2088,"availabilityPulls":27,"appendAttempts":2048,"maximumQueueLength":4}
+Executor, candidate runtime {"fixture":"dense","candidates":2,"elapsedMs":15.75,"stopReason":"attempt-cap","roots":8,"continuationNodes":8,"peakLiveNodes":16,"domainCursors":16,"cursorPulls":2048,"availabilityPulls":129,"appendAttempts":2048,"maximumQueueLength":1}
+
+ [32m✓[39m src/__tests__/candidates.test.ts [2m([22m[2m28 tests[22m[2m)[22m[33m 4510[2mms[22m[39m
+     [33m[2m✓[22m[39m uses standard UTF-8 SHA256 vectors and exact bytes under digest collisions [33m 307[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps full batches and diagnostics identical across equal observations of different hidden worlds, b [33m 305[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m4 passed[39m[22m[90m (4)[39m
+[2m      Tests [22m [1m[32m57 passed[39m[22m[90m (57)[39m
+[2m   Start at [22m 09:30:15
+[2m   Duration [22m 5.41s[2m (transform 996ms, setup 0ms, import 1.59s, tests 7.86s, environment 0ms)[22m
+
+JSON report written to /app/_spec/evidence/ml-adjutant-r2-refresh/vitest-starchess-training.json

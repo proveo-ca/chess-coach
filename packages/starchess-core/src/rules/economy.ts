@@ -56,7 +56,7 @@ export const gasRemainingFor = (
   color: StarChessColor,
   overlayActions?: readonly ScAction[] | null,
 ): number => {
-  let rem = Math.max(0, snap.gas[color] ?? 0);
+  let rem = Math.max(0, Object.entries(snap.gas).find(([side]) => side === color)?.[1] ?? 0);
   if (!overlayActions?.length) return rem;
   const onSnap = new Set((snap.queue?.actions ?? []).map((a) => a.seq));
   for (const a of overlayActions) {
