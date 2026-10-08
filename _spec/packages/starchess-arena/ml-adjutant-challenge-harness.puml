@@ -10,8 +10,11 @@
 ' covers: _spec/evidence/ml-adjutant-phase1/*.json
 ' covers: _spec/evidence/ml-adjutant-r0-refresh/**
 ' covers: _spec/evidence/ml-adjutant-r0-closure.json
-' status: Historical R0 CLOSED within accepted non-learned assurance; A01-A15 resolved. Current assembled-source/integration verification pending; no learning or trained acceptance.
-' recovery: _spec/_plans/recovery-pr47.md; R0 identities/checks below describe the original preserved generation, not current integration proof.
+' status: CURRENT RESTORED R3/SOURCE BOUNDED LOCAL VERIFICATION COMPLETE;554/95/2382/CI7/whole strict/Node109/UI34/CSS/actual54+54/current audits/reviews PASS per lead. Original R0/A01-A15 remain historical, no learned acceptance.
+' final lifecycle: _spec/_plans/recovery-pr47.md#final-local-restoration-complete-publication-pending; current non-learned54 matches +54 reruns integrity/performed/equal/migrationParity true at /tmp/opencode/pr47-final-verification-LVIdJu.
+' current pins: inventory166/12/956 SHAeed10618c85ed97e7fe1b0329e7261e17c09710c4f120a6d92bd65a8e6a51cc4 matches actual baseline pins; public5 roots/38 paths PASS per lead. Historical R0 identities below are not new Docker assurance.
+' final reviews: adversarial ses_ee4033dbaffe47xmv8LO9Kq8Yf / security ses_ee4033ddcffed3ahGX8y6LoG6i READY yes for current source/consumer fix, read-only without independent tests/hash reruns.
+' publication: four meaningful commits exist; fifth verification docs/lease push pending, remote feature still46c. Raw R4 archived/full R4 blocked/global R5 not ready, no model/data/calibration/training/HIGH waiver.
 ' related: _spec/_plans/PLAN-ml-adjutant.md
 ' related: _spec/_plans/ml-adjutant-r8-challenge.md
 ' related: _spec/_plans/ml-adjutant-r0-execution-revisions.md (reviewed repairs and completed ordered R0 closure)
@@ -27,7 +30,7 @@
 ' historical baseline report SHA-256: 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b
 ' transport: spawned stdin/stdout JSONL pipes; no Node process.send channel.
 ' evidence boundary: manifest v1 historical Phase 0 pending statuses remain unchanged; the separate execution report supersedes them for this measured baseline only.
-' rendering: renamed diagram historically passed checkonly; current check not run by spec-keeper (no shell tool).
+' final rendering: all9 actual lead checkonly/SVG PASS at /tmp/opencode/pr47-final-spec-render-96zlJm; ml-adjutant-challenge-harness.svg present. Keeper executes none; lead owns final metadata refresh.
 ' final reviews: adversarial ses_efe0ed67dffew2su1gZIUaDy23 and security ses_efe0ed520ffeOEg3kd6jAtN33i both READY TO CLOSE R0: yes; read-only source/captured-record review, no independent execution/hash recomputation.
 ' historical review: ses_f07c45365ffew0wJ58yFHXAye5 READY TO MERGE: no; original 7 HIGH + 8 MEDIUM retained as history, all now CLOSED.
 ' completed gate: pre-freeze reviews -> new frozen image/actual Docker/full core+arena+static/54+54 -> validated publication -> both final reviews READY.
@@ -229,7 +232,8 @@ note bottom of EVIDENCE
 end note
 
 legend bottom
-  Current temporary integration needs fresh final-source verification; no current PR/Main runtime PASS.
+  Current restored local source verification COMPLETE:554/95/2382/CI7/strict/actual54+54/audits/reviews PASS.
+  Four meaningful commits exist; fifth verification docs/lease push pending, remote feature still46c.
   PHASE 1 HISTORICALLY VERIFIED: then-final arena 164 tests / 17 files; core 426 / 53.
   Phase 1/2 bytes/pins stay immutable; original R0 evidence remains at ml-adjutant-r0-refresh.
   Corpus candidate = b, arena/inference seed = 0; live seeds = 0..17 in both seats.
@@ -242,7 +246,7 @@ legend bottom
   Original R0 54 executions + 54 reruns: semantic and migration parity true; eight commands/three static checks passed.
   Actual Docker 5/5; host post-publication 13/13 including both live source pins, no skips.
   Fresh publication: 24 artifacts, marker commit/durability confirmed; no atomic directory-visibility claim.
-  No learned acceptance or universal trace-compatibility claim. Current checkonly not run here.
+  All9 actual lead checkonly/SVG PASS; keeper runs none. No new Docker/learned or universal-compatibility claim.
   The policy-contracts sibling owns current numeric features. Training, learned artifacts, and browser integration remain unimplemented.
 endlegend
 @enduml

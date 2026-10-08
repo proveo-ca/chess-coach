@@ -34,8 +34,11 @@
 ' covers: _spec/evidence/ml-adjutant-r0-closure.json
 ' covers: _spec/evidence/ml-adjutant-r2-refresh/**
 ' covers: _spec/evidence/ml-adjutant-r2-closure.json
-' status: R2 CLOSED within its preserved authorized-observation V1/bounded composition V3 assurance generation. R2/R3 source retained active; fresh assembled-source/integration verification pending, not learned acceptance or training.
-' recovery: _spec/_plans/recovery-pr47.md; identities/counts/publication below retain original generation scope, not current integrated PR/Main proof. Full R4 blocked; failed raw foundations archive-only, no HIGH waiver.
+' status: CURRENT RESTORED R3/SOURCE BOUNDED LOCAL VERIFICATION COMPLETE; actual554/95/2382/CI7/whole strict/Node109/UI34/CSS/54+54/audits/reviews PASS per lead. Historical R2 V1/bounded V3 assurance remains its original immutable generation, not learned acceptance.
+' final lifecycle: _spec/_plans/recovery-pr47.md#final-local-restoration-complete-publication-pending; current scratch /tmp/opencode/pr47-final-verification-LVIdJu is unpublished local proof, not a new Docker/assurance generation.
+' current source: inventory166/12/956 SHAeed10618c85ed97e7fe1b0329e7261e17c09710c4f120a6d92bd65a8e6a51cc4 matches actual baseline pins; public5 roots/38 paths PASS. Reviewed native ProvenanceError class hash5272874e22bd81db851f7649cae62d6f735722b71cfe94d5e3fb5fb00b91337f remains exact after erasable-field fix, no widened descriptor/loader exemption.
+' current closing reviews: adversarial ses_ee4033dbaffe47xmv8LO9Kq8Yf / security ses_ee4033ddcffed3ahGX8y6LoG6i READY yes for recovery +consumer fix; read-only, not independent tests/hashes.
+' publication: four meaningful commits through3b29 exist on originalfork997141; fifth verification docs/lease push pending, remote feature still46c. Raw R4 archive-only/full R4 blocked/global R5 not ready, no HIGH waiver or model/data/calibration/training.
 ' historical R2 closure authority: _spec/evidence/ml-adjutant-r2-closure.json outside immutable57-payload bundle; committed/durability confirmed, marker65bc6bb200514b446ad6939412922bde1cfa00d76225495e309fbd165c81b0c3.
 ' historical R2 identities: sourceImage sha256:37b4ec38caa50f15d02dec1c4dbdb45b0c29a7bdeb3a4c21f7ccea54e66ee2a9; dependencyImage sha256:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1.
 ' historical R2 byte records: captured source7b08a6606e0a7ba9a1136253cc0329e9a9296e1ff80d36d20440a2606157d194; controlbbca2b58e15ca902cedc718e99333f372f092602bbd4c09317149cbb6f302385; external archivef626892248ecea1446db0d295bf3eb0ae42a668a10ab1e484ebde1e9a89d9ef1/134552576 bytes; export envelope retained, archive external.
@@ -107,7 +110,7 @@
 ' historical last failed checkpoint:2fae1... commands1-7 PASS/arena1942/2timeouts/0skips,239 prior blocked assertions executed,9-11 not run. Complete NEW current generation supersedes it; no stitched acceptance or private tmp-pins.
 ' current finite framework allowance: four240000ms complete-validation tests and prior hook240000/pin180000 scopes retained, all assertions/no-cache/independent safety preserved. Current complete generation passed them, not a universal timing guarantee.
 ' independent safety: child validator120000ms and evidence caps, model planning/startup/match budgets, production/Node deadlines, floors475/1944/57 and Docker2CPU/4GiB/network-none unchanged; framework allowance is not a production safety-limit amendment.
-' historical R2 closed scope: source37b4ec.../measured dependency987a49... complete all11/actual6/54+54/archive/import/exclusive57 publication and post-publication closing reviews; old failures remain separate, never stitched. R3 is active with earlier local proof and pending current integration verification; R4 blocked after archival/global R5 readiness remains beforeR6, no weights/training/registry activation.
+' historical R2 closed scope: source37b4ec.../measured dependency987a49... complete all11/actual6/54+54/archive/import/exclusive57 publication and post-publication closing reviews; old failures stay separate. Current R3/local restoration is separately verified COMPLETE, not a new Docker/R4/global R5/learning generation.
 ' fixture: immutable six-JSON snapshots/fresh validators remain; initial three240000/180000 exceptions plus four complete-validation tests240000ms only. Other test/child/model safety budgets and2CPU/4GiB/network-none unchanged; no caches/filters/dropped assertions.
 ' phase1 pins: baseline 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b; verification 55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508. Unchanged.
 ' historical R0 final reviews: adversarial ses_efe0ed67dffew2su1gZIUaDy23 and security ses_efe0ed520ffeOEg3kd6jAtN33i both READY TO CLOSE R0: yes; source/captured-record review, no independent execution/hash recomputation.
@@ -135,7 +138,7 @@
 ' current local publication permission: TUI approved restore ONLY _spec/evidence0700, historical bytes unchanged, exclusive new R2 namespace after verification; no chmod or publication performed by spec-keeper.
 ' historical failed run location (not recovered): /tmp/opencode/starchess-hermetic-run-Bv2jRa; default 5s test timeout repaired to 30s with unchanged assertions; policy deadlines unchanged.
 ' future gates: calibrated turn-aware material belief remains H=1, public opening 4 deployed + 3 banked = 7 excludes CC and endowed paid basis; R1 versioned amendment/R4/R5 calibration before R6. Native causal frames are not H3 search. Prior 370-field v2 is not a supplied calibrated model.
-' rendering: earlier checkonly is historical; current checkonly not run by spec-keeper (no shell tool).
+' final rendering: all9 actual lead checkonly/SVG PASS at /tmp/opencode/pr47-final-spec-render-96zlJm; ml-adjutant-policy-contracts.svg present. Keeper executes none; lead owns final metadata refresh.
 ' readiness: scoped R2 CLOSED after complete fresh1944/all11/infra/publication/post-publication reviews, not training-ready. README/control/source bytes and57 artifacts/marker/closure record unchanged here. Historical pending/failure comments above do not reopen accepted current gates.
 @startuml ml-adjutant-policy-contracts
 !include ../../themes/proveo.puml
@@ -547,7 +550,8 @@ note right of BUNDLE
 end note
 
 legend bottom
-  Fresh current integration verification is pending; no integrated PR/Main runtime PASS is claimed.
+  Current restored local verification COMPLETE:554/95/2382/CI7/strict/Node109/UI34/CSS/actual54+54/audits/reviews PASS.
+  Four meaningful commits exist; fifth verification docs/46c-expectation lease push pending, not origin publication.
   R2 CLOSED only within its preserved historical authorized V1/bounded V3 assurance generation.
   Original complete R2 generation all11/core475/arena1944/training57/Node109/actual infra6 PASS.
   Zero fail/skip/pending/todo;54+54 equal semantic reruns and original migration parity.
@@ -570,6 +574,6 @@ legend bottom
   Raw R4 foundations are archived; full R4 blocked on ingress, no HIGH waiver.
   R4 belief/features and global R5 readiness remain before explicitR6; R7 precedes R8.
   H=1; artifact null/eligible false/learnedPass false; weights NONE, registrydisabled, no training.
-  Final doc PlantUML validation belongs to lead after final writes; caller owns Upgrade Complete.
+  All9 actual lead checkonly/SVG PASS; final metadata refresh belongs to lead, keeper executes none.
 endlegend
 @enduml

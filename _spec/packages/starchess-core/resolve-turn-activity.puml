@@ -10,9 +10,11 @@
 ' covers: packages/starchess-core/src/__tests__/mine/mineContactRoutes.test.ts
 ' see also: _spec/packages/starchess-core/gas-phase-vacancy.puml
 ' related: _spec/_plans/ml-adjutant-r3-seam-addendum.md (accepted law and outside-snapshot execution record)
-' R3 implementation retained active; prior local proof remains by revision. Current post-correction/restoration verification is pending.
-' recovery: _spec/_plans/recovery-pr47.md; no rewritten/Main/PR readiness or full R4 completion is claimed here.
-' Actual lead checkonly/SVG PASS is recorded in the seam's completed recovered local proof; final closing metadata checks remain with the lead.
+' status: CURRENT R3/SOURCE BOUNDED LOCAL RESTORATION VERIFIED COMPLETE; current core554/62 files,training95/6,arena2382/36/1364.07s,CI7/whole strict/actual54+54/audits/reviews PASS per lead.
+' final lifecycle: _spec/_plans/recovery-pr47.md#final-local-restoration-complete-publication-pending; old REC counts remain historical, latest consumer-fixed source has separate complete local proof.
+' final render: all9 checkonly + actual SVG success per lead at /tmp/opencode/pr47-final-spec-render-96zlJm; resolve-turn-activity.svg present. Keeper runs no renderer/hash/test and changes no flow/reasoning notes.
+' closing reviews: adversarial ses_ee4033dbaffe47xmv8LO9Kq8Yf / security ses_ee4033ddcffed3ahGX8y6LoG6i READY yes, read-only; final metadata-refresh checks stay lead-owned.
+' publication: four meaningful commits exist; fifth docs/lease push pending and remote feature still46c. Raw R4 archived/full R4 blocked/global R5 not ready; no new Docker/calibration/model data/training/HIGH waiver.
 @startuml resolve-turn-activity
 !include ../../themes/proveo.puml
 

@@ -57,9 +57,9 @@
 ' covers: pnpm-workspace.yaml
 ' covers: _spec/evidence/ml-adjutant-r2-refresh/**
 ' covers: _spec/evidence/ml-adjutant-r2-closure.json
-' status: R2/R3 source and canonical successor tests retained active; current local types/training/focused arena/inventory/public closure PASS per lead. Full final arena and54+54 pending; R4 raw foundations archive-only, not an active-code recovery gate.
-' recovery: _spec/_plans/recovery-pr47.md; the selected lease rewrite is not executed here and no old five-promotion draft becomes active.
-' integration: 136 production files match REC0388 per lead; ten assertion ports retain published purposes on canonical tests. Partial proof does not complete the final integrated-source gate or selected history rewrite.
+' status: CURRENT R2/R3 SOURCE BOUNDED LOCAL RESTORATION VERIFIED COMPLETE; actual core554/62,training95/6,arena2382/36/1364.07s,CI7/whole strict/Node109/UI34/CSS/54+54/audits/reviews PASS per lead. R4 raw8 archive-only, no active-code push gate.
+' final lifecycle: _spec/_plans/recovery-pr47.md#final-local-restoration-complete-publication-pending; four meaningful commits through3b29 exist on originalfork997141, fifth verification docs/lease publication pending, remote still46c.
+' source chronology: earlier136-production equality to REC0388 preceded the five-path consumer/strict fix and is historical. Current source has explicit readonly native classes and exact reviewed class hash, not a fake schema/meter or widened guard.
 ' implementation map: _spec/_refactors/pr47-recovery/published-oct3/implementation-map.md (15 older implementation/test payloads,61,351 bytes, exact MAIN46c blob/raw-byte matches per lead).
 ' coverage disposition: nine former explicit core paths remain live under broad core/rules/board coverage; explicit successor edges now name domain/candidates/identity and canonical compatibility tests. No archive-root coverage claim.
 ' related: _spec/packages/starchess-core/sc-moves.puml
@@ -70,8 +70,10 @@
 ' R3 integration surface: r3Session exposes checked history; the caller invokes generation. No wired episode-v2 learner is claimed.
 ' R3 generator: composeCandidatesFromHistoryV2 derives live mine quantity, including repeated locations; V1 retains ownMines.size.
 ' R3 guard: resources, then actual count + stored reservations >=3, then location collision; root and lane use the same guard.
-' prior R3 local proof: inventory166 files/12 entrypoints/951 edges and public five roots/35 workspace files/two dependencies PASS for that revision. Current corrected source requires fresh final proof; no new Docker/hermetic generation.
-' current partial proof: three package typechecks PASS; full training95 versus REC91; focused arena108/3 files; inventory166 files/12 entrypoints/956 edges; public closure5 roots/38 reported paths PASS per lead. Full final arena and54+54 are not yet run on this tree.
+' prior R3 local proof: old548/85/2359,inventory951 edges/public35 workspace +dependencies and later partial108 stay revision-scoped history, never substituted for the current final gate.
+' current final proof: CI7/full strict/core554/62/training95/6/arena2382/36/Node109/UI34/CSS/actual54+54 and migration parity PASS; inventory166/12/956 SHAeed10618c85ed97e7fe1b0329e7261e17c09710c4f120a6d92bd65a8e6a51cc4 matches actual current baseline pins; public5 roots/38 verified paths PASS per lead.
+' closing reviews: adversarial ses_ee4033dbaffe47xmv8LO9Kq8Yf / security ses_ee4033ddcffed3ahGX8y6LoG6i READY yes for current recovery +consumer fix, read-only without independent tests/hashes.
+' preservation: lead PASS88 history/corpus,21 published archive payloads,8 blocked draft SHA/blobs,4 protected bodies/UI original997141 +index12 covers/orrery160000e6d6; no payload/evidence edits here.
 ' compatibility: public V1 allows zero or one own CC; legacy-private V1/V2/native R3 retain exact-one CC. Wire fields represent p,n,b,r,q; native generator promotion remains n,b,r,q.
 ' assertion ports: million-byte SHA/unsigned UTF-8-prefix-Unicode ordering, stale unknown-cell sightings, five structural wire choices, cumulative funding edges and independent mine reservations; production byte equality is separate from these changed tests.
 ' R3 native exception: accepted promotion guard changes native values; historical R2 parity does not certify the changed source.
@@ -152,7 +154,7 @@
 ' historical recovery checkpoint: cc6 recovery/strict fixture repairs preceded complete new closed generation; old markers/partial runs never authorized acceptance.
 ' recovery: R0 records/partial logs are immutable history; absent archives/tmp images and old markers cannot authorize current tests or closure.
 ' future: H=1 turn-aware 4 deployed + 3 banked =7 excludes CC; economic design is CLOSED/FROZEN, belief/features/calibration runtime remains pending, no learned policy or SGD.
-' rendering: actual lead checkonly/SVG PASS for all five R3 diagrams; outputs at /tmp/opencode/r3-spec-render-xaCaZz. This final pass updates status labels only; spec-keeper executes no renderer.
+' rendering: all9 actual lead checkonly/SVG PASS at /tmp/opencode/pr47-final-spec-render-96zlJm; candidate-generation.svg present. Keeper updates verification metadata/structural labels only, executes no renderer; lead owns final metadata refresh.
 @startuml candidate-generation
 !include ../../themes/proveo.puml
 title StarChess R3 · Counted V2 history / legacy V1 · Bounded composition V3
@@ -339,11 +341,11 @@ note bottom of CORE_HOST
 end note
 
 note bottom of VERIFY
-  Historical R2: 475 / 1944 / 57
-  Current training95 / focused arena108: PASS
-  Three package typechecks: PASS
+  Core554 / training95 / arena2382: PASS
+  CI7 + whole strict invoice: PASS
+  Actual54+54; migration parity: PASS
   Current inventory: 166 / 12 / 956
-  Full final arena + 54+54: pending
+  Local restoration complete; push pending
 end note
 
 note top of VERIFY
@@ -403,7 +405,7 @@ end note
 
 note left of CLOSURE
   public-closure-v2: 5 roots / 38 paths
-  Current lead PASS; final full gates pending
+  Current final local source: lead PASS
   jsSHA runtime edges: zero
   No vendor exception, patch or tree shaking
 end note
@@ -486,9 +488,10 @@ end note
 
 legend bottom
   R2/R3 stay active; earlier local proof is retained by revision.
-  Current partial types/training95/focused arena108/inventory/public closure PASS per lead.
-  Production136 matches REC0388; archived published implementation15/61,351 bytes matches MAIN46c.
-  Full final arena and54+54 are not yet run on this tree; final proof/rewrite/lease remain pending.
+  Current final local restoration COMPLETE:554/95/2382/CI7/strict/Node109/UI34/CSS/actual54+54/audits/reviews PASS.
+  Earlier136 equality was before consumer fixes; full current source has separate verified pins.
+  Lead preservation PASS:88 history/corpus,21 published payloads,8 blocked draft,4 protected bodies/UI/orrery.
+  Four meaningful commits exist; fifth final verification-doc commit and46c-expectation lease push pending.
   Raw R4 foundations are archive-only; active pure prerequisites are not full R4.
   Archived ingress HIGH is not an active R2/R3 recovery gate; no HIGH waiver or R4 completion.
   Current history generation derives actual mine quantity; V1 behavior stays separate.
@@ -506,7 +509,7 @@ legend bottom
   Supported source audits are not arbitrary-JS purity; hashes bind bytes, not producer identity.
   R0/failed generations remain separate history; private tmp reports are not current pins.
   Published57 payloads/marker/source/control and outside-bundle closure record unchanged here.
-  Actual lead checkonly/SVG passed; final closing metadata checks remain with lead.
+  All9 actual lead checkonly/SVG passed at final render path; metadata refresh checks remain with lead.
   R4 belief/features and global R5 readiness remain before explicitR6.
   H=1; artifact null/eligible false/learnedPass false; weights NONE, registrydisabled, no training.
 endlegend

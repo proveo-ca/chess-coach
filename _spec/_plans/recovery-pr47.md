@@ -1,8 +1,10 @@
 # PR47 recovery — provenance, archive decision and selected rewrite
 
-Status: **PUBLISHED/REC0388 BACKUPS RETAINED; INTEGRATION CONFLICTS RESOLVED/STAGED PER LEAD. UI OWNER RESTORED; PRODUCTION136 MATCHES REC; CURRENT TYPES/TRAINING95/FOCUSED ARENA108/INVENTORY/PUBLIC CLOSURE PASS PER LEAD. FULL FINAL ARENA +54+54 PENDING. THREE MEANINGFUL COMMITS +OPTIONAL VERIFICATION RECORD PLANNED ON ORIGINAL FORK997141; REWRITE/LEASE NOT COMPLETE. R4 RAW8 ARCHIVE-ONLY, NO ACTIVE-CODE INGRESS GATE OR HIGH WAIVER.**
+Status: **CURRENT LOCAL RESTORATION / R3 SOURCE AND BOUNDED VERIFICATION COMPLETE; ALL FINAL REQUESTED LOCAL CHECKS PASS, BOTH CLOSING REVIEWS READY. FOUR MEANINGFUL COMMITS EXIST ON ORIGINAL FORK997141 THROUGH3b29e73a; THREE REMOTELY VERIFIED BACKUPS RETAINED. VERIFICATION-DOC COMMIT5 AND PR47 FORCE-WITH-LEASE PUBLICATION PENDING; REMOTE FEATURE STILL46c. R4 RAW8 ARCHIVE-ONLY, FULL R4 UNIMPLEMENTED/BLOCKED; GLOBAL R5 NOT READY, NO HIGH WAIVER OR LEARNED PASS.** [Authoritative final lifecycle](#final-local-restoration-complete-publication-pending).
 
-This report records supplied actual user decisions and lead/scout findings. Prior passes wrote REC docs and resolved integration documentation/moved six older Markdown files. The current pass reads the implementation map, restored UI owner and limited canonical source/test references, then writes only mutable integration docs, candidate coverage and index under `/tmp/opencode/chess-coach-pr47-integrated`. It edits no source/tests/controls, protected bodies, evidence, archive README/map/payloads, PRIMARY or REC files. Spec-keeper ran no Git/GitHub/DB/process command, hash, test, renderer, staging, commit or push and edited no Git state. Lead-reported proof below is not independent keeper execution or final PR publication; no secrets or inaccessible root store were read.
+This report records actual user decisions and lead/scout findings. The final keeper pass writes only mutable documentation/diagram verification metadata and the permitted archive README metadata in isolated `/tmp/opencode/chess-coach-pr47-rewrite`, reset by lead to latest3b29 source. PRIMARY has the same verified code per lead but must not receive keeper writes because the observed local auto-persister can create commits there. Keeper reads supplied local outputs and selected current source; it executes no command, hash, test, renderer, review, stage, commit, amend or push and edits no source/tests/controls, protected bodies, immutable evidence, archive payloads/map or Git state. No secret or inaccessible root-store read occurs.
+
+**Chronology rule:** §§1–10 below retain earlier restoration/partial-verification checkpoints and their then-current pending/planned wording as history. Their older2359/136-equality/three-group/partial-proof claims do not describe the final consumer-fixed source. §11 is the current lifecycle authority; no failed attempt, protected text, run identity or original approval is relabeled or deleted.
 
 ## 1. Workspaces, PR state and dated evidence
 
@@ -178,7 +180,7 @@ Retain both actual backup refs, including REC0388's entire106-history/repair/arc
 
 The requested old-execution check found no eligible old project task/worker in the accessible checks; do not fabricate a termination or delete session history. The inaccessible root store remains a stated limit, not a target for secret reads.
 
-Current state: **REC0388 COMMITTED/BACKED UP; INTEGRATION RESOLVED/STAGED AND CURRENT PARTIAL LOCAL CHECKS PASS PER LEAD; UI OWNER RESTORED, PRODUCTION136 MATCHES REC. FULL FINAL ARENA/54+54 AND THREE-OR-FOUR-COMMIT REWRITE/LEASE PUBLICATION PENDING. R4 RAW8 ARCHIVE-ONLY, FUTURE R4 UNIMPLEMENTED/BLOCKED WITHOUT AN ACTIVE-CODE RECOVERY GATE.**
+Historical partial-checkpoint state: **REC0388 COMMITTED/BACKED UP; INTEGRATION RESOLVED/STAGED AND THEN-CURRENT PARTIAL LOCAL CHECKS PASS PER LEAD; UI OWNER RESTORED, PRODUCTION136 MATCHED REC. FULL FINAL ARENA/54+54 AND THREE-OR-FOUR-COMMIT REWRITE/LEASE PUBLICATION WERE PENDING.** The final actual lifecycle in §11 supersedes these operating TODOs; raw R4 archival/no-waiver history remains unchanged.
 
 ## 10. Temporary integration — scoped documentation resolution
 
@@ -192,4 +194,125 @@ Six older published-side Markdown files moved without intended text changes into
 
 This temporary integration does not equal final PR47 publication, significant history reconstruction, updated current MAIN runtime proof or Revision48 integration. The `orrery` Gitlink must remain `e6d6786f9a4b2a4555920329d3490f9ef833634f`; no Gitlink operation occurred in this docs pass. The published46c lease expectation remains unchanged.
 
-Lead's15 implementation/test payload comparisons, production equality, types/training/focused arena/inventory/public closure results are completed scoped findings above, not keeper executions. Remaining full final arena/54+54, required final identity/review/strict/render/guard and publication gates remain explicit. Lead reports the earlier unmerged index resolved/staged; keeper stages no subsequent docs/index edits and performs no Git-state/history/publication operation. The current code/coverage/partial-proof description is coherent without claiming a finished final gate, whole-tree pointer sweep or active R4 implementation.
+Lead's15 implementation/test payload comparisons, production equality, types/training/focused arena/inventory/public closure results were completed scoped findings at this earlier checkpoint, not keeper executions. Its then-pending final gates are superseded only by the actual final results in §11; it remains operating history rather than a fabricated earlier full PASS.
+
+<a id="final-local-restoration-complete-publication-pending"></a>
+## 11. Final local restoration — COMPLETE; publication pending
+
+### 11.1 Actual history and isolated write boundary
+
+Lead rebuilt the feature on original PR fork997141, not fetched `origin/main`2c749 Tutorial Revision48. The local meaningful history is now four commits; these supplied abbreviated IDs name existing commits, not proposed subjects:
+
+| Order | Existing commit | Actual significant subject |
+|---|---|---|
+| 1 | `9054fae6` | `feat(adjutant): centralize opponent catalog and UI availability` |
+| 2 | `a030c3e6` | `feat(ml): restore bounded planning and authorized economic runtime` |
+| 3 | `c2ec73cf` | `chore(assurance): preserve frozen recovery provenance and blocked R4 drafts` |
+| 4 | `3b29e73a` | `fix(core): support erasable consumers and strict regression typing` |
+
+The original three-commit tree SHA is **`6f82d439fd11095acd788fa61a1c4d12b8ecf121`**, exactly equal to the combined7519 backup tree per actual lead comparison. The subsequent consumer fix changes five source/test paths: explicit readonly class fields replace non-erasable parameter properties while preserving shape, strict regression typing is corrected and the reviewed native-class text hash is updated. This final source is not blanket byte-identical to REC0388 or the earlier combined tree; earlier136-production equality remains its own checkpoint.
+
+Keeper read `ProvenanceRecorder` and `ProvenanceError` explicit readonly fields plus the current inventory guard. The exact reviewed `ProvenanceError` class-text hash in `sourceInventory.ts` is **`5272874e22bd81db851f7649cae62d6f735722b71cfe94d5e3fb5fb00b91337f`**. This is a retained narrow source-shape check, not a new reflective-loader exemption, fake schema/meter field or runtime-contract relaxation. Keeper did not independently recompute that hash or identify the five-file diff through Git.
+
+Lead observed the local auto-persister create an autogenerated `b497…` commit after edits. Executor explicitly requested amendment; lead reworded it to3b29 without a runtime change. That supplied local event explains this observed recurrence of a bot-style name; it is not origin publication and supplies no explanation for any earlier autosync failure. Keeper never writes PRIMARY or amends commits.
+
+The next **fifth** commit is proposed as `docs(verification): record PR47 restoration results`, containing this mutable proof/status record only after lead reviews the delta. Its ID does not exist in this report and must not be embedded into its own content. Four existing source/history IDs are recorded above; there is no self-hash cycle, fifth-commit completion or lease-push claim.
+
+### 11.2 Final actual local verification
+
+These results come from actual lead execution on the latest PRIMARY source, matching isolated rewrite3b29 code per lead. Keeper's read tools confirmed the arena JSON aggregate fields, scratch parity/coverage fields, inventory identity and nine rendered filenames; keeper ran none of the checks.
+
+| Final check | Actual result / scope |
+|---|---|
+| Root `ci:typecheck` | **All7 projects PASS** after the firstTS1294 consumer failure was fixed. Preserve the failed attempt as history; no assertion that it passed before repair. |
+| Whole strict invoice | **PASS** over core+arena test files and both diagnostic/validator scripts after three test-typing errors were corrected; not merely package types or a filtered invoice. |
+| Full core | **554 PASS /62 files** on current source, separate from earlier548/61 or other checkpoints. |
+| Full training | **95 PASS /6 files** on current source, separate from earlier85 or REC91. |
+| Full arena | **2382 PASS /36 files /1364.07s**, zero failed/pending/todo/skipped. Actual JSON has2382 total/passed,0 failed/pending/todo and `success:true`; its92 nested suites are not36 file containers. |
+| Node hermetic-tool unit modules | **109 PASS,0 skips**; unit verification, not a fresh actual-Docker infrastructure/image generation. |
+| UI tests | **34 PASS /4 files**, per lead; no new full browser/Android/analytics claim. |
+| CSS layout | **PASS**, per actual lead execution. |
+| Fresh non-learned execution | **54 matches +54 reruns**, `executionIntegrity:true`, rerun `performed:true/equal:true`, original migration `semanticParity:true`. This closes current bounded local parity, not learned acceptance. |
+| Current source inventory | **PASS:166 files /12 entrypoints /956 edges**; inventory SHA **`eed10618c85ed97e7fe1b0329e7261e17c09710c4f120a6d92bd65a8e6a51cc4`**, observed in latest scratch baseline/contract pins and matched by lead to current source. |
+| Public model closure | **PASS:5 roots /38 verified paths**; lead used current installed bytes/source production roots and the same installed Node/SHA context. Do not relabel38 as a workspace-only count or borrow earlier35+dependencies. |
+| PlantUML | **All9 checkonly PASS +actual SVG execution success** at `/tmp/opencode/pr47-final-spec-render-96zlJm`; keeper confirmed all nine filenames, not renderer execution. |
+| Preservation checks | **PASS**, scopes in §11.5; no accepted/protected-body or historical-evidence rewrite. |
+
+The full arena ran with **`HERMETIC_OUTPUT_DIRECTORY=/tmp/opencode/pr47-final-verification-LVIdJu`**. That scratch directory contains `vitest-starchess-arena.json`, `baseline-report.json`, `contract-report.json`, `coverage.json`, `pin-migration.json` and `r2-composition-report.json`. They are **unpublished local verification outputs**, not a new immutable `_spec/evidence` generation or accepted Docker assurance publication. Report references to older published verification remain historical and do not change that scope.
+
+Fresh baseline semantics stay unchanged: corpus **0 wins /2 terminal losses /16 rejected queues**, live **0 wins /36 losses**; every failure remains in its denominator. Codec and feature representability each **282/282**; exact queues **18/282**, singleton intents **204/576**. `modelArtifact:null`, `learnedGateEligible:false`, weights NONE and registry disabled. Passing integrity/parity demonstrates current non-learned execution consistency, not winning coverage, learning or universal trace compatibility.
+
+### 11.3 Source/test concern owners
+
+These real paths locate the persisted regressions included in the passing suites; the table groups purposes rather than inventing a separate verification run for every row. UI34/4 is the aggregate supplied by lead; the named UI owners below are discovery links, not an invented complete four-file execution invoice.
+
+| Test / verification path | Purpose |
+|---|---|
+| `packages/starchess-core/src/__tests__/provenance.test.ts` | Native-companion parity, stage/lifecycle validation and detached private records. |
+| `packages/starchess-core/src/__tests__/provenanceMines.test.ts` | Native mine identities/occurrence order, repeated-square quantities and lifecycle accounting. |
+| `packages/starchess-core/src/__tests__/provenanceQueries.test.ts` | Private query evaluation, consumed-target association and causal authority. |
+| `packages/starchess-core/src/__tests__/gasPromotionOwnership.test.ts` | Live own-Marine/color eligibility, replacement ownership and promotion controls. |
+| `packages/starchess-core/src/__tests__/mine/mineContactRoutes.test.ts` | Actual mine contacts and delayed reciprocal-swap inventory synchronization. |
+| `packages/starchess-core/src/__tests__/countedPlanning.test.ts` | Detached actual quantity transport without caller count overrides. |
+| `packages/starchess-arena/src/__tests__/{challengeObservationV2,challengeEconomicLedger,challengeBoundariesV2,challengeProvenancePrivacy}.test.ts` | Authorized V2/native boundary integration, paid conservation, atomic transitions and host/private noninterference. |
+| `packages/starchess-arena/src/__tests__/forkCompatibility.test.ts` | Public zero-or-one CC compatibility versus exact-one legacy/V2/native-R3 boundaries. |
+| `packages/starchess-arena/src/__tests__/{intentCodecV1Bridge,observationV1Bridge,publicV1BridgeIsolation}.test.ts` | Structural wire choices, detached sightings/unknown cells, exact public leaves and runtime isolation. |
+| `packages/starchess-training/src/__tests__/{domain,candidates,candidatesHistoryV2,composition-kernel}.test.ts` | Native-four promotions, seven families, funding/reservation branches, counted bounded traversal and closed diagnostics. |
+| `packages/starchess-training/src/__tests__/candidateIdentityOwnership.test.ts` | Owned bytes, forced collisions, million-byte independent SHA and unsigned UTF-8/prefix/Unicode ordering. |
+| `packages/starchess-arena/src/__tests__/challengeSourceInventory.test.ts` | Supported syntax/source-shape audits and fail-closed mutation/loader guards. |
+| `packages/starchess-arena/hermetic/{evidence-bundle,image-measurement,tar}.test.mjs` | Node unit checks for exact bytes/publication state, independent measurement logic and positional archive binding. Not an actual Docker run. |
+| `packages/ui/web/src/__tests__/{common,extras}.test.tsx` | Shared presentation variants, controlled interactions and cleanup. |
+| `apps/starchess/src/__tests__/navTouchTargets.test.ts` | Extracted mobile navigation/CSS layout contracts. |
+| `scripts/challenge-contract-evidence.ts`, `scripts/challenge-validate-baseline.ts` | Strict-invoice-covered current diagnostics/authoritative parity and coverage validation. |
+| `scripts/check-public-closure.mjs` | Current five-root pure static model closure and installed-byte checks. |
+
+### 11.4 Nine rendered owners and current source links
+
+The two new R3 owners are explicitly **`_spec/packages/starchess-core/native-provenance.puml`** and **`_spec/packages/starchess-arena/authorized-economic-boundaries.puml`**. Existing source citations remain; keeper adds or removes none.
+
+| Rendered spec path | Verified SVG in final render directory |
+|---|---|
+| `_spec/_plans/chess-ui-primitives.puml` | `chess-ui-primitives.svg` |
+| `_spec/packages/starchess-core/native-provenance.puml` | `native-provenance.svg` |
+| `_spec/packages/starchess-arena/authorized-economic-boundaries.puml` | `authorized-economic-boundaries.svg` |
+| `_spec/packages/starchess-core/resolve-turn-activity.puml` | `resolve-turn-activity.svg` |
+| `_spec/packages/starchess-core/submit-turn-activity.puml` | `submit-turn-activity.svg` |
+| `_spec/packages/starchess-training/candidate-generation.puml` | `candidate-generation.svg` |
+| `_spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml` | `ml-adjutant-challenge-harness.svg` |
+| `_spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml` | `ml-adjutant-policy-contracts.svg` |
+| `_spec/packages/starchess-arena/index.puml` | `index.svg` |
+
+The UI owner remains the exact997141 body and its index keeps all12 covers/`fingerprint:null`; it is not rewritten for metadata. Other final diagram verification headers/structural proof labels and mutable docs are synchronized here without changing runtime flows or reasoning notes. Lead reviews this final documentation delta and owns any required final whitespace/render refresh after these edits; keeper's metadata pass creates no claimed renderer/hash/review execution.
+
+### 11.5 Final preservation, backups and closing reviews
+
+Actual lead PRIMARY byte verification **PASS**:
+
+- **88 historical evidence/corpus files** unchanged versus REC0388.
+- **21 published-Oct3 archive payloads** exact versus original MAIN46c: six Markdown files plus15 implementation/test/helper payloads. This supersedes the earlier six-Markdown comparison TODO; all payloads remain untouched.
+- **8 blocked R4 draft payloads** exact by SHA and Git blob; they remain archive-only, not active implementation/tests.
+- **4 accepted/protected bodies** exact: accepted R3 seam/promotion snapshots and protected economic base/annex bodies. Outside-body metadata does not amend any normative sentence or approval identity.
+- UI owner original997141 body and its12-cover index unchanged; **orrery mode160000 /`e6d6786f9a4b2a4555920329d3490f9ef833634f`** unchanged.
+
+Three backup refs are actually pushed and remotely verified per lead:
+
+| Retained remote backup | Verified target |
+|---|---|
+| `backup/feat-ml-adjuntant-20261008-46c51068` | `46c5106864e985065451abb3d5cf8bcad521e57d` |
+| `backup/recovered-ml-adjuntant-20261008-0388e41` | `0388e41eac7de10158a0d5db7f666a75d5644e26` |
+| `backup/combined-ml-adjuntant-20261008-7519c37` | supplied prefix `7519c37`; full object ID not invented here |
+
+These retain published history, the106-local/80-published divergence and recovered/combined working material. The scout's265/261 accessible-store and31 original patch/hash matches remain earlier forensic scopes, not blanket equality after later fixes. The inaccessible root-store limit remains explicit. Actual execution-age checks found **0 recorded running/pending tasks >24h and no workers >24h**; no eligible task was terminated and no session/history was deleted.
+
+| Current closing review | Actual verdict / method |
+|---|---|
+| Adversarial `ses_ee4033dbaffe47xmv8LO9Kq8Yf` | **READY: yes** for active recovery/integration plus the small consumer fix; read-only final source/diff review, not independent test/hash execution. |
+| Security `ses_ee4033ddcffed3ahGX8y6LoG6i` | **READY: yes** for the same current scope; read-only review, not independent suite/hash recomputation. |
+
+No remaining concrete active-recovery finding is reported by those closing reviews. The earlier TS1294 and three strict-regression typing errors were real failures before correction and stay in the chronology; no passing fragment from a failed attempt substitutes for the final whole PASS.
+
+### 11.6 Exact remaining publication boundary
+
+**CURRENT LOCAL SOURCE/R3 RESTORATION AND BOUNDED VERIFICATION: COMPLETE; ready for lead's final docs review and publication handoff.** Earlier partial/pending statements in §§1–10 are history, not current blockers. Archived R4's unresolved ingress HIGH has no active-code recovery/push gate and receives no waiver; full belief/418 encoder/estimator binding remains unimplemented. Global R5 is **not ready**: no new actual-Docker image/infrastructure generation, calibration, model data collection, fitting/transfer, training, learned artifact, registry activation or published assurance generation occurred.
+
+Lead's last actual `ls-remote` still found feature `feat-ml-adjuntant` at **`46c5106864e985065451abb3d5cf8bcad521e57d`**, the unchanged explicit lease expectation. **Force-with-lease has not yet executed.** Lead must review/stage the isolated final docs, create the proposed fifth verification-doc commit, refresh required docs checks, retain/recheck backups/lease and then perform the user-approved push. A changed remote must fail the lease; never fall back to unconditional force. Record the actual remote/API resulting tip only after publication evidence exists; until then neither PR47 nor origin is described as updated.

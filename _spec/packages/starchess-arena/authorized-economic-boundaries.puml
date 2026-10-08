@@ -12,9 +12,12 @@
 ' related: _spec/packages/starchess-core/native-provenance.puml
 ' related: _spec/packages/starchess-training/candidate-generation.puml
 ' related: _spec/_plans/ml-adjutant-r3-seam-addendum.md (recovered execution context)
-' status: R3 library retained active; earlier local proof is revision-scoped. Fresh current compatibility/restoration verification pending.
-' recovery: _spec/_plans/recovery-pr47.md; private readR3CheckedBoundary is an active prerequisite, not a completed R4 binding.
-' local proof: Actual lead checkonly/SVG and fresh local suites/audits are recorded outside the accepted snapshot; no renderer/test/hash execution by spec-keeper.
+' status: CURRENT R3/SOURCE BOUNDED LOCAL RESTORATION VERIFIED COMPLETE; current554/95/2382,CI7/whole strict/Node109/UI34/CSS/actual54+54/current audits and both closing reviews PASS per lead.
+' final lifecycle: _spec/_plans/recovery-pr47.md#final-local-restoration-complete-publication-pending; private readR3CheckedBoundary stays active, not a material belief/418 encoder/R4 binding.
+' final source proof: inventory166 files/12 entrypoints/956 edges SHAeed10618c85ed97e7fe1b0329e7261e17c09710c4f120a6d92bd65a8e6a51cc4 matches current scratch baseline pins; public5 roots/38 paths PASS per lead.
+' final render: all9 checkonly + actual SVG success at /tmp/opencode/pr47-final-spec-render-96zlJm per lead; authorized-economic-boundaries.svg present. Keeper runs no renderer/hash/test; lead owns final metadata refresh.
+' closing reviews: adversarial ses_ee4033dbaffe47xmv8LO9Kq8Yf / security ses_ee4033ddcffed3ahGX8y6LoG6i READY yes, read-only without independent execution/hash reruns.
+' scope: four meaningful commits through3b29 exist; fifth docs/lease publication pending, remote still46c. Raw R4 archive-only/full R4 blocked/global R5 not ready; no new assurance generation/learning/HIGH waiver.
 ' integration: Host exposes checked history; a caller invokes generation. No learner rollout is claimed.
 @startuml
 !include ../../themes/proveo.puml

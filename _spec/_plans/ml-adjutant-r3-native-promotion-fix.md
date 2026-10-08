@@ -1,5 +1,5 @@
 <!-- Approval/disposition metadata: outside the accepted R3 promotion snapshot. -->
-**CURRENT DISPOSITION: PAIRED DESIGN ACCEPTED; PROMOTION SOURCE RETAINED ACTIVE; EARLIER LOCAL PROOF PRESERVED BY REVISION. CURRENT POST-COMPATIBILITY / RESTORATION VERIFICATION PENDING.** The [prior completed R3 proof](ml-adjutant-r3-seam-addendum.md#completed-recovered-local-verification--bounded-r3-only) is not erased or reused as fresh proof for later corrected source. [PR47 recovery](recovery-pr47.md) owns the verified backup, selected rewrite/lease and unfinished-R4 archival decisions; no acceptance/snapshot text changes or full-R4 readiness claim occurs.
+**CURRENT DISPOSITION: PAIRED DESIGN ACCEPTED; CURRENT PROMOTION/R3 SOURCE AND BOUNDED LOCAL RESTORATION VERIFIED COMPLETE; SPEC IN-SYNC.** Latest full554/95/2382/CI7/strict/54+54/audits/9 renders/preservation checks and both closing READY reviews now verify restored consumer-fixed source. [Final current proof](recovery-pr47.md#final-local-restoration-complete-publication-pending) owns exact scopes; earlier REC proof stays historical. Four meaningful local commits exist; fifth docs/lease publication pending, remote still46c. No snapshot change, full R4/global R5/Docker/learning completion or HIGH waiver.
 
 ## Executor acceptance and local-build status
 
@@ -7,7 +7,7 @@ Accepted pre-metadata whole-file SHA-256: `d70d4ff803121ef13f6a401b58edb7ec34dff
 
 The existing accepted text remains between the snapshot markers below without a normative rewrite. Its proposal-stage status and pending acceptance/build clauses remain historical; this outside-snapshot record supersedes only those lifecycle statements. The actual grant permits the exact guard, its meaningful persisted regression/controls, affected local verification and scoped spec maintenance. It grants no broader movement/ownership repair and no collection, fitting, calibration, transfer, training, evidence publication or registry activation.
 
-The recovered source retains the own-Marine/color guard and ownership regression. Earlier core548/training85/arena2359/types/audits/render proof stays successful for its revision; current compatibility/restoration/lease-rewrite verification is separate and pending. The independent mine-sync fix stays scoped. Both accepted-snapshot identities remain recorded, with fresh final checks lead-owned; this pass changes no snapshot body and executes no commands or hashes.
+Current source retains the own-Marine/color guard and ownership regression under final completed bounded local proof. Earlier548/85/2359 remains successful by revision; current554/95/2382 and actual CI7/strict/54+54/reviews/rendering are separate final results. Lead's four accepted/protected-body identity checks PASS; snapshot identities remain unchanged. The independent mine fix stays scoped; keeper modifies only outside-snapshot metadata and executes no commands/hashes. Final isolated docs review/fifth commit/lease publication remain lead-owned.
 <!-- BEGIN ACCEPTED R3 PROMOTION WHOLE-FILE SNAPSHOT -->
 # ML Adjutant — R3 native gas-promotion correction
 

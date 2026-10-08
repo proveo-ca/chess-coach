@@ -11,9 +11,12 @@
 ' related: _spec/packages/starchess-core/submit-turn-activity.puml
 ' related: _spec/packages/starchess-core/resolve-turn-activity.puml
 ' related: _spec/_plans/ml-adjutant-r3-seam-addendum.md (recovered execution context)
-' status: R3 implementation retained active; earlier local proof is revision-scoped. Fresh current compatibility/restoration verification pending.
-' recovery: _spec/_plans/recovery-pr47.md records the verified backup, selected rewrite/lease and archive-only unfinished R4.
-' local proof: Actual lead checkonly/SVG and fresh local suites/audits are recorded outside the accepted snapshot; no renderer/test/hash execution by spec-keeper.
+' status: CURRENT R3/SOURCE BOUNDED LOCAL RESTORATION VERIFIED COMPLETE; current554 core/95 training/2382 arena,CI7/whole strict/Node109/UI34/CSS/actual54+54/current audits and both closing reviews PASS per lead.
+' final lifecycle: _spec/_plans/recovery-pr47.md#final-local-restoration-complete-publication-pending; four meaningful commits through3b29e73a exist, fifth docs/lease publication pending and remote feature still46c.
+' source: Core recorder/error explicit readonly fields preserve runtime shape for erasable consumers; current reviewed native-class hash remains exact, no new loader/descriptor exemption.
+' final render: all9 checkonly + actual SVG success per lead at /tmp/opencode/pr47-final-spec-render-96zlJm; native-provenance.svg present. Keeper runs no renderer/hash/test; lead owns any final metadata-refresh checks.
+' closing reviews: adversarial ses_ee4033dbaffe47xmv8LO9Kq8Yf / security ses_ee4033ddcffed3ahGX8y6LoG6i READY yes, read-only without independent execution/hash reruns.
+' scope: prior REC proof stays historical; R4 raw8 archived/full R4 unimplemented/global R5 not ready, no new Docker assurance/calibration/model data/training/HIGH waiver.
 @startuml
 !include ../../themes/proveo.puml
 title StarChess native provenance — host-only companion

@@ -8,12 +8,14 @@
 ' related: _spec/_plans/PLAN-ml-adjutant.md
 ' related: _spec/_plans/ml-adjutant-r8-challenge.md
 ' related: _spec/_plans/ml-adjutant-r4-weights.md
-' recovery: _spec/_plans/recovery-pr47.md; prior proof is revision-scoped; fresh integration verification pending.
+' status: CURRENT RESTORED R3/SOURCE BOUNDED LOCAL VERIFICATION COMPLETE;554/95/2382/CI7/whole strict/Node109/UI34/CSS/actual54+54/current audits and both closing READY reviews PASS per lead.
+' final lifecycle: _spec/_plans/recovery-pr47.md#final-local-restoration-complete-publication-pending; four meaningful commits through3b29 exist, fifth verification docs/lease publication pending, remote still46c.
 ' legacy rationale: What the arena measures is a spec question, not just a runner question.
 ' legacy rationale: Scripts live under _spec/apps/starchess/core/adjutant/; omitted per-side inputs change results without changing scripts.
 ' legacy history: The previous map called out ccIntel forwarding; arena.puml owns that legacy runner concern, not the isolated challenge.
 ' source pointers: optional corroboration; spec-side covers headers own drift coverage.
-' rendering: renamed-path map passed plantuml -checkonly.
+' final rendering: all9 checkonly +actual SVG success at /tmp/opencode/pr47-final-spec-render-96zlJm per lead; index.svg present. Keeper runs none; lead owns final metadata refresh.
+' scope: historical Docker/published assurance remains unchanged; R4 raw8 archive-only/full R4 blocked/global R5 not ready, no model/calibration/training/HIGH waiver.
 @startuml index
 !include ../../themes/proveo.puml
 
@@ -25,7 +27,7 @@ title StarChess Arena · Spec Map (_spec/packages/starchess-arena)
 package "_spec/packages/starchess-arena" {
   component "arena.puml\nheadless match runner" as ARENA <<app>>
   component "ml-adjutant-challenge-harness.puml\nverified non-learned historical baseline" as PHASE1 <<app>>
-  component "ml-adjutant-policy-contracts.puml\nhistorical R2 assurance closed\nfresh integration proof pending" as PHASE2 <<app>>
+  component "ml-adjutant-policy-contracts.puml\nhistorical R2 assurance closed\ncurrent local restoration verified" as PHASE2 <<app>>
 }
 
 package "packages/starchess-arena/src" {
@@ -40,7 +42,7 @@ package "packages/starchess-arena/src" {
 }
 
 component "scripts/challenge-contract-evidence.ts\ncontract and migration diagnostics" as DIAGNOSTIC <<host>>
-component "packages/starchess-arena/hermetic\nhistorical evidence preserved\nfresh integration proof pending" as HERMETIC <<host>>
+component "packages/starchess-arena/hermetic\nhistorical evidence preserved\ncurrent local PASS / no new image" as HERMETIC <<host>>
 
 package "packages/starchess-core/src (shared)" {
   component "replay/{fen,record}.ts · rules/economy.ts" as CORE <<app>>

@@ -1,13 +1,13 @@
 # Published October 3 ML docs — retained history, not live authority
 
-Status: **ARCHIVE-ONLY. Six published-side Markdown files moved without intentional text changes; byte comparison remains a lead verification gate.**
+Status: **ARCHIVE-ONLY. Final lead byte verification PASS for all21 published-side payloads: six Markdown files plus15 implementation/test/helper files, exact original MAIN46c blobs/bytes.** All payloads and the implementation map remain frozen; this update changes only README lifecycle metadata.
 
 The supplied original published/MAIN revision is `46c5106864e985065451abb3d5cf8bcad521e57d`, authored and committed `2026-10-03T16:17:01Z`.
 Its verified backup is `backup/feat-ml-adjuntant-20261008-46c51068`.
 These files came from the published-side material retained by the temporary integration merge, not from reconstructed REC contract bodies.
 Their location mirrors each original repo-root-relative path beneath this directory.
 Spec-keeper used `apply_patch` move operations with identical title replacement lines and made no intended content edits.
-The lead must prove each destination's complete bytes equal the corresponding original46c Git blob before accepting the archive; file reading and successful move operations are not independent byte/hash proof.
+The earlier required complete-byte comparison is now fulfilled by actual final lead verification of all21 archived payloads, including these six Markdown files, against original46c. Keeper records that supplied result and does not independently hash/compare; successful moves alone never constituted proof.
 
 ## Supersession and discovery
 
@@ -37,7 +37,7 @@ Full R4 remains blocked on ingress with eight failed raw foundations archived se
 
 ## Byte-proof and integration gate
 
-Before staging/committing reconstructed history, the lead must compare all six archived Markdown files with original46c blobs, verify no live aliases survive, and compare the protected bodies/accepted snapshots and immutable evidence with REC `0388e41eac7de10158a0d5db7f666a75d5644e26` without text-merging them.
-Preserve both published and recovered backups, the `orrery` Gitlink `e6d6786f9a4b2a4555920329d3490f9ef833634f` and the complete PRIMARY UI index entry.
-Current assembled-source verification, meaningful commit reconstruction and PR47 force-with-lease publication remain pending.
+Actual final lead checks PASS: all21 published archive payloads exact MAIN46c; raw R4 eight payloads exact SHA/Git blobs; four accepted/protected bodies exact;88 historical evidence/corpus files unchanged versus REC0388. No payload, protected body or evidence was text-merged. [Final authoritative record](../../../_plans/recovery-pr47.md#final-local-restoration-complete-publication-pending) retains method/count boundaries.
+Preserve the three remotely verified published46c/recovered0388/combined7519 backups, the unchanged `orrery` mode160000/Gitlink `e6d6786f9a4b2a4555920329d3490f9ef833634f`, exact997141 UI owner body and unchanged PRIMARY12-cover index.
+Current local restoration/full bounded verification is COMPLETE and four meaningful commits exist through3b29e73a. Isolated final verification docs/proposed fifth commit and exact46c-expectation PR47 force-with-lease publication remain pending; remote feature still46c. No new Docker assurance generation, R4 implementation/global R5 readiness, data/calibration/training, HIGH waiver or origin-push success is claimed.
 Spec-keeper ran no shell, hash, renderer, test, Git-state operation, stage, commit or push.

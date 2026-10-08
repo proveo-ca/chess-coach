@@ -8,9 +8,11 @@
 ' covers: packages/starchess-core/src/__tests__/mine/**
 ' related: _spec/packages/starchess-core/resolve-turn-activity.puml
 ' related: _spec/_plans/ml-adjutant-r3-native-promotion-fix.md
-' R3 implementation retained active; prior local proof remains by revision. Current post-correction/restoration verification is pending.
-' recovery: _spec/_plans/recovery-pr47.md; no rewritten/Main/PR readiness or full R4 completion is claimed here.
-' Actual lead checkonly/SVG PASS is recorded in the seam's completed recovered local proof; final closing metadata checks remain with the lead.
+' status: CURRENT R3/SOURCE BOUNDED LOCAL RESTORATION VERIFIED COMPLETE; current core554/62,training95/6,arena2382/36/1364.07s,CI7/whole strict/actual54+54/audits/reviews PASS per lead.
+' final lifecycle: _spec/_plans/recovery-pr47.md#final-local-restoration-complete-publication-pending; own-Marine/color and same-side replacement guard remains scoped, accepted snapshot unchanged.
+' final render: all9 checkonly + actual SVG success per lead at /tmp/opencode/pr47-final-spec-render-96zlJm; submit-turn-activity.svg present. Keeper runs no renderer/hash/test and changes no flow/reasoning notes.
+' closing reviews: adversarial ses_ee4033dbaffe47xmv8LO9Kq8Yf / security ses_ee4033ddcffed3ahGX8y6LoG6i READY yes, read-only; lead owns final metadata refresh.
+' publication: four meaningful commits through3b29 exist; fifth docs/lease push pending, remote still46c. Raw R4 archived/full R4 blocked/global R5 not ready; no new Docker/calibration/model data/training/HIGH waiver.
 @startuml submit-turn-activity
 !include ../../themes/proveo.puml
 
