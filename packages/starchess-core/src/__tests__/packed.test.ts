@@ -14,6 +14,7 @@ import {
   unpackResolves,
   validateArenaRecord,
   type EndScTurnResult,
+  type ReplayPayload,
 } from "../index";
 
 /** Three settled plies of a real resolve chain — the shape live play records. */
@@ -56,6 +57,15 @@ describe("packed resolves", () => {
     expect((back[1]!.next as unknown as { legacyOnly?: boolean }).legacyOnly).toBe(true);
     same(back, odd);
   });
+  it("preserves an own prototype-shaped next field instead of discarding it as rebuildable", () => {
+    const { scfens, resolves } = game();
+    Object.defineProperty(resolves[0]!.next, "__proto__", { value: { packedOnly: true }, enumerable: true });
+    const back = unpackResolves(scfens, packResolves(scfens, resolves)!);
+    expect(Object.hasOwn(back[0]!.next, "__proto__")).toBe(true);
+    expect(Object.getOwnPropertyDescriptor(back[0]!.next, "__proto__")?.value).toEqual({ packedOnly: true });
+    expect(Object.getPrototypeOf(back[0]!.next)).toBe(Object.prototype);
+    same(back, resolves);
+  });
 
   it("refuses to decode a corrupted payload", () => {
     const { scfens, resolves } = game();
@@ -68,7 +78,7 @@ describe("packed resolves", () => {
 describe("packed records", () => {
   it("stores packed resolves plus the per-ply intent line", () => {
     const { scfens, resolves } = game();
-    const stored = packRecord({ id: "g", scfens, resolves });
+    const stored: ReplayPayload & { id: string } = packRecord({ id: "g", scfens, resolves });
     expect(stored.resolves).toBeUndefined();
     expect(stored.scsan).toEqual([
       "Q:w:C=d2d3;b:C=e7e6",

@@ -22,7 +22,8 @@ export const stageQueue = (
   open: ScFenSnapshot, bank: Bank, side: PieceColor, intents: readonly ScActionInput[], planningOrdinal: number,
 ): StageResult => {
   if ((open.queue?.actions.length ?? 0) !== 0) throw new Error("staging requires an empty precommit queue");
-  if (!Number.isInteger(bank[side]) || bank[side] < 0 || bank[side] > 12) throw new Error("invalid bank");
+  const availableMinerals = Object.entries(bank).find(([seat]) => seat === side)?.[1];
+  if (availableMinerals === undefined || !Number.isInteger(availableMinerals) || availableMinerals < 0 || availableMinerals > 12) throw new Error("invalid bank");
   let snapshot = structuredClone(open);
   let spend = 0;
   if (!Array.isArray(intents)) return { ok: false, failure: {
@@ -32,8 +33,8 @@ export const stageQueue = (
     const base: ChallengeStop = { kind: "queue-rejected", phase: "admission", planningOrdinal, turn: open.turn, side, actionIndex, action };
     if (!validIntent(action, side)) return { ok: false, failure: { ...base, reason: "invalid-intent" } };
     const cost = action.kind === "deploy" && action.unit ? UNIT_COST[action.unit] : 0;
-    if (spend + cost > bank[side]) return { ok: false, failure: {
-      ...base, reason: "minerals", requiredMinerals: spend + cost, availableMinerals: bank[side],
+    if (spend + cost > availableMinerals) return { ok: false, failure: {
+      ...base, reason: "minerals", requiredMinerals: spend + cost, availableMinerals,
     } };
     try {
       snapshot = addScAction({ snapshot, action }).snapshot;
@@ -43,7 +44,7 @@ export const stageQueue = (
       return { ok: false, failure: { ...base, reason: error.message, engineCode: error.code } };
     }
   }
-  return { ok: true, staged: { side, intents: structuredClone([...intents]), gasAfter: snapshot.gas[side], spend } };
+  return { ok: true, staged: { side, intents: structuredClone([...intents]), gasAfter: Object.entries(snapshot.gas).find(([seat]) => seat === side)![1], spend } };
 };
 
 export const commitPair = (open: ScFenSnapshot, bank: Bank, white: StagedQueue, black: StagedQueue) => {

@@ -50,25 +50,42 @@ export function freshOutput(path) {
   return absolute;
 }
 
-export async function main(argv) {
+export function parseArguments(argv) {
   const [command, ...input] = argv;
   if (!command || command === '--help') {
-    console.log('Usage: node packages/starchess-arena/hermetic/run.mjs build [--dependencies] [--from-dependencies sha256:...] | preflight --image sha256:... [--out empty-directory] | run --image sha256:... [--out empty-directory] [-- code repository-file.ts args...] | export --image sha256:...');
-    return;
+    if (input.length) throw new Error('Invalid option after --help');
+    return { command: null, options: {}, runtime: [] };
   }
   if (!['build', 'preflight', 'run', 'export'].includes(command)) throw new Error('Unsupported command');
   const options = {};
   let runtime = [];
   for (let i = 0; i < input.length; i++) {
     const arg = input[i];
-    if (arg === '--') { runtime = input.slice(i + 1); break; }
-    if (arg === '--dependencies') { options.dependencies = true; continue; }
-    if (!['--image', '--out', '--from-dependencies'].includes(arg) || !input[i + 1] || input[i + 1].startsWith('--') || options[arg.slice(2)]) throw new Error(`Invalid option: ${arg}`);
+    if (arg === '--') {
+      if (command !== 'run') throw new Error('Option does not apply to command');
+      runtime = input.slice(i + 1);
+      break;
+    }
+    if (['--dependencies', '--no-cache'].includes(arg)) {
+      if (Object.hasOwn(options, arg.slice(2))) throw new Error(`Invalid option: ${arg}`);
+      options[arg.slice(2)] = true;
+      continue;
+    }
+    if (!['--image', '--out', '--from-dependencies'].includes(arg) || !input[i + 1] || input[i + 1].startsWith('--') || Object.hasOwn(options, arg.slice(2))) throw new Error(`Invalid option: ${arg}`);
     options[arg.slice(2)] = input[++i];
   }
   if (command !== 'build' && !options.image) throw new Error('--image is required');
-  if (command !== 'build' && (options.dependencies || options['from-dependencies']) || command === 'build' && (options.image || options.out || runtime.length) ||
+  if (command !== 'build' && (options.dependencies || options['no-cache'] || options['from-dependencies']) || command === 'build' && (options.image || options.out || runtime.length) ||
       command === 'export' && (options.out || runtime.length) || command === 'preflight' && runtime.length) throw new Error('Option does not apply to command');
+  return { command, options, runtime };
+}
+
+export async function main(argv) {
+  const { command, options, runtime } = parseArguments(argv);
+  if (!command) {
+    console.log('Usage: node packages/starchess-arena/hermetic/run.mjs build [--dependencies] [--no-cache] [--from-dependencies sha256:...] | preflight --image sha256:... [--out empty-directory] | run --image sha256:... [--out empty-directory] [-- code repository-file.ts args...] | export --image sha256:...');
+    return;
+  }
   const observedHost = host();
   const work = freshWork(`starchess-hermetic-${command}-`);
   if (command === 'build') {
@@ -77,7 +94,7 @@ export async function main(argv) {
     const capture = prepareContext(context, options.dependencies === true);
     const iid = join(work, 'image-id');
     let frozenDependency;
-    const extra = [];
+    const extra = options['no-cache'] ? ['--no-cache'] : [];
     if (options['from-dependencies']) {
       const image = options['from-dependencies'];
       const inspection = inspectImage(image);

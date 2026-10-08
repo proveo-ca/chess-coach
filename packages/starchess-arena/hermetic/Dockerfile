@@ -9,14 +9,14 @@ RUN --network=none node /hermetic/closure.mjs tools
 FROM tools AS acquisition
 WORKDIR /app
 COPY deps/ /app/
-RUN pnpm --filter @chess-coach/starchess-arena... install --frozen-lockfile --ignore-scripts --store-dir /pnpm/store --config.side-effects-cache=false
+RUN pnpm --filter @chess-coach/starchess-training... install --frozen-lockfile --ignore-scripts --store-dir /pnpm/store --config.side-effects-cache=false
 
 FROM tools AS dependencies
 WORKDIR /app
 COPY deps/ /app/
 COPY --from=acquisition /pnpm/store/ /pnpm/store/
 COPY capture.json /hermetic-evidence/capture.json
-RUN --network=none pnpm --filter @chess-coach/starchess-arena... install --offline --frozen-lockfile --store-dir /pnpm/store --config.side-effects-cache=false
+RUN --network=none pnpm --filter @chess-coach/starchess-training... install --offline --frozen-lockfile --store-dir /pnpm/store --config.side-effects-cache=false
 RUN --network=none node /hermetic/closure.mjs record && node /hermetic/manifest.mjs dependencies
 
 FROM ${FROZEN_DEPENDENCIES} AS frozen
@@ -24,7 +24,7 @@ FROM ${FROZEN_DEPENDENCIES} AS frozen
 FROM frozen AS runtime
 COPY runtime/ /app/
 COPY capture.json /hermetic-evidence/capture.json
-RUN --network=none mkdir -p /app/_spec/evidence/ml-adjutant-phase2 && node /hermetic/manifest.mjs source && node /hermetic/closure.mjs dependencies
+RUN --network=none mkdir -p /app/_spec/evidence/ml-adjutant-r2-refresh && node /hermetic/manifest.mjs source && node /hermetic/closure.mjs dependencies
 USER 10001:10001
 WORKDIR /app
 ENTRYPOINT ["node", "/app/packages/starchess-arena/hermetic/runtime.mjs"]

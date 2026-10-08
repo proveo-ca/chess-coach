@@ -13,12 +13,19 @@ type FixtureReport = {
   deterministicRerun: { performed: boolean; equal: boolean; comparisons: { key: string; equal: boolean; firstSha256: string; rerunSha256: string }[] };
 };
 const baseline = (): FixtureReport => JSON.parse(baselineBytes.toString("utf8")) as FixtureReport;
-const currentBaseline = (): FixtureReport => ({ ...baseline(), version: "phase2-baseline-report-v1", kind: "phase2-current-baseline",
-  independentVerification: "_spec/evidence/ml-adjutant-phase2/verification.json", migrationReference: "_spec/evidence/ml-adjutant-phase2/pin-migration.json",
-  pins: { version: "challenge-execution-pins-v2" },
+const currentBaseline = (): FixtureReport => ({ ...baseline(), version: "phase2-baseline-report-v2", kind: "phase2-current-baseline",
+  independentVerification: "_spec/evidence/ml-adjutant-r2-refresh/verification.json", migrationReference: "_spec/evidence/ml-adjutant-r2-refresh/pin-migration.json",
+  pins: { version: "challenge-execution-pins-v3" },
 });
 
 describe("baseline execution pin migration", () => {
+  it("compares historical v1 baselines with v2 pins only through the legacy migration schema", () => {
+    const historical = { ...currentBaseline(), version: "phase2-baseline-report-v1",
+      independentVerification: "_spec/evidence/ml-adjutant-phase2/verification.json",
+      migrationReference: "_spec/evidence/ml-adjutant-phase2/pin-migration.json", pins: { version: "challenge-execution-pins-v2" } };
+    expect(createMigration(baselineBytes, verificationBytes, Buffer.from(JSON.stringify(historical)))).toMatchObject({ version: "challenge-pin-migration-v1", passed: true });
+    expect(() => compareBaselineReports(baseline(), { ...currentBaseline(), pins: historical.pins })).toThrow("Invalid baseline migration provenance");
+  });
   it("pins the original baseline and verification raw bytes and verifies all 54 semantic rows", () => {
     expect(sha256(baselineBytes)).toBe(ORIGINAL_BASELINE_SHA256);
     expect(sha256(verificationBytes)).toBe(ORIGINAL_VERIFICATION_SHA256);
@@ -32,10 +39,10 @@ describe("baseline execution pin migration", () => {
 
   it("permits changed source/runtime pins while retaining exact execution semantics", () => {
     const current = currentBaseline();
-    current.pins = { version: "challenge-execution-pins-v2", inventorySha256: "new-inventory", executionSha256: "new-execution" };
+    current.pins = { version: "challenge-execution-pins-v3", inventorySha256: "new-inventory", executionSha256: "new-execution" };
     const currentBytes = Buffer.from(JSON.stringify(current));
     const migration = createMigration(baselineBytes, verificationBytes, currentBytes);
-    expect(migration).toMatchObject({ version: "challenge-pin-migration-v1", passed: true,
+    expect(migration).toMatchObject({ version: "challenge-pin-migration-v2", passed: true,
       originalBaselineSha256: ORIGINAL_BASELINE_SHA256, originalVerificationSha256: ORIGINAL_VERIFICATION_SHA256,
       currentBaselineSha256: sha256(currentBytes) });
     expect(migration.currentBaselineSha256).not.toBe(migration.originalBaselineSha256);

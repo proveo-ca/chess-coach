@@ -7,15 +7,15 @@ import {
 import { runSupervised } from "./supervisor";
 import { executionIntegrity } from "./integrity";
 import type { ChallengeEvidence, ChallengeStop } from "./types";
-import { collectSourceInventoryV2 } from "./sourceInventory";
+import { collectSourceInventory, type SourceInventoryV1 } from "./sourceInventory";
 
 export { executionIntegrity } from "./integrity";
 
 export type Suite = "all" | "corpus" | "live-strategic";
 
 export const executionPins = () => ({
-  version: "challenge-execution-pins-v3",
-  sourceInventory: collectSourceInventoryV2(),
+  version: "challenge-execution-pins-v3" as const,
+  sourceInventory: collectSourceInventory(),
   configuration: CHALLENGE_CONFIG,
   configurationSha256: sha256(canonical(CHALLENGE_CONFIG)),
   nodeVersion: process.version,
@@ -37,6 +37,16 @@ export const normalizeEvidence = (evidence: ChallengeEvidence): string => {
 };
 
 export type OutcomeBucket = "win" | "loss" | "draw" | "failure";
+export type HistoricalExecutionPinsV2 = Omit<ReturnType<typeof executionPins>, "version" | "sourceInventory"> & {
+  version: "challenge-execution-pins-v2"; sourceInventory: SourceInventoryV1;
+};
+export const decodeHistoricalExecutionPins = (value: unknown): HistoricalExecutionPinsV2 => {
+  if (!record(value) || value.version !== "challenge-execution-pins-v2" || !record(value.sourceInventory) ||
+    value.sourceInventory.version !== "challenge-source-inventory-v1" || value.sourceInventory.policyVersion !== "challenge-source-policy-v1") {
+    throw new Error("Invalid historical execution pins");
+  }
+  return value as HistoricalExecutionPinsV2;
+};
 export type FailureReason =
   | { kind: "missing-record" }
   | { kind: "duplicate-record" }

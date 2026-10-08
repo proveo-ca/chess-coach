@@ -68,7 +68,7 @@ export const summarize = (runs: readonly ArenaGameRecord[]): ScriptScoreboard =>
 
   for (const run of runs) {
     const status = run.meta?.status ?? "finished";
-    byStatus[status] = (byStatus[status] ?? 0) + 1;
+    byStatus[status] = (Object.entries(byStatus).find(([key]) => key === status)?.[1] ?? 0) + 1;
 
     const { w, b } = run.players;
     const wRow = touch(w);

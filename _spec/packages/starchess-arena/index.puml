@@ -6,8 +6,9 @@
 ' covers: packages/starchess-arena/hermetic/**
 ' see also: arena.puml (the runner itself)
 ' related: _spec/_plans/PLAN-ml-adjutant.md
-' related: _spec/_plans/ml-adjutant-challenge.md
-' related: _spec/_plans/ml-adjutant-weights.md
+' related: _spec/_plans/ml-adjutant-r8-challenge.md
+' related: _spec/_plans/ml-adjutant-r4-weights.md
+' recovery: _spec/_plans/recovery-pr47.md; prior proof is revision-scoped; fresh integration verification pending.
 ' legacy rationale: What the arena measures is a spec question, not just a runner question.
 ' legacy rationale: Scripts live under _spec/apps/starchess/core/adjutant/; omitted per-side inputs change results without changing scripts.
 ' legacy history: The previous map called out ccIntel forwarding; arena.puml owns that legacy runner concern, not the isolated challenge.
@@ -24,7 +25,7 @@ title StarChess Arena · Spec Map (_spec/packages/starchess-arena)
 package "_spec/packages/starchess-arena" {
   component "arena.puml\nheadless match runner" as ARENA <<app>>
   component "ml-adjutant-challenge-harness.puml\nverified non-learned historical baseline" as PHASE1 <<app>>
-  component "ml-adjutant-policy-contracts.puml\nhermetic verification passed\nnot learned; post-image review unrecorded" as PHASE2 <<app>>
+  component "ml-adjutant-policy-contracts.puml\nhistorical R2 assurance closed\nfresh integration proof pending" as PHASE2 <<app>>
 }
 
 package "packages/starchess-arena/src" {
@@ -39,7 +40,7 @@ package "packages/starchess-arena/src" {
 }
 
 component "scripts/challenge-contract-evidence.ts\ncontract and migration diagnostics" as DIAGNOSTIC <<host>>
-component "packages/starchess-arena/hermetic\nsource image run passed\npost-image review unrecorded" as HERMETIC <<host>>
+component "packages/starchess-arena/hermetic\nhistorical evidence preserved\nfresh integration proof pending" as HERMETIC <<host>>
 
 package "packages/starchess-core/src (shared)" {
   component "replay/{fen,record}.ts · rules/economy.ts" as CORE <<app>>

@@ -18,13 +18,15 @@ import { charonStrikeTarget, placementAfterMechaCharon } from "../rules/specials
 import { marineSingleTarget } from "../rules/specials/stimStep";
 import { classicalRewriteCoordinatesAfterB, orderBHeadsFirst } from "../rules/planning-order";
 import {
-  applyPendingCCShots,
-  resolveTurn,
+  resolveTurnKernel,
+  applyPendingCCShotsKernel,
   type ResolvePromotion,
   type ResolveTurnResult,
   type ResolveMove,
 } from "./resolve-turn";
 import { getSideVision } from "../board/vision";
+import type { ProvenanceRecorder } from "./provenance-recorder";
+import type { FramePhase } from "./provenance-types";
 import { queueGasSpent } from "../scfen/codec";
 import type {
   ClassicalPlan,
@@ -129,6 +131,13 @@ export const refillTurnGas = (snap: ScFenSnapshot): ScFenSnapshot => {
 };
 
 export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
+  return beginScTurnKernel(snapshot);
+};
+
+export const beginScTurnKernel = (
+  snapshot: ScFenSnapshot,
+  recorder?: ProvenanceRecorder,
+): BeginScTurnResult => {
   if (snapshot.phase !== "P") {
     throw new Error(`beginScTurn requires phase P (got ${snapshot.phase})`);
   }
@@ -139,14 +148,14 @@ export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
     minesIn,
     snapshot.siegedTanks,
   );
-  const pendingApplied = applyPendingCCShots({
+  const pendingApplied = applyPendingCCShotsKernel({
     placement: snapshot.placement,
     ccLives: snapshot.ccLives,
     pending: collectLegalCCChecks(snapshot.placement, {
       isTargetVisible: isCheckVisible,
     }),
     mines: minesIn,
-  });
+  }, recorder);
 
   const afterPending = {
     placement: pendingApplied.placement,
@@ -248,10 +257,24 @@ const byTiming = (actions: readonly ScAction[], timing: "B" | "C" | "F") =>
       return a.seq - b.seq;
     });
 
-const relocate = (placement: string, from: Square, to: Square): string => {
+const relocate = (
+  placement: string,
+  from: Square,
+  to: Square,
+  recorder?: ProvenanceRecorder,
+  phase: FramePhase = "B",
+  seq: number | null = null,
+): string => {
   const map = placementToMap(placement);
+  recorder?.board(map);
   const piece = map.get(from);
+  if (phase === "B") recorder?.bind(seq, piece);
   if (!piece) return placement;
+  recorder?.frame(phase, () => {
+    const occupant = map.get(to);
+    if (occupant && occupant !== piece) recorder.destroy(occupant, seq);
+    recorder.move(piece, from, to, seq);
+  });
   map.delete(from);
   map.set(to, piece);
   return mapToPlacement(map);
@@ -282,6 +305,9 @@ const applyArrivalMine = (
   squares: readonly Square[],
   color: StarChessColor,
   arriving: ScPiece,
+  recorder?: ProvenanceRecorder,
+  phase: FramePhase = "B",
+  seq: number | null = null,
 ): ArrivalMine => {
   const hit = mineContact({
     mines,
@@ -292,6 +318,12 @@ const applyArrivalMine = (
   });
   if (hit.kind !== "detonated") return { placement, mines };
   const board = placementToMap(placement);
+  recorder?.board(board);
+  recorder?.frame(phase, () => {
+    const victim = board.get(hit.at);
+    if (victim) recorder.destroy(victim, seq);
+    recorder.mineContact(hit, seq, mines);
+  });
   board.delete(hit.at);
   return {
     placement: mapToPlacement(board),
@@ -307,6 +339,7 @@ const applySpecial = (
   mines: ScMine[],
   action: Extract<ScAction, { timing: "B" | "F" }>,
   ignoreAttacksOn: Square[],
+  recorder?: ProvenanceRecorder,
 ): {
   placement: string;
   mines: ScMine[];
@@ -315,6 +348,7 @@ const applySpecial = (
   mineColor?: StarChessColor;
 } => {
   const kind = action.kind as SpecialKind;
+  const phase = action.timing;
   switch (kind) {
     case "charonMissiles": {
       if (!action.to) return { placement, mines };
@@ -323,9 +357,12 @@ const applySpecial = (
       // the action's side; anything else fizzles off-board. The event still
       // logs so the timeline plays the volley / fizzle.
       const board = placementToMap(placement);
+      recorder?.board(board);
+      if (phase === "B") recorder?.bind(action.seq, board.get(action.from));
       const kill = charonStrikeTarget(board, action.from, action.to, action.color);
       if (!kill) return { placement, mines };
       const victim = board.get(kill)!;
+      recorder?.frame(phase, () => recorder.destroy(victim, action.seq));
       return {
         placement: placementAfterMechaCharon(placement, kill),
         mines,
@@ -336,11 +373,17 @@ const applySpecial = (
       if (!action.to) return { placement, mines };
       ignoreAttacksOn.push(action.from);
       const board = placementToMap(placement);
+      recorder?.board(board);
       const hull = board.get(action.from);
+      if (phase === "B") recorder?.bind(action.seq, hull);
       if (!hull || hull.color !== action.color) return { placement, mines };
       const occupant = board.get(action.to);
       if (occupant && occupant.color === action.color) return { placement, mines };
       if (occupant && occupant.type !== "k") {
+        recorder?.frame(phase, () => {
+          recorder.destroy(hull, action.seq);
+          recorder.destroy(occupant, action.seq);
+        });
         // Jump collision: ship and occupant meet on the landing square —
         // both die, neither survives onto it.
         board.delete(action.from);
@@ -353,6 +396,7 @@ const applySpecial = (
         };
       }
       if (occupant) {
+        recorder?.frame(phase, () => recorder.destroy(hull, action.seq));
         // A Command Center takes the jumper: the ship dies on its square.
         board.delete(action.from);
         return {
@@ -361,19 +405,27 @@ const applySpecial = (
           victim: { type: hull.type, color: hull.color },
         };
       }
-      const landed = relocate(placement, action.from, action.to);
-      return applyArrivalMine(landed, mines, [action.to], action.color, hull);
+      const landed = relocate(placement, action.from, action.to, recorder, phase, action.seq);
+      return applyArrivalMine(landed, mines, [action.to], action.color, hull, recorder, phase, action.seq);
     }
     case "stimStep": {
       if (!action.to) return { placement, mines };
-      const marine = placementToMap(placement).get(action.from);
-      const stepped = relocate(placement, action.from, action.to);
+      const marineBoard = placementToMap(placement);
+      recorder?.board(marineBoard);
+      const marine = marineBoard.get(action.from);
+      if (phase === "B") recorder?.bind(action.seq, marine);
+      const stepped = relocate(placement, action.from, action.to, recorder, phase, action.seq);
       if (!marine) return { placement: stepped, mines };
-      return applyArrivalMine(stepped, mines, [action.to], action.color, marine);
+      return applyArrivalMine(stepped, mines, [action.to], action.color, marine, recorder, phase, action.seq);
     }
     case "deploy": {
-      if (!action.to || !action.unit) return { placement, mines };
-      const occupant = placementToMap(placement).get(action.to);
+      if (!action.to || !action.unit) {
+        recorder?.frame(phase, () => recorder.disposition(action.seq, null));
+        return { placement, mines };
+      }
+      const deployBoard = placementToMap(placement);
+      recorder?.board(deployBoard);
+      const occupant = deployBoard.get(action.to);
       // Command Centers are never crushable (validation rejects them); defense in depth
       // so a bypassed queue can never delete a Command Center via deploy.
       if (occupant?.type === "k") {
@@ -381,11 +433,16 @@ const applySpecial = (
       }
       const deployed = { type: action.unit, color: action.color };
       const landed = placeUnit(placement, action.to, deployed);
+      recorder?.frame(phase, () => {
+        if (occupant) recorder.destroy(occupant, action.seq);
+        const id = recorder.create(deployed, action.to!, action.seq);
+        recorder.disposition(action.seq, id);
+      });
       // Deploy over ally or enemy non-ccs — victim shows death, deployed survives
       const crush = occupant
         ? { victim: { type: occupant.type, color: occupant.color } }
         : {};
-      const blast = applyArrivalMine(landed, mines, [action.to], action.color, deployed);
+      const blast = applyArrivalMine(landed, mines, [action.to], action.color, deployed, recorder, phase, action.seq);
       if (blast.mineColor) {
         return {
           placement: blast.placement,
@@ -400,6 +457,7 @@ const applySpecial = (
       const at = action.to ?? action.from;
       const next = [...mines, { color: action.color, at }];
       assertMineCap(next, action.color);
+      recorder?.frame(phase, () => recorder.mineCreate(next[next.length - 1]!, action.seq));
       return { placement, mines: next };
     }
     case "siegeMode":
@@ -414,11 +472,18 @@ const toggleTankSiege = (
   sieged: Set<Square>,
   color: PieceColor,
   at: Square,
+  recorder?: ProvenanceRecorder,
+  phase: FramePhase = "B",
+  seq: number | null = null,
 ): boolean => {
-  const actor = placementToMap(placement).get(at);
+  const board = placementToMap(placement);
+  recorder?.board(board);
+  const actor = board.get(at);
+  if (phase === "B") recorder?.bind(seq, actor);
   if (!actor || actor.color !== color || actor.type !== "r") return false;
   if (sieged.has(at)) sieged.delete(at);
   else sieged.add(at);
+  if (seq !== null) recorder?.frame(phase, () => recorder.mode(actor, sieged.has(at) ? "siege" : "tank", seq));
   return true;
 };
 
@@ -543,6 +608,14 @@ export const endScTurn = (
   snapshot: ScFenSnapshot,
   opts?: EndScTurnOptions,
 ): EndScTurnResult => {
+  return endScTurnKernel(snapshot, opts);
+};
+
+export const endScTurnKernel = (
+  snapshot: ScFenSnapshot,
+  opts?: EndScTurnOptions,
+  recorder?: ProvenanceRecorder,
+): EndScTurnResult => {
   if (snapshot.phase !== "P") {
     throw new Error(`endScTurn requires phase P (got ${snapshot.phase})`);
   }
@@ -630,6 +703,7 @@ export const endScTurn = (
   };
 
   const tankModeFor = (sq: Square) => (sieged.has(sq) ? "siege" : "tank");
+  if (recorder) recorder.modeAt = tankModeFor;
   const visionOpts0 = { mines, tankModeFor };
   const visionW0 = getSideVision(placement, "w", visionOpts0);
   const visionB0 = getSideVision(placement, "b", visionOpts0);
@@ -643,16 +717,16 @@ export const endScTurn = (
         placement,
         mines,
         ccLives: { ...snapshot.ccLives },
-        attacks: [] as ReturnType<typeof applyPendingCCShots>["attacks"],
+        attacks: [] as ReturnType<typeof applyPendingCCShotsKernel>["attacks"],
       }
-    : applyPendingCCShots({
+    : applyPendingCCShotsKernel({
         placement,
         ccLives: snapshot.ccLives,
         pending: collectLegalCCChecks(placement, {
           isTargetVisible: isCheckVisible,
         }),
         mines,
-      });
+      }, recorder);
   placement = pendingApplied.placement;
   mines = pendingApplied.mines;
   let ccLives = pendingApplied.ccLives;
@@ -714,6 +788,11 @@ export const endScTurn = (
   ) => {
     const lastRank = a.color === "w" ? 8 : 1;
     if (!survived || Number(at[1]) !== lastRank || !a.promotion) return;
+    const board = placementToMap(placement);
+    recorder?.board(board);
+    const current = board.get(at);
+    if (!current || current.type !== "p" || current.color !== a.color) return;
+    recorder?.frame("B", () => recorder.transform(current, a.promotion!, a.seq));
     placement = placeUnit(placement, at, { type: a.promotion, color: a.color });
     gasPromotions.push({ color: a.color, from: a.from, at, unit: a.promotion });
   };
@@ -724,7 +803,7 @@ export const endScTurn = (
     for (const a of ordered) {
       if (a.timing !== "B") continue;
       if (a.kind === "siegeMode") {
-        if (toggleTankSiege(placement, sieged, a.color, a.from)) {
+        if (toggleTankSiege(placement, sieged, a.color, a.from, recorder, "B", a.seq)) {
           siegedThisTurn.push(a.from);
           extrasBySeq.set(a.seq, { action: a, extra: {} });
         }
@@ -747,8 +826,8 @@ export const endScTurn = (
       const applied = allyBlocked
         ? { placement, mines }
         : held
-          ? { placement: relocate(placement, a.from, a.to!), mines }
-          : applySpecial(placement, mines, a, ignoreAttacksOn);
+          ? { placement: relocate(placement, a.from, a.to!, recorder, "B", a.seq), mines }
+          : applySpecial(placement, mines, a, ignoreAttacksOn, recorder);
       const event: BeforeEvent = { action: a, extra: {} };
       const relocated = applied.placement !== placement;
       const stepped =
@@ -791,7 +870,7 @@ export const endScTurn = (
     if (continues) continue;
     const marine = placementToMap(placement).get(at);
     if (!marine) continue;
-    const blast = applyArrivalMine(placement, mines, [at], action.color, marine);
+    const blast = applyArrivalMine(placement, mines, [at], action.color, marine, recorder, "B", action.seq);
     placement = blast.placement;
     mines = blast.mines;
     step.event.extra = {
@@ -836,7 +915,7 @@ export const endScTurn = (
   }
   const white = withExtraStepLegs(classicalFor(actionsAfterB, "w"), actions);
   const black = withExtraStepLegs(classicalFor(actionsAfterB, "b"), actions);
-  const classical = resolveTurn({
+  const classical = resolveTurnKernel({
     placement,
     ccLives,
     white,
@@ -846,7 +925,10 @@ export const endScTurn = (
     isTargetVisible,
     pathVisionOpts: { mines, tankModeFor },
     siegedTanks: afterB.siegedTanks,
-  });
+  }, recorder, {
+    w: actionsAfterB.find(a => a.timing === "C" && a.color === "w")?.seq ?? null,
+    b: actionsAfterB.find(a => a.timing === "C" && a.color === "b")?.seq ?? null,
+  }, sieged);
 
   let resolved: ResolveTurnResult = {
     ...classical,
@@ -870,6 +952,7 @@ export const endScTurn = (
   }
 
   if (ccLives.w === 0 || ccLives.b === 0) {
+    for (const a of byTiming(actions, "F")) if (a.kind === "deploy") recorder?.frame("F", () => recorder.disposition(a.seq, null));
     return finish({ resolved, afterB, bMoves, queue: [...actions] });
   }
 
@@ -878,6 +961,7 @@ export const endScTurn = (
     const origC = classicalFor(actions, a.color);
     const rewrittenC = classicalFor(actionsAfterB, a.color);
     const boardAfter = placementToMap(placement);
+    recorder?.board(boardAfter);
     const candidates: Square[] = [a.from];
     if (rewrittenC) candidates.push(rewrittenC.to, rewrittenC.from);
     if (origC) candidates.push(origC.to, origC.from);
@@ -898,9 +982,13 @@ export const endScTurn = (
         }) ?? a.from)
       : a.from;
     const actor = boardAfter.get(at);
+    recorder?.bind(a.seq, actor);
     // Fire-and-forget Charon resolves from the queued square even with no
     // live Mecha; every other F special needs its actor.
-    if ((!actor || actor.color !== a.color) && a.kind !== "charonMissiles") continue;
+    if ((!actor || actor.color !== a.color) && a.kind !== "charonMissiles") {
+      if (a.kind === "deploy") recorder?.frame("F", () => recorder.disposition(a.seq, null));
+      continue;
+    }
 
     const rewritten: ScAction =
       a.kind === "spiderMine"
@@ -909,7 +997,7 @@ export const endScTurn = (
 
     if (a.kind === "siegeMode") {
       if (!actor || actor.type !== "r") continue;
-      if (toggleTankSiege(placement, sieged, a.color, at)) {
+      if (toggleTankSiege(placement, sieged, a.color, at, recorder, "F", a.seq)) {
         siegedThisTurn.push(at);
         log.special("specialAfter", rewritten);
       }
@@ -922,7 +1010,7 @@ export const endScTurn = (
       if (!to || boardAfter.has(to)) {
         // The Extra Step never lands, so `at` *is* the destination: a mine the
         // classical leg held back for this hop has to fire here instead.
-        const held = applyArrivalMine(placement, mines, [at], a.color, actor);
+        const held = applyArrivalMine(placement, mines, [at], a.color, actor, recorder, "F", a.seq);
         placement = held.placement;
         mines = held.mines;
         if (held.mineColor) {
@@ -934,17 +1022,21 @@ export const endScTurn = (
         continue;
       }
       const stepped = applyArrivalMine(
-        relocate(placement, at, to),
+        relocate(placement, at, to, recorder, "F", a.seq),
         mines,
         [at, to],
         a.color,
         actor,
+        recorder, "F", a.seq,
       );
       placement = stepped.placement;
       mines = stepped.mines;
       fMoves.push({ piece: "p", color: a.color, from: at, to });
       const lastRank = a.color === "w" ? 8 : 1;
       if (Number(to[1]) === lastRank && a.promotion && !stepped.mineColor) {
+        const landedBoard = placementToMap(placement);
+        recorder?.board(landedBoard);
+        recorder?.frame("F", () => recorder.transform(landedBoard.get(to)!, a.promotion!, a.seq));
         placement = placeUnit(placement, to, {
           type: a.promotion,
           color: a.color,
@@ -964,7 +1056,7 @@ export const endScTurn = (
       continue;
     }
 
-    const applied = applySpecial(placement, mines, rewritten, ignoreAttacksOn);
+    const applied = applySpecial(placement, mines, rewritten, ignoreAttacksOn, recorder);
     if (
       a.kind === "tacticalJump" &&
       rewritten.to &&

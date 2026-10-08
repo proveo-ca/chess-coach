@@ -4,6 +4,7 @@ import { existsSync, readFileSync, readdirSync, realpathSync, writeFileSync } fr
 import { createRequire } from 'node:module';
 import { createHash } from 'node:crypto';
 import pins from './pins.json' with { type: 'json' };
+import { workspacePackages, workspaceManifestTarget } from './workspace-policy.mjs';
 
 export function verifyTools() {
   const actual = { node: process.versions.node, pnpm: execFileSync('pnpm', ['--version'], { encoding: 'utf8' }).trim() };
@@ -17,13 +18,15 @@ export function verifyDependencies() {
   for (const entry of capture.dependencyFiles) {
     if (createHash('sha256').update(readFileSync(`/app/${entry.path}`)).digest('hex') !== entry.sha256) throw new Error(`Frozen input changed: ${entry.path}`);
   }
-  for (const name of ['starchess-core', 'starchess-arena']) {
+  for (const name of workspacePackages) {
     const manifest = JSON.parse(readFileSync(`/app/packages/${name}/package.json`, 'utf8'));
+    if (manifest.name !== `@chess-coach/${name}`) throw new Error('Workspace manifest name mismatch');
     const versions = {};
     for (const [dependency, specifier] of Object.entries({ ...manifest.dependencies, ...manifest.devDependencies })) {
       const resolved = `/app/packages/${name}/node_modules/${dependency}/package.json`;
       versions[dependency] = JSON.parse(readFileSync(resolved, 'utf8')).version;
-      if (specifier === 'workspace:*' && realpathSync(resolved) !== '/app/packages/starchess-core/package.json') throw new Error('Workspace link mismatch');
+      if (specifier === 'workspace:*' && realpathSync(resolved) !== workspaceManifestTarget(dependency)) throw new Error('Workspace link mismatch');
+      if (dependency === 'jssha' && (specifier !== '3.3.2' || versions[dependency] !== '3.3.2')) throw new Error('SHA dependency pin mismatch');
     }
     execFileSync(`/app/packages/${name}/node_modules/.bin/tsc`, ['--version']);
     execFileSync(`/app/packages/${name}/node_modules/.bin/vitest`, ['--version']);

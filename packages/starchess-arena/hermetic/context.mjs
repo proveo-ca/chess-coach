@@ -4,6 +4,7 @@ import { dirname, extname, join, relative, resolve, sep } from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { sha256, treeManifest } from './manifest.mjs';
+import { dependencyInputs, workspacePackages } from './workspace-policy.mjs';
 
 const require = createRequire(import.meta.url);
 const ts = require('typescript');
@@ -35,18 +36,27 @@ function sourceBytes(root, path) {
   return readFileSync(sourcePath(root, path));
 }
 
-function copyTree(root, path, target) {
+function contextDirectory(context, target) {
+  let current = context;
+  for (const part of relative(context, target).split(sep).filter(Boolean)) {
+    current = join(current, part);
+    mkdirSync(current, { recursive: true, mode: 0o755 });
+    chmodSync(current, 0o755);
+  }
+}
+
+function copyTree(root, path, target, context) {
   const source = sourcePath(root, path);
   const stat = lstatSync(source);
   if (stat.isDirectory()) {
-    mkdirSync(target, { recursive: true, mode: 0o755 });
+    contextDirectory(context, target);
     for (const name of readdirSync(sourcePath(root, path)).sort()) {
       if (excludedNames.includes(name)) continue;
       if (/^(\.env(?:\.|$)|\.npmrc$)|\.(pem|key|p12|pfx)$/i.test(name)) throw new Error(`Secret-bearing path excluded: ${source}/${name}`);
-      copyTree(root, join(path, name), join(target, name));
+      copyTree(root, join(path, name), join(target, name), context);
     }
   } else if (stat.isFile()) {
-    mkdirSync(dirname(target), { recursive: true });
+    contextDirectory(context, dirname(target));
     copyFileSync(sourcePath(root, path), target);
     chmodSync(target, stat.mode & 0o111 ? 0o755 : 0o644);
   } else throw new Error(`Special host file excluded: ${source}`);
@@ -85,16 +95,18 @@ function configClosure(root, seeds) {
 }
 
 export function prepareContext(context, dependenciesOnly = false, root = repository) {
+  context = resolve(context);
   root = resolve(root);
   sourcePath(root, '.');
   if (readdirSync(context).length) throw new Error('Docker context must start empty');
   const control = 'packages/starchess-arena/hermetic';
-  copyTree(root, control, join(context, 'hermetic'));
-  copyTree(root, join(control, 'Dockerfile'), join(context, 'Dockerfile'));
-  const dependencyFiles = ['pnpm-lock.yaml', 'packages/starchess-core/package.json', 'packages/starchess-arena/package.json'];
-  for (const path of dependencyFiles) copyTree(root, path, join(context, 'deps', path));
-  const narrowedWorkspace = 'packages:\n  - packages/starchess-core\n  - packages/starchess-arena\nallowBuilds:\n  esbuild: true\n';
+  copyTree(root, control, join(context, 'hermetic'), context);
+  copyTree(root, join(control, 'Dockerfile'), join(context, 'Dockerfile'), context);
+  const dependencyFiles = dependencyInputs;
+  for (const path of dependencyFiles) copyTree(root, path, join(context, 'deps', path), context);
+  const narrowedWorkspace = `packages:\n${workspacePackages.map((name) => `  - packages/${name}\n`).join('')}allowBuilds:\n  esbuild: true\n`;
   writeFileSync(join(context, 'deps/pnpm-workspace.yaml'), narrowedWorkspace);
+  chmodSync(join(context, 'deps/pnpm-workspace.yaml'), 0o644);
   const configs = optionalConfigs.map((path) => {
     const absolute = sourcePath(root, path, true);
     if (absolute !== null && !lstatSync(absolute).isFile()) throw new Error(`Non-file runtime configuration: ${path}`);
@@ -108,21 +120,22 @@ export function prepareContext(context, dependenciesOnly = false, root = reposit
     optionalConfigs: configs,
   };
   if (!dependenciesOnly) {
-    const required = ['package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'packages/starchess-core', 'packages/starchess-arena',
+    const required = ['package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', ...workspacePackages.map((name) => `packages/${name}`),
       'scripts', '_spec/corpora', '_spec/evidence/ml-adjutant-phase1'];
     const corpus = JSON.parse(sourceBytes(root, '_spec/corpora/ml-adjutant-corpus.manifest.json').toString('utf8'));
     if (!/^[a-zA-Z0-9._-]+\.json$/.test(corpus.sourcePath)) throw new Error('Corpus source must be a root JSON filename');
     required.push(corpus.sourcePath);
     if (sourcePath(root, 'scripts/challenge-contract-evidence.ts', true) === null) throw new Error('Phase2 diagnostic script is not integrated');
-    const seeds = ['packages/starchess-core/tsconfig.json', 'packages/starchess-arena/tsconfig.json',
+    const seeds = [...workspacePackages.map((name) => `packages/${name}/tsconfig.json`),
       ...configs.filter((entry) => entry.present && ['tsconfig.json', 'tsconfig.base.json'].includes(entry.path)).map((entry) => entry.path)];
     capture.configClosure = configClosure(root, seeds);
     for (const path of [...required, ...configs.filter((entry) => entry.present).map((entry) => entry.path), ...capture.configClosure]) {
-      copyTree(root, path, join(context, 'runtime', path));
+      copyTree(root, path, join(context, 'runtime', path), context);
     }
     capture.runtime = treeManifest(join(context, 'runtime'));
   }
   capture.control = treeManifest(join(context, 'hermetic'));
   writeFileSync(join(context, 'capture.json'), JSON.stringify(capture, null, 2) + '\n');
+  chmodSync(join(context, 'capture.json'), 0o644);
   return capture;
 }

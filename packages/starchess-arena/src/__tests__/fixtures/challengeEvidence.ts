@@ -1,13 +1,14 @@
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { canonical } from "../../challenge/config";
 import { REPOSITORY_ROOT, sha256 } from "../../challenge/corpus";
 import { classifyScheduledEvidence, executionPins, normalizeEvidence, summarize, type runBaselineSuite } from "../../challenge/evidence";
-import { createMigration, ORIGINAL_BASELINE_SHA256, ORIGINAL_VERIFICATION_SHA256 } from "../../challenge/pinMigration";
+import { createMigration, migrationInventoryDiagnostics, ORIGINAL_BASELINE_SHA256, ORIGINAL_VERIFICATION_SHA256 } from "../../challenge/pinMigration";
 import { loadTrustedExecutionContext } from "../../challenge/schedule";
 import { measureCoverage } from "../../challengeContract/coverage";
+import { measureR2Composition } from "../../../../../scripts/r2-composition-evidence";
 
 const require = createRequire(import.meta.url);
 const { tmpfsOptions } = require("../../../hermetic/policy.mjs") as { tmpfsOptions: string };
@@ -15,6 +16,15 @@ export const { evidenceLimits } = require("../../../hermetic/evidence-limits.mjs
   evidenceLimits: { fileBytes: number; retainedBytes: number; archiveBytes: number; scanBytes: number; metadataBytes: number; entries: number; pathBytes: number };
 };
 const runtimePins = require("../../../hermetic/pins.json") as { node: string };
+const { verificationCommands, VITEST_FLOORS, ASSERTION_FLOORS_VERSION } = require("../../../hermetic/verification-plan.mjs") as {
+  verificationCommands: (root: string) => { executable: string; args: string[]; cwd: string }[];
+  VITEST_FLOORS: Record<string, number>; ASSERTION_FLOORS_VERSION: string;
+};
+const { checkPublicClosure } = require("../../../hermetic/public-closure.mjs") as { checkPublicClosure: (root: string) => unknown };
+const { infrastructureHost, infrastructureEnvironment, INFRASTRUCTURE_VERSION, infraPath } = require("../../../../../scripts/challenge-infrastructure-evidence.mjs") as {
+  infrastructureEnvironment: (directory: string, image: string) => Record<string, string>;
+  infrastructureHost: (read: (path: string) => Buffer) => Record<string, unknown>; INFRASTRUCTURE_VERSION: string; infraPath: string;
+};
 const history = require("./challenge-history-pins.json") as { files: Record<string, { bytes: number; sha256: string }> };
 export const repositoryRoot = fileURLToPath(REPOSITORY_ROOT);
 export type Baseline = Awaited<ReturnType<typeof runBaselineSuite>>;
@@ -34,10 +44,10 @@ export function readEvidenceGeneration() {
   const fresh = process.env.HERMETIC_OUTPUT_DIRECTORY;
   if (fresh === "") throw new Error("HERMETIC_OUTPUT_DIRECTORY must name a fresh evidence directory");
   const historicalDirectory = fileURLToPath(new URL("_spec/evidence/ml-adjutant-phase2", REPOSITORY_ROOT));
-  const refreshedDirectory = fileURLToPath(new URL("_spec/evidence/ml-adjutant-r0-refresh", REPOSITORY_ROOT));
+  const refreshedDirectory = fileURLToPath(new URL("_spec/evidence/ml-adjutant-r2-refresh", REPOSITORY_ROOT));
   const directory = fresh ?? (existsSync(refreshedDirectory) ? refreshedDirectory : historicalDirectory);
-  const historical = !fresh && directory === historicalDirectory && !existsSync(join(directory, ".publication-complete"));
-  let files: Record<typeof names[number], Buffer>;
+  const historical = !fresh && directory === historicalDirectory;
+  let files: Record<typeof names[number], Buffer> & { "r2-composition-report.json"?: Buffer };
   if (!fresh && !historical) {
     const { readPublishedBundle } = require("../../../hermetic/evidence-bundle.mjs") as {
       readPublishedBundle: (path: string) => { artifacts: Map<string, Buffer> };
@@ -48,8 +58,12 @@ export function readEvidenceGeneration() {
       if (!bytes) throw new Error(`Published evidence is missing ${name}`);
       return [name, bytes];
     })) as Record<typeof names[number], Buffer>;
+    const composition = bundle.artifacts.get("r2-composition-report.json");
+    if (!composition) throw new Error("Published evidence is missing r2-composition-report.json");
+    files["r2-composition-report.json"] = composition;
   } else {
     files = Object.fromEntries(names.map((name) => [name, readFileSync(join(directory, name))])) as Record<typeof names[number], Buffer>;
+    if (fresh) files["r2-composition-report.json"] = readFileSync(join(directory, "r2-composition-report.json"));
   }
   if (historical) {
     for (const name of names) {
@@ -67,9 +81,9 @@ export function buildDiagnosticFixture() {
   const pins = { ...executionPins(), nodeVersion: `v${runtimePins.node}` };
   const rows = structuredClone(before.rows);
   const current: Baseline = {
-    ...before, version: "phase2-baseline-report-v1", kind: "phase2-current-baseline",
-    independentVerification: "_spec/evidence/ml-adjutant-phase2/verification.json",
-    migrationReference: "_spec/evidence/ml-adjutant-phase2/pin-migration.json", pins, rows,
+    ...before, version: "phase2-baseline-report-v2", kind: "phase2-current-baseline",
+    independentVerification: "_spec/evidence/ml-adjutant-r2-refresh/verification.json",
+    migrationReference: "_spec/evidence/ml-adjutant-r2-refresh/pin-migration.json", pins, rows,
     summary: summarize(rows, context), accounting: classifyScheduledEvidence(rows, context),
     executionIntegrity: true, learnedGateEligible: false, learnedChallengePass: false, modelArtifact: null,
     deterministicRerun: { performed: true, equal: true, comparisons: rows.map((row) => ({
@@ -81,23 +95,26 @@ export function buildDiagnosticFixture() {
   if (!migration.passed) throw new Error("Fixture baseline migration failed");
   const coverage = measureCoverage();
   if (canonical(coverage) !== canonical(measureCoverage())) throw new Error("Fixture coverage rerun mismatch");
-  return {
-    "baseline-report.json": currentBytes,
-    "coverage.json": jsonBytes(coverage),
+  const composition = measureR2Composition();
+  const publicClosure = checkPublicClosure(repositoryRoot);
+  return Object.freeze({
+    "baseline-report.json": currentBytes.toString("utf8"),
+    "coverage.json": jsonBytes(coverage).toString("utf8"),
+    "r2-composition-report.json": jsonBytes(composition).toString("utf8"),
     "pin-migration.json": jsonBytes({ ...migration,
       fromPinFormat: "phase1-legacy-digests", toPinFormat: pins.version,
-      inventorySha256: pins.sourceInventory.inventorySha256, importAuditSha256: sha256(canonical(pins.sourceInventory.audit)),
-      newlyCoveredPaths: pins.sourceInventory.files.filter((entry) => !entry.path.startsWith("packages/starchess-core/src/") &&
-        !["challenge", "cli", "players", "run"].some((directory) => entry.path.startsWith(`packages/starchess-arena/src/${directory}/`))).map((entry) => entry.path),
-    }),
-    "contract-report.json": jsonBytes({ version: "phase2-contract-report-v1", pins,
+      ...migrationInventoryDiagnostics(pins.sourceInventory),
+    }).toString("utf8"),
+    "contract-report.json": jsonBytes({ version: "phase2-contract-report-v2", pins,
+      r2CompositionVersion: composition.version, r2CompositionSha256: sha256(canonical(composition)),
       coverageSha256: sha256(canonical(coverage)), baselineReportSha256: sha256(currentBytes),
       phase1BaselineReportSha256: migration.originalBaselineSha256, migrationParity: migration.passed, coverageDeterministic: true,
       observationCodecVersion: coverage.observationCodecVersion, candidateCodecVersion: coverage.candidateCodecVersion,
       enumerationVersion: coverage.enumerationVersion, comparatorVersion: coverage.comparatorVersion,
       featureSchema: coverage.featureSchema, learnedGateEligible: false, modelArtifact: null,
-    }),
-  };
+    }).toString("utf8"),
+    "public-closure-report.json": jsonBytes(publicClosure).toString("utf8"),
+  });
 }
 
 export function syntheticVitestReport(count: number, pkg: string) {
@@ -134,10 +151,11 @@ export function syntheticImageArchive(options: { layers?: Buffer[]; manifestLaye
   return { bytes: tarArchive(entries), image: `sha256:${sha256(config)}` };
 }
 
-type Log = { path: string; sha256: string; bytes: number };
+type Log = { path: string; sha256: string; bytes: number; observedBytes: number; truncated: boolean };
 export type Command = { executable: string; args: string[]; cwd: string; exitCode: number; signal: null; error: null;
   logs: { stdout: Log; stderr: Log }; tests?: { path?: string; success: boolean; failed: number; passed: number; total: number; sha256: string } };
 export type Verification = { version: string; passed: boolean; assurance: Record<string, string>; commands: Command[];
+  assertionFloorsVersion: string; assertionFloors: Record<string, number>;
   artifacts: { path: string; type: string; bytes: number; sha256: string }[] };
 
 export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosticFixture>, roots: string[]) {
@@ -150,71 +168,144 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
   mkdirSync(originalDirectory, { recursive: true });
   writeFileSync(join(originalDirectory, "baseline-report.json"), original.baseline);
   writeFileSync(join(originalDirectory, "verification.json"), original.verification);
-  const target = "/app/_spec/evidence/ml-adjutant-phase2";
-  const current = decode<Baseline>(diagnostics["baseline-report.json"]);
-  current.pins = { ...executionPins(), nodeVersion: `v${runtimePins.node}` };
-  const currentBytes = jsonBytes(current);
-  const migration = decode<Record<string, unknown>>(diagnostics["pin-migration.json"]);
-  const contract = decode<Record<string, unknown>>(diagnostics["contract-report.json"]);
-  const inventory = current.pins.sourceInventory;
-  Object.assign(migration, { currentBaselineSha256: sha256(currentBytes), inventorySha256: inventory.inventorySha256,
-    importAuditSha256: sha256(canonical(inventory.audit)), newlyCoveredPaths: inventory.files.filter((entry) =>
-      !entry.path.startsWith("packages/starchess-core/src/") &&
-      !["challenge", "cli", "players", "run"].some((directory) => entry.path.startsWith(`packages/starchess-arena/src/${directory}/`))).map((entry) => entry.path) });
-  Object.assign(contract, { pins: current.pins, baselineReportSha256: sha256(currentBytes) });
-  const files: Record<string, Buffer> = { ...diagnostics,
-    "baseline-report.json": currentBytes, "pin-migration.json": jsonBytes(migration), "contract-report.json": jsonBytes(contract),
-    "vitest-starchess-core.json": jsonBytes(syntheticVitestReport(426, "starchess-core")),
-    "vitest-starchess-arena.json": jsonBytes(syntheticVitestReport(434, "starchess-arena")),
+  const target = "/app/_spec/evidence/ml-adjutant-r2-refresh";
+  const files: Record<string, Buffer> = {
+    ...Object.fromEntries(Object.entries(diagnostics).map(([name, text]) => [name, Buffer.from(text, "utf8")])),
+    ...Object.fromEntries(Object.entries(VITEST_FLOORS).map(([file, count]) => [file, jsonBytes(syntheticVitestReport(count, file.slice(7, -5)))])),
   };
-  const specs: [string, string[], string][] = [
-    ["/app/packages/starchess-arena/node_modules/.bin/tsx", ["/app/packages/starchess-arena/src/cli/challenge.ts", "--suite", "all", "--rerun", "--out", `${target}/baseline-report.json`], "/app"],
-    ["/app/packages/starchess-arena/node_modules/.bin/tsx", ["/app/scripts/challenge-contract-evidence.ts"], "/app"],
-    ...["starchess-core", "starchess-arena"].map((pkg): [string, string[], string] => [`/app/packages/${pkg}/node_modules/.bin/tsc`, ["-p", "tsconfig.json", "--noEmit"], `/app/packages/${pkg}`]),
-    ["/app/packages/starchess-arena/node_modules/.bin/tsc", ["--noEmit", "--target", "ES2022", "--module", "ESNext", "--moduleResolution", "Bundler", "--strict", "--skipLibCheck",
-      ...readdirSync(join(repositoryRoot, "packages/starchess-arena/src/__tests__")).filter((name) => /^challenge.*\.test\.ts$/.test(name) || ["observationIsolation.test.ts", "resourceLedger.test.ts", "strictRecordedQueues.test.ts"].includes(name)).sort().map((name) => `/app/packages/starchess-arena/src/__tests__/${name}`),
-      "/app/scripts/challenge-contract-evidence.ts", "/app/scripts/challenge-validate-baseline.ts"], "/app/packages/starchess-arena"],
-    ...["starchess-core", "starchess-arena"].map((pkg): [string, string[], string] => [`/app/packages/${pkg}/node_modules/.bin/vitest`, ["run", "--config", `/tmp/${pkg}.vitest.mts`, "--configLoader", "native", "--maxWorkers", "2", "--reporter=default", "--reporter=json", "--outputFile", `${target}/vitest-${pkg}.json`], `/app/packages/${pkg}`]),
-    ["/usr/local/bin/node", ["--test", "/app/packages/starchess-arena/hermetic/evidence-bundle.test.mjs", "/app/packages/starchess-arena/hermetic/image-measurement.test.mjs", "/app/packages/starchess-arena/hermetic/tar.test.mjs"], "/app"],
-  ];
-  const commands = specs.map(([executable, args, cwd], index): Command => {
+  const commands = verificationCommands(repositoryRoot).map(({ executable, args, cwd }, index): Command => {
     const prefix = `logs/command-${String(index + 1).padStart(2, "0")}`;
-    files[`${prefix}.stdout.log`] = Buffer.from("synthetic test-only command output\n");
+    files[`${prefix}.stdout.log`] = index === 10 ? files["public-closure-report.json"]! : Buffer.from("synthetic test-only command output\n");
     files[`${prefix}.stderr.log`] = Buffer.alloc(0);
-    const log = (stream: string): Log => ({ path: `${target}/${prefix}.${stream}.log`, sha256: sha256(files[`${prefix}.${stream}.log`]!), bytes: files[`${prefix}.${stream}.log`]!.length });
+    const log = (stream: string): Log => ({ path: `${target}/${prefix}.${stream}.log`, sha256: sha256(files[`${prefix}.${stream}.log`]!), bytes: files[`${prefix}.${stream}.log`]!.length, observedBytes: files[`${prefix}.${stream}.log`]!.length, truncated: false });
     const command: Command = { executable, args, cwd, exitCode: 0, signal: null, error: null, logs: { stdout: log("stdout"), stderr: log("stderr") } };
     if (executable.endsWith("/vitest")) {
       const name = args.at(-1)!.split("/").at(-1)!;
-      const count = name.includes("core") ? 426 : 434;
+      const count = VITEST_FLOORS[name]!;
       command.tests = { path: args.at(-1)!, success: true, failed: 0, passed: count, total: count, sha256: sha256(files[name]!) };
     }
     return command;
   });
   const assurance = { sourceSha256: "source", installedSha256: "installed", frozenStoreSha256: "store", toolsSha256: "tools" };
-  const verification: Verification = { version: "hermetic-verification-v2", passed: true, assurance, commands, artifacts: [] };
-  const policy = { Image: "", HostConfig: { NetworkMode: "none", PidMode: "", IpcMode: "private", ReadonlyRootfs: true, Privileged: false, Init: true,
+  const verification: Verification = { version: "hermetic-verification-v3", assertionFloorsVersion: ASSERTION_FLOORS_VERSION, assertionFloors: VITEST_FLOORS, passed: true, assurance, commands, artifacts: [] };
+  const policy = { Id: "c".repeat(64), Image: "", HostConfig: { NetworkMode: "none", PidMode: "", IpcMode: "private", ReadonlyRootfs: true, Privileged: false, Init: true,
     NanoCpus: 2_000_000_000, Memory: 4 * 1024 ** 3, MemorySwap: 4 * 1024 ** 3, PidsLimit: 256,
     CapDrop: ["ALL"], CapAdd: null, SecurityOpt: ["no-new-privileges=true"], Tmpfs: { "/tmp": tmpfsOptions } },
-    Config: { User: "10001:10001" }, Mounts: [{ Type: "bind", Destination: target, Source: output, RW: true, Propagation: "rprivate" }, { Type: "tmpfs", Destination: "/tmp" }] };
+    Config: { User: "10001:10001", Entrypoint: ["node", "/app/packages/starchess-arena/hermetic/runtime.mjs"], Cmd: ["verify"], WorkingDir: "/app", Env: ["PATH=/usr/local/bin:/usr/bin:/bin", `HERMETIC_OUTPUT_DIRECTORY=${target}`] }, Mounts: [{ Type: "bind", Destination: target, Source: output, RW: true, Propagation: "rprivate" }, { Type: "tmpfs", Destination: "/tmp" }] };
   const hostLog = Buffer.from("synthetic host log\n");
   const hostLogPath = join(output, "host.log"); writeFileSync(hostLogPath, hostLog);
-  const host = { logs: Object.fromEntries(["stdout", "stderr"].map((stream) => [stream, { path: hostLogPath, sha256: sha256(hostLog), bytes: hostLog.length }])) };
+  const host = { logs: Object.fromEntries(["stdout", "stderr"].map((stream) => [stream, { path: hostLogPath, sha256: sha256(hostLog), bytes: hostLog.length, observedBytes: hostLog.length, truncated: false }])) };
   const archive = syntheticImageArchive();
   const archivePath = join(output, "image.tar"); writeFileSync(archivePath, archive.bytes);
   policy.Image = archive.image;
   const envelope = { image: archive.image, imageInspection: { Id: archive.image },
     measurements: { source: { sourceSha256: "source" }, dependencies: { installedSha256: "installed", frozenStoreSha256: "store", toolTreeSha256: "tools" } },
     buildLog: host, executionLog: host, archive: archivePath, archiveSha256: sha256(archive.bytes), archiveBytes: archive.bytes.length };
-  const execution = { ...envelope, passed: true, status: "passed", output, initialContainerInspection: policy,
+  const execution = { ...envelope, executionLog: { ...host, executable: "docker", args: ["start", "--attach", policy.Id], exitCode: 0, signal: null, error: null }, passed: true, status: "passed", output, initialContainerInspection: policy,
     finalContainerInspection: { ...policy, State: { ExitCode: 0, OOMKilled: false } } };
-  const build = { ...envelope, capture: { runtime: { sha256: "source" }, control: { sha256: "control" } } };
-  const paths = { execution: join(output, "execution.json"), build: join(output, "build.json"), export: join(output, "export.json") };
+  const controlSha256 = sha256("synthetic test-only infrastructure control");
+  const dependencyImage = `sha256:${sha256("synthetic test-only dependency image independent of source image")}`;
+  const dependencyImageInspection = { Id: dependencyImage, Os: "linux", Architecture: "amd64",
+    Config: { Env: ["PATH=/usr/local/bin:/usr/bin:/bin", "PNPM_HOME=/tmp/pnpm"] },
+    RootFS: { Type: "layers", Layers: [`sha256:${sha256("synthetic test-only dependency layer")}`] },
+    RepoTags: [], RepoDigests: [], Metadata: { LastTagTime: "2026-10-04T00:00:00.000Z" },
+    GraphDriver: { Name: "overlay2", Data: { UpperDir: "/var/lib/docker/synthetic-capture" } } };
+  const dependencyFiles = ["pnpm-lock.yaml", "packages/starchess-core/package.json", "packages/starchess-arena/package.json", "packages/starchess-training/package.json"]
+    .map((path) => ({ path, sha256: sha256(`synthetic test-only dependency input ${path}`) }));
+  const infrastructureMeasurement = { dependencies: envelope.measurements.dependencies, capture: { controlSha256, inputs: dependencyFiles },
+    closure: { actual: { tools: { node: runtimePins.node }, packages: {} } }, method: "synthetic-test-only-host-boundary" };
+  const context = join(output, "source-build/context");
+  const dependencyTag = `starchess-hermetic-dependencies:${dependencyImage.slice(7)}`;
+  const buildArguments = ["build", "--platform", "linux/amd64", "--pull=false", "--target", "runtime", "--network=none", "--build-arg", `FROZEN_DEPENDENCIES=${dependencyTag}`, "--iidfile", join(dirname(context), "image-id"), "--file", join(context, "Dockerfile"), context];
+  const build = { ...envelope, buildArguments, buildLog: { ...host, executable: "docker", args: [...buildArguments], exitCode: 0, signal: null, error: null }, capture: { runtime: { sha256: "source" }, control: { sha256: controlSha256 } },
+    frozenDependency: { image: dependencyImage, localBuildReference: dependencyTag, measurements: infrastructureMeasurement } };
+  const acquisitionContext = join(output, "dependency-acquisition/context");
+  const acquisitionArguments = ["build", "--platform", "linux/amd64", "--pull=false", "--target", "dependencies", "--no-cache",
+    "--iidfile", join(dirname(acquisitionContext), "image-id"), "--file", join(acquisitionContext, "Dockerfile"), acquisitionContext];
+  const acquisitionFiles: Record<string, Buffer> = {};
+  const acquisitionLogs = Object.fromEntries(["stdout", "stderr"].map((stream) => {
+    const path = join(dirname(acquisitionContext), `build.${stream}.log`);
+    const bytes = stream === "stdout" ? Buffer.from("synthetic test-only uncached dependency acquisition\n") : Buffer.alloc(0);
+    acquisitionFiles[path] = bytes;
+    return [stream, { path, sha256: sha256(bytes), bytes: bytes.length, observedBytes: bytes.length, truncated: false }];
+  })) as { stdout: Log; stderr: Log };
+  const acquisition = { version: 1, kind: "dependency-build", image: dependencyImage, imageInspection: { Id: dependencyImage },
+    measurements: structuredClone(infrastructureMeasurement),
+    capture: { version: 1, dependenciesOnly: true, control: { sha256: controlSha256 }, dependencyFiles: structuredClone(dependencyFiles) },
+    buildArguments: acquisitionArguments, buildLog: { executable: "docker", args: [...acquisitionArguments], exitCode: 0, signal: null, error: null, logs: acquisitionLogs } };
+  const paths = { acquisition: join(output, "acquisition.json"), execution: join(output, "execution.json"), build: join(output, "build.json"), export: join(output, "export.json"), infrastructure: join(output, "infrastructure.json") };
+  const probeWork = join(output, "host-probe");
+  const probeOutput = join(probeWork, "output");
+  const infrastructureFiles: Record<string, Buffer> = {};
+  const infrastructureLog = (path: string) => {
+    const bytes = infrastructureFiles[path] ?? Buffer.alloc(0); infrastructureFiles[path] = bytes;
+    return { path, bytes: bytes.length, sha256: sha256(bytes), observedBytes: bytes.length, truncated: false };
+  };
+  const probeCommands = [
+    { executable: "/app/packages/starchess-arena/node_modules/.bin/tsx", args: ["/tmp/test/source-only-inventory.ts"] },
+    { executable: "/app/packages/starchess-arena/node_modules/.bin/tsx", args: ["/tmp/test/direct.ts"] },
+    { executable: "/app/packages/starchess-arena/node_modules/.bin/vitest", args: ["run", "--config", "/tmp/test/config.mts", "--configLoader", "native", "--reporter=default", "--reporter=json", "--outputFile", `${target}/vitest-probe.json`] },
+  ].map((entry, index) => {
+    const logs = Object.fromEntries(["stdout", "stderr"].map((stream) => {
+      const relative = `logs/${["inventory", "tsx", "vitest"][index]}.${stream}.log`;
+      const metadata = infrastructureLog(join(probeOutput, relative));
+      return [stream, { ...metadata, path: `${target}/${relative}` }];
+    }));
+    return { ...entry, cwd: "/tmp/test", exitCode: 0, signal: null, error: null, logs };
+  });
+  const probeVitest = jsonBytes(syntheticVitestReport(1, "probe"));
+  infrastructureFiles[join(probeOutput, "vitest-probe.json")] = probeVitest;
+  Object.assign(probeCommands[2]!, { tests: { path: `${target}/vitest-probe.json`, sha256: sha256(probeVitest), success: true, total: 1, passed: 1, failed: 0, pending: 0, todo: 0 } });
+  const probeReport: Record<string, any> = { passed: true, freshTemporaryRoot: true, sourceOnlyInventoryFiles: 1, commands: probeCommands,
+    closure: infrastructureMeasurement.closure.actual, installedSha256: assurance.installedSha256, frozenStoreSha256: assurance.frozenStoreSha256, toolsSha256: assurance.toolsSha256 };
+  const containerId = "d".repeat(64);
+  const probePolicy = { ...structuredClone(policy), Id: containerId, Image: dependencyImage,
+    Config: { User: "10001:10001", Entrypoint: ["node"], Cmd: ["/hermetic/probe.mjs"], WorkingDir: "/app", Env: [...dependencyImageInspection.Config.Env, `HERMETIC_OUTPUT_DIRECTORY=${target}`] },
+    Mounts: [{ Type: "bind", Destination: target, Source: probeOutput, RW: true, Propagation: "rprivate" }, { Type: "tmpfs", Destination: "/tmp" }] };
+  const probeExecution: Record<string, any> = { image: dependencyImage, output: probeOutput, imageInspection: structuredClone(dependencyImageInspection),
+    initialContainerInspection: probePolicy, finalContainerInspection: { ...probePolicy, State: { ExitCode: 0, OOMKilled: false } }, report: probeReport,
+    executionLog: { executable: "docker", args: ["start", "--attach", containerId], exitCode: 0, signal: null, error: null,
+      logs: { stdout: infrastructureLog(join(probeWork, "docker.stdout.log")), stderr: infrastructureLog(join(probeWork, "docker.stderr.log")) } } };
+  const probePath = join(probeOutput, "probe.json");
+  const tapPath = join(output, "infrastructure.stdout.log");
+  const tap = ["TAP version 13", "# Docker probe evidence: " + probePath,
+    ...[
+      "Dockerfile pins the official platform and isolates offline installation from acquisition",
+      "context keeps the original lock and workspace links without root dependencies or host stores",
+      "current verification freezes eleven exact commands and the complete strict source invoice",
+      "runtime capture preserves JSONC config closure, tests, fixtures, and rejects escaping paths or ancestor symlinks",
+      "CLI rejects mount injection and public output parents and preserves bounded success/failure logs",
+      "Docker enforces policy, fresh temporary inventory, and logged offline TS/Vitest",
+    ].map((name, index) => `ok ${index + 1} - ${name}`),
+    "1..6", "# tests 6", "# suites 0", "# pass 6", "# fail 0", "# cancelled 0", "# skipped 0", "# todo 0", ""].join("\n");
+  infrastructureFiles[tapPath] = Buffer.from(tap);
+  const infrastructure: Record<string, any> = { version: INFRASTRUCTURE_VERSION, passed: true, image: dependencyImage, imageInspection: structuredClone(dependencyImageInspection), measurements: infrastructureMeasurement,
+    host: infrastructureHost(readFileSync), command: { executable: process.execPath, args: ["--test", infraPath], cwd: repositoryRoot.replace(/\/$/, ""), env: infrastructureEnvironment(dirname(tapPath), dependencyImage),
+      started: "2026-10-04T00:00:00.000Z", finished: "2026-10-04T00:00:01.000Z", exitCode: 0, signal: null, error: null,
+      logs: { stdout: infrastructureLog(tapPath), stderr: infrastructureLog(join(output, "infrastructure.stderr.log")) } },
+    tap: { tests: 6, suites: 0, pass: 6, fail: 0, cancelled: 0, skipped: 0, todo: 0 }, probe: { artifacts: [] } };
+  const rebindInfrastructure = () => {
+    infrastructureFiles[probePath] = jsonBytes(probeReport);
+    infrastructureFiles[join(probeWork, "execution.json")] = jsonBytes(probeExecution);
+    const metadata = (path: string) => ({ path, bytes: infrastructureFiles[path]!.length, sha256: sha256(infrastructureFiles[path]!) });
+    infrastructure.probe.report = metadata(probePath);
+    infrastructure.probe.execution = metadata(join(probeWork, "execution.json"));
+    infrastructure.probe.artifacts = Object.entries(infrastructureFiles).filter(([path]) => path.startsWith(probeWork) && path !== probePath && path !== join(probeWork, "execution.json")).map(([path]) => ({
+      ...(path.endsWith(".log") ? infrastructureLog(path) : metadata(path)), relative: path.startsWith(probeOutput + "/") ? path.slice(probeOutput.length + 1) : path.slice(probeWork.length + 1),
+    }));
+    for (const stream of ["stdout", "stderr"]) infrastructure.command.logs[stream] = infrastructureLog(infrastructure.command.logs[stream].path);
+  };
+  rebindInfrastructure();
   const destination = join(root, "published");
   const save = () => {
     verification.artifacts = Object.entries(files).map(([path, bytes]) => ({ path, type: "file", bytes: bytes.length, sha256: sha256(bytes) }));
     for (const [path, bytes] of Object.entries(files)) { mkdirSync(dirname(join(output, path)), { recursive: true }); writeFileSync(join(output, path), bytes); }
     writeFileSync(join(output, "verification.json"), jsonBytes(verification));
     writeFileSync(paths.execution, jsonBytes(execution)); writeFileSync(paths.build, jsonBytes(build)); writeFileSync(paths.export, jsonBytes(envelope));
+    for (const [path, bytes] of Object.entries(acquisitionFiles)) { mkdirSync(dirname(path), { recursive: true }); writeFileSync(path, bytes); }
+    writeFileSync(paths.acquisition, jsonBytes(acquisition));
+    for (const [path, bytes] of Object.entries(infrastructureFiles)) { mkdirSync(dirname(path), { recursive: true }); writeFileSync(path, bytes); }
+    writeFileSync(paths.infrastructure, jsonBytes(infrastructure));
   };
   const mutate = (path: string, change: (document: Record<string, any>) => void) => {
     const document = decode<Record<string, any>>(files[path]!); change(document); files[path] = jsonBytes(document);
@@ -223,14 +314,16 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
   };
   const rebind = () => {
     mutate("pin-migration.json", (document) => { document.currentBaselineSha256 = sha256(files["baseline-report.json"]!); });
-    mutate("contract-report.json", (document) => { document.baselineReportSha256 = sha256(files["baseline-report.json"]!); document.coverageSha256 = sha256(canonical(decode(files["coverage.json"]!))); });
+    mutate("contract-report.json", (document) => { document.baselineReportSha256 = sha256(files["baseline-report.json"]!); document.coverageSha256 = sha256(canonical(decode(files["coverage.json"]!))); document.r2CompositionSha256 = sha256(canonical(decode(files["r2-composition-report.json"]!))); });
   };
   save();
-  return { root, output, files, verification, execution, build, paths, destination, archivePath, archive, save, mutate, rebind,
+  return { root, output, files, verification, execution, build, acquisition, acquisitionFiles, paths, destination, archivePath, archive, save, mutate, rebind,
+    infrastructure, infrastructureFiles, infrastructureMeasurement, probeReport, probeExecution, rebindInfrastructure,
     options: { repositoryRoot: root, executionPath: paths.execution, buildPath: paths.build, exportPath: paths.export,
-      expectedImage: archive.image, destination,
-      inspectImage: async () => ({ Id: archive.image }), measureImage: async () => ({ source: { sourceSha256: "source" }, dependencies: { installedSha256: "installed", frozenStoreSha256: "store", toolTreeSha256: "tools" } }),
-      captureContext: async () => ({ runtime: { sha256: "source" }, control: { sha256: "control" }, sourceRoot: repositoryRoot }),
+      expectedImage: archive.image, destination, infrastructurePath: paths.infrastructure, acquisitionPath: paths.acquisition,
+      measureInfrastructureImage: async () => structuredClone(infrastructureMeasurement),
+       inspectImage: async (image: string) => image === dependencyImage ? structuredClone(dependencyImageInspection) : { Id: archive.image, Config: { Env: ["PATH=/usr/local/bin:/usr/bin:/bin"] } }, measureImage: async () => ({ source: { sourceSha256: "source" }, dependencies: { installedSha256: "installed", frozenStoreSha256: "store", toolTreeSha256: "tools" } }),
+      captureContext: async () => ({ runtime: { sha256: "source" }, control: { sha256: controlSha256 }, sourceRoot: repositoryRoot }),
     },
   };
 }

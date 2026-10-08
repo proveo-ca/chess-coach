@@ -233,7 +233,7 @@ export const runMatch = async (options: ArenaRunOptions): Promise<ArenaRun> => {
   return {
     startScfen: opening,
     players: { w: players.w?.name ?? null, b: players.b?.name ?? null },
-    plies: resolves.map((resolve, i) => ({ resolve, scfen: scfens[i + 1]! })),
+    plies: resolves.map((resolve, i) => ({ resolve, scfen: scfens[+i + 1]! })),
     outcome,
     turns: snap.turn,
     bankTrail,

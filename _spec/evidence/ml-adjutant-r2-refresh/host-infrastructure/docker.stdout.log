@@ -1,0 +1,3 @@
+tsx: exit=0 signal=none logs=/app/_spec/evidence/ml-adjutant-r2-refresh/logs/inventory truncated=false
+tsx: exit=0 signal=none logs=/app/_spec/evidence/ml-adjutant-r2-refresh/logs/tsx truncated=false
+vitest: exit=0 signal=none tests=1/1 logs=/app/_spec/evidence/ml-adjutant-r2-refresh/logs/vitest truncated=false

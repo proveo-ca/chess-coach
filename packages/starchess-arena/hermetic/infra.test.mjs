@@ -2,14 +2,16 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, renameSync, symlinkSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { test } from 'node:test';
 import { createHash } from 'node:crypto';
 import { prepareContext, repository } from './context.mjs';
 import { assertContainerPolicy, outputTarget, runArguments, tmpfsOptions } from './policy.mjs';
 import pins from './pins.json' with { type: 'json' };
-import { freshOutput } from './run.mjs';
+import { freshOutput, main, parseArguments } from './run.mjs';
 import { logLimit, runLogged } from './logged-command.mjs';
+import { workspacePackages, dependencyInputs, installedRoots } from './workspace-policy.mjs';
+import { verificationCommands, strictInputs, VERIFICATION_VERSION } from './verification-plan.mjs';
 
 const parent = '/tmp/opencode';
 function fixture() {
@@ -66,6 +68,40 @@ test('context keeps the original lock and workspace links without root dependenc
   assert(!existsSync(join(context, 'deps/.env')));
   assert(capture.optionalConfigs.some((entry) => entry.path === '.npmrc' && entry.present === false));
   assert.deepEqual(readdirSync(context).sort(), ['Dockerfile', 'capture.json', 'deps', 'hermetic']);
+  assert.deepEqual(capture.dependencyFiles.map((entry) => entry.path), dependencyInputs);
+  assert.deepEqual(installedRoots, ['/app/node_modules', ...workspacePackages.map((name) => `/app/packages/${name}/node_modules`)]);
+  const training = JSON.parse(readFileSync(join(context, 'deps/packages/starchess-training/package.json'), 'utf8'));
+  assert.equal(training.dependencies['@chess-coach/starchess-arena'], 'workspace:*');
+  assert.equal(training.dependencies.jssha, '3.3.2');
+  assert.deepEqual(Object.keys(training.exports), ['./candidates']);
+});
+
+test('current verification freezes eleven exact commands and the complete strict source invoice', () => {
+  const plan = verificationCommands(repository);
+  assert.equal(VERIFICATION_VERSION, 'hermetic-verification-v3');
+  assert.equal(plan.length, 11);
+  assert.deepEqual(plan.slice(2, 5).map((command) => command.cwd), ['/app/packages/starchess-core', '/app/packages/starchess-arena', '/app/packages/starchess-training']);
+  const inputs = strictInputs(repository);
+  assert.equal(new Set(inputs).size, inputs.length);
+  for (const path of ['packages/starchess-arena/src/__tests__/observationV1Bridge.test.ts', 'packages/starchess-arena/src/__tests__/intentCodecV1Bridge.test.ts', 'packages/starchess-arena/src/__tests__/r2CompositionEvidence.test.ts']) assert(inputs.includes(`/app/${path}`));
+  assert.deepEqual(inputs.slice(-2), ['/app/scripts/challenge-contract-evidence.ts', '/app/scripts/challenge-validate-baseline.ts']);
+  const invoice = [];
+  const walk = (path) => {
+    for (const entry of readdirSync(join(repository, path), { withFileTypes: true })) {
+      const child = `${path}/${entry.name}`;
+      if (entry.isDirectory()) walk(child);
+      else if (/\.tsx?$/.test(entry.name)) invoice.push(`/app/${child}`);
+    }
+  };
+  walk('packages/starchess-core/src/__tests__');
+  walk('packages/starchess-arena/src/__tests__');
+  assert.deepEqual(inputs.slice(0, -2), invoice.sort());
+  assert.deepEqual(plan[9].args, ['--test', '/app/packages/starchess-arena/hermetic/evidence-bundle.test.mjs', '/app/packages/starchess-arena/hermetic/image-measurement.test.mjs', '/app/packages/starchess-arena/hermetic/tar.test.mjs']);
+  assert.deepEqual(plan[10], { executable: '/usr/local/bin/node', cwd: '/app', args: ['/app/scripts/check-public-closure.mjs'] });
+  const context = fixture();
+  const capture = prepareContext(context);
+  for (const path of ['scripts/r2-composition-evidence.ts', 'packages/starchess-arena/hermetic/workspace-policy.mjs', 'packages/starchess-arena/hermetic/verification-plan.mjs', 'packages/starchess-arena/hermetic/public-closure.mjs']) assert(capture.runtime.entries.some((entry) => entry.path === path && entry.type === 'file'));
+  for (const entry of capture.control.entries.filter((entry) => entry.type === 'file')) assert(capture.runtime.entries.some((file) => file.path === `packages/starchess-arena/hermetic/${entry.path}` && file.sha256 === entry.sha256));
 });
 
 test('runtime capture preserves JSONC config closure, tests, fixtures, and rejects escaping paths or ancestor symlinks', () => {
@@ -73,6 +109,8 @@ test('runtime capture preserves JSONC config closure, tests, fixtures, and rejec
   const files = {
     'package.json': '{"private":true}', 'pnpm-lock.yaml': 'lockfileVersion: 9\n', 'pnpm-workspace.yaml': 'packages: []\n',
     'packages/starchess-arena/package.json': '{}', 'packages/starchess-core/package.json': '{}',
+    'packages/starchess-training/package.json': '{}', 'packages/starchess-training/tsconfig.json': '{}',
+    'packages/starchess-training/src/__tests__/bridge.test.ts': 'export {};\n',
     'packages/starchess-arena/tsconfig.json': '{ // JSONC\n "extends": "../../config/base", }',
     'packages/starchess-core/tsconfig.json': '{"extends":["../../config/base.json"]}',
     'config/base.json': '{"extends":"./nested/strict.json"}', 'config/nested/strict.json': '{}',
@@ -89,12 +127,29 @@ test('runtime capture preserves JSONC config closure, tests, fixtures, and rejec
   const control = join(root, 'packages/starchess-arena/hermetic');
   mkdirSync(control);
   writeFileSync(join(control, 'Dockerfile'), 'FROM scratch\n');
+  mkdirSync(join(root, 'packages/starchess-core/src/empty'));
   const context = fixture();
-  const capture = prepareContext(context, false, root);
+  let capture;
+  const previousUmask = process.umask(0o077);
+  try { capture = prepareContext(context, false, root); }
+  finally { process.umask(previousUmask); }
+  assert.equal(lstatSync(root).mode & 0o7777, 0o700);
+  assert.equal(lstatSync(context).mode & 0o7777, 0o700);
+  assert.equal(lstatSync(join(context, 'capture.json')).mode & 0o7777, 0o644);
+  assert.equal(lstatSync(join(context, 'deps/pnpm-workspace.yaml')).mode & 0o7777, 0o644);
+  const checkDirectories = (path) => {
+    for (const entry of readdirSync(path, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      const child = join(path, entry.name);
+      assert.equal(lstatSync(child).mode & 0o7777, 0o755, child);
+      checkDirectories(child);
+    }
+  };
+  checkDirectories(context);
   assert(capture.runtime.entries.some((entry) => entry.path.endsWith('fixture.json')));
   assert(capture.runtime.entries.some((entry) => entry.path.endsWith('case.test.ts')));
   assert(!capture.runtime.entries.some((entry) => entry.path.includes('host-secret')));
-  assert(!existsSync(join(context, 'runtime/_spec/evidence/ml-adjutant-phase2')));
+  assert(!existsSync(join(context, 'runtime/_spec/evidence/ml-adjutant-r2-refresh')));
   assert.equal(readFileSync(join(context, 'runtime/config/base.json'), 'utf8'), files['config/base.json']);
   assert.equal(readFileSync(join(context, 'runtime/config/nested/strict.json'), 'utf8'), '{}');
   assert(capture.configClosure.includes('config/nested/strict.json'));
@@ -121,6 +176,23 @@ test('runtime capture preserves JSONC config closure, tests, fixtures, and rejec
 
 test('CLI rejects mount injection and public output parents and preserves bounded success/failure logs', async () => {
   const image = 'sha256:' + 'a'.repeat(64);
+  assert.deepEqual(parseArguments(['build', '--dependencies', '--no-cache']), { command: 'build', options: { dependencies: true, 'no-cache': true }, runtime: [] });
+  assert.deepEqual(parseArguments(['build', '--from-dependencies', image, '--no-cache']), { command: 'build', options: { 'from-dependencies': image, 'no-cache': true }, runtime: [] });
+  assert.deepEqual(parseArguments(['build']).options, {});
+  assert.deepEqual(parseArguments(['run', '--image', image, '--', 'code', 'scripts/test.ts', '--no-cache']).runtime, ['code', 'scripts/test.ts', '--no-cache']);
+  for (const argv of [
+    ['build', '--no-cache', '--no-cache'], ['build', '--dependencies', '--dependencies'],
+    ['build', '--no-cache=true'], ['build', '--no-cache', 'false'], ['build', '--unknown'],
+    ['build', '--from-dependencies'], ['build', '--from-dependencies', image, '--from-dependencies', image],
+    ['build', '--image', image], ['build', '--out', '/tmp/opencode/out'], ['build', '--'],
+    ['preflight', '--image', image, '--no-cache'], ['run', '--image', image, '--no-cache'], ['export', '--image', image, '--no-cache'],
+    ['preflight', '--image', image, '--dependencies'], ['run', '--image', image, '--from-dependencies', image],
+    ['preflight', '--image', image, '--'], ['export', '--image', image, '--'],
+    ['run', '--image', image, '--image', image], ['run', '--out'], ['run'], ['unknown'], ['--help', '--no-cache'],
+  ]) {
+    assert.throws(() => parseArguments(argv), /Invalid option|Option does not apply|--image is required|Unsupported command/);
+    await assert.rejects(main(argv), /Invalid option|Option does not apply|--image is required|Unsupported command/);
+  }
   for (const malicious of ['node:latest', '--privileged', 'sha256:' + 'a'.repeat(64) + '\n--network=host']) assert.throws(() => runArguments(malicious, '/tmp/opencode/out'));
   const syntheticOutput = '/tmp/opencode/policy-output';
   const approved = {
@@ -151,8 +223,7 @@ test('CLI rejects mount injection and public output parents and preserves bounde
   const args = runArguments(image, '/tmp/opencode/output with spaces;literal', ['code', 'scripts/test.ts', 'literal;$(touch /tmp/forbidden)']);
   assert(args.includes('type=bind,source=/tmp/opencode/output with spaces;literal,target=' + outputTarget + ',bind-propagation=rprivate'));
   assert.equal(args.at(-1), 'literal;$(touch /tmp/forbidden)');
-  assert.notEqual(lstatSync(parent).mode & 0o077, 0);
-  const publicOutput = join(parent, `public-output-${Date.now()}-${process.pid}`);
+  const publicOutput = join(dirname(parent), `public-output-${Date.now()}-${process.pid}`);
   assert.throws(() => freshOutput(publicOutput), /private host-owned ancestor/);
   assert(!existsSync(publicOutput));
   const protectedOutput = freshOutput(join(fixture(), 'output'));
@@ -175,8 +246,9 @@ test('CLI rejects mount injection and public output parents and preserves bounde
   assert.equal(failure.logs.stdout.truncated, false);
 });
 
-test('Docker enforces policy, fresh temporary inventory, and logged offline TS/Vitest', { skip: !process.env.HERMETIC_DEPENDENCY_IMAGE }, async () => {
+test('Docker enforces policy, fresh temporary inventory, and logged offline TS/Vitest', async () => {
   const image = process.env.HERMETIC_DEPENDENCY_IMAGE;
+  assert(image, 'HERMETIC_DEPENDENCY_IMAGE must name the freshly frozen dependency image');
   const work = fixture();
   const output = freshOutput(join(work, 'output'));
   const args = runArguments(image, output, ['preflight']);
@@ -225,7 +297,7 @@ test('Docker enforces policy, fresh temporary inventory, and logged offline TS/V
         assert.equal(log.sha256, createHash('sha256').update(readFileSync(path)).digest('hex'));
       }
     }
-    writeFileSync(join(work, 'execution.json'), JSON.stringify({ initialContainerInspection: inspect, finalContainerInspection: completed, executionLog, report }, null, 2) + '\n');
+    writeFileSync(join(work, 'execution.json'), JSON.stringify({ image, output, imageInspection: imageInspect, initialContainerInspection: inspect, finalContainerInspection: completed, executionLog, report }, null, 2) + '\n');
     console.log(`Docker probe evidence: ${output}/probe.json`);
   } finally {
     docker(['rm', container]);

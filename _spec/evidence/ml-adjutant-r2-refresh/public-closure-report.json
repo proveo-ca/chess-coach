@@ -1,0 +1,818 @@
+{
+  "version": "public-closure-v2",
+  "passed": true,
+  "conditions": [
+    "browser",
+    "module",
+    "import",
+    "default"
+  ],
+  "entries": [
+    {
+      "package": "@chess-coach/starchess-core",
+      "subpath": "./planning-v1",
+      "path": "packages/starchess-core/src/planning-v1.ts"
+    },
+    {
+      "package": "@chess-coach/starchess-arena",
+      "subpath": "./observations",
+      "path": "packages/starchess-arena/src/observations.ts"
+    },
+    {
+      "package": "@chess-coach/starchess-arena",
+      "subpath": "./intent-codec-v1",
+      "path": "packages/starchess-arena/src/intent-codec-v1.ts"
+    },
+    {
+      "package": "@chess-coach/starchess-training",
+      "subpath": "./candidates",
+      "path": "packages/starchess-training/src/candidates.ts"
+    }
+  ],
+  "verifiedPaths": [
+    "packages/starchess-arena/src/authorized/v1/canonical.ts",
+    "packages/starchess-arena/src/authorized/v1/observationCodec.ts",
+    "packages/starchess-arena/src/authorized/v1/squares.ts",
+    "packages/starchess-arena/src/authorized/v1/types.ts",
+    "packages/starchess-arena/src/challengeContract/candidateWire.ts",
+    "packages/starchess-arena/src/challengeContract/validation.ts",
+    "packages/starchess-arena/src/intent-codec-v1.ts",
+    "packages/starchess-arena/src/observations.ts",
+    "packages/starchess-core/src/board/classicFen.ts",
+    "packages/starchess-core/src/board/mines.ts",
+    "packages/starchess-core/src/board/moves.ts",
+    "packages/starchess-core/src/board/placement.ts",
+    "packages/starchess-core/src/board/siege.ts",
+    "packages/starchess-core/src/model/square.ts",
+    "packages/starchess-core/src/model/types.ts",
+    "packages/starchess-core/src/planning-v1.ts",
+    "packages/starchess-core/src/rules/constants.ts",
+    "packages/starchess-core/src/rules/planning-intents.ts",
+    "packages/starchess-core/src/rules/planning-order.ts",
+    "packages/starchess-core/src/rules/specials/adjacent.ts",
+    "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+    "packages/starchess-core/src/rules/specials/registry.ts",
+    "packages/starchess-core/src/rules/specials/stimStep.ts",
+    "packages/starchess-training/src/candidates.ts",
+    "packages/starchess-training/src/composition.ts",
+    "packages/starchess-training/src/contracts.ts",
+    "packages/starchess-training/src/domain.ts",
+    "packages/starchess-training/src/identity.ts",
+    "jssha@3.3.2/dist/sha256.mjs",
+    "jssha@3.3.2/package.json"
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/starchess-arena/src/authorized/v1/canonical.ts",
+      "sha256": "e6819862ada10504ca27f4a24e0f0e295cd5836a4567635ee846dc8754a4eb63"
+    },
+    {
+      "path": "packages/starchess-arena/src/authorized/v1/observationCodec.ts",
+      "sha256": "4d8e346b8edf1f4c93653a49a06102e4e89610b43237061805525fbf20e96299"
+    },
+    {
+      "path": "packages/starchess-arena/src/authorized/v1/squares.ts",
+      "sha256": "4b713ff51ce7a33cf12214cb159335225efb62b767a69ee0d20b4a4a16296640"
+    },
+    {
+      "path": "packages/starchess-arena/src/authorized/v1/types.ts",
+      "sha256": "da54549a4e246c4a5da58b873ed660d320a060a7b6a62cf32c57b7cf1c291820"
+    },
+    {
+      "path": "packages/starchess-arena/src/challengeContract/candidateWire.ts",
+      "sha256": "8238a445b75d18f199866a528582249db16729811f8f8377cc53cb5a4b31da7d"
+    },
+    {
+      "path": "packages/starchess-arena/src/challengeContract/validation.ts",
+      "sha256": "33375bd048d774fa691fb05ff6b9dd5144c7bd02381863c0280d4a779f381acb"
+    },
+    {
+      "path": "packages/starchess-arena/src/intent-codec-v1.ts",
+      "sha256": "3c07d033d67d3cb9044f0c5bf2b2c6592ee48108f32ca359a7cb75dfcc0ad024"
+    },
+    {
+      "path": "packages/starchess-arena/src/observations.ts",
+      "sha256": "2eb89c3117d475dd512124d94cbb3e149d04d690c46b6c866068fde93c6b4f59"
+    },
+    {
+      "path": "packages/starchess-core/src/board/classicFen.ts",
+      "sha256": "b005f66aa7e878b4c5db0e0fce7caa31f15a7d1bb052a2fdc485616d888e3adc"
+    },
+    {
+      "path": "packages/starchess-core/src/board/mines.ts",
+      "sha256": "1c9082d89051e6ffdfba71c97b709f7d33cced372cf149c02c84bffebbd31fff"
+    },
+    {
+      "path": "packages/starchess-core/src/board/moves.ts",
+      "sha256": "076606a95e7ebe6297549a843dbddf636dcfe78d128f540685e74b6fd53fbcd3"
+    },
+    {
+      "path": "packages/starchess-core/src/board/placement.ts",
+      "sha256": "ba074fce6e431a559522f4a0a83a4f196003a009772c3adff00c678406618f3b"
+    },
+    {
+      "path": "packages/starchess-core/src/board/siege.ts",
+      "sha256": "748aa88ec919c57e59538abdc5ddc0994d772084a32a3bf05f4ac05008431479"
+    },
+    {
+      "path": "packages/starchess-core/src/model/square.ts",
+      "sha256": "8ca0ebd7e5826bc962a1c79ddb1e07eaf164597dd63770d94777e76c1ad752c1"
+    },
+    {
+      "path": "packages/starchess-core/src/model/types.ts",
+      "sha256": "2a43424bed449bf930ae557c950b634ad3ec641e5d2ac5ff9a8ee6c84e64264e"
+    },
+    {
+      "path": "packages/starchess-core/src/planning-v1.ts",
+      "sha256": "e6886383723fba4b240faa3cd89170bb81171b799b3ff24d102d1ee6b0416304"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/constants.ts",
+      "sha256": "66acdcc1abc05197fbe3ae9df57a0efe4acea88c6ada78e4db9590f3343b6ff7"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/planning-intents.ts",
+      "sha256": "0998e24253d785598bf29740fa84daf2c64e503585564094b44e5862d39ce367"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/planning-order.ts",
+      "sha256": "976336de3635cf283bedb5270b58efb363113f401052de322db3b88db1ea242e"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/adjacent.ts",
+      "sha256": "1ec80f27709c024d2cda2c52dbef0485867a34b9939e1d525ebfe85832aebb3e"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+      "sha256": "b2c8af310fe33f83a18eb3e5e53b41734c147e5f62440d9422b2e757b376c4e4"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/registry.ts",
+      "sha256": "0965a88ac773afe43ca72915d2ddccac4cc84c31f58121a1514f6511de8f6b5d"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/stimStep.ts",
+      "sha256": "fbe990595fe42e41aad17460eb76b3a3f134672144a867a52ee618034f4069a1"
+    },
+    {
+      "path": "packages/starchess-training/src/candidates.ts",
+      "sha256": "108829c81cd9323b58d35ad4ba58e99d3b6b5c164a52bcc8c0ef19e91fb21eed"
+    },
+    {
+      "path": "packages/starchess-training/src/composition.ts",
+      "sha256": "4d5963b154153686a84a965242d71bdd20dcc5eceef616033376e432da023a22"
+    },
+    {
+      "path": "packages/starchess-training/src/contracts.ts",
+      "sha256": "5e315df6b45d4a8980c2f6ffc498572308ba176ade5a7a7d33aef6685ef1f662"
+    },
+    {
+      "path": "packages/starchess-training/src/domain.ts",
+      "sha256": "7f2459251fd26486e0d92fa5b65782938a69f5a949ec8c431c6f9d7f5194bf97"
+    },
+    {
+      "path": "packages/starchess-training/src/identity.ts",
+      "sha256": "a5bccc2d2316f80b7862341214aeed2fc0cf8a0e1ac3dabb415fd1c779cdc70d"
+    }
+  ],
+  "dependencyFiles": [
+    {
+      "path": "jssha@3.3.2/dist/sha256.mjs",
+      "resolvedPath": "node_modules/.pnpm/jssha@3.3.2/node_modules/jssha/dist/sha256.mjs",
+      "sha256": "4911466b7ab8e64e1030977aa3b07050d964d957d9e3abfa6a32d9097bde2e50"
+    },
+    {
+      "path": "jssha@3.3.2/package.json",
+      "resolvedPath": "node_modules/.pnpm/jssha@3.3.2/node_modules/jssha/package.json",
+      "sha256": "a4813aab26cb4626fe638a9c8557c3601f3a59d4b67749b73f52c7b9f41a7951"
+    }
+  ],
+  "runtimeFiles": [
+    {
+      "path": "package.json",
+      "sha256": "9a9649f35f177f9f8d06040f9639b59300df106d77c2d00596aaf6dedf686154"
+    },
+    {
+      "path": "packages/starchess-arena/package.json",
+      "sha256": "602f929a507a1c7806e850543d030de83091bd8f7413ca9520f34f641cce6e7b"
+    },
+    {
+      "path": "packages/starchess-core/package.json",
+      "sha256": "b837e00355f118f8c7ec23d65ee0933996adb9b91cc53318747f75435970998d"
+    },
+    {
+      "path": "packages/starchess-training/package.json",
+      "sha256": "4ab1d9bc0f417b08a340afd9820b631eb6224b6f7eaceebf65498df25046f2a5"
+    }
+  ],
+  "edges": [
+    {
+      "importer": "packages/starchess-arena/src/authorized/v1/observationCodec.ts",
+      "specifier": "../../challengeContract/validation",
+      "target": "packages/starchess-arena/src/challengeContract/validation.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-arena/src/authorized/v1/observationCodec.ts",
+      "specifier": "./canonical",
+      "target": "packages/starchess-arena/src/authorized/v1/canonical.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-arena/src/authorized/v1/observationCodec.ts",
+      "specifier": "./squares",
+      "target": "packages/starchess-arena/src/authorized/v1/squares.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-arena/src/authorized/v1/observationCodec.ts",
+      "specifier": "./types",
+      "target": "packages/starchess-arena/src/authorized/v1/types.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-arena/src/authorized/v1/observationCodec.ts",
+      "specifier": "@chess-coach/starchess-core/planning-v1",
+      "target": "packages/starchess-core/src/planning-v1.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-arena/src/authorized/v1/squares.ts",
+      "specifier": "@chess-coach/starchess-core/planning-v1",
+      "target": "packages/starchess-core/src/planning-v1.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-arena/src/authorized/v1/types.ts",
+      "specifier": "@chess-coach/starchess-core/planning-v1",
+      "target": "packages/starchess-core/src/planning-v1.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-arena/src/challengeContract/candidateWire.ts",
+      "specifier": "../authorized/v1/canonical",
+      "target": "packages/starchess-arena/src/authorized/v1/canonical.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-arena/src/challengeContract/candidateWire.ts",
+      "specifier": "../authorized/v1/observationCodec",
+      "target": "packages/starchess-arena/src/authorized/v1/observationCodec.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-arena/src/challengeContract/candidateWire.ts",
+      "specifier": "../authorized/v1/types",
+      "target": "packages/starchess-arena/src/authorized/v1/types.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-arena/src/challengeContract/candidateWire.ts",
+      "specifier": "./validation",
+      "target": "packages/starchess-arena/src/challengeContract/validation.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-arena/src/challengeContract/candidateWire.ts",
+      "specifier": "@chess-coach/starchess-core/planning-v1",
+      "target": "packages/starchess-core/src/planning-v1.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-arena/src/challengeContract/validation.ts",
+      "specifier": "@chess-coach/starchess-core/planning-v1",
+      "target": "packages/starchess-core/src/planning-v1.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-arena/src/intent-codec-v1.ts",
+      "specifier": "./challengeContract/candidateWire",
+      "target": "packages/starchess-arena/src/challengeContract/candidateWire.ts",
+      "kind": "export"
+    },
+    {
+      "importer": "packages/starchess-arena/src/intent-codec-v1.ts",
+      "specifier": "./challengeContract/candidateWire",
+      "target": "packages/starchess-arena/src/challengeContract/candidateWire.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-arena/src/intent-codec-v1.ts",
+      "specifier": "./challengeContract/validation",
+      "target": "packages/starchess-arena/src/challengeContract/validation.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-arena/src/intent-codec-v1.ts",
+      "specifier": "./observations",
+      "target": "packages/starchess-arena/src/observations.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-arena/src/intent-codec-v1.ts",
+      "specifier": "@chess-coach/starchess-core/planning-v1",
+      "target": "packages/starchess-core/src/planning-v1.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-arena/src/observations.ts",
+      "specifier": "./authorized/v1/observationCodec",
+      "target": "packages/starchess-arena/src/authorized/v1/observationCodec.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-arena/src/observations.ts",
+      "specifier": "./authorized/v1/types",
+      "target": "packages/starchess-arena/src/authorized/v1/types.ts",
+      "kind": "export",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-arena/src/observations.ts",
+      "specifier": "./authorized/v1/types",
+      "target": "packages/starchess-arena/src/authorized/v1/types.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-arena/src/observations.ts",
+      "specifier": "./challengeContract/validation",
+      "target": "packages/starchess-arena/src/challengeContract/validation.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-core/src/board/classicFen.ts",
+      "specifier": "../model/types",
+      "target": "packages/starchess-core/src/model/types.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/board/mines.ts",
+      "specifier": "../model/square",
+      "target": "packages/starchess-core/src/model/square.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/board/mines.ts",
+      "specifier": "../model/types",
+      "target": "packages/starchess-core/src/model/types.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/board/mines.ts",
+      "specifier": "./placement",
+      "target": "packages/starchess-core/src/board/placement.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-core/src/board/moves.ts",
+      "specifier": "../model/types",
+      "target": "packages/starchess-core/src/model/types.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/board/moves.ts",
+      "specifier": "../rules/specials/stimStep",
+      "target": "packages/starchess-core/src/rules/specials/stimStep.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-core/src/board/moves.ts",
+      "specifier": "./mines",
+      "target": "packages/starchess-core/src/board/mines.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-core/src/board/moves.ts",
+      "specifier": "./placement",
+      "target": "packages/starchess-core/src/board/placement.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-core/src/board/moves.ts",
+      "specifier": "chess.js",
+      "target": "chess.js",
+      "kind": "import",
+      "typeOnly": true,
+      "targetKind": "erased-external"
+    },
+    {
+      "importer": "packages/starchess-core/src/board/placement.ts",
+      "specifier": "../model/square",
+      "target": "packages/starchess-core/src/model/square.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/board/placement.ts",
+      "specifier": "../model/types",
+      "target": "packages/starchess-core/src/model/types.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/board/placement.ts",
+      "specifier": "./classicFen",
+      "target": "packages/starchess-core/src/board/classicFen.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-core/src/board/siege.ts",
+      "specifier": "../model/square",
+      "target": "packages/starchess-core/src/model/square.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/board/siege.ts",
+      "specifier": "../model/types",
+      "target": "packages/starchess-core/src/model/types.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/model/square.ts",
+      "specifier": "chess.js",
+      "target": "chess.js",
+      "kind": "export",
+      "typeOnly": true,
+      "targetKind": "erased-external"
+    },
+    {
+      "importer": "packages/starchess-core/src/model/types.ts",
+      "specifier": "./square",
+      "target": "packages/starchess-core/src/model/square.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/planning-v1.ts",
+      "specifier": "./board/mines",
+      "target": "packages/starchess-core/src/board/mines.ts",
+      "kind": "export"
+    },
+    {
+      "importer": "packages/starchess-core/src/planning-v1.ts",
+      "specifier": "./board/moves",
+      "target": "packages/starchess-core/src/board/moves.ts",
+      "kind": "export"
+    },
+    {
+      "importer": "packages/starchess-core/src/planning-v1.ts",
+      "specifier": "./board/placement",
+      "target": "packages/starchess-core/src/board/placement.ts",
+      "kind": "export",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/planning-v1.ts",
+      "specifier": "./model/square",
+      "target": "packages/starchess-core/src/model/square.ts",
+      "kind": "export",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/planning-v1.ts",
+      "specifier": "./model/types",
+      "target": "packages/starchess-core/src/model/types.ts",
+      "kind": "export",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/planning-v1.ts",
+      "specifier": "./rules/constants",
+      "target": "packages/starchess-core/src/rules/constants.ts",
+      "kind": "export"
+    },
+    {
+      "importer": "packages/starchess-core/src/planning-v1.ts",
+      "specifier": "./rules/planning-intents",
+      "target": "packages/starchess-core/src/rules/planning-intents.ts",
+      "kind": "export",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/planning-v1.ts",
+      "specifier": "./rules/planning-intents",
+      "target": "packages/starchess-core/src/rules/planning-intents.ts",
+      "kind": "export"
+    },
+    {
+      "importer": "packages/starchess-core/src/planning-v1.ts",
+      "specifier": "./rules/planning-order",
+      "target": "packages/starchess-core/src/rules/planning-order.ts",
+      "kind": "export"
+    },
+    {
+      "importer": "packages/starchess-core/src/planning-v1.ts",
+      "specifier": "./rules/specials/adjacent",
+      "target": "packages/starchess-core/src/rules/specials/adjacent.ts",
+      "kind": "export"
+    },
+    {
+      "importer": "packages/starchess-core/src/planning-v1.ts",
+      "specifier": "./rules/specials/mechaCharon",
+      "target": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+      "kind": "export"
+    },
+    {
+      "importer": "packages/starchess-core/src/planning-v1.ts",
+      "specifier": "./rules/specials/registry",
+      "target": "packages/starchess-core/src/rules/specials/registry.ts",
+      "kind": "export"
+    },
+    {
+      "importer": "packages/starchess-core/src/planning-v1.ts",
+      "specifier": "./rules/specials/stimStep",
+      "target": "packages/starchess-core/src/rules/specials/stimStep.ts",
+      "kind": "export"
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/planning-intents.ts",
+      "specifier": "../board/mines",
+      "target": "packages/starchess-core/src/board/mines.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/planning-intents.ts",
+      "specifier": "../board/moves",
+      "target": "packages/starchess-core/src/board/moves.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/planning-intents.ts",
+      "specifier": "../board/placement",
+      "target": "packages/starchess-core/src/board/placement.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/planning-intents.ts",
+      "specifier": "../board/siege",
+      "target": "packages/starchess-core/src/board/siege.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/planning-intents.ts",
+      "specifier": "../model/square",
+      "target": "packages/starchess-core/src/model/square.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/planning-intents.ts",
+      "specifier": "../model/types",
+      "target": "packages/starchess-core/src/model/types.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/planning-intents.ts",
+      "specifier": "./specials/adjacent",
+      "target": "packages/starchess-core/src/rules/specials/adjacent.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/planning-intents.ts",
+      "specifier": "./specials/mechaCharon",
+      "target": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/planning-intents.ts",
+      "specifier": "./specials/stimStep",
+      "target": "packages/starchess-core/src/rules/specials/stimStep.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/planning-order.ts",
+      "specifier": "../board/placement",
+      "target": "packages/starchess-core/src/board/placement.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/planning-order.ts",
+      "specifier": "../model/square",
+      "target": "packages/starchess-core/src/model/square.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/planning-order.ts",
+      "specifier": "../model/types",
+      "target": "packages/starchess-core/src/model/types.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/planning-order.ts",
+      "specifier": "./specials/stimStep",
+      "target": "packages/starchess-core/src/rules/specials/stimStep.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/specials/adjacent.ts",
+      "specifier": "../../board/placement",
+      "target": "packages/starchess-core/src/board/placement.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/specials/adjacent.ts",
+      "specifier": "../../model/square",
+      "target": "packages/starchess-core/src/model/square.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/specials/adjacent.ts",
+      "specifier": "../../model/types",
+      "target": "packages/starchess-core/src/model/types.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+      "specifier": "../../board/placement",
+      "target": "packages/starchess-core/src/board/placement.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+      "specifier": "../../model/square",
+      "target": "packages/starchess-core/src/model/square.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+      "specifier": "../../model/types",
+      "target": "packages/starchess-core/src/model/types.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+      "specifier": "../constants",
+      "target": "packages/starchess-core/src/rules/constants.ts",
+      "kind": "export"
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/specials/registry.ts",
+      "specifier": "../../model/types",
+      "target": "packages/starchess-core/src/model/types.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/specials/registry.ts",
+      "specifier": "../constants",
+      "target": "packages/starchess-core/src/rules/constants.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/specials/stimStep.ts",
+      "specifier": "../../model/square",
+      "target": "packages/starchess-core/src/model/square.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-core/src/rules/specials/stimStep.ts",
+      "specifier": "../../model/types",
+      "target": "packages/starchess-core/src/model/types.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-training/src/candidates.ts",
+      "specifier": "./composition",
+      "target": "packages/starchess-training/src/composition.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-training/src/candidates.ts",
+      "specifier": "./contracts",
+      "target": "packages/starchess-training/src/contracts.ts",
+      "kind": "export",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-training/src/candidates.ts",
+      "specifier": "./contracts",
+      "target": "packages/starchess-training/src/contracts.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-training/src/candidates.ts",
+      "specifier": "@chess-coach/starchess-arena/intent-codec-v1",
+      "target": "packages/starchess-arena/src/intent-codec-v1.ts",
+      "kind": "export"
+    },
+    {
+      "importer": "packages/starchess-training/src/candidates.ts",
+      "specifier": "@chess-coach/starchess-arena/observations",
+      "target": "packages/starchess-arena/src/observations.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-training/src/composition.ts",
+      "specifier": "./contracts",
+      "target": "packages/starchess-training/src/contracts.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-training/src/composition.ts",
+      "specifier": "./domain",
+      "target": "packages/starchess-training/src/domain.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-training/src/composition.ts",
+      "specifier": "./identity",
+      "target": "packages/starchess-training/src/identity.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-training/src/composition.ts",
+      "specifier": "@chess-coach/starchess-arena/intent-codec-v1",
+      "target": "packages/starchess-arena/src/intent-codec-v1.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-training/src/composition.ts",
+      "specifier": "@chess-coach/starchess-arena/observations",
+      "target": "packages/starchess-arena/src/observations.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-training/src/composition.ts",
+      "specifier": "@chess-coach/starchess-core/planning-v1",
+      "target": "packages/starchess-core/src/planning-v1.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-training/src/contracts.ts",
+      "specifier": "@chess-coach/starchess-arena/intent-codec-v1",
+      "target": "packages/starchess-arena/src/intent-codec-v1.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-training/src/domain.ts",
+      "specifier": "./contracts",
+      "target": "packages/starchess-training/src/contracts.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-training/src/domain.ts",
+      "specifier": "@chess-coach/starchess-arena/intent-codec-v1",
+      "target": "packages/starchess-arena/src/intent-codec-v1.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-training/src/domain.ts",
+      "specifier": "@chess-coach/starchess-arena/observations",
+      "target": "packages/starchess-arena/src/observations.ts",
+      "kind": "import",
+      "typeOnly": true
+    },
+    {
+      "importer": "packages/starchess-training/src/domain.ts",
+      "specifier": "@chess-coach/starchess-core/planning-v1",
+      "target": "packages/starchess-core/src/planning-v1.ts",
+      "kind": "import"
+    },
+    {
+      "importer": "packages/starchess-training/src/identity.ts",
+      "specifier": "jssha/sha256",
+      "target": "jssha@3.3.2/dist/sha256.mjs",
+      "kind": "import"
+    }
+  ],
+  "sourceSha256": "4e5f652fe1cc135a775e459148dae97bf06862069a396af181313ac6d1652d3e",
+  "dependencySha256": "57478bef405817aec199d4fc0404439748bb26491e4f15626273d7e54c64ecec",
+  "runtimeSha256": "855d4da0b4c41ab26d2ac1da228da8c96dd81a6cf5152e654130fc5b381df4b1",
+  "tooling": {
+    "package": "typescript",
+    "version": "5.9.3",
+    "declaredBy": "packages/starchess-arena/package.json",
+    "path": "node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js",
+    "sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675"
+  },
+  "closureSha256": "d4da5e70b76e0c21edb201184f39835094d5b80b0f6c85cf8c56cba54d878113"
+}

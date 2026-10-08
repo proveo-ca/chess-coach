@@ -23,7 +23,7 @@ function tar(entries) {
     header.write(entry.path, 0, 100);
     for (const [offset, width, value] of [[100, 8, parseInt(entry.mode, 8)], [108, 8, 0], [116, 8, 0], [124, 12, data.length], [136, 12, 0]]) header.write(value.toString(8).padStart(width - 1, '0') + '\0', offset, width);
     header.fill(32, 148, 156);
-    header.write(({ file: '0', directory: '5', symlink: '2', hardlink: '1' })[entry.type], 156);
+    header.write(Object.entries({ file: '0', directory: '5', symlink: '2', hardlink: '1' }).find(([type]) => type === entry.type)[1], 156);
     if (entry.target) header.write(entry.target, 157, 100);
     header.write('ustar\0', 257);
     header.write('00', 263);
@@ -48,11 +48,17 @@ async function fixture(source, action) {
     await write('opt/pnpm/package.json', { version: pins.pnpm });
     await symlink('missing-target', join(filesystem, 'opt/pnpm/dangling'));
     await write('app/pnpm-lock.yaml', 'lock data\n');
-    await write('app/packages/starchess-core/package.json', { version: '0.0.1', dependencies: { lib: '1.0.0' } });
-    await write('app/packages/starchess-arena/package.json', { version: '0.0.1', dependencies: { core: 'workspace:*' } });
+    await write('app/packages/starchess-core/package.json', { name: '@chess-coach/starchess-core', version: '0.0.1', dependencies: { lib: '1.0.0' } });
+    await write('app/packages/starchess-arena/package.json', { name: '@chess-coach/starchess-arena', version: '0.0.1', dependencies: { '@chess-coach/starchess-core': 'workspace:*' } });
+    await write('app/packages/starchess-training/package.json', { name: '@chess-coach/starchess-training', version: '0.0.1', dependencies: { '@chess-coach/starchess-core': 'workspace:*', '@chess-coach/starchess-arena': 'workspace:*', 'jssha': '3.3.2' } });
     await write('app/packages/starchess-core/node_modules/lib/package.json', { version: '1.0.0' });
     await mkdir(join(filesystem, 'app/packages/starchess-arena/node_modules'), { recursive: true, mode: 0o755 });
-    await symlink('../../starchess-core', join(filesystem, 'app/packages/starchess-arena/node_modules/core'));
+    await mkdir(join(filesystem, 'app/packages/starchess-arena/node_modules/@chess-coach'), { recursive: true });
+    await symlink('../../../starchess-core', join(filesystem, 'app/packages/starchess-arena/node_modules/@chess-coach/starchess-core'));
+    await mkdir(join(filesystem, 'app/packages/starchess-training/node_modules/@chess-coach'), { recursive: true });
+    await symlink('../../../starchess-core', join(filesystem, 'app/packages/starchess-training/node_modules/@chess-coach/starchess-core'));
+    await symlink('../../../starchess-arena', join(filesystem, 'app/packages/starchess-training/node_modules/@chess-coach/starchess-arena'));
+    await write('app/packages/starchess-training/node_modules/jssha/package.json', { name: 'jssha', version: '3.3.2' });
     await write('app/node_modules/z-child/value', 'z');
     await write('app/node_modules/a-child/value', 'a');
     await write('pnpm/store/z-file', 'content');
@@ -65,22 +71,22 @@ async function fixture(source, action) {
       await write(`${controlRoot}/pins.json`, pins);
       await write(`${controlRoot}/control.mjs`, 'new source controls');
       await write('app/source.txt', 'source bytes');
-      await write('app/_spec/evidence/ml-adjutant-phase2/excluded.txt', 'ignored');
+      await write('app/_spec/evidence/ml-adjutant-r2-refresh/excluded.txt', 'ignored');
       await symlink('../source.txt', join(filesystem, 'app/source-link'));
     }
-    const roots = ['/app/node_modules', '/app/packages/starchess-core/node_modules', '/app/packages/starchess-arena/node_modules'];
+    const roots = ['/app/node_modules', '/app/packages/starchess-core/node_modules', '/app/packages/starchess-arena/node_modules', '/app/packages/starchess-training/node_modules'];
     const installed = roots.map((root) => ({ root, ...treeManifest(join(filesystem, root)) }));
     const dependencies = { version: 1, installed, installedSha256: sha256(JSON.stringify(installed)), frozenStore: { root: '/pnpm/store', ...treeManifest(join(filesystem, 'pnpm/store')) }, tools: { root: '/opt/pnpm', ...treeManifest(join(filesystem, 'opt/pnpm')) } };
     await write('hermetic-evidence/dependencies.json', dependencies);
     await write('hermetic-evidence/tools.json', { pins, node: pins.node, pnpm: pins.pnpm, artifact: { integrity: pins.pnpmIntegrity, sha256: sha256(artifact), bytes: artifact.length } });
-    const inputs = ['pnpm-lock.yaml', 'packages/starchess-core/package.json', 'packages/starchess-arena/package.json'];
+    const inputs = ['pnpm-lock.yaml', 'packages/starchess-core/package.json', 'packages/starchess-arena/package.json', 'packages/starchess-training/package.json'];
     const capture = { version: 1, dependenciesOnly: !source, dependencyFiles: await Promise.all(inputs.map(async (path) => ({ path, sha256: sha256(await readFile(join(filesystem, 'app', path))) }))), control: treeManifest(join(filesystem, controlRoot)) };
     if (source) {
       capture.runtime = treeManifest(join(filesystem, 'app'), { exclude: excluded });
       await write('hermetic-evidence/source.json', { version: 1, root: '/app', exclusions: sourceExclusions, inventoryLocation: '/hermetic-evidence/source.json (outside inventoried root)', ...capture.runtime });
     }
     await write('hermetic-evidence/capture.json', capture);
-    await write('hermetic-evidence/closure.json', { tools: { node: pins.node, pnpm: pins.pnpm }, packages: { 'starchess-core': { lib: '1.0.0' }, 'starchess-arena': { core: '0.0.1' } }, lockSha256: capture.dependencyFiles[0].sha256 });
+    await write('hermetic-evidence/closure.json', { tools: { node: pins.node, pnpm: pins.pnpm }, packages: { 'starchess-core': { lib: '1.0.0' }, 'starchess-arena': { '@chess-coach/starchess-core': '0.0.1' }, 'starchess-training': { '@chess-coach/starchess-core': '0.0.1', '@chess-coach/starchess-arena': '0.0.1', 'jssha': '3.3.2' } }, lockSha256: capture.dependencyFiles[0].sha256 });
     const streams = new Map();
     streams.set('/usr/local/bin/node', tar([{ path: 'node', mode: '755', type: 'file', data: interpreterBytes }]));
     const rebuild = async () => {
@@ -163,6 +169,25 @@ test('rejects interpreter replacement despite unchanged version claims and tree 
   assert.equal(streams.get('/hermetic-evidence'), evidence);
   assert.equal(docker.calls.at(-1)[1], 'rm');
   assert.deepEqual(await readdir(temporaryRoot), []);
+}));
+
+test('rejects training arena link retargeted to core despite equal package versions and rebound installed claims', () => fixture(false, async ({ temporaryRoot, filesystem, streams, write, rebuild, dependencies }) => {
+  const path = join(filesystem, 'app/packages/starchess-training/node_modules/@chess-coach/starchess-arena');
+  await rm(path);
+  await symlink('../../../starchess-core', path);
+  dependencies.installed = dependencies.installed.map(({ root }) => ({ root, ...treeManifest(join(filesystem, root)) }));
+  dependencies.installedSha256 = sha256(JSON.stringify(dependencies.installed));
+  await write('hermetic-evidence/dependencies.json', dependencies);
+  await rebuild();
+  const docker = mockDocker(streams);
+  await assert.rejects(measureImageFilesystem(image, { temporaryRoot, spawnProcess: docker.spawnProcess }), /workspace link/);
+}));
+
+test('rejects training dependency bytes changed under unchanged captured evidence', () => fixture(false, async ({ temporaryRoot, streams, write, rebuild }) => {
+  await write('app/packages/starchess-training/node_modules/jssha/package.json', { name: 'jssha', version: '3.4.0' });
+  await rebuild();
+  const docker = mockDocker(streams);
+  await assert.rejects(measureImageFilesystem(image, { temporaryRoot, spawnProcess: docker.spawnProcess }), /dependencies manifest/);
 }));
 test('production default rejects synthetic interpreter instead of trusting image pins', () => fixture(false, async ({ temporaryRoot, streams }) => {
   const docker = mockDocker(streams);

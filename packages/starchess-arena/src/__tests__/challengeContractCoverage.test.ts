@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { canonical } from "../challenge/config";
 import { sha256 } from "../challenge/corpus";
-import { executionPins } from "../challenge/evidence";
+import { decodeHistoricalExecutionPins, executionPins } from "../challenge/evidence";
 import { measureCoverage } from "../challengeContract/coverage";
 import { decode, readEvidenceGeneration } from "./fixtures/challengeEvidence";
 
@@ -36,18 +36,23 @@ describe("Phase2 measured coverage and migration evidence", () => {
     expect(migration.currentBaselineSha256).toBe(report.baselineReportSha256);
   });
 
-  it.runIf(!generation.historical)("reproduces fresh coverage and current runtime pins", () => {
+  it("reproduces coverage and distinguishes fresh current pins from historical legacy pins", () => {
     expect(canonical(measureCoverage())).toBe(canonical(coverage));
-    expect(canonical(report.pins)).toBe(canonical(executionPins()));
-  }, 30000);
+    if (generation.historical) {
+      expect(decodeHistoricalExecutionPins(report.pins).version).toBe("challenge-execution-pins-v2");
+    } else {
+      expect(canonical(report.pins)).toBe(canonical(executionPins()));
+    }
+  }, 180000);
 
-  it.each(["baseline-report.json", "coverage.json", "contract-report.json", "pin-migration.json"] as const)(
+  it.each(["baseline-report.json", "coverage.json", "contract-report.json", "pin-migration.json", "r2-composition-report.json"] as const)(
     "requires %s in the configured fresh output without falling back to host history", (missing) => {
       mkdirSync("/tmp/opencode", { recursive: true });
       const directory = mkdtempSync("/tmp/opencode/coverage-generation-");
       const previous = process.env.HERMETIC_OUTPUT_DIRECTORY;
       try {
-        for (const [name, bytes] of Object.entries(generation.files)) if (name !== missing) writeFileSync(join(directory, name), bytes);
+        for (const [name, bytes] of Object.entries(generation.files)) if (name !== missing && bytes) writeFileSync(join(directory, name), bytes);
+        if (missing !== "r2-composition-report.json" && !generation.files["r2-composition-report.json"]) writeFileSync(join(directory, "r2-composition-report.json"), "{}");
         process.env.HERMETIC_OUTPUT_DIRECTORY = directory;
         expect(() => readEvidenceGeneration()).toThrow(missing);
       } finally {

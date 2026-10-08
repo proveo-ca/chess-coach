@@ -8,7 +8,7 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { addScAction, endScTurn, parseScFen } from "../../index";
+import { addScAction, endScTurn, parseScFen, type Square } from "../../index";
 
 /** Build a snapshot with a single Marine on `pawn` and its Command Center off the file. */
 const snapWith = (marine: string, color: "w" | "b"): ScFenSnapshot => {
@@ -43,17 +43,15 @@ const marineSquareOf = (placement: string, color: "w" | "b"): string => {
 const resolve = (
   marine: string,
   color: "w" | "b",
-  actions: Array<{ timing: "B" | "C" | "F"; from: string; to: string }>,
+  actions: Array<{ timing: "B" | "C" | "F"; from: Square; to: Square }>,
 ): { square: string; placement: string } => {
   let snap = snapWith(marine, color);
   for (const a of actions) {
     snap = addScAction({
       snapshot: snap,
-      action: {
-        ...a,
-        kind: a.timing === "C" ? "classical" : "stimStep",
-        color,
-      },
+      action: a.timing === "C"
+        ? { ...a, timing: a.timing, kind: "classical", color }
+        : { ...a, timing: a.timing, kind: "stimStep", color },
     }).snapshot;
   }
   const result = endScTurn(snap);
@@ -69,8 +67,8 @@ const resolveOn = (
   color: "w" | "b",
   actions: Array<{
     timing: "B" | "C" | "F";
-    from: string;
-    to: string;
+    from: Square;
+    to: Square;
     promotion?: "q" | "r" | "b" | "n";
   }>,
 ): { square: string; placement: string } => {
@@ -78,11 +76,9 @@ const resolveOn = (
   for (const a of actions) {
     snap = addScAction({
       snapshot: snap,
-      action: {
-        ...a,
-        kind: a.timing === "C" ? "classical" : "stimStep",
-        color,
-      },
+      action: a.timing === "C"
+        ? { ...a, timing: a.timing, kind: "classical", color }
+        : { ...a, timing: a.timing, kind: "stimStep", color },
     }).snapshot;
   }
   const result = endScTurn(snap);
@@ -102,13 +98,13 @@ describe("Marine gas stack — order independence", () => {
     "%s: gas-move and move-gas both land %s (%s squares)",
     (_label, marine, color, expected, squares) => {
       const mid =
-        color === "w"
+        (color === "w"
           ? `${marine[0]}${Number(marine[1]) + 1}`
-          : `${marine[0]}${Number(marine[1]) - 1}`;
+          : `${marine[0]}${Number(marine[1]) - 1}`) as Square;
       const far =
-        color === "w"
+        (color === "w"
           ? `${marine[0]}${Number(marine[1]) + (squares === 3 ? 2 : 1)}`
-          : `${marine[0]}${Number(marine[1]) - (squares === 3 ? 2 : 1)}`;
+          : `${marine[0]}${Number(marine[1]) - (squares === 3 ? 2 : 1)}`) as Square;
 
       const byGasMove = resolve(marine, color, [
         { timing: "B", from: marine, to: mid },

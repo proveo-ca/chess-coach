@@ -77,7 +77,7 @@ describe("collision: same-square Mechas", () => {
     const r = endScTurn(s, { skipTurnStartChecks: true });
     expect(r.next.placement).toBe("4k3/8/8/8/8/8/8/4K3");
     expect(r.resolved.moveCollisions).toHaveLength(2);
-    expect(r.resolved.moveCollisions.every((c) => c.occupies === false)).toBe(
+    expect(r.resolved.moveCollisions.every((c) => c.kind === "capture" && c.occupies === false)).toBe(
       true,
     );
   });
@@ -109,7 +109,7 @@ describe("collision: Hoverbike speed vs gas Marine + Mecha", () => {
     const r = endScTurn(parseScFen(scfen), { skipTurnStartChecks: true });
     expect(r.next.placement).toBe("4k3/8/8/4P3/8/8/8/4K3");
     expect(r.resolved.moveCollisions).toHaveLength(2);
-    expect(r.resolved.moveCollisions.every((c) => c.occupies === false)).toBe(
+    expect(r.resolved.moveCollisions.every((c) => c.kind === "capture" && c.occupies === false)).toBe(
       true,
     );
     expect(r.bMoves).toEqual([
@@ -148,7 +148,7 @@ describe("collision: timed paths — colour-independent", () => {
     const r = run(scfen, [...moves]);
     expect(r.next.placement).toBe("k7/8/8/8/8/8/8/K7");
     expect(r.resolved.moveCollisions).toHaveLength(2);
-    expect(r.resolved.moveCollisions.every((c) => c.to === at && c.occupies === false)).toBe(true);
+    expect(r.resolved.moveCollisions.every((c) => c.to === at && c.kind === "capture" && c.occupies === false)).toBe(true);
     expect(r.resolved.moves.map((m) => m.to)).toEqual([at, at]);
   });
 

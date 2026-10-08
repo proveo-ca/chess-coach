@@ -27,7 +27,7 @@ export const naiveScript = (overrides: Partial<ScriptPlayer> = {}): ScriptPlayer
   play(snap: ScFenSnapshot, ctx: SideContext) {
     const ctxOut: AdjutantContext = {
       color: ctx.color,
-      storedFor: (color) => ctx.bank[color],
+      storedFor: (color) => Object.entries(ctx.bank).find(([side]) => side === color)![1],
       rng: ctx.rng,
     };
     const result = adjutant(snap, ctxOut);

@@ -6,6 +6,7 @@ import {
   parseScFen,
   placementToMap,
   UNIT_COST,
+  type ScAction,
 } from "../index";
 import { squareColor } from "../ai/strategies/economy";
 
@@ -365,7 +366,8 @@ describe("adjutant", () => {
     );
     const plan = adjutant(snap, { storedFor: () => 3 });
     const spawn = plan.snapshot.queue?.actions.find(
-      (a) => a.color === "b" && a.kind === "deploy",
+      (a): a is Extract<ScAction, { timing: "B" | "F" }> =>
+        a.color === "b" && a.kind === "deploy",
     );
     expect(spawn?.unit).toMatch(/^[pnb]$/);
     expect(plan.spendMinerals?.amount).toBeLessThan(UNIT_COST.r);

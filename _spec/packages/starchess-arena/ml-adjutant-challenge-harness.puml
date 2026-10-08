@@ -10,18 +10,19 @@
 ' covers: _spec/evidence/ml-adjutant-phase1/*.json
 ' covers: _spec/evidence/ml-adjutant-r0-refresh/**
 ' covers: _spec/evidence/ml-adjutant-r0-closure.json
-' status: R0 CLOSED within accepted non-learned assurance; A01-A15 resolved. Phase 1 historical verification/READY verdicts preserved; no learning or trained acceptance.
+' status: Historical R0 CLOSED within accepted non-learned assurance; A01-A15 resolved. Current assembled-source/integration verification pending; no learning or trained acceptance.
+' recovery: _spec/_plans/recovery-pr47.md; R0 identities/checks below describe the original preserved generation, not current integration proof.
 ' related: _spec/_plans/PLAN-ml-adjutant.md
-' related: _spec/_plans/ml-adjutant-challenge.md
-' related: _spec/_plans/ml-adjutant-execution-revisions.md (reviewed repairs and completed ordered R0 closure)
+' related: _spec/_plans/ml-adjutant-r8-challenge.md
+' related: _spec/_plans/ml-adjutant-r0-execution-revisions.md (reviewed repairs and completed ordered R0 closure)
 ' related: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml (current codecs/features and hermetic evidence)
 ' related: _spec/packages/starchess-arena/arena.puml (legacy runner, not this isolated host)
-' current evidence: _spec/evidence/ml-adjutant-r0-refresh/baseline-report.json
-' current verification: _spec/evidence/ml-adjutant-r0-refresh/verification.json
+' historical R0 evidence: _spec/evidence/ml-adjutant-r0-refresh/baseline-report.json
+' historical R0 verification: _spec/evidence/ml-adjutant-r0-refresh/verification.json
 ' closure authority: _spec/evidence/ml-adjutant-r0-closure.json (unchanged fact data)
-' current image: sha256:3550d1cc2b98d9ae757937a9e45e1ba89b6e84459106a491a61af9e183968f72
-' current source SHA-256: b2b9e360fd5c2ecc0fbad667d5155ac56c3efd8603f3c09941982dadc5372147
-' current marker SHA-256: 33ac25cc582ee154179b3321091368858a6c0d65ee36df4eec02e85f8ff1d34d; 24 artifacts, committed/durability confirmed per lead.
+' historical R0 image: sha256:3550d1cc2b98d9ae757937a9e45e1ba89b6e84459106a491a61af9e183968f72
+' historical R0 source SHA-256: b2b9e360fd5c2ecc0fbad667d5155ac56c3efd8603f3c09941982dadc5372147
+' historical R0 marker SHA-256: 33ac25cc582ee154179b3321091368858a6c0d65ee36df4eec02e85f8ff1d34d; 24 artifacts, committed/durability confirmed per lead.
 ' historical evidence: _spec/evidence/ml-adjutant-phase1/baseline-report.json, _spec/evidence/ml-adjutant-phase1/verification.json (immutable original bytes/pins)
 ' historical baseline report SHA-256: 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b
 ' transport: spawned stdin/stdout JSONL pipes; no Node process.send channel.
@@ -30,7 +31,7 @@
 ' final reviews: adversarial ses_efe0ed67dffew2su1gZIUaDy23 and security ses_efe0ed520ffeOEg3kd6jAtN33i both READY TO CLOSE R0: yes; read-only source/captured-record review, no independent execution/hash recomputation.
 ' historical review: ses_f07c45365ffew0wJ58yFHXAye5 READY TO MERGE: no; original 7 HIGH + 8 MEDIUM retained as history, all now CLOSED.
 ' completed gate: pre-freeze reviews -> new frozen image/actual Docker/full core+arena+static/54+54 -> validated publication -> both final reviews READY.
-' current checks: core 426/426, arena 689/689, zero failed/pending/todo; 107 Node tests, Docker infrastructure 5/5 and host post-publication 13/13 (both live source pins), no skips; eight exact commands/three static checks include both scripts.
+' historical R0 checks: core 426/426, arena 689/689, zero failed/pending/todo; 107 Node tests, Docker infrastructure 5/5 and host post-publication 13/13 (both then-live source pins), no skips; eight exact commands/three static checks include both scripts.
 ' evidence generations: Phase 1/2 and pre-rename bytes remain immutable; fresh R0 publication is outside capture, not a rename/overwrite; runtime output remains /app/_spec/evidence/ml-adjutant-phase2.
 ' trust: host/daemon, no malicious same-UID mutation; no arbitrary-JavaScript sandbox proof. Host envelopes/archive remain under /tmp/opencode.
 ' future gates: R1 calibrated turn-aware material-belief amendment plus R2-R5 readiness before explicit R6 approval; R7 artifact/runtime then R8 learned acceptance. Prior 370-field v2 is not a supplied calibrated model.
@@ -228,16 +229,17 @@ note bottom of EVIDENCE
 end note
 
 legend bottom
+  Current temporary integration needs fresh final-source verification; no current PR/Main runtime PASS.
   PHASE 1 HISTORICALLY VERIFIED: then-final arena 164 tests / 17 files; core 426 / 53.
-  Phase 1/2 historical bytes/pins stay immutable; current R0 evidence lives at ml-adjutant-r0-refresh.
+  Phase 1/2 bytes/pins stay immutable; original R0 evidence remains at ml-adjutant-r0-refresh.
   Corpus candidate = b, arena/inference seed = 0; live seeds = 0..17 in both seats.
   Seat RNG: w = mulberry32(seed), b = mulberry32(~seed).
   Historically all 54 supervised cases ran twice under original final pins; 54/54 semantic comparisons equal.
   Corpus: 0 wins, 2 terminal losses, 16 queue-rejection failures; live: 0 wins, 36 terminal losses.
   executionIntegrity = true; learnedGateEligible = false; learnedChallengePass = false.
   R0 CLOSED: A01-A15 resolved within accepted non-learned assurance; both final reviews READY TO CLOSE R0: yes.
-  Frozen current image: 426 core / 689 arena, zero pending/todo; 107 Node tests, no skips.
-  Current 54 executions + 54 reruns: semantic and migration parity true; eight commands/three static checks passed.
+  Original frozen R0 image: 426 core / 689 arena, zero pending/todo; 107 Node tests, no skips.
+  Original R0 54 executions + 54 reruns: semantic and migration parity true; eight commands/three static checks passed.
   Actual Docker 5/5; host post-publication 13/13 including both live source pins, no skips.
   Fresh publication: 24 artifacts, marker commit/durability confirmed; no atomic directory-visibility claim.
   No learned acceptance or universal trace-compatibility claim. Current checkonly not run here.

@@ -1,0 +1,223 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.10 [39m[90m/app/packages/starchess-arena[39m
+
+ [32m✓[39m src/__tests__/challengeSourceInventory.test.ts [2m([22m[2m1177 tests[22m[2m)[22m[33m 257629[2mms[22m[39m
+     [33m[2m✓[22m[39m tracks parameter effects: 'array assignment targets retain captu…' [33m 808[2mms[22m[39m
+     [33m[2m✓[22m[39m tracks parameter effects: 'object assignment targets retain capt…' [33m 533[2mms[22m[39m
+     [33m[2m✓[22m[39m tracks parameter effects: 'renamed object assignments retain cap…' [33m 407[2mms[22m[39m
+     [33m[2m✓[22m[39m tracks parameter effects: 'nested assignment patterns retain cap…' [33m 465[2mms[22m[39m
+     [33m[2m✓[22m[39m tracks parameter effects: 'helper mutated tuple sources retain c…' [33m 400[2mms[22m[39m
+     [33m[2m✓[22m[39m tracks parameter effects: 'mutated object assignment sources ret…' [33m 321[2mms[22m[39m
+     [33m[2m✓[22m[39m tracks parameter effects: 'array assignment defaults retain muta…' [33m 307[2mms[22m[39m
+     [33m[2m✓[22m[39m resolves imported ordinary numeric data without classifying it as callable [33m 346[2mms[22m[39m
+     [33m[2m✓[22m[39m proves hoisted JavaScript counter writes and rejects a string rewrite in .js [33m 523[2mms[22m[39m
+     [33m[2m✓[22m[39m proves hoisted JavaScript counter writes and rejects a string rewrite in .mjs [33m 446[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: function poison({bag}:{bag:{key:number}}){(bag as any).key=["con","structor"].join("");}function compile(receiver:any,bag:{key:number}){return receiver[bag.key]("return process")();}const data={key:0};poison({bag:data});compile(()=>{},data); [33m 306[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: function poison(wrapper:{bag:{key:number}}){const {bag}=wrapper;(bag as any).key=["con","structor"].join("");}function forward(bag:{key:number}){poison({bag});}function compile(receiver:any,bag:{key:number}){return receiver[bag.key]("return process")();}const data={key:0};forward(data);compile(()=>{},data); [33m 305[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: const receiver:any=unknownFactory();Array.prototype.includes=(()=>true) as any;function compile(key:"data"){if(["data"].includes(key))return receiver[key]("return process")();}compile("constructor" as any); [33m 365[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: const lookup=(value:object,key:string):any=>(value as any)[key]; consume(lookup); lookup({data:1},"data"); [33m 303[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: function lookup(value:object,key:string):any{return(value as any)[key];} lookup({data:1},"data"); lookup(()=>{},["con","structor"].join(""))("return process")(); [33m 306[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: const box={nested:{key:0}};(box.nested as any).key=["con","structor"].join("");const receiver:any=unknownFactory();receiver[box.nested.key]("return process")(); [33m 344[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: const receiver:any=unknownFactory(); let key; const bag={get key():number{return "constructor" as any;}}; key=bag["key"]; receiver[key]("return process")(); [33m 353[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: const f:any=()=>{}; const key=["con","structor"].join(""); (f[key] ||= null)("return process")(); [33m 368[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: const f:any=()=>{}; const key=["con","structor"].join(""); (f[key] &&= f[key])("return process")(); [33m 340[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: const f:any=()=>{}; const key=["con","structor"].join(""); (f[key] ??= null)("return process")(); [33m 352[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: const make:any=()=>()=>{}; const f=make(); const keys={indexOf:()=>["con","structor"].join("")} as unknown as number[]; const key=keys.indexOf(0); f[key]("return process")(); [33m 343[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: const f: any = unknownFactory(); for (let key: any = 0; condition; key++) {key = ["con", "structor"].join(""); f[key]("return process")();} [33m 359[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: function make(): any {return () => {};} const value = make() as Record<string, number>; const compile: any = value[["con", "structor"].join("")]; compile("return process")(); [33m 304[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: const make:any=()=>()=>{}; const f:Record<string,number>=make(); const c=f[["con","structor"].join("")] as unknown as (s:string)=>()=>unknown; c("return process")(); [33m 390[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: const make: any = () => ({f: () => {}}); const f = make().f; f[["con", "structor"].join("")]("return process")(); [33m 304[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: const make: any = () => [() => {}]; const f = make()[0]; f[["con", "structor"].join("")]("return process")(); [33m 326[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: const box: any = {f: 0, other: 0}; box.other = 1; box.f[unknownKey]; [33m 314[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: const make: any = () => () => {}; const f: any = condition ? make() : make(); f[["con", "structor"].join("")]("return process")(); [33m 396[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: const make: any = () => () => {}; const f: any = make() || make(); f[["con", "structor"].join("")]("return process")(); [33m 308[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: const array: any = [0]; array.fill(() => {}); const f: any = array[0]; f[["con", "structor"].join("")]("return process")(); [33m 452[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unproven call-derived or mutated receivers: const make: any = () => () => {}; const key = ["con", "structor"].join(""); if (["data"].includes(key) || true) make()[key]("return process")(); [33m 322[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: const data={key:0};function read(bag=data){return bag.key;}let invoke:any;[invoke]=[read];invoke();function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data)); [33m 311[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: const data={key:0};function read(bag=data){return bag.key;}let invoke:any;({invoke}={invoke:read});invoke();function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data)); [33m 318[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: const data={key:0};function unused(bag=data){bag.key=1;}function read(){return 0;}let invoke:any,other:any;[invoke,other]=[read,unused];invoke();function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data)); [33m 379[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: const data={key:0};function unused(bag=data){bag.key=1;}function read(){return 0;}let invoke:any,other:any;({invoke,other}={invoke:read,other:unused});invoke();function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data)); [33m 388[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: const data={key:0};function read(bag=data){return bag.key;}let holder:any;[...holder]=[read];holder[0]();function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data)); [33m 343[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: const data={key:0};const methods={invoke(bag=data){return bag.key;}};let holder:any={};holder={...methods};holder.invoke();function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data)); [33m 368[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: const data={key:0};let holder:any={};holder={invoke(bag={key:1}){bag.key=2;}};holder.invoke();function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data)); [33m 408[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: const data={key:0};function read(bag=data){return bag.key;}const holder=[,read];holder[1]();function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data)); [33m 306[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: const data={key:0};function writeLocal(bag={key:1}){bag.key=2;}writeLocal();function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data)); [33m 372[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: const data={key:0};function unused(bag=data){bag.key=1;}function read(){return 0;}let invoke:any;invoke=read;invoke();function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data)); [33m 315[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: const data={key:0};function writeOther(bag=data){bag.key=1;}let invoke:any;invoke=writeOther;invoke({key:2});function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data)); [33m 361[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: const data={key:0};function read(args:{key:number}[]){return args.length;}const args=[{key:1}];read(args);function inspect(bag:{key:number}){return bag.key;}inspect.apply(null,args);function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe({0:"value"},data)); [33m 320[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: function read(bag:{key:number}){return bag.key;}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};const invoke=read;const args=[data];invoke.apply(null,args);consume(probe({0:"value"},data)); [33m 319[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: function writeLocal(bag={key:1}){bag.key=2;return bag.key;}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};writeLocal();consume(probe({0:"value"},data)); [33m 317[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: function read(bag:{key:number}){return bag.key;}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};read.call(null,data);read.apply(null,[data]);consume(probe({0:"value"},data)); [33m 383[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: function read(bag:{key:number}){return bag.key;}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};const bound=read.bind(null,data);[1,2].map(bound);consume(probe({0:"value"},data)); [33m 308[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: function read(bag:{key:number}){return bag.key;}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};const bound=read.bind(null);bound(data);Reflect.apply(read,null,[data]);consume(probe({0:"value"},data)); [33m 301[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: function inspect(bag:{key:number}){const {key}=bag;return key+1;}function compile(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};inspect(data);consume(compile({0:"value"},data)); [33m 359[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: function acquire(receiver:object,box:{key:number}){return(receiver as any)[box.key];} consume(acquire({1:"value"},{key:1})); [33m 301[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: function acquire(receiver:object,box:{key:"w"}){return(receiver as any)[box.key];} consume(acquire({w:1},{key:"w"})); [33m 354[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: function acquire(receiver:object,box:{key:number}){return(receiver as any)[+box.key];} consume(acquire({1:"value"},{key:1})); [33m 341[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary call-derived and mutated data indexing: function lookup(value:object,key:string):unknown{return(value as Record<string,unknown>)[key];} const data=JSON.parse(`{"data":1}`); consume(lookup(data,"data")); [33m 336[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects numeric array function constructor acquisition: const array: any = [{nested: [() => {}]}]; const box = array[0]; const alias = box.nested[0]; alias[["con", "structor"].join("")]("return process")(); [33m 360[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary data array indexing: const rows = [...inputRows]; void rows[0][1]; [33m 308[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects computed constructors on own function members: const box: any = {f() {}}; box.f[["con", "structor"].join("")]("return process")(); [33m 307[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects computed constructors on own function members: const box = {get f(): any {return () => {};}}; const alias = box.f; alias[["con", "structor"].join("")]("return process")(); [33m 378[2mms[22m[39m
+     [33m[2m✓[22m[39m audits literal forbidden targets through supported loader syntax: import nodeModule from "node:module"; const make = later; const later = nodeModule["createRequire"]; make(import.meta.url)("../challengeContract/codec.ts"); [33m 322[2mms[22m[39m
+     [33m[2m✓[22m[39m audits loader aliases and escapes in JavaScript .mjs files [33m 575[2mms[22m[39m
+     [33m[2m✓[22m[39m audits loader aliases and escapes in JavaScript .js files [33m 444[2mms[22m[39m
+     [33m[2m✓[22m[39m audits its own actual source without confusing AST property names with loader references [33m 1874[2mms[22m[39m
+     [33m[2m✓[22m[39m audits the real repository graph with declared root tooling in an isolated fixture [33m 70535[2mms[22m[39m
+     [33m[2m✓[22m[39m allows only the reviewed descriptor-safe DTO function and retains the indexed array seam [33m 587[2mms[22m[39m
+     [33m[2m✓[22m[39m tracks public parameter effects: 'known object spreads retain captured …' [33m 309[2mms[22m[39m
+     [33m[2m✓[22m[39m tracks public parameter effects: 'undefined initialized callees invalid…' [33m 303[2mms[22m[39m
+     [33m[2m✓[22m[39m tracks public parameter effects: 'helper effects invalidate originally …' [33m 395[2mms[22m[39m
+     [33m[2m✓[22m[39m invalidates public caller field shapes through a local invocation wrapper: const apply=Reflect.apply;const args=[data];apply(poison,null,args); [33m 325[2mms[22m[39m
+     [33m[2m✓[22m[39m invalidates public caller field shapes through a local invocation wrapper: const call=poison.call;call.call(poison,null,data); [33m 302[2mms[22m[39m
+     [33m[2m✓[22m[39m invalidates public caller field shapes through a local invocation wrapper: function invoke(callback:(bag:{key:number})=>void,bag:{key:number}){callback(bag);}invoke(poison,data); [33m 320[2mms[22m[39m
+     [33m[2m✓[22m[39m resolves public imported callable and constructor receiver signatures: import * as planning from "@chess-coach/starchess-core/planning-v1"; (planning.specialGasCost as any)[["con","structor"].join("")]("return process")(); [33m 327[2mms[22m[39m
+     [33m[2m✓[22m[39m proves public hoisted JavaScript counter writes and rejects a string rewrite in .js [33m 573[2mms[22m[39m
+     [33m[2m✓[22m[39m proves public hoisted JavaScript counter writes and rejects a string rewrite in .mjs [33m 516[2mms[22m[39m
+     [33m[2m✓[22m[39m audits the real four-root public graph and standalone SHA runtime [33m 7095[2mms[22m[39m
+     [33m[2m✓[22m[39m permits ordinary external data intrinsics and numeric loop indexing [33m 405[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects public unproven call-derived or mutated receivers: Array.prototype[Symbol.iterator]=function*(){yield["con","structor"].join("");};const receiver:any=unknownFactory();for(const key of["data"]){receiver[key]("return process")();} [33m 306[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects public unproven call-derived or mutated receivers: const ArrayCtor=Array;const iterator=Symbol.iterator;ArrayCtor.prototype[iterator]=function*(){yield["con","structor"].join("");};const receiver:any=unknownFactory();for(const key of["data"]){receiver[key]("return process")();} [33m 398[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects public unproven call-derived or mutated receivers: function poison({bag}:{bag:{key:number}}){(bag as any).key=["con","structor"].join("");}function compile(receiver:any,bag:{key:number}){return receiver[bag.key]("return process")();}const data={key:0};poison({bag:data});compile(()=>{},data); [33m 304[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects public unproven call-derived or mutated receivers: function poison(wrapper:{bag:{key:number}}){const {bag}=wrapper;(bag as any).key=["con","structor"].join("");}function forward(bag:{key:number}){poison({bag});}function compile(receiver:any,bag:{key:number}){return receiver[bag.key]("return process")();}const data={key:0};forward(data);compile(()=>{},data); [33m 366[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects public unproven call-derived or mutated receivers: function poison(bag:{key:number}){Object.assign(bag,{key:["con","structor"].join("")});}function compile(receiver:any,bag:{key:number}){return receiver[bag.key]("return process")();}const data={key:0};poison(data);compile(()=>{},data); [33m 310[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects public unproven call-derived or mutated receivers: function acquire(receiver:object,box:{key:number}){return(receiver as any)[box.key]("return process")();} acquire(()=>{},JSON.parse(`{"key":"constructor"}`)); [33m 318[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects public unproven call-derived or mutated receivers: function compile(receiver:any,bag:{key:number}){const alias=bag;return receiver[alias["key"]]("return process")();} compile(unknownFactory(),{key:"constructor" as any}); [33m 317[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects public unproven call-derived or mutated receivers: function compile(receiver:any,bag:{key:number}){return receiver[bag.key]("return process")();} consume(compile);compile(unknownFactory(),{key:1}); [33m 306[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects public unproven call-derived or mutated receivers: function compile(receiver:any,bag:{key:number}){return receiver[bag.key]("return process")();} function wrap(receiver:any,bag:{key:number}){return compile(receiver,bag);} wrap(unknownFactory(),{key:"constructor" as any}); [33m 353[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary public call-derived and mutated data indexing: const data={key:0};function read(bag=data){return bag.key;}read(flag?{key:1}:undefined);function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe({0:"value"},data)); [33m 304[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary public call-derived and mutated data indexing: const box={key:0};(box as any).key=unknownValue;const receiver:any=unknownFactory();consume(receiver[box.key>>>0]); [33m 333[2mms[22m[39m
+     [33m[2m✓[22m[39m allows ordinary public call-derived and mutated data indexing: const receiver:any=unknownFactory(); const data=[1,2].map(value=>value*2); data.forEach((_,index)=>consume(receiver[index])); [33m 310[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects public numeric array function constructor acquisition: const array: any = [{f: () => {}}]; array[0].f[["con", "structor"].join("")]("return process")(); [33m 320[2mms[22m[39m
+     [33m[2m✓[22m[39m pins the exact standalone SHA-256 ESM runtime without constructor exceptions [33m 1441[2mms[22m[39m
+ [32m✓[39m src/__tests__/strictRecordedQueues.test.ts [2m([22m[2m34 tests[22m[2m)[22m[32m 59[2mms[22m[39m
+ [32m✓[39m src/__tests__/challengeFeatures.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 152[2mms[22m[39m
+ [32m✓[39m src/__tests__/intentCodecV1Bridge.test.ts [2m([22m[2m62 tests[22m[2m)[22m[32m 105[2mms[22m[39m
+ [32m✓[39m src/__tests__/challengeContractAdmission.test.ts [2m([22m[2m43 tests[22m[2m)[22m[32m 136[2mms[22m[39m
+ [32m✓[39m src/__tests__/challengeWatchdog.test.ts [2m([22m[2m53 tests[22m[2m)[22m[33m 17341[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects a session-bound cross-phase announcement in a separate input chunk [33m 358[2mms[22m[39m
+     [33m[2m✓[22m[39m bounds descendant-watchdog with inherited stdout and reaps the direct child before resolving [33m 915[2mms[22m[39m
+     [33m[2m✓[22m[39m reaps a child that never becomes ready [33m 547[2mms[22m[39m
+     [33m[2m✓[22m[39m interrupts plan-loop at the planning deadline [33m 363[2mms[22m[39m
+     [33m[2m✓[22m[39m interrupts plan-promise at the planning deadline [33m 310[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects a matching decision that arrives after the original deadline [33m 319[2mms[22m[39m
+     [33m[2m✓[22m[39m uses the match deadline outside a planning phase [33m 415[2mms[22m[39m
+     [33m[2m✓[22m[39m does not renew the plan deadline for repeated phase messages [33m 323[2mms[22m[39m
+     [33m[2m✓[22m[39m does not renew the match deadline for progress messages [33m 425[2mms[22m[39m
+     [33m[2m✓[22m[39m preserves completed plies after ply-loop [33m 1713[2mms[22m[39m
+     [33m[2m✓[22m[39m preserves completed plies after ply-promise [33m 1694[2mms[22m[39m
+ [32m✓[39m src/__tests__/observationIsolation.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 72[2mms[22m[39m
+ [32m✓[39m src/__tests__/challengeCandidateCodec.test.ts [2m([22m[2m55 tests[22m[2m)[22m[32m 89[2mms[22m[39m
+ [32m✓[39m src/__tests__/challengeLifecycle.test.ts [2m([22m[2m21 tests[22m[2m)[22m[33m 1698[2mms[22m[39m
+     [33m[2m✓[22m[39m preserves production supervised/in-process terminal parity for 'SCFEN|4k3/8/8/8/8/8/8/4K3|0|03|O|G:11…' [33m 315[2mms[22m[39m
+ [32m✓[39m src/__tests__/challengeObservationCodec.test.ts [2m([22m[2m70 tests[22m[2m)[22m[32m 80[2mms[22m[39m
+ [32m✓[39m src/__tests__/observationV1Bridge.test.ts [2m([22m[2m30 tests[22m[2m)[22m[32m 154[2mms[22m[39m
+ [32m✓[39m src/__tests__/challengePinMigration.test.ts [2m([22m[2m26 tests[22m[2m)[22m[33m 11009[2mms[22m[39m
+     [33m[2m✓[22m[39m compares historical v1 baselines with v2 pins only through the legacy migration schema [33m 776[2mms[22m[39m
+     [33m[2m✓[22m[39m pins the original baseline and verification raw bytes and verifies all 54 semantic rows [33m 580[2mms[22m[39m
+     [33m[2m✓[22m[39m permits changed source/runtime pins while retaining exact execution semantics [33m 602[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects changed schedule identity: missing [33m 531[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects changed schedule identity: duplicate [33m 442[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects changed schedule identity: reordered [33m 475[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects changed schedule identity: seed [33m 483[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects changed schedule identity: side [33m 474[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects changed schedule identity: opening [33m 483[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects changed schedule identity: manifest [33m 443[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unverified deterministic reruns: not-performed [33m 431[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unverified deterministic reruns: not-equal [33m 417[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unverified deterministic reruns: missing [33m 424[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unverified deterministic reruns: key [33m 446[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unverified deterministic reruns: first-hash [33m 415[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unverified deterministic reruns: rerun-hash [33m 403[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unverified deterministic reruns: claim [33m 424[2mms[22m[39m
+     [33m[2m✓[22m[39m reexecutes evidence integrity rather than accepting report flags or matching forged bodies [33m 434[2mms[22m[39m
+     [33m[2m✓[22m[39m detects changed normalized event IDs and stop evidence [33m 867[2mms[22m[39m
+     [33m[2m✓[22m[39m ignores diagnostic-only historical labels but retains execution outcome and eligibility [33m 870[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects malformed inputs and report integrity claims [33m 510[2mms[22m[39m
+ [32m✓[39m src/__tests__/resourceLedger.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 43[2mms[22m[39m
+ [32m✓[39m src/__tests__/corpusManifest.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 78[2mms[22m[39m
+ [32m✓[39m src/__tests__/challengeEvidence.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 1691[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects a real corpus execution relabelled as a different pinned White trace [33m 314[2mms[22m[39m
+     [33m[2m✓[22m[39m runs the production supervised worker with pinned config and matches in-process semantics [33m 319[2mms[22m[39m
+ [32m✓[39m src/__tests__/challengeDtoInspection.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 208[2mms[22m[39m
+ [32m✓[39m src/__tests__/feedRescue.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m src/__tests__/challengeSuites.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 83097[2mms[22m[39m
+     [33m[2m✓[22m[39m contains every pinned18+36 case in exact order, retaining failures [33m 447[2mms[22m[39m
+     [33m[2m✓[22m[39m reexecutes recorded settlement and resource evidence through authoritative rules [33m 3256[2mms[22m[39m
+     [33m[2m✓[22m[39m pins fresh evidence to current v3 and decodes byte-locked history as legacy only [33m 78586[2mms[22m[39m
+     [33m[2m✓[22m[39m preserves all 54 original semantic executions across the pin-partition migration [33m 773[2mms[22m[39m
+ [32m✓[39m src/__tests__/challengeCorpus.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m src/__tests__/publicV1BridgeIsolation.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 735[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps observations.ts runtime closure free of Node imports and arena host/baseline modules [33m 451[2mms[22m[39m
+ [32m✓[39m src/__tests__/determinism.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 478[2mms[22m[39m
+ [32m✓[39m src/__tests__/r2CompositionEvidence.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 29325[2mms[22m[39m
+ [32m✓[39m src/__tests__/challengeObservation.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m src/__tests__/challengeContractCoverage.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 77913[2mms[22m[39m
+     [33m[2m✓[22m[39m reproduces coverage and distinguishes fresh current pins from historical legacy pins [33m 77892[2mms[22m[39m
+ [32m✓[39m src/__tests__/compare.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/__tests__/chipPly.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 400[2mms[22m[39m
+ [32m✓[39m src/__tests__/kvs.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/__tests__/challengePublication.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/__tests__/strategicSmoke.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 139[2mms[22m[39m
+[90mstdout[2m | src/__tests__/challengeEvidenceImport.test.ts[2m > [22m[2mlogged child environment[2m > [22m[2mpasses only the explicit infrastructure environment to the child
+[22m[39mnode: exit=0 signal=none logs=/tmp/opencode/import-environment-PDCPY0/scrubbed truncated=false
+
+[90mstdout[2m | src/__tests__/challengeEvidenceImport.test.ts[2m > [22m[2mlogged child environment[2m > [22m[2mdefaults the logged environment to process.env
+[22m[39mnode: exit=0 signal=none logs=/tmp/opencode/import-environment-Q2yfdi/default truncated=false
+
+ [32m✓[39m src/__tests__/challengeEvidenceImport.test.ts [2m([22m[2m239 tests[22m[2m)[22m[33m 1238341[2mms[22m[39m
+     [33m[2m✓[22m[39m isolates fixture Buffers and decoded pins from the shared six-report snapshot [33m 18698[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects a substituted public graph even after binding its command stdout [33m 6449[2mms[22m[39m
+     [33m[2m✓[22m[39m validates independently built evidence and publishes nested command logs [33m 140306[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects truncated verification logs with rebound checksum metadata [33m 5623[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects an omitted Vitest report path [33m 5640[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects a swapped Vitest report path [33m 5097[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects a failed assertion concealed by passing report summaries [33m 5121[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects malformed assertion statuses instead of coercing them: ["failed"] [33m 5072[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects malformed assertion statuses instead of coercing them: ["passed"] [33m 5196[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects malformed assertion statuses instead of coercing them: {} [33m 5802[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects malformed assertion statuses instead of coercing them: null [33m 4828[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects malformed assertion statuses instead of coercing them: 1 [33m 5785[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects report summary counts that disagree with real assertions [33m 6023[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects contradictory numPendingTestSuites summaries [33m 7498[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects contradictory numFailedTestSuites summaries [33m 6495[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects contradictory numPassedTestSuites summaries [33m 5579[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects contradictory numTotalTestSuites summaries [33m 5303[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects below-floor passing assertions in command 6 [33m 5603[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects below-floor passing assertions in command 7 [33m 6101[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects below-floor passing assertions in command 8 [33m 5610[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects source capture drift after successful authoritative validation [33m 5422[2mms[22m[39m
+     [33m[2m✓[22m[39m preserves a competing publication after all evidence checks pass [33m 121293[2mms[22m[39m
+     [33m[2m✓[22m[39m does not claim the destination when the before-publication hook fails [33m 99416[2mms[22m[39m
+     [33m[2m✓[22m[39m retains committed-state information when snapshot cleanup fails after publication [33m 100682[2mms[22m[39m
+     [33m[2m✓[22m[39m accepts the complete independent fixture without loading current output reports [33m 94890[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects historical current pin version with rebound raw checksums [33m 40288[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects historical baseline version with rebound raw checksums [33m 806[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects fabricated promotion retention with rebound raw checksums [33m 94894[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects fabricated generator version with rebound raw checksums [33m 94150[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects invented 54 integer rows with rebound raw checksums [33m 734[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unknown roster with rebound raw checksums [33m 751[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects truthy learned flag with rebound raw checksums [33m 810[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects falsy learned flag with rebound raw checksums [33m 797[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects eligible learned flag with rebound raw checksums [33m 806[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects falsy execution flag with rebound raw checksums [33m 779[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects forged learned pass with rebound raw checksums [33m 788[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects falsy learned pass with rebound raw checksums [33m 800[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects forged summary bucket with rebound raw checksums [33m 1291[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects forged stop-kind summary with rebound raw checksums [33m 1274[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects forged rerun flag with rebound raw checksums [33m 1239[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects forged rerun hash with rebound raw checksums [33m 1235[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects unequal migration with rebound raw checksums [33m 40775[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects forged inventory with rebound raw checksums [33m 40786[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects coverage feature hash changed with identical counts with rebound raw checksums [33m 48241[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects coverage fixture hash changed with identical counts with rebound raw checksums [33m 47684[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects an extra CLI input instead of silently ignoring it [33m 676[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects one sparse input beyond the shared file cap before decoding [33m 631[2mms[22m[39m
+     [33m[2m✓[22m[39m bounds aggregate retention before decoding sparse inputs [33m 678[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m30 passed[39m[22m[90m (30)[39m
+[2m      Tests [22m [1m[32m1944 passed[39m[22m[90m (1944)[39m
+[2m   Start at [22m 09:09:35
+[2m   Duration [22m 1239.78s[2m (transform 1.98s, setup 0ms, import 7.93s, tests 1721.04s, environment 3ms)[22m
+
+JSON report written to /app/_spec/evidence/ml-adjutant-r2-refresh/vitest-starchess-arena.json

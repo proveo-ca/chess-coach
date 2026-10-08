@@ -1,0 +1,61 @@
+{
+  "version": "ml-adjutant-r2-closure-v1",
+  "status": "closed",
+  "scope": "Authorized-observation V1 bounded candidate composition V3 and current hermetic evidence assurance",
+  "generatorVersion": "challenge-composition-v3",
+  "limits": { "candidatesIncludingPass": 512, "attemptedExtensions": 2048, "queueLength": 4 },
+  "modelArtifact": null,
+  "learnedGateEligible": false,
+  "learnedChallengePass": false,
+  "trainingAuthorized": false,
+  "registryId": "machine-learning",
+  "registryEnabled": false,
+  "evidence": {
+    "directory": "_spec/evidence/ml-adjutant-r2-refresh",
+    "artifacts": 57,
+    "publicationState": "committed",
+    "durability": "confirmed",
+    "markerSha256": "65bc6bb200514b446ad6939412922bde1cfa00d76225495e309fbd165c81b0c3",
+    "sourceImage": "sha256:37b4ec38caa50f15d02dec1c4dbdb45b0c29a7bdeb3a4c21f7ccea54e66ee2a9",
+    "dependencyImage": "sha256:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1",
+    "sourceSha256": "7b08a6606e0a7ba9a1136253cc0329e9a9296e1ff80d36d20440a2606157d194",
+    "controlSha256": "bbca2b58e15ca902cedc718e99333f372f092602bbd4c09317149cbb6f302385",
+    "archiveSha256": "f626892248ecea1446db0d295bf3eb0ae42a668a10ab1e484ebde1e9a89d9ef1",
+    "archiveBytes": 134552576,
+    "verificationSha256": "beb4852c1b0ea4bb5ad354fa0788bc47945fb27f37f1f5c38425814d18ec328f",
+    "baselineSha256": "34f7bd52c1aaa207e67e936f1bfb691735f3a7fdccf53d12ca787097c1803ed9",
+    "compositionSha256": "2330d59976d8f06e43deadbf281112f44f3cf63bc11a0f2130c7e2ec900886ff",
+    "migrationSha256": "569de8e0b908626763c07b2aabdbf32587c19fe02206063ac3a3af8b1faf4697",
+    "publicClosureSha256": "79d38195b49cf4c0a8d5730acf8679fc80af61e415c6ed611a79bd462ce23ed2"
+  },
+  "verification": {
+    "commandsPassed": 11,
+    "coreTests": 475,
+    "arenaTests": 1944,
+    "trainingTests": 57,
+    "nodeTests": 109,
+    "actualInfrastructureTests": 6,
+    "baselineExecutions": 54,
+    "semanticReruns": 54,
+    "allRerunsEqual": true,
+    "migrationParity": true,
+    "postPublicationCurrentPinTests": 14,
+    "publicRoots": 4,
+    "publicWorkspaceSourceFiles": 28,
+    "publicDependencyFiles": 2
+  },
+  "closingReviews": {
+    "adversarial": { "session": "ses_ef1bd904effeNnwLrxzq5IFMTc", "readyToCloseR2": true },
+    "security": { "session": "ses_ef292c512ffeiNMZ7KVQloY4sj", "readyToCloseR2": true },
+    "reviewMethod": "Read-only inspection of persisted source and evidence; reviewers did not independently rerun suites or recompute archive hashes"
+  },
+  "remainingGates": ["Calibrated-economy contract amendment", "R3 provenance and ledger", "R4 features", "R5 readiness", "R6 training", "R7 artifact and runtime", "R8 learned acceptance"],
+  "limitations": [
+    "The source audits enforce the reviewed supported syntax and boundaries, not arbitrary JavaScript purity.",
+    "The composition report distinguishes representable primitives from retained queues and records omissions at the attempt cap.",
+    "The retained non-learned baseline has zero candidate wins; this closure establishes generator and execution assurance, not learned acceptance.",
+    "Hashes establish byte identity rather than producer authenticity.",
+    "The image archive is external to the marker-bound evidence bundle; its retained export envelope records its location and identity.",
+    "Historical evidence and earlier failed generations do not authorize this generation."
+  ]
+}

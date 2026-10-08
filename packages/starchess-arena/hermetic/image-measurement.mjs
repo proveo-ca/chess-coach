@@ -8,9 +8,10 @@ import { evidenceLimits } from './evidence-limits.mjs';
 import { archivePath, evidenceBudget, scanTarFile } from './tar.mjs';
 import { sha256, sourceExclusions } from './manifest.mjs';
 import pins from './pins.json' with { type: 'json' };
+import { installedRoots, dependencyInputs, workspacePackages, workspaceManifestTarget } from './workspace-policy.mjs';
 
-const roots = ['/app/node_modules', '/app/packages/starchess-core/node_modules', '/app/packages/starchess-arena/node_modules'];
-const inputPaths = ['pnpm-lock.yaml', 'packages/starchess-core/package.json', 'packages/starchess-arena/package.json'];
+const roots = installedRoots;
+const inputPaths = dependencyInputs;
 const controlRoot = '/app/packages/starchess-arena/hermetic';
 const mismatch = (label) => { throw new Error(`Image filesystem evidence mismatch: ${label}`); };
 function equal(actual, expected, label) {
@@ -174,13 +175,15 @@ export function measureCopiedFilesystem(entries, { interpreterSha256 = pins.node
   equal(closure.value.tools, { node: tools.value.node, pnpm: tools.value.pnpm }, 'closure tools');
   if (closure.value.lockSha256 !== inputs[0].sha256) mismatch('closure lock');
   const packages = {};
-  for (const name of ['starchess-core', 'starchess-arena']) {
+  for (const name of workspacePackages) {
     const manifest = jsonFile(entries, `/app/packages/${name}/package.json`);
+    if (manifest.name !== `@chess-coach/${name}`) mismatch('workspace manifest name');
     const versions = {};
     for (const [dependencyName, specifier] of Object.entries({ ...manifest.dependencies, ...manifest.devDependencies })) {
       const resolved = fileAt(entries, `/app/packages/${name}/node_modules/${dependencyName}/package.json`, true);
-      if (specifier === 'workspace:*' && resolved.path !== 'app/packages/starchess-core/package.json') mismatch('workspace link');
+      if (specifier === 'workspace:*' && resolved.path !== workspaceManifestTarget(dependencyName).slice(1)) mismatch('workspace link');
       versions[dependencyName] = jsonFile(entries, resolved.path).version;
+      if (dependencyName === 'jssha' && (specifier !== '3.3.2' || versions[dependencyName] !== '3.3.2')) mismatch('SHA dependency pin');
     }
     packages[name] = versions;
   }

@@ -3,9 +3,9 @@ import type {
   EndScTurnResult, PieceColor, ScActionInput, ScOutcome,
 } from "@chess-coach/starchess-core";
 import type { Bank } from "../run/bank";
-
 import type { AuthorizedObservation } from "../authorized/v1/types";
 export type { AuthorizedObservation, ObservedCell, Sighting } from "../authorized/v1/types";
+
 export type QueueProposal = { key: string; actions: ScActionInput[]; score: number };
 export type CandidatePolicy = {
   name: string;

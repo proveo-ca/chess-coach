@@ -12,6 +12,7 @@ import {
   normalizeSnapGas,
   parseScFen,
   type ArenaGameRecord,
+  type ScOutcome,
 } from "../../index";
 
 const START = "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:";
@@ -60,7 +61,7 @@ describe("historyFromRecord", () => {
       endedAt: "2026-08-29T00:01:00.000Z",
       players: { w: "adjutant-naive", b: "adjutant-naive" },
       mapSeed: START,
-      outcome: { winner: null, draw: false },
+      outcome: { winner: null, draw: false } as unknown as ScOutcome,
       turns: 2,
       scfens: makeScfensAndResolves().scfens,
       resolves: makeScfensAndResolves().resolves,

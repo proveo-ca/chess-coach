@@ -17,7 +17,7 @@ import {
 const classical = (from: Square, to: Square, color: PieceColor = "w"):
   Extract<ScActionInput, { timing: "C" }> => ({ timing: "C", kind: "classical", color, from, to });
 const before = (kind: "stimStep" | "tacticalJump", from: Square, to: Square, color: PieceColor = "w"):
-  ScActionInput => ({ timing: "B", kind, from, to, color });
+  Extract<ScActionInput, { timing: "B" | "F" }> => ({ timing: "B", kind, from, to, color });
 const sequenced = (actions: readonly ScActionInput[]): ScAction[] => actions.map((a, seq) => ({ ...a, seq }));
 
 describe("classicalRewriteCoordinatesAfterB", () => {

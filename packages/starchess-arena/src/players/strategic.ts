@@ -84,7 +84,7 @@ export const strategicScript = (
     async play(snap: ScFenSnapshot, ctx: SideContext) {
       const adjCtx: StrategicAdjutantContext = {
         color: ctx.color,
-        storedFor: (color: "w" | "b") => ctx.bank[color],
+        storedFor: (color: "w" | "b") => Object.entries(ctx.bank).find(([side]) => side === color)![1],
         kvs: ctx.kvs,
         ccIntel: ctx.ccIntel,
         lastCCProbe: ctx.lastCCProbe,

@@ -146,7 +146,7 @@ export async function scanTarFile(path, { limits = evidenceLimits, budget = evid
       if (Buffer.byteLength(target) > limits.pathBytes || /[\x00-\x1f\x7f]/.test(target)) fail('link target limit');
       if (bytes > size - position) fail('truncated entry');
       if (['1', '2', '5'].includes(flag) && bytes) fail('non-file payload');
-      const entry = { path: name, mode: mode.toString(8), type: ({ '0': 'file', '1': 'hardlink', '2': 'symlink', '5': 'directory' })[flag], bytes, target, offset: position };
+      const entry = { path: name, mode: mode.toString(8), type: Object.entries({ '0': 'file', '1': 'hardlink', '2': 'symlink', '5': 'directory' }).find(([type]) => type === flag)?.[1], bytes, target, offset: position };
       if (!extended && entries.has(name)) fail(`duplicate path ${name}`);
       const keep = extended || retain(entry);
       if (keep && bytes > limits.fileBytes) fail('retained file limit');

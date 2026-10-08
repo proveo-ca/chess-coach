@@ -1,0 +1,2930 @@
+{
+  "version": 1,
+  "kind": "source-image-build",
+  "image": "sha256:37b4ec38caa50f15d02dec1c4dbdb45b0c29a7bdeb3a4c21f7ccea54e66ee2a9",
+  "pins": {
+    "platform": "linux/amd64",
+    "baseTag": "docker.io/library/node:22.23.2-bookworm-slim",
+    "baseIndexDigest": "sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+    "basePlatformDigest": "sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2",
+    "node": "22.23.2",
+    "nodeBinarySha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
+    "pnpm": "10.33.0",
+    "pnpmTarball": "https://registry.npmjs.org/pnpm/-/pnpm-10.33.0.tgz",
+    "pnpmIntegrity": "sha512-EFaLtKavtYyes2MNqQzJUWQXq+vT+rvmc58K55VyjaFJHp21pUTHatjrdXD1xLs9bGN7LLQb/c20f6gjyGSTGQ==",
+    "pnpmSha256": "bfcc1bcbad279b13a516c446a75b3c58b6904b45d57a1951411015e50b751a80",
+    "dockerInit": "0.19.0",
+    "dockerInitGitCommit": "de40ad0"
+  },
+  "host": {
+    "Client": {
+      "Platform": {
+        "Name": "Docker Engine - Community"
+      },
+      "Version": "29.7.2",
+      "ApiVersion": "1.55",
+      "DefaultAPIVersion": "1.55",
+      "GitCommit": "a7dcaa6",
+      "GoVersion": "go1.26.5",
+      "Os": "linux",
+      "Arch": "amd64",
+      "BuildTime": "Wed Aug  5 18:28:40 2026",
+      "Context": "default"
+    },
+    "Server": {
+      "Platform": {
+        "Name": "Docker Engine - Community"
+      },
+      "Version": "29.7.2",
+      "ApiVersion": "1.55",
+      "MinAPIVersion": "1.40",
+      "Os": "linux",
+      "Arch": "amd64",
+      "Components": [
+        {
+          "Name": "Engine",
+          "Version": "29.7.2",
+          "Details": {
+            "ApiVersion": "1.55",
+            "Arch": "amd64",
+            "BuildTime": "Wed Aug  5 18:28:40 2026",
+            "Experimental": "false",
+            "GitCommit": "6a43e3d",
+            "GoVersion": "go1.26.5",
+            "KernelVersion": "7.0.12",
+            "MinAPIVersion": "1.40",
+            "Module": "github.com/moby/moby/v2",
+            "ModuleVersion": "v2.0.0+unknown",
+            "Os": "linux"
+          }
+        },
+        {
+          "Name": "containerd",
+          "Version": "v2.3.3",
+          "Details": {
+            "GitCommit": "aad11006b869517fcd3009450b6f82da282e1a9b"
+          }
+        },
+        {
+          "Name": "runc",
+          "Version": "1.4.3",
+          "Details": {
+            "GitCommit": "v1.4.3-0-gbb14dabe"
+          }
+        },
+        {
+          "Name": "docker-init",
+          "Version": "0.19.0",
+          "Details": {
+            "GitCommit": "de40ad0"
+          }
+        }
+      ],
+      "GitCommit": "6a43e3d",
+      "GoVersion": "go1.26.5",
+      "KernelVersion": "7.0.12",
+      "BuildTime": "2026-08-05T18:28:40.000000000+00:00"
+    }
+  },
+  "buildArguments": [
+    "build",
+    "--platform",
+    "linux/amd64",
+    "--pull=false",
+    "--target",
+    "runtime",
+    "--no-cache",
+    "--network=none",
+    "--build-arg",
+    "FROZEN_DEPENDENCIES=starchess-hermetic-dependencies:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1",
+    "--iidfile",
+    "/tmp/opencode/starchess-hermetic-build-rMcQ5f/image-id",
+    "--file",
+    "/tmp/opencode/starchess-hermetic-build-rMcQ5f/context/Dockerfile",
+    "/tmp/opencode/starchess-hermetic-build-rMcQ5f/context"
+  ],
+  "imageInspection": {
+    "Id": "sha256:37b4ec38caa50f15d02dec1c4dbdb45b0c29a7bdeb3a4c21f7ccea54e66ee2a9",
+    "RepoTags": [],
+    "RepoDigests": [],
+    "Comment": "buildkit.dockerfile.v0",
+    "Created": "2026-10-06T09:04:59.641859845Z",
+    "Config": {
+      "User": "10001:10001",
+      "Env": [
+        "PATH=/opt/pnpm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "NODE_VERSION=22.23.2",
+        "YARN_VERSION=1.22.22",
+        "CI=true",
+        "PNPM_HOME=/tmp/pnpm",
+        "HOME=/tmp/home",
+        "XDG_CACHE_HOME=/tmp/cache",
+        "XDG_CONFIG_HOME=/tmp/config",
+        "XDG_DATA_HOME=/tmp/data",
+        "TMPDIR=/tmp",
+        "npm_config_update_notifier=false"
+      ],
+      "Entrypoint": [
+        "node",
+        "/app/packages/starchess-arena/hermetic/runtime.mjs"
+      ],
+      "Cmd": [
+        "verify"
+      ],
+      "WorkingDir": "/app",
+      "ArgsEscaped": true
+    },
+    "Architecture": "amd64",
+    "Os": "linux",
+    "Size": 134525725,
+    "RootFS": {
+      "Type": "layers",
+      "Layers": [
+        "sha256:34467cc93912af891dfee8a3902adf9b4f355a9bca4eaa46f658d1181a21de0d",
+        "sha256:fa308e2890c6e8792de63890c6311ed9fd21e6390db51e340b6085a1b23852e1",
+        "sha256:e05e1884319cd6aba2cbbc7a2afb655ca032bc83988020a9088439cac50dca76",
+        "sha256:c518045d8fcb97604685082962ab1cf5647e0baa5d33dd8e4c7ac5e05118a513",
+        "sha256:a483d4ed4858cfb9b72c8b6175ad924777e38b5695f4e26b860ace4d652273ad",
+        "sha256:c572c0b1dad9b245e822bab5f040d5ca324001475eea79040be0db48ea717dfa",
+        "sha256:7c843a0fb0d131aa4a638a7f3e6f8bb5e9fa046e1a000dbb332f12bac611b239",
+        "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+        "sha256:077d81355e1f9ae225e07eaf21c12215e49c701448c0776693b435adcb8bd2c5",
+        "sha256:ca89cc398f8927a573f449d4bcd06ee042a9c041096ccf367c108d2c933f8bd7",
+        "sha256:93ba9a4732a12ccba96597a1bf5ac8b7214485217daf0404d8c216228a4ae9c9",
+        "sha256:8bb9a520e1f25ce97336e57170d9e4139d07ab9de5362c3bd6009bcf24db2f15",
+        "sha256:363de315797d8933cbffddf0a7a459a7e4229a30f5c53c855a269061d1d7ea00",
+        "sha256:eb8a61a01db479dd2107839fea5f52e997b63bd5fcfff1475cec68a2f1e39c6d",
+        "sha256:4a37130bf95e488b5c0aec4c3cf8ebb0554c37a5204057166ec90f7fb3a1b2dc",
+        "sha256:71d852eb13468545459739ed2f6281e311d12523441cb3938aeca45360dbc611",
+        "sha256:b0cb36f7200b97a901c661133e0798232721f0a44db15b94606d8b117bb12d16",
+        "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+      ]
+    },
+    "Metadata": {
+      "LastTagTime": "2026-10-06T09:04:59.778571449Z"
+    },
+    "Descriptor": {
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "digest": "sha256:37b4ec38caa50f15d02dec1c4dbdb45b0c29a7bdeb3a4c21f7ccea54e66ee2a9",
+      "size": 856
+    },
+    "Identity": {
+      "Build": [
+        {
+          "Ref": "pqzwsn70u9kpxkl4388im3d33",
+          "CreatedAt": "2026-10-06T09:04:59.829838533Z"
+        }
+      ]
+    }
+  },
+  "measurements": {
+    "dependencies": {
+      "manifestSha256": "2f3200a1c757131e1d791c516d5b778090b4d5cc9ce4938b7cb1ece3d2fc4ae4",
+      "installedSha256": "e8c074b623cdc4c5b00debe00f68865c56e34eba91250979342129b290951d83",
+      "frozenStoreSha256": "89d5c3d854da88cbb419344bceb70f952394e2e38ebc014ed6449cdae44a58ae",
+      "toolTreeSha256": "45d37ff19cfad55687cec847b0888cf0cc2fb3b66b49472b454b3ada55b77270"
+    },
+    "tools": {
+      "manifestSha256": "b5018a4772899feab9269c5ce26204853f291e5bb79afa137447c68f41e8a8b2",
+      "actual": {
+        "pins": {
+          "platform": "linux/amd64",
+          "baseTag": "docker.io/library/node:22.23.2-bookworm-slim",
+          "baseIndexDigest": "sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+          "basePlatformDigest": "sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2",
+          "node": "22.23.2",
+          "nodeBinarySha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
+          "pnpm": "10.33.0",
+          "pnpmTarball": "https://registry.npmjs.org/pnpm/-/pnpm-10.33.0.tgz",
+          "pnpmIntegrity": "sha512-EFaLtKavtYyes2MNqQzJUWQXq+vT+rvmc58K55VyjaFJHp21pUTHatjrdXD1xLs9bGN7LLQb/c20f6gjyGSTGQ==",
+          "pnpmSha256": "bfcc1bcbad279b13a516c446a75b3c58b6904b45d57a1951411015e50b751a80",
+          "dockerInit": "0.19.0",
+          "dockerInitGitCommit": "de40ad0"
+        },
+        "node": "22.23.2",
+        "pnpm": "10.33.0",
+        "artifact": {
+          "integrity": "sha512-EFaLtKavtYyes2MNqQzJUWQXq+vT+rvmc58K55VyjaFJHp21pUTHatjrdXD1xLs9bGN7LLQb/c20f6gjyGSTGQ==",
+          "sha256": "bfcc1bcbad279b13a516c446a75b3c58b6904b45d57a1951411015e50b751a80",
+          "bytes": 4533784
+        }
+      }
+    },
+    "capture": {
+      "manifestSha256": "c47f0f6ce0f07347bcfd275a71ae820effc3a7b8a6aa2b32e4489bc09f61d98a",
+      "inputs": [
+        {
+          "path": "pnpm-lock.yaml",
+          "sha256": "10d9c8945a151b402511082911ddf8a3bbc19ff4c55a14a5df8ef0d1afb13b83"
+        },
+        {
+          "path": "packages/starchess-core/package.json",
+          "sha256": "b837e00355f118f8c7ec23d65ee0933996adb9b91cc53318747f75435970998d"
+        },
+        {
+          "path": "packages/starchess-arena/package.json",
+          "sha256": "602f929a507a1c7806e850543d030de83091bd8f7413ca9520f34f641cce6e7b"
+        },
+        {
+          "path": "packages/starchess-training/package.json",
+          "sha256": "4ab1d9bc0f417b08a340afd9820b631eb6224b6f7eaceebf65498df25046f2a5"
+        }
+      ],
+      "controlSha256": "bbca2b58e15ca902cedc718e99333f372f092602bbd4c09317149cbb6f302385"
+    },
+    "closure": {
+      "manifestSha256": "a37ec86f100477cca5370fefa0d9b38667a77323d5e4d22be633557babd7da1b",
+      "actual": {
+        "tools": {
+          "node": "22.23.2",
+          "pnpm": "10.33.0"
+        },
+        "packages": {
+          "starchess-core": {
+            "fflate": "0.8.3",
+            "chess.js": "1.4.0",
+            "typescript": "5.9.3",
+            "vitest": "4.1.10"
+          },
+          "starchess-arena": {
+            "@chess-coach/starchess-core": "0.0.1",
+            "@types/node": "22.20.1",
+            "tsx": "4.23.12",
+            "typescript": "5.9.3",
+            "vitest": "4.1.10"
+          },
+          "starchess-training": {
+            "@chess-coach/starchess-arena": "0.0.1",
+            "@chess-coach/starchess-core": "0.0.1",
+            "jssha": "3.3.2",
+            "@types/node": "22.20.1",
+            "typescript": "5.9.3",
+            "vitest": "4.1.10"
+          }
+        },
+        "lockSha256": "10d9c8945a151b402511082911ddf8a3bbc19ff4c55a14a5df8ef0d1afb13b83"
+      }
+    },
+    "method": "host-scanned-unstarted-container-tar-v1",
+    "source": {
+      "manifestSha256": "3ab5ceecfbef8eb5778dccc30cbdbf6f9fafa3ca5f5845e29b863e9a5908ad9a",
+      "sourceSha256": "7b08a6606e0a7ba9a1136253cc0329e9a9296e1ff80d36d20440a2606157d194"
+    },
+    "interpreter": {
+      "path": "/usr/local/bin/node",
+      "sha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
+      "bytes": 124836408
+    }
+  },
+  "frozenDependency": {
+    "image": "sha256:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1",
+    "localBuildReference": "starchess-hermetic-dependencies:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1",
+    "inspection": {
+      "Id": "sha256:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1",
+      "RepoTags": [
+        "starchess-hermetic-dependencies:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1"
+      ],
+      "RepoDigests": [
+        "starchess-hermetic-dependencies@sha256:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1"
+      ],
+      "Comment": "buildkit.dockerfile.v0",
+      "Created": "2026-10-06T05:59:40.60912829Z",
+      "Config": {
+        "Env": [
+          "PATH=/opt/pnpm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "NODE_VERSION=22.23.2",
+          "YARN_VERSION=1.22.22",
+          "CI=true",
+          "PNPM_HOME=/tmp/pnpm",
+          "HOME=/tmp/home",
+          "XDG_CACHE_HOME=/tmp/cache",
+          "XDG_CONFIG_HOME=/tmp/config",
+          "XDG_DATA_HOME=/tmp/data",
+          "TMPDIR=/tmp",
+          "npm_config_update_notifier=false"
+        ],
+        "Entrypoint": [
+          "docker-entrypoint.sh"
+        ],
+        "Cmd": [
+          "node"
+        ],
+        "WorkingDir": "/app"
+      },
+      "Architecture": "amd64",
+      "Os": "linux",
+      "Size": 133779839,
+      "RootFS": {
+        "Type": "layers",
+        "Layers": [
+          "sha256:34467cc93912af891dfee8a3902adf9b4f355a9bca4eaa46f658d1181a21de0d",
+          "sha256:fa308e2890c6e8792de63890c6311ed9fd21e6390db51e340b6085a1b23852e1",
+          "sha256:e05e1884319cd6aba2cbbc7a2afb655ca032bc83988020a9088439cac50dca76",
+          "sha256:c518045d8fcb97604685082962ab1cf5647e0baa5d33dd8e4c7ac5e05118a513",
+          "sha256:a483d4ed4858cfb9b72c8b6175ad924777e38b5695f4e26b860ace4d652273ad",
+          "sha256:c572c0b1dad9b245e822bab5f040d5ca324001475eea79040be0db48ea717dfa",
+          "sha256:7c843a0fb0d131aa4a638a7f3e6f8bb5e9fa046e1a000dbb332f12bac611b239",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:077d81355e1f9ae225e07eaf21c12215e49c701448c0776693b435adcb8bd2c5",
+          "sha256:ca89cc398f8927a573f449d4bcd06ee042a9c041096ccf367c108d2c933f8bd7",
+          "sha256:93ba9a4732a12ccba96597a1bf5ac8b7214485217daf0404d8c216228a4ae9c9",
+          "sha256:8bb9a520e1f25ce97336e57170d9e4139d07ab9de5362c3bd6009bcf24db2f15",
+          "sha256:363de315797d8933cbffddf0a7a459a7e4229a30f5c53c855a269061d1d7ea00",
+          "sha256:eb8a61a01db479dd2107839fea5f52e997b63bd5fcfff1475cec68a2f1e39c6d"
+        ]
+      },
+      "Metadata": {
+        "LastTagTime": "2026-10-06T06:00:03.296617602Z"
+      },
+      "Descriptor": {
+        "mediaType": "application/vnd.oci.image.index.v1+json",
+        "digest": "sha256:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1",
+        "size": 856
+      },
+      "Identity": {
+        "Pull": [
+          {
+            "Repository": "docker.io/library/starchess-hermetic-dependencies"
+          }
+        ],
+        "Build": [
+          {
+            "Ref": "q6rm38epvjfn2obrrvfyf4vaa",
+            "CreatedAt": "2026-10-06T05:59:44.4402225Z"
+          }
+        ]
+      }
+    },
+    "measurements": {
+      "dependencies": {
+        "manifestSha256": "2f3200a1c757131e1d791c516d5b778090b4d5cc9ce4938b7cb1ece3d2fc4ae4",
+        "installedSha256": "e8c074b623cdc4c5b00debe00f68865c56e34eba91250979342129b290951d83",
+        "frozenStoreSha256": "89d5c3d854da88cbb419344bceb70f952394e2e38ebc014ed6449cdae44a58ae",
+        "toolTreeSha256": "45d37ff19cfad55687cec847b0888cf0cc2fb3b66b49472b454b3ada55b77270"
+      },
+      "tools": {
+        "manifestSha256": "b5018a4772899feab9269c5ce26204853f291e5bb79afa137447c68f41e8a8b2",
+        "actual": {
+          "pins": {
+            "platform": "linux/amd64",
+            "baseTag": "docker.io/library/node:22.23.2-bookworm-slim",
+            "baseIndexDigest": "sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+            "basePlatformDigest": "sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2",
+            "node": "22.23.2",
+            "nodeBinarySha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
+            "pnpm": "10.33.0",
+            "pnpmTarball": "https://registry.npmjs.org/pnpm/-/pnpm-10.33.0.tgz",
+            "pnpmIntegrity": "sha512-EFaLtKavtYyes2MNqQzJUWQXq+vT+rvmc58K55VyjaFJHp21pUTHatjrdXD1xLs9bGN7LLQb/c20f6gjyGSTGQ==",
+            "pnpmSha256": "bfcc1bcbad279b13a516c446a75b3c58b6904b45d57a1951411015e50b751a80",
+            "dockerInit": "0.19.0",
+            "dockerInitGitCommit": "de40ad0"
+          },
+          "node": "22.23.2",
+          "pnpm": "10.33.0",
+          "artifact": {
+            "integrity": "sha512-EFaLtKavtYyes2MNqQzJUWQXq+vT+rvmc58K55VyjaFJHp21pUTHatjrdXD1xLs9bGN7LLQb/c20f6gjyGSTGQ==",
+            "sha256": "bfcc1bcbad279b13a516c446a75b3c58b6904b45d57a1951411015e50b751a80",
+            "bytes": 4533784
+          }
+        }
+      },
+      "capture": {
+        "manifestSha256": "808ea22e27e0cc0f37cf6c9970226257e0313c30a05620ec8f9540d63930875c",
+        "inputs": [
+          {
+            "path": "pnpm-lock.yaml",
+            "sha256": "10d9c8945a151b402511082911ddf8a3bbc19ff4c55a14a5df8ef0d1afb13b83"
+          },
+          {
+            "path": "packages/starchess-core/package.json",
+            "sha256": "b837e00355f118f8c7ec23d65ee0933996adb9b91cc53318747f75435970998d"
+          },
+          {
+            "path": "packages/starchess-arena/package.json",
+            "sha256": "602f929a507a1c7806e850543d030de83091bd8f7413ca9520f34f641cce6e7b"
+          },
+          {
+            "path": "packages/starchess-training/package.json",
+            "sha256": "4ab1d9bc0f417b08a340afd9820b631eb6224b6f7eaceebf65498df25046f2a5"
+          }
+        ],
+        "controlSha256": "bbca2b58e15ca902cedc718e99333f372f092602bbd4c09317149cbb6f302385"
+      },
+      "closure": {
+        "manifestSha256": "a37ec86f100477cca5370fefa0d9b38667a77323d5e4d22be633557babd7da1b",
+        "actual": {
+          "tools": {
+            "node": "22.23.2",
+            "pnpm": "10.33.0"
+          },
+          "packages": {
+            "starchess-core": {
+              "fflate": "0.8.3",
+              "chess.js": "1.4.0",
+              "typescript": "5.9.3",
+              "vitest": "4.1.10"
+            },
+            "starchess-arena": {
+              "@chess-coach/starchess-core": "0.0.1",
+              "@types/node": "22.20.1",
+              "tsx": "4.23.12",
+              "typescript": "5.9.3",
+              "vitest": "4.1.10"
+            },
+            "starchess-training": {
+              "@chess-coach/starchess-arena": "0.0.1",
+              "@chess-coach/starchess-core": "0.0.1",
+              "jssha": "3.3.2",
+              "@types/node": "22.20.1",
+              "typescript": "5.9.3",
+              "vitest": "4.1.10"
+            }
+          },
+          "lockSha256": "10d9c8945a151b402511082911ddf8a3bbc19ff4c55a14a5df8ef0d1afb13b83"
+        }
+      },
+      "method": "host-scanned-unstarted-container-tar-v1",
+      "interpreter": {
+        "path": "/usr/local/bin/node",
+        "sha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
+        "bytes": 124836408
+      }
+    }
+  },
+  "capture": {
+    "version": 1,
+    "dependenciesOnly": false,
+    "excludedNames": [
+      "node_modules",
+      ".git",
+      ".pnpm-store",
+      ".cache",
+      ".vite",
+      ".vite-temp",
+      "coverage",
+      "dist",
+      ".DS_Store"
+    ],
+    "dependencyFiles": [
+      {
+        "path": "pnpm-lock.yaml",
+        "sha256": "10d9c8945a151b402511082911ddf8a3bbc19ff4c55a14a5df8ef0d1afb13b83"
+      },
+      {
+        "path": "packages/starchess-core/package.json",
+        "sha256": "b837e00355f118f8c7ec23d65ee0933996adb9b91cc53318747f75435970998d"
+      },
+      {
+        "path": "packages/starchess-arena/package.json",
+        "sha256": "602f929a507a1c7806e850543d030de83091bd8f7413ca9520f34f641cce6e7b"
+      },
+      {
+        "path": "packages/starchess-training/package.json",
+        "sha256": "4ab1d9bc0f417b08a340afd9820b631eb6224b6f7eaceebf65498df25046f2a5"
+      }
+    ],
+    "workspace": {
+      "originalSha256": "0803c2d19cdf6aad850b39abe2fcb2bf6f7a909a405f359c99744dcca53465d4",
+      "acquisition": "packages:\n  - packages/starchess-core\n  - packages/starchess-arena\n  - packages/starchess-training\nallowBuilds:\n  esbuild: true\n"
+    },
+    "optionalConfigs": [
+      {
+        "path": ".npmrc",
+        "present": false
+      },
+      {
+        "path": ".pnpmfile.cjs",
+        "present": false
+      },
+      {
+        "path": "pnpmfile.cjs",
+        "present": false
+      },
+      {
+        "path": "tsconfig.json",
+        "present": false
+      },
+      {
+        "path": "tsconfig.base.json",
+        "present": false
+      },
+      {
+        "path": "vitest.config.ts",
+        "present": false
+      },
+      {
+        "path": "vite.config.ts",
+        "present": false
+      },
+      {
+        "path": "nx.json",
+        "present": true
+      }
+    ],
+    "configClosure": [
+      "packages/starchess-arena/tsconfig.json",
+      "packages/starchess-core/tsconfig.json",
+      "packages/starchess-training/tsconfig.json"
+    ],
+    "runtime": {
+      "algorithm": "sha256(JSON.stringify(entries))",
+      "sha256": "7b08a6606e0a7ba9a1136253cc0329e9a9296e1ff80d36d20440a2606157d194",
+      "entries": [
+        {
+          "path": ".",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "_spec",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "_spec/corpora",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "_spec/corpora/ml-adjutant-corpus.manifest.json",
+          "mode": "644",
+          "type": "file",
+          "bytes": 7309,
+          "sha256": "31ac6f865340a95f8e85c2c1577aaea0aada87feb92a37637cda90aee288cc3f"
+        },
+        {
+          "path": "_spec/evidence",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "_spec/evidence/ml-adjutant-phase1",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "_spec/evidence/ml-adjutant-phase1/baseline-report.json",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2267404,
+          "sha256": "940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b"
+        },
+        {
+          "path": "_spec/evidence/ml-adjutant-phase1/verification.json",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4508,
+          "sha256": "55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508"
+        },
+        {
+          "path": "nx.json",
+          "mode": "644",
+          "type": "file",
+          "bytes": 278,
+          "sha256": "8286707467b40ac377a75f50fa25df24ce2a24a0e5221e9a2393e19cdddaf29f"
+        },
+        {
+          "path": "package.json",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2474,
+          "sha256": "9a9649f35f177f9f8d06040f9639b59300df106d77c2d00596aaf6dedf686154"
+        },
+        {
+          "path": "packages",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-arena",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/Dockerfile",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1586,
+          "sha256": "e629248060f7db84fe04d68cd8533f5b291fe800f77febcac7c32bfafad98f5a"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/README.md",
+          "mode": "644",
+          "type": "file",
+          "bytes": 20549,
+          "sha256": "c90ea6faf243b078cce8b1cc2df2f1e08505ae0a5cb4cee88f5d55169a2e8f05"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/acquire-tool.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1479,
+          "sha256": "65a2558585c2cf3ac64f4dabd086088b8537a03828d66c2ec28b0a91e31d40d4"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/closure.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3159,
+          "sha256": "aed0c3a489ce7c2ca563cc843cef48b509d23f3d5deb83358bf8c297764d8e8b"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/context.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 7716,
+          "sha256": "08b427e9764984811a2359d083d1baec9bf1287c2de14b58f99c07b7f1998e2a"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/evidence-bundle.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 12213,
+          "sha256": "ef5003d8bfd76b4ed559bff8ada35381ea79f48f74e866b90a5146a21916b60e"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/evidence-bundle.test.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 19498,
+          "sha256": "7e74e7f9896137997395396cc82b3615e832b80f9dfda90a664e2f57adf67bdd"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/evidence-limits.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 303,
+          "sha256": "45fcbeec6661c7246c4251149bc1ee14250e4d8427dbeaf1d4e3685edbed8b83"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/image-measurement.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 17481,
+          "sha256": "aa3f29391ab75cc151511d838d9b191a31b78a26661af6133d4350fa612ffbf7"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/image-measurement.test.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 24809,
+          "sha256": "a6588d5834df881ad921436ca22a65c7c7f2ca1b51b9d409b485579f26402dae"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/infra.test.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 20449,
+          "sha256": "c0ddc3d4cb98b48e3d4396f164261f8f36b38af045c73b3d657a9e5c963d4cbb"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/logged-command.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3388,
+          "sha256": "13ac5942f885da870c18f84503b3d9ea3d98332893e975c85937375b4b1eb1c4"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/manifest.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2602,
+          "sha256": "106557db63888302f5c2f17be2447bf818ac542c238460b0c8f57387b424e0ae"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/pins.json",
+          "mode": "644",
+          "type": "file",
+          "bytes": 755,
+          "sha256": "088f415fb8e59694efaf591e1b5a97d42c1fdc5cd89e2eed7d6ce82c1f2e25a2"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/policy.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3442,
+          "sha256": "928520db0550d0dc21772acb5d8caf57306ea7b2082d72b93bf577a02f7cd889"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/probe.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4142,
+          "sha256": "86898587f6c49d72a348883e1164d8f0dc5567d1730c67bfc15d6e455ebce53e"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/public-closure.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 92431,
+          "sha256": "55f4c58053de4499ec32352bd8df20e7befe169d3b6784a33ef13842103ccd25"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/run.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 11963,
+          "sha256": "2d9e4718716decd3c457fe1bbfbd684fd46e0ca2434dff1b0f2474633fc630c6"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/runtime.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6953,
+          "sha256": "4dc8d48589a6f010c6e76817265f9c09c5e68c85ec85c32e4b3e5f52b03ed6e3"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/tar.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 15341,
+          "sha256": "f58da1cf8b84af73975950633265f084c1b1b226f61c79ac88a9e211a1da4d0b"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/tar.test.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 17988,
+          "sha256": "6a136d3feb536b8f0af224f48cf8804b8d65c62b010c71802706f6dbe066a88e"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/verification-plan.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3037,
+          "sha256": "f31494f354dba19b9a529fd0824bf3583bfb5f16b9d2622a793d0f8757d80898"
+        },
+        {
+          "path": "packages/starchess-arena/hermetic/workspace-policy.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1090,
+          "sha256": "41380ac12f43f340312791b8dbba77e90dbcefaf7f286a37d26881a1deb64ede"
+        },
+        {
+          "path": "packages/starchess-arena/package.json",
+          "mode": "644",
+          "type": "file",
+          "bytes": 660,
+          "sha256": "602f929a507a1c7806e850543d030de83091bd8f7413ca9520f34f641cce6e7b"
+        },
+        {
+          "path": "packages/starchess-arena/src",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/challengeCandidateCodec.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 12254,
+          "sha256": "1b1d9240eee530bce2456b3fd402dd9967becdf85235de3767523d77fb28dc2c"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/challengeContractAdmission.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 14000,
+          "sha256": "e4709a0fefedd16a036e97fb17fccff02466a3bb3fce73471022b981be33c858"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/challengeContractCoverage.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3740,
+          "sha256": "e0f8d041f236fb14c863358a9b9cf549604af19231592fb292b430b0ae073a72"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/challengeCorpus.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4364,
+          "sha256": "0af7a9b96abc0734c535d21c7b84877078d1787cc2e5dd175dc2e479e964e0b4"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/challengeDtoInspection.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5751,
+          "sha256": "15acc927792b17144e570e77728d2b8bb02f82abda3ec17cd865be4bff578a70"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/challengeEvidence.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6490,
+          "sha256": "eadcd7a1680276225c2c58d6e4fcdfdfbd2b19e7239363aa5f9bb289d43c8503"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/challengeEvidenceImport.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 53784,
+          "sha256": "98e0dd5c24161ab92792aa7687bd64b742869f65b358475c061ecc8c5080a34e"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/challengeFeatures.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 15408,
+          "sha256": "98472d7e0330cf2f2c540df951160d3d5bb1e6feceece835f33902876ab1e7c9"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/challengeLifecycle.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 11988,
+          "sha256": "cbb6fd5004afb3bff1b82d68042dd452943e6f1f5feb2b3c1d2ffe3353679310"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/challengeObservation.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3778,
+          "sha256": "0eb4e0d8e0886de0717d5380f2ca4e2f8d486c7be1cf598ae3305f13b2331230"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/challengeObservationCodec.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 11381,
+          "sha256": "c81eb14ad8d7fd44785ee70e5e6ad2030ea4425c32a2c0743ede03fc219c6f73"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/challengePinMigration.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 8608,
+          "sha256": "d5cdbbaee20f0df1f27b5241d971f25fb60ef38e37cd5ad6eabc706dd2bcfc8b"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/challengePublication.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1214,
+          "sha256": "39019f7403f28da46c5f99ca96339b03f7a4c5264f0ed58c509b2efe88e89be5"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/challengeSourceInventory.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 141124,
+          "sha256": "55ce2b2b47e3b16c89453a974e83652ea36c81441b424c7e841eb2b25488fd9c"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/challengeSuites.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4636,
+          "sha256": "81297cbc9c50e53679d4eb7237c6eaa1a77b168ae855e02800e9e0e01350c27f"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/challengeWatchdog.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 13800,
+          "sha256": "649a785b996b74faf5b44c003664782d1b59ff8fd5f84e57b19e7514aeec1b94"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/chipPly.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2560,
+          "sha256": "666198676340abcb064a116ffac301677c5df741a13a5d9d220d4eb12955797c"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/compare.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2822,
+          "sha256": "9ccc623254e6fb51cd2ddb22d7e812e1d324c59eb4c3776df27a19b847691c90"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/corpusManifest.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6754,
+          "sha256": "65bf3e4b2ac7bc353c83f5beb2300959cff542ee3bb541ec829e23f4a1cfac03"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/determinism.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4238,
+          "sha256": "c68e8efcd31664aa89ad95aa75b4403079cd3da443569937d75fb14dc39f789b"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/feedRescue.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5531,
+          "sha256": "b09cdd1ca269d382814f5ab16de1a3296fbc6085b3283aa1715b09fe8c15c60b"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/fixtures",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/fixtures/challenge-history-pins.json",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1113,
+          "sha256": "afa4c7b687d262f106f7d8092c7ce27d3e56717b4a0543ef96e156563dedb4ab"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/fixtures/challengeAnnouncementEscape.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 451,
+          "sha256": "ad8e6de75a8c196ba1dc3fca900e6535a8ac48f71adec3251b59105149fd9f15"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/fixtures/challengeBeforeReady.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 222,
+          "sha256": "0d6a60b9dcc9a5ae52af54e30bc8c4de595c106e69d9f9bc4db86666d65e43f2"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/fixtures/challengeChildCases.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 7610,
+          "sha256": "1cfba432a986166db67acc928bafd105c4b15d138b12011a915afb4a99c3a0b6"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/fixtures/challengeEvidence.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 28262,
+          "sha256": "356138eacc8c556bfcc28f8cb2914d0810353fcf4484ee135d9bf6895b178841"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/fixtures/challengeStartupHang.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 104,
+          "sha256": "39d9cf9007b1eabcff79f36016d26ac8dcc1a058508fbe1b93599afd7d8c6771"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/fixtures/challengeWorker.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 7502,
+          "sha256": "973c1c87a59f588a6362836664358553c0e94d53dd99c7829e27f3cee88ded4b"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/intentCodecV1Bridge.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 14235,
+          "sha256": "b0e5deb722dbae7689f858d36bd6ac1c05ee54a3c831cbc37d9acfb9aa2c6b42"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/kvs.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2108,
+          "sha256": "721498eb16c479813c71b6475c4a6560d5eaa04165265c46faabb908084971c8"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/observationIsolation.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 12688,
+          "sha256": "e692191dbb8fb903c9b1946231d9dca26484ad55ad9239a53b6734e543ecd43a"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/observationV1Bridge.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 10097,
+          "sha256": "750be076d70f2a38727d155fa488615c6142bc74208af0950a0fd3b11513b669"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/publicV1BridgeIsolation.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4251,
+          "sha256": "4b874a1dd692a5303eafcdc9f18ebac538dfe5a0f3765f780c5b30a87f68c674"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/r2CompositionEvidence.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4003,
+          "sha256": "3a02fae9443c086ed9afa6543fe8c8482547a5c7cec1e6e8a433e7b9ed980484"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/resourceLedger.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 7434,
+          "sha256": "0f7e4ca88fbc2851dab2060970699ffe9d7b8d3c8c0b05c9612994685f51a595"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/strategicSmoke.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1152,
+          "sha256": "91ecab3ef781fe036f38856edbb0c2bf1a665a2c4b588297a8f91d83ddb637fa"
+        },
+        {
+          "path": "packages/starchess-arena/src/__tests__/strictRecordedQueues.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 15706,
+          "sha256": "01eaa2b9416af74f6bb498d1b02875e9f26f9d31064093a8e716f33f1ab2e3ed"
+        },
+        {
+          "path": "packages/starchess-arena/src/authorized",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-arena/src/authorized/v1",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-arena/src/authorized/v1/canonical.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 759,
+          "sha256": "e6819862ada10504ca27f4a24e0f0e295cd5836a4567635ee846dc8754a4eb63"
+        },
+        {
+          "path": "packages/starchess-arena/src/authorized/v1/observationCodec.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5471,
+          "sha256": "4d8e346b8edf1f4c93653a49a06102e4e89610b43237061805525fbf20e96299"
+        },
+        {
+          "path": "packages/starchess-arena/src/authorized/v1/squares.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 274,
+          "sha256": "4b713ff51ce7a33cf12214cb159335225efb62b767a69ee0d20b4a4a16296640"
+        },
+        {
+          "path": "packages/starchess-arena/src/authorized/v1/types.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 850,
+          "sha256": "da54549a4e246c4a5da58b873ed660d320a060a7b6a62cf32c57b7cf1c291820"
+        },
+        {
+          "path": "packages/starchess-arena/src/challenge",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-arena/src/challenge/admission.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3861,
+          "sha256": "74a931e9aabbe950c5c5601744efd680494a3af8dda42b83c7e468efc3fba176"
+        },
+        {
+          "path": "packages/starchess-arena/src/challenge/baseline.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2482,
+          "sha256": "53ad6e4b47e56a5361d808487098fe842fb9c8d5a2816485a58e332a12ed374a"
+        },
+        {
+          "path": "packages/starchess-arena/src/challenge/config.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 615,
+          "sha256": "d5c0a1ff14b08d3fb34de4c6ff8b9a99baa4b402de6a5d476ce0da3f3d279fcb"
+        },
+        {
+          "path": "packages/starchess-arena/src/challenge/corpus.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6194,
+          "sha256": "4c2408419a8b26123f63b08762c9a08b2d181cecd681085d09930ee3ab2cffb2"
+        },
+        {
+          "path": "packages/starchess-arena/src/challenge/evidence.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 8818,
+          "sha256": "6d533e265bd886527f28eb146f5d8b14211a4137b4b6ff5be2d2db79ad889fb1"
+        },
+        {
+          "path": "packages/starchess-arena/src/challenge/integrity.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6547,
+          "sha256": "b3fc2ec8cbcd86fc3f388934acc7602ad8d7c069f2ccc0ba550c87e2695e2858"
+        },
+        {
+          "path": "packages/starchess-arena/src/challenge/observation.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2523,
+          "sha256": "4d2e73bafdd196a91f33933d6ad27f9ec4393f60e5290abb7f2cce4158873133"
+        },
+        {
+          "path": "packages/starchess-arena/src/challenge/pinMigration.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 8828,
+          "sha256": "84bb59762042549e34336633b065ddf0a7db8fc67a3e0e4c4e78d521d0ed7beb"
+        },
+        {
+          "path": "packages/starchess-arena/src/challenge/publication.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 857,
+          "sha256": "ce2137a18b00205f342b4eb78d424b63ef0afd858c0a3db9df87d04e856bba57"
+        },
+        {
+          "path": "packages/starchess-arena/src/challenge/runChallengeMatch.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 11421,
+          "sha256": "7aba9fc8402e155b6c61b480d529802b6ed01b6eb2aabe00b3ccb44b01009510"
+        },
+        {
+          "path": "packages/starchess-arena/src/challenge/schedule.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2492,
+          "sha256": "0c3f41cff9a61a00c2d2cb73f2897215db31b47a887a3b8e92c419f1c5e74f5b"
+        },
+        {
+          "path": "packages/starchess-arena/src/challenge/sourceInventory.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 126447,
+          "sha256": "e737739c354103f988c6931ceeb6aad3f3c079e289787ee079271ad4a2f9c43c"
+        },
+        {
+          "path": "packages/starchess-arena/src/challenge/supervisor.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 23243,
+          "sha256": "32a750fae9cdcc3dcc8dc9dbc45166763e2a8c23decc8958c9efb6f398dcd8d2"
+        },
+        {
+          "path": "packages/starchess-arena/src/challenge/types.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2987,
+          "sha256": "3713208c3279a4e8403b3d40e47ba3ed28aab12243a7845f996a1c8d338e9f3a"
+        },
+        {
+          "path": "packages/starchess-arena/src/challenge/worker.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3973,
+          "sha256": "3925f87bedccaaef247a5f4f726da1cdb3a601c876a97055f2601a64617e9927"
+        },
+        {
+          "path": "packages/starchess-arena/src/challengeContract",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-arena/src/challengeContract/candidateCodec.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 848,
+          "sha256": "3b16998af61e85f00e26039b820b2c324218f4b7c6c4b1d8fa6f81489a1c7f8b"
+        },
+        {
+          "path": "packages/starchess-arena/src/challengeContract/candidateWire.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4692,
+          "sha256": "8238a445b75d18f199866a528582249db16729811f8f8377cc53cb5a4b31da7d"
+        },
+        {
+          "path": "packages/starchess-arena/src/challengeContract/coverage.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6480,
+          "sha256": "85189e2105bba7ea09920780c815c658c03582a166f3b5efe9dea034416acc79"
+        },
+        {
+          "path": "packages/starchess-arena/src/challengeContract/features.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 9056,
+          "sha256": "a2774d67163e3dc698701ece92640549216cdb9cd97cd44651ee9d36e292a9cc"
+        },
+        {
+          "path": "packages/starchess-arena/src/challengeContract/observationCodec.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 212,
+          "sha256": "34af7701abe784a80e59a8a421ab6c72aea63d4736eaa4a01c94cb8e600aba9e"
+        },
+        {
+          "path": "packages/starchess-arena/src/challengeContract/validation.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6002,
+          "sha256": "33375bd048d774fa691fb05ff6b9dd5144c7bd02381863c0280d4a779f381acb"
+        },
+        {
+          "path": "packages/starchess-arena/src/cli",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-arena/src/cli/challenge.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1585,
+          "sha256": "be6a1be660387ad9ea2f4bd6484a0be076742d970730e482dc4a097373159ca9"
+        },
+        {
+          "path": "packages/starchess-arena/src/cli/main.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5656,
+          "sha256": "22eb0406a98446e0a37ee79209bcfad88c3823a778e0569424159c958115f98b"
+        },
+        {
+          "path": "packages/starchess-arena/src/compare",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-arena/src/compare/compare.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3696,
+          "sha256": "8693eb852bdcc8bae1ff245bc455b3b217dca209e350b1223419a52433f8b18a"
+        },
+        {
+          "path": "packages/starchess-arena/src/feed",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-arena/src/feed/nodeStockfishFeed.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 7121,
+          "sha256": "c41bb19c28886952d2bd529e5f07196fcf5e8e9bb5a45546f35cbff9ec1e75d0"
+        },
+        {
+          "path": "packages/starchess-arena/src/feed/types.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2351,
+          "sha256": "80b043a2738f1b71500e12eae066fbf4d7c1cb8002d70b9fc36e49981a4090f8"
+        },
+        {
+          "path": "packages/starchess-arena/src/index.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1461,
+          "sha256": "648c5a69d34a35a41fdb31ea42384f637ebeca2443e1a4fbdcb3637b0fb7ffcc"
+        },
+        {
+          "path": "packages/starchess-arena/src/intent-codec-v1.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1523,
+          "sha256": "3c07d033d67d3cb9044f0c5bf2b2c6592ee48108f32ca359a7cb75dfcc0ad024"
+        },
+        {
+          "path": "packages/starchess-arena/src/observations.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 783,
+          "sha256": "2eb89c3117d475dd512124d94cbb3e149d04d690c46b6c866068fde93c6b4f59"
+        },
+        {
+          "path": "packages/starchess-arena/src/players",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-arena/src/players/naive.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1305,
+          "sha256": "62c928a3778be3ec5f18c286258ba2d62f1d5a52b27954c17e7491c8411c4722"
+        },
+        {
+          "path": "packages/starchess-arena/src/players/strategic.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 8008,
+          "sha256": "bd71c4dab37ad430e267c4b1c7fa22fb31200426645a1a79ced9a9f7cac22c09"
+        },
+        {
+          "path": "packages/starchess-arena/src/players/types.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2526,
+          "sha256": "febb6636fffdd33e99b6296ae2619a26fe86a3facac8b753bb774f2cc02c253c"
+        },
+        {
+          "path": "packages/starchess-arena/src/record",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-arena/src/record/record.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1736,
+          "sha256": "4c2500ac056ff915bd0edb2333d15b205e370f6405607d6dbf07509da0695f66"
+        },
+        {
+          "path": "packages/starchess-arena/src/run",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-arena/src/run/bank.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1486,
+          "sha256": "7d2f2d82c2e9cbe67301b9607b99a0ca22c8910b5e7a51b0887019f518e0a763"
+        },
+        {
+          "path": "packages/starchess-arena/src/run/runMatch.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 9240,
+          "sha256": "476b87c5f3cd74286437291953a8feb3d335c9fa2f72e1da5211aca37b7ccda4"
+        },
+        {
+          "path": "packages/starchess-arena/src/seeds.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 940,
+          "sha256": "46063bdc695a254a02b89dbc1a01ed5c7e810446cfe0c845c8b161b06e5eb947"
+        },
+        {
+          "path": "packages/starchess-arena/tsconfig.json",
+          "mode": "644",
+          "type": "file",
+          "bytes": 261,
+          "sha256": "6e35c8fe29c2d6fec795cff3d9cd08a173a2f380ad36a09af46951863b714ef6"
+        },
+        {
+          "path": "packages/starchess-arena/vitest.config.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 365,
+          "sha256": "d29e4ed6e14585cef4f3f37b5157978141499f44309c2e53680a0ce6be7fc2bc"
+        },
+        {
+          "path": "packages/starchess-core",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/package.json",
+          "mode": "644",
+          "type": "file",
+          "bytes": 472,
+          "sha256": "b837e00355f118f8c7ec23d65ee0933996adb9b91cc53318747f75435970998d"
+        },
+        {
+          "path": "packages/starchess-core/src",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/adjutant.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 19729,
+          "sha256": "e05e1d0b0750f463e56d88f7283bd7d4f3234fea3446631f133cb58ab18a1d64"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/adjutantDefinitions.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1181,
+          "sha256": "aa800499aec4112679fb04780877c9d3a8aa62a792b1b1cae9f326aaa90291cc"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/ai",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/ai/charonHunt.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5775,
+          "sha256": "7f1032d97fa81c270dc98d6bd5897a5da39528dd9a081fc7a6b2c5e085056317"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/bank",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/bank/storedBank.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 809,
+          "sha256": "93b931a14f3b1a85fe9d4a254ac591067ec0d7d42781c82c1ec650d7a58c1c6c"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/boundary",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/boundary/boundary.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1207,
+          "sha256": "abd143d0ef6d051d059e2380bb214e37f809d0056d251ac906168aa873702807"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/collision",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/collision/collisionRaces.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 7607,
+          "sha256": "a212454882da77ec602a2e5152d5147a84744b7b6e18a96b33d7f5c5d46417f3"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/collision/fogVacatedTarget.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4296,
+          "sha256": "c24ac4d910d09e30a9c9274e593877f13fa5c7d2d32ed83cbb3c2c4e211693da"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/corpus",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/corpus/goldenCorpus.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5820,
+          "sha256": "b10bdafeab3d4c60f47f78214aeab01f835a59a08fec7150df6cf80ef2005561"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/deploy-reach.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6146,
+          "sha256": "eab0f9305cb1f233ccb2099db5a82fe3a16d5661492f64e9cf45bb31b8d31288"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/economy",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/economy/applyStoredIncome.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1341,
+          "sha256": "07443dc64d7519c3924968b10720fdcddffaefb377fbe38c317bffe363f59f5a"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/economy/estimateStoredFromSnap.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 634,
+          "sha256": "9ebe05db3ab210a429815089b5506a7c50ea6de708698f24a37d256e22109208"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/economy/mechaDeployCaps.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5598,
+          "sha256": "afd1bd0af980b5ffadfa3e38ed3f87469f3b6f70735b054b2fd4ca6854cf04a2"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/gas",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/gas/gasLastRank.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5249,
+          "sha256": "506d3314fe05574eef47680273f43673b540cc670782cfa2f1c60cc01f7d00e6"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/gas/gasRemainingFor.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1527,
+          "sha256": "6fb59c9768b7f2813a5e6f78cb11f25580cd69bfb07dd0a449bb8c666567ac76"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/gas/marineGasStackOrder.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 8521,
+          "sha256": "61665c63560f044e6c44611efd8576867cf8168e6be197af2354c76537046c3b"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/legacyKinds.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3579,
+          "sha256": "6296e42d87b8b6ef71548a4548c309cd881673ab69ff878dbce81cf49879a717"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/marine",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/marine/marineDiagonalCaptureOnly.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2868,
+          "sha256": "6cc62d3f672df060b24f84a6c865c56fc8cc3f79c9480107b1398ba7e47593a3"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/marine/marineDoubleBand.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5288,
+          "sha256": "8d3647e2f04dc1f3f984e7aaba266dbcd889a9ca9e0ab5d0ed1758df819dd432"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/marine/marineFrontBlocked.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5818,
+          "sha256": "0049e588c20d62d63586e473cec6366787d89fd7d9158f28adae3f2f9f342202"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/mecha",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/mecha/mechaCCLine.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4527,
+          "sha256": "0b523c0acc39a24b3548b986e493fbb00f0f6758e4871de8e2b40661f36519ed"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/mecha/mechaCharon.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 7715,
+          "sha256": "6fe6baaf4f5cdad17a9c7c2288e87a05bcf785432451a6ec7d92493b4af90fb3"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/mine",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/mine/mineChecks.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3309,
+          "sha256": "4cb2b8e87d1b19b4135e0fe201cbc8f29137ed13cf5aa40d5040eee5cc9f79f6"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/mine/mineContactRoutes.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 16868,
+          "sha256": "d8eeeae59cea9cf4471fb35d2cfaf343a1e8a11669f7f29aa8c0a4dae7911004"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/mine/minePathContact.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 10403,
+          "sha256": "26c4c2621b6bd9cfb5c609cf2561b8ed393839874de609694fd5f3ecf0fcdaa9"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/mine/mineTargets.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1938,
+          "sha256": "088c5badbff1f3887ceb489d9c20661ca7ce4b83cc82b85ad5d8ec2d1c9f3846"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/move-timing.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1509,
+          "sha256": "1d99176ce6768fdb27ddb9d652cee73ca3697bc66d831f7d484c3fb043da8b4a"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/packed.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5027,
+          "sha256": "4bd57619414ecc9f50f927be3b360d8c9cbbcb7ba92c4b8282c0c0682ce64855"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/planning-v1.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1247,
+          "sha256": "395b3d5d91d3f371c12c0ce82eef7f53e6e38abef4d5a4b1c8f37f0898f5ed4d"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/planningIntents.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 16963,
+          "sha256": "07fa21ad6646c380c6d3b88a7c42825241dda70e6f629fe6f07f3a08a2fceec9"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/planningOrder.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5818,
+          "sha256": "5c77b818b5f753490267fbc6cf79e9c1e91a873380a637339d5d56616029bc68"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/promotion",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/promotion/lastRankPromotion.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4111,
+          "sha256": "cfa01f9056904d83ab59bb8400cee92e55f297e9a317fb5cc353089741727bf3"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/queue",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/queue/queueMultiSpecial.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6908,
+          "sha256": "8949963eea053fe457d04153a2c0bd44aa0fd68006de66d382273b8afe30bc62"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/registry",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/registry/specialRegistry.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2528,
+          "sha256": "b2c15d22ba0ef26b86d06285b73e5cbe1e67a3f7fdced512dc3c5b7a5d1a9348"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/replay",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/replay/fen.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2377,
+          "sha256": "4ff599212f48b5740e332d8165bfdd56d1967639e1507dd3bfe30abf1c74524e"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/replay/record.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2854,
+          "sha256": "bda64047d775730a1896e892b0dbe38be76e4f06d6b77d4565af02d7f9b817ea"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/replay/validateRecord.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3901,
+          "sha256": "053800b983df58d98f98efd5521d0ff64a1a772e378080908a8b6e6ce3c56425"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/shipJumpCollision.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2672,
+          "sha256": "48914a642e1bdec4b8a8e6760a28216cc75b3aedfb8c916e541de1eae2f75b10"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/spawn",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/spawn/crushSpawn.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6697,
+          "sha256": "e0cfe7617a69918cc4c95eca5d32b737a00731b8af31dd972e4cb1d1ad88cbba"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/spawn/spawnCCAnchor.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3788,
+          "sha256": "c80a36facee2594b208f0a3fee2892786cdaa574640483dfe94aff01960652e2"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/strategic",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/strategic/attackers.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4766,
+          "sha256": "b81cbf71f42a2bcadc467e5dfed568f8641b92c98ad9ad0ee379d1b307e5d60f"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/strategic/candidates-parity.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2593,
+          "sha256": "7331e7ed72ccfcba7e3e5b1da997773fb93220a294a94b7a83cadaa8c47192d6"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/strategic/deployLookahead.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2441,
+          "sha256": "81f01a041bfa98c1dbbc9c73d75111d10decd8b6a2257368c31d41897527da9a"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/strategic/economy.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5519,
+          "sha256": "52e145ba2da74f5069eed82add56a33d1bbf1b78571c49019c4844ffdff4631d"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/strategic/economyAllyCrush.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 10540,
+          "sha256": "fd08e8d3214f41a150dd30421cf1ba245953977a593a47b6e3192a4fa6fdc985"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/strategic/intel.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2775,
+          "sha256": "059f9e1cae7ecac85b506bfcaaa2d8b19871cf1fd4ba3116e4eacf8efd2502a8"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/strategic/orchestrator.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3424,
+          "sha256": "ec12f38dbf52c71288bccf3593f971b12163cbea9a1617d1386ec7033cb6445a"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/strategic/runnerMemory.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 9128,
+          "sha256": "deea8c185fea767f6a7d2814489e7a91aa7613cc4c5f1b2f6a0974d832926d10"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/strategic/runners.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 8579,
+          "sha256": "b22d26005b40c946e9f81e54838c358f7c550b67fc1738f2be574c5593cd9f1c"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/strategic/witness.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 7458,
+          "sha256": "fea602787f69a1c9119b2939813fd47d6adbb3f892ff5e2af692f453020e4d33"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/tactics",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/tactics/ccFocus.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2913,
+          "sha256": "05e383d2125afa6a8c9f54c72af743b9470d060ba410d2253ab96aafa92cc190"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/tactics/weightOrdering.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 10232,
+          "sha256": "e262daaff68b3f6283d82184a4cf0dc4043781b013d8d4d564c0fa3a523b8193"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/tank",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/tank/siegedTankMoves.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6142,
+          "sha256": "2c3a37a14d96ff32876347179f9fcfa6df1491705db40db5cd81a103571ea7a2"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/tank/siegedTankShelling.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6225,
+          "sha256": "827fbd3c1b18263212f6c03b73fcec8e58f55ee216a568604b085eab6a8a6d6c"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/turn",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/turn/beginScTurn.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3446,
+          "sha256": "c1f459e27722ab7e609eef7cabc707133198a319f3df37cb96f227aec7f7d597"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/turn/gasVacancy.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6048,
+          "sha256": "2a0a3f2da44ddae0a9bcc5c1ebd63b581242fe8053d2f4e46a112c8d06ef19e3"
+        },
+        {
+          "path": "packages/starchess-core/src/__tests__/turn/turnTimeout.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 638,
+          "sha256": "9973aafa2d3b47a4579f7e3c97d4db1ae8ae5336e0b1aca7295d82a78edc332f"
+        },
+        {
+          "path": "packages/starchess-core/src/ai",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/adjutant.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4952,
+          "sha256": "002bc6395fa1b7bdedb52fbb017f7e6907708416d272917dd068bc90de179448"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/context",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/context/ccFocusIntel.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3513,
+          "sha256": "a5d61257443d603b05a7705985a7497cd079ff8f5f0d1d06582e1b8227b86e90"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/context/ccIntel.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4246,
+          "sha256": "186dbd78f1c2930795c095c8993b28010a6067ca3c001f2a13f143eeb028955f"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/context/geometry.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2852,
+          "sha256": "2fac7042660bff7809a680e913219042a51f0d8e9beded3c620f160203c3d0df"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/context/index.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3698,
+          "sha256": "efbde2d32734acc9bdc12cbc07eea350d81b7e4fdb4e42237958f92cd07506e4"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/context/marines.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2343,
+          "sha256": "0d2585cc30edb2c712e24c36c9b1f4d36aced7996feffa7d4b2ab7c62ac48711"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/context/material.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1981,
+          "sha256": "9c054ee2ec293d26be329b7eea3d39505fdec535c6b2080affd3feff2bc6d857"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/context/mines.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1257,
+          "sha256": "16f61498ddc3001f1c3f0707366dee82113b57edaf3c3c4ace57f615f570e3ee"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/context/posture.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2029,
+          "sha256": "442702d963e06dddfa68a796da096ecbc07e3a99497d1ed3c3d018aa9e8ef7d1"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/context/rng.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 530,
+          "sha256": "08850895113d9c1f85b902ac1c920cd7e254165c5d2b229ca8183e06d90eba44"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/context/tactical.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2055,
+          "sha256": "252b53e3c9bbfbf3150e47599d18e1d3f2ddd71f0741058438dd3ddeb0bfaf6c"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/context/types.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5521,
+          "sha256": "d5ce767f0c20580f4e1de60c15e26c5464da76ae392830b7fa2e84eea3d80964"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/context/vision.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1548,
+          "sha256": "266f6b47a08127e5f6331c1d950f8d95237a4560909495857411b37def07199e"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/definitions.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1156,
+          "sha256": "499fc9ab5e5c5c26d7dc36d93fb1b45d4048c75d8514d713c579a29e19035054"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/plans",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/plans/simulate.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3740,
+          "sha256": "f6ce90d726767deddcd683e438a62ab5d542f72edd1f75e45e27e8ec702969e6"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/plans/stacks.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 12186,
+          "sha256": "4d1fcba35a514d9c413d406a90574ccb29e1c88bf0f58cfea54d3672e271bf1d"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/attackers.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3929,
+          "sha256": "5c3e15340515f9d8d56f4ddb6cbd777a2f421baabb8172ea8716774df309df3b"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/context.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5218,
+          "sha256": "4788aa2fb8f2a2104fcec142c7d42881876d02431b62198ef3a4a993cf243017"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/deployLookahead.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5449,
+          "sha256": "a33c0933df06fb9ce1d51440060a2f6ff5ee4963e4c1aa872224586661e2a619"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/index.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3032,
+          "sha256": "e6d24c9c2ad0888778a77add01e21ab0289bda574577cbec86ddc3d44a8a1eb9"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/intel.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5230,
+          "sha256": "2e4100d83793d95ea600073f72e4df621717dda6d99a7fced395c7197b3f8b03"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/orchestrator.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5881,
+          "sha256": "dba79266db741bf0b616a757dad69659cd9342c1a6c6c95fa663ccbb1109c444"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/runners.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 19495,
+          "sha256": "5973edcc44e89887197b67855f576c4bb58c1fb3262bfc02efbcd77adfd54037"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/strategies",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/strategies/attackers.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3445,
+          "sha256": "4695d6a2e4cb1eb18f5a171c8673acdceea6899e3aa90e1cdd76415e63a33be5"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/strategies/captures.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5053,
+          "sha256": "cf759270a3a21cf831dc96dca742a232b29ea7434855b3370fa0e12932c3959a"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/strategies/checks.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3587,
+          "sha256": "6e4c07ad8408b62ebe87ab87eaf0e369c9c4fa21d235336a5c07ce0715adf1e1"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/strategies/economy.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 15038,
+          "sha256": "87e0e1358611e809da7a526bfd568d78060a4d2f7352dcecdde5c42ef3d2cfb0"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/strategies/index.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2473,
+          "sha256": "bb23ab162ccdbe661c56be2af6d9f14203bb7a01251a95ee50a0a83a486f0e6e"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/strategies/runners.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 7779,
+          "sha256": "f981562f4ea16e85a7ba6f415249f3196c21951237d8cfb553d6fa012ca9bd0a"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/strategies/survival.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2448,
+          "sha256": "b61dd29726872f30da351e8b843c91e0def45bbed2fe44e58f7d6aa7aac10c38"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/strategies/threats.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1690,
+          "sha256": "6b77b0d9a62f69ac08b52222139fc89eca41f0bf9faf1c701d1042ccc4cf37ef"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/strategies/types.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1179,
+          "sha256": "55f4f326e4f79b60457a25d0d004c3e40dbe390fbe4d988f71062e70865d698e"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/tracking.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 7206,
+          "sha256": "ccd6b5413853c1c33165228f55eff047e4f03ea29506329a68b050eda91286b5"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategic/witness.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 9576,
+          "sha256": "94e080bed32c43f6748c28f9cd7155d88556f8ba622a380aec0ea545d01033f4"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategies",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategies/captures.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 8992,
+          "sha256": "fef0c1ba86b5bd22d59b0b764908a810d188da5f03e6f192f9c4516ffe0eedfb"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategies/checks.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2371,
+          "sha256": "14f1b3f8ba49818ecf85b5eb4cc85100423a83d8f02ef32374fbb7c312d8cb18"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategies/economy.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 8371,
+          "sha256": "54b27aa3427a2e73d9928dcbd34499c587836122a8cb5a34aa6b92ad011925c8"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategies/index.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2114,
+          "sha256": "877bc4d5d7f425c917bab2fe52f09d87613c4c13cb822c9441bf4aed2a69c656"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategies/mapControl.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 7786,
+          "sha256": "0c95b69b4882164df78f01318d9bcf2dd12ab1e1b0a200b32ecd39dba67611a5"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategies/survival.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5829,
+          "sha256": "e518d3d4a14f922929b6a51456b7dc826343bf11224905e4fdc052a1522ada54"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategies/threats.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1102,
+          "sha256": "d7aa1dd4ff324ee9e2499315fd9c7b5bf26d87fb953620da2b233263a1ad361c"
+        },
+        {
+          "path": "packages/starchess-core/src/ai/strategies/types.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1296,
+          "sha256": "dddb6defbb4b917e7ac6cbff9acf65703c260135ddf8067b5c6b4c6316425194"
+        },
+        {
+          "path": "packages/starchess-core/src/board",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/board/classicFen.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 339,
+          "sha256": "b005f66aa7e878b4c5db0e0fce7caa31f15a7d1bb052a2fdc485616d888e3adc"
+        },
+        {
+          "path": "packages/starchess-core/src/board/deploy-reach.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3315,
+          "sha256": "463c757250af849ac48fa54fbe98dd2413a2ab28b800e4b1f0f1327dd39c283b"
+        },
+        {
+          "path": "packages/starchess-core/src/board/mine-contact.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2362,
+          "sha256": "8ac51b3c874685724995a9da478662f7ef63a7ca733fd706b72b57a83beb8cb6"
+        },
+        {
+          "path": "packages/starchess-core/src/board/mines.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3834,
+          "sha256": "1c9082d89051e6ffdfba71c97b709f7d33cced372cf149c02c84bffebbd31fff"
+        },
+        {
+          "path": "packages/starchess-core/src/board/move-timing.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3815,
+          "sha256": "c9f52e420ef8d983b9d007c71443d4d7a787ffc2fed51c2e7d55b0d9bd216151"
+        },
+        {
+          "path": "packages/starchess-core/src/board/moves.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 10462,
+          "sha256": "076606a95e7ebe6297549a843dbddf636dcfe78d128f540685e74b6fd53fbcd3"
+        },
+        {
+          "path": "packages/starchess-core/src/board/placement.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 7185,
+          "sha256": "ba074fce6e431a559522f4a0a83a4f196003a009772c3adff00c678406618f3b"
+        },
+        {
+          "path": "packages/starchess-core/src/board/ray-scan.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2021,
+          "sha256": "aca4dbe442f048f6ecf29e87a83ba39d58d3a48573e001ec80127226632e8c60"
+        },
+        {
+          "path": "packages/starchess-core/src/board/siege.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1030,
+          "sha256": "748aa88ec919c57e59538abdc5ddc0994d772084a32a3bf05f4ac05008431479"
+        },
+        {
+          "path": "packages/starchess-core/src/board/vision.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 9507,
+          "sha256": "c5e495516a3ddca3037a6234dc99fb71fd9753fb3c7f2857c5afa8f080183134"
+        },
+        {
+          "path": "packages/starchess-core/src/commands",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/commands/queue-action.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6541,
+          "sha256": "a5ae8504efd2dcb8587ba8b79c8670809ac172e209c55c1a4f4008d90129f654"
+        },
+        {
+          "path": "packages/starchess-core/src/index.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 7040,
+          "sha256": "0e416cc16626a5cba66e1e41a1f1f874f5d657e10306f21fb40cadaf83c8dd35"
+        },
+        {
+          "path": "packages/starchess-core/src/model",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/model/square.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 106,
+          "sha256": "8ca0ebd7e5826bc962a1c79ddb1e07eaf164597dd63770d94777e76c1ad752c1"
+        },
+        {
+          "path": "packages/starchess-core/src/model/types.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4962,
+          "sha256": "2a43424bed449bf930ae557c950b634ad3ec641e5d2ac5ff9a8ee6c84e64264e"
+        },
+        {
+          "path": "packages/starchess-core/src/outcome.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1177,
+          "sha256": "0413b7e440087b08fb66275dbb83b3e7f5adc34af5dbf3e6e09049c6855fb217"
+        },
+        {
+          "path": "packages/starchess-core/src/planning-v1.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 957,
+          "sha256": "e6886383723fba4b240faa3cd89170bb81171b799b3ff24d102d1ee6b0416304"
+        },
+        {
+          "path": "packages/starchess-core/src/replay",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/replay/fen.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2196,
+          "sha256": "17f78350954e297a5c1efe210ac6436a3ddffd3fe309d60026bc5d2e5862eeca"
+        },
+        {
+          "path": "packages/starchess-core/src/replay/packed.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6223,
+          "sha256": "791389a41611788aa9a5c17745536459bb4ba82417ab658d128f0eec90152a68"
+        },
+        {
+          "path": "packages/starchess-core/src/replay/record.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 8719,
+          "sha256": "c664e31138a20c60d589f891d225ee04a24b1a8bc8815a7c6e288a2282d3e9a4"
+        },
+        {
+          "path": "packages/starchess-core/src/replay/validate-history.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4309,
+          "sha256": "849ffef4cdc6f5cd30416b8814b56c2719ef2801ef25cf05cf2f9c3dd7214c9a"
+        },
+        {
+          "path": "packages/starchess-core/src/resolve",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/resolve/resolve-turn.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 40350,
+          "sha256": "00232e7c30c837102097c8b1fb9ce0025fa564103b866066a07b881b304c953c"
+        },
+        {
+          "path": "packages/starchess-core/src/resolve/submit-turn.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 32960,
+          "sha256": "464206986a96c4c44a3f9eb7bbb9ebb57179d779f8cfc8054f13c185c4895e45"
+        },
+        {
+          "path": "packages/starchess-core/src/rules",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/constants.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2062,
+          "sha256": "66acdcc1abc05197fbe3ae9df57a0efe4acea88c6ada78e4db9590f3343b6ff7"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/economy.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3658,
+          "sha256": "ed476a84d6b5c7bc81a5fcb93732ac08d92c20b7a23b38e7c6c2f9373dde30ec"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/planning-intents.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 8148,
+          "sha256": "0998e24253d785598bf29740fa84daf2c64e503585564094b44e5862d39ce367"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/planning-order.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2421,
+          "sha256": "976336de3635cf283bedb5270b58efb363113f401052de322db3b88db1ea242e"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/specials",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/specials/adjacent.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3651,
+          "sha256": "1ec80f27709c024d2cda2c52dbef0485867a34b9939e1d525ebfe85832aebb3e"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 5451,
+          "sha256": "b2c8af310fe33f83a18eb3e5e53b41734c147e5f62440d9422b2e757b376c4e4"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/specials/registry.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1212,
+          "sha256": "0965a88ac773afe43ca72915d2ddccac4cc84c31f58121a1514f6511de8f6b5d"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/specials/stimStep.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1421,
+          "sha256": "fbe990595fe42e41aad17460eb76b3a3f134672144a867a52ee618034f4069a1"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/validation.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 11625,
+          "sha256": "59bc098cfb20cd073dc86d4920c94d063c03bb0a3e320efd9b5ca82b82a517dd"
+        },
+        {
+          "path": "packages/starchess-core/src/scfen",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-core/src/scfen/classic.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 44,
+          "sha256": "43e7cdf70d4d0789aa4bc7c808361c1581e0493da21d7027448d669f9a849c1b"
+        },
+        {
+          "path": "packages/starchess-core/src/scfen/codec.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 20022,
+          "sha256": "f5871938845c126c21ac8eefec3659de090379b34f89b2ff409aa7d366b6fac4"
+        },
+        {
+          "path": "packages/starchess-core/src/scfen/index.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 733,
+          "sha256": "6fe29e70afd2d6c615a31379174d24de2d011e42d52c693f0ea7954a1cfa64ad"
+        },
+        {
+          "path": "packages/starchess-core/src/scfen/legacyKinds.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2018,
+          "sha256": "c6ff1296b2a19480643288df6ca37cf6200c47a96cb6acbf55251149d65e10e3"
+        },
+        {
+          "path": "packages/starchess-core/tsconfig.json",
+          "mode": "644",
+          "type": "file",
+          "bytes": 561,
+          "sha256": "0bc0c8a71148c1f782023bfb989a4fe15b501fd7fd65a092e43f79d7ca0a141f"
+        },
+        {
+          "path": "packages/starchess-core/vitest.config.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 355,
+          "sha256": "d19f9aea6176dfddc13ad4da043c6cad531ad3b7d5d1fcbffc0d6feecf3969a8"
+        },
+        {
+          "path": "packages/starchess-training",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-training/package.json",
+          "mode": "644",
+          "type": "file",
+          "bytes": 523,
+          "sha256": "4ab1d9bc0f417b08a340afd9820b631eb6224b6f7eaceebf65498df25046f2a5"
+        },
+        {
+          "path": "packages/starchess-training/src",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-training/src/__tests__",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "packages/starchess-training/src/__tests__/candidates.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 23263,
+          "sha256": "b0cb7cb0eaba2d878b0983d2273d07297f93edc209decf752d263b0ab91b9646"
+        },
+        {
+          "path": "packages/starchess-training/src/__tests__/closure.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2838,
+          "sha256": "f13a2ef6c98f9d485edd6cd3a3c982d086e334bd17cb071a992131d33771ee63"
+        },
+        {
+          "path": "packages/starchess-training/src/__tests__/composition-kernel.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 14590,
+          "sha256": "4eb5591718be407ec3d28b5636ab8983f24ebd608983f6fe16de8c2535ab093d"
+        },
+        {
+          "path": "packages/starchess-training/src/__tests__/domain.test.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 15160,
+          "sha256": "e8e790f9e37cc71b043d934d06d2944bb5c1409a1a621ce6a4ee9b107f3f4ca7"
+        },
+        {
+          "path": "packages/starchess-training/src/__tests__/fixtures.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2366,
+          "sha256": "629a0aa42601af0d139fa4710c02d0e0ea189ece3bc9f20701cfa471b3f9729f"
+        },
+        {
+          "path": "packages/starchess-training/src/__tests__/tiny-oracle.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 8792,
+          "sha256": "28cc12cf3d0ef7f97b980a3c06c29b36c1fb4ddbd52d3d1b17ceab31bf81825b"
+        },
+        {
+          "path": "packages/starchess-training/src/candidates.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 616,
+          "sha256": "108829c81cd9323b58d35ad4ba58e99d3b6b5c164a52bcc8c0ef19e91fb21eed"
+        },
+        {
+          "path": "packages/starchess-training/src/composition.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 8920,
+          "sha256": "4d5963b154153686a84a965242d71bdd20dcc5eceef616033376e432da023a22"
+        },
+        {
+          "path": "packages/starchess-training/src/contracts.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1366,
+          "sha256": "5e315df6b45d4a8980c2f6ffc498572308ba176ade5a7a7d33aef6685ef1f662"
+        },
+        {
+          "path": "packages/starchess-training/src/domain.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6064,
+          "sha256": "7f2459251fd26486e0d92fa5b65782938a69f5a949ec8c431c6f9d7f5194bf97"
+        },
+        {
+          "path": "packages/starchess-training/src/identity.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1373,
+          "sha256": "a5bccc2d2316f80b7862341214aeed2fc0cf8a0e1ac3dabb415fd1c779cdc70d"
+        },
+        {
+          "path": "packages/starchess-training/tsconfig.json",
+          "mode": "644",
+          "type": "file",
+          "bytes": 250,
+          "sha256": "95de7a4afe421c865bc931755c4e9a8f7d151f4b44bd34e130eaf741d706ab8f"
+        },
+        {
+          "path": "packages/starchess-training/vitest.config.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 180,
+          "sha256": "375974d41354e7fa1f0357a47cd82375186f9e1ed2c1a768b92166ce1fdb4dcc"
+        },
+        {
+          "path": "pnpm-lock.yaml",
+          "mode": "644",
+          "type": "file",
+          "bytes": 312937,
+          "sha256": "10d9c8945a151b402511082911ddf8a3bbc19ff4c55a14a5df8ef0d1afb13b83"
+        },
+        {
+          "path": "pnpm-workspace.yaml",
+          "mode": "644",
+          "type": "file",
+          "bytes": 116,
+          "sha256": "0803c2d19cdf6aad850b39abe2fcb2bf6f7a909a405f359c99744dcca53465d4"
+        },
+        {
+          "path": "scripts",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "scripts/challenge-contract-evidence.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3395,
+          "sha256": "479bc64b751e313c637f9446d1d79b749023d8e9f8c5afcac1ed519ea9cfb3de"
+        },
+        {
+          "path": "scripts/challenge-import-evidence.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 27272,
+          "sha256": "f3abc57ae01593f499f52074dec5c0caf537bdd4a5bf8bda1b7547463b20c621"
+        },
+        {
+          "path": "scripts/challenge-infrastructure-evidence.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 19521,
+          "sha256": "fd6d6bd293033df6c8309eff73370d4bdfd98ca2c3b6b2e22a7b8203ad62eba0"
+        },
+        {
+          "path": "scripts/challenge-preserve-history.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1281,
+          "sha256": "1e6a0f68a8274b555b0d79277ada943b6169d014d9270400b99db5898df0a1f6"
+        },
+        {
+          "path": "scripts/challenge-validate-baseline.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 14118,
+          "sha256": "c90e9d3acd314890c86325beb5aee550248f51478d248bc246f7d4855936e257"
+        },
+        {
+          "path": "scripts/check-public-closure.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 621,
+          "sha256": "effef7c9b77762153529a148df19b6311574e5103a1e68bcddcf52cf55b6b14d"
+        },
+        {
+          "path": "scripts/r2-composition-evidence.ts",
+          "mode": "644",
+          "type": "file",
+          "bytes": 7218,
+          "sha256": "619a66ffc86edac462e20baef9589d069cfdf85b092f8a79f2f8e3169006a9fd"
+        },
+        {
+          "path": "starchess-match-history-20260929-203446.json",
+          "mode": "644",
+          "type": "file",
+          "bytes": 664540,
+          "sha256": "e6770cb032aa76dc05432c7a49e61c4905d1a1f7b859aa860a090821213e7ae6"
+        }
+      ]
+    },
+    "control": {
+      "algorithm": "sha256(JSON.stringify(entries))",
+      "sha256": "bbca2b58e15ca902cedc718e99333f372f092602bbd4c09317149cbb6f302385",
+      "entries": [
+        {
+          "path": ".",
+          "mode": "755",
+          "type": "directory"
+        },
+        {
+          "path": "Dockerfile",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1586,
+          "sha256": "e629248060f7db84fe04d68cd8533f5b291fe800f77febcac7c32bfafad98f5a"
+        },
+        {
+          "path": "README.md",
+          "mode": "644",
+          "type": "file",
+          "bytes": 20549,
+          "sha256": "c90ea6faf243b078cce8b1cc2df2f1e08505ae0a5cb4cee88f5d55169a2e8f05"
+        },
+        {
+          "path": "acquire-tool.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1479,
+          "sha256": "65a2558585c2cf3ac64f4dabd086088b8537a03828d66c2ec28b0a91e31d40d4"
+        },
+        {
+          "path": "closure.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3159,
+          "sha256": "aed0c3a489ce7c2ca563cc843cef48b509d23f3d5deb83358bf8c297764d8e8b"
+        },
+        {
+          "path": "context.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 7716,
+          "sha256": "08b427e9764984811a2359d083d1baec9bf1287c2de14b58f99c07b7f1998e2a"
+        },
+        {
+          "path": "evidence-bundle.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 12213,
+          "sha256": "ef5003d8bfd76b4ed559bff8ada35381ea79f48f74e866b90a5146a21916b60e"
+        },
+        {
+          "path": "evidence-bundle.test.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 19498,
+          "sha256": "7e74e7f9896137997395396cc82b3615e832b80f9dfda90a664e2f57adf67bdd"
+        },
+        {
+          "path": "evidence-limits.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 303,
+          "sha256": "45fcbeec6661c7246c4251149bc1ee14250e4d8427dbeaf1d4e3685edbed8b83"
+        },
+        {
+          "path": "image-measurement.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 17481,
+          "sha256": "aa3f29391ab75cc151511d838d9b191a31b78a26661af6133d4350fa612ffbf7"
+        },
+        {
+          "path": "image-measurement.test.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 24809,
+          "sha256": "a6588d5834df881ad921436ca22a65c7c7f2ca1b51b9d409b485579f26402dae"
+        },
+        {
+          "path": "infra.test.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 20449,
+          "sha256": "c0ddc3d4cb98b48e3d4396f164261f8f36b38af045c73b3d657a9e5c963d4cbb"
+        },
+        {
+          "path": "logged-command.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3388,
+          "sha256": "13ac5942f885da870c18f84503b3d9ea3d98332893e975c85937375b4b1eb1c4"
+        },
+        {
+          "path": "manifest.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 2602,
+          "sha256": "106557db63888302f5c2f17be2447bf818ac542c238460b0c8f57387b424e0ae"
+        },
+        {
+          "path": "pins.json",
+          "mode": "644",
+          "type": "file",
+          "bytes": 755,
+          "sha256": "088f415fb8e59694efaf591e1b5a97d42c1fdc5cd89e2eed7d6ce82c1f2e25a2"
+        },
+        {
+          "path": "policy.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3442,
+          "sha256": "928520db0550d0dc21772acb5d8caf57306ea7b2082d72b93bf577a02f7cd889"
+        },
+        {
+          "path": "probe.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 4142,
+          "sha256": "86898587f6c49d72a348883e1164d8f0dc5567d1730c67bfc15d6e455ebce53e"
+        },
+        {
+          "path": "public-closure.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 92431,
+          "sha256": "55f4c58053de4499ec32352bd8df20e7befe169d3b6784a33ef13842103ccd25"
+        },
+        {
+          "path": "run.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 11963,
+          "sha256": "2d9e4718716decd3c457fe1bbfbd684fd46e0ca2434dff1b0f2474633fc630c6"
+        },
+        {
+          "path": "runtime.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 6953,
+          "sha256": "4dc8d48589a6f010c6e76817265f9c09c5e68c85ec85c32e4b3e5f52b03ed6e3"
+        },
+        {
+          "path": "tar.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 15341,
+          "sha256": "f58da1cf8b84af73975950633265f084c1b1b226f61c79ac88a9e211a1da4d0b"
+        },
+        {
+          "path": "tar.test.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 17988,
+          "sha256": "6a136d3feb536b8f0af224f48cf8804b8d65c62b010c71802706f6dbe066a88e"
+        },
+        {
+          "path": "verification-plan.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 3037,
+          "sha256": "f31494f354dba19b9a529fd0824bf3583bfb5f16b9d2622a793d0f8757d80898"
+        },
+        {
+          "path": "workspace-policy.mjs",
+          "mode": "644",
+          "type": "file",
+          "bytes": 1090,
+          "sha256": "41380ac12f43f340312791b8dbba77e90dbcefaf7f286a37d26881a1deb64ede"
+        }
+      ]
+    }
+  },
+  "buildLog": {
+    "executable": "docker",
+    "args": [
+      "build",
+      "--platform",
+      "linux/amd64",
+      "--pull=false",
+      "--target",
+      "runtime",
+      "--no-cache",
+      "--network=none",
+      "--build-arg",
+      "FROZEN_DEPENDENCIES=starchess-hermetic-dependencies:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1",
+      "--iidfile",
+      "/tmp/opencode/starchess-hermetic-build-rMcQ5f/image-id",
+      "--file",
+      "/tmp/opencode/starchess-hermetic-build-rMcQ5f/context/Dockerfile",
+      "/tmp/opencode/starchess-hermetic-build-rMcQ5f/context"
+    ],
+    "started": "2026-10-06T09:04:58.633Z",
+    "finished": "2026-10-06T09:04:59.871Z",
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "logs": {
+      "stdout": {
+        "path": "/tmp/opencode/starchess-hermetic-build-rMcQ5f/build.stdout.log",
+        "bytes": 0,
+        "observedBytes": 0,
+        "truncated": false,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/opencode/starchess-hermetic-build-rMcQ5f/build.stderr.log",
+        "bytes": 3073,
+        "observedBytes": 3073,
+        "truncated": false,
+        "sha256": "0d4639d9a2e63f38a873db342b3df8445e44c70be3b03fe67f3480b1a4b74702"
+      }
+    }
+  }
+}

@@ -6,6 +6,8 @@ import { verifyDependencies } from './closure.mjs';
 import { dependencyManifest, treeManifest } from './manifest.mjs';
 import { outputTarget } from './policy.mjs';
 import { runLogged } from './logged-command.mjs';
+import { excludedSource, workspacePackages } from './workspace-policy.mjs';
+import { verificationCommands, VERIFICATION_VERSION, ASSERTION_FLOORS_VERSION, VITEST_FLOORS } from './verification-plan.mjs';
 
 const records = [];
 const output = outputTarget;
@@ -29,17 +31,15 @@ function preflight() {
   const actual = dependencyManifest();
   if (actual.installedSha256 !== expected.installedSha256 || actual.frozenStore.sha256 !== expected.frozenStore.sha256 || actual.tools.sha256 !== expected.tools.sha256) throw new Error('Dependency artifact manifest mismatch');
   const source = JSON.parse(readFileSync('/hermetic-evidence/source.json', 'utf8'));
-  const observed = treeManifest('/app', { exclude: (path) => path.split('/').includes('node_modules') || path === '_spec/evidence/ml-adjutant-phase2' || path.startsWith('_spec/evidence/ml-adjutant-phase2/') });
+  const observed = treeManifest('/app', { exclude: excludedSource });
   if (observed.sha256 !== source.sha256) throw new Error('Captured source manifest mismatch');
   return { dependencies: verifyDependencies(), installedSha256: actual.installedSha256, frozenStoreSha256: actual.frozenStore.sha256, toolsSha256: actual.tools.sha256, sourceSha256: source.sha256 };
 }
 
-async function tests(name) {
+function configureTests(name) {
   const directory = `/app/packages/${name}`;
   const config = `/tmp/${name}.vitest.mts`;
   writeFileSync(config, `import base from '${directory}/vitest.config.ts';\nexport default { ...base, cacheDir: '/tmp/cache/${name}', test: { ...base.test, cache: false } };\n`);
-  const report = `${output}/vitest-${name}.json`;
-  await execute(`${directory}/node_modules/.bin/vitest`, ['run', '--config', config, '--configLoader', 'native', '--maxWorkers', '2', '--reporter=default', '--reporter=json', '--outputFile', report], directory, report);
 }
 
 function makeEvidenceReadable() {
@@ -68,25 +68,32 @@ export async function main(argv) {
     if (args.length) throw new Error('verify accepts no arguments');
     if (readdirSync(output).length) throw new Error('Verification requires a fresh empty output mount');
     try {
-      await execute(tsx, [`${arena}/src/cli/challenge.ts`, '--suite', 'all', '--rerun', '--out', `${output}/baseline-report.json`]);
-      const baseline = JSON.parse(readFileSync(`${output}/baseline-report.json`, 'utf8'));
-      if (baseline.rows?.length !== 54 || baseline.deterministicRerun?.comparisons?.length !== 54 || !baseline.executionIntegrity || baseline.deterministicRerun.equal !== true) throw new Error('Baseline did not verify 54 + 54 executions');
-      await execute(tsx, ['/app/scripts/challenge-contract-evidence.ts']);
-      if (existsSync(`${output}/verification.json`)) throw new Error('Diagnostic must not publish verification.json before checks pass');
-      for (const file of ['contract-report.json', 'pin-migration.json', 'coverage.json']) {
-        if (!existsSync(`${output}/${file}`)) throw new Error(`Diagnostic did not generate ${file}`);
+      for (const name of workspacePackages) configureTests(name);
+      const plan = verificationCommands('/app');
+      for (const [index, command] of plan.entries()) {
+        await execute(command.executable, command.args, command.cwd, command.executable.endsWith('/vitest') ? command.args.at(-1) : undefined);
+        if (index === 0) {
+          const baseline = JSON.parse(readFileSync(`${output}/baseline-report.json`, 'utf8'));
+          if (baseline.version !== 'phase2-baseline-report-v2' || baseline.pins?.version !== 'challenge-execution-pins-v3' || baseline.rows?.length !== 54 || baseline.deterministicRerun?.comparisons?.length !== 54 || baseline.executionIntegrity !== true || baseline.deterministicRerun.equal !== true) throw new Error('Baseline did not verify 54 + 54 executions');
+        }
+        if (index === 1) {
+          if (existsSync(`${output}/verification.json`)) throw new Error('Diagnostic must not publish verification.json before checks pass');
+          for (const file of ['contract-report.json', 'pin-migration.json', 'coverage.json', 'r2-composition-report.json']) {
+            if (!existsSync(`${output}/${file}`)) throw new Error(`Diagnostic did not generate ${file}`);
+          }
+        }
+        if (index === 10) {
+          const bytes = readFileSync(records[index].logs.stdout.path);
+          const closure = JSON.parse(bytes.toString('utf8'));
+          if (closure.version !== 'public-closure-v2' || closure.passed !== true) throw new Error('Public closure did not pass');
+          writeFileSync(`${output}/public-closure-report.json`, bytes, { flag: 'wx' });
+        }
       }
-      for (const name of ['starchess-core', 'starchess-arena']) await execute(`/app/packages/${name}/node_modules/.bin/tsc`, ['-p', 'tsconfig.json', '--noEmit'], `/app/packages/${name}`);
-      const integrityTests = readdirSync(`${arena}/src/__tests__`).filter((file) => /^challenge.*\.test\.ts$/.test(file) || ['strictRecordedQueues.test.ts', 'resourceLedger.test.ts', 'observationIsolation.test.ts'].includes(file)).sort();
-      await execute(`${arena}/node_modules/.bin/tsc`, ['--noEmit', '--target', 'ES2022', '--module', 'ESNext', '--moduleResolution', 'Bundler', '--strict', '--skipLibCheck', ...integrityTests.map((file) => `${arena}/src/__tests__/${file}`), '/app/scripts/challenge-contract-evidence.ts', '/app/scripts/challenge-validate-baseline.ts'], arena);
-      await tests('starchess-core');
-      await tests('starchess-arena');
-      await execute(process.execPath, ['--test', `${arena}/hermetic/evidence-bundle.test.mjs`, `${arena}/hermetic/image-measurement.test.mjs`, `${arena}/hermetic/tar.test.mjs`]);
       const after = preflight();
       if (JSON.stringify(after) !== JSON.stringify(assurance)) throw new Error('Execution artifacts changed');
       makeEvidenceReadable();
       const artifacts = treeManifest(output, { exclude: (path) => path === 'verification.json' }).entries.filter((entry) => entry.type === 'file');
-      writeFileSync(`${output}/verification.json`, JSON.stringify({ version: 'hermetic-verification-v2', passed: true, assurance, commands: records, artifacts }, null, 2) + '\n');
+      writeFileSync(`${output}/verification.json`, JSON.stringify({ version: VERIFICATION_VERSION, assertionFloorsVersion: ASSERTION_FLOORS_VERSION, assertionFloors: VITEST_FLOORS, passed: true, assurance, commands: records, artifacts }, null, 2) + '\n');
     } catch (error) {
       writeFileSync(`${output}/hermetic-failure.json`, JSON.stringify({ version: 1, passed: false, error: String(error), assurance, commands: records }, null, 2) + '\n');
       throw error;

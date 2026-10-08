@@ -2,9 +2,10 @@
 import { createHash } from 'node:crypto';
 import { lstatSync, readFileSync, readdirSync, readlinkSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { installedRoots, evidenceNamespace, excludedSource } from './workspace-policy.mjs';
 
 export const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
-export const sourceExclusions = ['node_modules', '_spec/evidence/ml-adjutant-phase2'];
+export const sourceExclusions = ['node_modules', evidenceNamespace];
 
 export function treeManifest(root, { exclude = () => false } = {}) {
   const entries = [];
@@ -28,7 +29,7 @@ export function treeManifest(root, { exclude = () => false } = {}) {
 }
 
 export function dependencyManifest() {
-  const roots = ['/app/node_modules', '/app/packages/starchess-core/node_modules', '/app/packages/starchess-arena/node_modules'];
+  const roots = installedRoots;
   const installed = roots.map((path) => ({ root: path, ...treeManifest(path) }));
   const store = treeManifest('/pnpm/store');
   const tools = treeManifest('/opt/pnpm');
@@ -40,7 +41,7 @@ if (process.argv[1] === new URL(import.meta.url).pathname) {
   const report = source ? {
     version: 1, root: '/app', exclusions: sourceExclusions,
     inventoryLocation: '/hermetic-evidence/source.json (outside inventoried root)',
-    ...treeManifest('/app', { exclude: (path) => path.split('/').includes('node_modules') || path === '_spec/evidence/ml-adjutant-phase2' || path.startsWith('_spec/evidence/ml-adjutant-phase2/') }),
+    ...treeManifest('/app', { exclude: excludedSource }),
   } : dependencyManifest();
   if (source) {
     const capture = JSON.parse(readFileSync('/hermetic-evidence/capture.json', 'utf8'));

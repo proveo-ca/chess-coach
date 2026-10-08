@@ -1,7 +1,7 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
 import { canonical } from "./config";
 import { sha256 } from "./corpus";
-import { normalizeEvidence } from "./evidence";
+import { normalizeEvidence, type executionPins } from "./evidence";
 import { executionIntegrity } from "./integrity";
 import { loadTrustedExecutionContext } from "./schedule";
 import type { ChallengeEvidence, ScheduledMatch } from "./types";
@@ -18,10 +18,9 @@ export type BaselineReportComparison = {
   deterministicRerun: boolean; semanticParity: boolean; comparisons: BaselineMigrationComparison[];
 };
 export type PinMigrationReport = BaselineReportComparison & {
-  version: "challenge-pin-migration-v1";
+  version: typeof PIN_MIGRATION_VERSION | "challenge-pin-migration-v1";
   originalBaselineSha256: string; originalVerificationSha256: string; currentBaselineSha256: string;
 };
-export type PinMigrationReportV2 = Omit<PinMigrationReport, "version"> & { version: typeof PIN_MIGRATION_VERSION };
 type RerunComparison = { key: string; equal: boolean; firstSha256: string; rerunSha256: string };
 type BaselineReport = {
   manifestSha256: string; sourceSha256: string; suite: string;
@@ -30,14 +29,13 @@ type BaselineReport = {
   deterministicRerun: { performed: boolean; equal: boolean; comparisons: RerunComparison[] };
 };
 const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
-const report = (value: unknown, phase: "original" | "current", refreshed: boolean): BaselineReport => {
-  const directory = phase === "original" ? "phase1" : refreshed ? "r2-refresh" : "phase2";
-  if (!object(value) || value.version !== (phase === "original" ? "phase1-baseline-report-v1" : refreshed ? "phase2-baseline-report-v2" : "phase2-baseline-report-v1") ||
+const report = (value: unknown, phase: "original" | "current"): BaselineReport => {
+  const historical = object(value) && value.version === "phase2-baseline-report-v1";
+  const namespace = phase === "original" ? "ml-adjutant-phase1" : historical ? "ml-adjutant-phase2" : "ml-adjutant-r2-refresh";
+  if (!object(value) || value.version !== (phase === "original" ? "phase1-baseline-report-v1" : historical ? "phase2-baseline-report-v1" : "phase2-baseline-report-v2") ||
     value.kind !== (phase === "original" ? "phase1-baseline" : "phase2-current-baseline") ||
-    value.independentVerification !== `_spec/evidence/ml-adjutant-${directory}/verification.json` ||
-    (phase === "current" && (value.migrationReference !== `_spec/evidence/ml-adjutant-${directory}/pin-migration.json` || !object(value.pins) || value.pins.version !== (refreshed ? "challenge-execution-pins-v3" : "challenge-execution-pins-v2")))) throw new Error("Invalid baseline migration provenance");
-  if (phase === "current" && refreshed && (!object(value.pins) || !object(value.pins.sourceInventory) ||
-    value.pins.sourceInventory.version !== "challenge-source-inventory-v2" || value.pins.sourceInventory.policyVersion !== "challenge-source-policy-v2")) throw new Error("Invalid current source inventory version");
+    value.independentVerification !== `_spec/evidence/${namespace}/verification.json` ||
+    (phase === "current" && (value.migrationReference !== `_spec/evidence/${namespace}/pin-migration.json` || !object(value.pins) || value.pins.version !== (historical ? "challenge-execution-pins-v2" : "challenge-execution-pins-v3")))) throw new Error("Invalid baseline migration provenance");
   if (!object(value) || !Array.isArray(value.schedule) || !Array.isArray(value.rows) ||
       !object(value.deterministicRerun) || !Array.isArray(value.deterministicRerun.comparisons) ||
       typeof value.manifestSha256 !== "string" || typeof value.sourceSha256 !== "string" || value.suite !== "all" ||
@@ -60,19 +58,17 @@ const report = (value: unknown, phase: "original" | "current", refreshed: boolea
 };
 const scheduleEntry = ({ trace: _trace, ...match }: ScheduledMatch): Omit<ScheduledMatch, "trace"> => match;
 
-export const compareBaselineReports = (original: unknown, current: unknown): BaselineReportComparison => compareReports(original, current, false);
-export const compareBaselineReportsV2 = (original: unknown, current: unknown): BaselineReportComparison => compareReports(original, current, true);
-const compareReports = (original: unknown, current: unknown, refreshed: boolean): BaselineReportComparison => {
-  const before = report(original, "original", refreshed);
-  const after = report(current, "current", refreshed);
+export const compareBaselineReports = (original: unknown, current: unknown): BaselineReportComparison => {
+  const before = report(original, "original");
+  const after = report(current, "current");
   const complete = (value: BaselineReport): boolean => value.schedule.length === 54 && value.rows.length === 54 &&
     new Set(value.schedule.map((entry) => entry.key)).size === 54 &&
-    value.rows.every((row, index) => canonical(scheduleEntry(row.match)) === canonical(value.schedule[index]));
+    value.rows.every((row, index) => canonical(scheduleEntry(row.match)) === canonical(value.schedule[+index]));
   const exactSchedule = complete(before) && complete(after) && canonical(before.schedule) === canonical(after.schedule) &&
     before.manifestSha256 === after.manifestSha256 && before.sourceSha256 === after.sourceSha256;
   const context = loadTrustedExecutionContext("all");
   const comparisons = before.rows.map((row, index): BaselineMigrationComparison => {
-    const next = after.rows[index];
+    const next = after.rows[+index];
     const originalSha256 = sha256(normalizeEvidence(row));
     const currentSha256 = next ? sha256(normalizeEvidence(next)) : "";
     return { key: row.match.key, originalSha256, currentSha256,
@@ -83,7 +79,7 @@ const compareReports = (original: unknown, current: unknown, refreshed: boolean)
   const rerunVerified = (value: BaselineReport): boolean => value.deterministicRerun.performed === true &&
     value.deterministicRerun.equal === true && value.deterministicRerun.comparisons.length === 54 &&
     value.deterministicRerun.comparisons.every((entry, index) => {
-      const row = value.rows[index];
+      const row = value.rows[+index];
       return row !== undefined && entry.key === row.match.key && entry.equal === true &&
         entry.firstSha256 === sha256(normalizeEvidence(row)) && entry.rerunSha256 === entry.firstSha256;
     });
@@ -99,19 +95,25 @@ const compareReports = (original: unknown, current: unknown, refreshed: boolean)
 
 export const createMigration = (
   originalBytes: Uint8Array, originalVerificationBytes: Uint8Array, currentBytes: Uint8Array,
-): PinMigrationReport => migrate(originalBytes, originalVerificationBytes, currentBytes, false) as PinMigrationReport;
-export const createMigrationV2 = (
-  originalBytes: Uint8Array, originalVerificationBytes: Uint8Array, currentBytes: Uint8Array,
-): PinMigrationReportV2 => migrate(originalBytes, originalVerificationBytes, currentBytes, true) as PinMigrationReportV2;
-const migrate = (originalBytes: Uint8Array, originalVerificationBytes: Uint8Array, currentBytes: Uint8Array, refreshed: boolean): PinMigrationReport | PinMigrationReportV2 => {
+): PinMigrationReport => {
   if (sha256(originalBytes) !== ORIGINAL_BASELINE_SHA256) throw new Error("Original baseline raw-byte pin mismatch");
   if (sha256(originalVerificationBytes) !== ORIGINAL_VERIFICATION_SHA256) throw new Error("Original verification raw-byte pin mismatch");
   const decode = (bytes: Uint8Array): unknown => JSON.parse(Buffer.from(bytes).toString("utf8")) as unknown;
   const verification = decode(originalVerificationBytes);
   if (!object(verification) || verification.baselineReportSha256 !== ORIGINAL_BASELINE_SHA256) throw new Error("Original verification baseline pin mismatch");
+  const current = decode(currentBytes);
   return {
-    version: refreshed ? PIN_MIGRATION_VERSION : "challenge-pin-migration-v1",
+    version: object(current) && current.version === "phase2-baseline-report-v1" ? "challenge-pin-migration-v1" : PIN_MIGRATION_VERSION,
     originalBaselineSha256: ORIGINAL_BASELINE_SHA256, originalVerificationSha256: ORIGINAL_VERIFICATION_SHA256,
-    currentBaselineSha256: sha256(currentBytes), ...compareReports(decode(originalBytes), decode(currentBytes), refreshed),
+    currentBaselineSha256: sha256(currentBytes), ...compareBaselineReports(decode(originalBytes), current),
   };
 };
+
+export const migrationInventoryDiagnostics = (inventory: ReturnType<typeof executionPins>["sourceInventory"]) => ({
+  inventorySha256: inventory.inventorySha256, importAuditSha256: sha256(canonical(inventory.audit)),
+  sourceInventoryVersion: inventory.version, sourcePolicyVersion: inventory.policyVersion,
+  partitionSha256: inventory.partitionSha256,
+  newlyCoveredPaths: inventory.files.filter((entry) =>
+    !entry.path.startsWith("packages/starchess-core/src/") &&
+    !["challenge", "cli", "players", "run"].some((directory) => entry.path.startsWith(`packages/starchess-arena/src/${directory}/`))).map((entry) => entry.path),
+});

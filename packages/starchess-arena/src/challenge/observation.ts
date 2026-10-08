@@ -10,6 +10,7 @@ export { SQUARES } from "../authorized/v1/squares";
 export const observe = (
   snapshot: ScFenSnapshot, bank: Bank, side: PieceColor, prior: readonly Sighting[] = [],
 ): AuthorizedObservation => {
+  const ownValue = (values: Bank): number => Object.entries(values).find(([seat]) => seat === side)![1];
   const map = placementToMap(snapshot.placement);
   const sieged = new Set(snapshot.siegedTanks ?? []);
   const vision = getSideVision(map, side, {
@@ -36,8 +37,8 @@ export const observe = (
   return deepFreeze({
     version: "challenge-observation-v1", side, turn: snapshot.turn,
     own: {
-      minerals: bank[side], gas: snapshot.gas[side], gasIncome: snapshot.gasIncome[side],
-      ccLives: snapshot.ccLives[side],
+      minerals: ownValue(bank), gas: ownValue(snapshot.gas), gasIncome: ownValue(snapshot.gasIncome),
+      ccLives: ownValue(snapshot.ccLives),
       pieces: cells.flatMap((cell) => cell.visibility !== "unknown" && cell.piece?.color === side
         ? [{ square: cell.square, piece: { ...cell.piece } }] : []),
       mines: SQUARES.filter((square) => snapshot.mines?.some((mine) => mine.at === square && mine.color === side)),

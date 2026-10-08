@@ -1,9 +1,8 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml, _spec/packages/starchess-training/candidate-generation.puml
-import { CC_MAX_LIVES, MAX_GAME_TURNS, MAX_MINES_PER_SIDE, MAX_STORED_MATERIAL } from "@chess-coach/starchess-core/rules";
+// SPEC: _spec/packages/starchess-training/candidate-generation.puml
+import { CC_MAX_LIVES, MAX_GAME_TURNS, MAX_STORED_MATERIAL, MAX_MINES_PER_SIDE } from "@chess-coach/starchess-core/planning-v1";
 import { canonical, deepFreeze } from "./canonical";
-import { guardDto } from "./guard";
 import { SQUARES } from "./squares";
-import type { AuthorizedObservation, AuthorizedObservationV1, ObservedCell, Sighting } from "./types";
+import type { AuthorizedObservation, ObservedCell, Sighting } from "./types";
 import { array, fail, integer, object, orderedSquares, parseJson, piece, side, square } from "../../challengeContract/validation";
 
 export const OBSERVATION_CODEC_VERSION = "challenge-observation-codec-v1";
@@ -51,7 +50,7 @@ const validateObservationRecord = (value: unknown, requireCC: boolean): Authoriz
   const siegedTanks = array(own.siegedTanks, "$.own.siegedTanks").map((entry, index) => square(entry, `$.own.siegedTanks[${index}]`));
   orderedSquares(mines, (entry) => entry, "$.own.mines");
   orderedSquares(siegedTanks, (entry) => entry, "$.own.siegedTanks");
-  if (mines.some((at) => cells[SQUARES.indexOf(at)]!.visibility !== "lit") ||
+  if (mines.some((at) => cells.find((cell) => cell.square === at)!.visibility !== "lit") ||
     siegedTanks.some((at) => !pieces.some((entry) => entry.square === at && entry.piece.type === "r"))) fail("$.own", "CONSISTENCY");
   const memory: Sighting[] = array(root.memory, "$.memory").map((entry, index) => {
     const path = `$.memory[${index}]`;
@@ -72,22 +71,10 @@ const validateObservationRecord = (value: unknown, requireCC: boolean): Authoriz
     own: { minerals, gas, gasIncome, ccLives, pieces, mines, siegedTanks }, cells, memory });
 };
 export const validateObservation = (value: unknown): AuthorizedObservation => validateObservationRecord(value, true);
+export const validateCompatibleObservation = (value: unknown): AuthorizedObservation => validateObservationRecord(value, false);
 export const encodeObservation = (observation: AuthorizedObservation): string => canonical({ codecVersion: OBSERVATION_CODEC_VERSION, observation: validateObservation(observation) });
 export const decodeObservation = (json: string): AuthorizedObservation => {
   const envelope = object(parseJson(json), "$", ["codecVersion", "observation"]);
   if (envelope.codecVersion !== OBSERVATION_CODEC_VERSION) fail("$.codecVersion", "VERSION");
   return validateObservation(envelope.observation);
-};
-
-export const validateObservationV1 = (value: unknown): AuthorizedObservationV1 => {
-  guardDto(value);
-  return validateObservationRecord(value, false);
-};
-export const encodeObservationV1 = (observation: AuthorizedObservationV1): string => canonical({ codecVersion: OBSERVATION_CODEC_VERSION, observation: validateObservationV1(observation) });
-export const decodeObservationV1 = (json: string): AuthorizedObservationV1 => {
-  const value = parseJson(json);
-  guardDto(value);
-  const envelope = object(value, "$", ["codecVersion", "observation"]);
-  if (envelope.codecVersion !== OBSERVATION_CODEC_VERSION) fail("$.codecVersion", "VERSION");
-  return validateObservationV1(envelope.observation);
 };

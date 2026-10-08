@@ -28,7 +28,7 @@ export const LEGACY_FIELD_NAMES: Readonly<Record<string, string>> = {
 };
 
 /** The current name for a kind string, legacy or not. */
-export const currentKind = (kind: string): string => LEGACY_SPECIAL_KINDS[kind] ?? kind;
+export const currentKind = (kind: string): string => Object.entries(LEGACY_SPECIAL_KINDS).find(([key]) => key === kind)?.[1] ?? kind;
 
 /**
  * Rewrite a persisted payload (a resolve: queue, events, attacks, boards) to
@@ -39,8 +39,10 @@ export const migrateLegacyNames = <T>(value: T): T => {
   if (value === null || typeof value !== "object") return value;
   const out: Record<string, unknown> = {};
   for (const [key, entry] of Object.entries(value)) {
-    out[LEGACY_FIELD_NAMES[key] ?? key] =
-      key === "kind" && typeof entry === "string" ? currentKind(entry) : migrateLegacyNames(entry);
+    Object.defineProperty(out, Object.entries(LEGACY_FIELD_NAMES).find(([name]) => name === key)?.[1] ?? key, {
+      value: key === "kind" && typeof entry === "string" ? currentKind(entry) : migrateLegacyNames(entry),
+      enumerable: true, writable: true, configurable: true,
+    });
   }
   return out as T;
 };

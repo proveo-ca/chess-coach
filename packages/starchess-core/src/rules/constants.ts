@@ -12,14 +12,14 @@ export const MAX_GAME_TURNS = 45;
  */
 export const TURN_TIMEOUT_MS = 10_000;
 
-export const UNIT_COST = {
+export const UNIT_COST = Object.freeze({
   k: 1,
   p: 1,
   n: 3,
   b: 3,
   r: 5,
   q: 9,
-} as const;
+} as const);
 
 /** Material income by turn index (starts at 1 after each resolved round). */
 export const incomeForTurn = (turn: number): number => {

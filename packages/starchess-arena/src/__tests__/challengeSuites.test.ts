@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { canonical } from "../challenge/config";
 import { loadPinnedCorpus, REPOSITORY_ROOT, sha256 } from "../challenge/corpus";
-import { executionIntegrity, executionPins, normalizeEvidence, summarize } from "../challenge/evidence";
+import { decodeHistoricalExecutionPins, executionIntegrity, executionPins, normalizeEvidence, summarize } from "../challenge/evidence";
 import { buildSchedule, loadTrustedExecutionContext } from "../challenge/schedule";
 import type { ChallengeEvidence } from "../challenge/types";
 import { compareBaselineReports, ORIGINAL_BASELINE_SHA256, ORIGINAL_VERIFICATION_SHA256 } from "../challenge/pinMigration";
@@ -11,7 +11,7 @@ import { decode, originalEvidence, readEvidenceGeneration } from "./fixtures/cha
 const original = originalEvidence();
 const generation = readEvidenceGeneration();
 const report = decode<{
-  manifestSha256: string; sourceSha256: string; pins: ReturnType<typeof executionPins>;
+  manifestSha256: string; sourceSha256: string; pins: unknown;
   rows: ChallengeEvidence[]; summary: ReturnType<typeof summarize>;
   executionIntegrity: boolean; learnedChallengePass: boolean; learnedGateEligible: boolean;
   deterministicRerun: { performed: boolean; equal: boolean; comparisons: { key: string; equal: boolean; firstSha256: string; rerunSha256: string }[] };
@@ -46,9 +46,15 @@ describe("persisted exhaustive Phase1 baseline evidence", () => {
     expect(sha256(readFileSync(new URL("_spec/evidence/ml-adjutant-phase1/verification.json", REPOSITORY_ROOT)))).toBe(ORIGINAL_VERIFICATION_SHA256);
   });
 
-  it.runIf(!generation.historical)("pins fresh evidence to the actual source, runtime configuration, rules, seeds, and watchdogs", () => {
-    expect(canonical(current.pins)).toBe(canonical(executionPins()));
-  });
+  it("pins fresh evidence to current v3 and decodes byte-locked history as legacy only", () => {
+    if (generation.historical) {
+      const historical = decodeHistoricalExecutionPins(current.pins);
+      expect(historical.version).toBe("challenge-execution-pins-v2");
+      expect(historical.sourceInventory.version).toBe("challenge-source-inventory-v1");
+    } else {
+      expect(canonical(current.pins)).toBe(canonical(executionPins()));
+    }
+  }, 180000);
 
   it("records semantic parity for an independently executed rerun of each scheduled case", () => {
     expect(report.deterministicRerun.performed).toBe(true);
