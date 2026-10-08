@@ -1,0 +1,42 @@
+' purpose: Implemented New Game opponent options and known-placeholder unavailable surface.
+' covers: apps/starchess/src/components/features/NewGamePanel.tsx
+' covers: apps/starchess/src/screens/SingleScreen.tsx
+' status: IMPLEMENTED and VERIFIED preparatory layout; baseline full-app lint exception recorded in _spec/_plans/PLAN-ml-adjutant.md.
+' related: _spec/apps/starchess/menu-flow.puml
+' related: _spec/packages/starchess-core/adjutant-definitions.puml
+@startsalt
+!include ../../themes/proveo.puml
+title StarChess · Preparatory opponent selector (implemented layout)
+{
+  {^"NewGamePanel · Single Player"
+    Name | "Player name                  "
+    Map | Eclipse / Butter / Vermeer
+    Team | Blue / Red
+    Opponent | ^Adjutant (Script)^
+    . | Adjutant (Script)
+    . | Adjutant (Strategic)
+    . | <color:#9a9a9a>Adjutant (Machine Learning) — not implemented</color>
+    . | <color:#9a9a9a>Adjutant (RLHF) — not implemented</color>
+    . | <color:#9a9a9a>Adjutant (RLCD) — not implemented</color>
+    . | [ Start ]
+  }
+  {^"Known EMPTY opponent requested"
+    Opponent | Canonical registry label
+    State | This opponent is not implemented yet.
+    Live match | .
+    Action | [ Return to menu ]
+  }
+}
+legend bottom
+  Implemented and verified preparatory source layout.
+  Opponent rows show the expanded Select options.
+  The selected value restores the playable choice.
+  Grey with a reason: offered, not selectable.
+  A dot: element absent; its column remains.
+  The titled unavailable region replaces live play
+  for machine-learning, rlhf, or rlcd from URL/session.
+  No live-match frame exists in that state.
+  Placeholder definitions do not disable Start for
+  the currently selected playable opponent.
+endlegend
+@endsalt

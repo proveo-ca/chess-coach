@@ -1,7 +1,11 @@
-@startuml index
-' SPEC: _spec/packages/starchess-core/index.puml
 ' purpose: Live StarChess rules spec map (packages/starchess-core).
 ' covers: packages/starchess-core/src/index.ts
+' related: _spec/packages/starchess-core/adjutant-definitions.puml (implemented and verified preparatory contract)
+' related: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
+' related: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml
+' related: _spec/apps/starchess/core/adjutant/cc-focus.puml
+' related: _spec/apps/starchess/core/adjutant/weight-ladder.puml
+@startuml index
 !include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -18,6 +22,7 @@ package "_spec/packages/starchess-core" {
   component "mine-contact.puml" as MINE <<app>>
   component "deploy-reach.puml" as DEPLOY <<app>>
   component "ray-scan.puml" as RAY <<app>>
+  component "adjutant-definitions.puml\nimplemented preparatory catalog" as DEFINITIONS <<app>>
 }
 
 package "packages/starchess-core/src" {
@@ -56,6 +61,7 @@ MOVES ARROW_OPTIONAL AI
 MINE ARROW_MAIN MCS
 DEPLOY ARROW_MAIN DRS
 RAY ARROW_MAIN RAYS
+DEFINITIONS ARROW_OPTIONAL AI : catalog and playable admission contract
 DRS ARROW_OPTIONAL MCS : hostileMineOn
 AI ARROW_OPTIONAL DRS : is that Marine really undefended?
 AI ARROW_OPTIONAL MCS : never step / drop / jump onto a mine
@@ -65,16 +71,15 @@ RPL ARROW_OPTIONAL UI : ReviewScreen · arena replay
 SEQ ARROW_OPTIONAL UI : MatchStore End
 MOVES ARROW_OPTIONAL UI : useBoardInput
 
-note bottom
-  Product/UX diagrams live under ""_spec/apps/starchess/"". The Adjutant's own
-  diagrams live under ""_spec/apps/starchess/core/adjutant/"" — ""naive/"" and
-  ""strategic/"" for the two scripts, plus ""cc-focus.puml"" (which square the
-  Command Center weights aim at) and ""weight-ladder.puml"" (every weight and
-  the orderings a test enforces).
+note bottom of AI
+  Naive and strategic: executable scripts.
+  Learning placeholders: EMPTY metadata.
+end note
 
-  **The ""board/"" consolidation tables.** ""mine-contact.ts"", ""deploy-reach.ts""
-  and ""ray-scan.ts"" each answer one question for every caller in the package,
-  the Adjutant included. Adding a private copy of any of them in a strategy or
-  in ""resolve-turn.ts"" is the drift each was extracted to stop.
+note bottom of RAYS
+  Shared board tables answer each caller's
+  query, including the Adjutant strategies.
+  Private copies in strategies or resolution
+  recreate the drift that consolidation removed.
 end note
 @enduml

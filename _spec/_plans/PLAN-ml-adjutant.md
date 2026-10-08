@@ -1,11 +1,64 @@
 # PLAN — ML Adjutant: a third script, and the harness that can prove it is better
 
-Status: **PLANNED** — nothing implemented. Phases 1–3 are prerequisites for *any* learning work
-and are worth doing on their own merits; phase 4 pays for itself by retiring Stockfish.
+Status: **Preparatory catalog IMPLEMENTED and VERIFIED**, with the baseline full-app lint exception below.
+Phases 1–5 remain **PLANNED and unimplemented**.
+Core `ai/definitions.ts` now owns all five IDs, canonical labels, and derived guards.
+The app implements disabled placeholder entries and explicit unavailable admission for known
+placeholder URLs or sessions. This completes the preparatory catalog, not a learning player.
+Phases 1–3 remain prerequisites for learning work; phase 4 proposes retiring Stockfish.
 
-Scope: a new top-level **`ml/`** workspace. `naive`, `strategic` and `ml` coexist as three scripts
-behind one contract — the arena's `ScriptPlayer` (`packages/starchess-arena/src/players/types.ts:56`)
-and the app's `AdjutantKind` (`apps/starchess/src/types/newGame.ts:6`).
+Scope: a proposed top-level **`ml/`** training workspace. `ml` is workspace/tooling shorthand,
+**not an Adjutant registry ID or a URL alias**. The exact future player ID is **`machine-learning`**.
+The arena's `ScriptPlayer` remains its execution contract; the app consumes the core-derived
+`AdjutantKind` and `PlayableAdjutantKind` through `apps/starchess/src/types/newGame.ts`.
+
+## Implemented preparatory contract (no learning implementation)
+
+- Core owns the metadata registry in `packages/starchess-core/src/ai/definitions.ts` and exports
+  its derived types and guards. `ADJUTANT_DEFINITIONS` marks `naive` and `strategic` as `ready`;
+  `PlayableAdjutantKind` and its guard admit only those entries.
+- `machine-learning`, `rlhf`, and `rlcd` are **EMPTY metadata definitions**, not executable
+  scripts, model loaders, training implementations, or strategic fallbacks. Their source status
+  is `placeholder`; EMPTY describes their unimplemented behavior, not a status literal.
+- New Game lists all five canonical labels from the registry. The last three entries remain
+  disabled and marked not implemented; only playable choices can start a match.
+- A recognized placeholder opponent from a URL or session, including a direct
+  `/single?opponent=machine-learning` URL,
+  displays an explicit unavailable state and cannot mount a live match. Unknown/missing values
+  retain legacy resolution: saved session opponent, otherwise `naive`.
+- Catalog metadata introduces **no runtime ML dependency** into core or the app.
+
+Owning contract: [`adjutant-definitions.puml`](../packages/starchess-core/adjutant-definitions.puml).
+App flow: [`menu-flow.puml`](../apps/starchess/menu-flow.puml).
+Selector layout: [`wireframe.puml`](../apps/starchess/wireframe.puml).
+Deepening learning architecture remains later work; this catalog does not complete any phase below.
+
+## Preparatory milestone verification
+
+| Check | Result and scope |
+|---|---|
+| Core unit suite | **53 files / 426 tests passed** |
+| App unit suite | **108 files / 791 tests passed**, before the final unknown-record label regression |
+| Final label regression run | **10 focused label tests passed** in `matchTitle.test.ts`; no subsequent full-app 792-test run is claimed |
+| Browser opponent suite | **10 tests passed** in `starchess-opponents.spec.ts` |
+| Typechecks | Core, app, and e2e passed |
+| Scoped static checks | Changed-file oxlint, dependency checks, and CSS checks passed |
+| PlantUML | All four changed `.puml` files passed `checkonly` |
+| Full app lint | **Fails on the existing baseline only:** five unchanged `no-raw-timer` violations in `apps/starchess/src/hooks/useVfxProbe.ts` at lines **23, 26, 28, 64, 75** |
+| Adversarial review | Sole MEDIUM finding fixed: unknown persisted opponents use `find(...)?.label ?? "Adjutant (Script)"`; regression added; rereview **READY: yes** |
+| Security review | Current-source scope **READY: yes**, no findings |
+
+The baseline full-app lint failure remains explicit; it does not mark scoped checks as failing
+or authorize unrelated timer cleanup.
+
+| Verification reference | Contract pinned |
+|---|---|
+| [`packages/starchess-core/src/__tests__/adjutantDefinitions.test.ts`](../../packages/starchess-core/src/__tests__/adjutantDefinitions.test.ts) | EMPTY metadata shape, all-ID recognition, ready-only admission, rejection of `ml` and unknown inputs |
+| [`apps/starchess/src/__tests__/singleOpponent.test.ts`](../../apps/starchess/src/__tests__/singleOpponent.test.ts) | App guards and distinct playable script execution |
+| [`apps/starchess/src/__tests__/newGameSetupStore.test.tsx`](../../apps/starchess/src/__tests__/newGameSetupStore.test.tsx) | Disabled placeholder options, playable selection/Start, persisted setup |
+| [`apps/starchess/src/__tests__/matchSessionStore.test.ts`](../../apps/starchess/src/__tests__/matchSessionStore.test.ts) | Preserve known placeholders for admission; retain legacy/unknown session handling |
+| [`apps/starchess/src/__tests__/matchTitle.test.ts`](../../apps/starchess/src/__tests__/matchTitle.test.ts) | Canonical labels and safe unknown-record fallback |
+| [`apps/e2e/tests/starchess/starchess-opponents.spec.ts`](../../apps/e2e/tests/starchess/starchess-opponents.spec.ts) | Browser selection, placeholder URL/session blocks, unchanged stored data, strategic rematch, setup normalization |
 
 ---
 
@@ -31,8 +84,10 @@ and the app's `AdjutantKind` (`apps/starchess/src/types/newGame.ts:6`).
 - **Determinism survives.** `seed + players + opening ⇒ identical records` is an arena invariant
   (`packages/starchess-arena/src/run/runMatch.ts:115`, plan order `[w, b]`). ML inference must have a
   frozen-weights, fixed-seed mode so the corpus tests keep meaning something.
-- **The ML script degrades to `strategic`** when no model/runtime is available (no WebGPU, no
-  weights), mirroring the feed fallback already in `players/strategic.ts`.
+- **A future implemented machine-learning player may degrade to `strategic`** when no
+  model/runtime is available (no WebGPU, no weights), mirroring the feed fallback in
+  `players/strategic.ts`. This planned behavior does not apply to today's EMPTY definition,
+  which remains unavailable and must not silently start either existing script.
 
 ## Layout
 
@@ -54,7 +109,7 @@ ml/
 | Need | Existing seam |
 |---|---|
 | Headless deterministic games | `runMatch` (`packages/starchess-arena/src/run/runMatch.ts:115`), seeded by `mulberry32`, `src/seeds.ts` |
-| Three scripts, one contract | `ScriptPlayer` / `SideContext` (`packages/starchess-arena/src/players/types.ts:19,56`) |
+| Future scripts, one execution contract | `ScriptPlayer` / `SideContext` (`packages/starchess-arena/src/players/types.ts:19,56`); EMPTY catalog entries are not players |
 | External evaluator seam | `EngineFeed.evaluate(candidates, {movetimeMs})` (`packages/starchess-arena/src/feed/types.ts:52`) |
 | Candidate list without legality risk | `strategicCandidates` / `applyCandidate` (`packages/starchess-core/src/ai/strategic/orchestrator.ts:58,113`) |
 | Scoreboard to build Elo on | `summarize` (`packages/starchess-arena/src/compare/compare.ts`), records in `src/record/record.ts` |
@@ -62,7 +117,7 @@ ml/
 | Fog, per side | `getSideVision(placement, side, {mines, tankModeFor})` (`packages/starchess-core/src/board/vision.ts:178`) |
 | A belief state, already fog-honest | `ai/strategic/{runners,attackers,witness,intel}.ts` + `ai/context/ccIntel.ts`, folded by `ai/strategic/tracking.ts` |
 | Terminal reward | `scOutcome` (`packages/starchess-core/src/outcome.ts:15`), `MAX_GAME_TURNS` 45, `ccLives` |
-| App-side third opponent | `AdjutantKind` + `ADJUTANT_KINDS` (`apps/starchess/src/types/newGame.ts:6-8`), consumed at `apps/starchess/src/screens/SingleScreen.tsx` `autoQueueOpponent` |
+| App-side catalog and admission | Implemented core registry + derived guards; `NewGamePanel` lists definitions, while `SingleScreen` admits only playable opponents |
 
 ---
 
@@ -160,10 +215,12 @@ CC lives and material margin, with 45-turn episodes.
 
 ## Phase 5 — The player (`ml/player/`)
 
-`mlScript(): ScriptPlayer` — rank candidates by the evaluator, commit through `applyCandidate`, fall
-back to `strategicAdjutant` when no model is loaded. App side: `AdjutantKind` gains `"ml"`, the New
-Game modal gains a third row, and `SingleScreen` threads the same cross-ply memories it already
-threads (they are the model's belief input, not just the script's).
+`mlScript(): ScriptPlayer` remains a proposed training-workspace function — rank candidates by the
+evaluator, commit through `applyCandidate`, and fall back to `strategicAdjutant` when no model is
+loaded. App side: implement the existing **`machine-learning`** definition before making it
+playable; do not add an `"ml"` ID or a duplicate selector entry. `SingleScreen` would thread the
+same cross-ply memories it already threads (the model's belief input). `rlhf` and `rlcd` remain
+EMPTY; this phase does not authorize their implementation.
 
 **Browser budget.** Inference must fit the live turn (10s cap at income tier 1, but sub-second for
 feel) inside the PWA — model size, WebGPU availability and a worker path are the constraints, and

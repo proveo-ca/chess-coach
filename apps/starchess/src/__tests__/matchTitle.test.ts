@@ -4,6 +4,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { StarChessGameRecord } from "~/types/review";
+import type { AdjutantKind } from "~/types/newGame";
 import {
   LIVE_ADJUTANT_MATCH_TITLE,
   adjutantKindLabel,
@@ -52,6 +53,9 @@ describe("live match title names the chosen opponent", () => {
     // "Adjutant (Strategic)" appears to start a Script game.
     expect(adjutantKindLabel("naive")).toBe("Adjutant (Script)");
     expect(adjutantKindLabel("strategic")).toBe("Adjutant (Strategic)");
+    expect(adjutantKindLabel("machine-learning")).toBe("Adjutant (Machine Learning)");
+    expect(adjutantKindLabel("rlhf")).toBe("Adjutant (RLHF)");
+    expect(adjutantKindLabel("rlcd")).toBe("Adjutant (RLCD)");
   });
 });
 
@@ -71,6 +75,12 @@ describe("the matchup line names the script that played", () => {
     // has no `opponent` — it must read exactly as it always did.
     expect(base.opponent).toBeUndefined();
     expect(formatMatchLabel(base)).toBe("Alex (Blue) vs Adjutant (Red)");
+  });
+
+  it("keeps otherwise valid persisted records readable when their opponent is unknown", () => {
+    expect(formatMatchLabel({ ...base, opponent: "wildcard" as AdjutantKind })).toBe(
+      "Alex (Blue) vs Adjutant (Script) (Red)",
+    );
   });
 
   it("arena imports still show both scripts, ignoring `opponent`", () => {

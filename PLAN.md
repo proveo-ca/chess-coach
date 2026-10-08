@@ -3,6 +3,15 @@
 Status: **planning only** (not scheduled work).  
 Scope: how Single Player’s opponent (`packages/starchess-core/src/ai/adjutant.ts`) grows from named strategy algorithms → a composed heuristic → something that learns, without rewriting the StarChess rules engine.
 
+The preparatory catalog is implemented and verified separately from this learning roadmap;
+the verification record includes the existing full-app lint baseline exception:
+[`adjutant-definitions.puml`](_spec/packages/starchess-core/adjutant-definitions.puml),
+[`menu-flow.puml`](_spec/apps/starchess/menu-flow.puml), and
+[`PLAN-ml-adjutant.md`](_spec/_plans/PLAN-ml-adjutant.md).
+The registry ID is `machine-learning`; `ml/` names proposed training tooling, not an opponent alias.
+`machine-learning`, `rlhf`, and `rlcd` remain EMPTY and unavailable until implemented.
+The implemented catalog definitions do not complete any learning stage below.
+
 This replaces the prior standalone-migration PLAN (Phases 1–6 are done).
 
 ---

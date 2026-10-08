@@ -1,0 +1,81 @@
+' purpose: Implemented preparatory Adjutant catalog, app selection, and runtime admission; not learning architecture.
+' covers: packages/starchess-core/src/ai/**
+' covers: packages/starchess-core/src/ai/definitions.ts
+' covers: packages/starchess-core/src/index.ts
+' covers: apps/starchess/src/types/newGame.ts
+' covers: apps/starchess/src/components/features/NewGamePanel.tsx
+' covers: apps/starchess/src/screens/SingleScreen.tsx
+' covers: apps/starchess/src/store/newGameSetupStore.ts
+' covers: apps/starchess/src/store/matchSessionStore.ts
+' covers: apps/starchess/src/utils/matchTitle.ts
+' covers: packages/starchess-core/src/__tests__/adjutantDefinitions.test.ts
+' covers: apps/starchess/src/__tests__/singleOpponent.test.ts
+' covers: apps/starchess/src/__tests__/newGameSetupStore.test.tsx
+' covers: apps/starchess/src/__tests__/matchSessionStore.test.ts
+' covers: apps/starchess/src/__tests__/matchTitle.test.ts
+' covers: apps/e2e/tests/starchess/starchess-opponents.spec.ts
+' status: IMPLEMENTED and VERIFIED preparatory source contract; learning phases remain PLANNED.
+' verification: Covered regression tests pin this contract; reported results and the baseline full-app lint exception live in _spec/_plans/PLAN-ml-adjutant.md.
+' related: _spec/apps/starchess/menu-flow.puml
+' related: _spec/apps/starchess/wireframe.puml
+' related: _spec/_plans/PLAN-ml-adjutant.md
+@startuml adjutant-definitions
+!include ../../themes/proveo.puml
+title StarChess Core · Adjutant definitions (implemented preparatory contract)
+
+package "packages/starchess-core/src" {
+  component "ai/definitions.ts\nADJUTANT_DEFINITIONS\nnaive → Adjutant (Script) · ready\nstrategic → Adjutant (Strategic) · ready\nmachine-learning → Adjutant (Machine Learning) · placeholder (EMPTY)\nrlhf → Adjutant (RLHF) · placeholder (EMPTY)\nrlcd → Adjutant (RLCD) · placeholder (EMPTY)" as REG <<app>>
+  component "Derived types and guards\nAdjutantKind / isAdjutantKind\nPlayableAdjutantKind / isPlayableAdjutantKind\nplayable iff status='ready'" as GUARDS <<app>>
+  component "index.ts\npublic catalog exports" as EXPORTS <<app>>
+  component "ai/adjutant.ts\nai/strategic/**\nexisting playable scripts" as SCRIPTS <<app>>
+}
+
+package "apps/starchess/src" {
+  component "types/newGame.ts\nconsume core types and guards" as TYPES <<app>>
+  component "components/features/NewGamePanel.tsx\nregistry labels and availability\nonly playable choices can start" as SELECTOR <<app>>
+  component "utils/matchTitle.ts\ncanonical labels\nunknown persisted opponent → Adjutant (Script)" as LABELS <<app>>
+  component "screens/SingleScreen.tsx\nresolve opponent, then admit" as ADMIT <<app>>
+  component "SingleScreen.tsx\nexplicit unavailable state\nno LiveMatchSession mount" as UNAVAILABLE <<error>>
+  component "store/matchSessionStore.ts\nlegacy resume handling" as SESSION <<db>>
+  component "store/newGameSetupStore.ts\nremember playable selection" as SAVED <<db>>
+}
+
+REG ARROW_MAIN GUARDS : derive, do not duplicate unions
+REG ARROW_MAIN EXPORTS
+GUARDS ARROW_MAIN EXPORTS
+EXPORTS ARROW_OPTIONAL TYPES
+EXPORTS ARROW_OPTIONAL SELECTOR
+EXPORTS ARROW_OPTIONAL LABELS
+TYPES ARROW_OPTIONAL ADMIT
+SELECTOR ARROW_MAIN ADMIT : ?opponent=playable ID
+SELECTOR ARROW_MAIN SAVED : playable choice
+SESSION ARROW_OPTIONAL ADMIT : unknown/missing URL → saved opponent or naive
+ADMIT ARROW_MAIN SCRIPTS : resolved naive | strategic only
+ADMIT ARROW_ERROR UNAVAILABLE : known placeholder from URL or session
+
+note bottom of REG
+  Core owns the catalog so the app can share
+  canonical IDs and labels without importing
+  a model runtime. EMPTY metadata does not
+  implement a player or authorize training work.
+end note
+
+note bottom of GUARDS
+  AdjutantKind: all five registry IDs.
+  PlayableAdjutantKind: naive | strategic.
+end note
+
+note bottom of UNAVAILABLE
+  A known placeholder must remain unavailable
+  rather than falling through to naive.
+  This prevents a direct URL from silently
+  starting a match against a different opponent.
+end note
+
+note bottom of SESSION
+  URL wins when recognized; otherwise resume
+  the saved opponent, then default to naive.
+  Legacy blobs without opponent remain naive,
+  and another opponent prevents session resume.
+end note
+@enduml

@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/menu-flow.puml
+// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/wireframe.puml, _spec/packages/starchess-core/adjutant-definitions.puml
 /**
  * StarChess single-player setup — MAP / TEAM / OPPONENT / START.
  * Opponent restores from starchess_setup, not Coach difficulty.
@@ -15,7 +15,12 @@ import { Button } from "@chess-coach/ui-web/primitives/Button";
 import { Select } from "@chess-coach/ui-web/primitives/Select";
 import { savedOpponent, setSavedOpponent } from "~/store/newGameSetupStore";
 import type { BoardVariant } from "~/types/board";
-import { isAdjutantKind, type AdjutantKind, type NewGameOptions } from "~/types/newGame";
+import {
+  ADJUTANT_DEFINITIONS,
+  isPlayableAdjutantKind,
+  type PlayableAdjutantKind,
+  type NewGameOptions,
+} from "~/types/newGame";
 
 const MAPS: readonly BoardVariant[] = ["eclipse", "butter", "vermeer"];
 
@@ -28,10 +33,10 @@ export type NewGamePanelProps = {
 export const NewGamePanel: Component<NewGamePanelProps> = (props) => {
   const [map, setMap] = createSignal<BoardVariant>("eclipse");
   const [team, setTeam] = createSignal<StarChessColor>("w");
-  const [opponent, setOpponent] = createSignal<AdjutantKind>(savedOpponent());
+  const [opponent, setOpponent] = createSignal<PlayableAdjutantKind>(savedOpponent());
 
   const chooseOpponent = (kind: string) => {
-    if (!isAdjutantKind(kind)) return;
+    if (!isPlayableAdjutantKind(kind)) return;
     setOpponent(kind);
     setSavedOpponent(kind);
   };
@@ -106,8 +111,13 @@ export const NewGamePanel: Component<NewGamePanelProps> = (props) => {
             aria-label="Opponent"
             data-testid="new-game-opponent"
           >
-            <option value="naive">Adjutant (Script)</option>
-            <option value="strategic">Adjutant (Strategic)</option>
+            <For each={ADJUTANT_DEFINITIONS}>
+              {(definition) => (
+                <option value={definition.id} disabled={definition.status === "placeholder"}>
+                  {definition.label}{definition.status === "placeholder" ? " — not implemented" : ""}
+                </option>
+              )}
+            </For>
           </Select>
         </section>
 
