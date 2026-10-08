@@ -13,6 +13,8 @@ import { fail, freezeDetached, validateImage } from "./provenance-validation";
 type MutableQuery = { -readonly [K in keyof PathQueryRecord]: PathQueryRecord[K] };
 
 export class ProvenanceRecorder {
+  readonly input: EngineProvenance;
+  readonly bindings: ActionBindings;
   readonly frames: TrustedEffectFrame[] = [];
   readonly visibilityImages: VisibilityImage[] = [];
   readonly visibilityCheckpoints: VisibilityCheckpoint[] = [];
@@ -29,7 +31,9 @@ export class ProvenanceRecorder {
   private effects: Effect[] | null = null;
   private beforeKey = "";
 
-  constructor(readonly input: EngineProvenance, readonly bindings: ActionBindings = []) {
+  constructor(input: EngineProvenance, bindings: ActionBindings = []) {
+    this.input = input;
+    this.bindings = bindings;
     for (const entity of input.entities) this.entities.set(entity.id, { ...entity });
     this.ccLives = { ...input.ccLives };
     this.nativeMineOrder = [...input.nativeMineOrder];

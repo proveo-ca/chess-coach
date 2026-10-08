@@ -7,8 +7,14 @@ import type { ScAction, ScFenSnapshot } from "../model/types";
 import type { ActionBindings, EngineProvenance, FrameImage, PathQueryRecord } from "./provenance-types";
 
 class ProvenanceError extends Error {
+  readonly path: string;
+  readonly code: string;
   readonly name = "ContractError";
-  constructor(readonly path: string, readonly code: string) { super(`${code}: ${path}`); }
+  constructor(path: string, code: string) {
+    super(`${code}: ${path}`);
+    this.path = path;
+    this.code = code;
+  }
 }
 export function fail(path: string, code = "SCHEMA"): never { throw new ProvenanceError(path, code); }
 

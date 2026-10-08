@@ -1980,7 +1980,7 @@ export const collectSourceInventory = (
           !errorBinding || typeof errorBinding === "string" || errorBinding.declarations?.length !== 1 ||
           [...memberMutationTargets, ...arrayMutatorTargets, ...intrinsicMutationTargets].some((target) => { const roots = provenance(target); return roots.has(failureBinding) || roots.has(errorBinding); }) ||
           hash(failure!.getText(source)) !== "bfef157ef09f5027307ef47ef8b705ec506d05bc183e93715a1358b6f41f5d0b" ||
-          hash(errors[0]!.getText(source)) !== "34d01e49bf084ee840e9a0267339462c5e467faa6558e285b2c7af634efb5b04" ||
+           hash(errors[0]!.getText(source)) !== "5272874e22bd81db851f7649cae62d6f735722b71cfe94d5e3fb5fb00b91337f" ||
           validationIntrinsicsChanged() || !checkedAnchorDeclaration(errors[0]!) || !functions.every(checkedAnchorDeclaration)) return false;
       return [...nativeValidationAnchors].every(([name, [digest]]) => {
         const definitions = functions.filter((entry) => entry.name?.text === name);

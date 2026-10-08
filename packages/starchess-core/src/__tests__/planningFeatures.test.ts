@@ -109,8 +109,8 @@ describe("planning feature native parity", () => {
     const placement = "7q/8/8/8/3B4/8/8/8";
     expect(getUnitVision(placement, "d4")).toEqual(vision);
     expect(getUnitVision({ fen: () => `${placement} w - - 0 1` }, "d4")).toEqual(vision);
-    vision.litSquares.clear();
-    vision.revealedPieces.clear();
+    Reflect.apply(Set.prototype.clear, vision.litSquares, []);
+    Reflect.apply(Set.prototype.clear, vision.revealedPieces, []);
     expect(getUnitVision(board, "d4").litSquares.size).toBe(25);
     expect([...getUnitVision(board, "d4").revealedPieces]).toEqual(["h8"]);
     for (const source of [null, "a1"] as const) {

@@ -48,7 +48,7 @@ describe("public intent codec V1 bridge and pure wire", () => {
   it.each(["p", "n", "b", "r", "q"] as const)("preserves structural wire deployment and promotion fields for %s", unit => {
     for (const color of ["w", "b"] as const) {
       const actions: ScActionInput[] = [
-        { ...action("deploy", "B", color), unit },
+        { kind: "deploy", timing: "B", color, from: "d2", to: "d3", unit },
         { ...action("stimStep", "F", color), promotion: unit },
         { ...action("classical", "C", color), promotion: unit },
       ];
