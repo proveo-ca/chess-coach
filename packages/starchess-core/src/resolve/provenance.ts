@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-core/resolve.puml, _spec/packages/starchess-core/resolve-turn-activity.puml, _spec/packages/starchess-core/submit-turn-activity.puml
+// SPEC: _spec/packages/starchess-core/resolve.puml, _spec/packages/starchess-core/resolve-turn-activity.puml, _spec/packages/starchess-core/submit-turn-activity.puml, _spec/packages/starchess-core/native-provenance.puml
 import { placementToMap } from "../board/placement";
 import { scOutcome } from "../outcome";
 import type { ScFenSnapshot } from "../model/types";

@@ -162,8 +162,15 @@ describe("public V1 bridge, identity, and detachment", () => {
     checkBatch(after);
   });
 
-  it("exports exactly V1/V2 composition and V1 decoding at runtime and preserves the 65-action codec ceiling", () => {
-    expect(Object.keys(publicApi).sort()).toEqual(["composeCandidatesFromHistoryV2", "composeCandidatesFromObservationV1", "decodeCandidate"]);
+  it("exports the legacy constants plus V1/V2 composition and V1 decoding and preserves the 65-action codec ceiling", () => {
+    expect(Object.keys(publicApi).sort()).toEqual([
+      "COMPOSITION_VERSION", "MAX_ATTEMPTED_EXTENSIONS", "MAX_GENERATED_ACTIONS", "MAX_RETAINED_CANDIDATES",
+      "composeCandidatesFromHistoryV2", "composeCandidatesFromObservationV1", "decodeCandidate",
+    ]);
+    expect(publicApi.COMPOSITION_VERSION).toBe("challenge-composition-v3");
+    expect(publicApi.MAX_GENERATED_ACTIONS).toBe(4);
+    expect(publicApi.MAX_ATTEMPTED_EXTENSIONS).toBe(2048);
+    expect(publicApi.MAX_RETAINED_CANDIDATES).toBe(512);
     expect(MAX_QUEUE_ACTIONS).toBe(65);
     const o = observation();
     const wire = encodeCandidate(o, Array.from({ length: 65 }, () => c("a1", "a2")));

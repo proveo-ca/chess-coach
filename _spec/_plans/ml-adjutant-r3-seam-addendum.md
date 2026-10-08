@@ -1,5 +1,9 @@
 <!-- Approval/disposition metadata: outside the accepted R3 proposal snapshot. -->
-**CURRENT DISPOSITION: R3 PAIRED DESIGN ACCEPTED; R3 SOURCE IMPLEMENTED / LOCAL VERIFICATION IN PROGRESS; R3 CLOSURE / READINESS PENDING.** Executor actually selected **“Accept + build locally (Recommended)”** after presentation of the exact paired targets below. That response grants both exact-text design acceptance and the scoped local build/verification permission; closing-review YES verdicts did not supply either grant. The [outside-snapshot execution record](#current-r3-local-implementation--verification-in-progress) distinguishes implemented source, attributed local results and the remaining gates.
+**CURRENT DISPOSITION: R3 DESIGN ACCEPTED / IMPLEMENTATION RETAINED ACTIVE; EARLIER BOUNDED LOCAL PROOF PRESERVED BY REVISION. FRESH POST-COMPATIBILITY / RESTORATION / REWRITE VERIFICATION PENDING. FULL R4 BLOCKED; FAILED FOUNDATIONS ARCHIVE-ONLY.** The actual R3 grant and [earlier completed local proof](#completed-recovered-local-verification--bounded-r3-only) remain intact. The [PR47 recovery report](recovery-pr47.md) records later source corrections, verified backup and selected-but-unexecuted rewrite; old proof is not relabeled as current assembled-source or MAIN/PR readiness.
+
+**Active recovery workspace:** `/tmp/opencode/chess-coach-r3-recovered`, committed base `1f2c232b` plus later corrected source. The earlier **“Recover prior revision + continue”** and R3 local proof remain chronological authority. Latest **“Rewrite + lease”** and **“Archive unfinished R4”** decisions govern PR47 restoration/history and the failed foundations; fresh current-source verification is pending. MAIN's old published `46c51068` is backed up, not yet claimed restored/rewritten. Original R4 source direction supplies no HIGH waiver or data permission; the draft is archive-only and full R4 remains blocked on ingress.
+
+**Later actual decisions:** **“Rewrite + lease (Recommended)”** and **“Archive unfinished R4 (Recommended)”** now govern PR47 recovery/history and the failed raw-object foundations. The published `46c51068` backup is actually pushed/remote-verified; grouped rewritten commits/lease push are not yet claimed. The earlier 2359 suite predates the current compatibility/restoration set; agent-observed 251 arena / 98 V2-R3 / five identity tests are focused scopes only. No accepted snapshot or protected economic body changes. See [current proof/operation boundaries](recovery-pr47.md#7-proof-chronology--what-is-and-is-not-current).
 
 ## Executor acceptance and scoped local-build authority
 
@@ -19,7 +23,7 @@ The scoped local grant covers:
 
 The accepted [§1.1 supersession map](#11-explicit-proposed-supersession-map) now governs the named original-contract exceptions. Accepted [§9.1](#91-explicit-downstream-r4-disposition) supplies only the specified downstream public-input/native-source binding precedence; [§9.2](#92-exact-v2-history-count-transport-and-generator-dependency) supplies the additive counted-history integration. Original frozen contracts and both protected R4 economic bodies remain intact outside that scope. Historical R2 assurance/evidence is not rewritten or reused as proof of the changed source/authorization law.
 
-No collection, fitting, calibration, transfer, training, evidence publication or registry activation is granted. R4 belief/features implementation, aggregate R5 readiness and R6–R8 execution remain later gates. The independent delayed-swap mine synchronization retains its separate implemented/verified scope; it does not prove the larger R3 implementation. Current local implementation/review results are attributed only in the outside-snapshot execution record; they do not close R3 or R5 readiness.
+No collection, fitting, calibration, transfer, training, evidence publication or registry activation is granted. Bounded local R3 source/verification is complete; R4 source implementation is next under its separate original instruction, while aggregate R5 readiness and R6–R8 execution remain later gates. The independent mine-sync fix retains its original scope. Current local results close only R3's authorized local assurance, not calibrated features, fresh hermetic assurance or training readiness.
 
 The lead reports direct extraction/hash checks of both accepted snapshots returned PASS. This pass does not recompute those identities. Final documentation whitespace checks after the current execution-record/diagram synchronization remain pending; this pass executes no commands, tests, hashes or renderers.
 <!-- BEGIN ACCEPTED R3 SEAM WHOLE-FILE SNAPSHOT -->
@@ -569,9 +573,35 @@ This current record supersedes only the earlier pending closing-review statement
 <!-- END ACCEPTED R3 SEAM WHOLE-FILE SNAPSHOT -->
 
 <!-- Execution metadata: outside the unchanged accepted whole-file snapshot. -->
-## Current R3 local implementation — verification in progress
+<a id="current-r3-local-implementation--verification-in-progress"></a>
+## Current R3 recovery — earlier local proof, fresh verification pending
 
-Status: **SOURCE IMPLEMENTED; SCOPED LOCAL IMPLEMENTATION REVIEWS REPORTED READY; FINAL LOCAL VERIFICATION / INVENTORY / IMPLEMENTATION SPEC GATE PENDING. NOT R3 COMPLETE / NOT R5 READY.** This records the supplied lead handoff and current read-only source inspection, not independently executed tests or a new acceptance grant. The accepted proposal snapshot, original370/amended418 definitions, both protected economic bodies and historical evidence remain unchanged by this pass.
+Status: **R2/R3 RETAINED ACTIVE; EARLIER LOCAL PROOF PRESERVED BY REVISION; FRESH CURRENT COMPATIBILITY / RESTORATION VERIFICATION PENDING. FULL R4 BLOCKED, FAILED FOUNDATIONS ARCHIVE-ONLY.** The successful [prior completed proof](#completed-recovered-local-verification--bounded-r3-only) still supersedes its preceding failed/pending attempts, but not the later correction set recorded in [recovery-pr47.md](recovery-pr47.md). No history, accepted snapshot or protected economic body is rewritten; no new current full PASS is claimed by this spec pass.
+
+### Recovery context and current verification authority
+
+- Active path: `/tmp/opencode/chess-coach-r3-recovered`; lead identifies the detached recovery base as `1f2c232b`. This short revision names the recovery base, not a hash of the working tree after subsequent audit edits.
+- Executor's actual **“Recover prior revision + continue”** selection permits continuation under the prior **“Accept + build locally (Recommended)”** R3 grant. It reopens no accepted design choice and supplies no collection/fitting/calibration/transfer/training/evidence-publication permission.
+- The lead reports recovery of the complete previously unreachable R3 worktree and successful direct checks of both accepted proposal-snapshot hashes. The lead also reports dependency installation completed against the current fixed lockfile with lifecycle scripts disabled. Recovery/installation success is not test or audit proof; this spec pass reruns neither hashes nor installation.
+- At the preceding recovery checkpoint, source-guard review had found **six HIGH** findings; partial fixes were recovered and RegExp/destructured-mutation/sparse-vector work was still undergoing regressions. That checkpoint had no final PASS or closing verdict. The later **6 + 8 + 2 HIGH** closure and fresh passing proof are recorded below; preserve both stages rather than borrowing an older five-root PASS.
+
+### Earlier recovered-tree checkpoint — pending before final local proof
+
+The following table records the preceding handoff only. The completed local proof later in this outside-snapshot record supplies the current R3 status; no passing fragments from these pending or failed attempts are stitched together.
+
+| Gate | Supplied state at that earlier checkpoint |
+|---|---|
+| Core full suite, previously 548 / 61 files | Fresh run **IN PROGRESS**; no recovered-tree final PASS supplied. |
+| Training full suite, previously 85 / 5 files | Fresh run **IN PROGRESS**; no recovered-tree final PASS supplied. |
+| Three normal package typechecks | Fresh runs **IN PROGRESS**; no recovered-tree final PASS supplied. |
+| Entire strict test/script invoice | Prior PASS retained below; no fresh recovered-tree result supplied. |
+| Source-guard regression tests / whole inventory / public closure | Fresh audit work **IN PROGRESS** after the six HIGH findings and subsequent fixes; no final recovered-tree PASS supplied. |
+| Full arena acceptance | No completed successful recovered-tree result supplied; prior failed/incomplete attempts remain visible below. |
+| Owner diagrams and source citations | Both concern diagrams now exist with coverage/index entries and source `SPEC:` citations inspected below; no authoring/template input remains outstanding for them. |
+| PlantUML availability / validation / rendering | Lead is checking; **no actual result supplied** to this spec pass. |
+| Final whitespace/protected-body checks and closing implementation reviews/spec gate | **PENDING** after current source, diagram and metadata edits. |
+
+The stale template-authoring blocker is removed because the lead completed both owners using the available spec skill's canonical roles/theme/arrows. The lead reports the previously suggested raw template URL returned **404**. No new template file, download or commit is required for these already authored owners. This pass makes no network request or commit.
 
 ### Implemented boundaries inspected
 
@@ -580,22 +610,22 @@ Status: **SOURCE IMPLEMENTED; SCOPED LOCAL IMPLEMENTATION REVIEWS REPORTED READY
 - Host-private `challenge/r3Projection.ts`, `r3Session.ts`, `r3Private.ts` stage recipients, replay native companions independently, compare complete native values/private bytes/both public batches, and commit only the checked successor. Session-chain authority is rechecked after untrusted inspection and before commit. Projection applies committed geometric vision plus exact acting-side consumed targets, clears authorized casualty sightings, retires each mine occurrence and emits one final settlement income event including zero. These modules do not become model imports. Existing V1 challenge operation remains separate; no learner/episode-v2 training rollout is claimed.
 - Core `rules/counted-planning.ts` derives quantity from dense inventory occurrences and exposes detached readonly planning state on `/planning-v1`. Training `/candidates` adds `composeCandidatesFromHistoryV2`; both V1 and V2 use private `composePrepared`. V2 derives quantity from live mine lineage, including repeated squares; resources precede the counted cap and anchor collision at root and lane append. CandidateBatchV3, diagnostics B, 512/2048/four slots and legacy V1 behavior remain scoped invariants. The V2 path encodes codec-v1 candidates directly; it fabricates no V1 observation or income carrier.
 
-### Supplied local verification — exact attribution
+### Prior local verification — pre-recovery attribution only
 
 | Check / scope | Supplied result and method |
 |---|---|
-| Core full suite | Agent-reported **548 tests / 61 files PASS**; not rerun by spec-keeper. |
-| Training full suite | Agent-reported **85 tests / 5 files PASS**; not rerun by spec-keeper. |
-| Pure V2 + V1 focused suites | **169 PASS**, supplied agent result; not a full arena result. |
-| Host R3 focused suites | **75 PASS**, supplied agent result; includes real-native boundary/privacy tests. |
-| Three normal package typechecks + entire strict invoice | Lead supplies **actual PASS** for core/arena/training and the full strict test/script invoice; no commands ran in this spec pass. |
-| Current public closure | Lead-reported **PASS, five roots**, including arena `/events`; current source confirms the five-root roster. This is not final whole-inventory PASS. |
-| Full arena suite | **RUNNING / no final result supplied** at this handoff. |
-| Whole source inventory / final private-helper anchor | **IN PROGRESS / no final PASS supplied**. |
-| Accepted proposal snapshots | Lead reports direct extraction/hash **PASS for both accepted targets**; no independent recomputation here. |
-| Protected-body identity / final docs / PlantUML / implementation spec gate | **PENDING** for this final documentation pass; no PASS invented. |
+| Core full suite | Prior agent-reported **548 tests / 61 files PASS**; not a fresh recovered-tree result. |
+| Training full suite | Prior agent-reported **85 tests / 5 files PASS**; not a fresh recovered-tree result. |
+| Pure V2 + V1 focused suites | Prior **169 PASS**, supplied agent result; not a full arena or recovered-tree acceptance result. |
+| Host R3 focused suites | Prior **75 PASS**, supplied agent result; includes real-native boundary/privacy tests, not fresh recovered-tree closure. |
+| Three normal package typechecks + entire strict invoice | Prior lead-supplied **actual PASS** for core/arena/training and the full strict invoice; fresh gates are tracked separately above. |
+| Public closure before later audit revisions | Prior lead-reported **PASS, five roots**, including arena `/events`; not a final PASS for the changed recovered audit source. |
+| Prior full arena attempt | Lead-reported **1977 passed / 4 failed / 239 skipped**. This attempt **FAILED**; passing tests do not erase failed/skipped cases. |
+| Second arena attempt | Lead reports a **workers=2** retry at roughly **20 minutes**, still **INCOMPLETE**, with two source-pin-dependent assertion failures observed. No completed suite verdict or replacement pass/fail totals were supplied; this failed/incomplete checkpoint remains history, not full PASS. |
+| Whole source inventory / final private-helper anchor at the preceding handoff | Was **IN PROGRESS**, with no final PASS supplied; later six-HIGH audit findings/fixes require current revalidation. |
+| Accepted proposal snapshots | Lead reports successful direct checks of both exact accepted snapshots, including after recovery; no independent recomputation here. |
 
-### Supplied implementation reviews — scoped, not readiness closure
+### Earlier scoped implementation reviews — before final audit closure
 
 | Scope | Task | Lead-supplied disposition |
 |---|---|---|
@@ -605,16 +635,61 @@ Status: **SOURCE IMPLEMENTED; SCOPED LOCAL IMPLEMENTATION REVIEWS REPORTED READY
 | Pure V2 security | `ses_eea74fa3dffePjEel6b3p1V3zn` | Reported **READY: yes** after two MEDIUM byte-failure findings and the subsequent `__proto__` cross-boundary fix. |
 | Host R3 security | `ses_eea3644b1ffeKDLYM4u4mBmDJS` | Reported **READY: yes** after two HIGH findings covering byte-getter reentry and `__proto__` handling. |
 | Integrated adversarial | `ses_eea3644c9ffedIMzxe0ZHrDQpS` | Reported **READY: yes** after HIGH reentry and three MEDIUM byte-cap / `__proto__` / stable-history-error findings were fixed. |
-| Final implementation spec gate | Pending | Current diagram/document maintenance does not supply the closing implementation verdict. |
+| Implementation spec gate at that preceding handoff | Was pending | The later completed local proof below supplies the current closing verdict; no old pending record is rewritten as a passing run. |
 
-These records add current scoped implementation progress without rewriting any earlier design/implementation finding or borrowing historical R2/R0 suite results. The lead owns the actual review/test artifacts and final verification handoff.
+These earlier scoped reviews did not clear the source-guard findings at the recovery checkpoint. The later actual audit pair and fresh completed local proof below close the final **6 + 8 + 2 HIGH** revisions without rewriting these records. Preserve every historical finding/verdict; borrow no R2/R0 or earlier local fragment as current proof. The lead owns the actual review/test artifacts and final handoff.
 
 ### Runtime spec maintenance and remaining gates
 
-Updated current owners: [native rank pipeline](../packages/starchess-core/submit-turn-activity.puml), [classical mutation sites](../packages/starchess-core/resolve-turn-activity.puml), and [V1/V2 counted candidate boundary](../packages/starchess-training/candidate-generation.puml). Their spec-side coverage/index includes the current modules and persisted regressions. No source `SPEC:` pointer is required for that coverage, and no source edit is requested here.
+Current concern owners are [native provenance](../packages/starchess-core/native-provenance.puml) and [authorized economic boundaries](../packages/starchess-arena/authorized-economic-boundaries.puml), alongside [Begin/End pipeline](../packages/starchess-core/submit-turn-activity.puml), [classical mutation sites](../packages/starchess-core/resolve-turn-activity.puml) and [V1/V2 counted candidates](../packages/starchess-training/candidate-generation.puml). Both new owners describe implemented library behavior, not stubs or training rollout; their coverage/index entries are present. The diagrams use the vendored repo identity theme, canonical role stereotypes and semantic arrows.
 
-The natural separate concern destinations are `_spec/packages/starchess-core/native-provenance.puml` and `_spec/packages/starchess-arena/authorized-economic-boundaries.puml`. They are **pending authoring**, not existing diagrams: `_spec/template.txt` is absent. Supply the proveo template once before creating those files; do not invent stubs or source citations to absent diagrams. Source inspection confirms the native provenance and authorized economic boundary modules are separate owners, not per-package diagram filler.
+Whole-file source inspection confirms the native owner is cited by `packages/starchess-core/src/resolve/provenance.ts`; the economic owner is cited by arena `src/events.ts`, `src/observations.ts` and `src/challenge/r3Session.ts`. These satisfy the skill's new-diagram source-reference convention. This pass edits no source header or implementation file.
 
-After that input, finish the two owners and their index entries, validate/render all changed diagrams, complete full arena verification and the final whole-inventory/private-helper anchor audit, and obtain the final implementation spec gate. No source note-ratchet definition was found; the only `specNotesEnforced`/`TestSpecNotesFitTheBox` hits were historical planning prose, not a runnable test/list. Existing edited notes now fit the 2–5-line/50-column box; newly authored notes are short structural labels. This source/test boundary is not changed by spec-keeper.
+Native capture wording is scoped to actual landing/deferred capture commits; the separate C attack-removal wave precedes movement. The history handoff carries only `AuthorizedHistory`; the caller invokes the pure generator, and its live quantity is derived from public own-mine lineage. No separate private audit/count argument or wired learner is implied.
+
+The earlier completed local proof below supplies suites/types/audits/non-learned diagnostics/reviews/rendering for that revision. Current compatibility/restoration/archival changes require fresh final proof under the recovery report. No template-authoring step remains. This docs pass changes only current-scope metadata, not runtime flow, source, accepted snapshots or archive-agent files; note labels retain the box and no source/test ratchet edit occurs.
 
 R4 belief/features/data, weights, calibration and aggregate R5 readiness remain pending. No historical evidence is refreshed or published, no training is run and no registry entry is activated by this local R3 record.
+
+## Completed recovered local verification — bounded R3 only
+
+**Historical proof scope after later corrections:** the successful run below preceded the current compatibility/restoration correction set. It remains a real PASS for that revision, not current post-rewrite proof. [recovery-pr47.md](recovery-pr47.md) supplies the latest pending source-verification/archive/rewrite status without altering this record.
+
+**R3 SOURCE / AUTHORIZED LOCAL VERIFICATION COMPLETE; FINAL R3 IMPLEMENTATION SPEC STATUS: IN-SYNC.** This closes the accepted local source/verification scope, not a refreshed Docker/hermetic generation or global R5 readiness. All results refer to `/tmp/opencode/chess-coach-r3-recovered`, recovery base `1f2c232b` plus the final recovered source-guard fixes. The actual lead/agent results below are distinct from the prior checkpoints retained above. Spec-keeper read current owners, complete citing source files, the coverage index and selected scratch-report fields; it executed no commands, tests, hashes or renderers.
+
+### Fresh local results and output locations
+
+| Local gate | Actual supplied result / proof scope |
+|---|---|
+| Core full suite | **548 PASS / 61 files**, fresh actual lead result. |
+| Training full suite | **85 PASS / 5 files**, fresh actual lead result. |
+| Arena full suite | **2359 PASS / 34 files / 1353.16s; zero failed/skipped**, actual lead run with a fresh nonempty `HERMETIC_OUTPUT_DIRECTORY`, `maxWorkers=2`, default + JSON reporters. Raw JSON: `/tmp/opencode/r3-local-verification-I3uWGD/vitest-starchess-arena.json`; inspected header has `success:true`, total/passed2359 and failed/pending/todo0. |
+| Three normal package typechecks + entire strict invoice | **Actual lead PASS** for core/arena/training and the complete strict test/script invoice. |
+| Final focused audit suites | Agent-reported **1520 PASS / 4 files**, plus types/strict PASS; not a substitute for the separately completed full arena suite. |
+| Whole source inventory | Final supplied **PASS: 166 files / 12 entrypoints / 951 edges** under the supported source policy. |
+| Public model closure | Final supplied **PASS: five roots / 35 workspace files / two dependency files**. Native root/provenance and Node host-private modules remain outside model closure; supported audits do not prove arbitrary-JavaScript purity. |
+| Non-learned CLI regression | **Actual lead 54 executions + 54 semantic reruns**, current pins, `executionIntegrity:true`, stable equal rerun, `learnedGateEligible:false`, `modelArtifact:null`. `/tmp/opencode/r3-local-verification-I3uWGD/baseline-report.json` preserves corpus **0 wins / 2 losses / 16 queue rejections** and live **0 wins / 36 losses**, exactly the non-learned historical semantics. |
+| Contract / migration diagnostics | Actual lead script PASS; `/tmp/opencode/r3-local-verification-I3uWGD/pin-migration.json` has `passed:true`, `semanticParity:true`, scheduled54, exact schedule/integrity/deterministic rerun true. `coverage.json` retains codec/features **282/282**, legacy baseline exact queues **18/282** and singleton intents **204/576**. These distinguish representability from generated membership, exhaustive coverage or wins. |
+| Five runtime diagrams | Actual lead **PlantUML checkonly PASS + SVG outputs read-confirmed** in `/tmp/opencode/r3-spec-render-xaCaZz`. Files: `native-provenance.svg`, `authorized-economic-boundaries.svg`, `resolve-turn-activity.svg`, `submit-turn-activity.svg`, `candidate-generation.svg`. Spec-keeper confirmed the output roster without running a renderer; this final pass updates status metadata/labels only. |
+| Accepted snapshots / historical-byte boundary | Lead reports both accepted snapshots still match their exact supplied hashes. The recovered private evidence ancestor was restored to **0700** for the reader contract, with bytes unchanged; no new historical evidence content or flags were written. |
+| Final documentation hash/diff checks | Lead-owned checks after this closing record; no new post-record PASS is claimed by spec-keeper. They are documentation maintenance, not an ungranted R5 Docker gate. |
+
+The five scratch diagnostic reports are `baseline-report.json`, `contract-report.json`, `coverage.json`, `pin-migration.json` and `r2-composition-report.json` under `/tmp/opencode/r3-local-verification-I3uWGD`. The Vitest JSON is the separate sixth file there. These are **UNPUBLISHED LOCAL DIAGNOSTICS** created under the scoped R3 local-verification grant. They are not new Docker/hermetic assurance, a published evidence generation, 24,000-group estimator collection or a learned artifact. Legacy report version/reference fields do not refresh the old R2 image's authority over changed source.
+
+The earlier default/old-pin failures and incomplete retry remain failures/incomplete history. Current source-pin-dependent local tests passed against legitimately generated fresh local reports; no historical R2 bundle/data/flag was rewritten, no assertion was silently counted as a pass and no successful fragments were combined to erase a failed run.
+
+### Actual closing scopes and retained review history
+
+| Closing/advisory scope | Task | Supplied disposition |
+|---|---|---|
+| Final recovered source-guard adversarial review | `ses_ee9ad85e3ffeCYKE6tbOjag2K5` | **READY: yes** after the successive **6 + 8 + 2 HIGH** findings were resolved with actual before-failure regressions and fresh passing verification. This closes the current bounded audit/source scope, not arbitrary-JavaScript proof or Docker assurance. |
+| Final recovered source-guard security review | `ses_ee9ad86b9ffeajO5G4tLUYkBFL` | **READY: yes** for the final repaired guard scope, with the same high-finding/regression boundary. |
+| Backend local-diagnostic scope advisory | `ses_eeada7f05ffeM79kkkxFKjTXza` | Supported the scoped non-learned CLI/contract scratch diagnostics under the existing R3 local grant; not a new collection, publication or hermetic grant. |
+| Earlier native / pure V2 / host / integrated reviews | Exact IDs retained in the preceding table | Their positive implementation scopes remain intact; the final audit pair closes later guard revisions without rewriting earlier findings or scopes. |
+| Final implementation spec gate | This current closing pass | **SPEC STATUS: in-sync** for the implemented R3 owners/source boundaries, matching coverage/index entries and present new-diagram source citations, with supplied fresh local/render proof. No remaining concrete spec mismatch in this local scope. |
+
+### Local closure versus later work and authority
+
+R3's accepted source/local-verification grant is fulfilled within bounded assurance. Global R5 fresh hermetic capture/Docker/provenance/resource verification, R4 estimator/features implementation, calibration/readiness, learned model/weights and R6–R8 remain pending. No learned pass, collection/fitting/calibration/transfer/training, evidence publication, registry activation, source commit or new Docker operation follows from this record.
+
+The separate original actual user instruction **“proceed with R4”** remains active. Executor's R3-first choice ordered prerequisite work; **“Accept + build locally”** and **“Recover prior revision + continue”** governed R3/recovery, not a new R4 grant. The lead now resumes R4 source work under that original instruction, as recorded in the [canonical roadmap](PLAN-ml-adjutant.md#original-r4-source-authority). R4 is **NOT IMPLEMENTED** by R3 closure; its frozen base/annex definitions and the accepted R3 input-law dependency remain authoritative. The original source instruction grants none of the excluded data/training/publication operations.

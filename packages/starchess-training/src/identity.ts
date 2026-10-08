@@ -22,10 +22,11 @@ export class KeyIndex {
     return this.bucket(bytes)?.some((other) => compareBytes(bytes, other) === 0) ?? false;
   }
   add(bytes: Uint8Array): void {
-    const hash = this.hash(bytes);
+    const copy = new Uint8Array(bytes);
+    const hash = this.hash(copy);
     const bucket = this.buckets.get(hash);
-    if (bucket) bucket.push(bytes);
-    else this.buckets.set(hash, [bytes]);
+    if (bucket) bucket.push(copy);
+    else this.buckets.set(hash, [copy]);
   }
   private hash(bytes: Uint8Array): string {
     return Array.from(this.digest(bytes), (byte) => byte.toString(16).padStart(2, "0")).join("");

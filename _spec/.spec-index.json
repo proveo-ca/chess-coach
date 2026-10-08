@@ -2,6 +2,36 @@
   "version": 1,
   "specs": [
     {
+      "spec": "_spec/packages/starchess-core/native-provenance.puml",
+      "covers": [
+        "packages/starchess-core/src/resolve/provenance*.ts",
+        "packages/starchess-core/src/index.ts",
+        "packages/starchess-core/src/resolve/submit-turn.ts",
+        "packages/starchess-core/src/resolve/resolve-turn.ts",
+        "packages/starchess-core/src/board/vision.ts",
+        "packages/starchess-core/src/board/ray-scan.ts",
+        "packages/starchess-core/src/__tests__/provenance*.test.ts",
+        "packages/starchess-core/src/__tests__/gasPromotionOwnership.test.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/packages/starchess-arena/authorized-economic-boundaries.puml",
+      "covers": [
+        "packages/starchess-arena/src/authorized/v2/**",
+        "packages/starchess-arena/src/challenge/r3*.ts",
+        "packages/starchess-arena/src/observations.ts",
+        "packages/starchess-arena/src/events.ts",
+        "packages/starchess-training/src/candidates.ts",
+        "packages/starchess-training/src/composition.ts",
+        "packages/starchess-arena/src/__tests__/challengeObservationV2.test.ts",
+        "packages/starchess-arena/src/__tests__/challengeEconomicLedger.test.ts",
+        "packages/starchess-arena/src/__tests__/challengeBoundariesV2.test.ts",
+        "packages/starchess-arena/src/__tests__/challengeProvenancePrivacy.test.ts"
+      ],
+      "fingerprint": null
+    },
+    {
       "spec": "_spec/packages/starchess-training/candidate-generation.puml",
       "covers": [
         "packages/starchess-training/**",

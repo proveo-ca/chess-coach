@@ -41,11 +41,12 @@ export const requestedSpend = (input: readonly ScActionInput[]) => {
     gas: actions.reduce((sum, action) => sum + (action.kind === "classical" ? 0 : specialGasCost(action.kind)), 0),
   };
 };
-export const encodeCandidate = (observation: AuthorizedObservation, value: readonly ScActionInput[]): EncodedCandidate => {
-  const authorized = validateObservation(observation);
-  const actions = validateActions(value, authorized.side);
+export const encodeCandidateForSide = (color: PieceColor, value: readonly ScActionInput[]): EncodedCandidate => {
+  const actions = validateActions(value, side(color, "$.side"));
   return deepFreeze({ version: CANDIDATE_CODEC_VERSION, key: canonical(actions), actions, ownSpend: requestedSpend(actions) });
 };
+export const encodeCandidate = (observation: AuthorizedObservation, value: readonly ScActionInput[]): EncodedCandidate =>
+  encodeCandidateForSide(validateObservation(observation).side, value);
 export const decodeCandidate = (value: unknown, color: PieceColor): EncodedCandidate => {
   const record = object(typeof value === "string" ? parseJson(value) : value, "$", ["version", "key", "actions", "ownSpend"]);
   if (record.version !== CANDIDATE_CODEC_VERSION) fail("$.version", "VERSION");

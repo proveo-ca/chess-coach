@@ -1,6 +1,10 @@
 // SPEC: _spec/packages/starchess-training/candidate-generation.puml
 import type { EncodedCandidate, ACTION_KINDS } from "@chess-coach/starchess-arena/intent-codec-v1";
 
+export const COMPOSITION_VERSION = "challenge-composition-v3";
+export const MAX_GENERATED_ACTIONS = 4;
+export const MAX_ATTEMPTED_EXTENSIONS = 2048;
+export const MAX_RETAINED_CANDIDATES = 512;
 export type CandidateKind = typeof ACTION_KINDS[number];
 export type CandidateLane = CandidateKind | "shared-composition";
 export type PruningReason = "actor" | "shape" | "timing" | "resources" | "mineCap" | "ownOccupancy";
@@ -11,6 +15,9 @@ export type CandidatePool = Readonly<{
   retained: number;
   exhausted: boolean;
 }>;
+export type Kind = CandidateKind;
+export type Lane = CandidateLane;
+export type PoolRecord = CandidatePool;
 export type CandidateDiagnostics = Readonly<{
   profile: "B";
   attemptedExtensions: number;
@@ -30,7 +37,7 @@ export type CandidateDiagnostics = Readonly<{
   stopReason: "capacity-cap" | "attempt-cap" | "exhausted";
 }>;
 export type CandidateBatchV3 = Readonly<{
-  version: "challenge-composition-v3";
+  version: typeof COMPOSITION_VERSION;
   candidates: readonly EncodedCandidate[];
   diagnostics: CandidateDiagnostics;
 }>;

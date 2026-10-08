@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml, _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml, _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml, _spec/packages/starchess-arena/authorized-economic-boundaries.puml
 import { createHash } from "node:crypto";
 import { isDeepStrictEqual } from "node:util";
 import {
@@ -17,7 +17,7 @@ import {
 } from "./r3Projection";
 import { copyR3PrivateBytes, detachR3Data, encodeR3Provenance, equalR3PrivateBytes, readR3Record, R3_PRIVATE_CAP } from "./r3Private";
 export { copyR3PrivateBytes, encodeR3Provenance, equalR3PrivateBytes } from "./r3Private";
-import type { AuthorizedBoundaryBatch, AuthorizedHistory, Side } from "../authorized/v2/types";
+import type { AuthorizedBoundaryBatch, AuthorizedHistory, ReconciledBoundaryState, Side } from "../authorized/v2/types";
 
 type NativeResult = BeginScTurnResult | EndScTurnResult;
 type Companion = ProvenanceCompanion<NativeResult>;
@@ -165,6 +165,11 @@ export const stageR3Settlement = (binding: R3Binding, session: R3Session, succes
   const result = execute(state, "settled", detached);
   authority(binding, session);
   return result.transition;
+};
+export const readR3CheckedBoundary = (binding: R3Binding, session: R3Session, side: Side): ReconciledBoundaryState => {
+  const state = authority(binding, session);
+  if (side !== "w" && side !== "b") return fail("$.side", "SIDE");
+  return sideValue(state.session.recipients, side).boundary;
 };
 export const readR3PlanningHistory = (binding: R3Binding, session: R3Session, side: Side): AuthorizedHistory => {
   const state = authority(binding, session);

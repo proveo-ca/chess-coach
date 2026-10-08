@@ -48,13 +48,15 @@
 ' covers: pnpm-workspace.yaml
 ' covers: _spec/evidence/ml-adjutant-r2-refresh/**
 ' covers: _spec/evidence/ml-adjutant-r2-closure.json
-' status: R2 CLOSED within its preserved generation; R3 V2/count source implemented, final local verification/inventory/spec gate pending. No learned acceptance or training.
+' status: R2/R3 implementations retained active; earlier local proof is revision-scoped. Current zero-CC V1/owned-KeyIndex/restoration verification pending; full R4 blocked, raw foundations archive-only.
+' recovery: _spec/_plans/recovery-pr47.md; the selected lease rewrite is not executed here and no old five-promotion draft becomes active.
+' active prerequisites: core/planning-v1 retains six pure helpers/21 runtime symbols; private checked-boundary access is not a belief/encoder/binding.
 ' related: _spec/_plans/ml-adjutant-r3-seam-addendum.md (accepted contract and outside-snapshot execution record)
 ' R3 source: /events and V2 DTO/reducer are pure; r3Session/r3Projection/r3Private and core provenance remain host-only.
 ' R3 integration surface: r3Session exposes checked history; the caller invokes generation. No wired episode-v2 learner is claimed.
 ' R3 generator: composeCandidatesFromHistoryV2 derives live mine quantity, including repeated locations; V1 retains ownMines.size.
 ' R3 guard: resources, then actual count + stored reservations >=3, then location collision; root and lane use the same guard.
-' R3 closure: five model roots, including arena /events; lead-reported current PASS is not final whole-inventory or R3 closure.
+' prior R3 local proof: inventory166 files/12 entrypoints/951 edges and public five roots/35 workspace files/two dependencies PASS for that revision. Current corrected source requires fresh final proof; no new Docker/hermetic generation.
 ' R3 native exception: accepted promotion guard changes native values; historical R2 parity does not certify the changed source.
 ' closure record: _spec/evidence/ml-adjutant-r2-closure.json is outside immutable57-artifact bundle; read only, no evidence/source/control bytes changed by this docs pass.
 ' current verification: complete new generation core475/arena1944/training57/Node109/actual infra6 all PASS, zero failure/skip/pending/todo;54+54 equal/original migration parity; public-v2 four roots/28 workspace/two dependency files PASS.
@@ -133,7 +135,7 @@
 ' historical recovery checkpoint: cc6 recovery/strict fixture repairs preceded complete new closed generation; old markers/partial runs never authorized acceptance.
 ' recovery: R0 records/partial logs are immutable history; absent archives/tmp images and old markers cannot authorize current tests or closure.
 ' future: H=1 turn-aware 4 deployed + 3 banked =7 excludes CC; economic design is CLOSED/FROZEN, belief/features/calibration runtime remains pending, no learned policy or SGD.
-' rendering: no shell/renderer available; no checkonly success claimed.
+' rendering: actual lead checkonly/SVG PASS for all five R3 diagrams; outputs at /tmp/opencode/r3-spec-render-xaCaZz. This final pass updates status labels only; spec-keeper executes no renderer.
 @startuml candidate-generation
 !include ../../themes/proveo.puml
 title StarChess R3 · Counted V2 history / legacy V1 · Bounded composition V3
@@ -322,7 +324,7 @@ end note
 note bottom of VERIFY
   Historical R2 accepted generation
   Eleven commands: 475 / 1944 / 57
-  Current R3 whole inventory: pending
+  Prior R3 local inventory: PASS
 end note
 
 note top of VERIFY
@@ -370,7 +372,7 @@ end note
 note left of VERIFY
   Approved finite Vitest allowances only
   Assertions/floors/model permits unchanged
-  R2 frozen PASS; current diagram check pending
+  Lead checkonly / SVG proof recorded
 end note
 
 note top of IMPORT
@@ -464,7 +466,9 @@ note bottom of PUBLISHED
 end note
 
 legend bottom
-  R3 sources are implemented; final local verification/inventory/spec gate is pending.
+  R2/R3 stay active; earlier local proof is retained by revision.
+  Current compatibility/restoration/rewrite verification is pending.
+  Raw R4 foundations are archive-only; active pure prerequisites are not full R4.
   Current history generation derives actual mine quantity; V1 behavior stays separate.
   R2 CLOSED only within its unchanged historical V1/bounded V3 assurance generation.
   Complete NEW generation: all11/core475/arena1944/training57/Node109/actual infra6 PASS.
@@ -479,8 +483,8 @@ legend bottom
   Supported source audits are not arbitrary-JS purity; hashes bind bytes, not producer identity.
   R0/failed generations remain separate history; private tmp reports are not current pins.
   Published57 payloads/marker/source/control and outside-bundle closure record unchanged here.
-  Final doc PlantUML check belongs to lead; no renderer/test/hash execution by spec-keeper.
-  R3 runtime closure / R4 belief/features / R5 readiness remain before explicitR6.
+  Actual lead checkonly/SVG passed; final closing metadata checks remain with lead.
+  R4 belief/features and global R5 readiness remain before explicitR6.
   H=1; artifact null/eligible false/learnedPass false; weights NONE, registrydisabled, no training.
 endlegend
 @enduml

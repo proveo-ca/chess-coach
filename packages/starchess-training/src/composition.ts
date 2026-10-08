@@ -7,7 +7,10 @@ import {
   ACTION_KINDS, decodeCandidate, encodeCandidate, requestedSpend, validateActions, type EncodedCandidate,
 } from "@chess-coach/starchess-arena/intent-codec-v1";
 import { countedPlanningKnowledge, type PlanningKnowledge, type ScActionInput, type Square } from "@chess-coach/starchess-core/planning-v1";
-import type { CandidateBatchV3, CandidateDiagnostics, CandidateKind, CandidateLane } from "./contracts";
+import {
+  COMPOSITION_VERSION, MAX_GENERATED_ACTIONS, MAX_ATTEMPTED_EXTENSIONS, MAX_RETAINED_CANDIDATES,
+  type CandidateBatchV3, type CandidateDiagnostics, type CandidateKind, type CandidateLane,
+} from "./contracts";
 import { appendFailure, appendState, emptyPrefix, planningKnowledge, primitiveDomain, type PrefixState } from "./domain";
 import { compareBytes, KeyIndex, type Digest } from "./identity";
 
@@ -66,7 +69,7 @@ const composePrepared = (
   });
   const ids: CandidateLane[] = [...ACTION_KINDS, "shared-composition"];
   const pools = ids.map((id) => ({
-    id, initialCapacity: id === "shared-composition" ? 175 : activeFamilies.includes(id) ? 48 : 0,
+    id, initialCapacity: id === "shared-composition" ? MAX_RETAINED_CANDIDATES - 1 - ACTION_KINDS.length * 48 : activeFamilies.includes(id) ? 48 : 0,
     finalCapacity: 0, retained: 0, exhausted: false,
   }));
   let released = (7 - activeFamilies.length) * 48;
@@ -80,7 +83,7 @@ const composePrepared = (
   const lanes: Lane[] = ids.map((id) => {
     const root = emptyPrefix();
     return { id, depthCursor: 0, exhausted: false,
-      frontiers: Array.from({ length: 4 }, (_, depth) => ({
+      frontiers: Array.from({ length: MAX_GENERATED_ACTIONS }, (_, depth) => ({
         nodes: depth === 0 ? [{ state: root, cursor: domain(knowledge, root, undefined, id) }] : [], head: 0,
       })),
     };
@@ -120,8 +123,8 @@ const composePrepared = (
     }
   };
   const nextAttempt = (lane: Lane): { node: Node; action: ScActionInput; depth: number } | null => {
-    for (let offset = 0; offset < 4; offset++) {
-      const depth = (lane.depthCursor + offset) % 4;
+    for (let offset = 0; offset < MAX_GENERATED_ACTIONS; offset++) {
+      const depth = (lane.depthCursor + offset) % MAX_GENERATED_ACTIONS;
       const frontier = lane.frontiers[depth]!;
       while (frontier.head < frontier.nodes.length) {
         const node = frontier.nodes.at(frontier.head)!;
@@ -136,16 +139,16 @@ const composePrepared = (
     }
     return null;
   };
-  while (d.attemptedExtensions < 2048 && d.uniqueIncludingPass < 512 && lanes.some((lane) => !lane.exhausted)) {
+  while (d.attemptedExtensions < MAX_ATTEMPTED_EXTENSIONS && d.uniqueIncludingPass < MAX_RETAINED_CANDIDATES && lanes.some((lane) => !lane.exhausted)) {
     for (let i = 0; i < lanes.length; i++) {
-      if (d.attemptedExtensions === 2048 || d.uniqueIncludingPass === 512) break;
+      if (d.attemptedExtensions === MAX_ATTEMPTED_EXTENSIONS || d.uniqueIncludingPass === MAX_RETAINED_CANDIDATES) break;
       const lane = lanes[i]!;
       if (lane.exhausted) continue;
       const attempt = nextAttempt(lane);
       if (!attempt) { proveExhausted(i); continue; }
       d.attemptedExtensions++;
       runtime.appendAttempts++;
-      lane.depthCursor = (attempt.depth + 1) % 4;
+      lane.depthCursor = (attempt.depth + 1) % MAX_GENERATED_ACTIONS;
       const { node, action } = attempt;
       const failure = appendFailure(facts, knowledge, node.state, action);
       if (failure) {
@@ -162,7 +165,7 @@ const composePrepared = (
       const child = appendState(knowledge, node.state, action);
       const length = child.actions.length;
       runtime.maximumQueueLength = Math.max(runtime.maximumQueueLength, length);
-      if (length < 4) {
+      if (length < MAX_GENERATED_ACTIONS) {
         lane.frontiers[length]!.nodes.push({ state: child, cursor: domain(knowledge, child, undefined, lane.id) });
         runtime.continuationNodes++;
         runtime.domainCursors++;
@@ -196,12 +199,12 @@ const composePrepared = (
     }
   }
   d.exhaustedLanes = lanes.filter((lane) => lane.exhausted).map((lane) => lane.id);
-  d.attemptCapReached = d.attemptedExtensions === 2048;
-  d.capacityCapReached = d.uniqueIncludingPass === 512;
+  d.attemptCapReached = d.attemptedExtensions === MAX_ATTEMPTED_EXTENSIONS;
+  d.capacityCapReached = d.uniqueIncludingPass === MAX_RETAINED_CANDIDATES;
   d.stopReason = d.capacityCapReached ? "capacity-cap" : d.attemptCapReached ? "attempt-cap" : "exhausted";
   retained.sort((a, b) => compareBytes(a.bytes, b.bytes));
   return {
-    batch: freeze({ version: "challenge-composition-v3", candidates: retained.map((entry) => entry.candidate), diagnostics: d }),
+    batch: freeze({ version: COMPOSITION_VERSION, candidates: retained.map((entry) => entry.candidate), diagnostics: d }),
     runtime: freeze(runtime),
   };
 };

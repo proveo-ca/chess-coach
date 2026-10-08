@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-training/candidate-generation.puml
+// SPEC: _spec/packages/starchess-training/candidate-generation.puml, _spec/packages/starchess-core/resolve.puml, _spec/packages/starchess-core/turn-queue-sequence.puml, _spec/apps/starchess/core/board/board-queries.puml
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { expect, it } from "vitest";
@@ -13,6 +13,7 @@ it("resolves the narrow entry and shares legacy native implementations", () => {
     "isScMoveShape", "knownAppendFailure", "marineSingleTarget", "spawnCCAnchorFromMap", "UNIT_COST", "specialGasCost",
     "CC_MAX_LIVES", "MAX_GAME_TURNS", "MAX_STORED_MATERIAL", "MAX_MINES_PER_SIDE",
     "countedPlanningKnowledge",
+    "incomeForTurn", "energyForTurn", "orderBHeadsFirst", "rayBetween", "attacksSquare", "getUnitVision",
   ].sort());
   for (const name of Object.keys(planning) as (keyof typeof planning)[]) {
     if (name !== "countedPlanningKnowledge") expect(planning[name]).toBe(native[name]);

@@ -25,8 +25,10 @@ describe("public intent codec V1 bridge and pure wire", () => {
     expect(bridge.requestedSpend(actions)).toEqual(wire.requestedSpend(actions));
     expect(bridge.validateActions(actions, "w")).toEqual(wire.validateActions(actions, "w"));
     expect(bridge.ACTION_KINDS).toEqual(wire.ACTION_KINDS);
+    expect(bridge.CANDIDATE_CODEC_VERSION).toBe("challenge-candidate-codec-v1");
+    expect(bridge.CANDIDATE_CODEC_VERSION).toBe(wire.CANDIDATE_CODEC_VERSION);
     expect(bridge.MAX_QUEUE_ACTIONS).toBe(65);
-    expect(Object.keys(bridge).sort()).toEqual(["ACTION_KINDS", "MAX_QUEUE_ACTIONS", "decodeCandidate", "encodeCandidate", "requestedSpend", "validateActions"].sort());
+    expect(Object.keys(bridge).sort()).toEqual(["ACTION_KINDS", "CANDIDATE_CODEC_VERSION", "MAX_QUEUE_ACTIONS", "decodeCandidate", "encodeCandidate", "requestedSpend", "validateActions"].sort());
   });
 
   it("pins exact candidate key, optional fields, spend, and serialized bytes", () => {

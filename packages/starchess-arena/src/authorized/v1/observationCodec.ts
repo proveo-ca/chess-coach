@@ -6,7 +6,7 @@ import type { AuthorizedObservation, ObservedCell, Sighting } from "./types";
 import { array, fail, integer, object, orderedSquares, parseJson, piece, side, square } from "../../challengeContract/validation";
 
 export const OBSERVATION_CODEC_VERSION = "challenge-observation-codec-v1";
-export const validateObservation = (value: unknown): AuthorizedObservation => {
+const validateObservationRecord = (value: unknown, requireCC: boolean): AuthorizedObservation => {
   const root = object(value, "$", ["version", "side", "turn", "own", "cells", "memory"]);
   if (root.version !== "challenge-observation-v1") fail("$.version", "VERSION");
   const color = side(root.side, "$.side");
@@ -44,7 +44,8 @@ export const validateObservation = (value: unknown): AuthorizedObservation => {
   });
   orderedSquares(pieces, (entry) => entry.square, "$.own.pieces");
   const expected = cells.flatMap((cell) => cell.visibility !== "unknown" && cell.piece?.color === color ? [{ square: cell.square, piece: cell.piece }] : []);
-  if (canonical(expected) !== canonical(pieces) || pieces.filter((entry) => entry.piece.type === "k").length !== 1) fail("$.own.pieces", "CONSISTENCY");
+  const ccCount = pieces.filter((entry) => entry.piece.type === "k").length;
+  if (canonical(expected) !== canonical(pieces) || (requireCC ? ccCount !== 1 : ccCount > 1)) fail("$.own.pieces", "CONSISTENCY");
   const mines = array(own.mines, "$.own.mines", MAX_MINES_PER_SIDE).map((entry, index) => square(entry, `$.own.mines[${index}]`));
   const siegedTanks = array(own.siegedTanks, "$.own.siegedTanks").map((entry, index) => square(entry, `$.own.siegedTanks[${index}]`));
   orderedSquares(mines, (entry) => entry, "$.own.mines");
@@ -69,6 +70,8 @@ export const validateObservation = (value: unknown): AuthorizedObservation => {
   return deepFreeze({ version: "challenge-observation-v1", side: color, turn,
     own: { minerals, gas, gasIncome, ccLives, pieces, mines, siegedTanks }, cells, memory });
 };
+export const validateObservation = (value: unknown): AuthorizedObservation => validateObservationRecord(value, true);
+export const validateCompatibleObservation = (value: unknown): AuthorizedObservation => validateObservationRecord(value, false);
 export const encodeObservation = (observation: AuthorizedObservation): string => canonical({ codecVersion: OBSERVATION_CODEC_VERSION, observation: validateObservation(observation) });
 export const decodeObservation = (json: string): AuthorizedObservation => {
   const envelope = object(parseJson(json), "$", ["codecVersion", "observation"]);

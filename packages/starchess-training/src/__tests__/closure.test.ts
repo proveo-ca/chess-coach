@@ -1,5 +1,7 @@
 // SPEC: _spec/packages/starchess-training/candidate-generation.puml
 import { readFileSync } from "node:fs";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import ts from "typescript";
 import { expect, it } from "vitest";
 
@@ -54,4 +56,80 @@ it("compiles source import descriptors and confines production to the approved p
     expect(output.diagnostics?.filter((d) => d.category === ts.DiagnosticCategory.Error)).toEqual([]);
   }
   expect([...external].every((specifier) => imports.has(specifier))).toBe(true);
+});
+
+const legacyImportFixture = `
+import {
+  COMPOSITION_VERSION, MAX_GENERATED_ACTIONS, MAX_ATTEMPTED_EXTENSIONS, MAX_RETAINED_CANDIDATES,
+  composeCandidatesFromObservationV1, composeCandidatesFromHistoryV2, decodeCandidate,
+  type Kind, type Lane, type PoolRecord, type CandidateBatchV3, type CandidateDiagnostics,
+  type CandidateKind, type CandidateLane, type CandidatePool,
+} from "@chess-coach/starchess-training/candidates";
+import { CANDIDATE_CODEC_VERSION, encodeCandidate, type EncodedCandidate } from "@chess-coach/starchess-arena/intent-codec-v1";
+import type { AuthorizedObservationV1, AuthorizedHistory } from "@chess-coach/starchess-arena/observations";
+import type { ScActionInput } from "@chess-coach/starchess-core/planning-v1";
+
+type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;
+type Assert<T extends true> = T;
+type ExpectedKind = "classical" | "deploy" | "stimStep" | "spiderMine" | "charonMissiles" | "siegeMode" | "tacticalJump";
+type ExpectedPool = Readonly<{ id: ExpectedKind | "shared-composition"; initialCapacity: number; finalCapacity: number; retained: number; exhausted: boolean }>;
+type KindShape = Assert<Equal<Kind, ExpectedKind>>;
+type LaneShape = Assert<Equal<Lane, ExpectedKind | "shared-composition">>;
+type PoolShape = Assert<Equal<PoolRecord, ExpectedPool>>;
+type KindAlias = Assert<Equal<Kind, CandidateKind>>;
+type LaneAlias = Assert<Equal<Lane, CandidateLane>>;
+type PoolAlias = Assert<Equal<PoolRecord, CandidatePool>>;
+
+const compositionVersion: "challenge-composition-v3" = COMPOSITION_VERSION;
+const wireVersion: "challenge-candidate-codec-v1" = CANDIDATE_CODEC_VERSION;
+const generated: 4 = MAX_GENERATED_ACTIONS;
+const attempted: 2048 = MAX_ATTEMPTED_EXTENSIONS;
+const retained: 512 = MAX_RETAINED_CANDIDATES;
+declare const observation: AuthorizedObservationV1;
+declare const history: AuthorizedHistory;
+const actions: ScActionInput[] = [
+  { kind: "classical", timing: "C", color: "w", from: "e7", to: "e8", promotion: "n" },
+  { kind: "classical", timing: "C", color: "w", from: "e7", to: "e8", promotion: "b" },
+  { kind: "classical", timing: "C", color: "w", from: "e7", to: "e8", promotion: "r" },
+  { kind: "classical", timing: "C", color: "w", from: "e7", to: "e8", promotion: "q" },
+];
+const encoded: EncodedCandidate = encodeCandidate(observation, actions);
+const decoded: EncodedCandidate = decodeCandidate(encoded, "w");
+const batch: CandidateBatchV3 = composeCandidatesFromObservationV1(observation);
+const historyBatch: CandidateBatchV3 = composeCandidatesFromHistoryV2(history);
+const diagnostics: CandidateDiagnostics = batch.diagnostics;
+const kind: Kind = decoded.actions[0]!.kind;
+const lane: Lane = diagnostics.exhaustedLanes[0]!;
+const currentPool: PoolRecord = diagnostics.pools[0]!;
+const poolRecord: PoolRecord = { id: "shared-composition", initialCapacity: 175, finalCapacity: 175, retained: 0, exhausted: false };
+`;
+
+it("typechecks legacy package imports and exact current aliases with incompatible-shape controls", () => {
+  const configPath = fileURLToPath(new URL("../../tsconfig.json", import.meta.url));
+  const config = ts.readConfigFile(configPath, ts.sys.readFile);
+  expect(config.error).toBeUndefined();
+  const parsed = ts.parseJsonConfigFileContent(config.config, ts.sys, dirname(configPath));
+  expect(parsed.errors).toEqual([]);
+  const options = { ...parsed.options, types: [] };
+  const fixturePath = fileURLToPath(new URL("./legacyPublicImports.fixture.ts", import.meta.url));
+  const compile = (suffix = "") => {
+    const host = ts.createCompilerHost(options);
+    const getSourceFile = host.getSourceFile;
+    host.getSourceFile = (path, ...args) => path === fixturePath
+      ? ts.createSourceFile(path, legacyImportFixture + suffix, ts.ScriptTarget.ES2022, true)
+      : getSourceFile(path, ...args);
+    return ts.getPreEmitDiagnostics(ts.createProgram([fixturePath], options, host))
+      .filter(diagnostic => diagnostic.category === ts.DiagnosticCategory.Error);
+  };
+  const valid = compile();
+  expect(valid.map(diagnostic => ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n"))).toEqual([]);
+  const invalid = compile(`
+const invalidKind: Kind = "pass";
+const invalidLane: Lane = "shared";
+const invalidPool: PoolRecord = { id: "shared-composition", initialCapacity: 175, retained: 0, exhausted: false };
+poolRecord.retained = 1;
+const invalidVersion: CandidateBatchV3["version"] = "challenge-composition-v2";
+`);
+  expect(invalid.map(diagnostic => diagnostic.code).sort()).toEqual([2322, 2322, 2322, 2540, 2741]);
+  expect(invalid.every(diagnostic => diagnostic.file?.fileName === fixturePath)).toBe(true);
 });

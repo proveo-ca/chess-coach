@@ -1,0 +1,61 @@
+' purpose: Trusted R3 recipient authorization, transactional economics, and checked V2 history.
+' covers: packages/starchess-arena/src/authorized/v2/**
+' covers: packages/starchess-arena/src/challenge/r3*.ts
+' covers: packages/starchess-arena/src/observations.ts
+' covers: packages/starchess-arena/src/events.ts
+' covers: packages/starchess-training/src/candidates.ts
+' covers: packages/starchess-training/src/composition.ts
+' covers: packages/starchess-arena/src/__tests__/challengeObservationV2.test.ts
+' covers: packages/starchess-arena/src/__tests__/challengeEconomicLedger.test.ts
+' covers: packages/starchess-arena/src/__tests__/challengeBoundariesV2.test.ts
+' covers: packages/starchess-arena/src/__tests__/challengeProvenancePrivacy.test.ts
+' related: _spec/packages/starchess-core/native-provenance.puml
+' related: _spec/packages/starchess-training/candidate-generation.puml
+' related: _spec/_plans/ml-adjutant-r3-seam-addendum.md (recovered execution context)
+' status: R3 library retained active; earlier local proof is revision-scoped. Fresh current compatibility/restoration verification pending.
+' recovery: _spec/_plans/recovery-pr47.md; private readR3CheckedBoundary is an active prerequisite, not a completed R4 binding.
+' local proof: Actual lead checkonly/SVG and fresh local suites/audits are recorded outside the accepted snapshot; no renderer/test/hash execution by spec-keeper.
+' integration: Host exposes checked history; a caller invokes generation. No learner rollout is claimed.
+@startuml
+!include ../../themes/proveo.puml
+title StarChess authorized economic boundaries — local R3 library
+left to right direction
+
+node "Trusted session binding\nr3Session.ts" as Session <<host>>
+component "Native companion\nfull private state" as Native <<host>>
+component "r3Projection.ts\nrecipient authorization" as Projection <<app>>
+component "authorized/v2\nclosed schema + canonical bytes" as Schemas <<app>>
+component "reconcileBoundary\nidentity / receipts / mines / memory" as Reducer <<app>>
+database "Staged successor\ninitial / turn-open / settled" as Staged <<db>>
+component "Independent parent reexecution\nprivate bytes + native result\nboth recipient batches" as Verify <<host>>
+database "Committed recipient boundary\nadvanceHistory" as History <<db>>
+component "packages/starchess-training/src/candidates.ts\ncomposeCandidatesFromHistoryV2" as Candidates <<app>>
+component "Rejected transition\nprior authority retained" as Rejected <<error>>
+
+Session ARROW_MAIN Native : initialize / Begin / admitted End
+Native ARROW_MAIN Projection : committed frames + consumed proofs
+Projection ARROW_MAIN Schemas : public recipient facts only
+Schemas ARROW_MAIN Reducer : detached validated batch
+Reducer ARROW_MAIN Staged : paid conservation + final agreement
+Staged ARROW_MAIN Verify : claim detached before comparison
+Session ARROW_MAIN Verify : independent prior session
+Verify ARROW_MAIN History : recheck freshness and commit
+History ARROW_OPTIONAL Candidates : AuthorizedHistory only\ncaller invokes the pure entry
+Verify ARROW_ERROR Rejected : mismatch / stale / malformed
+Reducer ARROW_ERROR Rejected : sequence / conservation failure
+
+note bottom of Projection
+  Geometric vision uses committed images.
+  Consumed facts authorize the acting target.
+  Casualty memory clears before later deltas.
+end note
+note bottom of Reducer
+  Mine quantity differs from unique locations.
+  Settlement income is final, including zero.
+end note
+note bottom of Verify
+  Private bytes cap: 16 MiB.
+  Public batch cap: 1 MiB.
+  JSON validation grants no session authority.
+end note
+@enduml

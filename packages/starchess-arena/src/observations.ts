@@ -1,14 +1,19 @@
-// SPEC: _spec/packages/starchess-training/candidate-generation.puml
+// SPEC: _spec/packages/starchess-training/candidate-generation.puml, _spec/packages/starchess-arena/authorized-economic-boundaries.puml
 import type { AuthorizedObservationV1 } from "./authorized/v1/types";
-import { decodeObservation, encodeObservation, validateObservation } from "./authorized/v1/observationCodec";
-import { inspectDto } from "./challengeContract/validation";
+import { OBSERVATION_CODEC_VERSION, validateCompatibleObservation } from "./authorized/v1/observationCodec";
+import { canonical } from "./authorized/v1/canonical";
+import { fail, inspectDto, object, parseJson } from "./challengeContract/validation";
 
 export type { AuthorizedObservationV1 } from "./authorized/v1/types";
 export const validateObservationV1 = (value: unknown): AuthorizedObservationV1 => {
-  return validateObservation(inspectDto(value));
+  return validateCompatibleObservation(inspectDto(value));
 };
-export const encodeObservationV1 = (observation: AuthorizedObservationV1): string => encodeObservation(validateObservationV1(observation));
-export const decodeObservationV1 = (json: string): AuthorizedObservationV1 => validateObservationV1(decodeObservation(json));
+export const encodeObservationV1 = (observation: AuthorizedObservationV1): string => canonical({ codecVersion: OBSERVATION_CODEC_VERSION, observation: validateObservationV1(observation) });
+export const decodeObservationV1 = (json: string): AuthorizedObservationV1 => {
+  const envelope = object(inspectDto(parseJson(json)), "$", ["codecVersion", "observation"]);
+  if (envelope.codecVersion !== OBSERVATION_CODEC_VERSION) fail("$.codecVersion", "VERSION");
+  return validateCompatibleObservation(envelope.observation);
+};
 export { validateObservation, decodeObservation, encodeObservation } from "./authorized/v2/observation";
 export type {
   AuthorizedSnapshotV2, AuthorizedHistory, AuthorizedOwnState, AuthorizedPiece, ObservedCell, Sighting,

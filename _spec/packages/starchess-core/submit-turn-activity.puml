@@ -8,7 +8,9 @@
 ' covers: packages/starchess-core/src/__tests__/mine/**
 ' related: _spec/packages/starchess-core/resolve-turn-activity.puml
 ' related: _spec/_plans/ml-adjutant-r3-native-promotion-fix.md
-' R3 source is implemented; full local verification and implementation spec gate remain pending.
+' R3 implementation retained active; prior local proof remains by revision. Current post-correction/restoration verification is pending.
+' recovery: _spec/_plans/recovery-pr47.md; no rewritten/Main/PR readiness or full R4 completion is claimed here.
+' Actual lead checkonly/SVG PASS is recorded in the seam's completed recovered local proof; final closing metadata checks remain with the lead.
 @startuml submit-turn-activity
 !include ../../themes/proveo.puml
 

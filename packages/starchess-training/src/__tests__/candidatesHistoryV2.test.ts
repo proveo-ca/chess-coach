@@ -314,7 +314,10 @@ describe("V1 complete-byte preservation", () => {
   });
 
   it("adds exactly the history entry to the existing candidate runtime surface", () => {
-    expect(Object.keys(publicApi).sort()).toEqual(["composeCandidatesFromHistoryV2", "composeCandidatesFromObservationV1", "decodeCandidate"]);
+    expect(Object.keys(publicApi).sort()).toEqual([
+      "COMPOSITION_VERSION", "MAX_ATTEMPTED_EXTENSIONS", "MAX_GENERATED_ACTIONS", "MAX_RETAINED_CANDIDATES",
+      "composeCandidatesFromHistoryV2", "composeCandidatesFromObservationV1", "decodeCandidate",
+    ]);
   });
 
   it.each(["w", "b"] as const)("preserves current own siege modes and unknown cells, %s", side => {

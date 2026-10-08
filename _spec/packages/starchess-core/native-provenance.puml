@@ -1,0 +1,54 @@
+' purpose: Call-local native identities, committed causal frames, and private consumed-target proofs.
+' covers: packages/starchess-core/src/resolve/provenance*.ts
+' covers: packages/starchess-core/src/index.ts
+' covers: packages/starchess-core/src/resolve/submit-turn.ts
+' covers: packages/starchess-core/src/resolve/resolve-turn.ts
+' covers: packages/starchess-core/src/board/vision.ts
+' covers: packages/starchess-core/src/board/ray-scan.ts
+' covers: packages/starchess-core/src/__tests__/provenance*.test.ts
+' covers: packages/starchess-core/src/__tests__/gasPromotionOwnership.test.ts
+' related: _spec/packages/starchess-arena/authorized-economic-boundaries.puml
+' related: _spec/packages/starchess-core/submit-turn-activity.puml
+' related: _spec/packages/starchess-core/resolve-turn-activity.puml
+' related: _spec/_plans/ml-adjutant-r3-seam-addendum.md (recovered execution context)
+' status: R3 implementation retained active; earlier local proof is revision-scoped. Fresh current compatibility/restoration verification pending.
+' recovery: _spec/_plans/recovery-pr47.md records the verified backup, selected rewrite/lease and archive-only unfinished R4.
+' local proof: Actual lead checkonly/SVG and fresh local suites/audits are recorded outside the accepted snapshot; no renderer/test/hash execution by spec-keeper.
+@startuml
+!include ../../themes/proveo.puml
+title StarChess native provenance — host-only companion
+left to right direction
+
+node "r3Session.ts\ntrusted native-companion caller" as Host <<host>>
+component "provenance.ts\ninitialize / Begin / End" as Companion <<app>>
+component "submit-turn / resolve-turn\nshared native kernels" as Native <<app>>
+component "provenance-recorder.ts\ncall-local identity carriers" as Recorder <<app>>
+component "vision / ray-scan\nactual query evaluations" as Queries <<app>>
+database "Detached private records\nentities + occurrence order\nframes + images + proofs" as Records <<db>>
+component "provenance-validation.ts\nshape / lifecycle / native agreement" as Validation <<app>>
+component "Provenance failure\nno companion publication" as Rejected <<error>>
+
+Host ARROW_MAIN Companion : snapshot + prior provenance\ncommitted action bindings
+Companion ARROW_MAIN Native : one native execution
+Native ARROW_MAIN Recorder : actual lookup and mutation sites
+Native ARROW_MAIN Queries : selected native query branches
+Queries ARROW_MAIN Recorder : evaluation prefix + application association
+Recorder ARROW_MAIN Records : atomic effects and causal images
+Records ARROW_MAIN Validation : closed bounded successor
+Validation ARROW_MAIN Host : native result + checked companion
+Validation ARROW_ERROR Rejected : invalid identity or lifecycle
+
+note bottom of Native
+  Normal result shapes stay native.
+  B promotion checks the live own Marine.
+end note
+note bottom of Records
+  Mine IDs retain native occurrence order.
+  Landing / deferred capture: one frame
+  Victim retirement + relocation
+end note
+note bottom of Queries
+  Probes remain private.
+  Successful consumption binds one target.
+end note
+@enduml

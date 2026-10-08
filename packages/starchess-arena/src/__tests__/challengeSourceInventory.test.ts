@@ -1494,6 +1494,171 @@ describe("static browser public closure", () => {
     const { checkPublicClosure } = await import(/* @vite-ignore */ script);
     return checkPublicClosure(root);
   };
+  const rejectsReviewGraph = async (root: string): Promise<void> => {
+    const inventory = (() => { try { collectSourceInventory(root); } catch (error) { return error; } })();
+    const closure = await check(root).catch((error: unknown) => error);
+    expect(inventory).toBeInstanceOf(Error);
+    expect(closure).toBeInstanceOf(Error);
+    expect((inventory as Error).message).toContain("Unsupported code constructor acquisition");
+    expect((closure as Error).message).toContain("Code constructor acquisition in public closure");
+  };
+  it("R3 final adversarial HIGH 1: rejects intrinsic prototype mutation behind a conditional value", async () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/events.ts`, 'const prototype=true?RegExp.prototype:RegExp.prototype;prototype.test=()=>true;');
+    await rejectsReviewGraph(root);
+  });
+  it("R3 final adversarial HIGH 2: rejects an intrinsic constructor passed to an imported mutation effect", async () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/authorized/v2/types.ts`, 'export function poison(ctor:any){ctor.prototype.test=()=>true;}');
+    put(root, `${ARENA}/src/events.ts`, 'import {poison} from "./authorized/v2/types";poison(RegExp);');
+    await rejectsReviewGraph(root);
+  });
+  it.each([
+    'flag?{}:RegExp.prototype',
+    'flag?RegExp.prototype:{}',
+    'flag&&RegExp.prototype',
+    'flag||RegExp.prototype',
+    'flag??RegExp.prototype',
+    '(0,(flag?{}:RegExp.prototype))',
+    '(flag?{}:(other&&RegExp.prototype))??RegExp.prototype',
+  ])("R3 final adversarial branch provenance: rejects a possible intrinsic mutation target: %s", async value => {
+    const root = fixture();
+    put(root, `${ARENA}/src/events.ts`, `const prototype=(${value}) as any;prototype.test=()=>true;`);
+    await rejectsReviewGraph(root);
+  });
+  it.each([
+    'poison.call(null,RegExp);',
+    'poison.apply(null,[RegExp]);',
+    'const alias=poison;alias(RegExp);',
+    'const alias=poison;alias.call(null,flag?RegExp:Array);',
+    'const alias=poison;alias.apply(null,[flag??RegExp]);',
+    'Reflect.apply(poison,null,[RegExp]);',
+    'const {RegExp:ctor}=globalThis;poison(ctor);',
+    'poison(globalThis.RegExp);',
+  ])("R3 final adversarial constructor dispatch: rejects intrinsic import-effect arguments: %s", async code => {
+    const root = fixture();
+    put(root, `${ARENA}/src/authorized/v2/types.ts`, 'export function poison(ctor:any){ctor.prototype.test=()=>true;}');
+    put(root, `${ARENA}/src/events.ts`, `import {poison} from "./authorized/v2/types";${code}`);
+    await rejectsReviewGraph(root);
+  });
+  it.each(["Array", "Object", "Number", "String", "Map", "Set", "WeakMap", "Date", "Promise", "Uint8Array", "ArrayBuffer", "Error", "Symbol", "Proxy", "BigInt"])("R3 final adversarial constructor coverage: rejects unapproved use of %s", async ctor => {
+    const root = fixture();
+    put(root, `${ARENA}/src/authorized/v2/types.ts`, 'export function poison(ctor:any){ctor.prototype.test=()=>true;}');
+    put(root, `${ARENA}/src/events.ts`, `import {poison} from "./authorized/v2/types";poison(${ctor});`);
+    await rejectsReviewGraph(root);
+  });
+  it("retains fresh branch/sequence data and non-native constructors under final R3 guards", async () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/authorized/v2/types.ts`, 'export function install(ctor:any){ctor.prototype.test=()=>true;}');
+    put(root, `${ARENA}/src/events.ts`, 'import {install} from "./authorized/v2/types";class Local{};install(Local);Object.freeze(Local);Object.freeze(Local.prototype);const record=flag?{value:1}:{value:2};Object.freeze(record);const data=(RegExp.prototype,{value:3});Object.defineProperty(data,"other",{value:4});const instance=new RegExp("safe");Object.defineProperty(instance,"label",{value:"safe"});');
+    expect(collectSourceInventory(root).audit.passed).toBe(true);
+    expect((await check(root)).passed).toBe(true);
+  });
+  it.each([["map", "Number"], ["filter", "Boolean"]])("rejects final R3 constructor callbacks on unreviewed receivers: %s(%s)", async (method, ctor) => {
+    const root = fixture();
+    put(root, `${ARENA}/src/authorized/v2/types.ts`, 'export function poison(ctor:any){ctor.prototype.test=()=>true;}');
+    put(root, `${ARENA}/src/events.ts`, `import {poison} from "./authorized/v2/types";const suffix={split(){return {map:poison,filter:poison};}};suffix.split(":").${method}(${ctor});`);
+    await rejectsReviewGraph(root);
+  });
+  it("rejects a mutable final R3 reviewed constructor-callback helper", async () => {
+    const root = v2Fixture();
+    const path = `${ARENA}/src/authorized/v2/schema.ts`;
+    const original = readFileSync(join(root, path), "utf8");
+    expect(original).toContain("export const id =");
+    put(root, path, `${original.replace("export const id =", "export let id =")}\nid=((value:any)=>value) as any;`);
+    await rejectsReviewGraph(root);
+  });
+  it("R3 re-review HIGH 1: rejects stale member initializers hiding reassigned intrinsic prototypes", async () => {
+    for (const mutation of [
+      'Object.defineProperty.call(null,holder.prototype,"test",{value:()=>true});',
+      'holder.prototype.test=()=>true;',
+    ]) {
+      const root = fixture();
+      put(root, `${ARENA}/src/events.ts`, `const holder:any={prototype:{}};holder.prototype=RegExp.prototype;${mutation}`);
+      await rejectsReviewGraph(root);
+    }
+  });
+  it("R3 re-review HIGH 2: rejects metadata-mutator captures exported later and invoked through an import", async () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/authorized/v2/types.ts`, 'const {defineProperty:define}=Object;export {define};');
+    put(root, `${ARENA}/src/events.ts`, 'import {define} from "./authorized/v2/types";define(RegExp.prototype,"test",{value:()=>true});');
+    await rejectsReviewGraph(root);
+  });
+  it("R3 re-review HIGH 3: rejects lexical Reflect shadowing in exact native function anchors", () => {
+    const root = nativeValidationFixture();
+    const path = `${CORE}/src/resolve/provenance-validation.ts`;
+    put(root, path, `${readFileSync(join(root, path), "utf8")}\nconst Reflect={ownKeys:(value:object)=>Array.isArray(value)?globalThis.Reflect.ownKeys(value):[]};`);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+  });
+  it("R3 re-review HIGH 4: rejects mutable counted-planning failure bindings with unchanged declaration text", async () => {
+    const root = await currentGraphFixture();
+    const path = `${CORE}/src/rules/counted-planning.ts`;
+    const original = readFileSync(join(root, path), "utf8");
+    expect(original).toContain("const fail =");
+    put(root, path, `${original.replace("const fail =", "let fail =")}\nfail=(()=>undefined) as any;`);
+    await rejectsReviewGraph(root);
+  }, 30000);
+  it("R3 re-review HIGH 5: rejects metadata mutation dispatched through spread arguments", async () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/events.ts`, 'Object.defineProperty(...([Uint8Array.prototype,"set",{value:()=>{}}] as const));');
+    await rejectsReviewGraph(root);
+  });
+  it("R3 re-review HIGH 6: rejects mutations through locally returned intrinsic prototypes", async () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/events.ts`, 'const prototype=(()=>RegExp.prototype)();prototype.test=()=>true;');
+    await rejectsReviewGraph(root);
+  });
+  it("R3 re-review HIGH 7: rejects intrinsic prototypes passed to an imported mutation effect", async () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/authorized/v2/types.ts`, 'export function poison(prototype:any){prototype.test=()=>true;}');
+    put(root, `${ARENA}/src/events.ts`, 'import {poison} from "./authorized/v2/types";poison(RegExp.prototype);');
+    await rejectsReviewGraph(root);
+  });
+  it("R3 re-review HIGH 8: rejects legacy getter/setter definitions on intrinsic prototypes", async () => {
+    for (const code of [
+      'RegExp.prototype.__defineGetter__("test",()=>()=>true);',
+      'RegExp.prototype.__defineSetter__("test",()=>{});',
+    ]) {
+      const root = fixture();
+      put(root, `${ARENA}/src/events.ts`, code);
+      await rejectsReviewGraph(root);
+    }
+  });
+  it.each([
+    'const {defineProperty:define}=Object;const holder={define};',
+    'const {defineProperty:define}=Object;consume(define);',
+    'const {defineProperty:define}=Object;export function getDefine(){return define;}',
+    'const define=Object.defineProperty;export {define};',
+    'const define=Object.defineProperty.bind(null,{},"value",{value:1});export {define};',
+    'const {__defineGetter__:define}=RegExp.prototype;export {define};',
+    'const {__defineSetter__:define}=RegExp.prototype;export {define};',
+  ])("rejects R3 re-review metadata-mutator member, argument, return and alias escapes: %s", async code => {
+    const root = fixture();
+    put(root, `${ARENA}/src/events.ts`, code);
+    await rejectsReviewGraph(root);
+  });
+  it("retains ordinary data mapping and non-native class freezes under the R3 re-review guards", async () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/events.ts`, 'class Local{};Object.freeze(Local);Object.freeze(Local.prototype);const records=()=>[{value:1},{value:2}];const frozen=records().map(Object.freeze);export {frozen};');
+    expect(collectSourceInventory(root).audit.passed).toBe(true);
+    expect((await check(root)).passed).toBe(true);
+  });
+  it("rejects prototype-return factories crossing modules under the R3 re-review guards", async () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/authorized/v2/types.ts`, 'export const getPrototype=()=>RegExp.prototype;');
+    put(root, `${ARENA}/src/events.ts`, 'import {getPrototype} from "./authorized/v2/types";const prototype=getPrototype();prototype.test=()=>true;');
+    await rejectsReviewGraph(root);
+  });
+  it("rejects mutable counted helper bindings used by approved R3 function anchors", async () => {
+    for (const name of ["square", "piece"]) {
+      const root = await currentGraphFixture();
+      const path = `${CORE}/src/rules/counted-planning.ts`;
+      const original = readFileSync(join(root, path), "utf8");
+      expect(original).toContain(`const ${name} =`);
+      put(root, path, `${original.replace(`const ${name} =`, `let ${name} =`)}\n${name}=((value:any)=>value) as any;`);
+      await rejectsReviewGraph(root);
+    }
+  }, 30000);
   it("R3 review regression: rejects lexical Reflect substitution without changing byte anchors", async () => {
     const root = v2Fixture();
     const path = `${ARENA}/src/authorized/v2/schema.ts`;
@@ -1573,6 +1738,56 @@ describe("static browser public closure", () => {
     expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
     await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
   });
+  it.each([
+    'const {defineProperty:define}=Object;define.call(null,Uint8Array.prototype,"set",{value:()=>{}});',
+    'const {defineProperty:define}=Object;const alias=define;alias(Uint8Array.prototype,"set",{value:()=>{}});',
+    'const {apply}=Reflect;apply(Object.defineProperty,null,[Uint8Array.prototype,"set",{value:()=>{}}]);',
+    'const {Object:api}=globalThis;const {defineProperty:define}=api;define(Uint8Array.prototype,"set",{value:()=>{}});',
+    'const {Reflect:api}=globalThis;api.defineProperty(Uint8Array.prototype,"set",{value:()=>{}});',
+    'const {Array:ctor}=globalThis;ctor.prototype.includes=(()=>true) as any;',
+    'const {prototype}=RegExp;prototype.test=(()=>true) as any;',
+  ])("rejects destructured intrinsic aliases across the graph: %s", async code => {
+    const root = fixture();
+    put(root, `${ARENA}/src/events.ts`, code);
+    const inventory = (() => { try { collectSourceInventory(root); } catch (error) { return error; } })();
+    const closure = await check(root).catch((error: unknown) => error);
+    expect(inventory).toBeInstanceOf(Error);
+    expect(closure).toBeInstanceOf(Error);
+    expect((inventory as Error).message).toContain("Unsupported code constructor acquisition");
+    expect((closure as Error).message).toContain("Code constructor acquisition in public closure");
+  });
+  it.each([
+    'function poison(prototype:any){prototype.includes=()=>true;}poison(Array.prototype);',
+    'function poison(prototype:any){prototype.test=()=>true;}function forward(prototype:any){poison(prototype);}forward(RegExp.prototype);',
+    'function replace(args:any[]){args[0]=Uint8Array.prototype;}const args=[{},"set",{value:()=>{}}];replace(args);Object.defineProperty.apply(null,args);',
+    'function replace(args:any[]){args[0]=Uint8Array.prototype;}function forward(args:any[]){replace(args);}const args=[{},"set",{value:()=>{}}];forward(args);Reflect.apply(Object.defineProperty,null,args);',
+  ])("rejects helper-propagated intrinsic mutations across the graph: %s", async code => {
+    const root = fixture();
+    put(root, `${ARENA}/src/events.ts`, code);
+    const inventory = (() => { try { collectSourceInventory(root); } catch (error) { return error; } })();
+    const closure = await check(root).catch((error: unknown) => error);
+    expect(inventory).toBeInstanceOf(Error);
+    expect(closure).toBeInstanceOf(Error);
+    expect((inventory as Error).message).toContain("Unsupported code constructor acquisition");
+    expect((closure as Error).message).toContain("Code constructor acquisition in public closure");
+  });
+  it("requires immutable anchor declarations even without an appended reassignment", async () => {
+    const root = v2Fixture();
+    const path = `${ARENA}/src/authorized/v2/schema.ts`;
+    const original = readFileSync(join(root, path), "utf8");
+    expect(original).toContain("export const object =");
+    put(root, path, original.replace("export const object =", "export let object ="));
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
+  });
+  it("preserves local intrinsic names outside anchor scopes and mutations of fresh data", async () => {
+    const root = v2Fixture();
+    const path = `${ARENA}/src/authorized/v2/schema.ts`;
+    put(root, path, `${readFileSync(join(root, path), "utf8")}\nfunction local(){const Reflect={apply:()=>0};const RegExp={test:()=>true};return Reflect.apply()+Number(RegExp.test());}`);
+    put(root, `${ARENA}/src/events.ts`, 'const data={};Object.defineProperty.call(null,data,"value",{value:1});const {defineProperty:define}=Object;define(data,"other",{value:2});');
+    expect(collectSourceInventory(root).audit.passed).toBe(true);
+    expect((await check(root)).passed).toBe(true);
+  });
   it.each(["RegExp.prototype.test", "Number.isSafeInteger", "JSON.parse", "String.prototype.startsWith", "Array.prototype.includes", "Reflect.apply"])("rejects scalar intrinsic poisoning outside anchor files: %s", async target => {
     const root = v2Fixture();
     put(root, `${ARENA}/src/events.ts`, `${target}=(()=>true) as any;`);
@@ -1583,6 +1798,7 @@ describe("static browser public closure", () => {
     'const args:any[]=[{},"set",{value:()=>{}}];args[0]=Uint8Array.prototype;Object.defineProperty.apply(null,args);',
     'Object.defineProperty.apply(null,unknownArguments());',
     'Reflect.apply(Object.defineProperty,null,unknownArguments());',
+    'Object.defineProperty.apply(null,[,"set",{value:()=>{}}]);',
   ])("rejects unproven or rewritten metadata-dispatch argument vectors: %s", async code => {
     const root = v2Fixture();
     put(root, `${ARENA}/src/events.ts`, code);

@@ -9,6 +9,7 @@ import { SQUARES as legacySquares } from "../challenge/observation";
 import { decodeObservation, encodeObservation, validateObservation } from "../challengeContract/observationCodec";
 import { ContractError } from "../challengeContract/validation";
 import { decodeObservationV1, encodeObservationV1, validateObservationV1, type AuthorizedObservationV1 } from "../observations";
+import * as publicObservations from "../observations";
 
 const fixture = (side: PieceColor = "w") => structuredClone(observe(parseScFen(
   "SCFEN|4k2q/8/8/8/8/8/BRN1P3/4K3|21|33|P|G:33:33|B:3:3|Q:w:;b:",
@@ -29,6 +30,12 @@ const assertFrozenPlainDetached = (output: unknown, input: unknown): void => {
 };
 
 describe("public authorized observation V1 bridge", () => {
+  it("exports exactly the approved V1 and V2 runtime entrypoints", () => {
+    expect(Object.keys(publicObservations).sort()).toEqual([
+      "decodeObservation", "decodeObservationV1", "encodeObservation", "encodeObservationV1", "validateObservation", "validateObservationV1",
+    ]);
+  });
+
   it("preserves legacy utility identity and APIs", () => {
     expect(legacyCanonical({ b: 2, a: 1 })).toBe(canonical({ b: 2, a: 1 }));
     expect(legacyFreeze({ nested: { value: 1 } })).toEqual(deepFreeze({ nested: { value: 1 } }));

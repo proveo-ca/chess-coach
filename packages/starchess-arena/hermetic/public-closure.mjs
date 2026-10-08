@@ -301,7 +301,7 @@ export const checkPublicClosure = (root = repository) => {
       }
       if (!ts.isIdentifier(expression)) return expression;
       const symbol = ts.isShorthandPropertyAssignment(expression.parent) ? checker.getShorthandAssignmentValueSymbol(expression.parent)
-        : checker.getSymbolAtLocation(expression);
+        : ts.isExportSpecifier(expression.parent) ? checker.getExportSpecifierLocalTargetSymbol(expression.parent) : checker.getSymbolAtLocation(expression);
       if (!symbol || seen.has(symbol)) return expression;
       const declaration = symbol.valueDeclaration;
       if (declaration && ts.isBindingElement(declaration) && !declaration.initializer && !declaration.dotDotDotToken) {
@@ -380,8 +380,10 @@ export const checkPublicClosure = (root = repository) => {
     };
     const builtinNamespace = (node, name) => {
       const expression = origin(node), member = property(expression);
+      const declaration = ts.isIdentifier(expression) ? binding(expression)?.valueDeclaration : undefined;
+      const bound = declaration && ts.isBindingElement(declaration) && !declaration.initializer && !declaration.dotDotDotToken ? bindingMember(declaration) : undefined;
       return ts.isIdentifier(expression) && expression.text === name && globalReference(expression) || member?.name === name &&
-        hostRoot(member.receiver);
+        hostRoot(member.receiver) || bound?.name === name && hostRoot(bound.receiver);
     };
     const mutatedRoots = new Set();
     const nonNumericWrites = new Set();
@@ -461,7 +463,7 @@ export const checkPublicClosure = (root = repository) => {
     const literalArguments = (node) => {
       if (node && [...provenance(node)].some((root) => mutatedRoots.has(root))) return undefined;
       const value = node && origin(node);
-      return value && ts.isArrayLiteralExpression(value) && !value.elements.some(ts.isSpreadElement) ? [...value.elements] : undefined;
+      return value && ts.isArrayLiteralExpression(value) && !value.elements.some((entry) => ts.isSpreadElement(entry) || ts.isOmittedExpression(entry)) ? [...value.elements] : undefined;
     };
     const mutationInvocation = (expression, args, depth = 0) => {
       if (depth > 16) return undefined;
@@ -470,7 +472,8 @@ export const checkPublicClosure = (root = repository) => {
         const bound = property(origin(value.expression));
         if (bound?.name === "bind") return mutationInvocation(bound.receiver, [...value.arguments.slice(1), ...args], depth + 1);
       }
-      const method = property(value);
+      const declaration = ts.isIdentifier(value) ? binding(value)?.valueDeclaration : undefined;
+      const method = property(value) ?? (declaration && ts.isBindingElement(declaration) && !declaration.initializer && !declaration.dotDotDotToken ? bindingMember(declaration) : undefined);
       if (!method) return undefined;
       if (method.name === "call") {
         const receiver = property(origin(method.receiver));
@@ -489,19 +492,59 @@ export const checkPublicClosure = (root = repository) => {
       }
       const object = builtinNamespace(method.receiver, "Object") && ["assign", "defineProperty", "defineProperties", "setPrototypeOf", "freeze", "seal", "preventExtensions"].includes(method.name);
       const reflect = builtinNamespace(method.receiver, "Reflect") && ["set", "deleteProperty", "defineProperty", "setPrototypeOf", "preventExtensions"].includes(method.name);
-      return object || reflect ? args[0] ?? null : undefined;
+      if (["__defineGetter__", "__defineSetter__"].includes(method.name)) return method.receiver;
+      return object || reflect ? args.some(ts.isSpreadElement) ? null : args[0] ?? null : undefined;
     };
-    const intrinsicTarget = (node, seen = new Set()) => {
+    const returnedValues = (call) => {
+      const callee = origin(call.expression);
+      const fn = ts.isIdentifier(callee) ? binding(callee)?.valueDeclaration : callee;
+      if (!fn || !(ts.isFunctionDeclaration(fn) || ts.isFunctionExpression(fn) || ts.isArrowFunction(fn)) || !fn.body) return [];
+      if (!ts.isBlock(fn.body)) return [fn.body];
+      const values = [];
+      const scan = (node) => {
+        if (ts.isReturnStatement(node) && node.expression) values.push(node.expression);
+        else if (!ts.isFunctionLike(node)) ts.forEachChild(node, scan);
+      };
+      ts.forEachChild(fn.body, scan);
+      return values;
+    };
+    const intrinsicTarget = (node, seen = new Map(), escapeOnly = false) => {
+      const input = unwrap(node);
       const value = origin(node);
-      if (seen.has(value)) return false;
-      const next = new Set([...seen, value]);
-      if (ts.isIdentifier(value)) return intrinsicNames.has(value.text) && globalReference(value);
+      const modes = seen.get(input) ?? 0;
+      const mode = escapeOnly ? 1 : 2;
+      if (modes & mode) return false;
+      seen.set(input, modes | mode);
+      const next = seen;
+      for (const root of provenance(input)) for (const assigned of callableAssignments.get(root) ?? []) {
+        if (intrinsicTarget(assigned, next, escapeOnly)) return true;
+      }
+      if (ts.isConditionalExpression(value)) return intrinsicTarget(value.whenTrue, next, escapeOnly) || intrinsicTarget(value.whenFalse, next, escapeOnly);
+      if (ts.isBinaryExpression(value) && [ts.SyntaxKind.AmpersandAmpersandToken, ts.SyntaxKind.BarBarToken, ts.SyntaxKind.QuestionQuestionToken].includes(value.operatorToken.kind)) {
+        return intrinsicTarget(value.left, next, escapeOnly) || intrinsicTarget(value.right, next, escapeOnly);
+      }
+      if (ts.isIdentifier(value)) {
+        if (intrinsicNames.has(value.text) && globalReference(value)) return true;
+        const declaration = binding(value)?.valueDeclaration;
+        if (declaration && ts.isVariableDeclaration(declaration) && declaration.initializer) return intrinsicTarget(declaration.initializer, next, escapeOnly);
+        const bound = declaration && ts.isBindingElement(declaration) && !declaration.initializer && !declaration.dotDotDotToken ? bindingMember(declaration) : undefined;
+        return Boolean(bound && (intrinsicNames.has(bound.name) && hostRoot(bound.receiver) ||
+          (escapeOnly ? bound.name === "prototype" && intrinsicTarget(bound.receiver, next) : intrinsicTarget(bound.receiver, next))));
+      }
       if (ts.isCallExpression(value)) {
         const method = property(origin(value.expression));
-        if (method && builtinNamespace(method.receiver, "Object") && ["getPrototypeOf", "getOwnPropertyDescriptor", "freeze"].includes(method.name) && value.arguments[0]) return intrinsicTarget(value.arguments[0], next);
+        if (method && builtinNamespace(method.receiver, "Object") && ["getPrototypeOf", "getOwnPropertyDescriptor", "freeze"].includes(method.name) && value.arguments[0]) {
+          return escapeOnly && method.name === "getOwnPropertyDescriptor" ? false : intrinsicTarget(value.arguments[0], next, method.name === "getPrototypeOf" ? false : escapeOnly);
+        }
+        return returnedValues(value).some((returned) => intrinsicTarget(returned, next, escapeOnly));
       }
       const member = property(value);
-      return Boolean(member && (intrinsicNames.has(member.name) && hostRoot(member.receiver) || intrinsicTarget(member.receiver, next)));
+      if (member) return intrinsicNames.has(member.name) && hostRoot(member.receiver) ||
+        (escapeOnly ? member.name === "prototype" && intrinsicTarget(member.receiver, next) : intrinsicTarget(member.receiver, next));
+      if (ts.isArrayLiteralExpression(value)) return value.elements.some((entry) => !ts.isOmittedExpression(entry) && intrinsicTarget(ts.isSpreadElement(entry) ? entry.expression : entry, next, escapeOnly));
+      if (ts.isObjectLiteralExpression(value)) return value.properties.some((entry) => ts.isPropertyAssignment(entry) ? intrinsicTarget(entry.initializer, next, escapeOnly)
+        : ts.isShorthandPropertyAssignment(entry) ? intrinsicTarget(entry.name, next, escapeOnly) : ts.isSpreadAssignment(entry) && intrinsicTarget(entry.expression, next, escapeOnly));
+      return false;
     };
     const scanMutations = (node) => {
       mutationNodeCount++;
@@ -599,12 +642,36 @@ export const checkPublicClosure = (root = repository) => {
       ts.forEachChild(node, scanMutations);
     };
     scanMutations(source);
-    for (const call of mutationCalls) {
-      const target = mutationInvocation(call.expression, call.arguments);
-      if (target === null) throw new Error(`Code constructor acquisition in public closure: ${id} -> unresolved mutation target`);
-      if (target) intrinsicMutationTargets.push(target);
-    }
-    if (intrinsicMutationTargets.some((target) => intrinsicTarget(target))) throw new Error(`Code constructor acquisition in public closure: ${id} -> intrinsic mutation`);
+    const reviewedIntrinsicCallback = (call) => {
+      if (id !== `${ARENA}/src/authorized/v2/schema.ts` || call.getText(source) !== 'suffix.split(":").map(Number)' ||
+          call.arguments.length !== 1 || !ts.isIdentifier(call.arguments[0]) || call.arguments[0].text !== "Number" || !globalReference(call.arguments[0])) return false;
+      let declaration = call.parent;
+      while (declaration && !(ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && declaration.name.text === "id")) declaration = declaration.parent;
+      if (!declaration || !ts.isIdentifier(declaration.name) || declaration.name.text !== "id" || declaration.parent.parent.parent !== source ||
+          !(declaration.parent.flags & ts.NodeFlags.Const) || sha256(declaration.getText(source)) !== "f52020686923cc8b01c878e68e2fdf208f6ad9b9800a84fccc60e388c38091de") return false;
+      const symbol = binding(declaration.name);
+      if (symbol?.declarations?.length !== 1 || numericAssignments.has(symbol) || nonNumericWrites.has(symbol)) return false;
+      let valid = true;
+      const scan = (node) => {
+        if (ts.isIdentifier(node) && valueUse(node) && intrinsicNames.has(node.text) && !globalReference(node)) valid = false;
+        ts.forEachChild(node, scan);
+      };
+      scan(declaration);
+      return valid;
+    };
+    const checkIntrinsicMutations = () => {
+      for (const call of mutationCalls) {
+        const target = mutationInvocation(call.expression, call.arguments);
+        if (target === null) throw new Error(`Code constructor acquisition in public closure: ${id} -> unresolved mutation target`);
+        if (target) intrinsicMutationTargets.push(target);
+        const method = property(origin(call.expression));
+        const reader = method && (builtinNamespace(method.receiver, "Object") && ["getPrototypeOf", "getOwnPropertyDescriptor", "getOwnPropertyDescriptors", "hasOwn", "is", "keys", "values", "entries", "isExtensible", "isFrozen", "isSealed"].includes(method.name) ||
+          builtinNamespace(method.receiver, "Reflect") && ["ownKeys", "has", "isExtensible"].includes(method.name));
+        if (!reader && !reviewedIntrinsicCallback(call) && call.arguments.some((argument) => intrinsicTarget(ts.isSpreadElement(argument) ? argument.expression : argument, new Map(), true))) throw new Error(`Code constructor acquisition in public closure: ${id} -> intrinsic reference escape: ${call.getText(source)}`);
+      }
+      if ([...intrinsicMutationTargets, ...memberMutationTargets].some((target) => intrinsicTarget(target))) throw new Error(`Code constructor acquisition in public closure: ${id} -> intrinsic mutation`);
+    };
+    checkIntrinsicMutations();
     arrayIntrinsicsMutated ||= arrayMutatorTargets.some((target) => !freshError(target));
     const staleInvocationSource = (node) => {
       const roots = [...provenance(node)];
@@ -855,7 +922,7 @@ export const checkPublicClosure = (root = repository) => {
       return values;
     };
     const localInvocation = (expression, args, depth = 0, expected, invoked = true) => {
-      if (depth > 16) throw new Error(`Unsupported parameter mutation wrapper in public closure: ${id}`);
+      if (depth > 16) throw new Error(`Unsupported parameter mutation wrapper in public closure: ${id} -> ${expression.getText(source)}`);
       const stale = staleInvocationSource(expression);
       if (invoked && !property(unwrap(expression)) && [...provenance(expression)].some((root) => numericAssignments.has(root) || nonNumericWrites.has(root))) {
         return { unproved: true, callee: expression, args };
@@ -1018,6 +1085,7 @@ export const checkPublicClosure = (root = repository) => {
         }
       }
     } while (previousMutationState !== mutationStateSize());
+    checkIntrinsicMutations();
     arrayIntrinsicsMutated ||= arrayMutatorTargets.some((target) => !freshError(target));
     const parameterValueProof = (node, prove) => {
       const path = parameterPath(node);
@@ -1293,8 +1361,8 @@ export const checkPublicClosure = (root = repository) => {
     const checkedAnchorCache = new WeakMap();
     const checkedAnchorDeclaration = (declaration) => {
       if (checkedAnchorCache.has(declaration)) return checkedAnchorCache.get(declaration);
-      if (!ts.isVariableDeclaration(declaration) || !ts.isIdentifier(declaration.name) || declaration.parent.parent.parent !== source ||
-          !(declaration.parent.flags & ts.NodeFlags.Const)) return false;
+      if (!(ts.isVariableDeclaration(declaration) || ts.isFunctionDeclaration(declaration) || ts.isClassDeclaration(declaration)) || !declaration.name || !ts.isIdentifier(declaration.name)) return false;
+      if (ts.isVariableDeclaration(declaration) ? declaration.parent.parent.parent !== source || !(declaration.parent.flags & ts.NodeFlags.Const) : declaration.parent !== source) return false;
       const symbol = binding(declaration.name);
       if (symbol?.declarations?.length !== 1 || numericAssignments.has(symbol) || nonNumericWrites.has(symbol)) return false;
       let valid = true;
@@ -1364,18 +1432,22 @@ export const checkPublicClosure = (root = repository) => {
       };
       const imports = source.statements.filter(ts.isImportDeclaration);
       const declarations = source.statements.filter(ts.isVariableStatement).flatMap((statement) => [...statement.declarationList.declarations]);
+      if (counted && ["fail", "square", "piece"].some((name) => {
+        const entries = declarations.filter((entry) => ts.isIdentifier(entry.name) && entry.name.text === name);
+        return entries.length !== 1 || !checkedAnchorDeclaration(entries[0]);
+      })) return false;
       if (history) {
         const failures = declarations.filter((entry) => ts.isIdentifier(entry.name) && entry.name.text === "historyFailure");
         const errors = source.statements.filter(ts.isClassDeclaration).filter((entry) => entry.name?.text === "ContractError");
         const failure = failures[0], error = errors[0];
-        if (failures.length !== 1 || errors.length !== 1 || failure.getText(source) !== 'historyFailure = (path: string, code = "SCHEMA"): never => { throw new ContractError(path, code); }' ||
+        if (failures.length !== 1 || errors.length !== 1 || !checkedAnchorDeclaration(failure) || !checkedAnchorDeclaration(error) || failure.getText(source) !== 'historyFailure = (path: string, code = "SCHEMA"): never => { throw new ContractError(path, code); }' ||
             sha256(error.getText(source)) !== "4e4027ca9cd7c79cc0f90b22f75fecdd9d950c7d3cb8177b21f5685a0e876e88") return false;
         const failureSymbol = binding(failure.name), errorSymbol = binding(error.name);
         if (failureSymbol?.declarations?.length !== 1 || errorSymbol?.declarations?.length !== 1 ||
             [...memberMutationTargets, ...arrayMutatorTargets, ...intrinsicMutationTargets].some((target) => { const roots = provenance(target); return roots.has(failureSymbol) || roots.has(errorSymbol); })) return false;
       }
       if (v2 && !imports.some((entry) => entry.getText(source) === 'import { fail, MAX_CODEC_BYTES } from "../../challengeContract/validation";') ||
-          counted && !declarations.some((entry) => entry.getText(source) === 'fail = (): never => { throw new TypeError("Invalid counted planning knowledge"); }') ||
+          counted && !declarations.some((entry) => checkedAnchorDeclaration(entry) && entry.getText(source) === 'fail = (): never => { throw new TypeError("Invalid counted planning knowledge"); }') ||
           validationIntrinsicsChanged()) return false;
       for (let declaration = node; declaration; declaration = declaration.parent) {
         const anchor = ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && new Map(Object.entries(anchors)).get(declaration.name.text);
@@ -1419,6 +1491,43 @@ export const checkPublicClosure = (root = repository) => {
           ts.isVariableDeclaration(parent) || ts.isParameter(parent) || ts.isBindingElement(parent) || ts.isFunctionDeclaration(parent) || ts.isFunctionExpression(parent) || ts.isClassDeclaration(parent)) && parent.name === node ||
         ts.isImportSpecifier(parent) || ts.isImportClause(parent) || ts.isNamespaceImport(parent));
     }
+    const metadataMutator = (node, seen = new Set()) => {
+      const value = origin(node);
+      if (seen.has(value)) return false;
+      const next = new Set([...seen, value]);
+      if (ts.isCallExpression(value)) {
+        const method = property(origin(value.expression));
+        return Boolean(method?.name === "bind" && metadataMutator(method.receiver, next));
+      }
+      const declaration = ts.isIdentifier(value) ? binding(value)?.valueDeclaration : undefined;
+      const method = property(value) ?? (declaration && ts.isBindingElement(declaration) ? bindingMember(declaration) : undefined);
+      if (!method) return false;
+      if (["call", "apply", "bind"].includes(method.name)) return metadataMutator(method.receiver, next);
+      return ["__defineGetter__", "__defineSetter__"].includes(method.name) || builtinNamespace(method.receiver, "Object") && ["assign", "defineProperty", "defineProperties", "setPrototypeOf", "freeze", "seal", "preventExtensions"].includes(method.name) ||
+        builtinNamespace(method.receiver, "Reflect") && ["set", "deleteProperty", "defineProperty", "setPrototypeOf", "preventExtensions"].includes(method.name);
+    };
+    const localMetadataCapture = (declaration, name) => {
+      const symbol = binding(name);
+      return ts.isVariableDeclaration(declaration) && ts.isVariableDeclarationList(declaration.parent) && Boolean(declaration.parent.flags & ts.NodeFlags.Const) &&
+        !(ts.getCombinedModifierFlags(declaration) & ts.ModifierFlags.Export) && symbol?.declarations?.length === 1 && !numericAssignments.has(symbol) && !nonNumericWrites.has(symbol);
+    };
+    const checkMetadataUse = (node) => {
+      if (ts.isBindingElement(node) && ts.isIdentifier(node.name) && metadataMutator(node.name) && !localMetadataCapture(node.parent.parent, node.name)) throw new Error(`Code constructor acquisition in public closure: ${id} -> metadata mutator capture`);
+      if (!valueUse(node) || !metadataMutator(node)) return;
+      const use = wrappedUse(node), parent = use.parent;
+      if (ts.isVariableDeclaration(parent) && parent.initializer === use && ts.isIdentifier(parent.name) && localMetadataCapture(parent, parent.name)) return;
+      const member = property(parent);
+      if (member && member.receiver === use && ["call", "apply", "bind"].includes(member.name)) return;
+      if (ts.isCallExpression(parent)) {
+        const method = property(origin(parent.expression));
+        if (parent.expression === use && (mutationInvocation(parent.expression, parent.arguments) !== undefined || method?.name === "bind")) return;
+        if (parent.arguments[0] === use && method?.name === "apply" && builtinNamespace(method.receiver, "Reflect") && mutationInvocation(parent.expression, parent.arguments) !== undefined) return;
+        const capture = property(origin(node));
+        if (parent.arguments[0] === use && parent.arguments.length === 1 && method?.name === "map" && arrayValue(method.receiver) && !intrinsicTarget(method.receiver) &&
+            capture?.name === "freeze" && builtinNamespace(capture.receiver, "Object")) return;
+      }
+      throw new Error(`Code constructor acquisition in public closure: ${id} -> metadata mutator escape: ${node.getText(source)}`);
+    };
     const timerReference = (node) => {
       const expression = origin(node), member = property(expression);
       return ts.isIdentifier(expression) && ["setTimeout", "setInterval", "setImmediate"].includes(expression.text) && globalReference(expression) ||
@@ -1434,6 +1543,11 @@ export const checkPublicClosure = (root = repository) => {
       return ts.isArrowFunction(value) || ts.isFunctionExpression(value) || ts.isIdentifier(value) && callableType(dataType(value));
     };
     const scan = (node) => {
+      checkMetadataUse(node);
+      const returned = ts.isReturnStatement(node) ? node.expression : ts.isArrowFunction(node) && !ts.isBlock(node.body) ? node.body : undefined;
+      const exported = ts.isVariableDeclaration(node) && Boolean(ts.getCombinedModifierFlags(node) & ts.ModifierFlags.Export) ? node.initializer
+        : ts.isIdentifier(node) && ts.isExportSpecifier(node.parent) && !node.parent.isTypeOnly && !node.parent.parent.parent.isTypeOnly ? node : undefined;
+      if ((returned || exported) && intrinsicTarget(returned ?? exported, new Map(), true)) throw new Error(`Code constructor acquisition in public closure: ${id} -> intrinsic reference escape`);
       if (id === `${ARENA}/src/authorized/v2/schema.ts` && ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) &&
           node.parent.parent.parent === source && byteIntrinsicAnchors.has(node.name.text) && !reviewedByteIntrinsic(node)) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${node.name.text}`);
       if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.parent.parent.parent === source && validationNames.get(id)?.includes(node.name.text) &&
@@ -1477,9 +1591,9 @@ export const checkPublicClosure = (root = repository) => {
           !descriptorSeam && !reviewedArrayDescriptor(node) && !reviewedValidationDescriptor(node) && !reviewedByteIntrinsic(node)) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${node.getText(source)}`);
       const boundName = ts.isBindingElement(node) ? node.propertyName ? ownName(node.propertyName) : ts.isIdentifier(node.name) ? node.name.text : undefined : undefined;
       const bound = ts.isBindingElement(node) ? bindingMember(node) : undefined;
-      if (ts.isBindingElement(node) && (["constructor", "__proto__", "eval", "Function", "process", "setTimeout", "setInterval", "setImmediate", "getOwnPropertyDescriptor", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(boundName ?? "") ||
+      if (ts.isBindingElement(node) && (["constructor", "__proto__", "__defineGetter__", "__defineSetter__", "eval", "Function", "process", "setTimeout", "setInterval", "setImmediate", "getOwnPropertyDescriptor", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(boundName ?? "") ||
           bound?.name === "get" && builtinNamespace(bound.receiver, "Reflect") || node.propertyName && ts.isComputedPropertyName(node.propertyName))) throw new Error(`Code constructor acquisition in public closure: ${id}`);
-      if (["constructor", "__proto__"].includes(member?.name) ||
+      if (["constructor", "__proto__", "__defineGetter__", "__defineSetter__"].includes(member?.name) ||
           ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(node.parent) && !reviewedDescriptor(node) && !reviewedDataAccess(node) && unsafeComputedReceiver(node.expression, new Set(),
             /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression))) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${node.getText(source)}`);
       if (ts.isIdentifier(node) && !ts.isPartOfTypeNode(node)) {
