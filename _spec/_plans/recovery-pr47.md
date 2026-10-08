@@ -1,5 +1,7 @@
 # PR47 recovery — provenance, archive decision and selected rewrite
 
+**PUBLICATION CONFIRMED:** the approved force-with-lease replaced `46c5106864e985065451abb3d5cf8bcad521e57d` with `25d7101379bd3569d9b4af9c1151dc8aff1ad09f` on `origin/feat-ml-adjuntant`. GitHub PR47 independently reported that exact head and the five meaningful commits. This confirmation records the observed publication event before its own documentation follow-up. Earlier publication-pending metadata below remains chronological history, not a current blocker. The source and test results do not change.
+
 Status: **CURRENT LOCAL RESTORATION / R3 SOURCE AND BOUNDED VERIFICATION COMPLETE; ALL FINAL REQUESTED LOCAL CHECKS PASS, BOTH CLOSING REVIEWS READY. FOUR MEANINGFUL COMMITS EXIST ON ORIGINAL FORK997141 THROUGH3b29e73a; THREE REMOTELY VERIFIED BACKUPS RETAINED. VERIFICATION-DOC COMMIT5 AND PR47 FORCE-WITH-LEASE PUBLICATION PENDING; REMOTE FEATURE STILL46c. R4 RAW8 ARCHIVE-ONLY, FULL R4 UNIMPLEMENTED/BLOCKED; GLOBAL R5 NOT READY, NO HIGH WAIVER OR LEARNED PASS.** [Authoritative final lifecycle](#final-local-restoration-complete-publication-pending).
 
 This report records actual user decisions and lead/scout findings. The final keeper pass writes only mutable documentation/diagram verification metadata and the permitted archive README metadata in isolated `/tmp/opencode/chess-coach-pr47-rewrite`, reset by lead to latest3b29 source. PRIMARY has the same verified code per lead but must not receive keeper writes because the observed local auto-persister can create commits there. Keeper reads supplied local outputs and selected current source; it executes no command, hash, test, renderer, review, stage, commit, amend or push and edits no source/tests/controls, protected bodies, immutable evidence, archive payloads/map or Git state. No secret or inaccessible root-store read occurs.
@@ -316,3 +318,26 @@ No remaining concrete active-recovery finding is reported by those closing revie
 **CURRENT LOCAL SOURCE/R3 RESTORATION AND BOUNDED VERIFICATION: COMPLETE; ready for lead's final docs review and publication handoff.** Earlier partial/pending statements in §§1–10 are history, not current blockers. Archived R4's unresolved ingress HIGH has no active-code recovery/push gate and receives no waiver; full belief/418 encoder/estimator binding remains unimplemented. Global R5 is **not ready**: no new actual-Docker image/infrastructure generation, calibration, model data collection, fitting/transfer, training, learned artifact, registry activation or published assurance generation occurred.
 
 Lead's last actual `ls-remote` still found feature `feat-ml-adjuntant` at **`46c5106864e985065451abb3d5cf8bcad521e57d`**, the unchanged explicit lease expectation. **Force-with-lease has not yet executed.** Lead must review/stage the isolated final docs, create the proposed fifth verification-doc commit, refresh required docs checks, retain/recheck backups/lease and then perform the user-approved push. A changed remote must fail the lease; never fall back to unconditional force. Record the actual remote/API resulting tip only after publication evidence exists; until then neither PR47 nor origin is described as updated.
+
+## 12. Publication confirmation — observed remote event
+
+The lead created fifth commit `25d7101379bd3569d9b4af9c1151dc8aff1ad09f`, `docs(verification): record PR47 restoration results`.
+The lead refreshed all nine diagram checks/renders and both whitespace checks after the final metadata edits.
+The lead used `--force-with-lease=refs/heads/feat-ml-adjuntant:46c5106864e985065451abb3d5cf8bcad521e57d` for the user-approved rewrite.
+Git reported the successful `46c51068...25d71013` update.
+The subsequent `ls-remote` and GitHub PR47 query agreed on the full new head.
+GitHub reported five named feature commits and PR state OPEN.
+The local feature working tree was clean and synchronized with its origin tracking ref.
+
+The same remote check confirmed all preservation branches:
+
+| Remote branch | Verified object |
+|---|---|
+| `backup/feat-ml-adjuntant-20261008-46c51068` | `46c5106864e985065451abb3d5cf8bcad521e57d` |
+| `backup/recovered-ml-adjuntant-20261008-0388e41` | `0388e41eac7de10158a0d5db7f666a75d5644e26` |
+| `backup/combined-ml-adjuntant-20261008-7519c37` | `7519c3797dd17502b376a48e5f4d4f5fbcaffb5c` |
+
+This section contains no self-commit ID.
+Its documentation-only follow-up descends from the observed published head and uses an ordinary push.
+Runtime code, validated native semantics, protected bodies, historical evidence, archived payloads and the unresolved inactive R4 finding remain unchanged.
+Git publication completion grants no new R4 ingress design, calibration, training, model activation or global R5 assurance.

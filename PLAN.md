@@ -1,5 +1,7 @@
 # Adjutant evolution — from strategies to learned opponent
 
+**Publication confirmed:** PR47 and `origin/feat-ml-adjuntant` were verified at `25d7101379bd3569d9b4af9c1151dc8aff1ad09f` after the approved lease rewrite. All three preservation branches retain their recorded objects. [The publication record](_spec/_plans/recovery-pr47.md#12-publication-confirmation--observed-remote-event) supersedes earlier push-pending checkpoints below. This documentation follow-up changes no runtime or verification scope.
+
 Status: **CURRENT LOCAL RESTORATION / R3 SOURCE AND BOUNDED VERIFICATION COMPLETE: ALL FINAL LOCAL CHECKS PASS, BOTH CLOSING REVIEWS READY. FOUR MEANINGFUL COMMITS THROUGH3b29e73a EXIST ON ORIGINAL FORK997141; THREE REMOTE BACKUPS VERIFIED. FIFTH VERIFICATION-DOC COMMIT AND PR47 LEASE PUSH PENDING; REMOTE FEATURE STILL46c. R4 RAW8 ARCHIVE-ONLY, FUTURE FULL R4 BLOCKED/UNIMPLEMENTED; GLOBAL R5 NOT READY, NOT TRAINING-READY.** No new Docker assurance, model data/calibration/training, learned artifact, HIGH waiver or frozen amendment. [Current final lifecycle](_spec/_plans/recovery-pr47.md#final-local-restoration-complete-publication-pending).
 Scope: how Single Player’s opponent (`packages/starchess-core/src/ai/adjutant.ts`) grows from named strategy algorithms → a composed heuristic → something that learns, without rewriting the StarChess rules engine.
 
