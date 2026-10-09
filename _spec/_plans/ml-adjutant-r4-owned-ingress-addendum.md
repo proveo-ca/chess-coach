@@ -20,7 +20,7 @@ The accepted text is retained between the O9 marker lines below. Its title and e
 | Persisted security review | `ses_ee209dcb5ffecxvhjOT4i4Dhui`: **READY TO CLOSE D1 DESIGN: yes**, no BLOCKER/HIGH/MEDIUM. Actual persisted content and scoped lifecycle changes reviewed; identity/execution checks remain supplied lead evidence. |
 | Persisted spec review | `ses_ee223009bffeqTMLVITwtI2qss`: **READY TO CLOSE D1 DESIGN: yes / SPEC STATUS: in-sync**, no BLOCKER/HIGH/MEDIUM. Actual persisted combined revision reviewed; no reviewer execution or identity measurement. |
 | Executor final D1 design closure | **COMPLETE: D1 FUTURE R4 DESIGN CLOSED / FROZEN.** Actual final TUI choice `Close D1 design (Recommended)`, after all three persisted READY reviews and lead post-review checks. Scoped O2–O9 supersessions are effective for future R4 design only; no source build or readiness grant. |
-| Lead final checks after closure-metadata update | **PENDING:** lead independently rechecks accepted-body/protected-body/archive preservation, links and whitespace after this authorized lifecycle update. No additional approval is required for the closure metadata itself. |
+| Lead final checks after closure-metadata update | **PASS:** direct lead rerun verified the exact accepted body, four protected bodies, eight archived payloads plus README, both authority snapshots, seven-document scope, all 15 links and baseline/working/cached whitespace after the authorized final-closure metadata update. No further design-approval or documentation-check gate remains. |
 | Source build / execution / full R4 / global R5 readiness | **NOT authorized / NOT complete.** Build requires a separate scoped grant after its required gates. |
 
 ## Outside-body scoped precedence map
