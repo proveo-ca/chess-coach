@@ -75,7 +75,7 @@ export const projectOwn = (history: History, candidate: Candidate, meter: Meter)
       const relocation = actions.find(a => a.timing === "B" && a.from === action.from && (a.kind === "stimStep" || a.kind === "tacticalJump"));
       if (rewrite && !(relocation?.kind === "stimStep" && (before.at.has(rewrite.to) || enemies.has(rewrite.to)))) {
         effectiveFrom = rewrite.from; effectiveTo = rewrite.to;
-        unknownRewrite = unknown.has(rewrite.to);
+        unknownRewrite = relocation?.kind === "stimStep" && unknown.has(rewrite.to);
       }
     } else if (action.timing === "F" && classical) {
       charge(meter, 12, "$.work.feature.projection.FBinding");

@@ -34,11 +34,10 @@ export const historical = (history: AuthorizedHistory, actions: readonly ScActio
 
 describe("historical 370 independent numerical fixtures", () => {
   it("matches every numeric historical coordinate for an uncertain Tank ray", () => {
-    const h = featureHistory([["a1", "k"], ["a2", "r"], ["b2", "n"]], { unknown: ["a4"], enemy: [["a7", "p"], ["h8", "k"]] }, { a2: 5 });
+    const h = featureHistory([["a1", "k"], ["a2", "r"], ["b2", "n"]], { unknown: ["a5"], enemy: [["a7", "p"], ["h8", "k"]] }, { a2: 5 });
     const ledger = { ...h.economicState, ownPaidDestroyed: 6, ownPaidWasted: 3, ownPaidDebits: 14,
       enemyLoss: { ...h.economicState.enemyLoss, replacementLowerBound: 9, confirmedUnitCount: 1 } };
-    const memory = [{ square: "a7" as const, piece: { type: "p" as const, color: "b" as const }, observedTurn: 10 }];
-    const input = { ...h, economicState: ledger, currentAuthorizedSnapshotV2: { ...h.currentAuthorizedSnapshotV2, economicState: ledger, memory } };
+    const input = { ...h, economicState: ledger, currentAuthorizedSnapshotV2: { ...h.currentAuthorizedSnapshotV2, economicState: ledger } };
     const { queue, positions } = historical(input, [c("a2", "a6")]);
     const expectedQueue = [0, .25, 0, 0, 0, .25, 0, 1, 1, 0, 0, 1 / 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 9 / (4096 * 2304), 1 / 4096, 0, 0, 0, 0, 0, 1 / 4096, 0, 0];
@@ -46,7 +45,7 @@ describe("historical 370 independent numerical fixtures", () => {
     for (const index of [0, 1, 9, 13, 16, 22, 28, 31, 35, 38, 42, 57, 60]) expected[index] = 1;
     expected[12] = 1 / 7; expected[15] = 5 / 7; expected[55] = 5 / 12; expected[56] = 5 / 12;
     expected[61] = 2 / 64; expected[63] = 1 / 64; expected[64] = 1 / 64; expected[65] = 4 / 7;
-    expected[68] = 1 / 64; expected[78] = 9 / (64 * 2304); expected[81] = 4 / 7; expected[82] = (4 / 7) * (11 / 45);
+    expected[68] = 1 / 64; expected[78] = 9 / (64 * 2304); expected[81] = 4 / 7;
     expect(Object.values(queue)).toEqual(expectedQueue);
     expect(Object.values(positions[0])).toEqual(expected);
     expect(positions.slice(1).flatMap(p => Object.values(p))).toEqual(new Array(252).fill(0));
@@ -139,5 +138,15 @@ describe("historical 370 independent numerical fixtures", () => {
     const result = historical(h, [c("d3", "e5")]);
     expect(result.positions[0]["protection.units"]).toBe(1 / 64);
     expect(result.positions[0]["protection.cc"]).toBe(0);
+  });
+
+  it("uses dated unknown-square memory for stale approach without creating live targets", () => {
+    const h = featureHistory([["a1", "k"], ["a2", "r"]], { unknown: ["a7"] });
+    const memory = [{ square: "a7" as const, piece: { type: "p" as const, color: "b" as const }, observedTurn: 10 }];
+    const result = historical({ ...h, currentAuthorizedSnapshotV2: { ...h.currentAuthorizedSnapshotV2, memory } }, [c("a2", "a6")]);
+    expect(result.positions[0]["nominal.staleApproach"]).toBe(4 / 7);
+    expect(result.positions[0]["ix.staleApproachAge"]).toBe((4 / 7) * (11 / 45));
+    expect(result.positions[0]["pressure.units"]).toBe(0);
+    expect(result.projection.layers.enemies.size).toBe(0);
   });
 });
