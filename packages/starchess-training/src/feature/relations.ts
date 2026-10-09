@@ -10,10 +10,22 @@ export type OwnView = Readonly<{ units: ReadonlyMap<string, FeatureUnit>; at: Re
 export type FeatureLayers = Readonly<{ enemies: ReadonlyMap<Square, ScPiece>; unknown: ReadonlySet<Square> }>;
 export type Relation = "none" | "known" | "possible";
 export type RayMeasurement = Readonly<{ applicable: boolean; empty: number; occupied: number; unknown: number; distance: number }>;
+const REPLACEMENT = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 } as const;
+
+class ConditionalAttackMap extends Map<Square, ScPiece> {
+  private readonly layers: FeatureLayers;
+  private readonly view: OwnView;
+  private readonly source: Readonly<{ square: Square; type: ScPiece["type"]; color: Side }>;
+  constructor(layers: FeatureLayers, view: OwnView, source: Readonly<{ square: Square; type: ScPiece["type"]; color: Side }>) {
+    super(); this.layers = layers; this.view = view; this.source = source;
+  }
+  override get(square: Square): ScPiece | undefined { return square === this.source.square ? this.source : undefined; }
+  override has(square: Square): boolean { return this.layers.enemies.has(square) || this.view.at.has(square); }
+}
 
 export const replacementValue = (type: ScPiece["type"], meter: Meter): number => {
   charge(meter, 3, "$.work.feature.replacement.lookup");
-  return ({ p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 } as const)[type];
+  return REPLACEMENT[type];
 };
 
 export const chebyshev = (from: Square, to: Square, meter: Meter): number => {
@@ -51,15 +63,16 @@ export const measureRay = (layers: FeatureLayers, view: OwnView, type: ScPiece["
 export const stationaryRelation = (layers: FeatureLayers, view: OwnView, source: Readonly<{ square: Square; type: ScPiece["type"]; color: Side }>, target: Square, meter: Meter): Relation => {
   charge(meter, 8, "$.work.feature.relation.dispatch");
   if (source.square === target) return "none";
+  // WHAT: native shape and known-blocker scan through explicit conditional occupancy.
+  charge(meter, 64 + (source.type === "b" || source.type === "r" || source.type === "q" ? 6 * 32 : 0), "$.work.feature.relation.nativeGeometry");
+  if (!attacksSquare(new ConditionalAttackMap(layers, view, source), source.square, target)) return "none";
   if (source.type === "b" || source.type === "r" || source.type === "q") {
     const ray = measureRay(layers, view, source.type, source.square, target, meter);
     charge(meter, 7, "$.work.feature.relation.rayClassify");
     return !ray.applicable || ray.occupied > 0 ? "none" : ray.unknown > 0 ? "possible" : "known";
   }
-  // WHAT: single-source map allocation and native non-sliding attack geometry.
-  charge(meter, 64, "$.work.feature.relation.nativeNonRay");
-  const map = new Map<Square, ScPiece>([[source.square, { type: source.type, color: source.color }]]);
-  return attacksSquare(map, source.square, target) ? "known" : "none";
+  charge(meter, 1, "$.work.feature.relation.nonRayReturn");
+  return "known";
 };
 
 export const exposure = (layers: FeatureLayers, view: OwnView, target: Square, meter: Meter): Readonly<{ known: number; possible: number }> => {
@@ -97,7 +110,7 @@ export const threatened = (layers: FeatureLayers, view: OwnView, meter: Meter): 
     const e = exposure(layers, view, unit.square, meter);
     charge(meter, 8, "$.work.feature.threatened.reduce");
     if (unit.type === "k") ccKnown ||= e.known > 0;
-    else if (e.known > 0) units++;
+    else if (e.known + e.possible > 0) units++;
   }
   charge(meter, 3, "$.work.feature.threatened.result");
   return { units, ccKnown };

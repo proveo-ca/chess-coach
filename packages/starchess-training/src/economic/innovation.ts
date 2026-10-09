@@ -1,4 +1,4 @@
-import type { AuthorizedEvent, ObservedCell, Sighting, UnitType } from "@chess-coach/starchess-arena/observations";
+import type { AuthorizedEvent, ObservedCell, OwnUnitLineage, Sighting, UnitType } from "@chess-coach/starchess-arena/observations";
 import type { Cells, Memory, Meter, Side, Square } from "./contracts";
 import { charge, fail } from "./work";
 
@@ -13,11 +13,11 @@ export type Innovation = Readonly<{
 export type InnovationInput = Readonly<{
   side: Side; previousTurn: number; turn: number; seqBefore: number; seqThrough: number;
   cells: Cells; memory: Memory; events: readonly AuthorizedEvent[]; finalCells: Cells;
-  priorOwn: readonly Square[]; currentOwn: readonly Square[];
+  priorOwn: readonly Square[]; currentOwn: readonly Square[]; priorUnits: readonly OwnUnitLineage[];
 }>;
 
 export const foldInnovations = (input: InnovationInput, meter: Meter): Innovation => {
-  charge(meter, 30 + 32 * (input.cells.length + input.memory.length + input.priorOwn.length + input.currentOwn.length), "$.innovation.seed");
+  charge(meter, 30 + 32 * (input.cells.length + input.memory.length + input.priorOwn.length + input.currentOwn.length + input.priorUnits.length), "$.innovation.seed");
   const cells = new Map<Square, ObservedCell>();
   const memory = new Map<Square, Sighting>();
   const assertions = new Set<string>();
@@ -25,6 +25,7 @@ export const foldInnovations = (input: InnovationInput, meter: Meter): Innovatio
   const clears = new Set<Square>();
   const anchors = new Set<Square>();
   const geometry = new Set<Square>();
+  const ownTypes = new Map<string, UnitType>();
   for (const cell of input.cells) cells.set(cell.square, cell);
   for (const sighting of input.memory) {
     memory.set(sighting.square, sighting);
@@ -32,6 +33,7 @@ export const foldInnovations = (input: InnovationInput, meter: Meter): Innovatio
   }
   for (const square of input.priorOwn) geometry.add(square);
   for (const square of input.currentOwn) geometry.add(square);
+  for (const unit of input.priorUnits) ownTypes.set(unit.id, unit.type);
   let y1 = 0, y2 = 0, grant = false, lastTurn = input.previousTurn;
   const observe = (changes: Cells, turn: number): void => {
     charge(meter, 8 + 100 * changes.length, "$.innovation.observe");
@@ -72,9 +74,15 @@ export const foldInnovations = (input: InnovationInput, meter: Meter): Innovatio
       if (grant || i !== input.events.length - 1) fail("$.innovation.grant", "DUPLICATE");
       grant = true;
     } else if (event.kind === "own-unit-moved") {
-      geometry.add(event.from); geometry.add(event.to);
+      if (!ownTypes.has(event.id)) fail("$.innovation.ownUnit", "IDENTITY");
+      if (ownTypes.get(event.id) !== "k") { geometry.add(event.from); geometry.add(event.to); }
     } else if (event.kind === "own-unit-created" || event.kind === "own-unit-endowed" || event.kind === "own-unit-destroyed") {
       if ((event.kind === "own-unit-destroyed" ? event.typeAtLoss : event.type) !== "k") geometry.add(event.square);
+      if (event.kind === "own-unit-created") ownTypes.set(event.lineageId, event.type);
+      else if (event.kind === "own-unit-endowed") ownTypes.set(event.id, event.type);
+      else ownTypes.delete(event.id);
+    } else if (event.kind === "own-unit-transformed") {
+      ownTypes.set(event.id, event.toType);
     } else if (event.kind === "own-mine-created" || event.kind === "own-mine-endowed") geometry.add(event.square);
   }
   observe(input.finalCells, input.turn);
@@ -84,7 +92,7 @@ export const foldInnovations = (input: InnovationInput, meter: Meter): Innovatio
   for (let file = 0; file < 8; file++) for (let rank = 1; rank <= 8; rank++) {
     const square = `${String.fromCharCode(97 + file)}${rank}` as Square;
     const cell = cells.get(square), sighting = memory.get(square);
-    if (!cell) fail("$.innovation.cells", "CARDINALITY");
+    if (!cell) return fail("$.innovation.cells", "CARDINALITY");
     orderedCells.push(cell);
     if (sighting) orderedMemory.push(sighting);
     if (anchors.has(square)) orderedAnchors.push(square);

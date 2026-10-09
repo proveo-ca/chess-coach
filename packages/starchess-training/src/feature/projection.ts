@@ -39,14 +39,14 @@ export const projectOwn = (history: History, candidate: Candidate, meter: Meter)
   const snapshot = history.currentAuthorizedSnapshotV2;
   charge(meter, 12, "$.work.feature.projection.layersAllocate");
   const units = new Map<string, FeatureUnit>(), at = new Map<Square, string>();
-  const enemies = new Map< Square, { type: FeatureUnit["type"]; color: "w" | "b" }>(), unknown = new Set<Square>();
+  const enemies = new Map<Square, { type: FeatureUnit["type"]; color: "w" | "b" }>(), unknown = new Set<Square>();
   for (const cell of snapshot.cells) {
     charge(meter, 12, "$.work.feature.projection.cellVisit");
     if (cell.visibility === "unknown") unknown.add(cell.square);
     else if (cell.piece && cell.piece.color !== snapshot.side) enemies.set(cell.square, { ...cell.piece });
   }
   for (const lineage of snapshot.ownUnitLineage) {
-    charge(meter, 24 + 2 * snapshot.own.siegedTanks.length, "$.work.feature.projection.lineageVisit");
+    charge(meter, 9 * 4 + 20 + 3 * snapshot.own.siegedTanks.length, "$.work.feature.projection.lineageVisit");
     const unit: FeatureUnit = { token: lineage.id, square: lineage.square, type: lineage.type, color: snapshot.side,
       paidBasis: lineage.paidBasis, baseline: true, mode: lineage.type === "r" ? snapshot.own.siegedTanks.includes(lineage.square) ? "siege" : "tank" : null, nominal: false };
     units.set(unit.token, unit); at.set(unit.square, unit.token);
@@ -54,11 +54,11 @@ export const projectOwn = (history: History, candidate: Candidate, meter: Meter)
   charge(meter, 8 + 3 * snapshot.own.mines.length, "$.work.feature.projection.baselineAllocate");
   const baseline: OwnView = { units, at, mines: new Set(snapshot.own.mines) }, layers: FeatureLayers = { enemies, unknown };
   let view = baseline;
-  charge(meter, 8 + candidate.actions.length * 12, "$.work.feature.projection.scheduleInput");
+  charge(meter, 8 + candidate.actions.length * (8 * 3 + 8), "$.work.feature.projection.scheduleInput");
   const actions: ScAction[] = candidate.actions.map((action, seq) => ({ ...action, seq }));
   const b = actions.filter(action => action.timing === "B");
   // WHAT: native sort, pending copies, head sets, find scans, splice for n<=4.
-  charge(meter, 16 + b.length * b.length * (24 + 8 * b.length), "$.work.feature.projection.nativeBOrder");
+  charge(meter, 16 + b.length * b.length * (24 + 8 * b.length) + 16 * actions.length, "$.work.feature.projection.nativeBOrder");
   const schedule = [...orderBHeadsFirst(b), ...actions.filter(a => a.timing === "C"), ...actions.filter(a => a.timing === "F")];
   charge(meter, 7 + 3 * actions.length, "$.work.feature.projection.checkpointsAllocate");
   const positions: ActionCheckpoint[] = new Array(actions.length), crushed = new Set<string>();
@@ -71,7 +71,7 @@ export const projectOwn = (history: History, candidate: Candidate, meter: Meter)
       // WHAT: native prefix find, coordinate arithmetic, structural rewrite checks.
       charge(meter, 100 + 8 * actions.length, "$.work.feature.projection.nativeCRewrite");
       const rewrite = classicalRewriteCoordinatesAfterB(actions, action);
-      charge(meter, 8 + 5 * actions.length, "$.work.feature.projection.rewriteBinding");
+      charge(meter, 24 + 12 * actions.length, "$.work.feature.projection.rewriteBinding");
       const relocation = actions.find(a => a.timing === "B" && a.from === action.from && (a.kind === "stimStep" || a.kind === "tacticalJump"));
       if (rewrite && !(relocation?.kind === "stimStep" && (before.at.has(rewrite.to) || enemies.has(rewrite.to)))) {
         effectiveFrom = rewrite.from; effectiveTo = rewrite.to;
@@ -97,13 +97,14 @@ export const projectOwn = (history: History, candidate: Candidate, meter: Meter)
       charge(meter, 8, "$.work.feature.projection.moveChecks");
       if (before.at.has(to) && before.at.get(to) !== actor.token) return;
       removeUnit(after, actor, meter);
-      charge(meter, 14, "$.work.feature.projection.moveRecord");
+      // WHAT: nine-field copy/replacement plus type/mode/nominal comparisons.
+      charge(meter, 9 * 4 + 32, "$.work.feature.projection.moveRecord");
       const type = actor.type === "p" && to[1] === (actor.color === "w" ? "8" : "1") && action.promotion ? action.promotion : actor.type;
       putUnit(after, { ...actor, square: to, type, mode: type === "r" ? actor.type === "r" ? actor.mode : "tank" : null,
         nominal: actor.nominal || to !== actor.square || type !== actor.type || unknownRewrite }, meter);
     };
     if (actor) {
-      charge(meter, 12, "$.work.feature.projection.effectDispatch");
+      charge(meter, 32, "$.work.feature.projection.effectDispatch");
       switch (action.kind) {
         case "classical":
           if (effectiveTo && !(actor.type === "r" && actor.mode === "siege") && enemies.get(effectiveTo)?.type !== "k") move(effectiveTo);
@@ -124,7 +125,7 @@ export const projectOwn = (history: History, candidate: Candidate, meter: Meter)
               charge(meter, 4, "$.work.feature.projection.crushDedup");
               if (victim.baseline) crushed.add(victim.token);
             }
-            charge(meter, 20, "$.work.feature.projection.childAllocate");
+            charge(meter, 9 * 3 + 12, "$.work.feature.projection.childAllocate");
             childToken = `birth:${action.seq}`;
             putUnit(after, { token: childToken, square: effectiveTo, type: action.unit, color: action.color,
               paidBasis: 0, baseline: false, mode: action.unit === "r" ? "tank" : null, nominal: true }, meter);
@@ -132,7 +133,7 @@ export const projectOwn = (history: History, candidate: Candidate, meter: Meter)
           break;
         case "siegeMode":
           if (actor.type === "r") {
-            charge(meter, 13, "$.work.feature.projection.modeRecord");
+            charge(meter, 9 * 3 + 8, "$.work.feature.projection.modeRecord");
             putUnit(after, { ...actor, mode: actor.mode === "siege" ? "tank" : "siege" }, meter);
           }
           break;
@@ -143,7 +144,7 @@ export const projectOwn = (history: History, candidate: Candidate, meter: Meter)
         case "charonMissiles": break;
       }
     }
-    charge(meter, 22, "$.work.feature.projection.checkpointRecord");
+    charge(meter, 12 * 3 + 16, "$.work.feature.projection.checkpointRecord");
     const checkpoint: ActionCheckpoint = { index: action.seq, action: candidate.actions[action.seq], before, after,
       actorToken: actor?.token ?? null, actorBefore: actor, actorAfter: actor ? after.units.get(actor.token) ?? null : null,
       effectiveFrom, effectiveTo, unknownRewrite, childToken };
