@@ -1,6 +1,6 @@
 # PLAN — ML Adjutant: learn a ranker and prove the strict challenge
 
-**R4 owned-ingress D1 — current navigation/disposition metadata:** [Exact D1](ml-adjutant-r4-owned-ingress-addendum.md) is accepted and document-persisted; persisted spec/adversarial/security reviews and final design closure remain **PENDING**. No implementation permission follows; full R4/global R5 remain incomplete. Protected bodies, archived failures and historical records retain their prior scopes.
+**R4 owned-ingress D1 — current navigation/disposition metadata:** [Exact D1](ml-adjutant-r4-owned-ingress-addendum.md) is **FUTURE R4 DESIGN CLOSED / FROZEN** by actual final TUI choice **`Close D1 design (Recommended)`**; scoped O2–O9 precedence is effective for future design only. Source build remains **NOT authorized**; full R4/global R5 remain incomplete. Protected bodies, archived failures and historical records retain their prior scopes.
 
 **Publication confirmed:** the user-approved history rewrite reached PR47 and `origin/feat-ml-adjuntant` at `25d7101379bd3569d9b4af9c1151dc8aff1ad09f`, verified through Git and GitHub. All three backup refs remain intact. [The observed publication record](recovery-pr47.md#12-publication-confirmation--observed-remote-event) governs older push-pending lifecycle text below. R4 stays archive-only and blocked; global R5 and training remain future.
 

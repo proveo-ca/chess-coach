@@ -1,8 +1,8 @@
 <!-- Acceptance, persistence and review metadata: outside the accepted D1 normative body. -->
 
-**CURRENT DISPOSITION: EXACT D1 ACCEPTED / DOCUMENT PERSISTED; PERSISTED REVIEWS AND FINAL DESIGN CLOSURE PENDING.** Executor accepted the displayed exact D1 with the actual message **`approved the above question`**. Executor separately selected **`Persist and review (Recommended)`** in the actual TUI, authorizing this document-only persistence, navigation/outside-body lifecycle links and persisted spec/adversarial/security review. The earlier **`Prepaid bounds (Recommended)`** selection authorized drafting/review only; it was not exact-text acceptance or persistence permission.
+**CURRENT DISPOSITION: D1 FUTURE R4 DESIGN CLOSED / FROZEN by actual Executor final approval.** Actual final TUI choice: **`Close D1 design (Recommended)`**, after all three persisted READY reviews and lead post-review whitespace/preservation/link PASS. Scoped O2–O9 precedence is effective for **FUTURE R4 DESIGN ONLY**, not implementation or readiness. Executor accepted the displayed exact D1 with the actual message **`approved the above question`**. Executor separately selected **`Persist and review (Recommended)`** in the actual TUI, authorizing this document-only persistence, navigation/outside-body lifecycle links and persisted spec/adversarial/security review. The earlier **`Prepaid bounds (Recommended)`** selection authorized drafting/review only; it was not exact-text acceptance or persistence permission.
 
-The accepted text is retained between the O9 marker lines below. Its title and embedded proposal/approval-boundary wording remain unchanged; this outside-body record supplies the subsequent exact acceptance and separate persistence disposition. Final design closure and source build are **NOT authorized**. Full R4 and global R5 remain incomplete. No implementation, collection, fitting, calibration, transfer, training, publishing or readiness permission follows.
+The accepted text is retained between the O9 marker lines below. Its title and embedded proposal/conditional approval-boundary wording remain unchanged frozen snapshot text; this outside-body record governs the current lifecycle and records completed exact acceptance, separate persistence, persisted reviews and actual final design closure. Source build remains **NOT authorized** and requires a separate scoped grant before implementation. Full R4 and global R5 remain incomplete. Design closure supplies no runtime PASS, runtime authority registration, implementation, collection, fitting, calibration, transfer, training, publishing or readiness permission.
 
 ## D1 review and verification ledger
 
@@ -16,13 +16,16 @@ The accepted text is retained between the O9 marker lines below. Its title and e
 | Document persistence and scoped navigation | **COMPLETE:** accepted body persisted below; seven document-only paths contain the addendum and additive outside-body navigation. |
 | Lead accepted-body identity, protected-body/archive preservation and authority-constituent checks | **PASS:** direct lead verification compared the persisted 16,648-byte body with the exact accepted-text snapshot; SHA-256 `d51893e88c75ce250deee569d7718eb3f0dcdf12292d7cc8b8f8358f4a2a4576`, exact LF/final newline. All four existing protected bodies and eight archived payloads plus archive README equal baseline `3da76215fdab204d5b49c65b295ae2514adb9474`. Both O9 whole-file authority snapshots resolve at that baseline. No runtime authority record was generated or registered. |
 | Lead link and whitespace checks | **PASS:** direct lead verification resolved all 15 scoped local links and executed baseline-diff, working-diff and cached-diff whitespace checks. Spec-keeper ran no commands or hashes. |
-| Persisted spec / adversarial / security reviews | **PENDING.** Prospective verdicts do not substitute for review of the persisted revision. |
-| Executor final D1 design closure | **PENDING / NOT AUTHORIZED.** Exact-text acceptance and document persistence do not close the design gate. |
+| Persisted adversarial review | `ses_ee209dcd6ffenGOKUTnQihg9ZG`: **READY TO CLOSE D1 DESIGN: yes**, no remaining BLOCKER/HIGH/MEDIUM. The first persisted pass reported a context-only BLOCKER because no scoped-diff artifact was supplied. The lead then supplied the actual baseline-to-current diff; the reviewer inspected it and resolved the blocker, without a waiver. |
+| Persisted security review | `ses_ee209dcb5ffecxvhjOT4i4Dhui`: **READY TO CLOSE D1 DESIGN: yes**, no BLOCKER/HIGH/MEDIUM. Actual persisted content and scoped lifecycle changes reviewed; identity/execution checks remain supplied lead evidence. |
+| Persisted spec review | `ses_ee223009bffeqTMLVITwtI2qss`: **READY TO CLOSE D1 DESIGN: yes / SPEC STATUS: in-sync**, no BLOCKER/HIGH/MEDIUM. Actual persisted combined revision reviewed; no reviewer execution or identity measurement. |
+| Executor final D1 design closure | **COMPLETE: D1 FUTURE R4 DESIGN CLOSED / FROZEN.** Actual final TUI choice `Close D1 design (Recommended)`, after all three persisted READY reviews and lead post-review checks. Scoped O2–O9 supersessions are effective for future R4 design only; no source build or readiness grant. |
+| Lead final checks after closure-metadata update | **PENDING:** lead independently rechecks accepted-body/protected-body/archive preservation, links and whitespace after this authorized lifecycle update. No additional approval is required for the closure metadata itself. |
 | Source build / execution / full R4 / global R5 readiness | **NOT authorized / NOT complete.** Build requires a separate scoped grant after its required gates. |
 
 ## Outside-body scoped precedence map
 
-This table navigates the accepted D1 corrections; it changes no protected body. Persisted reviews and final design closure remain pending. It supplies no runtime activation, HIGH waiver or retrospective clearance of the archived foundations.
+Actual Executor final TUI choice `Close D1 design (Recommended)` makes this scoped O2–O9 precedence effective for **FUTURE R4 DESIGN ONLY**. This table navigates the closed/frozen D1 corrections; it changes no protected body. It supplies no source build permission, runtime activation, HIGH waiver or retrospective clearance of the archived foundations. All other choices retain their prior scopes.
 
 | D1 section | Named correction / preserved boundary |
 |---|---|
@@ -38,6 +41,18 @@ Historical indices0..369, amended418/H=1, feature formulas, A3–A7, accepted R3
 Companion navigation: [base amendment](ml-adjutant-r4-economic-amendment.md), [corrective A1–A7](ml-adjutant-r4-economic-corrective-annex.md), [original contracts](ml-adjutant-r3-contracts.md), [R2 generator law](r2-generator-v3.md), [accepted R3 seam](ml-adjutant-r3-seam-addendum.md), [accepted R3 native correction](ml-adjutant-r3-native-promotion-fix.md), [weights](ml-adjutant-r4-weights.md), [ML roadmap](PLAN-ml-adjutant.md), [root PLAN](../../PLAN.md). O9 binds its immutable constituent scopes, not the subsequently updated whole-file navigation metadata. No authority record/reference is generated or registered by this persistence pass.
 
 Lead verification command: `node /tmp/opencode/verify-r4-owned-ingress-D1.mjs`. This temporary document-preservation verifier compares the accepted-text snapshot at `/tmp/opencode/r4-owned-ingress-approved-D1.md` and the four protected bodies/archive against baseline Git bytes. It validates document-only scope, navigation and whitespace. Its PASS verifies persistence, not parser correctness, invoice feasibility or runtime behavior. Runtime suites were not run for this document-only change; no diagrams or source references changed.
+
+The lead generated the actual baseline-to-current seven-document review diff at `/tmp/opencode/r4-owned-ingress-persisted.diff`: 36,062 bytes, SHA-256 `8fc85ade7e0e7627505745e6dcb184c9f5fe17f7d2cf31940221f021f7747795`. The artifact includes D1 and the pre-review verification metadata; subsequent review-ledger/lifecycle entries are outside the unchanged accepted body. The adversarial rereview inspected every diff hunk and reported the context-only blocker resolved. All reviewers used read-only content/diff inspection; none independently ran tests, hashes or preservation commands. The lead reran the document verifier after review-ledger/lifecycle synchronization: all body/archive identities, snapshots, seven-document scope, 15 links and three whitespace checks PASS before the final closure prompt.
+
+## Prospective next stages — separate build grants required
+
+These scopes describe later work, not active source files, implementation approvals, completed work or test results. A separate scoped build grant is required before implementation; design closure alone starts none of them.
+
+| Stage | Prospective scope / boundary |
+|---|---|
+| Foundations | Owned construction/structural receipts and prepaid ingress controls; Float64, closed schemas and manifest foundations. Archived raw-object payloads remain history, not activated implementation. |
+| Private R3 handoff | Follow foundation work as an independently scoped integration of O7's private host handoff. Preserve accepted R3 input law and the host/model boundary. |
+| Full belief / features / binding | Follow later as broader R4 implementation. Full R4 and global R5 remain incomplete; no data/calibration/training or readiness authority is supplied here. |
 
 <!-- BEGIN R4 OWNED INGRESS NORMATIVE BODY -->
 # R4 owned economic ingress — exact proposal D1

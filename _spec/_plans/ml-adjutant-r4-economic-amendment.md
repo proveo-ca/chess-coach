@@ -1,6 +1,6 @@
 <!-- Approval/disposition metadata: outside the approved normative body. -->
 
-**R4 owned-ingress D1 — current outside-body disposition:** [Exact D1](ml-adjutant-r4-owned-ingress-addendum.md) is accepted and document-persisted; persisted spec/adversarial/security reviews and final design closure remain **PENDING**. No implementation permission follows; full R4/global R5 remain incomplete. Protected bodies and historical records retain their prior scopes.
+**R4 owned-ingress D1 — current outside-body disposition:** [Exact D1](ml-adjutant-r4-owned-ingress-addendum.md) is **FUTURE R4 DESIGN CLOSED / FROZEN** by actual final TUI choice **`Close D1 design (Recommended)`**; scoped O2–O9 precedence is effective for future design only. Source build remains **NOT authorized**; full R4/global R5 remain incomplete. Protected bodies and historical records retain their prior scopes.
 
 **Exact text: Executor-approved. Document persistence: persistence explicitly authorized.**
 **CURRENT DISPOSITION: amended R1 FUTURE DESIGN CLOSED / FROZEN by actual Executor final approval.** Executor answered **“Close amended R1 design (Recommended)”** in the actual final TUI after both positive persisted combined reviews, SPEC READY and the lead's post-review metadata `git diff --check` PASS. Approved scope: this base amendment + [scoped corrective annex](ml-adjutant-r4-economic-corrective-annex.md); A1–A7 precedence now applies to the frozen future design. This records supplied actual approval authority, not a spec-keeper inference or runtime PASS.

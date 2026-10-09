@@ -1,6 +1,6 @@
 # Adjutant evolution — from strategies to learned opponent
 
-**R4 owned-ingress D1 — current navigation/disposition metadata:** [Exact D1](_spec/_plans/ml-adjutant-r4-owned-ingress-addendum.md) is accepted and document-persisted; persisted spec/adversarial/security reviews and final design closure remain **PENDING**. No implementation permission follows; full R4/global R5 remain incomplete. Protected bodies, archived failures and historical recovery records retain their prior scopes.
+**R4 owned-ingress D1 — current navigation/disposition metadata:** [Exact D1](_spec/_plans/ml-adjutant-r4-owned-ingress-addendum.md) is **FUTURE R4 DESIGN CLOSED / FROZEN** by actual final TUI choice **`Close D1 design (Recommended)`**; scoped O2–O9 precedence is effective for future design only. Source build remains **NOT authorized**; full R4/global R5 remain incomplete. Protected bodies, archived failures and historical recovery records retain their prior scopes.
 
 **Publication confirmed:** PR47 and `origin/feat-ml-adjuntant` were verified at `25d7101379bd3569d9b4af9c1151dc8aff1ad09f` after the approved lease rewrite. All three preservation branches retain their recorded objects. [The publication record](_spec/_plans/recovery-pr47.md#12-publication-confirmation--observed-remote-event) supersedes earlier push-pending checkpoints below. This documentation follow-up changes no runtime or verification scope.
 
