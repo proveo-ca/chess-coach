@@ -33,13 +33,28 @@ export type R3StagedTransition = Readonly<{
   digest: Readonly<{ byteLength: number; sha256: string }>;
   batches: Readonly<Record<Side, AuthorizedBoundaryBatch>>;
 }>;
+export type R3EconomicBoundaryFields = Readonly<Omit<ReconciledBoundaryState, "lastBatchBytes">>;
+export type R3EconomicInput = Readonly<{
+  batch: AuthorizedBoundaryBatch; boundary: R3EconomicBoundaryFields; history: AuthorizedHistory;
+  batchByteLength: number; readBatchByte: (index: number) => number;
+}>;
+type RecipientGraphs = Readonly<Record<Side, R3Recipient>>;
+type InputChain = { current: R3Session; nodes: RecipientGraphs[]; borrowed: boolean };
 type PrivateState = {
   binding: R3Binding; session: R3Session; recipients: Record<Side, R3RecipientPrivate>;
-  lastTransition: R3StagedTransition | null; chain: { current: R3Session };
+  publicRecipients: RecipientGraphs; lastTransition: R3StagedTransition | null; chain: InputChain;
+};
+type EconomicReaderScope = {
+  binding: R3Binding | null; session: R3Session | null; recipient: R3Recipient | null;
+  charge: ((units: number) => void) | null; byteLength: number; reading: boolean;
 };
 const sessions = new WeakMap<R3Session, PrivateState>();
 const bindings = new WeakMap<R3Binding, { opening: ScFenSnapshot; bank: Bank; started: boolean }>();
 const HOST_CAP = R3_PRIVATE_CAP;
+const INPUT_CAP = 91;
+const ECONOMIC_VISIT_UNITS = 128;
+const ECONOMIC_NODE_UNITS = 256;
+const ECONOMIC_BYTE_UNITS = 64;
 const SIDES = ["w", "b"] as const;
 const sideValue = <T>(values: Readonly<{ w: T; b: T }>, side: Side): T => side === "w" ? values.w : values.b;
 const hash = (input: Uint8Array): string => createHash("sha256").update(input).digest("hex");
@@ -48,6 +63,29 @@ const authority = (binding: R3Binding, session: R3Session): PrivateState => {
   if (!state || state.binding !== binding) return fail("$.binding", "SESSION");
   if (state.chain.current !== session) return fail("$.session", "SEQUENCE");
   return state;
+};
+const mutationAuthority = (binding: R3Binding, session: R3Session): PrivateState => {
+  const state = authority(binding, session);
+  if (state.chain.borrowed) fail("$.session", "PROTOCOL");
+  return state;
+};
+const chargeEconomic = (binding: R3Binding, session: R3Session, charge: (units: number) => void, units: number): void => {
+  if (!authority(binding, session).chain.borrowed) fail("$.session", "PROTOCOL");
+  let result: unknown;
+  try { result = charge(units); }
+  finally { if (!authority(binding, session).chain.borrowed) fail("$.session", "PROTOCOL"); }
+  if (result !== undefined) fail("$.charge", "PROTOCOL");
+};
+const economicByteReader = (scope: EconomicReaderScope): ((index: number) => number) => index => {
+  if (!scope.binding || !scope.session || !scope.recipient || !scope.charge || scope.reading) return fail("$.readBatchByte", "PROTOCOL");
+  const { binding, session, charge } = scope;
+  scope.reading = true;
+  try {
+    chargeEconomic(binding, session, charge, ECONOMIC_BYTE_UNITS);
+    if (!scope.recipient) return fail("$.readBatchByte", "PROTOCOL");
+    integer(index, "$.readBatchByte.index", 0, scope.byteLength - 1);
+    return scope.recipient.boundary.lastBatchBytes[index]!;
+  } finally { scope.reading = false; }
 };
 
 const privateBytes = (companion: Companion): Uint8Array => encodeR3Provenance({
@@ -103,8 +141,9 @@ export const initializeR3Session = (binding: R3Binding, openingSnapshot: ScFenSn
   reconcileR3NativeImage(snapshot, provenance);
   const recipients = { w: newRecipientPrivate(), b: newRecipientPrivate() };
   const project = (side: Side) => projectR3Boundary({ side, phase: "initial", planningOrdinal: 0, snapshot, bank, provenance, companion: null, previous: null, privateState: sideValue(recipients, side), ownStage: null, committedBank: null });
-  const session = sessionView(freeze({ snapshot, provenance, bank, planningOrdinal: 0, previousCompanion: null, recipients: { w: project("w"), b: project("b") } }));
-  sessions.set(session, { binding, session, recipients, lastTransition: null, chain: { current: session } });
+  const publicRecipients = freeze({ w: project("w"), b: project("b") });
+  const session = sessionView(freeze({ snapshot, provenance, bank, planningOrdinal: 0, previousCompanion: null, recipients: publicRecipients }));
+  sessions.set(session, { binding, session, recipients, publicRecipients, lastTransition: null, chain: { current: session, nodes: [publicRecipients], borrowed: false } });
   if (!registered) bindings.set(binding, { opening: session.snapshot, bank: session.bank, started: false });
   return session;
 };
@@ -139,7 +178,7 @@ const execute = (state: PrivateState, phase: "turn-open" | "settled", pair: Read
   const provenanceBytes = privateBytes(companion);
   const planningOrdinal = prior.planningOrdinal + (phase === "settled" ? 1 : 0);
   const recipients = { w: copyRecipientPrivate(state.recipients.w), b: copyRecipientPrivate(state.recipients.b) };
-  const project = (side: Side) => projectR3Boundary({ side, phase, planningOrdinal, snapshot: companion.nativeResult.next, bank, provenance: companion.provenance, companion, previous: sideValue(prior.recipients, side), privateState: sideValue(recipients, side), ownStage: stages ? sideValue(stages, side) : null, committedBank });
+  const project = (side: Side) => projectR3Boundary({ side, phase, planningOrdinal, snapshot: companion.nativeResult.next, bank, provenance: companion.provenance, companion, previous: sideValue(state.publicRecipients, side), privateState: sideValue(recipients, side), ownStage: stages ? sideValue(stages, side) : null, committedBank });
   const projected = { w: project("w"), b: project("b") };
   const completionLength = provenanceBytes.length + bytes(projected.w.batch).length + bytes(projected.b.batch).length + Buffer.byteLength(JSON.stringify(companion.nativeResult), "utf8");
   if (completionLength > HOST_CAP) fail("$.transition", "SIZE");
@@ -150,16 +189,16 @@ const execute = (state: PrivateState, phase: "turn-open" | "settled", pair: Read
     companion: checkedCompanion, provenanceBytes, digest: freeze({ byteLength: provenanceBytes.length, sha256: hash(provenanceBytes) }),
     batches: freeze({ w: projected.w.batch, b: projected.b.batch }),
   });
-  return { transition, successor: { binding: state.binding, session, recipients, lastTransition: transition, chain: state.chain } };
+  return { transition, successor: { binding: state.binding, session, recipients, publicRecipients: projected, lastTransition: transition, chain: state.chain } };
 };
 
 export const stageR3Begin = (binding: R3Binding, session: R3Session): R3StagedTransition => {
-  const result = execute(authority(binding, session), "turn-open", null);
+  const result = execute(mutationAuthority(binding, session), "turn-open", null);
   authority(binding, session);
   return result.transition;
 };
 export const stageR3Settlement = (binding: R3Binding, session: R3Session, successfulOwnStages: Readonly<Record<Side, StagedQueue>>): R3StagedTransition => {
-  const state = authority(binding, session);
+  const state = mutationAuthority(binding, session);
   const detached = detachR3Data(successfulOwnStages, "$.successfulOwnStages") as Readonly<Record<Side, StagedQueue>>;
   authority(binding, session);
   const result = execute(state, "settled", detached);
@@ -180,6 +219,48 @@ export const readR3PlanningHistory = (binding: R3Binding, session: R3Session, si
   if (snapshot.ownMineLineage.length !== recipient.boundary.ownMineAuditState.liveOwnMines.length ||
     !isDeepStrictEqual(snapshot, recipient.boundary.snapshot)) fail("$.ownMineLineage", "CONSISTENCY");
   return recipient.history;
+};
+
+export const visitR3EconomicInputs = (
+  binding: R3Binding, session: R3Session, side: Side, afterOrdinal: number,
+  charge: (units: number) => void, visit: (input: R3EconomicInput) => void,
+): void => {
+  const state = mutationAuthority(binding, session);
+  if (typeof charge !== "function" || typeof visit !== "function") fail("$.callback", "PROTOCOL");
+  state.chain.borrowed = true;
+  try {
+    chargeEconomic(binding, session, charge, ECONOMIC_VISIT_UNITS);
+    if (side !== "w" && side !== "b") fail("$.side", "SIDE");
+    if (session.provenance.stage !== "after-begin" || scOutcome(session.snapshot)) fail("$.session", "PROTOCOL");
+    const ordinal = state.publicRecipients.w.batch.ordinal;
+    if (typeof afterOrdinal !== "number" || !Number.isSafeInteger(afterOrdinal) || Object.is(afterOrdinal, -0) || afterOrdinal < -1 || afterOrdinal > ordinal ||
+      state.chain.nodes.length !== ordinal + 1 || state.chain.nodes.length > INPUT_CAP) fail("$.afterOrdinal", "SEQUENCE");
+    for (let next = afterOrdinal + 1; next <= ordinal; next++) {
+      chargeEconomic(binding, session, charge, ECONOMIC_NODE_UNITS);
+      const recipient = sideValue(state.chain.nodes[next]!, side);
+      const retained = recipient.boundary;
+      if (recipient.batch.ordinal !== next || retained.ordinal !== next) fail("$.ordinal", "SEQUENCE");
+      const boundary: R3EconomicBoundaryFields = Object.freeze({
+        snapshot: retained.snapshot, economicState: retained.economicState, ownMineAuditState: retained.ownMineAuditState,
+        everLit: retained.everLit, ordinal: retained.ordinal, phase: retained.phase, planningOrdinal: retained.planningOrdinal,
+        seqThrough: retained.seqThrough,
+      });
+      const scope: EconomicReaderScope = { binding, session, recipient, charge, byteLength: retained.lastBatchBytes.byteLength, reading: false };
+      try {
+        const input: R3EconomicInput = Object.freeze({
+          batch: recipient.batch, boundary, history: recipient.history,
+          batchByteLength: scope.byteLength, readBatchByte: economicByteReader(scope),
+        });
+        authority(binding, session);
+        let result: unknown;
+        try { result = visit(input); }
+        finally { authority(binding, session); }
+        if (result !== undefined) fail("$.visit", "PROTOCOL");
+      } finally {
+        scope.binding = null; scope.session = null; scope.recipient = null; scope.charge = null;
+      }
+    }
+  } finally { state.chain.borrowed = false; }
 };
 
 const checkTransition = (binding: R3Binding, transition: R3StagedTransition): R3StagedTransition => {
@@ -217,10 +298,10 @@ const compareTransition = (claimed: R3StagedTransition, expected: R3StagedTransi
   }
 };
 export const verifyAndCommitR3 = (binding: R3Binding, previous: R3Session, claimed: R3StagedTransition): R3Session => {
-  const state = authority(binding, previous);
+  const state = mutationAuthority(binding, previous);
   const checked = checkTransition(binding, claimed);
   authority(binding, previous);
-  const ordinal = previous.recipients.w.batch.ordinal;
+  const ordinal = state.publicRecipients.w.batch.ordinal;
   if (checked.ordinal === ordinal) {
     if (!state.lastTransition) return fail("$.ordinal", "SEQUENCE");
     compareTransition(checked, state.lastTransition);
@@ -231,6 +312,8 @@ export const verifyAndCommitR3 = (binding: R3Binding, previous: R3Session, claim
   const expected = execute(state, checked.phase, checked.successfulOwnStages);
   compareTransition(checked, expected.transition);
   authority(binding, previous);
+  if (state.chain.nodes.length !== checked.ordinal || state.chain.nodes.length >= INPUT_CAP) fail("$.ordinal", "SEQUENCE");
+  state.chain.nodes[checked.ordinal] = expected.successor.publicRecipients;
   sessions.set(expected.successor.session, expected.successor);
   state.chain.current = expected.successor.session;
   bindings.get(binding)!.started = true;

@@ -45,3 +45,10 @@ export { summarize, materialMarginAtTerminal } from "./compare/compare";
 export type { ScriptRow, ScriptScoreboard } from "./compare/compare";
 
 export { ARENA_SEEDS, seedForIndex, STAR_STARTING_SCFEN } from "./seeds";
+
+export {
+  initializeR3Session, stageR3Begin, stageR3Settlement, verifyAndCommitR3, visitR3EconomicInputs,
+} from "./challenge/r3Session";
+export type {
+  R3Binding, R3Session, R3StagedTransition, R3EconomicBoundaryFields, R3EconomicInput,
+} from "./challenge/r3Session";
