@@ -1,4 +1,6 @@
 <!-- Approval/disposition metadata: outside the exact approved corrective body. -->
+**R4 owned-ingress D1 — current outside-body disposition:** [Exact D1](ml-adjutant-r4-owned-ingress-addendum.md) is accepted and document-persisted; persisted spec/adversarial/security reviews and final design closure remain **PENDING**. No implementation permission follows; full R4/global R5 remain incomplete. Protected bodies and historical records retain their prior scopes.
+
 **Persistence guard:** Reject unapproved rename or grammar edits; preserve the approved 350-line body except the Executor-authorized base-amendment filename substitution recorded in [file migration](ml-adjutant-spec-file-migration.md). A4 already includes direct B-arrival C diagonal bindings and F-before-C unpromoted last-rank support; no additional feature, model, policy or native-rule change is authorized here.
 
 **Exact text: Executor-approved in the actual TUI. Persistence: separately and explicitly authorized by “Persist and synchronize”; completed below.**

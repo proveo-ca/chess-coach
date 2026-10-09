@@ -1,5 +1,7 @@
 # PLAN — ML Adjutant: learn a ranker and prove the strict challenge
 
+**R4 owned-ingress D1 — current navigation/disposition metadata:** [Exact D1](ml-adjutant-r4-owned-ingress-addendum.md) is accepted and document-persisted; persisted spec/adversarial/security reviews and final design closure remain **PENDING**. No implementation permission follows; full R4/global R5 remain incomplete. Protected bodies, archived failures and historical records retain their prior scopes.
+
 **Publication confirmed:** the user-approved history rewrite reached PR47 and `origin/feat-ml-adjuntant` at `25d7101379bd3569d9b4af9c1151dc8aff1ad09f`, verified through Git and GitHub. All three backup refs remain intact. [The observed publication record](recovery-pr47.md#12-publication-confirmation--observed-remote-event) governs older push-pending lifecycle text below. R4 stays archive-only and blocked; global R5 and training remain future.
 
 Status: **CURRENT LOCAL RESTORATION / R3 SOURCE AND BOUNDED VERIFICATION COMPLETE; ALL FINAL LOCAL CHECKS PASS, BOTH CLOSING REVIEWS READY. FOUR MEANINGFUL COMMITS THROUGH3b29e73a EXIST ON ORIGINAL FORK997141; THREE REMOTELY VERIFIED BACKUPS RETAINED. FIFTH VERIFICATION-DOC COMMIT AND PR47 LEASE PUSH PENDING, REMOTE FEATURE STILL46c. R4 RAW8 ARCHIVE-ONLY, FUTURE FULL R4 BLOCKED/UNIMPLEMENTED; GLOBAL R5 NOT READY, NO LEARNED PASS.** Frozen bodies/history stay exact; no new Docker assurance/calibration/model data/training or HIGH waiver. [Authoritative final lifecycle](recovery-pr47.md#final-local-restoration-complete-publication-pending).
