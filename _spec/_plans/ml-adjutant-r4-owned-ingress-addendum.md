@@ -13,9 +13,9 @@ The accepted text is retained between the O9 marker lines below. Its title and e
 | Exact displayed D1; prospective spec gate | **SPEC READY TO PRESENT D1: yes**, no concrete spec findings. Text/precedence/body-boundary gate only; no Git-blob identity or runtime verification. |
 | Executor exact-text acceptance | **COMPLETE:** actual message `approved the above question`. |
 | Separate Executor document-persistence/review authorization | **COMPLETE:** actual TUI selection `Persist and review (Recommended)`. |
-| Document persistence and scoped navigation | Accepted body persisted below; only additive outside-body metadata/navigation accompanies it. Independent identity verification remains pending. |
-| Lead accepted-body identity, protected-body/archive preservation and authority-constituent checks | **PENDING.** No identity comparison or hash computed by spec-keeper. |
-| Lead link and whitespace checks | **PENDING.** No commands or Git/staging operations performed by spec-keeper. |
+| Document persistence and scoped navigation | **COMPLETE:** accepted body persisted below; seven document-only paths contain the addendum and additive outside-body navigation. |
+| Lead accepted-body identity, protected-body/archive preservation and authority-constituent checks | **PASS:** direct lead verification compared the persisted 16,648-byte body with the exact accepted-text snapshot; SHA-256 `d51893e88c75ce250deee569d7718eb3f0dcdf12292d7cc8b8f8358f4a2a4576`, exact LF/final newline. All four existing protected bodies and eight archived payloads plus archive README equal baseline `3da76215fdab204d5b49c65b295ae2514adb9474`. Both O9 whole-file authority snapshots resolve at that baseline. No runtime authority record was generated or registered. |
+| Lead link and whitespace checks | **PASS:** direct lead verification resolved all 15 scoped local links and executed baseline-diff, working-diff and cached-diff whitespace checks. Spec-keeper ran no commands or hashes. |
 | Persisted spec / adversarial / security reviews | **PENDING.** Prospective verdicts do not substitute for review of the persisted revision. |
 | Executor final D1 design closure | **PENDING / NOT AUTHORIZED.** Exact-text acceptance and document persistence do not close the design gate. |
 | Source build / execution / full R4 / global R5 readiness | **NOT authorized / NOT complete.** Build requires a separate scoped grant after its required gates. |
@@ -36,6 +36,8 @@ This table navigates the accepted D1 corrections; it changes no protected body. 
 Historical indices0..369, amended418/H=1, feature formulas, A3–A7, accepted R3 §§9.1/9.2, separate generator2048/512/four-action limits and closed Configuration26/Versions21 remain preserved. All other choices retain their prior scopes. Archived failures keep their original disposition.
 
 Companion navigation: [base amendment](ml-adjutant-r4-economic-amendment.md), [corrective A1–A7](ml-adjutant-r4-economic-corrective-annex.md), [original contracts](ml-adjutant-r3-contracts.md), [R2 generator law](r2-generator-v3.md), [accepted R3 seam](ml-adjutant-r3-seam-addendum.md), [accepted R3 native correction](ml-adjutant-r3-native-promotion-fix.md), [weights](ml-adjutant-r4-weights.md), [ML roadmap](PLAN-ml-adjutant.md), [root PLAN](../../PLAN.md). O9 binds its immutable constituent scopes, not the subsequently updated whole-file navigation metadata. No authority record/reference is generated or registered by this persistence pass.
+
+Lead verification command: `node /tmp/opencode/verify-r4-owned-ingress-D1.mjs`. This temporary document-preservation verifier compares the accepted-text snapshot at `/tmp/opencode/r4-owned-ingress-approved-D1.md` and the four protected bodies/archive against baseline Git bytes. It validates document-only scope, navigation and whitespace. Its PASS verifies persistence, not parser correctness, invoice feasibility or runtime behavior. Runtime suites were not run for this document-only change; no diagrams or source references changed.
 
 <!-- BEGIN R4 OWNED INGRESS NORMATIVE BODY -->
 # R4 owned economic ingress — exact proposal D1
