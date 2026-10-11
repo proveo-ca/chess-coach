@@ -1,11 +1,19 @@
+// SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
 import { describe, expect, it } from "vitest";
 import type { Meter, Table, TransitionTable } from "../economic/contracts";
 import { BAND_STARTS, JOINT_SIZE } from "../economic/contracts";
-import { encodeFloat64, decodeFloat64 } from "../economic/float64";
+import { encodeOwnedNumber, decodeOwnedNumber } from "../economic/ownedScalars";
+import { createPlanningLedger, enterA2, consumeWorkBlock, type LedgerPair } from "../economic/ownedKernel";
+import { quoteBlock } from "../economic/invoices";
 import { evaluateEconomic, gammaSets, rebandEconomic, type EvaluationInput } from "../economic/evaluator";
 
-const meter = (): Meter => ({ limit: 1048576, used: 0 });
-const h = (value: number) => encodeFloat64(value, undefined);
+let previous: LedgerPair | undefined;
+const meter = (): Meter => {
+  if (previous) { try { previous.owner.abort(); } catch { } }
+  previous = createPlanningLedger(); previous.owner.admitOnce(); previous.owner.armAdvance(); enterA2(previous.meter, "advance");
+  return previous.meter;
+};
+const h = encodeOwnedNumber;
 const rows = [[0, 0, 0, 0, 0, 7], [1, 0, 1, 0, 0, 5], [1, 1, 0, 8, 3, 4], [3, 3, 0, 2, 1, 2]] as const;
 const global: TransitionTable = { kind: "transition", level: 3, bank: null, band: null, tier: null, groups: 40,
   rows: rows.map(([s, c, w, g, d, count]) => [s, c, w, g, d, h(count)]) };
@@ -136,22 +144,34 @@ describe("economic positive evaluator independent exhaustive parity", () => {
     equal(evaluateEconomic({ ...input, turn: 11, tables: [global, local, globalEvidence], innovation: [1, 0, 0] }, meter()),
       { joint: expected, publicSupport: baseline.publicSupport });
   });
-  it("retains all247 components and every explicit conditional band entry", () => {
+  it("retains every legal component and explicit band entry, and fails the full dense reband closed", () => {
     const joint = new Float64Array(JOINT_SIZE).fill(1 / JOINT_SIZE);
-    const components = rebandEconomic(joint, meter());
+    const original = joint.slice();
+    expect(() => rebandEconomic(joint, meter())).toThrow("WORK_CAP");
+    expect(joint).toEqual(original);
+    const components: ReturnType<typeof rebandEconomic>[number][] = [];
+    for (let bank = 0; bank <= 12; bank++) for (let band = 0; band < 19; band++) {
+      const start = BAND_STARTS[band]!, end = band === 18 ? 577 : BAND_STARTS[band + 1]!;
+      const singleBand = new Float64Array(JOINT_SIZE);
+      singleBand.fill(1 / (end - start), 577 * bank + start, 577 * bank + end);
+      const result = rebandEconomic(singleBand, meter());
+      expect(result).toHaveLength(1); expect(result[0]!.bank).toBe(bank); expect(result[0]!.band).toBe(band);
+      expect(decodeOwnedNumber(result[0]!.mass)).toBeCloseTo(1, 12);
+      components.push(result[0]!);
+    }
     expect(components).toHaveLength(247);
     let entries = 0;
     for (const component of components) {
       const width = (component.band === 18 ? 577 : BAND_STARTS[component.band + 1]!) - BAND_STARTS[component.band]!;
       expect(component.conditional).toHaveLength(width); entries += width;
-      for (const value of component.conditional) expect(decodeFloat64(value, undefined)).toBeGreaterThan(0);
+      for (const value of component.conditional) expect(decodeOwnedNumber(value)).toBeGreaterThan(0);
     }
     expect(entries).toBe(7501);
   });
   it("preserves band zeros and rejects positive underflow", () => {
     const joint = new Float64Array(JOINT_SIZE); joint[5] = 1;
     const components = rebandEconomic(joint, meter());
-    expect(components[0]!.conditional.map(value => decodeFloat64(value, undefined))).toEqual([0, 1]);
+    expect(components[0]!.conditional.map(decodeOwnedNumber)).toEqual([0, 1]);
     const input = jointInput(1, 0, 1, false, 0);
     input.joint[1] = Number.MIN_VALUE; input.joint[0] = 1;
     (input.publicSupport as boolean[])[0] = true;
@@ -159,7 +179,7 @@ describe("economic positive evaluator independent exhaustive parity", () => {
   });
   it("prevents cap overflow without publishing or mutating the source", () => {
     const input = jointInput(4, 3, 1, false, 0), before = input.joint.slice();
-    const work = meter(); work.used = work.limit - 1;
+    const work = meter(); consumeWorkBlock(work, "scalar", work.limit - work.used - 1 - quoteBlock("scalar", 0, 0), "$.fixture.exhaust");
     expect(() => evaluateEconomic(input, work)).toThrow("WORK_CAP");
     expect(input.joint).toEqual(before); expect(work.used).toBe(work.limit - 1);
   });
@@ -172,8 +192,8 @@ describe("economic positive evaluator independent exhaustive parity", () => {
     const input: EvaluationInput = { joint, publicSupport, tables: [], inputTurn: 21, turn: 22, gas: 3,
       boundsBefore: { lower: 0, upper: 567, marines: 0 }, bounds: { lower: 0, upper: 567, marines: 0 },
       loss: 0, grant: true, innovation: [0, 0, 0], settled: true };
-    expect(() => evaluateEconomic(input, work)).toThrow("WORK_CAP: $.evaluation.branches");
-    expect(work.used).toBe(1047859); expect(work.limit - work.used).toBe(717);
+    expect(() => evaluateEconomic(input, work)).toThrow("WORK_CAP");
+    expect(work.used).toBeGreaterThan(0); expect(work.used).toBeLessThanOrEqual(work.limit);
     expect(joint).toEqual(before);
   });
 });

@@ -1,15 +1,20 @@
+// SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
 import { describe, expect, it } from "vitest";
 import { decodeCandidate, requestedSpend } from "@chess-coach/starchess-arena/intent-codec-v1";
 import type { AuthorizedHistory } from "@chess-coach/starchess-arena/observations";
 import type { Meter } from "../economic/contracts";
 import type { ScActionInput, Square } from "@chess-coach/starchess-core/planning-v1";
 import { economicFeatures } from "../feature/economic";
-import { encodeFeatureBlocksV3 } from "../feature/encoder";
+import { encodeHistorical370 } from "../feature/encoder";
+import { promotionFeatures } from "../feature/promotion";
+import { makeFeatureBlocks } from "../economic/ownedKernel";
 import { flattenFeatureBlocksV3 } from "../feature/manifest";
 import { projectOwn } from "../feature/projection";
 import { c, s, observation, type FixtureOptions } from "./fixtures";
+import { featureMeter, ownHistory, ownCandidate } from "./featurePrefix370.test";
+import { consumeWorkBlock } from "../economic/ownedKernel";
+import { quoteBlock } from "../economic/invoices";
 
-const featureMeter = (): Meter => ({ limit: 1048576, used: 0 });
 const featureHistory = (own: Parameters<typeof observation>[0], options: FixtureOptions = {}, paid: Partial<Record<Square, number>> = {}): AuthorizedHistory => {
   const o = observation(own, options), surviving = Object.values(paid).reduce((a, b) => a + b, 0);
   const economic = { version: "challenge-economic-ledger-v1" as const, side: o.side, ownPaidDebits: surviving, ownPaidSurviving: surviving,
@@ -24,8 +29,8 @@ const featureCandidate = (actions: readonly ScActionInput[]) => decodeCandidate(
   key: JSON.stringify(actions.map(action => Object.fromEntries(Object.entries(action).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0)))), ownSpend: requestedSpend(actions) }, "w");
 
 const economics = (h: ReturnType<typeof featureHistory>, actions: Parameters<typeof featureCandidate>[0], balance = 2, uncertainty = 3) => {
-  const meter = featureMeter(), candidate = featureCandidate(actions);
-  const projection = projectOwn(h, candidate, meter);
+  const meter = featureMeter(), candidate = ownCandidate(actions, "w", meter);
+  const projection = projectOwn(ownHistory(h, meter), candidate, meter);
   return economicFeatures(projection, candidate, { balance, uncertainty }, meter);
 };
 
@@ -79,9 +84,14 @@ describe("amended economic append12", () => {
 describe("typed numerical V3 foundation", () => {
   it("encodes 418 finite fields and allocates fresh caller-owned flat copies", () => {
     const h = featureHistory([["a1", "k"], ["b2", "p"]]);
-    const before = JSON.stringify(h), candidate = featureCandidate([c("b2", "b4")]);
+    const before = JSON.stringify(h);
     const meter = featureMeter();
-    const blocks = encodeFeatureBlocksV3(h, candidate, { balance: 0, uncertainty: 2, witnessed: [], unlocated: [] }, meter);
+    const candidate = ownCandidate([c("b2", "b4")], "w", meter), owned = ownHistory(h, meter);
+    const projection = projectOwn(owned, candidate, meter);
+    const prefix = encodeHistorical370(owned, candidate, projection, meter);
+    const economic = economicFeatures(projection, candidate, { balance: 0, uncertainty: 2 }, meter);
+    const promotion = promotionFeatures(projection, { witnessed: [], unlocated: [] }, "w", 21, meter);
+    const blocks = makeFeatureBlocks(meter, prefix.queue, ...prefix.positions, economic, promotion);
     const first = flattenFeatureBlocksV3(blocks, meter), second = flattenFeatureBlocksV3(blocks, meter);
     expect(first).toHaveLength(418); expect([...first].every(Number.isFinite)).toBe(true);
     expect(first).toEqual(second); first[0] = 100; expect(second[0]).toBe(0);
@@ -90,9 +100,11 @@ describe("typed numerical V3 foundation", () => {
   });
 
   it("rejects fifth actions before numerical work and prepaid exhaustion before allocation", () => {
-    const h = featureHistory([["a1", "k"]]), candidate = featureCandidate([c("a1", "a2"), c("a1", "b1"), c("a1", "b2"), c("a1", "a2"), c("a1", "b1")]);
-    expect(() => projectOwn(h, candidate, featureMeter())).toThrow("CARDINALITY: $.actions");
-    const meter = { limit: 1048576 as const, used: 1048576 };
-    expect(() => projectOwn(h, featureCandidate([]), meter)).toThrow(); expect(meter.used).toBe(1048576);
+    const meter = featureMeter(), h = ownHistory(featureHistory([["a1", "k"]]), meter);
+    const candidate = ownCandidate([c("a1", "a2"), c("a1", "b1"), c("a1", "b2"), c("a1", "a2"), c("a1", "b1")], "w", meter);
+    expect(() => projectOwn(h, candidate, meter)).toThrow("CARDINALITY: $.actions");
+    const work = featureMeter(), pass = ownCandidate([], "w", work);
+    consumeWorkBlock(work, "scalar", work.limit - work.used - quoteBlock("scalar", 0, 0), "$.fixture.exhaust");
+    expect(() => projectOwn(h, pass, work)).toThrow("WORK_CAP"); expect(work.used).toBe(1048576);
   });
 });

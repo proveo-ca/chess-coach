@@ -1,7 +1,9 @@
+// SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
 import type { Candidate, Economic12, Meter } from "../economic/contracts";
 import { charge, fail } from "../economic/work";
 import type { OwnProjection } from "./projection";
 import { exposure, replacementValue, stationaryRelation } from "./relations";
+import { beginEconomic12, finishEconomic12, putEconomic12 } from "../economic/ownedKernel";
 
 export type NumericalEconomicReadout = Readonly<{ balance: number; uncertainty: number }>;
 
@@ -59,11 +61,8 @@ export const economicFeatures = (projection: OwnProjection, candidate: Candidate
   const S = .5 * (candidate.ownSpend.minerals / 12 + candidate.ownSpend.gas / 3);
   const A = (deployValue - crushedValue) / 12, T = classical ? (targetValue - actorRisk) / 12 : 0, P = protectedValue / 12;
   if (S < 0 || S > 1 || A < -48 || A > 1 || T < -3 || T > .75 || P < 0 || P > 48) fail("$.economic", "NUMBER");
-  return Object.freeze({
-    "ix.spendBalance": S * readout.balance, "ix.spendUncertainty": S * readout.uncertainty,
-    "ix.deployBalance": A * readout.balance, "ix.deployUncertainty": A * readout.uncertainty,
-    "ix.tradeBalance": T * readout.balance, "ix.tradeUncertainty": T * readout.uncertainty,
-    "ix.protectionBalance": P * readout.balance, "ix.protectionUncertainty": P * readout.uncertainty,
-    spend: S, deploy: A, trade: T, protection: P,
-  });
+  const cursor = beginEconomic12(meter), values = [S * readout.balance, S * readout.uncertainty, A * readout.balance, A * readout.uncertainty,
+    T * readout.balance, T * readout.uncertainty, P * readout.balance, P * readout.uncertainty, S, A, T, P];
+  for (let i = 0; i < 12; i++) putEconomic12(meter, cursor, i, values[i] === 0 ? 0 : values[i]!);
+  return finishEconomic12(meter, cursor);
 };

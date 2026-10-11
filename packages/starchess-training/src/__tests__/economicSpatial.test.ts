@@ -1,10 +1,18 @@
+// SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
 import { describe, expect, it } from "vitest";
 import { addScAction, endScTurn, mapToPlacement, placementToMap, type ScFenSnapshot, type ScActionInput, type ScPiece } from "@chess-coach/starchess-core";
 import type { Cells, Meter, Side, Square } from "../economic/contracts";
 import { adjacentSquares, marineOpportunity, reduceSpatial } from "../economic/spatial";
 import { squares } from "./fixtures";
+import { createPlanningLedger, enterA2, consumeWorkBlock, type LedgerPair } from "../economic/ownedKernel";
+import { quoteBlock } from "../economic/invoices";
 
-const meter = (): Meter => ({ limit: 1048576, used: 0 });
+let previous: LedgerPair | undefined;
+const meter = (): Meter => {
+  if (previous) { try { previous.owner.abort(); } catch { } }
+  previous = createPlanningLedger(); previous.owner.admitOnce(); previous.owner.armAdvance(); enterA2(previous.meter, "advance");
+  return previous.meter;
+};
 const unknown: Cells = squares.map(square => ({ square, visibility: "unknown" }));
 const changed = (entries: readonly (readonly [Square, ScPiece | null])[]): Cells => {
   const map = new Map(entries);
@@ -107,7 +115,7 @@ describe("economic anonymous spatial support with native controls", () => {
     expect(pruned.witnessed).toEqual([]);
   });
   it("charges one shared cap before expansion and preserves inputs on exhaustion", () => {
-    const work = meter(); work.used = work.limit - 20;
+    const work = meter(); consumeWorkBlock(work, "scalar", work.limit - work.used - 20 - quoteBlock("scalar", 0, 0), "$.fixture.exhaust");
     expect(() => reduceSpatial(initial, work)).toThrow("WORK_CAP");
     expect(initial.witnessed).toEqual(["e6"]); expect(work.used).toBe(work.limit - 20);
   });

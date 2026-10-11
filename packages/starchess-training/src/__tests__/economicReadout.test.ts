@@ -1,9 +1,16 @@
+// SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
 import { describe, expect, it } from "vitest";
 import type { Meter } from "../economic/contracts";
 import { JOINT_SIZE } from "../economic/contracts";
 import { calibrateJoint, publicCertainty, summarizeJoint } from "../economic/readout";
+import { createPlanningLedger, enterA2, type LedgerPair } from "../economic/ownedKernel";
 
-const meter = (): Meter => ({ limit: 1048576, used: 0 });
+let previous: LedgerPair | undefined;
+const meter = (): Meter => {
+  if (previous) { try { previous.owner.abort(); } catch { } }
+  previous = createPlanningLedger(); previous.owner.admitOnce(); previous.owner.armReadout(); enterA2(previous.meter, "readout");
+  return previous.meter;
+};
 const distribution = (entries: readonly (readonly [number, number, number])[]) => {
   const joint = new Float64Array(JOINT_SIZE), support = new Array<boolean>(JOINT_SIZE).fill(false);
   for (const [d, bank, p] of entries) { joint[577 * bank + d] = p; support[577 * bank + d] = true; }

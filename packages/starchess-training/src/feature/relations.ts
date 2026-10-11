@@ -1,3 +1,4 @@
+// SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
 import { attacksSquare, getUnitVision, rayBetween, type ScPiece, type Square } from "@chess-coach/starchess-core/planning-v1";
 import type { Meter, Side } from "../economic/contracts";
 import { charge } from "../economic/work";
@@ -12,16 +13,24 @@ export type Relation = "none" | "known" | "possible";
 export type RayMeasurement = Readonly<{ applicable: boolean; empty: number; occupied: number; unknown: number; distance: number }>;
 const REPLACEMENT = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 } as const;
 
-class ConditionalAttackMap extends Map<Square, ScPiece> {
-  private readonly layers: FeatureLayers;
-  private readonly view: OwnView;
-  private readonly source: Readonly<{ square: Square; type: ScPiece["type"]; color: Side }>;
-  constructor(layers: FeatureLayers, view: OwnView, source: Readonly<{ square: Square; type: ScPiece["type"]; color: Side }>) {
-    super(); this.layers = layers; this.view = view; this.source = source;
+const SQUARES = Object.freeze(Array.from({ length: 64 }, (_, i) => `${"abcdefgh"[Math.floor(i / 8)]}${i % 8 + 1}` as Square));
+const geometry = new Map<string, boolean>();
+const rays = new Map<string, readonly Square[]>();
+const vision = new Map<string, readonly Square[]>();
+for (const from of SQUARES) {
+  for (const to of SQUARES) {
+    rays.set(`${from}:${to}`, Object.freeze(rayBetween(from, to)));
+    for (const color of ["w", "b"] as const) for (const type of ["p", "n", "b", "r", "q", "k"] as const) {
+      geometry.set(`${color}:${type}:${from}:${to}`, attacksSquare(new Map([[from, { type, color }]]), from, to));
+    }
   }
-  override get(square: Square): ScPiece | undefined { return square === this.source.square ? this.source : undefined; }
-  override has(square: Square): boolean { return this.layers.enemies.has(square) || this.view.at.has(square); }
+  for (const color of ["w", "b"] as const) for (const type of ["p", "n", "b", "r", "q", "k"] as const) for (const mode of ["tank", "siege"] as const) {
+    const lit = getUnitVision(new Map([[from, { type, color }]]), from, { tankModeFor: () => mode }).litSquares;
+    vision.set(`${color}:${type}:${from}:${mode}`, Object.freeze([...lit]));
+  }
 }
+const litCache = new WeakMap<OwnView, ReadonlySet<Square>>();
+const exposureCache = new WeakMap<OwnView, WeakMap<FeatureLayers, Map<Square, Readonly<{ known: number; possible: number }>>>>();
 
 export const replacementValue = (type: ScPiece["type"], meter: Meter): number => {
   charge(meter, 3, "$.work.feature.replacement.lookup");
@@ -45,9 +54,8 @@ export const measureRay = (layers: FeatureLayers, view: OwnView, type: ScPiece["
   const applicable = slidingShape(type, from, to, meter);
   charge(meter, 8, "$.work.feature.ray.record");
   if (!applicable) return { applicable: false, empty: 0, occupied: 0, unknown: 0, distance: 0 };
-  // WHAT: native ray setup plus at most six coordinate/array construction steps.
-  charge(meter, 32 + 6 * 24, "$.work.feature.ray.native");
-  const mids = rayBetween(from, to);
+  charge(meter, 16, "$.work.feature.ray.compiled");
+  const mids = rays.get(`${from}:${to}`)!;
   charge(meter, 3, "$.work.feature.ray.counters");
   let empty = 0, occupied = 0, unknown = 0;
   for (const mid of mids) {
@@ -63,9 +71,8 @@ export const measureRay = (layers: FeatureLayers, view: OwnView, type: ScPiece["
 export const stationaryRelation = (layers: FeatureLayers, view: OwnView, source: Readonly<{ square: Square; type: ScPiece["type"]; color: Side }>, target: Square, meter: Meter): Relation => {
   charge(meter, 8, "$.work.feature.relation.dispatch");
   if (source.square === target) return "none";
-  // WHAT: native shape and known-blocker scan through explicit conditional occupancy.
-  charge(meter, 64 + (source.type === "b" || source.type === "r" || source.type === "q" ? 6 * 32 : 0), "$.work.feature.relation.nativeGeometry");
-  if (!attacksSquare(new ConditionalAttackMap(layers, view, source), source.square, target)) return "none";
+  charge(meter, 24, "$.work.feature.relation.compiledGeometry");
+  if (!geometry.get(`${source.color}:${source.type}:${source.square}:${target}`)) return "none";
   if (source.type === "b" || source.type === "r" || source.type === "q") {
     const ray = measureRay(layers, view, source.type, source.square, target, meter);
     charge(meter, 7, "$.work.feature.relation.rayClassify");
@@ -76,7 +83,9 @@ export const stationaryRelation = (layers: FeatureLayers, view: OwnView, source:
 };
 
 export const exposure = (layers: FeatureLayers, view: OwnView, target: Square, meter: Meter): Readonly<{ known: number; possible: number }> => {
-  charge(meter, 4, "$.work.feature.exposure.allocate");
+  charge(meter, 12, "$.work.feature.exposure.cache");
+  const cached = exposureCache.get(view)?.get(layers)?.get(target);
+  if (cached) return cached;
   let known = 0, possible = 0;
   for (const [square, piece] of layers.enemies) {
     charge(meter, 10, "$.work.feature.exposure.sourceVisit");
@@ -86,7 +95,13 @@ export const exposure = (layers: FeatureLayers, view: OwnView, target: Square, m
     else if (relation === "possible") possible++;
   }
   charge(meter, 3, "$.work.feature.exposure.result");
-  return { known, possible };
+  const result = Object.freeze({ known, possible });
+  let byLayers = exposureCache.get(view);
+  if (!byLayers) { byLayers = new WeakMap(); exposureCache.set(view, byLayers); }
+  let byTarget = byLayers.get(layers);
+  if (!byTarget) { byTarget = new Map(); byLayers.set(layers, byTarget); }
+  byTarget.set(target, result);
+  return result;
 };
 
 export const pressure = (layers: FeatureLayers, view: OwnView, actor: FeatureUnit, meter: Meter): Readonly<{ units: number; cc: number }> => {
@@ -117,18 +132,20 @@ export const threatened = (layers: FeatureLayers, view: OwnView, meter: Meter): 
 };
 
 export const ownLitSquares = (view: OwnView, meter: Meter): ReadonlySet<Square> => {
+  charge(meter, 8, "$.work.feature.vision.cache");
+  const cached = litCache.get(view);
+  if (cached) return cached;
   charge(meter, 2 + 3 * view.mines.size, "$.work.feature.vision.mineCopy");
   const result = new Set(view.mines);
   for (const unit of view.units.values()) {
-    // WHAT: one-unit map/opts plus native 9x9 maximum geometric grid and returned sets.
-    charge(meter, 48 + 81 * 24, "$.work.feature.vision.nativeUnit");
-    const board = new Map<Square, ScPiece>([[unit.square, { type: unit.type, color: unit.color }]]);
-    const vision = getUnitVision(board, unit.square, { tankModeFor: () => unit.mode ?? "tank" });
-    for (const square of vision.litSquares) {
+    charge(meter, 24, "$.work.feature.vision.compiledUnit");
+    const lit = vision.get(`${unit.color}:${unit.type}:${unit.square}:${unit.mode ?? "tank"}`)!;
+    for (const square of lit) {
       charge(meter, 4, "$.work.feature.vision.unionVisit");
       result.add(square);
     }
   }
   charge(meter, 1, "$.work.feature.vision.return");
+  litCache.set(view, result);
   return result;
 };

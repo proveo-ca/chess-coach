@@ -1,6 +1,9 @@
+// SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
 import type { AuthorizedEvent, ObservedCell, OwnUnitLineage, Sighting, UnitType } from "@chess-coach/starchess-arena/observations";
 import type { Cells, Memory, Meter, Side, Square } from "./contracts";
 import { charge, fail } from "./work";
+import { appendCells64, appendMemory64, appendSquareSet64, beginCells64, beginMemory64, beginSquareSet64, finishCells64, finishMemory64,
+  finishSquareSet64, makeSighting } from "./ownedKernel";
 
 export const replacement = (type: UnitType): number =>
   type === "k" ? 0 : type === "p" ? 1 : type === "n" || type === "b" ? 3 : type === "r" ? 5 : 9;
@@ -50,7 +53,7 @@ export const foldInnovations = (input: InnovationInput, meter: Meter): Innovatio
           y1 += replacement(cell.piece.type);
           if (cell.piece.type === "p") anchors.add(cell.square);
         }
-        memory.set(cell.square, { square: cell.square, piece: cell.piece, observedTurn: turn });
+        memory.set(cell.square, makeSighting(meter, cell.square, cell.piece, turn));
       } else if (cell.visibility === "lit") memory.delete(cell.square);
       cells.set(cell.square, cell);
     }
@@ -87,18 +90,19 @@ export const foldInnovations = (input: InnovationInput, meter: Meter): Innovatio
   }
   observe(input.finalCells, input.turn);
   charge(meter, 64 * 40 + 100, "$.innovation.output");
-  const orderedCells: ObservedCell[] = [], orderedMemory: Sighting[] = [];
-  const orderedAnchors: Square[] = [], orderedGeometry: Square[] = [];
+  const orderedCells = beginCells64(meter), orderedMemory = beginMemory64(meter);
+  const orderedAnchors = beginSquareSet64(meter), orderedGeometry = beginSquareSet64(meter);
   for (let file = 0; file < 8; file++) for (let rank = 1; rank <= 8; rank++) {
     const square = `${String.fromCharCode(97 + file)}${rank}` as Square;
     const cell = cells.get(square), sighting = memory.get(square);
     if (!cell) return fail("$.innovation.cells", "CARDINALITY");
-    orderedCells.push(cell);
-    if (sighting) orderedMemory.push(sighting);
-    if (anchors.has(square)) orderedAnchors.push(square);
-    if (geometry.has(square)) orderedGeometry.push(square);
+    appendCells64(meter, orderedCells, cell);
+    if (sighting) appendMemory64(meter, orderedMemory, sighting);
+    if (anchors.has(square)) appendSquareSet64(meter, orderedAnchors, square);
+    if (geometry.has(square)) appendSquareSet64(meter, orderedGeometry, square);
   }
   const bin = (value: number): number => value === 0 ? 0 : value <= 3 ? 1 : value <= 8 ? 2 : 3;
   return { values: [y1, y2, clears.size], code: [bin(y1), bin(y2), clears.size === 0 ? 0 : clears.size === 1 ? 1 : 2],
-    loss: y2, grant, anchors: orderedAnchors, geometry: orderedGeometry, cells: orderedCells, memory: orderedMemory };
+    loss: y2, grant, anchors: finishSquareSet64(meter, orderedAnchors), geometry: finishSquareSet64(meter, orderedGeometry),
+    cells: finishCells64(meter, orderedCells), memory: finishMemory64(meter, orderedMemory) };
 };

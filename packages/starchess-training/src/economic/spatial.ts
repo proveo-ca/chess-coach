@@ -1,6 +1,8 @@
+// SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
 import type { ScActionInput } from "@chess-coach/starchess-core/planning-v1";
 import type { Cells, Meter, Side, Square } from "./contracts";
 import { charge, fail } from "./work";
+import { appendSquareSet64, beginSquareSet64, finishSquareSet64 } from "./ownedKernel";
 
 export type MarineMacro = Readonly<{
   key: string; source: Square; destination: Square; promotion: "n" | "b" | "r" | "q" | null;
@@ -11,12 +13,12 @@ const coordinate = (file: number, rank: number): Square | null =>
   file >= 0 && file < 8 && rank >= 1 && rank <= 8 ? `${String.fromCharCode(97 + file)}${rank}` as Square : null;
 const ordered = (set: ReadonlySet<Square>, meter: Meter): readonly Square[] => {
   charge(meter, 64 * 18 + 10, "$.spatial.ordered");
-  const result: Square[] = [];
+  const result = beginSquareSet64(meter);
   for (let file = 0; file < 8; file++) for (let rank = 1; rank <= 8; rank++) {
     const square = coordinate(file, rank)!;
-    if (set.has(square)) result.push(square);
+    if (set.has(square)) appendSquareSet64(meter, result, square);
   }
-  return result;
+  return finishSquareSet64(meter, result);
 };
 export const adjacentSquares = (squares: readonly Square[], ring: boolean, meter: Meter): readonly Square[] => {
   charge(meter, 20 + squares.length * (20 + 9 * 30), "$.spatial.adjacent");
@@ -43,18 +45,15 @@ export const pruneSpatial = (squares: readonly Square[], cells: Cells, side: Sid
   return ordered(result, meter);
 };
 
-export const marineOpportunity = (source: Square, side: Side, diagonal: ReadonlySet<Square>, options: MacroOptions, meter: Meter): readonly MarineMacro[] => {
-  charge(meter, 60, "$.spatial.macro");
-  const result: MarineMacro[] = [];
+type CompiledMarineMacro = MarineMacro & Readonly<{ diagonalTarget: Square | null }>;
+const compileMarineOpportunity = (source: Square, side: Side, options: MacroOptions): readonly CompiledMarineMacro[] => {
+  const result: CompiledMarineMacro[] = [];
   const file = source.charCodeAt(0) - 97, rank = Number(source[1]), direction = side === "w" ? 1 : -1, last = side === "w" ? 8 : 1;
   const step = coordinate(file, rank + direction);
-  charge(meter, 2 * 5 * 2 * 20 + 10, "$.spatial.templates");
   for (let b = 0; b <= 1; b++) for (let c = 0; c < 5; c++) for (let f = 0; f <= 1; f++) {
     if ((b && f) || b + f > options.gas || (b && options.before === false) || ((b || f) && options.specials === false) || (c && options.classical === false)) continue;
     const bindings = b && c ? 2 : 1, orders = f && c ? 2 : 1;
-    charge(meter, 20 + bindings * orders * 16, "$.spatial.authoredVariants");
     for (let binding = 0; binding < bindings; binding++) for (let order = 0; order < orders; order++) {
-      charge(meter, 620, "$.spatial.variant");
       if ((b || f) && !step) continue;
       let position = b ? step! : source;
       const path: Square[] = [], actions: ScActionInput[] = [];
@@ -67,7 +66,6 @@ export const marineOpportunity = (source: Square, side: Side, diagonal: Readonly
       const distance = c === 2 ? 2 : 1;
       const authoredC = c ? coordinate(origin.charCodeAt(0) - 97 + dx, originRank + direction * distance) : null;
       if (c && !authoredC) continue;
-      if (c >= 3 && !diagonal.has(authoredC!)) continue;
       const rewritten = b && binding === 0 && c > 0 && c < 3;
       const actualC = c ? (rewritten ? coordinate(file, rank + direction * (distance + 1)) : authoredC) : null;
       if (c && !actualC) continue;
@@ -86,7 +84,6 @@ export const marineOpportunity = (source: Square, side: Side, diagonal: Readonly
         path.push(actualC!); position = actualC!;
       }
       if (f && !bPromotes && !cPromotes) { path.push(actualF!); position = actualF!; }
-      charge(meter, 24 + alternatives.length * (110 + path.length * 4), "$.spatial.promotions");
       for (const promotion of alternatives) {
         const bAction: ScActionInput | null = b ? { kind: "stimStep", timing: "B", color: side, from: source, to: step!, ...(bPromotes ? { promotion: promotion! } : {}) } : null;
         const cAction: ScActionInput | null = c ? { kind: "classical", timing: "C", color: side, from: origin, to: authoredC!, ...(cPromotes ? { promotion: promotion! } : {}) } : null;
@@ -96,10 +93,26 @@ export const marineOpportunity = (source: Square, side: Side, diagonal: Readonly
         if (order === 1 && fAction) actions.push(fAction);
         if (cAction && !bPromotes) actions.push(cAction);
         if (order === 0 && fAction && !cPromotes) actions.push(fAction);
-        result.push({ key: `${b}:${c}:${f}:${binding}:${order}:${promotion ?? "p"}`, source, destination: position, promotion, path: [...path], actions: [...actions] });
+        result.push(Object.freeze({ key: `${b}:${c}:${f}:${binding}:${order}:${promotion ?? "p"}`, source, destination: position, promotion,
+          path: Object.freeze([...path]), actions: Object.freeze(actions.map(action => Object.freeze(action))), diagonalTarget: c >= 3 ? authoredC : null }));
       }
     }
   }
+  return Object.freeze(result);
+};
+const COMPILED_MARINES = new Map<string, readonly CompiledMarineMacro[]>();
+for (const side of ["w", "b"] as const) for (let f = 0; f < 8; f++) for (let r = 1; r <= 8; r++) for (let gas = 0; gas <= 1; gas++) for (let flags = 0; flags < 8; flags++) {
+  const source = coordinate(f, r)!;
+  COMPILED_MARINES.set(`${side}:${source}:${gas}:${flags}`, compileMarineOpportunity(source, side, { gas, classical: !!(flags & 1), specials: !!(flags & 2), before: !!(flags & 4) }));
+}
+export const marineOpportunity = (source: Square, side: Side, diagonal: ReadonlySet<Square>, options: MacroOptions, meter: Meter): readonly MarineMacro[] => {
+  charge(meter, 32, "$.spatial.macro.compiled");
+  if (!Number.isInteger(options.gas) || options.gas < 0 || options.gas > 3) fail("$.spatial.gas", "NUMBER");
+  const flags = Number(options.classical !== false) + 2 * Number(options.specials !== false) + 4 * Number(options.before !== false);
+  const macros = COMPILED_MARINES.get(`${side}:${source}:${Number(options.gas > 0)}:${flags}`)!;
+  charge(meter, 8 + 10 * macros.length, "$.spatial.macro.visits");
+  const result: MarineMacro[] = [];
+  for (const macro of macros) if (macro.diagonalTarget === null || diagonal.has(macro.diagonalTarget)) result.push(macro);
   return result;
 };
 

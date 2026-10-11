@@ -1,11 +1,16 @@
+// SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
 import { specialGasCost, UNIT_COST } from "@chess-coach/starchess-core/planning-v1";
-import type { Candidate, FeatureBlocksV3, History, Meter, Position84, Queue34 } from "../economic/contracts";
+import type { Candidate, EconomicArtifact, EconomicBeliefState, FeatureBlocksV3, History, Meter, Position84, Queue34 } from "../economic/contracts";
 import { POSITION_NAMES, QUEUE_NAMES } from "../economic/contracts";
 import { charge, fail } from "../economic/work";
 import { economicFeatures, type NumericalEconomicReadout } from "./economic";
 import { promotionFeatures, type PromotionFrontiers } from "./promotion";
 import { projectOwn, type OwnProjection } from "./projection";
 import { chebyshev, exposure, measureRay, ownLitSquares, pressure, replacementValue, threatened } from "./relations";
+import { beginPosition84, putPosition84, finishPosition84, beginQueue34, putQueue34, finishQueue34, makeFeatureBlocks } from "../economic/ownedKernel";
+import { requireArtifact, requireCandidate, requireHistory, requireState } from "../economic/ownedGuards";
+import { readoutEconomicInternal } from "../economic/readout";
+import { decodeFloat64 } from "../economic/float64";
 
 type MutablePosition = { -readonly [K in keyof Position84]: number };
 type MutableQueue = { -readonly [K in keyof Queue34]: number };
@@ -23,6 +28,7 @@ const zeroQueue = (meter: Meter): MutableQueue => {
 
 export const encodeHistorical370 = (history: History, candidate: Candidate, projection: OwnProjection, meter: Meter): HistoricalFeatureBlocks => {
   charge(meter, 34, "$.work.feature.encoder.context");
+  requireHistory(history); requireCandidate(candidate);
   const snapshot = history.currentAuthorizedSnapshotV2, ledger = history.economicState;
   const B = snapshot.own.minerals / 12, A = snapshot.own.gas / 3, Cv = 1 - snapshot.own.ccLives / 3;
   const m = candidate.ownSpend.minerals / 12, g = candidate.ownSpend.gas / 3;
@@ -192,16 +198,26 @@ export const encodeHistorical370 = (history: History, candidate: Candidate, proj
   q["ix.pressureLossUncertainty"] = PK * Number(ledger.enemyLoss.upper === "unknown");
   q["ix.spendOwnPaidWaste"] = s * W; q["ix.deployOwnPaidWaste"] = deployCount / 4 * W;
   charge(meter, 8 + QUEUE_NAMES.length + 4 * (POSITION_NAMES.length + 1), "$.work.feature.encoder.historicalFreeze");
-  return Object.freeze({ queue: Object.freeze(q), positions: Object.freeze(positions.map(p => Object.freeze(p))) as HistoricalFeatureBlocks["positions"] });
+  const queueCursor = beginQueue34(meter);
+  for (let i = 0; i < QUEUE_NAMES.length; i++) putQueue34(meter, queueCursor, i, q[QUEUE_NAMES[i]!]);
+  const ownedPositions = positions.map(p => {
+    const cursor = beginPosition84(meter);
+    for (let i = 0; i < POSITION_NAMES.length; i++) putPosition84(meter, cursor, i, p[POSITION_NAMES[i]!]);
+    return finishPosition84(meter, cursor);
+  });
+  return { queue: finishQueue34(meter, queueCursor), positions: [ownedPositions[0]!, ownedPositions[1]!, ownedPositions[2]!, ownedPositions[3]!] };
 };
 
-export const encodeFeatureBlocksV3 = (history: History, candidate: Candidate, context: NumericalFeatureContext, meter: Meter): FeatureBlocksV3 => {
+export const encodeFeatureBlocksV3 = (history: History, state: EconomicBeliefState, candidate: Candidate, artifact: EconomicArtifact, meter: Meter): FeatureBlocksV3 => {
   charge(meter, 5, "$.work.feature.encoder.entry");
+  requireHistory(history); requireState(state); requireCandidate(candidate); requireArtifact(artifact);
   if (candidate.actions.length > 4) fail("$.actions", "CARDINALITY");
+  const readout = readoutEconomicInternal(history, state, artifact, meter);
+  const context: NumericalFeatureContext = { balance: decodeFloat64(readout.balance, meter), uncertainty: decodeFloat64(readout.uncertainty, meter), witnessed: state.witnessed, unlocated: state.unlocated };
   const projection = projectOwn(history, candidate, meter);
   const prefix = encodeHistorical370(history, candidate, projection, meter);
   const economic = economicFeatures(projection, candidate, context, meter);
   const promotion = promotionFeatures(projection, context, history.currentAuthorizedSnapshotV2.side, history.currentAuthorizedSnapshotV2.turn, meter);
   charge(meter, 12, "$.work.feature.encoder.blocksFreeze");
-  return Object.freeze({ version: "challenge-features-v3", ...prefix, economic, promotion });
+  return makeFeatureBlocks(meter, prefix.queue, ...prefix.positions, economic, promotion);
 };

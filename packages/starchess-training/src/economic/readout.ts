@@ -1,9 +1,44 @@
+// SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
 import type { EconomicArtifact, EconomicBeliefState, EconomicReadout, History, Meter } from "./contracts";
 import { JOINT_SIZE } from "./contracts";
 import { charge, fail } from "./work";
 import { decodeFloat64, encodeFloat64 } from "./float64";
 import { expandComponents } from "./evaluator";
 import { replacement } from "./innovation";
+import { batchForBoundaryRef, makeEconomicReadout, makeQuantilesD, makeQuantilesPotential } from "./ownedKernel";
+import { requireArtifact, requireBatch, requireHistory, requireReadout, requireSnapshotV2, requireState } from "./ownedGuards";
+const historyStateMatches = new WeakMap<EconomicBeliefState, WeakSet<History>>();
+
+export const requireHistoryState = (history: History, state: EconomicBeliefState, meter: Meter): void => {
+  charge(meter, 64, "$.historyState.entry");
+  requireHistory(history); requireState(state);
+  if (historyStateMatches.get(state)?.has(history)) return;
+  const actual = requireSnapshotV2(history.currentAuthorizedSnapshotV2), expected = requireBatch(batchForBoundaryRef(state.boundaryRef)).snapshot;
+  charge(meter, 128 + 64 * (actual.cells.length + actual.memory.length + actual.ownUnitLineage.length + actual.ownMineLineage.length + actual.economicState.receipts.length + actual.economicState.retiredOwnIds.length), "$.historyState.snapshot");
+  if (actual.side !== state.side || actual.turn !== state.turn || actual.own.minerals !== expected.own.minerals || actual.own.gas !== expected.own.gas ||
+      actual.own.gasIncome !== expected.own.gasIncome || actual.own.ccLives !== expected.own.ccLives) fail("$.historyState.snapshot", "CONSISTENCY");
+  const sameSquares = (a: readonly string[], b: readonly string[]): boolean => a.length === b.length && a.every((v, i) => v === b[i]);
+  const samePiece = (a: { type: string; color: string } | null, b: { type: string; color: string } | null): boolean =>
+    a === null || b === null ? a === b : a.type === b.type && a.color === b.color;
+  if (!sameSquares(actual.own.mines, expected.own.mines) || !sameSquares(actual.own.siegedTanks, expected.own.siegedTanks) ||
+      actual.own.pieces.length !== expected.own.pieces.length || actual.own.pieces.some((v, i) => v.square !== expected.own.pieces[i]!.square || !samePiece(v.piece, expected.own.pieces[i]!.piece)) ||
+      actual.cells.some((v, i) => { const e = expected.cells[i]!; return v.square !== e.square || v.visibility !== e.visibility || v.visibility !== "unknown" && (e.visibility === "unknown" || !samePiece(v.piece, e.piece)); }) ||
+      actual.memory.length !== expected.memory.length || actual.memory.some((v, i) => { const e = expected.memory[i]!; return v.square !== e.square || v.observedTurn !== e.observedTurn || !samePiece(v.piece, e.piece); }) ||
+      actual.ownUnitLineage.length !== expected.ownUnitLineage.length || actual.ownUnitLineage.some((v, i) => { const e = expected.ownUnitLineage[i]!; return v.id !== e.id || v.square !== e.square || v.type !== e.type || v.paidBasis !== e.paidBasis || v.replacementValue !== e.replacementValue; }) ||
+      actual.ownMineLineage.length !== expected.ownMineLineage.length || actual.ownMineLineage.some((v, i) => v.mineId !== expected.ownMineLineage[i]!.mineId || v.square !== expected.ownMineLineage[i]!.square)) fail("$.historyState.snapshot", "CONSISTENCY");
+  const a = actual.economicState, e = expected.economicState;
+  if (a.side !== e.side || a.ownPaidDebits !== e.ownPaidDebits || a.ownPaidSurviving !== e.ownPaidSurviving || a.ownPaidDestroyed !== e.ownPaidDestroyed ||
+      a.ownPaidWasted !== e.ownPaidWasted || a.ownReplacementDestroyed !== e.ownReplacementDestroyed || a.enemyLoss.confirmedUnitCount !== e.enemyLoss.confirmedUnitCount ||
+      a.enemyLoss.replacementLowerBound !== e.enemyLoss.replacementLowerBound || !sameSquares(a.retiredOwnIds, e.retiredOwnIds) || a.receipts.length !== e.receipts.length ||
+      a.receipts.some((v, i) => { const r = e.receipts[i]!; return v.receiptId !== r.receiptId || v.unit !== r.unit || v.requestedSquare !== r.requestedSquare || v.minerals !== r.minerals ||
+        v.actionRef.planningOrdinal !== r.actionRef.planningOrdinal || v.actionRef.acceptedActionOrdinal !== r.actionRef.acceptedActionOrdinal || v.disposition.kind !== r.disposition.kind ||
+        v.disposition.kind === "materialized" && (r.disposition.kind !== "materialized" || v.disposition.lineageId !== r.disposition.lineageId); })) fail("$.historyState.ledger", "CONSISTENCY");
+  let matches = historyStateMatches.get(state);
+  if (!matches) { matches = new WeakSet(); historyStateMatches.set(state, matches); }
+  matches.add(history);
+};
+
+const readouts = new WeakMap<EconomicBeliefState, WeakMap<EconomicArtifact, EconomicReadout>>();
 
 export type PublicCertainty = Readonly<{ material: number | null; potential: number | null }>;
 export const publicCertainty = (support: readonly boolean[], meter: Meter): PublicCertainty => {
@@ -103,6 +138,11 @@ export const summarizeJoint = (joint: Float64Array, support: readonly boolean[],
 };
 
 export const readoutEconomicInternal = (history: History, state: EconomicBeliefState, artifact: EconomicArtifact, meter: Meter): EconomicReadout => {
+  charge(meter, 32, "$.readout.entry");
+  requireHistory(history); requireState(state); requireArtifact(artifact);
+  requireHistoryState(history, state, meter);
+  const cached = readouts.get(state)?.get(artifact);
+  if (cached) return requireReadout(cached);
   charge(meter, 30 + 12 * history.currentAuthorizedSnapshotV2.cells.length + 20 * artifact.partition.length, "$.readout.bin");
   const snapshot = history.currentAuthorizedSnapshotV2;
   if (snapshot.side !== state.side || snapshot.turn !== state.turn) fail("$.readout.history", "CONSISTENCY");
@@ -123,8 +163,12 @@ export const readoutEconomicInternal = (history: History, state: EconomicBeliefS
   for (const item of snapshot.own.pieces) ownReplacement += replacement(item.piece.type);
   const summary = summarizeJoint(calibrated, state.publicSupport, ownReplacement, meter);
   charge(meter, 24, "$.readout.output");
-  return { version: "starchess-economic-readout-v1", boundaryRef: state.boundaryRef,
-    meanD: encodeFloat64(summary.meanD, meter), meanPotential: encodeFloat64(summary.meanPotential, meter),
-    quantilesD: summary.quantilesD, quantilesPotential: summary.quantilesPotential,
-    balance: encodeFloat64(summary.balance, meter), uncertainty: encodeFloat64(summary.uncertainty, meter) };
+  const result = makeEconomicReadout(meter, state, encodeFloat64(summary.meanD, meter), encodeFloat64(summary.meanPotential, meter),
+    makeQuantilesD(meter, ...summary.quantilesD), makeQuantilesPotential(meter, ...summary.quantilesPotential),
+    encodeFloat64(summary.balance, meter), encodeFloat64(summary.uncertainty, meter));
+  charge(meter, 32, "$.readout.cache");
+  let byArtifact = readouts.get(state);
+  if (!byArtifact) { byArtifact = new WeakMap(); readouts.set(state, byArtifact); }
+  byArtifact.set(artifact, result);
+  return result;
 };

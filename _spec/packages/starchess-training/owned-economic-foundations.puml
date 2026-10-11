@@ -1,0 +1,497 @@
+' purpose: Landed partial R4 owned foundations and their private authority dependencies; production admission remains closed.
+' covers: packages/starchess-training/src/economic/*.ts
+' covers: packages/starchess-training/src/coordinator/*.ts
+' covers: packages/starchess-training/src/coordinator/*.mjs
+' covers: packages/starchess-training/src/feature/*.ts
+' covers: packages/starchess-training/src/features.ts
+' covers: packages/starchess-training/src/__tests__/owned*.ts
+' covers: packages/starchess-training/src/__tests__/construction*.test.ts
+' covers: packages/starchess-training/src/__tests__/accountedConstruction.test.ts
+' covers: packages/starchess-training/src/__tests__/economic*.test.ts
+' covers: packages/starchess-training/src/__tests__/feature*.test.ts
+' covers: packages/starchess-training/src/__tests__/promotionFeatures.test.ts
+' covers: packages/starchess-training/src/__tests__/planning*.test.ts
+' covers: packages/starchess-training/src/__tests__/hostedAdmission.test.ts
+' covers: packages/starchess-training/src/__tests__/registeredBytes.test.ts
+' covers: packages/starchess-training/src/__tests__/source*.ts
+' covers: packages/starchess-training/src/__tests__/startupScope.test.ts
+' covers: packages/starchess-training/src/__tests__/episode*.test.ts
+' covers: packages/starchess-training/src/__tests__/r4AcceptedBodies.test.ts
+' covers: packages/starchess-training/src/__tests__/ownedPrototype.test.ts
+' covers: packages/starchess-training/src/__tests__/planningCleanup.test.ts
+' covers: packages/starchess-training/package.json
+' covers: packages/starchess-arena/src/challenge/sourceInventory.ts
+' covers: packages/starchess-arena/hermetic/public-closure.mjs
+' related: _spec/_plans/ml-adjutant-r4-implementation.md
+' authority: _spec/_plans/ml-adjutant-r4-owned-ingress-addendum.md; frozen base/A1-A7 and accepted R3 law retain their scopes.
+' accepted: _spec/_plans/ml-adjutant-r4-episode-request-completion.md; _spec/_plans/ml-adjutant-r4-accounting-bootstrap-clarification.md. Exact acceptance/persistence/build grants unchanged.
+' contract: _spec/_plans/ml-adjutant-r3-contracts.md:250; at most one pending raw frame and one staged batch, unchanged. Bounded coalesced transport remainder publishes no second pending handle.
+' status: PARTIAL FULL-SOURCE IN PROGRESS; numerical/accounting unit PASS is not whole R4 closure, production source authority or training readiness. Weights NONE.
+' verification: Lead fresh unfiltered training995 PASS /47 files /zero skips, full training typecheck, MJS syntax and diff checks PASS; r4-training-readonly-final.log.901/973/994 remain separate earlier checkpoints; no new per-file test count inferred. Keeper executes no commands/tests/hashes/render.
+' arena: Full retry FAIL:5 failed/32 passed files;3 failed/2171 passed/239 skipped tests/2413 total plus3 import-failed suites. Initial180s timeout remains history;600s retry concluded FAIL.
+' closure: Lead existing FIVE-root public closure PASS after review fixes; r4-public-closure-after-reviews.json. Package still exports candidates only, artifacts.ts absent. No seven-root R4/public graph, B1 auditor enforcement or complete source authority proof.
+' source reviews: Latest supplied focused read-only adversarial ses_ed721eeceffeD10xqB0V9wZH3y: last bounded HIGH resolved/no new scoped findings; bounded READY yes and READY TO MERGE yes FOR BOUNDED SOURCE ONLY; full R4 READY no. Latest security ses_ed7219801ffeQz6DBTwUsrrH5L bounded READY yes/static/no remaining inspected HIGH; full R4 NOT READY. No full-R4 approval or waiver.
+' rereview history: Earlier bounded NO/HIGH actionRef, mutable realm predicate and saved-promise writable read flags, plus MEDIUM alias/self-return/data fields remain chronology. Four-finding resolution and latest read-flags resolution each retain their explicit bounded scope;995 alone supplied no resolving verdict.
+' read-flags chronology: One actual targeted RED in r4-loader-read-flags-red.log; other58 cases excluded diagnostically, not acceptance skips. Shared sync/async readOptions rejects before target call and latches. Latest explicit focused static adversarial verdict closes that bounded HIGH; RED/negative history remains intact.
+' first-pass findings: HIGH inherited action promotion/to, inherited recordKeys lookup, repeated planning-string concat, loader host constructors, module body outside VM timeout, aggregate IPC buffering and valid-frame EOF discard; MEDIUM planningScope cleanup masking. Security aggregate-IPC HIGH overlaps, not an extra independent defect.
+' repair chronology: ownedPrototype4 RED then GREEN; planningCleanup1 RED then GREEN; loader agent tool error after21 persisted REDs; IPC15 RED then focused48 PASS and intermediate full FAIL:930 passing +21 loader RED; two descriptor TS failures then strict correction. Loader3-failure/1-failure,901/973/994 retain their original scopes;995 is a separate full run.
+' history: Prior217/eight-file/scoped strict and both construction/accounting READY rereviews certify their earlier revisions only. Prior312/eight import failures and65/42 TS2307 typecheck failures remain chronology.
+' chronology: original HIGH/red failure, dense-literal146 PASS and failed147-case attempt146 PASS/one typecheck-backed failure remain historical; lifted fresh slots constant fixed strict without casts/checker relaxation.
+' review history: accounting descriptor/reentry HIGHs, cleanup/error-name MEDIUMs and actual red regressions remain recorded; explicit rereviews resolve current source findings without a HIGH waiver.
+' Ref correction: frozen contracts section15 retains byteLength0..MAX_SAFE_INTEGER; physical Ref production107 bytes corrects the erroneous98-byte checkpoint, not the frozen design.
+' construction correction: captured Array.from.bind(Array) as private repeat + fresh null-prototype count + internal empty mapper creates dense own slots; long empty-string literals are historical.
+' accounting: Earlier unbound six-operation diagnostic catalog remains separate from kernel planning ledger. Full operation/control/bootstrap/error/cleanup invoices remain UNDER REVIEW; one cap1048576 unchanged.
+' finite encoding: Closed kernel encoder derives hex from a finite number, publishes fixed wire length and stores private numeric metadata; helper2168 includes metadata setter48, replacing3288/historical intermediate3336. Prices unchanged; removed executed lowerHex path, not its payment while still executed.
+' decoding: hNumber prepays unseen owned decode1880 + block control128 before effects; subsequent reuse binds the same immutable identity, not caller cache claims.
+' support: Dense private7501 Boolean draft binds its origin transaction; read32/write64 each + block control128; init1024+8*7501 and seal1024+40*7501 + control128 prepay all lanes and summary/freeze publication. No truncation or extra full-array copy.
+' summary: Private support count/material-potential extrema/canBirth metadata supports state/readout/birth assertions; three typed64 masks replace nested state spatial includes; ordinary cursors expire at origin entry.
+' corrections: complete null-prototype own data descriptors; captured descriptor value/writability checks on known issued storage; native own error-name fields; closed dispatch and original-error-preserving bounded cleanup.
+' admission: Unbound construction storage confers no planning permission. Kernel ledger ownership likewise does not supply permit/session/model authority; planningScope requires accepted channel permit, bound models and current source seal before issuance.
+' dependency invariant: pure model runtime and TYPE-ONLY edges cannot import coordinator files; numeric accountingPrimitives imports no coordinator or caller graph.
+' B1 graph gate: sourcePolicy names constructor/importer/owner-type restrictions;13 local negative routes pass, but actual sourceInventory/public-closure auditors remain unamended and do not enforce that complete rule.
+' loading: Actual source/runtime/installed/store/tool snapshots, read-only memory FS, captured TypeScript5.9.3 and both complete actual auditor modules form implemented mechanics; auditor loading tests do not produce successful production reports.
+' loader hardening: Receiving-realm facades capture realm admission/error/function predicates, creation/descriptor/freeze/prototype and typed-copy intrinsics before loaded code. Realm ArrayBuffer aliases and original self returns preserved; function-only metadata filtering retains record name/length/path/directory fields. Timed module invocation and constructor/callback regressions remain bounded mechanics, not arbitrary-JavaScript sandbox, total RSS or all-async/startup timing proof.
+' live filesystem: Saved sync, promise and realpath.native functions recheck current() and select current memory.fs at invocation, retaining no initial native function pointer. Shared readOptions accepts primitive encoding or nonproxy own-DATA encoding/flag fields, requires any flag='r', and freezes a null-prototype options copy with own flag='r' before target dispatch.
+' owned hardening: Null-prototype actions and captured own-field key selection reject inherited hooks, including event actionRef presence before access. Planning tokens use dense characters/join; canonical kernel bytes emit directly or stream-compare; candidate keys use dense characters/join prepaid64 per wire byte. Invoice adequacy remains UNDER REVIEW.
+' cleanup: Both nested planningScope finally paths preserve the originating error through bounded failed cleanup. Its isolated callback regression uses actual accounting only; it issues no hosted scope, source authority or genuine permit.
+' IPC: C=maxCompletionBytes, I=maxIpcMessages; channel-owned retained buffers <=2*C+I, assembly overlap <=3*C+I,64KiB partial slabs. One waiter/one queued-or-delivered undecoded handle; input pauses until successful decode. Existing coalesced remainder is bounded transport storage, not another published raw-frame record.
+' IPC receipts/EOF: Preflight reserves all arrived delimiters in combined count and stamps original arrival before first publication. Successful decode releases raw bytes but retains receipt/decoded identity; EOF drains complete frames before partial-tail CANONICAL or empty CLOSED. First failure/close clears active raw/remainder/slab storage; schema/caps/HostLimits/deadlines unchanged.
+' production gate: bootstrapSourceAuthority always rejects independent runtime image/config binding; cold launcher also rejects missing fixed same-graph production dispatch. fflate Node createRequire/Worker-eval path stays unsupported without browser alias or authority fake.
+' budget: First isolated settled reduction GREEN under unchanged cap with complete7501 support; initial/open/settled on one ledger still WORK_CAP. Complete readout/512-candidate feature/flatten schedule remains infeasible under current invoices, not waived.
+' full-R4 BLOCKERs: sourceBootstrap public-root mismatch/unconditional runtime-binding rejection; economicAdapter candidate-batch precharge alone1069888 at14 candidates exceeds1048576 before other work/control; missing features/artifacts exports. None closed by bounded regression PASS.
+' exclusion: No collection/fitting/calibration/transfer/training/publication/deployment/registry activation/global R5 operation or grant. No positive bound-model/genuine-permit/full A2 pipeline verification.
+' preservation history: Prior18-file accumulator/pointer proof, protected-body/120-file checks and rendering stay revision-scoped in ledger; they do not bind new source. Exact request/B1 body comparisons and2 persisted tests PASS reported by lead.
+' latest preservation: Lead reports five complete D1/R3-contracts/base/corrective/recovery files byte-identical to a32204314ca9feebb1956cf6d22a140a15e18ab9;119 tracked archive/evidence/arena-corpus files matched within supplied bounded paths.119 is not a fabricated120 aggregate. Arena source-audit expected[index] failure has no compatible-baseline attribution.
+' latest metadata checks: Lead request8959/B115189 exact accepted-body identities PASS with unchanged full supplied SHA; D1/PLAN original suffixes PASS;87 source/top-pointer paths inspected;23 covers/index valid JSON. PlantUML checkonly/SVG PASS after prior metadata revision at approved r4-owned-foundations-render/owned-economic-foundations.svg; this new metadata needs another lead check.
+' rendering: Lead rechecks checkonly/SVG and whitespace after this verdict-only metadata edit. Keeper executes no command/renderer/body/hash/index operation or nested agent;23 covers/index unchanged, fingerprint null; notes unchanged.119-file preservation keeps its bounded scope.
+' FK new reasoning notes: Ledger12.0; Support10.5; Summary11.5; Scalars top11.5; Budget11.9; MemoryFS10.2; Policy10.2; Bootstrap12.3; Startup10.7; Permits10.2; Public11.1. Two sentences each; manual syllable counts and formula in ledger.
+' FK review-fix notes: Kernel top12.6; Emission12.2; Scope right10.8; Loader top11.5/right12.3; Channel12.3; RawStorage10.2. Structural buffer-bound label exempt; earlier notes retained verbatim.
+' FK readonly notes: Loader left10.4/bottom11.9. Two sentences/five lines each; earlier notes unchanged.
+@startuml owned-economic-foundations
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title StarChess R4 - Partial landed foundations / production authority closed
+left to right direction
+skinparam packageStyle rectangle
+
+package "packages/starchess-training/src/economic\nowned construction and prepaid accounting" {
+  component "ownedGuards.ts\nrequired-role facade" as Guards <<app>>
+  component "ownedScalars.ts\nfinite binary64 / signed zero\nowned Ref equality" as Scalars <<app>>
+  component "ownedBytes.ts\nfixed-snapshot facade" as Bytes <<app>>
+  component "ownedSchema.ts\nsix direct ASCII codecs\nfloat64 / ref / opening" as Schema <<app>>
+  component "ownedKernel.ts\nfixed constructors / captured guards\nbounded synchronous byte snapshot" as Kernel <<app>>
+  component "accountingPrimitives.ts\nreservePrimitive\nprimitive-number cap arithmetic only" as Primitive <<app>>
+  database "ownedKernel.ts\nmodule-local WeakMap roles\nprivate snapshot storage" as Storage <<db>>
+  component "ownedErrors.ts\nOwnedIngressError / native own name" as Errors <<error>>
+  component "accountingPrimitives.ts\nConstructionAccountingError / native own name" as AccountingError <<error>>
+  component "ownedKernel.ts\ncreatePlanningLedger / entry tickets\nclosed blocks / permanent failure latch" as Ledger <<app>>
+  component "ownedKernel.ts\ntransaction-local EvaluationSupportDraft\nprivate dense Boolean array7501" as Support <<app>>
+  database "ownedKernel.ts\nimmutable support summary\ncount / extrema / canBirth" as Summary <<db>>
+  component "invoices.ts / work.ts / float64.ts\nclosed planning quotes\nreserve before proportional effects" as Fees <<app>>
+  component "ownedR4Schema.ts\nfixed R4 ASCII productions\nstartup and planning contexts" as R4Schema <<app>>
+  component "ownedKernel.ts\nfixed byte writer / streamed comparison\ndense candidate-key characters / one join" as Emission <<app>>
+}
+
+package "packages/starchess-training/src/coordinator\nunbound construction diagnostics" <<host>> {
+  component "constructionAccounting.ts\ncreateConstructionAccount / enterOnce\nknown-descriptor usage / gates / tickets" as Account <<host>>
+  component "constructionInvoices.ts\nFIRST six-operation closed catalog\nproposed disjoint quote terms" as Invoices <<host>>
+  component "accountedConstruction.ts\nprepaid closed switch / finish\ncleanup retains debit + original error" as Accounted <<host>>
+  database "constructionAccounting.ts\nprivate account / ticket WeakMaps\nunbound two-field storage" as Controls <<db>>
+}
+
+package "packages/starchess-training/src/coordinator\nsource authority mechanics / FAIL CLOSED" <<host>> {
+  component "sourceManifest.ts\nactual source snapshot" as Source <<host>>
+  component "sourceRuntimeSnapshot.ts\ninstalled / frozen store / tool trees" as Runtime <<host>>
+  component "sourceMemoryFs.ts\nread-only captured filesystem" as MemoryFS <<host>>
+  component "sourceModuleLoader.mjs\ncaptured compiler / canonical module cache\ncaptured realm intrinsics / timed module body\nlive read-only FS dispatch / cold launcher" as Loader <<host>>
+  component "sourcePolicy.ts\nexpected code/graph restrictions" as Policy <<host>>
+  component "sourceBootstrap.ts\nrealm-local seal checks\nproduction issuance CLOSED" as Bootstrap <<error>>
+  component "registeredBytes.ts\nrole / physical extent / hash joins" as Registered <<host>>
+}
+
+package "packages/starchess-training/src/coordinator\nprivate hosted dependencies / positive path blocked" <<host>> {
+  component "startupScope.ts\nindependent expected artifact joins\nbound models require source seal" as Startup <<host>>
+  component "planningScope.ts\npermit / source / model identity gates\nprivate LedgerOwner retained here" as Scope <<host>>
+  component "economicAdapter.ts\nfixed known DTO reconstruction\nowned candidates / candidate pipeline" as Adapter <<host>>
+  component "episodeVerification.ts\nprivate native replicas / permit tables" as Permits <<host>>
+  component "episodeContracts.ts / episodeRequest.ts\nepisodeRng.ts / episodeProtocol.ts\naccepted request / streams / seven IPC kinds" as Protocol <<host>>
+  component "episodeProtocol.ts\ncoalesced preflight / pause / decode gate\nEOF drain / byte release" as Channel <<host>>
+  database "episodeProtocol.ts\none active raw handle / one waiter\nbounded transport remainder /64KiB slabs" as RawStorage <<db>>
+  component "episodeSupervisor.ts / episodeWorker.ts\nparent recomputation / child channel\ndeadline and termination controls" as Supervision <<host>>
+}
+
+package "packages/starchess-training/src\ninternal numerical and feature dependencies" {
+  component "features.ts\nfive armed A2 entries" as Entries <<app>>
+  component "economic/belief.ts / economic/evaluator.ts\neconomic/innovation.ts / economic/spatial.ts\neconomic/readout.ts\npositive reduction / spatial / readout" as Numerical <<app>>
+  component "feature/encoder.ts / feature/manifest.ts\nfeature/projection.ts / feature/relations.ts\nfeature/economic.ts / feature/promotion.ts\n370 + 12 + 36 / fresh418 flatten" as Feature <<app>>
+  component "__tests__/economicBudget.test.ts\nisolated settled PASS\nshared-cap WORK_CAP retained" as Budget <<host>>
+}
+
+component "packages/starchess-training/package.json\nexports: candidates only" as Public <<host>>
+component "packages/starchess-arena/src/challenge/sourceInventory.ts\npackages/starchess-arena/hermetic/public-closure.mjs\nactual existing auditors / B1 enforcement missing" as Auditors <<host>>
+
+component "packages/starchess-training/src/__tests__\nownedScalars / ownedConstructionBounds\nownedSchemaBytes / ownedFoundationBoundary" as Tests <<host>>
+component "packages/starchess-training/src/__tests__\nconstructionAccountingPrimitives.test.ts\nconstructionAccounting.test.ts\nconstructionInvoices.test.ts\naccountedConstruction.test.ts" as AccountingTests <<host>>
+component "packages/starchess-training/src/__tests__\nownedPrototype.test.ts / planningCleanup.test.ts\nsourceModuleLoader.test.ts / episodeProtocol.test.ts\nepisodeSupervision.test.ts\n995 training PASS / bounded source reviews READY" as ReviewTests <<host>>
+
+Guards ARROW_MAIN Kernel : exact identity / required role
+Scalars ARROW_MAIN Kernel : construct / require Float64Hex or Ref
+Bytes ARROW_MAIN Kernel : bounded snapshot / indexed private reads
+Schema ARROW_MAIN Bytes : production identity / length / byte reads
+Schema ARROW_MAIN Kernel : require or construct fixed records
+Kernel ARROW_MAIN Storage : freeze + register roles / retain copied bytes
+Storage ARROW_OPTIONAL Kernel : captured identity lookup / private storage
+Kernel ARROW_ERROR Errors : wrong role / primitive / carrier / bound
+Scalars ARROW_ERROR Errors : nonfinite or nonprimitive number
+Schema ARROW_ERROR Errors : noncanonical production / domain failure
+Tests ARROW_OPTIONAL Kernel : no-trap identity / allocation / extent / isolation
+Tests ARROW_OPTIONAL Scalars : finite extremes / signed-zero bytes
+Tests ARROW_OPTIONAL Schema : canonical bytes / private surface boundaries
+Accounted ARROW_MAIN Account : local account identity / closed reserve / ticket phase
+Account ARROW_MAIN Invoices : quote one of six fixed block IDs
+Account ARROW_MAIN Primitive : reserve private usage before execution
+Account ARROW_MAIN Controls : complete own data descriptors / usage / tickets
+Controls ARROW_OPTIONAL Account : captured local identity lookup
+Accounted ARROW_MAIN Kernel : Float64Hex / Ref / canonical opening construction
+Accounted ARROW_MAIN Scalars : finite encode / decode / owned Ref equality
+Accounted ARROW_ERROR Account : bounded cleanup / no refund / preserve origin
+Account ARROW_ERROR AccountingError : identity / cap / lifecycle / ticket / tamper
+Invoices ARROW_ERROR AccountingError : unknown or nonprimitive block
+Primitive ARROW_ERROR AccountingError : invalid number / cap exhaustion
+AccountingTests ARROW_OPTIONAL Primitive : numeric domains / no coercion
+AccountingTests ARROW_OPTIONAL Account : storage descriptors / tickets / exhaustion
+AccountingTests ARROW_OPTIONAL Invoices : inspect proposed quote derivations
+AccountingTests ARROW_OPTIONAL Accounted : effect observers / ordering / no unsafe helper on failure
+Scope ARROW_MAIN Ledger : create only after source/model/permit checks
+Ledger ARROW_MAIN Fees : closed entry / block prepayment
+Ledger ARROW_MAIN Kernel : exact meter role / private accounting tables
+Support ARROW_MAIN Ledger : originating live transaction / prepaid access
+Support ARROW_MAIN Summary : paid full scan / seal same immutable array
+Kernel ARROW_OPTIONAL Summary : state/readout/birth assertions
+R4Schema ARROW_MAIN Kernel : schema-directed owned reconstruction
+Kernel ARROW_MAIN Emission : prepaid fixed construction / canonical bytes
+Entries ARROW_MAIN Ledger : enter / finish / abort armed A2 operation
+Entries ARROW_MAIN Numerical : initialize / advance / readout
+Entries ARROW_MAIN Feature : encode / flatten
+Numerical ARROW_MAIN Support : evaluate draft / seal full support
+Numerical ARROW_MAIN Fees : numeric and structural work
+Feature ARROW_MAIN Fees : paid feature visits / stores418
+Budget ARROW_OPTIONAL Entries : real cumulative-cap regression
+Source ARROW_MAIN MemoryFS : captured source bytes / members
+Runtime ARROW_MAIN MemoryFS : captured installed/store/tool bytes
+Loader ARROW_MAIN MemoryFS : fixed reads / module resolution
+Loader ARROW_MAIN Auditors : load actual auditor code in captured graph
+Bootstrap ARROW_MAIN Loader : recompute reports / recheck loaded graph
+Bootstrap ARROW_MAIN Policy : expected source/code/graph joins
+Bootstrap ARROW_MAIN Registered : registered provenance/runtime bytes
+Startup ARROW_MAIN Registered : independently expected role/extent/hash
+Startup ARROW_MAIN R4Schema : fixed artifact reconstruction
+Startup ARROW_MAIN Bootstrap : current valid seal REQUIRED; unavailable
+Scope ARROW_MAIN Startup : current bound model/request identities
+Scope ARROW_MAIN Bootstrap : current source seal REQUIRED; unavailable
+Scope ARROW_MAIN Permits : authentic channel permit / claim once
+Scope ARROW_MAIN Adapter : paid R3 input / generated candidate reconstruction
+Adapter ARROW_MAIN Entries : fixed A2 dispatch / candidate pipeline
+Adapter ARROW_MAIN Kernel : owned history/boundary/candidate identities
+Permits ARROW_MAIN Protocol : real decoded/written channel receipts
+Protocol ARROW_MAIN Channel : canonical message transport
+Channel ARROW_MAIN RawStorage : one active handle / bounded captured remainder
+RawStorage ARROW_OPTIONAL Channel : next publication only after successful decode
+Permits ARROW_MAIN Scope : independent candidate recomputation
+Supervision ARROW_MAIN Permits : native replicas / acceptance / deadlines
+Supervision ARROW_MAIN Protocol : parent/child channel / bounded frames
+Public ARROW_OPTIONAL Auditors : existing five-root closure only
+ReviewTests ARROW_OPTIONAL Kernel : own optional fields / own key-table entries
+ReviewTests ARROW_OPTIONAL Scope : isolated real accounting callback / origin error
+ReviewTests ARROW_OPTIONAL Loader : constructor/callback/timed-body mechanics
+ReviewTests ARROW_OPTIONAL Channel : aggregate buffers / original receipts / EOF
+
+legend bottom
+  Dependency edges describe landed modules.
+  They do not assert successful production admission.
+  PARTIAL FULL-SOURCE: R4 incomplete; weights NONE.
+endlegend
+
+note bottom of Kernel
+  Captured lookup rejects unowned records
+  before any reflective access can invoke
+  caller code. Local receipts confirm a fixed
+  construction role, not permission to plan
+  or authority over a session.
+end note
+
+note bottom of Storage
+  Intrinsic view checks establish physical
+  extent before a bounded private copy.
+  Caller aliases cannot mutate retained bytes,
+  and the snapshot reveals no backing buffer.
+end note
+
+note bottom of Schema
+  Direct ASCII productions accept only exact
+  canonical fields, ordering and primitive
+  domains. Fresh encoded bytes expose neither
+  the private snapshot nor its construction
+  receipt.
+end note
+
+note top of Bytes
+  Float64Hex: 26 bytes; Ref: at most 107.
+  Ref length: 0..MAX_SAFE_INTEGER.
+  Opening: exact canonical literal only.
+end note
+
+note bottom of Scalars
+  Captured array construction creates dense
+  own slots without inherited index callbacks.
+  A fresh count record with a null prototype
+  blocks an inherited iterator, keeping a fixed
+  construction extent without caller callbacks.
+end note
+
+note bottom of Primitive
+  Primitive reservation accepts only finite
+  safe numbers within the fixed construction
+  cap. It inspects no caller graph and confers
+  neither account identity nor a planning
+  permission.
+end note
+
+note bottom of Account
+  Local accounting binds tickets to one private
+  account and retains every reserved allowance.
+  Its two fields grant no planning permission,
+  model receipt or session authority, so a
+  copied record cannot authorize model work.
+end note
+
+note bottom of Invoices
+  Catalog quotes include primitive calls,
+  record stores and structural receipt creation.
+  Those allowances need independent review
+  and measured bounds, not just tests that
+  repeat the same arithmetic.
+end note
+
+note bottom of Accounted
+  Model closure excludes coordinator code even
+  when an import carries types rather than
+  runtime values. A matching storage shape
+  cannot confer a planning permit or attach
+  model and session authority.
+end note
+
+note right of Controls
+  Complete descriptors use a null prototype
+  and declare every data value and flag.
+  They block inherited hooks that could change
+  the fixed cap or install an accessor while
+  the private account is being constructed.
+end note
+
+note right of Account
+  Captured checks inspect only the known
+  meter data descriptor, not a caller graph.
+  Observed value or writability changes fail
+  before debit or final closure, preserving
+  private usage and the permanent failure latch.
+end note
+
+note right of AccountingError
+  Native class fields define error names as
+  own data instead of calling inherited setters.
+  Rejection construction therefore cannot
+  invoke a prototype name hook that changes
+  accounting control flow.
+end note
+
+note right of Accounted
+  A closed switch invokes the prepaid block
+  without allocating an operation closure.
+  Bounded cleanup preserves the original error
+  even when expired tickets reject, so failure
+  latches cannot reopen the private account.
+end note
+
+note top of Invoices
+  Closed primitive block IDs: length <=17.
+  Six blocks only; no caller-unit debit.
+end note
+
+note top of Controls
+  Initial: 2048 + 512 + 512 = 3072.
+  Enter once: permanently reserve next512.
+  Operation: quote + envelope1024 + gate512.
+  Control terms: measurement/review pending.
+end note
+
+note bottom of Tests
+  The tests observe allocation extents and
+  receipt isolation at construction boundaries.
+  They do not establish a planning invoice or
+  prove that all decision work fits the
+  transaction cap.
+end note
+
+note bottom of Ledger
+  Kernel accounting prepays entries and closed
+  blocks before their effects execute. Private
+  owners retain a single cumulative cap;
+  meter identity does not authorize a model
+  or session.
+end note
+
+note bottom of Support
+  An opaque draft binds dense Boolean support
+  to its originating transaction. Sealing
+  freezes the same array after a paid full scan,
+  so private metadata cannot conceal a copy.
+end note
+
+note bottom of Summary
+  Support identity retains the count, extrema
+  and birth predicate computed during sealing.
+  Constructors reuse that private summary
+  without a second full scan or weaker checks.
+end note
+
+note top of Scalars
+  The finite number encoder derives its own
+  hex bytes, avoiding a redundant input scan.
+  Private number receipts follow fixed identity;
+  unseen values still prepay decoding.
+end note
+
+note bottom of Budget
+  An isolated settled reduction now fits the
+  unchanged cap with complete Boolean support.
+  Pending boundaries on one ledger still exhaust
+  that cap; numerical tests cannot certify the
+  complete planning schedule.
+end note
+
+note bottom of MemoryFS
+  Captured source and installed bytes feed the
+  actual compiler in a read only memory graph.
+  Both auditors load from captured byte snapshots,
+  which proves loading mechanics but not
+  complete production enforcement.
+end note
+
+note bottom of Policy
+  Models must not acquire the ledger constructor
+  or its owner through runtime or type imports.
+  Thirteen local rejection cases do not replace
+  the unchanged auditors' missing enforcement.
+end note
+
+note bottom of Bootstrap
+  Source bootstrap rejects runtime image bindings
+  before it can issue a production seal.
+  The launcher lacks fixed same graph dispatch,
+  so captured mechanics cannot establish
+  independent authority for genuine planning.
+end note
+
+note bottom of Startup
+  Startup joins registered artifact bytes to
+  references chosen by the trusted host.
+  Agreement among supplied records cannot grant
+  authority; a valid source seal still gates
+  bound models and planning permits.
+end note
+
+note bottom of Permits
+  Native replicas and real channel receipts
+  bind each permit in private coordinator tables.
+  Without a valid source seal, that protocol
+  cannot prove genuine end to end planning.
+end note
+
+note bottom of Public
+  The package still exports candidates only;
+  features exist as an internal source module.
+  Existing five root closure omits the R4 graph,
+  so it cannot certify the required amended
+  public closure.
+end note
+
+note top of Kernel
+  Actions have a null prototype so missing
+  fields cannot invoke inherited hooks.
+  Captured own checks select record keys,
+  so inherited table entries cannot redirect
+  canonical construction.
+end note
+
+note bottom of Emission
+  Planning tokens use dense character arrays
+  and a single join after bounded decoding.
+  Canonical output writes directly into fixed
+  bytes or compares them in place, avoiding
+  repeated data dependent string copies.
+end note
+
+note right of Scope
+  Failed ingress retains its original error
+  while bounded cleanup attempts close tickets.
+  The callback test uses real accounting,
+  not an admitted hosted scope, genuine permit
+  or production source seal.
+end note
+
+note top of Loader
+  The loader wraps host values and callback
+  arguments in the realm that receives them.
+  Direct and indirect constructor regressions
+  exercise that boundary, not a general
+  JavaScript sandbox or production seal.
+end note
+
+note right of Loader
+  The loader times actual module invocation,
+  not just creation of its wrapper.
+  An infinite body regression tests that boundary,
+  without proving production startup or planning
+  deadlines across the complete graph.
+end note
+
+note bottom of Channel
+  One undecoded handle gates the next frame;
+  retained transport bytes publish no second
+  pending frame. Successful decoding releases
+  raw storage before exposing a successor,
+  so coalesced receipt times never renew.
+end note
+
+note bottom of RawStorage
+  Preflight counts every arrived delimiter
+  before publishing the first frame to a reader.
+  End of stream drains complete frames before
+  a partial tail fails, while receipt time and
+  decoded identity remain unchanged.
+end note
+
+note top of RawStorage
+  C: completion byte cap; I: message cap.
+  Retained channel buffers <= 2*C + I.
+  Assembly overlap <= 3*C + I.
+  Partial-frame slabs: 64 KiB each.
+  One waiter; one undecoded handle.
+end note
+
+note left of Loader
+  Saved filesystem readers recheck the live
+  loading gate before selecting the current
+  snapshot. Both read paths reject writable
+  flags before target dispatch, so cached
+  functions cannot restore native access.
+end note
+
+note bottom of Loader
+  Realm checks capture their intrinsics before
+  loaded code can change admission decisions.
+  Buffer aliases and self returns keep identity;
+  function metadata filters preserve plain
+  record fields rather than dropping them.
+end note
+@enduml

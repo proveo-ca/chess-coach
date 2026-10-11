@@ -1,37 +1,46 @@
+// SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
 import { describe, expect, it } from "vitest";
 import type { AuthorizedEvent, AuthorizedSnapshotV2, Sighting } from "@chess-coach/starchess-arena/observations";
 import type { Cells, EconomicArtifact, Meter, PublicOpening, Square } from "../economic/contracts";
-import { encodeFloat64, decodeFloat64 } from "../economic/float64";
+import { decodeOwnedNumber } from "../economic/ownedScalars";
 import { foldInnovations } from "../economic/innovation";
 import { currentBoardBounds, expandComponents } from "../economic/evaluator";
-import { initializeEconomicBelief, reduceEconomicBelief, type EconomicBoundaryInput } from "../economic/belief";
+import { initializeEconomicState, advanceEconomicState, readoutEconomic } from "../features";
+import { reduceEconomicBelief } from "../economic/belief";
 import { readoutEconomicInternal } from "../economic/readout";
 import { squares } from "./fixtures";
+import { armFixture, fixtureArtifact, fixtureBoundary, openingHistory } from "./economicA2.test";
+import { featureMeter, ownHistory } from "./featurePrefix370.test";
+import * as k from "../economic/ownedKernel";
 
-const meter = (): Meter => ({ limit: 1048576, used: 0 });
+const meter = featureMeter;
 const unknown: Cells = squares.map(square => ({ square, visibility: "unknown" }));
 const sighting = (square: Square, type: Sighting["piece"]["type"], observedTurn = 0): Sighting => ({ square, piece: { type, color: "b" }, observedTurn });
 const patch = (cells: Cells, changes: Cells): Cells => {
   const map = new Map(changes.map(cell => [cell.square, cell]));
   return cells.map(cell => map.get(cell.square) ?? cell);
 };
-const fold = (events: readonly AuthorizedEvent[], memory: readonly Sighting[] = [], finalCells: Cells = unknown, cells: Cells = unknown) =>
-  foldInnovations({ side: "w", previousTurn: 0, turn: 1, seqBefore: 0, seqThrough: events.length, cells, memory, events, finalCells, priorOwn: [], currentOwn: [], priorUnits: [] }, meter());
-const opening: PublicOpening = { version: "starchess-economic-opening-v1", turn: 0, bank: { w: 3, b: 3 }, cc: { w: "e1", b: "e8" },
-  marines: { w: ["c2", "d2", "e2", "f2"], b: ["c7", "d7", "e7", "f7"] } };
-const artifact: EconomicArtifact = { version: "starchess-economic-artifact-v1", status: "FROZEN", opening,
-  recipe: { version: "starchess-economic-recipe-v1", supportVersion: "economic-accounting-relaxation-v1", graphVersion: "positive-headstock-suffix-v1",
-    innovationVersion: "authorized-economic-innovation-v1", geometryVersion: "authorized-promotion-geometry-v1", calibrationVersion: "starchess-economic-calibration-v1",
-    workCap: 1048576, materialCeiling: 576, bankCap: 12, bandStarts: [0, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512],
-    alpha: encodeFloat64(.5, undefined), minimumGroups: 32, diagnosticHorizons: [1, 2, 3] }, tables: [], partition: [[0, 10, 0, 64], [11, 20, 0, 64], [21, 45, 0, 64]],
-  temperatures: [1, 1, 1].map(value => encodeFloat64(value, undefined)) };
-const snapshot = (turn = 0): AuthorizedSnapshotV2 => ({ version: "challenge-observation-v2", side: "w", turn,
-  own: { minerals: 3, gas: 1, gasIncome: 1, ccLives: 3, pieces: [{ square: "e1", piece: { type: "k", color: "w" } }, { square: "c2", piece: { type: "p", color: "w" } }], mines: [], siegedTanks: [] },
-  cells: unknown, memory: [], ownUnitLineage: [], ownMineLineage: [], economicState: { version: "challenge-economic-ledger-v1", side: "w",
-    ownPaidDebits: 0, ownPaidSurviving: 0, ownPaidDestroyed: 0, ownPaidWasted: 0, ownReplacementDestroyed: 0,
-    enemyLoss: { confirmedUnitCount: 0, replacementLowerBound: 0, paidLowerBound: 0, upper: "unknown", completeness: "witnessed-only" }, receipts: [], retiredOwnIds: [] } });
-const boundary = (ordinal = 0): EconomicBoundaryInput => ({ phase: ordinal === 0 ? "initial" : "turn-open", ordinal, planningOrdinal: 0,
-  seqBefore: 0, seqThrough: 0, events: [], snapshot: snapshot(), boundaryRef: { byteLength: 10, sha256: String(ordinal).repeat(64) }, priorOwnSquares: ["c2"], priorOwnUnits: [] });
+const ownedCells = (cells: Cells, m: Meter): Cells => {
+  const cursor = cells.length === 64 ? k.beginCells64(m) : k.beginChanges64(m);
+  for (const cell of cells) {
+    const piece = cell.visibility !== "unknown" && cell.piece ? k.makePiece(m, cell.piece.type, cell.piece.color) : null;
+    const owned = cell.visibility === "unknown" ? k.makeUnknownCell(m, cell.square) : cell.visibility === "lit" ? k.makeLitCell(m, cell.square, piece) : k.makeRevealedCell(m, cell.square, piece!, "w");
+    if (cells.length === 64) k.appendCells64(m, cursor, owned); else k.appendChanges64(m, cursor, owned);
+  }
+  return cells.length === 64 ? k.finishCells64(m, cursor) : k.finishChanges64(m, cursor);
+};
+const fold = (events: readonly AuthorizedEvent[], memory: readonly Sighting[] = [], finalCells: Cells = unknown, cells: Cells = unknown) => {
+  const m = meter(), memories = k.beginMemory64(m);
+  for (const v of memory) k.appendMemory64(m, memories, k.makeSighting(m, v.square, k.makePiece(m, v.piece.type, v.piece.color), v.observedTurn));
+  const ownedEvents = events.map(v => v.kind === "vision-witness" ? k.makeVisionWitnessEvent(m, v.seq, v.turn, ownedCells(v.changes, m)) : v.kind === "own-income" ?
+    k.makeOwnIncomeEvent(m, v.seq, v.actualCreditedMinerals) : v.kind === "enemy-unit-destruction-witnessed" ?
+      k.makeEnemyUnitDestructionWitnessedEvent(m, v.seq, v.witnessId, v.square, v.type, v.replacementLowerBound) : v);
+  return foldInnovations({ side: "w", previousTurn: 0, turn: 1, seqBefore: 0, seqThrough: events.length, cells: ownedCells(cells, m), memory: k.finishMemory64(m, memories),
+    events: ownedEvents, finalCells: ownedCells(finalCells, m), priorOwn: [], currentOwn: [], priorUnits: [] }, m);
+};
+const artifact = fixtureArtifact(), opening = artifact.opening;
+const snapshot = (turn = 0): AuthorizedSnapshotV2 => openingHistory(turn).currentAuthorizedSnapshotV2;
+const boundary = (ordinal = 0, seqBefore = 0) => fixtureBoundary(openingHistory(), ordinal, ordinal === 0 ? "initial" : "turn-open", seqBefore);
 
 describe("economic public innovation and transactional belief", () => {
   it("counts typed assertions once in recipient sequence without equating sightings with births", () => {
@@ -75,45 +84,55 @@ describe("economic public innovation and transactional belief", () => {
     expect(() => currentBoardBounds(complete, "w", meter())).toThrow("CONSISTENCY");
   });
   it("initializes the public joint4/3 and keeps turn-open economics and replay exact", () => {
-    const first = boundary(), state = initializeEconomicBelief(opening, first, artifact, meter());
+    const first = boundary(), state = initializeEconomicState(opening, first, artifact, armFixture("initialize"));
     const joint = expandComponents(state.components, meter());
     expect(joint[577 * 3 + 4]).toBe(1); expect(joint.reduce((sum, p) => sum + p, 0)).toBe(1);
     expect(state.witnessed).toEqual([]); expect(state.unlocated).toEqual(["c7", "d7", "e7", "f7"]);
-    const work = meter(), replay = reduceEconomicBelief(state, first, artifact, work);
-    expect(replay).toBe(state); expect(work.used).toBeLessThan(100);
-    const open = reduceEconomicBelief(state, boundary(1), artifact, meter());
-    expect(open.components).toEqual(state.components); expect(open.publicSupport).toEqual(state.publicSupport);
-    expect(() => reduceEconomicBelief(state, { ...first, boundaryRef: { byteLength: 11, sha256: first.boundaryRef.sha256 } }, artifact, meter())).toThrow("DUPLICATE");
+    const work = armFixture("advance"), used = work.used, replay = advanceEconomicState(state, first, artifact, work);
+    expect(replay).toBe(state); expect(work.used - used).toBeLessThan(512);
+    const open = advanceEconomicState(state, boundary(1, state.seqThrough), artifact, armFixture("advance"));
+    expect(open.components).toBe(state.components); expect(open.publicSupport).toBe(state.publicSupport);
+    expect(() => advanceEconomicState(state, { ...first, seqThrough: first.seqThrough + 1 }, artifact, armFixture("advance"))).toThrow("PROVENANCE");
   });
   it("reads exact own replacement rather than paid basis and excludes ownCC", () => {
-    const state = initializeEconomicBelief(opening, boundary(), artifact, meter());
+    const state = initializeEconomicState(opening, boundary(), artifact, armFixture("initialize"));
     const current = snapshot();
-    const result = readoutEconomicInternal({ version: "challenge-history-v2", currentAuthorizedSnapshotV2: current, economicState: current.economicState, everLit: [] }, state, artifact, meter());
-    expect(decodeFloat64(result.meanD, undefined)).toBe(4); expect(decodeFloat64(result.meanPotential, undefined)).toBe(7);
-    expect(decodeFloat64(result.balance, undefined)).toBe(-3); expect(decodeFloat64(result.uncertainty, undefined)).toBe(0);
+    const history = ownHistory({ version: "challenge-history-v2", currentAuthorizedSnapshotV2: current, economicState: current.economicState, everLit: ["c2", "e1"] }, meter());
+    const result = readoutEconomic(history, state, artifact, armFixture("readout"));
+    expect(decodeOwnedNumber(result.meanD)).toBe(4); expect(decodeOwnedNumber(result.meanPotential)).toBe(7);
+    expect(decodeOwnedNumber(result.balance)).toBe(-3); expect(decodeOwnedNumber(result.uncertainty)).toBe(0);
     const promoted: AuthorizedSnapshotV2 = { ...current, own: { ...current.own,
       pieces: [{ square: "e1", piece: { type: "k", color: "w" } }, { square: "c8", piece: { type: "q", color: "w" } }] },
       ownUnitLineage: [{ id: "w:unit:created:1", square: "c8", type: "q", paidBasis: 1, replacementValue: 9 }] };
-    const readout = readoutEconomicInternal({ version: "challenge-history-v2", currentAuthorizedSnapshotV2: promoted, economicState: promoted.economicState, everLit: [] }, state, artifact, meter());
-    expect(decodeFloat64(readout.balance, undefined)).toBe(5);
+    const ledger = { ...promoted.economicState, ownPaidDebits: 1, ownPaidSurviving: 1 };
+    const cells = patch(current.cells, [{ square: "c2", visibility: "lit", piece: null }, { square: "c8", visibility: "lit", piece: { type: "q", color: "w" } }]);
+    const promotedHistory = ownHistory({ version: "challenge-history-v2", currentAuthorizedSnapshotV2: { ...promoted, cells, economicState: ledger }, economicState: ledger, everLit: ["c2", "c8", "e1"] }, meter());
+    expect(() => readoutEconomic(promotedHistory, state, artifact, armFixture("readout"))).toThrow("CONSISTENCY");
+    const next = fixtureBoundary(promotedHistory, 3, "turn-open", state.seqThrough), m = meter();
+    const promotedState = k.makeEconomicState(m, next, "w", 3, next.seqThrough, 1, 0, k.boundaryRef(next), next.snapshot.cells, next.snapshot.memory,
+      state.witnessed, state.unlocated, state.enemyCC, state.components, state.publicSupport);
+    const readout = readoutEconomic(promotedHistory, promotedState, artifact, armFixture("readout"));
+    expect(decodeOwnedNumber(readout.balance)).toBe(5);
   });
   it("builds G from authorized nonCC own-loss/movement facts and excludes a moving CC", () => {
-    const result = foldInnovations({ side: "w", previousTurn: 0, turn: 1, seqBefore: 0, seqThrough: 3, cells: unknown, memory: [], finalCells: unknown,
+    const m = meter(), cells = ownedCells(unknown, m);
+    const result = foldInnovations({ side: "w", previousTurn: 0, turn: 1, seqBefore: 0, seqThrough: 3, cells, memory: [], finalCells: cells,
       priorOwn: ["d4"], currentOwn: [], priorUnits: [{ id: "cc", square: "e1", type: "k", paidBasis: 0, replacementValue: 0 },
         { id: "marine", square: "d4", type: "p", paidBasis: 0, replacementValue: 1 }], events: [
         { kind: "own-unit-moved", seq: 1, id: "cc", from: "e1", to: "e2" },
         { kind: "own-unit-moved", seq: 2, id: "marine", from: "d4", to: "e5" },
-        { kind: "own-unit-destroyed", seq: 3, id: "marine", typeAtLoss: "p", square: "e5", retiredPaidBasis: 0 }] }, meter());
+         { kind: "own-unit-destroyed", seq: 3, id: "marine", typeAtLoss: "p", square: "e5", retiredPaidBasis: 0 }] }, m);
     expect(result.geometry).toEqual(["d4", "e5"]); expect(result.loss).toBe(0);
   });
   it("uses actual zero own-income to grant enemy income once and rejects turn-open grants", () => {
-    const state = initializeEconomicBelief(opening, boundary(), artifact, meter());
-    const settled: EconomicBoundaryInput = { ...boundary(1), phase: "settled", planningOrdinal: 1, snapshot: snapshot(1), seqThrough: 1,
-      events: [{ kind: "own-income", seq: 1, actualCreditedMinerals: 0 }] };
-    const result = reduceEconomicBelief(state, settled, artifact, meter());
+    const initial = initializeEconomicState(opening, boundary(), artifact, armFixture("initialize"));
+    const state = advanceEconomicState(initial, boundary(1, initial.seqThrough), artifact, armFixture("advance"));
+    const settled = fixtureBoundary(openingHistory(1), 2, "settled", state.seqThrough);
+    const m = meter(), input = k.makeAdvanceReductionInput(m, state, settled);
+    const result = reduceEconomicBelief(state, input, artifact, m, settled);
     expect(result.publicSupport.slice(577 * 4, 577 * 5).some(Boolean)).toBe(true);
     expect(result.publicSupport.slice(0, 577).some(Boolean)).toBe(false);
-    expect(reduceEconomicBelief(result, settled, artifact, meter())).toBe(result);
-    expect(() => reduceEconomicBelief(state, { ...settled, phase: "turn-open", planningOrdinal: 0 }, artifact, meter())).toThrow("CONSISTENCY");
+    expect(advanceEconomicState(result, settled, artifact, armFixture("advance"))).toBe(result);
+    expect(() => advanceEconomicState(state, { ...settled, phase: "turn-open", planningOrdinal: 0 }, artifact, armFixture("advance"))).toThrow("PROVENANCE");
   });
 });

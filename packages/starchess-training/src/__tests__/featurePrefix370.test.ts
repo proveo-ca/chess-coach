@@ -1,3 +1,4 @@
+// SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
 import { describe, expect, it } from "vitest";
 import { decodeCandidate, requestedSpend } from "@chess-coach/starchess-arena/intent-codec-v1";
 import type { AuthorizedHistory, EconomicState } from "@chess-coach/starchess-arena/observations";
@@ -7,8 +8,67 @@ import { encodeHistorical370 } from "../feature/encoder";
 import { projectOwn } from "../feature/projection";
 import { measureRay, stationaryRelation } from "../feature/relations";
 import { c, observation, s, type FixtureOptions } from "./fixtures";
+import * as k from "../economic/ownedKernel";
 
-export const featureMeter = (): Meter => ({ limit: 1048576, used: 0 });
+let previous: k.LedgerPair | undefined;
+let currentTicket: k.A2Ticket | undefined;
+export const featureMeter = (): Meter => {
+  if (previous) { try { previous.owner.abort(); } catch { } }
+  previous = k.createPlanningLedger(); previous.owner.admitOnce(); previous.owner.armEncode(); currentTicket = k.enterA2(previous.meter, "encode");
+  return previous.meter;
+};
+export const closeFeatureMeter = (): void => {
+  if (currentTicket) { try { k.finishA2(currentTicket); } catch { } currentTicket = undefined; }
+};
+export const ownHistory = (input: AuthorizedHistory, meter: Meter): AuthorizedHistory => {
+  const s = input.currentAuthorizedSnapshotV2, side = s.side;
+  const set = (values: readonly Square[]) => { const c = k.beginSquareSet64(meter); for (const v of [...new Set(values)].sort()) k.appendSquareSet64(meter, c, v); return k.finishSquareSet64(meter, c); };
+  const cells = k.beginCells64(meter), memories = new Map(s.memory.map(v => [v.square, v]));
+  for (const cell of s.cells) {
+    const piece = cell.visibility !== "unknown" && cell.piece ? k.makePiece(meter, cell.piece.type, cell.piece.color) : null;
+    k.appendCells64(meter, cells, cell.visibility === "unknown" ? k.makeUnknownCell(meter, cell.square) : cell.visibility === "lit" ? k.makeLitCell(meter, cell.square, piece) : k.makeRevealedCell(meter, cell.square, piece!, side));
+    if (piece && piece.color !== side) memories.set(cell.square, { square: cell.square, piece, observedTurn: s.turn });
+  }
+  const memory = k.beginMemory64(meter);
+  for (const v of [...memories.values()].sort((a, b) => a.square < b.square ? -1 : 1)) k.appendMemory64(meter, memory, k.makeSighting(meter, v.square, k.makePiece(meter, v.piece.type, v.piece.color), v.observedTurn));
+  const pieces = k.beginOwnPieces64(meter), units = k.beginOwnUnits64(meter), receipts = k.beginReceipts64(meter), retired = k.beginRetiredOwnIds128(meter, side);
+  let created = 0, receiptOrdinal = 0;
+  const receipt = (paid: number, square: Square, retiredUnit = false, wasted = false): string => {
+    const id = `${side}:unit:created:${++created}`, unit = paid === 1 ? "p" : paid === 3 ? "n" : paid === 5 ? "r" : "q";
+    const ordinal = receiptOrdinal++;
+    k.appendReceipts64(meter, receipts, k.makePaidReceipt(meter, `${side}:receipt:${ordinal}:0`, k.makeActionRef(meter, ordinal, 0), unit, square, paid,
+      wasted ? k.makeUnmaterializedDisposition(meter) : k.makeMaterializedDisposition(meter, id)));
+    if (wasted) created--;
+    if (retiredUnit) k.appendRetiredOwnIds128(meter, retired, id);
+    return id;
+  };
+  const values = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 } as const;
+  const lineages = s.own.pieces.map(v => s.ownUnitLineage.find(u => u.square === v.square) ??
+    { id: `${side}:unit:opening:${v.square}`, square: v.square, type: v.piece.type, paidBasis: 0, replacementValue: values[v.piece.type] });
+  for (const v of lineages.sort((a, b) => a.square < b.square ? -1 : 1)) {
+    const id = v.paidBasis > 0 ? receipt(v.paidBasis, v.square) : v.id;
+    k.appendOwnUnits64(meter, units, k.makeOwnUnit(meter, id, v.square, v.type, v.paidBasis, v.replacementValue));
+  }
+  for (const v of [...s.own.pieces].sort((a, b) => a.square < b.square ? -1 : 1)) k.appendOwnPieces64(meter, pieces, k.makeOwnPiece(meter, v.square, k.makePiece(meter, v.piece.type, v.piece.color)));
+  let losses = 0;
+  for (let remaining = s.economicState.ownPaidDestroyed; remaining > 0;) { const paid = remaining >= 3 ? 3 : 1; receipt(paid, "a2", true); losses += paid; remaining -= paid; }
+  for (let remaining = s.economicState.ownPaidWasted; remaining > 0;) { const paid = remaining >= 3 ? 3 : 1; receipt(paid, "a2", false, true); remaining -= paid; }
+  const l = s.economicState, ledger = k.makeEconomicLedger(meter, side, l.ownPaidDebits, l.ownPaidSurviving, l.ownPaidDestroyed, l.ownPaidWasted, losses,
+    k.makeEnemyLoss(meter, l.enemyLoss.confirmedUnitCount, l.enemyLoss.replacementLowerBound), k.finishReceipts64(meter, receipts), k.finishRetiredOwnIds128(meter, retired));
+  const mines = k.beginOwnMines3(meter);
+  for (const v of s.ownMineLineage) k.appendOwnMines3(meter, mines, k.makeOwnMine(meter, v.mineId, v.square));
+  const own = k.makeOwnState(meter, s.own.minerals, s.own.gas, s.own.gasIncome, s.own.ccLives, k.finishOwnPieces64(meter, pieces), set(s.own.mines), set(s.own.siegedTanks));
+  const snapshot = k.makeSnapshotV2(meter, side, s.turn, own, k.finishCells64(meter, cells), k.finishMemory64(meter, memory), k.finishOwnUnits64(meter, units), k.finishOwnMines3(meter, mines), ledger);
+  return k.makeHistory(meter, snapshot, ledger, set(input.everLit));
+};
+export const ownCandidate = (actions: readonly ScActionInput[], side: "w" | "b", meter: Meter) => {
+  const c = k.beginActions65(meter);
+  for (const a of actions) k.appendActions65(meter, c, a.kind === "classical" ? k.makeClassicalAction(meter, side, a.from, a.to, a.promotion) :
+    a.kind === "deploy" ? k.makeDeployAction(meter, a.timing, side, a.from, a.to!, a.unit!) : a.kind === "stimStep" ? k.makeStimStepAction(meter, a.timing, side, a.from, a.to!, a.promotion) :
+    a.kind === "spiderMine" ? k.makeSpiderMineAction(meter, a.timing, side, a.from, a.to) : a.kind === "charonMissiles" ? k.makeCharonMissilesAction(meter, a.timing, side, a.from, a.to!) :
+    a.kind === "siegeMode" ? k.makeSiegeModeAction(meter, a.timing, side, a.from, a.to) : k.makeTacticalJumpAction(meter, a.timing, side, a.from, a.to!));
+  return k.makeCandidate(meter, side, k.finishActions65(meter, c));
+};
 export const featureHistory = (own: Parameters<typeof observation>[0], options: FixtureOptions = {}, paid: Partial<Record<Square, number>> = {}): AuthorizedHistory => {
   const o = observation(own, options);
   const surviving = Object.values(paid).reduce((a, b) => a + b, 0);
@@ -27,9 +87,9 @@ export const featureCandidate = (actions: readonly ScActionInput[], side: "w" | 
   return decodeCandidate({ version: "challenge-candidate-codec-v1", actions, key: JSON.stringify(canonicalActions), ownSpend: requestedSpend(actions) }, side);
 };
 export const historical = (history: AuthorizedHistory, actions: readonly ScActionInput[]) => {
-  const meter = featureMeter(), candidate = featureCandidate(actions, history.currentAuthorizedSnapshotV2.side);
-  const projection = projectOwn(history, candidate, meter);
-  return { ...encodeHistorical370(history, candidate, projection, meter), projection, meter };
+  const meter = featureMeter(), candidate = ownCandidate(actions, history.currentAuthorizedSnapshotV2.side, meter), owned = ownHistory(history, meter);
+  const projection = projectOwn(owned, candidate, meter);
+  return { ...encodeHistorical370(owned, candidate, projection, meter), projection, meter };
 };
 
 describe("historical 370 independent numerical fixtures", () => {
@@ -115,7 +175,7 @@ describe("historical 370 independent numerical fixtures", () => {
 
   it("keeps paid basis through promotion and uses a B birth token for deployMove", () => {
     const promoted = historical(featureHistory([["a1", "k"], ["e7", "p"]], {}, { e7: 1 }), [{ ...c("e7", "e8"), promotion: "q" }]);
-    expect(promoted.projection.final.units.get("w:unit:opening:e7")).toMatchObject({ square: "e8", type: "q", paidBasis: 1 });
+    expect(promoted.projection.final.units.get("w:unit:created:1")).toMatchObject({ square: "e8", type: "q", paidBasis: 1 });
     const born = historical(featureHistory([["e1", "k"]]), [{ ...s("deploy", "e1", "d2"), unit: "p" }, c("d2", "d4")]);
     expect(born.positions[1]["actor.known"]).toBe(0); expect(born.positions[1]["actor.paidKnown"]).toBe(0);
     expect(born.positions[1]["actor.nominal"]).toBe(1); expect(born.positions[1]["actor.paid"]).toBe(0);

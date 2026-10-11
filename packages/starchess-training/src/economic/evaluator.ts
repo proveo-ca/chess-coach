@@ -1,8 +1,15 @@
-import type { Cells, Component, Meter, Side, Table, TransitionTable, EvidenceTable } from "./contracts";
+// SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
+import type { Cells, Component, EconomicArtifact, Meter, Side, Table, TransitionTable, EvidenceTable } from "./contracts";
 import { BAND_STARTS, JOINT_SIZE } from "./contracts";
 import { decodeFloat64, encodeFloat64 } from "./float64";
 import { charge, fail } from "./work";
 import { replacement } from "./innovation";
+import { appendComponents247, appendConditional, beginComponents247, beginConditional,
+  finishComponents247, finishConditional, makeComponent, beginEvaluationSupport7501, putEvaluationSupport,
+  readEvaluationSupport, finishEvaluationSupport7501 } from "./ownedKernel";
+import { requireArtifact, requireStartupArtifactContext } from "./ownedGuards";
+import type { StartupArtifactContext } from "./ownedKernel";
+import { decodeOwnedNumber } from "./ownedScalars";
 
 export type BoardBounds = Readonly<{ lower: number; upper: number; marines: number }>;
 export type EvaluationInput = Readonly<{
@@ -52,18 +59,47 @@ export const gammaSets = (meter: Meter): readonly (readonly number[])[] => {
 
 type NumericTransition = readonly [number, number, number, number, number, number];
 type NumericEvidence = readonly [number, number, number, number];
-type IndexedTables = Readonly<{ transition: Map<string, TransitionTable>; evidence: Map<string, EvidenceTable> }>;
+type IndexedTables = Readonly<{ transition: Map<string, TransitionTable>; evidence: Map<string, EvidenceTable>;
+  transitions: Map<TransitionTable, readonly NumericTransition[]>; evidences: Map<EvidenceTable, readonly NumericEvidence[]> }>;
+const artifactTables = new WeakMap<readonly Table[], IndexedTables>();
+const immutableTables = (tables: readonly Table[]): boolean => Object.isFrozen(tables) && tables.every(table => Object.isFrozen(table) && Object.isFrozen(table.rows) &&
+  table.rows.every(row => Object.isFrozen(row) && Object.isFrozen(row[row.length - 1])));
 const tableKey = (level: number, bank: number | null, band: number | null, tier: number | null): string => `${level}:${bank}:${band}:${tier}`;
+export const compileEconomicArtifactTables = (artifact: EconomicArtifact, context: StartupArtifactContext): void => {
+  requireStartupArtifactContext(context); requireArtifact(artifact);
+  if (artifactTables.has(artifact.tables)) return;
+  const transition = new Map<string, TransitionTable>(), evidence = new Map<string, EvidenceTable>();
+  const transitions = new Map<TransitionTable, readonly NumericTransition[]>(), evidences = new Map<EvidenceTable, readonly NumericEvidence[]>();
+  for (const table of artifact.tables) {
+    const key = tableKey(table.level, table.bank, table.band, table.tier);
+    if (table.kind === "transition") {
+      transition.set(key, table);
+      transitions.set(table, Object.freeze(table.rows.map(row => Object.freeze([row[0], row[1], row[2], row[3], row[4], decodeOwnedNumber(row[5])] as const))));
+    } else {
+      evidence.set(key, table);
+      evidences.set(table, Object.freeze(table.rows.map(row => Object.freeze([row[0], row[1], row[2], decodeOwnedNumber(row[3])] as const))));
+    }
+  }
+  artifactTables.set(artifact.tables, { transition, evidence, transitions, evidences });
+};
 const indexTables = (tables: readonly Table[], meter: Meter): IndexedTables => {
+  charge(meter, 12, "$.tables.compiledLookup");
+  const compiled = artifactTables.get(tables);
+  if (compiled) return compiled;
   charge(meter, 12 + 70 * tables.length, "$.tables.index");
   const transition = new Map<string, TransitionTable>(), evidence = new Map<string, EvidenceTable>();
+  let rowCount = 0;
   for (const table of tables) {
+    rowCount += table.rows.length;
     const key = tableKey(table.level, table.bank, table.band, table.tier);
     const map: Map<string, Table> = table.kind === "transition" ? transition : evidence;
     if (map.has(key)) fail("$.tables", "DUPLICATE");
     map.set(key, table);
   }
-  return { transition, evidence };
+  const result = { transition, evidence, transitions: new Map<TransitionTable, readonly NumericTransition[]>(), evidences: new Map<EvidenceTable, readonly NumericEvidence[]>() };
+  charge(meter, 20 + 12 * rowCount, "$.tables.immutableRows");
+  if (immutableTables(tables)) artifactTables.set(tables, result);
+  return result;
 };
 const select = <T extends Table>(tables: Map<string, T>, bank: number, band: number, tier: number, meter: Meter): T | undefined => {
   charge(meter, 160, "$.tables.backoff");
@@ -91,15 +127,15 @@ const add = (a: number, b: number): number => {
 };
 
 export const evaluateEconomic = (input: EvaluationInput, meter: Meter): Evaluation => {
-  charge(meter, 50 + 3 * JOINT_SIZE + 2 * 13 * 618 + 13, "$.evaluation.allocate");
+  charge(meter, 50 + 2 * JOINT_SIZE + 2 * 13 * 618 + 13, "$.evaluation.allocate");
   if (input.joint.length !== JOINT_SIZE || input.publicSupport.length !== JOINT_SIZE) fail("$.evaluation.joint", "CARDINALITY");
   const head = new Float64Array(13 * 618), sparse = new Float64Array(JOINT_SIZE), joint = new Float64Array(JOINT_SIZE);
-  const support = new Array<boolean>(JOINT_SIZE).fill(false), publicHead = new Int16Array(13).fill(-1);
+  const support = beginEvaluationSupport7501(meter), publicHead = new Int16Array(13).fill(-1);
   const publicHeads = new Uint8Array(13 * 618);
   const gammas = input.settled ? gammaSets(meter) : [];
   const tables = indexTables(input.tables, meter);
   charge(meter, 20, "$.evaluation.cache");
-  const transitions = new Map<TransitionTable, readonly NumericTransition[]>(), evidences = new Map<EvidenceTable, readonly NumericEvidence[]>();
+  const { transitions, evidences } = tables;
   const tier = input.inputTurn <= 10 ? 0 : input.inputTurn <= 20 ? 1 : 2;
   const outputTier = input.turn <= 10 ? 0 : input.turn <= 20 ? 1 : 2;
   const income = input.turn <= 10 ? 1 : input.turn <= 20 ? 2 : 3;
@@ -111,8 +147,8 @@ export const evaluateEconomic = (input: EvaluationInput, meter: Meter): Evaluati
     if (!input.settled) {
       charge(meter, 14, "$.evaluation.stationary");
       if (d0 >= input.bounds.lower && d0 <= input.bounds.upper) {
-        joint[x] = p; support[x] = input.publicSupport[x]!;
-        if (support[x]) publicHead[bank] = d0;
+        joint[x] = p; putEvaluationSupport(meter, support, x, input.publicSupport[x]!);
+        if (input.publicSupport[x]) publicHead[bank] = d0;
       }
       continue;
     }
@@ -191,15 +227,16 @@ export const evaluateEconomic = (input: EvaluationInput, meter: Meter): Evaluati
     for (let bank = 0; bank <= 12; bank++) {
       const maximum = publicHead[bank]!;
       if (maximum < 0) continue;
-      charge(meter, 38 * maximum + 36 * (Math.min(576, maximum - input.loss) + 1) + 12, "$.evaluation.suffix");
+      const minimumD = Math.max(0, input.bounds.lower), maximumD = Math.min(576, maximum - input.loss, input.bounds.upper);
+      charge(meter, 38 * maximum + 36 * Math.max(0, maximumD - minimumD + 1) + 12, "$.evaluation.suffix");
       for (let j = maximum - 1; j >= 0; j--) {
         head[618 * bank + j] = add(head[618 * bank + j]!, head[618 * bank + j + 1]!);
         publicHeads[618 * bank + j] |= publicHeads[618 * bank + j + 1]!;
       }
-      for (let d = 0; d <= Math.min(576, maximum - input.loss); d++) {
+      for (let d = minimumD; d <= maximumD; d++) {
         const x = 577 * bank + d;
         joint[x] = add(sparse[x]!, d + input.loss <= 617 ? head[618 * bank + d + input.loss]! : 0);
-        support[x] = publicHeads[618 * bank + d + input.loss] === 1;
+        if (publicHeads[618 * bank + d + input.loss] === 1) putEvaluationSupport(meter, support, x, true);
       }
     }
   }
@@ -209,12 +246,11 @@ export const evaluateEconomic = (input: EvaluationInput, meter: Meter): Evaluati
   charge(meter, 10, "$.evaluation.likelihoodCache");
   const likelihoods = new Map<string, number>();
   for (let bank = 0; bank <= 12; bank++) {
-    const maximum = Math.min(576, publicHead[bank]! - (input.settled ? input.loss : 0));
-    charge(meter, 36 * Math.max(0, maximum + 1) + 8, "$.evaluation.conditionScan");
-    for (let d = 0; d <= maximum; d++) {
+    const minimum = Math.max(0, input.bounds.lower), maximum = Math.min(576, publicHead[bank]! - (input.settled ? input.loss : 0), input.bounds.upper);
+    charge(meter, 36 * Math.max(0, maximum - minimum + 1) + 8, "$.evaluation.conditionScan");
+    for (let d = minimum; d <= maximum; d++) {
       const x = bank * 577 + d;
-      if (d < input.bounds.lower || d > input.bounds.upper) { joint[x] = 0; support[x] = false; continue; }
-      if (support[x]) any = true;
+      if (readEvaluationSupport(meter, support, x)) any = true;
       if (joint[x]! > 0 && innovative) {
         const band = materialBand(d, meter), key = `${bank}:${band}`;
         charge(meter, 14, "$.evaluation.likelihoodLookup");
@@ -255,33 +291,45 @@ export const evaluateEconomic = (input: EvaluationInput, meter: Meter): Evaluati
   if (!any || !(total > 0)) fail("$.evaluation.support", "CONSISTENCY");
   let normalized = 0;
   for (let bank = 0; bank <= 12; bank++) {
-    const maximum = Math.min(576, publicHead[bank]! - (input.settled ? input.loss : 0));
-    charge(meter, 28 * Math.max(0, maximum + 1) + 8, "$.evaluation.normalize");
-    for (let d = 0; d <= maximum; d++) {
+    const minimum = Math.max(0, input.bounds.lower), maximum = Math.min(576, publicHead[bank]! - (input.settled ? input.loss : 0), input.bounds.upper);
+    charge(meter, 28 * Math.max(0, maximum - minimum + 1) + 8, "$.evaluation.normalize");
+    for (let d = minimum; d <= maximum; d++) {
       const x = bank * 577 + d;
       joint[x] = divide(joint[x]!, total); normalized = add(normalized, joint[x]!);
     }
   }
   if (Math.abs(normalized - 1) > 1e-12) fail("$.evaluation.normalization", "NUMERIC");
-  return { joint, publicSupport: support };
+  return { joint, publicSupport: finishEvaluationSupport7501(meter, support) };
 };
 
 export const expandComponents = (components: readonly Component[], meter: Meter): Float64Array => {
-  charge(meter, JOINT_SIZE + 20 + 28 * components.length, "$.components.expand");
+  charge(meter, JOINT_SIZE + 24 + 40 * components.length, "$.components.expand");
   const joint = new Float64Array(JOINT_SIZE);
+  const decoded = new Map<Component["mass"], number>();
+  const number = (value: Component["mass"], path: string): number => {
+    const cached = decoded.get(value);
+    if (cached !== undefined) return cached;
+    const result = decodeFloat64(value, meter, path); decoded.set(value, result); return result;
+  };
   for (const component of components) {
     const start = BAND_STARTS[component.band]!, end = component.band === 18 ? 577 : BAND_STARTS[component.band + 1]!;
-    const mass = decodeFloat64(component.mass, meter, "$.components.mass");
-    charge(meter, 10 + 24 * (end - start), "$.components.expandBand");
+    const mass = number(component.mass, "$.components.mass");
+    charge(meter, 10 + 36 * (end - start), "$.components.expandBand");
     if (component.conditional.length !== end - start) fail("$.components.conditional", "CARDINALITY");
-    for (let d = start; d < end; d++) joint[577 * component.bank + d] = product(mass, decodeFloat64(component.conditional[d - start], meter, "$.components.conditional"));
+    for (let d = start; d < end; d++) joint[577 * component.bank + d] = product(mass, number(component.conditional[d - start]!, "$.components.conditional"));
   }
   return joint;
 };
 
 export const rebandEconomic = (joint: Float64Array, meter: Meter): readonly Component[] => {
   charge(meter, 20 + 13 * 19 * 18 + JOINT_SIZE * 16, "$.components.rebandScan");
-  const components: Component[] = [];
+  const components = beginComponents247(meter);
+  const encoded = new Map<number | "-0", Component["mass"]>();
+  const hex = (value: number, path: string): Component["mass"] => {
+    const key = Object.is(value, -0) ? "-0" : value, cached = encoded.get(key);
+    if (cached) return cached;
+    const result = encodeFloat64(value, meter, path); encoded.set(key, result); return result;
+  };
   let total = 0;
   for (let bank = 0; bank <= 12; bank++) for (let band = 0; band < 19; band++) {
     const start = BAND_STARTS[band]!, end = band === 18 ? 577 : BAND_STARTS[band + 1]!;
@@ -292,17 +340,17 @@ export const rebandEconomic = (joint: Float64Array, meter: Meter): readonly Comp
       mass = add(mass, value);
     }
     if (mass === 0) continue;
-    charge(meter, 24 + 22 * (end - start), "$.components.rebandBand");
-    const conditional = [];
+    charge(meter, 38 + 36 * (end - start), "$.components.rebandBand");
+    const conditional = beginConditional(meter, end - start);
     let sum = 0;
     for (let d = start; d < end; d++) {
       const value = divide(joint[577 * bank + d]!, mass);
-      conditional.push(encodeFloat64(value, meter, "$.components.conditional")); sum = add(sum, value);
+      appendConditional(meter, conditional, hex(value, "$.components.conditional")); sum = add(sum, value);
     }
     if (Math.abs(sum - 1) > 1e-12) fail("$.components.conditional", "NUMERIC");
-    components.push({ bank, band, mass: encodeFloat64(mass, meter, "$.components.mass"), conditional });
+    appendComponents247(meter, components, makeComponent(meter, bank, band, hex(mass, "$.components.mass"), finishConditional(meter, conditional)));
     total = add(total, mass);
   }
   if (Math.abs(total - 1) > 1e-12) fail("$.components.normalization", "NUMERIC");
-  return components;
+  return finishComponents247(meter, components);
 };

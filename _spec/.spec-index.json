@@ -2,6 +2,35 @@
   "version": 1,
   "specs": [
     {
+      "spec": "_spec/packages/starchess-training/owned-economic-foundations.puml",
+      "covers": [
+        "packages/starchess-training/src/economic/*.ts",
+        "packages/starchess-training/src/coordinator/*.ts",
+        "packages/starchess-training/src/coordinator/*.mjs",
+        "packages/starchess-training/src/feature/*.ts",
+        "packages/starchess-training/src/features.ts",
+        "packages/starchess-training/src/__tests__/owned*.ts",
+        "packages/starchess-training/src/__tests__/construction*.test.ts",
+        "packages/starchess-training/src/__tests__/accountedConstruction.test.ts",
+        "packages/starchess-training/src/__tests__/economic*.test.ts",
+        "packages/starchess-training/src/__tests__/feature*.test.ts",
+        "packages/starchess-training/src/__tests__/promotionFeatures.test.ts",
+        "packages/starchess-training/src/__tests__/planning*.test.ts",
+        "packages/starchess-training/src/__tests__/hostedAdmission.test.ts",
+        "packages/starchess-training/src/__tests__/registeredBytes.test.ts",
+        "packages/starchess-training/src/__tests__/source*.ts",
+        "packages/starchess-training/src/__tests__/startupScope.test.ts",
+        "packages/starchess-training/src/__tests__/episode*.test.ts",
+        "packages/starchess-training/src/__tests__/r4AcceptedBodies.test.ts",
+        "packages/starchess-training/src/__tests__/ownedPrototype.test.ts",
+        "packages/starchess-training/src/__tests__/planningCleanup.test.ts",
+        "packages/starchess-training/package.json",
+        "packages/starchess-arena/src/challenge/sourceInventory.ts",
+        "packages/starchess-arena/hermetic/public-closure.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
       "spec": "_spec/packages/starchess-core/native-provenance.puml",
       "covers": [
         "packages/starchess-core/src/resolve/provenance*.ts",

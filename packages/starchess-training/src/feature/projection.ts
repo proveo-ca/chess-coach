@@ -1,7 +1,9 @@
+// SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
 import { classicalRewriteCoordinatesAfterB, marineSingleTarget, orderBHeadsFirst, type ScAction, type ScActionInput, type Square } from "@chess-coach/starchess-core/planning-v1";
 import type { Candidate, History, Meter } from "../economic/contracts";
 import { charge, fail } from "../economic/work";
 import type { FeatureLayers, FeatureUnit, OwnView } from "./relations";
+import { requireCandidate, requireHistory } from "../economic/ownedGuards";
 
 export type ActionCheckpoint = Readonly<{
   index: number; action: ScActionInput; before: OwnView; after: OwnView;
@@ -12,6 +14,7 @@ export type OwnProjection = Readonly<{
   layers: FeatureLayers; baseline: OwnView; final: OwnView;
   positions: readonly ActionCheckpoint[]; schedule: readonly number[]; crushed: ReadonlySet<string>;
 }>;
+const baselines = new WeakMap<History, Readonly<{ baseline: OwnView; layers: FeatureLayers }>>();
 
 const copyView = (view: OwnView, meter: Meter): OwnView => {
   charge(meter, 6 + 4 * view.units.size + 4 * view.at.size + 3 * view.mines.size, "$.work.feature.projection.viewCopy");
@@ -35,8 +38,12 @@ const removeUnit = (view: OwnView, unit: FeatureUnit, meter: Meter): void => {
 
 export const projectOwn = (history: History, candidate: Candidate, meter: Meter): OwnProjection => {
   charge(meter, 7, "$.work.feature.projection.cardinality");
+  requireHistory(history); requireCandidate(candidate);
   if (candidate.actions.length > 4) fail("$.actions", "CARDINALITY");
   const snapshot = history.currentAuthorizedSnapshotV2;
+  charge(meter, 16, "$.work.feature.projection.baselineCache");
+  let seed = baselines.get(history);
+  if (!seed) {
   charge(meter, 12, "$.work.feature.projection.layersAllocate");
   const units = new Map<string, FeatureUnit>(), at = new Map<Square, string>();
   const enemies = new Map<Square, { type: FeatureUnit["type"]; color: "w" | "b" }>(), unknown = new Set<Square>();
@@ -53,6 +60,9 @@ export const projectOwn = (history: History, candidate: Candidate, meter: Meter)
   }
   charge(meter, 8 + 3 * snapshot.own.mines.length, "$.work.feature.projection.baselineAllocate");
   const baseline: OwnView = { units, at, mines: new Set(snapshot.own.mines) }, layers: FeatureLayers = { enemies, unknown };
+  seed = { baseline, layers }; baselines.set(history, seed);
+  }
+  const { baseline, layers } = seed, { enemies, unknown } = layers;
   let view = baseline;
   charge(meter, 8 + candidate.actions.length * (8 * 3 + 8), "$.work.feature.projection.scheduleInput");
   const actions: ScAction[] = candidate.actions.map((action, seq) => ({ ...action, seq }));

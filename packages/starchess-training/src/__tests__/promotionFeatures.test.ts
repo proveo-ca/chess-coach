@@ -1,3 +1,4 @@
+// SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
 import { describe, expect, it } from "vitest";
 import { decodeCandidate, requestedSpend } from "@chess-coach/starchess-arena/intent-codec-v1";
 import type { AuthorizedHistory } from "@chess-coach/starchess-arena/observations";
@@ -6,19 +7,22 @@ import type { ScActionInput } from "@chess-coach/starchess-core/planning-v1";
 import { marineOpportunities, promotionFeatures, promotionRoutes } from "../feature/promotion";
 import { projectOwn } from "../feature/projection";
 import { c, observation } from "./fixtures";
+import { featureMeter, ownHistory, ownCandidate } from "./featurePrefix370.test";
+import { consumeWorkBlock } from "../economic/ownedKernel";
+import { quoteBlock } from "../economic/invoices";
+import { PROMOTION_CHANNELS, PROMOTION_KERNELS, type PromotionName } from "../economic/contracts";
+import { stationaryRelation } from "../feature/relations";
 
-const featureMeter = (): Meter => ({ limit: 1048576, used: 0 });
 const featureHistory = (own: Parameters<typeof observation>[0]): AuthorizedHistory => {
   const o = observation(own), values = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 } as const;
   const economic = { version: "challenge-economic-ledger-v1" as const, side: o.side, ownPaidDebits: 0, ownPaidSurviving: 0,
     ownPaidDestroyed: 0, ownPaidWasted: 0, ownReplacementDestroyed: 0, receipts: [], retiredOwnIds: [],
     enemyLoss: { confirmedUnitCount: 0, replacementLowerBound: 0, paidLowerBound: 0 as const, upper: "unknown" as const, completeness: "witnessed-only" as const } };
-  return { version: "challenge-history-v2", economicState: economic, everLit: o.cells.map(cell => cell.square),
+  return ownHistory({ version: "challenge-history-v2", economicState: economic, everLit: o.cells.map(cell => cell.square),
     currentAuthorizedSnapshotV2: { ...o, version: "challenge-observation-v2", economicState: economic,
-      ownUnitLineage: o.own.pieces.map(({ square, piece }) => ({ id: `w:unit:opening:${square}`, square, type: piece.type, paidBasis: 0, replacementValue: values[piece.type] })), ownMineLineage: [] } };
+      ownUnitLineage: o.own.pieces.map(({ square, piece }) => ({ id: `w:unit:opening:${square}`, square, type: piece.type, paidBasis: 0, replacementValue: values[piece.type] })), ownMineLineage: [] } }, featureMeter());
 };
-const featureCandidate = (actions: readonly ScActionInput[]) => decodeCandidate({ version: "challenge-candidate-codec-v1", actions,
-  key: JSON.stringify(actions.map(action => Object.fromEntries(Object.entries(action).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0)))), ownSpend: requestedSpend(actions) }, "w");
+const featureCandidate = (actions: readonly ScActionInput[]) => ownCandidate(actions, "w", featureMeter());
 
 describe("corrective A4 native Marine opportunity geometry", () => {
   it("retains original double eligibility and direct B-arrival diagonal bindings", () => {
@@ -50,6 +54,26 @@ describe("corrective A4 native Marine opportunity geometry", () => {
 });
 
 describe("promotion route common-family local predicates", () => {
+  it("matches full authored-route file pooling with exact contact-state reuse", () => {
+    const h = featureHistory([["h8", "k"], ["e2", "q"]]), projection = projectOwn(h, featureCandidate([c("e2", "f2")]), featureMeter());
+    const frontiers = { witnessed: ["e2" as const], unlocated: ["f2" as const] };
+    const actual = promotionFeatures(projection, frontiers, "w", 21, featureMeter());
+    const expected = {} as Record<PromotionName, number>;
+    for (const channel of PROMOTION_CHANNELS) {
+      const files = PROMOTION_KERNELS.map(() => [new Set<string>(), new Set<string>(), new Set<string>()]);
+      const meter = featureMeter();
+      for (const route of promotionRoutes(projection, frontiers[channel], "b", 21, 3, meter)) {
+        const gains = (a: ReadonlySet<import("../economic/contracts").Square>, b: ReadonlySet<import("../economic/contracts").Square>) => [...a].some(v => !b.has(v));
+        const exposed = route.candidate.compatible && route.candidate.blockers.size === 0 && [...projection.final.units.values()].some(v =>
+          stationaryRelation(projection.layers, projection.final, { square: route.arrival, type: route.promotion, color: "b" }, v.square, meter) !== "none");
+        const predicates = [exposed, gains(route.candidate.blockers, route.baseline.blockers), gains(route.baseline.blockers, route.candidate.blockers),
+          gains(route.candidate.cover, route.baseline.cover), gains(route.baseline.cover, route.candidate.cover), gains(route.candidate.vision, route.baseline.vision)];
+        for (let k = 0; k < 6; k++) for (let horizon = route.opportunities; horizon <= 3; horizon++) if (predicates[k]) files[k]![horizon - 1]!.add(route.arrival[0]!);
+      }
+      for (let k = 0; k < 6; k++) for (const horizon of [1, 2, 3] as const) expected[`${PROMOTION_KERNELS[k]}.${channel}.h${horizon}`] = files[k]![horizon - 1]!.size / 8;
+    }
+    expect(actual).toEqual(expected);
+  });
   it("measures local attack-cover and vision gains/removals on the same route family", () => {
     const before = featureHistory([["h8", "k"], ["f4", "n"]]);
     const added = projectOwn(before, featureCandidate([c("f4", "g2")]), featureMeter());
@@ -104,14 +128,20 @@ describe("promotion route common-family local predicates", () => {
     const features = promotionFeatures(projection, { witnessed: [], unlocated: [] }, "w", 21, featureMeter());
     expect(Object.values(features)).toEqual(new Array(36).fill(0));
     expect([...promotionRoutes(projection, ["e1"], "b", 21, 3, featureMeter())]).toEqual([]);
-    const routes = [...promotionRoutes(projection, ["e5"], "b", 21, 3, featureMeter())];
-    expect(routes.every(r => r.opportunities >= 2 && r.opportunities <= 3)).toBe(true);
+    const routes = [...promotionRoutes(projection, ["e5"], "b", 21, 2, featureMeter())];
+    expect(routes.every(r => r.opportunities === 2)).toBe(true);
     expect(routes.some(r => r.opportunities === 2)).toBe(true);
+    const three = promotionFeatures(projection, { witnessed: ["e7"], unlocated: [] }, "w", 21, featureMeter());
+    expect(three["exposure.witnessed.h1"]).toBe(0); expect(three["exposure.witnessed.h2"]).toBe(0);
+    expect(three["exposure.witnessed.h3"]).toBeGreaterThan(0);
+    const full = featureMeter();
+    expect(() => [...promotionRoutes(projection, ["e5"], "b", 21, 3, full)]).toThrow("WORK_CAP");
+    expect(full.used).toBeLessThanOrEqual(full.limit);
   });
 
   it("fails prepaid route work without silently truncating the common support", () => {
     const projection = projectOwn(featureHistory([["h8", "k"]]), featureCandidate([]), featureMeter());
-    const meter = { limit: 1048576 as const, used: 1048576 - 100 };
+    const meter = featureMeter(); consumeWorkBlock(meter, "scalar", meter.limit - meter.used - 100 - quoteBlock("scalar", 0, 0), "$.fixture.exhaust");
     expect(() => [...promotionRoutes(projection, ["e5"], "b", 21, 3, meter)]).toThrow();
     expect(meter.used).toBeLessThanOrEqual(1048576);
   });
