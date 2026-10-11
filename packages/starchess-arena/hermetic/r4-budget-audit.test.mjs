@@ -7,7 +7,7 @@ import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { test } from "node:test";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { auditR4PlanningBudget, planningAuditExitCode, R4_AUDITED_SOURCE_PATHS, R4_AUDIT_VERSION } from "./r4-budget-audit.mjs";
 
 const repository = fileURLToPath(new URL("../../../", import.meta.url));
@@ -19,6 +19,31 @@ const invoices = `${training}economic/invoices.ts`;
 const manifest = `${training}feature/manifest.ts`;
 const batchExpression = "32768 + 418 * 1536 + n * (512 + 2 * 418 * 32) + 418 * 32";
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
+
+test("new tooling passes fixed predicates rather than intrinsic constructors as callbacks", () => {
+  const ts = createRequire(import.meta.url)("typescript");
+  const intrinsics = new Set(["Boolean", "Number", "String", "Object", "Array", "Reflect", "Function", "Date", "RegExp",
+    "Map", "Set", "WeakMap", "WeakSet", "Symbol", "BigInt", "Promise", "Error", "Buffer"]);
+  const directEscapes = text => {
+    const ast = ts.createSourceFile("callback-fixture.mjs", text, ts.ScriptTarget.Latest, true, ts.ScriptKind.JS), found = [];
+    const rootName = node => ts.isIdentifier(node) ? node.text : ts.isPropertyAccessExpression(node) ? rootName(node.expression) : null;
+    const visit = node => {
+      if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression) &&
+          ["filter", "map", "find", "findIndex", "some", "every", "forEach", "sort", "reduce"].includes(node.expression.name.text)) {
+        for (const argument of node.arguments) if (intrinsics.has(rootName(argument))) found.push(argument.getText(ast));
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(ast);
+    return found;
+  };
+  for (const text of ["parts.filter(Boolean)", "parts.map(Number)", "parts.map(Object.freeze)"]) assert.equal(directEscapes(text).length, 1);
+  for (const text of ["parts.filter(part => part.length !== 0)", "nodes.filter(ts.isTryStatement)"]) assert.deepEqual(directEscapes(text), []);
+  for (const path of ["packages/starchess-arena/hermetic/r4-budget-audit.mjs", "scripts/r4-host-verify-lib.mjs",
+    "scripts/r4-host-verify.mjs", "scripts/r4-planning-budget-audit.mjs"]) {
+    assert.deepEqual(directEscapes(readFileSync(join(repository, path), "utf8")), [], path);
+  }
+});
 
 function fixture(t) {
   const root = mkdtempSync(join(realpathSync(process.env.OPENCODE_TMP_DIR || tmpdir()), "r4-budget-audit-"));
@@ -215,23 +240,31 @@ test("missing, invalid and symlinked sources fail closed", (t) => {
 });
 
 test("audit uses the owner's parser only and never loads audited source modules", (t) => {
-  const root = fixture(t), require = createRequire(import.meta.url), module = require("node:module");
-  const originalLoad = module._load;
-  const forbidden = new Set(["createProgram", "createIncrementalProgram", "createCompilerHost", "createLanguageService", "transpile", "transpileModule"]);
-  let parseCalls = 0;
-  module._load = function (request, ...args) {
-    assert(!request.endsWith(".ts"), `audited source module import: ${request}`);
-    const loaded = originalLoad.call(this, request, ...args);
-    if (request !== "typescript") return loaded;
-    return new Proxy(loaded, { get(target, property) {
-      assert(!forbidden.has(property), `forbidden TypeScript API: ${property}`);
-      if (property === "createSourceFile") return (...parameters) => { parseCalls++; return target.createSourceFile(...parameters); };
-      return Reflect.get(target, property);
-    } });
-  };
-  try { assert.equal(auditR4PlanningBudget(root).scheduleStatus, "infeasible"); }
-  finally { module._load = originalLoad; }
-  assert.equal(parseCalls, R4_AUDITED_SOURCE_PATHS.length);
+  const root = fixture(t);
+  const probe = `
+    import assert from 'node:assert/strict';
+    import {createRequire} from 'node:module';
+    import {auditR4PlanningBudget} from ${JSON.stringify(pathToFileURL(join(repository, "packages/starchess-arena/hermetic/r4-budget-audit.mjs")).href)};
+    const require=createRequire(import.meta.url), module=require('node:module'), originalLoad=module._load;
+    const forbidden=new Set(['createProgram','createIncrementalProgram','createCompilerHost','createLanguageService','transpile','transpileModule']);
+    let parseCalls=0;
+    module._load=function(request,...args){
+      assert(!request.endsWith('.ts'), 'audited source module import: '+request);
+      const loaded=originalLoad.call(this,request,...args);
+      if(request!=='typescript') return loaded;
+      return new Proxy(loaded,{get(target,property){
+        assert(!forbidden.has(property),'forbidden TypeScript API: '+property);
+        if(property==='createSourceFile') return (...parameters)=>{parseCalls++;return target.createSourceFile(...parameters);};
+        return Reflect.get(target,property);
+      }});
+    };
+    try {assert.equal(auditR4PlanningBudget(${JSON.stringify(root)}).scheduleStatus,'infeasible');}
+    finally {module._load=originalLoad;}
+    process.stdout.write(JSON.stringify({parseCalls}));
+  `;
+  const result = spawnSync(process.execPath, ["--input-type=module", "-e", probe], { cwd: repository, encoding: "utf8", timeout: 15000 });
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(JSON.parse(result.stdout).parseCalls, R4_AUDITED_SOURCE_PATHS.length);
 });
 
 test("CLI emits budget JSON and exit 2 from a source-only fixture without node_modules", (t) => {

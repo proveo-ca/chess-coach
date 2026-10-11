@@ -30,7 +30,7 @@ const unsupported = (detail) => { throw new Error(`Unsupported R4 source shape: 
 function readSource(root, path) {
   const absolute = join(root, path);
   let cursor = sep;
-  for (const part of absolute.split(sep).filter(Boolean)) {
+  for (const part of absolute.split(sep).filter(part => part.length !== 0)) {
     cursor = join(cursor, part);
     if (lstatSync(cursor).isSymbolicLink()) unsupported(`symlink: ${path}`);
   }
@@ -38,11 +38,11 @@ function readSource(root, path) {
   return readFileSync(absolute);
 }
 
-function syntaxShape(ts, node) {
+function syntaxShape(ts, node, kinds) {
   const children = [];
-  ts.forEachChild(node, (child) => { children.push(syntaxShape(ts, child)); });
+  ts.forEachChild(node, (child) => { children.push(syntaxShape(ts, child, kinds)); });
   const text = ts.isIdentifier(node) || ts.isPrivateIdentifier(node) || ts.isLiteralExpression(node) || ts.isTemplateLiteralToken(node) ? node.text : null;
-  return [ts.SyntaxKind[node.kind], text, typeof node.operator === "number" ? ts.SyntaxKind[node.operator] : null,
+  return [kinds.get(String(node.kind)), text, typeof node.operator === "number" ? kinds.get(String(node.operator)) : null,
     ts.isVariableDeclarationList(node) ? node.flags : null,
     typeof node.isTypeOnly === "boolean" ? node.isTypeOnly : null,
     typeof node.isExportEquals === "boolean" ? node.isExportEquals : null, children];
@@ -51,14 +51,16 @@ function syntaxShape(ts, node) {
 export function auditR4PlanningBudget(root = repository) {
   const ts = toolRequire("typescript");
   if (ts.version !== "5.9.3") unsupported(`TypeScript ${ts.version}`);
+  const kinds = new Map(Object.entries(ts.SyntaxKind));
+  const signatures = new Map(Object.entries(supportedSyntax));
   root = resolve(root);
   const sources = new Map();
   const sourceFiles = R4_AUDITED_SOURCE_PATHS.map((path) => {
     const bytes = readSource(root, path);
     const source = ts.createSourceFile(path, bytes.toString("utf8"), ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
     if (source.parseDiagnostics.length) unsupported(`syntax: ${path}`);
-    const syntaxSha256 = sha256(JSON.stringify(syntaxShape(ts, source)));
-    if (syntaxSha256 !== supportedSyntax[path]) unsupported(`AST drift: ${path}`);
+    const syntaxSha256 = sha256(JSON.stringify(syntaxShape(ts, source, kinds)));
+    if (syntaxSha256 !== signatures.get(path)) unsupported(`AST drift: ${path}`);
     sources.set(path, source);
     return { path, byteLength: bytes.length, sha256: sha256(bytes), syntaxSha256 };
   });
@@ -101,9 +103,10 @@ export function auditR4PlanningBudget(root = repository) {
   };
   const arithmetic = (node, bindings = {}, checked = false) => {
     node = unwrap(node);
+    const values = new Map(Object.entries(bindings));
     let value;
     if (node && ts.isNumericLiteral(node)) value = Number(node.text);
-    else if (node && ts.isIdentifier(node) && Object.hasOwn(bindings, node.text)) value = bindings[node.text];
+    else if (node && ts.isIdentifier(node) && values.has(node.text)) value = values.get(node.text);
     else if (node && ts.isBinaryExpression(node)) {
       const left = arithmetic(node.left, bindings, checked), right = arithmetic(node.right, bindings, checked);
       if (node.operatorToken.kind === ts.SyntaxKind.PlusToken) value = left + right;
@@ -119,18 +122,18 @@ export function auditR4PlanningBudget(root = repository) {
     return value;
   };
   const invoiceSource = source("economic/invoices");
-  const constants = {};
+  const constants = new Map();
   for (const name of ["PLANNING_WORK_CAP", "PLANNING_BOOTSTRAP_UNITS", "PLANNING_GATE_UNITS", "PLANNING_CLOSURE_UNITS", "PLANNING_ENTRY_UNITS", "PLANNING_INITIAL_UNITS", "blockControl"]) {
-    constants[name] = arithmetic(declaration(invoiceSource, name).initializer, constants);
+    constants.set(name, arithmetic(declaration(invoiceSource, name).initializer, Object.fromEntries(constants)));
   }
-  const cap = constants.PLANNING_WORK_CAP;
+  const cap = constants.get("PLANNING_WORK_CAP");
   const quoteFunction = fn("economic/invoices", "quoteBlock");
   const quoteSwitch = exactlyOne(find(quoteFunction.body, ts.isSwitchStatement), "quote switch");
   const quoteCase = (block) => exactlyOne(quoteSwitch.caseBlock.clauses.filter((clause) => ts.isCaseClause(clause) && ts.isStringLiteral(clause.expression) && clause.expression.text === block), `quote ${block}`);
   const quote = (block, extent0) => {
     const clause = quoteCase(block);
     if (clause.statements.length !== 1 || !ts.isReturnStatement(clause.statements[0])) unsupported(`quote ${block}`);
-    return arithmetic(clause.statements[0].expression, { ...constants, extent0 }, true);
+    return arithmetic(clause.statements[0].expression, { ...Object.fromEntries(constants), extent0 }, true);
   };
   const blockQuoteAnchors = ["scalar", "float64-array", "float64-store", "r3-visit", "r3-node", "r3-byte-read"].map((block) => anchor(quoteCase(block), `quoteBlock:${block}`));
   const adapterBatch = fn("coordinator/economicAdapter", "constructOwnedGeneratedBatch");
@@ -154,16 +157,16 @@ export function auditR4PlanningBudget(root = repository) {
   const promotionBuilder = fn("feature/manifest", "buildPromotionNames");
   const horizons = exactlyOne(find(promotionBuilder.body, (node) => ts.isArrayLiteralExpression(node) && node.elements.length > 0), "promotion horizons");
   const promotionWidth = literalNames("PROMOTION_KERNELS") * literalNames("PROMOTION_CHANNELS") * horizons.elements.length;
-  const widths = { QUEUE_NAMES: literalNames("QUEUE_NAMES"), POSITION_NAMES: literalNames("POSITION_NAMES"), ECONOMIC_NAMES: literalNames("ECONOMIC_NAMES"), PROMOTION_NAMES_V3: promotionWidth };
+  const widths = new Map(Object.entries({ QUEUE_NAMES: literalNames("QUEUE_NAMES"), POSITION_NAMES: literalNames("POSITION_NAMES"), ECONOMIC_NAMES: literalNames("ECONOMIC_NAMES"), PROMOTION_NAMES_V3: promotionWidth }));
   const positionLoop = exactlyOne(flatten.body.statements.filter(ts.isForStatement), "flatten positions loop");
   const positionCount = arithmetic(positionLoop.condition.right);
   const laneLayout = [];
   for (const append of calls(flatten.body, "append")) {
     const name = append.arguments[1].getText();
-    if (!Object.hasOwn(widths, name)) unsupported("flatten names");
+    if (!widths.has(name)) unsupported("flatten names");
     const position = name === "POSITION_NAMES";
     for (let i = 0; i < (position ? positionCount : 1); i++) {
-      laneLayout.push({ block: append.arguments[0].getText(), ...(position ? { position: i } : {}), start: arithmetic(append.arguments[2], { i }), width: widths[name] });
+      laneLayout.push({ block: append.arguments[0].getText(), ...(position ? { position: i } : {}), start: arithmetic(append.arguments[2], { i }), width: widths.get(name) });
     }
   }
   let laneEnd = 0;
@@ -220,9 +223,9 @@ export function auditR4PlanningBudget(root = repository) {
   });
   const storeUnitsPerCall = quote("float64-store", dimension);
   const storeQuoteTotal = flattenCallCount * storeUnitsPerCall;
-  const entryUnits = arithmetic(exactlyOne(calls(fn("economic/ownedKernel", "arm").body, "debit"), "entry debit").arguments[1], constants);
+  const entryUnits = arithmetic(exactlyOne(calls(fn("economic/ownedKernel", "arm").body, "debit"), "entry debit").arguments[1], Object.fromEntries(constants));
   const ingressDebit = exactlyOne(calls(fn("economic/ownedKernel", "beginIngress").body, "debit"), "ingress debit");
-  const ingressUnits = (block) => arithmetic(ingressDebit.arguments[1], { ...constants, units: quote(block, 1) });
+  const ingressUnits = (block) => arithmetic(ingressDebit.arguments[1], { ...Object.fromEntries(constants), units: quote(block, 1) });
   const r3Source = sources.get("packages/starchess-arena/src/challenge/r3Session.ts");
   const byteReader = declaration(r3Source, "economicByteReader").initializer;
   const byteCallback = exactlyOne(calls(byteReader, "chargeEconomic"), "byte read callback");
@@ -239,8 +242,8 @@ export function auditR4PlanningBudget(root = repository) {
   const conditional = (fields) => ({ kind: "conditional-bound", ...fields });
   const stages = [
     stage("bootstrap-admission", [functionAnchor("economic/ownedKernel", "createPlanningLedger"), functionAnchor("coordinator/planningScope", "openPlanningScope")],
-      [current({ initialUnits: constants.PLANNING_INITIAL_UNITS, admissionUnits: constants.PLANNING_GATE_UNITS, totalUnits: constants.PLANNING_INITIAL_UNITS + constants.PLANNING_GATE_UNITS,
-        closureUnitsIncludedInInitial: constants.PLANNING_CLOSURE_UNITS })], ["Source-seal, startup-binding and permit checks have no established coordinator invoice coverage."]),
+      [current({ initialUnits: constants.get("PLANNING_INITIAL_UNITS"), admissionUnits: constants.get("PLANNING_GATE_UNITS"), totalUnits: constants.get("PLANNING_INITIAL_UNITS") + constants.get("PLANNING_GATE_UNITS"),
+        closureUnitsIncludedInInitial: constants.get("PLANNING_CLOSURE_UNITS") })], ["Source-seal, startup-binding and permit checks have no established coordinator invoice coverage."]),
     stage("ingress", [anchor(byteReader, "economicByteReader"), anchor(declaration(r3Source, "visitR3EconomicInputs"), "visitR3EconomicInputs"), functionAnchor("coordinator/planningScope", "openPlanningScope"), functionAnchor("economic/ownedKernel", "beginIngress")],
       [current({ visitUnits: ingressUnits("r3-visit"), nodeUnits: ingressUnits("r3-node"), byteReadCallbackUnits: byteCallbackUnits, byteReadExtentPerTicket: 1, unitsPerByteReadTicket: ingressUnits("r3-byte-read"), byteReadAccounting: "one new ingress ticket per read, including entry and gate" })],
       ["Ingress totals depend on retained boundaries and every byte read; this audit does not aggregate them."]),
@@ -266,7 +269,7 @@ export function auditR4PlanningBudget(root = repository) {
       [conditional({ condition: "selection and both passes complete", encodeCalls: 1, flattenCalls: 1, entryUnitsPerEncodeOrFlatten: entryUnits })],
       ["Selected-minus-mean gradient and log-probability arithmetic have no established coordinator invoice coverage."]),
     stage("publication-closure", [functionAnchor("coordinator/economicAdapter", "executeCandidatePipeline"), functionAnchor("coordinator/planningScope", "closePlanningScope"), functionAnchor("coordinator/episodeVerification", "reconstructCandidateDecision")],
-      [current({ closureUnits: constants.PLANNING_CLOSURE_UNITS, includedIn: "bootstrap-admission.initialUnits", additionalCloseDebit: 0 })],
+      [current({ closureUnits: constants.get("PLANNING_CLOSURE_UNITS"), includedIn: "bootstrap-admission.initialUnits", additionalCloseDebit: 0 })],
       ["Journal construction, scalar encoding, scoreDelta copying, rechecks and recomputation publication have no established complete invoice coverage."]),
     stage("parent-replica", [functionAnchor("coordinator/episodeWorker", "runEpisodeWorker"), functionAnchor("coordinator/episodeSupervisor", "superviseEpisodeChannel"), functionAnchor("coordinator/episodeVerification", "reconstructCandidateDecision")],
       [conditional({ condition: "parent receives a candidate decision-result", schedule: "independent reconstruction of the same candidate pipeline", capScope: "one ledger per planning scope; do not sum parent and child against one cap" })],

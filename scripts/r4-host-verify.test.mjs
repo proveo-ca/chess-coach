@@ -6,7 +6,7 @@ import { copyFileSync, existsSync, linkSync, lstatSync, mkdirSync, mkdtempSync,
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
   blockedResult, controlledEnvironment, createScratch, diagnose, executeSchedule, fixedPlan, KIND,
   LIMITS, OPEN_GATES, PACKAGES, parseArgs, readFreshReport, resolveTool, runChild,
@@ -63,11 +63,59 @@ function command(f, id, code, extra = {}) {
 }
 
 test('CLI flags are closed with static/diagnose defaults', () => {
-  assert.deepEqual(parseArgs([]), { stage: 'static', mode: 'diagnose', tempParent: tmpdir() });
+  assert.deepEqual(parseArgs([]), { stage: 'static', mode: 'diagnose', tempParent: undefined });
   assert.deepEqual(parseArgs(['--stage', 'full', '--mode', 'accept', '--temp-parent', '/a literal path']), { stage: 'full', mode: 'accept', tempParent: '/a literal path' });
   for (const args of [['--stage', 'static', '--stage', 'full'], ['--stage'], ['--mode', 'ready'], ['--stage', 'fast'],
     ['--temp-parent', '/x', '--temp-parent', '/y'], ['--command', 'publish'], ['--executable', '/bin/sh'], ['--timeout', '600'],
     ['--stage=full'], ['full'], ['--mode', '--stage'], ['--temp-parent', 'x\0y']]) assert.throws(() => parseArgs(args));
+});
+
+test('a missing explicit HOST parent reports actionable guidance before any command runs', async t => {
+  const f = fixture(t);
+  for (const name of ['r4-host-verify.mjs', 'r4-host-verify-lib.mjs']) copyFileSync(join(here, name), join(f.root, 'scripts', name));
+  const missing = join(f.directory, 'missing-host-parent');
+  const result = spawnSync(process.execPath, [join(f.root, 'scripts/r4-host-verify.mjs'), '--stage', 'full', '--mode', 'diagnose',
+    '--temp-parent', missing], { encoding: 'utf8', env: {} });
+  assert.equal(result.status, 1);
+  const report = JSON.parse(result.stdout);
+  assert.deepEqual(report.commands, []);
+  assert.equal(report.diagnosticsComplete, false);
+  assert.match(report.errors[0], /Omit --temp-parent to use HOST's default/);
+  assert.equal(existsSync(missing), false);
+});
+
+test('omitted HOST parent resolves native TMPDIR aliases while explicit aliases remain rejected', t => {
+  const f = fixture(t), temporary = join(f.directory, 'native-temp'), alias = join(f.directory, 'native-alias');
+  mkdirSync(temporary, { mode: 0o700 });
+  symlinkSync(temporary, alias, 'dir');
+  const helper = f.write('scratch-probe.mjs', `import {createScratch} from ${JSON.stringify(pathToFileURL(join(here, 'r4-host-verify-lib.mjs')).href)};
+    process.stdout.write(createScratch(process.argv[2]));\n`);
+  const result = spawnSync(process.execPath, [helper, f.root], { encoding: 'utf8', env: { TMPDIR: alias } });
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(dirname(result.stdout), temporary);
+  assert.equal(lstatSync(result.stdout).mode & 0o7777, 0o700);
+  assert.equal(lstatSync(alias).isSymbolicLink(), true);
+  assert.equal(lstatSync(temporary).mode & 0o7777, 0o700);
+  assert.throws(() => createScratch(f.root, alias), /canonical/);
+});
+
+test('missing or relative native defaults fail without fallback and do not affect early accept refusal', t => {
+  const f = fixture(t);
+  const helper = f.write('scratch-probe.mjs', `import {createScratch} from ${JSON.stringify(pathToFileURL(join(here, 'r4-host-verify-lib.mjs')).href)};
+    createScratch(process.argv[2]);\n`);
+  for (const selected of [join(f.directory, 'absent-native-temp'), 'relative-native-temp']) {
+    const result = spawnSync(process.execPath, [helper, f.root], { encoding: 'utf8', cwd: f.root, env: { TMPDIR: selected } });
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /default temporary directory is unusable/);
+    assert.equal(existsSync(join(f.root, 'relative-native-temp')), false);
+    assert.equal(existsSync(join(f.directory, 'absent-native-temp')), false);
+  }
+  for (const name of ['r4-host-verify.mjs', 'r4-host-verify-lib.mjs']) copyFileSync(join(here, name), join(f.root, 'scripts', name));
+  const accept = spawnSync(process.execPath, [join(f.root, 'scripts/r4-host-verify.mjs'), '--stage', 'full', '--mode', 'accept'],
+    { encoding: 'utf8', env: { TMPDIR: join(f.directory, 'absent-native-temp') } });
+  assert.equal(accept.status, 2);
+  assert.equal(JSON.parse(accept.stdout).status, 'BLOCKED');
+  assert.deepEqual(JSON.parse(accept.stdout).commands, []);
 });
 
 test('accept blocks both stages before scratch, dependencies, or commands', async t => {

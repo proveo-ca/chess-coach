@@ -34,25 +34,44 @@
 ' related: _spec/_plans/ml-adjutant-r4-host-delegation.md
 ' related: _spec/_plans/ml-adjutant-r4-authority-chain.md
 ' related: _spec/packages/starchess-training/owned-economic-foundations.puml
-' authority: Existing frozen D1/base/A1-A7/R3/request/B1 bodies and operation grants remain unchanged.
-' status: LANDED DIAGNOSTICS ONLY; full R4 INCOMPLETE; positive cap, B1, image/dispatch and cold authority gates remain open.
+' authority: Frozen D1/base/A1-A7/R3/request/B1 bodies unchanged; latest user steering permits requested budget/full diagnostics in SBX and lead commit/push after done verification/review, not excluded runtime/data operations.
+' status: LATEST FULL SBX RERUN COMPLETE/FAILED; tooling69 PASS; bounded sourcecompat/path reviews READY; full R4 INCOMPLETE; cap/R3 inventory/B1/runtime/exports/cold-positive remain open.
 ' index:32 actual coverage declarations /36 source-test-tool paths; matching new entry fingerprint:null; existing entries/triage unchanged.
 ' source refs: Actual new source/top SPEC pointers and context/infra/private-helper dual pointers corroborate owned spec-side coverage.
-' verification: Current lead65 PASS (34 budget/7 context/24 HOST), zero fail/skip/todo, approximately7.4s; subsequent post-metadata tests pending; not HOST/full-package/cold production proof.
+' portable correction: Only r4-host-verify-lib.mjs/test source changed; omitted parent parses undefined/no filesystem and resolves realpath(os.tmpdir()) lazily in createScratch after accept guard; explicit parent remains strict/no fallback.
+' portable chronology: Earlier pre-full68 tooling PASS and first full tooling68 PASS include the three default-parent tests; neither is current own-budget-repair proof.
+' first full:46 commands/diagnosticsComplete=true/no input drift/notRun0/checksPassed=false/overall1; r4-sbx-diagnostics.jsB1cE0p/full-result.json and actual tmp/r4-host-DGma7T/result.json retained in linked plan.
+' first full scopes: Three types/strict/public FIVE-root/all selected MJS syntax PASS; core554/62 and training1010/49 PASS; arena raw2413/2169 pass/5 failed/239 pending plus3 failed imports.
+' first full Node:25/33/51 separate PASS commands (109 owner summary), then68 tooling PASS; not a synthetic single command or complete R4 verdict.
+' latest full: r4-sbx-rerun.ACE059Rp/full-result.json plus budget.json; actual tmp/r4-host-plQ4HJ/result.json;46 executed/complete=true/checks=false/notRun0/overall1; no observed source-doc-dependency drift.
+' latest passing scopes: Core554/62/training1010/49 zero skip, all three types/strict/FIVE-root closure/selected MJS syntax PASS; independent Node25/33/51 and tooling69 (35 budget/7 context/27 runner) PASS.
+' latest arena: Child1/raw2427 tests/2182 pass/6 failed/239 pending/0 todo/94 logical suites/8 failed/37 files total; exactly1 import-failed challengeEvidenceImport; no guessed file pass-fail split.
+' latest remaining failures: Budgetchild2 supported infeasible/adequacy unproven/design impossibility not-proven; inventorychild1 unchanged R3 expected[index]/localInvocation depth16; arena three R3 assertions and three5000ms fixture timeouts.
+' own-tool repair: Fixed filter predicate and SyntaxKind/signature/numeric dictionary Map reads; parser-only observer isolated in child code fixture; literal module URL uses pathToFileURL; one narrow callback case added.
+' unchanged audit probes: Lead restored original r3Session after failed numeric-loop probe and reports all12 audited source bytes/baked pins unchanged; no guard/fee/schema/B1/export amendment.
+' latest inventory STOP: Current plQ4HJ command2 repeats unchanged R3 expected[index]/wrapper depth16; older Gn4mkz/Hr3Gpb probe receipts stay chronology, not complete closure or fresh compatible-baseline certification.
+' soundness follow-up: Backend/architect reject seen-or-visited->undefined and single first-match localInvocation summaries for cycles/all-route effects; future reviewed bounded set-valued SCC fixpoint needed; no implementation/exemption here.
+' current verification: Latest combined69 pre-rerun PASS approximately7.84s and actual full-command69 PASS are separate; current full/portable/tool execution PENDING rows closed to COMPLETE/FAILED, not R4 acceptance.
+' current reviews: Lead supplies current sourcecompat/path-repair adversarial/security/DevOps bounded static READY yes for69 source; read-only/no independent tests/hashes/full-R4 approval; older named verdicts retain old scopes.
+' local evidence prerequisite: Lead restored only approved local clone _spec/evidence directory0755->0700 via current-UID/no-follow descriptor between runs; historical57 readers validated; no file bytes/modes/markers or assurance publication changed.
+' preflight boundary: Optional guarded setup lives in delegation doc, not runner auto-chmod; original permission records and published57 stay immutable.
+' latest local evidence: Private-ancestor fault no longer appears after approved single local-parent restoration; historical57 marker/artifact bytes read/hash-verified unchanged; no assurance publication or evidence rewrite.
+' reported attempts: User budget output infeasible; full attempt ENOENT/commands=[] from lead sandbox-only parent example, not accepted native controller configuration.
+' verification history: Prior lead65 PASS (34 budget/7 context/24 HOST), zero fail/skip/todo, approximately7.4s; final exact7406.17ms/raw evidence and23-path rereviews stay in linked plan as pre-correction proof only.
 ' verification chronology: Prior61 PASS (34 audit/7 context/20 runner), zero fail/skip/todo, approximately6.4s; earlier39 remains separate; no stitched acceptance count.
 ' checks: Lead context/infra/new-context syntax and planningScheduleReservation syntax-only PASS; private-helper isolated typecheck PASS via source-agent report, not full tsc/Vitest.
 ' review chronology: At61, initial scoped MEDIUM directory-substitution/expected-list/tmp repairs had no resolving verdict; retain those negatives and pending-at-that-revision history.
 ' adversarial: ses_ed6351c3effeOXHBTxD8uvhUN3 READ-ONLY no findings/READY TO MERGE yes for inspected increment/FULL R4 NOT READY; three ctx MEDIUMs then HIGH TAP-forge/MEDIUM config-closure/MEDIUM TMP resolved by explicit verdict.
-' security: ses_ed6351c3cffeokBn8KN9f1WffS static bounded READY/no scoped findings/FULL R4 NOT READY; ctx LOW/scratch-race MEDIUM/dangling-optional LOW resolved; complete diff/path inventory requires lead handoff.
+' security history: ses_ed6351c3cffeokBn8KN9f1WffS prior23-path final scope limitation resolved/static bounded READY/no findings/FULL R4 NOT READY; not a verdict on portable correction.
 ' devops: ses_ed6882ef8ffeMR0ubmo1bvsx10 bounded HOST delegation READY yes/no HIGH or BLOCKER; prior HIGH indefinite-command/MEDIUM receipt-loss/TAP-recount resolved; docs LOW lag corrected here, no post-edit verdict claimed.
-' review scope: All supplied verdicts are read-only without independent test execution; original findings/negative dispositions remain chronology, not skipped or waived.
+' review scope: All prior supplied verdicts are read-only without independent test execution; originals/negative dispositions remain chronology, not approval of newer code or skip waivers.
 ' hardening: Dedicated foreign-owned temporary-ancestor negative test is optional LOW, not an unwaived HIGH/BLOCKER; no test edit here.
 ' deadlines: Fixed HOST per-command static600s/Vitest3600s/Node900s; no CLI override or total-run wall-clock bound; production10s/300s and existing test timeouts unchanged.
 ' receipts: Exclusive0600 started/result JSON files receive file fsync before child/postscan/next task respectively; separate timedOut/actual exit/signal; no directory-durability claim.
 ' capture: Directory modes/nested src-build source and within-repo relative JSONC extends closure; reject invalid/cyclic/escaping configs and dangling optional controls; canonical Node fixture parents.
 ' scratch: Root/current-UID trusted ancestors; writable ancestors require sticky bit; O_DIRECTORY/O_NOFOLLOW descriptor chmod only on fresh owned child.
 ' preservation: Lead pre-metadata nine protected full reading files equal HEAD and two accepted-body hashes PASS; not exhaustive preservation or a new grant.
-' render: Prior lead checkonly PASS keeps its scope; actual diff/path-review artifact and subsequent tests/hash/preservation/checkonly/SVG pending after this metadata. Keeper runs no commands/tests/hashes/render/nested agents/commits.
+' render: Current source unchanged after completed capture as reported; newest metadata rendering/source-preservation/whitespace remains lead-owned before scoped commit/push. No resulting-document self-hash or keeper commands/tests/render/Git.
 ' unchanged: Public exports, both actual B1 auditors, private kernel/fees and production unsupported gates; prior995/static READY belongs to69b, not this revision.
 ' trace: Lead inspected installed fflate0.8.3 Node import/default esm/index.mjs, createRequire('/')/worker_threads init; Worker eval branch present, not executed.
 ' theme: Loaded skill and existing repo remote identity convention unchanged.
@@ -70,10 +89,10 @@ package "Audit-first planning boundary" {
 }
 
 package "Dedicated HOST route - landed diagnostics only" <<host>> {
-  component "scripts/r4-host-verify.mjs\noptional --stage / --mode / --temp-parent\ndefault static / diagnose / os.tmpdir()" as Cli <<host>>
-  component "scripts/r4-host-verify-lib.mjs\ndiagnose: trusted canonical parent\nfresh descriptor-bound0700 scratch / controlled env" as Capture <<host>>
+  component "scripts/r4-host-verify.mjs\noptional --stage / --mode / --temp-parent\nparse defaults: static / diagnose / undefined" as Cli <<host>>
+  component "scripts/r4-host-verify-lib.mjs\ndiagnose: lazy native default / strict override\nfresh descriptor-bound0700 scratch / controlled env" as Capture <<host>>
   component "scripts/r4-host-verify-lib.mjs\nstatic: budget FIRST / two actual auditors\nthree tsc + strict command6 + all selected mjs syntax" as Static <<host>>
-  component "r4-source-inventory.ts -> sourceInventory.ts\ncheck-public-closure.mjs -> public-closure.mjs\nactual auditors unchanged / B1 still required" as Auditors <<host>>
+  component "r4-source-inventory.ts -> sourceInventory.ts\ncheck-public-closure.mjs -> public-closure.mjs\nactual source inventory STOP at old R3 recursion\nauditors unchanged / B1 still required" as Auditors <<host>>
   component "scripts/r4-host-verify-lib.mjs\nfull diagnose: add three unfiltered Vitest\ncache:false / native / two workers / fresh JSON\nthree existing + one tooling Node commands" as Full <<host>>
   database "scripts/r4-host-verify-lib.mjs\ndiagnostic records only\nexclusive file-fsynced started/result JSON\nargv / logs / exits / signals / timedOut / not-run" as Records <<db>>
   component "scripts/r4-host-verify.mjs\naccept BLOCKED / exit2\nBEFORE scratch / dependencies / spawns" as Blocked <<error>>
@@ -85,20 +104,20 @@ package "Capture and fixture support - not a HOST Docker task" <<host>> {
   component "hermetic/manifest.mjs\nexisting physical treeManifest format" as Manifest <<host>>
   component "__tests__/privateScratch.ts\nowned child0700 / source root0755\ncanonical temporary fixture target" as Scratch <<host>>
   component "episodeSupervision / sourceManifest\nsourceBootstrap / sourceSnapshotFixture\nprivateScratch.test.ts" as Fixtures <<host>>
-  component "r4-budget-audit.test.mjs\nr4-context.test.mjs\nr4-host-verify.test.mjs\nlead scoped tooling65 PASS; prior61 history" as ToolTests <<host>>
-  component "planningScheduleReservation.test.ts\nreal accounting / expected rejection assertions\nlead syntax-only PASS; Vitest UNRUN" as ReservationTest <<host>>
+  component "r4-budget-audit.test.mjs\nr4-context.test.mjs\nr4-host-verify.test.mjs\ncurrent69 PASS / older68 and35 retain scopes" as ToolTests <<host>>
+  component "planningScheduleReservation.test.ts\nreal accounting / expected rejection assertions\nlatest training1010/49 PASS\nnot positive whole-cap authority" as ReservationTest <<host>>
 }
 
 Repo ARROW_MAIN Audit : parse actual source / bind hashes + anchors
 Audit ARROW_ERROR Stop : current witnesses; unsupported shape errors exit1
 Repo ARROW_OPTIONAL Cli : separately requested HOST diagnosis
-Cli ARROW_MAIN Capture : diagnose / validate selected or default parent
+Cli ARROW_MAIN Capture : diagnose only / resolve default then validate
 Capture ARROW_MAIN Static : pre-capture / fixed static plan
 Static ARROW_MAIN Audit : diagnostic invocation; STOP remains visible
-Static ARROW_MAIN Auditors : actual reports; missing enforcement is not PASS
+Static ARROW_MAIN Auditors : actual inventory rejection / five-root closure only
 Static ARROW_MAIN Records : separate static outcomes
 Static ARROW_OPTIONAL Full : --stage full; diagnostics only
-Full ARROW_MAIN Records : fresh results / positive runtime gate stays open
+Full ARROW_MAIN Records : latest46 completed / checks failed / actual receipts
 Capture ARROW_MAIN Records : per-task source/docs/config; start/end dependency drift
 Cli ARROW_ERROR Blocked : --mode accept; either stage
 Blocked ARROW_MAIN Cli : return JSON only / no scratch records
@@ -119,11 +138,32 @@ note top of Full
   Production10s/300s; test timeouts unchanged.
 end note
 
+note bottom of Full
+  Latest46: diagnosticsComplete=true.
+  checksPassed=false; no drift; notRun0.
+  Core554/62; training1010/49 PASS.
+  ArenaFAIL; current tooling69 PASS.
+  Positive R4 authority remains unproven.
+end note
+
+note bottom of Auditors
+  Inventory STOP: old R3 expected[index].
+  Wrapper analysis exceeds depth16.
+  No closure PASS or policy exception.
+end note
+
 note bottom of Records
   Started record precedes child spawn.
   Result record precedes postscan/next task.
   Exclusive0600 files; file fsync only.
   No directory-durability claim.
+end note
+
+note right of Cli
+  Parse: static / diagnose / undefined.
+  Accept: exit2 before default resolution.
+  Omitted: realpath(os.tmpdir()) in diagnose.
+  Explicit: existing canonical path only.
 end note
 
 note bottom of Audit
@@ -138,7 +178,7 @@ note top of Stop
   n=14 raw1069888: CARDINALITY.
   Scalar block control128; no debit.
   n=13 test: used7296 +quote1042752.
-  Expected WORK_CAP; Vitest UNRUN.
+  Latest training:three cases PASS; not cap proof.
   Conditional1025 store quotes:13841600.
 end note
 
@@ -178,8 +218,10 @@ legend bottom
   All-zero diagnosis still reports r4Acceptance=NOT_ESTABLISHED.
   Budget child exit2 makes aggregate diagnosis exit1; independent checks continue.
   Flat TAP requires one exact plan, consecutive results and recounted summaries.
-  Bounded supplied static reviews READY; full-R4 readiness remains open.
-  Actual HOST evidence and post-metadata lead validation remain pending.
+  Current sourcecompat/path reviews bounded READY; no full-R4 approval.
+  Latest steering authorizes requested budget/full diagnostics in SBX only.
+  Full-R4 acceptance/data/training/Docker/deployment gates remain unchanged.
+  Both full diagnostics executed and failed; positive R4 runtime remains unrun.
   No default Docker R2 run, cap waiver or expected-failure acceptance.
   Full R4 INCOMPLETE; weights NONE; operation grants unchanged.
 endlegend

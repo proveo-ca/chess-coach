@@ -42,7 +42,7 @@ const secret = name => /^\.env(?:$|\.)/.test(name) && name !== '.env.example' ||
   /\.(?:pem|key|p12|pfx|keystore)$/i.test(name) || /^(?:id_rsa|id_ed25519|credentials|\.netrc)$/i.test(name);
 
 export function parseArgs(argv) {
-  const result = { stage: 'static', mode: 'diagnose', tempParent: tmpdir() };
+  const result = { stage: 'static', mode: 'diagnose', tempParent: undefined };
   const seen = new Set();
   const keys = { '--stage': 'stage', '--mode': 'mode', '--temp-parent': 'tempParent' };
   for (let i = 0; i < argv.length; i += 2) {
@@ -53,7 +53,8 @@ export function parseArgs(argv) {
     seen.add(key);
     result[keys[key]] = argv[i + 1];
   }
-  if (!['static', 'full'].includes(result.stage) || !['diagnose', 'accept'].includes(result.mode) || /[\0\r\n]/.test(result.tempParent)) throw new Error('Invalid stage, mode, or temp parent');
+  if (!['static', 'full'].includes(result.stage) || !['diagnose', 'accept'].includes(result.mode) ||
+      result.tempParent !== undefined && /[\0\r\n]/.test(result.tempParent)) throw new Error('Invalid stage, mode, or temp parent');
   return result;
 }
 
@@ -64,7 +65,15 @@ export function blockedResult(options) {
 }
 
 export function createScratch(root, parent) {
-  if (!isAbsolute(parent) || resolve(parent) !== parent || realpathSync(parent) !== parent || !lstatSync(parent).isDirectory()) throw new Error('Temp parent must be an existing canonical absolute directory');
+  const supplied = parent !== undefined;
+  const selected = supplied ? parent : tmpdir();
+  const guidance = supplied ? 'Omit --temp-parent to use HOST\'s default, or provide an existing canonical external HOST directory.' :
+    'HOST\'s default temporary directory is unusable; provide an existing canonical external HOST directory with --temp-parent.';
+  try {
+    if (typeof selected !== 'string' || !isAbsolute(selected) || /[\0\r\n]/.test(selected)) throw new Error('Temporary parent must be absolute');
+    parent = supplied ? selected : realpathSync(selected);
+    if (resolve(parent) !== parent || realpathSync(parent) !== parent || !lstatSync(parent).isDirectory()) throw new Error('Temp parent must be an existing canonical absolute directory');
+  } catch (error) { throw new Error(`Cannot use ${supplied ? 'requested' : 'default HOST'} scratch parent ${JSON.stringify(selected)}: ${message(error)}. ${guidance}`); }
   if (within(root, parent)) throw new Error('Scratch must be external to the repository');
   let ancestor = parent;
   while (true) {
