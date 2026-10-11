@@ -1,15 +1,14 @@
 // SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, symlinkSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, symlinkSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
-import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { captureFilesystemSourceSnapshot } from "../coordinator/sourceManifest";
 import { captureFilesystemRuntimeSnapshot } from "../coordinator/sourceRuntimeSnapshot";
+import { createPrivateScratch, createScratchSourceRoot } from "./privateScratch";
 
 export const sourceSnapshotFixture = (files: Readonly<Record<string, string>>, compiler = false) => {
-  const preferred = "/tmp/proveo-opencode-runtime-cache-1000-21d690750d3738af14d58c25/tmp/opencode";
-  const directory = mkdtempSync(join(existsSync(preferred) ? preferred : tmpdir(), "b1-memory-"));
-  const repository = join(directory, "repository"), store = join(directory, "store"), tools = join(directory, "tools");
+  const directory = createPrivateScratch("b1-memory-");
+  const repository = createScratchSourceRoot(directory, "repository"), store = join(directory, "store"), tools = join(directory, "tools");
   for (const root of [repository, store, tools, ...["", "packages/starchess-core", "packages/starchess-arena", "packages/starchess-training"]
     .map(owner => join(repository, owner, "node_modules"))]) mkdirSync(root, { recursive: true });
   for (const [path, bytes] of Object.entries(files)) {

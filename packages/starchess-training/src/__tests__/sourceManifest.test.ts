@@ -1,20 +1,18 @@
 // SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   captureFilesystemSourceSnapshot, capturedSourceManifest, capturedSourceMember, capturedSourcePhysicalRoot,
   readCapturedSourceFile, requireCapturedSourceSnapshot, requireSourcePath, sourceSha256, verifyCapturedSourceManifest,
 } from "../coordinator/sourceManifest";
+import { createPrivateScratch, createScratchSourceRoot } from "./privateScratch";
 
-const preferredTemporary = "/tmp/proveo-opencode-runtime-cache-1000-21d690750d3738af14d58c25/tmp/opencode";
-const temporary = existsSync(preferredTemporary) ? preferredTemporary : tmpdir();
 const directories: string[] = [];
 const fixture = () => {
-  const root = mkdtempSync(join(temporary, "b1-manifest-"));
-  directories.push(root);
-  chmodSync(root, 0o755);
+  const directory = createPrivateScratch("b1-manifest-");
+  directories.push(directory);
+  const root = createScratchSourceRoot(directory, "source");
   mkdirSync(join(root, "src"), { mode: 0o755 });
   writeFileSync(join(root, "src", "module.ts"), "export const value = 1;\n", { mode: 0o644 });
   symlinkSync("module.ts", join(root, "src", "alias.ts"));
@@ -101,7 +99,7 @@ describe("B1 captured-source manifest-v1 bytes", () => {
     for (const candidate of [null, {}, { ...snapshot }, structuredClone(snapshot), new Proxy(snapshot, {})]) {
       expect(() => requireCapturedSourceSnapshot(candidate)).toThrow("PROVENANCE");
     }
-    const parent = mkdtempSync(join(temporary, "b1-manifest-link-"));
+    const parent = createPrivateScratch("b1-manifest-link-");
     directories.push(parent);
     symlinkSync(root, join(parent, "selected"));
     expect(() => captureFilesystemSourceSnapshot(join(parent, "selected"))).toThrow("SNAPSHOT");

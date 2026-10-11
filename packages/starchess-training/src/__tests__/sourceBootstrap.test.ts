@@ -1,6 +1,5 @@
 // SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { constructRef } from "../economic/ownedKernel";
@@ -18,9 +17,8 @@ import {
   BOOTSTRAP_AUDITOR_PATHS, BOOTSTRAP_CONSTRUCTOR_RULE, checkBootstrapSourcePolicy, checkClaimedSourceInventoryBytes,
   encodeBootstrapSourcePolicy, type BootstrapSourcePolicyExpectations,
 } from "../coordinator/sourcePolicy";
+import { createPrivateScratch, createScratchSourceRoot } from "./privateScratch";
 
-const preferredTemporary = "/tmp/proveo-opencode-runtime-cache-1000-21d690750d3738af14d58c25/tmp/opencode";
-const temporary = existsSync(preferredTemporary) ? preferredTemporary : tmpdir();
 const directories: string[] = [];
 const training = "packages/starchess-training/src";
 const roots = ["packages/starchess-core/src", "packages/starchess-arena/src", training,
@@ -41,8 +39,9 @@ const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
 const recordHash = (value: unknown) => sourceSha256(canonicalSourceJson(value));
 
 const fixture = () => {
-  const root = mkdtempSync(join(temporary, "b1-bootstrap-"));
-  directories.push(root);
+  const directory = createPrivateScratch("b1-bootstrap-");
+  directories.push(directory);
+  const root = createScratchSourceRoot(directory, "source");
   for (const path of roots) mkdirSync(join(root, path), { recursive: true });
   for (const path of entrypoints) {
     mkdirSync(dirname(join(root, path)), { recursive: true });

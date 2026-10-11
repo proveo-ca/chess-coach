@@ -1,0 +1,186 @@
+' purpose: Separate audit-first planning STOP from dedicated HOST diagnostics and blocked future R4 acceptance.
+' covers: scripts/r4-host-verify*.mjs
+' covers: scripts/r4-planning-budget-audit.mjs
+' covers: scripts/check-public-closure.mjs
+' covers: packages/starchess-arena/hermetic/r4-budget-audit*.mjs
+' covers: packages/starchess-arena/hermetic/r4-source-inventory.ts
+' covers: packages/starchess-arena/hermetic/r4-context.test.mjs
+' covers: packages/starchess-arena/hermetic/context.mjs
+' covers: packages/starchess-arena/hermetic/infra.test.mjs
+' covers: packages/starchess-arena/hermetic/manifest.mjs
+' covers: packages/starchess-arena/hermetic/verification-plan.mjs
+' covers: packages/starchess-training/src/__tests__/privateScratch*.ts
+' covers: packages/starchess-training/src/__tests__/episodeSupervision.test.ts
+' covers: packages/starchess-training/src/__tests__/sourceManifest.test.ts
+' covers: packages/starchess-training/src/__tests__/sourceBootstrap.test.ts
+' covers: packages/starchess-training/src/__tests__/sourceSnapshotFixture.ts
+' covers: packages/starchess-training/src/__tests__/planningScheduleReservation.test.ts
+' covers: packages/starchess-arena/src/challenge/r3Session.ts
+' covers: packages/starchess-training/src/coordinator/economicAdapter.ts
+' covers: packages/starchess-training/src/coordinator/episodeSupervisor.ts
+' covers: packages/starchess-training/src/coordinator/episodeVerification.ts
+' covers: packages/starchess-training/src/coordinator/episodeWorker.ts
+' covers: packages/starchess-training/src/coordinator/planningScope.ts
+' covers: packages/starchess-training/src/economic/contracts.ts
+' covers: packages/starchess-training/src/economic/invoices.ts
+' covers: packages/starchess-training/src/economic/ownedKernel.ts
+' covers: packages/starchess-training/src/economic/work.ts
+' covers: packages/starchess-training/src/feature/manifest.ts
+' covers: packages/starchess-training/src/features.ts
+' covers: packages/starchess-arena/src/challenge/sourceInventory.ts
+' covers: packages/starchess-arena/hermetic/public-closure.mjs
+' covers: packages/starchess-training/src/coordinator/sourceBootstrap.ts
+' covers: packages/starchess-training/src/coordinator/sourceModuleLoader.mjs
+' related: _spec/_plans/ml-adjutant-r4-host-delegation.md
+' related: _spec/_plans/ml-adjutant-r4-authority-chain.md
+' related: _spec/packages/starchess-training/owned-economic-foundations.puml
+' authority: Existing frozen D1/base/A1-A7/R3/request/B1 bodies and operation grants remain unchanged.
+' status: LANDED DIAGNOSTICS ONLY; full R4 INCOMPLETE; positive cap, B1, image/dispatch and cold authority gates remain open.
+' index:32 actual coverage declarations /36 source-test-tool paths; matching new entry fingerprint:null; existing entries/triage unchanged.
+' source refs: Actual new source/top SPEC pointers and context/infra/private-helper dual pointers corroborate owned spec-side coverage.
+' verification: Current lead65 PASS (34 budget/7 context/24 HOST), zero fail/skip/todo, approximately7.4s; subsequent post-metadata tests pending; not HOST/full-package/cold production proof.
+' verification chronology: Prior61 PASS (34 audit/7 context/20 runner), zero fail/skip/todo, approximately6.4s; earlier39 remains separate; no stitched acceptance count.
+' checks: Lead context/infra/new-context syntax and planningScheduleReservation syntax-only PASS; private-helper isolated typecheck PASS via source-agent report, not full tsc/Vitest.
+' review chronology: At61, initial scoped MEDIUM directory-substitution/expected-list/tmp repairs had no resolving verdict; retain those negatives and pending-at-that-revision history.
+' adversarial: ses_ed6351c3effeOXHBTxD8uvhUN3 READ-ONLY no findings/READY TO MERGE yes for inspected increment/FULL R4 NOT READY; three ctx MEDIUMs then HIGH TAP-forge/MEDIUM config-closure/MEDIUM TMP resolved by explicit verdict.
+' security: ses_ed6351c3cffeokBn8KN9f1WffS static bounded READY/no scoped findings/FULL R4 NOT READY; ctx LOW/scratch-race MEDIUM/dangling-optional LOW resolved; complete diff/path inventory requires lead handoff.
+' devops: ses_ed6882ef8ffeMR0ubmo1bvsx10 bounded HOST delegation READY yes/no HIGH or BLOCKER; prior HIGH indefinite-command/MEDIUM receipt-loss/TAP-recount resolved; docs LOW lag corrected here, no post-edit verdict claimed.
+' review scope: All supplied verdicts are read-only without independent test execution; original findings/negative dispositions remain chronology, not skipped or waived.
+' hardening: Dedicated foreign-owned temporary-ancestor negative test is optional LOW, not an unwaived HIGH/BLOCKER; no test edit here.
+' deadlines: Fixed HOST per-command static600s/Vitest3600s/Node900s; no CLI override or total-run wall-clock bound; production10s/300s and existing test timeouts unchanged.
+' receipts: Exclusive0600 started/result JSON files receive file fsync before child/postscan/next task respectively; separate timedOut/actual exit/signal; no directory-durability claim.
+' capture: Directory modes/nested src-build source and within-repo relative JSONC extends closure; reject invalid/cyclic/escaping configs and dangling optional controls; canonical Node fixture parents.
+' scratch: Root/current-UID trusted ancestors; writable ancestors require sticky bit; O_DIRECTORY/O_NOFOLLOW descriptor chmod only on fresh owned child.
+' preservation: Lead pre-metadata nine protected full reading files equal HEAD and two accepted-body hashes PASS; not exhaustive preservation or a new grant.
+' render: Prior lead checkonly PASS keeps its scope; actual diff/path-review artifact and subsequent tests/hash/preservation/checkonly/SVG pending after this metadata. Keeper runs no commands/tests/hashes/render/nested agents/commits.
+' unchanged: Public exports, both actual B1 auditors, private kernel/fees and production unsupported gates; prior995/static READY belongs to69b, not this revision.
+' trace: Lead inspected installed fflate0.8.3 Node import/default esm/index.mjs, createRequire('/')/worker_threads init; Worker eval branch present, not executed.
+' theme: Loaded skill and existing repo remote identity convention unchanged.
+' FK: bottom of Audit10.8; bottom of Capture11.8; bottom of FutureGate11.4; structural source arithmetic exempt.
+@startuml r4-host-verification
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title R4 - Audit first / HOST diagnostics / acceptance BLOCKED
+left to right direction
+
+folder "Repository inputs\nactual source / tests / docs\nresolved dependencies / tools" as Repo <<host>>
+
+package "Audit-first planning boundary" {
+  component "scripts/r4-planning-budget-audit.mjs\nhermetic/r4-budget-audit.mjs\n12 full-file AST probes / partial invoices" as Audit <<app>>
+  component "r4-budget-audit.mjs\ninfeasible / unproven: exit2\nSTOP planning exposure" as Stop <<error>>
+}
+
+package "Dedicated HOST route - landed diagnostics only" <<host>> {
+  component "scripts/r4-host-verify.mjs\noptional --stage / --mode / --temp-parent\ndefault static / diagnose / os.tmpdir()" as Cli <<host>>
+  component "scripts/r4-host-verify-lib.mjs\ndiagnose: trusted canonical parent\nfresh descriptor-bound0700 scratch / controlled env" as Capture <<host>>
+  component "scripts/r4-host-verify-lib.mjs\nstatic: budget FIRST / two actual auditors\nthree tsc + strict command6 + all selected mjs syntax" as Static <<host>>
+  component "r4-source-inventory.ts -> sourceInventory.ts\ncheck-public-closure.mjs -> public-closure.mjs\nactual auditors unchanged / B1 still required" as Auditors <<host>>
+  component "scripts/r4-host-verify-lib.mjs\nfull diagnose: add three unfiltered Vitest\ncache:false / native / two workers / fresh JSON\nthree existing + one tooling Node commands" as Full <<host>>
+  database "scripts/r4-host-verify-lib.mjs\ndiagnostic records only\nexclusive file-fsynced started/result JSON\nargv / logs / exits / signals / timedOut / not-run" as Records <<db>>
+  component "scripts/r4-host-verify.mjs\naccept BLOCKED / exit2\nBEFORE scratch / dependencies / spawns" as Blocked <<error>>
+  component "scripts/r4-host-verify-lib.mjs\nFUTURE positive full acceptance gates\nNOT IMPLEMENTED / BLOCKED\ncap + B1 + authority + cold real ACK" as FutureGate <<error>>
+}
+
+package "Capture and fixture support - not a HOST Docker task" <<host>> {
+  component "hermetic/context.mjs\nprepareContext runtime selection\nrequest + B1 required regular files" as Context <<host>>
+  component "hermetic/manifest.mjs\nexisting physical treeManifest format" as Manifest <<host>>
+  component "__tests__/privateScratch.ts\nowned child0700 / source root0755\ncanonical temporary fixture target" as Scratch <<host>>
+  component "episodeSupervision / sourceManifest\nsourceBootstrap / sourceSnapshotFixture\nprivateScratch.test.ts" as Fixtures <<host>>
+  component "r4-budget-audit.test.mjs\nr4-context.test.mjs\nr4-host-verify.test.mjs\nlead scoped tooling65 PASS; prior61 history" as ToolTests <<host>>
+  component "planningScheduleReservation.test.ts\nreal accounting / expected rejection assertions\nlead syntax-only PASS; Vitest UNRUN" as ReservationTest <<host>>
+}
+
+Repo ARROW_MAIN Audit : parse actual source / bind hashes + anchors
+Audit ARROW_ERROR Stop : current witnesses; unsupported shape errors exit1
+Repo ARROW_OPTIONAL Cli : separately requested HOST diagnosis
+Cli ARROW_MAIN Capture : diagnose / validate selected or default parent
+Capture ARROW_MAIN Static : pre-capture / fixed static plan
+Static ARROW_MAIN Audit : diagnostic invocation; STOP remains visible
+Static ARROW_MAIN Auditors : actual reports; missing enforcement is not PASS
+Static ARROW_MAIN Records : separate static outcomes
+Static ARROW_OPTIONAL Full : --stage full; diagnostics only
+Full ARROW_MAIN Records : fresh results / positive runtime gate stays open
+Capture ARROW_MAIN Records : per-task source/docs/config; start/end dependency drift
+Cli ARROW_ERROR Blocked : --mode accept; either stage
+Blocked ARROW_MAIN Cli : return JSON only / no scratch records
+Records ARROW_ERROR FutureGate : diagnostics alone never grant acceptance
+Repo ARROW_OPTIONAL Context : existing capture support; not runner invocation
+Context ARROW_MAIN Manifest : byte-exact selected tree / unchanged format
+Fixtures ARROW_MAIN Scratch : fresh owned test directories
+ToolTests ARROW_OPTIONAL Audit : AST/report mutations; no cost adequacy
+ToolTests ARROW_OPTIONAL Context : exact independent expected list / seven cases
+ToolTests ARROW_OPTIONAL Cli : tiny synthetic subprocess/plan fixtures
+ReservationTest ARROW_OPTIONAL Audit : separate cap witnesses / no production permit
+
+note top of Full
+  Static600s; Vitest3600s; Node900s.
+  Fixed HOST per-command deadlines only.
+  No CLI override or total-run wall-clock bound.
+  TERM-to-KILL2000ms; reap5000ms.
+  Production10s/300s; test timeouts unchanged.
+end note
+
+note bottom of Records
+  Started record precedes child spawn.
+  Result record precedes postscan/next task.
+  Exclusive0600 files; file fsync only.
+  No directory-durability claim.
+end note
+
+note bottom of Audit
+  Static checks expose a cap breach in current
+  source quotes, not the complete planning
+  schedule. These witnesses overlap, so their
+  sum cannot establish inherent infeasibility
+  of the frozen design.
+end note
+
+note top of Stop
+  n=14 raw1069888: CARDINALITY.
+  Scalar block control128; no debit.
+  n=13 test: used7296 +quote1042752.
+  Expected WORK_CAP; Vitest UNRUN.
+  Conditional1025 store quotes:13841600.
+end note
+
+note bottom of Context
+  Runtime: request + B1 whole files only.
+  Required regular files; no adjacent plans.
+  Dependency-only: no runtime document capture.
+end note
+
+note bottom of Scratch
+  Fresh owned child:0700; source root:0755.
+  Canonical os.tmpdir() fixture target.
+  Shared parent and existing aliases unchanged.
+end note
+
+note bottom of Capture
+  Capture untracked source, tests and docs with
+  the physical bytes that establish dependency
+  identity. Equal input hashes detect drift
+  between checks, not confined execution
+  of an immutable graph.
+end note
+
+note bottom of FutureGate
+  A full gate must prove that real hosted
+  planning fits one cap with the verified source
+  graph. Diagnostic checks cannot replace
+  independent source authority or certify
+  the positive parent verification path.
+end note
+
+legend bottom
+  Landed tooling/fixtures describe diagnostics, not production readiness.
+  FUTURE positive full acceptance remains NOT IMPLEMENTED / BLOCKED.
+  Planning STOP does not prohibit separately requested HOST diagnostics.
+  Current accept: BLOCKED / exit2 before scratch/source hash/dependencies/spawns.
+  All-zero diagnosis still reports r4Acceptance=NOT_ESTABLISHED.
+  Budget child exit2 makes aggregate diagnosis exit1; independent checks continue.
+  Flat TAP requires one exact plan, consecutive results and recounted summaries.
+  Bounded supplied static reviews READY; full-R4 readiness remains open.
+  Actual HOST evidence and post-metadata lead validation remain pending.
+  No default Docker R2 run, cap waiver or expected-failure acceptance.
+  Full R4 INCOMPLETE; weights NONE; operation grants unchanged.
+endlegend
+@enduml

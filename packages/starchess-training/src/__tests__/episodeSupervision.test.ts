@@ -1,6 +1,6 @@
 // SPEC: _spec/packages/starchess-training/owned-economic-foundations.puml
 import { PassThrough } from "node:stream";
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { createEpisodeChannel, encodeEpisodeMessage } from "../coordinator/episodeProtocol";
@@ -16,6 +16,7 @@ import {
 import { constructActiveStreamState, constructEpisodeStartStreams, constructUnusedEnvironmentState, deriveEpisodeRoot, reconstructStartedSelection } from "../coordinator/episodeRng";
 import { encodeOwnedNumber } from "../economic/ownedScalars";
 import { createRegisteredByteStore } from "../coordinator/registeredBytes";
+import { createPrivateScratch } from "./privateScratch";
 
 const context = (source: unknown = null, models: unknown = null) => {
   const weights = Buffer.from(`[${Array(418).fill('{"hex":"0000000000000000"}').join(",")}]`), manifest = Buffer.from('"manifest fixture"'), pin = Buffer.from('"pin fixture"');
@@ -110,8 +111,7 @@ describe("genuine native episode supervision", () => {
   });
   it("uses a real child pipe and kills a hanging descendant process group", async () => {
     const startup = context(), frames = childFrames(startup), parent = createEpisodeReplica(startup, "parent");
-    const cache = "/tmp/proveo-opencode-runtime-cache-1000-21d690750d3738af14d58c25/tmp/opencode";
-    const directory = mkdtempSync(join(cache, "episode-fixture-")), script = join(directory, "child.cjs"), pidFile = join(directory, "descendant.pid");
+    const directory = createPrivateScratch("episode-fixture-"), script = join(directory, "child.cjs"), pidFile = join(directory, "descendant.pid");
     writeFileSync(join(directory, "frames"), frames.bytes);
     writeFileSync(script, `const {spawn}=require('node:child_process');const fs=require('node:fs');const c=spawn(process.execPath,['-e','setInterval(()=>{},1000)'],{stdio:'inherit'});fs.writeFileSync(${JSON.stringify(pidFile)},String(c.pid));process.stdout.write(fs.readFileSync(${JSON.stringify(join(directory, "frames"))}));setInterval(()=>{},1000);`);
     const child = launchEpisodeProcess({ executable: process.execPath, arguments: [script], directory, environment: {} });

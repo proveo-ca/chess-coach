@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml, _spec/packages/starchess-training/r4-host-verification.puml
 import { chmodSync, copyFileSync, lstatSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { dirname, extname, join, relative, resolve, sep } from 'node:path';
 import { createRequire } from 'node:module';
@@ -12,6 +12,10 @@ const ts = require('typescript');
 export const repository = fileURLToPath(new URL('../../../', import.meta.url));
 export const optionalConfigs = ['.npmrc', '.pnpmfile.cjs', 'pnpmfile.cjs', 'tsconfig.json', 'tsconfig.base.json', 'vitest.config.ts', 'vite.config.ts', 'nx.json'];
 export const excludedNames = ['node_modules', '.git', '.pnpm-store', '.cache', '.vite', '.vite-temp', 'coverage', 'dist', '.DS_Store'];
+export const r4AcceptedDocuments = Object.freeze([
+  '_spec/_plans/ml-adjutant-r4-episode-request-completion.md',
+  '_spec/_plans/ml-adjutant-r4-accounting-bootstrap-clarification.md',
+]);
 
 function sourcePath(root, path, optional = false) {
   const absolute = resolve(root, path);
@@ -120,8 +124,11 @@ export function prepareContext(context, dependenciesOnly = false, root = reposit
     optionalConfigs: configs,
   };
   if (!dependenciesOnly) {
+    for (const document of r4AcceptedDocuments) {
+      if (!lstatSync(sourcePath(root, document)).isFile()) throw new Error(`Non-file accepted R4 document: ${document}`);
+    }
     const required = ['package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', ...workspacePackages.map((name) => `packages/${name}`),
-      'scripts', '_spec/corpora', '_spec/evidence/ml-adjutant-phase1'];
+      'scripts', '_spec/corpora', '_spec/evidence/ml-adjutant-phase1', ...r4AcceptedDocuments];
     const corpus = JSON.parse(sourceBytes(root, '_spec/corpora/ml-adjutant-corpus.manifest.json').toString('utf8'));
     if (!/^[a-zA-Z0-9._-]+\.json$/.test(corpus.sourcePath)) throw new Error('Corpus source must be a root JSON filename');
     required.push(corpus.sourcePath);

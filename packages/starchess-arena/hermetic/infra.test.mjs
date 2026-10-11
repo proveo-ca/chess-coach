@@ -1,11 +1,11 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml, _spec/packages/starchess-training/r4-host-verification.puml
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, renameSync, symlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { test } from 'node:test';
 import { createHash } from 'node:crypto';
-import { prepareContext, repository } from './context.mjs';
+import { prepareContext, repository, r4AcceptedDocuments } from './context.mjs';
 import { assertContainerPolicy, outputTarget, runArguments, tmpfsOptions } from './policy.mjs';
 import pins from './pins.json' with { type: 'json' };
 import { freshOutput, main, parseArguments } from './run.mjs';
@@ -118,6 +118,7 @@ test('runtime capture preserves JSONC config closure, tests, fixtures, and rejec
     'scripts/challenge-contract-evidence.ts': 'export {};\n', '_spec/corpora/ml-adjutant-corpus.manifest.json': '{"sourcePath":"corpus.json"}',
     '_spec/evidence/ml-adjutant-phase1/baseline-report.json': '{}', '_spec/evidence/ml-adjutant-phase1/verification.json': '{}', 'corpus.json': '{}',
     'packages/starchess-core/node_modules/host-secret': 'excluded', 'packages/starchess-arena/.pnpm-store/host-secret': 'excluded',
+    ...Object.fromEntries(r4AcceptedDocuments.map(path => [path, `accepted fixture: ${path}\n`])),
   };
   for (const [name, value] of Object.entries(files)) {
     const path = join(root, name);
