@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml, _spec/packages/starchess-arena/invocation-effect-analysis.puml
 import { createHash } from "node:crypto";
 import { lstatSync, readFileSync, readdirSync } from "node:fs";
 import { isBuiltin } from "node:module";
@@ -1712,6 +1712,18 @@ export const collectSourceInventory = (
       }
       return safeType(dataType(value));
     };
+    const literalArrayRoute = (node: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
+      const value = origin(node);
+      if (seen.has(value)) return false;
+      const next = new Set([...seen, value]);
+      if (ts.isArrayLiteralExpression(value)) return true;
+      return ts.isConditionalExpression(value) && (literalArrayRoute(value.whenTrue, next) || literalArrayRoute(value.whenFalse, next));
+    };
+    const safeArraySelector = (key: ts.Expression): boolean => {
+      const name = staticKey(key);
+      if (name !== undefined) return name === "length" || /^(0|[1-9][0-9]*)$/.test(name);
+      return numericValue(key);
+    };
     const unsafeComputedReceiver = (node: ts.Expression, seen = new Set<ts.Expression>(), dataIndex = false, dataKey = dataIndex): boolean => {
       const provenData = dataKey;
       if (!provenData && [...provenance(node)].some((root) => mutatedRoots.has(root))) return true;
@@ -2237,6 +2249,11 @@ export const collectSourceInventory = (
            ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken, ts.SyntaxKind.LessThanLessThanToken,
            ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken]
           .includes((wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind));
+      if (ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(wrappedUse(node).parent) &&
+          !reviewedDescriptor(node) && !reviewedDataAccess(node) && !reviewedNativeDataAccess(node) &&
+          literalArrayRoute(node.expression) && !safeArraySelector(node.argumentExpression)) {
+        throw new Error(`Unsupported code constructor acquisition: ${file.path} -> unproved array selector: ${node.getText(source)}`);
+      }
       if (ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(wrappedUse(node).parent) && !reviewedDescriptor(node) && !reviewedDataAccess(node) && !reviewedNativeDataAccess(node) && unsafeComputedReceiver(node.expression, new Set(),
           /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression))) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${node.getText(source)}`);
       const hostProcess = (receiver: ts.Expression): boolean => {

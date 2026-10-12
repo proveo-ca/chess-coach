@@ -1,3 +1,4 @@
+// SPEC: _spec/packages/starchess-arena/invocation-effect-analysis.puml
 import { createHash } from "node:crypto";
 import { existsSync, lstatSync, readFileSync, realpathSync } from "node:fs";
 import { createRequire, isBuiltin } from "node:module";
@@ -1274,6 +1275,22 @@ export const checkPublicClosure = (root = repository) => {
       }
       return safeType(dataType(value));
     };
+    const unsafeArraySelection = (receiver, selector) => {
+      const pending = [receiver], visited = new Set();
+      const name = staticKey(selector);
+      const provedIndex = name !== undefined ? name === "length" || /^(0|[1-9][0-9]*)$/.test(name) : numericValue(selector);
+      while (pending.length) {
+        const value = origin(pending.pop());
+        if (visited.has(value)) continue;
+        visited.add(value);
+        if (ts.isArrayLiteralExpression(value) && !provedIndex) return true;
+        const declaration = ts.isIdentifier(value) ? binding(value)?.valueDeclaration : value;
+        if (declaration && (ts.isArrowFunction(declaration) || ts.isFunctionExpression(declaration) || ts.isFunctionDeclaration(declaration) ||
+            ts.isMethodDeclaration(declaration) || ts.isClassDeclaration(declaration) || ts.isClassExpression(declaration))) return true;
+        if (ts.isConditionalExpression(value)) pending.push(value.whenTrue, value.whenFalse);
+      }
+      return false;
+    };
     const unsafeComputedReceiver = (node, seen = new Set(), dataIndex = false, dataKey = dataIndex) => {
       const provenData = dataKey;
       if (!provenData && [...provenance(node)].some((root) => mutatedRoots.has(root))) return true;
@@ -1593,6 +1610,13 @@ export const checkPublicClosure = (root = repository) => {
       const bound = ts.isBindingElement(node) ? bindingMember(node) : undefined;
       if (ts.isBindingElement(node) && (["constructor", "__proto__", "__defineGetter__", "__defineSetter__", "eval", "Function", "process", "setTimeout", "setInterval", "setImmediate", "getOwnPropertyDescriptor", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(boundName ?? "") ||
           bound?.name === "get" && builtinNamespace(bound.receiver, "Reflect") || node.propertyName && ts.isComputedPropertyName(node.propertyName))) throw new Error(`Code constructor acquisition in public closure: ${id}`);
+      const computedUse = ts.isElementAccessExpression(node) ? wrappedUse(node) : undefined;
+      const discardedComputed = computedUse && (ts.isVoidExpression(computedUse.parent) || ts.isExpressionStatement(computedUse.parent) ||
+        ts.isBinaryExpression(computedUse.parent) && computedUse.parent.operatorToken.kind === ts.SyntaxKind.CommaToken && computedUse.parent.left === computedUse);
+      if (ts.isElementAccessExpression(node) && !directDataWrite && !discardedComputed &&
+          !reviewedDescriptor(node) && !reviewedDataAccess(node) && unsafeArraySelection(node.expression, node.argumentExpression)) {
+        throw new Error(`Code constructor acquisition in public closure: ${id} -> unproved array selector: ${node.getText(source)}`);
+      }
       if (["constructor", "__proto__", "__defineGetter__", "__defineSetter__"].includes(member?.name) ||
           ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(node.parent) && !reviewedDescriptor(node) && !reviewedDataAccess(node) && unsafeComputedReceiver(node.expression, new Set(),
             /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression))) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${node.getText(source)}`);

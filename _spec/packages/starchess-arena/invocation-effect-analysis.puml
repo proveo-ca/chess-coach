@@ -1,0 +1,245 @@
+' purpose: PLANNED independent invocation/effect and source/value/native-frame goals after prototype quarantine; WIP with known RED regressions, not R4 acceptance.
+' covers: packages/starchess-arena/src/challenge/sourceInventory.ts
+' covers: packages/starchess-arena/hermetic/public-closure.mjs
+' covers: packages/starchess-arena/src/__tests__/computedArrayAcquisition.test.ts
+' covers: packages/starchess-arena/src/__tests__/sourceInventoryInvocation.test.ts
+' covers: packages/starchess-arena/src/__tests__/sourceInventoryCallbackGrounding.test.ts
+' covers: packages/starchess-arena/src/__tests__/publicClosureInvocation.test.ts
+' covers: packages/starchess-arena/src/__tests__/fixtures/invocationCases.ts
+' related: _spec/_plans/r4-finite-invocation-resolution.md
+' related: _spec/_plans/ml-adjutant-r4-host-delegation.md
+' related: _spec/_plans/ml-adjutant-r4-authority-chain.md
+' related: _spec/_refactors/r4-invocation-checkpoint/README.md
+' status: WIP / PROTOTYPE QUARANTINED / NOT R4 ACCEPTANCE / known RED regressions; lead-supplied checkpoints only, no keeper execution or executable approval.
+' inventory current: Architect-approved preservation/restoration; owner reports baseline plus retained SPEC/literalArrayRoute/safeArraySelector/computed-key guard, refrozen. No invocation graph, SourceRef/ValueRef or native-grounding prototype installed; all complete solver/frame goals PLANNED.
+' restored checks DONE WITH FAILURES: Fresh unfiltered arena2625 total/2315 PASS/71 FAIL/239 pending,41 files/104 raw logical suites/child exit1/no source drift; no file-status split inferred. Same run selectors32 PASS,public59 PASS34 FAIL,grounding15 PASS12 FAIL,inventory invocation25 PASS21 FAIL.
+' restored legacy: challengeSourceInventory1419 total/1417 PASS/2 FAIL; R3 host-private capture Error STACK_TRACE_ERROR duration5771.199248, cause unknown/no explicit timeout classification; real-repo R3 expected[index]/wrapper16 failure. ContractCoverage1/challengeSuites1 R3 wrapper failures; challengeEvidenceImport1 FAILED IMPORT wrapper error/239 pending retained.
+' restored failure invoice: New tests67 failed assertions=34+12+21; other4=3 R3 wrapper+1 unclassified stack trace, full71. Import diagnostic is not an extra failed assertion. No waivers/promotions/disabled REDs.
+' restored artifacts: r4-checkpoint-v060pvvb/restored-arena-tests.json plus stdout/stderr/exit and restored-source start/end JSON receipts; keeper neither reads executable reports nor runs checks.
+' restored ancillary checks: Source-inventory CLI exit1 first R3 expected[index]; public5 root PASS/exit0; all3 package types PASS/exit0; acceptance --stage full --mode accept exit2/BLOCKED/NOT_ESTABLISHED/zero spawned commands in accept-refusal.json; budget exit2 infeasible/adequacy unproven. Earlier tooling69 PASS has unchanged-tooling scope, not a new run.
+' prototype invoice ARCHIVED: Fresh five-file1617 total/1407 PASS/210 FAIL/0 pending, no source drift reported; legacy1419 total/1246 PASS/173 FAIL from eager native-guard preemptions; selectors32/invocation46 PASS, grounding24 PASS/3 RED, public59 PASS/34 RED.
+' prototype ancillary checks ARCHIVED: All3 package types PASS,69 tooling PASS,public5 roots PASS,budget exit2. Earlier mechanical46/16 PASS,grounding14 PASS/13 RED and2 legacy R3 RED remain history, not current production claims.
+' public current: Original invocation resolver plus selector/callable-alternative/discard-proof guards, bytes unchanged by restoration; independent SCC and SourceRef/ValueRef/CallFrame remain PLANNED in BOTH auditors.
+' public tests current: Fresh restored unfiltered run59 PASS/34 FAIL; separate earlier93/59 PASS/34 FAIL/0 pending/exit1 and32/31/21 checkpoints remain chronology, not substitutes for current execution.
+' public test history artifacts: /tmp/proveo-opencode-runtime-cache-1000-21d690750d3738af14d58c25/tmp/opencode/r4-checkpoint-v060pvvb/public-tests.json plus retained stdout/stderr/exit; keeper does not read or rerun.
+' coverage scope: Seven actual active source/test paths include retained sourceInventoryCallbackGrounding.test.ts. Exact index projection retained with fingerprint:null; frozen archive is historical and exempt, no archive covers added.
+' prerequisite chronology: Inventory prototype26/29 falsely accepted3 negatives and was removed from production retaining SPEC; fresh30 matrix RED14 PASS/16 FAIL; public prototype32/33 sort comparator false rejection and actual public5 failure.
+' focused chronology: Standalone computed-array16 first6 RED/10 PASS, then actual lead inventory16 PASS; knownnumeric1/initializedunion1/readonlyhelper controls PASS, constructor-string poisoned number field rejects, discardedunknown array control PASS.
+' prerequisite: Value-producing literal-array origins/aliases/known own nested/conditional routes need data AND independent numericValue/canonical numeric-string/own-length key proof AND old receiver guards; no unknown/inheritedconstructor/toString/scalar-context/typeannotation/codecache permission.
+' source-grounding RED history: Earlier prototype rejected authorized/v2/observation.ts33 some/includes predicate importing schema.array/read(schema.id); runtime string guards existed but that graph lacked actual return values/native callback frames. Graph now quarantined; no R3/schema body rewrite or helper-name exception.
+' public prototype history:32 of33 scalar/comparator false rejection included actual placement-string localeCompare; rolled back, not current public finite-graph body or a bypass grant.
+' private contracts PLANNED in BOTH auditors: SourceRef(file,node)/source-frame-ownDATA-symbolicElement ValueRef/unknownReason and CallFrame(site,definition,receiver,unknown-or-ordered ValueRefs,closureEnv,epoch); imported normal returns/fresh-array recipes/verified native frames are future goals, no manufactured AST/caststring/new authority role/RPC.
+' normal returns: Follow actual verified runtime import-export definitions through each existing resolver/contextual checker; generic dominating typeof/all-normal-return/genuine throw facts, own DATA fields/fresh-array reader recipe; unsupported flow unknown, no unrestricted new program or filename whitelist.
+' native frames: Array some/every/filter/map/flatMap/sort only closed receivers/pristine actual dispatch/all args-effects; element-index-originalArray-thisArg; sort two correlated elements plus structural reorder, not pure/no mutation waiver.
+' string grounding: Includes/localeCompare require every receiver primitive, pristine String dispatch and proved primitive args; fake objects/annotations/getters/locale options are not proof.
+' cache and bounds: Feed all source/value/frame facts to every route; epoch invalidates return/element/frame facts, source walks and interning/work counted under existing ceilings/wrapper-spread16; no old/warm/peer snapshots.
+' case correction: Shared declarative numeric/union controls and optional readonlyControlSource; extraeffects array[bag.key], not unrelated bag[unknownKey] oracle; agents exclusively own case/matrix writes.
+' independence: Fixtures share declarative cases only; no shared solver, cache, proof helper or verdict. Existing source owners remain cited by source agents.
+' index: Final three-doc scope; index unchanged, exact seven covers/fingerprint:null retained. Lead reports index/SPEC pointers PASS and prior payloads preserved; frozen archive remains exempt.
+' preservation: Actual R3/schema/observation bodies and12 pins, wrapper/spread16, outer convergence, timeouts, kernel/fees/cap, generic guards/policy schemas/frozen bodies/exports unchanged; grounding analysis only, not validator rewrites or waivers.
+' authority: Future actual auditor-code bytes require fresh independent expected/registered references; graph termination or local PASS supplies no source seal, B1/image authority or JavaScript sandbox proof.
+' limits: N=existing mutation-node count; Q<=min(64N,65536); each E/routes/argIDs<=min(256N,262144); steps<=min(2048N,2097152) across epochs; reject, never truncate/override.
+' verification: Prototype milestones are ARCHIVED; fresh restored full arena completed RED, all3 types/public5 PASS, checkpoint code/documentation gates YES but actual admission NO. Additional backend advice pending; no keeper execution.
+' coverage: Original six declarations plus retained actual sourceInventoryCallbackGrounding.test.ts; no further test path invented. Index synchronized, ledger/PLAN/history untouched.
+' review pivot: Architect approved exact preservation and scoped restoration after adversarial/security HIGHs; archive README retains eager native rejection/symbolic callable grounding/nativeIncoming preemption/first-receiver loss/destructuring defaults/thisArg effects and mixed-route MEDIUM with snapshot anchors. Static witnesses were not executed proof counts.
+' public security: Existing HIGH selector annotation/source-grounding and baseline conditional-callback loss persist; no delta-specific new HIGH identified is not actual admission approval. Quarantine does not mark findings resolved or prove safety.
+' completed code reviews: Adversarial ses_ed2d919feffeiQJTbmlkpCy06A no introduced active blockers/six HIGH paths quarantined/mixed-route MEDIUM baseline not new regression/bounded WIP publish YES/READY TO MERGE yes. Inventory security ses_ed2d8db33ffeu4x5CL5qe29TtB checkpoint code gate YES/introduced new HIGH none/actual admission NO; baseline HIGH annotation-numeric evidence and single-expected-target callback drop retained. Static review of both auditors/all checkpoint tests/archive docs, no independent test execution.
+' final metadata handoff: Lead verified12 audited production files exact HEAD unchanged/historical bundle57/index7 and SPEC pointers/staged archive SHA matches manifest. Final docs reviews and check-only/SVG render PASS, temporary invocation-effect-analysis.svg; additional backend advice pending, not acceptance evidence.
+' explicit skipped NEW runs: Unfiltered core/training suites and46-command full HOST diagnostic rerun skipped for incomplete WIP checkpoint already blocked by fresh unfiltered arena/cap; older full counts keep older revision scope, no current proof or waiver.
+' publication gate: Commit/Push stops feature work; completed code/documentation reviews allow bounded WIP checkpoint, not actual admission/full-R4 source proof/authority activation/accepted cap change. Additional backend advice cannot lift an R4 gate.
+' remaining R4: Raw14 quote1069888>cap1048576/max512 stores13841600 before rest/disjoint adequacy unproven; complete independent auditors/B1 LedgerOwner/atomic features-artifacts seven roots/immutable image-runtime-config and continuing seals/same-graph dispatch/native-fflate acquisition/cold genuine permits-model-A2-parent ACK/full checks/reviews; acceptance CLI early exit2.
+' weights: NONE; machine learning unavailable, no training/calibration/data/data-ops authorization.
+' FK: Cases12.0; SourceQuery12.6; SourceGate11.8; SourceEpoch11.7; SourceValues12.3; SourceFrames10.6. Structural key/limit/prerequisite labels exempt.
+@startuml invocation-effect-analysis
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title R4 - PLANNED goals / PROTOTYPE QUARANTINED / NOT R4 ACCEPTANCE
+left to right direction
+
+component "src/__tests__/fixtures/invocationCases.ts\nshared declarative cases only\nagent-owned / no shared solver or verdict" as Cases <<host>>
+component "src/__tests__/computedArrayAcquisition.test.ts\nretained selector prerequisite\nowner post-restoration selectors32 PASS" as ComputedTests <<host>>
+
+package "sourceInventory.ts - restored scanner / PLANNED solver goals" <<host>> {
+  component "sourceInventory.ts\nretained computed-array key guard\noriginal receiver / acquisition rules" as SourcePrereq <<host>>
+  component "sourceInventory.ts\nPLANNED SourceRef / ValueRef / actual definitions\nnormal-return / fresh-array evidence" as SourceValues <<host>>
+  component "sourceInventory.ts\nPLANNED verified native callback frames\nprototype quarantined / not installed" as SourceFrames <<host>>
+  component "sourceInventory.ts\nPLANNED correlated query keys\nordered ValueRef / frame evidence" as SourceQuery <<host>>
+  component "sourceInventory.ts\nPLANNED finite invocation graph\nprototype quarantined / no active graph" as SourceGraph <<app>>
+  component "sourceInventory.ts\nPLANNED SCC route / effect union\ncomplete normal-return / frame transfers" as SourceSolve <<app>>
+  component "sourceInventory.ts\nlocalInvocation / mutationCallback consumers\nPLANNED all-route mutation / callback checks" as SourceUse <<host>>
+  component "sourceInventory.ts\nPLANNED own positive proof gate\nclosed + grounded + nonempty + universal" as SourceGate <<host>>
+  collections "sourceInventory.ts\nPLANNED own epoch-local summary tables" as SourceEpoch <<db>>
+  component "sourceInventory.ts\nPLANNED own fixed internal ceilings\nwrapper/spread16 + outer convergence" as SourceBounds <<host>>
+  component "sourceInventory.ts\nreject / unproved\nunseeded / unknown / unclosed / exhausted" as SourceStop <<error>>
+  component "src/__tests__/sourceInventoryInvocation.test.ts\ncurrent unfiltered restored owner\n25 PASS /21 FAIL / REDs retained" as SourceTests <<host>>
+  component "src/__tests__/sourceInventoryCallbackGrounding.test.ts\ncurrent unfiltered restored owner\n15 PASS /12 FAIL / REDs retained" as GroundingTests <<host>>
+}
+
+package "public-closure.mjs - independent PLANNED solver" <<host>> {
+  component "public-closure.mjs\noriginal resolver + selector/callable/discard guards\ncurrent public5 PASS / exit0 / not seven roots" as PublicPrereq <<host>>
+  component "public-closure.mjs\nPLANNED independent actual-source values\nSourceRef / ValueRef / unknownReason" as PublicValues <<host>>
+  component "public-closure.mjs\nPLANNED independent native callback frames\nno shared primitive predicate/verdict" as PublicFrames <<host>>
+  component "public-closure.mjs\nactual AST / binding / provenance / mutation facts\nPLANNED correlated query interning" as PublicQuery <<host>>
+  component "public-closure.mjs\nPLANNED exhaustive dependency graph\nall callers / wrappers / targets / unknowns" as PublicGraph <<app>>
+  component "public-closure.mjs\nPLANNED SCC worklist\nmonotone route / effect union" as PublicSolve <<app>>
+  component "public-closure.mjs\nlocalInvocation / mutationCallback consumers\nPLANNED all-route mutation / callback checks" as PublicUse <<host>>
+  component "public-closure.mjs\nPLANNED own positive proof gate\nclosed + grounded + nonempty + universal" as PublicGate <<host>>
+  collections "public-closure.mjs\nPLANNED own epoch-local summary tables" as PublicEpoch <<db>>
+  component "public-closure.mjs\nPLANNED own fixed internal ceilings\nwrapper/spread16 + outer convergence" as PublicBounds <<host>>
+  component "public-closure.mjs\nreject / unproved\nunseeded / unknown / unclosed / exhausted" as PublicStop <<error>>
+  component "src/__tests__/publicClosureInvocation.test.ts\ncurrent unfiltered restored owner\n59 PASS /34 FAIL / REDs retained" as PublicTests <<host>>
+}
+
+SourcePrereq ARROW_MAIN SourceValues : source guards remain prerequisite
+SourcePrereq ARROW_ERROR SourceStop : unknown unsafe acquisition / preserve old guards
+PublicPrereq ARROW_MAIN PublicValues : original guard context / no callback bypass
+PublicPrereq ARROW_ERROR PublicStop : reject unsafe read / no broad type shortcut
+ComputedTests ARROW_OPTIONAL SourcePrereq : owner post-restoration32 PASS / earlier history retained
+SourceValues ARROW_MAIN SourceFrames : actual guarded return/element/own-DATA facts
+SourceFrames ARROW_MAIN SourceQuery : all-route callsite / receiver / ordered ValueRefs
+PublicValues ARROW_MAIN PublicFrames : separately verified actual source facts
+PublicFrames ARROW_MAIN PublicQuery : independent frame/closure/epoch context
+SourceValues ARROW_ERROR SourceStop : unresolved def / unsupported flow / unknown value
+PublicValues ARROW_ERROR PublicStop : no name/annotation/fabricated-AST permission
+SourceQuery ARROW_MAIN SourceGraph : intern complete context / correlate routes
+SourceGraph ARROW_MAIN SourceSolve : expand every dependency / concrete seed
+SourceSolve ARROW_MAIN SourceGraph : information grows / re-enqueue dependents
+SourceSolve ARROW_MAIN SourceUse : stable all-route summary only
+SourceSolve ARROW_MAIN SourceValues : normal-return dependencies / every route
+PublicQuery ARROW_MAIN PublicGraph : independent implementation / same contract
+PublicGraph ARROW_MAIN PublicSolve : expand every dependency / concrete seed
+PublicSolve ARROW_MAIN PublicGraph : information grows / re-enqueue dependents
+PublicSolve ARROW_MAIN PublicUse : stable all-route summary only
+PublicSolve ARROW_MAIN PublicValues : independent return/effect dependencies
+SourceUse ARROW_MAIN SourceGate : all unproved / mutator vectors / defaults / rest
+PublicUse ARROW_MAIN PublicGate : callback proof / structural escapes remain checked
+SourceGate ARROW_ERROR SourceStop : any unsafe or unresolved alternative
+PublicGate ARROW_ERROR PublicStop : any unsafe or unresolved alternative
+SourceSolve ARROW_MAIN SourceEpoch : cache only current stable mutation epoch
+PublicSolve ARROW_MAIN PublicEpoch : separate cache / no peer verdict reuse
+SourceEpoch ARROW_ERROR SourceGraph : new fact invalidates affected summaries
+PublicEpoch ARROW_ERROR PublicGraph : no stale positive proof
+SourceEpoch ARROW_ERROR SourceValues : invalidate value / frame / element facts
+PublicEpoch ARROW_ERROR PublicValues : no old-source / warm-peer value evidence
+SourceGraph ARROW_MAIN SourceBounds : account query / route / vector work
+PublicGraph ARROW_MAIN PublicBounds : independent counters / cumulative steps
+SourceValues ARROW_MAIN SourceBounds : source walk / ValueRef / frame work included
+PublicValues ARROW_MAIN PublicBounds : independent bounded accounting
+SourceBounds ARROW_ERROR SourceStop : limit reached / unsupported growth
+PublicBounds ARROW_ERROR PublicStop : limit reached / unsupported growth
+SourceTests ARROW_OPTIONAL Cases : shared data; never shared solver
+PublicTests ARROW_OPTIONAL Cases : independent effects and verdict observations
+SourceTests ARROW_OPTIONAL SourceUse : current25 PASS /21 FAIL / goals PLANNED
+GroundingTests ARROW_OPTIONAL Cases : declarative cases only / independent proof
+GroundingTests ARROW_OPTIONAL SourceValues : current15 PASS /12 FAIL / goals PLANNED
+GroundingTests ARROW_OPTIONAL SourceFrames : prototype quarantined / future complete effects
+PublicTests ARROW_OPTIONAL PublicUse : current59 PASS /34 FAIL / full arena exit1
+
+note bottom of SourceValues
+  Actual source guards must prove that every
+  normal return carries the primitive value a
+  callback receives. Type assertions and
+  manufactured AST nodes cannot provide valid
+  evidence from an imported reader.
+end note
+
+note bottom of SourceFrames
+  A native frame binds callback values to the
+  same proven receiver and actual source call.
+  Sorting reorders that array, so proving a
+  primitive comparator cannot waive effects or
+  excuse a changed method.
+end note
+
+note bottom of SourcePrereq
+  Restored arena:2625 tests /41 files.
+  2315 PASS /71 FAIL /239 pending.
+  104 raw logical suites; child exit1.
+  Selectors32 and all3 package types PASS.
+  No active graph/value/native prototype.
+end note
+
+note top of Cases
+  Each auditor owns its graph and verdict,
+  although the fixtures describe common cases.
+  Shared expected outcomes cannot establish that
+  both independent scanners preserve the required
+  acquisition and mutation guards.
+end note
+
+note bottom of SourceQuery
+  Routes retain the callable, argument vector
+  and receiver from the same input context.
+  Dropping those correlations can conceal
+  mutation effects or manufacture a callback
+  proof from unrelated branches.
+end note
+
+note top of SourceQuery
+  Key: actual source / ordered ValueRef IDs.
+  UNKNOWN_ARGS differs from known[] args.
+  Expected target: absent or exact identity.
+  Frame/closure/epoch contexts stay correlated.
+  Structural depth/wrapper cost unchanged.
+end note
+
+note bottom of SourceGate
+  A seeded cycle may converge without proving
+  that every dependent route is closed and
+  grounded. Callback permission requires a
+  nonempty universal proof, so unknown routes
+  cannot disappear behind one matching target.
+end note
+
+note bottom of SourceEpoch
+  New mutation facts invalidate every cached
+  result before another positive proof can
+  consume it. Stable epoch tags prevent stale
+  summaries from proving a later scan safe after
+  callable or intrinsic facts change.
+end note
+
+note bottom of SourceBounds
+  Queries: min(64*N,65536).
+  Edges/routes/argIDs: each min(256*N,262144).
+  Transfer steps: min(2048*N,2097152).
+  Steps accumulate across mutation epochs.
+  Exhaustion rejects; no truncation/override.
+end note
+
+legend bottom
+  WIP / PROTOTYPE QUARANTINED / NOT R4 ACCEPTANCE / known RED regressions.
+  Active inventory restored/refrozen; no graph/ValueRef/native-grounding prototype installed.
+  Complete SCC/SourceRef/ValueRef/CallFrame/native-effect goals are PLANNED in BOTH auditors.
+  Prototype five-file invoice1617:1407 PASS /210 FAIL /0 pending; no drift reported.
+  Prototype legacy1419:1246 PASS /173 FAIL; eager native guards preempted ordinary paths.
+  Archived selectors32/invocation46 PASS, grounding24 PASS/3 RED, public59 PASS/34 RED.
+  Archived3 types/69 tooling/public5 roots PASS; budget CLI exit2, not acceptance.
+  Current restored arena2625:2315 PASS /71 FAIL /239 pending; child exit1/no source drift.
+  41 files/104 raw logical suites; no inferred file-status split.
+  Current selectors32 PASS, public59 PASS34 FAIL, grounding15 PASS12 FAIL, invocation25 PASS21 FAIL.
+  Legacy1419:1417 PASS2 FAIL; new assertions67 plus3 R3 wrapper+1 unknown stack trace=71.
+  Error STACK_TRACE_ERROR duration5771.199248 is not explicitly classified as timeout.
+  challengeEvidenceImport FAILED IMPORT/R3 wrapper and239 pending retained, not an extra assertion.
+  Fresh public5/all3 types PASS; source inventory CLI exit1/R3 expected[index].
+  Acceptance CLI exit2/BLOCKED/NOT_ESTABLISHED with zero spawned commands; budget remains RED.
+  Two independent solvers/verdicts; one shared declarative fixture family.
+  Semantic parameter cycles differ from syntactic wrapper/spread depth.
+  No first-match dropping, active-query success or seen->undefined shortcut.
+  Empty noncallability requires concrete complete terminal proof.
+  No guard/policy/kernel/fee/R3/export amendment or runtime authority grant.
+  Public original resolver + selector/callable/discard guards retained, not an SCC solver.
+  Prior public93-test invoice remains history; current owner results are from the restored run.
+  Earlier32/31/21 checkpoints are history, not current verification.
+  Pair positive controls with unsafe reads; no type/cache/comparison shortcut.
+  Void/data-write/native seams and every generic guard remain preserved.
+  Known empty native array: explicit no callback effects, not vacuous value proof.
+  Tests/fixtures/public bytes unchanged; no RED test disabled or finding erased.
+  Review witnesses are static and unexecuted; archival is not a safety proof.
+  Final code reviews allow bounded WIP publication; no introduced active HIGH, actual admission NO.
+  Baseline annotation-numeric/single-target callback gaps remain; quarantine does not resolve them.
+  Final metadata reviews/check-only/SVG render PASS; additional backend advice pending.
+  Full arena/code reviews done; no full-R4 or admission acceptance.
+  New core/training unfiltered suites and46-command full HOST rerun explicitly skipped, not waived.
+  Future whole-pipeline cap/auditors/B1/seven roots/image/native/cold A2-ACK remain open.
+endlegend
+@enduml

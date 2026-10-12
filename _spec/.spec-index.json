@@ -2,6 +2,19 @@
   "version": 1,
   "specs": [
     {
+      "spec": "_spec/packages/starchess-arena/invocation-effect-analysis.puml",
+      "covers": [
+        "packages/starchess-arena/src/challenge/sourceInventory.ts",
+        "packages/starchess-arena/hermetic/public-closure.mjs",
+        "packages/starchess-arena/src/__tests__/computedArrayAcquisition.test.ts",
+        "packages/starchess-arena/src/__tests__/sourceInventoryInvocation.test.ts",
+        "packages/starchess-arena/src/__tests__/sourceInventoryCallbackGrounding.test.ts",
+        "packages/starchess-arena/src/__tests__/publicClosureInvocation.test.ts",
+        "packages/starchess-arena/src/__tests__/fixtures/invocationCases.ts"
+      ],
+      "fingerprint": null
+    },
+    {
       "spec": "_spec/packages/starchess-training/r4-host-verification.puml",
       "covers": [
         "scripts/r4-host-verify*.mjs",
