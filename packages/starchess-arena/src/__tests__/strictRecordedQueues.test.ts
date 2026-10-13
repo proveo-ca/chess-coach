@@ -36,6 +36,25 @@ const admitted = (snapshot: ScFenSnapshot, side: "w" | "b", actions: ScActionInp
 };
 
 describe("strict whole-queue admission", () => {
+  it.each(["w", "b"] as const)("rejects stale replacement geometry atomically for %s in either append order", side => {
+    const open = parseScFen(side === "b"
+      ? "SCFEN|4kb2/8/7R/8/8/8/8/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+      : "SCFEN|4k3/8/8/8/8/7r/8/4KB2|0|33|P|G:11:11|B:3:3|Q:w:;b:");
+    const rank = side === "b" ? "8" : "1";
+    const deploy: ScActionInput = { kind: "deploy", timing: "B", color: side, from: `e${rank}`, to: `f${rank}`, unit: "n" };
+    const move: ScActionInput = { kind: "classical", timing: "C", color: side, from: `f${rank}`, to: side === "b" ? "h6" : "h3" };
+    for (const actions of [[deploy, move], [move, deploy]]) {
+      const bank = { w: 3, b: 3 };
+      const before = structuredClone({ open, bank, actions });
+      const staged = stageQueue(open, bank, side, actions, 7);
+      expect(staged).toMatchObject({ ok: false, failure: {
+        kind: "queue-rejected", phase: "admission", side, actionIndex: 1, engineCode: "SC_BASELINE_FEN",
+      } });
+      expect(staged).not.toHaveProperty("staged");
+      expect({ open, bank, actions }).toEqual(before);
+    }
+  });
+
   it.each([0, 1, 2])("rolls back a rejection at action %i", (actionIndex) => {
     const open = stageOpening();
     const bank = { w: 3, b: 3 };
@@ -135,6 +154,26 @@ describe("strict whole-queue admission", () => {
 });
 
 describe("strict recorded and selected queues", () => {
+  it.each([false, true])("publishes no illegal replacement turn or debit, reverse append order %s", async reverse => {
+    const customOpening = "SCFEN|4kb2/8/7R/8/8/8/8/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:";
+    const deploy: ScActionInput = { kind: "deploy", timing: "B", color: "b", from: "e8", to: "f8", unit: "n" };
+    const move: ScActionInput = { kind: "classical", timing: "C", color: "b", from: "f8", to: "h6" };
+    const actions = reverse ? [move, deploy] : [deploy, move];
+    const candidate: CandidatePolicy = { name: "stale-deploy", choose: vi.fn(() => actions) };
+    const strategic = { name: "unused-rescue", play: vi.fn(() => { throw new Error("unexpected rescue"); }) };
+    const onProgress = vi.fn();
+    const evidence = await runChallengeMatch(request([[]], customOpening), { candidate, strategic, onProgress });
+    expect(evidence.stop).toMatchObject({ kind: "queue-rejected", phase: "admission", side: "b", actionIndex: 1, engineCode: "SC_BASELINE_FEN" });
+    expect(candidate.choose).toHaveBeenCalledTimes(1);
+    expect(strategic.play).not.toHaveBeenCalled();
+    expect(onProgress.mock.calls.map(([event]) => event.kind)).not.toContain("ply");
+    expect(evidence.resolves).toEqual([]);
+    expect(evidence.scfens).toHaveLength(1);
+    expect(evidence.bankTrail).toEqual([]);
+    expect(evidence.finalBank).toEqual({ w: 3, b: 3 });
+    expect(evidence).toMatchObject({ outcome: null, fallbackCount: 0, modelArtifact: null, learnedGateEligible: false });
+  });
+
   it.each([0, 1, 2])("publishes no recorded prefix when action %i fails", async (actionIndex) => {
     const actions = [...prefix];
     actions.splice(actionIndex, 0, missing);

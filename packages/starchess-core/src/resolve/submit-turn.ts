@@ -17,17 +17,20 @@ import { mineContact, withoutMine } from "../board/mine-contact";
 import { charonStrikeTarget, placementAfterMechaCharon } from "../rules/specials/mechaCharon";
 import { marineSingleTarget } from "../rules/specials/stimStep";
 import { classicalRewriteCoordinatesAfterB, orderBHeadsFirst } from "../rules/planning-order";
+import { matchedMarineDouble } from "../rules/nativeClassical";
+import { assertNativeClassicalDependencies } from "../rules/validation";
 import {
   resolveTurnKernel,
   applyPendingCCShotsKernel,
   type ResolvePromotion,
   type ResolveTurnResult,
   type ResolveMove,
+  type ResolveTurnInput,
 } from "./resolve-turn";
 import { getSideVision } from "../board/vision";
 import type { ProvenanceRecorder } from "./provenance-recorder";
 import type { FramePhase } from "./provenance-types";
-import { queueGasSpent } from "../scfen/codec";
+import { assertQueueShape, queueGasSpent } from "../scfen/codec";
 import type {
   ClassicalPlan,
   PieceColor,
@@ -40,6 +43,24 @@ import type {
 } from "../model/types";
 
 export { orderBHeadsFirst } from "../rules/planning-order";
+
+type NativeIdentity = ScPiece & { id: string };
+type NativeIdentityLedger = {
+  units: Map<Square, NativeIdentity>;
+  transfers: Map<ScAction, { actor: NativeIdentity; from: Square; to: Square }>;
+  next: number;
+};
+type NativeDoubleBinding = { placement: string; w?: { from: Square; to: Square }; b?: { from: Square; to: Square } };
+const nativeDoubleBindings = new WeakMap<ResolveTurnInput, NativeDoubleBinding>();
+
+export function consumeNativeClassicalDoubles(input: ResolveTurnInput): Record<PieceColor, boolean> {
+  const binding = nativeDoubleBindings.get(input);
+  nativeDoubleBindings.delete(input);
+  const matches = (color: PieceColor, plan: ClassicalPlan | null) =>
+    binding?.placement === input.placement && binding[color]?.from === plan?.from &&
+    binding[color]?.to === plan?.to && binding[color] !== undefined;
+  return { w: matches("w", input.white), b: matches("b", input.black) };
+}
 
 export type ResolveEvent = {
   id: string;
@@ -264,6 +285,8 @@ const relocate = (
   recorder?: ProvenanceRecorder,
   phase: FramePhase = "B",
   seq: number | null = null,
+  identities?: NativeIdentityLedger,
+  source?: ScAction,
 ): string => {
   const map = placementToMap(placement);
   recorder?.board(map);
@@ -277,6 +300,15 @@ const relocate = (
   });
   map.delete(from);
   map.set(to, piece);
+  if (identities) {
+    const actor = identities.units.get(from);
+    identities.units.delete(from);
+    identities.units.delete(to);
+    if (actor) {
+      identities.units.set(to, actor);
+      if (source) identities.transfers.set(source, { actor: { ...actor }, from, to });
+    }
+  }
   return mapToPlacement(map);
 };
 
@@ -308,6 +340,7 @@ const applyArrivalMine = (
   recorder?: ProvenanceRecorder,
   phase: FramePhase = "B",
   seq: number | null = null,
+  identities?: NativeIdentityLedger,
 ): ArrivalMine => {
   const hit = mineContact({
     mines,
@@ -325,6 +358,7 @@ const applyArrivalMine = (
     recorder.mineContact(hit, seq, mines);
   });
   board.delete(hit.at);
+  identities?.units.delete(hit.at);
   return {
     placement: mapToPlacement(board),
     mines: withoutMine(mines, hit),
@@ -340,6 +374,7 @@ const applySpecial = (
   action: Extract<ScAction, { timing: "B" | "F" }>,
   ignoreAttacksOn: Square[],
   recorder?: ProvenanceRecorder,
+  identities?: NativeIdentityLedger,
 ): {
   placement: string;
   mines: ScMine[];
@@ -363,6 +398,7 @@ const applySpecial = (
       if (!kill) return { placement, mines };
       const victim = board.get(kill)!;
       recorder?.frame(phase, () => recorder.destroy(victim, action.seq));
+      identities?.units.delete(kill);
       return {
         placement: placementAfterMechaCharon(placement, kill),
         mines,
@@ -388,6 +424,8 @@ const applySpecial = (
         // both die, neither survives onto it.
         board.delete(action.from);
         board.delete(action.to);
+        identities?.units.delete(action.from);
+        identities?.units.delete(action.to);
         return {
           placement: mapToPlacement(board),
           mines,
@@ -399,14 +437,15 @@ const applySpecial = (
         recorder?.frame(phase, () => recorder.destroy(hull, action.seq));
         // A Command Center takes the jumper: the ship dies on its square.
         board.delete(action.from);
+        identities?.units.delete(action.from);
         return {
           placement: mapToPlacement(board),
           mines,
           victim: { type: hull.type, color: hull.color },
         };
       }
-      const landed = relocate(placement, action.from, action.to, recorder, phase, action.seq);
-      return applyArrivalMine(landed, mines, [action.to], action.color, hull, recorder, phase, action.seq);
+      const landed = relocate(placement, action.from, action.to, recorder, phase, action.seq, identities, action);
+      return applyArrivalMine(landed, mines, [action.to], action.color, hull, recorder, phase, action.seq, identities);
     }
     case "stimStep": {
       if (!action.to) return { placement, mines };
@@ -414,9 +453,9 @@ const applySpecial = (
       recorder?.board(marineBoard);
       const marine = marineBoard.get(action.from);
       if (phase === "B") recorder?.bind(action.seq, marine);
-      const stepped = relocate(placement, action.from, action.to, recorder, phase, action.seq);
+      const stepped = relocate(placement, action.from, action.to, recorder, phase, action.seq, identities, action);
       if (!marine) return { placement: stepped, mines };
-      return applyArrivalMine(stepped, mines, [action.to], action.color, marine, recorder, phase, action.seq);
+      return applyArrivalMine(stepped, mines, [action.to], action.color, marine, recorder, phase, action.seq, identities);
     }
     case "deploy": {
       if (!action.to || !action.unit) {
@@ -433,6 +472,7 @@ const applySpecial = (
       }
       const deployed = { type: action.unit, color: action.color };
       const landed = placeUnit(placement, action.to, deployed);
+      if (identities) identities.units.set(action.to, { ...deployed, id: `u:${identities.next++}` });
       recorder?.frame(phase, () => {
         if (occupant) recorder.destroy(occupant, action.seq);
         const id = recorder.create(deployed, action.to!, action.seq);
@@ -442,7 +482,7 @@ const applySpecial = (
       const crush = occupant
         ? { victim: { type: occupant.type, color: occupant.color } }
         : {};
-      const blast = applyArrivalMine(landed, mines, [action.to], action.color, deployed, recorder, phase, action.seq);
+      const blast = applyArrivalMine(landed, mines, [action.to], action.color, deployed, recorder, phase, action.seq, identities);
       if (blast.mineColor) {
         return {
           placement: blast.placement,
@@ -622,6 +662,8 @@ export const endScTurnKernel = (
 
   const skipChecks = opts?.skipTurnStartChecks === true;
   const actions = snapshot.queue?.actions ?? [];
+  assertQueueShape(actions);
+  assertNativeClassicalDependencies(snapshot, actions);
   const events: ResolveEvent[] = [];
   const ignoreAttacksOn: Square[] = [];
   let placement = snapshot.placement;
@@ -765,6 +807,11 @@ export const endScTurnKernel = (
     });
   }
 
+  const identities: NativeIdentityLedger = { units: new Map(), transfers: new Map(), next: 0 };
+  for (const [at, piece] of placementToMap(placement)) {
+    identities.units.set(at, { ...piece, id: `u:${identities.next++}` });
+  }
+
   /**
    * `specialBefore` events are collected, not logged, because a gas step whose
    * marine keeps walking cannot know its own mine outcome until the classical
@@ -794,6 +841,8 @@ export const endScTurnKernel = (
     if (!current || current.type !== "p" || current.color !== a.color) return;
     recorder?.frame("B", () => recorder.transform(current, a.promotion!, a.seq));
     placement = placeUnit(placement, at, { type: a.promotion, color: a.color });
+    const identity = identities.units.get(at);
+    if (identity) identities.units.set(at, { ...identity, type: a.promotion });
     gasPromotions.push({ color: a.color, from: a.from, at, unit: a.promotion });
   };
 
@@ -826,8 +875,8 @@ export const endScTurnKernel = (
       const applied = allyBlocked
         ? { placement, mines }
         : held
-          ? { placement: relocate(placement, a.from, a.to!, recorder, "B", a.seq), mines }
-          : applySpecial(placement, mines, a, ignoreAttacksOn, recorder);
+          ? { placement: relocate(placement, a.from, a.to!, recorder, "B", a.seq, identities, a), mines }
+          : applySpecial(placement, mines, a, ignoreAttacksOn, recorder, identities);
       const event: BeforeEvent = { action: a, extra: {} };
       const relocated = applied.placement !== placement;
       const stepped =
@@ -870,7 +919,7 @@ export const endScTurnKernel = (
     if (continues) continue;
     const marine = placementToMap(placement).get(at);
     if (!marine) continue;
-    const blast = applyArrivalMine(placement, mines, [at], action.color, marine, recorder, "B", action.seq);
+    const blast = applyArrivalMine(placement, mines, [at], action.color, marine, recorder, "B", action.seq, identities);
     placement = blast.placement;
     mines = blast.mines;
     step.event.extra = {
@@ -915,7 +964,7 @@ export const endScTurnKernel = (
   }
   const white = withExtraStepLegs(classicalFor(actionsAfterB, "w"), actions);
   const black = withExtraStepLegs(classicalFor(actionsAfterB, "b"), actions);
-  const classical = resolveTurnKernel({
+  const classicalInput: ResolveTurnInput = {
     placement,
     ccLives,
     white,
@@ -925,10 +974,29 @@ export const endScTurnKernel = (
     isTargetVisible,
     pathVisionOpts: { mines, tankModeFor },
     siegedTanks: afterB.siegedTanks,
-  }, recorder, {
-    w: actionsAfterB.find(a => a.timing === "C" && a.color === "w")?.seq ?? null,
-    b: actionsAfterB.find(a => a.timing === "C" && a.color === "b")?.seq ?? null,
-  }, sieged);
+  };
+  const binding: NativeDoubleBinding = { placement };
+  for (const a of actions) {
+    if (a.timing !== "C") continue;
+    const selected = actionsAfterB.find((other): other is Extract<ScAction, { timing: "C" }> =>
+      other.timing === "C" && other.color === a.color && other.seq === a.seq);
+    const matched = actions.find(b => b.timing === "B" && b.color === a.color && b.from === a.from &&
+      b.to && (b.kind === "stimStep" || b.kind === "tacticalJump"));
+    if (selected && matchedMarineDouble(actions, a, selected, identities.units.get(selected.from),
+      matched ? identities.transfers.get(matched) : undefined)) {
+      binding[a.color] = { from: selected.from, to: selected.to };
+    }
+  }
+  nativeDoubleBindings.set(classicalInput, binding);
+  let classical: ResolveTurnResult;
+  try {
+    classical = resolveTurnKernel(classicalInput, recorder, {
+      w: actionsAfterB.find(a => a.timing === "C" && a.color === "w")?.seq ?? null,
+      b: actionsAfterB.find(a => a.timing === "C" && a.color === "b")?.seq ?? null,
+    }, sieged);
+  } finally {
+    nativeDoubleBindings.delete(classicalInput);
+  }
 
   let resolved: ResolveTurnResult = {
     ...classical,

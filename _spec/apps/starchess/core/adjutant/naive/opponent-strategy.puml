@@ -1,15 +1,23 @@
-@startuml opponent-strategy-naive
-' SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
-' purpose: ADJUTANT (SCRIPT NAIVE) — deterministic plan search; commits only
-' through addScAction. The shipped script behind /single and the tutorial.
+' purpose: Naive script layering and shared deployment composition with native C admission.
 ' covers: packages/starchess-core/src/ai/adjutant.ts
 ' covers: packages/starchess-core/src/ai/context/**
 ' covers: packages/starchess-core/src/ai/strategies/**
 ' covers: packages/starchess-core/src/ai/plans/**
+' covers: packages/starchess-core/src/ai/strategic/orchestrator.ts
+' covers: packages/starchess-core/src/__tests__/strategic/deployLegality.test.ts
+' covers: packages/starchess-core/src/__tests__/strategic/witness.test.ts
 ' see also: ../cc-focus.puml (the omniscience contract, decided)
 ' see also: ../weight-ladder.puml (every naive weight and its tier)
 ' see also: _spec/packages/starchess-core/deploy-reach.puml (undefended)
 ' see also: ../strategic/strategic-economy.puml (shared Mecha gate, fog-gated twin)
+' related: _spec/packages/starchess-core/sc-moves.puml
+' related: _spec/packages/starchess-core/scfen-queue.puml
+' related: ../strategic/strategic-architecture.puml
+' related: ../strategic/promotion-defense.puml
+' authority: accepted v3 in _spec/_plans/ml-adjutant-r3-native-classical-shape-fix.md
+' FK: note bottom of AI 10.2; N_CHARON 12.5; N_CHARON_PAIR 10.5; N_OMNI 10.2; N_OMNI_GATE 12.0; N_UNDEFENDED 12.3.
+' FK: N_LAYER 11.2; N_BISHOP_CAPS 12.5; N_BISHOP_TAKE 12.0; N_STALE 11.9; N_NEWBORN 11.1; N_COMMIT 12.5.
+@startuml opponent-strategy-naive
 !include ../../../../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -72,53 +80,59 @@ AI ARROW_MAIN Q : commit chosen plan
 Q ARROW_MAIN SNAP : gated write
 TRIG ARROW_OPTIONAL SNAP : APPLY_SNAPSHOT / store merge\n(one clock — no bypass reduce rules)
 
-note bottom
-  **Pattern:** Strategy → Command.
-  **Turn shape:** context → posture weights → strategies
-  (generate + score) → plans → guard → rank → commit.
-  **Allowed:** adjutant → addScAction (same gates as human).
-  **Forbidden:** adjutant → resolve-turn or raw Q: string edits.
-  **Forbidden:** a second legality stack in the app for AI moves.
-  **Forbidden:** a strategy that reads the snapshot directly, mutates
-  the context, or branches on posture — weights are the only dial.
-  **Forbidden:** importing from ""ai/strategic/**"" — this layer is below it.
-  **Charon hunt (two-mode):** ""captures.ts"" proposes B insta-kills while
-  ""enemyCanJump"" (enemy gasIncome < 3) is false, else F teleport-guesses at
-  top-3 mirrored warp predictions (free-aim diagonal + strike verified);
-  ""charonForwardStacks"" pairs each F with a classical that neither moves
-  the mecha nor occupies/screens the aim. Strategic twin mirrors both modes.
+note bottom of AI
+  Commands validate both human and script
+  plans instead of an independent AI rule set.
+  Strategies read context and posture weights,
+  while simulation and ranking remain in plans.
 end note
+note as N_CHARON
+  Charon uses immediate B attacks when
+  enemy gas income cannot fund a tactical jump.
+  Otherwise F predicts the top three mirrored
+  warp targets, with diagonal verification
+  and native strike validation retained.
+end note
+S2 .. N_CHARON
+note as N_CHARON_PAIR
+  F Charon compositions exclude moves that
+  relocate the Mecha or screen its firing ray.
+  The Strategic twin uses the same composition
+  modes, rather than a separate legality stack.
+end note
+PL .. N_CHARON_PAIR
 
 note as N_OMNI
-  **The naive script is omniscient about the Command Center, on purpose.**
-  ""ctx.enemyCC"" is ""findCC(map, enemy)"" and is never fog-filtered, so the
-  per-type check bonuses (""SNEAK_HOVERBIKE_CHECK"" 2_000, ""MARINE_CHECK_CC"" 1_500,
-  the Mecha ""diagonal"", ""TACTICAL_JUMP_CHECK_CC"" 2_000) aim at the real square
-  whether or not the script can see it. That is the decided contract, not a
-  defect: this is the weaker difficulty, and the fog-honest treatment belongs
-  to the strategic script.
-
-  **Two terms are still fog-gated:** ""attackCC"" and ""chaseCC"" test
-  ""vision.enemyCCVisible"" explicitly. The gate is close to redundant —
-  ""resolvePosture"" only returns ""hunt"" when the CC is visible, and those are
-  the only postures where either weight is non-zero — but it is cheap and it
-  documents which two terms were meant to depend on sight. Full split in
-  ""../cc-focus.puml"".
+  Naive CC bonuses use the real enemy square,
+  even when the current viewer cannot see it.
+  Strategic scoring owns fog-honest estimates,
+  so the weaker script keeps its deliberate
+  omniscience contract.
 end note
+note as N_OMNI_GATE
+  Only attackCC and chaseCC test enemy
+  CC visibility before adding their weights.
+  Hunt already requires the CC in view,
+  but those local gates preserve the intended
+  sight dependency for each scoring term.
+end note
+AI .. N_OMNI_GATE
 
 note as N_UNDEFENDED
-  **"Undefended" now means undefended against a deploy too.** ""captures.ts""
-  asks ""deployCovers"" on the **POST-move** board, for the enemy side, with
-  ""snap.gasIncome[enemy]"" and ""ctx.storedFor(enemy)"": a Marine the enemy can
-  recapture by dropping a unit off its Command Center is not free, so
-  ""HUNT_UNDEFENDED_MARINE"" stays off.
-
-  That predicate used to be a private, Marine-only ""canGasDeployDefend"" that
-  imported from ""ai/strategic/context"" — the one place this layer reached
-  upward. It now lives in ""board/deploy-reach.ts"", below both layers, and the
-  only strategic field naive reads is the optional ""ctx.winning"", which the
-  naive build simply leaves absent.
+  Post-move deployment defence includes
+  the enemy's gas income and mineral bank.
+  A Marine reachable by Command Center
+  replacement cannot receive the undefended
+  capture bonus merely because it looks free.
 end note
+note as N_LAYER
+  Deployment defence moved below both script
+  layers into the shared board query module.
+  Naive context leaves winning unspecified,
+  instead of importing Strategic context
+  or probing a foreign layer's type.
+end note
+DR .. N_LAYER
 
 AI .. N_OMNI
 S2 .. N_UNDEFENDED
@@ -127,21 +141,45 @@ S4 ARROW_OPTIONAL MC : never jump onto a mine
 S5 ARROW_OPTIONAL MC : never drop / step onto a mine
 
 note as N_BISHOP_CAPS
-  Same-color bishops share diagonals, so the
-  helper caps Mecha at four total and two per
-  square color (a1 dark parity). Total four is
-  absolute while per-color two still admits a
-  big-threat capture, crush-replace nets out first.
+  Mecha capacity remains four units overall
+  and two per square colour, with a1 dark.
+  Crush replacement discounts the existing ally,
+  so surviving material does not include
+  both predecessor and replacement.
 end note
 
 note as N_BISHOP_TAKE
-  Per-color two admits only a big-threat take where
-  fresh bishop crushes queen or rook on square or
-  captures one classically. Knight, bishop, pawn
-  takes never qualify; Charon fails since fresh
-  deploy spent special, always-visible, ladder kept.
+  The per-colour exception counts a visible
+  enemy queen or Tank crush or classical take.
+  Minor victims and Charon do not satisfy
+  this replacement-repayment predicate,
+  and the total cap remains absolute.
 end note
 
 S6 .. N_BISHOP_CAPS
 S6 .. N_BISHOP_TAKE
+note as N_STALE
+  B deployment excludes old move partners
+  originating or landing on its birth square.
+  This filter applies even when replacement
+  types share geometry, because old scoring
+  does not establish newborn provenance.
+end note
+PL .. N_STALE
+note as N_NEWBORN
+  Newborn captures are generated after the
+  planning map replaces the old occupant.
+  Unrelated moves and old-actor C before F
+  remain supported, rather than broadening
+  the stale B-origin exclusion.
+end note
+PL .. N_NEWBORN
+note as N_COMMIT
+  Native admission validates each plan
+  after stale composition has been filtered.
+  Newborn geometry and seed 7's legal plan
+  are controls, not proof of historical policy
+  selection or polluted user data.
+end note
+Q .. N_COMMIT
 @enduml

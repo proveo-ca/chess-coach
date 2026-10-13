@@ -201,7 +201,11 @@
         "packages/starchess-core/src/rules/validation.ts",
         "packages/starchess-core/src/board/moves.ts",
         "apps/starchess/src/presentation/specials/planning/occupancy.ts",
-        "apps/starchess/src/presentation/combat/intentOverlays.ts"
+        "apps/starchess/src/presentation/combat/intentOverlays.ts",
+        "packages/starchess-core/src/rules/nativeClassical.ts",
+        "packages/starchess-core/src/rules/planning-order.ts",
+        "packages/starchess-core/src/__tests__/nativeClassical.test.ts",
+        "packages/starchess-core/src/__tests__/deployLegality.test.ts"
       ],
       "fingerprint": null
     },
@@ -304,7 +308,10 @@
         "packages/starchess-core/src/ai/adjutant.ts",
         "packages/starchess-core/src/ai/context/**",
         "packages/starchess-core/src/ai/strategies/**",
-        "packages/starchess-core/src/ai/plans/**"
+        "packages/starchess-core/src/ai/plans/**",
+        "packages/starchess-core/src/ai/strategic/orchestrator.ts",
+        "packages/starchess-core/src/__tests__/strategic/deployLegality.test.ts",
+        "packages/starchess-core/src/__tests__/strategic/witness.test.ts"
       ],
       "fingerprint": null
     },
@@ -444,11 +451,34 @@
       "fingerprint": null
     },
     {
+      "spec": "_spec/packages/starchess-core/scfen-queue.puml",
+      "covers": [
+        "packages/starchess-core/src/scfen/codec.ts",
+        "packages/starchess-core/src/commands/queue-action.ts",
+        "packages/starchess-core/src/rules/validation.ts",
+        "packages/starchess-core/src/rules/nativeClassical.ts",
+        "packages/starchess-core/src/rules/planning-order.ts",
+        "packages/starchess-core/src/__tests__/deployLegality.test.ts",
+        "packages/starchess-core/src/__tests__/nativeClassical.test.ts",
+        "packages/starchess-arena/src/__tests__/strictRecordedQueues.test.ts",
+        "apps/starchess/src/__tests__/matchReducer.actions.test.ts"
+      ],
+      "fingerprint": null
+    },
+    {
       "spec": "_spec/packages/starchess-core/sc-moves.puml",
       "covers": [
         "packages/starchess-core/src/board/moves.ts",
         "packages/starchess-core/src/rules/validation.ts",
-        "packages/starchess-core/src/__tests__/rook/**"
+        "packages/starchess-core/src/rules/nativeClassical.ts",
+        "packages/starchess-core/src/rules/planning-order.ts",
+        "packages/starchess-core/src/rules/planning-intents.ts",
+        "packages/starchess-core/src/rules/specials/stimStep.ts",
+        "packages/starchess-core/src/commands/queue-action.ts",
+        "packages/starchess-core/src/__tests__/rook/**",
+        "packages/starchess-core/src/__tests__/deployLegality.test.ts",
+        "packages/starchess-core/src/__tests__/nativeClassical.test.ts",
+        "packages/starchess-core/src/__tests__/planningIntents.test.ts"
       ],
       "fingerprint": null
     },
@@ -457,7 +487,12 @@
       "covers": [
         "packages/starchess-core/src/resolve/resolve-turn.ts",
         "packages/starchess-core/src/resolve/submit-turn.ts",
-        "packages/starchess-core/src/__tests__/rook/**"
+        "packages/starchess-core/src/rules/nativeClassical.ts",
+        "packages/starchess-core/src/rules/validation.ts",
+        "packages/starchess-core/src/outcome.ts",
+        "packages/starchess-core/src/__tests__/rook/**",
+        "packages/starchess-core/src/__tests__/deployLegality.test.ts",
+        "packages/starchess-core/src/__tests__/provenance.test.ts"
       ],
       "fingerprint": null
     },
@@ -472,7 +507,11 @@
         "packages/starchess-core/src/__tests__/tank/**",
         "packages/starchess-core/src/__tests__/rook/**",
         "packages/starchess-core/src/__tests__/collision/fogVacatedTarget.test.ts",
-        "packages/starchess-core/src/__tests__/mine/mineContactRoutes.test.ts"
+        "packages/starchess-core/src/__tests__/mine/mineContactRoutes.test.ts",
+        "packages/starchess-core/src/resolve/submit-turn.ts",
+        "packages/starchess-core/src/rules/nativeClassical.ts",
+        "packages/starchess-core/src/board/moves.ts",
+        "packages/starchess-core/src/__tests__/deployLegality.test.ts"
       ],
       "fingerprint": null
     },
@@ -485,7 +524,13 @@
         "packages/starchess-core/src/index.ts",
         "packages/starchess-core/src/__tests__/provenance*.test.ts",
         "packages/starchess-core/src/__tests__/gasPromotionOwnership.test.ts",
-        "packages/starchess-core/src/__tests__/mine/**"
+        "packages/starchess-core/src/__tests__/mine/**",
+        "packages/starchess-core/src/rules/nativeClassical.ts",
+        "packages/starchess-core/src/rules/validation.ts",
+        "packages/starchess-core/src/rules/planning-order.ts",
+        "packages/starchess-core/src/__tests__/deployLegality.test.ts",
+        "packages/starchess-core/src/__tests__/nativeClassical.test.ts",
+        "packages/starchess-core/src/__tests__/gas/marineGasStackOrder.test.ts"
       ],
       "fingerprint": null
     },

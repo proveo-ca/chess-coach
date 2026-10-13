@@ -1,198 +1,151 @@
-@startuml sc-moves-layers
-' SPEC: _spec/packages/starchess-core/sc-moves.puml
-' purpose: SC-native classical move generator — board/moves.ts, consumers, MatchStore seam.
+' purpose: Classical move generation, strict native C geometry and the board-input boundary.
 ' covers: packages/starchess-core/src/board/moves.ts
 ' covers: packages/starchess-core/src/rules/validation.ts
+' covers: packages/starchess-core/src/rules/nativeClassical.ts
+' covers: packages/starchess-core/src/rules/planning-order.ts
+' covers: packages/starchess-core/src/rules/planning-intents.ts
+' covers: packages/starchess-core/src/rules/specials/stimStep.ts
+' covers: packages/starchess-core/src/commands/queue-action.ts
 ' covers: packages/starchess-core/src/__tests__/rook/**
-' see also: _spec/packages/starchess-core/gas-phase-vacancy.puml
+' covers: packages/starchess-core/src/__tests__/deployLegality.test.ts
+' covers: packages/starchess-core/src/__tests__/nativeClassical.test.ts
+' covers: packages/starchess-core/src/__tests__/planningIntents.test.ts
+' related: _spec/packages/starchess-core/scfen-queue.puml
+' related: _spec/packages/starchess-core/gas-phase-vacancy.puml
+' related: _spec/packages/starchess-core/resolve-turn-activity.puml
+' related: _spec/packages/starchess-core/submit-turn-activity.puml
+' related: _spec/apps/starchess/match-store.puml
+' related: _spec/apps/starchess/starchess-mode.puml
+' authority: accepted v3 in _spec/_plans/ml-adjutant-r3-native-classical-shape-fix.md
+' verification: bounded remediated code reviewed YES; current core666/training1010 PASS, arena77 FAIL/239 pending. Closing docs/rendering pending; full R3/R4 release NO.
+' readability: FK uses deterministic syllable estimation with engineering-token exceptions; structural labels are exempt.
+' FK: note right of OWN 11.0; note bottom of VAL 11.7; note bottom of QACT 10.2; note bottom of INPUT 10.8.
+' FK: note bottom of CJS 12.3; note right of MIN 12.2; note bottom of SIEGE 11.0; note top of OWN 11.9.
+@startuml sc-moves-layers
 !include ../../themes/proveo.puml
-
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left
+title StarChess · Classical geometry and native admission boundaries
 
-title StarChess · scMoves — SC-native classical legality (layers & seam)
-
-package "packages/starchess-core — SC RULES" {
-  component "board/moves.ts\nscMovesFrom / scMovesFor / isScMoveShape\nauthoritative SC classical legality" as SCM <<app>>
-  component "board/placement.ts\nattacksSquare + clearRay — piece geometry" as BRD <<app>>
-  component "board/siege.ts\nisRookSiegedAfterB — siege truth after queued B" as SIEGE <<app>>
-  component "board/mines.ts\nspider mines — targets, not occupancy" as MIN <<app>>
-  component "board/vision.ts\nsieged rook 9x9 grid vs tank 5x5 rectangle" as VIS <<db>>
-  component "rules/validation.ts\nassertClassicalBaseline — opt-in geometry" as VAL <<error>>
+package "packages/starchess-core" {
+  component "board/moves.ts\nscMovesFrom / scMovesFor\nisScMoveShape" as SCM <<app>>
+  component "board/placement.ts\nattacksSquare / clearRay" as BRD <<app>>
+  component "board/siege.ts\nisTankSiegedAfterB" as SIEGE <<app>>
+  component "board/mines.ts\nmine targets, not occupancy" as MIN <<app>>
+  component "board/vision.ts\ntank / siege footprint" as VIS <<app>>
+  component "rules/validation.ts\nassertClassicalBaseline\nassertNativeClassicalDependencies" as VAL <<error>>
+  component "rules/nativeClassical.ts\nnativeClassicalChecks\nmatchedMarineDouble" as OWN <<app>>
+  component "rules/planning-intents.ts\nclassicalActorAt / knownAppendFailure" as PUBLIC <<app>>
+  component "commands/queue-action.ts\naddScAction / removeScAction" as QACT <<async>>
+  component "ai/adjutant.ts\nclassical candidates" as BRAIN <<app>>
 }
-
-package "Consumers" {
-  component "apps/starchess\npresentation/board/hooks/useBoardInput.ts\nselect + commit classical / spawn / specials" as INPUT <<app>>
-  component "packages/starchess-core\nai/adjutant.ts\ncandidates via scMovesFor" as BRAIN <<app>>
+package "apps/starchess" {
+  component "LiveStarChessBoard\nonSquareClick" as LIVE <<app>>
+  component "presentation/board/hooks/useBoardInput.ts\nviewer occupancy / selection" as INPUT <<app>>
+  component "MatchStore / matchReducer\nQUEUE_ACTION / SUBMIT_TURN" as STORE <<async>>
 }
+cloud "chess.js\nSquare type only" as CJS <<cloud>>
 
-package "apps/starchess — MatchStore seam" {
-  component "MatchStore + matchReducer\nQUEUE_ACTION → addScAction\nSELECT_SQUARE / SET_LEGAL_DESTS" as STORE <<async>>
-  component "LiveStarChessBoard\nonSquareClick from useBoardInput" as LIVE <<app>>
-}
+SCM ARROW_MAIN BRD : leap / ray geometry
+SCM ARROW_OPTIONAL SIEGE : move-generation mode
+SCM ARROW_OPTIONAL MIN : Marine diagonal targets
+SCM ARROW_OPTIONAL VIS : tank 5x5 / siege 9x9
+BRAIN ARROW_MAIN SCM : scMovesFor
+PUBLIC ARROW_MAIN SCM : known-board shape law
+LIVE ARROW_MAIN INPUT : click origin / destination
+INPUT ARROW_MAIN SCM : highlights from viewer map
+INPUT ARROW_QUEUE STORE : SELECT_SQUARE / SET_LEGAL_DESTS\nSET_PENDING_PROMOTION / QUEUE_ACTION
+STORE ARROW_MAIN QACT : same native gates as scripts
+QACT ARROW_MAIN VAL : admission and retained-C dependencies
+VAL ARROW_MAIN OWN : own units / own siege / own queue
+OWN ARROW_MAIN SCM : mandatory shape or matched Marine double
+OWN ARROW_MAIN BRD : private own-dependency bookkeeping
+STORE ARROW_OPTIONAL CJS : no chess.js legality oracle
 
-cloud "chess.js\nNOT authoritative for StarChess\n(Square type only)" as CJS <<cloud>>
-
-SCM ARROW_MAIN     BRD   : leap + ray geometry
-SCM ARROW_OPTIONAL SIEGE : siege state after queued B
-SCM ARROW_OPTIONAL MIN   : hostileMineOnTo — marine diagonal only\n(sieged cross always emitted; mine clears in place)
-SCM ARROW_OPTIONAL VIS   : siege footprint authority
-
-INPUT ARROW_MAIN     SCM : destinations via ""scMovesFrom""
-BRAIN ARROW_MAIN     SCM : candidates via ""scMovesFor""
-VAL   ARROW_OPTIONAL SCM : opt-in ""isScMoveShape""
-
-INPUT ARROW_QUEUE STORE : QUEUE_ACTION (C / B / F)
-LIVE  ARROW_MAIN INPUT : click
-STORE ARROW_OPTIONAL CJS : Square type only
-
-note right of SCM
-  **Exports.**
-  * ""scMovesFrom(map, from, color, opts?) : ScMove[]""
-  * ""scMovesFor(map, color, opts?) : ScMove[]""
-  * ""isScMoveShape(piece, from, to) : boolean"" — shape-only;
-    ignores path blockers so fog path-discovery stays queueable.
-  ----
-   ""ScMoveOptions.siegedTanks"" — resolved **after** queued B
-   via ""isTankSiegedAfterB"", **never** raw ""snap.siegedTanks"".
+note right of OWN
+  Own B replacements determine C's effective
+  type, even over an allied old occupant.
+  Public planning helpers retain their earlier
+  precedence, rather than supplying this guard.
 end note
-
-note bottom of SCM
-  Movegen omits ally-occupied aims;
-  post-B projection reinstates the
-  squares a B departure vacates.
-  Validation must read the same
-  projected occupancy, not live.
+note bottom of VAL
+  Native shape validation rejects bad vectors
+  without using a path-clearance test.
+  The resolver still discovers hidden contact,
+  so legal geometric attempts remain valid.
 end note
-
-note bottom of STORE
-  **No Coach BoardMoveProvider.** Live StarChess does not go through
-  Coach ""useChessBoard"" / ""useMoveExecutor"" / ""gameStore"".
-  Classical commits are MatchStore actions; legality is ""scMoves*"".
-  **Player fog (all apps/starchess):** ""useBoardInput"" always feeds
-  ""scMovesFrom"" a viewer-occulted map (""occupancyForViewerMoves"") so
-  intent through fog stays clickable; resolve owns collisions.
-  See also ""_spec/apps/starchess/match-store.puml"".
+note bottom of QACT
+  Promotion and siege validation follow the
+  effective type, not a replaced predecessor.
+  Shifted last-rank promotion still fails at End,
+  rather than moving that error into admission.
 end note
-
+note bottom of INPUT
+  Board input hides unseen enemy pieces
+  before it asks for move highlights.
+  Native command admission remains authoritative,
+  so the UI does not introduce another rule set.
+end note
+note right of STORE
+  No Coach BoardMoveProvider route.
+  Specials use the same QUEUE_ACTION path.
+end note
+note top of STORE
+  PromotionModal selects the last-rank unit.
+  Timeout / End may flush the queen default.
+end note
 note bottom of CJS
-  chess.js forbids adjacent kings; SC allows the king duel
-  (resolve.puml). Using chess.js ""moves()"" would hard-lock play.
+  Chess.js excludes adjacent kings, whereas
+  StarChess deliberately permits the CC duel.
+  Its move oracle would therefore reject
+  a supported native interaction.
 end note
-@enduml
-
-@startuml sc-moves-sequence
-' purpose: Click → highlights → QUEUE_ACTION under useBoardInput.
-!include ../../themes/proveo.puml
-
-title StarChess · Board input — select and commit
-
-actor "Human" as H
-participant "LiveStarChessBoard" as VIEW <<app>>
-participant "useBoardInput" as INPUT <<app>>
-participant "board/moves.ts\nscMovesFrom" as SCM <<app>>
-participant "MatchStore\nmatchReducer" as STORE <<async>>
-participant "commands/queue-action.ts\naddScAction" as QACT <<app>>
-
-== 1 · Select — derive highlights ==
-
-H ARROW_MAIN VIEW : taps own piece
-VIEW ARROW_MAIN INPUT : ""onSquareClick(from)""
-INPUT ARROW_MAIN INPUT : ""occupancyForViewerMoves""\n(player fog — occult unseen enemies)
-INPUT ARROW_MAIN SCM : ""scMovesFrom(occultedMap, …)""
-SCM ARROW_MAIN INPUT : ""ScMove[]"" — SC-legal under fog info
-INPUT ARROW_ERROR INPUT : filter ""dropsAtResolve""\n(enemy-king square burns C)
-INPUT ARROW_MAIN STORE : ""SELECT_SQUARE"" + ""SET_LEGAL_DESTS""
-
-== 2 · Commit ==
-
-H ARROW_MAIN VIEW : taps highlighted destination
-VIEW ARROW_MAIN INPUT : ""onSquareClick(to)""
-opt last-rank pawn — ""promotes"" / gas-stack promote
-  INPUT ARROW_OPTIONAL STORE : ""SET_PENDING_PROMOTION""
-  note right of INPUT
-    PromotionModal; timeout / End may flush queen
-    (SUBMIT_TURN).
-  end note
-end
-INPUT ARROW_MAIN STORE : ""QUEUE_ACTION"" classical C
-STORE ARROW_MAIN QACT : ""addScAction""
-STORE ARROW_MAIN VIEW : snap + intent overlay re-render
-
-note over INPUT, STORE
-  Specials (spawn / Charon / Jump / siege / mine / stimStep) also
-  enter via ""QUEUE_ACTION"" from GasDeploy / targeting modes — same store.
-  Queue shape: scfen-queue.puml. Resolve: resolve.puml.
+note right of MIN
+  Move generation includes Marine diagonals
+  when a hostile mine supplies a target.
+  Native resolution distinguishes attack clearing
+  from lethal movement onto an armed mine.
 end note
-@enduml
-
-@startuml sc-moves-rules
-' purpose: Per-piece SC classical legality (verified against board/moves.ts).
-!include ../../themes/proveo.puml
-
-skinparam defaultTextAlignment left
-
-title StarChess · scMoves — rule table
-
-note as RULES
-  <size:14>**SC classical legality, per piece**</size>
-  ====
-  **pawn** — single push empty; free classical double from the double-step
-  band (mid+to empty); diagonal enemy capture **or hostile mine** (the marine
-  attacks the mine — see **mines** below); **no en passant**;
-  // Marines attack **only** on the front diagonals. The generator therefore
-  // never emits a push onto an occupied square — and where **fog** hides the
-  // occupant, the intent is still queueable but resolves as a **block**, not a
-  // capture: the marine truncates before the blocker (resolve.puml).
-  // Band = ""canMarineDoubleStep"" — start rank **and behind it** (rank ≤2 white,
-  // ≥7 black), so a marine deployed on its own back rank keeps the double.
-  // Sole owner of the rule: movegen, ""isScMoveShape"" and
-  // ""rewriteClassicalAfterB"" all read it, or the board offers a double the
-  // resolver refuses to land.
-  // Promotes on last rank. Gas ""stimStep"" is +1 forward (any rank),
-  // including onto last rank when a promotion choice is set; may stack with classical.
-  ----
-  **knight, king** — leap via ""attacksSquare"". King: **no** self-check /
-  castling; **may** step adjacent to enemy king (duel — resolve.puml).
-  ----
-  **bishop, rook, queen** — rays inclusive of first enemy, exclusive of ally.
-  ----
-  **SIEGED rook** — every square on the cross (same file/rank),
-  blockers ignored, own-occupied excluded — ""firesInPlace"";
-  enemy-occupied carries that victim, empties carry ""capture: null""
-  (resolve shells them — ""shelling"", no death, no occupy;
-  no diagonal / area fire). A hostile mine on an empty ray
-  square clears in place (mines are not occupancy, so the
-  ray runs through it). Vision footprint from ""vision.ts""
-  (9×9 vs tank 5×5).
-  ----
-  **ally on to** — never emitted.
-  ----
-  **enemy KING on to** — emitted with ""dropsAtResolve""; resolver drops
-  (burns C). UI/brain filter; validation accepts (fog path-discovery).
-  ----
-  **mines** — a hostile mine is a **target**: ""hostileMineOnTo"" is advisory for
-  units that already reach the tile, and **legality-bearing** only for the marine
-  front diagonal onto an empty mined tile. Sieged cross squares are always
-  emitted (an empty mined square clears in place). Pass ""opts.mines"" or the
-  board hides the marine shape.
-  Resolve (attack → clear → occupy, walk-over death, chase): resolve.puml.
-  ----
-  **fog** — not filtered in generator; occupancy is a caller parameter.
+note right of SCM
+  Hoverbike: L (1,2) or (2,1).
+  CC: adjacent step, no castling or self-check.
 end note
-
-note as NOTIMPL
-  <size:14>**Deliberately NOT implemented**</size>
-  ====
-  castling · en passant · self-check / pins · checkmate/stalemate ·
-  queue-time path-blocker rejection · B/F generation · gas budgeting
+note left of SCM
+  Mecha: diagonal; Tank: orthogonal.
+  BattleShip: either nonzero ray; no no-op.
 end note
-
-note as XREF
-  scfen-queue.puml · resolve.puml ·
-  _spec/apps/starchess/starchess-mode.puml · match-store.puml
+note top of SCM
+  Marine: forward push or diagonal attack.
+  Double band: White <=2, Black >=7.
+  Back-rank deployment keeps positional rights.
 end note
-
-RULES -[hidden]right- NOTIMPL
-NOTIMPL -[hidden]down- XREF
+note top of MIN
+  Marine pushes never capture forward.
+  No en passant; blockers truncate the walk.
+end note
+note bottom of SIEGE
+  Sieged move generation emits cross targets,
+  with no own aims and no diagonal shelling.
+  Native resolution owns ray contact, visible
+  empty-target shelling and mine clearing,
+  without relocating the packed Tank.
+end note
+note top of OWN
+  Insertion and resulting C states retain
+  separate geometry, siege and promotion checks.
+  Later replacements cannot erase a failure
+  already present when C entered the queue.
+end note
+note top of VIS
+  Enemy CC aims carry dropsAtResolve.
+  UI and scripts filter those highlights.
+end note
+note left of PUBLIC
+  No new candidate-domain contract.
+  No private helper on root or planning-v1.
+end note
+note top of QACT
+  No queue-time checkmate or path oracle.
+  Gas and B/F generation stay separate.
+end note
 @enduml

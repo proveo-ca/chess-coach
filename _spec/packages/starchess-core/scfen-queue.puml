@@ -1,19 +1,33 @@
+' purpose: Queue grammar, ordered native C dependencies and atomic append/removal refusals.
+' covers: packages/starchess-core/src/scfen/codec.ts
+' covers: packages/starchess-core/src/commands/queue-action.ts
+' covers: packages/starchess-core/src/rules/validation.ts
+' covers: packages/starchess-core/src/rules/nativeClassical.ts
+' covers: packages/starchess-core/src/rules/planning-order.ts
+' covers: packages/starchess-core/src/__tests__/deployLegality.test.ts
+' covers: packages/starchess-core/src/__tests__/nativeClassical.test.ts
+' covers: packages/starchess-arena/src/__tests__/strictRecordedQueues.test.ts
+' covers: apps/starchess/src/__tests__/matchReducer.actions.test.ts
+' related: _spec/packages/starchess-core/sc-moves.puml
+' related: _spec/packages/starchess-core/submit-turn-activity.puml
+' related: _spec/packages/starchess-core/gas-phase-vacancy.puml
+' authority: accepted v3 in _spec/_plans/ml-adjutant-r3-native-classical-shape-fix.md
+' FK: note bottom of RANK 12.8; note bottom of QACT 11.3; note bottom of OWN 10.2; note top of OWN 10.5.
+' FK: note left of VAL 11.7; structural grammar/error labels are exempt.
 @startuml scfen-queue
-' SPEC: _spec/packages/starchess-core/scfen-queue.puml
-' purpose: Queue ABNF, per-side shape (≤1 C + one special per unit, B and/or F), resolve order B < C < F then w then b.
 !include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left
 
-title SCFEN · Queue ABNF, Shape & Order
+title SCFEN · Queue grammar, dependencies and transactional edits
 
 package "ABNF" {
   queue "queueField\n\"Q:\" sideQueue \";\" sideQueue" as QF <<async>>
   component "sideQueue\nside \":\" [action *(\",\" action)]\naction = special / classical\n(wire order = seq order)" as SQ <<async>>
   component "special\n(\"B\" / \"F\") \"=\" kind \":\" from\n[\":\" to [\":\" unit]]" as SP <<app>>
   component "classical\n\"C=\" from to [promotion]" as CL <<app>>
-  component "kind\nspawn / stimStep / spiderMine /\nbishopSnipe / siegeMode / tacticalJump" as KD <<db>>
+  component "kind\ndeploy / stimStep / spiderMine /\ncharonMissiles / siegeMode / tacticalJump" as KD <<db>>
 }
 
 package "Shape & order" {
@@ -25,6 +39,8 @@ package "Shape & order" {
 package "packages/starchess-core" {
   component "scfen/codec.ts\nformatQueueField / parseQueueField\nassertQueueShape / assertQueueGas" as COD <<app>>
   component "commands/queue-action.ts\naddScAction / removeScAction\naddScMove" as QACT <<async>>
+  component "rules/validation.ts\nassertActionAdmission\nassertNativeClassicalDependencies" as VAL <<error>>
+  component "rules/nativeClassical.ts\nseparate insertion / resulting checks" as OWN <<app>>
 }
 
 QF ARROW_MAIN SQ : expands to two
@@ -34,40 +50,78 @@ SP ARROW_OPTIONAL KD : kind
 CL ARROW_OPTIONAL KD : resolves to
 COD ARROW_MAIN QF : serializes
 QACT ARROW_MAIN COD : mutates snap.queue
+QACT ARROW_MAIN VAL : admission, queue/gas, then C dependencies
+VAL ARROW_MAIN OWN : insertion prefix + resulting own queue
+OWN ARROW_ERROR QACT : refuse without publishing a successor
 
 note right of QF
-  ""queueField = 'Q:' sideQueue ';' sideQueue""
+  Queue: Q:sideQueue;sideQueue
+  White wire order precedes Black sequence.
 end note
 
 note right of SQ
-  ""sideQueue = side ':' [ action *( ',' action ) ]""
-  ""action    = special / classical""
-  Order is free — the shape rules are **≤1 classical per side** and
-  **one special per unit**. Specials may precede the C, follow it, or both,
-  as long as each is a different unit:
-  ""w:B=spiderMine:b4:b4,C=e2e3,F=siegeMode:e4"" is legal.
+  Side queue: side ':' optional action list.
+  Actions are special or classical.
+  One C per side; one special per origin.
 end note
 
 note right of SP
-  ""special = ('B' / 'F') '=' kind ':' from [ ':' to [ ':' unit ] ]""
+  Special: B/F = kind : from.
+  Optional destination and unit follow.
 end note
 
 note right of CL
-  ""classical = 'C=' from to [ promotion ]""
-  King-shot actions encode ""to"" as intent (see scfen-wire).
+  Classical: C=from to, optional promotion.
+  Enemy CC aims remain native intents.
 end note
 
 note right of KD
-  ""kind = 'spawn' / 'stimStep' / 'spiderMine' /""
-  ""       'charonMissiles' / 'siegeMode' / 'tacticalJump'""
+  deploy / stimStep / spiderMine
+  charonMissiles / siegeMode / tacticalJump
 end note
 
-note bottom
-  Ordering rules: **≤1 C per side** and **one special per unit** (keyed on
-  ""from""). Timing is free — **B and/or F** — so a side may act before *and*
-  after its own classical in one turn, on different units (gas budgets the rest).
-  Resolve rank **B < C < F**, then **w then b**.
-  F specials rewrite actor square to the unit's post-C position
-  (move-then-gas lands on the destination).
+note bottom of RANK
+  Execution follows timing and native B ordering,
+  not the action array's apparent ordering.
+  Insertion-prefix authorship still requires an
+  own actor or an already supported B arrival.
+end note
+note bottom of QACT
+  Append checks existing queue and gas refusals
+  before exposing new C dependency errors.
+  Failed validation publishes no successor,
+  so the input and its resources remain intact.
+end note
+note bottom of OWN
+  Removal validates retained C before gas refunds
+  or changes to special-use state.
+  A valid original own actor may resume,
+  since shared geometry does not pin identity.
+end note
+note right of VAL
+  Append geometry: AddScActionError.
+  Removal geometry: ScValidateError.
+  Both use SC_BASELINE_FEN.
+end note
+note top of OWN
+  Dependency validation keeps retained specials'
+  append-time anchors under later C.
+  It adds no duplicate gas debit and leaves
+  host-owned mineral accounting outside core.
+end note
+note bottom of SHAPE
+  B and F may coexist on different units.
+  F executes at its own post-C actor lookup.
+end note
+note top of QACT
+  Remove dependent C before prerequisite B.
+  No cascading discard or sequence renumbering.
+end note
+note left of VAL
+  Initial C retains promotion, siege and
+  geometry checks from its insertion state.
+  The resulting queue is checked again,
+  so later B cannot repair a refusal
+  merely by replacing the apparent actor type.
 end note
 @enduml

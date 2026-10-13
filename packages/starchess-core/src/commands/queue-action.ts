@@ -7,7 +7,7 @@
 import type { Square } from "chess.js";
 
 import { specialGasCost, assertQueueShape } from "../scfen";
-import { assertActionDeep, ScValidateError } from "../rules/validation";
+import { assertActionAdmission, assertNativeClassicalDependencies, ScValidateError } from "../rules/validation";
 import type {
   PieceColor,
   ScAction,
@@ -67,7 +67,7 @@ export const addScAction = (input: {
   }
 
   try {
-    assertActionDeep(snap, input.action);
+    assertActionAdmission(snap, input.action);
   } catch (e) {
     if (e instanceof ScValidateError) {
       throw new AddScActionError(e.code, e.message);
@@ -109,6 +109,12 @@ export const addScAction = (input: {
 
   const actions = [...existing, action];
   assertQueueShape(actions);
+  try {
+    assertNativeClassicalDependencies(snap, actions, action.color);
+  } catch (e) {
+    if (e instanceof ScValidateError) throw new AddScActionError(e.code, e.message);
+    throw e;
+  }
 
   const gas =
     action.timing === "C"
@@ -151,6 +157,7 @@ export const removeScAction = (input: {
   }
   const actions = existing.filter((a) => a.seq !== input.seq);
   assertQueueShape(actions);
+  assertNativeClassicalDependencies(snap, actions, removed.color);
 
   let gas = snap.gas;
   if (removed.timing === "B" || removed.timing === "F") {

@@ -126,11 +126,11 @@ describe("map anchors and geometry", () => {
 });
 
 describe("knownAppendFailure", () => {
-  it("keeps native soft admission while candidate shape rejects nongeometry", () => {
+  it("rejects native nongeometry while preserving candidate shape refusal", () => {
     const known = knowledge([["a1", piece("k")], ["h8", piece("k", "b")], ["d2", piece("n")]]);
     const action = classical("d2", "d3");
     expect(knownAppendFailure(known, [], action)).toBe("shape");
-    expect(() => addScAction({ snapshot: snapshot(known), action })).not.toThrow();
+    expect(() => addScAction({ snapshot: snapshot(known), action })).toThrow(AddScActionError);
   });
 
   it("keeps actor refusal ahead of shape and timing without granting special births", () => {

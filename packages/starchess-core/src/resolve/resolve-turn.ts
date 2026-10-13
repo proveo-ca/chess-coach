@@ -26,6 +26,9 @@ import { moverContact, timedMover, type MoverContact } from "../board/move-timin
 import { pathRevealStepsKernel } from "../board/vision";
 import type { ProvenanceRecorder } from "./provenance-recorder";
 import type { MineId } from "./provenance-types";
+import { isScMoveShape } from "../board/moves";
+import { ScValidateError } from "../rules/validation";
+import { consumeNativeClassicalDoubles } from "./submit-turn";
 
 export type { ClassicalPlan };
 
@@ -250,8 +253,13 @@ const applyPathRevealCCShotKernel = (
 
 const plansOf = (input: ResolveTurnInput): ClassicalPlan[] => {
   const out: ClassicalPlan[] = [];
-  if (input.white) out.push({ ...input.white, color: "w" });
-  if (input.black) out.push({ ...input.black, color: "b" });
+  const capture = (plan: ClassicalPlan | null, color: StarChessColor) => {
+    if (!plan) return;
+    out.push({ color, from: plan.from, to: plan.to, promotion: plan.promotion,
+      extraStepFrom: plan.extraStepFrom, extraStepTo: plan.extraStepTo });
+  };
+  capture(input.white, "w");
+  capture(input.black, "b");
   return out;
 };
 
@@ -460,7 +468,17 @@ export const resolveTurnKernel = (
   sources: Record<StarChessColor, number | null> = { w: null, b: null },
   nativeSiegedSet?: ReadonlySet<Square>,
 ): ResolveTurnResult => {
+  const nativeDoubles = consumeNativeClassicalDoubles(input);
   const start = placementToMap(input.placement);
+  const plans = plansOf(input);
+  for (const plan of plans) {
+    const actor = start.get(plan.from);
+    if (!actor || actor.color !== plan.color) continue;
+    if (!isScMoveShape(actor.type, plan.from, plan.to, plan.color) &&
+        !(actor.type === "p" && nativeDoubles[plan.color])) {
+      throw new ScValidateError("SC_BASELINE_FEN", `invalid ${plan.color} ${actor.type} classical shape ${plan.from}→${plan.to}`);
+    }
+  }
   recorder?.board(start);
   const queryBase = recorder?.image();
   const seqFor = (plan: ClassicalPlan) => plan.color === "w" ? sources.w : sources.b;
@@ -483,7 +501,6 @@ export const resolveTurnKernel = (
     w: clampLives(input.ccLives.w),
     b: clampLives(input.ccLives.b),
   };
-  const plans = plansOf(input);
   const ignoreAttacksOn = new Set<Square>(input.ignoreAttacksOn ?? []);
   let mines: ScMine[] = [...(input.mines ?? [])];
   const canSee = input.isTargetVisible ?? (() => true);

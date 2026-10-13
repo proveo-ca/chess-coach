@@ -29,41 +29,34 @@ const settle = (placement: string, moves: { color: "w" | "b"; from: string; to: 
 };
 
 describe("runner crossings — the fly-by the board cannot show", () => {
-  /**
-   * Black tank on h3 lights files f–h, ranks 1–5. A white marine on f4 that
-   * double-steps to f6 is watched leaving f4 and crossing f5, and ends on f6
-   * where nothing of ours is looking: the settled board shows an empty f4 and
-   * an unseen marine, and only the resolve knows which way it went.
-   */
-  const FLY_BY = "4k3/8/8/8/5P2/7r/8/4K3";
+  // Legal double with f2/f3 lit and f4 dark.
+  const FLY_BY = "4k3/8/8/8/8/8/5P2/4K2r";
 
   it("records the furthest square we actually watched it cross", () => {
-    const esr = settle(FLY_BY, [{ color: "w", from: "f4", to: "f6" }]);
+    const esr = settle(FLY_BY, [{ color: "w", from: "f2", to: "f4" }]);
     expect(esr.resolved.moves).toContainEqual(
-      expect.objectContaining({ from: "f4", to: "f6", color: "w" }),
+      expect.objectContaining({ from: "f2", to: "f4", color: "w" }),
     );
-    // f4 and f5 are lit for black; f6 is not. We watched it leave f4 and reach
-    // f5, so one of its two ranks is accounted for and only one is left.
     expect(runnerCrossings(witnessFromEndTurn(esr), "b")).toEqual([
-      { at: "f5", residual: 1 },
+      { at: "f3", residual: 1 },
     ]);
   });
 
   it("tells the *other* side nothing — the gate is per-viewer", () => {
-    const esr = settle(FLY_BY, [{ color: "w", from: "f4", to: "f6" }]);
+    const esr = settle(FLY_BY, [{ color: "w", from: "f2", to: "f4" }]);
     // White is the mover's own side: this channel only reports enemies.
     expect(runnerCrossings(witnessFromEndTurn(esr), "w")).toEqual([]);
   });
 
   it("reports nothing when the whole path ran through the dark", () => {
     // Same move with our tank moved away to a1 (files a–c, ranks 1–3).
-    const unwatched = "4k3/8/8/8/5P2/8/8/r3K3";
-    const esr = settle(unwatched, [{ color: "w", from: "f4", to: "f6" }]);
+    const unwatched = "4k3/8/8/8/8/8/5P2/r3K3";
+    const esr = settle(unwatched, [{ color: "w", from: "f2", to: "f4" }]);
     expect(runnerCrossings(witnessFromEndTurn(esr), "b")).toEqual([]);
   });
 
   it("feeds the memory a ghost the settled board alone could not produce", () => {
-    const esr = settle(FLY_BY, [{ color: "w", from: "f4", to: "f6" }]);
+    const esr = settle(FLY_BY, [{ color: "w", from: "f2", to: "f4" }]);
     const witness = witnessFromEndTurn(esr);
 
     // Without the witness the settled board shows nothing at all.
@@ -74,8 +67,8 @@ describe("runner crossings — the fly-by the board cannot show", () => {
     // advanced to where it could have got to unseen.
     const seeing = foldRunnerMemory(emptyRunnerMemory(), esr.next, "b", witness);
     expect(seeing.ghosts).toHaveLength(1);
-    expect(seeing.ghosts[0]!.seenAt).toBe("f5");
-    expect(seeing.ghosts[0]!.possible).toContain("f6");
+    expect(seeing.ghosts[0]!.seenAt).toBe("f3");
+    expect(seeing.ghosts[0]!.possible).toContain("f4");
   });
 });
 

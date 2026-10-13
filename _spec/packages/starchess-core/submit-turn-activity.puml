@@ -1,4 +1,4 @@
-' purpose: Native Begin/End kernels, R3 companions and ownership-preserving gas promotion.
+' purpose: Native Begin/End, C preflight, actual double entitlement and R3 provenance.
 ' covers: packages/starchess-core/src/resolve/submit-turn.ts
 ' covers: packages/starchess-core/src/resolve/resolve-turn.ts
 ' covers: packages/starchess-core/src/resolve/provenance*.ts
@@ -6,8 +6,18 @@
 ' covers: packages/starchess-core/src/__tests__/provenance*.test.ts
 ' covers: packages/starchess-core/src/__tests__/gasPromotionOwnership.test.ts
 ' covers: packages/starchess-core/src/__tests__/mine/**
+' covers: packages/starchess-core/src/rules/nativeClassical.ts
+' covers: packages/starchess-core/src/rules/validation.ts
+' covers: packages/starchess-core/src/rules/planning-order.ts
+' covers: packages/starchess-core/src/__tests__/deployLegality.test.ts
+' covers: packages/starchess-core/src/__tests__/nativeClassical.test.ts
+' covers: packages/starchess-core/src/__tests__/gas/marineGasStackOrder.test.ts
 ' related: _spec/packages/starchess-core/resolve-turn-activity.puml
 ' related: _spec/_plans/ml-adjutant-r3-native-promotion-fix.md
+' related: _spec/_plans/ml-adjutant-r3-native-classical-shape-fix.md
+' current lifecycle: bounded remediated native/planner code implemented, reviewed YES and scoped verified; closing docs/rendering pending. Arena77 FAIL/239 pending; full R3/R4 release NO.
+' historical recovery receipts below describe the earlier restored source, not the corrected-native verification epoch.
+' FK: note after End preflight 11.2; B head ordering 12.2; actual Marine identity 11.5; one-shot consume 10.4.
 ' status: CURRENT R3/SOURCE BOUNDED LOCAL RESTORATION VERIFIED COMPLETE; current core554/62,training95/6,arena2382/36/1364.07s,CI7/whole strict/actual54+54/audits/reviews PASS per lead.
 ' final lifecycle: _spec/_plans/recovery-pr47.md#final-local-restoration-complete-publication-pending; own-Marine/color and same-side replacement guard remains scoped, accepted snapshot unchanged.
 ' final render: all9 checkonly + actual SVG success per lead at /tmp/opencode/pr47-final-spec-render-96zlJm; submit-turn-activity.svg present. Keeper runs no renderer/hash/test and changes no flow/reasoning notes.
@@ -18,7 +28,7 @@
 
 skinparam defaultTextAlignment left
 
-title StarChess Core · Begin/End kernels and R3 provenance
+title StarChess Core · Native C validation, Begin/End and R3 provenance
 
 partition "beginScTurn — turn open, **before** players choose intent" {
   start
@@ -51,6 +61,14 @@ partition "beginScTurn — turn open, **before** players choose intent" {
 partition "endScTurn — the End pass" {
   start
   :require phase **P**; read ""queue.actions"", ""mines"", siege flags;
+  :assertQueueShape, then assertNativeClassicalDependencies\nfor both sides before turn-open checks or terminal return;
+  :validate separate insertion and resulting C facts:\nactor, geometry, promotion and applicable siege state;
+  note right
+    End uses the same own-dependency preflight
+    for default and post-Begin invocation.
+    Skipping turn-start shots cannot bypass
+    insertion authorship or native geometry.
+  end note
   :vision gate for checks = pre-B side vision (siege mode + own mines);
 
   :**1 · checks** — skipped when ""skipTurnStartChecks"";
@@ -64,7 +82,13 @@ partition "endScTurn — the End pass" {
     stop
   endif
 
-  :**2 · rank B specials** — white then black, queue order within a side;
+  :initialize call-local actual unit identities;\n**2 · rank B specials** — White then Black,\norderBHeadsFirst within each side;
+  note right
+    A single ordered head predicate chooses
+    each pending B action before removal.
+    Replacement and relocation therefore share
+    native sequencing instead of a kind priority.
+  end note
   :""siegeMode"" toggles the flag set only (placement untouched);
   :""applySpecial"" → snipe · warp · **gas step** · **deploy** · mine drop;
   :warp / gas step / deploy end in ""applyArrivalMine(squares)"": the last\nentry is the tile the unit rests on, so a hostile mine anywhere on that\nwalk detonates there (event carries ""mineColor"" + ""victim"" / ""unit"",\nplus ""chaseFrom"" when the mine was woken earlier on the walk);\nan allied mine stays inert;
@@ -75,6 +99,7 @@ partition "endScTurn — the End pass" {
     No opponent recoloring / refund
   end note
   :recorder: crush + replacement birth atomically;\nactual newborn mine death in a subsequent live frame;
+  :actual ledger: fresh identity on deployment;\ntransfer the real actor; retire mine/Charon/jump\ncasualties; update the surviving promoted type;
   :**hold** a gas step's arrival mine when a C is queued on the same\nmarine: only the rewrite knows whether the walk is handed on, so its\n""specialBefore"" event is *collected*, not logged (""mine-contact.puml"");
 
   :**3 · rank C classical** — post-B vision for attack fog;
@@ -89,7 +114,22 @@ partition "endScTurn — the End pass" {
   :noncontinued held B fallback repeats the current\nown-Marine/color promotion guard after held-mine processing;\nabsent / non-Marine / opponent: no promotion write or record;
   :→ **afterB** snapshot (placement · mines · siegedTanks);
   :throw if a surviving pawn's last-rank C carries no promotion;
+  :matchedMarineDouble requires a genuine B single step,\noriginal authored double band, exact structural coordinates,\nactual B transfer and selected surviving Marine identity;
+  :allocate fresh ResolveTurnInput; privately bind eligible\nside coordinates and placement in submit-owned WeakMap;
+  note right
+    Equal square and type are insufficient
+    to identify the actual transferred Marine.
+    A replacement Marine can qualify after
+    the real eligible step, not merely birth.
+  end note
   :""resolveTurn(...)"" → phases 1–4;
+  :resolve consumes and deletes the binding before\nits both-side shape guard; End finally deletes again;
+  note right
+    Direct public inputs receive no entitlement
+    from extra-step fields or coordinate claims.
+    One-shot consumption prevents reuse, while
+    final cleanup also handles a thrown resolver.
+  end note
   :stamp events: attacks → moves → mineTriggers → moveCollisions →\npathRevealAttacks (semantic cue order, ids ""ev-<n>"" in sequence);
   note right
     victim: crush / fatal warp or gas-step hull

@@ -1,11 +1,125 @@
-# DRAFT — R3 native classical shape correction
+# R3 native classical shape correction — accepted v3
 
-Status: **DRAFT / NOT ACCEPTED / NOT IMPLEMENTED / NOT READY FOR BUILD.** Draft revision: **v3**. This revision is a document identity, not a runtime version. v1 and v2 are **SUPERSEDED / NEVER ACCEPTED**.
+Status: **EXACT v3 DESIGN ACCEPTED / BOUNDED NATIVE + PLANNER CORRECTION IMPLEMENTED, REVIEWED AND VERIFIED / DOCS + RENDER CHECKS COMPLETE / FULL R3/R4 RELEASE NOT READY.** The fresh same-source three-package run completed with passing core/training and a failed arena. Accepted body revision: **v3** remains unchanged; v1 and v2 remain **SUPERSEDED / NEVER ACCEPTED**.
+
+## Current actual acceptance and separate build grant — outside the frozen body
+
+Executor's actual acceptance statement is preserved verbatim:
+
+> Proceed by accepeting R3
+
+This accepts the last exact reviewed v3 corrective body from commit `f30aa72293d16cb51743e2847716d993c726954a`. Accepted body SHA-256, supplied by the lead:
+
+```text
+cfc388d269b44d0d91c726e82be8b2464fdf573d7300c5f8bb5bfe2c9bc3ca2b
+```
+
+This is the supplied **body** identity, not a whole-file hash of this metadata-bearing document. The lead reports that the recovered original 315-line draft and its body identity were byte-verified before draft publication. The lead also reports clean `f30aa72293d16cb51743e2847716d993c726954a` as the starting checkpoint for this metadata pass. Spec-keeper records those facts without Git inspection or hash execution. No approval timestamps were supplied; none are inferred.
+
+Executor earlier explicitly selected the separate conditional **`Build + verify (Recommended)`** option. Exact v3 acceptance now fulfills that condition. The resulting grant authorizes the non-trivial native engine correction, meaningful persisted regressions and scoped local verification described by the accepted body. It does not derive build authority from design acceptance alone.
+
+The earlier freeform question about whether accepting R3 would block R4 was a question, not acceptance. The actual acceptance followed the clarification that R3 acceptance would add no administrative hold on R4. Neither **`Draft correction (Recommended)`** nor **`Preserve combinations (Recommended)`** accepted the normative body or granted implementation. The earlier draft commit/push permission was publication scope, not native-rule acceptance or an ongoing Git grant.
+
+The current grant includes **no further commit/push**, data audit, legacy remediation, training, calibration, collection, deployment or registry activation. Existing R4 contracts, independent readiness failures and verification gates remain separate; this acceptance supplies no R4 waiver or runtime readiness result. Executor has now separately selected **`Align existing diagrams (Recommended)`** after implementation, authorizing the owning-diagram/coverage alignment recorded below. This adds no engine, data or publishing permission to the spec-keeper pass.
+
+Executor subsequently requested **`commit & push`** after the bounded implementation, verification and closing reviews. This supplies a separate publication grant for the reviewed source/spec checkpoint. It does not waive the failed arena or legacy-compatibility gates, approve full R3/R4 release, or authorize data operations, training, deployment or registry activation.
+
+The reviewed v3 text between its existing BEGIN/END labels remains frozen without edits, including its historical DRAFT disposition and conditional acceptance/build wording. This current outside-body record supersedes only those lifecycle statements. It activates the scoped corrective design, not a new law amendment. Required cases and prototype expectations remain verification goals, not runtime proof. The confirmed native fixture and stale-stack witness still do not establish UserReplay occurrence or user-data contamination.
+
+## Current implemented-source alignment and verification — outside the frozen body
+
+Native C eligibility and shared planner composition are implemented. Source inspection confirms separate insertion/resulting actor, geometry, promotion and siege checks; genuine matched B single-step entitlement; own siege flags retained on all own occupied squares; and the existing End-owned actual-identity/one-shot WeakMap backstop before both C sides' callbacks/effects. This is implementation of accepted v3, not an amendment to the frozen body.
+
+The lead's current reviewed-source package is `source-review-remediated-paths.json` and `source-review-remediated.diff` under the artifact root below. The manifest names **14 paths**, with diff **99,585 bytes** and supplied SHA-256 `d371cc27e7cece0d21e9dc4dadca7e2d0ec1b93923e50b4977eea2d21c6ba1b1`. Keeper read the manifest and source; it did not compute any hash or execute the diff. Preserve the accepted body SHA `cfc388d269b44d0d91c726e82be8b2464fdf573d7300c5f8bb5bfe2c9bc3ca2b` and every frozen R4/evidence byte.
+
+### Verification epochs and review chronology
+
+Artifact root: `/tmp/proveo-opencode-runtime-cache-1000-21d690750d3738af14d58c25/tmp/opencode/r3-native-legality-1h8d109j/`.
+
+```json
+{
+  "state": "BOUNDED_CORRECTION_VERIFIED_FULL_RELEASE_BLOCKED",
+  "preRemediationLeadFull": {
+    "core": {"total": 651, "passed": 651, "failed": 0, "pending": 0, "report": "core.json"},
+    "training": {"total": 1010, "passed": 1010, "failed": 0, "pending": 0, "report": "training.json"},
+    "arena": {"total": 2629, "passed": 2313, "failed": 77, "pending": 239, "importFailedSuites": 1, "report": "arena.json"},
+    "sourceReceipts": ["source-start.json", "source-end.json"],
+    "matchingReportedSourceEntries": 14
+  },
+  "introducedAdversarialGate": {"verdict": "NO", "high": 2, "medium": 1},
+  "persistedRedBeforeRemediation": {"passed": 67, "failed": 11},
+  "remediatedEngineAgent": {
+    "core": {"passed": 666, "failed": 0, "pending": 0, "files": 65},
+    "strictNoUnusedTwoTests": "PASS",
+    "coreTypecheck": "PASS"
+  },
+  "finalRemediatedLeadFull": {
+    "core": {"total": 666, "passed": 666, "failed": 0, "pending": 0, "report": "remediated-core.json"},
+    "training": {"total": 1010, "passed": 1010, "failed": 0, "pending": 0, "report": "remediated-training.json"},
+    "arena": {"total": 2629, "passed": 2313, "failed": 77, "pending": 239, "importFailedSuites": 1, "report": "remediated-arena.json"},
+    "sourceReceipts": ["remediated-source-start.json", "remediated-source-end.json"],
+    "matchingReportedSourceEntries": 14,
+    "sourceDrift": false
+  },
+  "freshLeadFullThreePackageInvoice": "COMPLETE_WITH_ARENA_FAILURES",
+  "reportedAncillaryChecks": {
+    "fourPackageTypechecks": "PASS",
+    "publicClosure": "FIVE_EXISTING_ROOTS_PASS",
+    "nodeTooling": {"passed": 69, "failed": 0},
+    "sourceInventoryExit": 1,
+    "budgetExit": 2
+  },
+  "remediatedSourceReviews": {"adversarial": "BOUNDED_READY_YES", "security": "BOUNDED_STATIC_READY_YES"},
+  "closingDocsReview": "BOUNDED_23_PATH_ADVERSARIAL_AND_SECURITY_READY",
+  "plantumlCheckOnlyAndSvg": "SEVEN_ALIGNED_DIAGRAMS_PASS",
+  "fullR3R4Readiness": "NOT_ESTABLISHED",
+  "keeperExecutedTestsOrHashes": false
+}
+```
+
+The pre-remediation `651 / 1010 / 77 failed / 239 pending` run was source-frozen: both JSON source receipts list the same 14 reported digests. That does not bind those results to the later four-file remediation. A separate final remediated epoch now independently reports **core666 PASS / training1010 PASS / arena2629 total,2313 PASS,77 FAIL,239 pending**. Keeper read all three report summaries and both remediated source receipts; the latter list the same 14 reported digests, consistent with the lead's no-drift result. Lead checked these entry counts directly during closing validation. Do not mix epochs or turn the failed full arena into a PASS. The earlier core **594 passed / 4 failed** and **26-file / 318 focused** results remain separate checkpoints, not final full verification.
+
+The initial actual adversarial review found **two introduced HIGH plus one MEDIUM** and returned **NO**. The findings concerned erased insertion-time C promotion/type obligations, forged B two-step double entitlement and discarded own siege flags on non-Tank occupants. Builder persisted the **11-failed / 67-passed RED** regression run, then remediated only `nativeClassical.ts`, `validation.ts` and their two test files. Current source retains full insertion/resulting diagnostics, requires a genuine B single step in the shared matcher and filters siege flags by ownership, not old type. The actual final adversarial rereview in `ses_ed206cbe1ffeKUlqbWusvPTuOE` read the complete 14-path remediated artifact and explicitly **CLOSED both HIGH and the MEDIUM**; new findings **NONE**, bounded corrected-source **READY: yes / READY TO MERGE: yes / FULL R3/R4 RELEASE: NO**. Preserve the initial NO and RED as history rather than relabeling them.
+
+Initial static security reviewed **14 paths / the earlier 88,954-byte scope** and returned a first-gate YES. That remains its old scope. The separate actual final security rereview in `ses_ec95145afffeW1GUZLDrZltBWI` covers the complete **14-path / 99,585-byte** remediated artifact and returns **READY: yes / introduced HIGH: 0 / low risk for the bounded correction**. Its method is static; it independently executes no peer tests or hashes. The four fresh package/app types PASS, unchanged-tool-code Node69 PASS and public five-root PASS remain bounded checks, not seven-root/full-R4 readiness. Actual source inventory still exits **1** at R3 `expected[index]` wrapper depth 16; budget exits **2**. Neither stop is waived.
+
+The **six additional historical assertions**, still failing in the final remediated arena, remain distinct from the prior **71 failures**: four pin-migration unit checks and two historical challenge-suite execution-integrity checks. Backend classification establishes that these tests clone old rows with current metadata and verify both generations through **current engine execution integrity**, not merely stale code pins. Their boolean failure aggregates admission, result/stop differences or exception; **row-specific causes and compatibility remain unestablished**. Keep the old 67 auditor regressions, R3 depth-16 failures, unclassified `STACK_TRACE_ERROR`, six added assertions, failed import and 239 pending visible. No actual dataset contamination is established. Do not waive expectations, edit legacy records/pins or authorize legacy reruns/remediation.
+
+Lead reports the accepted body hash still equals `cfc388d269b44d0d91c726e82be8b2464fdf573d7300c5f8bb5bfe2c9bc3ca2b` after code changes. Lead also reports empty historical evidence/corpora/refactor Git diff, validated unchanged published57 and unchanged 12 budget files. The separately approved local private-ancestor `0700` FD restoration was a prerequisite preservation operation, not a new data/publication grant. Keeper performs no Git/hash validation. Later full R3 registration/acceptance references and R4 remain blocked; do not silently reexecute historical generations as accepted new-rule data or refresh their pins.
+
+### Persisted tests and their verification purpose
+
+| Test filepath | Current purpose / evidence boundary |
+|---|---|
+| `packages/starchess-core/src/__tests__/deployLegality.test.ts` | Native append/removal/End/direct guard, both colors, stage-preserving promotion/siege, genuine double identity and callback scalar capture; current remediated core proof applies. |
+| `packages/starchess-core/src/__tests__/nativeClassical.test.ts` | Own-only ordered folds, separate insertion/resulting facts, genuine single-step matcher and retained own siege flags; remediated alongside the main guard tests. |
+| `packages/starchess-core/src/__tests__/planningIntents.test.ts` | Approved strict-native nongeometry expectation, with public helper/candidate laws unchanged. |
+| `packages/starchess-core/src/__tests__/strategic/deployLegality.test.ts` | All-type stale partner exclusion, legitimate newborn captures and seed-7 legal control. Initial 30-case scope remains by its own epoch. |
+| `packages/starchess-core/src/__tests__/provenance.test.ts` | Two added corrected-native refusal/parity controls; no fabricated runtime permit-positive proof. |
+| `packages/starchess-arena/src/__tests__/strictRecordedQueues.test.ts` | Four added queue/debit/publication refusal cases; final full remediated arena completed but remains failed, not waived by these focused gates. |
+| `apps/starchess/src/__tests__/matchReducer.actions.test.ts` | Paid dependent-deployment removal preserves queue, gas and bank; this table claims no new full UI suite result. |
+| `packages/starchess-core/src/__tests__/strategic/witness.test.ts` | Legal translated crossing fixture preserves viewer isolation, residual and ghost-memory assertions; no published replay changes. |
+
+The old standalone White Marine `f4→f6` fixture cannot satisfy the corrected rank-band geometry without a supported B transformation. The legal `f2→f4` replacement keeps a Black Tank on `h1`: f2/f3 are lit and f4 is dark, so the furthest strict crossing remains **f3 / residual 1**. White receives no enemy crossing; moving the Tank to a1 makes the whole path unwatched. Memory still has no blind ghost, but one witnessed ghost seeded at f3 with f4 possible. This translates test coordinates to preserve the visibility contract; it does not relax the assertion, establish user-data taint or rewrite historical replay/evidence bytes.
+
+### Current graphical alignment scope
+
+The seven existing owners aligned here are [move/admission boundaries](../packages/starchess-core/sc-moves.puml), [queue edits](../packages/starchess-core/scfen-queue.puml), [native resolution](../packages/starchess-core/resolve.puml), [Begin/End](../packages/starchess-core/submit-turn-activity.puml), [actual C classification](../packages/starchess-core/resolve-turn-activity.puml), [dependency/vacancy separation](../packages/starchess-core/gas-phase-vacancy.puml) and [shared script composition](../apps/starchess/core/adjutant/naive/opponent-strategy.puml). Their durable spec-side coverage is projected into the seven affected index entries with `fingerprint:null`; unrelated payloads, three known unresolved targets and the existing empty-coverage core-app index remain unchanged. No new diagram or source SPEC pointer is required for this pass.
+
+Touched reasoning notes use two sentences within 2–5 lines / 50 text columns. Their measured FK estimates are recorded per anchor in the diagram headers, using deterministic English syllable estimation and engineering-token exceptions; structural labels are exempt. Existing local proveo styling is reused. `_spec/template.txt` and a source `specNotesEnforced`/`TestSpecNotesFitTheBox` implementation were not found; the four ratchet-name hits were documentation mentions, not executable checks. Keeper adds no source ratchet or renderer. Lead completed **check-only and SVG rendering for all seven aligned diagrams**; receipts are `diagram-results.json` and the `svg/` directory under the artifact root. The final 23-path adversarial review found one MEDIUM worked-chain ordering ambiguity; lead corrected the label to say e3→e4 executes first, rerendered that diagram, and obtained explicit closure with no new findings. Final complete-scope adversarial and security verdicts approve the **bounded code + documentation correction only**. Full arena/source-inventory/budget/registration gates remain failed or blocked independently. No global completion, commit/data-ops permission or source-pin refresh follows.
+
+### Historical implementation handoff — advisory, no v3 law amendment
+
+The lead reports the post-acceptance architect consultation in `ses_ed2669109ffexKbqDW14Z2mj5K`: **no v3 amendment needed**. The proposed implementation uses a **PLANNED** private helper at `packages/starchess-core/src/rules/nativeClassical.ts`, staged C-dependency validation, and a private consume lookup backed by a WeakMap tied to a fresh native `ResolveTurnInput` and actual identity ledger. It proposes no public package export or public witness field.
+
+The private helper isolates native eligibility from the unchanged public planning/candidate law. The private consume lookup binds double-step entitlement to the real native call instead of caller-supplied coordinates. These are implementation choices to review against accepted A–I, not replacements for those laws. Preserve the actual provenance callback store, economic cap and 12 frozen R4 audits; do not alter frozen audit evidence to force a passing result.
+
+Build owns test-first persisted regressions, implementation, full core verification/types and affected local checks under the accepted body's verification table. The source builder had not yet been created when this handoff was supplied. Status is **IN PROGRESS at authorization/handoff**, not implemented, verified complete or an Upgrade Complete result. Spec-keeper performs only this outside-body acceptance/handoff update; it writes no source/tests, runs no commands, spawns no agents and grants no broader operations.
 
 **Historical v1 direction — not acceptance:**
 Executor selected **`Draft correction (Recommended)`**. That choice authorizes this draft and prospective review only. It grants no engine implementation, test execution, data operations or Git publishing. Only this new planning document may change in this pass.
 
-**Current v3 direction — not acceptance:** Executor selected **`Preserve combinations (Recommended)`**. That choice authorizes revision of this draft and prospective review only. It accepts neither the corrective body nor implementation. Source, tests, diagrams, data, evidence and Git operations remain outside this pass.
+**Historical v3 draft direction — not acceptance:** Executor selected **`Preserve combinations (Recommended)`**. That choice authorizes revision of this draft and prospective review only. It accepts neither the corrective body nor implementation. Source, tests, diagrams, data, evidence and Git operations remain outside this pass.
 
 ## Context and findings — outside the proposed body
 
@@ -74,9 +188,9 @@ The lead reports these actual persisted-v2 review results:
 
 v3 adds the prescribed G clarification to address that HIGH and makes C's single ordered predicate scan explicit. All other laws remain unchanged. This records the proposed textual response, not an architect closure verdict or runtime fix. Exact persisted-v3 rereviews remain **PENDING**; the user has accepted neither body nor build.
 
-## Exact proposal for prospective acceptance
+## Accepted v3 body — frozen reviewed snapshot
 
-The delimiters identify the proposed corrective body for later byte-exact review and acceptance. Context, findings and review disposition outside them are not part of that body. The body has **no effective precedence** while DRAFT. Any revision requires rereview of the new exact text before human approval.
+The existing delimiters identify the exact v3 body accepted in the current record above. Context, review receipts and acceptance/handoff metadata outside them are not part of that body. The historical PROPOSED labels and embedded DRAFT disposition preserve the reviewed snapshot; they no longer describe current approval status. No normative text between the labels changes in this pass.
 
 <!-- BEGIN PROPOSED R3 CLASSICAL SHAPE CORRECTIVE BODY v3 -->
 # R3 native classical shape correction — proposed body v3
@@ -283,7 +397,9 @@ Any legacy-data audit, remediation, migration, quarantine, collection, calibrati
 Existing diagrams and coverage/index entries may receive a separately authorized source-alignment pass after implementation. Draft links are navigation only, not coverage assertions or shipped-behavior claims. Frozen R3/R4 bodies and historical evidence stay unchanged.
 <!-- END PROPOSED R3 CLASSICAL SHAPE CORRECTIVE BODY v3 -->
 
-## Current v3 prospective review gates — outside the proposed body
+## Completed prospective v3 review receipts — historical lifecycle
+
+The following receipt-stage paragraphs and table retain the earlier pre-acceptance state. The current actual acceptance and separate-build record above supersedes their pending human/build lifecycle only. Their prospective review scopes, earlier negative chronology and lack of runtime proof remain unchanged.
 
 **Prospective exact-v3 reviews COMPLETE / all three YES / READY FOR HUMAN READING.** Status remains **DRAFT / NOT ACCEPTED / NOT IMPLEMENTED / NOT READY FOR BUILD**. The following lead-supplied actual receipts concern the unchanged delimited v3 body, not implementation, runtime verification or human acceptance.
 

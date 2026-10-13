@@ -10,18 +10,17 @@ import type { Square } from "chess.js";
 import { placementToMap } from "../board/placement";
 import { charonDiagonalSquaresFromSquare } from "./specials/mechaCharon";
 import { minesFor, MAX_MINES_PER_SIDE, mineAt } from "../board/mines";
-import { isTankSiegedAfterB } from "../board/siege";
 import { hasExactCCPair } from "../scfen/codec";
 import { spawnCCAnchor } from "./specials/adjacent";
 import { marineSingleTarget } from "./specials/stimStep";
 import type { ScAction, ScActionInput, ScFenSnapshot } from "../model/types";
 import {
   appendTimeSpecialAnchor,
-  classicalActorAt,
   classifyClassicalVacancy,
   gasPairKey,
   type ClassicalVacancy,
 } from "./planning-intents";
+import { nativeClassicalChecks, type NativeClassicalEligibility } from "./nativeClassical";
 
 export { classifyClassicalVacancy, gasPairKey, type ClassicalVacancy } from "./planning-intents";
 
@@ -50,16 +49,65 @@ export const assertBaselineFen = (snap: ScFenSnapshot): void => {
   }
 };
 
-/**
- * Soft classical probe for C actions: piece exists on `from`.
- * Destination may be empty, enemy-occupied, **or the enemy Command Center** — fog of war
- * overrides classical FEN check / mate filters (scfen-queue.puml). Path blockers are
- * not rejected at queue time; resolve walks the ray.
- */
+/** Native classical admission and dependency validation. */
 export const assertClassicalBaseline = (
   snap: ScFenSnapshot,
   action: Extract<ScAction, { timing: "C" }>,
   vacancy?: ClassicalVacancy,
+): void => {
+  assertClassicalAdmission(snap, action, vacancy);
+  assertNativeClassicalDependencies(snap, actionsWithClassical(snap, action), action.color);
+};
+
+const actionsWithClassical = (snap: ScFenSnapshot, action: Extract<ScAction, { timing: "C" }>): ScAction[] => {
+  const actions = snap.queue?.actions ?? [];
+  if (actions.includes(action)) return [...actions];
+  const seq = action.seq ?? Math.max(-1, ...actions.map(a => a.seq)) + 1;
+  return [...actions, { ...action, seq }];
+};
+
+const eligibilityFor = (snap: ScFenSnapshot, actions: readonly ScAction[], action: Extract<ScAction, { timing: "C" }>) => {
+  const ownUnits = new Map([...placementToMap(snap.placement)].filter(([, piece]) => piece.color === action.color));
+  const ownSieged = new Set((snap.siegedTanks ?? []).filter(at => ownUnits.has(at)));
+  return nativeClassicalChecks({ ownUnits, ownSieged }, actions.filter(a => a.color === action.color), action);
+};
+
+const assertClassicalTypeDependencies = (
+  snap: ScFenSnapshot, action: Extract<ScAction, { timing: "C" }>, eligibility: NativeClassicalEligibility,
+  clause?: "siege" | "promotion",
+): void => {
+  const piece = eligibility.actor;
+  const map = placementToMap(snap.placement);
+  if (clause !== "promotion" && piece?.type === "r" && eligibility.sieged.has(eligibility.from)) {
+    const destPiece = map.get(action.to);
+    const destMine = mineAt(snap.mines, action.to);
+    const onCross = eligibility.from[0] === eligibility.to[0] || eligibility.from[1] === eligibility.to[1];
+    const isEnemyAttack =
+      (!!destPiece && destPiece.color !== action.color) ||
+      (!destPiece && !!destMine && destMine.color !== action.color) ||
+      (!destPiece && !destMine && onCross);
+    if (!isEnemyAttack) {
+      throw new ScValidateError("SC_SPECIAL", `sieged Tank on ${eligibility.from} cannot relocate`);
+    }
+  }
+  if (clause !== "siege" && piece?.type === "p" && Number(action.to[1]) === (action.color === "w" ? 8 : 1) && !action.promotion) {
+    throw new ScValidateError("SC_SPECIAL", `classical last-rank ${action.from}→${action.to} needs promotion`);
+  }
+};
+
+export const assertNativeClassicalDependencies = (snap: ScFenSnapshot, actions: readonly ScAction[], color?: "w" | "b"): void => {
+  for (const action of [...actions].sort((a, b) => a.seq - b.seq)) {
+    if (action.timing !== "C" || (color !== undefined && action.color !== color)) continue;
+    const checks = eligibilityFor(snap, actions, action);
+    for (const eligibility of [checks.insertion, checks.resulting]) {
+      assertClassicalTypeDependencies(snap, action, eligibility);
+      if (eligibility.diagnostic) throw new ScValidateError(eligibility.diagnostic.code, eligibility.diagnostic.message);
+    }
+  }
+};
+
+const assertClassicalAdmission = (
+  snap: ScFenSnapshot, action: Extract<ScAction, { timing: "C" }>, vacancy?: ClassicalVacancy,
 ): void => {
   const v = vacancy ?? classifyClassicalVacancy(snap.queue?.actions, action.color);
   const pairedGas = v.gasPairs.has(gasPairKey(action.from, action.to));
@@ -70,38 +118,10 @@ export const assertClassicalBaseline = (
     );
   }
   const map = placementToMap(snap.placement);
-  const piece = classicalActorAt(map, snap.queue?.actions ?? [], action.color, action.from);
-  if (!piece || piece.color !== action.color) {
-    throw new ScValidateError(
-      "SC_BASELINE_FEN",
-      `no ${action.color} piece on ${action.from}`,
-    );
-  }
-  // Siege Tank: immobile while sieged after B intents (quiet relocate blocked).
-  // Intent unsiege unlocks relocate; attacks on enemy squares stay legal (no occupy).
-  // A hostile mine on the destination is an attack too — the turret clears it
-  // in place (resolve.puml), so it must not read as a blocked relocate.
-  // Like a regular piece attacking an empty square, the tank may shell any
-  // square on its cross — resolve walks the ray (first blocker intercepts).
-  if (
-    piece.type === "r" &&
-    isTankSiegedAfterB(action.from, snap.siegedTanks, snap.queue?.actions)
-  ) {
-    const destPiece = map.get(action.to);
-    const destMine = mineAt(snap.mines, action.to);
-    const onCross =
-      action.from[0] === action.to[0] || action.from[1] === action.to[1];
-    const isEnemyAttack =
-      (!!destPiece && destPiece.color !== action.color) ||
-      (!destPiece && !!destMine && destMine.color !== action.color) ||
-      (!destPiece && !destMine && onCross);
-    if (!isEnemyAttack) {
-      throw new ScValidateError(
-        "SC_SPECIAL",
-        `sieged Tank on ${action.from} cannot relocate`,
-      );
-    }
-  }
+  const actions = actionsWithClassical(snap, action);
+  const current = actions.includes(action) ? action : actions[actions.length - 1]! as Extract<ScAction, { timing: "C" }>;
+  const eligibility = eligibilityFor(snap, actions, current).insertion;
+  assertClassicalTypeDependencies(snap, action, eligibility, "siege");
   // Allow empty or enemy-occupied destinations (incl. Command Center for fog path intents).
   // Allies are never classical targets — mines ignore allies (no friendly-fire).
   const dest = map.get(action.to);
@@ -111,16 +131,7 @@ export const assertClassicalBaseline = (
       `cannot classical-target ally on ${action.to}`,
     );
   }
-  // Last-rank marine advance must carry a promotion choice (picker / timeout default).
-  if (piece.type === "p") {
-    const lastRank = action.color === "w" ? 8 : 1;
-    if (Number(action.to[1]) === lastRank && !action.promotion) {
-      throw new ScValidateError(
-        "SC_SPECIAL",
-        `classical last-rank ${action.from}→${action.to} needs promotion`,
-      );
-    }
-  }
+  assertClassicalTypeDependencies(snap, action, eligibility, "promotion");
 };
 
 export const assertSpecialLegal = (
@@ -302,4 +313,10 @@ export const assertActionDeep = (snap: ScFenSnapshot, action: ScActionInput): vo
   } else {
     assertSpecialLegal(snap, action as Extract<ScAction, { timing: "B" | "F" }>);
   }
+};
+
+export const assertActionAdmission = (snap: ScFenSnapshot, action: ScActionInput): void => {
+  assertBaselineFen(snap);
+  if (action.timing === "C") assertClassicalAdmission(snap, action as Extract<ScAction, { timing: "C" }>);
+  else assertSpecialLegal(snap, action as Extract<ScAction, { timing: "B" | "F" }>);
 };

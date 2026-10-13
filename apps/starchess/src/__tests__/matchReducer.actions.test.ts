@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/match-store.puml
 import { describe, expect, it } from "vitest";
 
 import {
@@ -60,6 +61,41 @@ describe("matchReducer action surface", () => {
     // Removing a non-spawn action never touches the bank.
     const again = matchReducer(s, { type: "REMOVE_ACTION", seq: 999 });
     expect(again.economies.w.stored).toBe(4);
+  });
+
+  it("REMOVE_ACTION preserves the paid deployment and bank when its newborn move depends on it", () => {
+    let s = load("SCFEN|4kb2/8/8/8/8/8/8/4K3|11|33|P|G:22:22|B:6:6|Q:w:;b:");
+    const cost = spawnCost("n");
+    s = matchReducer(s, { type: "SPEND_STORED", color: "b", amount: cost });
+    s = matchReducer(s, { type: "QUEUE_ACTION", action: {
+      timing: "B", kind: "deploy", color: "b", from: "e8", to: "f8", unit: "n",
+    } });
+    s = matchReducer(s, { type: "QUEUE_ACTION", action: {
+      timing: "C", kind: "classical", color: "b", from: "f8", to: "h7",
+    } });
+    expect(s.liveSnapshot.queue!.actions).toHaveLength(2);
+    const [deploy, move] = s.liveSnapshot.queue!.actions;
+    const before = structuredClone({
+      snapshot: s.liveSnapshot, economies: s.economies, spend: s.planningMineralSpend,
+      specialsUsed: s.specialsUsed, statusText: s.statusText,
+    });
+    const rejected = matchReducer(s, { type: "REMOVE_ACTION", seq: deploy!.seq });
+    expect(rejected).toBe(s);
+    expect({
+      snapshot: rejected.liveSnapshot, economies: rejected.economies, spend: rejected.planningMineralSpend,
+      specialsUsed: rejected.specialsUsed, statusText: rejected.statusText,
+    }).toEqual(before);
+    expect(rejected.economies.b).toEqual({ stored: 6 - cost, deployed: cost });
+    expect(rejected.planningMineralSpend.b).toBe(cost);
+    s = matchReducer(rejected, { type: "REMOVE_ACTION", seq: move!.seq });
+    expect(s.economies.b).toEqual({ stored: 6 - cost, deployed: cost });
+    expect(s.planningMineralSpend.b).toBe(cost);
+    s = matchReducer(s, { type: "REMOVE_ACTION", seq: deploy!.seq });
+    expect(s.liveSnapshot.queue!.actions).toEqual([]);
+    expect(s.economies.b).toEqual({ stored: 6, deployed: 0 });
+    expect(s.planningMineralSpend.b).toBe(0);
+    expect(s.liveSnapshot.gas.b).toBe(2);
+    expect(s.liveSnapshot.stored?.b).toBe(6);
   });
 
   it("REMOVE_ACTION does not refund a seed-imported queued spawn", () => {

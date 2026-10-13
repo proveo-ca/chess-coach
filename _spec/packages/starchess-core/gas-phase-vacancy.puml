@@ -1,18 +1,24 @@
-@startuml gas-phase-vacancy
-' SPEC: _spec/packages/starchess-core/gas-phase-vacancy.puml
-' purpose: phase-aware vacancy (binding refinement) — only Marine stimStep + BattleShip tacticalJump vacate; transit vs origin matrix + canonical chains.
+' purpose: Native B dependencies and vacancy exceptions, separate from viewer ghosts and actual combat.
 ' covers: packages/starchess-core/src/resolve/submit-turn.ts
 ' covers: packages/starchess-core/src/resolve/resolve-turn.ts
 ' covers: packages/starchess-core/src/rules/validation.ts
 ' covers: packages/starchess-core/src/board/moves.ts
 ' covers: apps/starchess/src/presentation/specials/planning/occupancy.ts
 ' covers: apps/starchess/src/presentation/combat/intentOverlays.ts
+' covers: packages/starchess-core/src/rules/nativeClassical.ts
+' covers: packages/starchess-core/src/rules/planning-order.ts
+' covers: packages/starchess-core/src/__tests__/nativeClassical.test.ts
+' covers: packages/starchess-core/src/__tests__/deployLegality.test.ts
 ' see also: _spec/packages/starchess-core/resolve.puml
 ' see also: _spec/packages/starchess-core/resolve-turn-activity.puml
 ' see also: _spec/packages/starchess-core/sc-moves.puml
 ' see also: _spec/apps/starchess/core/board/planning-projection.puml
 ' see also: _spec/packages/starchess-core/turn-queue-sequence.puml
 ' see also: _spec/packages/starchess-core/mine-contact.puml
+' related: _spec/_plans/ml-adjutant-r3-native-classical-shape-fix.md
+' FK: N_ORDER 10.3; N_VACATE 11.2; N_CURRENT 12.9; N_TRANSIT 11.1; N_MOVE_GAS 10.5.
+' FK: N_ORDERING 10.6; N_WARP 11.9; N_PROJ 11.5; N_FLAGS 10.1; worked coordinate labels are structural.
+@startuml gas-phase-vacancy
 !include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -24,6 +30,7 @@ package "packages/starchess-core — order + rules" {
   component "resolve/submit-turn.ts\nendScTurn — order owner" as SUB <<app>>
   component "resolve/resolve-turn.ts\nRULES + relocate" as RES <<app>>
   component "rules/validation.ts\nassertClassicalBaseline" as VAL <<error>>
+  component "rules/nativeClassical.ts\ninsertion / resulting dependency folds" as OWN <<app>>
   component "board/moves.ts\nscMovesFrom" as MOV <<app>>
   database "placement map\nstart board" as MAP <<db>>
 }
@@ -34,98 +41,104 @@ package "apps/starchess — planning chrome" {
 }
 
 SUB ARROW_MAIN RES : B < C < F rank order
-SUB ARROW_MAIN VAL : queue + placement
-VAL ARROW_ERROR RES : ally aim rejected today
-VAL ARROW_OPTIONAL MAP : reads live placement
+SUB ARROW_MAIN VAL : both-side C preflight
+VAL ARROW_MAIN OWN : filtered own units / siege / actions
+OWN ARROW_MAIN SUB : LIVE or lawful NATIVE_DROP\nwith deferred diagnostic
+VAL ARROW_OPTIONAL MAP : existing destination constraints
 RES ARROW_MAIN MAP : ordered relocate
 MOV ARROW_OPTIONAL OCC : reads projected map
 OCC ARROW_MAIN OV : ghosts paint vacancy
 OV ARROW_OPTIONAL RES : never resolves
 
 note as N_ORDER
-  Turn order remains exclusively
-  owned by ""endScTurn"" sequencing.
-  Preliminary checks open, B combat
-  precedes C, and F concludes last.
+  End owns the native timing sequence,
+  with C preflight before optional start shots.
+  B precedes C and F follows settlement,
+  so array insertion order cannot supply
+  an earlier execution phase.
 end note
 N_ORDER .. SUB
 
 note as N_VACATE
-  Only Marine stimStep advance
-  relinquishes origin with gas, as
-  does BattleShip tacticalJump transit.
-  Spawn crushes arrival instead, and
-  mine, siege, snipe never vacate.
+  B relocation preserves the current actor's
+  type, rather than forcing the descriptor type.
+  Deployment replaces a resident identity;
+  mine, siege and Charon do not transfer
+  their own origin actor.
 end note
 N_VACATE .. RES
 
 note as N_CURRENT
-  B departure origin becomes FREE
-  for both C and F later landings.
-  Validation consults projection, not
-  live placement, for ally occupancy.
+  Own dependency projection selects C's actor,
+  while admission keeps its vacancy exceptions.
+  The fold does not replace the existing
+  destination, gas or special validation rules.
 end note
 N_CURRENT .. VAL
 
 note as N_TRANSIT
-  B arrival plus rewritten C origin
-  counts as transit, never vacancy.
-  C landing there stays BLOCKED, as
-  transit evaluation precedes origin
-  departure permission instead.
+  Unpaired C aim at a B transit square fails
+  before vacancy can authorize that target.
+  The exact gas pair remains the explicit
+  exception, not general transit eligibility.
 end note
 N_TRANSIT .. VAL
 
 note as N_MOVE_GAS
-  Rewritten C departure frees origin
-  for later F arrival in mirror.
-  F departure itself stays terminal,
-  chaining only toward later F in one
-  sequence, never toward prior phases.
+  F follows classical resolution and uses
+  the unit's own moved-actor lookup.
+  Retained append-time anchors do not change
+  merely because another C arrives later.
 end note
 N_MOVE_GAS .. RES
 
 note as N_ORDERING
-  B chain applies heads first under
-  departure ordering, never overwrite.
-  Consequently e2 to e3 plus e3 to e4
-  both commit same phase, each arrival
-  pursuing its vacater sequentially.
+  B order takes the first pending action
+  that passes the combined head predicate.
+  A deployment before transfer or later
+  origin refill can change C's actor,
+  without imposing a separate kind priority.
 end note
 N_ORDERING .. SUB
 
 note as N_WARP
-  BattleShip warp departure frees its
-  origin for later phases likewise.
-  Warp arrival onto holdout remains
-  rejected, since movement never
-  crushes through resident pieces.
+  Warp admission rejects an occupied target,
+  but actual enemy interference can collide.
+  The own fold models only resident allies,
+  rather than predicting those hidden outcomes.
 end note
 N_WARP .. RES
 
 note as N_CANON_AB
-  Canonical B e2 to e3 plus rewritten
-  C e3 to e4 onward chains advance.
-  Command Center e1 to e2 lands validated
-  vacant, while e1 to e3 disqualifies
-  since transit precludes entry sequentially.
+  Authored B chain: e2->e3 and e3->e4.
+  Head ordering executes e3->e4 first,
+  then e2->e3 into the vacated square.
+  CC d3->e2 uses the departure exception.
+  Unrelated CC d3->e3 remains a transit aim.
 end note
 N_CANON_AB .. RES
 
 note as N_CANON_CD
-  Move plus gas mirrors advance with
-  C e2 to e3 then F e3 to e4 onward.
-  Warp origin frees symmetrically, yet
-  warp arrival onto holdout remains
-  rejected since relocation crushes no residents.
+  C e2->e3 followed by F e3->e4 is preserved.
+  F cannot supply the actor for an earlier C.
+  A later phase never grants prior vacancy.
 end note
 N_CANON_CD .. RES
 
 note as N_PROJ
-  Planning projection paints post-B
-  vacancy as selectable destination.
-  Ghosts follow folded queue order, yet
-  only resolve owns collision outcomes.
+  Own-only dependency folding reads current
+  units and queued actions, not enemy contacts.
+  Viewer ghosts describe a prospective board,
+  not actual survival or additional vision.
 end note
 N_PROJ .. OV
+OWN .. N_PROJ
+note as N_FLAGS
+  Own siege flags survive on every owned
+  occupied square, not only a pre-B Tank.
+  Type-specific toggles still require the
+  current Tank, so a later replacement cannot
+  lose a retained applicable siege constraint.
+end note
+N_FLAGS .. OWN
 @enduml

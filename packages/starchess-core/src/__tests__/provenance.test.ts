@@ -37,6 +37,35 @@ function run(fen: string, actions: ScActionInput[]) {
 }
 
 describe("native provenance lifecycle", () => {
+  it("rejects a bypassed stale deployment queue without a returned settlement or provenance mutation", () => {
+    const opening = parseScFen("SCFEN|4kb2/8/7R/8/8/8/8/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:");
+    const initial = initializeProvenance(opening);
+    const began = beginTurnWithProvenance({ snapshot: opening, provenance: initial });
+    const snapshot: ScFenSnapshot = { ...began.nativeResult.next, gas: { ...began.nativeResult.next.gas, b: 0 }, queue: { actions: [
+      { kind: "deploy", timing: "B", color: "b", from: "e8", to: "f8", unit: "n", seq: 0 },
+      { kind: "classical", timing: "C", color: "b", from: "f8", to: "h6", seq: 1 },
+    ] } };
+    const actionBindings: ActionBindings = snapshot.queue!.actions.map((action, ordinal) => ({
+      sourceActionSeq: action.seq, side: action.color, actionRef: { planningOrdinal: 0, acceptedActionOrdinal: ordinal },
+    }));
+    const before = structuredClone({ opening, initial, began, snapshot, actionBindings });
+    expect(() => endTurnWithProvenance({ snapshot, provenance: began.provenance, actionBindings }))
+      .toThrow(expect.objectContaining({ code: "SC_BASELINE_FEN" }));
+    expect(() => endScTurn(snapshot, { skipTurnStartChecks: true }))
+      .toThrow(expect.objectContaining({ code: "SC_BASELINE_FEN" }));
+    expect({ opening, initial, began, snapshot, actionBindings }).toStrictEqual(before);
+  });
+
+  it("retains corrected-native parity for a legal newborn Hoverbike move", () => {
+    const { ended } = run("SCFEN|4kb2/8/7R/8/8/8/8/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:", [
+      { kind: "deploy", timing: "B", color: "b", from: "e8", to: "f8", unit: "n" },
+      { kind: "classical", timing: "C", color: "b", from: "f8", to: "h7" },
+    ]);
+    expect(placementToMap(ended.nativeResult.next.placement).get("h7")).toEqual({ color: "b", type: "n" });
+    expect(ended.nativeResult.resolved.moves).toContainEqual({ color: "b", piece: "n", from: "f8", to: "h7" });
+    expect(ended.provenance.entities).toContainEqual(expect.objectContaining({ kind: "unit", side: "b", type: "n", square: "h7" }));
+  });
+
   it("endows canonical IDs while preserving the native mine occurrence order", () => {
     const snapshot = parseScFen("SCFEN|7k/8/8/8/8/8/4R3/K7|0|33|P|G:11:11|Q:w:;b:");
     snapshot.mines = [{ color: "b", at: "a3" }, { color: "w", at: "h4" }, { color: "w", at: "a3" }];

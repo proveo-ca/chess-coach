@@ -125,6 +125,7 @@ export const spawnStacks = (
       if (!moveAction || moveAction.timing !== "C" || moveAction.kind !== "classical") {
         continue;
       }
+      if (spawnAction.timing === "B" && moveAction.from === spawnAction.to) continue;
       if (moveAction.to === spawnAction.to) continue;
       out.push({
         actions: [spawnAction, moveAction],

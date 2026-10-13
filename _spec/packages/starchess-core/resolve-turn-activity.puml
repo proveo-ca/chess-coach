@@ -1,4 +1,4 @@
-' purpose: Classical resolution and the committed R3 provenance mutation sites.
+' purpose: Actual-actor C geometry before classification, callbacks and R3 mutation sites.
 ' covers: packages/starchess-core/src/resolve/resolve-turn.ts
 ' covers: packages/starchess-core/src/resolve/provenance*.ts
 ' covers: packages/starchess-core/src/board/vision.ts
@@ -8,8 +8,17 @@
 ' covers: packages/starchess-core/src/__tests__/rook/**
 ' covers: packages/starchess-core/src/__tests__/collision/fogVacatedTarget.test.ts
 ' covers: packages/starchess-core/src/__tests__/mine/mineContactRoutes.test.ts
+' covers: packages/starchess-core/src/resolve/submit-turn.ts
+' covers: packages/starchess-core/src/rules/nativeClassical.ts
+' covers: packages/starchess-core/src/board/moves.ts
+' covers: packages/starchess-core/src/__tests__/deployLegality.test.ts
 ' see also: _spec/packages/starchess-core/gas-phase-vacancy.puml
 ' related: _spec/_plans/ml-adjutant-r3-seam-addendum.md (accepted law and outside-snapshot execution record)
+' related: _spec/_plans/ml-adjutant-r3-native-classical-shape-fix.md
+' current lifecycle: actual C guard implemented and complete14 remediated code reviews YES; fresh core666/training1010 PASS, arena77 FAIL/239 pending. Closing docs/rendering pending, full R3/R4 release NO.
+' historical recovery receipts below describe prior source and do not certify this new native-rule epoch.
+' FK: note after scalar capture 10.7; classification precedence 10.4; typed outcomes 12.9; plan preservation 11.9.
+' FK: note after path evaluation 12.4; departing victim 11.1; shared application 11.5; surviving mines 12.8; retaliation 12.9.
 ' status: CURRENT R3/SOURCE BOUNDED LOCAL RESTORATION VERIFIED COMPLETE; current core554/62 files,training95/6,arena2382/36/1364.07s,CI7/whole strict/actual54+54/audits/reviews PASS per lead.
 ' final lifecycle: _spec/_plans/recovery-pr47.md#final-local-restoration-complete-publication-pending; old REC counts remain historical, latest consumer-fixed source has separate complete local proof.
 ' final render: all9 checkonly + actual SVG success per lead at /tmp/opencode/pr47-final-spec-render-96zlJm; resolve-turn-activity.svg present. Keeper runs no renderer/hash/test and changes no flow/reasoning notes.
@@ -20,10 +29,27 @@
 
 skinparam defaultTextAlignment left
 
-title StarChess Core · ""resolveTurn"" — plan classification and phase run
+title StarChess Core · ""resolveTurn"" — physical C guard before classification
 
 start
-:Read ""placement"" once (""start"" map), clamp ""ccLives"",\ncollect plans white-then-black (""plansOf"");
+:consumeNativeClassicalDoubles deletes any submit-owned\nbinding on this exact input; ordinary direct input has none;
+:Read placement once into start; plansOf copies scalar\ncoordinates, promotion and extra-step fields before callbacks;
+:guard both live same-side actors with isScMoveShape\nor the matched native Marine-double entitlement;
+if (either live C actor has an impossible shape?) then (yes)
+  :throw ScValidateError / SC_BASELINE_FEN;\nno recorder board, query, visibility callback or C effect;
+  stop
+endif
+note right
+  Captured plan scalars preserve the checked
+  coordinates through later visibility callbacks.
+  Changing a caller's plan cannot redirect
+  an already checked native move.
+end note
+note right
+  Missing or foreign actors still drop.
+  Caller extra-step fields grant no witness.
+end note
+:clamp ccLives and create phase buckets;
 :Buckets for this pass:\n""attacks"" · ""moveCollisions"" · ""occupy"" · ""quiets""\n""pathRevealPending"" · ""deadSquares"";
 :Optional ""ProvenanceRecorder"": bind actual native carriers\nand source sequences; preserve mine occurrence order;
 note right
@@ -35,9 +61,10 @@ partition "Classify — an ordered rule list, first match wins" {
   :build ""PlanContext"" once: actor · target · ""visible0"" · ""leaps"" ·\nsieged flags · a **memoised** ""scanRay"";
   :evaluate ""RULES"" in order — first non-null outcome wins;
   note right
-    Explicit precedence eliminates ambiguity.
-    Ordered classification consolidates
-    formerly implicit control flow.
+    Ordered classification exposes control flow
+    that was implicit in scattered branches.
+    Each rule returns its first matching outcome,
+    so precedence remains explicit at the rule site.
   end note
 
   if (1 — jumpImmunity?) then (matches)
@@ -67,32 +94,35 @@ partition "Classify — an ordered rule list, first match wins" {
 
   :""applyOutcome"" alone writes phase buckets:\n""drop"" · ""quiet"" · ""occupy"" · ""capture(fogged?)""\n""mineClear"" · ""shelling"" · ""approach"";
   note right
-    Outcome discrimination prevents duplication.
-    Visibility determines exclusive capture
-    destinations: attacks or moveCollisions.
+    Typed outcomes prevent duplicate capture
+    accounting across the native phase lists.
+    Visibility assigns a target to attacks or
+    movement collisions, instead of reporting
+    the same victim in both destinations.
   end note
 
   :preserve complete plan fields when overriding ""to"";\ntruncate or drop a blocked forward step;
   note right
-    Structural preservation retains promotion
-    metadata rather than reconstructing coordinates.
-    Reconstruction previously produced asymmetric
-    last-rank capture behavior.
+    Preserve full plans when a landing changes,
+    so promotion metadata survives truncation.
+    Coordinate reconstruction once produced
+    asymmetric last-rank captures.
   end note
 
   :path discovery requires a fogged start target\nand positive intermediate ""pathRevealSteps"";
   :record actual query inputs and evaluated prefix privately;\ncarry query ordinal through the selected deferred branch;\nvirtual mover patches create no frame or observation image;
   note right
-    Intermediate evaluation excludes the origin.
-    Deferred classification additionally requires
-    an initially unobserved destination.
+    Path evaluation excludes the starting square.
+    Fog discovery also requires an initially
+    unobserved destination, so an aim already
+    in view cannot become a deferred approach.
   end note
 
   note right
-    A fogged capture or approach whose
-    START-board victim departs via its
-    own queued plan never books the
-    kill. The plan parks on "delayed".
+    Defer a fogged victim with a departing plan,
+    rather than booking an immediate destruction.
+    The later landing respects actual departure,
+    instead of retaining the original board's ghost.
   end note
 }
 
@@ -140,9 +170,11 @@ further, so the phase-4 arrival owns the contact list
 partition "Phase 3 — fog approaches" {
   :fizzle gates (in order): sieged origin · origin re-occupied by a\nphase-2 mover · attacker no longer on ""pathRevealFrom"" ·\n""to"" no longer holds the exact discovered victim;\nUI replay shares ""applyPathRevealAttack"" /\n""applyPathRevealCCShot"" board-state checks;
   note right
-    Shared applications validate actor and victim.
-    Contextual exclusions and mine consumption
-    remain native execution responsibilities.
+    Shared applications check the live actor
+    and victim before applying a deferred attack.
+    Native execution still owns exclusions and
+    mine contact, rather than deriving those
+    effects from a replay animation.
   end note
   :fired → ""pathRevealAttacks"" (the only mid-resolve king HP chip);
   :commit capture + relocation or CC damage + relocation atomically;\nrecord one associated acting-side consumed-target proof;
@@ -162,9 +194,10 @@ partition "Delayed landings — fogged aims and skipped approaches" {
     :record both moves atomically, then actual mine deaths;\nscratch synchronization adds no duplicate lifecycle effect;
     :copy resulting placement and remaining ""mines""\ninto ""phase3"" → **afterAll** retains removals;
     note right
-      Copy surviving mines with the new placement.
-      Final output retains spent-mine removals.
-      Preserve survivor order and duplicate entries.
+      Copy surviving mines with the new placement,
+      so final output retains spent-mine removals.
+      Native synchronization preserves survivor
+      order and duplicate occurrences.
     end note
   else (no)
     :""relocate"" with occupy trust — victim still home means\na single move-phase collision, never a second kill;
@@ -178,10 +211,10 @@ partition "Phase 4 — promotion" {
 }
 :return the four lists + the three snapshots;
 note right
-  applyPendingCCShots validates occupancy and
-  target identity, not the shooter's vitality.
-  Same-pass retaliation at zero HP preserves
-  mutual draws instead of resolution-order bias.
+  Pending shots validate occupancy and target
+  identity, not the shooter's remaining HP.
+  Retaliation within the same pass preserves
+  mutual draws despite ordering at zero HP.
 end note
 stop
 @enduml
