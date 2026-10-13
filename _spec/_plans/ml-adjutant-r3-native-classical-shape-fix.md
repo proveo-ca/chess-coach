@@ -22,8 +22,6 @@ The earlier freeform question about whether accepting R3 would block R4 was a qu
 
 The current grant includes **no further commit/push**, data audit, legacy remediation, training, calibration, collection, deployment or registry activation. Existing R4 contracts, independent readiness failures and verification gates remain separate; this acceptance supplies no R4 waiver or runtime readiness result. Executor has now separately selected **`Align existing diagrams (Recommended)`** after implementation, authorizing the owning-diagram/coverage alignment recorded below. This adds no engine, data or publishing permission to the spec-keeper pass.
 
-Executor subsequently requested **`commit & push`** after the bounded implementation, verification and closing reviews. This supplies a separate publication grant for the reviewed source/spec checkpoint. It does not waive the failed arena or legacy-compatibility gates, approve full R3/R4 release, or authorize data operations, training, deployment or registry activation.
-
 The reviewed v3 text between its existing BEGIN/END labels remains frozen without edits, including its historical DRAFT disposition and conditional acceptance/build wording. This current outside-body record supersedes only those lifecycle statements. It activates the scoped corrective design, not a new law amendment. Required cases and prototype expectations remain verification goals, not runtime proof. The confirmed native fixture and stale-stack witness still do not establish UserReplay occurrence or user-data contamination.
 
 ## Current implemented-source alignment and verification — outside the frozen body
