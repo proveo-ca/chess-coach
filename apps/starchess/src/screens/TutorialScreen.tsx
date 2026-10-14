@@ -88,21 +88,11 @@ type LineState = {
 
 const SECTIONS = TUTORIAL_SCRIPT.map((s) => ({ id: s.id, label: s.label }));
 
-/**
- * Fog lessons open by *showing* the claim they make — the pieces move the same
- * as Chess. Two seconds in, the skin flips to Chess; it holds there the same
- * two seconds, then flips back, so the equivalence reads without the player
- * hunting for the toggle.
- */
-const SKIN_DEMO_START_MS = 2000;
-const SKIN_DEMO_HOLD_MS = 2000;
+/** Fog lessons open in the Chess skin, then flip to StarChess. SPEC: _spec/apps/starchess/screens.puml */
+const SKIN_DEMO_HOLD_MS = 1200;
 
-/**
- * Hints wait out that demo rather than compete with it — a board lighting up
- * mid-skin-swap reads as part of the swap. Non-fog lessons run no demo, so
- * theirs land immediately.
- */
-const HINT_DELAY_MS = SKIN_DEMO_START_MS + SKIN_DEMO_HOLD_MS;
+/** Hints wait out the skin demo; non-fog lessons release them at once. */
+const HINT_DELAY_MS = SKIN_DEMO_HOLD_MS;
 
 const COACH_FAREWELL = "Ok, I'll let you play!";
 
@@ -188,28 +178,31 @@ const FogSection: Component<{
   const boardHints = createMemo(() =>
     props.showHints ? props.liveHints(props.beats) : undefined,
   );
+  // One host per fog lesson. SPEC: _spec/apps/starchess/screens.puml
   return (
-    <LiveLessonHost
-      board={props.board}
-      lessonKey={props.lessonKey}
-      bannerTitle={props.bannerTitle}
-      fog
-      boardVariant={props.chessMode ? "classic" : "eclipse"}
-      // Sole product entry for cburnett — fog tutorial Chess skin only.
-      pieceSet={props.chessMode ? "cburnett" : "nerd"}
-      tutorial
-      hideResources
-      hideGas
-      onNarration={props.onNarration}
-      turnChrome="none"
-      onExitToMenu={props.onHome}
-      coachEmotion={props.coachEmotion}
-      header={props.header}
-      guideBubble={props.guideBubble}
-      footerExtra={props.footer}
-      hudCenter={props.skinToggle}
-      boardHints={boardHints()}
-    />
+    <Show keyed when={props.lessonKey}>
+      <LiveLessonHost
+        board={props.board}
+        lessonKey={props.lessonKey}
+        bannerTitle={props.bannerTitle}
+        fog
+        boardVariant={props.chessMode ? "classic" : "eclipse"}
+        // Sole product entry for cburnett — fog tutorial Chess skin only.
+        pieceSet={props.chessMode ? "cburnett" : "nerd"}
+        tutorial
+        hideResources
+        hideGas
+        onNarration={props.onNarration}
+        turnChrome="none"
+        onExitToMenu={props.onHome}
+        coachEmotion={props.coachEmotion}
+        header={props.header}
+        guideBubble={props.guideBubble}
+        footerExtra={props.footer}
+        hudCenter={props.skinToggle}
+        boardHints={boardHints()}
+      />
+    </Show>
   );
 };
 
@@ -221,7 +214,7 @@ export const TutorialScreen: Component = () => {
   const storyId = createMemo(() =>
     resolveTutorialStoryId(section(), params.story),
   );
-  const [chessMode, setChessMode] = createSignal(false);
+  const [chessMode, setChessMode] = createSignal(section() === "fog");
   const [lessonEpoch, setLessonEpoch] = createSignal(0);
   const lessonKey = () => `${storyId()}#${lessonEpoch()}`;
   const tutorialNarration = createMemo(
@@ -234,12 +227,7 @@ export const TutorialScreen: Component = () => {
   /** Gated by the skin demo — see HINT_DELAY_MS. */
   const [hintsReady, setHintsReady] = createSignal(false);
 
-  /**
-   * Chess → StarChess round trip, once per fog lesson. Re-armed per story /
-   * retry so every fog lesson gets it, and cancelled the moment the player
-   * works the toggle themselves — it plays *for* the hand on the toggle, never
-   * against it. Cancelling releases the hints early rather than stranding them.
-   */
+  /** Chess → StarChess flip, re-armed per fog story / retry; the player's toggle cancels it. */
   let skinDemo: Cancel[] = [];
   const clearSkinDemo = () => {
     skinDemo.forEach((cancel) => cancel());
@@ -257,9 +245,11 @@ export const TutorialScreen: Component = () => {
       setHintsReady(true);
       return;
     }
-    setHintsReady(false);
+    batch(() => {
+      setHintsReady(false);
+      setChessMode(true);
+    });
     skinDemo.push(
-      schedule(SKIN_DEMO_START_MS, () => setChessMode(true)),
       schedule(HINT_DELAY_MS, () => batch(() => {
         setChessMode(false);
         setHintsReady(true);

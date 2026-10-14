@@ -48,7 +48,7 @@ import { BaseScreen } from "~/app/BaseScreen.tsx";
 import { MatchResultModal } from "~/components/features/MatchResultModal";
 import { NewAchievementsModal } from "~/components/features/NewAchievementsModal";
 import { Button } from "@chess-coach/ui-web/primitives/Button";
-import { noteAchievementUnlocks } from "~/store/achievementStore";
+import { noteAchievementUnlocks, unlockedLevel } from "~/store/achievementStore";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import { STAR_STARTING_SCFEN } from "~/app/seeds";
 import {
@@ -338,6 +338,7 @@ export const SingleScreen: Component = () => {
   const [resultOpen, setResultOpen] = createSignal(false);
   const [earnedOpen, setEarnedOpen] = createSignal(false);
   const [earned, setEarned] = createSignal<AchievementBubble[]>([]);
+  const [newShortIds, setNewShortIds] = createSignal<ReadonlySet<string>>(new Set());
   const [result, setResult] = createSignal<StarChessMatchResult | null>(null);
   const [finishedId, setFinishedId] = createSignal<string | null>(null);
 
@@ -367,6 +368,15 @@ export const SingleScreen: Component = () => {
   ) => {
     setFinishedId(id);
     setResult(matchResult);
+    // SPEC: _spec/_plans/starchess-achievements.puml
+    const NO_CAREER = { beat: 0, beat50: 0 };
+    setNewShortIds(
+      new Set(
+        fresh
+          .filter((item) => item.level > unlockedLevel(item.shortId, NO_CAREER))
+          .map((item) => item.shortId),
+      ),
+    );
     noteAchievementUnlocks(id, fresh);
     if (fresh.length > 0) {
       setEarned([...fresh]);
@@ -432,6 +442,7 @@ export const SingleScreen: Component = () => {
       <NewAchievementsModal
         open={earnedOpen()}
         earned={earned()}
+        newShortIds={newShortIds()}
         onContinue={() => {
           setEarnedOpen(false);
           setResultOpen(true);

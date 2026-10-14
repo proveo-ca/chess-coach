@@ -6,29 +6,23 @@
  */
 import { createEffect, on, onCleanup, type Accessor } from "solid-js";
 
+import { whenIdle } from "~/adapters/timers";
 import { PROBE_VERSION, startVfxProbe } from "~/presentation/animations/vfxProbe";
 import { REDUCED_MOTION_MQ } from "~/utils/breakpoints";
 import { probeIsStale, recordProbe, vfxTier } from "~/store/vfxTierStore";
+import type { Cancel } from "~/types/ports";
+
+const IDLE_TIMEOUT_MS = 2000;
 
 export function useVfxProbe(ready: Accessor<boolean>): void {
   let started = false;
   let stop: (() => void) | undefined;
-  let idleKind: "idle" | "timeout" | undefined;
-  let idleId: number | undefined;
+  let cancelIdle: Cancel | undefined;
   let onVisible: (() => void) | undefined;
 
   const clearIdle = () => {
-    if (idleId == null) return;
-    if (idleKind === "idle") {
-      const cic = (window as unknown as { cancelIdleCallback?: typeof cancelIdleCallback })
-        .cancelIdleCallback;
-      if (typeof cic === "function") cic(idleId);
-      else clearTimeout(idleId);
-    } else {
-      clearTimeout(idleId);
-    }
-    idleId = undefined;
-    idleKind = undefined;
+    cancelIdle?.();
+    cancelIdle = undefined;
   };
 
   const start = () => {
@@ -59,25 +53,12 @@ export function useVfxProbe(ready: Accessor<boolean>): void {
   };
 
   const schedule = () => {
-    if (started || idleId != null) return;
+    if (started || cancelIdle) return;
     // Background calibration: never steal first paint / interaction.
-    const ric = (window as unknown as { requestIdleCallback?: typeof requestIdleCallback })
-      .requestIdleCallback;
-    if (typeof ric === "function") {
-      idleKind = "idle";
-      idleId = ric(() => {
-        idleId = undefined;
-        idleKind = undefined;
-        start();
-      }, { timeout: 2000 }) as unknown as number;
-    } else {
-      idleKind = "timeout";
-      idleId = window.setTimeout(() => {
-        idleId = undefined;
-        idleKind = undefined;
-        start();
-      }, 0);
-    }
+    cancelIdle = whenIdle(() => {
+      cancelIdle = undefined;
+      start();
+    }, IDLE_TIMEOUT_MS);
   };
 
   createEffect(
