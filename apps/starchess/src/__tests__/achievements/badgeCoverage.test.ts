@@ -46,12 +46,19 @@ describe("badge events the engine reports outside `attacks`", () => {
   });
 
   it("credits a collision capture to the mover, not to the meeting square", () => {
-    // Nf3 and nf5 both land on e5 and trade. White's capture reports
-    // `from: e5`; its own move says it came from f3.
-    const scfen = "SCFEN|4k3/8/8/5n2/8/5N2/8/4K3|1|33|P|G:11:11|Q:w:C=f3e5;b:C=f5e5";
+    // White's Hoverbike meets Black's Mecha on e5.
+    const scfen = "SCFEN|4k3/6b1/8/8/8/5N2/8/4K3|1|33|P|G:11:11|Q:w:C=f3e5;b:C=g7e5";
     const state = seedAnalysis(parseScFen(scfen), "w");
     const { result } = play(state, scfen);
     expect(result.resolved.moveCollisions.length).toBeGreaterThan(0);
+    expect(result.resolved.moveCollisions).toHaveLength(2);
+    expect(result.resolved.moveCollisions.every((c) => c.kind === "capture" && c.to === "e5")).toBe(true);
+    expect(result.resolved.moveCollisions).toContainEqual(
+      expect.objectContaining({ color: "w", from: "e5", to: "e5" }),
+    );
+    expect(result.resolved.moves).toContainEqual(
+      expect.objectContaining({ color: "w", from: "f3", to: "e5" }),
+    );
     expect(state.material.get("1-n-f3")).toBe(0);
     expect([...state.material.keys()].some((id) => id.includes("-x-"))).toBe(false);
   });

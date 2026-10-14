@@ -1,6 +1,8 @@
 # R3 native classical shape correction — accepted v3
 
-Status: **EXACT v3 DESIGN ACCEPTED / BOUNDED NATIVE + PLANNER CORRECTION IMPLEMENTED, REVIEWED AND VERIFIED / DOCS + RENDER CHECKS COMPLETE / FULL R3/R4 RELEASE NOT READY.** The fresh same-source three-package run completed with passing core/training and a failed arena. Accepted body revision: **v3** remains unchanged; v1 and v2 remain **SUPERSEDED / NEVER ACCEPTED**.
+Status: **EXACT v3 DESIGN ACCEPTED / BOUNDED NATIVE + PLANNER CORRECTION ALREADY IMPLEMENTED, REVIEWED AND REVERIFIED / LATEST INVOICE: DONE_WITH_ARENA_FAILURES / SUBSEQUENT APP FIX: VERIFICATION CLOSED, FRESH ADVERSARIAL DONE / SCOPED YES / FULL R3/R4 RELEASE NOT READY.** Accepted body revision: **v3** remains unchanged; v1 and v2 remain **SUPERSEDED / NEVER ACCEPTED**.
+
+Latest: [Subsequent approved verification](#subsequent-approved-verification--outside-the-frozen-body). Earlier verification tables and review receipts below retain their historical epochs and scopes.
 
 ## Current actual acceptance and separate build grant — outside the frozen body
 
@@ -20,9 +22,66 @@ Executor earlier explicitly selected the separate conditional **`Build + verify 
 
 The earlier freeform question about whether accepting R3 would block R4 was a question, not acceptance. The actual acceptance followed the clarification that R3 acceptance would add no administrative hold on R4. Neither **`Draft correction (Recommended)`** nor **`Preserve combinations (Recommended)`** accepted the normative body or granted implementation. The earlier draft commit/push permission was publication scope, not native-rule acceptance or an ongoing Git grant.
 
-The current grant includes **no further commit/push**, data audit, legacy remediation, training, calibration, collection, deployment or registry activation. Existing R4 contracts, independent readiness failures and verification gates remain separate; this acceptance supplies no R4 waiver or runtime readiness result. Executor has now separately selected **`Align existing diagrams (Recommended)`** after implementation, authorizing the owning-diagram/coverage alignment recorded below. This adds no engine, data or publishing permission to the spec-keeper pass.
+At the acceptance/build checkpoint, the grant included **no further commit/push**, data audit, legacy remediation, training, calibration, collection, deployment or registry activation. Existing R4 contracts, independent readiness failures and verification gates remain separate; this acceptance supplies no R4 waiver or runtime readiness result. Executor has now separately selected **`Align existing diagrams (Recommended)`** after implementation, authorizing the owning-diagram/coverage alignment recorded below. This adds no engine, data or publishing permission to the spec-keeper pass.
 
 The reviewed v3 text between its existing BEGIN/END labels remains frozen without edits, including its historical DRAFT disposition and conditional acceptance/build wording. This current outside-body record supersedes only those lifecycle statements. It activates the scoped corrective design, not a new law amendment. Required cases and prototype expectations remain verification goals, not runtime proof. The confirmed native fixture and stale-stack witness still do not establish UserReplay occurrence or user-data contamination.
+
+## Subsequent approved verification — outside the frozen body
+
+**Latest invoice: DONE_WITH_ARENA_FAILURES.** The lead found the bounded implementation already present at `c7c89bc5`, with user-work metadata at `d2170aabd08f5b1f14d3cffeb2b3273c72725a93`, when the latest **Approved Proceed** authorized local verification and a contained regression correction. This records verification of existing work, not redundant native implementation, another design acceptance or a duplicate approval record. The lead reports that the raw body between the existing labels still has SHA-256 `cfc388d269b44d0d91c726e82be8b2464fdf573d7300c5f8bb5bfe2c9bc3ca2b`, equal to the original accepted `f30aa` body. Keeper executed no Git, hash, test or render command.
+
+Fresh artifact root: `/tmp/proveo-opencode-runtime-cache-1000-21d690750d3738af14d58c25/tmp/opencode/r3-approved-recheck-0botw1zm/`.
+
+| Verification epoch / discovered scope | Total | PASS | FAIL | Pending | Receipt / disposition |
+|---|---:|---:|---:|---:|---|
+| Fresh unchanged-source core | 666 | 666 | 0 | 0 | `core.json` / PASS |
+| Fresh unchanged-source training package tests | 1010 | 1010 | 0 | 0 | `training.json` / PASS; not a training operation |
+| Fresh unchanged-source arena | 2615 | 2302 | 74 | 239 | `arena.json`, `arena.exit` / child exit 1 |
+| Subsequent initial unfiltered app run, before fixture correction | 793 | 792 | 1 | 0 | Lead-supplied RED history; not the later `app.json` |
+| Corrected badge fixture, focused | 18 | 18 | 0 | 0 | `badge-focused.json` / PASS |
+| Corrected fixture, full app | 793 | 793 | 0 | 0 | `app.json` / PASS; fresh one-path adversarial DONE / bounded READY TO MERGE: YES |
+
+These discovery counts invoice the explicit scopes above. Keeper read the five current JSON summaries and `arena.exit`. The fresh `source-start.json` and `source-end.json` both name `d2170aabd08f5b1f14d3cffeb2b3273c72725a93` and the same 14 core/arena/source/app-test paths with matching recorded digests; the lead reports no hash drift. Those receipts bind the three-package epoch, not the subsequent badge test edit, which is outside that 14-path list. The lead separately reports the badge input hash unchanged across its corrected focused and full-app runs.
+
+The older **arena2629 / 2313 PASS / 77 FAIL / 239 pending** invoice and its classification remain historical below. Do not merge it with **arena2615 / 2302 PASS / 74 FAIL / 239 pending** or infer that three cases resolved. At the initial verification checkpoint, the lead had not supplied a new arena classification; the older exact failure-group counts were not a classification of those 74 failures. The follow-up triage below supplies the later classification without revising either historical invoice.
+
+The lead reexecuted the exact illegal Hoverbike `f8→h6` witness in both append orders. Both throw `AddScActionError/SC_BASELINE_FEN` and preserve the input snapshots. Backend's read-only current-source review in `ses_ec6fc78a4ffebrHdZ01JlIrKBp` inspected the guards, fold, witness and source API at `c7c89bc5` and reported no new HIGH. It ran no peer tests. The lead reports all four package/app typechecks PASS and the actual five-existing-root public-closure Node script PASS; neither result establishes seven-root/full-R4 readiness. Existing source-inventory and budget stops remain retained, not newly rerun or waived.
+
+After the three-package epoch completed, an attempted focused `pnpm --filter app test -- <path>` invocation actually ran the unfiltered app suite. Its **792 PASS / 1 FAIL** exposed the collision-badge fixture's illegal Black Hoverbike `f5→e5`; preserve that actual baseline failure as RED history. Architect `ses_ec6f6128effeWOFo8TXj0Fq13t` approved the contained legal-fixture approach without a normative amendment. Frontend `ses_ec6f612c0ffe0K8jLnA4Dmy1IM` rejected the proposed twin-Hoverbike `g6→e5` replacement because equal arrival would bypass recovery from a meeting-square event origin. That proposal was never installed.
+
+The final correction changes only `apps/starchess/src/__tests__/achievements/badgeCoverage.test.ts`: one SCFEN, a one-line WHAT label and stronger assertions, with all old assertions retained. Production engine behavior and its refusal guard remain unchanged. Exact legal fixture:
+
+```text
+SCFEN|4k3/6b1/8/8/8/5N2/8/4K3|1|33|P|G:11:11|Q:w:C=f3e5;b:C=g7e5
+```
+
+White's Hoverbike follows a legal L from f3 to e5 and arrives on tick **3**. Black's Mecha follows the legal diagonal g7→e5 and arrives on tick **4**. Both units cost **3**, so the existing material assertion still tests the same zero-net capture attribution. White arrives first, making its capture event report `from=e5, to=e5`, while its own move reports `from=f3, to=e5`. The `shooterSquare` fallback must recover f3 from the matching move rather than assign a synthetic identity to the meeting square. Equal-tick twin Hoverbikes would retain authored origins and miss that branch. The added assertions require exactly two captures on e5 and the White meeting-origin event and original-origin move. This paragraph retains the fixture rationale; the source keeps only the WHAT label. Existing ownership needs no new diagram, architecture role or coverage/index edit.
+
+The lead supplied the fresh one-file adversarial receipt from `ses_ec6ee7f11ffeqCsm9syvLDEk9T`: **findings NONE / bounded fixture READY TO MERGE: YES**. The reviewer confirmed that the meeting-origin fallback remains covered and the native refusal guard remains unchanged. This review was read-only, not independent peer execution. After the new assertions, the lead reran the app typecheck and Git diff check; both **PASS**. The unchanged-source core/training/arena tests preceded the app fixture edit; these receipts do not establish a combined four-package same-source epoch.
+
+After the preceding outside-body metadata update, the lead rechecked the accepted raw-body SHA-256 and reports the same `cfc388d269b44d0d91c726e82be8b2464fdf573d7300c5f8bb5bfe2c9bc3ca2b`. The lead reports only two changed files: the badge test and this plan's outside-body metadata. At that verification checkpoint, nothing new had been committed or pushed. Keeper records those receipts without executing commands, Git or hashes; this final pass changes only the plan's receipt/status metadata, not acceptance or native policy.
+
+The already-implemented bounded native correction is reverified; the subsequent app-only fixture verification is **CLOSED / scoped YES**. The invoice remains **DONE_WITH_ARENA_FAILURES**. Full R3/R4 release remains **NOT READY** with arena **74 FAIL / 239 pending** and unresolved independent guard/cap/source-binding gates. Data impact remains unknown without a separately authorized audit; local fixture tests are not a user-data audit, and the retained statement that actual user-data contamination is not established still applies. Collection and training operations remain **NONE / EXCLUDED**. Historical raw reports, datasets, pins, protected bodies and the seven aligned diagrams/index remain unchanged. This documentation pass runs no dataset operations and grants no publishing authority.
+
+### Follow-up arena triage — unchanged source, no repairs applied
+
+The lead's unchanged-source rerun records **2615 total / 2302 PASS / 74 FAIL / 239 pending (skipped) / child exit 1** in `arena-triage.json`, `arena-triage.stdout`, `arena-triage.stderr` and `arena-triage.exit` under the fresh artifact root above. Its 74 failed assertions classify as follows; import failures remain separate from that count.
+
+| Current failure group | Failed assertions | Actual classification / pending boundary |
+|---|---:|---|
+| Unfinished independent auditors | 67 | Public closure 34 + source invocation 21 + callback grounding 12; `auditor-failure-breakdown.json` totals 55 missing expected rejections + 11 safe-case refusals + 1 wrong rejection stage. Preserve all expectations without waivers. |
+| Pin-migration fixture checks | 4 | Reason-only execution-integrity drift in seven of the 54 existing test records; field forensics below. |
+| Real-repository R3 source audit | 1 | `r3Session.ts -> expected[index]` still exhausts the depth-16 recursive resolver. |
+| Host-private fixture in full triage | 1 | `arena-triage.stderr:238` states `Test timed out in 5000ms`; the JSON `Error: STACK_TRACE_ERROR` is Vitest's stack label, not a separate production exception. |
+| R2 composition evidence | 1 | `Publication requires a private host-owned ancestor`; environment prerequisite, not a production-rule regression. |
+
+**Three suites fail during import, not one:** `challengeContractCoverage.test.ts` and `challengeSuites.test.ts` require the private host-owned ancestor; `challengeEvidenceImport.test.ts` hits the R3 `expected[index]` depth-16 stop and leaves all **239** assertions skipped. The lead reports `_spec/evidence` owner UID **1000**, current UID **1000**, mode **0755**; the private-ancestor prerequisite requires **0700**. No chmod occurred and no guard was weakened. The R2 assertion and two private-ancestor import failures retain that environment classification.
+
+The isolated unchanged-timeout host-private case passes in **2.28s**, with **1418** other assertions excluded (`host-private-focused.stdout`); this is not a full-suite PASS. Pending **PERF/concurrency profiling** must preserve the **5000ms** limit, with no deadline increase or acceptance skip. Both independent auditors (`sourceInventory.ts` and `hermetic/public-closure.mjs`) still need actual source repair for independent SCC/ValueRefs and bounded all-route semantic resolution, including the real R3 recursion; raising the depth cap is not that repair.
+
+Forensics compare only the **54 existing test-fixture records**: `exactSchedule:true` and `semanticParity:true`; original and current execution integrity are both false only for **white-trace-01, white-trace-03, white-trace-04, white-trace-05, white-trace-06, white-trace-07, white-trace-11**, and both true for the other **47**. All seven retain settled-prefix integrity. Only `stop.reason` differs: the message template `no w piece on {square}` becomes `no w insertion-prefix actor on {square}`, with the same `d5`, `h4` or `d4` square. Code, category, action, index, turn, side and bank match. Preserve raw `pin-migration-diagnosis.jsonl`; derived `pin-migration-field-comparison.json` uses dictionary field comparison. The lead identifies the initial JSON-order comparison flag as nonsemantic; it must not be reported as another differing field. No legacy-acceptance proof was generated, and this is not a dataset-wide audit.
+
+**Conditional proposal / NOT APPLIED:** restore only the compatibility message at `packages/starchess-core/src/rules/nativeClassical.ts:101` and add an exact-text regression. Backend `ses_ec6823fe6ffexD0US2jU2gFnBE` confirms the proposal remains conditional. It requires no pin/data rewrite or geometry rollback. The prepared badge + outside-body notes change applies none of these source, permission or performance repairs and authorizes no legacy operations. Earlier badge **18/793 PASS**, four typechecks **PASS**, core **666 PASS** and training-package **1010 PASS** retain their recorded scopes. Full R3/R4 remains **NOT READY**; weight operations remain **NONE** and data impact remains **not established**.
 
 ## Current implemented-source alignment and verification — outside the frozen body
 
@@ -97,6 +156,7 @@ Lead reports the accepted body hash still equals `cfc388d269b44d0d91c726e82be8b2
 | `packages/starchess-arena/src/__tests__/strictRecordedQueues.test.ts` | Four added queue/debit/publication refusal cases; final full remediated arena completed but remains failed, not waived by these focused gates. |
 | `apps/starchess/src/__tests__/matchReducer.actions.test.ts` | Paid dependent-deployment removal preserves queue, gas and bank; this table claims no new full UI suite result. |
 | `packages/starchess-core/src/__tests__/strategic/witness.test.ts` | Legal translated crossing fixture preserves viewer isolation, residual and ghost-memory assertions; no published replay changes. |
+| `apps/starchess/src/__tests__/achievements/badgeCoverage.test.ts` | Legal unequal-arrival collision preserves meeting-origin attribution to the original mover via `shooterSquare`; old assertions retained and strengthened. App-only fixture regression, not training data; subsequent verification CLOSED / scoped review YES recorded above. |
 
 The old standalone White Marine `f4→f6` fixture cannot satisfy the corrected rank-band geometry without a supported B transformation. The legal `f2→f4` replacement keeps a Black Tank on `h1`: f2/f3 are lit and f4 is dark, so the furthest strict crossing remains **f3 / residual 1**. White receives no enemy crossing; moving the Tank to a1 makes the whole path unwatched. Memory still has no blind ghost, but one witnessed ghost seeded at f3 with f4 possible. This translates test coordinates to preserve the visibility contract; it does not relax the assertion, establish user-data taint or rewrite historical replay/evidence bytes.
 
