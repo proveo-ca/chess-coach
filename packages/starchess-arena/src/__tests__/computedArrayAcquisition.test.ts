@@ -36,8 +36,8 @@ const fixture = (text: string): string => {
 afterEach(() => { for (const root of temporary.splice(0)) rmSync(root, { recursive: true, force: true }); });
 
 describe.each([
-  ["source inventory", (root: string) => collectSourceInventory(root).audit.passed],
-  ["public closure", (root: string) => checkPublicClosure(root).passed],
+  ["source inventory", (root: string): boolean => collectSourceInventory(root).audit.passed],
+  ["public closure", (root: string): boolean => checkPublicClosure(root).passed],
 ] as const)("independent literal-array selector evidence: %s", (_, audit) => {
   it.each([
     "const values = [0, 1]; consume(values[0]);",

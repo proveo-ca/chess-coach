@@ -98,7 +98,7 @@ const evaluate = (context: NativeClassicalContext, actions: readonly ScAction[],
     ...state.selected, kind: actor ? "LIVE" : "NATIVE_DROP", actor: actor ?? authored, sieged: state.sieged,
   };
   if (!authored) {
-    result.diagnostic = diagnostic(`no ${c.color} insertion-prefix actor on ${c.from}`);
+    result.diagnostic = diagnostic(`no ${c.color} piece on ${c.from}`);
   } else if (actor) {
     if (!isScMoveShape(actor.type, result.from, result.to, c.color) &&
         !matchedMarineDouble(actions, c, result, actor, b ? state.transfers.get(b) : undefined)) {

@@ -621,6 +621,20 @@
         "apps/starchess/src/__tests__/navTouchTargets.test.ts"
       ],
       "fingerprint": null
+    },
+    {
+      "spec": "_spec/ml/overview.puml",
+      "covers": [
+        "_spec/ml/projects.yaml"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/packages/starchess-arena/auditor-diagnostic-headroom.puml",
+      "covers": [
+        "_spec/ml/projects.yaml"
+      ],
+      "fingerprint": null
     }
   ],
   "unresolved": [

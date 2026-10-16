@@ -1,0 +1,86 @@
+' purpose: R4 frozen WIP checkpoint, manifest dependencies, and deferred repair ownership.
+' covers: _spec/ml/projects.yaml
+' related: _spec/ml/README.md; per-project STATUS.md paths are declared in projects.yaml.
+' detail plan: _spec/ml/R4.md; P1-P8 partly implemented/deferred; no runtime configuration.
+' authority: _spec/_plans/PLAN-ml-adjutant.md; frozen contracts/evidence remain in place.
+' related: _spec/packages/starchess-core/native-provenance.puml
+' related: _spec/packages/starchess-arena/authorized-economic-boundaries.puml
+' related: _spec/packages/starchess-training/candidate-generation.puml
+' status: [Unverified] 2026-10-16 public0853/controls6437 FROZEN; focused242 PASS, core668/migration26/types/strict/syntax PASS; actual five-root CLI exit1. Both fresh reviews NOT READY; N1-N7/M2 static candidates unexecuted.
+' publication: Exact human decision "Push WIP with known risks" permits NON_ADMITTED WIP on feat-ml-adjuntant only; no source editor active, commit/push not yet recorded, no merge/R4 readiness or acceptance waiver.
+' maintenance: Human-maintained documentation projection; not generated or runtime configuration.
+' FK: note bottom of CORE 10.9; note bottom of ARENA 11.7.
+' FK: note bottom of TRAINING 11.9; note bottom of VERIFY 11.7.
+' FK method: two sentences, alphabetic words, explicit English syllable counts; hyphens split words.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title [Unverified] R4 FROZEN WIP — publication risks human-accepted / reviews NOT READY / cost gate BLOCKED — 2026-10-16
+left to right direction
+
+component "packages/starchess-core/\nnative engine + pure /planning-v1" as CORE <<app>>
+package "packages/starchess-arena/\nauthorized contracts + private challenge host" as ARENA <<host>> {
+  component "hermetic/public-closure.mjs\nFROZEN WIP — prior specific cases CLOSED\nN1-N7/M2 static OPEN / cost BLOCKED" as PUBLIC <<host>>
+  component "src/challenge/sourceInventory.ts\nindependent inventory — BLOCKED" as INVENTORY <<host>>
+}
+component "packages/starchess-training/\ncandidates + partial features/coordinator" as TRAINING <<app>>
+component "apps/starchess/\nSolid app — ML unavailable" as APP <<app>>
+component "apps/e2e/\nPlaywright browser regressions" as E2E <<app>>
+component "scripts/\npackages/starchess-arena/hermetic/\nverification workstream, not a package" as VERIFY <<host>>
+component "_spec/_plans/ml-adjutant-r4-authority-chain.md\nR4 proof gate — BLOCKED (not runtime)" as GATE <<error>>
+
+ARENA ARROW_MAIN CORE : manifest import dependency
+TRAINING ARROW_MAIN ARENA : manifest import dependency
+TRAINING ARROW_MAIN CORE : manifest import dependency
+APP ARROW_MAIN CORE : manifest import dependency
+E2E ARROW_OPTIONAL APP : browser test target
+
+VERIFY ARROW_OPTIONAL CORE : verification obligation / pending
+VERIFY ARROW_OPTIONAL ARENA : verification obligation / pending
+VERIFY ARROW_OPTIONAL TRAINING : verification obligation / pending
+VERIFY ARROW_OPTIONAL APP : verification obligation / pending
+VERIFY ARROW_OPTIONAL E2E : verification obligation / pending
+PUBLIC ARROW_ERROR GATE : fresh reviews NOT READY / cost gate BLOCKED
+INVENTORY ARROW_ERROR GATE : independent completion gated
+TRAINING ARROW_ERROR GATE : cap / authority / seven-root proof open
+
+note top of VERIFY
+  Frozen WIP checkpoint only.
+  Full R4 acceptance remains blocked.
+end note
+note bottom of CORE
+  The native engine decides whether each proposed
+  queue is legal, including proposals from a model.
+  Pure planning helpers expose calculations but
+  never import training code into the engine.
+end note
+note bottom of ARENA
+  The host projects recipient data without
+  exposing private state or causal traces.
+  Independent auditors keep their own solvers;
+  matching verdicts cannot prove complete closure.
+end note
+note bottom of TRAINING
+  Coordinator accounting cannot replace native
+  legality checks or prove real runtime authority.
+  Partial wiring supplies no cold-path proof;
+  neither admission nor learned weights follow.
+end note
+note bottom of APP
+  ML / RLHF / RLCD disabled.
+  Only naive / strategic playable.
+end note
+note bottom of VERIFY
+  Proof links track required evidence rather
+  than imports or deployed runtime dependencies.
+  Diagnostic receipts cannot grant admission,
+  and prior results cannot certify changed source.
+end note
+
+legend bottom
+  Solid: current manifest dependencies, not deployed calls.
+  Dotted: browser target or supporting verification, not runtime imports.
+  Verification obligations remain mandatory; dotted does not waive a gate.
+  Red: blocked proof obligations; gate node is documentation, not a service.
+  No app-to-arena/training edge; no core-to-ML dependency; no learned weights.
+endlegend
+@enduml

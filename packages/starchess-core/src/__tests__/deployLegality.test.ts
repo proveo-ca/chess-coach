@@ -31,6 +31,20 @@ const c = (from: Square, to: Square, color: "w" | "b" = "w"): ScActionInput =>
   ({ timing: "C", kind: "classical", color, from, to });
 
 describe("native effective classical actor", () => {
+  it.each(["w", "b"] as const)("preserves missing-actor refusal text and atomicity for %s", color => {
+    const snapshot = board([["e1", { type: "k", color: "w" }], ["e8", { type: "k", color: "b" }]]);
+    for (const from of ["d5", "h4", "d4"] as const) {
+      const input = { snapshot, action: c(from, "e5", color) };
+      const before = structuredClone(input);
+      let failure: unknown;
+      try { addScAction(input); } catch (error) { failure = error; }
+      expect(failure).toBeInstanceOf(AddScActionError);
+      expect(failure).toMatchObject({ code: "SC_BASELINE_FEN" });
+      expect((failure as AddScActionError).message).toBe(`no ${color} piece on ${from}`);
+      expect(input).toStrictEqual(before);
+    }
+  });
+
   it.each(["w", "b"] as const)("does not let a later B replacement hide illegal insertion promotion for %s", color => {
     const from: Square = color === "w" ? "e7" : "e2";
     const to: Square = color === "w" ? "e8" : "e1";

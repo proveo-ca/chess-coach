@@ -1,0 +1,237 @@
+# SPEC: _spec/ml/overview.puml, _spec/packages/starchess-arena/auditor-diagnostic-headroom.puml
+version: 1
+kind: documentation_ownership_graph
+observed_on: "2026-10-16"
+observation_basis: lead_frozen_0853_checkpoint_receipts_fresh_not_ready_reviews_and_explicit_wip_risk_acceptance
+independently_verified_by_keeper: false
+authority: _spec/_plans/PLAN-ml-adjutant.md
+detail_plan: _spec/ml/R4.md
+planning_scope: R4_frozen_wip_checkpoint_and_deferred_repairs
+proposed_patterns_are_implemented: false
+projection:
+  path: _spec/ml/overview.puml
+  maintenance: human
+  runtime_configuration: false
+  generated: false
+scope:
+  stage: R4_partial_blocked
+  weights: NONE
+  horizon: 1
+  amended_features: 418
+  work_cap: 1048576
+  ml_enabled: false
+  acceptance_or_execution_grant: false
+publication:
+  request: "commit & push"
+  decision: "Push WIP with known risks"
+  branch: feat-ml-adjuntant
+  disposition: NON_ADMITTED_WIP
+  risks_accepted_for_publication_only: true
+  known_risks: [N1, N2, N3, N4, N5, N6, N7, M2, AP5]
+  merge_ready: false
+  r4_ready: false
+  source_editor_active: false
+  git_status: verify_remote_ref_independently
+projects:
+  - id: starchess-core
+    kind: package
+    package_name: "@chess-coach/starchess-core"
+    paths: [packages/starchess-core/]
+    status_doc: _spec/ml/starchess-core/STATUS.md
+    state: current
+    responsibilities:
+      - Native legality and atomic queue admission
+      - Board, vision, resolution, outcome, and causal provenance
+      - Canonical adjutant registry and pure planning-v1 helpers
+    public_exports: [".", /planning-v1]
+    ml_dependency: false
+  - id: starchess-arena
+    kind: package
+    package_name: "@chess-coach/starchess-arena"
+    paths: [packages/starchess-arena/]
+    status_doc: _spec/ml/starchess-arena/STATUS.md
+    state: partial
+    proof_state: blocked
+    responsibilities:
+      - Authorized v1/v2 recipient observations, events, and intent codec
+      - Host-private challenge admission and supervision using native core truth
+      - Independent public-closure and source-inventory audits
+    public_exports: [".", /observations, /events, /intent-codec-v1]
+    audit_owners:
+      - id: public-closure
+        path: packages/starchess-arena/hermetic/public-closure.mjs
+        state: partial
+        proof_state: blocked
+        finding: FROZEN WIP with human-accepted publication risks; both fresh reviews NOT READY; N1-N7 HIGH static candidates and M2 MEDIUM OPEN; prior AP1-AP4/S1-S7/M1 specific cases CLOSED, not family proof; AP5 BLOCKED
+        source_editor_active: false
+        checkpoint:
+          source_sha256: 0853c82077f0174e6b55d7dda53305d36c605021c503cb6bcf14ad7bb0c98f5a
+          controls_sha256: 643788a254f97eeec22cbb36ed4e22f74d1dd94ccbbdd052e2884d57a0b0542d
+          focused_passed: 242
+          focused_failed: 0
+          focused_pending: 0
+          public_passed: 210
+          selectors_passed: 32
+          focused_seconds: 19.997497
+          core_passed: 668
+          pin_migration_passed: 26
+          types_strict_syntax: PASS
+          actual_five_root_cli_exit: 1
+          actual_five_root_cli_seconds: 2.125799
+          cli_stop: placement.ts_argument_ID_ceiling
+          nodes: 1294
+          argument_ids: 262144
+          steps: 1464103
+          queries: 27329
+          edges: 123275
+          routes: 23701
+          full_current_public_legacy_653: NOT_RUN_source_gate_STOP
+          full_legacy_568_pass_85_fail: historical_94a9_only
+        fresh_reviews:
+          security:
+            session: ses_eb995d9e3ffeKZauFvaB3a3L05
+            verdict: NOT_READY
+            static_high_candidates: [N1, N2, N3]
+          adversarial:
+            session: ses_eb995da16ffetegLcbK1mNOWaw
+            verdict: NOT_READY
+            static_high_candidates: [N1, N3, N4, N5, N6, N7]
+            static_medium_candidates: [M2]
+          unique_high_families: 7
+          distinct_high_witnesses: 8
+          candidate_regressions_executed: false
+          findings_doc: _spec/ml/R4.md#fresh-static-review-findings--open--not-reproduced
+      - id: source-inventory
+        path: packages/starchess-arena/src/challenge/sourceInventory.ts
+        state: current
+        proof_state: blocked
+        finding: Independent completion gated after public closure; R3 wrapper16 unresolved
+  - id: starchess-training
+    kind: package
+    package_name: "@chess-coach/starchess-training"
+    paths: [packages/starchess-training/]
+    status_doc: _spec/ml/starchess-training/STATUS.md
+    state: partial
+    proof_state: blocked
+    responsibilities:
+      - Candidate generation and composition from authorized leaves and pure core planning
+      - Partial economic, feature, and private coordinator source
+      - Accounting without replacing native legality or host admission
+    public_exports: [/candidates]
+    missing_required_exports: [/features, /artifacts]
+  - id: starchess
+    kind: application
+    package_name: "@chess-coach/starchess"
+    paths: [apps/starchess/]
+    status_doc: _spec/ml/starchess/STATUS.md
+    state: current
+    responsibilities:
+      - Registry-based New Game selection
+      - URL and saved-session unavailable-opponent guards
+    playable: [naive, strategic]
+    disabled: [machine-learning, rlhf, rlcd]
+    ml_runtime_dependency: false
+  - id: e2e
+    kind: browser_test_project
+    package_name: chess-coach-e2e
+    paths: [apps/e2e/]
+    status_doc: _spec/ml/e2e/STATUS.md
+    state: current
+    responsibilities:
+      - Playwright selection, URL, session, and admission regression checks
+      - Browser verification rather than auditor or formal runtime proof
+  - id: verification
+    kind: cross_cutting_workstream
+    paths: [scripts/, packages/starchess-arena/hermetic/]
+    status_doc: _spec/ml/verification/STATUS.md
+    state: current
+    proof_state: blocked
+    responsibilities:
+      - Fixed diagnostic orchestration, acquisition, capture, archives, and receipts
+      - Preserve historical published evidence without modifying payloads
+      - Schedule final frozen verification after independent auditor closure
+    owns_auditor_solver_logic: false
+    owns_admission_authority: false
+    diagnostic_headroom:
+      kind: planned_documentation_goal
+      design_authority: _spec/_plans/r4-auditor-diagnostic-headroom.md
+      diagram: _spec/packages/starchess-arena/auditor-diagnostic-headroom.puml
+      design_accepted: true
+      build_authorized: true
+      implemented: false
+      execution_authorized: false
+      required_process_tree_charged_memory_gib: 4
+      required_dedicated_enforcement: unverified
+      planned_source_status: NONEXISTENT_PLANNED
+      planned_source_paths:
+        - scripts/r4-auditor-profile.mjs
+        - scripts/r4-auditor-profile-lib.mjs
+        - scripts/r4-auditor-profile.test.mjs
+        - packages/starchess-training/src/__tests__/auditorProfileBoundary.test.ts
+      runtime_configuration: false
+      generated: false
+      native_authority: false
+gates:
+  - id: r4-acceptance
+    kind: documentation_proof_gate
+    path: _spec/_plans/ml-adjutant-r4-authority-chain.md
+    state: blocked
+    runtime_component: false
+relations:
+  - from: starchess-arena
+    to: starchess-core
+    kind: manifest_dependency
+    state: current
+    evidence: packages/starchess-arena/package.json
+  - from: starchess-training
+    to: starchess-arena
+    kind: manifest_dependency
+    state: current
+    evidence: packages/starchess-training/package.json
+  - from: starchess-training
+    to: starchess-core
+    kind: manifest_dependency
+    state: current
+    evidence: packages/starchess-training/package.json
+  - from: starchess
+    to: starchess-core
+    kind: manifest_dependency
+    state: current
+    evidence: apps/starchess/package.json
+  - from: e2e
+    to: starchess
+    kind: browser_test
+    state: current
+    evidence: apps/e2e/tests/starchess/starchess-opponents.spec.ts
+  - from: verification
+    to: starchess-core
+    kind: verification_obligation
+    state: blocked
+  - from: verification
+    to: starchess-arena
+    kind: verification_obligation
+    state: blocked
+  - from: verification
+    to: starchess-training
+    kind: verification_obligation
+    state: blocked
+  - from: verification
+    to: starchess
+    kind: verification_obligation
+    state: blocked
+  - from: verification
+    to: e2e
+    kind: verification_obligation
+    state: blocked
+  - from: public-closure
+    to: r4-acceptance
+    kind: proof_gate
+    state: blocked
+  - from: source-inventory
+    to: r4-acceptance
+    kind: proof_gate
+    state: blocked
+  - from: starchess-training
+    to: r4-acceptance
+    kind: proof_gate
+    state: blocked

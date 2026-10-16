@@ -1,0 +1,93 @@
+[Unverified] PLANNED: private auditor diagnostic-headroom build goals
+
+Authority: accepted exact v2 design; private harness/local negative-control build authorized.
+Implementation and verification: NOT IMPLEMENTED / NOT VERIFIED.
+Real profile execution: BLOCKED; no execution grant exists.
+Canonical design: _spec/_plans/r4-auditor-diagnostic-headroom.md, exact v2 delimiters.
+Delivery: retained PLANNED goals context, not a substitute for the requested auditor-diagnostic-headroom.puml or a user choice of diagram format.
+This document creates no source-authority brand, coverage-index entry, or proof of shipped behavior.
+
+1. Preserve ownership and frozen contracts
+
+The source owner continues original ordered repairs and public strict optimization.
+Touch no owner files, original repair plans, frozen R3 body, strict defaults/caps, or existing r4-host-verify scripts.
+Add no profile flags/environment overrides to strict production entrypoints, CLI, API, or schemas.
+Keep R4 opponent work cap 1,048,576 and deadlines 10s/300s independent from verifier analysis/test budgets.
+Weights never reduce proof obligations or trigger qualification.
+Grant no training, collection, calibration, fitting, deployment, real-data audit, Git, or sandbox/network-permission changes.
+
+2. Planned private files and separation
+
+Planned filenames, not claims of existing files or exact repo-root source locations:
+- r4-auditor-profile.mjs: private help and fail-closed preflight only.
+- r4-auditor-profile-lib.mjs: functions/plain records for bounded helpers and synthetic controls.
+- r4-auditor-profile-test.mjs: local synthetic helper/preflight negative controls.
+- auditorProfileBoundary.test.ts: new training-area tests using actual registered-byte/source-policy consumption.
+Use no classes, production authority fields, fake assurance brands, or runtime image changes.
+The requested diagram and matching coverage-index projection remain pending; this note creates neither.
+
+3. Initial CLI gate: no usable execution path
+
+Help must not copy real inputs, collect profile tests, apply overlays, or spawn actual auditors.
+Preflight validates existing controls only; its initial implementation cannot execute a real profile even if checks succeed.
+Missing or unverifiable required controls yield UNSUPPORTED before snapshot/overlay/test collection/auditor spawning.
+Future physical profile copies require BOTH verified existing controls AND a separate profile-execution grant.
+Synthetic test records and caller-supplied JSON/booleans cannot fabricate a host-enforcement lease or execution permission.
+Do not accept an incomplete harness as usable profiling infrastructure.
+
+4. Existing host enforcement remains unverified
+
+Validate canonical cgroup mount-root/mount-point mapping, device identity, physical leaf, and dedicated descendant-tree coverage.
+Verify the actual charged-memory ceiling and existing process supervision without installing guards/delegation or changing permissions.
+The lead reports a shared container: proc/self/cgroup 0::/docker/fb349... and physical-leaf memory.max literally max.
+Reported cgroup.procs includes 1, 2, 5, 75, 83, 109, 171, 184, and others; these observations do not establish a dedicated bounded job.
+Reject such observations as proof of enforced 4 GiB memory; no environment has been certified here.
+Keep the 2 GiB process-tree RSS telemetry/ratchet target distinct from the HARD 4 GiB process-tree charged-memory ceiling.
+RSS sampling and V8 max-old-space do not enforce total memory; report RSS and charged-memory coverage separately.
+Retain existing SBX/container, egress/proxy, and credential-broker policies; external scratch placement grants no sandbox authority.
+Add no hosts, direct sockets, bypasses, broker credentials, or network/security configuration changes.
+
+5. Synthetic bounded-helper goals
+
+Use small public synthetic fixtures, not real source snapshots, private data, secrets, weights, or actual profile invocations.
+Verify public-only sealed read-set/environment whitelists and existing secret/config rejection; forward no credentials or ambient authentication.
+Fail closed on unknown/secret inputs without exposing secret values in snapshots, logs, or receipts.
+Verify canonical current-UID-owned 0700 scratch handling; reject symlink aliases, foreign-writable paths, and non-sticky shared parents.
+Test snapshot bounds: 512 MiB per file, 4 GiB aggregate copied bytes, 100,000 encountered files/directories/links; reject links/aliases before copying.
+Keep copy-byte accounting distinct from charged-memory accounting; bound enumeration and never copy an unbounded worktree.
+Overlay helpers must allowlist actual rewritten bindings/bytes and scale COMPLETE category coefficients AND hard maxima, not maxima alone.
+Use k=4/2/1 on min(64N,65536), min(256N,262144), min(2048N,2097152); default timers remain D4=30s, D2=15s, STRICT=5s.
+Do not scale N, wrapper limit 16, outer convergence, explicit individual/hook timers, counter semantics, or source-unit boundaries.
+Preserve every alternative/effect, unknown handling, source guard, actual return, default/rest/receiver, and pristine-import obligation.
+Reject non-allowlisted diffs; permit no seen-to-safe/permitted-callee shortcut, outside-counter work, allowance donation, reset, refund, or proof renewal.
+Test declared budget-negative STOP by stable case/tier/category/reason/native boundary: stop before exceeding allowance, mark UNPROVED/no accepted closure, reap.
+Only independently preplanned cases can continue with fresh audit calls under the same aggregate ledger; never retry a stopped proof.
+Unexpected STOP/exhaustion of required positive/control/root fails the job; timeout, hard-memory violation, and cleanup failure are not authorized expected negatives.
+Supervision helpers must model external 120s invocation watchdogs and a 3,600s job clock starting before snapshot/setup and including cleanup.
+Preserve strict static/package/evidence limits 600s/3,600s/900s; cap all-profile workers at two, full logs at 8 MiB, report at 16 MiB.
+Reserve >=7,000ms inside the aggregate clock: TERM then KILL after 2,000ms and reap within the conservative 5,000ms allowance.
+Refuse new cases without declared maximum-execution-plus-cleanup headroom; add no time to the job or invocation watchdog.
+Unexpected exhaustion, overflow, partial evidence, or incomplete cleanup cannot become a positive result; retain bounded failure/status evidence.
+
+6. Actual consumer-boundary negative controls
+
+Use independently expected original synthetic bytes with the existing actual registration/source-policy consumer, not a mocked replacement boundary.
+Require the original positive policy branch to pass; derive its expected bytes independently from profiled outputs/receipts.
+Change physical profile bytes and require rejection through the same actual consumer even when a diagnostic record claims PASS.
+Labels alone do not establish rejection; test isolated/nonregistered profile origins and byte mismatch at actual consumption.
+Never fabricate a genuine seal, set a model permit true, or admit a profile into trustedSourcePolicy/bootstrap/assurance namespaces.
+Use ordinary NON_ADMITTED diagnostic records only; add no production join, source-authority fields, policy issuance, or report-authority scheme.
+Local control success would verify only those controls; it would not authorize a real profile or attest R4/B1/seven/cold-model gates.
+
+7. Future qualification remains gated and unexecuted
+
+Before any future run, obtain the separate execution grant after proving required existing enforcement and negative consumer-boundary controls.
+Keep all 653 legacy cases plus additions, whole 111-case invocation baseline/selectors, and actual five roots; counts may grow with source-owner controls.
+Require two consecutive cold frozen runs per tier/revision and all declared outcomes, with no omission, unexplained failure, timeout, import failure, or pending test.
+Report actual N, all per-unit counter maxima, p50/p95/MAX durations, memory measurements, and complete native outcomes.
+Require each successful-proof category maximum <= floor(60% of its next-tier derived limit) and default-case duration <=60% of the next default timer.
+Report declared expected-STOP fixtures separately as UNPROVED; never use them to excuse a root failure or count them as proof success.
+Require observed RSS <=2 GiB with verified 4 GiB charged-memory enforcement; retain identical clock/output/cleanup limits and preserve failed records.
+Higher-tier results cannot substitute for fresh lower-tier runs; final STRICT uses ORIGINAL strict source/entrypoint/configuration with NO overlay.
+Relevant source/helper/test/dependency/harness/profile-config changes require new frozen runs; profile records remain NON_ADMITTED afterward.
+No harness code, synthetic tests, real profile, source snapshot, body digest, or environment verification has been produced by this documentation task.

@@ -1,0 +1,68 @@
+' purpose: Project verification-owned PLANNED diagnostic-headroom goals without implying a controller implementation or profiling authority.
+' covers: _spec/ml/projects.yaml
+' planned-source: scripts/r4-auditor-profile.mjs
+' planned-source: scripts/r4-auditor-profile-lib.mjs
+' planned-source: scripts/r4-auditor-profile.test.mjs
+' planned-source: packages/starchess-training/src/__tests__/auditorProfileBoundary.test.ts
+' related: _spec/_plans/r4-auditor-diagnostic-headroom.md
+' related: _spec/ml/verification/STATUS.md; _spec/ml/projects.yaml verification.diagnostic_headroom.
+' status: [Unverified] Recovered PLANNED diagram; design accepted/build authorized, implemented:false, execution_authorized:false. Four planned source files do not exist; dedicated 4 GiB enforcement remains unverified.
+' coverage: Actual documentation registry only; not a generator, runtime configuration, native authority, or coverage of nonexistent harness files. Retained TXT goals and exact v2 body remain unchanged.
+@startuml auditor-diagnostic-headroom
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title [Unverified] PLANNED diagnostic headroom - registry goals only, no harness or profiling authority
+left to right direction
+
+actor "Executor\nseparate execution permission" as Executor <<host>>
+component "PLANNED: scripts/r4-auditor-profile.mjs\nhelp / read-only preflight" as CLI <<host>>
+component "Execution gate\nBLOCKED: not authorized" as Blocked <<error>>
+component "PLANNED: scripts/r4-auditor-profile-lib.mjs\nfixed limits / selection / overlay guards" as Guards <<app>>
+component "Required existing host controls - UNVERIFIED\ncanonical cgroup mapping / dedicated containment\n4 GiB charged-memory ceiling / cleanup proof" as Host <<host>>
+component "Unsupported host\nno source capture or auditor spawn" as Unsupported <<error>>
+database "Future external frozen scratch\npublic-only originals + limit-only overlay\nno registered authority inputs" as Scratch <<db>>
+component "Future supervised cases\nD4 / D2 / original STRICT\ncomplete selection / cumulative accounting" as Cases <<app>>
+database "NON_ADMITTED receipts\nidentities / raw outcomes / resource measurements" as Receipts <<db>>
+component "Real policy and registered-byte consumers\nindependent original-byte expectations" as Consumers <<host>>
+component "Profile-byte rejection\nAUDITOR_CODE / registered MISMATCH" as Reject <<error>>
+component "PLANNED: scripts/r4-auditor-profile.test.mjs\nsynthetic bounds / ordering / cleanup controls" as UnitTests <<host>>
+component "PLANNED: auditorProfileBoundary.test.ts\nphysical synthetic originals and substitutions" as BoundaryTests <<host>>
+
+Executor ARROW_MAIN CLI : approved build / preflight only
+CLI ARROW_ERROR Blocked : real profile request
+CLI ARROW_MAIN Guards : validate fixed request
+Guards ARROW_MAIN Host : verify existing controls first
+Host ARROW_ERROR Unsupported : absent / shared / unbounded / unverifiable
+Host ARROW_OPTIONAL Scratch : future permission + verified controls
+Scratch ARROW_OPTIONAL Cases : future complete frozen selection
+Cases ARROW_MAIN Receipts : diagnostic results only
+Receipts ARROW_ERROR Consumers : no authority join
+Consumers ARROW_ERROR Reject : changed physical bytes / wrong role
+UnitTests ARROW_OPTIONAL Guards : exercise synthetic guards
+BoundaryTests ARROW_OPTIONAL Consumers : original positive + profile negatives
+
+note bottom of Guards
+  Strict source, APIs and default limits stay
+  unchanged. An overlay changes only enumerated
+  resource bindings.
+end note
+
+note bottom of Host
+  A controller listing does not prove a hard bound.
+  A shared unlimited group cannot contain this job.
+end note
+
+note bottom of Consumers
+  Consumers compare actual bytes with independent
+  refs. A diagnostic label cannot grant trusted
+  authority.
+end note
+
+legend bottom
+  All four source/test paths are NONEXISTENT / PLANNED goals.
+  Only the actual projects.yaml documentation registry is covered.
+  Recovered diagram presence does not implement the harness or verify containment.
+  Build and guard tests do not authorize real profiling.
+  Two cold complete runs and next-tier margins remain future gates.
+  R4 cap 1048576, runtime deadlines and admission remain unchanged.
+endlegend
+@enduml
