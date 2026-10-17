@@ -1,4 +1,4 @@
-' purpose: Rust native candidate composition and baseline contracts beside retained synthetic Burn compatibility.
+' purpose: Rust economic ledger and native composition boundaries beside retained synthetic Burn compatibility.
 ' covers: Cargo.toml
 ' covers: rust-toolchain.toml
 ' covers: packages/training/Cargo.toml
@@ -22,18 +22,28 @@
 ' covers: packages/training/tests/policy.rs
 ' covers: packages/training/tests/support/native.rs
 ' covers: packages/training/tests/support/legacy.mjs
-' status: Native baseline source contract; matching-source verification and review status live in _spec/ml/native-runner.md.
+' covers: packages/training/src/ledger/mod.rs
+' covers: packages/training/src/ledger/contracts.rs
+' covers: packages/training/src/ledger/work.rs
+' covers: packages/training/src/ledger/history.rs
+' covers: packages/training/tests/ledger_contracts.rs
+' covers: packages/training/tests/ledger_history.rs
+' covers: packages/training/tests/fixtures/ledger-boundaries.json
+' status: Ledger source present; current whole-gate and review evidence lives in _spec/ml/native-economic-ledger.md.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
 ' related: _spec/ml/native-runner.md
+' related: _spec/_plans/native-economic-ledger.md
+' related: _spec/ml/native-economic-ledger.md
 ' related: _spec/apps/arena/burn-compat.puml
+' history: native-runner.md owns the completed baseline, not current ledger verification.
 ' history: d250c88e Bun receipt is superseded, not current proof or review eligibility.
 ' assurance: Remote identity include follows the skill; source checks do not imply hermetic rendering.
-' readability: New note estimates/counts live in _spec/ml/native-runner.md; unchanged notes retain historical estimates only.
-' validation: Author ran no source checks, renderer or hashes; lead must reconcile late files after freeze.
+' readability: Ledger note FK counts live in _spec/ml/native-economic-ledger.md; unchanged notes retain their historical register.
+' validation: Author runs no tests, renderer or hashes; lead owns the complete unchanged-input invoice and note-box checks.
 @startuml
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Rust composition + retained Burn compatibility — native source contract
+title Rust ledger + composition + retained Burn compatibility
 left to right direction
 
 component "apps/arena/src/lib.rs\nRust policy caller" as ARENA <<app>>
@@ -49,7 +59,15 @@ package "Root Cargo workspace\nCargo.toml / one reused Cargo.lock" {
     component "packages/training/src/candidates.rs\nprofile B / 4 actions / 2048 attempts\n512 retained including pass" as COMPOSER <<app>>
     component "packages/training/src/policy.rs\npass-v1 / first-v1 / seeded-v1\nxorshift32 / canonical array includes pass" as SELECTORS <<app>>
   }
+  package "Economic ledger source / not a learner" {
+    component "packages/training/src/ledger/mod.rs\nchecked Rust ledger API" as LEDGER_API <<app>>
+    component "packages/training/src/ledger/contracts.rs\narena-economic-rules-v1\narena-economic-boundary-v1\nclosed groups / immutable own locators" as LEDGER_CONTRACTS <<app>>
+    component "packages/training/src/ledger/history.rs\nLedgerPair / SideLedgerReport\nrecipient IDs / paid lineage / square memory" as LEDGER_HISTORY <<app>>
+    component "packages/training/src/ledger/work.rs\nLedgerWork / precharge\n1048576 shared per window" as LEDGER_WORK <<app>>
+  }
 }
+component "apps/arena/src/economic.rs\nhost recipient-history caller\nno recorded-policy verification" as ECO_HOST <<host>>
+component "packages/training/tests/ledger_contracts.rs\npackages/training/tests/ledger_history.rs\npackages/training/tests/fixtures/ledger-boundaries.json\nshared DTO / fold / native-fidelity controls" as LEDGER_PROOF <<app>>
 component "apps/arena/engine/planning.ts\npure authorized-view primitive domain\nno actual admission or private snapshot" as PLANNER <<app>>
 component "packages/starchess-core/src/planning-v1.ts\nnative actor / shape / timing / anchor\nUNIT_COST / specialGasCost" as HELPERS <<app>>
 component "packages/training/tests/contracts.rs\nclosed typed contract controls" as CONTRACT_PROOF <<app>>
@@ -84,6 +102,17 @@ PROOF ARROW_OPTIONAL PACK : real Burnpack save / restore
 PROTOCOL ARROW_ERROR FAILURE : invalid framing / version / id\ninvalid shape / excess bytes
 LIB ARROW_ERROR FAILURE : invalid numeric input\nno JS or f32 fallback
 XTASK ARROW_ERROR FAILURE : any required gate fails\nno old receipt reuse
+ECO_HOST ARROW_MAIN LEDGER_API : native-derived rules / authorized pairs\nno private SCFEN or opponent bank
+LEDGER_API ARROW_MAIN LEDGER_CONTRACTS : closed rules / boundaries / groups\nchecked data is not native authority
+LEDGER_API ARROW_MAIN LEDGER_HISTORY : initialize / immutable advance / reports
+LEDGER_HISTORY ARROW_MAIN LEDGER_CONTRACTS : whole before-image + same-group births\nreconcile after-image only after all effects
+ECO_HOST ARROW_MAIN LEDGER_WORK : one meter for both recipients\ninitial/open/settle then next-window reset
+LEDGER_HISTORY ARROW_MAIN LEDGER_WORK : charge validation / identity / state / reports\nfailed publication never refunds work
+LEDGER_HISTORY ARROW_MAIN ECO_HOST : conserved reports / local lineage\nno 418 encoder or authority flag
+LEDGER_PROOF ARROW_OPTIONAL LEDGER_CONTRACTS : strict schema / canonical complete bytes\ncurrent-pair duplicate identity only
+LEDGER_PROOF ARROW_OPTIONAL LEDGER_HISTORY : grants / gas / paid basis / memory\natomic pair failure / native fixture agreement
+XTASK ARROW_OPTIONAL LEDGER_PROOF : fresh unfiltered ledger targets\nold passing counts do not supply this proof
+LEDGER_HISTORY ARROW_ERROR FAILURE : sequence / identity / conservation / work\nretain prior checked boundary pair
 
 note bottom of LIB
   The smoke calls Burn in process so its
@@ -140,14 +169,46 @@ note bottom of XTASK
   source before any reviewer may participate.
 end note
 
+note bottom of LEDGER_CONTRACTS
+  Node imports economic tables from native
+  rules so Rust cannot fork their authority.
+  Closed boundary checks validate inputs, but
+  only the host can bind their provenance
+  to a recorded native run.
+end note
+
+note bottom of LEDGER_HISTORY
+  Resolve each subject against the group's
+  immutable preimage and accepted births.
+  Stage all effects before checking geometry,
+  so swaps and same-cell replacements retain
+  their native identity and paid lineage.
+end note
+
+note bottom of LEDGER_WORK
+  Both seats share one meter within a window,
+  so helper calls cannot renew its allowance.
+  Failed updates preserve ledger state without
+  refunding charges or certifying runtime
+  capacity for the deferred feature encoder.
+end note
+
 legend bottom
-  Native baseline source contract; current receipts live in native-runner.md.
+  Baseline proof remains historical in native-runner.md; ledger proof lives in native-economic-ledger.md.
   Preserve exact B funding: seven lanes x 48 + shared 175 + pass.
   All lanes enumerate full domains; only availability probes filter families.
   Preserve counters, continuation-before-skip and capacity/attempt/exhausted precedence.
   Retained Burn 0.22.0 Flex CPU f64 smoke/checkpoint fixtures are synthetic only.
   Width 418 remains zero padding, not the R4 feature encoder.
   Native baselines use no learned scorer; learned=false / modelArtifact=null.
+  Native tables: turns 1-10 mineral/gas 1/1; 11-20 2/2; 21-45 3/3.
+  Initial endowment is not a grant; only settlement advances grantOrdinal.
+  Own bank = origin + actual credits - paid debits; capped credit may be zero.
+  Paid debits = surviving + destroyed + wasted basis; promotion preserves basis.
+  CC lives stay separate; ordinary king replacement=0, native unit cost=1.
+  Mines remain entities, not a Set; memory does not identify unique enemy population.
+  Keep only the last pair's full canonical bytes; older duplicate ordinals refuse.
+  Shared golden has scoped fixture-repair proof, not whole-ledger acceptance.
   No real training, payout calibration, R4 readiness or activation claim.
   Complete fresh static/functional/preservation/diagram/source-identity gates precede reviewers.
 endlegend

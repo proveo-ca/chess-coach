@@ -3,6 +3,8 @@
 
 mod bridge;
 pub mod cli;
+pub mod economic;
+mod economic_client;
 mod engine_v2;
 pub mod evaluation;
 mod features;
@@ -12,6 +14,7 @@ pub mod record;
 pub mod replay;
 pub mod run;
 pub mod schedule;
+mod worker_transport;
 
 use features::{FeatureMatrix, ScoredCandidate, Selection};
 use observation::Observation;

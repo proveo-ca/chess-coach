@@ -15,6 +15,7 @@ enum Command {
     Run { config: PathBuf },
     Suite { config: PathBuf, out: PathBuf },
     Replay { record: PathBuf },
+    Ledger { record: PathBuf },
 }
 
 pub fn main(args: &[String]) -> i32 {
@@ -96,6 +97,26 @@ pub fn main(args: &[String]) -> i32 {
                 1
             })
         }
+        Command::Ledger { record } => {
+            let analysis = match read_bytes(&record, MAX_RECORD_BYTES)
+                .and_then(|bytes| crate::economic::decode_record(&bytes))
+                .and_then(|record| crate::economic::analyze_record(&record))
+            {
+                Ok(analysis) => analysis,
+                Err(message) => {
+                    eprintln!("{message}");
+                    return 2;
+                }
+            };
+            let code = i32::from(!analysis.is_verified());
+            emit(analysis.report()).map_or_else(
+                |message| {
+                    eprintln!("{message}");
+                    1
+                },
+                |()| code,
+            )
+        }
         Command::Replay { record } => {
             let report = match read_json::<RunRecord>(&record, MAX_RECORD_BYTES) {
                 Ok(record) => match replay_record(&record) {
@@ -126,12 +147,14 @@ pub fn main(args: &[String]) -> i32 {
 }
 
 fn parse(args: &[String]) -> Result<Command, String> {
-    let command = args.first().ok_or("Expected run, suite, or replay")?;
+    let command = args
+        .first()
+        .ok_or("Expected run, suite, replay, or ledger")?;
     let allowed: &[&str] = match command.as_str() {
         "run" => &["--config"],
         "suite" => &["--config", "--out"],
-        "replay" => &["--record"],
-        _ => return Err("Expected run, suite, or replay".into()),
+        "replay" | "ledger" => &["--record"],
+        _ => return Err("Expected run, suite, replay, or ledger".into()),
     };
     let mut options = std::collections::BTreeMap::new();
     for pair in args[1..].chunks(2) {
@@ -157,6 +180,9 @@ fn parse(args: &[String]) -> Result<Command, String> {
             config: options["--config"].into(),
             out: options["--out"].into(),
         },
+        "ledger" => Command::Ledger {
+            record: options["--record"].into(),
+        },
         _ => Command::Replay {
             record: options["--record"].into(),
         },
@@ -164,6 +190,11 @@ fn parse(args: &[String]) -> Result<Command, String> {
 }
 
 fn read_json<T: DeserializeOwned>(path: &Path, limit: usize) -> Result<T, String> {
+    let bytes = read_bytes(path, limit)?;
+    serde_json::from_slice(&bytes).map_err(|e| format!("Invalid {}: {e}", path.display()))
+}
+
+fn read_bytes(path: &Path, limit: usize) -> Result<Vec<u8>, String> {
     if !std::fs::metadata(path)
         .map_err(|e| format!("Cannot inspect {}: {e}", path.display()))?
         .is_file()
@@ -193,7 +224,7 @@ fn read_json<T: DeserializeOwned>(path: &Path, limit: usize) -> Result<T, String
     {
         return Err("Expected a closed JSON object".into());
     }
-    serde_json::from_slice(&bytes).map_err(|e| format!("Invalid {}: {e}", path.display()))
+    Ok(bytes)
 }
 
 struct BoundedJson(Vec<u8>);

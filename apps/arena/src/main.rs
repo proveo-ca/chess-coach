@@ -4,13 +4,13 @@
 use std::io::{self, Write};
 use std::process::ExitCode;
 
-const HELP: &str = "Usage: arena smoke\n       arena run --config <file>\n       arena suite --config <file> --out <fresh-dir>\n       arena replay --record <file>\n       arena --help\n\nsmoke: one synthetic Burn Flex compatibility window.\nrun/suite: native full-match baseline orchestration; no learned model.\nNON_ADMITTED. Exit 2: invalid configuration/options; exit 1: runtime/replay/case failure.\n";
+const HELP: &str = "Usage: arena smoke\n       arena run --config <file>\n       arena suite --config <file> --out <fresh-dir>\n       arena replay --record <file>\n       arena ledger --record <file>\n       arena --help\n\nsmoke: one synthetic Burn Flex compatibility window.\nrun/suite: native full-match baseline orchestration; no learned model.\nledger: native economic accounting; policy verification not executed; trainingReady false.\nNON_ADMITTED. Exit 2: invalid configuration/options/schema; exit 1: runtime/replay/ledger/case failure.\n";
 
 fn main() -> ExitCode {
     let arguments: Vec<_> = std::env::args_os().skip(1).collect();
     if arguments
         .first()
-        .is_some_and(|arg| arg == "run" || arg == "suite" || arg == "replay")
+        .is_some_and(|arg| arg == "run" || arg == "suite" || arg == "replay" || arg == "ledger")
     {
         let strings: Result<Vec<_>, _> = arguments
             .into_iter()

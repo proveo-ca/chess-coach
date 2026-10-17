@@ -1,8 +1,8 @@
 # R4 — frozen WIP checkpoint + deferred planning
 
-Current rebuild: [Rust runtime research](rebuild-runtime-research.md) and [Burn compatibility milestone](../_plans/burn-flex-compat.md).
-Current native delivery: [Native Rust baseline — COMPLETE; G3 PASS; all three closing reviews READY](native-runner.md) (NON_ADMITTED capability only, not learned-model/R4 readiness or new publication authority).
-The legacy R4 checkpoint below retains its own scope; it does not certify the Rust rebuild.
+Current selected scope: [Native economic ledger — Ledger first](native-economic-ledger.md) / [PR scope and acceptance](../_plans/native-economic-ledger.md); v2 FREEZE ACCEPTED; shared contract/work handoff complete with lead-reported leaf-only checks; Node/history/host implementation in parallel; ALL NEW INTEGRATED GATES PENDING, reviewers FORBIDDEN until the complete unchanged-input gate passes.
+Prior native delivery: [Native Rust baseline — COMPLETE; bounded old proof only](native-runner.md); [runtime research](rebuild-runtime-research.md) / [Burn compatibility milestone](../_plans/burn-flex-compat.md) remain separate completed/research scopes.
+The legacy R4 checkpoint and six-owner graph below remain unchanged; ledger is a single native-consequence pass with policy verification not executed, not legacy audit closure, learned readiness or new publication authority.
 
 **[Unverified] 2026-10-16 · FROZEN WIP / HUMAN-ACCEPTED PUBLICATION RISKS; fresh reviews NOT READY: N1–N7 HIGH static candidates / M2 MEDIUM; prior specific cases CLOSED / CONTROL VERIFIED; cost gate BLOCKED, full R4 NOT READY.**
 

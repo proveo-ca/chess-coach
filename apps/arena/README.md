@@ -6,8 +6,10 @@ Rust owns candidate composition, baseline selection, match orchestration, schedu
 The fixed Node adapter owns the unchanged TypeScript engine.
 The separate compatibility smoke retains its synthetic Burn scorer.
 
-The bounded native baseline passed the whole-workspace gate and all three closing reviews.
+The published native baseline passed its matching-source gate and all three closing reviews.
 Contract: [`_spec/ml/native-runner.md`](../../_spec/ml/native-runner.md).
+The ledger foundation has its own [verification and closing-review record](../../_spec/_plans/native-economic-ledger.md).
+The baseline receipts do not verify the ledger.
 
 ## Native commands
 
@@ -17,6 +19,7 @@ Run from the repository root with Rust 1.95.0, Node 22+ and the workspace's pnpm
 cargo run --frozen --offline -p arena -- run --config /path/to/match.json
 cargo run --frozen --offline -p arena -- suite --config /path/to/suite.json --out /path/to/fresh-results
 cargo run --frozen --offline -p arena -- replay --record /path/to/fresh-results/case-0000.json
+cargo run --frozen --offline -p arena -- ledger --record /path/to/fresh-results/case-0000.json
 ```
 
 Match configuration:
@@ -65,6 +68,57 @@ Its match budget is 300 seconds, including three seconds for cleanup.
 Each decision has one absolute ten-second budget.
 Config reads are bounded to 64 KiB; record reads and serialization are bounded to 16 MiB.
 Suite output requires a fresh private directory outside protected legacy, corpus and evidence paths.
+
+## Economic ledgers
+
+Contract: [`_spec/ml/native-economic-ledger.md`](../../_spec/ml/native-economic-ledger.md).
+The selected delivery adds `arena ledger --record /path/to/record.json`.
+It reconstructs native consequences from a fixed fixture in one independent provenance pass.
+Rust owns the ledger calculations and durable own-unit/mine identities.
+Node supplies native rule facts and recipient-filtered causal events.
+
+| Ledger | Meaning |
+| --- | --- |
+| Calculated | Actual initial endowment, equal scheduled income entitlement, own capped credits, spending and gas budgets. |
+| Seen | Current authorized enemy material and separate dated last-seen square assertions. |
+| Witnessed enemy destruction | Confirmed causal observations, with own-source-action attribution kept separate from killer ownership. |
+| Own lost | Exact own retirements, paid basis and replacement value; paid deployment waste remains separate. |
+
+Native turn, planning window and settlement/grant counters stay separate.
+Gas refills as capacity rather than accumulating as wealth.
+
+Normal playable-turn economics:
+
+| Turns | Nominal minerals per settlement, each seat | Gas refill capacity |
+| --- | ---: | ---: |
+| **1–10** | **1** | **1** |
+| **11–20** | **2** | **2** |
+| **21–45** | **3** | **3** |
+
+All three settlement thresholds require explicit controls:
+
+| Settlement crossing | Nominal minerals per seat | Next gas capacity |
+| --- | ---: | ---: |
+| 0 → **1** | 1 | 1 |
+| 10 → **11** | 2 | 2 |
+| 20 → **21** | 3 | 3 |
+
+The turn-0 fixture supplies initial endowment, not an income grant.
+Mineral credits occur only at settlement and remain bank-cap limited.
+A game-ending turn-start check opens no next playable turn and creates no additional settlement grant.
+For verified terminals, `terminalTrainingCloseout` excludes the matching unused actual mineral credit and declares zero usable gas.
+Raw ledgers, native outcomes, playable features and frozen estimator labels remain unchanged.
+Window limits, rejection and uncertain prefixes receive no terminal closeout.
+
+Fog disappearance never establishes a capture or loss.
+Repeated sightings never establish distinct enemy identities.
+Analysis starts at the record's initial state; zero endowed paid basis makes no claim about earlier purchases.
+
+Ledger verification checks native consequences, not policy selection.
+Use `arena replay` for the separate native-and-policy proof.
+Native rejection or uncertain mutation produces an explicit verified prefix, not a complete verified economic run.
+Ledger diagnostics retain `NON_ADMITTED`, `learned:false`, `modelArtifact:null` and `trainingReady:false`.
+Full418 features, posterior/promotion kernels, learner software, calibration and training remain deferred.
 
 ## Compatibility smoke
 
@@ -119,4 +173,4 @@ Rust unit tests cover DTO closure, square grammar, observation invariants, mine 
 `tests/smoke.rs` invokes the actual Rust binary and Burn scorer, compares every engine-result field with an independent native Node replay, and checks deterministic reports and CLI failures.
 The Node adapter retains its separate static checks and native tests.
 
-Deferred: economic belief/features, training readiness, real training, profiling, learned artifacts and final legacy cleanup.
+Deferred: full economic belief/features, learner software, training readiness, real training, profiling, learned artifacts and final legacy cleanup.

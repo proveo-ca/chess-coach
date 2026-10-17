@@ -1,8 +1,8 @@
-# Rust native-runner gate
+# Rust native-ledger gate
 
 Run `cargo xtask check` from the workspace.
 
-The fixed gate validates the native baseline runner and retained synthetic compatibility controls.
+The fixed gate validates the economic-ledger foundation, native baseline runner and retained synthetic compatibility controls.
 It does not admit a learned model or authorize training.
 It does not install dependencies, invoke Bun, or start reviews.
 Cargo commands use frozen, offline resolution and two build jobs.
@@ -28,6 +28,7 @@ The gate preserves the existing 43 index entries and unresolved metadata.
 It does not require historical unresolved pointers to resolve.
 Both owner diagrams must pass syntax checks and produce bounded SVGs in private receipt subdirectories.
 
-The Rust invoice requires nonempty compatibility, contract, composition, policy, runner, schedule and replay integration targets.
-The source inventory requires all four v2 Node control files.
+The Rust invoice requires nonempty compatibility, contract, composition, policy, runner, schedule, replay, ledger-contract, ledger-history, economic-reconstruction and readiness integration targets.
+The source inventory requires all four v2 Node control files and all three economic-worker control files.
+Ledger diagnostics do not certify policy selection, full feature semantics, calibration, learner software or training readiness.
 Tracked and untracked legacy-source, consumer, contract, corpus and evidence changes fail checks before and after verification.

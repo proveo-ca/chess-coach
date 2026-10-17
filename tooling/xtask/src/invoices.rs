@@ -17,6 +17,10 @@ const RUNNER_TARGETS: &[&str] = &[
     "tests/runner.rs",
     "tests/schedule.rs",
     "tests/replay.rs",
+    "tests/ledger_contracts.rs",
+    "tests/ledger_history.rs",
+    "tests/economic_replay.rs",
+    "tests/readiness.rs",
 ];
 
 pub(crate) fn required_rust_binaries(counts: &RustCounts) -> Result<(), String> {

@@ -3,6 +3,7 @@
 
 pub mod candidates;
 pub mod contracts;
+pub mod ledger;
 mod model;
 pub mod policy;
 pub mod protocol;

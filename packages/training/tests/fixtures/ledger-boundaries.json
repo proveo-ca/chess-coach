@@ -1,0 +1,113 @@
+{
+  "rules": {
+    "version": "arena-economic-rules-v1",
+    "openingBankDefault": 3,
+    "unitCosts": { "p": 1, "n": 3, "b": 3, "r": 5, "q": 9, "k": 1 },
+    "mineralBankCap": 12,
+    "mineEntityCap": 3,
+    "maxTurn": 45,
+    "incomeByTurn": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+    "gasCapacityByTurn": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+  },
+  "boundaries": [
+    {
+      "version": "arena-economic-boundary-v1", "side": "w", "ordinal": 0, "phase": "initial", "turn": 0,
+      "planningOrdinal": 0, "grantOrdinal": 0, "seqBefore": 0, "seqThrough": 0, "groups": [],
+      "snapshot": {
+        "version": "arena-observation-v2", "side": "w", "turn": 0,
+        "own": {
+          "minerals": 3, "gas": 1, "gasIncome": 1, "ccLives": 3,
+          "pieces": [{"square":"c2","type":"p"},{"square":"d2","type":"p"},{"square":"e1","type":"k"},{"square":"e2","type":"p"},{"square":"f2","type":"p"}],
+          "mines": [], "siegedTanks": []
+        },
+        "cells": [
+          {"square":"a1","visibility":"unknown"},{"square":"a2","visibility":"unknown"},{"square":"a3","visibility":"unknown"},{"square":"a4","visibility":"unknown"},{"square":"a5","visibility":"unknown"},{"square":"a6","visibility":"unknown"},{"square":"a7","visibility":"unknown"},{"square":"a8","visibility":"unknown"},
+          {"square":"b1","visibility":"unknown"},{"square":"b2","visibility":"unknown"},{"square":"b3","visibility":"lit","piece":null},{"square":"b4","visibility":"unknown"},{"square":"b5","visibility":"unknown"},{"square":"b6","visibility":"unknown"},{"square":"b7","visibility":"unknown"},{"square":"b8","visibility":"unknown"},
+          {"square":"c1","visibility":"unknown"},{"square":"c2","visibility":"lit","piece":{"color":"w","type":"p"}},{"square":"c3","visibility":"lit","piece":null},{"square":"c4","visibility":"lit","piece":null},{"square":"c5","visibility":"unknown"},{"square":"c6","visibility":"unknown"},{"square":"c7","visibility":"unknown"},{"square":"c8","visibility":"unknown"},
+          {"square":"d1","visibility":"lit","piece":null},{"square":"d2","visibility":"lit","piece":{"color":"w","type":"p"}},{"square":"d3","visibility":"lit","piece":null},{"square":"d4","visibility":"lit","piece":null},{"square":"d5","visibility":"unknown"},{"square":"d6","visibility":"unknown"},{"square":"d7","visibility":"unknown"},{"square":"d8","visibility":"unknown"},
+          {"square":"e1","visibility":"lit","piece":{"color":"w","type":"k"}},{"square":"e2","visibility":"lit","piece":{"color":"w","type":"p"}},{"square":"e3","visibility":"lit","piece":null},{"square":"e4","visibility":"lit","piece":null},{"square":"e5","visibility":"unknown"},{"square":"e6","visibility":"unknown"},{"square":"e7","visibility":"unknown"},{"square":"e8","visibility":"unknown"},
+          {"square":"f1","visibility":"lit","piece":null},{"square":"f2","visibility":"lit","piece":{"color":"w","type":"p"}},{"square":"f3","visibility":"lit","piece":null},{"square":"f4","visibility":"lit","piece":null},{"square":"f5","visibility":"unknown"},{"square":"f6","visibility":"unknown"},{"square":"f7","visibility":"unknown"},{"square":"f8","visibility":"unknown"},
+          {"square":"g1","visibility":"unknown"},{"square":"g2","visibility":"unknown"},{"square":"g3","visibility":"lit","piece":null},{"square":"g4","visibility":"unknown"},{"square":"g5","visibility":"unknown"},{"square":"g6","visibility":"unknown"},{"square":"g7","visibility":"unknown"},{"square":"g8","visibility":"unknown"},
+          {"square":"h1","visibility":"unknown"},{"square":"h2","visibility":"unknown"},{"square":"h3","visibility":"unknown"},{"square":"h4","visibility":"unknown"},{"square":"h5","visibility":"unknown"},{"square":"h6","visibility":"unknown"},{"square":"h7","visibility":"unknown"},{"square":"h8","visibility":"unknown"}
+        ]
+      }
+    },
+    {
+      "version": "arena-economic-boundary-v1", "side": "w", "ordinal": 1, "phase": "turn-open", "turn": 0,
+      "planningOrdinal": 0, "grantOrdinal": 0, "seqBefore": 0, "seqThrough": 0, "groups": [],
+      "snapshot": {
+        "version": "arena-observation-v2", "side": "w", "turn": 0,
+        "own": {
+          "minerals": 3, "gas": 1, "gasIncome": 1, "ccLives": 3,
+          "pieces": [{"square":"c2","type":"p"},{"square":"d2","type":"p"},{"square":"e1","type":"k"},{"square":"e2","type":"p"},{"square":"f2","type":"p"}],
+          "mines": [], "siegedTanks": []
+        },
+        "cells": [
+          {"square":"a1","visibility":"unknown"},{"square":"a2","visibility":"unknown"},{"square":"a3","visibility":"unknown"},{"square":"a4","visibility":"unknown"},{"square":"a5","visibility":"unknown"},{"square":"a6","visibility":"unknown"},{"square":"a7","visibility":"unknown"},{"square":"a8","visibility":"unknown"},
+          {"square":"b1","visibility":"unknown"},{"square":"b2","visibility":"unknown"},{"square":"b3","visibility":"lit","piece":null},{"square":"b4","visibility":"unknown"},{"square":"b5","visibility":"unknown"},{"square":"b6","visibility":"unknown"},{"square":"b7","visibility":"unknown"},{"square":"b8","visibility":"unknown"},
+          {"square":"c1","visibility":"unknown"},{"square":"c2","visibility":"lit","piece":{"color":"w","type":"p"}},{"square":"c3","visibility":"lit","piece":null},{"square":"c4","visibility":"lit","piece":null},{"square":"c5","visibility":"unknown"},{"square":"c6","visibility":"unknown"},{"square":"c7","visibility":"unknown"},{"square":"c8","visibility":"unknown"},
+          {"square":"d1","visibility":"lit","piece":null},{"square":"d2","visibility":"lit","piece":{"color":"w","type":"p"}},{"square":"d3","visibility":"lit","piece":null},{"square":"d4","visibility":"lit","piece":null},{"square":"d5","visibility":"unknown"},{"square":"d6","visibility":"unknown"},{"square":"d7","visibility":"unknown"},{"square":"d8","visibility":"unknown"},
+          {"square":"e1","visibility":"lit","piece":{"color":"w","type":"k"}},{"square":"e2","visibility":"lit","piece":{"color":"w","type":"p"}},{"square":"e3","visibility":"lit","piece":null},{"square":"e4","visibility":"lit","piece":null},{"square":"e5","visibility":"unknown"},{"square":"e6","visibility":"unknown"},{"square":"e7","visibility":"unknown"},{"square":"e8","visibility":"unknown"},
+          {"square":"f1","visibility":"lit","piece":null},{"square":"f2","visibility":"lit","piece":{"color":"w","type":"p"}},{"square":"f3","visibility":"lit","piece":null},{"square":"f4","visibility":"lit","piece":null},{"square":"f5","visibility":"unknown"},{"square":"f6","visibility":"unknown"},{"square":"f7","visibility":"unknown"},{"square":"f8","visibility":"unknown"},
+          {"square":"g1","visibility":"unknown"},{"square":"g2","visibility":"unknown"},{"square":"g3","visibility":"lit","piece":null},{"square":"g4","visibility":"unknown"},{"square":"g5","visibility":"unknown"},{"square":"g6","visibility":"unknown"},{"square":"g7","visibility":"unknown"},{"square":"g8","visibility":"unknown"},
+          {"square":"h1","visibility":"unknown"},{"square":"h2","visibility":"unknown"},{"square":"h3","visibility":"unknown"},{"square":"h4","visibility":"unknown"},{"square":"h5","visibility":"unknown"},{"square":"h6","visibility":"unknown"},{"square":"h7","visibility":"unknown"},{"square":"h8","visibility":"unknown"}
+        ]
+      }
+    },
+    {
+      "version": "arena-economic-boundary-v1", "side": "w", "ordinal": 2, "phase": "settled", "turn": 1,
+      "planningOrdinal": 1, "grantOrdinal": 1, "seqBefore": 0, "seqThrough": 4,
+      "groups": [
+        {"kind":"admission","seq":1,"actions":[{"actionRef":{"planningOrdinal":0,"acceptedActionOrdinal":0},"action":{"kind":"classical","timing":"C","color":"w","from":"c2","to":"c3"},"minerals":0,"gas":0}]},
+        {
+          "kind":"effects","seq":2,
+          "beforeOwn":{"units":[{"square":"c2","type":"p","mode":null},{"square":"d2","type":"p","mode":null},{"square":"e1","type":"k","mode":null},{"square":"e2","type":"p","mode":null},{"square":"f2","type":"p","mode":null}],"mines":[],"ccLives":3},
+          "afterOwn":{"units":[{"square":"c3","type":"p","mode":null},{"square":"d2","type":"p","mode":null},{"square":"e1","type":"k","mode":null},{"square":"e2","type":"p","mode":null},{"square":"f2","type":"p","mode":null}],"mines":[],"ccLives":3},
+          "facts":[{"kind":"unit-moved","subject":{"kind":"before-unit","square":"c2"},"from":"c2","to":"c3"}]
+        },
+        {"kind":"vision","seq":3,"turn":1,"changes":[{"square":"b3","visibility":"unknown"},{"square":"b4","visibility":"lit","piece":null},{"square":"c2","visibility":"unknown"},{"square":"c3","visibility":"lit","piece":{"color":"w","type":"p"}},{"square":"c5","visibility":"lit","piece":null}]},
+        {"kind":"settlement","seq":4,"entitlement":1,"credited":1,"gasBeforeReset":1,"nextGasCapacity":1}
+      ],
+      "snapshot": {
+        "version": "arena-observation-v2", "side": "w", "turn": 1,
+        "own": {
+          "minerals": 4, "gas": 0, "gasIncome": 1, "ccLives": 3,
+          "pieces": [{"square":"c3","type":"p"},{"square":"d2","type":"p"},{"square":"e1","type":"k"},{"square":"e2","type":"p"},{"square":"f2","type":"p"}],
+          "mines": [], "siegedTanks": []
+        },
+        "cells": [
+          {"square":"a1","visibility":"unknown"},{"square":"a2","visibility":"unknown"},{"square":"a3","visibility":"unknown"},{"square":"a4","visibility":"unknown"},{"square":"a5","visibility":"unknown"},{"square":"a6","visibility":"unknown"},{"square":"a7","visibility":"unknown"},{"square":"a8","visibility":"unknown"},
+          {"square":"b1","visibility":"unknown"},{"square":"b2","visibility":"unknown"},{"square":"b3","visibility":"unknown"},{"square":"b4","visibility":"lit","piece":null},{"square":"b5","visibility":"unknown"},{"square":"b6","visibility":"unknown"},{"square":"b7","visibility":"unknown"},{"square":"b8","visibility":"unknown"},
+          {"square":"c1","visibility":"unknown"},{"square":"c2","visibility":"unknown"},{"square":"c3","visibility":"lit","piece":{"color":"w","type":"p"}},{"square":"c4","visibility":"lit","piece":null},{"square":"c5","visibility":"lit","piece":null},{"square":"c6","visibility":"unknown"},{"square":"c7","visibility":"unknown"},{"square":"c8","visibility":"unknown"},
+          {"square":"d1","visibility":"lit","piece":null},{"square":"d2","visibility":"lit","piece":{"color":"w","type":"p"}},{"square":"d3","visibility":"lit","piece":null},{"square":"d4","visibility":"lit","piece":null},{"square":"d5","visibility":"unknown"},{"square":"d6","visibility":"unknown"},{"square":"d7","visibility":"unknown"},{"square":"d8","visibility":"unknown"},
+          {"square":"e1","visibility":"lit","piece":{"color":"w","type":"k"}},{"square":"e2","visibility":"lit","piece":{"color":"w","type":"p"}},{"square":"e3","visibility":"lit","piece":null},{"square":"e4","visibility":"lit","piece":null},{"square":"e5","visibility":"unknown"},{"square":"e6","visibility":"unknown"},{"square":"e7","visibility":"unknown"},{"square":"e8","visibility":"unknown"},
+          {"square":"f1","visibility":"lit","piece":null},{"square":"f2","visibility":"lit","piece":{"color":"w","type":"p"}},{"square":"f3","visibility":"lit","piece":null},{"square":"f4","visibility":"lit","piece":null},{"square":"f5","visibility":"unknown"},{"square":"f6","visibility":"unknown"},{"square":"f7","visibility":"unknown"},{"square":"f8","visibility":"unknown"},
+          {"square":"g1","visibility":"unknown"},{"square":"g2","visibility":"unknown"},{"square":"g3","visibility":"lit","piece":null},{"square":"g4","visibility":"unknown"},{"square":"g5","visibility":"unknown"},{"square":"g6","visibility":"unknown"},{"square":"g7","visibility":"unknown"},{"square":"g8","visibility":"unknown"},
+          {"square":"h1","visibility":"unknown"},{"square":"h2","visibility":"unknown"},{"square":"h3","visibility":"unknown"},{"square":"h4","visibility":"unknown"},{"square":"h5","visibility":"unknown"},{"square":"h6","visibility":"unknown"},{"square":"h7","visibility":"unknown"},{"square":"h8","visibility":"unknown"}
+        ]
+      }
+    },
+    {
+      "version": "arena-economic-boundary-v1", "side": "w", "ordinal": 0, "phase": "initial", "turn": 0,
+      "planningOrdinal": 0, "grantOrdinal": 0, "seqBefore": 0, "seqThrough": 0, "groups": [],
+      "snapshot": {
+        "version": "arena-observation-v2", "side": "w", "turn": 0,
+        "own": {
+          "minerals": 3, "gas": 1, "gasIncome": 1, "ccLives": 3,
+          "pieces": [{"square":"c2","type":"p"},{"square":"d2","type":"p"},{"square":"e1","type":"k"},{"square":"e2","type":"p"},{"square":"f2","type":"p"}],
+          "mines": ["e3", "e3", "f3"], "siegedTanks": []
+        },
+        "cells": [
+          {"square":"a1","visibility":"unknown"},{"square":"a2","visibility":"unknown"},{"square":"a3","visibility":"unknown"},{"square":"a4","visibility":"unknown"},{"square":"a5","visibility":"unknown"},{"square":"a6","visibility":"unknown"},{"square":"a7","visibility":"unknown"},{"square":"a8","visibility":"unknown"},
+          {"square":"b1","visibility":"unknown"},{"square":"b2","visibility":"unknown"},{"square":"b3","visibility":"lit","piece":null},{"square":"b4","visibility":"unknown"},{"square":"b5","visibility":"unknown"},{"square":"b6","visibility":"unknown"},{"square":"b7","visibility":"unknown"},{"square":"b8","visibility":"unknown"},
+          {"square":"c1","visibility":"unknown"},{"square":"c2","visibility":"lit","piece":{"color":"w","type":"p"}},{"square":"c3","visibility":"lit","piece":null},{"square":"c4","visibility":"lit","piece":null},{"square":"c5","visibility":"unknown"},{"square":"c6","visibility":"unknown"},{"square":"c7","visibility":"unknown"},{"square":"c8","visibility":"unknown"},
+          {"square":"d1","visibility":"lit","piece":null},{"square":"d2","visibility":"lit","piece":{"color":"w","type":"p"}},{"square":"d3","visibility":"lit","piece":null},{"square":"d4","visibility":"lit","piece":null},{"square":"d5","visibility":"unknown"},{"square":"d6","visibility":"unknown"},{"square":"d7","visibility":"unknown"},{"square":"d8","visibility":"unknown"},
+          {"square":"e1","visibility":"lit","piece":{"color":"w","type":"k"}},{"square":"e2","visibility":"lit","piece":{"color":"w","type":"p"}},{"square":"e3","visibility":"lit","piece":null},{"square":"e4","visibility":"lit","piece":null},{"square":"e5","visibility":"unknown"},{"square":"e6","visibility":"unknown"},{"square":"e7","visibility":"unknown"},{"square":"e8","visibility":"unknown"},
+          {"square":"f1","visibility":"lit","piece":null},{"square":"f2","visibility":"lit","piece":{"color":"w","type":"p"}},{"square":"f3","visibility":"lit","piece":null},{"square":"f4","visibility":"lit","piece":null},{"square":"f5","visibility":"unknown"},{"square":"f6","visibility":"unknown"},{"square":"f7","visibility":"unknown"},{"square":"f8","visibility":"unknown"},
+          {"square":"g1","visibility":"unknown"},{"square":"g2","visibility":"unknown"},{"square":"g3","visibility":"lit","piece":null},{"square":"g4","visibility":"unknown"},{"square":"g5","visibility":"unknown"},{"square":"g6","visibility":"unknown"},{"square":"g7","visibility":"unknown"},{"square":"g8","visibility":"unknown"},
+          {"square":"h1","visibility":"unknown"},{"square":"h2","visibility":"unknown"},{"square":"h3","visibility":"unknown"},{"square":"h4","visibility":"unknown"},{"square":"h5","visibility":"unknown"},{"square":"h6","visibility":"unknown"},{"square":"h7","visibility":"unknown"},{"square":"h8","visibility":"unknown"}
+        ]
+      }
+    }
+  ]
+}

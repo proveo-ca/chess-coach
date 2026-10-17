@@ -1,29 +1,25 @@
 // SPEC: _spec/apps/arena/burn-compat.puml
-use crate::bridge::{channel, kill_and_reap, node_from_path};
+#[cfg(test)]
+use crate::record::CleanupStatus;
 use crate::record::{
-    BeginRecord, CleanupStatus, EngineContext, FixtureId, Outcome, Pair, PendingOperation,
-    PendingStatus, RejectionWitness, SettlementRecord, StateImage,
+    BeginRecord, EngineContext, FixtureId, Outcome, Pair, PendingOperation, RejectionWitness,
+    SettlementRecord, StateImage,
 };
 use crate::record::{object_enum, object_struct};
+use crate::worker_transport::{DECISION, Endpoint, WorkerTransport};
+#[cfg(test)]
+use crate::worker_transport::{
+    Envelope, REAP, REPLY_LIMIT, REQUEST_LIMIT, STDERR_LIMIT, SuccessEnvelope,
+};
 use serde::Deserialize;
 use serde_json::{Value, json};
 use std::collections::{BTreeMap, BTreeSet};
-use std::io::{self, Read, Write};
-use std::net::Shutdown;
-use std::os::unix::net::UnixStream;
+#[cfg(test)]
 use std::path::Path;
-use std::process::{Child, Command};
-use std::time::{Duration, Instant};
+#[cfg(test)]
+use std::time::Duration;
+use std::time::Instant;
 use training_native::contracts::{Action, AuthorizedView, CursorPull, DomainStep, PlanningOracle};
-
-const PROTOCOL: &str = "arena-engine-v2";
-const WORKER: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/engine/worker-v2.ts");
-const REQUEST_LIMIT: usize = 64 * 1024;
-const REPLY_LIMIT: usize = 1024 * 1024;
-const STDERR_LIMIT: usize = 64 * 1024;
-const TOTAL: Duration = Duration::from_secs(300);
-const REAP: Duration = Duration::from_secs(3);
-const DECISION: Duration = Duration::from_secs(10);
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Namespace {
@@ -185,32 +181,6 @@ struct PlanningClose {
 }
 }
 
-#[derive(Deserialize)]
-#[serde(untagged)]
-enum Envelope {
-    Success(SuccessEnvelope),
-    Failure(FailureEnvelope),
-}
-object_struct! {
-#[serde(deny_unknown_fields)]
-struct SuccessEnvelope {
-    protocol: String,
-    id: u32,
-    ok: bool,
-    result: Value,
-}
-}
-object_struct! {
-#[serde(deny_unknown_fields)]
-struct FailureEnvelope {
-    protocol: String,
-    #[serde(deserialize_with = "nullable")]
-    id: Option<u32>,
-    ok: bool,
-    error: Box<ErrorPacket>,
-}
-}
-
 #[derive(Default)]
 struct PlanningState {
     created: usize,
@@ -220,73 +190,36 @@ struct PlanningState {
 }
 
 pub(crate) struct EngineClient {
-    child: Child,
-    stdin: UnixStream,
-    stdout: UnixStream,
-    stderr: UnixStream,
-    stdout_bytes: Vec<u8>,
-    stderr_bytes: Vec<u8>,
-    stdout_eof: bool,
-    stderr_eof: bool,
-    next_id: u32,
-    deadline: Instant,
-    work_deadline: Instant,
-    poisoned: bool,
-    finished: bool,
+    transport: WorkerTransport,
     planning: BTreeMap<u32, PlanningState>,
-    pub(crate) last_error: Option<EngineError>,
-    pub(crate) last_operation: Option<PendingOperation>,
-    cleanup_status: Option<CleanupStatus>,
+}
+
+impl std::ops::Deref for EngineClient {
+    type Target = WorkerTransport;
+    fn deref(&self) -> &Self::Target {
+        &self.transport
+    }
+}
+impl std::ops::DerefMut for EngineClient {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.transport
+    }
 }
 
 impl EngineClient {
     pub(crate) fn new() -> Result<Self, String> {
-        Self::spawn(Path::new(WORKER), TOTAL)
-    }
-
-    fn spawn(script: &Path, total: Duration) -> Result<Self, String> {
-        let started = Instant::now();
-        let path = std::env::var_os("PATH").ok_or("Trusted host PATH is missing")?;
-        let node = node_from_path(&path)?;
-        let (stdin, child_stdin) = channel().map_err(|e| format!("Cannot create v2 stdin: {e}"))?;
-        let (stdout, child_stdout) =
-            channel().map_err(|e| format!("Cannot create v2 stdout: {e}"))?;
-        let (stderr, child_stderr) =
-            channel().map_err(|e| format!("Cannot create v2 stderr: {e}"))?;
-        let child = Command::new(node)
-            .args(["--import", "tsx"])
-            .arg(script)
-            .current_dir(env!("CARGO_MANIFEST_DIR"))
-            .env_clear()
-            .env("PATH", path)
-            .stdin(child_stdin)
-            .stdout(child_stdout)
-            .stderr(child_stderr)
-            .spawn()
-            .map_err(|e| format!("Cannot launch Node engine v2: {e}"))?;
         Ok(Self {
-            child,
-            stdin,
-            stdout,
-            stderr,
-            stdout_bytes: Vec::new(),
-            stderr_bytes: Vec::new(),
-            stdout_eof: false,
-            stderr_eof: false,
-            next_id: 1,
-            deadline: started + total,
-            work_deadline: started + total.saturating_sub(REAP),
-            poisoned: false,
-            finished: false,
+            transport: WorkerTransport::new(Endpoint::EngineV2)?,
             planning: BTreeMap::new(),
-            last_error: None,
-            last_operation: None,
-            cleanup_status: None,
         })
     }
 
-    pub(crate) fn is_poisoned(&self) -> bool {
-        self.poisoned
+    #[cfg(test)]
+    fn spawn(script: &Path, total: Duration) -> Result<Self, String> {
+        Ok(Self {
+            transport: WorkerTransport::spawn_test(Endpoint::EngineV2, script, total)?,
+            planning: BTreeMap::new(),
+        })
     }
 
     pub(crate) fn start(
@@ -347,22 +280,6 @@ impl EngineClient {
         }
     }
 
-    fn pending(&self, method: &str, context: Option<EngineContext>) -> PendingOperation {
-        PendingOperation {
-            method: method.into(),
-            id: Some(self.next_id),
-            context,
-            status: if method.ends_with(".commit")
-                || method.ends_with(".open")
-                || method.ends_with(".start")
-            {
-                PendingStatus::MutationUnknown
-            } else {
-                PendingStatus::Unverified
-            },
-        }
-    }
-
     fn call<T: for<'de> Deserialize<'de>>(
         &mut self,
         method: &str,
@@ -370,153 +287,7 @@ impl EngineClient {
         context: Option<EngineContext>,
         deadline: Instant,
     ) -> Result<T, EngineError> {
-        let pending = self.pending(method, context);
-        self.last_operation = Some(pending.clone());
-        self.last_error = None;
-        let deadline = deadline.min(Instant::now() + DECISION);
-        let result = self.exchange(method, fields, deadline).and_then(|value| {
-            serde_json::from_value(value)
-                .map_err(|e| (format!("Malformed {method} result: {e}"), None))
-        });
-        result.map_err(|(message, packet)| {
-            if packet.is_none() {
-                self.poisoned = true;
-            }
-            let error = EngineError {
-                message,
-                packet,
-                pending,
-            };
-            self.last_error = Some(error.clone());
-            error
-        })
-    }
-
-    fn exchange(
-        &mut self,
-        method: &str,
-        fields: Value,
-        deadline: Instant,
-    ) -> Result<Value, (String, Option<Box<ErrorPacket>>)> {
-        let fail = |message: String| (message, None);
-        if self.poisoned || self.finished {
-            return Err(fail("Engine v2 transport is closed or poisoned".into()));
-        }
-        let deadline = deadline.min(self.work_deadline);
-        if Instant::now() >= deadline {
-            return Err(fail("Engine v2 absolute deadline exceeded".into()));
-        }
-        self.drain().map_err(fail)?;
-        if !self.stdout_bytes.is_empty() || self.stdout_eof {
-            return Err(fail("Unsolicited engine output or unexpected EOF".into()));
-        }
-        let id = self.next_id;
-        self.next_id = id
-            .checked_add(1)
-            .ok_or_else(|| fail("Engine request ID exhausted".into()))?;
-        let mut request = fields
-            .as_object()
-            .cloned()
-            .ok_or_else(|| fail("Request fields must be an object".into()))?;
-        request.insert("protocol".into(), json!(PROTOCOL));
-        request.insert("id".into(), json!(id));
-        request.insert("op".into(), json!(method));
-        let mut bytes = serde_json::to_vec(&request)
-            .map_err(|e| fail(format!("Cannot encode request: {e}")))?;
-        bytes.push(b'\n');
-        if bytes.len() > REQUEST_LIMIT {
-            return Err(fail("Engine request exceeds 64 KiB".into()));
-        }
-        let mut sent = 0;
-        let mut flushed = false;
-        loop {
-            if Instant::now() >= deadline {
-                return Err(fail("Engine v2 absolute deadline exceeded".into()));
-            }
-            if sent < bytes.len() {
-                match self.stdin.write(&bytes[sent..bytes.len().min(sent + 8192)]) {
-                    Ok(0) => return Err(fail("Engine stdin closed during request".into())),
-                    Ok(count) => {
-                        sent += count;
-                    }
-                    Err(e)
-                        if matches!(
-                            e.kind(),
-                            io::ErrorKind::WouldBlock | io::ErrorKind::Interrupted
-                        ) => {}
-                    Err(e) => return Err(fail(format!("Cannot write engine request: {e}"))),
-                }
-            }
-            if sent == bytes.len() && !flushed {
-                self.stdin
-                    .flush()
-                    .map_err(|e| fail(format!("Cannot flush engine request: {e}")))?;
-                flushed = true;
-            }
-            self.drain().map_err(fail)?;
-            if let Some(newline) = self.stdout_bytes.iter().position(|byte| *byte == b'\n') {
-                if sent != bytes.len() {
-                    return Err(fail("Engine replied before the complete request".into()));
-                }
-                if newline + 1 != self.stdout_bytes.len() {
-                    return Err(fail("Extra engine reply or partial frame".into()));
-                }
-                let frame = std::mem::take(&mut self.stdout_bytes);
-                let text = std::str::from_utf8(&frame[..newline])
-                    .map_err(|e| fail(format!("Invalid engine UTF-8: {e}")))?;
-                let envelope: Envelope = serde_json::from_str(text)
-                    .map_err(|e| fail(format!("Invalid engine reply: {e}")))?;
-                self.drain().map_err(fail)?;
-                if !self.stdout_bytes.is_empty() {
-                    return Err(fail("Extra engine reply or partial frame".into()));
-                }
-                return match envelope {
-                    Envelope::Success(reply)
-                        if reply.protocol == PROTOCOL && reply.id == id && reply.ok =>
-                    {
-                        Ok(reply.result)
-                    }
-                    Envelope::Failure(reply)
-                        if reply.protocol == PROTOCOL && reply.id == Some(id) && !reply.ok =>
-                    {
-                        let message = format!("{:?}: {}", reply.error.code, reply.error.message);
-                        Err((message, Some(reply.error)))
-                    }
-                    _ => Err(fail("Engine protocol, request ID, or ok mismatch".into())),
-                };
-            }
-            if self.stdout_eof {
-                return Err(fail("Unexpected EOF with a pending engine reply".into()));
-            }
-            if let Some(status) = self
-                .child
-                .try_wait()
-                .map_err(|e| fail(format!("Cannot poll engine: {e}")))?
-            {
-                return Err(fail(format!(
-                    "Engine exited during request: {status}; stderr: {}",
-                    String::from_utf8_lossy(&self.stderr_bytes)
-                )));
-            }
-            pause(deadline);
-        }
-    }
-
-    fn drain(&mut self) -> Result<(), String> {
-        drain_stream(
-            &mut self.stdout,
-            &mut self.stdout_bytes,
-            &mut self.stdout_eof,
-            REPLY_LIMIT,
-            "stdout frame",
-        )?;
-        drain_stream(
-            &mut self.stderr,
-            &mut self.stderr_bytes,
-            &mut self.stderr_eof,
-            STDERR_LIMIT,
-            "cumulative stderr",
-        )
+        self.transport.call(method, fields, context, deadline)
     }
 
     pub(crate) fn close_planning(&mut self) -> Result<(), String> {
@@ -531,103 +302,8 @@ impl EngineClient {
         if !self.planning.is_empty() {
             return Err("Cannot finish with live planning contexts".into());
         }
-        if self.poisoned {
-            return Err("Cannot gracefully finish poisoned engine".into());
-        }
-        self.stdin
-            .shutdown(Shutdown::Write)
-            .map_err(|e| format!("Cannot send engine EOF: {e}"))?;
-        let shutdown_deadline = (Instant::now() + Duration::from_secs(5)).min(self.work_deadline);
-        loop {
-            if Instant::now() >= shutdown_deadline {
-                return Err("Engine shutdown deadline exceeded".into());
-            }
-            self.drain()?;
-            if !self.stdout_bytes.is_empty() {
-                return Err("Unsolicited engine reply during shutdown".into());
-            }
-            if let Some(status) = self
-                .child
-                .try_wait()
-                .map_err(|e| format!("Cannot reap engine: {e}"))?
-                && self.stdout_eof
-                && self.stderr_eof
-            {
-                self.finished = true;
-                self.cleanup_status = Some(CleanupStatus::Exited {
-                    success: status.success(),
-                });
-                return if status.success() {
-                    Ok(())
-                } else {
-                    Err(format!(
-                        "Engine exited with {status}; stderr: {}",
-                        String::from_utf8_lossy(&self.stderr_bytes)
-                    ))
-                };
-            }
-            pause(shutdown_deadline);
-        }
+        self.transport.finish()
     }
-
-    pub(crate) fn cleanup(&mut self) -> CleanupStatus {
-        if let Some(status) = &self.cleanup_status {
-            return status.clone();
-        }
-        let status =
-            match kill_and_reap(&mut self.child, (Instant::now() + REAP).min(self.deadline)) {
-                Ok(()) => CleanupStatus::Reaped,
-                Err(message) => CleanupStatus::ReapFailed { message },
-            };
-        self.finished = true;
-        self.cleanup_status = Some(status.clone());
-        status
-    }
-}
-
-impl Drop for EngineClient {
-    fn drop(&mut self) {
-        if !self.finished {
-            let _ = kill_and_reap(&mut self.child, (Instant::now() + REAP).min(self.deadline));
-        }
-    }
-}
-
-fn pause(deadline: Instant) {
-    std::thread::sleep(
-        Duration::from_micros(100).min(deadline.saturating_duration_since(Instant::now())),
-    );
-}
-
-fn drain_stream(
-    stream: &mut UnixStream,
-    bytes: &mut Vec<u8>,
-    eof: &mut bool,
-    limit: usize,
-    label: &str,
-) -> Result<(), String> {
-    if *eof {
-        return Ok(());
-    }
-    let mut buffer = [0u8; 8192];
-    for _ in 0..4 {
-        match stream.read(&mut buffer) {
-            Ok(0) => {
-                *eof = true;
-                return Ok(());
-            }
-            Ok(count) => {
-                if count > limit.saturating_sub(bytes.len()) {
-                    return Err(format!("Engine {label} limit exceeded"));
-                }
-                bytes.extend_from_slice(&buffer[..count]);
-            }
-            Err(e) if e.kind() == io::ErrorKind::WouldBlock => return Ok(()),
-            Err(e) if e.kind() == io::ErrorKind::Interrupted => {}
-            Err(e) => return Err(format!("Cannot drain engine {label}: {e}")),
-        }
-    }
-    Ok(())
 }
 
 pub(crate) struct EngineOracle<'a> {

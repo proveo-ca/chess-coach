@@ -42,6 +42,20 @@ const REQUIRED: &[&str] = &[
     "apps/arena/engine/test/session.test.ts",
     "apps/arena/engine/test/replay.test.ts",
     "apps/arena/engine/test/worker-v2.test.ts",
+    "packages/training/src/ledger/contracts.rs",
+    "packages/training/src/ledger/history.rs",
+    "packages/training/src/ledger/work.rs",
+    "packages/training/tests/fixtures/ledger-boundaries.json",
+    "apps/arena/src/economic.rs",
+    "apps/arena/src/economic_client.rs",
+    "apps/arena/src/worker_transport.rs",
+    "apps/arena/engine/economic-wire.ts",
+    "apps/arena/engine/economic-replay.ts",
+    "apps/arena/engine/economic-project.ts",
+    "apps/arena/engine/worker-economic.ts",
+    "apps/arena/engine/test/economic-project.test.ts",
+    "apps/arena/engine/test/economic-replay.test.ts",
+    "apps/arena/engine/test/worker-economic.test.ts",
 ];
 
 pub(crate) fn training_identity(root: &Path) -> Result<String, String> {
@@ -200,7 +214,7 @@ mod tests {
     }
 
     #[test]
-    fn identity_binds_legacy_public_oracles_and_requires_v2_controls() {
+    fn identity_binds_public_oracles_ledger_fees_and_worker_controls() {
         let root = crate::test_directory();
         for relative in REQUIRED {
             let path = root.join(relative);
@@ -218,6 +232,17 @@ mod tests {
         assert_ne!(before, added);
         fs::write(&oracle, "changed public oracle").unwrap();
         assert_ne!(added, training_identity(&root).unwrap());
+        let before_fee_change = training_identity(&root).unwrap();
+        fs::write(
+            root.join("packages/training/src/ledger/work.rs"),
+            "changed fees",
+        )
+        .unwrap();
+        assert_ne!(before_fee_change, training_identity(&root).unwrap());
+        let economic_control = root.join("apps/arena/engine/test/worker-economic.test.ts");
+        fs::remove_file(&economic_control).unwrap();
+        assert!(training_identity(&root).is_err());
+        fs::write(economic_control, "fixture").unwrap();
         fs::remove_file(root.join("apps/arena/engine/test/worker-v2.test.ts")).unwrap();
         assert!(training_identity(&root).is_err());
         fs::remove_dir_all(root).unwrap();

@@ -47,8 +47,8 @@ fn verify(gate: &mut Gate) -> ExitCode {
     }
     let eligible = complete && error.is_none();
     let mut receipt = json!({
-        "version": "rust-training-verification-v2",
-        "scope": "native-baseline-runner",
+        "version": "rust-training-verification-v3",
+        "scope": "native-economic-ledger",
         "directory": gate.directory,
         "inputSha256": before.ok(),
         "inputSha256After": after.as_ref().ok(),
@@ -80,8 +80,8 @@ fn initialization_failure(error: String) -> ExitCode {
     println!(
         "{:#}",
         json!({
-            "version": "rust-training-verification-v2",
-            "scope": "native-baseline-runner",
+            "version": "rust-training-verification-v3",
+            "scope": "native-economic-ledger",
             "directory": null,
             "inputSha256": null,
             "reviewEligible": false,
@@ -395,6 +395,8 @@ mod tests {
         let mut gate = Gate::new(root.clone()).unwrap();
         assert_eq!(verify(&mut gate), ExitCode::FAILURE);
         let receipt = read_json(&gate.directory.join("receipt.json")).unwrap();
+        assert_eq!(receipt["version"], "rust-training-verification-v3");
+        assert_eq!(receipt["scope"], "native-economic-ledger");
         assert_eq!(receipt["reviewEligible"], false);
         assert_eq!(receipt["status"], "STOP");
         assert_eq!(receipt["inputSha256"], Value::Null);

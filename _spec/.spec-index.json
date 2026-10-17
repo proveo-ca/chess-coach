@@ -661,7 +661,14 @@
         "packages/training/tests/candidates.rs",
         "packages/training/tests/policy.rs",
         "packages/training/tests/support/native.rs",
-        "packages/training/tests/support/legacy.mjs"
+        "packages/training/tests/support/legacy.mjs",
+        "packages/training/src/ledger/mod.rs",
+        "packages/training/src/ledger/contracts.rs",
+        "packages/training/src/ledger/work.rs",
+        "packages/training/src/ledger/history.rs",
+        "packages/training/tests/ledger_contracts.rs",
+        "packages/training/tests/ledger_history.rs",
+        "packages/training/tests/fixtures/ledger-boundaries.json"
       ],
       "fingerprint": null
     },
@@ -708,7 +715,20 @@
         "apps/arena/engine/test/planning.test.ts",
         "apps/arena/engine/test/session.test.ts",
         "apps/arena/engine/test/replay.test.ts",
-        "apps/arena/engine/test/worker-v2.test.ts"
+        "apps/arena/engine/test/worker-v2.test.ts",
+        "apps/arena/src/economic.rs",
+        "apps/arena/src/economic_client.rs",
+        "apps/arena/src/worker_transport.rs",
+        "apps/arena/tests/economic_replay.rs",
+        "apps/arena/tests/readiness.rs",
+        "apps/arena/tests/support/economic.rs",
+        "apps/arena/engine/economic-wire.ts",
+        "apps/arena/engine/economic-replay.ts",
+        "apps/arena/engine/economic-project.ts",
+        "apps/arena/engine/worker-economic.ts",
+        "apps/arena/engine/test/economic-project.test.ts",
+        "apps/arena/engine/test/economic-replay.test.ts",
+        "apps/arena/engine/test/worker-economic.test.ts"
       ],
       "fingerprint": null
     }
