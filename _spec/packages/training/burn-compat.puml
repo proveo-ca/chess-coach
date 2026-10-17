@@ -1,0 +1,94 @@
+' purpose: Selected Rust workspace with direct Burn scoring and a retained standalone protocol test surface.
+' covers: Cargo.toml
+' covers: rust-toolchain.toml
+' covers: packages/training/Cargo.toml
+' covers: packages/training/src/lib.rs
+' covers: packages/training/src/main.rs
+' covers: packages/training/src/model.rs
+' covers: packages/training/src/protocol.rs
+' covers: packages/training/tests/protocol.rs
+' covers: tooling/xtask/src/main.rs
+' covers: tooling/xtask/src/lib.rs
+' covers: tooling/xtask/src/runner.rs
+' covers: tooling/xtask/src/identity.rs
+' covers: tooling/xtask/src/invoices.rs
+' covers: tooling/xtask/src/preservation.rs
+' status: Synthetic source contract; matching-source verification and review status live in the plan.
+' related: _spec/_plans/burn-flex-compat.md
+' related: _spec/ml/rebuild-runtime-research.md
+' related: _spec/apps/arena/burn-compat.puml
+' history: d250c88e Bun receipt is superseded, not current proof or review eligibility.
+' assurance: Remote identity include follows the skill; source checks do not imply hermetic rendering.
+' readability: LIB FK 10.9; MODEL FK 12.0; PACK FK 12.2; XTASK FK 10.2; counts in the plan.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Direct Rust Burn compatibility — synthetic source contract
+left to right direction
+
+component "apps/arena/src/lib.rs\nRust policy caller" as ARENA <<app>>
+package "Root Cargo workspace\nCargo.toml / one reused Cargo.lock" {
+  component "packages/training/src/lib.rs\ntraining_native::score_synthetic_f64" as LIB <<app>>
+  component "packages/training/src/model.rs\nsynthetic-linear-418-v1\nw=[0.5,-0.25,0,...] / b=0.125" as MODEL <<app>>
+  component "packages/training/src/main.rs\ntraining-native standalone binary" as CLI <<host>>
+  component "packages/training/src/protocol.rs\ntraining-burn-compat-v1\nuint32 id / score only" as PROTOCOL <<app>>
+  component "tooling/xtask/src/main.rs\nRust verifier / cargo xtask check\nfrozen workspace inventory" as XTASK <<host>>
+}
+component "Burn 0.22.0 / Rust 1.95.0\nFlex CPU / explicit f64\nstd + flex + optim + store" as BURN <<cloud>>
+component "Rust unit tests\npackages/training/tests/protocol.rs\nsynthetic compatibility fixtures" as PROOF <<app>>
+database "Temporary Burnpack fixture\nexact parameter-bit restoration\ncorrupt data rejected" as PACK <<db>>
+component "Closed failure\nno backend or precision fallback\nfailed gate keeps reviews forbidden" as FAILURE <<error>>
+
+ARENA ARROW_MAIN LIB : direct typed Rust call\nno scoring child / no Bun bridge
+LIB ARROW_MAIN MODEL : validate 1..512 rows x 418\nfinite values / abs(value) <= 1e6
+MODEL ARROW_MAIN BURN : local f64 tensor operations\nRust implementation / no runtime network
+CLI ARROW_MAIN PROTOCOL : retained standalone test surface\none JSON request / stdin EOF / <= 8 MiB
+PROTOCOL ARROW_MAIN LIB : same fixed scoring model\nno model/checkpoint path input
+PROTOCOL ARROW_MAIN CLI : one JSON response + newline\nmatching id / finite ordered scores
+XTASK ARROW_OPTIONAL PROOF : fresh workspace tests\nactual counts and unchanged-input receipt
+PROOF ARROW_OPTIONAL MODEL : fixed analytic fixtures\nlr=0.125 / one synthetic SGD step
+PROOF ARROW_OPTIONAL BURN : actual autodiff + optimizer\nno hand-coded substitute
+PROOF ARROW_OPTIONAL PACK : real Burnpack save / restore
+PROTOCOL ARROW_ERROR FAILURE : invalid framing / version / id\ninvalid shape / excess bytes
+LIB ARROW_ERROR FAILURE : invalid numeric input\nno JS or f32 fallback
+XTASK ARROW_ERROR FAILURE : any required gate fails\nno old receipt reuse
+
+note bottom of LIB
+  The arena calls the Rust library directly,
+  so scoring needs no second child process.
+  The retained binary tests its wire protocol
+  without bringing back the retired JavaScript
+  host or its runtime dependencies.
+end note
+
+note bottom of MODEL
+  Set the dtype before creating tensors, because
+  widening rounded values cannot restore lost
+  bits. Zero padding gives the proof its fixed
+  input shape without implementing the economic
+  feature encoder.
+end note
+
+note bottom of PACK
+  Use Burnpack for checkpoint fixtures so JSON
+  cannot substitute for the backend serializer.
+  Restoring must preserve each parameter bit
+  and reject corrupt data without admitting a
+  learned model.
+end note
+
+note bottom of XTASK
+  The previous receipt covers different source
+  paths and runtime boundaries, so it cannot
+  authorize reviews of this migration. Fresh
+  workspace checks must bind every required
+  result to the same unchanged input.
+end note
+
+legend bottom
+  Source contract; see the plan for matched-source receipts.
+  Synthetic optimization tests only; no real training.
+  Width 418 is padding, not the R4 feature encoder.
+  modelArtifact=null; no admission or activation.
+  Only a complete fresh gate unlocks reviewers.
+endlegend
+@enduml

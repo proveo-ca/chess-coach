@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "jest"],
+  "categories": { "correctness": "error" },
+  "rules": {
+    "no-debugger": "error",
+    "no-constant-condition": "error",
+    "no-unused-vars": "error",
+    "jest/no-focused-tests": "error",
+    "jest/no-disabled-tests": "error",
+    "no-restricted-imports": ["error", { "patterns": ["@chess-coach/starchess-arena", "@chess-coach/starchess-arena/*", "@chess-coach/starchess-training", "@chess-coach/starchess-training/*"] }]
+  }
+}

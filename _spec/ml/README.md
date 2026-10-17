@@ -1,5 +1,8 @@
 # R4 — frozen WIP checkpoint + deferred planning
 
+Current rebuild: [Rust runtime research](rebuild-runtime-research.md) and [Burn compatibility milestone](../_plans/burn-flex-compat.md).
+The legacy R4 checkpoint below retains its own scope; it does not certify the Rust rebuild.
+
 **[Unverified] 2026-10-16 · FROZEN WIP / HUMAN-ACCEPTED PUBLICATION RISKS; fresh reviews NOT READY: N1–N7 HIGH static candidates / M2 MEDIUM; prior specific cases CLOSED / CONTROL VERIFIED; cost gate BLOCKED, full R4 NOT READY.**
 
 `_spec/_plans/` holds high-level PR-oriented scope, acceptance, frozen-contract references, and history.

@@ -57,6 +57,9 @@ storybook-static/
 # ==========================================
 .bun/
 
+# Rust
+/target/
+
 # ==========================================
 # Engine weights / large model assets
 # (downloaded at build time — see Dockerfile)

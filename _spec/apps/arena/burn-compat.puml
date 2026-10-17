@@ -1,0 +1,107 @@
+' purpose: Selected Rust policy with a bounded one-shot Node engine bridge for non-admitted compatibility.
+' covers: Cargo.toml
+' covers: rust-toolchain.toml
+' covers: apps/arena/Cargo.toml
+' covers: apps/arena/src/lib.rs
+' covers: apps/arena/src/main.rs
+' covers: apps/arena/engine/worker.ts
+' covers: apps/arena/engine/protocol.ts
+' covers: apps/arena/engine/observation.ts
+' covers: apps/arena/engine/admission.ts
+' covers: apps/arena/engine/fixture.ts
+' covers: tooling/xtask/src/main.rs
+' covers: apps/arena/src/bridge.rs
+' covers: apps/arena/src/protocol.rs
+' covers: apps/arena/src/observation.rs
+' covers: apps/arena/src/features.rs
+' covers: tooling/xtask/src/lib.rs
+' covers: tooling/xtask/src/runner.rs
+' covers: tooling/xtask/src/identity.rs
+' covers: tooling/xtask/src/invoices.rs
+' covers: tooling/xtask/src/preservation.rs
+' status: Synthetic source contract; matching-source verification and review status live in the plan.
+' planned-source: apps/arena/Cargo.toml / src/{lib,main}.rs
+' planned-source: apps/arena/engine/{worker,protocol,observation,admission,fixture}.ts
+' planned-source: tooling/xtask/src/main.rs (lead reconciles any additional modules)
+' related: _spec/_plans/burn-flex-compat.md
+' related: _spec/ml/rebuild-runtime-research.md
+' related: _spec/packages/training/burn-compat.puml
+' history: Old Bun proof and canceled non-closing reviews do not approve this migration.
+' assurance: Remote identity include follows the skill; source checks do not imply hermetic rendering.
+' validation: Author runs no source checks, hashes, tests or renderer; lead reconciles actual coverage.
+' readability: OBS FK 10.4; ADMISSION FK 11.7; BRIDGE FK 11.7; POLICY FK 12.8; counts in the plan.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Rust arena policy + Node engine bridge — synthetic source contract
+left to right direction
+
+component "apps/arena/src/main.rs\nRust CLI / one synthetic window" as MAIN <<app>>
+component "apps/arena/src/lib.rs\nRust typed DTO / features / argmax\ncanonical tie-break / process driver" as POLICY <<app>>
+component "training_native\nscore_synthetic_f64\ndirect Rust library call" as SCORER <<app>>
+component "engine/worker.ts + protocol.ts\nfixed Node --import tsx / cwd apps/arena\narena-engine-v1 / open then settle" as BRIDGE <<host>>
+component "engine/fixture.ts\nreconstruct tiny-v1 for each request\nown king e1 / enemy king e8 / bank=3" as FIXTURE <<app>>
+component "engine/observation.ts\n64 ordered fog-safe cells\nown resources only" as OBS <<app>>
+component "engine/admission.ts\nselected white action / black empty pass\natomic admission + bank settlement" as ADMISSION <<app>>
+component "packages/starchess-core\nunchanged native rules\naddScAction / endScTurn / income" as NATIVE <<app>>
+component "Rust synthetic report\nmilestone=burn-flex-compat-v1\nscope=synthetic / assurance=NON_ADMITTED\nmodelArtifact=null / fullRunner=false" as RESULT <<app>>
+component "Closed failure\nno policy or engine substitute" as FAILURE <<error>>
+
+MAIN ARROW_MAIN POLICY : start fixed compatibility invocation
+POLICY ARROW_MAIN BRIDGE : one-shot open(tiny-v1)\nthen one-shot settle(selected action)
+BRIDGE ARROW_MAIN FIXTURE : reconstruct on both calls\nno caller snapshot or bank
+FIXTURE ARROW_MAIN NATIVE : fixed native engine state
+BRIDGE ARROW_MAIN OBS : project reconstructed open state
+OBS ARROW_MAIN NATIVE : native visibility / own resources
+OBS ARROW_MAIN BRIDGE : limited observation DTO only
+BRIDGE ARROW_MAIN POLICY : exact protocol / id / op\nsettle observation equals open
+POLICY ARROW_MAIN SCORER : king-to-d1 / king-to-f1\nrows=[file,rank,0 x 416]
+SCORER ARROW_MAIN POLICY : finite ordered f64 scores\ncanonical maximum
+BRIDGE ARROW_MAIN ADMISSION : settle only / closed classical action\nwhite e1 to d1 or f1 / black pass
+ADMISSION ARROW_MAIN NATIVE : same-open-state atomic pair\nnative income / bank reapplication
+ADMISSION ARROW_MAIN BRIDGE : SCFEN / bank / raw engine results\nreport-only after action selection
+POLICY ARROW_MAIN RESULT : validated settlement report\ntruth details never feed scoring
+POLICY ARROW_ERROR FAILURE : invalid envelope / DTO mismatch\n30 s total includes 3 s reap reserve
+BRIDGE ARROW_ERROR FAILURE : bounded stream or child failure\nno shell / eval / auto-install
+ADMISSION ARROW_ERROR FAILURE : native admission or settlement failure
+
+note bottom of OBS
+  Only visible board cells and the player's own
+  resources cross the observation boundary,
+  because private state would taint the proof.
+  Hidden cells keep their positions while
+  concealing enemy contents.
+end note
+
+note bottom of ADMISSION
+  Stage both seats against the same open state,
+  because sequential mutation would change
+  simultaneous admission semantics. Keep bank
+  state separate from the native snapshot and
+  apply income only at native grant boundaries.
+end note
+
+note bottom of BRIDGE
+  Each one-shot request reconstructs the same
+  fixture rather than accepting caller state.
+  This confines the bridge to compatibility
+  checks and cannot establish a persistent
+  match runner or a general replay protocol.
+end note
+
+note bottom of POLICY
+  The policy receives only the limited
+  observation before selecting an action, since
+  full engine state would cross the boundary.
+  Native settlement details become report data
+  after selection and never feed the scorer.
+end note
+
+legend bottom
+  Source contract; see the plan for matched-source receipts.
+  Node stdin 64 KiB / stdout 1 MiB / stderr 64 KiB.
+  Total 30 s includes 3 s reap; clear NODE_OPTIONS.
+  Two reconstructed calls, not a stateful match runner.
+  No R4 feature encoder, learned policy or full match.
+  Full replacement deferred; legacy deletion stays last.
+endlegend
+@enduml

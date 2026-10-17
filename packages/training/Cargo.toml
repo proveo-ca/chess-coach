@@ -1,0 +1,12 @@
+# SPEC: _spec/packages/training/burn-compat.puml
+[package]
+name = "training-native"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.95"
+publish = false
+
+[dependencies]
+burn = { version = "=0.22.0", default-features = false, features = ["std", "flex", "optim", "store"] }
+serde = { version = "=1.0.229", features = ["derive"] }
+serde_json = { version = "=1.0.151", features = ["float_roundtrip"] }

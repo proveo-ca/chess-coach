@@ -1,0 +1,5 @@
+# SPEC: _spec/packages/training/burn-compat.puml, _spec/apps/arena/burn-compat.puml
+[toolchain]
+channel = "1.95.0"
+profile = "minimal"
+components = ["rustfmt", "clippy"]

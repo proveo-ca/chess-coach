@@ -1,0 +1,4 @@
+# SPEC: _spec/packages/training/burn-compat.puml, _spec/apps/arena/burn-compat.puml
+[workspace]
+members = ["packages/training", "apps/arena", "tooling/xtask"]
+resolver = "3"

@@ -635,6 +635,52 @@
         "_spec/ml/projects.yaml"
       ],
       "fingerprint": null
+    },
+    {
+      "spec": "_spec/packages/training/burn-compat.puml",
+      "covers": [
+        "Cargo.toml",
+        "rust-toolchain.toml",
+        "packages/training/Cargo.toml",
+        "packages/training/src/lib.rs",
+        "packages/training/src/main.rs",
+        "packages/training/src/model.rs",
+        "packages/training/src/protocol.rs",
+        "packages/training/tests/protocol.rs",
+        "tooling/xtask/src/main.rs",
+        "tooling/xtask/src/lib.rs",
+        "tooling/xtask/src/runner.rs",
+        "tooling/xtask/src/identity.rs",
+        "tooling/xtask/src/invoices.rs",
+        "tooling/xtask/src/preservation.rs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/arena/burn-compat.puml",
+      "covers": [
+        "Cargo.toml",
+        "rust-toolchain.toml",
+        "apps/arena/Cargo.toml",
+        "apps/arena/src/lib.rs",
+        "apps/arena/src/main.rs",
+        "apps/arena/engine/worker.ts",
+        "apps/arena/engine/protocol.ts",
+        "apps/arena/engine/observation.ts",
+        "apps/arena/engine/admission.ts",
+        "apps/arena/engine/fixture.ts",
+        "tooling/xtask/src/main.rs",
+        "apps/arena/src/bridge.rs",
+        "apps/arena/src/protocol.rs",
+        "apps/arena/src/observation.rs",
+        "apps/arena/src/features.rs",
+        "tooling/xtask/src/lib.rs",
+        "tooling/xtask/src/runner.rs",
+        "tooling/xtask/src/identity.rs",
+        "tooling/xtask/src/invoices.rs",
+        "tooling/xtask/src/preservation.rs"
+      ],
+      "fingerprint": null
     }
   ],
   "unresolved": [

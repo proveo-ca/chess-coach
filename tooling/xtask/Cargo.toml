@@ -1,0 +1,15 @@
+# SPEC: _spec/packages/training/burn-compat.puml, _spec/apps/arena/burn-compat.puml
+[package]
+name = "xtask"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.95"
+publish = false
+
+[dependencies]
+serde_json = "=1.0.151"
+serde_yaml = "=0.9.34"
+sha2 = "=0.10.9"
+
+[target.'cfg(unix)'.dependencies]
+rustix = { version = "=1.1.5", features = ["process"] }
