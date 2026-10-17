@@ -72,7 +72,7 @@ fn invoke(request: &Request) -> ArenaResult<Reply> {
     })
 }
 
-fn node_from_path(path: &OsString) -> ArenaResult<PathBuf> {
+pub(crate) fn node_from_path(path: &OsString) -> ArenaResult<PathBuf> {
     for directory in std::env::split_paths(path) {
         if !directory.is_absolute() {
             continue;
@@ -90,7 +90,7 @@ fn node_from_path(path: &OsString) -> ArenaResult<PathBuf> {
     Err("Node executable is missing from the trusted host PATH".into())
 }
 
-fn channel() -> io::Result<(UnixStream, Stdio)> {
+pub(crate) fn channel() -> io::Result<(UnixStream, Stdio)> {
     let (parent, child) = UnixStream::pair()?;
     parent.set_nonblocking(true)?;
     Ok((parent, Stdio::from(OwnedFd::from(child))))
@@ -227,7 +227,7 @@ fn drain(
     Ok(())
 }
 
-fn kill_and_reap(child: &mut Child, deadline: Instant) -> ArenaResult<()> {
+pub(crate) fn kill_and_reap(child: &mut Child, deadline: Instant) -> ArenaResult<()> {
     if child
         .try_wait()
         .map_err(|error| format!("Cannot poll engine during cleanup: {error}"))?

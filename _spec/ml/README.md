@@ -1,6 +1,7 @@
 # R4 — frozen WIP checkpoint + deferred planning
 
 Current rebuild: [Rust runtime research](rebuild-runtime-research.md) and [Burn compatibility milestone](../_plans/burn-flex-compat.md).
+Current native delivery: [Native Rust baseline — COMPLETE; G3 PASS; all three closing reviews READY](native-runner.md) (NON_ADMITTED capability only, not learned-model/R4 readiness or new publication authority).
 The legacy R4 checkpoint below retains its own scope; it does not certify the Rust rebuild.
 
 **[Unverified] 2026-10-16 · FROZEN WIP / HUMAN-ACCEPTED PUBLICATION RISKS; fresh reviews NOT READY: N1–N7 HIGH static candidates / M2 MEDIUM; prior specific cases CLOSED / CONTROL VERIFIED; cost gate BLOCKED, full R4 NOT READY.**

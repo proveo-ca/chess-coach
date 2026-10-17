@@ -5811,6 +5811,7 @@ dependencies = [
  "burn",
  "serde",
  "serde_json",
+ "tempfile",
 ]
 
 [[package]]

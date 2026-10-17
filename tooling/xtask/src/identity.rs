@@ -30,6 +30,18 @@ const REQUIRED: &[&str] = &[
     "packages/starchess-core/package.json",
     "packages/starchess-core/tsconfig.json",
     "packages/starchess-core/src",
+    "packages/starchess-arena/package.json",
+    "packages/starchess-arena/src",
+    "packages/starchess-training/package.json",
+    "packages/starchess-training/src",
+    "apps/arena/engine/worker-v2.ts",
+    "apps/arena/engine/planning.ts",
+    "apps/arena/engine/session.ts",
+    "apps/arena/engine/replay.ts",
+    "apps/arena/engine/test/planning.test.ts",
+    "apps/arena/engine/test/session.test.ts",
+    "apps/arena/engine/test/replay.test.ts",
+    "apps/arena/engine/test/worker-v2.test.ts",
 ];
 
 pub(crate) fn training_identity(root: &Path) -> Result<String, String> {
@@ -184,6 +196,30 @@ mod tests {
         assert!(unchanged(&Ok("a".into()), &Err("missing".into())).is_err());
         assert!(unchanged(&Err("missing".into()), &Ok("a".into())).is_err());
         assert!(unchanged(&Ok("a".into()), &Ok("a".into())).is_ok());
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn identity_binds_legacy_public_oracles_and_requires_v2_controls() {
+        let root = crate::test_directory();
+        for relative in REQUIRED {
+            let path = root.join(relative);
+            if path.extension().is_none() {
+                fs::create_dir_all(path).unwrap();
+            } else {
+                fs::create_dir_all(path.parent().unwrap()).unwrap();
+                fs::write(path, "fixture").unwrap();
+            }
+        }
+        let before = training_identity(&root).unwrap();
+        let oracle = root.join("packages/starchess-training/src/candidates.ts");
+        fs::write(&oracle, "public oracle").unwrap();
+        let added = training_identity(&root).unwrap();
+        assert_ne!(before, added);
+        fs::write(&oracle, "changed public oracle").unwrap();
+        assert_ne!(added, training_identity(&root).unwrap());
+        fs::remove_file(root.join("apps/arena/engine/test/worker-v2.test.ts")).unwrap();
+        assert!(training_identity(&root).is_err());
         fs::remove_dir_all(root).unwrap();
     }
 

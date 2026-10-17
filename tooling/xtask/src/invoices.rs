@@ -8,6 +8,17 @@ pub(crate) struct RustCounts {
     pub binaries: Vec<Value>,
 }
 
+const RUNNER_TARGETS: &[&str] = &[
+    "tests/protocol.rs",
+    "tests/smoke.rs",
+    "tests/contracts.rs",
+    "tests/candidates.rs",
+    "tests/policy.rs",
+    "tests/runner.rs",
+    "tests/schedule.rs",
+    "tests/replay.rs",
+];
+
 pub(crate) fn required_rust_binaries(counts: &RustCounts) -> Result<(), String> {
     for package in ["training_native-", "arena-", "xtask-"] {
         if !counts.binaries.iter().any(|binary| {
@@ -18,6 +29,18 @@ pub(crate) fn required_rust_binaries(counts: &RustCounts) -> Result<(), String> 
         }) {
             return Err(format!(
                 "Missing nonempty Rust package test binary: {package}"
+            ));
+        }
+    }
+    for target in RUNNER_TARGETS {
+        if !counts.binaries.iter().any(|binary| {
+            binary["binary"]
+                .as_str()
+                .is_some_and(|name| name.starts_with(*target))
+                && binary["tests"].as_u64().is_some_and(|tests| tests > 0)
+        }) {
+            return Err(format!(
+                "Missing nonempty required integration target: {target}"
             ));
         }
     }
@@ -286,12 +309,39 @@ mod tests {
 
     #[test]
     fn workspace_invoice_requires_nonempty_native_arena_and_gate_tests() {
-        let text = format!(
+        let mut text = format!(
             "{RUST}{RUST}{RUST}Running unittests src/lib.rs (target/training_native-abc)\nRunning unittests src/lib.rs (target/arena-abc)\nRunning unittests src/lib.rs (target/xtask-abc)\n"
         );
+        for target in RUNNER_TARGETS {
+            text.push_str(&format!(
+                "{RUST}Running {target} (target/integration-abc)\n"
+            ));
+        }
         let counts = rust(&text).unwrap();
         assert!(required_rust_binaries(&counts).is_ok());
         assert!(required_rust_binaries(&rust(RUST).unwrap()).is_err());
+        for target in RUNNER_TARGETS {
+            let mut altered = RustCounts {
+                total: counts.total,
+                binaries: counts.binaries.clone(),
+            };
+            let index = altered
+                .binaries
+                .iter()
+                .position(|binary| {
+                    binary["binary"]
+                        .as_str()
+                        .is_some_and(|name| name.starts_with(*target))
+                })
+                .unwrap();
+            altered.binaries[index]["tests"] = json!(0);
+            assert!(required_rust_binaries(&altered).is_err(), "empty {target}");
+            altered.binaries.remove(index);
+            assert!(
+                required_rust_binaries(&altered).is_err(),
+                "missing {target}"
+            );
+        }
         let mut counts = counts;
         counts.binaries[0]["tests"] = json!(0);
         assert!(required_rust_binaries(&counts).is_err());

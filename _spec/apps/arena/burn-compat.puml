@@ -1,4 +1,4 @@
-' purpose: Selected Rust policy with a bounded one-shot Node engine bridge for non-admitted compatibility.
+' purpose: Rust native match, schedule and replay boundaries beside retained one-shot synthetic compatibility.
 ' covers: Cargo.toml
 ' covers: rust-toolchain.toml
 ' covers: apps/arena/Cargo.toml
@@ -19,31 +19,67 @@
 ' covers: tooling/xtask/src/identity.rs
 ' covers: tooling/xtask/src/invoices.rs
 ' covers: tooling/xtask/src/preservation.rs
-' status: Synthetic source contract; matching-source verification and review status live in the plan.
-' planned-source: apps/arena/Cargo.toml / src/{lib,main}.rs
-' planned-source: apps/arena/engine/{worker,protocol,observation,admission,fixture}.ts
-' planned-source: tooling/xtask/src/main.rs (lead reconciles any additional modules)
+' covers: apps/arena/src/engine_v2.rs
+' covers: apps/arena/src/record.rs
+' covers: apps/arena/src/run.rs
+' covers: apps/arena/src/replay.rs
+' covers: apps/arena/src/schedule.rs
+' covers: apps/arena/src/evaluation.rs
+' covers: apps/arena/src/cli.rs
+' covers: apps/arena/engine/wire-v2.ts
+' covers: apps/arena/engine/planning.ts
+' covers: apps/arena/engine/fixtures.ts
+' covers: apps/arena/engine/session.ts
+' covers: apps/arena/engine/replay.ts
+' covers: apps/arena/engine/worker-v2.ts
+' covers: apps/arena/tests/runner.rs
+' covers: apps/arena/tests/replay.rs
+' covers: apps/arena/tests/schedule.rs
+' covers: apps/arena/tests/fixtures/seeded-all-actors.json
+' covers: apps/arena/engine/test/planning.test.ts
+' covers: apps/arena/engine/test/session.test.ts
+' covers: apps/arena/engine/test/replay.test.ts
+' covers: apps/arena/engine/test/worker-v2.test.ts
+' status: Native baseline source contract; matching-source verification and review status live in _spec/ml/native-runner.md.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
+' related: _spec/ml/native-runner.md
 ' related: _spec/packages/training/burn-compat.puml
 ' history: Old Bun proof and canceled non-closing reviews do not approve this migration.
 ' assurance: Remote identity include follows the skill; source checks do not imply hermetic rendering.
 ' validation: Author runs no source checks, hashes, tests or renderer; lead reconciles actual coverage.
-' readability: OBS FK 10.4; ADMISSION FK 11.7; BRIDGE FK 11.7; POLICY FK 12.8; counts in the plan.
+' readability: New note estimates/counts live in _spec/ml/native-runner.md; unchanged notes retain historical estimates only.
 @startuml
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Rust arena policy + Node engine bridge — synthetic source contract
+title Rust native runner + retained synthetic smoke — native source contract
 left to right direction
 
-component "apps/arena/src/main.rs\nRust CLI / one synthetic window" as MAIN <<app>>
+component "apps/arena/src/main.rs\nsmoke / run / suite / replay" as MAIN <<app>>
+package "Retained v1 compatibility / not a full runner" {
 component "apps/arena/src/lib.rs\nRust typed DTO / features / argmax\ncanonical tie-break / process driver" as POLICY <<app>>
 component "training_native\nscore_synthetic_f64\ndirect Rust library call" as SCORER <<app>>
 component "engine/worker.ts + protocol.ts\nfixed Node --import tsx / cwd apps/arena\narena-engine-v1 / open then settle" as BRIDGE <<host>>
 component "engine/fixture.ts\nreconstruct tiny-v1 for each request\nown king e1 / enemy king e8 / bank=3" as FIXTURE <<app>>
 component "engine/observation.ts\n64 ordered fog-safe cells\nown resources only" as OBS <<app>>
 component "engine/admission.ts\nselected white action / black empty pass\natomic admission + bank settlement" as ADMISSION <<app>>
-component "packages/starchess-core\nunchanged native rules\naddScAction / endScTurn / income" as NATIVE <<app>>
 component "Rust synthetic report\nmilestone=burn-flex-compat-v1\nscope=synthetic / assurance=NON_ADMITTED\nmodelArtifact=null / fullRunner=false" as RESULT <<app>>
+}
+package "Native baseline" {
+  component "apps/arena/src/cli.rs\nMatchSpec / SuiteSpec / record inputs\nrun stdout / suite fresh private outputs" as CLI <<host>>
+  component "apps/arena/src/schedule.rs\narena-schedule-v1 / <=64 cases\nrepeat -> fixture -> pairing" as SCHEDULE <<app>>
+  component "apps/arena/src/run.rs\n<=45 planning windows / both seats\npass-v1 / first-v1 / seeded-v1" as RUN <<app>>
+  component "training_native::candidates / policy\nRust profile-B composition + selectors\nno learned model or R4 feature encoder" as BASELINE <<app>>
+  component "apps/arena/src/engine_v2.rs\nfixed worker / cwd apps/arena\nabsolute match + decision deadlines" as CLIENT <<host>>
+  component "engine/worker-v2.ts + wire-v2.ts\narena-engine-v2 / bounded UTF-8 NDJSON\nstrictly increasing u32 request IDs" as WORKER <<host>>
+  component "engine/planning.ts\nplan.open / next / close\nauthorized views + pure native helpers" as PLANNER <<app>>
+  component "engine/fixtures.ts\ntiny-v1 / standard-v1 / all-actors-v1\nnative-validated fixed SCFEN" as FIXTURES <<app>>
+  component "engine/session.ts\nprivate engine / retained bank\nsession.start / open / commit / close" as SESSION <<app>>
+  component "apps/arena/src/record.rs\narena-run-v1 / host-only truth\narena-policy-seeds-v1\nNON_ADMITTED / learned=false\nmodelArtifact=null / fullRunner=true" as RECORD <<app>>
+  component "apps/arena/src/replay.rs\nregenerate views / seeds / decisions\nprivate-field VerifiedRun" as REPLAY <<app>>
+  component "engine/replay.ts\nindependent NativeReplay reducer\nreplay.start / open / commit / close" as REPLAY_NATIVE <<app>>
+  component "apps/arena/src/evaluation.rs\narena-evaluation-v1\nterminal W/D/L / limits / failures" as EVAL <<app>>
+}
+component "packages/starchess-core\nunchanged native rules\naddScAction / beginScTurn / endScTurn\napplyStoredIncome / scOutcome" as NATIVE <<app>>
 component "Closed failure\nno policy or engine substitute" as FAILURE <<error>>
 
 MAIN ARROW_MAIN POLICY : start fixed compatibility invocation
@@ -63,6 +99,34 @@ POLICY ARROW_MAIN RESULT : validated settlement report\ntruth details never feed
 POLICY ARROW_ERROR FAILURE : invalid envelope / DTO mismatch\n30 s total includes 3 s reap reserve
 BRIDGE ARROW_ERROR FAILURE : bounded stream or child failure\nno shell / eval / auto-install
 ADMISSION ARROW_ERROR FAILURE : native admission or settlement failure
+
+MAIN ARROW_MAIN CLI : run --config / suite --config --out\nreplay --record / smoke remains separate
+CLI ARROW_MAIN SCHEDULE : closed SuiteSpec / arena-schedule-v1\nchecked product before allocation
+SCHEDULE ARROW_MAIN RUN : MatchSpec / arena-match-v1\nexplicit fixture and per-seat policy seeds
+CLI ARROW_MAIN RUN : one configured baseline match
+RUN ARROW_MAIN CLIENT : session.start/open / select BOTH\nthen session.commit / close
+CLIENT ARROW_MAIN WORKER : fixed Node --import tsx / no shell\n300 s total includes 3 s cleanup
+WORKER ARROW_MAIN SESSION : private native lifecycle\nstale-context rejection
+SESSION ARROW_MAIN FIXTURES : fixed native fixture / explicit bank
+FIXTURES ARROW_MAIN NATIVE : native parse / validation
+SESSION ARROW_MAIN NATIVE : isolated seats -> stable white/black merge\nendScTurn skipTurnStartChecks / native outcome
+SESSION ARROW_MAIN RUN : one post-begin context + both views\nno per-window raw truth before selection
+RUN ARROW_MAIN BASELINE : limited view only / no fixture or case ID\nseed goes only to explicit selector
+BASELINE ARROW_MAIN CLIENT : PlanningOracle / <=8 pulls per RPC\n10 s absolute decision / no RPC renewal
+WORKER ARROW_MAIN PLANNER : independent data-only planning contexts\n<=2 contexts / <=2063 cursors per view
+PLANNER ARROW_MAIN BASELINE : nativeFailure / anchor / one-action cost\nonly core/planning-v1 + wire helpers
+RUN ARROW_MAIN RECORD : selected queues / keys / diagnostics\nraw begin/resolve + SCFEN/bank/grants after choices
+SESSION ARROW_ERROR FAILURE : native rejection ends run\nno pass rescue or mutation retry
+CLIENT ARROW_ERROR FAILURE : byte / UTF-8 / ID / EOF / deadline failure\nretain prefix + unverified pending operation
+SCHEDULE ARROW_MAIN REPLAY : independently verify every record\nretain each case's failure classification
+CLI ARROW_MAIN REPLAY : bounded arena-run-v1 record\n<=16 MiB / no unchecked evaluation
+REPLAY ARROW_MAIN CLIENT : replay.* namespace / regenerate policy\ncompare every native frame and selected key
+WORKER ARROW_MAIN REPLAY_NATIVE : separate native replay lifecycle\nnever session.ts or commitWindow
+REPLAY_NATIVE ARROW_MAIN FIXTURES : independently parse fixed SCFEN
+REPLAY_NATIVE ARROW_MAIN NATIVE : independent projection / stage / reduction\ncompare raw payloads, banks and native outcomes
+REPLAY ARROW_MAIN EVAL : private VerifiedRun capability\nonly after native AND policy agreement
+SCHEDULE ARROW_MAIN EVAL : include explicit failed/unverified cases\nverified native rejection remains failed
+REPLAY ARROW_ERROR FAILURE : tamper / missing frame / unknown tail\nverified prefix is not a verified terminal
 
 note bottom of OBS
   Only visible board cells and the player's own
@@ -96,12 +160,54 @@ note bottom of POLICY
   after selection and never feed the scorer.
 end note
 
+note bottom of SESSION
+  Both seats select from the same native
+  opening before private admission exposes
+  truth. Stage requests independently, then
+  merge in white-black order so one seat
+  cannot alter the other's admission context.
+end note
+
+note right of SESSION
+  Retain the mineral bank outside native
+  transitions, because snapshots may omit
+  stored resources. Grant income once at
+  settlement; a terminal begin must never
+  apply another income grant.
+end note
+
+note bottom of REPLAY_NATIVE
+  Replaying the live commit path would repeat
+  its mistakes instead of checking native
+  results. Only replay may issue a private
+  token after both native and policy checks
+  agree, so evaluation cannot trust raw logs.
+end note
+
+note bottom of EVAL
+  Native rejection remains a failed case even
+  when independent replay confirms its cause.
+  Keep every scheduled case in the denominator
+  so verified terminals cannot hide failures
+  or convert window limits into draws.
+end note
+
 legend bottom
-  Source contract; see the plan for matched-source receipts.
-  Node stdin 64 KiB / stdout 1 MiB / stderr 64 KiB.
-  Total 30 s includes 3 s reap; clear NODE_OPTIONS.
-  Two reconstructed calls, not a stateful match runner.
-  No R4 feature encoder, learned policy or full match.
-  Full replacement deferred; legacy deletion stays last.
+  Native baseline source contract; current receipts live in native-runner.md.
+  v1 smoke: two reconstructed one-shot calls / 30 s total includes 3 s reap.
+  v1 Burn Flex f64 / 418 zero-padded rows / e1 -> d1 or f1 / black pass.
+  v1 smoke mine observation cap 2 remains unchanged; v2 counts up to 3 entities.
+  v2 request 64 KiB / reply 1 MiB / cumulative stderr 64 KiB; clear NODE_OPTIONS.
+  v2 300 s total includes 3 s cleanup; decision 10 s absolute; xtask 600=597+3 s.
+  Linux/Unix trusted built-in worker; no hostile-code sandbox or timing-fit claim.
+  arena-policy-seeds-v1: base + (ordinal+1)*0x9e3779b9 + black*0x85ebca6b mod 2^32.
+  Fixed fixtures do not use environmentSeed; case/fixture/seed metadata is host-only.
+  Initial image is host-only; per-window truth follows both selections or stopped planning.
+  Native outcome only; nonterminal host window limit is NOT a draw.
+  scheduled = verified-terminal + verified-window-limited + failed/unverified.
+  CLI config <=64 KiB / record <=16 MiB; private fresh outputs / no overwrite.
+  fullRunner=true states capability, not verification, training or a learned scorer.
+  No R4 economy/belief/features/calibration/readiness closure or pinned-54 win claim.
+  Preserve legacy consumers/evidence; delete legacy LAST after final consumer parity.
 endlegend
 @enduml

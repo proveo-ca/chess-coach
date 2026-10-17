@@ -2,9 +2,16 @@
 #![forbid(unsafe_code)]
 
 mod bridge;
+pub mod cli;
+mod engine_v2;
+pub mod evaluation;
 mod features;
 mod observation;
 mod protocol;
+pub mod record;
+pub mod replay;
+pub mod run;
+pub mod schedule;
 
 use features::{FeatureMatrix, ScoredCandidate, Selection};
 use observation::Observation;

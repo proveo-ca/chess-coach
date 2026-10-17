@@ -1,3 +1,7 @@
+> Current native replacement work (2026-10-17): [Rust composition, full-match baseline, schedule and replay contract](../ml/native-runner.md) — BOUNDED BASELINE COMPLETE; whole gate G3 passed all 29 commands (180 Rust / 93 Node / 668 core tests); adversarial, security and DevOps closing reviews returned READY after that pass. G2's passing invoice and the first review cycle retain their earlier source scope.
+> Owners: [training](../packages/training/burn-compat.puml) / [arena](../apps/arena/burn-compat.puml). Latest known published HEAD is lead-reported `23870083`; this navigation grants no new Git/publication operation and claims no new proof.
+> Historical navigation boundary: every CURRENT/RUNNING/status header below retains its checkpoint scope, not present execution status. Preserve every historical/frozen body, pin and evidence byte; the frozen R4 audit backlog remains open, and neither bounded compatibility nor new baseline work closes economy/belief/features/calibration/learner readiness.
+>
 > R4 detail navigation: [current checkpoint + project pre-implementation planning](../ml/README.md) / [P1–P8 repair plan](../ml/R4.md) (2026-10-16).
 > `_spec/_plans/` keeps PR-level scope/acceptance; `_spec/ml/` separates the implemented baseline from proposed repairs. Original contracts, pins, history, and evidence below retain their authority.
 

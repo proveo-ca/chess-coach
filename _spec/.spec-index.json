@@ -652,7 +652,16 @@
         "tooling/xtask/src/runner.rs",
         "tooling/xtask/src/identity.rs",
         "tooling/xtask/src/invoices.rs",
-        "tooling/xtask/src/preservation.rs"
+        "tooling/xtask/src/preservation.rs",
+        "packages/training/src/contracts.rs",
+        "packages/training/src/candidates.rs",
+        "packages/training/src/policy.rs",
+        "packages/training/tests/contracts.rs",
+        "apps/arena/engine/planning.ts",
+        "packages/training/tests/candidates.rs",
+        "packages/training/tests/policy.rs",
+        "packages/training/tests/support/native.rs",
+        "packages/training/tests/support/legacy.mjs"
       ],
       "fingerprint": null
     },
@@ -678,7 +687,28 @@
         "tooling/xtask/src/runner.rs",
         "tooling/xtask/src/identity.rs",
         "tooling/xtask/src/invoices.rs",
-        "tooling/xtask/src/preservation.rs"
+        "tooling/xtask/src/preservation.rs",
+        "apps/arena/src/engine_v2.rs",
+        "apps/arena/src/record.rs",
+        "apps/arena/src/run.rs",
+        "apps/arena/src/replay.rs",
+        "apps/arena/src/schedule.rs",
+        "apps/arena/src/evaluation.rs",
+        "apps/arena/src/cli.rs",
+        "apps/arena/engine/wire-v2.ts",
+        "apps/arena/engine/planning.ts",
+        "apps/arena/engine/fixtures.ts",
+        "apps/arena/engine/session.ts",
+        "apps/arena/engine/replay.ts",
+        "apps/arena/engine/worker-v2.ts",
+        "apps/arena/tests/runner.rs",
+        "apps/arena/tests/replay.rs",
+        "apps/arena/tests/schedule.rs",
+        "apps/arena/tests/fixtures/seeded-all-actors.json",
+        "apps/arena/engine/test/planning.test.ts",
+        "apps/arena/engine/test/session.test.ts",
+        "apps/arena/engine/test/replay.test.ts",
+        "apps/arena/engine/test/worker-v2.test.ts"
       ],
       "fingerprint": null
     }

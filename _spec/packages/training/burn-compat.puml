@@ -1,4 +1,4 @@
-' purpose: Selected Rust workspace with direct Burn scoring and a retained standalone protocol test surface.
+' purpose: Rust native candidate composition and baseline contracts beside retained synthetic Burn compatibility.
 ' covers: Cargo.toml
 ' covers: rust-toolchain.toml
 ' covers: packages/training/Cargo.toml
@@ -13,32 +13,65 @@
 ' covers: tooling/xtask/src/identity.rs
 ' covers: tooling/xtask/src/invoices.rs
 ' covers: tooling/xtask/src/preservation.rs
-' status: Synthetic source contract; matching-source verification and review status live in the plan.
+' covers: packages/training/src/contracts.rs
+' covers: packages/training/src/candidates.rs
+' covers: packages/training/src/policy.rs
+' covers: packages/training/tests/contracts.rs
+' covers: apps/arena/engine/planning.ts
+' covers: packages/training/tests/candidates.rs
+' covers: packages/training/tests/policy.rs
+' covers: packages/training/tests/support/native.rs
+' covers: packages/training/tests/support/legacy.mjs
+' status: Native baseline source contract; matching-source verification and review status live in _spec/ml/native-runner.md.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
+' related: _spec/ml/native-runner.md
 ' related: _spec/apps/arena/burn-compat.puml
 ' history: d250c88e Bun receipt is superseded, not current proof or review eligibility.
 ' assurance: Remote identity include follows the skill; source checks do not imply hermetic rendering.
-' readability: LIB FK 10.9; MODEL FK 12.0; PACK FK 12.2; XTASK FK 10.2; counts in the plan.
+' readability: New note estimates/counts live in _spec/ml/native-runner.md; unchanged notes retain historical estimates only.
+' validation: Author ran no source checks, renderer or hashes; lead must reconcile late files after freeze.
 @startuml
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Direct Rust Burn compatibility — synthetic source contract
+title Rust composition + retained Burn compatibility — native source contract
 left to right direction
 
 component "apps/arena/src/lib.rs\nRust policy caller" as ARENA <<app>>
+component "apps/arena/src/run.rs\nnative baseline caller" as RUN <<app>>
 package "Root Cargo workspace\nCargo.toml / one reused Cargo.lock" {
   component "packages/training/src/lib.rs\ntraining_native::score_synthetic_f64" as LIB <<app>>
   component "packages/training/src/model.rs\nsynthetic-linear-418-v1\nw=[0.5,-0.25,0,...] / b=0.125" as MODEL <<app>>
   component "packages/training/src/main.rs\ntraining-native standalone binary" as CLI <<host>>
   component "packages/training/src/protocol.rs\ntraining-burn-compat-v1\nuint32 id / score only" as PROTOCOL <<app>>
   component "tooling/xtask/src/main.rs\nRust verifier / cargo xtask check\nfrozen workspace inventory" as XTASK <<host>>
+  package "Native baseline contracts" {
+    component "packages/training/src/contracts.rs\narena-observation-v2 / arena-candidate-v1\narena-composition-v1 / seven action kinds" as CONTRACTS <<app>>
+    component "packages/training/src/candidates.rs\nprofile B / 4 actions / 2048 attempts\n512 retained including pass" as COMPOSER <<app>>
+    component "packages/training/src/policy.rs\npass-v1 / first-v1 / seeded-v1\nxorshift32 / canonical array includes pass" as SELECTORS <<app>>
+  }
 }
+component "apps/arena/engine/planning.ts\npure authorized-view primitive domain\nno actual admission or private snapshot" as PLANNER <<app>>
+component "packages/starchess-core/src/planning-v1.ts\nnative actor / shape / timing / anchor\nUNIT_COST / specialGasCost" as HELPERS <<app>>
+component "packages/training/tests/contracts.rs\nclosed typed contract controls" as CONTRACT_PROOF <<app>>
+component "packages/training/tests/candidates.rs\npackages/training/tests/policy.rs\npackages/training/tests/support/native.rs\npublic V3 parity / runtime controls" as COMPOSITION_PROOF <<app>>
 component "Burn 0.22.0 / Rust 1.95.0\nFlex CPU / explicit f64\nstd + flex + optim + store" as BURN <<cloud>>
 component "Rust unit tests\npackages/training/tests/protocol.rs\nsynthetic compatibility fixtures" as PROOF <<app>>
 database "Temporary Burnpack fixture\nexact parameter-bit restoration\ncorrupt data rejected" as PACK <<db>>
 component "Closed failure\nno backend or precision fallback\nfailed gate keeps reviews forbidden" as FAILURE <<error>>
 
-ARENA ARROW_MAIN LIB : direct typed Rust call\nno scoring child / no Bun bridge
+ARENA ARROW_MAIN LIB : retained smoke / direct typed Rust call\nno scoring child / no Bun bridge
+RUN ARROW_MAIN COMPOSER : limited AuthorizedView only\nno case / fixture / seed / native image
+CONTRACTS ARROW_MAIN COMPOSER : full ordered canonical JSON bytes\ncounted mine multiset / cap 3
+COMPOSER ARROW_MAIN PLANNER : PlanningOracle / prefix / family\naction + nativeFailure + anchor + cost
+PLANNER ARROW_MAIN HELPERS : native rule reuse / fog-safe facts only
+COMPOSER ARROW_MAIN SELECTORS : canonical retained candidates\ncomplete-byte identity / native spend
+SELECTORS ARROW_MAIN RUN : baseline selected queue\nno learned scorer or strength claim
+CONTRACT_PROOF ARROW_OPTIONAL CONTRACTS : typed grammar / canonical identity\nnative versions / mine counts 0..3
+XTASK ARROW_OPTIONAL CONTRACT_PROOF : complete matching-source invoice
+COMPOSITION_PROOF ARROW_OPTIONAL COMPOSER : B quotas / counters / continuation ordering\nnative fixtures / public V3 differential
+COMPOSITION_PROOF ARROW_OPTIONAL SELECTORS : versioned selectors / xorshift vectors\nno learned-policy assertion
+XTASK ARROW_OPTIONAL COMPOSITION_PROOF : full fresh suite\nliteral source coverage and pointers
+COMPOSER ARROW_ERROR FAILURE : planning / accounting / close failure\nno generation or admission rescue
 LIB ARROW_MAIN MODEL : validate 1..512 rows x 418\nfinite values / abs(value) <= 1e6
 MODEL ARROW_MAIN BURN : local f64 tensor operations\nRust implementation / no runtime network
 CLI ARROW_MAIN PROTOCOL : retained standalone test surface\none JSON request / stdin EOF / <= 8 MiB
@@ -53,11 +86,35 @@ LIB ARROW_ERROR FAILURE : invalid numeric input\nno JS or f32 fallback
 XTASK ARROW_ERROR FAILURE : any required gate fails\nno old receipt reuse
 
 note bottom of LIB
-  The arena calls the Rust library directly,
-  so scoring needs no second child process.
-  The retained binary tests its wire protocol
-  without bringing back the retired JavaScript
-  host or its runtime dependencies.
+  The smoke calls Burn in process so its
+  fixed model needs no scoring subprocess.
+  Native baseline selectors consume composed
+  queues without presenting synthetic weights
+  as fitted parameters or a learned policy.
+end note
+
+note bottom of CONTRACTS
+  Full canonical keys preserve action order
+  and prevent digest collisions from merging
+  distinct candidates. Native helpers supply
+  rules and costs while Rust owns composition,
+  resource accounting and mine reservations.
+end note
+
+note bottom of COMPOSER
+  Queue each valid child before an owner,
+  duplicate or quota skip can discard it.
+  Later extensions may qualify for retention
+  even when their parent cannot obtain
+  capacity from the current funding lane.
+end note
+
+note bottom of PLANNER
+  Planning derives knowledge from authorized
+  cells and own facts, never private snapshots.
+  Count mine entities rather than distinct
+  squares so duplicate locations still consume
+  the native three-mine capacity.
 end note
 
 note bottom of MODEL
@@ -77,18 +134,21 @@ note bottom of PACK
 end note
 
 note bottom of XTASK
-  The previous receipt covers different source
-  paths and runtime boundaries, so it cannot
-  authorize reviews of this migration. Fresh
-  workspace checks must bind every required
-  result to the same unchanged input.
+  Previous receipts describe a narrower runtime
+  and cannot authorize the new delivery.
+  Every required result must bind to unchanged
+  source before any reviewer may participate.
 end note
 
 legend bottom
-  Source contract; see the plan for matched-source receipts.
-  Synthetic optimization tests only; no real training.
-  Width 418 is padding, not the R4 feature encoder.
-  modelArtifact=null; no admission or activation.
-  Only a complete fresh gate unlocks reviewers.
+  Native baseline source contract; current receipts live in native-runner.md.
+  Preserve exact B funding: seven lanes x 48 + shared 175 + pass.
+  All lanes enumerate full domains; only availability probes filter families.
+  Preserve counters, continuation-before-skip and capacity/attempt/exhausted precedence.
+  Retained Burn 0.22.0 Flex CPU f64 smoke/checkpoint fixtures are synthetic only.
+  Width 418 remains zero padding, not the R4 feature encoder.
+  Native baselines use no learned scorer; learned=false / modelArtifact=null.
+  No real training, payout calibration, R4 readiness or activation claim.
+  Complete fresh static/functional/preservation/diagram/source-identity gates precede reviewers.
 endlegend
 @enduml

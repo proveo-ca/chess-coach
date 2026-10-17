@@ -47,8 +47,8 @@ fn verify(gate: &mut Gate) -> ExitCode {
     }
     let eligible = complete && error.is_none();
     let mut receipt = json!({
-        "version": "rust-training-verification-v1",
-        "scope": "synthetic-compatibility-only",
+        "version": "rust-training-verification-v2",
+        "scope": "native-baseline-runner",
         "directory": gate.directory,
         "inputSha256": before.ok(),
         "inputSha256After": after.as_ref().ok(),
@@ -80,8 +80,8 @@ fn initialization_failure(error: String) -> ExitCode {
     println!(
         "{:#}",
         json!({
-            "version": "rust-training-verification-v1",
-            "scope": "synthetic-compatibility-only",
+            "version": "rust-training-verification-v2",
+            "scope": "native-baseline-runner",
             "directory": null,
             "inputSha256": null,
             "reviewEligible": false,
@@ -112,27 +112,7 @@ fn fixed_checks(gate: &mut Gate) -> Result<(), String> {
         }
         gate.command("version-cc", &[&cc, "--version"])?;
     }
-    let preserved = gate.command(
-        "legacy-preservation",
-        &[
-            "git",
-            "diff",
-            "--name-only",
-            "HEAD",
-            "--",
-            "packages/starchess-core",
-            "packages/starchess-arena",
-            "packages/starchess-training",
-            "apps/server",
-            "apps/starchess",
-            "_spec/evidence",
-        ],
-    )?;
-    gate.validate(if preserved.trim().is_empty() {
-        Ok(())
-    } else {
-        Err("Legacy sources, consumers or evidence changed".into())
-    })?;
+    legacy_preservation(gate, false)?;
     let old_lock = gate.command("baseline-lock", &["git", "show", "HEAD:pnpm-lock.yaml"])?;
     gate.validate(
         read_text(&gate.root.join("pnpm-lock.yaml"))
@@ -274,8 +254,62 @@ fn fixed_checks(gate: &mut Gate) -> Result<(), String> {
         "diagram-arena",
         &["plantuml", "-checkonly", preservation::ARENA_SPEC],
     )?;
+    render_diagram(gate, "render-training", preservation::TRAINING_SPEC)?;
+    render_diagram(gate, "render-arena", preservation::ARENA_SPEC)?;
+    legacy_preservation(gate, true)?;
     gate.command("whitespace", &["git", "diff", "--check"])?;
     Ok(())
+}
+
+fn render_diagram(gate: &mut Gate, id: &str, spec: &str) -> Result<(), String> {
+    let directory = runner::fresh_directory(&gate.directory, id)?;
+    let output = directory
+        .to_str()
+        .ok_or("Diagram output path is not UTF-8")?;
+    gate.command(id, &["plantuml", "-tsvg", "-o", output, spec])?;
+    gate.validate(diagram_svg(&directory.join("burn-compat.svg")))
+}
+
+fn diagram_svg(path: &Path) -> Result<(), String> {
+    let metadata = std::fs::symlink_metadata(path).map_err(|error| error.to_string())?;
+    if !metadata.is_file() || metadata.len() == 0 || metadata.len() > 4 * 1024 * 1024 {
+        return Err("Diagram renderer omitted a bounded regular SVG file".into());
+    }
+    let text = read_text(path)?;
+    if !text.contains("<svg ") || !text.trim_end().ends_with("</svg>") {
+        return Err("Diagram renderer did not produce SVG".into());
+    }
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o600))
+            .map_err(|error| error.to_string())?;
+    }
+    Ok(())
+}
+
+fn legacy_preservation(gate: &mut Gate, after: bool) -> Result<(), String> {
+    let mut tracked_args = vec!["git", "diff", "--name-only", "HEAD", "--"];
+    tracked_args.extend_from_slice(preservation::LEGACY_PATHS);
+    let tracked = gate.command(
+        if after {
+            "legacy-preservation-after"
+        } else {
+            "legacy-preservation"
+        },
+        &tracked_args,
+    )?;
+    let mut untracked_args = vec!["git", "ls-files", "--others", "--exclude-standard", "--"];
+    untracked_args.extend_from_slice(preservation::LEGACY_PATHS);
+    let untracked = gate.command(
+        if after {
+            "legacy-untracked-after"
+        } else {
+            "legacy-untracked"
+        },
+        &untracked_args,
+    )?;
+    gate.validate(preservation::legacy_sources(&tracked, &untracked))
 }
 
 fn exact_rust_version(text: &str, tool: &str) -> Result<(), String> {
@@ -326,6 +360,33 @@ mod tests {
         assert!(node_version("v22.16.0").is_ok());
         assert!(node_version("v20.0.0").is_err());
         assert!(node_version("").is_err());
+    }
+
+    #[test]
+    fn rendered_diagram_requires_bounded_svg_and_private_permissions() {
+        let root = test_directory();
+        let path = root.join("diagram.svg");
+        assert!(diagram_svg(&path).is_err());
+        std::fs::write(&path, "not SVG").unwrap();
+        assert!(diagram_svg(&path).is_err());
+        std::fs::write(&path, "<svg xmlns=\"http://www.w3.org/2000/svg\"></svg>\n").unwrap();
+        assert!(diagram_svg(&path).is_ok());
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            assert_eq!(
+                std::fs::metadata(&path).unwrap().permissions().mode() & 0o777,
+                0o600
+            );
+        }
+        std::fs::OpenOptions::new()
+            .write(true)
+            .open(&path)
+            .unwrap()
+            .set_len(4 * 1024 * 1024 + 1)
+            .unwrap();
+        assert!(diagram_svg(&path).is_err());
+        std::fs::remove_dir_all(root).unwrap();
     }
 
     #[test]

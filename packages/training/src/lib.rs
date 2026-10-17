@@ -1,7 +1,10 @@
 // SPEC: _spec/packages/training/burn-compat.puml
 #![forbid(unsafe_code)]
 
+pub mod candidates;
+pub mod contracts;
 mod model;
+pub mod policy;
 pub mod protocol;
 
 pub use model::score_synthetic_f64;

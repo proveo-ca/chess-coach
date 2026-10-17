@@ -7,7 +7,37 @@ use serde_yaml::{Mapping, Value as Yaml};
 
 pub(crate) const TRAINING_SPEC: &str = "_spec/packages/training/burn-compat.puml";
 pub(crate) const ARENA_SPEC: &str = "_spec/apps/arena/burn-compat.puml";
+pub(crate) const LEGACY_PATHS: &[&str] = &[
+    "packages/starchess-core",
+    "packages/starchess-arena",
+    "packages/starchess-training",
+    "apps/server",
+    "apps/starchess",
+    "scripts",
+    "_spec/evidence",
+    "_spec/corpora",
+    "_spec/_refactors/r4-invocation-checkpoint",
+    "_spec/_plans/burn-flex-compat.md",
+    "_spec/ml/R4.md",
+    "_spec/ml/projects.yaml",
+    "_spec/ml/overview.puml",
+    "_spec/ml/overview.svg",
+    "_spec/ml/e2e",
+    "_spec/ml/starchess-arena",
+    "_spec/ml/starchess-core",
+    "_spec/ml/starchess-training",
+    "_spec/ml/starchess",
+    "_spec/ml/verification",
+];
 const DEV_TOOLS: &[&str] = &["@typescript/native-preview", "oxlint", "tsx", "@types/node"];
+
+pub(crate) fn legacy_sources(tracked: &str, untracked: &str) -> Result<(), String> {
+    if tracked.trim().is_empty() && untracked.trim().is_empty() {
+        Ok(())
+    } else {
+        Err("Protected legacy sources, consumers, contracts, corpora or evidence changed".into())
+    }
+}
 
 pub(crate) fn lock(previous: &str, current: &str) -> Result<(), String> {
     let previous: Yaml =
@@ -194,7 +224,10 @@ pub(crate) fn spec_index(root: &Path, previous: &Json, current: &Json) -> Result
                 ));
             }
             if relative.extension().is_some_and(|extension| {
-                matches!(extension.to_str(), Some("rs" | "ts" | "mts" | "cts"))
+                matches!(
+                    extension.to_str(),
+                    Some("rs" | "ts" | "mts" | "cts" | "mjs")
+                )
             }) {
                 let source = crate::read_text(&root.join(relative))?;
                 let first = source.lines().next().unwrap_or("");
@@ -231,6 +264,22 @@ mod tests {
     use serde_json::json;
 
     const LOCK: &str = "lockfileVersion: '9.0'\nimporters:\n  .:\n    devDependencies:\n      nx: {specifier: '^21.6.11', version: 21.6.11}\n  packages/starchess-core: {}\npackages:\n  a@1: {resolution: {integrity: abc}}\nsnapshots:\n  a@1: {}\n";
+
+    #[test]
+    fn legacy_preservation_rejects_tracked_and_untracked_additions() {
+        assert!(legacy_sources("", "").is_ok());
+        assert!(legacy_sources("packages/starchess-core/src/index.ts\n", "").is_err());
+        assert!(legacy_sources("", "_spec/corpora/new.json\n").is_err());
+        assert!(legacy_sources("_spec/ml/R4.md\n", "new.ts\n").is_err());
+        for path in [
+            "packages/starchess-core",
+            "_spec/evidence",
+            "_spec/corpora",
+            "_spec/ml/R4.md",
+        ] {
+            assert!(LEGACY_PATHS.contains(&path));
+        }
+    }
 
     #[test]
     fn lock_preserves_semantics_and_allows_only_new_bridge_importer_and_tools() {
@@ -324,6 +373,23 @@ mod tests {
         assert!(spec_index(&root, &old, &changed).is_err());
         std::fs::write(root.join("source.rs"), "// no pointer\n").unwrap();
         assert!(spec_index(&root, &old, &new).is_err());
+        let mut javascript = new.clone();
+        for (index, owner) in [TRAINING_SPEC, ARENA_SPEC].iter().enumerate() {
+            std::fs::write(
+                root.join(owner),
+                "' covers: source.mjs\n@startuml\n@enduml\n",
+            )
+            .unwrap();
+            javascript["specs"][43 + index]["covers"] = json!(["source.mjs"]);
+        }
+        std::fs::write(
+            root.join("source.mjs"),
+            format!("// SPEC: {TRAINING_SPEC}, {ARENA_SPEC}\n"),
+        )
+        .unwrap();
+        assert!(spec_index(&root, &old, &javascript).is_ok());
+        std::fs::write(root.join("source.mjs"), "// no pointer\n").unwrap();
+        assert!(spec_index(&root, &old, &javascript).is_err());
         std::fs::remove_dir_all(root).unwrap();
     }
 }

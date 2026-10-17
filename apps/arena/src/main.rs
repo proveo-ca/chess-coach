@@ -4,10 +4,26 @@
 use std::io::{self, Write};
 use std::process::ExitCode;
 
-const HELP: &str = "Usage: arena smoke\n       arena --help\n\nRun one synthetic Burn Flex compatibility window.\nNON_ADMITTED; no learned model or full runner.\n";
+const HELP: &str = "Usage: arena smoke\n       arena run --config <file>\n       arena suite --config <file> --out <fresh-dir>\n       arena replay --record <file>\n       arena --help\n\nsmoke: one synthetic Burn Flex compatibility window.\nrun/suite: native full-match baseline orchestration; no learned model.\nNON_ADMITTED. Exit 2: invalid configuration/options; exit 1: runtime/replay/case failure.\n";
 
 fn main() -> ExitCode {
     let arguments: Vec<_> = std::env::args_os().skip(1).collect();
+    if arguments
+        .first()
+        .is_some_and(|arg| arg == "run" || arg == "suite" || arg == "replay")
+    {
+        let strings: Result<Vec<_>, _> = arguments
+            .into_iter()
+            .map(|argument| argument.into_string())
+            .collect();
+        return match strings {
+            Ok(arguments) => ExitCode::from(arena::cli::main(&arguments) as u8),
+            Err(_) => {
+                eprintln!("Command arguments must be UTF-8");
+                ExitCode::from(2)
+            }
+        };
+    }
     if arguments.len() != 1 {
         eprintln!("Expected exactly one command: smoke, --help, or -h");
         return ExitCode::from(2);

@@ -1,8 +1,24 @@
-# Burn compatibility milestone
+# Rust training foundations
 
-This private workspace proves a synthetic CPU `f64` path with Burn `0.22.0`.
-It does not implement the full trainer or the historical 418-feature encoder.
-The [plan](../../_spec/_plans/burn-flex-compat.md) records the boundary and deferred replacement.
+This private crate retains the synthetic CPU `f64` path with Burn `0.22.0`.
+Rust contracts, candidate composition and baseline selectors support the native arena delivery.
+It does not implement the full learner or the historical 418-feature encoder.
+The [compatibility plan](../../_spec/_plans/burn-flex-compat.md) records the earlier bounded milestone.
+The [native-runner contract](../../_spec/ml/native-runner.md) records the completed bounded baseline delivery.
+
+The bounded native baseline passed the whole-workspace gate and all three closing reviews.
+
+## Library boundaries
+
+- `contracts`: closed authorized views, seven action families and complete canonical action-array keys.
+- `candidates`: profile-B composition with native planning helpers supplied through `PlanningOracle`.
+- `policy`: `pass-v1`, `first-v1` and integer-seeded `seeded-v1` selectors, including pass.
+- `score_synthetic_f64`: the retained fixed Burn model, not a learned arena policy.
+- `protocol`: the standalone numerical compatibility surface.
+
+Composition limits are four actions, 2048 attempted extensions and 512 retained candidates including pass.
+Node supplies native geometry, append failures, anchors and one-action costs.
+Rust owns composition, reservations, canonical identity and cumulative spend.
 
 ## Preparation
 
@@ -25,8 +41,8 @@ The gate builds the Rust workspace before integration tests.
 Oxlint and tsgo check the thin Node engine adapter and all its tests.
 The existing engine retains its own strict compiler profile.
 
-The arena calls the training library directly.
-The Node adapter accepts only the fixed engine fixture and native action data.
+The arena calls this Rust library directly.
+The Node adapter accepts only versioned fixed fixture identities and native action data.
 It never loads model paths, runs Cargo, installs dependencies, or substitutes JavaScript scoring.
 Framework tensor operations, autodiff, SGD, and Burnpack supply the numerical implementation.
 Only synthetic Rust tests update fixture weights.
