@@ -1,4 +1,4 @@
-' purpose: Numerical transition tables/source terms, joint readouts, point accounting and checked training foundations beside retained synthetic compatibility.
+' purpose: Canonical raw joint accounting/private table bridge and checked numerical training foundations beside retained synthetic compatibility.
 ' covers: Cargo.toml
 ' covers: rust-toolchain.toml
 ' covers: packages/training/Cargo.toml
@@ -43,7 +43,9 @@
 ' covers: packages/training/tests/joint_math.rs
 ' covers: packages/training/src/transition_tables.rs
 ' covers: packages/training/tests/transition_tables.rs
-' status: Transition/joint/accounting/learner/F1/ledger structure lives here; current evidence and review status lives in the related Markdown owners.
+' covers: packages/training/src/joint_accounting.rs
+' covers: packages/training/tests/joint_accounting.rs
+' status: Raw joint/table/readout/accounting/learner/F1/ledger structure lives here; current evidence and review status lives in the related Markdown owners.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
 ' related: _spec/ml/native-runner.md
@@ -59,6 +61,8 @@
 ' related: _spec/ml/native-joint-math.md
 ' related: _spec/_plans/native-transition-tables.md
 ' related: _spec/ml/native-transition-tables.md
+' related: _spec/_plans/native-joint-accounting.md
+' related: _spec/ml/native-joint-accounting.md
 ' related: _spec/apps/arena/burn-compat.puml
 ' history: native-runner.md owns the completed baseline, not current ledger verification.
 ' history: d250c88e Bun receipt is superseded, not current proof or review eligibility.
@@ -67,7 +71,7 @@
 ' validation: Author runs no tests, renderer or hashes; lead owns the complete unchanged-input invoice and note-box checks.
 @startuml
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Rust numerical transition tables + joint readouts + training foundations
+title Rust canonical RAW joint accounting + checked training foundations
 left to right direction
 
 component "apps/arena/src/lib.rs\nRust policy caller" as ARENA <<app>>
@@ -120,6 +124,13 @@ package "Root Cargo workspace\nCargo.toml / one reused Cargo.lock" {
     component "transition_tables::GrowthMetadata / copied LedgerRules\nprivate min opportunities + integer Gamma prefixes\nowned income/gas TABLE vectors / structural profile" as TABLE_METADATA <<app>>
     component "transition_tables::NumericTransitions::select\nBBT -> BT -> B groups >= 32, else Global\nqualification ONLY / no query-N fallback" as TABLE_SELECT <<app>>
     component "transition_tables::NumericTransitions::source_terms\nprivate widened source_interval / canonical row N\ninteger prefix Z / Den=N+.5Z / SourceTerms ONLY\nno 7501-flow allocation or F3/F4 flow/readout call" as TABLE_TERMS <<app>>
+    component "transition_tables::NumericAccountingSource\nPreparedNumericSource / module-private fields\ncrate-private loans / reused source_interval\nshared opportunities_prepaid / old public fees unchanged" as ACCOUNTING_BRIDGE <<app>>
+  }
+  package "F6 pub mod joint_accounting / RAW numerical component ONLY" {
+    component "joint_accounting::NumericAccountingStep\nNumericSourceContext / NumericGrant / L / destination bounds\nhypothetical DATA, no native chronology or permission" as RAW_STEP <<app>>
+    component "packages/training/src/joint_accounting.rs\naggregate_accounting / bank -> material sources\npositive P prepares Z/N/Den ONCE\nP=0 true support: accounting law ONLY, no model access" as RAW_AGGREGATE <<app>>
+    component "joint_accounting::Gamma / Buffers\nGamma170 fixed slots / 165 minimum inspections ONCE\n8034 f64 + 8034 bool / 7501 mass + 7501 bool\ncanonical head/sparse contributions / FOUR shared heaps" as RAW_BUFFERS <<app>>
+    component "joint_accounting::RawJointAccounting\nprivate 7501 raw masses / independent Boolean cells\nfinite positive cached retained_mass / O(1) borrows\nSTOP BEFORE likelihood / normalization / reband / readout" as RAW_RESULT <<app>>
   }
 }
 component "apps/arena/src/economic.rs\nhost recipient-history caller\nno recorded-policy verification" as ECO_HOST <<host>>
@@ -138,6 +149,7 @@ component "packages/training/tests/learner_math.rs\nindependent scalar objective
 component "packages/training/tests/accounting_kernel.rs\nindependent sequences -> distinct tuples -> direct weights\nall 7501 mass/support lanes / safe precharge controls\nunchanged rules golden is STRUCTURAL data only" as ACCOUNTING_PROOF <<app>>
 component "packages/training/tests/joint_math.rs\nindependent direct normalization / SORTED target records\nall 7501 lanes / all 1001 temperatures / exact CDF\ncertainty / bitwise isolation / safe work+error controls\nprivate source unit guards: inconsistent certainty refuses" as JOINT_PROOF <<app>>
 component "packages/training/tests/transition_tables.rs\nindependent sequences -> COMPLETE tuples / destruction Z\nall 794 cohorts / all 577 D / fractional count BITS\nqualification / profile isolation / exact fee controls\nprivate source units: safe logical-storage growth guards" as TABLE_PROOF <<app>>
+component "packages/training/tests/joint_accounting.rs\nindependent distinct-tuple mathematical oracle\nSEPARATE canonical contributor-graph BITWISE oracle\nall 7501 lanes / zero-PMF law / errors / exact work\nF3 parity TEST ONLY uses mathematical tolerance" as RAW_PROOF <<app>>
 
 ARENA ARROW_MAIN LIB : retained smoke / direct typed Rust call\nno scoring child / no Bun bridge
 RUN ARROW_MAIN COMPOSER : limited AuthorizedView only\nno case / fixture / seed / native image
@@ -230,6 +242,19 @@ TABLE_TERMS ARROW_MAIN LEDGER_WORK : entry/source/select + EACH inspected row/in
 TABLE_PROOF ARROW_OPTIONAL TABLE_BUILD : independent ordered count map / source witness oracle\ncanonical bits / same-slot group count / explicit paid growth
 TABLE_PROOF ARROW_OPTIONAL TABLE_TERMS : sequence/tuple oracle + explicit destruction counts\nminimum growth / stock-cap Z2307 / qualified N=0
 XTASK ARROW_OPTIONAL TABLE_PROOF : exact nonempty tests/transition_tables.rs token\ntwo required table files / cumulative F1-F4 controls
+JOINT_NORMALIZE ARROW_MAIN RAW_AGGREGATE : borrow existing NumericJoint probabilities + supplied mask\nimmutable prior ONLY / core never normalizes
+TABLE_DATA ARROW_MAIN ACCOUNTING_BRIDGE : crate-private borrowed numerical handles\nno public source capability / no clone or getter scan
+RAW_STEP ARROW_MAIN RAW_AGGREGATE : every true support D>=V, INCLUDING P=0\nowned-profile numeric grant / no silent support pruning
+RAW_AGGREGATE ARROW_MAIN ACCOUNTING_BRIDGE : P>0 prepare OLD+128 / P=0 accounting_source64 only\nopportunities32 IS pair setup / no P=0 qual/N/rows
+ACCOUNTING_BRIDGE ARROW_MAIN TABLE_TERMS : positive preparation calls PUBLIC source_terms ONCE\nthen repeated check + DIRECT returned-cohort lookup
+ACCOUNTING_BRIDGE ARROW_MAIN TABLE_METADATA : paid profile/minimum loans32 EACH / no revalidation\nrow_feasible reuses interval+minimum / no copied equation
+RAW_AGGREGATE ARROW_MAIN RAW_BUFFERS : canonical source / lex(s,c,g) / selected row order\nbackground=(.5*P)/Den ONCE / sparse=(P*C)/Den
+RAW_BUFFERS ARROW_MAIN RAW_RESULT : AFTER all sources: head[j]+suffix[j+1], j616..0\nthen sparse+suffix[D+L] / BOTH bounds / canonical total
+RAW_AGGREGATE ARROW_MAIN LEDGER_WORK : SAME caller / fixed495752 ONLY subtotal\nALL global/source/table/branch/row charges ADDITIONAL
+ACCOUNTING_BRIDGE ARROW_MAIN LEDGER_WORK : old public invoices unchanged / old M charge32 preserved\nrow valid192 or invalid32 / F6 inspect64 EVERY row extra
+RAW_PROOF ARROW_OPTIONAL RAW_RESULT : math tolerance1e-12 PLUS canonical mass/retained BITS\ninput bits / P=0 mask+cost independence / empty distinctions
+RAW_PROOF ARROW_OPTIONAL ACCOUNTING_BRIDGE : private source units preserve old outputs/invoices\nOLD+128 / 64 / 192 / 32 / failed loans before access
+XTASK ARROW_OPTIONAL RAW_PROOF : exact nonempty tests/joint_accounting.rs token\ntwo NEW identity files / KEEP cumulative F1-F5 + bridge
 
 note bottom of LIB
   The smoke calls Burn in process so its
@@ -365,8 +390,18 @@ legend bottom
   Guard -> precharge -> allocate -> copy -> replace -> DROP OLD -> insert/update; drop before another cohort grows.
   F5 table init60548 / growth49812 / paid profile copy / final1572+32 per table+64 per row remain additional to rules.
   Source audit + safe errors/cfg(test) logical peaks are NOT allocator instrumentation/D1/full fitter/runtime fit.
-  No transition-table-to-artifact/label-producer/collector/native-permit/joint-flow/spatial/host/CLI/readiness edge.
+  F5 public methods still return numeric tables/sourceTerms; ONLY the crate-private bridge serves RAW F6.
+  No table/bridge-to-artifact/label-producer/collector/native-permit/spatial/host/CLI/readiness edge.
   Future floating factoring memo authorizes NO canonical-order change, grouped headstock or runtime admission.
+  F6 returns RAW all-source accounting BEFORE qualified evidence likelihood/global normalization/reband/readout.
+  No implicit likelihood1, full estimator, authentic publicSupport, native grant chronology or fitted permission.
+  Canonical background(.5*P)/Den is reused ONCE/source; sparse(P*C)/Den MULTIPLIES before division, no FMA/Kahan.
+  Boolean P=0 sources use only accounting_source/opportunities; no qualification/count/row/N/Z/model-dependent cost.
+  True cells may have mass0; no reachable cells -> EmptySupport, reachable total0 -> EmptyMass, erased product -> Underflow.
+  Prior/table BITS stay immutable; no partial output, pruning, per-source normalization or F3 full-flow allocation.
+  Exactly FOUR shared heaps/Gamma170 fixed slots; allocation structure is source-audited, NOT allocator/RSS instrumentation.
+  Fixed495752 + full standalone F4chain1003928 =1499680>1M BEFORE extra F6 fees; that composition is not admitted.
+  No source/bridge-to-host/CLI/artifact/native-permit/complete-estimator/runtime-closure edge or new allowance.
   Verifier notEstablished: full-training-closure / genuine-native-authority / whole-decision-adequacy.
   Verifier notEstablished also includes calibration / training-readiness; private labels remain DOCUMENT ONLY.
   No real training, payout calibration, R4 readiness or activation claim.

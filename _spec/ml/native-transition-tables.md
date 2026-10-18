@@ -1,12 +1,14 @@
 # F5 — numerical transition tables and source terms: accepted contracts
 
-**2026-10-18 · BOUNDED F5 VERIFICATION/REVIEW COMPLETE ·3c1a v8 PASS:29 COMMANDS / RUST447 / NODE189 / CORE668 · ALL3 CURRENT FINAL F5 REVIEWS READY, FINDINGS NONE · PUBLICATION AUTHORIZED, NOT EXECUTED · trainingReady:false.**
+**2026-10-18 · BOUNDED F5 VERIFICATION/REVIEW/PUBLICATION COMPLETE ·3c1a v8 PASS:29 COMMANDS / RUST447 / NODE189 / CORE668 · ALL3 FINAL F5 REVIEWS READY, FINDINGS NONE · PUBLISHED723e4066 / MATCHED HEAD=REMOTE / CLEAN AT CHECKPOINT · trainingReady:false.**
+
+Lead committed/NON-FORCE pushed **723e4066618aea7cc9818920b35b1e6e2c79a8cd**, `feat(training): add qualified numerical transition tables`,16 files,parent59e1eff1a10072b6594fff3a65e2e6b3b5ff7a24. Before commit,464-input source joined3c1a and whole-v8/ALL3 final READY/exact16/navigation/preservation/whitespace/cached checks passed. Actual post-push full HEAD/remote matched723e and tree was CLEAN **at that checkpoint**, before [F6 goals](native-joint-accounting.md); bounded F5 publication establishes no F6/readiness proof.
 
 The [PR plan](../_plans/native-transition-tables.md) owns ownership, acceptance/oracles and gate order. Both current accepted external architect documents were reread completely, including completed backend/DevOps and final transient-storage clarifications:
 - `/tmp/proveo-opencode-runtime-cache-1000-21d690750d3738af14d58c25/tmp/opencode/f5-transition-tables-freeze.md` (108 lines).
 - `/tmp/proveo-opencode-runtime-cache-1000-21d690750d3738af14d58c25/tmp/opencode/f5-transition-tables-addendum.md` (44 lines).
 
-Architect `ses_eb7c5d187ffenpvgElk95FZ8ut` left no pending decision/public API/math/cap/order fork. Frozen paid LOGICAL storage/drop order/API/math/count order/fees/caps remain unchanged. Both actual Rust files/lib/root integration were read completely before freeze; the [existing training owner](../packages/training/burn-compat.puml) documents structure. [Current complete v8 proof](#current-f5-evidence) and ALL3 final READY/no findings establish actual bounded same-input F5 verification/review, not stitched leaves/F4 approval. This evidence-only update changes no source/config/tests/index/PUML or normative contract; publication is authorized but unexecuted.
+Architect `ses_eb7c5d187ffenpvgElk95FZ8ut` left no pending decision/public API/math/cap/order fork. Frozen paid LOGICAL storage/drop order/API/math/count order/fees/caps remain unchanged. Both actual Rust files/lib/root integration were read completely before freeze; the [existing training owner](../packages/training/burn-compat.puml) documents structure. [Complete v8 proof](#current-f5-evidence), ALL3 final READY/no findings and actual publication723e are lead/reviewer results, not stitched leaves/F4 approval or keeper reruns. This publication-status update changes no source/config/tests/index/PUML or normative F5 contract.
 
 ## 1. Published prerequisite and numerical-only scope
 
@@ -251,7 +253,7 @@ training-readiness
 ```
 
 Before the gate, the existing training owner/index extended **42→44**, exactly the two actual literals/fingerprint null; current complete-run syntax/bounded-SVG/index44/59 checks PASS. Arena59/all44 other entries/metadata/order/unresolved list/22 notes/FK/stable labels remain preserved. This evidence pass changes none of those verified inputs; note/nav/inventory preflight is separate from29 jobs.
-Actual whole unchanged-input3c1a/v8 PASS was followed by ALL3 fresh final F5 read-only reviews, now DONE/READY, findings NONE. Source/config/test/index/PUML changes require whole repeat before rereview; final metadata/preservation checks/restaging still precede authorized, unexecuted publication. No prior F4 proof/approval or predicted future hash supplies current F5 evidence.
+Actual whole unchanged-input3c1a/v8 PASS was followed by ALL3 fresh final F5 read-only reviews, DONE/READY/no findings, then final464-input source3c1a/metadata/preservation checks/restaging and actual publication723e. Later source/config/test/index/PUML changes require their whole gate before rereview. No prior F4 proof/approval or future hash supplies F5 evidence.
 
 ### 9.1 Bounded source-to-contract observations
 
@@ -310,7 +312,7 @@ An earlier test-only explicit_counter_loop lint was resolved with enumerate(), r
 <a id="93-current-f5-closing--devops-ready-adversarialsecurity-pending"></a>
 ### 9.3 Current final F5 closing and capture — ALL3 READY
 
-ALL3 fresh **F5** final read-only reviews are now **DONE/READY, findings NONE**, bound to actual3c1a/v8 source/whole proof, not earlier F4 verdicts in the same sessions. **Bounded verification/review is COMPLETE; no LOW or pending review blocker.** Publication remains separately authorized/unexecuted.
+ALL3 fresh **F5** final read-only reviews are **DONE/READY, findings NONE**, bound to actual3c1a/v8 source/whole proof, not earlier F4 verdicts in the same sessions. **Bounded verification/review/publication is COMPLETE** at723e; no LOW or pending F5 review blocker. These verdicts do not cover F6.
 
 | Reviewer/session | Actual current F5 status |
 |---|---|
@@ -328,9 +330,9 @@ After PASS lead explicitly STAGED all16 F5 paths, including4 new files, with cac
 | Same directory `changed-paths.txt` |16 paths; SHA256 `060fff094fc1be4e9e9e4325c7db107b82184a844c96211cec0fde9b8ba85902` |
 | Same directory `base-head.txt` |59e1eff1a10072b6594fff3a65e2e6b3b5ff7a24 |
 
-The complete16-path F5 scope is now fully reviewed; no source/config/test/index/PUML byte changed after PASS. Later four-Markdown status metadata can be newer than the capture. **F5 publication is AUTHORIZED BUT NOT EXECUTED**. Lead will read final docs, rehash/join current464-input source to3c1a, check nav suffixes/whitespace/protected scope/exact16 inventory/no unexpected untracked paths, restage16/cached-check, make a meaningful non-amend commit/non-force push and verify actual remote HEAD/clean checkpoint. HEAD remains published F4base59e1 until an actual later commit; no future hash/self-hash loop or current F5 push is invented.
+The complete16-path F5 scope was fully reviewed; source/config/tests/index/PUML bytes stayed unchanged through publication and later Markdown metadata received final checks. **F5 publication is COMPLETE:723e4066618aea7cc9818920b35b1e6e2c79a8cd**. Lead joined464-input source to3c1a, completed final nav/whitespace/protected-scope/exact16/cached checks/restaging, committed/NON-FORCE pushed and verified actual full HEAD=remote/CLEAN checkpoint. [F6 goals](native-joint-accounting.md) follow that publication; no future hash/self-hash loop or F6 proof is invented.
 
 ### 9.4 Separate preflight and current handoff
 
 Separate actual lead preflight PASS, **not extra29 invoice jobs**:45 entries/all44 nontraining entries+metadata unchanged, literal44/59 covers/SPEC/file agreement;22 unchanged note bodies/2–5 lines/max46 columns/FK unchanged; historical nav suffixes byte-exact to59e1; expected4 then-new files/clean new+tracked whitespace/protected F3/F4/native/legacy/model/Node/config/dependencies/locks/corpus/evidence preserved. This evidence-only pass changes no notes/index/PUML/protected inputs/normative API/math/count order/fees/caps.
-Current handoff: implementation/integration/architecture/WHOLE3c1a v8 proof **DONE/PASS29/447/189/668**, ALL3 current final F5 reviews **DONE/READY, findings NONE**, no pending review blocker. Next: lead final metadata/preservation/current-source join/checks, restage16 and perform the authorized verified publication; no actual F5 commit/push or future hash is claimed. F6 freeze/private bridge addendum stays external, no F6 repo docs/source before verified F5 publication or placeholder/full-estimator claim added here. Five exclusions/trainingReady:false/legacy R4 stops persist; fitted24k belief acceptance remains pretraining, policy training requires separate approval, learned transfer follows training. Keeper touches ONLY two F5 Markdown docs/navigation prefixes, no source/config/tests/index/PUML/normative changes/commands/tests/hashes/renders/agents/Git/progress polling.
+F5 whole3c1a/v8 PASS29/447/189/668, ALL3 final READY/no findings and publication723e are **DONE**. Next selected delivery is [F6 goals/acceptance](../_plans/native-joint-accounting.md), with source/tests/v9 gate/ALL3 fresh reviews/publication planned/not run; no F6 source presence/PASS/future hash or complete-estimator/default-likelihood claim. Five exclusions/trainingReady:false/legacy R4 stops persist; fitted24k belief acceptance remains pretraining, policy training requires separate approval, learned transfer follows training. This goals handoff adds two F6 docs/shared navigation prefixes/small F5 publication metadata only; no source/config/tests/index/PUML/normative F5 math/API/order/fees/caps/commands/tests/hashes/renders/agents/Git/progress polling.

@@ -128,6 +128,18 @@ pub struct SourceTerms {
     pub denominator: f64,
 }
 
+pub(crate) struct NumericAccountingSource {
+    checked: CheckedSource,
+    context: NumericSourceContext,
+}
+
+pub(crate) struct PreparedNumericSource<'a> {
+    terms: SourceTerms,
+    source: NumericAccountingSource,
+    table: &'a NumericTransitionTable,
+    growth: &'a GrowthMetadata,
+}
+
 #[derive(Debug, PartialEq, Eq)]
 pub enum TableError {
     Domain,
@@ -270,6 +282,55 @@ impl NumericTransitions {
         })
     }
 
+    pub(crate) fn borrow_numeric_profile(
+        &self,
+        work: &mut LedgerWork,
+    ) -> TableResult<&LedgerRules> {
+        charge(work, PARAMETER)?;
+        Ok(&self.profile)
+    }
+
+    pub(crate) fn borrow_growth_minimums(&self, work: &mut LedgerWork) -> TableResult<&[u8; 33]> {
+        charge(work, PARAMETER)?;
+        Ok(&self.growth.minimum_opportunities)
+    }
+
+    pub(crate) fn accounting_source(
+        &self,
+        point: AccountingPoint,
+        context: &NumericSourceContext,
+        work: &mut LedgerWork,
+    ) -> TableResult<NumericAccountingSource> {
+        let checked = checked_source(&self.profile, point, context, work)?;
+        charge(work, PARAMETER)?;
+        Ok(NumericAccountingSource {
+            checked,
+            context: *context,
+        })
+    }
+
+    pub(crate) fn prepare_aggregation_source<'a>(
+        &'a self,
+        point: AccountingPoint,
+        context: &NumericSourceContext,
+        work: &mut LedgerWork,
+    ) -> TableResult<PreparedNumericSource<'a>> {
+        let terms = self.source_terms(point, context, work)?;
+        let source = self.accounting_source(point, context, work)?;
+        charge(work, INDEX)?;
+        let table = self
+            .tables
+            .get(cohort_index(terms.cohort)?)
+            .ok_or(TableError::Domain)?;
+        charge(work, PARAMETER)?;
+        Ok(PreparedNumericSource {
+            terms,
+            source,
+            table,
+            growth: &self.growth,
+        })
+    }
+
     fn select_checked(
         &self,
         source: CheckedSource,
@@ -284,6 +345,65 @@ impl NumericTransitions {
             }
         }
         Err(TableError::Domain)
+    }
+}
+
+impl NumericAccountingSource {
+    pub(crate) fn point(&self) -> AccountingPoint {
+        self.checked.point
+    }
+
+    pub(crate) fn opportunities(
+        &self,
+        spend: u8,
+        created: u8,
+        work: &mut LedgerWork,
+    ) -> TableResult<usize> {
+        charge(work, PARAMETER)?;
+        if !SPENDS.contains(&spend)
+            || spend > self.checked.point.bank
+            || (created != 0 && created != spend)
+        {
+            return Err(TableError::Domain);
+        }
+        opportunities_prepaid(self.checked, &self.context, spend, created)
+    }
+}
+
+impl PreparedNumericSource<'_> {
+    pub(crate) fn terms(&self) -> SourceTerms {
+        self.terms
+    }
+    pub(crate) fn accounting(&self) -> &NumericAccountingSource {
+        &self.source
+    }
+    pub(crate) fn rows(&self) -> &[NumericTransitionRow] {
+        &self.table.rows
+    }
+
+    pub(crate) fn row_feasible(
+        &self,
+        row_index: usize,
+        work: &mut LedgerWork,
+    ) -> TableResult<bool> {
+        charge(work, INDEX)?;
+        let row = self.table.rows.get(row_index).ok_or(TableError::Domain)?;
+        let band = match self.table.cohort {
+            TransitionCohort::BankBandTier { .. } => Some(self.source.checked.bounds),
+            _ => None,
+        };
+        Ok(source_interval(
+            outcome_of(row),
+            self.source.checked,
+            &self.source.context,
+            band,
+            self.growth,
+            work,
+        )?
+        .is_some_and(|(lower, upper)| {
+            self.source.checked.point.material >= lower
+                && self.source.checked.point.material <= upper
+        }))
     }
 }
 
@@ -371,16 +491,7 @@ impl GrowthMetadata {
             for choice in 0..if spend == 0 { 1 } else { 2 } {
                 charge(work, PARAMETER)?;
                 let created = if choice == 0 { 0 } else { spend };
-                let gas = 1_u16
-                    .checked_add(u16::from(source.gas))
-                    .and_then(|value| value.checked_sub(u16::from(spend > 0)))
-                    .ok_or(TableError::Domain)?;
-                let candidates = u16::from(context.marines_before)
-                    .checked_add(source.point.material)
-                    .and_then(|value| value.checked_sub(context.visible_before))
-                    .and_then(|value| value.checked_add(u16::from(created == 1)))
-                    .ok_or(TableError::Domain)?;
-                let opportunities = usize::from(4_u16.min(gas).min(candidates));
+                let opportunities = opportunities_prepaid(source, context, spend, created)?;
                 let initial = source
                     .point
                     .material
@@ -424,6 +535,24 @@ struct CheckedSource {
     tier: u8,
     gas: u8,
     bounds: (u16, u16),
+}
+
+fn opportunities_prepaid(
+    source: CheckedSource,
+    context: &NumericSourceContext,
+    spend: u8,
+    created: u8,
+) -> TableResult<usize> {
+    let gas = 1_u16
+        .checked_add(u16::from(source.gas))
+        .and_then(|value| value.checked_sub(u16::from(spend > 0)))
+        .ok_or(TableError::Domain)?;
+    let candidates = u16::from(context.marines_before)
+        .checked_add(source.point.material)
+        .and_then(|value| value.checked_sub(context.visible_before))
+        .and_then(|value| value.checked_add(u16::from(created == 1)))
+        .ok_or(TableError::Domain)?;
+    Ok(usize::from(4_u16.min(gas).min(candidates)))
 }
 
 impl CheckedSource {
@@ -907,6 +1036,237 @@ fn accounting_error(error: AccountingError) -> TableError {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn bridge_rules() -> LedgerRules {
+        #[derive(serde::Deserialize)]
+        struct RulesOnly {
+            rules: LedgerRules,
+        }
+        serde_json::from_str::<RulesOnly>(include_str!("../tests/fixtures/ledger-boundaries.json"))
+            .unwrap()
+            .rules
+    }
+
+    fn qualified_bridge_model() -> NumericTransitions {
+        let rows = [NumericFitRow {
+            node_index: 0,
+            source: AccountingPoint {
+                material: 1,
+                bank: 0,
+            },
+            input_turn: 0,
+            visible_before: 0,
+            marines_before: 0,
+            outcome: NumericOutcome {
+                spend: 0,
+                created: 0,
+                wasted: 0,
+                growth: 0,
+                destroyed: 1,
+            },
+        }];
+        let groups: Vec<_> = (0..32)
+            .map(|slot| NumericFitGroup {
+                slot,
+                selected_rows: &rows,
+            })
+            .collect();
+        build_numeric_transitions(&bridge_rules(), 3, &groups, &mut LedgerWork::new()).unwrap()
+    }
+
+    #[test]
+    fn prepaid_opportunities_extraction_preserves_old_public_results_invoices_and_refusal_edges() {
+        let rules = bridge_rules();
+        let mut build_work = LedgerWork::with_limit(141388).unwrap();
+        let model = build_numeric_transitions(&rules, 3, &[], &mut build_work).unwrap();
+        assert_eq!(build_work.used(), 141388);
+        let mut short = LedgerWork::with_limit(141387).unwrap();
+        assert!(
+            matches!(build_numeric_transitions(&rules, 3, &[], &mut short), Err(TableError::Work(ref error)) if error.code == LedgerErrorCode::Budget)
+        );
+        let point = AccountingPoint {
+            material: 575,
+            bank: 0,
+        };
+        let context = NumericSourceContext {
+            input_turn: 0,
+            visible_before: 575,
+            marines_before: 1,
+        };
+        let mut exact = LedgerWork::with_limit(352).unwrap();
+        let terms = model.source_terms(point, &context, &mut exact).unwrap();
+        assert_eq!(exact.used(), 352);
+        assert_eq!(
+            terms,
+            SourceTerms {
+                cohort: TransitionCohort::Global,
+                feasible_tuple_count: 2307,
+                fitted_count_sum: 0.0,
+                denominator: 1153.5
+            }
+        );
+        let mut short = LedgerWork::with_limit(351).unwrap();
+        assert!(
+            matches!(model.source_terms(point, &context, &mut short), Err(TableError::Work(ref error)) if error.code == LedgerErrorCode::Budget)
+        );
+        assert_eq!(short.used(), 320);
+        let mut exact = LedgerWork::with_limit(288).unwrap();
+        assert_eq!(
+            model.select(point, 0, &mut exact).unwrap().cohort(),
+            TransitionCohort::Global
+        );
+        assert_eq!(exact.used(), 288);
+        let mut short = LedgerWork::with_limit(287).unwrap();
+        assert!(
+            matches!(model.select(point, 0, &mut short), Err(TableError::Work(ref error)) if error.code == LedgerErrorCode::Budget)
+        );
+        assert_eq!(short.used(), 256);
+    }
+
+    #[test]
+    fn prepared_bridge_uses_old_terms_once_plus_128_and_keeps_qualified_zero_count_selection() {
+        let model = qualified_bridge_model();
+        let context = NumericSourceContext {
+            input_turn: 0,
+            visible_before: 0,
+            marines_before: 0,
+        };
+        for (material, expected_feasible, old_invoice) in [(0, false, 480), (1, true, 448)] {
+            let point = AccountingPoint { material, bank: 0 };
+            let mut old = LedgerWork::with_limit(old_invoice).unwrap();
+            let terms = model.source_terms(point, &context, &mut old).unwrap();
+            assert_eq!(old.used(), old_invoice);
+            let mut work = LedgerWork::with_limit(old_invoice + 128).unwrap();
+            let prepared = model
+                .prepare_aggregation_source(point, &context, &mut work)
+                .unwrap();
+            assert_eq!(work.used(), old_invoice + 128);
+            assert_eq!(prepared.terms(), terms);
+            assert_eq!(prepared.accounting().point().material, material);
+            assert_eq!(prepared.rows().len(), 1);
+            if material == 0 {
+                assert_eq!(
+                    terms.cohort,
+                    TransitionCohort::BankTier { bank: 0, tier: 0 }
+                );
+                assert_eq!(
+                    (
+                        terms.fitted_count_sum.to_bits(),
+                        terms.denominator.to_bits()
+                    ),
+                    (0.0_f64.to_bits(), 0.5_f64.to_bits())
+                );
+            }
+            let mut row_work = LedgerWork::with_limit(192).unwrap();
+            assert_eq!(
+                prepared.row_feasible(0, &mut row_work).unwrap(),
+                expected_feasible
+            );
+            assert_eq!(row_work.used(), 192);
+            let mut short = LedgerWork::with_limit(191).unwrap();
+            assert!(
+                matches!(prepared.row_feasible(0, &mut short), Err(TableError::Work(ref error)) if error.code == LedgerErrorCode::Budget)
+            );
+            assert_eq!(short.used(), 160);
+            let mut invalid = LedgerWork::with_limit(32).unwrap();
+            assert_eq!(
+                prepared.row_feasible(1, &mut invalid).unwrap_err(),
+                TableError::Domain
+            );
+            assert_eq!(invalid.used(), 32);
+            let mut short = LedgerWork::with_limit(old_invoice + 127).unwrap();
+            assert!(
+                matches!(model.prepare_aggregation_source(point, &context, &mut short), Err(TableError::Work(ref error)) if error.code == LedgerErrorCode::Budget)
+            );
+            assert_eq!(short.used(), old_invoice + 96);
+        }
+    }
+
+    #[test]
+    fn accounting_only_source_does_not_pay_qualification_rows_or_counts_and_wrapper_prepays_each_pair()
+     {
+        let empty =
+            build_numeric_transitions(&bridge_rules(), 3, &[], &mut LedgerWork::new()).unwrap();
+        let populated = qualified_bridge_model();
+        let point = AccountingPoint {
+            material: 0,
+            bank: 0,
+        };
+        let context = NumericSourceContext {
+            input_turn: 0,
+            visible_before: 0,
+            marines_before: 0,
+        };
+        for model in [&empty, &populated] {
+            let mut work = LedgerWork::with_limit(64).unwrap();
+            let source = model.accounting_source(point, &context, &mut work).unwrap();
+            assert_eq!(work.used(), 64);
+            let mut pair_work = LedgerWork::with_limit(32).unwrap();
+            assert_eq!(source.opportunities(0, 0, &mut pair_work).unwrap(), 0);
+            assert_eq!(pair_work.used(), 32);
+            for (spend, created) in [(2, 0), (1, 0), (0, 1)] {
+                let mut invalid = LedgerWork::with_limit(32).unwrap();
+                assert_eq!(
+                    source
+                        .opportunities(spend, created, &mut invalid)
+                        .unwrap_err(),
+                    TableError::Domain
+                );
+                assert_eq!(invalid.used(), 32);
+            }
+            let mut short = LedgerWork::with_limit(63).unwrap();
+            assert!(
+                matches!(model.accounting_source(point, &context, &mut short), Err(TableError::Work(ref error)) if error.code == LedgerErrorCode::Budget)
+            );
+            assert_eq!(short.used(), 32);
+        }
+    }
+
+    #[test]
+    fn bridge_loans_fail_before_access_and_bulk_minimum_loan_does_not_discount_interval_lookups() {
+        let model = qualified_bridge_model();
+        let mut profile_work = LedgerWork::with_limit(32).unwrap();
+        assert_eq!(
+            model
+                .borrow_numeric_profile(&mut profile_work)
+                .unwrap()
+                .gas_capacity_by_turn[0],
+            1
+        );
+        assert_eq!(profile_work.used(), 32);
+        let mut minimum_work = LedgerWork::with_limit(32).unwrap();
+        assert_eq!(
+            model.borrow_growth_minimums(&mut minimum_work).unwrap()[14],
+            3
+        );
+        assert_eq!(minimum_work.used(), 32);
+        let mut short = LedgerWork::with_limit(31).unwrap();
+        assert!(
+            matches!(model.borrow_numeric_profile(&mut short), Err(TableError::Work(ref error)) if error.code == LedgerErrorCode::Budget)
+        );
+        assert_eq!(short.used(), 0);
+        let mut short = LedgerWork::with_limit(31).unwrap();
+        assert!(
+            matches!(model.borrow_growth_minimums(&mut short), Err(TableError::Work(ref error)) if error.code == LedgerErrorCode::Budget)
+        );
+        assert_eq!(short.used(), 0);
+        let point = AccountingPoint {
+            material: 0,
+            bank: 0,
+        };
+        let context = NumericSourceContext {
+            input_turn: 0,
+            visible_before: 0,
+            marines_before: 0,
+        };
+        let prepared = model
+            .prepare_aggregation_source(point, &context, &mut LedgerWork::new())
+            .unwrap();
+        let mut shared = LedgerWork::new();
+        model.borrow_growth_minimums(&mut shared).unwrap();
+        assert!(!prepared.row_feasible(0, &mut shared).unwrap());
+        assert_eq!(shared.used(), 32 + 192);
+    }
 
     fn storage_row(index: usize) -> NumericTransitionRow {
         NumericTransitionRow {

@@ -17,6 +17,7 @@ The baseline receipts do not verify the ledger.
 - `feature_input`: checked ordered boundary innovations and detached own-lineage inputs.
 - `feature_manifest`: exact 418-coordinate metadata, not an encoder.
 - `joint_math`: checked numerical masks, global normalization and summary-only readouts.
+- `joint_accounting`: canonical all-source raw accounting with shared buffers and independent Boolean reachability.
 - `learner_math`: finite f64 policy statistics and arithmetic SGD proposals, not update permission.
 - `candidates`: profile-B composition with native planning helpers supplied through `PlanningOracle`.
 - `policy`: `pass-v1`, `first-v1` and integer-seeded `seeded-v1` selectors, including pass.
@@ -90,6 +91,15 @@ Its source normalizers retain canonical count order and use checked growth metad
 The 8,192 occupied-row ceiling applies across all cohorts; explicit vector growth also accounts for temporary copies.
 Numeric source witnesses do not prove trustworthy labels, native execution, independent ancestry or authenticated artifacts.
 This module does not run empirical fitting or admit a complete offline driver, joint evaluator or planning schedule.
+
+## Raw joint accounting
+
+The [F6 contract](../../_spec/ml/native-joint-accounting.md) aggregates numerical prior sources through qualified numerical tables using four shared buffers.
+Supported zero-PMF sources propagate Boolean reachability without consulting fitted counts or qualification.
+The narrow private table bridge preserves existing public results and work invoices.
+The result stops before qualified evidence likelihood and global normalization; it is not a complete estimator or an implicit likelihood-one model.
+Canonical contribution order remains fixed, and dense inputs may exhaust the same caller's work allowance.
+These checks establish no native bindings, authentic public support or complete-window resource admission.
 
 ## Preparation
 
