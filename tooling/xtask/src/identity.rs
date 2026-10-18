@@ -66,6 +66,8 @@ const REQUIRED: &[&str] = &[
     "apps/arena/engine/test/feature-geometry.test.ts",
     "apps/arena/engine/test/feature-manifest-legacy.mjs",
     "apps/arena/engine/test/feature-manifest.test.ts",
+    "packages/training/src/learner_math.rs",
+    "packages/training/tests/learner_math.rs",
 ];
 
 pub(crate) fn training_identity(root: &Path) -> Result<String, String> {
@@ -264,6 +266,8 @@ mod tests {
             "apps/arena/engine/test/feature-geometry.test.ts",
             "apps/arena/engine/test/feature-manifest-legacy.mjs",
             "apps/arena/engine/test/feature-manifest.test.ts",
+            "packages/training/src/learner_math.rs",
+            "packages/training/tests/learner_math.rs",
         ] {
             let path = root.join(relative);
             let original = fs::read(&path).unwrap();

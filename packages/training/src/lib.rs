@@ -5,6 +5,7 @@ pub mod candidates;
 pub mod contracts;
 pub mod feature_input;
 pub mod feature_manifest;
+pub mod learner_math;
 pub mod ledger;
 mod model;
 pub mod policy;

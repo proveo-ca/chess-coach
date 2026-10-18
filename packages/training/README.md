@@ -15,6 +15,7 @@ The baseline receipts do not verify the ledger.
 - `contracts`: closed authorized views, seven action families and complete canonical action-array keys.
 - `feature_input`: checked ordered boundary innovations and detached own-lineage inputs.
 - `feature_manifest`: exact 418-coordinate metadata, not an encoder.
+- `learner_math`: finite f64 policy statistics and arithmetic SGD proposals, not update permission.
 - `candidates`: profile-B composition with native planning helpers supplied through `PlanningOracle`.
 - `policy`: `pass-v1`, `first-v1` and integer-seeded `seeded-v1` selectors, including pass.
 - `ledger`: strict economic boundaries, atomic recipient histories and paid-basis conservation.
@@ -43,7 +44,7 @@ RPCs and helper calls cannot renew that allowance.
 This bounds ledger work, not the deferred full-feature training decision.
 Economic verification does not certify policy selection or learner readiness.
 The arena's separate verified-terminal closeout excludes unused actual credit without changing these raw histories.
-Full418 features, posterior/promotion kernels, learner software and calibration remain deferred.
+Full418 features, posterior/promotion kernels, the complete learner/coordinator and calibration remain deferred.
 
 ## Feature seams
 
@@ -53,6 +54,14 @@ Its readout uses crate-private checked seed extraction, not serialized ledger re
 `feature_manifest_v3` returns detached five-field metadata after a prepaid allocation invoice.
 Its independent tests compare all coordinates with the frozen normative tables and actual legacy production readout.
 Neither seam computes the 418 feature values or establishes genuine native authority, calibration, learner behavior or training readiness.
+
+## Learner mathematics
+
+The [F2 contract](../../_spec/ml/native-learner-math.md) defines stable softmax/log probabilities, explicit-uniform sampling, streamed decision statistics and atomic summed statistics for at most 64 decisions.
+Scalar f64 functions return detached proposals using the frozen `.001` learning rate and `.0001` L2 term once.
+They never commit weights, classify eligibility, draw RNG values or run native episodes.
+Independent scalar finite differences and test-only Burn/F64 autodiff and SGD check the numerical results.
+These checks do not establish full feature semantics, native authority, decision-budget admission or training readiness.
 
 ## Preparation
 
@@ -72,13 +81,15 @@ cargo run --frozen -p arena -- smoke
 ```
 
 The gate builds the Rust workspace before integration tests.
-Oxlint and tsgo check the thin Node engine adapter and all its tests.
+Oxlint checks the thin Node adapter and its TypeScript/MJS tests.
+tsgo checks TypeScript inputs; Node runtime tests execute the MJS metadata oracle.
 The existing engine retains its own strict compiler profile.
 
 The arena calls this Rust library directly.
 The Node adapter accepts only versioned fixed fixture identities and native action data.
 It never loads model paths, runs Cargo, installs dependencies, or substitutes JavaScript scoring.
-Framework tensor operations, autodiff, SGD, and Burnpack supply the numerical implementation.
+Framework tensor operations, autodiff, SGD and Burnpack supply the retained compatibility path and test-only numerical oracles.
+The learner-math module uses scalar f64 arithmetic and does not implement a production Burn learner.
 Only synthetic Rust tests update fixture weights.
 
 `cargo xtask check` retains logs and a source-bound receipt in a fresh temporary directory.

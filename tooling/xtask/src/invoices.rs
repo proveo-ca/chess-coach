@@ -21,6 +21,7 @@ const RUNNER_TARGETS: &[&str] = &[
     "tests/ledger_history.rs",
     "tests/feature_input.rs",
     "tests/feature_manifest.rs",
+    "tests/learner_math.rs",
     "tests/economic_replay.rs",
     "tests/readiness.rs",
 ];

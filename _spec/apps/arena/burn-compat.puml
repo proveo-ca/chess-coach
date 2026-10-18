@@ -124,7 +124,7 @@ package "F1 standalone helpers / UNWIRED" {
 component "apps/arena/engine/test/feature-manifest.test.ts\napps/arena/engine/test/feature-manifest-legacy.mjs\nbounded TEST-ONLY legacy metadata reader" as FEATURE_MANIFEST_PROOF <<app>>
 component "packages/starchess-training/src/feature/manifest.ts\nfeatureManifestV3\npackages/starchess-training/src/economic/ownedKernel.ts\ncreateStartupArtifactContext" as FEATURE_LEGACY_METADATA <<app>>
 component "packages/training/tests/fixtures/feature-manifest-v3.json\nshared five-field / exact418 METADATA fixture" as FEATURE_METADATA_FIXTURE <<app>>
-component "tooling/xtask/src/lib.rs\nidentity.rs / invoices.rs / preservation.rs\nv4 / native-feature-seams / same 29 checks" as FEATURE_GATE <<host>>
+component "tooling/xtask/src/lib.rs\nidentity.rs / invoices.rs / preservation.rs\nshared cumulative verifier / same 29 checks" as FEATURE_GATE <<host>>
 component "packages/starchess-core\nunchanged native rules\naddScAction / beginScTurn / endScTurn\napplyStoredIncome / scOutcome" as NATIVE <<app>>
 component "Closed failure\nno policy or engine substitute" as FAILURE <<error>>
 
@@ -334,8 +334,8 @@ legend bottom
   Vision returns canonical litSquares ONLY, never revealedPieces; native exceptions have no rescue.
   Legacy manifest dependency is TEST ONLY; the structural startup context is not native authority.
   Exact418 metadata agreement does not compute encoder values/masks/formulas or alter frozen labels.
-  v4 notEstablished: full-training-closure / genuine-native-authority / whole-decision-adequacy.
-  v4 notEstablished also includes calibration / training-readiness; no new helper-local meter.
+  Verifier notEstablished: full-training-closure / genuine-native-authority / whole-decision-adequacy.
+  Verifier notEstablished also includes calibration / training-readiness; no new helper-local meter.
   No R4 economy/belief/features/calibration/readiness closure or pinned-54 win claim.
   Preserve legacy consumers/evidence; delete legacy LAST after final consumer parity.
 endlegend

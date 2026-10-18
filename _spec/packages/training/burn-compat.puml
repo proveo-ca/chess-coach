@@ -1,4 +1,4 @@
-' purpose: Rust F1 checked-input/metadata seams and economic/native composition boundaries beside retained synthetic Burn compatibility.
+' purpose: Pure Rust learner math, checked feature seams and economic/native composition boundaries beside retained synthetic compatibility.
 ' covers: Cargo.toml
 ' covers: rust-toolchain.toml
 ' covers: packages/training/Cargo.toml
@@ -35,7 +35,9 @@
 ' covers: packages/training/tests/feature_manifest.rs
 ' covers: packages/training/tests/fixtures/feature-input-boundaries.json
 ' covers: packages/training/tests/fixtures/feature-manifest-v3.json
-' status: Ledger/F1 source structure lives here; current evidence and review status lives in the related Markdown owners.
+' covers: packages/training/src/learner_math.rs
+' covers: packages/training/tests/learner_math.rs
+' status: Learner-math/F1/ledger source structure lives here; current evidence and review status lives in the related Markdown owners.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
 ' related: _spec/ml/native-runner.md
@@ -43,6 +45,8 @@
 ' related: _spec/ml/native-economic-ledger.md
 ' related: _spec/_plans/native-feature-seams.md
 ' related: _spec/ml/native-feature-seams.md
+' related: _spec/_plans/native-learner-math.md
+' related: _spec/ml/native-learner-math.md
 ' related: _spec/apps/arena/burn-compat.puml
 ' history: native-runner.md owns the completed baseline, not current ledger verification.
 ' history: d250c88e Bun receipt is superseded, not current proof or review eligibility.
@@ -51,7 +55,7 @@
 ' validation: Author runs no tests, renderer or hashes; lead owns the complete unchanged-input invoice and note-box checks.
 @startuml
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Rust F1 library seams + ledger + composition + retained Burn
+title Rust learner math + feature seams + ledger + retained compatibility
 left to right direction
 
 component "apps/arena/src/lib.rs\nRust policy caller" as ARENA <<app>>
@@ -61,7 +65,7 @@ package "Root Cargo workspace\nCargo.toml / one reused Cargo.lock" {
   component "packages/training/src/model.rs\nsynthetic-linear-418-v1\nw=[0.5,-0.25,0,...] / b=0.125" as MODEL <<app>>
   component "packages/training/src/main.rs\ntraining-native standalone binary" as CLI <<host>>
   component "packages/training/src/protocol.rs\ntraining-burn-compat-v1\nuint32 id / score only" as PROTOCOL <<app>>
-  component "tooling/xtask/src/main.rs\nRust verifier / cargo xtask check\nv4 / native-feature-seams" as XTASK <<host>>
+  component "tooling/xtask/src/main.rs\nRust verifier / cargo xtask check\nv5 / native-learner-math / same 29 checks" as XTASK <<host>>
   package "Native baseline contracts" {
     component "packages/training/src/contracts.rs\narena-observation-v2 / arena-candidate-v1\narena-composition-v1 / seven action kinds" as CONTRACTS <<app>>
     component "packages/training/src/candidates.rs\nprofile B / 4 actions / 2048 attempts\n512 retained including pass" as COMPOSER <<app>>
@@ -77,6 +81,13 @@ package "Root Cargo workspace\nCargo.toml / one reused Cargo.lock" {
     component "packages/training/src/feature_input.rs\nFeatureInputPair / native-feature-input-v1\nordered innovations / opaque own IDs\nchecked data, not native permission" as FEATURE_INPUT <<app>>
     component "packages/training/src/feature_manifest.rs\nstatic Descriptor[418] / metadata ONLY\nfive manifest fields / fourteen scales\nSerialize, no Deserialize or production codec" as FEATURE_MANIFEST <<app>>
   }
+  package "F2 pub mod learner_math / pure scalar f64 library" {
+    component "packages/training/src/learner_math.rs\nlinear_logit / softmax / Distribution\n1..512 finite logits / shifted finite logP" as MATH_DISTRIBUTION <<app>>
+    component "learner_math::sample_index\nexplicit uniform [0,1) / strict CDF\nlast-nonzero rounding fallback / NO RNG" as MATH_SAMPLE <<app>>
+    component "learner_math::decision_statistics\nstreamed delta418 / selected logP\nascending once-per-index trusted callback" as MATH_DECISION <<app>>
+    component "learner_math::EpisodeStatistics\nSUM at most 64 decisions / no mean\ncount + all coordinates + logP staged atomically" as MATH_EPISODE <<app>>
+    component "learner_math::sgd_proposal / SgdProposal\nfrozen weights + baseline + return\ngradient / proposed weights / objective DATA\nzero decisions None before norm/L2" as MATH_PROPOSAL <<app>>
+  }
 }
 component "apps/arena/src/economic.rs\nhost recipient-history caller\nno recorded-policy verification" as ECO_HOST <<host>>
 component "packages/training/tests/ledger_contracts.rs\npackages/training/tests/ledger_history.rs\npackages/training/tests/fixtures/ledger-boundaries.json\nshared DTO / fold / native-fidelity controls" as LEDGER_PROOF <<app>>
@@ -90,6 +101,7 @@ database "Temporary Burnpack fixture\nexact parameter-bit restoration\ncorrupt d
 component "Closed failure\nno backend or precision fallback\nfailed gate keeps reviews forbidden" as FAILURE <<error>>
 component "packages/training/tests/feature_input.rs\npackages/training/tests/fixtures/feature-input-boundaries.json\nhand-authored STRUCTURAL boundary controls" as FEATURE_INPUT_PROOF <<app>>
 component "packages/training/tests/feature_manifest.rs\npackages/training/tests/fixtures/feature-manifest-v3.json\nindependent normative metadata / exact invoices" as FEATURE_MANIFEST_PROOF <<app>>
+component "packages/training/tests/learner_math.rs\nindependent scalar objective / all418 FD\nBurn Flex F64 no-bias oracle TEST ONLY" as MATH_PROOF <<app>>
 
 ARENA ARROW_MAIN LIB : retained smoke / direct typed Rust call\nno scoring child / no Bun bridge
 RUN ARROW_MAIN COMPOSER : limited AuthorizedView only\nno case / fixture / seed / native image
@@ -134,7 +146,16 @@ FEATURE_MANIFEST ARROW_MAIN LEDGER_WORK : trusted compile-time registry bytes\np
 FEATURE_INPUT_PROOF ARROW_OPTIONAL FEATURE_INPUT : transient facts / replay retains innovation and grant\nsecond-seat rollback / detached seed / hidden twins
 FEATURE_MANIFEST_PROOF ARROW_OPTIONAL FEATURE_MANIFEST : all 418 normative names / meanings / scales\nallocation / exact-cap / one-below controls
 XTASK ARROW_OPTIONAL FEATURE_INPUT_PROOF : exact source-token nonempty target\nexplicit F1 identity inputs / unfiltered tests
-XTASK ARROW_OPTIONAL FEATURE_MANIFEST_PROOF : same complete unchanged-input v4 gate\nnormal and init-failure proof-scope metadata
+XTASK ARROW_OPTIONAL FEATURE_MANIFEST_PROOF : same complete unchanged-input gate\nnormal and init-failure proof-scope metadata
+MATH_DISTRIBUTION ARROW_MAIN MATH_SAMPLE : borrowed probabilities / caller supplies uniform\nreturned index is arithmetic data only
+MATH_DISTRIBUTION ARROW_MAIN MATH_DECISION : borrowed distribution / caller-selected index\nfeature callback streams rows / no retained matrix
+MATH_DECISION ARROW_MAIN MATH_EPISODE : caller append of DecisionStatistics\nlate overflow / decision65 preserves all prior fields
+MATH_EPISODE ARROW_MAIN MATH_PROPOSAL : borrowed summed statistics + frozen inputs\nno eligibility / ACK / baseline insertion / state commit
+MATH_PROOF ARROW_OPTIONAL MATH_DISTRIBUTION : extremes / underflow / finite intermediates\nstrict sampling / callback order / no matrix
+MATH_PROOF ARROW_OPTIONAL MATH_EPISODE : sum-not-mean / 64 limit / staged rollback
+MATH_PROOF ARROW_OPTIONAL MATH_PROPOSAL : independent all418 scalar central differences\nL2 once / PG-only flag / detached proposal
+MATH_PROOF ARROW_OPTIONAL BURN : TEST ONLY live F64 no-bias graph\nautodiff + synthetic SGD(.001) / no optimizer decay
+XTASK ARROW_OPTIONAL MATH_PROOF : exact nonempty tests/learner_math.rs token\ntwo required math files / cumulative F1 inputs
 
 note bottom of LIB
   The smoke calls Burn in process so its
@@ -238,8 +259,14 @@ legend bottom
   History owns crate-private seed types; sorted detached units and stable mine IDs leave state intact.
   Metadata 418 = queue34 + 4xposition84 + economic12 + promotion36; no feature values/masks/formulas.
   Manifest S=25864; build=452544; successful validation=119344; existing ledger fees remain additional.
-  v4 notEstablished: full-training-closure / genuine-native-authority / whole-decision-adequacy.
-  v4 notEstablished also includes calibration / training-readiness; private labels remain DOCUMENT ONLY.
+  F2 constants: learning rate .001 / temperature 1 / L2 .0001; zero418 weights / no bias.
+  F2 production is scalar Rust; ONLY its tests use Burn, not a production math backend.
+  Math EpisodeStatistics is not a native eligible episode; SgdProposal is not weight-update permission.
+  No math-to-game/CLI/native-permit/feature-encoder/geometry/checkpoint/baseline-commit runtime edge.
+  Every product/add/subtraction is finite-checked; F2 does not reuse compat abs(value)<=1e6.
+  No new meter/allowance or whole-decision resource claim; O(512+418) buffers are not admission.
+  v5 notEstablished: full-training-closure / genuine-native-authority / whole-decision-adequacy.
+  v5 notEstablished also includes calibration / training-readiness; private labels remain DOCUMENT ONLY.
   No real training, payout calibration, R4 readiness or activation claim.
   Complete fresh static/functional/preservation/diagram/source-identity gates precede reviewers.
 endlegend

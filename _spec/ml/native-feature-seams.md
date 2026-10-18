@@ -1,6 +1,6 @@
 # F1 — native feature seams: accepted contracts and reasoning
 
-**2026-10-18 · BOUNDED F1 VERIFICATION/REVIEW COMPLETE · d389 v4 PASS:29 COMMANDS / RUST343 / NODE189 / CORE668 · ALL3 CURRENT FINAL REVIEWS READY, FINDINGS NONE · NODE LOW RESOLVED · PUBLICATION AUTHORIZED, NOT EXECUTED · trainingReady:false.**
+**2026-10-18 · BOUNDED F1 PUBLISHED8d908d4c96641403f6161f118458ca66f2305a04 · d389 v4 PASS:29 COMMANDS / RUST343 / NODE189 / CORE668 · ALL3 READY/NO FINDINGS · NODE LOW RESOLVED · trainingReady:false · SEPARATE F2 GOALS ACTIVE.**
 
 The [PR plan](../_plans/native-feature-seams.md) owns acceptance, file ownership, verification matrix and gate order.
 This document persists the complete accepted freeze and final work/private-seed addendum from architect `ses_eb7c5d187ffenpvgElk95FZ8ut`, including the latest compatible memory/witness clarifications, reread in full from the lead-persisted file:
@@ -9,7 +9,7 @@ No unresolved TUI remains. Accepted F1 contracts/signatures/fee goals are unchan
 
 ## 1. Scope, published prerequisite and preservation
 
-The lead actually committed/non-force pushed **b47befd021bef04eea0bfe20a9308a71aa20f09f**,16 files, from preserved user4990d951, then confirmed HEAD/remote equality and clean status at publication. That prerequisite is satisfied; F1 is now a separately assigned goals-first implementation slice.
+The completed ledger base b47befd021bef04eea0bfe20a9308a71aa20f09f/preserved user4990d951 preceded F1. The lead now actually committed/pushed F1 as **8d908d4c96641403f6161f118458ca66f2305a04**,29 files,parent b47, non-force origin push, with post-push HEAD/remote equality and clean status at that checkpoint. Separate F2 goals now follow this completed bounded F1 publication, not new F2 source/proof.
 The [bounded ledger base](native-economic-ledger.md) retains its v3/native-economic-ledger receipt,258d identity,29 PASS commands/301 Rust/175 Node/668 core and ALL3 READY/no findings/HIGH-4 RESOLVED. Those are **ledger evidence, not F1 evidence**; later F1 source changes require a new v4 scope/run.
 
 F1 delivers structural checked inputs/ordered innovations, standalone **unwired** native geometry helpers, and an exact418 **metadata** registry/manifest. It delivers no populated encoder, belief/PMF/support/frontier model, learner, collector/permits, calibration/fitting, container/image work, genuine native authority, runtime closure or readiness promotion.
@@ -426,7 +426,7 @@ d389d0141fc2deb8c83d012dd8aca7d8f65161ebebe45dd7b512c54e3ad39528
 
 All required targets ran nonempty/unfiltered; totals are this one unchanged-input post-guard invoice, not stitched leaves or earlier bc238/ledger runs. All static/types/lint/fmt/all-targets check/Clippy-Dwarnings/build/selected CPU dependencies/locks/protected tracked+untracked preservation **before and after**, index36/59+other43 preservation, both PUML syntax/bounded SVG and receipt-time whitespace PASS.
 The exact five notEstablished values remain `full-training-closure`, `genuine-native-authority`, `whole-decision-adequacy`, `calibration`, `training-readiness`. Root manifests/locks/native/legacy corpus/evidence/pins, goals/APIs/fees/data-copy/oracle semantics and private-label DOCUMENT ONLY scope are unchanged; actual runtime/authority/learner/readiness closure is still unestablished.
-Source/config/tests/PUML/index bytes have not changed after d389 PASS. Note/navigation/inventory checks remain separate preflight, never extra29 invoice commands. The current full29-path review scope was restaged/cached-whitespace PASS before capture; later Markdown status metadata may require refreshed final checks/restaging, not an invented new source hash or gate result.
+F1 source/config/tests/PUML/index stayed source-bound to d389 through actual publication8d908d4c; the29-path review capture/cached-whitespace checkpoint belongs to that completed delivery. Note/navigation checks remain separate preflight, never extra29 commands. Later F2 goal edits do not extend this bounded F1 proof or create a new execution/hash claim.
 
 <a id="93-current-f1-closing-and-capture"></a>
 ### 9.3 Current F1 closing and capture
@@ -449,7 +449,7 @@ All29 F1 paths, including the latest guard/documentation changes, were restaged 
 | Same directory `changed-paths.txt` |29 paths; SHA256 `c52453657ddaf7c1cbdd50c10fb01110f85665e19441a44fa8c184864128013b` |
 | Base HEAD |b47befd021bef04eea0bfe20a9308a71aa20f09f |
 
-This current post-guard scope snapshot has been fully reviewed; later four-Markdown status metadata may be newer, but no verified source/config/test/PUML/index byte changed after PASS. **Bounded F1 verification/review is COMPLETE; ALL3 READY and LOW resolution are actual.** F1 publication is **AUTHORIZED BUT NOT EXECUTED**. Lead will finish Markdown whitespace/navigation-suffix preservation/current-input hash join, restage explicit29 paths, commit/non-force push and verify the actual remote/clean publication checkpoint. HEAD remains b47 until an actual later commit; no future hash is invented. trainingReady:false remains unchanged.
+The fully reviewed d389 F1 scope is now **PUBLISHED**: lead commit **8d908d4c96641403f6161f118458ca66f2305a04**,29 files,parent b47, successful non-force origin pushb47→8d908d4c, actual post-push HEAD/remote match and clean checkpoint. **Bounded F1 verification/review/publication are COMPLETE**, ALL3 READY/LOW resolved; no publication hold remains. Later F2 goals are not claimed in that commit without a future actual commit, and trainingReady:false is unchanged.
 
 ## 10. Current coverage, notes and handoff boundary
 
@@ -457,4 +457,4 @@ The existing training owner covers**36**, arena**59**, including the actual `oxl
 Both owners now show actual F1 library-only inputs/private seeds/shared work/static metadata, and standalone UNWIRED Node helpers/test-only legacy reader/config guard. No new owner diagram or runtime/CLI/live-policy/native-permission/RPC edge is created. Stable status headers point to Markdown rather than embedding a gate result that would force a post-gate diagram change.
 **Notes/FK:** all22 existing bodies and retained scores remain unchanged, with no new/reworked note. Current syntax/SVG/index proof belongs to the actual complete d389 gate; note/navigation box/preservation checks remain separate preflight, not extra29 commands.
 This update owns only the two F1 Markdown documents and shared navigation prefixes, changing current status and the test prerequisite clarification. It runs no commands/tests/hash/render/Git/agents/reviews/progress polls. PLAN suffix4+ and README first2/suffix6+ stay untouched by prefix-only patches; keeper makes no source/config/test/diagram/index edit.
-Next: lead final metadata/preservation/current-input join, restage29 and perform the authorized verified F1 publication. Current d389 complete proof/ALL3 final READY/Node LOW resolution are DONE; no pending review blocker or actual F1 commit/push is claimed. Any subsequent source/config/test/index/diagram change requires another whole gate before reviews; trainingReady:false remains unchanged. F2 repo docs/source wait for actual F1 publication and separate assignment; none is created here.
+F1 publication8d908d4c/current d389 proof/ALL3 READY/LOW resolution are DONE. Next assigned slice is the separate [F2 math PR goals](../_plans/native-learner-math.md)/[contract and resource boundaries](native-learner-math.md), persisted before implementation; F2 source/test/v5 gate remain PLANNED/NOT RUN. F1 proof is not F2 verification, and trainingReady:false remains unchanged. No source/PUML/index or verified F1 contract changes in this publication-status sync.
