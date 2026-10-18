@@ -170,6 +170,12 @@ pub struct EvidenceWeightedAccounting {
     retained_mass: f64,
 }
 
+pub(crate) struct WeightedAccountingParts {
+    pub(crate) masses: Vec<f64>,
+    pub(crate) accounting_cells: Vec<bool>,
+    pub(crate) retained_mass: f64,
+}
+
 impl std::fmt::Debug for EvidenceWeightedAccounting {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         formatter
@@ -188,6 +194,23 @@ impl EvidenceWeightedAccounting {
     }
     pub fn retained_mass(&self) -> f64 {
         self.retained_mass
+    }
+
+    pub(crate) fn into_numeric_parts(
+        self,
+        work: &mut LedgerWork,
+    ) -> Result<WeightedAccountingParts, LedgerError> {
+        work.charge(32)?;
+        let Self {
+            masses,
+            accounting_cells,
+            retained_mass,
+        } = self;
+        Ok(WeightedAccountingParts {
+            masses,
+            accounting_cells,
+            retained_mass,
+        })
     }
 }
 
@@ -715,6 +738,89 @@ fn charge_count(work: &mut LedgerWork, count: usize, rate: u64) -> EvidenceResul
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn weighted_for_owned_normalization() -> EvidenceWeightedAccounting {
+        let mut masses = vec![-0.0; JOINT_SIZE];
+        masses[4] = 0.125;
+        masses[5] = 0.5;
+        let mut cells = vec![false; JOINT_SIZE];
+        cells[4] = true;
+        cells[5] = true;
+        cells[576] = true;
+        EvidenceWeightedAccounting {
+            masses,
+            accounting_cells: cells,
+            retained_mass: 1.0,
+        }
+    }
+
+    #[test]
+    fn weighted_parts_move_both_live_heaps_and_cached_scalar_after_exact_precharge() {
+        let weighted = weighted_for_owned_normalization();
+        let mass_pointer = weighted.masses.as_ptr();
+        let cell_pointer = weighted.accounting_cells.as_ptr();
+        let mut exact = LedgerWork::with_limit(32).unwrap();
+        let parts = weighted.into_numeric_parts(&mut exact).unwrap();
+        assert_eq!(exact.used(), 32);
+        assert_eq!(parts.masses.as_ptr(), mass_pointer);
+        assert_eq!(parts.accounting_cells.as_ptr(), cell_pointer);
+        assert_eq!(parts.retained_mass, 1.0);
+        let mut short = LedgerWork::with_limit(31).unwrap();
+        let error = match weighted_for_owned_normalization().into_numeric_parts(&mut short) {
+            Err(error) => error,
+            Ok(_) => panic!("unpaid weighted move"),
+        };
+        assert_eq!(error.code, LedgerErrorCode::Budget);
+        assert_eq!(short.used(), 0);
+    }
+
+    #[test]
+    fn owned_wrapper_moves_same_buffers_recomputes_total_and_maps_typed_errors_without_old_fee_changes()
+     {
+        use crate::banded_joint::{BandError, normalize_weighted};
+        use crate::joint_math::JointMathError;
+        let weighted = weighted_for_owned_normalization();
+        let mass_pointer = weighted.masses.as_ptr();
+        let cell_pointer = weighted.accounting_cells.as_ptr();
+        let mut exact = LedgerWork::with_limit(390340).unwrap();
+        let joint = normalize_weighted(weighted, &mut exact).unwrap();
+        assert_eq!(exact.used(), 390340);
+        assert_eq!(joint.probabilities().as_ptr(), mass_pointer);
+        assert_eq!(joint.support().cells().as_ptr(), cell_pointer);
+        assert_eq!(
+            (joint.probabilities()[4], joint.probabilities()[5]),
+            (0.2, 0.8)
+        );
+        assert!(joint.support().cells()[576]);
+        assert_eq!(joint.support().certainty().material, None);
+        let mut short = LedgerWork::with_limit(390339).unwrap();
+        assert!(
+            matches!(normalize_weighted(weighted_for_owned_normalization(), &mut short), Err(BandError::Work(ref error)) if error.code == LedgerErrorCode::Budget)
+        );
+        assert_eq!(short.used(), 288);
+        let mut malformed = weighted_for_owned_normalization();
+        malformed.masses.pop();
+        let mut work = LedgerWork::new();
+        assert_eq!(
+            normalize_weighted(malformed, &mut work).unwrap_err(),
+            BandError::Joint(JointMathError::Shape)
+        );
+        assert_eq!(work.used(), 288);
+        let mut invalid = weighted_for_owned_normalization();
+        invalid.masses[4] = f64::NAN;
+        assert_eq!(
+            normalize_weighted(invalid, &mut LedgerWork::new()).unwrap_err(),
+            BandError::NonFinite
+        );
+        let mut tiny = weighted_for_owned_normalization();
+        tiny.masses.fill(0.0);
+        tiny.masses[4] = 2.0;
+        tiny.masses[5] = f64::from_bits(1);
+        assert_eq!(
+            normalize_weighted(tiny, &mut LedgerWork::new()).unwrap_err(),
+            BandError::Underflow
+        );
+    }
 
     #[test]
     fn shared_ceiling_allows_found_updates_and_refuses_new_cell_before_any_creation_mutation() {

@@ -1,12 +1,14 @@
 # F7 — paired numerical evidence tables and weighting: accepted contract
 
-**2026-10-18 · BOUNDED F7 VERIFICATION/REVIEW COMPLETE · a6f6 v10 PASS:29/29 COMMANDS /517 RUST /189 NODE /668 CORE · ALL3 CURRENT FINAL F7 REVIEWS READY, FINDINGS NONE · PUBLICATION AUTHORIZED, NOT EXECUTED · trainingReady:false.**
+**2026-10-18 · BOUNDED F7 VERIFICATION/REVIEW/PUBLICATION COMPLETE · a6f6 v10 PASS:29/29 COMMANDS /517 RUST /189 NODE /668 CORE · ALL3 FINAL F7 REVIEWS READY, FINDINGS NONE · PUBLISHED ed4aebd2 / MATCHED HEAD=REMOTE / CLEAN AT CHECKPOINT · trainingReady:false.**
+
+Lead committed/NON-FORCE pushed **ed4aebd233a5d91db2af4d2a6b4cd4470befb744**, `feat(training): pair numerical evidence tables and weighting`,18 files,parent4158065da37fd867b572a17d2f6271d687519584. Before commit,468-input source joined a6f6 and whole-v10/ALL3 current READY/NONE/exact18/nav/preservation/whitespace/cached checks passed. Actual post-push full HEAD/remote matched ed4a and tree was CLEAN **at that checkpoint**, before [F8 goals](native-banded-joint.md); bounded F7 publication establishes no F8/readiness proof.
 
 The [PR plan](../_plans/native-evidence-tables.md) owns sequential authorship, acceptance/oracles and gate order. Both CURRENT accepted external documents were read FULLY:
 - `/tmp/proveo-opencode-runtime-cache-1000-21d690750d3738af14d58c25/tmp/opencode/f7-evidence-tables-freeze.md` (70 lines).
 - `/tmp/proveo-opencode-runtime-cache-1000-21d690750d3738af14d58c25/tmp/opencode/f7-evidence-tables-addendum.md` (52 lines).
 
-Architect `ses_eb7c5d187ffenpvgElk95FZ8ut` plus Backend/DevOps static advice are DONE/compatible, no normative fork/current TUI. Goals preceded authors; handoffs implement the unchanged private projection/cache/cap/math/work contract below. The [existing training owner](../packages/training/burn-compat.puml), [current complete F7 proof](#current-f7-evidence) and ALL3 final F7 READY/no findings establish actual bounded same-input verification/review, not stitched leaves/F6 approval. This evidence-only update changes no source/config/tests/index/PUML/normative contract; publication remains authorized but unexecuted.
+Architect `ses_eb7c5d187ffenpvgElk95FZ8ut` plus Backend/DevOps advice are DONE/compatible, no normative fork/current TUI. The [existing training owner](../packages/training/burn-compat.puml), [whole-v10 proof](#current-f7-evidence), ALL3 final F7 READY/no findings and publication ed4a record actual bounded same-input F7, not stitched leaves/F6 approval or keeper reruns. This small publication-status update changes no source/config/tests/index/PUML/normative F7 contract.
 
 ## 1. Actual prerequisite and numerical-only scope
 
@@ -228,7 +230,7 @@ Actual policy training/activation/deployment have NO approval; learned transfer/
 
 ## 9. Actual source/root/coverage integration and completed whole gate
 
-NEW actual paths, **HANDOFFS DONE / UNCOMMITTED**:
+NEW F7 paths, **HANDOFFS DONE / PUBLISHED ed4a**:
 
 ```text
 packages/training/src/evidence_tables.rs
@@ -248,8 +250,8 @@ training-readiness
 ```
 
 After actual handoffs, keeper read the FULL825-line evidence module/2185-line independent integration, narrow F5 loans/private units/F6 move/error units/root integration. Prior training owner/index46→48 added EXACTLY two new literals/null and retained bridge edges. Arena59/all44 other entries/metadata/stable labels/22 old note bodies/FK remain preserved; no new note. Paired-roster→owned transitions+DEST evidence/shared cap→qualified LL→MOVED RAW graph stops BEFORE later normalization, with no estimator/host/CLI/native/artifact/ancestry/publicSupport/runtime-closure edge. Whole-v10 syntax+bounded SVG/index/identity PASS; separate lead preflight confirms45 entries/44 nontraining+metadata/literal48/59/SPEC files/22 byte-unchanged2–5-line notes max46 columns/historical nav byte-exact4158065d/expected4 new/whitespace/protected inputs. That separate preflight is NOT extra29 jobs.
-Actual whole unchanged-input a6f6/v10 PASS preceded ALL3 fresh final F7 read-only reviews, now DONE/READY/no findings on complete18-path scope supplied upfront. Codediff/source/config/test/index/PUML fixes require WHOLE repeat before rereview; final metadata/preservation/current-source join/checks/restaging precede authorized, unexecuted publication. Prior F6 proof/approvals remain prerequisites, not F7 approval.
-Current complete freeze/exact addendum/domain static clarifications remain **PERSISTED/ACCEPTED**, no normative fork/current TUI; public API/math/fees/caps/order stay unchanged. Bounded F7 verification/review is COMPLETE: whole29/517/189/668 and ALL3 current final READY/NONE, no LOW or pending review blocker. Handoffs remain uncommitted, publication authorized/NOT EXECUTED. This pass owns ONLY two F7 Markdown docs/shared nav prefixes; no source/config/tests/index/PUML/F6 docs/normative edits/commands/hashes/renders/agents/Git/template fetch. Later source-identity-excluded Markdown needs lead checks/restaging, not a self-hash loop. Final verdicts arrived through material callbacks, no polling; no future publication hash/native authority/runtime admission/readiness invented.
+Actual whole unchanged-input a6f6/v10 PASS preceded ALL3 final F7 READY/no findings on complete18 supplied upfront, then final468-input a6f6/metadata/preservation checks/restaging and publication ed4a. Later source/config/test/index/PUML fixes require their WHOLE gate before rereview; prior F6 approvals never supply F7 proof.
+F7 whole29/517/189/668, ALL3 final READY/NONE and publication ed4a are **DONE**. Next selected delivery is [F8 goals/acceptance](../_plans/native-banded-joint.md), with source/tests/v11 gate/fresh reviews/publication planned/not run. F7 public API/math/fees/caps/order/a6f6 proof and five exclusions/trainingReady:false stay unchanged. Current goals pass adds two F8 docs/shared nav prefixes/small F7 publication metadata ONLY; no source/config/tests/index/PUML/normative F7 edits/commands/tests/hashes/renders/agents/Git/template fetch or F8 authority/readiness claim.
 
 <a id="current-f7-evidence"></a>
 ## Current F7 whole-v10 evidence
@@ -277,13 +279,13 @@ ALL old/new required targets are unfiltered/nonempty; zero-test standalone main 
 
 | Current evidence | Actual bounded status / limits |
 |---|---|
-| A/B handoffs |DONE, uncommitted:825-line new module/2185-line new integration; F5 private metadata/band/path loans and F6 charged move/private units; lib export and shared root integration. No production discrepancy reported. |
+| A/B handoffs |DONE/PUBLISHED ed4a:825-line module/2185-line integration; F5 private metadata/band/path loans/F6 charged move/private units/lib export/shared root integration. No production discrepancy reported. |
 | Independent B integration |29/29 PASS in actual whole-v10; original-roster paired complete-r ALL794×48 counts/BITS/once-per-slot/qualification/source-vs-DEST/000 fit-query/cache isolation/pointer MOVE/mask/P0/reachable public underflow/exact invoices/dense Budget. This29 is INCLUDED in training379, itself INCLUDED in Rust517. |
 | Final unfiltered training |379 PASS, zero failures/ignored/filtered:340 retained+29 new integration+10 new private units. The10 include8 earlier private units+2 final raw-error controls; no extra39/29/10 added to379/517. Whole fmt/check/all-target Clippy-Dwarnings PASS. |
 | Final safe private error controls |Raw NaN or all-zero masses with stale positive retained cache exercise BOTH000/nonzero paths under exact/one-below scan/end-check prefixes/prior spend. Actual raw test rows PASS; these defend INVALID private fixtures, not native admission. NonFinite/EmptyMass remain distinct from typed Budget; no public unchecked constructor/production observer/unsafe allocator/partial output. |
 | Root integration |32 unfiltered tests INCLUDED in517; whole workspace check/Clippy PASS. Normal/init five exclusions/BOTH new required identity mutation-delete inputs KEEP20 old/bridges/exact nonempty target and ALL29 retained controls are exercised in actual whole-v10, not inferred from leaves. |
 | Superseded local reports |368/20 and377/29 precede final controls; they are NOT current totals or whole proof. Earlier B unused-field Clippy finding was fixed structurally without assertion/order weakening. |
-| Whole v10 / current final reviews / publication |WHOLE PASS a6f6 + ALL3 fresh final F7 READY/NONE DONE; bounded verification/review COMPLETE, no LOW or pending review blocker. Publication AUTHORIZED/NOT EXECUTED/uncommitted; published F6base4158065d/7bc9-v9 proof/F6 approvals are prerequisites ONLY. |
+| Whole v10 / final reviews / publication |WHOLE PASS a6f6 + ALL3 final F7 READY/NONE + publication ed4a DONE; actual matched/clean checkpoint. F6base4158065d/7bc9-v9 proof/F6 approvals are prerequisites ONLY, no F8 proof inferred. |
 
 Public query fees remain000224/nonzero1984+32q; weighting remains000240380/nonzero250292+64P+Σmiss(2016+32q), with construction203468/final1588 PLUS projection/old F5/loans/all variable fees on SAME1M. Fixed logical allocation/source audit+safe budget/error/pointer tests are NOT allocator instrumentation/RSS/D1/full fitter/complete F6→F7→later F4+history+ALLfeatures runtime admission. Valid physical maxima may Budget-refuse without reset/refund/discount/new allowance/support truncation.
 Five exact notEstablished families above and trainingReady:false persist. Fitted24k belief acceptance remains pretraining; learned transfer/admission follows actual separately approved policy training. No real fit/artifact/native producer/authenticated support/ancestry/hash selection/calibration/activation/deployment/readiness proof is established.
@@ -291,7 +293,7 @@ Five exact notEstablished families above and trainingReady:false persist. Fitted
 <a id="current-f7-closing"></a>
 ## Current F7 closing capture and final review matrix
 
-Lead staged explicit18 F7 paths AFTER whole PASS, including4 new files and existing F5/F6 bridges; cached-whitespace check PASS. Source/config/tests/index/PUML bytes stayed unchanged after PASS. Complete capture supplied to all three fresh read-only reviews upfront:
+Lead staged18 F7 paths after whole PASS, including4 new files/both existing bridges; cached-whitespace PASS. Source/config/tests/index/PUML bytes stayed unchanged through publication. Complete capture supplied to all three final read-only reviews upfront:
 
 ```text
 directory: /tmp/proveo-opencode-runtime-cache-1000-21d690750d3738af14d58c25/tmp/opencode/f7-closing-review-5cDuQd
@@ -302,7 +304,7 @@ inventory SHA256: 910414797dbf49b6a17fdffe99f981d7c50c5c63329041c36715b91a294460
 base-head.txt: 4158065da37fd867b572a17d2f6271d687519584
 ```
 
-Byte/hash capture identities and staging/preflight outcomes are lead-supplied, not keeper-computed. Keeper read the18-path inventory/base-head and confirmed18 diff file headers, including all new files/both existing bridges; this is not a claim to reread every captured diff hunk. Later four-Markdown status may be newer than captured/staged metadata and needs final lead checks/restaging before any publication. These Markdown edits are excluded from source identity; no future self-hash or F7 publication hash is invented.
+Capture byte/hash identities and staging/preflight outcomes are lead-supplied, not keeper-computed. Keeper read18-path inventory/base-head/18 diff headers, not every captured hunk. Later Markdown received final468-input a6f6/nav/preservation/whitespace/exact18/cached checks/restaging before publication ed4a, not a self-hash loop/new run claim. Historical capture remains bound to its actual F6base4158065d.
 
 | Fresh F7 reviewer | Session | Actual current verdict |
 |---|---|---|
@@ -311,5 +313,5 @@ Byte/hash capture identities and staging/preflight outcomes are lead-supplied, n
 | DevOps |`ses_eb7cb7206ffe1XrslbW4r6OyGq` |DONE / READY yes / findings NONE; complete18/current v10 receipt/raw logs29/517/189/668/26 binaries/a6f6/reviewEligible; prepaid two-Vec projection/shared cap/MOVE/cache hit-miss/product fees/cumulative input-target guards inspected |
 
 ALL3 final F7 reviews are DONE/READY/no findings on the SAME complete18-path scope and PRESENT a6f6/v10 proof. Material final verdicts are current F7 approvals, NOT older F6 approvals in these sessions. Reviewers ran no independent reruns/edits; optional cap/cache/budget property hardening is non-blocking/NOT executed proof. No LOW or pending review blocker remains. Source/config/test/index/PUML changes require WHOLE repeat before rereview; source/config/tests/index/PUML bytes stayed unchanged after PASS.
-**F7 publication is AUTHORIZED BUT NOT EXECUTED.** Lead will read final docs, rehash/join current468-input source to a6f6, check nav suffixes/whitespace/protected scope/exact18/no unexpected untracked paths, restage18/cached-check, make a meaningful non-amend commit/NON-FORCE push and verify actual remote HEAD/clean checkpoint. HEAD remains published4158065da37fd867b572a17d2f6271d687519584 until an actual later commit; no future hash/self-hash loop or F7 push invented. No polling/commands/commit/push occurred in this keeper pass.
-Bounded verification/review remains NUMERIC only before ONE LATER normalization; no empirical fit/authenticated labels/ancestry/cohort independence/artifact/native authority/authentic support/full estimator/allocator-RSS/D1/full fitter/composed-window/runtime-container/calibration/readiness or policy-training/activation/deployment approval. Five exclusions/trainingReady:false persist. F8 freeze/exact private ownership addendum/Backend+DevOps advice are DONE external-only; no F8 repository goals/source before actual verified F7 publication.
+**F7 publication is COMPLETE: ed4aebd233a5d91db2af4d2a6b4cd4470befb744.** Lead joined468-input source to a6f6, completed final nav/whitespace/protected-scope/exact18/cached checks/restaging, committed/NON-FORCE pushed and verified actual full HEAD=remote/CLEAN checkpoint. [F8 goals](native-banded-joint.md) follow that publication; no future hash/F8 proof inferred. No commands/commit/push occurred in this keeper pass.
+Bounded F7 verification/review/publication remains NUMERIC only before ONE LATER normalization; no empirical fit/authenticated labels/ancestry/cohort independence/artifact/native authority/authentic support/full estimator/allocator-RSS/D1/full fitter/composed-window/runtime-container/calibration/readiness/training approval. Five exclusions/trainingReady:false persist. F8 goals follow verified F7 publication; ALL F8 implementation/tests/v11/reviews/publication remain planned/not run.

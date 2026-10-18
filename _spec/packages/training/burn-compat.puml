@@ -1,4 +1,4 @@
-' purpose: Paired numerical transition/evidence tables, post-aggregation weighting and checked training foundations beside retained synthetic compatibility.
+' purpose: Owned normalization/full categorical banded joints and checked numerical training foundations beside retained synthetic compatibility.
 ' covers: Cargo.toml
 ' covers: rust-toolchain.toml
 ' covers: packages/training/Cargo.toml
@@ -47,7 +47,9 @@
 ' covers: packages/training/tests/joint_accounting.rs
 ' covers: packages/training/src/evidence_tables.rs
 ' covers: packages/training/tests/evidence_tables.rs
-' status: Paired evidence/raw joint/table/readout/accounting/learner/F1/ledger structure lives here; current evidence and review status lives in the related Markdown owners.
+' covers: packages/training/src/banded_joint.rs
+' covers: packages/training/tests/banded_joint.rs
+' status: Categorical banded/owned normalization/evidence/raw joint/training structure lives here; current evidence and review status lives in the related Markdown owners.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
 ' related: _spec/ml/native-runner.md
@@ -67,6 +69,8 @@
 ' related: _spec/ml/native-joint-accounting.md
 ' related: _spec/_plans/native-evidence-tables.md
 ' related: _spec/ml/native-evidence-tables.md
+' related: _spec/_plans/native-banded-joint.md
+' related: _spec/ml/native-banded-joint.md
 ' related: _spec/apps/arena/burn-compat.puml
 ' history: native-runner.md owns the completed baseline, not current ledger verification.
 ' history: d250c88e Bun receipt is superseded, not current proof or review eligibility.
@@ -75,7 +79,7 @@
 ' validation: Author runs no tests, renderer or hashes; lead owns the complete unchanged-input invoice and note-box checks.
 @startuml
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Rust paired numerical evidence + RAW accounting / checked training foundations
+title Rust categorical banded joints + owned normalization / checked training foundations
 left to right direction
 
 component "apps/arena/src/lib.rs\nRust policy caller" as ARENA <<app>>
@@ -120,6 +124,9 @@ package "Root Cargo workspace\nCargo.toml / one reused Cargo.lock" {
     component "joint_math::ReadoutTemperature::from_index\n0..1000 / tau=.25*16^(index/1000)\nchecked numerical index/value ONLY" as JOINT_TEMPERATURE <<app>>
     component "joint_math::readout_copy\none private N scratch / D577 + potential589 marginals\nfinite-checked compensated means in SAME N pass\nall quantiles checked before exact certain mean" as JOINT_READOUT <<app>>
     component "joint_math::NumericReadout\nmeans / quantiles [.05,.95,.025,.975]\nbalance / MATERIAL uncertainty\nSUMMARY ONLY / no tempered joint" as JOINT_SUMMARY <<app>>
+    component "joint_math::normalize_aggregate_owned\ncrate-private / BOTH lengths before prepaid52N\nALL-mask certainty / ordinary TOTAL / inplace DIV ONCE\nMOVE SAME mass+mask buffers / helper390180" as JOINT_OWNED_NORMALIZE <<app>>
+    component "joint_math::JointOwnedParts\nNumericJoint::into_owned_parts / crate-private\n32 BEFORE destructure / MOVE probability+support\nSAME support allocation + checked certainty" as JOINT_OWNED_MOVE <<app>>
+    component "joint_math::NumericSupport::copy_checked\njoint_math::from_normalized_owned\nONE fresh mask60328 / dense validation120144 NO DIV\nMOVE checked certainty / old public fees unchanged" as JOINT_OWNED_CONSTRUCT <<app>>
   }
   package "F5 pub mod transition_tables / numerical DATA only" {
     component "transition_tables::NumericFitGroup / NumericFitRow\nNumericOutcome / supplied source witness\nordered slot -> node -> cohort level / weight 1/r\nno native/hash-selected label or ancestry authority" as TABLE_INPUT <<app>>
@@ -146,6 +153,13 @@ package "Root Cargo workspace\nCargo.toml / one reused Cargo.lock" {
     component "evidence_tables::weight_evidence\nCONSUME all-source RAW / mask BITS + P=0 cells unchanged\n000 mass BITS unchanged / recompute retained / no MUL\nnonzero raw*LL / canonical finite retained sum" as EVID_WEIGHT <<app>>
     component "evidence_tables::weight_nonzero\nlocal Option<f64>[247] / ONE immutable model-turn-code\npaid band cursor + each positive index/product\nMISS full public query+store / HIT no count rescan" as EVID_CACHE <<app>>
     component "evidence_tables::EvidenceWeightedAccounting\nSAME two moved buffers / borrowed getters + cached total\nSTOP BEFORE ONE LATER global normalization\nno reband / readout / calibration / native authority" as EVID_RESULT <<app>>
+    component "evidence_tables::WeightedAccountingParts\nEvidenceWeightedAccounting::into_numeric_parts\ncrate-private / charge32 BEFORE destructure\nMOVE SAME two heaps / cached scalar NOT canonical TOTAL" as WEIGHTED_MOVE <<app>>
+  }
+  package "F8 pub mod banded_joint / FULL CATEGORICAL numerical DATA" {
+    component "packages/training/src/banded_joint.rs\nnormalize_weighted / consumes weighted output\n128 entry + parts32 + owned390180 =390340\nONE global normalization / no replacement buffers" as BANDED_NORMALIZE <<app>>
+    component "banded_joint::reband_joint / consumes NumericJoint\ncanonical bank -> band -> D SUM / FULL-width DIV\nONE247 scratch / cached C,L + component TOTAL\nstrict mass(0,1] / NO clamp or Gaussian approximation" as BANDED_REBAND <<app>>
+    component "banded_joint::NumericBandedJoint / NumericBandComponent\nprivate bank,band,mass,FULL conditional Vec incl ZEROS\nC<=247 / L<=7501 / final band512..576 width65\nseparate MOVED NumericSupport / ALL P=0 support retained" as BANDED_DATA <<app>>
+    component "banded_joint::expand_joint / borrows banded\nUNTEMPERED specified mass*conditional\nONE new probability Vec / omitted bands ZERO\ndetached typed NumericJoint / validation, NO second DIV" as BANDED_EXPAND <<app>>
   }
 }
 component "apps/arena/src/economic.rs\nhost recipient-history caller\nno recorded-policy verification" as ECO_HOST <<host>>
@@ -166,6 +180,7 @@ component "packages/training/tests/joint_math.rs\nindependent direct normalizati
 component "packages/training/tests/transition_tables.rs\nindependent sequences -> COMPLETE tuples / destruction Z\nall 794 cohorts / all 577 D / fractional count BITS\nqualification / profile isolation / exact fee controls\nprivate source units: safe logical-storage growth guards" as TABLE_PROOF <<app>>
 component "packages/training/tests/joint_accounting.rs\nindependent distinct-tuple mathematical oracle\nSEPARATE canonical contributor-graph BITWISE oracle\nall 7501 lanes / zero-PMF law / errors / exact work\nF3 parity TEST ONLY uses mathematical tolerance" as RAW_PROOF <<app>>
 component "packages/training/tests/evidence_tables.rs\noriginal-roster ALL794x48 count BITS / paired complete r\nqualification / destination clocks / cache / moved pointers\nmask + P=0 / reachable underflow / exact fees + Budget\nprivate source units: cap/precharge/move/NaN/zero total" as EVID_PROOF <<app>>
+component "packages/training/tests/banded_joint.rs\nindependent hardcoded19 bands / ALL247 +7501 entries\nordinary SUM/DIV/MUL BITS / full-width ZEROS\nstrict partial domain / MOVE+live detachment / exact fees\nprivate units: malformed shapes/domains/underflow" as BANDED_PROOF <<app>>
 
 ARENA ARROW_MAIN LIB : retained smoke / direct typed Rust call\nno scoring child / no Bun bridge
 RUN ARROW_MAIN COMPOSER : limited AuthorizedView only\nno case / fixture / seed / native image
@@ -293,6 +308,24 @@ EVID_PROOF ARROW_OPTIONAL EVID_BUILD : independent original-roster tallies / ALL
 EVID_PROOF ARROW_OPTIONAL EVID_WEIGHT : pointer equality BOTH heaps / mask BITS + P=0\n000 fit/query distinction / cache isolation / error prefixes
 EVID_PROOF ARROW_OPTIONAL EVID_LOANS : private metadata-only occupancy / bands + path invoices\nprivate raw NaN + stale-positive/zero-total controls
 XTASK ARROW_OPTIONAL EVID_PROOF : exact nonempty tests/evidence_tables.rs token\ntwo NEW required identities / KEEP20 F1-F6 + bridges
+EVID_RESULT ARROW_MAIN WEIGHTED_MOVE : consume weighted buffers / no clone or partial output
+WEIGHTED_MOVE ARROW_MAIN BANDED_NORMALIZE : SAME mass+mask heaps / typed LedgerError -> Band Work\ncached retained value grants NO total-scan exemption
+BANDED_NORMALIZE ARROW_MAIN JOINT_OWNED_NORMALIZE : header/metadata then full precharge BEFORE scans\nderive certainty from ALL mask cells, not PMF zeros
+JOINT_OWNED_NORMALIZE ARROW_MAIN JOINT_OWNED_MOVE : returned NumericJoint / caller chooses reband\nold public support+norm BITS preserved / no new authority
+JOINT_OWNED_MOVE ARROW_MAIN BANDED_REBAND : MOVE checked support + dense probabilities\nborrow compile-time band table by REFERENCE
+BANDED_REBAND ARROW_MAIN BANDED_DATA : prepay exactC + EACH full conditional width\nend checks CACHED total / MOVE support THEN drop dense
+BANDED_DATA ARROW_MAIN BANDED_EXPAND : borrowed immutable components+mask / zero-mass omission\nNEVER mask pruning / no temperature feedback
+BANDED_EXPAND ARROW_MAIN JOINT_OWNED_CONSTRUCT : specified MUL / domain+mask+underflow checks\npaid support copy THEN final dense SUM check, NO DIV
+BANDED_NORMALIZE ARROW_MAIN LEDGER_WORK : SAME caller390340 / helper390180\n120720 saved by THREE actual replacements removed, NOT discount
+BANDED_REBAND ARROW_MAIN LEDGER_WORK : 129332+248C+28L / max400616\nprepay scratch+headers+scan+alloc+DIV+checks+ownership
+BANDED_EXPAND ARROW_MAIN LEDGER_WORK : 210796+32C+16L / max338716\nONE new dense + paid mask copy / no unbilled loops
+BANDED_REBAND ARROW_ERROR FAILURE : strict mass>1 refuses EVEN inside F4 global tolerance\nallowed PARTIAL DOMAIN / NO clamp, repair or extra norm
+BANDED_EXPAND ARROW_ERROR FAILURE : positive MUL erased / nonfinite / outside-mask / work\nno partial output / borrowed banded state unchanged
+BANDED_PROOF ARROW_OPTIONAL JOINT_OWNED_NORMALIZE : old public numeric BITS / SAME TWO pointers\nALL-mask certainty / safe private precharge+error controls
+BANDED_PROOF ARROW_OPTIONAL BANDED_REBAND : Dirac5 [0,1] / Dirac576 width65 offset64\nfull conditionals incl zeros / independent ordinary SUM+DIV
+BANDED_PROOF ARROW_OPTIONAL BANDED_EXPAND : specified MUL BITS, NOT original roundtrip BITS\ndetach from LIVE banded storage / same-meter Budget
+BANDED_PROOF ARROW_OPTIONAL JOINT_READOUT : TEST ONLY private-copy temperature isolation\nno feedback to banded joint or support
+XTASK ARROW_OPTIONAL BANDED_PROOF : exact nonempty tests/banded_joint.rs token\ntwo NEW required identities / KEEP22 F1-F7 + bridges
 
 note bottom of LIB
   The smoke calls Burn in process so its
@@ -452,6 +485,18 @@ legend bottom
   Nonzero247 cache is local to one immutable model/turn/code; positive index/product and full MISS fees remain owed.
   F7 stops BEFORE ONE LATER global normalization; no fitted artifact, authentic support, calibration or permission.
   Safe private/pointer/budget controls are NOT allocator instrumentation/RSS/D1/full fitter or composed runtime admission.
+  F8 stores FULL CATEGORICAL conditional vectors, NOT Gaussian moments/variance floors/integration/approximation.
+  Canonical bank-band-D SUM then FULL-width DIV preserves zero entries; zero-mass components alone are omitted.
+  Strict mass(0,1] and conditional[0,1] / each conditional and component total SUM within1e-12 of1, no repair.
+  A valid F4 joint may fail strict band mass>1: permitted partial-domain refusal, NOT clamp or impossible-case assumption.
+  ALL mask bits and cached certainty survive zero-PMF bands; expansion is untempered specified MUL, NOT another DIV.
+  Owned normalization removes THREE real replacement allocations/init/copies/headers; old public F4/F7 fees/BITS stay unchanged.
+  Reband caches C,L/component total and moves existing support before dropping dense; no extra247 scratch/deep support copy.
+  Expansion allocates detached dense+mask, checks against LIVE banded storage; freed dense pointer reuse is not a test oracle.
+  Consuming errors may DROP inputs/no partial result, NOT rollback/coordinator transaction; borrowed models stay immutable.
+  Full-support390340+400616+338716=1129672>1M: valid same-meter Budget refusal, not window fit or global impossibility.
+  Logical storage/source audit+safe pointer/private/error controls are NOT allocator/RSS/D1/full pipeline admission.
+  No banded-joint-to-host/CLI/native-permit/history-initialization/spatial/encoder/fit-artifact/runtime-closure edge.
   Verifier notEstablished: full-training-closure / genuine-native-authority / whole-decision-adequacy.
   Verifier notEstablished also includes calibration / training-readiness; private labels remain DOCUMENT ONLY.
   No real training, payout calibration, R4 readiness or activation claim.

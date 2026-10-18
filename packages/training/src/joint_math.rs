@@ -92,11 +92,30 @@ impl NumericSupport {
     pub fn certainty(&self) -> NumericCertainty {
         self.certainty
     }
+
+    pub(crate) fn copy_checked(&self, work: &mut LedgerWork) -> JointMathResult<Self> {
+        charge(work, HEADER)?;
+        if self.cells.len() != JOINT_SIZE {
+            return Err(JointMathError::Shape);
+        }
+        charge(work, 192 + 8 * JOINT_SIZE as u64)?;
+        let mut cells = vec![false; JOINT_SIZE];
+        cells.copy_from_slice(&self.cells);
+        Ok(Self {
+            cells,
+            certainty: self.certainty,
+        })
+    }
 }
 
 pub struct NumericJoint {
     probabilities: Vec<f64>,
     support: NumericSupport,
+}
+
+pub(crate) struct JointOwnedParts {
+    pub(crate) probabilities: Vec<f64>,
+    pub(crate) support: NumericSupport,
 }
 
 impl std::fmt::Debug for NumericJoint {
@@ -116,6 +135,106 @@ impl NumericJoint {
     pub fn support(&self) -> &NumericSupport {
         &self.support
     }
+
+    pub(crate) fn into_owned_parts(
+        self,
+        work: &mut LedgerWork,
+    ) -> Result<JointOwnedParts, LedgerError> {
+        work.charge(32)?;
+        let Self {
+            probabilities,
+            support,
+        } = self;
+        Ok(JointOwnedParts {
+            probabilities,
+            support,
+        })
+    }
+}
+
+pub(crate) fn normalize_aggregate_owned(
+    mut masses: Vec<f64>,
+    cells: Vec<bool>,
+    work: &mut LedgerWork,
+) -> JointMathResult<NumericJoint> {
+    charge(work, HEADER)?;
+    if masses.len() != JOINT_SIZE || cells.len() != JOINT_SIZE {
+        return Err(JointMathError::Shape);
+    }
+    charge(work, 52 * JOINT_SIZE as u64)?;
+    let mut material_certainty = TargetCertainty::Unseen;
+    let mut potential_certainty = TargetCertainty::Unseen;
+    for bank in 0..BANKS {
+        for material in 0..MATERIAL_WIDTH {
+            let index = joint_offset(bank, material)?;
+            if cells[index] {
+                material_certainty.observe(coordinate(material)?);
+                potential_certainty.observe(coordinate(
+                    material.checked_add(bank).ok_or(JointMathError::Domain)?,
+                )?);
+            }
+        }
+    }
+    if matches!(material_certainty, TargetCertainty::Unseen) {
+        return Err(JointMathError::EmptySupport);
+    }
+    let certainty = NumericCertainty {
+        material: material_certainty.value(),
+        potential: potential_certainty.value(),
+    };
+    let mut total = 0.0;
+    for (index, mass) in masses.iter().enumerate() {
+        let mass = nonnegative(*mass)?;
+        if mass > 0.0 && !cells[index] {
+            return Err(JointMathError::Domain);
+        }
+        total = finite(total + mass)?;
+    }
+    if total == 0.0 {
+        return Err(JointMathError::EmptyMass);
+    }
+    let mut normalized_sum = 0.0;
+    for mass in &mut masses {
+        let previous = *mass;
+        *mass = finite(previous / total)?;
+        if previous > 0.0 && *mass == 0.0 {
+            return Err(JointMathError::Underflow);
+        }
+        normalized_sum = finite(normalized_sum + *mass)?;
+    }
+    normalized(normalized_sum)?;
+    Ok(NumericJoint {
+        probabilities: masses,
+        support: NumericSupport { cells, certainty },
+    })
+}
+
+pub(crate) fn from_normalized_owned(
+    probabilities: Vec<f64>,
+    support: NumericSupport,
+    work: &mut LedgerWork,
+) -> JointMathResult<NumericJoint> {
+    charge(work, HEADER)?;
+    if probabilities.len() != JOINT_SIZE || support.cells.len() != JOINT_SIZE {
+        return Err(JointMathError::Shape);
+    }
+    charge(work, 16 * JOINT_SIZE as u64)?;
+    let mut total = 0.0;
+    for (index, probability) in probabilities.iter().enumerate() {
+        let probability = nonnegative(*probability)?;
+        if probability > 0.0 && !support.cells[index] {
+            return Err(JointMathError::Domain);
+        }
+        total = finite(total + probability)?;
+    }
+    if total == 0.0 {
+        return Err(JointMathError::EmptyMass);
+    }
+    normalized(total)?;
+    Ok(NumericJoint {
+        probabilities,
+        support,
+    })
 }
 
 #[derive(Debug)]
@@ -411,6 +530,246 @@ fn charge(work: &mut LedgerWork, amount: u64) -> JointMathResult<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn owned_buffers() -> (Vec<f64>, Vec<bool>) {
+        let mut masses = vec![-0.0; JOINT_SIZE];
+        masses[4] = 0.125;
+        masses[MATERIAL_WIDTH + 4] = 0.5;
+        let mut cells = vec![false; JOINT_SIZE];
+        cells[4] = true;
+        cells[MATERIAL_WIDTH + 4] = true;
+        cells[12 * MATERIAL_WIDTH + 4] = true;
+        (masses, cells)
+    }
+
+    #[test]
+    fn owned_normalization_moves_both_heaps_matches_old_public_bits_and_saves_real_replacements() {
+        let (masses, cells) = owned_buffers();
+        let mut old_work = LedgerWork::new();
+        let support = NumericSupport::from_cells(&cells, &mut old_work).unwrap();
+        let expected = normalize_aggregate(&masses, &support, &mut old_work).unwrap();
+        assert_eq!(old_work.used(), 510900);
+        let mass_pointer = masses.as_ptr();
+        let cell_pointer = cells.as_ptr();
+        let mut work = LedgerWork::with_limit(390180).unwrap();
+        let joint = normalize_aggregate_owned(masses, cells, &mut work).unwrap();
+        assert_eq!(work.used(), 390180);
+        assert_eq!(old_work.used() - work.used(), 120720);
+        assert_eq!(joint.probabilities.as_ptr(), mass_pointer);
+        assert_eq!(joint.support.cells.as_ptr(), cell_pointer);
+        assert_eq!(
+            joint.support.certainty,
+            NumericCertainty {
+                material: Some(4),
+                potential: None
+            }
+        );
+        for (actual, expected) in joint.probabilities.iter().zip(&expected.probabilities) {
+            assert_eq!(actual.to_bits(), expected.to_bits());
+        }
+        assert_eq!(joint.support.cells, expected.support.cells);
+    }
+
+    #[test]
+    fn owned_normalization_prepays_shapes_masks_domains_overflow_and_positive_underflow() {
+        for (masses, cells) in [
+            (vec![], vec![false; JOINT_SIZE]),
+            (vec![0.0; JOINT_SIZE], vec![]),
+        ] {
+            let mut work = LedgerWork::with_limit(128).unwrap();
+            assert_eq!(
+                normalize_aggregate_owned(masses, cells, &mut work).unwrap_err(),
+                JointMathError::Shape
+            );
+            assert_eq!(work.used(), 128);
+        }
+        for case in 0..8 {
+            let mut masses = vec![0.0; JOINT_SIZE];
+            let mut cells = vec![false; JOINT_SIZE];
+            cells[0] = true;
+            let expected = match case {
+                0 => {
+                    cells[0] = false;
+                    JointMathError::EmptySupport
+                }
+                1 => JointMathError::EmptyMass,
+                2 => {
+                    masses[0] = f64::NAN;
+                    JointMathError::NonFinite
+                }
+                3 => {
+                    masses[0] = f64::INFINITY;
+                    JointMathError::NonFinite
+                }
+                4 => {
+                    masses[0] = -1.0;
+                    JointMathError::Domain
+                }
+                5 => {
+                    masses[1] = 1.0;
+                    JointMathError::Domain
+                }
+                6 => {
+                    masses[0] = f64::MAX;
+                    masses[1] = f64::MAX;
+                    cells[1] = true;
+                    JointMathError::NonFinite
+                }
+                _ => {
+                    masses[0] = 2.0;
+                    masses[1] = f64::from_bits(1);
+                    cells[1] = true;
+                    JointMathError::Underflow
+                }
+            };
+            let mut work = LedgerWork::with_limit(390180).unwrap();
+            assert_eq!(
+                normalize_aggregate_owned(masses, cells, &mut work).unwrap_err(),
+                expected
+            );
+            assert_eq!(work.used(), 390180);
+        }
+        let (masses, cells) = owned_buffers();
+        let mut short = LedgerWork::with_limit(390179).unwrap();
+        assert!(
+            matches!(normalize_aggregate_owned(masses, cells, &mut short), Err(JointMathError::Work(ref error)) if error.code == crate::ledger::contracts::LedgerErrorCode::Budget)
+        );
+        assert_eq!(short.used(), 128);
+    }
+
+    #[test]
+    fn checked_support_copy_and_normalized_owned_constructor_pay_exact_fees_without_dividing_again()
+    {
+        let (_, cells) = owned_buffers();
+        let support = NumericSupport::from_cells(&cells, &mut LedgerWork::new()).unwrap();
+        let mut copy_work = LedgerWork::with_limit(60328).unwrap();
+        let copied = support.copy_checked(&mut copy_work).unwrap();
+        assert_eq!(copy_work.used(), 60328);
+        assert_ne!(copied.cells.as_ptr(), support.cells.as_ptr());
+        assert_eq!(copied.certainty, support.certainty);
+        let mut probabilities = vec![-0.0_f64; JOINT_SIZE];
+        probabilities[4] = 0.50000000000005;
+        probabilities[MATERIAL_WIDTH + 4] = 0.5;
+        let expected_bits: Vec<_> = probabilities.iter().map(|value| value.to_bits()).collect();
+        let probability_pointer = probabilities.as_ptr();
+        let support_pointer = copied.cells.as_ptr();
+        let mut work = LedgerWork::with_limit(120144).unwrap();
+        let joint = from_normalized_owned(probabilities, copied, &mut work).unwrap();
+        assert_eq!(work.used(), 120144);
+        assert_eq!(joint.probabilities.as_ptr(), probability_pointer);
+        assert_eq!(joint.support.cells.as_ptr(), support_pointer);
+        for (value, bits) in joint.probabilities.iter().zip(expected_bits) {
+            assert_eq!(value.to_bits(), bits);
+        }
+        let mut short = LedgerWork::with_limit(60327).unwrap();
+        assert!(
+            matches!(support.copy_checked(&mut short), Err(JointMathError::Work(ref error)) if error.code == crate::ledger::contracts::LedgerErrorCode::Budget)
+        );
+        assert_eq!(short.used(), 128);
+        let malformed = NumericSupport {
+            cells: vec![],
+            certainty: NumericCertainty {
+                material: None,
+                potential: None,
+            },
+        };
+        let mut work = LedgerWork::with_limit(128).unwrap();
+        assert_eq!(
+            malformed.copy_checked(&mut work).unwrap_err(),
+            JointMathError::Shape
+        );
+        assert_eq!(work.used(), 128);
+        let support = support.copy_checked(&mut LedgerWork::new()).unwrap();
+        let mut short = LedgerWork::with_limit(120143).unwrap();
+        assert!(
+            matches!(from_normalized_owned(vec![f64::NAN; JOINT_SIZE], support, &mut short), Err(JointMathError::Work(ref error)) if error.code == crate::ledger::contracts::LedgerErrorCode::Budget)
+        );
+        assert_eq!(short.used(), 128);
+    }
+
+    #[test]
+    fn normalized_owned_constructor_checks_shapes_and_numeric_invariants_before_any_result() {
+        for case in 0..7 {
+            let mut probabilities = vec![0.0; JOINT_SIZE];
+            let mut cells = vec![false; JOINT_SIZE];
+            cells[0] = true;
+            let expected = match case {
+                0 => JointMathError::EmptyMass,
+                1 => {
+                    probabilities[0] = f64::NAN;
+                    JointMathError::NonFinite
+                }
+                2 => {
+                    probabilities[0] = f64::INFINITY;
+                    JointMathError::NonFinite
+                }
+                3 => {
+                    probabilities[0] = -0.5;
+                    JointMathError::Domain
+                }
+                4 => {
+                    probabilities[1] = 1.0;
+                    JointMathError::Domain
+                }
+                5 => {
+                    probabilities[0] = 0.5;
+                    JointMathError::NonFinite
+                }
+                _ => {
+                    probabilities.clear();
+                    JointMathError::Shape
+                }
+            };
+            let support = NumericSupport::from_cells(&cells, &mut LedgerWork::new()).unwrap();
+            let mut work = LedgerWork::new();
+            assert_eq!(
+                from_normalized_owned(probabilities, support, &mut work).unwrap_err(),
+                expected
+            );
+            assert_eq!(work.used(), if case == 6 { 128 } else { 120144 });
+        }
+        let support = NumericSupport {
+            cells: vec![],
+            certainty: NumericCertainty {
+                material: None,
+                potential: None,
+            },
+        };
+        let mut work = LedgerWork::with_limit(128).unwrap();
+        assert_eq!(
+            from_normalized_owned(vec![0.0; JOINT_SIZE], support, &mut work).unwrap_err(),
+            JointMathError::Shape
+        );
+        assert_eq!(work.used(), 128);
+    }
+
+    #[test]
+    fn joint_owned_parts_move_probability_mask_and_checked_certainty_after_32() {
+        let (masses, cells) = owned_buffers();
+        let joint = normalize_aggregate_owned(masses, cells, &mut LedgerWork::new()).unwrap();
+        let probability_pointer = joint.probabilities.as_ptr();
+        let support_pointer = joint.support.cells.as_ptr();
+        let certainty = joint.support.certainty;
+        let mut exact = LedgerWork::with_limit(32).unwrap();
+        let parts = joint.into_owned_parts(&mut exact).unwrap();
+        assert_eq!(exact.used(), 32);
+        assert_eq!(parts.probabilities.as_ptr(), probability_pointer);
+        assert_eq!(parts.support.cells.as_ptr(), support_pointer);
+        assert_eq!(parts.support.certainty, certainty);
+        let (masses, cells) = owned_buffers();
+        let joint = normalize_aggregate_owned(masses, cells, &mut LedgerWork::new()).unwrap();
+        let mut short = LedgerWork::with_limit(38).unwrap();
+        short.charge(7).unwrap();
+        let error = match joint.into_owned_parts(&mut short) {
+            Err(error) => error,
+            Ok(_) => panic!("unpaid joint move"),
+        };
+        assert_eq!(
+            error.code,
+            crate::ledger::contracts::LedgerErrorCode::Budget
+        );
+        assert_eq!(short.used(), 7);
+    }
 
     #[test]
     fn certain_mean_checks_each_quantile_without_repairing_it() {

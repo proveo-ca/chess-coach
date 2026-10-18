@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 
 pub mod accounting_kernel;
+pub mod banded_joint;
 pub mod candidates;
 pub mod contracts;
 pub mod evidence_tables;

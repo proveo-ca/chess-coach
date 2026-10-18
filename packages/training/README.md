@@ -15,6 +15,7 @@ The baseline receipts do not verify the ledger.
 - `contracts`: closed authorized views, seven action families and complete canonical action-array keys.
 - `evidence_tables`: paired numerical counts, qualified likelihoods and post-aggregation weighting.
 - `accounting_kernel`: one-source accounting flow and counts-independent reachability, not a joint estimator.
+- `banded_joint`: owned normalization, exact categorical conditional PMFs and untempered expansion.
 - `feature_input`: checked ordered boundary innovations and detached own-lineage inputs.
 - `feature_manifest`: exact 418-coordinate metadata, not an encoder.
 - `joint_math`: checked numerical masks, global normalization and summary-only readouts.
@@ -109,6 +110,14 @@ Evidence uses destination cohorts and shares the transition tables' occupied-row
 Weighting moves the raw mass/mask buffers, preserves every accounting-mask bit and stops before global normalization.
 The explicit zero-innovation bypass validates context first; fit-time zero codes still contribute counts and qualification.
 These numerical checks do not run empirical fitting or authenticate labels, ancestry, artifacts, calibration or public support.
+
+## Categorical banded joints
+
+The [F8 contract](../../_spec/ml/native-banded-joint.md) normalizes owned weighted buffers once and stores complete conditional PMFs in at most 247 bank/band components.
+Zero-mass components disappear without pruning any supplied support bit.
+Expansion produces a detached untempered joint and validates it without another global division.
+The representation uses no Gaussian approximation, probability floor or residual repair.
+Ownership savings remove actual replacement allocations and copies; they do not discount work charges or establish composed-window admission.
 
 ## Preparation
 
