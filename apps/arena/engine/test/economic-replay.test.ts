@@ -3,11 +3,13 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
-  OPENING_STORED_MATERIAL, UNIT_COST, applyStoredIncome, beginScTurn, deployedMaterialFromPlacement, endScTurn,
-  energyForTurn, formatScFen, parseScFen, snapFromPlacement, specialGasCost,
+  OPENING_STORED_MATERIAL, UNIT_COST, applyStoredIncome, beginScTurn, beginTurnWithProvenance,
+  deployedMaterialFromPlacement, endScTurn, endTurnWithProvenance, energyForTurn, formatScFen,
+  getSideVision, initializeProvenance, parseScFen, placementToMap, snapFromPlacement, specialGasCost,
 } from "@chess-coach/starchess-core";
 import { EconomicReplay, nativeLedgerRules } from "../economic-replay";
 import { EconomicProjector } from "../economic-project";
+import { fixtureV2 } from "../fixtures";
 import { parseEconomicBoundary, parseLedgerRules, type EconomicBoundary, type EconomicOpen } from "../economic-wire";
 import { NativeReplay } from "../replay";
 import { EngineErrorV2, type Action, type Pair } from "../wire-v2";
@@ -277,7 +279,7 @@ test("fixed all-actors rook replacement retires the sieged unit and births a new
   assert.deepEqual(group.afterOwn.units.find(unit => unit.square === "d1"), { square: "d1", type: "r", mode: "siege" });
   assert.deepEqual(group.facts, [
     { kind: "unit-destroyed", subject: { kind: "before-unit", square: "d1" }, square: "d1", type: "r" },
-    { kind: "unit-born", actionRef: { planningOrdinal: 1, acceptedActionOrdinal: 0 }, square: "d1", type: "r" },
+    { kind: "unit-born", actionRef: { planningOrdinal: 1, acceptedActionOrdinal: 0 }, square: "d1", type: "r", mode: "siege" },
   ]);
   assert.deepEqual(replaced.w.snapshot.own.siegedTanks, ["d1"]);
   assert.deepEqual(replacement.settlement.after.bank, applyStoredIncome(replacement.settlement.committed.bank, rawReplacement.next.turn));
@@ -307,7 +309,7 @@ test("fixed all-actors rook birth on an empty nonsieged square stays in native t
   assert.deepEqual(paid, oracle.commit(opened.context, requests));
   const groups = boundaries.w.groups.filter(group => group.kind === "effects");
   assert.equal(groups.length, 1);
-  assert.deepEqual(groups[0]!.facts, [{ kind: "unit-born", actionRef: { planningOrdinal: 0, acceptedActionOrdinal: 0 }, square: "d2", type: "r" }]);
+  assert.deepEqual(groups[0]!.facts, [{ kind: "unit-born", actionRef: { planningOrdinal: 0, acceptedActionOrdinal: 0 }, square: "d2", type: "r", mode: "tank" }]);
   assert.deepEqual(groups[0]!.afterOwn.units.filter(unit => unit.type === "r"), [
     { square: "d1", type: "r", mode: "tank" }, { square: "d2", type: "r", mode: "tank" },
   ]);
@@ -316,6 +318,201 @@ test("fixed all-actors rook birth on an empty nonsieged square stays in native t
   assert.deepEqual(paid.settlement.after.bank, applyStoredIncome(paid.settlement.committed.bank, boundaries.w.turn));
   assert.deepEqual(replay.close(), oracle.close(1));
 });
+
+test("fixed all-actors rook birth retains the replaced enemy rook's native siege square marker", () => {
+  const replay = new EconomicReplay(); const oracle = new NativeReplay();
+  const { boundaries: initial, rules: _rules, ...start } = replay.start("all-actors-v1");
+  assert.deepEqual(start, oracle.start("all-actors-v1"));
+  const nativeInitial = fixtureV2("all-actors-v1");
+  const initialProvenance = initializeProvenance(nativeInitial);
+  const nativeBegin = beginTurnWithProvenance({ snapshot: nativeInitial, provenance: initialProvenance });
+  const opened = planning(replay.open(0));
+  const { begin, boundaries: _openedBoundaries, ...oldOpened } = opened;
+  assert.deepEqual(oldOpened, oracle.open(1, 0));
+  assert.deepEqual(begin.rawBegin, nativeBegin.nativeResult);
+  assert.deepEqual([opened.context.turn, start.initial.bank], [21, { w: 12, b: 12 }]);
+  const relocate: Pair<Action[]> = { w: [], b: [
+    { kind: "classical", timing: "C", color: "b", from: "d8", to: "d2" },
+    { kind: "siegeMode", timing: "F", color: "b", from: "d8" },
+  ] };
+  const { boundaries: relocated, ...first } = replay.settle(opened.context, relocate);
+  assert.deepEqual(first, oracle.commit(opened.context, relocate));
+  const nativeFirst = endTurnWithProvenance({ snapshot: parseScFen(first.settlement.committed.scfen), provenance: nativeBegin.provenance,
+    actionBindings: relocate.b.map((_, ordinal) => ({ sourceActionSeq: ordinal, side: "b", actionRef: { planningOrdinal: 0, acceptedActionOrdinal: ordinal } })),
+  });
+  assert.deepEqual(nativeFirst.nativeResult, first.settlement.rawResolve);
+  assert.deepEqual(nativeFirst.nativeResult.next.siegedTanks, ["d2"]);
+  assert.deepEqual([first.settlement.committed.bank, first.settlement.grants, first.settlement.after.bank], [{ w: 12, b: 12 }, { w: 0, b: 0 }, { w: 12, b: 12 }]);
+  const originalBlackGeometry = { units: initial.b.snapshot.own.pieces.map(piece => ({ ...piece, mode: piece.type === "r" ? "tank" as const : null })), mines: [], ccLives: 3 };
+  const movedBlackGeometry = { ...originalBlackGeometry, units: originalBlackGeometry.units.map(unit => unit.square === "d8" ? { ...unit, square: "d2" as const } : unit) };
+  const siegedBlackGeometry = { ...movedBlackGeometry, units: movedBlackGeometry.units.map(unit => unit.square === "d2" ? { ...unit, mode: "siege" as const } : unit) };
+  const blackFirstGroups = relocated.b.groups.filter(group => group.kind === "effects");
+  assert.deepEqual(blackFirstGroups.map(({ beforeOwn, afterOwn, facts }) => ({ beforeOwn, afterOwn, facts })), [
+    { beforeOwn: originalBlackGeometry, afterOwn: movedBlackGeometry, facts: [{ kind: "unit-moved", subject: { kind: "before-unit", square: "d8" }, from: "d8", to: "d2" }] },
+    { beforeOwn: movedBlackGeometry, afterOwn: siegedBlackGeometry, facts: [{ kind: "unit-mode-changed", subject: { kind: "before-unit", square: "d2" }, before: "tank", after: "siege" }] },
+  ]);
+  assert.deepEqual(relocated.w.groups.filter(group => group.kind === "effects"), []);
+  assert.deepEqual(relocated.b.snapshot.own.siegedTanks, ["d2"]);
+  assert.equal(settlement(relocated.b).gasBeforeReset, 3 - specialGasCost("siegeMode"));
+
+  const nativeReplacementBegin = beginTurnWithProvenance({ snapshot: parseScFen(first.settlement.after.scfen), provenance: nativeFirst.provenance });
+  const replacementOpen = planning(replay.open(1));
+  const { begin: replacementBegin, boundaries: _replacementBoundaries, ...oldReplacementOpen } = replacementOpen;
+  assert.deepEqual(oldReplacementOpen, oracle.open(1, 1));
+  assert.deepEqual(replacementBegin.rawBegin, nativeReplacementBegin.nativeResult);
+  for (const side of ["w", "b"] as const) assert.deepEqual(relocated[side].snapshot.cells, replacementOpen.views[side].cells);
+  assert.deepEqual(replacementOpen.views.w.cells.find(cell => cell.square === "d2"), { square: "d2", visibility: "lit", piece: { color: "b", type: "r" } });
+  assert.deepEqual(replacementOpen.views.w.own.siegedTanks, []);
+  assert.ok(!replacementOpen.views.w.own.pieces.some(piece => piece.square === "d2"));
+  const deploy: Action = { kind: "deploy", timing: "B", color: "w", from: "e1", to: "d2", unit: "r" };
+  const requests: Pair<Action[]> = { w: [deploy], b: [] };
+  const { boundaries: replaced, ...second } = replay.settle(replacementOpen.context, requests);
+  assert.deepEqual(second, oracle.commit(replacementOpen.context, requests));
+  const committed = parseScFen(second.settlement.committed.scfen);
+  assert.deepEqual(committed.queue?.actions, [{ ...deploy, seq: 0 }]);
+  assert.deepEqual(committed.gas, { w: 2, b: 3 });
+  const nativeReplacement = endTurnWithProvenance({ snapshot: committed, provenance: nativeReplacementBegin.provenance,
+    actionBindings: [{ sourceActionSeq: 0, side: "w", actionRef: { planningOrdinal: 1, acceptedActionOrdinal: 0 } }],
+  });
+  assert.deepEqual(nativeReplacement.nativeResult, second.settlement.rawResolve);
+  assert.equal(nativeReplacement.frames.length, 1);
+  const frame = nativeReplacement.frames[0]!;
+  const birth = frame.effects.find(effect => effect.kind === "unit-create");
+  const death = frame.effects.find(effect => effect.kind === "unit-destroy");
+  assert.ok(birth?.kind === "unit-create" && death?.kind === "unit-destroy");
+  assert.deepEqual([frame.phase, birth.entity.side, birth.entity.square, birth.entity.type, birth.entity.tankMode, birth.sourceActionSeq], ["B", "w", "d2", "r", "siege", 0]);
+  assert.deepEqual([death.entity.side, death.entity.square, death.entity.type, death.entity.tankMode, death.sourceActionSeq], ["b", "d2", "r", "siege", 0]);
+  assert.notEqual(birth.entity.id, death.entity.id);
+  assert.deepEqual(frame.effects.map(effect => effect.kind), ["unit-create", "unit-destroy", "deployment-disposition"]);
+  const nativeVision = getSideVision(placementToMap(committed.placement), "w", {
+    mines: committed.mines ?? [], tankModeFor: square => committed.siegedTanks?.includes(square) ? "siege" : "tank",
+  });
+  assert.equal(nativeVision.litSquares.has(death.entity.square), true);
+
+  const ownBefore = { units: initial.w.snapshot.own.pieces.map(piece => ({ ...piece, mode: piece.type === "r" ? "tank" as const : null })), mines: [], ccLives: 3 };
+  const ownAfter = { ...ownBefore, units: [...ownBefore.units, { square: "d2" as const, type: "r" as const, mode: "siege" as const }].sort((a, b) => a.square < b.square ? -1 : a.square > b.square ? 1 : 0) };
+  const whiteGroups = replaced.w.groups.filter(group => group.kind === "effects");
+  const blackGroups = replaced.b.groups.filter(group => group.kind === "effects");
+  assert.deepEqual(whiteGroups.map(({ beforeOwn, afterOwn, facts }) => ({ beforeOwn, afterOwn, facts })), [{
+    beforeOwn: ownBefore, afterOwn: ownAfter, facts: [
+      { kind: "unit-born", actionRef: { planningOrdinal: 1, acceptedActionOrdinal: 0 }, square: "d2", type: "r", mode: "siege" },
+      { kind: "enemy-destruction-witnessed", square: "d2", type: "r", ownActionRef: { planningOrdinal: 1, acceptedActionOrdinal: 0 } },
+    ],
+  }]);
+  assert.deepEqual(blackGroups.map(({ beforeOwn, afterOwn, facts }) => ({ beforeOwn, afterOwn, facts })), [{
+    beforeOwn: siegedBlackGeometry, afterOwn: { ...siegedBlackGeometry, units: siegedBlackGeometry.units.filter(unit => unit.square !== "d2") },
+    facts: [{ kind: "unit-destroyed", subject: { kind: "before-unit", square: "d2" }, square: "d2", type: "r" }],
+  }]);
+  const admission = replaced.w.groups.find(group => group.kind === "admission");
+  assert.ok(admission?.kind === "admission");
+  assert.deepEqual(admission.actions, [{ actionRef: { planningOrdinal: 1, acceptedActionOrdinal: 0 }, action: deploy, minerals: UNIT_COST.r, gas: specialGasCost("deploy") }]);
+  assert.deepEqual([UNIT_COST.r, specialGasCost("deploy"), second.settlement.committed.bank, second.settlement.grants, second.settlement.after.bank], [5, 1, { w: 7, b: 12 }, { w: 3, b: 0 }, { w: 10, b: 12 }]);
+  assert.deepEqual(second.settlement.after.bank, applyStoredIncome(second.settlement.committed.bank, nativeReplacement.nativeResult.next.turn));
+  assert.deepEqual(replaced.w.snapshot.own.siegedTanks, ["d2"]);
+  assert.deepEqual(replaced.b.snapshot.own.siegedTanks, []);
+  assert.deepEqual(replaced.w.snapshot.cells.find(cell => cell.square === "d2"), { square: "d2", visibility: "lit", piece: { color: "w", type: "r" } });
+  assert.deepEqual(replaced.b.snapshot.cells.find(cell => cell.square === "d2"), { square: "d2", visibility: "unknown" });
+  for (const side of ["w", "b"] as const) {
+    assert.deepEqual(parseEconomicBoundary(replaced[side]), replaced[side]);
+    assert.ok(!/engine:|tankMode|sourceActionSeq|siegeMask/.test(JSON.stringify(replaced[side])));
+  }
+  const next = planning(replay.open(2));
+  const { begin: _nextBegin, boundaries: _nextBoundaries, ...oldNext } = next;
+  assert.deepEqual(oldNext, oracle.open(1, 2));
+  for (const side of ["w", "b"] as const) assert.deepEqual(replaced[side].snapshot.cells, next.views[side].cells);
+  assert.deepEqual([next.context.turn, next.views.w.own.minerals, next.views.w.own.gas, next.views.w.own.siegedTanks], [23, 10, 3, ["d2"]]);
+  assert.deepEqual(replay.close(), oracle.close(1));
+});
+
+test("fixed all-actors hidden enemy siege mode changes no white boundary or observation bytes", () => {
+  const pass = new EconomicReplay(); const siege = new EconomicReplay();
+  const initialPass = pass.start("all-actors-v1"); const initialSiege = siege.start("all-actors-v1");
+  assert.deepEqual(initialPass.boundaries.w.snapshot.cells.find(cell => cell.square === "d8"), { square: "d8", visibility: "unknown" });
+  assert.equal(JSON.stringify(initialPass.boundaries.w), JSON.stringify(initialSiege.boundaries.w));
+  const passOpen = planning(pass.open(0)); const siegeOpen = planning(siege.open(0));
+  assert.equal(JSON.stringify(passOpen.boundaries.w), JSON.stringify(siegeOpen.boundaries.w));
+  const passed = pass.settle(passOpen.context, empty);
+  const sieged = siege.settle(siegeOpen.context, { w: [], b: [{ kind: "siegeMode", timing: "F", color: "b", from: "d8" }] });
+  assert.deepEqual(parseScFen(sieged.settlement.after.scfen).siegedTanks, ["d8"]);
+  assert.deepEqual(sieged.boundaries.b.snapshot.own.siegedTanks, ["d8"]);
+  assert.equal(JSON.stringify(passed.boundaries.w), JSON.stringify(sieged.boundaries.w));
+  assert.deepEqual(sieged.boundaries.w.groups.filter(group => group.kind === "effects" || group.kind === "admission"), []);
+  const passNext = planning(pass.open(1)); const siegeNext = planning(siege.open(1));
+  assert.equal(JSON.stringify(passNext.boundaries.w), JSON.stringify(siegeNext.boundaries.w));
+  assert.equal(JSON.stringify(passNext.views.w), JSON.stringify(siegeNext.views.w));
+  assert.deepEqual(siegeNext.views.w.cells.find(cell => cell.square === "d8"), { square: "d8", visibility: "unknown" });
+  pass.close(); siege.close();
+});
+
+for (const [marked, mode] of [[true, "siege"], [false, "tank"]] as const) {
+  test(`native endowed-pawn capture promotion to rook samples ${mode} mode at the actual b8 transform square`, () => {
+    const snapshot = parseScFen(`SCFEN|1r2k3/P7/8/8/8/8/8/4K3|21|33|P|G:33:33|B:3:3|Q:w:;b:${marked ? "|S:b8" : ""}`);
+    const provenance = initializeProvenance(snapshot);
+    const originalPawn = provenance.entities.find(entity => entity.kind === "unit" && entity.side === "w" && entity.square === "a7");
+    assert.ok(originalPawn?.kind === "unit");
+    assert.deepEqual([originalPawn.type, originalPawn.tankMode], ["p", null]);
+    const nativeBegin = beginTurnWithProvenance({ snapshot, provenance });
+    const replay = EconomicReplay.fromSnapshotForTest(snapshot);
+    const oracle = NativeReplay.fromSnapshotForTest(snapshot);
+    const { boundaries: initial, rules: _rules, ...start } = replay.start("tiny-v1");
+    assert.deepEqual(start, oracle.start("tiny-v1"));
+    assert.deepEqual(initial.w.groups, []);
+    assert.deepEqual(initial.w.snapshot.own.pieces, [{ square: "a7", type: "p" }, { square: "e1", type: "k" }]);
+    const opened = planning(replay.open(0));
+    const { begin, boundaries: _openedBoundaries, ...oldOpened } = opened;
+    assert.deepEqual(oldOpened, oracle.open(1, 0));
+    assert.deepEqual(begin.rawBegin, nativeBegin.nativeResult);
+    assert.deepEqual(opened.views.w.cells.find(cell => cell.square === "b8"), { square: "b8", visibility: "lit", piece: { color: "b", type: "r" } });
+    const action: Action = { kind: "classical", timing: "C", color: "w", from: "a7", to: "b8", promotion: "r" };
+    const requests: Pair<Action[]> = { w: [action], b: [] };
+    const { boundaries, ...paid } = replay.settle(opened.context, requests);
+    assert.deepEqual(paid, oracle.commit(opened.context, requests));
+    const committed = parseScFen(paid.settlement.committed.scfen);
+    assert.deepEqual(committed.queue?.actions, [{ ...action, seq: 0 }]);
+    const native = endTurnWithProvenance({ snapshot: committed, provenance: nativeBegin.provenance,
+      actionBindings: [{ sourceActionSeq: 0, side: "w", actionRef: { planningOrdinal: 0, acceptedActionOrdinal: 0 } }],
+    });
+    assert.deepEqual(native.nativeResult, paid.settlement.rawResolve);
+    assert.deepEqual(native.frames.map(frame => frame.phase), ["C-attack", "C-move", "C-promotion"]);
+    assert.deepEqual(native.frames.flatMap(frame => frame.effects).map(effect => effect.kind), ["unit-destroy", "unit-move", "unit-transform"]);
+    const move = native.frames[1]!.effects[0]!;
+    const transformFrame = native.frames[2]!;
+    const transform = transformFrame.effects[0]!;
+    assert.deepEqual(move, { kind: "unit-move", entityId: originalPawn.id, from: "a7", to: "b8", sourceActionSeq: 0 });
+    assert.deepEqual(transform, { kind: "unit-transform", entityId: originalPawn.id, fromType: "p", toType: "r", sourceActionSeq: 0 });
+    assert.deepEqual(transformFrame.before.entities.find(entity => entity.id === originalPawn.id), { ...originalPawn, square: "b8" });
+    assert.deepEqual(transformFrame.after.entities.find(entity => entity.id === originalPawn.id), { ...originalPawn, square: "b8", type: "r", tankMode: mode });
+    assert.deepEqual(native.provenance.entities.find(entity => entity.id === originalPawn.id), { ...originalPawn, square: "b8", type: "r", tankMode: mode });
+    assert.equal(native.provenance.unitCounter, provenance.unitCounter);
+
+    const king = { square: "e1", type: "k", mode: null };
+    const originGeometry = { units: [{ square: "a7", type: "p", mode: null }, king], mines: [], ccLives: 3 };
+    const movedGeometry = { ...originGeometry, units: [{ square: "b8", type: "p", mode: null }, king] };
+    const promotedGeometry = { ...movedGeometry, units: [{ square: "b8", type: "r", mode }, king] };
+    const whiteEffects = boundaries.w.groups.filter(group => group.kind === "effects");
+    assert.deepEqual(whiteEffects.map(({ beforeOwn, afterOwn, facts }) => ({ beforeOwn, afterOwn, facts })), [
+      { beforeOwn: originGeometry, afterOwn: originGeometry, facts: [{ kind: "enemy-destruction-witnessed", square: "b8", type: "r", ownActionRef: { planningOrdinal: 0, acceptedActionOrdinal: 0 } }] },
+      { beforeOwn: originGeometry, afterOwn: movedGeometry, facts: [{ kind: "unit-moved", subject: { kind: "before-unit", square: "a7" }, from: "a7", to: "b8" }] },
+      { beforeOwn: movedGeometry, afterOwn: promotedGeometry, facts: [{ kind: "unit-transformed", subject: { kind: "before-unit", square: "b8" }, fromType: "p", toType: "r", toMode: mode }] },
+    ]);
+    const blackEffects = boundaries.b.groups.filter(group => group.kind === "effects");
+    assert.deepEqual(blackEffects.map(group => group.facts), [[{ kind: "unit-destroyed", subject: { kind: "before-unit", square: "b8" }, square: "b8", type: "r" }]]);
+    assert.deepEqual(blackEffects[0]!.beforeOwn.units.find(unit => unit.square === "b8"), { square: "b8", type: "r", mode });
+    assert.ok(!blackEffects[0]!.afterOwn.units.some(unit => unit.square === "b8"));
+    const admission = boundaries.w.groups.find(group => group.kind === "admission");
+    assert.ok(admission?.kind === "admission");
+    assert.deepEqual(admission.actions, [{ actionRef: { planningOrdinal: 0, acceptedActionOrdinal: 0 }, action, minerals: 0, gas: 0 }]);
+    assert.deepEqual(paid.settlement.committed.bank, { w: 3, b: 3 });
+    assert.deepEqual(paid.settlement.after.bank, applyStoredIncome(paid.settlement.committed.bank, native.nativeResult.next.turn));
+    assert.deepEqual([boundaries.w.turn, paid.settlement.grants, paid.settlement.after.bank], [22, { w: 3, b: 3 }, { w: 6, b: 6 }]);
+    assert.deepEqual(native.nativeResult.next.siegedTanks ?? [], marked ? ["b8"] : []);
+    assert.deepEqual(boundaries.w.snapshot.own.siegedTanks, marked ? ["b8"] : []);
+    assert.deepEqual(boundaries.w.snapshot.own.pieces, [{ square: "b8", type: "r" }, { square: "e1", type: "k" }]);
+    assert.deepEqual(boundaries.w.snapshot.cells.find(cell => cell.square === "b8"), { square: "b8", visibility: "lit", piece: { color: "w", type: "r" } });
+    assert.deepEqual(parseEconomicBoundary(boundaries.w), boundaries.w);
+    assert.deepEqual(replay.close(), oracle.close(1));
+  });
+}
 
 test("atomic rejected pair returns exact old witness and preserves opening without receipts, End or grant", () => {
   const replay = new EconomicReplay(); const oracle = new NativeReplay();

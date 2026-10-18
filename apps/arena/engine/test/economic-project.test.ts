@@ -2,12 +2,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
-  addScAction, beginTurnWithProvenance, endTurnWithProvenance, initializeProvenance, parseScFen,
-  type ProvenanceCompanion, type TrustedEffectFrame,
+  addScAction, beginTurnWithProvenance, endTurnWithProvenance, initializeProvenance, mapToPlacement, parseScFen,
+  type EngineEntity, type ProvenanceCompanion, type ScPiece, type Square, type TrustedEffectFrame,
 } from "@chess-coach/starchess-core";
 import { EconomicProjector, projectOwnGeometry } from "../economic-project";
 import { EconomicReplay } from "../economic-replay";
-import { type EconomicBoundary, type EffectFact } from "../economic-wire";
+import { parseEconomicBoundary, type EconomicBoundary, type EffectFact } from "../economic-wire";
 import { EngineErrorV2, type Action, type Pair, type Side } from "../wire-v2";
 
 const facts = (boundary: EconomicBoundary): EffectFact[] => boundary.groups.flatMap(g => g.kind === "effects" ? g.facts : []);
@@ -61,7 +61,7 @@ test("same-cell own replacement emits causal retirement and birth without confus
   const group = result.paid.boundaries.w.groups.find(g => g.kind === "effects");
   assert.ok(group && group.kind === "effects");
   assert.ok(group.facts.some(f => f.kind === "unit-destroyed" && f.type === "r" && f.subject.kind === "before-unit" && f.subject.square === "e2"));
-  assert.ok(group.facts.some(f => f.kind === "unit-born" && f.type === "p" && f.square === "e2"));
+  assert.ok(group.facts.some(f => f.kind === "unit-born" && f.type === "p" && f.square === "e2" && f.mode === null));
   assert.deepEqual(group.beforeOwn.units.find(u => u.square === "e2"), { square: "e2", type: "r", mode: "tank" });
   assert.deepEqual(group.afterOwn.units.find(u => u.square === "e2"), { square: "e2", type: "p", mode: null });
 });
@@ -100,9 +100,9 @@ test("promotion emits birth, movement and same-entity transformation without a n
       { kind: "classical", timing: "C", color: "w", from: "e7", to: "f8", promotion: "q" }], b: [],
   });
   const own = facts(result.paid.boundaries.w);
-  assert.ok(own.some(f => f.kind === "unit-born" && f.actionRef.acceptedActionOrdinal === 1));
+  assert.ok(own.some(f => f.kind === "unit-born" && f.actionRef.acceptedActionOrdinal === 1 && f.mode === null));
   assert.ok(own.some(f => f.kind === "unit-moved" && f.subject.kind === "before-unit" && f.subject.square === "e7"));
-  assert.ok(own.some(f => f.kind === "unit-transformed" && f.fromType === "p" && f.toType === "q" && f.subject.kind === "before-unit" && f.subject.square === "e8"));
+  assert.ok(own.some(f => f.kind === "unit-transformed" && f.fromType === "p" && f.toType === "q" && f.toMode === null && f.subject.kind === "before-unit" && f.subject.square === "e8"));
   const admission = result.paid.boundaries.w.groups.find(g => g.kind === "admission");
   assert.ok(admission && admission.kind === "admission");
   assert.deepEqual(admission.actions.map(a => a.minerals), [0, 1, 0]);
@@ -181,6 +181,242 @@ function nativeCompanion(raw: string, actions: Action[]) {
   return { projector, ended, initial, next: { ...ended.nativeResult.next, stored: initial.stored } };
 }
 
+type SyntheticImage = TrustedEffectFrame["before"];
+type SyntheticUnit = Extract<EngineEntity, { kind: "unit" }>;
+type SyntheticEffect = TrustedEffectFrame["effects"][number];
+
+function syntheticOwnModeFrame(born: boolean, build: (unit: SyntheticUnit, image: SyntheticImage) => { effects: readonly SyntheticEffect[]; after: SyntheticImage }) {
+  const { projector, ended, initial } = nativeCompanion(`SCFEN|7k/8/8/8/8/8/${born ? "8" : "P7"}/K7|21|33|P|G:33:33|B:3:3|Q:w:;b:`, []);
+  const before: SyntheticImage = { entities: ended.provenance.entities, ccLives: ended.provenance.ccLives, nativeMineOrder: ended.provenance.nativeMineOrder };
+  const unit: SyntheticUnit = born ? { id: "engine:unit:3", kind: "unit", side: "w", square: "a2", type: "p", tankMode: null } : (() => {
+    const pawn = before.entities.find(entity => entity.kind === "unit" && entity.side === "w" && entity.type === "p");
+    assert.ok(pawn?.kind === "unit"); return pawn;
+  })();
+  const built = build(unit, before);
+  const frame: TrustedEffectFrame = { sourceEffectKey: "synthetic-mode-frame", phase: born ? "B" : "C-promotion", before, after: built.after,
+    beforeVisibilityKey: "synthetic-before", afterVisibilityKey: "synthetic-after", effects: built.effects };
+  const project = (selected = frame, target = projector) => {
+    const board = new Map<Square, ScPiece>();
+    for (const entity of selected.after.entities) if (entity.kind === "unit") board.set(entity.square, { color: entity.side, type: entity.type });
+    const snapshot = { ...initial, placement: mapToPlacement(board), ccLives: { ...selected.after.ccLives },
+      siegedTanks: selected.after.entities.flatMap(entity => entity.kind === "unit" && entity.tankMode === "siege" ? [entity.square] : []),
+    };
+    const companion: ProvenanceCompanion<unknown> = { ...ended, frames: [selected], provenance: { ...ended.provenance,
+      resolvedActions: [{ sourceActionSeq: 0, side: "w", actionRef: { planningOrdinal: 0, acceptedActionOrdinal: 0 }, effectiveActorId: born ? null : unit.id }],
+    }, visibilityImages: [
+      { key: selected.beforeVisibilityKey, ordinal: 0, turn: initial.turn, phase: selected.phase, state: selected.before },
+      { key: selected.afterVisibilityKey, ordinal: 1, turn: initial.turn, phase: selected.phase, state: selected.after },
+    ], visibilityCheckpoints: [
+      { ordinal: 0, imageKey: selected.beforeVisibilityKey, frameKey: selected.sourceEffectKey, point: "before-frame" },
+      { ordinal: 1, imageKey: selected.afterVisibilityKey, frameKey: selected.sourceEffectKey, point: "after-frame" },
+    ] };
+    return target.boundary({ snapshot, companion, phase: "turn-open", planningOrdinal: 0 });
+  };
+  return { frame, unit, projector, project };
+}
+
+for (const mode of ["tank", "siege"] as const) {
+  test(`synthetic same-frame rook birth and death preserve actual ${mode} origin without an endpoint`, () => {
+    const fixture = syntheticOwnModeFrame(true, (unit, image) => {
+      const rook: SyntheticUnit = { ...unit, type: "r", tankMode: mode };
+      return { after: image, effects: [
+        { kind: "unit-create", entity: rook, sourceActionSeq: 0 },
+        { kind: "unit-destroy", entity: rook, sourceActionSeq: 0, causalBeforeVisibilityKey: "synthetic-before" },
+        { kind: "deployment-disposition", materializedEntityId: rook.id, sourceActionSeq: 0 },
+      ] };
+    });
+    const projected = fixture.project().w;
+    assert.deepEqual(facts(projected), [
+      { kind: "unit-born", actionRef: { planningOrdinal: 0, acceptedActionOrdinal: 0 }, square: "a2", type: "r", mode },
+      { kind: "unit-destroyed", subject: { kind: "born-unit", actionRef: { planningOrdinal: 0, acceptedActionOrdinal: 0 } }, square: "a2", type: "r" },
+    ]);
+    const group = projected.groups.find(group => group.kind === "effects");
+    assert.ok(group?.kind === "effects"); assert.deepEqual(group.beforeOwn, group.afterOwn);
+    assert.deepEqual(parseEconomicBoundary(projected), projected);
+  });
+
+  test(`synthetic birth retains ${mode} before a separate actual mode change`, () => {
+    const finalMode = mode === "tank" ? "siege" : "tank";
+    const fixture = syntheticOwnModeFrame(true, (unit, image) => {
+      const rook: SyntheticUnit = { ...unit, type: "r", tankMode: mode };
+      return { after: { ...image, entities: [...image.entities, { ...rook, tankMode: finalMode }] }, effects: [
+        { kind: "unit-create", entity: rook, sourceActionSeq: 0 },
+        { kind: "tank-mode-change", entityId: rook.id, before: mode, after: finalMode, sourceActionSeq: 0 },
+      ] };
+    });
+    assert.deepEqual(facts(fixture.project().w), [
+      { kind: "unit-born", actionRef: { planningOrdinal: 0, acceptedActionOrdinal: 0 }, square: "a2", type: "r", mode },
+      { kind: "unit-mode-changed", subject: { kind: "born-unit", actionRef: { planningOrdinal: 0, acceptedActionOrdinal: 0 } }, before: mode, after: finalMode },
+    ]);
+  });
+
+  test(`synthetic transform and immediate death use the actual ${mode} death anchor`, () => {
+    const fixture = syntheticOwnModeFrame(false, (unit, image) => ({
+      after: { ...image, entities: image.entities.filter(entity => entity.id !== unit.id) }, effects: [
+        { kind: "unit-transform", entityId: unit.id, fromType: "p", toType: "r", sourceActionSeq: 0 },
+        { kind: "unit-destroy", entity: { ...unit, type: "r", tankMode: mode }, sourceActionSeq: 0, causalBeforeVisibilityKey: "synthetic-before" },
+      ],
+    }));
+    assert.deepEqual(facts(fixture.project().w), [
+      { kind: "unit-transformed", subject: { kind: "before-unit", square: "a2" }, fromType: "p", toType: "r", toMode: mode },
+      { kind: "unit-destroyed", subject: { kind: "before-unit", square: "a2" }, square: "a2", type: "r" },
+    ]);
+  });
+
+  test(`synthetic newborn pawn keeps its born locator through ${mode} rook transformation and death`, () => {
+    const fixture = syntheticOwnModeFrame(true, (unit, image) => ({ after: image, effects: [
+      { kind: "unit-create", entity: unit, sourceActionSeq: 0 },
+      { kind: "unit-transform", entityId: unit.id, fromType: "p", toType: "r", sourceActionSeq: 0 },
+      { kind: "unit-destroy", entity: { ...unit, type: "r", tankMode: mode }, sourceActionSeq: 0, causalBeforeVisibilityKey: "synthetic-before" },
+    ] }));
+    const subject = { kind: "born-unit", actionRef: { planningOrdinal: 0, acceptedActionOrdinal: 0 } };
+    assert.deepEqual(facts(fixture.project().w), [
+      { kind: "unit-born", actionRef: subject.actionRef, square: "a2", type: "p", mode: null },
+      { kind: "unit-transformed", subject, fromType: "p", toType: "r", toMode: mode },
+      { kind: "unit-destroyed", subject, square: "a2", type: "r" },
+    ]);
+  });
+
+  for (const retired of [false, true]) {
+    test(`synthetic ${mode} type entry precedes a real mode change and ${retired ? "death" : "survival"}`, () => {
+      const finalMode = mode === "tank" ? "siege" : "tank";
+      const fixture = syntheticOwnModeFrame(false, (unit, image) => {
+        const rook: SyntheticUnit = { ...unit, type: "r", tankMode: finalMode };
+        return { after: { ...image, entities: retired ? image.entities.filter(entity => entity.id !== unit.id) : image.entities.map(entity => entity.id === unit.id ? rook : entity) }, effects: [
+          { kind: "unit-transform", entityId: unit.id, fromType: "p", toType: "r", sourceActionSeq: 0 },
+          { kind: "tank-mode-change", entityId: unit.id, before: mode, after: finalMode, sourceActionSeq: 0 },
+          ...(retired ? [{ kind: "unit-destroy" as const, entity: rook, sourceActionSeq: 0, causalBeforeVisibilityKey: "synthetic-before" }] : []),
+        ] };
+      });
+      const subject = { kind: "before-unit", square: "a2" };
+      const projected = fixture.project().w;
+      assert.deepEqual(facts(projected), [
+        { kind: "unit-transformed", subject, fromType: "p", toType: "r", toMode: mode },
+        { kind: "unit-mode-changed", subject, before: mode, after: finalMode },
+        ...(retired ? [{ kind: "unit-destroyed", subject, square: "a2", type: "r" }] : []),
+      ]);
+      assert.deepEqual(parseEconomicBoundary(projected), projected);
+    });
+  }
+}
+
+test("synthetic transformation validates successive mode changes against the advancing native mode", () => {
+  const fixture = syntheticOwnModeFrame(false, (unit, image) => ({
+    after: { ...image, entities: image.entities.map(entity => entity.id === unit.id ? { ...unit, type: "r", tankMode: "siege" } : entity) }, effects: [
+      { kind: "unit-transform", entityId: unit.id, fromType: "p", toType: "r", sourceActionSeq: 0 },
+      { kind: "tank-mode-change", entityId: unit.id, before: "tank", after: "siege", sourceActionSeq: 0 },
+      { kind: "tank-mode-change", entityId: unit.id, before: "siege", after: "tank", sourceActionSeq: 0 },
+      { kind: "tank-mode-change", entityId: unit.id, before: "tank", after: "siege", sourceActionSeq: 0 },
+    ],
+  }));
+  assert.deepEqual(facts(fixture.project().w).map(fact => fact.kind === "unit-transformed" ? fact.toMode : fact.kind === "unit-mode-changed" ? [fact.before, fact.after] : fact.kind), ["tank", ["tank", "siege"], ["siege", "tank"], ["tank", "siege"]]);
+});
+
+test("synthetic movement preserves the type-entry mode until a real native mode-change effect", () => {
+  const fixture = syntheticOwnModeFrame(false, (unit, image) => ({
+    after: { ...image, entities: image.entities.map(entity => entity.id === unit.id ? { ...unit, square: "a3", type: "r", tankMode: "siege" } : entity) }, effects: [
+      { kind: "unit-transform", entityId: unit.id, fromType: "p", toType: "r", sourceActionSeq: 0 },
+      { kind: "unit-move", entityId: unit.id, from: "a2", to: "a3", sourceActionSeq: 0 },
+      { kind: "tank-mode-change", entityId: unit.id, before: "tank", after: "siege", sourceActionSeq: 0 },
+    ],
+  }));
+  const subject = { kind: "before-unit", square: "a2" };
+  assert.deepEqual(facts(fixture.project().w), [
+    { kind: "unit-transformed", subject, fromType: "p", toType: "r", toMode: "tank" },
+    { kind: "unit-moved", subject, from: "a2", to: "a3" },
+    { kind: "unit-mode-changed", subject, before: "tank", after: "siege" },
+  ]);
+});
+
+test("synthetic contradictory transformation anchors refuse for the intended reason and retain both recipient cursors", () => {
+  type Mutation = (frame: TrustedEffectFrame, unit: SyntheticUnit) => TrustedEffectFrame;
+  const endpoint = (frame: TrustedEffectFrame, unit: SyntheticUnit, patch: Partial<SyntheticUnit>): TrustedEffectFrame => ({ ...frame,
+    after: { ...frame.after, entities: frame.after.entities.map(entity => entity.id === unit.id ? { ...unit, type: "r", tankMode: "siege", ...patch } : entity) },
+  });
+  const absent = (frame: TrustedEffectFrame, unit: SyntheticUnit): SyntheticImage => ({ ...frame.after, entities: frame.after.entities.filter(entity => entity.id !== unit.id) });
+  const death = (unit: SyntheticUnit, patch: Partial<SyntheticUnit> = {}): SyntheticEffect => ({ kind: "unit-destroy", entity: { ...unit, type: "r", tankMode: "siege", ...patch }, sourceActionSeq: 0, causalBeforeVisibilityKey: "synthetic-before" });
+  const mutations: [string, RegExp, Mutation][] = [
+    ["missing endpoint", /transformation terminal anchor/, (frame, unit) => ({ ...frame, after: absent(frame, unit) })],
+    ["foreign endpoint", /incompatible native unit anchor/, (frame, unit) => endpoint(frame, unit, { side: "b" })],
+    ["wrong endpoint type", /terminal anchor type mismatch/, (frame, unit) => endpoint(frame, unit, { type: "q", tankMode: null })],
+    ["invalid endpoint mode", /Invalid native unit type\/mode/, (frame, unit) => endpoint(frame, unit, { tankMode: null })],
+    ["incompatible final mode", /transformation terminal mode/, (frame, unit) => endpoint(frame, unit, { tankMode: "tank" })],
+    ["wrong endpoint kind", /incompatible native unit anchor/, (frame, unit) => ({ ...frame, after: { ...frame.after, entities: frame.after.entities.map(entity => entity.id === unit.id ? { id: unit.id, kind: "mine", side: "w", square: unit.square } as unknown as EngineEntity : entity) } })],
+    ["duplicate endpoint", /Duplicate native frame entity/, (frame, unit) => ({ ...frame, after: { ...frame.after, entities: [...frame.after.entities, { ...unit, type: "r", tankMode: "siege" }] } })],
+    ["missing preimage", /Missing native unit causal preimage/, (frame, unit) => ({ ...frame, before: { ...frame.before, entities: frame.before.entities.filter(entity => entity.id !== unit.id) } })],
+    ["unknown transformed identity", /Missing native unit causal preimage/, frame => ({ ...frame, effects: frame.effects.map(event => event.kind === "unit-transform" || event.kind === "tank-mode-change" ? { ...event, entityId: "engine:unit:99" } : event) })],
+    ["wrong source type", /Incompatible native transformation type/, frame => ({ ...frame, effects: frame.effects.map(event => event.kind === "unit-transform" ? { ...event, fromType: "q" } : event) })],
+    ["broken advancing chain", /transformation mode chain/, (frame, unit) => ({ ...frame, effects: [...frame.effects, { kind: "tank-mode-change", entityId: unit.id, before: "tank", after: "siege", sourceActionSeq: 0 }] })],
+    ["unprovable second type entry", /Unprovable compound transformation/, (frame, unit) => ({ ...endpoint(frame, unit, { type: "q", tankMode: null }), effects: [frame.effects[0]!, { kind: "unit-transform", entityId: unit.id, fromType: "r", toType: "q", sourceActionSeq: 0 }] })],
+    ["identity reuse", /identity reuse/, (frame, unit) => ({ ...frame, effects: [...frame.effects, { kind: "unit-create", entity: { ...unit, type: "r", tankMode: "siege" }, sourceActionSeq: 0 }] })],
+    ["foreign death", /incompatible native unit anchor/, (frame, unit) => ({ ...frame, after: absent(frame, unit), effects: [...frame.effects, death(unit, { side: "b" })] })],
+    ["wrong death type", /death anchor type mismatch/, (frame, unit) => ({ ...frame, after: absent(frame, unit), effects: [...frame.effects, death(unit, { type: "q", tankMode: null })] })],
+    ["invalid death mode", /Invalid native unit type\/mode/, (frame, unit) => ({ ...frame, after: absent(frame, unit), effects: [...frame.effects, death(unit, { tankMode: null })] })],
+    ["incompatible death mode", /transformation death mode/, (frame, unit) => ({ ...frame, after: absent(frame, unit), effects: [...frame.effects, death(unit, { tankMode: "tank" })] })],
+    ["retired endpoint", /Retired native unit survives/, (frame, unit) => ({ ...frame, effects: [...frame.effects, death(unit)] })],
+    ["movement after retirement", /Post-retirement native unit effect/, (frame, unit) => ({ ...frame, after: absent(frame, unit), effects: [...frame.effects, death(unit), { kind: "unit-move", entityId: unit.id, from: "a2", to: "a3", sourceActionSeq: 0 }] })],
+    ["mode change after retirement", /Post-retirement native unit effect/, (frame, unit) => ({ ...frame, after: absent(frame, unit), effects: [...frame.effects, death(unit), { kind: "tank-mode-change", entityId: unit.id, before: "siege", after: "tank", sourceActionSeq: 0 }] })],
+  ];
+  for (const [name, reason, mutate] of mutations) {
+    const fixture = syntheticOwnModeFrame(false, (unit, image) => ({
+      after: { ...image, entities: image.entities.map(entity => entity.id === unit.id ? { ...unit, type: "r", tankMode: "siege" } : entity) }, effects: [
+        { kind: "unit-transform", entityId: unit.id, fromType: "p", toType: "r", sourceActionSeq: 0 },
+        { kind: "tank-mode-change", entityId: unit.id, before: "tank", after: "siege", sourceActionSeq: 0 },
+      ],
+    }));
+    const clean = fixture.projector.fork();
+    assert.throws(() => fixture.project(mutate(fixture.frame, fixture.unit)), error => error instanceof EngineErrorV2 && error.packet.code === "ENGINE_FAILURE" && reason.test(error.message), name);
+    assert.deepEqual(fixture.project(), fixture.project(fixture.frame, clean), name);
+  }
+});
+
+test("synthetic contradictory birth anchors never supply a default mode or consume recipient sequences", () => {
+  type Mutation = (frame: TrustedEffectFrame, unit: SyntheticUnit) => TrustedEffectFrame;
+  const absent = (frame: TrustedEffectFrame, unit: SyntheticUnit): SyntheticImage => ({ ...frame.after, entities: frame.after.entities.filter(entity => entity.id !== unit.id) });
+  const mutations: [string, RegExp, Mutation][] = [
+    ["missing rook mode", /Invalid native unit type\/mode/, frame => ({ ...frame, effects: frame.effects.map(event => event.kind === "unit-create" ? { ...event, entity: { ...event.entity, tankMode: null } } : event) })],
+    ["nonrook birth mode", /Invalid native unit type\/mode/, frame => ({ ...frame, effects: frame.effects.map(event => event.kind === "unit-create" ? { ...event, entity: { ...event.entity, type: "p", tankMode: "siege" } } : event) })],
+    ["foreign birth entity", /incompatible native unit anchor/, frame => ({ ...frame, effects: frame.effects.map(event => event.kind === "unit-create" ? { ...event, entity: { ...event.entity, side: "b" } } : event) })],
+    ["wrong birth kind", /incompatible native unit anchor/, (frame, unit) => ({ ...frame, effects: [{ kind: "unit-create", entity: { id: unit.id, kind: "mine", side: "w", square: unit.square } as unknown as SyntheticUnit, sourceActionSeq: 0 }] })],
+    ["missing terminal entity", /incompatible native unit anchor/, (frame, unit) => ({ ...frame, after: absent(frame, unit) })],
+    ["birth versus endpoint mode", /Contradictory native unit terminal anchor/, (frame, unit) => ({ ...frame, after: { ...frame.after, entities: frame.after.entities.map(entity => entity.id === unit.id ? { ...unit, type: "r", tankMode: "siege" } : entity) } })],
+    ["birth versus death mode", /Contradictory native unit death anchor/, (frame, unit) => ({ ...frame, after: absent(frame, unit), effects: [...frame.effects, { kind: "unit-destroy", entity: { ...unit, type: "r", tankMode: "siege" }, sourceActionSeq: 0, causalBeforeVisibilityKey: "synthetic-before" }] })],
+    ["birth reuse after retirement", /Post-retirement native unit effect/, (frame, unit) => ({ ...frame, after: absent(frame, unit), effects: [...frame.effects, { kind: "unit-destroy", entity: { ...unit, type: "r", tankMode: "tank" }, sourceActionSeq: 0, causalBeforeVisibilityKey: "synthetic-before" }, frame.effects[0]!] })],
+  ];
+  for (const [name, reason, mutate] of mutations) {
+    const fixture = syntheticOwnModeFrame(true, (unit, image) => {
+      const rook: SyntheticUnit = { ...unit, type: "r", tankMode: "tank" };
+      return { after: { ...image, entities: [...image.entities, rook] }, effects: [{ kind: "unit-create", entity: rook, sourceActionSeq: 0 }] };
+    });
+    const clean = fixture.projector.fork();
+    assert.throws(() => fixture.project(mutate(fixture.frame, fixture.unit)), error => error instanceof EngineErrorV2 && error.packet.code === "ENGINE_FAILURE" && reason.test(error.message), name);
+    assert.deepEqual(fixture.project(), fixture.project(fixture.frame, clean), name);
+  }
+});
+
+test("mode projection enforces the existing total native effect cap before inspecting origin anchors", () => {
+  const fixture = syntheticOwnModeFrame(true, (unit, image) => ({ after: { ...image, entities: [...image.entities, unit] }, effects: [{ kind: "unit-create", entity: unit, sourceActionSeq: 0 }] }));
+  const malformed = { ...fixture.frame, effects: Array.from({ length: 1153 }, () => undefined as unknown as SyntheticEffect) };
+  const clean = fixture.projector.fork();
+  assert.throws(() => fixture.project(malformed), error => error instanceof EngineErrorV2 && error.packet.code === "LIMIT" && /Native provenance exceeds physical bounds/.test(error.message));
+  assert.deepEqual(fixture.project(), fixture.project(fixture.frame, clean));
+});
+
+test("synthetic black origin failure rolls back white facts and both side sequences atomically", () => {
+  const fixture = syntheticOwnModeFrame(true, (unit, image) => ({ after: { ...image, entities: [...image.entities, unit] }, effects: [{ kind: "unit-create", entity: unit, sourceActionSeq: 0 }] }));
+  const black: SyntheticUnit = { id: "engine:unit:4", kind: "unit", side: "b", type: "r", square: "h7", tankMode: null };
+  const malformed: TrustedEffectFrame = { ...fixture.frame,
+    after: { ...fixture.frame.after, entities: [...fixture.frame.after.entities, black] },
+    effects: [...fixture.frame.effects, { kind: "unit-create", entity: black, sourceActionSeq: 1 }],
+  };
+  const clean = fixture.projector.fork();
+  assert.throws(() => fixture.project(malformed), error => error instanceof EngineErrorV2 && error.packet.code === "ENGINE_FAILURE" && /Invalid native unit type\/mode/.test(error.message));
+  const recovered = fixture.project();
+  assert.deepEqual(recovered, fixture.project(fixture.frame, clean));
+  assert.equal(recovered.w.seqBefore, 0); assert.equal(recovered.b.seqBefore, 0);
+  assert.ok(facts(recovered.w).some(fact => fact.kind === "unit-born" && fact.mode === null));
+});
+
 test("unconsumed or mismatched capture proof cannot authorize hidden causal preimage", () => {
   const fixture = "SCFEN|4k3/8/p7/8/8/8/8/R3K3|0|33|P|G:11:11|B:3:3|Q:w:;b:";
   for (const variant of ["unconsumed", "victim", "source", "frame", "causal"] as const) {
@@ -241,7 +477,7 @@ test("whole-group newborn locators survive immediate destruction inside the same
   visibilityCheckpoints: [{ ordinal: 0, imageKey: "before", frameKey: frame.sourceEffectKey, point: "before-frame" as const }, { ordinal: 1, imageKey: "after", frameKey: frame.sourceEffectKey, point: "after-frame" as const }] };
   const projected = projector.boundary({ snapshot: initial, companion, phase: "turn-open", planningOrdinal: 0 }).w;
   assert.deepEqual(facts(projected), [
-    { kind: "unit-born", actionRef: { planningOrdinal: 0, acceptedActionOrdinal: 0 }, square: "a2", type: "p" },
+    { kind: "unit-born", actionRef: { planningOrdinal: 0, acceptedActionOrdinal: 0 }, square: "a2", type: "p", mode: null },
     { kind: "unit-destroyed", subject: { kind: "born-unit", actionRef: { planningOrdinal: 0, acceptedActionOrdinal: 0 } }, square: "a2", type: "p" },
   ]);
 });

@@ -192,6 +192,55 @@ test("public boundary decoder enforces group, combined entry, vision, nullable a
   success(worker.handle(request(2, { op: "economic.close" })));
 });
 
+test("economic v1 explicit birth and transformation modes decode both rook modes and required nonrook nulls without aliases", () => {
+  const worker = new EconomicWorker();
+  const start = success(worker.handle(request(1, { op: "economic.start", fixture: "tiny-v1" })));
+  assert.ok(start.kind === "started");
+  const own = { units: [{ square: "e1", type: "k", mode: null }], mines: [], ccLives: 3 };
+  const withFact = (fact: unknown) => ({ ...start.boundaries.w, ordinal: 1, phase: "turn-open", seqThrough: 1,
+    groups: [{ kind: "effects", seq: 1, beforeOwn: own, afterOwn: own, facts: [fact] }],
+  });
+  for (const mode of ["tank", "siege", null] as const) {
+    const born = { kind: "unit-born" as const, actionRef: { planningOrdinal: 0, acceptedActionOrdinal: 0 }, square: "e2", type: mode === null ? "p" : "r", mode };
+    const transformed = { kind: "unit-transformed" as const, subject: { kind: "before-unit", square: "e2" }, fromType: "p", toType: mode === null ? "q" : "r", toMode: mode };
+    for (const fact of [born, transformed]) {
+      const input = withFact(fact);
+      const decoded = parseEconomicBoundary(input);
+      assert.deepEqual(decoded, input);
+      assert.notEqual(decoded.groups, input.groups);
+      const group = decoded.groups[0]!;
+      assert.ok(group.kind === "effects");
+      assert.notEqual(group.facts[0], fact);
+      if (fact.kind === "unit-born") {
+        fact.actionRef.acceptedActionOrdinal = 3;
+        assert.ok(group.facts[0]!.kind === "unit-born");
+        assert.equal(group.facts[0]!.actionRef.acceptedActionOrdinal, 0);
+      } else {
+        fact.subject.square = "e3";
+        assert.ok(group.facts[0]!.kind === "unit-transformed");
+        assert.deepEqual(group.facts[0]!.subject, { kind: "before-unit", square: "e2" });
+      }
+    }
+  }
+  for (const [valid, field, typeField] of [
+    [{ kind: "unit-born", actionRef: { planningOrdinal: 0, acceptedActionOrdinal: 0 }, square: "e2", type: "r", mode: "tank" }, "mode", "type"],
+    [{ kind: "unit-transformed", subject: { kind: "before-unit", square: "e2" }, fromType: "p", toType: "r", toMode: "tank" }, "toMode", "toType"],
+  ] as const) {
+    const missing: Record<string, unknown> = { ...valid }; delete missing[field];
+    assert.throws(() => parseEconomicBoundary(withFact(missing)), code("BAD_REQUEST", /data field/));
+    assert.throws(() => parseEconomicBoundary(withFact({ ...valid, [field]: null })), code("BAD_REQUEST", /rook-only/));
+    assert.throws(() => parseEconomicBoundary(withFact({ ...valid, [typeField]: "q" })), code("BAD_REQUEST", /rook-only/));
+    for (const alias of [{ tank: null }, ["tank"], "Tank", "sieged", 1, true]) assert.throws(() => parseEconomicBoundary(withFact({ ...valid, [field]: alias })), code("BAD_REQUEST", /Invalid tank mode/));
+    assert.throws(() => parseEconomicBoundary(withFact({ ...valid, opponentMode: "siege" })), code("BAD_REQUEST", /Unexpected fields/));
+    assert.throws(() => parseEconomicBoundary(withFact(Object.values(valid))), code("BAD_REQUEST", /effect kind/));
+    const text = JSON.stringify(withFact(valid));
+    const duplicate = text.replace(`"${field}":"tank"`, `"${field}":"tank","${field}":"siege"`);
+    assert.notEqual(duplicate, text);
+    assert.throws(() => parseEconomicJson(duplicate), code("BAD_REQUEST", /Duplicate JSON key/));
+  }
+  success(worker.handle(request(2, { op: "economic.close" })));
+});
+
 test("input failures produce one bounded failure with both required nullable fields", async () => {
   const broken: AsyncIterable<Uint8Array> = { [Symbol.asyncIterator]() { return { next: () => Promise.reject(new Error("input failed")) }; } };
   const output: string[] = [];

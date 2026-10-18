@@ -723,6 +723,7 @@ fn materialized_then_destroyed_purchase_is_paid_loss_not_unmaterialized_waste() 
             action_ref: reference(0, 0),
             square: sq("d1"),
             kind: UnitType::Pawn,
+            mode: None,
         },
         EffectFact::UnitDestroyed {
             subject: UnitSubject::BornUnit {
@@ -819,6 +820,7 @@ fn deployment_disposition_missing_duplicate_conflicting_or_undeclared_fails_with
         action_ref: reference(0, 0),
         square: sq("d1"),
         kind: UnitType::Pawn,
+        mode: None,
     };
     let conflicting = finish(
         &opening,
@@ -839,6 +841,7 @@ fn deployment_disposition_missing_duplicate_conflicting_or_undeclared_fails_with
         action_ref: reference(0, 0),
         square: sq("c1"),
         kind: UnitType::Pawn,
+        mode: None,
     };
     let mismatch = finish(
         &opening,
@@ -876,6 +879,7 @@ fn paid_pawn_promotion_keeps_one_paid_basis_and_nine_replacement_then_loses_each
                         action_ref: reference(0, 0),
                         square: sq("d7"),
                         kind: UnitType::Pawn,
+                        mode: None,
                     },
                     EffectFact::UnitMoved {
                         subject: subject.clone(),
@@ -886,6 +890,7 @@ fn paid_pawn_promotion_keeps_one_paid_basis_and_nine_replacement_then_loses_each
                         subject,
                         from_type: UnitType::Pawn,
                         to_type: UnitType::Queen,
+                        to_mode: None,
                     },
                 ],
             ),
@@ -954,6 +959,7 @@ fn endowed_loss_and_free_promotion_never_invent_purchase_basis() {
                 subject: before("c7"),
                 from_type: UnitType::Pawn,
                 to_type: UnitType::Queen,
+                to_mode: None,
             }],
         )],
         vec![],
@@ -1070,6 +1076,7 @@ fn same_cell_birth_then_old_occupant_retirement_keeps_distinct_local_lineages() 
                         action_ref: reference(0, 0),
                         square: sq("c2"),
                         kind: UnitType::Pawn,
+                        mode: None,
                     },
                     EffectFact::UnitDestroyed {
                         subject: before("c2"),
@@ -1835,6 +1842,7 @@ fn rejected_open_birth_cc_increase_and_wrong_carried_refill_do_not_publish() {
             action_ref: reference(0, 0),
             square: sq("d1"),
             kind: UnitType::Pawn,
+            mode: None,
         }],
     ));
     reseq(&mut opening.w);
@@ -1955,6 +1963,7 @@ fn earlier_group_births_use_next_immutable_before_locator_not_a_reused_born_loca
         action_ref: reference(0, 0),
         square: sq("c2"),
         kind: UnitType::Pawn,
+        mode: None,
     };
     let movement = EffectFact::UnitMoved {
         subject: before("c2"),
@@ -2004,7 +2013,7 @@ fn earlier_group_births_use_next_immutable_before_locator_not_a_reused_born_loca
 }
 
 #[test]
-fn paid_rook_birth_defaults_to_tank_and_causal_mode_changes_reconcile_siege_geometry() {
+fn paid_rook_birth_explicit_tank_mode_and_causal_mode_changes_reconcile_siege_geometry() {
     let origin = tiny(21, (12, 12));
     let opening = open(&origin);
     let opened = step(&start(&origin), &opening);
@@ -2022,6 +2031,7 @@ fn paid_rook_birth_defaults_to_tank_and_causal_mode_changes_reconcile_siege_geom
         action_ref: reference(0, 0),
         square: sq("d1"),
         kind: UnitType::Rook,
+        mode: Some(TankMode::Tank),
     };
     let mode = EffectFact::UnitModeChanged {
         subject: UnitSubject::BornUnit {
@@ -2344,6 +2354,7 @@ fn sieged_rook_replacement_preserves_square_mode_and_mints_paid_lineage() {
         action_ref: reference(1, 0),
         square: sq("d1"),
         kind: UnitType::Rook,
+        mode: Some(TankMode::Siege),
     };
     for facts in [vec![retire.clone(), birth.clone()], vec![birth, retire]] {
         let replacement = finish(
@@ -2501,17 +2512,22 @@ fn initial_turn_limit_and_shorter_profile_limit_preserve_charged_terminal_duplic
 
 #[test]
 fn rook_birth_cannot_invent_siege_or_unsiege_from_postimage_or_unrelated_preimage() {
-    let birth = EffectFact::UnitBorn {
-        action_ref: reference(0, 0),
-        square: sq("d1"),
-        kind: UnitType::Rook,
-    };
     let retire = EffectFact::UnitDestroyed {
         subject: before("d1"),
         square: sq("d1"),
         kind: UnitType::Rook,
     };
     for case in 0..5 {
+        let birth = EffectFact::UnitBorn {
+            action_ref: reference(0, 0),
+            square: sq("d1"),
+            kind: UnitType::Rook,
+            mode: Some(if case == 3 {
+                TankMode::Siege
+            } else {
+                TankMode::Tank
+            }),
+        };
         let mut origin = match case {
             0 => tiny(21, (12, 12)),
             1 => with_white(
@@ -2623,6 +2639,7 @@ fn rook_replacement_obeys_explicit_mode_changes_within_and_between_atomic_groups
                     action_ref: reference(0, 1),
                     square: sq("d1"),
                     kind: UnitType::Rook,
+                    mode: Some(next_mode),
                 };
                 let mut groups = vec![admission(vec![
                     accepted(
@@ -2670,5 +2687,663 @@ fn rook_replacement_obeys_explicit_mode_changes_within_and_between_atomic_groups
                 );
             }
         }
+    }
+}
+
+fn rook_at(square: &str, mode: TankMode) -> OwnUnitGeometry {
+    OwnUnitGeometry {
+        square: sq(square),
+        kind: UnitType::Rook,
+        mode: Some(mode),
+    }
+}
+
+fn rook_action(planning: u32, ordinal: u32, square: &str) -> AcceptedOwnAction {
+    accepted(
+        planning,
+        ordinal,
+        json!({"kind":"deploy","timing":"B","color":"w","from":"e1","to":square,"unit":"r"}),
+        5,
+        1,
+    )
+}
+
+fn other_mode(mode: TankMode) -> TankMode {
+    match mode {
+        TankMode::Tank => TankMode::Siege,
+        TankMode::Siege => TankMode::Tank,
+    }
+}
+
+#[test]
+fn explicit_birth_modes_drive_structural_own_enemy_and_empty_origin_images() {
+    for mode in [TankMode::Tank, TankMode::Siege] {
+        for origin_kind in ["own", "enemy", "empty"] {
+            let mut origin = match origin_kind {
+                "own" => with_white(
+                    21,
+                    12,
+                    &[("d2", UnitType::Rook), ("e1", UnitType::King)],
+                    &[],
+                ),
+                "enemy" => initial(
+                    view(Side::White, 21, 12, &[("e1", UnitType::King)], &[]),
+                    view(
+                        Side::Black,
+                        21,
+                        12,
+                        &[("d2", UnitType::Rook), ("e8", UnitType::King)],
+                        &[],
+                    ),
+                ),
+                _ => tiny(21, (12, 12)),
+            };
+            let prior_mode = other_mode(mode);
+            if origin_kind == "own" && prior_mode == TankMode::Siege {
+                origin.w.snapshot.own.sieged_tanks.push(sq("d2"));
+            }
+            if origin_kind == "enemy" {
+                origin.w.snapshot.cells[sq("d2").index()] =
+                    lit("d2", Some(UnitType::Rook), Side::Black);
+                if prior_mode == TankMode::Siege {
+                    origin.b.snapshot.own.sieged_tanks.push(sq("d2"));
+                }
+            }
+            let opening = open(&origin);
+            let opened = step(&start(&origin), &opening);
+            let mut facts = Vec::new();
+            let mut black_groups = Vec::new();
+            if origin_kind == "own" {
+                facts.push(EffectFact::UnitDestroyed {
+                    subject: before("d2"),
+                    square: sq("d2"),
+                    kind: UnitType::Rook,
+                });
+            }
+            if origin_kind == "enemy" {
+                facts.push(EffectFact::EnemyDestructionWitnessed {
+                    square: sq("d2"),
+                    kind: UnitType::Rook,
+                    own_action_ref: Some(reference(0, 0)),
+                });
+                black_groups.push(effects(
+                    geometry(&opening.b),
+                    image(vec![unit("e8", UnitType::King)], &[], 3),
+                    vec![EffectFact::UnitDestroyed {
+                        subject: before("d2"),
+                        square: sq("d2"),
+                        kind: UnitType::Rook,
+                    }],
+                ));
+            }
+            facts.push(EffectFact::UnitBorn {
+                action_ref: reference(0, 0),
+                square: sq("d2"),
+                kind: UnitType::Rook,
+                mode: Some(mode),
+            });
+            let settlement = finish(
+                &opening,
+                vec![
+                    admission(vec![rook_action(0, 0, "d2")]),
+                    effects(
+                        geometry(&opening.w),
+                        image(
+                            vec![unit("e1", UnitType::King), rook_at("d2", mode)],
+                            &[],
+                            3,
+                        ),
+                        facts,
+                    ),
+                ],
+                black_groups,
+            );
+            let report = reports(&step(&opened, &settlement));
+            let rook = report
+                .w
+                .own_units
+                .iter()
+                .find(|unit| unit.square == sq("d2"))
+                .unwrap();
+            assert_eq!(
+                (
+                    rook.mode,
+                    rook.paid_mineral_basis,
+                    rook.non_cc_replacement_value
+                ),
+                (Some(mode), 5, 5)
+            );
+            assert_eq!(rook.id, if origin_kind == "own" { "u3" } else { "u2" });
+            assert_eq!(
+                (
+                    report.w.calculated.minerals.paid_debits,
+                    report.w.calculated.minerals.surviving_paid_basis,
+                    report.w.calculated.minerals.current_bank
+                ),
+                (5, 5, 10)
+            );
+            assert_eq!(report.w.own_lost.count, u64::from(origin_kind == "own"));
+            assert_eq!(
+                report.w.witnessed_enemy_destruction.count,
+                u64::from(origin_kind == "enemy")
+            );
+            if origin_kind == "own" {
+                assert_eq!(
+                    (
+                        report.w.own_lost.units[0].unit.mode,
+                        report.w.own_lost.units[0].unit.paid_mineral_basis
+                    ),
+                    (Some(prior_mode), 0)
+                );
+            }
+            if origin_kind == "enemy" {
+                assert_eq!(
+                    (
+                        report.b.own_lost.units[0].unit.mode,
+                        report.b.own_lost.units[0].unit.paid_mineral_basis
+                    ),
+                    (Some(prior_mode), 0)
+                );
+                assert_eq!(report.w.witnessed_enemy_destruction.replacement_value, 5);
+            }
+        }
+    }
+}
+
+#[test]
+fn explicit_rook_promotion_modes_preserve_endowed_and_paid_pawn_identity() {
+    for mode in [TankMode::Tank, TankMode::Siege] {
+        for paid in [false, true] {
+            let origin = if paid {
+                tiny(21, (12, 12))
+            } else {
+                with_white(
+                    21,
+                    12,
+                    &[("c7", UnitType::Pawn), ("e1", UnitType::King)],
+                    &[],
+                )
+            };
+            let opening = open(&origin);
+            let opened = step(&start(&origin), &opening);
+            let mut groups = Vec::new();
+            let mut facts = Vec::new();
+            let subject = if paid {
+                groups.push(admission(vec![deploy(0, 0, "c7")]));
+                facts.push(EffectFact::UnitBorn {
+                    action_ref: reference(0, 0),
+                    square: sq("c7"),
+                    kind: UnitType::Pawn,
+                    mode: None,
+                });
+                UnitSubject::BornUnit {
+                    action_ref: reference(0, 0),
+                }
+            } else {
+                before("c7")
+            };
+            facts.push(EffectFact::UnitTransformed {
+                subject,
+                from_type: UnitType::Pawn,
+                to_type: UnitType::Rook,
+                to_mode: Some(mode),
+            });
+            groups.push(effects(
+                geometry(&opening.w),
+                image(
+                    vec![rook_at("c7", mode), unit("e1", UnitType::King)],
+                    &[],
+                    3,
+                ),
+                facts,
+            ));
+            let settlement = finish(&opening, groups, vec![]);
+            let report = reports(&step(&opened, &settlement)).w;
+            let rook = report
+                .own_units
+                .iter()
+                .find(|unit| unit.square == sq("c7"))
+                .unwrap();
+            assert_eq!(
+                (
+                    &*rook.id,
+                    rook.mode,
+                    rook.paid_mineral_basis,
+                    rook.non_cc_replacement_value
+                ),
+                (
+                    if paid { "u2" } else { "u1" },
+                    Some(mode),
+                    u32::from(paid),
+                    5
+                )
+            );
+            assert_eq!(rook.type_changes.len(), 1);
+            assert_eq!(
+                (rook.type_changes[0].from_type, rook.type_changes[0].to_type),
+                (UnitType::Pawn, UnitType::Rook)
+            );
+            assert_eq!(
+                (
+                    report.calculated.minerals.paid_debits,
+                    report.calculated.minerals.surviving_paid_basis
+                ),
+                (u64::from(paid), u64::from(paid))
+            );
+            assert_eq!(report.own_lost.count, 0);
+            if paid {
+                assert_eq!(
+                    report.calculated.deployment_receipts[0].kind,
+                    UnitType::Pawn
+                );
+                assert!(
+                    matches!(&report.calculated.deployment_receipts[0].disposition, DeploymentDispositionReport::Materialized { unit_id, .. } if unit_id == "u2")
+                );
+            } else {
+                assert!(report.calculated.deployment_receipts.is_empty());
+            }
+        }
+    }
+}
+
+#[test]
+fn explicit_rook_birth_then_death_in_one_group_preserves_exact_loss_mode_and_paid_five() {
+    for mode in [TankMode::Tank, TankMode::Siege] {
+        let origin = tiny(21, (12, 12));
+        let opening = open(&origin);
+        let opened = step(&start(&origin), &opening);
+        let own = geometry(&opening.w);
+        let settlement = finish(
+            &opening,
+            vec![
+                admission(vec![rook_action(0, 0, "d2")]),
+                effects(
+                    own.clone(),
+                    own,
+                    vec![
+                        EffectFact::UnitBorn {
+                            action_ref: reference(0, 0),
+                            square: sq("d2"),
+                            kind: UnitType::Rook,
+                            mode: Some(mode),
+                        },
+                        EffectFact::UnitDestroyed {
+                            subject: UnitSubject::BornUnit {
+                                action_ref: reference(0, 0),
+                            },
+                            square: sq("d2"),
+                            kind: UnitType::Rook,
+                        },
+                    ],
+                ),
+            ],
+            vec![],
+        );
+        let report = reports(&step(&opened, &settlement)).w;
+        assert_eq!(report.own_units.len(), 1);
+        let loss = &report.own_lost.units[0];
+        assert_eq!(
+            (
+                &*loss.unit.id,
+                loss.unit.kind,
+                loss.unit.mode,
+                loss.unit.paid_mineral_basis,
+                loss.replacement_value_at_loss
+            ),
+            ("u2", UnitType::Rook, Some(mode), 5, 5)
+        );
+        assert_eq!(
+            (
+                report.calculated.minerals.paid_debits,
+                report.calculated.minerals.surviving_paid_basis,
+                report.calculated.minerals.destroyed_paid_basis,
+                report.calculated.minerals.wasted_paid_basis
+            ),
+            (5, 0, 5, 0)
+        );
+        assert!(
+            matches!(&report.calculated.deployment_receipts[0].disposition, DeploymentDispositionReport::Materialized { unit_id, .. } if unit_id == "u2")
+        );
+    }
+}
+
+#[test]
+fn explicit_rook_transform_then_death_in_one_group_preserves_identity_mode_and_basis() {
+    for mode in [TankMode::Tank, TankMode::Siege] {
+        for paid in [false, true] {
+            let origin = if paid {
+                tiny(21, (12, 12))
+            } else {
+                with_white(
+                    21,
+                    12,
+                    &[("c7", UnitType::Pawn), ("e1", UnitType::King)],
+                    &[],
+                )
+            };
+            let opening = open(&origin);
+            let opened = step(&start(&origin), &opening);
+            let mut groups = Vec::new();
+            let mut facts = Vec::new();
+            let subject = if paid {
+                groups.push(admission(vec![deploy(0, 0, "c7")]));
+                facts.push(EffectFact::UnitBorn {
+                    action_ref: reference(0, 0),
+                    square: sq("c7"),
+                    kind: UnitType::Pawn,
+                    mode: None,
+                });
+                UnitSubject::BornUnit {
+                    action_ref: reference(0, 0),
+                }
+            } else {
+                before("c7")
+            };
+            facts.push(EffectFact::UnitTransformed {
+                subject: subject.clone(),
+                from_type: UnitType::Pawn,
+                to_type: UnitType::Rook,
+                to_mode: Some(mode),
+            });
+            facts.push(EffectFact::UnitDestroyed {
+                subject,
+                square: sq("c7"),
+                kind: UnitType::Rook,
+            });
+            groups.push(effects(
+                geometry(&opening.w),
+                image(vec![unit("e1", UnitType::King)], &[], 3),
+                facts,
+            ));
+            let settlement = finish(&opening, groups, vec![]);
+            let report = reports(&step(&opened, &settlement)).w;
+            let loss = &report.own_lost.units[0];
+            assert_eq!(
+                (
+                    &*loss.unit.id,
+                    loss.unit.kind,
+                    loss.unit.mode,
+                    loss.unit.paid_mineral_basis,
+                    loss.replacement_value_at_loss
+                ),
+                (
+                    if paid { "u2" } else { "u1" },
+                    UnitType::Rook,
+                    Some(mode),
+                    u32::from(paid),
+                    5
+                )
+            );
+            assert_eq!(loss.unit.type_changes.len(), 1);
+            assert_eq!(
+                (
+                    report.calculated.minerals.paid_debits,
+                    report.calculated.minerals.destroyed_paid_basis,
+                    report.calculated.minerals.surviving_paid_basis,
+                    report.calculated.minerals.wasted_paid_basis
+                ),
+                (u64::from(paid), u64::from(paid), 0, 0)
+            );
+        }
+    }
+}
+
+#[test]
+fn explicit_origin_modes_bind_first_mode_change_and_cannot_be_overwritten_by_after_image() {
+    for origin_mode in [TankMode::Tank, TankMode::Siege] {
+        for transformed in [false, true] {
+            let origin = if transformed {
+                with_white(
+                    21,
+                    12,
+                    &[("c7", UnitType::Pawn), ("e1", UnitType::King)],
+                    &[],
+                )
+            } else {
+                tiny(21, (12, 12))
+            };
+            let opening = open(&origin);
+            let opened = step(&start(&origin), &opening);
+            let (subject, origin_fact) = if transformed {
+                (
+                    before("c7"),
+                    EffectFact::UnitTransformed {
+                        subject: before("c7"),
+                        from_type: UnitType::Pawn,
+                        to_type: UnitType::Rook,
+                        to_mode: Some(origin_mode),
+                    },
+                )
+            } else {
+                (
+                    UnitSubject::BornUnit {
+                        action_ref: reference(0, 0),
+                    },
+                    EffectFact::UnitBorn {
+                        action_ref: reference(0, 0),
+                        square: sq("c7"),
+                        kind: UnitType::Rook,
+                        mode: Some(origin_mode),
+                    },
+                )
+            };
+            let make = |after_mode, facts| {
+                let mut groups = Vec::new();
+                if !transformed {
+                    groups.push(admission(vec![rook_action(0, 0, "c7")]));
+                }
+                groups.push(effects(
+                    geometry(&opening.w),
+                    image(
+                        vec![rook_at("c7", after_mode), unit("e1", UnitType::King)],
+                        &[],
+                        3,
+                    ),
+                    facts,
+                ));
+                finish(&opening, groups, vec![])
+            };
+            let next_mode = other_mode(origin_mode);
+            let valid = make(
+                next_mode,
+                vec![
+                    origin_fact.clone(),
+                    EffectFact::UnitModeChanged {
+                        subject: subject.clone(),
+                        before: origin_mode,
+                        after: next_mode,
+                    },
+                ],
+            );
+            let report = reports(&step(&opened, &valid)).w;
+            assert_eq!(
+                report
+                    .own_units
+                    .iter()
+                    .find(|unit| unit.square == sq("c7"))
+                    .unwrap()
+                    .mode,
+                Some(next_mode)
+            );
+            let wrong_before = make(
+                origin_mode,
+                vec![
+                    origin_fact.clone(),
+                    EffectFact::UnitModeChanged {
+                        subject,
+                        before: next_mode,
+                        after: origin_mode,
+                    },
+                ],
+            );
+            reject(&opened, &wrong_before, LedgerErrorCode::Identity);
+            let invented = make(next_mode, vec![origin_fact]);
+            reject(&opened, &invented, LedgerErrorCode::Conservation);
+        }
+    }
+}
+
+#[test]
+fn explicit_origin_modes_do_not_authorize_wrong_subjects_or_post_retirement_changes() {
+    for mode in [TankMode::Tank, TankMode::Siege] {
+        for transformed in [false, true] {
+            let origin = if transformed {
+                with_white(
+                    21,
+                    12,
+                    &[("c7", UnitType::Pawn), ("e1", UnitType::King)],
+                    &[],
+                )
+            } else {
+                tiny(21, (12, 12))
+            };
+            let opening = open(&origin);
+            let opened = step(&start(&origin), &opening);
+            let mut groups = Vec::new();
+            if !transformed {
+                groups.push(admission(vec![rook_action(0, 0, "c7")]));
+            }
+            let subject = if transformed {
+                before("c7")
+            } else {
+                UnitSubject::BornUnit {
+                    action_ref: reference(0, 0),
+                }
+            };
+            let fact = if transformed {
+                EffectFact::UnitTransformed {
+                    subject: subject.clone(),
+                    from_type: UnitType::Pawn,
+                    to_type: UnitType::Rook,
+                    to_mode: Some(mode),
+                }
+            } else {
+                EffectFact::UnitBorn {
+                    action_ref: reference(0, 0),
+                    square: sq("c7"),
+                    kind: UnitType::Rook,
+                    mode: Some(mode),
+                }
+            };
+            let mut wrong = groups.clone();
+            wrong.push(effects(
+                geometry(&opening.w),
+                image(
+                    vec![rook_at("c7", other_mode(mode)), unit("e1", UnitType::King)],
+                    &[],
+                    3,
+                ),
+                vec![
+                    fact.clone(),
+                    EffectFact::UnitModeChanged {
+                        subject: before("e1"),
+                        before: mode,
+                        after: other_mode(mode),
+                    },
+                ],
+            ));
+            reject(
+                &opened,
+                &finish(&opening, wrong, vec![]),
+                LedgerErrorCode::Identity,
+            );
+            groups.push(effects(
+                geometry(&opening.w),
+                image(vec![unit("e1", UnitType::King)], &[], 3),
+                vec![
+                    fact,
+                    EffectFact::UnitDestroyed {
+                        subject: subject.clone(),
+                        square: sq("c7"),
+                        kind: UnitType::Rook,
+                    },
+                    EffectFact::UnitModeChanged {
+                        subject,
+                        before: mode,
+                        after: other_mode(mode),
+                    },
+                ],
+            ));
+            reject(
+                &opened,
+                &finish(&opening, groups, vec![]),
+                LedgerErrorCode::Identity,
+            );
+            assert_eq!(reports(&opened).w.own_lost.count, 0);
+        }
+    }
+}
+
+#[test]
+fn explicit_origin_mode_updates_are_pair_atomic_idempotent_and_budget_precharged() {
+    for mode in [TankMode::Tank, TankMode::Siege] {
+        let origin = tiny(21, (12, 12));
+        let opening = open(&origin);
+        let opened = step(&start(&origin), &opening);
+        let before_report = reports(&opened);
+        let valid = finish(
+            &opening,
+            vec![
+                admission(vec![rook_action(0, 0, "d2")]),
+                effects(
+                    geometry(&opening.w),
+                    image(
+                        vec![rook_at("d2", mode), unit("e1", UnitType::King)],
+                        &[],
+                        3,
+                    ),
+                    vec![EffectFact::UnitBorn {
+                        action_ref: reference(0, 0),
+                        square: sq("d2"),
+                        kind: UnitType::Rook,
+                        mode: Some(mode),
+                    }],
+                ),
+            ],
+            vec![],
+        );
+        let mut bad_second = valid.clone();
+        bad_second.b.snapshot.own.minerals = 11;
+        reject(&opened, &bad_second, LedgerErrorCode::Conservation);
+        assert_eq!(reports(&opened), before_report);
+        assert_eq!(opened.last_boundaries(), &opening);
+        let mut measured = LedgerWork::new();
+        let settled = opened.advance(&valid, &mut measured).unwrap();
+        let mut short = LedgerWork::with_limit(measured.used() - 1).unwrap();
+        assert_eq!(
+            opened.advance(&valid, &mut short).unwrap_err().code,
+            LedgerErrorCode::Budget
+        );
+        assert_eq!(reports(&opened), before_report);
+        let mut early = LedgerWork::with_limit(1).unwrap();
+        assert_eq!(
+            opened.advance(&valid, &mut early).unwrap_err().code,
+            LedgerErrorCode::Budget
+        );
+        assert_eq!(early.used(), 0);
+        let report = reports(&settled);
+        let rook = report
+            .w
+            .own_units
+            .iter()
+            .find(|unit| unit.kind == UnitType::Rook)
+            .unwrap();
+        assert_eq!(
+            (&*rook.id, rook.mode, rook.paid_mineral_basis),
+            ("u2", Some(mode), 5)
+        );
+        let mut repeated_work = LedgerWork::new();
+        let repeated = settled.advance(&valid, &mut repeated_work).unwrap();
+        assert_eq!(reports(&repeated), report);
+        assert!(repeated_work.used() > 0);
+        let mut conflict = valid;
+        let AtomicGroup::Effects { facts, .. } = &mut conflict.w.groups[1] else {
+            panic!()
+        };
+        let EffectFact::UnitBorn { mode: supplied, .. } = &mut facts[0] else {
+            panic!()
+        };
+        *supplied = Some(other_mode(mode));
+        reject(&settled, &conflict, LedgerErrorCode::Identity);
     }
 }

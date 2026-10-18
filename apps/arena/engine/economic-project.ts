@@ -5,18 +5,157 @@ import {
 } from "@chess-coach/starchess-core";
 import {
   ECONOMIC_REPLY_LIMIT, MAX_ECONOMIC_ENTRIES, MAX_ECONOMIC_GROUPS, type AcceptedOwnAction, type ActionRef,
-  type AtomicGroup, type EconomicBoundary, type EffectFact, type MineSubject, type OwnGeometry, type UnitSubject,
+  type AtomicGroup, type EconomicBoundary, type EffectFact, type MineSubject, type OwnGeometry, type TankMode, type UnitSubject,
 } from "./economic-wire";
 import { EngineErrorV2, parseViewV2, SQUARES_V2, type AuthorizedView, type Cell, type Pair, type Side } from "./wire-v2";
 
 type FrameImage = TrustedEffectFrame["before"];
 type Effect = TrustedEffectFrame["effects"][number];
+type NativeUnit = Extract<EngineEntity, { kind: "unit" }>;
+type UnitEffect = Extract<Effect, { kind: "unit-create" | "unit-move" | "unit-transform" | "unit-destroy" | "tank-mode-change" }>;
 type Cursor = { seq: number; ordinal: number; cells: Cell[]; turn: number };
 type GroupInput = AtomicGroup extends infer G ? G extends AtomicGroup ? Omit<G, "seq"> : never : never;
 export type SettlementFacts = { entitlement: number; credited: number; gasBeforeReset: number; nextGasCapacity: number };
 const fault = (message: string): never => { throw new EngineErrorV2("ENGINE_FAILURE", `Economic provenance: ${message}`); };
 const limit = (message: string): never => { throw new EngineErrorV2("LIMIT", message); };
 const compare = (a: string, b: string): number => a < b ? -1 : a > b ? 1 : 0;
+
+function nativeUnitMode(type: ScPiece["type"], value: unknown): TankMode | null {
+  if (type === "r" && (value === "tank" || value === "siege")) return value;
+  if (["p", "n", "b", "q", "k"].includes(type) && value === null) return null;
+  return fault("Invalid native unit type/mode");
+}
+
+function ownNativeUnit(entity: EngineEntity | undefined, side: Side, id: string): NativeUnit {
+  if (!entity || entity.kind !== "unit" || entity.id !== id || entity.side !== side) return fault("Missing or incompatible native unit anchor");
+  nativeUnitMode(entity.type, entity.tankMode);
+  return entity;
+}
+
+function transformedOwnMode(frame: TrustedEffectFrame, effectIndex: number, side: Side, checkTime: () => void): TankMode | null {
+  checkTime();
+  const event = frame.effects[effectIndex];
+  if (!event || event.kind !== "unit-transform") return fault("Missing native transformation effect");
+  if (event.toType !== "r") return null;
+  let origin: TankMode | undefined;
+  let current: TankMode | undefined;
+  let retired = false;
+  for (let i = effectIndex + 1; i < frame.effects.length; i++) {
+    checkTime();
+    const next = frame.effects[i]!;
+    const id = "entity" in next ? next.entity.id : "entityId" in next ? next.entityId : null;
+    if (id !== event.entityId) continue;
+    if (retired) return fault("Post-retirement native unit effect");
+    if (next.kind === "tank-mode-change") {
+      const beforeMode = nativeUnitMode("r", next.before);
+      const afterMode = nativeUnitMode("r", next.after);
+      if (beforeMode === null || afterMode === null || beforeMode === afterMode || (current !== undefined && current !== beforeMode)) return fault("Contradictory native transformation mode chain");
+      origin ??= beforeMode; current = afterMode;
+    } else if (next.kind === "unit-destroy") {
+      const anchor = ownNativeUnit(next.entity, side, event.entityId);
+      if (anchor.type !== "r" || anchor.tankMode === null) return fault("Transformation death anchor type mismatch");
+      if (current !== undefined && current !== anchor.tankMode) return fault("Contradictory native transformation death mode");
+      origin ??= anchor.tankMode; current = anchor.tankMode; retired = true;
+    } else if (next.kind !== "unit-move") return fault("Unprovable compound transformation origin or identity reuse");
+  }
+  const endpoints: EngineEntity[] = [];
+  for (const entity of frame.after.entities) {
+    checkTime();
+    if (entity.id === event.entityId) endpoints.push(entity);
+  }
+  if (retired) {
+    if (endpoints.length) return fault("Retired native unit survives in terminal image");
+  } else {
+    if (endpoints.length !== 1) return fault("Missing or ambiguous native transformation terminal anchor");
+    const anchor = ownNativeUnit(endpoints[0], side, event.entityId);
+    if (anchor.type !== "r" || anchor.tankMode === null) return fault("Transformation terminal anchor type mismatch");
+    if (current !== undefined && current !== anchor.tankMode) return fault("Contradictory native transformation terminal mode");
+    origin ??= anchor.tankMode;
+  }
+  if (origin === undefined) return fault("Missing native transformation entry mode");
+  checkTime();
+  return origin;
+}
+
+function frameOriginModes(frame: TrustedEffectFrame, side: Side, checkTime: () => void): Map<UnitEffect, TankMode | null> {
+  const before = new Map<string, EngineEntity>(frame.before.entities.map(entity => [entity.id, entity]));
+  const after = new Map<string, EngineEntity>(frame.after.entities.map(entity => [entity.id, entity]));
+  if (before.size !== frame.before.entities.length || after.size !== frame.after.entities.length) return fault("Duplicate native frame entity");
+  const ownIds = new Set<string>();
+  const knownUnitIds = new Set<string>(frame.before.entities.filter(entity => entity.kind === "unit").map(entity => entity.id));
+  for (const entity of [...frame.before.entities, ...frame.after.entities]) if (entity.kind === "unit" && entity.side === side) ownIds.add(entity.id);
+  const byId = new Map<string, { event: UnitEffect; index: number }[]>();
+  for (const [index, event] of frame.effects.entries()) {
+    checkTime();
+    if (event.kind !== "unit-create" && event.kind !== "unit-move" && event.kind !== "unit-transform" && event.kind !== "unit-destroy" && event.kind !== "tank-mode-change") continue;
+    const id = "entity" in event ? event.entity.id : event.entityId;
+    const events = byId.get(id) ?? [];
+    events.push({ event, index }); byId.set(id, events);
+    if (event.kind === "unit-create") {
+      knownUnitIds.add(event.entity.id);
+      if (event.entity.side === side) ownIds.add(id);
+    }
+  }
+  for (const id of byId.keys()) {
+    checkTime();
+    if (!knownUnitIds.has(id)) return fault("Missing native unit causal preimage");
+  }
+  const modes = new Map<UnitEffect, TankMode | null>();
+  for (const id of ownIds) {
+    checkTime();
+    const preimage = before.get(id);
+    const terminal = after.get(id);
+    let current: NativeUnit | null = preimage ? { ...ownNativeUnit(preimage, side, id) } : null;
+    let retired = false;
+    const events = byId.get(id) ?? [];
+    for (const { event, index } of events) {
+      checkTime();
+      if (retired) return fault("Post-retirement native unit effect");
+      if (event.kind === "unit-create") {
+        if (current) return fault("Duplicate native unit birth");
+        current = { ...ownNativeUnit(event.entity, side, id) };
+        if (current.type === "k") return fault("Native command center birth is unsupported");
+        modes.set(event, nativeUnitMode(current.type, current.tankMode));
+        continue;
+      }
+      if (!current) return fault("Missing native unit causal preimage");
+      switch (event.kind) {
+        case "unit-transform": {
+          if (current.type !== event.fromType || event.fromType === event.toType || event.fromType === "k" || event.toType === "k" ||
+              !["p", "n", "b", "r", "q"].includes(event.toType)) return fault("Incompatible native transformation type");
+          const toMode = transformedOwnMode(frame, index, side, checkTime);
+          modes.set(event, toMode);
+          current = { ...current, type: event.toType, tankMode: toMode };
+          break;
+        }
+        case "unit-move":
+          if (current.square !== event.from || event.from === event.to) return fault("Incompatible native unit movement");
+          current = { ...current, square: event.to };
+          break;
+        case "tank-mode-change": {
+          const beforeMode = nativeUnitMode("r", event.before);
+          const afterMode = nativeUnitMode("r", event.after);
+          if (current.type !== "r" || current.tankMode !== beforeMode || beforeMode === afterMode) return fault("Contradictory native unit mode chain");
+          current = { ...current, tankMode: afterMode };
+          break;
+        }
+        case "unit-destroy": {
+          const anchor = ownNativeUnit(event.entity, side, id);
+          if (anchor.type !== current.type || anchor.square !== current.square || anchor.tankMode !== current.tankMode) return fault("Contradictory native unit death anchor");
+          current = null; retired = true;
+          break;
+        }
+      }
+    }
+    if (retired) {
+      if (terminal) return fault("Retired native unit survives in terminal image");
+    } else {
+      const anchor = ownNativeUnit(terminal, side, id);
+      if (!current || anchor.type !== current.type || anchor.square !== current.square || anchor.tankMode !== current.tankMode) return fault("Contradictory native unit terminal anchor");
+    }
+  }
+  return modes;
+}
 
 function imageInventory(image: FrameImage, side: Side) {
   if (image.entities.length > 70 || image.nativeMineOrder.length > 6) limit("Native image exceeds physical bounds");
@@ -40,7 +179,7 @@ export function projectOwnGeometry(image: FrameImage, side: Side): OwnGeometry {
   return {
     units: units.map(e => {
       if (e.kind !== "unit") return fault("Invalid unit carrier");
-      return { square: e.square, type: e.type, mode: e.tankMode };
+      return { square: e.square, type: e.type, mode: nativeUnitMode(e.type, e.tankMode) };
     }),
     mines: mines.map(({ square, slot }) => ({ square, slot })).sort((a, b) => compare(a.square, b.square) || a.slot - b.slot),
     ccLives: image.ccLives[side],
@@ -116,7 +255,8 @@ function consumedCapture(companion: ProvenanceCompanion<unknown>, frame: Trusted
   return proof ? { square: proof.targetCell.square, visibility: "lit", piece: { color: proof.targetCell.piece.color, type: proof.targetCell.piece.type } } : null;
 }
 
-function projectFrame(companion: ProvenanceCompanion<unknown>, frame: TrustedEffectFrame, side: Side, beforeCells: Cell[]): EffectFact[] {
+function projectFrame(companion: ProvenanceCompanion<unknown>, frame: TrustedEffectFrame, side: Side, beforeCells: Cell[], checkTime: () => void): EffectFact[] {
+  const originModes = frameOriginModes(frame, side, checkTime);
   const before = imageInventory(frame.before, side);
   const subjects = new Map<string, UnitSubject | MineSubject>();
   for (const e of before.units) subjects.set(e.id, { kind: "before-unit", square: e.square });
@@ -148,9 +288,19 @@ function projectFrame(companion: ProvenanceCompanion<unknown>, frame: TrustedEff
       const id = entity.id;
       key = locatorKey(subjects.get(id) ?? fault("Missing whole-group subject"));
       switch (e.kind) {
-        case "unit-create": fact = { kind: "unit-born", actionRef: ref ?? fault("Unbound unit birth"), square: e.entity.square, type: e.entity.type }; break;
+        case "unit-create": {
+          const mode = originModes.get(e);
+          if (mode === undefined) return fault("Missing native unit birth mode");
+          fact = { kind: "unit-born", actionRef: ref ?? fault("Unbound unit birth"), square: e.entity.square, type: e.entity.type, mode };
+          break;
+        }
         case "unit-move": fact = { kind: "unit-moved", subject: unitSubject(id), from: e.from, to: e.to }; break;
-        case "unit-transform": fact = { kind: "unit-transformed", subject: unitSubject(id), fromType: e.fromType, toType: e.toType }; break;
+        case "unit-transform": {
+          const toMode = originModes.get(e);
+          if (toMode === undefined) return fault("Missing native transformation entry mode");
+          fact = { kind: "unit-transformed", subject: unitSubject(id), fromType: e.fromType, toType: e.toType, toMode };
+          break;
+        }
         case "unit-destroy": fact = { kind: "unit-destroyed", subject: unitSubject(id), square: e.entity.square, type: e.entity.type }; break;
         case "tank-mode-change": fact = { kind: "unit-mode-changed", subject: unitSubject(id), before: e.before, after: e.after }; break;
         case "mine-create": fact = { kind: "mine-born", actionRef: ref ?? fault("Unbound mine birth"), square: e.entity.square }; break;
@@ -245,7 +395,7 @@ export class EconomicProjector {
             if (cell) cells = cells.map(c => c.square === cell.square ? cell : c);
           }
           vision(cells, image.turn);
-          const facts = projectFrame(input.companion, frame, side, cells);
+          const facts = projectFrame(input.companion, frame, side, cells, checkTime);
           if (facts.length) emit({ kind: "effects", beforeOwn: projectOwnGeometry(frame.before, side), afterOwn: projectOwnGeometry(frame.after, side), facts });
         } else vision(cells, image.turn);
       }

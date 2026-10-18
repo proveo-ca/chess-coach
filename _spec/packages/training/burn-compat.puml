@@ -29,7 +29,7 @@
 ' covers: packages/training/tests/ledger_contracts.rs
 ' covers: packages/training/tests/ledger_history.rs
 ' covers: packages/training/tests/fixtures/ledger-boundaries.json
-' status: Ledger source present; current whole-gate and review evidence lives in _spec/ml/native-economic-ledger.md.
+' status: Explicit-origin economic-v1 source present; current verification and review status lives in _spec/ml/native-economic-ledger.md.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
 ' related: _spec/ml/native-runner.md
@@ -61,7 +61,7 @@ package "Root Cargo workspace\nCargo.toml / one reused Cargo.lock" {
   }
   package "Economic ledger source / not a learner" {
     component "packages/training/src/ledger/mod.rs\nchecked Rust ledger API" as LEDGER_API <<app>>
-    component "packages/training/src/ledger/contracts.rs\narena-economic-rules-v1\narena-economic-boundary-v1\nclosed groups / immutable own locators" as LEDGER_CONTRACTS <<app>>
+    component "packages/training/src/ledger/contracts.rs\narena-economic-rules-v1 / arena-economic-boundary-v1\nrequired birth.mode / transform.toMode\nclosed groups / immutable own locators" as LEDGER_CONTRACTS <<app>>
     component "packages/training/src/ledger/history.rs\nLedgerPair / SideLedgerReport\nrecipient IDs / paid lineage / square memory" as LEDGER_HISTORY <<app>>
     component "packages/training/src/ledger/work.rs\nLedgerWork / precharge\n1048576 shared per window" as LEDGER_WORK <<app>>
   }
@@ -105,7 +105,7 @@ XTASK ARROW_ERROR FAILURE : any required gate fails\nno old receipt reuse
 ECO_HOST ARROW_MAIN LEDGER_API : native-derived rules / authorized pairs\nno private SCFEN or opponent bank
 LEDGER_API ARROW_MAIN LEDGER_CONTRACTS : closed rules / boundaries / groups\nchecked data is not native authority
 LEDGER_API ARROW_MAIN LEDGER_HISTORY : initialize / immutable advance / reports
-LEDGER_HISTORY ARROW_MAIN LEDGER_CONTRACTS : whole before-image + same-group births\nreconcile after-image only after all effects
+LEDGER_HISTORY ARROW_MAIN LEDGER_CONTRACTS : explicit birth.mode / transform.toMode\nwhole preimage + births / exact mode continuity\nafterOwn reconciliation ONLY after all effects
 ECO_HOST ARROW_MAIN LEDGER_WORK : one meter for both recipients\ninitial/open/settle then next-window reset
 LEDGER_HISTORY ARROW_MAIN LEDGER_WORK : charge validation / identity / state / reports\nfailed publication never refunds work
 LEDGER_HISTORY ARROW_MAIN ECO_HOST : conserved reports / local lineage\nno 418 encoder or authority flag
@@ -208,7 +208,8 @@ legend bottom
   CC lives stay separate; ordinary king replacement=0, native unit cost=1.
   Mines remain entities, not a Set; memory does not identify unique enemy population.
   Keep only the last pair's full canonical bytes; older duplicate ordinals refuse.
-  Shared golden has scoped fixture-repair proof, not whole-ledger acceptance.
+  Birth mode / transform toMode: required tank|siege for rook, explicit null otherwise.
+  Native origin modes only; no predecessor inference, Tank default or compatibility parser.
   No real training, payout calibration, R4 readiness or activation claim.
   Complete fresh static/functional/preservation/diagram/source-identity gates precede reviewers.
 endlegend

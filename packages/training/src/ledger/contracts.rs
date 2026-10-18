@@ -534,9 +534,22 @@ object_enum! {
 object_enum! {
     #[serde(tag = "kind", rename_all = "kebab-case", rename_all_fields = "camelCase", deny_unknown_fields)]
     pub enum EffectFact {
-        UnitBorn { action_ref: ActionRef, square: Square, #[serde(rename = "type")] kind: UnitType },
+        UnitBorn {
+            action_ref: ActionRef,
+            square: Square,
+            #[serde(rename = "type")]
+            kind: UnitType,
+            #[serde(deserialize_with = "required_nullable")]
+            mode: Option<TankMode>,
+        },
         UnitMoved { subject: UnitSubject, from: Square, to: Square },
-        UnitTransformed { subject: UnitSubject, from_type: UnitType, to_type: UnitType },
+        UnitTransformed {
+            subject: UnitSubject,
+            from_type: UnitType,
+            to_type: UnitType,
+            #[serde(deserialize_with = "required_nullable")]
+            to_mode: Option<TankMode>,
+        },
         UnitModeChanged { subject: UnitSubject, before: TankMode, after: TankMode },
         UnitDestroyed { subject: UnitSubject, square: Square, #[serde(rename = "type")] kind: UnitType },
         DeploymentUnmaterialized { action_ref: ActionRef },
@@ -557,11 +570,17 @@ impl EffectFact {
     fn validate_shape(&self) -> ContractResult<()> {
         match self {
             Self::UnitBorn {
-                action_ref, kind, ..
+                action_ref,
+                kind,
+                mode,
+                ..
             } => {
                 action_ref.validate()?;
                 if *kind == UnitType::King {
                     return Err(bad("Command centers cannot be deployed"));
+                }
+                if (*kind == UnitType::Rook) != mode.is_some() {
+                    return Err(bad("Unit births require rook-only modes"));
                 }
             }
             Self::UnitMoved { subject, from, to } => {
@@ -574,6 +593,7 @@ impl EffectFact {
                 subject,
                 from_type,
                 to_type,
+                to_mode,
             } => {
                 validate_unit_subject(subject)?;
                 if from_type == to_type
@@ -581,6 +601,11 @@ impl EffectFact {
                     || *to_type == UnitType::King
                 {
                     return Err(bad("Unit transformations require distinct non-CC types"));
+                }
+                if (*to_type == UnitType::Rook) != to_mode.is_some() {
+                    return Err(bad(
+                        "Unit transformations require rook-only destination modes",
+                    ));
                 }
             }
             Self::UnitModeChanged {

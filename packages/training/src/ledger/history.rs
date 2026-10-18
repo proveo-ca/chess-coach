@@ -992,27 +992,11 @@ impl SideState {
         }
         charge_count(work, self.units.len(), GEOMETRY_ITEM)?;
         let mut before_units = [None; 64];
-        let mut rook_modes = [None; 64];
         for unit in &self.units {
             before_units[unit.square.index()] = Some(unit.id);
-            rook_modes[unit.square.index()] = unit.mode;
         }
         let before_mines = self.mine_locators(work)?;
         charge_count(work, facts.len(), FOLD_FACT)?;
-        charge_count(work, facts.len(), RESOLVE_ITEM)?;
-        let mut replacement_rooks = [false; 64];
-        for fact in facts {
-            if let EffectFact::UnitDestroyed {
-                subject: UnitSubject::BeforeUnit { square: locator },
-                square,
-                kind: UnitType::Rook,
-            } = fact
-                && locator == square
-                && rook_modes[square.index()].is_some()
-            {
-                replacement_rooks[square.index()] = true;
-            }
-        }
         let mut born_units: Vec<(ActionRef, u32)> = Vec::new();
         let mut born_mines: Vec<(ActionRef, u32)> = Vec::new();
         for fact in facts {
@@ -1021,6 +1005,7 @@ impl SideState {
                     action_ref,
                     square,
                     kind,
+                    mode,
                 } => {
                     if is_open {
                         return Err(provenance(
@@ -1047,13 +1032,7 @@ impl SideState {
                         id,
                         square: *square,
                         kind: *kind,
-                        mode: (*kind == UnitType::Rook).then(|| {
-                            if replacement_rooks[square.index()] {
-                                rook_modes[square.index()].unwrap_or(TankMode::Tank)
-                            } else {
-                                TankMode::Tank
-                            }
-                        }),
+                        mode: *mode,
                         paid,
                         origin: EntityOrigin::Action {
                             action_ref: *action_ref,
@@ -1077,6 +1056,7 @@ impl SideState {
                     subject,
                     from_type,
                     to_type,
+                    to_mode,
                 } => {
                     let id = resolve_unit(subject, &before_units, &born_units, work)?;
                     work.charge(STATE_ITEM)?;
@@ -1090,7 +1070,7 @@ impl SideState {
                         ));
                     }
                     unit.kind = *to_type;
-                    unit.mode = (*to_type == UnitType::Rook).then_some(TankMode::Tank);
+                    unit.mode = *to_mode;
                     unit.type_changes.push(TypeChange {
                         at,
                         from_type: *from_type,
@@ -1110,7 +1090,6 @@ impl SideState {
                         ));
                     }
                     unit.mode = Some(*after);
-                    rook_modes[unit.square.index()] = Some(*after);
                 }
                 EffectFact::UnitDestroyed {
                     subject,

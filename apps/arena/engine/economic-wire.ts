@@ -27,9 +27,9 @@ export type OwnGeometry = {
 export type UnitSubject = { kind: "before-unit"; square: Square } | { kind: "born-unit"; actionRef: ActionRef };
 export type MineSubject = { kind: "before-mine"; square: Square; slot: number } | { kind: "born-mine"; actionRef: ActionRef };
 export type EffectFact =
-  { kind: "unit-born"; actionRef: ActionRef; square: Square; type: UnitType } |
+  { kind: "unit-born"; actionRef: ActionRef; square: Square; type: UnitType; mode: TankMode | null } |
   { kind: "unit-moved"; subject: UnitSubject; from: Square; to: Square } |
-  { kind: "unit-transformed"; subject: UnitSubject; fromType: UnitType; toType: UnitType } |
+  { kind: "unit-transformed"; subject: UnitSubject; fromType: UnitType; toType: UnitType; toMode: TankMode | null } |
   { kind: "unit-mode-changed"; subject: UnitSubject; before: TankMode; after: TankMode } |
   { kind: "unit-destroyed"; subject: UnitSubject; square: Square; type: UnitType } |
   { kind: "deployment-unmaterialized"; actionRef: ActionRef } |
@@ -158,10 +158,16 @@ function subject(value: unknown, mine: boolean): UnitSubject | MineSubject {
 function effect(value: unknown): EffectFact {
   const kind = tag(value);
   switch (kind) {
-    case "unit-born": case "mine-born": {
-      const r = fieldsV2(value, kind === "unit-born" ? ["kind", "actionRef", "square", "type"] : ["kind", "actionRef", "square"]);
-      if (kind === "unit-born" && r.type === "k") return bad("Command centers cannot be deployed");
-      return kind === "unit-born" ? { kind, actionRef: actionRef(r.actionRef), square: square(r.square), type: unit(r.type) } : { kind, actionRef: actionRef(r.actionRef), square: square(r.square) };
+    case "unit-born": {
+      const r = fieldsV2(value, ["kind", "actionRef", "square", "type", "mode"]);
+      const type = unit(r.type);
+      if (type === "k") return bad("Command centers cannot be deployed");
+      if ((type === "r") !== (r.mode !== null)) return bad("Unit births require rook-only modes");
+      return { kind, actionRef: actionRef(r.actionRef), square: square(r.square), type, mode: r.mode === null ? null : mode(r.mode) };
+    }
+    case "mine-born": {
+      const r = fieldsV2(value, ["kind", "actionRef", "square"]);
+      return { kind, actionRef: actionRef(r.actionRef), square: square(r.square) };
     }
     case "unit-moved": {
       const r = fieldsV2(value, ["kind", "subject", "from", "to"]);
@@ -169,9 +175,11 @@ function effect(value: unknown): EffectFact {
       return { kind, subject: subject(r.subject, false), from: square(r.from), to: square(r.to) };
     }
     case "unit-transformed": {
-      const r = fieldsV2(value, ["kind", "subject", "fromType", "toType"]);
+      const r = fieldsV2(value, ["kind", "subject", "fromType", "toType", "toMode"]);
       if (r.fromType === r.toType || r.fromType === "k" || r.toType === "k") return bad("Invalid transformation");
-      return { kind, subject: subject(r.subject, false), fromType: unit(r.fromType), toType: unit(r.toType) };
+      const toType = unit(r.toType);
+      if ((toType === "r") !== (r.toMode !== null)) return bad("Unit transformations require rook-only destination modes");
+      return { kind, subject: subject(r.subject, false), fromType: unit(r.fromType), toType, toMode: r.toMode === null ? null : mode(r.toMode) };
     }
     case "unit-mode-changed": {
       const r = fieldsV2(value, ["kind", "subject", "before", "after"]);

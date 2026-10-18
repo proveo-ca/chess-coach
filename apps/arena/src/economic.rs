@@ -1621,6 +1621,268 @@ mod tests {
     }
 
     #[test]
+    fn native_all_actors_enemy_sieged_rook_replacement_conserves_white_paid_lineage() {
+        let spec: MatchSpec = serde_json::from_value(json!({
+            "version":"arena-match-v1","caseId":"native-enemy-sieged-rook-replacement-control","fixture":"all-actors-v1",
+            "players":{"w":"pass-v1","b":"pass-v1"},"environmentSeed":0,"policySeeds":{"w":1,"b":2},"maxWindows":2
+        })).unwrap();
+        let mut record = RunRecord::new(spec);
+        let mut native = EngineClient::new().unwrap();
+        let ns = Namespace::Session;
+        let NativeStartReply::Started {
+            session,
+            fixture,
+            initial,
+            outcome,
+        } = native.start(ns, record.spec.fixture).unwrap();
+        assert_eq!(fixture, record.spec.fixture);
+        assert!(outcome.is_none());
+        record.initial = Some(initial);
+        let d2 = Square::parse("d2").unwrap();
+        for (ordinal, queues) in [
+            json!({"w":[],"b":[
+                {"kind":"classical","timing":"C","color":"b","from":"d8","to":"d2"},
+                {"kind":"siegeMode","timing":"F","color":"b","from":"d8"}
+            ]}),
+            json!({"w":[
+                {"kind":"deploy","timing":"B","color":"w","from":"e1","to":"d2","unit":"r"}
+            ],"b":[]}),
+        ]
+        .into_iter()
+        .enumerate()
+        {
+            let NativeOpenReply::Planning { context, views } =
+                native.open(ns, session, ordinal as u32).unwrap()
+            else {
+                panic!("Unexpected native terminal before enemy rook replacement");
+            };
+            if ordinal == 1 {
+                assert!(views.b.own.sieged_tanks.contains(&d2));
+                assert!(
+                    views
+                        .b
+                        .own
+                        .pieces
+                        .iter()
+                        .any(|piece| piece.square == d2 && piece.kind == PieceKind::Rook)
+                );
+                assert!(views.w.own.pieces.iter().all(|piece| piece.square != d2));
+                let view = serde_json::to_value(&views.w).unwrap();
+                let enemy = view["cells"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .find(|cell| cell["square"] == "d2")
+                    .unwrap();
+                assert_eq!(enemy["piece"], json!({"color":"b","type":"r"}));
+                assert_ne!(enemy["visibility"], "unknown");
+            }
+            let requests: Pair<Vec<Action>> = serde_json::from_value(queues).unwrap();
+            let CommitReply::Committed {
+                context: committed_context,
+                begin,
+                settlement,
+            } = native.commit(ns, &context, &requests).unwrap();
+            assert_eq!(committed_context, context);
+            assert_eq!(settlement.requests, requests);
+            assert!(settlement.outcome.is_none());
+            assert!(
+                settlement
+                    .after
+                    .scfen
+                    .split('|')
+                    .any(|field| field == "S:d2")
+            );
+            assert!(
+                settlement.raw_resolve["next"]["siegedTanks"]
+                    .as_array()
+                    .unwrap()
+                    .contains(&json!("d2"))
+            );
+            assert_eq!(settlement.before.bank, Pair { w: 12, b: 12 });
+            assert_eq!(
+                settlement.committed.bank,
+                Pair {
+                    w: if ordinal == 0 { 12 } else { 7 },
+                    b: 12
+                }
+            );
+            assert_eq!(
+                settlement.grants,
+                Pair {
+                    w: if ordinal == 0 { 0 } else { 3 },
+                    b: 0
+                }
+            );
+            assert_eq!(
+                settlement.after.bank,
+                Pair {
+                    w: if ordinal == 0 { 12 } else { 10 },
+                    b: 12
+                }
+            );
+            let gas_field = settlement
+                .committed
+                .scfen
+                .split('|')
+                .find_map(|field| field.strip_prefix("G:"))
+                .unwrap();
+            let decision = |side: Side| {
+                let side_index = usize::from(side == Side::Black);
+                let spend = Spend {
+                    minerals: settlement
+                        .before
+                        .bank
+                        .get(side)
+                        .checked_sub(*settlement.committed.bank.get(side))
+                        .unwrap(),
+                    gas: views
+                        .get(side)
+                        .own
+                        .gas
+                        .checked_sub(u32::from(gas_field.as_bytes()[side_index] - b'0'))
+                        .unwrap(),
+                };
+                Decision {
+                    policy: BaselinePolicy::PassV1,
+                    seed: if side == Side::White { 1 } else { 2 },
+                    generation: None,
+                    selected: Candidate::new(requests.get(side).clone(), spend, side).unwrap(),
+                }
+            };
+            let decisions = Pair {
+                w: decision(Side::White),
+                b: decision(Side::Black),
+            };
+            record.windows.push(WindowRecord {
+                context,
+                views,
+                decisions,
+                begin,
+                settlement,
+            });
+            record.completed_windows += 1;
+        }
+        let NativeOpenReply::Planning { context, views } = native.open(ns, session, 2).unwrap()
+        else {
+            panic!("Unexpected native terminal at enemy-replacement window limit");
+        };
+        assert_eq!(context.planning_ordinal, 2);
+        assert_eq!(views.w.own.minerals, 10);
+        assert_eq!(views.b.own.minerals, 12);
+        assert!(views.w.own.sieged_tanks.contains(&d2));
+        assert!(!views.b.own.sieged_tanks.contains(&d2));
+        assert!(
+            views
+                .w
+                .own
+                .pieces
+                .iter()
+                .any(|piece| piece.square == d2 && piece.kind == PieceKind::Rook)
+        );
+        let CloseReply::Closed {
+            session: closed_session,
+            pending_begin,
+            image,
+            outcome,
+        } = native.close(ns, session).unwrap();
+        assert_eq!(closed_session, session);
+        assert!(outcome.is_none());
+        let pending_begin = pending_begin.unwrap();
+        assert_eq!(pending_begin.planning_ordinal, 2);
+        assert_eq!(pending_begin.after, image);
+        record.trailing_begin = Some(pending_begin);
+        record.final_image = Some(image);
+        record.outcome = outcome;
+        record.stop = RunStop::WindowLimit;
+        native.finish().unwrap();
+        record.cleanup = native.cleanup();
+        assert_eq!(record.cleanup, CleanupStatus::Exited { success: true });
+        record.validate_bounds().unwrap();
+        let original_bytes = serde_json::to_vec(&record).unwrap();
+        let decoded = decode_record(&original_bytes).unwrap();
+        let analysis = analyze_record(&decoded).unwrap();
+        assert_eq!(serde_json::to_vec(&decoded).unwrap(), original_bytes);
+        assert_eq!(serde_json::to_vec(&record).unwrap(), original_bytes);
+        assert!(
+            analysis.is_verified(),
+            "Native enemy replacement ledger refused: {:?}",
+            analysis.report.error
+        );
+        let report = serde_json::to_value(analysis.report()).unwrap();
+        assert_eq!(report["fullEconomicVerification"], true);
+        assert_eq!(report["classification"], "window-limited");
+        assert_eq!(report["policyVerification"], "not-executed");
+        assert_eq!(report["terminalTrainingCloseout"], Value::Null);
+        assert_eq!(report["trainingReady"], false);
+        assert_eq!(report["cleanup"], json!({"kind":"exited","success":true}));
+        let white = &report["ledgers"]["w"];
+        let rook = white["ownUnits"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|unit| unit["square"] == "d2" && unit["type"] == "r")
+            .unwrap();
+        assert_eq!(rook["mode"], "siege");
+        assert_eq!(rook["paidMineralBasis"], 5);
+        assert_eq!(
+            rook["origin"],
+            json!({"kind":"action","actionRef":{"planningOrdinal":1,"acceptedActionOrdinal":0}})
+        );
+        for endowed in white["ownUnits"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter(|unit| unit["origin"]["kind"] == "endowed")
+        {
+            assert_ne!(rook["id"], endowed["id"]);
+            assert_eq!(endowed["paidMineralBasis"], 0);
+        }
+        assert_eq!(white["ownLost"]["count"], 0);
+        assert_eq!(white["ownLost"]["paidMineralBasis"], 0);
+        assert_eq!(white["ownLost"]["replacementValueAtLoss"], 0);
+        assert!(white["ownLost"]["units"].as_array().unwrap().is_empty());
+        let minerals = &white["calculated"]["minerals"];
+        assert_eq!(minerals["originBank"], 12);
+        assert_eq!(minerals["actualCredits"], 3);
+        assert_eq!(minerals["paidDebits"], 5);
+        assert_eq!(minerals["currentBank"], 10);
+        assert_eq!(minerals["survivingPaidBasis"], 5);
+        assert_eq!(minerals["destroyedPaidBasis"], 0);
+        assert_eq!(minerals["wastedPaidBasis"], 0);
+        let deployment = &white["calculated"]["deploymentReceipts"][0];
+        assert_eq!(deployment["minerals"], 5);
+        assert_eq!(deployment["disposition"]["kind"], "materialized");
+        assert_eq!(deployment["disposition"]["unitId"], rook["id"]);
+        let witnessed = &white["witnessedEnemyDestruction"];
+        assert_eq!(witnessed["count"], 1);
+        assert_eq!(witnessed["replacementValue"], 5);
+        let witness = &witnessed["witnesses"][0];
+        assert_eq!(witness["square"], "d2");
+        assert_eq!(witness["type"], "r");
+        assert_eq!(
+            witness["ownActionRef"],
+            json!({"planningOrdinal":1,"acceptedActionOrdinal":0})
+        );
+        assert_eq!(
+            witnessed["ownActionCausedWitnessedEnemyDestruction"],
+            json!({"count":1,"replacementValue":5})
+        );
+        let black = &report["ledgers"]["b"];
+        assert_eq!(black["ownLost"]["count"], 1);
+        assert_eq!(black["ownLost"]["paidMineralBasis"], 0);
+        let lost_rook = &black["ownLost"]["units"][0]["unit"];
+        assert_eq!(lost_rook["square"], "d2");
+        assert_eq!(lost_rook["type"], "r");
+        assert_eq!(lost_rook["mode"], "siege");
+        assert_eq!(lost_rook["origin"], json!({"kind":"endowed"}));
+        assert_eq!(black["calculated"]["minerals"]["paidDebits"], 0);
+        assert_eq!(black["calculated"]["minerals"]["currentBank"], 12);
+        assert_eq!(white["grantOrdinal"], 2);
+        assert_eq!(black["grantOrdinal"], 2);
+    }
+
+    #[test]
     fn seeded_all_actors_native_rejection_retains_opening_without_receipts_or_admission() {
         let spec: MatchSpec = serde_json::from_str(include_str!(concat!(
             env!("CARGO_MANIFEST_DIR"),

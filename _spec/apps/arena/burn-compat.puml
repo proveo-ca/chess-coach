@@ -53,7 +53,7 @@
 ' covers: apps/arena/engine/test/economic-project.test.ts
 ' covers: apps/arena/engine/test/economic-replay.test.ts
 ' covers: apps/arena/engine/test/worker-economic.test.ts
-' status: Ledger and terminal closeout source present; current gate/review evidence lives in _spec/ml/native-economic-ledger.md.
+' status: Explicit-origin economic-v1 source present; current verification and review status lives in _spec/ml/native-economic-ledger.md.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
 ' related: _spec/ml/native-runner.md
@@ -101,7 +101,7 @@ package "Economic ledger / native consequences only" {
   component "apps/arena/src/economic_client.rs\none Transaction / both recipients\nabsolute window deadline + LedgerWork" as ECO_CLIENT <<host>>
   component "apps/arena/engine/worker-economic.ts\napps/arena/engine/economic-wire.ts\narena-economic-v1\neconomic.start / open / settle / close" as ECO_WORKER <<host>>
   component "apps/arena/engine/economic-replay.ts\nEconomicReplay / nativeLedgerRules\nindependent native consequence reconstruction" as ECO_NATIVE <<app>>
-  component "apps/arena/engine/economic-project.ts\nEconomicProjector / recipient filter\ncausal facts + own locators, no lasting IDs" as ECO_PROJECT <<app>>
+  component "apps/arena/engine/economic-project.ts\nEconomicProjector / recipient filter\nOWN native birth.mode / transform.toMode\nown locators / no lasting IDs or hidden mask" as ECO_PROJECT <<app>>
   component "packages/training/src/ledger/history.rs\nLedgerPair / IDs / paid basis / memory\natomic both-recipient boundary publication" as LEDGER <<app>>
   component "apps/arena/src/economic.rs\narena-economic-report-v1\nNON_ADMITTED / learned=false\ntrainingReady=false / modelArtifact=null\npolicyVerification=not-executed" as ECO_REPORT <<app>>
   component "apps/arena/src/economic.rs\nterminal_training_closeout\nNativeChronology / CheckedTerminalAccounting\nterminalTrainingCloseout required nullable" as CLOSEOUT <<host>>
@@ -166,7 +166,7 @@ ECO_WORKER ARROW_MAIN ECO_NATIVE : closed four-operation protocol\nno custom boa
 ECO_NATIVE ARROW_MAIN FIXTURES : independently parse fixed fixture\nactual record-initial-forward origin
 ECO_NATIVE ARROW_MAIN NATIVE : initializeProvenance / beginTurnWithProvenance\nendTurnWithProvenance / applyStoredIncome
 ECO_NATIVE ARROW_MAIN ECO_PROJECT : private causal frames / checkpoints\nactual action bindings / consumed capture proof
-ECO_PROJECT ARROW_MAIN ECO_NATIVE : filter before contiguous group sequence\nown locators / no paid-basis arithmetic
+ECO_PROJECT ARROW_MAIN ECO_NATIVE : recipient-OWN native origin modes / own locators\nfilter before contiguous group sequence\nno lasting IDs / hidden mask / paid-basis arithmetic
 ECO_NATIVE ARROW_MAIN ECO_WORKER : host native facts beside authorized pairs\nno private truth in future model DTOs
 ECO_CLIENT ARROW_MAIN ECO_HOST : strict parsed facts / exact native comparison\nraw begin/resolve, banks, grants, stop, outcome
 ECO_HOST ARROW_MAIN LEDGER : checked rules + authorized boundary pairs\nimmutable before-image / accepted births
@@ -297,7 +297,8 @@ legend bottom
   Both recipients share one 1048576-work / 10 s window transaction; helpers do not reset it.
   One absolute 300 s economic lifecycle includes 3 s cleanup; no chunks or truncated events.
   Native turns 1/11/21 grant nominal 1/2/3 after settlement; exact actual credits can be capped.
-  Terminal closeout source is present; supplied host104 leaf is not a fresh whole gate.
+  Economic-v1 birth.mode / transform.toMode: required tank|siege for rook, null otherwise.
+  Native same-entity origin trace only; afterOwn is reconciliation, not mode authority.
   Complete verified native terminal only; exclude the exact final unused actual-credit receipt.
   usableGas={w:0,b:0} means no terminal intent budget, never a native expense refund.
   Private chronology and terminal proof charges reuse the existing window meter.

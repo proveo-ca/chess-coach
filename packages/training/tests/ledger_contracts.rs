@@ -79,9 +79,9 @@ fn fact_values() -> Vec<Value> {
     let reference = json!({"planningOrdinal":0,"acceptedActionOrdinal":0});
     let subject = json!({"kind":"before-unit","square":"c2"});
     vec![
-        json!({"kind":"unit-born","actionRef":reference,"square":"c3","type":"p"}),
+        json!({"kind":"unit-born","actionRef":reference,"square":"c3","type":"p","mode":null}),
         json!({"kind":"unit-moved","subject":subject,"from":"c2","to":"c3"}),
-        json!({"kind":"unit-transformed","subject":subject,"fromType":"p","toType":"q"}),
+        json!({"kind":"unit-transformed","subject":subject,"fromType":"p","toType":"q","toMode":null}),
         json!({"kind":"unit-mode-changed","subject":subject,"before":"tank","after":"siege"}),
         json!({"kind":"unit-destroyed","subject":subject,"square":"c2","type":"p"}),
         json!({"kind":"deployment-unmaterialized","actionRef":reference}),
@@ -103,6 +103,28 @@ fn with_facts(facts: Vec<EffectFact>) -> EconomicBoundary {
     boundary
 }
 
+fn materialized_unit_fact_values() -> Vec<Value> {
+    let mut facts = Vec::new();
+    for (kind, mode) in [
+        ("p", Value::Null),
+        ("n", Value::Null),
+        ("b", Value::Null),
+        ("q", Value::Null),
+        ("r", json!("tank")),
+        ("r", json!("siege")),
+    ] {
+        facts.push(json!({"kind":"unit-born","actionRef":action_ref(),"square":"d2","type":kind,"mode":mode}));
+        facts.push(json!({"kind":"unit-transformed","subject":{"kind":"before-unit","square":"c2"},"fromType":if kind == "p" { "q" } else { "p" },"toType":kind,"toMode":mode}));
+    }
+    facts
+}
+
+fn boundary_with_fact_values(facts: Vec<Value>) -> Value {
+    let mut boundary = serde_json::to_value(golden().boundaries.remove(2)).unwrap();
+    boundary["groups"][1]["facts"] = json!(facts);
+    boundary
+}
+
 fn invalid_boundary(boundary: &EconomicBoundary, code: LedgerErrorCode) {
     assert_eq!(
         boundary
@@ -111,6 +133,222 @@ fn invalid_boundary(boundary: &EconomicBoundary, code: LedgerErrorCode) {
             .code,
         code
     );
+}
+
+#[test]
+fn materialized_units_reject_birth_without_required_mode() {
+    reject::<EffectFact>(
+        json!({"kind":"unit-born","actionRef":action_ref(),"square":"d2","type":"p"}),
+    );
+    reject::<EffectFact>(
+        json!({"kind":"unit-born","actionRef":action_ref(),"square":"d2","type":"r"}),
+    );
+}
+
+#[test]
+fn materialized_units_reject_transformation_without_required_to_mode() {
+    reject::<EffectFact>(
+        json!({"kind":"unit-transformed","subject":{"kind":"before-unit","square":"c2"},"fromType":"p","toType":"q"}),
+    );
+    reject::<EffectFact>(
+        json!({"kind":"unit-transformed","subject":{"kind":"before-unit","square":"c2"},"fromType":"p","toType":"r"}),
+    );
+}
+
+#[test]
+fn materialized_units_round_trip_closed_explicit_modes() {
+    for value in materialized_unit_fact_values() {
+        closed::<EffectFact>(value.clone());
+        let fact: EffectFact = serde_json::from_value(value.clone()).unwrap();
+        assert_eq!(serde_json::to_value(&fact).unwrap(), value);
+        round_trip(&fact);
+        with_facts(vec![fact])
+            .validate(&golden().rules, &mut LedgerWork::new())
+            .unwrap();
+    }
+}
+
+#[test]
+fn materialized_units_reject_invalid_mode_values_aliases_tags_and_types() {
+    for value in materialized_unit_fact_values() {
+        let (mode_key, type_key) = if value["kind"] == "unit-born" {
+            ("mode", "type")
+        } else {
+            ("toMode", "toType")
+        };
+        for invalid in [
+            json!("Tank"),
+            json!("Siege"),
+            json!("TANK"),
+            json!("SIEGE"),
+            json!("tank-mode"),
+            json!(""),
+            json!({"tank":null}),
+            json!(["siege"]),
+            json!(false),
+            json!(0),
+        ] {
+            let mut malformed = value.clone();
+            malformed[mode_key] = invalid;
+            reject::<EffectFact>(malformed);
+        }
+        for invalid in [
+            json!(null),
+            json!(1),
+            json!(true),
+            json!([]),
+            json!({}),
+            json!("UnitBorn"),
+            json!("unit_transformed"),
+        ] {
+            let mut malformed = value.clone();
+            malformed["kind"] = invalid;
+            reject::<EffectFact>(malformed);
+        }
+        for invalid in [
+            json!(null),
+            json!(1),
+            json!(true),
+            json!([]),
+            json!({}),
+            json!("Rook"),
+            json!("R"),
+        ] {
+            let mut malformed = value.clone();
+            malformed[type_key] = invalid;
+            reject::<EffectFact>(malformed);
+        }
+        let mut alias = value.clone();
+        let fields = alias.as_object_mut().unwrap();
+        let mode = fields.remove(mode_key).unwrap();
+        fields.insert(
+            if mode_key == "mode" {
+                "tankMode"
+            } else {
+                "to_mode"
+            }
+            .into(),
+            mode,
+        );
+        reject::<EffectFact>(alias);
+    }
+}
+
+#[test]
+fn materialized_units_reject_null_rook_modes_and_nonrook_modes() {
+    for value in materialized_unit_fact_values() {
+        let mode_key = if value["kind"] == "unit-born" {
+            "mode"
+        } else {
+            "toMode"
+        };
+        let invalid_modes = if value[mode_key].is_null() {
+            vec![json!("tank"), json!("siege")]
+        } else {
+            vec![Value::Null]
+        };
+        for invalid in invalid_modes {
+            let mut malformed = value.clone();
+            malformed[mode_key] = invalid;
+            let bytes = serde_json::to_vec(&boundary_with_fact_values(vec![malformed])).unwrap();
+            assert_eq!(
+                decode_boundary(&bytes, &golden().rules, &mut LedgerWork::new())
+                    .unwrap_err()
+                    .code,
+                LedgerErrorCode::BadInput
+            );
+        }
+    }
+}
+
+#[test]
+fn materialized_units_decode_and_canonicalize_actual_modes_with_unchanged_work_fees() {
+    let fixture = golden();
+    let facts = materialized_unit_fact_values();
+    let bytes = serde_json::to_vec(&boundary_with_fact_values(facts.clone())).unwrap();
+    let mut work = LedgerWork::new();
+    let boundary = decode_boundary(&bytes, &fixture.rules, &mut work).unwrap();
+    let fee_control = with_facts(vec![
+        EffectFact::CcLivesChanged {
+            before: 3,
+            after: 2
+        };
+        facts.len()
+    ]);
+    let mut validation_work = LedgerWork::new();
+    fee_control
+        .validate(&fixture.rules, &mut validation_work)
+        .unwrap();
+    assert_eq!(work.used(), bytes.len() as u64 + validation_work.used());
+    let mut canonical_work = LedgerWork::new();
+    let canonical = canonical_boundary_bytes(&boundary, &mut canonical_work).unwrap();
+    let canonical_value: Value = serde_json::from_slice(&canonical).unwrap();
+    assert_eq!(canonical_value["groups"][1]["facts"], json!(facts));
+    let mut control_work = LedgerWork::new();
+    control_work.charge_boundary(&fee_control).unwrap();
+    assert_eq!(
+        canonical_work.used(),
+        control_work.used() + canonical.len() as u64 * 3
+    );
+    assert_eq!(
+        serde_json::from_slice::<EconomicBoundary>(&canonical).unwrap(),
+        boundary
+    );
+    for index in [8, 9] {
+        let key = if index == 8 { "mode" } else { "toMode" };
+        let mut changed = canonical_value.clone();
+        changed["groups"][1]["facts"][index][key] = json!("siege");
+        let changed: EconomicBoundary = serde_json::from_value(changed).unwrap();
+        assert_ne!(
+            canonical,
+            canonical_boundary_bytes(&changed, &mut LedgerWork::new()).unwrap()
+        );
+    }
+    let mut missing = canonical_value.clone();
+    missing["groups"][1]["facts"][0]
+        .as_object_mut()
+        .unwrap()
+        .remove("mode");
+    missing["groups"][1]["facts"][1]
+        .as_object_mut()
+        .unwrap()
+        .remove("toMode");
+    let missing = serde_json::to_vec(&missing).unwrap();
+    let mut missing_work = LedgerWork::new();
+    assert_eq!(
+        decode_boundary(&missing, &fixture.rules, &mut missing_work)
+            .unwrap_err()
+            .code,
+        LedgerErrorCode::BadInput
+    );
+    assert_eq!(missing_work.used(), missing.len() as u64);
+    let mut byte_only = LedgerWork::with_limit(bytes.len() as u64).unwrap();
+    assert_eq!(
+        decode_boundary(&bytes, &fixture.rules, &mut byte_only)
+            .unwrap_err()
+            .code,
+        LedgerErrorCode::Budget
+    );
+    assert_eq!(byte_only.used(), bytes.len() as u64);
+    let mut max_bytes = bytes;
+    max_bytes.resize(MAX_BOUNDARY_BYTES, b' ');
+    let mut max_work = LedgerWork::new();
+    assert_eq!(
+        decode_boundary(&max_bytes, &fixture.rules, &mut max_work)
+            .unwrap_err()
+            .code,
+        LedgerErrorCode::Budget
+    );
+    assert_eq!(max_work.used(), MAX_BOUNDARY_BYTES as u64);
+    max_bytes.push(b' ');
+    let mut oversized_work = LedgerWork::new();
+    assert_eq!(
+        decode_boundary(&max_bytes, &fixture.rules, &mut oversized_work)
+            .unwrap_err()
+            .code,
+        LedgerErrorCode::Budget
+    );
+    assert_eq!(oversized_work.used(), 0);
 }
 
 #[test]
@@ -871,11 +1109,11 @@ fn effect_shapes_exclude_command_center_retirements_noops_and_invalid_subject_or
     let reference = json!({"planningOrdinal":0,"acceptedActionOrdinal":4});
     let subject = json!({"kind":"before-unit","square":"c2"});
     let malformed = [
-        json!({"kind":"unit-born","actionRef":action_ref(),"square":"c3","type":"k"}),
+        json!({"kind":"unit-born","actionRef":action_ref(),"square":"c3","type":"k","mode":null}),
         json!({"kind":"unit-destroyed","subject":subject,"square":"c2","type":"k"}),
         json!({"kind":"unit-moved","subject":subject,"from":"c2","to":"c2"}),
-        json!({"kind":"unit-transformed","subject":subject,"fromType":"p","toType":"p"}),
-        json!({"kind":"unit-transformed","subject":subject,"fromType":"p","toType":"k"}),
+        json!({"kind":"unit-transformed","subject":subject,"fromType":"p","toType":"p","toMode":null}),
+        json!({"kind":"unit-transformed","subject":subject,"fromType":"p","toType":"k","toMode":null}),
         json!({"kind":"unit-mode-changed","subject":subject,"before":"tank","after":"tank"}),
         json!({"kind":"cc-lives-changed","before":3,"after":4}),
         json!({"kind":"cc-lives-changed","before":3,"after":3}),
