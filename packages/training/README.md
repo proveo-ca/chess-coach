@@ -23,6 +23,7 @@ The baseline receipts do not verify the ledger.
 - `ledger`: strict economic boundaries, atomic recipient histories and paid-basis conservation.
 - `score_synthetic_f64`: the retained fixed Burn model, not a learned arena policy.
 - `protocol`: the standalone numerical compatibility surface.
+- `transition_tables`: numerical source witnesses, fractional counts, group-qualified backoff and source normalizers.
 
 Composition limits are four actions, 2048 attempted extensions and 512 retained candidates including pass.
 Node supplies native geometry, append failures, anchors and one-action costs.
@@ -81,6 +82,14 @@ The original joint remains unchanged; no tempered joint escapes for recursive re
 Mask certainty includes all supplied supported states, even states with zero model probability.
 These numerical checks do not authenticate public support, source aggregation, fitted temperatures or native observations.
 The standalone invoice does not establish that history, transitions and all candidate features fit the shared planning budget.
+
+## Numerical transition tables
+
+The [F5 contract](../../_spec/ml/native-transition-tables.md) builds ordered fractional counts from supplied numeric groups and derives distinct contributing-group qualification.
+Its source normalizers retain canonical count order and use checked growth metadata without allocating complete joint flows.
+The 8,192 occupied-row ceiling applies across all cohorts; explicit vector growth also accounts for temporary copies.
+Numeric source witnesses do not prove trustworthy labels, native execution, independent ancestry or authenticated artifacts.
+This module does not run empirical fitting or admit a complete offline driver, joint evaluator or planning schedule.
 
 ## Preparation
 

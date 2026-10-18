@@ -15,8 +15,8 @@ use serde_json::{Value, json};
 
 use runner::Gate;
 
-const VERIFICATION_VERSION: &str = "rust-training-verification-v7";
-const VERIFICATION_SCOPE: &str = "native-joint-math";
+const VERIFICATION_VERSION: &str = "rust-training-verification-v8";
+const VERIFICATION_SCOPE: &str = "native-transition-tables";
 const NODE_VERSION_PROBE: &str = "import * as nodeModule from 'node:module'; console.log(JSON.stringify({version:process.version,registerHooks:typeof nodeModule.registerHooks==='function'}));";
 const NOT_ESTABLISHED: &[&str] = &[
     "full-training-closure",
@@ -438,8 +438,8 @@ mod tests {
         let receipt = read_json(&gate.directory.join("receipt.json")).unwrap();
         let initialized = initialization_receipt("fixture initialization failure".into());
         for value in [&receipt, &initialized] {
-            assert_eq!(value["version"], "rust-training-verification-v7");
-            assert_eq!(value["scope"], "native-joint-math");
+            assert_eq!(value["version"], "rust-training-verification-v8");
+            assert_eq!(value["scope"], "native-transition-tables");
             assert_eq!(
                 value["notEstablished"],
                 json!([

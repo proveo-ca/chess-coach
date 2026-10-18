@@ -1,4 +1,4 @@
-' purpose: Numerical joint readouts, point-source accounting, learner math, checked feature seams and economic/native composition beside retained synthetic compatibility.
+' purpose: Numerical transition tables/source terms, joint readouts, point accounting and checked training foundations beside retained synthetic compatibility.
 ' covers: Cargo.toml
 ' covers: rust-toolchain.toml
 ' covers: packages/training/Cargo.toml
@@ -41,7 +41,9 @@
 ' covers: packages/training/tests/accounting_kernel.rs
 ' covers: packages/training/src/joint_math.rs
 ' covers: packages/training/tests/joint_math.rs
-' status: Joint/accounting/learner/F1/ledger structure lives here; current evidence and review status lives in the related Markdown owners.
+' covers: packages/training/src/transition_tables.rs
+' covers: packages/training/tests/transition_tables.rs
+' status: Transition/joint/accounting/learner/F1/ledger structure lives here; current evidence and review status lives in the related Markdown owners.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
 ' related: _spec/ml/native-runner.md
@@ -55,6 +57,8 @@
 ' related: _spec/ml/native-accounting-kernel.md
 ' related: _spec/_plans/native-joint-math.md
 ' related: _spec/ml/native-joint-math.md
+' related: _spec/_plans/native-transition-tables.md
+' related: _spec/ml/native-transition-tables.md
 ' related: _spec/apps/arena/burn-compat.puml
 ' history: native-runner.md owns the completed baseline, not current ledger verification.
 ' history: d250c88e Bun receipt is superseded, not current proof or review eligibility.
@@ -63,7 +67,7 @@
 ' validation: Author runs no tests, renderer or hashes; lead owns the complete unchanged-input invoice and note-box checks.
 @startuml
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Rust numerical joint readouts + point accounting + learner math + ledger
+title Rust numerical transition tables + joint readouts + training foundations
 left to right direction
 
 component "apps/arena/src/lib.rs\nRust policy caller" as ARENA <<app>>
@@ -109,6 +113,14 @@ package "Root Cargo workspace\nCargo.toml / one reused Cargo.lock" {
     component "joint_math::readout_copy\none private N scratch / D577 + potential589 marginals\nfinite-checked compensated means in SAME N pass\nall quantiles checked before exact certain mean" as JOINT_READOUT <<app>>
     component "joint_math::NumericReadout\nmeans / quantiles [.05,.95,.025,.975]\nbalance / MATERIAL uncertainty\nSUMMARY ONLY / no tempered joint" as JOINT_SUMMARY <<app>>
   }
+  package "F5 pub mod transition_tables / numerical DATA only" {
+    component "transition_tables::NumericFitGroup / NumericFitRow\nNumericOutcome / supplied source witness\nordered slot -> node -> cohort level / weight 1/r\nno native/hash-selected label or ancestry authority" as TABLE_INPUT <<app>>
+    component "packages/training/src/transition_tables.rs\nbuild_numeric_transitions / private TableBuilder\ncanonical fractional counts / groups once per slot\nexplicit paid grow/copy/drop/insert / no regroup" as TABLE_BUILD <<app>>
+    component "transition_tables::NumericTransitions\nNumericTransitionTable / ALL 794 index-ordered cohorts\nBBT 0..740 / BT 741..779 / B 780..792 / Global 793\nborrowed rows/groups / small O(1) Debug" as TABLE_DATA <<app>>
+    component "transition_tables::GrowthMetadata / copied LedgerRules\nprivate min opportunities + integer Gamma prefixes\nowned income/gas TABLE vectors / structural profile" as TABLE_METADATA <<app>>
+    component "transition_tables::NumericTransitions::select\nBBT -> BT -> B groups >= 32, else Global\nqualification ONLY / no query-N fallback" as TABLE_SELECT <<app>>
+    component "transition_tables::NumericTransitions::source_terms\nprivate widened source_interval / canonical row N\ninteger prefix Z / Den=N+.5Z / SourceTerms ONLY\nno 7501-flow allocation or F3/F4 flow/readout call" as TABLE_TERMS <<app>>
+  }
 }
 component "apps/arena/src/economic.rs\nhost recipient-history caller\nno recorded-policy verification" as ECO_HOST <<host>>
 component "packages/training/tests/ledger_contracts.rs\npackages/training/tests/ledger_history.rs\npackages/training/tests/fixtures/ledger-boundaries.json\nshared DTO / fold / native-fidelity controls" as LEDGER_PROOF <<app>>
@@ -125,6 +137,7 @@ component "packages/training/tests/feature_manifest.rs\npackages/training/tests/
 component "packages/training/tests/learner_math.rs\nindependent scalar objective / all418 FD\nBurn Flex F64 no-bias oracle TEST ONLY" as MATH_PROOF <<app>>
 component "packages/training/tests/accounting_kernel.rs\nindependent sequences -> distinct tuples -> direct weights\nall 7501 mass/support lanes / safe precharge controls\nunchanged rules golden is STRUCTURAL data only" as ACCOUNTING_PROOF <<app>>
 component "packages/training/tests/joint_math.rs\nindependent direct normalization / SORTED target records\nall 7501 lanes / all 1001 temperatures / exact CDF\ncertainty / bitwise isolation / safe work+error controls\nprivate source unit guards: inconsistent certainty refuses" as JOINT_PROOF <<app>>
+component "packages/training/tests/transition_tables.rs\nindependent sequences -> COMPLETE tuples / destruction Z\nall 794 cohorts / all 577 D / fractional count BITS\nqualification / profile isolation / exact fee controls\nprivate source units: safe logical-storage growth guards" as TABLE_PROOF <<app>>
 
 ARENA ARROW_MAIN LIB : retained smoke / direct typed Rust call\nno scoring child / no Bun bridge
 RUN ARROW_MAIN COMPOSER : limited AuthorizedView only\nno case / fixture / seed / native image
@@ -203,6 +216,20 @@ JOINT_PROOF ARROW_OPTIONAL JOINT_SUPPORT : set-based ALL-true certainty / zero-P
 JOINT_PROOF ARROW_OPTIONAL JOINT_NORMALIZE : direct global sum/division / no production oracle\n(.125,.5) -> (.2,.8), not per-source (.5,.5)
 JOINT_PROOF ARROW_OPTIONAL JOINT_READOUT : independent power temperature / SORTED means+quantiles\nunderflow / exact and one-below fees / same-meter refusal
 XTASK ARROW_OPTIONAL JOINT_PROOF : exact nonempty tests/joint_math.rs token\ntwo required joint files / cumulative F1-F3 controls
+TABLE_INPUT ARROW_MAIN TABLE_BUILD : EVERY row has its own feasible numeric source\nA1 SOME witness in cohort, not native truth/independence
+TABLE_BUILD ARROW_MAIN TABLE_DATA : ordinary 1/r additions / incrementally sorted tuples\nALL 794 including empty / distinct contributing groups
+TABLE_BUILD ARROW_MAIN TABLE_METADATA : explicit profile copy / growth metadata ownership\nno hidden Clone, index-map vector or startup
+TABLE_METADATA ARROW_MAIN LEDGER_CONTRACTS : LedgerRules.validate + supported numeric TABLE profile\ncap12 / income and gas 1..3 / NOT provenance
+TABLE_METADATA ARROW_MAIN ACCOUNTING_DOMAIN : growth_support(m) for ALL m0..4 / SAME work\nprocess each mask ONCE / growth helper ONLY, no flow
+TABLE_DATA ARROW_MAIN TABLE_SELECT : direct cohort indices / group qualification\nGlobal may be empty alpha-only NUMERIC prior
+TABLE_SELECT ARROW_MAIN TABLE_TERMS : select ONCE / qualified table stays selected at N=0\nno probability/evidence/query-feasibility backoff
+TABLE_TERMS ARROW_MAIN TABLE_DATA : scan selected rows ONCE in canonical tuple order\nignore query-infeasible counts, never reject their other witness
+TABLE_TERMS ARROW_MAIN TABLE_METADATA : copied actual gas, NOT model tier+1\nmin growth lookup / integer cardinality prefixes
+TABLE_BUILD ARROW_MAIN LEDGER_WORK : SAME caller / tables60548 + growth49812 + paid profile\nprepay search224 / row growth+copies+shifts / final moves
+TABLE_TERMS ARROW_MAIN LEDGER_WORK : entry/source/select + EACH inspected row/interval/lookup\nno reset/refund/hidden rescan or new allowance
+TABLE_PROOF ARROW_OPTIONAL TABLE_BUILD : independent ordered count map / source witness oracle\ncanonical bits / same-slot group count / explicit paid growth
+TABLE_PROOF ARROW_OPTIONAL TABLE_TERMS : sequence/tuple oracle + explicit destruction counts\nminimum growth / stock-cap Z2307 / qualified N=0
+XTASK ARROW_OPTIONAL TABLE_PROOF : exact nonempty tests/transition_tables.rs token\ntwo required table files / cumulative F1-F4 controls
 
 note bottom of LIB
   The smoke calls Burn in process so its
@@ -328,6 +355,18 @@ legend bottom
   Numeric chain1003928 leaves44648; simple F3+chain1457048 exceeds1M and valid composition refuses Work.
   Source audit + safe budget/error observations are NOT allocator instrumentation or full runtime fit proof.
   No joint-math-to-estimator/host/CLI/source-auth/cohort/likelihood/spatial/collector/calibration/runtime edge.
+  F5 inputs are supplied numeric fit groups, not authenticated labels, independent ancestry or empirical fitting.
+  Counts add slot -> node -> cohort level in ordinary binary64 order; no chunk merges/residual repair/Kahan.
+  Table group qualification counts DISTINCT contributing slots, not fractional count mass; empty groups pay headers.
+  All 794 cohorts remain index-ordered including empty Global793; model turn tiers are NOT native gas tiers.
+  source_terms preserves selected qualified N=0; integer Z and canonical N exclude L/destination conditioning.
+  No final sort/shrink/merge or implicit row reserve; explicit growth preserves old row order/count bits.
+  Occupied row copies8192 / paid persistent16384 / temporary old4096 / live20480 are LOGICAL, not allocator/RSS proof.
+  Guard -> precharge -> allocate -> copy -> replace -> DROP OLD -> insert/update; drop before another cohort grows.
+  F5 table init60548 / growth49812 / paid profile copy / final1572+32 per table+64 per row remain additional to rules.
+  Source audit + safe errors/cfg(test) logical peaks are NOT allocator instrumentation/D1/full fitter/runtime fit.
+  No transition-table-to-artifact/label-producer/collector/native-permit/joint-flow/spatial/host/CLI/readiness edge.
+  Future floating factoring memo authorizes NO canonical-order change, grouped headstock or runtime admission.
   Verifier notEstablished: full-training-closure / genuine-native-authority / whole-decision-adequacy.
   Verifier notEstablished also includes calibration / training-readiness; private labels remain DOCUMENT ONLY.
   No real training, payout calibration, R4 readiness or activation claim.

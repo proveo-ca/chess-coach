@@ -1,10 +1,12 @@
 # F4 — checked numerical joint math: goals and acceptance
 
-**2026-10-18 · BOUNDED F4 VERIFICATION/REVIEW COMPLETE ·721e v7 PASS:29 COMMANDS / RUST416 / NODE189 / CORE668 · ALL3 CURRENT FINAL F4 REVIEWS READY, FINDINGS NONE · PUBLICATION AUTHORIZED, NOT EXECUTED · trainingReady:false.**
+**2026-10-18 · BOUNDED F4 VERIFICATION/REVIEW/PUBLICATION COMPLETE ·721e v7 PASS:29 COMMANDS / RUST416 / NODE189 / CORE668 · ALL3 FINAL F4 REVIEWS READY, FINDINGS NONE · PUBLISHED59e1eff1 / MATCHED HEAD=REMOTE / CLEAN AT CHECKPOINT · trainingReady:false.**
+
+Lead committed/non-force pushed **59e1eff1a10072b6594fff3a65e2e6b3b5ff7a24**, `feat(training): add checked joint normalization and readout`,16 files,parent29018157e40bb11d558599a21409623bfbec1a83. Before commit, the462-input current-source identity joined721e; final navigation/preservation/whitespace/exact16 checks passed. Actual post-push local HEAD/remote matched full59e1 and tree was CLEAN **at that checkpoint**, before [F5 goals](native-transition-tables.md); bounded F4 publication is not F5/readiness proof.
 
 The [exact contract and reasoning](../ml/native-joint-math.md) owns APIs, support/certainty, one-time normalization, readout/quantiles, error/precharge rules and resource/authority exclusions.
 This plan owns delivery, ownership, acceptance/oracles and the full-gate lock. The complete80-line `f4-joint-math-freeze.md` was read; architect `ses_eb7c5d187ffenpvgElk95FZ8ut` and final backend/DevOps clarifications are accepted, no unresolved fork/ordering TUI.
-Both actual Rust files and narrow lib/root integration were read before freeze. The [existing training owner](../packages/training/burn-compat.puml) includes F4 structure; [current complete v7 proof](../ml/native-joint-math.md#current-f4-evidence) and ALL3 final READY/no findings establish bounded same-input F4 verification/review, not stitched leaves or borrowed F3 approval. Publication remains separate/unexecuted.
+Both actual Rust files and narrow lib/root integration were read before freeze. The [existing training owner](../packages/training/burn-compat.puml) includes F4 structure; [complete v7 proof](../ml/native-joint-math.md#current-f4-evidence) and ALL3 final READY/no findings establish bounded same-input F4 verification/review, not stitched leaves or borrowed F3 approval. Publication completed at59e1 with the matched/clean checkpoint above.
 
 ## 1. Actual published prerequisite
 
@@ -90,11 +92,11 @@ inputSha256 == inputSha256After ==
 | Training / root count boundary |278 =254 retained +22 integration +2 private guards; xtask32 also included in416. Neither subset is added again. |
 | Retained accounting/feature_input/feature_manifest/learner_math/ledger_contracts/ledger_history/economic_replay/readiness |25/29/11/24/42/49/9/4, already included in the actual workspace total |
 | Exact numeric/shared-meter work |Chain1003928/headroom44648; valid F3+chain Work refusal retains spent prefix964436, not Domain/Shape/fresh-meter success. Source audit+safe budget/error observations, **NOT allocator instrumentation**. |
-| Whole v7 / closing / publication |Whole PASS and ALL3 current READY/NONE **DONE**; publication AUTHORIZED BUT NOT EXECUTED |
+| Whole v7 / closing / publication |Whole PASS/ALL3 final READY/NONE/publication59e1 **DONE**, actual matched/clean publication checkpoint |
 
 This is ONE actual unchanged-input F4 run, not summed leaves/F3 proof. All static/fmt/all-targets check/Clippy-Dwarnings/types/warnings-denied lint/build/selected CPU dependencies/protected tracked+untracked preservation BEFORE+AFTER/index42/59/both PUML syntax+boundsSVG/receipt-time whitespace PASS. Actual Node capability stdout read `{"version":"v22.23.2","registerHooks":true}`; all five exact notEstablished families remain unchanged.
 Separate lead preflight PASS, **not extra29 invoice jobs**:45 entries/all44 nontraining entries+metadata preserved,42/59 literal covers/SPEC/file agreement;22 old notes byte-unchanged/2–5 lines/max46 columns/FK unchanged; PLAN suffix4+/README first2+suffix6+ byte-exact to29018157; exact4 then-new files/clean new+tracked whitespace/protected F3/native/legacy/model/Node/config/dependencies/locks/data preserved.
-After PASS lead explicitly staged all16 F4 paths including4 new files/cached-whitespace PASS and supplied the complete HEAD-relative capture upfront. Source/config/tests/index/PUML bytes stayed unchanged after PASS; current Markdown status may be newer than that capture and needs final metadata checks/restaging before publication, not a self-hash loop or invented run.
+After PASS lead explicitly staged all16 F4 paths including4 new files/cached-whitespace PASS and supplied the complete HEAD-relative capture upfront. Source/config/tests/index/PUML bytes stayed unchanged through publication; later Markdown status received final source-join/navigation/preservation/whitespace/exact16 checks/restaging before commit59e1, not a self-hash loop or invented run.
 
 Two resolved pre-gate controls preserve the frozen contract: certain_mean verifies computed quantiles instead of filling them (two safe private unit guards, including the pre-fix inconsistency reproduction); finite-checked compensated means remain in the existing canonical16N marginal/mean block. Independent B's dense case (all mask/raw j%19+1/τ1) originally differed by1.31e−12, beyond unchanged1e−12, yielding21/22; lead's exact raw sum74980/D numerator21593141 corroborated the oracle, and the unchanged22 tests now pass. No assertion, buffer/scan count, invoice or normative rule was relaxed. These are resolved implementation controls, not open review findings or D1 scalar/native-authority proof.
 
@@ -112,22 +114,22 @@ No joint transition/source aggregation/cohort/backoff/likelihood/spatial support
 2. **DONE source/root handoffs:** both actual Rust files and lib/root/READMEs were read. Root retains all14 F1–F3 required inputs/controls and adds both joint files/mutation/restore/delete checks; exact nonempty tests/joint_math.rs reuses missing/zero/lookalike/name-summary guards without parser redesign. Current22/278/32 are included in actual whole Rust416, not stitched leaves.
 3. **DONE architecture/coverage validation:** training owner/index40→42, exact two actual paths/fingerprint null; current complete-gate syntax/SVG/index42/59 PASS, arena59/all44 other entries/metadata preserved. Existing22 note bodies/FK records/stable labels unchanged; note/navigation preflight is separate from29 jobs. This metadata pass edits none of those verified inputs.
 4. **DONE full gate:** actual `rust-training-verification-v7` / `native-joint-math` whole PASS29/416/189/668 at matching721e retains all static/unfiltered-suite/preservation/identity controls and five exact notEstablished values. No readiness command/timeout/dependency/Node/config/F3 change.
-5. **DONE fresh closing; publication authorized/unexecuted:** ALL3 current721e final F4 read-only reviews READY, findings NONE, complete16-path scope; no old F3 approval borrowed. Source/config/test/index/PUML changes require the entire gate again before rereview. Lead will read final docs, join current source721e/navigation suffixes/whitespace/protected scope/exact16 inventory, restage explicit16, commit/non-force push and verify actual remote HEAD/clean checkpoint. HEAD remains published F3base29018157 until an actual later commit; no future hash is invented.
+5. **DONE fresh closing/publication:** ALL3 final721e F4 read-only reviews READY, findings NONE, complete16-path scope; no old F3 approval borrowed. Lead completed final462-input source721e/navigation/preservation/whitespace/exact16 join/restaging, committed/non-force pushed59e1 and verified actual HEAD=remote/CLEAN checkpoint. No future hash/F5 proof is inferred; later source/config/test/index/PUML changes require their whole gate before rereview.
 
 | Current item | Status |
 |---|---|
 | Published F3 prerequisite |DONE29018157e40bb11d558599a21409623bfbec1a83; bounded d771/v6 proof only |
 | F4 freeze/goals/static clarifications |ACCEPTED / PERSISTED, no open choice |
-| F4 sources/tests/lib/root |LANDED / actual handoffs read; two pre-gate corrections resolved without contract relaxation |
+| F4 sources/tests/lib/root |LANDED / PUBLISHED59e1; two pre-gate corrections resolved without contract relaxation |
 | Existing training owner/index |DONE40→42/null fingerprint; current syntax/SVG/index42/59 PASS, arena59/all44 other entries/metadata/22 notes preserved |
 | F4 numerical proof |22 integration +2 private guards included in training278; root32 included in actual whole Rust416 |
 | Complete v7 gate |DONE/PASS29 commands/416 Rust/189 Node/668 core, present721e receipt/matching identity |
 | ALL3 current final F4 reviews |DONE/READY, findings NONE, no LOW or pending review blocker; bounded verification/review COMPLETE |
-| F4 capture/publication |Full16-path scope COMPLETE/STAGED; PUBLICATION AUTHORIZED, NOT EXECUTED, final metadata/source join/restaging lead-owned |
+| F4 capture/publication |Full16-path scope COMPLETE/PUBLISHED59e1; final joins/checks/restaging DONE, actual post-push HEAD=remote/CLEAN checkpoint |
 | Full estimator/authority/resource/calibration/readiness |NOT ESTABLISHED / outside F4 completion |
 
-F4 completion will establish identified numeric normalization/readout correctness and bounded evidence/review/publication, not genuine publicSupport/native truth, complete estimator/posterior transition, fitted qualification or training readiness. trainingReady:false remains unchanged.
-Next: lead final metadata/preservation/current-source join, restage16 and perform the authorized verified publication. Whole721e/v7 PASS29/416/189/668 and ALL3 current final READY/no findings are DONE; no pending review blocker or actual F4 commit/push/future hash is claimed. F5 read-only freeze/advice remains external, with no F5 repo docs/source before actual F4 publication. Keeper ran no commands/tests/hashes/renders/agents/Git and edited no source/config/tests/index/PUML/normative law/API/fees or F3 docs.
+F4 completion establishes identified numeric normalization/readout correctness and bounded evidence/review/publication, not genuine publicSupport/native truth, complete estimator/posterior transition, fitted qualification or training readiness. trainingReady:false remains unchanged.
+Whole721e/v7 PASS29/416/189/668, ALL3 final READY/no findings and publication59e1 are DONE. Next selected delivery is [F5 goals](native-transition-tables.md), after actual F4 publication; F5 implementation/tests/gate/reviews/publication remain planned/not run. Keeper runs no commands/tests/hashes/renders/agents/Git and edits no source/config/tests/index/PUML/normative F4 API/math/fees or F3 docs in this goals handoff.
 
 ### Current final F4 closing — ALL3 READY, findings NONE
 
@@ -137,4 +139,4 @@ Next: lead final metadata/preservation/current-source join, restage16 and perfor
 | Security `ses_eb7cb7218ffePBBBS1MqCmBCtM` |DONE `READY TO MERGE:yes`, findings NONE; all16/four new/surroundings scope COMPLETE; current721e/v7 receipt+logs/source inspected, no commands/edit |
 | DevOps `ses_eb7cb7206ffe1XrslbW4r6OyGq` |DONE `READY TO MERGE:yes`, findings NONE; actual16/current v7 receipt+raw logs/source precharge/cumulative identity+nonempty target/five exclusions inspected, no independent rerun/edit |
 
-The [current16-path capture](../ml/native-joint-math.md#current-f4-closing) against29018157 includes all new files and is fully reviewed. ALL3 are actual current721e F4 approvals, not prior F3 verdicts. Optional property PMF/mask/underflow/budget tests are non-blocking/**not executed proof**. Publication remains authorized/unexecuted; numeric masks/temperature indices establish no genuine support/calibration/native authority/D1/full runtime/readiness claim.
+The [16-path capture](../ml/native-joint-math.md#current-f4-closing) against29018157 includes all new files and is fully reviewed. ALL3 are actual721e F4 approvals, not prior F3 verdicts. Optional property PMF/mask/underflow/budget tests are non-blocking/**not executed proof**. Publication completed at59e1; numeric masks/temperature indices still establish no genuine support/calibration/native authority/D1/full runtime/readiness or F5 proof.

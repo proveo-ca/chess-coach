@@ -12,6 +12,7 @@ pub mod ledger;
 mod model;
 pub mod policy;
 pub mod protocol;
+pub mod transition_tables;
 
 pub use model::score_synthetic_f64;
 

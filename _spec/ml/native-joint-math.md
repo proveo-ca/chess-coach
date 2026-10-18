@@ -1,11 +1,13 @@
 # F4 — checked numerical joint math: accepted contracts and reasoning
 
-**2026-10-18 · BOUNDED F4 VERIFICATION/REVIEW COMPLETE ·721e v7 PASS:29 COMMANDS / RUST416 / NODE189 / CORE668 · ALL3 CURRENT FINAL F4 REVIEWS READY, FINDINGS NONE · PUBLICATION AUTHORIZED, NOT EXECUTED · trainingReady:false.**
+**2026-10-18 · BOUNDED F4 VERIFICATION/REVIEW/PUBLICATION COMPLETE ·721e v7 PASS:29 COMMANDS / RUST416 / NODE189 / CORE668 · ALL3 FINAL F4 REVIEWS READY, FINDINGS NONE · PUBLISHED59e1eff1 / MATCHED HEAD=REMOTE / CLEAN AT CHECKPOINT · trainingReady:false.**
+
+Lead committed/non-force pushed **59e1eff1a10072b6594fff3a65e2e6b3b5ff7a24**, `feat(training): add checked joint normalization and readout`,16 files,parent29018157e40bb11d558599a21409623bfbec1a83. Before commit, the462-input current-source identity joined721e; final navigation/preservation/whitespace/exact16 checks passed. Actual post-push local HEAD/remote matched full59e1 and tree was CLEAN **at that checkpoint**, before [F5 goals](native-transition-tables.md); bounded F4 publication establishes no F5/readiness proof.
 
 The [PR plan](../_plans/native-joint-math.md) owns acceptance, file ownership, independent tests and gate order.
 The complete80-line accepted architect/backend/DevOps freeze was read at:
 `/tmp/proveo-opencode-runtime-cache-1000-21d690750d3738af14d58c25/tmp/opencode/f4-joint-math-freeze.md`.
-Architect `ses_eb7c5d187ffenpvgElk95FZ8ut` and final static clarifications establish no unresolved ordering/semantic fork. Both actual Rust files/lib/root integration were read before freeze; accepted API/math/1e−12 tolerance/work profile are unchanged. The [existing training owner](../packages/training/burn-compat.puml) documents structure; [current complete v7 proof](#current-f4-evidence) and ALL3 final READY/no findings establish actual bounded F4 verification/review, not stitched leaves/F3 approval. This evidence-only update changes no source/config/tests/index/PUML or normative contract; publication is authorized but unexecuted.
+Architect `ses_eb7c5d187ffenpvgElk95FZ8ut` and final static clarifications establish no unresolved ordering/semantic fork. Both actual Rust files/lib/root integration were read before freeze; accepted API/math/1e−12 tolerance/work profile are unchanged. The [existing training owner](../packages/training/burn-compat.puml) documents structure; [complete v7 proof](#current-f4-evidence), ALL3 final READY/no findings and publication59e1 are actual lead/reviewer results, not stitched leaves/F3 approval or keeper reruns. This publication-status update changes no source/config/tests/index/PUML or normative contract.
 
 ## 1. Actual published prerequisite and scope
 
@@ -207,7 +209,7 @@ calibration
 training-readiness
 ```
 
-Actual complete unchanged-input721e/v7 PASS was followed by ALL3 fresh final F4 read-only reviews, now DONE/READY, findings NONE. Source/config/test/index/PUML changes require the whole gate again before rereview; final metadata/preservation checks still precede authorized, unexecuted publication. F3 d771/v6 proof/approvals are not current F4 evidence.
+Actual complete unchanged-input721e/v7 PASS was followed by ALL3 fresh final F4 read-only reviews, DONE/READY, findings NONE, then final462-input source721e/metadata/preservation checks and actual publication59e1. Later source/config/test/index/PUML changes require their whole gate before rereview. F3 d771/v6 proof/approvals are not F4 evidence.
 Before the gate, the existing training owner/index extended **40→42** with exactly the two actual joint-file literals/fingerprint null. Current full-run syntax/bounded-SVG/index42/59 checks PASS; arena59/all44 nontraining entries/metadata/order/unresolved list and existing22 note bodies/FK records/stable labels stay preserved. This evidence pass changes none of those verified inputs or normative rules.
 
 <a id="current-f4-evidence"></a>
@@ -258,7 +260,7 @@ Two pre-gate implementation controls are resolved without revising the frozen AP
 <a id="92-current-fresh-f4-closing-and-capture--verdicts-pending"></a>
 ### 9.2 Current final F4 closing and capture — ALL3 READY
 
-ALL3 fresh **F4** final read-only reviews are now **DONE/READY, findings NONE**, bound to actual721e/v7 source/whole proof, not earlier F3 verdicts in the same sessions. **Bounded numeric verification/review is COMPLETE; no LOW or pending review blocker.** Publication remains separately authorized/unexecuted.
+ALL3 fresh **F4** final read-only reviews are **DONE/READY, findings NONE**, bound to actual721e/v7 source/whole proof, not earlier F3 verdicts in the same sessions. **Bounded numeric verification/review/publication is COMPLETE** at59e1; no LOW or pending F4 review blocker. These verdicts do not cover F5.
 
 | Reviewer/session | Actual current F4 status |
 |---|---|
@@ -276,9 +278,9 @@ After PASS lead explicitly STAGED all16 F4 paths, including4 new files, with cac
 | Same directory `changed-paths.txt` |16 paths; SHA256 `0d8fb80cc3fd1ed1447ad29363df1863c7636f85452f58b853fa12f092c7382b` |
 | Same directory `base-head.txt` |29018157e40bb11d558599a21409623bfbec1a83 |
 
-The complete16-path F4 scope is now fully reviewed; no source/config/test/index/PUML byte changed after PASS. Later four-Markdown status metadata can be newer than the capture. **F4 publication is AUTHORIZED BUT NOT EXECUTED**. Lead will read final docs, join current source721e/navigation suffixes/whitespace/protected scope/exact16 inventory, restage explicit16, commit/non-force push and verify actual remote HEAD/clean checkpoint. Current HEAD remains published F3base29018157 until an actual later commit; no future hash/self-hash loop or current F4 push is invented.
+The complete16-path F4 scope was fully reviewed; source/config/test/index/PUML bytes stayed unchanged through publication, and later Markdown metadata received final checks. **F4 publication is COMPLETE:59e1eff1a10072b6594fff3a65e2e6b3b5ff7a24**. Lead joined462-input source identity to721e, checked final navigation/whitespace/protected scope/exact16 inventory, restaged/committed/non-force pushed, then verified actual full HEAD=remote/CLEAN checkpoint. [F5 goals](native-transition-tables.md) follow that publication; no future hash/self-hash loop or F5 proof is invented.
 
 ### 9.3 Separate preflight and current handoff
 
 Separate lead preflight PASS, **not extra29 invoice jobs**:45 index entries/all44 nontraining entries+metadata preserved,42/59 literal covers/SPEC/file agreement;22 old note bodies byte-unchanged/2–5 lines/max46 columns and historical FK records unchanged; PLAN suffix4+/README first2+suffix6+ byte-exact to29018157; exact4 then-new files/clean new+tracked whitespace/protected F3/native/legacy/model/Node/config/dependencies/locks/data preserved. This evidence-only pass edits no notes/index/PUML/protected inputs or normative API/math/tolerance/work fees.
-Current handoff: implementation/integration/architecture/whole721e v7 proof **DONE/PASS29/416/189/668**, ALL3 current final F4 reviews **DONE/READY, findings NONE**, no pending review blocker. Next: lead final metadata/preservation/current-source join, restage16 and perform the authorized verified publication; no actual F4 commit/push or future hash is claimed. F5 read-only freeze/advice remains external, not F4 source work; no F5 repo docs/source before actual F4 publication. No source writer is assigned by this update. Keeper touches only two F4 Markdown docs/navigation prefixes and runs no commands/tests/hashes/renders/agents/Git/progress polls; normative API/math/tolerance/fees, five notEstablished families and trainingReady:false remain unchanged.
+F4 whole721e/v7 PASS29/416/189/668, ALL3 final READY/no findings and publication59e1 are **DONE**. Next selected delivery is [F5 goals/acceptance](../_plans/native-transition-tables.md), with implementation/tests/v8 gate/ALL3 fresh reviews/publication planned/not run; no F5 source presence/PASS/future hash is claimed. This goals handoff adds two F5 Markdown docs/shared navigation prefixes and small F4 publication-status metadata only; keeper runs no commands/tests/hashes/renders/agents/Git/progress polls. Normative F4 API/math/tolerance/fees, five notEstablished families and trainingReady:false remain unchanged.
