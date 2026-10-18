@@ -19,6 +19,19 @@
           "patterns": ["node:*", "./session", "./replay", "./admission", "./fixtures", "./economic-replay*", "./economic-project*", "./worker*", "../*", "@chess-coach/starchess-arena", "@chess-coach/starchess-arena/*", "@chess-coach/starchess-training", "@chess-coach/starchess-training/*"]
         }]
       }
+    },
+    {
+      "files": ["apps/arena/engine/feature-geometry.ts"],
+      "rules": {
+        "no-restricted-imports": ["error", {
+          "paths": ["@chess-coach/starchess-core"],
+          "patterns": [{
+            "group": ["**", "!@chess-coach/starchess-core/planning-v1"],
+            "caseSensitive": true,
+            "message": "Use only the native planning-v1 helper surface."
+          }]
+        }]
+      }
     }
   ]
 }

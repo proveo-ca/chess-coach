@@ -1,6 +1,6 @@
 # Native economic ledger — current scope and acceptance
 
-**2026-10-18 · BOUNDED LEDGER VERIFICATION/REVIEW COMPLETE · CURRENT258d GATE PASS:29 COMMANDS / RUST301 / NODE175 / CORE668 · ALL3 CURRENT REVIEWS READY / NO FINDINGS · LEDGER-ADV-4 RESOLVED · FOLLOW-UP PUBLICATION AUTHORIZED, NOT EXECUTED · trainingReady:false · F1 FUTURE.**
+**2026-10-18 · BOUNDED LEDGER PUBLISHED b47befd021bef04eea0bfe20a9308a71aa20f09f ·258d GATE PASS:29 COMMANDS / RUST301 / NODE175 / CORE668 · ALL3 READY / NO FINDINGS · LEDGER-ADV-4 RESOLVED · trainingReady:false · SEPARATE F1 GOALS ACTIVE, IMPLEMENTATION PLANNED.**
 
 Executor selected **Ledger first**, then **Revise v1 in place** for the unfinished economic schema.
 This plan owns delivery and forward acceptance; [detailed design](../ml/native-economic-ledger.md) owns the contract, accounting, privacy, resource bounds and terminal-closeout reasoning.
@@ -10,7 +10,7 @@ The current receipt was read for this evidence-only update; the lead executed th
 
 - Revise the same `arena-economic-v1`, `arena-economic-rules-v1`, `arena-economic-boundary-v1` and `arena-economic-report-v1` IDs/files together. This is breaking unfinished WIP, **not backward compatibility**, a legacy parser or a parallel economic-v2 path.
 - Preserve existing **arena-engine-v1/v2**, live mutation/replay, native rules/UI, RunRecord bytes, baseline reports/selectors/seeding, dependencies, frozen 418/D+B contracts, pins, protected corpora/evidence and the six-owner graph/status files. Economic-v1 revision authority does not widen any protected legacy contract.
-- The user personally published **4990d951034632d68307d3bb06c9d99e68b60da3**, `feat: economic ledgers & training prep`,39 files, parent `df968b5c33b432a3901f8cb91296b06deb394230`. That publication is not all-closing approval; do not amend/rebase it or claim these later changes in it. No later commit/push is supplied.
+- The user personally published **4990d951034632d68307d3bb06c9d99e68b60da3**, `feat: economic ledgers & training prep`,39 files, parent `df968b5c33b432a3901f8cb91296b06deb394230`; it remains preserved. The lead subsequently published the verified16-file ledger repair as **b47befd021bef04eea0bfe20a9308a71aa20f09f**, non-force4990d951→b47befd0, with actual post-push HEAD/remote equality and clean status at that checkpoint.
 - [Native runner](../ml/native-runner.md) remains the frozen baseline proof owner. Baseline N1–N3 closure does not close separate legacy R4 N1–N7/M2, inventory or resource/public-closure stops.
 - Future **Training-ready** and **Offline local capture** authority remains bounded by §9. Current `trainingReady:false` is unchanged.
 
@@ -172,8 +172,8 @@ The actual current PASS satisfied that lock for the completed fresh rereviews, n
 | Full gate/reviews | Complete29-command gate PASS at258d; reviewEligible:true. ALL3 current resolving reviews DONE/READY, findings NONE; HIGH-4 explicitly RESOLVED. Security scope inspection complete; no old approval is borrowed. |
 | Coverage/readability | Whole-gate covers30/54 and baseline43-entry preservation PASS; both syntax/bounded SVG PASS. Separate preflight22 notes PASS,2–5 lines/max46 columns, note bodies unchanged; navigation suffixes byte-exact. |
 | Current proof | Receipt PRESENT/read,29/29 PASS, Rust301=arena106+training165+xtask30 /Node175 /core668; identical before/after258d hash. |
-| Tools/publication | Pinned-tool version checks PASS within the gate; user4990d951 publication stands. Current16-file follow-up publication AUTHORIZED but not executed, awaiting final metadata checks/current-input join and actual commit/non-force push. |
-| Readiness/F1 | Bounded ledger verification/review COMPLETE, NON_ADMITTED/trainingReady:false. F1 freeze DONE/implementation FUTURE only after actual repair publication and separate assignment. |
+| Tools/publication | Pinned-tool version checks PASS; lead actually committed/non-force pushed16-file repair b47befd021bef04eea0bfe20a9308a71aa20f09f from preserved4990d951, then confirmed HEAD=remote/clean. No ledger publication hold remains. |
+| Readiness/F1 | Bounded ledger publication/verification/review COMPLETE, NON_ADMITTED/trainingReady:false. Separate F1 assignment is active/goals persisted; implementation/new F1 proof PLANNED, not covered by this base gate. |
 
 <a id="8-historical-pre-repair-gate-and-actual-blocked-closing-cycle"></a>
 <a id="81-actual-findings-and-repair-lock"></a>
@@ -213,17 +213,16 @@ The native HIGH-4 counterexample's actual RED→corrected native-journal GREEN r
 | Security `ses_eb7cb7218ffePBBBS1MqCmBCtM` |DONE `READY TO MERGE:yes`, findings NONE/risk low; all16 inventory paths/captured HEAD diff against4990d951 plus surrounding source/current receipt inspected, scope limitation RESOLVED; no independent gate rerun |
 | DevOps `ses_eb7cb7206ffe1XrslbW4r6OyGq` |DONE `READY TO MERGE:yes`, findings NONE; current source/receipt/raw-log inspection, no independent gate rerun |
 
-No source/configuration/test/index/diagram inputs changed after the gate. This four-Markdown evidence update changes no normative contract or verified source identity; lead must recheck whitespace/preservation/navigation after it.
+No source/configuration/test/index/diagram inputs changed between this gate and ledger publication; lead completed the final metadata whitespace/navigation/scope checks and current-input join before committing. This remains completed ledger-base proof, not proof of subsequent F1 work.
 **Bounded NON_ADMITTED ledger/terminal-closeout verification and ALL3 reviews are COMPLETE**, findings NONE; HIGH-4 is RESOLVED. Optional property-based native-mode-chain/hidden-twin strengthening is not a blocker or executed proof.
-Follow-up publication is **AUTHORIZED, NOT EXECUTED**: after this handoff the lead will check whitespace/navigation preservation and the current-input hash join, then explicitly stage16 files/commit/non-force push. No later commit hash, publication or F1 implementation is invented. Detailed [current completion/publication status](../ml/native-economic-ledger.md#94-current-closing-lock) preserves these boundaries; trainingReady:false remains unchanged.
+Repair publication is **DONE**: lead commit **b47befd021bef04eea0bfe20a9308a71aa20f09f**,16 files, successful non-force origin push4990d951→b47befd0, actual post-push HEAD/remote match and clean checkpoint. Detailed [publication status](../ml/native-economic-ledger.md#94-current-closing-lock) retains ledger-only proof; these later F1 goal edits are not claimed in that commit and trainingReady:false remains unchanged.
 
 ## 9. Following milestone authority — selected Training-ready, not policy training
 
 Executor selected **Training-ready**: future feature/belief/Rust learner implementation and required bounded **LOCAL** collection, belief-table fitting/calibration, profiling and container validation.
 Required gates remain real418 authorized features/belief, actual Rust learner, authorized calibration, full end-to-end correctness, runtime/resource/authority closure and final readiness review. The ledger does not complete them or close legacy resource stops.
 Only after these gates may **separate explicit policy-training approval** authorize training; learned-model admission follows training. No activation/deployment, engine/frozen-contract/corpus rewrite or reward/label/closeout change is authorized.
-F1 freeze and its manifest-fee/private-seed addendum are DONE. Implementation remains FUTURE, only after actual verified repair publication and separate assignment: checked ordered `FeatureInputPair`, standalone **unwired** pure Node geometry, exact418 metadata registry and private labels DOCUMENT ONLY. No encoder/belief/learner/collector/permits/empirical/image work belongs to F1.
-Future assigned docs are `_spec/_plans/native-feature-seams.md` and `_spec/ml/native-feature-seams.md`; neither is created here.
+F1 freeze and its manifest-fee/private-seed addendum are DONE; verified ledger publication is now DONE and the separate F1 assignment is active. The [F1 PR goals](native-feature-seams.md) and [contracts/reasoning](../ml/native-feature-seams.md) are persisted before source implementation. F1 source/tests/gate remain PLANNED/NOT RUN; no ledger contract or proof scope changes here.
 
 ### 9.1 Future image authority — Offline local capture selected
 

@@ -1,4 +1,4 @@
-' purpose: Rust economic reconstruction, native runner and terminal closeout boundaries beside retained synthetic compatibility.
+' purpose: F1 unwired native geometry/test-only metadata oracles and economic/native runner boundaries beside retained compatibility.
 ' covers: Cargo.toml
 ' covers: rust-toolchain.toml
 ' covers: apps/arena/Cargo.toml
@@ -53,12 +53,19 @@
 ' covers: apps/arena/engine/test/economic-project.test.ts
 ' covers: apps/arena/engine/test/economic-replay.test.ts
 ' covers: apps/arena/engine/test/worker-economic.test.ts
-' status: Explicit-origin economic-v1 source present; current verification and review status lives in _spec/ml/native-economic-ledger.md.
+' covers: apps/arena/engine/feature-geometry.ts
+' covers: apps/arena/engine/test/feature-geometry.test.ts
+' covers: apps/arena/engine/test/feature-manifest-legacy.mjs
+' covers: apps/arena/engine/test/feature-manifest.test.ts
+' covers: oxlint.training.json
+' status: Ledger/F1 source structure lives here; current evidence and review status lives in the related Markdown owners.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
 ' related: _spec/ml/native-runner.md
 ' related: _spec/_plans/native-economic-ledger.md
 ' related: _spec/ml/native-economic-ledger.md
+' related: _spec/_plans/native-feature-seams.md
+' related: _spec/ml/native-feature-seams.md
 ' related: _spec/packages/training/burn-compat.puml
 ' history: native-runner.md owns completed baseline receipts; new ledger/closeout scope lives in native-economic-ledger.md.
 ' history: Old Bun proof and canceled non-closing reviews do not approve this migration.
@@ -67,7 +74,7 @@
 ' readability: Ledger and rewritten replay-note FK counts live in _spec/ml/native-economic-ledger.md; unchanged notes retain their historical register.
 @startuml
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Rust economic ledger + native runner + retained smoke
+title F1 unwired native helpers + economic ledger + native runner
 left to right direction
 
 component "apps/arena/src/main.rs\nsmoke / run / suite / replay / ledger" as MAIN <<app>>
@@ -108,6 +115,16 @@ package "Economic ledger / native consequences only" {
 }
 component "apps/arena/tests/economic_replay.rs\napps/arena/tests/readiness.rs\napps/arena/tests/support/economic.rs\nnative correspondence / scoped diagnostics" as ECO_PROOF <<app>>
 component "apps/arena/engine/test/economic-project.test.ts\napps/arena/engine/test/economic-replay.test.ts\napps/arena/engine/test/worker-economic.test.ts\ncausal / native / fixed-wire controls" as ECO_NODE_PROOF <<app>>
+package "F1 standalone helpers / UNWIRED" {
+  component "apps/arena/engine/feature-geometry.ts\nowned immutable FeatureQueue / prepaid callback\nB/C schedule / attack shape / ray / lit-only vision\nno Rust trait, RPC, worker or local meter" as FEATURE_GEOMETRY <<app>>
+  component "packages/starchess-core/src/planning-v1.ts\npublic native geometry helpers ONLY" as FEATURE_NATIVE_HELPERS <<app>>
+  component "oxlint.training.json\nfeature-geometry.ts-only override\ncase-sensitive sole planning-v1 allowlist" as FEATURE_IMPORT_GUARD <<host>>
+  component "apps/arena/engine/test/feature-geometry.test.ts\nnative differential / immutable ownership\ntest-only delegate hooks / prepaid refusal" as FEATURE_GEOMETRY_PROOF <<app>>
+}
+component "apps/arena/engine/test/feature-manifest.test.ts\napps/arena/engine/test/feature-manifest-legacy.mjs\nbounded TEST-ONLY legacy metadata reader" as FEATURE_MANIFEST_PROOF <<app>>
+component "packages/starchess-training/src/feature/manifest.ts\nfeatureManifestV3\npackages/starchess-training/src/economic/ownedKernel.ts\ncreateStartupArtifactContext" as FEATURE_LEGACY_METADATA <<app>>
+component "packages/training/tests/fixtures/feature-manifest-v3.json\nshared five-field / exact418 METADATA fixture" as FEATURE_METADATA_FIXTURE <<app>>
+component "tooling/xtask/src/lib.rs\nidentity.rs / invoices.rs / preservation.rs\nv4 / native-feature-seams / same 29 checks" as FEATURE_GATE <<host>>
 component "packages/starchess-core\nunchanged native rules\naddScAction / beginScTurn / endScTurn\napplyStoredIncome / scOutcome" as NATIVE <<app>>
 component "Closed failure\nno policy or engine substitute" as FAILURE <<error>>
 
@@ -180,6 +197,14 @@ ECO_NODE_PROOF ARROW_OPTIONAL ECO_NATIVE : first/tier grants / native phase orde
 ECO_NODE_PROOF ARROW_OPTIONAL ECO_WORKER : strict objects / byte and ID bounds\nno truncation, caller paths or retry
 ECO_HOST ARROW_ERROR FAILURE : native mismatch / ledger refusal / cleanup\nretain only previously verified pair boundaries
 ECO_PROJECT ARROW_ERROR FAILURE : 2048 groups/entries / 1 MiB output\ndefinite refusal, no chunk protocol
+FEATURE_GEOMETRY ARROW_MAIN FEATURE_NATIVE_HELPERS : sole production import / singleton native queries\nB/C <=2 calls; shape/ray/vision <=1 each
+FEATURE_IMPORT_GUARD ARROW_OPTIONAL FEATURE_GEOMETRY : reject every other import for this module\nno broad legacy exception / no override weakening
+FEATURE_GEOMETRY_PROOF ARROW_OPTIONAL FEATURE_GEOMETRY : full fixed charge before construction/native call\nforeign/proxy identity refuses without caller traps
+FEATURE_MANIFEST_PROOF ARROW_OPTIONAL FEATURE_LEGACY_METADATA : direct production-source imports in test-only child\nactual featureManifestV3(createStartupArtifactContext())
+FEATURE_MANIFEST_PROOF ARROW_OPTIONAL FEATURE_METADATA_FIXTURE : PATH-only Node/tsx / 10 s / 1 MiB\nempty stderr / one JSON / all418 coordinates
+FEATURE_GATE ARROW_OPTIONAL FEATURE_IMPORT_GUARD : copied ACTUAL config / 15 bounded import cases\nactual pinned linter / case-sensitive negatives
+FEATURE_GATE ARROW_OPTIONAL FEATURE_GEOMETRY_PROOF : unfiltered Node controls / literal identity inputs
+FEATURE_GATE ARROW_OPTIONAL FEATURE_MANIFEST_PROOF : runtime oracle + lint / MJS outside tsgo graph\nno old-ledger receipt reuse
 
 note bottom of OBS
   Only visible board cells and the player's own
@@ -304,6 +329,13 @@ legend bottom
   Private chronology and terminal proof charges reuse the existing window meter.
   No closeout enters AuthorizedFeatureHistory, WDL rewards, frozen D+B truth or calibration.
   Terminal safeguards establish no measured bias reduction, learner permission or training proof.
+  F1 helper has NO CLI/live-policy/native-permission/RPC edge; queue ownership is local identity only.
+  Geometry prepaid units: empty128; append512+192n; schedule2048+256n^2; shape512; ray512; vision8192.
+  Vision returns canonical litSquares ONLY, never revealedPieces; native exceptions have no rescue.
+  Legacy manifest dependency is TEST ONLY; the structural startup context is not native authority.
+  Exact418 metadata agreement does not compute encoder values/masks/formulas or alter frozen labels.
+  v4 notEstablished: full-training-closure / genuine-native-authority / whole-decision-adequacy.
+  v4 notEstablished also includes calibration / training-readiness; no new helper-local meter.
   No R4 economy/belief/features/calibration/readiness closure or pinned-54 win claim.
   Preserve legacy consumers/evidence; delete legacy LAST after final consumer parity.
 endlegend

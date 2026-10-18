@@ -15,6 +15,17 @@ use serde_json::{Value, json};
 
 use runner::Gate;
 
+const VERIFICATION_VERSION: &str = "rust-training-verification-v4";
+const VERIFICATION_SCOPE: &str = "native-feature-seams";
+const NODE_VERSION_PROBE: &str = "import * as nodeModule from 'node:module'; console.log(JSON.stringify({version:process.version,registerHooks:typeof nodeModule.registerHooks==='function'}));";
+const NOT_ESTABLISHED: &[&str] = &[
+    "full-training-closure",
+    "genuine-native-authority",
+    "whole-decision-adequacy",
+    "calibration",
+    "training-readiness",
+];
+
 pub fn check() -> ExitCode {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let root = match root.canonicalize() {
@@ -47,8 +58,9 @@ fn verify(gate: &mut Gate) -> ExitCode {
     }
     let eligible = complete && error.is_none();
     let mut receipt = json!({
-        "version": "rust-training-verification-v3",
-        "scope": "native-economic-ledger",
+        "version": VERIFICATION_VERSION,
+        "scope": VERIFICATION_SCOPE,
+        "notEstablished": NOT_ESTABLISHED,
         "directory": gate.directory,
         "inputSha256": before.ok(),
         "inputSha256After": after.as_ref().ok(),
@@ -77,20 +89,22 @@ fn verify(gate: &mut Gate) -> ExitCode {
 }
 
 fn initialization_failure(error: String) -> ExitCode {
-    println!(
-        "{:#}",
-        json!({
-            "version": "rust-training-verification-v3",
-            "scope": "native-economic-ledger",
-            "directory": null,
-            "inputSha256": null,
-            "reviewEligible": false,
-            "status": "STOP",
-            "results": [],
-            "error": error,
-        })
-    );
+    println!("{:#}", initialization_receipt(error));
     ExitCode::FAILURE
+}
+
+fn initialization_receipt(error: String) -> Value {
+    json!({
+        "version": VERIFICATION_VERSION,
+        "scope": VERIFICATION_SCOPE,
+        "notEstablished": NOT_ESTABLISHED,
+        "directory": null,
+        "inputSha256": null,
+        "reviewEligible": false,
+        "status": "STOP",
+        "results": [],
+        "error": error,
+    })
 }
 
 fn fixed_checks(gate: &mut Gate) -> Result<(), String> {
@@ -98,7 +112,10 @@ fn fixed_checks(gate: &mut Gate) -> Result<(), String> {
     gate.validate(exact_rust_version(&rustc, "rustc"))?;
     let cargo = gate.command("version-cargo", &["cargo", "--version"])?;
     gate.validate(exact_rust_version(&cargo, "cargo"))?;
-    let node = gate.command("version-node", &["node", "--version"])?;
+    let node = gate.command(
+        "version-node",
+        &["node", "--input-type=module", "--eval", NODE_VERSION_PROBE],
+    )?;
     gate.validate(node_version(&node))?;
     gate.command("version-pnpm", &["pnpm", "--version"])?;
     gate.command("version-tsgo", &["pnpm", "exec", "tsgo", "--version"])?;
@@ -322,15 +339,25 @@ fn exact_rust_version(text: &str, tool: &str) -> Result<(), String> {
 }
 
 fn node_version(text: &str) -> Result<(), String> {
-    let major = text
-        .trim()
+    let probe: Value = serde_json::from_str(text)
+        .map_err(|_| "Node version/capability probe is not JSON".to_owned())?;
+    let fields = probe
+        .as_object()
+        .filter(|fields| fields.len() == 2)
+        .ok_or("Node version/capability probe has an invalid shape")?;
+    let major = fields
+        .get("version")
+        .and_then(Value::as_str)
+        .unwrap_or("")
         .strip_prefix('v')
         .and_then(|version| version.split('.').next())
         .and_then(|major| major.parse::<u32>().ok());
-    if major.is_some_and(|major| major >= 22) {
+    if major.is_some_and(|major| major >= 22)
+        && fields.get("registerHooks") == Some(&Value::Bool(true))
+    {
         Ok(())
     } else {
-        Err("Node >=22 is required".into())
+        Err("Node >=22 with node:module.registerHooks is required for F1 verification".into())
     }
 }
 
@@ -357,8 +384,22 @@ mod tests {
         assert!(exact_rust_version("rustc 1.95.0 (hash date)", "rustc").is_ok());
         assert!(exact_rust_version("rustc 1.95.01", "rustc").is_err());
         assert!(exact_rust_version("cargo 1.95.0", "rustc").is_err());
-        assert!(node_version("v22.16.0").is_ok());
-        assert!(node_version("v20.0.0").is_err());
+        for version in ["v22.15.0", "v22.23.2", "v24.0.0"] {
+            assert!(
+                node_version(&json!({"version":version,"registerHooks":true}).to_string()).is_ok()
+            );
+        }
+        for invalid in [
+            json!({"version":"v20.0.0","registerHooks":true}),
+            json!({"version":"v22.0.0","registerHooks":false}),
+            json!({"version":"v23.0.0","registerHooks":false}),
+            json!({"version":"v22.23.2"}),
+            json!({"version":"v22.23.2","registerHooks":"true"}),
+            json!({"version":"v22.23.2","registerHooks":true,"extra":true}),
+        ] {
+            assert!(node_version(&invalid.to_string()).is_err());
+        }
+        assert!(node_version("v22.23.2").is_err());
         assert!(node_version("").is_err());
     }
 
@@ -395,8 +436,24 @@ mod tests {
         let mut gate = Gate::new(root.clone()).unwrap();
         assert_eq!(verify(&mut gate), ExitCode::FAILURE);
         let receipt = read_json(&gate.directory.join("receipt.json")).unwrap();
-        assert_eq!(receipt["version"], "rust-training-verification-v3");
-        assert_eq!(receipt["scope"], "native-economic-ledger");
+        let initialized = initialization_receipt("fixture initialization failure".into());
+        for value in [&receipt, &initialized] {
+            assert_eq!(value["version"], "rust-training-verification-v4");
+            assert_eq!(value["scope"], "native-feature-seams");
+            assert_eq!(
+                value["notEstablished"],
+                json!([
+                    "full-training-closure",
+                    "genuine-native-authority",
+                    "whole-decision-adequacy",
+                    "calibration",
+                    "training-readiness"
+                ])
+            );
+            assert_eq!(value["reviewEligible"], false);
+            assert_eq!(value["status"], "STOP");
+            assert_eq!(value["results"], json!([]));
+        }
         assert_eq!(receipt["reviewEligible"], false);
         assert_eq!(receipt["status"], "STOP");
         assert_eq!(receipt["inputSha256"], Value::Null);

@@ -19,6 +19,8 @@ const RUNNER_TARGETS: &[&str] = &[
     "tests/replay.rs",
     "tests/ledger_contracts.rs",
     "tests/ledger_history.rs",
+    "tests/feature_input.rs",
+    "tests/feature_manifest.rs",
     "tests/economic_replay.rs",
     "tests/readiness.rs",
 ];
@@ -40,7 +42,7 @@ pub(crate) fn required_rust_binaries(counts: &RustCounts) -> Result<(), String> 
         if !counts.binaries.iter().any(|binary| {
             binary["binary"]
                 .as_str()
-                .is_some_and(|name| name.starts_with(*target))
+                .is_some_and(|name| name.split_whitespace().next() == Some(*target))
                 && binary["tests"].as_u64().is_some_and(|tests| tests > 0)
         }) {
             return Err(format!(
@@ -99,10 +101,11 @@ pub(crate) fn rust(text: &str) -> Result<RustCounts, String> {
         .lines()
         .filter_map(|line| line.trim().strip_prefix("Running "))
         .collect();
-    if names.len() == binaries.len() {
-        for (binary, name) in binaries.iter_mut().zip(names) {
-            binary["binary"] = json!(name);
-        }
+    if names.len() != binaries.len() {
+        return Err("Rust binary names and summaries disagree".into());
+    }
+    for (binary, name) in binaries.iter_mut().zip(names) {
+        binary["binary"] = json!(name);
     }
     Ok(RustCounts { total, binaries })
 }
@@ -323,7 +326,7 @@ mod tests {
         }
         let counts = rust(&text).unwrap();
         assert!(required_rust_binaries(&counts).is_ok());
-        assert!(required_rust_binaries(&rust(RUST).unwrap()).is_err());
+        assert!(rust(RUST).is_err());
         for target in RUNNER_TARGETS {
             let mut altered = RustCounts {
                 total: counts.total,
@@ -335,7 +338,7 @@ mod tests {
                 .position(|binary| {
                     binary["binary"]
                         .as_str()
-                        .is_some_and(|name| name.starts_with(*target))
+                        .is_some_and(|name| name.split_whitespace().next() == Some(*target))
                 })
                 .unwrap();
             altered.binaries[index]["tests"] = json!(0);
@@ -345,10 +348,36 @@ mod tests {
                 required_rust_binaries(&altered).is_err(),
                 "missing {target}"
             );
+            for lookalike in [
+                format!("{target}.extra (target/lookalike)"),
+                format!("{target}/extra (target/lookalike)"),
+                format!("prefix-{target} (target/lookalike)"),
+                format!("./{target} (target/lookalike)"),
+            ] {
+                let mut altered = RustCounts {
+                    total: counts.total,
+                    binaries: counts.binaries.clone(),
+                };
+                altered.binaries[index]["binary"] = json!(lookalike);
+                assert!(required_rust_binaries(&altered).is_err());
+            }
         }
         let mut counts = counts;
         counts.binaries[0]["tests"] = json!(0);
         assert!(required_rust_binaries(&counts).is_err());
+    }
+
+    #[test]
+    fn rust_binary_names_must_match_summary_cardinality() {
+        for invalid in [
+            RUST.to_owned(),
+            format!(
+                "{RUST}Running tests/feature_input.rs (target/input)\nRunning tests/feature_manifest.rs (target/manifest)\n"
+            ),
+            format!("{RUST}{RUST}Running tests/feature_input.rs (target/input)\n"),
+        ] {
+            assert!(rust(&invalid).is_err());
+        }
     }
 
     #[test]

@@ -13,6 +13,8 @@ The baseline receipts do not verify the ledger.
 ## Library boundaries
 
 - `contracts`: closed authorized views, seven action families and complete canonical action-array keys.
+- `feature_input`: checked ordered boundary innovations and detached own-lineage inputs.
+- `feature_manifest`: exact 418-coordinate metadata, not an encoder.
 - `candidates`: profile-B composition with native planning helpers supplied through `PlanningOracle`.
 - `policy`: `pass-v1`, `first-v1` and integer-seeded `seeded-v1` selectors, including pass.
 - `ledger`: strict economic boundaries, atomic recipient histories and paid-basis conservation.
@@ -42,6 +44,15 @@ This bounds ledger work, not the deferred full-feature training decision.
 Economic verification does not certify policy selection or learner readiness.
 The arena's separate verified-terminal closeout excludes unused actual credit without changing these raw histories.
 Full418 features, posterior/promotion kernels, learner software and calibration remain deferred.
+
+## Feature seams
+
+The [F1 contract](../../_spec/ml/native-feature-seams.md) defines the checked input adapter and exact metadata registry.
+`FeatureInputPair` stages both recipient histories and innovations atomically through the caller's shared work meter.
+Its readout uses crate-private checked seed extraction, not serialized ledger reports or native permission flags.
+`feature_manifest_v3` returns detached five-field metadata after a prepaid allocation invoice.
+Its independent tests compare all coordinates with the frozen normative tables and actual legacy production readout.
+Neither seam computes the 418 feature values or establishes genuine native authority, calibration, learner behavior or training readiness.
 
 ## Preparation
 

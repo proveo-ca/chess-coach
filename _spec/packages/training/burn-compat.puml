@@ -1,4 +1,4 @@
-' purpose: Rust economic ledger and native composition boundaries beside retained synthetic Burn compatibility.
+' purpose: Rust F1 checked-input/metadata seams and economic/native composition boundaries beside retained synthetic Burn compatibility.
 ' covers: Cargo.toml
 ' covers: rust-toolchain.toml
 ' covers: packages/training/Cargo.toml
@@ -29,12 +29,20 @@
 ' covers: packages/training/tests/ledger_contracts.rs
 ' covers: packages/training/tests/ledger_history.rs
 ' covers: packages/training/tests/fixtures/ledger-boundaries.json
-' status: Explicit-origin economic-v1 source present; current verification and review status lives in _spec/ml/native-economic-ledger.md.
+' covers: packages/training/src/feature_input.rs
+' covers: packages/training/src/feature_manifest.rs
+' covers: packages/training/tests/feature_input.rs
+' covers: packages/training/tests/feature_manifest.rs
+' covers: packages/training/tests/fixtures/feature-input-boundaries.json
+' covers: packages/training/tests/fixtures/feature-manifest-v3.json
+' status: Ledger/F1 source structure lives here; current evidence and review status lives in the related Markdown owners.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
 ' related: _spec/ml/native-runner.md
 ' related: _spec/_plans/native-economic-ledger.md
 ' related: _spec/ml/native-economic-ledger.md
+' related: _spec/_plans/native-feature-seams.md
+' related: _spec/ml/native-feature-seams.md
 ' related: _spec/apps/arena/burn-compat.puml
 ' history: native-runner.md owns the completed baseline, not current ledger verification.
 ' history: d250c88e Bun receipt is superseded, not current proof or review eligibility.
@@ -43,7 +51,7 @@
 ' validation: Author runs no tests, renderer or hashes; lead owns the complete unchanged-input invoice and note-box checks.
 @startuml
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Rust ledger + composition + retained Burn compatibility
+title Rust F1 library seams + ledger + composition + retained Burn
 left to right direction
 
 component "apps/arena/src/lib.rs\nRust policy caller" as ARENA <<app>>
@@ -53,7 +61,7 @@ package "Root Cargo workspace\nCargo.toml / one reused Cargo.lock" {
   component "packages/training/src/model.rs\nsynthetic-linear-418-v1\nw=[0.5,-0.25,0,...] / b=0.125" as MODEL <<app>>
   component "packages/training/src/main.rs\ntraining-native standalone binary" as CLI <<host>>
   component "packages/training/src/protocol.rs\ntraining-burn-compat-v1\nuint32 id / score only" as PROTOCOL <<app>>
-  component "tooling/xtask/src/main.rs\nRust verifier / cargo xtask check\nfrozen workspace inventory" as XTASK <<host>>
+  component "tooling/xtask/src/main.rs\nRust verifier / cargo xtask check\nv4 / native-feature-seams" as XTASK <<host>>
   package "Native baseline contracts" {
     component "packages/training/src/contracts.rs\narena-observation-v2 / arena-candidate-v1\narena-composition-v1 / seven action kinds" as CONTRACTS <<app>>
     component "packages/training/src/candidates.rs\nprofile B / 4 actions / 2048 attempts\n512 retained including pass" as COMPOSER <<app>>
@@ -64,6 +72,10 @@ package "Root Cargo workspace\nCargo.toml / one reused Cargo.lock" {
     component "packages/training/src/ledger/contracts.rs\narena-economic-rules-v1 / arena-economic-boundary-v1\nrequired birth.mode / transform.toMode\nclosed groups / immutable own locators" as LEDGER_CONTRACTS <<app>>
     component "packages/training/src/ledger/history.rs\nLedgerPair / SideLedgerReport\nrecipient IDs / paid lineage / square memory" as LEDGER_HISTORY <<app>>
     component "packages/training/src/ledger/work.rs\nLedgerWork / precharge\n1048576 shared per window" as LEDGER_WORK <<app>>
+  }
+  package "F1 structural library / no populated encoder" {
+    component "packages/training/src/feature_input.rs\nFeatureInputPair / native-feature-input-v1\nordered innovations / opaque own IDs\nchecked data, not native permission" as FEATURE_INPUT <<app>>
+    component "packages/training/src/feature_manifest.rs\nstatic Descriptor[418] / metadata ONLY\nfive manifest fields / fourteen scales\nSerialize, no Deserialize or production codec" as FEATURE_MANIFEST <<app>>
   }
 }
 component "apps/arena/src/economic.rs\nhost recipient-history caller\nno recorded-policy verification" as ECO_HOST <<host>>
@@ -76,6 +88,8 @@ component "Burn 0.22.0 / Rust 1.95.0\nFlex CPU / explicit f64\nstd + flex + opti
 component "Rust unit tests\npackages/training/tests/protocol.rs\nsynthetic compatibility fixtures" as PROOF <<app>>
 database "Temporary Burnpack fixture\nexact parameter-bit restoration\ncorrupt data rejected" as PACK <<db>>
 component "Closed failure\nno backend or precision fallback\nfailed gate keeps reviews forbidden" as FAILURE <<error>>
+component "packages/training/tests/feature_input.rs\npackages/training/tests/fixtures/feature-input-boundaries.json\nhand-authored STRUCTURAL boundary controls" as FEATURE_INPUT_PROOF <<app>>
+component "packages/training/tests/feature_manifest.rs\npackages/training/tests/fixtures/feature-manifest-v3.json\nindependent normative metadata / exact invoices" as FEATURE_MANIFEST_PROOF <<app>>
 
 ARENA ARROW_MAIN LIB : retained smoke / direct typed Rust call\nno scoring child / no Bun bridge
 RUN ARROW_MAIN COMPOSER : limited AuthorizedView only\nno case / fixture / seed / native image
@@ -113,6 +127,14 @@ LEDGER_PROOF ARROW_OPTIONAL LEDGER_CONTRACTS : strict schema / canonical complet
 LEDGER_PROOF ARROW_OPTIONAL LEDGER_HISTORY : grants / gas / paid basis / memory\natomic pair failure / native fixture agreement
 XTASK ARROW_OPTIONAL LEDGER_PROOF : fresh unfiltered ledger targets\nold passing counts do not supply this proof
 LEDGER_HISTORY ARROW_ERROR FAILURE : sequence / identity / conservation / work\nretain prior checked boundary pair
+FEATURE_INPUT ARROW_MAIN LEDGER_HISTORY : one checked LedgerPair / crate-private feature_parts\nselected seed and direct checked totals / no reports JSON
+FEATURE_INPUT ARROW_MAIN LEDGER_CONTRACTS : ordered checked pairs / explicit mode facts\nY2 counts fact entries / final snapshot reconciles
+FEATURE_INPUT ARROW_MAIN LEDGER_WORK : same caller meter / ledger fees additional\nstage BOTH seats before replacement / no refund
+FEATURE_MANIFEST ARROW_MAIN LEDGER_WORK : trusted compile-time registry bytes\nprepaid build / length-gated zero-copy validation
+FEATURE_INPUT_PROOF ARROW_OPTIONAL FEATURE_INPUT : transient facts / replay retains innovation and grant\nsecond-seat rollback / detached seed / hidden twins
+FEATURE_MANIFEST_PROOF ARROW_OPTIONAL FEATURE_MANIFEST : all 418 normative names / meanings / scales\nallocation / exact-cap / one-below controls
+XTASK ARROW_OPTIONAL FEATURE_INPUT_PROOF : exact source-token nonempty target\nexplicit F1 identity inputs / unfiltered tests
+XTASK ARROW_OPTIONAL FEATURE_MANIFEST_PROOF : same complete unchanged-input v4 gate\nnormal and init-failure proof-scope metadata
 
 note bottom of LIB
   The smoke calls Burn in process so its
@@ -210,6 +232,14 @@ legend bottom
   Keep only the last pair's full canonical bytes; older duplicate ordinals refuse.
   Birth mode / transform toMode: required tank|siege for rook, explicit null otherwise.
   Native origin modes only; no predecessor inference, Tank default or compatibility parser.
+  F1 input is a standalone checked library, not a CLI/live-policy/native-permit integration.
+  lib.rs exports feature_input and feature_manifest; no retained scorer calls either module.
+  Replay preserves latest innovations/grant; Y2 counts each witness FACT ENTRY, not group keys.
+  History owns crate-private seed types; sorted detached units and stable mine IDs leave state intact.
+  Metadata 418 = queue34 + 4xposition84 + economic12 + promotion36; no feature values/masks/formulas.
+  Manifest S=25864; build=452544; successful validation=119344; existing ledger fees remain additional.
+  v4 notEstablished: full-training-closure / genuine-native-authority / whole-decision-adequacy.
+  v4 notEstablished also includes calibration / training-readiness; private labels remain DOCUMENT ONLY.
   No real training, payout calibration, R4 readiness or activation claim.
   Complete fresh static/functional/preservation/diagram/source-identity gates precede reviewers.
 endlegend

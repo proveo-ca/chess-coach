@@ -668,7 +668,13 @@
         "packages/training/src/ledger/history.rs",
         "packages/training/tests/ledger_contracts.rs",
         "packages/training/tests/ledger_history.rs",
-        "packages/training/tests/fixtures/ledger-boundaries.json"
+        "packages/training/tests/fixtures/ledger-boundaries.json",
+        "packages/training/src/feature_input.rs",
+        "packages/training/src/feature_manifest.rs",
+        "packages/training/tests/feature_input.rs",
+        "packages/training/tests/feature_manifest.rs",
+        "packages/training/tests/fixtures/feature-input-boundaries.json",
+        "packages/training/tests/fixtures/feature-manifest-v3.json"
       ],
       "fingerprint": null
     },
@@ -728,7 +734,12 @@
         "apps/arena/engine/worker-economic.ts",
         "apps/arena/engine/test/economic-project.test.ts",
         "apps/arena/engine/test/economic-replay.test.ts",
-        "apps/arena/engine/test/worker-economic.test.ts"
+        "apps/arena/engine/test/worker-economic.test.ts",
+        "apps/arena/engine/feature-geometry.ts",
+        "apps/arena/engine/test/feature-geometry.test.ts",
+        "apps/arena/engine/test/feature-manifest-legacy.mjs",
+        "apps/arena/engine/test/feature-manifest.test.ts",
+        "oxlint.training.json"
       ],
       "fingerprint": null
     }

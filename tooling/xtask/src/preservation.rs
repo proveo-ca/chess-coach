@@ -392,4 +392,72 @@ mod tests {
         assert!(spec_index(&root, &old, &javascript).is_err());
         std::fs::remove_dir_all(root).unwrap();
     }
+
+    #[test]
+    fn geometry_import_boundary_allows_only_native_planning_helpers() {
+        let repository = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .canonicalize()
+            .unwrap();
+        let fixture = crate::test_directory();
+        let source = fixture.join("apps/arena/engine/feature-geometry.ts");
+        std::fs::create_dir_all(source.parent().unwrap()).unwrap();
+        let configuration = fixture.join("oxlint.training.json");
+        std::fs::copy(repository.join("oxlint.training.json"), &configuration).unwrap();
+        let mut gate = crate::runner::Gate::new(repository).unwrap();
+        let cases = [
+            ("@chess-coach/starchess-core/planning-v1", true),
+            ("@chess-coach/starchess-core", false),
+            ("@chess-coach/starchess-core/board/vision", false),
+            ("@chess-coach/starchess-core/planning-v1/extra", false),
+            ("@CHESS-COACH/starchess-core/planning-v1", false),
+            ("@chess-coach/starchess-arena/observations", false),
+            ("@chess-coach/starchess-training/candidates", false),
+            ("node:fs", false),
+            ("fs", false),
+            ("fs/promises", false),
+            ("child_process", false),
+            ("./economic-wire", false),
+            ("./session", false),
+            ("../host", false),
+            ("unapproved-package", false),
+        ];
+        for (index, (module, allowed)) in cases.iter().enumerate() {
+            std::fs::write(
+                &source,
+                format!("import * as probe from {module:?};\nexport {{ probe }};\n"),
+            )
+            .unwrap();
+            let name = format!("geometry-import-{index}");
+            let result = gate.command(
+                &name,
+                &[
+                    "pnpm",
+                    "exec",
+                    "oxlint",
+                    "--no-ignore",
+                    "--deny-warnings",
+                    "-c",
+                    configuration.to_str().unwrap(),
+                    source.to_str().unwrap(),
+                ],
+            );
+            if *allowed {
+                result.unwrap();
+            } else {
+                assert!(result.is_err(), "accepted {module}");
+                assert_eq!(gate.results.last().unwrap()["exit"], json!(1));
+                let stdout =
+                    std::fs::read_to_string(gate.directory.join(format!("{name}.stdout"))).unwrap();
+                let stderr = gate.last_stderr().unwrap();
+                assert!(
+                    stdout.contains("no-restricted-imports")
+                        || stderr.contains("no-restricted-imports"),
+                    "wrong refusal for {module}: {stdout}{stderr}"
+                );
+            }
+        }
+        std::fs::remove_dir_all(gate.directory).unwrap();
+        std::fs::remove_dir_all(fixture).unwrap();
+    }
 }

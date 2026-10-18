@@ -120,6 +120,15 @@ Native rejection or uncertain mutation produces an explicit verified prefix, not
 Ledger diagnostics retain `NON_ADMITTED`, `learned:false`, `modelArtifact:null` and `trainingReady:false`.
 Full418 features, posterior/promotion kernels, learner software, calibration and training remain deferred.
 
+## Standalone feature geometry
+
+Contract: [`_spec/ml/native-feature-seams.md`](../../_spec/ml/native-feature-seams.md).
+`engine/feature-geometry.ts` exposes owned scalar-built queues and pure native scheduling, attack-shape, ray and vision helpers.
+Each operation reserves its fixed invoice before constructing results or calling the native helper.
+The module imports only the native `planning-v1` surface.
+It remains unwired to Rust, worker RPCs and live policy selection.
+The test-only metadata reader calls the actual legacy manifest API; no production legacy-training import or encoder is added.
+
 ## Compatibility smoke
 
 Use the workspace Rust 1.95 toolchain and install the workspace's pinned Node dependencies before running.

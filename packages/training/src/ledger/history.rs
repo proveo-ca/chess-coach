@@ -384,6 +384,30 @@ pub struct LedgerPair {
     canonical: Pair<Vec<u8>>,
 }
 
+pub(crate) struct LedgerFeatureUnit {
+    pub(crate) id: u32,
+    pub(crate) square: Square,
+    pub(crate) kind: UnitType,
+    pub(crate) mode: Option<TankMode>,
+    pub(crate) paid_basis: u32,
+}
+
+pub(crate) struct LedgerFeatureMine {
+    pub(crate) id: u32,
+    pub(crate) occurrence: MineOccurrence,
+}
+
+pub(crate) struct LedgerFeatureParts {
+    pub(crate) view: AuthorizedView,
+    pub(crate) units: Vec<LedgerFeatureUnit>,
+    pub(crate) mines: Vec<LedgerFeatureMine>,
+    pub(crate) memory: [Option<LastSeenAssertion>; 64],
+    pub(crate) ever_lit: [bool; 64],
+    pub(crate) own_paid_destroyed: u64,
+    pub(crate) own_paid_wasted: u64,
+    pub(crate) enemy_replacement_loss_lower_bound: u64,
+}
+
 impl LedgerPair {
     pub fn initialize(
         rules: LedgerRules,
@@ -471,6 +495,62 @@ impl LedgerPair {
     }
     pub const fn last_boundaries(&self) -> &Pair<EconomicBoundary> {
         &self.last
+    }
+
+    pub(crate) fn feature_parts(
+        &self,
+        side: Side,
+        work: &mut LedgerWork,
+    ) -> ContractResult<LedgerFeatureParts> {
+        let state = self.states.get(side);
+        let view = &self.last.get(side).snapshot;
+        work.charge(128)?;
+        work.charge_snapshot(view)?;
+        charge_count(work, 64, 16)?;
+        charge_count(work, 64, 32)?;
+        charge_count(work, 64, 1)?;
+        charge_count(work, state.units.len(), 192)?;
+        charge_count(work, state.mines.len(), 192)?;
+        charge_count(work, state.losses.len(), 32)?;
+        charge_count(work, state.deployments.len(), 32)?;
+        charge_count(work, state.witnesses.len(), 32)?;
+        let mine_locators = state.mine_locators(work)?;
+        let mut units: Vec<_> = state
+            .units
+            .iter()
+            .map(|unit| LedgerFeatureUnit {
+                id: unit.id,
+                square: unit.square,
+                kind: unit.kind,
+                mode: unit.mode,
+                paid_basis: unit.paid,
+            })
+            .collect();
+        units.sort_unstable_by_key(|unit| unit.square);
+        let mines = mine_locators
+            .into_iter()
+            .map(|(occurrence, id)| LedgerFeatureMine { id, occurrence })
+            .collect();
+        let own_paid_destroyed = sum(state.losses.iter().map(|loss| u64::from(loss.unit.paid)))?;
+        let own_paid_wasted = sum(state
+            .deployments
+            .iter()
+            .filter(|receipt| matches!(receipt.disposition, Some(Disposition::Wasted { .. })))
+            .map(|receipt| u64::from(receipt.minerals)))?;
+        let enemy_replacement_loss_lower_bound = sum(state
+            .witnesses
+            .iter()
+            .map(|witness| u64::from(self.rules.non_cc_replacement(witness.kind))))?;
+        Ok(LedgerFeatureParts {
+            view: view.clone(),
+            units,
+            mines,
+            memory: state.memory,
+            ever_lit: state.ever_lit,
+            own_paid_destroyed,
+            own_paid_wasted,
+            enemy_replacement_loss_lower_bound,
+        })
     }
 
     fn clone_metered(&self, work: &mut LedgerWork) -> ContractResult<Self> {

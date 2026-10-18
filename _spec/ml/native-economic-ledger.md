@@ -1,6 +1,6 @@
 # Native economic ledger — current contract and reasoning
 
-**2026-10-18 · BOUNDED LEDGER VERIFICATION/REVIEW COMPLETE · CURRENT258d GATE PASS:29 COMMANDS / RUST301 / NODE175 / CORE668 · ALL3 CURRENT REVIEWS READY / NO FINDINGS · LEDGER-ADV-4 RESOLVED · FOLLOW-UP PUBLICATION AUTHORIZED, NOT EXECUTED · trainingReady:false · F1 FUTURE.**
+**2026-10-18 · BOUNDED LEDGER PUBLISHED b47befd021bef04eea0bfe20a9308a71aa20f09f ·258d GATE PASS:29 COMMANDS / RUST301 / NODE175 / CORE668 · ALL3 READY / NO FINDINGS · LEDGER-ADV-4 RESOLVED · trainingReady:false · SEPARATE F1 GOALS ACTIVE, IMPLEMENTATION PLANNED.**
 
 The [PR plan](../_plans/native-economic-ledger.md) owns forward delivery/acceptance.
 This document owns the selected current contract and reasoning, not obsolete unfinished-ledger branches.
@@ -16,7 +16,7 @@ Deliver calculated entitlement, exact own receipts/lineage, authorized observati
 Preserve existing **arena-engine-v1/v2**, closed legacy DTOs/RunRecord bytes/live mutation/replay, native rules/UI, baseline selectors/seeding/reports, frozen418/D+B contracts, pins, corpus/evidence and six-owner graph/status files.
 Passive fixed-transport extraction into `worker_transport.rs` and unchanged-wire integration in `engine_v2.rs` remain allowed; preserving legacy behavior does not require every adapter source byte to be frozen.
 The frozen [native runner](native-runner.md) retains its own proof scope; baseline closure is not legacy R4 N1–N7/M2, inventory or resource/public-closure closure.
-The user published4990d951; current revision verification is explicit in §9, while the lead-reported16-file follow-up remains uncommitted/unpushed.
+The user4990d951 commit is preserved; the lead actually published the verified16-file ledger repair as b47befd021bef04eea0bfe20a9308a71aa20f09f (§9). Separate F1 goals now follow that completed publication, without borrowing its proof.
 
 ## 2. Native authority: defaults, fixtures and rule facts
 
@@ -505,7 +505,7 @@ No required tests were skipped/ignored/filtered. Counts are this root run's invo
 | Receipt-time whitespace |PASS |
 
 Separate **lead-executed preflight PASS**, not extra commands in the29-result invoice:22 notes,2–5 lines/max46 columns, note bodies byte-unchanged, PLAN historical suffix4+ and README first2+suffix6+ byte-exact to HEAD.
-Source/configuration/test/index/diagram inputs have not changed after the gate. This evidence-only four-Markdown follow-up requires fresh lead whitespace/preservation/navigation checks; it does not alter the verified source identity or rerun the gate.
+Source/configuration/test/index/diagram inputs stayed unchanged through ledger publication. Lead completed final metadata whitespace/navigation/scope checks and the current-input join before committing b47befd0. This258d proof remains the bounded completed ledger base, not verification of later F1 work.
 
 <a id="97-latest-post-repair-closing-cycle--new-high-4-blocks-closing"></a>
 <a id="94-current-closing-lock"></a>
@@ -527,24 +527,24 @@ Optional property-based native-mode-chain/hidden-twin strengthening remains non-
 | Complete verification |29/301 Rust/175 Node/668 core PASS, present258d receipt |Retain that unchanged-input proof; repeat whole gate if source/config/tests/index/diagrams change. |
 | HIGH-4 |Code fixed/native regression/full gate GREEN; current adversarial explicitly RESOLVED |Resolution is already received; do not relabel it unresolved because a different review is incomplete. |
 | Closing reviews |ALL3 current final reviews DONE/READY, findings NONE |Bounded ledger/terminal-closeout verification and review COMPLETE; no pending review blocker. |
-| Markdown follow-up |Evidence/status-only edits after gate |Lead fresh whitespace/preservation/navigation checks after these edits. |
-| Publication |User4990d951 stands;16-file follow-up publication AUTHORIZED, not executed |Lead fresh whitespace/navigation-preservation/current-input join, then explicit16-file staging/commit/non-force push; no later hash is invented and user commit is not amended. |
-| F1/readiness |F1 PARKED, trainingReady:false/NON_ADMITTED |Closing does not start F1 without separate assignment or establish training readiness. |
+| Markdown follow-up |Lead final whitespace/navigation/scope checks and current-input join completed before ledger commit |Later F1 goals are separate post-publication edits, not additional ledger execution proof. |
+| Publication |DONE lead b47befd021bef04eea0bfe20a9308a71aa20f09f,16 files/non-force push from preserved4990d951; HEAD=remote/clean at publication |No ledger publication hold remains; do not claim later F1 goal/source changes in that commit. |
+| F1/readiness |Separate F1 assignment active/goals persisted, implementation PLANNED; trainingReady:false/NON_ADMITTED |Ledger proof is not new F1 implementation/test/runtime/readiness proof. |
 
-HIGH-4 resolution and **all-three bounded closing approvals are actual and COMPLETE**. Follow-up publication is authorized but not executed; no later commit hash, final training-readiness result or new publication is claimed. F1 implementation stays future until actual verified repair publication and a separate assignment.
+HIGH-4 resolution and **all-three bounded closing approvals are actual and COMPLETE**. Lead publication **b47befd021bef04eea0bfe20a9308a71aa20f09f is actual and COMPLETE**; the lead confirmed post-push HEAD/remote equality and clean status at that checkpoint. Separate F1 goals are now assigned before implementation; no final training readiness follows.
 
 <a id="98-user-performed-publication--not-all-closing-acceptance"></a>
 ### 9.5 User publication
 
 The user personally staged/committed/pushed **4990d951034632d68307d3bb06c9d99e68b60da3**, `feat: economic ledgers & training prep`,39 files, parent `df968b5c33b432a3901f8cb91296b06deb394230`, to origin/feat-ml-adjuntant.
 The lead confirmed clean/matching remote **at that publication checkpoint**, not after subsequent edits. Current258d verification and ALL3 approvals apply to the follow-up; they do not retroactively place these changes in the user commit.
-Do not amend/rebase that commit or claim later code/spec follow-ups in it. The lead reports the current16-file follow-up remains uncommitted/unpushed; no later commit/push is supplied.
+The lead subsequently committed the16-file verified repair as **b47befd021bef04eea0bfe20a9308a71aa20f09f** and successfully non-force pushed origin4990d951→b47befd0, then confirmed actual HEAD/remote equality and clean status. User4990d951 remains preserved, not amended/rebased; these later F1 goal edits are not included in b47befd0 without a later actual commit.
 
 ## 10. Diagram authoring and readability register
 
 The existing [training](../packages/training/burn-compat.puml) and [arena](../apps/arena/burn-compat.puml) explicit-origin labels and stable status comments were frozen **before** the current258d gate. This pass edits neither diagram. Retained synthetic compatibility/baseline graphs and **all22 note bodies remain byte-unchanged**.
 Current gate covers30/54, baseline43/index preservation and both owner syntax/bounded SVG jobs PASS. No covers/index bytes/entries/order/fingerprints/unresolved metadata change in this evidence-only update.
-No new diagram/module/golden/F1 file is created. Shared navigation edits are prefix-only: PLAN-ml-adjutant lines1–3 and ML README lines3–5; all historical suffix bytes stay untouched.
+The ledger delivery created no F1 source/fixture/owner. The separate F1 assignment now persists [PR goals](../_plans/native-feature-seams.md) and [contracts/reasoning](native-feature-seams.md) only; source implementation remains planned. Shared navigation edits stay prefix-only, preserving historical suffix bytes.
 Separate lead preflight verified22 notes fit2–5 lines/max46 columns with byte-unchanged bodies; it is not a fixed-invoice command. No reasoning note is written/rewritten here; the unchanged eight-note FK register below is retained, not recomputed.
 FK uses `0.39*(words/sentences)+11.8*(syllables/words)-15.59` on markup-free text; prior syllable counts are pronunciation-based estimates, not verification receipts.
 
@@ -559,7 +559,7 @@ FK uses `0.39*(words/sentences)+11.8*(syllables/words)-15.59` on markup-free tex
 | arena/burn-compat.puml · bottom of CLOSEOUT |32 /2 /57 |11.7 |
 | arena/burn-compat.puml · right of CLOSEOUT |34 /2 /59 |11.5 |
 
-Syntax/bounded SVG/receipt-time whitespace/matching source identity PASS belong to the actual current gate; note/navigation PASS belongs to the separate lead preflight. Post-update Markdown whitespace/preservation/navigation checks remain lead-owned and pending. No tests/hash/render/command/Git/agent/review/progress poll runs in this authoring pass.
+Syntax/bounded SVG/receipt-time whitespace/matching source identity PASS belong to the completed ledger gate; note/navigation PASS belongs to separate lead preflight. Lead completed publication metadata checks before b47befd0; later F1 edits do not extend that proof. This documentation pass runs no tests/hash/render/command/Git/agent/review/progress poll.
 
 ## 11. Following milestone authority — Training-ready selected, policy training excluded
 
@@ -568,10 +568,10 @@ Six pre-training gates remain real418 authorized features/belief, actual Rust le
 Only after these gates may **separate explicit human policy-training approval** authorize training; learned-model admission follows training. No activation/deployment/engine/frozen-contract/protected-corpus rewrite or WDL/D+B/closeout change is authorized.
 
 <a id="99-immediate-next-scope--f1-freeze-done-work-parked"></a>
-### F1 — freeze DONE, implementation PARKED
+<a id="f1--freeze-done-implementation-parked"></a>
+### F1 — separate goals active, implementation PLANNED
 
-Ledger repair/current whole PASS and ALL3 resolving reviews are DONE; F1 implementation remains FUTURE until actual verified repair publication and a separate assignment. Its frozen scope stays checked ordered FeatureInputPair, standalone **unwired** pure Node geometry, exact418 metadata registry and private labels DOCUMENT ONLY. The manifest-fee/private-seed addendum is also DONE; it changes no source in this delivery.
-F1 includes **no encoder/belief/learner/collector/permits/empirical/image work** and has not started. Future docs are `_spec/_plans/native-feature-seams.md` / `_spec/ml/native-feature-seams.md`; neither is created here.
+Ledger repair/publication/full proof/ALL3 reviews are DONE. F1 freeze plus manifest-fee/private-seed addendum are DONE, and its separate goals-first assignment is now active: [PR goals](../_plans/native-feature-seams.md) / [contracts and reasoning](native-feature-seams.md). Planned F1 source/tests/gate are NOT LANDED/NOT RUN; this is not new source or authority/readiness closure in the ledger delivery.
 
 ### 11.1 Future readiness image authority — Offline local capture selected
 

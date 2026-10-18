@@ -56,6 +56,16 @@ const REQUIRED: &[&str] = &[
     "apps/arena/engine/test/economic-project.test.ts",
     "apps/arena/engine/test/economic-replay.test.ts",
     "apps/arena/engine/test/worker-economic.test.ts",
+    "packages/training/src/feature_input.rs",
+    "packages/training/src/feature_manifest.rs",
+    "packages/training/tests/feature_input.rs",
+    "packages/training/tests/feature_manifest.rs",
+    "packages/training/tests/fixtures/feature-input-boundaries.json",
+    "packages/training/tests/fixtures/feature-manifest-v3.json",
+    "apps/arena/engine/feature-geometry.ts",
+    "apps/arena/engine/test/feature-geometry.test.ts",
+    "apps/arena/engine/test/feature-manifest-legacy.mjs",
+    "apps/arena/engine/test/feature-manifest.test.ts",
 ];
 
 pub(crate) fn training_identity(root: &Path) -> Result<String, String> {
@@ -243,6 +253,29 @@ mod tests {
         fs::remove_file(&economic_control).unwrap();
         assert!(training_identity(&root).is_err());
         fs::write(economic_control, "fixture").unwrap();
+        for relative in [
+            "packages/training/src/feature_input.rs",
+            "packages/training/src/feature_manifest.rs",
+            "packages/training/tests/feature_input.rs",
+            "packages/training/tests/feature_manifest.rs",
+            "packages/training/tests/fixtures/feature-input-boundaries.json",
+            "packages/training/tests/fixtures/feature-manifest-v3.json",
+            "apps/arena/engine/feature-geometry.ts",
+            "apps/arena/engine/test/feature-geometry.test.ts",
+            "apps/arena/engine/test/feature-manifest-legacy.mjs",
+            "apps/arena/engine/test/feature-manifest.test.ts",
+        ] {
+            let path = root.join(relative);
+            let original = fs::read(&path).unwrap();
+            let before = training_identity(&root).unwrap();
+            fs::write(&path, "changed F1 input").unwrap();
+            assert_ne!(before, training_identity(&root).unwrap(), "{relative}");
+            fs::write(&path, &original).unwrap();
+            assert_eq!(before, training_identity(&root).unwrap(), "{relative}");
+            fs::remove_file(&path).unwrap();
+            assert!(training_identity(&root).is_err(), "missing {relative}");
+            fs::write(path, original).unwrap();
+        }
         fs::remove_file(root.join("apps/arena/engine/test/worker-v2.test.ts")).unwrap();
         assert!(training_identity(&root).is_err());
         fs::remove_dir_all(root).unwrap();
