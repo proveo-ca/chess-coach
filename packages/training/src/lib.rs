@@ -1,6 +1,7 @@
 // SPEC: _spec/packages/training/burn-compat.puml
 #![forbid(unsafe_code)]
 
+pub mod accounting_kernel;
 pub mod candidates;
 pub mod contracts;
 pub mod feature_input;

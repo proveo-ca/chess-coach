@@ -676,7 +676,9 @@
         "packages/training/tests/fixtures/feature-input-boundaries.json",
         "packages/training/tests/fixtures/feature-manifest-v3.json",
         "packages/training/src/learner_math.rs",
-        "packages/training/tests/learner_math.rs"
+        "packages/training/tests/learner_math.rs",
+        "packages/training/src/accounting_kernel.rs",
+        "packages/training/tests/accounting_kernel.rs"
       ],
       "fingerprint": null
     },

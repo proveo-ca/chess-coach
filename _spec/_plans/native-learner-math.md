@@ -1,6 +1,6 @@
 # F2 — native learner mathematics: goals and acceptance
 
-**2026-10-18 · BOUNDED F2 VERIFICATION/REVIEW COMPLETE ·67a26 v5 PASS:29 COMMANDS / RUST367 / NODE189 / CORE668 · ALL3 CURRENT FINAL REVIEWS READY, FINDINGS NONE · PUBLICATION AUTHORIZED, NOT EXECUTED · trainingReady:false.**
+**2026-10-18 · BOUNDED F2 PUBLISHEDbf4d67431d8731b7c69419accece4a63bbd96ba9 ·67a26 v5 PASS:29 COMMANDS / RUST367 / NODE189 / CORE668 · ALL3 READY/NO FINDINGS · trainingReady:false · SEPARATE F3 GOALS ACTIVE.**
 
 The [math contract and reasoning](../ml/native-learner-math.md) owns exact APIs/formulas, finite/stable f64 behavior, streaming/sampling/atomicity and resource/admission gaps.
 This plan owns delivery, ownership, independent oracles, acceptance and the complete-gate lock.
@@ -41,7 +41,7 @@ Use existing dependencies; test-only Burn0.22 Flex is already part of the numeri
 
 ## 4. Frozen acceptance matrix
 
-Accepted goals/APIs/recipe/resource constraints below remain unchanged. Current complete v5 gate PASS29/367 Rust/189 Node/668 core and ALL3 final READY/no findings bind the same67a26 source. Bounded F2 verification/review is COMPLETE; publication is authorized but not executed, and no full learner/authority/resource/readiness claim follows.
+Accepted goals/APIs/recipe/resource constraints below remain unchanged. Complete v5 PASS29/367 Rust/189 Node/668 core and ALL3 READY/no findings bind67a26; actual publicationbf4d completes the bounded F2 delivery. No full learner/authority/resource/readiness or new F3 proof follows.
 
 | ID | Required behavior |
 |---|---|
@@ -99,7 +99,7 @@ inputSha256 == inputSha256After ==
 | Finite differences / Burn |12,958 comparisons=31 fixtures×418 coordinates; all418 basis axes across7 batches×4 cases+3 sparse multi-decision fixtures. Actual test-only no-bias live F64/autodiff/synthetic SGD(.001); numerical diagnostics, NOT policy training/native episode updates/artifacts. |
 
 This is one actual whole invoice, not stitched leaves or published F1 proof. All static/types/lint/fmt/all-targets check/Clippy-Dwarnings/build/selected CPU dependencies/locks/protected tracked+untracked preservation before+after/index38/59+44 nontraining entries/both PUML syntax+boundsSVG/receipt-time whitespace PASS. Actual Node stdout was read: `{"version":"v22.23.2","registerHooks":true}`. The exact five notEstablished scopes and all frozen resource/authority exclusions remain unchanged.
-After PASS the lead staged the complete17 F2 paths, including all4 new files, passed cached whitespace and supplied the full17-path capture upfront to all three fresh reviewers. Source/config/tests/index/PUML bytes remain unchanged after PASS; these later Markdown status edits need final metadata checks/restaging before publication, not an invented new source hash or run.
+The complete17-path F2 scope was staged/reviewed, with cached whitespace/navigation/preservation and actual458-input67a26 source join verified before commit. Lead then actually publishedbf4d with matching remote/clean checkpoint; later F3 goal edits neither enter that commit nor extend its bounded proof without a later actual commit/run.
 
 No concrete F2 API/recipe/source mismatch was identified in the inspected production/test surface. This is not closing review. The lead corrected the reported arena shared-verifier label drift before freeze without changing its coverage/index entry.
 Separate lead preflight PASS, **not extra29 invoice commands**: literal covers38/59/source files/pointers/index agree;45 entries/all44 nontraining entries including arena/top metadata unchanged;22 byte-unchanged notes fit2–5 lines/max46 columns; PLAN suffix4+ and README first2+suffix6+ byte-exact to HEAD8d; exact4 then-new untracked math-source/test+F2-doc files had expected inventory/no trailing whitespace and tracked diff whitespace PASS. Protected native/legacy/dependencies/locks/Node/config/model/corpus/evidence remain unchanged. Keeper runs no commands/tests/hash/render/agents/Git or reviewer polling.
@@ -123,7 +123,7 @@ There is no current decision fork. If later no compliant complete schedule can b
 4. **DONE root/spec sync:** lib exports learner_math; shared v5/native-learner-math constants/normal+init assertions, cumulative12 required inputs/mutation+restore+delete loop, exact nonempty learner_math target and existing mismatch/capability/import/MJS controls are present. Training owner/index append only the two actual math paths, fingerprint null. Arena shared-verifier labels are stable; its59 covers/index entry remain unchanged.
 5. **DONE whole gate:** actual complete v5/native-learner-math run PASS at matching67a26 identity, all29 checks/unfiltered367/189/668. Normal+init metadata/five notEstablished families remain fixed; note/navigation preflight is separate, not added invoice commands.
 6. **DONE closing:** ALL3 final current F2 read-only reviews READY, findings NONE, matching67a26/v5 proof; no F1 approval is borrowed. Any source/config/test/index/diagram change requires the entire gate again before rereview; only Markdown evidence/status edits proceed with final metadata/preservation checks.
-7. **AUTHORIZED, NOT EXECUTED F2 publication:** verification/reviews are complete. After this handoff lead will perform final source-identity join67a26/navigation-suffix/whitespace/protected-scope checks, explicitly restage17 paths, commit/non-force push and verify actual remote/clean status. HEAD remains published8d until a later actual commit; no future hash is invented.
+7. **DONE F2 publication:** lead actually committed17 files as **bf4d67431d8731b7c69419accece4a63bbd96ba9**, parent8d908d4c, successfully non-force pushed origin8d→bf4d6743 and confirmed actual post-push HEAD/remote equality/clean status. User4990/b47/8d remain preserved; this is the publication checkpoint, not a clean-tree claim after later F3 goal edits.
 
 ## 8. Current state and completion boundary
 
@@ -132,13 +132,13 @@ There is no current decision fork. If later no compliant complete schedule can b
 | Published F1 prerequisite |DONE8d908d4c96641403f6161f118458ca66f2305a04; bounded F1 evidence only |
 | F2 freeze/goals |ACCEPTED / PERSISTED |
 | Backend/DevOps read-only advice |DONE; source/design only, no contradiction/normative ordering fork or execution proof |
-| F2 source/test/lib/xtask |LANDED / ALL SOURCE HANDOFFS DONE, uncommitted |
+| F2 source/test/lib/xtask |LANDED / VERIFIED / PUBLISHEDbf4d67431d8731b7c69419accece4a63bbd96ba9 |
 | Training owner/index coverage |DONE36→38, two actual literals/fingerprint null; arena59/other entries untouched |
 | Current numerical/test proof |Math24/training229/xtask32 included in actual whole Rust367, not stitched leaves |
 | Arena shared-verifier labels |RECONCILED before freeze; no arena coverage/index change |
 | Complete v5 gate |DONE/PASS29 commands/367 Rust/189 Node/668 core, present67a26 receipt/matching before+after identity |
 | ALL3 fresh F2 reviews |DONE/READY on current67a26 source, findings NONE; bounded verification/review COMPLETE, no review blocker |
-| F2 capture/publication |Full17-path scope COMPLETE; publication AUTHORIZED, NOT EXECUTED, awaiting final metadata/hash-join/restage17/commit/non-force push |
+| F2 capture/publication |COMPLETE; actual17-file bf4d commit/non-force push from8d, actual post-push HEAD=remote/clean; no publication hold |
 | Full learner/training readiness/actual policy training |NOT ESTABLISHED / NOT AUTHORIZED by F2 |
 
 F2 completion will mean pure numerical code/proposals with identified bounded v5 evidence/review/publication, not a complete learner, native episode authority, runtime/resource admission, fitted belief/calibration or training readiness. Actual policy SGD/formal primary require separate later approval; learned transfer/admission follows training, not a circular pre-training prerequisite.
@@ -152,4 +152,4 @@ F2 completion will mean pure numerical code/proposals with identified bounded v5
 | Security `ses_eb7cb7218ffePBBBS1MqCmBCtM` |DONE `READY TO MERGE:yes`, findings NONE; all17 paths/four new files/surrounding source and current v5 receipt/logs inspected, scope COMPLETE; read-only/no independent gate rerun/edit |
 | DevOps `ses_eb7cb7206ffe1XrslbW4r6OyGq` |DONE `READY TO MERGE:yes`, findings NONE; cumulative inputs/exact targets/v5 metadata/five exclusions/current17 scope/receipt+logs/identity inspected, no independent gate rerun/edit |
 
-The [current17-path capture](../ml/native-learner-math.md#93-current-f2-closing-and-capture) is against published8d and includes all new files. All current approvals are actual67a26/v5 F2 verdicts, not old F1 approvals. Optional property/extreme/append-rollback strengthening is non-blocking/not executed proof. No F2 publication or native-policy update/training is claimed; F3 repo docs/source remain outside this evidence update and require actual F2 publication first.
+The [17-path capture](../ml/native-learner-math.md#93-current-f2-closing-and-capture) against8d supported the actual67a26/v5 F2 approvals and completedbf4d publication. Optional property/extreme/append-rollback strengthening stays non-blocking/not executed proof, with no native-policy update/training. Separate [F3 PR goals](native-accounting-kernel.md)/[point-kernel contract](../ml/native-accounting-kernel.md) are now assigned/persisted before source; F3 code/tests/proof remain PLANNED/NOT RUN.

@@ -1,4 +1,4 @@
-' purpose: Pure Rust learner math, checked feature seams and economic/native composition boundaries beside retained synthetic compatibility.
+' purpose: Point-source accounting, learner math, checked feature seams and economic/native composition beside retained synthetic compatibility.
 ' covers: Cargo.toml
 ' covers: rust-toolchain.toml
 ' covers: packages/training/Cargo.toml
@@ -37,7 +37,9 @@
 ' covers: packages/training/tests/fixtures/feature-manifest-v3.json
 ' covers: packages/training/src/learner_math.rs
 ' covers: packages/training/tests/learner_math.rs
-' status: Learner-math/F1/ledger source structure lives here; current evidence and review status lives in the related Markdown owners.
+' covers: packages/training/src/accounting_kernel.rs
+' covers: packages/training/tests/accounting_kernel.rs
+' status: Accounting/learner/F1/ledger structure lives here; current evidence and review status lives in the related Markdown owners.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
 ' related: _spec/ml/native-runner.md
@@ -47,6 +49,8 @@
 ' related: _spec/ml/native-feature-seams.md
 ' related: _spec/_plans/native-learner-math.md
 ' related: _spec/ml/native-learner-math.md
+' related: _spec/_plans/native-accounting-kernel.md
+' related: _spec/ml/native-accounting-kernel.md
 ' related: _spec/apps/arena/burn-compat.puml
 ' history: native-runner.md owns the completed baseline, not current ledger verification.
 ' history: d250c88e Bun receipt is superseded, not current proof or review eligibility.
@@ -55,7 +59,7 @@
 ' validation: Author runs no tests, renderer or hashes; lead owns the complete unchanged-input invoice and note-box checks.
 @startuml
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Rust learner math + feature seams + ledger + retained compatibility
+title Rust point accounting + learner math + feature seams + ledger
 left to right direction
 
 component "apps/arena/src/lib.rs\nRust policy caller" as ARENA <<app>>
@@ -65,7 +69,7 @@ package "Root Cargo workspace\nCargo.toml / one reused Cargo.lock" {
   component "packages/training/src/model.rs\nsynthetic-linear-418-v1\nw=[0.5,-0.25,0,...] / b=0.125" as MODEL <<app>>
   component "packages/training/src/main.rs\ntraining-native standalone binary" as CLI <<host>>
   component "packages/training/src/protocol.rs\ntraining-burn-compat-v1\nuint32 id / score only" as PROTOCOL <<app>>
-  component "tooling/xtask/src/main.rs\nRust verifier / cargo xtask check\nv5 / native-learner-math / same 29 checks" as XTASK <<host>>
+  component "tooling/xtask/src/main.rs\nshared cumulative verifier / cargo xtask check\nsame 29 checks / source-bound receipt scope" as XTASK <<host>>
   package "Native baseline contracts" {
     component "packages/training/src/contracts.rs\narena-observation-v2 / arena-candidate-v1\narena-composition-v1 / seven action kinds" as CONTRACTS <<app>>
     component "packages/training/src/candidates.rs\nprofile B / 4 actions / 2048 attempts\n512 retained including pass" as COMPOSER <<app>>
@@ -88,6 +92,12 @@ package "Root Cargo workspace\nCargo.toml / one reused Cargo.lock" {
     component "learner_math::EpisodeStatistics\nSUM at most 64 decisions / no mean\ncount + all coordinates + logP staged atomically" as MATH_EPISODE <<app>>
     component "learner_math::sgd_proposal / SgdProposal\nfrozen weights + baseline + return\ngradient / proposed weights / objective DATA\nzero decisions None before norm/L2" as MATH_PROPOSAL <<app>>
   }
+  package "F3 pub mod accounting_kernel / ONE hypothetical source" {
+    component "accounting_kernel::PointAccountingInput\nAccountingPoint / NumericGrant / NumericTransitionRow\nnumeric observations and grants NOT AUTHENTICATED" as ACCOUNTING_INPUT <<app>>
+    component "packages/training/src/accounting_kernel.rs\njoint_index / growth_support / private branch helpers\n577*bank+material / DISTINCT Gamma sums" as ACCOUNTING_DOMAIN <<app>>
+    component "accounting_kernel::accounting_point_support\nPointSupport / exactly 7501 Boolean cells\nNO counts argument / independent reachability" as ACCOUNTING_SUPPORT <<app>>
+    component "accounting_kernel::accounting_point_flow\nPointAccountingFlow / exactly 7501 raw masses\npositive headstock+suffix / independent Boolean stock\ncached empty/retained/Z readouts / point output ONLY" as ACCOUNTING_FLOW <<app>>
+  }
 }
 component "apps/arena/src/economic.rs\nhost recipient-history caller\nno recorded-policy verification" as ECO_HOST <<host>>
 component "packages/training/tests/ledger_contracts.rs\npackages/training/tests/ledger_history.rs\npackages/training/tests/fixtures/ledger-boundaries.json\nshared DTO / fold / native-fidelity controls" as LEDGER_PROOF <<app>>
@@ -102,6 +112,7 @@ component "Closed failure\nno backend or precision fallback\nfailed gate keeps r
 component "packages/training/tests/feature_input.rs\npackages/training/tests/fixtures/feature-input-boundaries.json\nhand-authored STRUCTURAL boundary controls" as FEATURE_INPUT_PROOF <<app>>
 component "packages/training/tests/feature_manifest.rs\npackages/training/tests/fixtures/feature-manifest-v3.json\nindependent normative metadata / exact invoices" as FEATURE_MANIFEST_PROOF <<app>>
 component "packages/training/tests/learner_math.rs\nindependent scalar objective / all418 FD\nBurn Flex F64 no-bias oracle TEST ONLY" as MATH_PROOF <<app>>
+component "packages/training/tests/accounting_kernel.rs\nindependent sequences -> distinct tuples -> direct weights\nall 7501 mass/support lanes / safe precharge controls\nunchanged rules golden is STRUCTURAL data only" as ACCOUNTING_PROOF <<app>>
 
 ARENA ARROW_MAIN LIB : retained smoke / direct typed Rust call\nno scoring child / no Bun bridge
 RUN ARROW_MAIN COMPOSER : limited AuthorizedView only\nno case / fixture / seed / native image
@@ -156,6 +167,18 @@ MATH_PROOF ARROW_OPTIONAL MATH_EPISODE : sum-not-mean / 64 limit / staged rollba
 MATH_PROOF ARROW_OPTIONAL MATH_PROPOSAL : independent all418 scalar central differences\nL2 once / PG-only flag / detached proposal
 MATH_PROOF ARROW_OPTIONAL BURN : TEST ONLY live F64 no-bias graph\nautodiff + synthetic SGD(.001) / no optimizer decay
 XTASK ARROW_OPTIONAL MATH_PROOF : exact nonempty tests/learner_math.rs token\ntwo required math files / cumulative F1 inputs
+ACCOUNTING_INPUT ARROW_MAIN ACCOUNTING_SUPPORT : numeric source/rules/grant/L/destination only\nno model/count/cohort or native-permit authority
+ACCOUNTING_INPUT ARROW_MAIN ACCOUNTING_FLOW : global rows -> THIS-source feasible -> conditioning\nZ/N/Den BEFORE L/bounds / no renormalization
+ACCOUNTING_SUPPORT ARROW_MAIN ACCOUNTING_DOMAIN : shared indexed branch / Boolean Gamma construction\nnever infer support from floating mass
+ACCOUNTING_FLOW ARROW_MAIN ACCOUNTING_DOMAIN : distinct source tuples / alpha headstock / sparse flow\npositive suffix, not subtraction / raw retained mass
+ACCOUNTING_DOMAIN ARROW_MAIN LEDGER_WORK : same caller work / fixed-stack precharge\neach Gamma attempt and branch recalculation billed
+ACCOUNTING_SUPPORT ARROW_MAIN LEDGER_CONTRACTS : LedgerRules.validate + native-derived TABLE reads\nstructural profile checks, NOT provenance
+ACCOUNTING_FLOW ARROW_MAIN LEDGER_CONTRACTS : gas_capacity_at(input_turn) / income_at(grant_turn)\nno Rust tier/price authority or grant chronology
+ACCOUNTING_SUPPORT ARROW_MAIN LEDGER_WORK : same caller / buffers + Boolean suffix + destination\nno refill/reset/allowance or partial output
+ACCOUNTING_FLOW ARROW_MAIN LEDGER_WORK : prior rule fees additional / inspected rows charged\nprecharge alloc/scatter/suffix/destination / no truncation
+ACCOUNTING_PROOF ARROW_OPTIONAL ACCOUNTING_SUPPORT : count-independent Boolean oracle / every lane\nstructural reachability, NOT native truth/publicSupport
+ACCOUNTING_PROOF ARROW_OPTIONAL ACCOUNTING_FLOW : independent DIRECT tuple weights, no helper oracle\nraw evidence mass / underflow / exact fee boundaries
+XTASK ARROW_OPTIONAL ACCOUNTING_PROOF : exact nonempty tests/accounting_kernel.rs token\ntwo required kernel files / cumulative F1+F2 controls
 
 note bottom of LIB
   The smoke calls Burn in process so its
@@ -265,8 +288,14 @@ legend bottom
   No math-to-game/CLI/native-permit/feature-encoder/geometry/checkpoint/baseline-commit runtime edge.
   Every product/add/subtraction is finite-checked; F2 does not reuse compat abs(value)<=1e6.
   No new meter/allowance or whole-decision resource claim; O(512+418) buffers are not admission.
-  v5 notEstablished: full-training-closure / genuine-native-authority / whole-decision-adequacy.
-  v5 notEstablished also includes calibration / training-readiness; private labels remain DOCUMENT ONLY.
+  F3 point input/grant/rows are hypothetical DATA, not native-adapter or fitted-table permission.
+  Z/N/Den are unconditioned; L/destination retain raw mass, never a normalized posterior.
+  Boolean point support has no counts/model-zero dependence and is not complete publicSupport.
+  Storage 8034 headstock / 7501 joint / 5x33 Gamma / 8192 rows; reachable J<=609, not617.
+  Physical max input may BUDGET-refuse; same caller work retains spent charges, no partial result.
+  No kernel-to-host/native-permit/cohort/likelihood/spatial-envelope/collector/calibration runtime edge.
+  Verifier notEstablished: full-training-closure / genuine-native-authority / whole-decision-adequacy.
+  Verifier notEstablished also includes calibration / training-readiness; private labels remain DOCUMENT ONLY.
   No real training, payout calibration, R4 readiness or activation claim.
   Complete fresh static/functional/preservation/diagram/source-identity gates precede reviewers.
 endlegend

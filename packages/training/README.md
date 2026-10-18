@@ -13,6 +13,7 @@ The baseline receipts do not verify the ledger.
 ## Library boundaries
 
 - `contracts`: closed authorized views, seven action families and complete canonical action-array keys.
+- `accounting_kernel`: one-source accounting flow and counts-independent reachability, not a joint estimator.
 - `feature_input`: checked ordered boundary innovations and detached own-lineage inputs.
 - `feature_manifest`: exact 418-coordinate metadata, not an encoder.
 - `learner_math`: finite f64 policy statistics and arithmetic SGD proposals, not update permission.
@@ -62,6 +63,14 @@ Scalar f64 functions return detached proposals using the frozen `.001` learning 
 They never commit weights, classify eligibility, draw RNG values or run native episodes.
 Independent scalar finite differences and test-only Burn/F64 autodiff and SGD check the numerical results.
 These checks do not establish full feature semantics, native authority, decision-budget admission or training readiness.
+
+## Point-source accounting
+
+The [F3 contract](../../_spec/ml/native-accounting-kernel.md) defines distinct accounting tuples, positive suffix flow and independent Boolean reachability for one hypothetical source.
+The kernel keeps its denominator unconditioned and returns raw retained evidence mass without posterior normalization.
+Native-derived rule tables supply numeric income and gas values; their structural validation does not authenticate a grant or observation.
+All operations precharge the caller's existing shared work meter.
+This primitive does not implement the joint estimator, spatial support, fitted tables, calibration or whole-decision resource admission.
 
 ## Preparation
 

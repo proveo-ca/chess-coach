@@ -1,6 +1,6 @@
 # F2 — native learner mathematics: accepted contracts and reasoning
 
-**2026-10-18 · BOUNDED F2 VERIFICATION/REVIEW COMPLETE ·67a26 v5 PASS:29 COMMANDS / RUST367 / NODE189 / CORE668 · ALL3 CURRENT FINAL REVIEWS READY, FINDINGS NONE · PUBLICATION AUTHORIZED, NOT EXECUTED · trainingReady:false.**
+**2026-10-18 · BOUNDED F2 PUBLISHEDbf4d67431d8731b7c69419accece4a63bbd96ba9 ·67a26 v5 PASS:29 COMMANDS / RUST367 / NODE189 / CORE668 · ALL3 READY/NO FINDINGS · trainingReady:false · SEPARATE F3 GOALS ACTIVE.**
 
 The [PR plan](../_plans/native-learner-math.md) owns acceptance, source ownership, test-purpose matrix and gate order.
 This document persists the full87-line read-only architect freeze from `ses_eb7c5d187ffenpvgElk95FZ8ut`, read in full at:
@@ -11,6 +11,7 @@ The production module/test/narrow integration were read before freeze. Accepted 
 ## 1. Published prerequisite, scope and non-goals
 
 The lead actually published F1 as **8d908d4c96641403f6161f118458ca66f2305a04**,29 files, parent b47befd021bef04eea0bfe20a9308a71aa20f09f, by successful non-force origin push. HEAD/remote matched and the tree was clean at that publication checkpoint, **before these F2 goal edits**.
+The lead has since actually published F2 as **bf4d67431d8731b7c69419accece4a63bbd96ba9**,17 files,parent8d, successful non-force origin push8d→bf4d6743, actual post-push HEAD/remote match and clean checkpoint. Later F3 goals follow this completed bounded F2 delivery, not new F3 implementation/proof.
 F1's [d389/v4 receipt and ALL3 READY](native-feature-seams.md#92-current-complete-unchanged-input-v4-gate--pass),29 commands/343 Rust/189 Node/668 core with Node LOW resolved, remain bounded **F1 evidence only**. F2 needs a new v5 source-bound run/reviews; no F2 code/test/receipt/hash exists by implication.
 
 Implement deterministic **production scalar Rust f64** logits/distributions, explicit-uniform sampling, streamed/summed statistics and detached arithmetic SGD proposals; Burn is a TEST-ONLY independent cross-check. The frozen R3 contract does not require a production Burn backend here. This is numerical correctness, **not actual policy training, eligible episode processing or permission to commit weights**.
@@ -319,7 +320,7 @@ Lead staged the complete17 F2 paths (all4 new source/test/docs included), passed
 | Same directory `changed-paths.txt` |17 paths; SHA256 `17a862cbf9f3ee9dbb978e98af3444e309f9fdd45fe311a21c044d3f432b3774` |
 | Base HEAD |8d908d4c96641403f6161f118458ca66f2305a04 |
 
-Source/config/tests/index/PUML bytes are unchanged after67a26 PASS. Later Markdown status metadata may be newer than this reviewed capture and needs final metadata checks/restaging; it does not change source identity or create a self-hash loop. **F2 publication is AUTHORIZED BUT NOT EXECUTED**: lead will final-check the67a26 source join/navigation suffixes/whitespace/protected scope, explicitly restage17, commit/non-force push and verify actual remote/clean status. HEAD remains published8d until that actual later commit; no future hash is invented. trainingReady:false and all deferred proofs remain unchanged.
+F2 stayed source-bound to67a26 through actual458-input join and precommit cached-whitespace/navigation/preservation checks. **Publication is DONE**: lead commit **bf4d67431d8731b7c69419accece4a63bbd96ba9**,17 files,parent8d, successful non-force push and actual post-push HEAD/remote equality/clean status. No F2 publication hold remains. Later F3 goal edits are not claimed in that commit without a later actual commit; trainingReady:false and all deferred proofs remain unchanged.
 
 ## 10. Current coverage, notes and shared-verifier labels
 
@@ -327,5 +328,5 @@ Current covers remain training**38**/arena**59**, all45 index entries/all44 nont
 No reasoning note is added/rewritten: all22 existing note bodies and retained FK estimates are unchanged. Current both syntax/bounded SVG/index/identity PASS belong to the actual complete v5 run, not a new keeper command; separate note/navigation preflight is not an extra29 invoice job.
 The lead reconciled the reported arena shared-verifier label drift before freeze. FEATURE_GATE and its two scope-exclusion legend labels now use stable cumulative-verifier wording; arena coverage/index remain unchanged. There is no dual v4 runtime.
 Separate lead preflight PASS (outside the29-command invoice): covers38/59/index literals/source pointers/files agree; all45 entries/all44 nontraining entries including arena/top metadata unchanged;22 note bodies byte-unchanged/2–5 lines/max46 columns; historical PLAN suffix4+ and README first2+suffix6+ byte-exact to HEAD8d; exact4 new untracked math source/test+two F2 docs have expected inventory/no trailing whitespace, tracked diff whitespace PASS. Protected native/legacy/dependencies/locks/Node/config/model/corpus/evidence remain unchanged.
-Current handoff: label drift was RESOLVED before the67a26 run; complete v5 PASS29/367/189/668 and ALL3 current final READY/no findings are DONE. Bounded verification/review is COMPLETE, publication authorized/unexecuted; full learner/genuine authority/decision-resource/calibration/readiness closure remains unestablished, trainingReady:false unchanged. No F3 repo docs/source are assigned or created here before actual F2 publication.
+Current F2 state: label drift resolved before67a26, complete v5 PASS29/367/189/668/ALL3 READY/no findings and actualbf4d publication DONE. Full learner/genuine authority/decision-resource/calibration/readiness closure remains unestablished, trainingReady:false unchanged. Separate [F3 PR goals](../_plans/native-accounting-kernel.md)/[contract](native-accounting-kernel.md) are now assigned/persisted before source; F3 implementation/v6 proof remains PLANNED/NOT RUN, and F2 evidence is not F3 proof.
 This pass touches only the two F2 Markdown documents and shared navigation prefixes, evidence/status only. It runs no commands/tests/hashes/renders/agents/reviews/Git/progress polls and changes no source/index/PUML or frozen normative goal/recipe. Historical navigation suffixes stay byte-untouched through prefix-only patches.

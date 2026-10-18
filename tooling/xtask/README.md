@@ -1,8 +1,8 @@
-# Rust learner-math gate
+# Rust accounting-kernel gate
 
 Run `cargo xtask check` from the workspace.
 
-The fixed gate validates pure 418-dimensional learner mathematics alongside checked feature-input seams, native geometry helpers, exact metadata, the economic ledger, the native baseline runner and retained synthetic compatibility controls.
+The fixed gate validates point-source accounting flow and independent Boolean reachability alongside learner mathematics, checked feature-input seams, native geometry helpers, exact metadata, the economic ledger, the native baseline runner and retained synthetic compatibility controls.
 It does not admit a learned model or authorize training.
 It does not install dependencies, invoke Bun, or start reviews.
 Cargo commands use frozen, offline resolution and two build jobs.
@@ -15,7 +15,7 @@ Receipts and raw stdout/stderr logs use a fresh directory outside the repository
 Unix receipt directories use mode `0700`; files use `0600`.
 Failures retain actual exit codes, Unix signals, timeout flags, elapsed time and validation errors.
 Only a complete fixed invoice with unchanged inputs sets `reviewEligible=true`.
-Both normal and initialization-failure receipts use `rust-training-verification-v5`, scope `native-learner-math`.
+Both normal and initialization-failure receipts use `rust-training-verification-v6`, scope `native-accounting-kernel`.
 The fixed `notEstablished` list excludes full training closure, genuine native authority, whole-decision adequacy, calibration and training readiness from this verification claim.
 
 The SHA-256 identity frames each sorted relative path and its file bytes with unsigned 64-bit big-endian lengths.
@@ -32,13 +32,14 @@ The gate preserves the existing 43 index entries and unresolved metadata.
 It does not require historical unresolved pointers to resolve.
 Both owner diagrams must pass syntax checks and produce bounded SVGs in private receipt subdirectories.
 
-The Rust invoice requires nonempty compatibility, contract, composition, policy, runner, schedule, replay, ledger-contract, ledger-history, feature-input, feature-manifest, learner-math, economic-reconstruction and readiness integration targets.
+The Rust invoice requires nonempty compatibility, contract, composition, policy, runner, schedule, replay, ledger-contract, ledger-history, feature-input, feature-manifest, learner-math, accounting-kernel, economic-reconstruction and readiness integration targets.
 Required target checks match complete source-path tokens; binary-name and summary counts must agree.
-The source inventory requires all four v2 Node controls, all three economic-worker controls, all ten F1 source/test/fixture inputs and both learner-math source/test files.
+The source inventory requires all four v2 Node controls, all three economic-worker controls, all twelve F1/F2 source/test/fixture inputs and both accounting-kernel source/test files.
 The metadata oracle executes a fixed test-only MJS reader against the actual legacy production API.
 Runtime tests and engine lint check that reader; tsgo does not include MJS files.
 The geometry-only import restriction permits only the native `planning-v1` surface.
 An isolated linter regression checks the actual configuration with allowed and forbidden imports.
 Numerical checks cover synthetic gradients and arithmetic SGD proposals, not native episodes or permission to commit policy updates.
+Point-kernel checks cover one hypothetical source, unnormalized retained flow and counts-independent reachability, not a complete joint evaluator, fitted estimator or authenticated grant.
 The gate does not establish a complete learner/coordinator, policy eligibility, full feature semantics, calibration, resource/runtime closure or training readiness.
 Tracked and untracked legacy-source, consumer, contract, corpus and evidence changes fail checks before and after verification.
