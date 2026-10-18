@@ -13,6 +13,7 @@ The baseline receipts do not verify the ledger.
 ## Library boundaries
 
 - `contracts`: closed authorized views, seven action families and complete canonical action-array keys.
+- `evidence_tables`: paired numerical counts, qualified likelihoods and post-aggregation weighting.
 - `accounting_kernel`: one-source accounting flow and counts-independent reachability, not a joint estimator.
 - `feature_input`: checked ordered boundary innovations and detached own-lineage inputs.
 - `feature_manifest`: exact 418-coordinate metadata, not an encoder.
@@ -100,6 +101,14 @@ The narrow private table bridge preserves existing public results and work invoi
 The result stops before qualified evidence likelihood and global normalization; it is not a complete estimator or an implicit likelihood-one model.
 Canonical contribution order remains fixed, and dense inputs may exhaust the same caller's work allowance.
 These checks establish no native bindings, authentic public support or complete-window resource admission.
+
+## Paired numerical evidence
+
+The [F7 contract](../../_spec/ml/native-evidence-tables.md) derives transition and evidence counts from one supplied compound group roster with the same complete-group weights.
+Evidence uses destination cohorts and shares the transition tables' occupied-row ceiling.
+Weighting moves the raw mass/mask buffers, preserves every accounting-mask bit and stops before global normalization.
+The explicit zero-innovation bypass validates context first; fit-time zero codes still contribute counts and qualification.
+These numerical checks do not run empirical fitting or authenticate labels, ancestry, artifacts, calibration or public support.
 
 ## Preparation
 

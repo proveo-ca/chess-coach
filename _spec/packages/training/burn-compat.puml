@@ -1,4 +1,4 @@
-' purpose: Canonical raw joint accounting/private table bridge and checked numerical training foundations beside retained synthetic compatibility.
+' purpose: Paired numerical transition/evidence tables, post-aggregation weighting and checked training foundations beside retained synthetic compatibility.
 ' covers: Cargo.toml
 ' covers: rust-toolchain.toml
 ' covers: packages/training/Cargo.toml
@@ -45,7 +45,9 @@
 ' covers: packages/training/tests/transition_tables.rs
 ' covers: packages/training/src/joint_accounting.rs
 ' covers: packages/training/tests/joint_accounting.rs
-' status: Raw joint/table/readout/accounting/learner/F1/ledger structure lives here; current evidence and review status lives in the related Markdown owners.
+' covers: packages/training/src/evidence_tables.rs
+' covers: packages/training/tests/evidence_tables.rs
+' status: Paired evidence/raw joint/table/readout/accounting/learner/F1/ledger structure lives here; current evidence and review status lives in the related Markdown owners.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
 ' related: _spec/ml/native-runner.md
@@ -63,6 +65,8 @@
 ' related: _spec/ml/native-transition-tables.md
 ' related: _spec/_plans/native-joint-accounting.md
 ' related: _spec/ml/native-joint-accounting.md
+' related: _spec/_plans/native-evidence-tables.md
+' related: _spec/ml/native-evidence-tables.md
 ' related: _spec/apps/arena/burn-compat.puml
 ' history: native-runner.md owns the completed baseline, not current ledger verification.
 ' history: d250c88e Bun receipt is superseded, not current proof or review eligibility.
@@ -71,7 +75,7 @@
 ' validation: Author runs no tests, renderer or hashes; lead owns the complete unchanged-input invoice and note-box checks.
 @startuml
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Rust canonical RAW joint accounting + checked training foundations
+title Rust paired numerical evidence + RAW accounting / checked training foundations
 left to right direction
 
 component "apps/arena/src/lib.rs\nRust policy caller" as ARENA <<app>>
@@ -125,12 +129,23 @@ package "Root Cargo workspace\nCargo.toml / one reused Cargo.lock" {
     component "transition_tables::NumericTransitions::select\nBBT -> BT -> B groups >= 32, else Global\nqualification ONLY / no query-N fallback" as TABLE_SELECT <<app>>
     component "transition_tables::NumericTransitions::source_terms\nprivate widened source_interval / canonical row N\ninteger prefix Z / Den=N+.5Z / SourceTerms ONLY\nno 7501-flow allocation or F3/F4 flow/readout call" as TABLE_TERMS <<app>>
     component "transition_tables::NumericAccountingSource\nPreparedNumericSource / module-private fields\ncrate-private loans / reused source_interval\nshared opportunities_prepaid / old public fees unchanged" as ACCOUNTING_BRIDGE <<app>>
+    component "transition_tables::NumericTransitions private F7 loans\noccupied_sparse_rows / borrow_material_bands\nnumeric_cohort_path / retained borrow_numeric_profile\nmetadata25440 / bands32 / path192 / profile32" as EVID_LOANS <<app>>
   }
   package "F6 pub mod joint_accounting / RAW numerical component ONLY" {
     component "joint_accounting::NumericAccountingStep\nNumericSourceContext / NumericGrant / L / destination bounds\nhypothetical DATA, no native chronology or permission" as RAW_STEP <<app>>
     component "packages/training/src/joint_accounting.rs\naggregate_accounting / bank -> material sources\npositive P prepares Z/N/Den ONCE\nP=0 true support: accounting law ONLY, no model access" as RAW_AGGREGATE <<app>>
     component "joint_accounting::Gamma / Buffers\nGamma170 fixed slots / 165 minimum inspections ONCE\n8034 f64 + 8034 bool / 7501 mass + 7501 bool\ncanonical head/sparse contributions / FOUR shared heaps" as RAW_BUFFERS <<app>>
     component "joint_accounting::RawJointAccounting\nprivate 7501 raw masses / independent Boolean cells\nfinite positive cached retained_mass / O(1) borrows\nSTOP BEFORE likelihood / normalization / reband / readout" as RAW_RESULT <<app>>
+    component "joint_accounting::RawAccountingParts\nRawJointAccounting::into_numeric_parts\n32 BEFORE destructure / MOVE two returned heaps\ntyped Budget / no consumed-raw return" as RAW_MOVE <<app>>
+  }
+  package "F7 pub mod evidence_tables / paired numerical DATA only" {
+    component "evidence_tables::NumericEconomicFitGroup / NumericEconomicFitRow\nInnovationCode private bins / 4x4x3 codes\nONE original roster / SAME complete group weight 1/r" as EVID_INPUT <<app>>
+    component "packages/training/src/evidence_tables.rs\nbuild_numeric_economic_tables / private EvidenceBuilder\npreflight -> flat NumericFitRow Vec -> borrowed group Vec\ndrop descriptors BEFORE flat / evidence rereads originals" as EVID_BUILD <<app>>
+    component "evidence_tables::NumericEconomicTables\nOWNS NumericTransitions + ALL 794 NumericEvidenceTable\n48 dense counts each / zero absent, positive occupied\ncached COMBINED transition+evidence occupancy <=8192" as EVID_DATA <<app>>
+    component "evidence_tables::NumericEconomicTables::evidence_likelihood\nDEST bank/band/BOUNDARY tier / distinct groups >=32\nBBT -> BT -> B -> Global / no missing-code fallback\n(C+.5)/(canonical SUM48 C+24) / validated 000 -> 1" as EVID_QUERY <<app>>
+    component "evidence_tables::weight_evidence\nCONSUME all-source RAW / mask BITS + P=0 cells unchanged\n000 mass BITS unchanged / recompute retained / no MUL\nnonzero raw*LL / canonical finite retained sum" as EVID_WEIGHT <<app>>
+    component "evidence_tables::weight_nonzero\nlocal Option<f64>[247] / ONE immutable model-turn-code\npaid band cursor + each positive index/product\nMISS full public query+store / HIT no count rescan" as EVID_CACHE <<app>>
+    component "evidence_tables::EvidenceWeightedAccounting\nSAME two moved buffers / borrowed getters + cached total\nSTOP BEFORE ONE LATER global normalization\nno reband / readout / calibration / native authority" as EVID_RESULT <<app>>
   }
 }
 component "apps/arena/src/economic.rs\nhost recipient-history caller\nno recorded-policy verification" as ECO_HOST <<host>>
@@ -150,6 +165,7 @@ component "packages/training/tests/accounting_kernel.rs\nindependent sequences -
 component "packages/training/tests/joint_math.rs\nindependent direct normalization / SORTED target records\nall 7501 lanes / all 1001 temperatures / exact CDF\ncertainty / bitwise isolation / safe work+error controls\nprivate source unit guards: inconsistent certainty refuses" as JOINT_PROOF <<app>>
 component "packages/training/tests/transition_tables.rs\nindependent sequences -> COMPLETE tuples / destruction Z\nall 794 cohorts / all 577 D / fractional count BITS\nqualification / profile isolation / exact fee controls\nprivate source units: safe logical-storage growth guards" as TABLE_PROOF <<app>>
 component "packages/training/tests/joint_accounting.rs\nindependent distinct-tuple mathematical oracle\nSEPARATE canonical contributor-graph BITWISE oracle\nall 7501 lanes / zero-PMF law / errors / exact work\nF3 parity TEST ONLY uses mathematical tolerance" as RAW_PROOF <<app>>
+component "packages/training/tests/evidence_tables.rs\noriginal-roster ALL794x48 count BITS / paired complete r\nqualification / destination clocks / cache / moved pointers\nmask + P=0 / reachable underflow / exact fees + Budget\nprivate source units: cap/precharge/move/NaN/zero total" as EVID_PROOF <<app>>
 
 ARENA ARROW_MAIN LIB : retained smoke / direct typed Rust call\nno scoring child / no Bun bridge
 RUN ARROW_MAIN COMPOSER : limited AuthorizedView only\nno case / fixture / seed / native image
@@ -255,6 +271,28 @@ ACCOUNTING_BRIDGE ARROW_MAIN LEDGER_WORK : old public invoices unchanged / old M
 RAW_PROOF ARROW_OPTIONAL RAW_RESULT : math tolerance1e-12 PLUS canonical mass/retained BITS\ninput bits / P=0 mask+cost independence / empty distinctions
 RAW_PROOF ARROW_OPTIONAL ACCOUNTING_BRIDGE : private source units preserve old outputs/invoices\nOLD+128 / 64 / 192 / 32 / failed loans before access
 XTASK ARROW_OPTIONAL RAW_PROOF : exact nonempty tests/joint_accounting.rs token\ntwo NEW identity files / KEEP cumulative F1-F5 + bridge
+EVID_INPUT ARROW_MAIN EVID_BUILD : strict slot -> node -> cohort / empty groups preserved\nordinary positive 1/r additions / no chunk merges
+EVID_BUILD ARROW_MAIN TABLE_BUILD : EXACTLY TWO projection temporaries / original r\nINPUT bank-band-input tier / old source A1 feasibility
+TABLE_DATA ARROW_MAIN EVID_DATA : MOVE owned F5 transitions / no table clone\npublic F5/F6 results + count BITS + invoices unchanged
+EVID_BUILD ARROW_MAIN EVID_LOANS : seed REAL transition occupancy ONCE, no caller counter\nDEST point / BOUNDARY turn / V0 / Np0 cohort keys
+EVID_LOANS ARROW_MAIN TABLE_METADATA : borrowed owned profile / nominal income TABLE\npaid gas read validates domain, NOT evidence conditioning
+EVID_BUILD ARROW_MAIN EVID_DATA : original compound roster -> DEST counts / once per slot\nD'=D+c+g-d / B'=min(12,B-s+nominal income)
+EVID_DATA ARROW_MAIN EVID_QUERY : destination distinct-group qualification / code not a gate\n000 FIT counts affect groups and other-code denominators
+EVID_QUERY ARROW_MAIN EVID_WEIGHT : validated qualified LL AFTER all-source RAW\n000 explicit law, NOT unknown-model default or sum1 API
+RAW_RESULT ARROW_MAIN RAW_MOVE : consume F6 output / no clone or replacement7501 array
+RAW_MOVE ARROW_MAIN EVID_WEIGHT : MOVE masses + independent mask + cached scalar\n32 BEFORE destructure / direct EvidenceError::Work
+EVID_WEIGHT ARROW_MAIN EVID_CACHE : NONZERO only / fixed local cache, no startup authority
+EVID_CACHE ARROW_MAIN EVID_QUERY : each MISS owes full context/profile/path/SUM48\nHIT still pays cursor + index + product
+EVID_WEIGHT ARROW_MAIN EVID_RESULT : finite positive recomputed total / same two heaps\nNO normalization / mask pruning / partial output
+EVID_BUILD ARROW_MAIN LEDGER_WORK : SAME meter / evidence fixed203468 + final1588\nold F5 + projection + loans + ALL variable fees extra
+EVID_QUERY ARROW_MAIN LEDGER_WORK : 000224 / nonzero1984+32q, q=levels examined
+EVID_WEIGHT ARROW_MAIN LEDGER_WORK : 000240380 / nonzero250292+64P+SUMmiss(2016+32q)\nP=positive cells / no reset, refund or new allowance
+EVID_BUILD ARROW_ERROR FAILURE : shared8192/new positive guard BEFORE prepaid mutations\nFound at ceiling allowed / no partial model
+EVID_WEIGHT ARROW_ERROR FAILURE : positive MUL erased -> Underflow / NaN -> NonFinite\nrecomputed total0 -> EmptyMass / no partial output
+EVID_PROOF ARROW_OPTIONAL EVID_BUILD : independent original-roster tallies / ALL794x48 BITS\nshared cap / repeated headers / exact and one-below fees
+EVID_PROOF ARROW_OPTIONAL EVID_WEIGHT : pointer equality BOTH heaps / mask BITS + P=0\n000 fit/query distinction / cache isolation / error prefixes
+EVID_PROOF ARROW_OPTIONAL EVID_LOANS : private metadata-only occupancy / bands + path invoices\nprivate raw NaN + stale-positive/zero-total controls
+XTASK ARROW_OPTIONAL EVID_PROOF : exact nonempty tests/evidence_tables.rs token\ntwo NEW required identities / KEEP20 F1-F6 + bridges
 
 note bottom of LIB
   The smoke calls Burn in process so its
@@ -390,7 +428,7 @@ legend bottom
   Guard -> precharge -> allocate -> copy -> replace -> DROP OLD -> insert/update; drop before another cohort grows.
   F5 table init60548 / growth49812 / paid profile copy / final1572+32 per table+64 per row remain additional to rules.
   Source audit + safe errors/cfg(test) logical peaks are NOT allocator instrumentation/D1/full fitter/runtime fit.
-  F5 public methods still return numeric tables/sourceTerms; ONLY the crate-private bridge serves RAW F6.
+  F5 public methods still return numeric tables/sourceTerms; crate-private loans serve RAW F6 and numerical F7.
   No table/bridge-to-artifact/label-producer/collector/native-permit/spatial/host/CLI/readiness edge.
   Future floating factoring memo authorizes NO canonical-order change, grouped headstock or runtime admission.
   F6 returns RAW all-source accounting BEFORE qualified evidence likelihood/global normalization/reband/readout.
@@ -402,6 +440,18 @@ legend bottom
   Exactly FOUR shared heaps/Gamma170 fixed slots; allocation structure is source-audited, NOT allocator/RSS instrumentation.
   Fixed495752 + full standalone F4chain1003928 =1499680>1M BEFORE extra F6 fees; that composition is not admitted.
   No source/bridge-to-host/CLI/artifact/native-permit/complete-estimator/runtime-closure edge or new allowance.
+  F7 pairs one supplied compound roster; source/input transition keys differ from DEST/boundary evidence keys.
+  Numeric destination arithmetic uses nominal income, not recipient credited/terminal closeout or native chronology.
+  No invented innovation/action constraints: source A1 feasibility belongs to transition fitting only.
+  Dense794x48 ZERO-owned cells are not occupied rows, serialized artifacts, RSS or allocator observations.
+  Shared8192 starts from real paid F5 metadata; new positive guards precede ALL prepaid mutations, Found uses no slot.
+  DISTINCT groups qualify >=32; selected missing code stays selected, canonical SUM48 smoothing uses +24.
+  000 FIT contributes counts/groups; validated INFERENCE returns explicit1 with no qualification/count scan.
+  Effective48 queries including 000 bypass do NOT sum1; empty nonzero1/48 / one0001/50 / qualified32x0001/112.
+  Weighting consumes RAW heaps, preserves mask/P=0 support; 000 preserves mass BITS with no cache/query/MUL.
+  Nonzero247 cache is local to one immutable model/turn/code; positive index/product and full MISS fees remain owed.
+  F7 stops BEFORE ONE LATER global normalization; no fitted artifact, authentic support, calibration or permission.
+  Safe private/pointer/budget controls are NOT allocator instrumentation/RSS/D1/full fitter or composed runtime admission.
   Verifier notEstablished: full-training-closure / genuine-native-authority / whole-decision-adequacy.
   Verifier notEstablished also includes calibration / training-readiness; private labels remain DOCUMENT ONLY.
   No real training, payout calibration, R4 readiness or activation claim.

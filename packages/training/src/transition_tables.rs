@@ -290,6 +290,44 @@ impl NumericTransitions {
         Ok(&self.profile)
     }
 
+    pub(crate) fn occupied_sparse_rows(&self, work: &mut LedgerWork) -> TableResult<usize> {
+        charge(work, 32 + 32 * TABLE_COUNT as u64)?;
+        let mut occupied = 0_usize;
+        for table in &self.tables {
+            occupied = occupied
+                .checked_add(table.rows.len())
+                .filter(|value| *value <= MAX_ROWS)
+                .ok_or(TableError::Capacity)?;
+        }
+        Ok(occupied)
+    }
+
+    pub(crate) fn borrow_material_bands(&self, work: &mut LedgerWork) -> TableResult<&[u16; 19]> {
+        charge(work, PARAMETER)?;
+        Ok(&BANDS)
+    }
+
+    pub(crate) fn numeric_cohort_path(
+        &self,
+        point: AccountingPoint,
+        boundary_turn: u32,
+        work: &mut LedgerWork,
+    ) -> TableResult<[usize; 4]> {
+        charge(work, PARAMETER)?;
+        let context = NumericSourceContext {
+            input_turn: boundary_turn,
+            visible_before: 0,
+            marines_before: 0,
+        };
+        let source = checked_source(&self.profile, point, &context, work)?;
+        let mut path = [0; 4];
+        for (level, index) in path.iter_mut().enumerate() {
+            charge(work, INDEX)?;
+            *index = cohort_index(source.cohort(level)?)?;
+        }
+        Ok(path)
+    }
+
     pub(crate) fn borrow_growth_minimums(&self, work: &mut LedgerWork) -> TableResult<&[u8; 33]> {
         charge(work, PARAMETER)?;
         Ok(&self.growth.minimum_opportunities)
@@ -1036,6 +1074,56 @@ fn accounting_error(error: AccountingError) -> TableError {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn evidence_loans_prepay_real_occupancy_metadata_and_borrowed_bands_without_row_value_scans() {
+        let mut model = qualified_bridge_model();
+        model.tables[GLOBAL_INDEX].rows[0].count = f64::NAN;
+        let mut exact = LedgerWork::with_limit(25440).unwrap();
+        assert_eq!(model.occupied_sparse_rows(&mut exact).unwrap(), 4);
+        assert_eq!(exact.used(), 25440);
+        let mut short = LedgerWork::with_limit(25439).unwrap();
+        assert!(
+            matches!(model.occupied_sparse_rows(&mut short), Err(TableError::Work(ref error)) if error.code == LedgerErrorCode::Budget)
+        );
+        assert_eq!(short.used(), 0);
+        let mut exact = LedgerWork::with_limit(32).unwrap();
+        assert_eq!(model.borrow_material_bands(&mut exact).unwrap(), &BANDS);
+        assert_eq!(exact.used(), 32);
+        let mut short = LedgerWork::with_limit(31).unwrap();
+        assert!(
+            matches!(model.borrow_material_bands(&mut short), Err(TableError::Work(ref error)) if error.code == LedgerErrorCode::Budget)
+        );
+        assert_eq!(short.used(), 0);
+    }
+
+    #[test]
+    fn destination_cohort_path_costs_192_uses_boundary_tier_and_never_qualifies_or_scans_rows() {
+        let model = qualified_bridge_model();
+        let point = AccountingPoint {
+            material: 6,
+            bank: 2,
+        };
+        let mut exact = LedgerWork::with_limit(192).unwrap();
+        assert_eq!(
+            model.numeric_cohort_path(point, 11, &mut exact).unwrap(),
+            [130, 748, 782, 793]
+        );
+        assert_eq!(exact.used(), 192);
+        let mut short = LedgerWork::with_limit(191).unwrap();
+        assert!(
+            matches!(model.numeric_cohort_path(point, 11, &mut short), Err(TableError::Work(ref error)) if error.code == LedgerErrorCode::Budget)
+        );
+        assert_eq!(short.used(), 160);
+        let mut invalid = LedgerWork::new();
+        assert_eq!(
+            model
+                .numeric_cohort_path(point, 46, &mut invalid)
+                .unwrap_err(),
+            TableError::Domain
+        );
+        assert_eq!(invalid.used(), 64);
+    }
 
     fn bridge_rules() -> LedgerRules {
         #[derive(serde::Deserialize)]

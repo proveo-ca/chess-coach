@@ -44,6 +44,12 @@ pub struct RawJointAccounting {
     retained_mass: f64,
 }
 
+pub(crate) struct RawAccountingParts {
+    pub(crate) masses: Vec<f64>,
+    pub(crate) accounting_cells: Vec<bool>,
+    pub(crate) retained_mass: f64,
+}
+
 impl std::fmt::Debug for RawJointAccounting {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         formatter
@@ -62,6 +68,23 @@ impl RawJointAccounting {
     }
     pub fn retained_mass(&self) -> f64 {
         self.retained_mass
+    }
+
+    pub(crate) fn into_numeric_parts(
+        self,
+        work: &mut LedgerWork,
+    ) -> Result<RawAccountingParts, LedgerError> {
+        work.charge(32)?;
+        let Self {
+            masses,
+            accounting_cells,
+            retained_mass,
+        } = self;
+        Ok(RawAccountingParts {
+            masses,
+            accounting_cells,
+            retained_mass,
+        })
     }
 }
 
@@ -447,4 +470,158 @@ fn charge_count(work: &mut LedgerWork, count: usize, fee: u64) -> JointAccountin
             ))
         })?;
     charge(work, amount)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::evidence_tables::{
+        EvidenceError, InnovationCode, NumericEconomicTables, build_numeric_economic_tables,
+        weight_evidence,
+    };
+    use crate::ledger::contracts::LedgerRules;
+
+    fn raw_for_move() -> RawJointAccounting {
+        let mut masses = vec![-0.0; JOINT_SIZE];
+        masses[4] = 1.0;
+        let mut cells = vec![false; JOINT_SIZE];
+        cells[4] = true;
+        cells[8] = true;
+        RawJointAccounting {
+            masses,
+            accounting_cells: cells,
+            retained_mass: 1.0,
+        }
+    }
+
+    fn empty_evidence_model() -> NumericEconomicTables {
+        #[derive(serde::Deserialize)]
+        struct RulesOnly {
+            rules: LedgerRules,
+        }
+        let rules = serde_json::from_str::<RulesOnly>(include_str!(
+            "../tests/fixtures/ledger-boundaries.json"
+        ))
+        .unwrap()
+        .rules;
+        build_numeric_economic_tables(&rules, 3, &[], &mut LedgerWork::new()).unwrap()
+    }
+
+    #[test]
+    fn evidence_weighting_rejects_private_nan_mass_only_after_covered_scan_prefix_for_both_code_paths()
+     {
+        let model = empty_evidence_model();
+        for (bins, invoice, unpaid_prefix) in
+            [([0, 0, 0], 240320, 288), ([0, 0, 1], 242360, 242328)]
+        {
+            let code = InnovationCode::from_bins(bins, &mut LedgerWork::new()).unwrap();
+            let prior_spent = 19;
+            let mut raw = raw_for_move();
+            raw.masses[0] = f64::NAN;
+            raw.accounting_cells[0] = true;
+            assert_eq!(raw.retained_mass, 1.0);
+            let mut exact = LedgerWork::with_limit(prior_spent + invoice).unwrap();
+            exact.charge(prior_spent).unwrap();
+            assert_eq!(
+                weight_evidence(raw, &model, 0, code, &mut exact).unwrap_err(),
+                EvidenceError::NonFinite
+            );
+            assert_eq!(exact.used(), prior_spent + invoice);
+            let mut raw = raw_for_move();
+            raw.masses[0] = f64::NAN;
+            raw.accounting_cells[0] = true;
+            let mut short = LedgerWork::with_limit(prior_spent + invoice - 1).unwrap();
+            short.charge(prior_spent).unwrap();
+            assert!(
+                matches!(weight_evidence(raw, &model, 0, code, &mut short), Err(EvidenceError::Work(ref error)) if error.code == LedgerErrorCode::Budget)
+            );
+            assert_eq!(short.used(), prior_spent + unpaid_prefix);
+        }
+    }
+
+    #[test]
+    fn evidence_weighting_recomputes_private_zero_total_instead_of_trusting_positive_cache_for_both_code_paths()
+     {
+        let model = empty_evidence_model();
+        for (bins, invoice, before_retained_check) in
+            [([0, 0, 0], 240352, 240320), ([0, 0, 1], 250264, 250232)]
+        {
+            let code = InnovationCode::from_bins(bins, &mut LedgerWork::new()).unwrap();
+            let prior_spent = 23;
+            let mut raw = raw_for_move();
+            raw.masses[4] = 0.0;
+            assert_eq!(raw.retained_mass, 1.0);
+            assert!(raw.accounting_cells[4]);
+            assert!(raw.masses.iter().all(|mass| *mass == 0.0));
+            let mut exact = LedgerWork::with_limit(prior_spent + invoice).unwrap();
+            exact.charge(prior_spent).unwrap();
+            assert_eq!(
+                weight_evidence(raw, &model, 0, code, &mut exact).unwrap_err(),
+                EvidenceError::EmptyMass
+            );
+            assert_eq!(exact.used(), prior_spent + invoice);
+            let mut raw = raw_for_move();
+            raw.masses[4] = 0.0;
+            let mut short = LedgerWork::with_limit(prior_spent + invoice - 1).unwrap();
+            short.charge(prior_spent).unwrap();
+            assert!(
+                matches!(weight_evidence(raw, &model, 0, code, &mut short), Err(EvidenceError::Work(ref error)) if error.code == LedgerErrorCode::Budget)
+            );
+            assert_eq!(short.used(), prior_spent + before_retained_check);
+        }
+    }
+
+    #[test]
+    fn numeric_parts_transfer_moves_exactly_both_output_buffers_and_scalar_after_32() {
+        let raw = raw_for_move();
+        let mass_pointer = raw.masses.as_ptr();
+        let cell_pointer = raw.accounting_cells.as_ptr();
+        let mut work = LedgerWork::with_limit(32).unwrap();
+        let parts = raw.into_numeric_parts(&mut work).unwrap();
+        assert_eq!(work.used(), 32);
+        assert_eq!(parts.masses.as_ptr(), mass_pointer);
+        assert_eq!(parts.accounting_cells.as_ptr(), cell_pointer);
+        assert_eq!(parts.retained_mass.to_bits(), 1.0_f64.to_bits());
+        assert_eq!(parts.masses[1].to_bits(), (-0.0_f64).to_bits());
+        assert!(parts.accounting_cells[8]);
+    }
+
+    #[test]
+    fn numeric_parts_failed_precharge_preserves_budget_payload_and_spent_prefix() {
+        let raw = raw_for_move();
+        let mut work = LedgerWork::with_limit(36).unwrap();
+        work.charge(5).unwrap();
+        let error = match raw.into_numeric_parts(&mut work) {
+            Err(error) => error,
+            Ok(_) => panic!("unpaid raw move"),
+        };
+        assert_eq!(error.code, LedgerErrorCode::Budget);
+        assert_eq!(work.used(), 5);
+    }
+
+    #[test]
+    fn zero_evidence_weighting_moves_same_pointers_preserves_all_zero_bits_and_true_zero_cells() {
+        #[derive(serde::Deserialize)]
+        struct RulesOnly {
+            rules: LedgerRules,
+        }
+        let rules = serde_json::from_str::<RulesOnly>(include_str!(
+            "../tests/fixtures/ledger-boundaries.json"
+        ))
+        .unwrap()
+        .rules;
+        let model = build_numeric_economic_tables(&rules, 3, &[], &mut LedgerWork::new()).unwrap();
+        let code = InnovationCode::from_bins([0; 3], &mut LedgerWork::new()).unwrap();
+        let raw = raw_for_move();
+        let mass_pointer = raw.masses.as_ptr();
+        let cell_pointer = raw.accounting_cells.as_ptr();
+        let mut work = LedgerWork::with_limit(240380).unwrap();
+        let weighted = weight_evidence(raw, &model, 0, code, &mut work).unwrap();
+        assert_eq!(work.used(), 240380);
+        assert_eq!(weighted.masses().as_ptr(), mass_pointer);
+        assert_eq!(weighted.accounting_cells().as_ptr(), cell_pointer);
+        assert_eq!(weighted.retained_mass(), 1.0);
+        assert_eq!(weighted.masses()[1].to_bits(), (-0.0_f64).to_bits());
+        assert!(weighted.accounting_cells()[8]);
+    }
 }

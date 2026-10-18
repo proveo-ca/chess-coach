@@ -1,8 +1,8 @@
-# Rust canonical joint-accounting gate
+# Rust paired numerical evidence-table gate
 
 Run `cargo xtask check` from the workspace.
 
-The fixed gate validates canonical shared-buffer raw joint accounting alongside numerical transition tables, joint readouts, point accounting, learner mathematics, feature seams, native helpers, metadata, economic ledgers, the native baseline runner and retained compatibility controls.
+The fixed gate validates paired numerical transition/evidence tables and post-aggregation weighting alongside raw joint accounting, joint readouts, point accounting, learner mathematics, feature seams, native helpers, metadata, economic ledgers, the native baseline runner and retained compatibility controls.
 It does not admit a learned model or authorize training.
 It does not install dependencies, invoke Bun, or start reviews.
 Cargo commands use frozen, offline resolution and two build jobs.
@@ -15,7 +15,7 @@ Receipts and raw stdout/stderr logs use a fresh directory outside the repository
 Unix receipt directories use mode `0700`; files use `0600`.
 Failures retain actual exit codes, Unix signals, timeout flags, elapsed time and validation errors.
 Only a complete fixed invoice with unchanged inputs sets `reviewEligible=true`.
-Both normal and initialization-failure receipts use `rust-training-verification-v9`, scope `native-joint-accounting`.
+Both normal and initialization-failure receipts use `rust-training-verification-v10`, scope `native-evidence-tables`.
 The fixed `notEstablished` list excludes full training closure, genuine native authority, whole-decision adequacy, calibration and training readiness from this verification claim.
 
 The SHA-256 identity frames each sorted relative path and its file bytes with unsigned 64-bit big-endian lengths.
@@ -32,9 +32,9 @@ The gate preserves the existing 43 index entries and unresolved metadata.
 It does not require historical unresolved pointers to resolve.
 Both owner diagrams must pass syntax checks and produce bounded SVGs in private receipt subdirectories.
 
-The Rust invoice requires nonempty compatibility, contract, composition, policy, runner, schedule, replay, ledger-contract, ledger-history, feature-input, feature-manifest, learner-math, accounting-kernel, joint-math, transition-table, joint-accounting, economic-reconstruction and readiness integration targets.
+The Rust invoice requires nonempty compatibility, contract, composition, policy, runner, schedule, replay, ledger-contract, ledger-history, feature-input, feature-manifest, learner-math, accounting-kernel, joint-math, transition-table, joint-accounting, evidence-table, economic-reconstruction and readiness integration targets.
 Required target checks match complete source-path tokens; binary-name and summary counts must agree.
-The source inventory requires all four v2 Node controls, all three economic-worker controls, all eighteen F1–F5 source/test/fixture inputs and both joint-accounting source/test files.
+The source inventory requires all four v2 Node controls, all three economic-worker controls, all twenty F1–F6 source/test/fixture inputs and both evidence-table source/test files.
 The metadata oracle executes a fixed test-only MJS reader against the actual legacy production API.
 Runtime tests and engine lint check that reader; tsgo does not include MJS files.
 The geometry-only import restriction permits only the native `planning-v1` surface.
@@ -47,5 +47,7 @@ Transition-table checks cover supplied numerical source witnesses, fractional co
 Physically permitted construction inputs may exhaust their shared work allowance; this gate does not admit the complete offline fitting driver or runtime evaluator.
 Joint accounting returns raw all-source masses and independent Boolean accounting cells before evidence likelihood and normalization.
 Canonical-graph checks preserve contributor order and count-independent zero-PMF reachability; they do not certify authentic public support or an integrated planning budget.
+Paired evidence checks preserve complete-group weighting and one shared transition/evidence row limit.
+Evidence weighting moves raw buffers, retains accounting masks and stops before global normalization; numerical likelihoods supply no fitted-artifact or calibration authority.
 The gate does not establish a complete learner/coordinator, policy eligibility, full feature semantics, calibration, resource/runtime closure or training readiness.
 Tracked and untracked legacy-source, consumer, contract, corpus and evidence changes fail checks before and after verification.

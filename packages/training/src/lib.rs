@@ -4,6 +4,7 @@
 pub mod accounting_kernel;
 pub mod candidates;
 pub mod contracts;
+pub mod evidence_tables;
 pub mod feature_input;
 pub mod feature_manifest;
 pub mod joint_accounting;

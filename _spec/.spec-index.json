@@ -684,7 +684,9 @@
         "packages/training/src/transition_tables.rs",
         "packages/training/tests/transition_tables.rs",
         "packages/training/src/joint_accounting.rs",
-        "packages/training/tests/joint_accounting.rs"
+        "packages/training/tests/joint_accounting.rs",
+        "packages/training/src/evidence_tables.rs",
+        "packages/training/tests/evidence_tables.rs"
       ],
       "fingerprint": null
     },
