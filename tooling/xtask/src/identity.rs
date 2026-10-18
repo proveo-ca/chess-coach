@@ -70,6 +70,8 @@ const REQUIRED: &[&str] = &[
     "packages/training/tests/learner_math.rs",
     "packages/training/src/accounting_kernel.rs",
     "packages/training/tests/accounting_kernel.rs",
+    "packages/training/src/joint_math.rs",
+    "packages/training/tests/joint_math.rs",
 ];
 
 pub(crate) fn training_identity(root: &Path) -> Result<String, String> {
@@ -272,6 +274,8 @@ mod tests {
             "packages/training/tests/learner_math.rs",
             "packages/training/src/accounting_kernel.rs",
             "packages/training/tests/accounting_kernel.rs",
+            "packages/training/src/joint_math.rs",
+            "packages/training/tests/joint_math.rs",
         ] {
             let path = root.join(relative);
             let original = fs::read(&path).unwrap();

@@ -1,12 +1,14 @@
 # F3 — point-source accounting kernels: accepted contracts and reasoning
 
-**2026-10-18 · BOUNDED F3 VERIFICATION/REVIEW COMPLETE · d771 v6 PASS:29 COMMANDS / RUST392 / NODE189 / CORE668 · ALL3 CURRENT FINAL REVIEWS READY, FINDINGS NONE · PUBLICATION AUTHORIZED, NOT EXECUTED · trainingReady:false.**
+**2026-10-18 · BOUNDED F3 VERIFICATION/REVIEW/PUBLICATION COMPLETE · d771 v6 PASS:29 COMMANDS / RUST392 / NODE189 / CORE668 · ALL3 FINAL F3 REVIEWS READY, FINDINGS NONE · PUBLISHED29018157 / MATCHED HEAD=REMOTE / CLEAN AT CHECKPOINT · trainingReady:false.**
+
+Lead committed/non-force pushed **29018157e40bb11d558599a21409623bfbec1a83**, `feat(training): add verified point accounting kernels`,16 files,parentbf4d67431d8731b7c69419accece4a63bbd96ba9. Before commit, the460-file current-source identity matched d771; exact16 inventory/navigation/preservation/whitespace checks passed. Actual post-push local HEAD/remote matched and tree was CLEAN **at that checkpoint**, before [F4 goals](native-joint-math.md); bounded F3 publication establishes no F4/readiness proof.
 
 The [PR plan](../_plans/native-accounting-kernel.md) owns acceptance, ownership, independent tests and gate order.
 The complete updated lead-persisted freeze, including final row/profile/storage-endpoint clarifications, was read at:
 `/tmp/proveo-opencode-runtime-cache-1000-21d690750d3738af14d58c25/tmp/opencode/f3-accounting-kernel-freeze.md`.
 Architect `ses_eb7c5d187ffenpvgElk95FZ8ut` has frozen this point-source foundation; backend/DevOps read-only advisories are DONE/incorporated, with no algebraic contradiction/architecture fork/open ordering choice. This supplies neither execution proof nor a change to the frozen law.
-Both actual Rust files/narrow integration were read before freeze; accepted API/accounting law/work profile/exclusions are unchanged. Current complete d771/v6 proof and ALL3 final READY/no findings are actual lead/reviewer results, not keeper reruns. This evidence-only update changes no source/config/tests/index/PUML or normative contract; publication is authorized but unexecuted.
+Both actual Rust files/narrow integration were read before freeze; accepted API/accounting law/work profile/exclusions are unchanged. Complete d771/v6 proof, ALL3 final READY/no findings and publication29018157 are actual lead/reviewer results, not keeper reruns. This publication-status update changes no source/config/tests/index/PUML or normative contract.
 
 ## 1. Actual published prerequisite and scope
 
@@ -239,7 +241,7 @@ calibration
 training-readiness
 ```
 
-Actual complete unchanged-input d771/v6 PASS was followed by ALL3 fresh final F3 read-only reviews, now DONE/READY, findings NONE. Source/config/test/index/diagram changes require whole gate again before rereview; final metadata/preservation checks still precede the authorized, unexecuted publication. F2's67a26/v5 approvals are not current F3 evidence.
+Actual complete unchanged-input d771/v6 PASS was followed by ALL3 fresh final F3 read-only reviews, DONE/READY, findings NONE, then final metadata/source-join/preservation checks and actual publication29018157. Later source/config/test/index/diagram changes require their complete gate before rereview. F2's67a26/v5 approvals are not F3 evidence.
 Before the gate, the two actual math/kernel-file edges were added to the training owner/index,38→40/fingerprint null; arena59/its entry/all44 nontraining entries/unresolved metadata remain preserved. Stable cumulative verifier labels were fixed before PASS. This evidence update creates no source/fixture/dependency/data/owner or index/PUML change.
 Backend's earlier source inspection found the one-deployment premise consistent with native/frozen dependencies but executed no containment experiment; the current independent oracle also remains numerical/structural, not native truth or fitted qualification.
 
@@ -293,7 +295,7 @@ Accounting25 contains420 source combinations/2520 flow cases/840 standalone supp
 <a id="93-current-fresh-f3-closing-and-capture--verdicts-pending"></a>
 ### 9.3 Current F3 closing and capture — ALL3 READY
 
-All three fresh **F3** final read-only reviews are now **DONE/READY, findings NONE**, bound to actual d771/v6 source/whole proof, not old F2 approvals. **Bounded point-kernel verification/review is COMPLETE; no pending review blocker.** Publication remains separately authorized/unexecuted.
+All three fresh **F3** final read-only reviews are **DONE/READY, findings NONE**, bound to actual d771/v6 source/whole proof, not old F2 approvals. **Bounded point-kernel verification/review/publication is COMPLETE** at29018157; no pending F3 review blocker. These verdicts do not cover F4.
 
 | Reviewer/session | Actual current F3 status |
 |---|---|
@@ -311,11 +313,11 @@ Lead explicitly staged the complete16 F3 paths, including4 new files, and cached
 | Same directory `changed-paths.txt` |16 paths; SHA256 `889f415ff317521ab8cc71b143f3ece50332a0333c32cc22a0de0f2b1c975c89` |
 | Same directory `base-head.txt` |bf4d67431d8731b7c69419accece4a63bbd96ba9 |
 
-This current16-path scope is fully reviewed; later Markdown status metadata may be newer, but no source/config/test/index/PUML byte changed after PASS. **F3 publication is AUTHORIZED BUT NOT EXECUTED**. Lead will read final docs, join current source d771/navigation suffixes/whitespace/protected scope, restage explicit16, commit/non-force push and verify actual remote/clean publication. HEAD remains publishedbf4d until an actual later commit; no future hash/self-hash loop or current F3 push is invented. No F4 repo docs/source are assigned or created before actual F3 publication.
+This16-path scope was fully reviewed; later Markdown status metadata received final checks without source/config/test/index/PUML changes through publication. **F3 publication is COMPLETE:29018157e40bb11d558599a21409623bfbec1a83**. Lead joined the460-file source identity to d771, checked exact16 inventory/navigation/whitespace/protected scope, restaged/committed/non-force pushed, then verified actual HEAD=remote/CLEAN checkpoint. [F4 goals](native-joint-math.md) follow that actual publication; no future hash/self-hash loop or F4 proof is invented.
 
 ## 10. Current coverage, notes and next gate
 
 Current covers remain training**40**/arena**59**, index45/all44 nontraining entries/top metadata/order/unresolved list preserved. Both actual kernel-file edges were added before the current complete gate; this evidence-only pass edits no source/config/tests/index/PUML/coverage.
 Separate lead preflight PASS, **not extra29 invoice commands**: literal cover/pointer/file agreement,45 entries/all44 nontraining metadata unchanged,22 old notes byte-unchanged/2–5 lines/max46 columns, historical PLAN suffix4+ and README first2+suffix6+ unchanged to bf4d, exact4 then-new files/no whitespace, protected native/legacy/model/Node/config/dependencies/locks/corpus/evidence unchanged. No new/reworked note or FK estimate; both actual syntax/bounded SVG/index/identity/receipt-time whitespace PASS belong to the current whole v6 run.
-Next: lead final metadata/preservation/current-source join, restage16 and perform the authorized verified publication. Current d771 whole PASS29/392/189/668 and ALL3 final READY/no findings are DONE; no pending review blocker, actual F3 commit/push or future hash is claimed. F2 bf4d/67a26 remains only the completed base. Any source/config/test/index/diagram change after PASS requires the entire gate again before reviews; no F4 repo work is created here.
-This update touches only the two F3 Markdown documents/shared navigation prefixes, evidence/status only; normative law/API/work units/authority/resource exclusions stay unchanged. No commands/tests/hash/render/agents/reviews/Git/progress polls run. Historical suffixes remain untouched, all five notEstablished gaps/unauthenticated inputs+grants/raw point-output scope/trainingReady:false unchanged.
+F3 whole d771/v6 PASS29/392/189/668, ALL3 final READY/no findings and publication29018157 are DONE; F2 bf4d/67a26 remains its separately completed base. Next selected delivery is [F4 goals/acceptance](../_plans/native-joint-math.md), with implementation/tests/v7 gate/ALL3 fresh reviews/publication pending; no F4 source presence/PASS/future hash is claimed.
+This goals handoff adds two F4 Markdown docs/shared navigation prefixes and small F3 publication-status metadata only; normative F3 law/API/work units/authority/resource exclusions stay unchanged. No commands/tests/hash/render/agents/reviews/Git/progress polls run. Historical suffixes remain untouched, all five notEstablished gaps/unauthenticated inputs+grants/raw point-output scope/trainingReady:false unchanged.

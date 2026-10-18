@@ -16,6 +16,7 @@ The baseline receipts do not verify the ledger.
 - `accounting_kernel`: one-source accounting flow and counts-independent reachability, not a joint estimator.
 - `feature_input`: checked ordered boundary innovations and detached own-lineage inputs.
 - `feature_manifest`: exact 418-coordinate metadata, not an encoder.
+- `joint_math`: checked numerical masks, global normalization and summary-only readouts.
 - `learner_math`: finite f64 policy statistics and arithmetic SGD proposals, not update permission.
 - `candidates`: profile-B composition with native planning helpers supplied through `PlanningOracle`.
 - `policy`: `pass-v1`, `first-v1` and integer-seeded `seeded-v1` selectors, including pass.
@@ -71,6 +72,15 @@ The kernel keeps its denominator unconditioned and returns raw retained evidence
 Native-derived rule tables supply numeric income and gas values; their structural validation does not authenticate a grant or observation.
 All operations precharge the caller's existing shared work meter.
 This primitive does not implement the joint estimator, spatial support, fitted tables, calibration or whole-decision resource admission.
+
+## Numerical joint readouts
+
+The [F4 contract](../../_spec/ml/native-joint-math.md) checks supplied numerical support and normalizes already aggregated masses once.
+Readout temperatures apply only to a private copy and return means, quantiles, balance and material uncertainty.
+The original joint remains unchanged; no tempered joint escapes for recursive reuse.
+Mask certainty includes all supplied supported states, even states with zero model probability.
+These numerical checks do not authenticate public support, source aggregation, fitted temperatures or native observations.
+The standalone invoice does not establish that history, transitions and all candidate features fit the shared planning budget.
 
 ## Preparation
 

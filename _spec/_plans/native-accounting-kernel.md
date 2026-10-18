@@ -1,6 +1,8 @@
 # F3 — point-source accounting kernels: goals and acceptance
 
-**2026-10-18 · BOUNDED F3 VERIFICATION/REVIEW COMPLETE · d771 v6 PASS:29 COMMANDS / RUST392 / NODE189 / CORE668 · ALL3 CURRENT FINAL REVIEWS READY, FINDINGS NONE · PUBLICATION AUTHORIZED, NOT EXECUTED · trainingReady:false.**
+**2026-10-18 · BOUNDED F3 VERIFICATION/REVIEW/PUBLICATION COMPLETE · d771 v6 PASS:29 COMMANDS / RUST392 / NODE189 / CORE668 · ALL3 FINAL F3 REVIEWS READY, FINDINGS NONE · PUBLISHED29018157 / MATCHED HEAD=REMOTE / CLEAN AT CHECKPOINT · trainingReady:false.**
+
+Lead committed/non-force pushed **29018157e40bb11d558599a21409623bfbec1a83**, `feat(training): add verified point accounting kernels`,16 files,parentbf4d67431d8731b7c69419accece4a63bbd96ba9. Before commit, the460-file current-source identity matched d771; exact16 inventory/navigation/preservation/whitespace checks passed. Actual post-push local HEAD/remote matched and tree was CLEAN **at that checkpoint**, before [F4 goals](native-joint-math.md); this is bounded F3 publication, not F4/readiness proof.
 
 The [accepted contract and reasoning](../ml/native-accounting-kernel.md) owns exact APIs/law, independent support, positive headstock/suffix flow, work schedule and authority/resource exclusions.
 This plan owns delivery, source ownership, acceptance/oracles and the full-gate lock.
@@ -28,7 +30,7 @@ Preserve frozen R3/R4 bodies/Configuration26/Versions21/native engine/labels/pin
 <a id="3-planned-files-and-ownership--not-landed-source"></a>
 ## 3. Actual files and completed source ownership
 
-Both new files/narrow integration were read before freeze. The current complete v6 receipt and ALL3 final READY/no findings supply actual same-input F3 verification/review, not stitched leaves or borrowed F2 proof. Publication remains separate/unexecuted.
+Both new files/narrow integration were read before freeze. The current complete v6 receipt and ALL3 final READY/no findings supply actual same-input F3 verification/review, not stitched leaves or borrowed F2 proof. Publication completed at29018157 with the matched/clean checkpoint above.
 
 | Owner | Actual path/change |
 |---|---|
@@ -97,7 +99,7 @@ d77127d001d2b5a4aa6a40f19f9b4b8a961b68bff798a0507e80f9f42fcf13d3
 | Numeric/work assurance |420 sources/2520 flows/840 standalone supports; exact.125+.125=.25 raw retained fixture, unconditioned totals1±1e−12. Independent fee traces/source audit+safe budget/error observations—not allocator instrumentation/native truth/D1/full-window adequacy. |
 
 This is one actual complete F3 invoice, not arithmetic stitching or borrowed F2 proof. All static/types/warnings-denied lint/fmt/all-targets check/Clippy-Dwarnings/build/selected CPU dependencies/locks/protected tracked+untracked preservation before+after/index40/59/both PUML checkonly+boundsSVG/receipt-time whitespace PASS. Actual Node preflight stdout read `{"version":"v22.23.2","registerHooks":true}`; the exact five notEstablished scopes remain unchanged.
-After PASS the lead explicitly staged all16 F3 paths including4 new files/cached-whitespace PASS and provided full closing capture upfront. Source/config/tests/index/PUML bytes have not changed after PASS; later four-Markdown metadata may be newer than that snapshot and requires final checks/restaging before publication, not a self-hash loop or invented run.
+After PASS the lead explicitly staged all16 F3 paths including4 new files/cached-whitespace PASS and provided full closing capture upfront. Source/config/tests/index/PUML bytes stayed unchanged through publication; later four-Markdown metadata received final source-join/navigation/preservation/whitespace checks and explicit16 restaging before commit29018157, not a self-hash loop or invented run.
 Separate lead preflight PASS, **not extra29 invoice commands**: index45/all44 nontraining entries/top metadata unchanged, covers40/59/source pointers/files agree;22 note bodies byte-unchanged/2–5 lines/max46 columns; PLAN suffix4+ and README first2+suffix6+ unchanged to HEADbf4d; exact4 then-new files/no whitespace and native/legacy/model/Node/config/dependencies/locks/corpus/evidence unchanged.
 
 No concrete source-to-frozen-API/law/work-profile mismatch was identified in the inspected surface. This is not closing review or proof of native truth/fitted qualification/resource/readiness admission. Published F2 bf4d/67a26 proof remains its bounded completed base, not F3 proof.
@@ -108,7 +110,7 @@ No concrete source-to-frozen-API/law/work-profile mismatch was identified in the
 2. **DONE source:** both actual Rust files/API/independent controls and supplied25/254 leaves are recorded above; source handoffs complete, no real native/eligible episode/update or fitted model introduced.
 3. **DONE root/training spec sync:** lib/v6 normal+init metadata/cumulative14 inputs/exact required targets/all F1+F2 guards and stable verifier labels are integrated. Current full-gate validation of40/59/index45 preservation/both syntax+SVG PASS; other44 entries/top metadata remain unchanged. This evidence pass edits none of those frozen inputs.
 4. **DONE full gate:** actual complete v6/native-accounting-kernel PASS29/392/189/668 at matching d771 identity includes all static/tests/dependencies/preservation/index/syntax+SVG checks. Five notEstablished values remain fixed; note/navigation preflight is separate, not extra invoice commands.
-5. **DONE fresh closing; publication authorized/unexecuted:** ALL3 current d771 final F3 read-only reviews READY, findings NONE, complete16-path scope. No F2 approval borrowed. Any source/config/test/index/diagram change requires whole gate again before rereview; Markdown-only status edits require final checks/restaging. Lead will read final docs, join current source d771/navigation/whitespace/protected scope, restage explicit16, commit/non-force push and verify actual remote/clean checkpoint. HEAD remains publishedbf4d until an actual later commit; no future hash is invented.
+5. **DONE fresh closing/publication:** ALL3 d771 final F3 read-only reviews READY, findings NONE, complete16-path scope; no F2 approval borrowed. Lead completed final source-d771/navigation/preservation/whitespace joins/restaging, committed/non-force pushed29018157 and verified actual HEAD=remote/CLEAN checkpoint. No future hash or F4 proof is inferred; later source/config/test/index/diagram changes require their complete gate before rereview.
 
 ## 7. Current state and completion boundary
 
@@ -117,15 +119,15 @@ No concrete source-to-frozen-API/law/work-profile mismatch was identified in the
 | Published F2 prerequisite |DONEbf4d67431d8731b7c69419accece4a63bbd96ba9; bounded F2 proof only |
 | F3 architect/point-law/goals |ACCEPTED / PERSISTED |
 | Static advisories |Backend+DevOps DONE, no contradiction/fork/open user choice; no execution proof |
-| F3 source/test/lib/root |LANDED / ALL SOURCE HANDOFFS DONE, uncommitted |
+| F3 source/test/lib/root |LANDED / ALL SOURCE HANDOFFS DONE / PUBLISHED29018157 |
 | Existing training owner/index sync |DONE38→40, two actual literals/fingerprint null; arena59/other44 entries untouched |
 | Current F3 numerical proof |Accounting25/training254/root32 included in actual whole Rust392, not stitched leaves |
 | Complete v6 gate |DONE/PASS29 commands/392 Rust/189 Node/668 core, present d771 receipt/matching identity |
 | ALL3 fresh F3 reviews |DONE/READY on current d771/v6 source, findings NONE; bounded verification/review COMPLETE, no blocker |
-| F3 review capture/publication |Full16-path scope COMPLETE; PUBLICATION AUTHORIZED, NOT EXECUTED, awaiting final metadata/source join/restage16/commit/non-force push |
+| F3 review capture/publication |Full16-path scope COMPLETE; PUBLISHED29018157, final source join/checks/restaging DONE, actual post-push HEAD=remote/CLEAN checkpoint |
 | Full estimator/belief/features/runtime/authority/readiness |NOT ESTABLISHED / outside F3 completion |
 
-F3 completion will establish identified point-kernel numerical/accounting correctness and its bounded evidence/review/publication, **not** a complete estimator/posterior/publicSupport or training readiness. Full belief/features/software/resource/authority and frozen24k-group belief-fit acceptance remain before separate policy-training approval; learned transfer/admission follows training. Legacy R4/inventory/public-closure/authority stops remain unwaived, and trainingReady:false stays unchanged.
+F3 completion establishes identified point-kernel numerical/accounting correctness and its bounded evidence/review/publication, **not** a complete estimator/posterior/publicSupport or training readiness. Full belief/features/software/resource/authority and frozen24k-group belief-fit acceptance remain before separate policy-training approval; learned transfer/admission follows training. Legacy R4/inventory/public-closure/authority stops remain unwaived, and trainingReady:false stays unchanged.
 
 <a id="current-fresh-f3-closing--verdicts-pending"></a>
 ### Current F3 closing — ALL3 READY, findings NONE
@@ -136,4 +138,4 @@ F3 completion will establish identified point-kernel numerical/accounting correc
 | Security `ses_eb7cb7218ffePBBBS1MqCmBCtM` |DONE `READY TO MERGE:yes`, findings NONE; all16/four new/surroundings scope COMPLETE, current d771 v6 receipt+logs and source inspected; read-only/no commands/edit |
 | DevOps `ses_eb7cb7206ffe1XrslbW4r6OyGq` |DONE `READY TO MERGE:yes`, findings NONE; complete16 scope/current receipt+raw logs and precharge/cumulative source+target inspected, no independent rerun/edit |
 
-The [current16-path capture](../ml/native-accounting-kernel.md#93-current-f3-closing-and-capture) againstbf4d includes all new files and is fully reviewed. ALL3 READY are actual d771 F3 approvals, not old F2 verdicts. Optional malformed-row/budget fuzzing is non-blocking/not executed proof. Publication is authorized but not executed; no actual F3 commit/push, future hash, native-policy training or F4 repo work is claimed.
+The [current16-path capture](../ml/native-accounting-kernel.md#93-current-f3-closing-and-capture) againstbf4d includes all new files and is fully reviewed. ALL3 READY are actual d771 F3 approvals, not old F2 verdicts. Optional malformed-row/budget fuzzing is non-blocking/not executed proof. F3 publication completed at29018157; [F4 goals](native-joint-math.md) now follow that checkpoint, with implementation/tests/gate/reviews/publication pending. No future hash, native-policy training or F4 proof is claimed.

@@ -1,4 +1,4 @@
-' purpose: Point-source accounting, learner math, checked feature seams and economic/native composition beside retained synthetic compatibility.
+' purpose: Numerical joint readouts, point-source accounting, learner math, checked feature seams and economic/native composition beside retained synthetic compatibility.
 ' covers: Cargo.toml
 ' covers: rust-toolchain.toml
 ' covers: packages/training/Cargo.toml
@@ -39,7 +39,9 @@
 ' covers: packages/training/tests/learner_math.rs
 ' covers: packages/training/src/accounting_kernel.rs
 ' covers: packages/training/tests/accounting_kernel.rs
-' status: Accounting/learner/F1/ledger structure lives here; current evidence and review status lives in the related Markdown owners.
+' covers: packages/training/src/joint_math.rs
+' covers: packages/training/tests/joint_math.rs
+' status: Joint/accounting/learner/F1/ledger structure lives here; current evidence and review status lives in the related Markdown owners.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
 ' related: _spec/ml/native-runner.md
@@ -51,6 +53,8 @@
 ' related: _spec/ml/native-learner-math.md
 ' related: _spec/_plans/native-accounting-kernel.md
 ' related: _spec/ml/native-accounting-kernel.md
+' related: _spec/_plans/native-joint-math.md
+' related: _spec/ml/native-joint-math.md
 ' related: _spec/apps/arena/burn-compat.puml
 ' history: native-runner.md owns the completed baseline, not current ledger verification.
 ' history: d250c88e Bun receipt is superseded, not current proof or review eligibility.
@@ -59,7 +63,7 @@
 ' validation: Author runs no tests, renderer or hashes; lead owns the complete unchanged-input invoice and note-box checks.
 @startuml
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Rust point accounting + learner math + feature seams + ledger
+title Rust numerical joint readouts + point accounting + learner math + ledger
 left to right direction
 
 component "apps/arena/src/lib.rs\nRust policy caller" as ARENA <<app>>
@@ -98,6 +102,13 @@ package "Root Cargo workspace\nCargo.toml / one reused Cargo.lock" {
     component "accounting_kernel::accounting_point_support\nPointSupport / exactly 7501 Boolean cells\nNO counts argument / independent reachability" as ACCOUNTING_SUPPORT <<app>>
     component "accounting_kernel::accounting_point_flow\nPointAccountingFlow / exactly 7501 raw masses\npositive headstock+suffix / independent Boolean stock\ncached empty/retained/Z readouts / point output ONLY" as ACCOUNTING_FLOW <<app>>
   }
+  package "F4 pub mod joint_math / numerical DATA only" {
+    component "packages/training/src/joint_math.rs\nNumericSupport::from_cells / NumericCertainty\n7501 supplied mask cells / cached target certainty\nALL true states, including zero-PMF cells" as JOINT_SUPPORT <<app>>
+    component "joint_math::normalize_aggregate / NumericJoint\ncaller ALREADY aggregated + observation-restricted masses\none GLOBAL normalization / owned mask copy" as JOINT_NORMALIZE <<app>>
+    component "joint_math::ReadoutTemperature::from_index\n0..1000 / tau=.25*16^(index/1000)\nchecked numerical index/value ONLY" as JOINT_TEMPERATURE <<app>>
+    component "joint_math::readout_copy\none private N scratch / D577 + potential589 marginals\nfinite-checked compensated means in SAME N pass\nall quantiles checked before exact certain mean" as JOINT_READOUT <<app>>
+    component "joint_math::NumericReadout\nmeans / quantiles [.05,.95,.025,.975]\nbalance / MATERIAL uncertainty\nSUMMARY ONLY / no tempered joint" as JOINT_SUMMARY <<app>>
+  }
 }
 component "apps/arena/src/economic.rs\nhost recipient-history caller\nno recorded-policy verification" as ECO_HOST <<host>>
 component "packages/training/tests/ledger_contracts.rs\npackages/training/tests/ledger_history.rs\npackages/training/tests/fixtures/ledger-boundaries.json\nshared DTO / fold / native-fidelity controls" as LEDGER_PROOF <<app>>
@@ -113,6 +124,7 @@ component "packages/training/tests/feature_input.rs\npackages/training/tests/fix
 component "packages/training/tests/feature_manifest.rs\npackages/training/tests/fixtures/feature-manifest-v3.json\nindependent normative metadata / exact invoices" as FEATURE_MANIFEST_PROOF <<app>>
 component "packages/training/tests/learner_math.rs\nindependent scalar objective / all418 FD\nBurn Flex F64 no-bias oracle TEST ONLY" as MATH_PROOF <<app>>
 component "packages/training/tests/accounting_kernel.rs\nindependent sequences -> distinct tuples -> direct weights\nall 7501 mass/support lanes / safe precharge controls\nunchanged rules golden is STRUCTURAL data only" as ACCOUNTING_PROOF <<app>>
+component "packages/training/tests/joint_math.rs\nindependent direct normalization / SORTED target records\nall 7501 lanes / all 1001 temperatures / exact CDF\ncertainty / bitwise isolation / safe work+error controls\nprivate source unit guards: inconsistent certainty refuses" as JOINT_PROOF <<app>>
 
 ARENA ARROW_MAIN LIB : retained smoke / direct typed Rust call\nno scoring child / no Bun bridge
 RUN ARROW_MAIN COMPOSER : limited AuthorizedView only\nno case / fixture / seed / native image
@@ -179,6 +191,18 @@ ACCOUNTING_FLOW ARROW_MAIN LEDGER_WORK : prior rule fees additional / inspected 
 ACCOUNTING_PROOF ARROW_OPTIONAL ACCOUNTING_SUPPORT : count-independent Boolean oracle / every lane\nstructural reachability, NOT native truth/publicSupport
 ACCOUNTING_PROOF ARROW_OPTIONAL ACCOUNTING_FLOW : independent DIRECT tuple weights, no helper oracle\nraw evidence mass / underflow / exact fee boundaries
 XTASK ARROW_OPTIONAL ACCOUNTING_PROOF : exact nonempty tests/accounting_kernel.rs token\ntwo required kernel files / cumulative F1+F2 controls
+JOINT_SUPPORT ARROW_MAIN JOINT_NORMALIZE : supplied numeric mask / cached certainty\nnot authentic publicSupport or aggregation permission
+JOINT_NORMALIZE ARROW_MAIN JOINT_READOUT : immutable normalized 7501 masses + owned mask\nno input renormalization / bitwise unchanged including -0
+JOINT_TEMPERATURE ARROW_MAIN JOINT_READOUT : log(p)/tau -> max-shift -> exp -> divide\nprivate scratch / preserve zeros / positive underflow refuses
+JOINT_READOUT ARROW_MAIN JOINT_SUMMARY : smallest ascending CDF >= q / no quantile repair\nonly matching cached certainty permits exact integer mean
+JOINT_SUPPORT ARROW_MAIN LEDGER_WORK : SAME caller meter / header128 + full remainder\n210348 total / precharge before allocation and scans
+JOINT_NORMALIZE ARROW_MAIN LEDGER_WORK : 300552 total / length rejects after header128\nreserve before scans, division and owned copies
+JOINT_TEMPERATURE ARROW_MAIN LEDGER_WORK : header128 BEFORE index check / then32 compute\n160 total / no extra allowance or hidden startup
+JOINT_READOUT ARROW_MAIN LEDGER_WORK : header256 BEFORE ownReplacement<=576 / full remainder\n492868 total / exactly 3 allocations / no refund
+JOINT_PROOF ARROW_OPTIONAL JOINT_SUPPORT : set-based ALL-true certainty / zero-PMF states\nvariation irreversible / broad-mask point PMF not certain
+JOINT_PROOF ARROW_OPTIONAL JOINT_NORMALIZE : direct global sum/division / no production oracle\n(.125,.5) -> (.2,.8), not per-source (.5,.5)
+JOINT_PROOF ARROW_OPTIONAL JOINT_READOUT : independent power temperature / SORTED means+quantiles\nunderflow / exact and one-below fees / same-meter refusal
+XTASK ARROW_OPTIONAL JOINT_PROOF : exact nonempty tests/joint_math.rs token\ntwo required joint files / cumulative F1-F3 controls
 
 note bottom of LIB
   The smoke calls Burn in process so its
@@ -294,6 +318,16 @@ legend bottom
   Storage 8034 headstock / 7501 joint / 5x33 Gamma / 8192 rows; reachable J<=609, not617.
   Physical max input may BUDGET-refuse; same caller work retains spent charges, no partial result.
   No kernel-to-host/native-permit/cohort/likelihood/spatial-envelope/collector/calibration runtime edge.
+  F4 checks supplied numeric masks; cached certainty includes ALL true states, independent of PMF zeros.
+  Normalize ALREADY aggregated/restricted masses ONCE; positive outside-mask, overflow or underflow refuses.
+  Readout preserves source joint/mask bits including -0; one private scratch, no recursive tempered state.
+  Quantiles keep [.05,.95,.025,.975] order; means are expectations, uncertainty uses the MATERIAL interval.
+  Cached certainty must match every computed target quantile; exact mean override never repairs quantiles.
+  Finite-checked compensated means share the canonical marginal N pass; 16N is structural, not D1 scalar proof.
+  F4 fees: support210348 / normalize300552 / temperature160 / readout492868, SAME caller LedgerWork.
+  Numeric chain1003928 leaves44648; simple F3+chain1457048 exceeds1M and valid composition refuses Work.
+  Source audit + safe budget/error observations are NOT allocator instrumentation or full runtime fit proof.
+  No joint-math-to-estimator/host/CLI/source-auth/cohort/likelihood/spatial/collector/calibration/runtime edge.
   Verifier notEstablished: full-training-closure / genuine-native-authority / whole-decision-adequacy.
   Verifier notEstablished also includes calibration / training-readiness; private labels remain DOCUMENT ONLY.
   No real training, payout calibration, R4 readiness or activation claim.

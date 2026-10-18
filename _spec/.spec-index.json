@@ -678,7 +678,9 @@
         "packages/training/src/learner_math.rs",
         "packages/training/tests/learner_math.rs",
         "packages/training/src/accounting_kernel.rs",
-        "packages/training/tests/accounting_kernel.rs"
+        "packages/training/tests/accounting_kernel.rs",
+        "packages/training/src/joint_math.rs",
+        "packages/training/tests/joint_math.rs"
       ],
       "fingerprint": null
     },
