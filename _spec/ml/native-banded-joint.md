@@ -1,12 +1,14 @@
 # F8 — owned normalization and categorical banded joints: accepted contract
 
-**2026-10-18 · BOUNDED F8 VERIFICATION/REVIEW COMPLETE · e540 v11 PASS:29/29 COMMANDS /550 RUST /189 NODE /668 CORE · ALL3 CURRENT FINAL F8 REVIEWS READY, FINDINGS NONE · PUBLICATION AUTHORIZED, NOT EXECUTED · trainingReady:false.**
+**2026-10-21 · BOUNDED F8 VERIFICATION/REVIEW/PUBLICATION COMPLETE · HISTORICAL e540 v11 PASS29/550 RUST/189 NODE/668 CORE · ALL3 FINAL F8 READY/NONE · PUBLISHED e3fa7d99 / MATCHED HEAD=REMOTE / CLEAN AT PUBLICATION CHECKPOINT · trainingReady:false.**
+
+Lead reported verified publication **e3fa7d9947d6b631cdd972596949385d5ad8e759**, `feat(training): normalize owned joints and retain categorical bands`,18 files,parent ed4a. Final470-source join e540/whole-v11/ALL3 READY/NONE/exact18/nav/preservation/whitespace/cached checks preceded commit/NON-FORCE push and full HEAD=remote/CLEAN checkpoint. Receipt/capture/read statements below record that historical revision, NOT current temporary-file availability or an Oct21 rerun. [F9 mapping](native-ingress-authority.md) is now MAPPING ACCEPTED/NOT IMPLEMENTED; later plan/invoice/operational gates still block implementation/execution.
 
 The [PR plan](../_plans/native-banded-joint.md) owns sequential authorship, acceptance/oracles and gate order. Both CURRENT accepted external documents were read FULLY:
 - `/tmp/proveo-opencode-runtime-cache-1000-21d690750d3738af14d58c25/tmp/opencode/f8-banded-joint-freeze.md` (54 lines).
 - `/tmp/proveo-opencode-runtime-cache-1000-21d690750d3738af14d58c25/tmp/opencode/f8-banded-joint-addendum.md` (54 lines).
 
-Architect `ses_eb7c5d187ffenpvgElk95FZ8ut` plus Backend/DevOps advice are DONE/compatible, no normative fork/current TUI. Goals preceded authors; handoffs implement the unchanged categorical representation/strict partial domain/private ownership/order/work contract below. The [existing training owner](../packages/training/burn-compat.puml), [current complete F8 proof](#current-f8-evidence) and ALL3 final F8 READY/no findings establish actual bounded same-input verification/review, not stitched leaves/F7 approval. This metadata-only update changes no source/config/tests/index/PUML/normative inputs; publication remains authorized but unexecuted.
+Accepted architect/domain advice, the [existing training owner](../packages/training/burn-compat.puml), [historical e540 evidence](#current-f8-evidence), ALL3 F8 READY/NONE and publication e3fa retain bounded same-input F8 scope. This small publication-status/restoration framing update changes no F8 normative API/math/fees/order/caps or source/config/tests/index/PUML, and claims no newly available receipt/native proof.
 
 ## 1. Actual prerequisite and numerical-only scope
 
@@ -183,7 +185,7 @@ Genuine prior/history initialization/spatial CC+Marine frontier/native publicSup
 
 ## 9. Actual source/root/coverage integration and completed whole gate
 
-NEW actual paths, **HANDOFFS DONE / UNCOMMITTED**:
+F8 actual paths, **HANDOFFS DONE / PUBLISHED e3fa**:
 
 ```text
 packages/training/src/banded_joint.rs
@@ -203,8 +205,8 @@ training-readiness
 ```
 
 After final handoffs, keeper read FULL516-line module/FULL1056-line integration/narrow F4F7 bridges+private controls/root. Prior training owner/index48→50 added exactly two actual literals/null, retaining bridge edges. Arena59/all44 other entries/metadata/stable labels/22 old notes/FK remain preserved; no new note. Categorical ownership graph keeps masks/P0 separate and adds no genuine belief/host/CLI/native permission/init/spatial/encoder/fit artifact/runtime closure edge. Whole-v11 syntax+bounded SVG/index/identity PASS; separate lead preflight confirms45 entries/44 nontraining+metadata/literal50/59+SPEC files/22 byte-unchanged2–5-line notes max46/nav suffix byte-exact ed4a/exact4 new files/whitespace/protected F3F5F6/native/legacy/model/Node/config/deps/pins/data. That preflight is NOT extra29 commands.
-Actual whole unchanged-input e540/v11 PASS preceded ALL3 fresh final F8 read-only reviews, now DONE/READY/no findings on complete18-path scope supplied upfront. Code/config/test/index/PUML fixes require WHOLE repeat before rereview; final metadata/preservation/current-source join/checks/restaging precede authorized, unexecuted publication. Prior F7 approvals/proof remain prerequisites, not F8 approval.
-Current freeze/exact private addendum/Architect+Backend+DevOps advice remain **PERSISTED/ACCEPTED**, categorical NOT Gaussian/strict partial domain/no normative fork/current TUI; API/math/fees/caps/order/tolerance unchanged. Bounded F8 verification/review is COMPLETE: whole29/550/189/668 and ALL3 current final READY/NONE, no LOW or pending review blocker. Handoffs remain uncommitted, publication authorized/NOT EXECUTED. Current pass owns ONLY two F8 Markdown docs/shared nav prefixes; no source/config/tests/index/PUML/F7 docs/normative edits/commands/hashes/renders/agents/Git/template fetch. Later source-identity-excluded Markdown needs lead checks/restaging, not a self-hash loop. Final verdicts arrived through material callbacks, no polling; no future F8 publication hash/native authority/genuine belief/readiness invented.
+Historical unchanged-input e540/v11 PASS preceded ALL3 F8 READY/NONE/complete18, then final470-source join e540/metadata/preservation checks/restaging and publication e3fa. Later source fixes require their whole gate; no current temp availability/new verification/F9 approval is inferred.
+Bounded F8 verification/review/publication is COMPLETE: historical29/550/189/668 + ALL3 READY/NONE + e3fa. API/math/fees/caps/order/tolerance and five exclusions/trainingReady:false remain unchanged. Current F9 mapping-acceptance metadata changes no source/config/tests/index/PUML/normative F8 body or proof scope and grants no F9 implementation/operations/new proof.
 
 <a id="current-f8-evidence"></a>
 ## Current F8 whole-v11 evidence
@@ -232,17 +234,17 @@ ALL old/new required targets are unfiltered/nonempty; zero-test standalone main 
 
 | Current evidence | Actual bounded status / limits |
 |---|---|
-| A/B source handoffs |DONE/uncommitted:516-line banded_joint.rs/1056-line tests/banded_joint.rs; narrow F7 weighted-parts MOVE/F4 owned helpers/private units; lib export/root metadata/identity/target/package+tool READMEs integrated. |
+| A/B source handoffs |DONE/PUBLISHED e3fa:516-line banded_joint.rs/1056-line tests/banded_joint.rs; narrow F7 weighted-parts MOVE/F4 owned helpers/private units; lib export/root metadata/identity/target/package+tool READMEs integrated. |
 | Independent B target |23/23 PASS in actual whole-v11: hardcoded19-band SUM/DIV/MUL BITS/ALL247 components+7501 entries/full conditional zeros/strict partial domain/mask+certainty/no second norm/live-pointer MOVE+detachment/exact work/same-meter Budget. This23 is INCLUDED in412 training, itself INCLUDED in550 Rust. |
 | Final unfiltered training |412 all-target PASS, zero failed/ignored/filtered:379 retained+23 new integration+10 new private units, all INCLUDED in550. Whole fmt/check/Clippy-all-targets-Dwarnings PASS; no extra23/10 added to412/550. |
 | Ten safe private units |3 banded+5 joint_math+2 evidence_tables units defend malformed shapes/domains/NaNInf/empty mask/zero total/positive underflow/strict mass>1/ownership/precharge/typed Budget/no extra DIV. Actual raw private-control rows PASS; invalid fixtures introduce no public unchecked constructor/production observer/unsafe allocator/native admission. Included in412/550, not extra10. |
 | Ownership/savings |Weighted-parts32→owned helper390180 preserves BOTH live heaps, wrapper390340 recomputes canonical TOTAL/ALL-mask certainty. Source removes THREE real old replacement allocations/init/copies/headers, saving120720 versus old510900 helper chain, not a discounted tariff/RSS measurement. Existing support moves through reband; expansion detaches against LIVE banded storage. |
 | Root integration |32 unfiltered tests INCLUDED in550; whole workspace check/Clippy PASS. Shared v11 normal/init five exclusions/two NEW mutation-delete inputs KEEP22/exact nonempty target/ALL29 retained controls are exercised in actual whole-v11, not inferred from leaves. |
-| Whole v11 / current final reviews / publication |WHOLE PASS e540 + ALL3 fresh final F8 READY/NONE DONE; bounded verification/review COMPLETE, no LOW or pending review blocker. Publication AUTHORIZED/NOT EXECUTED/uncommitted; published F7 ed4a/a6f6-v10 proof/F7 approvals are prerequisites ONLY. |
+| Whole v11 / final reviews / publication |Historical whole PASS e540 + ALL3 F8 READY/NONE + publication e3fa DONE; matched/clean publication checkpoint. F7 prerequisites are not F8 proof; F8 is not F9 proof. No current receipt availability inferred. |
 
 Reband129332+248C+28L/max400616, expand210796+32C+16L/max338716, owned wrapper390340, support copy60328/from-normalized120144 NO DIV remain exact. Full-support chain1129672>1M SAME-meter Budget refusal is included in actual whole-v11, not full-window admission/global impossibility. Consuming error may DROP input/no partial output, not rollback/coordinator transaction; borrowed banded models stay unchanged. Source-backed replacement elimination is NOT a tariff discount; source audit+safe pointer/private/error/logical-capacity controls are NOT allocator instrumentation/RSS/D1/full pipeline/runtime-container admission.
 Five exact notEstablished families above/trainingReady:false persist. No genuine belief/native authority/authentic support/codec/artifact/empirical fit/calibration/full estimator/readiness or policy-training/activation/deployment approval. Frozen24k belief acceptance remains pretraining; learned transfer/admission follows training.
-F9's external authority-mapping draft needs exact-text human acceptance; it does NOT block independent F8 verification/closing. No F9 repository docs/source before verified F8 publication, and no planning permit/contract relaxation/capture work is authorized by this F8 handoff.
+After verified F8 publication, the user accepted the exact [F9 mapping](../_plans/native-ingress-authority.md) only. It remains NOT IMPLEMENTED; later scoped plan/invoice/operational approvals are still required. No planning permit/contract relaxation/capture work follows.
 
 <a id="current-f8-closing"></a>
 ## Current F8 closing capture and final review matrix
@@ -258,7 +260,7 @@ inventory SHA256: 4dedebfd065f50b2fa00be45a12b7ff3e3a0c8234d2c1ba04f234a3921edbd
 base-head.txt: ed4aebd233a5d91db2af4d2a6b4cd4470befb744
 ```
 
-Capture byte/hash identities and staging/preflight outcomes are lead-supplied, not keeper-computed. Keeper read18-path inventory/base-head and confirmed18 diff file headers including all new files/both bridges; this is not a claim to reread every captured hunk. Later four-Markdown status may be newer than captured/staged metadata and needs lead final checks/restaging before publication. Markdown is source-identity-excluded; no future self-hash/F8 publication hash invented.
+Historical capture identities/reads/preflight outcomes retain their recorded scopes; no current temporary capture availability is asserted. Final470-source join e540/nav/protected-scope/whitespace/exact18/cached checks/restaging preceded publication e3fa, not a self-hash loop/new run. Historical capture base remains ed4a.
 
 | Fresh F8 reviewer | Session | Actual current verdict |
 |---|---|---|
@@ -267,5 +269,5 @@ Capture byte/hash identities and staging/preflight outcomes are lead-supplied, n
 | DevOps |`ses_eb7cb7206ffe1XrslbW4r6OyGq` |DONE / READY yes / findings NONE; complete18/current v11 raw29/550/189/668/27 binaries/matching e540 identities/reviewEligible; owned prepay/exact allocation/expansion NO DIV/cumulative identity-target guards; no edits/reruns |
 
 ALL3 final F8 reviews are DONE/READY/no findings on the SAME complete18-path scope/PRESENT e540-v11 proof. Material final verdicts are current F8 approvals, NOT older F7 approvals in these sessions. Security/DevOps reported no reruns/edits; reviews add no independent execution proof. Optional strict-domain/underflow/budget property hardening is non-blocking/NOT executed proof; no LOW or pending F8 review blocker remains. Code/config/test/index/PUML changes require WHOLE repeat before rereview; all such bytes stay FROZEN/unchanged after PASS.
-**F8 publication is AUTHORIZED BUT NOT EXECUTED.** Lead will read final docs, actually rehash/join expected470 source inputs to e540, check exact18/no unexpected untracked paths/nav suffixes/whitespace/protected scope, restage18/cached-check, make a meaningful non-amend commit/NON-FORCE push and verify actual remote HEAD/clean checkpoint. HEAD remains published ed4aebd233a5d91db2af4d2a6b4cd4470befb744 until an actual later commit; no future hash/self-hash loop/F8 push invented. No polling/commands/commit/push occurred in this keeper pass.
-Bounded proof/review remains categorical FULL vectors/NOT Gaussian/strict partial domain/ALL mask-P0/no extra norm/owned MOVE/real operation elimination NOT tariff discount/public F4F7 invoices unchanged. Source/pointer/private/error audit is NOT allocator/RSS/D1/window-fit/full estimator/native authority/runtime-container/calibration/readiness or policy-training/activation/deployment approval. Five exclusions/trainingReady:false persist; F9 remains excluded from this F8 snapshot and has no accepted/implemented/operational authority inferred here.
+**F8 publication is COMPLETE: e3fa7d9947d6b631cdd972596949385d5ad8e759.** Lead reported final470-source join e540/checks/restaging/commit/NON-FORCE push and actual full HEAD=remote/CLEAN at that historical checkpoint. No new gate/current receipt availability/hash measurement/Git verification occurred in this restoration.
+Bounded F8 proof/review/publication retains categorical FULL vectors/strict partial domain/MOVE/source-backed savings/public F4F7 fees and its exclusions. No allocator/RSS/D1/window-fit/full estimator/native/runtime-container/calibration/readiness/training approval follows. Five exclusions/trainingReady:false persist; F9 mapping-only acceptance is complete, implementation/operations remain blocked by later gates.
