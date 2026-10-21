@@ -160,3 +160,146 @@ trainingReady: false
 ```
 
 No policy training/activation/deployment, collection/fitting/calibration/model permission, security-posture change, full runtime/container/allocator-RSS/D1/window admission or whole-F9 READY claim. Frozen24k belief acceptance remains pretraining; learned transfer/admission follows separately approved training.
+
+## 10. Preservation-compatible placement — design decision pending
+
+**2026-10-21 · A SELECTED FOR PROPOSED FILE-PLAN DESIGN ONLY / FULL PLAN NOT APPROVED / NO FILE/API/INVOICE APPROVAL / NOT IMPLEMENTED · trainingReady:false.**
+
+The pending decision in this section's title now concerns the complete plan, not another root choice. Executor selected `Isolated tooling (Recommended)` for A, `tooling/native-ingress/`, in the reviewed DESIGN ONLY question. This selects a manifest-free directory direction only; no directory is created and no file is assigned for implementation. The selection ledger below supersedes preselection language in the retained history. Do not repeat root selection or N1–N10 mapping acceptance.
+
+### Current precedence — navigation only, no renewed grant
+
+This appended section supplies the next placement proposal, not a replacement for any preceding bytes or frozen contract. Earlier all-open/H02/PATH NOT RUN statements retain their revision scope. The subsequent [M2 recorded execution — INSTALLED / grant consumed](native-ingress-mise-install.md#m2-recorded-execution--installed--grant-consumed) supplies the later, scoped host-preparation outcome: eight direct children and six postchecks, not recipe acceptance, capture closure or native proof. Host setup is not reopened here.
+
+The M2 grant is consumed. Nothing here authorizes a future installed-root read, stat, hash, log inspection, rerun, build or container operation. No command, observation packet or operation is proposed for execution. The directory selection authorizes development of the PROPOSED file map below only; it does not approve the complete plan, APIs, invoice, implementation or installed-root inspection.
+
+### Preservation and identity facts supplied by lead
+
+These are lead-confirmed source facts, not a new keeper source audit or execution result.
+
+| Existing source/contract | Placement consequence |
+|---|---|
+| `tooling/xtask/src/preservation.rs:10–39` protects all legacy `packages/starchess-arena` paths; `legacy_sources` rejects both tracked and untracked additions. `tooling/xtask/src/lib.rs:308–329` supplies the protected paths to both checks. | Additive files have no exemption. Reject the protected legacy-hermetic candidate; do not move protected code or waive preservation. |
+| `tooling/xtask/src/identity.rs:90–100` recursively includes `apps/arena` and `tooling/xtask`, not an arbitrary sibling under `tooling/`. | Existing v11 identity does not cover option A's new root. Options B/C inherit eligible-file identity inclusion, not execution or test coverage. |
+| `tooling/xtask/src/identity.rs:130–140` excludes Markdown, `.generated`, `target`, `node_modules` and `.git`. | New authoritative inputs cannot live in excluded paths and claim identity coverage. A recursive root alone does not remove these exclusions. |
+| `pnpm-workspace.yaml` selects `apps/*`, `packages/*`, `packages/ui/*`, not `tooling/*`; root `Cargo.toml` explicitly lists `packages/training`, `apps/arena`, `tooling/xtask`. Preservation's root-lock guard at `preservation.rs:69–76` allows no other new importer. | No choice implicitly creates a workspace/package, importer, manifest, dependency or lockfile entry. |
+| `tooling/xtask/src/preservation.rs:154–250` permits exactly the two existing rebuild coverage owners, unchanged other index metadata, null fingerprints, existing literal paths and matching top `SPEC:` comments. | No third owner, phantom coverage or guard waiver. Existing owner diagrams/coverage follow approved actual source, not candidate paths; no index change now. |
+
+Identity coverage is not executable/import closure. Neither identity nor import closure establishes test coverage.
+
+### Preselection history — three design-only placement options
+
+All three retained proposed private Rust ingress at `apps/arena/src/native_ingress/{mod,invoice,decode,runtime}.rs`, followed only later by narrow additive transport/client/CLI integration. None introduces a `packages/training` → `apps/arena` reverse dependency. No directory was selected at this preselection checkpoint; A is now selected for proposed design only. No directory is created.
+
+| Choice | Candidate infrastructure root | Benefit | Cost and required later boundary |
+|---|---|---|---|
+| **A — recommended** | `tooling/native-ingress/`, manifest-free standalone directory | Separates infrastructure software from application code and verification-crate ownership. | Existing v11 does **not** cover this root. A separately named F9 identity must explicitly include all infrastructure source, tests, policy and recipe inputs plus the existing selected graph. Do not silently extend v11 or interpret an old pass as new coverage. |
+| B | `tooling/xtask/native-ingress/`, outside Rust `src` | Existing recursive identity already includes eligible files; avoids a new manifest or identity-root disruption. | Couples runtime-loader/reference infrastructure to the verification crate's ownership. No arena → xtask dependency and no automatic operational tasks in existing `cargo xtask check`; tests do not become automatic. |
+| C | `apps/arena/native-ingress/`, sibling of `engine` | Existing recursive identity already includes eligible files. | Existing TypeScript checking selects only `engine/**/*.ts`, and lint/`test:engine` select only `engine`: no automatic checks for this sibling. App deployment/build-tool coupling and host/model partition risk remain. No existing configuration change is accepted here. |
+
+Selecting any option implies **no** new `package.json`, `Cargo.toml`, `project.json`, workspace/importer/dependency/lockfile entries. Do not duplicate a generic framework to avoid a placement decision.
+
+Read-only preselection advisory disagreement remains explicit: Architect `ses_ea0915043ffeqNmRHEZNTVEVbH` and DevOps `ses_ea091502fffeN0TnkpDNAUqtGc` recommended A for ownership separation. Monorepo `ses_ea0915030ffeVXIXEZKtS6fohu` favored B for minimal manifest/identity disruption while acknowledging verification/runtime coupling. Lead recommended A before Executor selected that directory direction. No unanimous recommendation, complete-plan approval or new review verdict is claimed.
+
+### Proposed concrete file map under selected A — no source assignments
+
+Every path is a future proposal, not a file creation or source-author assignment. This map specifies directional inputs, outputs and responsibilities, not approved Rust signatures, report schemas or invoice coefficients. Read-only backend advisor `ses_ea0834c60ffeZNr9dEcYnmxrqz` supplied the Rust ownership split recorded here. The full file/API/invoice plan remains unapproved.
+
+| Proposed future path(s) | Directional input → output / responsibility |
+|---|---|
+| `tooling/native-ingress/capture.mjs`; `tooling/native-ingress/capture.test.mjs` | Exact independently expected recipe and installed-byte allowlist → bounded captured bytes/provenance evidence. Copy allowlisted installed bytes only; no discovery, acquisition, install or fallback. Tests exercise allowlist/path refusal without claiming actual capture. |
+| `tooling/native-ingress/mixed-closure.mjs`; `tooling/native-ingress/mixed-closure.test.mjs` | Actual selected Rust/Node source and dependency graph → classified closure/partition evidence or refusal. Cover Rust build/generated/native and Node runtime/type-only/reexport edges; fail unsupported edges and host/model leaks. |
+| `tooling/native-ingress/loader.mjs`; `tooling/native-ingress/loader.test.mjs` | Independently expected captured module/runtime bindings plus requested fixed edge → the same checked captured bytes or refusal. Check **and supply the same captured bytes**, never check a path then load unrelated bytes. |
+| `tooling/native-ingress/native-reference.mjs`; `tooling/native-ingress/native-reference.test.mjs` | Fixed independently controlled native initialization and operations → expected native lifecycle data for comparison. Import neither EconomicWorker nor EconomicReplay; never derive expected truth from worker output. Shared native core/projector remains an explicit common-model limitation. |
+| `apps/arena/src/native_ingress/mod.rs` | Checked runtime/session and exact boundary pairs → private expectations/session/initial-input capabilities, atomic checked-pair publication and read-only recipient borrows. Own ONE `FeatureInputPair`: initialize once, advance twice; no second HistoryPair fold. |
+| `apps/arena/src/native_ingress/runtime.rs` | Independently expected captured bindings and fixed launch contract → BOTH worker/reference child custody, clocks, revocation state and explicit both-child close/EOF/reap outcomes. Rust independently checks required actual runtime/session state before authority issuance. |
+| `apps/arena/src/native_ingress/decode.rs` | Bounded ORIGINAL frames using existing envelopes/DTO → parsed data plus EXACT original boundary spans and comparison inputs. Existing typed transport drops those spans; retain them additively rather than reconstructing accepted bytes from JSON. Compare every initial/open/settle/close lane against independent reference data, not worker claims. |
+| `apps/arena/src/native_ingress/invoice.rs` | Concrete selected operations, lengths and authority transitions → disjoint precharge/refusal for parse/retention/copy/compare/bind/borrow/revoke work. New charges compose with existing F1 fees in the same window; coefficients remain unknown and unwaived. |
+| `apps/arena/tests/native_ingress.rs` | Fixed public proof entry and externally observable outcomes → future black-box lifecycle/refusal checks. Do not export authority constructors or import private types to make integration tests possible. |
+| `tooling/xtask/src/native_ingress.rs` | Explicit selected F9 inputs and future applicable verification results → separately named F9 gate result, not authority. Its identity includes all new infrastructure source/tests/policy/recipe inputs plus the selected existing graph. |
+
+Reserve capture Dockerfile, captured bootstrap and recipe/configuration filenames until the exact recipe defines their authoritative inputs and contracts; do not invent or create them now. Authoritative inputs cannot be placed in identity-excluded Markdown, `.generated`, `target`, `node_modules` or `.git` paths and then claimed covered.
+
+### Proposed existing-file integration — narrow, conditional, not edit approval
+
+| Existing future integration path | Only proposed responsibility |
+|---|---|
+| `apps/arena/src/lib.rs` | Declare the private ingress module; no public authority constructor/export. |
+| `apps/arena/src/worker_transport.rs` | Only if needed, add the fixed source-captured launch/raw-frame path and retain exact spans. Preserve original PATH/tsx behavior for legacy callers; no blanket transport rewrite. |
+| `apps/arena/src/economic_client.rs` | Only if needed, carry bounded original frames/spans through the additive captured path. `Transaction::new` must not renew work or time. |
+| `apps/arena/src/cli.rs` | Fixed proof entry only; no caller source/module/executable/model/reference selector. |
+| `apps/arena/src/main.rs` | Narrow dispatch for that fixed proof entry, not arbitrary execution. |
+| `tooling/xtask/src/identity.rs` | Add a DISTINCT F9 identity with explicit infrastructure source/tests/policy/recipe inputs and selected graph. Do not silently change old v11 semantics or reinterpret its old pass. |
+| `tooling/xtask/src/lib.rs` | Narrow additive F9 gate wiring; no operational task added implicitly to existing/default checks. |
+| `tooling/xtask/src/main.rs` | Narrow separately named F9 gate dispatch; no automatic capture, build, container or installed-root operation. |
+
+No arena → xtask import, training → arena reverse dependency, protected-code move, preservation waiver, new manifest/importer/project configuration/dependency or lockfile entry follows. Actual approved source would later use only the two existing diagram/coverage owners, null fingerprints and unchanged other index metadata, with existing literal paths/matching top pointers as required. No planned coverage, third owner, phantom target, diagram or index edit now.
+
+Supervisor/capture tooling may produce evidence only; it cannot issue cross-realm Node authority. Retain one `FeatureInputPair`: initialize once, advance twice. Do not use `analyze_record` as a shortcut or add a second ledger fold. Keep N1–N10/O9, native DTO, Configuration26/Versions21 and the existing nonterminal AFTER-BEGIN gate of `visitR3EconomicInputs` fixed.
+
+Capture/audit/loader/reference outputs remain evidence data, not permission. Private Rust authority has no Deserialize/public-literal/verified-flag constructors and cannot derive from Node identity or JSON reports. Keep private unit controls colocated under `cfg(test)`; fixtures may exercise negative mechanics but cannot supply positive native authority.
+
+Live borrow checks run before/after callbacks and on every accessor. RAII releases on exit/unwind; reject nesting and staging/commit while borrowed. Publish both recipients atomically, and allow only charged immediate identical replay without reissuing facts. Fixed operations retain existing `economic.start`/`economic.open`/`economic.settle`/`economic.close`, standard initialization and the one open/empty-pass settlement; producer worker, EconomicReplay and projector bodies remain unchanged.
+
+### Future verification matrix — NOT RUN, no execution permission
+
+These are proposed verification obligations, not commands or passed checks. Unit/synthetic negatives cannot claim actual capture, loading, initialization or native proof.
+
+| Proposed future verification path(s) | Purpose / claim boundary |
+|---|---|
+| `tooling/native-ingress/capture.test.mjs` | Installed-byte allowlist, path refusal and no-acquisition cases; no synthetic fixture proves actual installed-byte capture. |
+| `tooling/native-ingress/mixed-closure.test.mjs` | Graph reachability and host/model partition rejection across Rust build/generated/native and Node runtime/type-only/reexport edges; retain unsupported-edge stops. |
+| `tooling/native-ingress/loader.test.mjs` | Unknown modules and mutable/substituted inputs; check and supply identical captured bytes, not merely path/digest comparison. |
+| `tooling/native-ingress/native-reference.test.mjs` | Independent, non-worker-golden expectations for cold both-seat initialization/open/empty and small settlements; neither worker nor EconomicReplay oracle. Preserve the shared-core/projector common-model limitation. |
+| `apps/arena/src/native_ingress/mod.rs` · private unit tests | Private session/initial-input issuance refusals, two-recipient atomicity, charged immediate identical replay, callback/accessor live checks, nesting refusal and RAII release/unwind. |
+| `apps/arena/src/native_ingress/runtime.rs` · private unit tests | Expected/actual binding mismatch, fixed-launch refusal, clocks/revocation, child failure and explicit BOTH-child close/EOF/reap/cleanup outcomes. |
+| `apps/arena/src/native_ingress/decode.rs` · private unit tests | Bounded original frames, exact original spans, malformed/partial data and every initial/open/settle/close comparison lane; JSON reserialization cannot replace retained spans. |
+| `apps/arena/src/native_ingress/invoice.rs` · private unit tests | Disjoint precharge and failure-prefix refusal before allocation/read/retention/compare/bind/borrow/revoke effects, after concrete coefficients exist; no window/work/time renewal. |
+| `apps/arena/tests/native_ingress.rs` | Future black-box fixed-entry refusal and actual native lifecycle proof after applicable implementation/operation approvals; no public authority constructors, private-type imports or fixture-derived positive authority. |
+| `tooling/xtask/src/native_ingress.rs`; `tooling/xtask/src/identity.rs` | F9 identity add/delete/mutation detection, nonempty actual targets, current applicable whole gates and unchanged preservation. Identity does not execute loader/reference tests; filtered/unit counts cannot stand in for full proof. |
+
+### Open boundaries — plan freeze versus later proof
+
+- Specify concrete independently observable actual process/image/rootfs/native-library/read-only/full-policy enforcement and actual daemon-used init-byte mechanisms before plan freeze; actual measurements remain later proof obligations.
+- Independent immutable RecipeRef, exact compiler/installed-byte and native-library allowlists, licenses, build/runtime split, selected source graph, peak coexistence and physical resource enforcement.
+- Specify mixed-closure coverage, unsupported-edge handling and the complete host/model partition; satisfy required current source-audit prerequisites without waiving unresolved R4 stops. Actual selected F9 mixed-graph proof follows separately approved implementation and operations.
+- Exact disjoint scalar/byte/allocation coefficients and failure-prefix invoice, not quantities or logical counters standing in for fit.
+- Physical parent/worker/reference envelopes, exact input/output contracts and their interaction with the public invoice.
+
+Directory selection does not require these mechanisms to be proved already; it closes **none** of them. The shared BOTH-seat1048576 meter, existing F1 fees, cold absolute10s, lifecycle300s including3s cleanup and separate generator2048 remain unchanged. No reset, renewal, waiver or budget increase follows.
+
+Before full plan freeze, define auditable mechanisms, input contracts, the exact recipe and invoice, and the required current prerequisites. Later actual F9 mixed-graph/loading/enforcement/native-positive evidence is not a preexisting implementation result. No authority issuer may succeed before its required actual checks pass. This sequencing distinction changes no accepted N1–N10 requirement or current R4 audit stop.
+
+```text
+notEstablished:
+  full-training-closure
+  genuine-native-authority
+  whole-decision-adequacy
+  calibration
+  training-readiness
+trainingReady: false
+```
+
+No data/model collection, fit, calibration, training, activation or deployment grant follows. This pass changes only the two planning documents; earlier host-preparation/install records remain untouched, including any earlier untracked records. Existing owner diagrams/covers await approved actual source; no diagram/index/source/configuration change is part of this proposal.
+
+### Preselection presentation review and choice history — DESIGN ONLY
+
+Read-only Adversarial `ses_ea08a1469ffeSIE5nJsXNt461s` resolved the MEDIUM circular-sequencing navigation finding after the PLAN distinguished pre-freeze design/current prerequisites from later actual F9 verification; no follow-up findings, READY TO PRESENT yes / DOCS READY yes. Security `ses_ea08a1463ffeQfjl7RtMtq9pQ9` found no issues in the proposal or scoped correction, READY TO PRESENT design-only choices yes / DOCS READY yes. These are presentation reviews, not placement selection, implementation approval or execution evidence.
+
+The reviewed preselection question asked which root the lead should develop into a **PROPOSED file plan**; it is retained as history, not a current repeat question:
+
+1. **A · `tooling/native-ingress/` (Recommended)** — separate infrastructure ownership; later explicit, distinct F9 identity inclusion required.
+2. **B · `tooling/xtask/native-ingress/`** — eligible files already fall under recursive identity; accept the verification/runtime ownership coupling as a planning tradeoff.
+3. **C · `apps/arena/native-ingress/`** — eligible files already fall under recursive identity; accept app-tooling coupling and separately plan checks/partition controls.
+
+Choosing a root is not file/API/invoice approval, implementation permission, installed-root inspection or operational authority. The later selection below supersedes this checkpoint's pending root decision. These earlier ADV/SEC reviews covered the preselection proposal; the separate final selection/file-map reviews are recorded below.
+
+### Selection ledger — directory direction only
+
+| Date | Actual selected option | Effective scope | Not granted |
+|---|---|---|---|
+| 2026-10-21 | `Isolated tooling (Recommended)` | A · manifest-free `tooling/native-ingress/`, for development into the PROPOSED concrete file map above; later DISTINCT F9 identity inclusion required. | No complete file/API/invoice approval, source-author assignment, implementation, installed-root access or operations. |
+
+Only directory direction is closed. Exact complete-plan mechanisms, input/output contracts, recipe/invoice and required current source audits remain unresolved; no new mapping acceptance is needed. Actual new F9 mixed-graph/loading/enforcement/daemon-init/native proof follows approved implementation and operations, not a circular requirement to have already implemented the proposal. No issuer succeeds before its required actual checks. No automatic next operational task follows.
+
+Final read-only selection/file-map reviews: Adversarial `ses_ea08a1469ffeSIE5nJsXNt461s` and Security `ses_ea08a1463ffeQfjl7RtMtq9pQ9` reported no findings and DOCS READY yes for this documentation delta only. Neither verdict approves source assignment, implementation, installed-root access or operations. Lead's local scope/preservation/identity/link/whitespace checks passed; runtime tests were not rerun for this Markdown-only change.
