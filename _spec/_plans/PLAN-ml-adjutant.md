@@ -1,3 +1,13 @@
+## Current continuation — F9 bootstrap correspondence (2026-10-22)
+
+**[Unverified] Planning update only:** baseline `6c146887`, user-approved branch `docs/f9-bootstrap-correspondence`. The [TS-to-Rust audit](native-ingress-ownership.md#15-ts-to-rust-bootstrap-correspondence-and-remaining-gates) identifies an existing restricted TS bootstrap base case, not an accepted Rust constructor, fee or Native authority. TS initial3072 plus successful admission512 must not become a portable F9 tariff; source/test inspection establishes no new runtime PASS.
+
+**Next contract freeze:** specify exact Rust construction/private-owner operations, disjoint bootstrap/first-gate/failure coverage and one-owner enforcement. Preserve ordinary `LedgerWork` failure semantics and existing shared-counter F1 fees; put absorbing F9 revocation in the proposed private lifecycle, not a replacement meter. Accounting admission grants no PlanPermit/A2 or Native permission.
+
+**Preparation and time remain OPEN:** [sealed-launch §15](native-ingress-sealed-launch.md#15-preparation-classification-and-original-launch-clock) distinguishes reusable fixed-software preparation from launch-causal memfd materialization. No automatic fee exemption or earlier-time exclusion follows. Freeze the registered recipe, qualified original clock/gates, actual closure/custody/full-policy/init checks, disjoint invoice and aggregate envelopes before full-plan/implementation approval. Preserve cold10s, lifecycle300s including3s cleanup, inclusive1_048_576 and separate generator2048. Live handoffs require continuing validity; final audit success requires the prescribed close/EOF/reap evidence.
+
+This three-plan update changes no protected bf38/D1/B1/O9 body, source, test, dependency or runtime permission. Earlier publication and UNCOMMITTED labels below retain their checkpoint scope. Documentation publication/PR authorization is separate from implementation and operational approvals; all consumed installed-root/proc/receipt/daemon grants remain consumed. `trainingReady:false`.
+
 ## Current continuation — F9 sole-owner contracts (2026-10-21)
 
 **Latest publication complete:** committed and non-force pushed `ae80f3c8e773f090553d53cf5ab381b93b76d956`, four planning Markdown files/1460 insertions. Actual remote HEAD/local tracking matched and the worktree was clean at that checkpoint. The181 network-free diagnostic mocks passed; publication repeated no daemon or installed-root operation. New planning below follows that commit and is not included in it.

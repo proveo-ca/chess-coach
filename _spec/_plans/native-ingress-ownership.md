@@ -540,3 +540,83 @@ Preparation classification is PROPOSED, NOT ACCEPTED. Any pre-owner owed public 
 DIRECT remains ONE inclusive1_048_576 counter for BOTH seats and unchanged F1 plus all owed public work, with original cold10s/lifecycle300s/reserved3s cleanup and separate generator2048. Exact dependency/interface approval, source/native graph, installed-byte/static-artifact recipe, fees and finite physical envelopes precede code/build/full-plan freeze. Source/API research is not installed-cache, kernel/configuration, custody or runtime qualification.
 
 The four existing continuation drafts remain retained; this new dossier makes five-draft scope including the parent-owned PLAN prefix. No previous publication, consumed M1/M2/query/receipt grant, accepted bf38 mapping or model/program bytes change or renew. No new model/script/test/hash/source read or runtime probe ran. The original arithmetic fence, its5017 bytes/190 lines and historical561348 assertions retain their old scope. All five exclusions and `trainingReady:false` remain. Parent handles PLAN navigation and review; no automatic publication follows.
+
+## 15. TS-to-Rust bootstrap correspondence and remaining gates
+
+**[Unverified] 2026-10-22 · SOURCE AUDIT DOCUMENTED / NOT RUNTIME QUALIFIED / NO F9 RUST BOOTSTRAP FEE OR CONSTRUCTOR SELECTED · trainingReady:false.**
+
+### 15.1 Authorization, baseline and correction
+
+Executor selected `Audit coverage (Recommended)`, then authorized three planning-document updates, not a policy exception.
+Parent owns the PLAN-prefix update; this appendix and [sealed-launch §15](native-ingress-sealed-launch.md#15-preparation-classification-and-original-launch-clock) own the two dossier additions.
+The supplied source baseline is `6c146887`; the user-approved documentation worktree is `/tmp/opencode/f9-bootstrap-correspondence`, branch `docs/f9-bootstrap-correspondence`.
+Earlier UNCOMMITTED/unpublished labels describe their prior checkpoints, not current publication proof.
+Parent handles subsequent review and authorized Git/publication steps; this appendix asserts no completed verification, publication or PR outcome.
+
+Supplied source-audit advice comes from Architect `ses_e9dcf2e92ffekmMxRwwSm277dY` and Backend `ses_e9dcf2e91ffeIDkPqyqm1MqgB5`.
+The keeper did not execute the cited source or tests; SOURCE INSPECTED below describes supplied audit evidence only.
+The earlier assertion that a bootstrap root base case necessarily needs invention was too broad: the TS source already supplies a concrete private construction/admission base case.
+That correction does not make TS B1 automatically valid for Rust or select its fees, constructor or authority boundary for F9.
+No agent selected a new bootstrap root; the architect's earlier `Selected` wording was withdrawn, not a human decision.
+Root A and DIRECT retain only their existing design-selection scope; the exact Rust bootstrap mechanism remains OPEN.
+
+### 15.2 Supplied TS source facts — not transferable authority
+
+All TS paths in this subsection are relative to `packages/starchess-training/`.
+
+| Source anchor | Audited fact / limit |
+|---|---|
+| `src/economic/invoices.ts:21–26` | Bootstrap2048 + gate512 + closure512 =3072. These TS constants are not selected F9 Rust coefficients. |
+| `src/economic/ownedKernel.ts:374–382` | The actual private constructor initializes used from that source constant, without a prior ledger debit, in private UNADMITTED state. This is the TS construction base case, not general caller-provided credit. |
+| `src/economic/ownedKernel.ts:385–388` | Successful admission adds512, producing3584. Neither3072 nor3584 is the whole F9 cost. |
+| `src/coordinator/constructionAccounting.ts:90–98`; `src/economic/accountingPrimitives.ts:16–21` | `reservePrimitive(0,3072)` uses validated arithmetic. It is not transferable paid credit or permission to adopt UnboundStorage; B1 prohibits that adoption. |
+| `src/coordinator/sourcePolicy.ts:15–19` | The policy constrains the exact TS constructor/module/importer/types. Those TS source restrictions do not establish Rust cross-crate privacy. |
+| `src/coordinator/planningScope.ts:64–80` | TS planning checks authorization permit, source and model before construction. This is TS PLAN scope, not an F9 PlanPermit or authority import. |
+| `src/coordinator/sourceBootstrap.ts:252–262,282–285` | Explicit `RUNTIME_IMAGE_BINDING_UNSUPPORTED` occurs before source-seal publication. Positive runtime-image binding is NOT qualified. |
+| `src/__tests__/planningLedger.test.ts:40–60,149–166,181–189` | SOURCE INSPECTED, NOT EXECUTED. These test anchors establish no new PASS or Native-runtime evidence. |
+
+### 15.3 Correspondence — existing code versus F9 obligation
+
+| Concern | Existing TS / existing Rust | Remaining F9 contract |
+|---|---|---|
+| Construction root | TS private3072 initialization above; Rust `packages/training/src/ledger/work.rs:34–70` starts used0. | Specify exact Rust operations and one nonduplicable owner construction/debit base case. No automatic3072 port, caller-selected used/cap or exec restoration. |
+| Ordinary charge | TS construction does not redefine Rust `work.rs:61–70`: failed charge leaves used unchanged and does not poison the primitive. | Preserve that public API; a failed F9 wrapper revokes independently and retains successful prior expenditure. |
+| F1 lending | Rust `packages/training/src/feature_input.rs:98–133` takes the same mutable counter; existing ENTRY128 and other F1 fees remain. | BOTH seats share ONE inclusive1_048_576 allowance. Each bounded N5 replay owes its existing charged-replay fees; do not double-bill covered work within an invocation or renew logical slots. No root-bootstrap inference follows. |
+| Private host boundary | TS constructor/import graph is source-constrained; Rust private fields are not a cross-crate friend mechanism. | Audit the actual closed graph and one-time creation. No constructor API is selected; do not assign training a public constructor or treat arena `pub(crate)` as friendship. |
+| Admission | TS PLAN authorization/model checks are not F9 authority. | Check independent expected source and actual runtime evidence; no PlanPermit/A2/model-history gate port. Accounting alone grants no Native authority. |
+| Absorbing failure | Non-poisoning `LedgerWork` remains unchanged. | Wrapper failure preserves spent work, blocks normal work/new loans and permits only bounded, already-covered mandatory cleanup; no replacement allowance. |
+| Live staging | Proposed `NativeActive` loans are live before close, not post-close audit objects. | Validate every read and before/after callbacks. A late postcheck rejects future/staged publication, not prior reads or private F1 state through imaginary rollback. |
+| Close | F9 still requires exact EOF/reap before FINAL audit acceptance. | Revoke/quiesce before wait/reap; do not move all live handoff after closure. Forced teardown is not positive clean-close proof. |
+| Original clock | `apps/arena/src/economic_client.rs:70–90` creates fresh resources/now+10s; `apps/arena/src/economic.rs:711–719` replaces them per window in the legacy path. | Legacy behavior is not F9 renewal permission. Bind the original launch origin through all required live gates. |
+
+### 15.4 Disjoint invoice and boundary still to freeze
+
+| Invoice partition | Required coverage, not a new fee schedule |
+|---|---|
+| Root/control construction | Account once for construction/debit, first gate and bounded failure coverage; specify the base case before effects. |
+| Actual runtime binding | Cover actual FD type, seals, length, digest, dev/inode, source comparison and copies, distinct from artifact preparation. |
+| Additional control/staging/publication | Cover each additional check, bounded read/copy and staging/publication operation without overlapping another partition. |
+| Existing F1 | Retain the old F1 schedule separately and lend the SAME counter; do not bill its work twice. |
+| Closing/failure | Cover actual mandatory close/failure work before effects; reserve physical cleanup time without creating free public work. |
+
+These partitions select no coefficients, free credit or complete1M/physical-fit claim.
+Do not invent a new global exception unless an exact proposed operation demonstrates a concrete conflict requiring human decision.
+Closed loading/source graphs, trusted artifact/host/kernel/launcher premises, actual Node custody, full policy/init and continuing checks remain independently required.
+
+### 15.5 Remaining gates and future tests — NOT RUN
+
+Freeze exact Rust bootstrap operations/private boundary, source-audited disjoint invoice/first-failure coverage, safe clock/custody mechanisms and bounded recipes/envelopes first.
+Bring consequential choices to Executor when concrete options are ready; no pending choice is needed to document these OPEN obligations.
+Full-plan review, exact implementation approval and operational approval remain separate gates.
+
+| Future verification family | Required refusal / continuity case — NOT RUN |
+|---|---|
+| Owner uniqueness | Duplicate owner, caller-supplied used/cap and exec restoration yield no substitute authority. |
+| Refusal semantics | Failed charge revokes the wrapper while leaving ordinary `LedgerWork` semantics and prior expenditure unchanged. |
+| Shared F1/replay | Both seats and bounded immediate replay use one counter; charge each replay's existing fees without double-billing its covered work or renewing logical slots. |
+| Actual identity | Same hash with wrong dev/inode fails; descriptor claims cannot replace actual binding. |
+| Live borrow/staging | Expiry and late postchecks prevent final staged acceptance without claiming rollback of prior reads/private state. |
+| Lifecycle | EOF/reap and launch/load timing remain under the original origin, including failure cleanup. |
+
+Preserve accepted bf38/D1/B1/O9, N1–N10, inclusive1_048_576, cold10s, lifecycle300s including reserved3s, separate generator2048, unchanged F1, gameplay gas/minerals/H1 and native DTO/protocol/Configuration26/Versions21 labels.
+All five exclusions remain; no collection, fitting, training, activation or readiness follows. `trainingReady:false`.
