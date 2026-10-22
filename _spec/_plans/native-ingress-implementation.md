@@ -667,3 +667,22 @@ Root code, safe APIs, whole-B accounting, protection/source obligations and late
 All old M2/root/log/receipt/proc/daemon/query grants remain consumed; source publication creates no controls and renews no read permission.
 Preserve the same five exclusions, accepted BAF3476/17, protected bf38/D1/B1/O9, all old prefixes, BOTH-seat1_048_576/F1/replay, existing clocks/caps/fees and all source/config/test/dependency targets.
 The parent owns the four-file documentation batch, PLAN prefix, checks/reviews and authorized publication without merge; this keeper appends these two sections only and runs no commands/tests/hashes/agents/web or operational reads.
+
+## 23. Current prerequisite STOP — host context remains open
+
+**[Unverified] Supplied execution record / ORDINARY_HOST_PREFLIGHT_ONLY / PARTIAL_STOP / EXACT_GRANTS_CONSUMED / trainingReady:false.**
+[The outcome](native-ingress-current-prerequisites-outcome.md) preserves the exact copied JSON, approval/command bindings and retained-control paths; [ownership §24](native-ingress-ownership.md#24-current-prerequisite-attempt--partial-metadata-and-consumed-grant) records authority boundaries.
+Actual human choices were `Trusted residual (Recommended)` followed by fresh exact `Approve once (Recommended)`; the approved whole proposal remains byte-for-byte frozen, including historical pending labels.
+The administrative call returned fixed OK and normal tool completion; source gates support in-invocation control creation/verification, not an independent native exit/FD/clock receipt.
+The subsequent exact controller call returned `MISSING_PARTIAL`/`TARGET_MISSING` and explicit exit2; both calls reported no stderr or timeout, and each requested outer5000ms with W cwd/empty environment.
+The fourth lstat reported ENOENT at the current M candidate after three directory prefixes; seven suffix targets and M statfs were not observed, and no Rust binary usability was tested.
+W space DATA is neither quota nor reservation; readonly null/API_NOT_AVAILABLE supplies no immutable backing, and Node reader DATA does not qualify runtime identity or later availability.
+Actual echoes lstat4/statfs1/euid1/release1/clock17 do not change the eleven/two filesystem maxima or establish native entry counts, elapsed time, RSS/CPU, isolation, source closure or exec flags.
+This attempt proves no deletion/global absence, historical M2 invalidity, different namespace, current C/daemon/cohost relation, protected root, snapshot or L artifact.
+PREP and OBS grants are consumed even on exit2; no retry/fallback, new observation, retained-control inspection/deletion/execution or old-root/proc/log/receipt/daemon access follows.
+Prior source/static checks are not Native positives; the ordinary-host partial result is STOP, never a prerequisite success/PASS or source/native authority.
+The next dependency is intended host/root/spec context: A operator handoff is architect recommended without SSH/probe/connectivity authority; B fresh current-context preparation is PROPOSAL ONLY with new exception/inputs/allowlist/offline closure/exact approvals; C pauses observations while existing source-only clock/domain work may continue.
+No such question has been asked or answered, and no actual host or preparation mechanism is selected; the parent asks after documentation checks/reviews/publication.
+Root B numeric/invoice/guard/source/clock, actual loading/protection/custody and every Native qualification gate remain OPEN; no network/install/capture/build/F9-runtime permission follows.
+Keep accepted BAF3476/17, bf38/D1/B1/O9, source470e540, ONE BOTH-seat1_048_576, F1/replay, cold10s/lifecycle300s including reserved3s and generator2048 unchanged; all five exclusions stand, L is unwritten, candidates remain null, nativeAuthorityfalse/trainingReadyfalse.
+This four-file documentation persistence changes no source/config/corpus/tests/manifests/diagrams/index; the keeper ran no commands/tests/hashes/agents/network or operational reads and creates no new verification/publication claim.

@@ -1060,3 +1060,21 @@ Source publication does not materialize controls; authoring, fence hashing, stdi
 Defer every observation-success flag to actual approved observations; metadata status is not Native proof, and `trainingReady:false` remains unconditional here.
 Preserve all five exclusions, accepted BAF3476/17, protected bf38/D1/B1/O9, every old prefix and all source/config/test/dependency targets; this appendix assigns no implementation.
 The parent owns the four-file documentation scope, PLAN prefix, checks/reviews and authorized publication without merge; this keeper appends only ownership §23 and implementation §22 and performs no commands/tests/hashes/agents/web or operational access.
+
+## 24. Current prerequisite attempt — partial metadata and consumed grant
+
+**[Unverified] Supplied execution record / MISSING_PARTIAL / TARGET_MISSING / PREP_AND_OBS_CONSUMED / trainingReady:false.**
+Executor selected `Trusted residual (Recommended)`, then approved the fresh exact one-shot packet with `Approve once (Recommended)`.
+The binding is frozen proposal SHA-256 `fdfed77ba7dbfb397100811bd040146f44d7d3ff76d78a7396e88d57af60d963` and administrative-command SHA-256 `a094b3de7cc5cfb3ac8d0f31dd3f29ffd95d2afadd613ad4cbe9fc6d82c0c0a5`; [the outcome](native-ingress-current-prerequisites-outcome.md) records registry paths and copied output.
+Keep the whole approved proposal unchanged forever as the approval artifact; its pending labels are historical only for this completed attempt, not renewed authority.
+Scope was three Node invocations, empty environment/W cwd and requested outer5000ms per call; ordinary trusted startup/time/path residuals do not relax Native criteria.
+The exact administration returned normal tool completion and fixed `F9_PREPARE_NODE_V1_OK\n`, with no stderr/timeout reported; its source profile creates and immediately verifies both controls before selecting code0, not an independent native exit receipt.
+The exact observation returned copied JSON and explicit tool exit2, with no stderr/timeout reported: three observed directory prefixes, fourth lstat ENOENT at M, seven targets unobserved, W statfs only.
+Source-call DATA echoes lstat4/statfs1/euid1/release1/clock17; eleven-lstat/two-statfs maxima stand, and neither counts nor requested timeout establish native entries or elapsed time.
+The missing candidate proves no global absence, deletion, historical M2 invalidity, different namespace, C/daemon relationship or capture root; readonly null/API_NOT_AVAILABLE proves no protection.
+Both one-shot grants are consumed, including nonzero2; no retry/fallback or probing elsewhere follows, and no outside reread/stat/hash occurred after execution.
+Preserve `/tmp/opencode/f9-current-prereqs-reader-01.mjs` and `/tmp/opencode/f9-current-prereqs-controller-01.mjs` without read/stat/hash/delete/exec absent a fresh grant; no runtime result/sink/receipt file was created.
+All old installed-root/proc/log/receipt/daemon permissions remain consumed; no network/install/capture/build/F9-runtime permission or source/config/corpus change follows.
+The next context question is not yet asked or answered: operator host/root/spec handoff (architect recommended, no SSH/probe grant), fresh current-context preparation PROPOSAL ONLY with new gates, or pause observations for existing source-only clock/domain work.
+No target host or new preparation mechanism is selected; [implementation §23](native-ingress-implementation.md#23-current-prerequisite-stop--host-context-remains-open) keeps root B/invoice/guard/source/clock and all Native gates open.
+Preserve every old byte/prefix, accepted BAF3476/17, bf38/D1/B1/O9, source470e540, ONE BOTH-seat1_048_576/F1/replay, cold10s/lifecycle300s/reserved3s/generator2048 and all five exclusions; L remains unwritten and all candidates null/nativeAuthorityfalse/trainingReadyfalse.

@@ -1,3 +1,11 @@
+## Current continuation — prerequisite partial STOP, exact grants consumed (2026-10-22)
+
+**[Unverified] Supplied actual outcome:** fresh `Approve once (Recommended)` bound the frozen proposal and administrative command after `Trusted residual (Recommended)`. [Outcome](native-ingress-current-prerequisites-outcome.md) preserves exact bindings and copied JSON; the whole approved proposal stays byte-for-byte unchanged, and earlier pending labels are historical for this attempt only.
+
+**Completed once, not PASS:** administration returned normal tool completion plus fixed OK; observation returned `MISSING_PARTIAL`/`TARGET_MISSING` and explicit exit2 after three directory prefixes and fourth-lstat ENOENT at M. [Ownership §24](native-ingress-ownership.md#24-current-prerequisite-attempt--partial-metadata-and-consumed-grant) marks both grants consumed; no retry, fallback, old-grant renewal or retained-control access follows. No independent native receipt, actual elapsed time, protected root, snapshot or L artifact is established.
+
+**Next context gate, not yet asked/selected:** [implementation §23](native-ingress-implementation.md#23-current-prerequisite-stop--host-context-remains-open) distinguishes operator host/root/spec handoff (architect recommended, no SSH/probe grant), fresh current-context preparation PROPOSAL ONLY with new exact gates, and pause observations/source-only clock/domain work. No host/mechanism, network/install/build/capture/F9 runtime permission or Native relaxation follows. Preserve accepted BAF3476/17, bf38/D1/B1/O9, source470e540, ONE BOTH-seat1_048_576/F1/replay, cold10s/lifecycle300s/reserved3s/generator2048 and all five exclusions; `trainingReady:false`.
+
 ## Current continuation — current-namespace Node prerequisite proposal (2026-10-22)
 
 **[Unverified] Proposal context selected, no observation approved:** Executor selected `Current prerequisites (Recommended)` and required Rust/Node only; the [new packet proposal](native-ingress-current-prerequisites.md) uses Node built-ins with no dependency installation or Rust build. [Ownership §23](native-ingress-ownership.md#23-current-namespace-prerequisite-proposal--node-only) limits the target to the current agent/sandbox namespace. This establishes neither the future C/daemon host relationship nor a protected capture root or unwritten L artifact.
