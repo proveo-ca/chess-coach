@@ -367,3 +367,66 @@ The new transport carries DATA ONLY. Register expected C/source and bind actual 
 K, suspend/namespace semantics, safe clock API, private frame ABI and exact safe handoff remain unapproved; no Node protocol change, unsafe FromRawFd/pre_exec, new observer, mount, capability or fallback follows.
 [Implementation §19](native-ingress-implementation.md#19-progress-only-origin-acquisition-and-symbolic-invoice-bounds) specifies conditional bounds; [mechanisms §17](native-ingress-mechanisms.md#17-single-invocation-pipe-primitives--source-level-bounds) separates one libc invocation from kernel restarts.
 Parent owns review/verification and PLAN/publication; this appendix claims no run or qualification. No source/dependency/target change or operation follows; all five exclusions remain, `trainingReady:false`.
+
+## 19. C-to-L-to-O descriptor lifetime contract
+
+**[Unverified] 2026-10-22 · PROPOSED FIVE-STAGE LEDGER / STANDARD-SLOT DIRECTION ONLY / BOOTSTRAP + INHERITANCE + SOURCE UNQUALIFIED · trainingReady:false.**
+
+[Ownership §21](native-ingress-ownership.md#21-standard-slot-profile-selected--descriptor-roles-not-abi-qualification) records the actual human choice and E/R/W/P/Q/X/A/S vocabulary; earlier candidate-only profile labels retain checkpoint scope.
+This ledger states required behavior, not implemented source, accepted Rust signatures, selected target files or a qualified inherited-FD mechanism.
+
+| Stage | Required descriptor/phase contract | Unresolved qualification / refusal |
+|---|---|---|
+| 1 — declared root / prepare | Independently fix source/E expectations and C trust. Capture S0 once BEFORE applicable per-launch materialization, pipe creation, L/O loading and root entry. Qualify actual sealed O ELF length/hash/backing before use; only independently classified reusable preparation may precede S0. | No Native/counter credit arises. Actual L immutable backing, safe C spawn and every N3 loader/read-only native graph remain unselected/unqualified. |
+| 2 — origin production | Create fresh R/W with R live; one scalar write requests trusted N. ONLY Ok(N) proceeds; close ALL W before L spawn. C/L never read or prefetch R. | ANY partial/error consumes the attempt: no L/O launch, replacement pipe, second write or recaptured S0. Capacity, restart, latency and exact source/producer binding remain separate prerequisites. |
+| 3 — C configures L | Prospective safe Command uses explicit `.stdin(Stdio::from(R))`, `.stdout(Stdio::from(safe_owned_clone(E)))`, `.stderr(Stdio::piped())`. C retains actual Child, actual ChildStderr P and E only under declared artifact custody. | This is a candidate configuration for L, not the legacy CLI. Safe clone/conversion/spawn source, all aliases and actual child-pipe endpoint closure need proof. |
+| 4 — L replaces itself | Borrow actual binding1 through Stdout AsFd, safely clone X≥3 with CLOEXEC, qualify its same-object relation/flags, then safe nix `execveat(&X, empty CStr, fixed argv/env, AT_EMPTY_PATH)`. | Exact source/cfg must qualify dup2/collision cases, intentionally non-CLOEXEC1 and X distinct/CLOEXEC. Success replaces L; failure yields no O or restored state. |
+| 5 — O enters / binds | Dedicated application entry reaches guard/new used0/first fixed B debit/accounting-only gate BEFORE args, stdio or public data access. O then ordinarily prepays origin/self-binding, adopts A and inspects actual1/S. | No first stdio access, clone, metadata, helper allocation, read or parse belongs before B or its additional ordinary quote. Source/root proof and prices remain open. |
+
+### 19.1 C configuration, aliases and inherited descriptors
+
+Moving a typed handle into Command configuration is not proof that spawn consumes/drops the stored descriptor.
+Drop Command/configuration after EITHER spawn result; prove elimination of parent R aliases and report-writer Q references through the selected std spawn implementation.
+C must never consume R even while an alias remains. Origin W and report Q belong to DIFFERENT pipes; report EOF is not origin EOF.
+Qualify actual parent/child report-end closure; retain P and the actual Child rather than substituting a PID or serialized custody report.
+Standard Command does not promise to close every ambient descriptor. Inventory each FD across BOTH exec boundaries: close it or prove CLOEXEC, except intended profile0/1/2.
+Qualify the initial launcher/filter against the independent source graph; no safe close-all API has been selected.
+O's prepaid post-B descriptor enumeration/rejection before Native is useful detection, NOT retroactive proof of preemptive inherited-FD absence.
+If complete inheritance/source proof is unsupported, STOP. Do not invent raw close loops, unsafe adoption, credential/cache-FD exemptions or a new proc/capability grant.
+
+### 19.2 L executable transition and physical classification
+
+Stdout's first access MAY allocate; classify and bound it as L native physical work or owed public work, never infer allocator freedom from AsFd.
+The supplied safe nix execveat wrapper allocates argv/env pointer Vecs even for fixed caller arrays; audit the effective captured exec scope and every failure prefix.
+Any owed public L operation before O's counter exists means STOP before effects, not a later O invoice or serialized paid credit.
+No caller unsafe fork/pre_exec/FromRawFd, proc-owner-exec fallback, counter/F1 snapshot or restored owner is permitted by this direction.
+Successful exec closes X through qualified CLOEXEC while intended0/1/2 survive. C's actual Child tracks L→O ONLY under the qualified launch graph.
+That Child is never, by itself, custody of either actual Node. Legacy Node protocol/standard streams remain unchanged.
+C retains S0 across exec; L contains no active meter or F1 state. All C/L loading/setup/resources remain inside finite original-clock envelopes.
+
+### 19.3 O ordinary paid acquisition and actual binding
+
+Candidate safe adoption is stdin AsFd → try_clone_to_owned → PipeReader From<OwnedFd> for A; this proves ownership only, not pipe/readability/provenance.
+Original0 remains an unread alias. Forbid competing consumers, buffered Stdin reads and prefetch; O uses only the qualified unbuffered A path.
+[Implementation §19](native-ingress-implementation.md#19-progress-only-origin-acquisition-and-symbolic-invoice-bounds) owns the scalar progress-only N fill plus one EOF probe, ≤N+1 source calls and requested-extent proof; do not substitute hidden retry/completion helpers.
+Candidate binding adoption is Stdout AsFd1 → owned clone → File From<OwnedFd>, used only for paid metadata and read-side binding.
+Bootstrap source checks may inspect self/producer under allowed CLOCK_UNBOUND prepaid operations; do not require fully bound ClockContext BEFORE the checks that establish it.
+Qualify actual1 object type, WRITE/GROW/SHRINK seals, length/hash and dev/inode against S's actual `/proc/self/exe` object and independent expected E/source graph.
+The O_RDWR memfd can remain O_RDWR after cloning. Use qualified same-FD read_at or an exclusively controlled cursor, with short-read/loop costs covered; duplication creates neither independent offset nor O_RDONLY.
+Clock binding requires actual C/owned launch/source/channel and same qualified domain, not EOF, timestamp shape, matching tags or a source flag.
+Construct NativeReplaySession only after required actual source/loading/clock/custody/full-policy/daemon-init checks. Construct NativeInitialInputs only after the relevant actual canonical initialization and independent reference/boundary checks, then lend those inputs to F1 on the SAME counter. Parsed fields or serialized values never construct positive clock/Native controls.
+Never write stdout1 on ANY path. Report2 carries bounded private DATA only after applicable precharge, not arbitrary diagnostics or an authority-bearing report.
+Audit root exit, system errors, panic and report paths across the full source graph; an intended report schema alone cannot constrain incidental stderr writes.
+
+### 19.4 Explicit close and final completion
+
+Inventory and precover explicit close/drop effects for owned A, S, temporary X where present, executable clones, report writers and every other owned artifact handle.
+L's X closes on successful exec; error paths still need qualified closure. Audit every report-writer alias so C's P can reach real EOF.
+Dropping a local clone does not close global standard originals0/1/2; close them through a qualified explicit lifecycle or process exit and include those effects.
+Unknown close/drop/allocation/failure effects and source counts must be frozen BEFORE code approval; OwnedFd alone supplies no complete lifecycle proof.
+Normal close quiesces loans, performs paid close and permanently revokes BEFORE wait/reap. Failure absorbs, retains spent work and allows only bounded precovered mandatory cleanup.
+Only actual canonical/Node/source/scope/full-policy/init/custody/reference/F1 checks plus BOTH actual Native endpoints' close/EOF/reap can support FinalAudit.
+C separately requires O exit, report EOF and actual reap under original S0; C's Child/report is not the Node completion barrier.
+Original cold10s/lifecycle300s including reserved3s and separate generator2048 remain unchanged; no new grace, CPU/memory allowance or postcheck rollback follows.
+[Mechanisms §18](native-ingress-mechanisms.md#18-reviewed-handoff-apis-and-c-to-l-bootstrap-gap) records supplied API limits; [implementation §20](native-ingress-implementation.md#20-standard-slot-operation-inventory-and-unresolved-bootstrap) owns unpriced operation/source gaps.
+Parent owns PLAN/checks/reviews/feature-PR publication without merge; no source, diagram/index, runtime observation, new verification result or full-plan approval follows. All five exclusions remain; `trainingReady:false`.

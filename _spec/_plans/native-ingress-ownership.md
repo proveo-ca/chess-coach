@@ -943,3 +943,52 @@ Parent supplies existing HEAD `225cf32a2f10105d99ee9a80b0704ba4a59b1b24`, branch
 Parent owns the fifth PLAN-prefix update, mechanical preservation/link checks, reviews and separately authorized feature-PR publication without merge. This appendix asserts no new check/review/publication result.
 The keeper ran no commands, hashes, tests, agents, web/Git or runtime probes and changed no source/target/Cargo/dependency/test/diagram/index/policy body. No installed-root/proc/PATH/log/receipt/daemon/runtime permission follows.
 All five exclusions remain not established: full-training-closure, genuine-native-authority, whole-decision-adequacy, calibration and training-readiness; `trainingReady:false`.
+
+## 21. Standard-slot profile selected — descriptor roles, not ABI qualification
+
+**[Unverified] 2026-10-22 · HUMAN-SELECTED DIRECTION ONLY / EXACT ABI + SOURCE + APIs + FEES + FULL PLAN UNQUALIFIED / NO IMPLEMENTATION OR OPS APPROVAL · trainingReady:false.**
+
+| Date | Actual TUI choice | Selected scope / not granted |
+|---|---|---|
+| 2026-10-22 | `Standard slots (Recommended)` | DESIGN ONLY: FD0 origin pipe, FD1 sealed-executable BINDING read-side use, FD2 bounded PRIVATE Owner report. No final ABI, safe adoption/closure mechanism, field count, API, dependency, invoice, source assignment or operation approved. |
+
+This is the first actual human FD-profile choice. The earlier false agent assertion of selection was withdrawn BEFORE this choice and remains withdrawn.
+Earlier FD-unselected labels are historical checkpoints only; do not reuse their status as current direction or promote the withdrawn assertion into provenance.
+Conventional stdout and the nonstandard-binding-slot option remain UNSELECTED, not fallbacks. FD1 is never a general output stream in this direction.
+Root A, DIRECT, route B, accepted initializer classification, R-OUT, Dedicated F9 entry, Native origin record and Origin pipe retain their existing scopes.
+Preserve accepted BAF3476/17, bf38/D1/B1/O9, all old prefixes/frozen programs/model, unchanged F1 fees/replay and existing Native protocols.
+Configuration26 and Versions21 remain unchanged; this choice adds no NativeNode protocol, configuration field or public authority constructor.
+
+### 21.1 Declared root and descriptor vocabulary
+
+Declare trusted kernel/host/initial C launcher plus independently registered source and captured L/O artifacts BEFORE runtime claims.
+This is an explicit initial root premise, not self-authentication through C's digest, a worker flag or a claimed executable path.
+Actual L immutable backing and safe C-to-L launch still need qualification; trust in initial C does not automatically authenticate arbitrary L bytes.
+Expected captured source/native graphs remain independently fixed; qualify every actual loader and continuing executable source under N3.
+
+| Name | Role only — not an approved Rust API or field layout |
+|---|---|
+| E | Actual qualified sealed O ELF object; C retains its captured-object custody, not a pathname/code flag. |
+| R / W | Fresh origin pipe read/write endpoints; R becomes profile0, and every W closes before L spawn. |
+| P / Q | Separate report pipe read/write endpoints; C retains P, and Q becomes profile2. |
+| X | L's distinct CLOEXEC executable clone of binding1; same object/open-file description, not a new immutable artifact. |
+| A | O's owned clone adopted for unbuffered origin acquisition; original0 remains an unread alias. |
+| S | O's actual self-executable handle obtained through the separately qualified `/proc/self/exe` binding path. |
+
+Typed carriers hold DATA. Safe ownership/conversion alone proves neither object kind, source/producer, read permission, channel exclusivity nor clock-domain identity.
+O performs actual owned-artifact/kernel-object, source/producer/channel/domain checks with ordinary post-B precharges before Native issuance.
+FD1 read-side use does NOT mean O_RDONLY: sealed memfd E may remain O_RDWR, and duplication preserves access mode/shared offsets.
+FD2 carries only bounded private report DATA after applicable precharge; report shape or a claimed verified value supplies no positive authority.
+
+### 21.2 Resource and handoff boundary
+
+C retains original S0 and physical supervision, but no second counter, F1 pair or Native issuer. L never owns an active meter across exec.
+O alone creates the direct counter and owns public checks/F1/private gates. C/L physical work still needs finite classified envelopes; owed pre-owner public work means STOP.
+Bound C/L/O separately and in aggregate with all coexisting roles; unchanged Node policy remains 2CPU/4GiB/256 PIDs, not an extra hosted allowance.
+N=32, LE grammar, K, MONOTONIC versus BOOTTIME, suspend/signals, pipe mode, byte quotas and numerical B remain UNSELECTED/unapproved.
+[Sealed-launch §19](native-ingress-sealed-launch.md#19-c-to-l-to-o-descriptor-lifetime-contract) owns five-stage lifetime; [mechanisms §18](native-ingress-mechanisms.md#18-reviewed-handoff-apis-and-c-to-l-bootstrap-gap) owns supplied API limits; [implementation §20](native-ingress-implementation.md#20-standard-slot-operation-inventory-and-unresolved-bootstrap) owns operation gaps and the next genuine bootstrap fork.
+Parent supplied Architect `ses_e9af32b4fffebVGDHZxx55dObA`, Backend `ses_e9af32b38ffetAVs31nsPGXn4X` and DevOps `ses_e9af32ab7ffeiRrN8T06gjnLZV`; these are advice/source findings, not new runtime qualification or closed blockers.
+Parent supplies branch `docs/f9-private-initializer`, HEAD `56d4aa1bf839a6040c5c35db8be8caeeef1ce42f`, PR50 OPEN/ready against feature base6b; the keeper did not verify Git/remote state.
+Parent owns the fifth PLAN-prefix update, preservation/link checks, reviews and authorized feature-PR publication without merge; this appendix claims no new PASS or publication.
+The keeper used read/grep/glob/skill/patch only: no commands, hashes, Git, agents, web, tests, source/target/Cargo/dependency/diagram/index/policy-body changes or proc/root/log/receipt/daemon/runtime access.
+All five exclusions remain not established: full-training-closure, genuine-native-authority, whole-decision-adequacy, calibration and training-readiness; `trainingReady:false`.

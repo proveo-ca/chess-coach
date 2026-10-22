@@ -547,3 +547,53 @@ No source/target/Cargo/dependency/test/index/diagram/protected-body change or in
 ### 19.4 Binding access-mode precision — candidate profile still unapproved
 
 For the candidate FD1 binding, read-only content/use does not imply an O_RDONLY descriptor. A memfd starts O_RDWR; verified content/size seals provide the relevant immutability. Duplication and CLOEXEC preserve access mode rather than attenuating it. Permit only audited read-side binding operations and prohibit stdout writes; require separately qualified positioned reads or exclusive cursor ownership because duplicates may share offsets.
+
+## 20. Standard-slot operation inventory and unresolved bootstrap
+
+**[Unverified] 2026-10-22 · SOURCE PROPOSED, NOT CURRENT IMPLEMENTATION / STANDARD-SLOT DIRECTION ONLY / FULL PLAN + IMPLEMENTATION + OPERATIONS BLOCKED · trainingReady:false.**
+
+[Ownership §21](native-ingress-ownership.md#21-standard-slot-profile-selected--descriptor-roles-not-abi-qualification) records the actual human choice; earlier FD-profile pending labels are checkpoints, not current direction.
+[Sealed-launch §19](native-ingress-sealed-launch.md#19-c-to-l-to-o-descriptor-lifetime-contract) owns the five-stage ledger; [mechanisms §18](native-ingress-mechanisms.md#18-reviewed-handoff-apis-and-c-to-l-bootstrap-gap) owns supplied API evidence and its limits.
+This inventory creates no target/source file, registration, schema, signature, private Rust API, field layout or source assignment; Dedicated F9 entry remains a design candidate.
+
+### 20.1 Before-effect source and classification worksheet
+
+| Role / phase | Operation inventory — exact source/price still required |
+|---|---|
+| C prepare / capture | Independently expected E/L/source/native graphs; actual captured/sealed E checks; applicable staging, copies, loader scope and S0 capture before causal launch effects. |
+| C origin / handoff | Fresh R/W, bounded encoding and one write, all-W closure, E cloning, explicit Command standard streams/report pipe, actual Child/P retention and both-result configuration/alias drops. |
+| L clone / exec | First Stdout access, borrowed1/owned X, flags and collisions, fixed argv/env plus wrapper allocation, captured effective exec scope, success CLOEXEC and every failure/close path. |
+| O fixed root | Closed guard/new used0/first B debit/assembly/accounting-only gate and bounded root failure; no pre-B args, stdio, public data, FD metadata or 1MiB payload access. |
+| O ordinary bootstrap | BEFORE effects, quote stdio first access/locks/TLS, clones/conversions/helper allocation, snapshot/probe initialization, inspection/classification, scalar I/O, parse, producer/source/launch/domain checks and binding1/S metadata/read_at/hash joins. |
+| O report / errors / close | Bounded private payload construction/write after applicable quote; prohibit stdout writes; audit root-exit/system-error/panic paths, every writer alias, guard/artifact/standard-FD lifecycle and final explicit closure. |
+| C retention / completion | Raw DATA retention and report framing, O exit/report EOF/reap plus original-S0 barriers; retain actual separate Native endpoint completion requirements, not Child/report-based substitution. |
+
+Classify EVERY C/L operation as bounded native physical work or owed public work; neither category is inferred from a safe type or fixed byte count.
+New owed public work requires the ONE O counter's precharge BEFORE its causal handoff/effect. If the effect precedes O, STOP; never shift its fee later or hide it in a C clock frame.
+All tuple prices, source/data-field counts, safe adoption, closed guard/drop allocation, descriptor/error paths and operator-report payload bytes remain UNKNOWN/unpriced.
+An unrestricted diagnostic stream cannot be priced as a bounded report. No KB quota, source-loop coefficient, numerical B or aggregate1_048_576 fit is established.
+Resource-phase worksheets and proposed root-control fields are planning responsibilities, not existing Rust types or selected constant fees; exact fields and operations remain unknown.
+Qualify actual captured O/self descriptors, independent expected source graph, actual C S0/source/channel/domain, independent actual Node custody/full policy/daemon init/reference checks.
+Raw source/NodePrivateReceipt DATA cannot become an issuer. Values, FD flags, EOF or clock tags never construct private Root/ClockContext/native-counter authority.
+Source checks that establish producer/self binding may run as permitted prepaid CLOCK_UNBOUND bootstrap; no Native/window permission follows before all actual gates.
+Initial stdio caches, bootloader/read-only source, inherited-FD bounds, blocking/gate/signal costs and finite host CPU/RSS/storage/latency envelopes remain future qualifications, not free startup.
+Bound C/L/O separately and in aggregate; retain unchanged Node2CPU/4GiB/256 caps without a second hosted allowance or implicit observer/mount/shared-namespace/unsafe-kernel operation.
+Only the existing initial-accounting classification is accepted; no numerical B or actual closed root code exists here. Legacy Root/new-transaction behavior, replay, both-seat F1 and public fields remain unchanged.
+Retain spent work on absorbing failure; normal quiesce/paid-close/permanent-revoke precedes wait/reap. Original10s/300s including3s and generator2048 remain unchanged.
+
+### 20.2 Next genuine fork — C-to-L bootstrap, not another standard-slot choice
+
+After this source ledger, parent may prepare a concrete design-only TUI for the following alternatives; NO option is currently selected.
+
+| Proposal | Concrete next deliverable / retained STOP |
+|---|---|
+| A — qualify fixed captured L asset | Develop independently fixed immutable L asset/path with safe Command spawn; qualify actual resolution/loading, read-only root/native closure and finite resources. O continues exact qualified FD exec. Path/digest alone is insufficient. |
+| B — research safe actual-FD child spawn | Identify a published SAFE actual-FD spawn retaining C's Child-like custody and exact inherited-FD controls. None is currently known/approved in the reviewed catalog; a new normal dependency would need separate exact approval. |
+| C — leave bootstrap unselected | Keep its STOP and continue K/suspend/domain proof only. Select no bootstrap fallback and claim no Native readiness. |
+
+Any later choice is DESIGN ONLY: no actual helper/path/source code, dependency/acquisition, observer permission or final full-plan acceptance follows automatically.
+Do not repeat standard-slot/carrier/method selection or ask a generic work-priority question. Present the concrete fork after parent checks/reviews/publication when ready.
+Exact source/classification/bounds/root/source-graph cost acceptance remains separate from N10 or any operational grant; all existing runtime blockers remain NOT READY.
+Parent owns the fifth PLAN-prefix navigation/status edit, mechanical old-prefix/body/link checks, reviews and authorized feature-PR publication without merge; never manufacture a just-in-time PASS.
+The keeper appended only these four existing plans and ran no commands/hashes/Git/agents/tests/web/runtime tools; no target/Cargo/dependency/source/test/diagram/index/policy body changed.
+All five exclusions remain not established: full-training-closure, genuine-native-authority, whole-decision-adequacy, calibration and training-readiness; `trainingReady:false`.

@@ -336,3 +336,42 @@ No numerical work coefficient, paid invoice, 1M fit, clock/API/profile selection
 [memfd_create](https://man7.org/linux/man-pages/man2/memfd_create.2.html) returns O_RDWR; verified WRITE/GROW/SHRINK seals constrain content/size, not the descriptor access mode. [dup](https://man7.org/linux/man-pages/man2/dup.2.html) and CLOEXEC cloning preserve the open-file description/access mode. [F_SETFL](https://man7.org/linux/man-pages/man2/F_GETFL.2const.html) or [F_SETFD](https://man7.org/linux/man-pages/man2/F_GETFD.2const.html) cannot turn it into O_RDONLY. Earlier candidate RO-binding wording means read-side use plus verified immutability unless an actual attenuation mechanism is separately qualified; it supplies no such mechanism.
 [pread](https://man7.org/linux/man-pages/man2/pread.2.html) illustrates offset-independent reading on seekable files; actual positioned-read or exclusive-cursor source qualification remains required, with no selected API or pathname-reopen fallback.
 Upstream nix0.31.3 [pipe2](https://github.com/nix-rust/nix/blob/v0.31.3/src/unistd.rs#L1507-L1517) is a safe fs-gated OwnedFd-pair candidate supporting O_NONBLOCK|O_CLOEXEC. The previously cited Rust1.95 std pipe uses O_CLOEXEC and blocking semantics. Neither creation API, mode nor dependency edge is selected. Nonblocking mode alone proves no exact kernel-entry bound; EAGAIN remains failure without retry under [implementation §19](native-ingress-implementation.md#19-progress-only-origin-acquisition-and-symbolic-invoice-bounds).
+
+## 18. Reviewed handoff APIs and C-to-L bootstrap gap
+
+**[Unverified] 2026-10-22 · SUPPLIED VERSIONED SOURCE FACTS / NO INSTALLED-TARGET QUALIFICATION OR API/DEPENDENCY APPROVAL · trainingReady:false.**
+
+[Ownership §21](native-ingress-ownership.md#21-standard-slot-profile-selected--descriptor-roles-not-abi-qualification) selects standard-slot direction only; [sealed-launch §19](native-ingress-sealed-launch.md#19-c-to-l-to-o-descriptor-lifetime-contract) owns proposed descriptor lifetimes.
+Parent/DevOps supplied the following reviewed references. The keeper did not fetch them, inspect installed target bytes or run any qualification.
+
+| Reviewed API / versioned source | Supplied fact and exact limitation |
+|---|---|
+| Rust1.95 [`Command`](https://doc.rust-lang.org/1.95.0/std/process/struct.Command.html) | `new` accepts a program path; `spawn` returns Child. This is not an actual executable-FD child-spawn interface. |
+| Rust1.95 [`CommandExt`](https://doc.rust-lang.org/1.95.0/std/os/unix/process/trait.CommandExt.html) | `exec` replaces the caller; `pre_exec` is UNSAFE. Neither supplies a safe C native-FD child spawn under these constraints. |
+| nix0.31.3 [`posix_spawn` / `posix_spawnp`](https://docs.rs/nix/0.31.3/src/nix/spawn.rs.html#364-431) | Path/PATH interfaces, not the missing captured native-FD child-spawn mechanism. |
+| nix0.31.3 [`execveat`](https://docs.rs/nix/0.31.3/src/nix/unistd.rs.html#1219-1245) | SAFE executable-FD replacement of the CALLER; fixed argv/env still incur internal pointer-Vec allocation. It does not retain C as parent through a new-child operation. |
+| nix0.31.3 [`PosixSpawnFileActions`](https://docs.rs/nix/0.31.3/src/nix/spawn.rs.html#236-334) | Reviewed full init/reinit/add_dup2/add_open/add_close source has NO add_closefrom. Do not invent that API or approve a capsule from its name. |
+| Rust1.95 [Unix spawn setup278–410](https://github.com/rust-lang/rust/blob/1.95.0/library/std/src/sys/process/unix/unix.rs#L278-L410), [stdio setup697–717](https://github.com/rust-lang/rust/blob/1.95.0/library/std/src/sys/process/unix/unix.rs#L697-L717) | Standard-stream setup supplies no blanket ambient-FD-close promise. CLOEXEC closes flagged descriptors, not every inherited descriptor. |
+| Rust1.95 [`OwnedFd` → `File`](https://doc.rust-lang.org/1.95.0/src/std/os/fd/owned.rs.html#337-344) | SAFE typed ownership conversion; does not establish actual file type, expected captured identity or permitted read-side use. |
+| Rust1.95 [`OwnedFd` → `PipeReader`](https://doc.rust-lang.org/1.95.0/src/std/os/fd/owned.rs.html#568-572) | SAFE ownership conversion; not proof of pipe type, read access, exclusive consumption or C provenance. |
+| Rust1.95 [`OwnedFd` → `Stdio`](https://doc.rust-lang.org/1.95.0/src/std/os/unix/process.rs.html#443-452), [`PipeReader` → `Stdio`](https://doc.rust-lang.org/1.95.0/src/std/process.rs.html#1777-1781) | SAFE Command configuration inputs; exact stored-handle/spawn/drop lifetime still requires selected-source proof. |
+| Rust1.95 [`FileExt::read_at`](https://doc.rust-lang.org/1.95.0/std/os/unix/fs/trait.FileExt.html#tymethod.read_at) | SAFE `(&self, &mut [u8], u64) -> io::Result<usize>` positioned read without advancing the shared offset; short reads and complete source-loop costs still need bounds. |
+
+No native-FD CHILD SPAWN appears among these reviewed APIs. This is a bounded catalog finding, NOT a claim of absence from the entire ecosystem.
+Safe conversions do not prove allocator freedom, source trust, physical latency, invoice coverage, object-kind guarantees or permission to perform I/O.
+Stdout AsFd cloning and same-object exec remain candidates; qualify actual selected cfg, descriptor flags/collisions, loader and native closure before use.
+No approved safe close-all mechanism exists in this plan. Qualify a finite initial inherited-FD inventory and source filter or STOP without new raw/unsafe operations.
+Post-B enumeration cannot undo a credential/broad-cache descriptor leak; no inherited-FD exemption follows from standard-slot selection.
+
+### 18.1 Unresolved C-to-L trust edge
+
+C must qualify actual resolved captured immutable L bytes BEFORE loading, including every loader/read-only native source and the original root premise.
+A fixed path or pre/post digest alone does not establish immutable resolution/loading. Trusted initial C does not implicitly cover arbitrary helper programs.
+The candidate L helper's byte graph, immutable staging, resource envelope and error scope remain unqualified; no ordinary normal dependency or CLI harness is implicitly approved.
+O still switches through the qualified native-FD exec direction. No proc-path Owner-exec fallback becomes allowed on any bootstrap route.
+The reviewed path-spawn APIs do not close that trust edge merely because they return Child; the replacement APIs do not provide retained C child custody merely because they accept FD.
+Each new safe API edge requires exact source/features/native closure/license and separate dependency/full-plan approval, not a transitive grant from this catalog.
+N/frame/LE/K, MONOTONIC/BOOTTIME/suspend, pipe blocking mode, signal semantics, source bounds and numerical fees remain unselected/unqualified as applicable.
+[Implementation §20](native-ingress-implementation.md#20-standard-slot-operation-inventory-and-unresolved-bootstrap) records operation gaps and the next genuine design fork; it records NO bootstrap choice.
+All prior source findings are NOT READY runtime blockers, not newly closed findings. No current code, target, dependency, tests, diagrams/index or policy body changes here.
+Parent owns documentation checks/reviews/PLAN and feature-PR publication. The keeper ran no commands or web/runtime tools while authoring this appendix; parent/upstream documentation research is separately scoped and establishes no installed-target qualification or new runtime PASS. All five exclusions remain; `trainingReady:false`.
