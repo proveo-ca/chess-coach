@@ -643,3 +643,27 @@ Retained M2 installed-root grants remain consumed; metadata DATA supplies no sou
 All defaults deny unknown root/loading/permission claims; no helper path, snapshot/mount/verity operation, capability/namespace/posture change, acquisition or tool execution follows.
 Parent owns the fifth PLAN-prefix update, preservation/link checks, fresh reviews and authorized feature-PR publication, not merge; no such result is claimed by this appendix.
 Preserve all old prefixes, accepted BAF3476/17, bf38/D1/B1/O9, programs/model, BOTH-seat1_048_576/F1/replay, cold10s/lifecycle300s/reserved3s and generator2048; all five exclusions remain, `trainingReady:false`.
+
+## 22. Node prerequisite packet — trusted-residual design selected
+
+**[Unverified] NODE_ONLY / PROPOSAL_CONTEXT_SELECTED / TRUSTED_RESIDUAL_DESIGN_SELECTED / EXACT_EXECUTION_APPROVAL_NONE / trainingReady:false.**
+[Ownership §23](native-ingress-ownership.md#23-current-namespace-prerequisite-proposal--node-only) records the actual context choice and subsequent NO Python instruction; the parent chose Node, not an observation or startup waiver.
+The new [inert proposal §5](native-ingress-current-prerequisites.md#5-entry-and-selected-trusted-residual-capture-design) owns the selected entry/capture design; [§7](native-ingress-current-prerequisites.md#7-registration-and-handoff) owns parent-measured source identities and pending gates.
+The collector imports Node fs/os only and has no child API; the controller uses Node child_process for ONE fixed reader, empty environment and W cwd, without discovery or fallback.
+The two observation invocations plus one administrative literal-eval invocation propose `/usr/local/bin/node` without qualifying its current availability or identity; missing runtime or unsupported API means STOP.
+Exactly eleven literal M2/path-parent candidates receive ordered absolute lstat, with W/M statfs: thirteen explicit filesystem queries, not kernel-entry or startup counts.
+No target opens/content/hash/exec/readdir/readlink, PATH/environment discovery, installed-root scan, proc/log/receipt or daemon query follows from this source proposal.
+Absolute checks do not provide descriptor-relative or race-free resolution; stable ordinary-host pathnames and non-atomic lstat/statfs remain explicit residuals.
+BigInt metadata uses canonical decimal strings; Node StatFs provides no read-only flag, yielding null/API_NOT_AVAILABLE rather than a protection claim.
+Stdout retention stays below32768 bytes; stderr retention stays within4096, with any nonempty stderr causing STOP, and controller-generated output is capped at32768 including LF.
+Proposed deadlines are3500ms collector,3800ms child,4200ms cleanup boundary and outer5000ms; they are not production cold10s/lifecycle300s or kernel-termination guarantees.
+Child retention/code output bounds do not cap controller PRE-BODY startup output/effects; automatic tool truncation supplies no hard byte cap.
+The subsequent actual TUI choice `Trusted residual (Recommended)` selects the ordinary metadata packet's design; it does not grant execution, target access or relaxed F9 requirements.
+NO Python alone selected no residual policy. The separate later choice accepts the controller startup residual; administration likewise declares ordinary trusted-tooling startup, and external/defer alternatives remain unselected.
+The inert administrative source now supplies bounded proposal authentication, exclusive0600 creation and immediate control verification; freeze its exact eval transport/identities and finish static checks/review BEFORE seeking a fresh exact permission packet. Current exact approval is NONE.
+Authoring, fence hashing, Node `--check` on stdin and proposal publication are not body execution; parent §7 measurements are not recomputed here, and source tree `470e540` still needs batch-scope verification.
+No NativePolicy data-root authority, Node statvfs/openat API, read-only asset availability, capture root, snapshot or L artifact is invented; `nativeAuthority=false`, candidates remain null and L remains unwritten.
+Root code, safe APIs, whole-B accounting, protection/source obligations and later actual L proof stay unchanged; metadata can never substitute for Native proof or approved observation-success flags.
+All old M2/root/log/receipt/proc/daemon/query grants remain consumed; source publication creates no controls and renews no read permission.
+Preserve the same five exclusions, accepted BAF3476/17, protected bf38/D1/B1/O9, all old prefixes, BOTH-seat1_048_576/F1/replay, existing clocks/caps/fees and all source/config/test/dependency targets.
+The parent owns the four-file documentation batch, PLAN prefix, checks/reviews and authorized publication without merge; this keeper appends these two sections only and runs no commands/tests/hashes/agents/web or operational reads.

@@ -1033,3 +1033,30 @@ Parent supplies Architect `ses_e9acca248ffeS942IZpiH911dI`, Backend `ses_e9acca2
 Preserve every old prefix, accepted BAF3476/17 body, bf38/D1/B1/O9, frozen programs/model, F1/replay, BOTH-seat1_048_576, cold10s/lifecycle300s/reserved3s and generator2048.
 Parent owns the fifth PLAN-prefix update, checks/reviews and authorized feature-PR publication without merge; no new verification/publication outcome is claimed here.
 The keeper appended planning text only and ran no commands, hashes, Git, agents, web or runtime tools. Parent documentation checks/publication remain separately scoped; no source/target/Cargo/dependency/test/diagram/index/policy-body change or runtime access follows from this direction. All five exclusions remain; `trainingReady:false`.
+
+## 23. Current-namespace prerequisite proposal — Node only
+
+**[Unverified] PROPOSAL_CONTEXT_SELECTED / NODE_ONLY / TRUSTED_RESIDUAL_DESIGN_SELECTED / NO_OBSERVATION_APPROVAL / trainingReady:false.**
+The user selected `Current prerequisites (Recommended)` for proposal context ONLY, then explicitly required NO Python and Rust/Node; the parent chose Node.
+The supplied checkpoint is worktree `/tmp/opencode/f9-bootstrap-correspondence`, HEAD `455f28a91cdff39602434ba17fa138c0bb6d881d`, branch `docs/f9-private-initializer`, PR50 ready/OPEN; this appendix does not verify it.
+The new untracked [Node-only inert proposal](native-ingress-current-prerequisites.md) supersedes an old draft that was never run or materialized; that draft is not a protected artifact.
+The target is the current agent/sandbox namespace ONLY, not actual C, the daemon host, cohosting evidence or a read-only root.
+Exactly eleven literal candidates are proposed: `/tmp`, `/tmp/opencode`, `/tmp/opencode/f9-bootstrap-correspondence` (W), `/tmp/opencode/f9-host-rust-1.95.0-m2` (M), `/tmp/opencode/f9-host-rust-1.95.0-m2/cargo`, `/tmp/opencode/f9-host-rust-1.95.0-m2/cargo/bin`,
+`/tmp/opencode/f9-host-rust-1.95.0-m2/cargo/bin/rustup`, `/tmp/opencode/f9-host-rust-1.95.0-m2/cargo/bin/rustc`, `/tmp/opencode/f9-host-rust-1.95.0-m2/cargo/bin/cargo`, `/tmp/opencode/f9-host-rust-1.95.0-m2/cargo/bin/rustfmt`, `/tmp/opencode/f9-host-rust-1.95.0-m2/cargo/bin/clippy-driver`.
+No target file opens, content reads, hashes, execution, readdir, readlink, PATH/environment discovery, proc/log/receipt or daemon queries are authorized.
+Ordered Node absolute-path lstat is NOT descriptor-relative or race-free path proof; stable ordinary-host pathnames remain a residual, and lstat/statfs is not atomic.
+Full traversal proposes eleven lstat plus two W/M statfs queries: thirteen explicit source calls, not exact kernel entries or startup activity.
+BigInt metadata serializes as canonical decimal strings without precision loss; Node StatFs exposes no read-only flag, so `readOnlyIndicator=null`, `readOnlyStatus=API_NOT_AVAILABLE`.
+Metadata cannot Native-qualify a capture root; `nativeAuthority=false`, `snapshotCandidate=null`, `captureRootCandidate=null`, `lArtifact=null`, and L remains unwritten.
+The source proposes three total Node invocations: one administrative literal-eval materializer/verifier without children or target observations, then controller plus one collector; `/usr/local/bin/node` has unqualified availability/identity, and missing or unsupported means STOP without fallback.
+Bounded child retention and code-generated output do not impose a controller PRE-BODY startup hard cap; tool automatic truncation is not a byte cap.
+The subsequent actual TUI choice `Trusted residual (Recommended)` selects this metadata packet's capture design only: trusted controller pre-body startup remains outside hard caps, while child retention and controller-generated output remain bounded.
+The user's NO Python instruction supplied no waiver; the separate later TUI choice supplies the selected design. External bounded launcher and defer remain unselected, not fallbacks.
+The inert administrative source authenticates one bounded proposal snapshot, exclusively creates two0600 controls, and immediately verifies both with bounded nofollow I/O; its own startup remains ordinary trusted-tooling residual. Complete source/transport registration and review BEFORE seeking a fresh exact one-shot grant; exact execution approval is NONE.
+All old M2 installed-root, log, receipt, proc and daemon/query grants remain consumed; selecting current prerequisites authorizes no new read.
+All Native/root laws, safe APIs, whole-B accounting, protection/source obligations and later actual L proof remain unchanged; BOTH-seat1_048_576 and existing clocks/caps stand, with no new fees.
+Source publication does not materialize controls; authoring, fence hashing, stdin-only Node `--check` and a proposal PR do not execute either proposed body.
+[Proposal §7](native-ingress-current-prerequisites.md#7-registration-and-handoff) records parent-measured source-body identities and syntax-only checks; this keeper computes none, and current source tree `470e540` still requires batch-scope verification.
+Defer every observation-success flag to actual approved observations; metadata status is not Native proof, and `trainingReady:false` remains unconditional here.
+Preserve all five exclusions, accepted BAF3476/17, protected bf38/D1/B1/O9, every old prefix and all source/config/test/dependency targets; this appendix assigns no implementation.
+The parent owns the four-file documentation scope, PLAN prefix, checks/reviews and authorized publication without merge; this keeper appends only ownership §23 and implementation §22 and performs no commands/tests/hashes/agents/web or operational access.
