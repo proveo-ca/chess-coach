@@ -193,3 +193,65 @@ Full-training-closure, genuine-native-authority, whole-decision-adequacy, calibr
 Lead's five-document scope, published-history preservation, accepted bf38/M1/M2/feasibility program identities, unchanged direct accounting/model,29 local links/anchors and whitespace checks passed. No model rerun, Cargo resolution, dependency installation, local kernel/descriptor/proc qualification, build or daemon operation ran.
 
 Read-only Adversarial `ses_e9f978361ffecmqmQy8Snxmwq4` and Security `ses_e9f9782b6ffeuga4zapbOPHxJ4` reported no findings and DOCS READY for DESIGN INVESTIGATION ONLY. Neither verdict accepts dependencies, bootstrap classification, a realm, implementation or operations. The API catalog and selected route remain subsequent uncommitted planning after publication `ae80f3c8`.
+
+## 15. Preparation classification and original launch clock
+
+**[Unverified] 2026-10-22 · PROPOSED, NOT ACCEPTED / PREPARATION CLASSIFICATION + CLOCK MECHANISM OPEN / NOT RUNTIME QUALIFIED · trainingReady:false.**
+
+### 15.1 Precedence and unchanged authorization
+
+This appendix refines the OPEN obligations in §§4/8; their text remains retained history, not rewritten approval.
+[Ownership §15](native-ingress-ownership.md#15-ts-to-rust-bootstrap-correspondence-and-remaining-gates) records the supplied TS audit, correction of the bootstrap-invention overstatement and unselected Rust base case.
+Executor selected audit coverage and authorized planning updates, not an exception to B1/DIRECT or an accepted preparation/clock mechanism.
+Source baseline `6c146887` and user-approved branch `docs/f9-bootstrap-correspondence` identify this documentation context only.
+Earlier uncommitted/publication labels retain checkpoint scope; this appendix asserts no new review, verification, publication or PR result.
+
+### 15.2 Classify the actual operation, not its fixed input
+
+| Proposed class | Qualification before acceptance |
+|---|---|
+| REUSABLE fixed-software materialization | Potentially eligible only under a complete registered recipe independent of the F9 session, recipient, live window, history and model. Fixed bytes do not automatically make work free or establish an accepted exemption. |
+| PER-LAUNCH object preparation | Creating/populating/sealing/hashing/checking the selected memfd is launch-causal even with fixed bytes. Include it in the applicable launch interval; no blanket fixed-software exclusion applies. |
+| Owed public work | Classification never automatically exempts copying, hashing, selection, checking or control work. If owed work would precede its owner, STOP before effects. |
+| Actual owner binding | After the ONE owner exists, prepay actual type/seals/length/digest/dev-inode/source checks regardless of any accepted preparation class. No earlier preparation substitutes for these checks. |
+
+A fixed-software handle or diagnostic report is neither Native authority nor paid credit.
+No pre-owner owed public effects, post-hoc debit, counter handoff, restored meter or replacement allowance follows.
+The exact bootstrap construction/first-gate base case remains unselected; the TS source example is not its automatic Rust implementation.
+
+Acceptance requires exact recipe identity and an offline allowlist of available inputs, not an acquisition permission.
+Declare current operation counts/bytes, CPU/RSS/PID/time, FD counts, output/staging/storage peaks, coexistence and failure bounds before acceptance.
+Required source audits and consequential human decisions remain OPEN; this appendix supplies no new numerical envelope.
+Private supervision cannot conceal public/R4 work or bypass the existing accepted boundary.
+
+### 15.3 Original launch origin — proposed obligations, no selected clock
+
+Proposed `S0` precedes the first applicable launch operation, including launch-causal materialization and loading.
+Do not exclude earlier preparation without its exact accepted classification and registered recipe.
+Cold absolute10s covers launch, BOTH endpoint initializations, open/pass/window work, independent comparison and F1 under the original contract.
+Lifecycle300s includes the reserved3s cleanup; neither helper startup nor owner entry renews either origin.
+Freeze the exact placement of close, EOF/reap and the cold barrier in the recipe; do not assume cleanup sits outside10s by default.
+
+An outer clock retaining original `S0` across child exec, with independent barrier checks, is a candidate only; no outer topology is approved.
+An inner-compatible clock still needs fresh local gates, a bounded nonrenewing residual and pre/post checks tied to that original origin.
+Serialized `Instant`, arbitrary remaining-ms, eventual JSON, proc age or an outer timeout alone supplies no live clock proof.
+No selected mechanism establishes preemption of synchronous F1.
+An overrun revokes future loans and staged publication; it does not roll back already-read facts or private F1 updates.
+
+Reserved physical3s is not a new public cleanup-work counter.
+Budget refusal does not waive mandatory bounded cleanup, but it grants no free public cleanup either.
+Incomplete EOF/reap fails positive proof; forced teardown is not clean-close evidence.
+No new proc/clock-data permission, safe clock API, dependency, authority realm or wire DTO is selected.
+
+### 15.4 Ordered remaining gates
+
+1. Freeze exact Rust bootstrap correspondence, disjoint invoice/first-failure coverage and private entry boundary; preserve public Rust/F1 APIs.
+2. Resolve exact preparation classification and the complete registered recipe, offline inputs and physical/failure envelopes.
+3. Qualify the original-clock bridge and live/staged gates with source-bound safe mechanisms, without renewal or rollback claims.
+4. Complete captured closure, trusted launch/loading premises, actual custody, full-policy/init checks, continuing confinement and aggregate bounds.
+5. Review the full file/API/recipe/invoice plan, then obtain exact human implementation and operational approvals separately.
+
+Parent owns PLAN navigation and subsequent review/verification; earlier reviews do not approve this delta.
+The keeper ran no tests, model runs, commands, hashes or probes while authoring these appendices; parent documentation checks and reviews remain separately scoped. No source/dependency edit, acquisition or runtime operation follows.
+Route B remains design-selected only; bf38/D1/B1/O9, fixed1_048_576/cold10s/lifecycle300s/reserved3s/generator2048, unchanged F1 and all five exclusions remain.
+No collection, fitting, calibration, training, activation or deployment follows. `trainingReady:false`.
