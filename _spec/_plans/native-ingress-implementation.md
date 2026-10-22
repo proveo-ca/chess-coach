@@ -597,3 +597,49 @@ Exact source/classification/bounds/root/source-graph cost acceptance remains sep
 Parent owns the fifth PLAN-prefix navigation/status edit, mechanical old-prefix/body/link checks, reviews and authorized feature-PR publication without merge; never manufacture a just-in-time PASS.
 The keeper appended only these four existing plans and ran no commands/hashes/Git/agents/tests/web/runtime tools; no target/Cargo/dependency/source/test/diagram/index/policy body changed.
 All five exclusions remain not established: full-training-closure, genuine-native-authority, whole-decision-adequacy, calibration and training-readiness; `trainingReady:false`.
+
+## 21. Fixed-stager plan gates and metadata-proposal scope
+
+**[Unverified] 2026-10-22 · FIXED-STAGER INVESTIGATION SELECTED / MECHANISM, SOURCE, BOUNDS AND CURRENT PREREQUISITES OPEN / NO IMPLEMENTATION OR OPS APPROVAL · trainingReady:false.**
+
+[Ownership §22](native-ingress-ownership.md#22-fixed-captured-stager-selected--path-qualification-pending) records the actual choice; §20.2's pending fork is historical ONLY for direction, not qualified source or a selected backing.
+[Sealed-launch §20](native-ingress-sealed-launch.md#20-fixed-path-l-admission-predicate-and-protection-interval) owns the conjunction; [mechanisms §19](native-ingress-mechanisms.md#19-immutable-contents-and-stable-executable-names--upstream-limits) owns upstream limits, without local observations.
+
+| Role / phase | Required classification and proof before effects |
+|---|---|
+| Independent expected references | Source/test/build/compiler/tool/native/helper selection, recipe/auditor/policy and fixed context remain DATA, never an issuer or qualification installer. |
+| Offline capture / immutable placement | Proposed P0 preparation needs the complete explicit N4 allowlist/recipe/profile, operation/count/byte limits, CPU/RSS/PID/time/output/storage/FD peaks, failure audit and later HITL operations approval; P0 is not accepted classification. |
+| C actual resolve / launch | Qualify actual protected L content/name/loader, child root/namespace/cwd/environment and complete inheritance/lifecycle graph BEFORE fixed Command launch. A later O or L self-check cannot undo wrong executed L. |
+| C/L handoff / native startup | Classify typed handoff, stdio allocation, nix argv/environment Vecs, clock/native I/O, all aliases and error/drop paths as finite bounded native physical work or owed public work. Any owed pre-owner effect STOPs. |
+| O fixed root then binding | Root B covers ONLY accepted initial accounting; afterward use the SAME ordinary counter for additional actual source/object/clock/runtime bindings before Native. No TS3072 port, late C/L payment or restored meter. |
+
+### 21.1 Four milestones — design precedes implementation, actual proof precedes use
+
+| Milestone | Gate / no circular requirement |
+|---|---|
+| 1 — BEFORE full-plan freeze | Specify concrete proposed backing/name protection, safe APIs/source graph, private interfaces, complete disjoint invoice, finite buffers/resources/failures and required current component/source prerequisites. No unwritten L bytes are demanded yet. |
+| 2 — source implementation | Obtain separate exact implementation approval after full-plan review; create no L target/source/dependency under this direction-only choice. |
+| 3 — actual artifact | After approved build and placement operations, independently measure/register actual L identity and source/build correspondence BEFORE worker claims; never backfill expectations from worker claims. |
+| 4 — BEFORE actual spawn | Pass actual source/content/protected namespace/child context/loader/inheritance/lifecycle checks under original S0; unknown means STOP before L can execute. |
+
+Actual L source, static artifact/native inputs, capture root and usable existing backing are not established; no qualified path/hash/default flag exists.
+N3/N4/N7/N8/N10 remain intact; actual positive F9 proof follows approved implementation and operations, not a circular prerequisite to designing them.
+N/frame grammar, K/suspend/domain, pipe mode, exact dependency features, numerical B/fees, Node placement/custody, full-policy parity and actual daemon-init checks remain OPEN.
+
+| Future refusal case — NOT RUN | Required outcome |
+|---|---|
+| Checked FD + mutable Command path; read-only bind + writable alias; verity + replaceable path | STOP: none proves the content/name conjunction. |
+| Unknown loader/helper; initial C trust offered as arbitrary L authentication; late L self-hash | STOP: trusted C and post-launch reports do not supply protected prelaunch L. |
+| Unpaid public C prechecks; missing source/namespace/lifecycle/FD proof | STOP before effects; Root B and later O inspection repair nothing retroactively. |
+
+### 21.2 Next artifact — bounded component/read-only-environment METADATA PROPOSAL
+
+Draft observation names/purpose, exact scope/paths, fixed readers/APIs, current reader realm, hard count/byte/time/resource/output limits, STOP interpretation and work classification BEFORE requesting execution approval.
+This next artifact is DESIGN ONLY, not a backing-mechanism vote or permission to read/stat/hash installed objects, proc/roots/logs/receipts or a daemon.
+Ask the parent to obtain authoritative intended host/root/target context if necessary to bound that proposal; do not nominate this agent's environment as future C or daemon host without proof.
+The known source-repository working directory is writable and does not qualify as a protected capture root. No current actual O context or capture-root candidate is established.
+Do not request an actual L path/hash measurement before that unwritten artifact exists; identify intended realm and bounded prerequisites first.
+Retained M2 installed-root grants remain consumed; metadata DATA supplies no source/native authority, and every future exact observation packet needs separate concrete approval.
+All defaults deny unknown root/loading/permission claims; no helper path, snapshot/mount/verity operation, capability/namespace/posture change, acquisition or tool execution follows.
+Parent owns the fifth PLAN-prefix update, preservation/link checks, fresh reviews and authorized feature-PR publication, not merge; no such result is claimed by this appendix.
+Preserve all old prefixes, accepted BAF3476/17, bf38/D1/B1/O9, programs/model, BOTH-seat1_048_576/F1/replay, cold10s/lifecycle300s/reserved3s and generator2048; all five exclusions remain, `trainingReady:false`.

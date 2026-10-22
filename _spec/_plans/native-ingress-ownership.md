@@ -992,3 +992,44 @@ Parent supplies branch `docs/f9-private-initializer`, HEAD `56d4aa1bf839a6040c5c
 Parent owns the fifth PLAN-prefix update, preservation/link checks, reviews and authorized feature-PR publication without merge; this appendix claims no new PASS or publication.
 The keeper used read/grep/glob/skill/patch only: no commands, hashes, Git, agents, web, tests, source/target/Cargo/dependency/diagram/index/policy-body changes or proc/root/log/receipt/daemon/runtime access.
 All five exclusions remain not established: full-training-closure, genuine-native-authority, whole-decision-adequacy, calibration and training-readiness; `trainingReady:false`.
+
+## 22. Fixed captured stager selected — path qualification pending
+
+**[Unverified] 2026-10-22 · BOOTSTRAP DIRECTION SELECTED FOR DESIGN INVESTIGATION ONLY / NO QUALIFIED L PATH, BACKING OR ARTIFACT / FULL PLAN + IMPLEMENTATION + OPERATIONS BLOCKED · trainingReady:false.**
+
+| Date | Actual TUI choice | Effective scope / not granted |
+|---|---|---|
+| 2026-10-22 | `Fixed captured stager (Recommended)` | Investigate safe fixed-path C→L child spawn; L retains native-FD execution of sealed O. No actual L path/helper/target, backing method, source/API/dependency, acquisition, provisioning, launch or operational approval. |
+
+This resolves [implementation §20.2](native-ingress-implementation.md#202-next-genuine-fork--c-to-l-bootstrap-not-another-standard-slot-choice) ONLY for bootstrap direction; safe actual-FD child-spawn research and leaving bootstrap unselected remain UNSELECTED, not fallbacks.
+Do not repeat this route, standard slots, origin carrier/method, Root A, DIRECT, sealed-owner route B, accepted private initializer, R-OUT or Dedicated F9 entry choices.
+Fixed-path L does not replace route B for O: L still uses the qualified native-FD syscall, without a proc-alias Owner-exec fallback.
+C retains the actual Child, actual report endpoint and original S0 supervision across L→O; neither supplies actual Node custody by itself.
+No L implementation, artifact bytes, measured identity or qualified path exists yet in this proposal.
+No backing mechanism has been human-selected; neither an existing read-only snapshot nor fs-verity/private-root availability has been observed.
+
+### 22.1 Independent expectations — DATA before claims
+
+| Registered role/input | Required independent expectation |
+|---|---|
+| Source and verification | Exact C/L/O source/test selection, build/compiler/tool inputs, native/runtime/helper closure, recipe identity and auditor/policy references. |
+| L artifact, after approved build/placement | Conventional file SHA-256 plus length/format, independently joined to the previously selected source/build recipe; no worker-selected expected digest. |
+| Program and context | Fixed absolute program binding, capture-root/resolution-domain description, fixed argv/environment/cwd and descriptor profile, including actual child root/namespace obligations. |
+| Resources and work | Per-role physical bounds and per-operation classification, failure coverage and aggregate coexistence; no safe-type or fixed-byte exemption. |
+
+Expected files, handles, digest labels, package outputs and private-gateway results remain DATA, not Native permission.
+No public constructor, deserialized verified flag or qualification installer may turn those expectations into actual launch qualification.
+Declare the minimal trusted initial C/kernel/host premise explicitly; C's self-hash cannot establish it, and initial C trust does not authenticate arbitrary helpers.
+Require actual content, executable-name resolution, complete loader protection and continuing confinement together BEFORE C launches L.
+Any additional public C/L copy/hash/compare/inventory/protection work owed before O's counter exists means STOP before effects; Root B funds only O's accepted initial-accounting scope.
+Exact bounded native-physical classification is never inferred free, and preparation classification remains PROPOSED, NOT ACCEPTED.
+
+### 22.2 Evidence stages and retained scope
+
+Before full-plan freeze, specify a concrete proposed mechanism, safe APIs/source graph, private interfaces, bounds/invoice and required current prerequisites; do not require proof of unwritten runtime code.
+After separate implementation/build/operations approval, independently register actual L artifact identity before worker claims; before actual spawn, require every actual protection/binding check to pass.
+[Sealed-launch §20](native-ingress-sealed-launch.md#20-fixed-path-l-admission-predicate-and-protection-interval) owns admission; [mechanisms §19](native-ingress-mechanisms.md#19-immutable-contents-and-stable-executable-names--upstream-limits) owns source limits; [implementation §21](native-ingress-implementation.md#21-fixed-stager-plan-gates-and-metadata-proposal-scope) owns milestones and next-proposal scope.
+Parent supplies Architect `ses_e9acca248ffeS942IZpiH911dI`, Backend `ses_e9acca245ffeMXZua4Ep4LPRRE` and DevOps `ses_e9acca223ffe7a5X7VjPEF1214`; their advice is source/research only, not local qualification or acceptance.
+Preserve every old prefix, accepted BAF3476/17 body, bf38/D1/B1/O9, frozen programs/model, F1/replay, BOTH-seat1_048_576, cold10s/lifecycle300s/reserved3s and generator2048.
+Parent owns the fifth PLAN-prefix update, checks/reviews and authorized feature-PR publication without merge; no new verification/publication outcome is claimed here.
+The keeper appended planning text only and ran no commands, hashes, Git, agents, web or runtime tools. Parent documentation checks/publication remain separately scoped; no source/target/Cargo/dependency/test/diagram/index/policy-body change or runtime access follows from this direction. All five exclusions remain; `trainingReady:false`.

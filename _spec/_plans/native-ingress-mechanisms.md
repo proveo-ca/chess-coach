@@ -375,3 +375,46 @@ N/frame/LE/K, MONOTONIC/BOOTTIME/suspend, pipe blocking mode, signal semantics, 
 [Implementation §20](native-ingress-implementation.md#20-standard-slot-operation-inventory-and-unresolved-bootstrap) records operation gaps and the next genuine design fork; it records NO bootstrap choice.
 All prior source findings are NOT READY runtime blockers, not newly closed findings. No current code, target, dependency, tests, diagrams/index or policy body changes here.
 Parent owns documentation checks/reviews/PLAN and feature-PR publication. The keeper ran no commands or web/runtime tools while authoring this appendix; parent/upstream documentation research is separately scoped and establishes no installed-target qualification or new runtime PASS. All five exclusions remain; `trainingReady:false`.
+
+## 19. Immutable contents and stable executable names — upstream limits
+
+**[Unverified] 2026-10-22 · SUPPLIED SOURCE/RESEARCH ONLY / NO SELECTED BACKING, LOCAL STATE OR NEW API/DEPENDENCY APPROVAL · trainingReady:false.**
+
+[Ownership §22](native-ingress-ownership.md#22-fixed-captured-stager-selected--path-qualification-pending) selects fixed-stager investigation; [sealed-launch §20](native-ingress-sealed-launch.md#20-fixed-path-l-admission-predicate-and-protection-interval) requires content AND executable-name/loader protection.
+References below are parent/advisor-supplied upstream facts, not keeper fetches, installed flags, permissions, actual filesystem availability or local kernel/configuration evidence.
+
+| Mechanism / reference | Supplied fact and limit |
+|---|---|
+| Rust1.95 [Command](https://doc.rust-lang.org/1.95.0/std/process/struct.Command.html), [Unix spawn source](https://github.com/rust-lang/rust/blob/1.95.0/library/std/src/sys/process/unix/unix.rs#L278-L410) | Fixed program/args still spawn through pathname resolution, not a previously checked executable FD. Holding a root/directory File does not lock that namespace or select the child's root. |
+| rustix1.1.5 [safe openat2 source](https://docs.rs/rustix/1.1.5/src/rustix/fs/openat2.rs.html#14-23), [Linux flags](https://man7.org/linux/man-pages/man2/openat2.2.html) | BENEATH/NO_SYMLINKS/NO_MAGICLINKS/NO_XDEV/IN_ROOT constrain THAT open; not a later Command open or child-root context. No new fs feature/dependency/API is approved. |
+| Linux v7.0.12 [statfs source](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/fs/statfs.c?h=v7.0.12), [mount_setattr](https://man7.org/linux/man-pages/man2/mount_setattr.2.html) | ST_RDONLY reflects per-mount/superblock read-only conditions, not exclusion of writable aliases to the backing. File type, permissions, xattrs or flags alone are insufficient. |
+| Official [Btrfs subvolume reference](https://btrfs.readthedocs.io/en/latest/btrfs-subvolume.html) | Snapshots default read-write; a read-only mount is not the subvolume read-only property. Nested subvolumes are excluded, and namespace rename/deletion remain separate issues. No Btrfs choice or local support is established. |
+| Kernel [fs-verity documentation](https://docs.kernel.org/filesystems/fsverity.html) | Enabled content blocks write/truncate and verifies reads, including mmap; hardlinks do not bypass that content protection. Rename/delete/link/metadata remain possible, so protect directory/mount resolution and declare trusted administrator/backing boundaries independently. |
+| Linux v7.0.12 [exe_file_deny_write_access](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/include/linux/fs.h?h=v7.0.12) | FMODE_FSNOTIFY_HSM can bypass ordinary executable write denial. A reported version or ETXTBSY does not qualify actual source/configuration/nonexemption or close a mutable precheck→exec race. |
+| [memfd seals](https://man7.org/linux/man-pages/man2/memfd_create.2.html), [exact execveat](https://man7.org/linux/man-pages/man2/execveat.2.html) | Verified seals protect the actual object; its diagnostic name is not an ordinary executable pathname. No proc stager-alias or Owner-exec fallback is implicitly allowed; O retains route B. |
+| [fs-verity measurement semantics](https://docs.kernel.org/filesystems/fsverity.html#fs-ioc-measure-verity) | The verity Merkle measurement digest is NOT conventional whole-file SHA-256. Worker-supplied values for either reference cannot independently bind expected source/artifact identity. |
+
+### 19.1 Exact safe-API research — observation is not qualification
+
+| Versioned source | Supplied safe export / limitation |
+|---|---|
+| rustix1.1.5 [fs ioctl source97–150](https://docs.rs/rustix/1.1.5/src/rustix/fs/ioctl.rs.html#97-150) | SAFE `fs::ioctl_getflags<Fd: AsFd>(fd: Fd) -> io::Result<IFlags>`. IFlags has NO named VERITY variant; `.bits() & 0x0010_0000` tests retained FS_VERITY_FL only as an observation, not authenticated content or names. |
+| rustix1.1.5 [statx attributes153–154](https://docs.rs/rustix/1.1.5/src/rustix/fs/statx.rs.html#153-154) | `StatxAttributes::VERITY` exists separately; an attribute observation does not measure the whole image or protect executable resolution. |
+| rustix1.1.5 [fs exports](https://docs.rs/rustix/1.1.5/src/rustix/fs/mod.rs.html) | No dedicated `ioctl_fsverity_measure` export appears in the supplied full export review; do not invent a safe wrapper or call unsafe raw ioctl at the arena boundary. |
+| fs-verity0.2.0 [Linux implementation](https://docs.rs/fs-verity/0.2.0/src/fs_verity/linux.rs.html) | Safe exported `fsverity_measure` is a research lead only: hardcoded ioctl architecture TODO, algorithm-as-u8 narrowing, unwrap and Box allocation require source/failure review. No dependency, installation or license qualification is approved. |
+
+The selected installed source/cfg, supported filesystem/ioctl and all error paths would need qualification; unsupported/unknown means STOP, never permission to probe.
+An already-enabled verity file plus a full SAME-owned-File hash against independent conventional SHA-256 is a conditional CONTENT strategy only.
+It supplies no stable pathname/loader strategy, actual availability, accepted classification or free public C hash before O exists.
+Safe API signatures establish neither allocation freedom nor complete source expansion, physical bounds, permissions or an accepted invoice.
+Do not make mutable same-directory pre/post hashing plus ordinary executable write exclusion into hash-to-exec protection.
+Neither source capture, a manifest, metadata nor an open descriptor alone proves immutable contents AND stable executable names.
+No backing mechanism is selected here; missing protection fails before L launch, without mounting, enabling verity, acquiring tools or relaxing policy.
+
+### 19.2 Pending source and context
+
+[Implementation §21](native-ingress-implementation.md#21-fixed-stager-plan-gates-and-metadata-proposal-scope) owns a bounded metadata-PROPOSAL next, not an observation packet or launch grant.
+No existing snapshot/private root, actual C/daemon host relationship, loader graph or effective namespace protection was inspected.
+Versioned references support source claims only; local target/configuration and actual protection must be established under later concrete approvals.
+The keeper ran no commands, web fetches, agents, tests, hashes or runtime observations and changed no source/target/Cargo/dependency/test/diagram/index/policy body.
+Parent owns PLAN, checks/reviews and authorized feature-PR publication without merge; all prior prefixes/frozen bodies and five exclusions remain, `trainingReady:false`.

@@ -430,3 +430,54 @@ C separately requires O exit, report EOF and actual reap under original S0; C's 
 Original cold10s/lifecycle300s including reserved3s and separate generator2048 remain unchanged; no new grace, CPU/memory allowance or postcheck rollback follows.
 [Mechanisms §18](native-ingress-mechanisms.md#18-reviewed-handoff-apis-and-c-to-l-bootstrap-gap) records supplied API limits; [implementation §20](native-ingress-implementation.md#20-standard-slot-operation-inventory-and-unresolved-bootstrap) owns unpriced operation/source gaps.
 Parent owns PLAN/checks/reviews/feature-PR publication without merge; no source, diagram/index, runtime observation, new verification result or full-plan approval follows. All five exclusions remain; `trainingReady:false`.
+
+## 20. Fixed-path L admission predicate and protection interval
+
+**[Unverified] 2026-10-22 · REQUIRED PREDICATE, NOT IMPLEMENTED QUALIFICATION / NO BACKING METHOD OR L PATH SELECTED / NO IMPLEMENTATION OR OPS APPROVAL · trainingReady:false.**
+
+[Ownership §22](native-ingress-ownership.md#22-fixed-captured-stager-selected--path-qualification-pending) records actual fixed-stager direction only; §19's safe spawn/backing gaps remain qualifications, not waived checks.
+The following is a conjunction of source-bound obligations, not a boolean supplied by a package, worker, L, O or a policy-data constructor.
+
+| Admission clause | Required fact BEFORE launch / continuing obligation |
+|---|---|
+| Independent expected role | Select L's exact source/test/build/compiler/tool/native/helper graph, recipe and policy independently before claims; actual artifact identity follows approved build/placement, not invented bytes. |
+| Source→artifact correspondence | Join actual captured L length/format/conventional SHA-256 to that independent source/build selection; a manifest or matching hash alone does not establish immutable execution. |
+| Actual content | Protect the candidate executable object against all relevant writers, writable aliases and backing mutation before checking; maintain protection through every actual loading/paging read. |
+| Actual executable name | Fix an absolute program in the actual child's resolution domain: root, namespace, ancestors, mount crossings, directory entries and any symlink targets. A parent's name string is insufficient. |
+| Resolution protection | Prevent rename, unlink, replacement, redirect and overmount affecting that resolution from check through Command's actual executable open and relevant loading interval. |
+| Loader and closure | Protect the actual selected interpreter, native libraries, plugins/helpers and every further executable source BEFORE their loading; main-file protection alone fails N3. |
+| Child launch context | Bind actual child root/namespace, cwd, exact argv/environment and descriptor inheritance to the independent fixed profile; environment cannot select code or a different loading domain. |
+| Continuing confinement | Preserve the qualified object/name/loader invariants throughout all actual executable reads, with bounded lifecycle/failure supervision and no unclassified loading edge. |
+| Source and payment | Qualify the selected safe APIs/cfg and complete source expansion; classify every check/copy/hash/compare/inventory/protection operation before effects. Owed public pre-owner work STOPs. |
+
+### 20.1 Ordered progression — no authority-bearing flags
+
+| Stage | Permitted meaning / refusal |
+|---|---|
+| Expected DATA | Independent references describe intended source/artifact/context; no launch permission or Native issuer. |
+| Candidate captured object | Retain an actual object for checking under the declared G1 initial C/kernel/host premise; possession alone qualifies neither content nor name. |
+| Qualified launch conditions | Require CONTENT ∧ RESOLUTION ∧ LOADER ∧ CONTINUING CONFINEMENT with actual context/source/lifecycle proof; unknown means STOP. |
+| Fixed C Command and stdio | Configure only the qualified fixed program/profile and selected0/1/2 direction; retain actual Child/report/S0 and prove configuration/alias closure. |
+| Actual L → sealed O | L performs the classified fixed handoff and native-FD O exec; O's accepted accounting root precedes its additional ordinary prepaid actual binding. |
+
+The protected interval starts BEFORE candidate content/name checks, spans the later actual Command open, and continues for every applicable paging/loading read.
+Prove actual child root/namespace/cwd/environment, not merely that C checked a parent-domain pathname.
+No PATH search, shell, worker-provided program, environment selector or arbitrary extra argument/FD selector belongs to this direction.
+A held File or directory FD does not bind Command's later pathname open or lock its namespace; constrain both operations under the SAME actual protection premises.
+An earlier openat2 check constrains that open only. It is not atomic handoff to a later Command execution.
+Neither a later L self-hash nor O's later checks can prevent wrong L code that already executed; qualification must precede loading under the explicit G1 trust premise.
+
+### 20.2 Loader, inheritance and protection boundaries
+
+First candidate remains native static ELF: require actual no-PT_INTERP/no-DT_NEEDED metadata plus a source audit excluding unregistered dynamic loading, plugins and helpers.
+No static L has been built or observed, and compatible offline static inputs are not established; missing inputs mean STOP, not a dynamic-closure fallback.
+A dynamic loader/closure remains UNSELECTED and requires its own protected resolution/loading design, not a silent expansion of fixed-stager consent.
+File verity can protect content without protecting names or metadata; require independent directory/mount protection and an explicit trusted-administrator/backing-mutation boundary.
+A read-only view with writable aliases does not prove global content immutability; filesystem/type/permission labels alone supply neither conjunction.
+Inventory every non-profile FD across C→L and L→O: explicitly close it or prove CLOEXEC through the captured source; std Command promises no automatic close-all.
+Preserve origin0, binding1 read-side use and private report2; actual binding1 may remain sealed O_RDWR, not magically O_RDONLY.
+Qualify clone/drop/error/panic/exit paths and report-writer aliases before approval; post-B enumeration cannot retroactively prevent leaked ambient descriptors.
+All C/L stdio/allocation/native-I/O, argv/environment wrapper expansion and protection operations need finite classified envelopes; Root B cannot pay those earlier effects later.
+No new mount, snapshot creation, read-only toggle, fs-verity enablement, seccomp/capability/namespace change or provisioning grant follows from choosing this direction.
+[Mechanisms §19](native-ingress-mechanisms.md#19-immutable-contents-and-stable-executable-names--upstream-limits) separates upstream properties; [implementation §21](native-ingress-implementation.md#21-fixed-stager-plan-gates-and-metadata-proposal-scope) separates pre-freeze mechanisms from later actual proof.
+No qualified capture root, actual namespace protection, local verity state or launch result is claimed. Parent owns PLAN/reviews/checks/publication without merge; all old prefixes, caps/clocks and five exclusions remain, `trainingReady:false`.
