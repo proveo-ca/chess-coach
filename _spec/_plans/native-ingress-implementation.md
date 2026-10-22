@@ -482,3 +482,68 @@ Map exact producer/loader/owner source paths in the later complete plan; current
 Clock-policy registration, independent expected-source binding, actual source/runtime/loading/custody/full-policy/init proof and full-plan/implementation/operations approvals remain open.
 Preserve accepted BAF3476/17, bf38/D1/B1/O9, all old prefixes/frozen programs/model, BOTH-seat1_048_576, unchanged F1/replay, cold10s/lifecycle300s/reserved3s and separate generator2048.
 Parent owns PLAN-prefix links and separately authorized Git/feature-PR publication without merge; this appendix reports no review/publication outcome. The keeper ran no commands/tests/hashes/Git/web/agents or installed-root/proc/PATH/log/receipt/daemon/runtime access and changed no source/target/Cargo/dependency/test/diagram/index/body law. All five exclusions remain; `trainingReady:false`.
+
+## 19. Progress-only origin acquisition and symbolic invoice bounds
+
+**[Unverified] 2026-10-22 · PROPOSED ALGORITHM / CONDITIONAL SYMBOLIC BOUNDS ONLY / N + ABI + SOURCE + FEES UNAPPROVED / NO IMPLEMENTATION OR OPS APPROVAL · trainingReady:false.**
+
+[Ownership §20](native-ingress-ownership.md#20-origin-pipe-selected--bounded-carrier-investigation) records the actual PIPE choice; it supersedes §18's pending carrier decision ONLY for investigation direction.
+[Sealed-launch §18](native-ingress-sealed-launch.md#18-origin-pipe-lifetime-and-handoff-obligations) owns descriptor lifetime; [mechanisms §17](native-ingress-mechanisms.md#17-single-invocation-pipe-primitives--source-level-bounds) supplies upstream-only scalar facts and restart limitations.
+This is readable design pseudologic, NOT executable source, a chosen wrapper, a measured/tested bound or an approved frame/profile.
+
+### 19.1 Trusted parameters and producer
+
+Let trusted source fix positive N and its frame profile before claims; no caller, frame header or runtime allocation/scan discovers or chooses N.
+Check all N, N+1, triangular-size, offset, conversion and invoice arithmetic before use, with their costs included in the applicable root/ordinary charge quote. Bounds/quotes remain unpriced; unknown means STOP, never wrap/clamp.
+C captures S0 once before applicable pipe creation/encoding/loading/root, creates the fresh pipe, retains its live read end and encodes exactly N bytes once.
+C makes ONE conforming scalar-write invocation requesting N. ONLY Ok(N) proceeds; ANY error including EINTR/EAGAIN, short or invalid count aborts/cleans up with NO O launch, new pipe, recaptured S0 or second write.
+On success close EVERY writer reference before L spawn and retain only the read end for the qualified fixed handoff; C/L never consume/prefetch origin data.
+Fresh-empty capacity≥N, safe close/inheritance and complete C/L per-operation native-physical-versus-owed-public classification are prerequisites; any owed pre-owner operation STOPs before effects.
+These are conditional producer obligations, not a guarantee of unconditional nonblocking execution, exact kernel entries or bounded signal/scheduling latency.
+
+### 19.2 O acquisition — ordinary precharge before effects
+
+1. Complete the proposed root's fixed B debit and first accounting-only gate under the accepted classification; B/body remain UNAPPROVED. That header performs no origin I/O, stdio access, FD inspection or provenance scan; its original first-charge source proof remains required.
+2. On the SAME counter, precharge the complete conservative origin envelope BEFORE initializing snapshot[N]/probe[1], stdio access, helper allocation, metadata/native I/O, parsing, source joins or clock checks. No escrow, subcounter or new owner results.
+3. If this envelope charge refuses, perform ZERO acquisition effects; retain B/prior expenditure and enter absorbing failure. Mandatory bounded precovered failure closure must already be available/audited, not funded by an emergency allowance.
+4. Set off=0. While off<N, request exactly N−off bytes with ONE conforming unbuffered scalar primitive invocation into the remaining snapshot extent; forbid hidden retry/prefetch/short-completion wrappers.
+5. Only Ok(r) with 1≤r≤N−off advances off by checked addition. Early Ok(0), ANY error including EINTR/EAGAIN, impossible count or arithmetic failure terminates the attempt; never retry, skip or replace the record.
+6. After exactly N bytes, invoke EXACTLY ONE scalar EOF probe requesting one byte. ONLY Ok(0) completes transport data; positive count rejects trailing data, ANY error fails. Never repeat the probe or reread a record.
+7. Preserve one conforming reader without earlier consumption/prefetch or competing/mixed readers. Earlier std buffered reads could hide extra bytes from the raw probe; such a source graph fails qualification.
+8. Decode the complete snapshot's fixed grammar ONLY after transport completion, then independently qualify actual C/source/channel/owned launch, namespace/domain and local K clock checks; transport data and authority are distinct.
+
+Magic/version/reserved zeros, typed seconds/nanoseconds and fixed K-tag agreement remain DATA validation only; no flag or timestamp constructs a private clock or Native issuer.
+While CLOCK_UNBOUND, permit only bounded prepaid bootstrap under C's ORIGINAL S0 supervision. No Native/window work precedes required clock/other gates; no A2/model work occurs in ANY phase.
+No post-receipt now+10s, clock-domain substitution, fresh counter, refund or restoration follows. K/API/suspend semantics and actual source profile remain UNAPPROVED.
+Failure absorbs and retains all charges; allow only bounded precovered mandatory cleanup under original time. Normal closing quiesces loans, performs paid close, permanently revokes before wait/reap and requires actual final Native audit barriers.
+Preserve original cold10s/lifecycle300s including reserved3s, independent C completion barriers and live local/accessor/pre/post gates; exact cold close/EOF/reap placement remains open, never assumed outside10s.
+
+### 19.3 Conditional proposed bounds — not fees or actual-source results
+
+| Quantity | Bound for the proposed conforming algorithm |
+|---|---|
+| C scalar-write invocations / requested extent | 1 if reached, ≤1 overall / ≤N bytes. |
+| O fill invocations, including a terminating failure | ≤N: each continuing success increases off by at least1; any nonprogress outcome terminates. |
+| O EOF probes / total scalar-read invocations | ≤1 / ≤N+1. |
+| O total REQUESTED BUFFER EXTENT | ≤N(N+1)/2+1 bytes: remaining requests descend by at least1, followed by at most one one-byte probe. |
+| O returned bytes, conforming primitive | ≤N+1; valid completion returns N payload bytes and probe0, while one trailing byte rejects. |
+| C+O combined requested extent | ≤N+N(N+1)/2+1 bytes. |
+| Initial storage initialization | N snapshot bytes +1 probe byte, ADDITIONAL invoice coverage, not the same transfer fee. |
+
+Conditional arithmetic illustration ONLY: IF N=32, O makes ≤33 scalar-read invocations, requests ≤529 bytes in aggregate, and C+O request ≤561 bytes. This selects no quota/profile or work-unit price and describes no actual run.
+Requested extent is repeated buffer exposure, not unique storage, full allocation size, native-instruction work, syscall count or elapsed-time bound.
+The combined C+O extent is a ledger-neutral pipeline quantity, not authorization to debit O later for C's pre-owner effects. Classify C's producer work independently; any owed pre-owner public work remains STOP.
+Conservatively charge full requested extents even on errors with unreported buffer writes; source audit must justify any tighter bound, never assume Err touched nothing.
+Debit the whole conservative envelope once on O's counter; unused coverage receives NO refund and creates no reserved spendable credit or second meter. Preserve disjoint existing F1 fees without double billing.
+These counts do NOT bound decoder/drop/stdio/close/setup, signal/libc/kernel restarts, host CPU/RSS/native code or scheduling/latency and do NOT prove 1M fit.
+Exact source bodies, scalar/control/allocation/copy coefficients, source graph, kernel/target qualification, safe handoff and finite physical/failure envelopes remain future prerequisites, not closed invoice rows.
+
+Future negative cases — NOT RUN, no test file/source fixture created: producer partial/error⇒no launch; retained writer; competing reader; hidden retry/prefetch; early0; trailing data; EINTR; budget refusal before initialization; stale/substituted C/source/domain/owned launch; K mismatch; C timeout; duplicate adoption.
+Retain every failure prefix with no replacement owner/time and no synthetic positive Native fixture. Accepted root BAF classification/first-charge proof, F1/replay, bf38/D1/B1/O9 and frozen programs/model remain unchanged.
+Next exact approval boundary is the private FD-role handoff ABI, not another carrier/method question; FD0 origin / FD1 read-only binding / FD2 report and exact wrappers remain candidates only.
+Parent owns PLAN navigation, preservation/link verification, review and separately authorized feature-PR publication; the keeper reports no new verification/publication result and ran no commands/tests/hashes/Git/network/agents/probes.
+No source/target/Cargo/dependency/test/index/diagram/protected-body change or installed-root/proc/log/receipt/daemon/runtime permission follows; all five exclusions remain, `trainingReady:false`.
+
+### 19.4 Binding access-mode precision — candidate profile still unapproved
+
+For the candidate FD1 binding, read-only content/use does not imply an O_RDONLY descriptor. A memfd starts O_RDWR; verified content/size seals provide the relevant immutability. Duplication and CLOEXEC preserve access mode rather than attenuating it. Permit only audited read-side binding operations and prohibit stdout writes; require separately qualified positioned reads or exclusive cursor ownership because duplicates may share offsets.

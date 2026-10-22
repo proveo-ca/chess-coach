@@ -334,3 +334,36 @@ Exact cold close/EOF/reap barrier placement remains OPEN; synchronous work has n
 [Mechanisms §16](native-ingress-mechanisms.md#16-safe-origin-carrier-primitives--research-only) owns upstream carrier research; [implementation §18](native-ingress-implementation.md#18-origin-acquisition-and-carrier-decision-boundary) owns source-before-effect obligations and the next carrier-only decision.
 Registration, source/clock qualification, full-plan review and implementation/operational approvals remain separate and unperformed; no source/DTO/ABI/dependency/permission change follows.
 The keeper ran no commands, tests, hashes, probes, agents or web fetches; parent owns PLAN navigation, review/verification and feature-PR publication. All prior text and five exclusions remain; `trainingReady:false`.
+
+## 18. Origin pipe lifetime and handoff obligations
+
+**[Unverified] 2026-10-22 · PIPE INVESTIGATION SELECTED / EXACT SOURCE + HANDOFF ABI + CAPACITY + CLOCK UNQUALIFIED / NO IMPLEMENTATION OR OPS APPROVAL · trainingReady:false.**
+
+[Ownership §20](native-ingress-ownership.md#20-origin-pipe-selected--bounded-carrier-investigation) records the actual choice; §17's no-carrier checkpoint retains historical scope, and its grammar remains UNSELECTED.
+The following is a proposed lifetime contract, not an existing C/L/O descriptor graph or selected safe API.
+
+| Stage | Required ownership / failure obligation |
+|---|---|
+| Capture and creation | Capture original S0 once before applicable pipe creation/encoding and launch; create a fresh anonymous pipe with exactly ONE writer, no writer clones/inheritance and no reader prefetch. |
+| Encode and retain | Encode exactly trusted source-fixed N bytes once; keep the read end live throughout writing. N/profile are unselected, never payload-derived. |
+| One write | Invoke one conforming scalar primitive requesting N. Only Ok(N) proceeds; ANY error, including EINTR/EAGAIN, short result or invalid count closes/cleans up and aborts without O launch, recaptured S0 or a second write. |
+| Seal the lifetime, not the pipe | After successful write, close EVERY writer reference BEFORE L spawn; retain the read end only for the typed fixed handoff. No later C/L read, buffering or competing consumer is allowed. |
+| O acquisition | Preserve one conforming unbuffered reader through O's ordinary prepaid progress loop and single EOF probe; snapshot completion alone is insufficient. |
+
+A qualified target/source contract must prove a fresh-empty pipe has capacity≥N and that the selected write path meets the proposed behavior; 32 bytes alone proves no blocking bound.
+Keeping the reader live excludes ordinary no-reader SIGPIPE only under this qualified graph. It establishes no unconditional signal, elapsed-time or physical-I/O guarantee.
+OwnedFd Drop alone proves neither that every writer alias disappeared nor complete safe-close behavior; qualify the exact close/duplication source graph and failure paths later.
+Never retry raw close on EINTR through an assumed-safe rule: descriptor reuse can make a retry close another object. This investigation selects no raw-close interface.
+Inventory CLOEXEC and inheritance for ALL descriptors against the actual role profile, which remains UNAPPROVED.
+Preserve the distinct CLOEXEC executable FD versus deliberately retained non-CLOEXEC same-object binding FD baseline; neither FD numbers nor type conversions prove provenance.
+FD0 origin / FD1 read-only binding / FD2 report is only a candidate, not consent to remapping or an accepted handoff ABI.
+No origin bytes may be consumed or prefetched before O's ordinary paid loop; a buffered std reader can hide trailing bytes from a later raw EOF probe and falsely accept the extent.
+Qualify every handle alias and prohibit mixed readers/other consumers; safe typed descriptors establish neither actual pipe type nor exclusive producer/reader identity.
+
+Classify EACH C/L operation as bounded native physical work or owed public work; any owed pre-owner work STOPs before effects. Fixed bytes create no exemption.
+Keep original C S0 throughout pending stages and timeout/cleanup; permit no Native/window/model work before required binding, and no A2 in any phase.
+Preserve live Native gates, quiesce/close/revoke/wait ordering, actual endpoint EOF/reap and final audit barriers under original10s/300s including3s; assume neither cold-barrier placement outside10s nor extra grace.
+The new transport carries DATA ONLY. Register expected C/source and bind actual producer/owned launch/channel/domain under the unchanged G1 captured-artifact/root-trust/kernel premises; self-hashes, metadata and Node C-claims do not qualify them.
+K, suspend/namespace semantics, safe clock API, private frame ABI and exact safe handoff remain unapproved; no Node protocol change, unsafe FromRawFd/pre_exec, new observer, mount, capability or fallback follows.
+[Implementation §19](native-ingress-implementation.md#19-progress-only-origin-acquisition-and-symbolic-invoice-bounds) specifies conditional bounds; [mechanisms §17](native-ingress-mechanisms.md#17-single-invocation-pipe-primitives--source-level-bounds) separates one libc invocation from kernel restarts.
+Parent owns review/verification and PLAN/publication; this appendix claims no run or qualification. No source/dependency/target change or operation follows; all five exclusions remain, `trainingReady:false`.

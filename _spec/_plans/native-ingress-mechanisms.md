@@ -298,3 +298,41 @@ Both directions require actual C/kernel/channel and clock-domain/launch binding;
 The proposed32-byte grammar remains UNSELECTED in [sealed-launch §17](native-ingress-sealed-launch.md#17-native-origin-candidate-profile-and-launch-binding); [implementation §18](native-ingress-implementation.md#18-origin-acquisition-and-carrier-decision-boundary) owns ordinary paid acquisition.
 Earlier nix `fs`/`process` research, additional nix `time`, and rustix `process`/`event` each retain separate approval/closure obligations; stable APIs do not establish approved dependencies or offline availability.
 No installed-source/target qualification, runtime access, source/target/Cargo/dependency/test/diagram/index change or new permission follows. Parent owns review, PLAN and publication; the keeper ran no commands/tests/hashes/agents/web/probes. All five exclusions remain; `trainingReady:false`.
+
+## 17. Single-invocation pipe primitives — source-level bounds
+
+**[Unverified] 2026-10-22 · SUPPLIED UPSTREAM VERSIONED SOURCE ONLY / NO LOCAL TARGET, SOURCE EDGE OR API SELECTION / NO DEPENDENCY OR OPS APPROVAL · trainingReady:false.**
+
+[Ownership §20](native-ingress-ownership.md#20-origin-pipe-selected--bounded-carrier-investigation) selects PIPE investigation only; earlier no-carrier labels retain checkpoint scope. Its advisor record supplies these findings; the keeper fetched/executed nothing.
+SAFE describes exported Rust-call safety, not source provenance, descriptor authenticity, allocation freedom, fee coverage or installed-target qualification.
+
+| Upstream primitive | Supplied source-level fact / limitation |
+|---|---|
+| nix0.31.3 `unistd::read<Fd: AsFd>(fd: Fd, buf: &mut [u8]) -> Result<usize>` | One libc::read invocation, followed by Errno::result; no wrapper retry, buffering or short-read completion. |
+| nix0.31.3 `unistd::write<Fd: AsFd>(fd: Fd, buf: &[u8]) -> Result<usize>` | One libc::write invocation, followed by Errno::result; no wrapper retry or short-write completion. |
+| nix read/write availability | These exports sit outside additional feature blocks; no additional Cargo FEATURE is needed for these two calls. A normal nix dependency/selected edge remains UNAPPROVED. |
+| nix descriptor ownership | By-value Fd may consume an OwnedFd; borrow `&handle` to retain lifetime on returning failure. Exact adoption/closure is a separate proof. |
+| Rust1.95 PipeReader::read / PipeWriter::write | Scalar paths delegate through FileDesc to one libc invocation via cvt, NOT the cvt_r retry loop; a research option needing no added nix merely for scalar pipe I/O. |
+
+Versioned references supplied by parent/DevOps, not local or permanent API guarantees:
+- [nix scalar wrappers, unistd.rs1361–1390](https://github.com/nix-rust/nix/blob/v0.31.3/src/unistd.rs#L1361-L1390); [Errno::result128–137](https://github.com/nix-rust/nix/blob/v0.31.3/src/errno.rs#L128-L137).
+- [Rust pipe delegates242–283](https://github.com/rust-lang/rust/blob/1.95.0/library/std/src/io/pipe.rs#L242-L283); [Unix pipe aliases3–6](https://github.com/rust-lang/rust/blob/1.95.0/library/std/src/sys/pipe/unix.rs#L3-L6).
+- [FileDesc scalar read110–119](https://github.com/rust-lang/rust/blob/1.95.0/library/std/src/sys/fd/unix.rs#L110-L119); [scalar write344–353](https://github.com/rust-lang/rust/blob/1.95.0/library/std/src/sys/fd/unix.rs#L344-L353); [cvt/cvt_r242–260](https://github.com/rust-lang/rust/blob/1.95.0/library/std/src/sys/pal/unix/mod.rs#L242-L260).
+- [POSIX sigaction / SA_RESTART](https://pubs.opengroup.org/onlinepubs/9799919799/functions/sigaction.html): automatic restart may occur; one wrapper/libc invocation does NOT mean exactly one kernel entry.
+
+The proposed receiver N+1 bound counts SOURCE PRIMITIVE INVOCATIONS, not kernel entries, native instructions or control-cost units.
+Selected source bytes, target cfg, libc/native closure and signal/kernel restart behavior need qualification before a source/physical/invoice freeze.
+Elapsed time, scheduling, signal work and physical CPU/RSS remain separately bounded obligations; no signal-policy, privilege or new physical allowance is approved.
+Do not substitute read_exact, write_all, read_to_end or any hidden retry/prefetch/short-completion helper for this proposed bounded proof.
+The std scalar result does not prove std PIPE/stdio setup, first access, locks, TLS, drop or the whole path allocator-free; O's ordinary post-B invoice must cover selected expansion before effects.
+TypedFd/PipeReader or a safe conversion proves neither actual pipe type, expected C producer, exclusive reader/writer nor owned-launch binding.
+Audit actual C/L/O descriptors, all aliases/shared open-file-description effects and non-profile loader descriptors; the candidate standard-stream profile and exact source edge remain UNAPPROVED.
+This std option selects no scalar wrapper or dependency and leaves nix exec/time candidates independently unapproved; no Cargo invocation/resolution or installed-source/native-closure qualification occurred.
+[Sealed-launch §18](native-ingress-sealed-launch.md#18-origin-pipe-lifetime-and-handoff-obligations) owns handoff/lifetime; [implementation §19](native-ingress-implementation.md#19-progress-only-origin-acquisition-and-symbolic-invoice-bounds) owns progress and requested-extent bounds, not fees.
+No numerical work coefficient, paid invoice, 1M fit, clock/API/profile selection or new local/runtime permission follows. Parent owns PLAN/reviews/verification/publication; all five exclusions remain, `trainingReady:false`.
+
+### 17.1 Access mode and optional nonblocking research — not profile selection
+
+[memfd_create](https://man7.org/linux/man-pages/man2/memfd_create.2.html) returns O_RDWR; verified WRITE/GROW/SHRINK seals constrain content/size, not the descriptor access mode. [dup](https://man7.org/linux/man-pages/man2/dup.2.html) and CLOEXEC cloning preserve the open-file description/access mode. [F_SETFL](https://man7.org/linux/man-pages/man2/F_GETFL.2const.html) or [F_SETFD](https://man7.org/linux/man-pages/man2/F_GETFD.2const.html) cannot turn it into O_RDONLY. Earlier candidate RO-binding wording means read-side use plus verified immutability unless an actual attenuation mechanism is separately qualified; it supplies no such mechanism.
+[pread](https://man7.org/linux/man-pages/man2/pread.2.html) illustrates offset-independent reading on seekable files; actual positioned-read or exclusive-cursor source qualification remains required, with no selected API or pathname-reopen fallback.
+Upstream nix0.31.3 [pipe2](https://github.com/nix-rust/nix/blob/v0.31.3/src/unistd.rs#L1507-L1517) is a safe fs-gated OwnedFd-pair candidate supporting O_NONBLOCK|O_CLOEXEC. The previously cited Rust1.95 std pipe uses O_CLOEXEC and blocking semantics. Neither creation API, mode nor dependency edge is selected. Nonblocking mode alone proves no exact kernel-entry bound; EAGAIN remains failure without retry under [implementation §19](native-ingress-implementation.md#19-progress-only-origin-acquisition-and-symbolic-invoice-bounds).

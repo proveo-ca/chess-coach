@@ -907,3 +907,39 @@ The next real decision concerns carrier DESIGN only, after parent verification/r
 Parent supplies branch `docs/f9-private-initializer`, HEAD `87c379bbf9d3ea0931ce20d8d0fc0470b63cabd5`, PR50 OPEN/ready against feature base6b; the keeper did not verify Git/remote state.
 Parent owns the fifth PLAN-prefix update and separately authorized feature-PR publication, not merge. This appendix claims no new review, test, operational grant or publication outcome.
 The keeper made no source/target/Cargo/dependency/test/diagram/index/protected-body changes and ran no commands, hashes, Git, agents, web or runtime tools while authoring this appendix. Parent documentation verification/publication remains separately scoped; no installed-root/proc/PATH/log/receipt/daemon or runtime permission follows. All five exclusions remain; `trainingReady:false`.
+
+## 20. Origin pipe selected — bounded carrier investigation
+
+**[Unverified] 2026-10-22 · CARRIER DIRECTION SELECTED FOR INVESTIGATION ONLY / FD PROFILE + N + LAYOUT + K + APIs + FEES UNAPPROVED / NO SOURCE OR OPS APPROVAL · trainingReady:false.**
+
+| Date | Actual TUI choice | Selected scope / not granted |
+|---|---|---|
+| 2026-10-22 | `Origin pipe (Recommended)` | Investigate the private origin PIPE carrier. No descriptor-role ABI, frame size/layout, clock kind/API, dependency, fee, source implementation, full-plan or operational approval. |
+
+This actual choice supersedes §19's historical no-human-PIPE checkpoint ONLY for carrier direction; the withdrawn agent assertion remains withdrawn.
+Do not ask pipe versus sealed-origin-FD again. The sealed origin-data FD alternative remains UNSELECTED, not a fallback.
+Root A, DIRECT, route B, accepted private initializer, R-OUT, Dedicated F9 entry and Native origin record retain their existing scopes.
+Accepted BAF3476/17, bf38/D1/B1/O9, frozen programs/model, public F1 APIs/fees/replay, native DTO/protocols and all prior prefixes remain unchanged.
+
+Parent supplies Architect `ses_e9b3e26bfffeTHrrYKBytqZ1oK` and Backend `ses_e9b3e25deffeXyDoQFFiF6QMCE` bounds advice, plus DevOps `ses_e9b3e248dffe0GxuRDY4t1pruX` upstream scalar-primitive verification.
+These are supplied findings, not keeper source/target qualification or completed review of this appendix. No numerical work units or paid invoice are closed.
+C produces native origin DATA and retains physical supervision; it owns no meter, F1 pair or Native issuer. O alone owns the counter, public checks, F1 and private gates.
+C captures S0 ONCE before applicable pipe creation/encoding, L spawn, O loading and root entry. Partial progress or failure never resets that event.
+C failure before O launch aborts the attempt without creating an O counter/owner or any Native positive result; no replacement pipe, second write or recaptured timestamp repairs it.
+O failure after B retains B and every successful charge, absorbs permanently and permits only bounded precovered mandatory cleanup, never a fresh counter/time origin.
+
+The proposed source-fixed N must be positive and trusted independently of payload/caller data; actual N and profile remain UNSELECTED. N=32 is a conditional illustration only, not an approved quota.
+Snapshot plus EOF proves transport-data completion ONLY under the qualified one-reader/all-writers-closed graph; neither proves C, source/kernel/channel, owned-launch, namespace or clock-domain authenticity.
+Actual producer/source/launch/domain binding and qualified fresh local checks remain prerequisites to a positive private clock binding; all remaining Native gates still precede NativeReplaySession and window use.
+No A2/model work is permitted in ANY phase. CLOCK_UNBOUND admits only bounded prepaid bootstrap while C supervises the original deadlines.
+EOF is not Native permission. Source-level primitive counts establish neither an exact kernel-entry count nor unconditional latency, CPU/RSS or physical-I/O bounds.
+Preserve cold10s/lifecycle300s including reserved3s, separate generator2048, MIN-only tightening, live Native gates and all required final completion barriers; no grace or new physical allowance follows.
+
+[Implementation §19](native-ingress-implementation.md#19-progress-only-origin-acquisition-and-symbolic-invoice-bounds) owns the proposed progress algorithm/invoice quantities; [sealed-launch §18](native-ingress-sealed-launch.md#18-origin-pipe-lifetime-and-handoff-obligations) owns lifetime/handoff; [mechanisms §17](native-ingress-mechanisms.md#17-single-invocation-pipe-primitives--source-level-bounds) owns primitive proof limits.
+The next specific approval boundary is the private descriptor-role HANDOFF ABI before carrier-specific source graph/invoice freeze: FD0 origin, FD1 read-only executable binding and FD2 report remain CANDIDATE ONLY.
+Exact safe adoption, unused-FD closure, report/error routing and legacy isolation need a complete inventory; pipe choice selects none of them or any source wrapper.
+Parent may continue source-only handoff investigation until concrete options are ready; do not substitute a generic task-order question or repeat carrier selection.
+Parent supplies existing HEAD `225cf32a2f10105d99ee9a80b0704ba4a59b1b24`, branch `docs/f9-private-initializer`, PR50 OPEN/ready against feature base6b; this is not publication of this delta or keeper Git verification.
+Parent owns the fifth PLAN-prefix update, mechanical preservation/link checks, reviews and separately authorized feature-PR publication without merge. This appendix asserts no new check/review/publication result.
+The keeper ran no commands, hashes, tests, agents, web/Git or runtime probes and changed no source/target/Cargo/dependency/test/diagram/index/policy body. No installed-root/proc/PATH/log/receipt/daemon/runtime permission follows.
+All five exclusions remain not established: full-training-closure, genuine-native-authority, whole-decision-adequacy, calibration and training-readiness; `trainingReady:false`.
