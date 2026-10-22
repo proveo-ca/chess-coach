@@ -374,3 +374,27 @@ Owner §16's future tests remain NOT RUN: initial positive fixed B/cap proof, al
 Parent reports PR49 merged and remote-verified at `6b7143299374b3e908f88bd7eaa61d920e9e3504`; that is the historical baseline, not publication of this next delta. The current supplied worktree is `/tmp/opencode/f9-bootstrap-correspondence`, branch `docs/f9-private-initializer`; the keeper did not verify Git state.
 Parent owns PLAN navigation, compatibility/spec-policy review, exact-body identity measurement, the subsequent real TUI classification decision and authorized publication checks/push/feature PR targeting `feat-ml-adjuntant`, not merge. Publication itself cannot accept the proposed classification, B, invoice, API, complete plan or operation.
 The keeper ran no commands, tests, model or probes and claims no parent-wide absence of document checks. No new files, diagrams/index/source/tests/manifests/dependencies or protected bodies change. Accepted bf38/D1/B1/O9/N1–N10, unchanged BOTH-seat cap/F1, schemas and all five exclusions remain; `trainingReady:false`.
+
+## 16. Accepted initializer classification — implementation still blocked
+
+**[Unverified] 2026-10-22 · ACCEPTED CLASSIFICATION ONLY / B + INVOICE + PRIVATE CONSTRUCTION + SOURCE PROOF + CLOCK CUSTODY OPEN / FULL PLAN + IMPLEMENTATION + OPERATIONS BLOCKED · trainingReady:false.**
+
+[Ownership §17](native-ingress-ownership.md#17-private-initializer-classification-accepted--remaining-execution-gates) records Executor's actual `Accept classification (Recommended)` selection and its narrow scope.
+The accepted immutable [§16.2 body](native-ingress-ownership.md#162-exact-proposed-classification-body--not-accepted-policy) retains its PROPOSED title and prior checkpoint text verbatim: parent-supplied SHA-256 `baf4237628dddbedc09541393ab4c64f97f38c72c46586751e9dc5475f9fa1b3`, 3476 UTF-8 bytes, 17 LF-terminated lines, excluding delimiters and retaining final LF.
+Ownership §17 takes current precedence only for classification acceptance; this appendix likewise supersedes §15's pending-acceptance status only at that scope.
+Do not repeat the same-body acceptance question; this is no B, invoice, API, source assignment, implementation, full-plan or operational approval.
+
+Independent host-private F9 RUNTIME-policy registration and expected-source binding remain NOT PERFORMED; neither acceptance nor this ledger constructs authority or a Permit.
+The exact constructor body, fixed positive B, complete source-specific disjoint invoice, bounded failure coverage, one-attempt guard and all return/move/drop paths remain open.
+The [conditional first-charge argument](native-ingress-ownership.md#173-conditional-first-charge-reasoning--not-executed) proves no concrete F9 entry or whole-F9 cost: source audit must establish its premises and include the error branch before execution.
+Captured loading/source graphs, safe original clocks, preparation classification, full-policy/init, actual runtime closure, Node custody and physical recipes/envelopes remain STOP gates.
+Next physical-role placement may need investigation of source-bill dependencies; no realm or reverse training→arena dependency is selected.
+Ordinary public LedgerWork APIs, legacy APIs and BOTH-seat SAME-counter F1 fees/replay remain unchanged; the classification supplies no TS fee or free unrelated preparation.
+Preserve inclusive1_048_576, original S0/cold10s/lifecycle300s including reserved3s cleanup, separate generator2048, bf38/D1/B1/O9/N1–N10, schemas and all five exclusions.
+
+Parent reports the initial proposal published documentation-only in remote-verified draft PR50 at `529a0a99801422bcd8d46e19b3c2f4cd972f7a68`; this later acceptance metadata is not yet published.
+Ownership §17.2 distinguishes the completed exact-body reviews from current metadata review, which remains pending; neither supplies runtime proof.
+Parent owns PLAN-prefix links, current review and authorized feature-branch Git/PR updates; the keeper did not verify publication or invent an outcome.
+No first-charge source, tests or CLI execution follows; no new tests/model/hardware PASS or operational permission is recorded. `trainingReady:false`.
+
+[Ownership §§17.5–17.6](native-ingress-ownership.md#175-root-operation-worksheet--source-facts-and-unpriced-gaps) now separate supplied API-expression counts from proposed UNKNOWN root operations and role-specific gates. The worksheet prices no B, completes no source invoice/initializer graph and proves no nonexistent guard or constructor; the concrete private initializer remains UNDESIGNED. Complete the realm-independent inventory before any necessary role-specific decision; arena-private API naming selects no physical realm. Source body, guard/retained-resource/failure closure, binding sequence, native closure, clocks and lifecycle envelopes remain open, with no new implementation or operational grant; parent owns PLAN-prefix navigation.

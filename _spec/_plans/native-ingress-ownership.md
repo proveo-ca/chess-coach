@@ -694,3 +694,93 @@ Parent must obtain compatibility/spec-policy review, mechanically measure the ex
 Parent measured the proposed body only, excluding delimiter lines and retaining its final LF: SHA-256 `baf4237628dddbedc09541393ab4c64f97f38c72c46586751e9dc5475f9fa1b3`,3476 UTF-8 bytes/17 LF-terminated lines. This identifies a review target, not accepted policy or executable authority.
 No additional question is opened by this appendix. Prior reviews do not approve this delta; parent owns current PLAN navigation, subsequent review and publication checks. The keeper ran no commands, tests, model or runtime probes.
 Accepted bf38/D1/B1/O9, N1–N10, schemas, F1, shared cap/clocks/cleanup and all five exclusions remain unchanged. Full training closure, genuine Native authority, whole-decision adequacy, calibration and training readiness remain unestablished; `trainingReady:false`.
+
+## 17. Private initializer classification accepted — remaining execution gates
+
+**[Unverified] 2026-10-22 · ACCEPTED CLASSIFICATION ONLY / RUST B + INVOICE + PRIVATE CONSTRUCTION + SOURCE PROOF + CLOCK CUSTODY OPEN / IMPLEMENTATION + OPERATIONS BLOCKED · trainingReady:false.**
+
+### 17.1 Actual acceptance ledger and current precedence
+
+| Date | Actual selected option | Exact accepted body identity | Accepted scope / not granted |
+|---|---|---|---|
+| 2026-10-22 | `Accept classification (Recommended)` | Ownership §16.2 body only, excluding delimiters and retaining final LF: SHA-256 `baf4237628dddbedc09541393ab4c64f97f38c72c46586751e9dc5475f9fa1b3`; 3476 UTF-8 bytes; 17 LF-terminated lines. | Initial-accounting classification only. No B, invoice, API, implementation, capture, proc/root/log/receipt/daemon access, build, model work, training or operational approval. |
+
+Parent reports that Executor selected this option in the exact-body TUI; this ledger records that actual selection, not an agent recommendation or inferred consent.
+The body identity is parent-supplied; the keeper performed no new hash computation and invents no acceptance UTC.
+This §17 supersedes §16's unaccepted status for classification acceptance only; §16 retains its prior checkpoint verbatim.
+The frozen body title `Private F9 initializer classification — PROPOSED` remains unchanged reading text, not a new pending acceptance request.
+Do not ask Executor to accept the same body again.
+
+Acceptance permits classification of the future exact private root base case; it neither establishes that root in source nor turns ordinary public work into post-hoc paid work.
+Source-fixed positive B remains unknown and unapproved; no TS3072 fee, discounted fee or discarded root alternative becomes selected.
+ONE inclusive1_048_576 counter for BOTH seats, unchanged F1 fees and charged immediate replay remain required.
+
+### 17.2 Registration, review and publication provenance
+
+Independent host-private F9 RUNTIME-policy registration and independent expected-source binding are NOT PERFORMED.
+This human acceptance and its documentary ledger construct no authority or Permit, add no O9 constituent and change no reference, model or native schema.
+They classify no unrelated artifact preparation as free and supply no positive runtime proof.
+
+Parent supplies these independent exact-body read-only reviews: Adversarial `ses_e9bf8b085ffenusp2eg9HaqHw5`, Security `ses_e9bf8b084ffe9gMt42Sb8eDBq2` and Spec `ses_e9bf8b042ffe3Ef0Yt2RO1f3fr`.
+Those reviews reported no findings and readiness to present the exact body / publish documentation only; they supplied no runtime qualification or implementation approval.
+Current acceptance-metadata review remains pending with parent; those body reviews do not review this new ledger.
+
+Parent reports remote-verified draft PR50, based on `feat-ml-adjuntant`, publishing the initial proposal at `529a0a99801422bcd8d46e19b3c2f4cd972f7a68` on `docs/f9-private-initializer`.
+That checkpoint published documentation only, not policy registration or runtime evidence; this later acceptance ledger is not yet published.
+The keeper did not verify Git/remote state; parent owns PLAN-prefix navigation, current review and authorized feature-branch push/PR updates.
+
+### 17.3 Conditional first-charge reasoning — not executed
+
+Let `L=LEDGER_WORK_LIMIT=1048576` and suppose the exact fresh counter has `used=0` and `limit=L`.
+Assume source-fixed positive `B≤L`, with no intervening mutation, callback or yield before this initial charge.
+Then `checked_add(0,B)=Some(B)`: `B≤L<2^64` excludes u64 overflow.
+The cap filter `B≤L` is true, so `.ok_or_else` does not invoke its error-construction closure.
+Under these premises, the cited charge path assigns `used=B`.
+Therefore this initial charge itself does not reach String-bearing error construction.
+This is a conditional argument about that call, not an executed model or whole-F9 proof.
+
+This argument neither proves future charge errors unreachable nor permits omitting the error branch from the source audit.
+It selects no B and proves no constructor, guard, return, private-control or failure-allocation cost covered or free; it establishes no actual F9 initializer source.
+Before candidate execution, the concrete closed entry must prove every premise against its source and complete disjoint invoice.
+
+### 17.4 Remaining gates — no execution assignment
+
+Registration still requires the exact host-private policy and independent expected-source binding; acceptance is not that registration.
+Before implementation approval, freeze the private constructor body, source-fixed B, complete operation inventory/invoice, first-error proof, one-attempt guard and every failure/return/move/drop path.
+The captured source/loading graph, safe original clocks, preparation classification, actual runtime closure, full-policy/init, physical source graph, Node custody and bounded recipe/resource envelopes remain open.
+Any next physical-role placement investigation must account for source-bill dependencies; it selects no authority realm or reverse training→arena dependency.
+Actual source/runtime/custody binding and non-Native refusals remain separate proof obligations, not consequences of accounting acceptance.
+Preserve original S0, cold10s, lifecycle300s including reserved3s cleanup, separate generator2048 and all N10 implementation/inventory/audit/command gates.
+Full-plan, implementation and exact operational approvals remain separate; no current grant permits commands, capture, source changes, builds, installed-root/proc/log/receipt/daemon access, model work or training.
+[Implementation §16](native-ingress-implementation.md#16-accepted-initializer-classification--implementation-still-blocked) records the corresponding blocked handoff without changing ordinary public LedgerWork APIs or F1 fees.
+No new tests, model or hardware checks ran; no new PASS, Native authority or readiness follows. Accepted bf38/D1/B1/O9/N1–N10, schemas and all five exclusions remain unchanged; `trainingReady:false`.
+
+### 17.5 Root operation worksheet — source facts and unpriced gaps
+
+**[Unverified] DESIGN WORKSHEET ONLY / SUPPLIED SOURCE ANCHORS / B UNPRICED / PRIVATE INITIALIZER UNDESIGNED / REALM UNSELECTED.** Parent supplies Architect `ses_e9bec5b6fffeJPcNqYbXCft4yF` and Backend `ses_e9bec5b0effeERWLjPLXi121q5` advice to inventory realm-independent root operations before a physical-realm decision. The keeper performed no new source inspection or execution.
+
+Counts below mean visible **SOURCE EXPRESSION OCCURRENCES**, not work units, instructions, stdlib-expansion fees or physical-fit evidence. Planned API invocation counts describe the proposed root sequence, not an existing initializer call graph. Selected stdlib/helper/debit-primitive expansion and relevant bounds remain unqualified; scalar/control costs remain OPEN.
+
+| Row ID | Operation + source anchor | Before or after first debit | Source-observed count or UNKNOWN (proposed) | Invoice / failure obligation | Realm dependency |
+|---|---|---|---|---|---|
+| R01 | Closed root entry; §16.3, source ABSENT | Before | UNKNOWN (proposed) | Bound fixed entry/control and guard input; independent host-expected inputs remain data, not Native authority or a fabricated schema/Permit. No predebit public-data/FD read, payload hash/copy, heap allocation, formatting, native IPC or callback. | Entry role unresolved; logical restriction is realm-independent. |
+| R02 | Attempt token creation/once-consumption; §16.4, source ABSENT | Before | UNKNOWN (proposed) | Invoice bounded closed guard primitives and duplicate rejection before any counter. Prove no clone/reset/reentry and one owned fixed-CLI/private-callsite initialization path; none is implemented or physically free. | Logical uniqueness independent; concrete guard/call graph unresolved. |
+| R03 | Fresh `LedgerWork::new`; `packages/training/src/ledger/work.rs:35–40` | Before | 1 planned invocation; 2 visible field initializations: used0, limitL | Cover construction and its control/move/return costs; expose no transient used0 counter. These field counts are not its full invoice. | Existing API fact independent of owner realm. |
+| R04 | Initial `charge(B)` checked addition; `work.rs:61–70` in the same ledger directory | First-debit primitive | 1 planned charge invocation; 1 visible `checked_add` call | Establish fixed positive B≤L and §17.3 premises; qualify primitive expansion/control cost, not a numerical fee. | Conditional arithmetic independent of realm. |
+| R05 | Cap filter; same `work.rs:61–70` | First-debit primitive | 1 visible `filter` call containing 1 cap-comparison expression on Some | Invoice selected closure/control expansion; the admitted initial Some(B) passes, but this observation does not price it. | Source expression independent of realm. |
+| R06 | Error selector; same `work.rs:61–70` | First-debit primitive | 1 visible `ok_or_else` call; error closure not executed under §17.3 premises | Audit the whole branch; prove this initial exclusion against the future closed source body, not intent alone. | Conditional exclusion independent of realm. |
+| R07 | Successful debit tail; same `work.rs:61–70` | First-debit completion | 1 visible `self.used` assignment; 1 `Ok(())` return expression | Cover scalar/control/return costs; retain used=B privately. No complete primitive-cost claim follows. | Existing success expressions independent of realm. |
+| R08 | Refusal branch `work.rs:66–68` → `budget` helper `:166–168` → `packages/training/src/ledger/contracts.rs:162–167` String conversion | Initial path conditionally excluded; later refusals reachable | Visible refusal/error-conversion path; full expansion/count UNKNOWN | Audit the entire reachable branch and its allocation/conversion/failure effects. §17.3 excludes THIS initial path only; permit no unpaid allocation or formatting/failure work later. | Source/policy qualification still required in the selected closure. |
+| R09 | Private owner-control assembly; §16.3, source ABSENT | After success | UNKNOWN (proposed): field initialization, return, move, drop, allocation and control operations | Cover the exact disjoint assembly in B; field privacy alone cannot prove one owner or exclude renewed construction. | Logical order independent; concrete retained controls depend on role. |
+| R10 | First fixed gate; §16.3, source ABSENT | After success | UNKNOWN (proposed) | Freeze its bounded operations and B coverage; do not charge covered work twice. Actual variable FD/runtime binding needs additional ordinary precharge, not the fixed root header. | Gate definition/control sequence unresolved. |
+| R11 | Actual source/policy/init/reference-closure and Native binding; §§16.3,17.4 | After success, later explicit gates | UNKNOWN (proposed) | Precharge actual operations; preserve raw boundaries and all required checks, with no caller-selected stdlib/verifier callback. No accounting admission becomes Native authority. | Role-specific selected native/source closure required. |
+| R12 | Success return, root-object lifetime and drop; source ABSENT | After success; guard lifetime begins before | UNKNOWN (proposed) | Freeze retained handles, moves/returns, guard/drop and memory/side-effect envelopes with paid closure coverage; do not classify them FREE. | Logical ownership independent; concrete lifecycle/resources role-specific. |
+| R13 | Absorbing failure and closure; source ABSENT | Predebit duplicate rejection; conditional initial refusal; postdebit failure | UNKNOWN (proposed) | Distinguish all three paths; no owner on root failure, attempt consumed, no retry and successful B/other charges stay spent. Freeze bounded failure coverage, not an emergency meter. | Failure obligations independent; concrete cleanup envelope role-specific. |
+
+This worksheet closes only the inventory of known existing API operations: it prices no B, completes no initializer graph and proves no conditions of nonexistent code. The new private initializer remains **UNDESIGNED**, including its concrete guard and source body, despite accepted classification. Freeze the broad root scope, which controls and resources it retains, and its failure-closure proof before approval; invent no fees and present no hypothetical source as existing or approved. Reserved3s physical cleanup supplies no budget credit, refund or new allowance.
+
+### 17.6 Decision boundary — realm-independent work first
+
+Realm-independent rows can be studied without selecting R-OUT/R-IN. The complete binding/control sequence, selected native closure, clock transport, source-operation quantities and lifecycle envelopes require role-specific design; the physical realm remains **UNSELECTED**. An arena-private API namespace selects no R-OUT placement.
+An outside/host owner needs an external physical envelope not covered by the Node container. An inside owner needs bounded, paid outer evidence and clock causality, not free public helpers; neither candidate is qualified here.
+Parent prepares genuine role-specific options only when needed. This worksheet grants no actual runtime inspections, source changes, commands, tests, models or probes and renews no access permission. Separately authorized documentation verification/publication remains distinct; no new generic root/accounting/mapping question is opened. Parent retains PLAN-prefix navigation; accepted classification, protected bodies, cap/clocks, schemas and implementation/operational STOP gates remain unchanged; `trainingReady:false`.
