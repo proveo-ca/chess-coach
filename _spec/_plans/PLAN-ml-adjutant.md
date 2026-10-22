@@ -1,3 +1,11 @@
+## Current continuation — fresh M3 host-exception proposal (2026-10-22)
+
+**[Unverified] New design only:** Executor selected `Fresh preparation proposal` then `Host exception (Recommended)`. [M3](native-ingress-host-preparation-m3.md) proposes a fresh destination and frozen Rust/rustup pins, not an installation or network grant. [Ownership §25](native-ingress-ownership.md#25-fresh-m3-host-exception--proposal-only) records the choices; all previous grants remain consumed.
+
+**Next exact gate:** register and review M3's inert eight-path metadata preflight, then obtain fresh one-shot approval. [Implementation §24](native-ingress-implementation.md#24-m3-prerequisite-observation-before-installation) separates presence data from still-missing mise/source/payload qualifications and a later separately approved installer. No new root/control, payload acquisition, target execution or installed-path observation is authorized.
+
+Keep the whole approved Node01 proposal/outcome and historical prefixes byte-exact. M3's downstream payload identities or a newly reviewed bounded trust scope remain open. No F9 capture/build/runtime permission, Native proof, budget/timing change or retained-control access follows. `trainingReady:false`.
+
 ## Current continuation — prerequisite partial STOP, exact grants consumed (2026-10-22)
 
 **[Unverified] Supplied actual outcome:** fresh `Approve once (Recommended)` bound the frozen proposal and administrative command after `Trusted residual (Recommended)`. [Outcome](native-ingress-current-prerequisites-outcome.md) preserves exact bindings and copied JSON; the whole approved proposal stays byte-for-byte unchanged, and earlier pending labels are historical for this attempt only.

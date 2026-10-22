@@ -1078,3 +1078,20 @@ All old installed-root/proc/log/receipt/daemon permissions remain consumed; no n
 The next context question is not yet asked or answered: operator host/root/spec handoff (architect recommended, no SSH/probe grant), fresh current-context preparation PROPOSAL ONLY with new gates, or pause observations for existing source-only clock/domain work.
 No target host or new preparation mechanism is selected; [implementation §23](native-ingress-implementation.md#23-current-prerequisite-stop--host-context-remains-open) keeps root B/invoice/guard/source/clock and all Native gates open.
 Preserve every old byte/prefix, accepted BAF3476/17, bf38/D1/B1/O9, source470e540, ONE BOTH-seat1_048_576/F1/replay, cold10s/lifecycle300s/reserved3s/generator2048 and all five exclusions; L remains unwritten and all candidates null/nativeAuthorityfalse/trainingReadyfalse.
+
+## 25. Fresh M3 host exception — proposal only
+
+**[Unverified] FRESH PREPARATION + HOST-EXCEPTION MODE DESIGN-SELECTED / P0 SOURCE MEASURED / EXACT GRANT NONE / INSTALLER SOURCE NOT WRITTEN / trainingReady:false.**
+Executor selected `Fresh preparation proposal`, then `Host exception (Recommended)` for NEW M3 design only; this supersedes §24's context-unselected checkpoint only for direction.
+Offline/operator alternatives remain UNSELECTED, not fallbacks; the mode choice grants no network, installation, metadata access or execution and renews no old host exception.
+The [M3 dossier](native-ingress-host-preparation-m3.md) orders inert P0 registration/fresh exact approval, eight-path presence observation, actual missing-fact review, separate registered installer/new exact exception, then separately approved offline capture.
+Its fresh root `/tmp/opencode/f9-host-rust-1.95.0-m3` remains unobserved/uncreated; later exclusive creation must STOP on collision without reuse, repair, removal or an alternate root.
+The fs/os-only Node fence proposes eight parent-first lstat queries and one `/tmp/opencode` statfs, no controls/admin/children, literal-eval transport via Bash builtin exec-c, and DATA ONLY output.
+Candidate regular-file presence proves no executable permission, version, source identity, GNU compatibility or installation usability; missing qualification needs another exact proposal, not a default program launch.
+P0 needs fresh explicit acceptance of THIS packet's ordinary startup/path/cooperative-time/output-capture residuals; Node01 acceptance is not renewed, and exact P0 approval remains NONE.
+Tracked M2 source pins are copied, not fetched; the future Rust1.95.0 GNU minimal installer remains unwritten with no identity or ready claim.
+Exact downstream component URLs/hashes/lengths OR a NEW reviewed bounded trust scope remain OPEN before installer approval; the old downstream trust and exception cannot be silently reused.
+Preserve the WHOLE approved Node01 proposal/outcome, all consumed grants and retained controls without access, source470e540, accepted BAF3476/17, bf38/D1/B1/O9 and every old byte.
+[Implementation §24](native-ingress-implementation.md#24-m3-prerequisite-observation-before-installation) retains full-plan/initializer/source/clock/custody/capture gates; no source/config/test/Cargo/dependency/diagram/index/helper file changes follow.
+ONE BOTH-seat1048576/F1/replay, no extra credit, cold10s/lifecycle300s including3s and generator2048 remain unchanged; all five exclusions remain and all native/capture/L/snapshot claims remain false/null.
+Parent supplies the architect/DevOps advice and HEAD509c24001f7dd398fc488fcf2971567193ab23be/PR50 checkpoint; the keeper authored repository Markdown only, without independent runtime, Git, hash, syntax, test or review verification.

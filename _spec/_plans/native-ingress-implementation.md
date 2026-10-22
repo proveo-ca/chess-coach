@@ -686,3 +686,23 @@ No such question has been asked or answered, and no actual host or preparation m
 Root B numeric/invoice/guard/source/clock, actual loading/protection/custody and every Native qualification gate remain OPEN; no network/install/capture/build/F9-runtime permission follows.
 Keep accepted BAF3476/17, bf38/D1/B1/O9, source470e540, ONE BOTH-seat1_048_576, F1/replay, cold10s/lifecycle300s including reserved3s and generator2048 unchanged; all five exclusions stand, L is unwritten, candidates remain null, nativeAuthorityfalse/trainingReadyfalse.
 This four-file documentation persistence changes no source/config/corpus/tests/manifests/diagrams/index; the keeper ran no commands/tests/hashes/agents/network or operational reads and creates no new verification/publication claim.
+
+## 24. M3 prerequisite observation before installation
+
+**[Unverified] NEW M3 DESIGN ONLY / P0 SOURCE MEASURED / NO EXECUTION OR ACQUISITION AUTHORITY / INSTALLER UNWRITTEN / trainingReady:false.**
+[Ownership §25](native-ingress-ownership.md#25-fresh-m3-host-exception--proposal-only) records actual `Fresh preparation proposal` then `Host exception (Recommended)` choices; §23's pending context question is historical only for direction.
+The [M3 dossier](native-ingress-host-preparation-m3.md) is a new inert document, not a revision of the approved whole Node01 proposal/outcome or a renewal of any consumed grant.
+P0 proposes one fs/os-only Node body, eight literal parent-first lstat targets and one BigInt `/tmp/opencode` statfs, with no administrative materializer, on-disk controls, child, target opens/content/hash or old-root/proc/log/receipt/daemon access.
+Source output is one≤16384-ASCII-byte JSON line; cooperative3500ms/requested outer5000ms and bounded counters provide no synchronous interrupt, hard startup/output-capture/termination/RSS proof.
+Literal-eval source must travel in registered argv via Bash builtin exec-c using `/usr/local/bin/node`; unsupported/missing stops without PATH/runtime fallback, heredoc, temporary program or pipeline.
+Parent must externally measure/register fence and whole-document identities plus exact command, then complete separately authorized stdin-only syntax/static review before requesting fresh exact P0 approval.
+Never execute this body or a mock/model without a new grant; THIS packet's startup/path/time/output-capture residual acceptance must be explicit, not inherited from Node01.
+P0 success remains PREREQUISITES_CANDIDATE/DATA ONLY, not installation/PASS/native authority: no root creation, actual mise-version/source/backend execution or Rust usability is proved.
+Review actual missing facts first; then author/register a separate installer and obtain a NEW exact network/install exception. Current installer SOURCE NOT WRITTEN, identities NONE, exception NONE.
+Fresh M3 root collision STOPs without reuse/repair/removal/alternate root; M2 bounds are proposed baseline only, not hard latency/RSS/disk/firewall enforcement or acquisition authority.
+The two copied M2 URL/length/SHA pins do not close rustup payload downloads; exact downstream payload URLs/hashes/lengths OR a NEW reviewed bounded trust scope must precede installer approval.
+Do not silently reuse M2 network trust, globally upgrade/bootstrap mise, add a runtime download graph or weaken later offline capture/build/runtime allowlisting and no-acquisition-fallback.
+Normal dependencies/licenses/build closure, full plan, numeric B/invoice/guard/source, safe clocks/custody/loading/protection and every later native gate remain OPEN; no source assignment follows.
+Preserve all old bytes/programs/model/Node01 controls without access, source470e540, accepted BAF3476/17, bf38/D1/B1/O9, unchanged F1/replay and ONE BOTH-seat1048576 with no extra credit.
+Cold10s/lifecycle300s including3s/generator2048 and all five exclusions remain; capture root/L/snapshot stay null, nativeAuthorityfalse/trainingReadyfalse.
+This four-file documentation-only batch grants no commands/hashes/tests/agents/network/access/execution/publication and creates no source/target/Cargo/dependency/test/diagram/index/helper file; parent owns subsequent separately authorized verification and handoff.
