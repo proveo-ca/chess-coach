@@ -210,3 +210,53 @@ The [sealed-launch dossier](native-ingress-sealed-launch.md) catalogs supplied u
 Staged obligations preserve independent static-artifact expectations, verified W/G/S seals before same-FD digest, exact-object launch/binding-FD custody and owner-paid actual-executable dev/inode comparison. Bounded fixed-artifact preparation remains a PROPOSED classification, not a public-fee exemption; pre-owner owed effects mean STOP. Trusted launch, safe handoff/spawn, original clock origin, exact dependency/interfaces, closure/recipe, fees and physical envelope remain open before code/build/full-plan freeze. No Native endpoint controls follow without all remaining actual policy/init/Node custody/graph checks.
 
 No command, test, hash, agent call, new source/web read, installed-root/proc/PATH/log/control/receipt/socket/daemon/network access, dependency/manifests/lock/source/gate/index/diagram edit, capture, build or runtime operation follows. Published prefixes, accepted bf38/M1/M2/feasibility raw programs, fees/caps/clocks, policy/protocols and exact historical model remain unchanged. No escrow/subbudget/replacement/restored meter or cross-exec work state follows. All five exclusions remain; `trainingReady:false`. The dossier is the fifth continuation draft; parent owns PLAN and later reviews.
+
+## 15. R-OUT actual custody and safe-API research
+
+**[Unverified] 2026-10-22 · R-OUT + DEDICATED ENTRY DESIGN ONLY / RUNTIME APIs + CUSTODY UNQUALIFIED / NO DEPENDENCY APPROVAL · trainingReady:false.**
+
+[Ownership §18](native-ingress-ownership.md#18-r-out-host-owner-and-dedicated-entry-direction) owns actual selection precedence and C/L/O semantics; earlier realm-UNSELECTED text retains checkpoint scope.
+Parent supplies the R-OUT advisors named there. Parent directly verified upstream Rust1.95 PidFd, nix0.31.3 sys module declarations and rustix1.1.5 pidfd source; remaining catalog rows come from supplied DevOps research, not keeper fetches or local probes.
+No upstream signature proves installed source, actual permission, kernel support or a selected custody mechanism.
+
+### 15.1 Actual evidence join before private issuance
+
+Fix independently registered source/runtime/policy/init inputs BEFORE claims, then join observed owned relationships to those expectations.
+For BOTH endpoints, bind actual ContainerID/attachment (and reference ExecID IF separately selected) to actual Node lifetime handle, executable FD, root/namespaces, native graph, session and ORIGINAL raw-frame channel.
+Require daemon relationship records AND retained kernel object/process observations; JSON identifiers alone cannot close the join.
+A Docker CLI `Child` is not Node custody. Raw PID plus start time is not a stable owned process handle.
+Opening a pidfd from a claimed PID may already select the wrong process through an acquisition race; a stable resulting FD cannot repair that provenance.
+An opened proc FD stabilizes its selected object, not the correctness of its initial PID selection or genuine proc/mount/root provenance.
+Actual same-host/proc permissions and rootless status remain UNKNOWN; matching old metadata proves none of them.
+Apply the FULL unchanged policy and independently bound inputs, plus actual daemon-used init bytes; hostname/version/basename matches do not suffice.
+EOF, RPC/CLI exit, `Running:false` or an exit code alone is not actual Node EOF + termination + reap evidence.
+If an already-allowed reachable stable-process/reaper observation cannot be specified, STOP; no added observer, capability, mount, socket, namespace sharing or ptrace fallback follows.
+
+### 15.2 Upstream safe-API catalog — no candidate chosen
+
+SAFE below describes the exported Rust call, not an approved dependency or qualified runtime mechanism.
+
+| Upstream API / reference | Export / feature and exact limitation |
+|---|---|
+| Rust1.95 [`std::os::linux::process::PidFd`](https://doc.rust-lang.org/1.95.0/std/os/linux/process/struct.PidFd.html) | NIGHTLY `linux_pidfd`; unavailable as this stable-stdlib solution. |
+| nix0.31.3 [`sys` declarations](https://docs.rs/nix/0.31.3/src/nix/sys/mod.rs.html) | Full source declarations contain no `sys::pidfd`; this is not a404-based absence claim. Reexported libc is no safe wrapper under `forbid(unsafe_code)`. |
+| rustix1.1.5 [`process::pidfd_open` / `pidfd_send_signal`](https://docs.rs/rustix/1.1.5/src/rustix/process/pidfd.rs.html) | SAFE `pidfd_open(pid:Pid, flags:PidfdFlags) -> io::Result<OwnedFd>`; SAFE `pidfd_send_signal<Fd:AsFd>(pidfd:Fd, sig:Signal) -> io::Result<()>`; `process`, Linux. Supply neither identity acquisition nor reaper permission. |
+| rustix1.1.5 [`PollFd::new`](https://docs.rs/rustix/1.1.5/rustix/event/struct.PollFd.html) / [`event::poll`](https://docs.rs/rustix/1.1.5/rustix/event/fn.poll.html) | SAFE borrowed-FD poll construction and `poll(&mut [PollFd], Option<&Timespec>) -> io::Result<usize>`; `event` is an additional unapproved feature. Inspect events, not just readiness count; readiness is not reap. |
+| rustix1.1.5 [`process::waitid` / `WaitId::PidFd`](https://docs.rs/rustix/1.1.5/src/rustix/process/wait.rs.html) | SAFE borrowed pidfd wait selection; `process`, Linux. A pidfd creates no wait authority; nonchild ECHILD, NOWAIT or nohang None is not completed reap. |
+| rustix1.1.5 [`process::pidfd_getfd`](https://docs.rs/rustix/1.1.5/src/rustix/process/pidfd_getfd.rs.html) | SAFE foreign-FD duplication; `process`, ptrace permission checks and shared-offset effects. EXCLUDE absent separate justification; no new privilege/path. |
+| nix0.31.3 [`fcntl::openat`](https://docs.rs/nix/0.31.3/nix/fcntl/fn.openat.html) / [`sys::stat::fstat`](https://docs.rs/nix/0.31.3/nix/sys/stat/fn.fstat.html) | SAFE `fs` candidates for retained proc/object metadata. Establish neither genuine proc/mount/root/namespace provenance nor permission. |
+| nix0.31.3 [`time::clock_gettime`](https://docs.rs/nix/0.31.3/src/nix/time.rs.html#210-219) / [time namespaces](https://man7.org/linux/man-pages/man7/time_namespaces.7.html) | SAFE `time` feature, NOT the older `fs`/`process` candidate. MONOTONIC excludes suspend; BOOTTIME includes it. Namespace offsets and actual comparability remain unqualified. |
+
+Safe exported APIs may contain internal unsafe code in reviewed dependencies; arena call sites still preserve `#![forbid(unsafe_code)]`.
+The rejected rustix unsafe experimental exec and these safe process APIs are DIFFERENT functions, not contradictory safety findings.
+The sealed-launch minimal proposed nix syscall entry was never the full F9 closure. A normal rustix edge with `process`/`event`, or nix `time`, would require a NEW dependency/feature decision.
+Cargo.lock presence supplies no normal dependency approval, resolution/cache availability, license qualification or build qualification.
+No pidfd, polling, wait, clock API, process layout or FD-handoff mechanism is automatically selected.
+
+### 15.3 Remaining source-bound contract
+
+Specify safe identity acquisition, live validation/reap authority, exact channel binding and failure ordering BEFORE accepting the mechanism plan.
+O's paid checks must compare independently expected inputs with actual observations before any private Native issuer succeeds; Node receipts cannot carry authority across realms.
+Potentially reaping validation keeps its exclusive gate; normal closing quiesces loans and permanently revokes before wait/reap. Missing completion evidence invalidates final audit acceptance.
+Original-clock obligations remain in [sealed-launch §16](native-ingress-sealed-launch.md#16-r-out-launch-responsibilities-and-original-clock); source/invoice boundaries remain in [implementation §17](native-ingress-implementation.md#17-r-out-fixed-entry-and-role-specific-invoice-design).
+The keeper ran no commands, tests, hashes, model or runtime probes while authoring this appendix; parent source/document verification and upstream web research are separately scoped. This design grants no installed/proc/PATH/log/receipt/daemon access, new permission or source/target/dependency change. All five exclusions remain; `trainingReady:false`.

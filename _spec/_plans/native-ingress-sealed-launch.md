@@ -255,3 +255,35 @@ Parent owns PLAN navigation and subsequent review/verification; earlier reviews 
 The keeper ran no tests, model runs, commands, hashes or probes while authoring these appendices; parent documentation checks and reviews remain separately scoped. No source/dependency edit, acquisition or runtime operation follows.
 Route B remains design-selected only; bf38/D1/B1/O9, fixed1_048_576/cold10s/lifecycle300s/reserved3s/generator2048, unchanged F1 and all five exclusions remain.
 No collection, fitting, calibration, training, activation or deployment follows. `trainingReady:false`.
+
+## 16. R-OUT launch responsibilities and original clock
+
+**[Unverified] 2026-10-22 · HOST OWNER + DEDICATED APPLICATION ENTRY DESIGN-SELECTED ONLY / PREPARATION + CLOCK + HANDOFF UNQUALIFIED / IMPLEMENTATION + OPERATIONS BLOCKED · trainingReady:false.**
+
+[Ownership §18](native-ingress-ownership.md#18-r-out-host-owner-and-dedicated-entry-direction) records both actual TUI selections and their limited precedence; [implementation §17](native-ingress-implementation.md#17-r-out-fixed-entry-and-role-specific-invoice-design) owns the proposed application-entry boundary.
+Root A, DIRECT, route B and accepted private-initializer classification remain unchanged; the earlier realm/entry labels retain checkpoint scope.
+R-OUT selects the host-owner direction, not ownership §13.6's main/ExecID topology, any safe API, clock feature, new helper or source target.
+
+| Responsibility | Ordered launch/time obligation |
+|---|---|
+| C | Retain original S0 BEFORE applicable per-launch materialization/loading AND root entry; remain outside the owner-replacing child exec. A surviving responsibility does not select a new process/channel. |
+| L | Preserve exact sealed-object/FD identity through the qualified loader; transfer no counter, paid credit or Native permission across exec. Safe spawn, descriptor handoff and error custody remain OPEN. |
+| O | Enter the proposed fixed root under the accepted classification, then perform separately prepaid actual binding and fresh local clock gates. Local entry never renews S0 or excludes earlier loading. |
+
+Reusable versus per-launch preparation remains PROPOSED, NOT ACCEPTED under §15.2; fixed public copies/hashes do not become physically or economically free.
+Classify every C/L pre-owner operation explicitly. O's placement outside the container supplies no exemption; any owed public work before its owner means STOP before effects.
+One counter exists only in O; no active-meter re-exec, snapshot, replacement, handoff or restored credit follows.
+
+Cold absolute10s covers launch, BOTH initializations, window/reference comparison and F1 under the original contract.
+Lifecycle300s includes reserved3s cleanup; no actor, failure or cleanup renews it. Exact close/EOF/reap/cold-barrier placement remains OPEN, not implicitly outside10s.
+Qualify clock-domain identity, origin binding, fresh local issuance/accessor gates, bounded nonrenewing residual and before/after checks.
+An outer timeout supervises termination but does not prove local gates refused on time. Synchronous F1 has no established hard-preemption guarantee.
+Serialized `Instant`, a remaining-ms flag or eventual JSON cannot authenticate the origin; a late postcheck prevents future/staged acceptance without rolling back prior reads/private F1 state.
+Ordinary host clocks do not automatically establish comparable origins: actual time-namespace provenance and possible offsets remain unqualified.
+No clock API/feature, timestamp/control schema or safe std executable-FD handoff is selected by these design choices.
+
+The dedicated-entry design must avoid F9 application argument collection/decoding before root entry; it does not eliminate all Rust-loader/stdlib allocation.
+Selected physical startup, loading and stdlib/native expansion still need source classification, finite bounds and original-clock coverage; any pre-owner owed public operation remains STOP.
+C/L/O need separate finite resource/failure envelopes and peak coexistence; Node-container caps do not automatically cover them.
+[Mechanisms §15](native-ingress-mechanisms.md#15-r-out-actual-custody-and-safe-api-research) records upstream-only custody/clock APIs without dependency approval or local qualification.
+The keeper ran no commands, tests or runtime probes while authoring this appendix. Parent owns PLAN navigation, documentation review/verification and separately authorized Git/publication; no source/dependency/target change or runtime access follows from this design. All five exclusions remain; `trainingReady:false`.

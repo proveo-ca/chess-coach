@@ -784,3 +784,67 @@ This worksheet closes only the inventory of known existing API operations: it pr
 Realm-independent rows can be studied without selecting R-OUT/R-IN. The complete binding/control sequence, selected native closure, clock transport, source-operation quantities and lifecycle envelopes require role-specific design; the physical realm remains **UNSELECTED**. An arena-private API namespace selects no R-OUT placement.
 An outside/host owner needs an external physical envelope not covered by the Node container. An inside owner needs bounded, paid outer evidence and clock causality, not free public helpers; neither candidate is qualified here.
 Parent prepares genuine role-specific options only when needed. This worksheet grants no actual runtime inspections, source changes, commands, tests, models or probes and renews no access permission. Separately authorized documentation verification/publication remains distinct; no new generic root/accounting/mapping question is opened. Parent retains PLAN-prefix navigation; accepted classification, protected bodies, cap/clocks, schemas and implementation/operational STOP gates remain unchanged; `trainingReady:false`.
+
+## 18. R-OUT host owner and dedicated-entry direction
+
+**[Unverified] 2026-10-22 · BOTH DIRECTIONS SELECTED FOR DESIGN ONLY / CUSTODY + CLOCK + B + SOURCE + FULL PLAN + OPERATIONS OPEN / NOT IMPLEMENTED · trainingReady:false.**
+
+### 18.1 Actual choices and narrowly scoped precedence
+
+| Date | Actual TUI selection | Selected scope / not granted |
+|---|---|---|
+| 2026-10-22 | `R-OUT design (Recommended)` | PHYSICAL OWNER DESIGN ONLY: develop one sealed host-Rust owner outside the Node policy container. No exact process topology, custody API, daemon exec, full-plan, implementation or operations approval. |
+| 2026-10-22 | `Dedicated F9 entry (Recommended)` | APPLICATION ENTRY DESIGN ONLY: develop a separate fixed F9 application entry. No target/source creation, Cargo change, signature/visibility, dependency, implementation or operations approval. |
+
+These are parent-supplied actual selections, not recommendations promoted into consent; no acceptance UTC is invented.
+This section supersedes earlier realm-UNSELECTED and source-entry-pending labels ONLY for these two directions; earlier labels retain checkpoint scope.
+Root A, DIRECT, sealed route B and the private-initializer direction remain unchanged. Accepted §16.2 BAF body (3476 bytes/17 lines), bf38/D1/B1/O9 and frozen model/program bytes remain untouched.
+R-IN, current legacy-CLI entry analysis and deferral alternatives remain UNSELECTED, not automatic fallbacks. Reask neither root, accounting nor mapping.
+Parent supplies Architect `ses_e9bb619c3ffe9pGnFII5eebYiG`, Backend `ses_e9bb619b9ffesNT2H121QN318N` and DevOps `ses_e9bb619b1ffeazXvjbF6OmlTxB` R-OUT advice; entry advice comes from Architect `ses_e9bad1b70ffeAVUfAkC17KXjgZ` and Backend `ses_e9bad1b6effedU828cTQtt4XRH`.
+These supplied findings establish no local capability or completed review of this appendix; the keeper called no agents or runtime tools.
+Parent supplies current branch `docs/f9-private-initializer`, HEAD `24415348b2197f67f58eb0c5d44a7d59c264cce5` and PR50 OPEN/ready against the feature base after PR49 merged; the keeper did not verify Git/remote state. Earlier publication/draft labels retain checkpoint scope; parent owns feature-PR publication of this delta.
+
+### 18.2 Responsibility contract — not an approved process diagram
+
+| Role | Concrete responsibility / exclusion |
+|---|---|
+| O — sole sealed HOST Rust owner | Own ONE direct counter, ONE F1 pair, all new public checks and the live private issuer. Remain outside the Node policy container; lend the counter locally, never restore it across exec. |
+| C — outer supervision | Retain original S0 and physical lifecycle supervision across child exec. Own no second work meter, F1 pair or Native issuer. Its survival is required; an exact helper process/channel is not selected. |
+| L — launch staging | Prepare and pass the SAME sealed object to its qualified loader. Produce material/evidence only, never paid credit or Native permission. Preparation classification and safe spawn/handoff remain OPEN. |
+| Worker / independent reference / daemon init | Actual Nodes and actual daemon-used init need registered source/native graphs and process bindings. Exact main-versus-ExecID placement remains UNSELECTED; §13.6 is still only a candidate. |
+
+C/L/O are responsibilities, not authorization for new top-level topology, a helper process, Node launcher, control channel or byte ABI.
+Preserve the FULL unchanged `assertContainerPolicy` and its imported predicate/input bindings, not a resource-only approximation: 2 CPUs, 4GiB memory AND memory+swap, 256 PIDs, UID/GID10001:10001, read-only root, network none, `/tmp` tmpfs1GiB/1777/nosuid/nodev, actual init, nonprivileged execution, `CapDrop=ALL`, no `CapAdd`, private PID/IPC, exact security-option list including no-new-privileges, and exact validated output-bind and `/tmp` mount restrictions.
+Bind policy bytes and separately required runtime configuration; Node booleans cannot attest Rust parity or hide unpaid work.
+The Node-container limits do NOT automatically constrain host C/L/O. Each role needs finite CPU/RSS/PID/time/FD/output/staging/storage and failure bounds, with enforced peak aggregate coexistence; no host numbers are selected here.
+Attributable daemon helpers and build/runtime coexistence must enter that worksheet. Outside-container work earns neither free allowance nor hidden Native/R4 exemption.
+
+### 18.3 R01/R02/R09–R13 refinement — source remains proposed
+
+| Existing row | Fixed-entry / owner obligation |
+|---|---|
+| R01 | Closed fixed application entry accepts no arbitrary args, meter/used/cap/invoice, callback, source path or FD selector. Before debit, permit only accepted root primitives; read no public data. |
+| R02 | Account for fixed guard creation/use and irreversible unused→spent consumption. Prove exactly one initializer call through the entire selected call graph; a non-Clone type alone proves no such property. |
+| R09 | AFTER successful fixed B debit, assemble proposed fixed control slots for the counter, spent-attempt, phase/revoked, borrow-state, empty custody and empty F1 state. Exact data-field/operation counts remain UNKNOWN proposed source, not an approved API. |
+| R10 | First fixed gate is accounting-only and covered once by B: no FD inspection, clock exchange or provenance scan. All variable binding requires additional ordinary precharge before effects. |
+| R11 | O performs paid actual same-object/seal/length/hash/dev-inode/source binding, clock/runtime/full-policy/init, BOTH endpoint custody and actual native-graph checks before issuing private Native controls. |
+| R12 | Retain private handles/control lifetimes; audit moves, returns, loans and drops. No escaping mutable counter, arbitrary installer or fresh-owner path. |
+| R13 | Failure absorbs: preserve successful expenditure, consume the attempt, block normal work/new loans and permit only bounded precovered mandatory cleanup. No refund, retry, replacement meter or fresh3s/work credit. |
+
+Existing `new()` starts used0; the conditional initial `charge(B)` argument and allocating String-error unreachability obligation in §17.3 remain unchanged.
+Source-fixed positive B≤1_048_576, concrete guard/body, full disjoint invoice and closed-graph proof remain OPEN; neither field lists nor acceptance create source.
+Independent registered expected source/runtime/policy/init inputs are data. Initial checker trust still rests on the selected captured artifact plus declared trusted kernel/host/launcher, not blind self-hashing.
+Only after required actual launch/loading/custody/policy/init checks may O privately construct `NativeReplaySession`. Construct `NativeInitialInputs` only from the relevant actual canonical initialization, independent reference comparison and checked authorized ordered boundaries. Node-private receipts or verified flags grant no Rust authority.
+
+### 18.4 Same-counter live use and final audit barrier
+
+O lends the SAME counter to F1 initialize once and two logical advances from the actual checked boundary pairs; retain existing F1 fees and no second fold.
+At most six unique recipient/boundary readouts describe logical facts, not a new total invocation cap. Each permitted N5 immediate identical replay pays its existing fees on that counter without reissuing facts or renewing slots; finite replay call/byte bounds remain OPEN.
+Retain exact ORIGINAL frames and boundary ranges; perform COMPLETE comparisons against independently controlled reference data, never reserialized JSON or an EconomicWorker/EconomicReplay oracle.
+`NativeActive` scoped loans remain LIVE before close. Validate every read and before/after callbacks through paid same-counter gates; prohibit nesting and staging/commit while borrowed.
+O7/public nonterminal AFTER-BEGIN visitor stays unchanged; the initial F9 Rust counterpart is separate and supplies no A2 authority.
+Normal closing quiesces loans, performs prescribed paid close operations and permanently revokes BEFORE wait/reap.
+Final audit acceptance requires required close facts, BOTH endpoint EOF, actual termination/reap and all original cold/lifecycle evidence; the retained report is audit DATA ONLY.
+Late postchecks reject future loans/staged acceptance, not already-read facts or already-mutated private F1 state through imaginary rollback.
+Full training closure, genuine Native authority, whole-decision adequacy, calibration and training readiness remain unestablished; `trainingReady:false`.
+Clock/launch obligations continue in [sealed-launch §16](native-ingress-sealed-launch.md#16-r-out-launch-responsibilities-and-original-clock), custody/API research in [mechanisms §15](native-ingress-mechanisms.md#15-r-out-actual-custody-and-safe-api-research), and entry/invoice design in [implementation §17](native-ingress-implementation.md#17-r-out-fixed-entry-and-role-specific-invoice-design).

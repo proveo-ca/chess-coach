@@ -398,3 +398,52 @@ Parent owns PLAN-prefix links, current review and authorized feature-branch Git/
 No first-charge source, tests or CLI execution follows; no new tests/model/hardware PASS or operational permission is recorded. `trainingReady:false`.
 
 [Ownership §§17.5–17.6](native-ingress-ownership.md#175-root-operation-worksheet--source-facts-and-unpriced-gaps) now separate supplied API-expression counts from proposed UNKNOWN root operations and role-specific gates. The worksheet prices no B, completes no source invoice/initializer graph and proves no nonexistent guard or constructor; the concrete private initializer remains UNDESIGNED. Complete the realm-independent inventory before any necessary role-specific decision; arena-private API naming selects no physical realm. Source body, guard/retained-resource/failure closure, binding sequence, native closure, clocks and lifecycle envelopes remain open, with no new implementation or operational grant; parent owns PLAN-prefix navigation.
+
+## 17. R-OUT fixed-entry and role-specific invoice design
+
+**[Unverified] 2026-10-22 · R-OUT + DEDICATED APPLICATION ENTRY DESIGN-SELECTED ONLY / EXACT TARGET + API + B + INVOICE + FULL PLAN UNAPPROVED / IMPLEMENTATION + OPERATIONS BLOCKED · trainingReady:false.**
+
+[Ownership §18](native-ingress-ownership.md#18-r-out-host-owner-and-dedicated-entry-direction) records the actual `R-OUT design (Recommended)` and `Dedicated F9 entry (Recommended)` choices; its precedence concerns directions only, not implementation/topology.
+Accepted initializer §16.2 BAF3476/17, bf38/D1/B1/O9, Root A, DIRECT, route B, model/program bytes and all prior prefixes remain unchanged.
+
+### 17.1 Supplied entry fact and proposed private boundary
+
+Parent directly read `apps/arena/src/main.rs:9–20`: line10 collects `args_os().skip(1)` into a Vec before dispatch; lines15–18 additionally collect String arguments for the existing route.
+That legacy route MAY allocate; this does not claim empty Vec always allocates, prove measured startup behavior or declare the existing CLI noncompliant without startup classification.
+The user selected a separate fixed F9 APPLICATION ENTRY design, not an edit to the legacy CLI or permission to create a binary now.
+Candidate path ONLY: `apps/arena/src/bin/native-ingress.rs`, within the existing arena package; legacy `src/main.rs` stays unchanged in this direction.
+A separate binary is a distinct Rust crate; package membership does not grant access to private library modules.
+Investigate a fixed host proof entry returning report/exit DATA through the existing public CLI boundary; expose no public owner/context constructor, mutable counter, arbitrary raw FD or selector.
+Exact entry signature, visibility, target and source filenames remain FULL-PLAN UNAPPROVED. No new training API, Cargo change or source file follows.
+
+The proposed fixed F9 entry must perform no application CLI argument parsing, args Vec, record-path/module/exec selection before the root covered by the accepted classification.
+Its private root consumes the one-attempt guard, constructs fresh used0, performs fixed `charge(B)`, then assembles accounting controls and the first fixed accounting-only gate after success.
+Read/register runtime data, FDs, environment and actual metadata only after the applicable ordinary paid gate; independent expected references remain data, not a pre-check Native issuer.
+Native issuance remains absent until O completes all required actual paid checks. Initial conditional allocating-error exclusion remains a source-proof obligation, not a test result.
+Loader/stdlib/whole-crate startup remains inside a captured, classified and bounded physical/native startup envelope with original-clock coverage; the dedicated entry does not make it allocation-free or free public work.
+Any owed pre-owner public operation means STOP. Audit registered expected argv/environment/launch inputs and reject hidden environment selectors.
+Audit the COMPLETE entry/private-operation/runtime/build/generated/native/type graph; symbol declarations or assumed compiler dead-stripping do not prove its closure.
+
+### 17.2 Existing proposed map and disjoint role invoice
+
+The existing private `{mod,runtime,decode,invoice}.rs` map retains its proposed responsibilities; this appendix creates no owner file, source assignment or accepted Rust API.
+
+| Invoice partition | Required role-specific coverage — quantities/coefficients UNKNOWN |
+|---|---|
+| Pre-owner preparation | Classify C/L reusable/per-launch preparation explicitly; no free public hash/copy or post-hoc debit. Any owed pre-owner work STOPs. |
+| Root B | Fixed entry, guard, fresh counter, initial debit, postdebit controls, first accounting-only gate and bounded root-failure effects, each covered once. |
+| Owner actual binding | Additional prepaid FD/type/seals/length/hash/dev-inode/source checks against independent expected inputs. |
+| Clock and custody gates | Every fresh local clock gate, actual identity/channel binding and continuing validation, including exclusive potentially reaping checks. |
+| Full policy/init/graph | Complete policy/input correspondence, actual daemon-init bytes, BOTH endpoints and actual source/runtime/native graph; no boolean shortcut. |
+| Requests and replies | Fixed requests, bounded reads/retention, ORIGINAL spans, complete decode/copy and independent-reference comparisons, including failure prefixes. |
+| Existing F1 | SAME counter, unchanged fees/results, initialize1/advance2, permitted charged N5 replay; no duplicated fold or double-billing covered work. |
+| Loan/staging/report | Per-read and pre/post-callback gates, borrow/release, atomic staging and report DATA production; no authority serialization. |
+| Close and failure | Prescribed close, revocation, EOF/reap observations, error allocation, returns/moves/drops and all mandatory bounded cleanup before effects. |
+
+No partition establishes numeric B, exact costs, invoice completeness, 1M fit or physical fit. Reserved3s is time, not public-work credit.
+The phase worksheet must enumerate C+L+O+worker/reference/init and attributable daemon helpers, finite per-role CPU/RSS/PID/time/FD/output/storage envelopes and enforced aggregate coexistence peaks; it authorizes no new helper.
+The new entry requires complete capture/identity/verification-plan approval and a separately named F9 gate; existing/default checks do not automatically run it, and old v11 coverage supplies no new F9 proof.
+Clock/launch and safe custody research remain owned by [sealed-launch §16](native-ingress-sealed-launch.md#16-r-out-launch-responsibilities-and-original-clock) and [mechanisms §15](native-ingress-mechanisms.md#15-r-out-actual-custody-and-safe-api-research).
+Next concrete contract work may refine original-clock or entry-source closure; bring only actual API/trust/topology/new-permission forks when specific, not another generic work-priority question.
+No clock/control schema, Node main/ExecID placement, dependency/feature or complete recipe is selected; full-plan, implementation and operations approvals remain separate.
+Parent owns the fifth PLAN-prefix update, review, verifiers and authorized feature-PR publication; this appendix claims no new review/check/publication result. The keeper ran no commands, tests, hashes, Git/network operations, agents or runtime probes while authoring it. Parent documentation verification and publication remain separately scoped; all five exclusions and `trainingReady:false` remain.
