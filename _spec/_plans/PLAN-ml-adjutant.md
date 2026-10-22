@@ -1,3 +1,11 @@
+## Current continuation — private F9 initializer investigation (2026-10-22)
+
+**[Unverified] Direction selected, classification NOT accepted:** Executor selected `Private initializer (Recommended)` for design investigation with existing LedgerWork APIs and no new training API. [Ownership §16](native-ingress-ownership.md#16-private-initializer-investigation-and-proposed-classification) specifies the proposed closed initial-accounting base case, one-attempt boundary and exact classification body; [implementation §15](native-ingress-implementation.md#15-private-initializer-direction--design-investigation-only) refines only the existing proposed file map.
+
+**Next decision gate:** compatibility/spec-policy review and exact-body identity precede a TUI decision on the classification alone. Existing new-used0 followed by a fixed first debit is not ordinary prepayment for earlier effects. Prove the first charge's allocating error branch unreachable under the admitted fixed constants and closed entry; exact Rust B, complete disjoint invoice, guard/failure coverage, source/API boundary, clocks, custody and full-plan approval remain OPEN. Select no TS fee, refund, replacement meter, implementation or operation.
+
+PR49 merged into `feat-ml-adjuntant` at verified baseline `6b7143299374b3e908f88bd7eaa61d920e9e3504`; this later planning delta is not included in that merge. Preserve the existing public Rust/F1 APIs, BOTH-seat1_048_576, cold10s/lifecycle300s including3s cleanup, generator2048, bf38/D1/B1/O9 and all consumed-access boundaries. Documentation publication does not accept the proposed policy or establish readiness. `trainingReady:false`.
+
 ## Current continuation — F9 bootstrap correspondence (2026-10-22)
 
 **[Unverified] Planning update only:** baseline `6c146887`, user-approved branch `docs/f9-bootstrap-correspondence`. The [TS-to-Rust audit](native-ingress-ownership.md#15-ts-to-rust-bootstrap-correspondence-and-remaining-gates) identifies an existing restricted TS bootstrap base case, not an accepted Rust constructor, fee or Native authority. TS initial3072 plus successful admission512 must not become a portable F9 tariff; source/test inspection establishes no new runtime PASS.

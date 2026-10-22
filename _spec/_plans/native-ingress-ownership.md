@@ -620,3 +620,77 @@ Full-plan review, exact implementation approval and operational approval remain 
 
 Preserve accepted bf38/D1/B1/O9, N1–N10, inclusive1_048_576, cold10s, lifecycle300s including reserved3s, separate generator2048, unchanged F1, gameplay gas/minerals/H1 and native DTO/protocol/Configuration26/Versions21 labels.
 All five exclusions remain; no collection, fitting, training, activation or readiness follows. `trainingReady:false`.
+
+## 16. Private initializer investigation and proposed classification
+
+**[Unverified] 2026-10-22 · DESIGN INVESTIGATION SELECTED / EXACT CLASSIFICATION PROPOSED NOT ACCEPTED / B, INVOICE, CLOCK, CUSTODY OPEN / IMPLEMENTATION + OPERATIONS BLOCKED · trainingReady:false.**
+
+### 16.1 Actual selection and supplied source basis
+
+| Date | Actual TUI choice | Selected scope | Alternatives / not granted |
+|---|---|---|---|
+| 2026-10-22 | `Private initializer (Recommended)` | Investigate a closed arena-private initializer using existing LedgerWork APIs; no new training API. | Training-host constructor and clock-first alternatives remain UNSELECTED, not fallbacks. No exact classification, base-case acceptance, B/fee, API, source assignment, full-plan or operations approval. |
+
+This records the supplied actual human selection, not an agent recommendation promoted into consent. Earlier `proceed`, R3/R4 source grants and prior root-direction advice supply no acceptance of the proposed body below.
+Parent supplies Architect `ses_e9c031d8cffeZ5P2TM4Yl4J8jJ` and Backend `ses_e9c031cefffeaXqyQISduKrjSl` advice; the keeper did not independently audit or execute source.
+Supplied `packages/training/src/ledger/work.rs:35–40` constructs used0 at the production cap; `:61–70` performs checked addition/cap refusal. `packages/training/src/ledger/contracts.rs:156–167` stores a String message and invokes `message.into()`; an actual first-charge refusal may allocate.
+TS `sourcePolicy.ts` restrictions remain TS policy, not Rust permission. The new direction narrows §15's OPEN constructor investigation only; it approves no constructor or transferable TS fee.
+
+### 16.2 Exact proposed classification body — not accepted policy
+
+<!-- BEGIN F9 PRIVATE INITIALIZER PROPOSED CLASSIFICATION BODY -->
+### Private F9 initializer classification — PROPOSED
+
+1. This classification concerns only one closed, source-audited private F9 initializer using existing LedgerWork APIs and the inclusive1_048_576 cap. It accepts no caller usage, cap, invoice, meter, credit or callback. A private fixed-entry attempt guard permits one initialization; failed or completed attempts cannot reopen it. No public F9-owner constructor or replacement allowance follows.
+
+2. Before the first successful debit, permit only explicitly enumerated fixed entry/uniqueness control, fresh counter construction, the fixed initial charge and bounded nonallocating branch/return operations. Account for guard creation and use. Permit no heap allocation, formatting, public-data/FD read, payload hash/copy, provenance check, native IPC or callback there. The transient used0 counter remains inaccessible outside the closed initializer.
+
+3. Existing new() followed by charge(B) is an INITIAL ACCOUNTING PRIMITIVE, not ordinary prepayment or proof that charging preceded construction. Source fixes positive B at or below the existing cap; B remains unpriced and unapproved here. It imports no prior accounting state, grants, reservations or work credit and transfers no meter through exec.
+
+4. Before implementation approval, a complete source-specific disjoint invoice must cover root entry/control, guard creation/use, counter construction, initial debit, subsequent private-control assembly, the first fixed gate and bounded failure/closure effects. Assemble private owner controls only after successful debit. Release initial used=B privately. Every variable runtime-binding operation requires its own ordinary precharge. Select no TS3072 port, refund or extra allowance.
+
+5. Prove the initial charge's error-construction branch unreachable under the admitted fresh used0 state, fixed valid B and selected closed source graph. Existing refusal constructs a String-bearing error; intent is insufficient. Without that source-bound proof, STOP before candidate execution, not unpaid allocation or an implied source fix. Any root failure publishes no owner, consumes the attempt and permits no retry, zero-meter recovery or replacement. Retain all successful charges.
+
+6. Accounting admission grants no Native or model authority. Actual source/loading/custody/full-policy/init and same-object FD/seal/digest/dev-inode checks remain separately required and prepaid. Keep one counter for BOTH seats, unchanged F1 and each charged immediate replay. Lend it only to fixed scoped operations; expose no arbitrary accounting or authority installer.
+
+7. Original S0 must precede root entry and applicable per-launch materialization/loading. The clock mechanism remains OPEN. Preserve cold10s, lifecycle300s including reserved3s cleanup and separate generator2048. Neither helper entry, failure nor cleanup creates a fresh deadline or public-work allowance.
+
+8. Acceptance classifies this initial-accounting base case only; it does not accept B, an invoice, constructor implementation, complete plan or operation. Register any accepted clarification independently as host-private F9 policy, not O9 authority. Preserve bf38/D1/B1/O9, schemas and the existing N10 implementation/inventory/audit/command gates. If compatibility requires changing a protected contract, STOP for a separate explicit decision. No capture, build, installed-root/proc/receipt/daemon access, acquisition, model work or readiness claim follows.
+<!-- END F9 PRIVATE INITIALIZER PROPOSED CLASSIFICATION BODY -->
+
+### 16.3 Proposed ordered operations — obligations, not Rust signatures
+
+| Order | Required operation / boundary |
+|---|---|
+| S0 / trusted closed entry | Preserve original S0 before root entry and applicable per-launch materialization/loading. Trusted entry is a declared premise, not a self-authenticating source check. Clock mechanism OPEN. |
+| Consume one attempt | Create/use/consume one private attempt guard inside the audited fixed base case. The guard supplies neither source authenticity nor genuine Native authority. No failed/completed attempt reopens it. |
+| Fresh counter | Construct used0 privately with existing production `new()` and fixed cap L=1_048_576. No `with_limit`, incoming usage/meter or restoration in this F9 path; expose no zero counter. |
+| First fixed debit | Charge source-fixed positive B with B≤L. Prove 0+B≤L without u64 overflow and unreachability of the allocating refusal branch on this initial call in the selected graph; do not omit the branch from the audit. |
+| Private assembly / first fixed gate | Only after successful debit assemble owner controls and complete the precovered fixed gate; release used=B privately in conceptual UNBOUND phase, not Native. B covers that gate once, without a second charge for the same work. |
+| Paid actual binding | Ordinarily precharge every variable runtime-binding operation additionally; no header claim includes it without a disjoint invoice. Issue actual Native controls only after all required source/loading/custody/full-policy/init and same-object checks. |
+| Live use then close | NativeActive scoped borrows precede close; validate each read and before/after callbacks. Quiesce loans for normal closing, perform the prescribed paid close operations, and revoke live controls before wait/reap. Final audit requires close, EOF and reap. No rollback of prior reads or private F1 state. |
+| Absorbing failure / bounded cleanup | Initial failure releases no owner. Consume the attempt, retain successful charges, block normal work and allow only bounded precovered mandatory cleanup within original clocks. Ordinary charge refusal remains non-poisoning; wrapper failure absorbs, with no retry/replacement/refund. |
+
+The symbolic invoice partition is B = B_root_entry_control + B_guard_creation_use + B_counter_construction + B_initial_debit + B_postdebit_controls + B_first_fixed_gate + B_bounded_failure_closure.
+Each term requires a source-specific disjoint operation inventory, including moves/returns/drop and bounded failure effects; the expression selects no coefficient, constant tariff or numeric Rust B. If the fixed positive total cannot fit B≤L, STOP without discount or extra allowance.
+The proposed base case is not proof that its own construction was prepaid. Variable Native-binding work remains additional ordinary precharge and cannot be hidden in the fixed header or B without its invoice.
+
+### 16.4 Source-bound proof and future verification — NOT RUN
+
+`packages/training/src/ledger/work.rs:35–40,61–70` and `packages/training/src/ledger/contracts.rs:156–167` anchor the initial-charge proof obligation: establish the exact fresh state, immutable source-fixed valid B and closed call graph so neither checked-add failure nor cap refusal reaches String construction on this initial call. Missing proof means STOP before candidate execution; no source fix is implied.
+Guard creation/use, duplicate-attempt rejection before an owner exists, reentry, all returns/moves/drop paths and failure closure need a closed finite source audit. Rejection is not a free borrowed permit. How the guard cannot duplicate/reenter remains OPEN; a Rust single-owner type alone does not prove that no path calls `new()` again.
+
+| Future verification family — NOT RUN | Required case / limit |
+|---|---|
+| Fixed production root | Prove source-fixed B positive and ≤L, the initial allocating error branch unreachable, initial private used=B and no used0 exposure. Negative fixtures introduce no production injector. |
+| Attempt and refusal | Repeated/failed/completed guard attempts release no owner; test reentry refusal without retry/replacement. Preserve ordinary non-poisoning charge behavior while wrapper failure absorbs. |
+| Shared work / boundary | BOTH seats, unchanged F1 and each charged immediate replay use the SAME counter. At cap the next positive unit refuses; successful charges remain, with no refund. |
+| Actual authority | Synthetic/private-control fixtures cannot supply a positive Native context. Actual source, runtime, custody, policy/init and clock proof remain separate. |
+
+### 16.5 Review and acceptance handoff
+
+The [implementation §15 pointer](native-ingress-implementation.md#15-private-initializer-direction--design-investigation-only) proposes responsibilities in the existing file map, not source assignments. Source coverage and the complete invoice remain unknown.
+Parent must obtain compatibility/spec-policy review, mechanically measure the exact proposed body identity, then present a real TUI classification decision. This body remains PROPOSED, not registered accepted policy, even if committed; no digest or acceptance is invented here.
+Parent measured the proposed body only, excluding delimiter lines and retaining its final LF: SHA-256 `baf4237628dddbedc09541393ab4c64f97f38c72c46586751e9dc5475f9fa1b3`,3476 UTF-8 bytes/17 LF-terminated lines. This identifies a review target, not accepted policy or executable authority.
+No additional question is opened by this appendix. Prior reviews do not approve this delta; parent owns current PLAN navigation, subsequent review and publication checks. The keeper ran no commands, tests, model or runtime probes.
+Accepted bf38/D1/B1/O9, N1–N10, schemas, F1, shared cap/clocks/cleanup and all five exclusions remain unchanged. Full training closure, genuine Native authority, whole-decision adequacy, calibration and training readiness remain unestablished; `trainingReady:false`.

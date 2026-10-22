@@ -346,3 +346,31 @@ The [sealed-launch dossier](native-ingress-sealed-launch.md) supplies the propos
 Bounded fixed-artifact preparation remains a PROPOSED classification requiring explicit policy/recipe acceptance where outside N3/N4; it never automatically exempts public copies/hashes/binding. Pre-owner owed work means STOP, not post-hoc payment or cross-exec meter restoration. Trusted initial loading, safe launch-staging/spawn/handoff and nonrenewing timing preserving any earlier launch origin remain unresolved; no fresh10s or remaining-ms flag is accepted. No fake Child or old-supervisor continuation follows exec. Exact closure/installed-byte/static recipe, interfaces, fees and physical envelopes remain prerequisites to code/build/full-plan freeze; actual F9 policy/init/Node custody/graph checks still precede controls.
 
 This dossier becomes the fifth continuation draft including the parent-owned PLAN. Published prefixes, bf38/M1/M2/feasibility raw programs, exact5017-byte/190-line model and historical561348 assertions stay untouched; no model rerun or new test occurs. ONE BOTH-seat1_048_576 counter covers unchanged F1 and all owed public work, with original10s/300s/reserved3s cleanup and separate generator2048; no escrow/subbudget/replacement/restored meter or cross-exec work state. No command, hash, Git, agent, source/web read, installed-root/proc/PATH/log/control/receipt/socket/daemon/network access, capture/build/runtime operation, diagram/index/gate/source change or new grant follows. All five exclusions and `trainingReady:false` remain; parent owns PLAN-prefix navigation and subsequent reviews.
+
+## 15. Private initializer direction — design investigation only
+
+**[Unverified] 2026-10-22 · PRIVATE INITIALIZER INVESTIGATION SELECTED / NO API, FEE OR EXACT CLASSIFICATION ACCEPTANCE / FULL PLAN + IMPLEMENTATION + OPERATIONS BLOCKED · trainingReady:false.**
+
+Executor actually selected `Private initializer (Recommended)` for investigation using existing LedgerWork APIs in an arena-private proposal; no new training API follows. Training-host constructor and clock-first alternatives remain unselected, not fallback paths.
+[Ownership §16](native-ingress-ownership.md#16-private-initializer-investigation-and-proposed-classification) owns the operation order, symbolic disjoint invoice, source-bound first-refusal proof and attempt-guard obligations. Its [exact proposed body](native-ingress-ownership.md#private-f9-initializer-classification--proposed) remains PROPOSED, not accepted or registered host-private F9 policy.
+Earlier R3/R4 source grants, root-direction advice and generic `proceed` supply no base-case, fee, source or operational acceptance. No agent recommendation is recorded as a human choice.
+
+### Proposed responsibility refinement — existing file map only
+
+| Existing proposed map | Direction for investigation, not source assignment or signatures |
+|---|---|
+| `apps/arena/src/native_ingress/{mod,runtime}.rs` | Investigate closed private initialization and one-attempt guard semantics: fixed audited base case, private initial used=B, postdebit UNBOUND controls, then separately paid actual runtime binding before Native controls. No new owner file. |
+| `apps/arena/src/native_ingress/invoice.rs` | Hold closed root/control/first-gate/failure terms only after actual source-audited fee approval; not a generic invoice writer or caller-provided credit installer. B and all coefficients remain OPEN. |
+| Existing private host entry / `apps/arena/src/lib.rs` boundary | Accept no arbitrary used/cap/invoice/meter/verifier callback/path; export no public authority or model-facing constructor. Prepared FD/seal flags cannot construct authority. No new training normal dependency or API. |
+
+This refines a proposed map only; it assigns no source now. Preserve legacy `Transaction::new`, ordinary LedgerWork semantics and old public F1 APIs unchanged, while forbidding legacy resource renewal as the F9 path.
+Before implementation approval, freeze the exact root body, B/invoice, first-error unreachability proof, once/reentry/duplicate-failure discipline and every return/move/drop operation. Rust ownership alone does not establish the closed source graph; coverage remains unknown.
+Private control creation belongs to the closed proposed F9 lifecycle, not a shortcut around actual source/loading checks or any Native gate. Accounting admission supplies no model or Native authority.
+Clock/preparation classification, safe launch/handoff, closure/custody/full-policy/init mechanisms, exact physical recipe/envelopes and the full plan remain STOP gates. Preserve original S0, cold10s, lifecycle300s including reserved3s cleanup and separate generator2048; no new deadline or allowance.
+Owner §16's future tests remain NOT RUN: initial positive fixed B/cap proof, allocating-branch exclusion, no zero exposure, failed/repeated guard refusal, ordinary non-poisoning versus absorbing owner failure, unchanged shared F1/replay and cap refusal. No production test injector or synthetic positive Native context is proposed.
+
+### Publication and next decision boundary
+
+Parent reports PR49 merged and remote-verified at `6b7143299374b3e908f88bd7eaa61d920e9e3504`; that is the historical baseline, not publication of this next delta. The current supplied worktree is `/tmp/opencode/f9-bootstrap-correspondence`, branch `docs/f9-private-initializer`; the keeper did not verify Git state.
+Parent owns PLAN navigation, compatibility/spec-policy review, exact-body identity measurement, the subsequent real TUI classification decision and authorized publication checks/push/feature PR targeting `feat-ml-adjuntant`, not merge. Publication itself cannot accept the proposed classification, B, invoice, API, complete plan or operation.
+The keeper ran no commands, tests, model or probes and claims no parent-wide absence of document checks. No new files, diagrams/index/source/tests/manifests/dependencies or protected bodies change. Accepted bf38/D1/B1/O9/N1–N10, unchanged BOTH-seat cap/F1, schemas and all five exclusions remain; `trainingReady:false`.
