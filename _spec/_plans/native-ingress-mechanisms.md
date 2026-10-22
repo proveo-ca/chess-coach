@@ -260,3 +260,41 @@ O's paid checks must compare independently expected inputs with actual observati
 Potentially reaping validation keeps its exclusive gate; normal closing quiesces loans and permanently revokes before wait/reap. Missing completion evidence invalidates final audit acceptance.
 Original-clock obligations remain in [sealed-launch §16](native-ingress-sealed-launch.md#16-r-out-launch-responsibilities-and-original-clock); source/invoice boundaries remain in [implementation §17](native-ingress-implementation.md#17-r-out-fixed-entry-and-role-specific-invoice-design).
 The keeper ran no commands, tests, hashes, model or runtime probes while authoring this appendix; parent source/document verification and upstream web research are separately scoped. This design grants no installed/proc/PATH/log/receipt/daemon access, new permission or source/target/dependency change. All five exclusions remain; `trainingReady:false`.
+
+## 16. Safe origin-carrier primitives — research only
+
+**[Unverified] 2026-10-22 · SUPPLIED UPSTREAM API FACTS ONLY / NO SELECTED CARRIER, FD MAPPING, DEPENDENCY OR OPS APPROVAL · trainingReady:false.**
+
+[Ownership §19](native-ingress-ownership.md#19-native-origin-record--selected-approach-unselected-carrier) selects method investigation only; Architect's pipe-selection claim was withdrawn, not human consent.
+The following DevOps findings concern UPSTREAM sources, not installed bytes, actual target behavior/offline availability, local capabilities or an accepted safe mechanism.
+SAFE means exported Rust call safety; it supplies no source provenance, economic exemption or whole-path allocation guarantee.
+
+| Upstream API / reference | Supplied fact / limitation |
+|---|---|
+| Rust1.95 [`std::io::pipe`](https://doc.rust-lang.org/1.95.0/src/std/io/pipe.rs.html#83-87) | SAFE `pipe() -> io::Result<(PipeReader, PipeWriter)>`, stable1.87. |
+| [`PipeReader` FD traits/conversions](https://doc.rust-lang.org/1.95.0/src/std/os/fd/owned.rs.html#534-572) | SAFE AsFd and OwnedFd conversions, stable1.87; ownership plumbing is not producer identity. |
+| [`Stdio` conversions](https://doc.rust-lang.org/1.95.0/std/process/struct.Stdio.html) | SAFE From<PipeReader> stable1.87; From<OwnedFd> stable1.63. No spawn/handoff design follows. |
+| [Standard-stream AsFd](https://doc.rust-lang.org/1.95.0/src/std/os/fd/owned.rs.html#483-531) | SAFE stdin/stdout/stderr FD0/1/2 borrowing, stable1.63; proves no file type, access mode or provenance. |
+| [`BorrowedFd::try_clone_to_owned`](https://doc.rust-lang.org/1.95.0/src/std/os/fd/owned.rs.html#113-129) | SAFE; Linux F_DUPFD_CLOEXEC uses minimum3, producing a DISTINCT CLOEXEC FD to the same object, not copied Native authority. |
+| nix0.31.3 [`dup`](https://docs.rs/nix/0.31.3/src/nix/unistd.rs.html#439-450) + [`fcntl`](https://docs.rs/nix/0.31.3/nix/fcntl/fn.fcntl.html) | SAFE `dup -> OwnedFd`, `fs`; checked F_SETFD/CLOEXEC is a separate second operation, not an atomic combined clone. |
+| nix0.31.3 [`execveat`](https://docs.rs/nix/0.31.3/src/nix/unistd.rs.html#1219-1245) | SAFE `process` wrapper internally allocates argv/env pointer Vecs even with caller-prepared arrays; classify/bound L's effects, never infer free launch. |
+| [stdin initialization](https://doc.rust-lang.org/1.95.0/src/std/io/stdio.rs.html#340-346), [stdout initialization](https://doc.rust-lang.org/1.95.0/src/std/io/stdio.rs.html#716-720) | First access, buffering/locks, TLS and synchronization MAY allocate; selected stdlib expansion and actual bounds remain unknown. |
+| [Linux pipe source](https://doc.rust-lang.org/1.95.0/src/std/sys/pipe/unix.rs.html#8-30) | Upstream pipe2(O_CLOEXEC) implementation; no automatic proof that every writer copy closes. |
+
+Duplicated FDs may SHARE the open-file-description offset/status; do not assume independent readers. Require exclusive-reader or qualified positioned-read proof; no source API is selected.
+Stdout AsFd can borrow FD1 even when it is bound read-only; that candidate must forbid stdout printing, not assume the name establishes writable stream semantics.
+Static unbuffered stderr does not make its entire access/report path allocation-free. O accesses stdio only AFTER B and ordinary precharge; C/L classify and supervise all corresponding effects.
+EOF requires EVERY writer copy closed, including inherited duplicates. A fixed32-byte pre-spawn write still requires fresh-empty capacity/blocking proof.
+Library `read_exact` can retry EINTR without an application attempt bound; bound actual attempts and every read/write/partial/EOF-probe call or STOP.
+No unsafe FromRawFd or `pre_exec` workaround, pidfd_getfd, ptrace or privilege fallback is authorized.
+
+### 16.1 Unselected carrier directions and remaining proof
+
+Candidate PIPE stdio profile ONLY: FD0 origin flow, FD1 read-only executable binding, FD2 final report; F9-only, never the legacy Node protocol.
+The exec FD is SEPARATE and CLOEXEC; candidate binding FD1 is deliberately non-CLOEXEC across exec. Standard descriptor numbers supply no provenance.
+This mapping is UNAPPROVED, not an accepted FD ABI or a human pipe choice; inheritance, report/error paths and closure still need a complete source audit.
+Alternative sealed NONEXEC origin-data FD adds creation, seal/exact-length verification, adoption and per-launch copy/classification obligations; no carrier or API is selected.
+Both directions require actual C/kernel/channel and clock-domain/launch binding; magic/schema, immutable seals or matching tags alone cannot authenticate C's original event.
+The proposed32-byte grammar remains UNSELECTED in [sealed-launch §17](native-ingress-sealed-launch.md#17-native-origin-candidate-profile-and-launch-binding); [implementation §18](native-ingress-implementation.md#18-origin-acquisition-and-carrier-decision-boundary) owns ordinary paid acquisition.
+Earlier nix `fs`/`process` research, additional nix `time`, and rustix `process`/`event` each retain separate approval/closure obligations; stable APIs do not establish approved dependencies or offline availability.
+No installed-source/target qualification, runtime access, source/target/Cargo/dependency/test/diagram/index change or new permission follows. Parent owns review, PLAN and publication; the keeper ran no commands/tests/hashes/agents/web/probes. All five exclusions remain; `trainingReady:false`.

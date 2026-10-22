@@ -287,3 +287,50 @@ Selected physical startup, loading and stdlib/native expansion still need source
 C/L/O need separate finite resource/failure envelopes and peak coexistence; Node-container caps do not automatically cover them.
 [Mechanisms §15](native-ingress-mechanisms.md#15-r-out-actual-custody-and-safe-api-research) records upstream-only custody/clock APIs without dependency approval or local qualification.
 The keeper ran no commands, tests or runtime probes while authoring this appendix. Parent owns PLAN navigation, documentation review/verification and separately authorized Git/publication; no source/dependency/target change or runtime access follows from this design. All five exclusions remain; `trainingReady:false`.
+
+## 17. Native origin candidate profile and launch binding
+
+**[Unverified] 2026-10-22 · METHOD INVESTIGATION SELECTED / CANDIDATE PROFILE PROPOSED, UNSELECTED / NO CARRIER, ABI, CLOCK API OR OPS APPROVAL · trainingReady:false.**
+
+[Ownership §19](native-ingress-ownership.md#19-native-origin-record--selected-approach-unselected-carrier) records the actual method-only choice; no human selected PIPE or this grammar.
+Backend's supplied candidate is a concrete 32-byte LITTLE-ENDIAN frame, not an accepted new ABI or an existing Native IPC/model DTO/core field.
+Configuration26, Versions21, O9 and all existing Node protocols remain unchanged; no instance bytes were produced.
+
+### 17.1 Proposed frame — every field and count remains unapproved
+
+| Offset | Bytes | Proposed field / validation |
+|---|---|---|
+| 0 | 8 | Magic `NORIGIN\0`: hex `4e 4f 52 49 47 49 4e 00`. |
+| 8 | 2 | Unsigned u16 version, exactly1. |
+| 10 | 2 | Unsigned u16 source-fixed expected K_tag; clock-profile ASSERTION, never clock selector. |
+| 12 | 4 | Reserved, all zero. |
+| 16 | 8 | Signed i64 native-origin seconds. |
+| 24 | 4 | Unsigned u32 native-origin nanoseconds, `0≤n<1_000_000_000`. |
+| 28 | 4 | Reserved, all zero. |
+
+Freezing field widths/order/counts requires the full plan; this candidate selects neither a 32-byte quota nor a carrier contract.
+The native-source K tag must match independently qualified source-fixed K in the expected code profile; callers and records never choose ClockId.
+There is no PID/nonce/hash field with authority. Magic/version/shape agreement cannot qualify the actual producer, launch or source.
+
+### 17.2 Producer and once-per-launch qualification
+
+C captures the actual native-clock-read event S0 ONCE before applicable launch materialization/loading/root entry under independently expected captured-source and declared root-trust/kernel/launcher premises.
+Encoding/delivery/read completion is not S0; no data producer becomes a Native issuer, and work state never transfers across exec.
+O requires actual producer/source/channel and owned-launch binding, actual time-namespace identity/comparability and the independently qualified fixed clock domain, not merely matching record contents.
+Accept only one complete record for that owned launch: no concatenation, trailing data, duplicate adoption, stale record, producer substitution or cross-attempt reuse.
+Exact extent requires a qualified carrier completion boundary; 32 accumulated bytes alone cannot prove that boundary.
+
+### 17.3 Paid validation and nonrenewing meaning
+
+After B's fixed accounting-only gate, ordinarily precharge acquisition, snapshot, parse and independent binding before effects; no origin FD inspection or read belongs to the root header.
+Validate exact extent, magic/version, every reserved zero, typed ranges and checked time conversions/deadline arithmetic against the qualified source profile.
+Use no floating point, wrap, saturation, clamping, unchecked narrowing or generic JSON parser as this bounded-frame proof.
+`OriginData` remains untrusted data until actual binding; no timestamp constructor, normalized flag, serialized Instant or arbitrary remaining-ms value installs a positive private clock context.
+Clock kind, namespace/suspend behavior, clock API and additional time feature remain UNAPPROVED; MONOTONIC and BOOTTIME are not selected here.
+Missing/corrupt/late data means failure, not a fresh local deadline, renewed allowance or permission while waiting. C retains supervision against original S0.
+Preserve original cold10s/lifecycle300s/reserved3s and MIN-only phase tightening; qualified fresh local checks plus independent C completion barriers remain required.
+Exact cold close/EOF/reap barrier placement remains OPEN; synchronous work has no established hard-preemption guarantee or postcheck rollback.
+
+[Mechanisms §16](native-ingress-mechanisms.md#16-safe-origin-carrier-primitives--research-only) owns upstream carrier research; [implementation §18](native-ingress-implementation.md#18-origin-acquisition-and-carrier-decision-boundary) owns source-before-effect obligations and the next carrier-only decision.
+Registration, source/clock qualification, full-plan review and implementation/operational approvals remain separate and unperformed; no source/DTO/ABI/dependency/permission change follows.
+The keeper ran no commands, tests, hashes, probes, agents or web fetches; parent owns PLAN navigation, review/verification and feature-PR publication. All prior text and five exclusions remain; `trainingReady:false`.

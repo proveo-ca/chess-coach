@@ -447,3 +447,38 @@ Clock/launch and safe custody research remain owned by [sealed-launch §16](nati
 Next concrete contract work may refine original-clock or entry-source closure; bring only actual API/trust/topology/new-permission forks when specific, not another generic work-priority question.
 No clock/control schema, Node main/ExecID placement, dependency/feature or complete recipe is selected; full-plan, implementation and operations approvals remain separate.
 Parent owns the fifth PLAN-prefix update, review, verifiers and authorized feature-PR publication; this appendix claims no new review/check/publication result. The keeper ran no commands, tests, hashes, Git/network operations, agents or runtime probes while authoring it. Parent documentation verification and publication remain separately scoped; all five exclusions and `trainingReady:false` remain.
+
+## 18. Origin acquisition and carrier decision boundary
+
+**[Unverified] 2026-10-22 · NATIVE ORIGIN METHOD INVESTIGATION ONLY / CARRIER, BOUNDS, PRICES, SOURCE AND FULL PLAN UNAPPROVED / IMPLEMENTATION + OPERATIONS BLOCKED · trainingReady:false.**
+
+[Ownership §19](native-ingress-ownership.md#19-native-origin-record--selected-approach-unselected-carrier) owns the actual `Native origin record (Recommended)` choice, producer/domain binding and absorbing clock progression; no human chose PIPE.
+[Sealed-launch §17](native-ingress-sealed-launch.md#17-native-origin-candidate-profile-and-launch-binding) proposes an UNSELECTED32-byte grammar; [mechanisms §16](native-ingress-mechanisms.md#16-safe-origin-carrier-primitives--research-only) records upstream-only safe-API facts, not installed support.
+
+### 18.1 Source-before-effect inventory — no coefficients or source assignments
+
+| Role / phase | Required coverage BEFORE effects |
+|---|---|
+| C capture / C-L transport preparation | Capture S0 once before applicable launch; classify bounded encoding, transport, stdlib/allocation and launch effects under an explicit native physical envelope, never free public/R4 work. Any owed pre-owner public work STOPs. |
+| O root B | Cover only accepted fixed entry/control, guard, fresh counter/debit, assembly, first accounting-only gate and bounded root-failure effects; no origin I/O, stdio initialization or provenance scan. |
+| O after B | Ordinarily precharge origin work before fixed snapshot-storage initialization, stdio access, allocation, syscalls/reads, snapshot, parsing, independent producer/source/channel/launch binding and qualified K/domain comparison. |
+| Continuing gates / close | Ordinarily precharge fresh local checks and continuing validation; cover mandatory failure/close effects and actual EOF/reap before effects, under original clocks. |
+
+`N_origin_calls`, `B_origin_bytes` and `W_origin` are symbolic UNPRICED quantities; selected source must supply bounds, disjoint coefficients and failure prefixes later.
+Count EINTR, partial calls, transfer copies, blocking/EOF probes and stdlib expansion; invent neither values nor a two-syscall promise. Candidate32 bytes is not an approved byte quota.
+Obtain exactly ONE complete frame and a qualified completion boundary; extra/trailing/concatenated bytes fail. Thirty-two accumulated bytes alone is insufficient.
+For a pipe, prove all writer copies closed and finite write/read behavior; for a sealed carrier, qualify actual seals/exact length and adoption against the owned launch.
+Never treat unbounded `read_to_end`, generic JSON or `read_exact` retry as bounded proof; qualify actual source-level attempt/byte/call limits or STOP.
+Blocked, missing, corrupt or expired data permits no positive result. C's global ORIGINAL-S0 supervision remains active while O is CLOCK_UNBOUND; O gains no Native/window/model permission or renewed clock while waiting.
+Failure absorbs, retains B and all successful charges, and allows only bounded precovered mandatory cleanup within original300s/reserved3s, never a fresh3s or emergency work allowance.
+Final C completion barriers must establish original-clock validity alongside O's actual Native checks; late checks do not roll back already observed reads or successful private F1 state.
+
+### 18.2 Next genuine decision — carrier design, not renewed method approval
+
+Parent will present pipe versus sealed-origin-FD versus leaving the carrier unselected pending producer/domain proof ONLY after verification, reviews and feature-PR publication.
+That choice affects I/O completion/closure, descriptor custody, stdio/allocation and invoice investigation; it accepts no final ABI/layout, clock kind/API/feature, permission, exact source or price.
+Do not ask another generic work-priority question or repeat the Native-origin method choice. No proposed source creation, clock API, Node protocol or field change follows.
+Map exact producer/loader/owner source paths in the later complete plan; current root call graph, source-fixed B and ClockDomain remain unqualified. Root B quantities cover only the fixed root/header; no TS3072 port or duplicated F1 fee follows.
+Clock-policy registration, independent expected-source binding, actual source/runtime/loading/custody/full-policy/init proof and full-plan/implementation/operations approvals remain open.
+Preserve accepted BAF3476/17, bf38/D1/B1/O9, all old prefixes/frozen programs/model, BOTH-seat1_048_576, unchanged F1/replay, cold10s/lifecycle300s/reserved3s and separate generator2048.
+Parent owns PLAN-prefix links and separately authorized Git/feature-PR publication without merge; this appendix reports no review/publication outcome. The keeper ran no commands/tests/hashes/Git/web/agents or installed-root/proc/PATH/log/receipt/daemon/runtime access and changed no source/target/Cargo/dependency/test/diagram/index/body law. All five exclusions remain; `trainingReady:false`.

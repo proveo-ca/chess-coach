@@ -848,3 +848,62 @@ Final audit acceptance requires required close facts, BOTH endpoint EOF, actual 
 Late postchecks reject future loans/staged acceptance, not already-read facts or already-mutated private F1 state through imaginary rollback.
 Full training closure, genuine Native authority, whole-decision adequacy, calibration and training readiness remain unestablished; `trainingReady:false`.
 Clock/launch obligations continue in [sealed-launch §16](native-ingress-sealed-launch.md#16-r-out-launch-responsibilities-and-original-clock), custody/API research in [mechanisms §15](native-ingress-mechanisms.md#15-r-out-actual-custody-and-safe-api-research), and entry/invoice design in [implementation §17](native-ingress-implementation.md#17-r-out-fixed-entry-and-role-specific-invoice-design).
+
+## 19. Native origin record — selected approach, unselected carrier
+
+**[Unverified] 2026-10-22 · APPROACH DESIGN-SELECTED / NO CARRIER, RECORD PROFILE, CLOCK TYPE, ABI, FEATURE, FEE OR OPS APPROVAL · trainingReady:false.**
+
+### 19.1 Actual choice and limited precedence
+
+| Date | Actual TUI choice | Selected scope / not granted |
+|---|---|---|
+| 2026-10-22 | `Native origin record (Recommended)` | METHOD INVESTIGATION ONLY: develop new `NativeClockData` as origin DATA, not a model context or clock-data access permission. No carrier, record layout, FD ABI, clock kind/API/feature, price, source change or runtime access selected. |
+
+This supersedes earlier clock-approach-UNSELECTED wording ONLY for method direction; clock proof and concrete mechanisms remain unqualified.
+Conservative C-birth and keep-clock-unselected alternatives remain UNSELECTED, not fallbacks. No human selected PIPE.
+Architect `ses_e9b7d76e1ffeM6yg0okbrz4uuc` withdrew its false pipe-selected assertion; only its corrected advice applies. Agent recommendations supply no human consent.
+Parent also supplies Backend `ses_e9b7d76d0ffee2jTDU248DmYIZ` clock/profile advice and DevOps `ses_e9b7d7643ffe1WU3dNq5yK831J` upstream-only API findings; the keeper performs no source execution or upstream fetch.
+Root A, DIRECT, sealed route B, accepted private initializer, R-OUT and Dedicated F9 entry remain unchanged; no fixed tag or clock source is selected.
+Preserve the exact accepted BAF3476/17 body, bf38/D1/B1/O9, frozen programs/model, schemas, fees and all prior prefixes.
+
+### 19.2 Actual producer, launch and domain binding
+
+C produces raw time data, NOT Native authority. O remains the sole work-counter/F1 owner and private issuer.
+`S0` means C's ONCE-CAPTURED native-clock READ EVENT before applicable per-launch materialization, L launch, O loading and root entry; encoding, delivery and O's read never redefine that event.
+Bind the original source C and actual owned launch scope through qualified actual-source/kernel/channel identity; PID, nonce, self-hash, schema, FD number or string tag alone supplies no such binding.
+Independently capture/register expected C/source and declared root-trust/kernel/launcher premises BEFORE claims. O must join those expectations to actual producer identity, source/channel and the same clock domain.
+Matching records alone prove neither producer provenance nor stable actual time-namespace identity/comparability; namespace offsets and suspend semantics require qualification.
+Every C/L operation needs explicit classification and finite supervision; C's pre-owner role is only declared bounded native physical supervision, never newly free public/R4 work.
+If any operation owes public work before its owner exists, STOP before effects. The method selection accepts no preparation exemption.
+After successful B and its first fixed accounting-only gate, O ordinarily precharges origin acquisition AND independent producer/source/domain binding before effects; B hides no origin I/O.
+C supervises CLOCK_UNBOUND against ORIGINAL S0 throughout waiting/binding. Waiting grants no Native permission or deadline extension; no `OwnerNow+10s` fallback follows.
+
+### 19.3 Proposed progression — data does not install a clock capability
+
+| Stage | Required boundary |
+|---|---|
+| CLOCK_UNBOUND | Only bounded prepaid bootstrap origin acquisition/binding after B; no Native/window/model work or other window operations. |
+| FRAME_SNAPSHOT | Retain bounded origin DATA as untrusted; parsing/tag agreement cannot promote it to authority. |
+| BOUND_ORIGIN | Privately retain immutable original S0 plus actual qualified producer/source/channel, owned-launch and clock-domain binding. |
+| CLOCK_CHECKED | Fresh qualified local checks pass against original deadlines; this still does not satisfy other Native gates. |
+| Remaining actual checks → NativeActive | Complete source/loading/custody/full-policy/init and all other required checks BEFORE Native issuance or scoped F9 window work. A2/model work remains prohibited in EVERY phase. |
+| Normal closing | Quiesce loans, perform prescribed paid close, permanently revoke, then wait/reap; final audit requires actual completion evidence. |
+| Any bad check, budget refusal or expiry | Absorbing failure; retain expenditure, permit only bounded precovered mandatory cleanup, never reread for fresh S0, retry or restore authority. |
+
+No positive private clock type has Deserialize, arbitrary-timestamp, trusted-flag or public installer construction. Parsed values remain data, not `NativeReplaySession`.
+S0 is immutable per actual owned launch attempt; reject old records, replaced producers, other-attempt adoption, future origins, domain mismatch and backward clocks. Matching K tags alone proves nothing.
+Qualify source-fixed K against original deadline/suspend semantics and actual time namespace; neither MONOTONIC nor BOOTTIME is selected, and the record never chooses ClockId.
+Use checked `D_cold=S0+10s` and `D_lifecycle=S0+300s`; preserve reserved3s cleanup. Existing phase deadlines may tighten these by MIN only; no helper or failure renews them.
+Every covered reader/accessor and pre/post callback uses fresh local now with `S0≤now<D_applicable` and `prior_now≤now`; source-bound bounded observation residuals and independent C completion barriers remain required.
+These checks establish no hard preemption of synchronous work; late postchecks reject future/staged acceptance without rolling back prior reads or private F1 updates.
+Exact cold close/EOF/reap/barrier placement remains OPEN; do not default cleanup outside10s or create a fresh3s.
+Construct `NativeReplaySession` and `NativeInitialInputs` only after their required actual runtime/custody/full-policy/init, reference and boundary checks; unchanged Node frames carry no Permit or A2 authority.
+Clock-policy registration, independent expected-source binding and actual qualification are NOT PERFORMED; the full-plan and implementation/operational gates remain open.
+
+### 19.4 Carrier boundary and parent handoff
+
+[Sealed-launch §17](native-ingress-sealed-launch.md#17-native-origin-candidate-profile-and-launch-binding) records an UNSELECTED grammar; [mechanisms §16](native-ingress-mechanisms.md#16-safe-origin-carrier-primitives--research-only) catalogs upstream primitives; [implementation §18](native-ingress-implementation.md#18-origin-acquisition-and-carrier-decision-boundary) separates acquisition from root B.
+The next real decision concerns carrier DESIGN only, after parent verification/reviews/publication; do not repeat this method choice or substitute a generic work-priority question.
+Parent supplies branch `docs/f9-private-initializer`, HEAD `87c379bbf9d3ea0931ce20d8d0fc0470b63cabd5`, PR50 OPEN/ready against feature base6b; the keeper did not verify Git/remote state.
+Parent owns the fifth PLAN-prefix update and separately authorized feature-PR publication, not merge. This appendix claims no new review, test, operational grant or publication outcome.
+The keeper made no source/target/Cargo/dependency/test/diagram/index/protected-body changes and ran no commands, hashes, Git, agents, web or runtime tools while authoring this appendix. Parent documentation verification/publication remains separately scoped; no installed-root/proc/PATH/log/receipt/daemon or runtime permission follows. All five exclusions remain; `trainingReady:false`.
