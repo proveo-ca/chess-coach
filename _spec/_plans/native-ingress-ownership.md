@@ -1114,3 +1114,25 @@ The whole M3 proposal and Node01 proposal/outcome remain frozen; earlier preappr
 Host-exception mode selected neither acquisition branch; even manifest resolution needs fresh access/network approval, and a mise follow-up neither resolves the branch nor authorizes execution.
 Preserve source470e540, BAF3476/17, bf38/D1/B1/O9, all old programs/model/corpora/configuration caps, Root B/counter/clocks/Native graph and ONE BOTH-seat1048576/F1/replay/cold10s/lifecycle300s/reserved3s/generator2048.
 Later capture/build/runtime offline allowlisting/no-acquisition-fallback and all five exclusions remain unchanged; no native/capture/L/snapshot/training proof follows.
+
+## 27. M3 exact payload pins — manifest evidence first
+
+**[Unverified] 2026-10-23 · EXACT PINS DESIGN-SELECTED / MANIFEST EVIDENCE SOURCE ONLY / NO FETCH OR EXECUTION GRANT / trainingReady:false.**
+Executor actually selected `Exact pins (Recommended)` for downstream DESIGN ONLY; §26's unselected fork is historical only for direction.
+Bounded downstream origin trust and deferral remain UNSELECTED, not fallback routes; strict pins grant neither publisher authentication nor network enforcement/Native context.
+The [new manifest-evidence dossier](native-ingress-host-preparation-m3-manifest-evidence.md) follows supplied Architect/DevOps advice with RAW LEXICAL EXCERPTS, not an untested TOML-section parser.
+Its historical tracked manifest expectation is848342 bytes/SHA `821ff14e4c4a1cbe1e8915f35aff0a3fbbdf8d293ad48ab8f31e3b0440c581f9`; no fresh manifest bytes were fetched.
+The inert fixed Node body proposes ONE explicit HTTPS GET, exact manifest integrity before decode, five bounded raw excerpts and one bounded stdout record.
+Its registered Bash parent waits for that single empty-environment Node child and appends the shell-observed exit marker; total authored output is at most24640 bytes, not a hard startup capture cap or Native receipt.
+It never registers payload URLs/hashes/lengths, interprets TOML semantics, follows manifest URLs, executes mise or installs anything.
+Full rustup/auxiliary/compression/preseed/archive acquisition graph and ALL payload lengths remain UNPROVED; actual mise/source/backend, full N3 capture, dependencies and licenses remain OPEN.
+Default public TLS/CA/DNS and ordinary native Node startup remain host-trust residuals; one source request is not one socket/DNS attempt, firewall or closed Native graph.
+Filesystem API use is solely one FD1 stdout write; no application file/root/control/sink/receipt/log operation or new privilege follows.
+Cooperative15000ms plus cleanup target≤16000ms/requested outer20000ms are not kernel hard deadlines or physical termination proof.
+Fresh exact manifest GET approval and THIS packet's explicit residual acceptance are NONE; P0/Node01 permissions/acceptances remain consumed and are not renewed.
+External fence/document/command measurement, stdin-only syntax/static preservation/link checks and reviews remain PENDING; never run the body or mocks under this design selection.
+The whole approved M3 `fdb740d9…`, Node01 `fdfed77…`, outcomes, every old prefix/program/model/corpus and retained artifact remain untouched without access.
+[Implementation §26](native-ingress-implementation.md#26-m3-pinned-manifest-evidence-before-payload-registration) separates raw manifest DATA from later full payload registration and installation approval.
+Preserve source470e540, BAF3476/17, bf38/D1/B1/O9, source Root B/counter/clocks/Native graph and ONE BOTH-seat1048576/F1/replay/cold10s/lifecycle300s/reserved3s/generator2048.
+Capture/build/runtime ALWAYS remain offline allowlist-only with no runtime acquisition fallback; all five exclusions stand and no native/capture/L/snapshot/training proof follows.
+Parent supplies HEAD6b58a0101e4c71a20034149d9ae4d7a2706e40bc/PR50 checkpoint and existing advisory sessions; the keeper performed no independent runtime/Git/hash/test/network verification.

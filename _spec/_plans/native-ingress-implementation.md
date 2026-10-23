@@ -724,3 +724,25 @@ The new bounded-trust alternative requires explicit residual acceptance and is n
 A separate bounded mise-version/source packet may be designed but resolves neither acquisition branch and grants no actual execution; installer source/identities/network-install exception remain absent.
 Preserve whole Node01 proposal/outcome, all failures/approvals/raw receipts/programs/model/corpora/configuration caps, source470e540, BAF3476/17, bf38/D1/B1/O9 and Root B/counter/clocks/Native graph.
 ONE BOTH-seat1048576/F1/replay/cold10s/lifecycle300s/reserved3s/generator2048, all five exclusions and later offline capture/build/runtime allowlists/no-acquisition-fallback remain unchanged; no native/capture/L/snapshot/training proof follows.
+
+## 26. M3 pinned manifest evidence before payload registration
+
+**[Unverified] 2026-10-23 · EXACT PINS DIRECTION ONLY / COLLECTOR INERT / PAYLOAD CLOSURE UNPROVED / INSTALLER UNWRITTEN / trainingReady:false.**
+[Ownership §27](native-ingress-ownership.md#27-m3-exact-payload-pins--manifest-evidence-first) records actual `Exact pins (Recommended)`; §25's pending fork is historical for that direction only.
+The [manifest-evidence packet](native-ingress-host-preparation-m3-manifest-evidence.md) is NEW planning source, never a rewrite of the whole approved M3/Node01 artifacts or their outcomes.
+Externally register exact fence/document/literal-eval command identities first; complete separately authorized stdin-only Node --check and static review without body/mock execution.
+Then request fresh exact one-shot manifest GET permission with THIS packet's explicit startup/TLS/DNS/path/time/output residual acceptance; both grants are currently NONE.
+One https/crypto/fs-only Node body uses fixed GET options; fs serves only one FD1 write, not application file access or a retained control.
+Empty-environment Bash builtin exec-c, fixed `/usr/local/bin/node`, W cwd and requested outer20000ms remain proposed unregistered transport, without heredoc/tempfile/pipeline/runtime fallback.
+Require status200, one exact Content-Length848342, absent/identity encoding,16KiB headers/32 pairs, Buffer-first retention≤848342 and≤1024 data callbacks.
+End/complete plus both close events precede exact body SHA/length, UTF-8 validation and five bounded raw lexical excerpts; no TOML interpretation or manifest-driven fetch occurs.
+Cooperative15000ms and failure cleanup MIN(START+16000ms,failure+1000ms) do not establish hard startup/termination/RSS/native-I/O bounds.
+Output is one≤24576-byte ASCII JSON+LF record; STOP exposes no excerpts, full/short write has no retry, and printed RAW with failed exit/deadline remains outer STOP.
+The ordinary Bash parent appends at most64 bytes of child-exit marker after waiting; require JSONLF plus exactly marker0 and normal tool completion for success. This introduces no second Node invocation or Native custody claim; no hard process-tree cleanup guarantee is asserted.
+All lengths, payload URL/hash registration, auxiliary sidecars/compression/preseed/archive behavior and full rustup acquisition remain UNPROVED; this packet creates NO payload record or installation claim.
+Package versions must come from later reviewed package bodies, not an implicit compiler-release assumption; exact five GNU role labels alone close no graph.
+Actual mise version/source/backend and full N3 source/native capture/dependencies/licenses remain OPEN; no mise/help/exec, payload HEAD/GET or installed-root observation is approved.
+Only later separately registered/reviewed complete payload evidence can support a new installer and exact network/install exception; bounded-trust/defer alternatives are not fallbacks.
+All old grants remain consumed; preserve whole M3 `fdb740d9…`, Node01 `fdfed77…`, outcomes, old prefixes/programs/model/corpus and retained controls without access.
+Preserve source470e540, BAF3476/17, bf38/D1/B1/O9, Root B/counter/clocks/Native graph, ONE BOTH-seat1048576/F1/replay/cold10s/lifecycle300s/reserved3s/generator2048 and all five exclusions.
+Later capture/build/runtime ALWAYS stay offline, explicit allowlist-only, without runtime acquisition fallback; no source/target/Cargo/dependency/test/diagram/index change or Native/readiness result follows.

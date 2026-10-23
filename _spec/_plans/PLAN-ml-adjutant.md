@@ -1,3 +1,11 @@
+## Current continuation — exact pins selected, manifest evidence first (2026-10-23)
+
+**[Unverified] DESIGN ONLY / trainingReady:false:** Executor selected `Exact pins (Recommended)`; [ownership §27](native-ingress-ownership.md#27-m3-exact-payload-pins--manifest-evidence-first) resolves direction only. Bounded downstream trust/defer remain unselected, not fallbacks; no publisher authentication, network enforcement or Native context follows.
+
+**Next source gate, no operation:** the [new manifest-evidence packet](native-ingress-host-preparation-m3-manifest-evidence.md) proposes one pinned-manifest GET and five RAW LEXICAL EXCERPTS, not TOML interpretation or payload records. [Implementation §26](native-ingress-implementation.md#26-m3-pinned-manifest-evidence-before-payload-registration) requires external registration/static review and fresh exact approval plus THIS packet's explicit residual acceptance; all remain pending/NONE.
+
+ALL payload lengths/URL/hash registration/full acquisition graph, actual mise/source/backend and N3/dependencies/licenses remain OPEN. Whole approved M3/Node01/outcomes and every old byte stay unchanged; all grants consumed, no fetch/install/metadata/mise execution. Preserve Root B/counter/clocks/Native graph/source470e540/F1/budgets/exclusions and offline allowlist-only build/runtime with no acquisition fallback.
+
 ## Current continuation — supplied M3-P0 execution record DATA ONLY, NOT INSTALLED (2026-10-23)
 
 **[Unverified] One attempt complete, trainingReady:false:** fresh `Approve P0 once (Recommended)` bound the frozen proposal/command and THIS packet's accepted residuals. The [P0 outcome](native-ingress-host-preparation-m3-p0-outcome.md) preserves supplied candidate JSON, not independent native exit/clock/EOF/descriptor proof or full host-prerequisite completion.
