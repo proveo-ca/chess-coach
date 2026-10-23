@@ -1,3 +1,11 @@
+## Current continuation — manifest grant consumed, HEAD lengths source only (2026-10-23)
+
+**[Unverified] Supplied Tool data / trainingReady:false:** fresh `Approve manifest once` executed only frozen command14bdfd83… bound whole proposalb6f2ad64…; [manifest outcome](native-ingress-host-preparation-m3-manifest-outcome.md) copies RAW_EXCERPTS_ONLY plus parent marker0, not an independent Native receipt.
+
+**Grant CONSUMED:** [ownership §28](native-ingress-ownership.md#28-m3-manifest-evidence--consumed-grant-and-unverified-references) derives ten literal MANIFEST_ADVERTISED references; every byteLength remains null and pinComplete/payloadVerified false. No archive acquisition, application file creation or mise execution followed.
+
+**Next source gate, no operation:** the [HEAD length proposal](native-ingress-host-preparation-m3-length-proposal.md) and [implementation §27](native-ingress-implementation.md#27-m3-advertised-lengths-before-archive-verification) require external registration/parse-only/static checks/review then fresh exact HEAD permission plus THIS packet's explicit residual acceptance; all remain pending/NONE. Preserve all old bytes, Root B/counter/F1/original clocks/budgets/exclusions/offline allowlists; installer and full graph stay OPEN.
+
 ## Current continuation — exact pins selected, manifest evidence first (2026-10-23)
 
 **[Unverified] DESIGN ONLY / trainingReady:false:** Executor selected `Exact pins (Recommended)`; [ownership §27](native-ingress-ownership.md#27-m3-exact-payload-pins--manifest-evidence-first) resolves direction only. Bounded downstream trust/defer remain unselected, not fallbacks; no publisher authentication, network enforcement or Native context follows.

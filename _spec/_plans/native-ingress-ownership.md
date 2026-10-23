@@ -1136,3 +1136,25 @@ The whole approved M3 `fdb740d9…`, Node01 `fdfed77…`, outcomes, every old pr
 Preserve source470e540, BAF3476/17, bf38/D1/B1/O9, source Root B/counter/clocks/Native graph and ONE BOTH-seat1048576/F1/replay/cold10s/lifecycle300s/reserved3s/generator2048.
 Capture/build/runtime ALWAYS remain offline allowlist-only with no runtime acquisition fallback; all five exclusions stand and no native/capture/L/snapshot/training proof follows.
 Parent supplies HEAD6b58a0101e4c71a20034149d9ae4d7a2706e40bc/PR50 checkpoint and existing advisory sessions; the keeper performed no independent runtime/Git/hash/test/network verification.
+
+## 28. M3 manifest evidence — consumed grant and unverified references
+
+**[Unverified] 2026-10-23 · SUPPLIED RAW_EXCERPTS_ONLY / MANIFEST GRANT CONSUMED / TEN ADVERTISED REFERENCES / HEAD APPROVAL NONE / trainingReady:false.**
+Fresh actual `Approve manifest once` bound whole manifest proposal SHA `b6f2ad64f061b482bc77f4ca6cd49c9c64d268d3c8bbb24083451d94c90dea34` and exact command SHA `14bdfd83a271b598cdf612d9fb9b2cca0d6b9f49531bde845b3c56efe67de337`.
+The [manifest outcome](native-ingress-host-preparation-m3-manifest-outcome.md) copies actual supplied JSONLF plus waiting-parent `F9_M3_MANIFEST_CHILD_EXIT=0`; no stderr/timeout was reported.
+Completed source guard plus marker0 support manifest848342/SHA `821ff14e4c4a1cbe1e8915f35aff0a3fbbdf8d293ad48ab8f31e3b0440c581f9` under the accepted ordinary-host premise, not independent Native receipt or physical-clock/termination proof.
+No actual payload was acquired, application file created or mise program executed; the exact manifest grant is now CONSUMED without refetch/retry/fallback.
+The five lexical snippets are not full TOML proof; finite literal ASCII key/order/unique-pair correspondence derives ten advertised references only.
+Preserve literal version1.95.0/date2026-04-16/targetx86_64-unknown-linux-gnu and rustfmt-preview→rustfmt/clippy-preview→clippy mappings.
+Omit zst only because absent in these observed excerpts, not because globally unsupported.
+Every historical ledger row stays MANIFEST_ADVERTISED/byteLength:null/pinComplete:false/payloadVerified:false; future header observations remain separate.
+The [HEAD length proposal](native-ingress-host-preparation-m3-length-proposal.md) contains a new inert Markdown-only Node body and one waiting Bash wrapper, not an actual program/control or executable grant.
+Its ten sequential literal HEADs cover both advertised formats as metadata, not selected compression/downloads or complete acquisition closure.
+Require response end/complete and both closes per descriptor before the next; first failure preserves only completed prefix and stops the suffix.
+Header lengths remain HEADER_ADVERTISED_LENGTH decimal strings, never measured archives; even ten successes leave pins/payloads unverified.
+External registration, parse-only/static checks, review and fresh exact HEAD permission plus THIS packet's explicit residual acceptance remain PENDING/NONE; existing exact-pins direction needs no repeat mode choice.
+Actual mise/source/backend/full rustup auxiliary/compression/preseed/offline source/dependency/license graph and installer remain OPEN/UNWRITTEN.
+Parent supplies HEAD64261fc33a44425241d5fc82db76af1cf05b5c7b/PR50 OPEN/pushed/clean before the attempt; keeper did not independently verify it.
+Preserve whole approved manifest/M3/Node01 proposals/outcomes, every old prefix/program/model/cap, source470e540, BAF3476/17, bf38/D1/B1/O9, Root B/counter/clocks/Native graph.
+ONE BOTH-seat1048576/F1/charged replay/cold10s/lifecycle300s/reserved3s/generator2048, all five exclusions and later offline allowlist-only/no-acquisition-fallback remain unchanged.
+This separate ordinary-host metadata phase supplies no new public fee exemption, Native/capture/L/snapshot/training proof or future C/daemon-host/protected-namespace binding.

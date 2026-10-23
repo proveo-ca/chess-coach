@@ -746,3 +746,30 @@ Only later separately registered/reviewed complete payload evidence can support 
 All old grants remain consumed; preserve whole M3 `fdb740d9…`, Node01 `fdfed77…`, outcomes, old prefixes/programs/model/corpus and retained controls without access.
 Preserve source470e540, BAF3476/17, bf38/D1/B1/O9, Root B/counter/clocks/Native graph, ONE BOTH-seat1048576/F1/replay/cold10s/lifecycle300s/reserved3s/generator2048 and all five exclusions.
 Later capture/build/runtime ALWAYS stay offline, explicit allowlist-only, without runtime acquisition fallback; no source/target/Cargo/dependency/test/diagram/index change or Native/readiness result follows.
+
+## 27. M3 advertised lengths before archive verification
+
+**[Unverified] 2026-10-23 · MANIFEST ATTEMPT COMPLETE / REFERENCES ONLY / HEAD SOURCE UNREGISTERED / NO HEAD OR INSTALL GRANT / trainingReady:false.**
+[Ownership §28](native-ingress-ownership.md#28-m3-manifest-evidence--consumed-grant-and-unverified-references) records fresh actual `Approve manifest once`, its exact consumed bindings and the [copied manifest outcome](native-ingress-host-preparation-m3-manifest-outcome.md).
+RAW_EXCERPTS_ONLY plus parent marker0 supports expected manifest848342/SHA821ff14e… under the accepted ordinary-host premise, not independent Native receipt, publisher or physical-termination proof.
+The frozen approved manifest/M3/Node01 proposals and whole outcomes stay unchanged; no retry, refetch, payload acquisition, file creation or mise execution follows.
+Finite literal snippet review derives ten MANIFEST_ADVERTISED URL/hash references only, with null lengths and false pin/payload flags permanently retained in that historical ledger.
+The [new length packet](native-ingress-host-preparation-m3-length-proposal.md) proposes exactly ten sequential HEAD descriptors at fixed static.rust-lang.org:443 dated literal paths, never manifest/worker-directed requests.
+No parallelism, retry, redirect, mirror, proxy fallback, other channel/authority or payload GET; both formats are metadata coverage, not compression selection or a need to download all formats.
+Require status200, TLS verification, identity/close headers,16KiB header cap/32 pairs, ONE canonical positive decimal Content-Length≤536870912 and absent/ONE identity encoding.
+Do not retain/read/hash archive bodies; any unexpected nonempty data callback STOPs, with at most16 empty callbacks and no body buffers retained.
+Node HEAD wire semantics may consume unsolicited bytes internally; ten source requests mean neither ten physical connects nor a firewall/closed native graph.
+Per probe, end/complete plus response/request close precede promise resolution; only afterward may the sequential loop record the completed observation and advance.
+Any error/abort/early-close/deadline stops the chain; destroy each active req/res at most once, absorb errors, settle at closed state or bounded cleanup, and drop active references.
+Preserve first N completed HEADER_ADVERTISED_LENGTH observations with canonical decimal STRING advertisedLength and payloadVerified:false; active failure/suffix remain unknown and overall STOP.
+Even ten complete metadata rows leave pinComplete:false/payloadsVerified:false; optional BigInt decimal sum proves neither actual downloaded length nor disk reservation.
+Global cooperative150000ms starts at first body clock after imports; each deadline is MIN(probeStart+15000ms,globalEND), cleanup≤1000ms/absolute151000ms, requested outer180000ms.
+One https/fs-only Node literal-eval body uses fs solely for FD1; one empty-environment waiting Bash parent appends `F9_M3_HEAD_CHILD_EXIT=%s\n`, without extra Node/temp/control/sink/receipt.
+One≤24576-byte ASCII JSONLF plus≤64-byte parent marker is authored-output only; short/error write has no retry/fallback append and default exit3 becomes0 only after all ten completions/full write/final deadline check.
+Printed metadata with exit3 or any stderr/timeout/truncation/marker mismatch remains outer STOP, not Native EOF/closure or process-tree termination proof.
+Register whole document/fences/exact quote transport externally, perform separately authorized Node --check stdin/Bash -n/static past-data/preservation/link checks and review, then obtain real-human exact HEAD approval with THIS packet's own startup/CA/DNS/native-I/O/path/cooperative-time/output residual acceptance.
+No body, mock, test, network or fetched TOML executes now; every identity remains UNREGISTERED until parent measures it, and no old acceptance is inherited.
+Actual mise version/source/backend, complete rustup auxiliary/compression/preseed/offline-source/dependency/license graph and unwritten installer remain unresolved; ten HEADs cannot close them.
+Preserve source470e540, BAF3476/17, bf38/D1/B1/O9, all programs/models/caps, Root B/numeric-B/invoice/source-clock gaps, ONE BOTH-seat1048576/F1/replay and original10s/300s/reserved3s/generator2048.
+Host metadata remains a separate ordinary-host phase, not a production meter/fee waiver or new resource envelope; P0 cwd establishes no future C/daemon-host/protected namespace.
+Later F9 capture/build/runtime remain offline, explicit installed-byte allowlist-only/no-acquisition-fallback; all five exclusions stand and no Native/capture/L/snapshot/training/activation claim follows.
