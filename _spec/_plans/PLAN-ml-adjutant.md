@@ -1,3 +1,11 @@
+## Current continuation — XZ selected, opaque acquisition source only (2026-10-23)
+
+**[Unverified] DESIGN ONLY / trainingReady:false:** Executor selected `XZ only (Recommended)`; [ownership §30](native-ingress-ownership.md#30-m3-xz-input-set--opaque-acquisition-proposal-only) resolves the former format-NONE checkpoint, not filesystem/network/installation approval or a timer vote.
+
+**New inert source, no operation:** [XZ acquisition packet](native-ingress-host-preparation-m3-xz-acquisition.md) proposes five fixed opaque GET/write/readback checks in NEW UNOBSERVED `/tmp/opencode/f9-m3-xz-inputs-01`, never the M3 installation root; global600000ms starts immediately after imports/before mkdir/DNS/request, file MIN(entry+120000ms,END), cooperative failure1000ms/absolute601000ms/requested outer620000ms, not hard kernel/process-tree bounds.
+
+**Next real gate:** [implementation §29](native-ingress-implementation.md#29-m3-xz-content-checks-before-installer-qualification) requires external Node/Bash/document/command registration, authorized stdin-only parse/static/guard/count/preservation checks and review, then ONE fresh BOTH-filesystem+five-GET grant with THIS acquisition's residual acceptance; all UNREGISTERED/PENDING/NONE. No extraction/mise/rustup/install/gzip fallback; installer/full graph/source-clock/custody remain OPEN. Preserve all frozen proposals/outcomes/null ledgers/old bytes/laws/model/source470e540, Root B/counter/F1/original budgets/exclusions/offline allowlists; nativeAuthority/trainingReady/pinComplete/installed false, capture/L/snapshot null.
+
 ## Current continuation — HEAD metadata complete, format selection NONE (2026-10-23)
 
 **[Unverified] Supplied Tool data / trainingReady:false:** fresh `Approve headers once` bound frozen HEAD proposald9718021…/command66193af4…; [HEAD outcome](native-ingress-host-preparation-m3-length-outcome.md) copies ten HEADER_ADVERTISED_LENGTH observations plus parent marker0, not independent Native evidence or archive-body length/hash verification.

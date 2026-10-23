@@ -1175,3 +1175,24 @@ Actual mise version/source/backend, full rustup auxiliary/compression/preseed/of
 Whole approved HEAD/manifest/M3/Node01 proposals/outcomes and all old bytes stay unchanged; M3 root remains uncreated by these phases and retained controls remain untouched without read/stat/hash/delete/exec approval.
 Preserve source470e540, BAF3476/17, bf38/D1/B1/O9, all programs/models/corpora/caps, Root B/sole counter/source clocks/Native graph, ONE BOTH-seat1048576/F1/charged replay/cold10s/lifecycle300s/reserved3s/generator2048 and all five exclusions.
 [Implementation §28](native-ingress-implementation.md#28-m3-head-metadata-complete--no-payload-verification) keeps future capture/build/runtime offline, explicit allowlist-only/no-acquisition-fallback; no Native/CaptureRoot/L/snapshot/training proof or source implementation follows.
+
+## 30. M3 XZ input set — opaque acquisition proposal only
+
+**[Unverified] 2026-10-23 · XZ DESIGN-SELECTED / ACQUISITION SOURCE INERT / FILESYSTEM + NETWORK GRANTS NONE / INSTALLER UNWRITTEN / trainingReady:false.**
+Executor actually selected `XZ only (Recommended)` for INPUT-SET DESIGN ONLY; §29's selection-NONE checkpoint is historical for direction only, not a pending timer vote.
+The [new XZ packet](native-ingress-host-preparation-m3-xz-acquisition.md) freezes five literal URL/basename/length/SHA tuples from unchanged manifest/HEAD records, sum127772720 expected bytes, not actual GET observations or publisher authentication.
+One fs/https/crypto-only Node eval plus waiting empty-environment Bash parent proposes opaque archive content acquisition without a decompressor; no extraction/archive execution/rustup/mise/installation/other child follows.
+Global START is immediately after imports and before root setup/DNS/requests;600000ms includes all setup/network/write/readback, each file MIN(entry+120000ms,END) before creation/request, network-failure cleanup1000ms/absolute601000ms, requested outer620000ms.
+These cooperative ordinary-host bounds are NOT production10s/300s clock changes, kernel/process-tree hard limits, Native qualification or a public-work allowance.
+NEW staging `/tmp/opencode/f9-m3-xz-inputs-01` is UNOBSERVED; exclusive0700 mkdir errors STOP without read/stat/reuse/repair/delete/alternate path. Installation root `/tmp/opencode/f9-host-rust-1.95.0-m3` remains uncreated by this packet.
+Root plus one writer/reader are at most two managed owned FDs; release each holder before one unconditional close attempt, close active then root on failure, and forbid new opens after close failure without claiming physical release.
+Five sequential fixed HTTPS GETs must satisfy exact headers/incoming size/SHA/end/complete/both closes, writer security/stat/close and same-snapshot exact64KiB readback/SHA/EOF/reader-close/root checks before prefix publication.
+Final root-check/close precede overall CONTENT_MATCHED_NOW; partial root/files persist indefinitely without fresh grants, never rollback/delete/resume or future-load protection claims.
+Root is intended private write scope, NOT an OS barrier/protected Native capture root; Node absolute-path ancestor stability, DNS/CA/startup/native-I/O/disk/cooperative-cleanup/output remain THIS packet's fresh residuals.
+Source caps mkdir1/opens11/closes11/fstats32/reads4096/file-writes32768/accepted-data32768/clock262144 bound authored calls, not native/kernel calls, all wire bytes/RSS/CPU or physical callbacks.
+Node/Bash/document/command identities, stdin-only parse checks, static count/guard/preservation review and fresh exact BOTH filesystem + five-GET approval remain UNREGISTERED/PENDING/NONE; never execute a body or mock now.
+Gzip is UNSELECTED, not fallback; actual selected-format installer/rustup/preseed/file:// compatibility is unproven, and unsupported later behavior STOPs.
+Parent supplies HEAD7ef254ed43315825642164ae821e8bf0d109a802/PR50 OPEN/clean and Architect ses_e99441d55ffezZyja068S735Jf/DevOps ses_e99441bdaffeifYrUScVFywbvU advice, not keeper verification or operation approval.
+Preserve whole HEADd971/manifestb6f2/M3fdb740/Node01fdfed proposals/outcomes/null ledgers, all old prefixes/programs/model/laws/corpora, source470e540, BAF3476/17, bf38/D1/B1/O9 and all full-plan/source/graph/loading/custody/clock gates.
+ONE BOTH-seat1048576, unchanged F1/charged replay, cold10s/lifecycle300s/reserved3s/generator2048 and all five exclusions remain; capture/build/runtime stay offline allowlist-only/no-acquisition-fallback.
+[Implementation §29](native-ingress-implementation.md#29-m3-xz-content-checks-before-installer-qualification) retains installer/full-graph STOP; nativeAuthority/trainingReady/pinComplete/installed false and captureRootCandidate/lArtifact/snapshotCandidate null remain unconditional, with no NativeIssuer flag or authority installation.
