@@ -406,3 +406,315 @@ The85 old Node passes prove neither current Rust compilation nor runtime accepta
 Next input-scope decision: supply complete audited inputs/theme, prepare an exact preflight proposal, or hold; none is an execution grant or a repeat of setup/XZ policy selection.
 This keeper pass performs repository reads/patches only, with no commands, agents, probes, network or unrelated document edits.
 `trainingReady:false`; §10 remains OPEN, step2 remains NOT DONE, and no complete ML runtime/Upgrade Complete claim follows.
+
+## 16. Exact metadata preflight — proposal prepared, execution unapproved
+
+**[Unverified] The user selected `Exact preflight (Recommended)` to prepare this proposal, not run it.**
+The preceding runtime WIP was published as `166a0bd922948f08530745ea8aa8cc266dc3649d`; PR50 remains OPEN/unmerged and its Rust-verification BLOCKER and diagram MEDIUM remain binding.
+This section uses ordinary host trust for metadata collection, not Native qualification or a renewed prior observation grant.
+
+### 16.1 Exact read scope and exclusions
+
+- Runtime hints: `process.platform`, `process.arch`, `os.endianness()`; these do not establish physical CPU, libc, host ABI or target compatibility.
+- One `lstatSync('/tmp/opencode', {bigint:true})`, requiring a named directory rather than a final-component symlink, then one `statfsSync` of that same literal path.
+- One `lstatSync` for each of the eight literal candidate paths in the program below. No Cargo/PATH scan, directory enumeration, link resolution, candidate open/content/hash or candidate execution.
+- Candidate ENOENT records MISSING; final-component symlinks record UNQUALIFIED_SYMLINK without following them. Continuing the independently fixed list is not link resolution or an executable fallback. Other filesystem errors STOP.
+- Named metadata and capacity are point-time, unreserved observations; there is no FD binding, ancestor-race protection, installed-state determination or executable-usability claim.
+- No filesystem creation/deletion, retained-root/cache/home/configuration access, `/proc`, daemon, network, subprocess or theme access belongs to the program.
+
+### 16.2 Source bounds and launch binding
+
+| Item | Proposed limit / permission boundary |
+| --- | --- |
+| Filesystem attempts | <=9 lstat +1 statfs, sequential, zero retries |
+| Clock samples | <=32 including START; cooperative3500ms collection deadline |
+| Output | One ASCII JSONLF <=8192 bytes, at most one borrowed-FD1 write, checked full count, no retry |
+| Filesystem objects / owned FDs | Zero created; zero opened/owned; stdout remains borrowed |
+| Error publication | Bounded fixed reason, prefix records allowed only with overall STOP; no stack/raw error/env output |
+| Launcher / argv / cwd / environment | UNBOUND: supply an approved exact Node launcher and launch context before requesting execution |
+
+The collection clock starts at the first body statement after imports. Imports, launcher/module startup, inherited hooks, native allocations and tool capture are outside this authored collection bound; no hard blocking-I/O, RSS, CPU, kernel-syscall or physical-time bound follows.
+The single diagnostic stdout attempt bypasses the collection guard so a STOP can be reported after expiry. A late/short/failed output leaves exit3 and may leave partial JSON; an isolated METADATA_ONLY line never establishes successful overall delivery.
+`countsAtEncoding` snapshots collection clock/filesystem counters before serialization; it excludes the later output-delivery clock sample and is not a final operation invoice.
+No exact execution command or execution approval exists while launcher/environment binding remains UNBOUND. Do not discover a launcher through PATH, retained roots or implicit fallback under this proposal; ordinary bootstrap trust must be explicit in a later exact approval.
+The offline theme path remains missing; this program does not search for it or authorize remote rendering.
+
+### 16.3 Inert proposed program — never evaluate without fresh approval
+
+<!-- BEGIN RUST RUNTIME METADATA PREFLIGHT V1 -->
+```mjs
+import fs from 'node:fs';
+import os from 'node:os';
+const START = process.hrtime.bigint();
+const END = START + 3_500_000_000n;
+const ROOT = '/tmp/opencode';
+const PATHS = [
+  '/usr/bin/cc', '/usr/bin/gcc', '/usr/bin/clang', '/usr/bin/ld',
+  '/usr/local/bin/cc', '/usr/local/bin/gcc', '/usr/local/bin/clang', '/usr/local/bin/ld',
+];
+const counts = { clock: 1, lstat: 0, statfs: 0, writes: 0 };
+const reasons = new Set(['TIME', 'LIMIT', 'ROOT', 'METADATA', 'FS']);
+const report = {
+  profile: 'rust-runtime-preflight-metadata-v1', status: 'STOP', reason: 'FS',
+  runtimeHints: null, root: null, capacity: null, candidates: [],
+  nativeAuthority: false, rustReady: false, trainingReady: false,
+};
+process.exitCode = 3;
+function fail(code) {
+  const error = new Error('STOP'); error.code = code; throw error;
+}
+function guard() {
+  if (counts.clock >= 32) fail('LIMIT');
+  counts.clock++;
+  if (process.hrtime.bigint() >= END) fail('TIME');
+}
+function io(kind, action) {
+  guard();
+  if (counts[kind] >= (kind === 'lstat' ? 9 : 1)) fail('LIMIT');
+  counts[kind]++;
+  let value;
+  try { value = action(); }
+  catch (error) { guard(); throw error; }
+  guard();
+  return value;
+}
+function unsigned(value) {
+  if (typeof value !== 'bigint' || value < 0n || value > (1n << 64n) - 1n) fail('METADATA');
+  return value.toString();
+}
+function metadata(stat) {
+  const result = {};
+  for (const key of ['dev', 'ino', 'mode', 'uid', 'gid', 'nlink', 'size']) result[key] = unsigned(stat[key]);
+  return result;
+}
+function token(value) {
+  if (typeof value !== 'string' || !/^[a-zA-Z0-9_+-]{1,32}$/.test(value)) fail('METADATA');
+  return value;
+}
+try {
+  guard();
+  report.runtimeHints = { platform: token(process.platform), arch: token(process.arch), endianness: token(os.endianness()) };
+  const root = io('lstat', () => fs.lstatSync(ROOT, { bigint: true }));
+  report.root = metadata(root);
+  if ((root.mode & 0o170000n) !== 0o040000n) fail('ROOT');
+  const capacity = io('statfs', () => fs.statfsSync(ROOT, { bigint: true }));
+  report.capacity = {};
+  for (const key of ['type', 'bsize', 'blocks', 'bavail']) report.capacity[key] = unsigned(capacity[key]);
+  for (const name of PATHS) {
+    let stat;
+    try { stat = io('lstat', () => fs.lstatSync(name, { bigint: true })); }
+    catch (error) {
+      if (error?.code === 'ENOENT') { report.candidates.push({ path: name, kind: 'MISSING' }); continue; }
+      throw error;
+    }
+    const snapshot = metadata(stat);
+    const type = stat.mode & 0o170000n;
+    const kind = type === 0o120000n ? 'UNQUALIFIED_SYMLINK'
+      : type === 0o100000n ? 'UNQUALIFIED_REGULAR' : 'UNQUALIFIED_OTHER';
+    report.candidates.push({ path: name, kind, metadata: snapshot, executeBit: (stat.mode & 0o111n) !== 0n });
+  }
+  guard();
+  report.status = 'METADATA_ONLY'; report.reason = null;
+} catch (error) {
+  report.reason = reasons.has(error?.code) ? error.code : 'FS';
+}
+try {
+  counts.writes = 1;
+  report.countsAtEncoding = { clock: counts.clock, lstat: counts.lstat, statfs: counts.statfs };
+  const text = JSON.stringify(report) + '\n';
+  if (text.length > 8192 || /[^\x00-\x7f]/.test(text)) throw new Error('OUTPUT');
+  const bytes = Buffer.from(text, 'ascii');
+  const written = fs.writeSync(1, bytes, 0, bytes.length);
+  if (written === bytes.length && report.status === 'METADATA_ONLY') {
+    guard();
+    process.exitCode = 0;
+  }
+} catch { process.exitCode = 3; }
+```
+<!-- END RUST RUNTIME METADATA PREFLIGHT V1 -->
+
+### 16.4 Admission before any future observation
+
+Syntax-only `node --input-type=module --check` with the extracted program on stdin passed; the program was parsed, not evaluated. Static comparison confirmed the eight literal candidate paths. No preflight root/candidate/capacity observation followed.
+Proposed program identity:3400 UTF-8 bytes including its final LF, SHA-256 `13bdcdce51718f6c19812fc89ec2b0d5b753c3f27343bf86281f3275294d2113`; this binds only the inert body, not an approved launcher, whole proposal or execution grant.
+Adversarial review identified a LOW pre-output clock-counter ambiguity; the record now explicitly snapshots `countsAtEncoding`, excluding the later delivery check. Closing adversarial/security reviews accepted the repaired proposal only with no new findings; both preserve EXECUTION NOT READY and the independent runtime verification gates.
+Final spec review reported in-sync. Rust verification and current diagram rendering remain blocked independently.
+Freeze this program's bytes, the whole approved proposal, exact launcher/argv/cwd/environment, output/capture disposition and explicit bootstrap residuals before asking for a one-time metadata grant.
+Review the literal scope, error/clock/output paths and prohibited-operation absence first. Syntax parsing without evaluation, if performed, proves neither collection behavior nor host observations.
+No target/candidate metadata has been observed through this program. Acquisition/setup/build/Native/training permissions and the original shared meter, clocks, fees and resource limits remain unchanged.
+Even a successful METADATA_ONLY result leaves linker/ABI usability, complete offline inputs, archive payload verification, installation, Rust tests and diagram rendering unqualified.
+
+### 16.5 Launcher identification and proposed exact launch — no preflight grant
+
+The user separately approved ONE identity-only query through the ordinary harness: `node -e 'process.stdout.write(JSON.stringify({node:process.execPath})+"\n")'`, repository cwd, tool timeout10000ms, inherited PATH/Node startup trusted without a hard startup/capture bound.
+That query ran once with reported tool exit0 and stdout `{"node":"/usr/local/bin/node"}`; stderr included the existing experimental EnvHttpProxyAgent warning.
+The identity-only grant is consumed. This is a reported launcher path, not named/FD binding, executable-byte verification, toolchain qualification or preflight execution.
+
+The following launch profile is a NEW proposal and supersedes §16.2's UNBOUND fields only as proposed command/context, not as approval:
+
+| Field | Proposed exact binding |
+| --- | --- |
+| Tool command | `/usr/local/bin/node --input-type=module <<'RUST_RUNTIME_PREFLIGHT_V1'` with §16.3's3400-byte program on stdin, followed by the delimiter line `RUST_RUNTIME_PREFLIGHT_V1`; no second authored program or parent marker |
+| cwd | `/tmp/opencode/f9-bootstrap-correspondence` |
+| Environment policy | Inherit the ordinary harness environment without enumeration or modification; trust its startup/hooks as an explicit metadata-only bootstrap residual, not a closed source/environment graph |
+| Tool timeout | 10000ms; not an OS/process-tree termination or physical-runtime guarantee |
+| Output policy | One authored ASCII JSONLF <=8192 bytes; ordinary tool stdout/stderr capture, including startup diagnostics, is not hard-bounded by that authored record cap |
+| Retries / grants | Zero retries; preflight execution approval remains NONE |
+
+The interpreter consumes stdin as fixed program source, not caller data. Absolute launch avoids a new PATH search but does not qualify its symlink/ancestor/loader/byte identity; those remain ordinary trusted-bootstrap residuals.
+The exact shell command is3496 UTF-8 bytes including its final LF, SHA-256 `80d4662b9d4fd254d6015a2ba69c350a97d7bc4944452518555417705b0b35ea`: the literal heredoc launch line in the table, LF, the complete §16.3 program including its final LF, then `RUST_RUNTIME_PREFLIGHT_V1` and LF. Static registration did not execute that command.
+Register the exact resulting shell-command bytes and whole current proposal before asking for one-time execution approval that explicitly accepts these residuals.
+No runtime candidate, root or capacity metadata was observed by the identity-only query; the original Rust BLOCKER and diagram MEDIUM remain open.
+Closing adversarial/security launch-profile reviews found no new findings and accepted the proposal only; spec review reported in-sync. Whole-proposal registration and fresh execution approval remain required, and neither review grants them.
+
+## 17. Metadata preflight outcome — one grant consumed, toolchain still unqualified
+
+**[Unverified] Harness-supplied execution receipt, not independently authenticated host/Native evidence.**
+The user explicitly selected `Approve metadata once`, accepting §16's ordinary bootstrap/startup/capture residuals for ONE execution only.
+Immediately before execution, repository-only verification matched whole canonical SHA-256 `86a561928b3608ecbe079f976cd4260f958ad6cfe2f3152d622de905a7b7ae23`, whole §16 SHA-256 `535ebd25a295d84fe0b0bcfd446b0cf9f9419c7606bbf4b50ed12ca4a6853f32`, body `13bdcdce51718f6c19812fc89ec2b0d5b753c3f27343bf86281f3275294d2113` and command `80d4662b9d4fd254d6015a2ba69c350a97d7bc4944452518555417705b0b35ea`.
+The registered3496-byte command ran once in `/tmp/opencode/f9-bootstrap-correspondence`, using `/usr/local/bin/node`, inherited harness environment and10000ms tool timeout; the tool returned normally without a timeout/error marker.
+Its authored JSONLF was the following single line; stderr contained the existing experimental EnvHttpProxyAgent warning, outside the authored-record bound:
+
+```json
+{"profile":"rust-runtime-preflight-metadata-v1","status":"METADATA_ONLY","reason":null,"runtimeHints":{"platform":"linux","arch":"x64","endianness":"LE"},"root":{"dev":"28","ino":"725","mode":"16877","uid":"1000","gid":"1000","nlink":"4","size":"4096"},"capacity":{"type":"2035054128","bsize":"4096","blocks":"5116564","bavail":"4206825"},"candidates":[{"path":"/usr/bin/cc","kind":"MISSING"},{"path":"/usr/bin/gcc","kind":"MISSING"},{"path":"/usr/bin/clang","kind":"MISSING"},{"path":"/usr/bin/ld","kind":"MISSING"},{"path":"/usr/local/bin/cc","kind":"MISSING"},{"path":"/usr/local/bin/gcc","kind":"MISSING"},{"path":"/usr/local/bin/clang","kind":"MISSING"},{"path":"/usr/local/bin/ld","kind":"MISSING"}],"nativeAuthority":false,"rustReady":false,"trainingReady":false,"countsAtEncoding":{"clock":23,"lstat":9,"statfs":1}}
+```
+
+Repository-only checks confirmed the approved canonical prefix and complete §16 bytes remain unchanged. The persisted JSONLF copy is824 bytes, SHA-256 `b404af3e5037124563be5a89c7fb4bc02eb51a14419258182dcd2cfceaae4b79`; hashing this copy supplies no independent transport/host authenticity.
+
+### 17.1 What this closes, and what it does not
+
+- Collection completed with METADATA_ONLY, not qualification. The observed counters are nine lstats and one statfs; `clock:23` is the pre-encoding snapshot, not the later final delivery sample or an original Native clock.
+- Every one of the eight fixed linker-candidate paths returned MISSING in this collection. This establishes neither host-global absence nor permission to inspect alternate directories or repeat PATH discovery.
+- Linux/x64/LE are Node runtime hints only. Current host ABI/libc, loader, GNU target compatibility, compiler/linker usability and dependency/source closure remain unqualified.
+- Root and capacity values are named, point-time and unreserved metadata; they do not bind a descriptor, explain historical device divergence, reserve storage or prove sufficient expanded/build capacity.
+- Neither this program nor the identity-only query ran Rust, compiled/ran its eight new tests, executed a candidate, acquired/extracted/installed archives, inspected retained roots/caches, created an authored filesystem object, trained a model or fetched/rendered a theme.
+- The one-shot metadata permission is CONSUMED. No retry, follow-up probe, alternate path, installation, build or other operation follows automatically; §§16/16.5 remain the immutable revision-scoped approved proposal, not a continuing grant.
+
+### 17.2 Remaining setup decision
+
+The five Rust archive descriptors alone cannot establish a usable GNU linking/sysroot or offline dependency context; existing runtime verification and diagram blockers remain open.
+Next select either a complete prepared verification context with audited direct tools/linker/sysroot/dependency inputs, or a separately reviewed expansion of setup planning to close those missing components. Neither route grants acquisition, host access or execution.
+The offline theme path remains unsupplied. The published runtime remains unverified WIP `166a0bd922948f08530745ea8aa8cc266dc3649d` on OPEN/unmerged PR50; this outcome does not waive either `READY TO MERGE: no` or change `trainingReady:false`.
+Closing adversarial/security reviews accepted this documentation receipt only with no new findings; spec review reported in-sync. These results authorize neither further observation nor runtime merge acceptance.
+
+## 18. Complete setup closure — GNU family selected, operational closure NOT CLOSED
+
+**[Unverified] Parent-supplied official research and repository-only inventory; requirements below are a PLAN, not qualified setup.**
+The user selected `Complete setup closure` for RESEARCH + PLAN only, then `GNU bundle (Recommended)` for family planning only.
+Architect `ses_e96c23f05ffezGIWfv7JIp4rzJ` and DevOps `ses_e9693b724ffe1scNv9YY7Q7eLq` supplied read-only advice.
+This append supersedes §17.2's unselected planning direction only; all preceding bytes, approved proposal/body bindings and receipts remain historical and unchanged.
+Runtime WIP `166a0bd922948f08530745ea8aa8cc266dc3649d` remains published on OPEN/unmerged PR50, with source unchanged by this pass.
+Rust compilation/tests BLOCKER, diagram-validation/rendering MEDIUM and both `READY TO MERGE: no` decisions remain binding without waiver.
+Every original and one-shot metadata grant is consumed; no follow-up host/proc/cache/environment observation, artifact HEAD/GET, installation or execution is authorized.
+The parent fetched documentation only, not archive bodies; this keeper performs repository-document reads/patches only, with no network, probes, scripts or new agents.
+
+### 18.1 Selected direction and compatibility requirements
+
+| Item | Selected requirement / limit |
+| --- | --- |
+| Rust / target | Rust1.95.0; `x86_64-unknown-linux-gnu` remains selected, but local host compatibility is UNKNOWN. |
+| ML baseline | Burn=0.22.0; Flex f64; defaults disabled; exactly std/flex/optim/store retained. |
+| Native tool direction | Prebuilt GNU compiler DRIVER plus compatible GNU sysroot/runtime; not a naked linker or a compiler source bootstrap. |
+| Provider | Bootlin is a CANDIDATE only; version, origin, payload and installer are unselected and acquisition is unapproved. |
+| Exclusions | No Python; no dependency/backend/target/feature changes, Clang/Zig wrapper selection or automatic fallback. |
+| Policy | Accepted zero-initialization/no-bias policy, table/belief contracts, Node bridge configuration/locks/RNG and all F9 controls stay unchanged. |
+
+Rust1.95's Tier1 host-tools table lists kernel3.2+ and glibc2.17+ for the selected GNU target [R18-1]; Node Linux/x64/LE hints prove neither requirement locally.
+On Unix, Rust normally uses a C compiler such as cc/clang as the linker DRIVER to supply system-library conventions [R18-2].
+For GNU x86-64, documented defaults use shipped rust-lld through the +lld linker feature; actual selected archive contents remain unverified [R18-2].
+Missing `/usr/bin/ld` alone therefore never proves a standalone GNU ld is required; driver, sysroot, loader and ABI closure remain UNKNOWN.
+Qualify the chosen GCC driver with Rust's shipped LLD where applicable; do not blindly substitute a raw ld executable.
+Do not disable LLD or change RUSTFLAGS, panic strategy, static linkage, musl target or backend to evade qualification.
+Bootlin publishes prebuilt GCC/binutils/C-library toolchains and license/source links [R18-9]; a newer glibc sysroot is not evidence of compatibility with an unknown host.
+Distinguish executable-platform loader/glibc requirements from compilation-target glibc, GLIBCXX, CRT, headers, libgcc_s and unwind requirements; establish each only where actually needed.
+Clang requires explicit runtime/sysroot closure; a local LLVM source bootstrap requires Python and is excluded [R18-10].
+Zig capabilities and cargo-zigbuild's flag/glibc/static limitations do not qualify this Rust GNU context [R18-11/12]; no helper, pip route or wrapper is selected.
+The cited closed-not-planned Zig GNU-static issue concerns upstream scope, not a demonstrated local Flex defect; infer no general glibc static-linking prohibition.
+
+### 18.2 Repository lock inventory — lexical evidence, not an active build graph
+
+The parent used a reproducible Node text pattern, not Cargo parsing, metadata, resolution or execution; this keeper does not rerun it.
+`Cargo.lock`:170624 UTF-8 bytes; SHA-256 `6907d97e5a09dc1b68f053194b50224bfba422047ca9e32e2d1b0497dac912c1`.
+Observed666 package entries comprise663 registry entries plus three without source, matching workspace arena/training-native/xtask, each version0.1.0.
+All663 registry sources equal `registry+https://github.com/rust-lang/crates.io-index`, with valid64-character lowercase checksum strings and zero duplicate identity records.
+No Git source entries were observed IN THIS LOCKFILE; this does not prove external manifest/configuration/source-replacement absence.
+Locked cc/pkg-config/bindgen/clang-sys/zstd-sys/torch-sys/cudarc/wgpu names belong to a SUPERSET, not proof of active features or a native/GPU/Torch/Python requirement.
+Selected dependency graph, cached bytes, actual source/build.rs contents and licenses remain UNKNOWN until separately approved Cargo/source evidence exists.
+Parent repository reads found the three-crate workspace, Cargo configuration limited to the xtask alias, and unchanged exact Burn CPU manifest features.
+Arena smoke declares tsx4.23.12; direct Node, pnpm-lock/module closure and actual smoke context need future qualification, not just §16.5's reported Node path.
+No environment values were read; lock inventory does not establish selected HOST build-script/proc-macro dependencies or installed tool usability.
+
+### 18.3 Formal BOM worksheet — required fields, not a completed pin catalog
+
+Every item needs an exact acquisition URL/origin or approved local-input path, revision/source identity, byte length + SHA-256, executablePlatform versus compilationTarget, dependency edges, preparation method and license/source proof; archive inputs additionally need their representation and compressed/expanded bounds.
+Record archive format, entry/expanded-byte bounds, setup interpreter, direct executable paths and every loader/library input; unresolved fields remain UNKNOWN rather than inferred.
+Track `contentVerified`, `installedUsability` and `nativeQualified` independently, all false here; `pinComplete:false` remains unchanged and no whole-BOM completion is claimed.
+
+| Role | Status / current evidence | Required unresolved descriptor or qualification |
+| --- | --- | --- |
+| Rust bundle | SELECTED direction; five historical XZ descriptors, total127772720 compressed bytes | Payloads, installation layout, direct tools and shipped linker usability unverified; retain §15.1 identities without reissuing receipts. |
+| GNU compiler driver | SELECTED family; Bootlin CANDIDATE | Exact version/origin/length/hash, executable platform, GCC driver, dependencies and setup/license proof UNKNOWN. |
+| GNU sysroot + CRT | REQUIRED compatible closure | Target headers/libc/startup objects, ABI baseline and source/license evidence UNKNOWN; do not install every optional library. |
+| Runtime / compiler / unwind / host loader | REQUIRED where actually used | Distinct host and target loader/libs, GLIBC/GLIBCXX/libgcc_s/unwind edges and exact identities UNKNOWN. |
+| Preparation tools | REQUIRED before unpack/setup | Exact decompressor/tar, installer shell/core utilities, verification utilities and ALL transitive preparation subprocess/runtime dependencies UNKNOWN; bound archive/setup policy and allow no Python. |
+| Locked sources |663 CANDIDATE registry identities, not selected bytes | Active subset, original .crate URLs/lengths/bytes/provenance/licenses and offline source closure UNKNOWN. |
+| Build-time executables | UNKNOWN selected HOST/TARGET graph | Native build.rs tools, proc macros and any child executables require source audit and qualified closure before execution. |
+| Arena Node/tsx verification | REQUIRED for affected smoke gate | Direct Node, tsx4.23.12, lock/module inputs, child paths and writable fixture scope UNKNOWN. |
+| Containment / enforcement | REQUIRED before controlled build/test execution | Identified process-tree network/filesystem/subprocess/resource mechanism, bootstrap dependencies and necessary privileges UNKNOWN; a policy statement or tool timeout is not enforcement. |
+| Offline diagrams | REQUIRED independent rendering gate | Supplied local theme path, include closure, renderer/runtime/font inputs and exact output scope UNKNOWN; no theme fetch. |
+
+### 18.4 Offline Cargo preparation and execution boundary
+
+Future preparation must derive the selected graph without all-features expansion; metadata's resolve graph covers all platforms by default, while filter-platform narrows that graph, not the complete packages inventory [R18-7]. Neither inventory alone establishes the selected compilation graph.
+Audit HOST build-script/proc-macro and TARGET dependency edges explicitly; target flags alone do not govern host compilation [R18-4].
+Cargo vendor can vendor registry/Git inputs and print source-replacement configuration; these are future templates, not commands run here [R18-3].
+Require unchanged resolution with --locked; --frozen means locked + offline, not source availability or whole-process network containment.
+Vendor ignores [source] configuration by default unless respect-source-config is chosen; freeze that choice against the approved source map.
+Use a separately approved fresh destination; collision means STOP, not reuse, --no-delete, repair, deletion or suffix fallback.
+Inventory hierarchical current/ancestor/CARGO_HOME configuration, source replacements, environment and Rust wrappers/linkers using a frozen allowlist; --config does not disable discovery [R18-4].
+Exclude credential files/tokens/helpers and unapproved wrappers/preloads from that future context. Freeze CC/CXX/AR/linker and HOST/TARGET settings without inspecting current secret or environment values now.
+Cargo1.95 documents automatic global-cache deletion as disabled under offline/frozen mode [R18-4]; this grants no retained-cache access or write permission. Require a separate fresh Cargo home and explicitly bound its necessary cache/lock/database writes.
+Directory-source per-file checksum metadata is necessary but rewritable; trusted preparation must bind vendor contents to lock-pinned original crate bytes [R18-5].
+Registry cksum is the expected .crate SHA-256; registry download templates may redirect and do not register a closed body/endpoint set [R18-6].
+Approve .crate format, origin/redirect policy, exact catalog and acquisition bounds independently; the old Rust XZ choice authorizes none of these payloads or new third-party source archives.
+No mirror, resolver fallback, current download authority or known license/preseed closure exists; establish source provenance/licenses before read-only vendor use.
+Cargo compiles and runs build scripts before compiling the rest of their package; scripts can emit linking instructions. OUT_DIR persists, and the documented write convention is not an OS sandbox [R18-8].
+Offline Cargo constrains resolver network use, not build.rs/proc-macro/child-process behavior; separately approve enforceable network denial, read/write/subprocess caps and resource limits.
+If a selected script requires Python, STOP; do not install Python or alter features. Never serialize live F9 meters, permits or clocks as build state.
+
+### 18.5 Construction DAG and fresh permission gates
+
+1. Obtain approved ordinary HOST ABI/context evidence first, or an operator-supplied closed GNU descriptor pack; neither may be accessed now without fresh scope approval.
+2. Qualify prebuilt preparation tools and their loaders/dependencies; do not bootstrap a compiler from source with unavailable tools or Python.
+3. Freeze and separately approve acquisition/verification of exact Rust/GNU inputs, then separately qualify bounded extraction/setup and direct installed-tool/loader usability.
+4. Approve source preparation, original-byte/checksum/license inventory, read-only vendor closure and frozen Cargo configuration; include all selected HOST/TARGET tool edges.
+5. Separately approve frozen/offline builds with actual process-tree network/filesystem/subprocess controls, explicit CPU/RSS/time/operation bounds and fresh TMP/target/cache writes.
+6. Run the eight focused new Rust tests plus retained scoring/f64/Burnpack, Node arena smoke and full affected suites/static checks only under approved exact direct-tool/input/write scopes.
+7. Independently qualify offline theme/renderer and current diagram outputs, then obtain closing adversarial/security/spec reviews on the accepted current source identity.
+
+Ordinary host metadata bootstrap does not require new F9 authority first; genuine sealed static-ELF/source closure remains a separate unqualified Native obligation.
+Only §15's four proposed fresh roots are named, still UNOBSERVED/unreserved/uncreated; additional Cargo-home/vendor paths are UNBOUND, with no guessed locations or path probes.
+Expanded bytes, archive entries, peak disk/RSS, CPU and time remain UNKNOWN; define actual caps before each operation, not from compressed totals or the64KiB fixture limit.
+§17 capacity is point-time metadata, not space qualification; source-fixture bounds are not larger acquisition budgets.
+Retention must specify approved count/byte limits; any cleanup covers only exact fresh known-owned test fixtures, never old/retained roots or a broad cache deletion.
+Four new Rust files, the current delta and changed spec index require a fresh verifier input count/identity; no old receipt, hash or invoice becomes current by this plan.
+This DAG does not close §10, qualify F9/training quality/calibration, authorize learning, or change `trainingReady:false`; step2 remains NOT DONE.
+
+### 18.6 Research references and explicit remaining STOP
+
+The parent fetched these official/upstream documents successfully; links establish requirements, not pinned artifact provenance, current host facts or local execution results.
+- [R18-1: Rust1.95 platform support](https://doc.rust-lang.org/1.95.0/rustc/platform-support.html) — host-tools kernel/glibc baseline.
+- [R18-2: Rust1.95 linker options](https://doc.rust-lang.org/1.95.0/rustc/codegen-options/index.html#linker), [linker features](https://doc.rust-lang.org/1.95.0/rustc/codegen-options/index.html#linker-features), [self-contained linking](https://doc.rust-lang.org/1.95.0/rustc/codegen-options/index.html#link-self-contained), [Rust1.90 LLD change](https://blog.rust-lang.org/2025/09/18/Rust-1.90.0/) — driver versus shipped linker.
+- [R18-3: Rust1.95 cargo vendor](https://doc.rust-lang.org/1.95.0/cargo/commands/cargo-vendor.html) — vendor/configuration and locked/frozen semantics.
+- [R18-4: Rust1.95 Cargo configuration](https://doc.rust-lang.org/1.95.0/cargo/reference/config.html) — discovery/merge, overrides and host/target scope.
+- [R18-5: Rust1.95 source replacement](https://doc.rust-lang.org/1.95.0/cargo/reference/source-replacement.html) — directory-source checksum metadata.
+- [R18-6: Rust1.95 registry index](https://doc.rust-lang.org/1.95.0/cargo/reference/registry-index.html) — crate checksum/download endpoint semantics.
+- [R18-7: Rust1.95 cargo metadata](https://doc.rust-lang.org/1.95.0/cargo/commands/cargo-metadata.html) — resolution/platform filtering.
+- [R18-8: Rust1.95 build scripts](https://doc.rust-lang.org/1.95.0/cargo/reference/build-scripts.html) — executable build inputs, output and persistence.
+- [R18-9: Bootlin toolchains](https://toolchains.bootlin.com/), [x86-64 releases](https://toolchains.bootlin.com/releases_x86-64.html) — candidate prebuilt GNU families and published license/source links; no version selected.
+- [R18-10: Clang toolchain](https://clang.llvm.org/docs/Toolchain.html), [cross-compilation](https://clang.llvm.org/docs/CrossCompilation.html), [LLVM source prerequisites](https://llvm.org/docs/GettingStarted.html) — explicit runtime/sysroot needs; Python>=3.8 source-build prerequisite excludes that bootstrap.
+- [R18-11: Zig overview](https://ziglang.org/learn/overview/), [R18-12: cargo-zigbuild README](https://raw.githubusercontent.com/rust-cross/cargo-zigbuild/main/README.md), [issue231](https://github.com/rust-cross/cargo-zigbuild/issues/231) — unselected alternative constraints; issue closed not planned2026-08-26, not local defect evidence.
+Research establishes official requirements and the reported lexical inventory ONLY; actual complete operational setup closure is **NOT CLOSED**.
+Host ABI, exact tool/payload descriptors, loader/libs/extractor, offline bytes/configuration, process/network/resource enforcement and local theme path remain UNKNOWN: STOP.
+Next concrete input is approved HOST ABI/context evidence or a provided closed GNU artifact descriptor pack, with fresh approval before access; no current operation or repeated family/XZ/profile vote follows.
+Closing adversarial/security research-document reviews reported no findings and accepted documentation only; DevOps clarifications were applied and spec review reported in-sync. These reviews do not close the Rust/diagram blockers or qualify the setup for execution.

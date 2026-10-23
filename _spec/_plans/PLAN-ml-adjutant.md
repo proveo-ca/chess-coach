@@ -1,3 +1,26 @@
+## Current setup closure — GNU family selected / requirements only (2026-10-23)
+
+**[Unverified] Selected planning:** `Complete setup closure` then `GNU bundle (Recommended)`; [canonical §18](ml-runtime-redesign.md#18-complete-setup-closure--gnu-family-selected-operational-closure-not-closed) records parent research, lexical lock inventory, formal BOM gaps and the construction DAG, not completed setup.
+**Direction:** prebuilt GNU compiler driver + compatible sysroot/runtime; Bootlin is an unpinned CANDIDATE, not an approved payload. Rust1.95 GNU/Burn0.22 Flex f64/features and no-Python remain unchanged; missing ld alone does not establish a standalone-linker requirement.
+**STOP / next input:** approved HOST ABI/context evidence or a supplied closed GNU descriptor pack, with fresh approval before access. All grants are consumed; no probe, artifact HEAD/GET, install, Rust execution, theme fetch or other operation follows. The preceding §16 proposal/§17 receipt remain frozen history.
+**Acceptance:** operational closure NOT CLOSED; Rust BLOCKER and diagram MEDIUM remain OPEN, runtime WIP `166a0bd9`/PR50 stays unmerged, `trainingReady:false`, step2 NOT DONE. Earlier navigation below does not reopen family/profile/XZ choices or permissions.
+
+## Current metadata outcome — grant consumed / toolchain unqualified (2026-10-23)
+
+**[Unverified] Reported execution:** user approved ONE registered metadata preflight with explicit bootstrap/capture residuals; [canonical §17](ml-runtime-redesign.md#17-metadata-preflight-outcome--one-grant-consumed-toolchain-still-unqualified) preserves its JSONLF outcome and frozen proposal/body/command bindings.
+**Result:** METADATA_ONLY, Linux/x64/LE runtime hints, nine lstats/one statfs, and all eight fixed linker-candidate paths MISSING. These are scoped observations, not host-global absence, physical ABI, capacity reservation, installed-tool usability or Native authority.
+**Permission:** consumed; no retry, follow-up probe, alternate path, archive acquisition, installation, Rust invocation or other operation is authorized. The earlier §16 proposal/launch bindings below are revision-scoped history, not renewed permission.
+**Next:** select a complete prepared verification context or separately plan missing linker/sysroot/offline-input closure. Offline theme path is still missing; Rust/diagram blockers remain OPEN, PR50 runtime WIP `166a0bd9` remains unmerged, `trainingReady:false` and step2 NOT DONE.
+
+## Current exact preflight — proposal only / launcher and execution unbound (2026-10-23)
+
+**[Unverified] Selected next input:** user chose `Exact preflight (Recommended)` after runtime WIP publication `166a0bd922948f08530745ea8aa8cc266dc3649d`; [canonical §16](ml-runtime-redesign.md#16-exact-metadata-preflight--proposal-prepared-execution-unapproved) contains the inert bounded metadata program and fixed scope.
+**Limits:** <=9 lstats +1 statfs, eight literal linker-candidate paths, cooperative3500ms collection, <=8192-byte one-write JSON; no candidate execution, content/hash/link resolution, filesystem creation, retained-root/cache/home/proc/daemon/network access or qualification claim.
+**Proposal checks:** syntax-only parsing and eight-path static comparison passed; closing adversarial/security reviews accepted the proposal only and spec review reports in-sync. The clock counter is explicitly an at-encoding snapshot, not a final invoice.
+**Pending:** whole-launch registration and separate one-time execution approval under the proposed §16.5 binding; no preflight evaluation or root/candidate/capacity observation is approved. Offline theme path remains missing.
+**Identity-only receipt:** a separately approved, consumed one-shot query reported `/usr/local/bin/node`; [§16.5](ml-runtime-redesign.md#165-launcher-identification-and-proposed-exact-launch--no-preflight-grant) proposes the absolute launch/cwd/inherited-environment policy. No preflight observation or execution grant follows.
+**Publication:** runtime WIP is pushed to PR50, still OPEN/unmerged; Rust compilation/tests and current diagram rendering remain blocked, with both `READY TO MERGE: no` findings intact. `trainingReady:false`; step2 NOT DONE.
+
 ## Current setup continuation — proposal selected / offline theme path missing (2026-10-23)
 
 **[Unverified] Latest navigation:** user selected **`Plan fresh setup (Recommended)`** and **`Provide offline theme`**; [canonical §15](ml-runtime-redesign.md#15-fresh-setup-proposal-and-offline-theme--selected-no-execution-grant) records proposal-only gates, four UNOBSERVED/unreserved/uncreated paths, historical XZ descriptors and unknown host/input/resource closure.
