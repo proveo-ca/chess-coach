@@ -1241,3 +1241,23 @@ Preserve WHOLE diagnosticd863/XZdc449/HEADd971/manifestb6f2/M3fdb740/Node01fdfed
 Root B/sole counter/BOTH-seat1048576/F1/charged replay/original source clocks/cold10s/lifecycle300s/reserved3s/generator2048 remain; accepted classification stays unpriced and numeric-B/invoice/private guard remain OPEN.
 [Implementation §31](native-ingress-implementation.md#31-m3-per-object-staging-policy-remains-unselected) retains installer/mise actual version/source/backend/rustup auxiliary/offline preseed/full graph/dependencies/licenses/N3/loading/custody gates OPEN, offline allowlist-only capture/build/runtime/no acquisition fallback and all five exclusions.
 nativeAuthority/trainingReady/pinComplete/installed/contentRead/contentHash/historicalFailureIdentified remain false and captureRootCandidate/lArtifact/snapshotCandidate null; operational grants remain zero, with no model/training/activation permission.
+
+## 33. Per-object input profile selected — redesign before learning
+
+**[Unverified] 2026-10-23 · #1 DESIGN SELECTED / SOURCE PLAN UNAPPROVED / NO OPERATIONS OR CLEANUP / trainingReady:false.**
+Executor selected the NEW per-object ordinary software-input staging profile; §32's unselected-choice checkpoint is historical, not another required vote.
+The [canonical runtime redesign](ml-runtime-redesign.md) now owns current goals, research provenance, future verification and conditional cleanup; old packets remain historical, not current approved designs.
+Training has not happened; no learned checkpoint needs migration, and existing legacy consumers/data/labels are not failed garbage.
+Only a NEW VERSION may replace parent/file same-device equality with each file's independent DEV+INO named-to-owned-FD binding before/after relevant phases.
+Retain root owner/0700 and named/FD coupling, regular file owner/0600/nlink1/size0 birth, full security/snapshots/cursor/length/incoming hash/readback/EOF and close gates.
+Same-device and device-diverse objects may both be valid under ordinary stable-host trust; this proves no openat, alias exclusion, OS barrier or immutable Native backing.
+Supplied current root dev28/file dev29 and seven-field per-object agreement do not identify the old failed predicate; historicalFailureIdentified remains false.
+Original01 remains zero-GET STOP:STAT and retained root/cargo remain inaccessible without fresh approval; no read/stat/hash/delete/repair/reuse/retry follows.
+First define a small bounded offline custody fixture with positive/negative identity/security/content/close cases, not another large archive acquisition program.
+Only after that scoped proof works may a fresh stage02 source/paths/I/O/registration/review proposal seek exact filesystem and GET permissions; none exists now.
+Keep selected XZ opaque data distinct from installed-binary qualification and Native authority; string/hash/JSON records mint no clocks, counters or custody.
+Preserve F9 N1–N10, actual source/protected names/read-only loading/process/channels/typed Native controls, Root B/sole counter/F1/charged replay and all original budgets.
+The redesign separates offline training from inference/admission; current F9 remains model-work-free and capture/build/runtime remain offline allowlist-only/no acquisition fallback.
+Cleanup is future conditional on an accepted working architecture, affected proofs/reviews and an exact independently reviewed target manifest plus fresh HITL deletion approval.
+No failed-doc/cache pruning is authorized now; preserve all earlier bytes and source470e540, BAF/Core data and accepted contracts during this research phase.
+[Implementation §32](native-ingress-implementation.md#32-burn-runtime-redesign--validate-before-cleanup) keeps full-plan/source/installer/native graph/invoice/private-guard gates open; all five exclusions and false/null authority/training ledgers remain unchanged.

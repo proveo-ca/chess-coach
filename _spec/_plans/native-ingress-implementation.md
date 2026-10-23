@@ -869,3 +869,24 @@ Accepted BAF classification remains unpriced; numeric B/invoice/private guard/fu
 Capture/build/runtime remain offline installed-byte allowlist-only/no-acquisition-fallback; full-training-closure/genuine-native-authority/whole-decision-adequacy/calibration/training-readiness remain unproved.
 nativeAuthority/trainingReady/pinComplete/installed/contentRead/contentHash/historicalFailureIdentified stay false, captureRootCandidate/lArtifact/snapshotCandidate null and operational grants zero; no model/collection/fitting/training/activation/deployment permission follows.
 This four-Markdown persistence used repository reads/patches only; no commands/hashes/tests/agents/network/retained/installed/proc/log/receipt/daemon/staging access or source/target/dependency/manifest/diagram/index/control change occurred.
+
+## 32. Burn runtime redesign — validate before cleanup
+
+**[Unverified] 2026-10-23 · RESEARCH-LED DESIGN CONTINUATION / NO SOURCE OR EXECUTION APPROVAL / trainingReady:false.**
+[Ownership §33](native-ingress-ownership.md#33-per-object-input-profile-selected--redesign-before-learning) records actual #1 selection; §31's policy-unselected state is historical, not a new decision gate.
+Use the [single canonical runtime redesign](ml-runtime-redesign.md) for current architecture, parent/specialist public research and future acceptance purposes, not another failed-attempt packet.
+Six logical responsibilities separate acquisition/build inputs, runtime/device initialization, dataset/features, offline trainer, arena inferencer and verification/artifact lifecycle; they do not mandate six new crates.
+Keep Rust model/feature logic shared and the thin Node/unchanged TypeScript engine bridge; offline fit/cache/seeds/config never become current Native A2/F9 work.
+Preserve Burn=0.22.0/Rust1.95/defaults-off std/flex/optim/store and explicit pre-tensor Flex f64; no implicit train/dataset/GPU/backend/dependency change follows.
+Published runtime Device/Tensor<D>, global Flex RNG and stored-dtype loading require explicit context/RNG/dtype tests, not older backend-generic examples or seeding-only resume claims.
+Module weights are not complete optimizer/scheduler/RNG/sampler resume; require a validated versioned candidate bundle without restoring live Native permits/meters/deadlines.
+Pinned Burnpack publication has unbounded scratch collisions, link-fallback races and post-publication error states; qualify actual storage and publish a validated bundle commit pointer last.
+First specify a small bounded offline custody proof, including valid same/diverse-device cases where supported and negative binding/owner/mode/link/size/hash/truncation/close cases.
+Do not author another large Root02 acquisition body before that proof works; fresh source/path/I/O registration, authorized checks/reviews and exact filesystem/GET approvals remain later requirements.
+Future acceptance covers numerical/SGD/f64/persistence, shared-feature/private-truth isolation, scoped resume, save failures, actual Node EOF/reap, resource measurements and independent full Native closure.
+No tests ran or new tests were persisted here; existing synthetic tests and width418 padding prove neither real training nor the complete accepted encoder.
+“Working” requires one accepted revision, affected proofs and reviews without HIGH/BLOCKER findings; synthetic architecture proof cannot establish learned-policy quality/calibration.
+After working acceptance, consolidate navigation and propose exact obsolete docs/cache targets with count/byte retention, protected pins/rollback and no active writers, then seek fresh HITL deletion approval.
+No cleanup now, no learned-weight migration, no legacy-consumer/data/label disposal, no access/reuse/repair/retry01 and no transfer of consumed grants.
+Preserve source470e540/BAF/Core data/N1–N10/Root B/sole counter/ONE BOTH1048576/F1/charged replay/original10s/300s including3s cleanup/generator2048 and belief24000 groups split14400/4800/4800 before policy training.
+Full source-plan/installer/graph/clock/loading/custody/numeric-B/invoice/private-guard gates and all five exclusions remain open; authority/training/pin/installed/content/hash/historical-diagnosis false and capture/L/snapshot null remain unchanged.

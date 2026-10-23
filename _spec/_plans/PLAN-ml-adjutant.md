@@ -1,3 +1,11 @@
+## Current canonical continuation — per-object inputs and runtime redesign (2026-10-23)
+
+**[Unverified] #1 DESIGN SELECTED / trainingReady:false:** [canonical runtime redesign](ml-runtime-redesign.md) is current navigation; older continuations below preserve literal history, not current approved design or permission. Training has not happened; redesign before learning, with no learned-weight migration or legacy-consumer/data/label deletion.
+
+[Ownership §33](native-ingress-ownership.md#33-per-object-input-profile-selected--redesign-before-learning) selects NEW ordinary per-object named/owned-FD identity plus security/hash/readback, not Native guard relaxation; [implementation §32](native-ingress-implementation.md#32-burn-runtime-redesign--validate-before-cleanup) separates offline training/inference and preserves Burn0.22/Flex f64/F9 contracts.
+
+**Next:** define a small bounded offline custody proof with negative cases BEFORE another large Root02 archive attempt; #1 needs no repeat policy vote. No new source/program/test/operation or retained01 access is approved; all prior grants are consumed. Cleanup follows verified working-architecture acceptance, exact reviewed targets and fresh destructive approval, not now; all old bytes remain intact during research.
+
 ## Current continuation — current device divergence, consumed diagnostic and policy gate (2026-10-23)
 
 **[Unverified] Supplied metadata DATA ONLY / trainingReady:false:** actual `Approve metadata once` bound WHOLE diagnosticd863…/commanddd2a9f…; [metadata outcome](native-ingress-host-preparation-m3-xz-metadata-outcome.md) copies DIAGNOSTIC_METADATA_ONLY/METADATA_OBSERVED/parent marker0, no reported stderr/timeout. CURRENT root dev28/file dev29 is the only false comparison; other nine true, selected seven-field snapshots agree per object and current size0 is observed, not historical diagnosis or Native evidence.
