@@ -1,3 +1,12 @@
+## Current actual `apply` unit — offline ordinary custody (2026-10-23)
+
+**[Unverified] Parent-reported first unit implemented:** later user `apply` authorizes actual source plus offline tests, not only inert Markdown; [canonical receipt §12](ml-runtime-redesign.md#12-actual-apply-implementation-unit--ordinary-offline-custody-only) supersedes older planning-only/no-source labels for this unit only.
+**Purpose:** close the small per-object spec → persisted offline tests/static checks → source loop before larger acquisition or runtime work; acceptance is scoped to this ordinary offline unit only.
+**Implemented:** `tooling/native-ingress/custody.mjs` and `custody.test.mjs`; [ordinary custody diagram](../tooling/native-ingress/custody.puml) documents exclusive fresh paths, independent named/FD identity, security, bounded write/readback/hash and close handling.
+**Evidence:** parent reports41 Node built-in tests PASS,0 fail/skip, including a real rootDevice28/fileDevice29 fixture; this is ordinary-per-object-v1/DATA_ONLY with nativeAuthority:false and installed:false, not Native/installer/Burn working-runtime proof.
+**Limits:** fresh private test parents/fixed-owned unlink/rmdir teardown only; no downloads, training, retained01 access or retained-artifact cleanup. Existing Rust, NamedDataset, legacy behavior, all old authority/retention bindings and trainingReady:false remain unchanged.
+**Next:** syntax, diagram,41-test and closing source-review gates passed for this unit; Oxlint is unavailable and skipped. Route the next separately approved unit before training. Stage02 large acquisition and §10 working architecture remain unproved; the older pipeline below is frozen revision-scoped history, not renewed permission.
+
 ## Current canonical continuation — per-object inputs and runtime redesign (2026-10-23)
 
 **[Unverified] #1 DESIGN SELECTED / trainingReady:false:** [canonical runtime redesign](ml-runtime-redesign.md) is current navigation; older continuations below preserve literal history, not current approved design or permission. Training has not happened; redesign before learning, with no learned-weight migration or legacy-consumer/data/label deletion.

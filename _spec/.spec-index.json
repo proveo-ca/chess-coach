@@ -756,6 +756,14 @@
         "oxlint.training.json"
       ],
       "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/custody.puml",
+      "covers": [
+        "tooling/native-ingress/custody.mjs",
+        "tooling/native-ingress/custody.test.mjs"
+      ],
+      "fingerprint": null
     }
   ],
   "unresolved": [

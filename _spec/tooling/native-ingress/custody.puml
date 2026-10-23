@@ -1,0 +1,126 @@
+' purpose: bounded offline ordinary per-object fixture custody, without Native authority
+' covers: tooling/native-ingress/custody.mjs
+' covers: tooling/native-ingress/custody.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 12 records the implementation unit.
+' scope: standalone ordinary helper; no F9 private initializer or standard-slot ABI.
+' validation: parent owns syntax checks, PlantUML checkonly/render and test execution.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Ordinary per-object custody — bounded offline fixture
+
+participant "tooling/native-ingress/\ncustody.test.mjs" as TEST <<app>>
+participant "tooling/native-ingress/\ncustody.mjs" as SOURCE <<app>>
+participant "node:fs / process\nhost runtime" as HOST <<host>>
+database "rootPath\nfresh directory" as ROOT <<db>>
+database "fixture.bin\nfresh regular file" as FILE <<db>>
+participant "CustodyError" as ERROR <<error>>
+
+TEST ARROW_MAIN SOURCE : stageFixture(rootPath, {bytes, expectedSha256})
+SOURCE ARROW_MAIN SOURCE : start 3.5s cooperative deadline; validate input
+SOURCE ARROW_MAIN SOURCE : copy Buffer; verify incoming SHA-256
+note right of SOURCE
+Absolute normalized non-root path
+Buffer length 1..65536; lowercase SHA-256
+Intrinsic typed-array length
+Bounded native byte copy
+end note
+
+group Fresh root; no collision repair
+  SOURCE ARROW_MAIN HOST : check platform flags; capture effective UID once
+  SOURCE ARROW_MAIN HOST : mkdirSync(rootPath, 0700, recursive:false)
+  HOST ARROW_MAIN ROOT : exclusive directory creation
+  SOURCE ARROW_MAIN HOST : open root: RDONLY | DIRECTORY | NOFOLLOW | NONBLOCK
+  SOURCE ARROW_MAIN HOST : fstat + lstat, bigint:true
+  SOURCE ARROW_MAIN SOURCE : assertRoot(named, opened, uid); retain rootBirth
+end
+note over SOURCE, ROOT
+Root security: dev, ino, mode, uid, gid, nlink
+Directory, effective UID, exact mode0700
+Root binding excludes size and timestamps
+end note
+
+group Exclusive file birth and one write
+  SOURCE ARROW_MAIN HOST : open fixture: WRONLY | CREAT | EXCL | NOFOLLOW | NONBLOCK
+  HOST ARROW_MAIN FILE : create fixture.bin with mode0600
+  SOURCE ARROW_MAIN HOST : fstat + lstat, bigint:true
+  SOURCE ARROW_MAIN SOURCE : assertFileBirth(named, opened, uid)
+  note over SOURCE, FILE
+Regular file, effective UID, exact mode0600
+nlink1; birth size0; named/FD snapshot equal
+  end note
+  SOURCE ARROW_MAIN HOST : one writeSync, position0, full input length
+  HOST ARROW_MAIN FILE : write copied bytes
+  SOURCE ARROW_MAIN SOURCE : require full count; no short-write retry
+  SOURCE ARROW_MAIN HOST : fstat + lstat file; fstat + lstat root
+  SOURCE ARROW_MAIN SOURCE : assertFilePhase; birth security unchanged; rootBinding
+  SOURCE ARROW_MAIN HOST : close writer before reader acquisition
+end
+
+note over SOURCE, FILE
+Content: dev, ino, mode, uid, gid, nlink,
+size, mtimeNs, ctimeNs — all bigint
+Security fields and size fit unsigned 64-bit
+Full equality within each file phase
+Birth-to-written comparison: security only
+end note
+note over ROOT, FILE
+Each object retains its own device identity
+because parent and file devices may differ.
+Stable host paths remain required; checks cannot
+protect ancestors against concurrent change.
+end note
+
+group Independent readback after writer closure
+  SOURCE ARROW_MAIN HOST : open fixture: RDONLY | NOFOLLOW | NONBLOCK
+  SOURCE ARROW_MAIN HOST : fstat + lstat, bigint:true
+  SOURCE ARROW_MAIN SOURCE : assertFilePhase; full snapshot equals written
+  loop Exact positional chunks, at most 4096 bytes each
+    SOURCE ARROW_MAIN HOST : readSync at current offset; require exact count
+    HOST ARROW_MAIN FILE : read fixture bytes
+    SOURCE ARROW_MAIN SOURCE : update independent SHA-256; advance offset
+  end
+  SOURCE ARROW_MAIN HOST : one-byte EOF probe at expected length
+  SOURCE ARROW_MAIN SOURCE : require EOF and expected readback SHA-256
+  SOURCE ARROW_MAIN HOST : fstat + lstat file, bigint:true
+  SOURCE ARROW_MAIN SOURCE : assertFilePhase; full snapshot still equals written
+  SOURCE ARROW_MAIN HOST : close reader; fstat + lstat root
+  SOURCE ARROW_MAIN SOURCE : rootBinding; prepare frozen DATA_ONLY result
+end
+
+group Failure handling and unconditional descriptor finalization
+  opt Any guard, I/O or explicit close fails
+    SOURCE ARROW_ERROR ERROR : preserve CustodyError; normalize other failures to E_FS
+  end
+  SOURCE ARROW_MAIN HOST : finally: close remaining file/root holders once
+  note over SOURCE, HOST
+Clear holder before each close attempt
+Closures bypass deadline and operation guards
+At most three total close attempts
+  end note
+  opt Any close attempt fails
+    SOURCE ARROW_ERROR ERROR : E_CLOSE takes priority; no uncertain-close retry
+  end
+end
+note over SOURCE, ERROR
+Close uncertainty prevents a success result
+because descriptor disposition is no longer known.
+The helper retains partial roots for inspection;
+only the test removes its fresh owned paths.
+end note
+
+alt Failure recorded
+  SOURCE ARROW_ERROR TEST : throw failure; no result
+else All checks and closes succeeded
+  SOURCE ARROW_MAIN SOURCE : final cooperative deadline guard
+  SOURCE ARROW_MAIN TEST : frozen ordinary-per-object-v1 / DATA_ONLY
+end
+note right of TEST
+nativeAuthority:false; installed:false
+Point-time byte verification, not immutability
+end note
+note over SOURCE, HOST
+96 ordinary-operation cap; max two owned FDs
+Max fixture: one write, 17 reads, three opens
+Cooperative clock, not an OS blocking-I/O bound
+end note
+@enduml
