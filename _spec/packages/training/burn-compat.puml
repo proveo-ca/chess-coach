@@ -49,7 +49,14 @@
 ' covers: packages/training/tests/evidence_tables.rs
 ' covers: packages/training/src/banded_joint.rs
 ' covers: packages/training/tests/banded_joint.rs
+' covers: packages/training/src/runtime.rs
+' covers: packages/training/src/synthetic_batch.rs
+' covers: packages/training/src/inference.rs
+' covers: packages/training/src/offline_trainer.rs
 ' status: Categorical banded/owned normalization/evidence/raw joint/training structure lives here; current evidence and review status lives in the related Markdown owners.
+' runtime-status: Synthetic boundary SOURCE PREPARED; Rust compilation/tests and closing reviews remain pending, not accepted runtime behavior.
+' related: _spec/_plans/ml-runtime-redesign.md#14-selected-synthetic-runtime-boundary--source-prepared-compilation-blocked
+' rendering: Existing burn-compat.svg is historical, NOT CURRENT for this source-prepared boundary; validation/rendering remain pending.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
 ' related: _spec/ml/native-runner.md
@@ -79,14 +86,18 @@
 ' validation: Author runs no tests, renderer or hashes; lead owns the complete unchanged-input invoice and note-box checks.
 @startuml
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Rust categorical banded joints + owned normalization / checked training foundations
+title Rust training foundations / synthetic boundary SOURCE PREPARED, uncompiled
 left to right direction
 
 component "apps/arena/src/lib.rs\nRust policy caller" as ARENA <<app>>
 component "apps/arena/src/run.rs\nnative baseline caller" as RUN <<app>>
 package "Root Cargo workspace\nCargo.toml / one reused Cargo.lock" {
-  component "packages/training/src/lib.rs\ntraining_native::score_synthetic_f64" as LIB <<app>>
-  component "packages/training/src/model.rs\nsynthetic-linear-418-v1\nw=[0.5,-0.25,0,...] / b=0.125" as MODEL <<app>>
+  component "packages/training/src/lib.rs\nre-export score_synthetic_f64\nF64Runtime / SyntheticInferenceContext" as LIB <<app>>
+  component "packages/training/src/runtime.rs\nF64Runtime::initialize / opaque Device\nOnceLock<Result<Device, ScoreError>> / backend" as RUNTIME <<app>>
+  component "packages/training/src/synthetic_batch.rs\ncrate-private SyntheticBatch / borrowed f64\n1..512 x 418 / finite / abs <= 1e6" as BATCH <<app>>
+  component "packages/training/src/inference.rs\nSyntheticInferenceContext::new / score\nprivate runtime + fixed model / no optimizer" as INFERENCE <<app>>
+  component "packages/training/src/offline_trainer.rs\nlib.rs cfg(test) ONLY / fixed synthetic fixture\nMSE / autodiff / SGD .125 / valid snapshot\nSOURCE PREPARED tests, NOT a production trainer" as OFFLINE_FIXTURE <<app>>
+  component "packages/training/src/model.rs\ncrate-private SyntheticLinear / ParamIds 1,2\nw=[0.5,-0.25,0,...] / b=0.125\nunchanged matmul then bias addition" as MODEL <<app>>
   component "packages/training/src/main.rs\ntraining-native standalone binary" as CLI <<host>>
   component "packages/training/src/protocol.rs\ntraining-burn-compat-v1\nuint32 id / score only" as PROTOCOL <<app>>
   component "tooling/xtask/src/main.rs\nshared cumulative verifier / cargo xtask check\nsame 29 checks / source-bound receipt scope" as XTASK <<host>>
@@ -182,7 +193,7 @@ component "packages/training/tests/joint_accounting.rs\nindependent distinct-tup
 component "packages/training/tests/evidence_tables.rs\noriginal-roster ALL794x48 count BITS / paired complete r\nqualification / destination clocks / cache / moved pointers\nmask + P=0 / reachable underflow / exact fees + Budget\nprivate source units: cap/precharge/move/NaN/zero total" as EVID_PROOF <<app>>
 component "packages/training/tests/banded_joint.rs\nindependent hardcoded19 bands / ALL247 +7501 entries\nordinary SUM/DIV/MUL BITS / full-width ZEROS\nstrict partial domain / MOVE+live detachment / exact fees\nprivate units: malformed shapes/domains/underflow" as BANDED_PROOF <<app>>
 
-ARENA ARROW_MAIN LIB : retained smoke / direct typed Rust call\nno scoring child / no Bun bridge
+ARENA ARROW_MAIN INFERENCE : smoke new() then score() / infer-only\nno scoring child / no Bun bridge
 RUN ARROW_MAIN COMPOSER : limited AuthorizedView only\nno case / fixture / seed / native image
 CONTRACTS ARROW_MAIN COMPOSER : full ordered canonical JSON bytes\ncounted mine multiset / cap 3
 COMPOSER ARROW_MAIN PLANNER : PlanningOracle / prefix / family\naction + nativeFailure + anchor + cost
@@ -195,17 +206,28 @@ COMPOSITION_PROOF ARROW_OPTIONAL COMPOSER : B quotas / counters / continuation o
 COMPOSITION_PROOF ARROW_OPTIONAL SELECTORS : versioned selectors / xorshift vectors\nno learned-policy assertion
 XTASK ARROW_OPTIONAL COMPOSITION_PROOF : full fresh suite\nliteral source coverage and pointers
 COMPOSER ARROW_ERROR FAILURE : planning / accounting / close failure\nno generation or admission rescue
-LIB ARROW_MAIN MODEL : validate 1..512 rows x 418\nfinite values / abs(value) <= 1e6
-MODEL ARROW_MAIN BURN : local f64 tensor operations\nRust implementation / no runtime network
+LIB ARROW_MAIN BATCH : wrapper validates BEFORE context/backend init\nShape -> NonFinite -> BadRequest precedence
+LIB ARROW_MAIN INFERENCE : unchanged score_synthetic_f64 signature\nnew context AFTER validated batch
+INFERENCE ARROW_MAIN BATCH : score validates through SAME borrowed guard\ncopy normalizes signed zero only
+INFERENCE ARROW_MAIN RUNTIME : new() initializes BEFORE model tensors\ncrate-private device access / no public raw Device
+RUNTIME ARROW_MAIN BURN : Device::flex / configure FloatDType::F64\nOnceLock before tensors / panic containment
+INFERENCE ARROW_MAIN MODEL : fixed inference model / dtype checks\nordered finite outputs / normalize output zero
+MODEL ARROW_MAIN BURN : unchanged matmul + bias / local f64\nRust implementation / no runtime network
 CLI ARROW_MAIN PROTOCOL : retained standalone test surface\none JSON request / stdin EOF / <= 8 MiB
 PROTOCOL ARROW_MAIN LIB : same fixed scoring model\nno model/checkpoint path input
 PROTOCOL ARROW_MAIN CLI : one JSON response + newline\nmatching id / finite ordered scores
 XTASK ARROW_OPTIONAL PROOF : fresh workspace tests\nactual counts and unchanged-input receipt
-PROOF ARROW_OPTIONAL MODEL : fixed analytic fixtures\nlr=0.125 / one synthetic SGD step
-PROOF ARROW_OPTIONAL BURN : actual autodiff + optimizer\nno hand-coded substitute
+PROOF ARROW_OPTIONAL OFFLINE_FIXTURE : existing model tests delegate updated_model\nnew gradient + snapshot tests UNRUN
+OFFLINE_FIXTURE ARROW_OPTIONAL RUNTIME : explicit clone().autodiff() / same AD Device\nretained for later update in isolation test
+OFFLINE_FIXTURE ARROW_OPTIONAL BATCH : shared guard / two fixed rows\nNOT accepted feature encoder parity
+OFFLINE_FIXTURE ARROW_OPTIONAL MODEL : original analytic loss/gradient/SGD .125 oracle\nindependent scalar central differences
+OFFLINE_FIXTURE ARROW_OPTIONAL BURN : backward -> GradientsParams -> optimizer.step\nfixed TEST ONLY fixture / uncompiled
+OFFLINE_FIXTURE ARROW_OPTIONAL INFERENCE : TEST ONLY model.valid() snapshot\nassert isolation from later update + public scorer
 PROOF ARROW_OPTIONAL PACK : real Burnpack save / restore
 PROTOCOL ARROW_ERROR FAILURE : invalid framing / version / id\ninvalid shape / excess bytes
 LIB ARROW_ERROR FAILURE : invalid numeric input\nno JS or f32 fallback
+RUNTIME ARROW_ERROR FAILURE : configuration error or caught backend panic\nBackendFailure / no alternate backend
+INFERENCE ARROW_ERROR FAILURE : backend panic / dtype / shape / finite output\nBackendFailure / no artifact admission
 XTASK ARROW_ERROR FAILURE : any required gate fails\nno old receipt reuse
 ECO_HOST ARROW_MAIN LEDGER_API : native-derived rules / authorized pairs\nno private SCFEN or opponent bank
 LEDGER_API ARROW_MAIN LEDGER_CONTRACTS : closed rules / boundaries / groups\nchecked data is not native authority
@@ -412,6 +434,11 @@ legend bottom
   All lanes enumerate full domains; only availability probes filter families.
   Preserve counters, continuation-before-skip and capacity/attempt/exhausted precedence.
   Retained Burn 0.22.0 Flex CPU f64 smoke/checkpoint fixtures are synthetic only.
+  Synthetic boundary is SOURCE PREPARED: no current compilation, Rust test or closing-review PASS.
+  Runtime/batch/context tests and fixed offline fixtures remain uncompiled/unrun; no real training occurred.
+  Offline trainer module and model.valid snapshot constructor are cfg(test), not public fitting/loading APIs.
+  No Cargo/lock/TypeScript change, artifact loading/admission, resume, training CLI or F9 model permit.
+  Existing SVG is historical; current PlantUML validation/rendering and qualified theme access remain pending.
   Width 418 remains zero padding, not the R4 feature encoder.
   Native baselines use no learned scorer; learned=false / modelArtifact=null.
   Native tables: turns 1-10 mineral/gas 1/1; 11-20 2/2; 21-45 3/3.

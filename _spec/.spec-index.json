@@ -688,7 +688,11 @@
         "packages/training/src/evidence_tables.rs",
         "packages/training/tests/evidence_tables.rs",
         "packages/training/src/banded_joint.rs",
-        "packages/training/tests/banded_joint.rs"
+        "packages/training/tests/banded_joint.rs",
+        "packages/training/src/runtime.rs",
+        "packages/training/src/synthetic_batch.rs",
+        "packages/training/src/inference.rs",
+        "packages/training/src/offline_trainer.rs"
       ],
       "fingerprint": null
     },

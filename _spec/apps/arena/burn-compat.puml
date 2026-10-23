@@ -59,6 +59,9 @@
 ' covers: apps/arena/engine/test/feature-manifest.test.ts
 ' covers: oxlint.training.json
 ' status: Ledger/F1 source structure lives here; current evidence and review status lives in the related Markdown owners.
+' runtime-status: Smoke context call is SOURCE PREPARED, uncompiled/unrun; baseline policy contracts remain unchanged.
+' related: _spec/_plans/ml-runtime-redesign.md#14-selected-synthetic-runtime-boundary--source-prepared-compilation-blocked
+' rendering: Existing burn-compat.svg is historical, NOT CURRENT for the changed scorer label; validation/rendering remain pending.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
 ' related: _spec/ml/native-runner.md
@@ -80,7 +83,7 @@ left to right direction
 component "apps/arena/src/main.rs\nsmoke / run / suite / replay / ledger" as MAIN <<app>>
 package "Retained v1 compatibility / not a full runner" {
 component "apps/arena/src/lib.rs\nRust typed DTO / features / argmax\ncanonical tie-break / process driver" as POLICY <<app>>
-component "training_native\nscore_synthetic_f64\ndirect Rust library call" as SCORER <<app>>
+component "training_native::SyntheticInferenceContext\nnew() then score() / infer-only\nSOURCE PREPARED, uncompiled" as SCORER <<app>>
 component "engine/worker.ts + protocol.ts\nfixed Node --import tsx / cwd apps/arena\narena-engine-v1 / open then settle" as BRIDGE <<host>>
 component "engine/fixture.ts\nreconstruct tiny-v1 for each request\nown king e1 / enemy king e8 / bank=3" as FIXTURE <<app>>
 component "engine/observation.ts\n64 ordered fog-safe cells\nown resources only" as OBS <<app>>

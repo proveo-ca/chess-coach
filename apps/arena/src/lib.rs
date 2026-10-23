@@ -51,7 +51,9 @@ pub fn run_smoke() -> ArenaResult<SmokeReport> {
     let observation = bridge::open()?;
     let actions = features::synthetic_candidates(&observation)?;
     let features = features::synthetic_features(&actions);
-    let scores = training_native::score_synthetic_f64(&features.values, features.rows)
+    let inferencer = training_native::SyntheticInferenceContext::new()
+        .map_err(|error| format!("Burn scoring failed: {error}"))?;
+    let scores = inferencer.score(&features.values, features.rows)
         .map_err(|error| format!("Burn scoring failed: {error}"))?;
     let selected = features::select_highest_score(&actions, &scores)?;
     let (settled_observation, engine) = bridge::settle(&selected.action)?;

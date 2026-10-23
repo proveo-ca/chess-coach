@@ -8,16 +8,22 @@ pub mod contracts;
 pub mod evidence_tables;
 pub mod feature_input;
 pub mod feature_manifest;
+mod inference;
 pub mod joint_accounting;
 pub mod joint_math;
 pub mod learner_math;
 pub mod ledger;
 mod model;
+#[cfg(test)]
+mod offline_trainer;
 pub mod policy;
 pub mod protocol;
+mod runtime;
+mod synthetic_batch;
 pub mod transition_tables;
 
-pub use model::score_synthetic_f64;
+pub use inference::{SyntheticInferenceContext, score_synthetic_f64};
+pub use runtime::F64Runtime;
 
 pub const COLUMNS: usize = 418;
 pub const MAX_ROWS: usize = 512;

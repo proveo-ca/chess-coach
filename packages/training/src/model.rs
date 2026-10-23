@@ -1,19 +1,17 @@
 // SPEC: _spec/packages/training/burn-compat.puml
-use std::sync::OnceLock;
-
 use burn::module::{Module, Param, ParamId};
-use burn::tensor::{DType, Device, FloatDType, Tensor, TensorData};
+use burn::tensor::{Device, Tensor, TensorData};
 
-use crate::{COLUMNS, ErrorCode, MAX_ABS_VALUE, MAX_ROWS, ScoreError};
+use crate::COLUMNS;
 
 #[derive(Module, Debug)]
-struct SyntheticLinear {
-    weight: Param<Tensor<2>>,
-    bias: Param<Tensor<1>>,
+pub(crate) struct SyntheticLinear {
+    pub(crate) weight: Param<Tensor<2>>,
+    pub(crate) bias: Param<Tensor<1>>,
 }
 
 impl SyntheticLinear {
-    fn new(device: &Device) -> Self {
+    pub(crate) fn new(device: &Device) -> Self {
         let mut weights = vec![0.0_f64; COLUMNS];
         weights[0] = 0.5;
         weights[1] = -0.25;
@@ -34,104 +32,24 @@ impl SyntheticLinear {
         }
     }
 
-    fn forward(&self, input: Tensor<2>) -> Tensor<2> {
+    pub(crate) fn forward(&self, input: Tensor<2>) -> Tensor<2> {
         input.matmul(self.weight.val()) + self.bias.val().unsqueeze::<2>()
     }
-}
-
-fn f64_device() -> Result<Device, ScoreError> {
-    static DEVICE: OnceLock<Result<Device, ScoreError>> = OnceLock::new();
-    DEVICE
-        .get_or_init(|| {
-            let mut device = Device::flex();
-            device.configure(FloatDType::F64).map_err(|_| {
-                ScoreError::new(ErrorCode::BackendFailure, "cannot configure Flex f64")
-            })?;
-            Ok(device)
-        })
-        .clone()
-}
-
-fn validate(values: &[f64], rows: usize) -> Result<(), ScoreError> {
-    if !(1..=MAX_ROWS).contains(&rows) || values.len() != rows * COLUMNS {
-        return Err(ScoreError::new(
-            ErrorCode::Shape,
-            "matrix must contain 1..512 rows of 418 values",
-        ));
-    }
-    if values.iter().any(|value| !value.is_finite()) {
-        return Err(ScoreError::new(
-            ErrorCode::NonFinite,
-            "matrix values must be finite",
-        ));
-    }
-    if values.iter().any(|value| value.abs() > MAX_ABS_VALUE) {
-        return Err(ScoreError::new(
-            ErrorCode::BadRequest,
-            "matrix values must have absolute value <= 1000000",
-        ));
-    }
-    Ok(())
-}
-
-pub fn score_synthetic_f64(values: &[f64], rows: usize) -> Result<Vec<f64>, ScoreError> {
-    validate(values, rows)?;
-    std::panic::catch_unwind(|| {
-        let device = f64_device()?;
-        let model = SyntheticLinear::new(&device);
-        let values = values
-            .iter()
-            .map(|&value| if value == 0.0 { 0.0 } else { value })
-            .collect::<Vec<_>>();
-        let input = Tensor::<2>::from_data(TensorData::new(values, [rows, COLUMNS]), &device);
-        if input.dtype() != DType::F64
-            || model.weight.val().dtype() != DType::F64
-            || model.bias.val().dtype() != DType::F64
-        {
-            return Err(ScoreError::new(
-                ErrorCode::BackendFailure,
-                "Flex model must use f64",
-            ));
-        }
-        let output = model.forward(input);
-        if output.dtype() != DType::F64 || output.dims() != [rows, 1] {
-            return Err(ScoreError::new(
-                ErrorCode::BackendFailure,
-                "unexpected Flex output dtype or shape",
-            ));
-        }
-        let mut scores = output.into_data().try_to_vec::<f64>().map_err(|_| {
-            ScoreError::new(ErrorCode::BackendFailure, "cannot read Flex f64 output")
-        })?;
-        if scores.len() != rows || scores.iter().any(|score| !score.is_finite()) {
-            return Err(ScoreError::new(
-                ErrorCode::BackendFailure,
-                "Flex output must contain finite row scores",
-            ));
-        }
-        for score in &mut scores {
-            if *score == 0.0 {
-                *score = 0.0;
-            }
-        }
-        Ok(scores)
-    })
-    .unwrap_or_else(|_| {
-        Err(ScoreError::new(
-            ErrorCode::BackendFailure,
-            "Burn Flex execution failed",
-        ))
-    })
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use burn::optim::{GradientsParams, SgdConfig};
+    use crate::{ErrorCode, F64Runtime, MAX_ABS_VALUE, MAX_ROWS, ScoreError, score_synthetic_f64};
+    use burn::tensor::DType;
     use burn::store::{ApplyResult, BurnpackStore, ModuleSnapshot, ModuleStore};
     use burn::tensor::Bytes;
     use std::path::PathBuf;
     use std::sync::atomic::{AtomicU64, Ordering};
+
+    fn f64_device() -> Result<Device, ScoreError> {
+        Ok(F64Runtime::initialize()?.device().clone())
+    }
 
     fn fixture() -> Vec<f64> {
         let mut values = vec![0.0; 2 * COLUMNS];
@@ -158,42 +76,7 @@ mod tests {
     }
 
     fn updated_model() -> SyntheticLinear {
-        let device = f64_device().unwrap().autodiff();
-        assert_eq!(device.settings().float_dtype, FloatDType::F64);
-        let model = SyntheticLinear::new(&device);
-        let mut initial_weights = vec![0.0; COLUMNS];
-        initial_weights[0] = 0.5;
-        initial_weights[1] = -0.25;
-        close(&data(model.weight.val()), &initial_weights);
-        close(&data(model.bias.val()), &[0.125]);
-        let input = Tensor::<2>::from_data(TensorData::new(fixture(), [2, COLUMNS]), &device);
-        let targets = Tensor::<2>::from_data([[1.0_f64], [-1.0_f64]], &device);
-        assert_eq!(input.dtype(), DType::F64);
-        assert_eq!(targets.dtype(), DType::F64);
-        let output = model.forward(input);
-        close(&data(output.clone()), &[0.125, 0.625]);
-        let residual = output - targets;
-        let loss = (residual.clone() * residual).sum().div_scalar(4.0_f64);
-        close(&data(loss.clone()), &[0.8515625]);
-        let grads = loss.backward();
-        let weight_grad = model.weight.val().grad(&grads).unwrap();
-        let bias_grad = model.bias.val().grad(&grads).unwrap();
-        assert_eq!(weight_grad.dims(), [COLUMNS, 1]);
-        assert_eq!(bias_grad.dims(), [1]);
-        let mut expected_grad = vec![0.0; COLUMNS];
-        expected_grad[0] = 2.0;
-        expected_grad[1] = 2.375;
-        close(&data(weight_grad), &expected_grad);
-        close(&data(bias_grad), &[0.375]);
-        let grads = GradientsParams::from_grads(grads, &model);
-        let mut optimizer = SgdConfig::new().init();
-        let updated = optimizer.step(0.125, model, grads);
-        let mut expected_weight = vec![0.0; COLUMNS];
-        expected_weight[0] = 0.25;
-        expected_weight[1] = -0.546875;
-        close(&data(updated.weight.val()), &expected_weight);
-        close(&data(updated.bias.val()), &[0.078125]);
-        updated
+        crate::offline_trainer::updated_model()
     }
 
     fn sentinel() -> SyntheticLinear {

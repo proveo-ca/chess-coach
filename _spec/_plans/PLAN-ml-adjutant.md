@@ -1,3 +1,20 @@
+## Current setup continuation — proposal selected / offline theme path missing (2026-10-23)
+
+**[Unverified] Latest navigation:** user selected **`Plan fresh setup (Recommended)`** and **`Provide offline theme`**; [canonical §15](ml-runtime-redesign.md#15-fresh-setup-proposal-and-offline-theme--selected-no-execution-grant) records proposal-only gates, four UNOBSERVED/unreserved/uncreated paths, historical XZ descriptors and unknown host/input/resource closure.
+**No operational grant:** preflight, acquisition, installation, retained-root access and setup execution remain unapproved; no theme path was supplied and no remote fetch is authorized. Current Rust compilation/tests and diagram rendering remain blocked; adversarial/security `READY TO MERGE: no` remains binding despite persisted test-only disabled-gradient assertions.
+**Publication scope:** the user subsequently requested commit/push of the prepared runtime as unverified work in progress. This authorizes neither merge nor a verification waiver; PR50 remains unmerged and step2 NOT DONE.
+**Next input scope:** human supplies complete audited direct-tool/dependency/theme inputs, prepare a separate exact metadata-preflight proposal, or hold. Do not repeat setup/XZ policy votes or execute a phase from navigation alone; `trainingReady:false`.
+
+## Current synthetic runtime boundary — source prepared / compilation blocked (2026-10-23)
+
+**[Unverified] Current source progress:** user selected **`Synthetic boundary (Recommended)`**, not a full learned runtime/trainer; [canonical §14](ml-runtime-redesign.md#14-selected-synthetic-runtime-boundary--source-prepared-compilation-blocked) owns this later unit and supersedes older next-action labels for navigation only.
+**Published custody:** parent reports commit/push `3efdcc93d978268fcb9619012b189406df4000b6`, PR50 OPEN against `feat-ml-adjuntant`, clean at publication; §13's85-test custody acceptance remains historical and does not verify this Rust delta.
+**Prepared:** explicit opaque `F64Runtime`, borrowed synthetic batch, infer-only `SyntheticInferenceContext`, cfg(test)-only fixed SGD/gradient/snapshot fixtures and arena smoke context call; no Cargo/lock/TypeScript change or baseline-policy replacement.
+**Verification BLOCKED:** separately selected `Offline host check (Recommended)` found ZERO approved PATH candidates for cargo/rustc/rustfmt/cargo-clippy/cc/clang/ld; retained F9/M2/M3 roots were excluded and shims were STOP-only. No versions, Cargo/formatter/tests, target creation, cache access, downloads, installs or fallback occurred.
+**Evidence limit:** parent reports source `git diff --check` PASS only; eight new Rust test declarations remain uncompiled/unrun. No current runtime, SGD, isolation or persistence acceptance follows from custody's85 passing Node tests.
+**Specs:** [training boundary](../packages/training/burn-compat.puml) gains four coverage paths; [arena boundary](../apps/arena/burn-compat.puml) relabels the smoke scorer. Both unchanged SVGs are historical / NOT CURRENT; fresh diagram validation/rendering and closing adversarial/security/spec reviews remain pending.
+**Next gate:** obtain approved exact direct toolchain/cache/input/fresh-target paths before frozen offline verification; rendering/theme access needs its own qualified scope. No new probe, acquisition, installation, retained-root access, F9 model permit, real training or cleanup is granted; `trainingReady:false`, §10 OPEN, step2 NOT DONE.
+
 ## Current offline extension — pull with cleanup (2026-10-23)
 
 **[Unverified] Current implementation:** [canonical receipt §13](ml-runtime-redesign.md#13-actual-pull-with-cleanup-unit--bounded-offline-streaming) and [custody sequence](../tooling/native-ingress/custody.puml) describe the explicitly selected producer-cleanup contract.
