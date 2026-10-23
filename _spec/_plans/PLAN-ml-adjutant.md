@@ -1,3 +1,12 @@
+## Current offline extension — pull with cleanup (2026-10-23)
+
+**[Unverified] Current implementation:** [canonical receipt §13](ml-runtime-redesign.md#13-actual-pull-with-cleanup-unit--bounded-offline-streaming) and [custody sequence](../tooling/native-ingress/custody.puml) describe the explicitly selected producer-cleanup contract.
+**Evidence:** 85 Node tests PASS (41 unchanged legacy +38 stream +6 descriptor),0 fail/skip; both production modules have100% line/branch/function coverage.
+**Contract:** descriptor validation and bounded lazy staging share the existing custody engine; captured cleanup runs once after FD finalization for unfinished producers.
+**Limit:** cleanup may block beyond the cooperative3.5s deadline; no hard runtime or Native proof follows.
+**Verification:** syntax, index/SPEC-pointer checks and adversarial/security reviews passed; PlantUML validation/rendering passed with separately approved theme access. Oxlint is unavailable and skipped; final spec review reports in-sync. §12 and the first-unit receipt below remain historical.
+**Scope:** no archive acquisition, retained/installed-root access, installation, training, publishing or retained-artifact cleanup; diagram-theme access supplies no such grant.
+
 ## Current actual `apply` unit — offline ordinary custody (2026-10-23)
 
 **[Unverified] Parent-reported first unit implemented:** later user `apply` authorizes actual source plus offline tests, not only inert Markdown; [canonical receipt §12](ml-runtime-redesign.md#12-actual-apply-implementation-unit--ordinary-offline-custody-only) supersedes older planning-only/no-source labels for this unit only.

@@ -1,29 +1,77 @@
 ' purpose: bounded offline ordinary per-object fixture custody, without Native authority
 ' covers: tooling/native-ingress/custody.mjs
 ' covers: tooling/native-ingress/custody.test.mjs
-' context: _spec/_plans/ml-runtime-redesign.md section 12 records the implementation unit.
+' covers: tooling/native-ingress/input-descriptor.mjs
+' covers: tooling/native-ingress/input-descriptor.test.mjs
+' covers: tooling/native-ingress/custody-chunks.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md sections 12 (historical) and 13 (stream unit).
 ' scope: standalone ordinary helper; no F9 private initializer or standard-slot ABI.
-' validation: parent owns syntax checks, PlantUML checkonly/render and test execution.
+' validation: Node syntax/tests and PlantUML check/render passed; source reviews accepted.
+' readability: FK uses English syllable estimates with explicit engineering-token counts.
+' FK: shared-validation note over SOURCE,DESC = 11.2 (24 words, 45 syllables, 2 sentences).
+' FK: acquisition note over SOURCE,PRODUCER = 10.5 (25 words, 45 syllables, 2 sentences).
+' FK: per-object note over ROOT,FILE = 10.8 (26 words, 47 syllables, 2 sentences).
+' FK: cleanup note over SOURCE,PRODUCER = 11.7 (26 words, 49 syllables, 2 sentences).
+' FK: close-uncertainty note over SOURCE,ERROR = 10.1 (28 words, 48 syllables, 2 sentences).
+' FK: producer-trust note over PRODUCER,HOST = 10.8 (26 words, 47 syllables, 2 sentences).
 @startuml
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Ordinary per-object custody — bounded offline fixture
+title Ordinary per-object custody — legacy Buffer or bounded pull stream
 
-participant "tooling/native-ingress/\ncustody.test.mjs" as TEST <<app>>
+actor "Offline caller" as CALLER <<host>>
 participant "tooling/native-ingress/\ncustody.mjs" as SOURCE <<app>>
+participant "tooling/native-ingress/\ninput-descriptor.mjs" as DESC <<app>>
+participant "chunks[Symbol.iterator]()\ncaller-supplied producer" as PRODUCER <<host>>
 participant "node:fs / process\nhost runtime" as HOST <<host>>
 database "rootPath\nfresh directory" as ROOT <<db>>
 database "fixture.bin\nfresh regular file" as FILE <<db>>
 participant "CustodyError" as ERROR <<error>>
 
-TEST ARROW_MAIN SOURCE : stageFixture(rootPath, {bytes, expectedSha256})
-SOURCE ARROW_MAIN SOURCE : start 3.5s cooperative deadline; validate input
-SOURCE ARROW_MAIN SOURCE : copy Buffer; verify incoming SHA-256
+alt Legacy Buffer entry
+  CALLER ARROW_MAIN SOURCE : stageFixture(rootPath, {bytes, expectedSha256})
+  SOURCE ARROW_MAIN SOURCE : start 3.5s deadline; validate path; capture fields once
+  SOURCE ARROW_MAIN SOURCE : copy bounded Buffer; verify incoming hash before mkdir
+else Pull with cleanup
+  CALLER ARROW_MAIN SOURCE : stageFixtureChunks(rootPath, descriptor, chunks)
+  SOURCE ARROW_MAIN SOURCE : start 3.5s deadline; validate path
+  SOURCE ARROW_MAIN DESC : validateFixtureDescriptor(descriptor), before producer access
+  DESC ARROW_MAIN DESC : reject proxies via node:util types, without traps
+  DESC ARROW_MAIN DESC : inspect prototype, exact own keys and data descriptors
+  DESC ARROW_MAIN SOURCE : frozen independent {name, byteLength, sha256} snapshot
+end
 note right of SOURCE
 Absolute normalized non-root path
 Buffer length 1..65536; lowercase SHA-256
 Intrinsic typed-array length
 Bounded native byte copy
 end note
+note right of DESC
+Object.prototype or null prototype
+Exactly name, byteLength, sha256; no accessors
+name:'fixture.bin'; byteLength:1..65536
+sha256:64 lowercase hexadecimal characters
+No symbols, URL, destination or authority keys
+end note
+note over SOURCE, DESC
+Both entry points share object validation
+to prevent drift between custody policies.
+The descriptor module owns the error class;
+custody re-exports the same constructor.
+end note
+
+group Shared private stage engine; active try/finally
+  opt Chunk entry only, before mkdir
+    SOURCE ARROW_MAIN PRODUCER : guarded acquisition: capture/call Symbol.iterator once
+    PRODUCER ARROW_MAIN SOURCE : iterator object; store inside guarded action
+    SOURCE ARROW_MAIN PRODUCER : capture optional callable return BEFORE callable next, once
+    SOURCE ARROW_MAIN SOURCE : post-action deadline guard; malformed producer => E_SOURCE
+  end
+  note over SOURCE, PRODUCER
+Acquisition stores the iterator before its
+deadline check to preserve cleanup on failure.
+Capturing return before next preserves cleanup
+when next acquisition fails or throws.
+  end note
 
 group Fresh root; no collision repair
   SOURCE ARROW_MAIN HOST : check platform flags; capture effective UID once
@@ -39,7 +87,7 @@ Directory, effective UID, exact mode0700
 Root binding excludes size and timestamps
 end note
 
-group Exclusive file birth and one write
+group Exclusive file birth and incremental custody
   SOURCE ARROW_MAIN HOST : open fixture: WRONLY | CREAT | EXCL | NOFOLLOW | NONBLOCK
   HOST ARROW_MAIN FILE : create fixture.bin with mode0600
   SOURCE ARROW_MAIN HOST : fstat + lstat, bigint:true
@@ -48,9 +96,29 @@ group Exclusive file birth and one write
 Regular file, effective UID, exact mode0600
 nlink1; birth size0; named/FD snapshot equal
   end note
-  SOURCE ARROW_MAIN HOST : one writeSync, position0, full input length
-  HOST ARROW_MAIN FILE : write copied bytes
-  SOURCE ARROW_MAIN SOURCE : require full count; no short-write retry
+  alt Legacy Buffer entry
+    SOURCE ARROW_MAIN HOST : one writeSync, position0, full copied input length
+    SOURCE ARROW_MAIN SOURCE : require full count; no short-write retry
+  else Chunk entry: one acquisition; at most 17 next calls
+    loop At most 16 data chunks plus required terminal result
+      SOURCE ARROW_MAIN PRODUCER : guarded captured next with iterator receiver
+      PRODUCER ARROW_MAIN SOURCE : non-proxy object; own data boolean done
+      SOURCE ARROW_MAIN SOURCE : if done:false require own data value; else mark completed
+      SOURCE ARROW_MAIN SOURCE : store completed INSIDE producer action, then deadline guard
+      alt done:true
+        SOURCE ARROW_MAIN SOURCE : exit pull loop; ignore value
+      else done:false
+        SOURCE ARROW_MAIN SOURCE : require chunk count <16; Buffer with native length 1..4096
+        SOURCE ARROW_MAIN SOURCE : intrinsic backing getter requires ordinary ArrayBuffer, not SAB
+        SOURCE ARROW_MAIN SOURCE : private copy; require cumulative length <= descriptor.byteLength
+        SOURCE ARROW_MAIN SOURCE : update incremental incoming SHA-256
+        SOURCE ARROW_MAIN HOST : exact writeSync at current offset; no retry
+        HOST ARROW_MAIN FILE : write this snapshot before the next pull
+        SOURCE ARROW_MAIN SOURCE : advance offset and chunk count; no arrays/concat/replay
+      end
+    end
+    SOURCE ARROW_MAIN SOURCE : require completed + exact length + complete incoming hash
+  end
   SOURCE ARROW_MAIN HOST : fstat + lstat file; fstat + lstat root
   SOURCE ARROW_MAIN SOURCE : assertFilePhase; birth security unchanged; rootBinding
   SOURCE ARROW_MAIN HOST : close writer before reader acquisition
@@ -87,7 +155,7 @@ group Independent readback after writer closure
   SOURCE ARROW_MAIN SOURCE : rootBinding; prepare frozen DATA_ONLY result
 end
 
-group Failure handling and unconditional descriptor finalization
+group Unconditional descriptor finalization, then producer cleanup
   opt Any guard, I/O or explicit close fails
     SOURCE ARROW_ERROR ERROR : preserve CustodyError; normalize other failures to E_FS
   end
@@ -100,6 +168,25 @@ At most three total close attempts
   opt Any close attempt fails
     SOURCE ARROW_ERROR ERROR : E_CLOSE takes priority; no uncertain-close retry
   end
+  opt Iterator acquired, not completed, captured return exists
+    SOURCE ARROW_MAIN SOURCE : clear return holder before invocation; bypass both guards
+    SOURCE ARROW_MAIN PRODUCER : captured return with iterator receiver, exactly once
+    PRODUCER ARROW_MAIN SOURCE : require non-proxy object with own data done:true; ignore value
+    opt Callback throws or cleanup result is invalid
+      SOURCE ARROW_ERROR ERROR : E_CLOSE > E_SOURCE_CLEANUP > original; preserve cause chain
+    end
+  end
+  note over SOURCE, PRODUCER
+Captured cleanup bypasses cooperative guards
+because failure must not suppress finalization.
+The callback can block forever, so call bounds
+do not establish a runtime lifecycle bound.
+  end note
+  note right of PRODUCER
+No return method: no callback/resource proof
+No cleanup after valid done:true, even when
+length, hash or post-call deadline checks fail
+  end note
 end
 note over SOURCE, ERROR
 Close uncertainty prevents a success result
@@ -108,19 +195,28 @@ The helper retains partial roots for inspection;
 only the test removes its fresh owned paths.
 end note
 
+end
+
 alt Failure recorded
-  SOURCE ARROW_ERROR TEST : throw failure; no result
+  SOURCE ARROW_ERROR CALLER : throw failure; no result
 else All checks and closes succeeded
   SOURCE ARROW_MAIN SOURCE : final cooperative deadline guard
-  SOURCE ARROW_MAIN TEST : frozen ordinary-per-object-v1 / DATA_ONLY
+  SOURCE ARROW_MAIN CALLER : frozen ordinary-per-object-v1 / DATA_ONLY
 end
-note right of TEST
+note right of CALLER
 nativeAuthority:false; installed:false
 Point-time byte verification, not immutability
 end note
 note over SOURCE, HOST
 96 ordinary-operation cap; max two owned FDs
-Max fixture: one write, 17 reads, three opens
-Cooperative clock, not an OS blocking-I/O bound
+Acquisition + <=17 next calls share this cap
+Max64KiB: <=16 writes (legacy:1), 17 reads
+Three opens/closes; finalizers bypass cap/clock
+end note
+note over PRODUCER, HOST
+Trusted producers may execute arbitrary code
+without a sandbox or hard time limit.
+Custody call bounds confer no Native authority
+and do not prove whole-runtime safety.
 end note
 @enduml

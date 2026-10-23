@@ -761,7 +761,10 @@
       "spec": "_spec/tooling/native-ingress/custody.puml",
       "covers": [
         "tooling/native-ingress/custody.mjs",
-        "tooling/native-ingress/custody.test.mjs"
+        "tooling/native-ingress/custody.test.mjs",
+        "tooling/native-ingress/input-descriptor.mjs",
+        "tooling/native-ingress/input-descriptor.test.mjs",
+        "tooling/native-ingress/custody-chunks.test.mjs"
       ],
       "fingerprint": null
     }

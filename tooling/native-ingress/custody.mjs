@@ -2,21 +2,19 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
+import { types } from 'node:util';
+import { CustodyError, MAX_FIXTURE_BYTES, validateFixtureDescriptor } from './input-descriptor.mjs';
 
-export const MAX_FIXTURE_BYTES = 65_536;
+export { CustodyError, MAX_FIXTURE_BYTES, validateFixtureDescriptor };
+export const MAX_CHUNKS = 16;
+export const MAX_CHUNK_BYTES = 4096;
 const SECURITY = ['dev', 'ino', 'mode', 'uid', 'gid', 'nlink'];
 const CONTENT = [...SECURITY, 'size', 'mtimeNs', 'ctimeNs'];
 const TYPE = 0o170000n;
 const TYPED_LENGTH = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(Uint8Array.prototype), 'length').get;
 const COPY_BYTES = Uint8Array.prototype.set;
-
-export class CustodyError extends Error {
-  constructor(code, cause) {
-    super(code, cause ? { cause } : undefined);
-    this.name = 'CustodyError';
-    this.code = code;
-  }
-}
+const TYPED_BUFFER = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(Uint8Array.prototype), 'buffer').get;
+const ARRAY_BUFFER_LENGTH = Object.getOwnPropertyDescriptor(ArrayBuffer.prototype, 'byteLength').get;
 
 function requireThat(ok, code) {
   if (!ok) throw new CustodyError(code);
@@ -67,27 +65,50 @@ function normalize(error) {
   return error instanceof CustodyError ? error : new CustodyError('E_FS');
 }
 
-export function stageFixture(rootPath, input) {
-  const deadline = process.hrtime.bigint() + 3_500_000_000n;
+function assertPath(rootPath) {
   requireThat(typeof rootPath === 'string' && path.isAbsolute(rootPath) &&
     path.normalize(rootPath) === rootPath && rootPath !== path.parse(rootPath).root &&
     !rootPath.endsWith(path.sep) && !rootPath.includes('\0'), 'E_INPUT');
+}
+
+function copyBuffer(source, maximum, code, ordinaryBacking = false) {
+  requireThat(Buffer.isBuffer(source), code);
+  try {
+    const length = Reflect.apply(TYPED_LENGTH, source, []);
+    requireThat(length > 0 && length <= maximum, code);
+    if (ordinaryBacking) Reflect.apply(ARRAY_BUFFER_LENGTH, Reflect.apply(TYPED_BUFFER, source, []), []);
+    const copy = Buffer.alloc(length);
+    Reflect.apply(COPY_BYTES, copy, [source]);
+    return copy;
+  } catch { throw new CustodyError(code); }
+}
+
+export function stageFixture(rootPath, input) {
+  const deadline = process.hrtime.bigint() + 3_500_000_000n;
+  assertPath(rootPath);
   requireThat(input !== null && typeof input === 'object', 'E_INPUT');
   let sourceBytes, expectedSha256;
   try { sourceBytes = input.bytes; expectedSha256 = input.expectedSha256; }
   catch { throw new CustodyError('E_INPUT'); }
   requireThat(Buffer.isBuffer(sourceBytes) && typeof expectedSha256 === 'string' &&
     /^[a-f0-9]{64}$/.test(expectedSha256), 'E_INPUT');
-  let bytes;
-  try {
-    const length = Reflect.apply(TYPED_LENGTH, sourceBytes, []);
-    requireThat(length > 0 && length <= MAX_FIXTURE_BYTES, 'E_INPUT');
-    bytes = Buffer.alloc(length);
-    Reflect.apply(COPY_BYTES, bytes, [sourceBytes]);
-  } catch { throw new CustodyError('E_INPUT'); }
+  const bytes = copyBuffer(sourceBytes, MAX_FIXTURE_BYTES, 'E_INPUT');
   requireThat(digest(bytes) === expectedSha256, 'E_HASH');
-  const filePath = path.join(rootPath, 'fixture.bin');
+  const descriptor = { name: 'fixture.bin', byteLength: bytes.length, sha256: expectedSha256 };
+  return stage(rootPath, descriptor, deadline, { bytes });
+}
+
+export function stageFixtureChunks(rootPath, descriptor, chunks) {
+  const deadline = process.hrtime.bigint() + 3_500_000_000n;
+  assertPath(rootPath);
+  return stage(rootPath, validateFixtureDescriptor(descriptor), deadline, { chunks });
+}
+
+function stage(rootPath, descriptor, deadline, source) {
+  const { byteLength, sha256: expectedSha256 } = descriptor;
+  const filePath = path.join(rootPath, descriptor.name);
   const root = { fd: null }, file = { fd: null };
+  let iterator, next, finish, completed = false;
   let failure, result, operations = 0;
 
   function guard() {
@@ -114,8 +135,39 @@ export function stageFixture(rootPath, input) {
   function named(target) {
     return io(() => fs.lstatSync(target, { bigint: true }));
   }
+  function producer(action) {
+    return io(() => {
+      try { return action(); }
+      catch { throw new CustodyError('E_SOURCE'); }
+    });
+  }
+  function stepResult(value, cleanup = false) {
+    const code = cleanup ? 'E_SOURCE_CLEANUP' : 'E_SOURCE';
+    requireThat(value !== null && typeof value === 'object' && !types.isProxy(value), code);
+    const done = Object.getOwnPropertyDescriptor(value, 'done');
+    requireThat(done && Object.hasOwn(done, 'value') && typeof done.value === 'boolean', code);
+    if (done.value) return { done: true };
+    requireThat(!cleanup, code);
+    const chunk = Object.getOwnPropertyDescriptor(value, 'value');
+    requireThat(chunk && Object.hasOwn(chunk, 'value'), code);
+    return { done: false, value: chunk.value };
+  }
 
   try {
+    if (!source.bytes) {
+      producer(() => {
+        const method = source.chunks?.[Symbol.iterator];
+        requireThat(typeof method === 'function', 'E_SOURCE');
+        const acquired = Reflect.apply(method, source.chunks, []);
+        requireThat(acquired !== null && typeof acquired === 'object', 'E_SOURCE');
+        iterator = acquired;
+        const cleanup = iterator.return;
+        requireThat(cleanup === undefined || typeof cleanup === 'function', 'E_SOURCE');
+        finish = cleanup;
+        next = iterator.next;
+        requireThat(typeof next === 'function', 'E_SOURCE');
+      });
+    }
     const flags = fs.constants;
     for (const key of ['O_DIRECTORY', 'O_NOFOLLOW', 'O_NONBLOCK', 'O_WRONLY', 'O_CREAT', 'O_EXCL']) {
       requireThat(Number.isInteger(flags[key]) && flags[key] > 0, 'E_PLATFORM');
@@ -143,10 +195,35 @@ export function stageFixture(rootPath, input) {
     });
     const birth = stat(file);
     assertFileBirth(named(filePath), birth, uid);
-    const writtenBytes = io(() => fs.writeSync(file.fd, bytes, 0, bytes.length, 0));
-    requireThat(writtenBytes === bytes.length, 'E_IO');
+    function write(bytes, offset) {
+      const writtenBytes = io(() => fs.writeSync(file.fd, bytes, 0, bytes.length, offset));
+      requireThat(writtenBytes === bytes.length, 'E_IO');
+    }
+    if (source.bytes) {
+      write(source.bytes, 0);
+    } else {
+      const incoming = createHash('sha256');
+      let offset = 0, chunks = 0;
+      for (let pull = 0; pull <= MAX_CHUNKS; pull++) {
+        const current = producer(() => {
+          const value = stepResult(Reflect.apply(next, iterator, []));
+          if (value.done) completed = true;
+          return value;
+        });
+        if (current.done) break;
+        requireThat(chunks < MAX_CHUNKS, 'E_LIMIT');
+        const bytes = copyBuffer(current.value, MAX_CHUNK_BYTES, 'E_CHUNK', true);
+        requireThat(bytes.length <= byteLength - offset, 'E_LENGTH');
+        incoming.update(bytes);
+        write(bytes, offset);
+        offset += bytes.length;
+        chunks++;
+      }
+      requireThat(completed && offset === byteLength, 'E_LENGTH');
+      requireThat(incoming.digest('hex') === expectedSha256, 'E_HASH');
+    }
     const written = stat(file);
-    assertFilePhase(named(filePath), written, uid, BigInt(bytes.length));
+    assertFilePhase(named(filePath), written, uid, BigInt(byteLength));
     requireThat(equal(birth, written, SECURITY), 'E_BINDING');
     rootBinding();
     close(file);
@@ -156,26 +233,26 @@ export function stageFixture(rootPath, input) {
       file.fd = fs.openSync(filePath, flags.O_RDONLY | flags.O_NOFOLLOW | flags.O_NONBLOCK);
     });
     const before = stat(file);
-    assertFilePhase(named(filePath), before, uid, BigInt(bytes.length));
+    assertFilePhase(named(filePath), before, uid, BigInt(byteLength));
     requireThat(equal(written, before, CONTENT), 'E_BINDING');
     const hash = createHash('sha256'), scratch = Buffer.alloc(4096);
-    for (let offset = 0; offset < bytes.length;) {
-      const want = Math.min(scratch.length, bytes.length - offset);
+    for (let offset = 0; offset < byteLength;) {
+      const want = Math.min(scratch.length, byteLength - offset);
       const count = io(() => fs.readSync(file.fd, scratch, 0, want, offset));
       requireThat(count === want, 'E_IO');
       hash.update(scratch.subarray(0, count));
       offset += count;
     }
-    requireThat(io(() => fs.readSync(file.fd, scratch, 0, 1, bytes.length)) === 0, 'E_LENGTH');
+    requireThat(io(() => fs.readSync(file.fd, scratch, 0, 1, byteLength)) === 0, 'E_LENGTH');
     const readbackSha256 = hash.digest('hex');
     requireThat(readbackSha256 === expectedSha256, 'E_HASH');
     const after = stat(file);
-    assertFilePhase(named(filePath), after, uid, BigInt(bytes.length));
+    assertFilePhase(named(filePath), after, uid, BigInt(byteLength));
     requireThat(equal(written, after, CONTENT), 'E_BINDING');
     close(file);
     rootBinding();
     result = Object.freeze({ profile: 'ordinary-per-object-v1', state: 'DATA_ONLY',
-      root: rootPath, file: filePath, byteLength: bytes.length, sha256: readbackSha256,
+      root: rootPath, file: filePath, byteLength, sha256: readbackSha256,
       rootDevice: rootBirth.dev.toString(), fileDevice: birth.dev.toString(),
       nativeAuthority: false, installed: false });
   } catch (error) {
@@ -184,6 +261,15 @@ export function stageFixture(rootPath, input) {
     for (const holder of [file, root]) {
       try { close(holder); }
       catch { failure = new CustodyError('E_CLOSE', failure); }
+    }
+    if (iterator && !completed && finish) {
+      const cleanup = finish;
+      finish = undefined;
+      try { stepResult(Reflect.apply(cleanup, iterator, []), true); }
+      catch {
+        const cleanupFailure = new CustodyError('E_SOURCE_CLEANUP', failure);
+        failure = failure?.code === 'E_CLOSE' ? new CustodyError('E_CLOSE', cleanupFailure) : cleanupFailure;
+      }
     }
   }
   if (failure) throw failure;
