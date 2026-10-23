@@ -1095,3 +1095,22 @@ Preserve the WHOLE approved Node01 proposal/outcome, all consumed grants and ret
 [Implementation §24](native-ingress-implementation.md#24-m3-prerequisite-observation-before-installation) retains full-plan/initializer/source/clock/custody/capture gates; no source/config/test/Cargo/dependency/diagram/index/helper file changes follow.
 ONE BOTH-seat1048576/F1/replay, no extra credit, cold10s/lifecycle300s including3s and generator2048 remain unchanged; all five exclusions remain and all native/capture/L/snapshot claims remain false/null.
 Parent supplies the architect/DevOps advice and HEAD509c24001f7dd398fc488fcf2971567193ab23be/PR50 checkpoint; the keeper authored repository Markdown only, without independent runtime, Git, hash, syntax, test or review verification.
+
+## 26. M3-P0 metadata candidate — one-shot grant consumed
+
+**[Unverified] 2026-10-23 · SUPPLIED EXECUTION RECORD / DATA ONLY / NOT INSTALLED / ONE-SHOT GRANT CONSUMED / trainingReady:false.**
+Fresh actual `Approve P0 once (Recommended)` bound the whole frozen [M3 proposal](native-ingress-host-preparation-m3.md) SHA `fdb740d94663bb5f97031b54362c0019af96428383b43d08f2f845362c480d37` and command SHA `602583c6cc7c583ccd069c3b5956f776e3df701bc815ef01881cd19277327416`.
+Executor accepted THIS packet's startup/pre-clock/path/cooperative-time/tool-output-capture residuals; no install/acquisition permission followed.
+The [P0 outcome](native-ingress-host-preparation-m3-p0-outcome.md) preserves the exact supplied stdout, external bindings and derived summary without another runtime/control read.
+One execution returned normal tool completion plus PREREQUISITES_CANDIDATE/FIXED_METADATA_OBSERVED JSON, with no explicit native exit line or reported stderr/timeout.
+Source exit0 requires complete candidate checks/write AND final tick; this record supplies no independent native exit/PID/clock/EOF/descriptor receipt, elapsed-time or physical-termination proof.
+Eight lstat, one statfs, one euid and one release call are source counts; clock24 is only callsAtSerialization, not the final clock or kernel-call count.
+Node/mise were nonsymlink regular-file candidates only; no actual mise-version/help/exec/hash, source identity, backend or GNU-toolchain usability was qualified.
+M3-root ENOENT is point-time absence, not reservation; later installer exclusive creation must STOP on collision, without repair/reuse/fallback.
+Statfs capacity indicators are not quotas/writable protection/RSS/disk guarantees; readOnly stays null/API_NOT_AVAILABLE.
+P0 grant CONSUMED: no retry/fallback/reprobe or old M2 root/proc/daemon/log/receipt/control access; all Node01 controls remain untouched.
+The whole M3 proposal and Node01 proposal/outcome remain frozen; earlier preapproval labels are historical for this single completed attempt only.
+[Implementation §25](native-ingress-implementation.md#25-m3-p0-complete--downstream-acquisition-undecided) keeps the next unasked/unselected fork BEFORE installer design: exact all-payload URLs/lengths/hashes, NEW bounded distribution-origin trust, or defer.
+Host-exception mode selected neither acquisition branch; even manifest resolution needs fresh access/network approval, and a mise follow-up neither resolves the branch nor authorizes execution.
+Preserve source470e540, BAF3476/17, bf38/D1/B1/O9, all old programs/model/corpora/configuration caps, Root B/counter/clocks/Native graph and ONE BOTH-seat1048576/F1/replay/cold10s/lifecycle300s/reserved3s/generator2048.
+Later capture/build/runtime offline allowlisting/no-acquisition-fallback and all five exclusions remain unchanged; no native/capture/L/snapshot/training proof follows.

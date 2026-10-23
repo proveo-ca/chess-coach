@@ -1,3 +1,11 @@
+## Current continuation — supplied M3-P0 execution record DATA ONLY, NOT INSTALLED (2026-10-23)
+
+**[Unverified] One attempt complete, trainingReady:false:** fresh `Approve P0 once (Recommended)` bound the frozen proposal/command and THIS packet's accepted residuals. The [P0 outcome](native-ingress-host-preparation-m3-p0-outcome.md) preserves supplied candidate JSON, not independent native exit/clock/EOF/descriptor proof or full host-prerequisite completion.
+
+**Grant CONSUMED:** [ownership §26](native-ingress-ownership.md#26-m3-p0-metadata-candidate--one-shot-grant-consumed) records nonsymlink Node/mise regular-file candidates, point-time M3-root absence and statfs indicators only. No retry/fallback/reprobe, actual mise-version/source/backend qualification, root creation, installation or acquisition permission follows; all old artifacts/controls remain untouched.
+
+**Next genuine fork, unasked/unselected:** [implementation §25](native-ingress-implementation.md#25-m3-p0-complete--downstream-acquisition-undecided) requires a design-only choice BEFORE installer design: exact ALL payload URLs/lengths/hashes, NEW bounded distribution-origin trust, or defer. Even manifest resolution needs separate fresh access/network approval. Preserve source Root B/counter/clocks/Native graph, all frozen contracts/budgets and offline F9 allowlists/no-acquisition-fallback; no native/capture/L/snapshot/training proof follows.
+
 ## Current continuation — fresh M3 host-exception proposal (2026-10-22)
 
 **[Unverified] New design only:** Executor selected `Fresh preparation proposal` then `Host exception (Recommended)`. [M3](native-ingress-host-preparation-m3.md) proposes a fresh destination and frozen Rust/rustup pins, not an installation or network grant. [Ownership §25](native-ingress-ownership.md#25-fresh-m3-host-exception--proposal-only) records the choices; all previous grants remain consumed.

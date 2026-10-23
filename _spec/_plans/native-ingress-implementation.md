@@ -706,3 +706,21 @@ Normal dependencies/licenses/build closure, full plan, numeric B/invoice/guard/s
 Preserve all old bytes/programs/model/Node01 controls without access, source470e540, accepted BAF3476/17, bf38/D1/B1/O9, unchanged F1/replay and ONE BOTH-seat1048576 with no extra credit.
 Cold10s/lifecycle300s including3s/generator2048 and all five exclusions remain; capture root/L/snapshot stay null, nativeAuthorityfalse/trainingReadyfalse.
 This four-file documentation-only batch grants no commands/hashes/tests/agents/network/access/execution/publication and creates no source/target/Cargo/dependency/test/diagram/index/helper file; parent owns subsequent separately authorized verification and handoff.
+
+## 25. M3-P0 complete — downstream acquisition undecided
+
+**[Unverified] 2026-10-23 · P0 ATTEMPT COMPLETE / METADATA CANDIDATE ONLY / NOT INSTALLED / INSTALLER UNWRITTEN / trainingReady:false.**
+[Ownership §26](native-ingress-ownership.md#26-m3-p0-metadata-candidate--one-shot-grant-consumed) records fresh `Approve P0 once (Recommended)`; its exact bindings and copied stdout live in the [P0 outcome](native-ingress-host-preparation-m3-p0-outcome.md).
+The whole frozen [M3 proposal](native-ingress-host-preparation-m3.md) SHA `fdb740d94663bb5f97031b54362c0019af96428383b43d08f2f845362c480d37` remains unchanged; its pending labels are historical for this one completed P0 attempt only.
+The exact command ran once with empty environment/fixed cwd/requested5000ms; THIS packet's startup/pre-clock/path/cooperative3500ms/tool-capture residuals were explicitly accepted.
+Normal tool completion plus candidate JSON, without explicit native exit line or reported stderr/timeout, supplies no independent native exit/PID/clock/EOF/descriptor receipt or measured termination/elapsed-time proof.
+Source exit0 requires all checks, complete write and final tick; callsAtSerialization clock24 excludes later source checks and is not a final clock/kernel count.
+Node/mise nonsymlink regular files are candidates, not qualified executors/source bytes/CLI versions/backend/GNU usability; actual mise-version/help/exec/hash was not performed.
+Statfs indicators prove no quota/writable protection/RSS/disk guarantee; M3-root last-lstat ENOENT reserves nothing, and later exclusive-create collision STOP remains mandatory.
+One-shot grant CONSUMED, without retry/fallback/reprobe; no old M2 root/proc/daemon/log/receipt/control access or new root/file/control creation follows.
+BEFORE installer design, the next TUI after documentation publication chooses DESIGN ONLY among exact ALL payload URLs/lengths/hashes, NEW bounded rustup distribution-origin trust, or defer installation; none is asked/selected yet.
+Architect/DevOps recommend exact pins as a stronger explicit byte-verification target, not publisher authentication or availability proof; resolving closure, even a manifest, needs separate fresh access/network approval, not implicit research/webfetch.
+The new bounded-trust alternative requires explicit residual acceptance and is neither full pins, firewall nor exact allowlist; host-exception mode selects no branch and renews no M2 scope.
+A separate bounded mise-version/source packet may be designed but resolves neither acquisition branch and grants no actual execution; installer source/identities/network-install exception remain absent.
+Preserve whole Node01 proposal/outcome, all failures/approvals/raw receipts/programs/model/corpora/configuration caps, source470e540, BAF3476/17, bf38/D1/B1/O9 and Root B/counter/clocks/Native graph.
+ONE BOTH-seat1048576/F1/replay/cold10s/lifecycle300s/reserved3s/generator2048, all five exclusions and later offline capture/build/runtime allowlists/no-acquisition-fallback remain unchanged; no native/capture/L/snapshot/training proof follows.
