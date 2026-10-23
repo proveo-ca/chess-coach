@@ -1,3 +1,11 @@
+## Current continuation — HEAD metadata complete, format selection NONE (2026-10-23)
+
+**[Unverified] Supplied Tool data / trainingReady:false:** fresh `Approve headers once` bound frozen HEAD proposald9718021…/command66193af4…; [HEAD outcome](native-ingress-host-preparation-m3-length-outcome.md) copies ten HEADER_ADVERTISED_LENGTH observations plus parent marker0, not independent Native evidence or archive-body length/hash verification.
+
+**Grant CONSUMED:** [ownership §29](native-ingress-ownership.md#29-m3-advertised-lengths--consumed-grant-and-format-gate) keeps historical null ledgers/frozen proposals unchanged, pins/payloads false and capture/L/snapshot null. No retry/requery/refetch/fallback/suffix, payload GET/body retention/hash, application file/root/control creation, mise execution or installation follows; accepted HEAD wire/host residuals remain.
+
+**Next genuine TUI after publication, direction only:** [implementation §28](native-ingress-implementation.md#28-m3-head-metadata-complete--no-payload-verification) offers XZ only (Recommended; advertised127772720), GZIP only (210090755), or defer body acquisition; current selection NONE, no payload program before selection and no GET/install permission. Unsupported selected format STOPs without fallback; full acquisition/mise/source/backend/graph remain OPEN. Preserve Root B/counter/F1/source clocks/budgets/exclusions and offline allowlist-only capture/build/runtime; parent owns BigInt/doc verification, no new qualification PASS.
+
 ## Current continuation — manifest grant consumed, HEAD lengths source only (2026-10-23)
 
 **[Unverified] Supplied Tool data / trainingReady:false:** fresh `Approve manifest once` executed only frozen command14bdfd83… bound whole proposalb6f2ad64…; [manifest outcome](native-ingress-host-preparation-m3-manifest-outcome.md) copies RAW_EXCERPTS_ONLY plus parent marker0, not an independent Native receipt.

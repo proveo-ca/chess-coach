@@ -773,3 +773,21 @@ Actual mise version/source/backend, complete rustup auxiliary/compression/presee
 Preserve source470e540, BAF3476/17, bf38/D1/B1/O9, all programs/models/caps, Root B/numeric-B/invoice/source-clock gaps, ONE BOTH-seat1048576/F1/replay and original10s/300s/reserved3s/generator2048.
 Host metadata remains a separate ordinary-host phase, not a production meter/fee waiver or new resource envelope; P0 cwd establishes no future C/daemon-host/protected namespace.
 Later F9 capture/build/runtime remain offline, explicit installed-byte allowlist-only/no-acquisition-fallback; all five exclusions stand and no Native/capture/L/snapshot/training/activation claim follows.
+
+## 28. M3 HEAD metadata complete — no payload verification
+
+**[Unverified] 2026-10-23 · HEAD ATTEMPT COMPLETE / METADATA ONLY / FORMAT NONE / INSTALLER UNWRITTEN / trainingReady:false.**
+[Ownership §29](native-ingress-ownership.md#29-m3-advertised-lengths--consumed-grant-and-format-gate) records fresh actual `Approve headers once`; the [outcome](native-ingress-host-preparation-m3-length-outcome.md) preserves exact consumed bindings and copied JSONLF/parent marker0.
+One frozen Node plus waiting Bash completed ten sequential HEADs, with normal tool completion/no reported stderr/timeout and source-profile end/complete/both-close gates per probe; no independent Native process/kernel/clock/custody or hard termination receipt follows.
+THIS packet's accepted startup/public CA/DNS/TLS/path/cooperative-time/tool-capture residuals remain; policy is not a hard firewall/resource bound and Node HEAD parsing does not guarantee zero unsolicited wire bytes.
+All ten observations remain HEADER_ADVERTISED_LENGTH decimal-string metadata/payloadVerified:false, with manifest-advertised hashes only; actual archive-body length/hash remains unverified and historical byteLength:null ledgers never change.
+nativeAuthority/trainingReady/pinComplete/payloadsVerified stay false; captureRootCandidate/lArtifact/snapshotCandidate stay null, without Native/CaptureRoot/L/snapshot/calibration/readiness evidence.
+Exact HEAD grant and all old grants are CONSUMED; no retry/requery/refetch/fallback/suffix, payload GET/body retention/hash, application file/root/control creation, mise execution or installation occurred or is newly authorized.
+Parent must verify strict BigInt derived advertised totals gzip210090755/xz127772720/both337863475/difference82318035; these are not future trusted GET metrics, body measurements or resource reservations.
+After documentation publication, ask the genuine direction-only TUI: `XZ only (Recommended)` for smaller advertised127772720, `GZIP only` for210090755, or `Defer body acquisition`; selection remains NONE.
+Do not author a payload program until format selection; BOTH-format HEAD coverage chose neither format, and a later choice grants no payload GET/install permission.
+Selected-format incompatibility means STOP, never implicit compression fallback; headers prove no actual size/performance/CPU/decompressor compatibility or rustup compression/fallback behavior.
+Actual runtime mise version/source/backend, rustup auxiliary metadata/compression/preseed/offline recipe, normal dependencies/licenses and full source/native acquisition graph remain OPEN; no installer or qualification PASS follows.
+Keep whole approved HEAD/manifest/M3/Node01 proposals/outcomes and every old prefix/program/model/corpus/cap unchanged; M3 root remains uncreated by these phases and retained controls remain untouched without read/stat/hash/delete/exec approval.
+Preserve source470e540, BAF3476/17, bf38/D1/B1/O9, Root B/counter/source clocks/Native graph/numeric-B/invoice gaps, ONE BOTH-seat1048576/F1/charged replay/cold10s/lifecycle300s/reserved3s/generator2048 and all five exclusions.
+Capture/build/runtime ALWAYS remain offline, explicit installed-byte allowlist-only/no-acquisition-fallback; parent owns bounded documentation checks/review/publication, not new runtime/source/model/qualification authority.
