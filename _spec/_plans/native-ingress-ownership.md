@@ -1196,3 +1196,21 @@ Parent supplies HEAD7ef254ed43315825642164ae821e8bf0d109a802/PR50 OPEN/clean and
 Preserve whole HEADd971/manifestb6f2/M3fdb740/Node01fdfed proposals/outcomes/null ledgers, all old prefixes/programs/model/laws/corpora, source470e540, BAF3476/17, bf38/D1/B1/O9 and all full-plan/source/graph/loading/custody/clock gates.
 ONE BOTH-seat1048576, unchanged F1/charged replay, cold10s/lifecycle300s/reserved3s/generator2048 and all five exclusions remain; capture/build/runtime stay offline allowlist-only/no-acquisition-fallback.
 [Implementation §29](native-ingress-implementation.md#29-m3-xz-content-checks-before-installer-qualification) retains installer/full-graph STOP; nativeAuthority/trainingReady/pinComplete/installed false and captureRootCandidate/lArtifact/snapshotCandidate null remain unconditional, with no NativeIssuer flag or authority installation.
+
+## 31. M3 XZ STAT stop — retained custody and diagnostic gate
+
+**[Unverified] 2026-10-23 · SUPPLIED TOOL DATA / STOP:STAT / ARCHIVE CHILD EXIT3 / STAGING GRANT CONSUMED / trainingReady:false.**
+Parent supplies HEAD6e89fcb88464172b8572791f1d6ced93356fcb9c/PR50 OPEN/pushed/clean and actual `Approve staging once`, bound to whole XZdc449d752bbfce5ed97d0b15f5c7d82e549aefc3e1458482fc048506012dbc07/command87014faee1b92cd191ebbf9a473e4c77462f7b35dc834e7ac05d3b135e93fd0a.
+The [new outcome](native-ingress-host-preparation-m3-xz-outcome.md) preserves exact supplied JSONLF/markerLF, explicit Tool exit3 and no reported stderr/timeout; the keeper did not independently verify external state.
+Source snapshot mkdir1/opens2/closes2/fstats3/geteuid1 and first two successful root checks place STAT at the cargo birth-metadata group before GET/file-data write/readback; actual failing predicate is UNKNOWN because no stat fields/original euid were emitted.
+Source reads/writes/GETs/data/acceptedBytes0 and completedCount0 are not kernel/implicit-I/O counts; rootCreated plus one createdPaths entry report creation, not actual file size or an empty-file observation.
+Retain `/tmp/opencode/f9-m3-xz-inputs-01` and `/tmp/opencode/f9-m3-xz-inputs-01/cargo-1.95.0-x86_64-unknown-linux-gnu.tar.xz`; assume no other created paths.
+The entire staging grant is CONSUMED even with zero GETs; all earlier grants remain consumed, with no read/stat/hash/delete/exec/retry/next-payload/suffix/repair/fallback permission.
+`closeFailed:false`/`httpCloseUncertain:false` and parent marker3 are supplied data, not independent Native FD/custody/physical-termination receipts; stdout0/clock19 are pre-write serialization snapshots.
+The [new inert two-path diagnostic](native-ingress-host-preparation-m3-xz-metadata-proposal.md) proposes parent-first nofollow named-type checks, read-only root/file opens, six selected-key metadata snapshots/current-euid comparisons and unconditional one-attempt cleanup, without content access or repair.
+Collection may report false CURRENT birth predicates with diagnostic exit0; it never establishes the historical cause or rewrites the frozen acquisition guards.
+Fresh startup/current-host-path/open-fstat/cooperative-clock/output residual acceptance and exact TWO-path permission remain NONE; body/wrapper/document/command registration, authorized static checks and reviews remain pending.
+Parent supplies Architect ses_e98efeaacffePv0bH5v3nGaeOm/DevOps ses_e98efea09ffe4FatX4plJK1U7W semantic advice, not an execution grant; no generic priority vote is needed.
+No downloaded archive, extraction/mise/rustup/install/build/capture/training followed; M3 installation root was uncreated by this phase. Do not infer a device/mode/nlink/umask/proxy/corruption/race diagnosis.
+Preserve whole XZdc449/HEADd971/manifestb6f2/M3fdb740/Node01fdfed, outcomes/null ledgers/all old bytes/laws/model/source470e540, BAF3476/17/bf38/D1/B1/O9, Root B/sole counter/F1/charged replay/original clocks/budgets and all five exclusions.
+[Implementation §30](native-ingress-implementation.md#30-m3-birth-metadata-stop-before-acquisition) keeps installer/full graph/source-clock/loading/custody gates OPEN and offline installed-byte allowlist-only capture/build/runtime without acquisition fallback; nativeAuthority/trainingReady/pinComplete/installed false and captureRootCandidate/lArtifact/snapshotCandidate null remain unconditional.

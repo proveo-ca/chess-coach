@@ -1,3 +1,11 @@
+## Current continuation — XZ STAT stop, retained custody and diagnostic source only (2026-10-23)
+
+**[Unverified] Supplied Tool data / trainingReady:false:** actual `Approve staging once` bound WHOLE XZdc449…/command87014f…; [XZ outcome](native-ingress-host-preparation-m3-xz-outcome.md) preserves STOP:STAT/explicit Tool exit3/child marker3, no reported stderr/timeout, completed0/GETs0 and the cargo birth-metadata stop before file-data write/readback. Which predicate failed is UNKNOWN; actual stat fields were not output.
+
+**Grant CONSUMED, retain without access:** [ownership §31](native-ingress-ownership.md#31-m3-xz-stat-stop--retained-custody-and-diagnostic-gate) retains `/tmp/opencode/f9-m3-xz-inputs-01` plus its first cargo pathname, not a proven empty file or Native custody receipt. No read/stat/hash/delete/exec/retry/repair/next-payload/suffix/gzip fallback; whole frozen acquisition/older proposals/outcomes/null ledgers/all old bytes remain unchanged.
+
+**Next exact gate, no operation:** [two-path metadata proposal](native-ingress-host-preparation-m3-xz-metadata-proposal.md) and [implementation §30](native-ingress-implementation.md#30-m3-birth-metadata-stop-before-acquisition) require external Node/Bash/document/command registration, authorized static checks/reviews, then fresh exact TWO-path permission plus THIS diagnostic's startup/current-host-path/open-fstat/cooperative-clock/output residual acceptance; all UNREGISTERED/PENDING/NONE. No content read/hash/mutation/network/install/build/capture/training; preserve Root B/counter/F1/source470e540/original budgets/exclusions/offline allowlists, authority/training/pin/installed false and capture/L/snapshot null.
+
 ## Current continuation — XZ selected, opaque acquisition source only (2026-10-23)
 
 **[Unverified] DESIGN ONLY / trainingReady:false:** Executor selected `XZ only (Recommended)`; [ownership §30](native-ingress-ownership.md#30-m3-xz-input-set--opaque-acquisition-proposal-only) resolves the former format-NONE checkpoint, not filesystem/network/installation approval or a timer vote.
