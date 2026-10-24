@@ -1,0 +1,135 @@
+{
+  "qualification": "source-inspection-only; uncompiled; no TypeScript runtime oracle",
+  "spec": "_spec/packages/training/shared418.puml",
+  "manifest": "packages/training/src/feature_manifest.rs::feature_registry_v3",
+  "coordinateBlocks": [
+    {
+      "start": 0, "endExclusive": 34,
+      "typescriptFile": "packages/starchess-training/src/feature/encoder.ts",
+      "typescriptSymbol": "encodeHistorical370 queue formulas",
+      "typescriptLines": [135, 208],
+      "rustFile": "packages/training/src/features/historical.rs",
+      "rustSymbol": "historical::encode queue",
+      "manifestCoordinates": "q:0..33; queue.pass through queue.ix.deployOwnPaidWaste",
+      "fixtureTests": ["literal_deploy_all_418_coordinates", "literal_two_frontiers_all_418_coordinates", "raw_destroyed_and_wasted_ledgers_have_distinct_interactions"]
+    },
+    {
+      "start": 34, "endExclusive": 118,
+      "typescriptFile": "packages/starchess-training/src/feature/encoder.ts",
+      "typescriptSymbol": "encodeHistorical370 authored position 0",
+      "typescriptLines": [29, 134],
+      "rustFile": "packages/training/src/features/historical.rs",
+      "rustSymbol": "historical::encode positions[0]",
+      "manifestCoordinates": "p:0..83 at position.0; present through ix.protectionPaidLoss",
+      "fixtureTests": ["literal_deploy_all_418_coordinates", "unknown_rays_and_frozen_enemy_blockers_stay_separate", "latest_memory_then_lexical_tie_drives_stale_approach_without_live_enemy"]
+    },
+    {
+      "start": 118, "endExclusive": 202,
+      "typescriptFile": "packages/starchess-training/src/feature/encoder.ts",
+      "typescriptSymbol": "encodeHistorical370 authored position 1",
+      "typescriptLines": [29, 134],
+      "rustFile": "packages/training/src/features/historical.rs",
+      "rustSymbol": "historical::encode positions[1]",
+      "manifestCoordinates": "p:0..83 at position.1",
+      "fixtureTests": ["literal_deploy_all_418_coordinates", "hypothetical_birth_has_zero_paid_and_distinct_baseline_masks", "unknown_rewrite_uses_effective_origin_but_authored_target_facts"]
+    },
+    {
+      "start": 202, "endExclusive": 286,
+      "typescriptFile": "packages/starchess-training/src/feature/encoder.ts",
+      "typescriptSymbol": "encodeHistorical370 authored position 2",
+      "typescriptLines": [29, 134],
+      "rustFile": "packages/training/src/features/historical.rs",
+      "rustSymbol": "historical::encode positions[2]",
+      "manifestCoordinates": "p:0..83 at position.2",
+      "fixtureTests": ["literal_deploy_all_418_coordinates", "b_heads_and_original_rank_double_keep_authored_slots", "promotion_preserves_paid_basis_and_maximum_risk_per_baseline_token"]
+    },
+    {
+      "start": 286, "endExclusive": 370,
+      "typescriptFile": "packages/starchess-training/src/feature/encoder.ts",
+      "typescriptSymbol": "encodeHistorical370 authored position 3",
+      "typescriptLines": [29, 134],
+      "rustFile": "packages/training/src/features/historical.rs",
+      "rustSymbol": "historical::encode positions[3]",
+      "manifestCoordinates": "p:0..83 at position.3",
+      "fixtureTests": ["literal_deploy_all_418_coordinates", "literal_two_frontiers_all_418_coordinates", "flatten_preserves_manifest_order_tails_and_detachment"]
+    },
+    {
+      "start": 370, "endExclusive": 382,
+      "typescriptFile": "packages/starchess-training/src/feature/economic.ts",
+      "typescriptSymbol": "economicFeatures",
+      "typescriptLines": [10, 68],
+      "rustFile": "packages/training/src/features/economic.rs",
+      "rustSymbol": "economic::encode",
+      "manifestCoordinates": "e:0..11; spendBalance,spendUncertainty,deployBalance,deployUncertainty,tradeBalance,tradeUncertainty,protectionBalance,protectionUncertainty,spend,deploy,trade,protection",
+      "fixtureTests": ["literal_deploy_all_418_coordinates", "classical_trade_credits_authored_target_once_and_deduplicates_immediate_actor_risk", "special_only_trade_is_zero_and_protection_counts_only_baseline_survivors"]
+    },
+    {
+      "start": 382, "endExclusive": 418,
+      "typescriptFile": "packages/starchess-training/src/feature/promotion.ts",
+      "typescriptSymbol": "promotionFeatures / routeFamily / annotateEntries",
+      "typescriptLines": [97, 257],
+      "rustFile": "packages/training/src/features/promotion.rs",
+      "rustSymbol": "promotion::encode / Walker::{walk,annotate,pool}",
+      "manifestCoordinates": "promo:k:c:h; k=exposure,blockerAdded,blockerRemoved,attackCoverAdded,attackCoverRemoved,visionAdded; c=witnessed,unlocated; h=1,2,3; index=382+6*k+3*c+h-1",
+      "fixtureTests": ["literal_two_frontiers_all_418_coordinates", "frontier_channels_use_physical_square_bits_and_last_rank_is_not_a_new_promotion", "promotion_horizons_count_opportunities_not_distance_or_future_births", "common_route_family_pools_blocker_additions_and_removals_by_destination_file", "promotion_attack_cover_and_vision_are_local_common_family_differences", "promotion_budget_failure_returns_no_truncated_or_zero_fallback_block"]
+    }
+  ],
+  "supportSymbols": [
+    {
+      "typescriptFile": "packages/starchess-training/src/feature/projection.ts", "typescriptLines": [19, 167],
+      "typescriptSymbol": "projectOwn / copyView / putUnit / removeUnit",
+      "rustFile": "packages/training/src/features/projection.rs", "rustSymbol": "project / OwnView::{copy,put,remove}",
+      "fixtureTests": ["b_heads_and_original_rank_double_keep_authored_slots", "f_mine_rebinds_after_classical_but_preserves_authored_coordinates", "hypothetical_birth_has_zero_paid_and_distinct_baseline_masks", "deploy_crush_uses_baseline_replacement_not_birth_or_paid_basis"]
+    },
+    {
+      "typescriptFile": "packages/starchess-core/src/rules/planning-order.ts", "typescriptLines": [7, 60],
+      "typescriptSymbol": "orderBHeadsFirst / classicalRewriteCoordinatesAfterB",
+      "rustFile": "packages/training/src/features/projection.rs", "rustSymbol": "project schedule / structural_rewrite",
+      "fixtureTests": ["b_heads_and_original_rank_double_keep_authored_slots", "unknown_rewrite_uses_effective_origin_but_authored_target_facts", "marine_original_double_and_arrival_diagonal_bindings"]
+    },
+    {
+      "typescriptFile": "packages/starchess-training/src/feature/relations.ts", "typescriptLines": [35, 151],
+      "typescriptSymbol": "replacementValue / chebyshev / measureRay / stationaryRelation / exposure / pressure / threatened / ownLitSquares",
+      "rustFile": "packages/training/src/features/geometry.rs", "rustSymbol": "replacement / distance / ray / relation / exposure / pressure / threatened / lit",
+      "fixtureTests": ["unknown_rays_and_frozen_enemy_blockers_stay_separate", "stationary_siege_and_enemy_cc_aim_do_not_move_actor", "special_only_trade_is_zero_and_protection_counts_only_baseline_survivors"]
+    },
+    {
+      "typescriptFile": "packages/starchess-core/src/board/vision.ts", "typescriptLines": [96, 168],
+      "typescriptSymbol": "getUnitVision litSquares",
+      "rustFile": "packages/training/src/features/geometry.rs", "rustSymbol": "lit",
+      "fixtureTests": ["promotion_attack_cover_and_vision_are_local_common_family_differences", "mine_lights_only_its_square_and_mecha_ping_does_not_light_enemy"]
+    },
+    {
+      "typescriptFile": "packages/starchess-training/src/feature/promotion.ts", "typescriptLines": [19, 90],
+      "typescriptSymbol": "compileMacros / marineOpportunities",
+      "rustFile": "packages/training/src/features/promotion.rs", "rustSymbol": "marine_opportunities",
+      "fixtureTests": ["marine_original_double_and_arrival_diagonal_bindings", "marine_cf_fc_and_unpromoted_last_rank_arrival", "marine_promotion_alternatives_terminate_before_f"]
+    },
+    {
+      "typescriptFile": "packages/starchess-training/src/feature/manifest.ts", "typescriptLines": [116, 135],
+      "typescriptSymbol": "flattenFeatureBlocksV3",
+      "rustFile": "packages/training/src/features/mod.rs", "rustSymbol": "flatten_features_v3",
+      "fixtureTests": ["flatten_preserves_manifest_order_tails_and_detachment", "budget_exhaustion_rejects_before_feature_or_flat_allocation"]
+    },
+    {
+      "typescriptFile": "packages/starchess-training/src/economic/readout.ts", "typescriptLines": [103, 137],
+      "typescriptSymbol": "summarizeJoint numerical readout domain only",
+      "rustFile": "packages/training/src/features/mod.rs", "rustSymbol": "validate NumericalFeatureContext",
+      "fixtureTests": ["accepts_negative_balance_without_clamping_and_rejects_bad_spend_key_fifth_action", "rejects_mismatched_boundary_side_version_and_nonfinite_readouts"]
+    }
+  ],
+  "accounting": {
+    "scalarControlFee": 128,
+    "laneConstructionFee": "128+1024+48*laneCount, plus explicit typed writes and copies",
+    "flattenFee": 18594,
+    "logicalFees": "Retain legacy scalar charges through features::charge; add typed stack writes/copies/scans and bounded tree/allocation precharges",
+    "callerWorkOnly": true,
+    "wholeDecisionFitClaim": false,
+    "fullSupportRequiredWork": 1129672,
+    "ledgerWorkLimit": 1048576,
+    "fullSupportMustReject": true,
+    "unexecutedSparsePassTestBudget": 100000
+  },
+  "excluded": ["belief authority", "Native permit", "session admission", "training", "model fitting", "policy fitting", "spatial calibration", "legacy engine changes", "dataset or raw D+B label changes"],
+  "parentIntegration": ["export features from lib.rs", "create and own shared418.puml", "integrate and run Rust verification when toolchain is available", "qualify TypeScript runtime parity independently"]
+}

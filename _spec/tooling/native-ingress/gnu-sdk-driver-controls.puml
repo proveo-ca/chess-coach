@@ -1,0 +1,45 @@
+' purpose: inspect the real driver and relocation inputs as bounded archive data
+' covers: tooling/native-ingress/sdk-driver-controls.mjs
+' covers: tooling/native-ingress/gnu-sdk-driver-controls-operation.mjs
+' covers: tooling/native-ingress/gnu-sdk-driver-controls-operation.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 owns exact data-inspection registration.
+' status: CONSUMED; section 33.38 records STOP/E_MANIFEST after both complete core passes; no parsed driver/location/manifest result or executable qualification accepted; no automatic retry or further-read authority follows; Step2 incomplete.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title Driver controls — independently expected decoded bytes, no relocation
+actor "Registered archive/staged profile\nthree literal regular member targets" as CALLER <<host>>
+component "Pass1: accepted final member spans\nindependently pinned full decoded hash" as FIRST <<app>>
+component "Pass2: bounded three-range capture\nsame full hash / summary / lifecycle" as SECOND <<app>>
+component "GCC driver ELF declarations\nlocation prefix / literal relocation list" as PARSE <<app>>
+component "Regular-span manifest joins\nno symlink or host-path following" as JOIN <<app>>
+component "Bounded data observations\nno exclusion/rewrite/execution authority" as RESULT <<app>>
+component "STOP\nno provisional body publication" as ERROR <<error>>
+CALLER ARROW_MAIN FIRST : exact known tuples; unique bounded sdk-relocs span
+FIRST ARROW_MAIN SECOND : require complete first core success before second child
+SECOND ARROW_MAIN PARSE : both independent SHA and metadata expectations must match
+PARSE ARROW_MAIN JOIN : strict literal-line grammar; no shell interpretation
+JOIN ARROW_MAIN RESULT : every listed name matches an accepted regular span
+FIRST ARROW_ERROR ERROR : missing, linked, duplicate or wrong target
+SECOND ARROW_ERROR ERROR : capture/hash/EOF/close/summary failure
+PARSE ARROW_ERROR ERROR : malformed UTF-8, prefix, manifest or ELF
+JOIN ARROW_ERROR ERROR : unsupported, duplicate or missing reference
+note bottom of SECOND
+Captured payload<=3398415 bytes total
+GCC2349760 / location79 / list<=1MiB
+No decoded archive retained or spooled
+Two children; four compressed hash passes
+end note
+note bottom of JOIN
+Manifest<=4096 unique relative literal paths
+Joined metadata<=1MiB; final ASCII<=2MiB
+No absolute/traversing/link reference accepted
+Listed names remain inert data
+end note
+note bottom of RESULT
+No shell, GCC, Python or SDK program executes
+No extraction, mutation, install or deletion
+Native/subset/Rust/training qualifiers:false
+No automatic successor or retry
+end note
+@enduml

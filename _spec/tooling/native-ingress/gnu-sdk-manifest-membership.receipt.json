@@ -1,0 +1,79 @@
+{
+  "version": "gnu-sdk-membership-receipt-v1",
+  "evidenceKind": "parent transcription of selected registered physical-operation fields",
+  "profile": "registered-gnu-sdk-manifest-membership-v1",
+  "status": "MANIFEST_MEMBERSHIP_OBSERVED",
+  "registration": {
+    "sectionBytes": 205126,
+    "sectionSha256": "f092b781bf257a07d0182b35fe55648c30418021bf233ebc138c1a11be880c3e",
+    "launcherBytes": 731,
+    "launcherSha256": "b18fe5a032ea79435be99047f338fcba970ce3b026e7fade8965379f773a7807",
+    "operationBytes": 26714,
+    "operationSha256": "7273341b5857152d1c4ce62fc5bd5cf4bc438a82c8845504a7d84b3cb3b82250"
+  },
+  "retainedRawReceipt": {
+    "path": "/home/agent/.local/share/opencode/shell/86d17357a7942bfc164837933bdc232aa20a0c35/sh_16e6b93df00226qqs3GoKEuFcS.out",
+    "selection": "single registered-profile JSON line including its terminal LF; warning lines excluded",
+    "byteLength": 104481,
+    "sha256": "2a0eacd3fc18a8a1074057c8fa5d4211b379e6808eca347a29a269908c4e0c33"
+  },
+  "counts": {"sourceReads":8,"sourceBytes":133509,"receiptReads":1,"receiptBytes":4239,"spawnAttempts":2,"spawnEvents":2,"stageChecks":4,"preloadChecks":4,"stageFsCalls":320,"stageReadBytes":11032864,"stageCloses":20,"completedCorePasses":2,"archivePasses":4,"archiveDataBytes":409185120,"archiveRequestedBytes":409185124,"archiveCloseAttempts":4},
+  "decodedSha256": "5e7f960281fb93121982f95976eb59ed980e009b54aabf993d5d3fa2982e056f",
+  "metadataSha256": "efe53c8fda0b0f1e8b8ba6b7868707a88f33aa26b5692b9c76dc0e6da694d901",
+  "regularFileCount": 6891,
+  "driver": {
+    "path": "x86-64--glibc--stable-2026.08-1/bin/x86_64-buildroot-linux-gnu-gcc-15.3.0.br_real",
+    "index": 29,
+    "bodyOffset": 61895680,
+    "byteLength": 2349760,
+    "sha256": "4db3aa91de31f611171a7d231c2ea10c8d50630969bdef76167dce6a62638165",
+    "interpreter": "/lib64/ld-linux-x86-64.so.2",
+    "needed": ["libc.so.6", "ld-linux-x86-64.so.2"],
+    "rpath": null,
+    "runpath": "$ORIGIN/../lib",
+    "versionNames": ["GLIBC_2.3", "GLIBC_2.15", "GLIBC_2.7", "GLIBC_2.14", "GLIBC_2.11", "GLIBC_2.2.5"],
+    "buildId": "b869eafd140830d5237531ce0ff462dc44cb53ea",
+    "interpretation": "ARCHIVE_ELF_DECLARATIONS_NOT_EXECUTION_QUALIFICATION"
+  },
+  "location": {
+    "index": 279,
+    "bodyOffset": 265943552,
+    "byteLength": 79,
+    "sha256": "e4df82547e211e82635d37dc97cd4bce2f5d941aebb24717a32b242811ea052f",
+    "prefix": "/builds/buildroot.org/toolchains-builder/build/x86-64--glibc--stable-2026.08-1",
+    "interpretation": "DATA_ONLY_NOT_A_HOST_PATH_PERMISSION"
+  },
+  "manifest": {
+    "index": 280,
+    "bodyOffset": 265944576,
+    "byteLength": 9367,
+    "sha256": "60f1b6054d8f01670a9f5ac3ac0181f7148e37be91025c2c4f111df30047305e",
+    "aliasProfile": "single-leading-dot-slash-v1",
+    "observationEncoding": "JSON.stringify(result.manifestRefs.observations), UTF-8, no terminal LF",
+    "observationsSha256": "4815c03bb8dd8f4ccc5f9487144bda30654e5de8e72f535e84fdc69e419d51ec",
+    "totalReferences": 190,
+    "histogram": {"ANCESTOR_LINK":0,"REGULAR_FILE":152,"NONREGULAR_ENTRY":0,"ABSENT_FROM_ARCHIVE":38},
+    "absentNames": [
+      "bin/ifnames", "bin/aclocal", "bin/yacc", "bin/ncursesw6-config", "bin/autom4te",
+      "bin/automake-1.16", "bin/libtool", "bin/autoupdate", "bin/gawkbug", "bin/autoheader",
+      "bin/automake", "bin/aclocal-1.16", "bin/python3.14-config", "bin/autoscan", "bin/pydoc3.14",
+      "bin/autoreconf", "bin/libtoolize", "bin/autoconf", "share/awk/passwd.awk", "share/awk/group.awk",
+      "share/automake-1.16/Automake/Config.pm", "share/autoconf/autom4te.cfg", "lib/libltdl.la",
+      "lib/libexpat.la", "lib/pkgconfig/expat.pc", "lib/pkgconfig/gmp.pc", "lib/pkgconfig/libpkgconf.pc",
+      "lib/pkgconfig/mpfr.pc", "lib/pkgconfig/python-3.14.pc", "lib/pkgconfig/zlib.pc", "lib/pkgconfig/mpc.pc",
+      "lib/pkgconfig/python-3.14-embed.pc", "lib/pkgconfig/libffi.pc", "lib/libffi.la", "lib/libmpc.la",
+      "lib/libgmp.la", "lib/libmpfr.la", "lib/libpkgconf.la"
+    ]
+  },
+  "interpretation": "MANIFEST_MEMBERSHIP_DATA_NOT_RELOCATION_AUTHORITY",
+  "relocationReady": false,
+  "archiveExtracted": false,
+  "filesInstalled": false,
+  "sdkDriverExecuted": false,
+  "pythonRuntimeInvoked": false,
+  "installedUsability": false,
+  "pythonFreeSubsetVerified": false,
+  "nativeQualified": false,
+  "rustReady": false,
+  "trainingReady": false
+}

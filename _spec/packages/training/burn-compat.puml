@@ -55,6 +55,9 @@
 ' covers: packages/training/src/offline_trainer.rs
 ' status: Categorical banded/owned normalization/evidence/raw joint/training structure lives here; current evidence and review status lives in the related Markdown owners.
 ' runtime-status: Synthetic boundary SOURCE PREPARED; Rust compilation/tests and closing reviews remain pending, not accepted runtime behavior.
+' related: _spec/packages/training/shared418.puml
+' related: _spec/packages/training/belief-integration.puml
+' related: _spec/packages/training/artifact-lifecycle.puml
 ' related: _spec/_plans/ml-runtime-redesign.md#14-selected-synthetic-runtime-boundary--source-prepared-compilation-blocked
 ' rendering: Current SVG uses approved local-theme substitution; source keeps the house include, and Rust compilation remains unverified.
 ' related: _spec/_plans/burn-flex-compat.md

@@ -1,0 +1,49 @@
+' purpose: shared numerical 418-coordinate encoder source and independent literal tests
+' covers: packages/training/src/features/mod.rs
+' covers: packages/training/src/features/geometry.rs
+' covers: packages/training/src/features/projection.rs
+' covers: packages/training/src/features/historical.rs
+' covers: packages/training/src/features/economic.rs
+' covers: packages/training/src/features/promotion.rs
+' covers: packages/training/src/numerical_belief/marine_adapter.rs
+' covers: packages/training/tests/features_shared418.rs
+' covers: packages/training/tests/fixtures/shared418-literals.json
+' covers: packages/training/tests/fixtures/shared418-source-map.json
+' status: SOURCE ONLY; Rust compilation, execution and TS runtime parity remain unverified.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title Shared418 — numerical source, not accepted learned inference
+actor "F1 detached feature input\ncandidate / numerical context / caller work" as INPUT <<host>>
+component "features::encode_numerical_features_v3\nframe and finite-domain checks" as ENCODE <<app>>
+component "projection + geometry\nauthored versus scheduled facts" as PROJECTION <<app>>
+component "historical::encode\nqueue34 + four positions84" as HISTORY <<app>>
+component "economic::encode\nrisk / trade / protection interactions12" as ECONOMIC <<app>>
+component "promotion::encode\npooled route contacts / six kernels36" as PROMOTION <<app>>
+component "flatten_features_v3\nfresh ordered f64[418]" as OUTPUT <<app>>
+component "Independent literal vectors\nand source-coordinate mapping" as ORACLE <<host>>
+component "LedgerError\nno partial feature publication" as ERROR <<error>>
+INPUT ARROW_MAIN ENCODE : same caller-owned meter; no authority creation
+ENCODE ARROW_MAIN PROJECTION : validated authorized facts and candidate
+PROJECTION ARROW_MAIN HISTORY : target facts stay original; actor facts follow checkpoints
+PROJECTION ARROW_MAIN ECONOMIC : attempted-target dedup and surviving baseline tokens
+PROJECTION ARROW_MAIN PROMOTION : shared nominal route family and frontier bitsets
+HISTORY ARROW_MAIN OUTPUT : coordinates0..369
+ECONOMIC ARROW_MAIN OUTPUT : coordinates370..381
+PROMOTION ARROW_MAIN OUTPUT : coordinates382..417
+ORACLE ARROW_OPTIONAL OUTPUT : persisted tests; execution remains blocked
+ENCODE ARROW_ERROR ERROR : invalid frame, domain, budget or nonfinite value
+OUTPUT ARROW_ERROR ERROR : reject nonfinite coordinate
+note bottom of PROJECTION
+B ordering / C rewrites / F actor rebinding
+Baseline paid provenance differs from births
+Enemy layers stay frozen during projection
+Stationary geometry is not engine legality
+end note
+note bottom of OUTPUT
+Numerical context grants no belief authority
+No synthetic scorer or bias is introduced
+TS engine and legacy consumers stay unchanged
+No compiled, parity or whole-window-fit claim
+end note
+@enduml

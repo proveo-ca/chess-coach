@@ -1,0 +1,39 @@
+{
+  "version": "rust-runtime-opaque-input-receipt-v1",
+  "evidenceKind": "parent transcription of selected registered physical-operation fields",
+  "status": "RUST_INPUT_BYTES_MATCHED",
+  "registration": {
+    "sectionBytes": 230651,
+    "sectionSha256": "9eb9588225c3bc6cae837a4bc1f38da4aeee9267549c291bc5fba9c273fd199a",
+    "launcherBytes": 736,
+    "launcherSha256": "8a34e4c28e2c3aa7b148f3d48cc46427306d98a35146f669a5bb0c22e43cf18e",
+    "operationBytes": 4226,
+    "operationSha256": "ab121f3fe4ca5700e847d30358e5efd86f3c72a7b0d2019402d3a0ca914ce06d",
+    "helperBytes": 22259,
+    "helperSha256": "b59e0ab22f10acefbeef5aca69205f189145b06ec290eb4415fd84a2814042a7"
+  },
+  "root": "/tmp/opencode/f9-rust-runtime-inputs-01",
+  "rootFinal": {"dev":"28","ino":"13954","mode":"16832","uid":"1000","gid":"1000","nlink":"2","size":"4096","mtimeNs":"1792857301045485610","ctimeNs":"1792857301045485610"},
+  "inputs": [
+    {"role":"cargo","name":"cargo-1.95.0-x86_64-unknown-linux-gnu.tar.xz","byteLength":10984780,"incomingSha256":"e74edd2cf7d0f1f1383b4f00eb90c843750bc489e2ccf7214e6476678a907425","readbackSha256":"e74edd2cf7d0f1f1383b4f00eb90c843750bc489e2ccf7214e6476678a907425","verified":true,"finalMetadata":{"dev":"29","ino":"1211150","mode":"33152","uid":"1000","gid":"1000","nlink":"1","size":"10984780","mtimeNs":"1792857299153485617","ctimeNs":"1792857299153485617"}},
+    {"role":"rustc","name":"rustc-1.95.0-x86_64-unknown-linux-gnu.tar.xz","byteLength":80351960,"incomingSha256":"8426a3d170a5879f5682f5fbdd024a1779b3951e7baba685af2d6dc32a6dfc15","readbackSha256":"8426a3d170a5879f5682f5fbdd024a1779b3951e7baba685af2d6dc32a6dfc15","verified":true,"finalMetadata":{"dev":"29","ino":"1211151","mode":"33152","uid":"1000","gid":"1000","nlink":"1","size":"80351960","mtimeNs":"1792857300349485612","ctimeNs":"1792857300349485612"}},
+    {"role":"rust-std","name":"rust-std-1.95.0-x86_64-unknown-linux-gnu.tar.xz","byteLength":29573972,"incomingSha256":"047ea7098803d3500fa1072e9cee5392697e21525559e4458128a2bf874aa382","readbackSha256":"047ea7098803d3500fa1072e9cee5392697e21525559e4458128a2bf874aa382","verified":true,"finalMetadata":{"dev":"29","ino":"1211153","mode":"33152","uid":"1000","gid":"1000","nlink":"1","size":"29573972","mtimeNs":"1792857300901485610","ctimeNs":"1792857300901485610"}},
+    {"role":"rustfmt-preview","name":"rustfmt-1.95.0-x86_64-unknown-linux-gnu.tar.xz","byteLength":2164880,"incomingSha256":"f1b2a7301513ffdd95ebf22ebbdd932e4d17fc806f748d93924740d0297b1396","readbackSha256":"f1b2a7301513ffdd95ebf22ebbdd932e4d17fc806f748d93924740d0297b1396","verified":true,"finalMetadata":{"dev":"29","ino":"1211154","mode":"33152","uid":"1000","gid":"1000","nlink":"1","size":"2164880","mtimeNs":"1792857301041485610","ctimeNs":"1792857301041485610"}},
+    {"role":"clippy-preview","name":"clippy-1.95.0-x86_64-unknown-linux-gnu.tar.xz","byteLength":4697128,"incomingSha256":"ac779bc9839dd47180806b133e4e2563c4a34716284cd5b8fede8ef289f452ca","readbackSha256":"ac779bc9839dd47180806b133e4e2563c4a34716284cd5b8fede8ef289f452ca","verified":true,"finalMetadata":{"dev":"29","ino":"1211155","mode":"33152","uid":"1000","gid":"1000","nlink":"1","size":"4697128","mtimeNs":"1792857301361485608","ctimeNs":"1792857301361485608"}}
+  ],
+  "counts": {"clockReads":72088,"mkdir":1,"opens":11,"closes":11,"fstats":32,"namedStats":32,"euid":1,"reads":1958,"writes":7999,"gets":5,"dataEvents":7999,"acceptedBytes":127772720,"copiedBytes":127772720,"writtenBytes":127772720,"readbackBytes":127772720,"peakOwnedFds":2,"destroyRequests":0,"destroyResponses":0},
+  "counterScope": "completed logical Node operations; not native syscall counts",
+  "closeFailed": false,
+  "cleanupUncertain": false,
+  "ioAccountingComplete": true,
+  "archiveDecoded": false,
+  "archiveExtracted": false,
+  "filesInstalled": false,
+  "rustExecuted": false,
+  "pythonRuntimeInvoked": false,
+  "installedUsability": false,
+  "nativeQualified": false,
+  "rustReady": false,
+  "trainingReady": false,
+  "pinComplete": false
+}

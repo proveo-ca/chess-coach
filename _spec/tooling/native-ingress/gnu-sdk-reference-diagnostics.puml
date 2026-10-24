@@ -1,0 +1,40 @@
+' purpose: identify one rejected regular-reference join using accepted archive metadata only
+' covers: tooling/native-ingress/gnu-sdk-reference-diagnostics-operation.mjs
+' covers: tooling/native-ingress/gnu-sdk-reference-diagnostics-operation.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 owns exact diagnostic disclosure scope.
+' status: CONSUMED; section 33.44 preserves STOP/E_REFERENCE and records bin/ifnames as ABSENT from the complete accepted archive namespace, ancestorLinks:[], no target resolution or ordinary result; no automatic retry or further-read authority follows; Step2 incomplete.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title Reference diagnostics — observe metadata, resolve no target
+actor "Separate registered two-child operation\nsame archive/manifest/source pins" as CALLER <<host>>
+component "First-pass parser events\npassive own-data metadata capture" as EVENTS <<app>>
+component "Complete accepted metadata map\ncount equals frozen TAR entries" as MAP <<app>>
+component "Unchanged canonical regular-span join\nfirst missing span still rejects" as JOIN <<app>>
+component "Bounded reference diagnostic\nkind/entry + ancestor link metadata" as DIAG <<app>>
+component "STOP E_REFERENCE\nno ordinary parsed result" as RESULT <<error>>
+CALLER ARROW_MAIN EVENTS : same parser and full hash/lifecycle acceptance
+EVENTS ARROW_MAIN MAP : retain only index/path/type/size/link metadata
+MAP ARROW_MAIN JOIN : two complete cores plus own second acceptance
+JOIN ARROW_MAIN DIAG : independent9367-byte/60f1 manifest gate
+DIAG ARROW_MAIN RESULT : one rejected name; no target lookup or resolution
+JOIN ARROW_ERROR RESULT : original error retained; no fallback
+note bottom of MAP
+<=8412 entries /4MiB accounted metadata
+This is not a hard heap bound
+Saturation marks incomplete and forbids release
+No payload or second parser/walker retained
+end note
+note bottom of DIAG
+Matched exact kind or ABSENT, not inference
+<=16 component-boundary ancestor links
+Too many ancestors withholds, never truncates
+Targets remain uninterpreted strings
+end note
+note bottom of RESULT
+No host-path, exclusion or mutation authority
+No extraction, link following or SDK execution
+No automatic successor or retry
+Native/subset/Rust/training qualifiers:false
+end note
+@enduml

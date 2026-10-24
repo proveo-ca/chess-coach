@@ -1,0 +1,35 @@
+' purpose: classify every canonical manifest reference as inert accepted-archive membership data
+' covers: tooling/native-ingress/gnu-sdk-manifest-membership-operation.mjs
+' covers: tooling/native-ingress/gnu-sdk-manifest-membership-operation.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 distinguishes observation from relocation admission.
+' status: CONSUMED; section 33.46 records MANIFEST_MEMBERSHIP_OBSERVED, all190 references /152 REGULAR_FILE /38 ABSENT_FROM_ARCHIVE /0 nonregular or ancestor-link; data only, relocationReady:false; no automatic retry or further-read authority follows; Step2 incomplete.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title Manifest membership — describe all references, prepare nothing
+actor "Separate registered observation\nsame three members / manifest pin" as CALLER <<host>>
+component "First-pass accepted metadata\nall entries + consistent regular spans" as MAP <<app>>
+component "Strict canonical manifest\nknown raw hash / one leading ./ alias" as MANIFEST <<app>>
+component "Classify each reference\nancestor link takes precedence" as CLASSIFY <<app>>
+component "Complete bounded observations\nregular / nonregular / absent / ancestor-link" as RESULT <<app>>
+component "STOP\nno truncated or provisional observation" as ERROR <<error>>
+CALLER ARROW_MAIN MAP : same complete hash/EOF/FD/profile acceptance
+CALLER ARROW_MAIN MANIFEST : both cores and collector second acceptance first
+MAP ARROW_MAIN CLASSIFY : exact entries and regular-span consistency required
+MANIFEST ARROW_MAIN CLASSIFY : all<=4096 references in original canonical order
+CLASSIFY ARROW_MAIN RESULT : preserve exact-match evidence even under ancestor link
+MAP ARROW_ERROR ERROR : incomplete/inconsistent metadata or resource overflow
+CLASSIFY ARROW_ERROR ERROR : >16 ancestors, missing observation or output overflow
+note bottom of MAP
+Span<=4MiB; private event metadata<=4MiB
+Count must equal all8412 accepted entries
+No second walker or target resolution
+Accounted storage is not a hard heap bound
+end note
+note bottom of RESULT
+Classification metadata<=1MiB; ASCII<=2MiB
+relocationReady:false; no mutation authority
+No host open, exclusion, extraction or execution
+Old strict relocation validators stay unchanged
+end note
+@enduml

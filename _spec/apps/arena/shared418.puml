@@ -1,0 +1,27 @@
+' purpose: arena delegates numerical encoding to the same Rust training implementation
+' covers: apps/arena/src/feature_adapter.rs
+' covers: apps/arena/tests/feature_parity.rs
+' status: SOURCE ONLY; compilation, parity tests and runtime activation remain unverified.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title Arena shared418 — one numerical encoder, no learned-selector activation
+actor "Detached authorized feature data\ncaller meter / candidate" as INPUT <<host>>
+component "arena::feature_adapter\nencode_shared418 / encode_belief_batch" as ADAPTER <<app>>
+component "training_native::features\nshared418 formulas and flattening" as FEATURES <<app>>
+component "training_native::numerical_belief\npaired readout/context for batch" as BELIEF <<app>>
+component "Fresh f64[418] values\nno model activation or inference permit" as OUTPUT <<app>>
+component "Persisted literal parity test\nsource only, not executed" as TEST <<host>>
+INPUT ARROW_MAIN ADAPTER : retain caller-owned work and boundary context
+ADAPTER ARROW_MAIN FEATURES : numerical single-candidate route
+ADAPTER ARROW_MAIN BELIEF : paired batch route
+BELIEF ARROW_MAIN FEATURES : derive one readout/context per batch
+FEATURES ARROW_MAIN OUTPUT : identical implementation, no arena-side formulas
+TEST ARROW_OPTIONAL ADAPTER : future bits/fees/literal comparison
+note bottom of OUTPUT
+Existing synthetic smoke remains synthetic
+Baseline policy and TS engine stay unchanged
+No trained artifact, deployment or activation
+Runtime parity and budget fit remain unproved
+end note
+@enduml

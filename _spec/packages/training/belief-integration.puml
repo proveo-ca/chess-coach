@@ -1,0 +1,75 @@
+' purpose: numerical paired belief coordination and spatial-provider source contracts
+' covers: packages/training/src/numerical_belief/mod.rs
+' covers: packages/training/src/numerical_belief/model.rs
+' covers: packages/training/src/numerical_belief/state.rs
+' covers: packages/training/src/numerical_belief/evaluate.rs
+' covers: packages/training/src/numerical_belief/spatial.rs
+' covers: packages/training/src/numerical_belief/marine_contract.rs
+' covers: packages/training/src/numerical_belief/marine_adapter.rs
+' covers: packages/training/src/numerical_belief/readout.rs
+' covers: packages/training/src/numerical_belief/pair.rs
+' covers: packages/training/src/numerical_belief/compact.rs
+' covers: packages/training/src/numerical_belief/fused.rs
+' covers: packages/training/src/joint_math.rs
+' covers: packages/training/src/banded_joint.rs
+' covers: packages/training/tests/numerical_belief.rs
+' covers: packages/training/tests/numerical_spatial.rs
+' covers: packages/training/tests/fused_belief.rs
+' status: SOURCE ONLY; shared Marine adapter added; hydration, compilation and execution remain pending.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title Numerical belief — paired publication, one caller meter, no Native authority
+actor "Checked boundary pair\ncaller-owned LedgerWork" as INPUT <<host>>
+component "EconomicBeliefPair\nF1 advance / charged replay" as PAIR <<app>>
+component "NumericalBeliefModel\npaired tables / rules / calibration" as MODEL <<app>>
+component "Compact fused reduction\nactive banks / canonical support runs" as REDUCE <<app>>
+component "Spatial reduction\nCC / witnessed / unlocated bitsets" as SPATIAL <<app>>
+component "SharedMarineOpportunities\nexisting promotion compiler + spatial filter" as MARINE <<app>>
+component "Private BeliefState pair\nbanded posterior + validated support runs" as STATE <<app>>
+component "Direct banded zero-run readout\nbitwise paired-Kahan fixed points only" as READOUT <<app>>
+component "Revoked publication\nno stale-side state or work refund" as ERROR <<error>>
+INPUT ARROW_MAIN PAIR : initialize or advance both recipients
+MODEL ARROW_MAIN REDUCE : validated paired numerical table owner
+PAIR ARROW_MAIN REDUCE : stage both successors after F1 advance
+REDUCE ARROW_MAIN SPATIAL : independent Boolean birth support and innovations
+SPATIAL ARROW_MAIN MARINE : gas / classical / specials / before restrictions
+MARINE ARROW_MAIN SPATIAL : authored diagonal geometry, no occupancy substitution
+SPATIAL ARROW_MAIN STATE : publish pair only after both successors succeed
+STATE ARROW_MAIN READOUT : temper bounded scratch only; charged boundary cache
+READOUT ARROW_MAIN INPUT : detached numerical values, not an inference permit
+REDUCE ARROW_ERROR ERROR : post-F1 failure revokes the whole wrapper
+SPATIAL ARROW_ERROR ERROR : inconsistency or budget exhaustion
+note bottom of STATE
+Opening D4 / bank3, never reset to7
+Keep support independent of PMF zeros
+Witnessed and unlocated remain separate
+Recursive state never receives calibrated PMF
+end note
+note bottom of PAIR
+One shared inclusive1048576, no clone/refund
+Replay charges F1 without repeating innovation
+Failure after F1 does not claim F1 rollback
+Whole-window affordability HIGH remains open
+end note
+note bottom of MARINE
+Authored diagonal target differs from entries
+Preserve feature routes; filter spatial-only gaps
+Concrete adapter parity remains unexecuted
+No fitted artifact or runtime qualification
+end note
+
+note bottom of REDUCE
+Normalize cells before band mass / conditionals
+Reachability is independent of PMF zeros
+Old dense APIs/fees/refusal remain unchanged
+No trusted or assume-valid construction bypass
+end note
+
+note bottom of READOUT
+Old full-lattice API and fees stay unchanged
+Skip known zeros only at all-four-word equality
+Otherwise execute and charge the remaining run
+Bitwise oracle and whole-window tests unrun
+end note
+@enduml

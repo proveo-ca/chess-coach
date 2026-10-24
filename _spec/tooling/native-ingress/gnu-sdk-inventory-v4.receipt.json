@@ -1,0 +1,61 @@
+{
+  "version": "gnu-sdk-data-inventory-receipt-v1",
+  "evidenceKind": "parent transcription of selected registered physical-operation fields",
+  "profile": "registered-gnu-sdk-inventory-v4",
+  "status": "GNU_SDK_DATA_INVENTORY",
+  "registration": {
+    "sectionBytes": 153445,
+    "sectionSha256": "36ab77480c2aa0441d576b74994382bd1a6576721f4c8dae6a927a84155cda2d",
+    "launcherBytes": 717,
+    "launcherSha256": "2b23e6a5a36b736067f9256e9da1e927a3b88cddd20a1e710cf698f2e7ea4186",
+    "operationBytes": 12608,
+    "operationSha256": "2ea3c1bfe71676c37d01a05b64f9d3f11e4a7d7d93541cfdc4707a378bae17db"
+  },
+  "archive": {
+    "path": "/tmp/opencode/f9-gnu-2026-data-only-01/x86-64--glibc--stable-2026.08-1.tar.xz",
+    "byteLength": 102296280,
+    "sha256": "cde893afab04ac7dcd15c46aac214ff550441b982536124c88a71146a0eeedd3",
+    "passes": 2,
+    "dataBytes": 204592560,
+    "requestedBytes": 204592562,
+    "readAttempts": 3124,
+    "fsOperations": 3151,
+    "closeAttempts": 2
+  },
+  "lifecycle": {"stdinFinished":true,"stdoutEnded":true,"stderrEnded":true,"closeObserved":true,"exitCode":0,"signal":null},
+  "inventory": {
+    "expandedBytes": 505333760,
+    "headers": 10181,
+    "entries": 8412,
+    "extensionBytes": 193768,
+    "outputBytes": 1812885,
+    "collisionBytes": 783392,
+    "dataEvents": 7711,
+    "metadataSha256": "efe53c8fda0b0f1e8b8ba6b7868707a88f33aa26b5692b9c76dc0e6da694d901"
+  },
+  "packetDiagnostics": {"stdoutEvents":54612,"stderrEvents":0,"stdoutBytes":505333760,"stderrBytes":0,"diagnosticCountersComplete":true},
+  "tarDiagnostics": {"feedCalls":7711,"completedFeedCalls":7711,"attemptedFeedBytes":505333760,"errorPhase":null,"errorCode":null,"diagnosticCountersComplete":true},
+  "profileChecks": {"spawnAttempts":1,"spawnEvents":1,"stageChecks":2,"preloadChecks":2,"stageFsCalls":160,"stageReadBytes":5516432,"stageCloses":10},
+  "registeredControlMembers": [
+    {"index":10,"path":"x86-64--glibc--stable-2026.08-1/bin/toolchain-wrapper","type":"file","size":14704},
+    {"index":8406,"path":"x86-64--glibc--stable-2026.08-1/relocate-sdk.sh","type":"file","size":1383}
+  ],
+  "pythonNameExamples": [
+    "x86-64--glibc--stable-2026.08-1/share/gdb/python",
+    "x86-64--glibc--stable-2026.08-1/share/gcc-15.3.0/python",
+    "x86-64--glibc--stable-2026.08-1/lib/libpython3.14.so.1.0",
+    "x86-64--glibc--stable-2026.08-1/lib/python3.14"
+  ],
+  "candidateExecuted": true,
+  "realArchiveInspected": true,
+  "archiveExtracted": false,
+  "filesInstalled": false,
+  "pythonRuntimeInvoked": false,
+  "pythonFreeSubsetVerified": false,
+  "nativeQualified": false,
+  "rustReady": false,
+  "trainingReady": false,
+  "hardRssBounded": false,
+  "hardDeadlineGuaranteed": false,
+  "processTreeBounded": false
+}

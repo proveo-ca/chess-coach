@@ -1,0 +1,42 @@
+' purpose: strict offline artifact and diagnostic-checkpoint admission source
+' covers: packages/training/src/artifact_bytes.rs
+' covers: packages/training/src/artifacts.rs
+' covers: packages/training/src/policy_weights.rs
+' covers: packages/training/src/checkpoint.rs
+' covers: packages/training/tests/strict_artifacts.rs
+' covers: packages/training/tests/checkpoint_state.rs
+' status: SOURCE ONLY; compilation, hydration, publication and resume execution remain unverified.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title Strict artifacts — pure admission is separate from storage and execution
+actor "Original bounded bytes\nindependently expected refs/evidence" as INPUT <<host>>
+component "artifact_bytes\ncanonical JSON / closed fields / Float64Hex" as BYTES <<app>>
+component "artifacts\nregistry / versions / configuration / joins" as ARTIFACT <<app>>
+component "policy_weights\nno-bias detached f64[418]" as WEIGHTS <<app>>
+component "checkpoint\ncounters / RNG / curriculum / journal evidence" as CHECKPOINT <<app>>
+component "Diagnostic values / checked checkpoint\nno Native/publication/resume permit" as RESULT <<app>>
+component "ArtifactError\nno partial accepted object" as ERROR <<error>>
+INPUT ARROW_MAIN BYTES : original length/digest expectations remain independent
+BYTES ARROW_MAIN ARTIFACT : exact canonical bytes and closed DTOs
+BYTES ARROW_MAIN CHECKPOINT : checkpoint format stays distinct from inference
+ARTIFACT ARROW_MAIN WEIGHTS : exact feature registry and frozen policy shape
+WEIGHTS ARROW_MAIN RESULT : zero-init numerical state is not a VALID trained artifact
+CHECKPOINT ARROW_MAIN RESULT : require independent committed-state evidence
+BYTES ARROW_ERROR ERROR : size, duplicate, schema, encoding or float failure
+ARTIFACT ARROW_ERROR ERROR : substituted references or invalid model/configuration
+CHECKPOINT ARROW_ERROR ERROR : counters, RNG, bucket or missing-evidence failure
+note bottom of BYTES
+Artifact<=1MiB; checkpoint<=16MiB
+Float64Hex is finite binary64, big-endian
+Signed zeros and subnormals remain distinct
+No f32 or noncanonical-byte fallback
+end note
+note bottom of RESULT
+No filesystem, activation or training occurs
+Table hydration and store publication are separate
+Inference stays fail-closed: MissingEvidence
+Rust execution and cross-language parity unproved
+No Native/session/meter authority is serialized
+end note
+@enduml

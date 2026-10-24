@@ -1,0 +1,34 @@
+' purpose: separate large-image ELF declaration profile with original parsers byte-preserved
+' covers: tooling/native-ingress/elf-requirements-v3.mjs
+' covers: tooling/native-ingress/elf-requirements-v3.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 owns SDK preparation bounds.
+' status: PURE PARSER; no SDK member or host executable inspected by this unit.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title ELF requirements-v3 — larger input only, no execution qualification
+actor "Explicit byte snapshot\ncaller-supplied lower-only bounds" as INPUT <<host>>
+component "Separate v3 API\nmaxInputBytes67108864" as V3 <<app>>
+component "Pinned original parser bodies\nheaders / dynamics / versions / notes" as PARSER <<app>>
+component "Frozen bounded declarations\nprofile identity requirements-v3" as OUTPUT <<app>>
+component "Original v1/v2 compatibility APIs\nlimits and behavior unchanged" as OLD <<app>>
+component "Fixed ElfMetadataError\nno partial declarations" as ERROR <<error>>
+INPUT ARROW_MAIN V3 : reject oversized or unsafe backing before snapshot
+V3 ARROW_MAIN PARSER : one bounded snapshot; same structural checks
+PARSER ARROW_MAIN OUTPUT : output<=131072 bytes; negative assurance flags
+OLD ARROW_OPTIONAL PARSER : original1MiB /4MiB input limits retained
+V3 ARROW_ERROR ERROR : invalid input, override or output bound
+PARSER ARROW_ERROR ERROR : malformed or unsupported declaration structure
+note bottom of V3
+Only input allowance/profile identity change
+String/version/note/record ceilings unchanged
+One additional snapshot copy must be accounted
+Input bound is not a hard RSS guarantee
+end note
+note bottom of OUTPUT
+No host path opens, subprocess or SDK execution
+Version names do not establish symbol bindings
+Native/usability/Rust/training qualifiers:false
+Original filesystem module remains unchanged
+end note
+@enduml

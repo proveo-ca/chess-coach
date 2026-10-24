@@ -1,0 +1,38 @@
+' purpose: diagnose the original TAR refusal without changing parser rules or limits
+' covers: tooling/native-ingress/tar-observer.mjs
+' covers: tooling/native-ingress/gnu-sdk-inventory-v3-operation.mjs
+' covers: tooling/native-ingress/gnu-sdk-inventory-v3-operation.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 owns exact diagnostic-operation scope.
+' status: CONSUMED; section 33.31 records STOP/E_TAR with parser category E_EXTENSION_BYTES; no inventory or partial prefix accepted; no automatic retry or further-read authority follows; Step2 incomplete.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title SDK inventory-v3 — transparent TAR diagnostics, no relaxed acceptance
+actor "New one-child operation registration\nsame archive/profile/limits" as CALLER <<host>>
+component "Exact original TAR bytes\nunchanged factory and state machine" as TAR <<app>>
+component "tar-observer\ntransparent feed / finish delegation" as OBSERVER <<app>>
+component "Same checked v2 pipeline\nfixed262144 packet ceiling" as PIPELINE <<app>>
+component "Existing staged XZ child\nno SDK execution or extraction" as CHILD <<host>>
+component "Frozen bounded diagnostics\nfixed code / phase / attempted-call counts" as DIAG <<app>>
+component "Accepted inventory or STOP\nno provisional entries on failure" as RESULT <<app>>
+CALLER ARROW_MAIN PIPELINE : captured original/transformed/linked hashes
+TAR ARROW_MAIN OBSERVER : original result and exception identity preserved
+OBSERVER ARROW_MAIN PIPELINE : same parser methods; no recovery or skipped entry
+PIPELINE ARROW_MAIN CHILD : original identity / hashes / EOF / resource gates
+CHILD ARROW_MAIN PIPELINE : unchanged bounded data flow
+OBSERVER ARROW_MAIN DIAG : first failure code from own data descriptor
+DIAG ARROW_MAIN RESULT : same observer module instance as pipeline
+PIPELINE ARROW_MAIN RESULT : preserve original success/cleanup-error precedence
+note bottom of DIAG
+No message getter, path, header or payload
+Feed calls are not parsed entry events
+Counters saturate and mark incompleteness
+First parser failure remains latched
+end note
+note bottom of RESULT
+No parser limit or format relaxation
+No automatic retry or successor invocation
+Native/NoPython-subset/Rust/training:false
+No accepted partial inventory on failure
+end note
+@enduml

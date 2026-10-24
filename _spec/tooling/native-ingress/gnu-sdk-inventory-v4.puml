@@ -1,0 +1,35 @@
+' purpose: bounded cumulative-extension resource profile retaining the individual payload gate
+' covers: tooling/native-ingress/gnu-sdk-inventory-v4-operation.mjs
+' covers: tooling/native-ingress/gnu-sdk-inventory-v4-operation.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 preserves prior STOPs and new registration.
+' status: CONSUMED; section 33.34 records GNU_SDK_DATA_INVENTORY, 505333760 decoded bytes /8412 entries, data only; no extraction or executable qualification; no automatic retry or further-read authority follows; Step2 incomplete.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title SDK inventory-v4 — cumulative allowance changes, parsing rules do not
+actor "Separate one-child registration\nsame archive/profile expectations" as CALLER <<host>>
+component "Captured original TAR\nunchanged filesystem bytes" as RAW <<app>>
+component "Two exact checked transformations\n4MiB cumulative / 64KiB per payload" as TRANSFORM <<app>>
+component "Existing transparent TAR observer\noriginal results/errors preserved" as OBSERVER <<app>>
+component "Unchanged v2-profile pipeline\n262144 packets / same byte and time caps" as PIPELINE <<app>>
+component "Complete inventory or STOP\nno provisional prefix acceptance" as RESULT <<app>>
+CALLER ARROW_MAIN RAW : same pinned input and staged-image checks
+RAW ARROW_MAIN TRANSFORM : verify original / intermediate / final hashes
+TRANSFORM ARROW_MAIN OBSERVER : checked exact linked private TAR image
+OBSERVER ARROW_MAIN PIPELINE : no path, key, type or recovery changes
+PIPELINE ARROW_MAIN RESULT : all original joint success gates still required
+TRANSFORM ARROW_ERROR RESULT : missing/duplicate transform or hash mismatch STOP
+OBSERVER ARROW_ERROR RESULT : over64KiB payload or over4MiB cumulative STOP
+note bottom of TRANSFORM
+64KiB bounds extension payload allocation
+It is not a total per-entry heap guarantee
+Other path/header/metadata bounds unchanged
+No existing source/API limit changes on disk
+end note
+note bottom of RESULT
+One explicit attempt; no automatic successor
+No extraction, install or archive-code execution
+Native/NoPython-subset/Rust/training:false
+Previous profiles and failures stay unchanged
+end note
+@enduml

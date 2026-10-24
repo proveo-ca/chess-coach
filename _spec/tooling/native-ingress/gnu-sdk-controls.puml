@@ -1,0 +1,44 @@
+' purpose: two-pass control-member inspection without extraction or SDK execution
+' covers: tooling/native-ingress/sdk-control-inspection.mjs
+' covers: tooling/native-ingress/gnu-sdk-controls-operation.mjs
+' covers: tooling/native-ingress/gnu-sdk-controls-operation.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 owns exact control-inspection registration.
+' status: CONSUMED; section 33.36 records SDK_CONTROL_DATA_INSPECTION, script1383 +wrapper14704 bytes /two members observed as data, no SDK/script execution; no automatic retry or further-read authority follows; Step2 incomplete.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title SDK controls — accepted spans first, bounded payload data second
+actor "Registered exact archive/profile\ntwo approved regular member names" as CALLER <<host>>
+component "Pass1: member inventory\nfull decoded hash + final regular spans" as FIRST <<app>>
+component "Accepted span bindings\nname/index/size/range + frozen summary" as SPANS <<app>>
+component "Pass2: ordinary TAR validation\nsame full decoded hash + range capture" as SECOND <<app>>
+component "Script UTF-8 data / wrapper ELF metadata\n16087 approved bytes only" as CONTROLS <<app>>
+component "Bounded compiler/helper metadata leads\nno archive-derived host path" as CANDIDATES <<app>>
+component "STOP\nno provisional payload publication" as ERROR <<error>>
+CALLER ARROW_MAIN FIRST : fixed first child; two complete compressed hash passes
+FIRST ARROW_MAIN SPANS : child/FD/EOF/TAR/profile success before acceptance
+SPANS ARROW_MAIN SECOND : second child only after complete first-pass success
+SECOND ARROW_MAIN CONTROLS : complete second lifecycle/hash/summary joins
+SPANS ARROW_MAIN CANDIDATES : fixed regular-file predicates only
+FIRST ARROW_ERROR ERROR : any first-pass failure forbids second child
+SPANS ARROW_ERROR ERROR : missing, linked, duplicate or wrong target
+SECOND ARROW_ERROR ERROR : late failure suppresses all control bytes
+note bottom of FIRST
+Internal span/summary envelopes<=4MiB
+Do not retain the505MiB decoded archive
+Four compressed passes total409185120 bytes
+Existing v4 parser and decoder limits retained
+end note
+note bottom of CONTROLS
+Script1383 / wrapper14704 bytes
+Decode text and parse ELF only after both pass
+No shell, wrapper or Python runtime executes
+No extraction, install or Native qualification
+end note
+note bottom of SECOND
+250s outer clock; two sequential children max
+Each core120s includes3s cleanup
+Do not start pass2 without120s remaining
+No third child, retry or automatic successor
+end note
+@enduml

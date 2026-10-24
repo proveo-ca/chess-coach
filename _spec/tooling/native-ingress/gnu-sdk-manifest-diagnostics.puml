@@ -1,0 +1,35 @@
+' purpose: diagnose strict relocation-manifest rejection without accepting unsupported paths
+' covers: tooling/native-ingress/gnu-sdk-manifest-diagnostics-operation.mjs
+' covers: tooling/native-ingress/gnu-sdk-manifest-diagnostics-operation.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 owns exact diagnostic disclosure scope.
+' status: CONSUMED; section 33.40 preserves STOP/E_MANIFEST and records bounded PATH_GRAMMAR diagnostic, line1 /13 bytes beginning ./bin/ifnames; only the registered prefix diagnostic released, no ordinary result; no automatic retry or further-read authority follows; Step2 incomplete.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title Manifest diagnostics — bounded raw prefix, unchanged strict rejection
+actor "Separate registered operation\nsame fixed three member targets" as CALLER <<host>>
+component "Captured strict collector\nchecked diagnostic-only instrumentation" as COLLECTOR <<app>>
+component "Two complete archive/core passes\nindependent decoded hash / FD closure" as CORE <<app>>
+component "Strict manifest validator\noriginal grammar and errors unchanged" as PARSER <<app>>
+component "Bounded first-failure diagnostic\nraw prefix hex / hash / fixed category" as DIAG <<app>>
+component "STOP / no ordinary result\nno path acceptance or mutation authority" as RESULT <<error>>
+CALLER ARROW_MAIN COLLECTOR : preserve all older source/operator/test bytes
+COLLECTOR ARROW_MAIN CORE : same source, member and lifecycle gates
+CORE ARROW_MAIN PARSER : interpret only after second collector acceptance
+PARSER ARROW_MAIN DIAG : latch first reason; same exception rethrown
+DIAG ARROW_MAIN RESULT : release only after full core AND collector gates
+PARSER ARROW_ERROR RESULT : reject unsupported path / duplicate / limit / UTF-8
+note bottom of DIAG
+First<=128 original manifest bytes as hex
+1-based ordinal; measured line byte count
+Byte count0 if unavailable or not consumed
+Manifest length/SHA256; fixed reasons only
+No message/getter, full list or arbitrary path
+end note
+note bottom of RESULT
+Counters alone never authorize release
+No cached diagnostic from an earlier attempt
+No grammar relaxation, normalize or retry
+No extraction, relocation, SDK execution
+end note
+@enduml

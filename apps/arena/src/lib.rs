@@ -7,6 +7,7 @@ pub mod economic;
 mod economic_client;
 mod engine_v2;
 pub mod evaluation;
+pub mod feature_adapter;
 mod features;
 mod observation;
 mod protocol;

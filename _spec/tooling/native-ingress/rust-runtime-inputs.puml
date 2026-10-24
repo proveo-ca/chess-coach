@@ -1,0 +1,44 @@
+' purpose: acquire five fixed Rust component archives as opaque bytes into fresh custody
+' covers: tooling/native-ingress/rust-runtime-input-acquisition.mjs
+' covers: tooling/native-ingress/rust-runtime-input-acquisition.test.mjs
+' covers: tooling/native-ingress/rust-runtime-input-acquisition-operation.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 owns exact input and operation registration.
+' status: CONSUMED; section 33.54 records RUST_INPUT_BYTES_MATCHED, all five opaque inputs /127772720 bytes incoming and independent readback; zero decoding, extraction, installation or Rust execution; no automatic retry or further-read authority follows; Step2 incomplete.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title Rust inputs — exact opaque bytes, never an installer or build fallback
+actor "Registered five fixed descriptors\nfresh literal root / captured source" as CALLER <<host>>
+component "Exclusive root/file custody\nper-object named/FD identity" as CUSTODY <<app>>
+cloud "static.rust-lang.org\nverified TLS / dated fixed component URLs" as ORIGIN <<cloud>>
+component "Sequential bounded transfer\nlength / hash / request and response close" as TRANSFER <<app>>
+component "Independent same-file readback\nhash / physical EOF / positive close" as READBACK <<app>>
+component "Five verified inputs or overall STOP\nroot close gates overall success" as RESULT <<app>>
+component "Absorbing failure\nretain partial files, no cleanup deletion" as ERROR <<error>>
+CALLER ARROW_MAIN CUSTODY : one exclusive root; never reuse, repair or suffix
+CUSTODY ARROW_CLOUD ORIGIN : at most five fixed GETs, no redirect/retry/mirror
+ORIGIN ARROW_CLOUD TRANSFER : bounded binary chunks and strict headers
+TRANSFER ARROW_MAIN READBACK : close writer before same-inode reader
+READBACK ARROW_MAIN RESULT : five full matches and successful root closure
+CUSTODY ARROW_ERROR ERROR : any root collision, identity or close failure
+TRANSFER ARROW_ERROR ERROR : late/short/malformed/hash/deadline failure
+READBACK ARROW_ERROR ERROR : changed bytes, short I/O or closure failure
+note bottom of CUSTODY
+Root plus writer OR reader<=2 owned FDs
+Root/file devices need not be equal
+Root0700 / exclusive regular files0600
+No ancestor-race or durability guarantee
+end note
+note bottom of RESULT
+Five archive inputs total127772720 bytes
+No decoder, extraction, installer or child
+No rustup, Python, SDK or Rust execution
+Native/usability/Rust/training qualifiers:false
+end note
+note bottom of TRANSFER
+600s includes reserved3s cleanup
+Per-file work<=119s within global work end
+Incoming chunk<=1MiB; readback scratch64KiB
+No hard RSS/tree/deadline guarantee
+end note
+@enduml

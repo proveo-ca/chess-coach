@@ -2,7 +2,8 @@
 
 This private crate retains the synthetic CPU `f64` path with Burn `0.22.0`.
 Rust contracts, candidate composition and baseline selectors support the native arena delivery.
-It does not implement the full learner or the historical 418-feature encoder.
+The full learner remains incomplete.
+[Unverified] Shared418, paired belief/spatial coordination and strict diagnostic artifact/checkpoint sources are prepared but remain uncompiled and unrun.
 The [compatibility plan](../../_spec/_plans/burn-flex-compat.md) records the earlier bounded milestone.
 The [native-runner contract](../../_spec/ml/native-runner.md) records the completed bounded baseline delivery.
 
@@ -18,6 +19,9 @@ The baseline receipts do not verify the ledger.
 - `banded_joint`: owned normalization, exact categorical conditional PMFs and untempered expansion.
 - `feature_input`: checked ordered boundary innovations and detached own-lineage inputs.
 - `feature_manifest`: exact 418-coordinate metadata, not an encoder.
+- `features`: source-only shared numerical 34+4×84+12+36 encoding and detached flattening.
+- `numerical_belief`: source-only paired reduction, shared Marine adapter and calibrated readout copies.
+- `artifact_bytes`, `artifacts`, `checkpoint`, `policy_weights`: source-only strict canonical admission and detached scalar weights; fitted inference stays fail-closed.
 - `joint_math`: checked numerical masks, global normalization and summary-only readouts.
 - `joint_accounting`: canonical all-source raw accounting with shared buffers and independent Boolean reachability.
 - `learner_math`: finite f64 policy statistics and arithmetic SGD proposals, not update permission.
@@ -50,7 +54,7 @@ RPCs and helper calls cannot renew that allowance.
 This bounds ledger work, not the deferred full-feature training decision.
 Economic verification does not certify policy selection or learner readiness.
 The arena's separate verified-terminal closeout excludes unused actual credit without changing these raw histories.
-Full418 features, posterior/promotion kernels, the complete learner/coordinator and calibration remain deferred.
+Full418/posterior/promotion execution, the complete learner/controller and calibration acceptance remain deferred.
 
 ## Feature seams
 
@@ -60,6 +64,11 @@ Its readout uses crate-private checked seed extraction, not serialized ledger re
 `feature_manifest_v3` returns detached five-field metadata after a prepaid allocation invoice.
 Its independent tests compare all coordinates with the frozen normative tables and actual legacy production readout.
 Neither seam computes the 418 feature values or establishes genuine native authority, calibration, learner behavior or training readiness.
+
+[Unverified] The separate [shared418](../../_spec/packages/training/shared418.puml), [belief](../../_spec/packages/training/belief-integration.puml) and [artifact](../../_spec/packages/training/artifact-lifecycle.puml) owners describe the new source-only integration.
+Its tests and literal vectors are persisted, not verified by a current Rust run.
+Positive fitted-inference admission returns `MissingEvidence` until supported economic hydration/qualification exists.
+Store publication, complete resume closure, arena wiring and whole-window budget adequacy remain incomplete.
 
 ## Learner mathematics
 

@@ -1102,3 +1102,290 @@ fn valid_structural_f3_point_plus_numeric_chain_refuses_work_on_the_same_meter_n
     assert_eq!(work.used(), 964436);
     assert_eq!(work.remaining(), 84140);
 }
+
+// Full-lattice sparse-run oracle and invoices.
+fn runs_readout_bits(readout: &NumericReadout) -> [u64; 12] {
+    let mut bits = [0; 12];
+    bits[0] = readout.mean_d.to_bits();
+    bits[1] = readout.mean_potential.to_bits();
+    for lane in 0..4 {
+        bits[2 + lane] = f64::from(readout.quantiles_d[lane]).to_bits();
+        bits[6 + lane] = f64::from(readout.quantiles_potential[lane]).to_bits();
+    }
+    bits[10] = readout.balance.to_bits();
+    bits[11] = readout.uncertainty.to_bits();
+    bits
+}
+
+fn runs_full_lattice_oracle(
+    cells: &[training_native::joint_math::SparseCell],
+    support: &[bool],
+    own: u16,
+    temperature: f64,
+) -> JointMathResult<(NumericReadout, u64, u64)> {
+    fn kahan(sum: &mut f64, compensation: &mut f64, term: f64) {
+        let adjusted = term - *compensation;
+        let next = *sum + adjusted;
+        let recovered = next - *sum;
+        *compensation = recovered - adjusted;
+        *sum = next;
+        assert!(sum.is_finite() && compensation.is_finite());
+    }
+    fn state_bits(state: &[f64; 4]) -> [u64; 4] {
+        state.map(f64::to_bits)
+    }
+    fn quantiles(marginal: &[f64]) -> [u16; 4] {
+        THRESHOLDS.map(|threshold| {
+            let mut cumulative = 0.0;
+            let mut selected = None;
+            for (lane, probability) in marginal.iter().enumerate() {
+                cumulative += *probability;
+                if selected.is_none() && cumulative >= threshold {
+                    selected = Some(lane as u16);
+                }
+            }
+            assert!((cumulative - 1.0).abs() <= 1e-12);
+            selected.unwrap()
+        })
+    }
+    let mut dense = vec![0.0; N];
+    let mut logs = Vec::with_capacity(cells.len());
+    let mut maximum = f64::NEG_INFINITY;
+    let mut input_sum = 0.0;
+    for cell in cells {
+        input_sum += cell.probability;
+        let scaled = cell.probability.ln() / temperature;
+        assert!(scaled.is_finite());
+        maximum = if maximum > scaled { maximum } else { scaled };
+        logs.push(scaled);
+    }
+    assert!((input_sum - 1.0).abs() <= 1e-12);
+    let mut denominator = 0.0;
+    for value in &mut logs {
+        *value = (*value - maximum).exp();
+        if *value == 0.0 { return Err(JointMathError::Underflow); }
+        denominator += *value;
+    }
+    let mut tempered_sum = 0.0;
+    for (cell, value) in cells.iter().zip(logs) {
+        let probability = value / denominator;
+        if probability == 0.0 { return Err(JointMathError::Underflow); }
+        dense[index(cell.material, cell.bank)] = probability;
+        tempered_sum += probability;
+    }
+    assert!((tempered_sum - 1.0).abs() <= 1e-12);
+    let mut material = vec![0.0; 577];
+    let mut potential = vec![0.0; 589];
+    let mut state = [0.0; 4];
+    let mut runs = 0;
+    let mut visits = 0;
+    let mut in_zero_run = false;
+    let mut fixed = false;
+    let mut executed_means = 0;
+    for (lane, probability) in dense.into_iter().enumerate() {
+        let d = lane % 577;
+        let p = d + lane / 577;
+        let before = state_bits(&state);
+        let [mut sum_d, mut comp_d, mut sum_p, mut comp_p] = state;
+        if probability > 0.0 {
+            material[d] += probability;
+            potential[p] += probability;
+            kahan(&mut sum_d, &mut comp_d, d as f64 * probability);
+            kahan(&mut sum_p, &mut comp_p, p as f64 * probability);
+            in_zero_run = false;
+        } else {
+            if !in_zero_run {
+                runs += 1;
+                in_zero_run = true;
+                fixed = false;
+            }
+            kahan(&mut sum_d, &mut comp_d, 0.0);
+            kahan(&mut sum_p, &mut comp_p, 0.0);
+        }
+        state = [sum_d, comp_d, sum_p, comp_p];
+        if probability == 0.0 && !fixed {
+            visits += 1;
+            fixed = before == state_bits(&state);
+        }
+        executed_means += 1;
+    }
+    assert_eq!(executed_means, N);
+    assert!(runs <= cells.len() as u64 + 1);
+    assert!(visits <= (N - cells.len()) as u64);
+    let quantiles_d = quantiles(&material);
+    let quantiles_potential = quantiles(&potential);
+    let certainty = reference_certainty(support);
+    let mut mean_d = state[0];
+    let mut mean_potential = state[2];
+    if let Some(d) = certainty.material {
+        assert_eq!(quantiles_d, [d; 4]);
+        mean_d = f64::from(d);
+    }
+    if let Some(p) = certainty.potential {
+        assert_eq!(quantiles_potential, [p; 4]);
+        mean_potential = f64::from(p);
+    }
+    Ok((NumericReadout {
+        mean_d, mean_potential, quantiles_d, quantiles_potential,
+        balance: f64::from(own) - mean_d,
+        uncertainty: f64::from(quantiles_d[3] - quantiles_d[2]) / 2.0,
+    }, runs, visits))
+}
+
+#[test]
+fn sparse_runs_match_full_lattice_oracle_all_bits_and_independent_invoices() {
+    use training_native::joint_math::{SparseCell, readout_sparse_copy, readout_sparse_runs_copy};
+    fn rng(state: &mut u64) -> u64 {
+        *state = state.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+        *state
+    }
+    let mut distributions = vec![
+        vec![(0, 1.0)], vec![(N - 1, 1.0)], vec![(3750, 1.0)],
+        vec![(0, 0.5), (N - 1, 0.5)],
+        vec![(1, f64::from_bits(1)), (576, f64::MIN_POSITIVE), (578, 1.0)],
+        vec![(0, 0.05), (1, 0.9), (N - 1, 0.05)],
+        vec![(7, 1.0000000000005)],
+        (0..40).map(|lane| (lane * 2, 0.025)).collect(),
+        vec![(4, 0.25), (4 + 12 * 577, 0.75)],
+        vec![(4, 0.25), (4 * 577, 0.75)],
+    ];
+    for seed in 0..24_u64 {
+        let mut state = seed + 1;
+        let count = 2 + (rng(&mut state) % 79) as usize;
+        let mut chosen = BTreeSet::new();
+        while chosen.len() < count { chosen.insert((rng(&mut state) % N as u64) as usize); }
+        let mut records: Vec<_> = chosen.into_iter().map(|lane| {
+            let mantissa = 1.0 + (rng(&mut state) >> 12) as f64 / (1_u64 << 52) as f64;
+            let exponent = (rng(&mut state) % 41) as i32 - 20;
+            (lane, mantissa * 2.0_f64.powi(exponent))
+        }).collect();
+        let total: f64 = records.iter().map(|record| record.1).sum();
+        for record in &mut records { record.1 /= total; }
+        distributions.push(records);
+    }
+    for records in distributions {
+        let cells: Vec<_> = records.iter().map(|&(lane, probability)| SparseCell {
+            bank: (lane / 577) as u8, material: (lane % 577) as u16, probability,
+        }).collect();
+        for broad in [false, true] {
+            let mut mask = vec![broad; N];
+            for &(lane, _) in &records { mask[lane] = true; }
+            let support = ok(NumericSupport::from_cells(&mask, &mut LedgerWork::new()));
+            let before = cells.iter().map(|cell| (cell.bank, cell.material, cell.probability.to_bits())).collect::<Vec<_>>();
+            let certainty = support.certainty();
+            for temperature_index in [0, 1, 249, 250, 251, 499, 500, 501, 749, 750, 751, 999, 1000] {
+                let temperature = ok(ReadoutTemperature::from_index(temperature_index, &mut LedgerWork::new()));
+                let expected = runs_full_lattice_oracle(&cells, &mask, 317, temperature.value());
+                let mut old_work = LedgerWork::new();
+                let old = readout_sparse_copy(&cells, &support, 317, &temperature, &mut old_work);
+                match expected {
+                    Err(error) => {
+                        assert_eq!(error, JointMathError::Underflow);
+                        assert_eq!(old.unwrap_err(), error);
+                        let mut work = LedgerWork::new();
+                        assert_eq!(readout_sparse_runs_copy(&cells, &support, 317, &temperature, &mut work).unwrap_err(), error);
+                        assert_eq!(work.used(), old_work.used());
+                    }
+                    Ok((expected, runs, visits)) => {
+                        let old = old.unwrap();
+                        let positives = cells.len() as u64;
+                        let invoice = 42984 + 180 * positives + 32 * runs + 40 * visits;
+                        assert_eq!(old_work.used(), 222992 + 140 * positives);
+                        let mut exact = LedgerWork::with_limit(19 + invoice).unwrap();
+                        exact.charge(19).unwrap();
+                        let actual = ok(readout_sparse_runs_copy(&cells, &support, 317, &temperature, &mut exact));
+                        assert_eq!(runs_readout_bits(&actual), runs_readout_bits(&expected));
+                        assert_eq!(runs_readout_bits(&actual), runs_readout_bits(&old));
+                        assert_eq!(actual.quantiles_d, expected.quantiles_d);
+                        assert_eq!(actual.quantiles_potential, expected.quantiles_potential);
+                        assert_eq!(exact.used(), 19 + invoice);
+                        let mut short = LedgerWork::with_limit(19 + invoice - 1).unwrap();
+                        short.charge(19).unwrap();
+                        expect_error(readout_sparse_runs_copy(&cells, &support, 317, &temperature, &mut short), ErrorKind::Budget);
+                        assert_eq!(short.used(), 19 + invoice - 64);
+                    }
+                }
+                assert_eq!(cells.iter().map(|cell| (cell.bank, cell.material, cell.probability.to_bits())).collect::<Vec<_>>(), before);
+                assert_eq!(support.cells(), mask);
+                assert_eq!(support.certainty(), certainty);
+            }
+        }
+    }
+}
+
+#[test]
+fn sparse_runs_validate_all_cells_before_zero_evidence_and_preserve_failure_prefixes() {
+    use training_native::joint_math::{SparseCell, readout_sparse_copy, readout_sparse_runs_copy};
+    let temperature = ok(ReadoutTemperature::from_index(500, &mut LedgerWork::new()));
+    let support = ok(NumericSupport::from_cells(&vec![true; N], &mut LedgerWork::new()));
+    let base = SparseCell { bank: 0, material: 0, probability: 0.5 };
+    let end = SparseCell { bank: 12, material: 576, probability: 0.5 };
+    let cases = vec![
+        (vec![], JointMathError::Domain, 256),
+        (vec![base; N + 1], JointMathError::Domain, 256),
+        (vec![SparseCell { bank: 13, ..base }], JointMathError::Domain, 288),
+        (vec![SparseCell { material: 577, ..base }], JointMathError::Domain, 288),
+        (vec![SparseCell { probability: 0.0, ..base }], JointMathError::Domain, 288),
+        (vec![SparseCell { probability: -0.0, ..base }], JointMathError::Domain, 288),
+        (vec![SparseCell { probability: -0.5, ..base }], JointMathError::Domain, 288),
+        (vec![base, SparseCell { probability: f64::NAN, ..end }], JointMathError::NonFinite, 320),
+        (vec![base, SparseCell { probability: f64::INFINITY, ..end }], JointMathError::NonFinite, 320),
+        (vec![base, SparseCell { probability: f64::NEG_INFINITY, ..end }], JointMathError::NonFinite, 320),
+        (vec![base, base], JointMathError::Domain, 320),
+        (vec![end, base], JointMathError::Domain, 320),
+        (vec![base], JointMathError::NonFinite, 320),
+        (vec![SparseCell { probability: f64::MAX, ..base }, SparseCell { probability: f64::MAX, ..end }], JointMathError::NonFinite, 320),
+    ];
+    for (cells, expected, prefix) in cases {
+        for old in [false, true] {
+            let mut work = LedgerWork::new();
+            work.charge(23).unwrap();
+            let result = if old { readout_sparse_copy(&cells, &support, 0, &temperature, &mut work) }
+                else { readout_sparse_runs_copy(&cells, &support, 0, &temperature, &mut work) };
+            assert_eq!(result.unwrap_err(), expected);
+            assert_eq!(work.used(), 23 + prefix);
+        }
+        let mut short = LedgerWork::with_limit(23 + prefix - 1).unwrap();
+        short.charge(23).unwrap();
+        expect_error(readout_sparse_runs_copy(&cells, &support, 0, &temperature, &mut short), ErrorKind::Budget);
+        assert!(short.used() >= 23 && short.used() < 23 + prefix);
+    }
+    let narrow = ok(NumericSupport::from_cells(&mask(&[(0, 0)]), &mut LedgerWork::new()));
+    let mut work = LedgerWork::new();
+    assert_eq!(readout_sparse_runs_copy(&[base, end], &narrow, 0, &temperature, &mut work).unwrap_err(), JointMathError::Domain);
+    assert_eq!(work.used(), 320);
+    for own in [577, u16::MAX] {
+        let mut work = LedgerWork::with_limit(256).unwrap();
+        assert_eq!(readout_sparse_runs_copy(&[base, end], &support, own, &temperature, &mut work).unwrap_err(), JointMathError::Domain);
+        assert_eq!(work.used(), 256);
+    }
+    let mut unpaid = LedgerWork::with_limit(255).unwrap();
+    expect_error(readout_sparse_runs_copy(&[], &support, 577, &temperature, &mut unpaid), ErrorKind::Budget);
+    assert_eq!(unpaid.used(), 0);
+}
+
+#[test]
+fn sparse_runs_full_positive_lattice_refuses_without_a_universal_budget_fit() {
+    use training_native::joint_math::{SparseCell, readout_sparse_runs_copy};
+    let cells: Vec<_> = (0..N).map(|lane| SparseCell {
+        bank: (lane / 577) as u8, material: (lane % 577) as u16, probability: 1.0 / N as f64,
+    }).collect();
+    let support = ok(NumericSupport::from_cells(&vec![true; N], &mut LedgerWork::new()));
+    let temperature = ok(ReadoutTemperature::from_index(500, &mut LedgerWork::new()));
+    let (_, runs, visits) = ok(runs_full_lattice_oracle(&cells, support.cells(), 0, temperature.value()));
+    assert_eq!((runs, visits), (0, 0));
+    let invoice = 42984 + 180 * N as u64;
+    assert_eq!(invoice, 1393164);
+    assert!(invoice > LEDGER_WORK_LIMIT);
+    let before = cells.iter().map(|cell| cell.probability.to_bits()).collect::<Vec<_>>();
+    let mut work = LedgerWork::new();
+    work.charge(11).unwrap();
+    expect_error(readout_sparse_runs_copy(&cells, &support, 0, &temperature, &mut work), ErrorKind::Budget);
+    let initial = 256 + 32 + 192 + 132 * N as u64 + 32 + 2 * 192 + 4 * M as u64;
+    let complete_positives = (LEDGER_WORK_LIMIT - 11 - initial) / 48;
+    let prefix = 11 + initial + 48 * complete_positives;
+    let paid_schedule = if LEDGER_WORK_LIMIT - prefix >= 16 { 16 } else { 0 };
+    assert_eq!(work.used(), prefix + paid_schedule);
+    assert_eq!(cells.iter().map(|cell| cell.probability.to_bits()).collect::<Vec<_>>(), before);
+    assert!(support.cells().iter().all(|present| *present));
+}

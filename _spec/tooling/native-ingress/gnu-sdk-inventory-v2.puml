@@ -1,0 +1,39 @@
+' purpose: separately registered SDK inventory successor with fixed raw-event diagnostics
+' covers: tooling/native-ingress/gnu-sdk-inventory-v2-operation.mjs
+' covers: tooling/native-ingress/gnu-sdk-inventory-v2-operation.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 preserves the v1 STOP and v2 registration.
+' status: CONSUMED; section 33.29 records STOP/E_TAR; underlying parser category unknown in this result, no accepted inventory; no automatic retry or further-read authority follows; Step2 incomplete.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title SDK inventory-v2 — frozen successor, never an adaptive retry
+actor "New explicit operation registration\nsame archive/staged-profile expectations" as CALLER <<host>>
+component "Captured original inventory-v1 bytes\nexact original length / SHA256" as V1 <<app>>
+component "One checked literal replacement\n32768 -> 262144 raw stream events" as TRANSFORM <<app>>
+component "Checked transformed + linked source\nall other pipeline limits unchanged" as V2 <<app>>
+component "One fixed existing XZ child\nno extraction, scripts or installation" as CHILD <<host>>
+component "Passive payload-free diagnostics\nattach only on spawn after core wiring" as OBSERVE <<app>>
+component "Accepted inventory or STOP\nno provisional selections on failure" as RESULT <<app>>
+component "Fixed failure\nno subsequent retry or cap increase" as ERROR <<error>>
+CALLER ARROW_MAIN V1 : preserve original source/operator/test bytes
+V1 ARROW_MAIN TRANSFORM : require exactly one occurrence
+TRANSFORM ARROW_MAIN V2 : verify transformed and fully linked hashes
+V2 ARROW_MAIN CHILD : unchanged identity/hash/FD/time/byte/TAR/preload gates
+CHILD ARROW_MAIN OBSERVE : observe existing data events without payload retention
+CHILD ARROW_MAIN RESULT : complete original joint-success gates only
+OBSERVE ARROW_MAIN RESULT : bounded packet/byte counters, including failure
+TRANSFORM ARROW_ERROR ERROR : missing/duplicate replacement or wrong hash
+V2 ARROW_ERROR ERROR : every existing pipeline failure remains fatal
+note bottom of OBSERVE
+No early flow, read, pause or resume operation
+Counters saturate; mark incomplete on overflow
+Observed Node packets are not OS syscall counts
+No decoded payload is retained
+end note
+note bottom of RESULT
+V1 failure remains historical and unchanged
+No adaptive parameter selection or fallback
+Native/NoPython-subset/Rust/training:false
+Hard RSS/tree/deadline guarantees remain false
+end note
+@enduml

@@ -1,0 +1,44 @@
+' purpose: recover bounded actual compiler/runtime/sysroot candidate names without payload selection
+' covers: tooling/native-ingress/gnu-sdk-subset-catalog.mjs
+' covers: tooling/native-ingress/gnu-sdk-subset-catalog.test.mjs
+' covers: tooling/native-ingress/gnu-sdk-subset-catalog-operation.mjs
+' covers: tooling/native-ingress/gnu-sdk-subset-catalog-operation.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 separates discovery from member approval.
+' status: CONSUMED; section 33.55 records SUBSET_CANDIDATE_CATALOG, 96 inert candidates /all roles roleSatisfied:false; presence is not member selection or executable admission; no automatic retry or further-read authority follows; Step2 incomplete.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title Subset candidate catalog — actual names, no executable admission
+actor "Registered exact archive/profile\nfrozen finite discovery predicates" as CALLER <<host>>
+component "Existing one-child archive core\ntwo complete compressed hash passes" as CORE <<app>>
+component "Original member parser\npassive returned-event map + final spans" as PARSER <<app>>
+component "Complete accepted namespace\n8412 entries /6891 consistent regular spans" as MAP <<app>>
+component "Anchored role predicates\nHOST tools/libs versus TARGET inputs" as SELECT <<app>>
+component "Bounded candidate catalog\npresence is not role fulfillment" as RESULT <<app>>
+component "STOP\nno partial catalog or namespace claim" as ERROR <<error>>
+CALLER ARROW_MAIN CORE : same custody/decoder/preload/lifecycle constraints
+CORE ARROW_MAIN PARSER : no additional walker or payload capture
+PARSER ARROW_MAIN MAP : independently pinned decoded hash and metadata summary
+MAP ARROW_MAIN SELECT : only after full core and owned-FD closure success
+SELECT ARROW_MAIN RESULT : deduplicate names; retain all matched role IDs
+MAP ARROW_ERROR ERROR : incomplete, duplicate or inconsistent metadata
+SELECT ARROW_ERROR ERROR : candidate/encoded-output overflow, no truncation
+note bottom of MAP
+Private metadata<=4MiB; span/core<=4MiB
+These are not hard heap/RSS guarantees
+Link strings stay uninterpreted
+No SDK entry becomes a host path
+end note
+note bottom of RESULT
+<=512 candidates /1MiB selected metadata
+Final escaped-ASCII envelope<=2MiB
+No extraction, member selection or execution
+Native/subset/Rust/training qualifiers:false
+end note
+note bottom of CORE
+Outer130s: source5s +core120s +publish5s
+Core120s includes reserved3s cleanup
+One child only; no retry or successor
+No hard deadline/process-tree guarantee
+end note
+@enduml

@@ -846,6 +846,176 @@
         "tooling/native-ingress/xz-operation.test.mjs"
       ],
       "fingerprint": null
+    },
+    {
+      "spec": "_spec/packages/training/shared418.puml",
+      "covers": [
+        "packages/training/src/features/mod.rs",
+        "packages/training/src/features/geometry.rs",
+        "packages/training/src/features/projection.rs",
+        "packages/training/src/features/historical.rs",
+        "packages/training/src/features/economic.rs",
+        "packages/training/src/features/promotion.rs",
+        "packages/training/src/numerical_belief/marine_adapter.rs",
+        "packages/training/tests/features_shared418.rs",
+        "packages/training/tests/fixtures/shared418-literals.json",
+        "packages/training/tests/fixtures/shared418-source-map.json"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/packages/training/artifact-lifecycle.puml",
+      "covers": [
+        "packages/training/src/artifact_bytes.rs",
+        "packages/training/src/artifacts.rs",
+        "packages/training/src/policy_weights.rs",
+        "packages/training/src/checkpoint.rs",
+        "packages/training/tests/strict_artifacts.rs",
+        "packages/training/tests/checkpoint_state.rs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/packages/training/belief-integration.puml",
+      "covers": [
+        "packages/training/src/numerical_belief/mod.rs",
+        "packages/training/src/numerical_belief/model.rs",
+        "packages/training/src/numerical_belief/state.rs",
+        "packages/training/src/numerical_belief/evaluate.rs",
+        "packages/training/src/numerical_belief/spatial.rs",
+        "packages/training/src/numerical_belief/marine_contract.rs",
+        "packages/training/src/numerical_belief/marine_adapter.rs",
+        "packages/training/src/numerical_belief/readout.rs",
+        "packages/training/src/numerical_belief/pair.rs",
+        "packages/training/src/numerical_belief/compact.rs",
+        "packages/training/src/numerical_belief/fused.rs",
+        "packages/training/src/joint_math.rs",
+        "packages/training/src/banded_joint.rs",
+        "packages/training/tests/numerical_belief.rs",
+        "packages/training/tests/numerical_spatial.rs",
+        "packages/training/tests/fused_belief.rs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/gnu-sdk-inventory.puml",
+      "covers": [
+        "tooling/native-ingress/gnu-sdk-inventory.mjs",
+        "tooling/native-ingress/gnu-sdk-inventory.test.mjs",
+        "tooling/native-ingress/gnu-sdk-inventory-operation.mjs",
+        "tooling/native-ingress/gnu-sdk-inventory-operation.test.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/gnu-sdk-inventory-v2.puml",
+      "covers": [
+        "tooling/native-ingress/gnu-sdk-inventory-v2-operation.mjs",
+        "tooling/native-ingress/gnu-sdk-inventory-v2-operation.test.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/arena/shared418.puml",
+      "covers": [
+        "apps/arena/src/feature_adapter.rs",
+        "apps/arena/tests/feature_parity.rs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/gnu-sdk-inventory-v3.puml",
+      "covers": [
+        "tooling/native-ingress/tar-observer.mjs",
+        "tooling/native-ingress/gnu-sdk-inventory-v3-operation.mjs",
+        "tooling/native-ingress/gnu-sdk-inventory-v3-operation.test.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/gnu-sdk-inventory-v4.puml",
+      "covers": [
+        "tooling/native-ingress/gnu-sdk-inventory-v4-operation.mjs",
+        "tooling/native-ingress/gnu-sdk-inventory-v4-operation.test.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/gnu-sdk-controls.puml",
+      "covers": [
+        "tooling/native-ingress/sdk-control-inspection.mjs",
+        "tooling/native-ingress/gnu-sdk-controls-operation.mjs",
+        "tooling/native-ingress/gnu-sdk-controls-operation.test.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/gnu-sdk-driver-controls.puml",
+      "covers": [
+        "tooling/native-ingress/sdk-driver-controls.mjs",
+        "tooling/native-ingress/gnu-sdk-driver-controls-operation.mjs",
+        "tooling/native-ingress/gnu-sdk-driver-controls-operation.test.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/gnu-sdk-manifest-diagnostics.puml",
+      "covers": [
+        "tooling/native-ingress/gnu-sdk-manifest-diagnostics-operation.mjs",
+        "tooling/native-ingress/gnu-sdk-manifest-diagnostics-operation.test.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/gnu-sdk-driver-controls-v2.puml",
+      "covers": [
+        "tooling/native-ingress/gnu-sdk-driver-controls-v2-operation.mjs",
+        "tooling/native-ingress/gnu-sdk-driver-controls-v2-operation.test.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/gnu-sdk-reference-diagnostics.puml",
+      "covers": [
+        "tooling/native-ingress/gnu-sdk-reference-diagnostics-operation.mjs",
+        "tooling/native-ingress/gnu-sdk-reference-diagnostics-operation.test.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/gnu-sdk-manifest-membership.puml",
+      "covers": [
+        "tooling/native-ingress/gnu-sdk-manifest-membership-operation.mjs",
+        "tooling/native-ingress/gnu-sdk-manifest-membership-operation.test.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/elf-requirements-v3.puml",
+      "covers": [
+        "tooling/native-ingress/elf-requirements-v3.mjs",
+        "tooling/native-ingress/elf-requirements-v3.test.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/gnu-sdk-subset-catalog.puml",
+      "covers": [
+        "tooling/native-ingress/gnu-sdk-subset-catalog.mjs",
+        "tooling/native-ingress/gnu-sdk-subset-catalog.test.mjs",
+        "tooling/native-ingress/gnu-sdk-subset-catalog-operation.mjs",
+        "tooling/native-ingress/gnu-sdk-subset-catalog-operation.test.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/rust-runtime-inputs.puml",
+      "covers": [
+        "tooling/native-ingress/rust-runtime-input-acquisition.mjs",
+        "tooling/native-ingress/rust-runtime-input-acquisition.test.mjs",
+        "tooling/native-ingress/rust-runtime-input-acquisition-operation.mjs"
+      ],
+      "fingerprint": null
     }
   ],
   "unresolved": [

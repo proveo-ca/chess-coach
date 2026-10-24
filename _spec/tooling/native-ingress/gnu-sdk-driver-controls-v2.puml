@@ -1,0 +1,35 @@
+' purpose: measured single-leading-dot-slash manifest aliases without broader normalization
+' covers: tooling/native-ingress/gnu-sdk-driver-controls-v2-operation.mjs
+' covers: tooling/native-ingress/gnu-sdk-driver-controls-v2-operation.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 owns exact interpretation-profile registration.
+' status: CONSUMED; section 33.42 records STOP/E_REFERENCE under single-leading-dot-slash-v1; this result does not identify the rejected member kind, no ordinary result accepted; no automatic retry or further-read authority follows; Step2 incomplete.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title Driver controls-v2 — one measured alias, same strict canonical checks
+actor "Separate registered data profile\nsame three members / manifest pin" as CALLER <<host>>
+component "Captured original strict collector\nchecked initializer + interpretation changes" as SOURCE <<app>>
+component "One leading ./ alias\nall other syntax stays literal" as ALIAS <<app>>
+component "Existing canonical path validator\nrooted length / duplicates / regular joins" as VALIDATE <<app>>
+component "Post-parse manifest length/SHA gate\nbefore driver ELF inspection/publication" as PIN <<app>>
+component "Bounded canonical data observations\nno rewrite or execution authority" as RESULT <<app>>
+CALLER ARROW_MAIN SOURCE : same two complete core passes and independent decoded hash
+SOURCE ARROW_MAIN ALIAS : strip prefix only when raw line starts ./
+ALIAS ARROW_MAIN VALIDATE : no trim, internal normalization or second strip
+VALIDATE ARROW_MAIN PIN : duplicate detection uses canonical names
+PIN ARROW_MAIN RESULT : fixed9367-byte manifest / independently recorded SHA
+VALIDATE ARROW_ERROR RESULT : a plus ./a, repeated ./, traversal, links or missing refs STOP
+PIN ARROW_ERROR RESULT : mismatch suppresses all ordinary results
+note bottom of ALIAS
+Profile: single-leading-dot-slash-v1
+././a remains invalid after one strip
+Raw byte identity stays independently pinned
+Old strict and diagnostic profiles unchanged
+end note
+note bottom of RESULT
+Same children, byte/time/capture bounds
+No fallback to another interpretation
+No extraction, relocation or SDK execution
+Native/subset/Rust/training qualifiers:false
+end note
+@enduml

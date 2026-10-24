@@ -1,0 +1,54 @@
+' purpose: real data-only SDK archive inventory without extraction or setup
+' covers: tooling/native-ingress/gnu-sdk-inventory.mjs
+' covers: tooling/native-ingress/gnu-sdk-inventory.test.mjs
+' covers: tooling/native-ingress/gnu-sdk-inventory-operation.mjs
+' covers: tooling/native-ingress/gnu-sdk-inventory-operation.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 owns exact operation registration.
+' status: CONSUMED; section 33.25 records STOP/E_LIMIT; no inventory or provisional selection accepted; no automatic retry or further-read authority follows; Step2 incomplete.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title GNU SDK inventory — real bounded decoding, no extracted executable
+actor "Registered exact archive identity\nsource graph / staged-profile receipt" as CALLER <<host>>
+component "Retained root + archive FDs\nno-follow / exact metadata" as FILE <<app>>
+component "First complete hash pass\n102296280 bytes + physical EOF" as FIRST <<app>>
+component "Second hash + backpressure\none outstanding stdin write" as SECOND <<app>>
+component "One fixed staged XZ child\nC/UTC environment / three pipes" as DECODER <<host>>
+component "createTarInventory\n64KiB feeds / discard file payloads" as TAR <<app>>
+component "Final bounded inventory receipt\nselected inert metadata names" as RESULT <<app>>
+component "Latched failure\nkill / observed close / FD cleanup" as ERROR <<error>>
+CALLER ARROW_MAIN FILE : independently expected root/file snapshots and content pin
+FILE ARROW_MAIN FIRST : same FD, exact positional reads
+FIRST ARROW_MAIN SECOND : hash match before any decoder starts
+SECOND ARROW_MAIN DECODER : hash supplied bytes again; finish stdin at physical EOF
+DECODER ARROW_MAIN TAR : expanded bytes bounded before parsing
+TAR ARROW_MAIN RESULT : joint EOF/status/close/hash/metadata/FD success only
+DECODER ARROW_ERROR ERROR : error, output/stderr cap or original deadline
+TAR ARROW_ERROR ERROR : malformed/unsupported TAR or selection cap
+FILE ARROW_ERROR ERROR : short read, mutation, hash or close failure
+note bottom of FILE
+Independent root/file devices; O_NOFOLLOW
+Pipeline: root FD + archive FD
+Gate helper: up to 2 additional FDs
+Peak owned FDs: 4; opaque pipes excluded
+Two exact passes: 204592560 data bytes
+end note
+note bottom of TAR
+No archive-derived name becomes a host path
+Python basename matches, not all descendants
+No Python-free subset qualification
+end note
+note bottom of RESULT
+Expanded<=1GiB; headers<=32768
+Selected<=128 /128KiB; UTF-8 summary<=256KiB
+Operation: escaped-ASCII envelope<=1MiB
+Extraction/installation forbidden
+nativeQualified/trainingReady:false
+end note
+note bottom of DECODER
+One-thread XZ decoder memory setting16MiB
+120s includes reserved3s cleanup
+No alternate decoder or automatic cap increase
+No hard RSS/process-tree/deadline guarantee
+end note
+@enduml

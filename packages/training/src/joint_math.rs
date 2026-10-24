@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/training/burn-compat.puml
+// SPEC: _spec/packages/training/burn-compat.puml, _spec/packages/training/belief-integration.puml
 use crate::accounting_kernel::{BANK_CEILING, JOINT_SIZE, MATERIAL_CEILING};
 use crate::ledger::LedgerWork;
 use crate::ledger::contracts::LedgerError;
@@ -527,6 +527,319 @@ fn charge(work: &mut LedgerWork, amount: u64) -> JointMathResult<()> {
     work.charge(amount).map_err(JointMathError::Work)
 }
 
+// SPEC: _spec/packages/training/belief-integration.puml
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct SupportRun {
+    pub bank: u8,
+    pub lower: u16,
+    pub upper: u16,
+}
+
+#[derive(Debug)]
+pub struct SupportRuns {
+    runs: Vec<SupportRun>,
+    certainty: NumericCertainty,
+    count: usize,
+}
+
+impl SupportRuns {
+    pub fn from_slice(runs: &[SupportRun], work: &mut LedgerWork) -> JointMathResult<Self> {
+        charge(work, 128)?;
+        if runs.is_empty() || runs.len() > JOINT_SIZE { return Err(JointMathError::EmptySupport); }
+        charge(work, 192 + 12 * runs.len() as u64)?;
+        Self::from_owned(runs.to_vec(), work)
+    }
+
+    pub fn from_owned(runs: Vec<SupportRun>, work: &mut LedgerWork) -> JointMathResult<Self> {
+        charge(work, 128)?;
+        if runs.is_empty() || runs.len() > JOINT_SIZE { return Err(JointMathError::EmptySupport); }
+        let mut previous: Option<SupportRun> = None;
+        let mut count = 0_usize;
+        let mut material = TargetCertainty::Unseen;
+        let mut potential = TargetCertainty::Unseen;
+        for run in &runs {
+            charge(work, 64)?;
+            if run.bank > BANK_CEILING || run.lower > run.upper || run.upper > MATERIAL_CEILING
+                || previous.is_some_and(|old| run.bank < old.bank
+                    || run.bank == old.bank && run.lower <= old.upper + 1)
+            { return Err(JointMathError::Domain); }
+            count = count.checked_add(usize::from(run.upper - run.lower) + 1)
+                .filter(|count| *count <= JOINT_SIZE).ok_or(JointMathError::Domain)?;
+            material.observe(run.lower);
+            material.observe(run.upper);
+            potential.observe(run.lower + u16::from(run.bank));
+            potential.observe(run.upper + u16::from(run.bank));
+            previous = Some(*run);
+        }
+        charge(work, 32)?;
+        Ok(Self { runs, count, certainty: NumericCertainty { material: material.value(), potential: potential.value() } })
+    }
+
+    pub fn runs(&self) -> &[SupportRun] { &self.runs }
+    pub fn cell_count(&self) -> usize { self.count }
+    pub fn certainty(&self) -> NumericCertainty { self.certainty }
+}
+
+impl NumericSupport {
+    pub fn from_runs(runs: &SupportRuns, work: &mut LedgerWork) -> JointMathResult<Self> {
+        charge(work, 128 + 192 + 4 * JOINT_SIZE as u64)?;
+        let mut cells = vec![false; JOINT_SIZE];
+        for run in runs.runs() {
+            charge(work, 32)?;
+            for material in run.lower..=run.upper {
+                charge(work, 16)?;
+                cells[usize::from(run.bank) * MATERIAL_WIDTH + usize::from(material)] = true;
+            }
+        }
+        charge(work, 32)?;
+        Ok(Self { cells, certainty: runs.certainty })
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct SparseCell {
+    pub bank: u8,
+    pub material: u16,
+    pub probability: f64,
+}
+
+pub fn readout_sparse_copy(
+    cells: &[SparseCell],
+    support: &NumericSupport,
+    own_replacement: u16,
+    temperature: &ReadoutTemperature,
+    work: &mut LedgerWork,
+) -> JointMathResult<NumericReadout> {
+    charge(work, 256)?;
+    if cells.is_empty() || cells.len() > JOINT_SIZE || support.cells.len() != JOINT_SIZE
+        || own_replacement > MATERIAL_CEILING || !temperature.value.is_finite()
+        || !(0.25..=4.0).contains(&temperature.value)
+    { return Err(JointMathError::Domain); }
+    let mut previous = None;
+    let mut input_sum = 0.0;
+    for cell in cells {
+        charge(work, 32)?;
+        if cell.bank > BANK_CEILING || cell.material > MATERIAL_CEILING { return Err(JointMathError::Domain); }
+        let index = joint_offset(usize::from(cell.bank), usize::from(cell.material))?;
+        let probability = nonnegative(cell.probability)?;
+        if probability == 0.0 || !support.cells[index] || previous.is_some_and(|old| index <= old) {
+            return Err(JointMathError::Domain);
+        }
+        previous = Some(index);
+        input_sum = finite(input_sum + probability)?;
+    }
+    charge(work, 32)?;
+    normalized(input_sum)?;
+    charge(work, 192 + 4 * cells.len() as u64)?;
+    let mut scratch = vec![0.0; cells.len()];
+    let mut maximum: Option<f64> = None;
+    for (offset, cell) in cells.iter().enumerate() {
+        charge(work, 32)?;
+        let logarithm = finite(cell.probability.ln())?;
+        let scaled = finite(logarithm / temperature.value)?;
+        scratch[offset] = scaled;
+        maximum = Some(match maximum { Some(old) if old > scaled => old, _ => scaled });
+    }
+    let maximum = maximum.ok_or(JointMathError::EmptyMass)?;
+    let mut exponential_sum = 0.0;
+    for value in &mut scratch {
+        charge(work, 32)?;
+        let shifted = finite(*value - maximum)?;
+        let exponential = finite(shifted.exp())?;
+        if exponential == 0.0 { return Err(JointMathError::Underflow); }
+        *value = exponential;
+        exponential_sum = finite(exponential_sum + exponential)?;
+    }
+    let mut tempered_sum = 0.0;
+    for value in &mut scratch {
+        charge(work, 32)?;
+        let probability = finite(*value / exponential_sum)?;
+        if probability == 0.0 { return Err(JointMathError::Underflow); }
+        *value = probability;
+        tempered_sum = finite(tempered_sum + probability)?;
+    }
+    charge(work, 32)?;
+    normalized(tempered_sum)?;
+    charge(work, 192 + 4 * MATERIAL_WIDTH as u64)?;
+    let mut marginal_d = vec![0.0; MATERIAL_WIDTH];
+    charge(work, 192 + 4 * POTENTIAL_WIDTH as u64)?;
+    let mut marginal_potential = vec![0.0; POTENTIAL_WIDTH];
+    let mut mean_d = 0.0;
+    let mut mean_potential = 0.0;
+    let mut compensation_d = 0.0;
+    let mut compensation_potential = 0.0;
+    let mut cursor = 0_usize;
+    for bank in 0..BANKS {
+        for (material, marginal) in marginal_d.iter_mut().enumerate() {
+            charge(work, 8)?;
+            let index = joint_offset(bank, material)?;
+            if !cells.get(cursor).is_some_and(|cell|
+                usize::from(cell.bank) * MATERIAL_WIDTH + usize::from(cell.material) == index)
+            {
+                charge(work, 16)?;
+                accumulate_mean(&mut mean_d, &mut compensation_d, 0.0)?;
+                accumulate_mean(&mut mean_potential, &mut compensation_potential, 0.0)?;
+                continue;
+            }
+            charge(work, 24)?;
+            let probability = scratch[cursor];
+            cursor += 1;
+            let potential = material.checked_add(bank).ok_or(JointMathError::Domain)?;
+            *marginal = finite(*marginal + probability)?;
+            marginal_potential[potential] = finite(marginal_potential[potential] + probability)?;
+            let d_term = finite(f64::from(coordinate(material)?) * probability)?;
+            let p_term = finite(f64::from(coordinate(potential)?) * probability)?;
+            accumulate_mean(&mut mean_d, &mut compensation_d, d_term)?;
+            accumulate_mean(&mut mean_potential, &mut compensation_potential, p_term)?;
+        }
+    }
+    charge(work, 32 + 32 * MARGINAL_SIZE as u64)?;
+    let mut quantiles_d = [0; 4];
+    let mut quantiles_potential = [0; 4];
+    for (index, threshold) in QUANTILES.iter().enumerate() {
+        quantiles_d[index] = quantile(&marginal_d, *threshold)?;
+        quantiles_potential[index] = quantile(&marginal_potential, *threshold)?;
+    }
+    if let Some(material) = support.certainty.material { mean_d = certain_mean(&quantiles_d, material)?; }
+    if let Some(potential) = support.certainty.potential { mean_potential = certain_mean(&quantiles_potential, potential)?; }
+    charge(work, 64)?;
+    let balance = finite(f64::from(own_replacement) - mean_d)?;
+    let width = quantiles_d[3].checked_sub(quantiles_d[2]).ok_or(JointMathError::Domain)?;
+    let uncertainty = finite(f64::from(width) / 2.0)?;
+    Ok(NumericReadout { mean_d, mean_potential, quantiles_d, quantiles_potential, balance, uncertainty })
+}
+
+// SPEC: _spec/packages/training/belief-integration.puml
+pub fn readout_sparse_runs_copy(
+    cells: &[SparseCell],
+    support: &NumericSupport,
+    own_replacement: u16,
+    temperature: &ReadoutTemperature,
+    work: &mut LedgerWork,
+) -> JointMathResult<NumericReadout> {
+    charge(work, 256)?;
+    if cells.is_empty() || cells.len() > JOINT_SIZE || support.cells.len() != JOINT_SIZE
+        || own_replacement > MATERIAL_CEILING || !temperature.value.is_finite()
+        || !(0.25..=4.0).contains(&temperature.value)
+    { return Err(JointMathError::Domain); }
+    let mut previous = None;
+    let mut input_sum = 0.0;
+    for cell in cells {
+        charge(work, 32)?;
+        if cell.bank > BANK_CEILING || cell.material > MATERIAL_CEILING { return Err(JointMathError::Domain); }
+        let index = joint_offset(usize::from(cell.bank), usize::from(cell.material))?;
+        let probability = nonnegative(cell.probability)?;
+        if probability == 0.0 || !support.cells[index] || previous.is_some_and(|old| index <= old) {
+            return Err(JointMathError::Domain);
+        }
+        previous = Some(index);
+        input_sum = finite(input_sum + probability)?;
+    }
+    charge(work, 32)?;
+    normalized(input_sum)?;
+    charge(work, 192 + 4 * cells.len() as u64)?;
+    let mut scratch = vec![0.0; cells.len()];
+    let mut maximum: Option<f64> = None;
+    for (offset, cell) in cells.iter().enumerate() {
+        charge(work, 32)?;
+        let logarithm = finite(cell.probability.ln())?;
+        let scaled = finite(logarithm / temperature.value)?;
+        scratch[offset] = scaled;
+        maximum = Some(match maximum { Some(old) if old > scaled => old, _ => scaled });
+    }
+    let maximum = maximum.ok_or(JointMathError::EmptyMass)?;
+    let mut exponential_sum = 0.0;
+    for value in &mut scratch {
+        charge(work, 32)?;
+        let shifted = finite(*value - maximum)?;
+        let exponential = finite(shifted.exp())?;
+        if exponential == 0.0 { return Err(JointMathError::Underflow); }
+        *value = exponential;
+        exponential_sum = finite(exponential_sum + exponential)?;
+    }
+    let mut tempered_sum = 0.0;
+    for value in &mut scratch {
+        charge(work, 32)?;
+        let probability = finite(*value / exponential_sum)?;
+        if probability == 0.0 { return Err(JointMathError::Underflow); }
+        *value = probability;
+        tempered_sum = finite(tempered_sum + probability)?;
+    }
+    charge(work, 32)?;
+    normalized(tempered_sum)?;
+    charge(work, 192 + 4 * MATERIAL_WIDTH as u64)?;
+    let mut marginal_d = vec![0.0; MATERIAL_WIDTH];
+    charge(work, 192 + 4 * POTENTIAL_WIDTH as u64)?;
+    let mut marginal_potential = vec![0.0; POTENTIAL_WIDTH];
+    let mut mean_d = 0.0;
+    let mut mean_potential = 0.0;
+    let mut compensation_d = 0.0;
+    let mut compensation_potential = 0.0;
+    let mut cursor = 0_usize;
+    for (offset, cell) in cells.iter().enumerate() {
+        charge(work, 16)?;
+        let index = joint_offset(usize::from(cell.bank), usize::from(cell.material))?;
+        if cursor < index {
+            accumulate_zero_mean_run(index - cursor, &mut mean_d, &mut compensation_d,
+                &mut mean_potential, &mut compensation_potential, work)?;
+        }
+        charge(work, 32)?;
+        let material = usize::from(cell.material);
+        let potential = material.checked_add(usize::from(cell.bank)).ok_or(JointMathError::Domain)?;
+        let probability = scratch[offset];
+        marginal_d[material] = finite(marginal_d[material] + probability)?;
+        marginal_potential[potential] = finite(marginal_potential[potential] + probability)?;
+        let d_term = finite(f64::from(coordinate(material)?) * probability)?;
+        let p_term = finite(f64::from(coordinate(potential)?) * probability)?;
+        accumulate_mean(&mut mean_d, &mut compensation_d, d_term)?;
+        accumulate_mean(&mut mean_potential, &mut compensation_potential, p_term)?;
+        cursor = index + 1;
+    }
+    charge(work, 16)?;
+    if cursor < JOINT_SIZE {
+        accumulate_zero_mean_run(JOINT_SIZE - cursor, &mut mean_d, &mut compensation_d,
+            &mut mean_potential, &mut compensation_potential, work)?;
+    }
+    charge(work, 32 + 32 * MARGINAL_SIZE as u64)?;
+    let mut quantiles_d = [0; 4];
+    let mut quantiles_potential = [0; 4];
+    for (index, threshold) in QUANTILES.iter().enumerate() {
+        quantiles_d[index] = quantile(&marginal_d, *threshold)?;
+        quantiles_potential[index] = quantile(&marginal_potential, *threshold)?;
+    }
+    if let Some(material) = support.certainty.material { mean_d = certain_mean(&quantiles_d, material)?; }
+    if let Some(potential) = support.certainty.potential { mean_potential = certain_mean(&quantiles_potential, potential)?; }
+    charge(work, 64)?;
+    let balance = finite(f64::from(own_replacement) - mean_d)?;
+    let width = quantiles_d[3].checked_sub(quantiles_d[2]).ok_or(JointMathError::Domain)?;
+    let uncertainty = finite(f64::from(width) / 2.0)?;
+    Ok(NumericReadout { mean_d, mean_potential, quantiles_d, quantiles_potential, balance, uncertainty })
+}
+
+// SPEC: _spec/packages/training/belief-integration.puml
+fn accumulate_zero_mean_run(
+    length: usize,
+    mean_d: &mut f64,
+    compensation_d: &mut f64,
+    mean_potential: &mut f64,
+    compensation_potential: &mut f64,
+    work: &mut LedgerWork,
+) -> JointMathResult<()> {
+    charge(work, 32)?;
+    if length == 0 || length > JOINT_SIZE { return Err(JointMathError::Domain); }
+    for _ in 0..length {
+        charge(work, 40)?;
+        let before = [mean_d.to_bits(), compensation_d.to_bits(),
+            mean_potential.to_bits(), compensation_potential.to_bits()];
+        accumulate_mean(mean_d, compensation_d, 0.0)?;
+        accumulate_mean(mean_potential, compensation_potential, 0.0)?;
+        let after = [mean_d.to_bits(), compensation_d.to_bits(),
+            mean_potential.to_bits(), compensation_potential.to_bits()];
+        if before == after { break; }
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -816,6 +1129,124 @@ mod tests {
             assert_eq!(work.used(), 160 + 492868);
             assert_eq!(joint.probabilities[7], 1.0);
             assert!(joint.support.cells[7]);
+        }
+    }
+
+    // WHAT: Paired zero-run fixed-point coverage.
+    #[test]
+    fn zero_mean_runs_match_full_transitions_for_private_signed_zero_and_compensated_states() {
+        fn step(sum: &mut f64, compensation: &mut f64) {
+            let adjusted = 0.0 - *compensation;
+            let next = *sum + adjusted;
+            let recovered = next - *sum;
+            *compensation = recovered - adjusted;
+            *sum = next;
+        }
+        fn bits(state: &[f64; 4]) -> [u64; 4] {
+            state.map(f64::to_bits)
+        }
+        let states = [
+            [-0.0, -0.0, -0.0, -0.0],
+            [-0.0, 0.0, 0.0, -0.0],
+            [0.0, f64::from_bits(1), -0.0, -f64::from_bits(1)],
+            [1.0, f64::EPSILON, 2.0, -f64::EPSILON],
+            [1.0, f64::EPSILON / 4.0, 2.0, f64::EPSILON / 2.0],
+            [1e100, -1e80, -1e100, 1e80],
+        ];
+        let mut changed_first_step = false;
+        for initial in states {
+            for length in [1, 2, 3, JOINT_SIZE] {
+                let mut expected = initial;
+                let mut visits = 0_u64;
+                let mut fixed = false;
+                for _ in 0..length {
+                    let before = bits(&expected);
+                    let [mut d, mut cd, mut p, mut cp] = expected;
+                    step(&mut d, &mut cd);
+                    step(&mut p, &mut cp);
+                    expected = [d, cd, p, cp];
+                    if !fixed {
+                        visits += 1;
+                        fixed = before == bits(&expected);
+                    }
+                }
+                changed_first_step |= visits > 1;
+                let invoice = 32 + 40 * visits;
+                let [mut d, mut cd, mut p, mut cp] = initial;
+                let mut exact = LedgerWork::with_limit(7 + invoice).unwrap();
+                exact.charge(7).unwrap();
+                accumulate_zero_mean_run(length, &mut d, &mut cd, &mut p, &mut cp, &mut exact).unwrap();
+                assert_eq!(bits(&[d, cd, p, cp]), bits(&expected));
+                assert_eq!(exact.used(), 7 + invoice);
+                let [mut d, mut cd, mut p, mut cp] = initial;
+                let mut short = LedgerWork::with_limit(7 + invoice - 1).unwrap();
+                short.charge(7).unwrap();
+                assert!(matches!(
+                    accumulate_zero_mean_run(length, &mut d, &mut cd, &mut p, &mut cp, &mut short),
+                    Err(JointMathError::Work(ref error)) if error.code == crate::ledger::contracts::LedgerErrorCode::Budget
+                ));
+                assert_eq!(short.used(), 7 + invoice - 40);
+            }
+        }
+        assert!(changed_first_step);
+    }
+
+    // Zero-run validation and prepaid transition failures.
+    #[test]
+    fn zero_mean_runs_validate_bounds_and_never_execute_an_unpaid_transition() {
+        for length in [0, JOINT_SIZE + 1, usize::MAX] {
+            let mut d = -0.0_f64;
+            let mut cd = -0.0_f64;
+            let mut p = 1.0_f64;
+            let mut cp = f64::EPSILON;
+            let before = [d, cd, p, cp].map(f64::to_bits);
+            let mut work = LedgerWork::with_limit(32).unwrap();
+            assert_eq!(accumulate_zero_mean_run(length, &mut d, &mut cd, &mut p, &mut cp, &mut work).unwrap_err(), JointMathError::Domain);
+            assert_eq!(work.used(), 32);
+            assert_eq!([d, cd, p, cp].map(f64::to_bits), before);
+        }
+        for limit in [31, 71] {
+            let mut d = -0.0_f64;
+            let mut cd = -0.0_f64;
+            let mut p = 1.0_f64;
+            let mut cp = f64::EPSILON;
+            let before = [d, cd, p, cp].map(f64::to_bits);
+            let mut work = LedgerWork::with_limit(limit).unwrap();
+            assert!(matches!(accumulate_zero_mean_run(3, &mut d, &mut cd, &mut p, &mut cp, &mut work),
+                Err(JointMathError::Work(ref error)) if error.code == crate::ledger::contracts::LedgerErrorCode::Budget));
+            assert_eq!(work.used(), if limit == 31 { 0 } else { 32 });
+            assert_eq!([d, cd, p, cp].map(f64::to_bits), before);
+        }
+    }
+
+    // Sparse-run private header and certainty rejection coverage.
+    #[test]
+    fn sparse_runs_keep_private_header_checks_and_reject_inconsistent_certainty() {
+        let valid = ReadoutTemperature { index: 500, value: 1.0 };
+        let cells = [SparseCell { bank: 0, material: 7, probability: 1.0 }];
+        let malformed = NumericSupport {
+            cells: vec![], certainty: NumericCertainty { material: None, potential: None },
+        };
+        let mut work = LedgerWork::with_limit(256).unwrap();
+        assert_eq!(readout_sparse_runs_copy(&cells, &malformed, 7, &valid, &mut work).unwrap_err(), JointMathError::Domain);
+        assert_eq!(work.used(), 256);
+        let support = NumericSupport::from_cells(&vec![true; JOINT_SIZE], &mut LedgerWork::new()).unwrap();
+        for value in [f64::NAN, f64::INFINITY, f64::NEG_INFINITY, -0.0, 0.249, 4.001] {
+            let invalid = ReadoutTemperature { index: 500, value };
+            let mut work = LedgerWork::with_limit(256).unwrap();
+            assert_eq!(readout_sparse_runs_copy(&cells, &support, 7, &invalid, &mut work).unwrap_err(), JointMathError::Domain);
+            assert_eq!(work.used(), 256);
+        }
+        for certainty in [
+            NumericCertainty { material: Some(8), potential: None },
+            NumericCertainty { material: None, potential: Some(8) },
+        ] {
+            let support = NumericSupport { cells: vec![true; JOINT_SIZE], certainty };
+            let mut work = LedgerWork::new();
+            assert_eq!(readout_sparse_runs_copy(&cells, &support, 7, &valid, &mut work).unwrap_err(), JointMathError::NonFinite);
+            assert_eq!(work.used(), 42984 + 180 + 32 * 2 + 40 * 2 - 64);
+            assert!(support.cells.iter().all(|present| *present));
+            assert_eq!(support.certainty, certainty);
         }
     }
 }

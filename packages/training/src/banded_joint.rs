@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/training/burn-compat.puml
+// SPEC: _spec/packages/training/burn-compat.puml, _spec/packages/training/belief-integration.puml
 use crate::accounting_kernel::{BANK_CEILING, JOINT_SIZE, MATERIAL_CEILING};
 use crate::evidence_tables::{EvidenceWeightedAccounting, WeightedAccountingParts};
 use crate::joint_math::{
@@ -330,6 +330,151 @@ fn invoice(base: u64, count: usize, rate: u64) -> BandResult<u64> {
                 "Banded joint invoice overflow",
             ))
         })
+}
+
+// SPEC: _spec/packages/training/belief-integration.puml
+pub fn from_sparse_probabilities(
+    cells: &[crate::joint_math::SparseCell],
+    support: NumericSupport,
+    work: &mut LedgerWork,
+) -> BandResult<NumericBandedJoint> {
+    charge(work, 128)?;
+    if cells.is_empty() || cells.len() > JOINT_SIZE || support.cells().len() != JOINT_SIZE {
+        return Err(BandError::Domain);
+    }
+    let mut previous = None;
+    let mut previous_key = None;
+    let mut count = 0_usize;
+    let mut total = 0.0;
+    for cell in cells {
+        charge(work, 32 + 5 * 16)?;
+        let index = joint_index(cell.bank, usize::from(cell.material))?;
+        let probability = nonnegative(cell.probability)?;
+        if probability == 0.0 || probability > 1.0 || !support.cells()[index]
+            || previous.is_some_and(|old| index <= old)
+        { return Err(BandError::Domain); }
+        let band = BAND_STARTS.partition_point(|start| *start <= cell.material) - 1;
+        let key = (cell.bank, band);
+        if previous_key != Some(key) { count += 1; }
+        previous_key = Some(key);
+        previous = Some(index);
+        total = finite(total + probability)?;
+    }
+    charge(work, 32)?;
+    normalized(total)?;
+    charge(work, invoice(192, count, 24)?)?;
+    let mut components = Vec::with_capacity(count);
+    let mut cursor = 0_usize;
+    let mut component_total = 0.0;
+    while cursor < cells.len() {
+        charge(work, 32 + 5 * 16)?;
+        let bank = cells[cursor].bank;
+        let band = BAND_STARTS.partition_point(|start| *start <= cells[cursor].material) - 1;
+        let (start, width) = band_bounds(&BAND_STARTS, band)?;
+        let first = cursor;
+        let mut mass = 0.0;
+        while cursor < cells.len() && cells[cursor].bank == bank
+            && usize::from(cells[cursor].material) < start + width
+        {
+            charge(work, 16)?;
+            mass = finite(mass + cells[cursor].probability)?;
+            cursor += 1;
+        }
+        component_mass(mass)?;
+        charge(work, invoice(192 + 32, width, 4 + 24)?)?;
+        let mut conditional = vec![0.0; width];
+        let mut item = first;
+        let mut sum = 0.0;
+        for (offset, value) in conditional.iter_mut().enumerate() {
+            let probability = if item < cursor && usize::from(cells[item].material) == start + offset {
+                let probability = cells[item].probability;
+                item += 1;
+                probability
+            } else { 0.0 };
+            *value = finite(probability / mass)?;
+            if probability > 0.0 && *value == 0.0 { return Err(BandError::Underflow); }
+            probability_value(*value)?;
+            sum = finite(sum + *value)?;
+        }
+        normalized(sum)?;
+        component_total = finite(component_total + mass)?;
+        components.push(NumericBandComponent { bank, band: band as u8, mass, conditional });
+    }
+    charge(work, 32 + 40)?;
+    normalized(component_total)?;
+    Ok(NumericBandedJoint { components, support })
+}
+
+pub fn sparse_probabilities(
+    banded: &NumericBandedJoint,
+    work: &mut LedgerWork,
+) -> BandResult<Vec<crate::joint_math::SparseCell>> {
+    charge(work, 128)?;
+    if banded.components.is_empty() || banded.components.len() > COMPONENT_LIMIT
+        || banded.support.cells().len() != JOINT_SIZE
+    {
+        return Err(BandError::Domain);
+    }
+    let mut count = 0_usize;
+    let mut previous = None;
+    for component in &banded.components {
+        charge(work, 32)?;
+        let key = (component.bank, component.band);
+        let (_, width) = band_bounds(&BAND_STARTS, usize::from(component.band))?;
+        if component.bank > BANK_CEILING || component.conditional.len() != width
+            || previous.is_some_and(|old| key <= old)
+        { return Err(BandError::Domain); }
+        previous = Some(key);
+        component_mass(component.mass)?;
+        for conditional in &component.conditional {
+            charge(work, 16)?;
+            probability_value(*conditional)?;
+            let probability = finite(component.mass * *conditional)?;
+            if *conditional > 0.0 && probability == 0.0 { return Err(BandError::Underflow); }
+            if probability > 0.0 { count += 1; }
+        }
+    }
+    charge(work, 192)?;
+    let mut cells = Vec::with_capacity(count);
+    for component in &banded.components {
+        charge(work, 32)?;
+        let (start, _) = band_bounds(&BAND_STARTS, usize::from(component.band))?;
+        for (offset, conditional) in component.conditional.iter().enumerate() {
+            charge(work, 16)?;
+            let probability = finite(component.mass * *conditional)?;
+            if *conditional > 0.0 && probability == 0.0 { return Err(BandError::Underflow); }
+            if probability > 0.0 {
+                let material = start + offset;
+                if !banded.support.cells()[joint_index(component.bank, material)?] { return Err(BandError::Domain); }
+                charge(work, 12)?;
+                cells.push(crate::joint_math::SparseCell { bank: component.bank, material: material as u16, probability });
+            }
+        }
+    }
+    Ok(cells)
+}
+
+pub fn readout_banded_copy(
+    banded: &NumericBandedJoint,
+    own_replacement: u16,
+    temperature: &crate::joint_math::ReadoutTemperature,
+    work: &mut LedgerWork,
+) -> BandResult<crate::joint_math::NumericReadout> {
+    let cells = sparse_probabilities(banded, work)?;
+    crate::joint_math::readout_sparse_copy(&cells, banded.support(), own_replacement, temperature, work)
+        .map_err(joint_error)
+}
+
+// SPEC: _spec/packages/training/belief-integration.puml
+pub fn readout_banded_runs_copy(
+    banded: &NumericBandedJoint,
+    own_replacement: u16,
+    temperature: &crate::joint_math::ReadoutTemperature,
+    work: &mut LedgerWork,
+) -> BandResult<crate::joint_math::NumericReadout> {
+    let cells = sparse_probabilities(banded, work)?;
+    crate::joint_math::readout_sparse_runs_copy(&cells, banded.support(), own_replacement, temperature, work)
+        .map_err(joint_error)
 }
 
 #[cfg(test)]
