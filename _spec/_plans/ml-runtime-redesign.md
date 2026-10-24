@@ -1515,3 +1515,193 @@ The four new source/test files have separate identity `cb23eafbea12965e97969f2b0
 The sole coverage-index change appends the exact four-file inventory entry while preserving every prior entry/unresolved record. That metadata change invalidates reuse of the earlier selected verifier identity as current evidence; no current Rust verifier run or reissued Native invoice is claimed. Existing tracked source/configuration files and prior acquisition proposal/JSON receipt remain unchanged.
 The offline unit cannot read XZ or qualify a decompressor. Exact tool discovery/qualification, compressed-FD custody with hashing of bytes actually decoded, XZ integrity/stream/trailing-data policy, decoder memory limits, bounded stderr and process lifecycle require separate designs and fresh operational approval.
 Rust compilation/tests remain a binding BLOCKER; successful mock tests never close NoPython/ELF/relocation/build-containment gates or permit training, activation, deployment, archive cleanup, commit/push or PR merge.
+
+## 28. XZ candidate identity proposal — fixed path, decoder execution forbidden
+
+**[Unverified] Prospective `/usr/bin/xz` identity check, not a discovered or qualified decoder.**
+The user requested `commit & push then continue`. The reviewed nine-file change was committed/pushed as `8f7f0933e32fb51b92d92739298cfeba4224c57b`; fresh pre-commit verification passed378 in-memory tests and four syntax checks. PR50 remains OPEN/unmerged, targeting `feat-ml-adjuntant`.
+The publication scope ended at that commit. This continuation prepares a separate host-file read proposal; no candidate stat/read, PATH search, link resolution, decoder invocation or SDK archive access follows from `continue`.
+Architect `ses_e94112164ffec22ZueXS2ndqyD` and DevOps `ses_e9411215dffeGxJAhLvE2FGmN6` reviewed the boundary before authoring. Classify this as non-trivial infrastructure/security/spec-impacting planning, with no production API/source/test change.
+
+### 28.1 Literal candidate and narrow evidence goal
+
+The sole prospective path is `/usr/bin/xz`. Its existence, type, contents, version, provenance and usability are UNKNOWN. This choice names a conventional candidate, not an observation or search result.
+Fresh approval would permit two named lstats of exactly that path, one no-follow/nonblocking read-only open, two owned-descriptor fstats, bounded positional reads/EOF, hashing, basic ELF-header interpretation, and exactly one close attempt when a descriptor was acquired.
+Require a regular file, UID0, nlink1, owner-executable bit, no setuid/setgid/sticky bits, no group/world write bits, and size64..1048576. These are conservative selection gates, not authenticity proofs; legitimate hardlinks, scripts or different binary layouts STOP without fallback or repair.
+Bind the initial named snapshot, opened descriptor snapshot, final descriptor snapshot and final named snapshot across `dev,ino,mode,uid,gid,nlink,size,mtimeNs,ctimeNs`. Do not compare a file device with a parent device. Do not query parent directories or resolve symlinks; ancestor resolution remains trusted, not proven symlink-free or protected.
+Read the complete accepted file through the owned FD, at exact positions in <=64KiB slices, plus one byte requested at recorded EOF. Stop on short read, nonempty EOF, metadata change or close uncertainty, without retry. Observe SHA-256 of those bytes; no independently authenticated expected candidate hash exists yet.
+Interpret only the first64-byte ELF header: magic, ELF64/little-endian/version1, machine62, ET_EXEC or ET_DYN, and64-byte header size. Do not parse program/section headers, PT_INTERP, dynamic tags, DT_NEEDED, RPATH/RUNPATH or symbol versions, follow any derived paths, invoke a loader or infer minimum ISA/ABI/library requirements.
+The result can be `CANDIDATE_BYTES_OBSERVED`, never `decoderQualified:true`. An ELF-shaped header and full-file digest do not establish a runnable XZ executable, source correspondence, version, provenance or exclusion of compromised origins such as XZ5.6.0/5.6.1.
+
+### 28.2 Exact Node reader proposal — fresh approval required
+
+Run the following command once via the shell tool in `/tmp/opencode/f9-bootstrap-correspondence`, timeout30000ms, foreground only. Plain `node` resolution and its inherited startup/environment/native runtime remain explicit ordinary-host trust; no discovery, inspection or sanitization of those inputs is authored.
+
+<!-- BEGIN XZ CANDIDATE IDENTITY V1 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+
+const profile = 'xz-candidate-bytes-once-v1';
+const candidate = '/usr/bin/xz';
+const started = process.hrtime.bigint();
+const workEnd = started + 19_000_000_000n, totalEnd = started + 20_000_000_000n;
+const counts = { fsCalls: 0, readCalls: 0, requestedBytes: 0, returnedBytes: 0, closeAttempts: 0, clockReads: 1 };
+const fields = ['dev', 'ino', 'mode', 'uid', 'gid', 'nlink', 'size', 'mtimeNs', 'ctimeNs'];
+const allowed = new Set(['E_PLATFORM', 'E_METADATA', 'E_POLICY', 'E_BINDING', 'E_IO',
+  'E_MISSING', 'E_LENGTH', 'E_ELF', 'E_LIMIT', 'E_DEADLINE', 'E_CLOSE']);
+const flags = { decoderQualified: false, realArchiveInspected: false, xzBehaviorVerified: false,
+  provenanceVerified: false, noPythonRuntimeVerified: false, loaderClosureVerified: false,
+  nativeAuthority: false, nativeQualified: false, installedUsability: false,
+  rustReady: false, trainingReady: false };
+let fd = null, last = started, failure = null, observation;
+function stop(code) { const error = new Error(); error.code = code; throw error; }
+function code(error) {
+  const value = error && Object.getOwnPropertyDescriptor(error, 'code');
+  if (value && Object.hasOwn(value, 'value') && allowed.has(value.value)) return value.value;
+  return value && value.value === 'ENOENT' ? 'E_MISSING' : 'E_IO';
+}
+function guard(final = false) {
+  if (counts.clockReads >= 256) stop('E_LIMIT');
+  counts.clockReads++;
+  const time = process.hrtime.bigint();
+  if (typeof time !== 'bigint' || time < last) stop('E_PLATFORM');
+  last = time;
+  if (time >= (final ? totalEnd : workEnd)) stop('E_DEADLINE');
+}
+function work(action) { guard(); const value = action(); guard(); return value; }
+function io(action) {
+  return work(() => {
+    if (counts.fsCalls >= 22) stop('E_LIMIT');
+    counts.fsCalls++;
+    return action();
+  });
+}
+function snapshot(stat) {
+  const result = {};
+  for (const key of fields) {
+    const value = stat[key], time = key === 'mtimeNs' || key === 'ctimeNs';
+    if (typeof value !== 'bigint' || value < (time ? -(1n << 63n) : 0n) || value > (1n << 64n) - 1n)
+      stop('E_METADATA');
+    result[key] = value;
+  }
+  return result;
+}
+function same(a, b) { if (!fields.every(key => a[key] === b[key])) stop('E_BINDING'); }
+function emit(value) {
+  try {
+    const text = JSON.stringify(value) + '\n';
+    if (!/^[\x20-\x7e\n]*$/.test(text) || Buffer.byteLength(text) > 8192) { process.exitCode = 1; return; }
+    process.stdout.write(text);
+  } catch { process.exitCode = 1; }
+}
+process.stdout.on('error', () => { process.exitCode = 1; });
+try {
+  guard();
+  const f = fs.constants;
+  if (f.O_RDONLY !== 0 || !Number.isInteger(f.O_NOFOLLOW) || f.O_NOFOLLOW <= 0 ||
+      !Number.isInteger(f.O_NONBLOCK) || f.O_NONBLOCK <= 0) stop('E_PLATFORM');
+  const initial = snapshot(io(() => fs.lstatSync(candidate, { bigint: true })));
+  if ((initial.mode & 0o170000n) !== 0o100000n || initial.uid !== 0n || initial.nlink !== 1n ||
+      (initial.mode & 0o100n) === 0n || (initial.mode & 0o7022n) !== 0n ||
+      initial.size < 64n || initial.size > 1_048_576n) stop('E_POLICY');
+  io(() => { fd = fs.openSync(candidate, f.O_RDONLY | f.O_NOFOLLOW | f.O_NONBLOCK); });
+  same(initial, snapshot(io(() => fs.fstatSync(fd, { bigint: true }))));
+  const scratch = work(() => Buffer.alloc(65_536));
+  const header = work(() => Buffer.alloc(64));
+  const hash = work(() => createHash('sha256'));
+  const size = Number(initial.size);
+  function read(want, position) {
+    return io(() => {
+      if (counts.readCalls >= 17 || counts.requestedBytes + want > 1_048_577) stop('E_LIMIT');
+      counts.readCalls++; counts.requestedBytes += want;
+      const count = fs.readSync(fd, scratch, 0, want, position);
+      if (!Number.isSafeInteger(count) || count < 0 || count > want) stop('E_IO');
+      counts.returnedBytes += count;
+      return count;
+    });
+  }
+  let elfHeader;
+  for (let offset = 0; offset < size;) {
+    const want = Math.min(65_536, size - offset);
+    if (read(want, offset) !== want) stop('E_LENGTH');
+    if (offset === 0) {
+      scratch.copy(header, 0, 0, 64);
+      if (!header.subarray(0, 4).equals(Buffer.from([127, 69, 76, 70])) ||
+          header[4] !== 2 || header[5] !== 1 || header[6] !== 1 ||
+          header.readUInt32LE(20) !== 1 || header.readUInt16LE(18) !== 62 ||
+          ![2, 3].includes(header.readUInt16LE(16)) || header.readUInt16LE(52) !== 64) stop('E_ELF');
+      elfHeader = { classBits: 64, endian: 'little', version: 1, machine: 62,
+        type: header.readUInt16LE(16), headerBytes: 64, osAbi: header[7], abiVersion: header[8] };
+    }
+    work(() => hash.update(scratch.subarray(0, want)));
+    offset += want;
+  }
+  if (read(1, size) !== 0) stop('E_LENGTH');
+  const sha256 = work(() => hash.digest('hex'));
+  same(initial, snapshot(io(() => fs.fstatSync(fd, { bigint: true }))));
+  same(initial, snapshot(io(() => fs.lstatSync(candidate, { bigint: true }))));
+  observation = { byteLength: size, sha256, elfHeader,
+    identity: Object.fromEntries(fields.map(key => [key, initial[key].toString()])) };
+} catch (error) { failure = [code(error)]; }
+finally {
+  if (fd !== null) {
+    const owned = fd; fd = null; counts.closeAttempts++;
+    try { fs.closeSync(owned); } catch { failure = ['E_CLOSE', ...(failure || [])]; }
+  }
+}
+if (!failure) { try { guard(true); } catch (error) { failure = [code(error)]; } }
+if (failure) process.exitCode = 1;
+emit({ profile, status: failure ? 'STOP' : 'CANDIDATE_BYTES_OBSERVED', grantConsumed: true,
+  candidate, ...(failure ? { errors: failure } : { observation }), counts, ...flags });
+NODE
+```
+<!-- END XZ CANDIDATE IDENTITY V1 -->
+
+### 28.3 Source-accounted limits, output and residual trust
+
+The source permits at most22 non-close filesystem attempts: initial lstat, open, initial fstat, up to16 data reads, one EOF read, final fstat and final lstat. An acquired FD receives one unconditional close attempt, assigned before post-open guard and consumed before close. Close uncertainty overrides the operation error; no descriptor retry or other path follows.
+Read at most1048576 data bytes, with at most1048577 requested bytes including EOF,17 read attempts, one managed FD,256 clock samples,64KiB scratch plus64-byte header. `returnedBytes` counts bytes reported by completed read calls inside their callback, before post-read guards or validation; it includes any nonempty EOF probe and is not an independently measured native-I/O count. Emit at most one ASCII JSON record <=8192 bytes including LF, with fixed/scalar header fields, lossless decimal metadata strings, counts and allowlisted error labels. No file content, native error text/stack or derived paths appear in output.
+Work guards use a19s ordinary deadline and20s total including1s for finalization. They cannot interrupt blocking native I/O/close or enforce hard CPU/RSS/physical-close limits. Node imports/bootstrap precede the first authored clock; output/startup diagnostics and shell-tool framing fall outside the JSON/work accounting. The30s shell timeout does not prove process termination or reap.
+Success requires complete expected output and observed zero command exit status, not a write call alone. Missing/truncated/error/uncertain capture means STOP without another probe, signal, retry or cleanup. No receipt/log/launcher file is authored.
+Fresh consent must accept inherited PATH/Node resolution, options/preloads/loaders/environment, runtime/native libraries, filesystem/ancestor behavior and source/runtime replacement risks without inspection or sanitization. No candidate code, interpreter or library is loaded by the authored reader; this does not claim zero implicit startup I/O or a fully qualified Node executable closure.
+No authored network, external acquisition, candidate `--version`, `ldd`, loader, readlink, directory/PATH search, dynamic ELF dependency traversal, SDK archive access, decompression, extraction, installation, mutation or deletion is included. All failures consume the one-shot grant, including missing/symlink/nonconforming candidates before a read; supplying another literal path requires a new registration and approval.
+This ordinary metadata profile changes no original F9/game meter, private source graph, cold10/lifecycle300 including3s cleanup, generator2048, shared inclusive1048576, Rust1.95/Burn=0.22.0 Flex CPU/f64/features, NoPython, labels or ledgers. Candidate bytes/header evidence cannot close the current Rust BLOCKER or training readiness.
+
+### 28.4 Registration, review and next evidence
+
+Syntax-only parsing of the extracted body passed without evaluating it, and §§1–27 remain byte-preserved. Closing adversarial/security/source-level DevOps reviews accepted this proposal only with no remaining findings; spec review reported in-sync. The stale parsing-status LOW and failure-path returned-byte-accounting LOW are closed. Register the exact shell command and complete §28 hashes, then ask fresh consent with approve-this-candidate-once / supply-another-literal-candidate / hold choices. Registration and execution approval remain pending; no candidate probe has run.
+If separately approved, retain the bounded captured result in a later canonical section and consume the grant once. No automatic next step follows. A positive result supplies only observed size/digest/stable metadata/header selection; next separately qualify source/provenance and ELF loader/library/symbol/ISA closure before any decoder execution.
+Future real archive inspection still needs same-FD compressed hashing/custody, qualified XZ integrity/framing/concatenation/trailing-data and memory policies, bounded output/stderr, process termination/closure evidence and explicit cleanup authority. The verified TAR/mock-controller unit cannot supply that real adapter. The acquired archive and all retained roots remain untouched; no new commit/push or PR merge is included in this proposal stage.
+
+## 29. XZ candidate identity receipt — observed bytes, grant consumed
+
+**[Unverified] Ordinary-host file/header observation, not trusted XZ behavior, provenance, loader compatibility or Native qualification.**
+The user selected `Approve candidate read once`, accepting §28's fixed-file scope and inherited Node/PATH/startup/environment/runtime/ancestor trust plus cooperative timing and capture limitations.
+The approved complete §28 is13433 UTF-8 bytes, SHA-256 `015df1b0f000dfee359cf153d353f8eab57cf98d1e7ee09138f42fc21481488c`. The5657-byte shell command is `452c3c3af2597f03d81c7a68237547e66f6432e61371b7ab85efd16410eb7dec`; its5618-byte JavaScript body is `29be8de83ac6f549b3767f8dd7406e1271d162c685fc2668ddf9be854f5f35fe`.
+Repository-only checks immediately before launch matched canonical document SHA-256 `e71078666376c79e7e860cc4c90958d8e0d4e5ef1cbb47ba65a7424634e3f581`, complete section and command identities. The exact command then ran once, foreground in `/tmp/opencode/f9-bootstrap-correspondence`, tool timeout30000ms.
+The tool returned normally with the complete expected stdout record and no timeout/nonzero-exit report. An inherited Node EnvHttpProxyAgent experimental warning appeared outside the JSON record, within the disclosed startup residual. The following compact JSON copies the authored record, not an authenticated process/native-I/O transcript:
+
+```json
+{"profile":"xz-candidate-bytes-once-v1","status":"CANDIDATE_BYTES_OBSERVED","grantConsumed":true,"candidate":"/usr/bin/xz","observation":{"byteLength":101392,"sha256":"1f6ca26fd33066c9d5b95e58a0d9e2f5789cb18fd5741518574113b37ea1934d","elfHeader":{"classBits":64,"endian":"little","version":1,"machine":62,"type":3,"headerBytes":64,"osAbi":0,"abiVersion":0},"identity":{"dev":"56","ino":"295","mode":"33261","uid":"0","gid":"0","nlink":"1","size":"101392","mtimeNs":"1791561255000000000","ctimeNs":"1791561255000000000"}},"counts":{"fsCalls":8,"readCalls":3,"requestedBytes":101393,"returnedBytes":101392,"closeAttempts":1,"clockReads":31},"decoderQualified":false,"realArchiveInspected":false,"xzBehaviorVerified":false,"provenanceVerified":false,"noPythonRuntimeVerified":false,"loaderClosureVerified":false,"nativeAuthority":false,"nativeQualified":false,"installedUsability":false,"rustReady":false,"trainingReady":false}
+```
+
+### 29.1 Observed evidence and limits
+
+Repository-only receipt-copy validation passed:925 bytes including storage LF, SHA-256 `17131dd6fbf2a4ac4a46a8701d54f51499932c16c12400ccbcea82c925b0588a`. The approved complete §28 and earlier canonical prefix remain byte-preserved. This validates the stored copy and proposal identity without reopening or statting the candidate or archive; it authenticates neither native execution nor the underlying file's provenance.
+
+The reader reports101392 complete file bytes hashed as SHA-256 `1f6ca26fd33066c9d5b95e58a0d9e2f5789cb18fd5741518574113b37ea1934d`, two data reads plus one EOF request, and stable full nine-field named/descriptor snapshots before/after reading. It returned after its single descriptor close attempt succeeded and the final cooperative guard passed.
+The basic ELF-header policy observed class64, little-endian, version1, machine62, type3/ET_DYN,64-byte header, OSABI0 and ABI-version0. These fields do not prove an XZ program, Linux compatibility, PIE versus shared-library role, minimum ISA/ABI/glibc requirement or executable loadability.
+Source counters report8 non-close filesystem attempts,3 reads,101393 requested bytes,101392 bytes reported by completed reads,1 close attempt and31 clock samples. They fit the approved source limits without establishing physical I/O, CPU/RSS, process reap or independent closure guarantees.
+The observed UID0/gid0/nlink1/mode33261/device56/inode295 and nanosecond timestamps are lossless metadata values from that operation, not future immutability, protected ancestors, authenticated origin or a trusted clock. No directory, alternate path or symlink target was inspected.
+The candidate was opened/read as data only. The authored operation did not execute `/usr/bin/xz`, invoke a version query, loader, `ldd`, interpreter, decompressor or library, or inspect derived dependency paths. It performed no SDK archive access, extraction, mutation or cleanup.
+
+### 29.2 Consumed authority and next qualification gate
+
+The one-shot candidate-read grant is CONSUMED. It permits no follow-up stat/read/re-hash, program-header/dynamic-symbol parsing, link resolution, PATH search, environment/package/library/proc inspection, candidate invocation, acquisition fallback or automatic retry.
+The positive observation provides an independently reusable comparison expectation only after a later operation is separately registered and approved. It supplies no authenticated version/source correspondence, provenance, NoPython runtime proof or exclusion of compromised XZ/library origins.
+The next proposal must separate source/provenance evidence from bounded static ELF program/dynamic-header analysis and the actual interpreter/library/symbol/ISA closure. Reading or following any derived path requires its own exact allowance; do not treat an ELF-supplied interpreter/DT_NEEDED/RPATH string as permission to open or execute it.
+Any decoder invocation still requires a separately accepted runtime/source closure, exact argv/environment policy, input/framing/integrity/memory/output/stderr bounds and lifecycle/termination authority. Do not use `--version` or archive decompression as a discovery shortcut.
+The SDK archive remains retained and uninspected with its acquisition grant consumed. Rust's eight new tests remain uncompiled/unrun and the Rust BLOCKER stays OPEN; NoPython subset, SDK relocation/ELF usability, Native authority and training readiness remain unqualified. No model training, activation/deployment, cleanup or PR merge occurred.
+Receipt-copy validation passed. Closing adversarial/security reviews accepted receipt documentation only with no findings; spec review closed the stale validation-status LOW and reported in-sync. Publication remains `8f7f0933`; the new proposal/receipt documents are uncommitted and not covered by an automatic further push.

@@ -1,3 +1,16 @@
+## Current XZ candidate observation — bytes/header only / grant consumed (2026-10-24)
+
+**[Unverified] Result:** the user approved §28 once; [canonical §29](ml-runtime-redesign.md#29-xz-candidate-identity-receipt--observed-bytes-grant-consumed) preserves the returned record. `/usr/bin/xz` was observed as101392 bytes, SHA-256 `1f6ca26fd33066c9d5b95e58a0d9e2f5789cb18fd5741518574113b37ea1934d`, with a64-bit little-endian machine62/type3 ELF header. No candidate execution occurred.
+**Consumed:** no repeat read/stat/hash, dependency-path traversal, tool search, loader/version query or decoder invocation follows. Candidate version/provenance, NoPython runtime, interpreter/library/symbol/ISA closure and XZ behavior remain unverified.
+**Unchanged:** the SDK archive is retained untouched/uninspected; Rust BLOCKER OPEN and `trainingReady:false`. Published `8f7f0933`/PR50 remain pushed and unmerged; new proposal/receipt documents are uncommitted. Receipt-copy validation and closing scoped reviews passed; spec in-sync.
+
+## Current XZ candidate proposal — fixed-path data read / fresh grant pending (2026-10-24)
+
+**[Unverified] Published:** `8f7f0933e32fb51b92d92739298cfeba4224c57b` is pushed; fresh pre-commit verification passed378 in-memory tests and four syntax checks. PR50 remains OPEN/unmerged targeting `feat-ml-adjuntant`.
+**Preparation only:** [canonical §28](ml-runtime-redesign.md#28-xz-candidate-identity-proposal--fixed-path-decoder-execution-forbidden) proposes a bounded read/hash/basic-ELF-header observation of the unverified literal `/usr/bin/xz`. No candidate probe, PATH search, link resolution, execution, SDK read or decoder qualification occurred.
+**Permission:** syntax-only parsing and closing static proposal reviews passed; exact-command/section registration and fresh TUI approval remain pending before any host-file access. Missing, symlink, nonconforming, read/close or capture failure consumes the grant and stops without fallback. Candidate bytes/header do not establish provenance, version, loader compatibility, NoPython runtime or execution safety.
+**Unchanged:** Rust BLOCKER OPEN and `trainingReady:false`; acquired archive retained untouched. This new proposal remains uncommitted; no automatic further publication or PR merge.
+
 ## Current offline inventory — verified offline / real inspection unapproved (2026-10-24)
 
 **[Unverified] Source unit:** the user selected offline Node units; [canonical §27](ml-runtime-redesign.md#27-offline-tar-inventory--verified-offline-unit-real-inspection-unapproved) maps the bounded TAR parser and mock controller. Parent verification passed378/378 new in-memory tests and all four syntax checks; both modules have100% line/function coverage. Closing reviews accepted the offline unit; octal MEDIUM, timer LOW and goal ambiguities are closed, spec in-sync.
