@@ -779,6 +779,16 @@
         "tooling/native-ingress/acquisition.test.mjs"
       ],
       "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/inventory.puml",
+      "covers": [
+        "tooling/native-ingress/tar-inventory.mjs",
+        "tooling/native-ingress/tar-inventory.test.mjs",
+        "tooling/native-ingress/inventory-controller.mjs",
+        "tooling/native-ingress/inventory-controller.test.mjs"
+      ],
+      "fingerprint": null
     }
   ],
   "unresolved": [

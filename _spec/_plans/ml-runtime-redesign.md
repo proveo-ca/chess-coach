@@ -1252,3 +1252,266 @@ The two new source/test files sit outside that old selection and have separate i
 Oxlint remains skipped because no approved binary is available; no installation or substitute lint PASS is claimed. This keeper does not independently rerun parent tests, rendering or hashes.
 The original adversarial reviewer closed the diagram MEDIUM for the explicitly approved offline-theme profile; it does not supply upstream-theme equivalence, Rust compilation or Native qualification. A subsequent stale training-diagram legend was corrected before final rendering. Rust WIP `166a0bd9`, eight uncompiled/unrun new Rust tests and the Rust BLOCKER remain OPEN, with unchanged Cargo/Burn baseline; notes last published `5aab9bb8`, PR50 OPEN/unmerged.
 Earlier query/HEAD permissions remain CONSUMED; real archive acquisition approval remains NONE, with no SDK body/staging/extraction/install or no-Python/Native qualification. §10 stays OPEN, step2 NOT DONE; scoped offline-unit verification never means a complete ML runtime or `trainingReady:true`.
+
+## 25. Real GNU2026 DATA_ONLY acquisition proposal — fresh grant pending
+
+**[Unverified] Proposed operation, not an archive receipt or executable qualification.**
+The user's `continue` authorizes preparation, not the archive GET or staging writes. Repository checks found a clean checkout at `ed46e5ce7f9d8552e93a1ee725d4b9656c1ce4f0` before this proposal was added.
+Architect and DevOps reviewed the operation boundary before authoring. This is non-trivial infrastructure/security/spec-impacting planning; production source, tests, diagrams and existing receipts remain unchanged.
+
+### 25.1 Exact source, descriptor, paths and effects
+
+The authored repository import chain is `acquisition.mjs -> custody.mjs -> input-descriptor.mjs`. Node evaluates entire imported modules, including top-level intrinsic/constant initialization; selected exports do not restrict evaluation to those functions.
+The launcher uses `node:fs`, `node:crypto` and `node:util`; the imported modules additionally use `node:path` and `node:https`. These source pins do not inventory Node built-ins, the executable, PATH resolution, preloads/loaders, package discovery, native libraries, trust stores or other runtime/OS inputs.
+
+| Repository source relative to `/tmp/opencode/f9-bootstrap-correspondence/` | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `tooling/native-ingress/acquisition.mjs` | 17183 | `6b04bc8adf0535986393dc5d98b2899024751df00494d5bc42a09a67f2b34172` |
+| `tooling/native-ingress/custody.mjs` | 11081 | `6a23185c1217132eb2286b76a215d793ea06bbca8e23b3f1367978d4cdebde33` |
+| `tooling/native-ingress/input-descriptor.mjs` | 1301 | `bc7516d1b604a1bd3f6a83acecacba9a288796d1d19544edecddd2ab44c6b767` |
+
+The fixed artifact is `https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-2026.08-1.tar.xz`, comparison length `102296280`, expected SHA-256 `cde893afab04ac7dcd15c46aac214ff550441b982536124c88a71146a0eeedd3`. These expectations come from published/advertised metadata, not an observed payload.
+The only proposed staging root is `/tmp/opencode/f9-gnu-2026-data-only-01`; its only authored file is `/tmp/opencode/f9-gnu-2026-data-only-01/x86-64--glibc--stable-2026.08-1.tar.xz`.
+Neither path has been inspected or created for this proposal. The helper must create the root exclusively0700 and file exclusively0600, and stop if creation fails. It must not inspect/reuse/repair an existing root, change the suffix, overwrite, resume, delete, chmod or retry. Ordinary filesystem failures can surface as `E_IO`, not necessarily a top-level native errno.
+Fresh approval would permit this exact operation's source reads, dynamic module/runtime loading, one UID query, exclusive root/file creation, bounded archive writes/readback/metadata checks and closures. It would permit at most one reached authored `https.request` GET plus `request.end`; failure before GET still consumes the approval.
+It would not permit another HEAD, source acquisition, credentials/environment/proc/cache/library inspection, archive listing/decompression/extraction/execution, installation, Rust invocation, training, deployment or cleanup. No external launcher, receipt or log file is authored; stdout carries the operation record.
+
+### 25.2 Exact launcher proposal — do not execute without fresh approval
+
+Run the command below once through the shell tool in `/tmp/opencode/f9-bootstrap-correspondence`, with tool timeout `180000` milliseconds and no background mode. The harness resolves the existing `node` command; no executable discovery or substitute follows failure.
+The launcher checks literal source sizes/hashes before the fixed absolute import, then checks the frozen exact artifact descriptor before its sole acquisition call. This is hash-before-import checking, not immutable-source loading or a race-free source closure.
+
+<!-- BEGIN GNU2026 DATA ONLY LAUNCHER V1 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+import { types } from 'node:util';
+
+const profile = 'real-gnu2026-data-only-once-v1';
+const base = '/tmp/opencode/f9-bootstrap-correspondence/tooling/native-ingress/';
+const root = '/tmp/opencode/f9-gnu-2026-data-only-01';
+const expected = Object.freeze({
+  name: 'x86-64--glibc--stable-2026.08-1.tar.xz',
+  url: 'https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-2026.08-1.tar.xz',
+  byteLength: 102296280,
+  sha256: 'cde893afab04ac7dcd15c46aac214ff550441b982536124c88a71146a0eeedd3',
+});
+const pins = [
+  ['acquisition.mjs', 17183, '6b04bc8adf0535986393dc5d98b2899024751df00494d5bc42a09a67f2b34172'],
+  ['custody.mjs', 11081, '6a23185c1217132eb2286b76a215d793ea06bbca8e23b3f1367978d4cdebde33'],
+  ['input-descriptor.mjs', 1301, 'bc7516d1b604a1bd3f6a83acecacba9a288796d1d19544edecddd2ab44c6b767'],
+];
+const codes = new Set(['E_INPUT', 'E_PLATFORM', 'E_IO', 'E_ROOT', 'E_FILE', 'E_METADATA',
+  'E_BINDING', 'E_LENGTH', 'E_HASH', 'E_CHUNK', 'E_HTTP', 'E_HEADERS', 'E_NETWORK',
+  'E_NETWORK_CLEANUP', 'E_LIMIT', 'E_DEADLINE', 'E_CLOSE', 'E_SOURCE_PIN',
+  'E_DESCRIPTOR', 'E_RESULT', 'E_LAUNCHER']);
+const flags = ['nativeAuthority', 'nativeQualified', 'provenanceVerified',
+  'pythonFreeSubsetVerified', 'installedUsability', 'rustReady', 'trainingReady',
+  'installationPerformed', 'immutabilityVerified'];
+let acquisitionCalled = false;
+
+function stop(code) {
+  const error = new Error();
+  error.code = code;
+  throw error;
+}
+function own(value, key) {
+  if (value === null || typeof value !== 'object' || types.isProxy(value)) return undefined;
+  const field = Object.getOwnPropertyDescriptor(value, key);
+  return field && Object.hasOwn(field, 'value') ? field.value : undefined;
+}
+function emit(value) {
+  try {
+    const text = JSON.stringify(value) + '\n';
+    if (!/^[\x20-\x7e\n]*$/.test(text) || Buffer.byteLength(text) > 16384) {
+      process.exitCode = 1;
+      return;
+    }
+    process.stdout.write(text);
+  } catch { process.exitCode = 1; }
+}
+process.stdout.on('error', () => { process.exitCode = 1; });
+
+try {
+  for (const [name, size, expectedSha256] of pins) {
+    const bytes = fs.readFileSync(base + name);
+    if (bytes.length !== size || createHash('sha256').update(bytes).digest('hex') !== expectedSha256)
+      stop('E_SOURCE_PIN');
+  }
+  const helper = await import('file:///tmp/opencode/f9-bootstrap-correspondence/tooling/native-ingress/acquisition.mjs');
+  const descriptor = helper.GNU2026_ARTIFACT;
+  if (!descriptor || !Object.isFrozen(descriptor) || Reflect.ownKeys(descriptor).length !== 4 ||
+      Object.entries(expected).some(([key, value]) => own(descriptor, key) !== value) ||
+      typeof helper.acquireGnu2026 !== 'function') stop('E_DESCRIPTOR');
+  acquisitionCalled = true;
+  const result = await helper.acquireGnu2026('/tmp/opencode/f9-gnu-2026-data-only-01');
+  const file = root + '/' + expected.name;
+  if (own(result, 'profile') !== 'ordinary-archive-acquisition-v1' || own(result, 'state') !== 'DATA_ONLY' ||
+      own(result, 'contentMatched') !== true || own(result, 'root') !== root || own(result, 'file') !== file ||
+      own(result, 'byteLength') !== expected.byteLength || flags.some(key => own(result, key) !== false) ||
+      ['expectedSha256', 'incomingSha256', 'readbackSha256'].some(key => own(result, key) !== expected.sha256))
+    stop('E_RESULT');
+  const devices = {};
+  for (const key of ['rootDevice', 'fileDevice']) {
+    const value = own(result, key);
+    if (typeof value !== 'string' || !/^[0-9]{1,20}$/.test(value)) stop('E_RESULT');
+    devices[key] = value;
+  }
+  const counts = {};
+  for (const key of ['fsCalls', 'requestCalls', 'networkCalls', 'lifecycleEvents', 'dataEvents',
+    'clockReads', 'copiedBytes', 'writtenBytes', 'readBytes', 'closeAttempts', 'peakOwnedFds']) {
+    const value = own(own(result, 'counts'), key);
+    if (!Number.isSafeInteger(value) || value < 0) stop('E_RESULT');
+    counts[key] = value;
+  }
+  emit({ profile, status: 'DATA_ONLY', grantConsumed: true, acquisitionCalled, root, file,
+    url: expected.url, byteLength: expected.byteLength, contentMatched: true,
+    expectedSha256: expected.sha256, incomingSha256: expected.sha256, readbackSha256: expected.sha256,
+    ...devices, counts, ...Object.fromEntries(flags.map(key => [key, false])) });
+} catch (error) {
+  process.exitCode = 1;
+  const errors = [];
+  for (let depth = 0; depth < 4 && error !== undefined; depth++) {
+    const code = own(error, 'code');
+    errors.push(codes.has(code) ? code : 'E_LAUNCHER');
+    error = own(error, 'cause');
+  }
+  emit({ profile, status: 'STOP', grantConsumed: true, acquisitionCalled, root,
+    errors, ...Object.fromEntries(flags.map(key => [key, false])) });
+}
+NODE
+```
+<!-- END GNU2026 DATA ONLY LAUNCHER V1 -->
+
+### 25.3 Output, source-accounted bounds and accepted-residual decision
+
+The launcher authors at most one ASCII JSON stdout record <=16384 bytes including LF, built from explicit fixed/scalar fields. It emits at most four allowlisted error-code labels; it never serializes error objects, native messages, stacks or arbitrary causes. Unknown codes map to `E_LAUNCHER`.
+It uses `process.exitCode`, not `process.exit`, signals or forced termination. It attempts no fallback write after serialization/output failure. Success requires the expected complete record and observed zero command exit status; a successful write call alone does not prove stdout delivery, process exit, physical closure or reaping. Startup diagnostics/tool framing sit outside the JSON bound; absent/truncated/uncertain output means STOP without retry or inspection.
+All failures consume the operational grant, including source-pin, descriptor, creation, network, digest/readback or output failure. `acquisitionCalled` distinguishes whether the helper call was reached, not whether a physical request occurred.
+Preserve the root and any partial/full file after every outcome. No automatic retry, root replacement, deletion, repair, extraction or response-driven next action follows success or failure.
+
+| Scope | Bound / limit |
+| --- | --- |
+| Proposed archive file | <=102296280 written bytes, same exact positional readback plus EOF; filesystem allocation/metadata is not a byte quota |
+| Helper lifecycle | 120s cooperative total,119s ordinary work + reserved1s cleanup; early-failure cleanup min(total end, failure time+1s) |
+| Helper payload | <=32768 data events; positive chunk <=1048576;64KiB readback scratch; no whole-archive array |
+| Helper accounted effects | <=65533 non-close FS calls +<=3 close attempts; peak2 managed file FDs;<=200000 clock reads;<=32 lifecycle events;<=4 explicit network methods |
+| Launcher preflight/runtime | Three authored source readFileSync calls before dynamic import; source hashing, module loading/startup, stdout and runtime operations sit OUTSIDE helper counts/clock |
+| Shell capture | Requested timeout180000ms; not verified native containment, termination or reap |
+
+Fresh approval must explicitly accept ordinary inherited PATH/Node/startup/preload/loader/environment/runtime/native-library/trust-store behavior without inspection or sanitization. Source bytes can change between hash checks and module loading; source preflight reads themselves rely on the trusted repository and have no adversarial file-size/I/O-time containment.
+DNS/TLS/socket behavior, possible environment-mediated proxy/interposition, internal attempts, buffering, callbacks outside admitted accounting, total RSS, blocked native filesystem calls, physical close and complete executable/source closure remain unqualified. Requested TLS/agent/headers and cooperative counters do not establish independent network or OS isolation.
+The ordinary operation cannot claim Native/F9 authority or borrow any original game allowance. Preserve Rust1.95.0, Burn=0.22.0 Flex CPU/f64/defaults-off/std,flex,optim,store, NoPython, all ledgers/labels, F1/shared inclusive1048576, cold10s/lifecycle300s including3s cleanup and generator2048.
+
+### 25.4 Registration, review and post-operation gate
+
+Before requesting approval, syntax-check the extracted launcher without evaluating it, compare literal source pins against repository bytes, and register the exact shell-command SHA-256 plus complete §25 SHA-256 in the TUI request after static reviews. Any command/source/path/bound change invalidates that approval.
+No proposal launcher, real archive GET, large staging write or target-root probe has run. Previous HEAD/query grants remain consumed. Syntax-only parsing passed without evaluating the extracted body; all three literal source sizes/hashes match repository bytes, and §§1–24 remain byte-preserved. Static adversarial/security/DevOps reviews accepted this proposal only with no findings, and spec review reported in-sync. Exact-command/section registration and fresh execution consent remain pending; no new runtime verification follows from these checks.
+If separately approved, execute once, retain the captured bounded record without a separate disk log, and record the result in a later canonical section. Successful incoming/readback matching remains DATA_ONLY only.
+Then separately qualify bounded archive inspection, a Python-free retained subset, relocation/preparation and actual ELF/loader/library/ISA closure before any installation/use. Offline Cargo/dependency/build containment and current Rust compilation/tests remain independent blockers. No training, activation, deployment, working-architecture acceptance or retained-cache/doc cleanup follows.
+
+## 26. Real GNU2026 acquisition receipt — DATA_ONLY match, grant consumed
+
+**[Unverified] Ordinary-host operation evidence, not independent authenticated execution, Native qualification or SDK usability.**
+The user selected `Approve acquisition once` for §25's exact network/filesystem operation and disclosed residuals. The approved complete §25 is13530 UTF-8 bytes, SHA-256 `93968ad6c82f2074edf72e1ca5d209698ed302cc5df4c4df1875d2de961e8654`; the4823-byte shell command is `3822bffcac3fc69617cc2c299409ac0fffbfce2495375df51abf56d8a11a7812`.
+The4784-byte JavaScript body is `481732b69f67c7f4b827ff63282fca9ec5c729dfc85d8c336a5aa9aaff90cece`. Immediately before launch, repository-only checks matched the canonical document `2a6de2a8139b3b51f12e2e909c51b66afdd6e43cfbf30a776da8682ad9c3cf8a`, approved section and exact command.
+The registered command ran once in `/tmp/opencode/f9-bootstrap-correspondence`, with shell-tool timeout180000ms and no background mode. The tool returned normally with the complete DATA_ONLY stdout record and no timeout/nonzero-exit report. Its inherited Node startup also emitted an experimental EnvHttpProxyAgent warning outside the JSON record; the proposal explicitly excluded startup diagnostics from the stdout-record bound.
+The following compact JSON copies the authored stdout record, not HTTP-wire bytes or an authenticated process transcript:
+
+```json
+{"profile":"real-gnu2026-data-only-once-v1","status":"DATA_ONLY","grantConsumed":true,"acquisitionCalled":true,"root":"/tmp/opencode/f9-gnu-2026-data-only-01","file":"/tmp/opencode/f9-gnu-2026-data-only-01/x86-64--glibc--stable-2026.08-1.tar.xz","url":"https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-2026.08-1.tar.xz","byteLength":102296280,"contentMatched":true,"expectedSha256":"cde893afab04ac7dcd15c46aac214ff550441b982536124c88a71146a0eeedd3","incomingSha256":"cde893afab04ac7dcd15c46aac214ff550441b982536124c88a71146a0eeedd3","readbackSha256":"cde893afab04ac7dcd15c46aac214ff550441b982536124c88a71146a0eeedd3","rootDevice":"28","fileDevice":"29","counts":{"fsCalls":14370,"requestCalls":1,"networkCalls":2,"lifecycleEvents":4,"dataEvents":12788,"clockReads":70260,"copiedBytes":102296280,"writtenBytes":102296280,"readBytes":102296280,"closeAttempts":3,"peakOwnedFds":2},"nativeAuthority":false,"nativeQualified":false,"provenanceVerified":false,"pythonFreeSubsetVerified":false,"installedUsability":false,"rustReady":false,"trainingReady":false,"installationPerformed":false,"immutabilityVerified":false}
+```
+
+### 26.1 What this operation establishes
+
+Repository-only validation confirmed the approved complete §25 and earlier canonical bytes remain unchanged. The compact stdout-record copy including storage LF is1163 bytes, SHA-256 `be1a18eb95b528156ad008bf7f4739cfa89c6ddda6da69ef281c0c82e2a9ff50`; this is copy-integrity metadata, not authenticated HTTP or process evidence. Validation parsed the repository copy without accessing the retained archive or root.
+
+The helper returned after exact incoming length/SHA-256 match, observed network end/completeness/request+response closure, writer checks/closure, independent positional readback+EOF/SHA-256, stable file metadata, root binding and three successful managed-FD close attempts. These are source-bound observations under the approved runtime trust, not independent physical-close or OS-barrier evidence.
+The observed source counts fit §25:14370 non-close filesystem calls,1 request call,2 explicit network methods,4 lifecycle events,12788 admitted data events,70260 clock reads,3 close attempts and peak2 owned file FDs. Copied, written and read bytes each equal102296280.
+The root's device28 and file's device29 are independent per-object observations. They do not imply a parent/child same-device requirement, explain historical staging failures or establish future path protection.
+This closes the separately approved incoming/readback DATA_ONLY match for this exact archive instance. It does not make §23's earlier advertised length an observed length retroactively; this later operation adds separate observed length/hash evidence.
+The source pins are unchanged from §25. No acquisition source/API/test/diagram changes or fresh Rust/static-analysis pass accompany this receipt; the217-test offline verification remains the revision-scoped evidence in §24.
+
+### 26.2 Consumed grant, retained archive and next boundary
+
+The one-shot acquisition grant is CONSUMED. Retain `/tmp/opencode/f9-gnu-2026-data-only-01` and its exact archive without any follow-up read, stat, listing, decompression, extraction, modification, removal, retry or alternate-root operation under this grant.
+No archive contents have been listed or decoded. The authored operation extracted, installed or executed no Python, GDB, GCC, sysroot component or SDK setup script from the archive. Installed usability, provenance, Python-free subset, immutability, Native authority, Rust readiness and training readiness remain false/unqualified.
+Any next inspection needs a separate exact plan and approval covering its reader/decompressor source/runtime, bounded compressed/uncompressed bytes, entry/path/link/header limits, output policy and failure behavior. Acquisition alone does not select an extractor, authorize a tool search or qualify a local decompressor.
+The source-level whole-SDK/GDB-Python and relocation/wrapper concerns in §22 remain unresolved for actual payload inventory. Do not apply vendor relocation scripts, follow archive links, install the whole SDK or infer a Python-free subset from the content digest.
+After separately approved bounded inspection, qualify any retained no-Python subset, preparation/relocation and actual ELF/loader/library/symbol/ISA closure before use. Current Rust compilation/tests remain a binding BLOCKER; §10 working-architecture acceptance, real training, activation/deployment and retained-cache/doc cleanup remain ineligible.
+Receipt-copy validation passed. Closing adversarial/security reviews accepted the receipt documentation only with no findings; spec review reported in-sync. No commit, push, PR merge, cleanup or next external operation is authorized by this continuation.
+
+## 27. Offline TAR inventory — verified offline unit, real inspection unapproved
+
+**[Unverified] Implemented offline source unit with parent-run synthetic tests, not an archive inspection or decoder qualification.**
+The user selected `Offline Node units (Recommended)` after being offered offline implementation, decoder-qualification planning or hold. This grants new parser/controller source, persistent synthetic in-memory tests and matching specs only.
+Architect `ses_e947186ddffe5oZc5z4IRAl2eX` revised the plan to runnable manifest-free Node helpers; DevOps `ses_e947186a6ffe80QZqTu0d4GDz1` reviewed the separate decompressor boundary. Do not introduce an unverified Rust bootstrap, Cargo workspace, dependency or installation step.
+
+### 27.1 Goal, file plan and exclusions
+
+Add `tooling/native-ingress/tar-inventory.mjs` plus `tar-inventory.test.mjs` for streaming TAR validation, provisional metadata events and a bounded summary/digest.
+Add `tooling/native-ingress/inventory-controller.mjs` plus `inventory-controller.test.mjs` for pull/backpressure, sink acceptance, mock completion, deadlines and bounded failure cleanup.
+Both modules must remain manifest-free Node-builtins infrastructure. Reuse the existing directory without changing acquisition/custody APIs, sources/tests or any Rust, TypeScript engine, dataset, label, ledger, F1 or game allowance.
+New tests use generated in-memory bytes only, <=1MiB per synthetic fixture. No file fixtures, filesystem inventory, archive read/stat/list/decode, network, listener, subprocess, tool discovery, decoder, extraction, Python, Rust invocation or package installation is authorized. Repository reads for source/SPEC/index checks are not archive or fixture access.
+Do not run the older acquisition/custody fixture suites under this new in-memory-only grant. Their217 passes remain the prior revision-scoped receipt, not a fresh verification result for this unit.
+Parent owns `_spec/tooling/native-ingress/inventory.puml`, exact four-file coverage in `_spec/.spec-index.json`, this goal/evidence ledger and main-plan navigation. Keep §§1–26 and the existing uncommitted acquisition receipts intact.
+
+### 27.2 Current parser contract and conservative profile
+
+`createTarInventory(overrides)` returns a sealed interface with incremental `feed(bytes)` and terminal `finish()`, whose frozen summary has state `TAR_INVENTORY`. Accept native ordinary-backed Buffer/Uint8Array chunks; reject proxies/shared backing and use private bounded bytes rather than shadowable `.length` values. Capture strict own-data limit overrides once; allow tightening only.
+Malformed input permanently poisons the parser; later `feed`/`finish` cannot recover a successful result. Successful `finish` seals it; reject repeated finish and later feed. Serialize numeric metadata losslessly, including PAX time fractions, rather than converting large fields through imprecise Number values.
+Validate512-byte basic/POSIX ustar/old-GNU headers, unsigned checksums and explicitly supported nonnegative octal/base256 numbers. Support regular files, directories, symlinks and hardlinks as metadata only; unsupported member kinds, sparse layouts or encodings STOP without fallback.
+Support GNU longname/longlink and POSIX local/global PAX only within the bounded subset `path,linkpath,size,uid,gid,uname,gname,mtime`. Validate PAX UTF-8 byte-counted records, duplicate/deletion/precedence semantics and extension padding; reject unknown keys. Actual SDK-format compatibility remains unproved.
+Apply global PAX, then pending GNU names/links, then local PAX; consume pending local/GNU state at the following member and reject dangling/ambiguous extensions. Extension record bodies use their own physical sizes, not pending member-size overrides.
+The bounded profile must define empty-value deletion explicitly: a global empty record removes that persistent key; a local empty record selects the ordinary member header's value for that key, masking global/GNU overrides for that member without deleting persistent defaults for later members. Unsupported deletion forms must fail, not silently fall through another extension layer.
+Accept explicitly defined `./` prefixes, directory root `.`/`./` and a directory's final slash; reject absolute member paths, internal empty/dot/parent segments, ambiguous separators/controls and canonical-name collisions. These alias rules do not silently normalize arbitrary unsafe paths.
+The alias grammar permits at most one leading `./` and at most one final slash for a directory; strip only those allowed aliases before checking nonempty slash-separated segments. Root directory `.` and `./` share one root key. Reject `././name`, `name//child`, internal `.`/`..`, file trailing slash and repeated slash aliases. Keys remain case-sensitive UTF-8 without Unicode, URL or filesystem normalization.
+Link targets remain bounded classified metadata, including relative-parent or absolute targets; never follow them or treat them as extraction permits. A TAR-inventory result cannot certify extraction safety or a Python-free subset.
+Count and discard ordinary contents/padding. Require zero padding, two complete zero termination blocks, block-aligned zero-only trailing data and exact completion; reject truncation and any late invalid bytes. Provisional events from a prefix never become a successful inventory after later failure.
+Charge all extension payload, including overwritten/deleted records, against the cumulative cap. Charge UTF-8 canonical collision keys and JSON+LF metadata before retaining or emitting them.
+
+The metadata-event schema uses this property insertion order: `index,path,type,size`, then `linkpath,linkKind` ONLY for link entries, then `mode,uid,gid,mtime`. No extra fields or member contents appear. `index` is a one-based logical-entry Number; `type` is `file|directory|symlink|hardlink`; paths are validated UTF-8 strings and canonical collision keys.
+`size,mode,uid,gid` are nonnegative safe-integer Numbers; reject unsupported larger integer fields rather than round them. Header mtime becomes its exact base10 integer string; accepted PAX mtime retains its validated decimal text, including sign/fractional digits, without floating-point conversion. `uname,gname` can be consumed as supported extension metadata but never appear in events.
+`linkKind` is `absolute` for slash-rooted/drive-prefixed targets, otherwise `parent-components` when any slash-separated component is `..`, otherwise `relative`. This classification does not resolve targets or certify containment.
+Digest framing is SHA-256 over the ordered concatenation of UTF-8 `JSON.stringify(event) + '\n'`, without indentation, BOM, summary/header framing or payload bytes. Charge the same serialized bytes to event/output limits. An empty inventory hashes the empty byte string; different accepted PAX time spellings may yield different metadata digests even when numerically equal.
+
+| Current maximum | Value | Interpretation |
+| --- | ---: | --- |
+| Expanded bytes | 1073741824 | All headers, extensions, contents, padding and termination bytes |
+| Physical headers | 65536 | Extension headers count; logical entries tracked separately |
+| Cumulative extension payload | 65536 | PAX/GNU buffering never expands to arbitrary member size |
+| Effective path / link target | 1024 bytes each | UTF-8 byte count, not JavaScript character count |
+| Input chunk / data events | 1048576 bytes /32768 | Admit before copy/parse; no zero chunks |
+| Serialized event / cumulative output | 32768 /16777216 bytes | Canonical JSON+LF, admitted before provisional emission |
+| Retained collision-key data | 33554432 bytes | Plus bounded header/extension state; not a hard heap/RSS quota |
+
+These conservative caps have unverified SDK fitness. Exceeding one or encountering an unsupported feature stops; it does not authorize raising limits or invoking a fallback parser.
+
+### 27.3 Mock controller and failure contract
+
+`runMockInventory` executes a trusted caller's mock source/sink protocol. Caller callbacks are code, not a sandbox: mock markers and completion booleans cannot enforce capability denial or authenticate a decoder.
+The source is an exact own-data plain record `{mockOnly:true,next,return}` with non-proxy functions; capture its callbacks before invocation. Each next result is an exact `{done,value}` record. Data requires `done:false`; terminal `done:true` requires exactly `{mockOnly:true,integrityVerified:true,compressedInputFullyAccountedFor:true}` as its value. Sink acceptance means its returned value/promise fulfills; returned qualification objects are ignored.
+Pull one chunk at a time; finish its bounded parser events and awaited sink acceptance before requesting another chunk. Require terminal TAR validity, explicit mock integrity/compressed-EOF completion and accepted sink work before a frozen `MOCK_INVENTORY` summary.
+Keep `mockOnly:true`, `decoderQualified:false`, `realArchiveInspected:false`, `extractionAuthorized:false`, `nativeQualified:false`, `provenanceVerified:false`, `pythonFreeSubsetVerified:false`, `installedUsability:false`, `rustReady:false` and `trainingReady:false`. The parser's summary/digest binds metadata interpretation, not a real compressed archive or publisher.
+Use a120s cooperative controller envelope including reserved1s cleanup,119s ordinary work and early-failure cleanup bounded by min(total end, failure time+1s). These are source timers, not hard cancellation of synchronous parsing, arbitrary callbacks, native work, process memory or the original F9/game clocks.
+Make failure absorbing. On failure call acquired iterator return at most once and wait only within the reserved cleanup bound; uncertain/rejected cleanup overrides the original failure through a fixed cleanup error with cause. Ignore/handle late promise results without more pulls, parser effects, sink calls or success.
+An accepted mock terminal receipt closes the source contract before parser finalization, so later TAR-finalization failure does not call return on that already completed source. Without accepted completion, cleanup runs only if acquired and within the total remaining budget; an expired budget yields `E_SOURCE_CLEANUP` uncertainty without invoking a late cleanup callback. No real-resource closure follows from these mock rules.
+`MOCK_INVENTORY_LIMITS` adds duration/cleanup caps and `maxSourceEvents:32768` to parser caps; overrides can tighten only. Source-event accounting counts chunk steps, permitting at most one extra next call to observe completion or reject an excess step. The controller uses Node's monotonic `performance.now()` and timers; caller code and synchronous parsing remain non-preemptible.
+No child is spawned; no signal, kill/reap claim, filesystem cleanup or actual decoder adapter belongs in this source unit. The acquired SDK remains untouched with its §26 grant consumed.
+
+### 27.4 Verification and later gates
+
+Persist synthetic tests for chunk splits, all three supported header dialects/numbers, PAX/GNU precedence/deletions, unsafe paths/aliases/link classification, duplicate names, unsupported formats, checksums, padding, truncation and every tightened cap boundary.
+Persist controller tests for backpressure, malformed/mock completion, source/sink/parser failure, late rejection, timeout, cleanup uncertainty and no success before all gates. Use coordinated fake clocks/timers and bounded settlement assertions, not real120s waits.
+The parent independently passed all four new-file syntax checks and **378/378 tests:305 parser +73 controller,0 failures/cancelled/skipped/todo**. Command: `node --test --test-reporter=tap --test-concurrency=1 --experimental-test-coverage tooling/native-ingress/tar-inventory.test.mjs tooling/native-ingress/inventory-controller.test.mjs`. Only these two in-memory suites ran.
+Both production modules have100% line/function coverage; branch coverage is98.85% parser and98.82% controller. These figures do not verify a real archive, decoder or native resource boundary. Oxlint remains unavailable and skipped; no install permission, replacement linter or lint PASS is claimed.
+Review-driven repairs reject octal digits after a NUL terminator, including leading-NUL fields and trailing control-byte partial matches. Regression vectors cover all numeric fields and checksum encodings. Deferred controller tests now use fake clocks and assert timer drainage; a new controller regression rejects nonzero trailing bytes after provisional sink delivery.
+The persisted literal UTF-8 JSON+LF oracle fixes file/link event property order, byte counts and digest framing independently of the parser's event construction. The source-contract test reads all four SPEC pointers, diagram covers and exact index entry; it does not access file fixtures or the archive.
+The user separately approved offline validation/rendering of the new inventory diagram only, using pinned `_spec/themes/proveo.puml` (6238 bytes, SHA-256 `d75f801bd90752ed50243ba05f58b37c4808b5510cbb035dc578b0441d74de39`). Keep the remote house include in source, substitute that local copy only in renderer input and reject other active external-input directives. Permit only `_spec/tooling/native-ingress/inventory.svg` <=8MiB; accept ordinary installed renderer/JRE/font startup trust, not Native qualification, upstream-theme equivalence, network access or hard containment.
+Parent offline-expanded `plantuml -checkonly -pipe` and `-tsvg -pipe` passed after final source mapping. The47320-byte SVG binds diagram SHA-256 `414cb596a874981b00d5625d422a2edfe9e10d8877974982820b337358fe76bd`, expanded-input SHA-256 `a049544711b464ffee6d1922f1909a81fe1aaac0e044bba29d1f167c36731902` and approved theme hash in its provenance comment; SVG SHA-256 is `1b35f61dc6a631231a7b7630370cfdbd9b4d25acf65325a8285e52a026030f62`. No remote theme was fetched or older SVG changed.
+Closing adversarial review closed the octal MEDIUM and prior goal ambiguities with no new findings. DevOps closed the deferred-test timer LOW; security accepted the offline unit only, and spec review reported in-sync. Reviews grant no actual archive access, decoder qualification or Rust/Native readiness.
+The four new source/test files have separate identity `cb23eafbea12965e97969f2b003981404fddc077f4ed1a3eda826f9d8a4f324d`, using sorted UTF-8 paths followed by file bytes, with each field prefixed by its unsigned64 big-endian byte length. Production SHA-256 values are parser `9357f3d33859df02f78d377403ed2cc9cad6d8867a7fddc4d24c57ef5c75c55e` and controller `655b100185220c165fc38e990e90c46e5f9c3407a75d6eb73530000786ae1254`.
+The sole coverage-index change appends the exact four-file inventory entry while preserving every prior entry/unresolved record. That metadata change invalidates reuse of the earlier selected verifier identity as current evidence; no current Rust verifier run or reissued Native invoice is claimed. Existing tracked source/configuration files and prior acquisition proposal/JSON receipt remain unchanged.
+The offline unit cannot read XZ or qualify a decompressor. Exact tool discovery/qualification, compressed-FD custody with hashing of bytes actually decoded, XZ integrity/stream/trailing-data policy, decoder memory limits, bounded stderr and process lifecycle require separate designs and fresh operational approval.
+Rust compilation/tests remain a binding BLOCKER; successful mock tests never close NoPython/ELF/relocation/build-containment gates or permit training, activation, deployment, archive cleanup, commit/push or PR merge.

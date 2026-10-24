@@ -1,3 +1,22 @@
+## Current offline inventory — verified offline / real inspection unapproved (2026-10-24)
+
+**[Unverified] Source unit:** the user selected offline Node units; [canonical §27](ml-runtime-redesign.md#27-offline-tar-inventory--verified-offline-unit-real-inspection-unapproved) maps the bounded TAR parser and mock controller. Parent verification passed378/378 new in-memory tests and all four syntax checks; both modules have100% line/function coverage. Closing reviews accepted the offline unit; octal MEDIUM, timer LOW and goal ambiguities are closed, spec in-sync.
+**Permission:** no real archive/file-fixture access, subprocess, network, decoder/tool discovery, package installation or extraction. Keep the acquired archive untouched and preserve existing uncommitted receipts; previous217 tests remain historical, not new-unit verification.
+**Boundary:** conservative format/cap failures STOP without fallback. Mock completion never qualifies XZ, NoPython, extraction safety, SDK usability or Native authority. The source-mapped diagram passed offline validation/rendering with the approved local theme; Oxlint was unavailable and skipped. Rust BLOCKER OPEN, `trainingReady:false`; changes remain uncommitted, archive untouched in this step.
+
+## Current real acquisition — DATA_ONLY match / grant consumed (2026-10-24)
+
+**[Unverified] Result:** the user approved the registered §25 operation once; [canonical §26](ml-runtime-redesign.md#26-real-gnu2026-acquisition-receipt--data_only-match-grant-consumed) preserves the returned DATA_ONLY record. Incoming and independent readback matched102296280 bytes and expected SHA-256 `cde893afab04ac7dcd15c46aac214ff550441b982536124c88a71146a0eeedd3`.
+**Retain:** `/tmp/opencode/f9-gnu-2026-data-only-01/x86-64--glibc--stable-2026.08-1.tar.xz`. The grant is consumed; no follow-up stat/list/decode/extract/read/cleanup/retry or archive execution follows.
+**Next boundary:** prepare separately approved bounded inspection with qualified reader/decompressor/runtime and expansion/path/link/output limits. No local tool discovery or extractor is selected by acquisition success.
+**Unchanged:** SDK inventory, NoPython subset, relocation/ELF usability, Native/Rust/training qualification remain unverified; Rust BLOCKER OPEN, `trainingReady:false`, no installation/training or PR merge. Receipt-copy validation and closing scoped reviews passed; spec in-sync. Changes remain uncommitted.
+
+## Current real acquisition proposal — exact operation / fresh grant pending (2026-10-24)
+
+**[Unverified] Preparation only:** [canonical §25](ml-runtime-redesign.md#25-real-gnu2026-data_only-acquisition-proposal--fresh-grant-pending) registers a proposed one-shot fixed GNU2026 launcher, three source pins, exact new `/tmp/opencode/f9-gnu-2026-data-only-01` root and archive child, stdout handling, cooperative bounds and residual runtime trust. No target path has been probed or created.
+**Permission:** `continue` does not authorize GET/staging. Syntax/source-pin checks and static proposal reviews passed; exact-command/section registration and fresh TUI consent remain pending. Any attempt consumes that grant, even failure before GET; retain partial outputs with no retry, replacement or cleanup.
+**Unchanged:** the offline unit has217 passing tests; no GNU body, extraction/install, Rust verification or training ran. Rust BLOCKER remains OPEN and `trainingReady:false`; PR50 stays unmerged. No commit/push is included in this continuation.
+
 ## Current offline acquisition unit — implemented and tested / real GET unapproved (2026-10-24)
 
 **[Unverified] Current progress:** new `acquisition.mjs`/`acquisition.test.mjs` implement the separate archive profile; [canonical §24](ml-runtime-redesign.md#24-offline-acquisition-unit--implemented-and-tested-real-acquisition-unapproved) maps the actual `GNU2026_ARTIFACT` API and custody/resource/failure contract. Parent verification reports217 PASS (132 new +85 legacy),0 fail/skip; acquisition coverage100% lines/functions and98.93% branches. Closing scoped reviews accepted the offline unit; timer-harness LOW and stale-legend drift are closed, spec in-sync.

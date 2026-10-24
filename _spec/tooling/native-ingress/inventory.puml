@@ -1,0 +1,98 @@
+' purpose: offline TAR metadata inventory and mock-only completion boundary
+' covers: tooling/native-ingress/tar-inventory.mjs
+' covers: tooling/native-ingress/tar-inventory.test.mjs
+' covers: tooling/native-ingress/inventory-controller.mjs
+' covers: tooling/native-ingress/inventory-controller.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 27 owns goals, scope and evidence.
+' status: source mapped; canonical section 27 owns current synthetic verification and closing-review receipts.
+' rendering: source keeps house include; approved local-theme substitution is renderer-input only.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Offline TAR inventory — streaming metadata, mock-only completion
+
+actor "Trusted synthetic caller" as CALLER <<host>>
+participant "inventory-controller.mjs\nrunMockInventory" as CONTROLLER <<app>>
+participant "Mock source\nnext / return" as SOURCE <<async>>
+participant "tar-inventory.mjs\ncreateTarInventory" as PARSER <<app>>
+participant "Provisional metadata sink\ntrusted callback" as SINK <<host>>
+participant "Node monotonic clock\nand cooperative timers" as CLOCK <<host>>
+participant "InventoryError" as ERROR <<error>>
+
+CALLER ARROW_MAIN CONTROLLER : runMockInventory(source, sink, tightened limits)
+CONTROLLER ARROW_MAIN CLOCK : first START; total120s, work119s, cleanup reserve1s
+CONTROLLER ARROW_MAIN CONTROLLER : capture strict own-data limits and mock protocol
+CONTROLLER ARROW_MAIN PARSER : createTarInventory(tightened parser limits)
+note over CONTROLLER, SOURCE
+Mock markers assert a test protocol only.
+Caller callbacks remain trusted code;
+this module is not a capability sandbox.
+No filesystem, network or child adapter.
+end note
+
+loop One pull at a time; no next pull until sink work finishes
+  CONTROLLER ARROW_MAIN SOURCE : await next() within work deadline
+  SOURCE ARROW_QUEUE CONTROLLER : bounded native byte chunk or mock completion
+  alt Byte chunk
+    CONTROLLER ARROW_MAIN PARSER : feed(bytes); admission before private copy
+    PARSER ARROW_MAIN PARSER : parse headers / extensions / member bytes / padding
+    note right of PARSER
+512-byte basic / ustar / old-GNU headers
+Checksum and bounded numeric fields
+Octal digits must precede any NUL terminator
+PAX local/global and GNU longname/link subset
+Unknown keys, sparse layouts and kinds STOP
+    end note
+    PARSER ARROW_MAIN PARSER : canonical path collision checks; bounded metadata digest
+    PARSER ARROW_MAIN CONTROLLER : frozen provisional events; no member contents
+    loop Each provisional event
+      CONTROLLER ARROW_MAIN SINK : await acceptance before next pull
+    end
+  else Source completes
+    CONTROLLER ARROW_MAIN CONTROLLER : require explicit mock integrity and compressed-EOF flags
+    CONTROLLER ARROW_MAIN CONTROLLER : accepted terminal receipt closes mock source contract
+    CONTROLLER ARROW_MAIN PARSER : finish(): require complete framing and no pending member/extension
+    PARSER ARROW_MAIN CONTROLLER : frozen TAR_INVENTORY summary
+  end
+end
+
+note over PARSER, SINK
+All expanded bytes and serialized metadata count.
+Paths use explicit aliases, not blind normalization.
+Link targets remain classified data, never followed.
+Events stay provisional until all gates pass.
+end note
+
+alt All parser, mock completion and sink gates pass
+  CONTROLLER ARROW_MAIN CALLER : frozen MOCK_INVENTORY summary; mockOnly:true
+else Parse, source, sink, limit or deadline failure
+  CONTROLLER ARROW_ERROR CONTROLLER : absorb failure; no more pulls, parsing, sink work or success
+  CONTROLLER ARROW_MAIN CLOCK : cleanupEnd=min(total end, failure time+1s)
+  opt Acquired source without accepted completion and budget remains
+    CONTROLLER ARROW_ERROR SOURCE : captured return at most once; bounded wait
+  end
+  opt Cleanup fails, rejects or remains uncertain
+    CONTROLLER ARROW_ERROR ERROR : cleanup error supersedes first failure with cause
+  end
+  CONTROLLER ARROW_ERROR CALLER : throw failure; ignore handled late promise results
+end
+
+note over CALLER, ERROR
+realArchiveInspected / decoderQualified:false
+extractionAuthorized / nativeQualified:false
+provenanceVerified / pythonFreeSubsetVerified:false
+installedUsability / rustReady / trainingReady:false
+end note
+
+legend bottom
+  Parser/controller source and tests are synthetic offline infrastructure, not an XZ decoder.
+  No archive read/stat/list, extraction, process, tool discovery or network belongs in this unit.
+  Expanded<=1GiB; physical headers<=65536; total extension payload<=64KiB.
+  Paths/links<=1024 bytes; chunks<=1MiB; data events<=32768.
+  Event<=32768 bytes; total metadata<=16MiB; retained collision keys<=32MiB.
+  Limits constrain source-accounted work, not native heap, callbacks or hard CPU/time containment.
+  Mock next results are own-data done/value records; success receipts contain exactly three true flags.
+  Valid mock completion closes its source contract even when later TAR finalization fails.
+  Metadata SHA-256 binds ordered UTF-8 JSON events + LF, not discarded payload bytes.
+  Real XZ framing/integrity, decoder qualification, SDK NoPython and Rust verification remain separate.
+endlegend
+@enduml
