@@ -771,6 +771,14 @@
         "tooling/native-ingress/custody-chunks.test.mjs"
       ],
       "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/acquisition.puml",
+      "covers": [
+        "tooling/native-ingress/acquisition.mjs",
+        "tooling/native-ingress/acquisition.test.mjs"
+      ],
+      "fingerprint": null
     }
   ],
   "unresolved": [

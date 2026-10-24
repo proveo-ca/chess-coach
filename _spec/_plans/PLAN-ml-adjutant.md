@@ -1,3 +1,46 @@
+## Current offline acquisition unit — implemented and tested / real GET unapproved (2026-10-24)
+
+**[Unverified] Current progress:** new `acquisition.mjs`/`acquisition.test.mjs` implement the separate archive profile; [canonical §24](ml-runtime-redesign.md#24-offline-acquisition-unit--implemented-and-tested-real-acquisition-unapproved) maps the actual `GNU2026_ARTIFACT` API and custody/resource/failure contract. Parent verification reports217 PASS (132 new +85 legacy),0 fail/skip; acquisition coverage100% lines/functions and98.93% branches. Closing scoped reviews accepted the offline unit; timer-harness LOW and stale-legend drift are closed, spec in-sync.
+**Permission:** ALL transport mocked, no TCP/listeners/external operations; fresh private `/tmp/opencode` fixtures <=1MiB each/<=8MiB per run, exact known test-owned unlink/rmdir cleanup only. Preserve old64KiB source/tests and every retained root; no real GET or installation grant.
+**Specs:** [new acquisition sequence](../tooling/native-ingress/acquisition.puml) and one index entry cover exactly both new files. Both syntax checks and all three offline diagram checks/renders passed using the approved tracked local theme substitution only; no remote-theme fetch. Oxlint is unavailable and skipped.
+**Unchanged:** §23 length is advertised metadata, its HEAD grant is consumed, Native/No-Python/installed/Rust/training qualification remains false; Rust BLOCKER OPEN, prior diagram MEDIUM closed for the approved offline-rendering profile, PR50 unmerged, §10 OPEN and step2 NOT DONE.
+
+## Current 2026 HEAD outcome — advertised length / grant consumed (2026-10-23)
+
+**[Unverified] Result:** user approved ONE registered HEAD; [canonical §23](ml-runtime-redesign.md#23-2026-head-outcome--advertised-length-collected-one-grant-consumed) preserves the returned normalized metadata object. It advertises102296280 bytes for the exact2026 archive; payload verification and all qualification/readiness flags remain false.
+**Boundary:** one authored Fetch and zero body-read API calls do not establish raw-wire, body-length/digest, hard transport/capture bounds or installed usability. Prior §22 approval-pending text is frozen revision-scoped history; this new grant is consumed.
+**Next source unit:** separately accept a bounded DATA_ONLY acquisition implementation and persisted offline failure tests; do not scale the64KiB fixture by constants or issue a GET under metadata permission.
+**Unchanged:** no archive GET/staging/extraction/install/Rust run/theme fetch/cleanup/publication is authorized; Rust BLOCKER/diagram MEDIUM OPEN, PR50 unmerged, `trainingReady:false`, step2 NOT DONE.
+
+## Current 2026 source subset — partial evidence / header proposal unapproved (2026-10-23)
+
+**[Unverified] Source findings:** [canonical §22](ml-runtime-redesign.md#22-2026-source-subset-assessment--partial-evidence-runtime-closure-blocked) separates GCC declarations from GDB/Python, whole-host SDK packaging, build-time manifest/RPATH work and end-user relocation. Actual retained subset and delivered runtime closure remain BLOCKED.
+**New boundary:** wrapper source has realpath versus bare-argv0 proc behavior and conditional cache/debug paths; this grants no local inspection or compiler execution. No Python-free SDK, safe manifest or host/target compatibility has been established.
+**Next proposal:** ONE exact Code Mode HEAD to the2026 archive URL, no body-consumption API or local query; syntax/static checks and research/proposal reviews passed. Request/header/result policy and unclosed integration limits are explicit. Register the whole proposal and obtain a fresh grant before sending it; no current request is authorized.
+**Unchanged:** no archive GET/install/Rust run/theme fetch or publication; Rust BLOCKER/diagram MEDIUM OPEN, prior operational grants consumed, `trainingReady:false`, step2 NOT DONE.
+
+## Current GNU candidate catalog — research only / no payload selected (2026-10-23)
+
+**[Unverified] Parent-reported public research:** [canonical §21](ml-runtime-redesign.md#21-gnu-candidate-catalog--public-metadata-and-pinned-source-no-payload-selected) catalogs Bootlin stable glibc2024.05-1/2025.08-1/2026.08-1, literal XZ/SHA references, published digests and pinned Buildroot source evidence; all remain METADATA_EXPECTATION_ONLY with no acquisition, installation or execution approval.
+**Red flag:** all three build configurations select Python-enabled host GDB; prove a separately approved Python-free GCC/sysroot installation/execution subset or STOP. Relocation differs: older whole-SDK scan versus2026 manifest; neither source script is approved to run.
+**Unknown:** exact archive lengths, authenticated signatures, actual SDK prefix/payload/ELF/loader requirements, extraction/containment bounds, offline Cargo/Node and local theme closure. Rounded sizes and reported glibc2.43/kernel7.0.12 do not qualify compatibility.
+**Research priority:** address the user's latest-version question by investigating2026 first; the unsupported2025 preference is withdrawn. Target sysroot glibc2.44 is not a demonstrated compiler host requirement or an exclusion. This does not approve a payload or operation; all previous operational grants remain consumed.
+**Acceptance:** runtime WIP `166a0bd9` unchanged/uncompiled, eight new tests unrun; Rust BLOCKER/diagram MEDIUM OPEN, notes last published `5aab9bb8`, PR50 OPEN/unmerged, `trainingReady:false`, step2 NOT DONE. Earlier entries remain frozen history.
+
+## Current GNU ABI outcome — metadata only / grant consumed (2026-10-23)
+
+**[Unverified] Reported outcome:** user approved ONE frozen ABI query; [canonical §20](ml-runtime-redesign.md#20-gnu-abi-query-outcome--metadata-collected-one-grant-consumed) preserves its source/command/proposal bindings and JSONLF receipt.
+**Observed data:** helper reported glibc2.43; Node kernel hint7.0.12; both metadata snapshots/all eligibility gates matched; child exit0,11 stdout bytes, empty stderr, complete bounded capture, two lstats/one spawn. These are screening metadata, not full ABI, executed-byte, loader, toolchain or Native qualification.
+**Permission:** consumed; no retry, alternate helper/path, follow-up probe, artifact request, install, Rust invocation or theme fetch is authorized. The older §19 proposal below is frozen history, not renewed permission.
+**Next:** build the GNU candidate input catalog against these reported hints, then independently qualify exact tool/loader/sysroot/source and containment inputs before any operation. Rust BLOCKER/diagram MEDIUM remain OPEN; PR50 unmerged, `trainingReady:false`, step2 NOT DONE.
+
+## Current GNU ABI input — query freeze selected / execution unapproved (2026-10-23)
+
+**[Unverified] Selected preparation:** user chose `Freeze ABI query (Recommended)` after publishing notes `5aab9bb8`; [canonical §19](ml-runtime-redesign.md#19-gnu-abi-query--freeze-selected-execution-unapproved) proposes a fixed Node/getconf metadata query, not a new probe grant.
+**Proposed scope:** <=2 named lstats of `/usr/bin/getconf`, <=1 exact GNU_LIBC_VERSION child with projected environment, kernel/runtime hints, bounded capture and one authored JSON; no fallback, authored file reads/opens, retained-root/cache/proc inspection or Native-qualification claim.
+**Proposal checks:** syntax-only parsing and static literal/call-site checks passed; closing adversarial/security proposal reviews accepted it, DevOps closed a wording LOW and spec review reports in-sync.
+**Pending:** whole-proposal registration, then ONE explicit helper-execution grant accepting ordinary outer-shell/Node/helper/loader/capture residuals. Prior metadata grants remain consumed; Rust tests and diagram rendering remain blocked, `trainingReady:false`.
+
 ## Current setup closure — GNU family selected / requirements only (2026-10-23)
 
 **[Unverified] Selected planning:** `Complete setup closure` then `GNU bundle (Recommended)`; [canonical §18](ml-runtime-redesign.md#18-complete-setup-closure--gnu-family-selected-operational-closure-not-closed) records parent research, lexical lock inventory, formal BOM gaps and the construction DAG, not completed setup.

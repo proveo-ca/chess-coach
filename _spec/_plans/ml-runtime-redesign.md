@@ -718,3 +718,537 @@ Research establishes official requirements and the reported lexical inventory ON
 Host ABI, exact tool/payload descriptors, loader/libs/extractor, offline bytes/configuration, process/network/resource enforcement and local theme path remain UNKNOWN: STOP.
 Next concrete input is approved HOST ABI/context evidence or a provided closed GNU artifact descriptor pack, with fresh approval before access; no current operation or repeated family/XZ/profile vote follows.
 Closing adversarial/security research-document reviews reported no findings and accepted documentation only; DevOps clarifications were applied and spec review reported in-sync. These reviews do not close the Rust/diagram blockers or qualify the setup for execution.
+
+## 19. GNU ABI query — freeze selected, execution unapproved
+
+**[Unverified] The user selected `Freeze ABI query (Recommended)` to prepare this proposal, not execute it.**
+Research/preflight notes were published as `5aab9bb88a1f9fdd53e22f04c1425171df3e46bd`; runtime source remains the uncompiled WIP from `166a0bd9` on OPEN/unmerged PR50.
+Architect `ses_e964b17c9ffegQGviJ6YtmIhNG` and DevOps `ses_e964b176dffew72K0VthfK0fYv` supplied read-only advice. All earlier grants remain consumed.
+This proposal adds ONE native helper execution to a possible future metadata grant; §16's no-candidate-execution profile does not authorize it.
+
+### 19.1 Exact proposed scope and meaning
+
+- Parent: previously reported `/usr/local/bin/node`, repository cwd, inherited ordinary harness environment; outer harness-shell/Node startup, hooks, loader and capture remain unqualified bootstrap residuals.
+- Authored observations: Node platform/architecture and `os.release()` kernel hint, plus at most two BigInt lstats of exactly `/usr/bin/getconf` before/after one possible query. No directory/PATH search, file content, open/hash/readlink, `process.report`, environment enumeration, authored retained-root/cache/home/configuration or `/proc` inspection.
+- Before execution require a nonempty regular file, UID0, nlink1, an execute bit, no group/world writes and no setuid/setgid. Record each gate and valid metadata snapshot before applying that gate; missing/symlink/rejected metadata means STOP with zero children, never `/bin/getconf` or another fallback.
+- The one possible child is `/usr/bin/getconf` with argv `["GNU_LIBC_VERSION"]`, shell:false, cwd `/tmp/opencode/f9-bootstrap-correspondence`, exact environment `{LC_ALL:"C",PATH:""}`, stdin ignored, stdout/stderr piped, timeout2000ms, maxBuffer256 and killSignal SIGKILL. No inherited environment entries reach that child.
+- Ordinary helper bootstrap, its actual executable contents, native loader/libraries and possible system loader-cache/preload-configuration activity remain unclosed trust residuals. Empty PATH/projected environment is not confinement or a zero-implicit-I/O guarantee. The Node body authors neither a Python command nor a helper-shell invocation/fallback.
+- The eligibility gates do not establish ELF format or exclude a script/shebang interpreter; shell:false is not an interpreter-free execution guarantee. This proposal relies on ordinary trust in the designated GNU host helper and selects no Python/script implementation or alternate helper; if that trust is unacceptable, use supplied audit evidence instead.
+- Compare named dev/ino/mode/uid/gid/nlink/size/mtimeNs/ctimeNs before/after, excluding atime. Equal snapshots do not identify the inode actually executed, bind a descriptor or protect ancestor/race windows.
+- `getconf` supplies a reported libc-version string for that helper context. It does not prove a direct `gnu_get_libc_version` call, future sysroot/linker libc selection, symbol versions, GLIBCXX/CRT/unwind compatibility or any complete host/Native ABI.
+- Publish a parsed version only after exit0, no signal/error, empty stderr, bounded complete capture, exact full ASCII output match and unchanged accepted metadata. Do not compare versions as floating-point values or emit a compatibility/ready verdict.
+
+### 19.2 Bounds and failure publication
+
+| Item | Proposed bound / limitation |
+| --- | --- |
+| Authored filesystem / child calls | <=2 lstats on one literal path, <=1 direct spawn, zero retries/fallbacks; no authored file opens/creates/deletes |
+| Clock / collection | <=32 samples including START; cooperative3500ms body deadline, checked before/after each lstat/spawn action |
+| Child capture | Node maxBuffer256; independently require returned stdout and stderr <=256 bytes each before treating capture as complete |
+| Capture failure | Oversized/unavailable or interrupted capture produces STOP with captureComplete:false and explicit raw omission/unavailability; never silently claim complete byte receipts |
+| Child timeout | 2000ms/SIGKILL request; synchronous return depends on termination; no hard wall-clock, subtree, FD or reap guarantee |
+| Authored output | One ASCII JSONLF <=8192 bytes, at most one checked borrowed-FD1 write, no retry; bounded streams use Base64 for byte preservation |
+| Harness timeout / capture | Proposed10000ms tool limit, not a hard OS/tree bound; startup/tool stdout/stderr capture is outside the authored-record cap |
+
+Node may buffer beyond maxBuffer before stopping a child; no hard native allocation/RSS bound follows. On overrun, raw bytes may be omitted only with explicit byte counts/flags and STOP; no glibc value or success claim follows.
+Diagnostic output bypasses the collection guard after failure; a short/failed/late write leaves exit3 and may leave partial JSON. METADATA_ONLY alone never proves successful delivery.
+`countsAtEncoding` is a snapshot before output serialization, not a final clock/sample invoice. Child stdio resources belong to Node's implementation; authored-call counters are not native syscall/physical-resource counts.
+
+### 19.3 Inert proposed program — never evaluate without fresh approval
+
+<!-- BEGIN GNU ABI QUERY V1 -->
+```mjs
+import fs from 'node:fs';
+import os from 'node:os';
+import { spawnSync } from 'node:child_process';
+const START = process.hrtime.bigint();
+const END = START + 3_500_000_000n;
+const HELPER = '/usr/bin/getconf';
+const CWD = '/tmp/opencode/f9-bootstrap-correspondence';
+const counts = { clock: 1, lstat: 0, spawns: 0 };
+const reasons = new Set(['TIME', 'LIMIT', 'HINT', 'MISSING', 'UNSAFE', 'METADATA', 'CHANGED', 'CAPTURE', 'QUERY', 'FORMAT']);
+const query = { argv: ['GNU_LIBC_VERSION'], environment: { LC_ALL: 'C', PATH: '' }, shell: false,
+  timeoutMs: 2000, maxBuffer: 256, killSignal: 'SIGKILL', attempted: false,
+  status: null, signal: null, errorCode: null, stdoutBytes: null, stderrBytes: null,
+  stdoutBase64: null, stderrBase64: null, rawOmitted: false, captureComplete: false };
+const report = { profile: 'gnu-abi-query-v1', status: 'STOP', reason: 'FS', runtimeHints: null,
+  helper: HELPER, before: null, beforeGates: null, after: null, afterGates: null, changedFields: [],
+  rejectedField: null, helperMetadataStable: false, query, glibcVersion: null,
+  nativeAuthority: false, rustReady: false, trainingReady: false };
+process.exitCode = 3;
+function fail(code) { const error = new Error('STOP'); error.code = code; throw error; }
+function guard() {
+  if (counts.clock >= 32) fail('LIMIT');
+  counts.clock++;
+  if (process.hrtime.bigint() >= END) fail('TIME');
+}
+function call(kind, action) {
+  guard();
+  if (counts[kind] >= (kind === 'lstat' ? 2 : 1)) fail('LIMIT');
+  counts[kind]++;
+  let result;
+  try { result = action(); } catch (error) { guard(); throw error; }
+  guard(); return result;
+}
+function hint(value, limit) {
+  if (typeof value !== 'string' || !value.length || value.length > limit || /[^\x20-\x7e]/.test(value)) fail('HINT');
+  return value;
+}
+function metadata(stat) {
+  const result = {};
+  for (const key of ['dev', 'ino', 'mode', 'uid', 'gid', 'nlink', 'size', 'mtimeNs', 'ctimeNs']) {
+    const value = stat[key], time = key === 'mtimeNs' || key === 'ctimeNs';
+    const min = time ? -(1n << 127n) : 0n, max = time ? (1n << 127n) - 1n : (1n << 64n) - 1n;
+    if (typeof value !== 'bigint' || value < min || value > max) { report.rejectedField = key; fail('METADATA'); }
+    result[key] = value.toString();
+  }
+  return result;
+}
+function gates(stat) {
+  return { regular: (stat.mode & 0o170000n) === 0o100000n, rootOwned: stat.uid === 0n, singleLink: stat.nlink === 1n,
+    nonempty: stat.size > 0n, executable: (stat.mode & 0o111n) !== 0n,
+    noGroupWorldWrite: (stat.mode & 0o022n) === 0n, noSetId: (stat.mode & 0o6000n) === 0n };
+}
+function capture(child) {
+  query.status = Number.isInteger(child.status) ? child.status : null;
+  query.signal = child.signal === null ? null : /^[A-Z0-9]{1,24}$/.test(child.signal ?? '') ? child.signal : 'OTHER';
+  const codes = ['ETIMEDOUT', 'ENOBUFS', 'ENOENT', 'EACCES', 'ENOEXEC'];
+  query.errorCode = child.error ? codes.includes(child.error.code) ? child.error.code : 'OTHER' : null;
+  let valid = true;
+  for (const key of ['stdout', 'stderr']) {
+    const bytes = child[key];
+    if (!Buffer.isBuffer(bytes)) { valid = false; continue; }
+    query[key + 'Bytes'] = bytes.length;
+    if (bytes.length > 256) { valid = false; query.rawOmitted = true; continue; }
+    query[key + 'Base64'] = bytes.toString('base64');
+  }
+  query.captureComplete = valid && !child.error && query.signal === null;
+  if (!valid) fail('CAPTURE');
+}
+try {
+  guard();
+  report.runtimeHints = { platform: hint(process.platform, 32), arch: hint(process.arch, 32), kernelRelease: hint(os.release(), 128) };
+  if (process.platform !== 'linux' || process.arch !== 'x64') fail('HINT');
+  const before = call('lstat', () => fs.lstatSync(HELPER, { bigint: true }));
+  report.before = metadata(before); report.beforeGates = gates(before);
+  if (!Object.values(report.beforeGates).every(Boolean)) fail('UNSAFE');
+  const child = call('spawns', () => {
+    query.attempted = true;
+    const value = spawnSync(HELPER, ['GNU_LIBC_VERSION'], { shell: false, cwd: CWD, env: { LC_ALL: 'C', PATH: '' },
+      stdio: ['ignore', 'pipe', 'pipe'], timeout: 2000, maxBuffer: 256, killSignal: 'SIGKILL' });
+    capture(value); return value;
+  });
+  if (query.errorCode !== null || query.status !== 0 || query.signal !== null || !query.captureComplete || query.stderrBytes !== 0) fail('QUERY');
+  const text = child.stdout.toString('utf8');
+  const match = /^glibc ([0-9]{1,4}\.[0-9]{1,4}(?:\.[0-9]{1,4})?)\n$/.exec(text);
+  if (!match || match[0] !== text) fail('FORMAT');
+  const after = call('lstat', () => fs.lstatSync(HELPER, { bigint: true }));
+  report.after = metadata(after); report.afterGates = gates(after);
+  report.changedFields = Object.keys(report.before).filter(key => report.before[key] !== report.after[key]);
+  if (report.changedFields.length) fail('CHANGED');
+  if (!Object.values(report.afterGates).every(Boolean)) fail('UNSAFE');
+  report.helperMetadataStable = true;
+  guard();
+  report.glibcVersion = match[1]; report.status = 'METADATA_ONLY'; report.reason = null;
+} catch (error) { report.reason = reasons.has(error?.code) ? error.code : error?.code === 'ENOENT' ? 'MISSING' : 'FS'; }
+try {
+  report.countsAtEncoding = { ...counts };
+  const text = JSON.stringify(report) + '\n';
+  if (text.length > 8192 || /[^\x00-\x7f]/.test(text)) throw new Error('OUTPUT');
+  const bytes = Buffer.from(text, 'ascii');
+  if (fs.writeSync(1, bytes, 0, bytes.length) === bytes.length && report.status === 'METADATA_ONLY') {
+    guard(); process.exitCode = 0;
+  }
+} catch { process.exitCode = 3; }
+```
+<!-- END GNU ABI QUERY V1 -->
+
+### 19.4 Proposed launch and approval gate
+
+The proposed literal launch is `/usr/local/bin/node --input-type=module <<'GNU_ABI_QUERY_V1'`, LF, the complete program including final LF, then `GNU_ABI_QUERY_V1` and LF; cwd is `/tmp/opencode/f9-bootstrap-correspondence`, inherited parent harness environment, tool timeout10000ms.
+Syntax-only Node parsing passed without evaluating this program; static comparison found only the helper/cwd literal paths, two lstat call sites and one spawn site. No helper or ABI observation occurred.
+Body identity:5543 UTF-8 bytes including final LF, SHA-256 `90b314be80fd436ff32823e89ac903a276b6b99f1a075dc528976caedb41e5a3`. Complete shell command:5621 UTF-8 bytes including final LF, SHA-256 `167283d6b7faec69d93e9343a3c001e59eefcf77300aa4fe68b5ebb8bdec4ae2`.
+Closing adversarial/security reviews accepted the proposal only with no findings; a LOW distinction between outer-shell startup and authored helper calls was clarified and closed. DevOps source review found no remaining issue, and spec review reported in-sync.
+Whole-proposal registration and fresh execution approval remain pending. Neither review acceptance, syntax parsing nor these source identities supply execution approval or current ABI qualification.
+Freeze the body, complete command and entire proposal bytes; perform proposal/static reviews before requesting ONE fresh grant that explicitly accepts both ordinary Node bootstrap and the helper/loader execution residuals.
+No query, lstat, child, version observation or fallback has run under this proposal. An approved or successful metadata query would still leave exact GNU payload/loader/sysroot/offline-source qualification and the Rust/diagram blockers open.
+
+## 20. GNU ABI query outcome — metadata collected, one grant consumed
+
+**[Unverified] Harness-supplied execution/child receipt, not independently authenticated ABI or Native evidence.**
+The user explicitly selected `Approve ABI query once`, accepting §19's ordinary outer-shell/Node/helper/loader/cache/capture residuals for ONE execution.
+Immediately before execution, repository-only checks matched whole canonical SHA-256 `cc4f965b97a792d55d7e6f0f2d8c011432e073dbf7fe20a46b47113bdf48184b`, complete §19 SHA-256 `749bea3849d2a988a89f7a41c623d84f648058f20df71da12edc778828242abe`, body `90b314be80fd436ff32823e89ac903a276b6b99f1a075dc528976caedb41e5a3` and command `167283d6b7faec69d93e9343a3c001e59eefcf77300aa4fe68b5ebb8bdec4ae2`.
+The registered5621-byte command ran once in the approved repository cwd, inherited parent harness environment and10000ms tool timeout; the tool returned normally without a timeout/error marker.
+The authored JSONLF was the following single line; parent stderr contained the existing experimental EnvHttpProxyAgent startup warning outside the authored-record bound:
+
+```json
+{"profile":"gnu-abi-query-v1","status":"METADATA_ONLY","reason":null,"runtimeHints":{"platform":"linux","arch":"x64","kernelRelease":"7.0.12"},"helper":"/usr/bin/getconf","before":{"dev":"82","ino":"1286","mode":"33261","uid":"0","gid":"0","nlink":"1","size":"31088","mtimeNs":"1784741087000000000","ctimeNs":"1784741087000000000"},"beforeGates":{"regular":true,"rootOwned":true,"singleLink":true,"nonempty":true,"executable":true,"noGroupWorldWrite":true,"noSetId":true},"after":{"dev":"82","ino":"1286","mode":"33261","uid":"0","gid":"0","nlink":"1","size":"31088","mtimeNs":"1784741087000000000","ctimeNs":"1784741087000000000"},"afterGates":{"regular":true,"rootOwned":true,"singleLink":true,"nonempty":true,"executable":true,"noGroupWorldWrite":true,"noSetId":true},"changedFields":[],"rejectedField":null,"helperMetadataStable":true,"query":{"argv":["GNU_LIBC_VERSION"],"environment":{"LC_ALL":"C","PATH":""},"shell":false,"timeoutMs":2000,"maxBuffer":256,"killSignal":"SIGKILL","attempted":true,"status":0,"signal":null,"errorCode":null,"stdoutBytes":11,"stderrBytes":0,"stdoutBase64":"Z2xpYmMgMi40Mwo=","stderrBase64":"","rawOmitted":false,"captureComplete":true},"glibcVersion":"2.43","nativeAuthority":false,"rustReady":false,"trainingReady":false,"countsAtEncoding":{"clock":9,"lstat":2,"spawns":1}}
+```
+
+### 20.1 Scoped interpretation and consumed permission
+
+Repository-only checks confirmed the approved canonical prefix and full §19 bytes remain unchanged. The persisted authored JSONLF copy is1311 bytes, SHA-256 `98e6e9447339c9e06f44cb9bd89b553423a950f02993b7cee146fa10ab7bd8a1`; decoded child stdout is11 bytes, SHA-256 `b9e88445cd5c3e93c1fd887ced19dc71d9cb6d08bda471076dbf3540668eb9d2`. These are copy-integrity checks, not independent transport, executable or host authentication.
+
+- The child receipt reports exit0, no signal/error,11 stdout bytes encoding `glibc 2.43` plus LF, empty stderr and complete bounded capture; no raw bytes were omitted.
+- Both named snapshots and every recorded eligibility gate matched. This is metadata equality only, not descriptor binding, executed-inode identity, ELF/interpreter qualification, immutable loading or a full source graph.
+- Kernel7.0.12 is a Node-reported running-kernel hint; glibc2.43 belongs to this helper execution context. Neither alone establishes future compiler/target/sysroot/loader/GLIBCXX/CRT/unwind compatibility or physical Native ABI.
+- `clock:9` is the pre-encoding counter snapshot; two authored lstats and one spawn attempt are source-call observations, not a physical syscall/FD/subtree/clock invoice or an independent EOF/reap proof.
+- The query authored no Python command, helper-shell invocation/fallback, filesystem content read/open/create/delete, retained-root/source-cache/proc inspection, Rust command, archive acquisition, installation, model training or theme fetch. Ordinary startup/loader activity remains the explicitly accepted unclosed residual, not a zero-I/O claim.
+- This one-shot grant is CONSUMED; no retry, alternate helper/path, further version probe, installation, build, acquisition or other operation follows automatically. §19 remains the immutable revision-scoped approved proposal, not ongoing permission.
+
+### 20.2 Next concrete setup input
+
+Use these reported versions only to screen the selected GNU-family candidate catalog. Do not select a newer sysroot or assume compatibility from a version label; exact host and target executable/library/symbol requirements and usability still require independent qualification.
+The next catalog should record publisher, release/triplet, immutable artifact URL, published size/digest/signature, build configuration and source/license provenance. Keep compiler host-runtime requirements distinct from emitted-code target/sysroot requirements; sysroot2.44 alone does not reject a bundle and sysroot2.41 alone does not establish compatibility with reported2.43.
+GNU provider/version/payload/installer selection, bounded artifact descriptors and source/license provenance, preparation tools, offline Cargo/Node inputs, actual containment/resource limits and the supplied offline theme path remain unresolved.
+No GNU archive was requested, no Rust test compiled or ran, and no runtime verification blocker was waived. Published notes remain `5aab9bb8`, runtime source remains the uncompiled WIP from `166a0bd9`, PR50 remains OPEN/unmerged and `trainingReady:false`.
+Closing adversarial/security reviews accepted this receipt documentation only with no findings; spec review reported in-sync. The one-shot permission remains consumed and all runtime/Native/diagram qualification gates remain open independently.
+
+## 21. GNU candidate catalog — public metadata and pinned source, no payload selected
+
+**[Unverified] Parent-reported public research; no archive bytes, installed tools or local compatibility were verified.**
+The user's `continue` permits this RESEARCH-ONLY catalog, not acquisition or another metadata-query program.
+Architect `ses_e957bfb3dffeOhS01plxYAbObY` and DevOps `ses_e957bfa8fffeTsH048bHF8JA83` supplied read-only advice.
+The parent read public HTML, SHA plaintext, release README/fragments/CSV and commit-addressed source scripts only.
+No archive HEAD/GET, extraction, installation, execution, local query, source-cache or retained-root access occurred in that research.
+This keeper reads/patches only the two canonical planning documents; all bytes before §21 remain unchanged.
+§§19/20 remain accepted revision-scoped history; the getconf grant is consumed and reports only glibc2.43/kernel7.0.12 hints.
+Bootlin is a candidate publisher; **no provider, release, payload or installer is approved for acquisition, installation or execution**.
+
+### 21.1 Three stable glibc XZ candidates — metadata expectations only
+
+Observed catalog: https://toolchains.bootlin.com/releases_x86-64.html
+Observed archive directory: https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/
+The release index/README report these versions; they are not inspected payload contents or host-runtime requirements.
+
+| Candidate release | GCC | GDB | Linux headers | Target glibc revision | Binutils | Rounded directory display | Exact compressed byteLength |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 2024.05-1 | 13.3.0 | 14.2 | 4.19.315 | 2.39-74-g198632a05f6c7b9ab67d3331d8caace9ceabb685 | 2.41 | 82M | UNKNOWN |
+| 2025.08-1 | 14.3.0 | 15.2 | 5.4.296 | 2.41-70-g1502c248d58cb99a203731707987a4342926e830 | 2.43.1 | 89M | UNKNOWN |
+| 2026.08-1 | 15.3.0 | 16.3 | 5.10.269 | 2.44-36-g2d5421ffca8893534d5e02ad38c28acd8e778fa3 | 2.45.1 | 98M | UNKNOWN |
+
+**2024.05-1 literal published references:**
+- Archive href: https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-2024.05-1.tar.xz
+- SHA plaintext: https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-2024.05-1.sha256
+- Published expected SHA-256: `932823ca9a3e067e7e2a29810a666d20c9cc5bb550de947f6879e38ace1aa955`.
+
+**2025.08-1 literal published references:**
+- Archive href: https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-2025.08-1.tar.xz
+- SHA plaintext: https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-2025.08-1.sha256
+- Published expected SHA-256: `760acd5c3159448b618e237b61935335baada74fe0cdc0d7611826cb49b41c8c`.
+
+**2026.08-1 literal published references:**
+- Archive href: https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-2026.08-1.tar.xz
+- SHA plaintext: https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-2026.08-1.sha256
+- Published expected SHA-256: `cde893afab04ac7dcd15c46aac214ff550441b982536124c88a71146a0eeedd3`.
+
+Each read SHA record contained its64-character digest, two spaces and the matching `.tar.xz` basename.
+The SHA reference ends in `.sha256`, NOT `.tar.xz.sha256`; directory size105 belongs to that text file, not the archive.
+Neither105 nor rounded82M/89M/98M supplies an archive byteLength, extraction limit or storage requirement.
+All three are `METADATA_EXPECTATION_ONLY`; same-publisher digest text is not independent signature authentication or payload readback.
+Detached archive signature, signing key and independently authenticated verification remain UNKNOWN; no absence/bad-signature claim follows.
+Bootlin's https://toolchains.bootlin.com/faq.html says the toolchains are built to run on x86-64 and URLs are kept long-term without an absolute guarantee.
+Versioned HTTPS URLs are published references, not proven immutable objects; this qualifies §20.2's requested immutable-URL field as still UNKNOWN.
+Actual host loader, GLIBC/GLIBCXX/ISA and emitted-code/sysroot requirements remain distinct UNKNOWNs for every candidate.
+Do not reject2026 solely because sysroot2.44 exceeds reported2.43, or admit2025 solely because2.41 is lower.
+
+### 21.2 Release evidence and historical source identities
+
+Define `B = https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/` and `N(r) = x86-64--glibc--stable-<r>` for the three literal release strings above.
+The parent read each `B + readmes/N(r).txt`, `B + fragments/N(r).frag`, `B + build_fragments/N(r).defconfig` and `B + summaries/N(r).csv`.
+These are exact URL-construction formulas for public metadata, not shell recipes or authority to fetch another object.
+README names versions/source/license links and a checkout in https://github.com/bootlin/buildroot-toolchains.git.
+
+| Release | README checkout tag, exact punctuation | API-resolved Buildroot commit | CSV Buildroot version |
+| --- | --- | --- | --- |
+| 2024.05-1 | `toolchains.bootlin.com-2024.05.1` | `1bef6133191aec7b923f5ff80af077c5cdab4e20` | 2021.11-12449-g1bef613319 |
+| 2025.08-1 | `toolchains.bootlin.com-2025.08.1` | `83947c7bb6158072bc2f52b58e90891cd3dc04a2` | 2021.11-18033-g83947c7bb6 |
+| 2026.08-1 | `toolchains.bootlin.com-2026.08-1` | `48bfc2c656979dbbb24277ffc6746ea7a6af4a50` | toolchains.bootlin.com-2026.08-1 |
+
+Tag API formula: `https://api.github.com/repos/bootlin/buildroot-toolchains/git/ref/tags/<exact-tag>`.
+The2026 ref names annotated tag `84c5a4d7dfeff0e552e3e4bc8232c342ab8c3522`; https://api.github.com/repos/bootlin/buildroot-toolchains/git/tags/84c5a4d7dfeff0e552e3e4bc8232c342ab8c3522 supplied the peeled commit above.
+Its API verification `{verified:false,reason:'unknown_key'}` is tag metadata, not archive verification, an archive bad signature or proof of an unsigned archive.
+These are published source refs, not established SDK-to-source correspondence or independently authenticated release identities.
+Historical builder-orchestrator revisions remain UNKNOWN; current toolchains-builder master `09655fd00bebf3f96b5912245d3db818eec0434f` dated2026-08-12 is CURRENT REFERENCE ONLY.
+Do not substitute current master, current script names or a failed raw-script URL for historical build provenance; no fallback was executed.
+At EACH table commit `C`, the parent read `https://raw.githubusercontent.com/bootlin/buildroot-toolchains/<C>/<P>` for these exact paths:
+- `support/misc/relocate-sdk.sh`
+- `docs/manual/using-buildroot-toolchain.adoc`
+- `toolchain/toolchain-buildroot/Config.in`
+- `package/Makefile.in`
+
+### 21.3 Build configuration, no-Python red flag and license boundaries
+
+External `.frag` files describe consumer integration, not how the SDK was built; they declare x86-64 glibc, C++, OpenMP, SSP and threads.
+The2024/2025 integration URL uses HTTP;2026 uses HTTPS. Do not copy historical HTTP acquisition instructions; any future approved acquisition must use approved HTTPS.
+Actual `.defconfig` source-build fragments explicitly set `BR2_PACKAGE_HOST_GDB=y`, `BR2_PACKAGE_HOST_GDB_TUI=y` and `BR2_PACKAGE_HOST_GDB_PYTHON3=y` in ALL THREE releases.
+CSV host-GDB dependencies include host-python3, with Python rows3.11.8/3.13.5/3.14.7 respectively; this is a concrete **whole-SDK no-Python red flag**.
+No GCC Python dependency follows merely from GDB's configuration; the selected GCC/sysroot execution and installation subset is still UNKNOWN.
+Opaque acquisition of upstream bytes containing Python files would not itself select Python execution, but does not qualify the whole SDK as no-Python compatible.
+Before installation/execution, prove an explicitly approved Python-free subset and every required helper/runtime edge, or STOP.
+No Python/GDB extraction, installation or execution, source bootstrap or README reproduction recipe is approved.
+The defconfigs also publish `BR2_WGET` with `--no-check-certificate`, retry3 for2024 and retry10 for2025/2026.
+Those are source facts, never permission to disable TLS checks, retry, use fallback acquisition or execute upstream recipes.
+CSV gcc-final records GPL-3.0-with-GCC-exception/COPYING.RUNTIME; host-GCC rows carry GPL variants and glibc components carry differing GPL/LGPL/BSD/MIT claims.
+The2024/2025 metadata includes unknown skeleton licenses; license labels and visible roots do not establish a complete correspondence/compliance audit.
+The parent viewed HTML roots https://toolchains.bootlin.com/downloads/releases/sources/ and https://toolchains.bootlin.com/downloads/releases/licenses/ only; no source tarball was downloaded.
+Require exact per-component source, revision, applicable license/exception and installed-subset correspondence; toolchains-builder's project LICENSE is not a component-license grant.
+
+### 21.4 Preparation and triplet — source evidence, not permission to run
+
+Pinned manuals say to run `relocate-sdk.sh` after extraction before use; optional `environment-setup` changes a CROSS context, not proof of native HOST usability.
+The manual's example `.tar.gz` does not reclassify these observed `.tar.xz` artifacts or reopen the XZ choice.
+The2024/2025 relocation sources use `/bin/sh`, dirname, `readlink -f`, cat, sed, whole-SDK `grep -lr`, `file --mime-type` filtering and in-place text rewrites.
+They update `share/buildroot/sdk-location`; this is a broad scan/mutation surface, not an approved blind setup step or immutable-prefix guarantee.
+The2026 source uses `share/buildroot/sdk-relocs` instead of that grep/file scan, while retaining shell/dirname/readlink/cat/sed dependencies.
+Manifest-driven does not mean safe: unqualified manifest paths, traversal and symlink following can escape a proposed root.
+Before relocation require bounded allowlisted paths/new-root writes, actual helper/runtime closure, manifest validation and post-transform identity evidence.
+No explicit Python command appears in these relocation sources; actual SDK-script correspondence and transitive no-Python runtime closure remain UNKNOWN.
+No SDK script ran and no SDK environment was sourced; source instructions grant neither setup execution nor PATH/environment changes.
+Pinned configuration defaults vendor to `buildroot`; Makefile defines `GNU_TARGET_NAME=$(ARCH)-$(TARGET_VENDOR)-$(TARGET_OS)-$(LIBC)$(ABI)`, with linux/gnu and TARGET_CROSS-prefixed tools.
+[Inference] Fragment/default composition suggests `x86_64-buildroot-linux-gnu`; this is a source-derived hint, NOT an observed SDK prefix or executable name.
+`actualSDKTriplet`, executable paths and install layout remain UNKNOWN; the Rust target stays `x86_64-unknown-linux-gnu`.
+HOST tools/build scripts and TARGET outputs require separate qualification; an environment script or tuple label cannot qualify either graph.
+
+### 21.5 Evidence tiers, unresolved fields and next research decision
+
+| Tier | Present status / future independent evidence |
+| --- | --- |
+| Metadata expectations | Three useful published candidate records only; `pinComplete:false`, no selected GNU payload. |
+| DATA_ONLY content verification | `contentVerified:false`; later approved bounded acquisition plus exact length/hash/independent readback, not installer approval. |
+| Installed usability | `installedUsability:false`; later approved preparation, actual ELF/loader/helper/no-Python closure and scoped usability evidence. |
+| Native qualification | `nativeQualified:false`; separate source/name/loading/custody/clock/authority obligations, never minted by the prior tiers. |
+
+Do not require installed usability before proposing DATA_ONLY acquisition; do require separately reviewed exact input descriptors, source bounds and explicit acquisition permission.
+No archive headers/length request or body fetch is granted now; missing exact compressed length, authenticated proof and payload manifest stay UNKNOWN.
+Expanded bytes/entries, extraction caps, preparation binaries, ELF/library/symbol requirements and actual filesystem/network/process/resource controls remain UNKNOWN.
+The663 candidate registry sources are not cached-byte evidence; selected offline Cargo inputs, Node/tsx closure and supplied local theme/renderer remain unqualified.
+The64KiB fixture is not an archive budget; preserve per-object binding/security/hash/readback and do not scale it by changing constants.
+Three versions were offered for **further source/metadata qualification ONLY**, not provider/payload approval, acquisition or another GNU-family/XZ vote:
+- **2024.05-1:** older GCC/sysroot, rounded82M, broad-scan relocation; potentially smaller input, but Python/GDB and compatibility gaps remain.
+- **2025.08-1:** middle GCC/sysroot, rounded89M, broad-scan relocation; no compatibility inference from sysroot2.41 versus reported2.43.
+- **2026.08-1:** newer GCC/sysroot, rounded98M, manifest relocation; larger displayed input and manifest-path qualification, not rejection merely for sysroot2.44.
+The user asked why not the latest2026 candidate; that question is not an artifact or operational approval. The initial2025 recommendation was not backed by compatibility evidence and is withdrawn.
+Prioritize2026 for further public-source investigation in response to that steering; retain the other two as comparison candidates. No evidence retrieved here rules out2026 for qualification merely because its target sysroot is glibc2.44.
+[Inference] The manifest-based2026 relocator provides a more explicit path-list audit surface than the older broad scan, but actual manifest safety, no-Python closure and executable compatibility remain unproved.
+Further operational grants remain independent; this research priority authorizes no archive HEAD/GET, installation or execution and does not change Rust1.95/Burn or the fixed GNU target.
+Rust1.95 GNU, Burn=0.22 Flex f64/std/flex/optim/store, five Rust XZ pins, RNG, backend, target, fees, data/labels/credits/meters/clocks and all F9/legal/Native controls remain unchanged.
+Runtime WIP `166a0bd9` is unchanged/uncompiled with eight unrun new tests; Rust BLOCKER and diagram MEDIUM stay OPEN and binding.
+Published notes remain `5aab9bb8`, PR50 OPEN/unmerged; this continuation grants no commit/push, merge, package change, test run, cleanup or training.
+Operational closure remains NOT CLOSED; `trainingReady:false`, §10 OPEN and step2 NOT DONE.
+Closing adversarial/security research-document reviews found no findings; DevOps reviewed the candidate distinctions and spec review reported in-sync. Acceptance covers catalog documentation only, not a payload, installation, execution or runtime verification waiver.
+
+## 22. 2026 source-subset assessment — partial evidence, runtime closure blocked
+
+**[Unverified] Public-source findings at Buildroot commit `48bfc2c656979dbbb24277ffc6746ea7a6af4a50`; no SDK bytes or local tools were inspected.**
+The user's `proceed` continues2026 source qualification, not archive acquisition, host observation, setup execution or a no-Python waiver.
+Architect `ses_e94e1ea90ffeCk2mArk7BMxs6n` and DevOps `ses_e94e1ea8effe1XDO0hrWhzzYdo` supplied read-only advice; the parent fetched individual public text sources only.
+Define `S = https://raw.githubusercontent.com/bootlin/buildroot-toolchains/48bfc2c656979dbbb24277ffc6746ea7a6af4a50/`; paths/line ranges below refer to that exact source revision, not observed archive contents.
+
+### 22.1 Declared dependency and packaging evidence
+
+| Proposed component treatment | Source evidence at S | Scope / remaining obligation |
+| --- | --- | --- |
+| GCC driver/wrapper: investigate for retention | `package/gcc/gcc.mk:59–77,302,353–373`; `package/gcc/gcc-final/gcc-final.mk:25–27,67–77,114–129` | Reviewed declarations list binutils/GMP/MPC/MPFR, libc and conditional dependencies, not a direct GDB/Python edge. These are build declarations, not a complete delivered runtime graph. |
+| GDB/Python: exclude from any proposed no-Python installation/execution subset | `package/gdb/gdb.mk:291–296`; `package/python3/python3.mk:16–18,246–251` | Configured host-GDB adds host-python3 and an explicit host Python path; host Python installs into HOST_DIR and adds aliases. Excluding GDB alone does not prove Python absent elsewhere. |
+| Target sysroot/CRT/libraries: investigate for retention as actually required | `package/glibc/glibc.mk:46–55,121–123,194–204`; `package/linux-headers/linux-headers.mk:118–154`; `package/gcc/gcc-final/gcc-final.mk:131–184` | Source describes staging headers/libs and conditional libgcc_s/libstdc++/libatomic/libgomp, not exact payload files or host ELF dependencies. Do not discard host C++ runtime libraries merely because the input language is C. |
+| Local source reproduction: not an accepted bootstrap route | `package/glibc/glibc.mk:50–51`; `support/dependencies/dependencies.sh:89–112` | glibc source building has a Python-host dependency variable; Buildroot source building checks a host compiler. Those do not establish a Python runtime requirement for prebuilt libc, and do not authorize local rebuilding. |
+| Whole SDK: not a curated no-Python subset | `Makefile:614–640` | `prepare-sdk` depends on world; `sdk` archives the host directory, without a demonstrated GCC-only/Python-free pruning rule. Symbol stripping is not dependency removal. |
+
+No Python interpreter, GDB, SDK or sysroot was extracted, installed or executed in this assessment. The source declarations support investigating a split, not certifying its completeness.
+
+### 22.2 Relocation producer, consumer and build-time sanitization
+
+`Makefile:619–629` generates `share/buildroot/sdk-relocs` by recursively grepping HOST_DIR for its old prefix, selecting text MIME results, excluding the location/list files and replacing the leading HOST_DIR with `.`.
+The source format is line-oriented and generated from the whole host tree, not the proposed retained subset. Whitespace/newline names, prefix escaping, symlinks, exclusions and actual manifest completeness need explicit handling; no existing manifest was observed.
+The end-user consumer `support/misc/relocate-sdk.sh` reads that list and performs in-place sed substitutions, then updates `sdk-location`; its manifest loop is not a root-containment validator or a transaction/rollback guarantee.
+Build-time RPATH work is separate: `Makefile:741–750,802–805` invokes `support/scripts/fix-rpath` for host/staging/target trees.
+`support/scripts/fix-rpath:1,56,66–104,114–190` uses Bash/patchelf and supporting utilities, creates work files and returns success after a path labeled to ignore errors. This is source behavior, not evidence that every delivered ELF RPATH was successfully sanitized.
+No relocation, RPATH tool, SDK environment script or regeneration recipe is approved to run. A curated manifest or replacement relocator would change the preparation design and needs an explicit accepted file plan, persisted tests, review and later execution approval.
+
+### 22.3 Wrapper and host/target boundary
+
+`package/gcc/gcc.mk:302,353–373` describes `.br_real` backing programs, wrapper links and simple tool aliases; `toolchain/toolchain-wrapper.mk:16–55,86–96` supplies relative sysroot/configuration arguments and builds/installs the C wrapper.
+`toolchain/toolchain-wrapper.c:261–302` resolves a slash-bearing argv0 using realpath; the bare-name branch reads `/proc/self/exe`. Absolute invocation can avoid that particular source branch, not prove the entire compiler process tree avoids proc or other unapproved inputs.
+The wrapper constructs its sysroot at `:345–349` and eventually calls execv at `:551`; conditional ccache/environment-controlled behavior appears at `:338–344,506–530`, and debug settings can print arguments at `:245–259,532–549`.
+Future direct paths, argv0, environment/configuration and optional-cache/debug policy must be frozen from actual qualified inputs. No current environment, cache or proc observation was performed here.
+Reviewed source does not supply actual delivered ELF interpreters, DT_NEEDED/symbol-version closure, selected compiled wrapper macros, CPU requirements, executed-image identity or a qualified SDK prefix.
+Rust's fixed GNU target, shipped-LLD branch and HOST build-script/proc-macro linking remain independent obligations; no wrapper bypass, new target, panic/static flag, SDK environment sourcing or helper selection follows.
+
+### 22.4 Source-only gate and useful next evidence
+
+`SourceSubsetAssessment.result = BLOCKED`: retained runtime edges, actual subset inventory, Python-free installation/execution, payload correspondence and safe relocation are unresolved.
+The useful result is a referenced proposed split and concrete inspection obligations, not `pythonFreeSubsetVerified:true`, installed usability, Native authority or a completed Rust runtime.
+Opaque DATA_ONLY acquisition need not wait for installed-usability proof, but it needs its own reviewed bounded implementation, exact expectations and fresh grant; the64KiB fixture is not that implementation.
+The candidate archive's exact length is still UNKNOWN. A separately approved HEAD can add advertised metadata without reading/extracting its body or selecting it for installation.
+
+### 22.5 Header-only request proposal — execution unapproved
+
+The following is proposed Code Mode JavaScript for ONE authored Fetch call on the already published2026 candidate URL. No GET, response-body read API, filesystem/host query, shell or subprocess is authored.
+The ordinary read-only integration is trusted for transport/startup; underlying DNS/TLS/proxy/cache behavior, authentication injection, internal attempts, duration, wire/header buffering, RSS and tool capture are not hard-bounded by this source. `credentials:'omit'` and `cache:'no-store'` are requested policies, not independent infrastructure-isolation proof.
+No timer or physical-network/source-graph qualification is claimed; this differs from a host-side native controller. Fresh approval must explicitly accept these integration residuals rather than borrowing a previous host-query grant.
+The request forbids redirects and asks for identity encoding. It requires exposed status200, exact response URL, redirected:false, canonical positive safe-integer Content-Length, absent/identity Content-Encoding, and no exposed Transfer-Encoding or Content-Range.
+These are normalized Fetch header values, not raw-header uniqueness or an HTTP-validity judgment. MIME type, ETag and Last-Modified are informational; dates/ETags do not authenticate bytes or timestamps.
+The returned record is ASCII JSON <=4096 bytes before integration framing; optional exposed values are rejected above256 printable ASCII characters rather than truncated. Generic STOP reasons expose no exception text, cookies or authentication headers.
+`bodyReadApiCalls:0` means no authored body-consumption API, not a guarantee of zero transported bytes. A successful HEAD adds only HEADER_ADVERTISED_LENGTH metadata; it verifies neither the expected SHA nor archive contents, no-Python subset, installation, Rust readiness or Native authority.
+
+<!-- BEGIN GNU 2026 HEAD METADATA V1 -->
+```js
+const URL = 'https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-2026.08-1.tar.xz';
+const out = { profile: 'gnu-2026-head-metadata-v1', status: 'STOP', reason: 'FETCH_FAILED', url: URL, method: 'HEAD',
+  httpStatus: null, responseUrl: null, redirected: null, headerView: 'FETCH_NORMALIZED', headers: null,
+  headerAdvertisedLength: null, headerAdvertisedBytes: null, sourceFetchCalls: 0, bodyReadApiCalls: 0,
+  expectedPublishedSHA256: 'cde893afab04ac7dcd15c46aac214ff550441b982536124c88a71146a0eeedd3',
+  payloadVerified: false, pythonFreeSubsetVerified: false, installedUsability: false,
+  nativeQualified: false, rustReady: false, trainingReady: false };
+function reject(reason) { out.reason = reason; throw new Error('STOP'); }
+try {
+  out.sourceFetchCalls = 1;
+  const response = await fetch(URL, { method: 'HEAD', redirect: 'error', credentials: 'omit', cache: 'no-store',
+    headers: { 'Accept-Encoding': 'identity' } });
+  if (!Number.isInteger(response.status) || response.status < 100 || response.status > 599) reject('RESPONSE_POLICY');
+  out.httpStatus = response.status;
+  if (response.url !== URL || response.redirected !== false) reject('URL_POLICY');
+  out.responseUrl = response.url; out.redirected = false;
+  const headers = {};
+  for (const name of ['content-length', 'content-encoding', 'transfer-encoding', 'content-range', 'content-type', 'etag', 'last-modified']) {
+    const value = response.headers.get(name);
+    if (value !== null && (typeof value !== 'string' || value.length > 256 || /[^\x20-\x7e]/.test(value))) reject('HEADER_VIEW_POLICY');
+    headers[name] = value;
+  }
+  out.headers = headers;
+  if (out.httpStatus !== 200) reject('STATUS_POLICY');
+  if (headers['transfer-encoding'] !== null) reject('TRANSFER_ENCODING_POLICY');
+  if (headers['content-range'] !== null) reject('RANGE_POLICY');
+  if (headers['content-encoding'] !== null && headers['content-encoding'].toLowerCase() !== 'identity') reject('ENCODING_POLICY');
+  const length = headers['content-length'];
+  if (typeof length !== 'string' || !/^[1-9][0-9]*$/.test(length)) reject('LENGTH_POLICY');
+  const count = Number(length);
+  if (!Number.isSafeInteger(count) || count <= 0) reject('LENGTH_POLICY');
+  out.headerAdvertisedLength = length; out.headerAdvertisedBytes = count;
+  out.status = 'HEADER_ADVERTISED_LENGTH'; out.reason = null;
+} catch {}
+const text = JSON.stringify(out);
+if (text.length > 4096 || /[^\x00-\x7f]/.test(text)) {
+  return { profile: 'gnu-2026-head-metadata-v1', status: 'STOP', reason: 'RESULT_POLICY',
+    sourceFetchCalls: out.sourceFetchCalls, bodyReadApiCalls: 0, payloadVerified: false,
+    pythonFreeSubsetVerified: false, installedUsability: false, nativeQualified: false, rustReady: false, trainingReady: false };
+}
+return out;
+```
+<!-- END GNU 2026 HEAD METADATA V1 -->
+
+### 22.6 Registration, reviews and separate permission
+
+Register exact Code Mode body and the whole current §22 proposal after static reviews, then request ONE fresh metadata-only execution grant; an executable change invalidates that approval.
+Syntax-only parsing in an uninvoked async-function wrapper passed; this does not evaluate the request or qualify integration behavior. Static comparison found one authored Fetch call and no body-read API call sites.
+The exact proposed Code Mode body is2810 UTF-8 bytes including final LF, SHA-256 `1eff6117ca39ea691d83ae333db3928e0329716e49ca60bae825e461f4f576e0`. Closing adversarial/security reviews accepted research/proposal documentation only with no findings; DevOps reviewed the length-provenance boundary and spec review reported in-sync.
+Whole-proposal registration and fresh execution approval remain pending. A future advertised-length result must retain that provenance; actual payload byte length/hash/readback remain unverified until separately approved acquisition.
+No HEAD request has run under this proposal. Existing local query grants remain consumed; no archive GET, body read/retention, extraction, installation, candidate execution, Rust/test command, cache/proc probe, theme fetch, cleanup or publication follows.
+All four evidence tiers from §21 remain separate; actual source/payload/loader/No-Python/containment qualification and the Rust BLOCKER/diagram MEDIUM remain open with `trainingReady:false`.
+
+## 23. 2026 HEAD outcome — advertised length collected, one grant consumed
+
+**[Unverified] Read-only integration result, not raw HTTP-wire, archive-content or Native evidence.**
+The user explicitly selected `Approve HEAD once`, accepting §22's opaque transport/proxy/cache/auth-injection/internal-attempt/startup/capture residuals without hard network, duration, buffering or RSS guarantees.
+Immediately before execution, repository-only checks matched whole canonical SHA-256 `637d86c9afaa5e92116d4b6c24ed4dcf5219ee65882523efc9586c80d9cb8676`, complete §22 SHA-256 `0d2b13e9c69c2153d954950c945f4b2e1864e74ef9522eaa8e92441b892814ad` and2810-byte Code Mode body `1eff6117ca39ea691d83ae333db3928e0329716e49ca60bae825e461f4f576e0`.
+That exact body ran once. The integration returned the following object, represented here as compact JSON for copy integrity, not as authenticated raw response bytes:
+
+```json
+{"profile":"gnu-2026-head-metadata-v1","status":"HEADER_ADVERTISED_LENGTH","reason":null,"url":"https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-2026.08-1.tar.xz","method":"HEAD","httpStatus":200,"responseUrl":"https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/x86-64--glibc--stable-2026.08-1.tar.xz","redirected":false,"headerView":"FETCH_NORMALIZED","headers":{"content-length":"102296280","content-encoding":null,"transfer-encoding":null,"content-range":null,"content-type":"application/x-xz","etag":"\"618ead8-65acb0981cc50\"","last-modified":"Sun, 06 Sep 2026 06:59:04 GMT"},"headerAdvertisedLength":"102296280","headerAdvertisedBytes":102296280,"sourceFetchCalls":1,"bodyReadApiCalls":0,"expectedPublishedSHA256":"cde893afab04ac7dcd15c46aac214ff550441b982536124c88a71146a0eeedd3","payloadVerified":false,"pythonFreeSubsetVerified":false,"installedUsability":false,"nativeQualified":false,"rustReady":false,"trainingReady":false}
+```
+
+### 23.1 Scope and candidate descriptor
+
+Repository-only checks confirmed the approved canonical prefix and whole §22 bytes remain unchanged. The compact JSON copy including its storage LF is1012 bytes, SHA-256 `7c7bc3605121a7193f3492164a3c7c3f930b575359cbaafbbaafdafacaa11cc6`; this authenticates neither raw HTTP bytes nor the integration's transport encoding.
+
+- The exposed headers advertise exactly102296280 bytes, with status200, matching URL, redirected:false and absent content/transfer encoding and content range. This is normalized-header evidence, not raw uniqueness or observed payload length.
+- Content type, ETag and Last-Modified are informational. None establishes a payload digest, independently authenticated publisher, immutable object or trusted clock.
+- The one authored Fetch call and zero authored body-read API calls are source observations, not a physical request/connection count or zero transported-byte guarantee.
+- Preserve §21's earlier exact-length UNKNOWN as historical research status; this later result adds `headerAdvertisedLength:'102296280'`, not `actualPayloadLengthVerified:true`.
+- A future independently registered comparison target may combine that advertised length with expected published SHA-256 `cde893afab04ac7dcd15c46aac214ff550441b982536124c88a71146a0eeedd3` and the same exact2026 URL/name. Actual incoming length/digest and independent readback must still match before even DATA_ONLY content acceptance.
+- That future expectation does not approve GNU provider/payload acquisition or installation, select SDK/GDB/Python files for extraction, establish the blocked source-subset graph, or qualify any executable.
+- The one-shot HEAD permission is CONSUMED. No retry, GET, follow-up header/host query, body retention, filesystem staging, extraction, installation, Rust invocation, training or theme fetch follows automatically.
+
+### 23.2 Next implementation gate
+
+The next useful source unit is a separately accepted bounded DATA_ONLY acquisition implementation with persisted offline transport/descriptor/custody/cleanup failure tests, not a constant increase to the64KiB fixture or an immediate large-archive attempt.
+It must retain independent per-object named/FD identity and security, exclusive fresh paths, bounded positional I/O, exact incoming byte/digest checks, successful single-attempt descriptor closure, independent readback/EOF/digest and absorbing failure.
+Implementation/test permission, real filesystem staging, external archive GET, extraction/installation, offline build and Native qualification remain separate scopes; actual archive GET approval is NONE here.
+Rust source remains the uncompiled WIP from `166a0bd9`; notes last published `5aab9bb8`/PR50 OPEN/unmerged. The Rust BLOCKER and diagram MEDIUM remain binding, `trainingReady:false`, step2 NOT DONE.
+Closing adversarial/security reviews accepted this metadata receipt documentation only with no findings; spec review reported in-sync. The HEAD grant remains consumed and supplies no acquisition, installation or runtime waiver.
+
+## 24. Offline acquisition unit — implemented and tested, real acquisition unapproved
+
+**[Unverified] Current source mapping and parent-run evidence cover the offline unit only, not real GNU payloads or Rust/Native readiness.**
+The user explicitly selected `Implement offline unit`: actual new source plus persisted tests, with ALL transport mocked and no TCP, listeners or external operations.
+Architect `ses_e94c2f5ecffe6BAhVOVabqE1Ya` and DevOps `ses_e94c2f53fffeOzbRTBWZtL2s65` supplied the accepted planning advice.
+The source handoff added `tooling/native-ingress/acquisition.mjs` and `tooling/native-ingress/acquisition.test.mjs`; both cite the [acquisition sequence](../tooling/native-ingress/acquisition.puml), and the persisted source/diagram/index test binds their exact coverage.
+Keep this continuation in the existing canonical document; do not create another history packet or change §§1–23.
+
+### 24.1 GOALS and permission before verification
+
+- Create a SEPARATE bounded archive profile; preserve the old64KiB fixture, its semantics and tests without edits.
+- Permit only fresh private test fixtures under `/tmp/opencode`, <=1MiB each and <=8MiB/run; typical payloads use a few bytes and real SHA-256.
+- Cleanup may unlink only exact known test-owned files and rmdir their exact owned directories; no old-root access, broad deletion, repair or fallback.
+- Mock both `https.request` and `https.get`; unused transport calls throw and never forward. Use fake clocks/timers, not a real120s sleep.
+- Boundary cases up to128MiB use pure descriptor checks/mocks, never physical large fixtures or forged success for the published GNU digest.
+- Use Node built-ins only; no new framework, dependency, manifest or license change. This keeper performs document reads/patches only, not commands or probes.
+- No archive GET, external grant, extraction, installation, resume, chmod, library-path deletion, fsync or durability claim is approved.
+
+### 24.2 Current API and source-bound resource contract
+
+- Source exports `createArtifactDescriptor(input)`, frozen `GNU2026_ARTIFACT`, `acquireArtifact(rootPath, input)` and fixed wrapper `acquireGnu2026(rootPath)`; module initialization validates metadata without network effects.
+- Accept only an exact own-data descriptor record; reject proxies, accessors, inherited/extra/symbol properties and return a frozen copy.
+- Require a safe basename ending `.tar.xz`, and URL EXACTLY `https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/` plus that name.
+- Reject credentials, query, fragment, explicit port, encoding/normalization variants and other origins; require integer length1..134217728 and lowercase64-hex SHA-256.
+- GNU2026_ARTIFACT targets `x86-64--glibc--stable-2026.08-1.tar.xz`, advertised102296280 bytes and expected SHA-256 `cde893afab04ac7dcd15c46aac214ff550441b982536124c88a71146a0eeedd3`.
+- That comparison target derives from §23 metadata, NOT a verified archive body, authenticated provenance, immutable object or permission to use the real GET function online.
+- Reject invalid paths/descriptors before filesystem or transport effects; require an exclusively created fresh0700 root and0600 regular nlink1 size0 writer before ONE request/end.
+- Reuse custody `assertRoot`/`assertFileBirth`/`assertFilePhase` checks with independent per-object named/FD dev+ino and security; never require file.dev==parent.dev or inspect/reuse an existing root.
+- Require verified TLS, agent:false, identity encoding, connection:close, status200 and exactly one canonical expected Content-Length; forbid TE, ranges, redirects, retries, auth, custom CA and proxy fallback.
+- Check raw headers against16KiB/32 pairs with request maxHeadersCount33 as sentinel; these source checks do not bound native wire buffering.
+- Limit data events to32768 and each chunk to1..1MiB; validate native typed length/backing, reject SharedArrayBuffer and copy privately before hash/full single positional write.
+- Stop excess bytes/events before effects; reject partial writes without retry. Retain no whole-payload array; private chunk<=1MiB plus64KiB scratch is not a hard RSS bound.
+- Cap source filesystem non-close attempts at65533 plus<=3 close attempts, total65536; own at most two file FDs: root plus writer OR reader.
+- Cap source clock samples at200000, lifecycle accounting at32 and explicit network effects at4: request, end, request destroy, response destroy; no native DNS/TLS/internal-attempt, physical-FD, wire or callback bound follows.
+- Take monotonic START before validation/setup; use120s total including1s cleanup reserve,119s ordinary work and early-failure cleanup deadline min(total end, failure time+1s).
+- Guards/timers are cooperative; they cannot interrupt blocked filesystem/native I/O or promise hard process/close termination. Keep original F9 cold10/lifecycle300 including reserved3, generator2048 and ONE inclusive BOTH-seat1048576 unchanged.
+- This ordinary-input profile stays outside F9 and preserves F1/WorkMeter, PrivateRootB/JF and source.price; grant no new allowance, reset, refund, clone, serialization or Native qualification.
+
+### 24.3 Current completion, failure and evidence contract
+
+- Observe response end+complete, request close AND response close before writer finalization/readback; exact incoming length/hash alone cannot publish success.
+- After incoming match, require full writer metadata/root binding and close writer once; clear its holder BEFORE close so uncertainty absorbs failure and forbids a reader open.
+- Assign each opened FD inside the active outer try BEFORE any post-operation guard; never lose ownership on a late deadline failure.
+- Read back in exact positional64KiB slices with EOF and independent SHA-256; require full nine-field stable metadata for the written file, final root binding and successful final FD closure.
+- Preserve error precedence `E_CLOSE > E_NETWORK_CLEANUP > first operation error`, retaining displaced errors through `.cause`; missing close/stat/hash evidence never yields success.
+- Destroy request/response at most once on failure; late events become inert, with no reopen, write or hash after failure and no retry on uncertain close.
+- The frozen `ordinary-archive-acquisition-v1` / DATA_ONLY result reports contentMatched:true only after all gates, expectedSha256/incomingSha256/readbackSha256, byteLength, root/file paths, rootDevice/fileDevice and frozen counts including copiedBytes/writtenBytes/readBytes.
+- Keep nativeAuthority/nativeQualified/provenanceVerified/pythonFreeSubsetVerified/installedUsability/rustReady/trainingReady:false; report installationPerformed:false only for this function, not global installed state, and immutabilityVerified:false.
+- Current-byte matching proves neither future immutability, ancestor/OS-barrier protection, provenance, a Python-free subset, controlled-root software classification nor installed usability; the API is operator-controlled, not a network daemon.
+
+### 24.4 Persisted verification, offline diagram permission and remaining gates
+
+The parent independently ran all four Node test files: **217 PASS =132 new +85 unchanged legacy,0 fail/cancelled/skip/todo**. Historical85 passes alone are not reused as verification of changed source.
+`acquisition.test.mjs` persists descriptor/origin/header/chunk/event/clock/custody/replacement/readback/close/cause-priority failure checks, real small-payload hashes, peak2 FDs/three positive closes and exact test-owned cleanup; its global write guard limits each positional write extent to1MiB and aggregate real writes to8MiB.
+Parent command: `node --test --test-reporter=tap --test-concurrency=1 --experimental-test-coverage tooling/native-ingress/acquisition.test.mjs tooling/native-ingress/input-descriptor.test.mjs tooling/native-ingress/custody.test.mjs tooling/native-ingress/custody-chunks.test.mjs`. Both new-file syntax checks passed. Acquisition-module coverage is100% lines/functions and98.93% branches; coverage is not actual-transport or Native assurance.
+Closing adversarial and security source reviews found no findings and accepted the offline unit only. DevOps closed the deterministic-settlement harness LOW by source review; spec review closed the stale-legend drift and reported in-sync. None accepted global Rust/Native readiness or real acquisition.
+DevOps identified a LOW regression-harness risk from real119s timers; all acquisition tests now use per-context fake clocks, bounded16-turn microtask drains and explicit settlement checks. Unexpectedly pending calls are driven through fake work/cleanup deadlines and fail rather than hanging; one persisted driver regression was added without changing production source.
+The new acquisition sequence covers exactly the two new files; its appended index entry has fingerprint:null, preserving every old entry/unresolved record. No older diagram, source/test or SVG is edited by this keeper; no old474-file selection identity becomes a new verifier receipt or Native invoice.
+The user now explicitly approved an offline diagram profile using tracked `_spec/themes/proveo.puml` only:6238 bytes, SHA-256 `d75f801bd90752ed50243ba05f58b37c4808b5510cbb035dc578b0441d74de39`. This supersedes earlier missing-path status, not the frozen historical statements.
+Parent rendering may substitute that exact local copy for the exact house remote-include line in renderer input ONLY; persisted `.puml` files retain their house include. No upstream-byte-equivalence, remote fetch, other include/import or Native-qualified renderer/bootstrap/JRE/font/hard-RSS claim follows.
+Parent offline-expanded `plantuml -checkonly -pipe` and `-tsvg -pipe` passed for acquisition, training and arena diagrams, writing only their three approved SVG counterparts below8MiB each. Source include lines remain remote; the exact local-theme substitution is the rendering input, not a claim of equality to current upstream theme bytes.
+Each SVG starts with a provenance comment binding its diagram source SHA-256, approved local-theme SHA-256 and expanded-input SHA-256; those comments are rendering metadata, not independently authenticated execution evidence.
+
+| Current offline-render artifact | Source SHA-256 | SVG SHA-256 |
+| --- | --- | --- |
+| `_spec/tooling/native-ingress/acquisition.svg` | `5c00f3613494cced394bea84ecb3d4cd09dd6195c4c5c12d31119cf1215f62ee` | `44d8b27d7f33e964bf320590383e5c475bfabbeb7a531b457af1281068ca79d8` |
+| `_spec/packages/training/burn-compat.svg` | `45298e8a226334a255522baef397bb04460b078bccd53620aacad162efd31721` | `8b061c513200970c5864c5baeb3ad42cb77cf84f569ff17162935d7786f63b91` |
+| `_spec/apps/arena/burn-compat.svg` | `94ad3c1ec3167c2cc5e1ccc0eb090ecdb7f04fbd34bde17ffb0997be0cf57e7b` | `e0dab04234c9a63524816e77fa712a126f39708c2ef34e57a4a5ae3e05d03f76` |
+
+The existing474-input verifier identity changes from `e916a646c50a15c12b8e890fc5db4dffe95d6c92c4b9d353774491784f1d39dc` to `747f660473cc875224f371cf3852b2d8debad13d515c6d5f7e01253c668f84bf` solely through the spec index and two existing Rust diagram metadata edits; the other471 inputs remain unchanged. This repository-only port of the identity calculation is not a Rust verifier run or reissued receipt.
+The two new source/test files sit outside that old selection and have separate identity `5521a1f7eeeac28680482c92727a286e8283854e36292050130b6e73475d0b29`, using sorted UTF-8 paths followed by file bytes with each field prefixed by its unsigned64 big-endian byte length.
+Oxlint remains skipped because no approved binary is available; no installation or substitute lint PASS is claimed. This keeper does not independently rerun parent tests, rendering or hashes.
+The original adversarial reviewer closed the diagram MEDIUM for the explicitly approved offline-theme profile; it does not supply upstream-theme equivalence, Rust compilation or Native qualification. A subsequent stale training-diagram legend was corrected before final rendering. Rust WIP `166a0bd9`, eight uncompiled/unrun new Rust tests and the Rust BLOCKER remain OPEN, with unchanged Cargo/Burn baseline; notes last published `5aab9bb8`, PR50 OPEN/unmerged.
+Earlier query/HEAD permissions remain CONSUMED; real archive acquisition approval remains NONE, with no SDK body/staging/extraction/install or no-Python/Native qualification. §10 stays OPEN, step2 NOT DONE; scoped offline-unit verification never means a complete ML runtime or `trainingReady:true`.

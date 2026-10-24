@@ -56,7 +56,7 @@
 ' status: Categorical banded/owned normalization/evidence/raw joint/training structure lives here; current evidence and review status lives in the related Markdown owners.
 ' runtime-status: Synthetic boundary SOURCE PREPARED; Rust compilation/tests and closing reviews remain pending, not accepted runtime behavior.
 ' related: _spec/_plans/ml-runtime-redesign.md#14-selected-synthetic-runtime-boundary--source-prepared-compilation-blocked
-' rendering: Existing burn-compat.svg is historical, NOT CURRENT for this source-prepared boundary; validation/rendering remain pending.
+' rendering: Current SVG uses approved local-theme substitution; source keeps the house include, and Rust compilation remains unverified.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
 ' related: _spec/ml/native-runner.md
@@ -438,7 +438,7 @@ legend bottom
   Runtime/batch/context tests and fixed offline fixtures remain uncompiled/unrun; no real training occurred.
   Offline trainer module and model.valid snapshot constructor are cfg(test), not public fitting/loading APIs.
   No Cargo/lock/TypeScript change, artifact loading/admission, resume, training CLI or F9 model permit.
-  Existing SVG is historical; current PlantUML validation/rendering and qualified theme access remain pending.
+  Current SVG uses the approved local-theme rendering profile; this supplies no Rust compilation or Native proof.
   Width 418 remains zero padding, not the R4 feature encoder.
   Native baselines use no learned scorer; learned=false / modelArtifact=null.
   Native tables: turns 1-10 mineral/gas 1/1; 11-20 2/2; 21-45 3/3.

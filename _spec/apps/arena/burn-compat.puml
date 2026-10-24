@@ -61,7 +61,7 @@
 ' status: Ledger/F1 source structure lives here; current evidence and review status lives in the related Markdown owners.
 ' runtime-status: Smoke context call is SOURCE PREPARED, uncompiled/unrun; baseline policy contracts remain unchanged.
 ' related: _spec/_plans/ml-runtime-redesign.md#14-selected-synthetic-runtime-boundary--source-prepared-compilation-blocked
-' rendering: Existing burn-compat.svg is historical, NOT CURRENT for the changed scorer label; validation/rendering remain pending.
+' rendering: Current SVG uses approved local-theme substitution; source keeps the house include, and Rust compilation remains unverified.
 ' related: _spec/_plans/burn-flex-compat.md
 ' related: _spec/ml/rebuild-runtime-research.md
 ' related: _spec/ml/native-runner.md

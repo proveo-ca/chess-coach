@@ -1,0 +1,150 @@
+' purpose: bounded archive acquisition with network closure before independent readback
+' covers: tooling/native-ingress/acquisition.mjs
+' covers: tooling/native-ingress/acquisition.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 24 owns goals and permissions.
+' related: _spec/tooling/native-ingress/custody.puml owns the unchanged small fixture.
+' scope: current ordinary DATA_ONLY helper; no online acquisition permission or Native authority.
+' validation: parent reports 217 Node passes and scoped source reviews; offline rendering uses the approved local theme.
+' rendering: retain house include; parent may substitute only the approved local theme in renderer input.
+' readability: FK uses English syllable estimates with explicit engineering-token counts.
+' FK: per-object note over ROOT,FILE = 10.8 (26 words, 47 syllables, 2 sentences).
+' FK: close-uncertainty note over SOURCE,ERROR = 10.1 (28 words, 48 syllables, 2 sentences).
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Ordinary archive acquisition — closure before readback, DATA_ONLY
+
+actor "Operator-controlled caller" as CALLER <<host>>
+participant "tooling/native-ingress/\nacquisition.mjs" as SOURCE <<app>>
+participant "tooling/native-ingress/\ncustody.mjs" as CUSTODY <<app>>
+participant "node:fs / node:crypto / process\nNode host runtime and timers" as HOST <<host>>
+participant "node:https\nrequest / IncomingMessage" as NETWORK <<host>>
+participant "toolchains.bootlin.com\nfixed HTTPS tarball origin" as HTTPS <<cloud>>
+database "rootPath\nfresh directory" as ROOT <<db>>
+database "descriptor.name\nfresh regular file" as FILE <<db>>
+participant "CustodyError" as ERROR <<error>>
+
+alt Fixed GNU comparison target
+  CALLER ARROW_MAIN SOURCE : acquireGnu2026(rootPath)
+  SOURCE ARROW_MAIN SOURCE : acquireArtifact(rootPath, GNU2026_ARTIFACT)
+else Operator-supplied descriptor, same origin policy
+  CALLER ARROW_MAIN SOURCE : acquireArtifact(rootPath, input)
+end
+SOURCE ARROW_MAIN HOST : first monotonic START; 119s work timer / 120s total
+SOURCE ARROW_MAIN SOURCE : validate absolute normalized non-root path
+SOURCE ARROW_MAIN SOURCE : createArtifactDescriptor(input); frozen independent snapshot
+note right of SOURCE
+Exact own data: name, url, byteLength, sha256
+Object.prototype or null; no proxy/accessors
+Safe basename .tar.xz, <=128 characters
+Length 1..134217728; lowercase64-hex digest
+URL = fixed Bootlin tarball prefix + name
+end note
+
+group Active outer try; any failure reaches descriptor finalization
+  SOURCE ARROW_MAIN HOST : check flags; capture effective UID; mkdirSync(0700, recursive:false)
+  HOST ARROW_MAIN ROOT : fresh exclusive directory; EEXIST stops without inspection
+  SOURCE ARROW_MAIN HOST : opened(root): RDONLY | DIRECTORY | NOFOLLOW | NONBLOCK
+  SOURCE ARROW_MAIN CUSTODY : assertRoot(lstat, fstat, uid); retain rootBirth
+  SOURCE ARROW_MAIN HOST : opened(file): WRONLY | CREAT | EXCL | NOFOLLOW | NONBLOCK, 0600
+  HOST ARROW_MAIN FILE : fresh regular file
+  SOURCE ARROW_MAIN CUSTODY : assertFileBirth(lstat, fstat, uid)
+  SOURCE ARROW_MAIN SOURCE : retain file birth; rootBinding() before transport
+  note over ROOT, FILE
+Each object retains its own device identity
+because parent and file devices may differ.
+Stable host paths remain required; checks cannot
+protect ancestors against concurrent change.
+  end note
+  note over SOURCE, HOST
+FD assigned before post-operation guard
+Owned FDs <=2: root + writer OR reader
+Positive path: three opens / three closes
+No library unlink, rmdir, chmod or fsync
+  end note
+
+  group transfer(descriptor): one request, no retry or redirect
+    SOURCE ARROW_MAIN NETWORK : https.request(url, GET); attach error/close/response handlers
+    SOURCE ARROW_MAIN NETWORK : maxHeadersCount=33; request.end() once
+    NETWORK ARROW_CLOUD HTTPS : verified TLS; agent:false; identity encoding; Connection:close
+    HTTPS ARROW_CLOUD NETWORK : status / raw headers / streaming body
+    NETWORK ARROW_MAIN SOURCE : receive(response); attach lifecycle/error handlers
+    SOURCE ARROW_MAIN SOURCE : assertHeaders(response, expected byteLength) before data handler
+    note over SOURCE, NETWORK
+status200; exactly one canonical length
+<=32 raw pairs / <=16384 counted bytes
+Absent encoding OR exactly one identity
+No Transfer-Encoding / Content-Range
+No auth, custom CA, proxy or fallback option
+    end note
+    loop data(chunk): <=32768 events, native Buffer length 1..1048576
+      NETWORK ARROW_MAIN SOURCE : data event; ignore after failed/settled
+      SOURCE ARROW_MAIN SOURCE : intrinsic length/backing checks; reject proxy/SAB/excess bytes
+      SOURCE ARROW_MAIN SOURCE : bounded private copy; incremental incoming SHA-256
+      SOURCE ARROW_MAIN HOST : one full writeSync at explicit offset; partial count fails, no retry
+      HOST ARROW_MAIN FILE : write private snapshot
+    end
+    NETWORK ARROW_MAIN SOURCE : end: complete===true; exact length and incoming SHA-256
+    NETWORK ARROW_MAIN SOURCE : request close AND response close, either order
+    SOURCE ARROW_MAIN SOURCE : finish(): recheck response.complete before resolving transfer
+  end
+
+  alt transfer resolved with end, complete, both closes and incoming match
+    SOURCE ARROW_MAIN CUSTODY : assertFilePhase(lstat, fstat, uid, expected length)
+    SOURCE ARROW_MAIN SOURCE : birth SECURITY stable; snapshot written CONTENT; rootBinding()
+    SOURCE ARROW_MAIN HOST : close(writer): clear holder BEFORE single close attempt
+    SOURCE ARROW_MAIN HOST : opened(reader): RDONLY | NOFOLLOW | NONBLOCK
+    SOURCE ARROW_MAIN CUSTODY : assertFilePhase; full nine-field snapshot equals written
+    loop exact positional slices <=65536 bytes
+      SOURCE ARROW_MAIN HOST : readSync; require full requested count
+      HOST ARROW_MAIN FILE : independent readback
+      SOURCE ARROW_MAIN SOURCE : independent SHA-256; counts.readBytes += count
+    end
+    SOURCE ARROW_MAIN HOST : one-byte EOF probe at expected length
+    SOURCE ARROW_MAIN SOURCE : require EOF and expected independent readback SHA-256
+    SOURCE ARROW_MAIN CUSTODY : assertFilePhase; written CONTENT unchanged
+    SOURCE ARROW_MAIN HOST : close(reader) once; rootBinding() via fstat/lstat
+    SOURCE ARROW_MAIN SOURCE : prepare ordinary-archive-acquisition-v1 / DATA_ONLY
+  else transfer failure: absorbing state, no reader acquisition
+    SOURCE ARROW_ERROR NETWORK : fail(): destroy request/response at most once each
+    SOURCE ARROW_MAIN SOURCE : cleanupEnd = min(total end, failure time + 1s)
+    NETWORK ARROW_MAIN SOURCE : observe owned network close events before cleanupEnd
+    opt destroy throws, close missing or observed too late
+      SOURCE ARROW_ERROR ERROR : E_NETWORK_CLEANUP, with first failure as cause
+    end
+    SOURCE ARROW_MAIN SOURCE : late body/end/error events inert; late first response destroyed
+  end
+end
+
+group Unconditional descriptor finalization
+  SOURCE ARROW_MAIN HOST : finally: clear work timer; close remaining file/root holders once
+  opt any filesystem close uncertain
+    SOURCE ARROW_ERROR ERROR : E_CLOSE > E_NETWORK_CLEANUP > operation error; preserve cause chain
+  end
+end
+note over SOURCE, ERROR
+Close uncertainty prevents a success result
+because descriptor disposition is no longer known.
+The helper retains partial roots for inspection;
+only the test removes its fresh owned paths.
+end note
+
+alt failure recorded
+  SOURCE ARROW_ERROR CALLER : throw failure; no result
+else all checks and closes succeeded
+  SOURCE ARROW_MAIN SOURCE : final total-deadline guard; freeze result and counts
+  SOURCE ARROW_MAIN CALLER : contentMatched:true; expected/incoming/readback hashes; paths/devices
+end
+note right of CALLER
+nativeAuthority/nativeQualified:false
+provenanceVerified/pythonFreeSubsetVerified:false
+installedUsability/rustReady/trainingReady:false
+installationPerformed/immutabilityVerified:false
+end note
+note over SOURCE, HOST
+fsCalls<=65533; closeAttempts<=3
+clockReads<=200000; lifecycleEvents<=32
+networkCalls<=4; no whole-payload array
+Private chunk<=1MiB; read scratch64KiB
+Cooperative guards; no hard native/RSS bound
+end note
+@enduml
