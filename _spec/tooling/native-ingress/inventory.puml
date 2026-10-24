@@ -57,8 +57,8 @@ end
 
 note over PARSER, SINK
 All expanded bytes and serialized metadata count.
-Paths use explicit aliases, not blind normalization.
-Link targets remain classified data, never followed.
+Only explicit path aliases apply.
+Link targets are data and never followed.
 Events stay provisional until all gates pass.
 end note
 
@@ -79,11 +79,15 @@ end
 note over CALLER, ERROR
 realArchiveInspected / decoderQualified:false
 extractionAuthorized / nativeQualified:false
-provenanceVerified / pythonFreeSubsetVerified:false
-installedUsability / rustReady / trainingReady:false
+provenanceVerified:false
+pythonFreeSubsetVerified:false
+installedUsability/rustReady/trainingReady:false
 end note
 
 legend bottom
+  Additive createTarMemberInventory shares this state machine and exposes final regular-file spans.
+  Span JSON<=4MiB; offsets count consumed physical bytes after GNU/PAX header processing.
+  Base feed events, metadata digests and existing summary schema remain unchanged.
   Parser/controller source and tests are synthetic offline infrastructure, not an XZ decoder.
   No archive read/stat/list, extraction, process, tool discovery or network belongs in this unit.
   Expanded<=1GiB; physical headers<=65536; total extension payload<=64KiB.

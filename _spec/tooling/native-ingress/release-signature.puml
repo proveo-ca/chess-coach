@@ -1,0 +1,45 @@
+' purpose: bounded OpenPGP clear-signature mathematics and exact Release index selection
+' covers: tooling/native-ingress/release-signature.mjs
+' covers: tooling/native-ingress/release-signature.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 owns provenance qualification.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title Release signatures — mathematical validity is not publisher trust
+actor "Caller-pinned full fingerprint\npublic key / clear-signed bytes" as CALLER <<host>>
+component "verifyReleaseSignature\nv4 RSA / SHA256 or SHA512" as VERIFY <<app>>
+component "Node crypto primitives\nRSA PKCS1 v1.5 verification" as CRYPTO <<host>>
+component "Frozen signature evidence\nexact canonical text + hash" as EVIDENCE <<app>>
+component "selectReleaseIndex\nexact repository/path expectation" as INDEX <<app>>
+component "Frozen index descriptor\nlength / SHA256 / date claims" as DESCRIPTOR <<app>>
+component "ReleaseSignatureError\nfixed code; no partial result" as ERROR <<error>>
+CALLER ARROW_MAIN VERIFY : bounded private snapshots and exact fingerprint
+VERIFY ARROW_MAIN CRYPTO : canonical text + hashed header + v4 trailer
+CRYPTO ARROW_MAIN EVIDENCE : verify full preimage; prefix alone is insufficient
+EVIDENCE ARROW_MAIN CALLER : signatureVerified:true under supplied key
+CALLER ARROW_MAIN INDEX : the same verified canonical text
+INDEX ARROW_MAIN DESCRIPTOR : unique exact SHA256 row and repository identity
+DESCRIPTOR ARROW_MAIN CALLER : extractor signatureVerified:false
+VERIFY ARROW_ERROR ERROR : malformed, unsupported or invalid signature
+INDEX ARROW_ERROR ERROR : duplicate/missing/unsafe/ambiguous descriptor
+ERROR ARROW_ERROR CALLER : fixed failure
+note bottom of VERIFY
+Release/keyring<=1MiB; signature<=16KiB
+Packets<=256; signatures<=4; subpackets<=128
+Primary RSA key only; no subkey adoption
+No input views, reader, network or process
+end note
+note bottom of EVIDENCE
+Publisher trust/key authentication remain false
+No revocation, expiry or Native authority proof
+Canonical text hash binds later selection
+Issuer hints never select a different key
+end note
+note bottom of INDEX
+Case-insensitive fields; reject duplicates
+Origin='Ubuntu'; codename='resolute' only
+Exact relative path, no fallback/normalization
+Selected size1..16MiB; empty other rows allowed
+Date claims do not establish trusted time
+end note
+@enduml

@@ -794,7 +794,56 @@
       "spec": "_spec/tooling/native-ingress/elf-metadata.puml",
       "covers": [
         "tooling/native-ingress/elf-metadata.mjs",
-        "tooling/native-ingress/elf-metadata.test.mjs"
+        "tooling/native-ingress/elf-metadata.test.mjs",
+        "tooling/native-ingress/elf-requirements.test.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/package-claims.puml",
+      "covers": [
+        "tooling/native-ingress/package-claims.mjs",
+        "tooling/native-ingress/package-claims.test.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/release-signature.puml",
+      "covers": [
+        "tooling/native-ingress/release-signature.mjs",
+        "tooling/native-ingress/release-signature.test.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/deb-members.puml",
+      "covers": [
+        "tooling/native-ingress/deb-members.mjs",
+        "tooling/native-ingress/deb-members.test.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/package-index.puml",
+      "covers": [
+        "tooling/native-ingress/package-index.mjs",
+        "tooling/native-ingress/package-index.test.mjs"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/xz-qualification.puml",
+      "covers": [
+        "tooling/native-ingress/xz-fixtures.mjs",
+        "tooling/native-ingress/xz-fixtures.test.mjs",
+        "tooling/native-ingress/xz-compressed-fixture.mjs",
+        "tooling/native-ingress/xz-compressed-fixture.test.mjs",
+        "tooling/native-ingress/xz-staging.mjs",
+        "tooling/native-ingress/xz-staging.test.mjs",
+        "tooling/native-ingress/xz-qualification.mjs",
+        "tooling/native-ingress/xz-qualification.test.mjs",
+        "tooling/native-ingress/xz-operation.mjs",
+        "tooling/native-ingress/xz-operation.test.mjs"
       ],
       "fingerprint": null
     }

@@ -1,0 +1,31 @@
+' purpose: bounded, folded package claims as unauthenticated metadata only
+' covers: tooling/native-ingress/package-claims.mjs
+' covers: tooling/native-ingress/package-claims.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 owns qualification scope.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title Package claims — bounded Deb822 fields, not provenance
+actor "Registered reader\nprivate bytes after FD closure" as CALLER <<host>>
+component "package-claims.mjs\nselectPackageClaims" as PARSER <<app>>
+component "Frozen selected claims\nxz-utils / liblzma5 / libc6" as CLAIMS <<app>>
+component "PackageClaimError\nfixed E_PACKAGE" as ERROR <<error>>
+CALLER ARROW_MAIN PARSER : native byte view; lower-only input ceiling
+PARSER ARROW_MAIN PARSER : private snapshot / fatal UTF-8 / Deb822 folding
+PARSER ARROW_MAIN CLAIMS : whitelisted fields; validate complete folded values
+CLAIMS ARROW_MAIN CALLER : claims only; never software-authentication authority
+PARSER ARROW_ERROR ERROR : invalid input/format, duplicate or exceeded cap
+ERROR ARROW_ERROR CALLER : no partial result
+note bottom of PARSER
+Input<=4MiB; paragraphs<=4096
+Paragraph<=128KiB; selected value<=512 bytes
+Continuations join their preceding field
+No shared/resizable backing or input views
+end note
+note bottom of CLAIMS
+Only six selected fields for three packages
+Unknown fields do not escape
+No filesystem, network, process or reader API
+Package claims never authenticate installed bytes
+end note
+@enduml

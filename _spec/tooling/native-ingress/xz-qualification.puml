@@ -1,0 +1,55 @@
+' purpose: ordinary fixed-image XZ staging and finite fixture observations
+' covers: tooling/native-ingress/xz-fixtures.mjs
+' covers: tooling/native-ingress/xz-fixtures.test.mjs
+' covers: tooling/native-ingress/xz-compressed-fixture.mjs
+' covers: tooling/native-ingress/xz-compressed-fixture.test.mjs
+' covers: tooling/native-ingress/xz-staging.mjs
+' covers: tooling/native-ingress/xz-staging.test.mjs
+' covers: tooling/native-ingress/xz-qualification.mjs
+' covers: tooling/native-ingress/xz-qualification.test.mjs
+' covers: tooling/native-ingress/xz-operation.mjs
+' covers: tooling/native-ingress/xz-operation.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 owns operation scope and evidence.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title XZ qualification — finite ordinary observations, never Native authority
+actor "Registered operation\npublication / source / input pins" as OWNER <<host>>
+component "xz-staging.mjs\nexclusive fixed-root copies" as STAGE <<app>>
+component "Pinned ELF requirements\nreject hidden loading tags" as ELF <<app>>
+component "Independent fixture bytes\nCRC32 / compressed CRC64 KAT" as FIXTURES <<app>>
+component "xz-qualification.mjs\noriginal-clock finite suite" as RUN <<app>>
+component "Staged loader + XZ\nconstructed environment / pipes" as CHILD <<host>>
+component "Frozen observations\nEOF / exit / close / digest" as RESULT <<app>>
+component "Fixed failure\nno accepted partial output" as ERROR <<error>>
+OWNER ARROW_MAIN STAGE : exact source images; no replacement or existing root reuse
+STAGE ARROW_MAIN ELF : checked private snapshots before staging
+ELF ARROW_MAIN STAGE : exact declared dependencies; no audit/filter extensions
+OWNER ARROW_MAIN FIXTURES : published or independent literal expected bytes
+STAGE ARROW_MAIN RUN : checked staged names; preload absence per case
+FIXTURES ARROW_MAIN RUN : at most32 explicitly selected finite cases
+RUN ARROW_MAIN CHILD : absolute loader / cache off / hwcaps mask empty
+CHILD ARROW_MAIN RUN : stdin finish; both EOFs; exit and child close
+RUN ARROW_MAIN RESULT : exact positive output; reject negative partial output
+STAGE ARROW_ERROR ERROR : mismatch, existing root, unsafe object or preload
+RUN ARROW_ERROR CHILD : one SIGKILL on error or deadline
+RUN ARROW_ERROR ERROR : overflow, wrong output/status or uncertain cleanup
+note bottom of RUN
+Case<=2s; suite<=60s includes3s cleanup
+Input<=64KiB/case; output<=64KiB/case
+Stderr<=8KiB/case; chunk events<=4096
+Hooks and timers retain ordinary runtime trust
+end note
+note bottom of RESULT
+Finite named cases only; no global decoder proof
+No hard RSS, process-tree or deadline guarantee
+Native/decoderQualified/Rust/training:false
+Same-UID/ancestor/loading races remain unproved
+end note
+note bottom of FIXTURES
+Uncompressed LZMA2 construction is independent
+Compressed KAT uses published literal bytes
+No Python interpreter or candidate encoder runs
+Check=None does not verify payload integrity
+end note
+@enduml

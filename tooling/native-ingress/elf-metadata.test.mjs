@@ -762,7 +762,7 @@ test('source/test pointers, diagram covers and index agree; source imports only 
   const source = await readFile(new URL('./elf-metadata.mjs', import.meta.url), 'utf8');
   const tests = await readFile(new URL('./elf-metadata.test.mjs', import.meta.url), 'utf8');
   const spec = '_spec/tooling/native-ingress/elf-metadata.puml';
-  const files = ['tooling/native-ingress/elf-metadata.mjs', 'tooling/native-ingress/elf-metadata.test.mjs'];
+  const files = ['tooling/native-ingress/elf-metadata.mjs', 'tooling/native-ingress/elf-metadata.test.mjs', 'tooling/native-ingress/elf-requirements.test.mjs'];
   const diagram = await readFile(new URL('../../' + spec, import.meta.url), 'utf8');
   const index = JSON.parse(await readFile(new URL('../../_spec/.spec-index.json', import.meta.url), 'utf8'));
   assert.deepEqual(index.specs.filter(entry => entry.spec === spec), [{ spec, covers: files, fingerprint: null }]);
@@ -770,6 +770,7 @@ test('source/test pointers, diagram covers and index agree; source imports only 
   const pointer = '// SPEC: ' + spec + '\n';
   assert.ok(source.startsWith(pointer));
   assert.ok(tests.startsWith(pointer));
+  assert.ok((await readFile(new URL('./elf-requirements.test.mjs', import.meta.url), 'utf8')).startsWith(pointer));
   assert.deepEqual([...source.matchAll(/^import .* from '([^']+)';$/gm)].map(match => match[1]), ['node:crypto', 'node:util']);
   assert.equal(/\b(?:process|fetch|require)\b|\bimport\s*\(/u.test(source), false);
   assert.equal(/node:(?:fs|net|http|https|child_process|worker_threads)/u.test(source), false);

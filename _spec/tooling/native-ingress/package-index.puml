@@ -1,0 +1,33 @@
+' purpose: exact package references from independently expected index bytes
+' covers: tooling/native-ingress/package-index.mjs
+' covers: tooling/native-ingress/package-index.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 owns provenance qualification.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title Package references — exact identities, no trust promotion
+actor "Expected index bytes/digest\npackage/version/arch/source requests" as CALLER <<host>>
+component "selectPackageReferences\nprivate snapshot + SHA-256" as INDEX <<app>>
+component "Case-insensitive Deb822 fields\ncomplete folded-value validation" as FIELDS <<app>>
+component "Frozen exact package references\nfilename / length / SHA256" as REFS <<app>>
+component "PackageIndexError\nfixed failure; no partial refs" as ERROR <<error>>
+CALLER ARROW_MAIN INDEX : authenticate complete expected bytes before parsing
+INDEX ARROW_MAIN FIELDS : bounded paragraphs; reject duplicates
+FIELDS ARROW_MAIN REFS : exactly one stanza per requested identity
+REFS ARROW_MAIN CALLER : caller request order; paths remain inert metadata
+INDEX ARROW_ERROR ERROR : bad input/reference or digest mismatch
+FIELDS ARROW_ERROR ERROR : missing/ambiguous/source mismatch or unsafe file
+ERROR ARROW_ERROR CALLER : no alternate version/architecture/path fallback
+note bottom of INDEX
+Input<=16MiB; paragraphs<=65536
+Paragraph<=128KiB; selected value<=1024 bytes
+Targets<=8; package<=8MiB; JSON<=64KiB
+No reader, fetch, process or resolver callback
+end note
+note bottom of REFS
+Package/version/architecture match exactly
+Source name/version match independently expected
+Signature/provenance/source/Native flags:false
+No path or reference authorizes acquisition
+end note
+@enduml

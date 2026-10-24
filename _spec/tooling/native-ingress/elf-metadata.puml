@@ -1,8 +1,9 @@
 ' purpose: bounded offline ELF64 program/dynamic metadata without loader or filesystem access
 ' covers: tooling/native-ingress/elf-metadata.mjs
 ' covers: tooling/native-ingress/elf-metadata.test.mjs
-' context: _spec/_plans/ml-runtime-redesign.md section 30 owns goals and verification.
-' status: source mapped; canonical section 30 owns current synthetic verification and closing-review receipts.
+' covers: tooling/native-ingress/elf-requirements.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 30 owns historical v1; section 33 owns current v2 qualification work.
+' status: inspectElf64 preserves v1; inspectElf64Requirements adds bounded v2 declarations.
 ' rendering: retain house include; approved pinned local theme is substituted in renderer input only.
 @startuml
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
@@ -15,6 +16,7 @@ component "Strict lower-only limits\nprivate bounded snapshot" as SNAPSHOT <<app
 component "ELF64 little-endian x86-64\nheader / program headers" as HEADERS <<app>>
 component "PT_DYNAMIC / DT_STRTAB\nunambiguous file-backed mapping" as DYNAMIC <<app>>
 component "Bounded UTF-8 strings\nunresolved metadata" as STRINGS <<app>>
+component "Optional requirements-v2\nversions / GNU notes / properties" as REQUIREMENTS <<app>>
 component "Deeply frozen metadata\ninputSha256 / false assurance flags" as RESULT <<app>>
 component "ElfMetadataError\nfixed code, no partial result" as ERROR <<error>>
 
@@ -24,16 +26,19 @@ SNAPSHOT ARROW_MAIN HEADERS : private bytes only; all U64 arithmetic in BigInt
 HEADERS ARROW_MAIN DYNAMIC : validated spans and bounded declared slot count
 DYNAMIC ARROW_MAIN STRINGS : unique string table; offsets stay inside captured bytes
 STRINGS ARROW_MAIN RESULT : bounded UTF-8 JSON before publication
+STRINGS ARROW_OPTIONAL REQUIREMENTS : inspectElf64Requirements only; v1 stays unchanged
+REQUIREMENTS ARROW_MAIN RESULT : bounded declarations, not actual symbol/CPU proof
 RESULT ARROW_MAIN CALLER : immutable plain data; no input-backed views
 
 SNAPSHOT ARROW_ERROR ERROR : invalid backing/profile or exceeded cap
 HEADERS ARROW_ERROR ERROR : unsupported format, overflow or malformed span
 DYNAMIC ARROW_ERROR ERROR : duplicate singleton, missing DT_NULL or ambiguous mapping
 STRINGS ARROW_ERROR ERROR : missing bounded NUL, invalid UTF-8/control or output overrun
+REQUIREMENTS ARROW_ERROR ERROR : bad chains, overlaps, notes or property bounds
 ERROR ARROW_ERROR CALLER : throw fixed failure; no partial-success metadata
 
 note bottom of SNAPSHOT
-Input<=1MiB; no shared/resizable/detached backing
+v1 input<=1MiB; no unsafe backing memory
 Program headers<=128; dynamic slots<=1024
 Limits accept own data only and may tighten only
 No filesystem/network/process/adapter callback
@@ -62,16 +67,25 @@ No path joins, search, expansion or dereference
 end note
 
 note bottom of RESULT
-Success JSON<=64KiB; digest is not provenance
+v1 JSON<=64KiB; digest is not provenance
 Execution/decoder/loader/NoPython flags:false
 Native/installed/Rust/training flags:false
 No candidate or SDK archive read by this module
 end note
 
+note bottom of REQUIREMENTS
+v2 input<=4MiB; output<=128KiB
+Version records<=512; auxiliaries<=1024
+Unique note bytes<=64KiB; notes<=128
+Build ID<=64 bytes; property payload<=4096
+No symbol, CPU, provenance or enforcement proof
+end note
+
 legend bottom
   Synthetic tests establish only this supported metadata subset, not actual candidate compatibility.
   Interpreter/library strings remain untrusted data and never become host-file allowances.
-  Unknown dynamic tags remain opaque; no relocations, versions, notes, ISA or loader execution.
+  v1 unknown tags remain opaque; v2 decodes bounded version and GNU-note declarations only.
+  No relocations, actual symbol resolution, CPU detection or loader execution occurs.
   Source caps do not establish native heap, CPU, runtime-closure or F9/game authority.
   Source/version/provenance, real ELF dependency closure and decoder execution remain separate gates.
 endlegend

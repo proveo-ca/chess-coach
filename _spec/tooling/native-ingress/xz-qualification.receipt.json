@@ -1,0 +1,66 @@
+{
+  "version": "ordinary-xz-finite-receipt-v1",
+  "evidenceKind": "parent transcription of selected registered physical-operation fields",
+  "status": "FINITE_XZ_PROFILE_OBSERVED",
+  "registration": {
+    "sectionBytes": 110064,
+    "sectionSha256": "0bbb4252fa504187979c3e4c0c546fbd6058e7ad53d102dc54a7f68644134739",
+    "launcherBytes": 692,
+    "launcherSha256": "459b3eb392f05b31d948df9d095ff752546543c91d07f8121c9a81feab95a871",
+    "operationBytes": 7337,
+    "operationSha256": "42b566485c38c723d8c568d8c765805a5989619d0ca89131faba09ada2341876"
+  },
+  "counts": {
+    "sourceReads": 5,
+    "sourceBytes": 60611,
+    "spawnCalls": 33,
+    "spawnEvents": 33,
+    "preloadChecks": 68,
+    "fsCalls": 5599,
+    "readBytes": 190316904,
+    "writtenBytes": 2758216,
+    "closeAttempts": 349
+  },
+  "fixtureManifestSha256": "632a0d812366712ae99ce2ce442ad98a59534430640184f70af53df58656b4ea",
+  "ordinaryPublisherAssociationCorroborated": true,
+  "ioAccountingComplete": true,
+  "candidateExecuted": true,
+  "filesInstalled": false,
+  "retainedFilesDeleted": false,
+  "hardRssBounded": false,
+  "hardDeadlineGuaranteed": false,
+  "processTreeBounded": false,
+  "nativeQualified": false,
+  "decoderQualified": false,
+  "rustReady": false,
+  "trainingReady": false,
+  "staged": {
+    "profile": "fixed-xz-ordinary-staging-v1",
+    "root": "/tmp/opencode/f9-xz-qualification-01",
+    "directory": {"dev":"28","ino":"13941","mode":"16704","uid":"1000","gid":"1000","nlink":"2","size":"4096","mtimeNs":"1792835630900915490","ctimeNs":"1792835630901678421"},
+    "files": [
+      {"name":"xz","metadata":{"dev":"29","ino":"1212099","mode":"33088","uid":"1000","gid":"1000","nlink":"1","size":"101392","mtimeNs":"1792835630890814175","ctimeNs":"1792835630890814175"}},
+      {"name":"ld-linux-x86-64.so.2","metadata":{"dev":"29","ino":"1212100","mode":"33088","uid":"1000","gid":"1000","nlink":"1","size":"254864","mtimeNs":"1792835630900220500","ctimeNs":"1792835630900220500"}},
+      {"name":"liblzma.so.5","metadata":{"dev":"29","ino":"1212101","mode":"33024","uid":"1000","gid":"1000","nlink":"1","size":"215448","mtimeNs":"1792835630900915490","ctimeNs":"1792835630900915490"}},
+      {"name":"libc.so.6","metadata":{"dev":"29","ino":"1212102","mode":"33024","uid":"1000","gid":"1000","nlink":"1","size":"2186512","mtimeNs":"1792835630901678421","ctimeNs":"1792835630901678421"}}
+    ],
+    "assurances": {"ordinaryStage":true,"nativeAuthority":false,"nativeQualified":false,"decoderQualified":false,"sourceRootAuthentication":false,"treeMetadataAuthenticated":false,"candidateExecuted":false,"ancestorRacesExcluded":false,"sameUidRacesExcluded":false,"rootRacesExcluded":false,"hardDeadlineEnforced":false,"symbolBindingsVerified":false},
+    "counters": {"fsCalls":239,"readCalls":96,"writeCalls":44,"readBytes":5516432,"writtenBytes":2758216,"closeAttempts":14,"peakOwnedFds":2}
+  },
+  "acceptedCases": [
+    "empty-crc32", "literal-crc32", "crc32-known-answer", "literal-check-none",
+    "empty-check-none", "concatenated-streams", "stream-padding-four", "stream-padding-eight",
+    "inter-stream-padding", "multiple-blocks", "multibyte-index-vli", "compressed-lzma2-crc64-known-answer"
+  ],
+  "rejectedCases": [
+    "corrupt-header-crc", "corrupt-block-header-crc", "corrupt-index-crc", "corrupt-footer-crc",
+    "corrupt-payload", "corrupt-payload-check", "truncated-header", "truncated-block",
+    "truncated-index", "truncated-footer", "invalid-trailing-padding-length", "invalid-trailing-byte",
+    "invalid-trailing-padding-content", "invalid-inter-stream-padding", "memory-limit-one-byte",
+    "large-declared-dictionary", "nonzero-block-padding", "noncanonical-index-vli",
+    "incorrect-index-unpadded-size", "incorrect-footer-backward-size"
+  ],
+  "normalCasesLifecycle": {"stdinFinished":true,"stdoutEnded":true,"stderrEnded":true,"closeObserved":true,"signal":null,"rejectedAcceptedOutputBytes":0},
+  "compressedKnownAnswer": {"inputBytes":1056,"outputBytes":1921,"outputSha256":"b64857892c3f1ff008e910d6f8786bffb7f6651b7c5ea58ae3b7975d3ac119de"},
+  "overflow": {"id":"compressed-output-overflow","inputBytes":38016,"decodedBytesExpected":69156,"observedError":"E_OUTPUT","closeObserved":true,"acceptedOutputByteLength":0}
+}

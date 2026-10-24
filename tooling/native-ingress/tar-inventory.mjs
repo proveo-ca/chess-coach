@@ -134,6 +134,15 @@ function canonicalPath(value, directory, limit) {
 }
 
 export function createTarInventory(overrides = {}) {
+  return createInventory(overrides, false, 0);
+}
+
+export function createTarMemberInventory(overrides = {}, maxSpanBytes = 4_194_304) {
+  if (!Number.isSafeInteger(maxSpanBytes) || maxSpanBytes < 1 || maxSpanBytes > 4_194_304) fail('E_LIMITS');
+  return createInventory(overrides, true, maxSpanBytes);
+}
+
+function createInventory(overrides, trackSpans, maxSpanBytes) {
   const limits = limitsFrom(overrides);
   const hash = createHash('sha256');
   const collisions = new Set();
@@ -160,6 +169,9 @@ export function createTarInventory(overrides = {}) {
   let outputBytes = 0;
   let collisionBytes = 0;
   let dataEvents = 0;
+  let consumedBytes = 0;
+  let spanBytes = 2;
+  const fileSpans = [];
 
   function guard() {
     if (error) throw error;
@@ -174,6 +186,7 @@ export function createTarInventory(overrides = {}) {
     longPath = null;
     longLink = null;
     collisions.clear();
+    fileSpans.length = 0;
     throw error;
   }
 
@@ -280,6 +293,13 @@ export function createTarInventory(overrides = {}) {
       const eventBytes = byteLength(serialized);
       if (eventBytes > limits.maxEventBytes) fail('E_EVENT_BYTES');
       if (eventBytes > limits.maxOutputBytes - outputBytes) fail('E_OUTPUT_BYTES');
+      if (trackSpans && kind === 'file') {
+        const span = { index: entries + 1, path: key, bodyOffset: consumedBytes, size };
+        const cost = byteLength(JSON.stringify(span)) + (fileSpans.length ? 1 : 0);
+        if (cost > maxSpanBytes - spanBytes) fail('E_SPAN_BYTES');
+        spanBytes += cost;
+        fileSpans.push(Object.freeze(span));
+      }
       collisions.add(key);
       collisionBytes += keyBytes;
       entries++;
@@ -316,6 +336,7 @@ export function createTarInventory(overrides = {}) {
         if (phase === 'trailing') {
           if (!zero(copy.subarray(cursor))) fail('E_TRAILING');
           trailingBytes += copy.length - cursor;
+          consumedBytes += copy.length - cursor;
           break;
         }
         if (phase === 'header') {
@@ -323,6 +344,7 @@ export function createTarInventory(overrides = {}) {
           copy.copy(header, headerUsed, cursor, cursor + count);
           headerUsed += count;
           cursor += count;
+          consumedBytes += count;
           if (headerUsed === 512) {
             headerUsed = 0;
             parseHeader(events);
@@ -335,12 +357,14 @@ export function createTarInventory(overrides = {}) {
           }
           bodyRemaining -= count;
           cursor += count;
+          consumedBytes += count;
           if (!bodyRemaining) endBody();
         } else {
           const count = Math.min(paddingRemaining, copy.length - cursor);
           if (!zero(copy.subarray(cursor, cursor + count))) fail('E_PADDING');
           paddingRemaining -= count;
           cursor += count;
+          consumedBytes += count;
           if (!paddingRemaining) phase = 'header';
         }
       }
@@ -352,9 +376,10 @@ export function createTarInventory(overrides = {}) {
     guard();
     try {
       if (phase !== 'trailing' || trailingBytes % 512) fail('E_TRUNCATED');
+      if (trackSpans && spanBytes > maxSpanBytes) fail('E_SPAN_BYTES');
       sealed = true;
       return Object.freeze({
-        state: 'TAR_INVENTORY',
+        state: trackSpans ? 'TAR_MEMBER_INVENTORY' : 'TAR_INVENTORY',
         mockOnly: false,
         decoderQualified: false,
         realArchiveInspected: false,
@@ -367,6 +392,7 @@ export function createTarInventory(overrides = {}) {
         collisionBytes,
         dataEvents,
         metadataSha256: hash.digest('hex'),
+        ...(trackSpans ? { fileSpans: Object.freeze(fileSpans) } : {}),
       });
     } catch (cause) { return absorb(cause); }
   }

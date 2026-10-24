@@ -1997,3 +1997,982 @@ The one-shot static-read grant is CONSUMED. Do not repeat candidate reads/stats/
 Next separate source/version/provenance evidence from exact bounded interpreter/library resolution/identity and symbol-version/ISA requirements. Declared names alone do not prove those files exist, show how they resolve, account for transitive/dynamic dependencies or establish a Python-free runtime. Any derived-path catalog and access must be explicitly registered and approved before use.
 The SDK archive remains retained and unlisted/unextracted/unexecuted. Rust compilation/tests stay a binding BLOCKER; real training, activation/deployment, SDK installation, working-architecture acceptance and retained-cache/doc cleanup remain unauthorized. Publication stays at `ddb5c98f`/PR50 OPEN/unmerged; the new ELF unit and these proposal/receipt additions remain uncommitted.
 Repository-only receipt-copy validation passed. Required brief parallel adversarial/security checks accepted receipt documentation only with no findings; spec review reported in-sync. Optional repeated review rounds remain omitted as requested; no further operation follows automatically.
+
+## 33. Autonomous work order through step5 — scoped qualification first
+
+**[Unverified] Work-order implementation/evidence ledger; no completed XZ, Native or training qualification is inferred.**
+The user explicitly ordered: `Loop until achieving 5. Finish shared418 features, estimator/belief integration and strict artifact lifecycle. No more questions from this session. Commit & push after each remaining step`.
+Treat that as a new work order for the previously listed steps1–5, not renewal of consumed grants: qualify XZ; qualify a Python-free SDK/offline toolchain; verify the prepared Rust runtime; complete the frozen F9 obligations; implement/verify shared418, estimator/belief integration and strict artifact lifecycle. Register bounded necessary operations here and continue without more questions. Commit/non-force push after a step actually meets its acceptance checks, not after relabeling a partial result.
+Retain NoPython, Rust1.95.0/Burn=0.22.0/defaults-off/std,flex,optim,store/Flex CPU-f64, unchanged TS engine, separate ledgers/raw D+B labels, settlement controls, both gas0, one shared inclusive1048576/F1/no reset/refund/clone, original10s/300s including3s cleanup and generator2048. This work order does not waive a Native source/invoice/loading/clock requirement, authorize training/collection/fitting/calibration/activation/deployment or permit retained-data deletion. Avoid old retained M2/M3 roots; use explicitly registered fresh paths for later preparation instead of reusing old grants.
+Architect `ses_e936987c0ffecQzddmWT2yoa4d`, repository exploration `ses_e936987b8ffeDC1iMTprqmt9Kz` and DevOps `ses_e93698751ffe4do5FwWMR4nB53` separated implemented foundations from missing source and hard proof gates before further coding. Current full418/belief/artifact Rust implementations remain absent, and the eight prepared runtime tests remain uncompiled/unrun. Genuine F9 numeric B, complete invoice, clock/custody/loading and whole-decision fit remain unproved; report precise blockers instead of waiving them.
+
+### 33.1 Step1 first operation — five-name metadata catalog
+
+This operation catalogs only the literal interpreter name from §32 plus four explicitly selected common x86-64 GNU library candidate names. The four library paths are unobserved candidates, not established loader selections. Perform at most10 lstats and5 conditional readlinks, no file-content read/open/hash, directory/PATH scan, realpath, target following, execution or network. Kernel traversal of uninspected ancestor symlinks remains the ordinary-host residual; leaf targets remain uninterpreted data.
+Use the exact command below once in the repository directory, foreground, shell timeout5000ms. The3500ms guard is cooperative and cannot interrupt native metadata calls or establish hard termination/RSS/reaping. No FD is explicitly acquired. Require stable nine-field pre/post snapshots, supported regular/symlink type and root ownership; do not interpret symlink permission bits as regular-file write permission. Missing literal names produce partial metadata, never global absence or fallback selection.
+
+<!-- BEGIN XZ FIVE NAME CATALOG V1 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+const started = process.hrtime.bigint();
+const end = started + 3_500_000_000n;
+const paths = ['/lib64/ld-linux-x86-64.so.2', '/lib/x86_64-linux-gnu/liblzma.so.5',
+  '/usr/lib/x86_64-linux-gnu/liblzma.so.5', '/lib/x86_64-linux-gnu/libc.so.6',
+  '/usr/lib/x86_64-linux-gnu/libc.so.6'];
+const fields = ['dev', 'ino', 'mode', 'uid', 'gid', 'nlink', 'size', 'mtimeNs', 'ctimeNs'];
+const counts = { lstats: 0, readlinks: 0 };
+const rows = [];
+let last = started, clocks = 1, failure;
+function stop(code) { const error = new Error(); error.code = code; throw error; }
+function guard() {
+  if (++clocks > 100) stop('E_LIMIT');
+  const time = process.hrtime.bigint();
+  if (typeof time !== 'bigint' || time < last) stop('E_PLATFORM');
+  last = time;
+  if (time >= end) stop('E_DEADLINE');
+}
+function sample(path) {
+  guard();
+  if (counts.lstats >= 10) stop('E_LIMIT');
+  counts.lstats++;
+  const stat = fs.lstatSync(path, { bigint: true });
+  guard();
+  const value = {};
+  for (const field of fields) {
+    if (typeof stat[field] !== 'bigint') stop('E_METADATA');
+    value[field] = stat[field];
+  }
+  return value;
+}
+try {
+  for (const path of paths) {
+    let before;
+    try { before = sample(path); }
+    catch (error) {
+      if (error.code === 'ENOENT' || error.code === 'ENOTDIR') {
+        rows.push({ path, state: 'UNAVAILABLE' });
+        continue;
+      }
+      throw error;
+    }
+    const type = before.mode & 0o170000n;
+    if (before.uid !== 0n || ![0o100000n, 0o120000n].includes(type)) stop('E_POLICY');
+    let target = null;
+    if (type === 0o120000n) {
+      guard();
+      if (counts.readlinks >= 5) stop('E_LIMIT');
+      counts.readlinks++;
+      const raw = fs.readlinkSync(path, { encoding: 'buffer' });
+      guard();
+      if (!Buffer.isBuffer(raw) || raw.length < 1 || raw.length > 4096) stop('E_LINK');
+      target = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(raw);
+      if (/[\u0000-\u001f\u007f-\u009f]/u.test(target)) stop('E_LINK');
+    }
+    const after = sample(path);
+    if (!fields.every(field => before[field] === after[field])) stop('E_BINDING');
+    rows.push({ path, state: type === 0o120000n ? 'SYMLINK' : 'REGULAR_FILE', target,
+      identity: Object.fromEntries(fields.map(field => [field, before[field].toString()])) });
+  }
+  guard();
+} catch (error) {
+  failure = ['E_LIMIT', 'E_PLATFORM', 'E_DEADLINE', 'E_METADATA', 'E_POLICY', 'E_LINK', 'E_BINDING'].includes(error.code)
+    ? error.code : 'E_IO';
+}
+const status = failure ? 'STOP' : rows.some(row => row.state === 'UNAVAILABLE') ? 'CATALOG_PARTIAL' : 'CATALOG_COMPLETE';
+const base = { profile: 'xz-five-name-catalog-v1', authorization: 'autonomous-steps-1-5',
+  attemptConsumed: true, status, counts, candidateExecuted: false, derivedPathsOpened: false,
+  contentsRead: false, decoderQualified: false, provenanceVerified: false,
+  loaderClosureVerified: false, noPythonRuntimeVerified: false, nativeQualified: false,
+  rustReady: false, trainingReady: false };
+let text = (JSON.stringify({ ...base, ...(failure ? { error: failure } : {}), rows }) + '\n')
+  .replace(/[^\x00-\x7f]/g, unit => '\\u' + unit.charCodeAt(0).toString(16).padStart(4, '0'));
+if (Buffer.byteLength(text) > 32768 || !/^[\x20-\x7e\n]*$/.test(text)) {
+  text = JSON.stringify({ ...base, status: 'STOP', error: 'E_OUTPUT' }) + '\n';
+  failure = 'E_OUTPUT';
+}
+if (failure) process.exitCode = 1;
+process.stdout.on('error', () => { process.exitCode = 1; });
+try { process.stdout.write(text); } catch { process.exitCode = 1; }
+NODE
+```
+<!-- END XZ FIVE NAME CATALOG V1 -->
+
+Syntax-only parsing passed without evaluating the catalog; the3581-byte command SHA-256 is `c9e07b38adb266af39a1ba06c77233a8a8619e83cc774d9a4c18a8abb98b051a`. Required quality/security source checks accepted this exact metadata catalog only with no findings; spec review reported in-sync. Register the complete current section before execution under the new work order; no more TUI questions follow. Actual catalog results, source/version provenance and complete XZ acceptance remain pending. Do not commit step1 as completed on catalog results alone.
+
+### 33.2 Five-name catalog outcome and versioned reader work
+
+The registered7343-byte initial §33 had SHA-256 `2dbaf377c74675f2b0a6418a04addfdbde0aaec8a510bac5a311fec5e61aa744`; its exact catalog ran once under the new work order and returned normally with CATALOG_COMPLETE,10 lstats and3 readlinks. No regular-file contents or derived target were opened.
+
+```json
+{"profile":"xz-five-name-catalog-v1","authorization":"autonomous-steps-1-5","attemptConsumed":true,"status":"CATALOG_COMPLETE","counts":{"lstats":10,"readlinks":3},"candidateExecuted":false,"derivedPathsOpened":false,"contentsRead":false,"decoderQualified":false,"provenanceVerified":false,"loaderClosureVerified":false,"noPythonRuntimeVerified":false,"nativeQualified":false,"rustReady":false,"trainingReady":false,"rows":[{"path":"/lib64/ld-linux-x86-64.so.2","state":"SYMLINK","target":"../lib/x86_64-linux-gnu/ld-linux-x86-64.so.2","identity":{"dev":"82","ino":"8619","mode":"41471","uid":"0","gid":"0","nlink":"1","size":"44","mtimeNs":"1784741087000000000","ctimeNs":"1784741087000000000"}},{"path":"/lib/x86_64-linux-gnu/liblzma.so.5","state":"SYMLINK","target":"liblzma.so.5.8.3","identity":{"dev":"56","ino":"340","mode":"41471","uid":"0","gid":"0","nlink":"1","size":"16","mtimeNs":"1791561255000000000","ctimeNs":"1791561255000000000"}},{"path":"/usr/lib/x86_64-linux-gnu/liblzma.so.5","state":"SYMLINK","target":"liblzma.so.5.8.3","identity":{"dev":"56","ino":"340","mode":"41471","uid":"0","gid":"0","nlink":"1","size":"16","mtimeNs":"1791561255000000000","ctimeNs":"1791561255000000000"}},{"path":"/lib/x86_64-linux-gnu/libc.so.6","state":"REGULAR_FILE","target":null,"identity":{"dev":"82","ino":"3878","mode":"33261","uid":"0","gid":"0","nlink":"1","size":"2186512","mtimeNs":"1784741087000000000","ctimeNs":"1784741087000000000"}},{"path":"/usr/lib/x86_64-linux-gnu/libc.so.6","state":"REGULAR_FILE","target":null,"identity":{"dev":"82","ino":"3878","mode":"33261","uid":"0","gid":"0","nlink":"1","size":"2186512","mtimeNs":"1784741087000000000","ctimeNs":"1784741087000000000"}}]}
+```
+
+The liblzma target text is a filename/version hint only. Equal `/lib` and `/usr/lib` object identities are observed aliases, not proof of loader search order or protected ancestor resolution. Register targets literally before reading them; no automatic resolver is introduced.
+Libc's observed2186512 bytes exceed the existing ELF-v1 input ceiling. Preserve v1's1MiB/profile/190-test contract; implement a distinct `inspectElf64Requirements`/v2 profile with4MiB input ceiling and bounded version/ABI/ISA/build-ID metadata, using the shared parser internals rather than silently expanding v1. The planned input remains bytes-only; no library/candidate reader enters that module.
+Extend `elf-metadata.mjs` and add `elf-requirements.test.mjs`; preserve all v1 behavioral tests and add corresponding exact coverage to the existing owner diagram/index after handoff. Bound version records512, auxiliaries1024, note bytes64KiB/notes128, build-ID64 bytes and property payload4096 bytes; keep source arithmetic BigInt and all qualification flags false. Source/provenance and complete symbol resolution remain distinct from version labels and GNU declarations.
+The source extension is now implemented as `inspectElf64Requirements` / `ELF_REQUIREMENTS_METADATA` / profile `elf64le-x86-64-requirements-v2`. The v1 API,1MiB/64KiB ceilings, profile and190 behavioral tests remain intact. Parent verification passed381/381 tests (190 v1 +191 requirements), three syntax checks and100% module line/branch/function coverage; only synthetic in-memory inputs ran.
+V2 parses paired/unique DT_VERNEED/DT_VERDEF tags, aggregate bounded records/auxiliaries, mapped forward relative chains, exact terminal links, occupied virtual/file-span rejection, string-table references and active NEEDED filename membership. It records hashes/flags/indices/names as declarations, not actual symbol bindings.
+V2 parses bounded GNU notes/build IDs/ABI/property declarations; identical physical ranges deduplicate and nonidentical overlaps STOP as unsupported. Unknown descriptors/properties emit only metadata/hashes; ISA/feature labels retain raw bits and unknown bits without CPU detection, instruction-coverage or enforcement proof. SymbolBindingsVerified/hardwareCompatibilityVerified/instructionCoverageVerified/propertyEnforcementVerified/buildIdAuthenticated remain false.
+The current owner diagram/index covers source plus both test files; rendering and final spec reconciliation remain pending. Historical source pins in §§28–32 retain their revision-specific meanings and are not the new source identity.
+
+### 33.3 Registered regular-file fingerprints and package claims
+
+Before any decoder invocation, the next work-order operation may inspect exactly `/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2`, `/lib/x86_64-linux-gnu/liblzma.so.5.8.3`, `/lib/x86_64-linux-gnu/libc.so.6` as data and read the prospective literal `/var/lib/dpkg/status` as package-claim data. These are explicitly registered literals, not runtime-resolved dependencies. No directory enumeration, implicit alternate package manager, environment query or target following is permitted.
+Use source-bound no-follow/nonblocking readonly custody, root ownership, no group/world write bits or special mode bits, nlink1, full nine-field named/FD stability, exact positional64KiB reads and EOF, complete SHA-256 and one close attempt per acquired FD. Binary-file ceiling8MiB each, status-file ceiling4MiB, aggregate data ceiling16MiB. Source attempts remain bounded to300 non-close filesystem calls plus4 closes,260 reads including EOF,4096 monotonic samples,119s work/120s total cooperative including1s finalization; shell capture timeout130s. Stop on unsupported types, short reads, stale metadata, overflow or uncertain close; missing explicitly registered files may yield PARTIAL data, not a fallback search.
+Read status-file text only to report whitelisted `Package,Source,Version,Architecture,Status,Built-Using` fields for `xz-utils,liblzma5,libc6`; bound selected values to512 UTF-8 bytes, paragraphs to128KiB, paragraphs4096 and selected records3. Missing/duplicate/malformed package claims do not authenticate another context. Installed package claims and MD5 records are never publisher signatures or independently authenticated source correspondence.
+The exact launcher, syntax checks and required gates must be registered before this operation. It performs no XZ/loader/library execution, real archive access, filesystem writes, package-manager command, network or cleanup. Further source/version/provenance research uses bounded public official text only; no binary/package acquisition fallback follows an unsupported local context.
+
+<!-- BEGIN XZ REGISTERED FILE FACTS V1 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+const start = process.hrtime.bigint(), workEnd = start + 119_000_000_000n, end = start + 120_000_000_000n;
+const files = [
+  { path: '/var/lib/dpkg/status', kind: 'package-status', maximum: 4194304 },
+  { path: '/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2', kind: 'binary', maximum: 8388608 },
+  { path: '/lib/x86_64-linux-gnu/liblzma.so.5.8.3', kind: 'binary', maximum: 8388608 },
+  { path: '/lib/x86_64-linux-gnu/libc.so.6', kind: 'binary', maximum: 8388608 },
+];
+const fields = ['dev', 'ino', 'mode', 'uid', 'gid', 'nlink', 'size', 'mtimeNs', 'ctimeNs'];
+const counts = { sourceReads: 0, sourceReturnedBytes: 0, fsCalls: 0, reads: 0, returnedBytes: 0, requestedBytes: 0, closes: 0 };
+const rows = [];
+let fd = null, last = start, clocks = 1, failure;
+function stop(code) { const error = new Error(); error.code = code; throw error; }
+function guard(final = false) {
+  if (++clocks > 4096) stop('E_LIMIT');
+  const now = process.hrtime.bigint();
+  if (typeof now !== 'bigint' || now < last) stop('E_PLATFORM');
+  last = now;
+  if (now >= (final ? end : workEnd)) stop('E_DEADLINE');
+}
+function work(action) { guard(); const value = action(); guard(); return value; }
+function io(action) { return work(() => { if (counts.fsCalls >= 300) stop('E_LIMIT'); counts.fsCalls++; return action(); }); }
+function snapshot(stat) {
+  const out = {};
+  for (const field of fields) { if (typeof stat[field] !== 'bigint') stop('E_METADATA'); out[field] = stat[field]; }
+  return out;
+}
+function same(a, b) { if (!fields.every(field => a[field] === b[field])) stop('E_BINDING'); }
+function close() {
+  if (fd === null) return;
+  const owned = fd; fd = null; counts.closes++;
+  try { fs.closeSync(owned); } catch { stop('E_CLOSE'); }
+}
+try {
+  const parserSource = work(() => {
+    counts.sourceReads++;
+    const bytes = fs.readFileSync('/tmp/opencode/f9-bootstrap-correspondence/tooling/native-ingress/package-claims.mjs');
+    counts.sourceReturnedBytes = bytes.length;
+    return bytes;
+  });
+  if (parserSource.length !== 2959 || work(() => createHash('sha256').update(parserSource).digest('hex')) !== 'd24f08a95e9cb923d5be98c155ba66d5f570ae3612aab6773b77c33ed7e8427a') stop('E_SOURCE_PIN');
+  guard();
+  const { selectPackageClaims } = await import('file:///tmp/opencode/f9-bootstrap-correspondence/tooling/native-ingress/package-claims.mjs');
+  guard();
+  if (typeof selectPackageClaims !== 'function') stop('E_SOURCE_PIN');
+  const f = fs.constants;
+  if (f.O_RDONLY !== 0 || !Number.isInteger(f.O_NOFOLLOW) || f.O_NOFOLLOW <= 0 || !Number.isInteger(f.O_NONBLOCK) || f.O_NONBLOCK <= 0) stop('E_PLATFORM');
+  for (const file of files) {
+    let before;
+    try { before = snapshot(io(() => fs.lstatSync(file.path, { bigint: true }))); }
+    catch (error) { if (error.code === 'ENOENT' || error.code === 'ENOTDIR') { rows.push({ path: file.path, kind: file.kind, state: 'UNAVAILABLE' }); continue; } throw error; }
+    if ((before.mode & 0o170000n) !== 0o100000n || before.uid !== 0n || before.nlink !== 1n || (before.mode & 0o7022n) !== 0n) stop('E_POLICY');
+    if (before.size < BigInt(file.kind === 'binary' ? 64 : 1) || before.size > BigInt(file.maximum) || before.size > BigInt(16777216 - counts.returnedBytes)) stop('E_LIMIT');
+    io(() => { fd = fs.openSync(file.path, f.O_RDONLY | f.O_NOFOLLOW | f.O_NONBLOCK); });
+    same(before, snapshot(io(() => fs.fstatSync(fd, { bigint: true }))));
+    const size = Number(before.size), scratch = work(() => Buffer.alloc(65536));
+    const status = file.kind === 'package-status' ? work(() => Buffer.alloc(size)) : null;
+    const hash = work(() => createHash('sha256'));
+    for (let offset = 0; offset < size;) {
+      const want = Math.min(65536, size - offset);
+      const got = io(() => {
+        if (counts.reads >= 260 || counts.requestedBytes + want > 16777220) stop('E_LIMIT');
+        counts.reads++; counts.requestedBytes += want;
+        const count = fs.readSync(fd, scratch, 0, want, offset);
+        if (!Number.isSafeInteger(count) || count < 0 || count > want) stop('E_IO');
+        counts.returnedBytes += count;
+        return count;
+      });
+      if (got !== want) stop('E_LENGTH');
+      work(() => hash.update(scratch.subarray(0, got)));
+      if (status !== null) scratch.copy(status, offset, 0, got);
+      offset += got;
+    }
+    const eof = io(() => {
+      if (counts.reads >= 260 || counts.requestedBytes >= 16777220) stop('E_LIMIT');
+      counts.reads++; counts.requestedBytes++;
+      const count = fs.readSync(fd, scratch, 0, 1, size);
+      if (!Number.isSafeInteger(count) || count < 0 || count > 1) stop('E_IO');
+      counts.returnedBytes += count;
+      return count;
+    });
+    if (eof !== 0) stop('E_LENGTH');
+    const sha256 = work(() => hash.digest('hex'));
+    same(before, snapshot(io(() => fs.fstatSync(fd, { bigint: true }))));
+    same(before, snapshot(io(() => fs.lstatSync(file.path, { bigint: true }))));
+    close();
+    rows.push({ path: file.path, kind: file.kind, state: 'FILE_BYTES_OBSERVED', byteLength: size, sha256,
+      identity: Object.fromEntries(fields.map(field => [field, before[field].toString()])),
+      ...(status !== null ? { packageClaims: work(() => selectPackageClaims(status)) } : {}) });
+  }
+  guard(true);
+} catch (error) { failure = ['E_SOURCE_PIN', 'E_PLATFORM', 'E_LIMIT', 'E_METADATA', 'E_BINDING', 'E_POLICY', 'E_IO', 'E_LENGTH', 'E_CLOSE', 'E_PACKAGE', 'E_DEADLINE'].includes(error.code) ? error.code : 'E_IO'; }
+finally { try { close(); } catch { failure = 'E_CLOSE'; } }
+const base = { profile: 'xz-registered-file-facts-v1', authorization: 'autonomous-steps-1-5', attemptConsumed: true,
+  status: failure ? 'STOP' : rows.some(row => row.state === 'UNAVAILABLE') ? 'FILE_FACTS_PARTIAL' : 'FILE_FACTS_COMPLETE', counts,
+  candidateExecuted: false, decoderQualified: false, provenanceVerified: false, loaderClosureVerified: false,
+  noPythonRuntimeVerified: false, nativeQualified: false, realArchiveInspected: false, rustReady: false, trainingReady: false };
+let text = (JSON.stringify({ ...base, ...(failure ? { error: failure } : {}), rows }) + '\n').replace(/[^\x00-\x7f]/g, unit => '\\u' + unit.charCodeAt(0).toString(16).padStart(4, '0'));
+if (Buffer.byteLength(text) > 32768 || !/^[\x20-\x7e\n]*$/.test(text)) { text = JSON.stringify({ ...base, status: 'STOP', error: 'E_OUTPUT' }) + '\n'; failure = 'E_OUTPUT'; }
+if (!failure) {
+  try { guard(true); }
+  catch (error) {
+    failure = ['E_LIMIT', 'E_PLATFORM', 'E_DEADLINE'].includes(error.code) ? error.code : 'E_IO';
+    text = JSON.stringify({ ...base, status: 'STOP', error: failure }) + '\n';
+  }
+}
+if (failure) process.exitCode = 1;
+process.stdout.on('error', () => { process.exitCode = 1; });
+try { process.stdout.write(text); } catch { process.exitCode = 1; }
+NODE
+```
+<!-- END XZ REGISTERED FILE FACTS V1 -->
+
+The first reader draft silently discarded continuation lines. Required review identified that MEDIUM before execution; extract a pure `package-claims.mjs`/test module with explicit folded-field semantics instead. A second finding fixed case-insensitive Deb822 field names and duplicate detection. Complete folded values, including Built-Using continuations, are checked against512 UTF-8 bytes; no truncation occurs. A final post-encoding guard prevents late successful publication; output flushing/native-call completion still has no hard time guarantee. This parser reports package claims, never package-manager execution or signature verification.
+The current package parser passes20 synthetic tests and syntax checks with100% line/branch/function coverage, including folded and case-insensitive fields, case-variant duplicates, value/cardinality boundaries and exact source/spec/index references. The operation separately counts one2959-byte repository source preflight read and imports only that source plus Node util. Its pin is `d24f08a95e9cb923d5be98c155ba66d5f570ae3612aab6773b77c33ed7e8427a`; hash-before-import and runtime/ancestor behavior retain the disclosed ordinary-host residual, not immutable loading or a complete filesystem graph. Host-file limits stay unchanged. Binary contents are hashed but not decoded as ELF in this operation. Required quality findings for folded/case-insensitive fields and final success deadline are closed, security reported no findings and spec correspondence is in-sync. The6859-byte current command has SHA-256 `cb742a3ea5a87946082c2f69c3b5f85f1150d415a1c18b0cecc6427526a8feb5`; whole current-section registration and actual file-fact evidence remain pending.
+
+### 33.4 Public XZ source evidence and decoder policy
+
+Read-only official-text research pinned XZ5.8.3 tag object `9d0743bb9629e8a55ea7b1b40b981514a1f68408` to commit `4b73f2ec19a99ef465282fbce633e8deb33691b3`; GitHub reports its signature verified, which is not independent local verification. The official latest-release API reports5.8.4, published2026-09-09. A local target name ending5.8.3 does not identify the actual package revision or authenticate its code.
+Sources: [official5.8.3 tag](https://api.github.com/repos/tukaani-project/xz/git/tags/9d0743bb9629e8a55ea7b1b40b981514a1f68408), [latest release](https://api.github.com/repos/tukaani-project/xz/releases/latest), [pinned coder.c](https://raw.githubusercontent.com/tukaani-project/xz/4b73f2ec19a99ef465282fbce633e8deb33691b3/src/xz/coder.c), [args.c](https://raw.githubusercontent.com/tukaani-project/xz/4b73f2ec19a99ef465282fbce633e8deb33691b3/src/xz/args.c), [stream_decoder.c](https://raw.githubusercontent.com/tukaani-project/xz/4b73f2ec19a99ef465282fbce633e8deb33691b3/src/liblzma/common/stream_decoder.c), [file_io.c](https://raw.githubusercontent.com/tukaani-project/xz/4b73f2ec19a99ef465282fbce633e8deb33691b3/src/xz/file_io.c), [fixtures README](https://raw.githubusercontent.com/tukaani-project/xz/4b73f2ec19a99ef465282fbce633e8deb33691b3/tests/files/README).
+Future fixed decoding must explicitly select `--decompress --stdout --format=xz --threads=1 --memlimit-decompress=<fixed bytes> -- -`, without `--force`, `--single-stream`, `--ignore-check`, `--no-warn`, file-list options or inherited XZ_DEFAULTS/XZ_OPT. Source enables concatenated streams and four-byte NUL padding; nonpadding trailing data fails, and physical input EOF remains required. Check=None can succeed without payload-check verification, so process success alone cannot certify every integrity check. Partial output can precede decoder failure; inventory stays provisional until complete success.
+Source memory accounting is not total process RSS. Runtime still needs independently bounded compressed input, expanded output, stderr, time and child/pipe lifecycle. Source libc/CLI startup may access locale data or `/dev/null` for missing standard handles; controlled descriptors and C locale do not create a Native closure proof.
+[GHSA-5qpq-xqfv-j9pg](https://api.github.com/repos/tukaani-project/xz/security-advisories/GHSA-5qpq-xqfv-j9pg) affects<=5.8.3 but explicitly excludes decoders for `.xz` and raw streams. That mode exclusion is narrow, not a blanket waiver of5.8.3 or unknown host artifacts. The [CVE-2024-3094 incident](https://tukaani.org/xz-backdoor/) demonstrates why signed source-tarball provenance and Git/tag identity must not be conflated with installed binary correspondence.
+The official [Debian debuginfod service](https://debuginfod.debian.net/) and [WEBAPI](https://manpages.debian.org/unstable/debuginfod/debuginfod.8.en.html#WEBAPI) document raw ELF retrieval by build-ID, including ET_DYN objects; no executable endpoint/body has been requested. Service coverage, federation configuration and mapping to independently authenticated package/source metadata remain unproved. A later bounded counterpart SHA-256 match could establish identity to that service response, not archive signatures, reproducibility or Native authority; do not use copied build-ID notes alone as provenance.
+
+### 33.5 Registered file-fact outcome — package claims are not provenance
+
+The26117-byte section registration `f689af48dd2c2fe4228e8b1f15eca9018869dabf133313d749c6eab442fd77e3` bound command6859/SHA-256 `cb742a3ea5a87946082c2f69c3b5f85f1150d415a1c18b0cecc6427526a8feb5` and package parser2959/SHA-256 `d24f08a95e9cb923d5be98c155ba66d5f570ae3612aab6773b77c33ed7e8427a`. That exact operation ran once under the new work order and returned normally with FILE_FACTS_COMPLETE. Source counters report76 non-close host calls,56 reads,3304041 returned bytes,3304045 requested bytes and4 positive closes; the separate source read returned2959 bytes. No file was executed or decoded as ELF in that operation.
+
+```json
+{"profile":"xz-registered-file-facts-v1","authorization":"autonomous-steps-1-5","attemptConsumed":true,"status":"FILE_FACTS_COMPLETE","counts":{"sourceReads":1,"sourceReturnedBytes":2959,"fsCalls":76,"reads":56,"returnedBytes":3304041,"requestedBytes":3304045,"closes":4},"candidateExecuted":false,"decoderQualified":false,"provenanceVerified":false,"loaderClosureVerified":false,"noPythonRuntimeVerified":false,"nativeQualified":false,"realArchiveInspected":false,"rustReady":false,"trainingReady":false,"rows":[{"path":"/var/lib/dpkg/status","kind":"package-status","state":"FILE_BYTES_OBSERVED","byteLength":647217,"sha256":"b80b0ad97af11a79060f7f212ccc373354ab5954094176620d3756a37bdf5c2d","identity":{"dev":"32","ino":"14279","mode":"33188","uid":"0","gid":"0","nlink":"1","size":"647217","mtimeNs":"1792604285000000000","ctimeNs":"1792604285000000000"},"packageClaims":[{"Package":"libc6","Status":"install ok installed","Architecture":"amd64","Source":"glibc","Version":"2.43-2ubuntu2.3"},{"Package":"liblzma5","Status":"install ok installed","Architecture":"amd64","Source":"xz-utils","Version":"5.8.3-1ubuntu0.1"},{"Package":"xz-utils","Status":"install ok installed","Architecture":"amd64","Version":"5.8.3-1ubuntu0.1"}]},{"path":"/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2","kind":"binary","state":"FILE_BYTES_OBSERVED","byteLength":254864,"sha256":"c5e80a563850d6ab5c2f2482e4202d9c1b71fbf44854b8c399e63527202c64e1","identity":{"dev":"82","ino":"3793","mode":"33261","uid":"0","gid":"0","nlink":"1","size":"254864","mtimeNs":"1784741087000000000","ctimeNs":"1784741087000000000"}},{"path":"/lib/x86_64-linux-gnu/liblzma.so.5.8.3","kind":"binary","state":"FILE_BYTES_OBSERVED","byteLength":215448,"sha256":"515749273a91ca5e3b273b4025dc2c1f8827f90005baea0ab85ffb594e74f72f","identity":{"dev":"56","ino":"343","mode":"33188","uid":"0","gid":"0","nlink":"1","size":"215448","mtimeNs":"1791561255000000000","ctimeNs":"1791561255000000000"}},{"path":"/lib/x86_64-linux-gnu/libc.so.6","kind":"binary","state":"FILE_BYTES_OBSERVED","byteLength":2186512,"sha256":"a3947513a02831ec692ebf13053c07614882ab54a2101fb91a1b15724062ed0c","identity":{"dev":"82","ino":"3878","mode":"33261","uid":"0","gid":"0","nlink":"1","size":"2186512","mtimeNs":"1784741087000000000","ctimeNs":"1784741087000000000"}}]}
+```
+
+These package records claim Ubuntu revisions, not Debian revisions; pursue the corresponding official Ubuntu publication/source evidence rather than treating Debian service presence as the relevant authority. No independently authenticated installed-package provenance, source correspondence, decoder behavior or runtime closure follows from a local status database. Its bytes were inspected as data only; no package-manager program ran.
+
+### 33.6 Pinned four-file ELF requirements operation
+
+Under the new work order, register the four pinned regular ELF objects below for one same-FD read/hash/stability/close-then-parse pass using the tested requirements-v2 API. Expected byte counts, hashes and nine-field identities come from §29/33.5; mismatches STOP without accepting replacements or performing a search. Read no symlink leaf or unlisted dependency, and make no package database, network, archive or code-execution call in this operation.
+Candidate host effects are capped at68 non-close calls plus4 closes,48 read attempts including EOF,2758216 returned data bytes/2758220 requested bytes, one owned FD at a time and4096 clock samples. Source preflight reads only the19842-byte repository ELF module, SHA-256 `b223a655eae572137891a2c6efafee16887a2478fc91052f0092b48dfd65de85`; its Node crypto/util imports and wrapper fs retain the explicit ordinary Node/source-before-import/ancestor trust residual. Guards use119s work/120s total cooperative; tool capture130s is not hard native interruption, termination or reaping.
+Emit at most262144 escaped-ASCII JSON bytes including LF, selecting input hash/length, header/interpreter/dynamic names and the complete bounded requirements object; omitted program headers/opaque dynamic pairs remain unclaimed, not hidden semantic checks. All provenance/hardware/symbol-binding/enforcement/Native/decoder/training qualification flags remain false. Current source unit has381 passing synthetic tests; actual file-format compatibility remains pending.
+
+<!-- BEGIN XZ PINNED REQUIREMENTS V2 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+const start = process.hrtime.bigint(), workEnd = start + 119_000_000_000n, end = start + 120_000_000_000n;
+const files = [
+  { path: '/usr/bin/xz', size: 101392, sha256: '1f6ca26fd33066c9d5b95e58a0d9e2f5789cb18fd5741518574113b37ea1934d', dev: 56n, ino: 295n, mode: 33261n, time: 1791561255000000000n },
+  { path: '/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2', size: 254864, sha256: 'c5e80a563850d6ab5c2f2482e4202d9c1b71fbf44854b8c399e63527202c64e1', dev: 82n, ino: 3793n, mode: 33261n, time: 1784741087000000000n },
+  { path: '/lib/x86_64-linux-gnu/liblzma.so.5.8.3', size: 215448, sha256: '515749273a91ca5e3b273b4025dc2c1f8827f90005baea0ab85ffb594e74f72f', dev: 56n, ino: 343n, mode: 33188n, time: 1791561255000000000n },
+  { path: '/lib/x86_64-linux-gnu/libc.so.6', size: 2186512, sha256: 'a3947513a02831ec692ebf13053c07614882ab54a2101fb91a1b15724062ed0c', dev: 82n, ino: 3878n, mode: 33261n, time: 1784741087000000000n },
+];
+const sourceSha256 = 'b223a655eae572137891a2c6efafee16887a2478fc91052f0092b48dfd65de85';
+const fields = ['dev', 'ino', 'mode', 'uid', 'gid', 'nlink', 'size', 'mtimeNs', 'ctimeNs'];
+const counts = { sourceReads: 0, sourceReturnedBytes: 0, fsCalls: 0, reads: 0, returnedBytes: 0, requestedBytes: 0, closes: 0 };
+const rows = [];
+let fd = null, last = start, clocks = 1, failure;
+function stop(code) { const error = new Error(); error.code = code; throw error; }
+function guard(final = false) {
+  if (++clocks > 4096) stop('E_LIMIT');
+  const now = process.hrtime.bigint();
+  if (typeof now !== 'bigint' || now < last) stop('E_PLATFORM');
+  last = now;
+  if (now >= (final ? end : workEnd)) stop('E_DEADLINE');
+}
+function work(action) { guard(); const value = action(); guard(); return value; }
+function io(action) { return work(() => { if (counts.fsCalls >= 68) stop('E_LIMIT'); counts.fsCalls++; return action(); }); }
+function snapshot(stat) {
+  const out = {};
+  for (const key of fields) { if (typeof stat[key] !== 'bigint') stop('E_METADATA'); out[key] = stat[key]; }
+  return out;
+}
+function same(a, b) { if (!fields.every(key => a[key] === b[key])) stop('E_BINDING'); }
+function close() { if (fd !== null) { const owned = fd; fd = null; counts.closes++; try { fs.closeSync(owned); } catch { stop('E_CLOSE'); } } }
+const known = ['E_INPUT', 'E_LIMITS', 'E_ELF', 'E_RANGE', 'E_PROGRAM_HEADERS', 'E_INTERPRETER', 'E_DYNAMIC', 'E_STRING_TABLE', 'E_STRING', 'E_OUTPUT', 'E_VERSIONS', 'E_NOTES', 'E_PROPERTIES', 'E_LIMIT', 'E_PLATFORM', 'E_DEADLINE', 'E_METADATA', 'E_BINDING', 'E_SOURCE_PIN', 'E_IO', 'E_LENGTH', 'E_HASH', 'E_CLOSE'];
+try {
+  const source = work(() => { counts.sourceReads++; const value = fs.readFileSync('/tmp/opencode/f9-bootstrap-correspondence/tooling/native-ingress/elf-metadata.mjs'); counts.sourceReturnedBytes = value.length; return value; });
+  if (source.length !== 19842 || work(() => createHash('sha256').update(source).digest('hex')) !== sourceSha256) stop('E_SOURCE_PIN');
+  guard();
+  const { inspectElf64Requirements } = await import('file:///tmp/opencode/f9-bootstrap-correspondence/tooling/native-ingress/elf-metadata.mjs');
+  guard();
+  if (typeof inspectElf64Requirements !== 'function') stop('E_SOURCE_PIN');
+  const f = fs.constants;
+  if (f.O_RDONLY !== 0 || !Number.isInteger(f.O_NOFOLLOW) || f.O_NOFOLLOW <= 0 || !Number.isInteger(f.O_NONBLOCK) || f.O_NONBLOCK <= 0) stop('E_PLATFORM');
+  for (const file of files) {
+    const expected = { dev: file.dev, ino: file.ino, mode: file.mode, uid: 0n, gid: 0n, nlink: 1n, size: BigInt(file.size), mtimeNs: file.time, ctimeNs: file.time };
+    const before = snapshot(io(() => fs.lstatSync(file.path, { bigint: true })));
+    same(before, expected);
+    io(() => { fd = fs.openSync(file.path, f.O_RDONLY | f.O_NOFOLLOW | f.O_NONBLOCK); });
+    same(snapshot(io(() => fs.fstatSync(fd, { bigint: true }))), before);
+    const bytes = work(() => Buffer.alloc(file.size)), eof = work(() => Buffer.alloc(1));
+    function read(target, destination, want, position) {
+      return io(() => {
+        if (counts.reads >= 48 || counts.requestedBytes + want > 2758220) stop('E_LIMIT');
+        counts.reads++; counts.requestedBytes += want;
+        const got = fs.readSync(fd, target, destination, want, position);
+        if (!Number.isSafeInteger(got) || got < 0 || got > want) stop('E_IO');
+        counts.returnedBytes += got;
+        return got;
+      });
+    }
+    for (let offset = 0; offset < file.size;) {
+      const want = Math.min(65536, file.size - offset);
+      if (read(bytes, offset, want, offset) !== want) stop('E_LENGTH');
+      offset += want;
+    }
+    if (read(eof, 0, 1, file.size) !== 0) stop('E_LENGTH');
+    if (work(() => createHash('sha256').update(bytes).digest('hex')) !== file.sha256) stop('E_HASH');
+    same(snapshot(io(() => fs.fstatSync(fd, { bigint: true }))), before);
+    same(snapshot(io(() => fs.lstatSync(file.path, { bigint: true }))), before);
+    close();
+    const metadata = work(() => inspectElf64Requirements(bytes));
+    if (metadata.profile !== 'elf64le-x86-64-requirements-v2' || metadata.state !== 'ELF_REQUIREMENTS_METADATA' || metadata.byteLength !== file.size || metadata.inputSha256 !== file.sha256) stop('E_HASH');
+    for (const key of ['candidateExecuted', 'decoderQualified', 'realCandidateRead', 'realArchiveInspected', 'provenanceVerified', 'noPythonRuntimeVerified', 'loaderClosureVerified', 'nativeAuthority', 'nativeQualified', 'installedUsability', 'rustReady', 'trainingReady']) if (metadata[key] !== false) stop('E_METADATA');
+    rows.push({ path: file.path, byteLength: metadata.byteLength, sha256: metadata.inputSha256, header: metadata.header,
+      interpreter: metadata.interpreter, needed: metadata.dynamic.needed, soname: metadata.dynamic.soname,
+      rpath: metadata.dynamic.rpath, runpath: metadata.dynamic.runpath, requirements: metadata.requirements });
+  }
+} catch (error) { failure = known.includes(error.code) ? error.code : 'E_IO'; }
+finally { try { close(); } catch { failure = 'E_CLOSE'; } }
+const base = { profile: 'xz-pinned-requirements-v2', authorization: 'autonomous-steps-1-5', attemptConsumed: true,
+  status: failure ? 'STOP' : 'REQUIREMENTS_METADATA', sourceSha256, counts, candidateExecuted: false,
+  provenanceVerified: false, decoderQualified: false, loaderClosureVerified: false, noPythonRuntimeVerified: false,
+  nativeQualified: false, realArchiveInspected: false, rustReady: false, trainingReady: false };
+let text = (JSON.stringify({ ...base, ...(failure ? { error: failure } : {}), rows }) + '\n').replace(/[^\x00-\x7f]/g, unit => '\\u' + unit.charCodeAt(0).toString(16).padStart(4, '0'));
+if (Buffer.byteLength(text) > 262144 || !/^[\x20-\x7e\n]*$/.test(text)) { failure = 'E_OUTPUT'; text = JSON.stringify({ ...base, status: 'STOP', error: failure }) + '\n'; }
+if (!failure) { try { guard(true); } catch (error) { failure = known.includes(error.code) ? error.code : 'E_IO'; text = JSON.stringify({ ...base, status: 'STOP', error: failure }) + '\n'; } }
+if (failure) process.exitCode = 1;
+process.stdout.on('error', () => { process.exitCode = 1; });
+try { process.stdout.write(text); } catch { process.exitCode = 1; }
+NODE
+```
+<!-- END XZ PINNED REQUIREMENTS V2 -->
+
+Syntax-only parsing passed for the7235-byte command SHA-256 `264bb0279cfdb847d68d6951f78f09761540eb883ab870c28f1cb958cbb0267c`, without evaluation. Required quality/security source gates accepted this exact data operation with no findings; the current source19842/SHA-256 `b223a655eae572137891a2c6efafee16887a2478fc91052f0092b48dfd65de85` matches the tested381-case unit. Register the complete current section before use under the autonomous work order. No second operation or fallback follows a failed or unsupported parse. These are ordinary source-bounded data operations, not a private F9 invocation or executable loading proof; actual requirements results remain pending.
+
+### 33.7 Requirements outcome — four pinned byte images, not executed
+
+The39133-byte section registration `50f0677a0b599cec919c1ef489b7598afdaa9611c847b756d0055e7b23dc1b46` bound command7235/SHA-256 `264bb0279cfdb847d68d6951f78f09761540eb883ab870c28f1cb958cbb0267c` and source19842/SHA-256 `b223a655eae572137891a2c6efafee16887a2478fc91052f0092b48dfd65de85`. The exact operation returned normally with REQUIREMENTS_METADATA,68 non-close calls,48 reads,2758216 returned/2758220 requested bytes and4 successful closes before parsing. Source preflight read19842 bytes separately. No image was executed and no dynamic name was followed.
+The following is a selected parent transcription of returned fields, not a raw authenticated process transcript:
+
+| Pinned object | SHA-256 | GNU build-ID | Declared dependencies |
+| --- | --- | --- | --- |
+| `/usr/bin/xz` | `1f6ca26fd33066c9d5b95e58a0d9e2f5789cb18fd5741518574113b37ea1934d` | `a99aaf17395b7ec6f2bc5d08f127a6053724b16e` | `liblzma.so.5`, `libc.so.6` |
+| `/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2` | `c5e80a563850d6ab5c2f2482e4202d9c1b71fbf44854b8c399e63527202c64e1` | `d4bfd49ced9d6e19bb77f23bf6872b8d270a9712` | none |
+| `/lib/x86_64-linux-gnu/liblzma.so.5.8.3` | `515749273a91ca5e3b273b4025dc2c1f8827f90005baea0ab85ffb594e74f72f` | `30ae5b7526e4526b7d1517a25e3ea70820ded934` | `libc.so.6` |
+| `/lib/x86_64-linux-gnu/libc.so.6` | `a3947513a02831ec692ebf13053c07614882ab54a2101fb91a1b15724062ed0c` | `240c8909736b31f963346aca80667fd00c551e32` | `ld-linux-x86-64.so.2` |
+
+All four report no active RPATH/RUNPATH. Loader SONAME is `ld-linux-x86-64.so.2`, liblzma SONAME is `liblzma.so.5`, libc SONAME is `libc.so.6`; XZ has no SONAME. XZ/libc interpreter remains `/lib64/ld-linux-x86-64.so.2`; the loader/liblzma report no interpreter.
+XZ requires declared libc versions GLIBC_2.3,2.6,2.32,2.8,2.14,2.33,2.4,2.7,2.17,2.34,2.3.4,2.2.5 and liblzma versions XZ_5.6.0,5.2,5.4,5.0. Liblzma requires GLIBC_2.3.4,2.32,2.14,2.34,2.4,2.6,2.3.2,2.17,2.2.5. Libc requires loader versions GLIBC_2.2.5,2.3,2.35,GLIBC_PRIVATE. The recorded provider definitions contain those names; this is declaration compatibility, not actual symbol binding or loader-choice proof.
+XZ/libc report GNU ABI Linux3.2.0 and baseline ISA bits1. All four report feature bits3 labeled IBT/SHSTK; loader/liblzma have no reported ISA-needed property. Properties do not establish actual instruction coverage, hardware capability or enforcement. Every requirements-verification/authentication flag remains false. Build-ID notes remain unauthenticated labels until independent provenance is established.
+Step1 remains INCOMPLETE: installed-package claims, source behavior and declared requirements do not authenticate host bytes or authorize execution. Next verify independent Ubuntu publication evidence, exact package/member byte equality and controlled finite decoder behavior; retain all original Native/F9 and training restrictions.
+
+### 33.8 Independent publication-comparison source units
+
+Architecture consultation accepted a bootstrap-breaking validation path conditionally: verify signed Ubuntu Release metadata under an independently expected full key fingerprint, authenticate exact index/package hashes, and compare selected `.deb` data-member bytes with host fingerprints WITHOUT invoking XZ to decode its own provenance package. Missing key trust, historical metadata or supported compression means STOP, not a replacement package/mirror/decoder.
+The new `release-signature.mjs`/test unit uses Node crypto/util only: v4 RSA primary-key clear-signatures, SHA256/SHA512, bounded packets/armor/MPI/subpackets and full PKCS1 v1.5 preimage verification. Full externally supplied fingerprint is mandatory; issuer hints never choose a key. Canonicalization handles dash escapes, ASCII trailing whitespace and CRLF/final-line semantics. Independent literal signed-preimage fixtures are used; no real key or Release has been authenticated yet.
+Signature mathematics returns `signatureVerified:true` only under the supplied key; publisherTrustEstablished/publicKeyAuthenticated/nativeQualified remain false. No key revocation/expiry/current-security proof follows. `selectReleaseIndex` extracts the exact case-insensitive, duplicate-rejecting Release row and repository identity from the same canonical text; its own signatureVerified remains false. Unselected empty index rows are supported, while selected transport size must be1..16MiB. Real trust anchors remain unresolved and are not silently accepted by this module.
+The new `deb-members.mjs`/test unit authenticates an expected complete package length/SHA-256 before strict three-member AR parsing. It never installs, writes, executes or decodes control scripts. Data gzip uses reported complete input consumption; zstd requires one fully framed, no-dictionary bounded-window frame and Node's bounded builtin decompressor. Data `.xz` and unsupported container/frame forms STOP without candidate fallback. Input<=8MiB, decoded<=64MiB, zstd window<=64MiB, target count<=8 and JSON<=64KiB are source ceilings, not native process RSS proof.
+The additive `createTarMemberInventory` shares the existing TAR state machine and returns final regular-file payload spans only after complete validation; original feed events/summary/hash behavior remains unchanged. Spans count consumed physical bytes through GNU/PAX states and have their own4MiB serialized cap. Comparison hashes exact selected regular-file payloads and rejects link substitution. Package/member matches do not authenticate the caller's expectations or prove source/provenance/NoPython/Native/runtime qualification.
+Current source/tests, actual publication-source/key trust and real-package compatibility require independent parent verification and required gates before use. All fixtures remain synthetic in-memory; no package/executable body has been fetched and no candidate/loader/XZ has run. Existing signed-byte expectations and all old source receipts remain revision-scoped.
+The parent independently ran all seven affected in-memory suites:1125/1125 tests passed,0 failures/cancelled/skipped/todo, with13 syntax checks. Scopes are381 ELF v1/v2,20 package claims,119 signature/Release,332 TAR including27 span tests,73 mock controller and200 DEB comparisons. Production module line/function coverage is100% except release-signature99.02% lines and deb-members99.29% lines; those defensive error paths remain explicitly uncovered. No actual package or key was used in these tests, and no physical-fixture acquisition/custody suite ran.
+The DEB parser additionally validates octal AR mode bytes. The Release extractor supports zero-byte unselected indexes while requiring a positive selected transport; both have persisted regression cases. Source-owned diagrams/index entries link all affected files. Current rendering and required cryptographic/DEB source review remain pending; do not promote source tests into software provenance.
+
+### 33.9 Registered public key/Release mathematics operation
+
+The work order next permits bounded read-only evidence collection from four exact official/public metadata URLs below. The archive keyring and keyserver response are independent, explicitly registered representations, not fallback executable acquisitions. Request each literal at most once; record non200/redirect locations as data without following them. No package/archive/executable body, host key file, candidate/library/SDK path or filesystem write is included.
+The expected full fingerprint `F6ECB3762474EDA9D21B7022871920D1991BC93C` comes from the hashed issuer-fingerprint declaration in the official Ubuntu HTTPS-served InRelease described by the public research; it is not independently authenticated key ownership or a value inferred from the downloaded key itself. This operation observes signature mathematics under that exact pin only. PublisherTrustEstablished/publicKeyAuthenticated/provenanceVerified/Native/decoder/training remain false even if verification succeeds. Selecting a trustworthy key/source and accepting historical freshness remains a separate qualification obligation.
+Pin the repository verifier before import, cap each body at1MiB and total at4MiB, chunks1..1MiB with<=4096 reads, one Fetch invocation per URL, no redirects/retries,120s cooperative envelope/119s work and bounded API cancellation<=1s within that envelope. Opaque Fetch startup/DNS/TLS/proxy/internal-attempt/buffering/socket behavior remains ordinary trusted integration, not independently bounded native transport or protected closure. The tool capture timeout130s does not establish process termination or reaping. Emit only selected descriptors/evidence hashes, escaped ASCII<=64KiB; no raw key/release body or error message is emitted.
+
+<!-- BEGIN UBUNTU RELEASE MATH V1 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+import { types } from 'node:util';
+const start = process.hrtime.bigint(), workEnd = start + 119_000_000_000n, end = start + 120_000_000_000n;
+const expectedFingerprint = 'F6ECB3762474EDA9D21B7022871920D1991BC93C';
+const sourceSha256 = '296cc8b4624030e54b05d60d875f67a69ea8273bff78ad0771d29f915aeea7f6';
+const targets = [
+  { label: 'archive-keyring', kind: 'key', url: 'https://archive.ubuntu.com/ubuntu/project/ubuntu-archive-keyring.gpg' },
+  { label: 'keyserver-key', kind: 'key', url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C' },
+  { label: 'current-release', kind: 'release', url: 'https://security.ubuntu.com/ubuntu/dists/resolute-security/InRelease' },
+  { label: 'historical-release', kind: 'release', url: 'https://snapshot.ubuntu.com/ubuntu/20260801T000000Z/dists/resolute-security/InRelease' },
+];
+const counts = { sourceReads: 0, fetchCalls: 0, bodyReads: 0, bodyBytes: 0, cancelAttempts: 0 };
+const rows = [], bodies = new Map(), checks = [];
+const abort = new AbortController();
+const timer = setTimeout(() => abort.abort(), 119000);
+let last = start, clocks = 1, failure;
+function stop(code) { const error = new Error(); error.code = code; throw error; }
+function guard(final = false) {
+  if (++clocks > 20000) stop('E_LIMIT');
+  const now = process.hrtime.bigint();
+  if (typeof now !== 'bigint' || now < last) stop('E_PLATFORM');
+  last = now;
+  if (now >= (final ? end : workEnd)) stop('E_DEADLINE');
+}
+async function cancel(body) {
+  if (!body) return;
+  counts.cancelAttempts++;
+  let timeout;
+  const delay = Math.max(0, Math.min(1000, Number((end - process.hrtime.bigint()) / 1000000n)));
+  try { await Promise.race([body.cancel(), new Promise((resolve, reject) => { timeout = setTimeout(() => reject(new Error('E_CLEANUP')), delay); })]); }
+  catch { stop('E_CLEANUP'); }
+  finally { clearTimeout(timeout); }
+}
+async function capture(target) {
+  guard();
+  counts.fetchCalls++;
+  const response = await fetch(target.url, { method: 'GET', redirect: 'manual', credentials: 'omit', cache: 'no-store', signal: abort.signal, headers: { 'Accept-Encoding': 'identity' } });
+  guard();
+  if (response.url !== target.url || response.redirected) { await cancel(response.body); stop('E_URL'); }
+  if (response.status !== 200) {
+    const location = response.headers.get('location');
+    if (location !== null && (location.length > 2048 || /[^\x20-\x7e]/.test(location))) { await cancel(response.body); stop('E_HEADERS'); }
+    await cancel(response.body);
+    return { label: target.label, url: target.url, state: 'UNAVAILABLE', httpStatus: response.status, location };
+  }
+  const encoding = response.headers.get('content-encoding'), length = response.headers.get('content-length');
+  if ((encoding !== null && encoding.toLowerCase() !== 'identity') ||
+      (length !== null && (!/^[1-9][0-9]*$/.test(length) || !Number.isSafeInteger(Number(length)) || Number(length) > 1048576))) { await cancel(response.body); stop('E_HEADERS'); }
+  if (!response.body) stop('E_BODY');
+  const reader = response.body.getReader(), chunks = [];
+  let total = 0;
+  try {
+    while (true) {
+      guard();
+      if (counts.bodyReads >= 4096) stop('E_LIMIT');
+      counts.bodyReads++;
+      const step = await reader.read();
+      guard();
+      if (step.done) break;
+      const value = step.value;
+      if (types.isProxy(value) || !types.isUint8Array(value) || value.byteLength < 1 || value.byteLength > 1048576 || value.byteLength > 1048576 - total || value.byteLength > 4194304 - counts.bodyBytes) stop('E_BODY');
+      const bytes = Buffer.from(value);
+      total += bytes.length; counts.bodyBytes += bytes.length; chunks.push(bytes);
+    }
+  } catch (error) { await cancel(reader); throw error; }
+  finally { reader.releaseLock(); }
+  if (!total || (length !== null && total !== Number(length))) stop('E_BODY');
+  const bytes = Buffer.concat(chunks, total);
+  bodies.set(target.label, bytes);
+  return { label: target.label, url: target.url, state: 'BODY_CAPTURED', httpStatus: 200, byteLength: total, sha256: createHash('sha256').update(bytes).digest('hex') };
+}
+const known = ['E_LIMIT', 'E_PLATFORM', 'E_DEADLINE', 'E_CLEANUP', 'E_URL', 'E_HEADERS', 'E_BODY', 'E_SOURCE_PIN', 'E_INPUT', 'E_ARMOR', 'E_PACKET', 'E_KEY', 'E_SIGNATURE', 'E_RELEASE'];
+try {
+  counts.sourceReads++;
+  const source = fs.readFileSync('/tmp/opencode/f9-bootstrap-correspondence/tooling/native-ingress/release-signature.mjs');
+  if (source.length !== 16186 || createHash('sha256').update(source).digest('hex') !== sourceSha256) stop('E_SOURCE_PIN');
+  guard();
+  const helper = await import('data:text/javascript;base64,' + source.toString('base64'));
+  guard();
+  if (typeof helper.verifyReleaseSignature !== 'function' || typeof helper.selectReleaseIndex !== 'function') stop('E_SOURCE_PIN');
+  for (const target of targets) {
+    try { rows.push(await capture(target)); }
+    catch (error) {
+      if (abort.signal.aborted || ['E_LIMIT', 'E_PLATFORM', 'E_DEADLINE', 'E_CLEANUP'].includes(error.code)) throw error;
+      rows.push({ label: target.label, url: target.url, state: 'FETCH_ERROR', error: known.includes(error.code) ? error.code : 'E_FETCH' });
+    }
+  }
+  for (const release of targets.filter(target => target.kind === 'release')) {
+    if (!bodies.has(release.label)) continue;
+    for (const key of targets.filter(target => target.kind === 'key')) {
+      if (!bodies.has(key.label)) continue;
+      guard();
+      let evidence;
+      try { evidence = helper.verifyReleaseSignature(bodies.get(release.label), bodies.get(key.label), expectedFingerprint); }
+      catch (error) {
+        checks.push({ release: release.label, key: key.label, signatureVerified: false, error: known.includes(error.code) ? error.code : 'E_INPUT' });
+        guard();
+        continue;
+      }
+      let indexes = [], indexError = null;
+      try {
+        indexes = ['main/binary-amd64/Packages.gz', 'main/binary-amd64/Packages', 'main/source/Sources.gz', 'main/source/Sources'].map(indexPath => helper.selectReleaseIndex(evidence.canonicalText, { origin: 'Ubuntu', suite: 'resolute-security', codename: 'resolute', indexPath }));
+        if (indexes.some(index => index.signedTextSha256 !== evidence.signedTextSha256)) stop('E_RELEASE');
+      } catch (error) { indexes = []; indexError = known.includes(error.code) ? error.code : 'E_INPUT'; }
+      checks.push({ release: release.label, key: key.label, signatureVerified: true, signerFingerprint: evidence.signerFingerprint,
+        hashAlgorithm: evidence.hashAlgorithm, signedTextSha256: evidence.signedTextSha256,
+        publisherTrustEstablished: false, publicKeyAuthenticated: false,
+        indexSelectionComplete: indexError === null, indexError, indexes });
+      guard();
+    }
+  }
+  guard(true);
+} catch (error) { failure = known.includes(error.code) ? error.code : abort.signal.aborted ? 'E_DEADLINE' : 'E_FETCH'; abort.abort(); }
+finally { clearTimeout(timer); }
+const base = { profile: 'ubuntu-release-math-v1', authorization: 'autonomous-steps-1-5', attemptConsumed: true,
+  status: failure ? 'STOP' : 'METADATA_EVIDENCE', expectedFingerprint, sourceSha256, counts,
+  candidateExecuted: false, packageBodiesFetched: false, hostKeyFilesRead: false, publisherTrustEstablished: false,
+  publicKeyOwnershipIndependentlyVerified: false, provenanceVerified: false, decoderQualified: false,
+  nativeQualified: false, realArchiveInspected: false, rustReady: false, trainingReady: false };
+let text = (JSON.stringify({ ...base, ...(failure ? { error: failure } : {}), rows, checks }) + '\n').replace(/[^\x00-\x7f]/g, unit => '\\u' + unit.charCodeAt(0).toString(16).padStart(4, '0'));
+if (Buffer.byteLength(text) > 65536 || !/^[\x20-\x7e\n]*$/.test(text)) { failure = 'E_OUTPUT'; text = JSON.stringify({ ...base, status: 'STOP', error: failure }) + '\n'; }
+if (!failure) { try { guard(true); } catch { failure = 'E_DEADLINE'; text = JSON.stringify({ ...base, status: 'STOP', error: failure }) + '\n'; } }
+if (failure) process.exitCode = 1;
+process.stdout.on('error', () => { process.exitCode = 1; });
+try { process.stdout.write(text); } catch { process.exitCode = 1; }
+NODE
+```
+<!-- END UBUNTU RELEASE MATH V1 -->
+
+Required review identified verifier hash/import binding and signature/index-state conflation before execution. The revised launcher imports a data URL built only from the same private source bytes whose exact length/hash passed, with Node crypto/util as its only imports; it never reopens the mutable verifier pathname for execution. Signature mathematics and index-selection completion now have separate result fields. Runtime/builtin/module-loader trust remains ordinary and unqualified, not a Native execution proof.
+The revised8266-byte command has SHA-256 `5caf041eb93efbbe97f1d27bbbb0b8171b848570f80469e106e78fab8e17c42b`. Syntax-only parsing passed without evaluating the operator; a separate benign exact-source data-URL import confirmed its builtin-only imports. Required quality review closed the source-binding HIGH and status-conflation MEDIUM; security accepted metadata observation only and spec correspondence is in-sync. Register the current complete section before use. Unsupported mathematical forms, missing references or invalid signatures never authorize package retrieval or decoder execution. Actual signature results remain pending; network service absence/redirect metadata supplies no mirror fallback.
+
+### 33.10 Signature-math observation and exact index-layout correction
+
+The57487-byte section registration `5c2302959ff63def128289c06236d0e4d90a3e8866a71da272730bb99f855c96` bound command8266/SHA-256 `5caf041eb93efbbe97f1d27bbbb0b8171b848570f80469e106e78fab8e17c42b` and exact captured verifier16186/SHA-256 `296cc8b4624030e54b05d60d875f67a69ea8273bff78ad0771d29f915aeea7f6`. That operation returned normally with METADATA_EVIDENCE,4 Fetch invocations,37 body-read calls,283160 returned body bytes and0 cancellation calls.
+All four URLs returned200 without redirection. Captured metadata identities were archive keyring3607/SHA-256 `80a36b0a6de2f69f49d2df75ef473ccde121e9e190b9ea01d20a4f63778d5c31`; keyserver key4747/`85309b698b7bdac6f21de64aa1eaa998470bbd9c8c853ea274d0c27a95013210`; current Release137403/`09e8bd092a1685a7a9fcacfbf8cb7ef803b797fb07ee642c1a2df83e747f7d2d`; historical Release137403/`7de474265e3601abfb8f4bbdeb8f5ff0551243e83f64253de3f6061780a77c9d`.
+Both Release documents verified mathematically under BOTH registered key representations and the exact F6ECB3762474EDA9D21B7022871920D1991BC93C pin with SHA512. Canonical text SHA-256 values were current `e415f3381bfa5b988d666c76aed9dc8f0292a915231b35711e956826879d700e` and historical `87212ec2441bcc78a2d336242ed2386f132a1f59bc348aa12813baba7590a4b7`. All key-ownership/publisher/provenance/decoder/Native flags remained false; no package body, host key file, candidate or archive was used.
+Index selection failed separately with E_RELEASE, without relabeling successful signature verification. A public-text layout diagnostic found450 SHA256 rows and ordinary unselected Ubuntu dep11 names such as `main/dep11/icons-128x128@2.tar.gz`; the strict filename grammar had excluded `@`. The first Code Mode diagnostic exposed no readable-stream API and failed before a body read; the second used the ordinary text integration with a post-return1MiB check, explicitly not a hard integration-buffer bound. Neither diagnostic touched host files or code.
+The corrected filename subset adds literal `@` within relative components only; absolute paths, dot/parent components, repeated separators, percent escapes, backslashes, query/fragment/colon forms and duplicates remain rejected. The120-case synthetic signature/selector suite passes with a regression for signed unselected dep11 names; cryptographic verification and trust flags are unchanged. This is a new source revision, not an instruction to rerun an old registered command with changed bytes.
+
+### 33.11 Pinned signed-index extraction operation
+
+Under the new work order, fetch only the three already observed metadata byte images below with exact sizes/hashes, then verify signatures and extract the four registered index descriptors with the corrected, captured-source verifier. No keyserver reread, package/body acquisition, redirect, mirror fallback, host/candidate/library/SDK access or filesystem write occurs. Body changes STOP; do not silently accept a refreshed Release as the same input.
+Each response is bounded by its exact expected size, total278413 bytes,<=2048 stream reads and chunks<=1MiB. Use119s work/120s total cooperative guards, bounded API cancellation<=1s,130s capture and escaped ASCII output<=32KiB. Fetch runtime/TLS/proxy/buffering/socket/closure remains the disclosed ordinary integration, not independently enforced native containment.
+The expected fingerprint remains externally pinned, never read from the received key as authority. Signature-bound descriptors are mathematical evidence under that exact key; key ownership, publisher-trust acceptance, current-security freshness and Native authority remain unclaimed. Historical signed metadata proves at most historical association, not current security support.
+
+<!-- BEGIN UBUNTU PINNED INDEX REFS V2 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+const start = process.hrtime.bigint(), workEnd = start + 119_000_000_000n, end = start + 120_000_000_000n;
+const sourceSha256 = '8872e764335f4c9402923c4b6a2ef595846485f342fa2e8d4dd459c12bfd5aab';
+const fingerprint = 'F6ECB3762474EDA9D21B7022871920D1991BC93C';
+const targets = [
+  { label: 'archive-keyring', url: 'https://archive.ubuntu.com/ubuntu/project/ubuntu-archive-keyring.gpg', size: 3607, sha256: '80a36b0a6de2f69f49d2df75ef473ccde121e9e190b9ea01d20a4f63778d5c31' },
+  { label: 'current-release', url: 'https://security.ubuntu.com/ubuntu/dists/resolute-security/InRelease', size: 137403, sha256: '09e8bd092a1685a7a9fcacfbf8cb7ef803b797fb07ee642c1a2df83e747f7d2d' },
+  { label: 'historical-release', url: 'https://snapshot.ubuntu.com/ubuntu/20260801T000000Z/dists/resolute-security/InRelease', size: 137403, sha256: '7de474265e3601abfb8f4bbdeb8f5ff0551243e83f64253de3f6061780a77c9d' },
+];
+const counts = { sourceReads: 0, fetchCalls: 0, reads: 0, bodyBytes: 0, cancellations: 0 };
+const bodies = [], observations = [], releases = [];
+let last = start, clocks = 1, failure;
+const abort = new AbortController(), timer = setTimeout(() => abort.abort(), 119000);
+const known = ['E_SOURCE_PIN', 'E_PLATFORM', 'E_DEADLINE', 'E_LIMIT', 'E_HTTP', 'E_HEADERS', 'E_LENGTH', 'E_HASH', 'E_BODY', 'E_CLEANUP', 'E_INPUT', 'E_ARMOR', 'E_PACKET', 'E_KEY', 'E_SIGNATURE', 'E_RELEASE', 'E_OUTPUT'];
+function stop(code) { const error = new Error(); error.code = code; throw error; }
+function guard(final = false) {
+  if (++clocks > 20000) stop('E_LIMIT');
+  const now = process.hrtime.bigint();
+  if (typeof now !== 'bigint' || now < last) stop('E_PLATFORM');
+  last = now;
+  if (now >= (final ? end : workEnd)) stop('E_DEADLINE');
+}
+async function cancel(body) {
+  if (!body) return;
+  counts.cancellations++;
+  let cleanup;
+  const delay = Math.max(0, Math.min(1000, Number((end - process.hrtime.bigint()) / 1000000n)));
+  try { await Promise.race([body.cancel(), new Promise((resolve, reject) => { cleanup = setTimeout(() => reject(new Error()), delay); })]); }
+  catch { stop('E_CLEANUP'); }
+  finally { clearTimeout(cleanup); }
+}
+try {
+  counts.sourceReads++;
+  const source = fs.readFileSync('/tmp/opencode/f9-bootstrap-correspondence/tooling/native-ingress/release-signature.mjs');
+  if (source.length !== 16188 || createHash('sha256').update(source).digest('hex') !== sourceSha256) stop('E_SOURCE_PIN');
+  guard();
+  const helper = await import('data:text/javascript;base64,' + source.toString('base64'));
+  guard();
+  for (const target of targets) {
+    guard(); counts.fetchCalls++;
+    const response = await fetch(target.url, { method: 'GET', redirect: 'error', credentials: 'omit', cache: 'no-store', signal: abort.signal, headers: { 'Accept-Encoding': 'identity' } });
+    guard();
+    if (response.status !== 200 || response.url !== target.url || response.redirected) { await cancel(response.body); stop('E_HTTP'); }
+    const encoding = response.headers.get('content-encoding'), length = response.headers.get('content-length');
+    if ((encoding !== null && encoding.toLowerCase() !== 'identity') || (length !== null && length !== String(target.size))) { await cancel(response.body); stop('E_HEADERS'); }
+    if (!response.body) stop('E_BODY');
+    const reader = response.body.getReader(), chunks = [];
+    let bytesRead = 0;
+    try {
+      while (true) {
+        guard(); if (counts.reads >= 2048) stop('E_LIMIT'); counts.reads++;
+        const step = await reader.read(); guard();
+        if (step.done) break;
+        if (!(step.value instanceof Uint8Array) || step.value.byteLength < 1 || step.value.byteLength > 1048576 || step.value.byteLength > target.size - bytesRead || step.value.byteLength > 278413 - counts.bodyBytes) stop('E_LENGTH');
+        const chunk = Buffer.from(step.value); chunks.push(chunk); bytesRead += chunk.length; counts.bodyBytes += chunk.length;
+      }
+    } catch (error) { await cancel(reader); throw error; }
+    finally { reader.releaseLock(); }
+    if (bytesRead !== target.size) stop('E_LENGTH');
+    const bytes = Buffer.concat(chunks, bytesRead);
+    if (createHash('sha256').update(bytes).digest('hex') !== target.sha256) stop('E_HASH');
+    bodies.push(bytes); observations.push({ label: target.label, byteLength: bytesRead, sha256: target.sha256 });
+  }
+  for (let index = 1; index < targets.length; index++) {
+    guard();
+    const evidence = helper.verifyReleaseSignature(bodies[index], bodies[0], fingerprint);
+    guard();
+    const indexes = ['main/binary-amd64/Packages.gz', 'main/binary-amd64/Packages', 'main/source/Sources.gz', 'main/source/Sources'].map(indexPath => helper.selectReleaseIndex(evidence.canonicalText, { origin: 'Ubuntu', suite: 'resolute-security', codename: 'resolute', indexPath }));
+    if (indexes.some(ref => ref.signedTextSha256 !== evidence.signedTextSha256)) stop('E_RELEASE');
+    releases.push({ label: targets[index].label, signatureVerified: evidence.signatureVerified,
+      signerFingerprint: evidence.signerFingerprint, hashAlgorithm: evidence.hashAlgorithm,
+      signedTextSha256: evidence.signedTextSha256, indexSelectionComplete: true, signatureBoundDescriptors: true, indexes });
+  }
+  guard(true);
+} catch (error) { failure = known.includes(error.code) ? error.code : abort.signal.aborted ? 'E_DEADLINE' : 'E_FETCH'; abort.abort(); }
+finally { clearTimeout(timer); }
+const base = { profile: 'ubuntu-pinned-index-refs-v2', authorization: 'autonomous-steps-1-5', attemptConsumed: true,
+  status: failure ? 'STOP' : 'SIGNATURE_BOUND_INDEX_REFS', sourceSha256, expectedFingerprint: fingerprint, counts,
+  publisherTrustEstablished: false, publicKeyOwnershipIndependentlyVerified: false,
+  provenanceVerified: false, decoderQualified: false, nativeQualified: false,
+  candidateExecuted: false, packageBodiesFetched: false, realArchiveInspected: false, rustReady: false, trainingReady: false };
+let text = (JSON.stringify({ ...base, ...(failure ? { error: failure } : {}), observations, releases }) + '\n').replace(/[^\x00-\x7f]/g, unit => '\\u' + unit.charCodeAt(0).toString(16).padStart(4, '0'));
+if (Buffer.byteLength(text) > 32768 || !/^[\x20-\x7e\n]*$/.test(text)) { failure = 'E_OUTPUT'; text = JSON.stringify({ ...base, status: 'STOP', error: failure }) + '\n'; }
+if (!failure) { try { guard(true); } catch { failure = 'E_DEADLINE'; text = JSON.stringify({ ...base, status: 'STOP', error: failure }) + '\n'; } }
+if (failure) process.exitCode = 1;
+process.stdout.on('error', () => { process.exitCode = 1; });
+try { process.stdout.write(text); } catch { process.exitCode = 1; }
+NODE
+```
+<!-- END UBUNTU PINNED INDEX REFS V2 -->
+
+Syntax-only parsing passed without evaluating the6680-byte new descriptor command, SHA-256 `123b21a1b7d7c21b93068f4569d4eb4234f701df8808bb313367e4ebd2c8c1ae`. The corrected verifier16188/SHA-256 `8872e764335f4c9402923c4b6a2ef595846485f342fa2e8d4dd459c12bfd5aab` matches its120-case synthetic suite. Required quality/security source gates accepted this exact metadata-only revision with no findings; active navigation is reconciled. Register complete current-section identity before use. Do not rerun an older consumed command with a new verifier or accept changed metadata under an old input pin. No package acquisition or decoder execution is authorized by a mere descriptor result.
+
+### 33.12 Signed-index references observed; package-reference source unit
+
+The68717-byte section registration `60b093e0ed924d6cec64631a8624766f82ff3e3b85030b53c4d2453ea7461074` bound command6680/SHA-256 `123b21a1b7d7c21b93068f4569d4eb4234f701df8808bb313367e4ebd2c8c1ae` and captured verifier16188/SHA-256 `8872e764335f4c9402923c4b6a2ef595846485f342fa2e8d4dd459c12bfd5aab`. It returned normally with SIGNATURE_BOUND_INDEX_REFS:3 Fetch calls,34 stream reads,278413 body bytes,0 cancellations. All three metadata byte pins matched exactly; both signatures and index selection succeeded. No package body or code was retrieved/executed.
+Current canonical text SHA-256 remains `e415f3381bfa5b988d666c76aed9dc8f0292a915231b35711e956826879d700e`; historical remains `87212ec2441bcc78a2d336242ed2386f132a1f59bc348aa12813baba7590a4b7`. Both verify SHA512 under the exact2018 Ubuntu archive-key fingerprint; official archive keyring3607/SHA-256 `80a36b0a6de2f69f49d2df75ef473ccde121e9e190b9ea01d20a4f63778d5c31` supplied the same public key observed independently in the keyserver representation. This is pinned-key signature mathematics with official-HTTPS origin evidence, not independent out-of-band ownership, key revocation/current-security or Native proof. Module trust/provenance flags remain false.
+
+| Release / exact relative index | Bytes | SHA-256 |
+| --- | ---: | --- |
+| Current `main/binary-amd64/Packages.gz` | 744998 | `5f113f573482190912c54e97deb1e67322228ea13a0dbd71f9b5986a7055781b` |
+| Current `main/binary-amd64/Packages` | 3192760 | `c69a86813b52e0db2a7820d7a9c54dff5afc7a635fc58812e9928e6299beb2c5` |
+| Current `main/source/Sources.gz` | 238139 | `f444e4123e85fc5ea74e75382e52b4540dff2583abc7ca508ac610b3316b12db` |
+| Current `main/source/Sources` | 913429 | `d20a5ba5b0a61223879a64c3252b10bcf59beb026c2230503d11fe792fa33312` |
+| Historical `main/binary-amd64/Packages.gz` | 419445 | `4710f1391e6ba21bdfdba2821b9b7329d1eb380a34655f12a3ebdb9cda164825` |
+| Historical `main/binary-amd64/Packages` | 1755135 | `84c0b668c6f8641096baddfefe4fd94c54c9fea66b68ea5bce49b59226685567` |
+| Historical `main/source/Sources.gz` | 167963 | `d80701f92cf534551629c530c3cb75cbf9f077a6e4001e763b9f91c4576a102e` |
+| Historical `main/source/Sources` | 656733 | `018609131ef667de0161986258d59464c8c8ecb5ecce35f3c84d54843a368c6e` |
+
+Current signed Date is `Fri, 23 Oct 2026  7:41:02 UTC`; historical is `Fri, 31 Jul 2026  8:42:38 UTC`. Neither has Valid-Until. Treat historical membership as historical association, not security freshness or an allowance to replace an installed revision.
+The new `package-index.mjs`/test unit selects exact package/version/architecture/source-name/source-version stanzas only after matching complete private index bytes to an independently expected length/SHA-256. It folds case-insensitive fields and continuations, rejects missing/late ambiguous matches and unsafe Filename/size/hash, preserves requested order and returns inert frozen references. No newer/older version, amd64v3 or another source revision substitutes for the requested amd64 entry.
+Source ceilings are input16MiB, paragraph128KiB/count65536, selected8/value1024 bytes, package8MiB and JSON64KiB, lower-only. Pure extraction leaves signature/provenance/source/Native/decoder/Rust/training flags false; the caller must maintain the signature-to-index-byte chain. Parent verification passed102 in-memory tests, both syntax checks and100% line/function coverage (99.42% branches), including unexpected-error normalization and exact owner/index coverage. Current source10025/SHA-256 `4f3bd4cfcd0f79cac0504b3cac46ee949a45c43f12baa27f0aaff144bbf16150` remains uncommitted with the other step1 work; source gates precede real use.
+
+### 33.13 Registered exact package-index operation
+
+Fetch only the current/historical Packages.gz URLs below with exact signed-bound compressed lengths/hashes. Before selecting stanzas, use Node's builtin bounded gunzip, require full compressed-input consumption, and independently compare decoded lengths/SHA-256 with the uncompressed references in §33.12. Decode output cap4MiB per index; source defaults16MiB are not automatically used as a decompressor allocation allowance.
+Select current amd64 xz-utils/liblzma5 version5.8.3-1ubuntu0.1, source xz-utils sameversion, and historical amd64 libc6 version2.43-2ubuntu2.3, source glibc sameversion. All requests are exact data comparisons under the new work order, not arbitrary metadata-derived fetch capabilities; failed/missing/ambiguous entries STOP without another package, architecture or mirror.
+Maximum2 authored Fetch calls,1 source preflight,1164443 compressed bytes,4947895 decoded bytes,<=2048 stream reads/chunks<=1MiB,119s work/120s total cooperative/130s tool capture, ASCII JSON<=32KiB. Builtin Node gunzip is permitted; no package-body acquisition, installation, scripts, host-key/candidate/library/SDK access, filesystem write, interpreter, candidate/XZ or external decoder execution occurs. HTTP/TLS/proxy/runtime/native buffering/crypto/zlib trust remain ordinary and unqualified. Signature/ownership/provenance/Native flags are not promoted merely by a reference result.
+
+<!-- BEGIN UBUNTU EXACT PACKAGE REFS V1 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+import zlib from 'node:zlib';
+const start = process.hrtime.bigint(), workEnd = start + 119_000_000_000n, end = start + 120_000_000_000n;
+const sourceSha256 = '4f3bd4cfcd0f79cac0504b3cac46ee949a45c43f12baa27f0aaff144bbf16150';
+const targets = [
+  { label: 'current', url: 'https://security.ubuntu.com/ubuntu/dists/resolute-security/main/binary-amd64/Packages.gz', size: 744998, sha256: '5f113f573482190912c54e97deb1e67322228ea13a0dbd71f9b5986a7055781b', decodedSize: 3192760, decodedSha256: 'c69a86813b52e0db2a7820d7a9c54dff5afc7a635fc58812e9928e6299beb2c5', packages: [
+    { package: 'xz-utils', version: '5.8.3-1ubuntu0.1', architecture: 'amd64', sourcePackage: 'xz-utils', sourceVersion: '5.8.3-1ubuntu0.1' },
+    { package: 'liblzma5', version: '5.8.3-1ubuntu0.1', architecture: 'amd64', sourcePackage: 'xz-utils', sourceVersion: '5.8.3-1ubuntu0.1' }] },
+  { label: 'historical', url: 'https://snapshot.ubuntu.com/ubuntu/20260801T000000Z/dists/resolute-security/main/binary-amd64/Packages.gz', size: 419445, sha256: '4710f1391e6ba21bdfdba2821b9b7329d1eb380a34655f12a3ebdb9cda164825', decodedSize: 1755135, decodedSha256: '84c0b668c6f8641096baddfefe4fd94c54c9fea66b68ea5bce49b59226685567', packages: [
+    { package: 'libc6', version: '2.43-2ubuntu2.3', architecture: 'amd64', sourcePackage: 'glibc', sourceVersion: '2.43-2ubuntu2.3' }] },
+];
+const counts = { sourceReads: 0, fetchCalls: 0, reads: 0, compressedBytes: 0, decodedBytes: 0, cancellations: 0 };
+const rows = [];
+let last = start, clocks = 1, failure;
+const abort = new AbortController(), timer = setTimeout(() => abort.abort(), 119000);
+const known = ['E_INPUT', 'E_LIMITS', 'E_HASH', 'E_PACKAGE', 'E_AMBIGUOUS', 'E_OUTPUT', 'E_SOURCE_PIN', 'E_PLATFORM', 'E_DEADLINE', 'E_LIMIT', 'E_HTTP', 'E_HEADERS', 'E_LENGTH', 'E_BODY', 'E_CLEANUP', 'E_DECOMPRESS'];
+function stop(code) { const error = new Error(); error.code = code; throw error; }
+function guard(final = false) {
+  if (++clocks > 20000) stop('E_LIMIT');
+  const now = process.hrtime.bigint();
+  if (typeof now !== 'bigint' || now < last) stop('E_PLATFORM');
+  last = now;
+  if (now >= (final ? end : workEnd)) stop('E_DEADLINE');
+}
+async function cancel(body) {
+  if (!body) return;
+  counts.cancellations++;
+  let cleanup;
+  const delay = Math.max(0, Math.min(1000, Number((end - process.hrtime.bigint()) / 1000000n)));
+  try { await Promise.race([body.cancel(), new Promise((resolve, reject) => { cleanup = setTimeout(() => reject(new Error()), delay); })]); }
+  catch { stop('E_CLEANUP'); }
+  finally { clearTimeout(cleanup); }
+}
+try {
+  counts.sourceReads++;
+  const source = fs.readFileSync('/tmp/opencode/f9-bootstrap-correspondence/tooling/native-ingress/package-index.mjs');
+  if (source.length !== 10025 || createHash('sha256').update(source).digest('hex') !== sourceSha256) stop('E_SOURCE_PIN');
+  guard();
+  const helper = await import('data:text/javascript;base64,' + source.toString('base64'));
+  guard();
+  for (const target of targets) {
+    guard(); counts.fetchCalls++;
+    const response = await fetch(target.url, { method: 'GET', redirect: 'error', credentials: 'omit', cache: 'no-store', signal: abort.signal, headers: { 'Accept-Encoding': 'identity' } });
+    guard();
+    if (response.status !== 200 || response.url !== target.url || response.redirected) { await cancel(response.body); stop('E_HTTP'); }
+    const encoding = response.headers.get('content-encoding'), length = response.headers.get('content-length');
+    if ((encoding !== null && encoding.toLowerCase() !== 'identity') || (length !== null && length !== String(target.size))) { await cancel(response.body); stop('E_HEADERS'); }
+    if (!response.body) stop('E_BODY');
+    const reader = response.body.getReader(), chunks = [];
+    let total = 0;
+    try {
+      while (true) {
+        guard(); if (counts.reads >= 2048) stop('E_LIMIT'); counts.reads++;
+        const step = await reader.read(); guard();
+        if (step.done) break;
+        if (!(step.value instanceof Uint8Array) || step.value.byteLength < 1 || step.value.byteLength > 1048576 || step.value.byteLength > target.size - total || step.value.byteLength > 1164443 - counts.compressedBytes) stop('E_LENGTH');
+        const value = Buffer.from(step.value); chunks.push(value); total += value.length; counts.compressedBytes += value.length;
+      }
+    } catch (error) { await cancel(reader); throw error; }
+    finally { reader.releaseLock(); }
+    if (total !== target.size) stop('E_LENGTH');
+    const compressed = Buffer.concat(chunks, total);
+    if (createHash('sha256').update(compressed).digest('hex') !== target.sha256) stop('E_HASH');
+    guard();
+    let decoded;
+    try { decoded = zlib.gunzipSync(compressed, { maxOutputLength: Math.min(4194304, target.decodedSize), info: true }); }
+    catch { stop('E_DECOMPRESS'); }
+    guard();
+    if (decoded.engine.bytesWritten !== target.size || !Buffer.isBuffer(decoded.buffer) || decoded.buffer.length !== target.decodedSize || createHash('sha256').update(decoded.buffer).digest('hex') !== target.decodedSha256) stop('E_HASH');
+    counts.decodedBytes += decoded.buffer.length;
+    if (counts.decodedBytes > 4947895) stop('E_LIMIT');
+    const selected = helper.selectPackageReferences(decoded.buffer, { byteLength: target.decodedSize, sha256: target.decodedSha256 }, target.packages);
+    guard();
+    if (!selected.indexBytesMatched || selected.inputSha256 !== target.decodedSha256 || selected.signatureVerified || selected.provenanceVerified || selected.nativeQualified) stop('E_PACKAGE');
+    rows.push({ label: target.label, compressedSha256: target.sha256, indexSha256: selected.inputSha256,
+      indexBytes: selected.byteLength, referenceChain: 'signature-bound Release descriptors in section 33.12', packages: selected.packages });
+  }
+  guard(true);
+} catch (error) { failure = known.includes(error.code) ? error.code : abort.signal.aborted ? 'E_DEADLINE' : 'E_FETCH'; abort.abort(); }
+finally { clearTimeout(timer); }
+const base = { profile: 'ubuntu-exact-package-refs-v1', authorization: 'autonomous-steps-1-5', attemptConsumed: true,
+  status: failure ? 'STOP' : 'EXACT_PACKAGE_REFS', sourceSha256, counts, packageBodiesFetched: false,
+  candidateExecuted: false, publisherTrustEstablished: false, provenanceVerified: false,
+  decoderQualified: false, nativeQualified: false, realArchiveInspected: false, rustReady: false, trainingReady: false };
+let text = (JSON.stringify({ ...base, ...(failure ? { error: failure, rows: [] } : { rows }) }) + '\n').replace(/[^\x00-\x7f]/g, unit => '\\u' + unit.charCodeAt(0).toString(16).padStart(4, '0'));
+if (Buffer.byteLength(text) > 32768 || !/^[\x20-\x7e\n]*$/.test(text)) { failure = 'E_OUTPUT'; text = JSON.stringify({ ...base, status: 'STOP', error: failure }) + '\n'; }
+if (!failure) { try { guard(true); } catch { failure = 'E_DEADLINE'; text = JSON.stringify({ ...base, status: 'STOP', error: failure }) + '\n'; } }
+if (failure) process.exitCode = 1;
+process.stdout.on('error', () => { process.exitCode = 1; });
+try { process.stdout.write(text); } catch { process.exitCode = 1; }
+NODE
+```
+<!-- END UBUNTU EXACT PACKAGE REFS V1 -->
+
+Syntax-only parsing passed for the7176-byte command SHA-256 `da463c413c33b1587b6841b00bfdd91197fd9468c4dfc8f00e8ead3b5466bae0`, without evaluating it. Required quality review closed partial-reference publication on failure by suppressing rows in every STOP envelope; security accepted DATAREF only and spec correspondence is in-sync. Register complete current-section identity before use. An exact reference result is not automatic package-download or software-execution authority; later counterpart downloads must be separately registered under the work order with their own exact lengths/hashes/URLs and no replacement behavior.
+
+### 33.14 Exact package references observed
+
+The81783-byte section registration `b7eb210343f7ed85297dc3f79f4c1e34040189564ef588b4d1cb691fd89dd7a2` bound command7176/SHA-256 `da463c413c33b1587b6841b00bfdd91197fd9468c4dfc8f00e8ead3b5466bae0` and selector10025/SHA-256 `4f3bd4cfcd0f79cac0504b3cac46ee949a45c43f12baa27f0aaff144bbf16150`. The exact operation returned normally with EXACT_PACKAGE_REFS:2 Fetch calls,123 stream reads,1164443 compressed bytes,4947895 decoded bytes and0 cancellations. Both compressed/uncompressed signed-bound index hashes matched, and the exact requested amd64/source/version tuples were uniquely selected. No package body or candidate/loader was used.
+
+| Source index / package | Exact relative Filename | Bytes | SHA-256 |
+| --- | --- | ---: | --- |
+| Current / xz-utils5.8.3-1ubuntu0.1 amd64 | `pool/main/x/xz-utils/xz-utils_5.8.3-1ubuntu0.1_amd64.deb` | 405688 | `5a1532b0f903040ba44a7459d20abb9163e300e081cf233eecc9cdfec33a6cd8` |
+| Current / liblzma5 sameversion/arch | `pool/main/x/xz-utils/liblzma5_5.8.3-1ubuntu0.1_amd64.deb` | 145800 | `da480a60b02a80fd529904dc0a92dae5d537864a9412909e45fbd9dd46f26e2f` |
+| Historical / libc62.43-2ubuntu2.3 amd64 | `pool/main/g/glibc/libc6_2.43-2ubuntu2.3_amd64.deb` | 2103290 | `49fc198d09ed1099070b8333c94c3801cc5b11d18b3a8ce9d0da15dc42547681` |
+
+The first two associate source xz-utils5.8.3-1ubuntu0.1; libc6 associates source glibc2.43-2ubuntu2.3. These are signature-bound distribution-metadata associations, not independently reproduced source-to-binary equivalence or current security support. No alternative architecture, version, package or source record was substituted.
+
+### 33.15 Registered non-executed package counterpart comparison
+
+The next work-order operation permits only the three exact package data URLs below and their independently expected byte counts/SHA-256 from §33.14. This retrieves validation counterparts, not replacements, installed packages or fallback software. Authenticate whole package bytes before Node builtin decompression/TAR member comparison. Unsupported compression/member layout, missing member, stale data or mismatch STOP without an XZ fallback or software execution.
+The four expected regular-file members are explicitly registered under `usr/bin/xz` and `usr/lib/x86_64-linux-gnu/...`; no link target is followed or member extracted. The local `/lib` observations remain alias/path evidence with ordinary uninspected ancestor trust; matching published member bytes would identify content only, not immutable path protection.
+Bind both runtime source images: DEB11973/SHA-256 `c24c40dcf1da7c1dddfc770ee586f2d4b0e281972b0d980cb9ce4780558211f6` and TAR15548/SHA-256 `050d629963fdf89bd5dff7639260c7de30b08be46320b7b6bb7ed4dac6bb8139`. A deterministic one-occurrence source transformation replaces only the DEB module's relative TAR import with a data URL of the captured, checked TAR bytes; expected linked source32714/SHA-256 `76b5d9dacb09e501373681f2060e1331bd845e9ba367db9aa67bbac707299908`. Import that exact linked byte image, never reopen either mutable pathname for execution. Node crypto/util/zlib imports remain the ordinary trusted runtime, not Native source/loading closure.
+Maximum3 Fetch calls,2654778 compressed package bytes,4096 stream reads/chunks<=1MiB, no redirects/retries,119s work/120s total cooperative/130s capture, output ASCII<=64KiB. Node builtin decompression remains capped by DEB_MEMBER_LIMITS; no process RSS/CPU/native-interruption guarantee follows. Data input/output stays private RAM; no filesystem write, installer, maintainer script, candidate/loader/XZ, archive inspection of the GNU SDK, host/candidate/library reread or deletion is included.
+
+<!-- BEGIN UBUNTU DEB COUNTERPARTS V1 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+const start = process.hrtime.bigint(), workEnd = start + 119_000_000_000n, end = start + 120_000_000_000n;
+const digest = value => createHash('sha256').update(value).digest('hex');
+const sources = [
+  { file: 'tar-inventory.mjs', size: 15548, sha256: '050d629963fdf89bd5dff7639260c7de30b08be46320b7b6bb7ed4dac6bb8139' },
+  { file: 'deb-members.mjs', size: 11973, sha256: 'c24c40dcf1da7c1dddfc770ee586f2d4b0e281972b0d980cb9ce4780558211f6' },
+];
+const targets = [
+  { package: 'xz-utils', url: 'https://security.ubuntu.com/ubuntu/pool/main/x/xz-utils/xz-utils_5.8.3-1ubuntu0.1_amd64.deb', size: 405688, sha256: '5a1532b0f903040ba44a7459d20abb9163e300e081cf233eecc9cdfec33a6cd8', members: [
+    { path: 'usr/bin/xz', byteLength: 101392, sha256: '1f6ca26fd33066c9d5b95e58a0d9e2f5789cb18fd5741518574113b37ea1934d' }] },
+  { package: 'liblzma5', url: 'https://security.ubuntu.com/ubuntu/pool/main/x/xz-utils/liblzma5_5.8.3-1ubuntu0.1_amd64.deb', size: 145800, sha256: 'da480a60b02a80fd529904dc0a92dae5d537864a9412909e45fbd9dd46f26e2f', members: [
+    { path: 'usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3', byteLength: 215448, sha256: '515749273a91ca5e3b273b4025dc2c1f8827f90005baea0ab85ffb594e74f72f' }] },
+  { package: 'libc6', url: 'https://snapshot.ubuntu.com/ubuntu/20260801T000000Z/pool/main/g/glibc/libc6_2.43-2ubuntu2.3_amd64.deb', size: 2103290, sha256: '49fc198d09ed1099070b8333c94c3801cc5b11d18b3a8ce9d0da15dc42547681', members: [
+    { path: 'usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2', byteLength: 254864, sha256: 'c5e80a563850d6ab5c2f2482e4202d9c1b71fbf44854b8c399e63527202c64e1' },
+    { path: 'usr/lib/x86_64-linux-gnu/libc.so.6', byteLength: 2186512, sha256: 'a3947513a02831ec692ebf13053c07614882ab54a2101fb91a1b15724062ed0c' }] },
+];
+const counts = { sourceReads: 0, fetchCalls: 0, reads: 0, packageBytes: 0, cancellations: 0 };
+const rows = [];
+let last = start, clocks = 1, failure;
+const abort = new AbortController(), timer = setTimeout(() => abort.abort(), 119000);
+const known = ['E_INPUT', 'E_LIMITS', 'E_REFERENCE', 'E_TARGETS', 'E_PACKAGE', 'E_AR', 'E_UNSUPPORTED', 'E_DECOMPRESS', 'E_TAR', 'E_MEMBER', 'E_OUTPUT', 'E_INTERNAL', 'E_SOURCE_PIN', 'E_PLATFORM', 'E_DEADLINE', 'E_LIMIT', 'E_HTTP', 'E_HEADERS', 'E_LENGTH', 'E_BODY', 'E_HASH', 'E_CLEANUP'];
+function stop(code) { const error = new Error(); error.code = code; throw error; }
+function guard(final = false) {
+  if (++clocks > 20000) stop('E_LIMIT');
+  const now = process.hrtime.bigint();
+  if (typeof now !== 'bigint' || now < last) stop('E_PLATFORM');
+  last = now;
+  if (now >= (final ? end : workEnd)) stop('E_DEADLINE');
+}
+async function cancel(body) {
+  if (!body) return;
+  counts.cancellations++;
+  let cleanup;
+  const delay = Math.max(0, Math.min(1000, Number((end - process.hrtime.bigint()) / 1000000n)));
+  try { await Promise.race([body.cancel(), new Promise((resolve, reject) => { cleanup = setTimeout(() => reject(new Error()), delay); })]); }
+  catch { stop('E_CLEANUP'); }
+  finally { clearTimeout(cleanup); }
+}
+try {
+  const code = [];
+  for (const source of sources) {
+    counts.sourceReads++;
+    const bytes = fs.readFileSync('/tmp/opencode/f9-bootstrap-correspondence/tooling/native-ingress/' + source.file);
+    if (bytes.length !== source.size || digest(bytes) !== source.sha256) stop('E_SOURCE_PIN');
+    code.push(bytes); guard();
+  }
+  const needle = "from './tar-inventory.mjs'";
+  if (code[1].toString('utf8').split(needle).length !== 2) stop('E_SOURCE_PIN');
+  const linked = Buffer.from(code[1].toString('utf8').replace(needle, "from 'data:text/javascript;base64," + code[0].toString('base64') + "'"));
+  if (linked.length !== 32714 || digest(linked) !== '76b5d9dacb09e501373681f2060e1331bd845e9ba367db9aa67bbac707299908') stop('E_SOURCE_PIN');
+  const helper = await import('data:text/javascript;base64,' + linked.toString('base64'));
+  guard();
+  if (typeof helper.compareDebMembers !== 'function') stop('E_SOURCE_PIN');
+  for (const target of targets) {
+    guard(); counts.fetchCalls++;
+    const response = await fetch(target.url, { method: 'GET', redirect: 'error', credentials: 'omit', cache: 'no-store', signal: abort.signal, headers: { 'Accept-Encoding': 'identity' } });
+    guard();
+    if (response.status !== 200 || response.url !== target.url || response.redirected) { await cancel(response.body); stop('E_HTTP'); }
+    const encoding = response.headers.get('content-encoding'), length = response.headers.get('content-length');
+    if ((encoding !== null && encoding.toLowerCase() !== 'identity') || (length !== null && length !== String(target.size))) { await cancel(response.body); stop('E_HEADERS'); }
+    if (!response.body) stop('E_BODY');
+    const reader = response.body.getReader(), chunks = [];
+    let total = 0;
+    try {
+      while (true) {
+        guard(); if (counts.reads >= 4096) stop('E_LIMIT'); counts.reads++;
+        const step = await reader.read(); guard();
+        if (step.done) break;
+        if (!(step.value instanceof Uint8Array) || step.value.byteLength < 1 || step.value.byteLength > 1048576 || step.value.byteLength > target.size - total || step.value.byteLength > 2654778 - counts.packageBytes) stop('E_LENGTH');
+        const value = Buffer.from(step.value); chunks.push(value); total += value.length; counts.packageBytes += value.length;
+      }
+    } catch (error) { await cancel(reader); throw error; }
+    finally { reader.releaseLock(); }
+    if (total !== target.size) stop('E_LENGTH');
+    const bytes = Buffer.concat(chunks, total);
+    if (digest(bytes) !== target.sha256) stop('E_HASH');
+    guard();
+    const comparison = helper.compareDebMembers(bytes, { byteLength: target.size, sha256: target.sha256 }, target.members);
+    guard();
+    if (!comparison.packageBytesMatched || comparison.provenanceVerified || comparison.nativeQualified || comparison.runtimeInvoked || comparison.fileWritesPerformed) stop('E_PACKAGE');
+    rows.push({ package: target.package, url: target.url, packageSize: target.size, packageSha256: target.sha256,
+      referenceChain: 'section 33.12 signature-bound indexes and exact package/source tuple in 33.14', comparison });
+  }
+  guard(true);
+} catch (error) { failure = known.includes(error.code) ? error.code : abort.signal.aborted ? 'E_DEADLINE' : 'E_FETCH'; abort.abort(); }
+finally { clearTimeout(timer); }
+const base = { profile: 'ubuntu-deb-counterparts-v1', authorization: 'autonomous-steps-1-5', attemptConsumed: true,
+  status: failure ? 'STOP' : 'ALL_COUNTERPART_BYTES_MATCHED', counts,
+  candidateExecuted: false, maintainerScriptsExecuted: false, filesInstalled: false,
+  publisherTrustEstablished: false, provenanceVerified: false, decoderQualified: false,
+  nativeQualified: false, realArchiveInspected: false, rustReady: false, trainingReady: false };
+let text = (JSON.stringify({ ...base, ...(failure ? { error: failure, rows: [] } : { rows }) }) + '\n').replace(/[^\x00-\x7f]/g, unit => '\\u' + unit.charCodeAt(0).toString(16).padStart(4, '0'));
+if (Buffer.byteLength(text) > 65536 || !/^[\x20-\x7e\n]*$/.test(text)) { failure = 'E_OUTPUT'; text = JSON.stringify({ ...base, status: 'STOP', error: failure }) + '\n'; }
+if (!failure) { try { guard(true); } catch { failure = 'E_DEADLINE'; text = JSON.stringify({ ...base, status: 'STOP', error: failure }) + '\n'; } }
+if (failure) process.exitCode = 1;
+process.stdout.on('error', () => { process.exitCode = 1; });
+try { process.stdout.write(text); } catch { process.exitCode = 1; }
+NODE
+```
+<!-- END UBUNTU DEB COUNTERPARTS V1 -->
+
+Actual counterpart compatibility/availability is not established until the exact registered operation succeeds. Syntax-only validation passed for command7558/SHA-256 `58d16d285cf4d707f36c4ac5991260764d9021b12e7229a2394bccd5c3f36152`; both raw source pins and the deterministic linked-source pin match, and benign captured-graph import succeeds. Required quality/security source gates accepted only this data operation with no findings; active navigation is reconciled. Register complete current-section identity before use. Failed comparisons expose no package/member references or partial-success match rows; no code execution or replacement follows.
+
+### 33.16 Counterpart byte equality observed; execution gate stays closed
+
+The93787-byte section registration `ba3c2a21db46c462986f32ed21d20f25425a4206fd2aab308174b2f833ad45a5` bound command7558/SHA-256 `58d16d285cf4d707f36c4ac5991260764d9021b12e7229a2394bccd5c3f36152` and the two source images/linked-source identity in §33.15. The operation returned normally with ALL_COUNTERPART_BYTES_MATCHED:2 source reads,3 Fetch calls,204 stream reads,2654778 package bytes and0 cancellations. Every whole-package size/hash and all four selected regular-file member lengths/hashes matched the independently recorded expectations.
+
+| Package | Data member | Compressed bytes | Decoded TAR bytes | TAR entries | Selected regular members |
+| --- | --- | ---: | ---: | ---: | --- |
+| xz-utils | `data.tar.zst` | 402966 | 593920 | 149 | `usr/bin/xz` |
+| liblzma5 | `data.tar.zst` | 143799 | 286720 | 14 | `usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3` |
+| libc6 | `data.tar.zst` | 2044329 | 5642240 | 52 | `usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2`, `usr/lib/x86_64-linux-gnu/libc.so.6` |
+
+All three packages used `control.tar.zst` and `data.tar.zst`. Node builtin zstd decoded only data members. No maintainer script, extracted file, installer, counterpart code, host candidate/loader/XZ, Python or SDK payload executed. Input/output remained private RAM. Preserve §33.15's command and the earlier unsuccessful/successful source revisions as historical evidence; this result does not renew any consumed operation.
+The evidence chain is exact pinned key → verified Release text → exact index hashes → exact package/source/architecture tuple → whole package hash → validated regular-member bytes → prior host fingerprints. It establishes byte equality under the recorded trust inputs, not independent out-of-band key ownership, source reproducibility, current security support, actual loading identity or Native authority. PublisherTrustEstablished/provenanceVerified/decoderQualified/nativeQualified/rustReady/trainingReady remain false.
+Architect follow-up `ses_e92caa483ffenhVmnj04uxXFfV` preserves §33.8's missing-key-trust STOP. No candidate invocation may follow by silently substituting a new HTTPS-origin trust policy. Independent official publisher-ownership research remains possible under the work order; finite fixture construction and independent source implementation may proceed without executing the candidate. Step1 remains INCOMPLETE; no remaining step is committed/pushed as complete.
+
+### 33.17 Independent publisher declaration and controlled qualification design
+
+Official [Ubuntu Security FAQ revision1347](https://wiki.ubuntu.com/w/index.php?title=Security/FAQ&oldid=1347#GPG_Keys_used_by_Ubuntu), also [retrieved as plaintext](https://wiki.ubuntu.com/w/index.php?title=Security/FAQ&oldid=1347&action=raw), explicitly states `The Ubuntu Archives are signed with keys:` and publishes `rsa4096/871920D1991BC93C`, full fingerprint `F6ECB3762474EDA9D21B7022871920D1991BC93C`, and `Ubuntu Archive Automatic Signing Key (2018) <ftpmaster@ubuntu.com>`. Parent retrieval independently confirmed the research result. This separate publisher declaration is not a key's self-claimed UID or a signature's issuer hint.
+Record `ordinaryPublisherAssociationCorroborated:true` for that exact publisher/document/fingerprint under the existing ordinary official-HTTPS research basis. Architect `ses_e92caa483ffenhVmnj04uxXFfV` confirms this new evidence closes the missing publisher-association prerequisite for ordinary bootstrap; §33.8 does not require inventing an air-gapped root. Do not modify library `publisherTrustEstablished:false`, which cannot authenticate its caller's expectations. Out-of-band authentication, key-revocation/current-security status, reproducible source correspondence and Native/F9 remain unproved.
+The next source units are independent `xz-fixtures.mjs`/tests and a separate real-process `xz-qualification.mjs`/mocked tests. They do not reclassify the existing inventory controller as real. Fixed XZ-format argv, exclusive staged copies of the four checked images, private library names, empty inherited environment apart from C locale/UTC, disabled loader cache/hwcaps, explicit rejection of audit/filter/auxiliary dynamic tags, and `/etc/ld.so.preload` absence checks remain execution prerequisites. No general glibc switch suppresses that global preload file; an existing entry means STOP without mutation.
+The runner must observe input completion, both output EOFs, exit status/signal and child close. Byte/deadline failures latch STOP and attempt SIGKILL once; uncertain completion remains a cleanup failure. Reserve cleanup inside the original suite clock. Node timers/XZ's memory option are not hard process RSS, kernel interruption or process-tree containment; keep those limitations explicit and Native qualification false.
+Independent uncompressed-LZMA2/CRC32 vectors can establish only their named finite cases. A separately sourced compressed-LZMA2 known-answer vector is required before claiming coverage of actual compressed SDK input. No candidate execution, staging write or SDK inspection follows automatically from this design; register the exact later operation after source verification and required gates.
+In parallel, the existing architect accepts SOURCE-ONLY shared418, recursive belief and strict-artifact implementation planning. Current Rust compilation, complete F9 B/source/invoice/clock/resource proof, whole-decision adequacy and learned-estimator acceptance remain blocking. No source-only unit counts as a completed step or authorizes training/activation/deployment.
+
+### 33.18 Qualification source progress — no physical invocation yet
+
+Independent fixture construction supplies32 frozen uncompressed-LZMA2 cases: empty/literal/multiblock/concatenated streams, legal and illegal padding, checksum/header/index/footer corruption, truncation, trailing garbage and memory refusal. It uses its own format construction and independently checked CRC32 known answers, not candidate compression. Its `missingCompressedKnownAnswer:true` applies to that factory alone.
+A separate fixed compressed-LZMA2/CRC64 known-answer fixture copies only the published `COMPRESSED_XZ` and `INPUT` byte constants from [CPython v3.13.0 test_lzma.py](https://raw.githubusercontent.com/python/cpython/60403a5409ff2c3f3b07dd2ca91a7a3e096839c7/Lib/test/test_lzma.py), commit `60403a5409ff2c3f3b07dd2ca91a7a3e096839c7`. Compressed bytes1056/SHA-256 `b63524a70c61afe5904bd6cf0b45c589ff2b58bc4ac1cc5e360318412e57994d`; plaintext1921/SHA-256 `b64857892c3f1ff008e910d6f8786bffb7f6651b7c5ea58ae3b7975d3ac119de`, CRC32 `b05baee2`. The published source asserts that mapping independently of the host candidate. Python source was read solely as public fixture text; no Python interpreter, package, compiler or helper was selected or executed. Preserve the PSF-2.0 copyright/license and modification summary in `tooling/native-ingress/licenses/PSF-2.0.txt`; the literal input/output bytes remain unchanged.
+The process controller replaces inherited environment, uses only the fixed absolute staged loader/profile and publishes positive output only after exact comparison, stdin finish, both EOFs, pipe closure observations, exit and child close. Parent review corrected same-event-turn Node ordering: child close may occur before user pipe-close listeners, so final verification runs in a guarded microtask. A persisted regression covers that ordering without launching a process.
+Parent verification passed1304/1304 tests across ten affected synthetic/mock-only suites,0 failures/cancelled/skipped/todo. This includes the previous1228-case combined source set plus32 constructed-fixture cases and44 process-controller cases; it precedes adding the separately verified12-case compressed-KAT suite and staging tests. No actual child, staging write or host probe occurred in these tests. Six current owner diagrams passed offline pinned-theme validation/rendering; the new qualification owner still awaits completed source mapping and rendering.
+The physical suite will select31 constructed cases (exclude the separately labeled output-limit payload from the normal-success suite) plus the compressed known-answer case, keeping the32-case controller ceiling. Output-overflow/SIGKILL behavior remains mock-tested until separately exercised. Prerequisite hooks must check global preload absence before and after each child; parent staging/static validation remains distinct from the process controller. Complete source gates and exact operation registration remain prerequisites to actual use.
+
+### 33.19 Registered fixed-root finite XZ qualification operation
+
+The autonomous work order permits this bounded qualification operation after required source gates, not arbitrary host execution. Register `tooling/native-ingress/xz-operation.mjs`,7337 bytes/SHA-256 `42b566485c38c723d8c568d8c765805a5989619d0ca89131faba09ada2341876`, as the exact operation source. The launcher below imports only its checked captured bytes; the operation similarly pins all five dependency byte images and its deterministic linked staging→ELF source image. No mutable source pathname is reopened for execution.
+
+| Captured dependency | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `elf-metadata.mjs` | 19842 | `b223a655eae572137891a2c6efafee16887a2478fc91052f0092b48dfd65de85` |
+| `xz-fixtures.mjs` | 5760 | `726fb0d891d7a62dad23522652639edbdffb4bde3b6d91da32145e56cbd400ac` |
+| `xz-compressed-fixture.mjs` | 4706 | `88b00aa4971b26725a4c9fe09550af714d4bb9bf06ea556f62cb45e59482aaa0` |
+| `xz-staging.mjs` | 16688 | `f75c21a58bb67e6ab3f8b1dafd090e11ac2d3a70f017da35afb81b00761b71b4` |
+| `xz-qualification.mjs` | 13615 | `788392807fed76480116ab31ea5221903c9c330c1091b1d0c5775961fe4be7be` |
+
+Linked staging bytes43154/SHA-256 `89b6c5e3dcbf902937f81fc642d7238bd4ec4ca3c94f6b61f4d069efdce8c5f2` replace exactly one relative ELF import with the captured checked ELF data URL. Fixture-manifest SHA-256 `632a0d812366712ae99ce2ce442ad98a59534430640184f70af53df58656b4ea` binds32 exact cases,3432 aggregate compressed bytes and their independently specified expected outputs/statuses.
+Read only the four original literal ELF files/pins from §33.15/`XZ_STAGING_PROFILE`. Require exact source size/hash/mode, root UID/GID, nlink1 and stable nine-field named/FD identity with no final-link following, exact positional64KiB reads and EOF. Parse the checked private snapshots only after FD closure. Reject DT_AUDIT, DT_DEPAUDIT, DT_FILTER, DT_AUXILIARY, unexpected dependency/interpreter/SONAME/RPATH/RUNPATH declarations and uncovered version names before any staging or child.
+Create only `/tmp/opencode/f9-xz-qualification-01`, exclusively, mode0700. Existing root means STOP without reuse, repair, suffix fallback or deletion. Create exactly `xz`, `ld-linux-x86-64.so.2`, `liblzma.so.5`, `libc.so.6` as exclusive regular files. Complete bounded writes, fchmod/fsync/closure, then make XZ/loader0500, libraries0400 and root0500; verify all staged bytes/identities and the exact directory layout. Up to two owned FDs coexist (root plus one image); each object's independent identity matters, not common device numbers. Retain every partial or successful file; no cleanup deletion or package installation occurs.
+Check only the literal `/etc/ld.so.preload` for absence. Only ENOENT passes; any existing leaf/type or other error STOPs without reading or modifying it. Before/after every case, reverify all four staged byte images and root identities/layout, then sample preload absence. Those snapshots do not exclude same-UID/root/ancestor races and cannot establish immutable loading.
+Run32 named cases sequentially through the fixed absolute staged loader. Argv disables loader cache/hwcaps and selects the private library path; XZ uses only decompression/stdout/explicit-XZ/one-thread/fixed memory limit/stdin. Environment is exactly LC_ALL=C, LANG=C, TZ=UTC; three pipes, no shell or extra inherited descriptors. After the32-case suite, one additional registered33rd child decodes36 concatenated compressed KAT streams (38016 compressed bytes,69156 expected decoded bytes) to exercise the controller's65536-byte output ceiling. Require E_OUTPUT and observed child close; never accept its partial output.
+The operation caps authored spawn calls33, filesystem calls10000, read bytes256MiB, staged writes2758216 bytes and close attempts400, with each staging helper capped1024 calls/32MiB transfer. The original operation clock reserves3s inside120s; the normal suite reserves3s inside60s and caps each case2s. The overflow suite caps5s including1s cleanup. Shell capture130s is not hard native interruption or process-tree containment. Native timers, RSS, allocator behavior, Node bootstrap/intrinsics and library/same-UID races remain explicit ordinary-host residuals. No hard RSS proof is claimed by XZ's16MiB decoder memory setting.
+The operation emits one bounded ASCII<=64KiB receipt with selected hashes/counters/statuses. Any failure suppresses successful fixture observations and returns a fixed STOP code. It makes no network call, installs nothing, reads no GNU SDK/archive payload, changes no environment/security policy, and deletes no retained data. A successful finite profile is evidence for those exact cases, not general decoder correctness or Native/F9 qualification.
+Required quality review found three MEDIUM receipt defects before execution. The repaired controller separates stdout overflow E_OUTPUT from stderr E_STDERR and chunk-event E_EVENTS, so only the intended stdout ceiling can pass the33rd-child check. Spawn-attempt and observed spawn-event counters are separate; candidateExecuted is false before any attempt, true after the normal suite's accepted observations, and null when execution remains unconfirmed after a failed attempt. Failed staging/verification marks `ioAccountingComplete:false`; filesystem/byte/close totals explicitly cover completed helper receipts only, with source reads/preload checks separate. They are lower-bound observations on a failed helper, not a zero-I/O assertion. Partial staging may remain when completion was not returned; never delete or reuse it. The repaired171-case focused source/mock suite passes with all10 syntax checks.
+Parent verification passed1399/1399 tests across13 synthetic/mock-only suites,25 syntax checks and no skipped/cancelled/todo cases. This includes76 staging mock tests,44 controller mock tests,32 constructed-fixture tests,12 compressed-KAT tests and7 operation/source-graph tests. A static fixture test initially rejected the required PSF copyright word; the repaired test exempts only the exact mandatory license header and preserves its no-runtime/no-import restrictions. No physical staging or candidate invocation has occurred yet.
+
+<!-- BEGIN FIXED XZ QUALIFICATION V1 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+const bytes = fs.readFileSync('/tmp/opencode/f9-bootstrap-correspondence/tooling/native-ingress/xz-operation.mjs');
+if (bytes.length !== 7337 || createHash('sha256').update(bytes).digest('hex') !== '42b566485c38c723d8c568d8c765805a5989619d0ca89131faba09ada2341876') throw new Error('E_SOURCE_PIN');
+const operation = await import('data:text/javascript;base64,' + bytes.toString('base64'));
+const result = await operation.runRegisteredXzQualification();
+process.exitCode = result.exitCode;
+process.stdout.on('error', () => { process.exitCode = 1; });
+process.stdout.write(result.text);
+NODE
+```
+<!-- END FIXED XZ QUALIFICATION V1 -->
+
+Required quality review closed all three MEDIUM receipt findings in the repaired source. Security accepted only the registered<=33-child ordinary boundary with no findings; its external RSS/wall-clock/process-tree caveat remains. Spec correspondence is in-sync. The launcher692/SHA-256 `459b3eb392f05b31d948df9d095ff752546543c91d07f8121c9a81feab95a871` passes syntax-only parsing, and its exact captured operation imports inertly without calling the physical function. The new qualification owner passes offline pinned-theme check/render. Register complete current-section identity before use. No result or step completion follows from these plans/tests alone.
+
+### 33.20 Step1 complete — exact ordinary bootstrap profile observed
+
+The110064-byte section registration `0bbb4252fa504187979c3e4c0c546fbd6058e7ad53d102dc54a7f68644134739` bound the692-byte launcher `459b3eb392f05b31d948df9d095ff752546543c91d07f8121c9a81feab95a871`, operation7337/`42b566485c38c723d8c568d8c765805a5989619d0ca89131faba09ada2341876`, five captured dependency images and the linked-stage/fixture-manifest pins in §33.19. The exact operation returned normally with FINITE_XZ_PROFILE_OBSERVED. All33 authored spawn calls produced observed spawn events; all32 ordinary cases matched their independently specified output/status and required stdin/EOF/exit/close lifecycle gates. The33rd child produced the distinct stdout-cap E_OUTPUT and observed close, with zero accepted partial output.
+Counters report5 dependency source reads/60611 bytes,68 preload-absence checks,5599 completed staging-helper filesystem calls,190316904 read bytes,2758216 staged write bytes and349 close attempts. `ioAccountingComplete:true`; source/preload counters retain their separate declared scopes. No installer, Python, network, retained-data deletion, GNU SDK inspection or model work occurred. Failed-input cases demonstrably emitted some partial output, which remained unaccepted; successful Check=None cases retained `integrityCheck:false`.
+Persist selected fields, all32 case identities, compressed-KAT result, overflow observation and exact staged nine-field identities in [`xz-qualification.receipt.json`](../tooling/native-ingress/xz-qualification.receipt.json). It is explicitly a parent transcription, not an authenticated raw transcript or Native capability. The staged root is `/tmp/opencode/f9-xz-qualification-01`, directory DEV28/INO13941/UID1000/mode0500; image files are DEV29/INOs1212099–1212102. Distinct root/file devices passed correctly. Retain this root and its files; the exclusive staging operation is consumed and must not be rerun or repaired/reused as a fresh creation.
+Architect `ses_e92caa483ffenhVmnj04uxXFfV` accepts Step1's **ordinary-bootstrap XZ qualification** on this persisted exact-profile result. This closes the named preparation step, not general decoder correctness, hard RSS/process-tree/deadline guarantees, complete symbol binding, reproducible source builds, current security support, §10, Native/F9 or training readiness. All corresponding broad assurance flags remain false. No additional out-of-band key or hard-RSS prerequisite is invented for this accepted ordinary profile; stronger Native/build-resource requirements remain binding in their own phases.
+Commit/non-force push only the verified Step1 infrastructure/spec/receipt delta under the user's work order. Keep in-progress, uncompiled shared418/belief/artifact Rust source outside that commit. Step2 starts with a separately registered data-only inventory of the exact retained GNU2026 archive, with staged-profile revalidation, original archive metadata/hash/FD binding, explicit compressed/expanded/entry/path/output limits and joint child/pipe/FD completion. It permits no extraction, Python/GDB/setup scripts or installation, and no acceptance of partial inventory.
+Closing parent verification passed1400/1400 synthetic/mock/transcription checks across13 suites,25 syntax checks and `git diff --check`, with no failures/skips/cancellations/todo and no repeated physical invocation. Required quality review accepts only this ordinary Step1 commit; spec review reports in-sync. Security's registered ordinary-execution boundary and residual caveats remain unchanged. All seven affected source-owned diagrams have current pinned-offline validated SVGs; unrelated unresolved coverage entries remain unchanged.

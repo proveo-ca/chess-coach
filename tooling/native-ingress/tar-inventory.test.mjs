@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
-import { createTarInventory, INVENTORY_LIMITS, InventoryError } from './tar-inventory.mjs';
+import { createTarInventory, createTarMemberInventory, INVENTORY_LIMITS, InventoryError } from './tar-inventory.mjs';
 
 function checksum(header) {
   header.fill(32, 148, 156);
@@ -663,4 +663,94 @@ test('static source contracts stay offline and point to the parent-owned SPEC', 
     assert.doesNotMatch(source, /\bprocess\s*[.[]/);
     for (const match of source.matchAll(/from '([^']+)'/g)) assert.ok(['node:crypto', 'node:util', './tar-inventory.mjs'].includes(match[1]));
   }
+});
+
+function spans(bytes, chunk = bytes.length, budget = 4_194_304, overrides = {}) {
+  const parser = createTarMemberInventory(overrides, budget);
+  const events = [];
+  for (let offset = 0; offset < bytes.length; offset += chunk) events.push(...parser.feed(bytes.subarray(offset, offset + chunk)));
+  return { events, summary: parser.finish() };
+}
+
+for (const chunk of [1, 7, 511, 512, 513, 1023, 4096]) {
+  test(`member spans measure consumed bytes across chunks ${chunk}`, () => {
+    const bytes = archive(member({ path: 'a' }, Buffer.from('abc')), member({ path: 'empty' }), member({ path: 'b' }, Buffer.alloc(513, 42)));
+    const { events, summary } = spans(bytes, chunk);
+    assert.equal(summary.state, 'TAR_MEMBER_INVENTORY');
+    assert.deepEqual(summary.fileSpans, [
+      { index: 1, path: 'a', bodyOffset: 512, size: 3 },
+      { index: 2, path: 'empty', bodyOffset: 1536, size: 0 },
+      { index: 3, path: 'b', bodyOffset: 2048, size: 513 },
+    ]);
+    const old = run(bytes, {}, chunk);
+    const { fileSpans, ...base } = summary;
+    assert.deepEqual({ ...base, state: 'TAR_INVENTORY' }, old.summary);
+    assert.deepEqual(events, old.events);
+    assert.equal(Object.isFrozen(summary), true);
+    assert.equal(Object.isFrozen(fileSpans), true);
+    for (const span of fileSpans) assert.equal(Object.isFrozen(span), true);
+    assert.equal(bytes.subarray(fileSpans[0].bodyOffset, fileSpans[0].bodyOffset + 3).toString(), 'abc');
+  });
+}
+
+test('member spans omit directories and links while preserving entry indices', () => {
+  const bytes = archive(member({ path: 'dir/', type: '5' }), member({ path: 's', type: '2', link: 'a' }),
+    member({ path: 'h', type: '1', link: 'a' }), member({ path: './a', type: '\0' }, Buffer.from('x')));
+  assert.deepEqual(spans(bytes).summary.fileSpans, [{ index: 4, path: 'a', bodyOffset: 2048, size: 1 }]);
+});
+
+for (const [label, extensions, name] of [
+  ['GNU', [extension('L', Buffer.from('long/name\0'))], 'long/name'],
+  ['local PAX', [extension('x', paxRecord('path', 'local'))], 'local'],
+  ['global PAX', [extension('g', paxRecord('path', 'global'))], 'global'],
+  ['precedence', [extension('g', paxRecord('path', 'global')), extension('L', Buffer.from('gnu\0')), extension('x', paxRecord('path', 'local'))], 'local'],
+]) {
+  test(`member spans use effective ${label} path and physical extension offsets`, () => {
+    assert.deepEqual(spans(archive(...extensions, member({}, Buffer.from('x'))), 13).summary.fileSpans,
+      [{ index: 1, path: name, bodyOffset: extensions.reduce((sum, item) => sum + item.length, 512), size: 1 }]);
+  });
+}
+
+test('member spans use effective local size over global and header sizes', () => {
+  const bytes = archive(extension('g', paxRecord('size', '9')), extension('x', paxRecord('size', '3')),
+    Buffer.concat([header({ size: 0 }), Buffer.from('abc'), Buffer.alloc(509)]));
+  assert.deepEqual(spans(bytes, 29).summary.fileSpans, [{ index: 1, path: 'root/file', bodyOffset: 2560, size: 3 }]);
+});
+
+test('member spans clear a global size locally to the physical header size', () => {
+  const bytes = archive(extension('g', paxRecord('size', '9')), extension('x', paxRecord('size', '')), member({}, Buffer.from('abc')));
+  assert.equal(spans(bytes).summary.fileSpans[0].size, 3);
+});
+
+test('member span JSON budget admits exact bytes and rejects before retention', () => {
+  const bytes = archive(member({ path: 'é' }), member({ path: 'b' }));
+  const size = Buffer.byteLength(JSON.stringify(spans(bytes).summary.fileSpans));
+  assert.equal(spans(bytes, 19, size).summary.fileSpans.length, 2);
+  assert.throws(() => spans(bytes, 19, size - 1), { code: 'E_SPAN_BYTES' });
+  assert.deepEqual(spans(archive(), 512, 2).summary.fileSpans, []);
+  assert.throws(() => spans(archive(), 512, 1), { code: 'E_SPAN_BYTES' });
+});
+
+for (const budget of [0, -1, 1.5, NaN, Infinity, '1', 4_194_305]) {
+  test(`member span budget rejects ${String(budget)}`, () => assert.throws(() => createTarMemberInventory({}, budget), { code: 'E_LIMITS' }));
+}
+
+for (const [label, mutate] of [
+  ['late checksum', bytes => { bytes[1024] = 1; }],
+  ['padding', bytes => { bytes[513] = 1; }],
+  ['late EOF', bytes => Buffer.concat([bytes, Buffer.from([1])])],
+  ['truncation', bytes => bytes.subarray(0, -1)],
+]) {
+  test(`member spans never publish on ${label}`, () => {
+    const initial = archive(member({ path: 'a' }, Buffer.from('x')));
+    const bytes = mutate(initial) ?? initial;
+    const parser = createTarMemberInventory();
+    assert.throws(() => { parser.feed(bytes); parser.finish(); }, InventoryError);
+    assert.throws(() => parser.finish(), InventoryError);
+  });
+}
+
+test('member spans reject aliases and retain every existing admission limit', () => {
+  assert.throws(() => spans(archive(member({ path: 'a' }), member({ path: './a' }))), { code: 'E_COLLISION' });
+  assert.throws(() => spans(archive(member()), 512, 1024, { maxHeaders: 1, maxExpandedBytes: 1024 }), { code: 'E_EXPANDED_BYTES' });
 });

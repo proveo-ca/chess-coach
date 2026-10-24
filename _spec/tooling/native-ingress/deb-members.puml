@@ -1,0 +1,45 @@
+' purpose: bounded DEB data-member byte comparison without package installation
+' covers: tooling/native-ingress/deb-members.mjs
+' covers: tooling/native-ingress/deb-members.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 33 owns provenance qualification.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title DEB member comparison — authenticated expectations supplied by caller
+actor "Caller-provided package/member refs\nprivate package bytes" as CALLER <<host>>
+component "compareDebMembers\nstrict snapshot and SHA-256" as PACKAGE <<app>>
+component "Three-member AR profile\ncontrol remains inert" as AR <<app>>
+component "Node gzip/zstd only\nframing + decoded/window caps" as DECODE <<host>>
+component "createTarMemberInventory\nshared validated TAR state machine" as TAR <<app>>
+component "Frozen selected-member matches\nno extraction or execution" as RESULT <<app>>
+component "DebMemberError\nfixed failure, no partial success" as ERROR <<error>>
+CALLER ARROW_MAIN PACKAGE : exact package length/digest before decompression
+PACKAGE ARROW_MAIN AR : checked spans, names, sizes and padding
+AR ARROW_MAIN DECODE : data.tar.gz or data.tar.zst only
+DECODE ARROW_MAIN TAR : bounded decompressed private bytes
+TAR ARROW_MAIN RESULT : final regular-file payload spans after valid EOF
+RESULT ARROW_MAIN CALLER : exact target path/length/digest comparisons
+PACKAGE ARROW_ERROR ERROR : bad expectations, hash or input
+AR ARROW_ERROR ERROR : unsupported container/member or malformed framing
+DECODE ARROW_ERROR ERROR : malformed/unsupported frame or resource refusal
+TAR ARROW_ERROR ERROR : invalid TAR, links as targets or missing member
+ERROR ARROW_ERROR CALLER : no fallback decoder or package install
+note bottom of AR
+Exactly debian-binary / control / data
+debian-binary bytes equal '2.0\n'
+No extended AR names or extra members
+Control scripts never decode or execute
+end note
+note bottom of DECODE
+Input<=8MiB; decoded TAR<=64MiB
+One zstd frame; window<=64MiB; no dictionary
+Gzip requires reported full input consumption
+No data XZ or external decoder fallback
+end note
+note bottom of RESULT
+Targets<=8; JSON<=64KiB; deeply frozen
+Signature/provenance/NoPython flags:false
+Native/decoder/extraction/runtime flags:false
+Caller refs are not authenticated by this module
+end note
+@enduml
