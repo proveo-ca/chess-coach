@@ -1,3 +1,22 @@
+## Current static ELF result — same pinned bytes / grant consumed (2026-10-24)
+
+**[Unverified] Result:** the user approved §31 once; [canonical §32](ml-runtime-redesign.md#32-same-candidate-static-elf-receipt--metadata-collected-grant-consumed) preserves the returned STATIC_ELF_METADATA record for the same101392-byte digest. It reports interpreter `/lib64/ld-linux-x86-64.so.2`, needed names `liblzma.so.5` and `libc.so.6`, with no declared RPATH/RUNPATH.
+**Consumed:** no derived path was opened or resolved; no candidate/loader/XZ execution or SDK inspection occurred. The grant is consumed and supplies no dependency search/read, provenance, NoPython, runtime-closure or training authority. Serialized clockReads34 excludes the final post-encoding guard; source total35 is documented separately.
+**Preserve:** uncommitted verified ELF unit and proposal/receipt work; publication remains `ddb5c98f`, PR50 OPEN/unmerged. Receipt-copy validation and required brief checks passed, spec in-sync; optional repeated rounds omitted. Rust BLOCKER OPEN and `trainingReady:false`.
+
+## Current static ELF proposal — same pinned candidate / fresh grant pending (2026-10-24)
+
+**[Unverified] Preparation only:** [canonical §31](ml-runtime-redesign.md#31-same-candidate-static-elf-proposal--fresh-read-grant-pending) proposes one exact `/usr/bin/xz` reread using the verified source-pinned ELF inspector. Compare the prior101392-byte digest and full nine-field identity; close the candidate FD successfully before parsing private bytes.
+**Permission:** syntax-only/source-pin checks and required static proposal reviews passed; spec in-sync. Exact command/section registration and fresh TUI consent remain pending. Omit optional repeated review rounds. No current candidate, interpreter/library, SDK, tool-search or decoder operation is authorized. All failures consume the grant with no fallback; metadata strings never authorize derived-path access.
+**Preserve:** verified uncommitted ELF source/test/spec/index work and all previous receipts; no new publication. Rust BLOCKER OPEN, `trainingReady:false`; real decoder/provenance/NoPython/loader closure remains unqualified.
+
+## Current offline ELF metadata — verified offline / candidate analysis unapproved (2026-10-24)
+
+**[Unverified] Published:** candidate-observation documentation is pushed as `ddb5c98fd7985b944effa13ea4f83b41321e9394`; PR50 remains OPEN/unmerged targeting `feat-ml-adjuntant`.
+**[Unverified] Source unit:** the user selected offline ELF source/tests plus matching specs and scoped local rendering. [Canonical §30](ml-runtime-redesign.md#30-offline-elf-metadata--verified-offline-unit-candidate-analysis-unapproved) maps the bounded Node inspector. Parent verification passed190/190 new in-memory tests and both syntax checks; parser coverage100% lines/branches/functions. Closing source reviews and current offline rendering passed; note-width LOW closed, spec in-sync. Oxlint was unavailable and skipped; this new unit remains uncommitted.
+**Permission:** synthetic in-memory fixtures only; no candidate/dependency/SDK/physical-fixture access, loader/decoder/process, network, tool search or install. Derived interpreter/library/RPATH strings remain inert metadata, not host-file allowances. Preserve consumed read grants and earlier receipts.
+**Unchanged:** version/provenance and loader/library/symbol/ISA/NoPython closure remain unqualified; Rust BLOCKER OPEN, `trainingReady:false`, no automatic further publication or PR merge.
+
 ## Current XZ candidate observation — bytes/header only / grant consumed (2026-10-24)
 
 **[Unverified] Result:** the user approved §28 once; [canonical §29](ml-runtime-redesign.md#29-xz-candidate-identity-receipt--observed-bytes-grant-consumed) preserves the returned record. `/usr/bin/xz` was observed as101392 bytes, SHA-256 `1f6ca26fd33066c9d5b95e58a0d9e2f5789cb18fd5741518574113b37ea1934d`, with a64-bit little-endian machine62/type3 ELF header. No candidate execution occurred.

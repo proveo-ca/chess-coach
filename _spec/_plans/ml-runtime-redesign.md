@@ -1705,3 +1705,295 @@ The next proposal must separate source/provenance evidence from bounded static E
 Any decoder invocation still requires a separately accepted runtime/source closure, exact argv/environment policy, input/framing/integrity/memory/output/stderr bounds and lifecycle/termination authority. Do not use `--version` or archive decompression as a discovery shortcut.
 The SDK archive remains retained and uninspected with its acquisition grant consumed. Rust's eight new tests remain uncompiled/unrun and the Rust BLOCKER stays OPEN; NoPython subset, SDK relocation/ELF usability, Native authority and training readiness remain unqualified. No model training, activation/deployment, cleanup or PR merge occurred.
 Receipt-copy validation passed. Closing adversarial/security reviews accepted receipt documentation only with no findings; spec review closed the stale validation-status LOW and reported in-sync. Publication remains `8f7f0933`; the new proposal/receipt documents are uncommitted and not covered by an automatic further push.
+
+## 30. Offline ELF metadata — verified offline unit, candidate analysis unapproved
+
+**[Unverified] Implemented offline source unit with parent-run synthetic verification, not new candidate evidence or decoder qualification.**
+The user requested `commit & push then proceed`; the reviewed two-document candidate proposal/receipt was committed/pushed as `ddb5c98fd7985b944effa13ea4f83b41321e9394`. Publication checked receipt/source identities and syntax-only parsing without another candidate/archive access; production source/tests were unchanged, so378 remains the earlier test receipt rather than a docs-only rerun.
+The user then selected `Build offline ELF unit (Recommended)` over provenance-only planning or hold. Architect `ses_e93d30213ffedCy1e9xJ50MMIO` and DevOps `ses_e93d30206ffewTR4j8u8NcXXf0` supplied the design before implementation.
+
+### 30.1 File plan, permission and non-goals
+
+Add only `tooling/native-ingress/elf-metadata.mjs` plus `elf-metadata.test.mjs` as manifest-free Node infrastructure with generated in-memory fixtures <=1MiB each. The module imports only Node crypto/util and exposes no filesystem, network, resolver, loader, process, reader or adapter callback.
+`inspectElf64(bytes, overrides)` returns deeply frozen plain metadata with state `ELF_METADATA` and profile `elf64le-x86-64-metadata-v1`, or throws a fixed-code `ElfMetadataError`, never partial-success metadata. Export frozen `ELF_METADATA_LIMITS`; capture strict own-data lower-only limit overrides, rejecting proxies, accessors, symbols, extra/inherited fields, non-integers and increased caps.
+Accept native Buffer/Uint8Array views using intrinsic length/buffer/offset accessors. Reject shared, resizable or detached backing and oversized input before creating the private snapshot. Hash exactly that snapshot as `inputSha256`; retain no input-backed view or caller-owned profile reference.
+The current input subset requires the standard local Buffer/Uint8Array prototype; subclasses, custom prototypes and other realms are unsupported rather than traversed. Own shadow properties are bypassed using captured intrinsic accessors. These checks are not a sandbox against mutation of the trusted Node runtime itself.
+Add `_spec/tooling/native-ingress/elf-metadata.puml` with exact two-file coverage in `_spec/.spec-index.json`. Both new files carry its top-line SPEC pointer. Preserve all existing source/API/test/configuration files, previous coverage entries and canonical §§1–29.
+No actual candidate, dependency, SDK archive, physical fixture, environment, package database, proc/cache/library or tool-search access is authorized. No decoder, loader, subprocess, network, dependency installation, Python, Rust command, extraction or cleanup belongs in this unit. Static repository reads for source/SPEC/index verification are allowed.
+
+### 30.2 Bounded format and arithmetic contract
+
+Support only ELF64, little-endian, x86-64 machine62, identification/header version1, ET_EXEC2 or ET_DYN3,64-byte ELF header and56-byte program headers. Reject extended program-header numbering and unsupported layouts without fallback. Section headers, relocations, symbol versions, GNU notes/build IDs and ISA requirements are outside this subset.
+Check offsets, products, exclusive range ends and virtual-address arithmetic in BigInt before Number conversion. Accept only bounded file offsets as Numbers; represent exported U64 addresses/sizes as lossless decimal strings. Reject address ranges extending beyond2^64 and file ranges outside the captured snapshot.
+Validate all program-header file spans, filesz<=memsz and declared alignment; require PT_LOAD file-offset/virtual-address alignment congruence. Preserve unknown program-header kinds as inert bounded metadata. Admit at most one PT_INTERP and one PT_DYNAMIC; duplicates fail even when identical.
+PT_INTERP must contain a bounded, nonempty, exactly terminal-NUL UTF-8 string without controls. Record its raw value, whether absolute or relative, without host access or path normalization.
+
+| Default hard ceiling | Value | Meaning |
+| --- | ---: | --- |
+| Captured input | 1048576 bytes | Admission before private allocation; no larger test fixture |
+| Program headers | 128 | Count admitted before multiplication/iteration |
+| Dynamic entries | 1024 | All declared16-byte slots, including DT_NULL and unused tail slots |
+| String table | 65536 bytes | Entire file-backed DT_STRTAB/DT_STRSZ span |
+| One dynamic string | 1024 bytes | Includes terminating NUL, not JavaScript character count |
+| Interpreter | 256 bytes | Includes NUL and bounds the whole PT_INTERP payload |
+| DT_NEEDED entries | 32 | Preserve order and duplicates, never resolve filenames |
+| Successful serialized output | 65536 bytes | UTF-8 JSON byte count before result publication |
+
+Caps may be tightened only. Their fit for the observed candidate is unverified until a separately approved read; unsupported content or a cap overrun stops, not auto-expands.
+
+### 30.3 Dynamic metadata, mapping and result boundary
+
+PT_DYNAMIC requires positive16-byte-aligned file size and DT_NULL within its bounded declared slots. Active-entry accounting includes the first DT_NULL; that terminates interpretation. Later bytes remain included in the snapshot hash and declared-slot cap but are not interpreted as active tags or claimed zero padding.
+Reject duplicate DT_STRTAB, DT_STRSZ, DT_SONAME, DT_RPATH and DT_RUNPATH singleton tags. Preserve DT_NEEDED entries in order, including duplicates. Record unknown active tags as bounded signed-tag/unsigned-value decimal pairs without following pointer-like values.
+Require DT_STRTAB and DT_STRSZ together; referenced strings require both. A present table must be nonempty and within its cap. An entire string-table virtual span must intersect exactly one file-backed PT_LOAD interval, fully fit that interval and translate to a bounded captured-file span. Reject BSS-only coverage, split mappings and full or partial overlapping aliases, even if resulting offsets match.
+Each string reference must lie inside that table and reach a NUL within both the table remainder and per-string cap. Use fatal UTF-8 decoding and reject controls instead of silent replacement. DT_NEEDED/SONAME values must be nonempty; empty RPATH/RUNPATH remain raw metadata. No `$ORIGIN` expansion, colon splitting, search-order emulation, basename resolution, filesystem path joining or derived-path allowance follows.
+The result records header/program-header metadata, nullable interpreter, bounded dynamic names/paths/opaque tags and snapshot SHA-256. It is not a full ELF-validity, executable-loadability or complete runtime-dependency proof; dynamic loading and source/provenance remain separate.
+The concrete root schema is `profile,state,byteLength,inputSha256,header,programHeaders,interpreter,dynamic`, followed by the fixed false assurance fields. `header` reports type/machine/version/ABI bytes/entryPoint/flags/program-header location/count/entry size. Each program header reports index/type/flags/fileOffset/virtualAddress/physicalAddress/fileBytes/memoryBytes/alignment, with all U64 values as decimal strings.
+`dynamic` reports present, declaredSlots, activeEntries, ordered needed names, nullable soname/rpath/runpath/stringTable and opaque unknownTags. A stringTable reports its virtualAddress and fileOffset as strings plus bounded byteLength as a Number. Unknown tag/value pairs use signed/unsigned decimal strings respectively. No raw input-backed bytes or deferred resolver appears in the result.
+Keep candidateExecuted, decoderQualified, realCandidateRead, realArchiveInspected, provenanceVerified, noPythonRuntimeVerified, loaderClosureVerified, nativeAuthority, nativeQualified, installedUsability, rustReady and trainingReady:false. These flags describe this byte-inspection unit, not a capability sandbox or global host state.
+Source caps bound loops, snapshots and serialized data, not native heap/RSS, CPU time, runtime bootstrap or the original F9/game budgets. Do not infer minimum ISA/glibc/kernel compatibility or a Python-free runtime from names or ELF labels.
+
+### 30.4 Verification, diagram rendering and later operation
+
+Persist synthetic tests for every cap at/exceeding tightened boundaries, truncated headers/tables, U64 overflow, >2^53 virtual addresses with small file offsets, bad header sizes/counts, BSS-only/partial/ambiguous mappings, duplicate tags, DT_NULL absence/tail handling, invalid strings/UTF-8, raw RPATH/RUNPATH labels, immutable snapshots/results and strict input/profile validation.
+Run both new-file syntax checks and only `node --test --test-concurrency=1 --experimental-test-coverage tooling/native-ingress/elf-metadata.test.mjs`; use no real decoder or physical fixture. Existing378 tests are not verification of this new feature; do not rerun old acquisition/custody file-fixture suites under this grant. Oxlint's known unavailability grants no install or substitute PASS.
+The parent independently passed both syntax checks and **190/190 new synthetic tests,0 failures/cancelled/skipped/todo**. Parser coverage is100% lines/branches/functions. A runtime-fault test exercises fixed unexpected-error normalization without publishing partial metadata; the source/SPEC test checks both pointers, diagram covers and the exact appended index entry. Coverage does not qualify real ELF bytes, a decoder or the Node/native runtime.
+The same user choice explicitly approves offline rendering only to `_spec/tooling/native-ingress/elf-metadata.svg` <=8MiB. Pin local `_spec/themes/proveo.puml`,6238 bytes, SHA-256 `d75f801bd90752ed50243ba05f58b37c4808b5510cbb035dc578b0441d74de39`; retain the source's remote house include and substitute the local body only in renderer input, rejecting other active external-input directives. Accept ordinary renderer/JRE/font startup trust, not Native/upstream-theme equivalence, remote fetch or hard containment.
+Parent offline-expanded `plantuml -checkonly -pipe` and `-tsvg -pipe` passed after current source mapping and note-width repair. Notes passed <=50 columns and2..5 lines. The29299-byte SVG binds diagram SHA-256 `eb5eeb8d3e8371350d6776ea84f6ec82ba443891c90486f089fc3d3903d86353`, expanded-input SHA-256 `afd98ebf7be22bb90d6d2933b829ce7c8a7b8e616a6b9a1ef47f1ee70f3c1bb3` and the approved local-theme hash in its provenance comment. SVG SHA-256 is `3d7b3c88357b40601040a9a3afd32859f73be65682c61944751d68e4b6071755`; no other SVG or remote theme changed.
+Adversarial, security and DevOps source reviews accepted the offline unit with no findings. Spec review closed the repaired note-width LOW and reported in-sync. These reviews grant no real-candidate access or runtime qualification. Oxlint remains unavailable and skipped without installation or replacement PASS.
+The separate two-file source/test identity is `1e799487cef1bc697fb9ca27a414877598f12233f534634b4120aa52d7778950`, using sorted UTF-8 paths followed by file bytes, each field prefixed by its unsigned64 big-endian length. SHA-256 values are source `c8e471b3417ec610cc3dba6c3600858646551cc2c352fb9d849d149c07ef87d0` and test `58b5cfa66b974ef8deca6a4ae665d6114d12574519cd7a9ba68e859ddfd57116`.
+All published canonical §§1–29, existing source/configuration files, previous coverage entries and unresolved records remain unchanged; the index only appends this exact two-file entry. That metadata change does not reissue an older selected verifier identity, Rust receipt or Native invoice.
+Implementation, parent synthetic verification and current offline rendering are complete. No real candidate reread, interpreter/library open or decoder execution is authorized. A later operation must separately pin/compare the candidate's observed101392-byte digest and use freshly approved same-FD custody/readback/metadata bounds; extracted names never authorize following their paths.
+Source/version/provenance and actual interpreter/library/symbol/ISA closure remain separate gates. The SDK archive stays untouched/uninspected, Rust's eight tests remain uncompiled/unrun with BLOCKER OPEN, and `trainingReady:false`. No new publication, PR merge, model training, activation/deployment or cleanup follows from this unit's grant.
+
+## 31. Same-candidate static ELF proposal — fresh read grant pending
+
+**[Unverified] Exact operation proposal, not actual interpreter/library metadata or execution qualification.**
+The user's `proceed` permits preparation only. Preserve the verified, uncommitted §30 source/test/spec/index work without committing, pushing or modifying its production code. Architect `ses_e9382462effe1TcUlC22mk0WCG` and DevOps `ses_e93824617ffex0W9XE4ZZJDDGh` reviewed the operation boundary before authoring.
+The sole host candidate remains `/usr/bin/xz`, comparison size101392, SHA-256 `1f6ca26fd33066c9d5b95e58a0d9e2f5789cb18fd5741518574113b37ea1934d`. Reuse §29's exact nine-field identity only under a fresh grant. Previous grants are consumed; no repeat stat/read/hash or new derived-path access has occurred.
+
+### 31.1 Source, custody and analysis contract
+
+The launcher reads and hashes ONLY repository parser `/tmp/opencode/f9-bootstrap-correspondence/tooling/native-ingress/elf-metadata.mjs`:11055 bytes, SHA-256 `c8e471b3417ec610cc3dba6c3600858646551cc2c352fb9d849d149c07ef87d0`, then imports its fixed absolute URL. That module imports only `node:crypto` and `node:util`; the launcher additionally imports `node:fs`.
+The source is tested but uncommitted. Byte pinning—not publication—identifies this proposal's source. Hash-before-import does not create immutable or race-free module loading. Node executable/PATH/options/preloads/environment/native libraries, module-loader/package discovery and startup inputs remain trusted ordinary-host residuals, not a complete executable/source closure.
+Require initial candidate metadata to equal the literal §29 snapshot, then bind the owned FD and both final snapshots to the same nine fields. No parent, symlink target, alternate candidate or directory is inspected. A different inode, mode, timestamp, size or other field stops even when bytes might match; no repair or relaxed comparison follows.
+Open read-only with NOFOLLOW/NONBLOCK, read exactly65536+35856 bytes through the same FD into one private101392-byte Buffer, request one byte at recorded EOF and compare the full expected SHA-256. Stop on short read, unexpected EOF data, hash/snapshot mismatch or unsupported platform metadata.
+Clear FD ownership before its single close attempt. Parse only after successful candidate closure, using `inspectElf64` on the private buffer. Require parser byteLength/inputSha256 to match the same pinned candidate and enforce its unchanged §30 limits. Missing/failed closure forbids parser invocation and successful metadata publication.
+Extracted interpreter/DT_NEEDED/SONAME/RPATH/RUNPATH strings are inert untrusted metadata. No loader, library path, token, basename or directory may be opened, searched, joined, normalized, resolved, substituted or executed from them.
+
+### 31.2 Exact launcher proposal — not authorized until fresh consent
+
+Run once through the shell tool in `/tmp/opencode/f9-bootstrap-correspondence`, timeout30000ms, foreground only. This operation creates no launcher, receipt, log, fixture or other file.
+
+<!-- BEGIN XZ STATIC ELF ANALYSIS V1 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+
+const started = process.hrtime.bigint();
+const workEnd = started + 19_000_000_000n, totalEnd = started + 20_000_000_000n;
+const profile = 'xz-static-elf-once-v1';
+const candidate = '/usr/bin/xz';
+const sourcePath = '/tmp/opencode/f9-bootstrap-correspondence/tooling/native-ingress/elf-metadata.mjs';
+const sourceSha256 = 'c8e471b3417ec610cc3dba6c3600858646551cc2c352fb9d849d149c07ef87d0';
+const expectedSha256 = '1f6ca26fd33066c9d5b95e58a0d9e2f5789cb18fd5741518574113b37ea1934d';
+const expectedBytes = 101392;
+const expectedIdentity = { dev: 56n, ino: 295n, mode: 33261n, uid: 0n, gid: 0n, nlink: 1n,
+  size: 101392n, mtimeNs: 1791561255000000000n, ctimeNs: 1791561255000000000n };
+const fields = Object.keys(expectedIdentity);
+const limits = { maxInputBytes: 1048576, maxProgramHeaders: 128, maxDynamicEntries: 1024,
+  maxStringTableBytes: 65536, maxStringBytes: 1024, maxInterpreterBytes: 256,
+  maxNeeded: 32, maxOutputBytes: 65536 };
+const assurances = { candidateExecuted: false, derivedPathsOpened: false, decoderQualified: false,
+  realArchiveInspected: false, provenanceVerified: false, noPythonRuntimeVerified: false,
+  loaderClosureVerified: false, nativeAuthority: false, nativeQualified: false,
+  installedUsability: false, rustReady: false, trainingReady: false };
+const parserFlags = ['candidateExecuted', 'decoderQualified', 'realCandidateRead',
+  'realArchiveInspected', 'provenanceVerified', 'noPythonRuntimeVerified', 'loaderClosureVerified',
+  'nativeAuthority', 'nativeQualified', 'installedUsability', 'rustReady', 'trainingReady'];
+const allowed = new Set(['E_INPUT', 'E_LIMITS', 'E_ELF', 'E_RANGE', 'E_PROGRAM_HEADERS',
+  'E_INTERPRETER', 'E_DYNAMIC', 'E_STRING_TABLE', 'E_STRING', 'E_OUTPUT', 'E_SOURCE_PIN',
+  'E_SOURCE', 'E_PLATFORM', 'E_METADATA', 'E_BINDING', 'E_IO', 'E_MISSING', 'E_LENGTH',
+  'E_HASH', 'E_LIMIT', 'E_DEADLINE', 'E_CLOSE', 'E_RESULT']);
+const counts = { sourceReads: 0, sourceReturnedBytes: 0, candidateFsCalls: 0,
+  candidateReadCalls: 0, candidateRequestedBytes: 0, candidateReturnedBytes: 0,
+  closeAttempts: 0, clockReads: 1 };
+let fd = null, last = started, failure = null, metadata, text;
+let phase = 'PREFLIGHT', candidateReadAttempted = false, candidateReadPerformed = false, parserInvoked = false;
+function stop(code) { const error = new Error(); error.code = code; throw error; }
+function code(error) {
+  const field = error && Object.getOwnPropertyDescriptor(error, 'code');
+  if (field && Object.hasOwn(field, 'value') && allowed.has(field.value)) return field.value;
+  return field && field.value === 'ENOENT' ? 'E_MISSING' : phase === 'OUTPUT' ? 'E_OUTPUT' : 'E_IO';
+}
+function guard(final = false) {
+  if (counts.clockReads >= 256) stop('E_LIMIT');
+  counts.clockReads++;
+  const time = process.hrtime.bigint();
+  if (typeof time !== 'bigint' || time < last) stop('E_PLATFORM');
+  last = time;
+  if (time >= (final ? totalEnd : workEnd)) stop('E_DEADLINE');
+}
+function work(action) { guard(); const value = action(); guard(); return value; }
+function io(action) {
+  return work(() => {
+    if (counts.candidateFsCalls >= 8) stop('E_LIMIT');
+    counts.candidateFsCalls++;
+    return action();
+  });
+}
+function snapshot(stat) {
+  const result = {};
+  for (const key of fields) {
+    const value = stat[key];
+    if (typeof value !== 'bigint') stop('E_METADATA');
+    result[key] = value;
+  }
+  return result;
+}
+function same(actual, expected) {
+  if (!fields.every(key => actual[key] === expected[key])) stop('E_BINDING');
+}
+function close() {
+  if (fd === null) return;
+  const owned = fd; fd = null; counts.closeAttempts++;
+  try { fs.closeSync(owned); } catch { stop('E_CLOSE'); }
+}
+function encode(value) {
+  const output = (JSON.stringify(value) + '\n').replace(/[^\x00-\x7f]/g,
+    unit => '\\u' + unit.charCodeAt(0).toString(16).padStart(4, '0'));
+  if (!/^[\x20-\x7e\n]*$/.test(output) || Buffer.byteLength(output) > 131072) stop('E_OUTPUT');
+  return output;
+}
+function base(status) {
+  return { profile, status, grantConsumed: true, candidate, sourceSha256, expectedSha256,
+    candidateReadAttempted, candidateReadPerformed, parserInvoked, phase, counts, ...assurances };
+}
+process.stdout.on('error', () => { process.exitCode = 1; });
+try {
+  const source = work(() => {
+    counts.sourceReads++;
+    const bytes = fs.readFileSync(sourcePath);
+    counts.sourceReturnedBytes = bytes.length;
+    return bytes;
+  });
+  if (source.length !== 11055 || work(() => createHash('sha256').update(source).digest('hex')) !== sourceSha256)
+    stop('E_SOURCE_PIN');
+  guard();
+  const helper = await import('file:///tmp/opencode/f9-bootstrap-correspondence/tooling/native-ingress/elf-metadata.mjs');
+  guard();
+  const configured = helper.ELF_METADATA_LIMITS;
+  if (!configured || !Object.isFrozen(configured) || Reflect.ownKeys(configured).length !== 8 ||
+      Object.entries(limits).some(([key, value]) => {
+        const field = Object.getOwnPropertyDescriptor(configured, key);
+        return !field || !Object.hasOwn(field, 'value') || field.value !== value;
+      }) || typeof helper.inspectElf64 !== 'function') stop('E_SOURCE');
+  phase = 'CANDIDATE';
+  const f = fs.constants;
+  if (f.O_RDONLY !== 0 || !Number.isInteger(f.O_NOFOLLOW) || f.O_NOFOLLOW <= 0 ||
+      !Number.isInteger(f.O_NONBLOCK) || f.O_NONBLOCK <= 0) stop('E_PLATFORM');
+  const initial = snapshot(io(() => fs.lstatSync(candidate, { bigint: true })));
+  same(initial, expectedIdentity);
+  io(() => { fd = fs.openSync(candidate, f.O_RDONLY | f.O_NOFOLLOW | f.O_NONBLOCK); });
+  same(snapshot(io(() => fs.fstatSync(fd, { bigint: true }))), initial);
+  const bytes = work(() => Buffer.alloc(expectedBytes));
+  const eof = work(() => Buffer.alloc(1));
+  function read(target, destination, want, position) {
+    return io(() => {
+      if (counts.candidateReadCalls >= 3 || counts.candidateRequestedBytes + want > 101393) stop('E_LIMIT');
+      counts.candidateReadCalls++; counts.candidateRequestedBytes += want;
+      candidateReadAttempted = true;
+      const count = fs.readSync(fd, target, destination, want, position);
+      if (!Number.isSafeInteger(count) || count < 0 || count > want) stop('E_IO');
+      counts.candidateReturnedBytes += count;
+      if (count > 0) candidateReadPerformed = true;
+      return count;
+    });
+  }
+  for (let offset = 0; offset < expectedBytes;) {
+    const want = Math.min(65536, expectedBytes - offset);
+    if (read(bytes, offset, want, offset) !== want) stop('E_LENGTH');
+    offset += want;
+  }
+  if (read(eof, 0, 1, expectedBytes) !== 0) stop('E_LENGTH');
+  if (work(() => createHash('sha256').update(bytes).digest('hex')) !== expectedSha256) stop('E_HASH');
+  same(snapshot(io(() => fs.fstatSync(fd, { bigint: true }))), initial);
+  same(snapshot(io(() => fs.lstatSync(candidate, { bigint: true }))), initial);
+  close();
+  phase = 'PARSER';
+  metadata = work(() => { parserInvoked = true; return helper.inspectElf64(bytes); });
+  if (!metadata || metadata.profile !== 'elf64le-x86-64-metadata-v1' || metadata.state !== 'ELF_METADATA' ||
+      metadata.byteLength !== expectedBytes || metadata.inputSha256 !== expectedSha256 ||
+      parserFlags.some(key => metadata[key] !== false) ||
+      work(() => Buffer.byteLength(JSON.stringify(metadata), 'utf8')) > 65536) stop('E_RESULT');
+} catch (error) { failure = [code(error)]; }
+finally {
+  try { close(); } catch { failure = ['E_CLOSE', ...(failure || [])]; }
+}
+phase = failure ? phase : 'OUTPUT';
+if (!failure) {
+  try {
+    guard(true);
+    text = encode({ ...base('STATIC_ELF_METADATA'), metadataScope: 'pure parser actions only; wrapper performed the approved read', metadata });
+    guard(true);
+  } catch (error) { failure = [code(error)]; }
+}
+if (failure) {
+  process.exitCode = 1;
+  try { text = encode({ ...base('STOP'), errors: failure }); } catch { text = undefined; }
+}
+if (text !== undefined) {
+  try { process.stdout.write(text); } catch { process.exitCode = 1; }
+}
+NODE
+```
+<!-- END XZ STATIC ELF ANALYSIS V1 -->
+
+### 31.3 Effects, output and residuals to accept
+
+Candidate effects are capped at8 non-close calls: initial lstat/open/fstat, two exact data reads, one EOF read, final fstat/lstat; add one unconditional close attempt only if an FD was acquired. One source preflight readFileSync is counted separately. Module loading/runtime activity is outside that candidate ledger; no complete native-FD/filesystem graph is asserted.
+The expected initial security/identity is exactly §29: device56/inode295/mode33261/UID0/GID0/nlink1/size101392/mtimeNs and ctimeNs1791561255000000000. This is an explicitly reused comparison target, not a new observation, immutable protection or authenticated origin. The single owned candidate FD is assigned before a post-open guard and cleared before one close attempt; close uncertainty blocks parsing/success without retry.
+The code reports attempted reads separately from reads returning positive bytes. Returned-byte counts are recorded before post-read guards and are not independently metered native I/O. A failure after partial read may report performed:true but never publishes partial parsed metadata.
+The helper's JSON remains <=65536 UTF-8 bytes. The entire operation envelope, including wrapper fields and LF, must fit131072 ASCII bytes after escaping every non-ASCII UTF-16 unit as `\uXXXX`; no truncation occurs. Prepare the full success record before any write. Oversize/serialization failure selects a small fixed-code STOP record before output; actual stdout emission is attempted only once, without a fallback write.
+`candidateReadPerformed` belongs to the wrapper; nested `metadata.realCandidateRead:false` describes the pure parser's lack of filesystem access, not denial of the wrapper's read. All execution/provenance/NoPython/loader/Native/Rust/training fields remain false/unqualified. Extracted strings never become filesystem permissions.
+Body START precedes preflight/validation; guards use19s work and20s total including1s finalization, with<=256 source clock samples. Awaited module loading, synchronous parsing/native I/O/close and stdout cannot be forcibly interrupted by these guards. The30s tool capture limit proves no hard CPU/RSS/termination/reap or physical-close bound.
+Fresh consent must accept trusted-mutable-repository source reads and hash-before-import TOCTOU, inherited Node/PATH/options/preload/environment/native-library/module-loader/startup behavior, and uninspected ancestor/filesystem behavior. Source preflight readFileSync has no adversarial source-file size/I/O-time containment; input/source pin failures stop but do not qualify the runtime itself.
+No candidate execution, loader/`ldd`/version query, dependency or interpreter open, link resolution, directory/PATH search, environment/package/proc/cache query, network, archive access, decompression/extraction, installation, modification, deletion, signal, retry, replacement path or cleanup is included. Every attempted launch consumes the grant, including source-preflight failure or failure before any candidate read.
+Keep all original Native/F9 source/invoice/PrivateRootB controls, both-seat inclusive1048576, F1, cold10/lifecycle300 including3s cleanup, generator2048, Rust1.95/Burn0.22 Flex CPU/f64/features, NoPython, datasets/labels and separate ledgers unchanged.
+
+### 31.4 Registration, review and next gate
+
+Syntax-only parsing passed without evaluating the extracted launcher; the11055-byte parser source pin matches and the prior working canonical prefix remains byte-preserved. Required adversarial/security reviews accepted this proposal only with no findings; spec review reported in-sync. Retain the prior architecture/domain consultation and omit optional repeated rounds. Register exact shell-command and complete §31 hashes before asking fresh consent with approve-static-read-once / provenance-only-planning / hold choices. Registration and fresh operational consent remain pending; no same-candidate reread or metadata extraction has run.
+If separately approved, record the bounded captured result in a later canonical section and consume the grant once. Successful metadata collection is not provenance, runtime compatibility, NoPython or decoder qualification. Derived paths remain unapproved; any source/version/provenance work or interpreter/library/symbol/ISA closure needs separate exact evidence and access permissions.
+The SDK archive remains untouched/uninspected and all earlier read/acquisition grants remain consumed. Rust compilation/tests remain a binding BLOCKER; no actual training, activation/deployment, installation, cleanup, commit/push or PR merge follows from this proposal stage.
+
+## 32. Same-candidate static ELF receipt — metadata collected, grant consumed
+
+**[Unverified] Ordinary-host static metadata evidence, not decoder execution, authenticated provenance or runtime closure.**
+The user selected `Approve static read once` for §31's exact source/candidate pins, filesystem effects, output limits and disclosed runtime/TOCTOU/ancestor/cooperative-timeout residuals.
+The approved complete §31 is15845 UTF-8 bytes, SHA-256 `6fba5cc92aa7d50436db3cf0abda18fe428311f5541acb055b1fc011011cdba8`. The8017-byte command is `8693e7964bcaffc5b1b918bd4bdd04a686e4cbba946242c1e8a4a307cbe6694c`; its7978-byte JavaScript body is `74072d67f63685ed3cee26e4686cc57f221073f90c4da9472da163b9fdcfd27a`.
+Repository-only preflight matched the complete canonical document `f54bac8a4cb58aea7b685c89cc77c11e59b34ef35f059495267e37a6a1d31890`, section, command and11055-byte parser source `c8e471b3417ec610cc3dba6c3600858646551cc2c352fb9d849d149c07ef87d0` before the exact launcher ran once, foreground with30000ms tool timeout.
+The tool returned normally with the complete expected STATIC_ELF_METADATA record and no timeout/nonzero-exit report. An inherited EnvHttpProxyAgent warning appeared outside the bounded JSON record, within the accepted startup residual. This compact JSON copies the authored stdout record, not an authenticated process or native-I/O transcript:
+
+```json
+{"profile":"xz-static-elf-once-v1","status":"STATIC_ELF_METADATA","grantConsumed":true,"candidate":"/usr/bin/xz","sourceSha256":"c8e471b3417ec610cc3dba6c3600858646551cc2c352fb9d849d149c07ef87d0","expectedSha256":"1f6ca26fd33066c9d5b95e58a0d9e2f5789cb18fd5741518574113b37ea1934d","candidateReadAttempted":true,"candidateReadPerformed":true,"parserInvoked":true,"phase":"OUTPUT","counts":{"sourceReads":1,"sourceReturnedBytes":11055,"candidateFsCalls":8,"candidateReadCalls":3,"candidateRequestedBytes":101393,"candidateReturnedBytes":101392,"closeAttempts":1,"clockReads":34},"candidateExecuted":false,"derivedPathsOpened":false,"decoderQualified":false,"realArchiveInspected":false,"provenanceVerified":false,"noPythonRuntimeVerified":false,"loaderClosureVerified":false,"nativeAuthority":false,"nativeQualified":false,"installedUsability":false,"rustReady":false,"trainingReady":false,"metadataScope":"pure parser actions only; wrapper performed the approved read","metadata":{"profile":"elf64le-x86-64-metadata-v1","state":"ELF_METADATA","byteLength":101392,"inputSha256":"1f6ca26fd33066c9d5b95e58a0d9e2f5789cb18fd5741518574113b37ea1934d","header":{"type":3,"machine":62,"version":1,"osAbi":0,"abiVersion":0,"entryPoint":"26784","flags":0,"programHeaderOffset":"64","programHeaderCount":14,"programHeaderBytes":56},"programHeaders":[{"index":0,"type":6,"flags":4,"fileOffset":"64","virtualAddress":"64","physicalAddress":"64","fileBytes":"784","memoryBytes":"784","alignment":"8"},{"index":1,"type":3,"flags":4,"fileOffset":"884","virtualAddress":"884","physicalAddress":"884","fileBytes":"28","memoryBytes":"28","alignment":"1"},{"index":2,"type":1,"flags":4,"fileOffset":"0","virtualAddress":"0","physicalAddress":"0","fileBytes":"12480","memoryBytes":"12480","alignment":"4096"},{"index":3,"type":1,"flags":5,"fileOffset":"16384","virtualAddress":"16384","physicalAddress":"16384","fileBytes":"57325","memoryBytes":"57325","alignment":"4096"},{"index":4,"type":1,"flags":4,"fileOffset":"73728","virtualAddress":"73728","physicalAddress":"73728","fileBytes":"18748","memoryBytes":"18748","alignment":"4096"},{"index":5,"type":1,"flags":6,"fileOffset":"93872","virtualAddress":"97968","physicalAddress":"97968","fileBytes":"5024","memoryBytes":"24512","alignment":"4096"},{"index":6,"type":2,"flags":6,"fileOffset":"96800","virtualAddress":"100896","physicalAddress":"100896","fileBytes":"512","memoryBytes":"512","alignment":"8"},{"index":7,"type":4,"flags":4,"fileOffset":"848","virtualAddress":"848","physicalAddress":"848","fileBytes":"36","memoryBytes":"36","alignment":"4"},{"index":8,"type":4,"flags":4,"fileOffset":"92280","virtualAddress":"92280","physicalAddress":"92280","fileBytes":"48","memoryBytes":"48","alignment":"8"},{"index":9,"type":4,"flags":4,"fileOffset":"92328","virtualAddress":"92328","physicalAddress":"92328","fileBytes":"148","memoryBytes":"148","alignment":"4"},{"index":10,"type":1685382483,"flags":4,"fileOffset":"92280","virtualAddress":"92280","physicalAddress":"92280","fileBytes":"48","memoryBytes":"48","alignment":"8"},{"index":11,"type":1685382480,"flags":4,"fileOffset":"88036","virtualAddress":"88036","physicalAddress":"88036","fileBytes":"724","memoryBytes":"724","alignment":"4"},{"index":12,"type":1685382481,"flags":6,"fileOffset":"0","virtualAddress":"0","physicalAddress":"0","fileBytes":"0","memoryBytes":"0","alignment":"16"},{"index":13,"type":1685382482,"flags":4,"fileOffset":"93872","virtualAddress":"97968","physicalAddress":"97968","fileBytes":"4432","memoryBytes":"4432","alignment":"1"}],"interpreter":"/lib64/ld-linux-x86-64.so.2","dynamic":{"present":true,"declaredSlots":32,"activeEntries":28,"needed":["liblzma.so.5","libc.so.6"],"soname":null,"rpath":null,"runpath":null,"stringTable":{"virtualAddress":"4080","byteLength":1803,"fileOffset":"4080"},"unknownTags":[{"tag":"12","value":"16384"},{"tag":"13","value":"73696"},{"tag":"25","value":"97968"},{"tag":"27","value":"8"},{"tag":"26","value":"97976"},{"tag":"28","value":"8"},{"tag":"1879047925","value":"912"},{"tag":"6","value":"984"},{"tag":"11","value":"24"},{"tag":"21","value":"0"},{"tag":"3","value":"101408"},{"tag":"2","value":"2784"},{"tag":"20","value":"7"},{"tag":"23","value":"9696"},{"tag":"7","value":"6432"},{"tag":"8","value":"3264"},{"tag":"9","value":"24"},{"tag":"30","value":"8"},{"tag":"1879048187","value":"134217729"},{"tag":"1879048190","value":"6144"},{"tag":"1879048191","value":"2"},{"tag":"1879048176","value":"5884"},{"tag":"1879048185","value":"125"}]},"candidateExecuted":false,"decoderQualified":false,"realCandidateRead":false,"realArchiveInspected":false,"provenanceVerified":false,"noPythonRuntimeVerified":false,"loaderClosureVerified":false,"nativeAuthority":false,"nativeQualified":false,"installedUsability":false,"rustReady":false,"trainingReady":false}}
+```
+
+### 32.1 Supported observations and counter scope
+
+Repository-only receipt-copy validation passed:4816 bytes including storage LF, SHA-256 `4f0fddb5eaa33eb8c3a30471807cf95d4c0092fd0462d4c42e3c6816708cbc23`. Nested metadata is3837 UTF-8 JSON bytes. The approved complete §31 and earlier working prefix remain unchanged; validation parsed the stored copy without candidate, dependency or archive access. This is copy-integrity metadata, not authenticated execution evidence.
+
+The source-bound result reports exact candidate length/digest/full nine-field identity matching, EOF, final metadata matching and successful single FD closure before parser invocation. The parser's private-snapshot inputSha256 again equals `1f6ca26fd33066c9d5b95e58a0d9e2f5789cb18fd5741518574113b37ea1934d` for101392 bytes. This is sampled identity/content evidence, not future immutability or authenticated execution.
+The supported subset reports14 program headers; interpreter `/lib64/ld-linux-x86-64.so.2`; active DT_NEEDED names `liblzma.so.5` and `libc.so.6` in that order; and no active SONAME, RPATH or RUNPATH tag. None of these names/paths has been opened or resolved. Absent declared RPATH/RUNPATH is not absence of runtime loader defaults, environment or cache effects.
+The dynamic table has32 declared slots and28 active entries including the first DT_NULL; string-table span is1803 bytes at file offset4080. The parser retained23 other active tags as opaque pairs. It did not interpret those pairs as symbol-version, relocation, ISA, build-ID, loader-policy or provenance evidence.
+The emitted counter snapshot reports sourceReads1/sourceReturnedBytes11055, candidateFsCalls8, candidateReadCalls3, candidateRequestedBytes101393, candidateReturnedBytes101392 and closeAttempts1. `clockReads:34` is the serialization-time snapshot; the approved positive path samples once more in its final post-encoding guard, for35 source samples overall. Preserve the original record rather than relabel its field as a complete final counter or Native invoice.
+Wrapper candidateReadAttempted/candidateReadPerformed/parserInvoked are true. Nested metadata.realCandidateRead remains false because it describes the pure parser, not the wrapper; metadataScope explicitly records that separation. Candidate execution, derived-path opening, archive inspection and all qualification fields remain false/unqualified.
+No new source, test, diagram or index change accompanies the operation. The verified but uncommitted §30 unit remains unchanged. No independent OS barrier, physical-close/reap, complete filesystem/source graph or hard CPU/RSS/timing guarantee follows.
+
+### 32.2 Consumed grant and next boundary
+
+The one-shot static-read grant is CONSUMED. Do not repeat candidate reads/stats/hashes, resolve links, follow the reported interpreter, search library names, inspect loader/package/cache/environment/proc inputs, execute a loader/`ldd`/version query, run XZ, inspect the SDK archive or acquire a replacement under this grant.
+Next separate source/version/provenance evidence from exact bounded interpreter/library resolution/identity and symbol-version/ISA requirements. Declared names alone do not prove those files exist, show how they resolve, account for transitive/dynamic dependencies or establish a Python-free runtime. Any derived-path catalog and access must be explicitly registered and approved before use.
+The SDK archive remains retained and unlisted/unextracted/unexecuted. Rust compilation/tests stay a binding BLOCKER; real training, activation/deployment, SDK installation, working-architecture acceptance and retained-cache/doc cleanup remain unauthorized. Publication stays at `ddb5c98f`/PR50 OPEN/unmerged; the new ELF unit and these proposal/receipt additions remain uncommitted.
+Repository-only receipt-copy validation passed. Required brief parallel adversarial/security checks accepted receipt documentation only with no findings; spec review reported in-sync. Optional repeated review rounds remain omitted as requested; no further operation follows automatically.

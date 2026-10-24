@@ -789,6 +789,14 @@
         "tooling/native-ingress/inventory-controller.test.mjs"
       ],
       "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/native-ingress/elf-metadata.puml",
+      "covers": [
+        "tooling/native-ingress/elf-metadata.mjs",
+        "tooling/native-ingress/elf-metadata.test.mjs"
+      ],
+      "fingerprint": null
     }
   ],
   "unresolved": [

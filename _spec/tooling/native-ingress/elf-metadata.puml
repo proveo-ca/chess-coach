@@ -1,0 +1,78 @@
+' purpose: bounded offline ELF64 program/dynamic metadata without loader or filesystem access
+' covers: tooling/native-ingress/elf-metadata.mjs
+' covers: tooling/native-ingress/elf-metadata.test.mjs
+' context: _spec/_plans/ml-runtime-redesign.md section 30 owns goals and verification.
+' status: source mapped; canonical section 30 owns current synthetic verification and closing-review receipts.
+' rendering: retain house include; approved pinned local theme is substituted in renderer input only.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Offline ELF metadata — bounded program/dynamic metadata, no loader or reader
+left to right direction
+
+actor "Synthetic caller" as CALLER <<host>>
+component "elf-metadata.mjs\ninspectElf64" as INSPECT <<app>>
+component "Strict lower-only limits\nprivate bounded snapshot" as SNAPSHOT <<app>>
+component "ELF64 little-endian x86-64\nheader / program headers" as HEADERS <<app>>
+component "PT_DYNAMIC / DT_STRTAB\nunambiguous file-backed mapping" as DYNAMIC <<app>>
+component "Bounded UTF-8 strings\nunresolved metadata" as STRINGS <<app>>
+component "Deeply frozen metadata\ninputSha256 / false assurance flags" as RESULT <<app>>
+component "ElfMetadataError\nfixed code, no partial result" as ERROR <<error>>
+
+CALLER ARROW_MAIN INSPECT : inspectElf64(bytes, tightened limits)
+INSPECT ARROW_MAIN SNAPSHOT : validate native view, backing and cap before copy
+SNAPSHOT ARROW_MAIN HEADERS : private bytes only; all U64 arithmetic in BigInt
+HEADERS ARROW_MAIN DYNAMIC : validated spans and bounded declared slot count
+DYNAMIC ARROW_MAIN STRINGS : unique string table; offsets stay inside captured bytes
+STRINGS ARROW_MAIN RESULT : bounded UTF-8 JSON before publication
+RESULT ARROW_MAIN CALLER : immutable plain data; no input-backed views
+
+SNAPSHOT ARROW_ERROR ERROR : invalid backing/profile or exceeded cap
+HEADERS ARROW_ERROR ERROR : unsupported format, overflow or malformed span
+DYNAMIC ARROW_ERROR ERROR : duplicate singleton, missing DT_NULL or ambiguous mapping
+STRINGS ARROW_ERROR ERROR : missing bounded NUL, invalid UTF-8/control or output overrun
+ERROR ARROW_ERROR CALLER : throw fixed failure; no partial-success metadata
+
+note bottom of SNAPSHOT
+Input<=1MiB; no shared/resizable/detached backing
+Program headers<=128; dynamic slots<=1024
+Limits accept own data only and may tighten only
+No filesystem/network/process/adapter callback
+end note
+
+note bottom of HEADERS
+ELF64 / little-endian / machine62 / version1
+ET_EXEC or ET_DYN; header64 / entry56
+Reject extended program-header numbering
+Convert file offsets after BigInt bounds checks
+end note
+
+note bottom of DYNAMIC
+At most one PT_INTERP and one PT_DYNAMIC
+First DT_NULL ends active-tag interpretation
+Declared-slot cap includes unused tail slots
+One entire file-backed PT_LOAD mapping only
+Reject aliases, split spans and BSS-only data
+end note
+
+note bottom of STRINGS
+Table<=64KiB; dynamic string<=1024 bytes with NUL
+Interpreter<=256 bytes with NUL; DT_NEEDED<=32
+Keep NEEDED order/duplicates and raw RPATH/RUNPATH
+No path joins, search, expansion or dereference
+end note
+
+note bottom of RESULT
+Success JSON<=64KiB; digest is not provenance
+Execution/decoder/loader/NoPython flags:false
+Native/installed/Rust/training flags:false
+No candidate or SDK archive read by this module
+end note
+
+legend bottom
+  Synthetic tests establish only this supported metadata subset, not actual candidate compatibility.
+  Interpreter/library strings remain untrusted data and never become host-file allowances.
+  Unknown dynamic tags remain opaque; no relocations, versions, notes, ISA or loader execution.
+  Source caps do not establish native heap, CPU, runtime-closure or F9/game authority.
+  Source/version/provenance, real ELF dependency closure and decoder execution remain separate gates.
+endlegend
+@enduml
