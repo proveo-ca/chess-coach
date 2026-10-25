@@ -51,6 +51,23 @@
 ' covers: tooling/native-ingress/rust-helper-evidence-operation.test.mjs
 ' covers: tooling/native-ingress/gnu-preparation-evidence-operation.mjs
 ' covers: tooling/native-ingress/gnu-preparation-evidence-operation.test.mjs
+' covers: tooling/native-ingress/gnu-preparation-plan.mjs
+' covers: tooling/native-ingress/gnu-preparation-plan.test.mjs
+' covers: tooling/native-ingress/toolchain-provider-plan.mjs
+' covers: tooling/native-ingress/toolchain-provider-plan.test.mjs
+' covers: tooling/native-ingress/bootlin-directory-metadata.mjs
+' covers: tooling/native-ingress/bootlin-directory-metadata.test.mjs
+' covers: tooling/native-ingress/bootlin-directory-metadata-v2.mjs
+' covers: tooling/native-ingress/bootlin-directory-metadata-v2.test.mjs
+' covers: tooling/native-ingress/gcc-context-registration.test.mjs
+' covers: tooling/native-ingress/bootlin-gcc-notices-source.mjs
+' covers: tooling/native-ingress/bootlin-gcc-notices-source.test.mjs
+' covers: tooling/native-ingress/bootlin-gcc-copying-head.mjs
+' covers: tooling/native-ingress/bootlin-gcc-copying-head.test.mjs
+' covers: tooling/native-ingress/bootlin-gcc-notices-v2.mjs
+' covers: tooling/native-ingress/bootlin-gcc-notices-v2.test.mjs
+' covers: tooling/native-ingress/candidate-image-manifest.mjs
+' covers: tooling/native-ingress/candidate-image-manifest.test.mjs
 ' context: _spec/_plans/native-ingress-step2.md and canonical ml-runtime-redesign.md section 33 own bounds and registration.
 ' status: STEP2 ACTIVE; no selected toolchain execution or containment qualification yet.
 ' evidence-status: Prefix data observed; root delegation not found; SDK payload-v1 STOP at bounded string-table gate. No retry is automatic.
@@ -82,7 +99,17 @@ component "Per-archive Rust V1 profiles consumed\nfive successful singleton obse
 database "Five accepted archive results\nsealed full DATA +exact compact receipts" as ARCHIVERESULT <<db>>
 component "Proposed member report observed\n8675 dispositions /logical reference data" as MEMBERPLAN <<app>>
 component "Supplemental helper DATA observed\nthree fixed ELF bodies /profile consumed" as HELPERS <<app>>
-component "GNU context source preparation\nthree raw texts /150 private-header rows" as GNUCONTEXT <<app>>
+component "GNU context DATA observed\nthree raw texts /150 private-header rows" as GNUCONTEXT <<app>>
+component "GNU preparation proposal\npure four-evidence input /literal CSV rows" as GNUPLAN <<app>>
+component "Provider declaration proposal\npure eight-evidence input /all candidates" as PROVIDERPLAN <<app>>
+component "Bootlin directory discovery STOP\nV1 consumed /no accepted HTML" as DIRECTORIES <<app>>
+component "Fresh Bootlin directory V2 DATA observed\nprofile consumed /two exact directory bodies" as DIRECTORIESV2 <<app>>
+component "GCC-final context DATA observed\nprofile consumed /directory bodies only" as GCCCONTEXT <<app>>
+component "GCC notice V1 STOP\nprofile consumed /no accepted notice body" as GCCNOTICES <<app>>
+component "COPYING HEAD DATA observed\nprofile consumed /zero authored body reads" as COPYINGHEAD <<app>>
+component "GCC notice V2 DATA observed\nprofile consumed /five exact passive bodies" as GCCNOTICESV2 <<app>>
+component "Candidate image proposal published\nPROPOSED_INCOMPLETE /no copy authority" as IMAGECANDIDATE <<app>>
+cloud "Bootlin sources and licenses directories\noutside offline capture/build/runtime" as DIRECTORYORIGIN <<cloud>>
 component "SDK literal payload inspection\nELF /CRT /AR /linker-script dispatch" as PAYLOAD <<app>>
 component "Own-process/cgroup metadata\nread-only prerequisites, not enforcement" as PROBE <<app>>
 component "Own-cgroup ancestry locator\nexplicit namespace mapping /no target lookup" as LOCATOR <<app>>
@@ -125,6 +152,36 @@ HELPERS ARROW_OPTIONAL MANIFEST : complete hash/TAR/close/publication gates; sta
 MEMBERPLAN ARROW_OPTIONAL GNUCONTEXT : private-header and license/source context gaps
 INPUT ARROW_OPTIONAL GNUCONTEXT : fixed GNU archive; new DATA scope only
 GNUCONTEXT ARROW_OPTIONAL MANIFEST : literal text/header candidates, not source or copy authority
+GNUCONTEXT ARROW_OPTIONAL GNUPLAN : retained evidence only; no archive or URL access
+GNUPLAN ARROW_OPTIONAL MANIFEST : append-only candidate/context supplement
+MEMBERPLAN ARROW_OPTIONAL PROVIDERPLAN : explicit HOST/TARGET declaration obligations
+HELPERS ARROW_OPTIONAL PROVIDERPLAN : three additional static ELF owners
+HOSTDATA ARROW_OPTIONAL PROVIDERPLAN : retain candidate source kinds; no authentication transfer
+PROVIDERPLAN ARROW_OPTIONAL MANIFEST : all exact-domain SONAME candidates; edges unresolved
+GNUCONTEXT ARROW_OPTIONAL DIRECTORIES : pinned README; explicit HTTPS policy
+DIRECTORIES ARROW_CLOUD DIRECTORYORIGIN : two bounded directory HTML requests only
+DIRECTORIES ARROW_OPTIONAL PUBLICATION : both EOFs before metadata publication
+DIRECTORIES ARROW_OPTIONAL DIRECTORIESV2 : new explicit scope; preserve consumed V1 STOP
+DIRECTORIESV2 ARROW_CLOUD DIRECTORYORIGIN : same two fixed URLs; no bundle or link following
+DIRECTORIESV2 ARROW_OPTIONAL PUBLICATION : new paths/profile; original parent clock
+DIRECTORIESV2 ARROW_OPTIONAL GCCCONTEXT : pinned literal directory references only
+GNUPLAN ARROW_OPTIONAL GCCCONTEXT : preserve separate GCC declaration rows1 and8
+GCCCONTEXT ARROW_CLOUD DIRECTORYORIGIN : new exact package-directory scope; no bundles
+GCCCONTEXT ARROW_OPTIONAL PUBLICATION : same clocks/caps; new profile and paths
+GCCCONTEXT ARROW_OPTIONAL GCCNOTICES : pinned notice hrefs; explicit user FF/file scope
+GCCNOTICES ARROW_CLOUD DIRECTORYORIGIN : five exact notice files; no bundles or transitive fetches
+GCCNOTICES ARROW_OPTIONAL PUBLICATION : all five EOFs; separate exact receipt custody
+GCCNOTICES ARROW_OPTIONAL COPYINGHEAD : unknown header predicate; new metadata-only scope
+COPYINGHEAD ARROW_CLOUD DIRECTORYORIGIN : one fixed HEAD; no Location following or body acquisition
+COPYINGHEAD ARROW_OPTIONAL PUBLICATION : exposed metadata only; no notice admission
+COPYINGHEAD ARROW_OPTIONAL GCCNOTICESV2 : separate human scope; no GET/HEAD equivalence
+GCCCONTEXT ARROW_OPTIONAL GCCNOTICESV2 : same pinned five notice targets
+GCCNOTICESV2 ARROW_CLOUD DIRECTORYORIGIN : new five-file profile; no fallback or transitive fetch
+GCCNOTICESV2 ARROW_OPTIONAL PUBLICATION : record nullable media/exposure per response
+MEMBERPLAN ARROW_OPTIONAL IMAGECANDIDATE : preserve8675 identities and explicit exclusions
+GNUPLAN ARROW_OPTIONAL IMAGECANDIDATE : private-header supplement, not copy permission
+GCCNOTICESV2 ARROW_OPTIONAL IMAGECANDIDATE : five passive notice references
+IMAGECANDIDATE ARROW_OPTIONAL PUBLICATION : proposed placements and blocking missing inputs only
 PAYLOAD ARROW_OPTIONAL MANIFEST : complete hash/TAR/FD success before publication
 PROBE ARROW_OPTIONAL LOCATOR : root denial does not classify own leaf or ancestors
 LOCATOR ARROW_OPTIONAL ERROR : historical direct route; no delegation candidate
@@ -144,6 +201,15 @@ ARCHIVERESULT ARROW_ERROR ERROR : keep failures unaccepted; never delete/reuse p
 MEMBERPLAN ARROW_ERROR ERROR : unresolved names/aliases/licenses never become permission
 HELPERS ARROW_ERROR ERROR : retain unaccepted partial; no format/time/path fallback
 GNUCONTEXT ARROW_ERROR ERROR : no interpretation, acquisition or partial evidence acceptance
+GNUPLAN ARROW_ERROR ERROR : malformed quoting, evidence join or output budget
+PROVIDERPLAN ARROW_ERROR ERROR : pin, schema, domain or candidate expansion failure
+DIRECTORIES ARROW_ERROR ERROR : no redirects, retries, oversized retention or partial HTML
+DIRECTORIESV2 ARROW_ERROR ERROR : any limit/clock/cleanup failure stops the new profile
+GCCCONTEXT ARROW_ERROR ERROR : context pin, graph or bounded metadata failure
+GCCNOTICES ARROW_ERROR ERROR : media, charset, body, clock or custody failure
+COPYINGHEAD ARROW_ERROR ERROR : null-body, metadata, deadline or custody failure
+GCCNOTICESV2 ARROW_ERROR ERROR : exposed invalid media or any unchanged guard fails
+IMAGECANDIDATE ARROW_ERROR ERROR : identity, destination, alias or output-bound mismatch
 PAYLOAD ARROW_ERROR ERROR : unsupported format or incomplete/hash failure
 PROBE ARROW_ERROR ERROR : unavailable context blocks its selected profile
 CONTAIN ARROW_ERROR ERROR : missing enforcement never becomes an exception
@@ -226,6 +292,60 @@ PREPARATION_TEXT is not a linker script
 Literal UTF-8; no CSV, shell or URL evaluation
 Separate source1MiB /accepted DATA4MiB bounds
 License/source/include readiness stays false
+end note
+note bottom of GNUPLAN
+Preserve duplicate distribution declarations
+Lexical CSV rows are not license semantics
+No HOST/TARGET inference or copy approval
+Receipt binding is not publisher authentication
+end note
+note bottom of PROVIDERPLAN
+159 needed /373 primary version references
+Preserve candidates, never choose a winner
+Raw search strings; no loader execution
+No source, symbol, ABI or runtime qualification
+end note
+note bottom of DIRECTORIES
+64KiB/body;128KiB aggregate retention
+10s request /27s work /30s outer
+No wire, transport-close or source proof
+No bundle, link or embedded-resource fetch
+end note
+note bottom of DIRECTORIESV2
+1MiB/body;2MiB aggregate;16MiB result
+Same10s /27s /30s clocks and cleanup
+Hard-pin all private graph stages
+V2 cannot resolve V1 cleanup uncertainty
+end note
+note bottom of GCCCONTEXT
+No automatic runtime link following
+No HOST/TARGET role inference from labels
+No source integrity or license applicability
+Original-prefix image placement stays proposed
+end note
+note bottom of GCCNOTICES
+FF allowed only in passive body text
+Nonempty data is not notice validity
+No legal interpretation or copy permission
+Original clocks and aggregate caps unchanged
+end note
+note bottom of COPYINGHEAD
+Status and headers are passive data
+No MIME or charset acceptance change
+No wire-body absence or transport proof
+Original parent clock; fresh output paths
+end note
+note bottom of GCCNOTICESV2
+Missing exposure is not an empty header
+All present-media and byte guards unchanged
+No legal, source or runtime qualification
+Original clock; preserve failed V1 unchanged
+end note
+note bottom of IMAGECANDIDATE
+1714 proposed placements;14 blockers
+Additional HOST roles stay unqualified
+Job limits unset; rootfs remains incomplete
+No materialization or execution authority
 end note
 note bottom of VERIFY
 Rust1.95 /Burn0.22 /Flex CPU-f64 unchanged

@@ -473,6 +473,196 @@ Preserve full16MiB ASCII/LF and compact64KiB ceilings, synchronized0444 seal/ful
 Any failure withholds text/header evidence, retains partial files unaccepted and exposes only fixed code/role with null legacy target identity.
 sourceContext remains UNQUALIFIED and all source/license/compliance/include/relocation/NoPython/ABI/runtime/image/Native qualifiers stay false.
 New two-file source/tests and mandatory gates/exact registration precede physical use; no acquisition, extraction, toolchain-member execution, Docker job, training or Step2 completion follows.
+The new GNU preparation V1 profile now passed once and is consumed; its2724242-byte full result and8583-byte exact compact receipt are sealed and independently readback-verified.
+All8412 member records match accepted GNU evidence, and all150 private-header candidates bind exact source spans/hashes; copying and include use remain unapproved.
+The raw README points to external source/license bundles and includes reproduction commands; no URL was followed and no command executed.
+The summary contains repeated package labels with distinct declarations; no HOST/TARGET or license-applicability conclusion follows.
+
+## GNU preparation proposal supplement — pure retained-evidence transformation
+
+The next two-file gnu-preparation-plan unit accepts only four exact pinned Buffers: GNU evidence2829942/01c24e73…, GNU receipt3428/bb7f0ad0…, preparation evidence2724242/3ae1a494… and preparation receipt8583/dc069754….
+Its createGnuPreparationPlanV1 API requires an exact own-data record, bounds each input<=4MiB/aggregate<=16MiB before private copying and verifies all four complete lengths/hashes before JSON parsing.
+The module performs no filesystem/process/network I/O, imports no collector and exposes no production pin override.
+Join each distinct receipt schema to its full result; the parent-transcribed GNU receipt has no mockOnly field, while the preparation compact receipt does.
+Hash-bound receipt claims do not authenticate a publisher or independently repeat historical filesystem observations.
+The prior5679112-byte member report remains APPEND_ONLY_REFERENCE_NOT_READ_OR_REVERIFIED, never rewritten or relabeled by this supplement.
+
+Rejoin full namespaces, all150 private-header tuples and all three exact raw text bodies, recomputing UTF-8 body hashes before forming a frozen PROPOSED_DATA_SUPPLEMENT.
+Keep560 plugin headers/9731900 bytes and include-fixed README separately unadmitted.
+The observed summary grammar permits a private conservative parser for seven fully quoted fields, doubled-quote escapes, LF/CRLF separators and an optional final terminator.
+Reject embedded CR/LF in fields, BOM, malformed quoting or wrong field counts without trimming/repair; bound text<=16KiB, each decoded cell<=4096 UTF-8 bytes and data rows<=128.
+Retain literal cells/raw records, original ordinals and source byte spans/hashes; preserve every duplicate package declaration independently.
+Distribution declarations have domain:UNRESOLVED and sourceKind:DISTRIBUTION_DECLARATION, not executable-provider or HOST/TARGET authority.
+Parse no SPDX/exception or dependency-list semantics, resolve no license notice by basename, follow no URL and execute no README instructions.
+Keep all source/license/include/copy/provider/ABI/NoPython/image/runtime/Native/readiness qualifications false and unresolved obligations explicit; bound the escaped-ASCII proposal+LF to1MiB.
+Mock source verification precedes parent validation against all four real retained evidence files and a separately registered publication; no synthetic PASS alone accepts the proposal.
+The fixed GNU preparation proposal is now published and consumed:136598 bytes/7d34c5e0… with2450-byte exact compact receipt/11a3ce91…, independent readback and child exit0 confirmed.
+It retains150 header candidates and30 literal distribution rows; no candidate, source/license obligation or execution boundary was qualified by publication.
+
+## Provider declaration supplement — pure eight-evidence contract
+
+The independent toolchain-provider-plan unit accepts eight fixed full-result Buffers: GNU, five Rust archive results, HOST candidates and supplemental Rust helpers.
+The named createToolchainProviderPlanV1 API verifies all eight exact lengths/SHA-256 values before parsing and performs no filesystem/process/network I/O.
+The real input set totals3189679 bytes; bound each file<=4MiB/aggregate<=16MiB and escaped-ASCII output+LF<=4MiB.
+Bound depth64/nodes1000000, aggregate selected/provider records128 each, needed edges512, primary version references1024, linker texts16 and candidates-per-edge128 before expansion.
+Reference receipt paths only as NOT_READ_OR_REVERIFIED; this unit establishes no receipt acceptance or publisher/source authentication.
+Use exact source-specific schemas and rejoin all helper member identities against the rustc namespace before using metadata.
+HOST candidates receive domain:HOST only through the fixed HOST_* role schema; preserve PINNED_ORDINARY_STAGE and ORDINARY_HOST_CANDIDATE_UNAUTHENTICATED without authentication transfer.
+
+Derive and retain51 selected ELF owners,25 SONAME providers,159 needed edges and373 primary version references; the last counts split143/349 base plus16/24 supplemental helpers.
+Join every needed edge to all exact-SONAME, same-domain candidates; preserve duplicate ordinals and candidate identities even when bytes match, and select no winner.
+Use only version-definition names[0] as primary, recompute the ASCII ELF hash and retain per-candidate name/hash matches without claiming symbol/relocation/ABI compatibility.
+Preserve raw interpreter/RPATH/RUNPATH without expansion; interpreter annotations require exact admitted HOST_LOADER pathname equality, not basename matching.
+Retain linker-text declarations and supported LLD byte-equality annotations without interpreting search order, aliases, argv personality or helper-role behavior.
+Every edge stays UNRESOLVED and every provider remains candidateOnly:true; source/build/license, symbol/loading, role-behavior and image/containment obligations remain separate.
+Produce only PROPOSED_DECLARATION_SUPPLEMENT with copying, source authentication, acceptance, HOST/TARGET promotion, NoPython/ABI/runtime/image/Native/readiness flags false.
+Mock verification and parent validation against retained full-result inputs precede any separately registered report publication; no executable/provider access belongs to this unit.
+
+## Bootlin source/license directory metadata — bounded preparation discovery
+
+The autonomous work order permits separately registered necessary toolchain-preparation metadata operations outside offline capture/build/runtime; it permits no acquisition fallback inside those boundaries.
+The next bootlin-directory-metadata two-file unit discovers directory metadata only, not source/license bundle bodies or legal/provider qualification.
+The parent must verify the accepted preparation result2724242/3ae1a494… and its1093-byte README/fa0b24cb… before any production invocation.
+Explicitly admit these two HTTPS locations, in order, as a scheme upgrade of the README's literal HTTP references:
+
+- https://toolchains.bootlin.com/downloads/releases/sources/
+- https://toolchains.bootlin.com/downloads/releases/licenses/
+
+The zero-argument collectRegisteredBootlinDirectoriesV1 operation consumes one module-local latch before awaiting; invalid arguments and any failure consume the attempt.
+Use at most two sequential GETs, manual redirects, omitted credentials/referrer, no request body/cookies/authentication, no retry/fallback and no link/script/resource following.
+Require exact response URL,200 status, admissible HTML content type, bounded Fetch-exposed headers and absent/identity content encoding; advertised lengths remain metadata, not wire guarantees.
+Retain<=65536 decoded body bytes per response/131072 aggregate before copying delivered chunks; count and reject oversized delivered chunks without retaining their prefix.
+Fetch may deliver a larger chunk than the retention budget, so this profile claims neither cap+1 transport reads nor wire/hard-RSS bounds.
+Require both body EOFs, fatal UTF-8/BOM preservation, permitted TAB/CR/LF controls and exact body hashes before exposing observations; any failure withholds all HTML/header prefixes.
+Keep one10s request deadline bounded by the original27s work cutoff, within30s outer including3s cleanup; race pending fetch/read/cancel work against those nonrenewing deadlines and observe late rejections.
+Attempt cancellation/release once, preserve cleanup uncertainty and claim no wire/socket closure from stream EOF or AbortController completion.
+The production collector performs no filesystem I/O or HTML interpretation; complete fake-only dependencies must never fall back to global Fetch/timers.
+Bound actual escaped-ASCII JSON+LF to1MiB; all source/publisher/license/provider/NoPython/ABI/runtime/image/Native/readiness flags remain false.
+Parent source/policy/README verification, exclusive result reservation, required gates, exact registration and independent full-result/exact-receipt custody precede one real metadata operation.
+No directory entry authorizes a bundle download, changed URL, source/build/runtime input, compiler, image or empirical campaign.
+The registered V1 invocation is now consumed with E_LIMIT after the sources response exceeded the64KiB retention profile; no directory metadata was accepted and the second request did not run.
+The exact711-byte STOP receipt/7d618e43… is sealed/readback-verified; the exclusive result reservation remains0 bytes/0600 and unaccepted, with no retry/reuse/repair/delete permitted.
+One Fetch delivered71655 decoded bytes across14 reads, retained64261 before rejection and observed no EOF; cancellation/release each ran once and cleanupUncertain:true remains binding.
+Do not infer a whole response length, filename, source availability or transport closure from this STOP; all HTML/header prefixes stay withheld.
+A larger or different discovery profile requires a new explicit scope decision and new paths/source identities; it is not an automatic limit increase or replay of V1.
+
+## Selected fresh directory V2 — user-approved byte ceilings, unchanged clocks
+
+The user explicitly selected New bounded profile:1MiB per directory/2MiB aggregate/16MiB full result, with unchanged10s request/27s work/30s outer/3s cleanup and no bundle downloads.
+Preserve the consumed V1 collector, exact STOP,0-byte0600 reservation and cleanup uncertainty unchanged; V2 success cannot resolve or supersede V1's failure evidence.
+The new bootlin-directory-metadata-v2 module is a pure source adapter, not a filesystem/network collector.
+buildBootlinDirectoryMetadataV2Source accepts exactly one genuine private-copy-admitted Buffer and verifies the complete19649-byte V1 source/1a625ec2… before transforming it; it never imports or invokes that consumed module/entry.
+Only exact-count changes to profile, body/aggregate/full-output ceilings, two production function names and two policy constant names are permitted, followed by the already-qualified original-parent-clock route/bridge.
+Pin each intermediate and final private source before import; final20438/ece2c9ed… exposes collectRegisteredBootlinDirectoriesV2 and BOOTLIN_DIRECTORY_METADATA_V2_PROFILE, with no callable V1 entry.
+The final policy JSON+LF is1027/47336055…; header/read/node/depth, HTTP/UTF-8/failure/cleanup algorithms and all original deadlines remain unchanged.
+The parent must bind its original started value exactly once before V2 invocation, verify accepted preparation/README and actual policy pins, and reserve only new bootlin-source-license-directories-v2.{result,receipt,stop}.json paths as applicable.
+The result reservation precedes network access and must fail on EEXIST without probing/reuse/repair/delete/suffix fallback; exact compact receipt custody remains separate from full-result acceptance.
+The two URLs remain the same fixed sources/licenses directories, not bundle/resource/link targets; all source/license/provider/NoPython/ABI/image/runtime/Native/readiness qualifiers remain false.
+New source/tests, required gates and exact fresh registration precede the independently one-shot V2 operation; the explicit scope decision alone executes no request.
+The registered V2 invocation now passed once and is consumed: full138884/c5cdf65b… and exact compact receipt3905/e01edd22… are sealed and independently readback-verified after child exit0.
+Both directory bodies reached EOF: sources71655 bytes/3ec2ebb7… and licenses54483/beb1ac11…, total126138; no link, embedded resource or bundle was fetched.
+V2 cleanupUncertain:false establishes no transport closure and does not resolve V1's retained cleanupUncertain:true.
+
+## GCC-final context discovery — separately admitted static child-directory pair
+
+The next exact metadata scope targets only sources/gcc-final-15.3.0/ and licenses/gcc-final-15.3.0/ beneath the same HTTPS origin.
+This is a separately registered static target pair, not automatic runtime link following or permission to fetch a listed bundle/notice.
+Before requests, pin accepted V2 root-directory DATA138884/c5cdf65b… and verify both body hashes/EOF/unique literal href matches, then pin GNU preparation proposal136598/7d34c5e0… and preserve GCC declaration ordinals1 and8 without HOST/TARGET inference.
+Reuse only the approved V2 source graph as inert text, privately changing profile, two exact URL literals, two production names and two policy names with hard-pinned stages; import only the new GCC image with an independent zero-argument latch.
+Keep1MiB/body,2MiB aggregate,16MiB full result, all HTTP/header/read/UTF-8/cleanup controls and original10s request/27s work/30s outer/3s cleanup unchanged.
+Require original parent-clock binding, fresh exclusive bootlin-gcc-final-context-v1.{result,receipt,stop}.json paths as applicable, both EOFs and independent full/exact-compact readback before acceptance.
+Directory context proves no corresponding-source integrity, notice applicability, legal compliance, executable provider or runtime qualification.
+The GCC-final directory invocation now passed once and is consumed; full14690/b020748b… and exact receipt4474/166c6418… are sealed and independently readback-verified after child exit0.
+Its source index advertises gcc-15.3.0.tar.xz at a rounded97M, three patches, series and an Xtensa archive; rounded sizes are not exact acquisition pins, and no listed file was fetched.
+Its license index lists COPYING, COPYING.LIB, COPYING.RUNTIME, COPYING3 and COPYING3.LIB; directory presence grants no notice acquisition or applicability by itself.
+Any passive notice capture needs its own exact target/media/control profile; FF pagination acceptance or a larger request set must not silently alter a consumed directory profile.
+
+## Selected five-notice capture — passive UTF-8 with explicit FF allowance
+
+The user explicitly selected Capture all notices: five fixed GETs for COPYING, COPYING.LIB, COPYING.RUNTIME, COPYING3 and COPYING3.LIB beneath the accepted GCC-final license directory.
+This acquires individual notice files, not bundles, and permits FF page separators as passive text without legal interpretation.
+Keep1MiB/file,2MiB aggregate,16MiB full result,10s/request,27s original work and30s outer including3s cleanup; no retry, alternate URL, redirect/resource following or budget renewal is permitted.
+The new bootlin-gcc-notices-source module is a pure one-argument source-string adapter; verify exact base V2 source20438/ece2c9ed… and every approved transformation before importing only the new notice image.
+Change only the declared profile/URLs/roles/request-count/type names, notice-specific media/charset/FF/nonempty validation, five literal request awaits and typed status/source-kind; preserve all other HTTP/read/time/cleanup/error-withholding controls and the original-parent-clock bridge.
+Use text/plain with absent/known UTF-8/US-ASCII charset or application/octet-stream; reject HTML/unsupported media and enforce declared US-ASCII against actual bytes including BOM bytes.
+Require nonempty bodies, fatal UTF-8/BOM-preserving exact byte round trip and SHA; permit only TAB/LF/CR/FF among body controls, while header controls remain unchanged and reject FF.
+The new producer collectRegisteredBootlinGccNoticesV1 reports LICENSE_NOTICE_TEXT/PUBLIC_LICENSE_NOTICE_TEXT, never directory observation or notice validity/applicability.
+Actual policy JSON+LF must be1468/5c699898…; final private source21227/ab907ecc… has no consumed production entry.
+Pin accepted GCC context14690/b020748b… plus its license EOF/body hash/unique five hrefs and separate declaration rows1/8 before requests; inherited preparation/README references remain historical bindings, not current-filesystem or source-authentication proofs.
+Reserve only fresh bootlin-gcc-notices-v1.result.json before GET1; after child exit0 and independent full readback exclusively preserve the exact selected .receipt.json, or returned .stop.json on failure.
+Never precreate both terminal files or roll back/delete any reservation; terminal creation/close/sync failure leaves the result retained and unaccepted without retry or fallback.
+New source/tests, mandatory gates and exact registration precede this one-shot capture; possession of five files still establishes no source/publisher authenticity, applicability, copying permission, legal compliance, runtime or training readiness.
+The notice V1 invocation is now consumed with E_HEADERS on the first COPYING target, before any authored body-reader call; no notice data was accepted and the remaining four requests did not run.
+The exact691-byte STOP/bd09f827… is sealed/readback-verified; one owned named-metadata observation confirms the result reservation remains0 bytes/0600, unaccepted and not reusable/repairable/deletable.
+cleanupUncertain:true and transportClosedVerified:false remain binding; the exact failing header predicate/status/media/charset is unknown because all header/body prefixes were withheld.
+Do not infer a charset or relax any consumed acceptance rule from this STOP; a separate body-free diagnostic scope must precede any successor proposal.
+
+## COPYING header observation — one new HEAD, no notice-body acceptance
+
+The next specific source/test unit performs one separately registered HEAD to the same fixed COPYING URI, not a GET retry or new notice acceptance profile.
+Standing §33 necessary preparation authorizes separately registering this narrower metadata operation; the consumed GET approval does not itself renew permission.
+Keep one10s request clipped to original27s work/30s outer including3s cleanup,64 exposed header pairs/16KiB total UTF-8 name+value bytes and64KiB ASCII JSON+LF output.
+Record exact requested/response URL, manual-redirect status/type and raw Fetch-exposed headers as passive metadata regardless of MIME/charset or HTTP status100..599; follow no Location or other target.
+Preserve UTF-8-roundtrippable header values, including controls only through JSON escaping; validate token names, case-insensitive uniqueness and all size caps before retention/publication.
+Require response.body===null on success and perform zero authored body-reader calls; this establishes neither wire-body absence nor transport closure.
+Unexpected body/timeout/error must abort/cancel without reading against the original cleanup end, with bounded STOP diagnostics and explicit cleanup uncertainty.
+The collector performs no filesystem I/O, body decoding, notice qualification, fallback or MIME/encoding relaxation; complete fake dependencies must never use global network/timers.
+Parent original-clock binding, accepted GCC-context/COPYING-href pins, fresh exclusive result reservation, exact registration and full/exact-terminal custody remain prerequisites to the single HEAD.
+The one HEAD now passed and is consumed: full3193/02937e1d… and exact receipt2447/4d4c2525… are sealed/independently readback-verified after child exit0.
+It observed200,7 exposed headers/179 UTF-8 bytes and advertised Content-Length:18002, but no Fetch-exposed Content-Type; no body was read and no notice was admitted.
+These HEAD facts do not establish the failed GET's predicate or equal GET/HEAD headers, and cannot silently waive a successor's media rule.
+A proposed fresh notice successor may distinguish a genuinely unexposed media declaration from an exposed empty value and retain all strict UTF-8/FF/byte/control/clock rules, with policy/targets/identities and authority separately registered before requests.
+The user-selected notice V2 now passed once and is consumed: full108099/2d907e7b… and exact receipt7711/e9bdd8ae… are sealed and independently readback-verified after child exit0.
+All five indexed targets reached EOF and retained90639 original bytes, including14 FF characters; each GET recorded contentTypeExposed:false/declaredContentType:null.
+These actual V2 observations supply no earlier-GET diagnosis, legal/applicability/copying permission, source authentication, runtime qualification or clearing of V1's uncertainty.
+
+## Candidate image manifest — concrete but incomplete planning artifact
+
+The next pure candidate-image-manifest source/test unit joins exactly four pinned evidence Buffers: member proposal5679112/2c4cd521…, GNU evidence2829942/01c24e73…, preparation proposal136598/7d34c5e0… and notice V2 DATA108099/2d907e7b….
+Admit each<=8MiB/aggregate<=16MiB before intrinsic private byte copies and verify all four complete lengths/hashes before JSON parsing; perform no filesystem/process/network/import/evaluation operation.
+Preserve every8675 original member identity/disposition in a source ledger and explicitly account for unselected/unreviewed identities without inferring omission safety or rewriting prior reports.
+Conservatively propose non-null destinations only for inspected-toolchain, C-header, unqualified-helper and Rust-library candidate categories, plus the exact150 private-header supplement, eight root runtime bodies and five passive notice references.
+Map GNU candidates beneath the recorded original image-internal prefix and propose Rust destinations beneath /opt/rust as PROPOSED_NOT_MATERIALIZATION_ROOT; no compiler/default/linker change or actual destination exists by that mapping.
+Keep the eight runtime bodies' TARGET identities unchanged and create separate additional-HOST candidate records with qualificationStatus:UNRESOLVED/candidateOnly:true/allowedForExecution:false/hostTargetPromotion:false.
+Propose only the two recorded root lib64 aliases; retain all other alias/relocation/linker/Rust-declaration obligations unresolved, including38 whole-SDK absences, without following host paths or silently creating links.
+External notice records use URL/record ordinal/body length/hash and proposed /usr/share/licenses/gcc-final-15.3.0/ destinations, never fabricated archive spans or legal-applicability claims.
+Reject destination collisions, escapes and non-directory ancestors under bounded lexical expansion; retain old seven HOST records as UNUSED_PROPOSED_IMAGE, not deleted or qualified.
+Return recursively frozen PROPOSED_INCOMPLETE with materializationAuthorized:false and explicit blockers for missing rootfs/Node/controller/CLI inputs, active Cargo graph, provider/ABI/NoPython/alias closure, unspecified job limits, daemon mapping, enforcement, original clocks/cleanup and actual fixtures.
+Do not invent limits, complete-source/legal/Native proof, a compiler rebuild, mandatory C supervisor or unadmitted external tools; separate parent source/static/correspondence gates and exact publication precede any proposal file persistence.
+The exact candidate proposal is now published and consumed:12731738/a106e1d7… with3573-byte exact receipt/bdc3f848…, independent readback and child exit0 confirmed.
+Its8675 source identities,1714 placements,8 runtime-role proposals,2 aliases and5 notices remain PROPOSED_INCOMPLETE with14 blockers, null job limits and all materialization/execution flags false.
+Next freeze the operator/job resource profile and exact preparation/controller/rootfs/input scopes; no incomplete proposal can authorize a copy, provider probe, image import, job or compiler invocation.
+
+## Selected qualification ceilings and helper metadata admission
+
+The user selected qualification-only ceilings:2 CPU equivalents,4294967296 memory bytes,256 PIDs,0 swap bytes and300000ms fixture lifecycle including3000ms cleanup.
+These are selected limits, not observed host capacity, effective kernel enforcement or job/compiler permission.
+CPU bandwidth does not establish total CPU-time enforcement; preserve that separate qualification obligation.
+The published candidate proposal's null-resource snapshot remains unchanged; bind the new selection separately in later admission records.
+
+The user also approved one fresh metadata-only observation of /usr/local/bin/node and /usr/bin/docker.
+The new preparation-helper-metadata source/test unit may call only lstatSync on those two fixed paths, pre/post once per path, at most4 calls total.
+Record independent nine-field bigint snapshots as decimal strings and REGULAR/SYMLINK/MISSING kinds; only ENOENT means missing, matching snapshots prove no uninterrupted identity or usability.
+Never follow/readlink/resolve a symlink, open/read/hash contents, execute a helper, search PATH, query a daemon, probe SDK/providers, copy files or import/start images/jobs.
+Keep a3500ms cooperative observer-entry deadline and5000ms external observation envelope; parent source/publication deadlines remain separate and must not renew within the observer.
+Return<=8192 escaped-ASCII JSON+LF, explicit mock-only identity and all qualification/installation/usability/ABI/NoPython/image/Native/readiness flags false; unstable/error/deadline cases withhold provisional observations and consume the attempt.
+New fake-only tests, required gates and exact parent registration/custody precede the one permitted physical metadata observation; old M2/M3 and failed roots remain excluded.
+
+## Runtime-layout decision pending — explicit HOST/TARGET roles
+
+The HOST runtime observation reported glibc2.43 while the GNU TARGET sysroot declares glibc2.44; those metadata facts establish no coherent provider set, and a single default /lib64 interpreter path must not silently select the wrong role/provider.
+Architecture equality and matching version declarations establish no HOST compatibility or permission to promote TARGET evidence.
+Three unselected routes remain: qualify the exact SDK2.44 loader/library closure in a separate additional HOST role within one image; use separate HOST-build/TARGET-run images through an explicitly approved runner/harness contract; or admit an operator-supplied offline image under equivalent evidence gates.
+The first route may preserve the original image-internal SDK prefix and unchanged frozen Cargo commands, but requires exact new HOST-role identity/dependency/ISA/symbol/private-ABI/loading and runtime/enforcement evidence before qualification.
+Existing TARGET records remain unchanged and old seven HOST candidates remain retained/unqualified/unused in that proposal; no source/provider authentication transfers across roles.
+The split-image route cannot silently alter the frozen harness or default compiler/linker/backend behavior, and an operator image name/tag alone proves nothing.
+All routes retain NoPython/closed rootfs and inputs, explicit job limits, filesystem/network/socket denial, original clocks/cleanup/reaping/cgroup-empty evidence and source/license context gates.
+No route, materialization, host mount, Docker import/job, compiler probe or verification-harness change is selected by this planning comparison.
+The user subsequently selected the unified SDK runtime route for planning only; [the candidate layout](native-ingress-runtime-layout.md) preserves separate TARGET/additional-HOST records and the recorded lib64 aliases without materialization or qualification.
+
+The saved79-byte sdk-location declaration proposes an image-internal original prefix at /builds/buildroot.org/toolchains-builder/build/x86-64--glibc--stable-2026.08-1, not a host-path mount.
+That mapping is only a proposal: exact member/alias maps and actual wrapper/helper/sysroot fixtures under qualified containment must precede approval; no relocation script or binary patch is authorized.
+Do not invent a full reproducible GCC source-build prerequisite for ordinary Step2; retain actual source/license context and notices separately from unproved full-source authentication/legal-compliance/Native claims.
 
 The source/runtime verification HIGH, whole-BOTH affordability, genuine fitted-economic evidence, artifact store/resume lifecycle,24,000 ancestry-group gate and all frozen F9 obligations remain open.
 No step receipt grants training authority.

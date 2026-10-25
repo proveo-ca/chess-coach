@@ -1,7 +1,7 @@
 // SPEC: _spec/tooling/native-ingress/step2.puml
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, constants } from 'node:fs';
+import { readFileSync, readSync, constants } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import { runRegisteredGnuPreparationEvidenceV1, createGnuPreparationEvidenceOperationFixture,
@@ -27,9 +27,11 @@ const dataBytes = readFileSync(source.dataPath);
 assert.deepEqual(pin(dataBytes), source.dataPin);
 const acceptedData = JSON.parse(dataBytes), accepted = acceptedData.collection.roles[0];
 const graph = source.buildGraph(retained, old);
+source.admitGraph(graph);
 const deliveredTar = await import(uri(graph.outputs.eventTar));
 const deliveredWriter = await import(graph.writerUri);
 const deliveredCore = await import(graph.coreUri);
+const deliveredHelper = await import(graph.collectorUri);
 const ownBytes = readFileSync(REPO + '/tooling/native-ingress/gnu-preparation-evidence-operation.mjs');
 
 function stat(size, ino = 10, directory = false) {
@@ -108,7 +110,8 @@ function publicationCounts(length) {
     namedStats: 15, fdStats: 10, fsyncs: 4, chmods: 1, writeAttempts: Math.ceil(length / 65536),
     readAttempts: Math.ceil(length / 65536) + 1, requestedWriteBytes: length, requestedReadBytes: length + 1,
     writtenBytes: length, readbackBytes: length, inputBytes: length, copiedBytes: length, inputHashBytes: length,
-    readbackHashBytes: length, peakOwnedFDs: 2, ownedSnapshotBytes: 0, ownedScratchBytes: 0 };
+    readbackHashBytes: length, peakOwnedFDs: 2, ownedSnapshotBytes: 0, ownedScratchBytes: 0,
+    peakOwnedSnapshotBytes: length, peakOwnedScratchBytes: 65536, jsonStringCodeUnits: length, wipedSnapshotBytes: length };
 }
 function harness(options = {}) {
   let clock = 0, phase = 'RESERVED', pubCounts = { writtenBytes: 0 }, acceptedRoles = 0, current = null;
@@ -349,6 +352,8 @@ test('fixture requires all fake capabilities and rejects real FS methods', () =>
   throws(() => createGnuPreparationEvidenceOperationFixture({ mockOnly: true, inputs: [] }, h.dependencies), 'E_INPUT');
   throws(() => createGnuPreparationEvidenceOperationFixture({ mockOnly: true }, { ...h.dependencies,
     fs: { ...h.dependencies.fs, readSync: undefined } }), 'E_COMPONENT');
+  throws(() => createGnuPreparationEvidenceOperationFixture({ mockOnly: true }, { ...h.dependencies,
+    fs: { ...h.dependencies.fs, readSync } }), 'E_INPUT');
 });
 test('EEXIST stops before accepted-data reads or archive work without opening an old destination', async () => {
   const result = await run({ exists: true }); stop(result, 'E_PUBLICATION_EXISTS');
@@ -527,7 +532,7 @@ test('fixed clocks preserve outer source role work cleanup publication and admis
   assert.deepEqual([LIMITS.totalMs, LIMITS.sourceMs, LIMITS.roleMs, LIMITS.workMs, LIMITS.cleanupMs, LIMITS.publicationMs, LIMITS.admissionMs],
     [300000, 10000, 120000, 117000, 3000, 30000, 150000]);
   assert.equal(LIMITS.targetBytes, 16384); assert.equal(LIMITS.aggregateSelectedBytes, 49152);
-  assert.match(retained.get('rawCore').toString(), /limits\.maxTotalMs - limits\.cleanupMs/);
+  assert.match(retained.get('rawCore').toString(), /workDeadline = totalDeadline - limits\.cleanupMs/);
 });
 for (const [name, eventName, value, deadline] of [
   ['source', 'sourceOpen', 10000, 'E_DEADLINE'], ['role', 'archive', 120000, 'E_DEADLINE'],
@@ -564,4 +569,291 @@ test('publisher abort failure cannot skip collector abort', async () => {
   const result = await run({ publishFailure: 'E_PUBLICATION_HASH', writerAbortFailure: true });
   stop(result, 'E_PUBLICATION_ABORT'); assert.equal(result.receipt.abortUncertain, true);
   assert.ok(result.h.events.some(([name]) => name === 'abortCollector'));
+  const abort = result.h.events.findIndex(([name]) => name === 'abortWriter');
+  assert.equal(result.h.events[abort + 1][0], 'publicationSnapshot');
+});
+
+function publicationMemory(options = {}) {
+  const directory = REPO + '/_spec/tooling/native-ingress';
+  const directories = [REPO, REPO + '/_spec', REPO + '/_spec/tooling', directory];
+  const nodes = new Map(directories.map((path, i) => [path, { ...stat(4096, 100 + i, true), data: Buffer.alloc(0) }]));
+  const fds = new Map(), calls = []; let next = 100;
+  const copy = value => Object.fromEntries(source.fields.map(key => [key, value[key]]));
+  const methods = {
+    lstatSync(path) { if (!nodes.has(path)) throw error('ENOENT'); return copy(nodes.get(path)); },
+    fstatSync(fd) { assert.ok(fds.has(fd)); return copy(fds.get(fd)); },
+    openSync(path, flags, mode) {
+      assert.ok(flags & constants.O_NOFOLLOW); assert.ok(flags & constants.O_NONBLOCK);
+      if (flags & constants.O_CREAT) {
+        assert.equal(path, PATH); assert.equal(mode, 0o600); assert.ok(flags & constants.O_EXCL);
+        if (nodes.has(path)) throw error('EEXIST');
+        nodes.set(path, { ...stat(0, 300), data: Buffer.alloc(0) });
+        nodes.get(directory).mtimeNs++; nodes.get(directory).ctimeNs++;
+      }
+      assert.ok(nodes.has(path)); const fd = next++; fds.set(fd, nodes.get(path)); return fd;
+    },
+    fsyncSync(fd) { assert.ok(fds.has(fd)); },
+    fchmodSync(fd, mode) { assert.equal(mode, 0o444); fds.get(fd).mode = 0o100444n; fds.get(fd).ctimeNs++; },
+    writeSync(fd, bytes, offset, length, position) {
+      const value = fds.get(fd); assert.ok(value);
+      const data = Buffer.alloc(Math.max(value.data.length, position + length));
+      value.data.copy(data); bytes.copy(data, position, offset, offset + length); value.data = data; value.size = BigInt(data.length);
+      value.mtimeNs++; value.ctimeNs++; return length;
+    },
+    readSync(fd, bytes, offset, length, position) {
+      const value = fds.get(fd); assert.ok(value);
+      const amount = Math.min(length, options.readCap ?? Infinity, Math.max(0, value.data.length - position));
+      value.data.copy(bytes, offset, position, position + amount);
+      if (options.corruptRead && amount) bytes[offset] ^= 1;
+      if (options.extraEof && !amount) return 1;
+      return amount;
+    },
+    closeSync(fd) { assert.ok(fds.has(fd)); fds.delete(fd); if (options.closeFailure) throw error('EIO'); },
+  };
+  const backend = Object.fromEntries(Object.entries(methods).map(([name, method]) => [name, (...args) => {
+    calls.push([name, args]); options.before?.(name, args); return method(...args);
+  }]));
+  return { fs: backend, nodes, fds, calls, file: () => nodes.get(PATH) };
+}
+test('delivered pinned writer reserves O_EXCL0600 seals0444 reads EOF and closes three descriptors positively', () => {
+  const memory = publicationMemory({ readCap: 7 });
+  const publisher = deliveredWriter.createSplitEvidencePublicationFixture({ mockOnly: true }, { fs: memory.fs, guard() {} })
+    .reserveSplitEvidencePublication(PART);
+  assert.equal(publisher.snapshot().ownedFDCount, 2); assert.equal(memory.file().mode, 0o100600n);
+  const bytes = Buffer.from('{"raw":"data only","qualified":false}\n');
+  const record = publisher.publish(bytes);
+  source.validatePublication(record, publisher.snapshot(), bytes.length, sha(bytes));
+  assert.equal(record.counts.closes, 3); assert.equal(record.counts.fsyncs, 4); assert.equal(memory.fds.size, 0);
+  assert.ok(record.counts.requestedReadBytes > bytes.length + 1); assert.ok(record.counts.requestedReadBytes <= 16777217);
+  assert.equal(record.counts.readbackBytes, bytes.length); assert.equal(record.counts.readbackHashBytes, bytes.length);
+  assert.equal(memory.file().mode, 0o100444n); assert.deepEqual(memory.file().data, bytes);
+});
+test('full mock controller accepts the delivered writer with partial-read request range', async () => {
+  const memory = publicationMemory({ readCap: 32768 });
+  const result = await run({ memory }); assert.equal(result.output.exitCode, 0, result.output.text);
+  assert.equal(result.receipt.sha256, sha(memory.file().data)); assert.equal(result.receipt.byteLength, memory.file().data.length);
+  assert.equal(result.receipt.publicationAccepted, true); assert.ok(result.receipt.publicationCounts.requestedReadBytes > memory.file().data.length + 1);
+  assert.equal(memory.fds.size, 0); assert.equal(memory.file().mode, 0o100444n);
+  assert.equal(JSON.parse(memory.file().data).headerLedger.length, 150);
+});
+for (const [name, options, code] of [
+  ['readback bytes', { corruptRead: true }, 'E_PUBLICATION_HASH'],
+  ['readback EOF', { extraEof: true }, 'E_PUBLICATION_EOF'],
+  ['positive close', { closeFailure: true }, 'E_PUBLICATION_CLOSE'],
+]) test('delivered writer ' + name + ' failure retains an unaccepted file without fallback', async () => {
+  const memory = publicationMemory(options), result = await run({ memory }); stop(result, code);
+  assert.ok(memory.file()); assert.ok(memory.file().data.length > 0);
+  assert.ok(result.h.events.some(([name]) => name === 'abortCollector'));
+});
+test('delivered writer EEXIST never opens existing result content', async () => {
+  const memory = publicationMemory();
+  memory.nodes.set(PATH, { ...stat(4, 400), data: Buffer.from('KEEP') });
+  const result = await run({ memory }); stop(result, 'E_PUBLICATION_EXISTS');
+  assert.equal(result.receipt.acceptedDataCapture.openAttempts, 0); assert.equal(result.receipt.collectionCounts.spawnAttempts, 0);
+  assert.equal(memory.file().data.toString(), 'KEEP');
+  assert.equal(memory.calls.some(([name]) => name === 'readSync'), false);
+  assert.equal(memory.fds.size, 0);
+});
+
+function tarHeader(path, size = 0, type = '0', link = '') {
+  const bytes = Buffer.alloc(512), slash = path.lastIndexOf('/');
+  if (Buffer.byteLength(path) > 100) { bytes.write(path.slice(slash + 1), 0, 100); bytes.write(path.slice(0, slash), 345, 155); }
+  else bytes.write(path, 0, 100);
+  for (const [offset, width, value] of [[100, 8, 0o644], [108, 8, 1000], [116, 8, 1000], [124, 12, size], [136, 12, 0]]) {
+    bytes.write(value.toString(8).padStart(width - 1, '0') + '\0', offset, width, 'ascii');
+  }
+  bytes[156] = type.charCodeAt(0); bytes.write(link, 157, 100); bytes.write('ustar\0', 257, 6); bytes.write('00', 263, 2); bytes.fill(32, 148, 156);
+  bytes.write(bytes.reduce((sum, byte) => sum + byte, 0).toString(8).padStart(6, '0') + '\0 ', 148, 8); return bytes;
+}
+function legacyEvent(event) {
+  const result = { index: event.index, path: event.path, type: event.type, size: event.size };
+  if (['hardlink', 'symlink'].includes(event.type)) { result.linkpath = event.linkpath; result.linkKind = event.linkKind; }
+  return { ...result, mode: event.mode, uid: event.uid, gid: event.gid, mtime: event.mtime };
+}
+const syntheticCollector = await import(uri(Buffer.concat([graph.outputs.linkedCollector, Buffer.from(`
+export const TEST_PREPARATION_PROFILE = SOURCE_PREPARATION_PROFILE;
+export function TEST_CREATE_MOCK_PREPARATION(profile) {
+  return collector(profile, { parserFactory: originalCreateTarInventory,
+    elfInspector() { throw new Error('NO_TARGET_ELF_INSPECTION'); },
+    formatInspectors: { ...SOURCE_FORMAT_INSPECTORS, text: inspectPreparationText } });
+}
+`)])));
+function syntheticPreparation(options = {}) {
+  const root = INPUT.expectedRoot, chunks = [], bodies = new Map();
+  const add = (path, body = Buffer.alloc(0), type = '0', link = '') => {
+    chunks.push(Buffer.concat([tarHeader(path, body.length, type, link), body, Buffer.alloc((512 - body.length % 512) % 512)]));
+    if (type === '0') bodies.set(path, body);
+  };
+  add(root, Buffer.alloc(0), '5');
+  add(root + '/share/buildroot/sdk-relocs', Buffer.from('$(NEVER_EVALUATED) https://invalid.example/\n'));
+  add(root + '/share/buildroot/sdk-location', Buffer.from('/fixture/raw-origin\n'));
+  add(root + '/alias', Buffer.alloc(0), '2', '../literal-only');
+  add(root + '/unselected/header.h', Buffer.from('UNRETAINED_BODY_DATA\n'));
+  const selectedBodies = [Buffer.from('\ufeffREADME β\n'), Buffer.from('key,value\n"$(ignored)",https://invalid.example/\n'), Buffer.from('RAW DATA\n')];
+  if (options.invalidUtf8) selectedBodies[0] = Buffer.from([0xff]);
+  if (options.control) selectedBodies[0] = Buffer.from('raw\0data');
+  if (options.oversize) selectedBodies[0] = Buffer.alloc(16385, 97);
+  for (const [i, target] of TARGETS.entries()) add(target.path, selectedBodies[i]);
+  const bytes = Buffer.concat([...chunks, Buffer.alloc(1024)]), parser = deliveredTar.createTarInventory(), events = [];
+  for (let at = 0; at < bytes.length; at += 65536) events.push(...parser.feed(bytes.subarray(at, at + 65536)));
+  const inventory = parser.finish();
+  const targets = TARGETS.map(target => {
+    const event = events.find(e => e.path === target.path);
+    return { ...target, index: event.index, bodyOffset: event.bodyOffset, size: event.size, expectedSha256: sha(bodies.get(target.path)) };
+  });
+  if (options.wrongBodyHash) targets[0].expectedSha256 = '0'.repeat(64);
+  const expected = { ...source.expected, expandedBytes: bytes.length, entries: events.length, headers: inventory.headers,
+    regularFiles: events.filter(e => e.type === 'file').length, decodedSha256: sha(bytes),
+    metadataSha256: sha(events.map(e => JSON.stringify(legacyEvent(e)) + '\n').join('')) };
+  if (options.wrongDecodedHash) expected.decodedSha256 = '0'.repeat(64);
+  if (options.wrongLegacyHash) expected.metadataSha256 = '0'.repeat(64);
+  const input = { ...INPUT, root: '/fixture/preparation', file: '/fixture/preparation/' + root + '.tar.xz',
+    archiveBytes: 3, archiveSha256: sha('mock compressed input') };
+  const profile = { part: 'gnu', mockOnly: true, inputs: [input], expectations: [expected], targets,
+    limits: { ...old.collectorLimits, maxPayloadBytes: 16384, maxElfSnapshotBytes: 16384 } };
+  const batch = syntheticCollector.TEST_CREATE_MOCK_PREPARATION(profile);
+  batch.beginToolchainEvidenceBatch(); batch.beginToolchainEvidenceRole('gnu-sdk');
+  const sink = batch.createTarInventory();
+  return { bytes, batch, sink, input, targets, expected, bodies };
+}
+function finishSynthetic(value) {
+  for (let at = 0; at < value.bytes.length; at += 65536) value.sink.feed(value.bytes.subarray(at, at + 65536));
+  const inventory = value.sink.finish(), core = { ...coreValue(), mockOnly: true, inventory,
+    archiveBytes: value.input.archiveBytes, archiveSha256: value.input.archiveSha256,
+    archiveDataBytes: 6, archiveRequestedBytes: 8, expandedBytes: value.bytes.length };
+  value.batch.acceptToolchainEvidenceRole(core); return value.batch.finishToolchainEvidenceBatch();
+}
+test('delivered private classifier hashes every synthetic regular member and dispatches raw text without ELF inspection', () => {
+  const value = syntheticPreparation(), result = finishSynthetic(value);
+  assert.equal(result.mockOnly, true); assert.equal(result.selectedPayloads, 3); assert.equal(result.completeNamespace, true);
+  const role = result.roles[0];
+  assert.equal(role.members.filter(m => m.type === 'file').length, value.bodies.size);
+  for (const member of role.members) {
+    if (member.type === 'file') assert.equal(member.bodySha256, sha(value.bodies.get(member.path)));
+    else { assert.equal(member.bodySha256, null); assert.equal(member.linkFollowed, false); }
+  }
+  role.selected.forEach((selected, i) => {
+    assert.equal(selected.kind, 'PREPARATION_TEXT'); assert.equal(selected.domain, 'DISTRIBUTION_DATA');
+    assert.equal(selected.metadata.state, 'SOURCE_FORMAT_DATA'); assert.equal(selected.metadata.qualified, false);
+    assert.deepEqual(selected.metadata.observation, source.inspectPreparationText(value.bodies.get(value.targets[i].path)));
+  });
+  assert.equal(result.resourceAccounting.buffersAllocated, 5); assert.equal(result.resourceAccounting.buffersErased, 5);
+  assert.equal(result.resourceAccounting.maxAdditionalElfSnapshotBytes, 16384);
+  assert.equal(role.manifests.length, 2); assert.ok(role.manifests.every(m => m.interpreted === false));
+  assert.ok(Object.isFrozen(role.selected[0].metadata.observation));
+});
+test('private preparation profile lowers only payload and ELF snapshot policy and preserves GNU controls', () => {
+  const profile = syntheticCollector.TEST_PREPARATION_PROFILE;
+  assert.deepEqual(profile.targets, TARGETS); assert.deepEqual(profile.inputs, [INPUT]);
+  assert.deepEqual(profile.expectations, [source.expected]); assert.equal(profile.mockOnly, false); assert.equal(profile.part, 'gnu');
+  assert.deepEqual(Object.keys(profile.limits).filter(key => profile.limits[key] !== old.collectorLimits[key]).sort(),
+    ['maxElfSnapshotBytes', 'maxPayloadBytes']);
+  assert.equal(profile.limits.maxPayloadBytes, 16384); assert.equal(profile.limits.maxElfSnapshotBytes, 16384);
+  assert.equal(profile.limits.maxManifestBytes, 1048576); assert.equal(profile.limits.maxAggregatePayloadBytes, 805306368);
+  assert.match(retained.get('collector').toString(), /const SDK_RELOCS_SHA256 = '60f1b6054d8f01670a9f5ac3ac0181f7148e37be91025c2c4f111df30047305e'/);
+  assert.match(retained.get('collector').toString(), /const SDK_RELOCS_BYTES = 9367/);
+});
+test('delivered collector checks selected file SHA before attempting invalid UTF-8 decode', () => {
+  const value = syntheticPreparation({ invalidUtf8: true, wrongBodyHash: true });
+  throws(() => finishSynthetic(value), 'E_EVIDENCE_BODY_HASH');
+  const failure = value.batch.getToolchainEvidenceFailure();
+  assert.equal(failure.role, 'gnu-sdk'); assert.equal(failure.path, null); assert.equal(failure.kind, null); assert.equal(failure.index, null);
+  const state = value.batch.snapshotToolchainEvidenceBatch();
+  assert.equal(state.activeBufferBytes, 0); assert.equal(state.activeBodyHashes, 0);
+  assert.equal(state.state, 'FAILED'); value.batch.abortToolchainEvidenceBatch();
+});
+for (const [name, options, code] of [
+  ['invalid raw UTF-8', { invalidUtf8: true }, 'E_EVIDENCE_INSPECT'],
+  ['forbidden raw controls', { control: true }, 'E_EVIDENCE_INSPECT'],
+  ['16-KiB target bound', { oversize: true }, 'E_EVIDENCE_LIMIT'],
+  ['decoded stream hash', { wrongDecodedHash: true }, 'E_EVIDENCE_DECODED_HASH'],
+  ['legacy metadata hash', { wrongLegacyHash: true }, 'E_EVIDENCE_METADATA_HASH'],
+]) test('delivered collector rejects ' + name + ' and releases provisional bodies', () => {
+  const value = syntheticPreparation(options); throws(() => finishSynthetic(value), code);
+  const state = value.batch.snapshotToolchainEvidenceBatch();
+  assert.equal(state.activeBufferBytes, 0); assert.equal(state.activeBodyHashes, 0);
+  throws(() => value.batch.finishToolchainEvidenceBatch(), 'E_EVIDENCE_STATE'); value.batch.abortToolchainEvidenceBatch();
+});
+let deliveredBatch;
+test('private zero-argument production collector has one instance and frozen controls', () => {
+  assert.equal(deliveredHelper.SOURCE_CREATE_GNU_PREPARATION.length, 0);
+  const batch = deliveredHelper.SOURCE_CREATE_GNU_PREPARATION(); deliveredBatch = batch; assert.ok(Object.isFrozen(batch));
+  throws(() => deliveredHelper.SOURCE_CREATE_GNU_PREPARATION(), 'E_EVIDENCE_STATE');
+  batch.beginToolchainEvidenceBatch(); batch.beginToolchainEvidenceRole('gnu-sdk');
+  assert.ok(Object.isFrozen(batch.snapshotToolchainEvidenceBatch()));
+});
+test('delivered unchanged GNU core stops at117s and positively closes fake archive descriptors before any decoder', async () => {
+  const archive = Buffer.from('mock compressed input'), owned = new Set(), closed = [], scheduled = [];
+  let clock = 0, spawned = false;
+  const descriptor = deliveredCore.GNU_SDK_DESCRIPTOR, values = { root: stat(4096, 501, true), file: stat(archive.length, 502) };
+  const identity = Object.fromEntries(Object.entries(values).map(([key, value]) =>
+    [key, Object.fromEntries(Object.entries(value).map(([field, n]) => [field, String(n)]))]));
+  const kind = target => target === descriptor.root || target === 501 ? 'root' :
+    target === descriptor.file || target === 502 ? 'file' : assert.fail('unexpected fake core path');
+  const backend = {
+    lstatSync(path) { return { ...values[kind(path)] }; },
+    fstatSync(fd) { assert.ok(owned.has(fd)); return { ...values[kind(fd)] }; },
+    openSync(path) { const fd = kind(path) === 'root' ? 501 : 502; assert.equal(owned.has(fd), false); owned.add(fd); return fd; },
+    readSync(fd, bytes, offset, length, position) { assert.equal(fd, 502); const amount = archive.copy(bytes, offset, position, position + length); clock = 117000; return amount; },
+    closeSync(fd) { assert.ok(owned.delete(fd)); closed.push(fd); },
+  };
+  const runner = deliveredCore.createSdkInventoryFixtureRunner({ archiveBytes: archive.length, archiveSha256: sha(archive) },
+    { fs: backend, spawn() { spawned = true; assert.fail('no decoder'); }, now: () => clock,
+      setTimeout(callback, delay) { scheduled.push(delay); return 1; }, clearTimeout() {},
+      beforeDecode() { assert.fail('clock stops before staging'); }, afterDecode() { assert.fail('no decoder'); } });
+  await assert.rejects(runner(identity), cause => cause.code === 'E_DEADLINE');
+  assert.deepEqual(scheduled, [117000]); assert.deepEqual(closed, [502, 501]); assert.equal(owned.size, 0); assert.equal(spawned, false);
+  deliveredBatch.abortToolchainEvidenceBatch();
+});
+test('malformed collector schema never invokes data getters', async () => {
+  let invoked = false;
+  const result = await run({ shallowFrozen: true, collection(value) {
+    Object.defineProperty(value, 'roles', { enumerable: true, get() { invoked = true; return []; } });
+  } }); stop(result, 'E_OUTPUT'); assert.equal(invoked, false);
+});
+test('shallow-frozen collector output fails recursive frozen-data admission', async () => {
+  const result = await run({ shallowFrozen: true }); stop(result, 'E_COLLECTION'); assert.equal(result.h.written, null);
+});
+test('unknown evidence error codes cannot serialize arbitrary strings', async () => {
+  const result = await run({ coreFailure: 'E_EVIDENCE_SECRET', diagnostic: null }); stop(result, 'E_COLLECTION');
+  assert.doesNotMatch(result.output.text, /SECRET/);
+});
+test('known collector underlying codes survive while all provisional source fields remain null', async () => {
+  const result = await run({ acceptFailure: 'E_EVIDENCE_INSPECT', diagnostic: { code: 'E_EVIDENCE_INSPECT',
+    role: 'gnu-sdk', path: TARGETS[0].path, kind: TARGETS[0].kind, index: TARGETS[0].index, underlyingCode: 'E_INPUT' } });
+  stop(result, 'E_EVIDENCE_INSPECT');
+  assert.deepEqual(result.receipt.diagnostic, { code: 'E_EVIDENCE_INSPECT', role: 'gnu-sdk',
+    path: null, kind: null, index: null, underlyingCode: 'E_INPUT' });
+});
+test('source positive-close failure explicitly marks close state uncertain', async () => {
+  const result = await run({ source: { closeFailure: 'operation' } }); stop(result, 'E_CLOSE');
+  assert.equal(result.receipt.sourceCloseUncertain, true); assert.equal(result.receipt.repoCapture.closes, 0);
+});
+test('publication clock starts after accepted role rather than before the decoder', async () => {
+  const result = await run({ event(name, _, setClock) {
+    if (name === 'archive') setClock(100000);
+    if (name === 'publish') setClock(120000);
+  } });
+  assert.equal(result.output.exitCode, 0, result.output.text);
+});
+test('exact 150-second admission remainder succeeds with fixed budgets', async () => {
+  const result = await run({ event(name, _, setClock) { if (name === 'begin') setClock(150000); } });
+  assert.equal(result.output.exitCode, 0, result.output.text);
+});
+test('invalid initial clock fails before bootstrap filesystem access', async () => {
+  for (const value of [NaN, Infinity, Number.MAX_VALUE]) {
+    const result = await run({ now: () => value }); stop(result, 'E_CLOCK'); assert.equal(result.h.io.calls.length, 0);
+  }
+});
+test('publication missing counter and negative metadata cannot be accepted', async () => {
+  const missing = await run({ record(r) { delete r.counts.peakOwnedScratchBytes; } }); stop(missing, 'E_PUBLICATION_RECORD');
+  const metadata = await run({ record(r) { r.fileMetadata.dev = '-1'; } }); stop(metadata, 'E_PUBLICATION_RECORD');
+});
+test('verification preserves all consumed source and accepted-result bytes', () => {
+  assert.deepEqual(pin(readFileSync(source.operationPath)), source.operationPin);
+  assert.deepEqual(pin(readFileSync(source.dataPath)), source.dataPin);
+  for (const [key, path] of source.rows) assert.deepEqual(pin(readFileSync(path)), source.sourcePins[key]);
+  assert.doesNotMatch(ownBytes.toString(), /prepareSourceGraph|compareConstants|\.validateCollection|\.validatePublication|oldMemberReport|\.receipt\.json['"]\s*[,)]\s*$/m);
+  console.log('NEW_FILE_PINS=' + JSON.stringify(['gnu-preparation-evidence-operation.mjs', 'gnu-preparation-evidence-operation.test.mjs']
+    .map(name => ({ path: 'tooling/native-ingress/' + name, ...pin(readFileSync(REPO + '/tooling/native-ingress/' + name)) }))));
 });

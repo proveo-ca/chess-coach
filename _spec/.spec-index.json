@@ -1071,7 +1071,24 @@
         "tooling/native-ingress/rust-helper-evidence-operation.mjs",
         "tooling/native-ingress/rust-helper-evidence-operation.test.mjs",
         "tooling/native-ingress/gnu-preparation-evidence-operation.mjs",
-        "tooling/native-ingress/gnu-preparation-evidence-operation.test.mjs"
+        "tooling/native-ingress/gnu-preparation-evidence-operation.test.mjs",
+        "tooling/native-ingress/gnu-preparation-plan.mjs",
+        "tooling/native-ingress/gnu-preparation-plan.test.mjs",
+        "tooling/native-ingress/toolchain-provider-plan.mjs",
+        "tooling/native-ingress/toolchain-provider-plan.test.mjs",
+        "tooling/native-ingress/bootlin-directory-metadata.mjs",
+        "tooling/native-ingress/bootlin-directory-metadata.test.mjs",
+        "tooling/native-ingress/bootlin-directory-metadata-v2.mjs",
+        "tooling/native-ingress/bootlin-directory-metadata-v2.test.mjs",
+        "tooling/native-ingress/gcc-context-registration.test.mjs",
+        "tooling/native-ingress/bootlin-gcc-notices-source.mjs",
+        "tooling/native-ingress/bootlin-gcc-notices-source.test.mjs",
+        "tooling/native-ingress/bootlin-gcc-copying-head.mjs",
+        "tooling/native-ingress/bootlin-gcc-copying-head.test.mjs",
+        "tooling/native-ingress/bootlin-gcc-notices-v2.mjs",
+        "tooling/native-ingress/bootlin-gcc-notices-v2.test.mjs",
+        "tooling/native-ingress/candidate-image-manifest.mjs",
+        "tooling/native-ingress/candidate-image-manifest.test.mjs"
       ],
       "fingerprint": null
     }

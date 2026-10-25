@@ -33,6 +33,50 @@ Defer optional reviewer calls until Step2 closure; retain repository-mandated ar
 This publication authorizes no acquisition, extraction, compiler/member execution, Docker job, training, activation, deployment or merge.
 Canonical §33.94 records this publication exception; earlier uncommitted-status statements describe their historical checkpoints.
 
+## Active continuation — loop toward training readiness
+
+The current WIP snapshot was committed/non-force pushed as845740e1 on docs/f9-private-initializer.
+The user now directs continued work until training readiness, preserving the frozen contracts and separate empirical/training authorization boundaries.
+Complete and publish each genuinely verified step; defer optional reviews until Step2 closure while retaining mandatory gates.
+The GNU preparation handoff now passes547 combined saved-evidence/mock checks, including119 new tests; mandatory source/security gates accept DATA-only source readiness.
+Canonical §33.95 records exact source and launch bindings before one new bounded collection.
+Step2 remains incomplete; engineering verification alone cannot establish the missing24000-group estimator acceptance or authorize its empirical campaign.
+The registered GNU preparation profile subsequently passed once and is consumed (§33.96); full evidence and exact receipt are preserved.
+Next implement the pure retained-evidence preparation supplement (§33.97), then close provider/source/license maps and the selected offline execution boundary.
+The preparation supplement is source-delivered (§33.99); its prepublication checkpoint passed149 targeted checks in disjoint runs (30 owner+119 new-module), and mandatory DATA-only source gates reported no findings.
+Its136598-byte proposed report and2450-byte exact receipt are now published/readback-verified (§33.100), retaining150 header candidates and30 literal declaration rows.
+The independent provider-declaration supplement is source-delivered (§33.101) with87 passing checks; all159 dependency edges and373 primary-version references remain UNRESOLVED.
+Next close source/license inputs and explicit preparation/rootfs maps before offline image/enforcement/compiler admission; no candidate provider is runtime-qualified by these source units.
+The bounded directory collector's source/parent gates passed (§33.103), but its registered V1 invocation stopped at E_LIMIT after one sources-directory request (§33.104); no HTML metadata was accepted and the license-directory request did not run.
+The exact STOP receipt is preserved; the0-byte0600 reservation remains unaccepted and cleanup uncertainty remains true.
+The user selected a fresh bounded V2 (§33.105):1MiB/directory,2MiB aggregate,16MiB result, unchanged deadlines and new paths; this authorizes no V1 retry or automatic expansion beyond V2.
+The preceding closure checkpoint passed756/756 saved-evidence/pure/mock checks,122 syntax targets, pinned-offline diagram validation/rendering and diff checks with56 coverage paths.
+The pre-invocation directory checkpoint passed159/159 targeted checks and124 syntax targets; the diagram and index cover58 completed source paths.
+The V1 closure checkpoint passed885/885 checks,124 syntax targets, pinned-offline diagram validation/rendering and diff checks; it verified the retained STOP, not successful discovery or Step2 readiness.
+V2 passed once and is consumed (§33.107): both directory bodies,138884-byte full result and3905-byte exact receipt are preserved/readback-verified; V1's failed reservation and cleanup uncertainty remain unchanged.
+The GCC-final source/license directory pair passed once and is consumed (§33.110); full14690-byte DATA and4474-byte exact receipt are preserved, with both GCC declarations still UNRESOLVED.
+The V2 closure checkpoint passed1018/1018 saved-evidence/pure/mock checks and126 syntax targets with60 source paths; it establishes no Step2 readiness.
+The GCC pre-invocation checkpoint passed96 targeted checks (58 new+38 owner),127 syntax targets and mandatory DATA-only gates, with61 source coverage paths.
+The five-notice V1 invocation stopped at E_HEADERS before any authored body read (§33.113); no notice data was accepted, remaining requests did not run and the exact STOP/failed reservation are preserved with cleanup uncertainty.
+The COPYING HEAD passed once and is consumed (§33.117):200, Content-Length:18002 and no exposed Content-Type, with0 authored body reads; full3193-byte DATA and2447-byte exact receipt are preserved.
+The failed GET's exact cause remains unknown; notice acceptance and runtime-layout alternatives require their own explicit next scope, not a silent media/role fallback.
+No source archive, patch, compiler, image or training operation has run.
+The GCC-directory closure checkpoint passed1077/1077 saved-evidence/pure/mock checks,127 syntax targets, pinned-offline diagram validation/rendering and diff checks across61 covered source paths; this did not complete Step2.
+The notice pre-invocation checkpoint passed190 targeted checks and129 syntax targets with63 source paths; HEAD construction files remain outside completion/coverage claims until handoff.
+The notice STOP closure checkpoint passed1229/1229 saved-evidence/pure/mock checks and129 syntax targets; current43/43 owner checks also preserve HEAD-only planning and unselected runtime-layout alternatives.
+The HEAD closure checkpoint now passes1385/1385 saved-evidence/pure/mock checks,131 syntax targets, pinned-offline diagram validation/rendering and diff checks across65 source paths; no notice or runtime route is admitted by those results.
+The user selected a fresh absent-media notice V2 and the unified SDK runtime planning route (§33.118); neither source successor nor runtime execution is admitted by that scope decision alone.
+Notice V2 passed once and is consumed (§33.120): all five passive bodies/90639 bytes,108099-byte full DATA and7711-byte exact receipt are preserved; no legal/runtime qualification follows and V1 remains unchanged.
+[Runtime layout](native-ingress-runtime-layout.md) records eight additional HOST-role candidates without promoting existing TARGET evidence or touching host/provider paths; completed-source coverage now includes the V2 files for67 paths.
+The candidate manifest proposal is published/readback-verified (§33.123):12731738-byte DATA plus3573-byte exact receipt,8675 identities and1714 proposed placements.
+It remains PROPOSED_INCOMPLETE with14 blockers, null job limits and no materialization authority;69 completed source paths are covered.
+Next freeze explicit qualification-job limits and controller/rootfs/input admission scopes before any copying, provider probe, image import or compiler job.
+The user selected qualification-only2CPU/4GiB/256PID/no-swap/300s-including3s-cleanup ceilings and one read-only two-path helper inventory (§33.124); no jobs, contents, execution, daemon query or SDK/provider probe is authorized.
+The helper observer/test handoff has arrived; independent159 fake-only checks and syntax pass, with WIP-only quality/security gates reporting no blocking findings. Integrated coverage, exact parent registration/custody and physical qualification remain pending; selected ceilings prove neither capacity nor enforcement.
+The user explicitly requested commit/push of this current snapshot (§33.125); publish it as WIP, including any captured in-progress helper source, not completed Step2 or training readiness.
+The completed WIP prepublication rerun passes1739/1739 saved-evidence/pure/mock checks in135.568s,135 completed-source syntax targets, pinned-offline diagram validation and diff checks across69 source paths; helper checks remain separately scoped and the proposal remains incomplete.
+The notice V2 closure checkpoint passes1592/1592 saved-evidence/pure/mock checks,133 syntax targets, pinned-offline diagram validation/rendering and diff checks across67 completed source paths; candidate construction files are excluded.
+
 ## Current static ELF result — same pinned bytes / grant consumed (2026-10-24)
 
 **[Unverified] Result:** the user approved §31 once; [canonical §32](ml-runtime-redesign.md#32-same-candidate-static-elf-receipt--metadata-collected-grant-consumed) preserves the returned STATIC_ELF_METADATA record for the same101392-byte digest. It reports interpreter `/lib64/ld-linux-x86-64.so.2`, needed names `liblzma.so.5` and `libc.so.6`, with no declared RPATH/RUNPATH.

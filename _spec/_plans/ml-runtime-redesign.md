@@ -4490,3 +4490,1787 @@ This publication grants no acquisition, extraction, toolchain/compiler execution
 Prepublication verification passes428/428 saved-evidence/mock tests across the owner, supplemental-helper, reused archive-utility and member-plan suites,118 source syntax targets, pinned-offline diagram check and `git diff --check`.
 The new GNU preparation files received syntax checks only; their implementation handoff and full mock qualification remain pending and no physical collection ran.
 An initial offline-include guard also matched a commented theme example and stopped before rendering; anchoring it to active include directives allowed the offline diagram check to pass without changing the diagram/theme.
+
+### 33.95 Training-readiness continuation — GNU preparation source delivered
+
+WIP845740e1 was committed and non-force pushed to docs/f9-private-initializer; subsequent GNU implementation edits remained uncommitted.
+The user directs continued looping toward training readiness, not an empirical fitting/calibration campaign, policy training, activation/deployment, retained-data deletion or merge.
+Architect consultation distinguishes engineering steps2–5 from genuine24000-group estimator acceptance (14400 fit/4800 calibration/4800 test), and separates pretraining estimator admission from posttraining policy-artifact/learned-transfer acceptance to avoid a circular prerequisite.
+Continue authorized engineering units without treating synthetic checks, table counts or bound journals as calibrated evidence; keep trainingReady:false until all actual gates pass.
+
+The GNU preparation operation is50709 bytes/SHA-256 `525702a57cfc54069412b16ff638b4636bf02e9d093f87bd4ac2f2580136f711`; its test is62235/`9866711b5b015fb6a34b7ea48a6e0c47aa9721804b6eb26cec46a34c35b35bde`.
+Independent verification passes547/547 (119 new GNU plus428 owner/helper/archive/member-plan),0 failures/skips/cancellations/todo,11.071s, both new syntax checks and diff checks.
+Mandatory quality/security gates report no findings for DATA-only source readiness, not physical/runtime/Step2 qualification.
+The implementation uses unchanged transformCore(bytes,'gnu','gnu-sdk',callback), one collector-dispatch addition and only two writer declaration-block changes.
+All18 graph identities are pinned before private import: classifiedCollector49507/`2fa93163e1a1e21adca6539f4d9a8de13e2c616e1f239a99e2092756f8a15a34`; appendedCollector52163/`17db9877a527e547025e22af6b1334da341441e8b089d444fc4a11f69a6282cc`; linkedCollector208411/`51f0f2ec103970eb7ce0d7c7b9c9d092a1506e36447d08d02b4f78430c33da1b`; GNU linkedCore300425/`48b21ad0fa43ce25a6b4ba8ce43c10bb3803e3ddc187f468388d366b721da0a0`; linkedWriter17897/`999af1b6e82df0aebdb5d91380cdcc7433757132a26d23d91c8675a6db18b33a`.
+JSON.stringify({operation:source.operationPin,sources:source.sourcePins,acceptedGnuData:source.dataPin,graph:source.graphPins})+LF binds the full14 source/18 graph/utility/DATA manifest at3672 bytes/SHA-256 `d2675941fb7e324003683f38c9920997da0f4978681580a3342fda4490b119ce`.
+The new fixed operation preserves all §33.93 limits, full fresh namespace/body comparison and raw-text/header withholding on failure; no new archive access or result reservation ran during source verification.
+
+<!-- BEGIN STEP2 GNU PREPARATION V1 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+const path = '/tmp/opencode/f9-bootstrap-correspondence/tooling/native-ingress/gnu-preparation-evidence-operation.mjs';
+const length = 50709, expected = '525702a57cfc54069412b16ff638b4636bf02e9d093f87bd4ac2f2580136f711';
+const started = performance.now(), fields = ['dev','ino','mode','uid','gid','nlink','size','mtimeNs','ctimeNs'];
+const guard = () => { if (performance.now() - started >= 2000) throw new Error('E_SOURCE_TIME'); };
+let source, fd = null;
+try {
+  guard(); fd = fs.openSync(path, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW | fs.constants.O_NONBLOCK);
+  const before = fs.fstatSync(fd, { bigint: true }); guard();
+  if (!before.isFile() || before.size !== BigInt(length)) throw new Error('E_SOURCE_PIN');
+  source = Buffer.alloc(length);
+  if (fs.readSync(fd, source, 0, length, 0) !== length || fs.readSync(fd, Buffer.alloc(1), 0, 1, length) !== 0) throw new Error('E_SOURCE_PIN');
+  const after = fs.fstatSync(fd, { bigint: true }), named = fs.lstatSync(path, { bigint: true }); guard();
+  if (!fields.every(key => before[key] === after[key] && before[key] === named[key])) throw new Error('E_SOURCE_PIN');
+} finally { if (fd !== null) { const owned = fd; fd = null; fs.closeSync(owned); } }
+if (createHash('sha256').update(source).digest('hex') !== expected) throw new Error('E_SOURCE_PIN');
+guard();
+const operation = await import('data:text/javascript;base64,' + source.toString('base64'));
+const result = await operation.runRegisteredGnuPreparationEvidenceV1();
+process.exitCode = result.exitCode;
+process.stdout.on('error', () => { process.exitCode = 1; });
+process.stdout.write(result.text);
+NODE
+```
+<!-- END STEP2 GNU PREPARATION V1 -->
+
+The exact launcher adds only its2s pinned-source bootstrap outside the original300s controller clock;310s external child timeout covers cooperative operation, not a hard descendant proof.
+Before one physical invocation bind current section/command/source identities and finish current static/offline diagram and spec correspondence gates.
+The parent must validate fixed profile/part/status, independently hash/EOF/mode/identity-readback accepted full DATA and preserve the exact compact JSON+LF through exclusive write/fsync/0444/readback/directory fsync at gnu-preparation-evidence-v1.receipt.json (or .stop.json).
+Existing destinations/reservations remain untouched; any failure consumes this profile, retains partials unaccepted and permits no automatic retry or budget change.
+No source/license/include/copy/NoPython/ABI/runtime/image/Native or training authority follows from static readiness or a later DATA result.
+Current static verification passes118 source syntax targets, launcher syntax-only validation, pinned-offline diagram check/render and diff checks; required source/spec correspondence is in-sync across52 paths.
+The exact GNU preparation launcher is1728 bytes/SHA-256 `1951ccfba24a4721d4784be1fe11330ac703dad5cec7ee21811a2cd5b4e59270`.
+Bind the complete current §33 section and this exact launcher before the single new physical DATA invocation; no collection ran during these checks.
+
+### 33.96 GNU preparation DATA accepted — literal context and private-header tuples retained
+
+Registered section458314/SHA-256 `a8e03ebe410e81490c56d4f0f942172fa1cf2ce671cad9d74a7a781bf2bd4d24` bound the1728-byte §33.95 launcher/1951ccfb… and50709-byte operation/525702a5….
+The single invocation returned GNU_PREPARATION_EVIDENCE_DATA/publicationAccepted:true and is consumed.
+The [full result](../tooling/native-ingress/gnu-preparation-evidence-v1.result.json) is2724242 bytes/SHA-256 `3ae1a4949a913b972695a32dfab2076354e49a70a960021a34050c63a9bb281b`.
+The parent independently checked full length/SHA/EOF/0444 mode/named-FD identity, then exclusively preserved the [exact compact receipt](../tooling/native-ingress/gnu-preparation-evidence-v1.receipt.json),8583 bytes/`dc06975401c17e41b24e75beb37eb8de2bcf3c30066773aaf53defdcf6dd30b6`, with fsync/0444/hash/EOF readback/directory fsync.
+All15 source captures close positively at301950 data/301965 requested, plus one accepted-GNU DATA capture2829942/2829943 requested/one close; each ledger has zero remaining ownership and one-FD peak.
+The decoder completes both compressed SHA/EOF passes204592560/204592562 requested/two archive closes, one child/pipe close, two staged/preload gates/ten stage closes and the complete8412-member/6891-regular/505333760 decoded namespace/body comparison.
+All150 private-header candidate tuples match accepted evidence, totaling2907751 bytes; all3 raw texts match known lengths/hashes, totaling12234 bytes, and the two unchanged manifests bring5 internal captures to21680 bytes.
+Publication has3 positive closes/4 fsyncs, and abortUncertain:false; these ordinary observations establish no hard RSS/descendant/deadline or Native guarantee.
+
+The include-fixed README describes fixincludes-generated system-specific headers and states they are not part of GCC; its presence does not establish that any header in that directory was prepared or approved.
+The root README attributes the distribution to Bootlin/Buildroot, states package versions, references separate source/license directories and includes git/curl/make reproduction instructions; all remain literal data, with no request or execution.
+The summary reports GCC15.3.0, binutils2.45.1 and other package/version/license/source declarations; repeated gcc-final/GDB/readline/ncurses rows retain distinct declarations and no explicit HOST/TARGET column.
+These observations do not resolve source/publisher coherence, exception applicability, legal compliance or execution dependencies.
+All retained raw csvParsed/shellEvaluated/urlsFollowed flags remain false; no old member report, receipt, source/profile or failed reservation changed.
+Continue with a pure append-only proposal supplement, then source/provider/license/preparation maps and qualified offline rootfs/containment/build graph.
+Step2 and training readiness remain incomplete; no compiler/member/Python/Rust execution, Docker job, training, activation/deployment or new commit/push ran.
+
+### 33.97 GNU preparation supplement plan — pure four-evidence input contract
+
+Architect and DevOps accepted the next two new source/test files before implementation: tooling/native-ingress/gnu-preparation-plan.mjs and .test.mjs.
+The pure createGnuPreparationPlanV1 API accepts exactly four own-data genuine Buffers, with no production pin override or collector import, filesystem/process/network I/O.
+Pin GNU full2829942/`01c24e73a65148b8a70c3c1d4034f86dcac8040859bc206b5cf40b784776cc22`, GNU receipt3428/`bb7f0ad07f8022bcba026b142bb40fe27651f534c35e119a4e1d9a3d2862a6e8`, preparation full2724242/`3ae1a4949a913b972695a32dfab2076354e49a70a960021a34050c63a9bb281b` and compact8583/`dc06975401c17e41b24e75beb37eb8de2bcf3c30066773aaf53defdcf6dd30b6`.
+Bound each input<=4MiB and aggregate<=16MiB before private copying; verify all four complete lengths/hashes before parsing.
+Join the actual distinct receipt schemas to their full results; publisherAuthenticated:false and declared dependency identities remain declarations, not an independently verified source graph.
+Declare prior member report5679112/2c4cd521… only as APPEND_ONLY_REFERENCE_NOT_READ_OR_REVERIFIED; do not read or rewrite it or invent terminal acceptance on its existing sidecar.
+Rejoin complete namespaces, every150-header index/path/type/offset/size/body hash, every proposed destination and the three known raw-text tuples, recomputing UTF-8 body hashes.
+Produce recursively frozen GNU_PREPARATION_PLAN_V1/PROPOSED_DATA_SUPPLEMENT with input bindings, candidate header supplement, literal distribution text/context, declaration rows and explicit unresolved obligations.
+Keep560 plugin-header files/9731900 bytes and include-fixed README separate/unadmitted; no copy/include/source/runtime flag becomes true.
+
+After observing the raw summary, allow only conservative lexical CSV parsing in this new supplement, never alteration of the accepted raw evidence.
+Require its exact seven header values and fully quoted fields, doubled quotes, LF/CRLF separators and optional final terminator; reject embedded field CR/LF, BOM, malformed quoting or field counts without repair/trim.
+Bound text<=16KiB/cell<=4096 UTF-8 bytes/data rows<=128 and derive actual row count rather than assuming it.
+Preserve literal cells/raw record, ordinal and summary-member-relative byte span/raw-record hash; retain duplicate package names as separate rows.
+Rows have sourceKind:DISTRIBUTION_DECLARATION/domain:UNRESOLVED, not inferred HOST/TARGET roles, SPDX/exception semantics or provider edges.
+Do not split dependencies, match license files by basename, follow URLs or execute README instructions.
+Source closure needs corresponding actual source bytes/digests/provenance/patch/configuration, and license assessment needs actual notices/exception text and applicability evidence; filenames and declared labels do not supply these inputs.
+Bound escaped-ASCII proposal+LF to1MiB and keep all source/legal/include/copy/provider/ABI/NoPython/image/runtime/Native/readiness qualifications false.
+New mock tests/source gates precede parent real-evidence validation and separate publication registration; no archive reread, extraction, copying, image or compiler operation belongs to this unit.
+Closing saved-evidence verification passes548/548 (the prior547 plus the new accepted-GNU owner contract),0 failures/skips/cancellations/todo, current owner syntax, pinned-offline diagram check/render and diff checks.
+Required outcome/next-plan correspondence confirms52 current source coverage paths in-sync; the two supplement construction files remain outside current coverage until handoff and verification.
+
+### 33.98 Provider declaration supplement plan — finite explicit candidates, no loading resolution
+
+Architect and backend accepted an independent pure two-file toolchain-provider-plan.mjs/.test.mjs unit before implementation; GNU preparation-supplement files remain separately owned.
+Parent saved-JSON inspection verifies the eight complete input digests and3189679-byte total without reopening an archive or host provider.
+Freeze named genuine Buffer inputs gnuEvidence,cargoEvidence,rustcEvidence,rustStdEvidence,rustfmtEvidence,clippyEvidence,hostEvidence,helperEvidence; reject overrides/accessors/proxies and verify every full length/hash before parsing.
+The fixed full-result pins are GNU2829942/01c24e73…, Cargo44154/6364e206…, rustc83556/2a2d4100…, std60485/0a76a92d…, rustfmt33457/11fd1af8…, clippy33993/88528d4b…, HOST49078/602209b5… and helpers55014/003b26c6…; the complete64-character hashes remain in their accepted records and must appear in production source.
+The pure API createToolchainProviderPlanV1 emits recursively frozen TOOLCHAIN_PROVIDER_PLAN_V1/PROPOSED_DECLARATION_SUPPLEMENT; it performs no filesystem/process/network or collector call.
+Bound input4MiB/file and16MiB aggregate before private copies, depth64/node1000000, aggregate selected/provider records128 each, needed512, primary versions1024, linker texts16, candidates-per-edge128 and escaped-ASCII output+LF4MiB before expansion/final serialization.
+Receipt paths remain NOT_READ_OR_REVERIFIED references, not newly verified acceptance or publisher identities.
+Use fixed source-specific schemas and rejoin the complete supplemental-helper rustc namespace with accepted rustc before metadata use.
+The seven HOST candidates lack a domain field; the fixed HOST_* semantic role schema supplies HOST domain, never path/source-container guessing, and preserves two PINNED_ORDINARY_STAGE plus five ORDINARY_HOST_CANDIDATE_UNAUTHENTICATED source kinds without authentication transfer.
+
+Derive51 selected ELF owners,25 SONAME providers,159 needed edges and373 primary version references, split143/349 base plus16/24 supplemental-helper references.
+For each needed ordinal retain all exact-SONAME/same-domain provider identities; duplicate SONAMEs or equal bodies never select a winner or collapse a candidate.
+For each version reference retain every candidate's primary names[0]/ELF-hash comparison, recomputing ASCII hashes; auxiliary definition names cannot satisfy a primary match, and matching declarations prove no symbol/relocation/private-ABI/loading compatibility.
+Preserve raw interpreter/RPATH/RUNPATH; an interpreter annotation requires exact HOST_LOADER pathname equality, not basename/SONAME substitution or token expansion.
+Retain selected linker-text declarations and supported LLD digest-equality annotations only as data, preserving argv/personality/helper obligations.
+Every edge remains UNRESOLVED, every provider candidateOnly:true and all copy/source/acceptance/HOST-TARGET-promotion/NoPython/ABI/runtime/image/Native/readiness qualifications false.
+Keep ELF declarations separate from unresolved source/build/license, search/symbol/loading/role and image/containment obligations.
+New tests and mandatory source gates precede parent saved-input validation and any separately registered report publication; no archive/provider access, execution, source acquisition or image work belongs to this unit.
+
+### 33.99 GNU preparation supplement delivered — bounded parent publication
+
+The pure module is23729 bytes/SHA-256 `6d322c86cde3810882881900bbc77d47460c58cc0bf3510d3856afde10adcca1`; tests29173/`931a30135b777ae5a72dff85d5021cad0e7a53d1dfefa43ab08118b68141129c`.
+Parent verification initially passes667/667 across the six saved/mock suites, including119 new tests; after narrowing unresolved-obligation fields from unsupported artifact-absence wording to requiredArtifactsVerified:false, the current owner/new-module run passes148/148 (29 owner+119 new),0 failures/skips/cancellations/todo, with both syntax/diff checks.
+Mandatory quality/security source gates report no findings for the pure DATA transformation; source coverage now54 paths.
+An independent pure derivation against the four pinned repository evidence files yields150 headers,12234 raw-text bytes and30 literal CSV rows, preserving duplicate package declarations and all unresolved qualifications.
+The deterministic escaped-ASCII proposal+LF is136598 bytes/SHA-256 `7d34c5e0308dc8397a221618dbd6e85f7c253b0ccfa8d806cb458a6b5e544f6e`.
+No report destination was reserved by this verification.
+
+The following separate parent scope captures two pinned module sources and four fixed accepted JSON files, never an archive or host provider.
+Keep the established metadata-parent30s outer/27s work/3s cleanup profile, source admission10s and external45s envelope; these are cooperative ordinary bounds, not hard syscall/process-tree or F9 proofs.
+Six captures total5607927 data bytes/5607933 requested/allocated including EOF probes; each requires exact-size admission before allocation, no-follow/nonblocking same-FD bounded reads/full SHA/EOF/named-FD nine-field binding and positive close, under8MiB aggregate capture allocation/128 reads per file.
+Privately replace only two writer constant declaration blocks into gnu-plan/fixed gnu-preparation-plan-v1.result.json: intermediate18000/`22b2cde5fa3695075b938eb27fec11773873d79618d78ade8413b21e267f9787`, final17879/`36ed8ba8c8a004e66f60f9fbb7b30570dcb4afcd8e3b37f6b978398886610dda`.
+Reserve exclusive0600 after source admission and before the four evidence reads; EEXIST stops without opening/replacing/deleting/retrying any old destination.
+Require unchanged writer3 positive closes/4 fsyncs/0444 seal/full readback/SHA/EOF/identity/directory sync and final original-clock success before returning compact acceptance.
+The parent independently verifies accepted full DATA and exclusively preserves the exact compact receipt at gnu-preparation-plan-v1.receipt.json, or a returned STOP at .stop.json; retain any partial result unaccepted without retry.
+The full report claims no self-digest/final publication acceptance, and receipt binding authenticates no publisher/source.
+
+<!-- BEGIN STEP2 GNU PREPARATION PLAN PUBLICATION V1 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+const ROOT = '/tmp/opencode/f9-bootstrap-correspondence', DIR = ROOT + '/_spec/tooling/native-ingress/';
+const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+const fail = code => { throw Object.assign(new Error(code), { code }); };
+const started = performance.now(), fields = ['dev','ino','mode','uid','gid','nlink','size','mtimeNs','ctimeNs'];
+let last = started, allocated = 0, captures = 0, captureCloses = 0, requested = 0, returned = 0, captureCloseFailed = false;
+let publisher = null;
+const guard = source => {
+  const now = performance.now();
+  if (!Number.isFinite(now) || now < last) fail('E_CLOCK'); last = now;
+  if (now - started >= (source === true ? 10000 : 27000)) fail('E_DEADLINE');
+};
+function capture(path, length, pin, source = false) {
+  guard(source); let fd = null, bytes;
+  try {
+    const named = fs.lstatSync(path, { bigint: true }); guard(source);
+    if (!named.isFile() || named.size !== BigInt(length) || length < 1 || allocated + length + 1 > 8388608) fail('E_LENGTH');
+    fd = fs.openSync(path, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW | fs.constants.O_NONBLOCK);
+    const before = fs.fstatSync(fd, { bigint: true }); guard(source);
+    if (!fields.every(k => before[k] === named[k]) || before.nlink !== 1n) fail('E_BINDING');
+    allocated += length + 1; bytes = Buffer.alloc(length); let position = 0, reads = 0;
+    while (position < length) {
+      guard(source); if (++reads > 128) fail('E_LIMIT');
+      const size = Math.min(65536, length - position); requested += size;
+      const n = fs.readSync(fd, bytes, position, size, position); returned += n;
+      if (n !== size) fail('E_LENGTH'); position += n;
+    }
+    guard(source); if (++reads > 128) fail('E_LIMIT'); requested++;
+    if (fs.readSync(fd, Buffer.alloc(1), 0, 1, length) !== 0) fail('E_EOF');
+    const after = fs.fstatSync(fd, { bigint: true }), finalName = fs.lstatSync(path, { bigint: true }); guard(source);
+    if (!fields.every(k => before[k] === after[k] && before[k] === finalName[k])) fail('E_BINDING');
+  } finally { if (fd !== null) { const owned = fd; fd = null; try { fs.closeSync(owned); captureCloses++; } catch { captureCloseFailed = true; fail('E_CLOSE'); } } }
+  guard(source); if (sha(bytes) !== pin) fail('E_HASH'); captures++; return bytes;
+}
+function abortPublications(code, publishers) {
+  let uncertain = code === 'E_PUBLICATION_CLOSE';
+  for (const publisher of publishers) if (publisher) {
+    try {
+      const aborted = publisher.abort(), snapshot = publisher.snapshot();
+      if (aborted.closeFailed !== false || aborted.cleanupUncertain !== false || snapshot.ownedFDCount !== 0
+        || snapshot.closeFailed !== false || snapshot.cleanupUncertain !== false) uncertain = true;
+    } catch { uncertain = true; }
+  }
+  return uncertain;
+}
+try {
+  const source = capture(ROOT + '/tooling/native-ingress/gnu-preparation-plan.mjs',23729,'6d322c86cde3810882881900bbc77d47460c58cc0bf3510d3856afde10adcca1',true);
+  const rawWriter = capture(ROOT + '/tooling/native-ingress/split-evidence-publication.mjs',18003,'9e3d6d84e58d5e86a3097a4d8a731dcef9c922622b1fc225acf0385b218f41aa',true);
+  const oldParts = "export const SPLIT_EVIDENCE_PARTS = Object.freeze(['gnu', 'rust']);";
+  const oldPaths = "export const SPLIT_EVIDENCE_PATHS = Object.freeze({\n  gnu: '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/gnu-evidence-collection-v1.result.json',\n  rust: '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/rust-evidence-collection-v1.result.json',\n});";
+  let writerText = rawWriter.toString('utf8');
+  if (writerText.split(oldParts).length !== 2 || writerText.split(oldPaths).length !== 2) fail('E_TRANSFORM');
+  writerText = writerText.replace(oldParts,"export const SPLIT_EVIDENCE_PARTS = Object.freeze(['gnu-plan']);");
+  if (Buffer.byteLength(writerText) !== 18000 || sha(writerText) !== '22b2cde5fa3695075b938eb27fec11773873d79618d78ade8413b21e267f9787') fail('E_SOURCE_PIN');
+  writerText = writerText.replace(oldPaths,"export const SPLIT_EVIDENCE_PATHS = Object.freeze({ 'gnu-plan': '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/gnu-preparation-plan-v1.result.json' });");
+  if (Buffer.byteLength(writerText) !== 17879 || sha(writerText) !== '36ed8ba8c8a004e66f60f9fbb7b30570dcb4afcd8e3b37f6b978398886610dda') fail('E_SOURCE_PIN');
+  const module = await import('data:text/javascript;base64,' + source.toString('base64')); guard(true);
+  const writer = await import('data:text/javascript;base64,' + Buffer.from(writerText).toString('base64')); guard(true);
+  publisher = writer.reserveSplitEvidencePublication('gnu-plan',() => guard());
+  const inputs = {
+    gnuEvidence: capture(DIR + 'gnu-evidence-collection-v1.result.json',2829942,'01c24e73a65148b8a70c3c1d4034f86dcac8040859bc206b5cf40b784776cc22'),
+    gnuEvidenceReceipt: capture(DIR + 'gnu-evidence-collection-v1.receipt.json',3428,'bb7f0ad07f8022bcba026b142bb40fe27651f534c35e119a4e1d9a3d2862a6e8'),
+    gnuPreparationEvidence: capture(DIR + 'gnu-preparation-evidence-v1.result.json',2724242,'3ae1a4949a913b972695a32dfab2076354e49a70a960021a34050c63a9bb281b'),
+    gnuPreparationReceipt: capture(DIR + 'gnu-preparation-evidence-v1.receipt.json',8583,'dc06975401c17e41b24e75beb37eb8de2bcf3c30066773aaf53defdcf6dd30b6'),
+  };
+  if (captures !== 6 || captureCloses !== 6 || returned !== 5607927 || requested !== 5607933 || allocated !== 5607933 || captureCloseFailed) fail('E_CLOSE');
+  const report = module.createGnuPreparationPlanV1(inputs); guard();
+  const text = JSON.stringify(report).replace(/[^\x00-\x7f]/g,c => '\\u' + c.charCodeAt(0).toString(16).padStart(4,'0')) + '\n';
+  const bytes = Buffer.from(text,'ascii');
+  if (bytes.length !== 136598 || sha(bytes) !== '7d34c5e0308dc8397a221618dbd6e85f7c253b0ccfa8d806cb458a6b5e544f6e') fail('E_REPORT_PIN'); guard();
+  const result = publisher.publish(bytes); guard(); const state = publisher.snapshot();
+  if (result.part !== 'gnu-plan' || result.path !== DIR + 'gnu-preparation-plan-v1.result.json'
+    || result.state !== 'PUBLISHED_READBACK_MATCHED' || result.byteLength !== bytes.length || result.sha256 !== sha(bytes)
+    || result.mode !== '0444' || result.readbackVerified !== true || result.directorySynced !== true
+    || state.ownedFDCount !== 0 || state.closeFailed !== false || state.cleanupUncertain !== false
+    || result.counts.closes !== 3 || result.counts.closeAttempts !== 3 || result.counts.fsyncs !== 4
+    || result.counts.readbackBytes !== bytes.length || result.counts.readbackHashBytes !== bytes.length
+    || result.counts.requestedReadBytes < bytes.length + 1 || result.counts.requestedReadBytes > 16777217) fail('E_PUBLICATION'); guard();
+  const terminal = JSON.stringify({profile:'GNU_PREPARATION_PLAN_RECEIPT_V1',status:'GNU_PREPARATION_PLAN_DATA',publicationAccepted:true,
+    result:{path:result.path,byteLength:result.byteLength,sha256:result.sha256,mode:result.mode,readbackVerified:true,directorySynced:true},
+    sourcePin:{bytes:23729,sha256:'6d322c86cde3810882881900bbc77d47460c58cc0bf3510d3856afde10adcca1'},
+    inputPins:module.GNU_PREPARATION_PLAN_V1_PINS,captureCounts:{captures,captureCloses,allocated,requested,returned},publicationCounts:result.counts,
+    headerCount:150,rawTextBytes:12234,distributionRows:30,copyAuthorized:false,sourceAuthenticated:false,publisherAuthenticated:false,
+    licenseComplianceVerified:false,pythonFreeSubsetVerified:false,abiVerified:false,runtimeProvidersQualified:false,imagePrepared:false,nativeQualified:false,rustReady:false,trainingReady:false}) + '\n';
+  if (Buffer.byteLength(terminal) > 65536) fail('E_OUTPUT'); guard();
+  process.stdout.on('error',() => { process.exitCode = 1; }); process.stdout.write(terminal);
+} catch (error) {
+  const code = error && typeof error === 'object' ? Object.getOwnPropertyDescriptor(error,'code')?.value : null;
+  const publicationCleanupUncertain = abortPublications(code,[publisher]);
+  const cleanupUncertain = captureCloseFailed || publicationCleanupUncertain || performance.now() - started >= 30000;
+  console.log(JSON.stringify({profile:'GNU_PREPARATION_PLAN_RECEIPT_V1',status:'STOP',publicationAccepted:false,
+    error:typeof code === 'string' && /^E_[A-Z_]{1,40}$/.test(code) ? code : 'E_PARENT_OPERATION',
+    captures,captureCloses,cleanupUncertain,retainedFilesUnaccepted:true})); process.exitCode = 1;
+}
+NODE
+```
+<!-- END STEP2 GNU PREPARATION PLAN PUBLICATION V1 -->
+
+Required parent-launcher/static/correspondence gates and exact current section/command binding precede its one metadata-only invocation; no new report reservation occurred while authoring this launcher.
+Mandatory parent quality/security gates report no findings for this DATA-only scope.
+Current owner verification passes30/30,0 failures/skips/cancellations/todo; combined with the unchanged119 new-module tests,149 applicable targeted checks pass in disjoint current runs.
+Current static checks pass120 syntax targets excluding the separate provider construction files, pinned-offline owner check/render, diff checks and launcher syntax-only validation.
+The exact launcher is8497 bytes/SHA-256 `df2a4ef6036cc2c3ba5352e37a458c58adfc3882a9ea2e50ebe32a54bd7baf17`.
+Require child exit0, independent accepted-full-result readback and exclusive exact compact-receipt preservation before final parent acceptance; no stored file alone supplies acceptance.
+Required correspondence found one stale current148 navigation count; the active PLAN now records149 targeted checks in disjoint runs, preserving the earlier148 historical checkpoint.
+
+### 33.100 GNU preparation proposal published — header and literal declaration supplement
+
+Required correspondence confirms the corrected navigation count and54 paths in-sync.
+Registered section480916/SHA-256 `9b2e838a0e85a8a23ca0422524b836c4ce310ccaa65ec70844568ccc7b52e5de` bound the8497-byte §33.99 launcher/df2a4ef6… and23729-byte source/6d322c86….
+The one invocation returned GNU_PREPARATION_PLAN_DATA/publicationAccepted:true with child exit0 and is consumed.
+The [full proposed supplement](../tooling/native-ingress/gnu-preparation-plan-v1.result.json) is136598 bytes/SHA-256 `7d34c5e0308dc8397a221618dbd6e85f7c253b0ccfa8d806cb458a6b5e544f6e`.
+After independent full hash/length/EOF/0444/named-FD readback, the parent exclusively preserved the [exact compact receipt](../tooling/native-ingress/gnu-preparation-plan-v1.receipt.json),2450 bytes/`11a3ce916d224de9d66772628b6ef774a56f61a416335fdf5e76e49fcebbb881`, with fsync/0444/hash/EOF readback and directory fsync.
+All6 capture descriptors close positively for5607927 returned/5607933 requested/allocated bytes, and report publication adds3 positive closes/4 fsyncs.
+The report preserves150 header candidates/2907751 bytes, all3 raw texts/12234 bytes,30 literal CSV data rows with ordinals/spans/hashes, both gcc-final declarations and all other duplicates, plus separate unadmitted plugin/include-fixed context.
+It changes no earlier report or accepted raw evidence, follows no URL and executes no README instruction.
+All source/license/include/copy/NoPython/ABI/provider/runtime/image/Native/readiness qualifiers remain false; Step2 remains incomplete and no completed-step commit/push follows.
+
+### 33.101 Provider declaration source delivered — all candidates, unresolved loading
+
+The pure provider module is22544 bytes/SHA-256 `5ba2abcc8c0417a37636655b91cdf79888a65e9f0d26e6e272a52600ddd6cf32`; tests24984/`d648c91d5a50ba11f816157ab31ccd1225582ad7f11e55c5ef45f84f19d46e46`.
+Parent closes explicit candidateOnly fields, false Native/Docker fields, exact one-argument admission and fatal UTF-8 decoding before source qualification.
+Independent verification passes87/87 (84 handed-off plus3 parent regressions),0 failures/skips/cancellations/todo,53.852s, both syntax checks and diff checks.
+Mandatory quality/security source gates report no findings for DATA-only source readiness, not provider/runtime or Step2 admission; source coverage grows54→56.
+An independent pure saved-input derivation yields968080 escaped-ASCII bytes+LF/SHA-256 `570f5d51e47f37ff3af66fadbcb0e728b7ecd6d86ca7db2ea2fd103b42cf8bc6`, with69 selected declarations,51 ELF owners,25 SONAME providers,159 needed edges,373 primary-version references and3 LLD byte-equality annotations.
+The8745 source-member count includes the rejoined70-member helper namespace, not additional unique archive members; the original8675 unique-member report remains unchanged.
+All159 needed references have one same-domain declaration candidate and all373 primary version references have matching declarations, but every edge remains UNRESOLVED and every provider candidateOnly:true.
+No interpreter raw pathname exactly matches the admitted HOST_LOADER candidate pathname;0 such annotations does not prove loader failure or qualify an alias/image mapping.
+The plan preserves four linker-text declarations and raw interpreter/RPATH/RUNPATH without search/expansion or HOST/TARGET promotion.
+Receipt references remain NOT_READ_OR_REVERIFIED, five ordinary host candidates remain unauthenticated and no authentication transfers through a SONAME join.
+No report was reserved/published by these pure checks; corresponding source/package/license, symbols/relocations/loading/private-ABI/role-behavior and image/containment obligations remain open.
+
+### 33.102 Source/license directory discovery plan — explicit metadata-only network boundary
+
+Canonical §33's autonomous work order permits registering necessary bounded toolchain-preparation operations and continuing without repeat questions; it renews no consumed grant and does not permit acquisition fallback during offline capture/build/runtime.
+The user now directs continued work toward training readiness, with all actual empirical/calibration/policy-training exclusions and frozen invariants preserved.
+Architect accepted a new two-file bootlin-directory-metadata.mjs/.test.mjs source unit before implementation, separating collection from parent reservation/publication.
+This unit admits exactly two sequential HTTPS GETs to https://toolchains.bootlin.com/downloads/releases/sources/ and https://toolchains.bootlin.com/downloads/releases/licenses/.
+The HTTPS scheme upgrade is explicit policy, not following an untrusted extracted URL; the parent must first verify accepted GNU preparation full2724242/3ae1a494… and root README1093/fa0b24cb….
+These locations derive from retained README data; the README's embedded reproduction commands remain unexecuted and no directory entry becomes permission to fetch a bundle.
+
+The zero-argument collectRegisteredBootlinDirectoriesV1 consumes its one-shot module latch before awaiting; its fixture requires complete fake fetch/now/setTimeout/clearTimeout capabilities and mockOnly:true with no production fallback.
+Use at most2 authored GETs with manual redirects, omitted credentials/referrer, no authored authentication/cookies/request body, identity encoding and HTML acceptance; no retries, fallback, redirects, scripts/resources or link following.
+Require exact200/URL, admissible HTML type and bounded Fetch-exposed headers; exposed headers are not raw wire headers, and missing/untrusted advertised length proves no wire bound.
+Retain<=65536 decoded body bytes each/131072 aggregate before private copies, counting delivered chunks before rejection; an oversized delivered chunk may exceed the retention budget and must not be retained.
+Withdraw any never-read-beyond-cap+1 assertion: ordinary Fetch chunks, proxy/startup/runtime behavior and automatic decoding are not hard wire/RSS or transport-custody proofs.
+Only both valid EOF/UTF-8/BOM-preserving bodies and exact body hashes expose observations; failures withhold all HTML/header prefixes and retain only bounded fixed-code/counter diagnostics.
+Keep each request's single absolute10s deadline bounded by the original27s work cutoff; the original30s outer includes3s cleanup, never a renewed per-read/status clock.
+Race pending fetch/read work against cancellation deadlines, observe late promise rejections and attempt cancellation/release once against the original cleanup end, marking uncertainty without claiming wire/socket closure.
+The module performs no filesystem I/O or HTML parsing and bounds the actual escaped-ASCII JSON+LF to1MiB; all source/publisher/license/provider/NoPython/ABI/runtime/image/Native/readiness qualifiers stay false.
+New fake-only tests and mandatory source gates precede the parent exact source/policy/README verification, exclusive new report reservation, launcher registration, one physical metadata operation and full/exact-compact receipt custody.
+No network request, source/license bundle download, Rust/Cargo acquisition, compiler/member execution, image/Docker job or empirical operation ran while defining this source plan.
+Closing verification of the current source/evidence set passes756/756 (31 owner,119 GNU collector,119 GNU proposal,87 provider proposal,126 helper collector,155 archive utility,119 member plan),0 failures/skips/cancellations/todo,108.776s.
+All122 completed-source syntax targets, pinned-offline owner check/render and diff checks pass; required correspondence confirms56 coverage paths in-sync.
+Directory collector construction files are excluded from those syntax/coverage/completion claims; no consumed collection/publication or network operation was repeated by verification.
+
+### 33.103 Directory collector delivered — fixed preparation-only parent operation
+
+The directory collector is19649 bytes/SHA-256 `1a625ec28479ac28efeaa19a51095924f7db5c48524a1cd74570e0c4b7f3890f`; tests43067/`36d2f2292ad399d267b745a94e331bf803ab28accc6d97bdbf3dbb63dbf3abf1`.
+Parent corrects the sourceRef registration to actual §33 rather than a nonexistent section number; source behavior/budgets stay unchanged.
+Independent targeted verification passes156/156 (125 new+31 owner),0 failures/skips/cancellations/todo,0.526s, both syntax checks and diff checks.
+Mandatory quality/security/DevOps gates accept bounded DATA-only source scope with no findings; no source gate alone authorizes invocation or establishes source/license/runtime qualification.
+JSON.stringify(BOOTLIN_DIRECTORY_METADATA_V1_PROFILE)+LF is1023 bytes/SHA-256 `51feabc3bc2f5d44d36220346be7b4771bb58f9b109d523ef2eaf20f7d1515d9`, binding the exact two URLs, source reference and all fixed limits.
+Coverage grows56→58 after handoff; no network request or report reservation occurred during verification.
+
+The following separately registered parent operation captures exactly the collector, pinned writer and accepted GNU preparation JSON, totaling2761894 data/2761897 requested/allocated bytes across3 positive capture closes.
+Preserve the established parent30s outer/27s work/3s cleanup profile/source admission10s/45s external envelope,8MiB aggregate capture allocation and128 reads per file; this qualifies no hard deadline/RSS/transport boundary.
+Parent and collector original clocks are never reset after phase/status/chunk changes; acceptance also requires the original parent work deadline.
+Privately route the collector's one production now dependency through a pinned origin bridge, then bind the original parent started value once before collection.
+Only collector-start initialization receives that latched origin; all request admission, timer-delay and deadline reads use current monotonic time, so preparation shortens rather than renews the27s/30s windows.
+Verify the known preparation result and root README tuple/hash before calling the production collector; production HTML remains untrusted data, not executable instructions or a bundle-acquisition grant.
+Specialize only the writer's two fixed declarations into bootlin-directories/fixed bootlin-source-license-directories-v1.result.json: intermediate18011/`16a39c0ea34fbdf1205bc29a97006e2ee88a2f16c0956db6114a1342db5773cd`; final17915/`25c2f82efd9d7982934774ac90350ddb731e936020eeecf0af66ab51e643c853`.
+Reserve exclusive0600 before reading preparation DATA or requesting the network; EEXIST stops without probing, modifying, deleting or retrying an existing result.
+Only both complete observations and all original-clock/source/collector gates may publish the<=1MiB full ASCII/LF metadata result through unchanged3-close/4-fsync/0444/readback/EOF/identity/directory-sync controls.
+Any failure withholds directory HTML/header prefixes, retains partial files unaccepted and returns only bounded STOP diagnostics/counters.
+The parent must require child exit0, independently read back the accepted full result and exclusively preserve the exact compact receipt at bootlin-source-license-directories-v1.receipt.json (or .stop.json); no managed stdout-only full custody is permitted.
+
+<!-- BEGIN STEP2 BOOTLIN DIRECTORIES V1 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+const ROOT = '/tmp/opencode/f9-bootstrap-correspondence', DIR = ROOT + '/_spec/tooling/native-ingress/';
+const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+const fail = code => { throw Object.assign(new Error(code), { code }); };
+const started = performance.now(), fields = ['dev','ino','mode','uid','gid','nlink','size','mtimeNs','ctimeNs'];
+let last = started, allocated = 0, captures = 0, captureCloses = 0, requested = 0, returned = 0, captureCloseFailed = false;
+let publisher = null, collectionStop = null;
+const guard = source => {
+  const now = performance.now();
+  if (!Number.isFinite(now) || now < last) fail('E_CLOCK'); last = now;
+  if (now - started >= (source === true ? 10000 : 27000)) fail('E_DEADLINE');
+};
+function capture(path, length, pin, source = false) {
+  guard(source); let fd = null, bytes;
+  try {
+    const named = fs.lstatSync(path, { bigint: true }); guard(source);
+    if (!named.isFile() || named.size !== BigInt(length) || length < 1 || allocated + length + 1 > 8388608) fail('E_LENGTH');
+    fd = fs.openSync(path, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW | fs.constants.O_NONBLOCK);
+    const before = fs.fstatSync(fd, { bigint: true }); guard(source);
+    if (!fields.every(k => before[k] === named[k]) || before.nlink !== 1n) fail('E_BINDING');
+    allocated += length + 1; bytes = Buffer.alloc(length); let position = 0, reads = 0;
+    while (position < length) {
+      guard(source); if (++reads > 128) fail('E_LIMIT');
+      const size = Math.min(65536, length - position); requested += size;
+      const n = fs.readSync(fd, bytes, position, size, position); returned += n;
+      if (n !== size) fail('E_LENGTH'); position += n;
+    }
+    guard(source); if (++reads > 128) fail('E_LIMIT'); requested++;
+    if (fs.readSync(fd, Buffer.alloc(1), 0, 1, length) !== 0) fail('E_EOF');
+    const after = fs.fstatSync(fd, { bigint: true }), finalName = fs.lstatSync(path, { bigint: true }); guard(source);
+    if (!fields.every(k => before[k] === after[k] && before[k] === finalName[k])) fail('E_BINDING');
+  } finally { if (fd !== null) { const owned = fd; fd = null; try { fs.closeSync(owned); captureCloses++; } catch { captureCloseFailed = true; fail('E_CLOSE'); } } }
+  guard(source); if (sha(bytes) !== pin) fail('E_HASH'); captures++; return bytes;
+}
+function abortPublications(code, publishers) {
+  let uncertain = code === 'E_PUBLICATION_CLOSE';
+  for (const publisher of publishers) if (publisher) {
+    try {
+      const aborted = publisher.abort(), snapshot = publisher.snapshot();
+      if (aborted.closeFailed !== false || aborted.cleanupUncertain !== false || snapshot.ownedFDCount !== 0
+        || snapshot.closeFailed !== false || snapshot.cleanupUncertain !== false) uncertain = true;
+    } catch { uncertain = true; }
+  }
+  return uncertain;
+}
+try {
+  const source = capture(ROOT + '/tooling/native-ingress/bootlin-directory-metadata.mjs',19649,'1a625ec28479ac28efeaa19a51095924f7db5c48524a1cd74570e0c4b7f3890f',true);
+  const rawWriter = capture(ROOT + '/tooling/native-ingress/split-evidence-publication.mjs',18003,'9e3d6d84e58d5e86a3097a4d8a731dcef9c922622b1fc225acf0385b218f41aa',true);
+  const clockBridge = `
+let SOURCE_PARENT_ORIGIN = null, SOURCE_FIRST_CLOCK = true;
+export function SOURCE_BIND_PARENT_CLOCK_ORIGIN(origin) {
+  if (arguments.length !== 1 || SOURCE_PARENT_ORIGIN !== null || !Number.isFinite(origin) || origin < 0 || origin > Number.MAX_SAFE_INTEGER - 30000) fail('E_CLOCK');
+  const current = Reflect.apply(NOW, CLOCK, []);
+  if (!Number.isFinite(current) || current < origin || current - origin >= 10000) fail('E_CLOCK');
+  SOURCE_PARENT_ORIGIN = origin;
+}
+function SOURCE_CAPTURE_NOW() {
+  if (SOURCE_PARENT_ORIGIN === null) fail('E_CLOCK');
+  const current = Reflect.apply(NOW, CLOCK, []);
+  if (!Number.isFinite(current) || current < SOURCE_PARENT_ORIGIN) fail('E_CLOCK');
+  if (SOURCE_FIRST_CLOCK) { SOURCE_FIRST_CLOCK = false; return SOURCE_PARENT_ORIGIN; }
+  return current;
+}
+`;
+  const originalNow = 'now: () => Reflect.apply(NOW, CLOCK, []),';
+  let collectorText = source.toString('utf8');
+  if (collectorText.split(originalNow).length !== 2) fail('E_TRANSFORM');
+  collectorText = collectorText.replace(originalNow,'now: () => SOURCE_CAPTURE_NOW(),');
+  if (Buffer.byteLength(collectorText) !== 19640 || sha(collectorText) !== 'cd06ea9e8e07d5a4514131dbc0240e3af4d96691a586592df151199c6e747ec6') fail('E_SOURCE_PIN');
+  if (Buffer.byteLength(clockBridge) !== 794 || sha(clockBridge) !== '28bbe878605dc95eaa7d15d27e1ae9d162c86a755e7d76f8f8e69a97291cf334') fail('E_SOURCE_PIN');
+  collectorText += clockBridge;
+  if (Buffer.byteLength(collectorText) !== 20434 || sha(collectorText) !== '4962a642a0933ec0149a521a548cccd526715ccf624762e5f678b1c3efc79738') fail('E_SOURCE_PIN');
+  const oldParts = "export const SPLIT_EVIDENCE_PARTS = Object.freeze(['gnu', 'rust']);";
+  const oldPaths = "export const SPLIT_EVIDENCE_PATHS = Object.freeze({\n  gnu: '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/gnu-evidence-collection-v1.result.json',\n  rust: '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/rust-evidence-collection-v1.result.json',\n});";
+  let writerText = rawWriter.toString('utf8');
+  if (writerText.split(oldParts).length !== 2 || writerText.split(oldPaths).length !== 2) fail('E_TRANSFORM');
+  writerText = writerText.replace(oldParts,"export const SPLIT_EVIDENCE_PARTS = Object.freeze(['bootlin-directories']);");
+  if (Buffer.byteLength(writerText) !== 18011 || sha(writerText) !== '16a39c0ea34fbdf1205bc29a97006e2ee88a2f16c0956db6114a1342db5773cd') fail('E_SOURCE_PIN');
+  writerText = writerText.replace(oldPaths,"export const SPLIT_EVIDENCE_PATHS = Object.freeze({ 'bootlin-directories': '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/bootlin-source-license-directories-v1.result.json' });");
+  if (Buffer.byteLength(writerText) !== 17915 || sha(writerText) !== '25c2f82efd9d7982934774ac90350ddb731e936020eeecf0af66ab51e643c853') fail('E_SOURCE_PIN');
+  const module = await import('data:text/javascript;base64,' + Buffer.from(collectorText).toString('base64')); guard(true);
+  const writer = await import('data:text/javascript;base64,' + Buffer.from(writerText).toString('base64')); guard(true);
+  const policy = module.BOOTLIN_DIRECTORY_METADATA_V1_PROFILE, policyText = JSON.stringify(policy) + '\n';
+  if (Buffer.byteLength(policyText) !== 1023 || sha(policyText) !== '51feabc3bc2f5d44d36220346be7b4771bb58f9b109d523ef2eaf20f7d1515d9') fail('E_POLICY_PIN');
+  publisher = writer.reserveSplitEvidencePublication('bootlin-directories',() => guard());
+  const preparation = capture(DIR + 'gnu-preparation-evidence-v1.result.json',2724242,'3ae1a4949a913b972695a32dfab2076354e49a70a960021a34050c63a9bb281b');
+  const readme = JSON.parse(preparation).collection.roles[0].selected.find(row => row.index === 8412);
+  if (!readme || readme.path !== 'x86-64--glibc--stable-2026.08-1/README.txt' || readme.size !== 1093
+    || readme.bodySha256 !== 'fa0b24cb67e660a5aebe2f4d4705b5a7ca2e5860e2e0405ddf6fddad40d4a41a'
+    || Buffer.byteLength(readme.metadata.observation.text,'utf8') !== 1093
+    || sha(Buffer.from(readme.metadata.observation.text,'utf8')) !== readme.bodySha256) fail('E_README_PIN');
+  if (captures !== 3 || captureCloses !== 3 || returned !== 2761894 || requested !== 2761897 || allocated !== 2761897 || captureCloseFailed) fail('E_CLOSE'); guard();
+  module.SOURCE_BIND_PARENT_CLOCK_ORIGIN(started); guard();
+  const result = await module.collectRegisteredBootlinDirectoriesV1();
+  if (result.exitCode !== 0 || result.data.status !== 'BOOTLIN_DIRECTORY_METADATA') { collectionStop = result.data; fail('E_DIRECTORY_COLLECTION'); }
+  guard(); const data = result.data, c = data.counts;
+  if (data.profile !== 'registered-bootlin-directories-v1' || data.mockOnly !== false || data.cleanupUncertain !== false
+    || data.observations.length !== 2 || c.fetchCalls !== 2 || c.requestsAttempted !== 2 || c.completedObservations !== 2
+    || c.eofObservations !== 2 || c.releases !== 2 || c.cancellations !== 0 || c.clearedTimers !== 3 || c.activeTimers !== 0
+    || c.pendingFetchKnown !== false || c.pendingReadKnown !== false || c.deliveredBytes !== c.retainedBytes
+    || c.retainedBytes > 131072 || c.peakDeliveredChunkBytes > 65536 || c.readAttempts > 2048) fail('E_COLLECTION');
+  for (let i = 0; i < 2; i++) {
+    const o = data.observations[i], body = Buffer.from(o.bodyUtf8,'utf8');
+    if (o.role !== policy.roles[i] || o.requestedUrl !== policy.urls[i] || o.responseUrl !== policy.urls[i] || o.status !== 200
+      || o.eof !== true || o.utf8Validated !== true || o.interpreted !== false || o.urlsFollowed !== false
+      || body.length !== o.observedBodyBytes || body.length > 65536 || sha(body) !== o.bodySha256) fail('E_COLLECTION');
+  }
+  const sourcePins = {module:{bytes:19649,sha256:'1a625ec28479ac28efeaa19a51095924f7db5c48524a1cd74570e0c4b7f3890f',privateBytes:20434,privateSha256:'4962a642a0933ec0149a521a548cccd526715ccf624762e5f678b1c3efc79738'},
+    writer:{rawBytes:18003,rawSha256:'9e3d6d84e58d5e86a3097a4d8a731dcef9c922622b1fc225acf0385b218f41aa',privateBytes:17915,privateSha256:'25c2f82efd9d7982934774ac90350ddb731e936020eeecf0af66ab51e643c853'},
+    preparation:{bytes:2724242,sha256:'3ae1a4949a913b972695a32dfab2076354e49a70a960021a34050c63a9bb281b'},
+    readme:{bytes:1093,sha256:readme.bodySha256},policy:{bytes:1023,sha256:sha(policyText)}};
+  const report = {profile:'BOOTLIN_DIRECTORY_METADATA_RESULT_V1',status:'BOOTLIN_DIRECTORY_METADATA_DATA',sourcePins,collection:data,
+    scope:'ordinary preparation directory metadata outside offline capture/build/runtime',
+    sourceAuthenticated:false,publisherAuthenticated:false,licenseComplianceVerified:false,pythonFreeSubsetVerified:false,
+    runtimeProvidersQualified:false,abiVerified:false,imagePrepared:false,nativeQualified:false,rustReady:false,trainingReady:false};
+  const text = JSON.stringify(report).replace(/[^\x00-\x7f]/g,c => '\\u' + c.charCodeAt(0).toString(16).padStart(4,'0')) + '\n';
+  const bytes = Buffer.from(text,'ascii'); if (bytes.length > 1048576) fail('E_OUTPUT'); guard();
+  const published = publisher.publish(bytes); guard(); const state = publisher.snapshot();
+  if (published.part !== 'bootlin-directories' || published.path !== DIR + 'bootlin-source-license-directories-v1.result.json'
+    || published.state !== 'PUBLISHED_READBACK_MATCHED' || published.byteLength !== bytes.length || published.sha256 !== sha(bytes)
+    || published.mode !== '0444' || published.readbackVerified !== true || published.directorySynced !== true
+    || state.ownedFDCount !== 0 || state.closeFailed !== false || state.cleanupUncertain !== false
+    || published.counts.closes !== 3 || published.counts.closeAttempts !== 3 || published.counts.fsyncs !== 4
+    || published.counts.readbackBytes !== bytes.length || published.counts.readbackHashBytes !== bytes.length
+    || published.counts.requestedReadBytes < bytes.length + 1 || published.counts.requestedReadBytes > 16777217) fail('E_PUBLICATION'); guard();
+  const terminal = JSON.stringify({profile:'BOOTLIN_DIRECTORY_METADATA_RECEIPT_V1',status:'BOOTLIN_DIRECTORY_METADATA_DATA',publicationAccepted:true,
+    result:{path:published.path,byteLength:published.byteLength,sha256:published.sha256,mode:published.mode,readbackVerified:true,directorySynced:true},
+    sourcePins,captureCounts:{captures,captureCloses,allocated,requested,returned},publicationCounts:published.counts,
+    observations:data.observations.map(o => ({role:o.role,url:o.requestedUrl,bytes:o.observedBodyBytes,sha256:o.bodySha256})),
+    networkCounts:c,sourceAuthenticated:false,publisherAuthenticated:false,licenseComplianceVerified:false,
+    runtimeProvidersQualified:false,pythonFreeSubsetVerified:false,abiVerified:false,imagePrepared:false,nativeQualified:false,rustReady:false,trainingReady:false}) + '\n';
+  if (Buffer.byteLength(terminal) > 65536) fail('E_OUTPUT'); guard();
+  process.stdout.on('error',() => { process.exitCode = 1; }); process.stdout.write(terminal);
+} catch (error) {
+  const code = error && typeof error === 'object' ? Object.getOwnPropertyDescriptor(error,'code')?.value : null;
+  const publicationCleanupUncertain = abortPublications(code,[publisher]);
+  const cleanupUncertain = captureCloseFailed || publicationCleanupUncertain || collectionStop?.cleanupUncertain === true || performance.now() - started >= 30000;
+  const terminal = JSON.stringify({profile:'BOOTLIN_DIRECTORY_METADATA_RECEIPT_V1',status:'STOP',publicationAccepted:false,
+    error:typeof code === 'string' && /^E_[A-Z_]{1,40}$/.test(code) ? code : 'E_PARENT_OPERATION',
+    collectionStop,captures,captureCloses,cleanupUncertain,retainedFilesUnaccepted:true}) + '\n';
+  if (Buffer.byteLength(terminal) > 65536) throw new Error('E_OUTPUT');
+  process.stdout.write(terminal); process.exitCode = 1;
+}
+NODE
+```
+<!-- END STEP2 BOOTLIN DIRECTORIES V1 -->
+
+Required parent/static/correspondence gates and exact current section/command registration precede one invocation; no request, report reservation or bundle download ran while preparing this launcher.
+The first parent review found HIGH original-clock renewal: the unexecuted11236-byte/929ad4aa… launcher would start collector timers after preparation and detect parent expiry only on return.
+Architect accepts the correction conditionally: exactly one private now routing plus794-byte origin bridge, with routed19640/cd06ea9e… and final20434/4962a642… identities verified before import; repository collector/policy/125 fake tests remain unchanged.
+Bind the parent origin only once and require actual-time admission before every Fetch; preparation consumes both original deadlines, and a late second request clips to the original27s cutoff.
+Persisted pure bridge and integrated transformed-module fake-network regressions must pass and the HIGH must receive a resolving verdict before any physical use.
+The three persisted owner regressions pass, including the actual pinned private production module under test-only fake Fetch/timer bindings:9s preparation yields21s outer/10s first-request/1ms clipped second-request timers; invocation at27s performs zero Fetch calls and retains only the original3s cleanup interval.
+Quality review resolves the original HIGH with no remaining findings; the narrow security delta also reports no findings.
+Current verification passes159/159 (34 owner+125 collector),0 failures/skips/cancellations/todo,124 syntax targets, launcher syntax-only validation and diff checks.
+The corrected exact launcher is13034 bytes/SHA-256 `dc847bd7d54e1b171588ad15e75f7ae0984ef9ecc59be012014625cf470db043`; the unexecuted earlier11236-byte variant remains superseded pre-execution history, not a consumed network profile.
+Final source/spec correspondence and exact current-section binding precede the single preparation-only metadata invocation; no request or result reservation ran during the correction.
+Final correspondence found one stale current56-path navigation count; the PLAN now distinguishes that preceding checkpoint from the current58-path coverage and159 targeted checks.
+
+### 33.104 Directory discovery V1 STOP — sources retention limit, no accepted HTML
+
+Final correspondence confirmed58 source paths in-sync and the original-clock HIGH resolved before networking.
+Registered section507410/SHA-256 `1a5a3796655fc12e5afa7774ff6b0190228d9b77d21c2ef01cc86110f283f388` bound the corrected13034-byte §33.103 launcher/`dc847bd7d54e1b171588ad15e75f7ae0984ef9ecc59be012014625cf470db043` and raw/private collector pins1a625ec2…/4962a642….
+The one invocation returned STOP/publicationAccepted:false/child exit1 with E_DIRECTORY_COLLECTION and collector E_LIMIT; this source/profile/operation is consumed.
+The parent exclusively preserved the [exact STOP receipt](../tooling/native-ingress/bootlin-source-license-directories-v1.stop.json),711 bytes/SHA-256 `7d618e43bf118fb794f515fd06ade2051fb3bbc79827cb6998feba3a79392e6f`, synchronized/sealed0444 and independently hash/EOF/readback/directory-sync verified.
+One independent named-metadata check of this operation-owned result confirms0 bytes/0600 at dev29/inode1211090; it is an unaccepted reservation, not JSON, and must never be overwritten, deleted, repaired, reused or retried.
+All3 source/input captures closed positively before collection.
+
+Only the sources-directory request ran: requestsAttempted/fetchCalls1,14 reader calls,71655 delivered decoded bytes,64261 retained bytes,8178-byte peak delivered chunk and1 rejected chunk.
+The delivered data exceeded the64KiB response-retention profile; no response EOF, completed observation or license-directory request occurred.
+The collector invoked cancellation/release once each and cleared2 timers, leaving0 active timers and false known-pending Fetch/read flags, but cleanupUncertain:true remains binding and transportClosedVerified:false.
+Those counters establish neither the cancellation-uncertainty cause nor actual wire/socket closure; the whole response length and source/license filenames remain unknown.
+No HTML/header prefix or raw discovery result was published; no bundle/source/license acquisition, archive/member/compiler/Python/Rust execution, Docker job or empirical operation followed.
+Keep every failed/successful predecessor source, result and reservation unchanged; no automatic cap increase, retry, alternate URL or transport fallback is authorized by this failure.
+
+The next consequential scope remains undecided: a separately reviewed fresh bounded larger-directory profile with new paths/identities, operator-supplied offline directory/manifest evidence, or continued source-only engineering without discovery.
+Step2 and training readiness remain incomplete; source/provider/license preparation, admitted immutable rootfs/containment/build graph, qualified compiler/workspace/runtime checks and all original F9/whole-BOTH/24k/fitted-evidence gates remain open.
+Closing verification passes885/885 (35 owner,125 directory collector,119 GNU collector,119 GNU proposal,87 provider proposal,126 helper collector,155 archive utility,119 member plan),0 failures/skips/cancellations/todo,109.505s.
+All124 syntax targets, pinned-offline owner check/render and diff checks pass; required STOP/spec correspondence is in-sync across58 paths.
+Tests read the sealed STOP and frozen command identity, never open the failed reservation and execute no consumed network/collection/publication operation.
+
+### 33.105 Explicit fresh directory V2 selection — larger retention, original deadlines
+
+After V1's consumed limit STOP, the interactive scope question offered a fresh bounded profile, operator-supplied offline inputs or continued source-only work.
+The user explicitly selected New bounded profile (Recommended):<=1MiB per directory,<=2MiB aggregate,<=16MiB full result, unchanged original deadlines and new paths, with no bundle downloads.
+This is a new scope decision, not an automatic cap increase, replay, repair or waiver of V1's failed reservation/withheld HTML/cleanup uncertainty.
+Architect and DevOps accepted two new source/test files, bootlin-directory-metadata-v2.mjs/.test.mjs, before implementation.
+The production module is a pure built-in crypto/util source adapter with frozen BOOTLIN_DIRECTORY_METADATA_V2_PINS and one-argument buildBootlinDirectoryMetadataV2Source(rawV1Buffer), no filesystem/process/network I/O, source evaluation or production pin/profile override.
+Admit a genuine nonshared/nonproxy/nonsubclass/accessor-free Buffer, copy privately and verify exact19649/SHA-256 `1a625ec28479ac28efeaa19a51095924f7db5c48524a1cd74570e0c4b7f3890f` before decoding/transforming; raw V1 remains bytes only and is never imported or invoked.
+
+Parent independently computes the approved static graph before implementation: profile19649/`2ba1287648b7c42bdd5abcd8f36d77c726e7bbc7b67cc66440898ff2080381ca`; bodyLimits19652/`c6c7fe77de2115988cc80f110193d145565e7a7811e170cf733a2bb280141b6d`; outputLimit19653/`76dd78b668d5cf71c73f229b3f85afb0aab9752b391e5a3269a269938ea9bd69`; entryNames19653/`fe18ce7d1df28e5113b6c1273c7c53722bb17fdc4c096666007779dcaa796d53`; policyNames19653/`243026d3f1b63abc6674102d55a89c0950bac86a97f318bbac52de96e8eaf7d9`; routed19644/`f5ce1d23732051048b8ea10499d4cf1e861bfc74bc31f0febbde95d070e129a1`; final20438/`ece2c9edbb3068bc65ce78454b7f8dbc5236d36f046849f4f30085c58c567557`.
+Permitted changes are exact-count profile/body/aggregate/output constants, two collectRegisteredBootlinDirectoriesV1→V2 names and two BOOTLIN_DIRECTORY_METADATA_V1_PROFILE→V2 names, then exactly one production-now routing and the same794-byte origin bridge/28bbe878….
+All header/read/node/depth, HTTP, UTF-8, failure, cancellation/release and original10s/27s/30s/3s clock algorithms remain byte-identical.
+The new private module exposes only the V2 production/policy names, retains an independent one-shot latch and requires the parent's original origin binding; no callable V1 entry remains in that generated module.
+The V2 policy JSON+LF is1027 bytes/SHA-256 `47336055ae39a95bdccb99e4a3fcee3a5618016fd946c6d15f1300a4a6e1ef16`; its two sources/licenses URLs and accepted preparation/README references remain unchanged.
+
+The parent will capture the new adapter plus V1 source as bytes, pinned writer and accepted preparation JSON; it must verify every raw/intermediate/final/policy identity before importing only the new final V2 image.
+Reserve only fresh bootlin-source-license-directories-v2.result.json before networking and preserve an exact .receipt.json or .stop.json separately; EEXIST/any failure stops without probing, replacing, deleting or retrying an old destination.
+The selected higher retention/output ceilings establish no hard RSS/wire/transport or F9 resource proof, source/license permission or provider admission.
+V2 source tests include inherited exact-cap/refusal/UTF-8/output cases and integrated fake-network original-clock clipping; required source/static/correspondence gates and fresh exact registration precede one physical use.
+No V2 request, source/license bundle acquisition, compiler/member execution, image/Docker job or empirical operation ran when selecting/designing this source unit.
+The current36/36 owner checks pass, including the selected V2 retention/deadline contract and byte-identical consumed V1 source pin; no failed reservation or V1 network profile is reopened by those checks.
+V2 construction files remain outside current58-path coverage and source-completion claims until their handoff and independent verification.
+
+### 33.106 Fresh directory V2 adapter delivered — independent parent scope
+
+The pure V2 adapter is5760 bytes/SHA-256 `d09558231e7ea5f27c2ed0d1b34c599c087bc34a4c6e5e75e3e4ecf3f1ff9f80`; tests35796/`e70f3ee1002ab2a8ce44e59bd69f38a5a590842b9f1eb7c6808c9b1ee1317efc`.
+Independent verification passes166/166 (130 new+36 owner),0 failures/skips/cancellations/todo,1.140s, both syntax checks and diff checks.
+Mandatory quality/security source gates report no findings for DATA-only source readiness; current owner coverage grows58→60 after handoff.
+All nine approved graph pins match, and tests verify the actual generated policy1027/47336055…; the new generated source is20438/ece2c9ed….
+Only newly generated V2 code may execute under this scope; consumed V1 source remains bytes-only input, its public entry is absent from the new image and V1's uncertain STOP remains binding.
+
+The separate parent operation below captures four fixed images: V2 adapter, raw V1 source as data, pinned writer and accepted preparation JSON.
+Four positive capture closes total2767654 returned bytes/2767658 requested/allocated bytes; preserve the existing8MiB/128-reads-per-file capture caps and parent30s outer/27s work/3s cleanup/source10s/external45s profile.
+Import the adapter only after its raw pin, verify final V2 graph/source before importing only the new data URI, verify actual V2 policy/accepted README, then bind the original parent started value once.
+The old raw collector module is never imported or invoked; no V1 output/reservation is probed, reused or repaired.
+Privately change only the writer's two fixed declarations into bootlin-directories-v2/fresh bootlin-source-license-directories-v2.result.json: intermediate18014/`90b240f439858321154fba89bd0e196180d3abd654858510a9735d9c2efcb14a`; final17921/`3bf5af8535a3e4614e16189e4a7e67a16966e7b2f5c8459413e12f9dcd11075e`.
+Reserve O_EXCL0600 before preparation DATA/network, enforce the user-selected1MiB/body/2MiB aggregate/16MiB full-result ceilings and all unchanged source/HTTP/read/UTF-8/clock/cleanup gates.
+Require unchanged3-positive-close/4-fsync/0444/full-hash-EOF-identity-readback/directory-sync publication and final original parent-clock success before compact acceptance.
+Parent acceptance additionally requires child exit0, independent full-result readback and exclusive exact compact-receipt preservation at the fresh V2 .receipt.json or returned .stop.json path.
+
+<!-- BEGIN STEP2 BOOTLIN DIRECTORIES V2 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+const ROOT = '/tmp/opencode/f9-bootstrap-correspondence', DIR = ROOT + '/_spec/tooling/native-ingress/';
+const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+const fail = code => { throw Object.assign(new Error(code), { code }); };
+const started = performance.now(), fields = ['dev','ino','mode','uid','gid','nlink','size','mtimeNs','ctimeNs'];
+let last = started, allocated = 0, captures = 0, captureCloses = 0, requested = 0, returned = 0, captureCloseFailed = false;
+let publisher = null, collectionStop = null;
+const guard = source => {
+  const now = performance.now();
+  if (!Number.isFinite(now) || now < last) fail('E_CLOCK'); last = now;
+  if (now - started >= (source === true ? 10000 : 27000)) fail('E_DEADLINE');
+};
+function capture(path, length, pin, source = false) {
+  guard(source); let fd = null, bytes;
+  try {
+    const named = fs.lstatSync(path, { bigint: true }); guard(source);
+    if (!named.isFile() || named.size !== BigInt(length) || length < 1 || allocated + length + 1 > 8388608) fail('E_LENGTH');
+    fd = fs.openSync(path, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW | fs.constants.O_NONBLOCK);
+    const before = fs.fstatSync(fd, { bigint: true }); guard(source);
+    if (!fields.every(k => before[k] === named[k]) || before.nlink !== 1n) fail('E_BINDING');
+    allocated += length + 1; bytes = Buffer.alloc(length); let position = 0, reads = 0;
+    while (position < length) {
+      guard(source); if (++reads > 128) fail('E_LIMIT');
+      const size = Math.min(65536, length - position); requested += size;
+      const n = fs.readSync(fd, bytes, position, size, position); returned += n;
+      if (n !== size) fail('E_LENGTH'); position += n;
+    }
+    guard(source); if (++reads > 128) fail('E_LIMIT'); requested++;
+    if (fs.readSync(fd, Buffer.alloc(1), 0, 1, length) !== 0) fail('E_EOF');
+    const after = fs.fstatSync(fd, { bigint: true }), finalName = fs.lstatSync(path, { bigint: true }); guard(source);
+    if (!fields.every(k => before[k] === after[k] && before[k] === finalName[k])) fail('E_BINDING');
+  } finally { if (fd !== null) { const owned = fd; fd = null; try { fs.closeSync(owned); captureCloses++; } catch { captureCloseFailed = true; fail('E_CLOSE'); } } }
+  guard(source); if (sha(bytes) !== pin) fail('E_HASH'); captures++; return bytes;
+}
+function abortPublications(code, publishers) {
+  let uncertain = code === 'E_PUBLICATION_CLOSE';
+  for (const publisher of publishers) if (publisher) {
+    try {
+      const aborted = publisher.abort(), snapshot = publisher.snapshot();
+      if (aborted.closeFailed !== false || aborted.cleanupUncertain !== false || snapshot.ownedFDCount !== 0
+        || snapshot.closeFailed !== false || snapshot.cleanupUncertain !== false) uncertain = true;
+    } catch { uncertain = true; }
+  }
+  return uncertain;
+}
+try {
+  const adapterSource = capture(ROOT + '/tooling/native-ingress/bootlin-directory-metadata-v2.mjs',5760,'d09558231e7ea5f27c2ed0d1b34c599c087bc34a4c6e5e75e3e4ecf3f1ff9f80',true);
+  const rawV1 = capture(ROOT + '/tooling/native-ingress/bootlin-directory-metadata.mjs',19649,'1a625ec28479ac28efeaa19a51095924f7db5c48524a1cd74570e0c4b7f3890f',true);
+  const rawWriter = capture(ROOT + '/tooling/native-ingress/split-evidence-publication.mjs',18003,'9e3d6d84e58d5e86a3097a4d8a731dcef9c922622b1fc225acf0385b218f41aa',true);
+  const adapter = await import('data:text/javascript;base64,' + adapterSource.toString('base64')); guard(true);
+  const graph = adapter.buildBootlinDirectoryMetadataV2Source(rawV1); guard(true);
+  if (graph.profile !== 'BOOTLIN_DIRECTORY_METADATA_V2_SOURCE' || Buffer.byteLength(graph.sourceText) !== 20438
+    || sha(graph.sourceText) !== 'ece2c9edbb3068bc65ce78454b7f8dbc5236d36f046849f4f30085c58c567557') fail('E_GRAPH_PIN');
+  const oldParts = "export const SPLIT_EVIDENCE_PARTS = Object.freeze(['gnu', 'rust']);";
+  const oldPaths = "export const SPLIT_EVIDENCE_PATHS = Object.freeze({\n  gnu: '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/gnu-evidence-collection-v1.result.json',\n  rust: '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/rust-evidence-collection-v1.result.json',\n});";
+  let writerText = rawWriter.toString('utf8');
+  if (writerText.split(oldParts).length !== 2 || writerText.split(oldPaths).length !== 2) fail('E_TRANSFORM');
+  writerText = writerText.replace(oldParts,"export const SPLIT_EVIDENCE_PARTS = Object.freeze(['bootlin-directories-v2']);");
+  if (Buffer.byteLength(writerText) !== 18014 || sha(writerText) !== '90b240f439858321154fba89bd0e196180d3abd654858510a9735d9c2efcb14a') fail('E_SOURCE_PIN');
+  writerText = writerText.replace(oldPaths,"export const SPLIT_EVIDENCE_PATHS = Object.freeze({ 'bootlin-directories-v2': '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/bootlin-source-license-directories-v2.result.json' });");
+  if (Buffer.byteLength(writerText) !== 17921 || sha(writerText) !== '3bf5af8535a3e4614e16189e4a7e67a16966e7b2f5c8459413e12f9dcd11075e') fail('E_SOURCE_PIN');
+  const module = await import('data:text/javascript;base64,' + Buffer.from(graph.sourceText).toString('base64')); guard(true);
+  const writer = await import('data:text/javascript;base64,' + Buffer.from(writerText).toString('base64')); guard(true);
+  if (module.collectRegisteredBootlinDirectoriesV1 !== undefined || module.BOOTLIN_DIRECTORY_METADATA_V1_PROFILE !== undefined) fail('E_OLD_ENTRY');
+  const policy = module.BOOTLIN_DIRECTORY_METADATA_V2_PROFILE, policyText = JSON.stringify(policy) + '\n';
+  if (Buffer.byteLength(policyText) !== 1027 || sha(policyText) !== '47336055ae39a95bdccb99e4a3fcee3a5618016fd946c6d15f1300a4a6e1ef16') fail('E_POLICY_PIN');
+  publisher = writer.reserveSplitEvidencePublication('bootlin-directories-v2',() => guard());
+  const preparation = capture(DIR + 'gnu-preparation-evidence-v1.result.json',2724242,'3ae1a4949a913b972695a32dfab2076354e49a70a960021a34050c63a9bb281b');
+  const readme = JSON.parse(preparation).collection.roles[0].selected.find(row => row.index === 8412);
+  if (!readme || readme.path !== 'x86-64--glibc--stable-2026.08-1/README.txt' || readme.size !== 1093
+    || readme.bodySha256 !== 'fa0b24cb67e660a5aebe2f4d4705b5a7ca2e5860e2e0405ddf6fddad40d4a41a'
+    || Buffer.byteLength(readme.metadata.observation.text,'utf8') !== 1093
+    || sha(Buffer.from(readme.metadata.observation.text,'utf8')) !== readme.bodySha256) fail('E_README_PIN');
+  if (captures !== 4 || captureCloses !== 4 || returned !== 2767654 || requested !== 2767658 || allocated !== 2767658 || captureCloseFailed) fail('E_CLOSE'); guard();
+  module.SOURCE_BIND_PARENT_CLOCK_ORIGIN(started); guard();
+  const result = await module.collectRegisteredBootlinDirectoriesV2();
+  if (result.exitCode !== 0 || result.data.status !== 'BOOTLIN_DIRECTORY_METADATA') { collectionStop = result.data; fail('E_DIRECTORY_COLLECTION'); }
+  guard(); const data = result.data, c = data.counts;
+  if (data.profile !== 'registered-bootlin-directories-v2' || data.mockOnly !== false || data.cleanupUncertain !== false
+    || data.observations.length !== 2 || c.fetchCalls !== 2 || c.requestsAttempted !== 2 || c.completedObservations !== 2
+    || c.eofObservations !== 2 || c.releases !== 2 || c.cancellations !== 0 || c.clearedTimers !== 3 || c.activeTimers !== 0
+    || c.pendingFetchKnown !== false || c.pendingReadKnown !== false || c.deliveredBytes !== c.retainedBytes
+    || c.retainedBytes > 2097152 || c.peakDeliveredChunkBytes > 1048576 || c.readAttempts > 2048) fail('E_COLLECTION');
+  for (let i = 0; i < 2; i++) {
+    const o = data.observations[i], body = Buffer.from(o.bodyUtf8,'utf8');
+    if (o.role !== policy.roles[i] || o.requestedUrl !== policy.urls[i] || o.responseUrl !== policy.urls[i] || o.status !== 200
+      || o.eof !== true || o.utf8Validated !== true || o.interpreted !== false || o.urlsFollowed !== false
+      || body.length !== o.observedBodyBytes || body.length > 1048576 || sha(body) !== o.bodySha256) fail('E_COLLECTION');
+  }
+  const sourcePins = {adapter:{bytes:5760,sha256:'d09558231e7ea5f27c2ed0d1b34c599c087bc34a4c6e5e75e3e4ecf3f1ff9f80'},
+    rawCollector:graph.graphPins.raw,privateCollector:graph.graphPins.final,graph:graph.graphPins,
+    writer:{rawBytes:18003,rawSha256:'9e3d6d84e58d5e86a3097a4d8a731dcef9c922622b1fc225acf0385b218f41aa',privateBytes:17921,privateSha256:'3bf5af8535a3e4614e16189e4a7e67a16966e7b2f5c8459413e12f9dcd11075e'},
+    preparation:{bytes:2724242,sha256:'3ae1a4949a913b972695a32dfab2076354e49a70a960021a34050c63a9bb281b'},
+    readme:{bytes:1093,sha256:readme.bodySha256},policy:{bytes:1027,sha256:sha(policyText)}};
+  const report = {profile:'BOOTLIN_DIRECTORY_METADATA_V2_RESULT',status:'BOOTLIN_DIRECTORY_METADATA_V2_DATA',sourcePins,collection:data,
+    scope:'user-selected fresh V2 preparation directory metadata outside offline capture/build/runtime',
+    sourceAuthenticated:false,publisherAuthenticated:false,licenseComplianceVerified:false,pythonFreeSubsetVerified:false,
+    runtimeProvidersQualified:false,abiVerified:false,imagePrepared:false,nativeQualified:false,rustReady:false,trainingReady:false};
+  const text = JSON.stringify(report).replace(/[^\x00-\x7f]/g,c => '\\u' + c.charCodeAt(0).toString(16).padStart(4,'0')) + '\n';
+  const bytes = Buffer.from(text,'ascii'); if (bytes.length > 16777216) fail('E_OUTPUT'); guard();
+  const published = publisher.publish(bytes); guard(); const state = publisher.snapshot();
+  if (published.part !== 'bootlin-directories-v2' || published.path !== DIR + 'bootlin-source-license-directories-v2.result.json'
+    || published.state !== 'PUBLISHED_READBACK_MATCHED' || published.byteLength !== bytes.length || published.sha256 !== sha(bytes)
+    || published.mode !== '0444' || published.readbackVerified !== true || published.directorySynced !== true
+    || state.ownedFDCount !== 0 || state.closeFailed !== false || state.cleanupUncertain !== false
+    || published.counts.closes !== 3 || published.counts.closeAttempts !== 3 || published.counts.fsyncs !== 4
+    || published.counts.readbackBytes !== bytes.length || published.counts.readbackHashBytes !== bytes.length
+    || published.counts.requestedReadBytes < bytes.length + 1 || published.counts.requestedReadBytes > 16777217) fail('E_PUBLICATION'); guard();
+  const terminal = JSON.stringify({profile:'BOOTLIN_DIRECTORY_METADATA_V2_RECEIPT',status:'BOOTLIN_DIRECTORY_METADATA_V2_DATA',publicationAccepted:true,
+    result:{path:published.path,byteLength:published.byteLength,sha256:published.sha256,mode:published.mode,readbackVerified:true,directorySynced:true},
+    sourcePins,captureCounts:{captures,captureCloses,allocated,requested,returned},publicationCounts:published.counts,
+    observations:data.observations.map(o => ({role:o.role,url:o.requestedUrl,bytes:o.observedBodyBytes,sha256:o.bodySha256})),
+    networkCounts:c,sourceAuthenticated:false,publisherAuthenticated:false,licenseComplianceVerified:false,
+    runtimeProvidersQualified:false,pythonFreeSubsetVerified:false,abiVerified:false,imagePrepared:false,nativeQualified:false,rustReady:false,trainingReady:false}) + '\n';
+  if (Buffer.byteLength(terminal) > 65536) fail('E_OUTPUT'); guard();
+  process.stdout.on('error',() => { process.exitCode = 1; }); process.stdout.write(terminal);
+} catch (error) {
+  const code = error && typeof error === 'object' ? Object.getOwnPropertyDescriptor(error,'code')?.value : null;
+  const publicationCleanupUncertain = abortPublications(code,[publisher]);
+  const cleanupUncertain = captureCloseFailed || publicationCleanupUncertain || collectionStop?.cleanupUncertain === true || performance.now() - started >= 30000;
+  const terminal = JSON.stringify({profile:'BOOTLIN_DIRECTORY_METADATA_V2_RECEIPT',status:'STOP',publicationAccepted:false,
+    error:typeof code === 'string' && /^E_[A-Z_]{1,40}$/.test(code) ? code : 'E_PARENT_OPERATION',
+    collectionStop,captures,captureCloses,cleanupUncertain,retainedFilesUnaccepted:true}) + '\n';
+  if (Buffer.byteLength(terminal) > 65536) throw new Error('E_OUTPUT');
+  process.stdout.write(terminal); process.exitCode = 1;
+}
+NODE
+```
+<!-- END STEP2 BOOTLIN DIRECTORIES V2 -->
+
+Required fresh parent/static/correspondence gates and exact current section/command binding precede one V2 invocation; no V2 network request or result reservation ran while preparing this launcher.
+Mandatory parent quality and source-based security inspection report no findings for this fixed DATA-only V2 scope, not runtime/Step2 qualification or result acceptance.
+Current verification passes167/167 (130 new+37 owner),0 failures/skips/cancellations/todo,126 syntax targets, pinned-offline owner check/render, diff checks and launcher syntax-only validation.
+The exact fresh launcher is12211 bytes/SHA-256 `bc92d0e6a69b1543db0c2bc0e68462d047eb9287b479808ce6ba8f2cb185637e`.
+Source/spec correspondence and exact current-section binding remain before use; the outer parent must mechanically require child exit0, independent full readback and exclusive exact fresh-receipt preservation before acceptance.
+
+### 33.107 Fresh directory V2 DATA accepted — both origins observed, no bundle acquisition
+
+Final required correspondence confirms60 paths in-sync before the new operation.
+Registered section530489/SHA-256 `ef443d3c7d747efb55d092c18a80ffe6461bdf11aa334437e3b5cc4b9af9cccf` bound the12211-byte §33.106 launcher/`bc92d0e6a69b1543db0c2bc0e68462d047eb9287b479808ce6ba8f2cb185637e` and adapter/raw/final/policy identities.
+The single V2 invocation returned BOOTLIN_DIRECTORY_METADATA_V2_DATA/publicationAccepted:true/child exit0 and is consumed.
+The [full metadata result](../tooling/native-ingress/bootlin-source-license-directories-v2.result.json) is138884 bytes/SHA-256 `c5cdf65b6ad92de0eeb379017bff4464bed8136340394b1dc8f3b36c67699f61`.
+After independent full length/hash/EOF/0444/named-FD readback, the parent exclusively preserved the [exact compact receipt](../tooling/native-ingress/bootlin-source-license-directories-v2.receipt.json),3905 bytes/`e01edd22690836b1274646e62086dd27593c20965ca3c395202f1e3924251979`, with fsync/0444/readback/hash/EOF/directory sync.
+Sources body71655 bytes/`3ec2ebb752d98768658645ad0beeb02d6c3152c5c0e7fb73d1e567f1c3a5f177` and licenses body54483/`beb1ac11371a08f2ad5f85b9a25d8c1a38624acfe9b69c85c56e6f6afdafb738` both reach validated EOF, totaling126138 delivered/retained decoded bytes across27 reads,8178-byte peak chunk,0 rejected chunks/cancellations,2 releases/EOFs/completed observations and3 cleared/0 active timers.
+All4 repository captures close positively for2767654 returned/2767658 requested/allocated bytes; report publication adds3 positive closes/4 fsyncs.
+V2 cleanupUncertain:false is ordinary API completion, not wire/socket closure; V1's uncertain STOP/reservation/source/profile remain unchanged and unaccepted.
+
+Offline literal HTML inspection identifies package directories rather than source archives/notices, including gcc-final-15.3.0, gcc-initial-15.3.0, glibc-2.44-36-g2d5421ffca8893534d5e02ad38c28acd8e778fa3, gmp-6.3.0, mpfr-4.2.2, mpc-1.4.1, libzlib-1.3.2 and expat-2.8.4.
+Both accepted bodies contain one exact href="gcc-final-15.3.0/"; no link/resource was followed and no bundle/license text was downloaded.
+These directory declarations establish no source integrity, source/binary correspondence, notice applicability, publisher authentication or legal compliance; all runtime/ABI/NoPython/image/Native/readiness qualifiers remain false.
+Closing V2 saved-evidence verification passes1018/1018 (38 owner,125 directory V1,130 directory V2,119 GNU collector,119 GNU proposal,87 provider proposal,126 helper collector,155 archive utility,119 member plan),0 failures/skips/cancellations/todo,109.958s.
+All126 completed-source syntax targets, pinned-offline owner check/render and diff checks pass, with required60-path correspondence in-sync; the GCC test was still under construction and excluded from that checkpoint.
+
+### 33.108 GCC-final context plan — static successor pair and original-prefix proposal
+
+Architect and DevOps accept the next narrow scope: separately register exactly https://toolchains.bootlin.com/downloads/releases/sources/gcc-final-15.3.0/ and https://toolchains.bootlin.com/downloads/releases/licenses/gcc-final-15.3.0/.
+Static pre-admitted targets under unchanged envelopes are necessary preparation under §33, not automatic runtime link following and not a bundle-acquisition grant.
+Before requests, pin the accepted root result138884/c5cdf65b… and both exact body hashes/EOF/unique href matches, plus GNU proposal136598/7d34c5e0… with separate GCC rows1 and8/version15.3.0; infer no HOST/TARGET/license applicability from names.
+Privately specialize the approved V2 graph as inert source; change only profile, two fixed URL literals, two production names and two policy names, then import only the new GCC-final source image and retain its independent one-shot latch.
+Parent independently computes approved stages: profile20444/`cdd8b5205c80518f9e17064612e4e3b4bb37876395ba89be744645e0781798e3`; sourceUrl20461/`63bc60b1afa14670ffab842282c84c294761b6b3d467159abf55235bbf75e41a`; licenseUrl20478/`a556107f384a9cf0ad4dbc191760a038b1c20c7ce22d4b92a24f3f8885ecab6a`; entryNames20486/`3fabd3574f01fda4ef7f1b7de0bdcccb14d6191c75733ee4783f8c6d93259a62`; final policyNames20484/`23a1a7017a050c8f1ac4f6c9c1f610913cc97136ecf62480c8d9debd2592b323`.
+Actual policy JSON+LF must be1067 bytes/SHA-256 `e738e09ff89e8db2e0f23bce5c1bfa28f8dc6cd31398693d78bae90477d67bef` before HTTP; production entry collectRegisteredBootlinGccFinalContextV1 and BOOTLIN_GCC_FINAL_CONTEXT_V1_PROFILE expose no consumed root-directory entry.
+Keep1MiB/body/2MiB aggregate/16MiB full result, all header/read/node/UTF-8/HTTP/cleanup controls and original10s/27s/30s/3s clocks unchanged; bind the original parent started value once before invocation.
+Reserve only fresh bootlin-gcc-final-context-v1.result.json before network and preserve an exact .receipt.json or .stop.json through the established exclusive/seal/readback discipline; no existing target is probed/reused/repaired/deleted/retried.
+One new gcc-context-registration.test.mjs persists fake-only graph/URL/latch/deadline/custody tests; no new configurable collector or framework belongs to this scope.
+
+The saved sdk-location manifest is79 bytes/SHA-256 `e4df82547e211e82635d37dc97cd4bce2f5d941aebb24717a32b242811ea052f`, declaring /builds/buildroot.org/toolchains-builder/build/x86-64--glibc--stable-2026.08-1 plus terminating LF.
+Architect/DevOps consider image-internal placement at that original prefix a plausible minimum preparation proposal that may avoid relocation scripts/binary patching; it is not a selected host mount, approved copy map or proof that all compiled-in paths resolve.
+An explicit member/alias/provider map and actual wrapper/helper/sysroot fixtures under qualified containment remain necessary; preserve every copied regular body's accepted identity until a separately approved transformation exists.
+Directory metadata and actual notices close only their demonstrated context; do not invent a full reproducible GCC source-build prerequisite for ordinary Step2 or promote unproved full-source/legal/Native claims.
+Active Cargo source bytes/checksums/licenses/build-script/proc-macro closure remains binding.
+No GCC child-directory request, bundle acquisition, copy/materialization, compiler/member execution, image/Docker job or empirical operation ran while defining this plan.
+
+### 33.109 GCC-final metadata parent packet — new fixed pair, unchanged envelope
+
+This separate parent packet uses six fixed repository captures: adapter5760/d0955823…, raw V1 source19649/1a625ec2… as bytes only, writer18003/9e3d6d84…, preparation2724242/3ae1a494…, accepted root-directory result138884/c5cdf65b… and GNU proposal136598/7d34c5e0….
+Six positive closes total3043136 returned/3043142 requested/allocated bytes, under the unchanged8MiB/128-reads-per-file capture caps and source10s/parent27s work/30s outer including3s cleanup/external45s profile.
+Pin the five package-specialization stages and actual policy before importing/calling only the new GCC-final entry; retain the original-parent-clock bridge unchanged.
+Only exact static href/EOF/body-hash and duplicate-GCC-row bindings admit the new fixed URLs; no runtime traversal or bundle acquisition follows from them.
+Specialize only the writer's two declarations into bootlin-gcc-final-context/fresh bootlin-gcc-final-context-v1.result.json: intermediate18017/`35e337183714fa2b6960dc38cb80dfcc605efd320ca72d2d3dcd745fc33a1bc4`; final17918/`29690c60a66ec950c658e2f4d93c3d686a05ef4a57184b98426874455986b0d3`.
+Reserve exclusive0600 before evidence/network, and require both EOFs, fixed caps, original clocks and unchanged writer3-positive-close/4-fsync/0444/full-hash-EOF-identity-readback/directory-sync gates before compact acceptance.
+The outer parent must observe child exit0, independently verify full bytes and exclusively preserve the exact fresh .receipt.json or returned .stop.json; any failure retains partials unaccepted without retry.
+
+<!-- BEGIN STEP2 GCC FINAL CONTEXT V1 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+const ROOT = '/tmp/opencode/f9-bootstrap-correspondence', DIR = ROOT + '/_spec/tooling/native-ingress/';
+const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+const fail = code => { throw Object.assign(new Error(code), { code }); };
+const started = performance.now(), fields = ['dev','ino','mode','uid','gid','nlink','size','mtimeNs','ctimeNs'];
+let last = started, allocated = 0, captures = 0, captureCloses = 0, requested = 0, returned = 0, captureCloseFailed = false;
+let publisher = null, collectionStop = null;
+const guard = source => {
+  const now = performance.now();
+  if (!Number.isFinite(now) || now < last) fail('E_CLOCK'); last = now;
+  if (now - started >= (source === true ? 10000 : 27000)) fail('E_DEADLINE');
+};
+function capture(path, length, pin, source = false) {
+  guard(source); let fd = null, bytes;
+  try {
+    const named = fs.lstatSync(path, { bigint: true }); guard(source);
+    if (!named.isFile() || named.size !== BigInt(length) || length < 1 || allocated + length + 1 > 8388608) fail('E_LENGTH');
+    fd = fs.openSync(path, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW | fs.constants.O_NONBLOCK);
+    const before = fs.fstatSync(fd, { bigint: true }); guard(source);
+    if (!fields.every(k => before[k] === named[k]) || before.nlink !== 1n) fail('E_BINDING');
+    allocated += length + 1; bytes = Buffer.alloc(length); let position = 0, reads = 0;
+    while (position < length) {
+      guard(source); if (++reads > 128) fail('E_LIMIT');
+      const size = Math.min(65536, length - position); requested += size;
+      const n = fs.readSync(fd, bytes, position, size, position); returned += n;
+      if (n !== size) fail('E_LENGTH'); position += n;
+    }
+    guard(source); if (++reads > 128) fail('E_LIMIT'); requested++;
+    if (fs.readSync(fd, Buffer.alloc(1), 0, 1, length) !== 0) fail('E_EOF');
+    const after = fs.fstatSync(fd, { bigint: true }), finalName = fs.lstatSync(path, { bigint: true }); guard(source);
+    if (!fields.every(k => before[k] === after[k] && before[k] === finalName[k])) fail('E_BINDING');
+  } finally { if (fd !== null) { const owned = fd; fd = null; try { fs.closeSync(owned); captureCloses++; } catch { captureCloseFailed = true; fail('E_CLOSE'); } } }
+  guard(source); if (sha(bytes) !== pin) fail('E_HASH'); captures++; return bytes;
+}
+function abortPublications(code, publishers) {
+  let uncertain = code === 'E_PUBLICATION_CLOSE';
+  for (const publisher of publishers) if (publisher) {
+    try {
+      const aborted = publisher.abort(), snapshot = publisher.snapshot();
+      if (aborted.closeFailed !== false || aborted.cleanupUncertain !== false || snapshot.ownedFDCount !== 0
+        || snapshot.closeFailed !== false || snapshot.cleanupUncertain !== false) uncertain = true;
+    } catch { uncertain = true; }
+  }
+  return uncertain;
+}
+try {
+  const adapterSource = capture(ROOT + '/tooling/native-ingress/bootlin-directory-metadata-v2.mjs',5760,'d09558231e7ea5f27c2ed0d1b34c599c087bc34a4c6e5e75e3e4ecf3f1ff9f80',true);
+  const rawV1 = capture(ROOT + '/tooling/native-ingress/bootlin-directory-metadata.mjs',19649,'1a625ec28479ac28efeaa19a51095924f7db5c48524a1cd74570e0c4b7f3890f',true);
+  const rawWriter = capture(ROOT + '/tooling/native-ingress/split-evidence-publication.mjs',18003,'9e3d6d84e58d5e86a3097a4d8a731dcef9c922622b1fc225acf0385b218f41aa',true);
+  const adapter = await import('data:text/javascript;base64,' + adapterSource.toString('base64')); guard(true);
+  const base = adapter.buildBootlinDirectoryMetadataV2Source(rawV1); guard(true);
+  if (base.profile !== 'BOOTLIN_DIRECTORY_METADATA_V2_SOURCE' || Buffer.byteLength(base.sourceText) !== 20438
+    || sha(base.sourceText) !== 'ece2c9edbb3068bc65ce78454b7f8dbc5236d36f046849f4f30085c58c567557') fail('E_GRAPH_PIN');
+  const gccSteps = [
+    ['profile',"const PROFILE = 'registered-bootlin-directories-v2';","const PROFILE = 'registered-bootlin-gcc-final-context-v1';",1,20444,'cdd8b5205c80518f9e17064612e4e3b4bb37876395ba89be744645e0781798e3'],
+    ['sourceUrl','https://toolchains.bootlin.com/downloads/releases/sources/','https://toolchains.bootlin.com/downloads/releases/sources/gcc-final-15.3.0/',1,20461,'63bc60b1afa14670ffab842282c84c294761b6b3d467159abf55235bbf75e41a'],
+    ['licenseUrl','https://toolchains.bootlin.com/downloads/releases/licenses/','https://toolchains.bootlin.com/downloads/releases/licenses/gcc-final-15.3.0/',1,20478,'a556107f384a9cf0ad4dbc191760a038b1c20c7ce22d4b92a24f3f8885ecab6a'],
+    ['entryNames','collectRegisteredBootlinDirectoriesV2','collectRegisteredBootlinGccFinalContextV1',2,20486,'3fabd3574f01fda4ef7f1b7de0bdcccb14d6191c75733ee4783f8c6d93259a62'],
+    ['policyNames','BOOTLIN_DIRECTORY_METADATA_V2_PROFILE','BOOTLIN_GCC_FINAL_CONTEXT_V1_PROFILE',2,20484,'23a1a7017a050c8f1ac4f6c9c1f610913cc97136ecf62480c8d9debd2592b323'],
+  ];
+  let collectorText = base.sourceText; const gccGraph = {};
+  for (const [name,before,after,count,bytes,pin] of gccSteps) {
+    if (collectorText.split(before).length !== count + 1) fail('E_TRANSFORM');
+    collectorText = collectorText.split(before).join(after);
+    if (Buffer.byteLength(collectorText) !== bytes || sha(collectorText) !== pin) fail('E_GRAPH_PIN');
+    gccGraph[name] = {bytes,sha256:pin};
+  }
+  const oldParts = "export const SPLIT_EVIDENCE_PARTS = Object.freeze(['gnu', 'rust']);";
+  const oldPaths = "export const SPLIT_EVIDENCE_PATHS = Object.freeze({\n  gnu: '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/gnu-evidence-collection-v1.result.json',\n  rust: '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/rust-evidence-collection-v1.result.json',\n});";
+  let writerText = rawWriter.toString('utf8');
+  if (writerText.split(oldParts).length !== 2 || writerText.split(oldPaths).length !== 2) fail('E_TRANSFORM');
+  writerText = writerText.replace(oldParts,"export const SPLIT_EVIDENCE_PARTS = Object.freeze(['bootlin-gcc-final-context']);");
+  if (Buffer.byteLength(writerText) !== 18017 || sha(writerText) !== '35e337183714fa2b6960dc38cb80dfcc605efd320ca72d2d3dcd745fc33a1bc4') fail('E_SOURCE_PIN');
+  writerText = writerText.replace(oldPaths,"export const SPLIT_EVIDENCE_PATHS = Object.freeze({ 'bootlin-gcc-final-context': '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/bootlin-gcc-final-context-v1.result.json' });");
+  if (Buffer.byteLength(writerText) !== 17918 || sha(writerText) !== '29690c60a66ec950c658e2f4d93c3d686a05ef4a57184b98426874455986b0d3') fail('E_SOURCE_PIN');
+  const module = await import('data:text/javascript;base64,' + Buffer.from(collectorText).toString('base64')); guard(true);
+  const writer = await import('data:text/javascript;base64,' + Buffer.from(writerText).toString('base64')); guard(true);
+  if (module.collectRegisteredBootlinDirectoriesV1 !== undefined || module.collectRegisteredBootlinDirectoriesV2 !== undefined) fail('E_OLD_ENTRY');
+  const policy = module.BOOTLIN_GCC_FINAL_CONTEXT_V1_PROFILE, policyText = JSON.stringify(policy) + '\n';
+  if (Buffer.byteLength(policyText) !== 1067 || sha(policyText) !== 'e738e09ff89e8db2e0f23bce5c1bfa28f8dc6cd31398693d78bae90477d67bef') fail('E_POLICY_PIN');
+  publisher = writer.reserveSplitEvidencePublication('bootlin-gcc-final-context',() => guard());
+  const preparation = capture(DIR + 'gnu-preparation-evidence-v1.result.json',2724242,'3ae1a4949a913b972695a32dfab2076354e49a70a960021a34050c63a9bb281b');
+  const readme = JSON.parse(preparation).collection.roles[0].selected.find(row => row.index === 8412);
+  if (!readme || readme.path !== 'x86-64--glibc--stable-2026.08-1/README.txt' || readme.size !== 1093
+    || readme.bodySha256 !== 'fa0b24cb67e660a5aebe2f4d4705b5a7ca2e5860e2e0405ddf6fddad40d4a41a'
+    || Buffer.byteLength(readme.metadata.observation.text,'utf8') !== 1093
+    || sha(Buffer.from(readme.metadata.observation.text,'utf8')) !== readme.bodySha256) fail('E_README_PIN');
+  const rootBytes = capture(DIR + 'bootlin-source-license-directories-v2.result.json',138884,'c5cdf65b6ad92de0eeb379017bff4464bed8136340394b1dc8f3b36c67699f61');
+  const roots = JSON.parse(rootBytes).collection.observations;
+  const rootPins = [
+    ['sources','https://toolchains.bootlin.com/downloads/releases/sources/',71655,'3ec2ebb752d98768658645ad0beeb02d6c3152c5c0e7fb73d1e567f1c3a5f177'],
+    ['licenses','https://toolchains.bootlin.com/downloads/releases/licenses/',54483,'beb1ac11371a08f2ad5f85b9a25d8c1a38624acfe9b69c85c56e6f6afdafb738'],
+  ];
+  if (roots.length !== 2) fail('E_CONTEXT_PIN');
+  for (let i = 0; i < 2; i++) {
+    const [role,url,bytes,pin] = rootPins[i], row = roots[i], body = Buffer.from(row.bodyUtf8,'utf8');
+    if (row.role !== role || row.requestedUrl !== url || row.responseUrl !== url || row.eof !== true || body.length !== bytes
+      || sha(body) !== pin || row.bodySha256 !== pin || row.bodyUtf8.split('href="gcc-final-15.3.0/"').length !== 2) fail('E_CONTEXT_PIN');
+  }
+  const proposalBytes = capture(DIR + 'gnu-preparation-plan-v1.result.json',136598,'7d34c5e0308dc8397a221618dbd6e85f7c253b0ccfa8d806cb458a6b5e544f6e');
+  const gccRows = JSON.parse(proposalBytes).distributionDeclarations.rows.filter(row => row.packageLabel === 'gcc-final');
+  if (gccRows.length !== 2 || gccRows[0].ordinal !== 1 || gccRows[1].ordinal !== 8
+    || gccRows.some(row => row.cells[0] !== 'gcc-final' || row.cells[1] !== '15.3.0' || row.domain !== 'UNRESOLVED')) fail('E_CONTEXT_PIN');
+  if (captures !== 6 || captureCloses !== 6 || returned !== 3043136 || requested !== 3043142 || allocated !== 3043142 || captureCloseFailed) fail('E_CLOSE'); guard();
+  module.SOURCE_BIND_PARENT_CLOCK_ORIGIN(started); guard();
+  const result = await module.collectRegisteredBootlinGccFinalContextV1();
+  if (result.exitCode !== 0 || result.data.status !== 'BOOTLIN_DIRECTORY_METADATA') { collectionStop = result.data; fail('E_DIRECTORY_COLLECTION'); }
+  guard(); const data = result.data, c = data.counts;
+  if (data.profile !== 'registered-bootlin-gcc-final-context-v1' || data.mockOnly !== false || data.cleanupUncertain !== false
+    || data.observations.length !== 2 || c.fetchCalls !== 2 || c.requestsAttempted !== 2 || c.completedObservations !== 2
+    || c.eofObservations !== 2 || c.releases !== 2 || c.cancellations !== 0 || c.clearedTimers !== 3 || c.activeTimers !== 0
+    || c.pendingFetchKnown !== false || c.pendingReadKnown !== false || c.deliveredBytes !== c.retainedBytes
+    || c.retainedBytes > 2097152 || c.peakDeliveredChunkBytes > 1048576 || c.readAttempts > 2048) fail('E_COLLECTION');
+  for (let i = 0; i < 2; i++) {
+    const o = data.observations[i], body = Buffer.from(o.bodyUtf8,'utf8');
+    if (o.role !== policy.roles[i] || o.requestedUrl !== policy.urls[i] || o.responseUrl !== policy.urls[i] || o.status !== 200
+      || o.eof !== true || o.utf8Validated !== true || o.interpreted !== false || o.urlsFollowed !== false
+      || body.length !== o.observedBodyBytes || body.length > 1048576 || sha(body) !== o.bodySha256) fail('E_COLLECTION');
+  }
+  const sourcePins = {adapter:{bytes:5760,sha256:'d09558231e7ea5f27c2ed0d1b34c599c087bc34a4c6e5e75e3e4ecf3f1ff9f80'},
+    base:base.graphPins,contextGraph:gccGraph,
+    writer:{rawBytes:18003,rawSha256:'9e3d6d84e58d5e86a3097a4d8a731dcef9c922622b1fc225acf0385b218f41aa',privateBytes:17918,privateSha256:'29690c60a66ec950c658e2f4d93c3d686a05ef4a57184b98426874455986b0d3'},
+    preparation:{bytes:2724242,sha256:'3ae1a4949a913b972695a32dfab2076354e49a70a960021a34050c63a9bb281b'},
+    readme:{bytes:1093,sha256:readme.bodySha256},rootDirectories:{bytes:138884,sha256:'c5cdf65b6ad92de0eeb379017bff4464bed8136340394b1dc8f3b36c67699f61'},
+    gnuProposal:{bytes:136598,sha256:'7d34c5e0308dc8397a221618dbd6e85f7c253b0ccfa8d806cb458a6b5e544f6e'},policy:{bytes:1067,sha256:sha(policyText)}};
+  const report = {profile:'BOOTLIN_GCC_FINAL_CONTEXT_RESULT_V1',status:'BOOTLIN_GCC_FINAL_CONTEXT_DATA',sourcePins,collection:data,
+    packageContext:{packageLabel:'gcc-final',version:'15.3.0',declarationRows:gccRows,domain:'UNRESOLVED',sourceKind:'DISTRIBUTION_DECLARATION'},
+    scope:'static GCC-final source/license directory metadata outside offline capture/build/runtime',
+    sourceAuthenticated:false,publisherAuthenticated:false,licenseComplianceVerified:false,pythonFreeSubsetVerified:false,
+    runtimeProvidersQualified:false,abiVerified:false,imagePrepared:false,nativeQualified:false,rustReady:false,trainingReady:false};
+  const text = JSON.stringify(report).replace(/[^\x00-\x7f]/g,c => '\\u' + c.charCodeAt(0).toString(16).padStart(4,'0')) + '\n';
+  const bytes = Buffer.from(text,'ascii'); if (bytes.length > 16777216) fail('E_OUTPUT'); guard();
+  const published = publisher.publish(bytes); guard(); const state = publisher.snapshot();
+  if (published.part !== 'bootlin-gcc-final-context' || published.path !== DIR + 'bootlin-gcc-final-context-v1.result.json'
+    || published.state !== 'PUBLISHED_READBACK_MATCHED' || published.byteLength !== bytes.length || published.sha256 !== sha(bytes)
+    || published.mode !== '0444' || published.readbackVerified !== true || published.directorySynced !== true
+    || state.ownedFDCount !== 0 || state.closeFailed !== false || state.cleanupUncertain !== false
+    || published.counts.closes !== 3 || published.counts.closeAttempts !== 3 || published.counts.fsyncs !== 4
+    || published.counts.readbackBytes !== bytes.length || published.counts.readbackHashBytes !== bytes.length
+    || published.counts.requestedReadBytes < bytes.length + 1 || published.counts.requestedReadBytes > 16777217) fail('E_PUBLICATION'); guard();
+  const terminal = JSON.stringify({profile:'BOOTLIN_GCC_FINAL_CONTEXT_RECEIPT_V1',status:'BOOTLIN_GCC_FINAL_CONTEXT_DATA',publicationAccepted:true,
+    result:{path:published.path,byteLength:published.byteLength,sha256:published.sha256,mode:published.mode,readbackVerified:true,directorySynced:true},
+    sourcePins,captureCounts:{captures,captureCloses,allocated,requested,returned},publicationCounts:published.counts,
+    observations:data.observations.map(o => ({role:o.role,url:o.requestedUrl,bytes:o.observedBodyBytes,sha256:o.bodySha256})),
+    gccDeclarationOrdinals:[1,8],networkCounts:c,sourceAuthenticated:false,publisherAuthenticated:false,licenseComplianceVerified:false,
+    runtimeProvidersQualified:false,pythonFreeSubsetVerified:false,abiVerified:false,imagePrepared:false,nativeQualified:false,rustReady:false,trainingReady:false}) + '\n';
+  if (Buffer.byteLength(terminal) > 65536) fail('E_OUTPUT'); guard();
+  process.stdout.on('error',() => { process.exitCode = 1; }); process.stdout.write(terminal);
+} catch (error) {
+  const code = error && typeof error === 'object' ? Object.getOwnPropertyDescriptor(error,'code')?.value : null;
+  const publicationCleanupUncertain = abortPublications(code,[publisher]);
+  const cleanupUncertain = captureCloseFailed || publicationCleanupUncertain || collectionStop?.cleanupUncertain === true || performance.now() - started >= 30000;
+  const terminal = JSON.stringify({profile:'BOOTLIN_GCC_FINAL_CONTEXT_RECEIPT_V1',status:'STOP',publicationAccepted:false,
+    error:typeof code === 'string' && /^E_[A-Z_]{1,40}$/.test(code) ? code : 'E_PARENT_OPERATION',
+    collectionStop,captures,captureCloses,cleanupUncertain,retainedFilesUnaccepted:true}) + '\n';
+  if (Buffer.byteLength(terminal) > 65536) throw new Error('E_OUTPUT');
+  process.stdout.write(terminal); process.exitCode = 1;
+}
+NODE
+```
+<!-- END STEP2 GCC FINAL CONTEXT V1 -->
+
+Fresh persisted fake tests, required parent/static/correspondence gates and exact current section/command binding precede one GCC-final metadata invocation; no child-directory request or new reservation ran while preparing this packet.
+The delivered registration test is34234 bytes/SHA-256 `16109e1e6b4ef45f25656f7bcebad600114f87ad34c665f2ae6a083fecc115f2`; its58 fake/static tests and38 owner checks pass together96/96,0 failures/skips/cancellations/todo,0.456s.
+Mandatory parent quality/security source inspections report no findings for the fixed DATA-only scope; current coverage grows60→61.
+Current static verification passes127 syntax targets, pinned-offline owner check/render, diff checks and exact launcher syntax-only validation.
+The fresh exact launcher is15504 bytes/SHA-256 `45df1cac7978b3329397673845f78476dd5e93aeb029df30cc60ba29883955de`; final correspondence and exact current-section binding precede its one invocation.
+
+### 33.110 GCC-final directory context accepted — source/notice entries, no file acquisition
+
+Final required correspondence confirms61 coverage paths in-sync before the new invocation.
+Registered section555084/SHA-256 `2a17ff6b181cf0c3548ca65b5ad681cdc21f581a46d52a7e3b7557834a997858` bound the15504-byte §33.109 launcher/`45df1cac7978b3329397673845f78476dd5e93aeb029df30cc60ba29883955de` and all base/package graph/policy identities.
+The single invocation returned BOOTLIN_GCC_FINAL_CONTEXT_DATA/publicationAccepted:true/child exit0 and is consumed.
+The [full result](../tooling/native-ingress/bootlin-gcc-final-context-v1.result.json) is14690 bytes/SHA-256 `b020748b1a6cae8254e82486821682d79e747918a8a0128a897fa33c94806c7b`; after independent full hash/length/EOF/0444/named-FD readback the parent exclusively preserved the [exact compact receipt](../tooling/native-ingress/bootlin-gcc-final-context-v1.receipt.json),4474 bytes/`166c641800914834ce3d39df367021ac8a8e67d38b4c43a055c78322bd0c3519`, synchronized/sealed/readback/EOF/directory-sync verified.
+Sources directory body2349 bytes/`c14dd86c50fbc18db9fc3ed0bd06d90f1af66d45564c7ff80b63e94bfd8fb76c` and licenses1867/`bc44d5fff09beba4b68c3ad6ac6ae914e26f8174f32c85322c721f0f355f8f1c` both reached EOF in4 reads,4216 delivered/retained bytes,2 releases/completed observations,0 cancellations/rejected chunks and3 cleared/0 active timers.
+All6 capture descriptors closed positively at3043136 returned/3043142 requested/allocated bytes; publication adds3 positive closes/4 fsyncs and cleanupUncertain:false, not a transport-closure proof.
+
+The source listing advertises gcc-15.3.0.tar.xz at rounded97M, three patch files, a168-byte series entry and xtensa_dc233c.tar.gz at rounded90K.
+The license listing exposes unique exact hrefs for COPYING, COPYING.LIB, COPYING.RUNTIME, COPYING3 and COPYING3.LIB, with rounded displayed sizes18K/26K/3.2K/34K/7.5K respectively.
+Those displayed sizes are not exact lengths or hashes and authorize no file acquisition; no notice, source archive, patch, series or Xtensa archive was fetched.
+Both GCC declaration rows1 and8 remain separate and domain:UNRESOLVED; all source/publisher/license/provider/NoPython/ABI/runtime/image/Native/readiness qualifiers remain false.
+V1's old limit STOP/cleanup uncertainty/reservation and all consumed directory variants remain unchanged.
+
+The next scope decision concerns actual passive notice files, not another directory or bundle acquisition.
+Architect/DevOps distinguish a new LICENSE_NOTICE_TEXT profile from the consumed HTML profiles: exact static targets, allowed text/plain/octet-stream media, fatal UTF-8/byte round trip and unchanged original resource clocks remain necessary.
+Standard notice pagination may include FF(U+000C); accepting FF is a new explicit passive-text rule, not an automatic relaxation of any consumed profile.
+The new request set/control rule remains unselected here; record a separate decision before new import or requests, preserve all indexed-but-unfetched notices explicitly and infer no applicability/legal permission from possession.
+Closing saved-evidence verification passes1077/1077 (39 owner,125 directory V1,130 directory V2,58 GCC registration,119 GNU collector,119 GNU proposal,87 provider proposal,126 helper collector,155 archive utility,119 member plan),0 failures/skips/cancellations/todo,108.196s.
+All127 syntax targets, pinned-offline owner check/render and diff checks pass; required outcome/spec correspondence confirms61 paths in-sync.
+Verification performs no consumed network/collection/publication operation, opens no failed reservation and acquires no notice or source file.
+
+### 33.111 Explicit five-notice selection — new passive-text profile, same original clocks
+
+The interactive question offered five-notice capture with FF pagination, strict control rejection or operator-supplied offline files.
+The user explicitly selected Capture all notices (Recommended): up to five fixed GETs, FF page breaks as passive UTF-8,1MiB/file,2MiB aggregate,16MiB result and unchanged10s/27s/30s deadlines, with no bundles or legal interpretation.
+Targets are exactly https://toolchains.bootlin.com/downloads/releases/licenses/gcc-final-15.3.0/ plus COPYING,COPYING.LIB,COPYING.RUNTIME,COPYING3,COPYING3.LIB in that order.
+This authorizes a new passive notice-file acquisition scope, not an HTML-profile relaxation, old-profile retry, transitive fetch, source archive/patch acquisition or qualification of any prior failed/uncertain profile.
+Architect/DevOps accept two new files, bootlin-gcc-notices-source.mjs/.test.mjs, before implementation; the module remains a pure crypto/util source adapter with no filesystem/process/network or source-evaluation capability.
+The exact one-argument buildBootlinGccNoticesSource API accepts only an immutable primitive ASCII source string20438/ece2c9ed… before any transform, returns frozen sourceText/graphPins/policyPin and exposes no production pin/path/profile override.
+
+Parent independently computes the approved base/stages before build: base20438/`ece2c9edbb3068bc65ce78454b7f8dbc5236d36f046849f4f30085c58c567557`; profile20438/`92c9251709b15921cfb721994d3c4347d5cd569c27781418f05ab4c88142035e`; urls20778/`d202328546dec1a7a10bd92c1f882f9ebb0c7f5c640ccbf185d0971bce644bf5`; roles20907/`240c6fb0f6c8eec76eb3ea06530e5d40364ceb415192d6650cbb54086bd82a15`; requests20907/`a353648bdcdb997e982a67129179157e737a7d24b385666cd1693a43ce2b1d9b`; scope20904/`702fe9b41085f421dbfd349ca1ee147c1672eada3c34e263c153456e0e51e52a`; entryNames20902/`6b5a2e0d903d1209ef3bae1dc2a7f3a486d4ab61c5ce568e97000ccba88eab94`; policyNames20888/`37a06a8641d758908754d76785994ff013e0a468aa9bd123ccaf764ad6909096`.
+Notice-specific stages continue: media21026/`34dbf69a452284c0910b7d5206ee1ec874cea0180f035b5a3349f1a89fc67d3f`; headerCharset21037/`58646c210a4490236a69e773b074ba75932c697e4f1a72d321ed673202d258f2`; nonempty21071/`0bc1fcadbcae2b7c7fb11cfb8de1bba3389d05a69153d48ed4d165da48158672`; asciiBody21150/`1e5d5e84c8c80e1322d0e4941e4ff14af1b7dfadfb76d7a71c4167c3f7137c62`; bodyControls21146/`022e120ab83f35c7ba626906e3b95c0ef972de6c120a05b668d49db3ee41230d`; bodyKind21147/`a9dd1735765158c2877191265f82531af829156d7e1eb7a9ed3f3e177c4f9738`; requestsBody21225/`14ca9a99cf0acaf481ee83bc424b3c93a93fb0538aeff96eeecfc6ff0f7d71fb`; final status21227/`ab907eccc60c8f58c351ca82b449d2fd774c96e343e07cf49ceda74b86e77a44`.
+Actual BOOTLIN_GCC_NOTICES_V1_PROFILE JSON+LF must be1468 bytes/SHA-256 `5c6998988e94606c75ec2be7f18f513e4e1520d2f2b53ad0bfd3a7373bc5f7df` before HTTP; new zero-argument collectRegisteredBootlinGccNoticesV1 has an independent once latch and no callable consumed entry.
+
+The new profile uses five literal sequential awaits and requests:5;10 means seconds/request, not an invented request-count guard.
+Keep header64/16KiB, read1024/response/2048 aggregate, body1MiB/2MiB aggregate, output16MiB/depth64/nodes100000 and every original10s-request/27s-work/30s-outer/3s-cleanup clock/error-withholding behavior unchanged.
+Accept only text/plain with absent/known UTF-8/US-ASCII charset or application/octet-stream; enforce a US-ASCII declaration against actual bytes including BOM bytes, reject empty bodies before decoding and retain fatal UTF-8/BOM-preserving exact round-trip hashing.
+Only TAB/LF/CR/explicitly approved FF pass the body-control guard; other C0/C1/DEL/NUL/ANSI controls and all header FF remain rejected.
+Report LICENSE_NOTICE_TEXT/PUBLIC_LICENSE_NOTICE_TEXT, with semantic interpretation/applicability/copying/legal/source authentication/NoPython/ABI/runtime/image/Native/readiness claims false; nonempty text is not notice validity.
+Pin accepted GCC context14690/b020748b…, license EOF1867/bc44d5ff… and all five unique hrefs plus separate GCC rows1/8 before network; historical preparation/README references remain explicitly historical, not current-filesystem/source-authentication proofs.
+Reserve only fresh bootlin-gcc-notices-v1.result.json before GET1; exclusively preserve only the selected exact .receipt.json after child exit0/independent full readback or returned .stop.json on failure.
+No both-terminal precreation, rollback/deletion, old-path probe/reuse/repair/retry or fallback path is permitted; terminal persistence failure leaves all retained bytes unaccepted.
+Source/fake tests, mandatory source/static/correspondence gates and exact fresh parent registration precede any request; no notice acquisition, archive/patch/series download, compiler/member execution, image/Docker job or empirical operation ran while defining this selected source unit.
+
+### 33.112 Five-notice source delivered — typed passive acquisition parent packet
+
+The pure notice adapter is6707 bytes/SHA-256 `5688445c67f6c7ea92784d5727302e7b454923fa4bfda5ed1864e1659a614757`; tests33979/`dbc0015b1f2240b39f70c9c662aa0f970c04b8666b2004bf025c6bd75932f8d8`.
+Independent verification passes189/189 (149 new+40 owner),0 failures/skips/cancellations/todo,1.207s, both syntax checks and diff checks; mandatory quality/security source inspections report no findings for DATA-only readiness.
+Every approved stage matches final21227/ab907ecc… and actual policy1468/5c699898…; the unchanged original-clock bridge and abort-resistant fake cleanup behavior remain covered without transport-closure claims.
+Source coverage grows61→63 after handoff; no notice request or new reservation occurred during these checks.
+
+The parent below captures five fixed images: notice adapter6707/5688445c…, V2 adapter5760/d0955823…, raw V1 source19649/1a625ec2… as bytes only, writer18003/9e3d6d84… and accepted GCC context14690/b020748b….
+Five positive capture closes total64809 returned/64814 requested/allocated bytes, retaining the established8MiB/128-reads-per-file capture caps and original source10s/parent27s-work/30s-outer-including3s-cleanup/external45s profile.
+Build base V2 as inert text, then the notice graph; verify final source and actual policy before calling only the new five-notice entry.
+Accepted GCC context supplies pinned historical preparation/README bindings, exact license EOF/body SHA/five unique hrefs and separate unresolved declaration rows1/8; it supplies no current-filesystem, source-authentication or legal proof.
+Specialize only the writer's two declarations into bootlin-gcc-notices/fresh bootlin-gcc-notices-v1.result.json: intermediate18011/`a2c75a636ac15b9b0c6d446de51d7cc2cf0d0d6b8d49f8e2cbef046d6c8c6281`; final17900/`bb76460341425b370ba07dc0ff979a7a73aa0aa6a0498eecabd19b7317f554ef`.
+Reserve only the result O_EXCL0600 before context reads/GET1; all five valid EOFs, original clocks and source/media/body gates precede unchanged3-close/4-fsync/0444/full-hash-EOF-identity-readback/directory-sync publication.
+The outer parent must observe child exit0, independently verify full bytes and exclusively preserve the exact selected .receipt.json or returned .stop.json; no precreation of both terminals, rollback/deletion, retry, alternate path or acceptance from a stored file alone is allowed.
+
+<!-- BEGIN STEP2 GCC NOTICES V1 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+const ROOT = '/tmp/opencode/f9-bootstrap-correspondence', DIR = ROOT + '/_spec/tooling/native-ingress/';
+const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+const fail = code => { throw Object.assign(new Error(code), { code }); };
+const started = performance.now(), fields = ['dev','ino','mode','uid','gid','nlink','size','mtimeNs','ctimeNs'];
+let last = started, allocated = 0, captures = 0, captureCloses = 0, requested = 0, returned = 0, captureCloseFailed = false;
+let publisher = null, collectionStop = null;
+const guard = source => {
+  const now = performance.now();
+  if (!Number.isFinite(now) || now < last) fail('E_CLOCK'); last = now;
+  if (now - started >= (source === true ? 10000 : 27000)) fail('E_DEADLINE');
+};
+function capture(path, length, pin, source = false) {
+  guard(source); let fd = null, bytes;
+  try {
+    const named = fs.lstatSync(path, { bigint: true }); guard(source);
+    if (!named.isFile() || named.size !== BigInt(length) || length < 1 || allocated + length + 1 > 8388608) fail('E_LENGTH');
+    fd = fs.openSync(path, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW | fs.constants.O_NONBLOCK);
+    const before = fs.fstatSync(fd, { bigint: true }); guard(source);
+    if (!fields.every(k => before[k] === named[k]) || before.nlink !== 1n) fail('E_BINDING');
+    allocated += length + 1; bytes = Buffer.alloc(length); let position = 0, reads = 0;
+    while (position < length) {
+      guard(source); if (++reads > 128) fail('E_LIMIT');
+      const size = Math.min(65536, length - position); requested += size;
+      const n = fs.readSync(fd, bytes, position, size, position); returned += n;
+      if (n !== size) fail('E_LENGTH'); position += n;
+    }
+    guard(source); if (++reads > 128) fail('E_LIMIT'); requested++;
+    if (fs.readSync(fd, Buffer.alloc(1), 0, 1, length) !== 0) fail('E_EOF');
+    const after = fs.fstatSync(fd, { bigint: true }), finalName = fs.lstatSync(path, { bigint: true }); guard(source);
+    if (!fields.every(k => before[k] === after[k] && before[k] === finalName[k])) fail('E_BINDING');
+  } finally { if (fd !== null) { const owned = fd; fd = null; try { fs.closeSync(owned); captureCloses++; } catch { captureCloseFailed = true; fail('E_CLOSE'); } } }
+  guard(source); if (sha(bytes) !== pin) fail('E_HASH'); captures++; return bytes;
+}
+function abortPublications(code, publishers) {
+  let uncertain = code === 'E_PUBLICATION_CLOSE';
+  for (const publisher of publishers) if (publisher) {
+    try {
+      const aborted = publisher.abort(), snapshot = publisher.snapshot();
+      if (aborted.closeFailed !== false || aborted.cleanupUncertain !== false || snapshot.ownedFDCount !== 0
+        || snapshot.closeFailed !== false || snapshot.cleanupUncertain !== false) uncertain = true;
+    } catch { uncertain = true; }
+  }
+  return uncertain;
+}
+try {
+  const noticeSource = capture(ROOT + '/tooling/native-ingress/bootlin-gcc-notices-source.mjs',6707,'5688445c67f6c7ea92784d5727302e7b454923fa4bfda5ed1864e1659a614757',true);
+  const adapterSource = capture(ROOT + '/tooling/native-ingress/bootlin-directory-metadata-v2.mjs',5760,'d09558231e7ea5f27c2ed0d1b34c599c087bc34a4c6e5e75e3e4ecf3f1ff9f80',true);
+  const rawV1 = capture(ROOT + '/tooling/native-ingress/bootlin-directory-metadata.mjs',19649,'1a625ec28479ac28efeaa19a51095924f7db5c48524a1cd74570e0c4b7f3890f',true);
+  const rawWriter = capture(ROOT + '/tooling/native-ingress/split-evidence-publication.mjs',18003,'9e3d6d84e58d5e86a3097a4d8a731dcef9c922622b1fc225acf0385b218f41aa',true);
+  const adapter = await import('data:text/javascript;base64,' + adapterSource.toString('base64')); guard(true);
+  const noticeAdapter = await import('data:text/javascript;base64,' + noticeSource.toString('base64')); guard(true);
+  const base = adapter.buildBootlinDirectoryMetadataV2Source(rawV1); guard(true);
+  if (Buffer.byteLength(base.sourceText) !== 20438 || sha(base.sourceText) !== 'ece2c9edbb3068bc65ce78454b7f8dbc5236d36f046849f4f30085c58c567557') fail('E_BASE_PIN');
+  const graph = noticeAdapter.buildBootlinGccNoticesSource(base.sourceText); guard(true);
+  if (graph.profile !== 'BOOTLIN_GCC_NOTICES_SOURCE_V1' || Buffer.byteLength(graph.sourceText) !== 21227
+    || sha(graph.sourceText) !== 'ab907eccc60c8f58c351ca82b449d2fd774c96e343e07cf49ceda74b86e77a44') fail('E_GRAPH_PIN');
+  const oldParts = "export const SPLIT_EVIDENCE_PARTS = Object.freeze(['gnu', 'rust']);";
+  const oldPaths = "export const SPLIT_EVIDENCE_PATHS = Object.freeze({\n  gnu: '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/gnu-evidence-collection-v1.result.json',\n  rust: '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/rust-evidence-collection-v1.result.json',\n});";
+  let writerText = rawWriter.toString('utf8');
+  if (writerText.split(oldParts).length !== 2 || writerText.split(oldPaths).length !== 2) fail('E_TRANSFORM');
+  writerText = writerText.replace(oldParts,"export const SPLIT_EVIDENCE_PARTS = Object.freeze(['bootlin-gcc-notices']);");
+  if (Buffer.byteLength(writerText) !== 18011 || sha(writerText) !== 'a2c75a636ac15b9b0c6d446de51d7cc2cf0d0d6b8d49f8e2cbef046d6c8c6281') fail('E_SOURCE_PIN');
+  writerText = writerText.replace(oldPaths,"export const SPLIT_EVIDENCE_PATHS = Object.freeze({ 'bootlin-gcc-notices': '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/bootlin-gcc-notices-v1.result.json' });");
+  if (Buffer.byteLength(writerText) !== 17900 || sha(writerText) !== 'bb76460341425b370ba07dc0ff979a7a73aa0aa6a0498eecabd19b7317f554ef') fail('E_SOURCE_PIN');
+  const module = await import('data:text/javascript;base64,' + Buffer.from(graph.sourceText).toString('base64')); guard(true);
+  const writer = await import('data:text/javascript;base64,' + Buffer.from(writerText).toString('base64')); guard(true);
+  if (module.collectRegisteredBootlinDirectoriesV1 !== undefined || module.collectRegisteredBootlinDirectoriesV2 !== undefined) fail('E_OLD_ENTRY');
+  const policy = module.BOOTLIN_GCC_NOTICES_V1_PROFILE, policyText = JSON.stringify(policy) + '\n';
+  if (Buffer.byteLength(policyText) !== 1468 || sha(policyText) !== '5c6998988e94606c75ec2be7f18f513e4e1520d2f2b53ad0bfd3a7373bc5f7df') fail('E_POLICY_PIN');
+  publisher = writer.reserveSplitEvidencePublication('bootlin-gcc-notices',() => guard());
+  const contextBytes = capture(DIR + 'bootlin-gcc-final-context-v1.result.json',14690,'b020748b1a6cae8254e82486821682d79e747918a8a0128a897fa33c94806c7b');
+  const context = JSON.parse(contextBytes), catalog = context.collection.observations[1], catalogBody = Buffer.from(catalog.bodyUtf8,'utf8');
+  if (context.profile !== 'BOOTLIN_GCC_FINAL_CONTEXT_RESULT_V1' || context.collection.mockOnly !== false
+    || catalog.role !== 'licenses' || catalog.eof !== true || catalog.requestedUrl !== 'https://toolchains.bootlin.com/downloads/releases/licenses/gcc-final-15.3.0/'
+    || catalog.responseUrl !== catalog.requestedUrl || catalogBody.length !== 1867
+    || sha(catalogBody) !== 'bc44d5fff09beba4b68c3ad6ac6ae914e26f8174f32c85322c721f0f355f8f1c') fail('E_CONTEXT_PIN');
+  const names = ['COPYING','COPYING.LIB','COPYING.RUNTIME','COPYING3','COPYING3.LIB'];
+  for (let i = 0; i < names.length; i++) {
+    if (catalog.bodyUtf8.split('href="' + names[i] + '"').length !== 2
+      || policy.urls[i] !== catalog.requestedUrl + names[i]) fail('E_CONTEXT_PIN');
+  }
+  const rows = context.packageContext.declarationRows;
+  if (context.packageContext.domain !== 'UNRESOLVED' || rows.length !== 2 || rows[0].ordinal !== 1 || rows[1].ordinal !== 8
+    || rows.some(row => row.cells[0] !== 'gcc-final' || row.cells[1] !== '15.3.0' || row.domain !== 'UNRESOLVED')) fail('E_CONTEXT_PIN');
+  if (context.sourcePins.preparation.bytes !== 2724242 || context.sourcePins.preparation.sha256 !== '3ae1a4949a913b972695a32dfab2076354e49a70a960021a34050c63a9bb281b'
+    || context.sourcePins.readme.bytes !== 1093 || context.sourcePins.readme.sha256 !== 'fa0b24cb67e660a5aebe2f4d4705b5a7ca2e5860e2e0405ddf6fddad40d4a41a') fail('E_CONTEXT_PIN');
+  if (captures !== 5 || captureCloses !== 5 || returned !== 64809 || requested !== 64814 || allocated !== 64814 || captureCloseFailed) fail('E_CLOSE'); guard();
+  module.SOURCE_BIND_PARENT_CLOCK_ORIGIN(started); guard();
+  const result = await module.collectRegisteredBootlinGccNoticesV1();
+  if (result.exitCode !== 0 || result.data.status !== 'BOOTLIN_LICENSE_NOTICES_DATA') { collectionStop = result.data; fail('E_NOTICE_COLLECTION'); }
+  guard(); const data = result.data, c = data.counts;
+  if (data.profile !== 'registered-bootlin-gcc-notices-v1' || data.mockOnly !== false || data.cleanupUncertain !== false
+    || data.observations.length !== 5 || c.fetchCalls !== 5 || c.requestsAttempted !== 5 || c.completedObservations !== 5
+    || c.eofObservations !== 5 || c.releases !== 5 || c.cancellations !== 0 || c.clearedTimers !== 6 || c.activeTimers !== 0
+    || c.pendingFetchKnown !== false || c.pendingReadKnown !== false || c.deliveredBytes !== c.retainedBytes
+    || c.retainedBytes > 2097152 || c.peakDeliveredChunkBytes > 1048576 || c.readAttempts > 2048) fail('E_COLLECTION');
+  for (let i = 0; i < 5; i++) {
+    const o = data.observations[i], body = Buffer.from(o.bodyUtf8,'utf8');
+    if (o.role !== policy.roles[i] || o.requestedUrl !== policy.urls[i] || o.responseUrl !== policy.urls[i] || o.status !== 200
+      || o.eof !== true || o.utf8Validated !== true || o.interpreted !== false || o.urlsFollowed !== false
+      || o.sourceKind !== 'PUBLIC_LICENSE_NOTICE_TEXT' || body.length !== o.observedBodyBytes || body.length < 1 || body.length > 1048576
+      || sha(body) !== o.bodySha256 || /[\x00-\x08\x0b\x0e-\x1f\x7f-\x9f]/u.test(o.bodyUtf8)) fail('E_COLLECTION');
+  }
+  const sourcePins = {noticeAdapter:{bytes:6707,sha256:'5688445c67f6c7ea92784d5727302e7b454923fa4bfda5ed1864e1659a614757'},
+    baseAdapter:{bytes:5760,sha256:'d09558231e7ea5f27c2ed0d1b34c599c087bc34a4c6e5e75e3e4ecf3f1ff9f80'},base:base.graphPins,notices:graph.graphPins,
+    writer:{rawBytes:18003,rawSha256:'9e3d6d84e58d5e86a3097a4d8a731dcef9c922622b1fc225acf0385b218f41aa',privateBytes:17900,privateSha256:'bb76460341425b370ba07dc0ff979a7a73aa0aa6a0498eecabd19b7317f554ef'},
+    gccContext:{bytes:14690,sha256:'b020748b1a6cae8254e82486821682d79e747918a8a0128a897fa33c94806c7b'},
+    historicalPreparation:context.sourcePins.preparation,historicalReadme:context.sourcePins.readme,
+    bindingKind:'HISTORICAL_PINNED_CONTEXT_NOT_CURRENT_FILESYSTEM_PROOF',policy:{bytes:1468,sha256:sha(policyText)}};
+  const report = {profile:'BOOTLIN_GCC_NOTICES_RESULT_V1',status:'BOOTLIN_GCC_NOTICES_DATA',sourcePins,collection:data,
+    noticeContext:{packageLabel:'gcc-final',version:'15.3.0',targetNames:names,declarationRows:rows,domain:'UNRESOLVED',
+      noticeApplicabilityVerified:false,copyAuthorized:false,semanticInterpretation:false},
+    scope:'approved passive GCC notice-file acquisition outside offline capture/build/runtime',
+    sourceAuthenticated:false,publisherAuthenticated:false,licenseComplianceVerified:false,noticeApplicabilityVerified:false,copyAuthorized:false,
+    pythonFreeSubsetVerified:false,runtimeProvidersQualified:false,abiVerified:false,imagePrepared:false,nativeQualified:false,rustReady:false,trainingReady:false};
+  const text = JSON.stringify(report).replace(/[^\x00-\x7f]/g,c => '\\u' + c.charCodeAt(0).toString(16).padStart(4,'0')) + '\n';
+  const bytes = Buffer.from(text,'ascii'); if (bytes.length > 16777216) fail('E_OUTPUT'); guard();
+  const published = publisher.publish(bytes); guard(); const state = publisher.snapshot();
+  if (published.part !== 'bootlin-gcc-notices' || published.path !== DIR + 'bootlin-gcc-notices-v1.result.json'
+    || published.state !== 'PUBLISHED_READBACK_MATCHED' || published.byteLength !== bytes.length || published.sha256 !== sha(bytes)
+    || published.mode !== '0444' || published.readbackVerified !== true || published.directorySynced !== true
+    || state.ownedFDCount !== 0 || state.closeFailed !== false || state.cleanupUncertain !== false
+    || published.counts.closes !== 3 || published.counts.closeAttempts !== 3 || published.counts.fsyncs !== 4
+    || published.counts.readbackBytes !== bytes.length || published.counts.readbackHashBytes !== bytes.length
+    || published.counts.requestedReadBytes < bytes.length + 1 || published.counts.requestedReadBytes > 16777217) fail('E_PUBLICATION'); guard();
+  const terminal = JSON.stringify({profile:'BOOTLIN_GCC_NOTICES_RECEIPT_V1',status:'BOOTLIN_GCC_NOTICES_DATA',publicationAccepted:true,
+    result:{path:published.path,byteLength:published.byteLength,sha256:published.sha256,mode:published.mode,readbackVerified:true,directorySynced:true},
+    sourcePins,captureCounts:{captures,captureCloses,allocated,requested,returned},publicationCounts:published.counts,
+    notices:data.observations.map((o,i) => ({name:names[i],role:o.role,url:o.requestedUrl,bytes:o.observedBodyBytes,sha256:o.bodySha256})),
+    gccDeclarationOrdinals:[1,8],networkCounts:c,sourceAuthenticated:false,publisherAuthenticated:false,licenseComplianceVerified:false,
+    noticeApplicabilityVerified:false,copyAuthorized:false,runtimeProvidersQualified:false,pythonFreeSubsetVerified:false,
+    abiVerified:false,imagePrepared:false,nativeQualified:false,rustReady:false,trainingReady:false}) + '\n';
+  if (Buffer.byteLength(terminal) > 65536) fail('E_OUTPUT'); guard();
+  process.stdout.on('error',() => { process.exitCode = 1; }); process.stdout.write(terminal);
+} catch (error) {
+  const code = error && typeof error === 'object' ? Object.getOwnPropertyDescriptor(error,'code')?.value : null;
+  const publicationCleanupUncertain = abortPublications(code,[publisher]);
+  const cleanupUncertain = captureCloseFailed || publicationCleanupUncertain || collectionStop?.cleanupUncertain === true || performance.now() - started >= 30000;
+  const terminal = JSON.stringify({profile:'BOOTLIN_GCC_NOTICES_RECEIPT_V1',status:'STOP',publicationAccepted:false,
+    error:typeof code === 'string' && /^E_[A-Z_]{1,40}$/.test(code) ? code : 'E_PARENT_OPERATION',
+    collectionStop,captures,captureCloses,cleanupUncertain,retainedFilesUnaccepted:true}) + '\n';
+  if (Buffer.byteLength(terminal) > 65536) throw new Error('E_OUTPUT');
+  process.stdout.write(terminal); process.exitCode = 1;
+}
+NODE
+```
+<!-- END STEP2 GCC NOTICES V1 -->
+
+Fresh persisted parent checks, required static/quality/security/correspondence gates and exact current section/command binding precede one five-notice invocation; no notice request or reservation ran while preparing this packet.
+Mandatory parent quality/security source inspections report no findings for this fixed DATA-only notice scope, not legal applicability, copying permission, runtime or training acceptance.
+Current verification passes190/190 (149 notice+41 owner),0 failures/skips/cancellations/todo,129 syntax targets, pinned-offline owner check/render, diff checks and launcher syntax-only validation.
+The exact notice launcher is14403 bytes/SHA-256 `1eed27daa40fa8fe9c6d25d584f3e0bfba1a319a90f05b4c013bfbb506fa53e9`; final correspondence and exact current-section registration precede one request set.
+The outer parent must mechanically require child exit0, independent full readback and exclusive preservation of the exact selected terminal before any DATA acceptance.
+
+### 33.113 Notice V1 STOP — header predicate unknown, no body-reader data
+
+Final required correspondence confirms63 source paths in-sync before invocation.
+Registered section581599/SHA-256 `33e5df5f0d6462d6b1fc2bfee330ab73327c6e11d1272004a4f293efcab6fdca` bound the14403-byte §33.112 launcher/`1eed27daa40fa8fe9c6d25d584f3e0bfba1a319a90f05b4c013bfbb506fa53e9` and all adapter/base/notice graph/policy identities.
+The single invocation returned STOP/publicationAccepted:false/child exit1 with E_NOTICE_COLLECTION and collector E_HEADERS; this profile/operation is consumed.
+The parent exclusively preserved the [exact STOP](../tooling/native-ingress/bootlin-gcc-notices-v1.stop.json),691 bytes/SHA-256 `bd09f82704201cb7cc47687787c734b54c4efcc67158df3dee527a05751d2542`, synchronized/sealed0444 and independently full-hash/EOF/readback/directory-sync verified.
+One owned named-metadata check confirms0 bytes/0600 at dev29/inode1211368 for the result reservation; it is not JSON/accepted data and must not be reopened, overwritten, repaired, reused, deleted or retried.
+All5 source/context captures closed positively before the attempted acquisition.
+
+Only the first COPYING GET was attempted; the collector made0 authored body-reader calls, retained/delivered0 reader bytes, observed0 EOFs/completed notices, invoked cancellation once/release0, cleared2 timers and reported0 active/known-pending operations.
+cleanupUncertain:true remains binding despite those counters, and transportClosedVerified:false; no wire-byte absence, cancellation cause or actual connection closure follows.
+No source/notice body or header prefix was accepted, and the remaining four GETs did not run.
+The failing header predicate/status/media/charset remains unknown because the bounded STOP withheld those values; guessing ISO/UTF-8, changing MIME acceptance or rerunning this profile is not authorized by the failure.
+All consumed sources/profiles/STOPs/reservations and all source/legal/provider/NoPython/ABI/runtime/image/Native/readiness prohibitions remain unchanged.
+Closing saved-evidence verification passes1229/1229 (42 owner,149 notice source,125 directory V1,130 directory V2,58 GCC registration,119 GNU collector,119 GNU proposal,87 provider proposal,126 helper collector,155 archive utility,119 member plan),0 failures/skips/cancellations/todo,107.072s.
+All129 completed-source syntax targets, pinned-offline owner check/render and diff checks pass; required STOP/HEAD-plan correspondence is in-sync across63 paths.
+HEAD construction files were excluded, no failed reservation was opened and no consumed acquisition was repeated by verification.
+
+### 33.114 Separate COPYING HEAD diagnostic plan — body-free exposed metadata only
+
+Architect accepts two new specific source/test files, bootlin-gcc-copying-head.mjs/.test.mjs, before implementation, conditional on the verified §33 necessary-preparation standing order and fresh exact registration.
+The parent verifies that order; the new one-shot operation targets only HEAD https://toolchains.bootlin.com/downloads/releases/licenses/gcc-final-15.3.0/COPYING, never repeats GET, reads a body, follows a redirect/resource or changes notice acceptance.
+The source exports a frozen policy, zero-argument collectRegisteredBootlinGccCopyingHeadV1 and complete explicit fake-only fixture; it performs no filesystem I/O or source evaluation.
+Keep one request,10s clipped to original27s work/30s outer including3s cleanup,64 exposed header pairs/16384 total UTF-8 name+value bytes and65536 escaped-ASCII JSON+LF bytes; verify the original parent clock before production admission.
+Observe status100..599, exact URL/type/manual-redirect state and all Fetch-exposed header values as passive data, without MIME/charset admission or raw-wire claims; validate token names/uniqueness/UTF-8 round trip/caps before retention.
+Controls are preserved only through JSON escaping in this diagnostic class, not accepted as notice input; any encoded-output overrun fails rather than truncates.
+Require response.body===null for successful metadata and use zero authored body-reader APIs; unexpected body/timeout/header failure must abort/cancel against the original cleanup deadline without reading, preserving uncertainty.
+All source/publisher/notice/legal/NoPython/ABI/runtime/image/Native/training/wire/body-absence/transport-closure qualifications stay false.
+The future parent must pin accepted GCC context14690/b020748b… and exact COPYING href/body identity, exclusively reserve a fresh result before HEAD, then enforce exit0/independent full readback/exact selected-terminal custody before acceptance.
+New tests, required source/static/correspondence gates and exact registration precede one HEAD; no new body acquisition, successor notice admission or changed encoding/limit policy belongs to this plan.
+
+### 33.115 Runtime-layout alternatives — planning only, no silent domain promotion
+
+While the body-free HEAD diagnostic source is prepared, read-only architect/DevOps consultation identifies a separate execution-layout decision rather than another collection framework.
+The HOST runtime observation reported glibc2.43 while GNU TARGET sysroot declarations refer to2.44; those metadata facts establish no coherent provider set, and TARGET executables' default /lib64/ld-linux-x86-64.so.2 path cannot silently resolve an unqualified HOST runtime merely because both artifacts use x86-64 GNU.
+Route A proposes one coherent2.44 runtime, explicitly qualifying exact SDK loader/library bytes in an additional HOST role while preserving all existing TARGET identities/statuses; current seven HOST candidates would remain retained/unqualified/unused, not deleted or implicitly replaced.
+Route B proposes distinct HOST-build/TARGET-run images, but needs explicit runner/verification-contract approval before changing how unchanged Cargo commands execute tests; a silent command split is not frozen-harness acceptance.
+Route C proposes an operator-supplied offline image with equivalent exact manifest/provider/rootfs/input/no-Python/path-mapping/resource/enforcement/clock/cleanup evidence; an image name/tag or supplied PASS claim alone closes no gate.
+Architecture recommends Route A only as a minimum planning direction conditional on actual HOST qualification; no human route selection or copying/probing/import/job permission follows from that recommendation.
+Image-internal placement at the recorded original SDK prefix remains a proposal that may avoid relocation scripts/binary patching, never a host-path mount or proof of compiled-in search behavior.
+Preserve Rust1.95/Burn0.22/defaults-off/std-flex-optim-store/Flex CPU-f64, shipped LLD and default compiler flags; matching version names/ELF hashes are static candidates, not symbol/private-ABI/loading or native execution proof.
+An exact role-specific candidate manifest, approved materialization scope and actual wrapper/compiler/linker/TARGET/default-interpreter/frozen-harness fixtures under qualified containment remain required, without inventing a reproducible compiler rebuild prerequisite for ordinary Step2.
+This comparison selects no route, touches no Docker/host/provider path and grants no new execution, data/fitting/calibration, policy training or completed-Step2 publication.
+The current43/43 owner checks pass, including the fresh HEAD-only design and unselected runtime-route boundaries; HEAD source implementation/handoff and all execution/qualification gates remain pending.
+
+### 33.116 COPYING HEAD source delivered — passive diagnostic parent packet
+
+The HEAD collector is17188 bytes/SHA-256 `6b4c7fc9d2a1f57e2da0affcf37b20f47068a0e5964b5b69bec00c90e79362b3`; tests44377/`c4f377e4a2d8d3b06f7e22cd5a4f3d696c23dd7947608ba29119c8fde8b1e882`.
+Parent adds explicit production mockOnly:false/fixture mockOnly:true to DATA and STOP snapshots and preserves leading BOM header values during UTF-8 round-trip validation; no production request ran before these corrections.
+Independent verification passes195/195 (152 new+43 owner),0 failures/skips/cancellations/todo,0.436s, both syntax checks and diff checks; mandatory quality/security source inspections report no findings for passive DATA-only readiness.
+The raw policy JSON+LF is1562 bytes/SHA-256 `86b274e1aca8fa092f60d4d2423f647df1ad35e7872d49020e7e5d95e8d036ee`.
+Route exactly one production now dependency through the unchanged794-byte original-parent bridge: routed17179/`72794d4da8a40ae2da04ba3fe798c1c7d16bfdc4d59b1071fb042f68be5cd5dc`, final17973/`ea0bc346a8e5f839fc9f0139c415bfd138ac8fd275223923cdc834cdb23981eb`, all before private import.
+Coverage grows63→65 after handoff; no HEAD request or new reservation occurred during source checks.
+
+The parent below captures three fixed sources/context images totaling49881 returned/49884 requested/allocated bytes and3 positive closes, retaining8MiB/128-read capture caps, source10s, original27s work/30s outer including3s cleanup and45s external envelope.
+Pin accepted GCC context14690/b020748b…, license EOF/body hash1867/bc44d5ff… and the unique COPYING href before binding the original parent started value and invoking only the new one-shot HEAD.
+Specialize only the writer's two declarations into bootlin-copying-head/fresh bootlin-gcc-copying-head-v1.result.json: intermediate18012/`483e8f7862b3b7a663054a4f83f275bb1abecb751f6e83b17c82e2cd5eb33ded`; final17907/`274944d145ccbefc0caf1aab082ce0458359d2be8d99e32a5121e78654bf0796`.
+Reserve O_EXCL0600 before context read/HEAD; require exact method/URL, null body,0 authored body reads and bounded passive header metadata, then unchanged3-close/4-fsync/0444/full-hash-EOF-identity-readback/directory-sync publication under the original parent deadline.
+MIME/charset/status are observed only, never admitted as notice input; parent acceptance still requires child exit0, independent full readback and exclusive exact selected .receipt.json or returned .stop.json preservation without rollback/deletion/retry/fallback.
+
+<!-- BEGIN STEP2 COPYING HEAD V1 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+const ROOT = '/tmp/opencode/f9-bootstrap-correspondence', DIR = ROOT + '/_spec/tooling/native-ingress/';
+const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+const fail = code => { throw Object.assign(new Error(code), { code }); };
+const started = performance.now(), fields = ['dev','ino','mode','uid','gid','nlink','size','mtimeNs','ctimeNs'];
+let last = started, allocated = 0, captures = 0, captureCloses = 0, requested = 0, returned = 0, captureCloseFailed = false;
+let publisher = null, collectionStop = null;
+const guard = source => {
+  const now = performance.now();
+  if (!Number.isFinite(now) || now < last) fail('E_CLOCK'); last = now;
+  if (now - started >= (source === true ? 10000 : 27000)) fail('E_DEADLINE');
+};
+function capture(path, length, pin, source = false) {
+  guard(source); let fd = null, bytes;
+  try {
+    const named = fs.lstatSync(path, { bigint: true }); guard(source);
+    if (!named.isFile() || named.size !== BigInt(length) || length < 1 || allocated + length + 1 > 8388608) fail('E_LENGTH');
+    fd = fs.openSync(path, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW | fs.constants.O_NONBLOCK);
+    const before = fs.fstatSync(fd, { bigint: true }); guard(source);
+    if (!fields.every(k => before[k] === named[k]) || before.nlink !== 1n) fail('E_BINDING');
+    allocated += length + 1; bytes = Buffer.alloc(length); let position = 0, reads = 0;
+    while (position < length) {
+      guard(source); if (++reads > 128) fail('E_LIMIT');
+      const size = Math.min(65536, length - position); requested += size;
+      const n = fs.readSync(fd, bytes, position, size, position); returned += n;
+      if (n !== size) fail('E_LENGTH'); position += n;
+    }
+    guard(source); if (++reads > 128) fail('E_LIMIT'); requested++;
+    if (fs.readSync(fd, Buffer.alloc(1), 0, 1, length) !== 0) fail('E_EOF');
+    const after = fs.fstatSync(fd, { bigint: true }), finalName = fs.lstatSync(path, { bigint: true }); guard(source);
+    if (!fields.every(k => before[k] === after[k] && before[k] === finalName[k])) fail('E_BINDING');
+  } finally { if (fd !== null) { const owned = fd; fd = null; try { fs.closeSync(owned); captureCloses++; } catch { captureCloseFailed = true; fail('E_CLOSE'); } } }
+  guard(source); if (sha(bytes) !== pin) fail('E_HASH'); captures++; return bytes;
+}
+function abortPublications(code, publishers) {
+  let uncertain = code === 'E_PUBLICATION_CLOSE';
+  for (const publisher of publishers) if (publisher) {
+    try {
+      const aborted = publisher.abort(), snapshot = publisher.snapshot();
+      if (aborted.closeFailed !== false || aborted.cleanupUncertain !== false || snapshot.ownedFDCount !== 0
+        || snapshot.closeFailed !== false || snapshot.cleanupUncertain !== false) uncertain = true;
+    } catch { uncertain = true; }
+  }
+  return uncertain;
+}
+try {
+  const source = capture(ROOT + '/tooling/native-ingress/bootlin-gcc-copying-head.mjs',17188,'6b4c7fc9d2a1f57e2da0affcf37b20f47068a0e5964b5b69bec00c90e79362b3',true);
+  const rawWriter = capture(ROOT + '/tooling/native-ingress/split-evidence-publication.mjs',18003,'9e3d6d84e58d5e86a3097a4d8a731dcef9c922622b1fc225acf0385b218f41aa',true);
+  const clockBridge = `
+let SOURCE_PARENT_ORIGIN = null, SOURCE_FIRST_CLOCK = true;
+export function SOURCE_BIND_PARENT_CLOCK_ORIGIN(origin) {
+  if (arguments.length !== 1 || SOURCE_PARENT_ORIGIN !== null || !Number.isFinite(origin) || origin < 0 || origin > Number.MAX_SAFE_INTEGER - 30000) fail('E_CLOCK');
+  const current = Reflect.apply(NOW, CLOCK, []);
+  if (!Number.isFinite(current) || current < origin || current - origin >= 10000) fail('E_CLOCK');
+  SOURCE_PARENT_ORIGIN = origin;
+}
+function SOURCE_CAPTURE_NOW() {
+  if (SOURCE_PARENT_ORIGIN === null) fail('E_CLOCK');
+  const current = Reflect.apply(NOW, CLOCK, []);
+  if (!Number.isFinite(current) || current < SOURCE_PARENT_ORIGIN) fail('E_CLOCK');
+  if (SOURCE_FIRST_CLOCK) { SOURCE_FIRST_CLOCK = false; return SOURCE_PARENT_ORIGIN; }
+  return current;
+}
+`;
+  let collectorText = source.toString('utf8'); const originalNow = 'now: () => Reflect.apply(NOW, CLOCK, []),';
+  if (collectorText.split(originalNow).length !== 2) fail('E_TRANSFORM');
+  collectorText = collectorText.replace(originalNow,'now: () => SOURCE_CAPTURE_NOW(),');
+  if (Buffer.byteLength(collectorText) !== 17179 || sha(collectorText) !== '72794d4da8a40ae2da04ba3fe798c1c7d16bfdc4d59b1071fb042f68be5cd5dc') fail('E_SOURCE_PIN');
+  if (Buffer.byteLength(clockBridge) !== 794 || sha(clockBridge) !== '28bbe878605dc95eaa7d15d27e1ae9d162c86a755e7d76f8f8e69a97291cf334') fail('E_SOURCE_PIN');
+  collectorText += clockBridge;
+  if (Buffer.byteLength(collectorText) !== 17973 || sha(collectorText) !== 'ea0bc346a8e5f839fc9f0139c415bfd138ac8fd275223923cdc834cdb23981eb') fail('E_SOURCE_PIN');
+  const oldParts = "export const SPLIT_EVIDENCE_PARTS = Object.freeze(['gnu', 'rust']);";
+  const oldPaths = "export const SPLIT_EVIDENCE_PATHS = Object.freeze({\n  gnu: '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/gnu-evidence-collection-v1.result.json',\n  rust: '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/rust-evidence-collection-v1.result.json',\n});";
+  let writerText = rawWriter.toString('utf8');
+  if (writerText.split(oldParts).length !== 2 || writerText.split(oldPaths).length !== 2) fail('E_TRANSFORM');
+  writerText = writerText.replace(oldParts,"export const SPLIT_EVIDENCE_PARTS = Object.freeze(['bootlin-copying-head']);");
+  if (Buffer.byteLength(writerText) !== 18012 || sha(writerText) !== '483e8f7862b3b7a663054a4f83f275bb1abecb751f6e83b17c82e2cd5eb33ded') fail('E_SOURCE_PIN');
+  writerText = writerText.replace(oldPaths,"export const SPLIT_EVIDENCE_PATHS = Object.freeze({ 'bootlin-copying-head': '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/bootlin-gcc-copying-head-v1.result.json' });");
+  if (Buffer.byteLength(writerText) !== 17907 || sha(writerText) !== '274944d145ccbefc0caf1aab082ce0458359d2be8d99e32a5121e78654bf0796') fail('E_SOURCE_PIN');
+  const module = await import('data:text/javascript;base64,' + Buffer.from(collectorText).toString('base64')); guard(true);
+  const writer = await import('data:text/javascript;base64,' + Buffer.from(writerText).toString('base64')); guard(true);
+  const policy = module.BOOTLIN_GCC_COPYING_HEAD_V1_POLICY, policyText = JSON.stringify(policy) + '\n';
+  if (Buffer.byteLength(policyText) !== 1562 || sha(policyText) !== '86b274e1aca8fa092f60d4d2423f647df1ad35e7872d49020e7e5d95e8d036ee') fail('E_POLICY_PIN');
+  publisher = writer.reserveSplitEvidencePublication('bootlin-copying-head',() => guard());
+  const contextBytes = capture(DIR + 'bootlin-gcc-final-context-v1.result.json',14690,'b020748b1a6cae8254e82486821682d79e747918a8a0128a897fa33c94806c7b');
+  const context = JSON.parse(contextBytes), catalog = context.collection.observations[1], body = Buffer.from(catalog.bodyUtf8,'utf8');
+  if (context.profile !== 'BOOTLIN_GCC_FINAL_CONTEXT_RESULT_V1' || context.collection.mockOnly !== false
+    || catalog.role !== 'licenses' || catalog.eof !== true || catalog.requestedUrl !== 'https://toolchains.bootlin.com/downloads/releases/licenses/gcc-final-15.3.0/'
+    || catalog.responseUrl !== catalog.requestedUrl || body.length !== 1867 || sha(body) !== 'bc44d5fff09beba4b68c3ad6ac6ae914e26f8174f32c85322c721f0f355f8f1c'
+    || catalog.bodyUtf8.split('href="COPYING"').length !== 2 || policy.requestedUrl !== catalog.requestedUrl + 'COPYING') fail('E_CONTEXT_PIN');
+  if (captures !== 3 || captureCloses !== 3 || returned !== 49881 || requested !== 49884 || allocated !== 49884 || captureCloseFailed) fail('E_CLOSE'); guard();
+  module.SOURCE_BIND_PARENT_CLOCK_ORIGIN(started); guard();
+  const result = await module.collectRegisteredBootlinGccCopyingHeadV1();
+  if (result.exitCode !== 0 || result.data.scope !== 'HEAD_METADATA_DATA') { collectionStop = result.data; fail('E_HEAD_COLLECTION'); }
+  guard(); const data = result.data, c = data.counts;
+  if (data.profile !== 'registered-bootlin-gcc-copying-head-v1' || data.mockOnly !== false || data.cleanupUncertain !== false
+    || data.method !== 'HEAD' || data.requestedUrl !== policy.requestedUrl || data.responseUrl !== policy.requestedUrl || data.redirected !== false
+    || !Number.isInteger(data.statusCode) || data.statusCode < 100 || data.statusCode > 599 || data.responseBodyNullObserved !== true
+    || c.requests !== 1 || c.fetchCalls !== 1 || c.authoredBodyReads !== 0 || c.cancelCalls !== 0 || c.abortCalls !== 0 || c.releaseCalls !== 0
+    || c.pendingFetchKnown !== false || c.timersCreated !== 2 || c.timersCleared !== 2 || c.timersFired !== 0 || c.activeTimers !== 0
+    || data.exposedHeaders.length !== data.exposedHeaderCount || data.exposedHeaderCount > 64 || data.headerBytes > 16384
+    || data.exposedHeaders.reduce((n,[key,value]) => n + Buffer.byteLength(key,'utf8') + Buffer.byteLength(value,'utf8'),0) !== data.headerBytes) fail('E_COLLECTION');
+  const sourcePins = {module:{bytes:17188,sha256:'6b4c7fc9d2a1f57e2da0affcf37b20f47068a0e5964b5b69bec00c90e79362b3',privateBytes:17973,privateSha256:'ea0bc346a8e5f839fc9f0139c415bfd138ac8fd275223923cdc834cdb23981eb'},
+    writer:{rawBytes:18003,rawSha256:'9e3d6d84e58d5e86a3097a4d8a731dcef9c922622b1fc225acf0385b218f41aa',privateBytes:17907,privateSha256:'274944d145ccbefc0caf1aab082ce0458359d2be8d99e32a5121e78654bf0796'},
+    gccContext:{bytes:14690,sha256:'b020748b1a6cae8254e82486821682d79e747918a8a0128a897fa33c94806c7b'},policy:{bytes:1562,sha256:sha(policyText)}};
+  const report = {profile:'BOOTLIN_GCC_COPYING_HEAD_RESULT_V1',status:'BOOTLIN_GCC_COPYING_HEAD_DATA',sourcePins,collection:data,
+    scope:'one body-free HEAD metadata observation; no notice admission or wire-body absence proof',
+    sourceAuthenticated:false,publisherAuthenticated:false,noticeQualified:false,licenseComplianceVerified:false,copyAuthorized:false,
+    runtimeProvidersQualified:false,pythonFreeSubsetVerified:false,abiVerified:false,imagePrepared:false,nativeQualified:false,rustReady:false,trainingReady:false};
+  const text = JSON.stringify(report).replace(/[^\x00-\x7f]/g,c => '\\u' + c.charCodeAt(0).toString(16).padStart(4,'0')) + '\n';
+  const bytes = Buffer.from(text,'ascii'); if (bytes.length > 65536) fail('E_OUTPUT'); guard();
+  const published = publisher.publish(bytes); guard(); const state = publisher.snapshot();
+  if (published.part !== 'bootlin-copying-head' || published.path !== DIR + 'bootlin-gcc-copying-head-v1.result.json'
+    || published.state !== 'PUBLISHED_READBACK_MATCHED' || published.byteLength !== bytes.length || published.sha256 !== sha(bytes)
+    || published.mode !== '0444' || published.readbackVerified !== true || published.directorySynced !== true
+    || state.ownedFDCount !== 0 || state.closeFailed !== false || state.cleanupUncertain !== false
+    || published.counts.closes !== 3 || published.counts.closeAttempts !== 3 || published.counts.fsyncs !== 4
+    || published.counts.readbackBytes !== bytes.length || published.counts.readbackHashBytes !== bytes.length
+    || published.counts.requestedReadBytes < bytes.length + 1 || published.counts.requestedReadBytes > 16777217) fail('E_PUBLICATION'); guard();
+  const terminal = JSON.stringify({profile:'BOOTLIN_GCC_COPYING_HEAD_RECEIPT_V1',status:'BOOTLIN_GCC_COPYING_HEAD_DATA',publicationAccepted:true,
+    result:{path:published.path,byteLength:published.byteLength,sha256:published.sha256,mode:published.mode,readbackVerified:true,directorySynced:true},
+    sourcePins,captureCounts:{captures,captureCloses,allocated,requested,returned},publicationCounts:published.counts,
+    head:{method:'HEAD',url:data.requestedUrl,statusCode:data.statusCode,exposedHeaderCount:data.exposedHeaderCount,headerBytes:data.headerBytes},
+    selectedHeaders:data.exposedHeaders.filter(([name]) => ['content-type','content-length','content-encoding','location'].includes(name.toLowerCase())),
+    networkCounts:c,sourceAuthenticated:false,publisherAuthenticated:false,noticeQualified:false,licenseComplianceVerified:false,
+    copyAuthorized:false,runtimeProvidersQualified:false,pythonFreeSubsetVerified:false,abiVerified:false,imagePrepared:false,nativeQualified:false,rustReady:false,trainingReady:false}).replace(/[^\x00-\x7f]/g,c => '\\u' + c.charCodeAt(0).toString(16).padStart(4,'0')) + '\n';
+  if (Buffer.byteLength(terminal) > 65536) fail('E_OUTPUT'); guard();
+  process.stdout.on('error',() => { process.exitCode = 1; }); process.stdout.write(terminal);
+} catch (error) {
+  const code = error && typeof error === 'object' ? Object.getOwnPropertyDescriptor(error,'code')?.value : null;
+  const publicationCleanupUncertain = abortPublications(code,[publisher]);
+  const cleanupUncertain = captureCloseFailed || publicationCleanupUncertain || collectionStop?.cleanupUncertain === true || performance.now() - started >= 30000;
+  const terminal = JSON.stringify({profile:'BOOTLIN_GCC_COPYING_HEAD_RECEIPT_V1',status:'STOP',publicationAccepted:false,
+    error:typeof code === 'string' && /^E_[A-Z_]{1,40}$/.test(code) ? code : 'E_PARENT_OPERATION',
+    collectionStop,captures,captureCloses,cleanupUncertain,retainedFilesUnaccepted:true}).replace(/[^\x00-\x7f]/g,c => '\\u' + c.charCodeAt(0).toString(16).padStart(4,'0')) + '\n';
+  if (Buffer.byteLength(terminal) > 65536) throw new Error('E_OUTPUT');
+  process.stdout.write(terminal); process.exitCode = 1;
+}
+NODE
+```
+<!-- END STEP2 COPYING HEAD V1 -->
+
+Fresh persisted parent tests, required static/quality/security/correspondence gates and exact current section/command binding precede one HEAD; no HEAD request or new reservation ran while preparing this packet.
+Parent quality review found MEDIUM non-ASCII terminal encoding in the unexecuted13339-byte/ef51c0cb… variant; both success and STOP terminals now escape untrusted Unicode before LF/size checks, with a persisted lossless Unicode/control-header encoder regression.
+Quality review resolves that finding with no remaining findings; parent security source inspection reports no findings for DATA-only readiness.
+Current verification passes197/197 (152 HEAD+45 owner),0 failures/skips/cancellations/todo,131 completed-source syntax targets, pinned-offline owner check/render, owner/launcher syntax-only validation and diff checks.
+The corrected exact launcher is13505 bytes/SHA-256 `33ea91cac83383d44f6124bd9ed4f627d6f5131b4c416514017d54396b4f1886`; source/policy/clock/URL/custody bounds remain unchanged and no unexecuted variant grants acceptance.
+Final source/spec correspondence and exact current-section registration precede the single body-free HEAD, with mechanical outer child-exit0/full-readback/exact-terminal preservation before DATA acceptance.
+
+### 33.117 COPYING HEAD accepted — absent exposed Content-Type, no notice body
+
+Final required correspondence confirms65 coverage paths in-sync before networking.
+Registered section606444/SHA-256 `b88d23598ebf1480cb47fad0c829d0ef8d69a59be730c146901fa699c17bc4e5` bound the13505-byte §33.116 launcher/`33ea91cac83383d44f6124bd9ed4f627d6f5131b4c416514017d54396b4f1886` and all raw/private/policy source identities.
+The one HEAD invocation returned BOOTLIN_GCC_COPYING_HEAD_DATA/publicationAccepted:true/child exit0 and is consumed.
+The [full metadata](../tooling/native-ingress/bootlin-gcc-copying-head-v1.result.json) is3193 bytes/SHA-256 `02937e1d5b1e1804476db7b8eea6b14707bb96e8e6556e151d2aea4fc288c339`; after independent full length/hash/EOF/0444/named-FD readback the parent exclusively preserved the [exact compact receipt](../tooling/native-ingress/bootlin-gcc-copying-head-v1.receipt.json),2447 bytes/`4d4c25252596f28a4d091016594b29a30c2591348049abe85f59ade7cd1d9f34`, synchronized/sealed/readback/EOF/directory-sync verified.
+The exposed response is200 with7 headers totaling179 UTF-8 name/value bytes; Content-Length advertises18002 and no Content-Type appears in the Fetch-exposed header set.
+One Fetch,0 authored body reads, null response body,0 abort/cancel/release calls and2 created/cleared/0 fired/active timers pass with cleanupUncertain:false; these client observations prove neither wire-body absence nor transport closure.
+All3 source/context captures close positively at49881 returned/49884 requested/allocated bytes; publication adds3 positive closes/4 fsyncs.
+
+No notice or source body was acquired; HEAD metadata neither proves the exact earlier GET failure cause nor guarantees equal GET/HEAD header sets.
+The consumed notice V1 E_HEADERS/cleanup uncertainty/reservation remains unchanged and unaccepted; no media/charset/body decoder or retry permission is inferred from HEAD success.
+Architect conditionally supports a separately authorized/registered fresh passive notice successor that allows only genuinely unexposed Content-Type while preserving every present-header, UTF-8/FF/nonempty/hash/byte/time rule.
+That proposal must distinguish missing exposure from an exposed empty/whitespace value, record nullable declared media and exposure explicitly, and retain no semantic license/source/runtime/Native authority.
+No successor notice profile or runtime-layout route is selected by this diagnostic outcome; preserve all existing source/STOP variants and require a separate next-scope decision before effects.
+Closing saved-evidence verification passes1385/1385 (46 owner,152 HEAD,149 notice source,125 directory V1,130 directory V2,58 GCC registration,119 GNU collector,119 GNU proposal,87 provider proposal,126 helper collector,155 archive utility,119 member plan),0 failures/skips/cancellations/todo,116.306s.
+All131 syntax targets, pinned-offline owner check/render and diff checks pass; required HEAD/spec correspondence confirms65 paths in-sync.
+Verification performs no consumed request/publication or failed-reservation access and admits no notice body, successor, runtime route or training readiness.
+
+### 33.118 Explicit next scopes — absent-media notice V2 and unified-runtime planning
+
+The user selected Allow absent media (Recommended) for a fresh notice V2 and Unified SDK runtime (Recommended) for planning only.
+Notice V2 may accept genuinely unexposed Content-Type while preserving every present-header, strict UTF-8/FF/nonempty/hash/byte/deadline rule; exposed empty/whitespace/unsupported media still fail.
+This separate decision authorizes no V1 replay, decoder fallback, legal interpretation, archive acquisition, source authentication or qualification of a previous failed variant.
+Architect accepts two new pure source/test files, bootlin-gcc-notices-v2.mjs/.test.mjs, before implementation; the one-argument builder accepts only primitive ASCII notice-source21227/ab907ecc… as data, never imports/invokes that consumed producer, and exposes no production override.
+New fixed targets remain the same five GCC notice files; new production/policy names and fresh bootlin-gcc-notices-v2.{result,receipt,stop}.json paths bind an independent one-shot scope.
+
+Parent independently computes the approved graph before implementation: base21227/`ab907eccc60c8f58c351ca82b449d2fd774c96e343e07cf49ceda74b86e77a44`; profile21227/`222c7415fe8e2e225195423fc4bfa5970a0d32a4d9834eadd046b8d0494cb48d`; entryNames21227/`b462226f68d322e7018724066f440e25e45595ff7dd19ca677dfdcd81cae33e2`; policyNames21227/`73bd42d3a8abaa7cc12362cd2fe97e2e9a017c9b2f95d877843b9af696d9d4ac`; absentPolicy21255/`e14883d54334242f8d5c15afe11a05315d90bb9cc3e20daf04f4384055488ebc`; declaration21336/`4eb87061dd2d5756a242696eac537aab5f7c4ab74f830b3cc0636afd61918456`; acceptance21354/`dadbf9b890863e23086ee4138d29bb15eeb63841f7ab113a44372d10ea6aa1c5`; headerRecord21402/`78746045d9d2ae92ef4b128eb7b1cb6a835749946e95e16d5e85901f14125a45`; final observation21510/`6b0dbb219859300b7c5530d314f6d6fa1a6d1ff1146400af92ed707134239866`.
+Actual policy JSON+LF must be1494/`227acf8ed390f17ccece2691fd11e8d05d5d589a59878b67925bd0e2a0275abd` before import/use gates close.
+Capture exposure with selected.has('content-type'), preserve null only for actual absence, and record contentTypeExposed plus nullable declaredContentType in every response.
+No present media rule, byte decoder, FF/body/header/read/output/node cap, five literal requests, error-withholding or original-parent-clock behavior changes; no HEAD/GET equivalence or prior-GET diagnosis is inferred.
+All old source/STOP/failed-reservation identities and uncertainty remain unchanged; new source/fake/static/source-review/correspondence and exact registration precede any notice V2 request.
+
+The unified-runtime selection authorizes only [a proposed candidate layout](native-ingress-runtime-layout.md), not copying, provider probes, host mounts, image import/jobs, compiler execution or frozen-harness changes.
+Saved GNU namespace inspection identifies eight TARGET runtime bodies totaling6183544 bytes and inert lib64->lib/usr/lib64->lib records, supporting a separate additional-HOST candidate proposal without promoting or mutating existing TARGET observations.
+Preserve SDK's original image-internal prefix; propose root runtime paths matching recorded sysroot/lib layout and only the recorded bounded aliases, not ambient Debian multiarch paths.
+Actual HOST/ISA/symbol/private-ABI/loading/provider/rootfs/NoPython/containment/clock/cleanup and source/license/Cargo graph gates remain open; keep old seven HOST candidates retained/unqualified and unused in the proposed compiler-image runtime.
+No runtime route is qualified, and no notice V2, materialization, Docker, compiler, empirical fitting/calibration, policy training or completed-Step2 publication ran while recording these choices.
+Current48/48 owner checks pass, including exact eight-body/6183544-byte candidate table, inert alias identities and absent-versus-empty notice scope; no provider path or failed reservation is opened by those checks.
+The notice V2 construction files remain outside current65-path completion/coverage claims until handoff and independent verification.
+
+### 33.119 Absent-media notice V2 source delivered — fresh five-file parent scope
+
+The pure V2 adapter is4259 bytes/SHA-256 `4855719235f7dd8c342da9c0137231d24a712bf5058566d7a88c53aab94c14a9`; tests46065/`0ad936a8782522839901902cce7f1eb123cda10e703d47aedb775a075755286d`.
+Independent verification passes250/250 (202 new+48 owner),0 failures/skips/cancellations/todo,1.664s, both syntax checks and diff checks; mandatory quality/security source inspections report no findings for DATA-only readiness.
+All approved stages match final21510/6b0dbb21… and actual policy1494/227acf8e…; missing exposure remains distinct from an exposed empty/unsupported value, with all byte/clock/body-present-media rules unchanged.
+Source coverage grows65→67 after handoff; no V2 notice request or new reservation occurred during those checks.
+
+The parent below captures seven fixed sources/context images: new V2 adapter4259/48557192…, notice V1 adapter6707/5688445c… as a pure builder only, V2-directory adapter5760/d0955823… as a pure builder, raw V1 collector19649/1a625ec2… as bytes only, writer18003/9e3d6d84…, GCC context14690/b020748b… and accepted HEAD metadata3193/02937e1d….
+Seven positive capture closes total72261 returned/72268 requested/allocated bytes, under unchanged8MiB/128-reads-per-file capture caps and original source10s/parent27s-work/30s-outer-including3s-cleanup/external45s envelope.
+Generate base directory/notice code as inert strings, verify all fixed graph images and actual V2 policy, and import only the new V2 notice image; no consumed producer is imported or called.
+Pin GCC notice catalog/body/unique hrefs/rows1 and8 plus the accepted body-free HEAD observation before binding the original parent clock; HEAD supplies historical observations, not GET equivalence or source authentication.
+Specialize only the writer's two declarations into bootlin-gcc-notices-v2/fresh bootlin-gcc-notices-v2.result.json: intermediate18014/`860dbdb687622ec2b79fe14885ba53dcca23c9c3997298ffd53bd70db8615578`; final17906/`b8bf6c0fdd7f5906fd70c0557f782b81b46e9c372906501399f9852972ca7db5`.
+Reserve only the result O_EXCL0600 before context reads/GET1; require all five strict passive bodies, their own exposure/declaration records, original clocks and unchanged3-close/4-fsync/0444/full-hash-EOF-identity-readback/directory-sync controls before compact acceptance.
+The outer parent must mechanically require child exit0, independent full readback and exclusive exact selected .receipt.json or returned .stop.json preservation without precreating both terminals, rollback/deletion, retry, alternate path or acceptance from a stored file alone.
+
+<!-- BEGIN STEP2 GCC NOTICES V2 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+const ROOT = '/tmp/opencode/f9-bootstrap-correspondence', DIR = ROOT + '/_spec/tooling/native-ingress/';
+const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+const fail = code => { throw Object.assign(new Error(code), { code }); };
+const started = performance.now(), fields = ['dev','ino','mode','uid','gid','nlink','size','mtimeNs','ctimeNs'];
+let last = started, allocated = 0, captures = 0, captureCloses = 0, requested = 0, returned = 0, captureCloseFailed = false;
+let publisher = null, collectionStop = null;
+const guard = source => {
+  const now = performance.now();
+  if (!Number.isFinite(now) || now < last) fail('E_CLOCK'); last = now;
+  if (now - started >= (source === true ? 10000 : 27000)) fail('E_DEADLINE');
+};
+function capture(path, length, pin, source = false) {
+  guard(source); let fd = null, bytes;
+  try {
+    const named = fs.lstatSync(path, { bigint: true }); guard(source);
+    if (!named.isFile() || named.size !== BigInt(length) || length < 1 || allocated + length + 1 > 8388608) fail('E_LENGTH');
+    fd = fs.openSync(path, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW | fs.constants.O_NONBLOCK);
+    const before = fs.fstatSync(fd, { bigint: true }); guard(source);
+    if (!fields.every(k => before[k] === named[k]) || before.nlink !== 1n) fail('E_BINDING');
+    allocated += length + 1; bytes = Buffer.alloc(length); let position = 0, reads = 0;
+    while (position < length) {
+      guard(source); if (++reads > 128) fail('E_LIMIT');
+      const size = Math.min(65536, length - position); requested += size;
+      const n = fs.readSync(fd, bytes, position, size, position); returned += n;
+      if (n !== size) fail('E_LENGTH'); position += n;
+    }
+    guard(source); if (++reads > 128) fail('E_LIMIT'); requested++;
+    if (fs.readSync(fd, Buffer.alloc(1), 0, 1, length) !== 0) fail('E_EOF');
+    const after = fs.fstatSync(fd, { bigint: true }), finalName = fs.lstatSync(path, { bigint: true }); guard(source);
+    if (!fields.every(k => before[k] === after[k] && before[k] === finalName[k])) fail('E_BINDING');
+  } finally { if (fd !== null) { const owned = fd; fd = null; try { fs.closeSync(owned); captureCloses++; } catch { captureCloseFailed = true; fail('E_CLOSE'); } } }
+  guard(source); if (sha(bytes) !== pin) fail('E_HASH'); captures++; return bytes;
+}
+function abortPublications(code, publishers) {
+  let uncertain = code === 'E_PUBLICATION_CLOSE';
+  for (const publisher of publishers) if (publisher) {
+    try {
+      const aborted = publisher.abort(), snapshot = publisher.snapshot();
+      if (aborted.closeFailed !== false || aborted.cleanupUncertain !== false || snapshot.ownedFDCount !== 0
+        || snapshot.closeFailed !== false || snapshot.cleanupUncertain !== false) uncertain = true;
+    } catch { uncertain = true; }
+  }
+  return uncertain;
+}
+try {
+  const v2Source = capture(ROOT + '/tooling/native-ingress/bootlin-gcc-notices-v2.mjs',4259,'4855719235f7dd8c342da9c0137231d24a712bf5058566d7a88c53aab94c14a9',true);
+  const noticeSource = capture(ROOT + '/tooling/native-ingress/bootlin-gcc-notices-source.mjs',6707,'5688445c67f6c7ea92784d5727302e7b454923fa4bfda5ed1864e1659a614757',true);
+  const adapterSource = capture(ROOT + '/tooling/native-ingress/bootlin-directory-metadata-v2.mjs',5760,'d09558231e7ea5f27c2ed0d1b34c599c087bc34a4c6e5e75e3e4ecf3f1ff9f80',true);
+  const rawV1 = capture(ROOT + '/tooling/native-ingress/bootlin-directory-metadata.mjs',19649,'1a625ec28479ac28efeaa19a51095924f7db5c48524a1cd74570e0c4b7f3890f',true);
+  const rawWriter = capture(ROOT + '/tooling/native-ingress/split-evidence-publication.mjs',18003,'9e3d6d84e58d5e86a3097a4d8a731dcef9c922622b1fc225acf0385b218f41aa',true);
+  const adapter = await import('data:text/javascript;base64,' + adapterSource.toString('base64')); guard(true);
+  const noticeAdapter = await import('data:text/javascript;base64,' + noticeSource.toString('base64')); guard(true);
+  const v2Adapter = await import('data:text/javascript;base64,' + v2Source.toString('base64')); guard(true);
+  const base = adapter.buildBootlinDirectoryMetadataV2Source(rawV1); guard(true);
+  if (Buffer.byteLength(base.sourceText) !== 20438 || sha(base.sourceText) !== 'ece2c9edbb3068bc65ce78454b7f8dbc5236d36f046849f4f30085c58c567557') fail('E_BASE_PIN');
+  const noticeBase = noticeAdapter.buildBootlinGccNoticesSource(base.sourceText); guard(true);
+  if (Buffer.byteLength(noticeBase.sourceText) !== 21227 || sha(noticeBase.sourceText) !== 'ab907eccc60c8f58c351ca82b449d2fd774c96e343e07cf49ceda74b86e77a44') fail('E_BASE_PIN');
+  const graph = v2Adapter.buildBootlinGccNoticesV2Source(noticeBase.sourceText); guard(true);
+  if (graph.profile !== 'BOOTLIN_GCC_NOTICES_V2_SOURCE' || Buffer.byteLength(graph.sourceText) !== 21510
+    || sha(graph.sourceText) !== '6b0dbb219859300b7c5530d314f6d6fa1a6d1ff1146400af92ed707134239866') fail('E_GRAPH_PIN');
+  const oldParts = "export const SPLIT_EVIDENCE_PARTS = Object.freeze(['gnu', 'rust']);";
+  const oldPaths = "export const SPLIT_EVIDENCE_PATHS = Object.freeze({\n  gnu: '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/gnu-evidence-collection-v1.result.json',\n  rust: '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/rust-evidence-collection-v1.result.json',\n});";
+  let writerText = rawWriter.toString('utf8');
+  if (writerText.split(oldParts).length !== 2 || writerText.split(oldPaths).length !== 2) fail('E_TRANSFORM');
+  writerText = writerText.replace(oldParts,"export const SPLIT_EVIDENCE_PARTS = Object.freeze(['bootlin-gcc-notices-v2']);");
+  if (Buffer.byteLength(writerText) !== 18014 || sha(writerText) !== '860dbdb687622ec2b79fe14885ba53dcca23c9c3997298ffd53bd70db8615578') fail('E_SOURCE_PIN');
+  writerText = writerText.replace(oldPaths,"export const SPLIT_EVIDENCE_PATHS = Object.freeze({ 'bootlin-gcc-notices-v2': '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/bootlin-gcc-notices-v2.result.json' });");
+  if (Buffer.byteLength(writerText) !== 17906 || sha(writerText) !== 'b8bf6c0fdd7f5906fd70c0557f782b81b46e9c372906501399f9852972ca7db5') fail('E_SOURCE_PIN');
+  const module = await import('data:text/javascript;base64,' + Buffer.from(graph.sourceText).toString('base64')); guard(true);
+  const writer = await import('data:text/javascript;base64,' + Buffer.from(writerText).toString('base64')); guard(true);
+  if (module.collectRegisteredBootlinGccNoticesV1 !== undefined || module.collectRegisteredBootlinDirectoriesV2 !== undefined) fail('E_OLD_ENTRY');
+  const policy = module.BOOTLIN_GCC_NOTICES_V2_PROFILE, policyText = JSON.stringify(policy) + '\n';
+  if (Buffer.byteLength(policyText) !== 1494 || sha(policyText) !== '227acf8ed390f17ccece2691fd11e8d05d5d589a59878b67925bd0e2a0275abd') fail('E_POLICY_PIN');
+  publisher = writer.reserveSplitEvidencePublication('bootlin-gcc-notices-v2',() => guard());
+  const contextBytes = capture(DIR + 'bootlin-gcc-final-context-v1.result.json',14690,'b020748b1a6cae8254e82486821682d79e747918a8a0128a897fa33c94806c7b');
+  const context = JSON.parse(contextBytes), catalog = context.collection.observations[1], catalogBody = Buffer.from(catalog.bodyUtf8,'utf8');
+  if (context.profile !== 'BOOTLIN_GCC_FINAL_CONTEXT_RESULT_V1' || context.collection.mockOnly !== false
+    || catalog.role !== 'licenses' || catalog.eof !== true || catalog.requestedUrl !== 'https://toolchains.bootlin.com/downloads/releases/licenses/gcc-final-15.3.0/'
+    || catalog.responseUrl !== catalog.requestedUrl || catalogBody.length !== 1867
+    || sha(catalogBody) !== 'bc44d5fff09beba4b68c3ad6ac6ae914e26f8174f32c85322c721f0f355f8f1c') fail('E_CONTEXT_PIN');
+  const names = ['COPYING','COPYING.LIB','COPYING.RUNTIME','COPYING3','COPYING3.LIB'];
+  for (let i = 0; i < 5; i++) {
+    if (catalog.bodyUtf8.split('href="' + names[i] + '"').length !== 2 || policy.urls[i] !== catalog.requestedUrl + names[i]) fail('E_CONTEXT_PIN');
+  }
+  const rows = context.packageContext.declarationRows;
+  if (context.packageContext.domain !== 'UNRESOLVED' || rows.length !== 2 || rows[0].ordinal !== 1 || rows[1].ordinal !== 8
+    || rows.some(row => row.cells[0] !== 'gcc-final' || row.cells[1] !== '15.3.0' || row.domain !== 'UNRESOLVED')) fail('E_CONTEXT_PIN');
+  const headBytes = capture(DIR + 'bootlin-gcc-copying-head-v1.result.json',3193,'02937e1d5b1e1804476db7b8eea6b14707bb96e8e6556e151d2aea4fc288c339');
+  const head = JSON.parse(headBytes).collection;
+  if (head.scope !== 'HEAD_METADATA_DATA' || head.mockOnly !== false || head.method !== 'HEAD'
+    || head.requestedUrl !== policy.urls[0] || head.statusCode !== 200 || head.responseBodyNullObserved !== true
+    || head.counts.authoredBodyReads !== 0 || head.exposedHeaders.some(([key]) => key.toLowerCase() === 'content-type')) fail('E_CONTEXT_PIN');
+  if (captures !== 7 || captureCloses !== 7 || returned !== 72261 || requested !== 72268 || allocated !== 72268 || captureCloseFailed) fail('E_CLOSE'); guard();
+  module.SOURCE_BIND_PARENT_CLOCK_ORIGIN(started); guard();
+  const result = await module.collectRegisteredBootlinGccNoticesV2();
+  if (result.exitCode !== 0 || result.data.status !== 'BOOTLIN_LICENSE_NOTICES_DATA') { collectionStop = result.data; fail('E_NOTICE_COLLECTION'); }
+  guard(); const data = result.data, c = data.counts;
+  if (data.profile !== 'registered-bootlin-gcc-notices-v2' || data.mockOnly !== false || data.cleanupUncertain !== false
+    || data.observations.length !== 5 || c.fetchCalls !== 5 || c.requestsAttempted !== 5 || c.completedObservations !== 5
+    || c.eofObservations !== 5 || c.releases !== 5 || c.cancellations !== 0 || c.clearedTimers !== 6 || c.activeTimers !== 0
+    || c.pendingFetchKnown !== false || c.pendingReadKnown !== false || c.deliveredBytes !== c.retainedBytes
+    || c.retainedBytes > 2097152 || c.peakDeliveredChunkBytes > 1048576 || c.readAttempts > 2048) fail('E_COLLECTION');
+  for (let i = 0; i < 5; i++) {
+    const o = data.observations[i], body = Buffer.from(o.bodyUtf8,'utf8'), media = new Map(o.exposedHeaders.map(([key,value]) => [key.toLowerCase(),value]));
+    if (o.role !== policy.roles[i] || o.requestedUrl !== policy.urls[i] || o.responseUrl !== policy.urls[i] || o.status !== 200
+      || o.eof !== true || o.utf8Validated !== true || o.interpreted !== false || o.urlsFollowed !== false || o.sourceKind !== 'PUBLIC_LICENSE_NOTICE_TEXT'
+      || body.length !== o.observedBodyBytes || body.length < 1 || body.length > 1048576 || sha(body) !== o.bodySha256
+      || /[\x00-\x08\x0b\x0e-\x1f\x7f-\x9f]/u.test(o.bodyUtf8)
+      || o.contentTypeExposed !== media.has('content-type')
+      || (o.contentTypeExposed ? typeof o.declaredContentType !== 'string' || o.declaredContentType.length === 0
+        || o.declaredContentType !== media.get('content-type') : o.declaredContentType !== null)) fail('E_COLLECTION');
+  }
+  const sourcePins = {v2Adapter:{bytes:4259,sha256:'4855719235f7dd8c342da9c0137231d24a712bf5058566d7a88c53aab94c14a9'},
+    noticeAdapter:{bytes:6707,sha256:'5688445c67f6c7ea92784d5727302e7b454923fa4bfda5ed1864e1659a614757'},
+    baseAdapter:{bytes:5760,sha256:'d09558231e7ea5f27c2ed0d1b34c599c087bc34a4c6e5e75e3e4ecf3f1ff9f80'},base:base.graphPins,noticeBase:noticeBase.graphPins,v2:graph.graphPins,
+    writer:{rawBytes:18003,rawSha256:'9e3d6d84e58d5e86a3097a4d8a731dcef9c922622b1fc225acf0385b218f41aa',privateBytes:17906,privateSha256:'b8bf6c0fdd7f5906fd70c0557f782b81b46e9c372906501399f9852972ca7db5'},
+    gccContext:{bytes:14690,sha256:'b020748b1a6cae8254e82486821682d79e747918a8a0128a897fa33c94806c7b'},
+    headObservation:{bytes:3193,sha256:'02937e1d5b1e1804476db7b8eea6b14707bb96e8e6556e151d2aea4fc288c339'},
+    bindingKind:'HISTORICAL_CONTEXT_NOT_GET_HEAD_EQUIVALENCE_OR_SOURCE_AUTHENTICATION',policy:{bytes:1494,sha256:sha(policyText)}};
+  const report = {profile:'BOOTLIN_GCC_NOTICES_V2_RESULT',status:'BOOTLIN_GCC_NOTICES_V2_DATA',sourcePins,collection:data,
+    noticeContext:{packageLabel:'gcc-final',version:'15.3.0',targetNames:names,declarationRows:rows,domain:'UNRESOLVED',
+      noticeApplicabilityVerified:false,copyAuthorized:false,semanticInterpretation:false},
+    scope:'fresh approved passive notices; only unexposed media permitted without a declaration',
+    sourceAuthenticated:false,publisherAuthenticated:false,licenseComplianceVerified:false,noticeApplicabilityVerified:false,copyAuthorized:false,
+    pythonFreeSubsetVerified:false,runtimeProvidersQualified:false,abiVerified:false,imagePrepared:false,nativeQualified:false,rustReady:false,trainingReady:false};
+  const text = JSON.stringify(report).replace(/[^\x00-\x7f]/g,c => '\\u' + c.charCodeAt(0).toString(16).padStart(4,'0')) + '\n';
+  const bytes = Buffer.from(text,'ascii'); if (bytes.length > 16777216) fail('E_OUTPUT'); guard();
+  const published = publisher.publish(bytes); guard(); const state = publisher.snapshot();
+  if (published.part !== 'bootlin-gcc-notices-v2' || published.path !== DIR + 'bootlin-gcc-notices-v2.result.json'
+    || published.state !== 'PUBLISHED_READBACK_MATCHED' || published.byteLength !== bytes.length || published.sha256 !== sha(bytes)
+    || published.mode !== '0444' || published.readbackVerified !== true || published.directorySynced !== true
+    || state.ownedFDCount !== 0 || state.closeFailed !== false || state.cleanupUncertain !== false
+    || published.counts.closes !== 3 || published.counts.closeAttempts !== 3 || published.counts.fsyncs !== 4
+    || published.counts.readbackBytes !== bytes.length || published.counts.readbackHashBytes !== bytes.length
+    || published.counts.requestedReadBytes < bytes.length + 1 || published.counts.requestedReadBytes > 16777217) fail('E_PUBLICATION'); guard();
+  const terminal = JSON.stringify({profile:'BOOTLIN_GCC_NOTICES_V2_RECEIPT',status:'BOOTLIN_GCC_NOTICES_V2_DATA',publicationAccepted:true,
+    result:{path:published.path,byteLength:published.byteLength,sha256:published.sha256,mode:published.mode,readbackVerified:true,directorySynced:true},
+    sourcePins,captureCounts:{captures,captureCloses,allocated,requested,returned},publicationCounts:published.counts,
+    notices:data.observations.map((o,i) => ({name:names[i],role:o.role,url:o.requestedUrl,bytes:o.observedBodyBytes,sha256:o.bodySha256,
+      contentTypeExposed:o.contentTypeExposed,declaredContentType:o.declaredContentType})),
+    gccDeclarationOrdinals:[1,8],networkCounts:c,sourceAuthenticated:false,publisherAuthenticated:false,licenseComplianceVerified:false,
+    noticeApplicabilityVerified:false,copyAuthorized:false,runtimeProvidersQualified:false,pythonFreeSubsetVerified:false,
+    abiVerified:false,imagePrepared:false,nativeQualified:false,rustReady:false,trainingReady:false}).replace(/[^\x00-\x7f]/g,c => '\\u' + c.charCodeAt(0).toString(16).padStart(4,'0')) + '\n';
+  if (Buffer.byteLength(terminal) > 65536) fail('E_OUTPUT'); guard();
+  process.stdout.on('error',() => { process.exitCode = 1; }); process.stdout.write(terminal);
+} catch (error) {
+  const code = error && typeof error === 'object' ? Object.getOwnPropertyDescriptor(error,'code')?.value : null;
+  const publicationCleanupUncertain = abortPublications(code,[publisher]);
+  const cleanupUncertain = captureCloseFailed || publicationCleanupUncertain || collectionStop?.cleanupUncertain === true || performance.now() - started >= 30000;
+  const terminal = JSON.stringify({profile:'BOOTLIN_GCC_NOTICES_V2_RECEIPT',status:'STOP',publicationAccepted:false,
+    error:typeof code === 'string' && /^E_[A-Z_]{1,40}$/.test(code) ? code : 'E_PARENT_OPERATION',
+    collectionStop,captures,captureCloses,cleanupUncertain,retainedFilesUnaccepted:true}).replace(/[^\x00-\x7f]/g,c => '\\u' + c.charCodeAt(0).toString(16).padStart(4,'0')) + '\n';
+  if (Buffer.byteLength(terminal) > 65536) throw new Error('E_OUTPUT');
+  process.stdout.write(terminal); process.exitCode = 1;
+}
+NODE
+```
+<!-- END STEP2 GCC NOTICES V2 -->
+
+Fresh persisted parent tests, required static/quality/security/correspondence gates and exact current section/command binding precede one V2 notice set; no new notice request or reservation ran while preparing this packet.
+Mandatory parent quality/security source inspections report no findings for the fresh DATA-only V2 scope, not network-result, legal, runtime or training acceptance.
+Current verification passes251/251 (202 new+49 owner),0 failures/skips/cancellations/todo,133 syntax targets, pinned-offline owner check/render, diff checks and exact launcher syntax-only validation.
+The exact V2 notice launcher is15921 bytes/SHA-256 `4913d7ef73d5aa9ce71899f75b8a5b2c710472206d93332fe30170dec41604fc`; final correspondence and exact current-section binding precede its one request set.
+The outer parent must mechanically require child exit0, independent full readback and exclusive exact selected-terminal preservation before DATA acceptance.
+
+### 33.120 Fresh notice V2 accepted — five passive targets, no legal interpretation
+
+Final required correspondence confirms67 source paths in-sync before use.
+Registered section633270/SHA-256 `d6571d3d149768fa9dcc7d08413c28c0edd66bad5d7d73c38d6bccfc4bbee1d8` bound the15921-byte §33.119 launcher/`4913d7ef73d5aa9ce71899f75b8a5b2c710472206d93332fe30170dec41604fc` and all raw/base/notice/V2/policy identities.
+The one fresh V2 invocation returned BOOTLIN_GCC_NOTICES_V2_DATA/publicationAccepted:true/child exit0 and is consumed.
+The [full result](../tooling/native-ingress/bootlin-gcc-notices-v2.result.json) is108099 bytes/SHA-256 `2d907e7bb2520918e6d27920cee0d1aba731a382056141cdf18f7d9b3198d2ed`; after independent full length/hash/EOF/0444/named-FD readback the parent exclusively preserved the [exact compact receipt](../tooling/native-ingress/bootlin-gcc-notices-v2.receipt.json),7711 bytes/`e9bdd8ae3b269827307cbd04e51035edf98faa30893cd6e5976d5d835bdf287f`, synchronized/sealed/readback/hash/EOF/directory-sync verified.
+
+| Target | Bytes | SHA-256 |
+| --- | --- | --- |
+| COPYING | 18002 | `231f7edcc7352d7734a96eef0b8030f77982678c516876fcb81e25b32d68564c` |
+| COPYING.LIB | 26527 | `a9bdde5616ecdd1e980b44f360600ee8783b1f99b8cc83a2beb163a0a390e861` |
+| COPYING.RUNTIME | 3324 | `9d6b43ce4d8de0c878bf16b54d8e7a10d9bd42b75178153e3af6a815bdc90f74` |
+| COPYING3 | 35147 | `8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903` |
+| COPYING3.LIB | 7639 | `a853c2ffec17057872340eee242ae4d96cbf2b520ae27d903e1b2fef1a5f9d1c` |
+
+All five validated EOFs retain90639 original bytes across19 reads,8000-byte peak chunk,0 rejected chunks/cancellations,5 releases/completed observations and6 cleared/0 active timers; pending flags are false and cleanupUncertain:false remains ordinary API evidence, not transport closure.
+All7 source/context captures close positively at72261 returned/72268 requested/allocated bytes; publication adds3 positive closes/4 fsyncs.
+Each actual V2 GET records contentTypeExposed:false/declaredContentType:null; this does not establish the original failed GET's headers or exact E_HEADERS cause.
+COPYING and COPYING.LIB retain5 and9 FF page separators respectively, with no BOM and no byte normalization; the other three targets contain0 FF.
+Possession of these five indexed responses establishes no notice validity/applicability, copying permission, source/publisher authentication, full legal compliance or executable/runtime/NoPython/ABI/image/Native/readiness qualification.
+No source archive/patch/series/bundle, image, compiler/member execution or empirical operation was included; V1's uncertain STOP/reservation and every consumed predecessor source remain unchanged.
+Closing saved-evidence verification passes1592/1592 (51 owner,202 notice V2,152 HEAD,149 notice V1 source,125 directory V1,130 directory V2,58 GCC registration,119 GNU collector,119 GNU proposal,87 provider proposal,126 helper collector,155 archive utility,119 member plan),0 failures/skips/cancellations/todo,113.261s.
+All133 completed-source syntax targets, pinned-offline owner check/render and diff checks pass; required notice/candidate-plan correspondence confirms67 source paths in-sync, with candidate construction files excluded and no consumed operation or failed reservation accessed.
+
+### 33.121 Candidate image manifest plan — explicit incomplete proposal, no copy authority
+
+Architect/DevOps recommend the next concrete step as an exact candidate manifest rather than further undirected metadata discovery.
+Architect freezes two new source/test files under tooling/native-ingress/candidate-image-manifest.mjs/.test.mjs before implementation; production code belongs in tooling, not _spec.
+The pure createCandidateImageManifestV1 API accepts exactly memberPlan,gnuEvidence,gnuPreparationPlan,gccNotices own-data Buffers with no caller pin/layout override.
+Pin memberPlan5679112/`2c4cd5218dce220e55dabe96345b97cc777c2cdc10c6e18b8d53f1357d2a94da`; GNU2829942/`01c24e73a65148b8a70c3c1d4034f86dcac8040859bc206b5cf40b784776cc22`; GNU preparation136598/`7d34c5e0308dc8397a221618dbd6e85f7c253b0ccfa8d806cb458a6b5e544f6e`; notices108099/`2d907e7bb2520918e6d27920cee0d1aba731a382056141cdf18f7d9b3198d2ed`.
+The8753751-byte input set fits per-file8MiB/aggregate16MiB admission before private copies; use native intrinsic byte copies, ignoring custom Buffer properties without invoking coercion or enumerating millions of numeric keys, reject shared/resizable/proxy/subclass sources and verify all four hashes/lengths before parsing.
+Bound parsed data, namespace joins, destinations and escaped-ASCII JSON+LF independently, with output<=16MiB and no filesystem/process/network/dynamic import/evaluation operations.
+
+Preserve every8675 original identity/disposition in sourceSnapshotRefs/sourceIdentityLedger; rejoin all8412 GNU member tuples, exact150-private-header supplement and five notice-body hashes/EOF/rows against their source evidence without mutating prior reports.
+Conservative proposed selection uses only non-null destinations in INSPECTED_TOOLCHAIN_CANDIDATE,C_HEADER_DATA_CANDIDATE,CANDIDATE_NEEDS_QUALIFICATION,RUST_LIBRARY_CANDIDATE; all excluded/unmapped identities remain explicit and omission proves no closure.
+Map gnu/ paths beneath the exact saved SDK prefix and rust/ paths beneath proposed /opt/rust, marked PROPOSED_NOT_MATERIALIZATION_ROOT; add private-header proposals referencing existing identities rather than duplicate source ledger rows or rewritten dispositions.
+Propose eight root runtime placements preserving actual sysroot/lib paths and separate additional-HOST records with TARGET source domain, HOST proposed domain, UNRESOLVED qualification/candidateOnly:true/allowedForExecution:false/hostTargetPromotion:false.
+Only index516/4121 root lib64 aliases are proposed; retain all other alias references,157 Rust declarations,190 relocation dispositions/38 absences and eight linker-token candidates as unresolved data, never automatic links or search/loading authority.
+External notice placements beneath /usr/share/licenses/gcc-final-15.3.0/ reference captured URL/ordinal/length/hash and actual media exposure, never fabricated archive spans or inferred GPL applicability to independent C code.
+Reject destination escapes/collisions/non-directory ancestors under bounded lexical expansion; preserve old Rust/license/Python-tree classifications as metadata, and old HOST7 records as UNUSED_PROPOSED_IMAGE without promotion or deletion.
+Return recursively frozen PROPOSED_INCOMPLETE with materializationAuthorized:false and all copy/source/legal/provider/ABI/NoPython/image/Native/runtime/training flags false.
+Explicit blockers include full rootfs/Node/controller/CLI byte closure, active Cargo source/checksum/license/build-script/proc-macro graph, HOST/ISA/symbol/private-ABI/loading/alias/input closure, unselected numeric job limits, daemon mapping, enforcement/original clocks/descendant cleanup and actual compiler/frozen-harness fixtures.
+Invent no limits, full legal/source proof, reproducible compiler rebuild, mandatory C supervisor, unadmitted external tool or actual destination existence.
+New source/fake tests and required source/static/correspondence gates precede a separately registered proposal publication; no copying, provider probe, import, job, compiler or empirical operation belongs to this unit.
+
+### 33.122 Candidate manifest source delivered — exact incomplete proposal publication
+
+The pure builder is42458 bytes/SHA-256 `aeafd655292cbf4c73708700ea6b725c2b405c48836c08d4cdd1e923788e2362`; tests38639/`3d187701950850ebfd86f7a0724ca4b510bca16db0a5eee9554e2ee5b32d765c`.
+Independent verification passes196/196 (145 new+51 owner),0 failures/skips/cancellations/todo,24.311s, both syntax checks and diff checks; mandatory quality/security source inspections report no findings for planning DATA only.
+The exact pure proposal is12731738 escaped-ASCII bytes+LF/SHA-256 `a106e1d71c2cf9833ef5eea5ce136d0d38e337f78020d66ec278a0bb3a26af88`, with8675 source identities,1714 candidate placements,8 additional-HOST runtime proposals,2 alias proposals,5 external notice references and14 blocking gaps.
+Its1556 original conservative candidates plus150 private headers and8 root runtime placements do not imply permission; identical original-runtime placements deduplicate8 times without collapsing source identities.
+All copying/materialization/execution/source/legal/provider/ABI/NoPython/image/Native/readiness flags remain false and job limits remain null; no proposal destination has been created.
+Coverage grows67→69 after handoff.
+
+The separately registered parent publication below captures the two pinned source images and four fixed evidence inputs,8814212 returned/8814218 requested/allocated bytes across6 positive capture closes.
+Use the already declared16MiB candidate input/capture envelope rather than the smaller prior units'8MiB envelope; this is a new upfront metadata-only profile, not an adaptive increase after failure or a runtime/F9 budget change.
+Keep source admission10s, original27s work/30s outer including3s cleanup,45s external envelope,128 reads/file, exact size-before-allocation/no-follow/nonblocking/same-FD nine-field/full-hash/EOF/positive-close capture gates.
+Privately replace only the writer's two declarations into candidate-image-manifest/fresh candidate-image-manifest-v1.proposal.json: intermediate18016/`279e4449382369a550de88931b667850d3c8e4d0a01dfb2a59383be4ad372678`; final17917/`15954f1621a1869d215133b2c4073c799c82cf9aa876a5669e94683295282aaa`.
+Reserve exclusive0600 before the four evidence reads, derive only the exact pinned PROPOSED_INCOMPLETE report and require unchanged3-positive-close/4-fsync/0444/full-hash-EOF-identity-readback/directory-sync publication plus final original-clock success.
+The outer parent must require child exit0, independent full readback and exclusive exact selected receipt/STOP preservation; no rollback/delete/retry or acceptance/materialization authority follows from a stored proposal.
+
+<!-- BEGIN STEP2 CANDIDATE IMAGE PROPOSAL V1 -->
+```sh
+node --input-type=module <<'NODE'
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+const ROOT = '/tmp/opencode/f9-bootstrap-correspondence', DIR = ROOT + '/_spec/tooling/native-ingress/';
+const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+const fail = code => { throw Object.assign(new Error(code), { code }); };
+const started = performance.now(), fields = ['dev','ino','mode','uid','gid','nlink','size','mtimeNs','ctimeNs'];
+let last = started, allocated = 0, captures = 0, captureCloses = 0, requested = 0, returned = 0, captureCloseFailed = false;
+let publisher = null;
+const guard = source => {
+  const now = performance.now();
+  if (!Number.isFinite(now) || now < last) fail('E_CLOCK'); last = now;
+  if (now - started >= (source === true ? 10000 : 27000)) fail('E_DEADLINE');
+};
+function capture(path, length, pin, source = false) {
+  guard(source); let fd = null, bytes;
+  try {
+    const named = fs.lstatSync(path, { bigint: true }); guard(source);
+    if (!named.isFile() || named.size !== BigInt(length) || length < 1 || allocated + length + 1 > 16777216) fail('E_LENGTH');
+    fd = fs.openSync(path, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW | fs.constants.O_NONBLOCK);
+    const before = fs.fstatSync(fd, { bigint: true }); guard(source);
+    if (!fields.every(k => before[k] === named[k]) || before.nlink !== 1n) fail('E_BINDING');
+    allocated += length + 1; bytes = Buffer.alloc(length); let position = 0, reads = 0;
+    while (position < length) {
+      guard(source); if (++reads > 128) fail('E_LIMIT');
+      const size = Math.min(65536, length - position); requested += size;
+      const n = fs.readSync(fd, bytes, position, size, position); returned += n;
+      if (n !== size) fail('E_LENGTH'); position += n;
+    }
+    guard(source); if (++reads > 128) fail('E_LIMIT'); requested++;
+    if (fs.readSync(fd, Buffer.alloc(1), 0, 1, length) !== 0) fail('E_EOF');
+    const after = fs.fstatSync(fd, { bigint: true }), finalName = fs.lstatSync(path, { bigint: true }); guard(source);
+    if (!fields.every(k => before[k] === after[k] && before[k] === finalName[k])) fail('E_BINDING');
+  } finally { if (fd !== null) { const owned = fd; fd = null; try { fs.closeSync(owned); captureCloses++; } catch { captureCloseFailed = true; fail('E_CLOSE'); } } }
+  guard(source); if (sha(bytes) !== pin) fail('E_HASH'); captures++; return bytes;
+}
+function abortPublications(code, publishers) {
+  let uncertain = code === 'E_PUBLICATION_CLOSE';
+  for (const publisher of publishers) if (publisher) {
+    try {
+      const aborted = publisher.abort(), snapshot = publisher.snapshot();
+      if (aborted.closeFailed !== false || aborted.cleanupUncertain !== false || snapshot.ownedFDCount !== 0
+        || snapshot.closeFailed !== false || snapshot.cleanupUncertain !== false) uncertain = true;
+    } catch { uncertain = true; }
+  }
+  return uncertain;
+}
+try {
+  const source = capture(ROOT + '/tooling/native-ingress/candidate-image-manifest.mjs',42458,'aeafd655292cbf4c73708700ea6b725c2b405c48836c08d4cdd1e923788e2362',true);
+  const rawWriter = capture(ROOT + '/tooling/native-ingress/split-evidence-publication.mjs',18003,'9e3d6d84e58d5e86a3097a4d8a731dcef9c922622b1fc225acf0385b218f41aa',true);
+  const oldParts = "export const SPLIT_EVIDENCE_PARTS = Object.freeze(['gnu', 'rust']);";
+  const oldPaths = "export const SPLIT_EVIDENCE_PATHS = Object.freeze({\n  gnu: '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/gnu-evidence-collection-v1.result.json',\n  rust: '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/rust-evidence-collection-v1.result.json',\n});";
+  let writerText = rawWriter.toString('utf8');
+  if (writerText.split(oldParts).length !== 2 || writerText.split(oldPaths).length !== 2) fail('E_TRANSFORM');
+  writerText = writerText.replace(oldParts,"export const SPLIT_EVIDENCE_PARTS = Object.freeze(['candidate-image-manifest']);");
+  if (Buffer.byteLength(writerText) !== 18016 || sha(writerText) !== '279e4449382369a550de88931b667850d3c8e4d0a01dfb2a59383be4ad372678') fail('E_SOURCE_PIN');
+  writerText = writerText.replace(oldPaths,"export const SPLIT_EVIDENCE_PATHS = Object.freeze({ 'candidate-image-manifest': '/tmp/opencode/f9-bootstrap-correspondence/_spec/tooling/native-ingress/candidate-image-manifest-v1.proposal.json' });");
+  if (Buffer.byteLength(writerText) !== 17917 || sha(writerText) !== '15954f1621a1869d215133b2c4073c799c82cf9aa876a5669e94683295282aaa') fail('E_SOURCE_PIN');
+  const module = await import('data:text/javascript;base64,' + source.toString('base64')); guard(true);
+  const writer = await import('data:text/javascript;base64,' + Buffer.from(writerText).toString('base64')); guard(true);
+  publisher = writer.reserveSplitEvidencePublication('candidate-image-manifest',() => guard());
+  const inputs = {
+    memberPlan: capture(DIR + 'toolchain-member-plan-v1.result.json',5679112,'2c4cd5218dce220e55dabe96345b97cc777c2cdc10c6e18b8d53f1357d2a94da'),
+    gnuEvidence: capture(DIR + 'gnu-evidence-collection-v1.result.json',2829942,'01c24e73a65148b8a70c3c1d4034f86dcac8040859bc206b5cf40b784776cc22'),
+    gnuPreparationPlan: capture(DIR + 'gnu-preparation-plan-v1.result.json',136598,'7d34c5e0308dc8397a221618dbd6e85f7c253b0ccfa8d806cb458a6b5e544f6e'),
+    gccNotices: capture(DIR + 'bootlin-gcc-notices-v2.result.json',108099,'2d907e7bb2520918e6d27920cee0d1aba731a382056141cdf18f7d9b3198d2ed'),
+  };
+  if (captures !== 6 || captureCloses !== 6 || returned !== 8814212 || requested !== 8814218 || allocated !== 8814218 || captureCloseFailed) fail('E_CLOSE');
+  const report = module.createCandidateImageManifestV1(inputs); guard();
+  if (report.status !== 'PROPOSED_INCOMPLETE' || report.materializationAuthorized !== false || report.closedRootfs !== false
+    || report.trainingReady !== false || report.counts.sourceIdentities !== 8675 || report.counts.candidatePlacements !== 1714
+    || report.runtimeRoleCandidates.length !== 8 || report.rootAliasProposals.length !== 2 || report.externalNoticeRecords.length !== 5
+    || report.missing.length !== 14 || report.jobResourceProfile.memoryBytes !== null || report.jobResourceProfile.cpu !== null
+    || report.jobResourceProfile.pids !== null || report.jobResourceProfile.swapBytes !== null) fail('E_REPORT');
+  const text = JSON.stringify(report).replace(/[\u007f-\uffff]/g,c => '\\u' + c.charCodeAt(0).toString(16).padStart(4,'0')) + '\n';
+  const bytes = Buffer.from(text,'ascii');
+  if (bytes.length !== 12731738 || bytes.length !== report.outputAccounting.byteLength
+    || sha(bytes) !== 'a106e1d71c2cf9833ef5eea5ce136d0d38e337f78020d66ec278a0bb3a26af88') fail('E_REPORT_PIN'); guard();
+  const published = publisher.publish(bytes); guard(); const state = publisher.snapshot();
+  if (published.part !== 'candidate-image-manifest' || published.path !== DIR + 'candidate-image-manifest-v1.proposal.json'
+    || published.state !== 'PUBLISHED_READBACK_MATCHED' || published.byteLength !== bytes.length || published.sha256 !== sha(bytes)
+    || published.mode !== '0444' || published.readbackVerified !== true || published.directorySynced !== true
+    || state.ownedFDCount !== 0 || state.closeFailed !== false || state.cleanupUncertain !== false
+    || published.counts.closes !== 3 || published.counts.closeAttempts !== 3 || published.counts.fsyncs !== 4
+    || published.counts.readbackBytes !== bytes.length || published.counts.readbackHashBytes !== bytes.length
+    || published.counts.requestedReadBytes < bytes.length + 1 || published.counts.requestedReadBytes > 16777217) fail('E_PUBLICATION'); guard();
+  const terminal = JSON.stringify({profile:'CANDIDATE_IMAGE_MANIFEST_RECEIPT_V1',status:'CANDIDATE_IMAGE_MANIFEST_DATA',publicationAccepted:true,
+    result:{path:published.path,byteLength:published.byteLength,sha256:published.sha256,mode:published.mode,readbackVerified:true,directorySynced:true},
+    sourcePin:{bytes:42458,sha256:'aeafd655292cbf4c73708700ea6b725c2b405c48836c08d4cdd1e923788e2362'},
+    inputPins:module.CANDIDATE_IMAGE_MANIFEST_V1_PINS,captureCounts:{captures,captureCloses,allocated,requested,returned},publicationCounts:published.counts,
+    proposalStatus:report.status,counts:report.counts,blockers:report.blockers,materializationAuthorized:false,imageComplete:false,
+    copyAuthorized:false,runtimeProvidersQualified:false,pythonFreeSubsetVerified:false,abiVerified:false,imagePrepared:false,nativeQualified:false,rustReady:false,trainingReady:false})
+    .replace(/[^\x00-\x7f]/g,c => '\\u' + c.charCodeAt(0).toString(16).padStart(4,'0')) + '\n';
+  if (Buffer.byteLength(terminal) > 65536) fail('E_OUTPUT'); guard();
+  process.stdout.on('error',() => { process.exitCode = 1; }); process.stdout.write(terminal);
+} catch (error) {
+  const code = error && typeof error === 'object' ? Object.getOwnPropertyDescriptor(error,'code')?.value : null;
+  const publicationCleanupUncertain = abortPublications(code,[publisher]);
+  const cleanupUncertain = captureCloseFailed || publicationCleanupUncertain || performance.now() - started >= 30000;
+  const terminal = JSON.stringify({profile:'CANDIDATE_IMAGE_MANIFEST_RECEIPT_V1',status:'STOP',publicationAccepted:false,
+    error:typeof code === 'string' && /^E_[A-Z_]{1,40}$/.test(code) ? code : 'E_PARENT_OPERATION',
+    captures,captureCloses,cleanupUncertain,retainedFilesUnaccepted:true}) + '\n';
+  if (Buffer.byteLength(terminal) > 65536) throw new Error('E_OUTPUT');
+  process.stdout.write(terminal); process.exitCode = 1;
+}
+NODE
+```
+<!-- END STEP2 CANDIDATE IMAGE PROPOSAL V1 -->
+
+Fresh parent/static/correspondence gates, persisted rejection of incomplete-authority promotion and exact current section/command binding precede one proposal publication; no file or materialization root was reserved while preparing this packet.
+Mandatory parent quality/security source inspections report no findings for DATA-proposal publication only; a persisted pure owner regression executes the actual rejection predicate against promoted materialization/READY/rootfs/training/invented-resource cases and rejects all of them.
+Current verification passes197/197 (145 builder+52 owner),0 failures/skips/cancellations/todo,135 syntax targets, pinned-offline owner check/render, diff checks and launcher syntax-only validation.
+The exact proposal launcher is9513 bytes/SHA-256 `7ed0f759e5131178960da6726f5ba376f789e358aa10f038e5554a5f44d3be4b`; final correspondence and exact current-section binding precede its one publication.
+No actual materialization, provider probe, job, compiler operation or completed-Step2 claim follows from proposal custody; child exit0, independent full readback and exclusive exact terminal preservation remain mechanical parent acceptance gates.
+
+### 33.123 Candidate proposal published — incomplete contents, explicit admission blockers
+
+Final required correspondence confirms69 paths in-sync before publication.
+Registered section654110/SHA-256 `440bc755717f763aa9f66e78d7f5a3d63dc5446f6ca4e3e832d5ecbb27dc820c` bound the9513-byte §33.122 launcher/`7ed0f759e5131178960da6726f5ba376f789e358aa10f038e5554a5f44d3be4b` and builder/writer/raw-input identities.
+The one metadata-only invocation returned CANDIDATE_IMAGE_MANIFEST_DATA/publicationAccepted:true/child exit0 and is consumed.
+The [full proposed manifest](../tooling/native-ingress/candidate-image-manifest-v1.proposal.json) is12731738 bytes/SHA-256 `a106e1d71c2cf9833ef5eea5ce136d0d38e337f78020d66ec278a0bb3a26af88`; after independent full length/hash/EOF/0444/named-FD readback the parent exclusively preserved the [exact compact receipt](../tooling/native-ingress/candidate-image-manifest-v1.receipt.json),3573 bytes/`bdc3f848e7a56a3a1420fb0e98458bbc98c1b858ace7ab526593ebca9305f220`, synchronized/sealed/readback/hash/EOF/directory-sync verified.
+All6 capture descriptors close positively at8814212 returned/8814218 requested/allocated bytes; report publication adds3 positive closes/4 fsyncs.
+The report remains PROPOSED_INCOMPLETE with8675 unchanged source identities,1714 candidate placements (1556 original conservative+150 private headers+8 root runtime placements),8 additional-HOST role candidates,2 root aliases,5 notice references,157 Rust declarations,152 regular/38 absent relocation references and14 blocking gaps.
+All seven earlier HOST observations remain retained/unqualified/unused in the proposed compiler-image runtime; existing TARGET records are not promoted or rewritten.
+Resource-profile memory/CPU/PID/swap fields remain null and materializationAuthorized/closedRootfs/imageComplete/copy/execution/source/legal/provider/ABI/NoPython/image/Native/runtime/training flags remain false.
+The proposal lacks a closed rootfs and executable/data/Node/controller/CLI closure, active Cargo source/build graph, qualified HOST behavior and wrapper/helper/search/alias closure, effective job limits and daemon mapping, filesystem/socket/exec enforcement, original-clock/descendant-cleanup evidence and actual compiler/frozen-harness results.
+Those are explicit blockers rather than a license to skip them; the next boundary requires a human-frozen job profile and exact preparation/controller/rootfs/input admissions, not another claim that metadata completed Step2.
+No archive payload copying, staging-root creation, provider probe, image import, job, compiler/member execution or empirical operation occurred during this proposal publication; no completed-Step2 commit/push follows.
+Closing saved-evidence verification passes1739/1739 (53 owner,145 candidate manifest,202 notice V2,152 HEAD,149 notice V1 source,125 directory V1,130 directory V2,58 GCC registration,119 GNU collector,119 GNU proposal,87 provider proposal,126 helper collector,155 archive utility,119 member plan),0 failures/skips/cancellations/todo,138.839s.
+All135 syntax targets, pinned-offline owner check/render and diff checks pass; required proposal/spec correspondence confirms69 paths in-sync, with no consumed operation, copying, provider probe, job or failed-reservation access during verification.
+
+### 33.124 Explicit qualification ceilings and two-path metadata selection
+
+The user selected the proposed2CPU/4GiB qualification profile and Read-only helper inventory.
+Freeze selected ceilings as2 CPU equivalents,4294967296 memory bytes,256 PIDs,0 swap bytes and300000ms qualification-fixture lifecycle including3000ms cleanup; this grants no job/compiler execution and establishes no provider capacity or effective enforcement.
+Do not infer total CPU-time enforcement from CPU bandwidth, alter frozen game/runtime clocks or overwrite the published proposal's null-resource snapshot; bind new selection identities separately in future admission evidence.
+
+The exact newly approved observation targets only /usr/local/bin/node and /usr/bin/docker as pathname metadata.
+Architect accepts two new source/test files under tooling/native-ingress/preparation-helper-metadata.mjs/.test.mjs before implementation: zero-argument independently one-shot observer, explicit complete fake lstatSync/now fixture and no filesystem calls except the two fixed paths' pre/post lstatSync, at most4 calls.
+Record each object's independent dev/ino/mode/nlink/uid/gid/size/mtimeNs/ctimeNs bigint data as decimal strings, classify REGULAR/SYMLINK/MISSING, accept only ENOENT as absence and reject unsupported types or any pre/post transition/mismatch.
+No content open/read/hash, readlink/realpath/link following, executable launch/version query, PATH search, daemon query, SDK/provider probe, copying, image import/job or old M2/M3/failed-root access belongs to this scope.
+Keep3500ms cooperative observer-entry work and5000ms external observation envelope,<=8192 escaped-ASCII JSON+LF, no owned descriptors and no native blocking-syscall/deadline/identity-race guarantees.
+Return explicit production/fixture mockOnly identity and false installed/usability/provider/ABI/NoPython/image/Native/runtime/training flags; all failure/reuse paths consume the attempt and withhold provisional metadata without retry/fallback.
+Parent source/policy/fresh-result reservation/readback/exact-terminal custody, new fake-only tests and mandatory source/static/correspondence gates plus exact registration precede one physical observer invocation.
+The earlier failed empty subagent tool call launched no implementation; the separately dispatched implementer owns only these two new files.
+No helper metadata/content, new daemon query, provider probe, copy, image/job, compiler or empirical operation ran while recording these choices.
+
+### 33.125 Explicit WIP publication request — preserve evidence and unfinished helper work
+
+The user explicitly requests commit/non-force push of the current snapshot.
+Publish the accumulated source/tests/specifications, retained DATA/receipts/STOPs and candidate proposal as WIP, not completed Step2 or training readiness.
+The helper metadata handoff arrived before staging; captured helper files receive no integrated-completion, physical-use or qualification claim from this commit.
+Preserve all consumed source/profile identities, accepted results, exact receipts, failed reservations and frozen Rust/Burn/NoPython/F9/economic invariants.
+Run saved-evidence/pure/mock verification and staged syntax/whitespace checks before publication; do not invoke a live collector or repeat any consumed operation.
+This request authorizes git commit/non-force push only, with no merge, helper execution, daemon query, source acquisition, copying/materialization, image/job, compiler, fitting/calibration, policy training, activation, deployment or retained-data deletion.
+The prepublication rerun completed1739/1739 checks,0 failures/skips/cancellations/todo in135.568s;135 completed-source syntax targets, pinned-offline diagram validation and diff checks pass.
+That completed result resolves the publication correspondence timing concern about the PLAN's1739 claim; no in-progress run is presented as a completed PASS.
+The delivered helper source is10475 bytes/SHA-256 `07823403fd0b966f9ac15c3a9d9c210ed21fd0add2ed6d35afdb5336922f551a`; tests32729/`da4e5dbab8bd22c22228e9d2576bdb66dcdb36c15c1bac570e0781035bf184e6`.
+Independent helper verification passes159 fake-only tests and both syntax checks, with the physical-lstat guard recording0 attempts; these checks remain separate from the1739 completed-source suite and69-path integrated coverage.
+Required narrow WIP quality/security reviews report no blocking findings for the helper pair; source acceptance does not grant physical invocation, integrated qualification or parent custody.
+Keep exact observer registration/custody, integrated spec coverage and physical verification pending after this WIP publication; no helper or consumed live operation ran during publication verification.

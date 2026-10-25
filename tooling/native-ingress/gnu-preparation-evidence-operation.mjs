@@ -437,9 +437,14 @@ function validatePublication(record, state, length, hash) {
   const c = record.counts, m = record.fileMetadata;
   if (!m || !FIELDS.every(key => typeof m[key] === 'string' && /^-?[0-9]{1,40}$/.test(m[key])) ||
     m.mode !== '33060' || m.size !== String(length) || m.nlink !== '1' || m.uid !== '1000' || m.gid !== '1000' || BigInt(m.ino) <= 0n) fail('E_PUBLICATION_RECORD');
-  if (!Object.values(c).every(n => Number.isSafeInteger(n) && n >= 0) || c.opens !== 3 || c.closeAttempts !== 3 || c.closes !== 3 ||
+  if (!FIELDS.every(key => BigInt(m[key]) <= 0xffffffffffffffffn &&
+    BigInt(m[key]) >= (key.endsWith('Ns') ? -0x8000000000000000n : 0n))) fail('E_PUBLICATION_RECORD');
+  if (!c || Object.keys(c).length !== PUBLICATION_COUNTERS.length ||
+    !PUBLICATION_COUNTERS.every(key => Number.isSafeInteger(c[key]) && c[key] >= 0) || c.opens !== 3 || c.closeAttempts !== 3 || c.closes !== 3 ||
     c.cleanupCloseAttempts !== 0 || c.fsyncs !== 4 || c.chmods !== 1 || c.peakOwnedFDs !== 2 ||
-    !['inputBytes', 'copiedBytes', 'inputHashBytes', 'writtenBytes', 'readbackBytes', 'readbackHashBytes'].every(key => c[key] === length) ||
+    !['inputBytes', 'copiedBytes', 'inputHashBytes', 'writtenBytes', 'readbackBytes', 'readbackHashBytes',
+      'peakOwnedSnapshotBytes', 'jsonStringCodeUnits', 'wipedSnapshotBytes'].every(key => c[key] === length) ||
+    c.peakOwnedScratchBytes !== 65536 || c.requestedWriteBytes < length || c.requestedWriteBytes > 268435456 ||
     c.requestedReadBytes < length + 1 || c.requestedReadBytes > 16777217 || c.ownedSnapshotBytes !== 0 || c.ownedScratchBytes !== 0 ||
     c.fsOperations > 8192 || c.writeAttempts < 1 || c.writeAttempts > 4096 || c.readAttempts < 2 || c.readAttempts > 1024) fail('E_PUBLICATION_RECORD');
   for (const key of ['sourceRootAuthentication', 'ancestorRacesExcluded', 'atomicCrashCommit', 'storageFailureSurvival',
@@ -448,10 +453,42 @@ function validatePublication(record, state, length, hash) {
 const METHODS = freeze(['beginToolchainEvidenceBatch', 'beginToolchainEvidenceRole', 'createTarInventory',
   'acceptToolchainEvidenceRole', 'finishToolchainEvidenceBatch', 'abortToolchainEvidenceBatch',
   'getToolchainEvidenceFailure', 'snapshotToolchainEvidenceBatch']);
+const CODES = new Set(['E_INPUT', 'E_COMPONENT', 'E_SOURCE_PIN', 'E_METADATA', 'E_BINDING', 'E_IO', 'E_CLOSE',
+  'E_LENGTH', 'E_HASH', 'E_PREREQUISITE', 'E_LIMIT', 'E_CLOCK', 'E_DEADLINE', 'E_OUTPUT', 'E_RECEIPT',
+  'E_COLLECTION', 'E_COLLECTION_ABORT', 'E_SPAWN', 'E_PIPE', 'E_DECODER', 'E_TAR', 'E_PRELOAD', 'E_CLEANUP',
+  ...['INPUT', 'LIMIT', 'CHUNK', 'INSPECT', 'DATA', 'STATE', 'METADATA', 'SPAN', 'BODY_HASH', 'MANIFEST', 'ROOT',
+    'EVENT', 'TARGET', 'MANIFEST_LIMIT', 'EXPANDED', 'ENTRIES', 'SUMMARY', 'DECODED_HASH', 'METADATA_HASH', 'CORE',
+    'OUTPUT'].map(code => 'E_EVIDENCE_' + code),
+  ...['ARGUMENT', 'FIXTURE', 'LIMIT', 'GUARD', 'STATE', 'DIRECTORY', 'METADATA', 'BINDING', 'FILE', 'EXISTS',
+    'IO', 'CLOSE', 'BYTES', 'JSON', 'WRITE', 'READ', 'HASH', 'EOF', 'ABORTED', 'RECORD', 'ABORT'].map(code => 'E_PUBLICATION_' + code)]);
+const DIAGNOSTIC_CODES = new Set(['E_INPUT', 'E_LIMITS', 'E_UTF8', 'E_TEXT', 'E_NUMBER', 'E_PAX_NUMBER', 'E_PAX',
+  'E_PAX_KEY', 'E_PAX_DUPLICATE', 'E_PATH', 'E_SEALED', 'E_INTERNAL', 'E_GNU_LONG', 'E_DANGLING_EXTENSION',
+  'E_TERMINATOR', 'E_HEADERS', 'E_CHECKSUM', 'E_MAGIC', 'E_SIZE', 'E_EXTENSION_REPEAT', 'E_EXTENSION_BYTES',
+  'E_NONFILE_BODY', 'E_TYPE', 'E_LINK', 'E_COLLISION', 'E_COLLISION_BYTES', 'E_EVENT_BYTES', 'E_OUTPUT_BYTES',
+  'E_SPAN_BYTES', 'E_CHUNK', 'E_DATA_EVENTS', 'E_EXPANDED_BYTES', 'E_PADDING', 'E_TRAILING', 'E_TRUNCATED',
+  'E_ELF', 'E_RANGE', 'E_PROGRAM_HEADERS', 'E_INTERPRETER', 'E_DYNAMIC', 'E_STRING_TABLE', 'E_STRING', 'E_OUTPUT',
+  'E_VERSIONS', 'E_NOTES', 'E_PROPERTIES', 'E_REL', 'E_REL_UNSUPPORTED', 'E_AR', 'E_AR_UNSUPPORTED',
+  'E_LINKER_TEXT', 'E_LINKER_UNSUPPORTED', 'E_LIMIT', 'E_KIND']);
+const PUBLICATION_COUNTERS = freeze(['fsOperations', 'guardChecks', 'opens', 'closeAttempts', 'closes',
+  'cleanupCloseAttempts', 'namedStats', 'fdStats', 'fsyncs', 'chmods', 'writeAttempts', 'readAttempts',
+  'requestedWriteBytes', 'requestedReadBytes', 'writtenBytes', 'readbackBytes', 'inputBytes', 'copiedBytes',
+  'inputHashBytes', 'readbackHashBytes', 'peakOwnedFDs', 'ownedSnapshotBytes', 'peakOwnedSnapshotBytes',
+  'ownedScratchBytes', 'peakOwnedScratchBytes', 'jsonStringCodeUnits', 'wipedSnapshotBytes']);
+function publicationAccounting(value) {
+  if (!value || typeof value !== 'object' || types.isProxy(value)) return null;
+  const result = {};
+  for (const key of PUBLICATION_COUNTERS) {
+    const field = Object.getOwnPropertyDescriptor(value, key);
+    if (!field || !Object.hasOwn(field, 'value')) continue;
+    if (!Number.isSafeInteger(field.value) || field.value < 0) return null;
+    result[key] = field.value;
+  }
+  return result;
+}
 function codeOf(error) {
   try {
     const code = own(error, 'code');
-    return typeof code === 'string' && /^E_(?:INPUT|COMPONENT|SOURCE_PIN|METADATA|BINDING|IO|CLOSE|LENGTH|HASH|PREREQUISITE|LIMIT|CLOCK|DEADLINE|OUTPUT|RECEIPT|COLLECTION|SPAWN|PIPE|DECODER|TAR|PRELOAD|CLEANUP|EVIDENCE_[A-Z_]+|PUBLICATION_[A-Z_]+)$/.test(code) ? code : 'E_COLLECTION';
+    return CODES.has(code) ? code : 'E_COLLECTION';
   } catch { return 'E_IO'; }
 }
 const stopInput = mockOnly => Object.freeze({ exitCode: 1, text: safeJson({ profile: 'registered-gnu-preparation-evidence-v1',
@@ -516,6 +553,7 @@ async function run(deps, mockOnly) {
     sourceInputPins: { operation: OPERATION_PIN, sources: SOURCE_PINS, transforms: graphPins, acceptedGnuData: DATA_PIN,
       input: GNU_PREPARATION_INPUT }, repoCapture: { ...repoCapture }, acceptedDataCapture: { ...dataCapture },
     collectionCounts: { ...counts }, sourceAccountingComplete, stageAccountingComplete,
+    sourceCloseUncertain: repoCapture.closeAttempts !== repoCapture.closes || dataCapture.closeAttempts !== dataCapture.closes,
     archiveAccountingComplete: counts.completedCorePasses === 1,
     archiveCountersScope: 'completed private core results; failed-pass bytes remain unaccounted, not zero',
     descriptorScope: 'source peak1; collection publisher2 +archive2 +stage2, aggregate peak at most6',
@@ -627,7 +665,7 @@ async function run(deps, mockOnly) {
     const text = safeJson({ ...base('GNU_PREPARATION_EVIDENCE_DATA'), collection, ...preparation }, 16777216, guard);
     const bytes = Buffer.from(text, 'ascii'), hash = sha(bytes); guard();
     const record = snapshot(publisher.publish(bytes), 16384, guard);
-    const state = snapshot(publisher.snapshot(), 16384, guard); publicationCounts = state.counts;
+    const state = snapshot(publisher.snapshot(), 16384, guard); publicationCounts = publicationAccounting(state.counts);
     validatePublication(record, state, bytes.length, hash); guard();
     const compact = safeJson({ ...base('GNU_PREPARATION_EVIDENCE_DATA'), publicationAccepted: true,
       byteLength: bytes.length, sha256: hash, mode: '0444', readbackVerified: true, directorySynced: true,
@@ -642,17 +680,19 @@ async function run(deps, mockOnly) {
         if (detail) {
           const value = snapshot(detail);
           diagnostic = { code: codeOf({ code: value.code }), role: value.role === 'gnu-sdk' ? 'gnu-sdk' : null,
-            path: null, kind: null, index: null, underlyingCode: null };
+            path: null, kind: null, index: null, underlyingCode: DIAGNOSTIC_CODES.has(value.underlyingCode) ? value.underlyingCode : null };
         }
       } catch { diagnostic = null; }
     }
     if (publisher) {
       try {
-        const aborted = snapshot(publisher.abort()); publicationCounts = aborted.counts;
+        const aborted = snapshot(publisher.abort()); publicationCounts = publicationAccounting(aborted.counts);
         if (aborted.closeFailed !== false || aborted.cleanupUncertain !== false) { error = 'E_PUBLICATION_CLOSE'; abortUncertain = true; }
+      } catch { error = 'E_PUBLICATION_ABORT'; abortUncertain = true; }
+      try {
         const state = snapshot(publisher.snapshot());
         if (state.ownedFDCount !== 0 || state.closeFailed !== false || state.cleanupUncertain !== false) { error = 'E_PUBLICATION_CLOSE'; abortUncertain = true; }
-      } catch { error = 'E_PUBLICATION_ABORT'; abortUncertain = true; }
+      } catch { if (!abortUncertain) error = 'E_PUBLICATION_ABORT'; abortUncertain = true; }
     }
     if (collector) {
       try { collector.abortToolchainEvidenceBatch(); }
