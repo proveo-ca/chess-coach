@@ -96,7 +96,10 @@ test('integrated owner pointers and exact coverage index agree', () => {
     'split-evidence-publication.test', 'split-toolchain-evidence',
     'split-toolchain-evidence.test', 'split-toolchain-evidence-operation',
     'split-toolchain-evidence-operation.test', 'rust-archive-evidence-operation',
-    'rust-archive-evidence-operation.test'].map(name => 'tooling/native-ingress/' + name + '.mjs');
+    'rust-archive-evidence-operation.test', 'toolchain-member-plan',
+    'toolchain-member-plan.test', 'rust-helper-evidence-operation',
+    'rust-helper-evidence-operation.test', 'gnu-preparation-evidence-operation',
+    'gnu-preparation-evidence-operation.test'].map(name => 'tooling/native-ingress/' + name + '.mjs');
   const diagram = fs.readFileSync(new URL('../../' + spec, import.meta.url), 'utf8');
   const index = JSON.parse(fs.readFileSync(new URL('../../_spec/.spec-index.json', import.meta.url), 'utf8'));
   assert.deepEqual(index.specs.filter(value => value.spec === spec), [{ spec, covers: files, fingerprint: null }]);
@@ -378,4 +381,107 @@ test('finite same-domain declaration comparison reproduces counts without qualif
   for (const key of ['symbolBindingsVerified', 'relocationsVerified', 'loaderClosureVerified',
     'privateAbiCoherenceVerified', 'hostTargetPromotion']) assert.equal(set.declarationComparison[key], false);
   assert.equal(set.declarationComparison.dependencyQualificationStatus, 'UNRESOLVED');
+});
+
+test('member dispositions remain pure proposals with explicit licensing and namespace limits', () => {
+  for (const phrase of ['pure deterministic evidence-to-report module', 'callerInputsAuthenticated:false',
+    'Every one of8675 namespace identities receives exactly one disposition',
+    'UNREVIEWED_OMIT_NOT_RUNTIME_PROOF', 'Apply C++/LTO exclusions before generic wrapper-alias matching',
+    'join all157 declarations', 'LICENSE_DATA_CANDIDATE', 'GNU C/GCC license/source-context gap',
+    'all190 sdk-relocs lines', '152 regular matches/38 absences', 'all1434 regular GNU sysroot headers',
+    'requiresApprovedSysrootMapping:true', 'DECLARED_MEMBER_MATCH_NOT_LINKER_PROOF',
+    'no global basename search or host discovery']) assert.ok(plan.includes(phrase), phrase);
+});
+
+test('parent member-report cleanup distinguishes abort flags, ownership snapshots and reservation close failures', () => {
+  const canonical = fs.readFileSync(new URL('../../_spec/_plans/ml-runtime-redesign.md', import.meta.url), 'utf8');
+  const match = canonical.match(/function abortPublications\(code, publishers\) \{[\s\S]*?\n\}\n(?=const inputPins = \[)/);
+  assert.ok(match);
+  const classify = Function(match[0] + '\nreturn abortPublications;')();
+  assert.equal(classify('E_PUBLICATION_CLOSE', [null, null]), true);
+  assert.equal(classify('E_PUBLICATION_EXISTS', [null, null]), false);
+  let aborts = 0, snapshots = 0;
+  const clean = { abort() { aborts++; return { counts: {}, closeFailed: false, cleanupUncertain: false }; },
+    snapshot() { snapshots++; return { ownedFDCount: 0, closeFailed: false, cleanupUncertain: false }; } };
+  assert.equal(classify('E_HASH', [clean, clean]), false);
+  assert.equal(aborts, 2); assert.equal(snapshots, 2);
+  assert.equal(classify('E_HASH', [{ ...clean, snapshot: () => ({ ownedFDCount: 1, closeFailed: false, cleanupUncertain: false }) }]), true);
+  assert.equal(classify('E_HASH', [{ ...clean, abort: () => ({ closeFailed: true, cleanupUncertain: true }) }]), true);
+  assert.equal(classify('E_HASH', [{ ...clean, abort() { throw Error('close'); } }, clean]), true);
+  assert.equal(aborts, 4);
+});
+
+test('published member report and sidecar stay proposed data after terminal acceptance', () => {
+  const bytes = fs.readFileSync(new URL('../../_spec/tooling/native-ingress/toolchain-member-plan-v1.result.json', import.meta.url));
+  const sidecar = fs.readFileSync(new URL('../../_spec/tooling/native-ingress/toolchain-member-plan-v1.receipt.json', import.meta.url));
+  assert.equal(bytes.length, 5679112);
+  assert.equal(sha(bytes), '2c4cd5218dce220e55dabe96345b97cc777c2cdc10c6e18b8d53f1357d2a94da');
+  assert.equal(sidecar.length, 3573);
+  assert.equal(sha(sidecar), '81989c8cf46e321780bfd17df4f4acf599f4b047b96a1aad30415a077b9184bf');
+  const report = JSON.parse(bytes), receipt = JSON.parse(sidecar);
+  assert.equal(report.members.length, 8675);
+  assert.equal(new Set(report.members.map(row => row.artifactRole + ':' + row.index)).size, 8675);
+  assert.equal(report.rustDeclarations.length, 157);
+  assert.equal(report.linkerInputReferences.length, 8);
+  assert.ok(report.linkerInputReferences.every(row => row.status === 'DECLARED_MEMBER_MATCH_NOT_LINKER_PROOF' && row.mappingApproved === false));
+  assert.deepEqual(report.proposedDestinationCollisions, []);
+  assert.equal(report.headerAliasClosure.regularHeaderCount, 1434);
+  assert.equal(report.headerAliasClosure.aliasReferenceCount, 1);
+  assert.equal(report.gnuRelocation.unresolvedWholeSdkContext, 38);
+  assert.equal(receipt.parentTerminalSuccessRequired, true);
+  assert.equal(receipt.status, 'PROPOSED_DATA_WRITTEN_PENDING_TERMINAL_ACCEPTANCE');
+  assert.equal(Object.hasOwn(receipt, 'publicationAccepted'), false);
+  for (const key of ['copyAuthorized', 'imagePrepared', 'runtimeProvidersQualified', 'pythonFreeSubsetVerified',
+    'abiVerified', 'rustReady', 'trainingReady', 'callerInputsAuthenticated']) assert.equal(report[key], false, key);
+  const rust = json('rust-archive-rustc-v1.result.json').collection.roles[0];
+  const helpers = report.members.filter(row => row.disposition === 'CANDIDATE_NEEDS_QUALIFICATION');
+  assert.equal(helpers.length, 6);
+  const unobserved = helpers.filter(row => !rust.selected.some(observation => observation.kind === 'ELF_EXEC_DSO'
+    && observation.size === row.size && observation.bodySha256 === row.bodySha256
+    && observation.metadata.requirements.inputSha256 === row.bodySha256));
+  assert.equal(unobserved.length, 3);
+  assert.equal(new Set(unobserved.map(row => row.bodySha256)).size, 3);
+});
+
+test('supplemental helper scope and private-header gap preserve consumed evidence and runtime boundaries', () => {
+  for (const phrase of ['runRegisteredRustHelperEvidenceV1', 'total selected6995632 bytes',
+    'each<=8MiB and aggregate<=24MiB', '383472 bytes/383488 requested bytes',
+    'SOURCE_RUSTC_TAR binds only this new instance', 'path/kind/index:null',
+    'rust-helper-evidence-v1.result.json', '150 regular files/2907751 bytes',
+    'include-fixed/ prefix contains only its750-byte README',
+    'preserve that report and record the omission gap']) assert.ok(plan.includes(phrase), phrase);
+});
+
+test('accepted supplemental helper evidence stays static and preserves exact body and publication accounting', () => {
+  const full = fs.readFileSync(new URL('../../_spec/tooling/native-ingress/rust-helper-evidence-v1.result.json', import.meta.url));
+  const compact = fs.readFileSync(new URL('../../_spec/tooling/native-ingress/rust-helper-evidence-v1.receipt.json', import.meta.url));
+  assert.equal(full.length, 55014); assert.equal(sha(full), '003b26c6cd849670f5ef28f775466f0e1e0e09fa154058c70cf130e9587269d2');
+  assert.equal(compact.length, 8366); assert.equal(sha(compact), 'bb2ded89b133162c44104b6650475e60d1d1ada17c58c7bd2d4f14fb14256053');
+  const data = JSON.parse(full), accepted = JSON.parse(compact), selected = data.collection.roles[0].selected;
+  assert.equal(accepted.publicationAccepted, true); assert.equal(accepted.sha256, sha(full));
+  assert.equal(selected.length, 3); assert.deepEqual(selected.map(row => row.index), [28, 63, 70]);
+  assert.equal(selected.reduce((n, row) => n + row.size, 0), 6995632);
+  assert.equal(data.collection.resourceAccounting.maxAdditionalElfSnapshotBytes, 8388608);
+  assert.equal(data.collection.declaredNeededEdges.length, 16);
+  assert.ok(data.collection.declaredNeededEdges.every(edge => edge.status === 'UNRESOLVED'));
+  assert.equal(accepted.repoCapture.closes, 16); assert.equal(accepted.repoCapture.readBytes, 383472);
+  assert.equal(accepted.collectionCounts.archivePasses, 2); assert.equal(accepted.collectionCounts.archiveCloseAttempts, 2);
+  assert.equal(accepted.collectionCounts.ownedChildren, 0); assert.equal(accepted.collectionCounts.stageCloses, 10);
+  assert.equal(accepted.publicationCounts.closes, 3); assert.equal(accepted.publicationCounts.fsyncs, 4);
+  for (const member of selected) {
+    assert.equal(member.metadata.requirements.inputSha256, member.bodySha256);
+    assert.equal(member.metadata.requirements.byteLength, member.size);
+    assert.equal(member.qualified, false); assert.equal(member.roleSatisfied, false);
+  }
+  for (const key of ['rustReady', 'trainingReady', 'nativeQualified', 'runtimeProvidersQualified',
+    'abiVerified', 'pythonFreeSubsetVerified', 'imagePrepared', 'compilerExecuted',
+    'memberExecuted', 'jointEvidenceSetComplete']) assert.equal(data[key], false, key);
+});
+
+test('GNU preparation-context profile separates raw text from parsing and private headers from use approval', () => {
+  for (const phrase of ['runRegisteredGnuPreparationEvidenceV1', 'PREPARATION_TEXT', 'domain:DISTRIBUTION_DATA',
+    'new selected total12234 bytes', 'BOM preservation', 'interpreted:false/urlsFollowed:false',
+    'exactly three means new selected targets', '15 source captures301950 bytes/301965 requested',
+    'accepted-GNU DATA capture2829942 bytes/2829943 requested', 'C_HEADER_CANDIDATE data',
+    'gnu-preparation-evidence-v1.result.json', 'sourceContext remains UNQUALIFIED']) assert.ok(plan.includes(phrase), phrase);
 });

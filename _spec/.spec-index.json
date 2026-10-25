@@ -1065,7 +1065,13 @@
         "tooling/native-ingress/split-toolchain-evidence-operation.mjs",
         "tooling/native-ingress/split-toolchain-evidence-operation.test.mjs",
         "tooling/native-ingress/rust-archive-evidence-operation.mjs",
-        "tooling/native-ingress/rust-archive-evidence-operation.test.mjs"
+        "tooling/native-ingress/rust-archive-evidence-operation.test.mjs",
+        "tooling/native-ingress/toolchain-member-plan.mjs",
+        "tooling/native-ingress/toolchain-member-plan.test.mjs",
+        "tooling/native-ingress/rust-helper-evidence-operation.mjs",
+        "tooling/native-ingress/rust-helper-evidence-operation.test.mjs",
+        "tooling/native-ingress/gnu-preparation-evidence-operation.mjs",
+        "tooling/native-ingress/gnu-preparation-evidence-operation.test.mjs"
       ],
       "fingerprint": null
     }

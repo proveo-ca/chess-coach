@@ -14,6 +14,24 @@
 **Current split result:** §33.81 records GNU accepted with2829942-byte sealed/readback-verified repository DATA, while Rust stopped E_DEADLINE in rustc after Cargo completed and wrote no DATA. Both invocations are consumed; the Rust and older V1 empty0600 reservations stay untouched. No retry, reuse/deletion or automatic budget increase is authorized. Joint evidence and Step2 remain incomplete pending an approved Rust successor or optimization.
 **Current Rust evidence:** §33.84 records all five singleton V1 collections passed, consumed and preserved as sealed full DATA plus exact compact receipts. The fresh GNU/Rust/HOST evidence set passed independent hash/readback and finite declaration comparison. Source/publisher coherence, member/license/NoPython omission maps, headers/linker-input closure, image/enforcement and runtime verification remain open. Step2 is incomplete; no compiler, Docker job, training or completed-step commit/push ran.
 **Current publication instruction:** the user now explicitly orders commit/push, then continued work. §33.85 authorizes the present evidence/tooling snapshot as WIP, not completed Step2. Preserve all consumed-operation boundaries and continue qualification after non-force publication; this grants no compiler, image, training or merge authority.
+**Latest publication/continuation:** e0ba2b1b507bfc0d2032ac2fd2ef1d5298610279 was committed and non-force pushed to docs/f9-private-initializer. §33.89 records the subsequent accepted DATA-only member-report pair:8675 dispositions and eight logical linker-reference matches, not copy/license/image/runtime qualification. Supplemental static coverage is recorded in §33.92; GNU licensing/source/private-header and build-graph closure remain open. Current continuation changes are uncommitted; Step2 remains incomplete.
+**Current helper result:** §33.92 records the supplemental three-body ELF inspection passed, consumed and preserved as55014-byte full DATA plus8366-byte exact compact receipt. No helper executed or role was qualified. Next close GNU private-header/input and licensing/source context, provider/loading maps and offline image/enforcement before compiler admission; all runtime/NoPython/image/training qualifiers remain false.
+**Current next unit:** §33.93 defines a fresh bounded GNU context profile for three exact raw-text members and150 private-header candidate rows, with separate source/DATA capture budgets. Source/tests and live gates are pending. Text is not parsed/evaluated or source/license authority, and no header/copy/image/runtime use is approved.
+
+## Next Moves — current WIP publication / Step2 remains incomplete
+
+The user explicitly requests another commit/non-force push of the current snapshot.
+Publish it as WIP, including the in-progress GNU preparation source/test files; their implementation handoff and full qualification remain pending.
+Defer optional reviewer calls until Step2 closure; retain repository-mandated architect/domain/security/quality/spec gates before applicable operations.
+
+1. Receive the GNU preparation implementation handoff and verify its source/graph pins, separate source/DATA budgets, exact raw-text/header bindings and failure withholding with mock tests.
+2. Complete required gates and exact registration before one new bounded GNU DATA invocation; independently read back accepted full evidence and preserve its exact compact receipt, or retain STOP/partial reservation without retry.
+3. Assess retained text only as data and append a private-header/input preparation supplement without modifying the accepted member report.
+4. Close provider/source/license and approved-member maps, offline rootfs/Docker enforcement and the offline Cargo/build-script/proc-macro graph.
+5. Run admitted finite C/Rust fixtures and frozen offline workspace verification, then close Step2 reviews and publish genuine completion only after its verification passes.
+
+This publication authorizes no acquisition, extraction, compiler/member execution, Docker job, training, activation, deployment or merge.
+Canonical §33.94 records this publication exception; earlier uncommitted-status statements describe their historical checkpoints.
 
 ## Current static ELF result — same pinned bytes / grant consumed (2026-10-24)
 

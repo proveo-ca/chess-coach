@@ -45,6 +45,12 @@
 ' covers: tooling/native-ingress/split-toolchain-evidence-operation.test.mjs
 ' covers: tooling/native-ingress/rust-archive-evidence-operation.mjs
 ' covers: tooling/native-ingress/rust-archive-evidence-operation.test.mjs
+' covers: tooling/native-ingress/toolchain-member-plan.mjs
+' covers: tooling/native-ingress/toolchain-member-plan.test.mjs
+' covers: tooling/native-ingress/rust-helper-evidence-operation.mjs
+' covers: tooling/native-ingress/rust-helper-evidence-operation.test.mjs
+' covers: tooling/native-ingress/gnu-preparation-evidence-operation.mjs
+' covers: tooling/native-ingress/gnu-preparation-evidence-operation.test.mjs
 ' context: _spec/_plans/native-ingress-step2.md and canonical ml-runtime-redesign.md section 33 own bounds and registration.
 ' status: STEP2 ACTIVE; no selected toolchain execution or containment qualification yet.
 ' evidence-status: Prefix data observed; root delegation not found; SDK payload-v1 STOP at bounded string-table gate. No retry is automatic.
@@ -56,6 +62,8 @@
 ' fresh-status: V1 consumed STOP/E_DEADLINE in gnu-sdk; zero DATA writes. Retain empty reservation unaccepted; no retry/reuse/delete or automatic clock increase.
 ' split-status: GNU accepted2829942-byte sealed repository result; Rust consumed STOP/E_DEADLINE in rustc, no DATA writes. Joint completeness remains false.
 ' archive-status: All five singleton Rust V1 profiles consumed successfully;255645 bytes of sealed results plus exact compact receipts. Fresh raw custody set validated; declarations only, no runtime qualification.
+' member-status: Proposed8675-member disposition report published/sealed/readback-verified; eight logical linker tokens match. No copy/license/image/runtime qualification.
+' helper-status: Supplemental three-body static ELF profile consumed successfully;55014-byte result and exact compact receipt preserved. No helper-role/runtime qualification.
 @startuml
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
 left to right direction
@@ -72,6 +80,9 @@ component "Split V1 observations consumed\nGNU accepted /Rust deadline STOP" as 
 database "Split repository results\nGNU sealed DATA /Rust empty unaccepted" as SPLITRESULT <<db>>
 component "Per-archive Rust V1 profiles consumed\nfive successful singleton observations" as ARCHIVE <<app>>
 database "Five accepted archive results\nsealed full DATA +exact compact receipts" as ARCHIVERESULT <<db>>
+component "Proposed member report observed\n8675 dispositions /logical reference data" as MEMBERPLAN <<app>>
+component "Supplemental helper DATA observed\nthree fixed ELF bodies /profile consumed" as HELPERS <<app>>
+component "GNU context source preparation\nthree raw texts /150 private-header rows" as GNUCONTEXT <<app>>
 component "SDK literal payload inspection\nELF /CRT /AR /linker-script dispatch" as PAYLOAD <<app>>
 component "Own-process/cgroup metadata\nread-only prerequisites, not enforcement" as PROBE <<app>>
 component "Own-cgroup ancestry locator\nexplicit namespace mapping /no target lookup" as LOCATOR <<app>>
@@ -104,6 +115,16 @@ INPUT ARROW_OPTIONAL ARCHIVE : original five Rust inputs; no consumed replay
 ARCHIVERESULT ARROW_OPTIONAL ARCHIVE : selected fixed-path reservation before archive I/O
 ARCHIVE ARROW_OPTIONAL ARCHIVERESULT : singleton gates; original300s outer clock
 ARCHIVERESULT ARROW_OPTIONAL MANIFEST : GNU +all five accepted pairs +HOST pin; no execution grant
+ARCHIVERESULT ARROW_OPTIONAL MEMBERPLAN : accepted decoded evidence; parent raw pins remain separate
+SPLITRESULT ARROW_OPTIONAL MEMBERPLAN : GNU namespace /headers /script-reference data
+HOSTDATA ARROW_OPTIONAL MEMBERPLAN : HOST source context remains unqualified
+MEMBERPLAN ARROW_OPTIONAL MANIFEST : proposed dispositions, never copy/image authority
+MEMBERPLAN ARROW_OPTIONAL HELPERS : three distinct uninspected payload obligations
+INPUT ARROW_OPTIONAL HELPERS : one original rustc archive; new scope, not consumed replay
+HELPERS ARROW_OPTIONAL MANIFEST : complete hash/TAR/close/publication gates; static data only
+MEMBERPLAN ARROW_OPTIONAL GNUCONTEXT : private-header and license/source context gaps
+INPUT ARROW_OPTIONAL GNUCONTEXT : fixed GNU archive; new DATA scope only
+GNUCONTEXT ARROW_OPTIONAL MANIFEST : literal text/header candidates, not source or copy authority
 PAYLOAD ARROW_OPTIONAL MANIFEST : complete hash/TAR/FD success before publication
 PROBE ARROW_OPTIONAL LOCATOR : root denial does not classify own leaf or ancestors
 LOCATOR ARROW_OPTIONAL ERROR : historical direct route; no delegation candidate
@@ -120,6 +141,9 @@ HOSTDATA ARROW_ERROR ERROR : any capture/ELF/close failure suppresses whole batc
 PUBLICATION ARROW_ERROR ERROR : retain failure partial; file existence is not acceptance
 SPLITRESULT ARROW_ERROR ERROR : one accepted part never grants joint or runtime readiness
 ARCHIVERESULT ARROW_ERROR ERROR : keep failures unaccepted; never delete/reuse predecessors
+MEMBERPLAN ARROW_ERROR ERROR : unresolved names/aliases/licenses never become permission
+HELPERS ARROW_ERROR ERROR : retain unaccepted partial; no format/time/path fallback
+GNUCONTEXT ARROW_ERROR ERROR : no interpretation, acquisition or partial evidence acceptance
 PAYLOAD ARROW_ERROR ERROR : unsupported format or incomplete/hash failure
 PROBE ARROW_ERROR ERROR : unavailable context blocks its selected profile
 CONTAIN ARROW_ERROR ERROR : missing enforcement never becomes an exception
@@ -183,6 +207,25 @@ Private pinned-source specializations only
 Independent role latches /static TAR bridges
 Same-process in-flight admission guard
 No shared active archive or arbitrary path
+end note
+note bottom of MEMBERPLAN
+One disposition per recorded member
+No host-path lookup or payload copying
+No script execution
+Logical match is not linker/loader proof
+License names are not legal/compliance evidence
+end note
+note bottom of HELPERS
+8MiB payload/snapshot;24MiB selected allowance
+Same120s preparation /300s outer clocks
+No helper execution or role qualification
+Private-header and license gaps remain open
+end note
+note bottom of GNUCONTEXT
+PREPARATION_TEXT is not a linker script
+Literal UTF-8; no CSV, shell or URL evaluation
+Separate source1MiB /accepted DATA4MiB bounds
+License/source/include readiness stays false
 end note
 note bottom of VERIFY
 Rust1.95 /Burn0.22 /Flex CPU-f64 unchanged

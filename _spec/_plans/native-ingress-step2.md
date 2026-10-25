@@ -351,5 +351,128 @@ Its finite pure declaration comparison covers48 selected/candidate ELF consumers
 Keep every dependency UNRESOLVED: matching declarations do not prove symbol/relocation/loading/private-ABI behavior, source/publisher coherence or runtime admission.
 Next construct explicit member/license/NoPython omission and GNU header/linker-input maps, resolve provider/source admission and qualify an immutable offline image and Docker enforcement before compiler execution.
 
+## Evidence-derived member dispositions — proposal data, no copying authority
+
+The user requested commit/push then continuation; e0ba2b1b507bfc0d2032ac2fd2ef1d5298610279 publishes the prior snapshot as WIP, not completed Step2.
+The next two-file unit is a pure deterministic evidence-to-report module and test; it performs no filesystem access or execution.
+Parent-owned source/evidence hash verification and any future exclusive report publication remain separate operations.
+The pure entry derives from the closed GNU/five-Rust/HOST evidence graph and records callerInputsAuthenticated:false; parsed receipt claims alone do not authenticate raw bytes.
+Bound input and final escaped-ASCII JSON/LF independently to16MiB, depth64, one million nodes,32768 members and2GiB declared expanded bytes; reject proxies, getters, cycles, exotic objects and serialization hooks before access.
+
+Every one of8675 namespace identities receives exactly one disposition with artifactRole,index,path,type,size,bodySha256,domain,reasonCodes and a proposed relative destination or null.
+Keep nonregular hashes null and links inert; no omission deletes source evidence.
+Default disposition is UNREVIEWED_OMIT_NOT_RUNTIME_PROOF, not an assertion that an uninspected executable is Python-free.
+Separate selected inspection candidates, GNU headers, license-name candidates, metadata, installer/debugger/Python exclusions and minimal-C-only C++/LTO exclusions.
+Apply C++/LTO exclusions before generic wrapper-alias matching; GCC and G++ aliases may share the same recorded wrapper.
+Do not change compiler defaults, backend or Cargo graph requirements to hide an omitted surface.
+Retain every Rust library and manifest-declared compiler helper as candidate data; uninspected objcopy, wasm/other linker wrappers and proc-macro service need qualification rather than silent feature removal.
+
+Reparse bounded Rust version3/component/manifest text and join all157 declarations through the exact archive root/component/destination to recorded regular files or unresolved entries.
+Preserve all six Python debugger-support files, debugger launchers and lldb_commands as explicit omitted-image proposals; installer scripts and installer metadata never become executable admissions.
+Treat license/copyright/copying text names as LICENSE_DATA_CANDIDATE with source hashes and collision-free licenses/<role>/<source-relative-path> proposals, not legal/content/compliance evidence.
+An inert license file inside an excluded Python tree remains identified as license data with that context; it does not make Python modules or runtimes candidates.
+GNU's only currently observed license-like name is lib/python3.14/LICENSE.txt; record the GNU C/GCC license/source-context gap instead of inventing coverage.
+The observed summary.csv body is not captured as text and cannot establish package obligations merely from its filename.
+
+Reparse all190 sdk-relocs lines under exactly the existing single-leading-./ alias profile, preserving152 regular matches/38 absences and each member's disposition.
+Missing whole-SDK references remain UNRESOLVED_WHOLE_SDK_CONTEXT, neither successful relocation nor automatically a minimal-C requirement.
+sdk-location stays inert observed prefix data; never execute or rewrite relocation/installer scripts.
+Record all1434 regular GNU sysroot headers plus their separately recorded alias context; header names/body hashes do not prove preprocessor include closure.
+
+Derive linker reference ledgers from the three GNU scripts and Rust LLVM INPUT metadata without executing scripts or consulting the host filesystem.
+Resolve recorded aliases component-by-component only inside their own archive namespace, distinguishing parent-relative symlinks from archive-root hardlinks.
+Record every bounded hop; loops, escapes, absolute link targets, missing members, unsupported references and ambiguity remain unresolved.
+GNU absolute script references use a proposed root-to-sysroot namespace map and keep requiresApprovedSysrootMapping:true even after a unique member match.
+For -lgcc, enumerate only fixed proposed GCC15.3.0/sysroot directories and exact libgcc.so/libgcc.a names; no global basename search or host discovery is allowed.
+A unique regular terminal yields DECLARED_MEMBER_MATCH_NOT_LINKER_PROOF with its recorded body hash, never loader/linker/ABI qualification.
+Keep HOST/TARGET separate, reject destination conflicts and leave every copying, installation, source-authentication, NoPython, image, runtime and Native qualifier false.
+New source/tests, mandatory gates and a separate bounded report-publication scope precede any report acceptance; no extraction, acquisition, compiler, Python/Rust, Docker job, training or Step2 completion follows.
+The separate parent report-publication V1 now ran once and passed its terminal DATA-only acceptance: full report5679112 bytes and sidecar3573 bytes are sealed/readback-verified in the repository.
+All8675 member identities have exactly one disposition;157 Rust declarations join,190 relocation references retain152 regular/38 absent,1434 regular headers plus one alias remain data, and all eight linker tokens have unique recorded namespace matches.
+Those are DECLARED_MEMBER_MATCH_NOT_LINKER_PROOF, not preprocessing/linking/loading or source/license compliance.
+Six Rust helper roles remain unqualified; three wrapper bodies match the already inspected ld.lld digest, leaving three distinct additional payload digests for static inspection without dropping any helper role.
+The GNU C/GCC licensing/source context and GNU private-header/toolchain/build-graph closure remain open; the report and stored sidecar alone never grant copying/image/runtime authority.
+
+## Supplemental Rust helper evidence — new closed three-payload profile
+
+Continue with a new zero-argument runRegisteredRustHelperEvidenceV1 operation; no consumed archive/profile or result is retried or modified.
+Use the original fixed rustc archive80351960 bytes/SHA8426a3d170a5879f5682f5fbdd024a1779b3951e7baba685af2d6dc32a6dfc15 and its original root/file identities.
+Exactly three regular ELF expectations derive from accepted rustc namespace bytes, not paths discovered from loading declarations:
+
+| Member suffix under rustc component | Index | Body offset | Bytes |
+| --- | --- | --- | --- |
+| lib/rustlib/x86_64-unknown-linux-gnu/bin/wasm-component-ld | 28 | 14370304 | 5156664 |
+| libexec/rust-analyzer-proc-macro-srv | 63 | 400383488 | 1557840 |
+| lib/rustlib/x86_64-unknown-linux-gnu/bin/rust-objcopy | 70 | 402025472 | 281128 |
+
+Their exact body hashes remain pinned to the accepted rustc result; total selected6995632 bytes, each<=8MiB and aggregate<=24MiB.
+Lower only collector payload/snapshot ceilings to8MiB, preserving the existing ELF-v5 parser,16MiB string-table span,1024-byte referenced strings and all other limits.
+No format fallback is allowed; retain full interpreter/DT_NEEDED/SONAME/RPATH/RUNPATH/version/loading-tag declarations without resolving host paths.
+One120s role includes3s cleanup; retain original300s outer/source10s/publication30s,>=150s admission reserve and256MiB decoder memory.
+Require70 entries/53 regular bodies/71 headers/402308096 decoded bytes and the accepted offset metadata/decoded hashes.
+Two compressed same-FD full-SHA/EOF passes require160703920 data bytes/160703922 requested bytes and two positive archive closes; one child/pipe close, two staged/preload checks and ten stage closes precede publication.
+
+Capture/import pinned rust-archive-evidence-operation source58904/e956352c… only for its bounded utilities and checked transforms; never call its public physical entries or fixture factory.
+Its captureSource performs capability-controlled I/O, not pure computation, and must use the new controller's original guarded ledger.
+Fourteen existing source/receipt captures plus that utility source and accepted rustc JSON give16 captures/383472 bytes/383488 requested bytes with16 positive closes under one1MiB allocation budget.
+Privately append a one-shot internal collector profile with one rustc input/expectation and the three literal targets; SOURCE_RUSTC_TAR binds only this new instance.
+Specialize only the writer's fixed part/path declaration blocks to rust-helper and `rust-helper-evidence-v1.result.json`; preserve all other writer bytes.
+Pin every raw/intermediate/final image before private import; early exclusive0600 reservation precedes archive access and EEXIST never probes/replaces/deletes/retries a result.
+The legacy failure-target lookup may return path/kind/index:null for these new paths; preserve that opaque diagnostic rather than inventing provisional identity.
+Require complete new DATA<=16MiB/LF, then synchronized0444 seal/full hash/EOF/identity readback/parent-directory fsync and three publication closes/four fsyncs before compact<=64KiB controller acceptance.
+On failure keep partial/valid-looking files unaccepted; check abort flags separately from snapshot ownership, including reservation-time close failures before capability assignment.
+All helper-role/argv-personality/dylib/source/ABI/provider/NoPython/runtime/image/Native qualifiers stay false even after static metadata succeeds.
+The existing three byte-identical alternate LLD wrapper names retain separate role obligations; this new profile neither drops them nor re-inspects them by default.
+New two-file source/tests, required gates and exact fresh registration precede physical use; no acquisition, extraction, helper execution, Docker job, training or Step2 completion follows.
+The supplemental V1 invocation now passed and is consumed: full result55014 bytes and exact compact receipt8366 bytes are sealed/readback-verified in the repository.
+All three known bodies were inspected as ELF data under the fixed profile; no helper executed and no preceding result/report was changed.
+Their16 DT_NEEDED references and24 primary version-name/hash references match recorded HOST declarations in a separate pure comparison, but all dependency/role/personality/dylib/ABI/runtime/NoPython/image qualification stays UNRESOLVED/false.
+Static byte metadata now covers the three additional distinct digests; six logical helper roles still need appropriate source/loading/execution admission.
+Continue with GNU private-header/input and licensing/source-context closure, exact preparation maps and qualified offline image/enforcement; no retry or retarget of this consumed profile is allowed.
+
+## GNU private-header evidence gap — saved namespace only
+
+The accepted GNU namespace records150 regular files/2907751 bytes beneath the GCC15.3.0 include/ prefix, separate from1434 regular sysroot headers.
+The include-fixed/ prefix contains only its750-byte README; plugin/include/ has560 regular files/9731900 bytes, not an automatically admitted minimal-C requirement.
+The current accepted proposal leaves the150 private regular files and README as UNREVIEWED_OMIT_NOT_RUNTIME_PROOF; preserve that report and record the omission gap rather than claiming include closure.
+A later explicit proposal must account for private include/search-directory inputs without compiler probing, default changes or licensing/source-compliance assumptions.
+
+## GNU preparation-context evidence — new raw-text and header-ledger profile
+
+The next new zero-argument runRegisteredGnuPreparationEvidenceV1 profile reads only the original fixed GNU archive through its separately admitted bounded decoder path.
+It does not retry/retarget any consumed operation or modify the accepted namespace/member report.
+Exactly three new PREPARATION_TEXT targets use domain:DISTRIBUTION_DATA, never ELF or linker-script classification:
+
+| Source-relative member | Index | Body offset | Bytes |
+| --- | --- | --- | --- |
+| lib/gcc/x86_64-buildroot-linux-gnu/15.3.0/include-fixed/README | 8379 | 504808448 | 750 |
+| summary.csv | 8391 | 505059840 | 10391 |
+| README.txt | 8412 | 505326592 | 1093 |
+
+Bind their exact accepted body hashes; new selected total12234 bytes,<=16384 bytes each and<=49152 aggregate reservation.
+Decode fatal UTF-8 with BOM preservation; permit TAB/LF/CR but reject other C0/C1 controls and DEL/NUL.
+Retain literal text with interpreted:false/urlsFollowed:false; do not parse CSV, evaluate shell, follow URLs or classify license permissions before observing the text.
+The unchanged collector also captures the two existing sdk-relocs/location manifests; exactly three means new selected targets, not all internal text captures.
+Keep the complete fresh8412-member/6891-regular namespace, decoded/legacy/offset hashes and exact accepted body bindings before publishing any new text.
+
+Append150 private-header candidate records with exact source path/index/offset/size/body SHA from fresh and accepted evidence, total2907751 bytes.
+Use only the GCC15.3.0 include/ prefix; include-fixed README remains context text and plugin/include/ remains separate/unadmitted.
+These records are C_HEADER_CANDIDATE data, not copying or include-search approval, and do not replace the earlier proposal.
+
+Capture pinned split operation60938/47969e03… before importing its utility namespace; never invoke old physical/fixture/partition-validator closures.
+Keep15 source captures301950 bytes/301965 requested/15 closes under1MiB aggregate allocation, plus one separately bounded accepted-GNU DATA capture2829942 bytes/2829943 requested/one close under4MiB.
+Every capture requires exact regular-file size admission before allocation, no-follow/nonblocking same-FD bounded reads/EOF/full hash/positive close and own named/FD nine-field identity rechecks.
+Privately add only PREPARATION_TEXT:'text' to the pinned collector dispatch map, append the closed single-GNU profile/raw-text inspector, and preserve all other existing collection algorithms.
+Lower only payload/snapshot ceilings to16384; no existing format parser, metadata guard or resource ceiling widens.
+Pin all raw/classifier-transformed/appended/linked graph images before private import and bind SOURCE_GNU_TAR only to this new collector.
+
+Keep source10s/role120s including3s cleanup/publication30s inside one original300s outer,>=150s before collection and GNU16MiB decoder memory.
+Require two same-FD compressed SHA/EOF passes204592560 data/204592562 requested/two archive closes, one decoder/pipe close, two staged/preload gates/ten stage closes and all complete namespace/hash/body comparisons.
+Use only the new fixed gnu-preparation-evidence-v1.result.json with early exclusive0600 reservation, EEXIST-before-archive behavior and no overwrite/delete/repair/retry/suffix fallback.
+Preserve full16MiB ASCII/LF and compact64KiB ceilings, synchronized0444 seal/full hash/EOF/identity readback/parent-directory fsync and three publication closes/four fsyncs before final controller acceptance.
+Any failure withholds text/header evidence, retains partial files unaccepted and exposes only fixed code/role with null legacy target identity.
+sourceContext remains UNQUALIFIED and all source/license/compliance/include/relocation/NoPython/ABI/runtime/image/Native qualifiers stay false.
+New two-file source/tests and mandatory gates/exact registration precede physical use; no acquisition, extraction, toolchain-member execution, Docker job, training or Step2 completion follows.
+
 The source/runtime verification HIGH, whole-BOTH affordability, genuine fitted-economic evidence, artifact store/resume lifecycle,24,000 ancestry-group gate and all frozen F9 obligations remain open.
 No step receipt grants training authority.
