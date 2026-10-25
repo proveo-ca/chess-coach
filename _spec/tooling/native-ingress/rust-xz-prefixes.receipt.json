@@ -1,0 +1,29 @@
+{
+  "version": "rust-xz-prefix-receipt-v1",
+  "evidenceKind": "parent transcription of selected registered physical-operation fields",
+  "status": "RUST_XZ_PREFIXES_OBSERVED",
+  "registration": {"sectionBytes":262242,"sectionSha256":"8093657d52d3ad0b0cc1989d6107fc950f88563573962be3cd78564f1c305651","launcherBytes":1718,"launcherSha256":"73adcfb947de341c6f418e1bb344c92c618f6fb6741a6ca62929df4697364493","operationBytes":16882,"operationSha256":"56f3d01a768afd7bfa95fbdfc2c5ce526da623351f8c73521e011274c2da5191"},
+  "scope": "PREFIX_DECLARATIONS_NOT_FULL_ARCHIVE_INTEGRITY_OR_DECODER_MEMORY_PROOF",
+  "counts": {"clockReads":141,"fsOperations":61,"opens":6,"openAttempts":6,"closes":6,"closeAttempts":6,"fstats":22,"namedStats":22,"reads":5,"prefixAttempts":5,"prefixBytes":5200,"requestedPrefixBytes":5200,"peakOwnedFds":2},
+  "repositoryCapture": {"opens":2,"closes":2,"reads":4,"requestedBytes":23620,"returnedBytes":23618},
+  "observations": [
+    {"role":"cargo","prefixBytes":1040,"streamCheckId":0,"blockHeaderBytes":12,"filterId":"33","propertiesHex":"1b","declaredDictionaryBytes":"50331648","prefixSha256":"b2d254b5225099befecedd9631f6a9668743481cf8560053afe39ccb0c129f3f"},
+    {"role":"rustc","prefixBytes":1040,"streamCheckId":0,"blockHeaderBytes":12,"filterId":"33","propertiesHex":"1e","declaredDictionaryBytes":"134217728","prefixSha256":"669d3c43a0ca2de431d1361b8d7650603fc096a507888f12b31087e718b7bb1e"},
+    {"role":"rust-std","prefixBytes":1040,"streamCheckId":0,"blockHeaderBytes":12,"filterId":"33","propertiesHex":"1e","declaredDictionaryBytes":"134217728","prefixSha256":"4cfea8ca31b398f1caf4a3c047f7a004992837f1d65e085ceeecab049fc6b504"},
+    {"role":"rustfmt-preview","prefixBytes":1040,"streamCheckId":0,"blockHeaderBytes":12,"filterId":"33","propertiesHex":"17","declaredDictionaryBytes":"12582912","prefixSha256":"3d96e0a19a81f7d32f2c2a98c8831e7f311659b5cb0730c80cc075e1f99a6456"},
+    {"role":"clippy-preview","prefixBytes":1040,"streamCheckId":0,"blockHeaderBytes":12,"filterId":"33","propertiesHex":"19","declaredDictionaryBytes":"25165824","prefixSha256":"c2a0e73a4e0afc63111bccb8c4b2c82f7de81b8648c3665cc14a6b7dcb1fdb12"}
+  ],
+  "observationAccountingComplete": true,
+  "closeFailed": false,
+  "cleanupUncertain": false,
+  "rootFinalUnchanged": true,
+  "wholeArchiveHashVerifiedThisOperation": false,
+  "eofProbed": false,
+  "archiveDecoded": false,
+  "archiveExtracted": false,
+  "filesChanged": false,
+  "rustExecuted": false,
+  "nativeQualified": false,
+  "rustReady": false,
+  "trainingReady": false
+}

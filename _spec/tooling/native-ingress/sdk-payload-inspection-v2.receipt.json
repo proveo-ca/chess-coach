@@ -1,0 +1,40 @@
+{
+  "version": "sdk-payload-data-receipt-v2",
+  "evidenceKind": "parent transcription of selected registered physical-operation fields",
+  "status": "SDK_PAYLOAD_DATA_INSPECTED",
+  "registration": {"sectionBytes":278524,"sectionSha256":"ca3c672189ebd67072d9d6281d8bb7993294d1bc29d54ed89c21e9a2fba68523","launcherBytes":1735,"launcherSha256":"f78ffbc0bebec764c6a56d5dabfd3290446117afa0d3c981182a14d03c8f5848","operationBytes":22174,"operationSha256":"e7a201ae60711d3a5c43d9abe34555192201216d1404e64bb72954ca9fbe5a97"},
+  "retainedRawReceipt": {"path":"/home/agent/.local/share/opencode/shell/86d17357a7942bfc164837933bdc232aa20a0c35/sh_16f4d8508001QZE1OBGwwYdgQn.out","selection":"single profile JSON line plus terminal LF; warning lines excluded","byteLength":177465,"sha256":"d5ed9cfa6676d2c2b6077a5fda121c524142a3b69d6d809230af11814ad8c303"},
+  "membersEncoding": "JSON.stringify(result.members), UTF-8, no terminal LF",
+  "membersSha256": "43997e89a586d8aa84f48226d895649516357cc76b45607a8bf2b6641324c981",
+  "targetCount": 45,
+  "capturedBytes": 184285137,
+  "decodedSha256": "5e7f960281fb93121982f95976eb59ed980e009b54aabf993d5d3fa2982e056f",
+  "formatCounts": {"ELF_EXEC_DSO":28,"ET_REL":10,"AR":4,"LINKER_TEXT":3},
+  "counts": {"sourceReads":10,"sourceBytes":191873,"receiptReads":1,"receiptBytes":4239,"spawnAttempts":1,"spawnEvents":1,"stageChecks":2,"preloadChecks":2,"stageFsCalls":160,"stageReadBytes":5516432,"stageCloses":10,"completedCorePasses":1,"archivePasses":2,"archiveDataBytes":204592560,"archiveRequestedBytes":204592562,"archiveCloseAttempts":2},
+  "repoCapture": {"fsCalls":110,"openAttempts":11,"readAttempts":22,"requestedBytes":196123,"readBytes":196112,"closeAttempts":11,"closes":11,"completedCaptures":11,"sourceCaptures":10,"receiptCaptures":1,"ownedFds":0,"peakOwnedFds":1},
+  "resourceAccounting": {"peakPayloadBytes":51506040,"buffersAllocated":45,"buffersErased":45,"maxAdditionalElfSnapshotBytes":67108864,"observationBytes":172358,"edgeObservationBytes":12411,"hardRssBounded":false,"secureStringErasureClaimed":false},
+  "observedLargeStringTables": [
+    {"path":"libexec/gcc/x86_64-buildroot-linux-gnu/15.3.0/lto1","bytes":1856026},
+    {"path":"libexec/gcc/x86_64-buildroot-linux-gnu/15.3.0/cc1plus","bytes":2001829},
+    {"path":"libexec/gcc/x86_64-buildroot-linux-gnu/15.3.0/cc1","bytes":1901744}
+  ],
+  "hostDeclaredDependencies": ["libc.so.6","ld-linux-x86-64.so.2","libdl.so.2","libpthread.so.0","libmpc.so.3","libmpfr.so.6","libgmp.so.10","libm.so.6"],
+  "linkerReferences": [
+    {"path":"x86_64-buildroot-linux-gnu/sysroot/usr/lib/libc.so","references":["/lib64/libc.so.6","/usr/lib64/libc_nonshared.a","/lib64/ld-linux-x86-64.so.2"]},
+    {"path":"x86_64-buildroot-linux-gnu/sysroot/usr/lib/libm.so","references":["/lib64/libm.so.6","/lib64/libmvec.so.1"]},
+    {"path":"x86_64-buildroot-linux-gnu/sysroot/lib/libgcc_s.so","references":["libgcc_s.so.1","-lgcc"]}
+  ],
+  "interpretation": "DATA_NOT_EXTRACTION_MEMBER_EXECUTION_OR_HOST_PERMISSION",
+  "allDependencyEdgesStatus": "UNRESOLVED",
+  "roleSatisfied": false,
+  "archiveExtracted": false,
+  "filesInstalled": false,
+  "sdkExecuted": false,
+  "pythonRuntimeInvoked": false,
+  "relocationReady": false,
+  "loaderClosureVerified": false,
+  "installedUsability": false,
+  "nativeQualified": false,
+  "rustReady": false,
+  "trainingReady": false
+}

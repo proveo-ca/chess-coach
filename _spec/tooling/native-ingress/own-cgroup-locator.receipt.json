@@ -1,0 +1,29 @@
+{
+  "version": "own-cgroup-locator-receipt-v1",
+  "evidenceKind": "parent transcription of selected registered physical-operation fields",
+  "status": "OWN_CGROUP_METADATA_OBSERVED",
+  "registration": {"sectionBytes":278524,"sectionSha256":"ca3c672189ebd67072d9d6281d8bb7993294d1bc29d54ed89c21e9a2fba68523","launcherBytes":1722,"launcherSha256":"1c55b1c5a2caea10cacac997e006edd86df64848264cdd372bedd404d86d6fcc","operationBytes":14061,"operationSha256":"191124594507817c21a25b66fda70ac35392777f8eaaee9f20aa7915595c37e0"},
+  "mapping": "MAPPED",
+  "snapshotAgreement": true,
+  "accountingComplete": true,
+  "candidate": null,
+  "delegationCandidate": false,
+  "rootProfileOnly": false,
+  "ownAncestryOnly": true,
+  "ancestry": [
+    {"hash":"b27dd184be0afcfce43a9e7e2474827d485e120ad96f81f652f1101865c5c41c","depth":0,"uid":"0","gid":"0","mode":"16877","writeAccess":"EACCES","controllers":{"memory":true,"pids":true,"cpu":true},"subtreeControl":{"memory":false,"pids":false,"cpu":false},"memoryMax":"max","pidsMax":"max","cpuMax":{"quota":"max","period":"100000"}},
+    {"hash":"4c618c90d1f59d7f0c2e928f8062252ccc7d2b44ef53cc558b28f103b64680d3","depth":1,"uid":"0","gid":"0","mode":"16877","writeAccess":"EACCES","controllers":{"memory":true,"pids":true,"cpu":true},"subtreeControl":{"memory":true,"pids":true,"cpu":true},"memoryMax":"max","pidsMax":"max","cpuMax":{"quota":"max","period":"100000"}},
+    {"hash":"85bae2ead9d613eb16150e89460f06daea72d31beaa1c37c68457a29a0fdba68","depth":2,"uid":"0","gid":"0","mode":"16749","writeAccess":"EACCES","controllers":{"memory":true,"pids":true,"cpu":true},"subtreeControl":{"memory":true,"pids":true,"cpu":true},"memoryMax":"UNAVAILABLE_ENOENT","pidsMax":"UNAVAILABLE_ENOENT","cpuMax":"UNAVAILABLE_ENOENT"}
+  ],
+  "processStatus": {"noNewPrivs":0,"seccomp":0,"capabilities":{"CAP_SYS_ADMIN":false,"CAP_SYS_RESOURCE":false,"CAP_SYS_PTRACE":false,"CAP_DAC_OVERRIDE":false,"CAP_NET_ADMIN":false}},
+  "counts": {"clockReadAttempts":190,"clockReads":190,"fsOperationAttempts":165,"fsOperationsCompleted":159,"openAttempts":17,"opensCompleted":17,"readAttempts":33,"readsCompleted":33,"requestedReadBytes":52736,"returnedReadBytes":5925,"acceptedReadBytes":5925,"closeAttempts":17,"closesCompleted":17,"peakOwnedFds":1,"directoryAccessAttempts":3,"checkedFiles":17},
+  "scope": "DATA_NOT_PERMISSION",
+  "hashScope": "UNSALTED_PATH_SHA256_NOT_GUARANTEED_ANONYMITY",
+  "snapshotAgreementScope": "INITIAL_FINAL_MAPPING_AND_UNIFIED_MEMBERSHIP_ONLY",
+  "capacityProven": false,
+  "childCgroupManagementProven": false,
+  "containmentEstablished": false,
+  "nativeQualified": false,
+  "rustReady": false,
+  "trainingReady": false
+}

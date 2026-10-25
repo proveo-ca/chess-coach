@@ -1,0 +1,193 @@
+' purpose: integrated closed-input toolchain qualification without premature executable admission
+' covers: tooling/native-ingress/step2-contract.test.mjs
+' covers: tooling/native-ingress/sdk-payload-inspection.mjs
+' covers: tooling/native-ingress/sdk-payload-inspection.test.mjs
+' covers: tooling/native-ingress/sdk-payload-inspection-operation.mjs
+' covers: tooling/native-ingress/sdk-payload-inspection-operation.test.mjs
+' covers: tooling/native-ingress/rust-xz-prefixes.mjs
+' covers: tooling/native-ingress/rust-xz-prefixes.test.mjs
+' covers: tooling/native-ingress/rust-xz-prefixes-operation.mjs
+' covers: tooling/native-ingress/containment-metadata.mjs
+' covers: tooling/native-ingress/containment-metadata.test.mjs
+' covers: tooling/native-ingress/containment-metadata-operation.mjs
+' covers: tooling/native-ingress/own-cgroup-locator.mjs
+' covers: tooling/native-ingress/own-cgroup-locator.test.mjs
+' covers: tooling/native-ingress/own-cgroup-locator-operation.mjs
+' covers: tooling/native-ingress/elf-requirements-v4.mjs
+' covers: tooling/native-ingress/elf-requirements-v4.test.mjs
+' covers: tooling/native-ingress/sdk-payload-inspection-v2-operation.mjs
+' covers: tooling/native-ingress/sdk-payload-inspection-v2-operation.test.mjs
+' covers: tooling/native-ingress/rust-component-layout.mjs
+' covers: tooling/native-ingress/rust-component-layout.test.mjs
+' covers: tooling/native-ingress/rust-component-layout-operation.mjs
+' covers: tooling/native-ingress/rust-component-layout-operation.test.mjs
+' covers: tooling/native-ingress/elf-requirements-v5.mjs
+' covers: tooling/native-ingress/elf-requirements-v5.test.mjs
+' covers: tooling/native-ingress/rust-payload-inspection.mjs
+' covers: tooling/native-ingress/rust-payload-inspection.test.mjs
+' covers: tooling/native-ingress/rust-payload-inspection-operation.mjs
+' covers: tooling/native-ingress/rust-payload-inspection-operation.test.mjs
+' covers: tooling/native-ingress/host-runtime-providers.mjs
+' covers: tooling/native-ingress/host-runtime-providers.test.mjs
+' covers: tooling/native-ingress/host-runtime-providers-operation.mjs
+' covers: tooling/native-ingress/host-runtime-providers-operation.test.mjs
+' covers: tooling/native-ingress/evidence-publication.mjs
+' covers: tooling/native-ingress/evidence-publication.test.mjs
+' covers: tooling/native-ingress/toolchain-evidence.mjs
+' covers: tooling/native-ingress/toolchain-evidence.test.mjs
+' covers: tooling/native-ingress/toolchain-evidence-operation.mjs
+' covers: tooling/native-ingress/toolchain-evidence-operation.test.mjs
+' covers: tooling/native-ingress/split-evidence-publication.mjs
+' covers: tooling/native-ingress/split-evidence-publication.test.mjs
+' covers: tooling/native-ingress/split-toolchain-evidence.mjs
+' covers: tooling/native-ingress/split-toolchain-evidence.test.mjs
+' covers: tooling/native-ingress/split-toolchain-evidence-operation.mjs
+' covers: tooling/native-ingress/split-toolchain-evidence-operation.test.mjs
+' covers: tooling/native-ingress/rust-archive-evidence-operation.mjs
+' covers: tooling/native-ingress/rust-archive-evidence-operation.test.mjs
+' context: _spec/_plans/native-ingress-step2.md and canonical ml-runtime-redesign.md section 33 own bounds and registration.
+' status: STEP2 ACTIVE; no selected toolchain execution or containment qualification yet.
+' evidence-status: Prefix data observed; root delegation not found; SDK payload-v1 STOP at bounded string-table gate. No retry is automatic.
+' current-status: Docker-managed jobs selected, not qualified; local image inventory empty. Raw delegation remains historically blocked. No compiler/build execution or completed-step publication.
+' layout-status: Fixed five-archive batch consumed successfully:263 members/642746880 decoded bytes. Executable/provider qualification and NoPython subset admission remain pending.
+' payload-status: Fixed thirteen-member Rust batch consumed successfully;12 ELF +one GNU ld text. All69 dependency edges unresolved; no ABI/image/runtime readiness.
+' host-status: Seven HOST candidates observed;14 FD closes/3870312 bytes. Five remain unauthenticated; no loading, ABI or runtime qualification.
+' custody-status: SDK/Rust managed full-result JSON unavailable; selected receipts retained. HOST raw JSON preserved by checked worktree copy. Full-evidence derivation blocked pending recovery/new scoped collection.
+' fresh-status: V1 consumed STOP/E_DEADLINE in gnu-sdk; zero DATA writes. Retain empty reservation unaccepted; no retry/reuse/delete or automatic clock increase.
+' split-status: GNU accepted2829942-byte sealed repository result; Rust consumed STOP/E_DEADLINE in rustc, no DATA writes. Joint completeness remains false.
+' archive-status: All five singleton Rust V1 profiles consumed successfully;255645 bytes of sealed results plus exact compact receipts. Fresh raw custody set validated; declarations only, no runtime qualification.
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+left to right direction
+title Step2 — closed evidence -> guarded preparation -> contained verification
+actor "Pinned GNU +five Rust archives\nfixed existing input identities" as INPUT <<host>>
+component "Rust XZ header declarations\nno full-file or memory-proof claim" as PREFIX <<app>>
+component "Rust component layout batch\nprivate streamed hashes /manifests as data" as LAYOUT <<app>>
+component "Rust payload batch data observed\nfixed13 candidates /separate ELF-v5 profile" as RUSTPAYLOAD <<app>>
+node "Two pinned stage files +five HOST paths\npublic candidates /not runtime admission" as HOSTFILES <<host>>
+component "HOST candidate data observed\nseven captures /ELF-v4 data only" as HOSTDATA <<app>>
+component "Fresh V1 collection stopped\nGNU deadline /profile consumed" as FRESH <<app>>
+database "Repository evidence publication blocked\nempty reservation retained /not accepted" as PUBLICATION <<db>>
+component "Split V1 observations consumed\nGNU accepted /Rust deadline STOP" as SPLIT <<app>>
+database "Split repository results\nGNU sealed DATA /Rust empty unaccepted" as SPLITRESULT <<db>>
+component "Per-archive Rust V1 profiles consumed\nfive successful singleton observations" as ARCHIVE <<app>>
+database "Five accepted archive results\nsealed full DATA +exact compact receipts" as ARCHIVERESULT <<db>>
+component "SDK literal payload inspection\nELF /CRT /AR /linker-script dispatch" as PAYLOAD <<app>>
+component "Own-process/cgroup metadata\nread-only prerequisites, not enforcement" as PROBE <<app>>
+component "Own-cgroup ancestry locator\nexplicit namespace mapping /no target lookup" as LOCATOR <<app>>
+component "Future component/role manifests\nactual layouts /HOST vs TARGET closure" as MANIFEST <<app>>
+component "Future exclusive direct extraction\nno installer /relocation script" as PREPARE <<app>>
+component "Future qualified containment\nfilesystem/network/descendant/resource" as CONTAIN <<app>>
+node "Docker-managed jobs selected\ncontroller-only daemon access /unqualified" as DOCKER <<host>>
+component "Future admitted offline image\nclosed rootfs /no local image available" as IMAGE <<app>>
+component "Frozen offline verification\nno acquisition fallback" as VERIFY <<app>>
+component "STOP /remain unqualified\nretain failed roots; no silent fallback" as ERROR <<error>>
+INPUT ARROW_MAIN PREFIX : five prefixes only; fixed descriptors
+INPUT ARROW_MAIN PAYLOAD : one SDK stream;45 fixed regular tuples
+PREFIX ARROW_OPTIONAL LAYOUT : separate fixed256MiB decoder profile
+INPUT ARROW_OPTIONAL LAYOUT : five exact retained inputs; sequential data-only passes
+LAYOUT ARROW_OPTIONAL MANIFEST : all five custody/decoder/TAR gates before publication
+LAYOUT ARROW_OPTIONAL RUSTPAYLOAD : accepted literal spans, body/decoded/metadata hashes
+RUSTPAYLOAD ARROW_OPTIONAL MANIFEST : unresolved HOST/TARGET declarations, not ABI proof
+HOSTFILES ARROW_OPTIONAL HOSTDATA : exact public-file scope; no aliases or discovery
+RUSTPAYLOAD ARROW_OPTIONAL HOSTDATA : missing HOST requirements, not path authority
+HOSTDATA ARROW_OPTIONAL MANIFEST : later explicit provider/version ledger; still unqualified
+INPUT ARROW_OPTIONAL FRESH : same fixed artifacts; new scope, not consumed replay
+PUBLICATION ARROW_OPTIONAL FRESH : early reservation; EEXIST blocks input consumption
+FRESH ARROW_OPTIONAL PUBLICATION : all six collection gates before JSON write/readback
+PUBLICATION ARROW_OPTIONAL MANIFEST : accepted receipt +matching complete DATA required
+INPUT ARROW_OPTIONAL SPLIT : new closed partition profiles; no V1 replay
+SPLITRESULT ARROW_OPTIONAL SPLIT : early exclusive part reservation before input use
+SPLIT ARROW_OPTIONAL SPLITRESULT : complete partition gates +sealed readback
+SPLITRESULT ARROW_OPTIONAL MANIFEST : both accepted files/receipts +HOST pin required
+INPUT ARROW_OPTIONAL ARCHIVE : original five Rust inputs; no consumed replay
+ARCHIVERESULT ARROW_OPTIONAL ARCHIVE : selected fixed-path reservation before archive I/O
+ARCHIVE ARROW_OPTIONAL ARCHIVERESULT : singleton gates; original300s outer clock
+ARCHIVERESULT ARROW_OPTIONAL MANIFEST : GNU +all five accepted pairs +HOST pin; no execution grant
+PAYLOAD ARROW_OPTIONAL MANIFEST : complete hash/TAR/FD success before publication
+PROBE ARROW_OPTIONAL LOCATOR : root denial does not classify own leaf or ancestors
+LOCATOR ARROW_OPTIONAL ERROR : historical direct route; no delegation candidate
+MANIFEST ARROW_OPTIONAL PREPARE : separately approve exact files /aliases /roots
+PREPARE ARROW_OPTIONAL IMAGE : separately admit data-only rootfs preparation
+IMAGE ARROW_OPTIONAL DOCKER : immutable image /job map /fixed resource profile
+DOCKER ARROW_OPTIONAL CONTAIN : effective controls and denial/cleanup fixtures
+DOCKER ARROW_ERROR ERROR : missing image, policy, map or authoritative evidence
+CONTAIN ARROW_OPTIONAL VERIFY : actual allow/deny/cleanup fixtures first
+PREFIX ARROW_ERROR ERROR : unsupported header, drift or closure failure
+LAYOUT ARROW_ERROR ERROR : any role failure suppresses whole layout result
+RUSTPAYLOAD ARROW_ERROR ERROR : unsupported format or bounds never trigger fallback
+HOSTDATA ARROW_ERROR ERROR : any capture/ELF/close failure suppresses whole batch
+PUBLICATION ARROW_ERROR ERROR : retain failure partial; file existence is not acceptance
+SPLITRESULT ARROW_ERROR ERROR : one accepted part never grants joint or runtime readiness
+ARCHIVERESULT ARROW_ERROR ERROR : keep failures unaccepted; never delete/reuse predecessors
+PAYLOAD ARROW_ERROR ERROR : unsupported format or incomplete/hash failure
+PROBE ARROW_ERROR ERROR : unavailable context blocks its selected profile
+CONTAIN ARROW_ERROR ERROR : missing enforcement never becomes an exception
+note bottom of PAYLOAD
+One payload at a time;<=256MiB total
+ELF<=64MiB /AR<=8MiB /text<=1MiB
+All observations private until joint success
+No SDK member executes or becomes a host path
+Failure: literal target +fixed parser code only
+end note
+note bottom of PREFIX
+Five fixed files;<=1040 prefix bytes each
+CRC/filter/dictionary declarations only
+No decoder, extraction or full-hash recheck
+No adaptive dictionary-memory increase
+end note
+note bottom of LOCATOR
+Only mapped own leaf to mount-root ancestors
+<=32 directories; no readdir or cgroup write
+Other paths hashed; candidate data not permission
+No candidate -> direct route stays blocked
+end note
+note bottom of DOCKER
+No privileged jobs or host namespaces
+No daemon socket or host-root mounts in jobs
+No image pull, agent move or implicit admission
+Config intent is not enforcement evidence
+end note
+note bottom of LAYOUT
+No installer, extraction or Rust execution
+Five roles; one active decoder; no payload spool
+Opaque manifest lines remain unresolved data
+No image import or provider qualification
+end note
+note bottom of RUSTPAYLOAD
+ELF input256MiB; declared strings span16MiB
+Referenced strings1024 bytes; old APIs unchanged
+Decoder memory256MiB is a separate policy
+No extraction, Python, Rust or Docker execution
+end note
+note bottom of HOSTDATA
+8MiB/file;32MiB total;14 positive FD closes
+Unknown bytes hashed, not publisher-authenticated
+No loader invocation or TARGET promotion
+No atomic snapshot, ABI or runtime proof
+end note
+note bottom of PUBLICATION
+No managed stdout as sole full-result custody
+No overwrite, delete, repair or automatic retry
+Late failure ->publicationAccepted:false
+Readback verified, not crash/storage proof
+end note
+note bottom of SPLIT
+New GNU120s ceiling explicitly user-approved
+Runtime/F9 clocks and memory choices unchanged
+Preserve V1 source, STOP and empty reservation
+No arbitrary partition, path or role subset
+end note
+note bottom of ARCHIVE
+Private pinned-source specializations only
+Independent role latches /static TAR bridges
+Same-process in-flight admission guard
+No shared active archive or arbitrary path
+end note
+note bottom of VERIFY
+Rust1.95 /Burn0.22 /Flex CPU-f64 unchanged
+One inclusive BOTH1048576 unchanged
+No Python, policy training or activation
+No Native/F9 authority from setup metadata
+end note
+@enduml

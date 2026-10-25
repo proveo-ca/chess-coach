@@ -1,0 +1,25 @@
+{
+  "version": "toolchain-evidence-retention-observation-v1",
+  "evidenceKind": "parent report of bounded saved-output opens and exclusive metadata-file preservation",
+  "scope": "AVAILABILITY_AND_BYTE_READBACK_NOT_RUNTIME_OR_STORAGE_AUTHENTICATION",
+  "missingManagedResults": [
+    {"profile":"registered-sdk-payload-inspection-v2","path":"/home/agent/.local/share/opencode/shell/86d17357a7942bfc164837933bdc232aa20a0c35/sh_16f4d8508001QZE1OBGwwYdgQn.out","error":"ENOENT","expectedJsonBytes":177465,"expectedJsonSha256":"d5ed9cfa6676d2c2b6077a5fda121c524142a3b69d6d809230af11814ad8c303"},
+    {"profile":"registered-rust-component-layout-v1","path":"/home/agent/.local/share/opencode/shell/86d17357a7942bfc164837933bdc232aa20a0c35/sh_16fdcd0bc001xoq4lIB45YDCBJ.out","error":"ENOENT","expectedJsonBytes":175049,"expectedJsonSha256":"830051744503d53643310d34f1195afc9d5fb5cd138ffe735b86059d9d914f35"},
+    {"profile":"registered-rust-payload-inspection-v1","path":"/home/agent/.local/share/opencode/shell/86d17357a7942bfc164837933bdc232aa20a0c35/sh_1700380ce001sdFBnniq0usZFa.out","error":"ENOENT","expectedJsonBytes":99788,"expectedJsonSha256":"827413b9a2fa716deccf9976878b91974a74887c38ed81a055b8050bb9518fb6"}
+  ],
+  "preservedResult": {"profile":"registered-host-runtime-providers-v1","path":"_spec/tooling/native-ingress/host-runtime-providers.result.json","byteLength":49078,"sha256":"602209b5473b052df68acae9930a9bf348bf1431903b24b4ed56ad20e8d35894","creation":"O_EXCL | O_NOFOLLOW; no overwrite","readbackMatched":true,"fileMode":"0444","sourceModified":false},
+  "missingCauseKnown": false,
+  "selectedReceiptsRemainInRepository": true,
+  "operationSourcesRemainInRepository": true,
+  "consumedOperationsRepeated": false,
+  "missingResultsReconstructed": false,
+  "retainedDataDeletedByThisWork": false,
+  "rawEvidenceSetComplete": false,
+  "downstreamFullDeclarationComparisonCompleted": false,
+  "runtimeProvidersQualified": false,
+  "imagePrepared": false,
+  "dockerProviderQualified": false,
+  "nativeQualified": false,
+  "rustReady": false,
+  "trainingReady": false
+}

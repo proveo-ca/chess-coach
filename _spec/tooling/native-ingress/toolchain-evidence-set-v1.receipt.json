@@ -1,0 +1,75 @@
+{
+  "version": "toolchain-evidence-set-readback-v1",
+  "evidenceKind": "parent aggregation of accepted per-profile results, independent bounded repository readback and finite pure declaration comparison",
+  "status": "REPOSITORY_EVIDENCE_SET_READBACK_MATCHED",
+  "scope": "FRESH_RAW_DATA_SET_NOT_RUNTIME_OR_INSTALLATION_AUTHORITY",
+  "rustRegistration": {
+    "sectionBytes": 390941,
+    "sectionSha256": "92ae61f294fd52df30c58e44d00668894fec6a1c760f592fc7aefbcc17641f73",
+    "operationBytes": 58904,
+    "operationSha256": "e956352c591ae060759e00e69c83c68217269703852afb67172d06a6c14ca062",
+    "eachRoleInvocations": 1,
+    "eachRoleConsumed": true
+  },
+  "gnuResult": {
+    "path": "_spec/tooling/native-ingress/gnu-evidence-collection-v1.result.json",
+    "byteLength": 2829942,
+    "sha256": "01c24e73a65148b8a70c3c1d4034f86dcac8040859bc206b5cf40b784776cc22",
+    "acceptanceReceipt": "_spec/tooling/native-ingress/gnu-evidence-collection-v1.receipt.json"
+  },
+  "hostResult": {
+    "path": "_spec/tooling/native-ingress/host-runtime-providers.result.json",
+    "byteLength": 49078,
+    "sha256": "602209b5473b052df68acae9930a9bf348bf1431903b24b4ed56ad20e8d35894"
+  },
+  "rustResults": [
+    {"role":"cargo","byteLength":44154,"sha256":"6364e2063f24be97096694f34d267d6c74e6ad538fd20218ca53d79d2627ea09","receiptBytes":11248,"receiptSha256":"c1c1d13f46c7c121f922aecb664919124d09047b61367dc10def3de059e17b37","entries":68,"regularFiles":56,"expandedBytes":42864128,"selectedPayloads":1,"commandBytes":1748,"commandSha256":"b6404ec577317322804db2c7b287266ae3d04bc8e0bedef50cd9c90a628161f5"},
+    {"role":"rustc","byteLength":83556,"sha256":"2a2d410012e7b56be1cfaabaf8fb71823127b8b7826bc230d998f615184df3aa","receiptBytes":11253,"receiptSha256":"06f489950a405483b494384f3b4685fe24460e6db67ae4fe2195576daa8477bb","entries":70,"regularFiles":53,"expandedBytes":402308096,"selectedPayloads":7,"commandBytes":1748,"commandSha256":"a2477a006d6b6c284c254977ca14099810625017b302a3f7c64810edf2251740"},
+    {"role":"rust-std","byteLength":60485,"sha256":"0a76a92d7ebc4bde40d0be317bc4557f684c3680b757d602f345b8df9ecf5ce7","receiptBytes":11265,"receiptSha256":"8897b37d6d95a26ea39fb6905c0a81e770eba2a9eb8ccde530c98a193a592d9e","entries":81,"regularFiles":74,"expandedBytes":166755840,"selectedPayloads":1,"commandBytes":1750,"commandSha256":"083b5aa049854c77499bb4121eb20f040e4815fe95203a81b1f266d607557436"},
+    {"role":"rustfmt-preview","byteLength":33457,"sha256":"11fd1af89703029062560f8ff31dbc9d8fd2bbf08e2e8b9fe302f6a4a1600d35","receiptBytes":11276,"receiptSha256":"ddccbe0c9e8a4f948549b4757e25111c0c6aadcdcff38805a49619c681be9217","entries":22,"regularFiles":16,"expandedBytes":9112576,"selectedPayloads":2,"commandBytes":1750,"commandSha256":"000f53a12f7a32bd75ee0bf0ee4d3c61bbbe2f082ca1b718b11e77a43090801c"},
+    {"role":"clippy-preview","byteLength":33993,"sha256":"88528d4b1c184a5e5ad95cc2e3df0ea597863e9cf130d1659a78ded52e667dd3","receiptBytes":11273,"receiptSha256":"bac5a7b03b801c0ff5b7c3effbd7dedde6663be40f34ec64a3e9f5e058b114e6","entries":22,"regularFiles":16,"expandedBytes":21706240,"selectedPayloads":2,"commandBytes":1749,"commandSha256":"9c4607ccde1b0e834e2058e784369c70361f7fb718ed728a243b2b078f8a752b"}
+  ],
+  "rustResultBytes": 255645,
+  "rustCompactReceiptBytes": 56315,
+  "allResultsMode": "0444",
+  "allResultsIndependentHashEofIdentityReadbackMatched": true,
+  "allCompactReceiptsExclusiveSyncedSealedReadbackMatched": true,
+  "rustClosureTotals": {"archivePasses":10,"archiveDataBytes":255545440,"archiveRequestedBytes":255545450,"archiveCloses":10,"decoderPipeCloses":5,"stageChecks":10,"preloadChecks":10,"stageCloses":50,"publicationCloses":15,"publicationFsyncs":20},
+  "archiveTotals": {"artifacts":6,"entries":8675,"regularFiles":7106,"expandedBytes":1148080640,"selectedPayloads":59},
+  "declarationComparison": {
+    "scope": "selected ELF observations plus seven HOST candidates; same-domain SONAME and primary version-definition name/ELF hash only",
+    "consumerCount": 48,
+    "neededEdges": 143,
+    "versionReferences": 349,
+    "providerNames": {
+      "HOST": ["ld-linux-x86-64.so.2","libLLVM.so.22.1-rust-1.95.0-stable","libc.so.6","libdl.so.2","libexpat.so.1","libgcc_s.so.1","libgmp.so.10","liblto_plugin.so","libm.so.6","libmpc.so.3","libmpfr.so.6","libncursesw.so.6","libpthread.so.0","librt.so.1","librustc_driver-6108105cd7e839cf.so","libz.so.1"],
+      "TARGET": ["ld-linux-x86-64.so.2","libc.so.6","libdl.so.2","libgcc_s.so.1","libm.so.6","libmvec.so.1","libpthread.so.0","librt.so.1","libstd-d1237ef7159db0a2.so"]
+    },
+    "missingNames": [],
+    "missingVersions": [],
+    "ambiguousProviders": [],
+    "symbolBindingsVerified": false,
+    "relocationsVerified": false,
+    "loaderClosureVerified": false,
+    "privateAbiCoherenceVerified": false,
+    "hostTargetPromotion": false,
+    "dependencyQualificationStatus": "UNRESOLVED"
+  },
+  "freshRawEvidenceSetValidated": true,
+  "historicalMissingRawResultsRestored": false,
+  "atomicSnapshotClaimed": false,
+  "failedReservationsReusedOrDeleted": false,
+  "archiveExtracted": false,
+  "compilerExecuted": false,
+  "rustExecuted": false,
+  "pythonRuntimeInvoked": false,
+  "sourceAuthenticated": false,
+  "runtimeProvidersQualified": false,
+  "abiVerified": false,
+  "pythonFreeSubsetVerified": false,
+  "imagePrepared": false,
+  "dockerProviderQualified": false,
+  "nativeQualified": false,
+  "rustReady": false,
+  "trainingReady": false
+}
