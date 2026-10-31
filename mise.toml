@@ -1,0 +1,28 @@
+[settings]
+auto_install = false
+
+[tasks."host:sbx:preflight"]
+description = "Check registered host KUnit inputs (convenience only; separate approval required)"
+raw_args = true
+run = '''
+#!/usr/bin/bash -p
+set -euo pipefail
+[[ $# -eq 1 && ${F9_HOST_PREFLIGHT_SHA256:-} =~ ^[[:xdigit:]]{64}$ ]] || exit 2
+unset BASH_ENV ENV NODE_OPTIONS LD_PRELOAD LD_LIBRARY_PATH
+export PATH=/usr/local/bin:/usr/bin:/bin
+printf '%s  %s\n' "$F9_HOST_PREFLIGHT_SHA256" /opt/f9/native-ingress/host-sbx-preflight.sh | /usr/bin/sha256sum --check --status -
+exec /usr/bin/bash -p /opt/f9/native-ingress/host-sbx-preflight.sh "$@"
+'''
+
+[tasks."host:sbx:kunit"]
+description = "Run guarded host KUnit (convenience only; separate approval required)"
+raw_args = true
+run = '''
+#!/usr/bin/bash -p
+set -euo pipefail
+[[ $# -eq 2 && ${F9_HOST_RUNNER_SHA256:-} =~ ^[[:xdigit:]]{64}$ ]] || exit 2
+unset BASH_ENV ENV NODE_OPTIONS LD_PRELOAD LD_LIBRARY_PATH
+export PATH=/usr/local/bin:/usr/bin:/bin
+printf '%s  %s\n' "$F9_HOST_RUNNER_SHA256" /opt/f9/native-ingress/host-sbx-kunit.sh | /usr/bin/sha256sum --check --status -
+exec /usr/bin/bash -p /opt/f9/native-ingress/host-sbx-kunit.sh "$@"
+'''

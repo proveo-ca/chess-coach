@@ -2,8 +2,6 @@
   "name": "chess-coach",
   "private": true,
   "scripts": {
-    "host:sbx:preflight": "test -n \"$F9_HOST_PREFLIGHT_SHA256\" && test \"$F9_HOST_PREFLIGHT_SHA256\" = \"$(/usr/bin/sha256sum /opt/f9/native-ingress/host-sbx-preflight.sh | /usr/bin/cut -d ' ' -f 1)\" && PATH=/usr/local/bin:/usr/bin:/bin /usr/bin/bash /opt/f9/native-ingress/host-sbx-preflight.sh",
-    "host:sbx:kunit": "test -n \"$F9_HOST_RUNNER_SHA256\" && test \"$F9_HOST_RUNNER_SHA256\" = \"$(/usr/bin/sha256sum /opt/f9/native-ingress/host-sbx-kunit.sh | /usr/bin/cut -d ' ' -f 1)\" && PATH=/usr/local/bin:/usr/bin:/bin /usr/bin/bash /opt/f9/native-ingress/host-sbx-kunit.sh",
     "check:training": "cargo xtask check",
     "arena:smoke": "cargo run --frozen -p arena -- smoke",
     "dev": "nx run-many -t dev,storybook --projects=ui,starchess --parallel=4",
