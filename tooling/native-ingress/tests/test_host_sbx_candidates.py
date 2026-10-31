@@ -10,9 +10,65 @@ ROOT = Path(__file__).resolve().parents[1]
 GUARD = ROOT / "host-sbx-guard-candidate.sh"
 PROVENANCE = ROOT / "host-sbx-provenance-candidate.py"
 READINESS = ROOT / "host-sbx-readiness.sh"
+INVENTORY = ROOT / "host-sbx-boundary-inventory.sh"
 
 
 class OfflineCandidateTest(unittest.TestCase):
+    def test_boundary_inventory_reports_only_candidates_and_never_calls_providers(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            for name in ("sbx", "systemctl", "sudo", "getent", "findmnt"):
+                fake = base / name
+                fake.write_text(f"#!/bin/sh\nprintf called >> '{base / 'called'}'\n")
+                fake.chmod(0o755)
+            env = {**os.environ, "PATH": str(base)}
+            result = subprocess.run(
+                ["/usr/bin/bash", "--noprofile", "--norc", str(INVENTORY)],
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0)
+            self.assertEqual(result.stderr, "")
+            lines = result.stdout.splitlines()
+            self.assertEqual(lines[0], "F9_HOST_BOUNDARY_INVENTORY_V1")
+            self.assertEqual(lines[-2:], ["INVENTORY=COMPLETE", "BOUNDARY=UNVERIFIED"])
+            for label, values in (
+                ("UNIT_FILE", ("FILE_CANDIDATE", "UNSEEN")),
+                ("SLICE_FILE", ("FILE_CANDIDATE", "UNSEEN")),
+                ("HOME_DIR", ("DIRECTORY_CANDIDATE", "UNSEEN")),
+                ("RUNTIME_DIR", ("DIRECTORY_CANDIDATE", "UNSEEN")),
+            ):
+                self.assertIn(lines.pop(1), [f"{label}={value}" for value in values])
+            self.assertEqual(
+                lines,
+                [
+                    "F9_HOST_BOUNDARY_INVENTORY_V1",
+                    "INVENTORY=COMPLETE",
+                    "BOUNDARY=UNVERIFIED",
+                ],
+            )
+            self.assertFalse((base / "called").exists())
+
+            refused = subprocess.run(
+                [
+                    "/usr/bin/bash",
+                    "--noprofile",
+                    "--norc",
+                    str(INVENTORY),
+                    "unexpected",
+                ],
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(refused.returncode, 2)
+            self.assertEqual(refused.stdout, "")
+            self.assertIn("STOP:", refused.stderr)
+            self.assertFalse((base / "called").exists())
+
     def test_readiness_reports_stop_without_invoking_sbx(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)
