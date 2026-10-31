@@ -41,8 +41,6 @@ llvm_signer=$(xz -dc -- "$inputs/llvm-20.1.8-x86_64.tar.xz" | gpgv --status-fd 1
 [[ $linux_signer == 647F28654894E3BD457199BE38DBBDC86092693E ]] || die 'unexpected Linux signer'
 [[ $llvm_signer == 7BE325C731319CCD01D8CA921D6B269171C01A96 ]] || die 'unexpected LLVM signer'
 
-version=$(sbx version 2>&1) || die 'sbx unavailable on this host'
-printf 'sbx: %s\n' "$version"
-printf 'Inspect sbx diagnose and effective policy on the host before authorizing a run.\n'
+printf 'Dedicated-service guard must verify the scoped sbx version, daemon routing and effective policy.\n'
 printf 'Verified archives/signatures and operator-pinned patch/tools/Zig hashes in %s\n' "$inputs"
 printf 'Archive preflight passed; dependency provenance and resource enforcement require separate reviewed providers.\n'

@@ -32,7 +32,4 @@ preflight="$(dirname -- "$(realpath -e -- "$0")")/host-sbx-preflight.sh"
 preflight_hash=$(sha256sum "$preflight") || die 'cannot hash installed preflight'
 [[ ${preflight_hash%% *} == "$F9_HOST_PREFLIGHT_SHA256" ]] || die 'installed preflight digest mismatch'
 
-"$preflight" "$inputs" || die 'archive preflight failed'
-"$F9_PROVENANCE_VERIFIER" "$inputs" || die 'dependency/Zig/tool provenance not verified'
-
-exec "$F9_HOST_GUARD" --inputs "$inputs" --evidence "$evidence" --patch "$inputs/linux-6.16-original-custody.patch" --filter 'exec.exec_test_original_custody*'
+exec "$F9_HOST_GUARD" --inputs "$inputs" --evidence "$evidence" --preflight "$preflight" --verifier "$F9_PROVENANCE_VERIFIER" --patch "$inputs/linux-6.16-original-custody.patch" --filter 'exec.exec_test_original_custody*'
