@@ -3,14 +3,27 @@ set -euo pipefail
 
 stop() { printf 'STOP: %s\n' "$*" >&2; exit 2; }
 
-[[ $# == 3 || $# == 5 ]] || stop 'usage: host-smoke.sh --confirm-dev-shared-daemon --sbx ABSOLUTE_EXECUTABLE [--create-seconds 1..60]'
+(( $# >= 3 && $# <= 7 && $# % 2 == 1 )) || stop 'usage: host-smoke.sh --confirm-dev-shared-daemon --sbx ABSOLUTE_EXECUTABLE [--create-seconds 1..60] [--instrumented-debug PRIVATE_DIRECTORY]'
 [[ $1 == --confirm-dev-shared-daemon && $2 == --sbx && $3 == /* && -f $3 && -x $3 ]] || stop 'explicit confirmation and absolute sbx executable required'
 sbx=$3
 create_seconds=60
-if (( $# == 5 )); then
-  [[ $4 == --create-seconds && $5 =~ ^([1-9]|[1-5][0-9]|60)$ ]] || stop 'create deadline must be 1..60 seconds'
-  create_seconds=$5
-fi
+create_seconds_seen=0
+instrumented_dir=
+for (( index=4; index<=$#; index+=2 )); do
+  value_index=$(( index + 1 ))
+  case ${!index} in
+    --create-seconds)
+      [[ $create_seconds_seen == 0 && ${!value_index} =~ ^([1-9]|[1-5][0-9]|60)$ ]] || stop 'invalid or duplicate create deadline'
+      create_seconds=${!value_index}
+      create_seconds_seen=1
+      ;;
+    --instrumented-debug)
+      [[ -z $instrumented_dir && ${!value_index} == /* && -d ${!value_index} ]] || stop 'invalid or duplicate private evidence directory'
+      instrumented_dir=${!value_index}
+      ;;
+    *) stop 'unexpected smoke option' ;;
+  esac
+done
 [[ -n ${HOME:-} ]] || stop 'HOME is required by sbx'
 name="f9smoke-$(/usr/bin/od -An -N12 -tx1 /dev/urandom | /usr/bin/tr -d ' \n')"
 [[ $name =~ ^f9smoke-[0-9a-f]{24}$ ]] || stop 'cannot generate smoke name'
@@ -19,7 +32,8 @@ phase=preflight
 
 listed() {
   local output line
-  output=$(/usr/bin/timeout --kill-after=2s 8s "$sbx" ls -q) || return 2
+  output=$(/usr/bin/timeout --kill-after=2s 8s "$sbx" ls -q | /usr/bin/head -c 65537) || return 2
+  (( ${#output} <= 65536 )) || return 2
   while IFS= read -r line; do
     [[ $line == "$name" ]] && return 0
   done <<< "$output"
@@ -71,10 +85,22 @@ else
 fi
 
 phase=creating
-if ! /usr/bin/timeout --kill-after=2s "${create_seconds}s" "$sbx" create --name "$name" --pull never --skills off --deny-network '**' --cpus 1 --memory 512m shell; then
-  printf 'CREATE_UNCONFIRMED_NAME=%s\n' "$name" >&2
-  exit 2
+printf 'CREATE_BEGIN_EPOCH=%s\n' "$(/usr/bin/date -u +%s)"
+if [[ -n $instrumented_dir ]]; then
+  [[ ${BASH_SOURCE[0]} == /* ]] || stop 'instrumented smoke requires an absolute script path'
+  if ! /usr/bin/python3 "${BASH_SOURCE[0]%/*}/create-debug.py" --sbx "$sbx" --name "$name" --seconds "$create_seconds" --evidence-dir "$instrumented_dir"; then
+    printf 'CREATE_END_EPOCH=%s\n' "$(/usr/bin/date -u +%s)"
+    printf 'CREATE_UNCONFIRMED_NAME=%s\n' "$name" >&2
+    exit 2
+  fi
+else
+  if ! /usr/bin/timeout --kill-after=2s "${create_seconds}s" "$sbx" create --name "$name" --pull never --skills off --deny-network '**' --cpus 1 --memory 512m shell; then
+    printf 'CREATE_END_EPOCH=%s\n' "$(/usr/bin/date -u +%s)"
+    printf 'CREATE_UNCONFIRMED_NAME=%s\n' "$name" >&2
+    exit 2
+  fi
 fi
+printf 'CREATE_END_EPOCH=%s\n' "$(/usr/bin/date -u +%s)"
 phase=checking
 if listed; then
   owned=1
