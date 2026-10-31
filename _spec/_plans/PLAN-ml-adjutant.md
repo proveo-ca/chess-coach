@@ -1,6 +1,6 @@
 ## Latest navigation — offline host-sbx refusal scaffold (NO KUNIT REPLAY / STOP)
 
-**2026-10-31 · CODING ONLY / STOP.** [Host-`sbx` operator packet](../../tooling/native-ingress/HOST-SBX-KUNIT.md#offline-stop-only-candidates--not-host-guard-or-provenance-approval) records offline-only candidate guard/provenance entrypoints and a short synthetic refusal test. They cannot be installed as the approved guard/verifier, run `sbx`, close the separate-service/credential/quota/input gates or verify post-atomic KUnit. No `mise`/`sbx` command, host operation, G1/5c/5d, Native or training approval follows; `trainingReady:false`.
+**2026-10-31 · CODING ONLY / STOP.** [Host-`sbx` operator packet](../../tooling/native-ingress/HOST-SBX-KUNIT.md#offline-byte-integrity-candidate--host-runner-stop) records offline-only candidate guard/provenance entrypoints and a short synthetic refusal test. They cannot be installed as the approved guard/verifier, run `sbx`, close the separate-service/credential/quota/input gates or verify post-atomic KUnit. No `mise`/`sbx` command, host operation, G1/5c/5d, Native or training approval follows; `trainingReady:false`.
 
 ## Prior navigation — illustrative Linux v6.16 in-tree G1 draft (SOURCE ONLY / STOP)
 
