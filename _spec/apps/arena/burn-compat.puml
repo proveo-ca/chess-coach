@@ -3,6 +3,7 @@
 ' covers: rust-toolchain.toml
 ' covers: apps/arena/Cargo.toml
 ' covers: apps/arena/src/lib.rs
+' covers: apps/arena/src/native_ingress.rs
 ' covers: apps/arena/src/main.rs
 ' covers: apps/arena/engine/worker.ts
 ' covers: apps/arena/engine/protocol.ts
@@ -114,6 +115,9 @@ package "Economic ledger / native consequences only" {
   component "apps/arena/src/economic.rs\nterminal_training_closeout\nNativeChronology / CheckedTerminalAccounting\nterminalTrainingCloseout required nullable" as CLOSEOUT <<host>>
 }
 component "apps/arena/tests/economic_replay.rs\napps/arena/tests/readiness.rs\napps/arena/tests/support/economic.rs\nnative correspondence / scoped diagnostics" as ECO_PROOF <<app>>
+component "apps/arena/src/native_ingress.rs\nprivate supplied-boundary F1 fold\none borrowed caller meter / data only" as INGRESS_FOLD <<app>>
+component "training_native::feature_input::FeatureInputPair\nboth seats / existing ledger charges\ninitialize + two advances + readouts" as F1_PAIR <<app>>
+INGRESS_FOLD ARROW_MAIN F1_PAIR : borrow one caller LedgerWork
 component "apps/arena/engine/test/economic-project.test.ts\napps/arena/engine/test/economic-replay.test.ts\napps/arena/engine/test/worker-economic.test.ts\ncausal / native / fixed-wire controls" as ECO_NODE_PROOF <<app>>
 package "F1 standalone helpers / UNWIRED" {
   component "apps/arena/engine/feature-geometry.ts\nowned immutable FeatureQueue / prepaid callback\nB/C schedule / attack shape / ray / lit-only vision\nno Rust trait, RPC, worker or local meter" as FEATURE_GEOMETRY <<app>>

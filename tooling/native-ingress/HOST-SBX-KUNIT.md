@@ -1,0 +1,67 @@
+# Host-run `sbx` custody KUnit · conditional operator packet
+
+These scripts **do not** run on the current realm. Run them on the Fedora host only after separately approving the host operation and reviewing the independent guard and provenance verifier. Docker documents Ubuntu 24.04+ for local `sbx`; Fedora host behavior is not established by this packet. No GitHub access is needed by the scripts.
+
+## Stage inputs without mounting the checkout
+
+Place only these files in an operator-controlled, quota-enforced absolute `INPUTS` directory on the host:
+
+| Name | Requirement |
+| --- | --- |
+| `linux-6.16.tar.xz`, `linux-6.16.tar.sign` | kernel.org signed archive and detached signature |
+| `llvm-20.1.8-x86_64.tar.xz`, `llvm-20.1.8-x86_64.tar.sign` | kernel.org signed archive and detached signature |
+| `linux-kernel.gpg`, `llvm-kernel.gpg` | independently authenticated keyrings, with externally registered hashes |
+| `linux-6.16-original-custody.patch` | exact repository patch, hash registered outside `INPUTS` |
+| `tools.tar`, `zig` | reviewed dependency closure and Zig 0.14.1 executable, hashes registered outside `INPUTS` |
+
+The host must independently authenticate signed Ubuntu package indexes and exact `.deb` hashes, Zig provenance and the tool/runtime closure **before** invoking the guard. The required `F9_PROVENANCE_VERIFIER` is an operator-supplied, independently reviewed executable that checks these facts and rejects incomplete inputs. A hash supplied alongside an untrusted archive cannot authenticate it. The two keyring hashes, three artifact hashes, verifier hash and guard hash must come from a separately approved record, **not** `sha256sum` computed from transferred inputs on the day of the test.
+
+## Operator invocation (no host operation is authorized here)
+
+After reviewing and approving the exact source bytes, install `host-sbx-preflight.sh` and `host-sbx-kunit.sh` as root-owned regular files in `/opt/f9/native-ingress/`. Keep that directory and every parent root-owned and non-writable by other users. Do not install from an unreviewed checkout. Independently register each installed script's SHA-256 in the approval record. The npm aliases use absolute `/usr/bin` tools, check these two hashes before invoking the root-owned copies, and restrict the script `PATH` to `/usr/local/bin:/usr/bin:/bin`. **These aliases are convenience commands, not a security-valid host launch:** npm can run checkout-defined `pre*` lifecycle hooks before an alias. Any later approved host operation must use the direct invocation below from a trusted shell after inspecting the installed files and execution environment.
+
+After separate operator approval for host installation, an operator can copy the reviewed scripts from a trusted checkout with:
+
+```sh
+sudo install -d -o root -g root -m 0755 /opt/f9/native-ingress
+sudo install -o root -g root -m 0755 tooling/native-ingress/host-sbx-preflight.sh /opt/f9/native-ingress/host-sbx-preflight.sh
+sudo install -o root -g root -m 0755 tooling/native-ingress/host-sbx-kunit.sh /opt/f9/native-ingress/host-sbx-kunit.sh
+```
+
+Do not run the installation commands from this realm or treat the resulting files as independently registered merely because they were copied.
+
+```sh
+export F9_PATCH_SHA256='<independently registered SHA-256>'
+export F9_TOOLS_SHA256='<independently registered SHA-256>'
+export F9_ZIG_SHA256='<independently registered SHA-256>'
+export F9_LINUX_KEYRING_SHA256='<independently registered SHA-256>'
+export F9_LLVM_KEYRING_SHA256='<independently registered SHA-256>'
+export F9_PROVENANCE_VERIFIER='/absolute/path/to/reviewed-provenance-verifier'
+export F9_PROVENANCE_VERIFIER_SHA256='<independently registered SHA-256>'
+export F9_HOST_GUARD='/absolute/path/to/reviewed-host-guard'
+export F9_HOST_GUARD_SHA256='<independently registered SHA-256>'
+export F9_HOST_PREFLIGHT_SHA256='<independently registered installed preflight SHA-256>'
+export F9_HOST_RUNNER_SHA256='<independently registered installed runner SHA-256>'
+
+# Proposed host entrypoint after separate approval: do not use npm for this operation.
+set -e
+unset BASH_ENV ENV NODE_OPTIONS LD_PRELOAD LD_LIBRARY_PATH
+export PATH=/usr/local/bin:/usr/bin:/bin
+printf '%s  %s\n' "$F9_HOST_PREFLIGHT_SHA256" /opt/f9/native-ingress/host-sbx-preflight.sh | /usr/bin/sha256sum -c -
+printf '%s  %s\n' "$F9_HOST_RUNNER_SHA256" /opt/f9/native-ingress/host-sbx-kunit.sh | /usr/bin/sha256sum -c -
+/usr/bin/bash /opt/f9/native-ingress/host-sbx-preflight.sh "$INPUTS"
+/usr/bin/bash /opt/f9/native-ingress/host-sbx-kunit.sh "$INPUTS" "$EVIDENCE"
+```
+
+For developer convenience only, the root `package.json` exposes `npm run host:sbx:preflight -- "$INPUTS"` and `npm run host:sbx:kunit -- "$INPUTS" "$EVIDENCE"`. Do **not** use these aliases as evidence of the approved host boundary. `INPUTS` and `EVIDENCE` must be existing, distinct absolute directories. The preflight is read-only; it checks the fixed archive hashes, detached signatures against independently pinned keyrings and exact signer fingerprints, and the registered patch/tool/Zig hashes. It checks that `sbx` is available. It does **not** provision quotas or verify the build closure. Install the verifier and guard at absolute paths owned by root, without symlinks or group/world-writable parent directories, and register their hashes independently; this prevents a host user from swapping their files between verification and execution. The runner fails before `sbx create` unless both reviewed external executables and their pinned hashes exist and the verifier succeeds. Neither external executable is supplied in this repository; **do not replace either with a stub that returns success**.
+
+## Required `F9_HOST_GUARD` contract
+
+The guard receives `--inputs ABS --evidence ABS --patch ABS --filter 'exec.exec_test_original_custody*'`. It must own the complete host-to-VM sequence:
+
+1. Independently recheck the staged bytes after copying, verify the *fresh* source extraction, exact patch application without fuzz, the atomic admission and two-caller case, and the archived stack-limit fix. Use signed v6.16, LLVM 20.1.8, authenticated Ubuntu dependencies, verified Zig 0.14.1 and GNU BFD. Do not pull packages during the KUnit run.
+2. Check host `sbx` version and diagnostics, KVM and effective policies. Create a uniquely named **mountless** `shell` microVM (requires `sbx` ≥0.42.0); do **not** use `sbx run` from the repository, direct or clone workspaces, shared skills, host Docker sockets, host `/proc`, host home, broad host system mounts, or a host daemon inside the VM. Pin the shell template. Deny egress explicitly, including kit-supplied rules; do not rely on the `deny-all` preset alone.
+3. Independently enforce a reviewed aggregate host envelope covering VM, daemon, input staging, logs and cleanup: peak CPU/RSS/PIDs/FDs, finite disk/output including extraction, a ≤20-minute total deadline with bounded stop/remove before deadline, at most two build jobs, and a ≤60-second KUnit test timeout. Guest cgroups and VM `--cpus`/`--memory` are not a substitute for host bounds. Prove the effective guest CPU/memory/PID/FD limits and the 3 GiB `/out` ceiling before launching the test. Refuse if host delegation, disk quotas, effective limits, or the watchdog are unavailable.
+4. Run the exact filtered command in `_spec/_plans/native-ingress-r-out-kernel-core-custody.md`, using the reviewed compiler wrapper and GNU BFD, **not** the historical LLD-only flag. Require exit 0, exactly `exec_test_original_custody` and `exec_test_original_custody_two_callers` passed, no skips/truncation, and a retained bounded log. Confirm VM and child removal on every path, including partial creation and timeouts; `sbx stop` alone preserves state. Refuse a PASS when cleanup cannot be confirmed.
+
+The selected delegated-cgroup blocker in the plan remains open until an independently reviewed host supervisor actually supplies equivalent host limits and the operator accepts that change. A post-atomic synthetic KUnit PASS is not a booted kernel, G1, actual 5c, Native/5d, or `trainingReady:true`. The original S0+10s, S0+300s (final 3s cleanup), N1–N10 and shared DIRECT meter remain unchanged.

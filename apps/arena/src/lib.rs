@@ -8,6 +8,7 @@ mod economic_client;
 mod engine_v2;
 pub mod evaluation;
 mod features;
+mod native_ingress;
 mod observation;
 mod protocol;
 pub mod record;

@@ -1,0 +1,216 @@
+# SPEC: _spec/tooling/native-ingress/original-custody-kunit.puml
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1681,6 +1681,53 @@
+ 	return -ENOEXEC;
+ }
+ 
++#ifdef CONFIG_EXEC_KUNIT_TEST
++#include <linux/atomic.h>
++
++enum exec_original_result {
++	EXEC_ORIGINAL_PENDING,
++	EXEC_ORIGINAL_FAILED,
++	EXEC_ORIGINAL_SUCCEEDED,
++};
++
++struct exec_original_fixture {
++	atomic_t occupied;
++};
++
++struct exec_original_custody {
++	struct file *original;
++	struct exec_original_fixture *fixture;
++	enum exec_original_result result;
++};
++
++static struct exec_original_custody exec_original_custody_begin(struct linux_binprm *bprm,
++					   struct exec_original_fixture *fixture)
++{
++	if (!fixture || atomic_cmpxchg(&fixture->occupied, 0, 1))
++		return (struct exec_original_custody) {
++			.result = EXEC_ORIGINAL_FAILED,
++		};
++
++	return (struct exec_original_custody) {
++		.original = get_file(bprm->file),
++		.fixture = fixture,
++		.result = EXEC_ORIGINAL_PENDING,
++	};
++}
++
++static void exec_original_custody_end(struct exec_original_custody *custody,
++				      bool succeeded)
++{
++	if (!custody->original)
++		return;
++	custody->result = succeeded ? EXEC_ORIGINAL_SUCCEEDED : EXEC_ORIGINAL_FAILED;
++	fput(custody->original);
++	custody->original = NULL;
++	atomic_set(&custody->fixture->occupied, 0);
++	custody->fixture = NULL;
++}
++#endif
++
+ /* binfmt handlers will call back into begin_new_exec() on success. */
+ static int exec_binprm(struct linux_binprm *bprm)
+ {
+--- a/fs/tests/exec_kunit.c
++++ b/fs/tests/exec_kunit.c
+@@ -1,4 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
++#include <linux/completion.h>
++#include <linux/kthread.h>
+ #include <kunit/test.h>
+ 
+ struct bprm_stack_limits_result {
+@@ -97,7 +99,7 @@
+ 	{ { .p = ULONG_MAX, .rlim_stack.rlim_cur = 4 * (_STK_LIM / 4 * 3 + sizeof(void *)),
+ 	    .argc = 0, .envc = 0 },
+ 	  .expected_argmin = ULONG_MAX - (_STK_LIM / 4 * 3) + sizeof(void *) },
+-	{ { .p = ULONG_MAX, .rlim_stack.rlim_cur = 4 * (_STK_LIM / 4 *  + sizeof(void *)),
++	{ { .p = ULONG_MAX, .rlim_stack.rlim_cur = 4 * (_STK_LIM / 4 * 3 + sizeof(void *)),
+ 	    .argc = 0, .envc = 0 },
+ 	  .expected_argmin = ULONG_MAX - (_STK_LIM / 4 * 3) + sizeof(void *) },
+ 	{ { .p = ULONG_MAX, .rlim_stack.rlim_cur = 4 * _STK_LIM,
+@@ -128,8 +130,140 @@
+ 	}
+ }
+ 
++static void exec_test_original_custody(struct kunit *test)
++{
++	struct file *main, *interpreter;
++	struct linux_binprm bprm = {};
++	struct exec_original_custody custody;
++	struct exec_original_custody refused;
++	struct exec_original_fixture fixture = { .occupied = ATOMIC_INIT(0) };
++	struct exec_original_fixture occupied = { .occupied = ATOMIC_INIT(1) };
++
++	main = alloc_empty_file(O_RDONLY, current_cred());
++	KUNIT_ASSERT_FALSE(test, IS_ERR(main));
++	interpreter = alloc_empty_file(O_RDONLY, current_cred());
++	if (IS_ERR(interpreter)) {
++		fput(main);
++		KUNIT_FAIL(test, "interpreter allocation failed");
++		return;
++	}
++
++	bprm.file = main;
++	custody = exec_original_custody_begin(&bprm, NULL);
++	KUNIT_EXPECT_PTR_EQ(test, custody.original, NULL);
++	KUNIT_EXPECT_EQ(test, custody.result, EXEC_ORIGINAL_FAILED);
++	KUNIT_EXPECT_EQ(test, file_count(main), 1UL);
++	custody = exec_original_custody_begin(&bprm, &occupied);
++	KUNIT_EXPECT_PTR_EQ(test, custody.original, NULL);
++	KUNIT_EXPECT_EQ(test, custody.result, EXEC_ORIGINAL_FAILED);
++	KUNIT_EXPECT_EQ(test, file_count(main), 1UL);
++	KUNIT_EXPECT_EQ(test, atomic_read(&occupied.occupied), 1);
++	custody = exec_original_custody_begin(&bprm, &fixture);
++	KUNIT_EXPECT_PTR_EQ(test, custody.original, main);
++	KUNIT_EXPECT_EQ(test, file_count(main), 2UL);
++	KUNIT_EXPECT_EQ(test, custody.result, EXEC_ORIGINAL_PENDING);
++	KUNIT_EXPECT_EQ(test, atomic_read(&fixture.occupied), 1);
++	refused = exec_original_custody_begin(&bprm, &fixture);
++	KUNIT_EXPECT_PTR_EQ(test, refused.original, NULL);
++	KUNIT_EXPECT_EQ(test, refused.result, EXEC_ORIGINAL_FAILED);
++	KUNIT_EXPECT_EQ(test, file_count(main), 2UL);
++	KUNIT_EXPECT_EQ(test, atomic_read(&fixture.occupied), 1);
++
++	bprm.file = interpreter;
++	KUNIT_EXPECT_PTR_EQ(test, custody.original, main);
++	exec_original_custody_end(&custody, false);
++	KUNIT_EXPECT_PTR_EQ(test, custody.original, NULL);
++	KUNIT_EXPECT_EQ(test, custody.result, EXEC_ORIGINAL_FAILED);
++	KUNIT_EXPECT_EQ(test, file_count(main), 1UL);
++	KUNIT_EXPECT_EQ(test, atomic_read(&fixture.occupied), 0);
++	exec_original_custody_end(&custody, false);
++	KUNIT_EXPECT_EQ(test, file_count(main), 1UL);
++	KUNIT_EXPECT_EQ(test, atomic_read(&fixture.occupied), 0);
++
++	bprm.file = main;
++	custody = exec_original_custody_begin(&bprm, &fixture);
++	KUNIT_EXPECT_EQ(test, atomic_read(&fixture.occupied), 1);
++	bprm.file = interpreter;
++	exec_original_custody_end(&custody, true);
++	KUNIT_EXPECT_PTR_EQ(test, custody.original, NULL);
++	KUNIT_EXPECT_EQ(test, custody.result, EXEC_ORIGINAL_SUCCEEDED);
++	KUNIT_EXPECT_EQ(test, file_count(main), 1UL);
++	KUNIT_EXPECT_EQ(test, atomic_read(&fixture.occupied), 0);
++
++	fput(interpreter);
++	fput(main);
++}
++
++struct exec_original_caller {
++	struct completion *start;
++	struct completion done;
++	struct exec_original_fixture *fixture;
++	struct linux_binprm *bprm;
++	struct exec_original_custody custody;
++};
++
++static int exec_original_caller_begin(void *arg)
++{
++	struct exec_original_caller *caller = arg;
++
++	wait_for_completion(caller->start);
++	caller->custody = exec_original_custody_begin(caller->bprm, caller->fixture);
++	complete(&caller->done);
++	return 0;
++}
++
++static void exec_test_original_custody_two_callers(struct kunit *test)
++{
++	struct exec_original_fixture fixture = { .occupied = ATOMIC_INIT(0) };
++	struct completion start;
++	struct linux_binprm bprm = {};
++	struct exec_original_caller callers[2] = {};
++	struct task_struct *tasks[2];
++	struct file *main;
++	size_t i;
++	int accepted = 0;
++
++	main = alloc_empty_file(O_RDONLY, current_cred());
++	KUNIT_ASSERT_FALSE(test, IS_ERR(main));
++	bprm.file = main;
++	init_completion(&start);
++	for (i = 0; i < ARRAY_SIZE(callers); i++) {
++		callers[i].start = &start;
++		init_completion(&callers[i].done);
++		callers[i].fixture = &fixture;
++		callers[i].bprm = &bprm;
++		tasks[i] = kthread_run(exec_original_caller_begin, &callers[i], "exec-custody-%zu", i);
++		if (IS_ERR(tasks[i])) {
++			complete_all(&start);
++			while (i--) {
++				kthread_stop(tasks[i]);
++				exec_original_custody_end(&callers[i].custody, false);
++			}
++			fput(main);
++			KUNIT_FAIL(test, "custody racer allocation failed");
++			return;
++		}
++	}
++	complete_all(&start);
++	for (i = 0; i < ARRAY_SIZE(callers); i++) {
++		wait_for_completion(&callers[i].done);
++		kthread_stop(tasks[i]);
++		accepted += callers[i].custody.result == EXEC_ORIGINAL_PENDING;
++	}
++	KUNIT_EXPECT_EQ(test, accepted, 1);
++	KUNIT_EXPECT_EQ(test, atomic_read(&fixture.occupied), 1);
++	KUNIT_EXPECT_EQ(test, file_count(main), 2UL);
++	for (i = 0; i < ARRAY_SIZE(callers); i++)
++		exec_original_custody_end(&callers[i].custody, true);
++	KUNIT_EXPECT_EQ(test, atomic_read(&fixture.occupied), 0);
++	KUNIT_EXPECT_EQ(test, file_count(main), 1UL);
++	fput(main);
++}
++
+ static struct kunit_case exec_test_cases[] = {
+ 	KUNIT_CASE(exec_test_bprm_stack_limits),
++	KUNIT_CASE(exec_test_original_custody),
++	KUNIT_CASE(exec_test_original_custody_two_callers),
+ 	{},
+ };
+ 

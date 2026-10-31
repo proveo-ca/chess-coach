@@ -1,0 +1,120 @@
+' purpose: Implemented atomic fixture admission in the isolated v6.16 patch, uncompiled and unrun post-atomic; no runtime exec integration.
+' covers: tooling/native-ingress/linux-6.16-original-custody.patch
+' related: _spec/_plans/native-ingress-r-out-kernel-core-custody.md
+@startuml original-custody-kunit
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title IMPLEMENTED PATCH / UNCOMPILED, UNRUN POST-ATOMIC: v6.16 KUnit fixture custody
+
+participant "fs/tests/exec_kunit.c\nexec_test_original_custody" as KUnit <<host>>
+participant "fs/tests/exec_kunit.c\nexec_test_original_custody_two_callers" as TwoCallers <<host>>
+participant "fs/tests/exec_kunit.c\nexec_original_caller_begin (two kthreads)" as Threads <<async>>
+participant "fs/exec.c\nexec_original_custody_begin/end\nCONFIG_EXEC_KUNIT_TEST" as Helper <<app>>
+participant "fs/exec.c\nexec_binprm" as Exec <<host>>
+participant "struct linux_binprm\nbprm->file" as Bprm <<host>>
+participant "struct exec_original_fixture\natomic_t occupied" as Slot <<db>>
+participant "struct file\noriginal main" as Main <<db>>
+participant "struct file\ninterpreter" as Interp <<db>>
+
+KUnit -> Bprm : bprm.file = main (synthetic empty file)
+KUnit -> Helper : begin(bprm, fixture=NULL)
+Helper --> KUnit : FAILED; no get_file; main refcount=1
+KUnit -> Helper : begin(bprm, fixture=&occupied_slot)
+Helper -> Slot : atomic_cmpxchg(occupied, 0, 1) returns 1
+Helper --> KUnit : FAILED; no get_file; main refcount=1
+KUnit -> Helper : begin(bprm, fixture=&free_slot)
+Helper -> Slot : atomic_cmpxchg(occupied, 0, 1) returns 0
+Helper -> Main : get_file(bprm->file)
+Helper --> KUnit : PENDING; original=main; fixture=&free_slot; refcount=2
+KUnit -> Helper : begin(bprm, fixture=&free_slot)
+Helper -> Slot : atomic_cmpxchg(occupied, 0, 1) returns 1
+Helper --> KUnit : FAILED; no get_file; main refcount=2
+KUnit -> Bprm : bprm.file = interpreter
+KUnit -> KUnit : assert custody.original == main
+KUnit -> Helper : end(custody, succeeded=false)
+Helper -> Main : fput(original)
+Helper -> Slot : atomic_set(occupied, 0) after fput
+Helper -> Helper : original=NULL; fixture=NULL
+Helper --> KUnit : FAILED; main refcount=1; slot free
+KUnit -> Helper : end(custody, succeeded=false) again
+Helper --> KUnit : no-op; main refcount=1; slot free
+KUnit -> Bprm : bprm.file = main
+KUnit -> Helper : begin(bprm, fixture=&free_slot) after release
+Helper -> Slot : atomic_cmpxchg(occupied, 0, 1) returns 0
+Helper -> Main : get_file(bprm->file)
+Helper --> KUnit : PENDING; original=main; fixture=&free_slot; refcount=2
+KUnit -> Bprm : bprm.file = interpreter
+KUnit -> Helper : end(custody, succeeded=true)
+Helper -> Main : fput(original)
+Helper -> Slot : atomic_set(occupied, 0) after fput
+Helper -> Helper : original=NULL; fixture=NULL
+Helper --> KUnit : SUCCEEDED; main refcount=1; slot free
+KUnit -> Interp : fput(interpreter)
+KUnit -> Main : fput(main)
+
+TwoCallers -> Threads : create two exec_original_caller tasks with shared fixture and bprm
+alt both kthreads created
+  TwoCallers -> Threads : complete_all(start)
+  Threads -> Helper : each calls begin(bprm, shared fixture)
+  Helper -> Slot : each calls atomic_cmpxchg(occupied, 0, 1)
+  Slot --> Helper : first admission returns 0; later refusal returns 1
+  Helper -> Main : winner get_file(main) only
+  Threads --> TwoCallers : done completions; one PENDING; one FAILED
+  TwoCallers -> Threads : kthread_stop both after completion
+  TwoCallers -> TwoCallers : assert one admission; slot=1; main refcount=2
+  TwoCallers -> Helper : end(each custody, succeeded=true), sequentially
+  Helper -> Main : winner fput(original) only
+  Helper -> Slot : winner atomic_set(occupied, 0)
+  TwoCallers -> TwoCallers : assert slot=0; main refcount=1
+  TwoCallers -> Main : fput(main)
+else second kthread creation fails
+  TwoCallers -> Threads : complete_all(start); kthread_stop(first)
+  Threads -> Helper : first may admit and retain main
+  TwoCallers -> Helper : end(first custody, succeeded=false)
+  Helper -> Main : fput(original) if admitted
+  Helper -> Slot : atomic_set(occupied, 0) if admitted
+  TwoCallers -> Main : fput(main); KUNIT_FAIL; return
+end
+
+Exec -> Exec : ordinary binfmt flow; no custody helper call
+
+note right of Helper
+  Atomic compare-and-swap admits one contender
+  before any file reference is acquired.
+  The rejected contender never owns the
+  original object or changes its reference count.
+end note
+
+note right of Threads
+  Shared completion releases both kthreads,
+  yet UML may schedule their CAS sequentially.
+  The exclusion check holds admission through
+  both calls, but cannot demonstrate
+  simultaneous overlap.
+end note
+
+note right of Slot
+  Terminal end releases the file before it
+  opens the slot for another admission.
+  Only the custody owner may call end; concurrent
+  ends of one custody are not synchronized.
+end note
+
+note right of Exec
+  A stalled test can retain its reference
+  without a deadline or cleanup guarantee.
+  Ordinary exec never calls this helper, so
+  active-kernel authority remains unproved.
+end note
+
+legend bottom
+  Implemented repository patch, uncompiled/unrun post-atomic: atomic one-slot admission, one extra file reference, zero loans per fixture.
+  Two-caller exclusion is checked while admission is held; shared completion does not force simultaneous CAS attempts (UML NR_CPUS=1).
+  NULL or occupied fixtures refuse before get_file; terminal end is single-owner only.
+  Second kthread creation failure joins the first and ends its custody before dropping main.
+  Historical pre-atomic fixture KUnit: 1/1 passed (110.557s total; 13.168 config, 97.272 build, 0.074 run).
+  Earlier boolean-admission KUnit 1/1 passed; neither historical run verifies the atomic cases.
+  No post-atomic build or KUnit pass exists. STOP replay until narrow mounts and independent quotas are reviewed.
+  The patch also fixes an archived-v6.16 stack-limit expression.
+  No runtime bound, reader, receipt, consume path, exec hook, or active-kernel proof is supplied.
+endlegend
+@enduml

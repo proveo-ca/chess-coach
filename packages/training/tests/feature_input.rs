@@ -1315,6 +1315,47 @@ fn detached_input_invoice_and_conversion_precharge_refuse_before_public_vector_a
 }
 
 #[test]
+fn one_meter_covers_both_seats_through_settlement_and_readouts() {
+    let origin = tiny(0, 3);
+    let open = opened(&origin);
+    let settled = finish(&open, vec![], vec![]);
+    let mut work = LedgerWork::new();
+    let mut input = FeatureInputPair::initialize(rules(), &origin, &mut work).unwrap();
+    let initial_used = work.used();
+
+    assert_eq!(
+        input.advance(&open, &mut work).unwrap(),
+        AdvanceDisposition::Advanced
+    );
+    let open_used = work.used();
+    assert_eq!(
+        input.advance(&settled, &mut work).unwrap(),
+        AdvanceDisposition::Advanced
+    );
+    let settled_used = work.used();
+
+    let white = input.input(Side::White, &mut work).unwrap();
+    let white_used = work.used();
+    let black = input.input(Side::Black, &mut work).unwrap();
+    assert!(
+        0 < initial_used
+            && initial_used < open_used
+            && open_used < settled_used
+            && settled_used < white_used
+            && white_used < work.used()
+            && work.used() <= work.limit()
+    );
+    assert_eq!(work.used() + work.remaining(), work.limit());
+    assert_eq!(input.last_boundaries(), &settled);
+    for (side, value) in [(Side::White, white), (Side::Black, black)] {
+        assert_eq!(value.view.side, side);
+        assert_eq!(value.stamp.phase, BoundaryPhase::Settled);
+        assert_eq!(value.stamp.ordinal, settled.get(side).ordinal);
+        assert_eq!(value.stamp.turn, settled.get(side).turn);
+    }
+}
+
+#[test]
 fn caller_meter_is_shared_across_initialization_both_seats_readouts_and_refusal_without_reset() {
     let origin = tiny(0, 3);
     let mut measured = LedgerWork::new();
