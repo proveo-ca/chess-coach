@@ -1,5 +1,7 @@
 # F9 — host Rust G1 kernel-core custody state machine · DESIGN ONLY / NO SITE
 
+**2026-10-31 · OFFLINE REFUSAL SCAFFOLD / READ-ONLY HOST HANDOFF / STOP.** The [host-`sbx` operator packet](../../tooling/native-ingress/HOST-SBX-KUNIT.md#offline-stop-only-candidates--not-host-guard-or-provenance-approval) now lists two candidate entrypoints, a readiness-only path check and a short offline synthetic refusal test. Neither candidate is a runnable host guard or independently accepted provenance verifier. Readiness returns STOP without querying the `sbx` daemon or proving service routing/quotas. These checks do not close credential handling, signed dependency closure, post-atomic KUnit, booted G1, Gate0 or 5c/5d. The original delegated-cgroup and host-`sbx` STOPs below remain; `trainingReady:false`.
+
 ## Isolated v6.16 custody slice · atomic patch implemented, post-atomic build and KUnit pending, not G1
 
 The [isolated KUnit custody sequence](../tooling/native-ingress/original-custody-kunit.puml) documents the **implemented atomic repository patch** for synthetic reference lifetime and refusal, plus the untouched ordinary exec path. Its spec coverage is the regenerated repository patch, not an installed or active kernel tree. The filtered fixture KUnit case passed before the atomic change, not after it. The regenerated patch is **uncompiled and unrun post-atomic**; no post-atomic build or KUnit pass exists.

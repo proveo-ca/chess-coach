@@ -4,6 +4,12 @@
 
 **Trust ownership follow-up (2026-10-30):** [Rust-first trust ownership and first-effect handoffs](native-ingress-rust-first-trust-ownership.md) maps candidate consumers to **UNASSIGNED** external producers and source-ordered STOPs. It does not amend this packet's acceptance ledger or assign an issuer, realm, API or provider.
 
+**G1 criterion follow-up (2026-10-31):** Executor chose the [independently proven protected-backing join](native-ingress-r-out-proven-backing-join.md) as the **Gate0 drafting criterion**, not G1 evidence or Gate0 acceptance. Use the compact Gate0 action/review checklist below; keep all trust sites, effect classes, operational gates and approvals OPEN.
+
+**G1 trust-surface follow-up (2026-10-31):** Executor chose the [in-tree kernel-core site/action proposal](native-ingress-r-out-kernel-site-proposal.md) for Gate0 drafting, not an exact kernel site, ABI, source assignment, boot/privilege change or G1 proof. The existing issuer, Rust adapter, first-effect, A/B, Node/FD and 5a–5d gates stay OPEN.
+
+**Kernel source baseline follow-up (2026-10-31):** Draft candidate **runtime G1** sites against published Linux v6.16 while Executor's `mise` commands run in `sbx`; no output from those commands is claimed. The [existing isolated v6.16 KUnit fixture patch](native-ingress-r-out-kernel-core-custody.md#isolated-v616-custody-slice--atomic-patch-implemented-post-atomic-build-and-kunit-pending-not-g1) and [conditional host-`sbx` packet](../../tooling/native-ingress/HOST-SBX-KUNIT.md) cover a **different, synthetic** custody check; post-atomic build/KUnit and operator guard/verifier/service/quota prerequisites remain OPEN. The target **active runtime** kernel source/config/build/boot identity remains unassigned, not the historical Docker kernel string or an assumed v6.16 installation. No `mise`/`sbx`, installed-root, host-kernel or boot probe is authorized here.
+
 ## 1 · Scope and precedence
 
 Accepted N1–N10 remain unchanged. Executor design-selected **A · manifest-free `tooling/native-ingress/`** and **DIRECT SAME COUNTER**, not a complete file/API/RecipeRef/invoice plan or an authority realm. R-OUT is a candidate with STOP before the earliest owed pre-owner effect or first PID-derived `/proc`, whichever comes first; R-IN is not a fallback. No source/tests/config/host/operations are granted. M2 and prior query grants remain consumed; no new access follows. The protected `packages/starchess-arena` tree stays unchanged.
@@ -103,6 +109,16 @@ Derive each role's bound and each feasible aggregate peak with actual membership
 For `T` only, obtain exact human **test-edit approval** before changing either existing file, then **separate exact human test-run approval** for each proposed command: `cargo test --frozen --offline -p training-native --test ledger_contracts`; `cargo test --frozen --offline -p training-native --test feature_input`. This is independent preparation, not F9 implementation or a gate0 waiver; any later F9 implementation test edits require accepted gate0 and exact assignment. **No test/build now.** Future static checks: placement/no `pub` authority, unchanged manifests/protected legacy, no new F9 `Transaction::new`/second meter, nonrenewing S0, unchanged preservation and two coverage owners. Synthetic/static results do not prove actual loading, policy, init, effect order or Native authority.
 
 ## 8 · Explicit acceptance checklist: preflight 0–5d — ALL OPEN
+
+**Gate0 action → verification needed.** Each review check is a **design/prerequisite check before acceptance**, not an observed runtime PASS. Short e2e hooks are **future proposed scenarios**, not assigned test paths, approvals or executable evidence. Attach a bounded persisted e2e test to each later closed implementation item only after its applicable source and operation approvals.
+
+| Gate0 action | Verification needed before acceptance | Short future e2e hook; not run |
+|---|---|---|
+| Fix independent EXPECTED inputs, RecipeRef, launcher-selected FD constraints and complete Rust/Node/native closure. | Expectations precede observed outputs; actual backing provider, mutators and full policy are specified without self-nomination. | Refuse a different FD with the same pathname. |
+| Design the G1 protected-backing join for each selected branch. | Independently review selected FD → **returned exec-open file** → each read/mapping backing → pre-fixed EXPECTED, aliases and continuing loads; refuse unproved transitions. Direct ext4/overlayfs examples remain unselected. | Refuse read/mapping backing divergence. |
+| Identify proposed exact issuer, launcher, kernel custodian, Rust consume, init creator A, prepaid B and both Node/FD source/owner paths and interfaces for Gate0 review. | Review trust/privilege changes, definitive exec/generation and exclusive one-use acceptance; identifying proposed paths is **not source assignment** before Gate0 acceptance. | Refuse a stale generation or replayed receipt. |
+| Classify source-ordered first effects and cleanup, then fix disjoint tariff and physical bounds. | Show original S0 before causal work, first successful paid DIRECT debit before owed work or STOP beforehand; verify `new + existing ledger + unchanged F1 ≤ 1_048_576`, both original deadlines and feasible overlap peaks. | Refuse unpaid pre-owner cleanup, renewed S0, late F1 postcheck or lifecycle work invading the final 3s cleanup reserve. |
+| Fix independent post-5b output-registration method and constraints. | Review method before capture/build; register actual output identities only after separately approved 5a/5b and before 5c selection. | Refuse self-nominated output identity. |
 
 | Gate | BEFORE operation/advance: independently accepted design and prerequisites | DURING/AFTER separately approved operation: actual evidence required BEFORE any Native authority/publication | Status |
 |---|---|---|---|
