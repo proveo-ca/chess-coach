@@ -1315,6 +1315,39 @@ fn work_limit_arithmetic_is_checked_and_failed_charge_does_not_increase_used() {
 }
 
 #[test]
+fn test_local_effect_follows_successful_charge_and_failed_charge_preserves_prefix() {
+    fn charge_then_mark(
+        work: &mut LedgerWork,
+        effects: &mut Vec<&'static str>,
+        amount: u64,
+        marker: &'static str,
+    ) -> ContractResult<()> {
+        work.charge(amount)?;
+        effects.push(marker);
+        Ok(())
+    }
+
+    let mut work = LedgerWork::with_limit(10).unwrap();
+    let mut effects = Vec::new();
+    charge_then_mark(&mut work, &mut effects, 7, "first").unwrap();
+    assert_eq!(work.used(), 7);
+    assert_eq!(effects.as_slice(), &["first"]);
+
+    assert_eq!(
+        charge_then_mark(&mut work, &mut effects, 4, "refused")
+            .unwrap_err()
+            .code,
+        LedgerErrorCode::Budget
+    );
+    assert_eq!(work.used(), 7);
+    assert_eq!(effects.as_slice(), &["first"]);
+
+    charge_then_mark(&mut work, &mut effects, 2, "later").unwrap();
+    assert_eq!(work.used(), 9);
+    assert_eq!(effects.as_slice(), &["first", "later"]);
+}
+
+#[test]
 fn work_fees_cover_profile_snapshots_groups_geometry_actions_facts_and_canonical_allocation() {
     let fixture = golden();
     let mut work = LedgerWork::new();
