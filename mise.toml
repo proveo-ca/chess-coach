@@ -1,6 +1,16 @@
 [settings]
 auto_install = false
 
+[tasks."f9:status"]
+description = "Display offline F9 prerequisites and refuse authority (no host or VM checks)"
+raw_args = true
+run = '''
+#!/usr/bin/bash -p
+set -euo pipefail
+[[ -f tooling/native-ingress/f9-status.sh && ! -L tooling/native-ingress/f9-status.sh ]] || { printf 'RESULT=STOP\n'; exit 2; }
+exec /usr/bin/bash -p tooling/native-ingress/f9-status.sh "$@"
+'''
+
 [tasks."dev:sbx:create"]
 description = "Create one mountless development-only Rust sandbox (separate host approval required)"
 raw_args = true
