@@ -2,7 +2,8 @@
 set -euo pipefail
 
 stop() { printf 'STOP: %s\n' "$*" >&2; exit 2; }
-[[ $# == 2 && $1 == --sbx && $2 == /* && -f $2 && -x $2 && ! -L $2 ]] || stop 'usage: create.sh --sbx ABSOLUTE_EXECUTABLE'
+[[ $# == 2 && $1 == --sbx ]] || stop 'usage: create.sh --sbx ABSOLUTE_EXECUTABLE'
+[[ $2 == /* && -f $2 && -x $2 && ! -L $2 ]] || stop 'sbx path must be an existing absolute, regular, executable file (not a symlink)'
 sbx=$2
 name="devrust-$(/usr/bin/od -An -N12 -tx1 /dev/urandom | /usr/bin/tr -d ' \n')"
 [[ $name =~ ^devrust-[0-9a-f]{24}$ ]] || stop 'name generation failed'
@@ -26,7 +27,6 @@ fi
 
 printf 'ATTEMPT_NAME=%s\n' "$name"
 if ! /usr/bin/timeout --kill-after=2s 90s "$sbx" create --name "$name" \
-  --template docker.io/docker/sandbox-templates:shell-docker \
   --pull never --skills off --deny-network '**' --cpus 2 --memory 4g shell; then
   printf 'CREATE_UNCONFIRMED_NAME=%s\n' "$name" >&2
   exit 2

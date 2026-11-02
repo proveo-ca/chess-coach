@@ -108,8 +108,6 @@ class SetupTest(unittest.TestCase):
                     "create",
                     "--name",
                     name,
-                    "--template",
-                    "docker.io/docker/sandbox-templates:shell-docker",
                     "--pull",
                     "never",
                     "--skills",
@@ -125,6 +123,12 @@ class SetupTest(unittest.TestCase):
                 ["ls", "-q"],
             ],
         )
+
+    def test_placeholder_executable_refuses_before_sbx(self):
+        result = self.invoke("create.sh", "--sbx", "/absolute/path/to/sbx")
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("sbx path must be an existing absolute", result.stderr)
+        self.assertEqual(self.calls(), [])
 
     def test_ambiguous_create_does_not_retry_or_remove(self):
         result = self.create(mode="create-fail")

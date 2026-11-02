@@ -4,7 +4,8 @@ set -euo pipefail
 stop() { printf 'STOP: %s\n' "$*" >&2; exit 2; }
 [[ $# == 8 && $1 == --sbx && $3 == --name && $5 == --bundle && $7 == --sha256 ]] || stop 'usage: seed.sh --sbx ABSOLUTE_EXECUTABLE --name DEVRUST_NAME --bundle ABSOLUTE_TAR --sha256 SHA256_LOWERCASE'
 sbx=$2 name=$4 bundle=$6 digest=$8
-[[ $sbx == /* && -f $sbx && -x $sbx && ! -L $sbx && $name =~ ^devrust-[0-9a-f]{24}$ && $bundle == /* && -f $bundle && ! -L $bundle && $digest =~ ^[0-9a-f]{64}$ ]] || stop 'invalid seed inputs'
+[[ $sbx == /* && -f $sbx && -x $sbx && ! -L $sbx ]] || stop 'sbx path must be an existing absolute, regular, executable file (not a symlink)'
+[[ $name =~ ^devrust-[0-9a-f]{24}$ && $bundle == /* && -f $bundle && ! -L $bundle && $digest =~ ^[0-9a-f]{64}$ ]] || stop 'invalid seed inputs'
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
 entrypoint="$script_dir/install-rust.sh"
 [[ -f $entrypoint && ! -L $entrypoint ]] || stop 'guest entrypoint unavailable'
