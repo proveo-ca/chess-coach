@@ -1,6 +1,24 @@
 [settings]
 auto_install = false
 
+[tasks."dev:sbx:create"]
+description = "Create one mountless development-only Rust sandbox (separate host approval required)"
+raw_args = true
+run = '''
+#!/usr/bin/bash -p
+set -euo pipefail
+exec /usr/bin/bash -p tooling/sbx-dev/create.sh "$@"
+'''
+
+[tasks."dev:sbx:seed"]
+description = "Seed pinned offline Rust tools into a named development sandbox (separate approval required)"
+raw_args = true
+run = '''
+#!/usr/bin/bash -p
+set -euo pipefail
+exec /usr/bin/bash -p tooling/sbx-dev/seed.sh "$@"
+'''
+
 [tasks."host:sbx:preflight"]
 description = "Check registered host KUnit inputs (convenience only; separate approval required)"
 raw_args = true
