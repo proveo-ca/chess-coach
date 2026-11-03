@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPEC: _spec/tooling/bun-first-party-tooling.puml
 set -euo pipefail
 
 stop() { printf 'STOP: %s\n' "$*" >&2; exit 2; }
@@ -9,7 +10,7 @@ sbx=$2 name=$4 bundle=$6 digest=$8
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
 entrypoint="$script_dir/install-rust.sh"
 [[ -f $entrypoint && ! -L $entrypoint ]] || stop 'guest entrypoint unavailable'
-/usr/bin/python3 "$script_dir/check-bundle.py" "$bundle" "$digest" || stop 'bundle validation failed'
+bun "$script_dir/check-bundle.mjs" "$bundle" "$digest" || stop 'bundle validation failed'
 
 output=$(/usr/bin/timeout --kill-after=2s 10s "$sbx" ls -q | /usr/bin/head -c 65537) || stop 'sandbox listing unavailable'
 (( ${#output} <= 65536 )) || stop 'sandbox listing incomplete'

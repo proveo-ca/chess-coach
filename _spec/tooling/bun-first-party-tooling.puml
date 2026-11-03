@@ -1,0 +1,78 @@
+' purpose: First-party Bun tooling and offline tests preserve development-only and F9 refusal boundaries.
+' covers: scripts/assert-no-python*.mjs
+' covers: tooling/README.md
+' covers: tooling/sbx-dev/check-bundle.mjs
+' covers: tooling/sbx-dev/seed.sh
+' covers: tooling/sbx-dev/tests/setup.test.mjs
+' covers: tooling/sbx-smoke/create-debug.mjs
+' covers: tooling/sbx-smoke/host-smoke.sh
+' covers: tooling/sbx-smoke/tests/**/*.mjs
+' covers: tooling/native-ingress/host-sbx-provenance-candidate.mjs
+' covers: tooling/native-ingress/host-sbx-guard-candidate.sh
+' covers: tooling/native-ingress/f9-status.sh
+' covers: tooling/native-ingress/tests/host-sbx-candidates.test.mjs
+' covers: tooling/native-ingress/tests/f9-status.test.mjs
+' related: _spec/_plans/PLAN-ml-adjutant.md
+' note-register: ASSERT bottom FK 12.0; DEBUG bottom FK 11.5; VERIFY bottom FK 12.7.
+' FK syllables: English word counts; first-party=3, CLI=3, F9=2, OS=2.
+@startuml bun-first-party-tooling
+!include ../themes/proveo.puml
+title First-party Bun tooling: unchanged refusal gates
+
+node "Bun host runtime" as BUN <<host>> {
+  component "scripts/\nassert-no-python.mjs" as ASSERT <<app>>
+  component "tooling/sbx-dev/\ncheck-bundle.mjs" as BUNDLE <<app>>
+  component "tooling/sbx-smoke/\ncreate-debug.mjs" as DEBUG <<app>>
+  component "tooling/native-ingress/\nhost-sbx-provenance-candidate.mjs" as VERIFY <<app>>
+}
+
+package "Shell entrypoints" {
+  component "tooling/sbx-dev/seed.sh" as SEED <<app>>
+  component "tooling/sbx-smoke/host-smoke.sh" as SMOKE <<app>>
+  component "tooling/native-ingress/\nhost-sbx-guard-candidate.sh" as GUARD <<app>>
+  component "tooling/native-ingress/f9-status.sh" as STATUS <<app>>
+}
+
+component "Bun offline tests\nassert-no-python / setup / host-smoke\nhost-sbx-candidates / f9-status" as TESTS <<app>>
+component "Execution refused\nNo F9 or training authority" as STOP <<error>>
+
+SEED ARROW_OPTIONAL BUNDLE : digest + bounded archive layout
+SMOKE ARROW_OPTIONAL DEBUG : instrumented dev-only mode
+GUARD ARROW_OPTIONAL VERIFY : --offline-check only
+GUARD ARROW_ERROR STOP : runner mode refuses before providers
+STATUS ARROW_ERROR STOP : exit 2; TRAINING_READY=false
+
+TESTS ARROW_OPTIONAL ASSERT : source-policy fixtures
+TESTS ARROW_OPTIONAL BUNDLE : archive fixtures + fake seed CLI
+TESTS ARROW_OPTIONAL DEBUG : fake CLI + private log fixtures
+TESTS ARROW_OPTIONAL GUARD : pinned bytes + refusal fixtures
+TESTS ARROW_OPTIONAL STATUS : static output + no-provider checks
+
+note bottom of ASSERT
+  First-party Python files and direct calls
+  remain banned.
+  Installed or vendored dependencies may use
+  Python, including Burn dependencies and Docker
+  OS package declarations; no machine ban applies.
+end note
+
+note bottom of BUNDLE
+  SHA-256 + bounded archive layout.
+  No host extraction.
+end note
+
+note bottom of DEBUG
+  The helper caps private logs without exposing
+  raw debug content.
+  A CLI deadline cannot prove guest termination
+  or authorize unconfirmed removal.
+end note
+
+note bottom of VERIFY
+  Pinned bytes establish integrity, not
+  independent provenance.
+  Fake CLI tests cannot authorize live sandbox
+  execution, and the runner and static status
+  still refuse F9.
+end note
+@enduml

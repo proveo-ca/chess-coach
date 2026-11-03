@@ -4,6 +4,8 @@
 
 **Follow-up · DESIGN ONLY / NOT APPROVED:** Executor chose the [narrow early-S0 issuer and Rust-launcher investigation](native-ingress-early-s0-launch.md), not either exec-replacement or retained-parent topology as an approved trust boundary. The original S0-before-all-causal and first-successful-debit-before-owed STOPs remain; gate0/source and actual proof need separate decisions.
 
+**Placement correction · DESIGN ONLY:** The candidate `native_ingress/mod.rs` consumer below means a **future approved migration** of the existing private `apps/arena/src/native_ingress.rs` F1 fixture, tests and `SPEC:` pointer. `apps/arena/src/lib.rs` already declares the module. The current flat fixture issues no G1/S0/A/B/Node authority; no consumer path below names an external trust producer. See the [Gate0 closure ledger](native-ingress-rust-first-full-plan-packet.md#21--gate0-closure-ledger--source-observations-versus-independent-decisions).
+
 ## Ordered responsibility ledger — consumers are not issuers
 
 | Required claim | Proposed consumer/file responsibility (candidate, NOT assigned) | External producer/source boundary OPEN | Earliest refusal |

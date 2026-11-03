@@ -2,6 +2,8 @@
   "name": "chess-coach",
   "private": true,
   "scripts": {
+    "check:no-python": "bun scripts/assert-no-python.mjs",
+    "test:tooling": "bun test scripts/assert-no-python.test.mjs tooling/sbx-dev/tests tooling/sbx-smoke/tests tooling/native-ingress/tests",
     "check:training": "cargo xtask check",
     "arena:smoke": "cargo run --frozen -p arena -- smoke",
     "dev": "nx run-many -t dev,storybook --projects=ui,starchess --parallel=4",
@@ -9,7 +11,7 @@
     "deploy:desktop": "echo 'TODO: desktop deployment'",
     "build:starchess": "pnpm --filter @chess-coach/starchess build",
     "test:starchess": "pnpm --filter @chess-coach/starchess test",
-    "ci": "pnpm run ci:typecheck && pnpm run ci:lint && pnpm run ci:test",
+    "ci": "bun run check:no-python && pnpm run ci:typecheck && pnpm run ci:lint && pnpm run ci:test",
     "ci:typecheck": "pnpm --filter @chess-coach/starchess typecheck && pnpm --filter chess-coach-ui typecheck && pnpm --filter @chess-coach/starchess-core typecheck && pnpm --filter @chess-coach/starchess-arena typecheck && pnpm --filter @chess-coach/starchess-training typecheck && pnpm --filter @chess-coach/server typecheck && pnpm --filter @chess-coach/ui-web typecheck",
     "ci:lint": "pnpm --filter @chess-coach/starchess lint && pnpm --filter chess-coach-ui lint && pnpm --filter @chess-coach/ui-web lint",
     "ci:test": "pnpm run test:packages && pnpm run test:coverage && pnpm run test:model",

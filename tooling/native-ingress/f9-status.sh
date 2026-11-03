@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPEC: _spec/tooling/bun-first-party-tooling.puml
 set -euo pipefail
 
 if (( $# != 0 )); then

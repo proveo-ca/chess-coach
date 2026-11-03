@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPEC: _spec/tooling/bun-first-party-tooling.puml
 set -euo pipefail
 
 stop() { printf 'STOP: %s\n' "$1" >&2; exit 2; }
@@ -7,7 +8,7 @@ if [[ ${1:-} == --offline-check ]]; then
   [[ $# == 7 && $2 == --inputs && $4 == --trust-record && $6 == --expected-record-sha256 ]] || stop 'invalid offline check arguments'
   [[ $3 == /* && $5 == /* && $7 =~ ^[0-9a-f]{64}$ ]] || stop 'invalid offline check paths or pin'
   [[ $0 == /* && ! -L $0 ]] || stop 'use an absolute non-symlinked offline guard'
-  exec /usr/bin/python3 "${0%/*}/host-sbx-provenance-candidate.py" --offline-only --inputs "$3" --trust-record "$5" --expected-record-sha256 "$7"
+  exec bun "${0%/*}/host-sbx-provenance-candidate.mjs" --offline-only --inputs "$3" --trust-record "$5" --expected-record-sha256 "$7"
 fi
 
 [[ $# == 12 ]] || stop 'expected six fixed option/value pairs'

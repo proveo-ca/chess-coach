@@ -2,6 +2,17 @@
   "version": 1,
   "specs": [
     {
+      "spec": "_spec/tooling/native-ingress/f9-diagnostic.puml",
+      "covers": [
+        "mise.toml",
+        "tooling/native-ingress/f9-diagnose.mjs",
+        "tooling/native-ingress/f9-requirements.mjs",
+        "tooling/native-ingress/tests/f9-diagnose.test.mjs",
+        "tooling/native-ingress/F9-DIAGNOSTIC.md"
+      ],
+      "fingerprint": null
+    },
+    {
       "spec": "_spec/packages/starchess-arena/invocation-effect-analysis.puml",
       "covers": [
         "packages/starchess-arena/src/challenge/sourceInventory.ts",
@@ -762,6 +773,25 @@
         "apps/arena/engine/test/feature-manifest-legacy.mjs",
         "apps/arena/engine/test/feature-manifest.test.ts",
         "oxlint.training.json"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/tooling/bun-first-party-tooling.puml",
+      "covers": [
+        "scripts/assert-no-python*.mjs",
+        "tooling/README.md",
+        "tooling/sbx-dev/check-bundle.mjs",
+        "tooling/sbx-dev/seed.sh",
+        "tooling/sbx-dev/tests/setup.test.mjs",
+        "tooling/sbx-smoke/create-debug.mjs",
+        "tooling/sbx-smoke/host-smoke.sh",
+        "tooling/sbx-smoke/tests/**/*.mjs",
+        "tooling/native-ingress/host-sbx-provenance-candidate.mjs",
+        "tooling/native-ingress/host-sbx-guard-candidate.sh",
+        "tooling/native-ingress/f9-status.sh",
+        "tooling/native-ingress/tests/host-sbx-candidates.test.mjs",
+        "tooling/native-ingress/tests/f9-status.test.mjs"
       ],
       "fingerprint": null
     }

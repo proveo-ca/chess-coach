@@ -26,8 +26,10 @@ mise run dev:sbx:seed -- --sbx (realpath -- (which sbx)) --name REPLACE_WITH_DEV
 
 Before seeding, independently inspect effective sandbox network rules, including kit rules, with an **individually approved** `sbx policy ls --wide NAME`; a requested deny flag alone does not establish policy enforcement. The task does not perform that inspection or certify the rules. A failed/ambiguous copy or exec leaves the VM and any copied files in place for operator reconciliation; it never automatically removes, retries or cleans them. The guest directory persists across VM stops until removal; seeding again refuses if the tools directory already exists. `sbx exec` may start a stopped VM. Every follow-up (connection, cache transfer, fetch, tests, removal) needs its own approval. The private Cargo stage previously created on the host remains on the host and is not used by these tasks.
 
-Offline, fake-CLI validation (never contacts `sbx`):
+The new ML smoke wrapper has been removed; Burn and its Rust learner tests remain. These preparation tasks do not run a learner test. Host-side archive validation and offline tests require Bun and GNU tar; the seeded guest does not require Bun.
+
+Offline, fake-CLI validation (never contacts the real `sbx`):
 
 ```fish
-env PYTHONDONTWRITEBYTECODE=1 TMPDIR=/tmp/opencode python3 -m unittest discover -s tooling/sbx-dev/tests -p 'test_setup.py'
+bun test tooling/sbx-dev/tests
 ```

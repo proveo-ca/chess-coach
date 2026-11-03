@@ -1,5 +1,15 @@
+# SPEC: _spec/tooling/native-ingress/f9-diagnostic.puml
 [settings]
 auto_install = false
+
+[tasks."f9:diagnose"]
+description = "Diagnose a separately created live sbx and list all F9 blockers (Bun; separate approval required; always STOP)"
+raw_args = true
+run = '''
+#!/usr/bin/bash -p
+set -euo pipefail
+exec bun tooling/native-ingress/f9-diagnose.mjs "$@"
+'''
 
 [tasks."f9:status"]
 description = "Display offline F9 prerequisites and refuse authority (no host or VM checks)"

@@ -1,0 +1,43 @@
+' purpose: Live development reconnaissance reports complete F9 blockers without granting readiness.
+' covers: mise.toml
+' covers: tooling/native-ingress/f9-diagnose.mjs
+' covers: tooling/native-ingress/f9-requirements.mjs
+' covers: tooling/native-ingress/tests/f9-diagnose.test.mjs
+' covers: tooling/native-ingress/F9-DIAGNOSTIC.md
+@startuml f9-diagnostic
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Live development diagnostic / F9 remains STOP
+actor Executor as OP
+participant "dev:sbx:create\nexisting helper" as CREATE <<host>>
+participant "f9:diagnose\nBun supervisor" as DIAG <<app>>
+participant "Named development sbx" as VM <<host>>
+participant "Fixed guest timeout + shell" as GUEST <<app>>
+participant "44-row F9 catalogue" as GATES <<db>>
+
+OP -> CREATE : separately approved creation attempt
+CREATE --> OP : confirmed name / ambiguous state
+OP -> DIAG : --plan: print fixed scope only
+DIAG --> OP : no sbx invocation; STOP
+OP -> DIAG : separately approved named diagnostic
+DIAG -> VM : ls -q (10s, 64KiB)
+VM --> DIAG : complete unique-name observation
+DIAG -> VM : policy ls --wide NAME (10s, 64KiB)
+VM --> DIAG : bounded policy bytes
+DIAG -> GUEST : exec NAME timeout 8s + kill 1s
+GUEST --> DIAG : fixed capability fields (20s, 16KiB)
+DIAG -> GATES : list N1-N10, G1-G5 and remaining gates
+GATES --> DIAG : BLOCKED; verifiers not connected
+DIAG --> OP : diagnostic completion != readiness
+DIAG --> OP : result STOP; exit 2; trainingReady false
+
+note over DIAG, GUEST
+  No create/copy/build/test/reset/remove here.
+  Raw policy and errors stay off the terminal.
+  CLI timeout does not prove guest termination.
+end note
+note over DIAG, GATES
+  Capabilities are observations, not F9 proof.
+  No capture/KUnit/G1/Native workload runs.
+  Gate0 and separate approvals stay required.
+end note
+@enduml
