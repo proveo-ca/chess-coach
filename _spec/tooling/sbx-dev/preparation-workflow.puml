@@ -1,4 +1,4 @@
-' purpose: Mise-pinned host acquisition feeds separately approved offline guest setup and diagnosis.
+' purpose: Approved development preparation reports setup completion separately from F9 readiness.
 ' covers: mise.toml
 ' covers: rust-toolchain.toml
 ' covers: package.json
@@ -217,7 +217,22 @@ note over C, VM
 end note
 C -> VM : bounded listing, policy readback and guest shell capability probe
 C -> STATE : accept original helper exit 2 only with matching complete STOP report
-P --> OP : developmentPrepared=true; diagnosticComplete=true\nSTOP; f9Qualified=false; trainingReady=false; exit 2
+P -> P : composePreparation returns developmentPrepared=true; diagnosticComplete=true\nSTOP; f9Qualified=false; trainingReady=false
+
+group Parent CLI presentation: main(argv)
+  alt actual composePreparation returns its successful final receipt
+    P --> OP : stdout: unchanged parent JSON first
+    P --> OP : stderr: fixed DEVELOPMENT_SETUP_COMPLETE summary\nF9_NOT_ASSESSED; exit 2 is intentional
+  else --plan, failed preparation or non-terminal stdin
+    P --> OP : no setup-completion text\nplan exits 0; refusal exits 2
+  end
+  note right of P
+    No humanSummary or other JSON additions
+    Existing status and exit contracts unchanged
+    Stage receipts, parsers and probes unchanged
+    No operations or approval changes
+  end note
+end
 
 note over P, C
   Each child requires fresh terminal approval

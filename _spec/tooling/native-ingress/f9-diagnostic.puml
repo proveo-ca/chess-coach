@@ -1,8 +1,11 @@
-' purpose: Live development reconnaissance reports complete F9 blockers without granting readiness.
+' purpose: Live reconnaissance and saved-report explanation never grant F9 readiness.
 ' covers: mise.toml
 ' covers: tooling/native-ingress/f9-diagnose.mjs
 ' covers: tooling/native-ingress/f9-requirements.mjs
+' covers: tooling/native-ingress/f9-summary.mjs
+' covers: tooling/native-ingress/f9-explain.mjs
 ' covers: tooling/native-ingress/tests/f9-diagnose.test.mjs
+' covers: tooling/native-ingress/tests/f9-explain.test.mjs
 ' covers: tooling/native-ingress/F9-DIAGNOSTIC.md
 ' covers: tooling/sbx-dev/stages.mjs
 ' covers: tooling/sbx-dev/tests/stages.test.mjs
@@ -16,13 +19,16 @@
 ' FK syllables: hand-counted English; CLI=3, F9=2, Gate0=3, KUnit=3, G1=2.
 @startuml f9-diagnostic
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Live development diagnostic / F9 remains STOP
+title Development reconnaissance and saved explanation / F9 remains STOP
 actor Executor as OP
 participant "dev:sbx:create\nexisting helper" as CREATE <<host>>
 participant "f9:diagnose\nBun supervisor" as DIAG <<app>>
 participant "Named development sbx" as VM <<host>>
 participant "Fixed guest timeout + shell" as GUEST <<app>>
-participant "44-row F9 catalogue" as GATES <<db>>
+participant "f9-requirements.mjs\nstatic catalogue (44 current rows)" as GATES <<db>>
+participant "f9-explain.mjs\nf9:explain read-only CLI" as EXPLAIN <<app>>
+participant "f9-summary.mjs\npure formatter" as SUMMARY <<app>>
+database "Exact requested report leaf" as REPORT <<db>>
 
 OP -> CREATE : separately approved creation attempt
 CREATE --> OP : confirmed name / ambiguous state
@@ -39,6 +45,7 @@ DIAG -> GATES : list N1-N10, G1-G5 and remaining gates
 GATES --> DIAG : BLOCKED; verifiers not connected
 DIAG --> OP : diagnostic completion != readiness
 DIAG --> OP : result STOP; exit 2; trainingReady false
+DIAG --> OP : original JSON stdout and schema unchanged
 
 note over DIAG, GUEST
   No create/copy/build/test/reset/remove
@@ -71,4 +78,47 @@ note over DIAG, GATES
   for capture, KUnit, G1 and Native workloads,
   which this diagnostic never runs.
 end note
+
+group Offline saved-report explanation: no fresh observations
+  OP -> EXPLAIN : mise run f9:explain -- --report <normalized-absolute-path>
+  note right of EXPLAIN
+    Bun --no-env-file --no-install
+    Independent task; auto_install=false
+  end note
+  EXPLAIN -> EXPLAIN : main(argv): --report PATH or --report=PATH; no other arguments
+  EXPLAIN -> REPORT : readDiagnosticReport(path): normalized absolute; control-free; <=4096 UTF-8 bytes\nO_RDONLY | O_NOFOLLOW | O_NONBLOCK on exact requested leaf
+  REPORT --> EXPLAIN : same descriptor: regular file; size<=128KiB\nBigInt metadata before/after
+  EXPLAIN -> EXPLAIN : read <=128KiB+1 sentinel; accept <=128KiB; bytes=stable size\nunchanged dev/ino/size/mtimeNs/ctimeNs/mode/nlink; always close descriptor
+  EXPLAIN -> SUMMARY : formatDiagnosticSummary(report)\nf9-live-diagnostic-v1; DEVELOPMENT_RECONNAISSANCE_ONLY
+  SUMMARY -> GATES : compare all rows in catalogue order: id, source, nextStep\ncount=requirements.length (44 currently)
+  GATES --> SUMMARY : exact static catalogue; BLOCKED / NOT_RUN / verifier=null
+  SUMMARY -> SUMMARY : diagnosticComplete=true; liveGuestObserved=true; four known PASS probes\nif present: cliSucceeded=true, outcome=EXIT, code=0, signal=null\nresult=STOP; f9Qualified=false; trainingReady=false
+  SUMMARY -> SUMMARY : safe target; exact guest capability vocabulary\nnever print opaque policy, reasons, errors or private fields
+  alt structurally complete, consistent retained live-v1 report
+    SUMMARY --> EXPLAIN : F9_NOT_ASSESSED: count/count BLOCKED; NOT_RUN / verifier=null\nnot failed tests; recorded PATH tools PRESENT/MISSING; seeded pair separate
+    EXPLAIN --> OP : stdout: SAVED_REPORT_ONLY + explanation\nstderr empty; exit 2
+  else invalid arguments/read/schema, plan, incomplete or inconsistent fields
+    EXPLAIN --> OP : stdout empty; fixed stderr refusal\nSTOP; trainingReady=false; exit 2
+  end
+  note over EXPLAIN, REPORT
+    Read only the requested report leaf
+    Ancestor symlinks allowed; leaf links refused
+    No refs, siblings, VM calls or subprocesses
+    No network, writes or new approvals
+  end note
+  note over EXPLAIN, SUMMARY
+    Saved probe results describe a past guest
+    observation, not current authenticated state.
+    Consistent report fields cannot prove that
+    setup actually completed or that independent
+    F9 requirements have passed.
+  end note
+  note right of SUMMARY
+    The seeded check tests both executable paths
+    as one pair, apart from recorded PATH results.
+    If that pair is unavailable, either tool may
+    still exist; presence proves no version,
+    provenance or runtime behavior.
+  end note
+end
 @enduml

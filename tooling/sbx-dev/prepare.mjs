@@ -100,18 +100,26 @@ export async function composePreparation(options, dependencies = {}) {
   };
 }
 
-async function main(argv) {
+export const completionExplanation = [
+  "Executor, DEVELOPMENT_SETUP_COMPLETE — development preparation and reconnaissance completed.",
+  "F9_NOT_ASSESSED — independent acceptance verifiers did not run; these are not failed tests.",
+  "F9=STOP; trainingReady=false; exit 2 is intentional, not a development setup failure.",
+  "Use mise run f9:explain -- --report with the receipt's reportPath for saved-report-only details.",
+].join("\n");
+
+export async function main(argv, { compose = composePreparation, output = console.log, explain = console.error } = {}) {
   try {
     const options = parsePreparation(argv);
     if (options.plan) {
-      console.log(JSON.stringify(preparationPlan(options), null, 2));
+      output(JSON.stringify(preparationPlan(options), null, 2));
       return 0;
     }
     if (!process.stdin.isTTY) throw new Error("a real terminal is required for per-stage approvals");
-    console.log(JSON.stringify(await composePreparation(options), null, 2));
+    output(JSON.stringify(await compose(options), null, 2));
+    explain(completionExplanation);
     return 2;
   } catch (error) {
-    console.error(`STOP: ${error.message}; retain state and reconcile before any new attempt.`);
+    explain(`STOP: ${error.message}; retain state and reconcile before any new attempt.`);
     return 2;
   }
 }

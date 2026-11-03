@@ -4,7 +4,7 @@ import { spawn, spawnSync } from "node:child_process";
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
-import { composePreparation, parsePreparation, preparationPlan } from "../prepare.mjs";
+import { completionExplanation, composePreparation, main, parsePreparation, preparationPlan } from "../prepare.mjs";
 import { readState, snapshotPaths } from "../stages.mjs";
 
 const here = new URL("../", import.meta.url).pathname;
@@ -111,6 +111,52 @@ test("parent invokes real fake-mise child processes sequentially and carries the
   expect(calls("sbx-calls").filter(([command]) => command === "cp")).toHaveLength(2);
   expect(calls("sbx-calls").some(([command]) => ["rm", "reset", "run", "auth"].includes(command))).toBe(false);
   expect(messages.join("\n")).not.toContain("PRIVATE_POLICY_TEST_DATA");
+});
+
+test("successful parent CLI keeps its receipt and exit two while explaining completion only on stderr", async () => {
+  const stdout = [], stderr = [], writes = [];
+  const input = Object.getOwnPropertyDescriptor(process.stdin, "isTTY");
+  Object.defineProperty(process.stdin, "isTTY", { value: true, configurable: true });
+  let report;
+  try {
+    const code = await main([], {
+      compose: async () => { report = await compose(); return report; },
+      output: (text) => { stdout.push(text); writes.push("stdout"); },
+      explain: (text) => { stderr.push(text); writes.push("stderr"); },
+    });
+    expect(code).toBe(2);
+    expect(stdout).toHaveLength(1);
+    expect(JSON.parse(stdout[0])).toEqual(report);
+    expect(stderr).toEqual([completionExplanation]);
+    expect(writes).toEqual(["stdout", "stderr"]);
+    expect(stderr[0]).toContain("DEVELOPMENT_SETUP_COMPLETE");
+    expect(stderr[0]).toContain("F9_NOT_ASSESSED");
+    expect(stderr[0]).toContain("exit 2 is intentional");
+    expect(report.trainingReady).toBe(false);
+  } finally {
+    if (input) Object.defineProperty(process.stdin, "isTTY", input); else delete process.stdin.isTTY;
+  }
+});
+
+test.each(["plan", "failure", "non-terminal"])("%s never prints the parent completion explanation", async (mode) => {
+  const stdout = [], stderr = [];
+  const input = Object.getOwnPropertyDescriptor(process.stdin, "isTTY");
+  Object.defineProperty(process.stdin, "isTTY", { value: mode !== "non-terminal", configurable: true });
+  let invoked = false;
+  try {
+    const code = await main(mode === "plan" ? ["--plan"] : [], {
+      compose: async () => { invoked = true; throw new Error("fixture stage stopped"); },
+      output: (text) => stdout.push(text), explain: (text) => stderr.push(text),
+    });
+    expect(code).toBe(mode === "plan" ? 0 : 2);
+    expect(invoked).toBe(mode === "failure");
+    expect([...stdout, ...stderr].join("\n")).not.toContain("DEVELOPMENT_SETUP_COMPLETE");
+    expect([...stdout, ...stderr].join("\n")).not.toContain("exit 2 is intentional");
+    expect(calls("mise-calls")).toEqual([]);
+    expect(calls("sbx-calls")).toEqual([]);
+  } finally {
+    if (input) Object.defineProperty(process.stdin, "isTTY", input); else delete process.stdin.isTTY;
+  }
 });
 
 test("default path acquires pinned tools and passes generated archive/hash before creation", async () => {

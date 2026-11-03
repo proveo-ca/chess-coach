@@ -51,6 +51,30 @@ The composed preparation wrapper gives this helper a 60 s outer deadline. Cancel
 
 This task performs **no F9 capture/build/KUnit/G1/5c/Native workload**, so it does not bypass their Gate0/first-effect/host-isolation approvals. R4 and R5 remain separate training-readiness gates. Reviewers remain deferred under the current instruction.
 
+## Explain an existing report offline
+
+`BLOCKED`, `execution: "NOT_RUN"`, and `verifier: null` mean the independent F9 acceptance checks did **not run**. They do not describe failed test executions. Four successful reconnaissance probes can coexist with all 44 F9 requirements remaining unassessed.
+
+Read one complete saved report without contacting the sandbox or rerunning preparation:
+
+```fish
+mise run f9:explain -- --report /absolute/path/to/report.json
+```
+
+If mise rejects the updated configuration as untrusted, review `mise.toml` and run `mise trust` explicitly before invoking the task.
+
+The task prints a human explanation instead of changing the report's JSON. It reads only the selected regular file, refuses a symlink leaf or a file larger than 128 KiB, and checks stable descriptor metadata. It creates no state, follows no report references, spawns no child processes, and performs no live checks. A saved report is neither fresh evidence nor independently authenticated. Plan-only, incomplete, inconsistent, and unsupported reports refuse without a success summary. The helper retains exit `2` and `trainingReady=false` for a valid STOP report. Mise can still display `ERROR task failed`; that is not an explanation failure when the saved-report summary printed successfully. Mise/user configuration still applies before the helper starts, and `auto_install=false` remains unchanged.
+
+PATH observations and seeded tool observations answer different questions:
+
+| Report observation | Meaning |
+|---|---|
+| `TOOL_rustc=MISSING` / `TOOL_cargo=MISSING` | `command -v` did not resolve those names in the diagnostic shell. This does not prove the tools are uninstalled. |
+| `SEEDED_RUST=EXECUTABLES_PRESENT` | Both fixed files under `/home/agent/workspace/devrust-tools/bin/` passed executable-presence checks. The diagnostic did not run them or verify their versions, compatibility, or provenance. |
+| `SEEDED_RUST=UNAVAILABLE` | The combined check did not establish both seeded executables. Individual availability remains unknown. |
+
+Only the composed preparation receipt establishes `developmentPrepared: true`. The standalone saved diagnostic establishes no preparation completion, F9 qualification, or training permission.
+
 ## Offline verification
 
 ```fish
