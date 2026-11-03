@@ -104,6 +104,7 @@ export const completionExplanation = [
   "Executor, DEVELOPMENT_SETUP_COMPLETE — development preparation and reconnaissance completed.",
   "F9_NOT_ASSESSED — independent acceptance verifiers did not run; these are not failed tests.",
   "F9=STOP; trainingReady=false; exit 2 is intentional, not a development setup failure.",
+  "The offline explainer exits 0 for successful presentation only; rejected reports exit 2.",
   "Use mise run f9:explain -- --report with the receipt's reportPath for saved-report-only details.",
 ].join("\n");
 

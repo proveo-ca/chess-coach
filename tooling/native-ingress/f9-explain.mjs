@@ -43,10 +43,11 @@ export function main(argv) {
     else throw new Error(refusal);
     const summary = formatDiagnosticSummary(readDiagnosticReport(reportPath));
     process.stdout.write(summary);
+    return 0;
   } catch {
     process.stderr.write(`${refusal}\n`);
+    return 2;
   }
-  return 2;
 }
 
 if (import.meta.main) process.exitCode = main(process.argv.slice(2));

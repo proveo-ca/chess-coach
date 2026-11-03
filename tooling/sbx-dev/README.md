@@ -74,7 +74,7 @@ Use the receipt's `reportPath` with the offline explanation task instead of reru
 mise run f9:explain -- --report /absolute/path/to/report.json
 ```
 
-The explanation distinguishes recorded PATH resolution from the fixed seeded Rust executable checks. It labels the 44 unrun acceptance requirements as unassessed, not failed tests. It does not change the saved report or contact the VM. A valid STOP explanation still exits `2`; see the [diagnostic guide](../native-ingress/F9-DIAGNOSTIC.md#explain-an-existing-report-offline).
+The explanation distinguishes recorded PATH resolution from the fixed seeded Rust executable checks. It labels the 44 unrun acceptance requirements as unassessed, not failed tests. It does not change the saved report or contact the VM. Successful explanation exits `0` for presentation only; rejected reports and argument/read errors still exit `2`. F9 remains STOP, qualification/readiness flags remain false, and the diagnostic/preparation commands still exit `2`; see the [diagnostic guide](../native-ingress/F9-DIAGNOSTIC.md#explain-an-existing-report-offline).
 
 For individual stages, use the printed state file: every child after validation accepts only `--state` with that exact absolute path. Acquisition takes `--manifest` inside a new private run directory; its receipt supplies the archive/hash to validation. Validation additionally needs `--sbx`, `--bundle`, and `--sha256`, and a new private state file; the parent passes them for you. The older `dev:sbx:create` remains a standalone one-attempt helper; it does not create workflow state. The old combined `dev:sbx:seed` refuses before provider calls; use separate provisioning and installation.
 

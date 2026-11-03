@@ -49,7 +49,9 @@ export function formatDiagnosticSummary(report) {
     `  /home/agent/workspace/devrust-tools/bin/rustc: ${seeded}.`,
     `  /home/agent/workspace/devrust-tools/bin/cargo: ${seeded}.`,
     "The diagnostic did not execute Rust/Cargo or verify their versions.",
-    "F9: STOP; f9Qualified=false; trainingReady=false; exit=2 (intentional).",
+    "F9: STOP; f9Qualified=false; trainingReady=false.",
+    "f9:diagnose still exits 2; f9:explain exits 0 when formatting succeeds.",
+    "Formatter success is not F9 qualification or training permission.",
     "A saved report does not establish workflow completion.",
     "",
   ].join("\n");

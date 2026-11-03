@@ -132,6 +132,7 @@ test("successful parent CLI keeps its receipt and exit two while explaining comp
     expect(stderr[0]).toContain("DEVELOPMENT_SETUP_COMPLETE");
     expect(stderr[0]).toContain("F9_NOT_ASSESSED");
     expect(stderr[0]).toContain("exit 2 is intentional");
+    expect(stderr[0]).toContain("offline explainer exits 0 for successful presentation only");
     expect(report.trainingReady).toBe(false);
   } finally {
     if (input) Object.defineProperty(process.stdin, "isTTY", input); else delete process.stdin.isTTY;

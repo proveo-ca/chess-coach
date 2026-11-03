@@ -54,11 +54,11 @@ function invoke(args = ["--report", reportPath], env = {}) {
   });
   expect(result.error).toBeUndefined();
   expect(result.signal).toBeNull();
-  expect(result.status).toBe(2);
   return result;
 }
 
 function refused(result) {
+  expect(result.status).toBe(2);
   expect(result.stdout).toBe("");
   expect(result.stderr).toBe(`${refusal}\n`);
 }
@@ -80,7 +80,9 @@ test("complete saved observations distinguish unassessed F9 rows from failed tes
   expect(summary).toContain("Reconnaissance: 4/4 PASS");
   expect(summary).toContain("F9_NOT_ASSESSED: 44/44 BLOCKED; execution=NOT_RUN; verifier=null.");
   expect(summary).toContain("not 44 failed tests");
-  expect(summary).toContain("F9: STOP; f9Qualified=false; trainingReady=false; exit=2 (intentional).");
+  expect(summary).toContain("F9: STOP; f9Qualified=false; trainingReady=false.");
+  expect(summary).toContain("f9:diagnose still exits 2; f9:explain exits 0 when formatting succeeds.");
+  expect(summary).toContain("Formatter success is not F9 qualification or training permission.");
   expect(summary).toContain("A saved report does not establish workflow completion.");
   expect(JSON.stringify(report)).toBe(before);
 });
@@ -108,8 +110,9 @@ test("all PATH tools present still leaves F9 unassessed and training stopped", (
   expect(formatDiagnosticSummary(report)).toContain("F9_NOT_ASSESSED: 44/44 BLOCKED");
   fs.writeFileSync(reportPath, JSON.stringify(report));
   const result = invoke();
+  expect(result.status).toBe(0);
   expect(result.stderr).toBe("");
-  expect(result.stdout).toContain("F9: STOP; f9Qualified=false; trainingReady=false; exit=2 (intentional).");
+  expect(result.stdout).toContain("F9: STOP; f9Qualified=false; trainingReady=false.");
 });
 
 test("opaque private fields, policy, reasons, and controls never reach output", () => {
@@ -123,6 +126,7 @@ test("opaque private fields, policy, reasons, and controls never reach output", 
   const summary = formatDiagnosticSummary(report);
   fs.writeFileSync(reportPath, JSON.stringify(report));
   const result = invoke();
+  expect(result.status).toBe(0);
   expect(result.stdout).toBe(summary);
   expect(result.stderr).toBe("");
   for (const forbidden of ["PRIVATE", "\u001b", "\r", "\u009b"]) expect(summary).not.toContain(forbidden);
@@ -219,10 +223,13 @@ test("CLI accepts both report syntaxes without a TTY or PATH providers and leave
   const reportBefore = fs.statSync(reportPath, { bigint: true });
   for (const args of [["--report", reportPath], [`--report=${reportPath}`]]) {
     const result = invoke(args);
+    expect(result.status).toBe(0);
     expect(result.stderr).toBe("");
     expect(result.stdout).toBe(formatDiagnosticSummary(fixture()));
   }
-  expect(invoke(["--report", reportPath], { PATH: bin }).stderr).toBe("");
+  const withProviders = invoke(["--report", reportPath], { PATH: bin });
+  expect(withProviders.status).toBe(0);
+  expect(withProviders.stderr).toBe("");
   expect(snapshot()).toEqual(before);
   const reportAfter = fs.statSync(reportPath, { bigint: true });
   for (const key of ["dev", "ino", "size", "mtimeNs", "ctimeNs", "mode", "nlink"]) expect(reportAfter[key]).toBe(reportBefore[key]);
@@ -238,10 +245,10 @@ test("argument errors, incomplete reports, and unreadable inputs emit only the f
   }
 });
 
-test("exported main returns intentional exit 2 and never leaks caught errors", () => {
+test("exported main returns zero for explanation success and two for refusal without leaking errors", () => {
   const out = spyOn(process.stdout, "write").mockImplementation(() => true);
   const err = spyOn(process.stderr, "write").mockImplementation(() => true);
-  expect(main(["--report", reportPath])).toBe(2);
+  expect(main(["--report", reportPath])).toBe(0);
   expect(out).toHaveBeenCalledWith(formatDiagnosticSummary(fixture()));
   expect(err).not.toHaveBeenCalled();
   out.mockClear();

@@ -222,7 +222,7 @@ P -> P : composePreparation returns developmentPrepared=true; diagnosticComplete
 group Parent CLI presentation: main(argv)
   alt actual composePreparation returns its successful final receipt
     P --> OP : stdout: unchanged parent JSON first
-    P --> OP : stderr: fixed DEVELOPMENT_SETUP_COMPLETE summary\nF9_NOT_ASSESSED; exit 2 is intentional
+    P --> OP : stderr: fixed DEVELOPMENT_SETUP_COMPLETE summary\nF9_NOT_ASSESSED; parent exit 2 is intentional\nhint: offline explainer presentation success 0 / rejected report 2; use receipt reportPath
   else --plan, failed preparation or non-terminal stdin
     P --> OP : no setup-completion text\nplan exits 0; refusal exits 2
   end
@@ -231,6 +231,7 @@ group Parent CLI presentation: main(argv)
     Existing status and exit contracts unchanged
     Stage receipts, parsers and probes unchanged
     No operations or approval changes
+    Formatter not invoked; hint text only
   end note
 end
 
