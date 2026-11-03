@@ -1,4 +1,4 @@
-# SPEC: _spec/packages/training/burn-compat.puml, _spec/apps/arena/burn-compat.puml
+# SPEC: _spec/packages/training/burn-compat.puml, _spec/apps/arena/burn-compat.puml, _spec/tooling/sbx-dev/preparation-workflow.puml, _spec/tooling/bun-first-party-tooling.puml
 [toolchain]
 channel = "1.95.0"
 profile = "minimal"

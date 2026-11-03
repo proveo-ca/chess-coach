@@ -1,6 +1,6 @@
 // SPEC: _spec/tooling/native-ingress/f9-diagnostic.puml
 import { afterEach, beforeEach, expect, test } from "bun:test";
-import { chmodSync, existsSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdtempSync, readFileSync, rmSync, symlinkSync, watch, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { guestScript, parseGuest, runBounded } from "../f9-diagnose.mjs";
@@ -180,9 +180,50 @@ test("interruption stops the owned CLI group and returns an explicit outcome", a
   expect(result.outcome).toBe("INTERRUPTED");
 });
 
+test.each(["interrupt", "timeout"])("graceful %s lets a nested supervisor terminate its detached child", async (action) => {
+  const pidPath = join(root, "nested-pid"), helper = join(root, "helper.mjs");
+  const ready = new Promise((resolve, reject) => {
+    const watcher = watch(root, (_event, name) => {
+      if (name !== "nested-pid") return;
+      try {
+        const pid = Number(readFileSync(pidPath, "utf8"));
+        if (!Number.isInteger(pid) || pid <= 0) return;
+        clearTimeout(timer); watcher.close(); resolve(pid);
+      } catch {}
+    });
+    const timer = setTimeout(() => { watcher.close(); reject(new Error("nested fixture did not start")); }, 2000);
+  });
+  const childCode = `require('node:fs').writeFileSync(${JSON.stringify(pidPath)}, String(process.pid)); setInterval(()=>{},1000);`;
+  writeFileSync(helper, `import {runBounded} from ${JSON.stringify(script)}; await runBounded([process.execPath,'--no-env-file','--no-install','-e',${JSON.stringify(childCode)}],{milliseconds:10000}); process.exitCode=2;\n`);
+  const pending = runBounded([process.execPath, "--no-env-file", "--no-install", helper], {
+    milliseconds: action === "timeout" ? 750 : 5000, graceMilliseconds: 1000,
+  });
+  const pid = await ready;
+  if (action === "interrupt") process.emit("SIGTERM");
+  const result = await pending;
+  expect(result.ok).toBe(false);
+  expect(result.outcome).toBe(action === "interrupt" ? "INTERRUPTED" : "TIMEOUT");
+  const status = `/proc/${pid}/status`;
+  if (existsSync(status)) expect(["Z", "X"]).toContain(/^State:\s+(\S+)/m.exec(readFileSync(status, "utf8"))?.[1]);
+});
+
+test("graceful cancellation escalates a TERM-ignoring child to KILL", async () => {
+  const result = await runBounded([process.execPath, "--no-env-file", "--no-install", "-e", "process.on('SIGTERM',()=>{}); setInterval(()=>{},1000);"], {
+    milliseconds: 250, graceMilliseconds: 100,
+  });
+  expect(result.ok).toBe(false);
+  expect(result.outcome).toBe("TIMEOUT");
+  expect(result.signal).toBe("SIGKILL");
+  expect(result.elapsedMs).toBeLessThan(2000);
+});
+
+test.each([-1, 1001, 0.5, "1000", null])("invalid cancellation grace %j refuses before a subprocess", (graceMilliseconds) => {
+  expect(() => runBounded([process.execPath], { milliseconds: 1000, graceMilliseconds })).toThrow("invalid cancellation grace");
+});
+
 test("mise wiring adds only the separate diagnostic and retains static status", () => {
   const config = Bun.TOML.parse(readFileSync(new URL("../../../mise.toml", import.meta.url), "utf8"));
-  expect(config.tasks["f9:diagnose"].run).toContain("exec bun tooling/native-ingress/f9-diagnose.mjs");
+  expect(config.tasks["f9:diagnose"].run).toBe("bun --no-env-file --no-install tooling/native-ingress/f9-diagnose.mjs");
   expect(config.tasks["f9:status"].run).toContain("tooling/native-ingress/f9-status.sh");
   expect(config.tasks["dev:sbx:ml-smoke"]).toBeUndefined();
 });

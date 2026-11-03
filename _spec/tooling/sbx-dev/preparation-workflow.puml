@@ -1,0 +1,250 @@
+' purpose: Mise-pinned host acquisition feeds separately approved offline guest setup and diagnosis.
+' covers: mise.toml
+' covers: rust-toolchain.toml
+' covers: package.json
+' covers: tooling/sbx-dev/prepare.mjs
+' covers: tooling/sbx-dev/acquire-tools.mjs
+' covers: tooling/sbx-dev/tests/acquire-tools.test.mjs
+' covers: tooling/sbx-dev/check-bundle.mjs
+' covers: tooling/sbx-dev/stages.mjs
+' covers: tooling/sbx-dev/snapshots.mjs
+' covers: tooling/sbx-dev/create.sh
+' covers: tooling/sbx-dev/seed.sh
+' covers: tooling/sbx-dev/install-rust.sh
+' covers: tooling/sbx-dev/tests/preparation.test.mjs
+' covers: tooling/sbx-dev/tests/stages.test.mjs
+' covers: tooling/sbx-dev/tests/snapshots.test.mjs
+' covers: tooling/sbx-dev/tests/setup.test.mjs
+' covers: tooling/sbx-dev/README.md
+' related: _spec/tooling/bun-first-party-tooling.puml
+' related: _spec/tooling/native-ingress/f9-diagnostic.puml
+' invariant: No automatic retry, resume, reset, rollback or removal.
+' rationale: [HIGH] Checking mutable host paths before copying does not bind the bytes a provider later reads.
+' contract: The fixed guest wrapper receives installer path/SHA, archive SHA and attempt only as positional arguments.
+' note-register: P right preview FK 11.5; P/C approval FK 10.7; A right scope FK 10.4.
+' note-register: A/STATE intent FK 11.6; A/B provenance FK 12.0; C/STATE recovery FK 11.5.
+' note-register: C/VM policy FK 11.4; P/VM diagnosis FK 12.9.
+' note-register: S right host binding FK 12.2; VM right installer binding FK 12.2; S/VM limits FK 11.2.
+' FK syllables: hand-counted English; executables=5, mise=1, sysroot=2, CLI=3, F9=2, KUnit=3.
+' FK syllables: UID=3; read-only and in-place each count as two words.
+@startuml sbx-preparation
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Development setup: automatic host inputs, separate guest approvals
+actor Executor as OP
+participant "prepare.mjs\ndev:sbx:prepare parent" as P <<app>>
+participant "acquire-tools.mjs\ndev:sbx:acquire child" as A <<app>>
+participant "check-bundle.mjs" as B <<app>>
+participant "stages.mjs\nseven sequential mise children" as C <<app>>
+participant "snapshots.mjs\nbounded Bun worker" as S <<app>>
+participant "Named development sbx" as VM <<host>>
+participant "mise\ncore backends on host" as TOOLS <<host>>
+database "Private 0700 run directory\n0600 acquisition / state / policy / report\n0400 complete provision snapshots" as STATE <<db>>
+
+OP -> TOOLS : review mise.toml; explicitly mise trust
+OP -> TOOLS : mise install (online host bootstrap)
+TOOLS --> OP : core:bun@1.4.0 + core:rust@1.95.0
+note over OP, TOOLS
+  mise.toml: exact built-in backend pins
+  Rust matches rust-toolchain.toml
+  auto_install=false
+end note
+
+OP -> P : --plan: syntax and task graph only
+P -> P : toolPins(): read checked-in configuration
+P --> OP : no children, executable resolution, directories or network
+note right of P
+  Preview reads configured pins but runs no
+  children, creates no files and resolves no
+  executables. Explicit host bootstrap supplies
+  Bun before preview, since mise has disabled
+  its own automatic installation.
+end note
+
+OP -> P : mise run dev:sbx:prepare (no input flags)
+P -> P : require stdin TTY; resolve mise and sbx from current PATH
+note over P, C
+  Parent entry precheck: stdin TTY
+  Acquisition/stage approval: stdin AND stderr TTY
+end note
+P -> STATE : allocate fresh run directory
+alt default: no bundle or digest supplied
+  P -> A : mise run --raw dev:sbx:acquire -- --manifest <private-run>/tools.json
+  A -> A : acquireTools(): require Linux x64; read exact matching configured pins
+  A -> OP : fresh terminal approval: host downloads + bounded packaging
+  A -> STATE : exclusively record rust-tools.tar.intent
+  note over A, STATE
+    Record private intent before host installs
+    and publish the manifest only after
+    validation. Keep partial artifacts when
+    acquisition fails, since a retry cannot prove
+    whether shared toolchain storage changed.
+  end note
+  A -> TOOLS : install --jobs 1 core:rust@1.95.0
+  A -> TOOLS : exec core:rust@1.95.0 -- rustc -vV
+  A -> TOOLS : exec core:rust@1.95.0 -- rustc --print sysroot
+  A -> TOOLS : exec core:rust@1.95.0 -- cargo --version
+  TOOLS --> A : checked Rust/Cargo 1.95.0; x86_64-unknown-linux-gnu
+  note over A, TOOLS
+    Install: <=600s, output <=64KiB
+    Discovery: 3 x <=30s, output <=16KiB each
+    Pack/hash/validation budget: 120s
+    Archive <=2GiB; expanded <=4GiB
+    Members <=20,000; manifest <=8KiB
+  end note
+  note right of TOOLS
+    Shared mise/rustup caches: no F9 quota
+    Approval pauses: no automatic deadline
+  end note
+  A -> A : select actual sysroot: bin/rustc + bin/cargo + lib/**
+  note right of A
+    Selected sysroot paths exclude home
+    directories, caches and credentials from
+    the guest archive.
+    Resolve internal links, but refuse cycles,
+    special files and links escaping the sysroot.
+  end note
+  note over A, B
+    Optional fixed regular notice leaves:
+    LICENSE-APACHE, LICENSE-MIT, COPYRIGHT
+    at the sysroot root or share/doc/rust/
+    No recursive documentation copy
+  end note
+  A -> STATE : stream rust-tools.tar: regular files/directories, no links
+  A -> A : compute SHA-256 within packaging budget
+  A -> B : validate hash/layout; remaining budget; output <=16KiB\ngraceMilliseconds=1000
+  note over A, B
+    Validator supervisors: TERM grace 1000ms
+    Then KILL + <=2s reap; refusal unchanged
+    Leaf tar: grace 0; <=30s / <=8MiB
+  end note
+  B -> B : runBounded(/usr/bin/tar, explicit clean env)\nparse metadata only after bounded success
+  B --> A : BUNDLE=HASH_AND_LAYOUT_OK
+  A -> STATE : exclusively publish tools.json
+  note right of STATE
+    dev-sbx-acquired-tools-v1 (exact keys)
+    schema, bunVersion, rustVersion, host,
+    bundlePath, sha256
+    bundlePath = <private-run>/rust-tools.tar
+  end note
+  P -> A : readAcquiredTools(<private-run>/tools.json): private manifest + bundle
+  A --> P : automatic bundlePath + sha256
+  note over A, B
+    The manifest binds configured Bun and
+    checked Rust/Cargo versions, host and archive
+    integrity. It does not authenticate upstream
+    sources or validate inherited mise settings
+    and previously installed files.
+  end note
+else advanced offline: --bundle AND --sha256
+  P -> P : skip acquisition; require absolute archive + lowercase digest
+end
+
+P -> C : mise run --raw dev:sbx:validate
+C -> OP : approve local validation
+C -> B : revalidate archive hash/layout: <=60s / output <=16KiB\ngraceMilliseconds=1000
+C -> STATE : pin archive + fixed installer / attempt state
+P -> C : mise run --raw dev:sbx:create-stage
+C -> OP : approve one ls/create/ls attempt
+C -> VM : create.sh: mountless; --pull never; --skills off\n--deny-network '**'; --cpus 2; --memory 4g
+VM --> C : generated name + confirmed result
+C -> STATE : carry name automatically
+P -> C : mise run --raw dev:sbx:policy
+C -> OP : approve private policy readback
+C -> VM : policy ls --wide NAME
+C -> STATE : bounded policy + digest
+P -> C : mise run --raw dev:sbx:accept-policy
+C -> OP : inspect file; accept this digest/name
+group Snapshot provision and descriptor-bound installation
+  P -> C : mise run --raw dev:sbx:provision
+  C -> OP : approve local snapshots + two copies; stdin AND stderr TTY
+  C -> STATE : persist inFlightStage='provision'; consume policy acknowledgement
+  C -> S : host Bun --no-env-file --no-install snapshots.mjs --state STATE_PATH\n<=60s / combined output <=16KiB
+  S -> STATE : read bound state; derive both attempt-specific snapshot paths
+  note over S, STATE
+    prefix = statePath + '.' + attemptId
+    prefix + '.bundle.snapshot.tar'
+    prefix + '.installer.snapshot.sh'
+    dev-sbx-workflow-v1 remains unchanged
+  end note
+  S -> S : open approved bundle + fixed installer: O_NOFOLLOW, regular files
+  S -> STATE : exclusive 0600 snapshots; bounded copy + approved SHA-256\nfstat unchanged; complete files become 0400
+  note right of S
+    Snapshot approved bytes before provider copy,
+    since a mutable pathname can change after
+    validation. Private read-only artifacts keep
+    subsequent source replacement from changing
+    the approved transfer inputs.
+  end note
+  note over S, STATE
+    Bundle <=2GiB; fixed installer <=64KiB
+    Extra retained disk <=2GiB +64KiB/attempt
+    Partial snapshots remain after failure
+    No overwrite, retry or automatic cleanup
+  end note
+  S --> C : SNAPSHOTS=VERIFIED_PRIVATE_INPUTS; both snapshots read-only
+  C -> B : validate SNAPSHOT bundle hash/layout: <=60s / output <=16KiB\ngraceMilliseconds=1000
+  C -> VM : cp bundle SNAPSHOT -> existing attempt guest archive\n<=90s / output <=16KiB
+  C -> VM : cp installer SNAPSHOT -> existing attempt guest installer\n<=45s / output <=16KiB
+  P -> C : mise run --raw dev:sbx:install
+  C -> OP : approve bounded guest install; stdin AND stderr TTY
+  C -> VM : existing timeout; fixed /bin/sh -c wrapper; positional path/SHA inputs\nhost <=130s / output <=16KiB; guest 120s + kill-after 2s
+  VM -> VM : open guest installer once as fd 3
+  VM -> VM : sha256sum checks approved installer SHA via /proc/self/fd/3
+  VM -> VM : exec /bin/sh /proc/self/fd/3 with archive SHA + attempt\noffline Rust/Cargo 1.95.0 checks
+  note right of VM
+    Open the guest installer once and verify its
+    approved digest through that descriptor.
+    Execute the same descriptor so a pathname
+    replacement after hashing cannot substitute
+    different installer bytes.
+  end note
+  note over S, VM
+    Read-only private snapshots narrow pathname
+    races rather than defend against compromised
+    same-UID processes.
+    Guest descriptor binding also cannot prevent
+    in-place writes to that same open inode.
+  end note
+end
+P -> C : mise run --raw dev:sbx:diagnose
+C -> OP : approve diagnostic scope
+C -> C : invoke original f9-diagnose.mjs in host Bun\nrunBounded(..., graceMilliseconds=1000)
+note over C, VM
+  Outer deadline: 60s / output <=128KiB
+  TERM helper group for cooperative CLI cleanup
+  KILL after 1s; reap allowance <=2s
+  Failure and interruption still refuse
+end note
+C -> VM : bounded listing, policy readback and guest shell capability probe
+C -> STATE : accept original helper exit 2 only with matching complete STOP report
+P --> OP : developmentPrepared=true; diagnosticComplete=true\nSTOP; f9Qualified=false; trainingReady=false; exit 2
+
+note over P, C
+  Each child requires fresh terminal approval
+  before work begins on its stated scope.
+  Acquisition consent covers host downloads,
+  not guest network access or any subsequent
+  provider calls.
+end note
+note over C, STATE
+  Write stage intent before provider calls
+  so ambiguous failures leave a bound
+  attempt for review.
+  Keep that state for reconciliation rather
+  than automatic retry, reset or removal.
+end note
+note over C, VM
+  Policy acceptance binds one attempt, name
+  and digest before copying starts.
+  It records consent, not proof that deny
+  rules prevail over broader allows or grant
+  reusable F9 authority.
+end note
+note over P, VM
+  Accept diagnostic completion only for the
+  matching STOP report, not F9 qualification.
+  A host CLI timeout proves neither guest
+  termination nor permission to start Cargo,
+  KUnit or model work.
+end note
+@enduml

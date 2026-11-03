@@ -4,6 +4,16 @@
 ' covers: tooling/native-ingress/f9-requirements.mjs
 ' covers: tooling/native-ingress/tests/f9-diagnose.test.mjs
 ' covers: tooling/native-ingress/F9-DIAGNOSTIC.md
+' covers: tooling/sbx-dev/stages.mjs
+' covers: tooling/sbx-dev/tests/stages.test.mjs
+' covers: tooling/sbx-dev/acquire-tools.mjs
+' covers: tooling/sbx-dev/check-bundle.mjs
+' covers: tooling/sbx-dev/tests/acquire-tools.test.mjs
+' covers: tooling/sbx-dev/tests/setup.test.mjs
+' related: _spec/tooling/sbx-dev/preparation-workflow.puml
+' related: _spec/tooling/bun-first-party-tooling.puml
+' note-register: DIAG right cancellation FK 12.1; DIAG/GUEST crash FK 12.7; DIAG/GATES authority FK 12.3.
+' FK syllables: hand-counted English; CLI=3, F9=2, Gate0=3, KUnit=3, G1=2.
 @startuml f9-diagnostic
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
 title Live development diagnostic / F9 remains STOP
@@ -31,13 +41,34 @@ DIAG --> OP : diagnostic completion != readiness
 DIAG --> OP : result STOP; exit 2; trainingReady false
 
 note over DIAG, GUEST
-  No create/copy/build/test/reset/remove here.
-  Raw policy and errors stay off the terminal.
-  CLI timeout does not prove guest termination.
+  No create/copy/build/test/reset/remove
+  Raw policy and errors stay off the terminal
+end note
+note left of DIAG
+  graceMilliseconds: integer 0..1000
+  Leaf default 0: immediate KILL; <=2s reap
+  Validator/diagnostic supervisors: 1000
+  SIGINT/SIGTERM handlers registered pre-spawn
+end note
+note right of DIAG
+  Cooperative cancellation gives the nested Bun
+  helper time to stop its detached CLI group.
+  The outer wrapper escalates to KILL after one
+  second and allows two seconds to reap without
+  accepting failed or interrupted outcomes.
+end note
+note over DIAG, GUEST
+  Helper signal handlers propagate cancellation
+  to the detached CLI group before normal exit.
+  A helper crash can bypass that cooperation,
+  so bounded host cleanup cannot prove that
+  every descendant or guest process stopped.
 end note
 note over DIAG, GATES
-  Capabilities are observations, not F9 proof.
-  No capture/KUnit/G1/Native workload runs.
-  Gate0 and separate approvals stay required.
+  Probe results are observations, not proof that
+  independent F9 gates have passed.
+  Gate0 and separate approvals remain required
+  for capture, KUnit, G1 and Native workloads,
+  which this diagnostic never runs.
 end note
 @enduml

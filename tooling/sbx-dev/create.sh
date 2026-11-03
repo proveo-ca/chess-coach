@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPEC: _spec/tooling/sbx-dev/preparation-workflow.puml
 set -euo pipefail
 
 stop() { printf 'STOP: %s\n' "$*" >&2; exit 2; }

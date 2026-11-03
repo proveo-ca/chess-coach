@@ -29,22 +29,26 @@ export function buildPlan({ sbx, name }) {
   ];
 }
 
-export function runBounded(argv, { milliseconds, cap = 65536 }) {
+export function runBounded(argv, { milliseconds, cap = 65536, graceMilliseconds = 0, env = process.env }) {
+  if (!Number.isInteger(graceMilliseconds) || graceMilliseconds < 0 || graceMilliseconds > 1000) {
+    throw new Error("invalid cancellation grace");
+  }
   return new Promise((resolve) => {
     const beginning = performance.now();
-    const child = spawn(argv[0], argv.slice(1), { stdio: ["ignore", "pipe", "pipe"], detached: true });
     const chunks = { stdout: [], stderr: [] };
-    let bytes = 0, failure = null, settled = false, drainTimer;
+    let child, deadline, forceTimer, reapTimer, drainTimer;
+    let bytes = 0, failure = null, settled = false;
     const finish = (code, signal) => {
       if (settled) return;
       settled = true;
       clearTimeout(deadline);
       clearTimeout(drainTimer);
+      clearTimeout(forceTimer);
       clearTimeout(reapTimer);
       process.off("SIGINT", interrupted);
       process.off("SIGTERM", interrupted);
-      child.stdout?.destroy(); child.stderr?.destroy();
-      if (child.exitCode === null && child.signalCode === null) child.unref();
+      child?.stdout?.destroy(); child?.stderr?.destroy();
+      if (child?.exitCode === null && child?.signalCode === null) child.unref();
       resolve({
         ok: failure === null && code === 0 && signal === null,
         outcome: failure ?? "EXIT", code, signal,
@@ -53,19 +57,29 @@ export function runBounded(argv, { milliseconds, cap = 65536 }) {
         stderr: Buffer.concat(chunks.stderr).toString("utf8"),
       });
     };
-    let reapTimer;
+    const signalGroup = (signal) => {
+      if (child?.pid) {
+        try { process.kill(-child.pid, signal); } catch {}
+      }
+    };
     const stop = (reason) => {
       if (failure !== null) return;
       failure = reason;
-      if (child.pid) {
-        try { process.kill(-child.pid, "SIGKILL"); } catch {}
-      }
-      reapTimer = setTimeout(() => finish(child.exitCode, child.signalCode), 2000);
+      const force = () => {
+        signalGroup("SIGKILL");
+        reapTimer = setTimeout(() => finish(child?.exitCode ?? null, child?.signalCode ?? null), 2000);
+      };
+      if (graceMilliseconds) {
+        signalGroup("SIGTERM");
+        forceTimer = setTimeout(force, graceMilliseconds);
+      } else force();
     };
     const interrupted = () => stop("INTERRUPTED");
     process.on("SIGINT", interrupted);
     process.on("SIGTERM", interrupted);
-    const deadline = setTimeout(() => stop("TIMEOUT"), milliseconds);
+    try { child = spawn(argv[0], argv.slice(1), { env, stdio: ["ignore", "pipe", "pipe"], detached: true }); }
+    catch { stop("SPAWN_ERROR"); finish(null, null); return; }
+    deadline = setTimeout(() => stop("TIMEOUT"), milliseconds);
     for (const stream of ["stdout", "stderr"]) {
       child[stream].on("data", (chunk) => {
         const available = Math.max(0, cap - bytes);

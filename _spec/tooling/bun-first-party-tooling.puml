@@ -1,9 +1,20 @@
-' purpose: First-party Bun tooling and offline tests preserve development-only and F9 refusal boundaries.
+' purpose: Bun tooling composes mise-pinned host acquisition while preserving development-only and F9 refusal boundaries.
+' covers: mise.toml
+' covers: rust-toolchain.toml
 ' covers: scripts/assert-no-python*.mjs
 ' covers: tooling/README.md
+' covers: tooling/sbx-dev/prepare.mjs
+' covers: tooling/sbx-dev/acquire-tools.mjs
+' covers: tooling/sbx-dev/stages.mjs
+' covers: tooling/sbx-dev/snapshots.mjs
 ' covers: tooling/sbx-dev/check-bundle.mjs
 ' covers: tooling/sbx-dev/seed.sh
+' covers: tooling/sbx-dev/tests/preparation.test.mjs
+' covers: tooling/sbx-dev/tests/acquire-tools.test.mjs
+' covers: tooling/sbx-dev/tests/stages.test.mjs
+' covers: tooling/sbx-dev/tests/snapshots.test.mjs
 ' covers: tooling/sbx-dev/tests/setup.test.mjs
+' covers: tooling/sbx-dev/README.md
 ' covers: tooling/sbx-smoke/create-debug.mjs
 ' covers: tooling/sbx-smoke/host-smoke.sh
 ' covers: tooling/sbx-smoke/tests/**/*.mjs
@@ -12,19 +23,33 @@
 ' covers: tooling/native-ingress/f9-status.sh
 ' covers: tooling/native-ingress/tests/host-sbx-candidates.test.mjs
 ' covers: tooling/native-ingress/tests/f9-status.test.mjs
+' covers: tooling/native-ingress/f9-diagnose.mjs
+' covers: tooling/native-ingress/tests/f9-diagnose.test.mjs
 ' related: _spec/_plans/PLAN-ml-adjutant.md
+' related: _spec/tooling/sbx-dev/preparation-workflow.puml
+' related: _spec/tooling/native-ingress/f9-diagnostic.puml
 ' note-register: ASSERT bottom FK 12.0; DEBUG bottom FK 11.5; VERIFY bottom FK 12.7.
+' note-register: ACQUIRE bottom FK 12.0.
+' note-register: SNAPSHOTS bottom FK 12.4.
+' note-register: ASSERT left encoding FK 12.4; BUNDLE right listing FK 12.4.
 ' FK syllables: English word counts; first-party=3, CLI=3, F9=2, OS=2.
+' FK syllables: NULs=1; byte-order counts as two words.
 @startuml bun-first-party-tooling
-!include ../themes/proveo.puml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
 title First-party Bun tooling: unchanged refusal gates
 
 node "Bun host runtime" as BUN <<host>> {
   component "scripts/\nassert-no-python.mjs" as ASSERT <<app>>
+  component "tooling/sbx-dev/\nprepare.mjs" as PREPARE <<app>>
+  component "tooling/sbx-dev/\nacquire-tools.mjs" as ACQUIRE <<app>>
+  component "tooling/sbx-dev/\nstages.mjs" as STAGES <<app>>
+  component "tooling/sbx-dev/\nsnapshots.mjs" as SNAPSHOTS <<app>>
   component "tooling/sbx-dev/\ncheck-bundle.mjs" as BUNDLE <<app>>
   component "tooling/sbx-smoke/\ncreate-debug.mjs" as DEBUG <<app>>
   component "tooling/native-ingress/\nhost-sbx-provenance-candidate.mjs" as VERIFY <<app>>
 }
+
+component "mise.toml\ncore:bun@1.4.0 / core:rust@1.95.0\nauto_install=false" as MISE <<host>>
 
 package "Shell entrypoints" {
   component "tooling/sbx-dev/seed.sh" as SEED <<app>>
@@ -33,17 +58,30 @@ package "Shell entrypoints" {
   component "tooling/native-ingress/f9-status.sh" as STATUS <<app>>
 }
 
-component "Bun offline tests\nassert-no-python / setup / host-smoke\nhost-sbx-candidates / f9-status" as TESTS <<app>>
+component "Bun offline tests\nassert-no-python / preparation / acquire-tools\nstages / snapshots / setup / host-smoke\nhost-sbx-candidates / f9-status" as TESTS <<app>>
 component "Execution refused\nNo F9 or training authority" as STOP <<error>>
 
-SEED ARROW_OPTIONAL BUNDLE : digest + bounded archive layout
-SMOKE ARROW_OPTIONAL DEBUG : instrumented dev-only mode
+MISE ARROW_OPTIONAL BUN : exact host runtime pin
+PREPARE ARROW_MAIN ACQUIRE : default child via mise; automatic archive/hash
+PREPARE ARROW_MAIN STAGES : seven ordered mise children; fresh approvals
+ACQUIRE ARROW_OPTIONAL MISE : approved exact core Rust install + discovery
+ACQUIRE ARROW_MAIN BUNDLE : hash/layout checks before private manifest
+STAGES ARROW_MAIN SNAPSHOTS : after TTY approval, in-flight state and consumed acknowledgement
+SNAPSHOTS ARROW_MAIN STAGES : attempt-derived read-only bundle + installer; no new state keys
+STAGES ARROW_OPTIONAL BUNDLE : source at validation; snapshot before copies
+STAGES ARROW_ERROR STOP : verified diagnosis never grants readiness
+SEED ARROW_ERROR STOP : combined seed disabled; use prepare
+SMOKE ARROW_OPTIONAL DEBUG : instrumented mode; Bun --no-env-file --no-install
 GUARD ARROW_OPTIONAL VERIFY : --offline-check only
 GUARD ARROW_ERROR STOP : runner mode refuses before providers
 STATUS ARROW_ERROR STOP : exit 2; TRAINING_READY=false
 
 TESTS ARROW_OPTIONAL ASSERT : source-policy fixtures
-TESTS ARROW_OPTIONAL BUNDLE : archive fixtures + fake seed CLI
+TESTS ARROW_OPTIONAL PREPARE : no-argument PATH discovery + sequential children
+TESTS ARROW_OPTIONAL ACQUIRE : private sysroot fixtures; no live mise downloads
+TESTS ARROW_OPTIONAL STAGES : approval, state binding and STOP-report fixtures
+TESTS ARROW_OPTIONAL SNAPSHOTS : digest, privacy and source-replacement fixtures
+TESTS ARROW_OPTIONAL BUNDLE : archive fixtures + provider refusals
 TESTS ARROW_OPTIONAL DEBUG : fake CLI + private log fixtures
 TESTS ARROW_OPTIONAL GUARD : pinned bytes + refusal fixtures
 TESTS ARROW_OPTIONAL STATUS : static output + no-provider checks
@@ -56,9 +94,55 @@ note bottom of ASSERT
   OS package declarations; no machine ban applies.
 end note
 
+note right of ASSERT
+  Windows launchers: .ps1 / .cmd / .bat
+  Case-insensitive extensions; no exec-bit gate
+  UTF-16 LE/BE BOMs decoded before NUL check
+end note
+
+note left of ASSERT
+  Decode supported byte-order marks before
+  binary checks so Windows launcher commands
+  remain visible to inspection.
+  Reject unresolved NULs in listed source types
+  rather than silently skipping unsupported text.
+end note
+
+note right of SMOKE
+  Launch: --no-env-file --no-install
+  No inherited-environment sanitization
+end note
+
 note bottom of BUNDLE
-  SHA-256 + bounded archive layout.
-  No host extraction.
+  SHA-256 + bounded layout; no host extraction
+  Shared tar leaf: <=30s / output <=8MiB
+  Direct clean spawn env:
+  PATH=/usr/bin:/bin; LC_ALL=C; TZ=UTC
+  Parse metadata after bounded success only
+end note
+
+note right of BUNDLE
+  Pass the clean environment directly to spawn
+  so inherited loader settings stay out of tar.
+  Bound the full listing before parsing metadata
+  so cancellation uses the shared runner
+  without relaxing archive acceptance.
+end note
+
+note bottom of ACQUIRE
+  Scope acquisition to the selected sysroot
+  instead of copying homes or credential stores.
+  The archive hash proves transfer integrity,
+  not upstream authentication or permission
+  to run F9.
+end note
+
+note bottom of SNAPSHOTS
+  Stage approved bytes in private snapshots,
+  since validating a mutable source path cannot
+  bind what a later provider copy will read.
+  Preserve failed artifacts for reconciliation
+  rather than silently retrying the transfer.
 end note
 
 note bottom of DEBUG

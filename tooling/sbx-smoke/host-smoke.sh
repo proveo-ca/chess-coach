@@ -90,7 +90,7 @@ printf 'CREATE_BEGIN_EPOCH=%s\n' "$(/usr/bin/date -u +%s)"
 if [[ -n $instrumented_dir ]]; then
   [[ ${BASH_SOURCE[0]} == /* ]] || stop 'instrumented smoke requires an absolute script path'
   command -v bun >/dev/null || stop 'instrumented smoke requires Bun'
-  if ! bun "${BASH_SOURCE[0]%/*}/create-debug.mjs" --sbx "$sbx" --name "$name" --seconds "$create_seconds" --evidence-dir "$instrumented_dir"; then
+  if ! bun --no-env-file --no-install "${BASH_SOURCE[0]%/*}/create-debug.mjs" --sbx "$sbx" --name "$name" --seconds "$create_seconds" --evidence-dir "$instrumented_dir"; then
     printf 'CREATE_END_EPOCH=%s\n' "$(/usr/bin/date -u +%s)"
     printf 'CREATE_UNCONFIRMED_NAME=%s\n' "$name" >&2
     exit 2

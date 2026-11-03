@@ -16,3 +16,5 @@ CI runs the policy check before its existing checks. The offline tooling tests u
 ## Live F9 diagnostic
 
 [`f9:diagnose`](native-ingress/F9-DIAGNOSTIC.md) reports live development-sandbox observations alongside the full F9 blocker ledger. Its fresh-box workflow requires separate creation and diagnostic approvals. Diagnostic completion never grants F9 or training readiness.
+
+[`dev:sbx:prepare`](sbx-dev/README.md) composes mise-pinned online **host** acquisition, validation, creation, policy review, provisioning, offline **guest** installation and diagnosis. It generates the archive/checksum and box name automatically and pauses for fresh approval at each stage.

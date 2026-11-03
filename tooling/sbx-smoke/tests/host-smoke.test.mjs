@@ -238,6 +238,11 @@ check("instrumented success keeps debug output private", async () => {
   assert.ok(readFileSync(log, "utf8").includes("PRIVATE_DEBUG_SENTINEL"));
 });
 
+check("instrumented launcher passes explicit dotenv and package isolation flags", () => {
+  const source = readFileSync(SCRIPT, "utf8");
+  assert.ok(source.includes('bun --no-env-file --no-install "${BASH_SOURCE[0]%/*}/create-debug.mjs"'));
+});
+
 for (const mode of ["create-stopped-after-state", "create-term-resistant"]) {
   check(`instrumented ${mode} samples and kills only its stopped CLI`, async () => {
     const beginning = performance.now();

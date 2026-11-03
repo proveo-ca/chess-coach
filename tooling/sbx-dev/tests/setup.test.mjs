@@ -1,7 +1,7 @@
-// SPEC: _spec/tooling/bun-first-party-tooling.puml
+// SPEC: _spec/tooling/bun-first-party-tooling.puml, _spec/tooling/sbx-dev/preparation-workflow.puml
 import { afterEach, beforeEach, expect, test } from "bun:test";
 import { createHash } from "node:crypto";
-import { chmodSync, existsSync, mkdtempSync, readFileSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { checkBundle } from "../check-bundle.mjs";
@@ -64,10 +64,6 @@ function invoke(script, args, mode = "") {
 }
 function create(mode = "") { return invoke("create.sh", ["--sbx", fake], mode); }
 function calls() { return existsSync(join(root, "calls")) ? readFileSync(join(root, "calls"), "utf8").trim().split("\n").map(JSON.parse) : []; }
-function seed({ name = readFileSync(join(root, "name"), "utf8"), pin = digest, mode = "" } = {}) {
-  return invoke("seed.sh", ["--sbx", fake, "--name", name, "--bundle", archive, "--sha256", pin], mode);
-}
-function clearCalls() { unlinkSync(join(root, "calls")); }
 
 test("create uses one exact mountless command and retains the named VM", () => {
   const result = create();
@@ -88,30 +84,13 @@ test.each(["create-fail", "unlisted"])("ambiguous %s does not retry or remove", 
   expect(calls()).toHaveLength(mode === "unlisted" ? 3 : 2);
   expect(calls().some(([command]) => command === "rm")).toBe(false);
 });
-test("seed copies only the validated bundle and fixed entrypoint", () => {
-  create(); clearCalls();
-  const name = readFileSync(join(root, "name"), "utf8");
-  const result = seed();
-  expect(result.status).toBe(0);
-  expect(result.stdout).toContain("RESULT=DEV_ONLY_SEEDED");
-  expect(calls()).toEqual([
-    ["ls", "-q"], ["cp", archive, `${name}:/home/agent/workspace/devrust-tools.tar`],
-    ["cp", join(ROOT, "install-rust.sh"), `${name}:/home/agent/workspace/install-rust.sh`],
-    ["exec", name, "/bin/sh", "/home/agent/workspace/install-rust.sh", digest],
-  ]);
-});
-test("bad digest and missing VM refuse before transfer", () => {
-  create(); clearCalls();
-  expect(seed({ pin: "0".repeat(64) }).status).toBe(2);
-  expect(calls()).toEqual([]);
-  expect(seed({ name: "devrust-" + "f".repeat(24) }).status).toBe(2);
-  expect(calls()).toEqual([["ls", "-q"]]);
-});
-test.each(["copy-fail", "exec-fail"])("failed %s retains the VM without retry", (mode) => {
-  create(); clearCalls();
-  expect(seed({ mode }).status).toBe(2);
-  expect(calls()).toHaveLength(mode === "copy-fail" ? 2 : 4);
-  expect(calls().some(([command]) => command === "rm")).toBe(false);
+test("deprecated combined seed refuses before any provider or guest execution", () => {
+  for (const args of [[], ["--sbx", fake, "--name", "devrust-" + "a".repeat(24), "--bundle", archive, "--sha256", digest]]) {
+    const result = invoke("seed.sh", args);
+    expect(result.status).toBe(2);
+    expect(result.stderr).toContain("combined seed is disabled");
+    expect(calls()).toEqual([]);
+  }
 });
 test("archive validates hashes and refuses symlink archives", async () => {
   await checkBundle(archive, digest);
@@ -136,7 +115,8 @@ test.each([
 test("malformed archive returns bounded STOP", () => {
   writeFileSync(archive, "not an archive");
   digest = createHash("sha256").update(readFileSync(archive)).digest("hex");
-  create(); clearCalls();
-  expect(seed().status).toBe(2);
+  const result = spawnSync(process.execPath, ["--no-env-file", "--no-install", join(ROOT, "check-bundle.mjs"), archive, digest], { encoding: "utf8" });
+  expect(result.status).toBe(2);
+  expect(result.stderr).toContain("STOP:");
   expect(calls()).toEqual([]);
 });

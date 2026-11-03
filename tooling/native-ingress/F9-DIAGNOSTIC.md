@@ -2,6 +2,8 @@
 
 `f9:diagnose` is a Bun convenience task. It connects to one explicitly named sandbox and reports the F9 requirement ledger. It is **not** a qualified F9 launcher or an implementation of the missing authority verifiers. It always prints `result: "STOP"`, keeps `trainingReady: false`, and exits 2, even when `diagnosticComplete: true`.
 
+For automatic name propagation plus offline provisioning/installation, use the composed [`dev:sbx:prepare` workflow](../sbx-dev/README.md). Its child tasks require separate terminal approvals and retain the diagnostic STOP report. The standalone `f9:diagnose` task remains available; its Bun launcher now disables automatic dotenv loading and package installation. Existing exported environment and mise configuration remain in effect.
+
 ## Fresh-box workflow: two separately approved invocations
 
 1. Request fresh approval for one `dev:sbx:create` attempt. That existing task requests a mountless `shell` box with `--pull never --skills off --deny-network '**' --cpus 2 --memory 4g`, without transferring the checkout or inputs. It uses the existing development service and does not prove F9 identity/routing/policy/quotas. From Fish, **only after creation approval**:
@@ -35,6 +37,8 @@ The literal `FIXED_SCRIPT` is exported as `guestScript` in [f9-diagnose.mjs](f9-
 Policy readback is included in this **separate diagnostic approval**, not inherited from create. A policy listing can contain private domains/configuration: the helper keeps it only in bounded memory, prints its digest rather than raw contents, and does not claim to verify allow/deny precedence. No files or evidence bundles are written locally. Guest output must match the complete fixed field schema; unexpected, duplicate or malformed fields refuse. The report never prints raw CLI stderr.
 
 Failure, overflow, malformed output, timeout or interruption stops subsequent commands without retry or fallback. Deadlines terminate only the helper's owned CLI process group, with at most 2 s bounded reaping per operation. Total CLI scope is at most 46 s plus argument validation/reporting. A killed CLI does **not** prove its guest command stopped. An `exec` can start a stopped VM. The helper never creates, copies into, stops, removes, resets, prunes, authenticates or reconfigures a sandbox/service. The box remains; any later inspection, retry or cleanup needs its own exact approval.
+
+The composed preparation wrapper gives this helper a 60 s outer deadline. Cancellation sends TERM first so the helper can terminate its detached CLI, then escalates to KILL after at most 1 s and allows at most 2 s for reaping. This cooperative cleanup does not guarantee descendant cleanup after an unexpected helper crash or prove guest termination.
 
 ## Reading the report
 

@@ -11,7 +11,7 @@ const excludedDirectories = new Set([
 ]);
 const codeExtensions = new Set([
   ".js", ".mjs", ".cjs", ".ts", ".mts", ".cts", ".jsx", ".tsx",
-  ".sh", ".bash", ".fish", ".rs", ".toml", ".json", ".yaml", ".yml",
+  ".sh", ".bash", ".fish", ".ps1", ".cmd", ".bat", ".rs", ".toml", ".json", ".yaml", ".yml",
 ]);
 const interpreter = ["py", "thon"].join("");
 const alternative = ["py", "py"].join("");
@@ -29,6 +29,12 @@ function allowBuildDependencies(source) {
     /\b(?:apt-get|apt|apk|dnf|yum)\s+(?:install|add)\b[^;&|\n]*/g,
     (install) => install.replace(new RegExp(`\\b${interpreter}\\d*(?:[.][0-9]+)*(?:-[a-z0-9-]+)?\\b`, "gi"), "dependency-runtime"),
   );
+}
+
+function sourceText(bytes) {
+  if (bytes[0] === 0xff && bytes[1] === 0xfe) return bytes.subarray(2).toString("utf16le");
+  if (bytes[0] === 0xfe && bytes[1] === 0xff && bytes.length % 2 === 0) return Buffer.from(bytes.subarray(2)).swap16().toString("utf16le");
+  return bytes.toString("utf8");
 }
 
 export function scanRepository(root) {
@@ -50,14 +56,17 @@ export function scanRepository(root) {
       checked++;
       if (/^\.env(?:\.|$)/.test(entry.name) || /\.(?:key|pem)$/.test(entry.name)) continue;
       const details = lstatSync(path);
-      if (!codeExtensions.has(extname(entry.name)) && extname(entry.name) !== "" && !/^Dockerfile(?:\.|$)/.test(entry.name) && !(details.mode & 0o111)) continue;
+      if (!codeExtensions.has(extname(entry.name).toLowerCase()) && extname(entry.name) !== "" && !/^Dockerfile(?:\.|$)/.test(entry.name) && !(details.mode & 0o111)) continue;
       if (/lock(?:\.json)?$/.test(entry.name)) continue;
       if (details.size > 16 * 1024**2) {
         violations.push(`${display}: source exceeds inspection limit`);
         continue;
       }
-      let source = readFileSync(path, "utf8");
-      if (source.includes("\0")) continue;
+      let source = sourceText(readFileSync(path));
+      if (source.includes("\0")) {
+        if (codeExtensions.has(extname(entry.name).toLowerCase())) violations.push(`${display}: unsupported source encoding`);
+        continue;
+      }
       if (/^Dockerfile(?:\.|$)/.test(entry.name)) source = allowBuildDependencies(source);
       if (forbiddenInvocation.test(source)) violations.push(`${display}: disallowed interpreter or package command`);
     }

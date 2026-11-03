@@ -1,15 +1,69 @@
-# SPEC: _spec/tooling/native-ingress/f9-diagnostic.puml
+# SPEC: _spec/tooling/native-ingress/f9-diagnostic.puml, _spec/tooling/sbx-dev/preparation-workflow.puml
 [settings]
 auto_install = false
+
+[tools]
+"core:bun" = "1.4.0"
+"core:rust" = { version = "1.95.0", profile = "minimal", components = ["rustfmt", "clippy"] }
 
 [tasks."f9:diagnose"]
 description = "Diagnose a separately created live sbx and list all F9 blockers (Bun; separate approval required; always STOP)"
 raw_args = true
-run = '''
-#!/usr/bin/bash -p
-set -euo pipefail
-exec bun tooling/native-ingress/f9-diagnose.mjs "$@"
-'''
+run = "bun --no-env-file --no-install tooling/native-ingress/f9-diagnose.mjs"
+
+[tasks."dev:sbx:prepare"]
+description = "Acquire mise-pinned host tools and compose sandbox setup with separate approvals; retain F9 STOP"
+raw_args = true
+raw = true
+run = "bun --no-env-file --no-install tooling/sbx-dev/prepare.mjs"
+
+[tasks."dev:sbx:acquire"]
+description = "Approve mise-pinned online host Rust acquisition and build the guest archive/hash automatically"
+raw_args = true
+raw = true
+run = "bun --no-env-file --no-install tooling/sbx-dev/acquire-tools.mjs"
+
+[tasks."dev:sbx:validate"]
+description = "Validate pinned offline tools and create private workflow state"
+raw_args = true
+raw = true
+run = "bun --no-env-file --no-install tooling/sbx-dev/stages.mjs validate"
+
+[tasks."dev:sbx:create-stage"]
+description = "Approve and create the workflow sandbox; retain its generated name"
+raw_args = true
+raw = true
+run = "bun --no-env-file --no-install tooling/sbx-dev/stages.mjs create"
+
+[tasks."dev:sbx:policy"]
+description = "Approve bounded policy readback into a private workflow file"
+raw_args = true
+raw = true
+run = "bun --no-env-file --no-install tooling/sbx-dev/stages.mjs policy"
+
+[tasks."dev:sbx:accept-policy"]
+description = "Record a separate operator acknowledgement of the retained policy"
+raw_args = true
+raw = true
+run = "bun --no-env-file --no-install tooling/sbx-dev/stages.mjs accept-policy"
+
+[tasks."dev:sbx:provision"]
+description = "Approve two pinned offline input copies; do not install or execute"
+raw_args = true
+raw = true
+run = "bun --no-env-file --no-install tooling/sbx-dev/stages.mjs provision"
+
+[tasks."dev:sbx:install"]
+description = "Approve bounded offline Rust 1.95.0 installation inside the workflow VM"
+raw_args = true
+raw = true
+run = "bun --no-env-file --no-install tooling/sbx-dev/stages.mjs install"
+
+[tasks."dev:sbx:diagnose"]
+description = "Approve diagnosis of the workflow VM and retain the F9 STOP report"
+raw_args = true
+raw = true
+run = "bun --no-env-file --no-install tooling/sbx-dev/stages.mjs diagnose"
 
 [tasks."f9:status"]
 description = "Display offline F9 prerequisites and refuse authority (no host or VM checks)"
@@ -31,7 +85,7 @@ exec /usr/bin/bash -p tooling/sbx-dev/create.sh "$@"
 '''
 
 [tasks."dev:sbx:seed"]
-description = "Seed pinned offline Rust tools into a named development sandbox (separate approval required)"
+description = "Deprecated combined seed entrypoint; use the separately approved preparation stages"
 raw_args = true
 run = '''
 #!/usr/bin/bash -p

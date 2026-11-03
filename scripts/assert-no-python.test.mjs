@@ -43,6 +43,24 @@ test("excludes installed dependencies, git internals and generated outputs", () 
   expect(scanRepository(root).violations).toEqual([]);
 });
 
+test.each(["ps1", "cmd", "bat", "PS1", "CMD", "BAT"])("inspects non-executable Windows launcher .%s", (extension) => {
+  fixture(`launcher.${extension}`, `${language}3 main.py\n`);
+  expect(scanRepository(root).violations).toHaveLength(1);
+});
+
+test.each(["le-bom", "be-bom", "le-no-bom"])("UTF-16 %s cannot hide a PowerShell interpreter command", (encoding) => {
+  const source = Buffer.from(`${language}3 main.py\n`, "utf16le");
+  const bytes = encoding === "le-bom" ? Buffer.concat([Buffer.from([0xff, 0xfe]), source])
+    : encoding === "be-bom" ? Buffer.concat([Buffer.from([0xfe, 0xff]), source.swap16()]) : source;
+  fixture("launcher.ps1", bytes);
+  expect(scanRepository(root).violations).toHaveLength(1);
+});
+
+test("inspects allowed UTF-16 PowerShell without treating it as binary", () => {
+  fixture("launcher.ps1", Buffer.concat([Buffer.from([0xff, 0xfe]), Buffer.from("bun run task\n", "utf16le")]));
+  expect(scanRepository(root).violations).toEqual([]);
+});
+
 test("retains historical prose without treating it as active code", () => {
   fixture("_spec/history.md", `Previously used ${language}3.\n`);
   fixture("src/allowed.mjs", "console.log('bun');\n");
