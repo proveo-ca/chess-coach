@@ -16,6 +16,11 @@ description = "Explain one complete saved F9 diagnostic offline; no VM checks, r
 raw_args = true
 run = "bun --no-env-file --no-install tooling/native-ingress/f9-explain.mjs"
 
+[tasks."f9:verify-sbx"]
+description = "Verify 15 guest tools and run the saved-report explainer in one explicitly approved sbx; no Gate0 grant"
+raw_args = true
+run = "bun --no-env-file --no-install tooling/native-ingress/f9-verify-sbx.mjs"
+
 [tasks."dev:sbx:prepare"]
 description = "Acquire mise-pinned host tools and compose sandbox setup with separate approvals; retain F9 STOP"
 raw_args = true

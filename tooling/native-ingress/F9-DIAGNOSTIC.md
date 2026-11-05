@@ -75,10 +75,60 @@ PATH observations and seeded tool observations answer different questions:
 
 Only the composed preparation receipt establishes `developmentPrepared: true`. The standalone saved diagnostic establishes no preparation completion, F9 qualification, or training permission.
 
+## Verify guest tools and run the explainer from an sbx-enabled host
+
+`f9:verify-sbx` checks an explicitly selected guest, then runs the existing explanation task **inside that guest**. It does not create or provision the guest. The existing preparation workflow seeds Rust only and does not establish guest mise/Bun or all other tools.
+
+The guest must already contain an approved checkout/configuration, the explainer's source imports, and a complete saved diagnostic report. The runner reads no host report and copies no files. Its required guest PATH names are:
+
+```text
+tar sha256sum timeout gpgv patch make clang ld.bfd readelf
+node rustc cargo zig mise bun
+```
+
+Every name must resolve through `command -v`. Seeded Rust paths do not compensate for missing PATH entries. Resolution proves neither executable versions, functionality, compatibility nor provenance.
+
+Preview the exact operation without inspecting the controller or contacting a guest:
+
+```sh
+mise run f9:verify-sbx \
+  --sbx /absolute/path/to/sbx --name SANDBOX_NAME \
+  --repo /home/agent/workspace/checkout \
+  --report /home/agent/workspace/report.json --plan
+```
+
+The paths and name above are placeholders, not a discovered instance. Plan success is not execution approval. Mise still loads its own configuration before launching the helper.
+
+After obtaining fresh approval for the exact controller, named instance, guest paths, effective mise configuration/startup effects and operation bounds, replace `--plan` with `--confirm-dev-verification`. The flag acknowledges intent; it does not grant permission. The two modes are mutually exclusive.
+
+The helper validates the explicit host controller as a regular executable non-link leaf, then invokes exactly one operation:
+
+```text
+SBX exec NAME /usr/bin/timeout --kill-after=1s 25s
+  /bin/sh -c FIXED_SCRIPT sh REPO REPORT
+```
+
+The host supervisor requests a 35-second deadline, a 64-KiB combined-output cap and up to one second of cooperative cancellation plus the existing bounded reaping. `sbx exec` may start a stopped VM. These settings and killing the controller do not prove guest termination, effective whole-tree limits or positive quiescence. Leaf metadata checks do not qualify continuing backing or provider identity.
+
+The fixed script reports all fifteen PATH observations. Any missing tool stops before mise runs. Otherwise it changes to the supplied guest repository and invokes:
+
+```sh
+MISE_AUTO_INSTALL=false mise run f9:explain --report "$2"
+```
+
+`$2` is the quoted positional report argument, not interpolated shell source. The [mise settings reference](https://mise.jdx.dev/configuration/settings.html#auto_install) documents that this environment setting also disables task auto-installation. It does not confine hooks, plugins, explicit task installers, cache writes or every startup effect. Approved source/configuration behavior remains an external precondition. The runner performs no automatic trust, setup, installation or network-policy change.
+
+Task stdout/stderr are discarded inside the guest before the fixed completion result is emitted. The host requires the exact ordered fifteen-tool protocol, its final result and a consistent successful controller exit. Missing tools, failed repository/task execution, malformed/duplicate/extra fields, signals, overflow, unexpected stderr or ambiguous completion return sanitized `STOP` and exit `2`, without raw provider output, retry or fallback.
+
+Only all fifteen recorded tools plus a completed task exit `0` produce development result `PASS` and exit `0`. **Gate0 remains OPEN, `f9Qualified=false` and `trainingReady=false` even on PASS.** A valid explanation can describe all 44 F9 requirements as BLOCKED/NOT_RUN. This runner neither closes Gate0 nor supplies the outstanding independent checker/finalizer or acceptance protocol.
+
+Actual guest verification remains **NOT_RUN** in the authoring environment: `sbx` did not resolve on PATH, and no inventory or guest call ran. Tests with fake providers and fake mise establish no real sandbox result or installed mise compatibility.
+
 ## Offline verification
 
 ```fish
 bun test tooling/native-ingress/tests/f9-diagnose.test.mjs
+bun --no-env-file --no-install test tooling/native-ingress/tests/f9-verify-sbx.test.mjs tooling/native-ingress/tests/f9-explain.test.mjs
 bun run check:no-python
 ```
 

@@ -1,11 +1,13 @@
-' purpose: Live reconnaissance and saved-report explanation never grant F9 readiness.
+' purpose: Development diagnostics, saved explanations and host-runner PASS never grant F9 readiness.
 ' covers: mise.toml
 ' covers: tooling/native-ingress/f9-diagnose.mjs
 ' covers: tooling/native-ingress/f9-requirements.mjs
 ' covers: tooling/native-ingress/f9-summary.mjs
 ' covers: tooling/native-ingress/f9-explain.mjs
+' covers: tooling/native-ingress/f9-verify-sbx.mjs
 ' covers: tooling/native-ingress/tests/f9-diagnose.test.mjs
 ' covers: tooling/native-ingress/tests/f9-explain.test.mjs
+' covers: tooling/native-ingress/tests/f9-verify-sbx.test.mjs
 ' covers: tooling/native-ingress/F9-DIAGNOSTIC.md
 ' covers: tooling/sbx-dev/stages.mjs
 ' covers: tooling/sbx-dev/tests/stages.test.mjs
@@ -15,11 +17,20 @@
 ' covers: tooling/sbx-dev/tests/setup.test.mjs
 ' related: _spec/tooling/sbx-dev/preparation-workflow.puml
 ' related: _spec/tooling/bun-first-party-tooling.puml
+' related: _spec/_plans/native-ingress-rust-first-full-plan-packet.md
+' status: Host verification AUTHORED; offline suites 118 PASS / 0 FAIL; scoped host-helper code/spec and planned-publication review READY, no findings; real guest NOT_RUN; Gate0 OPEN; F9/training false.
+' source: Mise documentation observations supplied by the lead; no fetch in this pass.
+' reference: https://mise.jdx.dev/configuration/settings.html#auto_install
+' reference: https://mise.jdx.dev/tasks/task-configuration.html#raw-args
 ' note-register: DIAG right cancellation FK 12.1; DIAG/GUEST crash FK 12.7; DIAG/GATES authority FK 12.3.
+' note-register: OP/VERIFY approval FK 11.3; BOUNDED/GUEST deadline FK 10.7; MISE configuration FK 12.5.
+' note-register: GUEST/MISE privacy FK 10.2; VERIFY/GATES authority FK 11.9.
+' FK counts: approval W26/S48/N2; deadline W24/S44/N2; configuration W23/S46/N2.
+' FK counts: privacy W24/S43/N2; authority W25/S48/N2; W=words, S=syllables, N=sentences.
 ' FK syllables: hand-counted English; CLI=3, F9=2, Gate0=3, KUnit=3, G1=2.
 @startuml f9-diagnostic
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Development reconnaissance and saved explanation / F9 remains STOP
+title Development diagnostics, saved explanation and host verification / Gate0 remains OPEN
 actor Executor as OP
 participant "dev:sbx:create\nexisting helper" as CREATE <<host>>
 participant "f9:diagnose\nBun supervisor" as DIAG <<app>>
@@ -29,6 +40,9 @@ participant "f9-requirements.mjs\nstatic catalogue (44 current rows)" as GATES <
 participant "f9-explain.mjs\nf9:explain read-only CLI" as EXPLAIN <<app>>
 participant "f9-summary.mjs\npure formatter" as SUMMARY <<app>>
 database "Exact requested report leaf" as REPORT <<db>>
+participant "f9-verify-sbx.mjs\nf9:verify-sbx host CLI" as VERIFY <<app>>
+participant "f9-diagnose.mjs\nrunBounded host supervisor" as BOUNDED <<app>>
+participant "mise\nexisting guest f9:explain task" as MISE <<host>>
 
 OP -> CREATE : separately approved creation attempt
 CREATE --> OP : confirmed name / ambiguous state
@@ -124,5 +138,81 @@ group Offline saved-report explanation: no fresh observations
     still exist; presence proves no version,
     provenance or runtime behavior.
   end note
+end
+
+group Host-side verification contract: offline fake-provider tests PASS; real guest NOT_RUN
+  OP -> VERIFY : mise run f9:verify-sbx --sbx SBX --name NAME --repo REPO --report REPORT\nexactly one of --plan / --confirm-dev-verification\nBun --no-env-file --no-install; raw_args=true; no task dependencies/tools/env
+  VERIFY -> VERIFY : parseVerificationArgs: unique known options; no positionals\nlexically normalized absolute UTF-8 paths; no controls/trailing slash; <=4096 bytes\nNAME is literal [A-Za-z0-9][A-Za-z0-9_.-]{0,63}; no discovery
+  alt invalid arguments or ambiguous mode
+    VERIFY --> OP : sanitized STOP; exit 2; no executable inspection/provider call
+  else plan mode (--plan)
+    VERIFY --> OP : PLAN_ONLY; exit 0; frozen argv/settings only\nno executable metadata checks or provider queries; not permission\nGate0 OPEN; f9Qualified=false; trainingReady=false
+  else execution acknowledgement (--confirm-dev-verification)
+    note over OP, VERIFY
+  The confirmation flag acknowledges a request,
+  not permission to execute a live command.
+  Fresh approval must bind the chosen controller,
+  guest paths and configuration before use.
+    end note
+    VERIFY -> VERIFY : inspectExecutable(SBX): regular executable non-link leaf\nlstat before/after + access(X_OK); no body/hash/version read
+    alt executable checks fail
+      VERIFY --> OP : sanitized STOP / INVALID_EXECUTABLE; exit 2; no spawn
+    else executable checks pass: not provider identity or execution authority
+      VERIFY -> BOUNDED : one fixed argv; milliseconds=35000; cap=65536 combined bytes\ngraceMilliseconds=1000; existing bounded host-group termination/reaping
+      BOUNDED -> VM : SBX exec NAME /usr/bin/timeout --kill-after=1s 25s\n/bin/sh -c FIXED sh REPO REPORT; exec may start a stopped VM\nno ls/policy/create/copy/install/provision/cleanup/retry
+      VM -> GUEST : fixed script; repo/report are quoted positional values\nalready provisioned approved guest repo/config/imports/report; no host report read/copy
+      note over BOUNDED, GUEST
+  Terminating the controller cannot establish
+  that a guest process has stopped.
+  The guest deadline limits a requested command,
+  but supplies no independent quiescence proof.
+      end note
+      GUEST -> GUEST : emit F9_SBX_EXPLAIN_V1; command -v all fifteen names\nemit every ordered TOOL_name=PRESENT|MISSING field
+      note right of GUEST
+  PATH only: command -v, in this order
+  tar sha256sum timeout gpgv patch make clang
+  ld.bfd readelf node rustc cargo zig mise bun
+  No version/build queries or seeded-path credit
+      end note
+      alt any PATH tool missing
+        GUEST --> BOUNDED : all fifteen tool fields; RESULT=TOOLS_MISSING; exit 2\nno mise invocation
+      else all tools present but cd REPO fails
+        GUEST --> BOUNDED : RESULT=REPO_UNAVAILABLE; exit 2; no mise invocation
+      else all tools present and cd "$1" succeeds
+        GUEST -> MISE : MISE_AUTO_INSTALL=false mise run f9:explain --report "$2"\n>/dev/null 2>&1; raw-args form without an added separator
+        note right of MISE
+  Disabling automatic installation does not
+  confine configuration hooks or plugin startup.
+  The operator must approve those guest effects
+  before the requested task runs.
+        end note
+        MISE -> EXPLAIN : existing guest task/helper and approved source imports\nroot auto_install=false and tool pins unchanged\ninstalled Mise forwarding/setting behavior remains UNTESTED
+        EXPLAIN -> REPORT : read only existing guest report through unchanged explainer API
+        REPORT --> EXPLAIN : retained diagnostic fields, not fresh or authenticated observations
+        EXPLAIN --> MISE : formatting exit 0 can legitimately describe a STOP report\ninvalid arguments/read/report return exit 2
+        MISE --> GUEST : task status only; stdout/stderr discarded
+        note over GUEST, MISE
+  Task output is discarded before the guest
+  emits the final protocol result.
+  This separation prevents task logs from posing
+  as protocol evidence of success.
+        end note
+        GUEST --> BOUNDED : RESULT=EXPLAIN_SUCCEEDED with exit 0\nor RESULT=EXPLAIN_FAILED with exit 2
+      end
+      BOUNDED --> VERIFY : bounded stdout/stderr, outcome, code, signal or execution failure
+      VERIFY -> VERIFY : parseGuestVerification: exact marker + fifteen ordered unique tool fields\n+ one allowed RESULT row + final newline; missing/result consistency\nno duplicate/reordered/unknown/extra authority fields
+      alt EXPLAIN_SUCCEEDED, all tools PRESENT, EXIT, ok=true, code=0, signal=null, stderr empty, within cap
+        VERIFY --> OP : development result PASS; exit 0\nallToolsAvailable=true; explanationSucceeded=true\nGate0 OPEN; f9Qualified=false; trainingReady=false
+      else missing/repo/explainer failure, malformed/crossed protocol, nonzero, signal, overflow, stderr or spawn error
+        VERIFY --> OP : sanitized STOP; exit 2; no raw provider stdout/stderr/error names\nGate0 OPEN; f9Qualified=false; trainingReady=false; no retry
+      end
+    end
+    note over VERIFY, GATES
+  Tool presence and report formatting do not
+  prove source identity or native behavior.
+  Independent Gate0 acceptance remains required,
+  and this runner grants no such authority.
+    end note
+  end
 end
 @enduml
