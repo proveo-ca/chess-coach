@@ -5,7 +5,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, 
 import { join } from "node:path";
 import { completeProfile } from "../complete-profile.mjs";
 import {
-  STAGES, completeToolsPlan, downloadArtifact, main, parseCapacity, parseCompleteTools,
+  STAGES, completeToolsFailure, completeToolsPlan, downloadArtifact, main, parseCapacity, parseCompleteTools,
   parseGuestReport, parsePreflight, prepareCompleteTools, readCompleteState, runCompleteStage,
 } from "../complete-tools.mjs";
 
@@ -105,6 +105,40 @@ function guestResult(action, state, extra = {}) {
     data: action === "verify" ? { allToolsAvailable: true } : {}, ...extra };
 }
 
+function failureFrom(action) {
+  let failure;
+  try { action(); } catch (error) { failure = error; }
+  expect(failure).toBeDefined();
+  expect(failure.message).toBe("DEV_TOOLS_STOP");
+  return completeToolsFailure(failure);
+}
+
+async function failedPreflight(execute) {
+  await start();
+  await through("policy");
+  const output = [], errors = [];
+  const exit = await main(["--state", statePath, "--stage", "preflight"], { ...dependencies, execute,
+    output: (value) => output.push(value), error: (value) => errors.push(value) });
+  expect(exit).toBe(2);
+  expect(output).toEqual([]);
+  expect(errors).toHaveLength(2);
+  expect(errors[0]).toBe("DEV_TOOLS_STOP; retain attempt files and guest reservation; reconcile in-flight stages; never retry an attempted stage or remove reservations; Gate0=OPEN; f9Qualified=false; trainingReady=false.");
+  expect(Buffer.byteLength(errors[1])).toBeLessThanOrEqual(4096);
+  const diagnostic = JSON.parse(errors[1]);
+  expect(diagnostic).toMatchObject({ schema: "dev-sbx-complete-failure-v1", result: "DEV_TOOLS_STOP",
+    stage: "preflight", phase: "EFFECT", ...AUTHORITY });
+  expect(readCompleteState(statePath)).toMatchObject({ status: "RECONCILE", inFlightStage: "preflight", nextStage: null });
+  expect(existsSync(join(run, "02-preflight.intent.json"))).toBe(true);
+  expect(existsSync(join(run, "02-preflight.complete.json"))).toBe(false);
+  expect(existsSync(join(run, "receipt.json"))).toBe(false);
+  expect(requests).toEqual([]);
+  const count = approvals.length;
+  await expect(runCompleteStage("preflight", { state: statePath }, dependencies)).rejects.toThrow("DEV_TOOLS_STOP");
+  await expect(runCompleteStage("accept-policy", { state: statePath }, dependencies)).rejects.toThrow("DEV_TOOLS_STOP");
+  expect(approvals).toHaveLength(count);
+  return { diagnostic, errors };
+}
+
 test("parser accepts only explicit new targets or one next-stage selector", () => {
   expect(parseCompleteTools(["--name", NAME, "--plan"])).toEqual({ name: NAME, plan: true });
   expect(parseCompleteTools(["--state", statePath, "--stage", "copy", "--plan"])).toEqual({ state: statePath, stage: "copy", plan: true });
@@ -199,7 +233,11 @@ test("the first five stages require separate approvals and preserve all earlier 
 test("source drift during approval refuses before intent and before provider effects", async () => {
   await start();
   const confirm = async () => { writeFileSync(join(fixture, "sources", "complete-profile.mjs"), "changed fixture\n"); return true; };
-  await expect(runCompleteStage("policy", { state: statePath, stage: "policy" }, { ...dependencies, confirm })).rejects.toThrow();
+  let failure;
+  try { await runCompleteStage("policy", { state: statePath, stage: "policy" }, { ...dependencies, confirm }); }
+  catch (error) { failure = error; }
+  expect(completeToolsFailure(failure)).toMatchObject({ stage: "policy", phase: "POST_APPROVAL",
+    failures: [{ check: "SOURCE_BINDINGS", code: "BINDING_INVALID" }], ...AUTHORITY });
   expect(calls).toEqual([]);
   expect(existsSync(join(run, "01-policy.intent.json"))).toBe(false);
   expect(readCompleteState(statePath).nextStage).toBe("policy");
@@ -426,4 +464,191 @@ test("CLI withholds provider errors and never claims readiness after a failed st
   expect(errors.join("\n")).not.toContain("signed-location");
   expect(errors.join("\n")).toContain("Gate0=OPEN");
   expect(errors.join("\n")).not.toContain("DEV_TOOLS_READY");
+});
+
+test.each([
+  ["OS=Linux", "OS=Darwin", "OS", "Linux"],
+  ["ARCH=x86_64", "ARCH=aarch64", "ARCH", "x86_64"],
+  ["GLIBC=glibc 2.35", "GLIBC=glibc 2.17", "GLIBC", "GLIBC_AT_LEAST_2_18"],
+  ...completeProfile.baseTools.map((tool) => [`TOOL_${tool}=PRESENT`, `TOOL_${tool}=MISSING`, `TOOL_${tool}`, "PRESENT"]),
+  ["WORKSPACE=WRITABLE", "WORKSPACE=UNAVAILABLE", "WORKSPACE", "WRITABLE"],
+  ["TAR=EXECUTABLE", "TAR=MISSING", "TAR", "EXECUTABLE"],
+  ["XZ=EXECUTABLE", "XZ=MISSING", "XZ", "EXECUTABLE"],
+  ["GNU_TAR=YES", "GNU_TAR=NO", "GNU_TAR", "YES"],
+  [df(), df(24 * 1024 ** 2 - 1), "GUEST_CAPACITY", "AT_LEAST_24_GIB_FREE"],
+])("complete preflight protocol identifies the exact unmet requirement: %s", (from, to, check, expected) => {
+  const report = failureFrom(() => parsePreflight(preflight().replace(from, to)));
+  expect(report.failures).toEqual([{ check, code: "REQUIREMENT_UNMET", expected }]);
+  expect(report).toMatchObject({ result: "DEV_TOOLS_STOP", ...AUTHORITY });
+});
+
+test("complete protocol reports combined unmet checks in fixed order without observed values", () => {
+  let stdout = preflight().replace("OS=Linux", "OS=PRIVATE_OS").replace("ARCH=x86_64", "ARCH=PRIVATE_ARCH")
+    .replace("GLIBC=glibc 2.35", "GLIBC=glibc 2.17").replace("WORKSPACE=WRITABLE", "WORKSPACE=UNAVAILABLE")
+    .replace("TAR=EXECUTABLE", "TAR=MISSING").replace("XZ=EXECUTABLE", "XZ=MISSING").replace("GNU_TAR=YES", "GNU_TAR=NO")
+    .replace(df(), df(24 * 1024 ** 2 - 1).replace("/dev/fixture", "/dev/PRIVATE_DISK"));
+  for (const tool of completeProfile.baseTools) stdout = stdout.replace(`TOOL_${tool}=PRESENT`, `TOOL_${tool}=MISSING`);
+  const report = failureFrom(() => parsePreflight(stdout));
+  expect(report.failures.map(({ check }) => check)).toEqual(["OS", "ARCH", "GLIBC",
+    ...completeProfile.baseTools.map((tool) => `TOOL_${tool}`), "WORKSPACE", "TAR", "XZ", "GNU_TAR", "GUEST_CAPACITY"]);
+  expect(JSON.stringify(report)).not.toContain("PRIVATE");
+  expect(JSON.stringify(report)).not.toContain(String(24 * 1024 ** 2 - 1));
+});
+
+test.each([
+  (stdout) => stdout.replace("DEV_SBX_PREFLIGHT_V1", "PRIVATE_HEADER"),
+  (stdout) => stdout.replace("XZ=MISSING", "XZ=PRIVATE_VALUE"),
+  (stdout) => stdout.replace("TOOL_node=PRESENT", "TOOL_node=PRESENT\nTOOL_node=PRESENT"),
+  (stdout) => stdout.replace("TAR=EXECUTABLE\nXZ=MISSING", "XZ=MISSING\nTAR=EXECUTABLE"),
+  (stdout) => stdout.replace("Filesystem 1024-blocks", "Filesystem Size"),
+  (stdout) => stdout.replace("DF_END\n", ""),
+  (stdout) => stdout.replace("DONE\n", ""),
+  (stdout) => stdout.slice(0, -1),
+  (stdout) => `${stdout}PRIVATE_EXTRA\n`,
+  (stdout) => stdout.replace("GLIBC=glibc 2.35", "GLIBC=PRIVATE_LIBC"),
+])("malformed protocol never fabricates unmet checks from partial observations %#", (mutate) => {
+  const stdout = preflight().replace("XZ=EXECUTABLE", "XZ=MISSING").replace(df(), df(1));
+  const report = failureFrom(() => parsePreflight(mutate(stdout)));
+  expect(report.failures).toEqual([{ check: "PROTOCOL", code: "PROTOCOL_INVALID" }]);
+  expect(JSON.stringify(report)).not.toContain("PRIVATE");
+});
+
+test("host and guest free-space failures print fixed floors, not measured paths or values", () => {
+  const report = failureFrom(() => parseCapacity(df(10 * 1024 ** 2 - 1), 10 * 1024 ** 2));
+  expect(report.failures).toEqual([{ check: "HOST_CAPACITY", code: "REQUIREMENT_UNMET", expected: "AT_LEAST_10_GIB_FREE" }]);
+  expect(JSON.stringify(report)).not.toContain(String(10 * 1024 ** 2 - 1));
+  for (const minimum of [undefined, NaN, Infinity, -1, 0.5]) {
+    expect(failureFrom(() => parseCapacity(df(), minimum)).failures).toEqual([{ check: "ARGUMENTS", code: "INVALID_ARGUMENTS" }]);
+  }
+});
+
+test("CLI appends actionable preflight JSON while preserving the fixed stderr line and empty stdout", async () => {
+  const { diagnostic, errors } = await failedPreflight(async () => result(preflight().replace("XZ=EXECUTABLE", "XZ=MISSING")));
+  expect(diagnostic.failures).toEqual([{ check: "XZ", code: "REQUIREMENT_UNMET", expected: "EXECUTABLE" }]);
+  expect(errors.join("\n")).not.toContain(NAME);
+  expect(errors.join("\n")).not.toContain(statePath);
+});
+
+test.each([
+  [{ outcome: "TIMEOUT", ok: false, code: null }, "TIMEOUT"],
+  [{ outcome: "OUTPUT_LIMIT", ok: false, code: null, bytes: 16385 }, "OUTPUT_LIMIT"],
+  [{ outcome: "INTERRUPTED", ok: false, code: null }, "INTERRUPTED"],
+  [{ outcome: "SPAWN_ERROR", ok: false, code: null }, "SPAWN_ERROR"],
+  [{ outcome: "SPAWN_ERROR", ok: false, code: -2 }, "SPAWN_ERROR"],
+  [{ outcome: "SPAWN_ERROR", ok: false, code: -13 }, "SPAWN_ERROR"],
+  [{ outcome: "STREAM_ERROR", ok: false, code: null }, "STREAM_ERROR"],
+  [{ outcome: "INCOMPLETE_STREAM", ok: false, code: null }, "INCOMPLETE_STREAM"],
+  [{ code: 7, ok: false }, "NONZERO_EXIT"],
+  [{ code: null, signal: "SIGKILL", ok: false }, "SIGNAL"],
+  [{ stderr: "PRIVATE_STDERR\u001b[31m" }, "UNEXPECTED_STDERR"],
+  [{ stdout: "PRIVATE_OVERFLOW".repeat(2000) }, "OUTPUT_LIMIT"],
+  [{ outcome: "PRIVATE_OUTCOME" }, "EXECUTOR_RESULT_INVALID"],
+  [{ code: undefined }, "EXECUTOR_RESULT_INVALID"],
+  [{ code: -1 }, "EXECUTOR_RESULT_INVALID"],
+  [{ signal: "PRIVATE_SIGNAL" }, "EXECUTOR_RESULT_INVALID"],
+  [{ bytes: Infinity }, "EXECUTOR_RESULT_INVALID"],
+  [{ ok: false }, "EXECUTOR_RESULT_INVALID"],
+  [{ outcome: "TIMEOUT", ok: true }, "EXECUTOR_RESULT_INVALID"],
+])("executor failure emits a fixed category without parsing partial output %#", async (extra, code) => {
+  const { diagnostic, errors } = await failedPreflight(async () => result("PRIVATE_STDOUT\n", extra));
+  expect(diagnostic.failures).toEqual([{ check: "COMMAND", code }]);
+  expect(errors.join("\n")).not.toContain("PRIVATE");
+  expect(errors.join("\n")).not.toContain("SIGKILL");
+});
+
+test("forged exception properties and hostile getters cannot inject diagnostics", async () => {
+  const error = Object.assign(new Error("PRIVATE_EXCEPTION\u001b[31m https://user:PRIVATE_TOKEN@example.invalid/?secret=x"),
+    { code: "TIMEOUT", check: "OS", phase: "EFFECT", stage: "preflight", expected: "PRIVATE_EXPECTED", cause: "PRIVATE_CAUSE" });
+  const untrusted = completeToolsFailure(error);
+  expect(untrusted.failures).toEqual([{ check: "INTERNAL", code: "INTERNAL_ERROR" }]);
+  expect(JSON.stringify(untrusted)).not.toContain("PRIVATE");
+  const hostile = new Proxy(error, { get() { throw new Error("PRIVATE_GETTER"); } });
+  expect(completeToolsFailure(hostile)).toEqual(untrusted);
+  const { diagnostic, errors } = await failedPreflight(async () => { throw error; });
+  expect(diagnostic.failures).toEqual([{ check: "COMMAND", code: "INTERNAL_ERROR" }]);
+  expect(errors.join("\n")).not.toContain("PRIVATE");
+  expect(errors.join("\n")).not.toContain("https:");
+});
+
+test("formatted diagnostic copies do not mutate the private error registry", () => {
+  let error;
+  try { parsePreflight(preflight().replace("XZ=EXECUTABLE", "XZ=MISSING")); } catch (failure) { error = failure; }
+  const first = completeToolsFailure(error);
+  first.failures[0].expected = "PRIVATE_MUTATION";
+  expect(completeToolsFailure(error).failures[0].expected).toBe("EXECUTABLE");
+});
+
+test("invalid CLI arguments produce only a fixed argument diagnostic", async () => {
+  const errors = [], output = [];
+  expect(await main(["--name", "PRIVATE_NAME\n", "--plan"], { ...dependencies,
+    error: (value) => errors.push(value), output: (value) => output.push(value) })).toBe(2);
+  expect(output).toEqual([]);
+  expect(JSON.parse(errors[1])).toMatchObject({ stage: "CLI", phase: "ARGUMENTS",
+    failures: [{ check: "ARGUMENTS", code: "INVALID_ARGUMENTS" }], ...AUTHORITY });
+  expect(errors.join("\n")).not.toContain("PRIVATE");
+  expect(readdirSync(run)).toEqual([]);
+  expect(calls).toEqual([]);
+});
+
+test("controller drift after approval reports the binding boundary before intent", async () => {
+  await start();
+  let controller = SBX;
+  let failure;
+  try {
+    await runCompleteStage("policy", { state: statePath }, { ...dependencies, resolveController: () => controller,
+      confirm: async () => { controller = "/PRIVATE_CONTROLLER"; return true; } });
+  } catch (error) { failure = error; }
+  expect(completeToolsFailure(failure)).toMatchObject({ stage: "policy", phase: "POST_APPROVAL",
+    failures: [{ check: "CONTROLLER_BINDINGS", code: "BINDING_INVALID" }] });
+  expect(calls).toEqual([]);
+  expect(existsSync(join(run, "01-policy.intent.json"))).toBe(false);
+  expect(JSON.stringify(completeToolsFailure(failure))).not.toContain("PRIVATE");
+});
+
+test("changed source bindings refuse old synthetic state without attempting or migrating it", async () => {
+  await start();
+  const before = readFileSync(statePath), errors = [];
+  writeFileSync(join(fixture, "sources/complete-tools.mjs"), "PRIVATE_NEW_REVISION\n");
+  expect(await main(["--state", statePath, "--stage", "policy"], { ...dependencies,
+    error: (value) => errors.push(value), output: () => { throw new Error("UNEXPECTED_STDOUT"); } })).toBe(2);
+  expect(JSON.parse(errors[1])).toMatchObject({ stage: "policy", phase: "PRE_APPROVAL",
+    failures: [{ check: "SOURCE_BINDINGS", code: "BINDING_INVALID" }] });
+  expect(readFileSync(statePath).equals(before)).toBe(true);
+  expect(existsSync(join(run, "01-policy.intent.json"))).toBe(false);
+  expect(approvals).toEqual([]);
+  expect(calls).toEqual([]);
+});
+
+test("an intent-write collision reports uncertainty without claiming guest execution", async () => {
+  await start();
+  const errors = [];
+  let resolutions = 0;
+  expect(await main(["--state", statePath, "--stage", "policy"], { ...dependencies,
+    resolveController: () => {
+      if (++resolutions === 2) mkdirSync(join(run, "01-policy.intent.json"), { mode: 0o700 });
+      return SBX;
+    }, error: (value) => errors.push(value), output: () => { throw new Error("UNEXPECTED_STDOUT"); } })).toBe(2);
+  expect(JSON.parse(errors[1])).toMatchObject({ stage: "policy", phase: "INTENT_WRITE",
+    failures: [{ check: "INTENT", code: "INTENT_WRITE_UNCERTAIN" }] });
+  expect(calls).toEqual([]);
+  expect(existsSync(join(run, "01-policy.complete.json"))).toBe(false);
+  expect(() => readCompleteState(statePath)).toThrow();
+});
+
+test("post-effect source drift reports finalization without claiming a guest prerequisite failure", async () => {
+  await start(); await through("policy");
+  const errors = [], output = [];
+  expect(await main(["--state", statePath, "--stage", "preflight"], { ...dependencies,
+    execute: async () => {
+      writeFileSync(join(fixture, "sources/complete-tools.mjs"), "PRIVATE_SOURCE_DRIFT\n");
+      return result(preflight());
+    }, error: (value) => errors.push(value), output: (value) => output.push(value) })).toBe(2);
+  const report = JSON.parse(errors[1]);
+  expect(report).toMatchObject({ stage: "preflight", phase: "FINALIZATION",
+    failures: [{ check: "SOURCE_BINDINGS", code: "BINDING_INVALID" }] });
+  expect(output).toEqual([]);
+  expect(existsSync(join(run, "02-preflight.intent.json"))).toBe(true);
+  expect(existsSync(join(run, "02-preflight.complete.json"))).toBe(false);
+  expect(readCompleteState(statePath).status).toBe("RECONCILE");
+  expect(errors.join("\n")).not.toContain("PRIVATE");
 });

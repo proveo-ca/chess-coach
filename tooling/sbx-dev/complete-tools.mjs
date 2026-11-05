@@ -23,6 +23,27 @@ const SOURCE_CAP = 256 * 1024;
 const RECORD_CAP = 64 * 1024;
 const CHUNK = 128 * 1024;
 const AUTHORITY = Object.freeze({ gate0: "OPEN", f9Qualified: false, trainingReady: false });
+const FAILURE_LINE = "DEV_TOOLS_STOP; retain attempt files and guest reservation; reconcile in-flight stages; never retry an attempted stage or remove reservations; Gate0=OPEN; f9Qualified=false; trainingReady=false.";
+const failureDetails = new WeakMap();
+const PHASE_FAILURES = {
+  ARGUMENTS: ["ARGUMENTS", "INVALID_ARGUMENTS"], INITIALIZATION: ["INITIALIZATION", "INTERNAL_ERROR"],
+  STATE_READ: ["STATE_BINDINGS", "STATE_INVALID"], PRE_APPROVAL: ["STATE_BINDINGS", "BINDING_INVALID"],
+  APPROVAL: ["APPROVAL", "INTERNAL_ERROR"], POST_APPROVAL: ["STATE_BINDINGS", "BINDING_INVALID"],
+  INTENT_WRITE: ["INTENT", "INTENT_WRITE_UNCERTAIN"], EFFECT: ["EFFECT", "INTERNAL_ERROR"],
+  FINALIZATION: ["FINALIZATION", "FINALIZATION_FAILED"],
+};
+const EXPECTATIONS = {
+  OS: "Linux", ARCH: "x86_64", GLIBC: "GLIBC_AT_LEAST_2_18", WORKSPACE: "WRITABLE",
+  TAR: "EXECUTABLE", XZ: "EXECUTABLE", GNU_TAR: "YES",
+  GUEST_CAPACITY: "AT_LEAST_24_GIB_FREE", HOST_CAPACITY: "AT_LEAST_10_GIB_FREE", CAPACITY: "MINIMUM_FREE_SPACE",
+  ...Object.fromEntries(completeProfile.baseTools.map((tool) => [`TOOL_${tool}`, "PRESENT"])),
+};
+const FAILURE_CHECKS = new Set(["INTERNAL", "ARGUMENTS", "INITIALIZATION", "STATE_BINDINGS", "SOURCE_BINDINGS",
+  "CONTROLLER_BINDINGS", "APPROVAL", "TTY", "INTENT", "EFFECT", "FINALIZATION", "PROTOCOL", "COMMAND", ...Object.keys(EXPECTATIONS)]);
+const FAILURE_CODES = new Set(["INTERNAL_ERROR", "INVALID_ARGUMENTS", "STATE_INVALID", "BINDING_INVALID", "APPROVAL_DECLINED",
+  "TTY_REQUIRED", "INTENT_WRITE_UNCERTAIN", "FINALIZATION_FAILED", "REQUIREMENT_UNMET", "PROTOCOL_INVALID",
+  "TIMEOUT", "OUTPUT_LIMIT", "INTERRUPTED", "SPAWN_ERROR", "STREAM_ERROR", "INCOMPLETE_STREAM",
+  "NONZERO_EXIT", "SIGNAL", "UNEXPECTED_STDERR", "EXECUTOR_RESULT_INVALID"]);
 const hash = (value) => createHash("sha256").update(value).digest("hex");
 const PROFILE_SHA = hash(JSON.stringify(completeProfile));
 const hex = (value, length) => typeof value === "string" && value.length === length && !/[^0-9a-f]/.test(value);
@@ -30,6 +51,43 @@ const same = (a, b) => ["dev", "ino", "mode", "uid", "gid", "nlink", "size", "mt
   .every((key) => a[key] === b[key]);
 
 function fail() { throw new Error("DEV_TOOLS_STOP"); }
+
+function diagnosticFailure(failures) {
+  const error = new Error("DEV_TOOLS_STOP");
+  failureDetails.set(error, { failures });
+  return error;
+}
+
+function unmet(check) {
+  return { check, code: "REQUIREMENT_UNMET", expected: EXPECTATIONS[check] };
+}
+
+function failCheck(check, code) { throw diagnosticFailure([{ check, code }]); }
+
+function failureAt(error, stage, phase) {
+  const prior = error && typeof error === "object" ? failureDetails.get(error) : null;
+  if (prior?.stage && prior?.phase) return error;
+  const [check, code] = PHASE_FAILURES[phase] ?? ["INTERNAL", "INTERNAL_ERROR"];
+  const result = diagnosticFailure(prior?.failures ?? [{ check, code }]);
+  Object.assign(failureDetails.get(result), { stage: STAGES.includes(stage) ? stage : "CLI", phase });
+  return result;
+}
+
+export function completeToolsFailure(error) {
+  const detail = error && typeof error === "object" ? failureDetails.get(error) : null;
+  const stage = detail?.stage ?? "CLI", phase = detail?.phase ?? "INITIALIZATION";
+  const valid = detail && (stage === "CLI" || STAGES.includes(stage))
+    && Object.hasOwn(PHASE_FAILURES, phase) && Array.isArray(detail.failures)
+    && detail.failures.length > 0 && detail.failures.length <= 32
+    && detail.failures.every(({ check, code, expected }) => FAILURE_CHECKS.has(check) && FAILURE_CODES.has(code)
+      && (expected === undefined || (Object.hasOwn(EXPECTATIONS, check) && expected === EXPECTATIONS[check])));
+  return {
+    schema: "dev-sbx-complete-failure-v1", result: "DEV_TOOLS_STOP",
+    stage: valid ? stage : "CLI", phase: valid ? phase : "INITIALIZATION",
+    failures: valid ? detail.failures.map(({ check, code, expected }) => ({ check, code, ...(expected === undefined ? {} : { expected }) }))
+      : [{ check: "INTERNAL", code: "INTERNAL_ERROR" }], ...AUTHORITY,
+  };
+}
 
 function plain(value) {
   return value !== null && typeof value === "object" && Object.getPrototypeOf(value) === Object.prototype;
@@ -175,6 +233,18 @@ function sourceBindings(dependencies) {
   return bindings;
 }
 
+function assertSourceBindings(state, dependencies) {
+  let valid = false;
+  try { valid = JSON.stringify(sourceBindings(dependencies)) === JSON.stringify(state.sourceBindings); } catch {}
+  if (!valid) failCheck("SOURCE_BINDINGS", "BINDING_INVALID");
+}
+
+function assertControllerBinding(state, dependencies) {
+  let valid = false;
+  try { valid = (dependencies.resolveController ?? resolveController)(state.sbxPath) === state.sbxPath; } catch {}
+  if (!valid) failCheck("CONTROLLER_BINDINGS", "BINDING_INVALID");
+}
+
 function executable(path) {
   absolute(path);
   if (realpathSync(path) !== path) fail();
@@ -211,14 +281,18 @@ function masterChecked(value) {
 }
 
 export function parseCapacity(stdout, minimumKiB) {
-  if (typeof stdout !== "string" || Buffer.byteLength(stdout) > 16384 || /[\x00-\x08\x0b-\x1f\x7f-\x9f]/.test(stdout)) fail();
+  const invalid = () => failCheck("PROTOCOL", "PROTOCOL_INVALID");
+  if (!Number.isSafeInteger(minimumKiB) || minimumKiB < 0) failCheck("ARGUMENTS", "INVALID_ARGUMENTS");
+  if (typeof stdout !== "string" || Buffer.byteLength(stdout) > 16384 || /[\x00-\x08\x0b-\x1f\x7f-\x9f]/.test(stdout)) invalid();
   const lines = stdout.split("\n");
-  if (lines.length !== 3 || lines[2] !== "" || !/^Filesystem\s+1024-blocks\s+Used\s+Available\s+Capacity\s+Mounted on$/.test(lines[0])) fail();
+  if (lines.length !== 3 || lines[2] !== "" || !/^Filesystem\s+1024-blocks\s+Used\s+Available\s+Capacity\s+Mounted on$/.test(lines[0])) invalid();
   const fields = lines[1].trim().split(/\s+/);
   if (fields.length !== 6 || fields.slice(1, 4).some((field) => !/^[0-9]+$/.test(field))
-    || !/^[0-9]{1,3}%$/.test(fields[4]) || !fields[5].startsWith("/")) fail();
+    || !/^[0-9]{1,3}%$/.test(fields[4]) || !fields[5].startsWith("/")) invalid();
   const total = Number(fields[1]), available = Number(fields[3]);
-  if (![total, Number(fields[2]), available].every(Number.isSafeInteger) || available > total || available < minimumKiB) fail();
+  if (![total, Number(fields[2]), available].every(Number.isSafeInteger) || available > total) invalid();
+  if (available < minimumKiB) throw diagnosticFailure([unmet(minimumKiB === 24 * 1024 ** 2 ? "GUEST_CAPACITY"
+    : minimumKiB === 10 * 1024 ** 2 ? "HOST_CAPACITY" : "CAPACITY")]);
   return { freeKiB: available };
 }
 
@@ -243,17 +317,42 @@ printf 'DF_END\\nDONE\\n'
 `;
 
 export function parsePreflight(stdout) {
-  if (typeof stdout !== "string" || Buffer.byteLength(stdout) > 16384) fail();
+  const invalid = () => failCheck("PROTOCOL", "PROTOCOL_INVALID");
+  if (typeof stdout !== "string" || Buffer.byteLength(stdout) > 16384) invalid();
   const lines = stdout.split("\n");
-  const take = (expected) => { if (lines.shift() !== expected) fail(); };
-  take("DEV_SBX_PREFLIGHT_V1"); take("OS=Linux"); take("ARCH=x86_64");
+  const take = (expected) => { if (lines.shift() !== expected) invalid(); };
+  const field = (key, values) => {
+    const line = lines.shift() ?? "", prefix = `${key}=`;
+    const value = line.startsWith(prefix) ? line.slice(prefix.length) : "";
+    if (!values.includes(value)) invalid();
+    return value;
+  };
+  const token = (key) => {
+    const match = new RegExp(`^${key}=([A-Za-z0-9_.-]{1,64})$`).exec(lines.shift() ?? "");
+    if (!match) invalid();
+    return match[1];
+  };
+  take("DEV_SBX_PREFLIGHT_V1");
+  const os = token("OS"), arch = token("ARCH");
   const libc = /^GLIBC=glibc ([0-9]{1,3})\.([0-9]{1,3})$/.exec(lines.shift() ?? "");
-  if (!libc || !(Number(libc[1]) > 2 || (Number(libc[1]) === 2 && Number(libc[2]) >= 18))) fail();
-  for (const tool of completeProfile.baseTools) take(`TOOL_${tool}=PRESENT`);
-  take("WORKSPACE=WRITABLE"); take("TAR=EXECUTABLE"); take("XZ=EXECUTABLE"); take("GNU_TAR=YES"); take("DF_BEGIN");
-  const capacity = parseCapacity(`${lines.shift()}\n${lines.shift()}\n`, 24 * 1024 ** 2);
+  if (!libc) invalid();
+  const tools = completeProfile.baseTools.map((tool) => [tool, field(`TOOL_${tool}`, ["PRESENT", "MISSING"])]);
+  const workspace = field("WORKSPACE", ["WRITABLE", "UNAVAILABLE"]);
+  const tar = field("TAR", ["EXECUTABLE", "MISSING"]), xz = field("XZ", ["EXECUTABLE", "MISSING"]);
+  const gnuTar = field("GNU_TAR", ["YES", "NO"]);
+  take("DF_BEGIN");
+  const capacity = parseCapacity(`${lines.shift()}\n${lines.shift()}\n`, 0);
   take("DF_END"); take("DONE"); take("");
-  if (lines.length) fail();
+  if (lines.length) invalid();
+  const failures = [];
+  const require = (valid, check) => { if (!valid) failures.push(unmet(check)); };
+  require(os === "Linux", "OS"); require(arch === "x86_64", "ARCH");
+  require(Number(libc[1]) > 2 || (Number(libc[1]) === 2 && Number(libc[2]) >= 18), "GLIBC");
+  for (const [tool, status] of tools) require(status === "PRESENT", `TOOL_${tool}`);
+  require(workspace === "WRITABLE", "WORKSPACE"); require(tar === "EXECUTABLE", "TAR");
+  require(xz === "EXECUTABLE", "XZ"); require(gnuTar === "YES", "GNU_TAR");
+  require(capacity.freeKiB >= 24 * 1024 ** 2, "GUEST_CAPACITY");
+  if (failures.length) throw diagnosticFailure(failures);
   return { os: "Linux", arch: "x86_64", glibc: `${libc[1]}.${libc[2]}`, baseTools: [...completeProfile.baseTools],
     workspaceWritable: true, tar: true, xz: true, gnuTar: true, ...capacity };
 }
@@ -385,7 +484,7 @@ async function confirmTTY({ prompt }) {
 }
 
 function terminalRequired(dependencies) {
-  if (!dependencies.confirm && (!process.stdin.isTTY || !process.stderr.isTTY)) fail();
+  if (!dependencies.confirm && (!process.stdin.isTTY || !process.stderr.isTTY)) failCheck("TTY", "TTY_REQUIRED");
 }
 
 function acknowledgement(parent, state) {
@@ -415,12 +514,33 @@ function prompt(stage, state) {
 }
 
 async function checked(execute, argv, bounds, quiet = false) {
-  const result = await execute(argv, bounds);
-  if (!result || result.ok !== true || result.code !== 0 || result.signal !== null || result.outcome !== "EXIT"
-    || typeof result.stdout !== "string" || typeof result.stderr !== "string"
-    || Buffer.byteLength(result.stdout) + Buffer.byteLength(result.stderr) > bounds.cap
-    || (result.bytes !== undefined && (!Number.isSafeInteger(result.bytes) || result.bytes < 0 || result.bytes > bounds.cap))
-    || (quiet && result.stderr !== "")) fail();
+  let result;
+  try { result = await execute(argv, bounds); }
+  catch { failCheck("COMMAND", "INTERNAL_ERROR"); }
+  const invalid = () => failCheck("COMMAND", "EXECUTOR_RESULT_INVALID");
+  if (!plain(result) || typeof result.ok !== "boolean" || typeof result.stdout !== "string" || typeof result.stderr !== "string"
+    || (result.code !== null && !Number.isSafeInteger(result.code))
+    || (result.signal !== null && (typeof result.signal !== "string" || !/^SIG[A-Z0-9]{1,20}$/.test(result.signal)))
+    || (result.bytes !== undefined && (!Number.isSafeInteger(result.bytes) || result.bytes < 0))) invalid();
+  const outcomes = ["TIMEOUT", "OUTPUT_LIMIT", "INTERRUPTED", "SPAWN_ERROR", "STREAM_ERROR", "INCOMPLETE_STREAM"];
+  if (outcomes.includes(result.outcome)) {
+    if (result.ok) invalid();
+    failCheck("COMMAND", result.outcome);
+  }
+  if (result.outcome !== "EXIT") invalid();
+  if (Buffer.byteLength(result.stdout) + Buffer.byteLength(result.stderr) > bounds.cap
+    || (result.bytes !== undefined && result.bytes > bounds.cap)) failCheck("COMMAND", "OUTPUT_LIMIT");
+  if (result.signal !== null) {
+    if (result.ok) invalid();
+    failCheck("COMMAND", "SIGNAL");
+  }
+  if (result.code === null || result.code < 0 || result.code > 255) invalid();
+  if (result.code !== 0) {
+    if (result.ok) invalid();
+    failCheck("COMMAND", "NONZERO_EXIT");
+  }
+  if (!result.ok) invalid();
+  if (quiet && result.stderr !== "") failCheck("COMMAND", "UNEXPECTED_STDERR");
   return result.stdout;
 }
 
@@ -690,33 +810,45 @@ function receipt(state) {
 }
 
 export async function runCompleteStage(stage, options, dependencies = {}) {
-  if (!STAGES.includes(stage)) fail();
-  if (!plain(options) || (options.stage !== undefined && options.stage !== stage)) fail();
-  options = optionsChecked({ ...options, stage });
-  if (!options.state) fail();
-  if (options.plan) return completeToolsPlan(options);
-  terminalRequired(dependencies);
-  const statePath = stateLocation(options.state), directory = dirname(statePath), parent = privateDirectory(directory);
+  let phase = "ARGUMENTS", parent;
   try {
+    if (!STAGES.includes(stage)) fail();
+    if (!plain(options) || (options.stage !== undefined && options.stage !== stage)) fail();
+    options = optionsChecked({ ...options, stage });
+    if (!options.state) fail();
+    if (options.plan) return completeToolsPlan(options);
+    phase = "PRE_APPROVAL";
+    terminalRequired(dependencies);
+    phase = "STATE_READ";
+    const statePath = stateLocation(options.state), directory = dirname(statePath);
+    parent = privateDirectory(directory);
     anchor(parent, directory);
     const state = readFrom(parent, statePath);
-    if (state.status !== "READY" || state.nextStage !== stage) fail();
-    if ((dependencies.resolveController ?? resolveController)(state.sbxPath) !== state.sbxPath
-      || JSON.stringify(sourceBindings(dependencies)) !== JSON.stringify(state.sourceBindings)) fail();
+    if (state.status !== "READY" || state.nextStage !== stage) failCheck("STATE_BINDINGS", "STATE_INVALID");
+    phase = "PRE_APPROVAL";
+    assertControllerBinding(state, dependencies);
+    assertSourceBindings(state, dependencies);
     const acknowledgementBefore = stage === "accept-policy" ? acknowledgement(parent, state) : null;
-    if (await (dependencies.confirm ?? confirmTTY)({ stage, state: structuredClone(state), prompt: prompt(stage, state) }) !== true) fail();
+    phase = "APPROVAL";
+    if (await (dependencies.confirm ?? confirmTTY)({ stage, state: structuredClone(state), prompt: prompt(stage, state) }) !== true) {
+      failCheck("APPROVAL", "APPROVAL_DECLINED");
+    }
+    phase = "POST_APPROVAL";
     anchor(parent, directory);
-    if (JSON.stringify(readFrom(parent, statePath)) !== JSON.stringify(state)
-      || JSON.stringify(sourceBindings(dependencies)) !== JSON.stringify(state.sourceBindings)
-      || (dependencies.resolveController ?? resolveController)(state.sbxPath) !== state.sbxPath) fail();
+    if (JSON.stringify(readFrom(parent, statePath)) !== JSON.stringify(state)) failCheck("STATE_BINDINGS", "BINDING_INVALID");
+    assertSourceBindings(state, dependencies);
+    assertControllerBinding(state, dependencies);
     if (stage === "accept-policy" && JSON.stringify(acknowledgement(parent, state)) !== JSON.stringify(acknowledgementBefore)) fail();
+    phase = "INTENT_WRITE";
     record(parent, eventName(stage, "intent"), eventRecord(state, stage, "intent", {}));
+    phase = "EFFECT";
     const data = await effect(stage, state, parent, dependencies);
+    phase = "FINALIZATION";
     anchor(parent, directory);
-    if (JSON.stringify(sourceBindings(dependencies)) !== JSON.stringify(state.sourceBindings)) fail();
+    assertSourceBindings(state, dependencies);
     const pending = readFrom(parent, statePath);
     if (pending.masterSha256 !== state.masterSha256 || pending.inFlightStage !== stage
-      || JSON.stringify(pending.events) !== JSON.stringify(state.events)) fail();
+      || JSON.stringify(pending.events) !== JSON.stringify(state.events)) failCheck("STATE_BINDINGS", "BINDING_INVALID");
     stageData(stage, data, state, state.events);
     record(parent, eventName(stage, "complete"), eventRecord(state, stage, "complete", data));
     const result = readFrom(parent, statePath);
@@ -726,40 +858,54 @@ export async function runCompleteStage(stage, options, dependencies = {}) {
       return ready;
     }
     return { schema: "dev-sbx-complete-stage-v1", stage, statePath, target: state.name, ...AUTHORITY, result: "DEV_STAGE_COMPLETE" };
-  } catch { throw new Error("DEV_TOOLS_STOP"); }
-  finally { closeSync(parent); }
+  } catch (error) { throw failureAt(error, stage, phase); }
+  finally { if (parent !== undefined) closeSync(parent); }
 }
 
 export async function prepareCompleteTools(options, dependencies = {}) {
-  optionsChecked(options);
-  if (options.plan) return completeToolsPlan(options);
-  if (options.state) return runCompleteStage(options.stage, options, dependencies);
-  terminalRequired(dependencies);
-  const sbxPath = absolute((dependencies.resolveController ?? resolveController)(options.sbx));
-  const bindings = sourceBindings(dependencies);
-  const directory = absolute((dependencies.createDirectory ?? (() => mkdtempSync("/tmp/opencode/dev-sbx-tools-")))());
-  const statePath = stateLocation(join(directory, "attempt.json")), parent = privateDirectory(directory);
+  let phase = "ARGUMENTS";
   try {
-    if (readdirSync(`/proc/self/fd/${parent}`).length) fail();
-    const attemptId = randomBytes(8).toString("hex");
-    record(parent, "attempt.json", masterChecked({ schema: "dev-sbx-complete-workflow-v1", profileSha256: PROFILE_SHA,
-      attemptId, name: options.name, sbxPath, guestToolRoot: `/home/agent/workspace/devtools-${attemptId}`,
-      sourceBindings: bindings, ...AUTHORITY }));
-  } finally { closeSync(parent); }
-  (dependencies.announce ?? ((value) => process.stderr.write(`${value}\n`)))(`STATE_PATH=${statePath}`);
-  let result;
-  for (const stage of STAGES) result = await runCompleteStage(stage, { state: statePath, stage }, dependencies);
-  return result;
+    optionsChecked(options);
+    if (options.plan) return completeToolsPlan(options);
+    if (options.state) return await runCompleteStage(options.stage, options, dependencies);
+    phase = "INITIALIZATION";
+    terminalRequired(dependencies);
+    let sbxPath, bindings;
+    try { sbxPath = absolute((dependencies.resolveController ?? resolveController)(options.sbx)); }
+    catch { failCheck("CONTROLLER_BINDINGS", "BINDING_INVALID"); }
+    try { bindings = sourceBindings(dependencies); }
+    catch { failCheck("SOURCE_BINDINGS", "BINDING_INVALID"); }
+    const directory = absolute((dependencies.createDirectory ?? (() => mkdtempSync("/tmp/opencode/dev-sbx-tools-")))());
+    const statePath = stateLocation(join(directory, "attempt.json")), parent = privateDirectory(directory);
+    try {
+      if (readdirSync(`/proc/self/fd/${parent}`).length) fail();
+      const attemptId = randomBytes(8).toString("hex");
+      record(parent, "attempt.json", masterChecked({ schema: "dev-sbx-complete-workflow-v1", profileSha256: PROFILE_SHA,
+        attemptId, name: options.name, sbxPath, guestToolRoot: `/home/agent/workspace/devtools-${attemptId}`,
+        sourceBindings: bindings, ...AUTHORITY }));
+    } finally { closeSync(parent); }
+    (dependencies.announce ?? ((value) => process.stderr.write(`${value}\n`)))(`STATE_PATH=${statePath}`);
+    let result;
+    for (const stage of STAGES) result = await runCompleteStage(stage, { state: statePath, stage }, dependencies);
+    return result;
+  } catch (error) { throw failureAt(error, "CLI", phase); }
 }
 
 export async function main(argv, dependencies = {}) {
+  let stage = "CLI", phase = "ARGUMENTS";
   try {
     const options = parseCompleteTools(argv);
+    stage = options.stage ?? "CLI";
+    phase = "INITIALIZATION";
     const result = options.plan ? completeToolsPlan(options) : await prepareCompleteTools(options, dependencies);
     (dependencies.output ?? console.log)(JSON.stringify(result));
     return 0;
-  } catch {
-    (dependencies.error ?? console.error)("DEV_TOOLS_STOP; retain attempt files and guest reservation; reconcile in-flight stages; never retry an attempted stage or remove reservations; Gate0=OPEN; f9Qualified=false; trainingReady=false.");
+  } catch (error) {
+    const write = dependencies.error ?? console.error;
+    const report = completeToolsFailure(failureAt(error, stage, phase));
+    const json = JSON.stringify(report);
+    write(FAILURE_LINE);
+    write(Buffer.byteLength(json) <= 4096 ? json : JSON.stringify(completeToolsFailure(null)));
     return 2;
   }
 }

@@ -4,7 +4,7 @@ These commands use the existing development `sbx` service. They do not provision
 
 ## Complete tools in an existing sandbox
 
-**Offline verification: 731 tests PASS; real provisioning NOT_RUN.** The complete-tools task remains separate from the legacy Rust-only workflow below. It does not create a sandbox or reuse legacy state, tool roots or completed attempts.
+**Offline verification: 787 tests PASS; actual provisioning remains unqualified.** The complete-tools task remains separate from the legacy Rust-only workflow below. It does not create a sandbox or reuse legacy state, tool roots or completed attempts.
 
 The profile in [complete-profile.mjs](complete-profile.mjs) declares five upstream prebuilt artifacts: Bun **1.4.0**, Rust/Cargo **1.95.0**, Zig **0.17.1**, mise **2026.11.2** and LLVM/Clang **23.1.5**. These declarations are not inspected archive inventories, authenticated publisher keys or demonstrated runtime compatibility. Rust's compressed size remains unknown. The workflow never selects a source-building backend or enables guest networking.
 
@@ -52,6 +52,26 @@ Successful development verification returns `DEV_TOOLS_READY`, `developmentTools
 `guestToolContext()` scopes PATH, HOME, mise directories, disabled automatic mise installation and Zig caches to one command. It does not edit `.profile`, mutate the global guest PATH, trust mise configuration or confine every startup/configuration effect. The task preserves the full original distributions; it does not copy arbitrary host libraries or manufacture tool wrappers.
 
 This workflow does **not** stage a checkout, the explainer's import closure or a saved diagnostic report. Those remain separately approved prerequisites for [`f9:verify-sbx --tool-root`](../native-ingress/F9-DIAGNOSTIC.md#optional-complete-tool-context). It does not implement `f9:gate0`, accept any Gate0 record or grant training permission.
+
+### Failure diagnostics for future attempts
+
+**Offline verification passed: 79 targeted tests and 787 full tooling tests, with zero failures.** Static quality/security reviews are READY for the reporting code. The earlier 731-test result belongs to the preceding provisioning commit. This verification used synthetic fixtures and fake providers under separate approval; it accessed no existing attempt files and ran no live guest commands. Publication still requires fresh approval.
+
+On failure, the CLI keeps stdout empty and exits `2`. Stderr retains the original `DEV_TOOLS_STOP; ...` line verbatim, then adds one JSON diagnostic line of at most 4096 UTF-8 bytes. Existing operator prompts and the `STATE_PATH` announcement remain separate from that diagnostic. No failure file or state-schema change is introduced.
+
+An illustrative future result—not a diagnosis of the reported failed attempt—is:
+
+```json
+{"schema":"dev-sbx-complete-failure-v1","result":"DEV_TOOLS_STOP","stage":"preflight","phase":"EFFECT","failures":[{"check":"XZ","code":"REQUIREMENT_UNMET","expected":"EXECUTABLE"}],"gate0":"OPEN","f9Qualified":false,"trainingReady":false}
+```
+
+- The diagnostic includes only fixed stage, phase, check, code and expectation labels. It omits observed values, raw provider stdout/stderr, policy, argv, paths, identifiers, hashes, URLs, exception messages/stacks and control characters. Unregistered exceptions become `INTERNAL_ERROR`; arbitrary exception properties cannot supply diagnostics.
+- Preflight validates its entire protocol before reporting known unmet requirements in fixed order. Missing/duplicate/reordered/unknown fields, invalid values and truncation produce `PROTOCOL_INVALID`, not assertions based on partial observations. Existing acceptance conditions remain unchanged.
+- Command failures distinguish `TIMEOUT`, `OUTPUT_LIMIT`, `INTERRUPTED`, `SPAWN_ERROR`, `STREAM_ERROR`, `INCOMPLETE_STREAM`, `NONZERO_EXIT`, `SIGNAL`, `UNEXPECTED_STDERR` and `EXECUTOR_RESULT_INVALID`. Failed execution never feeds partial output into prerequisite evaluation.
+- `phase` names the host boundary: argument handling, initialization, state read, before/after approval, intent write, effect or finalization. It does not prove that a guest command started/stopped or that a reservation exists. `INTENT_WRITE_UNCERTAIN` does not establish safely unattempted work.
+- The generic reservation warning remains generic, including when failure occurs before `reserve`. Preserve the actual attempt files. Reporting grants no retry, migration, rearming, removal or automatic new attempt. Source-binding checks must refuse old attempts after code changes.
+
+The supplied `/tmp/opencode/dev-sbx-tools-X5NYWI/attempt.json` log shows policy completion followed by approval of preflight and a generic STOP. It does not identify the cause or establish whether the guest command started. These source changes do not inspect, modify or recover that attempt.
 
 ## Legacy Rust-only preparation
 

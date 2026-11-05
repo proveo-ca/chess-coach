@@ -26,21 +26,33 @@
 ' covers: tooling/sbx-dev/tests/complete-tools.test.mjs
 ' related: _spec/tooling/bun-first-party-tooling.puml
 ' related: _spec/tooling/native-ingress/f9-diagnostic.puml
+' related: _spec/_plans/native-ingress-development-tool-profile-research.md
+' related: _spec/_plans/native-ingress-rust-first-full-plan-packet.md
 ' invariant: No automatic retry, resume, reset, rollback or removal.
-' status: AUTHORING + OFFLINE_VERIFICATION_COMPLETE (lead-reported 731 PASS / 0 FAIL); QUALITY_SECURITY_REVIEW_READY (code scope only); REAL_PROVISIONING_NOT_RUN; ACQUISITION_NOT_APPROVED; OPERATIONS_NOT_RUN.
+' status: REPORTING_OFFLINE_VERIFICATION_PASS; QUALITY_SECURITY_STATIC_READY; PUBLICATION_NOT_APPROVED.
 ' scope: Legacy Rust-only flow and its limits/pins remain unchanged; the complete-tool group is a separate authored contract.
-' verification: 728 PASS is PRE-FIX history; lead reports post-fix 730 then final 731 PASS / 0 FAIL, language/diff checks and two-diagram syntax PASS; final syntax/render/diff recheck required after these spec edits.
-' verification-scope: Synthetic cases live in complete-guest.test.mjs; no real package/guest provisioning, publisher/input qualification or hard filesystem quota proof.
-' review: Quality ses_e52bfc5edffegjpJS3Qc6bAS4v and security ses_e52bfc5e1ffe1My5mtH2mGnAEQ now READY TO MERGE: yes for code scope; prior metadata/member findings closed; no reviewer test execution claimed.
+' history: Lead reports prior provisioning commit e8be4a026f1637fcba4cab1f262fb90e9c51f896 pushed; 731 PASS / 0 FAIL and both READY verdicts cover ONLY that old scope.
+' verification: Fresh Verification boundary choice Run offline checks (Recommended); lead reports targeted 79 PASS / 0 FAIL / 931 expectations and full 787 PASS / 0 FAIL / 7579 expectations; Bun1.4.0(34cbb9a40), source/tests unchanged since final static reviews.
+' verification-scope: Lead reports check:no-python PASS/2136 first-party files, diff check exit0 and preparation syntax exit0 BEFORE this label edit; final syntax/render in fresh /tmp/opencode/failure-report-verification-6SQl4v2K PENDING. Spec author executes nothing; no attempt/package/live-guest or publication approval.
+' review-history: Quality ses_e52bfc5edffegjpJS3Qc6bAS4v and security ses_e52bfc5e1ffe1My5mtH2mGnAEQ closed prior budget findings only; those old verdicts do not review this reporting delta.
+' initial-static-review: Lead reports quality ses_e528f8760ffeUDUgNI2omRdGxy READY/no findings; security ses_e528f875effeJZ5lmnDseLOzlW READY with LOW CWE-755 negative spawn-code classification finding; neither executed tests.
+' final-static-review: Lead reports quality ses_e528f8760ffeUDUgNI2omRdGxy READY/no findings for final two-file delta; security ses_e528f875effeJZ5lmnDseLOzlW READY/static CODE scope only, LOW CWE-755 CLOSED by inspection, no new findings; reviewers ran no tests; later approved tests ran by lead only.
+' final-static-scope: Source/tests unchanged after supplied final rechecks and passing offline suites; static CODE verdicts and synthetic tests prove no actual-attempt cause, guest state, operational acceptance or publication permission.
+' reported-attempt: User reports policy completion then preflight approval and generic STOP; cause, guest-command start and intent/reservation state remain unknown and uninspected.
 ' qualification: Real archive layouts, notices, metadata, CPU/ABI and full native closure remain UNINSPECTED / UNQUALIFIED.
 ' rationale: [HIGH] Checking mutable host paths before copying does not bind the bytes a provider later reads.
 ' contract: The fixed guest wrapper receives installer path/SHA, archive SHA and attempt only as positional arguments.
+' failure-line: DEV_TOOLS_STOP; retain attempt files and guest reservation; reconcile in-flight stages; never retry an attempted stage or remove reservations; Gate0=OPEN; f9Qualified=false; trainingReady=false.
+' failure-phases: ARGUMENTS, INITIALIZATION, STATE_READ, PRE_APPROVAL, APPROVAL, POST_APPROVAL, INTENT_WRITE, EFFECT, FINALIZATION.
+' failure-state: No new state/event schema, failure file, migration, rearm or automatic replacement attempt; changed source bindings still refuse older attempts.
 ' note-register: P right preview FK 11.5; P/C approval FK 10.7; A right scope FK 10.4.
 ' note-register: A/STATE intent FK 11.6; A/B provenance FK 12.0; C/STATE recovery FK 11.5.
 ' note-register: C/VM policy FK 11.4; P/VM diagnosis FK 12.9.
 ' note-register: S right host binding FK 12.2; VM right installer binding FK 12.2; S/VM limits FK 11.2.
 ' note-register: CT/COMPLETE_STATE intent FK 11.5 (W27/S50/N2); CT/CG capacity FK 11.7 (W24/S46/N2).
 ' note-register: CP/CG qualification FK 11.2 (W29/S52/N2); counts are hand-computed, not executed checks.
+' note-register: CT right protocol FK 11.0 (W31/S54/N2); CT right privacy FK 12.4 (W27/S52/N2).
+' note-register: CT/VM phase boundary FK 10.6 (W31/S53/N2); counts are hand-computed, not executed checks.
 ' FK syllables: hand-counted English; executables=5, mise=1, sysroot=2, CLI=3, F9=2, KUnit=3.
 ' FK syllables: UID=3; read-only and in-place each count as two words.
 @startuml sbx-preparation
@@ -286,7 +298,7 @@ note over P, VM
   KUnit or model work.
 end note
 
-group Separate complete-tool workflow: scoped 731-test offline suite PASS / real guest NOT_RUN
+group Separate complete-tool workflow: reporting offline 787 PASS / real guest NOT_RUN
   OP -> CT : mise run dev:sbx:prepare-tools --name NAME [--sbx ABS] [--plan]\nor --state ABS/attempt.json --stage STAGE [--plan]
   note right of CT
     raw=true; raw_args=true; no depends
@@ -311,9 +323,13 @@ group Separate complete-tool workflow: scoped 731-test offline suite PASS / real
       OP --> CT : exact approve line for THIS stage only
       CT -> CT : recheck state, controller and source/pin bindings after consent
       break no consent, interrupted prompt or changed pre-intent bindings
-        CT --> OP : STOP / exit 2; no stage intent/effect\nunattempted next stage remains available only with its own fresh prompt
+        CT --> OP : main refusal presentation / exit 2; no stage intent/effect\nunattempted next stage still needs fresh approval; changed source bindings refuse old attempts
       end
       CT -> COMPLETE_STATE : exclusive stage intent BEFORE stage effect
+      break failed or uncertain intent write
+        CT -> CT : fixed INTENT / INTENT_WRITE_UNCERTAIN; phase INTENT_WRITE
+        CT --> OP : main refusal presentation / exit 2\nno safely-unattempted or guest/reservation-state claim
+      end
       note over CT, COMPLETE_STATE
         Write stage intent before provider calls
         so ambiguous failures leave a bound
@@ -326,6 +342,9 @@ group Separate complete-tool workflow: scoped 731-test offline suite PASS / real
         CT -> COMPLETE_STATE : private policy.txt + SHA; no raw provider output on terminal
       else preflight
         CT -> VM : exec: guest 15s + kill 1s; host 25s / output <=16KiB\nLinux/x86_64; glibc>=2.18; base nine names; writable workspace\n/usr/bin/xz + GNU /usr/bin/tar; df-reported free>=24GiB
+        VM --> CT : bounded executor result
+        CT -> CT : checked(): validate executor outcome before parsing stdout; code=null or safe integer\nknown failed outcomes classify BEFORE EXIT-only exit-code range 0..255\nTIMEOUT / OUTPUT_LIMIT / INTERRUPTED / SPAWN_ERROR / STREAM_ERROR / INCOMPLETE_STREAM\nNONZERO_EXIT / SIGNAL / UNEXPECTED_STDERR / EXECUTOR_RESULT_INVALID
+        CT -> CT : checked() success only: validate ENTIRE ordered protocol before collecting every unmet check\nOS, ARCH, GLIBC, base9 order, WORKSPACE, TAR, XZ, GNU_TAR, GUEST_CAPACITY\nmalformed/partial/duplicate/reordered/unknown fields => PROTOCOL_INVALID only
       else accept-policy
         CT -> COMPLETE_STATE : rehash policy + preflight before/after consent; no provider call\nacknowledgement is not effective-policy or reusable F9 proof
       else reserve
@@ -373,7 +392,7 @@ group Separate complete-tool workflow: scoped 731-test offline suite PASS / real
         CT -> COMPLETE_STATE : exclusive completion event; next unattempted stage needs its OWN fresh prompt
       else failure, timeout, interruption, malformed or ambiguous outcome after intent
         break terminal in-flight stage
-          CT --> OP : DEV_TOOLS_STOP / exit 2; retained intent without completion => terminal RECONCILE\nno retry, fallback, rollback, reset, guest-network enablement or cleanup
+          CT --> OP : main refusal presentation / exit 2; bound intent without completion => terminal RECONCILE\nuncertain state stays refused; no retry, fallback, rollback, reset, guest-network enablement or cleanup
         end
       end
     end
@@ -399,6 +418,41 @@ group Separate complete-tool workflow: scoped 731-test offline suite PASS / real
     end note
     CT -> COMPLETE_STATE : all ten completed stages: exclusive 0400 receipt.json
     CT --> OP : DEV_TOOLS_READY / exit 0; developmentToolsPrepared=true; explanation NOT_RUN\nGate0 OPEN; f9Qualified=false; trainingReady=false; not Gate0 acceptance
+  end
+end
+
+group Complete-tool CLI refusal presentation: reporting offline 787 PASS / real guest NOT_RUN
+  opt refusal at any complete-tool host boundary
+    CT -> CT : failureAt(): retain branded context or fixed phase fallback\nno arbitrary exception properties; preserve Error.message DEV_TOOLS_STOP
+    CT -> CT : completeToolsFailure(error): pure WeakMap-backed projection\nstage: STAGES or CLI; phase: nine fixed host labels; failures: 1..32\nclosed check/code labels; optional static expected constant; return fresh copies
+    note right of CT
+      Validate the full protocol before listing
+      unmet checks, since partial output does not
+      establish which requirements failed.
+      Malformed data yields a fixed refusal, not
+      a diagnosis based on an incomplete response.
+    end note
+    alt registry projection is valid
+      CT -> CT : schema=dev-sbx-complete-failure-v1; result=DEV_TOOLS_STOP\nstage / phase / failures[{check,code,expected?}]\ngate0=OPEN; f9Qualified=false; trainingReady=false
+    else unregistered formatter input or invalid private detail
+      CT -> CT : fixed CLI / INITIALIZATION; INTERNAL / INTERNAL_ERROR\nno exception message, stack, observed value or forged property
+    end
+    note right of CT
+      Private error brands select fixed labels
+      without reading arbitrary error properties.
+      This prevents raw provider output or hostile
+      getters from adding private values to the
+      failure diagnostic.
+    end note
+    CT -> CT : main(): JSON line <=4096 UTF-8 bytes; oversize => fixed INTERNAL_ERROR fallback\nno observed values, raw outputs, policy, argv, paths, IDs, hashes, URLs or control characters
+    CT --> OP : stderr: existing failure-line VERBATIM, then exactly ONE diagnostic JSON line\nfailure stdout empty; exit 2; prompts and STATE_PATH announcement remain separate
+    note over CT, VM
+      Host phases locate reporting boundaries,
+      not proof that a guest command started or
+      stopped. Intent write uncertainty
+      establishes neither a safe retry nor the
+      presence or absence of a guest reservation.
+    end note
   end
 end
 @enduml
