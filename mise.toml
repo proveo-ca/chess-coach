@@ -27,6 +27,12 @@ raw_args = true
 raw = true
 run = "bun --no-env-file --no-install tooling/sbx-dev/prepare.mjs"
 
+[tasks."dev:sbx:prepare-tools"]
+description = "Prepare a complete offline tool profile in one existing sbx with separate approvals; no Gate0 grant"
+raw_args = true
+raw = true
+run = "bun --no-env-file --no-install tooling/sbx-dev/complete-tools.mjs"
+
 [tasks."dev:sbx:acquire"]
 description = "Approve mise-pinned online host Rust acquisition and build the guest archive/hash automatically"
 raw_args = true

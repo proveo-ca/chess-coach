@@ -18,7 +18,11 @@
 ' related: _spec/tooling/sbx-dev/preparation-workflow.puml
 ' related: _spec/tooling/bun-first-party-tooling.puml
 ' related: _spec/_plans/native-ingress-rust-first-full-plan-packet.md
-' status: Host verification AUTHORED; offline suites 118 PASS / 0 FAIL; scoped host-helper code/spec and planned-publication review READY, no findings; real guest NOT_RUN; Gate0 OPEN; F9/training false.
+' status: AUTHORING + OFFLINE_VERIFICATION_COMPLETE (lead-reported 731 PASS / 0 FAIL); QUALITY_SECURITY_REVIEW_READY (code scope only); REAL_PROVISIONING_NOT_RUN; ACQUISITION_NOT_APPROVED; OPERATIONS_NOT_RUN; Gate0 OPEN; F9/training false.
+' history: 118 PASS / 0 FAIL and READY describe ONLY the prior host-helper scope, not the new --tool-root/profile integration.
+' verification: 728 PASS is PRE-FIX history; final post-fix 731 PASS / 0 FAIL and fresh quality/security READY are lead-reported; final syntax/render/diff recheck required after these spec edits; no actual guest DEV_TOOLS_READY.
+' review-scope: Both budget findings closed in development code; security READY TO MERGE: yes, code scope only; actual filesystem byte/inode enforcement remains a LOW follow-up, not quota/F9/provisioning proof or approval.
+' contract: --tool-root selects invocation-scoped context only; checkout/import closure/configuration/report staging require separate approval and already existing guest inputs.
 ' source: Mise documentation observations supplied by the lead; no fetch in this pass.
 ' reference: https://mise.jdx.dev/configuration/settings.html#auto_install
 ' reference: https://mise.jdx.dev/tasks/task-configuration.html#raw-args
@@ -140,9 +144,10 @@ group Offline saved-report explanation: no fresh observations
   end note
 end
 
-group Host-side verification contract: offline fake-provider tests PASS; real guest NOT_RUN
+group Host verification: scoped 731-test offline suite PASS / real guest NOT_RUN
   OP -> VERIFY : mise run f9:verify-sbx --sbx SBX --name NAME --repo REPO --report REPORT\nexactly one of --plan / --confirm-dev-verification\nBun --no-env-file --no-install; raw_args=true; no task dependencies/tools/env
   VERIFY -> VERIFY : parseVerificationArgs: unique known options; no positionals\nlexically normalized absolute UTF-8 paths; no controls/trailing slash; <=4096 bytes\nNAME is literal [A-Za-z0-9][A-Za-z0-9_.-]{0,63}; no discovery
+  VERIFY -> VERIFY : optional --tool-root: exactly /home/agent/workspace/devtools-<16lowerhex>\nno root discovery/existence/provisioning proof; legacy script unchanged when absent
   alt invalid arguments or ambiguous mode
     VERIFY --> OP : sanitized STOP; exit 2; no executable inspection/provider call
   else plan mode (--plan)
@@ -159,8 +164,11 @@ group Host-side verification contract: offline fake-provider tests PASS; real gu
       VERIFY --> OP : sanitized STOP / INVALID_EXECUTABLE; exit 2; no spawn
     else executable checks pass: not provider identity or execution authority
       VERIFY -> BOUNDED : one fixed argv; milliseconds=35000; cap=65536 combined bytes\ngraceMilliseconds=1000; existing bounded host-group termination/reaping
-      BOUNDED -> VM : SBX exec NAME /usr/bin/timeout --kill-after=1s 25s\n/bin/sh -c FIXED sh REPO REPORT; exec may start a stopped VM\nno ls/policy/create/copy/install/provision/cleanup/retry
-      VM -> GUEST : fixed script; repo/report are quoted positional values\nalready provisioned approved guest repo/config/imports/report; no host report read/copy
+      BOUNDED -> VM : SBX exec NAME /usr/bin/timeout --kill-after=1s 25s\n/bin/sh -c FIXED sh REPO REPORT [TOOL_ROOT]; exec may start a stopped VM\nno ls/policy/create/copy/install/provision/cleanup/retry
+      VM -> GUEST : fixed script; repo/report and optional tool root are quoted positional values\nalready provisioned separately approved guest repo/config/imports/report; no host report read/copy
+      opt --tool-root explicitly supplied
+        GUEST -> GUEST : profiledGuestVerificationScript: scoped PATH/HOME + mise data/config/cache\nMISE_AUTO_INSTALL=false; both Zig caches; same complete-profile context\nno .profile/global exports/auto-install/trust or automatic provisioning
+      end
       note over BOUNDED, GUEST
   Terminating the controller cannot establish
   that a guest process has stopped.

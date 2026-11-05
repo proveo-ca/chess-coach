@@ -4,6 +4,7 @@ import fs, { constants } from "node:fs";
 import { isAbsolute, normalize } from "node:path";
 import { parseArgs } from "node:util";
 import { runBounded } from "./f9-diagnose.mjs";
+import { guestToolContext, validateGuestToolRoot } from "../sbx-dev/complete-profile.mjs";
 
 export const guestTools = Object.freeze([
   "tar", "sha256sum", "timeout", "gpgv", "patch", "make", "clang", "ld.bfd",
@@ -38,6 +39,14 @@ else
 fi
 `;
 
+const contextRoot = "/home/agent/workspace/devtools-0000000000000000";
+const contextEnvironment = guestToolContext(contextRoot).env;
+export const profiledGuestVerificationScript = guestVerificationScript.replace(
+  'test "$#" -eq 2',
+  ['test "$#" -eq 3', ...Object.entries(contextEnvironment).map(([key, value]) => `${key}="${value.replaceAll(contextRoot, "$3")}"`),
+    `export ${Object.keys(contextEnvironment).join(" ")}`].join("\n"),
+);
+
 function absolutePath(value) {
   if (typeof value !== "string" || Buffer.byteLength(value) > 4096
     || !isAbsolute(value) || normalize(value) !== value || value.endsWith("/")
@@ -52,6 +61,7 @@ function absolutePath(value) {
 export function parseVerificationArgs(argv) {
   const { values, tokens } = parseArgs({ args: argv, strict: true, allowPositionals: false, tokens: true, options: {
     sbx: { type: "string" }, name: { type: "string" }, repo: { type: "string" }, report: { type: "string" },
+    "tool-root": { type: "string" },
     plan: { type: "boolean" }, "confirm-dev-verification": { type: "boolean" },
   } });
   if (tokens.some((token) => token.kind !== "option")
@@ -62,6 +72,7 @@ export function parseVerificationArgs(argv) {
     sbx: absolutePath(values.sbx), name: values.name,
     repo: absolutePath(values.repo), report: absolutePath(values.report),
     mode: values.plan ? "PLAN_ONLY" : "EXECUTE",
+    ...(values["tool-root"] !== undefined ? { toolRoot: validateGuestToolRoot(values["tool-root"]) } : {}),
   };
 }
 
@@ -69,7 +80,8 @@ export function buildVerificationPlan(options) {
   return {
     id: "GUEST_TOOLS_AND_EXPLAIN",
     argv: [options.sbx, "exec", options.name, "/usr/bin/timeout", "--kill-after=1s", "25s",
-      "/bin/sh", "-c", guestVerificationScript, "sh", options.repo, options.report],
+      "/bin/sh", "-c", options.toolRoot ? profiledGuestVerificationScript : guestVerificationScript,
+      "sh", options.repo, options.report, ...(options.toolRoot ? [options.toolRoot] : [])],
     milliseconds: 35000, cap: 65536, graceMilliseconds: 1000,
   };
 }
@@ -117,6 +129,7 @@ export async function verifySbx(argv, { execute = runBounded, inspect = inspectE
     const options = parseVerificationArgs(argv);
     report.mode = options.mode;
     report.target = options.name;
+    if (options.toolRoot) report.guestToolRoot = options.toolRoot;
     const plan = buildVerificationPlan(options);
     if (options.mode === "PLAN_ONLY") {
       report.plan = plan;

@@ -1,8 +1,63 @@
-# Composed development sandbox preparation
+# Development sandbox preparation
 
-These commands use the existing development `sbx` service. They do not provision a dedicated F9 host service, change credentials/policy, prove provenance/quotas, run Cargo/KUnit/ML workloads, or establish F9/Native/training readiness. Mise pins Bun **1.4.0** and Rust **1.95.0** in the root `mise.toml`. The host may download those versions; the guest keeps its existing network denial and needs no Bun.
+These commands use the existing development `sbx` service. They do not provision a dedicated F9 host service, change credentials/policy, prove provenance/quotas, run Cargo/KUnit/ML workloads, or establish F9/Native/training readiness. Mise pins Bun **1.4.0** and Rust **1.95.0** in the root `mise.toml`. Each acquisition and live operation requires its own approval.
 
-## One parent, separate child tasks
+## Complete tools in an existing sandbox
+
+**Offline verification: 731 tests PASS; real provisioning NOT_RUN.** The complete-tools task remains separate from the legacy Rust-only workflow below. It does not create a sandbox or reuse legacy state, tool roots or completed attempts.
+
+The profile in [complete-profile.mjs](complete-profile.mjs) declares five upstream prebuilt artifacts: Bun **1.4.0**, Rust/Cargo **1.95.0**, Zig **0.17.1**, mise **2026.11.2** and LLVM/Clang **23.1.5**. These declarations are not inspected archive inventories, authenticated publisher keys or demonstrated runtime compatibility. Rust's compressed size remains unknown. The workflow never selects a source-building backend or enables guest networking.
+
+The host needs an already approved working mise, Bun and `sbx`. Review and explicitly trust the changed mise configuration before using it. No task dependency installs tools automatically. Preview the actual selected instance without executable discovery, source-file checks, writes, downloads or sandbox queries inside the helper:
+
+```sh
+mise run dev:sbx:prepare-tools --name devrust-19b6330ee5f5e08ad90fcb30 --plan
+```
+
+Mise itself still loads its configuration before this lexical preview. A successful `PLAN_ONLY` result proves neither availability nor permission.
+
+After separate operational authorization, remove `--plan` to start the raw-terminal approval sequence. Keep stdin and stderr attached to a terminal. Every stage requires a new literal `approve` response. There is no `--yes`, piped approval or inherited consent. An optional `--sbx` accepts a canonical absolute executable path instead of PATH discovery.
+
+| Order | Stage | Separately approved effects |
+|---|---|---|
+| 1 | `policy` | Read bounded policy for the selected existing name into a private host file. |
+| 2 | `preflight` | Check Linux/x86_64, reported glibc ≥2.18, the nine base tools, writable workspace, GNU tar, XZ and reported guest free space ≥24 GiB. |
+| 3 | `accept-policy` | Acknowledge the exact retained policy and preflight after reviewing the private policy file. No provider call. |
+| 4 | `reserve` | Exclusively create the fixed guest reservation and fresh private tool/input directories. |
+| 5 | `host-capacity` | Check reported host free space ≥10 GiB. |
+| 6 | `acquire` | Download the five exact host artifacts, check expected sizes/digests and inspect the Bun ZIP to retain a bootstrap binary without executing it. |
+| 7 | `copy` | Create and transfer nine read-only snapshots: five archives, bootstrap Bun and the three guest modules. No guest execution. |
+| 8 | `inspect` | Hash-check bootstrap/source inputs and inspect every guest archive before materialization. |
+| 9 | `install` | Reinspect all archives, extract offline and assemble the five Rust manifest components as data. Never run vendor `install.sh`. |
+| 10 | `verify` | Check six pinned executable versions, retained resource directories and all fifteen PATH names. No compilation or learner workload. |
+
+The nine base prerequisites are `tar`, `sha256sum`, `timeout`, `gpgv`, `patch`, `make`, `ld.bfd`, `readelf` and `node`. Preflight also uses fixed `/usr/bin/timeout`, `/usr/bin/tar`, `/usr/bin/xz`, `uname`, `getconf` and `df`, plus ordinary shell/file utilities. Version startup and the reported glibc floor do not establish full CPU, loader, DSO or native dependency compatibility. Policy acknowledgement does not prove effective deny precedence.
+
+### Bounds and retained state
+
+- New development-only software caps: **2 GiB/archive**, **4 GiB total compressed**, **16 GiB expanded**, **200,000 members** and **256 MiB encoded metadata**. Both host and guest Bun ZIP inspection additionally cap total expansion and each entry at **128 MiB**. Legacy limits stay unchanged.
+- Expanded accounting includes retained extracted distributions, extra Rust sysroot copies, bootstrap/source bytes and a 2 MiB control reserve. Host originals and the nine snapshots remain retained. Capacity checks report free space, not reserved quotas, physical-fit proofs, RSS bounds or accepted F9 limits.
+- One shared metadata budget debits the archive parsers' consumption, including headers/extensions/extras, rather than JSON inventory lengths. Member accounting includes unique implicit parent directories, fresh package roots and Bun's relocated binary directory before any extraction.
+- Strict archive validation rejects unsafe names/links, special or privileged members, unsupported formats and unrecognized metadata. ZIP supports store/deflate with CRC32 and validated-but-ignored timestamp/UID/GID extras. Every artifact must contain a notice and the asserted runtime layout. Actual upstream contents remain uninspected; a missing Bun notice or unsupported layout stops the attempt without relaxing the guard or selecting a fallback.
+- New host state lives in `/tmp/opencode/dev-sbx-tools-*/attempt.json`. The task prints its actual `STATE_PATH`. It appends exclusive `NN-stage.intent.json` and `NN-stage.complete.json` files. Failure after intent becomes terminal `RECONCILE`; it never retries, overwrites, resets, removes, rearms or cleans up automatically.
+- The guest root is `/home/agent/workspace/devtools-<16lowerhex>`. The fixed directory `/home/agent/workspace/.complete-dev-tools-v1` reserves the profile across host attempts. Neither success nor failure removes it. An existing marker stops another reservation; creating a new host attempt does not authorize bypassing it.
+- A declined, unattempted next stage can later use `dev:sbx:prepare-tools --state` with the exact printed state path and `--stage` with that next stage. It still requires fresh terminal approval. Completed or in-flight stages cannot run again.
+- Acquisition allows at most three manual HTTPS redirects to its allowlisted upstream/asset hosts, with 120-second request/body deadlines and a 600-second acquisition deadline. Each copy uses 180 seconds/64 KiB. Each inspection/installation/verification invocation uses guest timeout 1200 seconds + 2-second kill escalation and host 1210 seconds/64 KiB, with 1-second cancellation grace and bounded reaping. Guest XZ/tar operations use 1200 seconds/16 KiB; each version/presence query uses 10 seconds/16 KiB. These are software operation settings, not original F9 clocks or quiescence proofs.
+- The helper preserves private snapshots and checks stable descriptors. Those checks do not protect against a compromised same-UID process or qualify G1 continuing backing. A killed host controller does not prove guest termination. `sbx exec` can start a stopped VM.
+
+### Scoped PATH and result
+
+Successful development verification returns `DEV_TOOLS_READY`, `developmentToolsPrepared:true` and exit `0`. It keeps **`gate0:"OPEN"`, `f9Qualified:false`, `trainingReady:false`, `explanation:"NOT_RUN"`**. Notice retention does not qualify licensing or publisher trust.
+
+`guestToolContext()` scopes PATH, HOME, mise directories, disabled automatic mise installation and Zig caches to one command. It does not edit `.profile`, mutate the global guest PATH, trust mise configuration or confine every startup/configuration effect. The task preserves the full original distributions; it does not copy arbitrary host libraries or manufacture tool wrappers.
+
+This workflow does **not** stage a checkout, the explainer's import closure or a saved diagnostic report. Those remain separately approved prerequisites for [`f9:verify-sbx --tool-root`](../native-ingress/F9-DIAGNOSTIC.md#optional-complete-tool-context). It does not implement `f9:gate0`, accept any Gate0 record or grant training permission.
+
+## Legacy Rust-only preparation
+
+The following workflow creates a new sandbox and seeds Rust/Cargo only. Its guest needs no Bun. Its state, limits and operational contracts remain unchanged.
+
+### One parent, separate child tasks
 
 `dev:sbx:prepare` actually invokes and awaits each child through `mise run --raw`, in this order. It does not use parallel `depends` tasks.
 

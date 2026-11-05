@@ -49,7 +49,7 @@ The composed preparation wrapper gives this helper a 60 s outer deadline. Cancel
 - `requirements`: the complete checked-in F9 readiness ledger, with source references and next evidence steps. An independent verifier is not wired for these requirements, so they remain `BLOCKED`; no caller-supplied `ready` flag can promote them.
 - `result: "STOP"`, exit 2: F9 remains unqualified. Mise will display task failure; do not mistake completed reconnaissance for readiness acceptance. `f9:status` remains unchanged and offline.
 
-This task performs **no F9 capture/build/KUnit/G1/5c/Native workload**, so it does not bypass their Gate0/first-effect/host-isolation approvals. R4 and R5 remain separate training-readiness gates. Reviewers remain deferred under the current instruction.
+This task performs **no F9 capture/build/KUnit/G1/5c/Native workload**, so it does not bypass their Gate0/first-effect/host-isolation approvals. R4 and R5 remain separate training-readiness gates. Development-code reviews do not replace independent F9 acceptance.
 
 ## Explain an existing report offline
 
@@ -77,7 +77,7 @@ Only the composed preparation receipt establishes `developmentPrepared: true`. T
 
 ## Verify guest tools and run the explainer from an sbx-enabled host
 
-`f9:verify-sbx` checks an explicitly selected guest, then runs the existing explanation task **inside that guest**. It does not create or provision the guest. The existing preparation workflow seeds Rust only and does not establish guest mise/Bun or all other tools.
+`f9:verify-sbx` checks an explicitly selected guest, then runs the existing explanation task **inside that guest**. It does not create or provision the guest. The legacy preparation workflow seeds Rust only. The separate [complete-tools workflow](../sbx-dev/README.md#complete-tools-in-an-existing-sandbox) implements offline provisioning for the full profile; synthetic tests pass, while actual provisioning remains NOT_RUN.
 
 The guest must already contain an approved checkout/configuration, the explainer's source imports, and a complete saved diagnostic report. The runner reads no host report and copies no files. Its required guest PATH names are:
 
@@ -123,6 +123,22 @@ Task stdout/stderr are discarded inside the guest before the fixed completion re
 Only all fifteen recorded tools plus a completed task exit `0` produce development result `PASS` and exit `0`. **Gate0 remains OPEN, `f9Qualified=false` and `trainingReady=false` even on PASS.** A valid explanation can describe all 44 F9 requirements as BLOCKED/NOT_RUN. This runner neither closes Gate0 nor supplies the outstanding independent checker/finalizer or acceptance protocol.
 
 Actual guest verification remains **NOT_RUN** in the authoring environment: `sbx` did not resolve on PATH, and no inventory or guest call ran. Tests with fake providers and fake mise establish no real sandbox result or installed mise compatibility.
+
+### Optional complete-tool context
+
+An explicit `--tool-root` selects `/home/agent/workspace/devtools-<16lowerhex>` from the separate provisioning workflow's actual receipt. Other roots, uppercase identifiers, aliases and trailing slashes refuse. The flag validates only the path shape; it does not authenticate or accept a provisioning receipt.
+
+The profiled script passes that root as positional `$3`. It scopes PATH in this order:
+
+```text
+ROOT/rust/bin:ROOT/bun/bin:ROOT/zig:ROOT/llvm/bin:ROOT/mise/bin:/usr/local/bin:/usr/bin:/bin
+```
+
+It also scopes HOME, mise data/config/cache and Zig cache directories beneath that root, with `MISE_AUTO_INSTALL=false`. It writes no shell profile or global environment. Provisioning verification prepares those directories; the host verifier does not create them. Disabling automatic installation does not confine hooks, inherited configuration or explicit task effects.
+
+Without the flag, the original script, PATH behavior, report and operation bounds remain unchanged. With it, the same single bounded invocation adds `TOOL_ROOT` after `REPO REPORT`. All fifteen tool checks and the independent approval requirements still apply. The guest must already contain the approved checkout, import closure and actual saved report. Complete tools alone do not supply them, close Gate0 or set `trainingReady:true`.
+
+Profile-context tests passed within the current **731 PASS / 0 FAIL** offline tooling suite. The earlier 118-test receipt covers only its previous scope. Real installed mise and sandbox behavior remain unqualified.
 
 ## Offline verification
 

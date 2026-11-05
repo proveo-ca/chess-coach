@@ -20,7 +20,15 @@
         "tooling/sbx-dev/tests/stages.test.mjs",
         "tooling/sbx-dev/tests/snapshots.test.mjs",
         "tooling/sbx-dev/tests/setup.test.mjs",
-        "tooling/sbx-dev/README.md"
+        "tooling/sbx-dev/README.md",
+        "tooling/sbx-dev/complete-profile.mjs",
+        "tooling/sbx-dev/complete-archive.mjs",
+        "tooling/sbx-dev/complete-guest.mjs",
+        "tooling/sbx-dev/complete-tools.mjs",
+        "tooling/sbx-dev/tests/complete-profile.test.mjs",
+        "tooling/sbx-dev/tests/complete-archive.test.mjs",
+        "tooling/sbx-dev/tests/complete-guest.test.mjs",
+        "tooling/sbx-dev/tests/complete-tools.test.mjs"
       ],
       "fingerprint": null
     },

@@ -3,7 +3,7 @@ import { afterEach, beforeEach, expect, test } from "bun:test";
 import fs from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { buildVerificationPlan, guestTools, guestVerificationScript, parseGuestVerification, parseVerificationArgs, verifySbx } from "../f9-verify-sbx.mjs";
+import { buildVerificationPlan, guestTools, guestVerificationScript, profiledGuestVerificationScript, parseGuestVerification, parseVerificationArgs, verifySbx } from "../f9-verify-sbx.mjs";
 
 const script = new URL("../f9-verify-sbx.mjs", import.meta.url).pathname;
 const options = { sbx: "/approved/sbx", name: "devrust-example", repo: "/approved/repo", report: "/approved/report.json", mode: "EXECUTE" };
@@ -63,6 +63,28 @@ test("plan mode makes no metadata checks, provider calls or executable discovery
   expect(result.status).toBe(0);
   expect(result.report.result).toBe("PLAN_ONLY");
   expect(fs.existsSync(calls)).toBe(false);
+});
+
+test("complete-tool context is an explicit positional root without changing the legacy plan", async () => {
+  const toolRoot = "/home/agent/workspace/devtools-0123456789abcdef";
+  const argv = [...args("--plan"), "--tool-root", toolRoot];
+  const parsed = parseVerificationArgs(argv);
+  expect(parsed.toolRoot).toBe(toolRoot);
+  expect(buildVerificationPlan(parsed).argv.slice(-3)).toEqual([options.repo, options.report, toolRoot]);
+  expect(buildVerificationPlan(parsed).argv).toContain(profiledGuestVerificationScript);
+  expect(profiledGuestVerificationScript).toContain('HOME="$3/home"');
+  expect(profiledGuestVerificationScript).toContain('MISE_DATA_DIR="$3/mise-data"');
+  expect(guestVerificationScript).not.toContain("MISE_DATA_DIR");
+  const report = await verifySbx(argv, { inspect: () => { throw new Error("UNEXPECTED_INSPECTION"); } });
+  expect(report.result).toBe("PLAN_ONLY");
+  expect(report.guestToolRoot).toBe(toolRoot);
+  expect(report.gate0).toBe("OPEN");
+});
+
+test.each(["/tmp/tools", "/home/agent/workspace/devrust-tools", "/home/agent/workspace/devtools-ABCDEF0123456789", "/home/agent/workspace/devtools-0123456789abcdef/", "/home/agent/workspace/devtools-0123456789abcdef/../other"])("unregistered tool-root shape refuses: %s", async (toolRoot) => {
+  const report = await verifySbx([...args("--plan"), "--tool-root", toolRoot]);
+  expect(report.result).toBe("STOP");
+  expect(report.error).toBe("INVALID_ARGUMENTS");
 });
 
 test.each([
@@ -169,30 +191,31 @@ test("missing, directory, nonexecutable and symlink host controllers refuse befo
   }
 });
 
-function guestFixture({ missing = [], exit = 0 } = {}) {
-  const bin = join(root, "bin");
+function guestFixture({ missing = [], exit = 0, profiled = false } = {}) {
+  const toolRoot = join(root, "scoped-tools");
+  const bin = profiled ? join(toolRoot, "rust/bin") : join(root, "bin");
   const repo = join(root, "repo with space and 'quote");
   const invocation = join(root, "mise-invocation.json");
-  fs.mkdirSync(bin);
+  fs.mkdirSync(bin, { recursive: true });
   fs.mkdirSync(repo);
   for (const tool of guestTools) {
     if (missing.includes(tool)) continue;
     fs.writeFileSync(join(bin, tool), tool === "mise" ? `#!${process.execPath}
 import fs from "node:fs";
-fs.writeFileSync(${JSON.stringify(invocation)}, JSON.stringify({ argv: process.argv.slice(2), autoInstall: process.env.MISE_AUTO_INSTALL, cwd: process.cwd() }), { flag: "wx" });
+fs.writeFileSync(${JSON.stringify(invocation)}, JSON.stringify({ argv: process.argv.slice(2), autoInstall: process.env.MISE_AUTO_INSTALL, cwd: process.cwd()${profiled ? ", home: process.env.HOME, miseData: process.env.MISE_DATA_DIR" : ""} }), { flag: "wx" });
 console.log("PRIVATE_TASK_OUTPUT\\u001b[31m RESULT=FORGED");
 console.error("PRIVATE_TASK_ERROR");
 process.exitCode = ${exit};
 ` : "#!/bin/sh\nexit 93\n", { mode: 0o700 });
   }
   const report = "/approved/report with 'quote.json";
-  const result = spawnSync("/bin/sh", ["-c", guestVerificationScript, "sh", repo, report], {
-    env: { PATH: bin }, stdio: ["ignore", "pipe", "pipe"], encoding: "utf8", timeout: 5000,
+  const result = spawnSync("/bin/sh", ["-c", profiled ? profiledGuestVerificationScript : guestVerificationScript, "sh", repo, report, ...(profiled ? [toolRoot] : [])], {
+    env: { PATH: profiled ? "/nonexistent" : bin }, stdio: ["ignore", "pipe", "pipe"], encoding: "utf8", timeout: 5000,
   });
   expect(result.error).toBeUndefined();
   expect(result.signal).toBeNull();
   expect(result.stderr).toBe("");
-  return { result, repo, report, invocation };
+  return { result, repo, report, invocation, toolRoot };
 }
 
 test("fixed guest script uses positional paths, disables auto-install and hides task output", () => {
@@ -209,6 +232,14 @@ test("fixed guest script reports all missing tools and never invokes mise", () =
   expect(result.status).toBe(2);
   expect(parseGuestVerification(result.stdout).missing).toEqual(["clang", "zig"]);
   expect(fs.existsSync(invocation)).toBe(false);
+});
+
+test("profiled guest script scopes tool PATH, HOME and mise data to one invocation", () => {
+  const { result, invocation, toolRoot } = guestFixture({ profiled: true });
+  expect(result.status).toBe(0);
+  expect(parseGuestVerification(result.stdout).result).toBe("EXPLAIN_SUCCEEDED");
+  expect(JSON.parse(fs.readFileSync(invocation, "utf8"))).toMatchObject({ autoInstall: "false", home: `${toolRoot}/home`, miseData: `${toolRoot}/mise-data` });
+  expect(result.stdout).not.toContain("PRIVATE");
 });
 
 test("fixed guest script preserves a nonzero explainer as failure rather than a PASS marker", () => {

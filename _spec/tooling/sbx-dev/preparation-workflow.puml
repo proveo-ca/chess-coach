@@ -1,4 +1,4 @@
-' purpose: Approved development preparation reports setup completion separately from F9 readiness.
+' purpose: Separate Rust-only and complete-tool development preparation from F9 readiness.
 ' covers: mise.toml
 ' covers: rust-toolchain.toml
 ' covers: package.json
@@ -16,20 +16,36 @@
 ' covers: tooling/sbx-dev/tests/snapshots.test.mjs
 ' covers: tooling/sbx-dev/tests/setup.test.mjs
 ' covers: tooling/sbx-dev/README.md
+' covers: tooling/sbx-dev/complete-profile.mjs
+' covers: tooling/sbx-dev/complete-archive.mjs
+' covers: tooling/sbx-dev/complete-guest.mjs
+' covers: tooling/sbx-dev/complete-tools.mjs
+' covers: tooling/sbx-dev/tests/complete-profile.test.mjs
+' covers: tooling/sbx-dev/tests/complete-archive.test.mjs
+' covers: tooling/sbx-dev/tests/complete-guest.test.mjs
+' covers: tooling/sbx-dev/tests/complete-tools.test.mjs
 ' related: _spec/tooling/bun-first-party-tooling.puml
 ' related: _spec/tooling/native-ingress/f9-diagnostic.puml
 ' invariant: No automatic retry, resume, reset, rollback or removal.
+' status: AUTHORING + OFFLINE_VERIFICATION_COMPLETE (lead-reported 731 PASS / 0 FAIL); QUALITY_SECURITY_REVIEW_READY (code scope only); REAL_PROVISIONING_NOT_RUN; ACQUISITION_NOT_APPROVED; OPERATIONS_NOT_RUN.
+' scope: Legacy Rust-only flow and its limits/pins remain unchanged; the complete-tool group is a separate authored contract.
+' verification: 728 PASS is PRE-FIX history; lead reports post-fix 730 then final 731 PASS / 0 FAIL, language/diff checks and two-diagram syntax PASS; final syntax/render/diff recheck required after these spec edits.
+' verification-scope: Synthetic cases live in complete-guest.test.mjs; no real package/guest provisioning, publisher/input qualification or hard filesystem quota proof.
+' review: Quality ses_e52bfc5edffegjpJS3Qc6bAS4v and security ses_e52bfc5e1ffe1My5mtH2mGnAEQ now READY TO MERGE: yes for code scope; prior metadata/member findings closed; no reviewer test execution claimed.
+' qualification: Real archive layouts, notices, metadata, CPU/ABI and full native closure remain UNINSPECTED / UNQUALIFIED.
 ' rationale: [HIGH] Checking mutable host paths before copying does not bind the bytes a provider later reads.
 ' contract: The fixed guest wrapper receives installer path/SHA, archive SHA and attempt only as positional arguments.
 ' note-register: P right preview FK 11.5; P/C approval FK 10.7; A right scope FK 10.4.
 ' note-register: A/STATE intent FK 11.6; A/B provenance FK 12.0; C/STATE recovery FK 11.5.
 ' note-register: C/VM policy FK 11.4; P/VM diagnosis FK 12.9.
 ' note-register: S right host binding FK 12.2; VM right installer binding FK 12.2; S/VM limits FK 11.2.
+' note-register: CT/COMPLETE_STATE intent FK 11.5 (W27/S50/N2); CT/CG capacity FK 11.7 (W24/S46/N2).
+' note-register: CP/CG qualification FK 11.2 (W29/S52/N2); counts are hand-computed, not executed checks.
 ' FK syllables: hand-counted English; executables=5, mise=1, sysroot=2, CLI=3, F9=2, KUnit=3.
 ' FK syllables: UID=3; read-only and in-place each count as two words.
 @startuml sbx-preparation
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Development setup: automatic host inputs, separate guest approvals
+title Development setup: legacy Rust-only and isolated complete tools / no F9 authority
 actor Executor as OP
 participant "prepare.mjs\ndev:sbx:prepare parent" as P <<app>>
 participant "acquire-tools.mjs\ndev:sbx:acquire child" as A <<app>>
@@ -39,6 +55,12 @@ participant "snapshots.mjs\nbounded Bun worker" as S <<app>>
 participant "Named development sbx" as VM <<host>>
 participant "mise\ncore backends on host" as TOOLS <<host>>
 database "Private 0700 run directory\n0600 acquisition / state / policy / report\n0400 complete provision snapshots" as STATE <<db>>
+participant "complete-tools.mjs\ndev:sbx:prepare-tools" as CT <<app>>
+participant "complete-profile.mjs\ncomplete-dev-v1" as CP <<app>>
+participant "complete-archive.mjs\nTarInspector / inspectZipArchive" as CA <<app>>
+participant "complete-guest.mjs\ninspect / install / verify" as CG <<app>>
+participant "Declared upstream HTTPS origins" as UPSTREAM <<cloud>>
+database "Private complete-tool attempt\nattempt.json + append-only events" as COMPLETE_STATE <<db>>
 
 OP -> TOOLS : review mise.toml; explicitly mise trust
 OP -> TOOLS : mise install (online host bootstrap)
@@ -263,4 +285,120 @@ note over P, VM
   termination nor permission to start Cargo,
   KUnit or model work.
 end note
+
+group Separate complete-tool workflow: scoped 731-test offline suite PASS / real guest NOT_RUN
+  OP -> CT : mise run dev:sbx:prepare-tools --name NAME [--sbx ABS] [--plan]\nor --state ABS/attempt.json --stage STAGE [--plan]
+  note right of CT
+    raw=true; raw_args=true; no depends
+    Bun --no-env-file --no-install
+  end note
+  CT -> CP : built-in immutable profile; five declared artifacts
+  CP --> CT : Bun 1.4.0; Rust 1.95.0; Zig 0.17.1\nMise 2026.11.2; LLVM 23.1.5; profileSha256
+  alt lexical plan mode
+    CT --> OP : lexical PLAN_ONLY / exit 0; no executable or source-binding checks\nno state allocation/read, subprocesses, queries, writes or downloads
+    note right of CT
+      Mise configuration loading is external
+      to the helper's lexical preview contract
+    end note
+  else execution: one existing explicitly named development guest
+    CT -> CT : require stdin AND stderr TTY; resolve controller; bind four sources\ncheck unchanged Bun/Rust pins and auto_install=false\nprivate same-UID files remain mutable; no protected-backing/G1 proof
+    CT -> COMPLETE_STATE : new attempt only: /tmp/opencode/dev-sbx-tools-* (0700)\nexclusive attempt.json (0600); name/controller/source/profile bindings
+    CT -> CP : guestToolContext(/home/agent/workspace/devtools-<16lowerhex>)
+    CP --> CT : root-scoped PATH, HOME, mise data/config/cache and both Zig caches\nMISE_AUTO_INSTALL=false; no .profile, global export, auto-install or trust
+    loop policy -> preflight -> accept-policy -> reserve -> host-capacity -> acquire -> copy -> inspect -> install -> verify
+      CT -> COMPLETE_STATE : require exact unattempted next stage; no incomplete earlier intent
+      CT -> OP : fresh raw-TTY prompt: stage, controller/name, roots, hashes, prior events, effects and limits
+      OP --> CT : exact approve line for THIS stage only
+      CT -> CT : recheck state, controller and source/pin bindings after consent
+      break no consent, interrupted prompt or changed pre-intent bindings
+        CT --> OP : STOP / exit 2; no stage intent/effect\nunattempted next stage remains available only with its own fresh prompt
+      end
+      CT -> COMPLETE_STATE : exclusive stage intent BEFORE stage effect
+      note over CT, COMPLETE_STATE
+        Write stage intent before provider calls
+        so ambiguous failures leave a bound
+        attempt for review.
+        Keep that state for reconciliation rather
+        than automatic retry, reset or removal.
+      end note
+      alt policy
+        CT -> VM : policy ls --wide NAME; host <=10s / output <=64KiB
+        CT -> COMPLETE_STATE : private policy.txt + SHA; no raw provider output on terminal
+      else preflight
+        CT -> VM : exec: guest 15s + kill 1s; host 25s / output <=16KiB\nLinux/x86_64; glibc>=2.18; base nine names; writable workspace\n/usr/bin/xz + GNU /usr/bin/tar; df-reported free>=24GiB
+      else accept-policy
+        CT -> COMPLETE_STATE : rehash policy + preflight before/after consent; no provider call\nacknowledgement is not effective-policy or reusable F9 proof
+      else reserve
+        CT -> VM : exec: guest 20s + kill 1s; host 30s / output <=16KiB\natomic mkdir /home/agent/workspace/.complete-dev-tools-v1 (0700)\ncreate fresh root + inputs (0700); root .reservation becomes 0400
+        VM --> CT : refuse existing marker/root; no overwrite, removal or rearm\nexec may start a stopped VM; reservation is irreversible in this workflow
+      else host-capacity
+        CT -> COMPLETE_STATE : /usr/bin/df -Pk RUN_DIR; host <=10s / output <=16KiB\nreported free>=10GiB
+      else acquire
+        CT -> UPSTREAM : stream five declared URLs only; exact SHA + known byte sizes\nRust bytes UNKNOWN but finite <=2GiB; all archives <=4GiB
+        UPSTREAM --> CT : manual HTTPS redirects <=3; initial host or two fixed GitHub asset hosts\ndefault HTTPS port; request/body <=120s; whole acquisition <=600s; no retry
+        CT -> COMPLETE_STATE : exclusive 0600 originals; successful files seal 0400; retain partials
+        CT -> CA : bunBootstrap(): real inspectZipArchive, flat limits; entries[].path/content
+        CA --> CT : exactly root/bun regular content; ELF magic; no binary execution
+        CT -> COMPLETE_STATE : exclusive 0400 bun-bootstrap; retain original archives/notices
+      else copy
+        CT -> COMPLETE_STATE : stable-FD SHA snapshots: five archives + bootstrap + three guest modules\nexclusive 0400; retain originals and partial snapshots
+        CT -> VM : exactly nine sequential cp calls; each <=180s / output <=64KiB\nonly snapshots -> ROOT/inputs; no exec, checkout, report or import-closure staging
+      else inspect OR install OR verify
+        CT -> VM : one exec: guest 1200s + kill 2s; host 1210s / output <=64KiB / grace 1s\nhash three guest sources; open bootstrap fd 3, hash + chmod 0500\nexecute SAME descriptor --no-env-file --no-install complete-guest.mjs ACTION
+        VM -> CG : exact root + --profile-sha; shared report field profileSha256\nvalidate 0400 root reservation; exclusive guest intent; no attempted-stage reuse
+        alt inspect OR install
+          CG -> CG : hold original archive descriptors; rehash five declared inputs
+          CG -> CA : ZIP store/deflate + CRC; tar.xz: stream /usr/bin/xz -> TarInspector\neach parser receives remaining SHARED metadata budget\ninspect ALL inputs before any extraction; install repeats complete inspection
+          CA --> CG : entries / bytes / members / metadataBytes = actual parser counter\nconfined paths + acyclic internal links; refuse sparse/special/privileged entries\nUSTAR/GNU/local PAX; unknown metadata/layouts fail closed
+          note right of CA
+            ZIP: 128MiB total AND per entry
+            UT 0x5455 / UID 0x7875 validated, ignored
+            Unknown extras / ZIP64 rejected
+          end note
+          CG -> CG : validate resources + regular notice within EACH artifact root; real contents uninspected\naccountMetadataBytes: debit each parser counter once against shared 256MiB; no JSON proxy\ncount max(encoded members, unique materialized destination union): implicit parents, fresh roots, Bun/bin\nearly 200,000-entry guards + aggregate accounting BEFORE ANY extraction; unchanged Rust/control counts
+          opt install only, after all five inspections match prior receipt
+            CG -> VM : write Bun contents; extract four tar archives to fresh package roots\nheld archive/destination FDs; strip one root; GNU no-overwrite/no-owner flags
+            CG -> CG : retain rust-dist; assemble rust from five DATA-ONLY manifest.in components\nrustc / cargo / rust-std-x86_64-unknown-linux-gnu / rustfmt-preview / clippy-preview\nmerge directories or identical files; count additional copies; never execute install.sh
+          end
+        else verify
+          CG -> CG : create root-local HOME/mise/Zig cache directories; check std/resource trees
+          CG -> VM : six genuine startup/version queries, each <=10s / output <=16KiB\nbun / rustc / cargo / zig / mise / clang; no compilation or workload
+          CG -> VM : one exact ordered fifteen-name command -v query; <=10s / output <=16KiB
+          VM --> CG : require all versions + exact presence rows before allToolsAvailable=true\nlicensing NOT_QUALIFIED; explanation NOT_RUN; no startup-hook confinement claim
+        end
+        CG --> CT : exact guest schema/action/root/profileSha256 + PASS/data\nGate0 OPEN; f9Qualified=false; trainingReady=false
+        CT -> CT : parseGuestReport: validate context/status; retain only narrow safe summary\nverify requires data.allToolsAvailable=true; no raw guest-private output
+      end
+      alt complete validated outcome and unchanged source/state bindings
+        CT -> COMPLETE_STATE : exclusive completion event; next unattempted stage needs its OWN fresh prompt
+      else failure, timeout, interruption, malformed or ambiguous outcome after intent
+        break terminal in-flight stage
+          CT --> OP : DEV_TOOLS_STOP / exit 2; retained intent without completion => terminal RECONCILE\nno retry, fallback, rollback, reset, guest-network enablement or cleanup
+        end
+      end
+    end
+    note over CT, CG
+      Archive <=2GiB each; compressed total <=4GiB
+      Expanded <=16GiB; members <=200,000
+      Includes bootstrap, sources, control reserve
+      Includes retained rust-dist + Rust copies
+      Encoded metadata <=256MiB, not RSS
+    end note
+    note over CT, CG
+      Capacity floors report filesystem free space,
+      not enforced quotas or complete runtime fit.
+      Retained archives and additional Rust copies
+      consume the same development envelope.
+    end note
+    note over CP, CG
+      Declared digests bind bytes, not the identity
+      of an upstream publisher or independently
+      qualified input. Version checks prove only
+      startup; they do not qualify the full native
+      runtime closure.
+    end note
+    CT -> COMPLETE_STATE : all ten completed stages: exclusive 0400 receipt.json
+    CT --> OP : DEV_TOOLS_READY / exit 0; developmentToolsPrepared=true; explanation NOT_RUN\nGate0 OPEN; f9Qualified=false; trainingReady=false; not Gate0 acceptance
+  end
+end
 @enduml
