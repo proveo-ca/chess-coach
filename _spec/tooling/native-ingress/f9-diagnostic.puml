@@ -1,4 +1,4 @@
-' purpose: Development diagnostics, saved explanations and host-runner PASS never grant F9 readiness.
+' purpose: Development diagnostics and opt-in raw-byte capture never grant F9 readiness.
 ' covers: mise.toml
 ' covers: tooling/native-ingress/f9-diagnose.mjs
 ' covers: tooling/native-ingress/f9-requirements.mjs
@@ -18,10 +18,22 @@
 ' related: _spec/tooling/sbx-dev/preparation-workflow.puml
 ' related: _spec/tooling/bun-first-party-tooling.puml
 ' related: _spec/_plans/native-ingress-rust-first-full-plan-packet.md
-' status: AUTHORING + OFFLINE_VERIFICATION_COMPLETE (lead-reported 731 PASS / 0 FAIL); QUALITY_SECURITY_REVIEW_READY (code scope only); REAL_PROVISIONING_NOT_RUN; ACQUISITION_NOT_APPROVED; OPERATIONS_NOT_RUN; Gate0 OPEN; F9/training false.
+' status: SOURCE_SPEC_IN_SYNC; TRACE_MISE_CHECKS_PASS (156/835); MISE_PLAN_PASS; CODE_QUALITY_SECURITY_READY; LOCAL_REALM_TRACE_CAPTURED; NAMED_HOST_TRACE_NOT_RUN; FINAL_DIAGRAM_VERIFIED; PUBLICATION_AUTHORIZED; Gate0 OPEN; F9/training false.
 ' history: 118 PASS / 0 FAIL and READY describe ONLY the prior host-helper scope, not the new --tool-root/profile integration.
-' verification: 728 PASS is PRE-FIX history; final post-fix 731 PASS / 0 FAIL and fresh quality/security READY are lead-reported; final syntax/render/diff recheck required after these spec edits; no actual guest DEV_TOOLS_READY.
+' verification-history: 728 PASS is PRE-FIX history; final post-fix 731 PASS / 0 FAIL and quality/security READY cover that prior development scope only. Diagram syntax/render was pending at the earlier source-sync cut; the final receipt below supersedes that status only, not guest/F9 qualification.
 ' review-scope: Both budget findings closed in development code; security READY TO MERGE: yes, code scope only; actual filesystem byte/inode enforcement remains a LOW follow-up, not quota/F9/provisioning proof or approval.
+' trace-history: Prior published d6106dfc2ad49b6f72a2447cb22830f61f1adaa5 reporting tests/static/publication verdicts cover old scope only, not this trace delta.
+' trace-source-sync: Finished runBounded, complete-tools.mjs, both changed suites and README read as text; explicit buffer capture preserves bytes, while default UTF-8 strings/original diagnostic JSON remain unchanged.
+' trace-authority: Separate user-host read-only diagnostic grant is spent; reported COMMAND / UNEXPECTED_STDERR identifies no raw stderr cause or host/guest origin. Future private capture needs fresh exact raw-TTY approval.
+' trace-verification-history: Initial 153 targeted / 832 full PASS predates three optional synthetic privacy regressions; it is not the final test-file cut.
+' trace-verification: Lead reports actual Mise exec / MISE_AUTO_INSTALL=false / 120s+2s: targeted 156 PASS/0 FAIL/1555 expectations/2 files/3.86s; full 835 PASS/0 FAIL/7907 expectations/16 files/40.95s. Synthetic children/fake providers only, not live sbx; helper/API/defaults unchanged.
+' trace-code-review: Quality ses_e52385ebbffe9ODYv9Up7kC1BF READY/no findings; security ses_e52385eb1ffemMjTFKwOJzuPNJ READY/no actionable findings, CODE ONLY, pending specs excluded. Reviewers did not execute tests; lead passed three optional privacy regressions without helper changes.
+' local-scope: Lead reports language guard PASS/2136 first-party files, diff exit0, trace/normal existing-task PLAN_ONLY exit0 and non-TTY trace expected exit2 before resolution/allocation. None proves realm equivalence, guest forwarding, provisioning, readiness or operation permission.
+' local-mise: Lead reports 2026.9.1 linux-x64 (2026-09-02), bounded15s version query exit0 with outer update warning; no update/install. Guest profile2026.11.2 unchanged; original controller stderr cause/origin still UNKNOWN.
+' local-direct-capture: Lead reports CURRENT_REALM_ONLY fixed script after removing SBX/exec/name prefix: controllerUsed=false; local timeout/shell EXIT/code0/signal=null; stdout436B/stderr0B. Not runPreflightTrace, a named-host trace, a TTY bypass or an original-host-error reproduction.
+' local-direct-limits: Parsed local unmet checks are TOOL_patch, TOOL_ld.bfd, TOOL_readelf and GUEST_CAPACITY>=24GiB under fixed PATH. Private four-file capture metadata is in research section 2.10; no body read here, publication, identity/cold-run/full-readiness or F9 proof follows.
+' final-diagram-verification: Lead reports both diagrams passed plantuml -checkonly and -tsvg -o /tmp/opencode/preflight-trace-verification-vittRvAY, each exit0 under 120s/+2s / MISE_AUTO_INSTALL=false / mise exec --; fresh output directory was read empty, no overwrite.
+' final-diagram-outputs: Dedicated glob confirmed /tmp/opencode/preflight-trace-verification-vittRvAY/sbx-preparation.svg and /tmp/opencode/preflight-trace-verification-vittRvAY/f9-diagnostic.svg; subsequent git diff --check exit0. JAVA_TOOL_OPTIONS notice was outer renderer output, not trace data. Only header outcome metadata changes afterward; rendered logic/notes/titles/group labels and all authority/grants remain unchanged.
 ' contract: --tool-root selects invocation-scoped context only; checkout/import closure/configuration/report staging require separate approval and already existing guest inputs.
 ' source: Mise documentation observations supplied by the lead; no fetch in this pass.
 ' reference: https://mise.jdx.dev/configuration/settings.html#auto_install
@@ -29,6 +41,7 @@
 ' note-register: DIAG right cancellation FK 12.1; DIAG/GUEST crash FK 12.7; DIAG/GATES authority FK 12.3.
 ' note-register: OP/VERIFY approval FK 11.3; BOUNDED/GUEST deadline FK 10.7; MISE configuration FK 12.5.
 ' note-register: GUEST/MISE privacy FK 10.2; VERIFY/GATES authority FK 11.9.
+' note-register: BOUNDED/TRACE byte mode FK 11.3 (W26/S48/N2); hand-computed, not an executed check.
 ' FK counts: approval W26/S48/N2; deadline W24/S44/N2; configuration W23/S46/N2.
 ' FK counts: privacy W24/S43/N2; authority W25/S48/N2; W=words, S=syllables, N=sentences.
 ' FK syllables: hand-counted English; CLI=3, F9=2, Gate0=3, KUnit=3, G1=2.
@@ -47,6 +60,7 @@ database "Exact requested report leaf" as REPORT <<db>>
 participant "f9-verify-sbx.mjs\nf9:verify-sbx host CLI" as VERIFY <<app>>
 participant "f9-diagnose.mjs\nrunBounded host supervisor" as BOUNDED <<app>>
 participant "mise\nexisting guest f9:explain task" as MISE <<host>>
+participant "complete-tools.mjs\nisolated trace caller" as TRACE <<app>>
 
 OP -> CREATE : separately approved creation attempt
 CREATE --> OP : confirmed name / ambiguous state
@@ -222,5 +236,25 @@ group Host verification: scoped 731-test offline suite PASS / real guest NOT_RUN
   and this runner grants no such authority.
     end note
   end
+end
+
+group Additive bounded-runner encoding API: Mise 156/835 PASS; code reviews READY; named-host trace NOT_RUN
+  alt explicit opt-in for the isolated trace caller
+    TRACE -> BOUNDED : runBounded(fixed approved argv, encoding:"buffer")\nexisting combined byte cap, timeout, cancellation and reap behavior
+    BOUNDED -> BOUNDED : retain capped stdout/stderr byte prefixes as exact Buffers\ncount observed pipe bytes separately from retained output
+    BOUNDED --> TRACE : stdout/stderr Buffers + existing outcome/code/signal/bytes\nraw retained bytes may be partial; no UTF-8 reinterpretation before hashing
+  else encoding absent or default "utf8"
+    DIAG -> BOUNDED : existing caller options; unchanged default
+    BOUNDED --> DIAG : existing stdout/stderr strings and result behavior\noriginal f9:diagnose JSON report shape unchanged
+  else any other encoding value
+    BOUNDED --> TRACE : throw invalid capture encoding before argv access or spawn
+  end
+  note over BOUNDED, TRACE
+    Buffer mode preserves captured byte sequences,
+    because text decoding can replace invalid data.
+    Default callers retain their existing strings;
+    observed byte totals can exceed retained data.
+  end note
+  TRACE -> TRACE : capture completion is not preflight acceptance\nnonempty stderr remains rejected; origin UNATTRIBUTED\nno extra query, command discovery, retry or operational authority
 end
 @enduml

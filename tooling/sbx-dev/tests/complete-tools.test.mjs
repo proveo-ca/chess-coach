@@ -1,12 +1,12 @@
 // SPEC: _spec/tooling/sbx-dev/preparation-workflow.puml
 import { afterEach, beforeEach, expect, test } from "bun:test";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, linkSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, renameSync, rmSync, statSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { completeProfile } from "../complete-profile.mjs";
 import {
   STAGES, completeToolsFailure, completeToolsPlan, downloadArtifact, main, parseCapacity, parseCompleteTools,
-  parseGuestReport, parsePreflight, prepareCompleteTools, readCompleteState, runCompleteStage,
+  parseGuestReport, parsePreflight, prepareCompleteTools, readCompleteState, runCompleteStage, runPreflightTrace,
 } from "../complete-tools.mjs";
 
 const NAME = "existing-development-box";
@@ -19,7 +19,7 @@ const preflight = () => "DEV_SBX_PREFLIGHT_V1\nOS=Linux\nARCH=x86_64\nGLIBC=glib
   + completeProfile.baseTools.map((tool) => `TOOL_${tool}=PRESENT\n`).join("")
   + `WORKSPACE=WRITABLE\nTAR=EXECUTABLE\nXZ=EXECUTABLE\nGNU_TAR=YES\nDF_BEGIN\n${df()}DF_END\nDONE\n`;
 const result = (stdout, extra = {}) => ({ ok: true, outcome: "EXIT", code: 0, signal: null, stdout, stderr: "", ...extra });
-let fixture, run, statePath, dependencies, approvals, calls, requests, reserved;
+let fixture, run, statePath, dependencies, approvals, calls, requests, reserved, traceDirectory;
 
 beforeEach(() => {
   fixture = mkdtempSync("/tmp/opencode/dev-sbx-tools-fixture-");
@@ -29,6 +29,7 @@ beforeEach(() => {
   for (const filename of SOURCES) writeFileSync(join(fixture, "sources", filename), `fixture ${filename}\n`, { mode: 0o600 });
   writeFileSync(join(fixture, "mise.toml"), '[settings]\nauto_install = false\n[tools]\n"core:bun" = "1.4.0"\n"core:rust" = { version = "1.95.0" }\n', { mode: 0o600 });
   approvals = []; calls = []; requests = []; reserved = false;
+  traceDirectory = null;
   dependencies = {
     sourceDirectory: join(fixture, "sources"), projectDirectory: fixture,
     createDirectory: () => run, resolveController: (path) => path ?? SBX, announce: () => {},
@@ -58,9 +59,35 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  if (traceDirectory) rmSync(traceDirectory, { recursive: true, force: true });
   rmSync(run, { recursive: true, force: true });
   rmSync(fixture, { recursive: true, force: true });
 });
+
+function traceOptions(extra = {}) {
+  return { tracePreflight: true, sbx: SBX, name: NAME, ...extra };
+}
+
+function rawResult(stdout = Buffer.from(preflight()), stderr = Buffer.alloc(0), extra = {}) {
+  return { ok: true, outcome: "EXIT", code: 0, signal: null, elapsedMs: 1,
+    bytes: stdout.length + stderr.length, stdout, stderr, ...extra };
+}
+
+function traceDependencies(reply = rawResult(), extra = {}) {
+  traceDirectory = mkdtempSync("/tmp/opencode/dev-sbx-trace-");
+  const runnerSourcePath = join(fixture, "runner-source.mjs");
+  writeFileSync(runnerSourcePath, "SYNTHETIC_RUNNER_SOURCE_NOT_EXECUTED\n", { mode: 0o600 });
+  return { ...dependencies, runnerSourcePath, createTraceDirectory: () => traceDirectory,
+    execute: async (argv, bounds) => {
+      expect(existsSync(join(traceDirectory, "intent.json"))).toBe(true);
+      for (const filename of ["stdout.bin", "stderr.bin"]) {
+        expect(statSync(join(traceDirectory, filename)).mode & 0o7777).toBe(0o600);
+        expect(statSync(join(traceDirectory, filename)).size).toBe(0);
+      }
+      calls.push({ argv: [...argv], bounds: { ...bounds } });
+      return reply;
+    }, ...extra };
+}
 
 async function start() {
   await expect(prepareCompleteTools({ name: NAME }, { ...dependencies, confirm: async () => false })).rejects.toThrow();
@@ -138,6 +165,235 @@ async function failedPreflight(execute) {
   expect(approvals).toHaveLength(count);
   return { diagnostic, errors };
 }
+
+test("trace parsing is isolated from preparation state, stages and output overrides", () => {
+  expect(parseCompleteTools(["--trace-preflight", "--sbx", SBX, "--name", NAME, "--plan"]))
+    .toEqual(traceOptions({ plan: true }));
+  for (const argv of [
+    ["--trace-preflight", "--name", NAME],
+    ["--trace-preflight", "--sbx", SBX, "--name", NAME, "--state", statePath],
+    ["--trace-preflight", "--sbx", SBX, "--name", NAME, "--stage", "preflight"],
+    ["--trace-preflight", "--sbx", SBX, "--name", NAME, "--trace-preflight"],
+    ["--trace-preflight", "--sbx", SBX, "--name", NAME, "--output", "/tmp/PRIVATE"],
+  ]) expect(() => parseCompleteTools(argv)).toThrow();
+});
+
+test("trace plans require no controller, source, trace directory, state or provider access", async () => {
+  const forbidden = () => { throw new Error("UNEXPECTED_ACCESS"); }, output = [];
+  expect(await main(["--trace-preflight", "--sbx", "/missing/sbx", "--name", NAME, "--plan"], {
+    resolveController: forbidden, createTraceDirectory: forbidden, confirm: forbidden, execute: forbidden,
+    sourceDirectory: "/missing", runnerSourcePath: "/missing", output: (value) => output.push(value),
+  })).toBe(0);
+  const plan = JSON.parse(output[0]);
+  expect(plan).toMatchObject({ schema: "dev-sbx-preflight-trace-plan-v1", result: "PLAN_ONLY", ...AUTHORITY,
+    traceDirectory: "ALLOCATED_AT_EXECUTION", freshApproval: true,
+    previewEffects: { subprocesses: false, writes: false, downloads: false, queries: false } });
+  expect(plan.operation).toMatchObject({ milliseconds: 25000, cap: 16384 });
+  expect(plan.operation.argv.slice(0, 8)).toEqual(["/missing/sbx", "exec", NAME, "/usr/bin/timeout", "--kill-after=1s", "15s", "/bin/sh", "-c"]);
+  expect(plan.operation.argv[8]).toContain("DEV_SBX_PREFLIGHT_V1");
+  expect(readdirSync(run)).toEqual([]);
+});
+
+test("private trace retains original stderr bytes without weakening its rejection", async () => {
+  const stderr = Buffer.from("PRIVATE_PROVIDER_WARNING\0\u001b[31m\n"), stdout = Buffer.from(preflight());
+  const deps = traceDependencies(rawResult(stdout, stderr)), output = [];
+  expect(await main(["--trace-preflight", "--sbx", SBX, "--name", NAME], {
+    ...deps, output: (value) => output.push(value),
+  })).toBe(0);
+  const report = JSON.parse(output[0]);
+  expect(report).toMatchObject({ traceComplete: true, origin: "UNATTRIBUTED", result: "STOP", ...AUTHORITY,
+    stdoutProtocol: { status: "METADATA_CHECKS_MET" },
+    preflightGuard: { status: "STOP", failures: [{ check: "COMMAND", code: "UNEXPECTED_STDERR" }] } });
+  expect(calls).toHaveLength(1);
+  expect(calls[0]).toEqual({ argv: completeToolsPlan(traceOptions()).operation.argv,
+    bounds: { milliseconds: 25000, cap: 16384, encoding: "buffer" } });
+  expect(approvals.map(({ stage }) => stage)).toEqual(["trace-preflight"]);
+  expect(approvals[0].prompt).toContain("Exactly one fixed sbx exec");
+  expect(approvals[0].prompt).not.toContain("PRIVATE_PROVIDER_WARNING");
+  expect(readFileSync(report.streams.stdout.path)).toEqual(stdout);
+  expect(readFileSync(report.streams.stderr.path)).toEqual(stderr);
+  expect(report.streams.stderr.sha256).toBe(sha(stderr));
+  expect(report.execution).toMatchObject({ commandSucceeded: true, observedBytes: stdout.length + stderr.length,
+    retainedBytes: stdout.length + stderr.length, truncated: false });
+  expect(statSync(traceDirectory).mode & 0o7777).toBe(0o700);
+  expect(readdirSync(traceDirectory).sort()).toEqual(["intent.json", "report.json", "stderr.bin", "stdout.bin"]);
+  for (const filename of readdirSync(traceDirectory)) {
+    expect(statSync(join(traceDirectory, filename)).mode & 0o7777).toBe(0o600);
+    expect(statSync(join(traceDirectory, filename)).nlink).toBe(1);
+  }
+  expect(JSON.parse(readFileSync(join(traceDirectory, "report.json"), "utf8"))).toEqual(report);
+  expect(output.join("\n")).not.toContain("PRIVATE_PROVIDER_WARNING");
+  expect(readdirSync(run)).toEqual([]);
+});
+
+test("trace byte fidelity includes invalid UTF-8 without lossy digest conversion", async () => {
+  const stdout = Buffer.from([0xff, 0xfe, 0, 27, 65]), stderr = Buffer.from([0x80, 0, 27, 66]);
+  const report = await runPreflightTrace(traceOptions(), traceDependencies(rawResult(stdout, stderr)));
+  expect(readFileSync(report.streams.stdout.path)).toEqual(stdout);
+  expect(readFileSync(report.streams.stderr.path)).toEqual(stderr);
+  expect(report.streams.stdout.sha256).toBe(sha(stdout));
+  expect(report.streams.stderr.sha256).toBe(sha(stderr));
+  expect(report.stdoutProtocol).toEqual({ status: "INVALID", failures: [{ check: "PROTOCOL", code: "PROTOCOL_INVALID" }] });
+  expect(report.preflightGuard.status).toBe("STOP");
+});
+
+test.each(["TIMEOUT", "OUTPUT_LIMIT", "INTERRUPTED", "STREAM_ERROR", "INCOMPLETE_STREAM"])("trace retains capped partial bytes after %s", async (outcome) => {
+  const stdout = Buffer.alloc(outcome === "OUTPUT_LIMIT" ? 16377 : 32, 255), stderr = Buffer.alloc(7, 0);
+  const reply = rawResult(stdout, stderr, { ok: false, outcome, code: null, signal: "SIGKILL",
+    bytes: outcome === "OUTPUT_LIMIT" ? 17000 : stdout.length + stderr.length });
+  const report = await runPreflightTrace(traceOptions(), traceDependencies(reply));
+  expect(readFileSync(report.streams.stdout.path)).toEqual(stdout);
+  expect(readFileSync(report.streams.stderr.path)).toEqual(stderr);
+  expect(report.execution.truncated).toBe(outcome === "OUTPUT_LIMIT");
+  expect(report.execution.retainedBytes).toBe(stdout.length + stderr.length);
+  expect(report.stdoutProtocol.status).toBe("NOT_EVALUATED");
+  expect(report.preflightGuard).toEqual({ status: "STOP", failures: [{ check: "COMMAND", code: outcome }] });
+  expect(calls).toHaveLength(1);
+});
+
+test("trace capture success does not declare readiness even with clean complete stdout", async () => {
+  const report = await runPreflightTrace(traceOptions(), traceDependencies());
+  expect(report.stdoutProtocol.status).toBe("METADATA_CHECKS_MET");
+  expect(report.preflightGuard).toEqual({ status: "METADATA_CHECKS_MET", failures: [] });
+  expect(report).toMatchObject({ result: "STOP", traceComplete: true, ...AUTHORITY });
+});
+
+test("trace preserves native negative spawn codes as failed capture metadata", async () => {
+  const report = await runPreflightTrace(traceOptions(), traceDependencies(rawResult(Buffer.alloc(0), Buffer.alloc(0), {
+    ok: false, outcome: "SPAWN_ERROR", code: -2,
+  })));
+  expect(report.execution).toMatchObject({ outcome: "SPAWN_ERROR", code: -2, commandSucceeded: false });
+  expect(report.stdoutProtocol.status).toBe("NOT_EVALUATED");
+  expect(report.preflightGuard.failures).toEqual([{ check: "COMMAND", code: "SPAWN_ERROR" }]);
+  expect(report).toMatchObject({ result: "STOP", ...AUTHORITY });
+});
+
+test("nonterminal trace refuses before controller resolution or private allocation", async () => {
+  const input = Object.getOwnPropertyDescriptor(process.stdin, "isTTY");
+  const error = Object.getOwnPropertyDescriptor(process.stderr, "isTTY");
+  let operations = 0;
+  const errors = [];
+  Object.defineProperty(process.stdin, "isTTY", { value: false, configurable: true });
+  Object.defineProperty(process.stderr, "isTTY", { value: false, configurable: true });
+  try {
+    expect(await main(["--trace-preflight", "--sbx", SBX, "--name", NAME], {
+      resolveController: () => { operations++; return SBX; }, createTraceDirectory: () => { operations++; return run; },
+      error: (value) => errors.push(value), output: () => { throw new Error("UNEXPECTED_STDOUT"); },
+    })).toBe(2);
+    expect(operations).toBe(0);
+    expect(JSON.parse(errors[1]).failures).toEqual([{ check: "TTY", code: "TTY_REQUIRED" }]);
+    expect(readdirSync(run)).toEqual([]);
+  } finally {
+    if (input) Object.defineProperty(process.stdin, "isTTY", input); else delete process.stdin.isTTY;
+    if (error) Object.defineProperty(process.stderr, "isTTY", error); else delete process.stderr.isTTY;
+  }
+});
+
+test("declined trace has no intent, raw capture or provider operation", async () => {
+  const deps = traceDependencies(rawResult(), { confirm: async () => false });
+  await expect(runPreflightTrace(traceOptions(), deps)).rejects.toThrow("DEV_TOOLS_STOP");
+  expect(readdirSync(traceDirectory)).toEqual([]);
+  expect(calls).toEqual([]);
+});
+
+test("trace file collisions refuse without overwrite or replay", async () => {
+  const deps = traceDependencies();
+  writeFileSync(join(traceDirectory, "intent.json"), "PRIVATE_EXISTING_INTENT\n", { mode: 0o600 });
+  await expect(runPreflightTrace(traceOptions(), deps)).rejects.toThrow();
+  expect(readFileSync(join(traceDirectory, "intent.json"), "utf8")).toBe("PRIVATE_EXISTING_INTENT\n");
+  expect(calls).toEqual([]);
+  expect(approvals).toEqual([]);
+});
+
+test("trace source drift at consent refuses before intent and invocation", async () => {
+  const deps = traceDependencies();
+  deps.confirm = async () => { writeFileSync(deps.runnerSourcePath, "PRIVATE_REPLACEMENT_SOURCE\n"); return true; };
+  await expect(runPreflightTrace(traceOptions(), deps)).rejects.toThrow();
+  expect(readdirSync(traceDirectory)).toEqual([]);
+  expect(calls).toEqual([]);
+});
+
+test("trace source drift after invocation retains raw captures without a completion report", async () => {
+  const stdout = Buffer.from(preflight()), stderr = Buffer.from("PRIVATE_RETAINED_AFTER_DRIFT\n");
+  const deps = traceDependencies();
+  deps.execute = async () => {
+    writeFileSync(deps.runnerSourcePath, "PRIVATE_CHANGED_RUNNER\n");
+    return rawResult(stdout, stderr);
+  };
+  await expect(runPreflightTrace(traceOptions(), deps)).rejects.toThrow();
+  expect(readFileSync(join(traceDirectory, "stdout.bin"))).toEqual(stdout);
+  expect(readFileSync(join(traceDirectory, "stderr.bin"))).toEqual(stderr);
+  expect(existsSync(join(traceDirectory, "report.json"))).toBe(false);
+});
+
+test("trace persistence refuses a swapped directory without writing into its replacement", async () => {
+  const deps = traceDependencies();
+  const moved = join(fixture, "moved-trace");
+  deps.execute = async () => {
+    renameSync(traceDirectory, moved);
+    mkdirSync(traceDirectory, { mode: 0o700 });
+    return rawResult();
+  };
+  await expect(runPreflightTrace(traceOptions(), deps)).rejects.toThrow();
+  expect(readdirSync(traceDirectory)).toEqual([]);
+  expect(statSync(join(moved, "stdout.bin")).size).toBe(0);
+  expect(existsSync(join(moved, "report.json"))).toBe(false);
+});
+
+test("trace persistence refuses symlink replacement without touching the linked file", async () => {
+  const deps = traceDependencies();
+  const target = join(fixture, "private-target");
+  writeFileSync(target, "PRIVATE_UNCHANGED_TARGET\n", { mode: 0o600 });
+  deps.execute = async () => {
+    unlinkSync(join(traceDirectory, "stdout.bin"));
+    symlinkSync(target, join(traceDirectory, "stdout.bin"));
+    return rawResult();
+  };
+  await expect(runPreflightTrace(traceOptions(), deps)).rejects.toThrow();
+  expect(readFileSync(target, "utf8")).toBe("PRIVATE_UNCHANGED_TARGET\n");
+  expect(existsSync(join(traceDirectory, "report.json"))).toBe(false);
+});
+
+test("trace persistence refuses hard-linked capture files before writing bytes", async () => {
+  const deps = traceDependencies();
+  const alias = join(fixture, "capture-alias");
+  deps.execute = async () => {
+    linkSync(join(traceDirectory, "stdout.bin"), alias);
+    return rawResult();
+  };
+  await expect(runPreflightTrace(traceOptions(), deps)).rejects.toThrow();
+  expect(statSync(alias).size).toBe(0);
+  expect(existsSync(join(traceDirectory, "report.json"))).toBe(false);
+});
+
+test("trace neither mutates nor continues an existing blocked preparation attempt", async () => {
+  await start();
+  await expect(runCompleteStage("policy", { state: statePath }, { ...dependencies,
+    execute: async () => result("PRIVATE_FAILURE", { ok: false, code: 1 }) })).rejects.toThrow();
+  const before = Object.fromEntries(readdirSync(run).map((filename) => [filename, readFileSync(join(run, filename))]));
+  const report = await runPreflightTrace(traceOptions(), traceDependencies());
+  expect(report.traceComplete).toBe(true);
+  expect(Object.fromEntries(readdirSync(run).map((filename) => [filename, readFileSync(join(run, filename))]))).toEqual(before);
+  expect(readCompleteState(statePath)).toMatchObject({ status: "RECONCILE", nextStage: null });
+});
+
+test.each([
+  { outcome: "PRIVATE_OUTCOME" }, { signal: "SIGPRIVATE" }, { stdout: "PRIVATE_STRING_NOT_BYTES" },
+  { bytes: -1 }, { elapsedMs: Infinity }, { stdout: Buffer.alloc(16385) },
+  { outcome: "TIMEOUT", ok: true }, { code: -2 },
+])("malformed trace results remain private and cannot be replayed %#", async (extra) => {
+  const deps = traceDependencies({ ...rawResult(), ...extra }), errors = [];
+  expect(await main(["--trace-preflight", "--sbx", SBX, "--name", NAME], {
+    ...deps, output: () => { throw new Error("UNEXPECTED_STDOUT"); }, error: (value) => errors.push(value),
+  })).toBe(2);
+  expect(errors.join("\n")).not.toContain("PRIVATE");
+  expect(errors[0]).toContain("DEV_TRACE_STOP");
+  expect(existsSync(join(traceDirectory, "intent.json"))).toBe(true);
+  expect(existsSync(join(traceDirectory, "report.json"))).toBe(false);
+  const count = calls.length;
+  await expect(runPreflightTrace(traceOptions(), deps)).rejects.toThrow();
+  expect(calls).toHaveLength(count);
+});
 
 test("parser accepts only explicit new targets or one next-stage selector", () => {
   expect(parseCompleteTools(["--name", NAME, "--plan"])).toEqual({ name: NAME, plan: true });

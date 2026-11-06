@@ -5,6 +5,7 @@ import {
   mkdirSync, mkdtempSync, openSync, readSync, readdirSync, realpathSync, writeSync,
 } from "node:fs";
 import { basename, dirname, isAbsolute, join, resolve } from "node:path";
+import { constants as osConstants } from "node:os";
 import { createInterface } from "node:readline";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
@@ -24,6 +25,10 @@ const RECORD_CAP = 64 * 1024;
 const CHUNK = 128 * 1024;
 const AUTHORITY = Object.freeze({ gate0: "OPEN", f9Qualified: false, trainingReady: false });
 const FAILURE_LINE = "DEV_TOOLS_STOP; retain attempt files and guest reservation; reconcile in-flight stages; never retry an attempted stage or remove reservations; Gate0=OPEN; f9Qualified=false; trainingReady=false.";
+const TRACE_FAILURE_LINE = "DEV_TRACE_STOP; preserve private trace files; do not retry automatically; Gate0=OPEN; f9Qualified=false; trainingReady=false.";
+const TRACE_CAP = 16384;
+const TRACE_OUTCOMES = new Set(["EXIT", "TIMEOUT", "OUTPUT_LIMIT", "INTERRUPTED", "SPAWN_ERROR", "STREAM_ERROR", "INCOMPLETE_STREAM"]);
+const TRACE_SIGNALS = new Set(Object.keys(osConstants.signals));
 const failureDetails = new WeakMap();
 const PHASE_FAILURES = {
   ARGUMENTS: ["ARGUMENTS", "INVALID_ARGUMENTS"], INITIALIZATION: ["INITIALIZATION", "INTERNAL_ERROR"],
@@ -119,9 +124,13 @@ function stateLocation(value) {
 }
 
 function optionsChecked(options) {
-  if (!plain(options) || Object.keys(options).some((key) => !["name", "sbx", "state", "stage", "plan"].includes(key))
+  if (!plain(options) || Object.keys(options).some((key) => !["name", "sbx", "state", "stage", "plan", "tracePreflight"].includes(key))
     || (options.plan !== undefined && typeof options.plan !== "boolean")) fail();
-  if (options.state !== undefined || options.stage !== undefined) {
+  if (options.tracePreflight !== undefined) {
+    if (options.tracePreflight !== true || options.state !== undefined || options.stage !== undefined) fail();
+    name(options.name);
+    absolute(options.sbx);
+  } else if (options.state !== undefined || options.stage !== undefined) {
     stateLocation(options.state);
     if (!STAGES.includes(options.stage) || options.name !== undefined || options.sbx !== undefined) fail();
   } else {
@@ -134,13 +143,23 @@ function optionsChecked(options) {
 export function parseCompleteTools(argv) {
   const { values, tokens } = parseArgs({ args: argv, strict: true, allowPositionals: false, tokens: true, options: {
     name: { type: "string" }, sbx: { type: "string" }, state: { type: "string" }, stage: { type: "string" }, plan: { type: "boolean" },
+    "trace-preflight": { type: "boolean" },
   } });
   if (tokens.some((token) => token.kind !== "option") || new Set(tokens.map((token) => token.name)).size !== tokens.length) fail();
-  return optionsChecked({ ...values });
+  const { "trace-preflight": tracePreflight, ...options } = values;
+  return optionsChecked({ ...options, ...(tracePreflight === undefined ? {} : { tracePreflight }) });
 }
 
 export function completeToolsPlan(options) {
   optionsChecked(options);
+  if (options.tracePreflight) return {
+    schema: "dev-sbx-preflight-trace-plan-v1", result: "PLAN_ONLY", ...AUTHORITY,
+    scope: "INDEPENDENT_PREFLIGHT_DIAGNOSTIC", origin: "UNATTRIBUTED",
+    target: options.name, sbxPath: options.sbx, traceDirectory: "ALLOCATED_AT_EXECUTION",
+    operation: preflightTraceOperation(options), freshApproval: true,
+    privateFiles: ["intent.json", "stdout.bin", "stderr.bin", "report.json"],
+    previewEffects: { subprocesses: false, writes: false, downloads: false, queries: false },
+  };
   return {
     schema: "dev-sbx-complete-plan-v1", result: "PLAN_ONLY", ...AUTHORITY,
     name: options.name ?? "BOUND_FROM_STATE_AT_EXECUTION", sbxPath: options.sbx ?? "RESOLVED_AT_EXECUTION",
@@ -355,6 +374,132 @@ export function parsePreflight(stdout) {
   if (failures.length) throw diagnosticFailure(failures);
   return { os: "Linux", arch: "x86_64", glibc: `${libc[1]}.${libc[2]}`, baseTools: [...completeProfile.baseTools],
     workspaceWritable: true, tar: true, xz: true, gnuTar: true, ...capacity };
+}
+
+function preflightTraceOperation(options) {
+  return { argv: [options.sbx, "exec", options.name, "/usr/bin/timeout", "--kill-after=1s", "15s",
+    "/bin/sh", "-c", PREFLIGHT, "sh"], milliseconds: 25000, cap: TRACE_CAP };
+}
+
+function traceSourceBindings(dependencies) {
+  return { ...sourceBindings(dependencies), "f9-diagnose.mjs": hash(readSmall(
+    dependencies.runnerSourcePath ?? resolve(HERE, "../native-ingress/f9-diagnose.mjs"), SOURCE_CAP)) };
+}
+
+function traceLocation(directory) {
+  absolute(directory);
+  if (dirname(directory) !== "/tmp/opencode" || !/^dev-sbx-trace-[A-Za-z0-9-]+$/.test(basename(directory))) fail();
+  return directory;
+}
+
+function traceFile(parent, filename) {
+  const fd = openSync(`/proc/self/fd/${parent}/${filename}`,
+    constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW | constants.O_NONBLOCK, 0o600);
+  try { fchmodSync(fd, 0o600); details(fd, 0, 0o600); fsyncSync(fd); fsyncSync(parent); return fd; }
+  catch (error) { closeSync(fd); throw error; }
+}
+
+function checkedTraceResult(result) {
+  if (!plain(result) || !TRACE_OUTCOMES.has(result.outcome) || typeof result.ok !== "boolean"
+    || !Buffer.isBuffer(result.stdout) || !Buffer.isBuffer(result.stderr)
+    || !Number.isSafeInteger(result.bytes) || result.bytes < 0
+    || !Number.isSafeInteger(result.elapsedMs) || result.elapsedMs < 0
+    || (result.code !== null && !Number.isSafeInteger(result.code))
+    || (result.signal !== null && !TRACE_SIGNALS.has(result.signal))) failCheck("COMMAND", "EXECUTOR_RESULT_INVALID");
+  const retainedBytes = result.stdout.length + result.stderr.length;
+  if (retainedBytes > TRACE_CAP || result.bytes < retainedBytes
+    || result.ok !== (result.outcome === "EXIT" && result.code === 0 && result.signal === null)
+    || (result.outcome === "EXIT" && result.code !== null && (result.code < 0 || result.code > 255))
+    || (result.outcome === "EXIT" && result.code === null && result.signal === null)
+    || (result.ok && result.bytes > TRACE_CAP)) failCheck("COMMAND", "EXECUTOR_RESULT_INVALID");
+  return { outcome: result.outcome, code: result.code, signal: result.signal, elapsedMs: result.elapsedMs,
+    observedBytes: result.bytes, retainedBytes, truncated: result.bytes > retainedBytes, commandSucceeded: result.ok };
+}
+
+function traceObservations(result) {
+  let code = null;
+  if (result.outcome !== "EXIT") code = result.outcome;
+  else if (result.signal !== null) code = "SIGNAL";
+  else if (result.code !== 0) code = "NONZERO_EXIT";
+  else if (result.stderr.length) code = "UNEXPECTED_STDERR";
+  let stdoutProtocol = { status: "NOT_EVALUATED", failures: [] };
+  if (result.ok) {
+    let text;
+    try { text = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(result.stdout); }
+    catch { stdoutProtocol = { status: "INVALID", failures: [{ check: "PROTOCOL", code: "PROTOCOL_INVALID" }] }; }
+    if (text !== undefined) {
+      try { parsePreflight(text); stdoutProtocol = { status: "METADATA_CHECKS_MET", failures: [] }; }
+      catch (error) { stdoutProtocol = { status: "STOP", failures: completeToolsFailure(error).failures }; }
+    }
+  }
+  const failures = code ? [{ check: "COMMAND", code }] : stdoutProtocol.failures;
+  return { stdoutProtocol, preflightGuard: { status: failures.length ? "STOP" : "METADATA_CHECKS_MET", failures } };
+}
+
+export async function runPreflightTrace(options, dependencies = {}) {
+  let phase = "ARGUMENTS", parent;
+  const captures = [];
+  try {
+    optionsChecked(options);
+    if (!options.tracePreflight) fail();
+    if (options.plan) return completeToolsPlan(options);
+    phase = "INITIALIZATION";
+    terminalRequired(dependencies);
+    const sbxPath = absolute((dependencies.resolveController ?? resolveController)(options.sbx));
+    if (sbxPath !== options.sbx) failCheck("CONTROLLER_BINDINGS", "BINDING_INVALID");
+    const bindings = traceSourceBindings(dependencies);
+    const directory = traceLocation((dependencies.createTraceDirectory ?? (() => mkdtempSync("/tmp/opencode/dev-sbx-trace-")))());
+    parent = privateDirectory(directory);
+    anchor(parent, directory);
+    if (readdirSync(`/proc/self/fd/${parent}`).length) fail();
+    const operation = preflightTraceOperation({ ...options, sbx: sbxPath });
+    const request = { schema: "dev-sbx-preflight-trace-intent-v1", scope: "INDEPENDENT_PREFLIGHT_DIAGNOSTIC",
+      target: options.name, sbxPath, traceDirectory: directory, sourceBindings: bindings, profileSha256: PROFILE_SHA,
+      operation, ...AUTHORITY };
+    const prompt = `TRACE_PREFLIGHT_ONLY\nCONTROLLER=${sbxPath}\nNAME=${options.name}\nTRACE_DIRECTORY=${directory}\nSOURCES=${JSON.stringify(bindings)}\nOPERATION=${JSON.stringify(operation)}\nExactly one fixed sbx exec; guest 15s +1s kill escalation; host 25s/16KiB combined plus bounded reaping. Allocate private 0600 intent.json/stdout.bin/stderr.bin/report.json in this fresh 0700 directory. Retain raw bytes, including possible private provider output; never print or publish the raw bodies. No preparation-state access, policy read, installation, downloads, retry, rearm or removal. Exec may start a stopped VM; controller termination does not prove guest termination. Stderr remains rejected; origin UNATTRIBUTED. Bindings are not G1 proof. Gate0 OPEN; f9Qualified=false; trainingReady=false.`;
+    (dependencies.announce ?? ((value) => process.stderr.write(`${value}\n`)))(`TRACE_DIRECTORY=${directory}`);
+    phase = "APPROVAL";
+    if (await (dependencies.confirm ?? confirmTTY)({ stage: "trace-preflight", state: structuredClone(request), prompt }) !== true) {
+      failCheck("APPROVAL", "APPROVAL_DECLINED");
+    }
+    phase = "POST_APPROVAL";
+    anchor(parent, directory);
+    if (readdirSync(`/proc/self/fd/${parent}`).length) failCheck("STATE_BINDINGS", "BINDING_INVALID");
+    if (JSON.stringify(traceSourceBindings(dependencies)) !== JSON.stringify(bindings)) failCheck("SOURCE_BINDINGS", "BINDING_INVALID");
+    if ((dependencies.resolveController ?? resolveController)(options.sbx) !== sbxPath) failCheck("CONTROLLER_BINDINGS", "BINDING_INVALID");
+    phase = "INTENT_WRITE";
+    record(parent, "intent.json", request);
+    for (const filename of ["stdout.bin", "stderr.bin"]) captures.push({ filename, fd: traceFile(parent, filename) });
+    phase = "EFFECT";
+    const result = await (dependencies.execute ?? runBounded)(operation.argv, {
+      milliseconds: operation.milliseconds, cap: operation.cap, encoding: "buffer",
+    });
+    const execution = checkedTraceResult(result);
+    phase = "FINALIZATION";
+    anchor(parent, directory);
+    const streams = {};
+    for (const [index, key] of ["stdout", "stderr"].entries()) {
+      const { filename, fd } = captures[index], bytes = result[key];
+      details(fd, 0, 0o600);
+      writeAll(fd, bytes); fsyncSync(fd);
+      const stored = details(fd, TRACE_CAP, 0o600);
+      if (stored.size !== BigInt(bytes.length) || !same(stored, lstatSync(`/proc/self/fd/${parent}/${filename}`, { bigint: true }))) fail();
+      streams[key] = { path: join(directory, filename), retainedBytes: bytes.length, sha256: hash(bytes) };
+    }
+    fsyncSync(parent);
+    if (JSON.stringify(traceSourceBindings(dependencies)) !== JSON.stringify(bindings)) failCheck("SOURCE_BINDINGS", "BINDING_INVALID");
+    const summary = { schema: "dev-sbx-preflight-trace-v1", scope: "INDEPENDENT_PREFLIGHT_DIAGNOSTIC",
+      origin: "UNATTRIBUTED", traceComplete: true, traceDirectory: directory, target: options.name,
+      profileSha256: PROFILE_SHA, sourceBindings: bindings, execution, streams,
+      ...traceObservations(result), result: "STOP", ...AUTHORITY };
+    record(parent, "report.json", summary);
+    anchor(parent, directory);
+    return summary;
+  } catch (error) { throw failureAt(error, "CLI", phase); }
+  finally {
+    for (const { fd } of captures) closeSync(fd);
+    if (parent !== undefined) closeSync(parent);
+  }
 }
 
 function jsonData(value, depth = 0) {
@@ -867,6 +1012,7 @@ export async function prepareCompleteTools(options, dependencies = {}) {
   try {
     optionsChecked(options);
     if (options.plan) return completeToolsPlan(options);
+    if (options.tracePreflight) return await runPreflightTrace(options, dependencies);
     if (options.state) return await runCompleteStage(options.stage, options, dependencies);
     phase = "INITIALIZATION";
     terminalRequired(dependencies);
@@ -892,9 +1038,10 @@ export async function prepareCompleteTools(options, dependencies = {}) {
 }
 
 export async function main(argv, dependencies = {}) {
-  let stage = "CLI", phase = "ARGUMENTS";
+  let stage = "CLI", phase = "ARGUMENTS", trace = false;
   try {
     const options = parseCompleteTools(argv);
+    trace = options.tracePreflight === true;
     stage = options.stage ?? "CLI";
     phase = "INITIALIZATION";
     const result = options.plan ? completeToolsPlan(options) : await prepareCompleteTools(options, dependencies);
@@ -904,7 +1051,7 @@ export async function main(argv, dependencies = {}) {
     const write = dependencies.error ?? console.error;
     const report = completeToolsFailure(failureAt(error, stage, phase));
     const json = JSON.stringify(report);
-    write(FAILURE_LINE);
+    write(trace ? TRACE_FAILURE_LINE : FAILURE_LINE);
     write(Buffer.byteLength(json) <= 4096 ? json : JSON.stringify(completeToolsFailure(null)));
     return 2;
   }

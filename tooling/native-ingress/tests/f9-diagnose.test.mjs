@@ -163,6 +163,75 @@ test("bounded runner stops hangs and output floods", async () => {
   expect(Buffer.byteLength(flood.stdout)).toBeLessThanOrEqual(64);
 });
 
+test("buffer capture preserves non-UTF8, NUL and ANSI bytes on both streams", async () => {
+  const stdout = Buffer.from([0xff, 0xc3, 0x28, 0, 0x1b, 91, 51, 49, 109]);
+  const stderr = Buffer.from([0xfe, 0x80, 0, 0x1b, 91, 48, 109]);
+  const result = await runBounded([process.execPath, "--no-env-file", "--no-install", "-e",
+    `const {writeSync}=require('node:fs'); writeSync(1,Buffer.from(${JSON.stringify([...stdout])})); writeSync(2,Buffer.from(${JSON.stringify([...stderr])}));`],
+  { milliseconds: 1000, encoding: "buffer" });
+  expect(result.ok).toBe(true);
+  expect(Buffer.isBuffer(result.stdout)).toBe(true);
+  expect(Buffer.isBuffer(result.stderr)).toBe(true);
+  expect(result.stdout).toEqual(stdout);
+  expect(result.stderr).toEqual(stderr);
+  expect(result.bytes).toBe(stdout.length + stderr.length);
+});
+
+test("default and explicit UTF8 capture retain the legacy string result shape", async () => {
+  const bytes = Buffer.from([0xff, 0, 0x1b, 91, 48, 109]);
+  for (const options of [{}, { encoding: "utf8" }]) {
+    const result = await runBounded([process.execPath, "--no-env-file", "--no-install", "-e",
+      `const {writeSync}=require('node:fs'); const bytes=Buffer.from(${JSON.stringify([...bytes])}); writeSync(1,bytes); writeSync(2,bytes);`],
+    { milliseconds: 1000, ...options });
+    expect(result.ok).toBe(true);
+    expect(typeof result.stdout).toBe("string");
+    expect(typeof result.stderr).toBe("string");
+    expect(result.stdout).toBe(bytes.toString("utf8"));
+    expect(result.stderr).toBe(bytes.toString("utf8"));
+    expect(result.bytes).toBe(bytes.length * 2);
+    expect(Object.keys(result).sort()).toEqual(["ok", "outcome", "code", "signal", "elapsedMs", "bytes", "stdout", "stderr"].sort());
+  }
+});
+
+test("buffer capture shares the output cap and counts observed overflow bytes", async () => {
+  const cap = 32;
+  const result = await runBounded([process.execPath, "--no-env-file", "--no-install", "-e",
+    "const {writeSync}=require('node:fs'); writeSync(1,Buffer.alloc(24,255)); writeSync(2,Buffer.alloc(24,254));"],
+  { milliseconds: 1000, cap, encoding: "buffer" });
+  expect(result.ok).toBe(false);
+  expect(result.outcome).toBe("OUTPUT_LIMIT");
+  expect(Buffer.isBuffer(result.stdout)).toBe(true);
+  expect(Buffer.isBuffer(result.stderr)).toBe(true);
+  expect(result.stdout.length).toBeGreaterThan(0);
+  expect(result.stderr.length).toBeGreaterThan(0);
+  const retained = result.stdout.length + result.stderr.length;
+  expect(retained).toBeLessThanOrEqual(cap);
+  expect(result.bytes).toBeGreaterThan(cap);
+  expect(result.bytes).toBeGreaterThanOrEqual(retained);
+});
+
+test("buffer capture retains bounded partial output on timeout", async () => {
+  const result = await runBounded([process.execPath, "--no-env-file", "--no-install", "-e",
+    "const {writeSync}=require('node:fs'); writeSync(1,Buffer.from([255,0])); writeSync(2,Buffer.from([0,254])); setInterval(()=>{},1000);"],
+  { milliseconds: 1000, cap: 8, encoding: "buffer" });
+  expect(result.ok).toBe(false);
+  expect(result.outcome).toBe("TIMEOUT");
+  expect(Buffer.isBuffer(result.stdout)).toBe(true);
+  expect(Buffer.isBuffer(result.stderr)).toBe(true);
+  expect(result.stdout).toEqual(Buffer.from([255, 0]));
+  expect(result.stderr).toEqual(Buffer.from([0, 254]));
+  expect(result.stdout.length + result.stderr.length).toBeLessThanOrEqual(8);
+  expect(result.bytes).toBe(4);
+});
+
+test.each(["", "utf-8", "UTF8", "BUFFER", "hex", null, false, 0, {}, [], new String("buffer")].map((encoding) => [encoding]))("invalid capture encoding %j refuses before subprocess access", (encoding) => {
+  const absent = join(root, "absent"), argv = [absent];
+  let argvReads = 0;
+  Object.defineProperty(argv, 0, { get() { argvReads++; return absent; } });
+  expect(() => runBounded(argv, { milliseconds: 1000, encoding })).toThrow(/^invalid capture encoding$/);
+  expect(argvReads).toBe(0);
+});
+
 test("bounded runner handles spawn failure and incomplete inherited pipes", async () => {
   const absent = await runBounded([join(root, "absent")], { milliseconds: 1000 });
   expect(absent.ok).toBe(false);
@@ -219,6 +288,10 @@ test("graceful cancellation escalates a TERM-ignoring child to KILL", async () =
 
 test.each([-1, 1001, 0.5, "1000", null])("invalid cancellation grace %j refuses before a subprocess", (graceMilliseconds) => {
   expect(() => runBounded([process.execPath], { milliseconds: 1000, graceMilliseconds })).toThrow("invalid cancellation grace");
+});
+
+test.each([-1, 1001, 0.5, "1000", null])("buffer capture preserves invalid cancellation grace %j refusal", (graceMilliseconds) => {
+  expect(() => runBounded([join(root, "absent")], { milliseconds: 1000, graceMilliseconds, encoding: "buffer" })).toThrow(/^invalid cancellation grace$/);
 });
 
 test("mise wiring adds only the separate diagnostic and retains static status", () => {

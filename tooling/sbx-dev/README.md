@@ -4,7 +4,7 @@ These commands use the existing development `sbx` service. They do not provision
 
 ## Complete tools in an existing sandbox
 
-**Offline verification: 787 tests PASS; actual provisioning remains unqualified.** The complete-tools task remains separate from the legacy Rust-only workflow below. It does not create a sandbox or reuse legacy state, tool roots or completed attempts.
+**Offline verification: 835 tests PASS; actual provisioning remains unqualified.** The complete-tools task remains separate from the legacy Rust-only workflow below. It does not create a sandbox or reuse legacy state, tool roots or completed attempts.
 
 The profile in [complete-profile.mjs](complete-profile.mjs) declares five upstream prebuilt artifacts: Bun **1.4.0**, Rust/Cargo **1.95.0**, Zig **0.17.1**, mise **2026.11.2** and LLVM/Clang **23.1.5**. These declarations are not inspected archive inventories, authenticated publisher keys or demonstrated runtime compatibility. Rust's compressed size remains unknown. The workflow never selects a source-building backend or enables guest networking.
 
@@ -72,6 +72,32 @@ An illustrative future resultâ€”not a diagnosis of the reported failed attemptâ€
 - The generic reservation warning remains generic, including when failure occurs before `reserve`. Preserve the actual attempt files. Reporting grants no retry, migration, rearming, removal or automatic new attempt. Source-binding checks must refuse old attempts after code changes.
 
 The supplied `/tmp/opencode/dev-sbx-tools-X5NYWI/attempt.json` log shows policy completion followed by approval of preflight and a generic STOP. It does not identify the cause or establish whether the guest command started. These source changes do not inspect, modify or recover that attempt.
+
+### Private raw preflight traces
+
+Local verification used the installed mise 2026.9.1 and Bun 1.4.0: 156 targeted trace/runner tests and 835 full tooling tests passed. The actual mise trace preview also passed without an installed sbx controller. These checks exercise task forwarding, bounded synthetic subprocesses and fake-provider capture, including directory-swap, symlink and hard-link refusal; actual host/named-guest trace execution remains NOT_RUN.
+
+`--trace-preflight` adds an independent diagnostic route to the existing task. It does not resume a preparation attempt. It requires explicit `--sbx` and `--name`; combining it with `--state`, `--stage`, arbitrary commands or output destinations refuses.
+
+Preview the exact one-call operation without controller discovery, source checks, trace allocation or provider access:
+
+```sh
+mise run dev:sbx:prepare-tools --trace-preflight --sbx /usr/bin/sbx --name devrust-19b6330ee5f5e08ad90fcb30 --plan
+```
+
+On the sbx-enabled host, removing `--plan` requests a fresh raw-terminal approval. The prompt binds the controller, target, source hashes, fixed operation, private output directory and bounds. No prior diagnostic/preparation consent carries over. The trace invokes one `sbx exec`, with guest timeout 15s/+1s kill escalation, host deadline 25s, a 16 KiB combined retained-output cap and existing bounded host reaping. It reads no preparation state or policy and installs nothing. The fixed metadata script requests no guest file writes. Exec may start a stopped VM; host termination does not prove guest termination.
+
+The helper allocates a fresh `0700` `/tmp/opencode/dev-sbx-trace-*` directory. After consent, it creates/fsyncs exclusive `0600` `intent.json`, `stdout.bin` and `stderr.bin` before invocation. It retains the bounded original bytes without UTF-8 conversion, then exclusively writes `0600` `report.json`. Failure, interruption, timeout or overflow never triggers cleanup, overwrite, replay or automatic retry. A failed persistence operation can leave incomplete artifacts without a report; preserve them.
+
+Only sanitized metadata reaches the terminal: generated paths, retained-byte SHA-256 digests, outcome/code/signal, observed pipe-byte counts, retained counts, truncation and separate stdout-protocol observations. Digests describe retained bytes, not complete output or authenticated provenance. Raw bodies may contain private provider configuration, paths, domains or credentials. Keep them outside Git, use a control-character-escaping viewer for local review and share only deliberately redacted excerpts. Neither the helper nor normal verification prints raw captured bytes.
+
+`origin:"UNATTRIBUTED"` means the controller stderr pipe can combine wrapper and guest output. Outer mise/Bun startup output is not captured by this child-process trace. A complete stdout protocol may be reported separately after a successful bounded command, but nonempty stderr still yields `UNEXPECTED_STDERR` and a STOP guard. No speculative warning allowlist or stderr suppression is introduced.
+
+Exit `0` with `traceComplete:true` means the private capture/report was persisted, even if the captured command failed. The summary always keeps `result:"STOP"`, `gate0:"OPEN"`, `f9Qualified:false` and `trainingReady:false`. This is not successful provisioning, a retry grant, a cleared reservation or an accepted F9 record.
+
+Current-realm metadata establishes only local tool resolution. It does not bind the named guest or establish cold-run equivalence, pinned versions, ABI closure, quotas or readiness. The agent realm exposes mise/Bun but no `/usr/bin/sbx`; local mise task previews and fake-provider tests do not execute the host provisioning path. No package installation or mise self-update follows from a missing tool or update warning.
+
+A separate direct current-realm-only preflight captured private files in `/tmp/opencode/current-realm-preflight-Xeb86L`, without an sbx controller. It exited `0` with 436 stdout bytes and 0 stderr bytes; its validated protocol reported missing `patch`, `ld.bfd`, `readelf` on the checked PATH and insufficient reported free space for the 24 GiB floor. The directory is `0700` and its four files are `0600`. This local observation did not reproduce or diagnose the named host's `UNEXPECTED_STDERR`; the failed preparation attempt remains unchanged.
 
 ## Legacy Rust-only preparation
 

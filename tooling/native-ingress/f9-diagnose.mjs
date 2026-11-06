@@ -29,10 +29,11 @@ export function buildPlan({ sbx, name }) {
   ];
 }
 
-export function runBounded(argv, { milliseconds, cap = 65536, graceMilliseconds = 0, env = process.env }) {
+export function runBounded(argv, { milliseconds, cap = 65536, graceMilliseconds = 0, env = process.env, encoding = "utf8" }) {
   if (!Number.isInteger(graceMilliseconds) || graceMilliseconds < 0 || graceMilliseconds > 1000) {
     throw new Error("invalid cancellation grace");
   }
+  if (encoding !== "utf8" && encoding !== "buffer") throw new Error("invalid capture encoding");
   return new Promise((resolve) => {
     const beginning = performance.now();
     const chunks = { stdout: [], stderr: [] };
@@ -49,12 +50,14 @@ export function runBounded(argv, { milliseconds, cap = 65536, graceMilliseconds 
       process.off("SIGTERM", interrupted);
       child?.stdout?.destroy(); child?.stderr?.destroy();
       if (child?.exitCode === null && child?.signalCode === null) child.unref();
+      const elapsedMs = Math.ceil(performance.now() - beginning);
+      const stdout = Buffer.concat(chunks.stdout), stderr = Buffer.concat(chunks.stderr);
       resolve({
         ok: failure === null && code === 0 && signal === null,
         outcome: failure ?? "EXIT", code, signal,
-        elapsedMs: Math.ceil(performance.now() - beginning), bytes,
-        stdout: Buffer.concat(chunks.stdout).toString("utf8"),
-        stderr: Buffer.concat(chunks.stderr).toString("utf8"),
+        elapsedMs, bytes,
+        stdout: encoding === "buffer" ? stdout : stdout.toString("utf8"),
+        stderr: encoding === "buffer" ? stderr : stderr.toString("utf8"),
       });
     };
     const signalGroup = (signal) => {

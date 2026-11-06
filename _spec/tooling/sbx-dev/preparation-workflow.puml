@@ -1,4 +1,4 @@
-' purpose: Separate Rust-only and complete-tool development preparation from F9 readiness.
+' purpose: Separate development preparation and private preflight traces from F9 readiness.
 ' covers: mise.toml
 ' covers: rust-toolchain.toml
 ' covers: package.json
@@ -29,22 +29,37 @@
 ' related: _spec/_plans/native-ingress-development-tool-profile-research.md
 ' related: _spec/_plans/native-ingress-rust-first-full-plan-packet.md
 ' invariant: No automatic retry, resume, reset, rollback or removal.
-' status: REPORTING_OFFLINE_VERIFICATION_PASS; QUALITY_SECURITY_STATIC_READY; PUBLICATION_NOT_APPROVED.
+' status: SOURCE_SPEC_IN_SYNC; TRACE_MISE_CHECKS_PASS (156/835); MISE_PLAN_PASS; CODE_QUALITY_SECURITY_READY; LOCAL_REALM_TRACE_CAPTURED; NAMED_HOST_TRACE_NOT_RUN; FINAL_DIAGRAM_VERIFIED; PUBLICATION_AUTHORIZED.
 ' scope: Legacy Rust-only flow and its limits/pins remain unchanged; the complete-tool group is a separate authored contract.
 ' history: Lead reports prior provisioning commit e8be4a026f1637fcba4cab1f262fb90e9c51f896 pushed; 731 PASS / 0 FAIL and both READY verdicts cover ONLY that old scope.
-' verification: Fresh Verification boundary choice Run offline checks (Recommended); lead reports targeted 79 PASS / 0 FAIL / 931 expectations and full 787 PASS / 0 FAIL / 7579 expectations; Bun1.4.0(34cbb9a40), source/tests unchanged since final static reviews.
-' verification-scope: Lead reports check:no-python PASS/2136 first-party files, diff check exit0 and preparation syntax exit0 BEFORE this label edit; final syntax/render in fresh /tmp/opencode/failure-report-verification-6SQl4v2K PENDING. Spec author executes nothing; no attempt/package/live-guest or publication approval.
+' reporting-verification-history: Prior Verification boundary choice Run offline checks (Recommended); lead reports targeted 79 PASS / 0 FAIL / 931 expectations and full 787 PASS / 0 FAIL / 7579 expectations; Bun1.4.0(34cbb9a40), reporting source/tests unchanged at that prior cut.
+' reporting-verification-scope: Prior language/diff/syntax/render results belong to the reporting cut recorded in research section 2.8; none verifies this new trace. Spec author executes nothing; no attempt/package/live-guest or publication approval.
 ' review-history: Quality ses_e52bfc5edffegjpJS3Qc6bAS4v and security ses_e52bfc5e1ffe1My5mtH2mGnAEQ closed prior budget findings only; those old verdicts do not review this reporting delta.
 ' initial-static-review: Lead reports quality ses_e528f8760ffeUDUgNI2omRdGxy READY/no findings; security ses_e528f875effeJZ5lmnDseLOzlW READY with LOW CWE-755 negative spawn-code classification finding; neither executed tests.
 ' final-static-review: Lead reports quality ses_e528f8760ffeUDUgNI2omRdGxy READY/no findings for final two-file delta; security ses_e528f875effeJZ5lmnDseLOzlW READY/static CODE scope only, LOW CWE-755 CLOSED by inspection, no new findings; reviewers ran no tests; later approved tests ran by lead only.
-' final-static-scope: Source/tests unchanged after supplied final rechecks and passing offline suites; static CODE verdicts and synthetic tests prove no actual-attempt cause, guest state, operational acceptance or publication permission.
-' reported-attempt: User reports policy completion then preflight approval and generic STOP; cause, guest-command start and intent/reservation state remain unknown and uninspected.
+' final-static-scope: At the prior reporting cut, source/tests were unchanged after final rechecks and passing offline suites; those static CODE verdicts and synthetic tests do not review this trace or prove actual-attempt cause, guest state or operational acceptance.
+' reporting-history: Lead reports published d6106dfc2ad49b6f72a2447cb22830f61f1adaa5; 79 targeted / 787 full PASS and static/publication READY cover ONLY that prior reporting scope, not this trace delta.
+' reported-attempt: Later user-supplied X5NYWI projection is terminal RECONCILE: policy completed, preflight in flight, nextStage=null; retained attempt remains unread/untouched and grants no recovery authority.
+' reported-diagnostic: Separate INDEPENDENT_PREFLIGHT_DIAGNOSTIC STOP: COMMAND / UNEXPECTED_STDERR; Gate0 OPEN; f9Qualified=false; trainingReady=false. Its one read-only host exec grant is spent.
+' diagnostic-limit: The reported classification condition implies wrapper EXIT0 with nonempty stderr, not accepted preflight; raw stderr was neither retained nor supplied, so cause and host/guest origin remain UNKNOWN.
+' trace-source-sync: Finished helper/API contract remains unchanged since the source-text sync and code reviews; named-host runPreflightTrace remains NOT_RUN and needs NEW bound TTY approval, not the spent diagnostic grant or local direct capture.
+' trace-verification-history: Initial 153 targeted / 832 full PASS predates three optional synthetic privacy regressions; it is not the final test-file cut.
+' trace-verification: Lead reports actual Mise exec with MISE_AUTO_INSTALL=false and 120s/+2s bounds: targeted 156 PASS/0 FAIL/1555 expectations/2 files/3.86s; full 835 PASS/0 FAIL/7907 expectations/16 files/40.95s; helper functions unchanged.
+' trace-code-review: Quality ses_e52385ebbffe9ODYv9Up7kC1BF READY/no findings; security ses_e52385eb1ffemMjTFKwOJzuPNJ READY/no actionable findings, CODE ONLY, pending specs excluded. Reviewers did not run tests; lead added/passed three optional directory-replacement/symlink/hardlink regressions.
+' local-scope: Lead reports language guard PASS/2136 first-party files/dependencies allowed and diff check exit0; existing-task trace/normal plans exit0 and non-TTY trace refusal expected exit2. No live SBX, install/trust/package/old-attempt permission or readiness follows.
+' local-mise: Lead reports bounded15s mise --version exit0: 2026.9.1 linux-x64 (2026-09-02); outer update warning is separate from unknown original SBX stderr. No update/install; guest profile Mise2026.11.2 unchanged.
+' local-direct-capture: Lead reports CURRENT_REALM_ONLY fixed PREFLIGHT via plan.operation.argv.slice(3): local timeout/shell only, controllerUsed=false, not runPreflightTrace or named-guest TTY bypass. EXIT/code0/signal=null; stdout436B/stderr0B; original host stderr cause remains UNKNOWN/UNATTRIBUTED.
+' local-direct-checks: Fixed PATH=/usr/local/bin:/usr/bin:/bin; unmet TOOL_patch, TOOL_ld.bfd, TOOL_readelf and GUEST_CAPACITY>=24GiB. PATH failures do not prove uninstalled tools; reported capacity is not quota, realm identity, full readiness or cold-run proof.
+' local-direct-retention: Lead reports fresh /tmp/opencode/current-realm-preflight-Xeb86L (0700); four exclusive0600 regular nlink1 files, intent/stdout/stderr/report sizes1118/436/0/781B. Spec author reads no private body; captures stay outside Git.
+' final-diagram-verification: Lead reports both diagrams passed plantuml -checkonly and -tsvg -o /tmp/opencode/preflight-trace-verification-vittRvAY, each exit0 under 120s/+2s / MISE_AUTO_INSTALL=false / mise exec --; fresh output directory was read empty, no overwrite.
+' final-diagram-outputs: Dedicated glob confirmed /tmp/opencode/preflight-trace-verification-vittRvAY/sbx-preparation.svg and /tmp/opencode/preflight-trace-verification-vittRvAY/f9-diagnostic.svg; subsequent git diff --check exit0. JAVA_TOOL_OPTIONS notice was outer renderer output, not trace data. Only header outcome metadata changes afterward; rendered logic/notes/titles/group labels and all authority/grants remain unchanged.
+' realm-metadata: Lead reports current-realm UID1000 Linux x86_64 glibc2.43 and Mise on PATH; /usr/bin/sbx and PATH sbx absent. This proves no named guest identity, host equivalence, native closure or full tool readiness.
 ' qualification: Real archive layouts, notices, metadata, CPU/ABI and full native closure remain UNINSPECTED / UNQUALIFIED.
 ' rationale: [HIGH] Checking mutable host paths before copying does not bind the bytes a provider later reads.
 ' contract: The fixed guest wrapper receives installer path/SHA, archive SHA and attempt only as positional arguments.
 ' failure-line: DEV_TOOLS_STOP; retain attempt files and guest reservation; reconcile in-flight stages; never retry an attempted stage or remove reservations; Gate0=OPEN; f9Qualified=false; trainingReady=false.
 ' failure-phases: ARGUMENTS, INITIALIZATION, STATE_READ, PRE_APPROVAL, APPROVAL, POST_APPROVAL, INTENT_WRITE, EFFECT, FINALIZATION.
-' failure-state: No new state/event schema, failure file, migration, rearm or automatic replacement attempt; changed source bindings still refuse older attempts.
+' failure-state: Normal preparation state/events/receipts remain unchanged; isolated trace intent/report never repair, migrate, rearm or replace an old attempt. Changed source bindings still refuse older attempts.
 ' note-register: P right preview FK 11.5; P/C approval FK 10.7; A right scope FK 10.4.
 ' note-register: A/STATE intent FK 11.6; A/B provenance FK 12.0; C/STATE recovery FK 11.5.
 ' note-register: C/VM policy FK 11.4; P/VM diagnosis FK 12.9.
@@ -53,6 +68,8 @@
 ' note-register: CP/CG qualification FK 11.2 (W29/S52/N2); counts are hand-computed, not executed checks.
 ' note-register: CT right protocol FK 11.0 (W31/S54/N2); CT right privacy FK 12.4 (W27/S52/N2).
 ' note-register: CT/VM phase boundary FK 10.6 (W31/S53/N2); counts are hand-computed, not executed checks.
+' note-register: CT/TRACE approval FK 12.7 (W24/S48/N2); private bytes FK 11.4 (W28/S51/N2).
+' note-register: CT/VM capture boundary FK 12.7 (W24/S48/N2); hand-computed, not an executed check.
 ' FK syllables: hand-counted English; executables=5, mise=1, sysroot=2, CLI=3, F9=2, KUnit=3.
 ' FK syllables: UID=3; read-only and in-place each count as two words.
 @startuml sbx-preparation
@@ -73,6 +90,7 @@ participant "complete-archive.mjs\nTarInspector / inspectZipArchive" as CA <<app
 participant "complete-guest.mjs\ninspect / install / verify" as CG <<app>>
 participant "Declared upstream HTTPS origins" as UPSTREAM <<cloud>>
 database "Private complete-tool attempt\nattempt.json + append-only events" as COMPLETE_STATE <<db>>
+database "Isolated private trace only\n0700 generated directory / 0600 leaves" as TRACE <<db>>
 
 OP -> TOOLS : review mise.toml; explicitly mise trust
 OP -> TOOLS : mise install (online host bootstrap)
@@ -298,7 +316,7 @@ note over P, VM
   KUnit or model work.
 end note
 
-group Separate complete-tool workflow: reporting offline 787 PASS / real guest NOT_RUN
+group Existing complete-tool workflow: prior reporting 787 PASS / new trace NOT_RUN
   OP -> CT : mise run dev:sbx:prepare-tools --name NAME [--sbx ABS] [--plan]\nor --state ABS/attempt.json --stage STAGE [--plan]
   note right of CT
     raw=true; raw_args=true; no depends
@@ -421,8 +439,8 @@ group Separate complete-tool workflow: reporting offline 787 PASS / real guest N
   end
 end
 
-group Complete-tool CLI refusal presentation: reporting offline 787 PASS / real guest NOT_RUN
-  opt refusal at any complete-tool host boundary
+group Normal complete-tool refusal presentation: prior reporting 787 PASS
+  opt refusal at a normal non-trace complete-tool host boundary
     CT -> CT : failureAt(): retain branded context or fixed phase fallback\nno arbitrary exception properties; preserve Error.message DEV_TOOLS_STOP
     CT -> CT : completeToolsFailure(error): pure WeakMap-backed projection\nstage: STAGES or CLI; phase: nine fixed host labels; failures: 1..32\nclosed check/code labels; optional static expected constant; return fresh copies
     note right of CT
@@ -453,6 +471,58 @@ group Complete-tool CLI refusal presentation: reporting offline 787 PASS / real 
       establishes neither a safe retry nor the
       presence or absence of a guest reservation.
     end note
+  end
+end
+
+group Isolated preflight trace: Mise 156/835 PASS; code reviews READY; local direct capture separate; named-host trace NOT_RUN
+  OP -> CT : existing raw dev:sbx:prepare-tools task forwards\n--trace-preflight --sbx ABS --name NAME [--plan]; no new task
+  CT -> CT : reject --state, --stage and unknown options in trace mode\nrequire explicit canonical controller; no PATH discovery or arbitrary command\nnormal initial/stage workflow remains unchanged
+  alt lexical trace plan
+    CT --> OP : dev-sbx-preflight-trace-plan-v1 / PLAN_ONLY / exit 0\nfixed one-exec argv/bounds; traceDirectory=ALLOCATED_AT_EXECUTION\nno controller/source inspection, state/attempt read, subprocess, directory or write
+  else fresh user-host operation: NOT_RUN / requires new approval
+    CT -> CT : require stdin AND stderr TTY; inspect explicit canonical executable\ntraceSourceBindings(): four complete-*.mjs files + f9-diagnose.mjs\ncheck root Bun/Rust pins and auto_install=false; not full import-closure/G1 proof
+    CT -> TRACE : allocate fresh /tmp/opencode/dev-sbx-trace-* directory (0700) BEFORE consent\nanchor descriptor; require empty directory; no caller-selected destination
+    CT -> OP : announce TRACE_DIRECTORY=<generated directory>
+    CT -> OP : exact prompt marker and field names:\nTRACE_PREFLIGHT_ONLY\nCONTROLLER=<canonical SBX>\nNAME=<literal target>\nTRACE_DIRECTORY=<generated directory>\nSOURCES=<five source SHA bindings as JSON>\nOPERATION=<fixed argv/milliseconds/cap as JSON>
+    CT -> OP : scope text: one exec; guest15s/+1s; host25s/16KiB + bounded reap\n0600 intent/stdout/stderr/report; private raw bodies never printed/published\nno state/policy/install/download/retry/rearm/removal; exec may start stopped VM\nno guest-termination or G1 proof; stderr rejected; origin UNATTRIBUTED; false authority\nType approve to authorize this stage only:
+    OP --> CT : first line must equal approve; EOF/SIGINT/SIGTERM refuse\nno reusable/retry grant
+    break declined approval or changed post-consent directory/source/controller bindings
+      CT --> OP : empty stdout; DEV_TRACE_STOP + fixed failure JSON; exit2\nretain allocated directory; no intent, raw leaf or provider effect yet
+    end
+    CT -> TRACE : exclusive fsynced 0600 intent.json, then empty stdout.bin and stderr.bin\nall three BEFORE the one provider effect; intent binds profileSha256 as well
+    note over CT, TRACE
+      Approval binds one diagnostic invocation,
+      not permission to reopen an old failed attempt.
+      Source hashes bind local bookkeeping only;
+      they cannot establish protected backing.
+    end note
+    CT -> VM : exactly [SBX, exec, NAME, /usr/bin/timeout, --kill-after=1s, 15s,\n/bin/sh, -c, fixed PREFLIGHT script, sh]\nhost 25s; combined cap 16KiB; default grace0 / existing <=2s reap\nno guest creation or cold-run validation
+    VM --> CT : runBounded(..., encoding:"buffer"): capped raw stdout/stderr Buffers\nobserved pipe-byte counter may exceed retained bytes after overflow
+    CT -> CT : checkedTraceResult(): closed outcome/signal vocabulary; exact Buffers\nvalidate byte counts/code/ok consistency; observedBytes may exceed retainedBytes\nvalid timeout/overflow/interruption/spawn failure is capture DATA, not a capture exception
+    CT -> TRACE : write/fsync SAME exclusive stdout/stderr descriptors; check size/mode/link identity\nSHA-256 over exact retained Buffers, not UTF-8 replacement/re-encoding\nretain bounded partial output for valid failed executor outcomes
+    note over CT, TRACE
+      Raw streams can retain private diagnostic data,
+      so capture keeps exact bytes with no decoding.
+      Private files stay outside publication scope;
+      a completed trace grants no operational
+      readiness.
+    end note
+    opt result.ok: complete successful bounded EXIT0 / code0 / signal=null only
+      CT -> CT : fatal UTF-8 decode, preserving BOM; parse whole ordered stdout protocol\nstdoutProtocol=METADATA_CHECKS_MET / STOP / INVALID; otherwise NOT_EVALUATED\npreflightGuard independently gives COMMAND / UNEXPECTED_STDERR for nonempty stderr
+    end
+    note over CT, VM
+      Controller error output can mix wrapper
+      messages with guest diagnostics in one stream.
+      Outer startup output bypasses this capture;
+      neither source gains authenticated identity.
+    end note
+    CT -> CT : recheck five source bindings after raw persistence; no old-attempt/policy read
+    CT -> TRACE : exclusive fsynced report.json (0600), schema dev-sbx-preflight-trace-v1\nfixed INDEPENDENT_PREFLIGHT_DIAGNOSTIC scope; origin UNATTRIBUTED\npaths/hashes/source/profile/target + execution/streams + separate protocol/guard observations
+    alt private capture and report finalization complete
+      CT --> OP : same sanitized JSON; result STOP; traceComplete=true; exit0\neven when captured command failed, timed out or produced stderr\nGate0 OPEN; f9Qualified=false; trainingReady=false; no preflight/G0 acceptance
+    else exception at any parsed-trace host boundary
+      CT --> OP : main(): empty stdout; DEV_TRACE_STOP line + bounded complete-failure JSON\nstage CLI; fixed phase/failures; exit2; Gate0 OPEN; F9/training false\nretain directory/intent/empty-or-partial captures; report may be absent; no cleanup/replay
+    end
   end
 end
 @enduml
