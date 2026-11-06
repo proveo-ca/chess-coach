@@ -29,7 +29,24 @@
 ' related: _spec/_plans/native-ingress-development-tool-profile-research.md
 ' related: _spec/_plans/native-ingress-rust-first-full-plan-packet.md
 ' invariant: No automatic retry, resume, reset, rollback or removal.
-' status: SOURCE_SPEC_IN_SYNC; TRACE_MISE_CHECKS_PASS (156/835); MISE_PLAN_PASS; CODE_QUALITY_SECURITY_READY; LOCAL_REALM_TRACE_CAPTURED; NAMED_HOST_TRACE_NOT_RUN; FINAL_DIAGRAM_VERIFIED; PUBLICATION_AUTHORIZED.
+' status: SOURCE_SPEC_IN_SYNC; TRANSPORT_MISE_CHECKS_PASS (212/891); QUALITY_SECURITY_CODE_READY; FINAL_DIAGRAM_VERIFIED; EMBEDDED_SALT_PROMPT_CONTRACT_COMPLETE; NAMED_HOST_V2_NOT_RUN; PUBLICATION_AUTHORIZED.
+' publication-authorization: Executor's NEW exact command 'commit & push' authorizes only the current seven-file transport delta listed in canonical plan section8; existing HTTPS/gh route, no remote-config/credential changes. No Git outcome asserted; historical unapproved cuts and spent315a grant remain history. No new operational/F9 authority.
+' transport-source-sync: Completed helper, whole1350-line complete-tools.test.mjs and README read as text only; lead reports stable source/test cut with no active writers. Architect ses_e516b015affe18nypjUDuEPKhQ and DevOps ses_e51676cc1ffeD97WMqM96rH0zr advised before edits.
+' transport-local-checks: Lead reports actual Mise / MISE_AUTO_INSTALL=false /120s+2s: targeted212 PASS/0 FAIL/3125 expectations/2 files/4.52s; full891 PASS/0 FAIL/9477 expectations/16 files/41.64s, Bun1.4.0. Language2136 PASS/dependencies allowed and post-handoff diff exit0; framework times are not F9 clocks.
+' transport-plan-checks: Lead reports trace lexical plan v2 exit0 and normal lexical plan original complete-plan-v1 exit0/unchanged profile; no helper writes or provider calls, not named-host v2 evidence.
+' transport-review: Lead reports quality ses_e515a79e2ffeESVXzg5z3Kbm4t READY/no runtime-test findings and security ses_e515a79e1ffeZ1hVxI2mhoe8Od READY/CODE scope/no in-scope findings. Known LOW same-UID isolation residual remains; neither reviewer executed commands/tests, and source/tests are unchanged since212/891.
+' transport-render-history: At the pre-render receipt cut the fresh directory was allocated and rendering was NOT_PERFORMED; that pending status is historical only.
+' transport-render-history: Pre-wireframe checks/renders in /tmp/opencode/preflight-transport-verification-kl0uTqJk passed and remain retained unchanged; the final post-wireframe receipt below supersedes only the current render/layout status.
+' transport-render: Lead reports BOTH diagrams passed plantuml -checkonly and -tsvg -o /tmp/opencode/preflight-transport-final-MpgffCrC AFTER the embedded Salt addition, each EXIT0 via Mise/120s/+2s/MISE_AUTO_INSTALL=false; output directory read EMPTY first, both SVGs glob-confirmed, post-render git diff --check EXIT0. No execution by this author.
+' transport-render-outputs: /tmp/opencode/preflight-transport-final-MpgffCrC/sbx-preparation.svg and /tmp/opencode/preflight-transport-final-MpgffCrC/f9-diagnostic.svg. Only pre-@startuml outcome comments and current plan receipts change afterward; rendered bodies/notes/groups/titles/source/tests/coverage stay unchanged.
+' transport-frame-check: Lead reports one embedded SVG frame decoded and BOTH panel labels confirmed, corrected nested-frame inspection EXIT0; initial top-level-only assertion EXIT2 was an invalid inspection query, not a diagram/source/test failure.
+' transport-test-coverage: Existing suite includes real LOCAL wrapper/synthetic guest stderr and125/127 exits; strict v2/legacy/BOM/UTF-8/cap/count/failure precedence, normal/trace private capture/link/directory/report collision/retention, source drift, no replay, fresh policy approval and other quiet-stage regressions; no live SBX.
+' prompt-layout-history: The earlier pre-wireframe handoff is closed by build's embedded Salt addition in this existing sequence; no sibling path or scaffold is required now.
+' prompt-layout: COMPLETE; embedded note read as text: Normal preflight approval and Independent trace approval panels preserve source-order TRANSPORT/OPERATION fields and literal approve consent. Trigger7 is satisfied beside the logic without a new file; prior blocked cut is historical only.
+' publication-history: Lead reports 315a170c2e272e810c1f2c937c412705fb4030a6 pushed via HTTPS/gh to feat-ml-adjuntant, remote/local SHA equal and tree clean; that publication grant is spent.
+' supplied-v1-trace: USER_REPORTED /tmp/opencode/dev-sbx-trace-Jlx2QD: EXIT0, signal=null, stdout436B/stderr59B, observed=retained495B, no truncation; protocol STOP only GUEST_CAPACITY>=24GiB, old guard COMMAND/UNEXPECTED_STDERR.
+' supplied-v1-limit: Lead checked supplied UTF-8/base64 consistency for a startup notice, not authenticated origin or independent named-host execution; raw body stays private. Immutable v1 report is not reclassified; original X5NYWI cause stays UNKNOWN.
+' transport-verification: Old156/835 tests, READY reviews and renders cover published v1 only; current212/891 and new CODE READY cover scoped software, not named-host v2, provenance, original-attempt cause, package/install/publication approval or full cold provisioning. Other quiet-stage empty-stderr guards remain unqualified for cold starts.
 ' scope: Legacy Rust-only flow and its limits/pins remain unchanged; the complete-tool group is a separate authored contract.
 ' history: Lead reports prior provisioning commit e8be4a026f1637fcba4cab1f262fb90e9c51f896 pushed; 731 PASS / 0 FAIL and both READY verdicts cover ONLY that old scope.
 ' reporting-verification-history: Prior Verification boundary choice Run offline checks (Recommended); lead reports targeted 79 PASS / 0 FAIL / 931 expectations and full 787 PASS / 0 FAIL / 7579 expectations; Bun1.4.0(34cbb9a40), reporting source/tests unchanged at that prior cut.
@@ -42,17 +59,17 @@
 ' reported-attempt: Later user-supplied X5NYWI projection is terminal RECONCILE: policy completed, preflight in flight, nextStage=null; retained attempt remains unread/untouched and grants no recovery authority.
 ' reported-diagnostic: Separate INDEPENDENT_PREFLIGHT_DIAGNOSTIC STOP: COMMAND / UNEXPECTED_STDERR; Gate0 OPEN; f9Qualified=false; trainingReady=false. Its one read-only host exec grant is spent.
 ' diagnostic-limit: The reported classification condition implies wrapper EXIT0 with nonempty stderr, not accepted preflight; raw stderr was neither retained nor supplied, so cause and host/guest origin remain UNKNOWN.
-' trace-source-sync: Finished helper/API contract remains unchanged since the source-text sync and code reviews; named-host runPreflightTrace remains NOT_RUN and needs NEW bound TTY approval, not the spent diagnostic grant or local direct capture.
+' trace-v1-source-sync: The published helper/API was source-synced and code-reviewed; later user-reported v1 capture is not independently executed here. Named-host v2 requires NEW bound TTY approval, not any spent diagnostic/trace grant.
 ' trace-verification-history: Initial 153 targeted / 832 full PASS predates three optional synthetic privacy regressions; it is not the final test-file cut.
-' trace-verification: Lead reports actual Mise exec with MISE_AUTO_INSTALL=false and 120s/+2s bounds: targeted 156 PASS/0 FAIL/1555 expectations/2 files/3.86s; full 835 PASS/0 FAIL/7907 expectations/16 files/40.95s; helper functions unchanged.
+' trace-v1-verification: Lead reports actual Mise exec with MISE_AUTO_INSTALL=false and 120s/+2s bounds: targeted 156 PASS/0 FAIL/1555 expectations/2 files/3.86s; full 835 PASS/0 FAIL/7907 expectations/16 files/40.95s; helper functions unchanged at that cut only.
 ' trace-code-review: Quality ses_e52385ebbffe9ODYv9Up7kC1BF READY/no findings; security ses_e52385eb1ffemMjTFKwOJzuPNJ READY/no actionable findings, CODE ONLY, pending specs excluded. Reviewers did not run tests; lead added/passed three optional directory-replacement/symlink/hardlink regressions.
 ' local-scope: Lead reports language guard PASS/2136 first-party files/dependencies allowed and diff check exit0; existing-task trace/normal plans exit0 and non-TTY trace refusal expected exit2. No live SBX, install/trust/package/old-attempt permission or readiness follows.
 ' local-mise: Lead reports bounded15s mise --version exit0: 2026.9.1 linux-x64 (2026-09-02); outer update warning is separate from unknown original SBX stderr. No update/install; guest profile Mise2026.11.2 unchanged.
 ' local-direct-capture: Lead reports CURRENT_REALM_ONLY fixed PREFLIGHT via plan.operation.argv.slice(3): local timeout/shell only, controllerUsed=false, not runPreflightTrace or named-guest TTY bypass. EXIT/code0/signal=null; stdout436B/stderr0B; original host stderr cause remains UNKNOWN/UNATTRIBUTED.
 ' local-direct-checks: Fixed PATH=/usr/local/bin:/usr/bin:/bin; unmet TOOL_patch, TOOL_ld.bfd, TOOL_readelf and GUEST_CAPACITY>=24GiB. PATH failures do not prove uninstalled tools; reported capacity is not quota, realm identity, full readiness or cold-run proof.
 ' local-direct-retention: Lead reports fresh /tmp/opencode/current-realm-preflight-Xeb86L (0700); four exclusive0600 regular nlink1 files, intent/stdout/stderr/report sizes1118/436/0/781B. Spec author reads no private body; captures stay outside Git.
-' final-diagram-verification: Lead reports both diagrams passed plantuml -checkonly and -tsvg -o /tmp/opencode/preflight-trace-verification-vittRvAY, each exit0 under 120s/+2s / MISE_AUTO_INSTALL=false / mise exec --; fresh output directory was read empty, no overwrite.
-' final-diagram-outputs: Dedicated glob confirmed /tmp/opencode/preflight-trace-verification-vittRvAY/sbx-preparation.svg and /tmp/opencode/preflight-trace-verification-vittRvAY/f9-diagnostic.svg; subsequent git diff --check exit0. JAVA_TOOL_OPTIONS notice was outer renderer output, not trace data. Only header outcome metadata changes afterward; rendered logic/notes/titles/group labels and all authority/grants remain unchanged.
+' v1-diagram-verification-history: Lead reports both diagrams passed plantuml -checkonly and -tsvg -o /tmp/opencode/preflight-trace-verification-vittRvAY, each exit0 under 120s/+2s / MISE_AUTO_INSTALL=false / mise exec --; fresh output directory was read empty, no overwrite.
+' v1-diagram-outputs-history: Dedicated glob confirmed both SVGs there; subsequent diff check exit0. JAVA_TOOL_OPTIONS notice was outer renderer output, not trace data. At the published v1 cut only header outcomes changed after rendering; new v2 logic/notes/title/group labels still need fresh checks/render.
 ' realm-metadata: Lead reports current-realm UID1000 Linux x86_64 glibc2.43 and Mise on PATH; /usr/bin/sbx and PATH sbx absent. This proves no named guest identity, host equivalence, native closure or full tool readiness.
 ' qualification: Real archive layouts, notices, metadata, CPU/ABI and full native closure remain UNINSPECTED / UNQUALIFIED.
 ' rationale: [HIGH] Checking mutable host paths before copying does not bind the bytes a provider later reads.
@@ -69,12 +86,13 @@
 ' note-register: CT right protocol FK 11.0 (W31/S54/N2); CT right privacy FK 12.4 (W27/S52/N2).
 ' note-register: CT/VM phase boundary FK 10.6 (W31/S53/N2); counts are hand-computed, not executed checks.
 ' note-register: CT/TRACE approval FK 12.7 (W24/S48/N2); private bytes FK 11.4 (W28/S51/N2).
-' note-register: CT/VM capture boundary FK 12.7 (W24/S48/N2); hand-computed, not an executed check.
+' note-register: CT/VM transport FK 12.4 (W29/S55/N2); CT/COMPLETE_STATE retention FK 12.2 (W28/S53/N2).
+' note-register: CT/VM capture boundary FK 10.8 (W26/S47/N2); hand-counted syllables and computed FK, not a renderer/test check.
 ' FK syllables: hand-counted English; executables=5, mise=1, sysroot=2, CLI=3, F9=2, KUnit=3.
 ' FK syllables: UID=3; read-only and in-place each count as two words.
 @startuml sbx-preparation
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Development setup: legacy Rust-only and isolated complete tools / no F9 authority
+title Development setup / authored preflight transport v2 / no F9 authority
 actor Executor as OP
 participant "prepare.mjs\ndev:sbx:prepare parent" as P <<app>>
 participant "acquire-tools.mjs\ndev:sbx:acquire child" as A <<app>>
@@ -316,7 +334,7 @@ note over P, VM
   KUnit or model work.
 end note
 
-group Existing complete-tool workflow: prior reporting 787 PASS / new trace NOT_RUN
+group Complete-tool workflow / transport Mise 212/891 PASS; quality/security CODE READY
   OP -> CT : mise run dev:sbx:prepare-tools --name NAME [--sbx ABS] [--plan]\nor --state ABS/attempt.json --stage STAGE [--plan]
   note right of CT
     raw=true; raw_args=true; no depends
@@ -338,6 +356,9 @@ group Existing complete-tool workflow: prior reporting 787 PASS / new trace NOT_
     loop policy -> preflight -> accept-policy -> reserve -> host-capacity -> acquire -> copy -> inspect -> install -> verify
       CT -> COMPLETE_STATE : require exact unattempted next stage; no incomplete earlier intent
       CT -> OP : fresh raw-TTY prompt: stage, controller/name, roots, hashes, prior events, effects and limits
+      opt preflight prompt only
+        CT -> OP : append TRANSPORT then OPERATION after the fixed stage-scope text\nexact transport object + shared argv/milliseconds/cap; no reusable approval
+      end
       OP --> CT : exact approve line for THIS stage only
       CT -> CT : recheck state, controller and source/pin bindings after consent
       break no consent, interrupted prompt or changed pre-intent bindings
@@ -358,11 +379,33 @@ group Existing complete-tool workflow: prior reporting 787 PASS / new trace NOT_
       alt policy
         CT -> VM : policy ls --wide NAME; host <=10s / output <=64KiB
         CT -> COMPLETE_STATE : private policy.txt + SHA; no raw provider output on terminal
-      else preflight
-        CT -> VM : exec: guest 15s + kill 1s; host 25s / output <=16KiB\nLinux/x86_64; glibc>=2.18; base nine names; writable workspace\n/usr/bin/xz + GNU /usr/bin/tar; df-reported free>=24GiB
-        VM --> CT : bounded executor result
-        CT -> CT : checked(): validate executor outcome before parsing stdout; code=null or safe integer\nknown failed outcomes classify BEFORE EXIT-only exit-code range 0..255\nTIMEOUT / OUTPUT_LIMIT / INTERRUPTED / SPAWN_ERROR / STREAM_ERROR / INCOMPLETE_STREAM\nNONZERO_EXIT / SIGNAL / UNEXPECTED_STDERR / EXECUTOR_RESULT_INVALID
-        CT -> CT : checked() success only: validate ENTIRE ordered protocol before collecting every unmet check\nOS, ARCH, GLIBC, base9 order, WORKSPACE, TAR, XZ, GNU_TAR, GUEST_CAPACITY\nmalformed/partial/duplicate/reordered/unknown fields => PROTOCOL_INVALID only
+      else preflight: shared capturePreflight / existing v1 attempts unchanged
+        CT -> COMPLETE_STATE : AFTER stage intent: reject ANY of three existing sidecar names\nSTATE_BINDINGS / BINDING_INVALID; before raw preallocation or provider call
+        CT -> COMPLETE_STATE : AFTER stage intent: preallocate exclusive0600 siblings\n02-preflight.stdout.bin + 02-preflight.stderr.bin; no new directory
+        CT -> VM : shared fixed argv [SBX, exec, NAME, /bin/sh, -c, WRAPPER, sh, PREFLIGHT]\nrunBounded encoding:'buffer'; host25s / combined16KiB / existing<=2s reap
+        VM -> VM : WRAPPER: exec 2>&1 BEFORE set -eu, marker and timeout\nemit DEV_SBX_PREFLIGHT_TRANSPORT_V1 plus LF\nexec /usr/bin/timeout --kill-after=1s 15s /bin/sh -c "$1" sh\nPREFLIGHT is the positional fixed script; no guest file or extra call
+        note over CT, VM
+          Redirect guest diagnostics before the marker
+          so later shell errors share the protocol pipe.
+          Strict protocol validation rejects mixed output
+          without treating outer messages as evidence
+          of guest failure.
+        end note
+        VM --> CT : exact capped stdout/stderr Buffers + executor metadata\nstdout=GUEST_PROTOCOL_AND_DIAGNOSTICS; stderr=OUTER_DIAGNOSTICS\norigin UNATTRIBUTED, not authenticated controller-only output
+        CT -> COMPLETE_STATE : persist/fsync cap-safe buffers and SHA/counts BEFORE other result validation\nunsafe buffers or combined retained bytes>16KiB refuse without unsafe writes
+        note over CT, COMPLETE_STATE
+          Store each bounded stream before checking the
+          execution metadata, so malformed results
+          cannot discard useful diagnostic evidence.
+          Refuse unsafe buffers rather than write
+          beyond the approved byte cap.
+        end note
+        CT -> CT : checkedTraceResult(): validate closed metadata AFTER safe raw persistence\ninvalid result or successful observedBytes!=retainedBytes => EXECUTOR_RESULT_INVALID, no report\nknown failed outcomes BEFORE EXIT-only0..255 bounds; no protocol on failed/nonzero/signal results\nTIMEOUT / OUTPUT_LIMIT / INTERRUPTED / SPAWN_ERROR / STREAM_ERROR / INCOMPLETE_STREAM\nNONZERO_EXIT / SIGNAL; outer stderr alone is NOT failure
+        opt complete successful bounded EXIT0 / code0 / signal=null / counts valid
+          CT -> CT : parsePreflightTransport(Buffer): fatal UTF-8 / ignoreBOM:true; prefix at BYTE ZERO\nparsePreflight(): ENTIRE old ordered metadata protocol before every unmet check\nLinux/x86_64; glibc>=2.18; base9; workspace; tar/XZ/GNU tar; free>=24GiB\nPROTOCOL_INVALID => stdoutProtocol INVALID; valid unmet prerequisites => STOP
+        end
+        CT -> COMPLETE_STATE : exclusive0600 02-preflight.transport.json BEFORE guard refusal\nschema dev-sbx-preflight-capture-v1; target/masterSha256/profileSha256\ntransport/execution/streams/stdoutProtocol/preflightGuard; NO operation field\nresult STOP; Gate0 OPEN; F9/training false; valid failures and capacity negatives retained
+        CT -> CT : guard accepts only complete protocol with ALL metadata checks met and persisted capture\nnormal preflight completion data KEYS and master/event/receipt schemas unchanged\nall other quiet-stage stderr guards unchanged; sidecars never authorize completion or replay
       else accept-policy
         CT -> COMPLETE_STATE : rehash policy + preflight before/after consent; no provider call\nacknowledgement is not effective-policy or reusable F9 proof
       else reserve
@@ -474,32 +517,32 @@ group Normal complete-tool refusal presentation: prior reporting 787 PASS
   end
 end
 
-group Isolated preflight trace: Mise 156/835 PASS; code reviews READY; local direct capture separate; named-host trace NOT_RUN
+group Isolated preflight trace v2 / Mise 212/891 PASS; CODE READY / named-host v2 NOT_RUN
   OP -> CT : existing raw dev:sbx:prepare-tools task forwards\n--trace-preflight --sbx ABS --name NAME [--plan]; no new task
-  CT -> CT : reject --state, --stage and unknown options in trace mode\nrequire explicit canonical controller; no PATH discovery or arbitrary command\nnormal initial/stage workflow remains unchanged
+  CT -> CT : reject --state, --stage and unknown options in trace mode\nrequire explicit canonical controller; no PATH discovery or arbitrary command\nnormal CLI options and ordered stage/event contracts unchanged
   alt lexical trace plan
-    CT --> OP : dev-sbx-preflight-trace-plan-v1 / PLAN_ONLY / exit 0\nfixed one-exec argv/bounds; traceDirectory=ALLOCATED_AT_EXECUTION\nno controller/source inspection, state/attempt read, subprocess, directory or write
-  else fresh user-host operation: NOT_RUN / requires new approval
+    CT --> OP : dev-sbx-preflight-trace-plan-v2 / PLAN_ONLY / exit 0\nshared one-exec argv/bounds + dev-sbx-preflight-transport-v1; traceDirectory=ALLOCATED_AT_EXECUTION\nno controller/source inspection, state/attempt read, subprocess, directory or write
+  else fresh user-host v2 operation: NOT_RUN / requires new approval
     CT -> CT : require stdin AND stderr TTY; inspect explicit canonical executable\ntraceSourceBindings(): four complete-*.mjs files + f9-diagnose.mjs\ncheck root Bun/Rust pins and auto_install=false; not full import-closure/G1 proof
     CT -> TRACE : allocate fresh /tmp/opencode/dev-sbx-trace-* directory (0700) BEFORE consent\nanchor descriptor; require empty directory; no caller-selected destination
     CT -> OP : announce TRACE_DIRECTORY=<generated directory>
-    CT -> OP : exact prompt marker and field names:\nTRACE_PREFLIGHT_ONLY\nCONTROLLER=<canonical SBX>\nNAME=<literal target>\nTRACE_DIRECTORY=<generated directory>\nSOURCES=<five source SHA bindings as JSON>\nOPERATION=<fixed argv/milliseconds/cap as JSON>
-    CT -> OP : scope text: one exec; guest15s/+1s; host25s/16KiB + bounded reap\n0600 intent/stdout/stderr/report; private raw bodies never printed/published\nno state/policy/install/download/retry/rearm/removal; exec may start stopped VM\nno guest-termination or G1 proof; stderr rejected; origin UNATTRIBUTED; false authority\nType approve to authorize this stage only:
+    CT -> OP : exact prompt marker and field names:\nTRACE_PREFLIGHT_ONLY\nCONTROLLER=<canonical SBX>\nNAME=<literal target>\nTRACE_DIRECTORY=<generated directory>\nSOURCES=<five source SHA bindings as JSON>\nOPERATION=<fixed argv/milliseconds/cap as JSON>\nTRANSPORT=<fixed transport object as JSON>
+    CT -> OP : scope text: one shared exec; guest15s/+1s; host25s/16KiB + bounded reap\n0600 intent/stdout/stderr/report; private raw bodies never printed/published\nno state/policy/install/download/retry/rearm/removal; exec may start stopped VM\nstrict guest protocol; outer stderr diagnostic only / origin UNATTRIBUTED\nno guest-termination or G1 proof; false authority\nType approve to authorize this stage only:
     OP --> CT : first line must equal approve; EOF/SIGINT/SIGTERM refuse\nno reusable/retry grant
     break declined approval or changed post-consent directory/source/controller bindings
       CT --> OP : empty stdout; DEV_TRACE_STOP + fixed failure JSON; exit2\nretain allocated directory; no intent, raw leaf or provider effect yet
     end
-    CT -> TRACE : exclusive fsynced 0600 intent.json, then empty stdout.bin and stderr.bin\nall three BEFORE the one provider effect; intent binds profileSha256 as well
+    CT -> TRACE : exclusive fsynced0600 intent.json: dev-sbx-preflight-trace-intent-v2\nthen empty stdout.bin and stderr.bin, all three BEFORE provider effect\nbind profileSha256, fresh operation/source approval and dev-sbx-preflight-transport-v1
     note over CT, TRACE
       Approval binds one diagnostic invocation,
       not permission to reopen an old failed attempt.
       Source hashes bind local bookkeeping only;
       they cannot establish protected backing.
     end note
-    CT -> VM : exactly [SBX, exec, NAME, /usr/bin/timeout, --kill-after=1s, 15s,\n/bin/sh, -c, fixed PREFLIGHT script, sh]\nhost 25s; combined cap 16KiB; default grace0 / existing <=2s reap\nno guest creation or cold-run validation
+    CT -> VM : SAME shared argv [SBX, exec, NAME, /bin/sh, -c, WRAPPER, sh, PREFLIGHT]\nWRAPPER redirects 2>&1 BEFORE marker + guest timeout15s/kill1s\nhost25s / combined16KiB / default grace0 / existing<=2s reap\nno guest files, extra provider call, guest creation or cold-run validation
     VM --> CT : runBounded(..., encoding:"buffer"): capped raw stdout/stderr Buffers\nobserved pipe-byte counter may exceed retained bytes after overflow
-    CT -> CT : checkedTraceResult(): closed outcome/signal vocabulary; exact Buffers\nvalidate byte counts/code/ok consistency; observedBytes may exceed retainedBytes\nvalid timeout/overflow/interruption/spawn failure is capture DATA, not a capture exception
-    CT -> TRACE : write/fsync SAME exclusive stdout/stderr descriptors; check size/mode/link identity\nSHA-256 over exact retained Buffers, not UTF-8 replacement/re-encoding\nretain bounded partial output for valid failed executor outcomes
+    CT -> TRACE : FIRST write/fsync SAME exclusive descriptors for cap-safe Buffers\ncheck size/mode/link identity; SHA-256 over exact retained bytes, no re-encoding\nbefore other executor metadata, protocol, capacity or source-drift rejection
+    CT -> CT : THEN checkedTraceResult(): closed outcome/signal vocabulary; counts/code/ok consistency\nfailed observedBytes may exceed retainedBytes; successful mismatch => EXECUTOR_RESULT_INVALID\ninvalid metadata leaves safe raw bytes but no report; valid failed outcomes are capture DATA
     note over CT, TRACE
       Raw streams can retain private diagnostic data,
       so capture keeps exact bytes with no decoding.
@@ -508,16 +551,16 @@ group Isolated preflight trace: Mise 156/835 PASS; code reviews READY; local dir
       readiness.
     end note
     opt result.ok: complete successful bounded EXIT0 / code0 / signal=null only
-      CT -> CT : fatal UTF-8 decode, preserving BOM; parse whole ordered stdout protocol\nstdoutProtocol=METADATA_CHECKS_MET / STOP / INVALID; otherwise NOT_EVALUATED\npreflightGuard independently gives COMMAND / UNEXPECTED_STDERR for nonempty stderr
+      CT -> CT : parsePreflightTransport(Buffer): BYTE ZERO prefix; fatal UTF-8 / ignoreBOM:true; whole protocol\nstdoutProtocol=METADATA_CHECKS_MET; prerequisite failure STOP; PROTOCOL_INVALID gives INVALID\notherwise NOT_EVALUATED; preflightGuard METADATA_CHECKS_MET or STOP\nall checks including24GiB required; outer stderr alone never UNEXPECTED_STDERR\nextra guest diagnostics, BOM, bare legacy protocol or extra rows refuse
     end
     note over CT, VM
-      Controller error output can mix wrapper
-      messages with guest diagnostics in one stream.
-      Outer startup output bypasses this capture;
-      neither source gains authenticated identity.
+      The outer pipe has no authenticated origin,
+      so its messages cannot establish guest failure.
+      The host deadline covers wrapper startup,
+      which precedes the requested guest timeout.
     end note
     CT -> CT : recheck five source bindings after raw persistence; no old-attempt/policy read
-    CT -> TRACE : exclusive fsynced report.json (0600), schema dev-sbx-preflight-trace-v1\nfixed INDEPENDENT_PREFLIGHT_DIAGNOSTIC scope; origin UNATTRIBUTED\npaths/hashes/source/profile/target + execution/streams + separate protocol/guard observations
+    CT -> TRACE : exclusive fsynced report.json (0600), schema dev-sbx-preflight-trace-v2\ntransport schema dev-sbx-preflight-transport-v1; marker DEV_SBX_PREFLIGHT_TRANSPORT_V1 plus LF\nstdout GUEST_PROTOCOL_AND_DIAGNOSTICS; stderr OUTER_DIAGNOSTICS; origin UNATTRIBUTED\nfixed INDEPENDENT_PREFLIGHT_DIAGNOSTIC scope; paths/hashes/source/profile/target\nexecution/streams + separate stdoutProtocol/preflightGuard; v1 reports remain immutable
     alt private capture and report finalization complete
       CT --> OP : same sanitized JSON; result STOP; traceComplete=true; exit0\neven when captured command failed, timed out or produced stderr\nGate0 OPEN; f9Qualified=false; trainingReady=false; no preflight/G0 acceptance
     else exception at any parsed-trace host boundary
@@ -525,4 +568,49 @@ group Isolated preflight trace: Mise 156/835 PASS; code reviews READY; local dir
     end
   end
 end
+
+note over OP, CT
+  Prompt field-order wireframes; values and terminal wrapping vary.
+  {{salt
+  {
+    {^"Normal preflight approval"
+      STAGE=preflight
+      CONTROLLER=canonical path
+      NAME=literal target
+      HOST_ROOT=private run directory
+      GUEST_ROOT=bound tool root
+      PROFILE_SHA256=profile digest
+      MASTER_SHA256=master digest
+      SOURCES=source bindings JSON
+      PRIOR_BINDINGS=prior events JSON
+      ARTIFACTS=declared artifacts JSON
+      SOFTWARE_LIMITS=fixed limits JSON
+      SOURCE_CAP=fixed cap
+      Fixed preflight scope and capture filenames
+      TRANSPORT=fixed channel contract JSON
+      OPERATION=fixed argv and bounds JSON
+      Policy review: private policy path
+      Same-UID and Gate0 authority notices
+      Type approve to authorize this stage only:
+      "operator response                      "
+    } |
+    {^"Independent trace approval"
+      TRACE_PREFLIGHT_ONLY
+      CONTROLLER=canonical path
+      NAME=literal target
+      TRACE_DIRECTORY=fresh private directory
+      SOURCES=five source bindings JSON
+      OPERATION=fixed argv and bounds JSON
+      TRANSPORT=fixed channel contract JSON
+      One-exec bounds and private capture scope
+      Guest protocol and outer diagnostic routing
+      No state, policy, install, retry or removal
+      Startup, termination and authority notices
+      Type approve to authorize this stage only:
+      "operator response                      "
+    }
+  }
+  }}
+  Only literal approve authorizes this invocation; EOF or signals refuse.
+end note
 @enduml

@@ -3,21 +3,29 @@ import { afterEach, beforeEach, expect, test } from "bun:test";
 import { createHash } from "node:crypto";
 import { existsSync, linkSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, renameSync, rmSync, statSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { runBounded } from "../../native-ingress/f9-diagnose.mjs";
 import { completeProfile } from "../complete-profile.mjs";
 import {
   STAGES, completeToolsFailure, completeToolsPlan, downloadArtifact, main, parseCapacity, parseCompleteTools,
-  parseGuestReport, parsePreflight, prepareCompleteTools, readCompleteState, runCompleteStage, runPreflightTrace,
+  parseGuestReport, parsePreflight, parsePreflightTransport, prepareCompleteTools, readCompleteState, runCompleteStage, runPreflightTrace,
 } from "../complete-tools.mjs";
 
 const NAME = "existing-development-box";
 const SBX = "/fixture/controller/sbx";
 const AUTHORITY = { gate0: "OPEN", f9Qualified: false, trainingReady: false };
+const TRANSPORT_MARKER = "DEV_SBX_PREFLIGHT_TRANSPORT_V1\n";
+const TRANSPORT = { schema: "dev-sbx-preflight-transport-v1", marker: TRANSPORT_MARKER,
+  stdout: "GUEST_PROTOCOL_AND_DIAGNOSTICS", stderr: "OUTER_DIAGNOSTICS", origin: "UNATTRIBUTED" };
+const PREFLIGHT_WRAPPER = "exec 2>&1\nset -eu\nprintf 'DEV_SBX_PREFLIGHT_TRANSPORT_V1\\n'\n"
+  + 'exec /usr/bin/timeout --kill-after=1s 15s /bin/sh -c "$1" sh\n';
+const CAPTURE_FILES = ["02-preflight.stdout.bin", "02-preflight.stderr.bin", "02-preflight.transport.json"];
 const SOURCES = ["complete-tools.mjs", "complete-profile.mjs", "complete-archive.mjs", "complete-guest.mjs"];
 const sha = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const df = (free = 32 * 1024 ** 2) => `Filesystem 1024-blocks Used Available Capacity Mounted on\n/dev/fixture ${free} 0 ${free} 0% /\n`;
 const preflight = () => "DEV_SBX_PREFLIGHT_V1\nOS=Linux\nARCH=x86_64\nGLIBC=glibc 2.35\n"
   + completeProfile.baseTools.map((tool) => `TOOL_${tool}=PRESENT\n`).join("")
   + `WORKSPACE=WRITABLE\nTAR=EXECUTABLE\nXZ=EXECUTABLE\nGNU_TAR=YES\nDF_BEGIN\n${df()}DF_END\nDONE\n`;
+const transportedPreflight = (metadata = preflight()) => TRANSPORT_MARKER + metadata;
 const result = (stdout, extra = {}) => ({ ok: true, outcome: "EXIT", code: 0, signal: null, stdout, stderr: "", ...extra });
 let fixture, run, statePath, dependencies, approvals, calls, requests, reserved, traceDirectory;
 
@@ -42,7 +50,12 @@ beforeEach(() => {
       calls.push({ argv: [...argv], bounds: { ...bounds } });
       if (argv[1] === "policy") return result("PRIVATE_POLICY_NOT_FOR_STDOUT\n");
       if (argv[0] === "/usr/bin/df") return result(df());
-      if (argv[8]?.includes("DEV_SBX_PREFLIGHT_V1")) return result(preflight());
+      if (argv[3] === "/bin/sh" && argv[5] === PREFLIGHT_WRAPPER && argv[7]?.includes("DEV_SBX_PREFLIGHT_V1")) {
+        expectPreflightOperation(argv, bounds);
+        expectEmptyCaptures(run, CAPTURE_FILES.slice(0, 2));
+        expect(existsSync(join(run, CAPTURE_FILES[2]))).toBe(false);
+        return rawResult();
+      }
       if (argv[8]?.includes(".complete-dev-tools-v1")) {
         if (reserved) return result("PRIVATE_EXISTING_MARKER", { ok: false, code: 1 });
         reserved = true;
@@ -68,9 +81,46 @@ function traceOptions(extra = {}) {
   return { tracePreflight: true, sbx: SBX, name: NAME, ...extra };
 }
 
-function rawResult(stdout = Buffer.from(preflight()), stderr = Buffer.alloc(0), extra = {}) {
+function rawResult(stdout = Buffer.from(transportedPreflight()), stderr = Buffer.alloc(0), extra = {}) {
   return { ok: true, outcome: "EXIT", code: 0, signal: null, elapsedMs: 1,
     bytes: stdout.length + stderr.length, stdout, stderr, ...extra };
+}
+
+function expectPreflightOperation(argv, bounds, sbx = SBX) {
+  expect(argv).toHaveLength(8);
+  expect(argv.slice(0, 7)).toEqual([sbx, "exec", NAME, "/bin/sh", "-c", PREFLIGHT_WRAPPER, "sh"]);
+  expect(argv[7]).toContain("printf 'DEV_SBX_PREFLIGHT_V1\\n'");
+  expect(argv[7]).not.toContain("SYNTHETIC_CALLER_COMMAND");
+  if (bounds) expect(bounds).toEqual({ milliseconds: 25000, cap: 16384, encoding: "buffer" });
+}
+
+function expectEmptyCaptures(directory, filenames) {
+  for (const filename of filenames) {
+    const info = statSync(join(directory, filename));
+    expect(info.mode & 0o7777).toBe(0o600);
+    expect(info.nlink).toBe(1);
+    expect(info.size).toBe(0);
+  }
+}
+
+function normalCapture() {
+  return JSON.parse(readFileSync(join(run, CAPTURE_FILES[2]), "utf8"));
+}
+
+function expectNormalCapture(stdout, stderr) {
+  expect(readFileSync(join(run, CAPTURE_FILES[0]))).toEqual(stdout);
+  expect(readFileSync(join(run, CAPTURE_FILES[1]))).toEqual(stderr);
+  for (const filename of CAPTURE_FILES) {
+    expect(statSync(join(run, filename)).mode & 0o7777).toBe(0o600);
+    expect(statSync(join(run, filename)).nlink).toBe(1);
+  }
+  const state = readCompleteState(statePath), report = normalCapture();
+  expect(report).toMatchObject({ schema: "dev-sbx-preflight-capture-v1", transport: TRANSPORT,
+    target: NAME, masterSha256: state.masterSha256, profileSha256: state.profileSha256, result: "STOP", ...AUTHORITY });
+  expect(report.transport).toEqual(TRANSPORT);
+  expect(report.streams.stdout).toMatchObject({ path: join(run, CAPTURE_FILES[0]), retainedBytes: stdout.length, sha256: sha(stdout) });
+  expect(report.streams.stderr).toMatchObject({ path: join(run, CAPTURE_FILES[1]), retainedBytes: stderr.length, sha256: sha(stderr) });
+  return report;
 }
 
 function traceDependencies(reply = rawResult(), extra = {}) {
@@ -80,10 +130,9 @@ function traceDependencies(reply = rawResult(), extra = {}) {
   return { ...dependencies, runnerSourcePath, createTraceDirectory: () => traceDirectory,
     execute: async (argv, bounds) => {
       expect(existsSync(join(traceDirectory, "intent.json"))).toBe(true);
-      for (const filename of ["stdout.bin", "stderr.bin"]) {
-        expect(statSync(join(traceDirectory, filename)).mode & 0o7777).toBe(0o600);
-        expect(statSync(join(traceDirectory, filename)).size).toBe(0);
-      }
+      expectEmptyCaptures(traceDirectory, ["stdout.bin", "stderr.bin"]);
+      expect(existsSync(join(traceDirectory, "report.json"))).toBe(false);
+      expectPreflightOperation(argv, bounds);
       calls.push({ argv: [...argv], bounds: { ...bounds } });
       return reply;
     }, ...extra };
@@ -185,31 +234,45 @@ test("trace plans require no controller, source, trace directory, state or provi
     sourceDirectory: "/missing", runnerSourcePath: "/missing", output: (value) => output.push(value),
   })).toBe(0);
   const plan = JSON.parse(output[0]);
-  expect(plan).toMatchObject({ schema: "dev-sbx-preflight-trace-plan-v1", result: "PLAN_ONLY", ...AUTHORITY,
+  expect(plan).toMatchObject({ schema: "dev-sbx-preflight-trace-plan-v2", result: "PLAN_ONLY", transport: TRANSPORT, ...AUTHORITY,
     traceDirectory: "ALLOCATED_AT_EXECUTION", freshApproval: true,
     previewEffects: { subprocesses: false, writes: false, downloads: false, queries: false } });
   expect(plan.operation).toMatchObject({ milliseconds: 25000, cap: 16384 });
-  expect(plan.operation.argv.slice(0, 8)).toEqual(["/missing/sbx", "exec", NAME, "/usr/bin/timeout", "--kill-after=1s", "15s", "/bin/sh", "-c"]);
-  expect(plan.operation.argv[8]).toContain("DEV_SBX_PREFLIGHT_V1");
+  expect(plan.transport).toEqual(TRANSPORT);
+  expectPreflightOperation(plan.operation.argv, undefined, "/missing/sbx");
   expect(readdirSync(run)).toEqual([]);
 });
 
-test("private trace retains original stderr bytes without weakening its rejection", async () => {
-  const stderr = Buffer.from("PRIVATE_PROVIDER_WARNING\0\u001b[31m\n"), stdout = Buffer.from(preflight());
+test("private trace retains arbitrary outer stderr bytes without treating them as guest protocol", async () => {
+  const stderr = Buffer.concat([Buffer.from("SYNTHETIC_STARTED_NOTICE\0\u001b[31m\n"), Buffer.from([0xff, 0x80])]);
+  const stdout = Buffer.from(transportedPreflight());
   const deps = traceDependencies(rawResult(stdout, stderr)), output = [];
   expect(await main(["--trace-preflight", "--sbx", SBX, "--name", NAME], {
     ...deps, output: (value) => output.push(value),
   })).toBe(0);
   const report = JSON.parse(output[0]);
-  expect(report).toMatchObject({ traceComplete: true, origin: "UNATTRIBUTED", result: "STOP", ...AUTHORITY,
+  expect(report).toMatchObject({ schema: "dev-sbx-preflight-trace-v2", transport: TRANSPORT,
+    traceComplete: true, origin: "UNATTRIBUTED", result: "STOP", ...AUTHORITY,
     stdoutProtocol: { status: "METADATA_CHECKS_MET" },
-    preflightGuard: { status: "STOP", failures: [{ check: "COMMAND", code: "UNEXPECTED_STDERR" }] } });
+    preflightGuard: { status: "METADATA_CHECKS_MET", failures: [] } });
+  expect(report.transport).toEqual(TRANSPORT);
   expect(calls).toHaveLength(1);
   expect(calls[0]).toEqual({ argv: completeToolsPlan(traceOptions()).operation.argv,
     bounds: { milliseconds: 25000, cap: 16384, encoding: "buffer" } });
   expect(approvals.map(({ stage }) => stage)).toEqual(["trace-preflight"]);
   expect(approvals[0].prompt).toContain("Exactly one fixed sbx exec");
-  expect(approvals[0].prompt).not.toContain("PRIVATE_PROVIDER_WARNING");
+  expect(approvals[0].prompt).toContain(TRANSPORT_MARKER.trimEnd());
+  expect(approvals[0].prompt).toContain("GUEST_PROTOCOL_AND_DIAGNOSTICS");
+  expect(approvals[0].prompt).toContain("OUTER_DIAGNOSTICS");
+  expect(approvals[0].prompt).toContain("UNATTRIBUTED");
+  expect(approvals[0].prompt).not.toContain("SYNTHETIC_STARTED_NOTICE");
+  expect(JSON.parse(approvals[0].prompt.split("\n").find((line) => line.startsWith("TRANSPORT=")).slice("TRANSPORT=".length))).toEqual(TRANSPORT);
+  expect(JSON.parse(approvals[0].prompt.split("\n").find((line) => line.startsWith("OPERATION=")).slice("OPERATION=".length)))
+    .toEqual(completeToolsPlan(traceOptions()).operation);
+  const intent = JSON.parse(readFileSync(join(traceDirectory, "intent.json"), "utf8"));
+  expect(intent).toMatchObject({ schema: "dev-sbx-preflight-trace-intent-v2", transport: TRANSPORT,
+    operation: completeToolsPlan(traceOptions()).operation, ...AUTHORITY });
+  expect(intent.transport).toEqual(TRANSPORT);
   expect(readFileSync(report.streams.stdout.path)).toEqual(stdout);
   expect(readFileSync(report.streams.stderr.path)).toEqual(stderr);
   expect(report.streams.stderr.sha256).toBe(sha(stderr));
@@ -222,7 +285,8 @@ test("private trace retains original stderr bytes without weakening its rejectio
     expect(statSync(join(traceDirectory, filename)).nlink).toBe(1);
   }
   expect(JSON.parse(readFileSync(join(traceDirectory, "report.json"), "utf8"))).toEqual(report);
-  expect(output.join("\n")).not.toContain("PRIVATE_PROVIDER_WARNING");
+  expect(output.join("\n")).not.toContain("SYNTHETIC_STARTED_NOTICE");
+  expect(output.join("\n")).not.toContain("\ufffd");
   expect(readdirSync(run)).toEqual([]);
 });
 
@@ -256,6 +320,118 @@ test("trace capture success does not declare readiness even with clean complete 
   expect(report.stdoutProtocol.status).toBe("METADATA_CHECKS_MET");
   expect(report.preflightGuard).toEqual({ status: "METADATA_CHECKS_MET", failures: [] });
   expect(report).toMatchObject({ result: "STOP", traceComplete: true, ...AUTHORITY });
+});
+
+test.each([
+  ["legacy metadata", () => Buffer.from(preflight())],
+  ["marker only", () => Buffer.from(TRANSPORT_MARKER)],
+  ["CRLF transport marker", () => Buffer.from(TRANSPORT_MARKER.replace("\n", "\r\n") + preflight())],
+  ["leading junk", () => Buffer.from(`SYNTHETIC_LEADING_JUNK\n${transportedPreflight()}`)],
+  ["leading status", () => Buffer.from(`SYNTHETIC_STARTED_NOTICE\n${transportedPreflight()}`)],
+  ["extra guest diagnostic", () => Buffer.from(`${transportedPreflight()}SYNTHETIC_GUEST_DIAGNOSTIC\n`)],
+  ["interleaved guest diagnostic", () => Buffer.from(transportedPreflight().replace("OS=Linux\n", "OS=Linux\nSYNTHETIC_GUEST_DIAGNOSTIC\n"))],
+  ["duplicate marker", () => Buffer.from(TRANSPORT_MARKER + transportedPreflight())],
+  ["trailing marker", () => Buffer.from(transportedPreflight() + TRANSPORT_MARKER)],
+  ["byte-zero BOM", () => Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), Buffer.from(transportedPreflight())])],
+  ["metadata BOM", () => Buffer.from(TRANSPORT_MARKER + "\ufeff" + preflight())],
+  ["invalid UTF-8", () => Buffer.concat([Buffer.from(transportedPreflight()), Buffer.from([0xff])])],
+  ["invalid UTF-8 inside metadata", () => Buffer.concat([Buffer.from(TRANSPORT_MARKER + "DEV_SBX_PREFLIGHT_V1\nOS="), Buffer.from([0xc0, 0xaf]), Buffer.from("\n")])],
+  ["invalid UTF-8 in df label", () => {
+    const [before, after] = transportedPreflight().split("/dev/fixture");
+    return Buffer.concat([Buffer.from(`${before}/dev/`), Buffer.from([0xff]), Buffer.from(after)]);
+  }],
+])("transport parser and trace reject %s without filtering guest output", async (_label, bytes) => {
+  const stdout = bytes();
+  expect(failureFrom(() => parsePreflightTransport(stdout)).failures).toEqual([{ check: "PROTOCOL", code: "PROTOCOL_INVALID" }]);
+  const report = await runPreflightTrace(traceOptions(), traceDependencies(rawResult(stdout, Buffer.from("SYNTHETIC_OUTER_STATUS\n"))));
+  expect(report.stdoutProtocol).toEqual({ status: "INVALID", failures: [{ check: "PROTOCOL", code: "PROTOCOL_INVALID" }] });
+  expect(report.preflightGuard).toEqual({ status: "STOP", failures: [{ check: "PROTOCOL", code: "PROTOCOL_INVALID" }] });
+  expect(readFileSync(report.streams.stdout.path)).toEqual(stdout);
+  expect(report).toMatchObject({ traceComplete: true, result: "STOP", transport: TRANSPORT, ...AUTHORITY });
+});
+
+test("transport parser accepts exact 24 GiB metadata without changing legacy metadata shape", () => {
+  const metadata = preflight().replace(df(), df(24 * 1024 ** 2));
+  expect(parsePreflightTransport(Buffer.from(transportedPreflight(metadata)))).toEqual(parsePreflight(metadata));
+  expect(Object.keys(parsePreflight(metadata))).toEqual(["os", "arch", "glibc", "baseTools", "workspaceWritable", "tar", "xz", "gnuTar", "freeKiB"]);
+  expect(failureFrom(() => parsePreflightTransport(transportedPreflight())).failures)
+    .toEqual([{ check: "PROTOCOL", code: "PROTOCOL_INVALID" }]);
+  expect(failureFrom(() => parsePreflight(transportedPreflight())).failures)
+    .toEqual([{ check: "PROTOCOL", code: "PROTOCOL_INVALID" }]);
+  for (const value of [undefined, null, new Uint8Array(Buffer.from(transportedPreflight())), Buffer.alloc(16385)]) {
+    expect(failureFrom(() => parsePreflightTransport(value)).failures).toEqual([{ check: "PROTOCOL", code: "PROTOCOL_INVALID" }]);
+  }
+});
+
+test("transport metadata failure keeps GUEST_CAPACITY and trace STOP distinct from INVALID", async () => {
+  const stdout = Buffer.from(transportedPreflight(preflight().replace(df(), df(24 * 1024 ** 2 - 1))));
+  const failures = [{ check: "GUEST_CAPACITY", code: "REQUIREMENT_UNMET", expected: "AT_LEAST_24_GIB_FREE" }];
+  expect(failureFrom(() => parsePreflightTransport(stdout)).failures).toEqual(failures);
+  const report = await runPreflightTrace(traceOptions(), traceDependencies(rawResult(stdout, Buffer.from("SYNTHETIC_STARTED_NOTICE\n"))));
+  expect(report.stdoutProtocol).toEqual({ status: "STOP", failures });
+  expect(report.preflightGuard).toEqual({ status: "STOP", failures });
+  expect(report.execution.commandSucceeded).toBe(true);
+});
+
+test.each(["normal", "trace"])("%s accepts exactly 16 KiB combined raw capture without decoding outer stderr", async (route) => {
+  const stdout = Buffer.from(transportedPreflight()), stderr = Buffer.alloc(16384 - stdout.length, 0xff);
+  const reply = rawResult(stdout, stderr);
+  let report;
+  if (route === "trace") report = await runPreflightTrace(traceOptions(), traceDependencies(reply));
+  else {
+    await start(); await through("policy");
+    await runCompleteStage("preflight", { state: statePath }, { ...dependencies, execute: async () => reply });
+    report = expectNormalCapture(stdout, stderr);
+    expect(readCompleteState(statePath)).toMatchObject({ status: "READY", nextStage: "accept-policy" });
+  }
+  expect(report.execution).toMatchObject({ commandSucceeded: true, retainedBytes: 16384, observedBytes: 16384, truncated: false });
+  expect(report.preflightGuard).toEqual({ status: "METADATA_CHECKS_MET", failures: [] });
+  expect(readFileSync(report.streams.stdout.path)).toEqual(stdout);
+  expect(readFileSync(report.streams.stderr.path)).toEqual(stderr);
+  expect(report.streams.stderr.sha256).toBe(sha(stderr));
+  expect(report).toMatchObject({ result: "STOP", transport: TRANSPORT, ...AUTHORITY });
+});
+
+test.each([
+  [{ ok: false, code: 7 }, "NONZERO_EXIT"],
+  [{ ok: false, code: null, signal: "SIGTERM" }, "SIGNAL"],
+])("trace command failure takes precedence over transported metadata and outer stderr %#", async (extra, code) => {
+  const stdout = Buffer.from(transportedPreflight(preflight().replace(df(), df(1))));
+  const stderr = Buffer.from("SYNTHETIC_OUTER_DIAGNOSTIC\n");
+  const report = await runPreflightTrace(traceOptions(), traceDependencies(rawResult(stdout, stderr, extra)));
+  expect(report.stdoutProtocol).toEqual({ status: "NOT_EVALUATED", failures: [] });
+  expect(report.preflightGuard).toEqual({ status: "STOP", failures: [{ check: "COMMAND", code }] });
+  expect(readFileSync(report.streams.stdout.path)).toEqual(stdout);
+  expect(readFileSync(report.streams.stderr.path)).toEqual(stderr);
+});
+
+test.each([
+  ["valid synthetic metadata", `printf '%s' '${preflight()}'`, 0, true],
+  ["guest stderr despite exit zero", `printf '%s' '${preflight()}'\nprintf 'SYNTHETIC_GUEST_STDERR\\n' >&2\nexit 0`, 0, false],
+  ["inner exit 125", "printf 'SYNTHETIC_INNER_FAILURE\\n' >&2\nexit 125", 125, false],
+  ["inner exit 127", "printf 'SYNTHETIC_INNER_FAILURE\\n' >&2\nexit 127", 127, false],
+])("local owned wrapper redirects %s into the guest protocol stream", async (_label, script, code, valid) => {
+  const operation = completeToolsPlan(traceOptions()).operation;
+  expectPreflightOperation(operation.argv);
+  const argv = operation.argv.slice(3);
+  argv[argv.length - 1] = script;
+  expect(argv.slice(0, -1)).toEqual(["/bin/sh", "-c", PREFLIGHT_WRAPPER, "sh"]);
+  const reply = await runBounded(argv, { milliseconds: operation.milliseconds, cap: operation.cap, encoding: "buffer" });
+  expect(reply).toMatchObject({ outcome: "EXIT", code, signal: null, ok: code === 0 });
+  expect(reply.stderr).toEqual(Buffer.alloc(0));
+  expect(reply.stdout.subarray(0, Buffer.byteLength(TRANSPORT_MARKER))).toEqual(Buffer.from(TRANSPORT_MARKER));
+  expect(reply.bytes).toBe(reply.stdout.length);
+  if (valid) expect(parsePreflightTransport(reply.stdout)).toEqual(parsePreflight(preflight()));
+  else {
+    expect(reply.stdout.toString("utf8")).toContain(code === 0 ? "SYNTHETIC_GUEST_STDERR" : "SYNTHETIC_INNER_FAILURE");
+    expect(failureFrom(() => parsePreflightTransport(reply.stdout)).failures).toEqual([{ check: "PROTOCOL", code: "PROTOCOL_INVALID" }]);
+  }
+});
+
+test("fixed transport rejects caller-selected commands in plans and CLI parsing", () => {
+  expect(() => completeToolsPlan(traceOptions({ command: "SYNTHETIC_CALLER_COMMAND" }))).toThrow();
+  expect(() => completeToolsPlan({ name: NAME, command: "SYNTHETIC_CALLER_COMMAND" })).toThrow();
+  expect(() => parseCompleteTools(["--trace-preflight", "--sbx", SBX, "--name", NAME, "--command", "SYNTHETIC_CALLER_COMMAND"])).toThrow();
 });
 
 test("trace preserves native negative spawn codes as failed capture metadata", async () => {
@@ -314,7 +490,7 @@ test("trace source drift at consent refuses before intent and invocation", async
 });
 
 test("trace source drift after invocation retains raw captures without a completion report", async () => {
-  const stdout = Buffer.from(preflight()), stderr = Buffer.from("PRIVATE_RETAINED_AFTER_DRIFT\n");
+  const stdout = Buffer.from(transportedPreflight()), stderr = Buffer.from("PRIVATE_RETAINED_AFTER_DRIFT\n");
   const deps = traceDependencies();
   deps.execute = async () => {
     writeFileSync(deps.runnerSourcePath, "PRIVATE_CHANGED_RUNNER\n");
@@ -379,10 +555,13 @@ test("trace neither mutates nor continues an existing blocked preparation attemp
 
 test.each([
   { outcome: "PRIVATE_OUTCOME" }, { signal: "SIGPRIVATE" }, { stdout: "PRIVATE_STRING_NOT_BYTES" },
+  { stderr: "PRIVATE_STRING_NOT_BYTES" }, { stdout: new Uint8Array([65]) },
   { bytes: -1 }, { elapsedMs: Infinity }, { stdout: Buffer.alloc(16385) },
-  { outcome: "TIMEOUT", ok: true }, { code: -2 },
+  { stdout: Buffer.alloc(16380), stderr: Buffer.alloc(5) },
+  { bytes: 0 },
+  { outcome: "TIMEOUT", ok: true }, { code: -2 }, { bytes: Buffer.byteLength(transportedPreflight()) + 1 },
 ])("malformed trace results remain private and cannot be replayed %#", async (extra) => {
-  const deps = traceDependencies({ ...rawResult(), ...extra }), errors = [];
+  const reply = { ...rawResult(), ...extra }, deps = traceDependencies(reply), errors = [];
   expect(await main(["--trace-preflight", "--sbx", SBX, "--name", NAME], {
     ...deps, output: () => { throw new Error("UNEXPECTED_STDOUT"); }, error: (value) => errors.push(value),
   })).toBe(2);
@@ -390,6 +569,10 @@ test.each([
   expect(errors[0]).toContain("DEV_TRACE_STOP");
   expect(existsSync(join(traceDirectory, "intent.json"))).toBe(true);
   expect(existsSync(join(traceDirectory, "report.json"))).toBe(false);
+  const safeBuffers = Buffer.isBuffer(reply.stdout) && Buffer.isBuffer(reply.stderr)
+    && reply.stdout.length + reply.stderr.length <= 16384;
+  expect(readFileSync(join(traceDirectory, "stdout.bin"))).toEqual(safeBuffers ? reply.stdout : Buffer.alloc(0));
+  expect(readFileSync(join(traceDirectory, "stderr.bin"))).toEqual(safeBuffers ? reply.stderr : Buffer.alloc(0));
   const count = calls.length;
   await expect(runPreflightTrace(traceOptions(), deps)).rejects.toThrow();
   expect(calls).toHaveLength(count);
@@ -472,8 +655,8 @@ test("the first five stages require separate approvals and preserve all earlier 
   await through("host-capacity");
   expect(approvals.map(({ stage }) => stage)).toEqual(STAGES.slice(0, 5));
   expect(calls).toHaveLength(4);
-  expect(calls[1].bounds).toEqual({ milliseconds: 25000, cap: 16384 });
-  expect(calls[1].argv.slice(0, 8)).toEqual([SBX, "exec", NAME, "/usr/bin/timeout", "--kill-after=1s", "15s", "/bin/sh", "-c"]);
+  expectPreflightOperation(calls[1].argv, calls[1].bounds);
+  expect(calls[1].argv).toEqual(completeToolsPlan(traceOptions()).operation.argv);
   expect(calls[2].bounds).toEqual({ milliseconds: 30000, cap: 16384 });
   expect(calls[2].argv[8]).toContain('chmod 400 "$1/.reservation"');
   expect(calls[3].argv).toEqual(["/usr/bin/df", "-Pk", run]);
@@ -484,6 +667,230 @@ test("the first five stages require separate approvals and preserve all earlier 
   }
   await expect(runCompleteStage("policy", { state: statePath, stage: "policy" }, dependencies)).rejects.toThrow();
   expect(calls).toHaveLength(4);
+});
+
+test("normal preflight accepts synthetic outer startup bytes and requires a new policy approval", async () => {
+  await start(); await through("policy");
+  const master = readFileSync(statePath);
+  const stdout = Buffer.from(transportedPreflight(preflight().replace(df(), df(24 * 1024 ** 2))));
+  const stderr = Buffer.concat([Buffer.from(`SYNTHETIC_STARTED_NOTICE ${NAME}\n\0\u001b[31m`), Buffer.from([0xff, 0x80])]);
+  const output = [], errors = [];
+  let executions = 0;
+  expect(await main(["--state", statePath, "--stage", "preflight"], { ...dependencies,
+    output: (value) => output.push(value), error: (value) => errors.push(value), execute: async (argv, bounds) => {
+      executions++;
+      expectPreflightOperation(argv, bounds);
+      expect(argv).toEqual(completeToolsPlan(traceOptions()).operation.argv);
+      expectEmptyCaptures(run, CAPTURE_FILES.slice(0, 2));
+      expect(existsSync(join(run, CAPTURE_FILES[2]))).toBe(false);
+      expect(readCompleteState(statePath)).toMatchObject({ status: "RECONCILE", inFlightStage: "preflight" });
+      return rawResult(stdout, stderr);
+    } })).toBe(0);
+  expect(executions).toBe(1);
+  expect(errors).toEqual([]);
+  expect(output).toHaveLength(1);
+  expect(JSON.parse(output[0])).toMatchObject({ schema: "dev-sbx-complete-stage-v1", stage: "preflight", result: "DEV_STAGE_COMPLETE", ...AUTHORITY });
+  expect(output.join("\n")).not.toContain("SYNTHETIC_STARTED_NOTICE");
+  expect(output.join("\n")).not.toContain("\ufffd");
+  const report = expectNormalCapture(stdout, stderr);
+  expect(report.execution).toMatchObject({ outcome: "EXIT", code: 0, signal: null, commandSucceeded: true,
+    observedBytes: stdout.length + stderr.length, retainedBytes: stdout.length + stderr.length, truncated: false });
+  expect(report.stdoutProtocol).toEqual({ status: "METADATA_CHECKS_MET", failures: [] });
+  expect(report.preflightGuard).toEqual({ status: "METADATA_CHECKS_MET", failures: [] });
+  expect(readFileSync(statePath)).toEqual(master);
+  expect(readCompleteState(statePath)).toMatchObject({ nextStage: "accept-policy", completedStage: "preflight", status: "READY", ...AUTHORITY });
+  const event = JSON.parse(readFileSync(join(run, "02-preflight.complete.json"), "utf8"));
+  expect(Object.keys(event).sort()).toEqual(["schema", "kind", "stage", "masterSha256", "data"].sort());
+  expect(event.schema).toBe("dev-sbx-complete-event-v1");
+  expect(event.data).toEqual(parsePreflight(preflight().replace(df(), df(24 * 1024 ** 2))));
+  expect(approvals.map(({ stage }) => stage)).toEqual(["policy", "preflight"]);
+  const approval = approvals.at(-1);
+  for (const text of [TRANSPORT_MARKER.trimEnd(), "GUEST_PROTOCOL_AND_DIAGNOSTICS", "OUTER_DIAGNOSTICS", "UNATTRIBUTED", ...CAPTURE_FILES]) {
+    expect(approval.prompt).toContain(text);
+  }
+  expect(approval.prompt).not.toContain("SYNTHETIC_STARTED_NOTICE");
+  expect(JSON.parse(approval.prompt.split("\n").find((line) => line.startsWith("TRANSPORT=")).slice("TRANSPORT=".length))).toEqual(TRANSPORT);
+  expect(JSON.parse(approval.prompt.split("\n").find((line) => line.startsWith("OPERATION=")).slice("OPERATION=".length)))
+    .toEqual(completeToolsPlan(traceOptions()).operation);
+  let policyPrompts = 0;
+  await expect(runCompleteStage("accept-policy", { state: statePath }, { ...dependencies, confirm: async ({ stage }) => {
+    expect(stage).toBe("accept-policy"); policyPrompts++; return false;
+  } })).rejects.toThrow("DEV_TOOLS_STOP");
+  expect(policyPrompts).toBe(1);
+  expect(existsSync(join(run, "03-accept-policy.intent.json"))).toBe(false);
+  expect(readCompleteState(statePath).nextStage).toBe("accept-policy");
+  await runCompleteStage("accept-policy", { state: statePath }, dependencies);
+  expect(approvals.at(-1).stage).toBe("accept-policy");
+  expect(readCompleteState(statePath)).toMatchObject({ nextStage: "reserve", ...AUTHORITY });
+  expect(calls).toHaveLength(1);
+  expect(executions).toBe(1);
+  expect(requests).toEqual([]);
+  expect(existsSync(join(run, "receipt.json"))).toBe(false);
+});
+
+test("low guest capacity plus outer startup status retains normal transport before terminal STOP", async () => {
+  const stdout = Buffer.from(transportedPreflight(preflight().replace(df(), df(24 * 1024 ** 2 - 1))));
+  const stderr = Buffer.from("SYNTHETIC_STARTED_NOTICE\n");
+  let executions = 0;
+  const { diagnostic, errors } = await failedPreflight(async (argv, bounds) => {
+    executions++;
+    expectPreflightOperation(argv, bounds);
+    expectEmptyCaptures(run, CAPTURE_FILES.slice(0, 2));
+    return rawResult(stdout, stderr);
+  });
+  const failures = [{ check: "GUEST_CAPACITY", code: "REQUIREMENT_UNMET", expected: "AT_LEAST_24_GIB_FREE" }];
+  expect(diagnostic.failures).toEqual(failures);
+  expect(executions).toBe(1);
+  expect(errors.join("\n")).not.toContain("SYNTHETIC_STARTED_NOTICE");
+  expect(errors.join("\n")).not.toContain("UNEXPECTED_STDERR");
+  const report = expectNormalCapture(stdout, stderr);
+  expect(report.stdoutProtocol).toEqual({ status: "STOP", failures });
+  expect(report.preflightGuard).toEqual({ status: "STOP", failures });
+  expect(report.execution.commandSucceeded).toBe(true);
+});
+
+test("normal preflight rejects guest stderr merged into otherwise valid exit-zero protocol", async () => {
+  const stdout = Buffer.from(`${transportedPreflight()}SYNTHETIC_GUEST_STDERR\n`), stderr = Buffer.alloc(0);
+  const { diagnostic, errors } = await failedPreflight(async () => rawResult(stdout, stderr));
+  const failures = [{ check: "PROTOCOL", code: "PROTOCOL_INVALID" }];
+  expect(diagnostic.failures).toEqual(failures);
+  const report = expectNormalCapture(stdout, stderr);
+  expect(report.stdoutProtocol).toEqual({ status: "INVALID", failures });
+  expect(report.preflightGuard).toEqual({ status: "STOP", failures });
+  expect(report.execution.commandSucceeded).toBe(true);
+  expect(errors.join("\n")).not.toContain("SYNTHETIC_GUEST_STDERR");
+});
+
+test.each(["reserve", "host-capacity"])("%s keeps string capture and rejects stderr outside preflight", async (stage) => {
+  await start(); await through(stage === "reserve" ? "accept-policy" : "reserve");
+  let failure;
+  try {
+    await runCompleteStage(stage, { state: statePath }, { ...dependencies, execute: async (argv, bounds) => {
+      expect(bounds.encoding).toBeUndefined();
+      expect(bounds).toEqual({ milliseconds: stage === "reserve" ? 30000 : 10000, cap: 16384 });
+      if (stage === "reserve") expect(argv[8]).toContain(".complete-dev-tools-v1");
+      else expect(argv).toEqual(["/usr/bin/df", "-Pk", run]);
+      return result(stage === "reserve" ? "RESERVED\n" : df(), { stderr: "SYNTHETIC_NONPREFLIGHT_STDERR\n" });
+    } });
+  } catch (error) { failure = error; }
+  expect(failure).toBeDefined();
+  expect(completeToolsFailure(failure)).toMatchObject({ stage, phase: "EFFECT",
+    failures: [{ check: "COMMAND", code: "UNEXPECTED_STDERR" }] });
+  expect(readCompleteState(statePath)).toMatchObject({ status: "RECONCILE", inFlightStage: stage, nextStage: null });
+});
+
+test.each(CAPTURE_FILES)("normal preflight refuses %s collision without overwrite or provider execution", async (filename) => {
+  await start(); await through("policy");
+  const bytes = Buffer.from("SYNTHETIC_EXISTING_CAPTURE\n");
+  writeFileSync(join(run, filename), bytes, { mode: 0o600 });
+  let executions = 0;
+  await expect(runCompleteStage("preflight", { state: statePath }, { ...dependencies,
+    execute: async () => { executions++; return rawResult(); } })).rejects.toThrow("DEV_TOOLS_STOP");
+  expect(executions).toBe(0);
+  expect(readFileSync(join(run, filename))).toEqual(bytes);
+  expect(existsSync(join(run, "02-preflight.complete.json"))).toBe(false);
+});
+
+test.each(["symlink", "hardlink", "directory"])("normal capture preallocation refuses a %s collision before invocation", async (kind) => {
+  await start(); await through("policy");
+  const target = join(fixture, "synthetic-collision-target"), capture = join(run, CAPTURE_FILES[0]);
+  writeFileSync(target, "SYNTHETIC_UNCHANGED_TARGET\n", { mode: 0o600 });
+  if (kind === "symlink") symlinkSync(target, capture);
+  else if (kind === "hardlink") linkSync(target, capture);
+  else mkdirSync(capture, { mode: 0o700 });
+  let executions = 0;
+  await expect(runCompleteStage("preflight", { state: statePath }, { ...dependencies,
+    execute: async () => { executions++; return rawResult(); } })).rejects.toThrow("DEV_TOOLS_STOP");
+  expect(executions).toBe(0);
+  expect(readFileSync(target, "utf8")).toBe("SYNTHETIC_UNCHANGED_TARGET\n");
+  if (kind === "directory") expect(readdirSync(capture)).toEqual([]);
+  expect(existsSync(join(run, "02-preflight.complete.json"))).toBe(false);
+});
+
+test.each(CAPTURE_FILES.slice(0, 2))("normal capture refuses symlink replacement of %s without writing its target", async (filename) => {
+  await start(); await through("policy");
+  const target = join(fixture, "synthetic-symlink-target");
+  writeFileSync(target, "SYNTHETIC_UNCHANGED_TARGET\n", { mode: 0o600 });
+  let executions = 0;
+  await expect(runCompleteStage("preflight", { state: statePath }, { ...dependencies, execute: async () => {
+    executions++;
+    expectEmptyCaptures(run, CAPTURE_FILES.slice(0, 2));
+    unlinkSync(join(run, filename));
+    symlinkSync(target, join(run, filename));
+    return rawResult();
+  } })).rejects.toThrow("DEV_TOOLS_STOP");
+  expect(executions).toBe(1);
+  expect(readFileSync(target, "utf8")).toBe("SYNTHETIC_UNCHANGED_TARGET\n");
+  expect(existsSync(join(run, CAPTURE_FILES[2]))).toBe(false);
+  expect(existsSync(join(run, "02-preflight.complete.json"))).toBe(false);
+  expect(readCompleteState(statePath)).toMatchObject({ status: "RECONCILE", inFlightStage: "preflight", nextStage: null });
+});
+
+test.each(CAPTURE_FILES.slice(0, 2))("normal capture refuses hard-linking %s before retaining bytes", async (filename) => {
+  await start(); await through("policy");
+  const alias = join(fixture, "synthetic-capture-alias");
+  await expect(runCompleteStage("preflight", { state: statePath }, { ...dependencies, execute: async () => {
+    expectEmptyCaptures(run, CAPTURE_FILES.slice(0, 2));
+    linkSync(join(run, filename), alias);
+    return rawResult(undefined, Buffer.from("SYNTHETIC_OUTER_NOTICE\n"));
+  } })).rejects.toThrow("DEV_TOOLS_STOP");
+  expect(statSync(alias).size).toBe(0);
+  expect(existsSync(join(run, CAPTURE_FILES[2]))).toBe(false);
+  expect(existsSync(join(run, "02-preflight.complete.json"))).toBe(false);
+});
+
+test("normal capture refuses an attempt-directory swap before writing into either directory", async () => {
+  await start(); await through("policy");
+  const moved = join(fixture, "synthetic-moved-attempt");
+  let executions = 0;
+  await expect(runCompleteStage("preflight", { state: statePath }, { ...dependencies, execute: async () => {
+    executions++;
+    expectEmptyCaptures(run, CAPTURE_FILES.slice(0, 2));
+    renameSync(run, moved);
+    mkdirSync(run, { mode: 0o700 });
+    return rawResult();
+  } })).rejects.toThrow("DEV_TOOLS_STOP");
+  expect(executions).toBe(1);
+  expect(readdirSync(run)).toEqual([]);
+  expectEmptyCaptures(moved, CAPTURE_FILES.slice(0, 2));
+  expect(existsSync(join(moved, CAPTURE_FILES[2]))).toBe(false);
+  expect(existsSync(join(moved, "02-preflight.complete.json"))).toBe(false);
+  expect(existsSync(join(moved, "02-preflight.intent.json"))).toBe(true);
+});
+
+test("normal transport report collision after invocation retains raw files but cannot complete an event", async () => {
+  await start(); await through("policy");
+  const stdout = Buffer.from(transportedPreflight()), stderr = Buffer.from("SYNTHETIC_OUTER_NOTICE\n");
+  await expect(runCompleteStage("preflight", { state: statePath }, { ...dependencies, execute: async () => {
+    writeFileSync(join(run, CAPTURE_FILES[2]), "SYNTHETIC_EXISTING_REPORT\n", { mode: 0o600 });
+    return rawResult(stdout, stderr);
+  } })).rejects.toThrow("DEV_TOOLS_STOP");
+  expect(readFileSync(join(run, CAPTURE_FILES[0]))).toEqual(stdout);
+  expect(readFileSync(join(run, CAPTURE_FILES[1]))).toEqual(stderr);
+  expect(readFileSync(join(run, CAPTURE_FILES[2]), "utf8")).toBe("SYNTHETIC_EXISTING_REPORT\n");
+  expect(existsSync(join(run, "02-preflight.complete.json"))).toBe(false);
+  expect(readCompleteState(statePath)).toMatchObject({ status: "RECONCILE", inFlightStage: "preflight", nextStage: null });
+});
+
+test("normal sidecar names never authorize preparation events and other sidecar names stay forbidden", async () => {
+  await start(); await through("policy");
+  const state = readCompleteState(statePath);
+  writeFileSync(join(run, CAPTURE_FILES[0]), Buffer.from(transportedPreflight()), { mode: 0o600 });
+  writeFileSync(join(run, CAPTURE_FILES[1]), "SYNTHETIC_OUTER_NOTICE\n", { mode: 0o600 });
+  const forged = { schema: "dev-sbx-complete-event-v1", kind: "complete", stage: "preflight",
+    masterSha256: state.masterSha256, data: parsePreflight(preflight()) };
+  writeFileSync(join(run, CAPTURE_FILES[2]), JSON.stringify(forged), { mode: 0o600 });
+  expect(readCompleteState(statePath)).toMatchObject({ status: "READY", completedStage: "policy", nextStage: "preflight" });
+  expect(readCompleteState(statePath).events.map(({ stage }) => stage)).toEqual(["policy"]);
+  const extra = join(run, "02-preflight.arbitrary-report.json");
+  writeFileSync(extra, JSON.stringify(forged), { mode: 0o600 });
+  expect(() => readCompleteState(statePath)).toThrow();
+  unlinkSync(extra);
+  writeFileSync(join(run, "03-accept-policy.complete.json"), JSON.stringify({ ...forged, stage: "accept-policy",
+    data: { policySha256: state.events[0].data.policySha256, preflightSha256: sha(JSON.stringify(forged)) } }), { mode: 0o600 });
+  expect(() => readCompleteState(statePath)).toThrow();
+  expect(calls).toHaveLength(1);
+  expect(requests).toEqual([]);
 });
 
 test("source drift during approval refuses before intent and before provider effects", async () => {
@@ -779,7 +1186,8 @@ test("host and guest free-space failures print fixed floors, not measured paths 
 });
 
 test("CLI appends actionable preflight JSON while preserving the fixed stderr line and empty stdout", async () => {
-  const { diagnostic, errors } = await failedPreflight(async () => result(preflight().replace("XZ=EXECUTABLE", "XZ=MISSING")));
+  const stdout = Buffer.from(transportedPreflight(preflight().replace("XZ=EXECUTABLE", "XZ=MISSING")));
+  const { diagnostic, errors } = await failedPreflight(async () => rawResult(stdout));
   expect(diagnostic.failures).toEqual([{ check: "XZ", code: "REQUIREMENT_UNMET", expected: "EXECUTABLE" }]);
   expect(errors.join("\n")).not.toContain(NAME);
   expect(errors.join("\n")).not.toContain(statePath);
@@ -796,20 +1204,42 @@ test.each([
   [{ outcome: "INCOMPLETE_STREAM", ok: false, code: null }, "INCOMPLETE_STREAM"],
   [{ code: 7, ok: false }, "NONZERO_EXIT"],
   [{ code: null, signal: "SIGKILL", ok: false }, "SIGNAL"],
-  [{ stderr: "PRIVATE_STDERR\u001b[31m" }, "UNEXPECTED_STDERR"],
-  [{ stdout: "PRIVATE_OVERFLOW".repeat(2000) }, "OUTPUT_LIMIT"],
+  [{ stdout: Buffer.alloc(16385) }, "EXECUTOR_RESULT_INVALID"],
+  [{ stdout: Buffer.alloc(16380), stderr: Buffer.alloc(5) }, "EXECUTOR_RESULT_INVALID"],
+  [{ stdout: "PRIVATE_STRING_NOT_BYTES" }, "EXECUTOR_RESULT_INVALID"],
+  [{ stderr: "PRIVATE_STRING_NOT_BYTES" }, "EXECUTOR_RESULT_INVALID"],
+  [{ stdout: new Uint8Array([65]) }, "EXECUTOR_RESULT_INVALID"],
   [{ outcome: "PRIVATE_OUTCOME" }, "EXECUTOR_RESULT_INVALID"],
   [{ code: undefined }, "EXECUTOR_RESULT_INVALID"],
   [{ code: -1 }, "EXECUTOR_RESULT_INVALID"],
   [{ signal: "PRIVATE_SIGNAL" }, "EXECUTOR_RESULT_INVALID"],
   [{ bytes: Infinity }, "EXECUTOR_RESULT_INVALID"],
+  [{ bytes: -1 }, "EXECUTOR_RESULT_INVALID"],
+  [{ bytes: 0 }, "EXECUTOR_RESULT_INVALID"],
+  [{ elapsedMs: Infinity }, "EXECUTOR_RESULT_INVALID"],
+  [{ bytes: 16384 }, "EXECUTOR_RESULT_INVALID"],
+  [{ bytes: 16385 }, "EXECUTOR_RESULT_INVALID"],
   [{ ok: false }, "EXECUTOR_RESULT_INVALID"],
   [{ outcome: "TIMEOUT", ok: true }, "EXECUTOR_RESULT_INVALID"],
 ])("executor failure emits a fixed category without parsing partial output %#", async (extra, code) => {
-  const { diagnostic, errors } = await failedPreflight(async () => result("PRIVATE_STDOUT\n", extra));
+  const stdout = Buffer.from(transportedPreflight(preflight().replace(df(), df(1))));
+  const stderr = Buffer.from("PRIVATE_SYNTHETIC_OUTER_DIAGNOSTIC\n");
+  const reply = rawResult(stdout, stderr, extra);
+  const { diagnostic, errors } = await failedPreflight(async () => reply);
   expect(diagnostic.failures).toEqual([{ check: "COMMAND", code }]);
   expect(errors.join("\n")).not.toContain("PRIVATE");
   expect(errors.join("\n")).not.toContain("SIGKILL");
+  const safeBuffers = Buffer.isBuffer(reply.stdout) && Buffer.isBuffer(reply.stderr)
+    && reply.stdout.length + reply.stderr.length <= 16384;
+  expect(readFileSync(join(run, CAPTURE_FILES[0]))).toEqual(safeBuffers ? stdout : Buffer.alloc(0));
+  expect(readFileSync(join(run, CAPTURE_FILES[1]))).toEqual(safeBuffers ? stderr : Buffer.alloc(0));
+  if (code === "EXECUTOR_RESULT_INVALID") expect(existsSync(join(run, CAPTURE_FILES[2]))).toBe(false);
+  else {
+    const report = expectNormalCapture(stdout, stderr);
+    expect(report.stdoutProtocol).toEqual({ status: "NOT_EVALUATED", failures: [] });
+    expect(report.preflightGuard).toEqual({ status: "STOP", failures: [{ check: "COMMAND", code }] });
+    expect(report.execution.commandSucceeded).toBe(false);
+  }
 });
 
 test("forged exception properties and hostile getters cannot inject diagnostics", async () => {
@@ -894,10 +1324,13 @@ test("an intent-write collision reports uncertainty without claiming guest execu
 test("post-effect source drift reports finalization without claiming a guest prerequisite failure", async () => {
   await start(); await through("policy");
   const errors = [], output = [];
+  const stdout = Buffer.from(transportedPreflight()), stderr = Buffer.from("SYNTHETIC_RETAINED_AFTER_SOURCE_DRIFT\n");
+  let executions = 0;
   expect(await main(["--state", statePath, "--stage", "preflight"], { ...dependencies,
     execute: async () => {
+      executions++;
       writeFileSync(join(fixture, "sources/complete-tools.mjs"), "PRIVATE_SOURCE_DRIFT\n");
-      return result(preflight());
+      return rawResult(stdout, stderr);
     }, error: (value) => errors.push(value), output: (value) => output.push(value) })).toBe(2);
   const report = JSON.parse(errors[1]);
   expect(report).toMatchObject({ stage: "preflight", phase: "FINALIZATION",
@@ -905,6 +1338,13 @@ test("post-effect source drift reports finalization without claiming a guest pre
   expect(output).toEqual([]);
   expect(existsSync(join(run, "02-preflight.intent.json"))).toBe(true);
   expect(existsSync(join(run, "02-preflight.complete.json"))).toBe(false);
+  expect(readFileSync(join(run, CAPTURE_FILES[0]))).toEqual(stdout);
+  expect(readFileSync(join(run, CAPTURE_FILES[1]))).toEqual(stderr);
+  expect(executions).toBe(1);
+  const count = approvals.length;
+  await expect(runCompleteStage("preflight", { state: statePath }, dependencies)).rejects.toThrow("DEV_TOOLS_STOP");
+  await expect(runCompleteStage("accept-policy", { state: statePath }, dependencies)).rejects.toThrow("DEV_TOOLS_STOP");
+  expect(approvals).toHaveLength(count);
   expect(readCompleteState(statePath).status).toBe("RECONCILE");
   expect(errors.join("\n")).not.toContain("PRIVATE");
 });

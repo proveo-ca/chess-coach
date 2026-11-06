@@ -27,6 +27,11 @@ const AUTHORITY = Object.freeze({ gate0: "OPEN", f9Qualified: false, trainingRea
 const FAILURE_LINE = "DEV_TOOLS_STOP; retain attempt files and guest reservation; reconcile in-flight stages; never retry an attempted stage or remove reservations; Gate0=OPEN; f9Qualified=false; trainingReady=false.";
 const TRACE_FAILURE_LINE = "DEV_TRACE_STOP; preserve private trace files; do not retry automatically; Gate0=OPEN; f9Qualified=false; trainingReady=false.";
 const TRACE_CAP = 16384;
+const PREFLIGHT_TRANSPORT = Object.freeze({
+  schema: "dev-sbx-preflight-transport-v1", marker: "DEV_SBX_PREFLIGHT_TRANSPORT_V1\n",
+  stdout: "GUEST_PROTOCOL_AND_DIAGNOSTICS", stderr: "OUTER_DIAGNOSTICS", origin: "UNATTRIBUTED",
+});
+const PREFLIGHT_CAPTURE_FILES = ["02-preflight.stdout.bin", "02-preflight.stderr.bin", "02-preflight.transport.json"];
 const TRACE_OUTCOMES = new Set(["EXIT", "TIMEOUT", "OUTPUT_LIMIT", "INTERRUPTED", "SPAWN_ERROR", "STREAM_ERROR", "INCOMPLETE_STREAM"]);
 const TRACE_SIGNALS = new Set(Object.keys(osConstants.signals));
 const failureDetails = new WeakMap();
@@ -153,8 +158,9 @@ export function parseCompleteTools(argv) {
 export function completeToolsPlan(options) {
   optionsChecked(options);
   if (options.tracePreflight) return {
-    schema: "dev-sbx-preflight-trace-plan-v1", result: "PLAN_ONLY", ...AUTHORITY,
+    schema: "dev-sbx-preflight-trace-plan-v2", result: "PLAN_ONLY", ...AUTHORITY,
     scope: "INDEPENDENT_PREFLIGHT_DIAGNOSTIC", origin: "UNATTRIBUTED",
+    transport: { ...PREFLIGHT_TRANSPORT },
     target: options.name, sbxPath: options.sbx, traceDirectory: "ALLOCATED_AT_EXECUTION",
     operation: preflightTraceOperation(options), freshApproval: true,
     privateFiles: ["intent.json", "stdout.bin", "stderr.bin", "report.json"],
@@ -376,9 +382,25 @@ export function parsePreflight(stdout) {
     workspaceWritable: true, tar: true, xz: true, gnuTar: true, ...capacity };
 }
 
+const PREFLIGHT_WRAPPER = `exec 2>&1
+set -eu
+printf 'DEV_SBX_PREFLIGHT_TRANSPORT_V1\\n'
+exec /usr/bin/timeout --kill-after=1s 15s /bin/sh -c "$1" sh
+`;
+
 function preflightTraceOperation(options) {
-  return { argv: [options.sbx, "exec", options.name, "/usr/bin/timeout", "--kill-after=1s", "15s",
-    "/bin/sh", "-c", PREFLIGHT, "sh"], milliseconds: 25000, cap: TRACE_CAP };
+  return { argv: [options.sbx, "exec", options.name, "/bin/sh", "-c", PREFLIGHT_WRAPPER, "sh", PREFLIGHT],
+    milliseconds: 25000, cap: TRACE_CAP };
+}
+
+export function parsePreflightTransport(stdout) {
+  const invalid = () => failCheck("PROTOCOL", "PROTOCOL_INVALID");
+  if (!Buffer.isBuffer(stdout) || stdout.length > TRACE_CAP) invalid();
+  let text;
+  try { text = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(stdout); }
+  catch { invalid(); }
+  if (!text.startsWith(PREFLIGHT_TRANSPORT.marker)) invalid();
+  return parsePreflight(text.slice(PREFLIGHT_TRANSPORT.marker.length));
 }
 
 function traceSourceBindings(dependencies) {
@@ -399,19 +421,24 @@ function traceFile(parent, filename) {
   catch (error) { closeSync(fd); throw error; }
 }
 
+function capturedBytes(result) {
+  if (!plain(result) || !Buffer.isBuffer(result.stdout) || !Buffer.isBuffer(result.stderr)
+    || result.stdout.length + result.stderr.length > TRACE_CAP) failCheck("COMMAND", "EXECUTOR_RESULT_INVALID");
+  return result.stdout.length + result.stderr.length;
+}
+
 function checkedTraceResult(result) {
-  if (!plain(result) || !TRACE_OUTCOMES.has(result.outcome) || typeof result.ok !== "boolean"
-    || !Buffer.isBuffer(result.stdout) || !Buffer.isBuffer(result.stderr)
+  const retainedBytes = capturedBytes(result);
+  if (!TRACE_OUTCOMES.has(result.outcome) || typeof result.ok !== "boolean"
     || !Number.isSafeInteger(result.bytes) || result.bytes < 0
     || !Number.isSafeInteger(result.elapsedMs) || result.elapsedMs < 0
     || (result.code !== null && !Number.isSafeInteger(result.code))
     || (result.signal !== null && !TRACE_SIGNALS.has(result.signal))) failCheck("COMMAND", "EXECUTOR_RESULT_INVALID");
-  const retainedBytes = result.stdout.length + result.stderr.length;
-  if (retainedBytes > TRACE_CAP || result.bytes < retainedBytes
+  if (result.bytes < retainedBytes
     || result.ok !== (result.outcome === "EXIT" && result.code === 0 && result.signal === null)
     || (result.outcome === "EXIT" && result.code !== null && (result.code < 0 || result.code > 255))
     || (result.outcome === "EXIT" && result.code === null && result.signal === null)
-    || (result.ok && result.bytes > TRACE_CAP)) failCheck("COMMAND", "EXECUTOR_RESULT_INVALID");
+    || (result.ok && result.bytes !== retainedBytes)) failCheck("COMMAND", "EXECUTOR_RESULT_INVALID");
   return { outcome: result.outcome, code: result.code, signal: result.signal, elapsedMs: result.elapsedMs,
     observedBytes: result.bytes, retainedBytes, truncated: result.bytes > retainedBytes, commandSucceeded: result.ok };
 }
@@ -421,24 +448,46 @@ function traceObservations(result) {
   if (result.outcome !== "EXIT") code = result.outcome;
   else if (result.signal !== null) code = "SIGNAL";
   else if (result.code !== 0) code = "NONZERO_EXIT";
-  else if (result.stderr.length) code = "UNEXPECTED_STDERR";
   let stdoutProtocol = { status: "NOT_EVALUATED", failures: [] };
   if (result.ok) {
-    let text;
-    try { text = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(result.stdout); }
-    catch { stdoutProtocol = { status: "INVALID", failures: [{ check: "PROTOCOL", code: "PROTOCOL_INVALID" }] }; }
-    if (text !== undefined) {
-      try { parsePreflight(text); stdoutProtocol = { status: "METADATA_CHECKS_MET", failures: [] }; }
-      catch (error) { stdoutProtocol = { status: "STOP", failures: completeToolsFailure(error).failures }; }
+    try { parsePreflightTransport(result.stdout); stdoutProtocol = { status: "METADATA_CHECKS_MET", failures: [] }; }
+    catch (error) {
+      const failures = completeToolsFailure(error).failures;
+      stdoutProtocol = { status: failures.some(({ code }) => code === "PROTOCOL_INVALID") ? "INVALID" : "STOP", failures };
     }
   }
   const failures = code ? [{ check: "COMMAND", code }] : stdoutProtocol.failures;
   return { stdoutProtocol, preflightGuard: { status: failures.length ? "STOP" : "METADATA_CHECKS_MET", failures } };
 }
 
+async function capturePreflight(operation, parent, directory, prefix, execute) {
+  const captures = [];
+  try {
+    for (const key of ["stdout", "stderr"]) {
+      const filename = `${prefix}${key}.bin`;
+      captures.push({ filename, fd: traceFile(parent, filename) });
+    }
+    let result;
+    try { result = await execute(operation.argv, { milliseconds: operation.milliseconds, cap: operation.cap, encoding: "buffer" }); }
+    catch { failCheck("COMMAND", "INTERNAL_ERROR"); }
+    capturedBytes(result);
+    anchor(parent, directory);
+    const streams = {};
+    for (const [index, key] of ["stdout", "stderr"].entries()) {
+      const { filename, fd } = captures[index], bytes = result[key];
+      details(fd, 0, 0o600);
+      writeAll(fd, bytes); fsyncSync(fd);
+      const stored = details(fd, TRACE_CAP, 0o600);
+      if (stored.size !== BigInt(bytes.length) || !same(stored, lstatSync(`/proc/self/fd/${parent}/${filename}`, { bigint: true }))) fail();
+      streams[key] = { path: join(directory, filename), retainedBytes: bytes.length, sha256: hash(bytes) };
+    }
+    fsyncSync(parent);
+    return { result, streams, execution: checkedTraceResult(result) };
+  } finally { for (const { fd } of captures) closeSync(fd); }
+}
+
 export async function runPreflightTrace(options, dependencies = {}) {
   let phase = "ARGUMENTS", parent;
-  const captures = [];
   try {
     optionsChecked(options);
     if (!options.tracePreflight) fail();
@@ -453,10 +502,10 @@ export async function runPreflightTrace(options, dependencies = {}) {
     anchor(parent, directory);
     if (readdirSync(`/proc/self/fd/${parent}`).length) fail();
     const operation = preflightTraceOperation({ ...options, sbx: sbxPath });
-    const request = { schema: "dev-sbx-preflight-trace-intent-v1", scope: "INDEPENDENT_PREFLIGHT_DIAGNOSTIC",
+    const request = { schema: "dev-sbx-preflight-trace-intent-v2", scope: "INDEPENDENT_PREFLIGHT_DIAGNOSTIC",
       target: options.name, sbxPath, traceDirectory: directory, sourceBindings: bindings, profileSha256: PROFILE_SHA,
-      operation, ...AUTHORITY };
-    const prompt = `TRACE_PREFLIGHT_ONLY\nCONTROLLER=${sbxPath}\nNAME=${options.name}\nTRACE_DIRECTORY=${directory}\nSOURCES=${JSON.stringify(bindings)}\nOPERATION=${JSON.stringify(operation)}\nExactly one fixed sbx exec; guest 15s +1s kill escalation; host 25s/16KiB combined plus bounded reaping. Allocate private 0600 intent.json/stdout.bin/stderr.bin/report.json in this fresh 0700 directory. Retain raw bytes, including possible private provider output; never print or publish the raw bodies. No preparation-state access, policy read, installation, downloads, retry, rearm or removal. Exec may start a stopped VM; controller termination does not prove guest termination. Stderr remains rejected; origin UNATTRIBUTED. Bindings are not G1 proof. Gate0 OPEN; f9Qualified=false; trainingReady=false.`;
+      operation, transport: { ...PREFLIGHT_TRANSPORT }, ...AUTHORITY };
+    const prompt = `TRACE_PREFLIGHT_ONLY\nCONTROLLER=${sbxPath}\nNAME=${options.name}\nTRACE_DIRECTORY=${directory}\nSOURCES=${JSON.stringify(bindings)}\nOPERATION=${JSON.stringify(operation)}\nTRANSPORT=${JSON.stringify(PREFLIGHT_TRANSPORT)}\nExactly one fixed sbx exec; guest 15s +1s kill escalation; host 25s/16KiB combined plus bounded reaping. Allocate private 0600 intent.json/stdout.bin/stderr.bin/report.json in this fresh 0700 directory. Retain raw bytes, including possible private provider output; never print or publish the raw bodies. Guest stderr after redirection joins strict protocol stdout; unexpected guest output is rejected. Outer stderr is retained diagnostic data, not an automatic failure or authenticated controller channel. No preparation-state access, policy read, installation, downloads, retry, rearm or removal. Exec may start a stopped VM; controller termination does not prove guest termination. Origin UNATTRIBUTED. Bindings are not G1 proof. Gate0 OPEN; f9Qualified=false; trainingReady=false.`;
     (dependencies.announce ?? ((value) => process.stderr.write(`${value}\n`)))(`TRACE_DIRECTORY=${directory}`);
     phase = "APPROVAL";
     if (await (dependencies.confirm ?? confirmTTY)({ stage: "trace-preflight", state: structuredClone(request), prompt }) !== true) {
@@ -469,37 +518,20 @@ export async function runPreflightTrace(options, dependencies = {}) {
     if ((dependencies.resolveController ?? resolveController)(options.sbx) !== sbxPath) failCheck("CONTROLLER_BINDINGS", "BINDING_INVALID");
     phase = "INTENT_WRITE";
     record(parent, "intent.json", request);
-    for (const filename of ["stdout.bin", "stderr.bin"]) captures.push({ filename, fd: traceFile(parent, filename) });
     phase = "EFFECT";
-    const result = await (dependencies.execute ?? runBounded)(operation.argv, {
-      milliseconds: operation.milliseconds, cap: operation.cap, encoding: "buffer",
-    });
-    const execution = checkedTraceResult(result);
+    const { result, execution, streams } = await capturePreflight(operation, parent, directory, "", dependencies.execute ?? runBounded);
     phase = "FINALIZATION";
     anchor(parent, directory);
-    const streams = {};
-    for (const [index, key] of ["stdout", "stderr"].entries()) {
-      const { filename, fd } = captures[index], bytes = result[key];
-      details(fd, 0, 0o600);
-      writeAll(fd, bytes); fsyncSync(fd);
-      const stored = details(fd, TRACE_CAP, 0o600);
-      if (stored.size !== BigInt(bytes.length) || !same(stored, lstatSync(`/proc/self/fd/${parent}/${filename}`, { bigint: true }))) fail();
-      streams[key] = { path: join(directory, filename), retainedBytes: bytes.length, sha256: hash(bytes) };
-    }
-    fsyncSync(parent);
     if (JSON.stringify(traceSourceBindings(dependencies)) !== JSON.stringify(bindings)) failCheck("SOURCE_BINDINGS", "BINDING_INVALID");
-    const summary = { schema: "dev-sbx-preflight-trace-v1", scope: "INDEPENDENT_PREFLIGHT_DIAGNOSTIC",
+    const summary = { schema: "dev-sbx-preflight-trace-v2", scope: "INDEPENDENT_PREFLIGHT_DIAGNOSTIC",
       origin: "UNATTRIBUTED", traceComplete: true, traceDirectory: directory, target: options.name,
-      profileSha256: PROFILE_SHA, sourceBindings: bindings, execution, streams,
+      transport: { ...PREFLIGHT_TRANSPORT }, profileSha256: PROFILE_SHA, sourceBindings: bindings, execution, streams,
       ...traceObservations(result), result: "STOP", ...AUTHORITY };
     record(parent, "report.json", summary);
     anchor(parent, directory);
     return summary;
   } catch (error) { throw failureAt(error, "CLI", phase); }
-  finally {
-    for (const { fd } of captures) closeSync(fd);
-    if (parent !== undefined) closeSync(parent);
-  }
+  finally { if (parent !== undefined) closeSync(parent); }
 }
 
 function jsonData(value, depth = 0) {
@@ -575,6 +607,7 @@ function readFrom(parent, statePath) {
   if (!raw) fail();
   const master = masterChecked(JSON.parse(raw.toString("utf8"))), masterSha256 = hash(raw);
   const allowed = new Set(["attempt.json", "policy.txt", "bun-bootstrap", "snapshots", "receipt.json",
+    ...PREFLIGHT_CAPTURE_FILES,
     ...completeProfile.artifacts.map(artifactFileName), ...STAGES.flatMap((stage) => [eventName(stage, "intent"), eventName(stage, "complete")])]);
   if (readdirSync(`/proc/self/fd/${parent}`).some((filename) => !allowed.has(filename))) fail();
   const events = [];
@@ -642,7 +675,7 @@ function acknowledgement(parent, state) {
 
 const OPERATIONS = {
   policy: "One sbx policy ls --wide NAME; 10s/64KiB. Retain private policy.txt without printing provider output.",
-  preflight: "One sbx exec; guest timeout --kill-after=1s 15s; host 25s/16KiB. Fixed metadata only: uname -s/-m, getconf GNU_LIBC_VERSION (glibc>=2.18 for known Mise startup only), base9 command -v, writable workspace, executable /usr/bin/tar and /usr/bin/xz, GNU tar --version marker, df -Pk /home/agent/workspace. Require reported free>=24GiB; not quota or full runtime compatibility proof.",
+  preflight: "One sbx exec; guest timeout --kill-after=1s 15s; host 25s/16KiB. A fixed outer shell redirects guest stderr into strict protocol stdout BEFORE its transport marker and timeout. Outer stderr is retained UNATTRIBUTED diagnostic data, not an automatic failure or authenticated controller channel. Preserve both bounded raw pipes in exclusive0600 02-preflight.stdout.bin / 02-preflight.stderr.bin, then 02-preflight.transport.json; no raw terminal output. Fixed metadata only: uname -s/-m, getconf GNU_LIBC_VERSION (glibc>=2.18 for known Mise startup only), base9 command -v, writable workspace, executable /usr/bin/tar and /usr/bin/xz, GNU tar --version marker, df -Pk /home/agent/workspace. Require reported free>=24GiB; unexpected guest output fails the protocol; not quota or full runtime compatibility proof.",
   "accept-policy": "Review retained policy.txt and preflight completion before typing approve. Rehash both before and after acknowledgement. Human promise only, not reusable F9 enforcement proof. No sbx call.",
   reserve: "One sbx exec; guest timeout --kill-after=1s 20s; host 30s/16KiB. Atomically mkdir /home/agent/workspace/.complete-dev-tools-v1 mode0700, bind name/root, create fresh root and inputs mode0700 and reservation records. Refuse existing marker/root. Never remove any marker or root. Guest exec may start a stopped VM.",
   "host-capacity": "One /usr/bin/df -Pk RUN_DIR; 10s/16KiB; require reported free>=10GiB, not physical quota proof.",
@@ -655,7 +688,8 @@ const OPERATIONS = {
 
 function prompt(stage, state) {
   const copies = stage === "copy" ? copyInputs(state, state.events).map((item) => `${join(dirname(state.statePath), "snapshots", item.name)} -> ${state.name}:${state.guestToolRoot}/inputs/${item.name}`).join("\n") : "";
-  return `STAGE=${stage}\nCONTROLLER=${state.sbxPath}\nNAME=${state.name}\nHOST_ROOT=${dirname(state.statePath)}\nGUEST_ROOT=${state.guestToolRoot}\nPROFILE_SHA256=${state.profileSha256}\nMASTER_SHA256=${state.masterSha256}\nSOURCES=${JSON.stringify(state.sourceBindings)}\nPRIOR_BINDINGS=${JSON.stringify(state.events)}\nARTIFACTS=${JSON.stringify(completeProfile.artifacts)}\nSOFTWARE_LIMITS=${JSON.stringify(completeProfile.limits)}\nSOURCE_CAP=${SOURCE_CAP}\n${OPERATIONS[stage]}\n${copies}\nPolicy review: ${join(dirname(state.statePath), "policy.txt")}\nSame-UID private files are mutable; these bindings are not qualified G1 source proof. Gate0 remains OPEN; f9Qualified=false; trainingReady=false.`;
+  const preflight = stage === "preflight" ? `TRANSPORT=${JSON.stringify(PREFLIGHT_TRANSPORT)}\nOPERATION=${JSON.stringify(preflightTraceOperation({ sbx: state.sbxPath, name: state.name }))}\n` : "";
+  return `STAGE=${stage}\nCONTROLLER=${state.sbxPath}\nNAME=${state.name}\nHOST_ROOT=${dirname(state.statePath)}\nGUEST_ROOT=${state.guestToolRoot}\nPROFILE_SHA256=${state.profileSha256}\nMASTER_SHA256=${state.masterSha256}\nSOURCES=${JSON.stringify(state.sourceBindings)}\nPRIOR_BINDINGS=${JSON.stringify(state.events)}\nARTIFACTS=${JSON.stringify(completeProfile.artifacts)}\nSOFTWARE_LIMITS=${JSON.stringify(completeProfile.limits)}\nSOURCE_CAP=${SOURCE_CAP}\n${OPERATIONS[stage]}\n${preflight}${copies}\nPolicy review: ${join(dirname(state.statePath), "policy.txt")}\nSame-UID private files are mutable; these bindings are not qualified G1 source proof. Gate0 remains OPEN; f9Qualified=false; trainingReady=false.`;
 }
 
 async function checked(execute, argv, bounds, quiet = false) {
@@ -879,8 +913,20 @@ async function effect(stage, state, parent, dependencies) {
     exclusive(parent, "policy.txt", Buffer.from(stdout));
     return { policySha256: hash(stdout), bytes: Buffer.byteLength(stdout) };
   }
-  if (stage === "preflight") return parsePreflight(await checked(execute, [state.sbxPath, "exec", state.name,
-    "/usr/bin/timeout", "--kill-after=1s", "15s", "/bin/sh", "-c", PREFLIGHT, "sh"], { milliseconds: 25000, cap: 16384 }, true));
+  if (stage === "preflight") {
+    anchor(parent, directory);
+    if (readdirSync(`/proc/self/fd/${parent}`).some((filename) => PREFLIGHT_CAPTURE_FILES.includes(filename))) {
+      failCheck("STATE_BINDINGS", "BINDING_INVALID");
+    }
+    const operation = preflightTraceOperation({ sbx: state.sbxPath, name: state.name });
+    const { result, execution, streams } = await capturePreflight(operation, parent, directory, "02-preflight.", execute);
+    const observations = traceObservations(result);
+    record(parent, "02-preflight.transport.json", { schema: "dev-sbx-preflight-capture-v1", target: state.name,
+      masterSha256: state.masterSha256, profileSha256: state.profileSha256, transport: { ...PREFLIGHT_TRANSPORT },
+      execution, streams, ...observations, result: "STOP", ...AUTHORITY });
+    if (observations.preflightGuard.failures.length) throw diagnosticFailure(observations.preflightGuard.failures);
+    return parsePreflightTransport(result.stdout);
+  }
   if (stage === "accept-policy") return acknowledgement(parent, state);
   if (stage === "reserve") {
     const stdout = await checked(execute, [state.sbxPath, "exec", state.name, "/usr/bin/timeout", "--kill-after=1s", "20s",
