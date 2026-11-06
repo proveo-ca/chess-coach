@@ -508,15 +508,22 @@ test("combined stdout/stderr cap remains enforced for injected results", async (
 });
 
 test("default confirmation refuses non-TTY before local validation or remote operations", async () => {
-  expect(Boolean(process.stdin.isTTY)).toBe(false);
-  await expect(runStage("validate", { state: statePath, sbx, bundle, sha256: SHA }, { execute })).rejects.toThrow("approval refused");
-  expect(calls).toEqual([]);
-  expect(existsSync(statePath)).toBe(false);
-  await stage("validate");
-  const before = calls.length;
-  await expect(runStage("create", { state: statePath }, { execute })).rejects.toThrow("approval refused");
-  noAdditionalCalls(before);
-  expect(readState(statePath).inFlightStage).toBeNull();
+  const input = Object.getOwnPropertyDescriptor(process.stdin, "isTTY");
+  try {
+    Object.defineProperty(process.stdin, "isTTY", { value: false, configurable: true });
+    await expect(runStage("validate", { state: statePath, sbx, bundle, sha256: SHA }, { execute })).rejects.toThrow("approval refused");
+    expect(calls).toEqual([]);
+    expect(existsSync(statePath)).toBe(false);
+    const initial = await stage("validate");
+    const before = calls.length;
+    await expect(runStage("create", { state: statePath }, { execute })).rejects.toThrow("approval refused");
+    noAdditionalCalls(before);
+    expect(readState(statePath)).toEqual(initial);
+    expect(readState(statePath).inFlightStage).toBeNull();
+  } finally {
+    if (input) Object.defineProperty(process.stdin, "isTTY", input); else delete process.stdin.isTTY;
+  }
+  expect(Object.getOwnPropertyDescriptor(process.stdin, "isTTY")).toEqual(input);
 });
 
 test("terminal input with redirected prompt output cannot authorize a stage", async () => {

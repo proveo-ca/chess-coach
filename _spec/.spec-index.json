@@ -55,6 +55,16 @@
       "fingerprint": null
     },
     {
+      "spec": "_spec/tooling/native-ingress/gate0-checker.puml",
+      "covers": [
+        "tooling/native-ingress/f9-gate0.mjs",
+        "tooling/native-ingress/tests/f9-gate0.test.mjs",
+        "mise.toml",
+        "tooling/native-ingress/F9-DIAGNOSTIC.md"
+      ],
+      "fingerprint": null
+    },
+    {
       "spec": "_spec/packages/starchess-arena/invocation-effect-analysis.puml",
       "covers": [
         "packages/starchess-arena/src/challenge/sourceInventory.ts",

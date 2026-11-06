@@ -1,4 +1,4 @@
-# SPEC: _spec/tooling/native-ingress/f9-diagnostic.puml, _spec/tooling/sbx-dev/preparation-workflow.puml
+# SPEC: _spec/tooling/native-ingress/f9-diagnostic.puml, _spec/tooling/sbx-dev/preparation-workflow.puml, _spec/tooling/native-ingress/gate0-checker.puml
 [settings]
 auto_install = false
 
@@ -15,6 +15,11 @@ run = "bun --no-env-file --no-install tooling/native-ingress/f9-diagnose.mjs"
 description = "Explain one complete saved F9 diagnostic offline; no VM checks, readiness grant or installation"
 raw_args = true
 run = "bun --no-env-file --no-install tooling/native-ingress/f9-explain.mjs"
+
+[tasks."f9:gate0"]
+description = "Check proposed Gate0 records offline; mechanical review readiness only, no acceptance or operations"
+raw_args = true
+run = "bun --no-env-file --no-install tooling/native-ingress/f9-gate0.mjs"
 
 [tasks."f9:verify-sbx"]
 description = "Verify 15 guest tools and run the saved-report explainer in one explicitly approved sbx; no Gate0 grant"

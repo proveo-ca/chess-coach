@@ -1,0 +1,90 @@
+' purpose: Offline Gate0 consistency checks cannot finalize independent acceptance.
+' covers: tooling/native-ingress/f9-gate0.mjs
+' covers: tooling/native-ingress/tests/f9-gate0.test.mjs
+' covers: mise.toml
+' covers: tooling/native-ingress/F9-DIAGNOSTIC.md
+' related: _spec/_plans/native-ingress-gate0-checker.md
+' related: _spec/_plans/native-ingress-rust-first-full-plan-packet.md section 8
+' related: _spec/tooling/native-ingress/f9-diagnostic.puml
+' related: _spec/tooling/sbx-dev/preparation-workflow.puml
+' status: SOURCE_SPEC_IN_SYNC; LEAD_OFFLINE_CHECKS_PASS_587_1498; QUALITY_SECURITY_CODE_READY; OFFLINE_BODY_PROJECTION_VERIFIED; CANONICAL_THEME_NOT_REVALIDATED; PUBLICATION_AUTHORIZED_NOT_EXECUTED.
+' publication: Latest exact commit/push choice covers current engineering delta via existing gh/HTTPS; mandatory targeted reviews and offline body projection are complete. No commit/push outcome or new F9/operational authority asserted.
+' authority: Schema/binding proposal NOT ACCEPTED; no real profile, marker or consent authored.
+' source-sync: Initial whole-checker/suite/Mise/guides/legacy reads followed by complete corrected-checker, all15 new regression cases and updated-guide reads. Source/test/Mise citations and coverage unchanged; no execution or private-artifact read here.
+' verification: Lead reports current587 PASS/0 FAIL/1.83s; full1498 PASS/0 FAIL/9601 Bun expectations/17files/43.52s, via Mise/no-auto-install/120s+2s. Checker node:test assertions are not a Bun-expect count;572/1483 are pre-quality-fix history.
+' quality-correction: Source confirms ATX section boundaries (MEDIUM), rooted record reachability (MEDIUM) and original source-row indices (LOW);15 regressions added. Lead reports quality ses_e510bbf0cffe0YPor9kQ6XyYZj all3 CLOSED/no remaining targeted findings/READY; security ses_e510bbf06ffe2bjA297oS57nbn no new findings/READY targeted development-code only. Static reviews, no execution or independent Gate0 acceptance.
+' final-static: Lead reports language2140 FIRST_PARTY PASS/dependencies allowed and git diff --check exit0 AFTER all3 fixes; source unchanged after matching587/1498 cut, not an independently verified exact-baseline identity.
+' harness-verification: Lead reports147 PASS/0 FAIL/775 expectations/6.42s; actual-TTY stages105 PASS/0 FAIL/505 expectations/463ms after test -t 0 guard. Source confirmation/guards unchanged, no provider proof.
+' preview-verification: Lead reports actual Mise plan exit0/all effects false/36IDs; noargs exit2/PROFILE_REQUIRED; empty SYNTHETIC_ONLY profile plus canonical ledger exit2 with36 missing records/36 missing markers; never a populated inventory or accepted ledger.
+' finalize-verification: Lead reports actual Mise --finalize without profile exit2/PROFILE_REQUIRED + ACCEPTANCE_PROTOCOL_UNAPPROVED; Gate0 OPEN, false F9/training flags.
+' render-scope: Lead checked/rendered all3 isolated copies in /tmp/opencode/gate0-offline-render-us8SSm with SANDBOX URL denial; -checkonly/-tsvg exit0. Copies omit only the remote include; canonical theme NOT_REVALIDATED and canonical include retained.
+' render-correction: Initial projected checker returned Illegal sequence arrow for the bare opt --finalize label; finalization requested (--finalize) preserves meaning and passes. Initial logs remain in /tmp/opencode/gate0-offline-render-QEIL7Z; no runtime source/test changes.
+' render-content: Lead verified both nested Salt approval panels in the preparation SVG and3 authority labels in the checker SVG. Outcome headers alone change after this successful body cut.
+' body-handoff: STABLE_FOR_OFFLINE_BODY_PROJECTION; no further body/title/note edits planned. Later actual render/review receipts change pre-@startuml outcome headers only; no predicted PASS.
+' template: Local template absent; earlier human bootstrap request outstanding; no URL fetched here.
+' note-register: CHECK/INPUT reader FK 12.6 (W26/S51/N2); REPORT authority FK 10.0 (W29/S49/N2).
+' FK method: Hand-counted English words/syllables, formula 0.39*(W/N)+11.8*(S/W)-15.59; no executed check.
+@startuml gate0-checker
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Gate0 checker / proposed binding contract / structural review only / Gate0 OPEN
+actor Executor as OP
+participant "mise.toml\nf9:gate0" as MISE <<host>>
+participant "tooling/native-ingress/f9-gate0.mjs\nmain(argv, {output, read})" as CHECK <<app>>
+database "Two explicit regular input leaves\nprofile + ledger snapshot" as INPUT <<db>>
+participant "checkProfile(Buffer, Buffer, options)\nlocal strict parser + binding checks" as VALIDATE <<app>>
+participant "f9-gate0-report-v1\nnoninteractive JSON output" as REPORT <<app>>
+
+OP -> MISE : task invocation; raw_args=true; no dependencies
+MISE -> CHECK : Bun --no-env-file --no-install
+alt exclusive --plan
+  CHECK --> OP : lexical preview / exit0; no helper reads or effects
+else no arguments
+  CHECK -> REPORT : PROFILE_REQUIRED + frozen required-ID inventory
+  REPORT --> OP : BLOCKED / exit2; safe fixed fields only
+else --profile ABS --ledger ABS [--finalize]
+  CHECK -> CHECK : reject ambiguous/duplicate/unknown arguments
+  CHECK -> INPUT : readGate0Input(): exact leaves only; <=1MiB each
+  INPUT --> CHECK : O_RDONLY | O_NOFOLLOW | O_NONBLOCK; regular descriptor
+  CHECK -> CHECK : initial-size+1 partial reads; stable BigInt metadata; finally attempt close
+  CHECK -> CHECK : fixed close refusal; preserve any earlier read/metadata refusal
+  note over CHECK, INPUT
+    Stable descriptors limit pathname substitution,
+    but ancestor aliases remain explicitly allowed.
+    These checks bind the bytes read by the checker,
+    not protected backing or runtime provenance.
+  end note
+  CHECK -> VALIDATE : checkProfile(profileBytes, ledgerBytes, {finalize})
+  VALIDATE -> VALIDATE : strict UTF-8/JSON; duplicate/forbidden keys and unsafe numbers refuse
+  VALIDATE -> VALIDATE : exact integral decimal/exponent tokens; rounded fractions/underflow refuse
+  VALIDATE -> VALIDATE : required records/links + exact schema; typed references and declared DAGs
+  VALIDATE -> VALIDATE : BFS from required/supporting-row record roots; isolated cycles refuse
+  VALIDATE -> VALIDATE : preserve original zero-based declaration indices for later findings
+  VALIDATE -> VALIDATE : unique producer/output ownership; all declared inputs consumed
+  VALIDATE -> VALIDATE : checked invoice total <=1_048_576; declared physical-role coverage
+  VALIDATE -> VALIDATE : canonical profile excluding decisionBindings; separate raw-byte hashes
+  VALIDATE -> VALIDATE : unfenced ATX level2: 0..3 leading spaces; separator space/tab or empty ##
+  VALIDATE -> VALIDATE : one section8 content prefix; ANY next recognized level2 ends it
+  VALIDATE -> VALIDATE : in-place bounded marker collection within that section only
+  VALIDATE -> VALIDATE : one marker/binding per required record; excerpts exclude heading
+  VALIDATE -> VALIDATE : exact original-byte line excerpts + record/profile/ledger digests
+  VALIDATE -> REPORT : mechanical READY_FOR_REVIEW or BLOCKED BEFORE finalize refusal
+  opt finalization requested (--finalize)
+    VALIDATE -> REPORT : finalization BLOCKED; ACCEPTANCE_PROTOCOL_UNAPPROVED; exit2
+  end
+  note right of REPORT
+    The checker binds exact proposed records to the
+    supplied ledger snapshot, not a trusted decision.
+    Independent review must establish their truth,
+    scope and acceptance before any gate can close.
+  end note
+  REPORT --> OP : scope OFFLINE_STRUCTURAL_CONSISTENCY_ONLY
+  REPORT --> OP : acceptanceProtocol UNAPPROVED; ledgerTrust UNAUTHENTICATED_SNAPSHOT
+  REPORT --> OP : closed bounded blockers + nonempty reviewObligations
+  REPORT --> OP : Gate0 OPEN; f9Qualified=false; trainingReady=false
+  REPORT --> OP : exit0 only for non-finalizing mechanical READY_FOR_REVIEW; otherwise2
+end
+note over CHECK, VALIDATE
+  No refs, sibling scans, subprocesses or network
+  No writes, approvals, runtime claims or dispatch
+end note
+@enduml

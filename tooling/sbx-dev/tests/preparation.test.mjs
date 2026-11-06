@@ -10,7 +10,191 @@ import { readState, snapshotPaths } from "../stages.mjs";
 const here = new URL("../", import.meta.url).pathname;
 const order = ["validate", "create-stage", "policy", "accept-policy", "provision", "install", "diagnose"].map((stage) => `dev:sbx:${stage}`);
 const tools = ["tar", "sha256sum", "timeout", "gpgv", "patch", "make", "clang", "ld.bfd", "readelf", "node", "rustc", "cargo", "zig"];
+const originalPath = process.env.PATH ?? "";
+const originalScript = locatePtyBackend(originalPath);
+const PTY_TIMEOUT_MS = 5000, PTY_REAP_MS = 2000, PTY_OUTPUT_CAP = 65536;
+const retainedFixtures = new Map();
 let root, bin, mise, sbx, options, env, previousEnv, messages;
+
+function locatePtyBackend(path) {
+  const backend = Bun.which("script", { PATH: path });
+  return typeof backend === "string" && backend.startsWith("/") ? backend : null;
+}
+
+function cleanupFixture(fixtureRoot, { retained = retainedFixtures, remove = rmSync, announce = console.error } = {}) {
+  if (retained.has(fixtureRoot)) {
+    announce(`PTY_FIXTURE_RETAINED ${JSON.stringify({ root: fixtureRoot, ...retained.get(fixtureRoot) })}`);
+    return false;
+  }
+  remove(fixtureRoot, { recursive: true, force: true });
+  return true;
+}
+
+async function runPty(command, answer, {
+  backend = originalScript, environment = env, fixtureRoot = root, spawnChild = spawn,
+  signalGroup = (pid, signal) => process.kill(pid, signal), schedule = setTimeout, cancel = clearTimeout,
+  preserveFixture = (metadata) => retainedFixtures.set(fixtureRoot, metadata),
+} = {}) {
+  if (typeof backend !== "string" || !backend.startsWith("/")) {
+    throw new Error("PTY_PREREQUISITE_MISSING: existing util-linux-compatible script required; actual PTY test not run");
+  }
+  return new Promise((resolve, reject) => {
+    const output = { stdout: [], stderr: [] };
+    let child, ownedPid = null, spawned = false, closed = false, launchFailed = false, settled = false;
+    let failure = null, timeout, reap, signalled = false, signalError = null, replied = false;
+    let bytes = 0, observedBytes = 0, code = null, signal = null;
+    const text = (name) => {
+      const prefix = Buffer.concat(output[name]);
+      const encoded = Buffer.from(prefix.toString("utf8"));
+      return new TextDecoder("utf-8", { ignoreBOM: true }).decode(encoded.subarray(0, prefix.length), { stream: true });
+    };
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      if (timeout !== undefined) cancel(timeout);
+      if (reap !== undefined) cancel(reap);
+      const metadata = {
+        root: fixtureRoot, backend, ownedPid, spawned, closeObserved: closed,
+        cleanupCertain: launchFailed || (closed && !signalled), descendants: "NOT_VERIFIED",
+        signalled, signalError, code, signal, bytes, observedBytes, replied,
+        stdout: text("stdout"), stderr: text("stderr"),
+      };
+      if (failure) {
+        failure.pty = metadata;
+        if (!metadata.cleanupCertain) preserveFixture(metadata);
+        reject(failure);
+      } else resolve(metadata);
+    };
+    const stopLauncher = () => {
+      if (ownedPid === null || signalled || closed) return;
+      signalled = true;
+      try { signalGroup(-ownedPid, "SIGKILL"); }
+      catch (error) { signalError = error.code ?? "SIGNAL_FAILED"; }
+    };
+    const fail = (error) => {
+      if (settled || failure) return;
+      failure = error;
+      if (timeout !== undefined) cancel(timeout);
+      if (closed || launchFailed) { finish(); return; }
+      reap = schedule(() => {
+        child?.stdin?.destroy();
+        child?.stdout?.destroy();
+        child?.stderr?.destroy();
+        child?.unref?.();
+        finish();
+      }, PTY_REAP_MS);
+      stopLauncher();
+    };
+    const collect = (name, chunk) => {
+      if (settled || failure) return;
+      const data = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+      const prefix = data.subarray(0, PTY_OUTPUT_CAP - bytes);
+      if (prefix.length) { output[name].push(Buffer.from(prefix)); bytes += prefix.length; }
+      observedBytes += data.length;
+      if (observedBytes > PTY_OUTPUT_CAP) {
+        fail(new Error("PTY_OUTPUT_LIMIT: combined stdout/stderr exceeded 65536 bytes"));
+        return;
+      }
+      if (name === "stdout" && !replied && text("stdout").includes("Type approve")) {
+        replied = true;
+        try {
+          child.stdin.write(`${answer}\n`, (error) => {
+            if (error) fail(new Error("PTY_STDIN_WRITE_FAILED", { cause: error }));
+          });
+        } catch (error) { fail(new Error("PTY_STDIN_WRITE_FAILED", { cause: error })); }
+      }
+    };
+    try {
+      child = spawnChild(backend, ["-q", "-e", "-c", command, "/dev/null"], {
+        env: { ...environment, SHELL: "/bin/sh" }, detached: true, stdio: ["pipe", "pipe", "pipe"],
+      });
+    } catch (error) {
+      launchFailed = true;
+      fail(error);
+      return;
+    }
+    child.once("spawn", () => {
+      if (settled) return;
+      spawned = true;
+      if (!Number.isSafeInteger(child.pid) || child.pid <= 1 || child.pid > 2147483647) {
+        fail(new Error("PTY_LAUNCH_PID_INVALID: no owned positive launcher PID"));
+        return;
+      }
+      ownedPid = child.pid;
+      if (failure) stopLauncher();
+    });
+    child.on("error", (error) => {
+      if (!spawned) launchFailed = true;
+      fail(error);
+    });
+    child.once("close", (exitCode, exitSignal) => {
+      closed = true;
+      code = exitCode;
+      signal = exitSignal;
+      if (!failure && !replied) {
+        fail(new Error("PTY_BACKEND_UNSUPPORTED: -q -e -c did not deliver the stage approval prompt"));
+      } else finish();
+    });
+    child.stdin.on("error", (error) => fail(new Error("PTY_STDIN_WRITE_FAILED", { cause: error })));
+    for (const name of ["stdout", "stderr"]) {
+      child[name].on("data", (chunk) => collect(name, chunk));
+      child[name].on("error", fail);
+    }
+    timeout = schedule(() => fail(new Error("PTY_TIMEOUT: pseudo-terminal exceeded 5000ms")), PTY_TIMEOUT_MS);
+  });
+}
+
+function fakePty() {
+  const events = (fields = {}) => {
+    const listeners = new Map();
+    return {
+      ...fields,
+      on(name, listener) {
+        const entries = listeners.get(name) ?? [];
+        entries.push({ listener, once: false }); listeners.set(name, entries);
+        return this;
+      },
+      once(name, listener) {
+        this.on(name, listener); listeners.get(name).at(-1).once = true;
+        return this;
+      },
+      emit(name, ...args) {
+        const entries = listeners.get(name) ?? [];
+        for (const entry of [...entries]) {
+          if (entry.once) entries.splice(entries.indexOf(entry), 1);
+          entry.listener(...args);
+        }
+      },
+      destroy() { this.destroyed = true; },
+    };
+  };
+  const writes = [], signals = [], launches = [], retained = [], scheduled = [], timers = new Map();
+  const child = events({ pid: 4321, unref() { this.unreferenced = true; } });
+  child.stdout = events(); child.stderr = events();
+  child.stdin = events({ write(value, callback) { writes.push(value); callback?.(); return true; } });
+  return {
+    child, writes, signals, launches, retained, scheduled, timers,
+    run(extra = {}) {
+      return runPty("fixture command", "approve", {
+        backend: "/fixture/script", environment: env,
+        spawnChild: (...args) => { launches.push(args); return child; },
+        signalGroup: (...args) => signals.push(args),
+        schedule: (callback, milliseconds) => {
+          const timer = { callback, milliseconds }; timers.set(timer, timer); scheduled.push(milliseconds);
+          return timer;
+        },
+        cancel: (timer) => timers.delete(timer),
+        preserveFixture: (metadata) => retained.push(metadata),
+        ...extra,
+      });
+    },
+    fire(milliseconds) {
+      const timer = [...timers.values()].find((entry) => entry.milliseconds === milliseconds);
+      if (!timer) throw new Error(`missing fixture timer: ${milliseconds}`);
+      timers.delete(timer); timer.callback();
+    },
+  };
+}
 
 function wrapper(path, code) {
   const module = path + ".mjs";
@@ -83,7 +267,7 @@ else if(args[0]==='exec') {
 });
 afterEach(() => {
   for (const [key, value] of Object.entries(previousEnv)) { if (value === undefined) delete process.env[key]; else process.env[key] = value; }
-  rmSync(root, { recursive: true, force: true });
+  cleanupFixture(root);
 });
 
 function compose(extra = {}, input = options) {
@@ -250,20 +434,230 @@ test("mise tasks use distinct children, raw terminal access and explicit Bun iso
   expect(config.settings.auto_install).toBe(false);
 });
 
+test("PTY backend resolution captures an existing nonstandard PATH before fixture changes", async () => {
+  const hostBin = join(root, "original-host-bin"); mkdirSync(hostBin);
+  const backend = join(hostBin, "script");
+  writeFileSync(backend, "#!/bin/sh\nexit 2\n", { mode: 0o700 });
+  const captured = locatePtyBackend(hostBin);
+  expect(captured).toBe(backend);
+  process.env.PATH = bin;
+  const fixture = fakePty(), pending = fixture.run({ backend: captured });
+  fixture.child.emit("spawn");
+  fixture.child.stdout.emit("data", Buffer.from("Type approve"));
+  fixture.child.emit("close", 0, null);
+  expect((await pending).backend).toBe(backend);
+  expect(fixture.launches[0][0]).toBe(backend);
+  expect(fixture.launches[0][1]).toEqual(["-q", "-e", "-c", "fixture command", "/dev/null"]);
+  expect(fixture.launches[0][2].detached).toBe(true);
+  expect(fixture.signals).toEqual([]);
+});
+
+test("missing PTY prerequisite fails explicitly without spawning or signalling", async () => {
+  const fixture = fakePty();
+  const backend = locatePtyBackend(join(root, "missing-host-bin"));
+  expect(backend).toBeNull();
+  await expect(fixture.run({ backend })).rejects.toThrow("PTY_PREREQUISITE_MISSING: existing util-linux-compatible script required; actual PTY test not run");
+  expect(fixture.launches).toEqual([]);
+  expect(fixture.signals).toEqual([]);
+  expect(fixture.timers.size).toBe(0);
+});
+
+test("unsupported PTY backend fails explicitly with bounded stderr and no reply or signal", async () => {
+  const fixture = fakePty(), pending = fixture.run().catch((error) => error);
+  fixture.child.emit("spawn");
+  fixture.child.stderr.emit("data", Buffer.from("script: unsupported option -e\n"));
+  fixture.child.emit("close", 1, null);
+  const error = await pending;
+  expect(error.message).toContain("PTY_BACKEND_UNSUPPORTED: -q -e -c");
+  expect(error.pty.stderr).toBe("script: unsupported option -e\n");
+  expect(error.pty.closeObserved).toBe(true);
+  expect(fixture.writes).toEqual([]);
+  expect(fixture.signals).toEqual([]);
+  expect(fixture.retained).toEqual([]);
+  expect(fixture.timers.size).toBe(0);
+});
+
+test.each([undefined, 0, 1, -1, NaN, 1.5])("PTY launcher refuses invalid owned PID %s without signalling", async (pid) => {
+  const fixture = fakePty(); fixture.child.pid = pid;
+  const pending = fixture.run().catch((error) => error);
+  fixture.child.emit("spawn");
+  fixture.child.emit("close", 1, null);
+  const error = await pending;
+  expect(error.message).toContain("PTY_LAUNCH_PID_INVALID");
+  expect(error.pty.ownedPid).toBeNull();
+  expect(fixture.signals).toEqual([]);
+  expect(fixture.timers.size).toBe(0);
+});
+
+test("PTY spawn failure preserves its reason and never owns a pre-spawn PID", async () => {
+  const fixture = fakePty(), failure = new Error("fixture spawn failure");
+  const pending = fixture.run().catch((error) => error);
+  fixture.child.emit("error", failure);
+  fixture.child.emit("error", new Error("later fixture error"));
+  const error = await pending;
+  expect(error).toBe(failure);
+  expect(error.pty.ownedPid).toBeNull();
+  expect(error.pty.cleanupCertain).toBe(true);
+  expect(fixture.signals).toEqual([]);
+  expect(fixture.retained).toEqual([]);
+  expect(fixture.timers.size).toBe(0);
+});
+
+test("PTY prompt split across chunks receives exactly one reply", async () => {
+  const fixture = fakePty(), pending = fixture.run();
+  fixture.child.emit("spawn");
+  fixture.child.stdout.emit("data", Buffer.from("Type app"));
+  expect(fixture.writes).toEqual([]);
+  fixture.child.stdout.emit("data", Buffer.from("rove to authorize: "));
+  fixture.child.stdout.emit("data", Buffer.from("Type approve again"));
+  fixture.child.stderr.emit("data", Buffer.from("stderr prefix"));
+  fixture.child.emit("close", 0, null);
+  const result = await pending;
+  expect(fixture.writes).toEqual(["approve\n"]);
+  expect(result.stdout).toBe("Type approve to authorize: Type approve again");
+  expect(result.stderr).toBe("stderr prefix");
+  expect(result.bytes).toBe(Buffer.byteLength(result.stdout) + Buffer.byteLength(result.stderr));
+  expect(fixture.timers.size).toBe(0);
+});
+
+test("PTY timeout signals only its owned launcher group and preserves the first failure through close", async () => {
+  const fixture = fakePty(), pending = fixture.run().catch((error) => error);
+  fixture.child.emit("spawn");
+  fixture.fire(PTY_TIMEOUT_MS);
+  fixture.child.emit("error", new Error("later child failure"));
+  fixture.child.stdin.emit("error", new Error("later stdin failure"));
+  expect(fixture.signals).toEqual([[-4321, "SIGKILL"]]);
+  expect(fixture.scheduled).toEqual([5000, 2000]);
+  fixture.child.emit("close", null, "SIGKILL");
+  const error = await pending;
+  expect(error.message).toBe("PTY_TIMEOUT: pseudo-terminal exceeded 5000ms");
+  expect(error.pty.closeObserved).toBe(true);
+  expect(error.pty.cleanupCertain).toBe(false);
+  expect(error.pty.descendants).toBe("NOT_VERIFIED");
+  expect(fixture.retained).toEqual([error.pty]);
+  expect(fixture.timers.size).toBe(0);
+});
+
+test("PTY signal failure cannot replace the timeout reason or imply cleanup certainty", async () => {
+  const fixture = fakePty();
+  const pending = fixture.run({ signalGroup: (...args) => {
+    fixture.signals.push(args);
+    throw Object.assign(new Error("fixture signal failure"), { code: "ESRCH" });
+  } }).catch((error) => error);
+  fixture.child.emit("spawn");
+  fixture.fire(PTY_TIMEOUT_MS);
+  fixture.child.emit("close", null, "SIGKILL");
+  const error = await pending;
+  expect(error.message).toBe("PTY_TIMEOUT: pseudo-terminal exceeded 5000ms");
+  expect(error.pty.signalError).toBe("ESRCH");
+  expect(error.pty.cleanupCertain).toBe(false);
+  expect(fixture.signals).toEqual([[-4321, "SIGKILL"]]);
+  expect(fixture.retained).toEqual([error.pty]);
+  expect(fixture.timers.size).toBe(0);
+});
+
+test("PTY missing close settles once after bounded reap and retains the known fixture root", async () => {
+  const fixture = fakePty(); let settlements = 0;
+  const pending = fixture.run().then(() => { settlements++; return null; }, (error) => { settlements++; return error; });
+  fixture.child.emit("spawn");
+  fixture.fire(PTY_TIMEOUT_MS);
+  await Promise.resolve();
+  expect(settlements).toBe(0);
+  fixture.fire(PTY_REAP_MS);
+  const error = await pending;
+  expect(error.message).toContain("PTY_TIMEOUT");
+  expect(error.pty.closeObserved).toBe(false);
+  expect(error.pty.root).toBe(root);
+  expect(fixture.child.stdin.destroyed).toBe(true);
+  expect(fixture.child.stdout.destroyed).toBe(true);
+  expect(fixture.child.stderr.destroyed).toBe(true);
+  expect(fixture.child.unreferenced).toBe(true);
+  fixture.child.emit("close", null, "SIGKILL");
+  fixture.child.emit("error", new Error("late child error"));
+  expect(settlements).toBe(1);
+  expect(fixture.signals).toEqual([[-4321, "SIGKILL"]]);
+  expect(fixture.retained).toEqual([error.pty]);
+  expect(fixture.timers.size).toBe(0);
+});
+
+test("PTY combined output cap counts multibyte stdout and stderr in bytes", async () => {
+  const fixture = fakePty(), pending = fixture.run().catch((error) => error);
+  fixture.child.emit("spawn");
+  fixture.child.stdout.emit("data", Buffer.from("é".repeat(16384)));
+  fixture.child.stderr.emit("data", Buffer.from("é".repeat(20000)));
+  fixture.child.stdout.emit("data", Buffer.alloc(PTY_OUTPUT_CAP));
+  fixture.child.emit("close", null, "SIGKILL");
+  const error = await pending;
+  expect(error.message).toContain("PTY_OUTPUT_LIMIT");
+  expect(error.pty.bytes).toBe(65536);
+  expect(error.pty.observedBytes).toBe(72768);
+  expect(Buffer.byteLength(error.pty.stdout) + Buffer.byteLength(error.pty.stderr)).toBe(65536);
+  expect(error.pty.stdout).toBe("é".repeat(16384));
+  expect(error.pty.stderr).toBe("é".repeat(16384));
+  expect(fixture.signals).toEqual([[-4321, "SIGKILL"]]);
+  expect(fixture.retained).toHaveLength(1);
+  expect(fixture.timers.size).toBe(0);
+});
+
+test("PTY malformed UTF-8 diagnostics cannot expand beyond the retained byte cap", async () => {
+  const fixture = fakePty(), pending = fixture.run().catch((error) => error);
+  fixture.child.emit("spawn");
+  fixture.child.stderr.emit("data", Buffer.alloc(PTY_OUTPUT_CAP + 1, 0xff));
+  fixture.child.emit("close", null, "SIGKILL");
+  const error = await pending;
+  expect(error.message).toContain("PTY_OUTPUT_LIMIT");
+  expect(error.pty.bytes).toBe(65536);
+  expect(error.pty.observedBytes).toBe(65537);
+  expect(Buffer.byteLength(error.pty.stdout) + Buffer.byteLength(error.pty.stderr)).toBeLessThanOrEqual(65536);
+  expect(fixture.signals).toEqual([[-4321, "SIGKILL"]]);
+  expect(fixture.timers.size).toBe(0);
+});
+
+test.each(["throw", "callback", "event"])("PTY stdin %s failure stops the launcher and preserves the write cause", async (mode) => {
+  const fixture = fakePty(), cause = new Error("fixture stdin failure");
+  if (mode !== "event") fixture.child.stdin.write = (value, callback) => {
+    fixture.writes.push(value);
+    if (mode === "throw") throw cause;
+    callback(cause); return false;
+  };
+  const pending = fixture.run().catch((error) => error);
+  fixture.child.emit("spawn");
+  fixture.child.stdout.emit("data", Buffer.from("Type approve"));
+  if (mode === "event") fixture.child.stdin.emit("error", cause);
+  fixture.child.stdout.emit("data", Buffer.from("Type approve again"));
+  fixture.child.emit("close", null, "SIGKILL");
+  const error = await pending;
+  expect(error.message).toBe("PTY_STDIN_WRITE_FAILED");
+  expect(error.cause).toBe(cause);
+  expect(fixture.writes).toEqual(["approve\n"]);
+  expect(fixture.signals).toEqual([[-4321, "SIGKILL"]]);
+  expect(fixture.retained).toHaveLength(1);
+  expect(fixture.timers.size).toBe(0);
+});
+
+test("PTY cleanup uncertainty preserves its fixture and announces known root metadata", () => {
+  const retained = new Map([[root, { ownedPid: 4321, closeObserved: false, descendants: "NOT_VERIFIED" }]]);
+  const removals = [], announcements = [];
+  const cleanup = { retained, remove: (...args) => removals.push(args), announce: (text) => announcements.push(text) };
+  expect(cleanupFixture(root, cleanup)).toBe(false);
+  expect(removals).toEqual([]);
+  expect(existsSync(root)).toBe(true);
+  expect(JSON.parse(announcements[0].slice("PTY_FIXTURE_RETAINED ".length))).toEqual({
+    root, ownedPid: 4321, closeObserved: false, descendants: "NOT_VERIFIED",
+  });
+  retained.delete(root);
+  expect(cleanupFixture(root, cleanup)).toBe(true);
+  expect(removals).toEqual([[root, { recursive: true, force: true }]]);
+});
+
 test.each(["approve", "decline"])("actual pseudo-terminal %s exercises the stage approval boundary", async (answer) => {
   const stateDir = join(root, "tty"); mkdirSync(stateDir, { mode: 0o700 });
   const state = join(stateDir, "state.json");
-  const command = [process.execPath, "--no-env-file", "--no-install", join(here, "stages.mjs"), "validate", "--state", state, "--sbx", sbx, "--bundle", options.bundle, "--sha256", options.sha256].map((argument) => `'${argument}'`).join(" ");
-  const result = await new Promise((resolve, reject) => {
-    const child = spawn("/usr/bin/script", ["-q", "-e", "-c", command, "/dev/null"], { env: { ...env, SHELL: "/bin/sh" }, detached: true, stdio: ["pipe", "pipe", "pipe"] });
-    let stdout = "", replied = false;
-    const timer = setTimeout(() => { process.kill(-child.pid, "SIGKILL"); reject(new Error("pseudo-terminal test timeout")); }, 5000);
-    child.stdout.on("data", (chunk) => { stdout += chunk; if (!replied && stdout.includes("Type approve")) { replied = true; child.stdin.write(answer + "\n"); } });
-    child.stderr.on("data", () => {});
-    child.once("error", (error) => { clearTimeout(timer); reject(error); });
-    child.once("close", (code) => { clearTimeout(timer); resolve({ code, stdout }); });
-  });
+  const command = [process.execPath, "--no-env-file", "--no-install", join(here, "stages.mjs"), "validate", "--state", state, "--sbx", sbx, "--bundle", options.bundle, "--sha256", options.sha256].map((argument) => `'${argument.replaceAll("'", "'\\''")}'`).join(" ");
+  const result = await runPty(command, answer);
   expect(result.code).toBe(answer === "approve" ? 0 : 2);
+  expect(result.replied).toBe(true);
+  expect(result.closeObserved).toBe(true);
   expect(existsSync(state)).toBe(answer === "approve");
   expect(calls("sbx-calls")).toEqual([]);
-});
+}, 10000);

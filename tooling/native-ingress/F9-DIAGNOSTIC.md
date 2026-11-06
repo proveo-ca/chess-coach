@@ -1,4 +1,34 @@
-# Live sandbox reconnaissance and full F9 blocker report
+# F9 offline design checks and sandbox reconnaissance
+
+## Check proposed Gate0 records offline
+
+`f9:gate0` checks the proposed structural contract in [the checker plan](../../_spec/_plans/native-ingress-gate0-checker.md). It does not launch a sandbox, invoke another program, inspect installed inputs, follow references, modify the canonical ledger or obtain acceptance. These guarantees cover the helper, not outer mise/Bun startup or runtime-cache effects.
+
+Start with the read-free plan:
+
+```sh
+MISE_AUTO_INSTALL=false mise run f9:gate0 --plan
+```
+
+Check two explicit input snapshots after preparing a proposed profile:
+
+```sh
+MISE_AUTO_INSTALL=false mise run f9:gate0 --profile /absolute/path/to/proposed-profile.json --ledger /absolute/path/to/native-ingress-rust-first-full-plan-packet.md
+```
+
+The proposed profile describes the file/API plan, independent input declarations, selected build units and producers, trust/origin records, invoice, declared resource peaks and section-8 consistency bindings. The checker validates closed schemas, references, build-unit/producer cycles, planned-output ownership, stage-specific identity declarations, checked inclusive invoice arithmetic and exact original-byte binding ranges. References remain data; no referenced file or URL is opened. Each explicit input is at most 1 MiB, with a 2 MiB combined software cap and bounded parsing. These are development limits, not accepted F9 physical bounds or protected-backing proof.
+
+- `mechanical:"READY_FOR_REVIEW"` with exit `0` means the listed mechanical checks passed, not that the descriptions are true, exhaustive or accepted.
+- Missing records, invalid bindings or inconsistent graphs produce `mechanical:"BLOCKED"`, fixed-code findings, required record IDs or row indices, and canned next-artifact instructions; exit `2`. No arguments report `PROFILE_REQUIRED` without reading files.
+- The supplied ledger remains `ledgerTrust:"UNAUTHENTICATED_SNAPSHOT"`. A matching marker, excerpt or digest does not authenticate an independent human decision. Canonical §8 remains the sole acceptance ledger.
+- `--finalize` always returns exit `2` with `ACCEPTANCE_PROTOCOL_UNAPPROVED`. A trusted finalizer cannot be implemented or enabled from a caller's `accepted:true`, matching hashes or an approval-looking string.
+- Every report keeps `gate0:"OPEN"`, `f9Qualified:false` and `trainingReady:false`, with outstanding human-review obligations. The real unit inventory and current acceptance records are not fabricated from test fixtures or historical research.
+
+`profileSha256` hashes canonical, recursively key-sorted profile JSON with `decisionBindings` excluded. `profileBytesSha256` hashes the exact profile bytes; `ledgerSha256` hashes the exact ledger bytes. Binding excerpts retain their original line endings. The proposed section-8 markers do not exist by inference and are never auto-inserted. Synthetic positive profiles exercise checker behavior only.
+
+Current offline verification passed through mise with automatic installation disabled: **587 checker tests**, **147 terminal-harness tests**, and **1,498 full tooling tests across 17 files**, all with zero failures. The stages suite also passed **105 tests under a real local PTY**. The language-policy scan passed over **2,140 first-party files**. Each command used a 120-second deadline with a 2-second kill allowance. These are development-software checks, not Gate0 acceptance or live F9/R4 proof. The earlier transport-only 212/891 results remain historical. The supplied host's 888-pass/3-fail run exposed an ambient-TTY assumption and an unavailable hardcoded PTY utility; this local verification does not establish the host's current PTY capability.
+
+## Live development reconnaissance
 
 `f9:diagnose` is a Bun convenience task. It connects to one explicitly named sandbox and reports the F9 requirement ledger. It is **not** a qualified F9 launcher or an implementation of the missing authority verifiers. It always prints `result: "STOP"`, keeps `trainingReady: false`, and exits 2, even when `diagnosticComplete: true`.
 

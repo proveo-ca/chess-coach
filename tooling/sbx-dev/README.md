@@ -51,7 +51,7 @@ Successful development verification returns `DEV_TOOLS_READY`, `developmentTools
 
 `guestToolContext()` scopes PATH, HOME, mise directories, disabled automatic mise installation and Zig caches to one command. It does not edit `.profile`, mutate the global guest PATH, trust mise configuration or confine every startup/configuration effect. The task preserves the full original distributions; it does not copy arbitrary host libraries or manufacture tool wrappers.
 
-This workflow does **not** stage a checkout, the explainer's import closure or a saved diagnostic report. Those remain separately approved prerequisites for [`f9:verify-sbx --tool-root`](../native-ingress/F9-DIAGNOSTIC.md#optional-complete-tool-context). It does not implement `f9:gate0`, accept any Gate0 record or grant training permission.
+This workflow does **not** stage a checkout, the explainer's import closure or a saved diagnostic report. Those remain separately approved prerequisites for [`f9:verify-sbx --tool-root`](../native-ingress/F9-DIAGNOSTIC.md#optional-complete-tool-context). It does not run the separate [offline Gate0 checker](../native-ingress/F9-DIAGNOSTIC.md#check-proposed-gate0-records-offline), accept any Gate0 record or grant training permission.
 
 ### Failure diagnostics for future attempts
 
@@ -104,6 +104,12 @@ Exit `0` with `traceComplete:true` means the private capture/report was persiste
 Current-realm metadata establishes only local tool resolution. It does not bind the named guest or establish cold-run equivalence, pinned versions, ABI closure, quotas or readiness. The agent realm exposes mise/Bun but no `/usr/bin/sbx`; local mise task previews and fake-provider tests do not execute the host provisioning path. No package installation or mise self-update follows from a missing tool or update warning.
 
 A separate direct current-realm-only preflight captured private files in `/tmp/opencode/current-realm-preflight-Xeb86L`, without an sbx controller. It exited `0` with 436 stdout bytes and 0 stderr bytes; its validated protocol reported missing `patch`, `ld.bfd`, `readelf` on the checked PATH and insufficient reported free space for the 24 GiB floor. The directory is `0700` and its four files are `0600`. This local observation did not reproduce or diagnose the named host's `UNEXPECTED_STDERR`; the failed preparation attempt remains unchanged.
+
+## Test-run terminal prerequisites
+
+The tooling suite runs without manual `approve` responses. Non-TTY refusal tests must explicitly create their non-TTY context instead of assuming the caller redirected stdin. Real pseudo-terminal approve/decline tests still exercise the production confirmation boundary using fake providers.
+
+Those integration tests resolve an existing util-linux-compatible `script` from the original test-runner PATH, not a hardcoded `/usr/bin/script` or the later fixture PATH. A missing or unsupported PTY backend fails explicitly; no test is silently skipped and no utility is installed. Missing PTY coverage prevents claiming full-suite success, not continued offline engineering. Production approval boundaries remain unchanged.
 
 ## Legacy Rust-only preparation
 
