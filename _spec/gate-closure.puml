@@ -3,6 +3,7 @@
 title Gate0 / F9 / R4 - open gates and explicit decisions
 start
 :C1 accepted - amended supported-runtime gate profile;
+:Select shared-GPU host Docker learning and host-backed state;
 :Freeze current file/API/test plan, expectations,
 runtime policy, resource bounds and output-registration method;
 :Executor accepts Gate0 design and prerequisites;
@@ -24,6 +25,8 @@ stdio, deadlines and whole-job cleanup;
 independent comparison and clean close/EOF/reap;
 :Close F9 only on actual positive and negative evidence;
 :Bind genuine recipient facts to frozen Burn model;
+:Qualify actual-target F64 GPU scoring / backward / SGD,
+record reload, redundant learners, VRAM policy and owned cleanup;
 :Verify economics, noninterference,
 numeric validation, phase and atomicity;
 :Close R4 only on complete current-profile evidence;

@@ -24,7 +24,8 @@
 - [supervision.puml](supervision.puml): outside original-clock deadline supervision and exact owned-cgroup observation.
 - [checkpoint-runtime.puml](checkpoint-runtime.puml): private SQLite completion/checkpoint ownership and abort-all publication.
 - [match-runtime.puml](match-runtime.puml): whole-match child barriers, owner stop proofs and redundant native learners.
-- [host-entrypoint.puml](host-entrypoint.puml): host mise metadata preflight, separately granted provisioning and supported sbx execution.
+- [host-entrypoint.puml](host-entrypoint.puml): operator-run host mise metadata, separately granted provisioning and selected shared-GPU host Docker learning.
+- [gpu-readiness.puml](gpu-readiness.puml): mandatory actual-target F64 GPU scoring/learning, preserved host driver attachment and unqualified GPU/runtime/VRAM/cleanup gates.
 
 ## Persisted tests
 
@@ -113,6 +114,7 @@
 | `tooling/runtime/tests/test_host_inventory.py` | C16 bounded CPU/projection calculations and refusal to promote sandbox observations to daemon-host authority |
 | `tooling/runtime/tests/test_host_view.py` | C17 bounded mountinfo projection, local/cgroup selection and malformed-input refusal |
 | `tooling/runtime/tests/test_host_preflight.py` | V2 bounded/explicitly skipped hashes, six-command contract-help allowlist, retained partial/exception receipts, symlink invocation, task schema guard, actual mise/parser/basic/contract e2e with synthetic tools and failure/byte/deadline cleanup |
+| `tooling/runtime/tests/test_host_admission.py` | Sixteen synthetic/static admission cases: fixed CPU/RAM/filesystem projections, no creation/source overlap/symlink substitution, byte/DRM/card bounds, exact non-process NVIDIA query, retained facts on missing Docker, fail-stop/no follow-up, separate fake-Docker CLI e2e and task-schema/profile guards |
 
 The persisted process e2e tests use explicitly synthetic source/model/return fixtures.
 The whole-match fixture uses actual canonical game transitions and native Burn updates, not a genuine corpus/strategic rollout or a measured training experiment.
@@ -126,17 +128,32 @@ It is not the final production envelope or a current live host e2e qualification
 - Clippy: passes with warnings denied.
 - Bun after host-mise/storage refresh: 489 tests pass across 66 files, with 29,887 assertions.
 - TypeScript: source and tests pass strict static analysis, including unused-symbol checks.
-- Python after the sbx-contract addition: all 58 fake/synthetic/static tests pass, including 27 host-preflight/contract tests, C16/C17 calculations and unexecuted C19 parser fixtures.
-- PlantUML: all 23 diagrams pass syntax checking and SVG rendering in `/tmp/opencode/chess-coach-ii-sbx-contract-verification-d2noe53n/`.
+- Python after the admission/GPU addition and facts-first correction: all 74 fake/synthetic/static tests pass, including 16 admission tests and the retained host-preflight/contract/C16/C17/C19 fixtures.
+- PlantUML: all 24 diagrams pass syntax checking and SVG rendering in `/tmp/opencode/chess-coach-ii-gpu-host-facts-final-d9vaickr/`.
 - Synthetic Docker: one container passed limit, inheritance, CPU/PID/memory pressure and manager-cleanup checks within 7.477 seconds; no production-admission claim.
 - New JSON manifests and whitespace: pass.
 
 Rust verification uses the operator-approved installed Zig 0.15.2 through temporary C-driver scripts outside the repository. A normal GCC/Clang development toolchain remains sufficient on a standard host. No repository compiler shim or runtime bootstrap is required.
 
-The current bounded-contract Python/AST/TOML/whitespace, actual mise parser/discovery and synthetic basic/contract task e2e/diagram receipt is `/tmp/opencode/chess-coach-ii-sbx-contract-verification-d2noe53n/`.
-Its private `operator-reported-root-preflight.json` retains a structured copy of the returned v2 report and warnings; it is not an agent host-execution receipt.
-The new host task selects sbx once and queries exactly six fixed help pages, retaining earlier receipts even after a query exception.
-No installed host subcommand help, resource admission, provisioning or training has occurred through the new task.
+The current admission/GPU Python/AST/TOML/whitespace, actual mise parser/discovery and 24-diagram receipt is `/tmp/opencode/chess-coach-ii-gpu-host-facts-final-d9vaickr/`.
+It includes the separate fake-Docker CLI e2e and retained synthetic basic/contract task e2e checks.
+Its import-only `development-admission-import-inventory.stdout` records the isolated development Python dependency files without calling the metadata entrypoint or querying hardware.
+Its current source hashes bind the final facts-first correction and refreshed spec/test indexes.
+Its `operator-reported-contract-and-decisions.json` preserves the earlier structured operator report/decisions; it is not an agent host-execution receipt.
+The preceding `/tmp/opencode/chess-coach-ii-gpu-host-facts-verification-vw4rtfoq/` passed 73 tests before the final facts-first change and cannot verify that change.
+The new profile collects hardware/filesystem metadata before local Docker client discovery, preserving those facts when Docker is absent.
+It keeps GPU learning required, GPU qualification absent and `trainingReady:false`.
+No actual host admission-facts invocation, GPU computation, provisioning or training occurred in this verification.
+Executor subsequently selected `Commit + push (Recommended)` for the 19-file admission/GPU source/spec/test phase and the exact one-shot operator-run facts command.
+The post-approval source/verification publication receipt is `/tmp/opencode/chess-coach-ii-gpu-host-facts-publication-pj4qpqli/`.
+It preserves the preceding verification receipt without overwriting its source manifest.
+The actual host facts report remains pending.
+
+The preceding bounded-contract receipt is `/tmp/opencode/chess-coach-ii-sbx-contract-verification-d2noe53n/`.
+Its private `operator-reported-root-preflight.json` retains the returned v2 report and warnings.
+The contract task selects sbx once and queries exactly six fixed help pages, retaining earlier receipts even after a query exception.
+Executor subsequently returned the successful six-command help packet without executing the listed operations.
+Those reports do not establish actual resource admission, provisioning or training.
 The preceding preflight-v2 correction receipt is `/tmp/opencode/chess-coach-ii-preflight-v2-verification-rt8qi3t6/`.
 It reproduces the original combined size/type failure with a synthetic four-byte limit and proves explicit metadata-only skipping without reading the oversized fixture.
 It preserves the two operator-reported host failures separately from agent-executed synthetic checks.
@@ -151,8 +168,9 @@ Its complete pipeline results below remain the last full pass rather than a new 
 
 The fresh complete Rust build/tests/formatting/Clippy, Bun, TypeScript, Python, actual mise parser/task-discovery and diagram receipts are in `/tmp/opencode/chess-coach-ii-host-mise-verification-uxq71elx/`.
 The parser check invokes no real sbx command.
-The refreshed selected Cargo/Bun/TypeScript/native/development-Python closure receipt is `/tmp/opencode/chess-coach-ii-host-mise-closure-reed_eg3/`.
-It remains development evidence rather than independent Gate0 registration or actual host/runtime qualification.
+The preceding selected Cargo/Bun/TypeScript/native/development-Python closure receipt is `/tmp/opencode/chess-coach-ii-host-mise-closure-reed_eg3/`.
+The current admission import inventory supplements its Python portion without claiming a new Cargo/Bun/native build or GPU runtime closure.
+Both remain development evidence rather than independent Gate0 registration or actual host/runtime qualification.
 The previous complete C15 receipts and development-source hashes remain in `/tmp/opencode/chess-coach-ii-c15-final-source-verification-e7dwst2t/`.
 The preceding full corpus/RNG/strategic static-fixture receipts remain in `/tmp/opencode/chess-coach-ii-whole-match-verification-ks8hbbpi/`.
 The fresh complete Rust/formatting/Clippy pass remains in `/tmp/opencode/chess-coach-ii-whole-match-rust-9nm840m8/`.
@@ -170,10 +188,11 @@ See [host-view-followup-request.md](host-view-followup-request.md).
 These receipts do not register Gate0 artifacts or authorize execution.
 Executor subsequently corrected their realm to sbx-local observations.
 Do not promote C16/C17 to actual host CPU/storage/cgroup authority or treat their free-space samples as host provisioning limits.
-The new host-executed mise architecture and missing host interface are recorded in [host-entrypoint.md](host-entrypoint.md).
+The host-executed mise amendment, completed sbx-help discovery and pending actual host Docker/GPU/filesystem facts are recorded in [host-entrypoint.md](host-entrypoint.md).
 C19 remains authorized but unexecuted and paused.
 The agent has executed no actual host sbx commands.
-The subsequent operator-reported root help contains no provisioning or workload operation.
+The subsequent operator-reported root and six subcommand help reports contain no provisioning or workload operation.
+Executor selected host-backed state and actual F64 GPU learning in a shared-GPU host Docker job while keeping the coding agent in sbx and the active GPU attached to its host driver.
 
 ## Remaining gates
 
@@ -181,8 +200,11 @@ The subsequent operator-reported root help contains no provisioning or workload 
 
 Complete physics, causal recipients/economics, closed native/policy/match protocols, redundant Burn numerics and synthetic whole-match/SQLite publication now have persisted checks.
 Actual captured runtime, loading, effective controls, independent confined reference/lifecycle, durable target and original-clock qualification remain open.
+The current manifests and three native entrypoints still select CPU Flex.
+No supported GPU backend implementation, GPU build or real F64 GPU forward/backward/SGD/reload/redundant-learner/VRAM/cleanup proof exists.
+The metadata task and synthetic tests do not satisfy mandatory GPU learning readiness.
 Training readiness remains false.
 Reviewers remain deferred.
-Publication and game-data training require separate authorization.
+The scoped admission/GPU publication approval does not authorize further publication or game-data training.
 
 The scoring subprocess consumes actual feature encoding derived from bounded synthetic fixtures, including continuing observations produced by the actual causal source pipeline. Hidden-state-twin e2e checks compare candidate order, feature values and frozen native Burn scores. The new representation, context-dependent MLP and feature/model-artifact binding have source tests. No placeholder economic readout, custom estimator or missing-channel zero padding ships. The operator approved replacing DIRECT metering with shared standard OS-resource limits. The one-shot synthetic grant is consumed. Production resource admission still requires concrete limits, separate host-operation authorization and applicable pipeline/deadline verification; byte caps and the synthetic proof do not establish it.

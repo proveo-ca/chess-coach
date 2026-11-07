@@ -1,6 +1,6 @@
 @startuml host_entrypoint
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Host mise entrypoint / dedicated sbx execution
+title Host mise entrypoint / shared-GPU host Docker execution
 start
 :Executor runs mise on the actual host;
 :host:preflight records local mise/sbx identity and fixed help;
@@ -11,23 +11,27 @@ note right
   This metadata does not register final artifact identity.
 end note
 :host:sbx-contract records six fixed subcommand help pages only;
-if (Supported sbx interface supplied?) then (no)
+:Retain received create/exec/stop/removal contract;
+:Select host-backed state and shared-GPU host Docker target;
+:host:admission-facts records self / selected-filesystem / GPU metadata;
+if (Actual host facts and supported GPU runtime selected?) then (no)
   :Retain metadata and stop at tools/context boundary;
   stop
 else (yes)
   :Freeze exact host seeding/provisioning plan and usable bytes;
 endif
+:Executor accepts complete Gate0 design and prerequisites;
 :Obtain separate exact provisioning/capture/build grants;
 :Host mise invokes selected supported provisioning operations;
 :Register immutable outputs and admit job/outside controls;
 :Qualify durable state and original-clock cleanup under fresh grants;
-if (Gate0 + F9 + R4 + cross-cutting checks accepted?) then (no)
+if (Gate0 + F9 + R4 + GPU + cross-cutting checks accepted?) then (no)
   :trainingReady=false; preserve all evidence; no retry/reset;
   stop
 else (yes)
   :Technical readiness only; request separate training execution grant;
 endif
-:Host mise calls supported sbx for the dedicated training job;
+:Host mise launches the admitted shared-GPU Docker learning job;
 :Keep private state and failed evidence after owned job cleanup;
 stop
 @enduml

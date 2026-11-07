@@ -8,6 +8,11 @@ The original branch remains the read-only behavior reference at `b4b241481fb12de
 
 ## Component boundaries
 
+Executor's current execution design uses host mise for preflight/seeding/provisioning and a supported shared-GPU host Docker learning job.
+The coding agent remains in sbx.
+Host-backed state and real F64 GPU scoring/learning are required for readiness; the CPU Flex foundation remains the reference/test backend, not a GPU-ready training fallback.
+Actual hardware, GPU backend/driver/runtime, filesystem and effective controls remain unqualified; see [gpu-readiness.md](gpu-readiness.md).
+
 | Component | Responsibility | Current state |
 |---|---|---|
 | `packages/game-core` | Canonical physics, legal actions and actual causal effects | Init, queues, B/C/F settlement, stable private identities and actual-mutation journal implemented |

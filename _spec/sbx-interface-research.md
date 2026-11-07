@@ -1,6 +1,6 @@
 # Docker Sandboxes: storage and execution interface research
 
-Status: ROOT CLI IDENTIFIED FROM OPERATOR REPORT / OFFICIAL STORAGE DOCS FOUND / INSTALLED SUBCOMMAND HELP PENDING.
+Status: ROOT + SIX INSTALLED HELP REPORTS RECEIVED / HOST-BACKED STATE + SHARED-GPU HOST DOCKER SELECTED.
 
 ## Official sources
 
@@ -13,7 +13,22 @@ Status: ROOT CLI IDENTIFIED FROM OPERATOR REPORT / OFFICIAL STORAGE DOCS FOUND /
 
 The fetched create/exec reference pages exposed titles only.
 Do not fill installed flags from stale agent-specific examples or treat those empty page bodies as a complete CLI contract.
-The operator's installed root help is authoritative for the discovered verb names, not their unobserved arguments.
+The operator subsequently supplied the installed version/create/exec/stop/rm/cp help packet, with successful natural query receipts and retained denied-home warnings.
+
+## Installed help received
+
+- `version` supports JSON and distinguishes debug details; no non-help version query occurred in the received packet.
+- `create` supports mountless creation, built-in `shell`, explicit CPU/memory sizing, workspaces, pull policy and skills selection.
+- CPU zero means all host CPUs in this installed help, not the N-1 default shown by some older public examples.
+- Memory strings use binary units and documented creation limits depend on host RAM.
+- `exec` starts a stopped sandbox and propagates command exit status; detached exec is unsupported.
+- `stop` retains state; cloud stop returns on request acceptance rather than final absence.
+- `rm` deletes local sandbox state/secrets and can report cloud deletion still pending after a 60-second wait; do not use it as retained-evidence cleanup.
+- `cp` copies rather than transferring ownership; destination-directory behavior is explicit and can create a target path.
+
+These are received operator-reported CLI semantics, not actual runtime/control qualifications.
+Executor subsequently selected host-backed state and a shared-GPU host Docker learning target, preserving the coding sbx and active host GPU attachment.
+The earlier dedicated training-sbx candidate is superseded for learning; see [gpu-readiness.md](gpu-readiness.md).
 
 ## Documented storage controls
 

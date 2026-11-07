@@ -13,7 +13,8 @@ Historical contracts and evidence remain unchanged in the reference worktree at 
 No historical gate result or operational grant transfers to this branch.
 
 The current development grant covers bounded Rust/Cargo/Bun implementation, synthetic tests and static analysis.
-Game-data collection, training, production host operations, deployment, commit and publication remain unauthorized.
+Game-data collection, training, production host operations and deployment remain unauthorized.
+Executor separately approved commit/publication of the current 19-file admission/GPU phase and its exact one-shot operator-run metadata packet; no broader publication or host operation follows.
 The one-container synthetic Docker grant is consumed.
 Reviewers remain deferred until technical training readiness under the operator's instruction.
 
@@ -116,9 +117,15 @@ The actual interactive selection, not this document's self-declaration, supplies
 
 Current design decisions C8–C14 are recorded in [supervision.md](supervision.md), [runtime-output-limits.md](runtime-output-limits.md), [learning-runtime.md](learning-runtime.md), [checkpoint-runtime.md](checkpoint-runtime.md), [state-persistence.md](state-persistence.md) and [reference-bundles.md](reference-bundles.md).
 The final input/output-registration method and deliberately unset host bindings are in [gate0-packet.md](gate0-packet.md).
-Executor selected host-executed mise for preflight/seeding/provisioning and supported sbx for training execution; see [host-entrypoint.md](host-entrypoint.md).
+Executor selected host-executed mise for preflight/seeding/provisioning and initially selected sbx for training execution; see [host-entrypoint.md](host-entrypoint.md).
+Executor then made real F64 GPU learning mandatory, reported an in-use GPU, selected host-backed state and amended learning execution to a supported shared-GPU host Docker job.
+No VFIO rebind, GPU runtime installation, creation, qualification or training authority follows from that design choice.
 C16/C17 remain consumed sbx-local receipts, not actual host bindings or capacity limits.
 The metadata-only task and tighter fixed-write storage bound do not close a gate or grant an operation.
+The refreshed 74-test Python suite includes 16 admission tests for bounded metadata collection and synthetic CLI behavior, not GPU implementation or computation.
+Its current source/static/synthetic evidence is indexed in [verification.md](verification.md).
+Executor selected `Commit + push (Recommended)` for this 19-file phase and the exact delegated one-shot host facts packet.
+The operator's actual host facts report remains pending.
 No design selection grants an operation or accepts the packet.
 
 The original 36 IDs remain a traceability inventory, not a requirement to recreate the old checker or build DAG.
@@ -133,7 +140,7 @@ All current acceptance rows remain OPEN.
 | `TRUST`, `G1`, `CREATOR.A`, `INIT.B` | Explicit C1 trust/guarantee decision and exact runtime/init/launcher controls | C1 accepted; exact selected runtime/init/launcher packet remains open |
 | `NODE.MAIN`, `NODE.REFERENCE`, `FD.MAIN.0/1/2`, `FD.REFERENCE.0/1/2` | Exact main/reference topology and independent owned I/O plan under selected profile | Fixed workers/job, staged coordinator, bounded JSONL and owned pipes implemented; captured/qualified runtime remains absent |
 | `S0`, `FIRST_EFFECT`, `INVOICE` | Original deadline origin before launch-causal work; shared resource admission before game work; no renewed budget | Outside standard supervisor, boot barrier and C8 observer pass fake fixtures; actual admitted runtime and enforcement qualification remain absent |
-| `FIT`, `U-BOUNDS`, `U-ENFORCE` | Concrete CPU/memory/swap/tasks/tmp/output/storage/FD bounds; peak coexistence and whole-job cleanup design | C2/C9/C15 retain the design ceilings; fixed writes plus outside evidence and 8 GiB planning allowance total 191,396,683,776 usable bytes; actual host interface, IDs, view, durable target/headroom and effective enforcement remain open |
+| `FIT`, `U-BOUNDS`, `U-ENFORCE` | Concrete CPU/memory/swap/tasks/tmp/output/storage/FD bounds; selected GPU/VRAM coexistence; peak coexistence and whole-job cleanup design | C2/C9/C15 retain the design ceilings; fixed writes plus outside evidence and 8 GiB planning allowance total 191,396,683,776 usable bytes; actual host Docker/GPU runtime, IDs, view, durable target/headroom and effective enforcement remain open |
 | `U-HANDOFF` | Versioned recipient/session/sequence transactional protocol and independent reference comparison | Actual-mutation producer/journal/recipients and staged BOTH protocol implemented; reference init/open/pass fixtures pass; cold confined independent process proof remains unrun |
 | `AUDITS` | Current source/dependency/native-closure, partition and negative audit results | Historical passes do not transfer; reviewers remain deferred |
 
@@ -170,7 +177,7 @@ F9 grants no model or training permission.
 | Opponent knowledge | Actual pre-destruction witnesses and target-only consumption, deduplication, casualty-memory/dead-vision tests and private paid-history separation | Supervised producer/reference and protocol-substitution evidence |
 | Candidate/context scoring | Approved enumerator/encoding, hidden twins, frozen argmax/ties, exact sampling/ACK/admission and checked whole-match barriers | Actual captured immutable runtime, effective bounds and qualified native/learner integration |
 | Independent artifact binding | Model config, feature version/layout/dimensions and exact checkpoint SHA-256 | Supervisor-selected expectations through the real coordinator; session/model/version substitution and stale-episode rejection |
-| Numerical validation | C6/C7, redundant logical-F64 proposals/reload and real synthetic whole-match/Burn/SQL completion pass | Qualified bounded runtime and final artifact closure; no all-parameter FD or game-data training claim |
+| Numerical validation | C6/C7, redundant logical-F64 proposals/reload and real synthetic whole-match/Burn/SQL completion pass | Actual selected GPU F64 scoring/learning, unchanged numerical checks and redundant learner agreement; GPU runtime/VRAM/cleanup and final artifact qualification remain open |
 | Phase/atomicity controls | Closed child-owned match loop, owner native/decision/stop reconstruction, C12 learners, retained private journal bytes, atomic C11 completion and C13 source publisher | Actual durable state/clock/process-group/descendant qualification; complete final-envelope/initialization path qualification remains open |
 
 R4 is implementation closure for the accepted current profile, not successful game-data training.

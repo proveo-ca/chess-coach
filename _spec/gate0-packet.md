@@ -19,7 +19,8 @@ Executor must independently accept the final frozen physical input bytes and thi
 | C13 | One exact operator-selected private state mount at `/state` for policy jobs; native F9 stays tmpfs-only |
 | C14 | Six standard pinned Bun reference bundles; no reference fallback or runtime package manager |
 | C15 | Fifty fixed 100-STARTED-slot private evidence packets; 4 GiB / 16,384 entries each; 200 GiB aggregate payload planning ceiling; no failure rollover |
-| Host entrypoint | Executor-selected host `mise` preflight/seeding/provisioning → supported `sbx`; no operational task until the real host interface and separate grants exist |
+| Host entrypoint | Host `mise` preflight/seeding/provisioning; Executor explicitly amended training to a supported shared-GPU host Docker job while the coding agent stays in sbx |
+| GPU + state placement | Actual F64 GPU scoring/learning is mandatory; keep the active GPU attached to the host driver and use host-backed private state; vendor/backend/driver/target admission remains open |
 
 ## Input-registration roles
 
@@ -39,6 +40,7 @@ Do not update a pin automatically after failure.
 | `builder-tools/` | Frozen `tooling/build-reference.ts` as `build-reference.ts` and `reference-entrypoints.json` |
 | `init/` | Independently captured Tini bytes matching the selected published SHA-256 and length expectation |
 | Images | Exact selected platform manifest/config/layer bytes, not mutable tags or developer images |
+| GPU runtime inputs | Actual vendor/backend, selected driver/container-runtime/toolkit/library closure and device identity; reconcile supported runtime-managed injection with exact C2/C13 mount/device policy before accepting the amended GPU recipe |
 | Recipe | `tooling/runtime/Dockerfile`, context-role manifest, supported builder/control-plane tool bytes and exact future command allowlist |
 
 `tooling/runtime/Dockerfile` is an unexecuted standard multi-stage recipe.
@@ -82,6 +84,9 @@ The following values remain deliberately unset:
 }
 ```
 
+The GPU amendment also leaves `selectedGpuIdentity`, `gpuBackend`, `gpuDriverAndRuntimeClosure`, `gpuVramPolicy` and `gpuTargetQualification` unset.
+The existing CPU-only Dockerfile and development binaries do not satisfy those roles.
+
 CPU IDs must come from Executor's approved set of at most 12 eligible threads.
 The hard aggregate ceiling remains 24,000,000,000 bytes.
 Do not infer CPU IDs, host filesystem mappings, state paths or live headroom from the development sandbox or the consumed metadata receipt.
@@ -101,7 +106,8 @@ The enforced pipeline write bound is 182,806,749,184 payload bytes including out
 The earlier 204 GiB sum of configured ceilings is not the fixed pipeline's minimum.
 Exact units, usable bytes/entries, host view and control-plane mapping still require actual target selection and qualification.
 Executor subsequently supplied passing v2 host metadata and Docker Sandboxes root help, with both executable hashes explicitly skipped.
-The next fixed help-only packet must expose the installed create/exec/lifecycle contract before actual provisioning commands are frozen.
+Executor subsequently supplied that six-command help packet, selected host-backed state, and amended training execution to a shared-GPU host Docker job.
+The next host facts packet observes actual self CPU/RAM/GPU and the candidate state-parent filesystem without a daemon/workload query or allocation.
 See [host-entrypoint.md](host-entrypoint.md) and [storage-admission-decision.md](storage-admission-decision.md).
 Private state storage is therefore a genuine remaining allocation/contract boundary, not a field to fill with a guessed path.
 

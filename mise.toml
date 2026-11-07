@@ -22,3 +22,11 @@ raw = true
 quiet = true
 env.PYTHONDONTWRITEBYTECODE = "1"
 run = "python3 -I -B tooling/runtime/host_preflight.py --sbx-contract"
+
+[tasks."host:admission-facts"]
+description = "Host-only CPU/RAM/GPU and selected filesystem metadata; no allocation or workload inspection"
+raw_args = true
+raw = true
+quiet = true
+env.PYTHONDONTWRITEBYTECODE = "1"
+run = "python3 -I -B tooling/runtime/host_preflight.py --admission-facts"

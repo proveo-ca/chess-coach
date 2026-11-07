@@ -2,6 +2,11 @@
 
 Status: DEDICATED STATE MOUNT SELECTED / SOURCE AND SYNTHETIC WORK ONLY / NO MOUNT OR STORAGE GRANT.
 
+Executor subsequently selected host-backed private state for the shared-GPU host Docker learning target.
+The earlier training-sbx placement no longer governs learning execution.
+Keep the exact one-source `/state` policy, exclusive experiment roots and failed-evidence retention unchanged.
+The host filesystem/path and its durability/capacity remain unqualified; no directory or mount has been created by this decision.
+
 Executor selected `Dedicated state mount` in C13.
 Explicitly amend the policy-job mount design to allow one operator-selected private read/write state directory at fixed `/state`.
 Keep SQLite, private journals and the completion owner inside C2.

@@ -222,7 +222,10 @@ They cannot supply actual runtime/loading/enforcement/init/stdio/native proof.
 
 [gate0-packet.md](gate0-packet.md) fixes the proposed input/output-registration procedure and lists the exact missing host bindings.
 C14 selects the six supported Bun reference bundles in [reference-bundles.md](reference-bundles.md).
-Executor subsequently selected host-executed mise preflight/seeding/provisioning calling supported sbx for training.
+Executor initially selected host-executed mise preflight/seeding/provisioning calling supported sbx for training.
+Executor subsequently required actual F64 GPU learning, reported that the host uses its GPU, selected host-backed state, and amended the learning target to a supported shared-GPU host Docker job.
+The coding agent stays in sbx and the active GPU stays attached to the host driver.
+The GPU backend/image/driver/library/device/VRAM roles and actual target admission remain open; see [gpu-readiness.md](gpu-readiness.md).
 [host-entrypoint.md](host-entrypoint.md) records the metadata-only task and actual host-interface boundary.
 Do not reuse sbx-local C16/C17 capacity/view proposals as actual host bindings.
 [storage-admission-decision.md](storage-admission-decision.md) separates C15 ceilings from the enforced fixed-write storage proposal.

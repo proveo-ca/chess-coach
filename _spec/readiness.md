@@ -15,12 +15,20 @@ trainingReady =
   && effective supported-runtime qualification
   && F9 cold BOTH + independent reference + orderly close / EOF / reap
   && R4 integrated policy / episode / artifact / numeric verification
+  && admitted execution target exposes the selected GPU
+  && supported Burn GPU backend passes actual F64 scoring / learning qualification
+  && selected GPU / driver / VRAM / lifecycle evidence passes
   && current cross-cutting readiness checks
 ```
 
 This expression is an acceptance checklist, not a source flag that a worker or test fixture can set.
 Reviewers remain deferred until technical readiness under Executor's standing instruction.
 Actual training, deployment, commit and publication retain separate authorization.
+Executor added mandatory GPU access and selected GPU learning, not access-only CPU learning.
+Executor reports 8 GB VRAM and states that the host uses the GPU.
+Do not detach that active GPU or count the current CPU Flex path as GPU readiness.
+Keep F64, existing tolerances, C12 redundant learner comparison and all CPU/RAM/deadline constraints unchanged.
+See [gpu-readiness.md](gpu-readiness.md) for the supported-runtime decision boundary.
 
 ## Work that continues under the development grant
 
@@ -82,14 +90,20 @@ Its remaining host bindings cannot be chosen from the sandbox's CPU numbers or f
 Executor must supply the eligible/job CPU IDs, daemon-host cgroup/observation view, actual private state/evidence targets and outside control-plane selection/headroom.
 Executor subsequently instructed calculation of the unknown values and authorized exact C16/C17 read-only inventories.
 Those consumed receipts calculate sbx-local CPU/observer/parent/executable proposals only.
-Executor clarified that the actual host can provision `200gb` and selected host-executed mise for preflight/seeding/provisioning, calling supported sbx for training.
-The implemented metadata-only `host:preflight` task still needs an actual host executor or operator-supplied host output/interface documentation.
+Executor clarified that the actual host can provision `200gb` and initially selected host-executed mise for preflight/seeding/provisioning, calling supported sbx for training.
+Executor selected operator execution rather than granting this agent a host execution tool.
 Executor selected the operator-run host preflight route and reported a host task-schema failure followed by an executable size/type failure.
 The selected v2 correction passed the operator's fresh metadata/root-help run and identifies Docker Sandboxes at `/usr/bin/sbx`.
 Both large executables explicitly skipped hashing; the report preserves denied-home initialization warnings.
-The next fixed host metadata packet collects installed version/create/exec/lifecycle help without executing those operations.
+Executor then supplied the six fixed installed subcommand help pages without executing those operations.
+Executor selected host-backed state and amended the learning target to a supported shared-GPU host Docker job because the host uses its GPU.
+The next host facts packet reads actual self CPU/RAM/GPU and selected filesystem metadata without allocating or qualifying them.
+Its local source/static/synthetic checks do not qualify GPU compute or authorize publication/delegated host metadata execution.
+Executor subsequently supplied the separate `Commit + push (Recommended)` approval for this 19-file phase and its exact one-shot operator-run host facts packet.
+No host facts report or broader operational authority follows from that approval.
+The current CPU Flex manifests and three native entrypoints do not implement GPU learning.
 The agent has executed no actual host sbx commands.
-The operator's received report includes root `sbx --help` only, not a workload operation.
+The operator's received reports include root and subcommand help only, not a workload operation.
 The remaining interface/target/control-plane boundary cannot be resolved by another sbx-local inventory.
 The fixed pipeline's proposed free usable bound is 191,396,683,776 bytes with the declared 8 GiB planning allowance, distinct from the 204 GiB sum of configured ceilings.
 Actual host allocation, units, durability/headroom qualification and outside-control admission remain open.

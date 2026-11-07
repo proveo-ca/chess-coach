@@ -11,9 +11,11 @@ database "Burn native model records\nsynthetic round-trip test" as STORE <<db>>
 component "Product applications\nmigration pending" as UI <<app>>
 node "Cargo + Bun\nstandard development tools" as TOOLS <<host>>
 node "Host mise\npreflight / planned seeding + provisioning" as HOST <<host>>
-node "Dedicated admitted sbx\nseparate execution grant" as SBX <<host>>
-HOST ..> SBX : supported CLI contract pending
-SBX ..> RUN : separately authorized job
+node "Coding agent sbx\nnot the training target" as SBX <<host>>
+node "Host Docker GPU job\nselected design / unqualified" as GPU <<host>>
+HOST ..> GPU : separate provisioning / execution grants
+GPU ..> RUN : required F64 GPU learning
+SBX ..> TOOLS : authorized source / synthetic verification
 UI ..> GAME : game API
 RUN ..> GAME : observations / legal actions / replay
 RUN ..> POLICY : recipient observation / candidates

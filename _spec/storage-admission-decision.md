@@ -2,6 +2,12 @@
 
 Status: C18 SEPARATE PRIVATE BACKING + HOST MISE ENTRYPOINT SELECTED / NO PROVISIONING AUTHORITY / `trainingReady:false`.
 
+After installed sbx-contract discovery, Executor selected `Host-backed state (Recommended)`.
+After requiring GPU learning and reporting an in-use GPU, Executor selected host mise → shared-GPU host Docker execution instead of training-sbx VFIO passthrough.
+Keep private state outside container/VM deletion and bind only its approved source into the job at `/state`.
+The next metadata task observes an existing candidate host parent and real host CPU/RAM/GPU facts; it creates nothing.
+The prior `/srv/chess-coach/...` names remain unapproved proposals, not a reason to fabricate host paths or reserve capacity from samples.
+
 Executor selected `Separate private backing` in C18.
 Prepare the exact provisioning/admission handoff below.
 This selection grants no device access, filesystem creation, mount, controller write, image operation or training.
@@ -9,8 +15,8 @@ This selection grants no device access, filesystem creation, mount, controller w
 C16/C17 observed and retained sbx-local CPU, memory, cgroup-view and writable-filesystem metadata under consumed exact read-only grants.
 Executor subsequently clarified that this session is sbx and the actual host can provision `200gb` of disk.
 Do not promote those sbx values to actual host capacity, CPU IDs, cgroup bindings or provisioning limits.
-Executor selected host-executed `mise` for preflight/seeding/provisioning and supported `sbx` for training execution.
-The metadata-only entrypoint and missing host-interface handoff are in [host-entrypoint.md](host-entrypoint.md).
+Executor initially selected host-executed `mise` for preflight/seeding/provisioning and supported `sbx` for training execution.
+The current shared-GPU host Docker amendment and pending actual-host facts handoff are in [host-entrypoint.md](host-entrypoint.md).
 No actual host provisioning, device, durable target or effective outside-control admission has been selected or qualified.
 
 ## C18 alternatives (historical; separate backing selected)
@@ -74,7 +80,8 @@ Actual metadata/headroom adequacy and available bytes/inodes must be qualified o
 Image/capture/build scratch remain separately bounded and admitted; do not silently charge them to private state or omit them from capacity checks.
 
 Host-executed `mise` exposed Docker Sandboxes root help and metadata, with both executable hashes explicitly skipped.
-The installed create/exec/lifecycle options and exact storage/resource mapping remain pending before an exact provisioning command can be formed.
+Executor subsequently supplied the installed create/exec/lifecycle help, then selected host-backed state and shared-GPU host Docker execution.
+Exact host filesystem, GPU/runtime, manager endpoint and resource mapping remain pending before an exact provisioning command can be formed.
 Official docs identify separate creation-time root/Docker-data/clone size controls and explicitly exclude resizing existing volumes; see [sbx-interface-research.md](sbx-interface-research.md).
 The current sbx session supplies neither a host executor nor authority to provision backing.
 C19 remains unexecuted and paused; do not replace the host handoff with another sbx-local block-device inventory.

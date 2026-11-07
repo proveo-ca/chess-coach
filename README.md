@@ -6,7 +6,8 @@ Clean rebuild on `feat-ml-adjuntant-ii`.
 
 - Rust + Cargo for machine learning.
 - Burn 0.22 with its `Module`, `nn::Linear`, optimizer and native record APIs.
-- Flex CPU execution; no custom compiler, linker, kernel patch or bootstrap framework.
+- Flex CPU reference/tests; required F64 GPU learning remains unqualified.
+- No custom compiler, linker, kernel patch or bootstrap framework.
 - Bun/TypeScript for the canonical game integration and application tooling.
 
 The learning crate uses a standard Burn MLP and episodic objective. `packages/game-core` supplies canonical initialization, native rules, gas-aware queue edits, complete B/C/F physics and an actual-mutation causal journal. Host-only `packages/contracts` entrypoints produce continuing recipient observations, retain side-local identities and paid receipts, own explicit banks and support deterministic source-bound replay. Standard JSON/Zod schemas validate observations, journals, public batches, candidates and inference messages. `packages/policy` enumerates bounded recipient-local candidates and encodes 2,271 observation/action coordinates without a custom enemy-economic estimator. `crates/policy-io` binds model configuration, feature version and native checkpoint identity before scoring. Supervised independent-reference runtime qualification, integrated episode admission/learning, rollout/evaluation and product applications remain pending. This is not a trained model or a production-readiness claim.
@@ -17,7 +18,10 @@ Run `mise run host:preflight --confirm-host` **on the actual host**, not in this
 Automatic installation stays disabled.
 This metadata-only task provisions nothing and authorizes no training.
 After root-help discovery, `mise run host:sbx-contract --confirm-host` collects only six fixed subcommand help pages.
-Seeding/provisioning/training tasks remain unwired until the supported host `sbx` interface and separate grants exist.
+The selected learning target is a shared-GPU host Docker job with host-backed state; this coding agent stays in sbx.
+`mise run host:admission-facts --confirm-host` collects bounded host CPU/RAM/GPU and selected-filesystem metadata without creating anything.
+Actual F64 GPU scoring/learning remains required and unqualified; CPU Flex is the verified reference/test path.
+Seeding/provisioning/training tasks remain unwired until the actual Docker/GPU runtime, host targets and separate grants exist.
 See [_spec/host-entrypoint.md](_spec/host-entrypoint.md).
 
 ## Development checks
