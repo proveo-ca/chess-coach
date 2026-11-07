@@ -10,7 +10,7 @@ task.run_auto_install = false
 [tasks."host:preflight"]
 description = "Host-only read-only mise/sbx identity and help; no provisioning or training"
 raw_args = true
+raw = true
 quiet = true
-output = "interleave"
 env.PYTHONDONTWRITEBYTECODE = "1"
 run = "python3 -I -B tooling/runtime/host_preflight.py"

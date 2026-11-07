@@ -20,26 +20,69 @@ EXECUTABLE_BYTES = 128 * 1024 * 1024
 
 
 def identity(path: str) -> dict:
-    resolved = Path(path).resolve(strict=True)
-    digest = hashlib.sha256()
-    with resolved.open("rb") as handle:
-        info = os.fstat(handle.fileno())
-        if not stat.S_ISREG(info.st_mode) or info.st_size > EXECUTABLE_BYTES:
-            raise ValueError("Host preflight: EXECUTABLE_BOUND_OR_KIND")
-        size = 0
-        while data := handle.read(65536):
-            size += len(data)
-            if size > EXECUTABLE_BYTES:
-                raise ValueError("Host preflight: EXECUTABLE_BOUND")
-            digest.update(data)
-    return {
-        "selectedPath": path,
-        "resolvedPath": str(resolved),
-        "byteLength": size,
-        "sha256": digest.hexdigest(),
-        "device": info.st_dev,
-        "inode": info.st_ino,
-    }
+    selected = Path(path).absolute()
+    resolved = selected.resolve(strict=True)
+
+    def metadata(info: os.stat_result) -> dict:
+        regular = stat.S_ISREG(info.st_mode)
+        result = {
+            "selectedPath": str(selected),
+            "resolvedPath": str(resolved),
+            "fileType": "regular" if regular else "non-regular",
+            "fileMode": stat.filemode(info.st_mode),
+            "byteLength": info.st_size,
+            "device": info.st_dev,
+            "inode": info.st_ino,
+            "sha256": None,
+            "bytesRead": 0,
+            "hashLimitBytes": EXECUTABLE_BYTES,
+            "hashStatus": "PENDING",
+        }
+        if not regular:
+            result.update(
+                error="Host preflight: EXECUTABLE_KIND", hashStatus="REJECTED_KIND"
+            )
+        elif info.st_size > EXECUTABLE_BYTES:
+            result["hashStatus"] = "SKIPPED_SIZE_BOUND"
+        return result
+
+    result = metadata(resolved.stat())
+    if result["hashStatus"] != "PENDING":
+        return result
+    try:
+        fd = os.open(resolved, os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW)
+        with os.fdopen(fd, "rb", buffering=0) as handle:
+            before = os.fstat(handle.fileno())
+            result = metadata(before)
+            if result["hashStatus"] != "PENDING":
+                return result
+            digest = hashlib.sha256()
+            remaining = before.st_size
+            while remaining:
+                data = handle.read(min(65536, remaining))
+                if not data:
+                    break
+                result["bytesRead"] += len(data)
+                remaining -= len(data)
+                digest.update(data)
+            after = os.fstat(handle.fileno())
+            if (
+                remaining
+                or after.st_size != before.st_size
+                or after.st_mtime_ns != before.st_mtime_ns
+            ):
+                result.update(
+                    error="Host preflight: EXECUTABLE_CHANGED",
+                    hashStatus="INCOMPLETE_CHANGED",
+                )
+            else:
+                result.update(sha256=digest.hexdigest(), hashStatus="FULL_SHA256")
+    except OSError as error:
+        result.update(
+            error=f"Host preflight: EXECUTABLE_READ errno={error.errno}",
+            hashStatus="UNAVAILABLE",
+        )
+    return result
 
 
 def query(command: list[str], timeout_seconds: float = 10) -> dict:
@@ -60,6 +103,8 @@ def query(command: list[str], timeout_seconds: float = 10) -> dict:
                 "HOME": "/nonexistent",
                 "LC_ALL": "C",
                 "TERM": "dumb",
+                "MISE_AUTO_INSTALL": "false",
+                "MISE_TASK_RUN_AUTO_INSTALL": "false",
             },
         )
         for name in buffers:
@@ -111,7 +156,7 @@ def query(command: list[str], timeout_seconds: float = 10) -> dict:
 
 def collect() -> dict:
     result = {
-        "version": "chess-coach.host-preflight.v1",
+        "version": "chess-coach.host-preflight.v2",
         "executionRealm": "OPERATOR_ASSERTED_HOST_UNQUALIFIED",
         "scope": "LOCAL_TOOL_IDENTITY_AND_HELP_ONLY",
         "tools": {},
@@ -127,7 +172,10 @@ def collect() -> dict:
                 raise FileNotFoundError(f"Host preflight: MISSING_{name.upper()}")
             tool = identity(path)
             result["tools"][name] = tool
-            tool["query"] = query([tool["resolvedPath"], *arguments])
+            if "error" in tool:
+                result["status"] = "BLOCKED"
+                break
+            tool["query"] = query([str(Path(path).absolute()), *arguments])
             if (
                 "error" in tool["query"]
                 or tool["query"]["forced"]

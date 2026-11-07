@@ -2,9 +2,17 @@
 
 Status: PARTIAL CURRENT DEVELOPMENT INVENTORY / NOT INDEPENDENTLY FROZEN / NOT GATE0 OUTPUT REGISTRATION.
 
+## Preflight-v2 correction
+
+The host preflight module and its mise task changed after the baseline inventory below.
+The correction uses the existing standard-library imports and does not change the Cargo/Bun game/learning runtime graphs.
+The current source/test and AST/TOML/mise/synthetic-e2e/diagram checks are in `/tmp/opencode/chess-coach-ii-preflight-v2-verification-rt8qi3t6/`.
+Do not reuse the earlier preflight source hash as the corrected module's identity.
+The two operator-reported host failures remain retained and do not supply a real sbx help/runtime registration.
+
 ## Host-mise / retained-storage refresh
 
-The current receipt is `/tmp/opencode/chess-coach-ii-host-mise-closure-reed_eg3/`.
+The baseline receipt is `/tmp/opencode/chess-coach-ii-host-mise-closure-reed_eg3/`.
 It refreshes standard locked/offline Cargo metadata/tree/build producer records, Bun metafiles, TypeScript file lists, static ELF headers and sbx-development Python imports.
 It records 569 metadata packages, 221 compiler/build records, 156 selected compiler-artifact package IDs, 13 proc-macro artifacts and 23 build-script outputs.
 Current Bun input counts are 127 model, 139 current worker, 112 reference worker, 134 native job, 148 match worker, 144 match owner, 151 coordinator and 119 fixed factory.

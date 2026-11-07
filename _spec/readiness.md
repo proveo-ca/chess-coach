@@ -84,7 +84,8 @@ Executor subsequently instructed calculation of the unknown values and authorize
 Those consumed receipts calculate sbx-local CPU/observer/parent/executable proposals only.
 Executor clarified that the actual host can provision `200gb` and selected host-executed mise for preflight/seeding/provisioning, calling supported sbx for training.
 The implemented metadata-only `host:preflight` task still needs an actual host executor or operator-supplied host output/interface documentation.
-Executor selected the operator-run host preflight route; its actual host report remains pending.
+Executor selected the operator-run host preflight route and reported a host task-schema failure followed by an executable size/type failure.
+The selected v2 correction retains metadata, bounds optional discovery hashing and awaits a fresh operator-run host report.
 No real host sbx invocation occurred.
 The remaining interface/target/control-plane boundary cannot be resolved by another sbx-local inventory.
 The fixed pipeline's proposed free usable bound is 191,396,683,776 bytes with the declared 8 GiB planning allowance, distinct from the 204 GiB sum of configured ceilings.

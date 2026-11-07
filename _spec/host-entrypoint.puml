@@ -4,6 +4,12 @@ title Host mise entrypoint / dedicated sbx execution
 start
 :Executor runs mise on the actual host;
 :host:preflight records local mise/sbx identity and fixed help;
+note right
+  v2 reports file type/size before any content read.
+  Hash regular files <=128 MiB; explicitly skip larger hashes.
+  Preserve selected invocation paths for dispatching symlinks.
+  This metadata does not register final artifact identity.
+end note
 if (Supported sbx interface supplied?) then (no)
   :Retain metadata and stop at tools/context boundary;
   stop
