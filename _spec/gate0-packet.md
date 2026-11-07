@@ -100,6 +100,8 @@ Executor states the actual host can provision `200gb` and selected host-executed
 The enforced pipeline write bound is 182,806,749,184 payload bytes including outside evidence, or 191,396,683,776 free usable bytes with the explicit 8 GiB planning allowance.
 The earlier 204 GiB sum of configured ceilings is not the fixed pipeline's minimum.
 Exact units, usable bytes/entries, host view and control-plane mapping still require actual target selection and qualification.
+Executor subsequently supplied passing v2 host metadata and Docker Sandboxes root help, with both executable hashes explicitly skipped.
+The next fixed help-only packet must expose the installed create/exec/lifecycle contract before actual provisioning commands are frozen.
 See [host-entrypoint.md](host-entrypoint.md) and [storage-admission-decision.md](storage-admission-decision.md).
 Private state storage is therefore a genuine remaining allocation/contract boundary, not a field to fill with a guessed path.
 

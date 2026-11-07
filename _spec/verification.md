@@ -112,7 +112,7 @@
 | `tooling/runtime/tests/test_recipe.py` | Unexecuted pinned multi-stage recipe, network-disabled builds, nonroot/init and six fixed reference outputs |
 | `tooling/runtime/tests/test_host_inventory.py` | C16 bounded CPU/projection calculations and refusal to promote sandbox observations to daemon-host authority |
 | `tooling/runtime/tests/test_host_view.py` | C17 bounded mountinfo projection, local/cgroup selection and malformed-input refusal |
-| `tooling/runtime/tests/test_host_preflight.py` | V2 bounded/explicitly skipped hashes, retained type/size failures, symlink invocation, older task-field schema guard, actual mise/parser e2e with synthetic tools, absent tools and failure/byte/deadline cleanup |
+| `tooling/runtime/tests/test_host_preflight.py` | V2 bounded/explicitly skipped hashes, six-command contract-help allowlist, retained partial/exception receipts, symlink invocation, task schema guard, actual mise/parser/basic/contract e2e with synthetic tools and failure/byte/deadline cleanup |
 
 The persisted process e2e tests use explicitly synthetic source/model/return fixtures.
 The whole-match fixture uses actual canonical game transitions and native Burn updates, not a genuine corpus/strategic rollout or a measured training experiment.
@@ -126,20 +126,26 @@ It is not the final production envelope or a current live host e2e qualification
 - Clippy: passes with warnings denied.
 - Bun after host-mise/storage refresh: 489 tests pass across 66 files, with 29,887 assertions.
 - TypeScript: source and tests pass strict static analysis, including unused-symbol checks.
-- Python after the preflight-v2 correction: all 52 fake/synthetic/static tests pass, including 21 host-preflight tests, C16/C17 calculations and unexecuted C19 parser fixtures.
-- PlantUML: all 23 diagrams pass syntax checking and SVG rendering in `/tmp/opencode/chess-coach-ii-preflight-v2-verification-rt8qi3t6/`.
+- Python after the sbx-contract addition: all 58 fake/synthetic/static tests pass, including 27 host-preflight/contract tests, C16/C17 calculations and unexecuted C19 parser fixtures.
+- PlantUML: all 23 diagrams pass syntax checking and SVG rendering in `/tmp/opencode/chess-coach-ii-sbx-contract-verification-d2noe53n/`.
 - Synthetic Docker: one container passed limit, inheritance, CPU/PID/memory pressure and manager-cleanup checks within 7.477 seconds; no production-admission claim.
 - New JSON manifests and whitespace: pass.
 
 Rust verification uses the operator-approved installed Zig 0.15.2 through temporary C-driver scripts outside the repository. A normal GCC/Clang development toolchain remains sufficient on a standard host. No repository compiler shim or runtime bootstrap is required.
 
-The current preflight-v2 Python/AST/TOML/whitespace, actual mise parser/discovery and synthetic task e2e/diagram receipt is `/tmp/opencode/chess-coach-ii-preflight-v2-verification-rt8qi3t6/`.
+The current bounded-contract Python/AST/TOML/whitespace, actual mise parser/discovery and synthetic basic/contract task e2e/diagram receipt is `/tmp/opencode/chess-coach-ii-sbx-contract-verification-d2noe53n/`.
+Its private `operator-reported-root-preflight.json` retains a structured copy of the returned v2 report and warnings; it is not an agent host-execution receipt.
+The new host task selects sbx once and queries exactly six fixed help pages, retaining earlier receipts even after a query exception.
+No installed host subcommand help, resource admission, provisioning or training has occurred through the new task.
+The preceding preflight-v2 correction receipt is `/tmp/opencode/chess-coach-ii-preflight-v2-verification-rt8qi3t6/`.
 It reproduces the original combined size/type failure with a synthetic four-byte limit and proves explicit metadata-only skipping without reading the oversized fixture.
 It preserves the two operator-reported host failures separately from agent-executed synthetic checks.
 Executor reported host mise 2026.5.16 rejecting task-level `output`, then a v1 executable-check failure after independently updating to 2026.11.3.
 The corrected task uses supported `raw`/`quiet` fields and no task-level `output`.
 The actual installed-2026.5.16 binary was not part of local verification.
-No actual host sbx query, provisioning or training followed from the correction.
+At correction delivery, actual host root help remained pending.
+Executor subsequently supplied a passing v2 metadata/root-help report, preserving both skipped hashes and denied-home initialization warnings.
+That operator report supplies no provisioning, workload, final artifact or runtime-control qualification.
 The current diff leaves the previously verified Rust/Bun learning/game runtime unchanged.
 Its complete pipeline results below remain the last full pass rather than a new full-pipeline run or host qualification.
 
@@ -166,7 +172,8 @@ Executor subsequently corrected their realm to sbx-local observations.
 Do not promote C16/C17 to actual host CPU/storage/cgroup authority or treat their free-space samples as host provisioning limits.
 The new host-executed mise architecture and missing host interface are recorded in [host-entrypoint.md](host-entrypoint.md).
 C19 remains authorized but unexecuted and paused.
-No real host sbx command, provisioning or training occurred.
+The agent has executed no actual host sbx commands.
+The subsequent operator-reported root help contains no provisioning or workload operation.
 
 ## Remaining gates
 

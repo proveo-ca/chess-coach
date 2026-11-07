@@ -17,6 +17,7 @@ import time
 
 OUTPUT_BYTES = 65536
 EXECUTABLE_BYTES = 128 * 1024 * 1024
+SBX_HELP = ("version", "create", "exec", "stop", "rm", "cp")
 
 
 def identity(path: str) -> dict:
@@ -154,7 +155,7 @@ def query(command: list[str], timeout_seconds: float = 10) -> dict:
     return result
 
 
-def collect() -> dict:
+def collect(sbx_contract: bool = False) -> dict:
     result = {
         "version": "chess-coach.host-preflight.v2",
         "executionRealm": "OPERATOR_ASSERTED_HOST_UNQUALIFIED",
@@ -165,25 +166,38 @@ def collect() -> dict:
         "trainingReady": False,
         "status": "PASS_METADATA_ONLY",
     }
-    for name, arguments in (("mise", ["--version"]), ("sbx", ["--help"])):
+    if sbx_contract:
+        result.update(
+            version="chess-coach.sbx-contract.v1",
+            scope="LOCAL_TOOL_METADATA_AND_FIXED_SUBCOMMAND_HELP_ONLY",
+        )
+    commands = (
+        tuple(("sbx", [verb, "--help"]) for verb in SBX_HELP)
+        if sbx_contract
+        else (("mise", ["--version"]), ("sbx", ["--help"]))
+    )
+    for name, arguments in commands:
         try:
-            path = shutil.which(name)
-            if path is None:
-                raise FileNotFoundError(f"Host preflight: MISSING_{name.upper()}")
-            tool = identity(path)
-            result["tools"][name] = tool
-            if "error" in tool:
-                result["status"] = "BLOCKED"
-                break
-            tool["query"] = query([str(Path(path).absolute()), *arguments])
-            if (
-                "error" in tool["query"]
-                or tool["query"]["forced"]
-                or not tool["query"]["reaped"]
-            ):
+            tool = result["tools"].get(name)
+            if tool is None:
+                path = shutil.which(name)
+                if path is None:
+                    raise FileNotFoundError(f"Host preflight: MISSING_{name.upper()}")
+                tool = identity(path)
+                tool["selectedPath"] = str(Path(path).absolute())
+                result["tools"][name] = tool
+                if "error" in tool:
+                    result["status"] = "BLOCKED"
+                    break
+            receipt = query([tool["selectedPath"], *arguments])
+            if sbx_contract:
+                tool.setdefault("queries", []).append(receipt)
+            else:
+                tool["query"] = receipt
+            if "error" in receipt or receipt["forced"] or not receipt["reaped"]:
                 result["status"] = "BLOCKED"
         except (OSError, ValueError) as error:
-            result["tools"][name] = {"error": str(error)}
+            result["tools"].setdefault(name, {})["error"] = str(error)
             result["status"] = "BLOCKED"
         if result["status"] == "BLOCKED":
             break
@@ -195,13 +209,18 @@ def main() -> int:
         description="Host-only metadata preflight; no provisioning, installation or training."
     )
     parser.add_argument(
+        "--sbx-contract",
+        action="store_true",
+        help="Collect only the six fixed sbx subcommand help pages; never run the operations.",
+    )
+    parser.add_argument(
         "--confirm-host",
         action="store_true",
         required=True,
         help="Operator assertion, not proof of the execution realm.",
     )
-    parser.parse_args()
-    result = collect()
+    arguments = parser.parse_args()
+    result = collect(arguments.sbx_contract)
     print(json.dumps(result, sort_keys=True))
     return 0 if result["status"] == "PASS_METADATA_ONLY" else 1
 

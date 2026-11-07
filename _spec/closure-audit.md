@@ -4,6 +4,10 @@ Status: PARTIAL CURRENT DEVELOPMENT INVENTORY / NOT INDEPENDENTLY FROZEN / NOT G
 
 ## Preflight-v2 correction
 
+The later fixed `host:sbx-contract` profile reuses this helper's standard-library imports and adds no Cargo/Bun runtime dependency.
+Its source/tests, basic/contract mise e2e, AST/TOML/whitespace and diagram checks are in `/tmp/opencode/chess-coach-ii-sbx-contract-verification-d2noe53n/`.
+The received root CLI help identifies Docker Sandboxes but does not register its executable hash, installed subcommand options or final runtime resources.
+
 The host preflight module and its mise task changed after the baseline inventory below.
 The correction uses the existing standard-library imports and does not change the Cargo/Bun game/learning runtime graphs.
 The current source/test and AST/TOML/mise/synthetic-e2e/diagram checks are in `/tmp/opencode/chess-coach-ii-preflight-v2-verification-rt8qi3t6/`.
@@ -22,7 +26,9 @@ The development Python inventory contains 86 imported files including the metada
 Importing that module does not execute its CLI or query any host/sbx tool.
 All three development native binaries still carry developer/toolchain RUNPATHs and remain disallowed as final runtime artifacts.
 The preserved reference stays read-only.
-No real host sbx command, provisioning, capture/build image operation or training occurred.
+No actual host sbx command occurred during that baseline inventory.
+Executor subsequently supplied an operator-run root-help report; it registers no final artifact or runtime control.
+No provisioning, capture/build image operation or training followed from that report.
 Actual host-side mise/sbx/Python identities and their supported control mapping remain unregistered.
 The final source/static/synthetic refresh is recorded in [verification.md](verification.md).
 

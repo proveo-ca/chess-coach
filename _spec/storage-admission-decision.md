@@ -73,7 +73,9 @@ No real 5,000-attempt experiment or admitted filesystem fit has been demonstrate
 Actual metadata/headroom adequacy and available bytes/inodes must be qualified on the selected new target.
 Image/capture/build scratch remain separately bounded and admitted; do not silently charge them to private state or omit them from capacity checks.
 
-Host-executed `mise` must first expose the real `sbx` help/identity or supported interface documentation before an exact provisioning command can be formed.
+Host-executed `mise` exposed Docker Sandboxes root help and metadata, with both executable hashes explicitly skipped.
+The installed create/exec/lifecycle options and exact storage/resource mapping remain pending before an exact provisioning command can be formed.
+Official docs identify separate creation-time root/Docker-data/clone size controls and explicitly exclude resizing existing volumes; see [sbx-interface-research.md](sbx-interface-research.md).
 The current sbx session supplies neither a host executor nor authority to provision backing.
 C19 remains unexecuted and paused; do not replace the host handoff with another sbx-local block-device inventory.
 If no backing is available through the approved interface, this is a genuine infrastructure/tools boundary, not a missing TypeScript flag.

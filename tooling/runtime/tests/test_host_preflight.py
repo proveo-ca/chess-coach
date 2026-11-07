@@ -12,10 +12,169 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-from tooling.runtime.host_preflight import OUTPUT_BYTES, collect, identity, query
+from tooling.runtime.host_preflight import (
+    OUTPUT_BYTES,
+    SBX_HELP,
+    collect,
+    identity,
+    query,
+)
 
 
 class HostPreflightTests(unittest.TestCase):
+    def test_contract_profile_queries_only_the_six_fixed_help_pages_and_selects_identity_once(
+        self,
+    ):
+        with (
+            patch(
+                "tooling.runtime.host_preflight.shutil.which", return_value="/fake/sbx"
+            ) as select,
+            patch(
+                "tooling.runtime.host_preflight.identity",
+                return_value={"resolvedPath": "/fake/target"},
+            ) as identify,
+            patch(
+                "tooling.runtime.host_preflight.query",
+                return_value={"reaped": True, "forced": False},
+            ) as run,
+        ):
+            result = collect(True)
+        self.assertEqual(SBX_HELP, ("version", "create", "exec", "stop", "rm", "cp"))
+        self.assertEqual(
+            [call.args[0] for call in run.call_args_list],
+            [["/fake/sbx", verb, "--help"] for verb in SBX_HELP],
+        )
+        self.assertEqual(select.call_count, 1)
+        self.assertEqual(identify.call_count, 1)
+        self.assertEqual(result["version"], "chess-coach.sbx-contract.v1")
+        self.assertEqual(result["status"], "PASS_METADATA_ONLY")
+        self.assertEqual(len(result["tools"]["sbx"]["queries"]), 6)
+        self.assertFalse(result["trainingReady"])
+
+    def test_contract_failure_retains_prior_help_and_never_queries_later_verbs(self):
+        good = {"stdout": "retained help", "reaped": True, "forced": False}
+        failed = {
+            "stdout": "retained failure",
+            "error": "synthetic failure",
+            "reaped": True,
+            "forced": False,
+        }
+        with (
+            patch(
+                "tooling.runtime.host_preflight.shutil.which", return_value="/fake/sbx"
+            ),
+            patch(
+                "tooling.runtime.host_preflight.identity",
+                return_value={"resolvedPath": "/fake/target"},
+            ),
+            patch(
+                "tooling.runtime.host_preflight.query", side_effect=[good, good, failed]
+            ) as run,
+        ):
+            result = collect(True)
+        self.assertEqual(result["status"], "BLOCKED")
+        self.assertEqual(run.call_count, 3)
+        self.assertEqual(
+            [receipt["stdout"] for receipt in result["tools"]["sbx"]["queries"]],
+            ["retained help", "retained help", "retained failure"],
+        )
+
+    def test_contract_query_exception_preserves_already_collected_receipts(self):
+        good = {"stdout": "retained first help", "reaped": True, "forced": False}
+        with (
+            patch(
+                "tooling.runtime.host_preflight.shutil.which", return_value="/fake/sbx"
+            ),
+            patch(
+                "tooling.runtime.host_preflight.identity",
+                return_value={"resolvedPath": "/fake/target"},
+            ),
+            patch(
+                "tooling.runtime.host_preflight.query",
+                side_effect=[good, OSError("synthetic query exception")],
+            ) as run,
+        ):
+            result = collect(True)
+        self.assertEqual(result["status"], "BLOCKED")
+        self.assertEqual(run.call_count, 2)
+        self.assertEqual(
+            result["tools"]["sbx"]["queries"][0]["stdout"], "retained first help"
+        )
+        self.assertIn("synthetic query exception", result["tools"]["sbx"]["error"])
+
+    def test_contract_profile_rejects_extra_operation_arguments_before_any_query(self):
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-I",
+                "-B",
+                "tooling/runtime/host_preflight.py",
+                "--confirm-host",
+                "--sbx-contract",
+                "create",
+            ],
+            capture_output=True,
+            timeout=5,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(b"unrecognized arguments: create", result.stderr)
+        self.assertEqual(result.stdout, b"")
+
+    @unittest.skipUnless(
+        shutil.which("mise"), "requires installed mise for synthetic contract e2e"
+    )
+    def test_actual_mise_contract_task_runs_help_only_against_a_synthetic_sbx(self):
+        mise = shutil.which("mise")
+        with tempfile.TemporaryDirectory(
+            prefix="chess-coach-mise-contract-", dir="/tmp/opencode"
+        ) as directory:
+            root = Path(directory)
+            executable = root / "sbx"
+            executable.write_text('#!/bin/sh\nprintf "%s\\n" "$*"\n')
+            executable.chmod(0o700)
+            env = dict(
+                os.environ,
+                PATH=f"{root}:/usr/bin:/bin",
+                MISE_AUTO_INSTALL="false",
+                MISE_TASK_RUN_AUTO_INSTALL="false",
+                MISE_OFFLINE="true",
+                MISE_DATA_DIR=str(root / "data"),
+                MISE_CACHE_DIR=str(root / "cache"),
+                MISE_STATE_DIR=str(root / "state"),
+                MISE_GLOBAL_CONFIG_FILE=str(root / "absent-global.toml"),
+                MISE_SYSTEM_CONFIG_FILE=str(root / "absent-system.toml"),
+            )
+            process = subprocess.run(
+                [mise, "run", "host:sbx-contract", "--confirm-host"],
+                env=env,
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                timeout=10,
+            )
+            self.assertEqual(process.returncode, 0, process.stderr.decode())
+            result = json.loads(process.stdout)
+            self.assertEqual(result["version"], "chess-coach.sbx-contract.v1")
+            self.assertEqual(result["status"], "PASS_METADATA_ONLY")
+            self.assertEqual(
+                [receipt["stdout"] for receipt in result["tools"]["sbx"]["queries"]],
+                [verb + " --help\n" for verb in SBX_HELP],
+            )
+            self.assertFalse(result["trainingAuthorized"])
+            self.assertFalse(result["provisioningAuthorized"])
+
+    def test_contract_task_has_no_arbitrary_argv_or_operational_dependencies(self):
+        config = tomllib.loads(Path("mise.toml").read_text())
+        task = config["tasks"]["host:sbx-contract"]
+        self.assertEqual(
+            task["run"],
+            "python3 -I -B tooling/runtime/host_preflight.py --sbx-contract",
+        )
+        self.assertTrue(task["raw"])
+        self.assertTrue(task["raw_args"])
+        self.assertLessEqual(
+            set(task), {"description", "raw_args", "raw", "quiet", "env", "run"}
+        )
+
     @unittest.skipUnless(
         shutil.which("mise"), "requires installed mise for synthetic task e2e"
     )

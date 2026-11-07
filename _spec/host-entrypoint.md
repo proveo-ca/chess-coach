@@ -1,13 +1,14 @@
 # Host-executed mise → supported sbx
 
-Status: EXECUTOR-SELECTED ARCHITECTURE / PREFLIGHT SOURCE VERIFIED SEPARATELY / HOST INTERFACE STILL MISSING.
+Status: OPERATOR-REPORTED ROOT HELP RECEIVED / SUBCOMMAND CONTRACT PENDING / NO PROVISIONING OR TRAINING GRANT.
 
 Executor selected `Run host preflight (Recommended)` at the host-interface handoff.
 The selected route is operator execution on the actual host and return of its bounded stdout/stderr report.
 Executor explicitly directed delegation of host commands to Executor, who runs them and reports outputs.
 The agent prepares exact scoped host commands but executes only authorized sbx development work in this session.
 Executor returned the failed host reports described below.
-No successful host sbx help/identity report or host execution integration has arrived in this session.
+Executor returned the successful v2 metadata/root-help report described below.
+The installed subcommand contract and actual resource/storage admission remain pending.
 Do not execute the task in the coding sbx and present it as completion of that selection.
 The agent has not run the actual host preflight.
 
@@ -41,6 +42,8 @@ Keep the existing supported supervisor and original clock contract rather than r
 
 ## Available task
 
+### Root preflight: completed by Executor
+
 Run from the selected source snapshot on the actual host:
 
 ```sh
@@ -69,9 +72,44 @@ Unsupported help, missing tools, output exhaustion and deadline failure stop wit
 Development verification may execute that parser and synthetic subprocess fixtures inside sbx.
 Those checks do not invoke a real host `sbx` command.
 
+## Received v2 host report
+
+Executor reported `PASS_METADATA_ONLY` after the corrected parser help succeeded.
+The reported mise executable is `/home/gu1lty/.local/bin/mise`, version `2026.11.3`, length 177,830,976 bytes.
+The reported sbx executable is `/usr/bin/sbx`, length 163,042,432 bytes.
+Both are regular files above 134,217,728 bytes and correctly report `SKIPPED_SIZE_BOUND`, zero content bytes read and no SHA-256.
+The root help identifies Docker Sandboxes and lists `version`, `create`, `exec`, `stop`, `rm` and `cp` among its supported verbs.
+It does not identify the installed sbx version or expose those verbs' exact options.
+The two query receipts report exit zero, natural completion and reap.
+Their stderr retains failed initialization attempts under the unavailable synthetic home: mise reports `failed create_dir_all` and sbx reports `mkdir /nonexistent: permission denied`.
+Do not hide these warnings, grant real-home/credential access to silence them, or promote metadata success to a guarantee that arbitrary CLI help has no initialization effects.
+No daemon query, provisioning, workload operation or training appears in this report's fixed query list.
+These remain operator-reported observations rather than independently selected artifact identities or effective runtime qualification.
+
+### Next metadata task: fixed subcommand help
+
+Executor selected `Commit and push task (Recommended)` for this new fixed help packet.
+This authorizes publication and the delegated metadata handoff, not any provisioning or workload operation.
+
+```sh
+MISE_AUTO_INSTALL=false MISE_TASK_RUN_AUTO_INSTALL=false mise run host:sbx-contract --confirm-host
+```
+
+The source task executes only the selected sbx path with the six fixed argument lists `version --help`, `create --help`, `exec --help`, `stop --help`, `rm --help` and `cp --help`, in that order.
+It does not execute any listed operation without `--help`.
+It selects/observes the sbx executable once, preserves its selected invocation path and reuses the existing bounded query helper.
+Each query keeps the 10-second / 65,536-byte combined-output bound and two-second owned cleanup limit.
+The six output prefixes total at most 393,216 raw bytes before JSON encoding/metadata.
+The first failure preserves all earlier receipts and stops before later help pages.
+The task accepts no arbitrary operation, sandbox name, backend flag, target path or forwarded argv.
+It creates no persistent report directory and invokes no `ls`, `diagnose`, login, settings, daemon, cloud, create, exec, stop or removal operation.
+Executor retains stdout/stderr and delegates no host execution to this agent.
+This is a new metadata packet, not a retry or reset of the completed root preflight.
+No host subcommand report has arrived yet.
+
 ## Unimplemented operational tasks
 
-Keep host seeding/provisioning/training operations unwired until the real host CLI/help or official interface documentation is supplied.
+Keep host seeding/provisioning/training operations unwired until the installed create/exec/lifecycle contract, supported storage controls and actual target are supplied and the applicable operation is separately approved.
 Do not invent `sbx` disk, mount, resource, image, lifecycle or execution flags.
 Do not add an arbitrary shell/argv escape hatch that bypasses the fixed supported runtime contract.
 After interface selection, freeze exact host targets, disk units/usable capacity, private-state mapping, control-plane ownership and lifecycle.
@@ -91,6 +129,8 @@ See [storage-admission-decision.md](storage-admission-decision.md) for the enfor
 - https://mise.jdx.dev/tasks/
 - https://mise.jdx.dev/tasks/task-configuration.html
 - https://mise.jdx.dev/configuration/settings.html#task.run_auto_install
+
+Docker Sandboxes storage/lifecycle findings and their limits are in [sbx-interface-research.md](sbx-interface-research.md).
 
 Use `raw_args` to forward Python parser arguments.
 Use the older-supported `raw` task flag to avoid prefixing the JSON report.

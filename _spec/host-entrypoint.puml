@@ -10,6 +10,7 @@ note right
   Preserve selected invocation paths for dispatching symlinks.
   This metadata does not register final artifact identity.
 end note
+:host:sbx-contract records six fixed subcommand help pages only;
 if (Supported sbx interface supplied?) then (no)
   :Retain metadata and stop at tools/context boundary;
   stop

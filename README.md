@@ -16,6 +16,7 @@ The learning crate uses a standard Burn MLP and episodic objective. `packages/ga
 Run `mise run host:preflight --confirm-host` **on the actual host**, not in this coding sbx, to capture the existing mise/sbx executable identities and `sbx --help`.
 Automatic installation stays disabled.
 This metadata-only task provisions nothing and authorizes no training.
+After root-help discovery, `mise run host:sbx-contract --confirm-host` collects only six fixed subcommand help pages.
 Seeding/provisioning/training tasks remain unwired until the supported host `sbx` interface and separate grants exist.
 See [_spec/host-entrypoint.md](_spec/host-entrypoint.md).
 
