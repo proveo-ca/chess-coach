@@ -1,0 +1,27 @@
+@startuml game_core
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Canonical game primitives
+component "Typed squares + actions + snapshots" as TYPES <<app>>
+component "Board placement + attack geometry" as BOARD <<app>>
+component "Economy + special costs + turn clocks" as ECONOMY <<app>>
+component "Terminal outcomes" as OUTCOME <<app>>
+component "Native moves + mine geometry" as MOVES <<app>>
+component "Cumulative fog + path reveals" as VISION <<app>>
+component "Bun regression tests" as TESTS <<app>>
+BOARD --> TYPES
+ECONOMY --> TYPES
+ECONOMY --> BOARD : deployed material
+OUTCOME --> TYPES
+MOVES --> BOARD
+VISION --> BOARD
+TESTS ..> BOARD
+TESTS ..> ECONOMY
+TESTS ..> OUTCOME
+TESTS ..> MOVES
+TESTS ..> VISION
+note bottom of TESTS
+  Retain canonical rules, not legacy AI planners.
+  Move generation is not queue/resolve eligibility.
+  Simultaneous resolution and recipient DTOs remain pending.
+end note
+@enduml

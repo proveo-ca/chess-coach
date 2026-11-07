@@ -1,0 +1,20 @@
+{
+  "name": "@chess-coach/contracts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./initialization": "./src/initialization.ts",
+    "./causal-journal": "./src/causal-journal.ts",
+    "./recipient": "./src/recipient.ts",
+    "./recipient-codec": "./src/recipient-codec.ts",
+    "./game-session": "./src/game-session.ts",
+    "./native-protocol": "./src/native-protocol.ts",
+    "./episode": "./src/episode.ts"
+  },
+  "dependencies": {
+    "@chess-coach/game-core": "workspace:*",
+    "zod": "4.6.7"
+  }
+}

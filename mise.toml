@@ -1,0 +1,16 @@
+# SPEC: _spec/architecture.puml
+[settings]
+auto_install = false
+task.run_auto_install = false
+
+[tools]
+"core:bun" = "1.4.0"
+"core:rust" = { version = "1.95.0", profile = "minimal", components = ["rustfmt", "clippy"] }
+
+[tasks."host:preflight"]
+description = "Host-only read-only mise/sbx identity and help; no provisioning or training"
+raw_args = true
+quiet = true
+output = "interleave"
+env.PYTHONDONTWRITEBYTECODE = "1"
+run = "python3 -I -B tooling/runtime/host_preflight.py"

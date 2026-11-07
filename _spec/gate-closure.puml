@@ -1,0 +1,40 @@
+@startuml gate_closure
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Gate0 / F9 / R4 - open gates and explicit decisions
+start
+:C1 accepted - amended supported-runtime gate profile;
+:Freeze current file/API/test plan, expectations,
+runtime policy, resource bounds and output-registration method;
+:Executor accepts Gate0 design and prerequisites;
+fork
+  :Complete resolver and typed causal journal;
+  :Produce BOTH recipient histories,
+paid receipts and deterministic replay;
+fork again
+  :Implement supported supervision,
+independent reference and negative tests;
+end fork
+:Obtain fresh scoped capture/build approval;
+:Build and independently register actual outputs;
+:Obtain fresh live-qualification approval;
+:Verify actual selected runtime, limits,
+stdio, deadlines and whole-job cleanup;
+:Obtain separate native-proof approval;
+:Cold canonical BOTH init, open/pass settlement,
+independent comparison and clean close/EOF/reap;
+:Close F9 only on actual positive and negative evidence;
+:Bind genuine recipient facts to frozen Burn model;
+:Verify economics, noninterference,
+numeric validation, phase and atomicity;
+:Close R4 only on complete current-profile evidence;
+:Run cross-cutting technical readiness checks;
+:Defer reviewers until technical training readiness;
+note right
+  Current Gate0 / F9 / R4 remain OPEN.
+  No contract decision or operation is granted here.
+  Historical exact-contract results remain unchanged.
+  Synthetic Docker grant is consumed.
+  Training and publication require separate approval.
+end note
+stop
+@enduml

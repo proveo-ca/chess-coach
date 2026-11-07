@@ -1,0 +1,30 @@
+{
+  "version": "chess-coach.features.v1",
+  "dimension": 2271,
+  "stateDimension": 1679,
+  "actionDimension": 592,
+  "boardSquares": 64,
+  "perspective": "own-side-forward-rank-flip",
+  "boardChannels": [
+    "own.p", "own.n", "own.b", "own.r", "own.q", "own.k",
+    "enemy.p", "enemy.n", "enemy.b", "enemy.r", "enemy.q", "enemy.k",
+    "memory.p", "memory.n", "memory.b", "memory.r", "memory.q", "memory.k",
+    "memory.age", "visibility.lit", "visibility.revealed", "visibility.everLit",
+    "mine.own", "siege.own", "economic.ownPaidBasis", "economic.ownReplacement"
+  ],
+  "scalars": [
+    "turn/45", "minerals/12", "gas/3", "gasIncome/3", "ccLives/3",
+    "paidDebits/576", "paidSurviving/576", "paidDestroyed/576", "paidWasted/576",
+    "replacementDestroyed/1152", "enemyConfirmedLossCount/128", "enemyReplacementLowerBound/1152",
+    "paidReceiptCount/64", "unmaterializedReceiptCount/64", "retiredOwnCount/128"
+  ],
+  "actionSlots": 4,
+  "actionSlotDimension": 148,
+  "actionKinds": ["classical", "deploy", "stimStep", "spiderMine", "charonMissiles", "siegeMode", "tacticalJump"],
+  "timings": ["B", "C", "F"],
+  "spawnChoices": ["p", "n", "b", "r", "q"],
+  "promotionChoices": ["n", "b", "r", "q"],
+  "actionSlotFields": ["present", "kind.onehot7", "timing.onehot3", "from.onehot64", "to.onehot64", "spawn.onehot5", "promotion.onehot4"],
+  "memoryAgeScale": 45,
+  "ownUnitValueScale": 9
+}

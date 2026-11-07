@@ -1,0 +1,33 @@
+@startuml clean_runtime
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Clean game / learning boundaries
+component "packages/game-core\ncanonical init + B/C/F physics\nactual-mutation causal sink" as GAME <<app>>
+component "Rollout + evaluation harness\nnot implemented" as RUN <<app>>
+component "crates/learning\nBurn model + episodic objective" as ML <<app>>
+component "packages/contracts\nZod recipient observation + JSON Schema" as CONTRACT <<app>>
+component "crates/policy-io\nstandard JSON / Serde scoring" as IO <<app>>
+component "packages/policy\nbounded candidates + versioned encoder" as POLICY <<app>>
+database "Burn native model records\nsynthetic round-trip test" as STORE <<db>>
+component "Product applications\nmigration pending" as UI <<app>>
+node "Cargo + Bun\nstandard development tools" as TOOLS <<host>>
+node "Host mise\npreflight / planned seeding + provisioning" as HOST <<host>>
+node "Dedicated admitted sbx\nseparate execution grant" as SBX <<host>>
+HOST ..> SBX : supported CLI contract pending
+SBX ..> RUN : separately authorized job
+UI ..> GAME : game API
+RUN ..> GAME : observations / legal actions / replay
+RUN ..> POLICY : recipient observation / candidates
+POLICY --> CONTRACT : standard validation
+POLICY --> IO : 2271 numeric coordinates / candidate
+IO --> ML : frozen model / bounded feature batch
+RUN ..> CONTRACT : recipient-local data; producer pending
+ML --> STORE : Burn record API
+TOOLS --> ML : build / synthetic tests
+TOOLS --> GAME : Bun regression tests
+TOOLS --> CONTRACT : strict static + invariant tests
+TOOLS --> IO : native / cross-language e2e
+note bottom of RUN
+  Proposed boundaries grant no runtime authority.
+  Host verification and training remain separate.
+end note
+@enduml

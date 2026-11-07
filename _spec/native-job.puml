@@ -1,0 +1,18 @@
+@startuml native_job
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Shared native job limits - synthetic proof passed, production pending
+component "Trusted deadline supervisor\noriginal S0; no reset after failure" as SUPERVISOR <<app>>
+node "Standard OS/runtime resource envelope\nC2: 4 CPU / 8 GiB / 512 tasks / no extra swap\n2 GiB tmpfs within memory; admission pending" as JOB <<host>> {
+  component "Both seats + game producer" as GAME <<app>>
+  component "Feature encoding + Burn scoring / learning" as ML <<app>>
+  GAME --> ML
+}
+SUPERVISOR --> JOB : retain absolute 10s / 300s boundaries
+SUPERVISOR --> JOB : reserve final 3s for whole-job cleanup
+note bottom of JOB
+  No custom DIRECT meter or private kernel framework.
+  Byte validation does not prove resource admission.
+  The one-shot synthetic grant is consumed.
+  Production host operations remain unauthorized.
+end note
+@enduml

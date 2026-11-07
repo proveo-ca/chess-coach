@@ -1,0 +1,10 @@
+{
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "worlds": 1536,
+  "nativeQueries": 49152,
+  "appendQueries": 344064,
+  "sha256": {
+    "append": "0ede38852449f7705084246a939a31f16696bc92bc910e18beb6d9d67dc185e1",
+    "native": "c32129100c11f5f5f741825c184d56b77c60d1088eee2d6eccd441739061f8e2"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "version": "chess-coach.runtime-input-proposal.v1",
+  "status": "DESIGN_CANDIDATES_NOT_GATE0_ACCEPTED",
+  "decision": "C5_OFFICIAL_BUN_BASE",
+  "platform": "linux/amd64",
+  "runtimeBase": {
+    "repository": "docker.io/oven/bun",
+    "discoveryTag": "1.4.0",
+    "indexDigest": "sha256:5ff609364c049b54eb0ff560ec96319729a972078ef2c755d758f0c6ef89c2d6",
+    "manifestDigest": "sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038",
+    "configDigest": "sha256:4bb1bd8ae2d620c285a765a09425aeac85caf16e4031105169f33ff72096f829",
+    "upstreamRevision": "34cbb9a40b4bd1bd767d134a7065e66c2432a676"
+  },
+  "rustBuilder": {
+    "repository": "docker.io/library/rust",
+    "discoveryTag": "1.95.0-bookworm",
+    "indexDigest": "sha256:6258907abe69656e41cd992e0b705cdcfabcbbe3db374f92ed2d47121282d4a1",
+    "manifestDigest": "sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+    "configDigest": "sha256:d617f1b5c2a18778ba357ba0528e973bd24992b0dd18000dfbca059f4a15ebda",
+    "upstreamRevision": "dd106de2954f52f336c3d2c1326ae778c51830f3"
+  },
+  "imageContainedInit": {
+    "project": "krallin/tini",
+    "release": "v0.19.0",
+    "asset": "tini-static-amd64",
+    "url": "https://github.com/krallin/tini/releases/download/v0.19.0/tini-static-amd64",
+    "publishedChecksumUrl": "https://github.com/krallin/tini/releases/download/v0.19.0/tini-static-amd64.sha256sum",
+    "publishedSha256": "c5b0666b4cb676901f90dfcb37106783c5fe2077b04590973b885950611b30ee",
+    "releaseMetadataSizeBytes": 870496,
+    "executableFetchedOrVerified": false,
+    "proposedEntrypoint": ["/sbin/chess-init", "-g", "--"]
+  },
+  "metadataEvidence": "/tmp/opencode/chess-coach-ii-runtime-metadata-4wh3ycgc/",
+  "imageLayersFetched": 0,
+  "executablesFetched": 0,
+  "dockerInvocations": 0,
+  "captureBuildOrRuntimeAuthorized": false,
+  "trainingReady": false
+}

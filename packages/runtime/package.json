@@ -1,0 +1,13 @@
+{
+  "name": "@chess-coach/runtime",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": {
+    "@chess-coach/contracts": "workspace:*",
+    "@chess-coach/game-core": "workspace:*",
+    "@chess-coach/policy": "workspace:*",
+    "zod": "4.6.7"
+  }
+}

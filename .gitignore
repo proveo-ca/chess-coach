@@ -1,0 +1,14 @@
+/.env
+/.env.*
+!/.env.example
+node_modules/
+/target/
+dist/
+coverage/
+test-results/
+__pycache__/
+*.py[cod]
+*.log
+*.key
+*.pem
+*.bpk

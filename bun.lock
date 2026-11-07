@@ -1,0 +1,64 @@
+{
+  "lockfileVersion": 2,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "chess-coach",
+      "devDependencies": {
+        "@types/bun": "1.4.0",
+        "typescript": "5.9.3",
+      },
+    },
+    "packages/contracts": {
+      "name": "@chess-coach/contracts",
+      "version": "0.0.0",
+      "dependencies": {
+        "@chess-coach/game-core": "workspace:*",
+        "zod": "4.6.7",
+      },
+    },
+    "packages/game-core": {
+      "name": "@chess-coach/game-core",
+      "version": "0.0.0",
+    },
+    "packages/policy": {
+      "name": "@chess-coach/policy",
+      "version": "0.0.0",
+      "dependencies": {
+        "@chess-coach/contracts": "workspace:*",
+        "@chess-coach/game-core": "workspace:*",
+      },
+    },
+    "packages/runtime": {
+      "name": "@chess-coach/runtime",
+      "version": "0.0.0",
+      "dependencies": {
+        "@chess-coach/contracts": "workspace:*",
+        "@chess-coach/game-core": "workspace:*",
+        "@chess-coach/policy": "workspace:*",
+        "zod": "4.6.7",
+      },
+    },
+  },
+  "packages": {
+    "@chess-coach/contracts": ["@chess-coach/contracts@workspace:packages/contracts"],
+
+    "@chess-coach/game-core": ["@chess-coach/game-core@workspace:packages/game-core"],
+
+    "@chess-coach/policy": ["@chess-coach/policy@workspace:packages/policy"],
+
+    "@chess-coach/runtime": ["@chess-coach/runtime@workspace:packages/runtime"],
+
+    "@types/bun": ["@types/bun@1.4.0", "", { "dependencies": { "bun-types": "1.4.0" } }, "sha512-K+lZULY23vRgK/CfTjFIV+tyifaNdSMlPh9j+6mQ/cLfpOznLyAuzgV/JQysyECpkBQLVMSyvjlr2fBUSA9wFQ=="],
+
+    "@types/node": ["@types/node@26.6.6", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-MzQj+8Kx3XI40OmUAE6Qoh58ZMNstNNMwn2nfd3qWsfe7nDNSqJNzes4njhz6AHwrSHOffSLwXU6yb474Q4aog=="],
+
+    "bun-types": ["bun-types@1.4.0", "", { "dependencies": { "@types/node": "*" } }, "sha512-iIKw23BspnQQYd3prITOBxeUsxBHnwzX6YJfGMuNOZzeNcMmVqzIIVGRm1l69ogaPQmb4wB6BN8mA5bE9YuC5Q=="],
+
+    "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
+
+    "undici-types": ["undici-types@8.9.0", "", {}, "sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg=="],
+
+    "zod": ["zod@4.6.7", "", {}, "sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg=="],
+  }
+}

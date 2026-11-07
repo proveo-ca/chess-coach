@@ -1,0 +1,26 @@
+@startuml supervision
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title C8 - supported outside supervision and exact owned cgroup absence
+start
+:Capture one CLOCK_BOOTTIME origin before per-attempt work;
+:Create selected immutable job with C2 and explicit remaining limits;
+:Hold at boot barrier without game or policy work;
+:Check trusted manager identity and controls;
+:Bind owned init to exact approved host cgroup;
+:Check effective limits and membership through read-only observation;
+:Release one fixed native-proof command;
+if (BOTH init/open/pass and clean child close before S0+10s?) then (yes)
+  :Require natural job exit and successful owned CLI reap;
+  :Remove the stopped job normally;
+else (no)
+  :Fail attempt and stop complete owned job without retry;
+endif
+:Require exact bound cgroup disappearance before S0+300s;
+note right
+  End normal work by S0+297s.
+  Stable observation root and approved parent remain required.
+  Empty cgroup or Docker removal alone cannot establish absence.
+  Synthetic fixtures grant no host execution authority.
+end note
+stop
+@enduml

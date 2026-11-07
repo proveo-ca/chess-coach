@@ -1,0 +1,15 @@
+{
+  "name": "chess-coach",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.4.0",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "test": "bun test packages/game-core/tests packages/contracts/tests packages/policy/tests packages/runtime/tests",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.tests.json"
+  },
+  "devDependencies": {
+    "@types/bun": "1.4.0",
+    "typescript": "5.9.3"
+  }
+}

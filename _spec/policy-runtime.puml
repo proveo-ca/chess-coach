@@ -1,0 +1,25 @@
+@startuml policy_runtime
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Frozen policy - exact permit, reconstruction, ACK and one admission
+start
+:Bind model / history / side / original deadlines / ACKed RNG;
+:Receive exact owner-issued permit before preparing policy inputs;
+:Enumerate and encode only recipient facts;
+:Score through immutable native model;
+:Choose frozen argmax or one verified sampling draw;
+:Return compact tentative journal before permit deadline;
+:Owner reconstructs all decision facts under whole-job deadline;
+if (Exact match?) then (yes)
+  :ACK exact journal and commit known RNG prefix;
+  :Release recomputed features to Burn accumulation;
+  :Release selected actions to exactly one private admission;
+else (no)
+  :Abort without reward, update, rescue or renewed budget;
+endif
+note right
+  First-side ACK reveals no queue to the other side.
+  Timely result receipt and owner verification are distinct.
+  Parsing, names and digests do not confer execution authority.
+end note
+stop
+@enduml

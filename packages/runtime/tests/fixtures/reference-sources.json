@@ -1,0 +1,28 @@
+{
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "scope": "STATIC_CORPUS_CODEC_AND_SYNTHETIC_OPENING_PLANNING_ONLY",
+  "corpus": [
+    { "caseIndex": 0, "windows": 20, "normalizedPrefixSha256": "6b3a151053f41db7e221cd9f4ef3d94b7384aae1efa1c5e4d8c0244de9ecbddc" },
+    { "caseIndex": 1, "windows": 8, "normalizedPrefixSha256": "2903b38bcbe9793a6fcf8b04e11da5381b0e045e3fde9a7671ce7858e27e850b" },
+    { "caseIndex": 2, "windows": 19, "normalizedPrefixSha256": "da6530501c74f2c65b8d2a0a3f51b6c1bb07c10c79723947e14686a6005e882f" },
+    { "caseIndex": 3, "windows": 13, "normalizedPrefixSha256": "c3cf2e6aa3abbbad30d27e7b3fc803f74afdc5a7276cc156ef24b51de1fc3649" },
+    { "caseIndex": 4, "windows": 12, "normalizedPrefixSha256": "773974a6100a23b1130be086fbec3d2ea1564ec31a579db3bea9fbf924589a6a" },
+    { "caseIndex": 5, "windows": 13, "normalizedPrefixSha256": "14728214a137caac6c894c850d048e2ad943d17b69f17d94e2a27c9d4541923a" },
+    { "caseIndex": 6, "windows": 17, "normalizedPrefixSha256": "84f9706803e9a0f8a2801b1dbc1178d466dc4eb7f1b54d2e78acfdad6056114c" },
+    { "caseIndex": 7, "windows": 11, "normalizedPrefixSha256": "5ea740a0880c221dc6b98382afc23a11385ab6d0472f84bcaf1d0ea73324f258" },
+    { "caseIndex": 8, "windows": 9, "normalizedPrefixSha256": "795e05875142831bd45e36a0b1d670fb559be45aadbb61a98d7715d78184eb06" },
+    { "caseIndex": 9, "windows": 10, "normalizedPrefixSha256": "e3b3e59861fdd3ef62f7045a2fd3fa9df2928daf51950ec1dbc0b8b1e65229da" },
+    { "caseIndex": 10, "windows": 28, "normalizedPrefixSha256": "f51e1151ee675d032d144cd9fc2396ddd5c68547898d500bd77f01427d99f433" },
+    { "caseIndex": 11, "windows": 26, "normalizedPrefixSha256": "116ccb659eccb03d5c12ba86d83392e0799b0d5a791c2d7a565bba137b2035eb" },
+    { "caseIndex": 12, "windows": 24, "normalizedPrefixSha256": "8e4e9112a99c2e5529892848dffac924858db7e82046c171feb08223b6647006" },
+    { "caseIndex": 13, "windows": 26, "normalizedPrefixSha256": "c46e53accfd7b94037f5a4913741a06463364cc1116ddff0c3442486ffc68466" },
+    { "caseIndex": 14, "windows": 15, "normalizedPrefixSha256": "9133da27a7d0f822e1baa431bcecb4014721eb9069a3ef73add690aa0b445545" },
+    { "caseIndex": 15, "windows": 13, "normalizedPrefixSha256": "84272d957c2b7930a1a537ab0a362ae38fd01a509e2b5f3e2c5a7e297b3e01e9" },
+    { "caseIndex": 16, "windows": 8, "normalizedPrefixSha256": "9c18f44e9ab88a5e06051b5223cc12c2acad531f6c96f7a532eb862caaff35d1" },
+    { "caseIndex": 17, "windows": 10, "normalizedPrefixSha256": "44dc47ad8559e71f8c2fa065e61a392a48e5bd5e4f2a71de3dd7f0ffa314fe9c" }
+  ],
+  "strategic": [
+    { "side": "w", "digest": "8cf578c8efecaad82ccaa0b1da9976007f7f8a56a49dd742c5cb19052dc1eacd", "reportedMinSpend": 3, "drawCount": 10, "state": 2255165808 },
+    { "side": "b", "digest": "3eb56369541c63573759914054839890b3c9d2823a9618f1546e4858830e0270", "reportedMinSpend": 3, "drawCount": 10, "state": 2255165808 }
+  ]
+}

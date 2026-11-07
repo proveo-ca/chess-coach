@@ -1,0 +1,12 @@
+{
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "source": "packages/starchess-core/src/resolve/submit-turn.ts + commands/queue-action.ts",
+  "queuesPerSide": 47,
+  "variants": [
+    { "variant": 0, "cases": 2209, "settled": 2025, "rejected": 184, "sha256": "7c0888bda12116c439c6e5fef627674086772674ca89ad6db74f448d8b1cc281" },
+    { "variant": 1, "cases": 2209, "settled": 2025, "rejected": 184, "sha256": "94ba1f4706d83d691e7e1a344387b5de8db02455a8c5683c9d2698c1d3d858c6" },
+    { "variant": 2, "cases": 2209, "settled": 2025, "rejected": 184, "sha256": "1e9f76ea7925ce54417d217b8c0ede3911ae8f81739705f678a91adab982bd41" },
+    { "variant": 3, "cases": 2209, "settled": 2025, "rejected": 184, "sha256": "b7b5c167bbe871a40e190a8914e232b94855e20808394907bfb8d463a409bfd3" },
+    { "variant": 4, "cases": 2209, "settled": 1218, "rejected": 991, "sha256": "45b8f329afd1fe1518cb28c2104b292dcdc1ec4f0fbcc43333771129458ba849" }
+  ]
+}
