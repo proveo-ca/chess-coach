@@ -10,8 +10,9 @@ Host mise remains the entrypoint and the coding agent remains in sbx.
 The selected training target is a supported shared-GPU host Docker container, replacing the earlier dedicated-training-sbx design.
 Keep the active GPU attached to its host driver.
 Executor also selected host-backed private state; no actual filesystem, GPU identity, Docker endpoint or runtime installation has been selected or qualified.
-The vendor, device identity, driver, exact VRAM bytes and measured device availability remain unobserved.
-Do not infer NVIDIA from the reported capacity or from Docker's supported vendor.
+Executor subsequently supplied NVIDIA identity, driver and 8,192 MiB total-memory observations in the operator-reported admission packet; see [host-entrypoint.md](host-entrypoint.md#received-observations-and-provenance-boundary).
+These reported observations do not independently select or qualify the device, runtime or measured availability.
+Do not infer device availability or display ownership from capacity, vendor or the additional Intel `i915` device.
 Do not detach a host/display GPU, enable experimental settings, load modules, bind PCI devices, install drivers or build a driver bundle without a separate exact approved plan.
 
 ## Official findings
@@ -19,7 +20,7 @@ Do not detach a host/display GPU, enable experimental settings, load modules, bi
 - https://docs.docker.com/ai/sandboxes/configuration/gpu-passthrough/
 - https://docs.docker.com/ai/sandboxes/configuration/environment-files/
 - https://docs.rs/crate/burn/0.22.0/source/
-- https://docs.rs/crate/burn-cuda/0.22.0/source/
+- https://docs.rs/crate/burn-cuda/0.22.1/source/
 - https://docs.docker.com/engine/containers/resource_constraints/
 - https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/docker-specialized.html
 - https://docs.nvidia.com/deploy/nvidia-smi/index.html
@@ -38,9 +39,13 @@ The CUDA backend describes a CUDA 12.x runtime dependency.
 The fetched 0.22.0 rustdoc pages report documentation build failures; use exact released source for API/feature checks rather than importing a newer release's working API as proof.
 No backend declaration or device enumeration proves actual F64 support, model/update correctness or VRAM fit on this host.
 The current manifests and executable entrypoints select CPU Flex and remain the verified CPU reference foundation.
+The current lockfile records Burn facade 0.22.0, `burn-cuda` 0.22.1 and CubeCL 0.11.3; optional lockfile membership does not mean a CUDA build was selected.
+[Unverified] The backend investigation reports an unsupported-F64 test in `burn-cuda` 0.22.1 and F64 registration in CubeCL 0.11.3.
+End-to-end feasibility remains unresolved; neither finding alone proves absolute impossibility or working Burn model/gradient/record support on this target.
+Do not change dependencies, select deprecated LibTorch, reduce precision or waive numerical checks on the strength of this investigation.
 NVIDIA documents Docker GPU selection by UUID/index and runtime-managed driver capability injection.
 Its `compute` and `utility` capabilities support CUDA and NVML without requesting display/graphics capabilities.
-This is a candidate only if the actual host GPU is NVIDIA and the required supported runtime is present or separately approved for installation.
+The operator-reported NVIDIA device makes this a candidate, not a selected runtime; the required supported runtime must still be identified or separately approved for installation.
 Do not use the documentation's `--gpus all`, `--privileged`, `--rm`, or unpinned image examples as approved job commands.
 The future exact packet must account for GPU device access, driver-library injection, selected device identity and supported VRAM policy without weakening C2/C8/C13.
 
@@ -66,14 +71,17 @@ Do not silently use F32/TF32, CPU training, a remote GPU service, privileged hos
 If strict F64 or another retained obligation cannot be met on the selected supported GPU path, keep readiness false and present the actual decision boundary.
 Actual game-data collection and training remain unauthorized.
 
-## Next operator metadata
+## Received admission metadata and next source slice
 
 `host:admission-facts` records the selected Docker client version, Linux self CPU/RAM/kernel/membership metadata, an existing private-state parent filesystem and read-only GPU identity metadata.
 The optional NVIDIA query selects only index, UUID, name, total memory, driver version and PCI bus ID.
 It never uses the unqualified `nvidia-smi` summary, compute-process/accounting queries, resets, setters, clock controls, GPU kernels or model work.
 Tool absence is not proof of absent hardware.
 The packet explicitly reports GPU learning required, GPU qualification absent and `trainingReady:false`.
-Actual vendor/backend choice and GPU qualification remain blocked on the returned facts and later separate runtime grants.
+The operator report has arrived; actual backend/runtime selection and GPU qualification remain open under later separate grants.
 Executor selected `Commit + push (Recommended)` for the 19-file admission/GPU source/spec/test phase and the exact one-shot operator-run metadata command in [host-entrypoint.md](host-entrypoint.md).
-The actual host report remains pending.
+Its retained provenance leaves the executed source commit, exact invocation and execution timestamp unknown; see [verification.md](verification.md#operator-reported-admission-evidence).
 This approval grants no host execution to the coding agent and no installation, daemon query, container, storage creation, GPU change, qualification or training.
+The Python CLI proposal failed review and was removed; the [Rust fixed Unix HTTP API v2 collector](host-runtime-inventory-request.md) has accepted Rust/handoff-source reviews, a verified local static asset and passing musl/task/configuration tests, while actual-host staging/execution approvals remain pending.
+The metadata-helper musl/LLVM tooling change selects no CUDA/model dependency or feature and supplies no GPU build, host execution or F64 qualification.
+No registered operator packet or host/publication grant follows, and the old Python fixture counts prove no Rust or GPU readiness.

@@ -5,7 +5,7 @@ Status: C18 SEPARATE PRIVATE BACKING + HOST MISE ENTRYPOINT SELECTED / NO PROVIS
 After installed sbx-contract discovery, Executor selected `Host-backed state (Recommended)`.
 After requiring GPU learning and reporting an in-use GPU, Executor selected host mise → shared-GPU host Docker execution instead of training-sbx VFIO passthrough.
 Keep private state outside container/VM deletion and bind only its approved source into the job at `/state`.
-The next metadata task observes an existing candidate host parent and real host CPU/RAM/GPU facts; it creates nothing.
+Executor returned metadata for an existing candidate host parent and reported host CPU/RAM/GPU facts; it supplies no allocation or qualification result.
 The prior `/srv/chess-coach/...` names remain unapproved proposals, not a reason to fabricate host paths or reserve capacity from samples.
 
 Executor selected `Separate private backing` in C18.
@@ -16,8 +16,11 @@ C16/C17 observed and retained sbx-local CPU, memory, cgroup-view and writable-fi
 Executor subsequently clarified that this session is sbx and the actual host can provision `200gb` of disk.
 Do not promote those sbx values to actual host capacity, CPU IDs, cgroup bindings or provisioning limits.
 Executor initially selected host-executed `mise` for preflight/seeding/provisioning and supported `sbx` for training execution.
-The current shared-GPU host Docker amendment and pending actual-host facts handoff are in [host-entrypoint.md](host-entrypoint.md).
+The current shared-GPU host Docker amendment and received operator-reported facts are in [host-entrypoint.md](host-entrypoint.md#received-observations-and-provenance-boundary).
 No actual host provisioning, device, durable target or effective outside-control admission has been selected or qualified.
+The reported state parent and workspace share the same `/home` btrfs pool; do not sum their available-byte samples or treat them as separate backing.
+The proposed application root is not an observed existing target, and zero btrfs entry counters do not prove exhausted inodes or qualified entry capacity.
+See [verification.md](verification.md#operator-reported-admission-evidence) for the retained report's unknown source/invocation/time provenance.
 
 ## C18 alternatives (historical; separate backing selected)
 
@@ -81,7 +84,9 @@ Image/capture/build scratch remain separately bounded and admitted; do not silen
 
 Host-executed `mise` exposed Docker Sandboxes root help and metadata, with both executable hashes explicitly skipped.
 Executor subsequently supplied the installed create/exec/lifecycle help, then selected host-backed state and shared-GPU host Docker execution.
-Exact host filesystem, GPU/runtime, manager endpoint and resource mapping remain pending before an exact provisioning command can be formed.
+Independent filesystem/GPU selection, complete runtime, manager endpoint and approved resource mapping remain pending before an exact provisioning command can be formed.
+The Python CLI proposal is superseded and removed; the [Rust fixed-API v2 collector](host-runtime-inventory-request.md) has accepted Rust/handoff-source reviews, verified local static preparation and an implemented prebuilt task, but actual-host deployment/store acceptance and all publication/transfer/query grants remain pending.
+The proposed digest-qualified store must remain operator-controlled/private from jobs; 0555 is not confidentiality or strong immutability under writable ancestors, and cleanup/cargo-clean loss must fail without fallback rather than allocate replacement backing.
 Official docs identify separate creation-time root/Docker-data/clone size controls and explicitly exclude resizing existing volumes; see [sbx-interface-research.md](sbx-interface-research.md).
 The current sbx session supplies neither a host executor nor authority to provision backing.
 C19 remains unexecuted and paused; do not replace the host handoff with another sbx-local block-device inventory.

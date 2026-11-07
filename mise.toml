@@ -5,7 +5,7 @@ task.run_auto_install = false
 
 [tools]
 "core:bun" = "1.4.0"
-"core:rust" = { version = "1.95.0", profile = "minimal", components = ["rustfmt", "clippy"] }
+"core:rust" = { version = "1.95.0", profile = "minimal", components = ["rustfmt", "clippy", "llvm-tools"], targets = ["x86_64-unknown-linux-musl"] }
 
 [tasks."host:preflight"]
 description = "Host-only read-only mise/sbx identity and help; no provisioning or training"
@@ -30,3 +30,10 @@ raw = true
 quiet = true
 env.PYTHONDONTWRITEBYTECODE = "1"
 run = "python3 -I -B tooling/runtime/host_preflight.py --admission-facts"
+
+[tasks."host:docker-runtime-facts"]
+description = "Host-only prebuilt Rust Docker metadata; no build, install, download, container or GPU operation"
+raw_args = true
+raw = true
+quiet = true
+run = "./target/host-facts/67541b7b2fb0388cd7bfefedfb69fcc74a7cca2e34cdf7f937fea15d2880538a/host-docker-runtime-facts-linux-x86_64-musl"

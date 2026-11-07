@@ -16,7 +16,8 @@ The current development grant covers bounded Rust/Cargo/Bun implementation, synt
 Game-data collection, training, production host operations and deployment remain unauthorized.
 Executor separately approved commit/publication of the current 19-file admission/GPU phase and its exact one-shot operator-run metadata packet; no broader publication or host operation follows.
 The one-container synthetic Docker grant is consumed.
-Reviewers remain deferred until technical training readiness under the operator's instruction.
+AGENTS.md requires adversarial review after implementation and feasible verification, before completion.
+This runtime/permissions slice also requires security review; resolve BLOCKER/HIGH findings before completion or obtain the human decision required by AGENTS.md.
 
 ## Historical acceptance sources
 
@@ -74,7 +75,7 @@ Do not claim kernel-witness or same-opened-object attestation.
 
 Freeze an independent source/test/lockfile/build/runtime/reference expectation set before execution claims.
 Replace prior-branch F8 publication and legacy named-auditor prerequisites with an independently registered current source snapshot and current selected-closure/partition/static audits.
-Keep reviewer deferral unchanged.
+Apply the active AGENTS.md review gates before implementation completion; do not defer reviews until training readiness.
 Local gate closure does not require or authorize Git publication.
 Build a read-only, offline runtime from the selected captured closure.
 Fix the output-registration method before build; register actual artifacts after build and before qualification.
@@ -122,10 +123,11 @@ Executor then made real F64 GPU learning mandatory, reported an in-use GPU, sele
 No VFIO rebind, GPU runtime installation, creation, qualification or training authority follows from that design choice.
 C16/C17 remain consumed sbx-local receipts, not actual host bindings or capacity limits.
 The metadata-only task and tighter fixed-write storage bound do not close a gate or grant an operation.
-The refreshed 74-test Python suite includes 16 admission tests for bounded metadata collection and synthetic CLI behavior, not GPU implementation or computation.
+The admission/GPU phase's earlier 74-test Python suite includes 16 admission tests for bounded metadata collection and synthetic CLI behavior, not GPU implementation or computation.
 Its current source/static/synthetic evidence is indexed in [verification.md](verification.md).
 Executor selected `Commit + push (Recommended)` for this 19-file phase and the exact delegated one-shot host facts packet.
-The operator's actual host facts report remains pending.
+Executor returned `PASS_METADATA_ONLY` admission facts; [host-entrypoint.md](host-entrypoint.md#received-observations-and-provenance-boundary) records reported identities and [verification.md](verification.md#operator-reported-admission-evidence) preserves the unknown source/invocation/time provenance.
+The Python CLI proposal is superseded and removed; the [Rust fixed-API v2 collector](host-runtime-inventory-request.md) has accepted Rust/handoff-source reviews, a locally frozen/inspected static asset, release-musl 72 tests and passing prebuilt-task/configuration checks, while actual-host registration and all publication/transfer/query grants remain pending.
 No design selection grants an operation or accepts the packet.
 
 The original 36 IDs remain a traceability inventory, not a requirement to recreate the old checker or build DAG.
@@ -142,7 +144,7 @@ All current acceptance rows remain OPEN.
 | `S0`, `FIRST_EFFECT`, `INVOICE` | Original deadline origin before launch-causal work; shared resource admission before game work; no renewed budget | Outside standard supervisor, boot barrier and C8 observer pass fake fixtures; actual admitted runtime and enforcement qualification remain absent |
 | `FIT`, `U-BOUNDS`, `U-ENFORCE` | Concrete CPU/memory/swap/tasks/tmp/output/storage/FD bounds; selected GPU/VRAM coexistence; peak coexistence and whole-job cleanup design | C2/C9/C15 retain the design ceilings; fixed writes plus outside evidence and 8 GiB planning allowance total 191,396,683,776 usable bytes; actual host Docker/GPU runtime, IDs, view, durable target/headroom and effective enforcement remain open |
 | `U-HANDOFF` | Versioned recipient/session/sequence transactional protocol and independent reference comparison | Actual-mutation producer/journal/recipients and staged BOTH protocol implemented; reference init/open/pass fixtures pass; cold confined independent process proof remains unrun |
-| `AUDITS` | Current source/dependency/native-closure, partition and negative audit results | Historical passes do not transfer; reviewers remain deferred |
+| `AUDITS` | Current source/dependency/native-closure, partition and negative audit results | Historical passes do not transfer; active AGENTS.md adversarial/security review gates apply before completion |
 
 Gate0 closes on explicit acceptance of the complete selected-profile design and prerequisites.
 It does not require runtime results before their separately approved launch.
@@ -201,9 +203,11 @@ Persisted synthetic resolver fixtures do not authorize collection or a gameplay 
 | 6 | Supported supervisor and frozen artifact selection | Implemented outside supervisor/evidence writer, native job and artifact guards; C13 state-mount checker; fake-manager/job/artifact fixtures | Actual CPU IDs/cgroup/observation view, private storage, outside admission and Gate0 acceptance remain open |
 | 7 | Capture/build → output registration → live qualification → native proof | Exact separately approved commands and private append-only evidence paths from order 2 | Actual limits/loading/init/stdio/deadline/cleanup negatives and cold BOTH positive; close F9 only after pass |
 | 8 | Bind genuine observations and immutable model to policy/admission | Whole-match worker/session, fixed dependency factory, two native learners, private publisher and SQLite coordinator | Actual separate-process synthetic completion/update/retained-journal/SQL integration passes; no actual corpus/strategic rollout, durable target or confined qualification |
-| 9 | Cross-cutting technical readiness | `_spec/verification.md` plus persisted current tests/e2e/static evidence | Current R5-equivalent verification; `trainingReady` changes only on evidence; deferred reviews then run |
+| 9 | Cross-cutting technical readiness | `_spec/verification.md` plus persisted current tests/e2e/static evidence | Current R5-equivalent verification; `trainingReady` changes only on evidence; each implementation slice already requires applicable AGENTS.md reviews |
 
 Independent source tasks may proceed under the development grant after applicable contract decisions.
+The linked gate-closure diagram now applies active AGENTS adversarial and security review gates.
+Those gates apply to each implementation slice before completion, not only at the final readiness stage shown in the diagram; [verification.md](verification.md#blocked-docker-metadata-proposal-python-verification) retains its render receipt alongside the superseded Python verification and failed review.
 Do not turn this sequence into a prohibition on already approved synthetic development.
 Do not run a canonical live game or reference rollout merely because its source tests exist.
 

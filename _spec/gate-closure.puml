@@ -31,7 +31,7 @@ record reload, redundant learners, VRAM policy and owned cleanup;
 numeric validation, phase and atomicity;
 :Close R4 only on complete current-profile evidence;
 :Run cross-cutting technical readiness checks;
-:Defer reviewers until technical training readiness;
+:Apply active AGENTS adversarial and security review gates;
 note right
   Current Gate0 / F9 / R4 remain OPEN.
   No contract decision or operation is granted here.

@@ -3,6 +3,7 @@
 Status: ACTIVE IMPLEMENTATION / `trainingReady:false`.
 
 The stopping condition is the accepted current-profile readiness result, not completion of a source slice.
+Executor's `goaltrainingReady:true` names the objective; it does not change the observed `trainingReady:false` result.
 Continue authorized source, static and bounded synthetic work until a required decision or operational grant blocks the next action.
 Do not run collection or training to prove readiness.
 
@@ -22,7 +23,8 @@ trainingReady =
 ```
 
 This expression is an acceptance checklist, not a source flag that a worker or test fixture can set.
-Reviewers remain deferred until technical readiness under Executor's standing instruction.
+Apply active AGENTS.md adversarial review after implementation and feasible verification, before completion.
+Runtime, permissions, network and credential changes also require security review; do not defer either applicable gate until training readiness.
 Actual training, deployment, commit and publication retain separate authorization.
 Executor added mandatory GPU access and selected GPU learning, not access-only CPU learning.
 Executor reports 8 GB VRAM and states that the host uses the GPU.
@@ -97,13 +99,27 @@ The selected v2 correction passed the operator's fresh metadata/root-help run an
 Both large executables explicitly skipped hashing; the report preserves denied-home initialization warnings.
 Executor then supplied the six fixed installed subcommand help pages without executing those operations.
 Executor selected host-backed state and amended the learning target to a supported shared-GPU host Docker job because the host uses its GPU.
-The next host facts packet reads actual self CPU/RAM/GPU and selected filesystem metadata without allocating or qualifying them.
+Executor returned the host facts packet's metadata-only report without an allocation or qualification result; see [host-entrypoint.md](host-entrypoint.md#received-observations-and-provenance-boundary).
 Its local source/static/synthetic checks do not qualify GPU compute or authorize publication/delegated host metadata execution.
 Executor subsequently supplied the separate `Commit + push (Recommended)` approval for this 19-file phase and its exact one-shot operator-run host facts packet.
-No host facts report or broader operational authority follows from that approval.
+The report is now retained with unknown executed source commit, exact invocation and execution timestamp; the earlier approval supplies none of those missing facts or broader authority.
+The [Python Docker runtime metadata proposal](host-runtime-inventory-request.md) is blocked by adversarial HIGH findings and superseded, despite passing synthetic tests.
+The source-only [Rust fixed Unix HTTP API v2 collector](host-runtime-inventory-request.md) passes 72 Rust tests and both source reviews, including socket/timerfd, mount binding and bounded fixtures; retained format/Clippy/Python/Bun results do not qualify a deployment artifact or host target.
+The pinned cgroup directory and same-FD controller reads supply C1-scoped observation binding, not continuous global-path visibility, an atomic snapshot, actual cgroup-filesystem enforcement or host admission.
+The per-request absolute BOOTTIME timer backstop preserves the original end across suspend, but expiry can only be acted on when execution resumes; no actual suspend test or exact-deadline close while unscheduled is claimed.
+Executor approved coding-sandbox tooling installation through `mise install`; the lead reports Rust 1.95 installed, without a host-operation grant.
+The retained 97/98-test Python proposal runs verify neither Rust nor readiness; a fresh 74-test Python pass now covers the restored tasks and latest mise/handoff configuration.
+The selected `HTTPS operator packets` transport grants no publication, runner/endpoint creation or host operation.
+The static-musl asset is locally frozen and inspected, and actual release-musl 72 tests pass; this is not actual-host compatibility or production deployment/runtime registration.
+The prebuilt Rust mise task now exists under an accepted source plan, with actual closed byte/ELF expectations and four persisted task tests; 26 combined Bun tests, full TypeScript checks and both targeted handoff-file source reviews pass.
+The relative store path is proposed, not host-accepted; independently retained expected hash/size, approved exclusive placement/private-to-job store and fresh publication/transfer/query grants remain required.
+Missing or cleaned staged bytes must fail without fallback; 0555 and writable ancestors do not establish confidentiality or strong immutability.
+Do not hand off the removed Python command; the existing Rust task is not an APPROVED RUNNABLE HOST HANDOFF until those conditions hold.
+The successful host-tool Cargo inventory and direct-dependency partition do not replace the failed offline application Cargo-tree evidence or qualify a full application build.
+Source-plan and sandbox-tooling approval do not register a packet or authorize publication, host invocation, provisioning or training.
 The current CPU Flex manifests and three native entrypoints do not implement GPU learning.
 The agent has executed no actual host sbx commands.
-The operator's received reports include root and subcommand help only, not a workload operation.
+The operator's received reports include root/subcommand help and admission metadata, not a daemon query, workload operation or GPU computation.
 The remaining interface/target/control-plane boundary cannot be resolved by another sbx-local inventory.
 The fixed pipeline's proposed free usable bound is 191,396,683,776 bytes with the declared 8 GiB planning allowance, distinct from the 204 GiB sum of configured ceilings.
 Actual host allocation, units, durability/headroom qualification and outside-control admission remain open.

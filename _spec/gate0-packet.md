@@ -32,7 +32,7 @@ Do not update a pin automatically after failure.
 | Input role | Exact content / registration obligation |
 |---|---|
 | Source and tests | Complete current workspace snapshot, `_spec` goals, persisted tests, tooling, manifests, locks and layout; no Git commit/publication requirement |
-| `current-native/` | Frozen Cargo manifests/lock and selected Rust source for the three executable targets |
+| `current-native/` | Frozen root Cargo manifest/lock plus every root workspace member's manifest/source required for standard Cargo loading, including `crates/host-facts`; native build selection remains only the three policy executable targets |
 | `current-runtime/` | Exact four workspace package manifests and selected `src` trees, root package manifest and Bun lock; no tests, secrets, toolchain, cache or unselected project files |
 | `cargo-home/` | Newly captured locked public registry/source inputs selected by standard Cargo evidence; no credentials, user configuration or developer cache mount |
 | `bun-cache/` | Newly captured anonymous public package inputs for the current frozen production install |
@@ -45,6 +45,10 @@ Do not update a pin automatically after failure.
 
 `tooling/runtime/Dockerfile` is an unexecuted standard multi-stage recipe.
 Its three build commands disable networking.
+The native Cargo command selects only `policy-score`, `policy-channel` and `policy-initialize`, and the final image copies only those three native binaries.
+Including host-facts manifest/source for workspace loading does not select that crate for the application native build, copy, runtime dependency closure or final image.
+`crates/host-facts/tests/recipe.rs` persists the exact native build/copy allowlist and rejects host-tool copying or workspace-wide native builds; the Docker recipe itself is unchanged.
+Keep the host tool's development/control-plane dependency inventory separate from the application's selected Cargo closure and the future host-tool deployment/loader registration.
 The Bun install uses frozen production inputs and disables lifecycle scripts.
 The reference build rejects unresolved dynamic imports.
 The final stage contains the curated runtime, three native binaries, six reference bundles, corpus bytes and selected image-contained init.
@@ -107,7 +111,13 @@ The earlier 204 GiB sum of configured ceilings is not the fixed pipeline's minim
 Exact units, usable bytes/entries, host view and control-plane mapping still require actual target selection and qualification.
 Executor subsequently supplied passing v2 host metadata and Docker Sandboxes root help, with both executable hashes explicitly skipped.
 Executor subsequently supplied that six-command help packet, selected host-backed state, and amended training execution to a shared-GPU host Docker job.
-The next host facts packet observes actual self CPU/RAM/GPU and the candidate state-parent filesystem without a daemon/workload query or allocation.
+Executor returned operator-reported self CPU/RAM/GPU and candidate state-parent filesystem metadata without a daemon/workload query or allocation.
+The report's executed source commit, invocation and timestamp remain unknown; see [verification.md](verification.md#operator-reported-admission-evidence).
+Do not fill the independent host-binding fields above from reported identities, sampled headroom or the proposed application path.
+The Python CLI proposal is superseded and removed; the [Rust fixed-API v2 collector](host-runtime-inventory-request.md) has accepted Rust/handoff-source reviews, verified local static bytes/ELF properties and passing release-musl/task/configuration tests, while actual-host compatibility/deployment registration and publication/transfer/query approvals remain pending.
+The digest-qualified relative store and closed artifact JSON are proposed handoff expectations, not self-issued production registration or an independently accepted actual-host path; missing bytes fail without build/download fallback.
+Neither the Rust synthetic results, historical Python fixtures nor any proposed metadata endpoint selects an execution target, registers runtime artifacts or closes Gate0/F9/R4/GPU readiness.
+The offline host-tool Cargo tree and standard `--no-deps` metadata pass do not establish a complete application closure; the application offline-tree attempt failed on missing cached `addr2line v0.27.1` without online fallback.
 See [host-entrypoint.md](host-entrypoint.md) and [storage-admission-decision.md](storage-admission-decision.md).
 Private state storage is therefore a genuine remaining allocation/contract boundary, not a field to fill with a guessed path.
 

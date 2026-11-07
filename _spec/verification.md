@@ -107,6 +107,7 @@
 | `packages/runtime/tests/model-inputs.test.ts` | Serial owned scratch release without accumulation; retained failed inputs and refusal to remove unexpected files |
 | `packages/runtime/tests/training-artifact.test.ts` | Closed synthetic final metadata, exact five-master roster/primary and no private scheduling/RNG fields |
 | `packages/runtime/tests/reference-bundles.test.ts` | C14 six standard Bun bundles, selected input scope, exports and original reference/strategic/corpus fixtures |
+| `packages/runtime/tests/host-facts-task.test.ts` | Four prebuilt-handoff tests: literal closed artifact/task expectations, unchanged Python tasks/disabled auto-install, real mise fake-artifact literal-argument forwarding with empty stores, and missing bytes failing without staging/build/install/download |
 | `tooling/runtime/tests/test_supervise.py` | Fake manager/cgroup controls, original deadlines, owned cleanup, evidence failure and no operational retry |
 | `tooling/runtime/tests/test_evidence.py` | Bounded exclusive fsynced evidence, retained failure reservations and packet-wide storage refusal |
 | `tooling/runtime/tests/test_state_mount.py` | C13 exact selected private bind source/target and substituted/extra mount refusal |
@@ -115,13 +116,20 @@
 | `tooling/runtime/tests/test_host_view.py` | C17 bounded mountinfo projection, local/cgroup selection and malformed-input refusal |
 | `tooling/runtime/tests/test_host_preflight.py` | V2 bounded/explicitly skipped hashes, six-command contract-help allowlist, retained partial/exception receipts, symlink invocation, task schema guard, actual mise/parser/basic/contract e2e with synthetic tools and failure/byte/deadline cleanup |
 | `tooling/runtime/tests/test_host_admission.py` | Sixteen synthetic/static admission cases: fixed CPU/RAM/filesystem projections, no creation/source overlap/symlink substitution, byte/DRM/card bounds, exact non-process NVIDIA query, retained facts on missing Docker, fail-stop/no follow-up, separate fake-Docker CLI e2e and task-schema/profile guards |
+| `crates/host-facts/src/socket.rs` · inline unit tests | Four real Unix-listener pin/probe tests: leaf replacement, parent replacement, unlink/replacement and unsafe/absent endpoint refusal; replacement listeners receive nothing |
+| `crates/host-facts/src/http.rs` · inline unit tests | Fixed HTTP/EOF/timerfd bounds; test-only fdinfo/simulated expiry; bounded nonblocking BOOTTIME fixture accepts and zero-duration client/server-join regression |
+| `crates/host-facts/src/cgroup.rs` · inline unit tests | Eleven cases, including eight new descriptor/statx mount-ID, topology/order/escape, missing-mask/ID/error, directory-replacement and no-follow cases; four content paths only; synthetic cgroup2 rows are not filesystem qualification |
+| `crates/host-facts/src/projection.rs` · inline unit tests | Typed Serde fields/types/ranges/duplicates, UTF-8 and lexical depth guard, bounded options/runtime keys, ignored-value grammar validation and secret-canary exclusion |
+| `crates/host-facts/src/lib.rs` · inline unit tests | Caller guard, sole endpoint, held cgroup guard and mount-binding failure before RPC; synthetic sequencing/failure retention, false gates and encoded-stdout bound including escaping/newline |
+| `crates/host-facts/tests/cli.rs` | Child `--help` and invalid-argument paths only; no host metadata collection |
+| `crates/host-facts/tests/recipe.rs` | Exact three-policy-binary build/copy allowlist; reject host-tool copy and workspace-wide native build without changing the Docker recipe |
 
 The persisted process e2e tests use explicitly synthetic source/model/return fixtures.
 The whole-match fixture uses actual canonical game transitions and native Burn updates, not a genuine corpus/strategic rollout or a measured training experiment.
 The separately authorized historical one-shot Docker proof remains in [native-job.md](native-job.md).
 It is not the final production envelope or a current live host e2e qualification.
 
-## Results
+## Existing results before the Docker runtime metadata slice
 
 - Rust: 38 tests pass with locked, offline dependencies and 2 Cargo jobs.
 - Rust formatting: passes.
@@ -147,7 +155,141 @@ No actual host admission-facts invocation, GPU computation, provisioning or trai
 Executor subsequently selected `Commit + push (Recommended)` for the 19-file admission/GPU source/spec/test phase and the exact one-shot operator-run facts command.
 The post-approval source/verification publication receipt is `/tmp/opencode/chess-coach-ii-gpu-host-facts-publication-pj4qpqli/`.
 It preserves the preceding verification receipt without overwriting its source manifest.
-The actual host facts report remains pending.
+Executor subsequently supplied the admission report recorded below; the earlier verification receipt remains unchanged.
+
+## Operator-reported admission evidence
+
+The complete returned JSON message is `/tmp/opencode/chess-coach-operator-host-admission-FenA0l/operator-message.json`.
+Its adjacent `provenance.json` labels it `OPERATOR_MESSAGE_NOT_AGENT_HOST_EXECUTION`.
+The receipt records a 3,796-byte report with SHA-256 `93a91d87976953e69b3d71521a1469ab5e47673d23c7261ea54431bb8984fad2` in `derived-summary.json`.
+That summary derives arithmetic from the message; it is not a second independent observation or host qualification.
+The canonical reported inventory and unchanged acceptance boundary are in [host-entrypoint.md](host-entrypoint.md#received-observations-and-provenance-boundary).
+
+The executed source commit, exact operator invocation, execution timestamp and standalone stdout/stderr byte records are unknown (`null`).
+The expected handoff command is not evidence of the executed invocation.
+Do not retrospectively bind this report to current development commit `875378db96ca80e12a6deaeb5de858ba3ebd3a23` or to any later source snapshot.
+The local receipt digest binds the retained message bytes, not independently selected host/tool/runtime identities.
+Retain the original message and its provenance without replacing them with the derived summary or silently filling missing fields.
+
+The report keeps `OPERATOR_ASSERTED_HOST_UNQUALIFIED`, runtime admission false, GPU `NOT_QUALIFIED`, provisioning/training authorization false and `trainingReady:false`.
+The available-byte/RAM samples reserve nothing; zero btrfs entry counters do not prove exhausted inodes or successful entry admission.
+No daemon, runtime/GPU qualification, allocation, provisioning or training evidence follows from this metadata report.
+
+## Rust host-facts v2: implemented source evidence
+
+Status: GNU AND MUSL RUST SOURCE TESTS PASS, 72 EACH / BOTH EARLIER RUST SOURCE REVIEWS ACCEPTED / LOCAL STATIC ASSET AND PREBUILT TASK VERIFIED / LATEST HANDOFF-FILE REVIEWS PENDING / NO APPROVED RUNNABLE HOST HANDOFF OR HOST/PUBLICATION GRANT.
+The implemented contract is [host-runtime-inventory-request.md](host-runtime-inventory-request.md); `crates/host-facts`, package `chess-coach-host-facts`, is a separate development/control-plane source boundary.
+Executor approved necessary coding-sandbox tooling installation through `mise install`; the lead reports Rust 1.95 installed.
+That tooling approval neither grants host installation/execution nor relaxes the prebuilt-only operator entrypoint.
+
+The fresh private receipt is `/tmp/opencode/chess-coach-rust-host-facts-verification-YYp6eH/`.
+Its current `rust-tests-mountid.stdout`/`rust-tests-mountid.stderr` record 72 passing Rust tests: 69 library unit tests, one CLI parser integration test and two native-recipe partition tests, with no failures.
+The earlier `rust-tests-timerfd.stdout`/`rust-tests-timerfd.stderr` retain the 62-test timerfd checkpoint; `rust-tests.stdout`/`rust-tests.stderr` and `phase-57-pre-review.json` retain the 57-test pre-review phase.
+Neither earlier checkpoint is final verification or review acceptance for the latest three source files.
+The socket module's four tests include real leaf/parent/unlink replacement checks that deliver only to the original held socket, plus unsafe/absent probe cases.
+Its `python-final.stdout`/`python-final.stderr` retain 74 passing restored Python tests in 0.495 seconds before the latest mise tool-option addition; the preceding `python-baseline.*` receipt remains preserved.
+That baseline is historical; the new post-mise/task 74-test pass is retained in the separate static/handoff receipt below.
+The complete Rust collector ran only against synthetic temporary-root Unix fixtures; executable child tests used `--help` or invalid arguments, never real host collection.
+
+Five new HTTP tests inspect only their own timer fdinfo under `cfg(test)` to confirm clock ID 7, absolute-arm flag 1 and CLOEXEC/NONBLOCK; observe timer-only expiry; simulate expiry with a socket already readable; reject zero/range setup before RPC; and discard a projection completed after expiry.
+The simulated expiry test re-arms only its own test timer; production creates/arms once per valid request and performs no fdinfo read or timer read/rearm.
+The request origin/end precede timer creation; absolute BOOTTIME timerfd readiness backs every socket wait and defeats the suspend-excluding relative `ppoll` timeout.
+Checked setup failures retain fixed initialized receipts without connecting, and timer expiry/error wins over socket progress while clock checks remain before I/O, after poll and after projection.
+Expiry is observable when execution resumes; these tests do not show actual suspend, host-clock qualification or exact-deadline socket closure while execution is suspended/unscheduled.
+The implementation validates UTF-8 and lexical nesting depth below 128 before standard Serde parsing, including ignored fields/runtime definitions; this is a bounded preflight, not a general JSON parser or bespoke codec.
+The cgroup view now pins `/sys/fs/cgroup` and its fixed parents using descriptor-relative no-follow directory opens, requires ordinary statx MNT_ID mask/nonzero identity on the held FD, and selects its unique matching mountinfo row after standard escape/ancestry validation.
+The collector retains that guard throughout collection and opens the two controller files relative to the same directory; the mount ID remains internal and `exposesCgroupV2` refers to this pinned observation, not an atomic/global-path or enforcement claim.
+The four content-file allowlist entries remain unchanged; only fixed read-only directory metadata/statx calls were added.
+Eight new cgroup cases combine real statx and independently obtained fixture-FD IDs with parser-level hidden-overmount/order/escape checks, missing/duplicate/malformed-row refusal, unsupported/missing ID masks and replaced-controller-directory tests.
+Their cgroup2-labelled rows are synthetic metadata, not evidence that the fixture filesystem is a real cgroup filesystem.
+A new collector negative blocks binding failure before Docker RPC and leaves the view unknown; a new HTTP fixture regression makes a zero-duration client's server join terminate without any connection.
+Both formerly blocking HTTP fixture accept sites now use one-second nonblocking BOOTTIME loops; 150 ms client deadlines and 300 ms EOF holds remain test controls, not changes to the production 10-second bound.
+The 128 KiB stdout ceiling includes the final newline; encoding overflow emits no report bytes and only fixed `HOST_FACTS_REPORT_BOUND` stderr with exit 1.
+All runtime/GPU qualification and provisioning/training authorization/readiness gates remain false.
+
+`host-cargo-tree.stdout` retains the successful offline host-tool dependency inventory; it contains no Burn, learning or policy dependency.
+`workspace-metadata.json` retains standard Cargo `--no-deps` metadata; root/member manifests and direct dependency declarations separate the host tool from application direct dependencies.
+Workspace load inputs are not the selected build/runtime closure: [gate0-packet.md](gate0-packet.md#input-registration-roles) now includes every root workspace member's required manifest/source, while the unchanged Docker recipe builds/copies only the three policy binaries.
+The two persisted recipe tests enforce that exact allowlist and reject host-tool copying or `--workspace` builds.
+
+The application offline Cargo-tree attempt failed because cached `addr2line v0.27.1` was missing; `policy-cargo-tree.stderr` preserves that failure.
+No online fallback ran, and this record supplies no complete application Cargo closure, workspace/model Rust rerun, production build or GPU proof.
+
+`bun-partition.stdout`/`bun-partition.stderr` retain 22 passing partition tests, zero failures and 121 assertions across the two selected source-boundary/closure files; this is not a full Bun/TypeScript rerun.
+The current supplied `fmt-mountid.stdout`/`fmt-mountid.stderr` and `clippy-mountid.stdout`/`clippy-mountid.stderr` retain passing formatting-all and host-tool Clippy with warnings denied after the mount/fixture changes; the timerfd-phase static receipts remain historical.
+
+The contained Rust security review reported MEDIUM CWE-400 because relative `ppoll` excludes suspend time.
+The architect approved the absolute BOOTTIME timerfd backstop, and the lead implemented it with the five new tests.
+Security accepted the timerfd/privacy state with `READY TO MERGE: yes` at the earlier 62-test checkpoint.
+Adversarial review still identified MEDIUM mount-selection topology and unbounded HTTP fixture-accept findings; the architect approved the pinned ordinary-mount-ID binding and bounded fixture fixes now represented by the 72-test receipt.
+The lead subsequently supplied adversarial `READY TO MERGE: yes` for the 72-test mount/fixture corrections and security `READY TO MERGE: yes` for the 72-test source, privacy/timerfd and targeted statx changes.
+Both source-review acceptances are true for that reviewed Rust diff only; they grant no host, artifact registration, source publication or distribution operation.
+The later mise task, closed artifact metadata and persisted Bun task test passed their development checks and separate targeted adversarial/security reviews, both returning `READY TO MERGE: yes`.
+Security retains the independent staging/hash-verification requirement because the task trusts its pathname; neither a digest-named directory nor mode 0555 enforces integrity.
+Actual artifact bytes are now locally frozen and the task exists, but no production/host artifact registration, approved actual-host path or approved runnable host handoff follows.
+Keep the private Python receipts below historical; they verify neither this Rust source nor its eventual packet.
+
+## Static HTTPS artifact and prebuilt handoff: local preparation verified
+
+Executor selected `Static HTTPS artifact (Recommended)` for preparation only; no GNU loader bundle or actual-host build was selected.
+The initial Zig-musl link failed with duplicate `_start` from competing Zig/Rust CRT startup objects; `/tmp/opencode/chess-coach-host-facts-static-1cCOX8/` remains unchanged failed-attempt evidence.
+Stable Rust 1.95 rejected the read-only `gnu-lld` linker-flavor probe as unstable; the corrected recipe uses bundled Rust LLD with stable `ld.lld` and Rust-provided self-contained musl CRT.
+No nightly, `RUSTC_BOOTSTRAP`, handwritten CRT or application recipe/target/feature change followed.
+
+The successful private receipt is `/tmp/opencode/chess-coach-host-facts-static-lld-6OVK2f/`.
+Its private `build-recipe.json`, `build.stdout` and `build.stderr` record the package-only musl release, locked/offline and two jobs, with source/cache remapping and symbol stripping.
+Never publish raw recipes or LLVM inspection files containing builder paths.
+The frozen local `artifact/host-docker-runtime-facts-linux-x86_64-musl` is 674,400 bytes, mode 0555, SHA-256 `67541b7b2fb0388cd7bfefedfb69fcc74a7cca2e34cdf7f937fea15d2880538a`.
+Private `verify-artifact.ts`, `artifact-inspection.json` and `elf-inspection-final.json` bind standard LLVM inspection to those bytes: no interpreter, needed library, RPATH or RUNPATH; five unsafe-ELF negatives rejected; four help/invalid smokes and the private-builder-path scan pass.
+Static PIE `ET_DYN` with `PT_DYNAMIC` is allowed; these headers alone do not mean an external loader dependency.
+No real `--confirm-host` profile ran, and real-host compatibility, deployment/runtime/GPU qualification and training readiness remain false.
+
+`musl-tests.stdout`/`musl-tests.stderr` retain the actual release-musl 72-test pass: 69 unit, one CLI parser and two native-recipe tests.
+The GNU 72-test and earlier Python/source receipts remain separate valid evidence, not a combined workspace/model test count.
+`bun-handoff.stdout`/`bun-handoff.stderr` retain 26 passing tests across three files with 137 assertions: 22 partition tests plus the four new persisted handoff cases.
+`typecheck.stdout`/`typecheck.stderr` retain the full strict source/test TypeScript check; `python-handoff.stdout`/`python-handoff.stderr` retain 74 passing post-mise/task Python tests in 0.593 seconds.
+These do not claim a full Bun suite, full model Rust rerun, host execution or GPU e2e.
+
+The architect accepted the source handoff plan; the new task now invokes the single literal digest-qualified prebuilt path, with raw_args/raw/quiet and no build/install/download/staging/dependencies/env/implicit confirmation.
+The new closed `tooling/runtime/host-facts-artifact.json` records actual expectations while keeping deployment/runtime admission/host execution/provisioning/training/readiness false and GPU `NOT_QUALIFIED`.
+The real-mise tests use fake bytes and empty tool/Cargo/Rustup stores; metacharacters remain literal arguments, while missing bytes fail without creating a target or falling back.
+The actual binary still accepts only an explicit single `--help` or `--confirm-host` argument.
+The proposed relative host store is not an accepted actual-host deployment; 0555 and a digest directory name supply neither confidentiality nor strong immutability under writable ancestors.
+Independently accepted expected hash/size, approved exclusive HTTPS placement with no overwrite, operator-controlled/private-to-job storage and an exact fresh query grant remain prerequisites; cleanup or `cargo clean` invalidates staging without fallback.
+
+The Rust tool options retain 1.95.0/minimal/rustfmt/Clippy plus installed llvm-tools/musl target; auto-install remains false and the three Python task bodies remain unchanged.
+Root mise now also contains the new prebuilt task; it is no longer a tool-options-only diff.
+Reviewers are rechecking the latest mise/metadata/test files; do not transfer the earlier Rust-source READY verdicts to that later handoff diff.
+There is NO APPROVED RUNNABLE HOST HANDOFF until fresh publication or approved transfer, staging/deployment selection and exact host-invocation approval; preparation and task-plan acceptance grant none of those operations.
+
+## Blocked Docker metadata proposal: Python verification
+
+Status: PYTHON CLI PROPOSAL BLOCKED, SUPERSEDED AND REMOVED / RUST SOURCE-ONLY SUCCESSOR PLAN ACCEPTED / NO REGISTERED OPERATOR PACKET OR NEW HOST/PUBLICATION APPROVAL.
+The CLI draft retained in the private receipt is historical; the [current Rust contract](host-runtime-inventory-request.md) replaces it with separate source evidence recorded above.
+The Python results below supply no Rust implementation verification.
+
+The private Python development receipt is `/tmp/opencode/chess-coach-docker-runtime-verification-pYJinp/`, separate from the operator-admission receipt.
+Its later `python-tests-final.stdout` is empty; `python-tests-final.stderr` records all 98 Python tests passing in 0.892 seconds: baseline 74 plus 24 added proposal tests.
+The preceding `python-tests.stdout`/`python-tests.stderr` retain the 97-test caller-guard run in 0.994 seconds; the later run adds the independent literal-allowlist regression.
+`verification.json` records both runs and a prior focused-test depth-expectation failure; retain that failed-development chronology rather than replacing it with the final pass.
+It also lists AST/TOML/local-link/receipt-JSON/whitespace checks and the existing gate-closure diagram's check/render; the actual `gate-closure.svg` and `plantuml.stderr` remain retained.
+No other diagram or Cargo/Rust/Bun/TypeScript source changed in that Python slice, so those full suites were not rerun; this skip rationale does not cover a later Rust implementation.
+
+The review sequence overrides any suggestion that passing Python fixtures accepted the packet:
+
+1. Security reported MEDIUM CWE-200 exposure in the new tracked inventory summary and `READY TO MERGE: no`; the summary was redacted while the private report stayed unchanged, and subsequent privacy review resolved that finding.
+2. Adversarial review then reported HIGH unregistered CLI plugin execution through `create --help`/`info`, plus help's possible daemon contact and hidden failure.
+3. Adversarial review also reported MEDIUM socket-path/executable-path metadata-to-use races.
+4. The Python operator proposal is blocked and superseded; security redaction does not resolve the separate HIGH findings.
+
+These review findings were supplied by the lead; the private `verification.json` review field records rejection after the adversarial HIGH finding, not a later pass.
+The adjacent `operator-packet-draft.json` explicitly marks the unpublished Python proposal rejected and forbidden for execution; it has no frozen source manifest and must not be presented as the Rust packet.
+The lead removed only the added Python runtime profile/helpers/test/task, preserving the earlier Python tasks; the fresh Rust-slice receipt above retains the restored 74-test baseline pass.
+The existing Python helper and preserved Python task bodies no longer contain the proposed Python runtime profile, and its new Python test file is absent.
+The original failed-source and test logs remain retained; removal does not turn the failed proposal into an accepted packet or supply Rust proof, a source freeze, daemon contact, host qualification or publication approval.
+Keep all Gate0/F9/R4/GPU qualification and training-readiness results unchanged.
+
+## Earlier verification chronology
 
 The preceding bounded-contract receipt is `/tmp/opencode/chess-coach-ii-sbx-contract-verification-d2noe53n/`.
 Its private `operator-reported-root-preflight.json` retains the returned v2 report and warnings.
@@ -188,7 +330,7 @@ See [host-view-followup-request.md](host-view-followup-request.md).
 These receipts do not register Gate0 artifacts or authorize execution.
 Executor subsequently corrected their realm to sbx-local observations.
 Do not promote C16/C17 to actual host CPU/storage/cgroup authority or treat their free-space samples as host provisioning limits.
-The host-executed mise amendment, completed sbx-help discovery and pending actual host Docker/GPU/filesystem facts are recorded in [host-entrypoint.md](host-entrypoint.md).
+The host-executed mise amendment, completed sbx-help discovery and received operator-reported Docker-client/GPU/filesystem facts are recorded in [host-entrypoint.md](host-entrypoint.md).
 C19 remains authorized but unexecuted and paused.
 The agent has executed no actual host sbx commands.
 The subsequent operator-reported root and six subcommand help reports contain no provisioning or workload operation.
@@ -204,7 +346,8 @@ The current manifests and three native entrypoints still select CPU Flex.
 No supported GPU backend implementation, GPU build or real F64 GPU forward/backward/SGD/reload/redundant-learner/VRAM/cleanup proof exists.
 The metadata task and synthetic tests do not satisfy mandatory GPU learning readiness.
 Training readiness remains false.
-Reviewers remain deferred.
+Apply active AGENTS.md adversarial and applicable security review gates after implementation and feasible verification, before completion; do not defer them until readiness.
+The corrected [gate-closure.puml](gate-closure.puml) applies active AGENTS adversarial/security gates; it does not defer each implementation slice's reviews until readiness.
 The scoped admission/GPU publication approval does not authorize further publication or game-data training.
 
 The scoring subprocess consumes actual feature encoding derived from bounded synthetic fixtures, including continuing observations produced by the actual causal source pipeline. Hidden-state-twin e2e checks compare candidate order, feature values and frozen native Burn scores. The new representation, context-dependent MLP and feature/model-artifact binding have source tests. No placeholder economic readout, custom estimator or missing-channel zero padding ships. The operator approved replacing DIRECT metering with shared standard OS-resource limits. The one-shot synthetic grant is consumed. Production resource admission still requires concrete limits, separate host-operation authorization and applicable pipeline/deadline verification; byte caps and the synthetic proof do not establish it.

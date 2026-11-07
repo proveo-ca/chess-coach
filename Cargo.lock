@@ -1104,6 +1104,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "chess-coach-host-facts"
+version = "0.1.0"
+dependencies = [
+ "httparse",
+ "rustix 1.1.6",
+ "serde",
+ "serde_json",
+ "tempfile",
+]
+
+[[package]]
 name = "chess-coach-learning"
 version = "0.1.0"
 dependencies = [

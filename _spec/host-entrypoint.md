@@ -1,6 +1,6 @@
 # Host-executed mise → shared-GPU host Docker
 
-Status: OPERATOR ROOT + SIX SUBCOMMAND HELP REPORTS RECEIVED / HOST-BACKED STATE + HOST GPU DOCKER SELECTED / NO PROVISIONING OR TRAINING GRANT.
+Status: OPERATOR METADATA RECEIVED / RUST SOURCE AND LOCAL STATIC PREPARATION VERIFIED / PREBUILT TASK IMPLEMENTED AND SOURCE REVIEWS ACCEPTED / NO APPROVED RUNNABLE HOST HANDOFF OR NEW HOST, PUBLICATION, PROVISIONING OR TRAINING GRANT.
 
 Executor selected `Run host preflight (Recommended)` at the host-interface handoff.
 The selected route is operator execution on the actual host and return of its bounded stdout/stderr report.
@@ -8,7 +8,7 @@ Executor explicitly directed delegation of host commands to Executor, who runs t
 The agent prepares exact scoped host commands but executes only authorized sbx development work in this session.
 Executor returned the failed host reports described below.
 Executor returned the successful v2 metadata/root-help report described below.
-Executor returned the installed six-subcommand help report; actual resource/storage/GPU admission remains pending.
+Executor returned the installed six-subcommand help report and the admission metadata report; actual resource/storage/GPU admission remains pending.
 Do not execute the task in the coding sbx and present it as completion of that selection.
 The agent has not run the actual host preflight.
 
@@ -125,14 +125,14 @@ Executor selected the shared-GPU host Docker job instead, preserving host driver
 No GPU vendor, backend, driver installation, actual Docker endpoint, resource enforcement or GPU qualification follows from that design choice.
 See [gpu-readiness.md](gpu-readiness.md).
 
-## Next metadata task: actual host admission facts
+## Admission facts: operator report received
 
-Status: LOCAL SOURCE VERIFIED / SCOPED PUBLICATION + DELEGATED HOST METADATA APPROVED / HOST REPORT PENDING.
-The earlier publication/host-help approvals do not authorize this new hardware/filesystem/GPU packet.
+Status: OPERATOR-REPORTED `PASS_METADATA_ONLY` / SOURCE COMMIT, EXECUTED INVOCATION AND EXECUTION TIMESTAMP UNKNOWN / ADMISSION UNQUALIFIED.
+The earlier publication/host-help approvals did not authorize this hardware/filesystem/GPU packet.
 Executor subsequently selected `Commit + push (Recommended)` for this 19-file admission/GPU source/spec/test phase and the exact one-shot metadata packet below.
-That fresh approval permits publication to `feat-ml-adjuntant-ii` over HTTPS and operator execution of this command on the actual host.
+That scoped approval permitted publication of the admission/GPU phase to `feat-ml-adjuntant-ii` over HTTPS and operator execution of its exact metadata command.
 It does not delegate host execution to the coding agent or approve a different parent/path invocation, installation, daemon query, container, allocation, GPU change, qualification or training.
-The approved one-shot operator command is:
+The approved one-shot handoff command was:
 
 ```sh
 MISE_AUTO_INSTALL=false MISE_TASK_RUN_AUTO_INSTALL=false mise run host:admission-facts --confirm-host
@@ -164,6 +164,53 @@ The report keeps runtime admission and GPU qualification false.
 The actual Docker daemon/socket, complete GPU runtime, captured inputs, target ownership/durability and original-clock qualification still require independent selection and exact fresh grants.
 If the selected existing parent is absent or rejected, retain the blocked report and stop without creating it, substituting another path or automatically retrying.
 Only an independently supplied existing absolute parent may replace the default through `--state-parent` in a separately selected exact invocation.
+
+### Received observations and provenance boundary
+
+Executor supplied a complete `chess-coach.host-admission-facts.v1` JSON message reporting `PASS_METADATA_ONLY`.
+The preserved message is `/tmp/opencode/chess-coach-operator-host-admission-FenA0l/operator-message.json`.
+See [verification.md](verification.md#operator-reported-admission-evidence) for its digest, provenance gaps and derived-summary distinction.
+The execution realm remains `OPERATOR_ASSERTED_HOST_UNQUALIFIED`, not an independently qualified host identity.
+Its runtime admission is false, GPU qualification is `NOT_QUALIFIED`, and provisioning authorization, training authorization and training readiness remain false.
+
+| Reported surface | Operator-reported observation; not an approved binding |
+|---|---|
+| Caller and kernel | Real/effective UID/GID 1000; kernel `7.2.13-200.fc44.x86_64`; CPU IDs 0–15 |
+| RAM | Total 41,706,151,936 bytes; available 24,247,398,400 bytes |
+| Swap | Total 8,589,930,496 bytes; free 5,878,820,864 bytes; no waiver of the job's zero-extra-swap policy |
+| NVIDIA GPU | `NVIDIA GeForce RTX 3070 Laptop GPU`; 8,192 MiB; driver `615.78.08` |
+| Other DRM device | Intel `i915` is present; this does not identify display ownership or available NVIDIA capacity |
+| Docker client | `/usr/bin/docker`; version `29.9.2`, build `a82e528`; reported SHA-256 `1aa503f7404a95fcec56614f5e0b7672d6f0cc29888182a1d4ab5ab72e6d14c1`; no daemon query |
+| Existing state parent | An existing operator-reported parent; the application root remains only a proposal, not an allocation |
+| Shared filesystem | State parent and workspace share the `/home` btrfs pool; capacity 996,914,757,632 bytes; available 236,845,432,832 bytes |
+| Entry counters | Both `availableEntries` and `freeEntries` report zero; do not infer exhausted btrfs inodes or qualified entry capacity |
+
+Keep persistent GPU/PCI identifiers, filesystem/device/inode identities and account-specific inventory paths only in the private operator report linked above.
+This public-bound summary intentionally omits those identifiers; the private receipt remains unchanged.
+These observations neither select the final GPU/daemon/state identities nor reserve CPU, RAM, VRAM or filesystem capacity.
+Do not add the two filesystem samples: they describe one shared pool.
+Keep the 24,000,000,000-byte / 12-thread aggregate ceiling and all existing Gate0/F9/R4 obligations.
+
+## Docker runtime metadata: Rust v2 source implemented
+
+The earlier source-only Python `host:docker-runtime-facts` proposal passed synthetic checks but failed adversarial review and is now superseded.
+HIGH findings cover unregistered CLI plugin execution and help's possible daemon contact/hidden failures; MEDIUM findings cover socket/executable metadata-to-use races.
+The source-only [Rust fixed Unix HTTP API v2 collector](host-runtime-inventory-request.md) now exists in `crates/host-facts`.
+Its supplied 72-test pass includes socket replacement proof, the BOOTTIME timerfd backstop, pinned ordinary-mount-ID observation binding and bounded HTTP fixtures without Docker CLI/plugin/child execution.
+The 72-test Rust source, format/Clippy and retained Python/Bun receipts pass, and both source-review verdicts are READY; these accept source only, not an operator packet or host operation.
+Executor approved necessary coding-sandbox tooling installation through `mise install`; the lead reports Rust 1.95 installed, without any host installation or execution grant.
+The lead removed only the added Python runtime profile/helpers/test/task; all three earlier Python tasks remain intact, and a fresh 74-test post-mise/handoff rerun passes.
+Retain the 97/98-test Python receipts as failed-proposal history, never Rust evidence.
+The verified local static-musl asset and its fixed expectations are documented in [host-runtime-inventory-request.md](host-runtime-inventory-request.md#verified-local-static-artifact--not-distribution-approval); local ELF/privacy/smoke and release-musl 72-test results do not qualify the actual host.
+The architect accepted the prebuilt-task source plan, and `host:docker-runtime-facts` now exists with one literal digest-qualified run path and no implicit build/install/download/staging or confirmation.
+The new closed artifact expectations and four persisted Bun handoff tests pass; the combined Bun set passes 26 tests, full TypeScript passes, and both targeted mise/metadata/test source reviews accept preparation.
+The relative target-store path is proposed only; no approved actual-host deployment, HTTPS publication/transfer or exact host-invocation grant exists, so there is NO APPROVED RUNNABLE HOST HANDOFF.
+Mise retains Rust 1.95.0/minimal/rustfmt/Clippy plus llvm-tools/musl target, both auto-install settings false and the original Python task bodies; the diff now also includes the prebuilt task.
+
+Executor selected `HTTPS operator packets` as transport.
+[Unverified] DevOps reports that gh identified public repository `proveo-ca/chess-coach`, zero repository runners and only the DependencyGraph workflow.
+That observation creates no runner or host execution endpoint and authorizes no workflow, credential handling or publication.
+Keep this session in the coding sbx; do not substitute sbx-local metadata for the operator packet.
 
 ## Unimplemented operational tasks
 
