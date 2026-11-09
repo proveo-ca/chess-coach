@@ -1,0 +1,10 @@
+{
+  "stage": "02-audit",
+  "argv": [
+    "/usr/local/bin/mise",
+    "run",
+    "--raw",
+    "cuda:audit-llvm-archive"
+  ],
+  "exitCode": 1
+}

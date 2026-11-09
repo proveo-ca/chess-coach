@@ -1,0 +1,15 @@
+{
+  "kind": "EXECUTOR_APPROVED_DEVELOPMENT_REALM_PROVISIONING",
+  "selectedOption": "Restore inputs (Recommended)",
+  "followUp": "provision your realm with mise",
+  "toolchain": { "rust": "1.95.0", "profile": "minimal", "components": ["rustfmt", "clippy"], "target": "x86_64-unknown-linux-gnu" },
+  "dependencyScope": "LOCKED_RUST_OWNER_AND_DEFAULT_CPU_VERIFICATION_INPUTS_ONLY",
+  "cpuLinker": { "tool": "zig", "version": "0.15.2", "scope": "RESTORE_PREVIOUS_DEVELOPMENT_CPU_LINKER_UNDER_REALM_PROVISIONING", "changesCudaCompilerRoute": false },
+  "configScope": "_work/gpu-owner-recovery/mise.toml",
+  "newWritableHomes": "_work/gpu-owner-recovery/cache",
+  "cudaLlvmNvidiaAcquisitionAuthorized": false,
+  "actualHostGpuContainerImageExecutionAuthorized": false,
+  "publicationAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

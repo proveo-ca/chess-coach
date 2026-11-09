@@ -1,0 +1,20 @@
+
+packages/contracts/tests/gpu-job.test.ts:
+(pass) GPU closed boundary > accepts exact input and outer identities without control frames [13.12ms]
+(pass) GPU closed boundary > binds original input bytes, all model identities and nested closed fields [2.26ms]
+(pass) GPU closed boundary > rejects recursively escaped duplicate keys, malformed JSON and resource excess [7.86ms]
+(pass) GPU original descriptor token commitment > accepts literal negative-zero integers only with the exact changed descriptor commitment [2.90ms]
+(pass) GPU original descriptor token commitment > accepts literal negative-zero live ordinals without changing descriptor token hashing [1.48ms]
+(pass) GPU original descriptor token commitment > retains Bun semantic integer spellings beyond the narrower Rust integer token grammar [2.74ms]
+(pass) GPU original descriptor token commitment > accepts outer formatting and decoded escaped property names [1.79ms]
+(pass) GPU original descriptor token commitment > rejects inside-token whitespace, reordering and Unicode escapes despite refreshed enclosing hashes [2.17ms]
+(pass) GPU original descriptor token commitment > rejects escaped descriptor duplicates in the same bounded parse [1.01ms]
+(pass) GPU original descriptor token commitment > accepts opaque alternate RNG roots, valid prefixes and a different corpus permutation [0.87ms]
+(pass) GPU original descriptor token commitment > accepts schema-valid descriptor, journal, model and update alternatives without replay [5.02ms]
+(pass) GPU original descriptor token commitment > retains existing closed state, prefix, counter, history and control predicates [6.74ms]
+(pass) GPU original descriptor token commitment > retains exactly the accepted first-attempt proposal bindings [2.32ms]
+
+ 13 pass
+ 0 fail
+ 163 expect() calls
+Ran 13 tests across 1 file. [372.00ms]

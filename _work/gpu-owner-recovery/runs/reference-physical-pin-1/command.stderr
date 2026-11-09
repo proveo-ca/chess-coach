@@ -1,0 +1,21 @@
+
+packages/runtime/tests/reference-bundles.test.ts:
+(pass) reference source guard requires an explicit absolute exact-pin root [11.31ms]
+(pass) reference source guard rejects a canonical tracked subdirectory with untracked entrypoints before building [556.28ms]
+(pass) reference source guard rejects tracked modifications before and after staging [1132.27ms]
+(pass) reference source guard rejects tracked modifications hidden by --assume-unchanged [821.74ms]
+(pass) reference source guard rejects tracked modifications hidden by --skip-worktree [881.25ms]
+(pass) reference source guard rejects source substitutions hidden by Git replacement refs [1198.39ms]
+(pass) reference source guard authenticates physical bytes hidden by a synthetic clean filter [984.43ms]
+(pass) reference source guard rejects a physical symlink replacing tracked package.json [707.64ms]
+(pass) reference source guard rejects a physical symlink replacing tracked packages [694.47ms]
+(pass) reference source guard rejects populated submodule source [709.24ms]
+(pass) reference source guard rejects untracked bundle input metadata even with identical tracked bytes [1509.11ms]
+(pass) reference source guard requires original bundle input size, digest, paths, and selected entry coverage [2225.32ms]
+(pass) reference source guard reauthenticates physical inputs after inventory capture [720.77ms]
+
+ 13 pass
+ 1 filtered out
+ 0 fail
+ 88 expect() calls
+Ran 13 tests across 1 file. [12.51s]

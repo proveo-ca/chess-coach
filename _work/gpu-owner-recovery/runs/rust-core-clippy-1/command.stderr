@@ -1,0 +1,487 @@
+    Checking serde_core v1.0.229
+    Checking linux-raw-sys v0.12.1
+    Checking rustix v1.1.6
+    Checking serde_json v1.0.154
+    Checking serde v1.0.229
+    Checking libc v0.2.191
+    Checking chess-coach-gpu-owner v0.1.0 (/home/gu1lty/Projects/proveo/chess-coach/crates/gpu-owner)
+    Checking getrandom v0.4.3
+    Checking tempfile v3.27.0
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/docker.rs:155:5
+    |
+155 | /     if let Some(value) = v.get(key) {
+156 | |         if !value.is_null() && value.as_array().is_none_or(|a| !a.is_empty()) {
+157 | |             return Err(OwnerError("INSPECT_EXTRA"));
+158 | |         }
+159 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+    = note: `-D clippy::collapsible-if` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::collapsible_if)]`
+help: collapse nested if block
+    |
+155 ~     if let Some(value) = v.get(key)
+156 ~         && !value.is_null() && value.as_array().is_none_or(|a| !a.is_empty()) {
+157 |             return Err(OwnerError("INSPECT_EXTRA"));
+158 ~         }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/docker.rs:187:5
+    |
+187 | /     if let Some(name) = v.get("Name") {
+188 | |         if name.as_str() != Some(&format!("/{}", input.ownership.container_name)) {
+189 | |             return Err(OwnerError("INSPECT_NAME"));
+190 | |         }
+191 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+187 ~     if let Some(name) = v.get("Name")
+188 ~         && name.as_str() != Some(&format!("/{}", input.ownership.container_name)) {
+189 |             return Err(OwnerError("INSPECT_NAME"));
+190 ~         }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/docker.rs:301:9
+    |
+301 | /         if let Some(value) = h.get(key) {
+302 | |             if value.as_str() != Some("") {
+303 | |                 return Err(OwnerError("INSPECT_NAMESPACE"));
+304 | |             }
+305 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+301 ~         if let Some(value) = h.get(key)
+302 ~             && value.as_str() != Some("") {
+303 |                 return Err(OwnerError("INSPECT_NAMESPACE"));
+304 ~             }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/observe.rs:190:9
+    |
+190 | /         if let Some((old, expected)) = &self.bound {
+191 | |             if old != &path || *expected != identity {
+192 | |                 return Err(OwnerError("C8_REBOUND"));
+193 | |             }
+194 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+190 ~         if let Some((old, expected)) = &self.bound
+191 ~             && (old != &path || *expected != identity) {
+192 |                 return Err(OwnerError("C8_REBOUND"));
+193 ~             }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/owner.rs:430:9
+    |
+430 | /         if let Some((_, q0)) = self.query {
+431 | |             if i128::from(now)
+432 | |                 >= i128::from(q0) + i128::from(self.input.telemetry.query_budget_ns.0)
+...   |
+436 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+430 ~         if let Some((_, q0)) = self.query
+431 ~             && i128::from(now)
+432 |                 >= i128::from(q0) + i128::from(self.input.telemetry.query_budget_ns.0)
+433 |             {
+434 |                 return Err(OwnerError("TELEMETRY_QUERY_DEADLINE"));
+435 ~             }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/owner.rs:446:9
+    |
+446 | /         if let Some((index, q0)) = self.query {
+447 | |             if self.helpers[index].process.complete() {
+448 | |                 let sample = telemetry::finish(
+449 | |                     &self.helpers[index].process,
+...   |
+475 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+446 ~         if let Some((index, q0)) = self.query
+447 ~             && self.helpers[index].process.complete() {
+448 |                 let sample = telemetry::finish(
+...
+473 |                 self.record(index, Phase::Working)?;
+474 ~             }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/owner.rs:618:13
+    |
+618 | /             if !self.helpers[index].process.complete() {
+619 | |                 if let Err(error) = self.helpers[index].process.cleanup_pump() {
+620 | |                     self.report.cleanup_fault(error);
+621 | |                 }
+622 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+618 ~             if !self.helpers[index].process.complete()
+619 ~                 && let Err(error) = self.helpers[index].process.cleanup_pump() {
+620 |                     self.report.cleanup_fault(error);
+621 ~                 }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/owner.rs:624:13
+    |
+624 | /             if self.helpers[index].process.complete() {
+625 | |                 if let Err(error) = self.record(index, Phase::Cleanup) {
+626 | |                     self.report.cleanup_fault(error);
+627 | |                 }
+628 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+624 ~             if self.helpers[index].process.complete()
+625 ~                 && let Err(error) = self.record(index, Phase::Cleanup) {
+626 |                     self.report.cleanup_fault(error);
+627 ~                 }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/process.rs:154:9
+    |
+154 | /         if let Some(pipe) = &process.stdin {
+155 | |             if nonblocking(pipe).is_err() {
+156 | |                 process.failure = Some(OwnerError("PIPE_NONBLOCK"));
+157 | |                 process.stdin.take();
+158 | |             }
+159 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+154 ~         if let Some(pipe) = &process.stdin
+155 ~             && nonblocking(pipe).is_err() {
+156 |                 process.failure = Some(OwnerError("PIPE_NONBLOCK"));
+157 |                 process.stdin.take();
+158 ~             }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/process.rs:160:9
+    |
+160 | /         if let Some(pipe) = &process.stdout_pipe {
+161 | |             if nonblocking(pipe).is_err() {
+162 | |                 process.failure = Some(OwnerError("PIPE_NONBLOCK"));
+163 | |                 process.stdout_pipe.take();
+164 | |             }
+165 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+160 ~         if let Some(pipe) = &process.stdout_pipe
+161 ~             && nonblocking(pipe).is_err() {
+162 |                 process.failure = Some(OwnerError("PIPE_NONBLOCK"));
+163 |                 process.stdout_pipe.take();
+164 ~             }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/process.rs:166:9
+    |
+166 | /         if let Some(pipe) = &process.stderr_pipe {
+167 | |             if nonblocking(pipe).is_err() {
+168 | |                 process.failure = Some(OwnerError("PIPE_NONBLOCK"));
+169 | |                 process.stderr_pipe.take();
+170 | |             }
+171 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+166 ~         if let Some(pipe) = &process.stderr_pipe
+167 ~             && nonblocking(pipe).is_err() {
+168 |                 process.failure = Some(OwnerError("PIPE_NONBLOCK"));
+169 |                 process.stderr_pipe.take();
+170 ~             }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/process.rs:172:9
+    |
+172 | /         if process.failure.is_some() {
+173 | |             if let Err(error) = process.kill_owned() {
+174 | |                 process.failure = Some(error);
+175 | |             }
+176 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+172 ~         if process.failure.is_some()
+173 ~             && let Err(error) = process.kill_owned() {
+174 |                 process.failure = Some(error);
+175 ~             }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/process.rs:196:9
+    |
+196 | /         if self.status.is_none() {
+197 | |             if let Some(fd) = &self.pidfd {
+198 | |                 watches.push(Watch {
+199 | |                     fd: fd.as_fd(),
+...   |
+203 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+196 ~         if self.status.is_none()
+197 ~             && let Some(fd) = &self.pidfd {
+198 |                 watches.push(Watch {
+...
+201 |                 });
+202 ~             }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/process.rs:204:9
+    |
+204 | /         if !self.stdout.eof {
+205 | |             if let Some(pipe) = &self.stdout_pipe {
+206 | |                 watches.push(Watch {
+207 | |                     fd: pipe.as_fd(),
+...   |
+211 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+204 ~         if !self.stdout.eof
+205 ~             && let Some(pipe) = &self.stdout_pipe {
+206 |                 watches.push(Watch {
+...
+209 |                 });
+210 ~             }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/process.rs:212:9
+    |
+212 | /         if !self.stderr.eof {
+213 | |             if let Some(pipe) = &self.stderr_pipe {
+214 | |                 watches.push(Watch {
+215 | |                     fd: pipe.as_fd(),
+...   |
+219 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+212 ~         if !self.stderr.eof
+213 ~             && let Some(pipe) = &self.stderr_pipe {
+214 |                 watches.push(Watch {
+...
+217 |                 });
+218 ~             }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/process.rs:220:9
+    |
+220 | /         if self.queued {
+221 | |             if let Some(pipe) = &self.stdin {
+222 | |                 watches.push(Watch {
+223 | |                     fd: pipe.as_fd(),
+...   |
+227 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+220 ~         if self.queued
+221 ~             && let Some(pipe) = &self.stdin {
+222 |                 watches.push(Watch {
+...
+225 |                 });
+226 ~             }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/process.rs:238:9
+    |
+238 | /         if self.queued && !self.forced {
+239 | |             if let Some(pipe) = &mut self.stdin {
+240 | |                 for _ in 0..16 {
+241 | |                     if self.written == self.pending.len() {
+...   |
+261 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+238 ~         if self.queued && !self.forced
+239 ~             && let Some(pipe) = &mut self.stdin {
+240 |                 for _ in 0..16 {
+...
+259 |                 }
+260 ~             }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/process.rs:262:9
+    |
+262 | /         if let Some(pipe) = &mut self.stdout_pipe {
+263 | |             if !self.stdout.eof {
+264 | |                 if let Err(e) = self.stdout.read(pipe) {
+265 | |                     error.get_or_insert(e);
+...   |
+268 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+262 ~         if let Some(pipe) = &mut self.stdout_pipe
+263 ~             && !self.stdout.eof {
+264 |                 if let Err(e) = self.stdout.read(pipe) {
+265 |                     error.get_or_insert(e);
+266 |                 }
+267 ~             }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/process.rs:263:13
+    |
+263 | /             if !self.stdout.eof {
+264 | |                 if let Err(e) = self.stdout.read(pipe) {
+265 | |                     error.get_or_insert(e);
+266 | |                 }
+267 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+263 ~             if !self.stdout.eof
+264 ~                 && let Err(e) = self.stdout.read(pipe) {
+265 |                     error.get_or_insert(e);
+266 ~                 }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/process.rs:269:9
+    |
+269 | /         if let Some(pipe) = &mut self.stderr_pipe {
+270 | |             if !self.stderr.eof {
+271 | |                 if let Err(e) = self.stderr.read(pipe) {
+272 | |                     error.get_or_insert(e);
+...   |
+275 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+269 ~         if let Some(pipe) = &mut self.stderr_pipe
+270 ~             && !self.stderr.eof {
+271 |                 if let Err(e) = self.stderr.read(pipe) {
+272 |                     error.get_or_insert(e);
+273 |                 }
+274 ~             }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/process.rs:270:13
+    |
+270 | /             if !self.stderr.eof {
+271 | |                 if let Err(e) = self.stderr.read(pipe) {
+272 | |                     error.get_or_insert(e);
+273 | |                 }
+274 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+270 ~             if !self.stderr.eof
+271 ~                 && let Err(e) = self.stderr.read(pipe) {
+272 |                     error.get_or_insert(e);
+273 ~                 }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/process.rs:302:9
+    |
+302 | /         if !cleanup {
+303 | |             if let Some(e) = self.failure {
+304 | |                 return Err(e);
+305 | |             }
+306 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+302 ~         if !cleanup
+303 ~             && let Some(e) = self.failure {
+304 |                 return Err(e);
+305 ~             }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates/gpu-owner/src/wire.rs:314:5
+    |
+314 | /     if let Some(j) = &s.journal_ref {
+315 | |         if j.byte_length > json::SAFE_INTEGER
+316 | |             || j.last_record_ordinal > json::SAFE_INTEGER
+317 | |             || !json::digest(&j.sha256)
+...   |
+321 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+314 ~     if let Some(j) = &s.journal_ref
+315 ~         && (j.byte_length > json::SAFE_INTEGER
+316 |             || j.last_record_ordinal > json::SAFE_INTEGER
+317 ~             || !json::digest(&j.sha256))
+318 |         {
+319 |             return Err(OwnerError("STATE_JOURNAL"));
+320 ~         }
+    |
+
+error: could not compile `chess-coach-gpu-owner` (lib) due to 23 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `chess-coach-gpu-owner` (lib test) due to 23 previous errors

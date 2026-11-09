@@ -1,0 +1,63 @@
+
+chess-coach/_work/gpu-owner-recovery/verify.test.ts:
+16 | };
+17 | const digest = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
+18 | export type CommandResult = { status: "PASS" | "FAIL"; exitCode: number; failure: string | null; stdoutBytes: number; stderrBytes: number };
+19 | 
+20 | export async function runBounded(argv: string[], directory: string, timeoutMs: number): Promise<CommandResult> {
+21 |   if (resolve(directory) !== directory || !directory.startsWith(work + "/") || !argv.length || timeoutMs <= 0) throw Error("RECOVERY_RUN_CONTEXT");
+                                                                                                                          ^
+error: RECOVERY_RUN_CONTEXT
+      at runBounded (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/verify.ts:21:118)
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/verify.test.ts:13:24)
+(fail) repository runner retains bounded successful output and exact exit [0.64ms]
+16 | };
+17 | const digest = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
+18 | export type CommandResult = { status: "PASS" | "FAIL"; exitCode: number; failure: string | null; stdoutBytes: number; stderrBytes: number };
+19 | 
+20 | export async function runBounded(argv: string[], directory: string, timeoutMs: number): Promise<CommandResult> {
+21 |   if (resolve(directory) !== directory || !directory.startsWith(work + "/") || !argv.length || timeoutMs <= 0) throw Error("RECOVERY_RUN_CONTEXT");
+                                                                                                                          ^
+error: RECOVERY_RUN_CONTEXT
+      at runBounded (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/verify.ts:21:118)
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/verify.test.ts:21:24)
+(fail) repository runner preserves nonzero exits without success substitution [0.11ms]
+16 | };
+17 | const digest = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
+18 | export type CommandResult = { status: "PASS" | "FAIL"; exitCode: number; failure: string | null; stdoutBytes: number; stderrBytes: number };
+19 | 
+20 | export async function runBounded(argv: string[], directory: string, timeoutMs: number): Promise<CommandResult> {
+21 |   if (resolve(directory) !== directory || !directory.startsWith(work + "/") || !argv.length || timeoutMs <= 0) throw Error("RECOVERY_RUN_CONTEXT");
+                                                                                                                          ^
+error: RECOVERY_RUN_CONTEXT
+      at runBounded (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/verify.ts:21:118)
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/verify.test.ts:27:24)
+(fail) repository runner kills its bounded stalled synthetic child [0.10ms]
+16 | };
+17 | const digest = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
+18 | export type CommandResult = { status: "PASS" | "FAIL"; exitCode: number; failure: string | null; stdoutBytes: number; stderrBytes: number };
+19 | 
+20 | export async function runBounded(argv: string[], directory: string, timeoutMs: number): Promise<CommandResult> {
+21 |   if (resolve(directory) !== directory || !directory.startsWith(work + "/") || !argv.length || timeoutMs <= 0) throw Error("RECOVERY_RUN_CONTEXT");
+                                                                                                                          ^
+error: RECOVERY_RUN_CONTEXT
+      at runBounded (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/verify.ts:21:118)
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/verify.test.ts:35:26)
+(fail) repository runner rejects stdout overflow and preserves only the bounded prefix [0.14ms]
+16 | };
+17 | const digest = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
+18 | export type CommandResult = { status: "PASS" | "FAIL"; exitCode: number; failure: string | null; stdoutBytes: number; stderrBytes: number };
+19 | 
+20 | export async function runBounded(argv: string[], directory: string, timeoutMs: number): Promise<CommandResult> {
+21 |   if (resolve(directory) !== directory || !directory.startsWith(work + "/") || !argv.length || timeoutMs <= 0) throw Error("RECOVERY_RUN_CONTEXT");
+                                                                                                                          ^
+error: RECOVERY_RUN_CONTEXT
+      at runBounded (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/verify.ts:21:118)
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/verify.test.ts:35:26)
+(fail) repository runner rejects stderr overflow and preserves only the bounded prefix [0.05ms]
+(pass) repository runner refuses paths outside the repository work root [0.06ms]
+
+ 1 pass
+ 5 fail
+ 1 expect() calls
+Ran 6 tests across 1 file. [13.00ms]

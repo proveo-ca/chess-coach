@@ -1,0 +1,39 @@
+     Locking 1 package to latest Rust 1.95 compatible version
+      Adding cubek-fft v0.3.1
+ Downloading crates ...
+  Downloaded generic-array v0.14.7
+  Downloaded itoa v1.0.18
+  Downloaded cpufeatures v0.2.17
+  Downloaded crypto-common v0.1.7
+  Downloaded cfg-if v1.0.5
+  Downloaded errno v0.3.14
+  Downloaded version_check v0.9.5
+  Downloaded block-buffer v0.10.4
+  Downloaded bitflags v2.13.2
+  Downloaded digest v0.10.7
+  Downloaded zmij v1.0.23
+  Downloaded sha2 v0.10.9
+  Downloaded quote v1.0.47
+  Downloaded unicode-ident v1.0.27
+  Downloaded serde_derive v1.0.229
+  Downloaded serde_core v1.0.229
+  Downloaded serde v1.0.229
+  Downloaded proc-macro2 v1.0.107
+  Downloaded serde_json v1.0.154
+  Downloaded memchr v2.8.3
+  Downloaded typenum v1.20.1
+  Downloaded syn v3.0.9
+  Downloaded rustix v1.1.6
+  Downloaded libc v0.2.191
+  Downloaded linux-raw-sys v0.12.1
+   Compiling version_check v0.9.5
+   Compiling proc-macro2 v1.0.107
+error: linking with `/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/zig-cc.ts` failed: exit status: 1
+  |
+  = note:  "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/zig-cc.ts" "-m64" "/home/gu1lty/Projects/proveo/chess-coach/target/gpu-owner-recovery/debug/build/proc-macro2-d5a497729a74483e/rustczCdSEH/symbols.o" "<3 object files omitted>" "-Wl,--as-needed" "-Wl,-Bstatic" "<sysroot>/lib/rustlib/x86_64-unknown-linux-gnu/lib/{libstd-*,libpanic_unwind-*,libobject-*,libmemchr-*,libaddr2line-*,libgimli-*,libcfg_if-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libminiz_oxide-*,libadler2-*,libunwind-*,liblibc-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "-Wl,-Bdynamic" "-lgcc_s" "-lutil" "-lrt" "-lpthread" "-lm" "-ldl" "-lc" "-L" "/home/gu1lty/Projects/proveo/chess-coach/target/gpu-owner-recovery/debug/build/proc-macro2-d5a497729a74483e/rustczCdSEH/raw-dylibs" "-B<sysroot>/lib/rustlib/x86_64-unknown-linux-gnu/bin/gcc-ld" "-fuse-ld=lld" "-Wl,--eh-frame-hdr" "-Wl,-z,noexecstack" "-L" "<sysroot>/lib/rustlib/x86_64-unknown-linux-gnu/lib" "-o" "/home/gu1lty/Projects/proveo/chess-coach/target/gpu-owner-recovery/debug/build/proc-macro2-d5a497729a74483e/build_script_build-d5a497729a74483e" "-Wl,--gc-sections" "-pie" "-Wl,-z,relro,-z,now" "-Wl,--strip-debug" "-nodefaultlibs"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: error: unsupported linker arg: --threads
+          
+
+error: could not compile `proc-macro2` (build script) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...

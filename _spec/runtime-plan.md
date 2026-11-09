@@ -1,6 +1,48 @@
 # Supported-runtime closure packet
 
-Status: DRAFT / NOT GATE0 ACCEPTED / NO EXECUTION GRANT.
+## CURRENT priority amendment — 2026-11-09
+
+The [canonical training-first amendment and phase order](gate-closure.md#current-precedence-amendment--accepted-2026-11-09) and [functional readiness checklist](readiness.md#current-precedence--training-functional-readiness-2026-11-09) govern current planning.
+The packet below retains the historical full-assurance topology, controls and acceptance gaps; it is not a mandatory pretraining implementation sequence.
+ALL security/privacy hardening, bwrap/namespace/hardened read-only closure qualification, anti-race/custody/provenance assurance, private custody storage and runtime-domain security acceptance come LAST, after the planned training phase is complete and its results are validated.
+Prior strict physical-stop/escaped-group/dual-crash proof and native bridge/pidfd/cgroup/service/helper implementation are likewise deferred, not accepted repairs or pretraining dependencies.
+Keep the selected supported host-backed shared-GPU container path, ordinary bounded resources/clocks/coexistence, truthful output/checkpoint receipts, functional close evidence and unchanged game/model/economic/F64/C12 correctness; phase 0 must determine whether the chosen path needs the old isolated diagnostic pipeline at all.
+AGENTS.md implementation reviews still check functional correctness and the deferred backlog; Executor already supplied the policy deferral, not clearance of any historical HIGH.
+All original packet text remains intact; no source, safeguard, configuration, request, receipt, reported 0/3/no-binding/full-halt status or `trainingReady:false` changes.
+This amendment grants no implementation, build, runtime, archive, download, helper, host/GPU, training or publication operation.
+
+Status: `SOURCE_RECONSTRUCTED` / `VERIFIED_TEST_SUBSETS` / `SOURCE_REVIEWS_ACCEPTED_SCOPED` / NOT GATE0 ACCEPTED / `trainingReady:false` / NO EXECUTION GRANT.
+
+## CURRENT recovered goals
+
+[recovery.md](recovery.md) governs reconstruction provenance and historical-only evidence.
+[gpu-owner.md](gpu-owner.md) defines the connected reconstructed Rust-owner/Bun-job contract and public test-facing API; current reviewed source is accepted in scope, not qualified for operation.
+[gpu-cooperative-policy.md](gpu-cooperative-policy.md) defines the pure lease gate.
+The new owner does not replace or modify the frozen Python F9 path described below.
+Both ordinary new mains stay disabled; raw manifest/hash inputs must not activate them.
+Retain test-facing source and repository-owned bounded fixtures without enabling normal operational dispatch.
+Keep C1/C2/C8/C9/C13, aggregate 12-thread/24,000,000,000-byte ceilings, original clocks, F64 numerics, and CPU defaults unchanged.
+The GPU contract retains ownership-safe cleanup after evidence failure, complete start-write/closed-stdin startup admission, and exact original descriptor-token hashing in Bun and Rust.
+Receiver validation mirrors existing closed-state and stream-prefix predicates, not master-root derivation, Fisher–Yates, curriculum cursor/epoch replay, or learning outside the job; actual producer pins and one real in-job attempt stay unchanged.
+Actual target values, image/provider closure, and Gate0 acceptance remain unset.
+Historical success statements below grant neither a fresh result nor any host/GPU/image/capture/build/production/acquisition/training/publication operation.
+The exact restored Bun policy path is `tooling/runtime/gpu-policy.ts`; the closed protocol lives in `packages/contracts/src/gpu-job.ts`.
+`packages/runtime/src/gpu-job.ts` must export the loop and contain its disabled normal main in that same file.
+Use the recovered `match-session.ts` startup hook and exact tests/fixtures listed in [recovery.md](recovery.md#exact-recovered-file-plan).
+Selected development restoration is `TOOLCHAIN_OWNER_DEFAULT_CPU_RESTORED` / `LOCKED_INPUTS_RESTORED_AND_FRESHLY_VERIFIED`: Rust `1.95.0` minimal/rustfmt/Clippy, restored Zig `0.15.2` CPU linker, and selected owner/default-CPU inputs, with trust only for `_work/gpu-owner-recovery/mise.toml`; root mise stays untrusted/unchanged.
+This grant changes no CUDA compiler route and grants no CUDA/LLVM/NVIDIA/host/GPU/production work.
+Retained [source-bound receipts](verification.md#preferred-corrected-source-receipts) record owner 72 cases, CPU 39 / 4,670 coordinates, policy 352/1,262, bridge 27/388, authenticated reference guards 25/194, runner/audit 12/72, and passing snapshot static/type checks, all with `sourceChanged:false`.
+The 15 lifecycle cases traverse real Rust and real Bun job/SQLite/coordinator/factory/MatchWorker with fake manager/query/learners; 19 observation cases prove synthetic custody/namespace-removal predicates, not actual Docker/GPU/native process qualification.
+`closing-three-diagram-render-1` and `source-accepted-diagrams-1` pass their earlier diagram generations; `source-accepted-diagrams-2` passes all three final diagrams without self-referential render-pending annotations.
+Current Rust C1 security, authenticated TypeScript packet-5 security, scoped integer-contract, and final adversarial source-only verdicts are accepted; no acceptance derives from old packet-4/no-filter verdicts or implies a single global manifest hash.
+Cleanup drains/reaps without advancing queued stdin; evidence lies outside writable state, state/config path checks are not atomic bind custody, and held-leaf unlinking is not inode destruction or qualified cgroupfs behavior.
+The reference guard compares exact mode/OID/path stage-0 index entries to the original pinned non-tree entries and authenticates original physical bytes plus every consumed bundle input before imports.
+It never invokes worktree/cached Git diff or source clean/textconv pipelines; prior 13/88 evidence is `PRE_FILTER_EXECUTION_FIX`, and full C14/native proof remains unqualified.
+The [implemented object graph](reference/object-graph-authentication.puml) derives inventory from raw commit/tree body hashes, bounded complete path traversal, and fail-closed no-fetch behavior; ordinary `ls-tree` is not authoritative.
+The fresh 25/194 suite includes owned corruption/local-canary, parser/cache and graph-bound cases; prior 16/108 stays `PRE_OBJECT_GRAPH_AUTHENTICATION`, with no collision-resistance upgrade or atomic filesystem snapshot claim.
+The corrected frozen-boundary audit now requires actual `policy-initialize.rs`, while preserving membership-only root selection, the exact approved lock delta, and other enumerated frozen files; the earlier wrong-selector record remains incomplete history.
+The twelve fresh `closure-*-1` reruns pass their selected snapshots; `closure-verification-integrity-2` validates every complete closing manifest/raw stream, all 198 packet-5 inputs, and only the accepted 27-input Rust/root-Cargo scope of historical packet 3, preserving the first overbroad audit FAIL.
+The closure frozen-boundary audit and final three-diagram render are complete; `closure.json` indexes the separate staged namespace/scoped-whitespace checks, which grant no operational authority.
 
 ## Authority and scope
 

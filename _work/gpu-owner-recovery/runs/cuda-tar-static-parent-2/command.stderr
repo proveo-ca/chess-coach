@@ -1,0 +1,72 @@
+
+_work/gpu-owner-recovery/cuda-tar.test.ts:
+(pass) logical fixture remains exactly fourteen synthetic TAR vectors [0.03ms]
+(pass) persistent logical wire vector: regular-tree [2.98ms]
+(pass) persistent logical wire vector: in-prefix-relative-symlink [0.60ms]
+(pass) persistent logical wire vector: absolute-path [0.37ms]
+(pass) persistent logical wire vector: parent-traversal [0.19ms]
+(pass) persistent logical wire vector: second-prefix [0.17ms]
+(pass) persistent logical wire vector: duplicate-effective-path [0.29ms]
+(pass) persistent logical wire vector: escaping-relative-symlink [0.22ms]
+(pass) persistent logical wire vector: absolute-symlink [0.18ms]
+(pass) persistent logical wire vector: write-below-symlink [0.41ms]
+(pass) persistent logical wire vector: symlink-cycle [0.32ms]
+(pass) persistent logical wire vector: archive-supplied-sentinel [0.15ms]
+(pass) persistent logical wire vector: privileged-regular-mode [0.13ms]
+(pass) persistent logical wire vector: fifo [0.10ms]
+(pass) persistent logical wire vector: device-node [0.12ms]
+(pass) inventory hashes file payloads, omits link digests and uses UTF-8 byte ordering [0.64ms]
+(pass) one-byte, split-header, empty and huge chunks produce the same inventory [3.23ms]
+(pass) streams ordinary data into SHA256 without retaining payload chunks [0.35ms]
+(pass) rejects non-Uint8Array chunks including after termination [0.30ms]
+(pass) requires two complete zero terminators and rejects each truncation class [0.85ms]
+(pass) an empty archive cannot claim an effective LLVM prefix [0.23ms]
+(pass) requires zero payload padding and consumes every trailing chunk through EOF [0.43ms]
+(pass) checks unsigned header checksum before interpreting other fields [0.24ms]
+(pass) accepts POSIX prefix/name and GNU standard magic but rejects alternate dialects [0.51ms]
+(pass) octal-only fields reject base256, signs, non-octal and malformed NUL numerics [1.01ms]
+(pass) strict strings reject malformed UTF-8, control bytes and data after NUL [0.69ms]
+(pass) rejects sparse headers, sparse extensions, special and unknown entry types [1.46ms]
+46 |   for (let offset = 0; offset < data.length; offset += width) yield data.subarray(offset, offset + width);
+47 | }
+48 | const audit = (data: Uint8Array, width?: number) => auditTar(chunks(data, width));
+49 | const rejected = async (data: Uint8Array, code?: string): Promise<void> => {
+50 |   const pending = audit(data);
+51 |   if (code) await expect(pending).rejects.toThrow(`TAR_${code}`); else await expect(pending).rejects.toThrow();
+                                                                                                          ^
+error: expect(received).rejects.toThrow(expected)
+
+Expected promise that rejects
+Received promise that resolved: Promise { <resolved> }
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-tar.test.ts:51:102)
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-tar.test.ts:190:58)
+(fail) rejects unsafe modes, payload-bearing non-files and writable implicit replacements [0.97ms]
+(pass) canonicalizes exactly one directory slash and permits implicit then explicit parents [0.36ms]
+(pass) rejects dot, redundant, absolute, backslash, reserved and wrong-prefix effective paths [0.59ms]
+(pass) later non-directory parents cannot invalidate earlier children [0.89ms]
+(pass) resolves forward, backward and chained hardlinks only to regular in-prefix targets [1.33ms]
+(pass) resolves full symlink path components including directory aliases and parent traversal [0.81ms]
+(pass) rejects cycles through complete target components and hardlink cycles [0.71ms]
+(pass) GNU long names and long targets work with independently split metadata [2.25ms]
+(pass) local PAX counts UTF-8 record bytes and overrides path, target and raw size [0.86ms]
+(pass) global non-path time attributes may inherit without altering entry data [0.59ms]
+(pass) rejects duplicate and competing GNU/PAX overrides in either order [1.72ms]
+(pass) overrides expire after one ordinary member and orphan extensions fail [0.65ms]
+(pass) rejects malformed PAX byte lengths, records, numeric values and unsupported keys [1.74ms]
+(pass) rejects unterminated GNU strings, embedded NULs and malformed UTF-8 metadata [0.35ms]
+(pass) fixed production limits cannot be replaced by callers [0.16ms]
+(pass) effective path and link limits accept exact byte/component ceilings [1.06ms]
+(pass) per-extension ceiling accepts 64KiB exactly and rejects its next byte [2.78ms]
+(pass) cumulative extension ceiling includes every metadata payload [9.85ms]
+(pass) all-header ceiling includes both terminators [2985.02ms]
+(pass) inventory encoded-JSON ceiling fails without retaining archive payload bytes [1287.80ms]
+(pass) 512MiB ceiling counts trailing zeros lazily and checks chunks before processing [6720.84ms]
+
+1 tests failed:
+(fail) rejects unsafe modes, payload-bearing non-files and writable implicit replacements [0.97ms]
+
+ 47 pass
+ 1 fail
+ 223 expect() calls
+Ran 48 tests across 1 file. [11.05s]

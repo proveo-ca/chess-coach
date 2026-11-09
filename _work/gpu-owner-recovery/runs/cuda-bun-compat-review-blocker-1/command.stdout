@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "scope": "READ_ONLY_SOURCE_REVIEW_RECORD_INTEGRITY_NOT_CANCELLATION_QUALIFICATION",
+  "sourceManifestSha256": "d8d5bc5fcebd95d9163bbc13e53af1abf55d611dfe7ae11e7a87d18af39925f8",
+  "sourceInputs": 242,
+  "gates": [
+    {
+      "stage": "static",
+      "status": "PASS",
+      "tests": 23,
+      "assertions": 4161
+    },
+    {
+      "stage": "types",
+      "status": "PASS",
+      "tests": null,
+      "assertions": null
+    },
+    {
+      "stage": "archive",
+      "status": "PASS",
+      "tests": 164,
+      "assertions": 870
+    },
+    {
+      "stage": "snapshot",
+      "status": "PASS",
+      "tests": 46,
+      "assertions": 1065
+    },
+    {
+      "stage": "runner",
+      "status": "PASS",
+      "tests": 18,
+      "assertions": 476
+    },
+    {
+      "stage": "acquire",
+      "status": "PASS",
+      "tests": 28,
+      "assertions": 522
+    },
+    {
+      "stage": "isolation",
+      "status": "PASS",
+      "tests": 16,
+      "assertions": 276
+    }
+  ],
+  "devopsSourceAccepted": false,
+  "highFindingUnresolved": true,
+  "newRepairAuthorityRequired": true,
+  "diagnosticCasesLaunched": 0,
+  "diagnosticGrantConsumed": false,
+  "newBindingCreated": false,
+  "fullArchivePipelineAuthorityGranted": false,
+  "trainingReady": false
+}

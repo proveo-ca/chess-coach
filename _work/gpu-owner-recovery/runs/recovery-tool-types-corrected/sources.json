@@ -1,0 +1,46 @@
+[
+  {
+    "path": "_work/gpu-owner-recovery/audit-lock.ts",
+    "sha256": "1b618be3d4471c54eba82b15e1a29f37a3c41d2b5a0606bd2272d92203767482"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/cargo.ts",
+    "sha256": "22839f3b3909b0c38c28f1e3c4bcc7b75c6ccdf2339cbcff72d79ca49386744a"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/compiler-driver.ts",
+    "sha256": "bfa3cd2f8bd12d5a0466914eb74d33ff749b727d46e3a9057a11950d5e62885c"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/provision.ts",
+    "sha256": "6e5e20904ca08c192c62fa42a4dc70313f5460330918d607e411fd503fb94979"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/recover-runner-output.ts",
+    "sha256": "9970188819bf6024fc5733e01b319eca0bf81064015c681bd617528e16377b51"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/tsconfig.json",
+    "sha256": "e70ffa726d5b3b004982a4705b17b778c4326fe9964b9ce76e006ed1310c793d"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.test.ts",
+    "sha256": "6ce4f65241f6df349386e5452bc543418ed2ebb5badd289d1ce953592ef13eec"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.ts",
+    "sha256": "ce1318b670360763c2b5de39ed4433c1c59bf420092858772ef35e38a5947bed"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/zig-ar.ts",
+    "sha256": "b2ae0f3ed032f1db45c2cc31e072f31033a642c23ca928083cab39499145d6a0"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/zig-cc.ts",
+    "sha256": "af9a8708d2acf0052f61acab96f23fe4b9c47ae0396622b5a11a05173ea6e28a"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/zig-cxx.ts",
+    "sha256": "f4205337b3d55f50b91dd618c38ebb063e093d1af514da7f3b981d93eb469ce7"
+  }
+]

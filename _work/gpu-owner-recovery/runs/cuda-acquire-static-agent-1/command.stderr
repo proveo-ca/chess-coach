@@ -1,0 +1,35 @@
+
+_work/gpu-owner-recovery/cuda-continuation.test.ts:
+(pass) continuation accepts only the renewed full grant and authenticated third inert predecessor [3.25ms]
+(pass) probe-only, halted, consumed, missing grants and arbitrary progress fields fail closed [9.74ms]
+(pass) the entire base contract, both pinned artifacts, compile targets, limits and denied authorities remain exact [61.03ms]
+(pass) review flags represent source acceptance and require exact current closure, request and predecessor hashes [2.91ms]
+(pass) new bindings cannot rewrite the original isolation source or minimal configuration [3.37ms]
+(pass) failed, widened or source-changed predecessor evidence cannot become acquisition authority [11.64ms]
+(pass) two-task TOML and whole private environment preserve the original configuration without fallback [0.25ms]
+(pass) Mise consumer gates before trust, demands sole discovery, and stops on first failure [0.89ms]
+(pass) configuration/discovery injection and original-config fallback fail before artifact task [0.87ms]
+(pass) the production continuation loader has no path argument and performs reads only [0.36ms]
+
+_work/gpu-owner-recovery/cuda-acquire.test.ts:
+(pass) production identities close both exact public URLs, destinations, sizes and independent digests [0.09ms]
+(pass) unknown CLI, URL, path, flags and multi-artifact arguments fail before even a continuation read [0.42ms]
+(pass) main awaits closed continuation validation before marker, filesystem and fetch effects [3.30ms]
+(pass) small streaming vectors acquire both fixed IDs independently with one operation and no no-run qualification [1.97ms]
+(pass) production entry never consumes the injectable small identity [2.02ms]
+(pass) wrong length, oversize and digest retain bounded partial bytes without publishing or retrying [7.69ms]
+(pass) manual GET redirect accepts only exact HTTPS hosts and at most three hops without retry budgets [2.44ms]
+(pass) unknown host, lookalike, scheme, credentials, non-443 port and downgrade redirect never reach a second fetch [7.73ms]
+(pass) network, signed URL, body and HTTP failures expose sanitized codes only [6.53ms]
+(pass) preexisting cache reuse requires fresh regular-file identity, exact length and digest without network [3.45ms]
+(pass) symlink, path/descriptor mismatch and identity drift reject cache entries without overwrite [3.13ms]
+(pass) exclusive publication races reuse only verified identical bytes and never overwrite a conflicting winner [2.55ms]
+(pass) completed operations cannot replay, and missing markers or incomplete operations halt the sequence [3.35ms]
+(pass) first actual artifact failure blocks the second artifact and creates no automatic retry [2.19ms]
+(pass) a lost or failed verdict write leaves the claimed operation fail-closed [1.79ms]
+(pass) production source uses manual credential-free GET, no-follow exclusive files, fixed receipts and no native operations [0.51ms]
+
+ 26 pass
+ 0 fail
+ 492 expect() calls
+Ran 26 tests across 2 files. [165.00ms]

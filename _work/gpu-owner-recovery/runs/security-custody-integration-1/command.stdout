@@ -1,0 +1,115 @@
+
+running 3 tests
+test json::tests::list_elements_and_required_nullable_values_use_lexical_integers ... ok
+test json::tests::lexical_integer_normalizes_only_the_exact_negative_zero_token ... ok
+test json::tests::safe_integer_ceiling_and_decimal_strings_keep_their_original_contracts ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 13 tests
+test cleanup_reports_new_output_faults_and_still_drains_and_reaps ... ok
+test cpu_ranges_are_bounded_sorted_and_unique ... ok
+test evidence_is_exclusive_counts_root_and_latches_failures_without_cleanup_io ... ok
+test expired_timer_wins_over_readable_io ... ok
+test file_custody_rejects_symlink_leaves_and_ancestors ... ok
+test file_hashing_checks_deadlines_exact_length_identity_and_rewinds ... ok
+test cleanup_does_not_transmit_or_close_queued_start_input ... ok
+test group_kill_cannot_manufacture_natural_helper_eof ... ok
+test helper_multiplexes_large_concurrent_output_and_complete_stdin_close ... ok
+test pinned_executable_survives_path_replacement_without_fallback ... ok
+test replacing_the_evidence_path_latches_failure_even_with_a_pinned_directory ... ok
+test telemetry_is_one_uuid_filtered_five_field_csv_not_sum_accounting ... ok
+test received_bytes_and_retained_prefix_have_distinct_limits ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+
+running 2 tests
+test bounded_help_is_the_only_enabled_cli_operation ... ok
+test operational_arguments_and_environment_cannot_enable_main ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test shared_reconstructed_policy_range_and_clock_traces ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 8 tests
+test decimal_strings_and_json_integer_counts_are_not_coerced ... ok
+test evidence_packet_must_remain_outside_job_writable_state ... ok
+test independent_hash_commits_original_bytes ... ok
+test exact_manifest_names_and_resource_envelope ... ok
+test origin_precedes_raw_validation_and_remains_a_decimal_string ... ok
+test literal_negative_zero_counts_preserve_bounds_and_manifest_byte_commitment ... ok
+test recursive_json_uniqueness_and_bounds ... ok
+test rejects_missing_unknown_and_memory_aliases ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 15 tests
+test empty_retained_cgroup_is_not_disappearance_before_original_final_deadline ... ok
+test cold_expiry_after_queueing_does_not_release_job_work_during_cleanup ... ok
+test extra_bind_mount_fails_c13_but_keeps_owned_cleanup_authority ... ok
+test extra_gpu_request_fails_c2_but_keeps_owned_cleanup_authority ... ok
+test low_registered_query_never_creates_or_releases_work ... ok
+test evidence_path_failure_still_rechecks_ownership_binds_and_removes ... ok
+test malformed_registered_query_never_creates_or_releases_work ... ok
+test owner_rejects_evidence_inside_state_before_any_query_or_manager ... ok
+test nonzero_attach_after_real_sqlite_commit_never_becomes_success ... ok
+test real_bun_attempt_commits_once_and_naturally_reaps_every_child ... ok
+test startup_before_complete_start_write_and_stdin_eof_is_rejected ... ok
+test stalled_registered_query_expires_and_reaps_without_create ... ok
+test state_path_substitution_stops_work_but_preserves_owned_cleanup ... ok
+test wrong_image_or_ownership_token_never_authorizes_remove_or_start_release ... ok
+test trailing_stdout_after_real_sqlite_commit_never_becomes_success ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.81s
+
+
+running 17 tests
+test changing_the_bound_path_rejects_rebinding ... ok
+test an_empty_retained_nested_leaf_is_not_gone ... ok
+test failed_revalidation_does_not_replace_established_custody ... ok
+test failed_validation_does_not_establish_custody_or_leak_fds ... ok
+test honest_direct_child_removal_reports_gone ... ok
+test honest_nested_leaf_removal_reports_gone_and_keeps_the_leaf_inode_pinned ... ok
+test intermediate_symlink_substitution_faults ... ok
+test leaf_symlink_substitution_faults_instead_of_reporting_gone ... ok
+test missing_intermediate_ancestor_faults_instead_of_reporting_gone ... ok
+test renamed_ancestor_with_empty_replacement_faults_while_owned_leaf_survives ... ok
+test replacement_of_an_inner_ancestor_faults ... ok
+test repeated_binding_retains_the_same_custody_without_accumulating_fds ... ok
+test replacement_of_an_outer_ancestor_faults ... ok
+test replacing_the_leaf_rejects_rebinding_and_preserves_established_custody ... ok
+test replacing_an_ancestor_cannot_rebind_even_when_the_leaf_identity_matches ... ok
+test unbound_observer_does_not_claim_disappearance ... ok
+test root_and_approved_parent_replacements_never_report_gone ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.76s
+
+
+running 11 tests
+test duplicate_decoded_keys_reject_before_raw_token_acceptance ... ok
+test exact_original_descriptor_token_excludes_only_outer_whitespace ... ok
+test literal_negative_zero_integer_fields_preserve_structural_state_and_exact_descriptor_bytes ... ok
+test literal_negative_zero_live_schedule_uses_the_exact_new_descriptor_pin ... ok
+test raw_schedule_decoding_keeps_variants_fields_and_integer_grammar_closed ... ok
+test receiver_checks_structural_rng_prefixes_without_replaying_curriculum ... ok
+test nested_fields_are_closed_and_nullable_fields_are_required ... ok
+test start_serializes_exact_bound_identity_and_decimal_elapsed ... ok
+test startup_requires_completed_write_and_closed_stdin_not_queue_intent ... ok
+test rejects_complete_state_and_first_attempt_contradictions ... ok
+test typed_wire_integer_fields_reject_fraction_exponent_and_coercion_tokens ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+

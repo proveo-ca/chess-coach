@@ -210,6 +210,10 @@ fn accepts_the_maximum_candidate_count() {
 }
 
 #[test]
+#[cfg_attr(
+    feature = "gpu-cuda",
+    ignore = "host-only CUDA policy-score subprocess; never run in sbx"
+)]
 fn binary_scores_one_json_request_and_emits_no_logits_on_failure() {
     let bytes = native_record();
     let mut file = tempfile::NamedTempFile::new().unwrap();

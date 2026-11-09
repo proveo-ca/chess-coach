@@ -1,0 +1,25 @@
+{
+  "version": "chess-coach.source-review.v1",
+  "reviewer": "security-reviewer",
+  "sessionId": "ses_e463cc8a8ffenbLOljn5xc5Jaz",
+  "scope": "STABLE_TYPESCRIPT_GPU_BOUNDARIES_AND_AUTHENTICATED_REFERENCE_GUARD",
+  "baselineCommit": "c04a8da9468f7d443bd27d73a08c0bd7ee0e9d20",
+  "baselineDiff": "_work/gpu-owner-recovery/runs/security-typescript-baseline-packet-5/command.stdout",
+  "sourceManifest": "_work/gpu-owner-recovery/runs/security-typescript-baseline-packet-5/sources.json",
+  "reviewedDiffFileCount": 18,
+  "readOnly": true,
+  "reviewerExecutedCommands": false,
+  "findingsCleared": ["replacement-reference-substitution", "physical-source-filter-masking", "filter-command-execution", "unauthenticated-git-object-ancestry"],
+  "verifiedControls": ["raw-commit-and-tree-authentication", "exact-index-and-physical-blob-comparison", "no-lazy-object-fetch", "pre-import-bundle-input-authentication"],
+  "verificationReceipts": [
+    "_work/gpu-owner-recovery/runs/authenticated-git-objects-1/receipt.json",
+    "_work/gpu-owner-recovery/runs/authenticated-git-objects-types-1/receipt.json"
+  ],
+  "finalVerdict": "READY_TO_MERGE_STABLE_TYPESCRIPT_SOURCE_SECURITY_GATE_PACKET_5",
+  "remainingConcreteSecurityFindingsInScope": 0,
+  "strongerSha1CollisionResistanceClaimed": false,
+  "atomicFilesystemSnapshotClaimed": false,
+  "fullC14Acceptance": false,
+  "operationalAcceptance": false,
+  "trainingReady": false
+}

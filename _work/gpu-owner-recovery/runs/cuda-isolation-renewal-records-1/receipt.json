@@ -1,0 +1,50 @@
+{
+  "version": "chess-coach.cuda-renewal-record-validation.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "-e",
+    "\nimport { readFile, lstat } from 'node:fs/promises';\nimport { createHash } from 'node:crypto';\nconst work='_work/gpu-owner-recovery',hash=bytes=>createHash('sha256').update(bytes).digest('hex');\nconst load=async path=>JSON.parse(await readFile(path,'utf8'));\nconst assert=(condition,message)=>{if(!condition)throw Error(message);};\nconst record=await load(work+'/cuda-isolation-corrected-source-review.json');\nassert(record.version==='chess-coach.cuda-isolation-corrected-source-acceptance.v1'&&record.runnableBinding===false&&record.executionAuthorized===false,'SOURCE_RECORD_NOT_AUTHORITY');\nassert(record.reviews.length===2&&record.reviews.every(review=>review.readOnly&&review.reviewerExecutedCommands===false&&review.remainingFindings===0),'SOURCE_REVIEW_SCOPE');\nassert(record.reviews[0].sessionId==='ses_e4439a2c0ffeTD6G2gSAPqPEyM'&&record.reviews[1].sessionId==='ses_e4439a2b6ffeD4aw7uSogI27Fg','REVIEW_PROVENANCE');\nfor(const item of Object.values(record.evidence).filter(value=>value&&typeof value==='object'&&value.receipt)){\n  const receipt=await load(item.receipt),manifestBytes=await readFile(item.receipt.replace('/receipt.json','/sources.json'));\n  assert(receipt.status==='PASS'&&receipt.exitCode===0&&receipt.sourceChanged===false&&receipt.trainingReady===false,'FINAL_2_STATIC_PASS_REQUIRED');\n  assert(hash(manifestBytes)===receipt.sourceManifestSha256&&receipt.sourceManifestSha256===record.evidence.sourceManifestSha256AtVerification,'FINAL_2_MANIFEST_IDENTITY');\n  const manifest=JSON.parse(manifestBytes);\n  assert(manifest.length===receipt.sourceCount,'MANIFEST_MEMBERSHIP');\n  for(const source of manifest){\n    const path=source.path===work+'/cuda-llvm-request.json'?record.evidence.requestBeforeRecordReconciliation:source.path;\n    assert(hash(await readFile(path))===source.sha256,'VERIFIED_SOURCE_CHANGED:'+source.path);\n  }\n  for(const stream of [receipt.stdout,receipt.stderr]){const bytes=await readFile(stream.path);assert(hash(bytes)===stream.sha256&&bytes.length===stream.bytes,'STATIC_STREAM_CHANGED');}\n  if(item.tests){const text=await readFile(receipt.stderr.path,'utf8');assert(text.includes(item.tests+' pass')&&text.includes(item.assertions+' expect() calls'),'STATIC_COUNTS');}\n}\nfor(const [path,expected]of Object.entries(record.reviewedImplementationFiles))assert(hash(await readFile(path))===expected,'REVIEWED_IMPLEMENTATION_CHANGED:'+path);\nconst beforeBytes=await readFile(record.evidence.requestBeforeRecordReconciliation),before=JSON.parse(beforeBytes),request=await load(work+'/cuda-llvm-request.json');\nassert(hash(beforeBytes)===record.evidence.requestSha256AtVerification,'REQUEST_SNAPSHOT_CHANGED');\nconst beforeCopy=structuredClone(before),currentCopy=structuredClone(request);delete beforeCopy.sourceCorrection;delete currentCopy.sourceCorrection;\nassert(JSON.stringify(beforeCopy)===JSON.stringify(currentCopy),'NON_CORRECTION_REQUEST_FIELDS_CHANGED');\nassert(request.authorityGranted===false&&request.authorization.grantStatus==='HALTED_AFTER_FIRST_FAILURE'&&request.phase==='HALTED_BEFORE_NAMESPACE_PROBE'&&request.renewedExecutorDecisionRequired===true,'HALTED_AUTHORITY_REQUIRED');\nassert(request.sourceCorrection.status==='SOURCE_ACCEPTED_FOR_EXACT_RENEWAL_REQUEST_ONLY'&&request.sourceCorrection.actualRetryAuthorized===false,'NO_RETRY_AUTHORITY');\nconst closure=await load(work+'/closure.json');\nassert(closure.overarchingTaskStatus==='EXACT_SEQUENCE_RENEWAL_DECISION_REQUIRED'&&closure.newOperationalOrAcquisitionAuthorityGranted===false&&closure.newLocalDevelopmentNamespaceAndNoRunAuthorityGranted===false&&closure.trainingReady===false,'CLOSURE_AUTHORITY');\nassert(hash(await readFile(record.preservedOriginalReviewRecord))===record.preservedOriginalReviewSha256,'ORIGINAL_REVIEW_CHANGED');\nconst failed=await load(record.preservedFailedAttempt),classification=await load(record.failedAttemptClassification);\nassert(failed.status==='FAIL'&&failed.exitCode===1&&failed.pinnedReviewSha256===record.preservedOriginalReviewSha256,'ORIGINAL_FAILURE');\nfor(const stream of failed.streams){const bytes=await readFile(stream.path);assert(hash(bytes)===stream.sha256&&bytes.length===stream.bytes,'FAILED_STREAM_CHANGED');}\nconst stdout=await readFile(failed.streams[0].path,'utf8'),stderr=await readFile(failed.streams[1].path,'utf8');\nassert(JSON.parse(stdout).stage==='00-config'&&stderr.includes('not trusted'),'ACTUAL_FAILURE_LAYER');\nassert(classification.namespaceCommandAttempted===false&&classification.namespaceSupportDetermined===false&&classification.configurationTrustAttempted===false,'NO_KERNEL_PROBE_CLAIM');\ntry{await lstat(record.futureFixedRunnableBinding);throw Error('PREMATURE_V2_BINDING');}catch(error){if(error.code!=='ENOENT')throw error;}\nfor(const item of request.artifacts){try{await lstat(item.destination);throw Error('UNEXPECTED_LLVM_ARTIFACT');}catch(error){if(error.code!=='ENOENT')throw error;}}\nconsole.log(JSON.stringify({status:'PASS',staticTests:15,staticAssertions:255,runnerTests:13,runnerAssertions:89,types:'PASS',implementationHashesUnchanged:true,requestDelta:'SOURCE_CORRECTION_REVIEW_METADATA_ONLY',originalReviewAndFailureStreamsPreserved:true,runnableV2BindingPresent:false,llvmArtifactFilesPresent:false,executionAuthorized:false,namespaceSupportDetermined:false,trainingReady:false},null,2));\n"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 461,
+  "stderrBytes": 0,
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/cuda-isolation-corrected-source-review.json",
+      "sha256": "405d4a8ce1d01eeff4c48fef873560a3e04d13dbd534fc7c1af686a83bda77b6"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-llvm-request.json",
+      "sha256": "51c1e8f3436dfae1c2040b8e33788784050f2718d7dba5164bbfe0464a3481f8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/closure.json",
+      "sha256": "e8b9f4db49022fd96ecdd4a8075fb9abf658ec2b83c45bd1e7a6e3d1267ea292"
+    }
+  ],
+  "sourceChanged": false,
+  "streams": [
+    {
+      "stream": "stdout",
+      "path": "_work/gpu-owner-recovery/runs/cuda-isolation-renewal-records-1/command.stdout",
+      "bytes": 461,
+      "sha256": "ae37e048b6465a217e37e2a4fcd032308a4cee2995e38753fa66d22f0d1e9dcf"
+    },
+    {
+      "stream": "stderr",
+      "path": "_work/gpu-owner-recovery/runs/cuda-isolation-renewal-records-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scope": "RECORD_AND_EVIDENCE_VALIDATION_ONLY",
+  "miseInvoked": false,
+  "namespaceCommandAttempted": false,
+  "llvmCodeExecuted": false,
+  "cudaCompilationEstablished": false,
+  "trainingReady": false
+}

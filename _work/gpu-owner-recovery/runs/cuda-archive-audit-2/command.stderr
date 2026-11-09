@@ -1,0 +1,21 @@
+[cuda:audit-llvm-archive] $ /usr/local/bin/bun --no-env-file --no-install _work…
+============================================================
+Bun v1.4.0 (34cbb9a40) Linux x64
+Linux Kernel v7.0.14 | glibc v2.43
+CPU: sse42 popcnt avx avx2 avx512
+Args: "/usr/local/bin/bun" "--no-env-file" "--no-install" "-e" "\nimport { auditTar } from '/audit/cuda-tar.ts';\nimport { constants } from 'node:fs';\nimport { open } from 'node:fs/promises';\nimport { createHash } fro"...
+Features: jsc 
+
+Elapsed: 1ms | User: 0ms | Sys: 8ms
+RSS: 24.58 MB | Peak: 8.31 MB | Commit: 24.58 MB | Faults: 0
+
+panic(main thread): abort() called
+oh no: Bun has crashed. This indicates a bug in Bun, not your code.
+
+To send a redacted crash report to Bun's team,
+please file a GitHub issue using the link below:
+
+ https://bun.report/1.4.0/la134cbb9aAggggC2iypB63tR2ukKikxkxBk88jxB200jxB2785wB4947vB6927vBo820vBsti0vByp3zvBsqrzvBggzKuxzK6i6vvBAa
+
+ARCHIVE_QUARANTINE_FAILED
+[cuda:audit-llvm-archive] ERROR task failed

@@ -10,7 +10,7 @@ import type { TrainingExperiment } from "../../contracts/src/training-artifact";
 import type { ByteRef } from "../../contracts/src/training-state";
 import { STORAGE_BOUNDS } from "./storage-bounds";
 
-type OwnedDependencies = Pick<MatchSessionInputs, "transport" | "learners" | "verifier" | "corpus" | "strategic"> & { releaseInputs?: () => void };
+type OwnedDependencies = Pick<MatchSessionInputs, "transport" | "learners" | "verifier" | "corpus" | "strategic" | "onStarted"> & { releaseInputs?: () => void };
 export type AttemptSetup = (input: { descriptor: AttemptDescriptor; rng: RngState; model: NativeRecord; directory: string; timing: MatchClock }) => OwnedDependencies | Promise<OwnedDependencies>;
 export function evidencePacket(descriptor: AttemptDescriptor): number { return (descriptor.master - 101) * 10 + Math.floor(descriptor.startedOrdinal / 100); }
 export class TrainingCoordinator {
@@ -53,6 +53,7 @@ export class TrainingCoordinator {
     this.busy = true;
     let session: MatchSession | null = null;
     let dependencies: OwnedDependencies | null = null;
+    let inputsReleased = false;
     const check = () => {
       if (this.failed || timing.clockNs() < timing.originNs || timing.clockNs() >= timing.workDeadlineNs) throw new Error("Training coordinator: ORIGINAL_DEADLINE");
     };
@@ -74,6 +75,7 @@ export class TrainingCoordinator {
       const result = await session.run();
       check();
       dependencies.releaseInputs?.();
+      inputsReleased = true;
       check();
       const journalRef = this.state.appendJournal(attemptId, result.auditJson);
       if (Buffer.byteLength(result.historyJson) > STORAGE_BOUNDS.historyBytes) throw new Error("Training coordinator: HISTORY_BOUND");
@@ -100,6 +102,9 @@ export class TrainingCoordinator {
       if (session === null && dependencies !== null) {
         const cleanup = await Promise.allSettled([dependencies.transport.terminate(error), dependencies.learners.abort(error)]);
         errors.push(...cleanup.flatMap(value => value.status === "rejected" && value.reason !== error ? [value.reason] : []));
+      }
+      if (dependencies !== null && !inputsReleased) {
+        try { dependencies.releaseInputs?.(); } catch (release) { errors.push(release); }
       }
       try { this.stop(error); } catch (storage) { errors.push(storage); }
       if (errors.length > 1) throw new AggregateError(errors, "Training coordinator: ABORT_ALL");

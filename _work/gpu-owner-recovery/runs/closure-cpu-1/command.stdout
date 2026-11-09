@@ -1,0 +1,129 @@
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test empty_single_candidate_and_zero_advantage_do_not_invent_policy_updates ... ok
+test finite_extreme_features_do_not_bypass_gradient_checks ... ok
+test baseline_return_and_device_domains_fail_before_update ... ok
+test framework_accumulation_matches_the_whole_episode_objective_and_sgd ... ok
+test proposed_update_round_trips_through_a_burn_native_record ... ok
+test invalid_acknowledgement_closes_the_episode_and_sample_cap_is_inclusive ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.75s
+
+
+running 1 test
+test nonlinear_candidate_preferences_can_reverse_with_state ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+
+running 6 tests
+test empty_episode_produces_no_update_objective ... ok
+test enforces_the_inclusive_sample_limit ... ok
+test frozen_baseline_scales_the_selected_log_probability_gradient ... ok
+test rejects_invalid_selected_candidates_and_episode_domains ... ok
+test burn_preserves_the_summed_episode_policy_gradient ... ok
+test zero_advantage_keeps_l2_but_empty_episodes_skip_it ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+
+running 2 tests
+test feature_complete_sweep_for_active_relu_checks_2335_coordinates ... ok
+test feature_complete_sweep_for_inactive_relu_checks_2335_coordinates ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 18.24s
+
+
+running 1 test
+test seeded_hidden_initialization_is_reproducible_and_learns_after_the_zero_head_step ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 6 tests
+test accepts_inclusive_feature_bounds_and_normalizes_negative_zero ... ok
+test burn_autodiff_and_sgd_match_the_synthetic_golden_update ... ok
+test rejects_nonfinite_or_out_of_range_features ... ok
+test burn_native_record_round_trip_preserves_logits ... ok
+test validates_shape_before_backend_work ... ok
+test zero_output_head_returns_one_zero_logit_per_candidate ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+
+running 1 test
+test device::tests::default_device_preserves_flex_f64_inference_configuration ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test empty_completion_is_diagnostic_and_cannot_invent_an_l2_record ... ok
+test acknowledged_frozen_episode_emits_only_a_reloadable_uncommitted_proposal ... ok
+test framed_channel_requires_close_eof_and_bounded_complete_input ... ok
+test malformed_binding_phase_ack_or_replay_fails_closed_without_a_proposal ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.59s
+
+
+running 1 test
+test rejects_a_default_f32_device_instead_of_silently_changing_precision ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test initialization_rejects_nonselected_seeds_and_executable_selectors_without_output ... ok
+test each_master_uses_its_exact_burn_seed_and_zero_output_head_without_rollout_draws ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.55s
+
+
+running 9 tests
+test binary_scores_one_json_request_and_emits_no_logits_on_failure ... ok
+test json_preserves_f64_subnormals_and_fraction_bits ... ok
+test model_metadata_binds_dimensions_feature_version_and_record_bytes ... ok
+test native_checkpoint_identity_and_nonzero_scores_round_trip ... ok
+test accepts_the_maximum_candidate_count ... ok
+test rejects_nonfinite_record_parameters_and_output_overflow ... ok
+test rejects_oversize_unknown_fields_versions_and_trailing_messages ... ok
+test rejects_shape_domain_model_and_request_identity_mismatches ... ok
+test rejects_record_size_corruption_and_autodiff_devices ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.41s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

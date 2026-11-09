@@ -1,0 +1,36 @@
+{
+  "version": "chess-coach.cuda-archive-halt-record-review.v1",
+  "status": "READY_TO_ASK_NATIVE_ANCESTOR_TRUST_DECISION",
+  "scope": "HALT_RECORD_AND_DECISION_BOUNDARY_ONLY_NOT_REMEDY_AUTHORIZATION",
+  "reviews": [
+    {
+      "role": "security-reviewer",
+      "sessionId": "ses_e4439a2c0ffeTD6G2gSAPqPEyM",
+      "verdict": "READY_TO_ASK_NATIVE_ANCESTOR_TRUST_DECISION",
+      "readOnly": true,
+      "remainingFindings": 0
+    },
+    {
+      "role": "adversarial-reviewer",
+      "sessionId": "ses_e4439a2b6ffeD4aw7uSogI27Fg",
+      "verdict": "READY_TO_ASK_NATIVE_ANCESTOR_TRUST_DECISION",
+      "readOnly": true,
+      "remainingFindings": 0
+    }
+  ],
+  "failedReadOnlyPlan": "_work/gpu-owner-recovery/runs/cuda-archive-plan-1/receipt.json",
+  "classification": "_work/gpu-owner-recovery/cuda-archive-plan-1-classification.json",
+  "recordValidation": "_work/gpu-owner-recovery/runs/cuda-archive-halt-records-1/receipt.json",
+  "recordValidationStatus": "PASS",
+  "recordValidationSourceChanged": false,
+  "historicalSourceBinding": "_work/gpu-owner-recovery/cuda-archive-reviewed.json",
+  "historicalSourceBindingSha256": "e5d24c1d29be99e5989d0eddde26b94077b786e770b7338815a7ecd5d3cd453a",
+  "historicalBindingAuthenticatesCurrentHaltedRequest": false,
+  "documentationReviewedByTheseRecordReviews": false,
+  "remedySelected": false,
+  "executionAuthorityGranted": false,
+  "privateSnapshotCreated": false,
+  "trustPolicyWeakened": false,
+  "nativeAuditLaunched": false,
+  "trainingReady": false
+}

@@ -2,9 +2,9 @@
 use std::fs::File;
 use std::io::{self, Read, Write};
 
-use burn::tensor::{Device, FloatDType};
 use chess_coach_policy_io::{
     FrozenPolicy, MAX_CONFIG_BYTES, MAX_MESSAGE_BYTES, MAX_RECORD_BYTES, ModelConfig,
+    selected_f64_device,
 };
 
 fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -30,8 +30,7 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     File::open(path)?
         .take(MAX_RECORD_BYTES as u64 + 1)
         .read_to_end(&mut bytes)?;
-    let mut device = Device::flex();
-    device.configure(FloatDType::F64)?;
+    let device = selected_f64_device()?;
     let policy = FrozenPolicy::from_record(&bytes, config, device)?;
     let mut request = Vec::new();
     io::stdin()

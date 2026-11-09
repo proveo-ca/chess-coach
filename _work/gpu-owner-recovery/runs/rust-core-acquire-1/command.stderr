@@ -1,0 +1,22 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling serde_core v1.0.229
+   Compiling rustix v1.1.6
+   Compiling syn v3.0.9
+   Compiling serde_json v1.0.154
+   Compiling linux-raw-sys v0.12.1
+   Compiling serde v1.0.229
+   Compiling libc v0.2.191
+   Compiling serde_derive v1.0.229
+   Compiling getrandom v0.4.3
+   Compiling chess-coach-gpu-owner v0.1.0 (/home/gu1lty/Projects/proveo/chess-coach/crates/gpu-owner)
+   Compiling tempfile v3.27.0
+    Finished `test` profile [unoptimized] target(s) in 6.90s
+  Executable unittests src/lib.rs (target/gpu-owner-recovery/debug/deps/chess_coach_gpu_owner-7d32901ac38c29b4)
+  Executable unittests src/main.rs (target/gpu-owner-recovery/debug/deps/host_gpu_owner-e430803eec516b2f)
+  Executable tests/adapters.rs (target/gpu-owner-recovery/debug/deps/adapters-f56368fb7551972f)
+  Executable tests/cli.rs (target/gpu-owner-recovery/debug/deps/cli-7a2494d03640579f)
+  Executable tests/conformance.rs (target/gpu-owner-recovery/debug/deps/conformance-ad8878aca91d0e8b)
+  Executable tests/contracts.rs (target/gpu-owner-recovery/debug/deps/contracts-23d055b03d46f180)
+  Executable tests/lifecycle.rs (target/gpu-owner-recovery/debug/deps/lifecycle-1188d423751c378e)
+  Executable tests/wire.rs (target/gpu-owner-recovery/debug/deps/wire-5ab60a0d5ce153a8)

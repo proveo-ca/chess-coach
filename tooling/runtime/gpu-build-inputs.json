@@ -1,0 +1,46 @@
+{
+  "version": "chess-coach.gpu-build-inputs.v1",
+  "status": "AWAITING_PREPARED_INPUT_SELECTION",
+  "recipe": "tooling/runtime/Dockerfile.gpu",
+  "cpuRecipe": "tooling/runtime/Dockerfile",
+  "nativePackage": "chess-coach-policy-io",
+  "feature": "gpu-cuda",
+  "binaries": ["policy-score", "policy-channel", "policy-initialize"],
+  "llvm": {
+    "bundleVersion": "23.1.0-4",
+    "configVersion": "23.1.0",
+    "context": "gpu-build/llvm",
+    "destination": "/opt/tracel-data/tracel/tracel-llvm-23.1.0-4",
+    "installationMarker": ".tracel-llvm-installed",
+    "selection": null
+  },
+  "builderDependencies": {
+    "context": "gpu-build/rootfs",
+    "destination": "/",
+    "requires": ["C compiler", "C++ compiler", "archiver/linker", "LLVM system headers/libraries"],
+    "selection": null
+  },
+  "cuda": {
+    "backend": "cubecl-llvm-nvptx",
+    "bindingsCrate": "cudarc 0.19.10",
+    "buildArgument": "CUDARC_CUDA_VERSION",
+    "version": null,
+    "supportedBindingVersions": ["13040", "13030", "13020", "13010", "13000", "12090", "12080", "12060", "12050", "12040", "12030", "12020", "12010", "12000", "11080", "11070", "11060", "11050", "11040"],
+    "root": "/usr/local/cuda",
+    "libdevice": "/usr/local/cuda/nvvm/libdevice/libdevice.10.bc"
+  },
+  "runtimeDependencies": {
+    "context": "gpu-runtime/rootfs",
+    "destination": "/",
+    "requires": ["ELF interpreter and shared-library dependencies", "selected dynamically loaded userspace libraries", "CUDA libdevice.10.bc"],
+    "hostProvided": ["CUDA driver libcuda"],
+    "excludes": ["CUDA driver replacement"],
+    "selection": null
+  },
+  "qualification": {
+    "imageBuilt": false,
+    "actualHostExecuted": false,
+    "cudaGpuCodeExecuted": false,
+    "trainingReady": false
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "version": "chess-coach.cuda-bun-snapshot-independent-verification.v1",
+  "status": "PASS",
+  "scope": "PRIVATE_PINNED_TOOL_BYTES_AND_CAPTURE_PROVENANCE_ONLY",
+  "outsideReceipt": "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-1/receipt.json",
+  "outsideReceiptSha256": "e69d6ae4a62a86900f6a9229c5f921d119a751c2211a8b37e1b0d9f22e93047a",
+  "captureReceipt": "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-1/capture.json",
+  "captureReceiptSha256": "76676597a794bb9a8d80004113102eea75d1668a1d91a9bc13a32184108bcbb6",
+  "approvedRequest": "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-1/approved-request.json",
+  "approvedRequestSha256": "e4a2dca4aa4f0cd9b463f40400912299f16765339723f1a6b371cb11da03150a",
+  "sourceReview": "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-1/source-review.json",
+  "sourceReviewSha256": "780a907710d5a934c5f02414db2bedfb91d56d7cc97fd6badf6015bfcf8f58ce",
+  "sourceSnapshot": "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-1/source-snapshot.json",
+  "sourceSnapshotCapturedBeforeInvocation": true,
+  "destination": {
+    "path": "_work/gpu-owner-recovery/cache/native-audit-bun-1/bun",
+    "byteLength": 80761952,
+    "sha256": "33d56b070be6a9e3da0ab013038b43d1645d0534ca811ecdba4472599117eb4b",
+    "mode": 33088,
+    "uid": 1000,
+    "device": "65088",
+    "inode": "1739544",
+    "links": 2
+  },
+  "ancestors": [
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/native-audit-bun-1",
+      "uid": 1000,
+      "mode": 16832
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache",
+      "uid": 1000,
+      "mode": 16832
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery",
+      "uid": 1000,
+      "mode": 16877
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work",
+      "uid": 1000,
+      "mode": 16877
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach",
+      "uid": 1000,
+      "mode": 16877
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo",
+      "uid": 1000,
+      "mode": 17389
+    },
+    {
+      "path": "/home/gu1lty/Projects",
+      "uid": 0,
+      "mode": 17389
+    },
+    {
+      "path": "/home/gu1lty",
+      "uid": 0,
+      "mode": 17389
+    },
+    {
+      "path": "/home",
+      "uid": 0,
+      "mode": 16877
+    },
+    {
+      "path": "/",
+      "uid": 0,
+      "mode": 16877
+    }
+  ],
+  "sourceFileUnmodifiedByCapture": true,
+  "outerBootstrapTrustRetained": true,
+  "privateSnapshotExecuted": false,
+  "extractionPerformed": false,
+  "llvmCodeExecuted": false,
+  "buildIsolationQualified": false,
+  "custodyQualified": false,
+  "cudaCompilationEstablished": false,
+  "trainingReady": false
+}

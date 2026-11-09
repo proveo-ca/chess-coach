@@ -6,6 +6,10 @@ edition.workspace = true
 rust-version.workspace = true
 publish.workspace = true
 
+[features]
+default = []
+gpu-cuda = ["burn/cuda", "chess-coach-learning/gpu-cuda"]
+
 [dependencies]
 burn.workspace = true
 chess-coach-learning = { path = "../learning" }

@@ -1,0 +1,82 @@
+@startuml reference_object_graph_authentication
+' purpose: document implemented raw commit/tree authentication, bounded inventory and no-fetch refusal
+' covers: packages/runtime/tests/reference-bundles.test.ts
+' covers: tooling/reference-entrypoints.json
+' covers: packages/runtime/tests/fixtures/reference-sources.json
+' status: SOURCE_RECONSTRUCTED / VERIFIED_TEST_SUBSETS / SOURCE_REVIEWS_ACCEPTED_SCOPED / trainingReady:false
+' evidence: authenticated-git-objects-1 passes 25 tests / 194 assertions; one C14 test filtered; sourceChanged:false
+' review: persisted TypeScript security and final adversarial packet-5 source-only verdicts accepted
+' render: offline render receipts are indexed in _spec/verification.md
+' see: _spec/reference-bundles.md
+' see: _spec/recovery.md
+' see: _spec/verification.md
+title Authenticated reference graph - scoped source accepted, operations unqualified
+
+participant "tooling/reference-entrypoints.json\npackages/runtime/tests/fixtures/reference-sources.json" as PIN
+participant "packages/runtime/tests/\nreference-bundles.test.ts" as GUARD
+participant "Git cat-file\nlocal object database" as ODB
+participant "Reference filesystem\nand stage-0 index" as PHYSICAL
+participant "tooling/build-reference.ts" as BUILD
+
+PIN -> GUARD: Independent SHA-1 commit pin
+GUARD -> GUARD: Canonical top-level, SHA-1 format, original HEAD, no replacements
+GUARD -> GUARD: Start 20-second graph deadline before commit retrieval
+GUARD -> ODB: cat-file commit pin; no lazy fetch and no terminal prompt
+ODB --> GUARD: Raw commit body, not a batch frame; bounded helper output
+GUARD -> GUARD: Require SHA1(commit header + raw body) == independent pin; else fail immediately
+note over GUARD, ODB
+  An object pathname does not authenticate
+  its contents. Validate commit and tree bodies
+  before interpreting the pinned inventory.
+end note
+GUARD -> GUARD: Only then parse the first strict root-tree OID
+
+loop breadth-first tree batches within graph budgets
+  GUARD -> ODB: Request root / child OIDs from authenticated ancestry only
+  ODB --> GUARD: OID / tree type / size / exact binary body / newline
+  GUARD -> GUARD: Require framing and SHA1(tree header + body) == requested OID; else fail immediately
+  GUARD -> GUARD: Decode strict modes and UTF-8 component names; reject duplicates
+  GUARD -> GUARD: Reject empty / dot / dot-dot / separator names and unsupported modes
+  GUARD -> GUARD: Cache verified nodes for this validation only
+  note over GUARD
+    Cache verified nodes without discarding paths.
+    Expand a reused subtree beneath every parent
+    so input membership remains complete.
+  end note
+  GUARD -> GUARD: Instantiate every parent path; enforce independent graph / path budgets
+end
+
+alt missing object, bad hash / framing / tree, or exhausted budget
+  GUARD -> GUARD: Fail closed; no inventory trust, bundle build or import
+  GUARD -> GUARD: Never fetch / invoke promisor helpers / scan history with fsck
+else complete authenticated graph
+  GUARD -> GUARD: Derive inventory from verified graph, never unauthenticated ls-tree
+  GUARD -> PHYSICAL: Match raw blob Git SHA-1, executable mode and safe path kinds
+  GUARD -> PHYSICAL: Exact stage-0 mode / OID / path set and H flags
+  GUARD -> BUILD: Build only after source validation
+  BUILD --> GUARD: Selected entries and all consumed input size / SHA-256 metadata
+  GUARD -> PHYSICAL: Reauthenticate physical inputs after inventory capture
+  GUARD -> GUARD: Require every consumed input's graph membership / size / SHA-256
+  GUARD -> GUARD: Permit imports only after every retained check passes
+end
+
+legend
+  Implemented source; 25 tests / 194 assertions pass, zero failures.
+  One full C14 test remains filtered; no complete C14/native proof.
+  TypeScript security and final adversarial packet-5 source scopes accepted.
+  closure-reference-1 repeats 25/194; one C14 test remains filtered.
+  Prior 16/108 evidence is PRE_OBJECT_GRAPH_AUTHENTICATION.
+  4 MiB caps: metadata / batch stdin / cumulative tree I/O / path bytes.
+  At most 4,096 cached trees and 16,384 instantiated entries.
+  Tree depth <=32 from root 0; individual UTF-8 path <=4,096 bytes.
+  Graph deadline 20s; helpers <=10s within remaining graph time.
+  Physical blobs <=16 MiB each and <=128 MiB aggregate.
+  GIT_NO_LAZY_FETCH=1; GIT_TERMINAL_PROMPT=0.
+  Validator never invokes worktree/cached diff or clean/textconv.
+  Corruption fixtures write only the owned clone, never shared alternates.
+  Owned corruption/local-canary, parser, cache and graph-bound cases pass.
+  Existing SHA-1 pin model; no collision-resistance upgrade.
+  No atomic filesystem snapshot, full C14 proof or operational grant.
+  Diagram rendering grants no operational authority.
+endlegend
+@enduml

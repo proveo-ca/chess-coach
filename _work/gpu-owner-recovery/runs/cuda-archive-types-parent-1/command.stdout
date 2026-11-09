@@ -1,0 +1,47 @@
+_work/gpu-owner-recovery/cuda-tar.test.ts(56,29): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Uint8Array<ArrayBuffer>'.
+  Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+    Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+_work/gpu-owner-recovery/cuda-tar.test.ts(69,70): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Uint8Array<ArrayBuffer>'.
+  Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+    Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+_work/gpu-owner-recovery/cuda-tar.test.ts(71,72): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Uint8Array<ArrayBuffer>'.
+  Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+    Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+_work/gpu-owner-recovery/cuda-tar.test.ts(72,102): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Uint8Array<ArrayBuffer>'.
+  Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+    Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+_work/gpu-owner-recovery/cuda-tar.test.ts(202,115): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Uint8Array<ArrayBuffer>'.
+  Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+    Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+_work/gpu-owner-recovery/cuda-tar.test.ts(262,104): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Uint8Array<ArrayBuffer>'.
+  Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+    Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+_work/gpu-owner-recovery/cuda-tar.test.ts(286,110): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Uint8Array<ArrayBuffer>'.
+  Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+    Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+_work/gpu-owner-recovery/cuda-tar.test.ts(308,50): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Uint8Array<ArrayBuffer>'.
+  Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+    Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+_work/gpu-owner-recovery/cuda-tar.test.ts(320,88): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Uint8Array<ArrayBuffer>'.
+  Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+    Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+_work/gpu-owner-recovery/cuda-tar.test.ts(323,56): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Uint8Array<ArrayBuffer>'.
+  Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+    Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+_work/gpu-owner-recovery/cuda-tar.test.ts(350,53): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Uint8Array<ArrayBuffer>'.
+  Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+    Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+_work/gpu-owner-recovery/cuda-tar.test.ts(355,96): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Uint8Array<ArrayBuffer>'.
+  Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+    Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+_work/gpu-owner-recovery/cuda-tar.ts(124,21): error TS18048: 'child' is possibly 'undefined'.
+_work/gpu-owner-recovery/cuda-tar.ts(126,20): error TS2345: Argument of type 'Node | undefined' is not assignable to parameter of type 'Node'.
+  Type 'undefined' is not assignable to type 'Node'.
+_work/gpu-owner-recovery/cuda-tar.ts(131,35): error TS2345: Argument of type 'Node | undefined' is not assignable to parameter of type 'Node'.
+  Type 'undefined' is not assignable to type 'Node'.
+_work/gpu-owner-recovery/cuda-tar.ts(133,22): error TS2345: Argument of type 'Node | undefined' is not assignable to parameter of type 'Node'.
+  Type 'undefined' is not assignable to type 'Node'.
+_work/gpu-owner-recovery/cuda-tar.ts(134,18): error TS2345: Argument of type 'Node | undefined' is not assignable to parameter of type 'Node'.
+  Type 'undefined' is not assignable to type 'Node'.
+_work/gpu-owner-recovery/cuda-tar.ts(137,22): error TS2322: Type 'Node | undefined' is not assignable to type 'Node'.
+  Type 'undefined' is not assignable to type 'Node'.

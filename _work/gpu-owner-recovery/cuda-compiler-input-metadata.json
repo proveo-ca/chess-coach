@@ -1,0 +1,56 @@
+{
+  "version": "chess-coach.cuda-compiler-input-metadata.v1",
+  "scope": "PUBLIC_RELEASE_METADATA_AND_EXISTING_LOCKED_SOURCE_ONLY",
+  "authorizationSnapshot": "PRE_LLVM_GRANT_METADATA_RESEARCH_ONLY",
+  "currentAuthorityRecord": "_work/gpu-owner-recovery/cuda-llvm-request.json",
+  "publicMetadataReadsPerformed": true,
+  "artifactAcquisitionPerformed": false,
+  "llvm": {
+    "bundlerCrate": "tracel-llvm-bundler@23.1.0-4",
+    "llvmSysCrate": "llvm-sys@231.0.2",
+    "releaseMetadataUrl": "https://api.github.com/repos/tracel-ai/tracel-llvm/releases/tags/v23.1.0-4",
+    "archive": {
+      "url": "https://github.com/tracel-ai/tracel-llvm/releases/download/v23.1.0-4/linux-x64.tar.xz",
+      "byteLength": 45439652,
+      "sha256": "c394bb1b10ac785f16d3d92d688a9343ba869f720e9cf9ca3f1abf2f401f165f",
+      "releaseApiAndSidecarArchiveHashesAgree": true,
+      "downloadAuthorized": false
+    },
+    "checksumSidecar": {
+      "url": "https://github.com/tracel-ai/tracel-llvm/releases/download/v23.1.0-4/linux-x64.checksums.json",
+      "byteLength": 297,
+      "releaseApiSha256": "57780b96c702d2ac595c52da61961549450648b8d18f5b81b7a1d06afa83682d",
+      "parsedMetadata": {
+        "archive_sha256": "c394bb1b10ac785f16d3d92d688a9343ba869f720e9cf9ca3f1abf2f401f165f",
+        "content_sha256": "d1b44f818d17fd882d938a625017b31234fc8b726c190b2a5c324e2be3551bbf",
+        "created_at_utc": "2026-10-19T16:10:06Z",
+        "platform": "linux-x64",
+        "release_number": "4",
+        "version": "23.1.0"
+      }
+    },
+    "archiveCache": "_work/gpu-owner-recovery/cache/home/.cache/tracel/tracel-llvm-23.1.0-4-linux-x64.tar.xz",
+    "installedPrefix": "_work/gpu-owner-recovery/cache/xdg/data/tracel/tracel-llvm-23.1.0-4",
+    "buildScriptCanDownloadIndependentlyOfCargoOffline": true,
+    "skipChecksumDownloadDoesNotDisableArchiveDownload": true,
+    "installedSentinelMustNotBeFabricated": true,
+    "gnuCppAbiQualified": false,
+    "compilerClosureComplete": false
+  },
+  "cudarc": {
+    "version": "0.19.10",
+    "lockedSourceInspected": true,
+    "fallbackCudaVersion": "13.4",
+    "hostDriverCompatibilityEstablished": false
+  },
+  "libdevice": {
+    "loadedAtNvptxKernelCompilationTime": true,
+    "missingBytesAloneDoNotProveRustNoRunCompilationBlocked": true,
+    "priorAcquisitionGrant": "CONSUMED",
+    "reacquisitionAuthorized": false
+  },
+  "immediateAcquisitionDecision": "_work/gpu-owner-recovery/cuda-input-request.json",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

@@ -1,0 +1,36 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "bridge-integrated-recheck-1",
+  "stage": "bridge",
+  "sourceManifestSha256": "d61d3a1203bea175f25e3d43ab6b497764c6d940b602b7c979451dcec8e96225",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "packages/contracts/tests/gpu-job.test.ts",
+    "packages/runtime/tests/gpu-job.test.ts",
+    "packages/runtime/tests/fixed-attempt-gpu-owner.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 3201,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/bridge-integrated-recheck-1/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/bridge-integrated-recheck-1/command.stderr",
+    "bytes": 3201,
+    "sha256": "c7e2f1e2991d5f97a4338ccd0d248ea58fdd6c0ac82b6b6a6bae112b9be5a36d"
+  },
+  "sourceCount": 194,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

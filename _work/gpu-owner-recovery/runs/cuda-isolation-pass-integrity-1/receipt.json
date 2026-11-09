@@ -1,0 +1,34 @@
+{
+  "version": "chess-coach.cuda-inert-pass-integrity.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "-e",
+    "\nimport { readFile } from 'node:fs/promises';\nimport { createHash } from 'node:crypto';\nconst work='_work/gpu-owner-recovery',hash=bytes=>createHash('sha256').update(bytes).digest('hex');\nconst load=async path=>JSON.parse(await readFile(path,'utf8'));\nconst assert=(condition,message)=>{if(!condition)throw Error(message);};\nconst receipt=await load(work+'/runs/cuda-isolation-probe-3/receipt.json'),approvedBytes=await readFile(work+'/runs/cuda-isolation-probe-3/approved-request.json'),reviewBytes=await readFile(work+'/cuda-isolation-reviewed-v3.json');\nassert(receipt.status==='PASS'&&receipt.exitCode===0&&receipt.sourceChanged===false&&receipt.oneOutsideDeadlineMs===30000,'INERT_PASS_SCOPE');\nassert(hash(approvedBytes)===receipt.pinnedRequestSha256&&hash(approvedBytes)==='2882f02baf9054e1890d58f4c984d3adc49fbbf0fad2ee5359312759a17a64c5','CAPTURED_APPROVED_REQUEST');\nassert(hash(reviewBytes)===receipt.pinnedReviewSha256&&hash(reviewBytes)==='509d75b8bdda611f8059307368a043130b34a75179cb72c31ae3ba28a8257f94','V3_SOURCE_BINDING');\nfor(const stream of receipt.streams){const bytes=await readFile(stream.path);assert(bytes.length===stream.bytes&&hash(bytes)===stream.sha256,'INERT_RAW_STREAM_CHANGED');}\nconst frames=(await readFile(receipt.streams[0].path,'utf8')).trimEnd().split('\\n').map(line=>JSON.parse(line));\nconst proof=frames.find(frame=>Array.isArray(frame.inputs)),terminal=frames.at(-1);\nassert(proof.exitCode===0&&proof.inertProbePassed===true&&proof.inputs[0].guest==='/usr/bin/true'&&proof.inputs[0].path==='/usr/bin/gnutrue','ACTUAL_INERT_FRAME');\nassert(terminal.exitCode===0&&terminal.failedStage===null&&JSON.stringify(terminal.completedStages)===JSON.stringify(['00-trust','01-config','02-inert-probe']),'CLOSED_SEQUENCE_COMPLETED');\nfor(const frame of [proof,terminal])assert(frame.buildIsolationQualified===false&&frame.custodyQualified===false&&frame.cudaCompilationEstablished===false&&frame.trainingReady===false,'NO_PROOF_PROMOTION');\nconst known=(await load(work+'/readiness-native-build-environment.json')).files;\nfor(const file of proof.inputs){const old=known.find(item=>item.path===file.guest);assert(old&&file.path===old.physicalPath&&file.sha256===old.sha256&&file.byteLength===old.byteLength&&file.uid===0,'EXPECTED_NATIVE_INPUTS');}\nfor(const number of [1,2]){\n const failed=await load(work+'/runs/cuda-isolation-probe-'+number+'/receipt.json');assert(failed.status==='FAIL','HISTORICAL_FAILURE_PRESERVED');\n for(const stream of failed.streams){const bytes=await readFile(stream.path);assert(hash(bytes)===stream.sha256&&bytes.length===stream.bytes,'HISTORICAL_RAW_STREAM_CHANGED');}\n}\nfor(const [path,expected]of [[work+'/cuda-isolation-reviewed.json','094327f153dd33d59aaa4127fdf91733ae932a36ccfcafb944ff92cbe82fd849'],[work+'/cuda-isolation-reviewed-v2.json','96558dad450d33eca000c12e7ecce4ccec094d7cdeec05401e7c90a2ab248412']])assert(hash(await readFile(path))===expected,'HISTORICAL_BINDING_CHANGED');\nconsole.log(JSON.stringify({status:'PASS',inertNamespaceLaunchEstablished:true,approvedRequestWasCapturedBeforeExecution:true,completedStages:terminal.completedStages,rawStreamsAndHistoricalFailuresPreserved:true,buildIsolationQualified:false,custodyQualified:false,cudaCompilationEstablished:false,trainingReady:false},null,2));\n"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 383,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "stream": "stdout",
+      "path": "_work/gpu-owner-recovery/runs/cuda-isolation-pass-integrity-1/command.stdout",
+      "bytes": 383,
+      "sha256": "d680c2a91b5ec860fb8fee63f9cfde7e8a5c114ae99f84f47603addab0826b25"
+    },
+    {
+      "stream": "stderr",
+      "path": "_work/gpu-owner-recovery/runs/cuda-isolation-pass-integrity-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scope": "IMMUTABLE_INERT_EVIDENCE_ONLY_NOT_CURRENT_PIPELINE_SOURCE_QUALIFICATION",
+  "miseInvoked": false,
+  "namespaceCommandAttempted": false,
+  "llvmCodeExecuted": false,
+  "trainingReady": false
+}

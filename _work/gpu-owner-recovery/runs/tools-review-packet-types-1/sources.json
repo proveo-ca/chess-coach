@@ -1,0 +1,58 @@
+[
+  {
+    "path": "_work/gpu-owner-recovery/audit-lock.ts",
+    "sha256": "1b618be3d4471c54eba82b15e1a29f37a3c41d2b5a0606bd2272d92203767482"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/cargo.ts",
+    "sha256": "249a7ae258ae455f04761858501b32274d95ad6600c3bb0bc501b5d2567f11c9"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+    "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/compiler-driver.ts",
+    "sha256": "bfa3cd2f8bd12d5a0466914eb74d33ff749b727d46e3a9057a11950d5e62885c"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/diagrams.ts",
+    "sha256": "529160a222254997c139be99783b8e819255e1408185119b7480493e7e5aba7a"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/provision.ts",
+    "sha256": "6e5e20904ca08c192c62fa42a4dc70313f5460330918d607e411fd503fb94979"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/recover-runner-output.ts",
+    "sha256": "9970188819bf6024fc5733e01b319eca0bf81064015c681bd617528e16377b51"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/review-packet.ts",
+    "sha256": "c6d7cc98e29cc10aa71e7a7a71a11277c15245a92d8708a8b0bb393ae61dba09"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/tsconfig.json",
+    "sha256": "e70ffa726d5b3b004982a4705b17b778c4326fe9964b9ce76e006ed1310c793d"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.test.ts",
+    "sha256": "fce51ec2828d7373509bcdb256826c1e6b73646e4da98b4452ecf9f9c6298da5"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.ts",
+    "sha256": "2190d46d42817bdbfd8d0cd9d33136bc1ec1674173afedf5c33f11ee5ddf6d2a"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/zig-ar.ts",
+    "sha256": "b2ae0f3ed032f1db45c2cc31e072f31033a642c23ca928083cab39499145d6a0"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/zig-cc.ts",
+    "sha256": "af9a8708d2acf0052f61acab96f23fe4b9c47ae0396622b5a11a05173ea6e28a"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/zig-cxx.ts",
+    "sha256": "f4205337b3d55f50b91dd618c38ebb063e093d1af514da7f3b981d93eb469ce7"
+  }
+]

@@ -1,0 +1,795 @@
+{
+  "status": "PASS",
+  "scope": "STANDARD_CARGO_METADATA_RESOLVED_BUILD_SCRIPT_CANDIDATES_NOT_COMPILER_UNIT_DAG",
+  "metadataSha256": "d0184a3cf4893205029336fa7db974aa43e4992187c1722fde7c20a4d75106b9",
+  "buildScriptCount": 98,
+  "buildScripts": [
+    {
+      "package": "aegis",
+      "version": "0.9.20",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#aegis@0.9.20",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/aegis-0.9.20/build.rs",
+      "bytes": 6111,
+      "sha256": "419c0df1c1b16443ce65761331bcd537d6c4677d3b989562850d921b876b6ba4"
+    },
+    {
+      "package": "ahash",
+      "version": "0.8.12",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#ahash@0.8.12",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ahash-0.8.12/build.rs",
+      "bytes": 782,
+      "sha256": "d7dd5428c78b80bb3c99068561641ec661f0f94defbda17f85b443e358ab6396"
+    },
+    {
+      "package": "anyhow",
+      "version": "1.0.104",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#anyhow@1.0.104",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/build.rs",
+      "bytes": 6936,
+      "sha256": "89d1baedcff59822ed692d3a33f131c211a213bdec33c83f68b54110d9c64223"
+    },
+    {
+      "package": "ash",
+      "version": "0.38.0+1.3.281",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#ash@0.38.0+1.3.281",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ash-0.38.0+1.3.281/build.rs",
+      "bytes": 799,
+      "sha256": "b0109a1596448fb599af8ca0efdbaaf2dba09bbdded8f07f2b5bab885f9a0d42"
+    },
+    {
+      "package": "av-scenechange",
+      "version": "0.14.1",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#av-scenechange@0.14.1",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av-scenechange-0.14.1/build.rs",
+      "bytes": 7675,
+      "sha256": "ac91ff305fd1b0ab4607c3b6c4ad152b63563bbd8e6e4076aff47c837a9fda3e"
+    },
+    {
+      "package": "bigdecimal",
+      "version": "0.4.11",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#bigdecimal@0.4.11",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bigdecimal-0.4.11/build.rs",
+      "bytes": 4746,
+      "sha256": "cabe560c4c46c2eb045ed19a281775f81bd2fc738474aed3161fa6fcec67c2dd"
+    },
+    {
+      "package": "bindgen",
+      "version": "0.69.5",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#bindgen@0.69.5",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bindgen-0.69.5/build.rs",
+      "bytes": 1043,
+      "sha256": "4a9c4ac3759572e17de312a9d3f4ced3b6fd3c71811729e5a8d06bfbd1ac8f82"
+    },
+    {
+      "package": "branches",
+      "version": "0.4.6",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#branches@0.4.6",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/branches-0.4.6/build.rs",
+      "bytes": 1053,
+      "sha256": "db91f2b2830b9fdd43a1adae616e4dbeb029f6578cd0115e20997f8f6c7a0c4e"
+    },
+    {
+      "package": "burn-dispatch",
+      "version": "0.22.1",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#burn-dispatch@0.22.1",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/burn-dispatch-0.22.1/build.rs",
+      "bytes": 1436,
+      "sha256": "1e197215f078c7db8aa93f7e2f0738350b6830fa52dfd62232603d6403499397"
+    },
+    {
+      "package": "burn-ndarray",
+      "version": "0.22.1",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#burn-ndarray@0.22.1",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/burn-ndarray-0.22.1/build.rs",
+      "bytes": 185,
+      "sha256": "1db51d79316e8f816e7929a0ebc27e5eb34237a7511d3e00b1c88c580b5a5907"
+    },
+    {
+      "package": "burn-tch",
+      "version": "0.22.1",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#burn-tch@0.22.1",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/burn-tch-0.22.1/build.rs",
+      "bytes": 8995,
+      "sha256": "b6797bd4b7b5b92fe5374807135a68d13628a1cfb39d540bb842e86fb07954a0"
+    },
+    {
+      "package": "bzip2-sys",
+      "version": "0.1.13+1.0.8",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#bzip2-sys@0.1.13+1.0.8",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bzip2-sys-0.1.13+1.0.8/build.rs",
+      "bytes": 1562,
+      "sha256": "b114f9e57458c18d9dcd601064b1b74807ce02aeff230a3f68d117cee7b0de35"
+    },
+    {
+      "package": "clang-sys",
+      "version": "1.9.1",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#clang-sys@1.9.1",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clang-sys-1.9.1/build.rs",
+      "bytes": 1585,
+      "sha256": "1d3a13cba52050a62c1d420431d2c8dd2f96919e1b4a6cc7faf13a84d807838b"
+    },
+    {
+      "package": "const_fn",
+      "version": "0.4.12",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#const_fn@0.4.12",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/const_fn-0.4.12/build.rs",
+      "bytes": 4802,
+      "sha256": "8de9d55780370383bbb0c5e816d03e343796fafe4e9ce9f3f8905a441823dae7"
+    },
+    {
+      "package": "crc32c",
+      "version": "0.6.9",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#crc32c@0.6.9",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crc32c-0.6.9/build.rs",
+      "bytes": 4290,
+      "sha256": "cd2e41b8e5f0661d2029b96bc5232d125d3ace723adac00f8e10f82ce267a016"
+    },
+    {
+      "package": "crc32fast",
+      "version": "1.5.4",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#crc32fast@1.5.4",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crc32fast-1.5.4/build.rs",
+      "bytes": 1324,
+      "sha256": "deb6052c4a586e8875ef677fe2d9e9dcfafebfa949803455ea8eff6e7dbde436"
+    },
+    {
+      "package": "crossbeam-deque",
+      "version": "0.8.8",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#crossbeam-deque@0.8.8",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crossbeam-deque-0.8.8/build.rs",
+      "bytes": 674,
+      "sha256": "c8c35fc536a2e6481549bc13979293cb51244cd9c72d4ed9e35c22a1d70fa9ae"
+    },
+    {
+      "package": "crossbeam-epoch",
+      "version": "0.9.21",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#crossbeam-epoch@0.9.21",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crossbeam-epoch-0.9.21/build.rs",
+      "bytes": 674,
+      "sha256": "c8c35fc536a2e6481549bc13979293cb51244cd9c72d4ed9e35c22a1d70fa9ae"
+    },
+    {
+      "package": "crossbeam-utils",
+      "version": "0.8.23",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#crossbeam-utils@0.8.23",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crossbeam-utils-0.8.23/build.rs",
+      "bytes": 1940,
+      "sha256": "79cc5363313f77ab76e2de4779e384c672a747fbcd4b96647a79286568714807"
+    },
+    {
+      "package": "crunchy",
+      "version": "0.2.4",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#crunchy@0.2.4",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crunchy-0.2.4/build.rs",
+      "bytes": 6688,
+      "sha256": "08bfcfa380ded6870ed262baa4b6e87ec54482306aebffabefbd19c83ad4b6ba"
+    },
+    {
+      "package": "cubecl",
+      "version": "0.11.3",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#cubecl@0.11.3",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cubecl-0.11.3/build.rs",
+      "bytes": 2009,
+      "sha256": "a6d7ce3d9e56a981069339ad7dc72b5aee74da6b36ce40e5937f04d4db0eb5cd"
+    },
+    {
+      "package": "cubecl-common",
+      "version": "0.11.3",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#cubecl-common@0.11.3",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cubecl-common-0.11.3/build.rs",
+      "bytes": 359,
+      "sha256": "0ea97eb226376a3e63903f30cca0cb88486160f102b484f349a9d9d823db570d"
+    },
+    {
+      "package": "cubecl-cpp",
+      "version": "0.11.3",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#cubecl-cpp@0.11.3",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cubecl-cpp-0.11.3/build.rs",
+      "bytes": 316,
+      "sha256": "ff979a93371b9779dd78f6096ff20a11c02235cc0bc8bf7f9991db1d2c322589"
+    },
+    {
+      "package": "cubecl-cuda",
+      "version": "0.11.3",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#cubecl-cuda@0.11.3",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cubecl-cuda-0.11.3/build.rs",
+      "bytes": 337,
+      "sha256": "6fa8014352e244a950b782827e511373e3721a14d115b5768f338a24f621ae95"
+    },
+    {
+      "package": "cubecl-environment",
+      "version": "0.11.3",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#cubecl-environment@0.11.3",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cubecl-environment-0.11.3/build.rs",
+      "bytes": 1045,
+      "sha256": "bea0e27468cd7269998d8a57d316313427266b46f0ac0a55532a9251e7388ff9"
+    },
+    {
+      "package": "cubecl-hip-sys",
+      "version": "7.14.6085001",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#cubecl-hip-sys@7.14.6085001",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cubecl-hip-sys-7.14.6085001/build.rs",
+      "bytes": 9030,
+      "sha256": "e55a038323145157adce611b414fc211fb8f50644707e6a07c5969fadd2a8951"
+    },
+    {
+      "package": "cubecl-llvm",
+      "version": "0.11.3",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#cubecl-llvm@0.11.3",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cubecl-llvm-0.11.3/build.rs",
+      "bytes": 1854,
+      "sha256": "85979a52eb1c8715f233143156db86500f49844ab8fba452935d528e760f7550"
+    },
+    {
+      "package": "cubecl-macros",
+      "version": "0.11.3",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#cubecl-macros@0.11.3",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cubecl-macros-0.11.3/build.rs",
+      "bytes": 675,
+      "sha256": "880ac1c11b0f72ea144222f217a2d5e6198510882fd03878a1f15337c2a380f9"
+    },
+    {
+      "package": "cubecl-monitoring",
+      "version": "0.11.3",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#cubecl-monitoring@0.11.3",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cubecl-monitoring-0.11.3/build.rs",
+      "bytes": 691,
+      "sha256": "ea30739f0f0ecf0a89c3b692963f90454f49c6f65569a7ba07b40c83e0368272"
+    },
+    {
+      "package": "cubecl-runtime",
+      "version": "0.11.3",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#cubecl-runtime@0.11.3",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cubecl-runtime-0.11.3/build.rs",
+      "bytes": 846,
+      "sha256": "0d28ea4615d8e150bccf2e756ea58d1b12bf5fa663327ff69c71898308660629"
+    },
+    {
+      "package": "cubecl-server",
+      "version": "0.11.3",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#cubecl-server@0.11.3",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cubecl-server-0.11.3/build.rs",
+      "bytes": 1167,
+      "sha256": "3f47c954aec7ebd1fdb472713d851bdb5c8f88bb72d7bf14920cc1438289d1c3"
+    },
+    {
+      "package": "cubecl-spirv",
+      "version": "0.11.3",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#cubecl-spirv@0.11.3",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cubecl-spirv-0.11.3/build.rs",
+      "bytes": 316,
+      "sha256": "ff979a93371b9779dd78f6096ff20a11c02235cc0bc8bf7f9991db1d2c322589"
+    },
+    {
+      "package": "cubecl-wgpu",
+      "version": "0.11.3",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#cubecl-wgpu@0.11.3",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cubecl-wgpu-0.11.3/build.rs",
+      "bytes": 2101,
+      "sha256": "eb034f645f6baa2584a478586c7ecbf93e52932487e41f9018b92bc576349b47"
+    },
+    {
+      "package": "cudarc",
+      "version": "0.19.10",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#cudarc@0.19.10",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cudarc-0.19.10/build.rs",
+      "bytes": 20459,
+      "sha256": "575af2dcc77d6e2ba07405cd5cb556a25f09db83f749ef798082240d0aea8089"
+    },
+    {
+      "package": "generic-array",
+      "version": "0.14.7",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#generic-array@0.14.7",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/generic-array-0.14.7/build.rs",
+      "bytes": 146,
+      "sha256": "08fa30c4a2c1ad24fe5f987e721dfb20131f45ea5b5dc3e836dcf88a8e33248c"
+    },
+    {
+      "package": "getrandom",
+      "version": "0.3.4",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#getrandom@0.3.4",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.3.4/build.rs",
+      "bytes": 2173,
+      "sha256": "d542c9c3bbc2f64a26c758eac8af16178aab52464bdd8bf0b9a767ba87665021"
+    },
+    {
+      "package": "getrandom",
+      "version": "0.4.3",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#getrandom@0.4.3",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.4.3/build.rs",
+      "bytes": 446,
+      "sha256": "662faa06d7b2a9c5bea2c17a127a90e00b9f9b31105b0360da516e47cf816e95"
+    },
+    {
+      "package": "httparse",
+      "version": "1.10.1",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#httparse@1.10.1",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/httparse-1.10.1/build.rs",
+      "bytes": 4321,
+      "sha256": "eba8e341d746a6cf54249c62afe9eb237e7c21fcf9937223e894549e3a34d489"
+    },
+    {
+      "package": "icu_collator_data",
+      "version": "2.4.0",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#icu_collator_data@2.4.0",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_collator_data-2.4.0/build.rs",
+      "bytes": 452,
+      "sha256": "c2d446772e3d766a804963dbf36e51729f910920f91f4b68c0c199fe6ca0853e"
+    },
+    {
+      "package": "icu_locale_data",
+      "version": "2.4.0",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#icu_locale_data@2.4.0",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_locale_data-2.4.0/build.rs",
+      "bytes": 452,
+      "sha256": "c2d446772e3d766a804963dbf36e51729f910920f91f4b68c0c199fe6ca0853e"
+    },
+    {
+      "package": "icu_locale_fallback_data",
+      "version": "2.4.0",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#icu_locale_fallback_data@2.4.0",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_locale_fallback_data-2.4.0/build.rs",
+      "bytes": 452,
+      "sha256": "c2d446772e3d766a804963dbf36e51729f910920f91f4b68c0c199fe6ca0853e"
+    },
+    {
+      "package": "icu_normalizer_data",
+      "version": "2.4.0",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#icu_normalizer_data@2.4.0",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer_data-2.4.0/build.rs",
+      "bytes": 452,
+      "sha256": "c2d446772e3d766a804963dbf36e51729f910920f91f4b68c0c199fe6ca0853e"
+    },
+    {
+      "package": "icu_properties_data",
+      "version": "2.4.0",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#icu_properties_data@2.4.0",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_properties_data-2.4.0/build.rs",
+      "bytes": 452,
+      "sha256": "c2d446772e3d766a804963dbf36e51729f910920f91f4b68c0c199fe6ca0853e"
+    },
+    {
+      "package": "io-uring",
+      "version": "0.7.15",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#io-uring@0.7.15",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/io-uring-0.7.15/build.rs",
+      "bytes": 1719,
+      "sha256": "f247a17535e77b53ab1003aa76749d030fd069961e7e03bea61a7a408fc4081a"
+    },
+    {
+      "package": "khronos-egl",
+      "version": "6.0.0",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#khronos-egl@6.0.0",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/khronos-egl-6.0.0/build.rs",
+      "bytes": 259,
+      "sha256": "d932445d4ed5c9545f2ae99417c97090e842b0ef14d217cdb4cea6b75174b4fd"
+    },
+    {
+      "package": "libc",
+      "version": "0.2.191",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#libc@0.2.191",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.191/build.rs",
+      "bytes": 21693,
+      "sha256": "e70593206df4d2a3138eab463567e0ae8f91c1bea565da4ab5370ea8986840ac"
+    },
+    {
+      "package": "liblzma-sys",
+      "version": "0.4.9",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#liblzma-sys@0.4.9",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/liblzma-sys-0.4.9/build.rs",
+      "bytes": 5044,
+      "sha256": "3e5bdf12ef4821e5dae560dd0e838ba6f34b95305eaf52210cb8b8a6af4417f9"
+    },
+    {
+      "package": "libm",
+      "version": "0.2.16",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#libm@0.2.16",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libm-0.2.16/build.rs",
+      "bytes": 470,
+      "sha256": "85dfa93693f40e282ecf2d9a3115280d8f508f056063862add9e529b8143b71b"
+    },
+    {
+      "package": "linkme",
+      "version": "0.3.37",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#linkme@0.3.37",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linkme-0.3.37/build.rs",
+      "bytes": 486,
+      "sha256": "c95dd02cf856edc6efa9d9081cd0ee88b06d32eaa267eb43ca86ca5618148d90"
+    },
+    {
+      "package": "linkme-impl",
+      "version": "0.3.37",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#linkme-impl@0.3.37",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linkme-impl-0.3.37/build.rs",
+      "bytes": 1108,
+      "sha256": "c9082458d035980d608836e6a189d42eebf393b384e05a20fbd40d8cd58beeb8"
+    },
+    {
+      "package": "llvm-sys",
+      "version": "231.0.2",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#llvm-sys@231.0.2",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/llvm-sys-231.0.2/build.rs",
+      "bytes": 28307,
+      "sha256": "0c92ca56bcb43e7d7d2529db2baa5b8754e7be74112b06999a249f1ea1c26baf"
+    },
+    {
+      "package": "macerator",
+      "version": "0.5.2",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#macerator@0.5.2",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/macerator-0.5.2/build.rs",
+      "bytes": 723,
+      "sha256": "7c5d0d1cac78866c166f34d917d5a53912544313aefb13160ec76bfb37dcf171"
+    },
+    {
+      "package": "matrixmultiply",
+      "version": "0.3.11",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#matrixmultiply@0.3.11",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/matrixmultiply-0.3.11/build.rs",
+      "bytes": 878,
+      "sha256": "70108cb12936fdbe2123b2018c42899a531c7cb0007b3e402a8fdea7411e88a7"
+    },
+    {
+      "package": "memoffset",
+      "version": "0.9.1",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#memoffset@0.9.1",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/memoffset-0.9.1/build.rs",
+      "bytes": 784,
+      "sha256": "0ddaae191a4091fe1318177d12244ff0dbabc17a18f25a54059f4badc9a20876"
+    },
+    {
+      "package": "naga",
+      "version": "30.0.1",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#naga@30.0.1",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/naga-30.0.1/build.rs",
+      "bytes": 549,
+      "sha256": "b1aa8cfbdb081700515ff506517bba2720705db90c7c8e767100a95df998e705"
+    },
+    {
+      "package": "num-traits",
+      "version": "0.2.19",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#num-traits@0.2.19",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/num-traits-0.2.19/build.rs",
+      "bytes": 160,
+      "sha256": "d3969209fc1c9d201c66ed11820d0b328600d75b3971f8ceebeab04900bc0587"
+    },
+    {
+      "package": "parking_lot_core",
+      "version": "0.9.12",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#parking_lot_core@0.9.12",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/parking_lot_core-0.9.12/build.rs",
+      "bytes": 515,
+      "sha256": "3698c936b75f8332d9b6b30a8a6838ea116c1ff0a819a025c9ea9696e4d8ce72"
+    },
+    {
+      "package": "paste",
+      "version": "1.0.15",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#paste@1.0.15",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/paste-1.0.15/build.rs",
+      "bytes": 1012,
+      "sha256": "dba46ae4291317fb644ba2143f44eaf54a8ab946ba1367a33d055d694715f68a"
+    },
+    {
+      "package": "portable-atomic",
+      "version": "1.15.0",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#portable-atomic@1.15.0",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-atomic-1.15.0/build.rs",
+      "bytes": 37487,
+      "sha256": "9d0b1e071715580497aadb918d4b3b124ee366ba66f15ac05a3d8045f0bc2cf0"
+    },
+    {
+      "package": "portable-atomic-util",
+      "version": "0.2.8",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#portable-atomic-util@0.2.8",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-atomic-util-0.2.8/build.rs",
+      "bytes": 8690,
+      "sha256": "f17a8f6b7c93fa6bcefc325a7b75e9e03fc9c97f23ded051f31d6dc8b8e0d478"
+    },
+    {
+      "package": "prettyplease",
+      "version": "0.2.37",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#prettyplease@0.2.37",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/prettyplease-0.2.37/build.rs",
+      "bytes": 646,
+      "sha256": "79a5b2d260aa97aeac7105fbfa00774982f825cd708c100ea96d01c39974bb88"
+    },
+    {
+      "package": "prettyplease",
+      "version": "0.3.0",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#prettyplease@0.3.0",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/prettyplease-0.3.0/build.rs",
+      "bytes": 1002,
+      "sha256": "6e18666b8a69aa6b3d6fc6c7273e2d313f55075035ef5aff73b000e52eaedbfd"
+    },
+    {
+      "package": "proc-macro2",
+      "version": "1.0.107",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#proc-macro2@1.0.107",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/proc-macro2-1.0.107/build.rs",
+      "bytes": 10277,
+      "sha256": "baeb20b52f6b536be8657a566591a507bb2e34a45cf8baa42b135510a0c3c729"
+    },
+    {
+      "package": "pulp",
+      "version": "0.22.3",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#pulp@0.22.3",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pulp-0.22.3/build.rs",
+      "bytes": 6533,
+      "sha256": "ba006df9f748fd817b68f9ff9b174ece596cf9fa3e4f1a008dbcb762bd7f00b8"
+    },
+    {
+      "package": "quote",
+      "version": "1.0.47",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#quote@1.0.47",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quote-1.0.47/build.rs",
+      "bytes": 882,
+      "sha256": "cd6808c02e476b09a520105e2c6f6d325cccb1ecd542cbbcc836a0ae6f6fb0f1"
+    },
+    {
+      "package": "rav1e",
+      "version": "0.8.1",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#rav1e@0.8.1",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rav1e-0.8.1/build.rs",
+      "bytes": 7647,
+      "sha256": "762a52a53ca01a04d5c173619555391ec0d4029377d43e31a177d14bb0562add"
+    },
+    {
+      "package": "rayon-core",
+      "version": "1.13.0",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#rayon-core@1.13.0",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-core-1.13.0/build.rs",
+      "bytes": 278,
+      "sha256": "fa31cb198b772600d100a7c403ddedccef637d2e6b2da431fa7f02ca41307fc6"
+    },
+    {
+      "package": "ring",
+      "version": "0.17.14",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#ring@0.17.14",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ring-0.17.14/build.rs",
+      "bytes": 33341,
+      "sha256": "9d1928ffb1d8e15766c1c1b9ead73e4b81a21703dd25f7c27b87842a2e6e9cee"
+    },
+    {
+      "package": "rustc_apfloat",
+      "version": "0.2.3+llvm-462a31f5a5ab",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#rustc_apfloat@0.2.3+llvm-462a31f5a5ab",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustc_apfloat-0.2.3+llvm-462a31f5a5ab/build.rs",
+      "bytes": 2058,
+      "sha256": "c6f165c151091168e13af707ead36e3bd22f33e5849e3f4d55ea32dc4a94a73c"
+    },
+    {
+      "package": "rustix",
+      "version": "0.38.44",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#rustix@0.38.44",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustix-0.38.44/build.rs",
+      "bytes": 9305,
+      "sha256": "7cc60a1a80836bff6c4f82dd938049dcec84736100bb81ebe6ac84513b0f4a45"
+    },
+    {
+      "package": "rustix",
+      "version": "1.1.6",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#rustix@1.1.6",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustix-1.1.6/build.rs",
+      "bytes": 10508,
+      "sha256": "f7609b919173e7121493266d0f89db724a1e47bb105ebd05397f869639603eec"
+    },
+    {
+      "package": "rustls",
+      "version": "0.23.46",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#rustls@0.23.46",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustls-0.23.46/build.rs",
+      "bytes": 352,
+      "sha256": "380b9a051325baa7d4957bd9a4f1a637c27a663610b1b502f9524530f6995f4d"
+    },
+    {
+      "package": "rustversion",
+      "version": "1.0.23",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#rustversion@1.0.23",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustversion-1.0.23/build/build.rs",
+      "bytes": 4057,
+      "sha256": "4438b108d5b198ca43ef0a78509da89861020674abd05166addd1c3058afbfa6"
+    },
+    {
+      "package": "serde",
+      "version": "1.0.229",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#serde@1.0.229",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/build.rs",
+      "bytes": 2471,
+      "sha256": "e2ea6a7a82f5404c3e28cb055883c737ee7903367a10206fbb47b75c009f0eb3"
+    },
+    {
+      "package": "serde_core",
+      "version": "1.0.229",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#serde_core@1.0.229",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/build.rs",
+      "bytes": 4252,
+      "sha256": "7bc6b1eec8913ff4cd8e4b9b92cd04a82a4f38beb30a0b73a64c1e6e49f07b5f"
+    },
+    {
+      "package": "serde_json",
+      "version": "1.0.154",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#serde_json@1.0.154",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.154/build.rs",
+      "bytes": 1206,
+      "sha256": "a681e754be844c7dbef957f5d2d00b01f37c5dca160ef1055a8d8f975697a881"
+    },
+    {
+      "package": "simsimd",
+      "version": "6.5.16",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#simsimd@6.5.16",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/simsimd-6.5.16/build.rs",
+      "bytes": 5247,
+      "sha256": "a137d33624a5ef23a7f1f06991a23f72d2d69d72bcfd7cc186e99726d2526eca"
+    },
+    {
+      "package": "slotmap",
+      "version": "1.1.1",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#slotmap@1.1.1",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/slotmap-1.1.1/build.rs",
+      "bytes": 535,
+      "sha256": "fa4b3bd978b8f9c9a619b6fd61b4471a9b0a386335dd3b1fc8997daa8a16c4ff"
+    },
+    {
+      "package": "tch",
+      "version": "0.22.0",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#tch@0.22.0",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tch-0.22.0/build.rs",
+      "bytes": 492,
+      "sha256": "c3485073dba6a1b483b781e9699852f4fcfbe7410a5502521b2d4e985fa79250"
+    },
+    {
+      "package": "thiserror",
+      "version": "1.0.69",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#thiserror@1.0.69",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-1.0.69/build.rs",
+      "bytes": 5060,
+      "sha256": "275d0ddbb22d5f015fba360f51a48da10b6309410efe8c6ca678412b1e8c9288"
+    },
+    {
+      "package": "thiserror",
+      "version": "2.0.21",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#thiserror@2.0.21",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/build.rs",
+      "bytes": 6923,
+      "sha256": "ccc38283604f99237ad2333bbe395259e29fdf2ff4e04a60a95de9e4499c09a3"
+    },
+    {
+      "package": "tiny-keccak",
+      "version": "2.0.2",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#tiny-keccak@2.0.2",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tiny-keccak-2.0.2/build.rs",
+      "bytes": 562,
+      "sha256": "c3e63c57ab0d28633f522c4a056c3230e9399fda6e511954da81ebfd00b216b2"
+    },
+    {
+      "package": "torch-sys",
+      "version": "0.22.0",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#torch-sys@0.22.0",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/torch-sys-0.22.0/build.rs",
+      "bytes": 20971,
+      "sha256": "d266c1d1fb374988471f7b19ce5341c77d45e5b3024d203eecdd78f1d74c711f"
+    },
+    {
+      "package": "tracel-llvm-bundler",
+      "version": "23.1.0-4",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#tracel-llvm-bundler@23.1.0-4",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tracel-llvm-bundler-23.1.0-4/build.rs",
+      "bytes": 5607,
+      "sha256": "c9b1aae6fd90bb6bdd119879d213fb1bec83201437e85a62d0db4be7350e253b"
+    },
+    {
+      "package": "turso_core",
+      "version": "0.8.3",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#turso_core@0.8.3",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/turso_core-0.8.3/build.rs",
+      "bytes": 5532,
+      "sha256": "390ef8d965fefcebd30143e681b7f273568f4c01f2fbbd9814cfe610bf3116cf"
+    },
+    {
+      "package": "turso_ext",
+      "version": "0.8.3",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#turso_ext@0.8.3",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/turso_ext-0.8.3/build.rs",
+      "bytes": 145,
+      "sha256": "88e0e0cf03c5beede3743509f6c6a6a908e104abba68858cd9ba3b050912cd1f"
+    },
+    {
+      "package": "turso_sdk_kit",
+      "version": "0.8.3",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#turso_sdk_kit@0.8.3",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/turso_sdk_kit-0.8.3/build.rs",
+      "bytes": 4013,
+      "sha256": "a171b504a6ff92457efd842478efd268e6dc6e388863fef336afa162f8589510"
+    },
+    {
+      "package": "uncased",
+      "version": "0.9.10",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#uncased@0.9.10",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/uncased-0.9.10/build.rs",
+      "bytes": 258,
+      "sha256": "527238722a1e10e3e53afb762a0ea071e4220835815775706486b5fb9583b649"
+    },
+    {
+      "package": "wasm-bindgen",
+      "version": "0.2.130",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#wasm-bindgen@0.2.130",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasm-bindgen-0.2.130/build.rs",
+      "bytes": 1732,
+      "sha256": "363b0c2cf7b1353ff702898612ab98956a87fa85e943b41377627c08a053406a"
+    },
+    {
+      "package": "wasm-bindgen-shared",
+      "version": "0.2.130",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#wasm-bindgen-shared@0.2.130",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasm-bindgen-shared-0.2.130/build.rs",
+      "bytes": 2625,
+      "sha256": "2ad2b0d08ef35c6a9013b5488bdf568630f0fc517d10b47f3851ad5c6ef10da4"
+    },
+    {
+      "package": "wayland-sys",
+      "version": "0.31.11",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#wayland-sys@0.31.11",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wayland-sys-0.31.11/build.rs",
+      "bytes": 639,
+      "sha256": "11473cb618b53e1fc980c9caf9d3ed8a969a3c33b6243a8e79b5da6fab03ce28"
+    },
+    {
+      "package": "wgpu",
+      "version": "30.0.1",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#wgpu@30.0.1",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-30.0.1/build.rs",
+      "bytes": 3604,
+      "sha256": "18681e37762d3a8e36e04df1b6228a16e93f8b5946f1e1886839c5cab1b034f0"
+    },
+    {
+      "package": "wgpu-core",
+      "version": "30.0.1",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#wgpu-core@30.0.1",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-core-30.0.1/build.rs",
+      "bytes": 1388,
+      "sha256": "f3d39c06752630257f6bf5efe76a61e54b32b354704f7c16c76c8e2128fa6b34"
+    },
+    {
+      "package": "wgpu-hal",
+      "version": "30.0.1",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#wgpu-hal@30.0.1",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-hal-30.0.1/build.rs",
+      "bytes": 1862,
+      "sha256": "001414f5b7dcdbebb18939ef47ab03a36aaf98d92deb4b40af61ab8c9e440bf6"
+    },
+    {
+      "package": "zerocopy",
+      "version": "0.8.63",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#zerocopy@0.8.63",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zerocopy-0.8.63/build.rs",
+      "bytes": 10647,
+      "sha256": "075d31f4f99cf4e42132e9c3652c846de832576e2f18be281b16405235644fcd"
+    },
+    {
+      "package": "zmij",
+      "version": "1.0.23",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#zmij@1.0.23",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.23/build.rs",
+      "bytes": 1362,
+      "sha256": "ad320bc635887879bdbbf1b9322da4a157ec2c5a4243bd7c2cf9b6884a3b2a41"
+    },
+    {
+      "package": "zstd-safe",
+      "version": "5.0.2+zstd.1.5.2",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#zstd-safe@5.0.2+zstd.1.5.2",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zstd-safe-5.0.2+zstd.1.5.2/build.rs",
+      "bytes": 345,
+      "sha256": "2342e59833e2ebca2980884d4f242a6bf1b0143037c212e05514626ad5213505"
+    },
+    {
+      "package": "zstd-sys",
+      "version": "2.1.2+zstd.1.5.7",
+      "packageId": "registry+https://github.com/rust-lang/crates.io-index#zstd-sys@2.1.2+zstd.1.5.7",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zstd-sys-2.1.2+zstd.1.5.7/build.rs",
+      "bytes": 18223,
+      "sha256": "ff97fca52b72ba76c2c71f0d4ca3475d5fa746e184e7d01c6085f9efee360171"
+    }
+  ],
+  "buildScriptsExecuted": false,
+  "dependencyNativeClosureQualified": false,
+  "trainingReady": false
+}

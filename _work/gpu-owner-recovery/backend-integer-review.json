@@ -1,0 +1,15 @@
+{
+  "version": "chess-coach.source-review.v1",
+  "reviewer": "backend",
+  "sessionId": "ses_e462ed1acffedRWzSz0CQUGWeq",
+  "scope": "RUST_INTEGER_TOKEN_AND_BOUND_STATE_CONTRACT",
+  "readOnly": true,
+  "reviewerExecutedCommands": false,
+  "findingCleared": "Literal numeric -0 now decodes as integer zero without changing original-byte commitments.",
+  "preservedContracts": ["typed-integer-ranges", "safe-u64-ceiling", "canonical-decimal-strings", "required-nullable-presence", "closed-raw-schedule-variants", "original-descriptor-hash"],
+  "remainingAcceptedContractCounterexamples": 0,
+  "finalVerdict": "READY_TO_PROCEED_SCOPED_RUST_INTEGER_CONTRACT_ONLY",
+  "globalLexicalJsonParityClaimed": false,
+  "operationalAcceptance": false,
+  "trainingReady": false
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "path": "Cargo.toml",
+    "sha256": "553b6e3cf5a8d30f53f19bf6623332d4d6c5df69099d5f2a51ae9260f07b74bc"
+  },
+  {
+    "path": "Cargo.lock",
+    "sha256": "b2852cbabb1fcedc29146c33a9323eb04401005afa4cb3c8e5de89e16ae66555"
+  },
+  {
+    "path": "crates/learning/Cargo.toml",
+    "sha256": "018a19c5bb0dd4a43660c3add3062bb52bdc5c40c79c27de4248c841460f2abf"
+  },
+  {
+    "path": "crates/policy-io/Cargo.toml",
+    "sha256": "c9e25c2541e835906fcad2da53d2d9a9588007b32d41895e85d66599d6bdce56"
+  },
+  {
+    "path": "crates/gpu-owner/Cargo.toml",
+    "sha256": "ceb98a71e3a5c16c1c3f6d5035843b8441995339b5d49f62340b395540b2c3aa"
+  },
+  {
+    "path": "crates/host-facts/Cargo.toml",
+    "sha256": "852c6df40e26aff5ac82e347db1f7cc4fdebb069a54095a8a92fb714183f64c8"
+  }
+]

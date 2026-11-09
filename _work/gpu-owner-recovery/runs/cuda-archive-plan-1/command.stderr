@@ -1,0 +1,16 @@
+32 | const canonical = (value: unknown): string => JSON.stringify(value, (_key, item: unknown) => item && typeof item === "object" && !Array.isArray(item)
+33 |   ? Object.fromEntries(Object.entries(item).sort(([a], [b]) => a.localeCompare(b))) : item);
+34 | const same = (a: unknown, b: unknown) => canonical(a) === canonical(b);
+35 | const keys = (value: object, expected: readonly string[]) => same(Object.keys(value).sort(), [...expected].sort());
+36 | const parse = (bytes: Uint8Array): unknown => JSON.parse(new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes));
+37 | const need = (condition: unknown, code: string): void => { if (!condition) throw Error(code); };
+                                                                                      ^
+error: UNTRUSTED_FILE_ANCESTOR
+      at need (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-archive.ts:37:82)
+      at trustedAncestors (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-archive.ts:103:5)
+      at async readAudited (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-archive.ts:108:9)
+      at async native (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-archive.ts:196:19)
+      at async <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-archive.ts:174:27)
+      at async makePlan (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-archive.ts:177:65)
+
+Bun v1.4.0 (Linux x64)

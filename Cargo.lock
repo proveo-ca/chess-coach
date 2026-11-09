@@ -799,6 +799,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a4e7494d1142d945c9f1bd88b9aa68e4af7b190482e8cff47011d338057d857b"
 dependencies = [
  "burn-core",
+ "burn-cubecl",
  "burn-fusion",
  "burn-std",
  "num-traits",
@@ -882,6 +883,7 @@ checksum = "3afcc7d0f8654ccf9529c9e93f21383b8828d4c784c0429966d2026698f72451"
 dependencies = [
  "burn-autodiff",
  "burn-core",
+ "burn-cubecl",
  "burn-flex",
  "burn-fusion",
  "burn-std",
@@ -971,8 +973,10 @@ dependencies = [
  "aligned-vec",
  "bon",
  "burn-core",
+ "burn-cubecl",
  "burn-std",
  "bytemuck",
+ "cubecl",
  "derive-new",
  "image",
  "macerator",
@@ -1101,6 +1105,17 @@ dependencies = [
  "cfg-if",
  "cpufeatures 0.3.1",
  "rand_core 0.10.1",
+]
+
+[[package]]
+name = "chess-coach-gpu-owner"
+version = "0.1.0"
+dependencies = [
+ "rustix 1.1.6",
+ "serde",
+ "serde_json",
+ "sha2",
+ "tempfile",
 ]
 
 [[package]]
@@ -1917,6 +1932,7 @@ dependencies = [
  "cubecl",
  "cubek-attention",
  "cubek-convolution",
+ "cubek-fft",
  "cubek-interpolate",
  "cubek-matmul",
  "cubek-pool",
@@ -1956,6 +1972,15 @@ dependencies = [
  "cubek-tile",
  "half",
  "serde",
+]
+
+[[package]]
+name = "cubek-fft"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "48451902f1d21d3eb88cadc17a8a7aeb3b582f17484a68e650f44efe74688b73"
+dependencies = [
+ "cubecl",
 ]
 
 [[package]]

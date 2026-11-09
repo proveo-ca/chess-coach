@@ -2,6 +2,9 @@
 #![forbid(unsafe_code)]
 
 pub mod channel;
+mod device;
+
+pub use device::selected_f64_device;
 
 use std::io;
 

@@ -1,0 +1,40 @@
+{
+  "version": "chess-coach.cuda-acquisition-source-review-provenance.v1",
+  "scope": "EXACT_TWO_FILE_ACQUISITION_SOURCE_ONLY_NOT_EXTRACTION_OR_NATIVE_EXECUTION",
+  "reviewRecord": "_work/gpu-owner-recovery/cuda-acquire-reviewed.json",
+  "reviewRecordSha256": "7e163891ae6e9cde0a77ea2608d5c25129add3edbfda078ee2c2619be3850f3f",
+  "requestSha256": "6b8aae0c45ac959e555675c3f5a7908968fb999b55d16daba833c81fca5cb346",
+  "securitySessionId": "ses_e4439a2c0ffeTD6G2gSAPqPEyM",
+  "adversarialSessionId": "ses_e4439a2b6ffeD4aw7uSogI27Fg",
+  "sourceVerdicts": "READY_FOR_EXACT_TWO_FILE_ACQUISITION_CONDITIONAL_ON_OUTSIDE_PIN_AND_DEADLINES",
+  "remainingFindings": 0,
+  "staticTests": {
+    "tests": 28,
+    "assertions": 520
+  },
+  "runnerTests": {
+    "tests": 14,
+    "assertions": 142
+  },
+  "isolationRegression": {
+    "tests": 16,
+    "assertions": 276
+  },
+  "types": "PASS",
+  "staticReceipts": [
+    "_work/gpu-owner-recovery/runs/cuda-acquire-static-parent-3/receipt.json",
+    "_work/gpu-owner-recovery/runs/cuda-acquire-types-parent-3/receipt.json",
+    "_work/gpu-owner-recovery/runs/cuda-acquire-runner-parent-3/receipt.json",
+    "_work/gpu-owner-recovery/runs/cuda-acquire-isolation-regression-3/receipt.json"
+  ],
+  "sourceCount": 15,
+  "predecessorProofCount": 6,
+  "approvedExecutorScope": "EXACT_TWO_LLVM_FILES_GATED_LOCAL_PROVISIONING_AND_TWO_ISOLATED_NO_RUN_TARGETS_ONLY",
+  "oneOutsideDeadlineMsPerArtifact": 120000,
+  "firstActualFailureStopsSequence": true,
+  "actualAcquisitionPerformed": false,
+  "extractionPerformed": false,
+  "llvmCodeExecuted": false,
+  "cudaCompilationEstablished": false,
+  "trainingReady": false
+}

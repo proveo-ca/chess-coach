@@ -1,0 +1,21 @@
+{
+  "version": "chess-coach.cuda-inert-probe-classification.v1",
+  "originalReceipt": "_work/gpu-owner-recovery/runs/cuda-isolation-probe-1/receipt.json",
+  "originalReceiptPreserved": true,
+  "outcome": "FAIL",
+  "exitCode": 1,
+  "failureStage": "00-config",
+  "failureCategory": "MISE_UNTRUSTED_TASK_CONFIG_DISCOVERY",
+  "observedError": "Config files in cuda-mise.toml are not trusted. Trust them with mise trust.",
+  "configurationTrustAttempted": false,
+  "namespaceCommandAttempted": false,
+  "namespaceSupportDetermined": false,
+  "llvmArchiveDownloaded": false,
+  "llvmCodeExecuted": false,
+  "cudaCompilationAttempted": false,
+  "originalReceiptSchedulingFlagLimit": "isolationProbeAttemptedBeforeLlvmDownloads records the intended outer-sequence ordering; stage-00 stdout proves that no kernel namespace probe was reached.",
+  "sequenceHaltedAtFirstFailure": true,
+  "automaticRetryPerformed": false,
+  "renewedExecutorDecisionRequiredBeforeActualRetry": true,
+  "trainingReady": false
+}

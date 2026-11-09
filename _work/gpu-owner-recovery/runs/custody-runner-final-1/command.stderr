@@ -1,0 +1,20 @@
+
+_work/gpu-owner-recovery/verify.test.ts:
+(pass) every source manifest includes the executed supervisor and pinned reference metadata [6.89ms]
+(pass) repository runner retains bounded successful output and exact exit [30.22ms]
+(pass) repository runner preserves nonzero exits without success substitution [30.20ms]
+(pass) repository runner kills its bounded stalled synthetic child [31.62ms]
+(pass) repository runner retains group custody after a command exits with inherited pipes open [202.24ms]
+(pass) repository runner rejects supervisor loss after a successful command exit [228.37ms]
+(pass) repository command supervisor terminates its anchored group on runner disconnect [26.74ms]
+(pass) repository runner rejects stdout overflow and preserves only the bounded prefix [59.04ms]
+(pass) repository runner rejects stderr overflow and preserves only the bounded prefix [61.46ms]
+(pass) repository runner refuses paths outside the repository work root [0.36ms]
+
+_work/gpu-owner-recovery/audit-lock.test.ts:
+(pass) lock audit authenticates the original baseline despite checksum-substituting replacement refs [337.35ms]
+
+ 11 pass
+ 0 fail
+ 58 expect() calls
+Ran 11 tests across 2 files. [1484.00ms]

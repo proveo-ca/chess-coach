@@ -1,0 +1,10 @@
+{
+  "stage": "02-acquire",
+  "argv": [
+    "/usr/local/bin/mise",
+    "run",
+    "--raw",
+    "cuda:acquire-llvm-checksums"
+  ],
+  "exitCode": 0
+}

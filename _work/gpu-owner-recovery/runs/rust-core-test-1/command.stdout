@@ -1,0 +1,113 @@
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 9 tests
+test cpu_ranges_are_bounded_sorted_and_unique ... ok
+test expired_timer_wins_over_readable_io ... ok
+test telemetry_is_one_uuid_filtered_five_field_csv_not_sum_accounting ... ok
+test file_custody_rejects_symlink_leaves_and_ancestors ... ok
+test evidence_is_exclusive_counts_root_and_latches_failures_without_cleanup_io ... ok
+test file_hashing_checks_deadlines_exact_length_identity_and_rewinds ... ok
+test pinned_executable_survives_path_replacement_without_fallback ... ok
+test received_bytes_and_retained_prefix_have_distinct_limits ... ok
+test helper_multiplexes_large_concurrent_output_and_complete_stdin_close ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 2 tests
+test bounded_help_is_the_only_enabled_cli_operation ... ok
+test operational_arguments_and_environment_cannot_enable_main ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test shared_reconstructed_policy_range_and_clock_traces ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test origin_precedes_raw_validation_and_remains_a_decimal_string ... ok
+test decimal_strings_and_json_integer_counts_are_not_coerced ... ok
+test independent_hash_commits_original_bytes ... ok
+test recursive_json_uniqueness_and_bounds ... ok
+test exact_manifest_names_and_resource_envelope ... ok
+test rejects_missing_unknown_and_memory_aliases ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 12 tests
+test low_registered_query_never_creates_or_releases_work ... ok
+test malformed_registered_query_never_creates_or_releases_work ... ok
+test extra_bind_mount_fails_c13_but_keeps_owned_cleanup_authority ... ok
+test extra_gpu_request_fails_c2_but_keeps_owned_cleanup_authority ... ok
+test startup_before_complete_start_write_and_stdin_eof_is_rejected ... FAILED
+test empty_retained_cgroup_is_not_disappearance_before_original_final_deadline ... FAILED
+test wrong_image_or_ownership_token_never_authorizes_remove_or_start_release ... ok
+test nonzero_attach_after_real_sqlite_commit_never_becomes_success ... FAILED
+test trailing_stdout_after_real_sqlite_commit_never_becomes_success ... FAILED
+test real_bun_attempt_commits_once_and_naturally_reaps_every_child ... FAILED
+test evidence_path_failure_still_rechecks_ownership_binds_and_removes ... FAILED
+test stalled_registered_query_expires_and_reaps_without_create ... ok
+
+failures:
+
+---- startup_before_complete_start_write_and_stdin_eof_is_rejected stdout ----
+
+thread 'startup_before_complete_start_write_and_stdin_eof_is_rejected' (16890) panicked at crates/gpu-owner/tests/lifecycle.rs:282:5:
+assertion failed: fixture.path("prematureSent").exists()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+preserved lifecycle fixture: /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/scratch/lc-NumBJI
+
+---- empty_retained_cgroup_is_not_disappearance_before_original_final_deadline stdout ----
+
+thread 'empty_retained_cgroup_is_not_disappearance_before_original_final_deadline' (16878) panicked at crates/gpu-owner/tests/lifecycle.rs:213:5:
+assertion failed: waiter.advanced_cleanup
+preserved lifecycle fixture: /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/scratch/lc-tQhLiK
+
+---- nonzero_attach_after_real_sqlite_commit_never_becomes_success stdout ----
+
+thread 'nonzero_attach_after_real_sqlite_commit_never_becomes_success' (16885) panicked at crates/gpu-owner/tests/lifecycle.rs:21:5:
+Report { success: false, first_failure: Some("OPEN_NOFOLLOW"), cleanup_errors: ["OPEN_NOFOLLOW", "CGROUP_NOT_GONE"], proposal_json: None, cgroup_gone: false, all_helpers_reaped: true, origin_ns: 2862614781042, training_ready: false }
+preserved lifecycle fixture: /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/scratch/lc-41rBeL
+
+---- trailing_stdout_after_real_sqlite_commit_never_becomes_success stdout ----
+
+thread 'trailing_stdout_after_real_sqlite_commit_never_becomes_success' (16891) panicked at crates/gpu-owner/tests/lifecycle.rs:21:5:
+Report { success: false, first_failure: Some("OPEN_NOFOLLOW"), cleanup_errors: ["OPEN_NOFOLLOW", "CGROUP_NOT_GONE"], proposal_json: None, cgroup_gone: false, all_helpers_reaped: true, origin_ns: 2862597677417, training_ready: false }
+preserved lifecycle fixture: /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/scratch/lc-xHSlgb
+
+---- real_bun_attempt_commits_once_and_naturally_reaps_every_child stdout ----
+
+thread 'real_bun_attempt_commits_once_and_naturally_reaps_every_child' (16886) panicked at crates/gpu-owner/tests/lifecycle.rs:70:5:
+Report { success: false, first_failure: Some("OPEN_NOFOLLOW"), cleanup_errors: ["OPEN_NOFOLLOW", "CGROUP_NOT_GONE"], proposal_json: None, cgroup_gone: false, all_helpers_reaped: true, origin_ns: 2862613080791, training_ready: false }
+preserved lifecycle fixture: /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/scratch/lc-UpkTkf
+
+---- evidence_path_failure_still_rechecks_ownership_binds_and_removes stdout ----
+
+thread 'evidence_path_failure_still_rechecks_ownership_binds_and_removes' (16880) panicked at crates/gpu-owner/tests/lifecycle.rs:21:5:
+Report { success: false, first_failure: Some("EVIDENCE_PATH"), cleanup_errors: ["OPEN_NOFOLLOW", "CGROUP_NOT_GONE"], proposal_json: None, cgroup_gone: false, all_helpers_reaped: true, origin_ns: 2862633635046, training_ready: false }
+preserved lifecycle fixture: /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/scratch/lc-hlwcAA
+
+
+failures:
+    empty_retained_cgroup_is_not_disappearance_before_original_final_deadline
+    evidence_path_failure_still_rechecks_ownership_binds_and_removes
+    nonzero_attach_after_real_sqlite_commit_never_becomes_success
+    real_bun_attempt_commits_once_and_naturally_reaps_every_child
+    startup_before_complete_start_write_and_stdin_eof_is_rejected
+    trailing_stdout_after_real_sqlite_commit_never_becomes_success
+
+test result: FAILED. 6 passed; 6 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.67s
+

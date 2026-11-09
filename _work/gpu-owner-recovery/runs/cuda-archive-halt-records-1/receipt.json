@@ -1,0 +1,72 @@
+{
+  "version": "chess-coach.cuda-archive-halt-record-validation.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "-e",
+    "\nimport { readFile, lstat } from 'node:fs/promises';\nimport { createHash } from 'node:crypto';\nconst base='_work/gpu-owner-recovery/',planRoot=base+'runs/cuda-archive-plan-1/',hash=bytes=>createHash('sha256').update(bytes).digest('hex'),load=async path=>JSON.parse(await readFile(path,'utf8'));\nconst assert=(value,message)=>{if(!value)throw Error(message);};\nconst same=(left,right)=>JSON.stringify(left,(_key,item)=>item&&typeof item==='object'&&!Array.isArray(item)?Object.fromEntries(Object.entries(item).sort(([a],[b])=>a.localeCompare(b))):item)===JSON.stringify(right,(_key,item)=>item&&typeof item==='object'&&!Array.isArray(item)?Object.fromEntries(Object.entries(item).sort(([a],[b])=>a.localeCompare(b))):item);\nconst rawReview=await readFile(base+'cuda-archive-reviewed.json'),review=JSON.parse(rawReview);\nassert(hash(rawReview)==='e5d24c1d29be99e5989d0eddde26b94077b786e770b7338815a7ecd5d3cd453a','ACCEPTED_ARCHIVE_BINDING_CHANGED');\nconst retained=await readFile(planRoot+'authenticated-request-retained-after-plan.json'),approved=JSON.parse(retained);\nassert(hash(retained)==='27ee06aafbbc64eb936f5ea39d03ba0bdecd0b9109e8c3472ee4999d917b6321'&&review.requestSha256===hash(retained),'POST_PLAN_RETAINED_REQUEST_PIN');\nconst request=await load(base+'cuda-llvm-request.json'),classification=await load(base+'cuda-archive-plan-1-classification.json');\nconst expected={...approved,status:'HALTED_AFTER_READ_ONLY_ARCHIVE_ROOT_PLAN_FAILURE_DECISION_REQUIRED',authorityGranted:false,authorization:{...approved.authorization,grantStatus:'HALTED_AFTER_FIRST_FAILURE'},phase:'HALTED_BEFORE_PASSIVE_ARCHIVE_AUDIT',archiveRootPlanFailure:{receipt:planRoot+'receipt.json',classification:base+'cuda-archive-plan-1-classification.json',failureCode:'UNTRUSTED_FILE_ANCESTOR',rejectedAncestor:'/usr/local/bin',observedOwnerUid:1001,currentUid:1000,nativeAuditLaunched:false,automaticRetryPerformed:false,trustPolicyDecisionRequired:true},renewedExecutorDecisionRequired:true,sourceCorrection:{...approved.sourceCorrection,actualRetryAuthorized:false},nativeLayoutCorrection:{...approved.nativeLayoutCorrection,actualRetryAuthorized:false}};\nassert(same(request,expected),'HALTED_REQUEST_SCOPE_OR_DENIAL_CHANGED');\nconst closure=await load(base+'closure.json');\nassert(closure.newOperationalOrAcquisitionAuthorityGranted===false&&closure.newLocalDevelopmentNamespaceAndNoRunAuthorityGranted===false&&closure.newOperationalAuthorityGranted===false&&closure.trainingReady===false&&closure.nextDecisionRequest===base+'cuda-llvm-request.json','CLOSURE_MUST_ENFORCE_HALT');\nfor(const [path,expected]of Object.entries({...review.files,...review.predecessorProofs}))assert(hash(await readFile(path))===expected,'ACCEPTED_SOURCE_OR_HISTORY_CHANGED:'+path);\nfor(const label of ['cuda-archive-static-parent-4','cuda-archive-types-parent-4','cuda-archive-runner-parent-4','cuda-archive-acquire-regression-4','cuda-archive-isolation-regression-4']){\n const receipt=await load(base+'runs/'+label+'/receipt.json'),manifest=await readFile(base+'runs/'+label+'/sources.json');\n assert(receipt.status==='PASS'&&receipt.sourceChanged===false&&hash(manifest)===receipt.sourceManifestSha256,'SOURCE_GATE_HISTORY');\n for(const item of JSON.parse(manifest))assert(hash(await readFile(item.path===base+'cuda-llvm-request.json'?planRoot+'authenticated-request-retained-after-plan.json':item.path))===item.sha256,'SOURCE_GATE_INPUT_CHANGED:'+item.path);\n for(const stream of [receipt.stdout,receipt.stderr]){const bytes=await readFile(stream.path);assert(bytes.length===stream.bytes&&hash(bytes)===stream.sha256,'SOURCE_GATE_STREAM_CHANGED');}\n}\nconst failed=await load(planRoot+'receipt.json');assert(failed.status==='FAIL'&&failed.exitCode===1&&failed.pinnedReviewSha256===hash(rawReview)&&failed.pinnedRequestSha256===hash(retained)&&failed.scope==='READ_ONLY_DEVELOPMENT_PLAN_NOT_NATIVE_AUDIT_ATTEMPT','FAILED_PLAN_CLASSIFICATION');\nfor(const stream of failed.streams){const bytes=await readFile(stream.path);assert(bytes.length===stream.bytes&&hash(bytes)===stream.sha256,'FAILED_PLAN_STREAM_CHANGED');}\nassert((await readFile(planRoot+'command.stderr','utf8')).includes('UNTRUSTED_FILE_ANCESTOR'),'GUARD_FAILURE_EVIDENCE');\nassert(failed.nativeExecutableInvocations===0&&failed.decompressionPerformed===false&&failed.llvmCodeExecuted===false&&classification.plannerBunCommandRan===true&&classification.bwrapLaunched===false&&classification.xzLaunched===false&&classification.miseInvoked===false,'NO_NATIVE_AUDIT_LAUNCH');\nconst metadata=await load(planRoot+'ancestor-metadata.json'),ancestor=metadata.files.find(file=>file.path==='/usr/local/bin');\nassert(metadata.currentUid===1000&&ancestor.uid===1001&&ancestor.mode===0o40755&&ancestor.physicalPath==='/usr/local/bin'&&ancestor.directory&&!ancestor.symlink,'EXACT_REJECTED_ANCESTOR');\nconst packet=await load(planRoot+'source-snapshot.json');assert(packet.files.length===23,'COMPLETE_ARCHIVE_SOURCE_PACKET');\nfor(const item of packet.files){const bytes=await readFile(item.snapshot);assert(bytes.length===item.bytes&&hash(bytes)===item.sha256&&item.sha256===review.files[item.path],'SOURCE_PACKET_CHANGED');}\nfor(const path of [base+'runs/cuda-archive-audit-1',base+'scratch/cuda-archive-audit-1']){try{await lstat(path);throw Error('NATIVE_AUDIT_OUTPUT_UNEXPECTED');}catch(error){if(error.code!=='ENOENT')throw error;}}\nconsole.log(JSON.stringify({status:'PASS',scope:'HALT_RECORD_AND_IMMUTABLE_SOURCE_EVIDENCE_ONLY',historicalArchiveSource:{tests:159,assertions:713,types:'PASS'},historicalRegressions:{runner:[15,216],acquisition:[28,522],isolation:[16,276]},sourcePacketFiles:23,retainedRequestTiming:'POST_PLAN_RETENTION_MATCHED_PRE_EXECUTION_PIN_NOT_ORIGINAL_CAPTURE',failedReadOnlyPlanPreserved:true,ancestorGuardRejectedAcceptedPolicy:true,authorityGranted:false,renewalRequired:true,nativeAuditLaunched:false,ownershipOrTrustChanged:false,extractionPerformed:false,llvmCodeExecuted:false,trainingReady:false},null,2));\n"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 772,
+  "stderrBytes": 0,
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/cuda-llvm-request.json",
+      "sha256": "51d56812426992f2ad9e85980a35630fe620220a5fb562d7af20b009e1c3eb82"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/closure.json",
+      "sha256": "77f7a1ec86ec701c3b2150226d79d86b6caef80e31593a418cfbf371ea8d3def"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-archive-plan-1-classification.json",
+      "sha256": "615d5b9c18667ac7b47a2da181e547ab2d0f16c17ce64efbf7d266711ba40556"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-archive-reviewed.json",
+      "sha256": "e5d24c1d29be99e5989d0eddde26b94077b786e770b7338815a7ecd5d3cd453a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-archive-review-provenance.json",
+      "sha256": "acadec039374719b520e2700654f8c144b66d26a23f4382dc55fd2a27d99d1f0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/cuda-archive-plan-1/ancestor-metadata.json",
+      "sha256": "67565f9c6972eb4cd4d87679991444da41530a01467c4fe0c8bbe2725df71cf3"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/cuda-archive-plan-1/receipt.json",
+      "sha256": "d572df37b9080bf06cc6bbddf9720aad36f1cde8c955de4ff03abd48ed4f5661"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/cuda-archive-plan-1/authenticated-request-retained-after-plan.json",
+      "sha256": "27ee06aafbbc64eb936f5ea39d03ba0bdecd0b9109e8c3472ee4999d917b6321"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/cuda-archive-plan-1/source-snapshot.json",
+      "sha256": "489cc81f0af1a22264f52c0d81f99ecccbe9cff695e6abde0bc241b9a129a7a7"
+    }
+  ],
+  "sourceChanged": false,
+  "streams": [
+    {
+      "stream": "stdout",
+      "path": "_work/gpu-owner-recovery/runs/cuda-archive-halt-records-1/command.stdout",
+      "bytes": 772,
+      "sha256": "4d2e4f85713d58e07599423eb91cab928ce953d9ca58997644f95568210efd8b"
+    },
+    {
+      "stream": "stderr",
+      "path": "_work/gpu-owner-recovery/runs/cuda-archive-halt-records-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scope": "RECORD_VALIDATION_ONLY_NOT_OPERATIONAL_RETRY",
+  "nativeAuditLaunched": false,
+  "authorityGranted": false,
+  "trainingReady": false
+}

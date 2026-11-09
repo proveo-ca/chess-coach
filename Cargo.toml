@@ -1,6 +1,6 @@
 # SPEC: _spec/architecture.puml
 [workspace]
-members = ["crates/learning", "crates/policy-io", "crates/host-facts"]
+members = ["crates/learning", "crates/policy-io", "crates/host-facts", "crates/gpu-owner"]
 resolver = "3"
 
 [workspace.package]

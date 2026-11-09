@@ -1,0 +1,2 @@
+_work/gpu-owner-recovery/audit-lock.ts(8,74): error TS2339: Property 'package' does not exist on type 'object'.
+_work/gpu-owner-recovery/audit-lock.ts(10,72): error TS2339: Property 'package' does not exist on type 'object'.

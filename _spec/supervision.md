@@ -1,6 +1,31 @@
 # C8: outside supervision and read-only cgroup observation
 
-Status: C8 SELECTED / SOURCE AND SYNTHETIC TESTS / NO HOST EXECUTION AUTHORITY.
+Status: C8 SELECTED / `SOURCE_RECONSTRUCTED` / `VERIFIED_TEST_SUBSETS` / `SOURCE_REVIEWS_ACCEPTED_SCOPED` / `trainingReady:false` / NO HOST EXECUTION AUTHORITY.
+
+## CURRENT separate GPU-owner source contract
+
+[recovery.md](recovery.md) labels earlier source/test reports historical after loss of external work and logs.
+The existing Python F9 supervisor and native-only job remain unchanged.
+[gpu-owner.md](gpu-owner.md) and [gpu-owner.puml](gpu-owner.puml) define corrected connected Rust-owner/Bun-job source; 72 cases, Clippy/rustfmt and 25/194 reference guards retain accepted current Rust/TypeScript/backend/adversarial source-only review scopes.
+[gpu-cooperative-policy.md](gpu-cooperative-policy.md) supplies the pure VRAM lease gate, not a reservation or uninterrupted-host guarantee.
+The new owner captures BOOTTIME before validation/hashing/adapters/evidence and gives absolute timer expiry priority over I/O readiness.
+It must inspect ownership and clean up exactly owned resources even after evidence failure, with best-effort evidence restricted to explicit internal cleanup mode.
+Wrong labels or image always prohibit removal.
+Keep attach alive through ownership inspection/C8 binding, then stop its helper without waiting for EOF and remove the exact owned ID while draining concurrently.
+Finish helper group stop/reap and exact cgroup-path disappearance under stable roots/parent before the original final boundary.
+Startup requires completed bounded start delivery and actual stdin closure; queued intent cannot release the cold deadline.
+Actual controls/paths/provider/image remain unset; both ordinary GPU mains remain disabled.
+The 15 lifecycle cases and 19 observation cases cover deferred-start cleanup, evidence/state separation, directory/ancestor/leaf replacement, and honest namespace removal; they qualify no real proc permissions, host controls, GPU, runtime, or publication.
+Selected development setup is `TOOLCHAIN_OWNER_DEFAULT_CPU_RESTORED` / `LOCKED_INPUTS_RESTORED_AND_FRESHLY_VERIFIED`, limited to repository-local Rust `1.95.0` minimal/rustfmt/Clippy, restored Zig `0.15.2` CPU linking, and selected locked owner/default-CPU inputs; Zig changes no CUDA compiler route.
+Fresh bounded owner/policy/bridge/CPU/reference/harness/typecheck and earlier diagram render receipts are recorded in [verification.md](verification.md#fresh-repository-owned-recovery-evidence); no slice supplies operational owner qualification.
+Cleanup pumping only drains/reaps: it neither writes/closes deferred stdin nor advances `write_complete`, excludes stdin `POLLOUT`, and reports newly encountered cleanup faults without replacing the first failure.
+Natural EOF must precede any EOF-producing termination; quota-exhausted final draining defers kill/reap and forced EOF never becomes natural success.
+Observation retains every intermediate ancestor and the leaf; final-component absence requires stable custody plus held-leaf `nlink()==0`, not merely a renamed pathname or empty cgroup.
+This proves namespace unlinking while the held FD keeps the inode alive; actual cgroupfs link-count behavior and atomic Docker bind custody remain unqualified.
+Fresh closure reference guards pass 25/194 and affected test types, while closure runner/audit tests pass 12/72; current TypeScript security/final adversarial packet-5 source verdicts are accepted, and prior 16/108 remains `PRE_OBJECT_GRAPH_AUTHENTICATION`.
+The reference validator compares exact original-tree/stage-0 index entries, never worktree/cached diffs or source clean/textconv pipelines; prior 13/88 evidence is `PRE_FILTER_EXECUTION_FIX`.
+The [implemented raw-object guard](reference/object-graph-authentication.puml) authenticates commit/tree ancestry, bounded complete path inventory, and missing-object refusal without lazy fetching; owned corruption/canary, parser/cache and named graph-bound cases pass without a full C14/native qualification claim.
+The corrected frozen-file audit includes required actual `policy-initialize.rs` plus listed F9/collector/native-job/state boundaries; no frozen-source contract changed, and `source-accepted-diagrams-2` passes all three final acceptance-label diagrams.
 
 Executor selected `Read-only cgroup observer` in the C8 decision.
 Keep Docker as the supported manager under C1.

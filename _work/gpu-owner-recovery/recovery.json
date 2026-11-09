@@ -1,0 +1,37 @@
+{
+  "version": "chess-coach.source-recovery.v1",
+  "baselineCommit": "c04a8da9468f7d443bd27d73a08c0bd7ee0e9d20",
+  "scope": "RECONSTRUCT_ACCEPTED_SOURCE_AND_VERIFY_WITH_CPU_SYNTHETIC_FIXTURES",
+  "workingRoot": "_work/gpu-owner-recovery",
+  "evidencePolicy": "TRACK_BOUNDED_RUNNERS_MANIFESTS_RECEIPTS_STDOUT_STDERR",
+  "temporaryFixtureRoot": "_work/gpu-owner-recovery/scratch",
+  "historicalVerification": "NOT_CURRENT_EVIDENCE",
+  "historicalFinalAdversarialReview": "FAILED_401_NO_ACCEPTANCE",
+  "reconstructionStatus": "SOURCE_RECONSTRUCTED",
+  "verificationStatus": "VERIFIED_TEST_SUBSETS",
+  "reviewStatus": "REVIEWED_SOURCE_ACCEPTED_OPERATIONAL_QUALIFICATION_OPEN",
+  "currentAdversarialReview": "_work/gpu-owner-recovery/adversarial-final-review.json",
+  "libdevice": {
+    "status": "MISSING_BYTES",
+    "priorAcquisitionGrant": "CONSUMED",
+    "reacquisitionAuthorized": false,
+    "historicalBitcodeByteLength": 465412,
+    "historicalBitcodeSha256": "93d6b5b9c8b284a2273b2b2578ac42c59b21c9091e1d35bb63a9b7f9072079dd"
+  },
+  "normalOwnerDispatch": "SOURCE_ONLY_DISABLED",
+  "normalGpuJobDispatch": "SOURCE_ONLY_DISABLED",
+  "actualHostOrGpuExecutionAuthorized": false,
+  "productionCaptureOrImageOperationAuthorized": false,
+  "initialRecoveryNewAcquisitionAuthorized": false,
+  "developmentInputRestoration": {
+    "authorization": "EXECUTOR_APPROVED_SCOPED_GRANT",
+    "grant": "_work/gpu-owner-recovery/provision-approval.json",
+    "toolchainStatus": "RUST_1_95_0_RUSTFMT_CLIPPY_AND_ZIG_0_15_2_PROVISIONED_REPOSITORY_LOCAL",
+    "defaultCpuInputStatus": "LOCKED_INPUTS_RESTORED_AND_FRESHLY_VERIFIED",
+    "ownerInputVerificationStatus": "LOCKED_INPUTS_RESTORED_AND_FRESHLY_VERIFIED",
+    "cudaLlvmNvidiaAcquisitionAuthorized": false
+  },
+  "publicationAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

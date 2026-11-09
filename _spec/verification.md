@@ -1,4 +1,265 @@
-# Verified source pipeline and open runtime gates
+# Source verification, scoped review acceptance, and retained history
+
+## CURRENT — verified subsets and scoped source acceptance, operations unqualified
+
+Status: `SOURCE_RECONSTRUCTED` / `VERIFIED_TEST_SUBSETS` / `SOURCE_REVIEWS_ACCEPTED_SCOPED` / OPERATIONAL QUALIFICATION OPEN / `trainingReady:false`.
+
+[recovery.md](recovery.md) separates recovered goals from lost evidence.
+[gpu-owner.md](gpu-owner.md) and [gpu-cooperative-policy.md](gpu-cooperative-policy.md) describe reconstructed source, verified subsets, and scoped source-review acceptance, not operational acceptance.
+The inspected recovery baseline lacked GPU-owner/cooperative-policy source; reconstructed source and repository-owned receipts now exist.
+The corrected owner retains 72 cases, locked/offline Clippy `-D warnings`, and direct rustfmt checks for its recorded owner manifest; the authenticated reference guard retains 25/194, and current Rust/TypeScript/backend/adversarial source reviews are accepted within their explicit scopes.
+This documentation pass runs no tests, builds, diagram render, or source reviews.
+The fresh-evidence subsection below records only the bounded slices directly supported by the new receipts.
+All older result counts, temporary receipt paths, retained-log statements, and review acceptances in the historical baseline sections describe historical reports only.
+Those older external receipts are unavailable after the reported loss; do not count their assertions as fresh verification or promise the bytes still exist.
+The recalled 165 Rust owner / 39 CPU / 585 Bun tests across 72 files with 30,444 assertions are also historical-only.
+The final recalled adversarial `401 FAIL` was not accepted; historical security corrections do not override it.
+Fresh verification must bind reconstructed source to new bounded repository-owned receipts and new source reviews.
+Keep scripts, fixtures, manifests, and bounded `.stdout`/`.stderr` records inside the repository and tracked; do not put caches or compiler outputs in Git.
+No historical acquisition/publication grant is renewed.
+Selected development restoration is `TOOLCHAIN_OWNER_DEFAULT_CPU_RESTORED` / `LOCKED_INPUTS_RESTORED_AND_FRESHLY_VERIFIED`; all actual host/GPU/image/production/capture/training/publication gates remain denied.
+
+## Fresh repository-owned recovery evidence
+
+All run paths below are relative to `_work/gpu-owner-recovery/runs/`.
+These are recorded snapshot results, not a final unified run or a new review verdict.
+
+### Preferred corrected-source receipts
+
+Every receipt below reports `PASS`, exit 0, and `sourceChanged:false`; each retained manifest/stream digest binds that selected snapshot.
+
+| Run | Fresh observation | Proof limit |
+|---|---|---|
+| `corrected-source-owner-final-2` | 72 top-level Rust cases: 3 JSON units, 13 adapters, 2 CLI, 1 conformance, 8 contracts, 15 lifecycle, 19 observation, 11 wire | Exactly 33 traces and 61 contradiction mutations remain nested inside single cases; no actual Docker/GPU/native policy process |
+| `corrected-source-clippy-final-2`, `corrected-source-format-final-2` | Owner all-targets locked/offline Clippy `-D warnings` and direct Rust 1.95 rustfmt `--check` pass | Same manifest as the 72-case suite, not source-review acceptance |
+| `corrected-source-cpu-final-1` | 39 default-CPU tests; all 4,670 finite-difference coordinates; default Flex F64 unit passes | Fresh 45-input selected CPU manifest; no CUDA or complete workspace qualification |
+| `custody-policy-final-1` | 352 tests / 1,262 assertions | Pure policy and 33 semantic traces; native JS Proxy tests remain separate |
+| `custody-bridge-final-1` | 27 tests / 388 assertions | Includes exact `-0` descriptor commitments and explicit Rust/Bun integer-spelling differences |
+| `authenticated-git-objects-1` | 25 guards / 194 assertions, zero failures; one C14 test filtered out | Raw commit/tree authentication, no-fetch local-canary, parser/cache/graph-bound cases, and retained guards; no full C14/native proof or review acceptance |
+| `exact-selection-runner-final-1` | 12 tests / 72 assertions | Exact file selection, manifest membership, supervisor custody, and the actual replacement-ref audit counterfactual |
+| `custody-source-types-final-1`, `custody-test-types-final-1` | Source and test TypeScript checks pass | Recorded source snapshots, not a review verdict |
+| `authenticated-git-objects-types-1` | Affected test TypeScript check passes | Same recorded source-manifest digest as the 25-guard run; no source change during verification |
+| `exact-selection-tool-types-final-1` | Tooling TypeScript check passes | Same manifest as the 12-test runner/audit suite |
+| `security-rust-baseline-packet-3`, `security-typescript-baseline-packet-5` | Bounded original-baseline diff packets and source/stream manifests retained | Accepted source-review inputs; TypeScript packet 5 contains the full 18-file baseline diff, while acceptance lives in the separate review records |
+
+The owner suite includes 19 observation cases, not the intermediate 17: direct/nested leaf renames, ancestor replacement/missing/symlink, repeated-bind FD custody, and honest removal are covered.
+The held-leaf unlink predicate proves namespace removal under stable custody, not inode destruction or qualified cgroupfs link-count behavior.
+Rust exact numeric `-0` decoding leaves original hashes unchanged; fractional/exponent integer tokens still reject in Rust while existing Bun `z.int` accepts mathematical integral spellings.
+These selected passes establish neither global lexical JSON parity nor full legacy Bun, C14/native, actual storage/runtime/GPU/driver coexistence, Gate0/F9/R4, or training qualification.
+
+### Current scoped source review acceptance
+
+`review-corrections.json` and `recovery.json` now record `REVIEWED_SOURCE_ACCEPTED_OPERATIONAL_QUALIFICATION_OPEN`; `SOURCE_REVIEWS_ACCEPTED_SCOPED` is the diagram/status shorthand for that source-only result.
+The ledger retains the original findings and corrections, sets `allListedSourceFindingsCleared:true`, and marks filter execution, object ancestry, and lazy-object-fetch `CLEARED_CURRENT_PACKET_5`.
+`_work/gpu-owner-recovery/security-rust-review.json` persists session `ses_e462ed1aeffefugdBMBe16ejE1`, `READY_TO_MERGE_RUST_SOURCE_SECURITY_GATE_ONLY`, zero remaining in-scope findings, and the current 72-case/Clippy/fmt `corrected-source-*-final-2` evidence.
+The verdict clears all three original Rust security findings and reviewed Rust adversarial/numeric corrections under C1, not the final adversarial gate.
+It excludes actual GPU/runtime/filesystems, proc permissions, cgroupfs link-count behavior, atomic Docker binds, and hostile aliases; the read-only reviewer executed no commands, and this pass executes no review.
+After the earlier 10-of-11 checkpoint, the parent reported adversarial acceptance of the no-filter 16/108 snapshot; the later object-ancestry finding reopened that gate and is now cleared by current packet-5 reviews.
+
+All review-record paths below are beneath `_work/gpu-owner-recovery/`; each reviewer was read-only and executed no commands.
+
+| Persisted record | Current scoped verdict | Boundary |
+|---|---|---|
+| `security-rust-review.json` | `READY_TO_MERGE_RUST_SOURCE_SECURITY_GATE_ONLY`, zero remaining in-scope findings | Corrected isolated Rust owner under C1; 72-case/Clippy/fmt evidence and Rust packet 3 |
+| `security-typescript-authenticated-review.json` | `READY_TO_MERGE_STABLE_TYPESCRIPT_SOURCE_SECURITY_GATE_PACKET_5`, zero remaining concrete in-scope findings | Full 18-file TypeScript packet-5 diff, including authenticated reference and GPU boundaries |
+| `backend-integer-review.json` | `READY_TO_PROCEED_SCOPED_RUST_INTEGER_CONTRACT_ONLY`, zero accepted-contract counterexamples | Exact numeric `-0`, ranges/presence/raw schedule and byte commitments; not global lexical JSON parity |
+| `adversarial-final-review.json` | `READY_TO_MERGE_REVIEWED_SOURCE_ONLY_PACKET_5`, zero remaining in-scope findings | Session `ses_e4633f9c4ffem033a7XZ2viOY1`; Rust/TypeScript/CUDA-leaf/recovery-tooling source-only scope, object ancestry/lazy fetching cleared and prior clearances stand |
+
+These current verdicts accept reviewed source only, not full legacy Bun/C14, actual GPU F64/C12, filesystem/fsync/storage, driver/coexistence, proc/cgroupfs qualification, stronger SHA-1 collision resistance, atomic snapshots/binds, operations, training, publication, or Git commit/push authority.
+The authenticated guard and affected-typecheck receipts report `PASS`, exit 0, and `sourceChanged:false`, share source-manifest digest `f359081260b2dff474417f658e72f720f541a1f3dcf8e89ed364fa7cd1220dd7`, and retain their stream digests.
+Packet 5 separately retains `command.stdout`, `sources.json`, and its passing source-bound receipt; its 18 diff headers are not its source-manifest input count or an acceptance.
+`security-typescript-review.json.currentApplicability` marks the old READY verdict `HISTORICAL_SCOPE_PRE_PHYSICAL_REFERENCE_PIN_AND_INTEGER_REGRESSIONS`.
+The current contracts and rationale are in [gpu-owner.md](gpu-owner.md) and [recovery.md](recovery.md#physical-reference-baseline-audit-and-manifest-custody).
+`source-accepted-diagrams-2` verifies all three final source-acceptance diagrams offline; prior SVG receipts still certify their own earlier bytes only.
+
+### Closing validation — selected reruns and final audits
+
+`_work/gpu-owner-recovery/closure.json` is the source-only machine index for current review records, selected closing runs, proof limits, frozen-boundary audit, final diagram render, and staged hygiene checks.
+All twelve closing receipts below report PASS, exit 0, `sourceChanged:false`, `actualHostExecuted:false`, `cudaGpuCodeExecuted:false`, and `trainingReady:false`.
+Their command streams retain the actual counts below; these are new closure generations, not rewritten older receipts or a full legacy-suite result.
+
+| Closing run | Fresh recorded result |
+|---|---|
+| `closure-owner-1` | 72 top-level Rust cases: 3 JSON + 13 adapters + 2 CLI + 1 conformance + 8 contracts + 15 lifecycle + 19 observation + 11 wire; nested 33 traces/61 mutations add no cases |
+| `closure-cpu-1` | 39 default-CPU cases, both 2,335-coordinate sweeps / all 4,670 coordinates, and the default Flex F64 selector unit |
+| `closure-policy-1` | 352 tests / 1,262 assertions |
+| `closure-bridge-1` | 27 tests / 388 assertions |
+| `closure-reference-1` | 25 tests / 194 assertions, zero failures, one full C14 test filtered out |
+| `closure-runner-1` | 12 tests / 72 assertions |
+| `closure-source-types-1`, `closure-test-types-1`, `closure-tool-types-1` | Source, test, and recovery-tool TypeScript checks pass |
+| `closure-owner-clippy-1`, `closure-cpu-clippy-1` | Owner and selected default-CPU all-targets Clippy pass locked/offline with `-D warnings` |
+| `closure-owner-format-1` | Direct owner Rust 1.95 rustfmt `--check` passes without rewriting source |
+
+#### Completed integrity checks and preserved first failure
+
+`runs/closure-verification-integrity-2/{receipt.json,command.stdout}` records PASS for all twelve closure receipts, manifest SHA-256/counts, raw-stream SHA-256/lengths, and observed test/assertion totals.
+It compares the ENTIRE selected current manifest for each closing run: 131 owner/static inputs, 45 CPU inputs, 197 TypeScript/policy/bridge/reference inputs, or 16 runner/tool inputs as recorded for that run; none of those closing comparisons skips entries.
+It also compares all 198 current inputs of TypeScript packet 5 and validates that packet's manifest and raw streams.
+
+Preserve `closure-verification-integrity-1` as FAIL, exit 1, with `CURRENT_SOURCE_MISMATCH:security-rust-baseline-packet-3:packages/runtime/tests/reference-bundles.test.ts` in stderr.
+That intentionally strict first audit attempted current-byte comparison of the entire historical Rust packet's 225-input inventory, which also contains a superseded TypeScript guard outside the accepted Rust review scope.
+The second audit authenticates that historical packet's retained manifest/streams but compares current bytes only for 27 total inputs in accepted Rust scope: recorded `crates/gpu-owner/**` files and root `Cargo.toml`/`Cargo.lock`.
+All 27 match.
+This is an explicit review-scope provenance correction, not a claim that all 225 historical inputs are current or a waiver for changed Rust source.
+Both audit receipts retain their exact inline-script argv; no new source tool or script file is implied, and the first failure remains unchanged.
+
+`_work/gpu-owner-recovery/closure-lock-and-frozen-boundaries.json` completes the current exact workspace/lock audit: owner-only root membership, approved owner/FFT/four-list delta, unchanged existing versions/checksums and other package blocks, and enumerated frozen-source identities including required `policy-initialize.rs`, F9, metadata, native job, and existing validators.
+This audit proves its listed boundaries, not whole-repository or operational qualification.
+
+Every receipt still owns its selected snapshot, source-manifest digest, and stream hashes, not one global all-files hash shared by earlier and later runs.
+The current closing manifests account for their selected tooling generation, including the third-diagram tooling addition where selected; differing older manifests remain distinct evidence generations.
+The integrity checks claim no atomic filesystem snapshot, and scoped source acceptance does not turn synthetic tests into actual GPU/runtime qualification.
+Reference verification selected only `reference source guard`, so the full C14 bundle test stayed filtered and no actual native/runtime proof ran.
+Full legacy Bun remains unrun because hardcoded external temporary roots, missing reference/runtime inputs, and native prerequisites prevent a valid complete-suite result; closing subsets do not erase those limits.
+
+| Final or prior closing item | Current evidence status |
+|---|---|
+| `closing-three-diagram-render-1` | PASS, exit 0, three valid SVGs, offline `SANDBOX`, `sourceChanged:false`; hashes cover the prior pending-label diagram bytes only |
+| `source-accepted-diagrams-1` | PASS for the first acceptance-label generation; its sources still contained render-pending annotations and are superseded |
+| `source-accepted-diagrams-2` | PASS, exit 0, three valid SVGs, offline `SANDBOX`, `sourceChanged:false`; source/output hashes bind the final diagrams without self-referential pending annotations |
+| Scoped staged whitespace / tracked namespace check | `closure-git-hygiene-1` PASS: scoped staged check exits 0, generated namespaces are untracked, and all 284 raw streams staged before this receipt was added match physical bytes; unfiltered check retains expected exit 2 on raw captures only |
+
+### Raw evidence and scoped whitespace checking
+
+Keep captured stdout/stderr bytes unchanged, including intentional trailing whitespace bound by receipt hashes; never trim or normalize them to satisfy a text check.
+The scoped `git diff --cached --check` excludes only `_work/gpu-owner-recovery/runs/**/*.stdout` and `_work/gpu-owner-recovery/runs/**/*.stderr`; `closure.json` indexes the final captured result after documentation/restaging.
+Source, `_spec/`, JSON, and every other staged path remain under strict whitespace checking; no new Git attributes, clean filters, or broad exclusions implement this exception.
+This is a scoped staged-repository whitespace check, not a reference-validator Git diff; the validator's no-worktree/cached-diff/no-clean/textconv contract remains unchanged.
+The unfiltered whitespace check is a known FAIL on immutable raw captures; preserve that result rather than trimming streams or claiming an unfiltered pass.
+The scoped whitespace result proves only its stated staged scope; raw-stream integrity instead comes from the separate completed hash/length audit above.
+The hygiene receipt covers the index before adding its own records; its 284-stream comparison is not a self-inclusive or atomic final-index proof.
+
+### Earlier checkpoints — superseded source generations
+
+The following table and checkpoint narratives preserve prior observations; they are not current corrected-source verification or current review acceptance.
+
+| Run / streams | Observed result | Limit |
+|---|---|---|
+| `no-filter-execution-reference-1`, `no-filter-execution-types-1` | Earlier 16 guards / 108 assertions and test typecheck pass, `sourceChanged:false` | `PRE_OBJECT_GRAPH_AUTHENTICATION`; parent-reported adversarial acceptance covers only that earlier snapshot |
+| `security-typescript-baseline-packet-4` | Earlier bounded baseline packet passes, `sourceChanged:false` | Before raw object-graph authentication; packet 5 is the current final-review input |
+| `exact-selection-reference-final-1` | 13 guards / 88 assertions; `sourceChanged:false` | `PRE_FILTER_EXECUTION_FIX`; distinct from the later pre-object-authentication 16/108 snapshot |
+| `security-typescript-baseline-packet-3` | Bounded source packet retained, `sourceChanged:false` | Before filter-execution correction; later packet 4 also predates object-graph authentication |
+| `owner-connected-fixture-correction-1/command.stdout` | All-targets locked/offline owner suite: exactly 38 top-level cases, zero failures, including all 12 connected lifecycle cases; `sourceChanged:false` | CPU/synthetic manager/query/proc/cgroup fixtures only; nested 33 traces and 61 wire mutations are not extra test cases |
+| `owner-integrated-clippy-1` | Owner all-targets Clippy passes locked/offline with `-D warnings`; `sourceChanged:false` | Selected source/static snapshot, not Rust security or adversarial acceptance |
+| `owner-integrated-format-1` | Direct Rust 1.95 rustfmt, edition 2024, `--check` passes; `sourceChanged:false` | Closed check-only runner mode; no installation or source rewrite |
+| `rust-core-check-2`, `owner-closure-isolation-1/command.stdout` | All-targets owner check and dependency tree pass locked/offline, both `sourceChanged:false`; no Burn/application/host-facts/CUDA in the selected owner tree | Verifies selected restored owner inputs and isolation, not a production/runtime closure |
+| `security-rust-baseline-packet-1` | Bounded baseline Rust/root Cargo/support packet passes; source/stream digests retained, `sourceChanged:false` | Preparation for review, not an accepted review; 221 manifest inputs are not a test-case count |
+| `tooling-frozen-boundary-audit-types-1` | Tooling typecheck passes, `sourceChanged:false` | No inferred fix for the initializer audit-selector gap below |
+| `mise-isolation-inspection`, `mise-rust-1950-install`, `mise-zig-cpu-linker`, `rust-1950-identity`, `provisioned-tools-identity` | Scoped minimal-config trust; Rust 1.95.0 minimal/rustfmt/Clippy and Zig 0.15.2 installed; actual compiler identity recorded | Root mise remains untrusted/unchanged; Zig is the restored CPU linker, not a changed CUDA compiler route |
+| `cpu-locked-inputs-restored` | Selected locked default-CPU inputs restored; no-run preparation exits 0 with unchanged lock | Owner inputs are separately offline verified by the owner receipts above |
+| `cpu-source-manifest-regression-1/command.stdout` | Preferred 39-test CPU pass, including two 2,335-coordinate finite-difference sweeps and default Flex F64 selector unit; `sourceChanged:false` | 43 selected manifest inputs, before/end source checks, stdout/stderr digests; predates the last two runner guards, no final everything-hash or owner/CUDA/full-workspace claim |
+| `cpu-offline-clippy-1` | Selected learning + policy-io all-targets Clippy passes locked/offline, `-D warnings`, `sourceChanged:false` | Same recorded 43-input manifest generation as the CPU regression, not owner/full-workspace or later-runner acceptance |
+| `cpu-f64-selector-regression/command.stdout` | Earlier 39-test CPU pass retained | Predates source-manifest upgrade; not a complete source-hash snapshot |
+| `reference-replacement-ref-regression-1/command.stderr` | Latest 5 reference guards / 34 assertions; `sourceChanged:false` | Adds Git replacement-ref substitution rejection without alternate-code execution; one bundle test is filtered out |
+| `tests-reference-replacement-fix-1` | Test TypeScript check passes; `sourceChanged:false` | Same recorded source-manifest digest as the 5-guard run; not final unified verification |
+| `reference-canonical-root-corrected/command.stderr` | Earlier 4 tests / 24 assertions; `sourceChanged:false`; includes `assume-unchanged` and `skip-worktree` negatives | `PRE_REPLACEMENT_REF_FIX`; preserve this generation and the failed first canonical-root expectation in `reference-integrity-recovery`; one bundle test was filtered out |
+| `fidelity-policy-1/command.stderr` | 352 tests / 2 files / 1,262 assertions; exactly 33 semantic traces; `sourceChanged:false` | Separate Rust owner conformance now passes the same traces within one case; native Proxy tests stay outside JSON traces; no original-byte identity claim |
+| `fidelity-policy-source-1`, `fidelity-policy-tests-1` | Both TypeScript checks pass, both `sourceChanged:false` | Correction snapshot, not final unified verification |
+| `fidelity-bridge-1/command.stderr` | 24 tests / 3 files / 359 assertions; `sourceChanged:false` | Existing receiver predicates and real SQLite/fixed factory/MatchWorker with fake Bun learners; no actual native learner/GPU or Rust-owner run |
+| `fidelity-source-1`, `fidelity-tests-1` | Both TypeScript checks pass, both `sourceChanged:false` | Bridge correction snapshot, not final unified verification |
+| `runner-supervisor-loss-fix-1/command.stderr` | Latest harness: 9 tests / 1 file / 28 assertions; `sourceChanged:false` | Covers all three runner HIGH regressions; DevOps permits selected offline checks only |
+| `tooling-supervisor-loss-fix-1` | Latest tooling TypeScript check passes, `sourceChanged:false` | Same recorded source-manifest digest as the 9-test run; not final source/review closure |
+| `tools-review-packet-types-1` | Later review-packet tooling TypeScript check passes, `sourceChanged:false` | 14 selected tooling manifest inputs; not a new runner-test pass |
+| `security-typescript-baseline-packet-1` | Bounded 18-file baseline diff packet passes, `sourceChanged:false`; tracked and untracked changes included | 195 manifest inputs are not 195 reviewed diff files; see scoped security verdict below |
+| `runner-group-custody-fix-1`, `tooling-group-custody-fix-1` | Earlier 7-test/20-assertion harness and tooling check pass | Before the last two supervisor guards; not verification of the final 9-test snapshot |
+| `runner-provisioning-adapters`, `runner-integrated-recheck-1`, `recovery-tool-manifests-types` | Earlier 6-test/17-assertion harness or tooling typecheck passes retained | `PRE_RUNNER_CUSTODY_FIX`; they do not verify the new command supervisor |
+| `offline-reconciled-diagrams-1` | Both prior reconciled diagrams render to valid SVG; offline `SANDBOX`, no includes, `sourceChanged:false`, source/output hashes retained | Earlier diagram bytes; parent must rerender both diagrams changed in this connected-source update |
+| `offline-recovery-diagrams-first` | Earlier valid SVGs for both recovery diagrams; source/output hashes retained | Earlier diagram generation only; not substituted for the later reconciled render |
+
+`recovered-lock-delta.json` records exactly the local owner, `cubek-fft 0.3.1` with SHA-256 `48451902f1d21d3eb88cadc17a8a7aeb3b582f17484a68e650f44efe74688b73`, and the four dependency-list additions detailed in [recovery.md](recovery.md#reconstructed-dependency-and-acquisition-history).
+All existing versions/checksums and all other package blocks stay unchanged in that audit.
+Earlier 276-test policy and 21-test/299-assertion bridge results are `PRE_FIDELITY_CORRECTION`, not verification of the corrected contract.
+Full legacy Bun has not rerun because of hardcoded external temporary roots, missing reference inputs, and native prerequisites; do not report a fresh full-suite pass.
+The six pre-fix integrated receipts `policy-integrated-recheck-1`, `bridge-integrated-recheck-1`, `source-integrated-recheck-1`, `tests-integrated-recheck-1`, `reference-integrated-recheck-1`, and `runner-integrated-recheck-1` also record passes with `sourceChanged:false`.
+Their observed counts are policy 352/1,262, bridge 24/359, reference 4/24, and runner 6/17; the source/test typechecks emit no errors.
+They are actual pre-fix code-check observations, not final post-custody verification; parent will rerun the integrated checks.
+DevOps found three HIGH runner custody failures; [recovery.md](recovery.md#high-runner-custody-corrections--selected-offline-checks-only) records the live-anchor/kill-before-reap, unexpected-loss-after-zero-exit, and IPC-disconnect cleanup corrections.
+`_work/gpu-owner-recovery/devops-runner-review.json` records read-only `READY_TO_CONTINUE_SELECTED_OFFLINE_CHECKS_ONLY` with zero remaining blocking findings in the reviewed runner/provisioning scope; the reviewer executed no commands.
+It explicitly grants no adversarial/security/operational acceptance or readiness.
+At that checkpoint final integrated checks, reviews, diagram renders, and the initializer audit correction were pending; current scoped acceptance, closing receipts, final render, and corrected audits supersede that checkpoint without rewriting its history.
+The 4/24 integrated reference observation is `PRE_REPLACEMENT_REF_FIX`; the newer 5/34 result belongs to a separate source generation.
+The old TypeScript verdict below and parent-reported no-filter adversarial acceptance belong to earlier snapshots; the current accepted post-repair packet-5 records above supply distinct scoped source acceptance.
+The preferred CPU regression/Clippy receipts bind their recorded source generation, not the last two runner-guard edits; do not promote unchanged Rust sources into a final all-files hash claim.
+
+### Earlier connected Rust owner — PRE_SECURITY_AND_INTEGER_CORRECTION
+
+The public exports `RawLaunchRequest`, `Report`, `run_once`, and `run_once_with` connect the owner modules while ordinary main stays `SOURCE_ONLY_DISABLED`.
+`owner-connected-fixture-correction-1` records 10 adapter + 2 CLI + 1 conformance + 6 contract + 12 lifecycle + 7 wire cases = 38 top-level cases, all passing.
+This generation is `PRE_SECURITY_AND_INTEGER_CORRECTION`; `security-custody-integration-1` later passed 70 cases before the held-leaf link-count guard's final two rename cases (`PRE_LINK_COUNT_GUARD`).
+One conformance case consumes all 33 reconstructed shared traces; one wire case checks 61 contradiction mutations.
+Neither nested count adds top-level tests, and this suite does not recover the historical 165-test evidence.
+The 12 connected cases include real Rust -> fake Docker -> real Bun GPU-job loop -> SQLite/coordinator/fixed factory/MatchWorker/two fake Bun learners for one attempt; no actual GPU, Docker, or native policy/learning process runs.
+Post-SQLite trailing output/nonzero exit remain failed outcomes; storage failure still permits exactly owned cleanup but never removal after wrong image/label, premature partial-write startup fails, and an empty retained cgroup is not disappearance.
+The passing fixture correction only creates/removes synthetic `cgroup.threads` and collapses a fixture `if`; it does not relax C2/C8/C13 or any resource/observation contract.
+Retain `rust-core-test-1` with its six lifecycle failures and `rust-core-clippy-2` with its preserved-fixture `collapsible_if` failure as earlier failed generations.
+The owner check/test/static/tree receipts each record `sourceChanged:false` and unchanged root lock; their distinct manifest hashes bind their own generations, not one final all-files snapshot.
+`security-rust-baseline-packet-1/{command.stdout,sources.json,receipt.json}` includes c04 baseline tracked/untracked Rust, support, shared inputs, and root Cargo deltas.
+Those packet-1 requests are historical; the current Rust/TypeScript/backend/adversarial scoped source acceptance is recorded above.
+
+### Exact workspace/lock and frozen-source audit
+
+`_work/gpu-owner-recovery/integrated-lock-and-frozen-boundaries-1.json` records root workspace `OWNER_MEMBERSHIP_ONLY`, exactly the local owner/FFT/four-list lock delta, unchanged existing versions/checksums, and unchanged other package blocks.
+Its enumerated frozen sources match baseline bytes with retained hashes: tracked F9/Docker/metadata files under `tooling/runtime`, `crates/host-facts`, existing native `job.ts`, state/episode schemas, root `package.json`, and `bun.lock`.
+The bounded audit uses global `--no-replace-objects` and a private environment, not actual host/runtime observations.
+That earlier audit omitted the actual initializer through the wrong `policy-init.rs` selector; keep it as historically incomplete.
+`_work/gpu-owner-recovery/corrected-initializer-frozen-audit-1.json` now includes required `crates/policy-io/src/bin/policy-initialize.rs`, baseline byte equality, and SHA-256 `1024cb2f47bcb5cf494be6da0016ca583342346544a3eb20ca52bf19a001fdf2`.
+The corrected selector also requires initializer presence instead of silently accepting an unmatched path; the exact workspace/approved lock and other listed frozen files remain unchanged.
+The 12-test runner suite includes a private sparse-clone counterfactual: a checksum substitution plus baseline replacement ref makes the lax audit copy accept, while the current original-object audit rejects, without changing actual workspace refs.
+
+The verification runner's ordinary manifests now include executed `command-supervisor.ts` and pinned `tooling/reference-entrypoints.json`; mode-membership regression covers both.
+Current Bun selectors use exact `./` file paths; policy/bridge custody receipts retain actual pre-selector argv, while exact-selection reference/runner receipts verify the later discovery correction.
+Preserve `custody-reference-final-1` as FAIL despite 13 guard passes: path-filter discovery loaded an audit clone and hit missing Zod.
+Preserve `reference-physical-pin-1` and `reference-physical-pin-types-1` as `SOURCE_CHANGED_DURING_VERIFICATION` failures despite exit 0; `reference-physical-pin-integrated-1` is a separate later pass, not a rewritten failure.
+
+### No-filter reference-validator contract
+
+Compare `git ls-files --stage -z` as an exact mode/OID/path stage-0 set against the original pinned tree's non-tree entries; reject missing, extra, duplicate, unmerged, and mismatched entries.
+Retain canonical top-level/SHA-1/no-replace/H-flag checks, raw physical original-tree blob SHA-1 and executable mode, directory/symlink/submodule checks, and every consumed bundle input's original-tree membership/size/SHA-256 before imports.
+The validator invokes neither worktree nor cached Git diff and executes no source clean/textconv pipeline; identical physical bytes do not make Git diff safe against untrusted local filter configuration.
+The owned regression intentionally runs the old vulnerable diff with a Bun marker/echo filter after an mtime change and proves execution despite unchanged tracked bytes.
+It removes the marker, changes mtime again, and proves the corrected guard passes without recreating it; staged-change/physical-restore and extra-index-entry negatives also pass.
+The no-filter receipts record 16 guards / 108 assertions and passing test types with `sourceChanged:false` as `PRE_OBJECT_GRAPH_AUTHENTICATION`; one C14 test remains filtered, and the prior 13/88 pass stays `PRE_FILTER_EXECUTION_FIX`.
+
+### Authenticated object-graph source evidence
+
+[reference-bundles.md](reference-bundles.md#authenticate-before-interpreting) and [reference/object-graph-authentication.puml](reference/object-graph-authentication.puml) now document the implemented architect-approved repair in `packages/runtime/tests/reference-bundles.test.ts`, the only source file changed by this delta.
+The raw commit command returns body bytes, which hash against the independent pin before parsing the first strict root-tree header; breadth-first raw tree batches require expected OID/type/size/body/LF framing and Git SHA-1 body authentication before binary parsing.
+Inventory derives only from that graph, with strict modes/UTF-8 component names and per-validation node caching that expands every reused parent path.
+Exact bounds are 4 MiB for metadata/batch stdin/cumulative tree I/O/aggregate path bytes, 4,096 cached trees, 16,384 instantiated entries, tree depth 32 from root 0, and 4,096 bytes per UTF-8 path.
+The 20-second graph deadline starts before commit retrieval; physical blobs have independent 16 MiB/file and 128 MiB aggregate limits, not a whole-validator 20-second guarantee.
+Physical blob/mode/no-symlink checks, exact stage-0 index/H flags, every consumed input's membership/size/SHA-256 before imports, and validator no-diff/no-clean/textconv restrictions remain intact.
+`GIT_NO_LAZY_FETCH=1` and `GIT_TERMINAL_PROMPT=0` remain mandatory; the fresh local `ext::` Bun-canary test demonstrates old-reader execution while failing and corrected missing-tree refusal without a marker.
+Owned clone loose-object commit/tree shadows make ordinary Git return forged content under a genuine HEAD; the new guard rejects body-hash mismatches without touching shared alternate stores.
+The actual stderr records 25 tests / 194 assertions, zero failures, and one filtered C14 test; those cases already include the no-fetch, object, parser/framing, reused-path/cache and named graph-bound regressions.
+Nested negative vectors add no top-level cases, and this selected suite does not establish exhaustive branch/limit-combination coverage or a fresh full legacy Bun/C14/native run.
+The repair preserves the existing SHA-1 pin model and claims neither upgraded collision resistance nor an atomic filesystem snapshot, full C14/native proof, operational authority, or training readiness.
+
+### Stable TypeScript source-security acceptance
+
+HISTORICAL ONLY: this verdict predates physical-reference pinning and integer regressions and accepts no current corrected source.
+
+`_work/gpu-owner-recovery/security-typescript-review.json` records read-only review session `ses_e463cc8a8ffenbLOljn5xc5Jaz`, with no reviewer-executed commands, zero remaining findings, and `READY_TO_MERGE_STABLE_TYPESCRIPT_SOURCE_SECURITY_GATE_ONLY`.
+Its baseline is `c04a8da9468f7d443bd27d73a08c0bd7ee0e9d20`; `security-typescript-baseline-packet-1/{command.stdout,sources.json,receipt.json}` binds 18 changed files, including four tracked diffs and fourteen untracked additions.
+The packet receipt's 195 source inputs are not its reviewed-diff count.
+The addressed MEDIUM CWE-345 replacement-ref bypass is fixed by global `git --no-replace-objects` in the reference guard's Git helper.
+The synthetic regression preserves expected HEAD, stages an alternate index/worktree, demonstrates the old cached-HEAD diff returns success through a replacement ref, then verifies the fixed guard rejects it without executing alternate reference code.
+The fresh 5-guard/34-assertion and test-typecheck receipts both record `sourceChanged:false`; preserve earlier 4-guard/24-assertion receipts as `PRE_REPLACEMENT_REF_FIX`.
+This acceptance excludes Rust security, adversarial acceptance, full legacy-suite acceptance, operational acceptance, and readiness.
+The earlier post-reconciliation two-diagram render is separately verified by `offline-reconciled-diagrams-1`; this connected-source update changes both diagrams, so its new bytes need another parent-owned render.
+
+### Earlier runner-only receipt
+
+`_work/gpu-owner-recovery/runs/runner-repository-root/receipt.json` records `PASS`, exit 0, actual Bun `1.4.0`, and unchanged source hashes.
+This result is `PRE_RUNNER_CUSTODY_FIX`, not verification of the new command supervisor.
+Its `command.stderr` records **6 tests / 1 file / 17 assertions / 0 failures** for `_work/gpu-owner-recovery/verify.test.ts`.
+Its manifest has seven files; that count is not a source-test count or the parent's nine reconstructed CUDA leaf files.
+This is harness-only evidence, not policy, owner, bridge, default-CPU, full Bun, CUDA compilation, or runtime verification.
+The two early runner reconstruction failures remain recorded, including the root error and recovery of its own output back into the repository; see [recovery.md](recovery.md#earlier-runner-only-checkpoint).
+This earlier receipt alone establishes none of the later policy/bridge/CPU results above.
+Parent reports six ignored actual-GPU fixtures; no GPU test ran and app initialization stays unchanged.
+Rust `1.95.0` minimal/rustfmt/Clippy plus selected locked owner/default-CPU dependencies may be restored anonymously through repository-local mise with trust restricted to a new minimal config.
+The restored selected toolchain/owner/default-CPU boundary is recorded separately in [recovery.md](recovery.md#scoped-development-inputs--restored-selected-inputs).
+Template check: `SKIP` because the local template is absent and the parent reports the historical official URL returned 404; use offline plain PlantUML without includes.
 
 ## Goals
 
@@ -26,11 +287,38 @@
 - [match-runtime.puml](match-runtime.puml): whole-match child barriers, owner stop proofs and redundant native learners.
 - [host-entrypoint.puml](host-entrypoint.puml): operator-run host mise metadata, separately granted provisioning and selected shared-GPU host Docker learning.
 - [gpu-readiness.puml](gpu-readiness.puml): mandatory actual-target F64 GPU scoring/learning, preserved host driver attachment and unqualified GPU/runtime/VRAM/cleanup gates.
+- [gpu-owner.puml](gpu-owner.puml): corrected custody, drain-only cleanup, natural-EOF classification, held-ancestor/leaf namespace-removal proof and raw integer tokens; 72 cases pass, source reviews accepted in scope, operational gates remain open.
+- [gpu-cooperative-policy.puml](gpu-cooperative-policy.puml): Rust/Bun telemetry/lease/first-failure policy; shared 33 traces pass, source reviews accepted in scope, no VRAM reservation or operational qualification.
+- [reference/object-graph-authentication.puml](reference/object-graph-authentication.puml): raw commit/tree authentication, bounded complete inventory and no-fetch refusal; 25/194 passes, packet-5 source reviews accepted, full C14/native and operational qualification open.
+
+## Recovery verification targets and remaining scope
+
+| Target | Required evidence |
+|---|---|
+| Pure Rust/Bun policy | `tooling/runtime/gpu-policy.ts`; exact runtime `gpu-policy.test.ts` and `gpu-policy-conformance.test.ts`; 33 semantic traces at `tooling/runtime/fixtures/gpu-policy-traces.json`, no historical byte/hash recovery claim; separate native Proxy/trap-canary tests |
+| Rust owner | Safe disabled main, exact manifest/file binding, BOOTTIME/poll ordering, bounded helper groups, ownership-safe evidence-independent cleanup and exact cgroup absence |
+| Separate Bun GPU job | Contracts `src/gpu-job.ts` and `tests/gpu-job.test.ts`; runtime `src/gpu-job.ts` exports loop and disabled main together; runtime `gpu-job.test.ts`, `fixed-attempt-gpu-owner.test.ts`, and `tests/fixtures/gpu-owner/**`; EOF-before-work/startup barriers, real SQLite/fixed factory/MatchWorker plus two fake Bun learners; no actual GPU/native binaries |
+| Cross-language proposal | Existing state/prefix and exact descriptor-token contracts retained; Bun/Rust subsets and scoped source/integer reviews accepted, without global lexical JSON parity or runtime qualification |
+| CPU/CUDA retention | Unchanged CPU Flex seeds 101..105, all 4,670 finite differences with unchanged tolerances, exact C12 digests; optional F64 CUDA without fallback |
+| Reference object graph | Retained 25/194 and affected typecheck with accepted packet-5 TypeScript security/adversarial source reviews; full C14/native/runtime qualification remains open |
+| Documentation | GPU diagrams plus the implemented reference object-graph concern, exact partial coverage projection, null fingerprints; no claim of reconciled legacy coverage |
+
+Parent/build records actual commands, outcomes, skips, and new review verdicts in repository-owned evidence.
+Missing libdevice/CUDA/LLVM bytes remain blockers, not permission to reacquire, install, run production builds, or substitute precision/backends.
+The grant permits only the stated toolchain/CPU-linker and selected locked owner/default-CPU inputs, now restored and offline verified; it establishes no CUDA/LLVM/NVIDIA acquisition authority or actual runtime-input restoration.
 
 ## Persisted tests
 
 | Test filepath | Purpose |
 |---|---|
+| `crates/gpu-owner/src/json.rs` · inline unit tests | 3 exact integer-token/negative-zero/list/required-nullable/safe-bound cases |
+| `crates/gpu-owner/tests/adapters.rs` | 13 adapter cases, including drain-only cleanup, new fault propagation, and forced-versus-natural EOF |
+| `crates/gpu-owner/tests/cli.rs` | 2 fresh CLI cases: bounded help only; operational arguments/environment cannot enable normal main |
+| `crates/gpu-owner/tests/conformance.rs` | 1 fresh case consuming all 33 reconstructed shared Rust/Bun policy traces |
+| `crates/gpu-owner/tests/contracts.rs` | 8 manifest/hash/JSON/resource/origin cases, including evidence/state separation and exact numeric `-0` |
+| `crates/gpu-owner/tests/lifecycle.rs` | 15 connected lifecycle cases, including post-SQL failure, deferred-start cleanup, state substitution, and evidence exposure rejection |
+| `crates/gpu-owner/tests/observation.rs` | 19 ancestor/leaf custody and namespace-removal cases, including direct/nested leaf rename and retained-FD behavior |
+| `crates/gpu-owner/tests/wire.rs` | 11 closed-wire/state/raw-token cases, including negative-zero schedule pinning; 61 contradiction mutations remain nested inside one case |
 | `crates/learning/tests/model.rs` | Bounded 2,271-feature input, zero output head, controlled MLP SGD golden and nonzero native-record round-trip |
 | `crates/learning/tests/context.rs` | Candidate preference reverses with state through a standard nonlinear model |
 | `crates/learning/tests/initialization.rs` | Seeded hidden initialization reproduces results and receives gradients after the first head update |
@@ -106,7 +394,7 @@
 | `packages/runtime/tests/storage-bounds.test.ts` | Exact fixed-write byte/entry calculation below nominal 200 GB without claiming an allocation or qualified physical fit |
 | `packages/runtime/tests/model-inputs.test.ts` | Serial owned scratch release without accumulation; retained failed inputs and refusal to remove unexpected files |
 | `packages/runtime/tests/training-artifact.test.ts` | Closed synthetic final metadata, exact five-master roster/primary and no private scheduling/RNG fields |
-| `packages/runtime/tests/reference-bundles.test.ts` | C14 six standard Bun bundles, selected input scope, exports and original reference/strategic/corpus fixtures |
+| `packages/runtime/tests/reference-bundles.test.ts` | Fresh 25 guards / 194 assertions include raw-object/no-fetch/parser/cache/graph-bound and retained guards; prior 16/108 stays `PRE_OBJECT_GRAPH_AUTHENTICATION`, and full C14/native proof stays filtered/unqualified |
 | `packages/runtime/tests/host-facts-task.test.ts` | Four prebuilt-handoff tests: literal closed artifact/task expectations, unchanged Python tasks/disabled auto-install, real mise fake-artifact literal-argument forwarding with empty stores, and missing bytes failing without staging/build/install/download |
 | `tooling/runtime/tests/test_supervise.py` | Fake manager/cgroup controls, original deadlines, owned cleanup, evidence failure and no operational retry |
 | `tooling/runtime/tests/test_evidence.py` | Bounded exclusive fsynced evidence, retained failure reservations and packet-wide storage refusal |
@@ -343,7 +631,7 @@ Executor selected host-backed state and actual F64 GPU learning in a shared-GPU 
 Complete physics, causal recipients/economics, closed native/policy/match protocols, redundant Burn numerics and synthetic whole-match/SQLite publication now have persisted checks.
 Actual captured runtime, loading, effective controls, independent confined reference/lifecycle, durable target and original-clock qualification remain open.
 The current manifests and three native entrypoints still select CPU Flex.
-No supported GPU backend implementation, GPU build or real F64 GPU forward/backward/SGD/reload/redundant-learner/VRAM/cleanup proof exists.
+Optional CUDA source reconstruction does not establish a supported/qualified backend, a GPU build, or real F64 GPU forward/backward/SGD/reload/redundant-learner/VRAM/cleanup proof.
 The metadata task and synthetic tests do not satisfy mandatory GPU learning readiness.
 Training readiness remains false.
 Apply active AGENTS.md adversarial and applicable security review gates after implementation and feasible verification, before completion; do not defer them until readiness.

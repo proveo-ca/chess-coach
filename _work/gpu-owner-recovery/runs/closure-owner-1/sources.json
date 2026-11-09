@@ -1,0 +1,526 @@
+[
+  {
+    "path": "Cargo.lock",
+    "sha256": "b2852cbabb1fcedc29146c33a9323eb04401005afa4cb3c8e5de89e16ae66555"
+  },
+  {
+    "path": "Cargo.toml",
+    "sha256": "553b6e3cf5a8d30f53f19bf6623332d4d6c5df69099d5f2a51ae9260f07b74bc"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/audit-lock.test.ts",
+    "sha256": "b3573a6905256c9ed131e090c905136e6befaa715bbe9685ed0a2db136bae19d"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/audit-lock.ts",
+    "sha256": "0f7210560b22170231d0373f4f338e698d89392824ae13f3ac933a5d576a3886"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/cargo.ts",
+    "sha256": "1850444aae040348d4b1035b98f629e52afc5db51925f8190c514f6804772960"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+    "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/compiler-driver.ts",
+    "sha256": "bfa3cd2f8bd12d5a0466914eb74d33ff749b727d46e3a9057a11950d5e62885c"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/diagrams.ts",
+    "sha256": "99aa72cbc4ef6338ef234767ac1bb654d885f507a950739870665ad7c63c7e87"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/mise.toml",
+    "sha256": "09b27b21573e66a53fb59c29feb97b15a8b0887384b21b09fac8599d8ecb5df8"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/provision.ts",
+    "sha256": "446bafb616dce8f642216268cb10d6c30e1e485b45428b8c83295358964a8efb"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/recover-runner-output.ts",
+    "sha256": "9970188819bf6024fc5733e01b319eca0bf81064015c681bd617528e16377b51"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/review-packet.ts",
+    "sha256": "23fc6e74e4a1072e7b370a4f035976d0ad163f1224fdafcf1de7091fd97b7c94"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.test.ts",
+    "sha256": "207c058655aa7c8a94f7619de244d8550d9f933dfe1971efb5d7659ea6b4ca36"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.ts",
+    "sha256": "bd23c36b9baa46b35b19c0dd2196aeb0c300a420005fc2b1d8ad33a455edfccd"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/zig-ar.ts",
+    "sha256": "b2ae0f3ed032f1db45c2cc31e072f31033a642c23ca928083cab39499145d6a0"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/zig-cc.ts",
+    "sha256": "af9a8708d2acf0052f61acab96f23fe4b9c47ae0396622b5a11a05173ea6e28a"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/zig-cxx.ts",
+    "sha256": "f4205337b3d55f50b91dd618c38ebb063e093d1af514da7f3b981d93eb469ce7"
+  },
+  {
+    "path": "crates/gpu-owner/Cargo.toml",
+    "sha256": "ceb98a71e3a5c16c1c3f6d5035843b8441995339b5d49f62340b395540b2c3aa"
+  },
+  {
+    "path": "crates/gpu-owner/src/docker.rs",
+    "sha256": "4e49b8c65a735339bdfb5891e182bc636c590e2ae341109d9c1864b699f74720"
+  },
+  {
+    "path": "crates/gpu-owner/src/evidence.rs",
+    "sha256": "34d139a627fd2d3e066d3600a753be2dc599b23d7469ff5b2ba11794dfde4fa4"
+  },
+  {
+    "path": "crates/gpu-owner/src/input.rs",
+    "sha256": "f23eff4854b12d575b527ed250c13284364b903e6ba5a65a084849c057d91674"
+  },
+  {
+    "path": "crates/gpu-owner/src/json.rs",
+    "sha256": "92fb2fdd5fe6b9c2ce8337238a0581aa56a99167f590a3d80e9bfec92f4b1e81"
+  },
+  {
+    "path": "crates/gpu-owner/src/lib.rs",
+    "sha256": "ccb3abed8e7b5910c3e16f8e87c2757b224bb267c68c58ae956d42848c593a12"
+  },
+  {
+    "path": "crates/gpu-owner/src/linux.rs",
+    "sha256": "3780278f9fc74d09ebd841a0162546e38f855609b6c943816022dfa0edb973c5"
+  },
+  {
+    "path": "crates/gpu-owner/src/main.rs",
+    "sha256": "5134cf06bcd693a56c01cd00931c5127d3efda6f1ad8db4953c231334f53cc03"
+  },
+  {
+    "path": "crates/gpu-owner/src/observe.rs",
+    "sha256": "06497a88f90fc025aea28b5debe77adfc212a73b493c1d12100096ed8b53f9cc"
+  },
+  {
+    "path": "crates/gpu-owner/src/owner.rs",
+    "sha256": "bdd44713775077f937648c60d045e8d31ebf0720f4c6e00ea352b675e229d96d"
+  },
+  {
+    "path": "crates/gpu-owner/src/policy.rs",
+    "sha256": "5657425403da4a456e657ecd9604e04d4be724e56d5428e90e407121066f7799"
+  },
+  {
+    "path": "crates/gpu-owner/src/process.rs",
+    "sha256": "6a7361d12263aa9a96b2cf64948871aa6dd857ffdda2cf6e7454179b1893e3e8"
+  },
+  {
+    "path": "crates/gpu-owner/src/telemetry.rs",
+    "sha256": "f1b8d5ca3aa1643f17af464338aa3eb9f82110b35d07a3dbcc42acb7aa2252e1"
+  },
+  {
+    "path": "crates/gpu-owner/src/wire.rs",
+    "sha256": "35d9b0094fa45dcc4650a104983deb82e08aafe3d3c480d6e62d193b7230b97b"
+  },
+  {
+    "path": "crates/gpu-owner/tests/adapters.rs",
+    "sha256": "378b9a33f835317c2beb76399fc0f892637bff52014b1a01fd669263905b858f"
+  },
+  {
+    "path": "crates/gpu-owner/tests/cli.rs",
+    "sha256": "ef3d75bec0f06bacd363bd0c4d696650efbf4ef24c5bbe4012b580660b5e7ab5"
+  },
+  {
+    "path": "crates/gpu-owner/tests/conformance.rs",
+    "sha256": "7998a3bbdd28760d5fe83c1633871b06606a0481a03d51947bd7438910959b78"
+  },
+  {
+    "path": "crates/gpu-owner/tests/contracts.rs",
+    "sha256": "eeea6aadd0f96ed50b1e2a014b4fa184304a73d780f7023f22505c95a9d4528c"
+  },
+  {
+    "path": "crates/gpu-owner/tests/lifecycle.rs",
+    "sha256": "c31475672e1506bf0df7f9f2391e3a0c77f7e20965b622cde2475bca29871441"
+  },
+  {
+    "path": "crates/gpu-owner/tests/observation.rs",
+    "sha256": "b608ef1c90c83df55561530c20325051351aed0710db9ce4e2071a1bf4ed59cf"
+  },
+  {
+    "path": "crates/gpu-owner/tests/support/assert-completed.ts",
+    "sha256": "b4fd496baeb80d6708165559f8caba5153ba211d1450756dbba21b8f64052b0b"
+  },
+  {
+    "path": "crates/gpu-owner/tests/support/fake-docker.ts",
+    "sha256": "795a6b7826bf16c9a70218f7440cab7f54bbbc68d5e6c2d5d4dc76e7958532ac"
+  },
+  {
+    "path": "crates/gpu-owner/tests/support/fake-telemetry.ts",
+    "sha256": "84b2581a94e985a94d1664c6350e67b65d4df9c6ec39827726ca8e4556b593c1"
+  },
+  {
+    "path": "crates/gpu-owner/tests/support/mod.rs",
+    "sha256": "cfa8f2e72975afad6a755d51127b01e2b03c362f0105a4b90fb9c028760e47f8"
+  },
+  {
+    "path": "crates/gpu-owner/tests/wire.rs",
+    "sha256": "971e2fe6a687a9d980120a095b22d72c82886bae4ed9e023e6299719810daf8d"
+  },
+  {
+    "path": "crates/host-facts/Cargo.toml",
+    "sha256": "852c6df40e26aff5ac82e347db1f7cc4fdebb069a54095a8a92fb714183f64c8"
+  },
+  {
+    "path": "crates/learning/Cargo.toml",
+    "sha256": "018a19c5bb0dd4a43660c3add3062bb52bdc5c40c79c27de4248c841460f2abf"
+  },
+  {
+    "path": "crates/policy-io/Cargo.toml",
+    "sha256": "c9e25c2541e835906fcad2da53d2d9a9588007b32d41895e85d66599d6bdce56"
+  },
+  {
+    "path": "packages/contracts/src/candidate.ts",
+    "sha256": "01422c6e5b8f289cd387e3cf488363c810277db5aae7117cd7354b7b14c8af1e"
+  },
+  {
+    "path": "packages/contracts/src/causal-journal.ts",
+    "sha256": "ac44add7e33739b1fb4bcb06a11cad0459fef547e7afa57b1a94f3153dc202a6"
+  },
+  {
+    "path": "packages/contracts/src/episode.ts",
+    "sha256": "ae8c21913bf58d1688f4136bab05c6b55ad051a2dc39b5640c6d94ab603ee370"
+  },
+  {
+    "path": "packages/contracts/src/game-session.ts",
+    "sha256": "c36fbe1c2c4385b767818e5fc2714b25d2d8ef2d0a3b686fb73602e0b6496459"
+  },
+  {
+    "path": "packages/contracts/src/gpu-job.ts",
+    "sha256": "c374aa8faff00b3f17294a7f7645a62e46e50e17ae39c4b895cbc4c7b30150d9"
+  },
+  {
+    "path": "packages/contracts/src/index.ts",
+    "sha256": "989ccb211f8be99a88787832fa082a5f129ef52682c2087ae1b584fbda2baab3"
+  },
+  {
+    "path": "packages/contracts/src/inference.ts",
+    "sha256": "c8212f109e8027bfecd6202c0edb58a4c201bbbdd74a4ede18ba2102314663ec"
+  },
+  {
+    "path": "packages/contracts/src/initialization.ts",
+    "sha256": "6ac77a56ed1837b55c18b82e9e5a286c9161e7bf402aedb165393abcef9da4fb"
+  },
+  {
+    "path": "packages/contracts/src/learning-channel.ts",
+    "sha256": "01abdbf580e2c9cd5cc2a718a52284b58b32bda24f901f44321490fb8e444982"
+  },
+  {
+    "path": "packages/contracts/src/match.ts",
+    "sha256": "fd13cf6822e37fc14d220576c6568cbfaa586fed481b089307dc702145ba5d30"
+  },
+  {
+    "path": "packages/contracts/src/native-intents.ts",
+    "sha256": "cbb8f024001fac6c8f682fbb42677d19dc922c0a7ea317285ea480f914a8fe37"
+  },
+  {
+    "path": "packages/contracts/src/native-protocol.ts",
+    "sha256": "df684ebaacdff2d6472d6f47c067d1850aae0db39826618c3118cbc03b9b9560"
+  },
+  {
+    "path": "packages/contracts/src/recipient-codec.ts",
+    "sha256": "75cb4a7b83ca9e9e1970754e6fcffec9067a4ee8be37f704eb1c8ce7fbde8447"
+  },
+  {
+    "path": "packages/contracts/src/recipient.ts",
+    "sha256": "c530aedb31621933a697fb68a9c0e5d3fdf419990954ca026fde0ac709ee8341"
+  },
+  {
+    "path": "packages/contracts/src/resolution.ts",
+    "sha256": "af02d9f13f69d359784d9a201c32b6dae0a5b15bd2d0dec00c31358fb45f1ef1"
+  },
+  {
+    "path": "packages/contracts/src/semantics.ts",
+    "sha256": "f12269697d9280a2134aa013250bc8c6c9a9076cd2966d86559e6429561cb0fd"
+  },
+  {
+    "path": "packages/contracts/src/shape.ts",
+    "sha256": "74c7a52ca90949da256e07ad4e6f7581c53834ba9abdc45cd4b7f51150a269d1"
+  },
+  {
+    "path": "packages/contracts/src/training-artifact.ts",
+    "sha256": "0203e6183d543b5fa54ee7c62887bc74cfcd62cb7bc6f3a9b17adbeb1a7d56af"
+  },
+  {
+    "path": "packages/contracts/src/training-state.ts",
+    "sha256": "e17d980ca2bc03566bf43cf75869862c81fa3d6f9febcfc52044669242d7b5ff"
+  },
+  {
+    "path": "packages/game-core/src/board.ts",
+    "sha256": "853ae876825871b738962688a3118754d0a7b97d9d4f54c9004e03467d5e704e"
+  },
+  {
+    "path": "packages/game-core/src/causal-events.ts",
+    "sha256": "ead2c04a80d285a91537351209740890f0238942ceec5f9d75fe67565144f808"
+  },
+  {
+    "path": "packages/game-core/src/causal-producer.ts",
+    "sha256": "267281d9fffd767923d1fd3d5583d3851c8d3ad9b0906f7ee16fac9fa184a004"
+  },
+  {
+    "path": "packages/game-core/src/causal-types.ts",
+    "sha256": "291b19587b4e483b25f2d5f77c9389c6b535a23faede2360aecb46a00063a40f"
+  },
+  {
+    "path": "packages/game-core/src/charon.ts",
+    "sha256": "21e2fefdc9f60d430fa7edde904670c48d861e2f916b4eb55ed540117529b0bd"
+  },
+  {
+    "path": "packages/game-core/src/classical-resolution.ts",
+    "sha256": "4a4ca52edc01f7e49234da60c38ac8f93b389f5399c53bf2806a65995c78a46a"
+  },
+  {
+    "path": "packages/game-core/src/constants.ts",
+    "sha256": "09cd3758add018120976887fa89dc0b456b8373db1474c7712949bea030e8fb3"
+  },
+  {
+    "path": "packages/game-core/src/economy.ts",
+    "sha256": "6db58a067bbd1f2c79c56a68da338368ffbd2bc718e53d110481da3b27f55b3f"
+  },
+  {
+    "path": "packages/game-core/src/index.ts",
+    "sha256": "ae3b112c5745b2944791d86120392a9a6b70d4ec15a17a23311d0e7505cb8393"
+  },
+  {
+    "path": "packages/game-core/src/initialization.ts",
+    "sha256": "2fd4b7717071849089e7479739f76a8c999a3de306fd6f4294aa868bb3eaf7de"
+  },
+  {
+    "path": "packages/game-core/src/mine-contact.ts",
+    "sha256": "2da58eafae69b1e4df5b6321c9f9575d416322532c3548390a4b267e0f7a58da"
+  },
+  {
+    "path": "packages/game-core/src/mines.ts",
+    "sha256": "74edb4e0c7cd7952292aa3eff2bb8235ff21c4f27d65b52d26a172bc4498f2ca"
+  },
+  {
+    "path": "packages/game-core/src/move-timing.ts",
+    "sha256": "5e0da4fd7c37f5524ca5138a09f34c8d9e6deb38be05e2f6d6d7497fa701bf7a"
+  },
+  {
+    "path": "packages/game-core/src/moves.ts",
+    "sha256": "1ea3e9c63837986f6ecc6d82a38eb2a2eb7d3d68a02f4003a38ab55416b94739"
+  },
+  {
+    "path": "packages/game-core/src/native-classical.ts",
+    "sha256": "cdaed916e386fa3d4ef37996f469edf39af46c0e7a5da3230491194b6b1c045b"
+  },
+  {
+    "path": "packages/game-core/src/outcome.ts",
+    "sha256": "029090d69966f7c5f28315b5cc64779c5164d2b3f19345fd3826f0da344a518e"
+  },
+  {
+    "path": "packages/game-core/src/planning-intents.ts",
+    "sha256": "7afa1dcdf57aeafffcdfcc44d84a51313a026c0d886f85658b52d4e7f616eab6"
+  },
+  {
+    "path": "packages/game-core/src/planning-order.ts",
+    "sha256": "cd81e87043aa8bb30349254be110da60f843e06725c63dccfaa3e290c15ad184"
+  },
+  {
+    "path": "packages/game-core/src/planning-specials.ts",
+    "sha256": "6391cb1211d4e1fd65af8065cccafbf0854b2d468f87d57e7ec0c101cd2723db"
+  },
+  {
+    "path": "packages/game-core/src/queue-action.ts",
+    "sha256": "87c0ca1e14caff3067ae2b524fbdb789a97573599149ae25001c8b5ba74b3583"
+  },
+  {
+    "path": "packages/game-core/src/queue-contract.ts",
+    "sha256": "4a5e7da9d48c0788c61cc6efccb8a85106fc4ff9e8c61caad833eed5ad06c3f9"
+  },
+  {
+    "path": "packages/game-core/src/queue-validation.ts",
+    "sha256": "0cea8a571e5ee58eb519e2ce818a67fcde6a21b2d9ef1fb460d7464b42b28e79"
+  },
+  {
+    "path": "packages/game-core/src/ray-scan.ts",
+    "sha256": "950acb6b34b30d9607a2a92787389c0cc7b085a8270f5491b0e72ac66a644ca1"
+  },
+  {
+    "path": "packages/game-core/src/resolve.ts",
+    "sha256": "2d28904751219fbe87c7f4782be95f6b310c35663d3e5673089e20c9b7afbe0d"
+  },
+  {
+    "path": "packages/game-core/src/specials.ts",
+    "sha256": "8f0d53523391aa0e5fd645dee96013a579df209815b035b71c50c5f40363b5c6"
+  },
+  {
+    "path": "packages/game-core/src/types.ts",
+    "sha256": "bcfd79f980a3f3742e1baef9a6fce5c6bfbd49371d11de8ddff7de17968135a0"
+  },
+  {
+    "path": "packages/game-core/src/vision.ts",
+    "sha256": "4500ac17987052b49d6297e0e4e2363e26a2e6668bba67c7ecccb24488881a79"
+  },
+  {
+    "path": "packages/policy/src/candidates.ts",
+    "sha256": "d3f037cce2e0315352b97ef4c153c389dfacce999a8bfa0a213a2a941f0970d6"
+  },
+  {
+    "path": "packages/policy/src/index.ts",
+    "sha256": "3363494140713609b571bc8e1ca6894f757a69113440e28ee24b492f6532459d"
+  },
+  {
+    "path": "packages/runtime/src/artifacts.ts",
+    "sha256": "59d0f3697366d2280eb6ddf06ad97f0659e347613fd862c9574e46a8fbe7f5a0"
+  },
+  {
+    "path": "packages/runtime/src/corpus.ts",
+    "sha256": "6ab7fc22ed51977b63178988496059621cc83df8f62adc6066a47639b84c09b9"
+  },
+  {
+    "path": "packages/runtime/src/current-driver.ts",
+    "sha256": "7049fabb4b39e285acf5c10dc2e9a84c072f37e4794bc4ef52f4b1dcae13fba4"
+  },
+  {
+    "path": "packages/runtime/src/curriculum.ts",
+    "sha256": "2621c4a99d94f92eb61357375822038e5d3e288d9f0a4c6af05dc9b8425253d4"
+  },
+  {
+    "path": "packages/runtime/src/fixed-attempt.ts",
+    "sha256": "4ba0f6dc4bd0bf75c782e80b5ed3e775acf69c81cb5637626954f3a042c72fbb"
+  },
+  {
+    "path": "packages/runtime/src/framing.ts",
+    "sha256": "344d03a78e94dce87c3b958d02f7499e7927b25388830d3062dfdfc00655f026"
+  },
+  {
+    "path": "packages/runtime/src/frozen-scorer.ts",
+    "sha256": "9e5f051b9487b53f34259075298ea9f65b905ed3f6ef895a20a1a3d31b58c72e"
+  },
+  {
+    "path": "packages/runtime/src/game-worker.ts",
+    "sha256": "d7ec081fe81c1f3ef1c5257a840305c5d2be821378d106a28ea3a801b9ddd7ab"
+  },
+  {
+    "path": "packages/runtime/src/gpu-job.ts",
+    "sha256": "edf7838bafb256e0ba380c234ea255e642220ed6338d95fb41416cbe9ce7f876"
+  },
+  {
+    "path": "packages/runtime/src/index.ts",
+    "sha256": "a21ced057537a81fe1006e8d13ccc3fbccee831ee034361f76122dad0f669588"
+  },
+  {
+    "path": "packages/runtime/src/job.ts",
+    "sha256": "bea66950267f27d02fd91e9c35fc2cde914637506a63a39e33b251f71de8da09"
+  },
+  {
+    "path": "packages/runtime/src/learner-pair.ts",
+    "sha256": "fe75719f6dcdcb3a4a621c2aeba284cfbabca9e6b6f84d43d7457693666e3d26"
+  },
+  {
+    "path": "packages/runtime/src/match-process.ts",
+    "sha256": "5960e488179b87b7fe2eb2df0c371518771c837a632f5844024d905d97731e18"
+  },
+  {
+    "path": "packages/runtime/src/match-session.ts",
+    "sha256": "6dbcd36fe4fda9aa6495617a9ee3ea5558e44bfc6ec9d2ecd7986852db2b051f"
+  },
+  {
+    "path": "packages/runtime/src/match-state.ts",
+    "sha256": "cf1665ffaadedff7e352f0195d6040641191abbb481e034f4f8dd2df4f703eef"
+  },
+  {
+    "path": "packages/runtime/src/match-worker-main.ts",
+    "sha256": "7fbfda7c1898ae904990e8e4184780a36cca62069b5c4710ac4dd7082dfe198e"
+  },
+  {
+    "path": "packages/runtime/src/match-worker.ts",
+    "sha256": "7333ae7a643441f0a6d254db853315b8431fe558e03e410468a9ad3977c4cbb4"
+  },
+  {
+    "path": "packages/runtime/src/model-inputs.ts",
+    "sha256": "5ca0cbe0196a7c481255b0989e52c95c1f95d7f0e66c7c0d4e3b7979b27f5927"
+  },
+  {
+    "path": "packages/runtime/src/native-learner.ts",
+    "sha256": "bd42911e886b352a97e1aea22552dd596d79ba2d55d490e35267a637d215340c"
+  },
+  {
+    "path": "packages/runtime/src/native-session.ts",
+    "sha256": "004db7d129c5f74a92fabbe419b1b1e021b0cb2326c56e6bc3ee96bb042d7db0"
+  },
+  {
+    "path": "packages/runtime/src/policy-session.ts",
+    "sha256": "ad815f7e744dc21cc99275ff3fd1d57787d725826f7f03a2b8be8a12b74ee42c"
+  },
+  {
+    "path": "packages/runtime/src/private-state.ts",
+    "sha256": "c129175e1e6f6a0ef4df2e0e8f0a9843b7087770064cde3c44b6ea8936bd4999"
+  },
+  {
+    "path": "packages/runtime/src/process-transport.ts",
+    "sha256": "bb8dde00851642d2b2faaa00909092e35e5676b093aebb652b1088daba34cac1"
+  },
+  {
+    "path": "packages/runtime/src/reference-driver.ts",
+    "sha256": "f9623f1ec68354139140ee142f1ac280d2995e81dbd8eaef77b3bde57aef8f30"
+  },
+  {
+    "path": "packages/runtime/src/reference-worker.ts",
+    "sha256": "db1438a09e0dd5c28c8bfa2c1fd5789bce00914ad217dcfb3bdd606b1703163f"
+  },
+  {
+    "path": "packages/runtime/src/rng.ts",
+    "sha256": "1e2311763946768b7d1323b4717a203699ea057c88525a66a764465ad2fa5f5a"
+  },
+  {
+    "path": "packages/runtime/src/storage-bounds.ts",
+    "sha256": "f86f351c51d09529d751564b85aa3d150283c2ae5a09c7f632de12a84b5a1d38"
+  },
+  {
+    "path": "packages/runtime/src/strategic.ts",
+    "sha256": "cce7360158ab894894e181b255e1e8fad53cdc2f4b76f6702375a7d8297b98d4"
+  },
+  {
+    "path": "packages/runtime/src/training-coordinator.ts",
+    "sha256": "4d3b9abb4b3f87c306ccc532c82fa64041cc730a72119f1d451d5cbbc3758ae4"
+  },
+  {
+    "path": "packages/runtime/src/training-store.ts",
+    "sha256": "9ed0b2a9457a3e92c3c8b69d70fa5ad83783d7bef6e7e4ec4d5ee39513ae3b42"
+  },
+  {
+    "path": "packages/runtime/src/worker-loop.ts",
+    "sha256": "afd57b55b54a2f982e882f3337ce1d2468f066bf94c61f09ba8a1d6249d4347f"
+  },
+  {
+    "path": "packages/runtime/src/worker.ts",
+    "sha256": "0c6fab7a35bb5be6f99eb62fc02b3c6f2309cc110cb48bbbbfbb2111dfc5d830"
+  },
+  {
+    "path": "packages/runtime/tests/fixtures/gpu-owner/driver.ts",
+    "sha256": "7b41d419ad9e526f3d2903deb9d24f6c35f40a8630e7ef71f2bd21f9b411492d"
+  },
+  {
+    "path": "packages/runtime/tests/fixtures/gpu-owner/learner.ts",
+    "sha256": "ae99ebc0cb11d6671d1c19ad9ae2ede6a4ef06b4066f477464927546724726ab"
+  },
+  {
+    "path": "packages/runtime/tests/fixtures/gpu-owner/match.ts",
+    "sha256": "af6e778913caa6536f0a1ceb4be9a19a4439f149aa712b29d4de759d358519a8"
+  },
+  {
+    "path": "packages/runtime/tests/fixtures/gpu-owner/register.ts",
+    "sha256": "91bc489906920e2efce5ad97eac703876042745afdb8f69e39a44a63e6cd6aec"
+  },
+  {
+    "path": "packages/runtime/tests/fixtures/gpu-owner/support.ts",
+    "sha256": "3ce935ea675c7d2fca9c8a17d79ba907c66add0d992b7c3ae9df323cf5d5c905"
+  },
+  {
+    "path": "tooling/runtime/fixtures/gpu-policy-traces.json",
+    "sha256": "8d6c0f29e959190b7a92aad93ef17c7d2dda73475ec3e9c8fe8280793eba73cc"
+  }
+]

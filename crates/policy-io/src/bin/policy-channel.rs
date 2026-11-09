@@ -2,9 +2,8 @@
 use std::fs::File;
 use std::io::{self, Read};
 
-use burn::tensor::{Device, FloatDType};
 use chess_coach_policy_io::channel::{LearningChannel, run_channel};
-use chess_coach_policy_io::{MAX_CONFIG_BYTES, MAX_RECORD_BYTES, ModelConfig};
+use chess_coach_policy_io::{MAX_CONFIG_BYTES, MAX_RECORD_BYTES, ModelConfig, selected_f64_device};
 
 fn read(path: &std::ffi::OsStr, limit: usize) -> io::Result<Vec<u8>> {
     let mut bytes = Vec::new();
@@ -31,8 +30,7 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
         .to_str()
         .ok_or("Invalid session identifier")?
         .to_owned();
-    let mut device = Device::flex();
-    device.configure(FloatDType::F64)?;
+    let device = selected_f64_device()?;
     let mut channel = LearningChannel::from_record(&record, config, device, session_id)?;
     run_channel(
         &mut io::stdin().lock(),

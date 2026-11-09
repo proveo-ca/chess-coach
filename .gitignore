@@ -12,3 +12,5 @@ __pycache__/
 *.key
 *.pem
 *.bpk
+/_work/gpu-owner-recovery/scratch/
+/_work/gpu-owner-recovery/cache/

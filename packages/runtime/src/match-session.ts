@@ -28,7 +28,7 @@ export interface MatchLearners {
 }
 export type MatchClock = { clockNs: () => bigint; originNs: bigint; startupDeadlineNs: bigint; workDeadlineNs: bigint; cleanupDeadlineNs: bigint };
 export type MatchSessionInputs = MatchClock & { descriptor: AttemptDescriptor; rng: RngState; corpus: RecordedCorpus | null; strategic: StrategicApi | null;
-  verifier: FrozenScorePort; learners: MatchLearners; transport: OwnedMatchTransport };
+  verifier: FrozenScorePort; learners: MatchLearners; transport: OwnedMatchTransport; onStarted?: () => Promise<void> };
 export type VerifiedMatchResult = { descriptor: AttemptDescriptor; reason: MatchStop["reason"] | "candidate-deadline"; returnValue: -1 | 0 | 1;
   sampledDecisions: number; rngAfter: RngState; proposal: PairedProposal; auditJson: string; historyJson: string };
 const expired = Symbol("owned-match-deadline");
@@ -220,6 +220,7 @@ export class MatchSession {
           this.game.snapshot, this.rng.opponent, this.input.strategic, this.input.clockNs, this.input.workDeadlineNs);
       } else if (this.input.corpus === null) throw new Error("Match session: CORPUS_REQUIRED");
       this.time(this.input.startupDeadlineNs);
+      if (this.input.onStarted) await this.bounded(this.input.onStarted, this.input.startupDeadlineNs);
       reply = await this.exchange(this.request("accept"));
       let deadlineStop = false;
       while (reply !== null) {

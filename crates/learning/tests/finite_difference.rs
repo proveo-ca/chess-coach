@@ -108,8 +108,8 @@ fn perturb(model: PolicyModel, target: Layer, index: usize, delta: f64) -> Polic
     model.map(&mut Perturb(target, index, delta))
 }
 
-fn sweep(active: bool) {
-    let device = device().autodiff();
+fn sweep(device: Device, active: bool) {
+    let device = device.autodiff();
     let model = fixture(&device, active);
     let episode = episode();
     let grads = GradientsParams::from_grads(
@@ -175,10 +175,39 @@ fn sweep(active: bool) {
 
 #[test]
 fn feature_complete_sweep_for_active_relu_checks_2335_coordinates() {
-    sweep(true);
+    sweep(device(), true);
 }
 
 #[test]
 fn feature_complete_sweep_for_inactive_relu_checks_2335_coordinates() {
-    sweep(false);
+    sweep(device(), false);
+}
+
+#[cfg(feature = "gpu-cuda")]
+fn cuda_device() -> Device {
+    static DEVICE: std::sync::OnceLock<Device> = std::sync::OnceLock::new();
+    DEVICE
+        .get_or_init(|| {
+            let mut device = Device::cuda(0);
+            device.configure(burn::tensor::FloatDType::F64).unwrap();
+            assert!(!device.is_autodiff());
+            assert_eq!(device.settings().float_dtype, burn::tensor::FloatDType::F64);
+            device.seed(42);
+            device
+        })
+        .clone()
+}
+
+#[cfg(feature = "gpu-cuda")]
+#[test]
+#[ignore = "host-only CUDA F64 qualification; never run in sbx"]
+fn cuda_feature_complete_sweep_for_active_relu_checks_2335_coordinates() {
+    sweep(cuda_device(), true);
+}
+
+#[cfg(feature = "gpu-cuda")]
+#[test]
+#[ignore = "host-only CUDA F64 qualification; never run in sbx"]
+fn cuda_feature_complete_sweep_for_inactive_relu_checks_2335_coordinates() {
+    sweep(cuda_device(), false);
 }

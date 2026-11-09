@@ -1,0 +1,35 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "cuda-acquire-types-parent-2",
+  "stage": "typecheck-tools",
+  "sourceManifestSha256": "44751dada4a0591c97f7ba4a56bb8c89d06307d5ba621d252b07a54351a5b841",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "node_modules/typescript/lib/_tsc.js",
+    "-p",
+    "_work/gpu-owner-recovery/tsconfig.json"
+  ],
+  "status": "FAIL",
+  "exitCode": 2,
+  "failure": null,
+  "stdoutBytes": 829,
+  "stderrBytes": 0,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-acquire-types-parent-2/command.stdout",
+    "bytes": 829,
+    "sha256": "9145c64e84c203e6e26f76a6acd723af17a405e57b6e11c757578b3bb5891850"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-acquire-types-parent-2/command.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "sourceCount": 45,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

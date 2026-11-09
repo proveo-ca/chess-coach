@@ -1,0 +1,406 @@
+// SPEC: _spec/recovery.md
+import { createHash } from "node:crypto";
+import { constants } from "node:fs";
+import type { BigIntStats } from "node:fs";
+import { link, lstat, mkdir, open, realpath } from "node:fs/promises";
+import { dirname, resolve } from "node:path";
+import { environment, repository } from "./provision";
+import { reviewedFiles as acquisitionFiles, predecessorPaths as inertPaths, sha256 } from "./cuda-continuation";
+
+const base = "_work/gpu-owner-recovery/", acquisition = `${base}runs/cuda-llvm-acquire-1/`, plan = `${base}runs/cuda-archive-plan-1/`;
+const run = `${base}runs/cuda-bun-snapshot-1/`, attempt = `${base}cache/native-audit-bun-1/`;
+export const snapshotPaths = Object.freeze({
+  request: `${base}cuda-llvm-request.json`, binding: `${base}cuda-bun-snapshot-reviewed.json`,
+  taskConfiguration: `${base}cuda-bun-snapshot-mise.toml`, source: "/usr/local/bin/bun",
+  cache: `${base}cache`, attemptDirectory: attempt.slice(0, -1), pending: `${attempt}.pending`, destination: `${attempt}bun`,
+  runDirectory: run.slice(0, -1), operation: `${run}.operation`, captureStage: `${run}capture.pending.json`, capture: `${run}capture.json`,
+  haltedRequest: `${run}request-before-renewal.json`, oldRequest: `${plan}authenticated-request-retained-after-plan.json`,
+  oldReview: `${base}cuda-archive-reviewed.json`, retainedReview: `${plan}source-review.json`, sourceManifest: `${plan}source-snapshot.json`,
+  failedReceipt: `${plan}receipt.json`, failedStdout: `${plan}command.stdout`, failedStderr: `${plan}command.stderr`,
+  ancestorDiagnosis: `${plan}ancestor-metadata.json`, failureClassification: `${base}cuda-archive-plan-1-classification.json`,
+});
+export const snapshotIdentity = Object.freeze({ source: snapshotPaths.source, byteLength: 80761952,
+  sha256: "33d56b070be6a9e3da0ab013038b43d1645d0534ca811ecdba4472599117eb4b", destination: snapshotPaths.destination });
+export const snapshotPins = Object.freeze({ haltedRequest: "51d56812426992f2ad9e85980a35630fe620220a5fb562d7af20b009e1c3eb82",
+  haltedCanonical: "185268cfde22ce3651280a5e98f7234173a16406c9faabc25c69c24b14e54188",
+  oldRequest: "27ee06aafbbc64eb936f5ea39d03ba0bdecd0b9109e8c3472ee4999d917b6321",
+  oldReview: "e5d24c1d29be99e5989d0eddde26b94077b786e770b7338815a7ecd5d3cd453a",
+  failedStderr: "424e5adf80167a5a9e8d19eac76fdb7638f879b219859733926544de86f6a662" });
+export const bindingVersion = "chess-coach.cuda-bun-snapshot-source-review.v1";
+export const snapshotLimits = Object.freeze({ proofBytes: 1048576, chunkBytes: 65536, wholeInvocationMs: 30000 });
+export const reviewedFiles = Object.freeze([...acquisitionFiles, `${base}cuda-bun-snapshot.ts`, `${base}cuda-bun-snapshot.test.ts`, snapshotPaths.taskConfiguration]);
+export const historicalSourcePaths = Object.freeze([...acquisitionFiles, `${base}cuda-archive.ts`, `${base}cuda-archive.test.ts`,
+  `${base}cuda-archive-mise.toml`, `${base}cuda-tar.ts`, `${base}cuda-tar.test.ts`, `${base}cuda-elf.ts`, `${base}cuda-elf.test.ts`, `${base}fixtures/cuda-tar-cases.json`]);
+const acquisitionSnapshots = acquisitionFiles.map((_, i) => `${acquisition}source-snapshot/${String(i).padStart(2, "0")}.source`);
+export const historicalProofPaths = Object.freeze([...inertPaths, `${acquisition}approved-request.json`, `${base}cuda-acquire-reviewed.json`,
+  `${acquisition}source-review.json`, `${acquisition}receipt.json`, `${acquisition}source-snapshot.json`,
+  ...["archive", "checksums"].flatMap(leaf => ["receipt.json", "artifact.json", "command.stdout", "command.stderr", ".operation"].map(name => `${acquisition}${leaf}/${name}`)),
+  ...acquisitionSnapshots]);
+export const historicalSnapshotPaths = Object.freeze(historicalSourcePaths.map((_, i) => `${plan}source-snapshot/${String(i).padStart(2, "0")}.source`));
+export const proofPaths = Object.freeze([...historicalProofPaths, snapshotPaths.haltedRequest, snapshotPaths.oldRequest, snapshotPaths.oldReview,
+  snapshotPaths.retainedReview, snapshotPaths.sourceManifest, ...historicalSnapshotPaths, snapshotPaths.failedReceipt,
+  snapshotPaths.failedStdout, snapshotPaths.failedStderr, snapshotPaths.ancestorDiagnosis, snapshotPaths.failureClassification]);
+export const predecessorPaths = proofPaths;
+const acceptanceFlags = ["staticUnitTestsPassed", "staticTypesPassed", "adversarialSourceAccepted", "securitySourceAccepted", "devopsSourceAccepted"] as const;
+const outerBootstrapTrust = "EXISTING_C1_BUN_AND_MISE_BOOTSTRAP_ASSUMPTION_RETAINED_NOT_AUTHENTICATED_BY_GUEST_SNAPSHOT";
+const encode = (value: string): Uint8Array => new TextEncoder().encode(value);
+const parse = (bytes: Uint8Array): unknown => JSON.parse(new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes));
+function need(condition: unknown, code: string): asserts condition { if (!condition) throw Error(code); }
+function object(value: unknown): Record<string, unknown> {
+  need(value !== null && typeof value === "object" && !Array.isArray(value), "OBJECT_REQUIRED");
+  return value as Record<string, unknown>;
+}
+function canonical(value: unknown): string {
+  if (value === null || typeof value === "string" || typeof value === "boolean") return JSON.stringify(value);
+  if (typeof value === "number") { need(Number.isFinite(value), "JSON_DATA_REQUIRED"); return JSON.stringify(value); }
+  if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
+  const record = object(value);
+  need([Object.prototype, null].includes(Object.getPrototypeOf(record)) && Reflect.ownKeys(record).length === Object.keys(record).length, "JSON_DATA_REQUIRED");
+  return `{${Object.entries(record).sort(([a], [b]) => a.localeCompare(b)).map(([key, item]) => `${JSON.stringify(key)}:${canonical(item)}`).join(",")}}`;
+}
+const same = (a: unknown, b: unknown): boolean => canonical(a) === canonical(b);
+const keys = (value: object, expected: readonly string[]): boolean => same(Object.keys(value).sort(), [...expected].sort());
+
+export function snapshotRenewalRequest(halted: unknown): Record<string, unknown> {
+  need(sha256(encode(canonical(halted))) === snapshotPins.haltedCanonical, "EXACT_HALTED_SNAPSHOT_BASELINE_REQUIRED");
+  const baseline = object(halted);
+  return { ...baseline, status: "APPROVED_SEQUENCE_IN_PROGRESS_AFTER_PRIVATE_BUN_SNAPSHOT_RENEWAL", authorityGranted: true,
+    authorization: { ...object(baseline.authorization), grantStatus: "APPROVED_SEQUENCE_IN_PROGRESS" },
+    phase: "PRIVATE_BUN_SNAPSHOT_SOURCE_GATES_PENDING", renewedExecutorDecisionRequired: false,
+    nativeBunSnapshotRenewal: { selectedOption: "Private Bun snapshot (Recommended)", previousHaltedRequestCapture: snapshotPaths.haltedRequest,
+      previousHaltedRequestSha256: snapshotPins.haltedRequest, remainingApprovedPipelineRenewed: true, completedDownloadsMayRepeat: false,
+      oneOutsideSnapshotDeadlineMs: 30000, firstActualFailureStopsSequence: true },
+    nativeBunSnapshot: { grantStatus: "APPROVED_NOT_EXECUTED", ...snapshotIdentity, directoryMode: "0700", executableMode: "0500",
+      sourceReadException: { path: "/usr/local/bin", uid: 1001, gid: 1001, mode: "0755", scope: "PINNED_BYTE_CAPTURE_READ_ONLY_NEVER_EXECUTABLE_BINDING" },
+      outerBootstrapTrust, taskConfiguration: snapshotPaths.taskConfiguration } };
+}
+export type SnapshotInputs = Readonly<{ requestBytes: Uint8Array; binding: unknown;
+  evidence: Readonly<{ files: Readonly<Record<string, Uint8Array>>; predecessorProofs: Readonly<Record<string, Uint8Array>> }> }>;
+
+function validateFailedPlan(raw: Readonly<Record<string, Uint8Array>>): void {
+  const receipt = object(parse(raw[snapshotPaths.failedReceipt]!)), classification = object(parse(raw[snapshotPaths.failureClassification]!));
+  need(receipt.version === "chess-coach.cuda-archive-readonly-root-plan.v1" && receipt.status === "FAIL" && receipt.exitCode === 1 && receipt.failure === null &&
+    receipt.scope === "READ_ONLY_DEVELOPMENT_PLAN_NOT_NATIVE_AUDIT_ATTEMPT" && receipt.pinnedRequestSha256 === snapshotPins.oldRequest &&
+    receipt.pinnedReviewSha256 === snapshotPins.oldReview && receipt.nativeExecutableInvocations === 0, "EXACT_FAILED_PLAN_REQUIRED");
+  for (const key of ["decompressionPerformed", "extractionPerformed", "llvmCodeExecuted", "trainingReady"]) need(receipt[key] === false, "NO_NATIVE_PLAN_REQUIRED");
+  const streams = [snapshotPaths.failedStdout, snapshotPaths.failedStderr].map((path, i) => ({ stream: i === 0 ? "stdout" : "stderr", path,
+    bytes: raw[path]!.byteLength, sha256: sha256(raw[path]!) }));
+  need(raw[snapshotPaths.failedStdout]!.byteLength === 0 && sha256(raw[snapshotPaths.failedStderr]!) === snapshotPins.failedStderr &&
+    new TextDecoder().decode(raw[snapshotPaths.failedStderr]!).includes("UNTRUSTED_FILE_ANCESTOR") && same(receipt.streams, streams) &&
+    receipt.stdoutBytes === 0 && receipt.stderrBytes === streams[1]!.bytes, "FAILED_PLAN_STREAMS_REQUIRED");
+  need(same(classification, { version: "chess-coach.cuda-archive-readonly-plan-failure.v1", outcome: "FAIL", originalReceipt: snapshotPaths.failedReceipt,
+    originalReceiptPreserved: true, failureCategory: "READ_ONLY_ENVIRONMENT_ROOT_PLAN_VALIDATION_BEFORE_NATIVE_AUDIT_LAUNCH", failureCode: "UNTRUSTED_FILE_ANCESTOR",
+    diagnosis: snapshotPaths.ancestorDiagnosis, rejectedAncestor: "/usr/local/bin", observedOwnerUid: 1001, observedOwnerGid: 1001, observedMode: "0755",
+    currentUid: 1000, allowedAncestorOwners: [0, 1000], guardRejectedAccordingToAcceptedPolicy: true, plannerBunCommandRan: true,
+    quarantineBunChildLaunched: false, bwrapLaunched: false, xzLaunched: false, miseInvoked: false, decompressionPerformed: false, extractionPerformed: false,
+    llvmCodeExecuted: false, cudaCompilationAttempted: false, cudaGpuCodeExecuted: false, namespaceCapabilityFailureEstablished: false,
+    hostOnlyVerificationCommandEstablished: false, retainedRequest: snapshotPaths.oldRequest, retainedRequestSha256: snapshotPins.oldRequest,
+    requestRetentionTiming: "AFTER_FAILED_PLANNING_INVOCATION_MATCHED_PRE_EXECUTION_PIN_NOT_ORIGINAL_PRE_EXECUTION_CAPTURE",
+    sourceReview: snapshotPaths.oldReview, sourceReviewSha256: snapshotPins.oldReview,
+    bootstrapTrustLimitation: "A guest-only private Bun snapshot would not authenticate existing outer Bun or Mise execution through the same ancestor.",
+    sequenceHaltedConservativelyAtFirstRealEnvironmentQualificationFailure: true, automaticRetryPerformed: false, ownershipOrPermissionsChanged: false,
+    privateExecutableSnapshotCreated: false, trustPolicyWeakened: false, freshRemedySelectionAndRenewalRequired: true, trainingReady: false }), "EXACT_FAILED_PLAN_CLASSIFICATION_REQUIRED");
+  const diagnosis = object(parse(raw[snapshotPaths.ancestorDiagnosis]!));
+  need(keys(diagnosis, ["version", "method", "currentUid", "files", "guardAllowsOnlyRootOrCurrentUid", "diagnosedRejectedAncestor", "ownershipChanged", "sourceCopied", "nativeAuditLaunched", "trainingReady"]) &&
+    diagnosis.version === "chess-coach.cuda-archive-ancestor-diagnosis.v1" && diagnosis.method === "READ_ONLY_LSTAT_REALPATH_AFTER_FAILED_PLAN" && diagnosis.currentUid === 1000 &&
+    diagnosis.guardAllowsOnlyRootOrCurrentUid === true && diagnosis.diagnosedRejectedAncestor === "/usr/local/bin" &&
+    ["ownershipChanged", "sourceCopied", "nativeAuditLaunched", "trainingReady"].every(key => diagnosis[key] === false) &&
+    Array.isArray(diagnosis.files) && diagnosis.files.length === 5, "EXACT_ANCESTOR_DIAGNOSIS_REQUIRED");
+  const paths = ["/", "/usr", "/usr/local", "/usr/local/bin", snapshotPaths.source];
+  for (const [i, value] of diagnosis.files.entries()) {
+    const file = object(value), source = i === 4;
+    need(keys(file, ["path", "physicalPath", "uid", "gid", "mode", "directory", "regularFile", "symlink", "bytes", "device", "inode", "mtimeNs", "ctimeNs"]) &&
+      file.path === paths[i] && file.physicalPath === paths[i] && file.uid === (i === 3 ? 1001 : 0) && file.gid === (i === 3 ? 1001 : 0) &&
+      file.mode === (source ? 0o100755 : 0o40755) && file.directory === !source && file.regularFile === source && file.symlink === false &&
+      file.bytes === (source ? snapshotIdentity.byteLength : 4096), "EXACT_REJECTED_ANCESTOR_REQUIRED");
+  }
+}
+
+export function validateSnapshotRenewal(input: SnapshotInputs): void {
+  const review = object(input.binding), files = object(review.files), proofs = object(review.predecessorProofs);
+  need(keys(review, ["version", ...acceptanceFlags, "requestSha256", "files", "predecessorProofs"]) && review.version === bindingVersion &&
+    acceptanceFlags.every(key => review[key] === true), "SNAPSHOT_SOURCE_ACCEPTANCE_REQUIRED");
+  need(input.requestBytes instanceof Uint8Array && input.requestBytes.byteLength > 0 && input.requestBytes.byteLength <= snapshotLimits.proofBytes &&
+    review.requestSha256 === sha256(input.requestBytes) && keys(files, reviewedFiles) && keys(input.evidence.files, reviewedFiles) &&
+    keys(proofs, proofPaths) && keys(input.evidence.predecessorProofs, proofPaths), "SNAPSHOT_BINDING_MEMBERSHIP_REQUIRED");
+  for (const [paths, hashes, bytes] of [[reviewedFiles, files, input.evidence.files], [proofPaths, proofs, input.evidence.predecessorProofs]] as const) {
+    for (const path of paths) need(bytes[path] instanceof Uint8Array && bytes[path]!.byteLength <= snapshotLimits.proofBytes && hashes[path] === sha256(bytes[path]!), "SNAPSHOT_BINDING_HASH_MISMATCH");
+  }
+  const raw = input.evidence.predecessorProofs;
+  need(sha256(raw[snapshotPaths.haltedRequest]!) === snapshotPins.haltedRequest && sha256(raw[snapshotPaths.oldRequest]!) === snapshotPins.oldRequest &&
+    [snapshotPaths.oldReview, snapshotPaths.retainedReview].every(path => sha256(raw[path]!) === snapshotPins.oldReview), "PINNED_SNAPSHOT_PREDECESSORS_REQUIRED");
+  const halted = object(parse(raw[snapshotPaths.haltedRequest]!)), oldRequest = object(parse(raw[snapshotPaths.oldRequest]!));
+  need(same(parse(input.requestBytes), snapshotRenewalRequest(halted)), "EXACT_SNAPSHOT_RENEWAL_REQUIRED");
+  need(same(halted, { ...oldRequest, status: "HALTED_AFTER_READ_ONLY_ARCHIVE_ROOT_PLAN_FAILURE_DECISION_REQUIRED", authorityGranted: false,
+    authorization: { ...object(oldRequest.authorization), grantStatus: "HALTED_AFTER_FIRST_FAILURE" }, phase: "HALTED_BEFORE_PASSIVE_ARCHIVE_AUDIT",
+    sourceCorrection: { ...object(oldRequest.sourceCorrection), actualRetryAuthorized: false },
+    nativeLayoutCorrection: { ...object(oldRequest.nativeLayoutCorrection), actualRetryAuthorized: false },
+    renewedExecutorDecisionRequired: true, archiveRootPlanFailure: { receipt: snapshotPaths.failedReceipt, classification: snapshotPaths.failureClassification,
+      failureCode: "UNTRUSTED_FILE_ANCESTOR", rejectedAncestor: "/usr/local/bin", observedOwnerUid: 1001, currentUid: 1000,
+      nativeAuditLaunched: false, automaticRetryPerformed: false, trustPolicyDecisionRequired: true } }), "EXACT_ARCHIVE_HALT_DELTA_REQUIRED");
+  const oldReview = object(parse(raw[snapshotPaths.oldReview]!)), oldFiles = object(oldReview.files), oldProofs = object(oldReview.predecessorProofs);
+  need(keys(oldReview, ["version", ...acceptanceFlags, "requestSha256", "files", "predecessorProofs"]) && oldReview.version === "chess-coach.cuda-archive-audit-source-review.v1" &&
+    acceptanceFlags.every(key => oldReview[key] === true) && oldReview.requestSha256 === snapshotPins.oldRequest &&
+    keys(oldFiles, historicalSourcePaths) && keys(oldProofs, historicalProofPaths), "PINNED_OLD_ARCHIVE_REVIEW_REQUIRED");
+  for (const path of historicalProofPaths) need(oldProofs[path] === sha256(raw[path]!), "OLD_ARCHIVE_PROOF_CHANGED");
+  const manifest = historicalSourcePaths.map((path, i) => {
+    const snapshot = historicalSnapshotPaths[i]!, bytes = raw[snapshot]!;
+    need(oldFiles[path] === sha256(bytes), "OLD_ARCHIVE_SOURCE_PACKET_CHANGED");
+    return { path, snapshot, bytes: bytes.byteLength, sha256: sha256(bytes) };
+  });
+  need(same(parse(raw[snapshotPaths.sourceManifest]!), { captureTiming: "AFTER_FAILED_READ_ONLY_PLAN_MATCHES_ACCEPTED_PRE_EXECUTION_BINDING", files: manifest }), "EXACT_OLD_SOURCE_MANIFEST_REQUIRED");
+  validateFailedPlan(raw);
+  validateSnapshotTaskConfiguration(input.evidence.files[snapshotPaths.taskConfiguration]!);
+}
+
+export type SnapshotStat = Readonly<{ device: string; inode: string; bytes: number; mode: number; uid: number; gid: number;
+  links: number; mtime: string; ctime: string }>;
+export type SnapshotHandle = Readonly<{ stat: () => Promise<SnapshotStat>; read: (buffer: Uint8Array, offset: number, length: number, position: number) => Promise<number>;
+  write: (buffer: Uint8Array, offset: number, length: number, position: number) => Promise<number>; sync: () => Promise<void>;
+  chmod: (mode: number) => Promise<void>; close: () => Promise<void> }>;
+export type SnapshotFileIO = Readonly<{ uid: () => number; lstat: (path: string) => Promise<SnapshotStat>; realpath: (path: string) => Promise<string>;
+  open: (path: string, flags: number, mode?: number) => Promise<SnapshotHandle>; mkdir: (path: string, mode: number) => Promise<void>;
+  link: (from: string, to: string) => Promise<void> }>;
+export type TrustedSnapshotIO = SnapshotFileIO & Readonly<{ readInputs: () => Promise<SnapshotInputs> }>;
+export type SnapshotAncestor = Readonly<{ path: string; physicalPath: string; identity: SnapshotStat }>;
+export type SnapshotFileObservation = Readonly<{ descriptor: SnapshotStat; path: SnapshotStat }>;
+type SnapshotIdentity = Readonly<{ byteLength: number; sha256: string }>;
+const absolute = (path: string): string => resolve(repository, path);
+const equalStat = (a: SnapshotStat, b: SnapshotStat): boolean => same(a, b);
+const sameLinkedFile = (a: SnapshotStat, b: SnapshotStat): boolean => a.device === b.device && a.inode === b.inode && a.bytes === b.bytes &&
+  a.mode === b.mode && a.uid === b.uid && a.gid === b.gid && a.mtime === b.mtime;
+const readFlags = constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK;
+const writeFlags = constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW | constants.O_NONBLOCK;
+
+async function ancestors(path: string, io: SnapshotFileIO, sourceCaptureRead = false): Promise<SnapshotAncestor[]> {
+  const observations: SnapshotAncestor[] = [];
+  for (let current = dirname(path); ; current = dirname(current)) {
+    const stat = await io.lstat(current), physicalPath = await io.realpath(current);
+    const exception = sourceCaptureRead && path === snapshotPaths.source && current === "/usr/local/bin" && stat.uid === 1001 && stat.gid === 1001 && stat.mode === 0o40755;
+    need((stat.mode & 0o170000) === 0o40000 && (stat.mode & 0o022) === 0 && physicalPath === current &&
+      (exception || [0, io.uid()].includes(stat.uid)), "UNTRUSTED_SNAPSHOT_ANCESTOR");
+    observations.push({ path: current, physicalPath, identity: stat });
+    if (current === "/") break;
+  }
+  return observations.reverse();
+}
+async function privateDirectory(path: string, io: SnapshotFileIO): Promise<void> {
+  await ancestors(`${path}/.entry`, io);
+  const stat = await io.lstat(path);
+  need(stat.uid === io.uid() && stat.mode === 0o40700 && await io.realpath(path) === path, "PRIVATE_SNAPSHOT_DIRECTORY_REQUIRED");
+}
+async function observation(path: string, handle: SnapshotHandle, io: SnapshotFileIO): Promise<SnapshotFileObservation> {
+  const descriptor = await handle.stat(), pathStat = await io.lstat(path);
+  need(equalStat(descriptor, pathStat) && await io.realpath(path) === path, "SNAPSHOT_FD_PATH_MISMATCH");
+  return { descriptor, path: pathStat };
+}
+function regular(stat: SnapshotStat, uid: number, mode: number, bytes: number, links?: number): void {
+  need(stat.mode === (0o100000 | mode) && stat.uid === uid && stat.bytes === bytes && (links === undefined || stat.links === links), "SNAPSHOT_FILE_IDENTITY_REJECTED");
+}
+async function closed<T>(handle: SnapshotHandle, work: () => Promise<T>): Promise<T> {
+  let failed = false, first: unknown, result!: T;
+  try { result = await work(); } catch (error) { failed = true; first = error; }
+  try { await handle.close(); } catch (error) { if (!failed) { failed = true; first = error; } }
+  if (failed) throw first;
+  return result;
+}
+async function writeAll(handle: SnapshotHandle, bytes: Uint8Array, position: number): Promise<void> {
+  let offset = 0;
+  while (offset < bytes.byteLength) {
+    const count = await handle.write(bytes, offset, bytes.byteLength - offset, position + offset);
+    need(Number.isInteger(count) && count > 0 && count <= bytes.byteLength - offset, "SNAPSHOT_PARTIAL_WRITE_FAILED");
+    offset += count;
+  }
+}
+async function readSmall(path: string, io: SnapshotFileIO): Promise<Uint8Array> {
+  const beforeAncestors = await ancestors(path, io), handle = await io.open(path, readFlags);
+  return closed(handle, async () => {
+    const before = await observation(path, handle, io), stat = before.descriptor;
+    need((stat.mode & 0o170000) === 0o100000 && (stat.mode & 0o7022) === 0 && [0, io.uid()].includes(stat.uid) &&
+      Number.isSafeInteger(stat.bytes) && stat.bytes >= 0 && stat.bytes <= snapshotLimits.proofBytes, "BOUNDED_OWNED_SNAPSHOT_INPUT_REQUIRED");
+    const buffer = new Uint8Array(stat.bytes + 1); let length = 0;
+    while (length < buffer.byteLength) {
+      const count = await handle.read(buffer, length, buffer.byteLength - length, length);
+      need(Number.isInteger(count) && count >= 0 && count <= buffer.byteLength - length && count <= stat.bytes - length, "SNAPSHOT_INPUT_BYTE_LIMIT");
+      if (count === 0) break;
+      length += count;
+    }
+    need(length === stat.bytes && same(before, await observation(path, handle, io)) && same(beforeAncestors, await ancestors(path, io)), "SNAPSHOT_INPUT_CHANGED");
+    return buffer.subarray(0, length);
+  });
+}
+export async function readSnapshotInputs(io: SnapshotFileIO = filesystemIO): Promise<SnapshotInputs> {
+  const requestBytes = await readSmall(absolute(snapshotPaths.request), io), binding = parse(await readSmall(absolute(snapshotPaths.binding), io));
+  const files = Object.fromEntries(await Promise.all(reviewedFiles.map(async path => [path, await readSmall(absolute(path), io)])));
+  const predecessorProofs = Object.fromEntries(await Promise.all(proofPaths.map(async path => [path, await readSmall(absolute(path), io)])));
+  return { requestBytes, binding, evidence: { files, predecessorProofs } };
+}
+async function exclusiveSmall(path: string, bytes: Uint8Array, io: SnapshotFileIO): Promise<SnapshotStat> {
+  need(bytes.byteLength > 0 && bytes.byteLength <= snapshotLimits.proofBytes, "BOUNDED_SNAPSHOT_RECORD_REQUIRED");
+  const beforeAncestors = await ancestors(path, io), handle = await io.open(path, writeFlags, 0o600);
+  const result = await closed(handle, async () => {
+    regular((await observation(path, handle, io)).descriptor, io.uid(), 0o600, 0, 1);
+    await writeAll(handle, bytes, 0); await handle.sync();
+    const after = await observation(path, handle, io); regular(after.descriptor, io.uid(), 0o600, bytes.byteLength, 1);
+    return after.descriptor;
+  });
+  const afterAncestors = await ancestors(path, io);
+  need(same(beforeAncestors.map(a => [a.path, a.physicalPath, a.identity.device, a.identity.inode, a.identity.uid, a.identity.gid, a.identity.mode]),
+    afterAncestors.map(a => [a.path, a.physicalPath, a.identity.device, a.identity.inode, a.identity.uid, a.identity.gid, a.identity.mode])) &&
+    equalStat(result, await io.lstat(path)), "SNAPSHOT_RECORD_PATH_CHANGED");
+  return result;
+}
+async function verifyPrivateFile(path: string, expected: SnapshotIdentity, links: number, io: SnapshotFileIO, sealed?: SnapshotStat) {
+  const beforeAncestors = await ancestors(path, io); await privateDirectory(absolute(snapshotPaths.attemptDirectory), io);
+  const handle = await io.open(path, readFlags);
+  return closed(handle, async () => {
+    const before = await observation(path, handle, io); regular(before.descriptor, io.uid(), 0o500, expected.byteLength, links);
+    if (sealed) need(equalStat(before.descriptor, sealed), "SEALED_SNAPSHOT_CHANGED");
+    const hash = createHash("sha256"); let length = 0;
+    while (true) {
+      const buffer = new Uint8Array(Math.min(snapshotLimits.chunkBytes, expected.byteLength - length + 1));
+      const count = await handle.read(buffer, 0, buffer.byteLength, length);
+      need(Number.isInteger(count) && count >= 0 && count <= buffer.byteLength && count <= expected.byteLength - length, "SNAPSHOT_VERIFY_BYTE_LIMIT");
+      if (count === 0) break;
+      hash.update(buffer.subarray(0, count)); length += count;
+    }
+    need(length === expected.byteLength && hash.digest("hex") === expected.sha256, "SNAPSHOT_VERIFY_BYTES_MISMATCH");
+    const after = await observation(path, handle, io);
+    need(same(before, after) && same(beforeAncestors, await ancestors(path, io)), "PRIVATE_SNAPSHOT_CHANGED");
+    return { before, after, ancestorsBefore: beforeAncestors };
+  });
+}
+export type SnapshotCapture = Readonly<{ version: "chess-coach.cuda-bun-snapshot.v1"; status: "PASS"; requestSha256: string; sourceReviewCanonicalSha256: string;
+  byteLength: number; sha256: string; source: Readonly<{ path: string; before: SnapshotFileObservation; after: SnapshotFileObservation;
+    ancestorsBefore: readonly SnapshotAncestor[]; ancestorsAfter: readonly SnapshotAncestor[] }>;
+  destination: string; stagedIdentity: SnapshotStat; finalIdentity: SnapshotStat; outerBootstrapTrust: string; requiredOutsideDeadlineMs: 30000;
+  fileSyncOnly: true; directoryDurabilityEstablished: false; atomicMountCustodyEstablished: false; buildIsolationQualified: false; custodyQualified: false;
+  llvmCodeExecuted: false; cudaCompilationEstablished: false; actualHostExecuted: false; cudaGpuCodeExecuted: false; trainingReady: false }>;
+
+async function captureEngine(args: readonly string[], expected: SnapshotIdentity, io: TrustedSnapshotIO): Promise<SnapshotCapture> {
+  need(args.length === 1 && args[0] === "capture", "CLOSED_BUN_SNAPSHOT_CLI_REQUIRED");
+  const input = await io.readInputs(); validateSnapshotRenewal(input);
+  await privateDirectory(absolute(snapshotPaths.runDirectory), io); await privateDirectory(absolute(snapshotPaths.cache), io);
+  await exclusiveSmall(absolute(snapshotPaths.operation), encode('{"version":"chess-coach.cuda-bun-snapshot-operation.v1","sequence":"cuda-bun-snapshot-1"}\n'), io);
+  await io.mkdir(absolute(snapshotPaths.attemptDirectory), 0o700);
+  await privateDirectory(absolute(snapshotPaths.attemptDirectory), io);
+  const resources: { handle: SnapshotHandle; closed: boolean }[] = [];
+  const track = (handle: SnapshotHandle) => { const resource = { handle, closed: false }; resources.push(resource); return resource; };
+  const close = async (resource: typeof resources[number]) => { resource.closed = true; await resource.handle.close(); };
+  let failed = false, first: unknown, result!: SnapshotCapture;
+  try {
+    const ancestorsBefore = await ancestors(snapshotPaths.source, io, true), source = track(await io.open(snapshotPaths.source, readFlags));
+    const before = await observation(snapshotPaths.source, source.handle, io); regular(before.descriptor, 0, 0o755, expected.byteLength);
+    await privateDirectory(absolute(snapshotPaths.attemptDirectory), io);
+    const pending = absolute(snapshotPaths.pending), stage = track(await io.open(pending, writeFlags, 0o600));
+    regular((await observation(pending, stage.handle, io)).descriptor, io.uid(), 0o600, 0, 1);
+    const hash = createHash("sha256"); let length = 0;
+    while (true) {
+      const buffer = new Uint8Array(Math.min(snapshotLimits.chunkBytes, expected.byteLength - length + 1));
+      const count = await source.handle.read(buffer, 0, buffer.byteLength, length);
+      need(Number.isInteger(count) && count >= 0 && count <= buffer.byteLength && count <= expected.byteLength - length, "SOURCE_SNAPSHOT_BYTE_LIMIT");
+      if (count === 0) break;
+      const chunk = buffer.subarray(0, count); await writeAll(stage.handle, chunk, length); hash.update(chunk); length += count;
+    }
+    need(length === expected.byteLength, "SOURCE_SNAPSHOT_LENGTH_MISMATCH");
+    need(hash.digest("hex") === expected.sha256, "SOURCE_SNAPSHOT_DIGEST_MISMATCH");
+    const after = await observation(snapshotPaths.source, source.handle, io), ancestorsAfter = await ancestors(snapshotPaths.source, io, true);
+    need(same(before, after) && same(ancestorsBefore, ancestorsAfter), "SOURCE_SNAPSHOT_CHANGED");
+    await close(source);
+    await stage.handle.sync(); await stage.handle.chmod(0o500); await stage.handle.sync();
+    const sealed = (await observation(pending, stage.handle, io)).descriptor; regular(sealed, io.uid(), 0o500, expected.byteLength, 1);
+    await close(stage);
+    const verified = await verifyPrivateFile(pending, expected, 1, io, sealed);
+    const fresh = await io.readInputs(); validateSnapshotRenewal(fresh);
+    need(sha256(fresh.requestBytes) === sha256(input.requestBytes) && same(fresh.binding, input.binding), "SNAPSHOT_AUTHORITY_CHANGED");
+    need(equalStat(await io.lstat(pending), verified.after.descriptor) && same(await ancestors(pending, io), verified.ancestorsBefore), "STAGED_SNAPSHOT_CHANGED");
+    await io.link(pending, absolute(snapshotPaths.destination));
+    const linked = await io.lstat(pending), finalBefore = await io.lstat(absolute(snapshotPaths.destination));
+    regular(linked, io.uid(), 0o500, expected.byteLength, 2);
+    need(sameLinkedFile(verified.after.descriptor, linked) && equalStat(linked, finalBefore), "SNAPSHOT_HARDLINK_IDENTITY_REQUIRED");
+    const final = await verifyPrivateFile(absolute(snapshotPaths.destination), expected, 2, io, finalBefore);
+    need(equalStat(final.after.descriptor, await io.lstat(pending)), "SNAPSHOT_LINK_CHANGED");
+    const last = await io.readInputs(); validateSnapshotRenewal(last);
+    need(sha256(last.requestBytes) === sha256(input.requestBytes) && same(last.binding, input.binding), "SNAPSHOT_AUTHORITY_CHANGED");
+    result = { version: "chess-coach.cuda-bun-snapshot.v1", status: "PASS", requestSha256: sha256(input.requestBytes),
+      sourceReviewCanonicalSha256: sha256(encode(canonical(input.binding))), byteLength: expected.byteLength, sha256: expected.sha256,
+      source: { path: snapshotPaths.source, before, after, ancestorsBefore, ancestorsAfter }, destination: snapshotPaths.destination,
+      stagedIdentity: verified.after.descriptor, finalIdentity: final.after.descriptor, outerBootstrapTrust, requiredOutsideDeadlineMs: 30000,
+      fileSyncOnly: true, directoryDurabilityEstablished: false, atomicMountCustodyEstablished: false, buildIsolationQualified: false, custodyQualified: false,
+      llvmCodeExecuted: false, cudaCompilationEstablished: false, actualHostExecuted: false, cudaGpuCodeExecuted: false, trainingReady: false };
+    await privateDirectory(absolute(snapshotPaths.runDirectory), io);
+    const receiptIdentity = await exclusiveSmall(absolute(snapshotPaths.captureStage), encode(JSON.stringify(result) + "\n"), io);
+    await privateDirectory(absolute(snapshotPaths.runDirectory), io);
+    need(equalStat(receiptIdentity, await io.lstat(absolute(snapshotPaths.captureStage))), "SNAPSHOT_RECEIPT_CHANGED");
+    await privateDirectory(absolute(snapshotPaths.attemptDirectory), io);
+    need(equalStat(final.after.descriptor, await io.lstat(absolute(snapshotPaths.destination))) &&
+      equalStat(final.after.descriptor, await io.lstat(pending)), "FINAL_SNAPSHOT_CHANGED_BEFORE_RECEIPT");
+    await io.link(absolute(snapshotPaths.captureStage), absolute(snapshotPaths.capture));
+  } catch (error) { failed = true; first = error; }
+  for (const resource of resources) if (!resource.closed) {
+    try { await close(resource); } catch (error) { if (!failed) { failed = true; first = error; } }
+  }
+  if (failed) throw first;
+  return result;
+}
+export function captureBunSnapshot(args: readonly string[], io: TrustedSnapshotIO = productionIO): Promise<SnapshotCapture> {
+  return captureEngine(args, snapshotIdentity, io);
+}
+export function snapshotFailureCode(error: unknown): string {
+  const message = error instanceof Error ? error.message : typeof error === "string" ? error : "";
+  return /^[A-Z][A-Z0-9_]{0,127}$/.test(message) ? message : "BUN_SNAPSHOT_FAILED";
+}
+const identity = (stat: BigIntStats): SnapshotStat => ({ device: String(stat.dev), inode: String(stat.ino), bytes: Number(stat.size), mode: Number(stat.mode),
+  uid: Number(stat.uid), gid: Number(stat.gid), links: Number(stat.nlink), mtime: String(stat.mtimeNs), ctime: String(stat.ctimeNs) });
+const filesystemIO: SnapshotFileIO = Object.freeze({
+  uid: () => process.getuid!(), lstat: async path => identity(await lstat(path, { bigint: true })), realpath,
+  async open(path, flags, mode) {
+    const handle = await open(path, flags, mode);
+    return { stat: async () => identity(await handle.stat({ bigint: true })),
+      read: async (buffer, offset, length, position) => (await handle.read(buffer, offset, length, position)).bytesRead,
+      write: async (buffer, offset, length, position) => (await handle.write(buffer, offset, length, position)).bytesWritten,
+      sync: () => handle.sync(), chmod: mode => handle.chmod(mode), close: () => handle.close() };
+  },
+  mkdir: async (path, mode) => { await mkdir(path, { mode }); }, link,
+});
+export const productionIO: TrustedSnapshotIO = Object.freeze({ ...filesystemIO, readInputs: () => readSnapshotInputs() });
+export const snapshotTestOnly = Object.freeze({
+  capture(io: TrustedSnapshotIO) {
+    need(io !== productionIO, "FAKE_SNAPSHOT_IO_REQUIRED");
+    return captureEngine(["capture"], { byteLength: 3, sha256: "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad" }, io);
+  },
+  readSmall, ancestors,
+});
+
+export function snapshotEnvironment(): Record<string, string> { return { ...environment, MISE_OVERRIDE_CONFIG_FILENAMES: "cuda-bun-snapshot-mise.toml" }; }
+export function validateSnapshotTaskConfiguration(bytes: Uint8Array): void {
+  const exact = '# SPEC: _spec/recovery.md\n[tasks."cuda:capture-audit-bun"]\ndir = "../.."\nrun = "/usr/local/bin/bun --no-env-file --no-install _work/gpu-owner-recovery/cuda-bun-snapshot.ts capture"\n';
+  need(bytes.byteLength === encode(exact).byteLength && new TextDecoder("utf-8", { fatal: true }).decode(bytes) === exact, "EXACT_SNAPSHOT_TASK_CONFIGURATION_REQUIRED");
+}
+export type SnapshotMiseStage = Readonly<{ name: "00-trust" | "01-config" | "02-capture"; argv: string[] }>;
+export function snapshotStagePlan(): SnapshotMiseStage[] { return [
+  { name: "00-trust", argv: ["/usr/local/bin/mise", "trust", absolute(snapshotPaths.taskConfiguration)] },
+  { name: "01-config", argv: ["/usr/local/bin/mise", "config", "ls", "--json"] },
+  { name: "02-capture", argv: ["/usr/local/bin/mise", "run", "--raw", "cuda:capture-audit-bun"] },
+]; }
+export function validateSnapshotMiseDiscovery(bytes: Uint8Array): void {
+  need(bytes.byteLength > 0 && bytes.byteLength <= 65536, "SOLE_SNAPSHOT_CONFIGURATION_REQUIRED"); const value = parse(bytes);
+  need(Array.isArray(value) && value.length === 1 && object(value[0]).path === absolute(snapshotPaths.taskConfiguration) &&
+    (object(value[0]).tools === undefined || same(object(value[0]).tools, [])), "SOLE_SNAPSHOT_CONFIGURATION_REQUIRED");
+}
+export type TrustedSnapshotMiseIO = Readonly<{ verifyOutsideGate: () => Promise<void>; readTaskConfiguration: () => Promise<Uint8Array>;
+  run: (stage: SnapshotMiseStage) => Promise<{ exitCode: number; stdout: Uint8Array; failure?: string | null }> }>;
+export async function runSnapshotMiseStages(io: TrustedSnapshotMiseIO) {
+  const completedStages: SnapshotMiseStage["name"][] = [];
+  for (const stage of snapshotStagePlan()) {
+    await io.verifyOutsideGate(); validateSnapshotTaskConfiguration(await io.readTaskConfiguration()); const result = await io.run(stage);
+    need(Number.isInteger(result.exitCode) && result.exitCode >= 0 && result.exitCode <= 255, "INVALID_MISE_STAGE_EXIT");
+    if (result.exitCode !== 0 || (result.failure !== undefined && result.failure !== null)) return { exitCode: result.exitCode || 1, failedStage: stage.name, completedStages };
+    if (stage.name === "01-config") validateSnapshotMiseDiscovery(result.stdout);
+    await io.verifyOutsideGate(); completedStages.push(stage.name);
+  }
+  return { exitCode: 0, failedStage: null, completedStages };
+}
+if (import.meta.main) {
+  try { await captureBunSnapshot(Bun.argv.slice(2)); } catch (error) { console.error(snapshotFailureCode(error)); process.exitCode = 1; }
+}

@@ -1,0 +1,3 @@
+[cuda:isolation-probe] $ /usr/local/bin/bun --no-env-file --no-install _work/gp…
+Error: UNSUPPORTED_TRUSTED_FILE_LAYOUT
+[cuda:isolation-probe] ERROR task failed

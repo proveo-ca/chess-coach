@@ -1,0 +1,81 @@
+@startuml gpu_cooperative_policy_reconstruction
+' purpose: document reconstructed Rust/Bun lease gates and telemetry failure precedence
+' covers: crates/gpu-owner/src/**
+' covers: tooling/runtime/gpu-policy.ts
+' covers: packages/runtime/tests/gpu-policy.test.ts
+' covers: packages/runtime/tests/gpu-policy-conformance.test.ts
+' covers: tooling/runtime/fixtures/gpu-policy-traces.json
+' status: SOURCE_RECONSTRUCTED / VERIFIED_TEST_SUBSETS / SOURCE_REVIEWS_ACCEPTED_SCOPED / trainingReady:false
+' verification: closure policy 352/1262 and all 33 traces pass; current source reviews accepted in scope
+' render: offline render receipts are indexed in _spec/verification.md
+' see: _spec/gpu-cooperative-policy.md
+' see: _spec/gpu-owner.puml
+' see: _spec/recovery.md
+' see: _spec/reference/object-graph-authentication.puml
+title GPU cooperative policy - scoped source accepted, operations unqualified
+
+participant "crates/gpu-owner\nrun_once / run_once_with" as CALLER
+participant "tooling/runtime/gpu-policy.ts\ncrates/gpu-owner/src/policy.rs" as POLICY
+
+CALLER -> POLICY: Construct with fixed S0 and exact config
+POLICY -> POLICY: JS native isProxy(config) first; zero traps
+POLICY -> POLICY: Exact ordinary / null-prototype data shape; config then origin
+CALLER -> POLICY: admit(now, sample)
+POLICY -> POLICY: Terminal / initial failure -> clock -> method -> cold deadline
+alt earlier gate fails
+  POLICY --> CALLER: Prelaunch rejection; terminal first reason
+else earlier gates pass
+  POLICY -> POLICY: JS native isProxy(sample) first; zero traps
+  POLICY -> POLICY: SHAPE: validate fields, UUID syntax, unsigned-i64 values; invalid -> TELEMETRY
+  POLICY -> POLICY: SHAPE: require total > 0 and 0 <= free <= total; invalid -> TELEMETRY
+  POLICY -> POLICY: DEVICE -> SAMPLE_TIME -> SAMPLE_ORDER -> CAPACITY
+  POLICY -> POLICY: CAPACITY only: threshold > total or stable-total mismatch
+  POLICY -> POLICY: New STALE_SAMPLE -> MISSED_SAMPLE -> HEADROOM
+  alt new sample rejected
+    POLICY --> CALLER: Terminal rejection; no owned-job abort
+  else initial lease accepted
+    POLICY --> CALLER: Admission once; awaiting -> running
+    POLICY -> POLICY: Wide nextCheck=min(sample+period, sample+age, S0+297s)
+    loop running; no renewed origin
+      CALLER -> POLICY: observe(now, sample) or check(now)
+      POLICY -> POLICY: Terminal / initial failure -> clock -> method -> work deadline
+      POLICY -> POLICY: OLD lease STALE_SAMPLE -> MISSED_SAMPLE before new input
+      note over CALLER, POLICY
+        Validate the old lease before accepting
+        a replacement. A fresh sample cannot
+        revive an expired lease or renew the
+        original admission window.
+      end note
+      alt earlier gate or old lease fails
+        POLICY -> POLICY: Latch first failure; running -> terminal
+        POLICY --> CALLER: abort-owned exactly once; do not inspect sample
+      else observe with valid earlier gates
+        POLICY -> POLICY: Native Proxy / SHAPE -> DEVICE -> SAMPLE_TIME -> SAMPLE_ORDER
+        POLICY -> POLICY: CAPACITY -> new STALE_SAMPLE -> MISSED_SAMPLE -> HEADROOM
+        alt new sample rejected
+          POLICY --> CALLER: Latch first reason; abort-owned exactly once
+        else new sample accepted
+          POLICY --> CALLER: Continue with updated nextCheck
+        end
+      else check with valid earlier gates
+        POLICY --> CALLER: Continue without sample inspection or lease renewal
+      end
+    end
+  end
+end
+CALLER -> POLICY: Any event after terminal
+POLICY --> CALLER: Preserve first reason; no admission or repeated abort
+
+legend
+  Threshold equality passes; time-boundary equality fails.
+  Pure policy reserves no VRAM and performs no cleanup.
+  Exactly 33 reconstructed semantic traces, not lost historical bytes.
+  Bun: 352 tests; native JS Proxy checks are separate.
+  Rust: all 33 shared traces pass inside one conformance case.
+  Rust source-security acceptance is persisted under C1 only.
+  Authenticated reference guards pass 25 tests / 194 assertions.
+  Current TypeScript packet-5 and final adversarial source reviews accepted.
+  Earlier TypeScript READY verdict does not accept corrected source.
+  Diagram rendering grants no operational authority.
+endlegend
+@enduml

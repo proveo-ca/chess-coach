@@ -1,5 +1,91 @@
 # Gate0 / F9 / R4 closure contract
 
+## CURRENT precedence amendment — accepted 2026-11-09
+
+Executor's latest explicit priority is **training first on a supported functional path; ALL security/privacy hardening and isolation come LAST, after the planned training phase is complete and its results are validated**.
+Do not resume hardening after one episode or a first checkpoint while the accepted training plan remains unfinished.
+This accepted policy supersedes earlier pretraining sequencing, including the prior strict STOP, escaped-group and dual-crash requirements.
+It accepts neither an implementation nor a gate result.
+The architect advisory in session `ses_e43068215ffeuugrCoynxn0LkH` supports this training-first ordering.
+
+The newly selected **training-functional profile** is distinct from the retained **full-assurance profile** below.
+Historical exact-contract and amended full-assurance Gate0/F9/R4 remain OPEN; functional acceptance must never be reported as their PASS or closure.
+The older matrices, C1 implementation packet, critical path and execution-packet requirements below retain their full-assurance meaning, not authority to restore pretraining hardening gates.
+Where their present-tense instructions conflict with this amendment, this amendment governs current roadmap priority.
+Read [readiness.md](readiness.md#current-precedence--training-functional-readiness-2026-11-09), [recovery.md](recovery.md#current-priority--training-first-2026-11-09) and [gate-closure.puml](gate-closure.puml) with this distinction.
+
+### Current accepted critical path
+
+Every phase below is planned work, not a new execution grant or a claim that its exit condition passed.
+
+| Phase | Deliverable | Functional exit condition / authority boundary |
+|---|---|---|
+| 0 | One bounded upfront inventory of training-critical dependencies and blockers | Record dependency, current evidence, genuine functional blocker, required proof and separate approval; accept and freeze the functional gate set before implementation or operations |
+| 1 | Supported runtime/toolchain and actual GPU feasibility on the selected host-backed shared-GPU Docker container path | Establish the chosen path's actual startup, build/runtime compatibility and F64 GPU feasibility; determine whether it needs any part of the old isolated diagnostic pipeline rather than mandating completion of that pipeline |
+| 2 | Functional canonical init/BOTH/reference/close evidence and integrated R4 game/model/economic correctness | Obtain genuine source-bound canonical init/open/pass, BOTH histories, independent reference comparison and orderly close/EOF/reap; verify recipient facts, economic conservation, scoring/context, episode/artifact binding and deterministic game eligibility on the selected path |
+| 3 | Actual GPU F64 numerical and learner validation | Retain all 4,670 finite-difference coordinates at `eps=1e-6`, `atol=1e-8`, `rtol=1e-5`; prove actual GPU scoring, backward, SGD, checkpoint reload and exact C12 redundant-learner digest agreement; leave CPU Flex and master initialization unchanged |
+| 4 | Accepted functional readiness, then **COMPLETE PLANNED TRAINING AND VALIDATE RESULTS** | Explicitly accept the frozen functional evidence; obtain a separate explicit training-execution grant before any training; complete the authorized planned training phase and validate its results under the unchanged model, five-master experiment, learning and eligibility contracts |
+| LAST | **ALL security/privacy hardening, isolation and full-assurance qualification** | Only after completion of the planned training phase and validation of its results: separately scope, approve, implement and qualify runtime-domain security, isolation, custody/provenance assurance and final full-assurance acceptance; no historical finding or gate passes by deferral |
+
+### Phase 0 — bounded dependency/blocker inventory
+
+Use one inventory for the selected functional path, not a new open-ended prerequisite audit at each slice.
+The rows below identify known evidence gaps; they do not establish missing host facts or approve a concrete implementation.
+
+| Dependency | Current evidence | Genuine functional blocker | Required proof | Separate approval |
+|---|---|---|---|---|
+| Selected supported runtime/toolchain | `tooling/runtime/Dockerfile:7` remains the unchanged CPU recipe; optional `tooling/runtime/Dockerfile.gpu` implements package-scoped `gpu-cuda` in source; [local-3 evidence](gpu-readiness.md#current-local-evidence--gpu-functional-local-3-only) records six local recipe/source-test-tooling-type/default-CPU/CPU-recipe stages PASS with `sourceChanged:false`, not an image build or GPU result; Rust source/manifests stay unchanged; see [gpu-build.puml](gpu-build.puml) | The optional GPU recipe source is present, not a built image; explicit CUDA version and prepared LLVM/builder/runtime input selections remain unset, with actual host F64 unqualified; this is a functional input/build gap, not a security gate | Future selected-input GPU-feature build plus actual host GPU F64 execution on the chosen supported path; retain phase 3 numerical/C12 proof and toolchain/runtime compatibility, not full isolated-root qualification | Next genuine decision: select the prepared compiler/library inputs, LLVM prefix, libdevice and supported encoded CUDA version, or obtain narrow fresh authority to prepare the exact cached LLVM archive/libdevice inputs; no automatic build, archive access/rehash/mount, download, upgrade, helper compilation or GPU operation; do not reenact or renew the old audit pipeline |
+| Functional GPU training activation | `tooling/runtime/Dockerfile.gpu:50` retains `job.ts`; `packages/runtime/src/job.ts:11` permits only `native-proof`; `packages/runtime/src/gpu-job.ts:142` and `crates/gpu-owner/src/main.rs:10` retain `SOURCE_ONLY_DISABLED` normal mains | The recipe does not enable or connect the operational GPU training path; this known activation gap is functional work, not deferred security hardening or a new pre-input-selection gate | After selected-host GPU capability proof, separately implement and verify the approved activation/wiring through ordinary source/test/readiness checks; preserve numerical/model contracts and keep capability proof distinct from training enablement | No activation design/change is approved or implemented by the recipe; later activation work and actual execution/training require their own explicit scope/authority; the immediate next decision remains prepared inputs versus narrow fresh cached-LLVM/libdevice preparation |
+| Bun on that functional path | The private quarantine Bun audit aborted; cause remains `UNDETERMINED`; diagnostics remain 0/3 with no accepted binding | The abort is a functional blocker only if the chosen path depends on the failing behavior; its relevance remains unresolved | Determine that dependency and prove required startup/work on the selected supported path; do not require completing the old isolated diagnostic pipeline by default | A fresh explicit scope decision before any diagnostic, alternative runtime operation or replay; existing blocked requests do not suffice |
+| Canonical game/reference and integrated R4 | Retained source/synthetic receipts do not supply actual selected-path integrated proof | Missing actual functional init/BOTH/reference/close and game/model/economic evidence | Phase 2 proof and existing functional negatives, without adding new privacy/isolation assurance | Separate exact runtime/reference verification grant |
+| F64 GPU and C12 learner path | Recorded CPU evidence covers 4,670 coordinates; actual GPU F64/C12 remains unqualified | Missing real required GPU computation, numerical agreement and update/reload evidence | Phase 3 actual F64 scoring/backward/SGD/reload and exact C12 digest comparison | Separate bounded actual-GPU verification grant; no CPU or reduced-precision fallback |
+| Bounded execution, coexistence and ordinary outputs | Host uses the reported 8 GB GPU; actual admitted target, fit and state/output locations remain unresolved | Insufficient capacity, unsupported ordinary limits or failure to produce/reload the required functional outputs | Selected-path resource/VRAM fit, ordinary bounded job controls and truthful output/checkpoint receipts | Exact resource, target and output scope before execution; no new cgroup/custody proof prerequisite |
+
+Accept the bounded inventory's proof requirements explicitly before using it as the functional readiness checklist.
+Freeze those accepted functional gates to prevent scope ratcheting.
+Route every newly identified security/privacy/isolation requirement to LAST, even when a review rates it HIGH; retain its finding, severity and deferred disposition rather than fabricating a fix or PASS.
+Reopen the functional inventory only for a demonstrated training-critical correctness or supported-path feasibility blocker, with its evidence, minimal proof and explicit approval recorded.
+Do not disguise a deferred assurance requirement as a functional dependency.
+
+### Retained correctness and operational limits
+
+Game/model correctness remains pretraining work; new privacy/security hardening does not.
+Keep genuine recipient-authorized facts, hidden-fact exclusion, history/lineage, economic accounting, existing privacy-twin/noninterference tests, deterministic replay and game eligibility unchanged.
+Do not remove or relabel existing functional tests, alter model inputs or expose hidden facts by calling that a privacy deferral.
+Keep the model/objective, master seeds `101..105`, initialization, RNG/curriculum, sampling, baselines, checkpoint binding/reload, reward/failure classification and retained experiment contracts unchanged.
+Infrastructure, timeout or failed-output episodes cannot become learned rewards.
+
+Keep ordinary bounded-resource execution, original clocks/deadlines, bounded cleanup and honest failure reporting.
+Retain C2 job ceilings, aggregate 24,000,000,000-byte RAM / 12-thread ceilings, output bounds and the final three-second cleanup reserve; do not renew clocks or retry automatically.
+Preserve GPU cooperative admission/operational ceilings and coexistence with the host's reported in-use 8 GB GPU; a free-VRAM sample is neither a reservation nor guaranteed availability.
+Keep the GPU attached to its host driver; CPU fallback and actual GPU work inside the coding sandbox remain excluded.
+Ordinary output/receipt evidence must identify the work, result and failure scope truthfully; end-to-end hardened capture is not a pretraining dependency.
+Require genuine successful close/EOF/reap for the functional positive; do not substitute forced removal or claim unconditional physical termination.
+
+Defer strict physical-stop guarantees, escaped-group and dual-crash proof, native bridge/pidfd/cgroup/service/helper implementation, bwrap/namespace qualification, hardened read-only closures, anti-race/custody proofs, private custody storage, provenance-assurance qualification and runtime-domain security acceptance to LAST.
+No new isolation or hardened capture/storage mechanism becomes a covert pretraining gate.
+This roadmap does not remove or disable any existing configuration, safeguard or source path.
+
+### Reviews, observed status and authority
+
+AGENTS.md implementation reviews remain process requirements after feasible authorized verification.
+Scope applicable reviews to functional correctness, the frozen supported-path gates and an explicit deferred assurance backlog; review participation does not require security hardening first.
+Executor's latest instruction already supplies the policy decision to defer security/privacy/isolation-hardening findings until LAST.
+Keep such findings open/deferred with their original severity; do not claim reviewer acceptance, clear an old HIGH, or reopen the same policy-deferral question merely because it is HIGH.
+A genuine functional-correctness finding still requires resolution or its own explicit human decision.
+
+Observed status remains **0/3 diagnostic cases, no accepted diagnostic binding, full pipeline halted, `trainingReady:false`**.
+Only future explicitly accepted functional proof can change the observed readiness result; this plan cannot set that flag.
+The unspent diagnostic allowance does not authorize invoking the existing blocked pipeline.
+The full LLVM/archive request remains halted; no execution grant is renewed or inferred.
+This amendment authorizes no source/tooling/request/receipt changes, archive acquisition/capture/replay, downloads, runtime upgrades, helper compilation, credentials, host/GPU inspection, process launch, native load, test, render, training or publication.
+Any future implementation or operation needs its own applicable explicit scope and execution approval.
+
+## Retained full-assurance contract — historical sequencing, not pretraining gates
+
+All original text below remains intact for traceability.
+Its historical grants, findings, gate matrices and proposed ordering do not override the current amendment or renew authority.
+
 ## Status and authority
 
 Gate0 is OPEN.

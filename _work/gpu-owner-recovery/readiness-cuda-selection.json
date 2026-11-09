@@ -1,0 +1,112 @@
+{
+  "version": "chess-coach.selected-cuda-metadata.v1",
+  "sourceReceipt": "_work/gpu-owner-recovery/runs/readiness-real-cuda-metadata-2/receipt.json",
+  "metadataSha256": "d0184a3cf4893205029336fa7db974aa43e4992187c1722fde7c20a4d75106b9",
+  "packageCount": 572,
+  "resolveNodeCount": 572,
+  "packages": [
+    {
+      "name": "burn-cuda",
+      "version": "0.22.1",
+      "id": "registry+https://github.com/rust-lang/crates.io-index#burn-cuda@0.22.1",
+      "features": [
+        "std"
+      ],
+      "manifestPath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/burn-cuda-0.22.1/Cargo.toml",
+      "hasBuildScript": false
+    },
+    {
+      "name": "chess-coach-learning",
+      "version": "0.1.0",
+      "id": "path+file:///home/gu1lty/Projects/proveo/chess-coach/crates/learning#chess-coach-learning@0.1.0",
+      "features": [
+        "default",
+        "gpu-cuda"
+      ],
+      "manifestPath": "/home/gu1lty/Projects/proveo/chess-coach/crates/learning/Cargo.toml",
+      "hasBuildScript": false
+    },
+    {
+      "name": "chess-coach-policy-io",
+      "version": "0.1.0",
+      "id": "path+file:///home/gu1lty/Projects/proveo/chess-coach/crates/policy-io#chess-coach-policy-io@0.1.0",
+      "features": [
+        "default",
+        "gpu-cuda"
+      ],
+      "manifestPath": "/home/gu1lty/Projects/proveo/chess-coach/crates/policy-io/Cargo.toml",
+      "hasBuildScript": false
+    },
+    {
+      "name": "cubecl-cuda",
+      "version": "0.11.3",
+      "id": "registry+https://github.com/rust-lang/crates.io-index#cubecl-cuda@0.11.3",
+      "features": [
+        "std"
+      ],
+      "manifestPath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cubecl-cuda-0.11.3/Cargo.toml",
+      "hasBuildScript": true
+    },
+    {
+      "name": "cubecl-llvm",
+      "version": "0.11.3",
+      "id": "registry+https://github.com/rust-lang/crates.io-index#cubecl-llvm@0.11.3",
+      "features": [
+        "amdgpu",
+        "nvptx",
+        "std"
+      ],
+      "manifestPath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cubecl-llvm-0.11.3/Cargo.toml",
+      "hasBuildScript": true
+    },
+    {
+      "name": "cubek-fft",
+      "version": "0.3.1",
+      "id": "registry+https://github.com/rust-lang/crates.io-index#cubek-fft@0.3.1",
+      "features": [],
+      "manifestPath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cubek-fft-0.3.1/Cargo.toml",
+      "hasBuildScript": false
+    },
+    {
+      "name": "cudarc",
+      "version": "0.19.10",
+      "id": "registry+https://github.com/rust-lang/crates.io-index#cudarc@0.19.10",
+      "features": [
+        "cuda-version-from-build-system",
+        "driver",
+        "fallback-dynamic-loading",
+        "fallback-latest",
+        "nccl",
+        "nccl-02030",
+        "nvrtc",
+        "std"
+      ],
+      "manifestPath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cudarc-0.19.10/Cargo.toml",
+      "hasBuildScript": true
+    },
+    {
+      "name": "llvm-sys",
+      "version": "231.0.2",
+      "id": "registry+https://github.com/rust-lang/crates.io-index#llvm-sys@231.0.2",
+      "features": [
+        "disable-alltargets-init",
+        "no-llvm-linking"
+      ],
+      "manifestPath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/llvm-sys-231.0.2/Cargo.toml",
+      "hasBuildScript": true
+    },
+    {
+      "name": "tracel-llvm-bundler",
+      "version": "23.1.0-4",
+      "id": "registry+https://github.com/rust-lang/crates.io-index#tracel-llvm-bundler@23.1.0-4",
+      "features": [],
+      "manifestPath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tracel-llvm-bundler-23.1.0-4/Cargo.toml",
+      "hasBuildScript": true
+    }
+  ],
+  "cubeclCppFeatureSelected": false,
+  "compilationPerformed": false,
+  "nativeLinkerClosureQualified": false,
+  "hostDriverCompatibilityEstablished": false,
+  "trainingReady": false
+}

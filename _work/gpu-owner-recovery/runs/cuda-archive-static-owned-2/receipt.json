@@ -1,0 +1,20 @@
+{
+  "version": "chess-coach.cuda-archive-owned-static-test.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./_work/gpu-owner-recovery/cuda-archive.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 1376,
+  "sourceChanged": false,
+  "scope": "DEPENDENCY_INJECTION_AND_IMMUTABLE_PROOF_FIXTURES_ONLY",
+  "nativeExecutableInvocations": 0,
+  "decompressionPerformed": false,
+  "trainingReady": false
+}

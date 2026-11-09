@@ -1,0 +1,34 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "cuda-acquire-isolation-regression-3",
+  "stage": "cuda-isolation",
+  "sourceManifestSha256": "97c449e79ce048485a3cd65a235d41fb5b5e77d45a3929743bb168efda4cc7d0",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./_work/gpu-owner-recovery/cuda-isolation.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 1763,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-acquire-isolation-regression-3/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-acquire-isolation-regression-3/command.stderr",
+    "bytes": 1763,
+    "sha256": "78d2ff04911d1cb0b87608349838ce09300ea0e446941473da50fc5374ad9a13"
+  },
+  "sourceCount": 45,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

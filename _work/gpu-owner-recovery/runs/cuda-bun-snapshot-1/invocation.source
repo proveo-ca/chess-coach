@@ -1,0 +1,31 @@
+
+import { readFile, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+const root="/home/gu1lty/Projects/proveo/chess-coach",work="/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery",directory="/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/cuda-bun-snapshot-1",environment={"HOME":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/home","PATH":"/usr/local/bin:/usr/bin:/bin","TMPDIR":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/tmp","LANG":"C.UTF-8","LC_ALL":"C.UTF-8","TZ":"UTC","XDG_CONFIG_HOME":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/xdg/config","XDG_CACHE_HOME":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/xdg/cache","XDG_DATA_HOME":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/xdg/data","XDG_STATE_HOME":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/xdg/state","MISE_DATA_DIR":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/data","MISE_CACHE_DIR":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/cache","MISE_STATE_DIR":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/state","MISE_CONFIG_DIR":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/config","MISE_TMP_DIR":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/tmp","MISE_GLOBAL_CONFIG_FILE":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/config/config.toml","MISE_SYSTEM_CONFIG_DIR":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/system","MISE_SYSTEM_DIR":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/system","MISE_SYSTEM_CONFIG_FILE":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/system/config.toml","MISE_CEILING_PATHS":"/home/gu1lty/Projects/proveo/chess-coach/_work","MISE_OVERRIDE_CONFIG_FILENAMES":"cuda-bun-snapshot-mise.toml","MISE_AUTO_ENV":"false","MISE_NO_ENV":"1","MISE_NO_HOOKS":"1","MISE_PARANOID":"1","MISE_AUTO_INSTALL":"false","MISE_TASK_RUN_AUTO_INSTALL":"false","MISE_RUSTUP_HOME":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/rustup","RUSTUP_HOME":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/rustup","MISE_CARGO_HOME":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo","CARGO_HOME":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo","MISE_RUST_DEFAULT_HOST":"x86_64-unknown-linux-gnu","RUSTUP_DIST_SERVER":"https://static.rust-lang.org","RUSTUP_UPDATE_ROOT":"https://static.rust-lang.org/rustup","RUSTUP_AUTO_INSTALL":"0","CARGO_TARGET_DIR":"/home/gu1lty/Projects/proveo/chess-coach/target/gpu-owner-recovery","CARGO_BUILD_JOBS":"2","CARGO_INCREMENTAL":"0","CARGO_PROFILE_DEV_DEBUG":"0","CARGO_PROFILE_TEST_DEBUG":"0","RAYON_NUM_THREADS":"2","RUST_TEST_THREADS":"2"};
+const expectedReviewSha='780a907710d5a934c5f02414db2bedfb91d56d7cc97fd6badf6015bfcf8f58ce',expectedRequestSha='e4a2dca4aa4f0cd9b463f40400912299f16765339723f1a6b371cb11da03150a',hash=bytes=>createHash('sha256').update(bytes).digest('hex');
+async function gate(){
+ const bytes=await readFile(work+'/cuda-bun-snapshot-reviewed.json');if(hash(bytes)!==expectedReviewSha)throw Error('PINNED_BUN_SNAPSHOT_REVIEW_REQUIRED');
+ const record=JSON.parse(bytes);
+ if(record.version!=='chess-coach.cuda-bun-snapshot-source-review.v1'||['staticUnitTestsPassed','staticTypesPassed','adversarialSourceAccepted','securitySourceAccepted','devopsSourceAccepted'].some(key=>record[key]!==true)||Object.keys(record.files).length!==18||Object.keys(record.predecessorProofs).length!==69||record.requestSha256!==expectedRequestSha||hash(await readFile(work+'/cuda-llvm-request.json'))!==expectedRequestSha)throw Error('EXACT_BUN_SNAPSHOT_OUTSIDE_GATE');
+ for(const [path,expected]of Object.entries({...record.files,...record.predecessorProofs}))if(hash(await readFile(root+'/'+path))!==expected)throw Error('PINNED_SNAPSHOT_INPUT_CHANGED:'+path);
+}
+try{
+ await gate();
+ const {readSnapshotInputs,validateSnapshotRenewal,runSnapshotMiseStages}=await import(work+'/cuda-bun-snapshot.ts');
+ validateSnapshotRenewal(await readSnapshotInputs());
+ const result=await runSnapshotMiseStages({verifyOutsideGate:gate,readTaskConfiguration:()=>readFile(work+'/cuda-bun-snapshot-mise.toml'),run:async stage=>{
+   await writeFile(directory+'/'+stage.name+'.argv.json',JSON.stringify(stage.argv,null,2)+'\n',{flag:'wx',mode:0o600});console.log(JSON.stringify({stage:stage.name,argv:stage.argv}));
+   if(stage.name==='02-capture'){
+     const child=Bun.spawn(stage.argv,{cwd:work,env:environment,stdin:'ignore',stdout:'inherit',stderr:'inherit',detached:false}),exitCode=await child.exited;
+     await writeFile(directory+'/'+stage.name+'.json',JSON.stringify({stage:stage.name,argv:stage.argv,exitCode},null,2)+'\n',{flag:'wx',mode:0o600});
+     return{exitCode,stdout:new Uint8Array(),failure:null};
+   }
+   const command=Bun.spawnSync(stage.argv,{cwd:work,env:environment,stdin:'ignore',stdout:'pipe',stderr:'pipe',maxBuffer:65536});
+   await writeFile(directory+'/'+stage.name+'.stdout',command.stdout,{flag:'wx',mode:0o600});await writeFile(directory+'/'+stage.name+'.stderr',command.stderr,{flag:'wx',mode:0o600});
+   const failure=command.error?String(command.error):null,status={stage:stage.name,argv:stage.argv,exitCode:command.exitCode,signalCode:command.signalCode??null,failure};
+   await writeFile(directory+'/'+stage.name+'.json',JSON.stringify(status,null,2)+'\n',{flag:'wx',mode:0o600});console.log(JSON.stringify(status));
+   if(command.exitCode!==0||failure!==null)await Bun.write(Bun.stderr,command.stderr);
+   return{exitCode:command.exitCode,stdout:command.stdout,failure};
+ }});
+ console.log(JSON.stringify(result));process.exitCode=result.exitCode;
+}catch(error){console.error(String(error));process.exitCode=1;}

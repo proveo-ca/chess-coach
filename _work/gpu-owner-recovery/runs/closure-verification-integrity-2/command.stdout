@@ -1,0 +1,162 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "run": "closure-owner-1",
+      "receiptSha256": "6cdde3c984a2ec896a05850f63267b8021c960cce609a5abd71b9a4cd402b3f2",
+      "sourceCount": 131,
+      "currentSourcesCompared": 131,
+      "currentSourceComparisonScope": "COMPLETE_SELECTED_MANIFEST",
+      "currentSourcesMatch": true,
+      "streamHashesAndLengthsMatch": true,
+      "tests": 72,
+      "assertions": null
+    },
+    {
+      "run": "closure-cpu-1",
+      "receiptSha256": "095301b5186f6ca1ff5065c24ad01a14462d81024046dcbeed8e58967a0ceba3",
+      "sourceCount": 45,
+      "currentSourcesCompared": 45,
+      "currentSourceComparisonScope": "COMPLETE_SELECTED_MANIFEST",
+      "currentSourcesMatch": true,
+      "streamHashesAndLengthsMatch": true,
+      "tests": 39,
+      "assertions": null
+    },
+    {
+      "run": "closure-policy-1",
+      "receiptSha256": "842ae60a757a9cf1dd256a55c480f3e86261bcabe1a436dcd11c87d9d84d34dd",
+      "sourceCount": 197,
+      "currentSourcesCompared": 197,
+      "currentSourceComparisonScope": "COMPLETE_SELECTED_MANIFEST",
+      "currentSourcesMatch": true,
+      "streamHashesAndLengthsMatch": true,
+      "tests": 352,
+      "assertions": 1262
+    },
+    {
+      "run": "closure-bridge-1",
+      "receiptSha256": "8f973c91daddffa2bd2b8d9814a154411bc3ebcbdc6d6c0077d60fa0b983f3c3",
+      "sourceCount": 197,
+      "currentSourcesCompared": 197,
+      "currentSourceComparisonScope": "COMPLETE_SELECTED_MANIFEST",
+      "currentSourcesMatch": true,
+      "streamHashesAndLengthsMatch": true,
+      "tests": 27,
+      "assertions": 388
+    },
+    {
+      "run": "closure-reference-1",
+      "receiptSha256": "6dbb971dd974d02f95ad396db1a52f00e369f323b40c1251f5ef59152ccd06f0",
+      "sourceCount": 197,
+      "currentSourcesCompared": 197,
+      "currentSourceComparisonScope": "COMPLETE_SELECTED_MANIFEST",
+      "currentSourcesMatch": true,
+      "streamHashesAndLengthsMatch": true,
+      "tests": 25,
+      "assertions": 194
+    },
+    {
+      "run": "closure-runner-1",
+      "receiptSha256": "eb5bb4495dc1908c49fe5ae2a09f3b9b4175898dfe4a12ae8343bed5ba3c5efe",
+      "sourceCount": 16,
+      "currentSourcesCompared": 16,
+      "currentSourceComparisonScope": "COMPLETE_SELECTED_MANIFEST",
+      "currentSourcesMatch": true,
+      "streamHashesAndLengthsMatch": true,
+      "tests": 12,
+      "assertions": 72
+    },
+    {
+      "run": "closure-source-types-1",
+      "receiptSha256": "ad00129b913db84feb355998fad8822167efd49b6b151765ab2393f1fa249cf6",
+      "sourceCount": 197,
+      "currentSourcesCompared": 197,
+      "currentSourceComparisonScope": "COMPLETE_SELECTED_MANIFEST",
+      "currentSourcesMatch": true,
+      "streamHashesAndLengthsMatch": true,
+      "tests": null,
+      "assertions": null
+    },
+    {
+      "run": "closure-test-types-1",
+      "receiptSha256": "1c73526191f199e4e58418a1800b519662987acb57fa386b63e5837bc835a306",
+      "sourceCount": 197,
+      "currentSourcesCompared": 197,
+      "currentSourceComparisonScope": "COMPLETE_SELECTED_MANIFEST",
+      "currentSourcesMatch": true,
+      "streamHashesAndLengthsMatch": true,
+      "tests": null,
+      "assertions": null
+    },
+    {
+      "run": "closure-tool-types-1",
+      "receiptSha256": "9092997b72a0f0ed930ae78cd779bc9d77a6ab0fcbb1e2d5ac10af71dfb31b61",
+      "sourceCount": 16,
+      "currentSourcesCompared": 16,
+      "currentSourceComparisonScope": "COMPLETE_SELECTED_MANIFEST",
+      "currentSourcesMatch": true,
+      "streamHashesAndLengthsMatch": true,
+      "tests": null,
+      "assertions": null
+    },
+    {
+      "run": "closure-owner-clippy-1",
+      "receiptSha256": "093df4d6b06a7ff9c96e3546d788f85fb50ab9158a4f53d5200feccb770c9b77",
+      "sourceCount": 131,
+      "currentSourcesCompared": 131,
+      "currentSourceComparisonScope": "COMPLETE_SELECTED_MANIFEST",
+      "currentSourcesMatch": true,
+      "streamHashesAndLengthsMatch": true,
+      "tests": null,
+      "assertions": null
+    },
+    {
+      "run": "closure-owner-format-1",
+      "receiptSha256": "1d61cd5dbf6b00e701d5ad176f33571890ade4bd1f9f5b5332518b9ed4f7445e",
+      "sourceCount": 131,
+      "currentSourcesCompared": 131,
+      "currentSourceComparisonScope": "COMPLETE_SELECTED_MANIFEST",
+      "currentSourcesMatch": true,
+      "streamHashesAndLengthsMatch": true,
+      "tests": null,
+      "assertions": null
+    },
+    {
+      "run": "closure-cpu-clippy-1",
+      "receiptSha256": "d90bcd9342f2214d84b4c5cdf174240c14e1753154148c0b850a90400b41b7c8",
+      "sourceCount": 45,
+      "currentSourcesCompared": 45,
+      "currentSourceComparisonScope": "COMPLETE_SELECTED_MANIFEST",
+      "currentSourcesMatch": true,
+      "streamHashesAndLengthsMatch": true,
+      "tests": null,
+      "assertions": null
+    },
+    {
+      "run": "security-rust-baseline-packet-3",
+      "receiptSha256": "b4d19a119c86c9b042623330f99a199ab652f19d1cd6338c0286431261d39f90",
+      "sourceCount": 225,
+      "currentSourcesCompared": 27,
+      "currentSourceComparisonScope": "RUST_OWNER_AND_ROOT_CARGO_ONLY",
+      "currentSourcesMatch": true,
+      "streamHashesAndLengthsMatch": true,
+      "tests": null,
+      "assertions": null
+    },
+    {
+      "run": "security-typescript-baseline-packet-5",
+      "receiptSha256": "a50435b2cb31847de3b0dcb4544bab4ce9877f3b27753a99d9396f755bdd164c",
+      "sourceCount": 198,
+      "currentSourcesCompared": 198,
+      "currentSourceComparisonScope": "COMPLETE_SELECTED_MANIFEST",
+      "currentSourcesMatch": true,
+      "streamHashesAndLengthsMatch": true,
+      "tests": null,
+      "assertions": null
+    }
+  ],
+  "atomicSnapshotClaimed": false,
+  "historicalFailedReceiptsRewritten": false,
+  "trainingReady": false
+}

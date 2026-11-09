@@ -1,0 +1,36 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "reference-canonical-root-corrected",
+  "stage": "reference-guards",
+  "sourceManifestSha256": "3a7e19fa4a5e065d0e2f6ee87ddb2ee17b21ea9ecb5ddd19e36650a81c034023",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "packages/runtime/tests/reference-bundles.test.ts",
+    "--test-name-pattern",
+    "reference source guard"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 515,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/reference-canonical-root-corrected/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/reference-canonical-root-corrected/command.stderr",
+    "bytes": 515,
+    "sha256": "f479c6f62d33beab360148184a0716d0ba494b2078b8b1f2b2edfd35227b17b5"
+  },
+  "sourceCount": 39,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}
