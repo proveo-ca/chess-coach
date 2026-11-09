@@ -49,7 +49,7 @@ These results qualify the ordinary local source/test stage only, not image const
 The lead confirms scoped adversarial, DevOps and security source-wiring acceptance in `_work/gpu-owner-recovery/gpu-functional-source-review.json`; run 3 satisfies the security review's local-verification condition.
 This acceptance supplies no image, runtime, activation or training qualification.
 The operator has supplied GPU/driver and Docker-runtime metadata in [the normalized host-observation record](../_work/gpu-owner-recovery/gpu-functional-host-observations.json); these are operator-reported facts, not an agent-run host verification or selected bindings.
-The local manifest does not capture `_spec/` documents; this documentation-only update neither changes that source generation nor calls for rerunning its commands.
+The new lookup packet and nested tests sit outside the local-3 manifest; its 273 inputs remain unchanged and need no full rerun for this slice.
 
 The existing six ignored host GPU tests remain unrun evidence targets: two sweeps in `crates/learning/tests/finite_difference.rs` and four score/update/channel/reload tests in `crates/policy-io/tests/gpu.rs`.
 Future selected-host verification must retain F64, all 4,670 coordinates at `eps=1e-6`, `atol=1e-8`, `rtol=1e-5`, actual scoring/backward/SGD/reload and exact C12 digests; CPU Flex/master `101..105` initialization and all model/objective/RNG/curriculum/checkpoint/eligibility semantics stay unchanged.
@@ -63,11 +63,11 @@ After selected-host GPU capability is established, activation remains separately
 It is not deferred security hardening, a new audit gauntlet, or an extra decision before the current prepared-input choice.
 
 Executor's original `Cached-image probe (Recommended)` selection led to an operator-reported cache-inspection stop: both exact pinned images were missing, so the unchanged [Fish packet](../_work/gpu-owner-recovery/gpu-container-visibility.fish) created no container and ran no GPU query.
-Executor then explicitly selected `Bun only (Recommended)` in the parent session's fresh acquisition-scope question; the [new renewal](../_work/gpu-owner-recovery/gpu-container-visibility-renewal.json) records `APPROVED_OPERATOR_BUN_PULL_AND_ONE_VISIBILITY_PROBE_PENDING`.
-Only that actual parent selection grants one exact Bun pull and one fresh metadata-only probe to the operator; neither the cache miss nor an earlier agent claim supplies authority, and coding-agent host execution remains forbidden.
+Executor then selected `Bun only (Recommended)`; the [renewal](../_work/gpu-owner-recovery/gpu-container-visibility-renewal.json) retains its original pending status byte-unchanged, but the [latest operator result](#current-bun-only-operator-result--authority-consumed) records **CONSUMED: one pull and one container attempt; zero remaining**.
+The reported Bun pull succeeded; OCI launcher lookup failed before any container process or GPU query started. No retry or new acquisition/container authority remains, and coding-agent host execution stays forbidden.
 The later choice of compatible prepared compiler/library/LLVM/libdevice inputs and explicit CUDA bindings, versus narrow fresh authority to prepare the exact cached LLVM archive/libdevice inputs, remains unresolved.
 No context-assembly helper is added by this spec pass, and no input preparation is inferred before that selection.
-Apart from the exact operator-only Bun pull, renewed metadata probe and its bounded cleanup, no image build, real-archive read/rehash/mount, capture, other acquisition/download, upgrade, helper compilation, other native/host/GPU operation or training is authorized here; the prior full-pipeline hold remains in force and actual GPU work stays outside the coding sandbox.
+No further pull, container, image build, real-archive read/rehash/mount, capture, acquisition/download, install, configuration change, restart, upgrade, helper compilation, native/host/GPU operation, training or publication is authorized here; the prior full-pipeline hold remains in force and actual GPU work stays outside the coding sandbox.
 Do not require reenacting the old isolated Bun/archive pipeline; its requests remain unchanged, diagnostics remain 0/3 with no accepted binding, and the full request stays halted.
 Native capture, pidfd/cgroup/strict-stop work and ALL security/privacy hardening and isolation remain LAST, after **COMPLETE PLANNED TRAINING AND VALIDATE RESULTS**.
 
@@ -91,19 +91,19 @@ This comparison establishes neither an exact CUDA API/PTX ceiling nor actual F64
 `13000` is an **ADVISORY candidate only**, not a selected CUDARC binding or compatible-input proof; the CUDA version and all three prepared-input selections remain `null`.
 No global `selectedUuid`, host binding or Gate0 acceptance follows from this reported identity.
 
-The renewed operator-only Bun pull and NVML visibility attempt are functional work, not a security inspection, GPU-kernel test or training activation.
-The new renewal permits only the exact Bun acquisition and at most one fresh metadata container; it grants no Rust pull, image build, LLVM archive preparation, libdevice acquisition, native CUDA compilation or training.
-No host commands or operator tools ran through this agent; the operator reported image-inspection commands only, not an image build, container GPU visibility, GPU kernel or training result.
-The unchanged local-3 273-input source verification remains separate evidence; this metadata/spec-only update requires no full retest.
+The consumed operator-only Bun pull and visibility attempt were functional work, not a security inspection, GPU-kernel test or training activation.
+The latest paste reports a container object but no started container process or `nvidia-smi`; it establishes neither GPU visibility nor Bun/CUDA numerical failure.
+No host commands or operator tools ran through this agent; no Rust pull, image build, LLVM/libdevice preparation, native CUDA compilation or training is authorized.
+The unchanged local-3 273-input source verification remains separate evidence; the new lookup has its own scoped verification below.
 
-### Unchanged visibility packet — cache miss, renewed probe pending
+### Historical visibility packet — unchanged, authority consumed
 
 The original [request](../_work/gpu-owner-recovery/gpu-container-visibility-request.json) and [packet](../_work/gpu-owner-recovery/gpu-container-visibility.fish) remain byte-unchanged, including the original no-pull rule and retained request status.
-The packet's limits below still govern the probe; only the separate renewal permits a preceding Bun pull and one fresh invocation after that pull succeeds.
-The operator runs the packet on the host; the coding agent may provide its pasteable contents but must not invoke Docker or any host tool, even for metadata.
-No automatic retry is authorized; the original cache guard stopped before container creation, and no visibility result has been received.
+The limits below describe the historical probe, not a runnable handoff or remaining authority.
+The original cache guard stopped before container creation; the later renewed attempt consumed its separate one-pull/one-container allowance and failed at launcher lookup.
+Do not rerun either handoff; the coding agent must not invoke Docker or any host tool, even for metadata.
 
-| Approved operation | Exact boundary |
+| Historical approved operation | Exact boundary |
 |---|---|
 | Cached-image inspection | Inspect the request's pinned Rust and Bun images with 10-second client deadlines each and a three-second kill-after. Bun must already exist as `linux/amd64`, or stop without pull/substitution; report missing Rust for later input selection without pulling it. |
 | One conditional container | Use only the pinned cached Bun base, `nvidia` runtime, GPU UUID `GPU-713c95e0-6952-a576-794b-9ef1fb527ff0`, UID/GID `1000:1000` and `compute,utility` driver capabilities. No additional user mounts. |
@@ -112,10 +112,10 @@ No automatic retry is authorized; the original cache guard stopped before contai
 | Cleanup | A 10-second client deadline plus three-second kill-after applies only to force-removing the valid 64-hex CID recorded in this attempt's fresh CID file. Missing/invalid CID or failed cleanup remains unverified; do not target other containers. |
 | Output | Use the packet's fresh `_work/gpu-owner-recovery/runs/host-visibility-XXXXXXXX` directory for query/cleanup streams, CID and reported exit statuses; no evidence directory is created by this spec pass. |
 
-The unchanged probe packet itself grants no pull; the fresh renewal permits only its one preceding exact Bun pull, not a Rust pull, image build, install, additional user mount, libdevice/LLVM archive operation, native CUDA compilation, CUDA kernel, training or host configuration change.
+The unchanged probe packet itself grants no pull; the separate renewal is consumed and grants no repeat pull/probe, Rust pull, image build, install, additional user mount, libdevice/LLVM archive operation, native CUDA compilation, CUDA kernel, training or host configuration change.
 It supplies no new isolation/containment proof and does not reopen deferred hardening work.
 Driver branch 615 still establishes only the reported CUDA 13.x family-floor comparison; the exact API/PTX ceiling, CUDARC binding version and three prepared-input selections remain unestablished/unselected.
-The new operator packet is outside the existing local-3 result; that PASS is not packet execution, GPU visibility, activation or training acceptance.
+The operator packet and proposed runtime lookup are outside the existing local-3 result; that PASS is not packet execution, GPU visibility, activation or training acceptance.
 `containerGpuVisibilityEstablished` and `trainingReady` remain `false`; old diagnostic cases remain 0/3 unspent and the full pipeline remains halted.
 ALL security/privacy hardening and isolation remain LAST, after completed planned training and validated results.
 
@@ -140,31 +140,60 @@ These are manifest/config declarations, not versions executed in an image; no la
 Compressed-layer sums are neither exact network-transfer totals nor unpacked disk requirements.
 No base-image metadata implies GPU capability, selected compiler inputs or permission to acquire Rust.
 
-### CURRENT Bun-only operator renewal — approved, execution pending
+### CURRENT Bun-only operator result — authority consumed
 
-The [renewal authority](../_work/gpu-owner-recovery/gpu-container-visibility-renewal.json) projects Executor's actual parent-session `Bun only (Recommended)` selection: operator host only, one pull invocation, at most one fresh same-UUID metadata container, no automatic retry or substitution.
-Its two-line Fish handoff pulls only the exact `linux/amd64` Bun pin with a 600-second client deadline and three-second kill-after; `and` invokes the unchanged probe packet only after pull success:
+The [latest observation](../_work/gpu-owner-recovery/runs/gpu-container-visibility-host-probe-1/operator-observation.json) normalizes the retained [operator paste](../_work/gpu-owner-recovery/runs/gpu-container-visibility-host-probe-1/operator-paste.txt), not original machine files; the executed source commit remains unknown.
+The original request, renewal, packet and earlier syntax receipts remain byte-unchanged; their pending statuses are historical, not current unspent authority.
+The historical acquisition command remains in the renewal record for traceability, **not rerun**.
 
-```fish
-timeout --kill-after=3s 600s docker pull --platform=linux/amd64 'docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038'
-and fish _work/gpu-owner-recovery/gpu-container-visibility.fish
-```
+| Latest operator-reported result | Boundary |
+|---|---|
+| Bun pull succeeded; inspect exit 0, `linux/amd64` | Exact digest `sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038`; no numeric pull exit was supplied and no Bun version executed |
+| Rust inspect exit 1, missing | Expected informational result; no Rust pull authorized |
+| One container object created | CID `48633c91974748c087e2f49c511b91d746f7379a80af7863b788fd6b53b30a0b`; no container process started |
+| OCI launcher lookup failed | `exec: "nvidia-container-runtime": executable file not found in $PATH`; query exit 127, zero started in-container GPU queries |
+| Cleanup exit 0 | Operator-reported removal only; original `_work/gpu-owner-recovery/runs/host-visibility-tRp94up1` machine files were not received |
+| Authority **CONSUMED** | One pull / one container attempt used; zero remaining; no retry, new pull/container, install, configuration change or restart |
 
-The reported `17a0ed9cf` operator checkout already contains that packet; no Git update or publication is needed for this handoff.
-Rust may still report missing during the packet's inspection; that warning is informational and authorizes no Rust pull.
-The renewed probe inherits the same UUID, UID/GID, metadata-only operations, ordinary resource caps, client deadlines and fresh-CID-only cleanup; a timeout still supplies no hard-termination guarantee or containment proof.
-This is not a build, compiler/library-input selection, LLVM/libdevice/archive operation, CUDA compilation, kernel, activation, training or full-pipeline renewal grant.
-No Bun pull or renewed container execution result has been received, and no host operation was executed by the coding agent; visibility and training qualification remain false and CUDA/three prepared-input selections remain `null`.
-Existing local-3 and Fish syntax receipts remain unchanged; neither verifies execution of this new acquisition handoff or establishes an image's actual version or GPU behavior.
+The lookup failure does not distinguish missing installation, a service PATH issue or a different daemon execution host; the root cause remains undetermined.
+No `nvidia-smi`, CUDA kernel or Bun application ran, so no Bun/CUDA numerical failure or GPU proof follows.
+Engine version, effective daemon endpoint, default runtime, daemon/containerd PATH and NVIDIA hook mode remain unknown; `runc 1.5.2` is not the Docker Engine version.
+`containerGpuVisibilityEstablished` and `trainingReady` remain `false`; CUDA and all three prepared-input selections remain `null`.
+Existing gpu-functional-local-3 and visibility-local-1 syntax receipts remain unchanged and do not cover the new runtime-lookup proposal.
 ALL security/privacy hardening and isolation remain LAST, after completed planned training and validated results.
+
+#### Proposed read-only runtime lookup — not executed
+
+[gpu-runtime-lookup.fish](../_work/gpu-owner-recovery/gpu-runtime-lookup.fish) is a source-only operator-handoff proposal, not an executed lookup or fresh authority claim.
+It reports only exported `DOCKER_HOST`/`DOCKER_CONTEXT` values (`set -qx`; otherwise `<unset>`), Docker version/info/current context/context endpoint with at most four 10-second client deadlines plus three-second kill-after, and shell-machine `/etc/os-release` and fixed path checks.
+The five names are `nvidia-container-runtime`, `nvidia-container-runtime-hook`, `nvidia-container-cli`, `nvidia-ctk` and `runc`; the six directories are `/usr/bin`, `/usr/sbin`, `/usr/local/bin`, `/usr/local/sbin`, `/bin` and `/sbin`.
+It resolves/checks paths without executing those tools or starting a container; client/context and shell-machine paths do not prove the daemon execution host or daemon/containerd PATH.
+No shell access to a remote daemon host is supplied or assumed, and a context endpoint need not be the effective endpoint under environment overrides.
+The current [lookup-local-3 receipt](../_work/gpu-owner-recovery/runs/gpu-runtime-lookup-local-3/receipt.json) records `PASS`, scope `FISH_SYNTAX_STATIC_TESTS_AND_TEST_TYPES_ONLY`, and `sourceChanged:false`.
+Under `_work/gpu-owner-recovery/tests/`, `gpu-runtime-lookup.test.ts` and `verify-runtime-lookup.ts` use strict `tsconfig.json`; Fish `4.9.3 --no-config --no-execute`, [five static tests / 53 assertions](../_work/gpu-owner-recovery/runs/gpu-runtime-lookup-local-3/static-tests.stderr), and test/verifier typechecking all exit 0.
+The verifier records six input SHA-256s and stdout/stderr with 10/30/30-second stage deadlines plus three-second kill-after; it freshly rechecks all 273 prior gpu-functional-local-3 source hashes with zero mismatches.
+The original gpu-functional-local-3 inputs/evidence stay unchanged; this is no new CPU test run and requires no full CPU rerun.
+Earlier [lookup-local-2 PASS](../_work/gpu-owner-recovery/runs/gpu-runtime-lookup-local-2/receipt.json) recorded 52 assertions before the exported-environment fix and regression assertion.
+Preserve [lookup-local-1 FAIL](../_work/gpu-owner-recovery/runs/gpu-runtime-lookup-local-1/receipt.json): Fish syntax exit 0, four static passes/one failure because the negative regex matched `build` in the `SPEC:` filename, not a forbidden command; typechecking did not run.
+The corrected test excludes the `SPEC:` line; the pointer and original packet remain intact.
+`lookupPacketExecuted`, `dockerCommandsExecuted` and `cudaGpuCodeExecuted` remain `false`; local PASS is not executed lookup or host/GPU proof.
+The lead reports adversarial `ses_e41520899ffeQKIuTNgX9L1MpP` READY yes after the LOW stale-doc fix and security `ses_e41520898ffer9yrOkXEAM23ZI` READY yes for the narrow operator proposal.
+DevOps `ses_e415ccaf5ffeKtkUCGX1sfkYVh` confirms proposal-only readiness after the exported-variable correction covered by lookup-local-3.
+These scoped source/proposal reviews grant no operational authority or GPU qualification; no new host/daemon facts have returned.
+
+**Candidate only:** a later explicit `--runtime=runc` + `--gpus` route depends on the actual Engine's NVIDIA hook registration and required executables; it is not selected, approved or verified.
+Direct `--gpus` needs a compatible legacy hook path and cannot be assumed to work in CDI/non-legacy mode.
+Omitting `--runtime` does not establish runc because the default runtime is unknown.
+Previously verified upstream references: [Moby v27.5.1 NVIDIA hook registration](https://github.com/moby/moby/blob/v27.5.1/daemon/nvidia_linux.go), [Moby current NVIDIA device handling](https://github.com/moby/moby/blob/master/daemon/devices_nvidia_linux.go), and [NVIDIA's direct `--gpus` mode caveat](https://github.com/NVIDIA/nvidia-container-toolkit/blob/main/cmd/nvidia-container-runtime/README.md#notes-on-using-the-docker-cli).
+These references describe candidates, not this unknown Engine/host; no new operation or publication is approved.
 
 #### Local packet syntax evidence — no packet commands executed
 
 [The syntax-only receipt](../_work/gpu-owner-recovery/runs/gpu-container-visibility-local-1/receipt.json) records Fish `4.9.3` with `--no-config --no-execute`, `PASS`, exit 0, and scope `FISH_SYNTAX_ONLY_NO_PACKET_COMMAND_EXECUTION`.
 It records four artifact SHA-256s: the Fish packet, visibility request, normalized host observations and compiler-candidate inventory.
 This proves only the recorded syntax check; it executed no Docker commands and establishes no image availability, container launch, NVML visibility, compiler usability or native/GPU qualification.
-The lead reports DevOps READY for the operator proposal's source only; adversarial and security read-only checks of this handoff remain ongoing, with no acceptance claimed until explicit verdicts.
-Those handoff checks are distinct from the earlier recipe/source-wiring acceptance; the original request retains `APPROVED_OPERATOR_EXECUTION_PENDING` unchanged, while the separate Bun-only renewal now governs the pending operator acquisition/probe; no visibility result is claimed.
+The earlier visibility-handoff DevOps READY covered proposal source only; current lookup review dispositions appear above, not as host/GPU qualification.
+Those checks are distinct from recipe/source-wiring acceptance; the original request retains `APPROVED_OPERATOR_EXECUTION_PENDING` unchanged, but the later operator result records consumed acquisition/probe authority and no established visibility.
 
 ### Coding-realm compiler candidate — directory metadata only, unselected
 

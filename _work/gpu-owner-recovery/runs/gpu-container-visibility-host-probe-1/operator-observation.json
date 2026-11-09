@@ -1,0 +1,57 @@
+{
+  "version": "chess-coach.gpu-container-visibility-host-probe.v1",
+  "status": "OCI_LAUNCHER_LOOKUP_FAILED_AUTHORITY_CONSUMED",
+  "provenance": "NORMALIZED_FROM_OPERATOR_PASTED_OUTPUT_NOT_ORIGINAL_MACHINE_CAPTURE",
+  "operatorPaste": "_work/gpu-owner-recovery/runs/gpu-container-visibility-host-probe-1/operator-paste.txt",
+  "operatorSourceCommit": null,
+  "authorityRecord": "_work/gpu-owner-recovery/gpu-container-visibility-renewal.json",
+  "commandPacket": "_work/gpu-owner-recovery/gpu-container-visibility.fish",
+  "authorityDisposition": {
+    "pullInvocationsConsumed": 1,
+    "containerAttemptsConsumed": 1,
+    "remainingPullInvocations": 0,
+    "remainingContainerAttempts": 0,
+    "automaticRetryAuthorized": false,
+    "authorityRecordRetainedUnchanged": true
+  },
+  "bun": {
+    "reportedPullSucceeded": true,
+    "reportedPullExitCode": null,
+    "digest": "sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038",
+    "inspectExitCode": 0,
+    "reportedPlatform": "linux/amd64",
+    "actualBunVersionExecuted": false
+  },
+  "rust": {
+    "inspectExitCode": 1,
+    "reportedMissing": true,
+    "pullAuthorized": false
+  },
+  "container": {
+    "reportedCid": "48633c91974748c087e2f49c511b91d746f7379a80af7863b788fd6b53b30a0b",
+    "objectCreated": true,
+    "runtime": "nvidia",
+    "reportedFailure": "exec: \"nvidia-container-runtime\": executable file not found in $PATH",
+    "failureStage": "OCI_RUNTIME_LAUNCHER_LOOKUP_BEFORE_CONTAINER_PROCESS_START",
+    "queryExitCode": 127,
+    "cleanupExitCode": 0,
+    "cleanupReportedSuccessful": true,
+    "reportedHostEvidenceDirectory": "_work/gpu-owner-recovery/runs/host-visibility-tRp94up1",
+    "originalHostEvidenceFilesReceived": false,
+    "inContainerGpuQueriesStarted": 0
+  },
+  "rootCause": "LAUNCHER_UNRESOLVED_INSTALLATION_PATH_AND_DAEMON_HOST_UNDETERMINED",
+  "dockerEngineVersion": null,
+  "effectiveDaemonEndpoint": null,
+  "defaultRuntime": null,
+  "daemonLauncherPath": null,
+  "nvidiaHookMode": null,
+  "runcGpuRouteSelected": false,
+  "runcGpuRouteVerified": false,
+  "newContainerOperationAuthorized": false,
+  "hostConfigurationChangeAuthorized": false,
+  "agentExecutedHostCommands": false,
+  "containerGpuVisibilityEstablished": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

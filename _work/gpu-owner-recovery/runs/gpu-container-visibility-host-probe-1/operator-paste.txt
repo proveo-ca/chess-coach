@@ -1,0 +1,20 @@
+docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038: Pulling from oven/bun
+c10599c38a79: Pull complete
+415fd67e5470: Pull complete
+1da3cb2f93f2: Pull complete
+75e788fd4656: Pull complete
+e8603be19c52: Pull complete
+162d638a144c: Pull complete
+9fcb4eaa995f: Pull complete
+Digest: sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038
+Status: Downloaded newer image for oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038
+docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038
+
+Error response from daemon: No such image: rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb
+rust_inspect_exit=1
+bun_inspect_exit=0 bun=linux/amd64 sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038
+docker: Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: unable to retrieve OCI runtime error (open /run/containerd/io.containerd.runtime.v2.task/moby/48633c91974748c087e2f49c511b91d746f7379a80af7863b788fd6b53b30a0b/log.json: no such file or directory): exec: "nvidia-container-runtime": executable file not found in $PATH
+
+Run 'docker run --help' for more information
+48633c91974748c087e2f49c511b91d746f7379a80af7863b788fd6b53b30a0b
+query_exit=127 cleanup_exit=0 evidence=_work/gpu-owner-recovery/runs/host-visibility-tRp94up1

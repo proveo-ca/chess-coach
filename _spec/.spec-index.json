@@ -55,7 +55,13 @@
         "crates/policy-io/tests/gpu.rs",
         "_work/gpu-owner-recovery/gpu-container-visibility-request.json",
         "_work/gpu-owner-recovery/gpu-container-visibility.fish",
-        "_work/gpu-owner-recovery/gpu-container-visibility-renewal.json"
+        "_work/gpu-owner-recovery/gpu-container-visibility-renewal.json",
+        "_work/gpu-owner-recovery/gpu-runtime-lookup.fish",
+        "_work/gpu-owner-recovery/tests/gpu-runtime-lookup.test.ts",
+        "_work/gpu-owner-recovery/tests/verify-runtime-lookup.ts",
+        "_work/gpu-owner-recovery/tests/tsconfig.json",
+        "_work/gpu-owner-recovery/runs/gpu-container-visibility-host-probe-1/operator-observation.json",
+        "_work/gpu-owner-recovery/runs/gpu-container-visibility-host-probe-1/operator-paste.txt"
       ],
       "fingerprint": null
     }
