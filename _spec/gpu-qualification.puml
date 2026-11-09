@@ -30,16 +30,22 @@
 ' covers: _work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/receipt.json
 ' covers: _work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/command.stdout
 ' covers: _work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/command.stderr
-' status: PASS_METADATA_ONLY / inventory-source-3 PASS_INPUT_SOURCE_ONLY / OPERATOR_HOST_GRANT_UNEXECUTED / HOST_INPUTS_UNSELECTED / trainingReady:false
+' covers: _work/gpu-owner-recovery/runs/host-builder-inputs-1/operator-paste.txt
+' covers: _work/gpu-owner-recovery/runs/host-builder-inputs-1/operator-observation.json
+' status: OPERATOR_REPORTED_INPUT_METADATA_PASS_AUTHORITY_CONSUMED_DETAILS_PENDING / CODING_METADATA_SPENT / HOST_INPUTS_UNSELECTED / trainingReady:false
 ' see: _spec/gpu-build.puml
 ' see: _spec/gpu-readiness.md#current-qualification-source-and-flags
 ' see: _spec/gate-closure.md#current-qualification-source-and-flags
 ' see: _spec/gpu-readiness.md#current-input-inventory
 ' see: _spec/gate-closure.md#current-input-inventory
-' current authority: Executor selected Inventory inputs Recommended; input-request.json separates spent coding metadata scope from pending operator-only Rust image pull/inspection
+' current authority: both Inventory inputs allowances are spent; input-request.json retains its original approved projection, not replay permission
 ' coding metadata result: gpu-qualification-input-inventory-1 PASS_METADATA_ONLY, sourceChanged:false; one invocation consumed / zero remaining, no replay
-' operator scope: one exact Rust pull 600s, one combined image/non-CUDA container inspection 60s, exact-CID cleanup at most 30s; approved but UNEXECUTED, agent execution prohibited
-' availability: operator-host script availability unverified; no original host files received, no publishing/transfer/copy authority inferred
+' operator result: normalized pasted PASS_INPUT_METADATA_ONLY, all five reported phase exits 0; one pull / one container / one cleanup consumed, zero remaining, no retry
+' evidence boundary: operator-paste.txt and operator-observation.json are new coding-side records, not original host files; image/inspection stdout/stderr remain unreceived
+' published source (lead-confirmed): 2c17a189ecba08cb7078ea8daf991317d09c3ef1; actual operator-executed source commit unknown, not a new custody gate
+' current acquisition status: the report clears the pinned Rust-image acquisition blocker at report scope; the old ABSENT and all-false packet projections remain historical, not current absence or pending-pull state
+' next evidence: existing image.stdout, image.stderr, inspection.stdout and inspection.stderr only; no Docker/compiler replay or new acquisition/execution grant
+' new operator-record reviews: not requested or claimed by this docs pass; earlier source/grant verdicts remain scoped to their original evidence
 ' inventory source proof: gpu-input-inventory-source-3 PASS_INPUT_SOURCE_ONLY, 8 mocked/static cases / 64 assertions, strict qualification types and direct existing Fish 4.9.3 syntax all exit 0
 ' inventory history: input-helper source-1 FAIL at Mise shim before Fish parsing; classification overrides its misleading fishSyntaxChecked counter; source-2 7/59 PASS predates final reporting fixes
 ' inventory reviews (lead-reported): adversarial ses_e3db08ecaffe7JpgpwIKHCgyMl READY after MEDIUM receipt-failure and LOW syntax-attempt fixes; security ses_e3db08ecaffd8jrnYUsS9UQS84 READY within new grant; DevOps ses_e3ec46b44ffe7CbnV5rwv23shT READY source-only
@@ -56,8 +62,8 @@
 ' FK: PACKET 12.2; FLAGS 11.7; RECIPE 11.7; ARTIFACTS 11.3; RUNNER 12.9
 ' FK: COUNTS 12.0; MANIFEST 11.5; RESULT 11.6; NUMERICS 12.9
 ' FK: APPROVAL 11.7; ATTEMPT 11.1; SOURCE_CHECK 11.9; LIMITS 10.6
-' FK: INPUT_REQUEST 12.2; METADATA_RESULT 12.3; HOST_PACKET 12.8; INPUT_SOURCE 12.7; HOST_RESULT 11.9
-title Coding LLVM metadata PASS and spent - operator-only builder inspection pending; no build/GPU proof
+' FK: INPUT_REQUEST 11.5; METADATA_RESULT 12.3; HOST_PACKET 12.8; INPUT_SOURCE 12.7; HOST_RESULT 11.8
+title Operator-reported builder metadata PASS - grants consumed; image/compiler details pending
 left to right direction
 
 component "_work/gpu-owner-recovery/qualification/\nrequest.json\nsource preparation approved\nfive exact queries, 10 seconds each\nfirst failure STOP; no retry" as REQUEST
@@ -69,13 +75,13 @@ component "packages/runtime/tests/\ngpu-qualification.test.ts\n18 pure/static ca
 component "_work/gpu-owner-recovery/runs/\ngpu-qualification-source-1/receipt.json\nHISTORICAL PRE-REVIEW-FIX SOURCE PROOF\n28 tests / 201 assertions + 4 typechecks\nimmutable; no current acceptance inferred" as HISTORICAL_SOURCE_RECEIPT
 component "_work/gpu-owner-recovery/runs/\ngpu-qualification-source-2/receipt.json\nPASS_SOURCE_ONLY / sourceChanged:false\n32 tests / 223 assertions + 4 typechecks\n5 stages exit 0; 277 bound inputs\n64 native-manifest inputs; source-only scope" as SOURCE_RECEIPT
 
-component "_work/gpu-owner-recovery/qualification/\ninput-request.json\nInventory inputs Recommended\nCODING: 1 metadata walk CONSUMED / 0 remaining\nOPERATOR: 1 Rust pull + 1 inspection PENDING\nno agent host call, retry, install, build or GPU" as INPUT_REQUEST
+component "_work/gpu-owner-recovery/qualification/\ninput-request.json\noriginal approved authority projection retained\nCODING: 1 metadata walk CONSUMED / 0 remaining\nOPERATOR: 1 pull / container / cleanup CONSUMED\nzero remaining; no retry or new operation" as INPUT_REQUEST
 component "_work/gpu-owner-recovery/qualification/\ninput-inventory.ts\nrealpath root + lstat/opendir/readlink\n20,000 entries / 60s / retained output <=10 MiB\nNDJSON limit 4 MiB - 64 KiB summary reserve\nexclusive directory + worker marker\nno prefix payload read/hash or nested link walk" as METADATA
 component "_work/gpu-owner-recovery/runs/\ngpu-qualification-input-inventory-1/receipt.json\nPASS_METADATA_ONLY / sourceChanged:false\n2,684 entries: 137 dirs / 2,545 files / 2 links\n331,823 metadata bytes; stdout 332,260 / stderr 0\nfile-byte SUM 329,242,172; entry-counted\nnot allocated/deduplicated storage or selection" as METADATA_RESULT
 component "_work/gpu-owner-recovery/qualification/\nverify-inputs.ts + input-inventory.test.ts\nstandalone input-helper proof\n8 mocked/static tests / 64 assertions\nstrict qualification types + direct Fish syntax\nno metadata or operator execution in checks" as INPUT_SOURCE
 component "_work/gpu-owner-recovery/runs/\ngpu-input-inventory-source-3/receipt.json\nPASS_INPUT_SOURCE_ONLY / sourceChanged:false\n11 bound sources / all 3 stages exit 0\nFish syntax attempted, available and PASS\nhelper source-1 FAIL / source-2 PASS historical" as INPUT_SOURCE_RESULT
-component "_work/gpu-owner-recovery/qualification/\ninspect-builder.fish\nOPERATOR HOST ONLY / APPROVED_UNEXECUTED\nexact pinned Rust pull <=600s\ncombined image facts + one container <=60s\n1 CPU / 1 GiB / non-CUDA / pull=never\none exact-CID cleanup <=30s" as HOST_PACKET
-component "inspect-builder.fish\nfuture plaintext result contract\nphase stdout/stderr + exit files + root receipt\nmissing tools or unresolved C++ library => FAIL\nreceipt write/read/output failure cannot PASS\nNO ORIGINAL HOST FILES RECEIVED\nno host Bun dependency" as HOST_RESULT
+component "_work/gpu-owner-recovery/qualification/\ninspect-builder.fish\nHISTORICAL CONSUMED OPERATOR PACKET\nprescribed pull 600s / combined inspect 60s\n1 CPU / 1 GiB / non-CUDA / pull=never\nsaved-CID cleanup <=30s\nNOT RERUN; no new host execution authority" as HOST_PACKET
+component "_work/gpu-owner-recovery/runs/\nhost-builder-inputs-1/\noperator-paste.txt + operator-observation.json\nOPERATOR-REPORTED PASS_INPUT_METADATA_ONLY\nnormalized paste, not original host files\n5 reported phase exits 0; 1 pull/container/cleanup\nzero remaining; raw image/compiler details null" as HOST_RESULT
 
 package "tooling/runtime/Dockerfile.gpu-qualification\nSEPARATE RECIPE; BUILD AND EXECUTION UNRUN" {
   component "inputs\ncurrent-native + cargo-home\nqualification-tools\ngpu-build/rootfs\nfrozen source-manifest.json supplied in context" as INPUTS
@@ -108,11 +114,11 @@ INPUT_REQUEST --> METADATA : completed coding-only metadata allowance\nrequest p
 METADATA --> METADATA_RESULT : same resolved prefix root; complete walk\n2 nested symlink targets recorded, not traversed
 METADATA_RESULT --> PACKET : metadata informs input planning only\nno automatic prefix selection or staging
 INPUT_SOURCE --> INPUT_SOURCE_RESULT : retained helper source-3 proof only\nnot another qualification or CPU/GPU campaign
-INPUT_SOURCE_RESULT ..> HOST_PACKET : source/syntax READY does not prove\noperator-host script availability
-INPUT_REQUEST ..> HOST_PACKET : APPROVED / UNEXECUTED operator-only exception\nno agent Docker call or handoff-file transfer grant
-HOST_PACKET ..> HOST_RESULT : APPROVED / UNEXECUTED\npull success gates combined inspection; cleanup separate
-HOST_RESULT ..> PACKET : future returned operator evidence only\nno compiler/libc/image fact received yet
-INPUT_REQUEST --> PACKET : broader packet's all-false projection unchanged\nonly this separate narrow grant is an exception
+INPUT_SOURCE_RESULT ..> HOST_PACKET : prior source/syntax proof only\nnot acceptance of the later operator report
+INPUT_REQUEST --> HOST_PACKET : original one-shot scope now consumed\nrequest bytes unchanged; no replay
+HOST_PACKET --> HOST_RESULT : operator reports completed PASS\nactual executed source commit unknown
+HOST_RESULT --> PACKET : reported Rust acquisition clears prior blocker\nimage/compiler/libc/library details still pending
+INPUT_REQUEST --> PACKET : historical all-false projection unchanged\nnew consumed report controls current acquisition state
 INPUTS ..> CPU_BUILD : FUTURE --no-run build; Cargo exit checked by Docker
 INPUTS ..> GPU_BUILD : FUTURE prepared LLVM copy + version guard\nexplicit supported CUDARC version required
 CPU_BUILD ..> RECIPE : FUTURE same absolute target-cpu path + JSON logs
@@ -136,11 +142,11 @@ COUNTS ..> RESULT : every frozen count checked; 0 failures / 0 ignored
 RESULT --> MANIFEST : final source inventory comparison
 
 note bottom of INPUT_REQUEST
-  The separate grant permits one operator
-  image pull without approving a GPU build.
-  Its coding walk allowance is already
-  spent, so the unchanged broad packet cannot
-  authorize further work by implication.
+  The original request preserves its grant
+  projection after the reported allowance
+  has been consumed.
+  Neither that retained approval nor the
+  summary authorizes a replay or new build.
 end note
 
 note bottom of METADATA_RESULT
@@ -168,11 +174,11 @@ note bottom of INPUT_SOURCE
 end note
 
 note bottom of HOST_RESULT
-  Receipt write or output failure cannot
-  count as success after the inspection ran.
-  The packet preserves separate phase results
-  so missing evidence remains an unresolved
-  outcome rather than successful completion.
+  Reported success clears the missing-image
+  blocker, but leaves builder details unknown.
+  The existing outputs can resolve those
+  functional choices without another inspection
+  or a hardened custody gate.
 end note
 
 note bottom of APPROVAL
@@ -278,7 +284,15 @@ end note
 
 legend bottom
   Solid edges describe implemented source or retained evidence; FUTURE dotted edges remain unexecuted and unapproved.
-  APPROVED / UNEXECUTED edges refer only to the separate pending operator-host grant, never permission for an agent to execute it.
+  Operator-result edges describe normalized pasted reports, not original machine captures or verified executed-source identity.
+  OPERATOR_REPORTED_INPUT_METADATA_PASS_AUTHORITY_CONSUMED_DETAILS_PENDING: pull/inspection/image/container/cleanup exits all reported 0, one pull/container/cleanup consumed, zero remaining.
+  Reported pin: Rust 4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb; frozen lock 77f674cc26a01f26558fd99c45bdcd5566017be05833fce1d39cae98cda05955.
+  Reported CID: 9411a17c3a9f678b625749a6c86668afba5b778d87d6822f67119c674e24f32f; cleanup exit 0 is operator-reported, not physical-stop assurance.
+  Reported started 1794266630 / finished 1794266641 = 11 wall seconds; this is not independent phase-deadline or containment proof.
+  Original image.stdout/image.stderr/inspection.stdout/inspection.stderr are absent from the received evidence; OS/architecture/local image ID/compiler versions/libc/C++ library path remain null.
+  The coding directory now contains normalized operator records; directory existence does not establish receipt of original host phase files.
+  The operator report clears the Rust-image acquisition blocker at its reported scope, not builder ABI/linking, qualification-image usability or GPU capability.
+  Next functional evidence is the four existing host output files, not another pull/container/compiler run or a new hardware/network/security prerequisite.
   Current coding metadata: 2,684 entries = 137 directories + 2,545 files + 2 symlinks + 0 other; complete:true, one invocation consumed / zero remaining.
   metadataBytes 331,823 excludes the final summary line; retained stdout is 332,260 bytes and stderr is empty, below the 10 MiB grant.
   Unchanged runBounded keeps 4 MiB per stream; the worker reserves 64 KiB inside stdout for its summary, with no duplicate full inventory file.
@@ -288,12 +302,13 @@ legend bottom
   Historical input-helper source-1 remains FAIL before Fish parsing: Mise shim trust error; original counter is not syntax proof, classification preserves the correction, no trust/install or operational grant consumed.
   Historical input-helper source-2 7 cases / 59 assertions PASS predates final MEDIUM host-receipt failure handling and LOW launched-stage counter fixes.
   Input-helper proofs are separate from unchanged qualification source-2 32/223 + four types and its prior 64-native-input scope; no new app/Rust/math or production-recipe change.
-  Host grant remains unexecuted: one exact pinned Rust pull 600s; only pull success permits a 60s combined image-inspect + one non-CUDA container worker; at most one cleanup 30s.
+  Historical consumed host scope prescribed one exact pinned Rust pull 600s, then only on success a 60s combined image-inspect/non-CUDA worker, then at most one cleanup 30s; none of these allowances remains available.
   Container contract: --pull=never, --cpus=1, --memory=1g, /bin/sh entrypoint, no GPU flags; client bounds do not establish physical stop or host containment assurance.
   Worker records tool paths, requested compiler/linker versions and libc/OS facts; C++ library path must resolve to a file, missing tools or unresolved libstdc++.so fail. No actual compiler/link test.
   Host preflight: explicit operator environment, approved repo root, frozen Cargo.lock SHA, existing runs parent, required tools; exclusive host-builder-inputs-1 output directory and inspection marker prevent replay there.
   Host phase outputs are plaintext; state/exit files bracket work, cleanup addresses only this run's valid saved CID, and receipt write/read/output failures cannot become PASS.
-  Host script availability is unverified; no original host outputs received. Permission does not authorize publishing, transferring or copying the handoff file, staging inputs or running agent host calls.
+  Last confirmed published source: 2c17a189ecba08cb7078ea8daf991317d09c3ef1; actual operator commit unknown. This gap adds no hardened custody gate.
+  No original host outputs received; this report authorizes no further acquisition, publication/transfer, LLVM query/payload read, staging, build, host/GPU or training operation.
   GPU full order: cuda_f64_nonzero_native_scores_round_trip; cuda_f64_direct_sgd_changes_policy_parameters;
   cuda_feature_complete_sweep_for_active_relu_checks_2335_coordinates; cuda_feature_complete_sweep_for_inactive_relu_checks_2335_coordinates;
   cuda_f64_redundant_learning_channels_agree_and_reload; cuda_f64_policy_channel_subprocesses_agree_and_reload.
@@ -311,15 +326,15 @@ legend bottom
   totalMs >= steps * perTestMs + cleanupReserveMs; these are TEST_LOOP_ONLY_NOT_OVERALL_HOST_INVOCATION limits, not an end-to-end deadline.
   DevOps LOW scope clarification resolved: proposedLimitsNotApproved.overallHostInvocationMs remains null; no whole-invocation bound is claimed.
   Proposed test timings are not approved; build/context/image/CPU-memory/cooperative-GPU and transfer/resource bounds remain unresolved.
-  Rust historically ABSENT: a separate exact operator-only pull is now approved but unexecuted; Bun last CACHED_NOT_FRESHLY_INSPECTED, no new Bun acquisition or inspection grant.
+  Rust ABSENT is now historical projection only: the operator reports successful acquisition of the exact pin; detailed image facts remain pending. Bun last CACHED_NOT_FRESHLY_INSPECTED, no new Bun grant.
   All earlier Rust install, Cargo fetch, LLVM metadata/version and visibility grants remain consumed; five flag queries are now consumed too.
-  The new coding metadata allowance is spent; the operator-only Rust packet remains available only within its exact unexecuted grant, not to an agent or through an assumed handoff copy.
+  Coding metadata and operator Rust pull/container/cleanup allowances are all spent; original request/review/packet projections remain unchanged and cannot authorize replay.
   Continue the bounded inventory and consolidated functional input resolution; all other acquisitions and input choices, transfer/resource bounds and build/GPU/training work remain unapproved.
   Source proof does not qualify actual Cargo artifact compatibility, compiled linking/ABI, image usability or GPU behavior.
   Canonical init/BOTH/independent reference/orderly close, integrated R4, activation/five-master scheduling and accepted telemetry/coexistence remain outside qualification.
   PASS_TESTS_ONLY never sets trainingReady, canonicalBothQualified, integratedR4Qualified, operationalTelemetryQualified, fullAssuranceQualified or trainingExecuted true.
   All security/privacy/isolation hardening remains LAST, after ALL planned training completes and results validate; full-assurance gates remain OPEN.
   The broader host-inputs.json all-false approval projection stays unchanged; input-request.json records the only new narrow exception, not an approved complete acquisition/build/training packet.
-  This diagram renews no grant and performs no operation; metadata post-outcome record acceptance remains outside this docs pass.
+  This diagram renews no grant and performs no operation; no post-record review acceptance is claimed for the new operator records.
 endlegend
 @enduml

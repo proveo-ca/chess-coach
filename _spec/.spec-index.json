@@ -76,7 +76,9 @@
         "_work/gpu-owner-recovery/runs/gpu-input-inventory-source-*/**",
         "_work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/receipt.json",
         "_work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/command.stdout",
-        "_work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/command.stderr"
+        "_work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-builder-inputs-1/operator-paste.txt",
+        "_work/gpu-owner-recovery/runs/host-builder-inputs-1/operator-observation.json"
       ],
       "fingerprint": null
     },

@@ -13,12 +13,14 @@ This amendment renews no execution, acquisition, installation, runtime-change or
 
 <a id="current-input-inventory"></a>
 
-## CURRENT input inventory — coding metadata PASS/spent; operator-only builder packet pending
+## CURRENT input inventory — operator-reported metadata PASS; all attempt grants consumed, details pending
 
 Executor freshly selected `Inventory inputs Recommended`; the separate [input request](../_work/gpu-owner-recovery/qualification/input-request.json) records two bounded scopes, not a new complete build or acquisition packet.
-The [owning diagram](gpu-qualification.puml) separates completed coding metadata from the **approved but UNEXECUTED operator-host** Rust pull/inspection.
+The [owning diagram](gpu-qualification.puml) separates completed coding metadata from the new **operator-reported completed** Rust pull/inspection; both one-shot allowances are now consumed.
 This docs pass reads sources and retained evidence only; it runs no command, test, render, LLVM/native program, network request, host operation or agent.
-The broader [host-input packet](../_work/gpu-owner-recovery/qualification/host-inputs.json) retains its original all-false approval projection; this new narrow grant is a separate exception, not a rewrite of that packet.
+The broader [host-input packet](../_work/gpu-owner-recovery/qualification/host-inputs.json) retains its original all-false approvals and old `ABSENT` observation as historical projections.
+The original request, prior coding outcomes and review/approval records remain byte-unchanged; the new operator report controls current reported acquisition state, not those retained projections.
+This current section supersedes older Rust-absence and pending-pull wording below; those statements retain only their capture-time scope.
 
 ### Completed coding-prefix metadata — one consumed, zero remaining
 
@@ -55,25 +57,37 @@ The final [tests](../_work/gpu-owner-recovery/qualification/input-inventory.test
 The lead reports adversarial `ses_e3db08ecaffe7JpgpwIKHCgyMl` READY with both findings resolved, security `ses_e3db08ecaffd8jrnYUsS9UQS84` READY **within this new grant**, and DevOps `ses_e3ec46b44ffe7CbnV5rwv23shT` READY source-only.
 Those source/pre-execution verdicts are not completed-metadata record acceptance or actual host outcome acceptance.
 
-### Separate operator-host grant — approved, unexecuted and unavailable to agents
+### Operator-reported result — PASS summary, authority consumed, detailed outputs unreceived
 
-The [Fish packet](../_work/gpu-owner-recovery/qualification/inspect-builder.fish) permits the **operator on the approved host only** to use one exact pinned Rust pull, bounded to **600 seconds**.
-Only pull success permits one **60-second combined image-facts + non-CUDA-container inspection**, followed by at most one separate **30-second** cleanup targeting only this run's valid saved CID.
-The exact Rust pin is `docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb`.
-The container uses `--pull=never`, **1 CPU / 1 GiB**, and `/bin/sh`; it runs no GPU work or actual compile/link test.
-It records image OS/architecture/ID/digests, tool paths, requested compiler/linker versions, libc/OS facts and a C++ standard-library path query; missing tools, failed commands or unresolved/bare `libstdc++.so` fail the packet.
-These are separate client bounds, not a physical-stop or containment qualification.
+The [operator paste](../_work/gpu-owner-recovery/runs/host-builder-inputs-1/operator-paste.txt) and [normalized observation](../_work/gpu-owner-recovery/runs/host-builder-inputs-1/operator-observation.json) record **`OPERATOR_REPORTED_INPUT_METADATA_PASS_AUTHORITY_CONSUMED_DETAILS_PENDING`** and reported `PASS_INPUT_METADATA_ONLY`.
+These are newly retained coding-side records normalized from pasted output, **not original host files**; creating this local evidence directory did not transfer the operator's phase outputs.
 
-The packet requires explicit operator-host environment, the approved repo root with frozen `Cargo.lock` SHA, an existing runs parent and required tools.
-Exclusive `host-builder-inputs-1` output creation and the inspection marker prevent replay within that retained evidence.
-Each phase retains stdout/stderr and status files; a plaintext root receipt records pull/image/inspection/container/cleanup results, and receipt write/read/output failure cannot become PASS.
-No host Bun installation is required; the self-Fish inspection worker shares the combined 60-second deadline.
-There is no `--rm`, GPU/NVIDIA query, prune, package installation, host configuration change, build, staging or training step.
+| Operator-reported field | Result / limit |
+|---|---|
+| Exact Rust image | `docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb` |
+| Frozen lock SHA | `77f674cc26a01f26558fd99c45bdcd5566017be05833fce1d39cae98cda05955` |
+| Pull / combined inspection / image inspection / container / cleanup exits | All reported `0` |
+| Container and cleanup | One of each; CID `9411a17c3a9f678b625749a6c86668afba5b778d87d6822f67119c674e24f32f` |
+| Started / finished | `1794266630` / `1794266641`; 11 reported wall seconds, not independent per-phase deadline proof |
+| Remaining authority | **One pull / one container / one cleanup CONSUMED; zero remaining**, no automatic retry |
+| Compilation / GPU execution / training readiness | Reported `false` |
 
-**No host operation has run under this grant; one pull and one container remain available only to the operator within the exact selected scope.**
-No original host files have been received, and the script's presence in the operator's host checkout is **unverified**.
-Handoff permission does **not** authorize publishing, transferring or copying the script; local source/syntax proof does not establish remote availability.
-The coding agent must not invoke Docker or any host tool, assume a handoff copy, replay the spent coding inventory or repeat earlier LLVM queries.
+This report **clears the pinned Rust-image acquisition blocker at report scope**; do not describe the current state as image still absent, pull pending or an unexecuted available grant.
+It does not establish compiled builder ABI/native linking, a built qualification image, actual GPU work or training readiness.
+The last confirmed published source is `2c17a189ecba08cb7078ea8daf991317d09c3ef1`; the observation leaves the actual operator-executed source commit unknown.
+That unknown does not add a hardened source-custody gate.
+This docs pass claims no post-record review acceptance.
+
+**Still unreceived:** `image.stdout`, `image.stderr`, `inspection.stdout`, `inspection.stderr`.
+Consequently image OS/architecture/local image ID, compiler versions, libc version and C++ standard-library path remain `null` in the normalized record; the PASS summary is not those detailed facts.
+The next functional input-selection handoff requests these **existing four output files only**, without Docker, compiler, pull or container replay.
+This is ordinary missing functional detail, not a new hardware, network, security or strong-custody prerequisite.
+
+The unchanged [Fish source](../_work/gpu-owner-recovery/qualification/inspect-builder.fish) retains the consumed contract: pull <=600 seconds; combined image/non-CUDA inspection <=60 seconds at 1 CPU / 1 GiB; separate saved-exact-CID cleanup <=30 seconds.
+It specifies per-command tool/library result handling and plaintext phase/receipt evidence without host Bun, compilation, GPU, installation or staging.
+Those prescribed bounds and source declarations are not independently verified by the pasted 11-second summary.
+The original request and older approval projections remain history, **NOT RERUN**; the report grants no new install/acquisition, LLVM query/prefix-payload read, copy/staging, build, GPU or training operation.
+The coding agent must not invoke Docker or any host tool or repeat the spent coding inventory/LLVM queries.
 The broader host packet remains unresolved: LLVM selection, CUDARC, libdevice, builder/runtime selections, transfer/staging choices and remaining build/resource bounds stay unapproved.
 Continue this bounded inventory and consolidated input resolution without adding full-assurance gates; staging, builds, actual GPU qualification and training still need separate explicit scope.
 ALL security/privacy/isolation hardening remains LAST, after **ALL planned training completes and results validate**; full-assurance gates remain OPEN and `trainingReady:false` remains unchanged.
@@ -156,9 +170,9 @@ The [host input packet](../_work/gpu-owner-recovery/qualification/host-inputs.js
 All its acquisition, installation, context-copy/staging, image-build, host-execution, GPU-execution and training approval fields are **false**.
 LLVM selection, builder/runtime overlays, CUDARC binding and libdevice source/hash remain unresolved; transfer/staging choices and build/overall-host-invocation/context/image/disk/CPU-memory bounds and cooperative GPU ceilings/telemetry are still incomplete.
 Proposed per-campaign timings are not approved bounds, so this is **not a complete approved runnable host packet**.
-The Rust pin remains historically absent without an executed acquisition; the separate current operator-only pull/inspection grant above is approved but unexecuted. Bun was last reported cached, not freshly inspected here, with no new Bun grant.
-Continue consolidated functional input resolution and the exact pending operator inventory, not helper hardening, new library-by-library approvals or an assurance gauntlet.
-Except for that exact pending operator-only action, every further acquisition, transfer/staging, native build, image operation, host/GPU campaign and training operation needs fresh explicit scope; prior Rust-install, Cargo-fetch, LLVM-metadata/version and visibility grants remain consumed, as do the flag-query batch and new coding metadata walk.
+The Rust pin's old `ABSENT` field remains unchanged only as historical projection; the current operator report records successful acquisition, with detailed image/compiler outputs still unreceived. Bun was last reported cached, not freshly inspected here, with no new Bun grant.
+Continue consolidated input resolution by obtaining the four existing operator output files, not helper hardening, new library-by-library approvals or an assurance gauntlet.
+No pull/container/cleanup allowance remains; any further acquisition, transfer/staging, native build, image operation, host/GPU campaign or training needs separate explicit scope. Prior Rust-install, Cargo-fetch, LLVM-metadata/version and visibility grants remain consumed, as do the flag-query batch and coding metadata walk.
 Canonical init/BOTH/independent-reference/orderly-close proof, integrated R4, operational activation/five-master scheduling and accepted selected-path telemetry/coexistence remain outside this qualification.
 ALL security/privacy/isolation hardening remains LAST, after **ALL planned training completes and its results validate**; full-assurance Gate0/F9/R4 stay OPEN and `trainingReady:false` remains unchanged.
 
