@@ -54,7 +54,8 @@
         "crates/learning/tests/finite_difference.rs",
         "crates/policy-io/tests/gpu.rs",
         "_work/gpu-owner-recovery/gpu-container-visibility-request.json",
-        "_work/gpu-owner-recovery/gpu-container-visibility.fish"
+        "_work/gpu-owner-recovery/gpu-container-visibility.fish",
+        "_work/gpu-owner-recovery/gpu-container-visibility-renewal.json"
       ],
       "fingerprint": null
     }

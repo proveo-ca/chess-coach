@@ -8,13 +8,17 @@
 ' covers: crates/policy-io/tests/gpu.rs
 ' covers: _work/gpu-owner-recovery/gpu-container-visibility-request.json
 ' covers: _work/gpu-owner-recovery/gpu-container-visibility.fish
+' covers: _work/gpu-owner-recovery/gpu-container-visibility-renewal.json
 ' status: SOURCE_IMPLEMENTED / AWAITING_PREPARED_INPUT_SELECTION / trainingReady:false
 ' verification: gpu-functional-local-3 PASS, six stages, sourceChanged:false; no image build or GPU execution
 ' evidence: _work/gpu-owner-recovery/runs/gpu-functional-local-3/receipt.json
 ' host evidence: _work/gpu-owner-recovery/gpu-functional-host-observations.json; normalized operator paste, not original capture
 ' compatibility reference: https://docs.nvidia.com/deploy/cuda-compatibility/minor-version-compatibility.html
-' operator approval: _work/gpu-owner-recovery/gpu-container-visibility-request.json; APPROVED_OPERATOR_EXECUTION_PENDING
-' operator packet: _work/gpu-owner-recovery/gpu-container-visibility.fish; no packet commands executed; outside local-3
+' original operator request: _work/gpu-owner-recovery/gpu-container-visibility-request.json; retained byte-unchanged, no-pull scope
+' operator renewal: _work/gpu-owner-recovery/gpu-container-visibility-renewal.json; parent Executor selected Bun only, operator pull/probe pending
+' operator packet: _work/gpu-owner-recovery/gpu-container-visibility.fish; original operator cache inspection stopped before container creation; outside local-3
+' cache result: _work/gpu-owner-recovery/runs/gpu-container-visibility-host-inspection-1/operator-observation.json; normalized operator paste, not original capture
+' registry metadata: _work/gpu-owner-recovery/gpu-functional-base-image-metadata.json; manifest/config only, no layer payloads
 ' syntax evidence: _work/gpu-owner-recovery/runs/gpu-container-visibility-local-1/receipt.json; Fish 4.9.3 --no-config --no-execute PASS only; four artifact hashes
 ' compiler candidate evidence: _work/gpu-owner-recovery/gpu-functional-compiler-candidates.json; coding-realm directory metadata only, not selected or verified
 ' manifest: 273 selected inputs; 3e5b58c02eeab08783051e087c57381dc0059605c2de6b07fac70e240bf09d45
@@ -29,8 +33,9 @@ left to right direction
 
 component "tooling/runtime/gpu-build-inputs.json\nAWAITING_PREPARED_INPUT_SELECTION" as INPUTS
 component "_work/gpu-owner-recovery/\ngpu-functional-host-observations.json\noperator-reported metadata only\nRTX 3070 Laptop; driver 615.78.08\nDocker nvidia runtime reported registered" as HOST_REPORT
-component "_work/gpu-owner-recovery/\ngpu-container-visibility-request.json\nAPPROVED_OPERATOR_EXECUTION_PENDING" as PROBE_REQUEST
-component "_work/gpu-owner-recovery/\ngpu-container-visibility.fish\nOPERATOR_HOST_ONLY; commands not executed\nFish 4.9.3 syntax-only PASS" as OPERATOR_PACKET
+component "_work/gpu-owner-recovery/\ngpu-container-visibility-request.json\noriginal no-pull request retained unchanged" as PROBE_REQUEST
+component "_work/gpu-owner-recovery/\ngpu-container-visibility-renewal.json\nAPPROVED_OPERATOR_BUN_PULL_AND_ONE_VISIBILITY_PROBE_PENDING" as RENEWAL
+component "_work/gpu-owner-recovery/\ngpu-container-visibility.fish\nOPERATOR_HOST_ONLY; original cache guard stopped\nFish 4.9.3 syntax-only PASS; packet unchanged" as OPERATOR_PACKET
 package "tooling/runtime/Dockerfile.gpu" {
   component "native\npinned Rust stage\n-p chess-coach-policy-io --features gpu-cuda" as NATIVE
   component "javascript\npinned Bun stage" as JAVASCRIPT
@@ -42,7 +47,8 @@ component "crates/learning/tests/finite_difference.rs\n2 ignored host GPU sweeps
 component "crates/policy-io/tests/gpu.rs\n4 ignored host GPU tests" as HOST_TESTS
 
 HOST_REPORT ..> INPUTS : reported driver/runtime facts, not runtime PASS\n13000 advisory only; bindings/inputs remain null
-PROBE_REQUEST --> OPERATOR_PACKET : approved one-attempt handoff\nconditional cached Bun; no retry/pull
+PROBE_REQUEST --> OPERATOR_PACKET : original no-pull scope unchanged\nboth caches missing; no container or GPU query
+RENEWAL --> OPERATOR_PACKET : operator: exact Bun pull once, 600s + kill-after 3s\nand unchanged packet only after successful pull
 OPERATOR_PACKET ..> INPUTS : future operator visibility evidence only\nno current PASS, binding or GPU-kernel proof
 INPUTS --> NATIVE : explicit CUDARC version; no default\nbuilder rootfs before current-native\nprepared LLVM prefix; config 23.1.0
 INPUTS --> RUNTIME : runtime rootfs before app outputs\nnonempty libdevice.10.bc guard
@@ -90,18 +96,28 @@ legend bottom
   Reported driver branch 615 meets CUDA 13.x family floor 580, not an API/PTX or F64 proof.
   13000 is advisory only; no selected UUID, host binding, Gate0 or runtime acceptance.
   Reported 8,192 MiB total / 7,742 MiB free is a snapshot, not a VRAM reservation.
-  Approved operator-only metadata attempt; visibility remains unestablished, not PASS.
-  Inspect both pinned images: 10s each; require cached linux/amd64 Bun or stop, no pull.
+  Operator reported checkout 17a0ed9cf: Rust inspect 1, Bun inspect 1; both pins absent.
+  Original cache guard created zero containers and ran zero GPU queries; no runtime/CUDA failure.
+  Result is normalized operator paste, not an original machine capture; it grants no pull.
+  Registry metadata: exact OCI pins HTTP 200, matching digest headers, linux/amd64; no layers read.
+  Bun declares 1.4.0 / revision 34cbb9a40...; 7 compressed layers, 89,195,521 bytes.
+  Rust config declares 1.95.0; 5 compressed layers, 563,746,315 bytes; no version executed.
+  Layer sums are not exact network totals or unpacked disk requirements.
+  Parent Executor selected Bun only: operator exact-pin linux/amd64 pull once, then one probe.
+  Pull client 600s + kill-after 3s; unchanged Fish packet runs only on successful pull, no retry.
+  No Git update/publication needed; old request and script retain their no-pull bytes.
+  Probe inspects both pinned images: 10s each; Bun must be cached linux/amd64 or stop.
   Missing Rust is reported only; at most one Bun container, UID/GID 1000:1000, fixed GPU UUID.
   NVML/nvidia-smi metadata only; 2 CPUs / 512m / 64 PIDs; no additional user mounts.
   Query client 30s; cleanup client 10s, only this attempt's fresh recorded CID; kill-after 3s.
   No hard-termination guarantee or new containment proof; no coding-agent host execution.
-  No builds, pulls, installs, LLVM/libdevice operations, CUDA kernels, training or config change.
+  No Rust/other pull, builds, installs, LLVM/libdevice/archive operations, CUDA kernels or training.
+  No host configuration change, full-pipeline renewal or coding-agent host execution.
   Local-3 does not verify or execute the new operator handoff artifacts.
   Separate local-1 visibility receipt: Fish 4.9.3 --no-config --no-execute PASS, exit 0.
   Four artifact hashes; no Docker command execution, image availability or visibility proof.
   DevOps READY covers operator-proposal source only; handoff adversarial/security checks ongoing.
-  No handoff adversarial/security acceptance is claimed; operator execution remains pending.
+  No handoff adversarial/security acceptance is claimed; renewed pull/probe execution is pending.
   Compiler candidate: coding-realm Mise version directory named 23.1.0-4, metadata only.
   No verified LLVM installation, file inspection, llvm-config execution, copy or host input.
   A later approved functional inventory might avoid acquisition; candidate remains unselected.
@@ -118,7 +134,7 @@ legend bottom
   Activation is separate functional work after selected-host capability, not security hardening.
   No activation change/approval, training enablement or new audit gauntlet follows from local PASS.
   imageBuilt / actualHostExecuted / cudaGpuCodeExecuted / trainingReady remain false.
-  Only the exact operator visibility attempt is approved; no broader operation or training grant.
+  Only the exact operator Bun pull and renewed visibility probe are approved; no broader grant.
   All security/privacy hardening and isolation are LAST, after completed planned training
   and validated results; existing requests remain unchanged.
   Diagnostics: 0/3, no accepted binding; full archive request remains halted.

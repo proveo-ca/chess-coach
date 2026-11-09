@@ -1,0 +1,41 @@
+{
+  "version": "chess-coach.gpu-container-visibility-renewal.v1",
+  "status": "APPROVED_OPERATOR_BUN_PULL_AND_ONE_VISIBILITY_PROBE_PENDING",
+  "authorization": {
+    "source": "EXECUTOR_SELECTED_BUN_ONLY_RECOMMENDED_IN_PARENT_SESSION",
+    "executor": "OPERATOR_HOST_ONLY",
+    "maximumPullInvocations": 1,
+    "maximumContainersCreated": 1,
+    "automaticRetry": false
+  },
+  "previousRequest": "_work/gpu-owner-recovery/gpu-container-visibility-request.json",
+  "previousResult": "_work/gpu-owner-recovery/runs/gpu-container-visibility-host-inspection-1/operator-observation.json",
+  "registryMetadata": "_work/gpu-owner-recovery/gpu-functional-base-image-metadata.json",
+  "image": {
+    "reference": "docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038",
+    "platform": "linux/amd64",
+    "metadataDeclaredVersion": "1.4.0",
+    "compressedLayerBytes": 89195521,
+    "pullAuthorized": true,
+    "substitutionAuthorized": false
+  },
+  "pullCommand": "timeout --kill-after=3s 600s docker pull --platform=linux/amd64 'docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038'",
+  "pullClientDeadlineSeconds": 600,
+  "pullClientKillAfterSeconds": 3,
+  "probeCommandAfterSuccessfulPull": "fish _work/gpu-owner-recovery/gpu-container-visibility.fish",
+  "probeUsesUnchangedPacket": true,
+  "probeLimitsAndCleanup": "INHERIT_PREVIOUS_REQUEST_FOR_ONE_RENEWED_METADATA_ONLY_PROBE",
+  "rustImagePullAuthorized": false,
+  "imageBuildAuthorized": false,
+  "llvmArchiveOperationAuthorized": false,
+  "libdeviceAcquisitionAuthorized": false,
+  "nativeCudaCompilationAuthorized": false,
+  "cudaKernelExecutionAuthorized": false,
+  "hostConfigurationChangeAuthorized": false,
+  "trainingAuthorized": false,
+  "fullPipelineAuthorityRenewed": false,
+  "agentPerformedImagePull": false,
+  "agentExecutedHostCommands": false,
+  "containerGpuVisibilityEstablished": false,
+  "trainingReady": false
+}
