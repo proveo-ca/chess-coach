@@ -1,0 +1,52 @@
+{
+  "version": "chess-coach.gpu-runtime-lookup-host.v2",
+  "status": "OPERATOR_REPORTED_TOOLKIT_PACKAGES_AND_PATHS_AVAILABLE_GPU_VISIBILITY_UNPROVED",
+  "provenance": "NORMALIZED_FROM_PARTIAL_OPERATOR_PASTE_NOT_ORIGINAL_MACHINE_CAPTURE",
+  "operatorPaste": "_work/gpu-owner-recovery/runs/gpu-runtime-lookup-host-2/operator-paste.txt",
+  "operatorSourceCommit": null,
+  "exactExecutedPacket": "NOT_ATTESTED_MULTILINE_OR_ONE_LINE_HANDOFF",
+  "previousLookup": "_work/gpu-owner-recovery/runs/gpu-runtime-lookup-host-1/operator-observation.json",
+  "docker": {
+    "infoExitCode": 0,
+    "versionExitCode": null,
+    "clientVersion": null,
+    "serverVersion": null,
+    "defaultRuntime": null,
+    "runtimes": null,
+    "dockerHostOverride": "NOT_SUPPLIED",
+    "dockerContextOverride": "NOT_SUPPLIED",
+    "contextShowExitCode": 0,
+    "reportedContext": "default",
+    "contextInspectExitCode": 0,
+    "reportedContextEndpoint": "unix:///var/run/docker.sock",
+    "effectiveDaemonEndpointEstablished": false,
+    "daemonExecutionHostEstablished": false
+  },
+  "shellMachine": {
+    "rpmPackagesExitCode": 0,
+    "reportedInstalledPackages": [
+      "nvidia-container-toolkit-1.20.1-1.x86_64",
+      "nvidia-container-toolkit-base-1.20.1-1.x86_64",
+      "libnvidia-container-tools-1.20.1-1.x86_64",
+      "libnvidia-container1-1.20.1-1.x86_64"
+    ],
+    "ctkPackageOwnerExitCode": 0,
+    "reportedCtkPackageOwner": "nvidia-container-toolkit-base-1.20.1-1.x86_64",
+    "pathLookups": [
+      { "tool": "nvidia-container-runtime", "exitCode": 0, "reportedPath": "/usr/bin/nvidia-container-runtime" },
+      { "tool": "nvidia-container-runtime-hook", "exitCode": 0, "reportedPath": "/usr/bin/nvidia-container-runtime-hook" },
+      { "tool": "nvidia-container-cli", "exitCode": 0, "reportedPath": "/usr/bin/nvidia-container-cli" },
+      { "tool": "nvidia-cdi-hook", "exitCode": 0, "reportedPath": "/usr/bin/nvidia-cdi-hook" },
+      { "tool": "nvidia-ctk", "exitCode": 0, "reportedPath": "/usr/bin/nvidia-ctk" },
+      { "tool": "runc", "exitCode": 0, "reportedPath": "/usr/bin/runc" }
+    ],
+    "installationHistory": "NOT_SUPPLIED",
+    "daemonPathEstablished": false
+  },
+  "missingOutput": ["DOCKER_HOST", "DOCKER_CONTEXT", "docker version fields and exit", "docker info formatted values"],
+  "operationsGrantedByThisObservation": false,
+  "agentExecutedHostCommands": false,
+  "containerGpuVisibilityEstablished": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

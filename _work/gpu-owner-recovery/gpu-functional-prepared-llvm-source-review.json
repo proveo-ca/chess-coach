@@ -1,0 +1,35 @@
+{
+  "version": "chess-coach.gpu-functional-prepared-llvm-source-review.v1",
+  "status": "ACCEPTED_SOURCE_AND_STATIC_SCOPE_ONLY",
+  "authorization": "_work/gpu-owner-recovery/gpu-functional-prepared-llvm-implementation-request.json",
+  "currentVerification": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-local-4/receipt.json",
+  "verificationStatus": "PASS_STATIC_GRAPH_UNAVAILABLE",
+  "sourceManifestSha256": "710a658592d3f7ef89f04a654f0d30213315eb33ba8a0f927c24061db1a01fba",
+  "sourceCount": 277,
+  "staticEvidence": { "recipeTests": 9, "recipeAssertions": 97, "verifierTests": 5, "verifierAssertions": 12, "typecheckProjects": 4 },
+  "reviewSessions": {
+    "architect": "ses_e3eea8cfeffecDxOMiTQwd2chs",
+    "backend": "ses_e3eb390a0ffevPYsyX7nd2VlAn",
+    "devops": "ses_e3ec46b44ffe7CbnV5rwv23shT",
+    "monorepoCoordinator": "ses_e3e975903ffemhEzKAbgl5dmRP",
+    "adversarial": "ses_e3e8e2af9ffea4WmRI4iPfFWdJ",
+    "security": "ses_e3e8e2af2ffeghBA7pJPnxjio9"
+  },
+  "sourceOnlyVerdicts": { "backend": "ACCEPT", "devops": "READY", "monorepoCoordinator": "ACCEPT", "adversarial": "READY", "security": "READY" },
+  "resolvedSourceFinding": {
+    "severity": "MEDIUM",
+    "subject": "GRAPH_QUERY_COMPILER_BINDING",
+    "resolution": "REQUIRE_PAIRED_PINNED_CARGO_AND_RUSTC_SET_EXACT_RUSTC_AND_BIN_PATH_RECORD_STAGE_ENVIRONMENT",
+    "regressionTests": "_work/gpu-owner-recovery/prepared-llvm/verify.test.ts"
+  },
+  "graphStatus": "UNAVAILABLE_CARGO",
+  "nativeGraphCommandsExecuted": 0,
+  "graphCouplingQualified": false,
+  "cpuCompilationAndRegressionTestsRun": false,
+  "imageBuilt": false,
+  "llvmPrefixStagedOrSelected": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false,
+  "historicalFullAssuranceFindingsClosed": false,
+  "additionalOperationsAuthorizedByThisReview": false
+}

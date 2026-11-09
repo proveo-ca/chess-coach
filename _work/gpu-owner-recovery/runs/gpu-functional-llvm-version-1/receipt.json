@@ -1,0 +1,46 @@
+{
+  "version": "chess-coach.gpu-functional-llvm-version.v1",
+  "scope": "SINGLE_CODING_ENVIRONMENT_NON_CUDA_LLVM_CONFIG_VERSION_ONLY",
+  "status": "PASS_VERSION_ONLY",
+  "request": "_work/gpu-owner-recovery/gpu-functional-llvm-version-request.json",
+  "executedArgv": [
+    "/usr/bin/timeout",
+    "--kill-after=3s",
+    "10s",
+    "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/bin/llvm-config",
+    "--version"
+  ],
+  "environment": {
+    "PATH": "/usr/local/bin:/usr/bin:/bin",
+    "LANG": "C",
+    "LC_ALL": "C"
+  },
+  "exitCode": 0,
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-functional-llvm-version-1/command.stdout",
+      "bytes": 7,
+      "sha256": "105cea6ab21beabd59f0ce9c72349435c99d6012981875d22aae70494f10dc10"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-functional-llvm-version-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "reportedVersion": "23.1.0",
+  "expectedVersion": "23.1.0",
+  "versionMatches": true,
+  "invocationsConsumed": 1,
+  "remainingInvocations": 0,
+  "nativeNonCudaProgramExecuted": true,
+  "prefixModified": false,
+  "prefixSelected": false,
+  "markerCreated": false,
+  "compilationPerformed": false,
+  "archiveBytesRead": false,
+  "downloadsPerformed": false,
+  "hostCommandsExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

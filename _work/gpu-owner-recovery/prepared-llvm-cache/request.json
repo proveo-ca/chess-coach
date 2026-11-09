@@ -1,0 +1,31 @@
+{
+  "version": "chess-coach.gpu-functional-cargo-cache-request.v1",
+  "status": "APPROVED_ONE_LOCKED_REGISTRY_CACHE_FETCH_AND_OFFLINE_GRAPH_RECHECK",
+  "authorization": {
+    "source": "EXECUTOR_SELECTED_FETCH_CACHE_RECOMMENDED_IN_PARENT_SESSION",
+    "executor": "CODING_ENVIRONMENT_ONLY",
+    "maximumFetchInvocations": 1,
+    "automaticRetry": false,
+    "lockedRegistryMetadataAndCrateDownloadsAuthorized": true
+  },
+  "lockPath": "Cargo.lock",
+  "lockSha256": "77f674cc26a01f26558fd99c45bdcd5566017be05833fce1d39cae98cda05955",
+  "lockedPackages": 675,
+  "maximumRegistryEntries": 671,
+  "registrySource": "registry+https://github.com/rust-lang/crates.io-index",
+  "target": "x86_64-unknown-linux-gnu",
+  "fetchArgs": ["fetch", "--locked", "--target", "x86_64-unknown-linux-gnu"],
+  "fetchDeadlineMs": 600000,
+  "cargoNetworkRetryCount": 0,
+  "cargoHttpTimeoutSeconds": 30,
+  "runId": "gpu-prepared-llvm-cache-1",
+  "graphVerificationRunId": "gpu-prepared-llvm-local-6",
+  "registryEntryLimitIsHttpRequestOrByteLimit": false,
+  "packageUpgradesAuthorized": false,
+  "toolchainReinstallationAuthorized": false,
+  "compilationAuthorized": false,
+  "llvmBundleOperationAuthorized": false,
+  "imageOperationAuthorized": false,
+  "hostGpuOperationAuthorized": false,
+  "trainingAuthorized": false
+}

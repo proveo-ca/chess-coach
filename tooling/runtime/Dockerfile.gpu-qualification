@@ -1,0 +1,52 @@
+# SPEC: _spec/gpu-qualification.puml
+FROM docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb AS inputs
+ENV CARGO_HOME=/capture/cargo-home CARGO_BUILD_JOBS=2 RAYON_NUM_THREADS=2
+WORKDIR /build/native
+COPY gpu-build/rootfs/ /
+COPY cargo-home/ /capture/cargo-home/
+COPY current-native/ /build/native/
+COPY qualification-tools/ /build/native/
+RUN --network=none mkdir -p /build/native/qualification
+
+FROM inputs AS cpu-build
+ENV CARGO_TARGET_DIR=/build/native/target-cpu
+RUN --network=none cargo test --release --target x86_64-unknown-linux-gnu --locked --offline --jobs 2 -p chess-coach-learning --tests --no-run --message-format=json > qualification/cpu-learning.stdout 2> qualification/cpu-learning.stderr || { cat qualification/cpu-learning.stdout; cat qualification/cpu-learning.stderr >&2; exit 1; }
+RUN --network=none cargo test --release --target x86_64-unknown-linux-gnu --locked --offline --jobs 2 -p chess-coach-policy-io --tests --no-run --message-format=json > qualification/cpu-policy.stdout 2> qualification/cpu-policy.stderr || { cat qualification/cpu-policy.stdout; cat qualification/cpu-policy.stderr >&2; exit 1; }
+
+FROM inputs AS gpu-build
+ENV CARGO_TARGET_DIR=/build/native/target-gpu XDG_DATA_HOME=/opt/tracel-data
+ARG CUDARC_CUDA_VERSION
+ENV CUDARC_CUDA_VERSION=${CUDARC_CUDA_VERSION}
+COPY gpu-build/llvm/ /opt/tracel-data/tracel/tracel-llvm-23.1.0-4/
+RUN --network=none case "$CUDARC_CUDA_VERSION" in \
+      13040|13030|13020|13010|13000|12090|12080|12060|12050|12040|12030|12020|12010|12000|11080|11070|11060|11050|11040) ;; \
+      *) echo "An explicit supported CUDARC_CUDA_VERSION is required" >&2; exit 1 ;; \
+    esac \
+    && test -x /opt/tracel-data/tracel/tracel-llvm-23.1.0-4/bin/llvm-config \
+    && test "$(/opt/tracel-data/tracel/tracel-llvm-23.1.0-4/bin/llvm-config --version)" = "23.1.0"
+RUN --network=none cargo test --release --target x86_64-unknown-linux-gnu --locked --offline --jobs 2 -p chess-coach-learning --features gpu-prepared-llvm --test finite_difference --no-run --message-format=json > qualification/gpu-learning.stdout 2> qualification/gpu-learning.stderr || { cat qualification/gpu-learning.stdout; cat qualification/gpu-learning.stderr >&2; exit 1; }
+RUN --network=none cargo test --release --target x86_64-unknown-linux-gnu --locked --offline --jobs 2 -p chess-coach-policy-io --features gpu-prepared-llvm --test gpu --no-run --message-format=json > qualification/gpu-policy.stdout 2> qualification/gpu-policy.stderr || { cat qualification/gpu-policy.stdout; cat qualification/gpu-policy.stderr >&2; exit 1; }
+
+FROM docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038 AS runtime
+COPY gpu-runtime/rootfs/ /
+WORKDIR /build/native
+RUN --network=none mkdir -p /build/native/_work/gpu-owner-recovery/runs /build/native/_work/gpu-owner-recovery/scratch/home /build/native/_work/gpu-owner-recovery/scratch/tmp \
+    && chown -R 1000:1000 /build/native/_work
+ENTRYPOINT ["/usr/local/bin/bun", "--no-env-file", "--no-install", "/build/native/tooling/runtime/qualification.ts"]
+
+FROM runtime AS cpu-qualification
+ENV QUALIFICATION_IMAGE_MODE=cpu
+COPY --from=inputs /build/native/ /build/native/
+COPY --from=cpu-build /build/native/target-cpu/ /build/native/target-cpu/
+COPY --from=cpu-build /build/native/qualification/ /build/native/qualification/
+RUN --network=none chown -R 1000:1000 /build/native/_work
+USER 1000:1000
+
+FROM runtime AS gpu-qualification
+ENV QUALIFICATION_IMAGE_MODE=gpu CUDA_PATH=/usr/local/cuda
+RUN --network=none test -s /usr/local/cuda/nvvm/libdevice/libdevice.10.bc
+COPY --from=inputs /build/native/ /build/native/
+COPY --from=gpu-build /build/native/target-gpu/ /build/native/target-gpu/
+COPY --from=gpu-build /build/native/qualification/ /build/native/qualification/
+RUN --network=none chown -R 1000:1000 /build/native/_work
+USER 1000:1000

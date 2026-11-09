@@ -1,0 +1,146 @@
+{
+  "version": "chess-coach.input-inventory-source.v1",
+  "status": "PASS_INPUT_SOURCE_ONLY",
+  "failure": null,
+  "sourceChanged": false,
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/qualification/input-request.json",
+      "sha256": "eed1759ebd11d28420988eea21c7730465701381506e01e17eb2b0678fe9e7e7"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/input-inventory.ts",
+      "sha256": "4838a66286eccdbb91b96d3fa76513d0cdbc43553dceaf593a7b12b32fa05deb"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/input-inventory.test.ts",
+      "sha256": "8ae02592b106a15a9ada5009d79906a3ba920eabfe67df5159a981800f996357"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/inspect-builder.fish",
+      "sha256": "aeebbd52e9c7805213cd3d821c702658d899a1a462ab8a701f2186fd35cb9fe9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/verify-inputs.ts",
+      "sha256": "15dd7d6b2c1b9c6ce1889f6146c4bb99e4d8104db2ba23b7b3e16bdd8d4491fa"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/tsconfig.json",
+      "sha256": "b328520d0a04776b0e0931f6fb0e6de92c4a2f37494bc37129c3dc24b63a098b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/provision.ts",
+      "sha256": "446bafb616dce8f642216268cb10d6c30e1e485b45428b8c83295358964a8efb"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/verify.ts",
+      "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+      "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "a0cf0b388c7327624fa7f91061dbf4ee4280e9f27d095740399fe5c83682e913"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "77f674cc26a01f26558fd99c45bdcd5566017be05833fce1d39cae98cda05955"
+    }
+  ],
+  "results": [
+    {
+      "name": "unit",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "./_work/gpu-owner-recovery/qualification/input-inventory.test.ts"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 28,
+      "stderrBytes": 901,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-input-inventory-source-3/unit/command.stdout",
+          "bytes": 28,
+          "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-input-inventory-source-3/unit/command.stderr",
+          "bytes": 901,
+          "sha256": "46bacb87b8eea1990c4ef7ac10d232f4895e8b8a0fbd7a013e54712d9373c732"
+        }
+      ]
+    },
+    {
+      "name": "types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "-p",
+        "_work/gpu-owner-recovery/qualification/tsconfig.json"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-input-inventory-source-3/types/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-input-inventory-source-3/types/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "fish-syntax",
+      "argv": [
+        "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-fish-shell-fish-shell/4.9.3/fish",
+        "--no-config",
+        "--no-execute",
+        "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/qualification/inspect-builder.fish"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-input-inventory-source-3/fish-syntax/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-input-inventory-source-3/fish-syntax/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "fishSyntaxChecked": true,
+  "fishSyntaxAttempted": true,
+  "fishSyntaxAvailable": true,
+  "fishSyntaxSkipReason": null,
+  "metadataInventoryExecuted": false,
+  "hostPacketExecuted": false,
+  "imageOperationPerformed": false,
+  "llvmExecuted": false,
+  "compilationPerformed": false,
+  "gpuExecuted": false,
+  "trainingReady": false
+}

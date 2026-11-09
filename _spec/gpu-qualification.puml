@@ -1,0 +1,325 @@
+@startuml gpu_qualification
+' purpose: CPU/GPU qualification source, bounded input inventory and separate coding/operator authority
+' covers: tooling/runtime/qualification.ts
+' covers: tooling/runtime/Dockerfile.gpu-qualification
+' covers: packages/runtime/tests/gpu-qualification.test.ts
+' covers: _work/gpu-owner-recovery/qualification/request.json
+' covers: _work/gpu-owner-recovery/qualification/llvm-flags.ts
+' covers: _work/gpu-owner-recovery/qualification/host-inputs.json
+' covers: _work/gpu-owner-recovery/qualification/verify.ts
+' covers: _work/gpu-owner-recovery/qualification/tsconfig.json
+' covers: _work/gpu-owner-recovery/qualification/input-request.json
+' covers: _work/gpu-owner-recovery/qualification/input-inventory.ts
+' covers: _work/gpu-owner-recovery/qualification/input-inventory.test.ts
+' covers: _work/gpu-owner-recovery/qualification/inspect-builder.fish
+' covers: _work/gpu-owner-recovery/qualification/verify-inputs.ts
+' covers: _work/gpu-owner-recovery/verify.ts
+' covers: _work/gpu-owner-recovery/command-supervisor.ts
+' covers: tooling/runtime/gpu-build-inputs.json
+' covers: Cargo.toml
+' covers: Cargo.lock
+' covers: crates/*/Cargo.toml
+' covers: crates/**/*.rs
+' covers: _work/gpu-owner-recovery/runs/gpu-qualification-source-1/receipt.json
+' covers: _work/gpu-owner-recovery/runs/gpu-qualification-source-1/tests/command.stderr
+' covers: _work/gpu-owner-recovery/runs/gpu-qualification-source-2/receipt.json
+' covers: _work/gpu-owner-recovery/runs/gpu-qualification-source-2/tests/command.stderr
+' covers: _work/gpu-owner-recovery/runs/gpu-qualification-llvm-flags-1/receipt.json
+' covers: _work/gpu-owner-recovery/runs/gpu-qualification-llvm-flags-1/*/command.stdout
+' covers: _work/gpu-owner-recovery/runs/gpu-input-inventory-source-*/**
+' covers: _work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/receipt.json
+' covers: _work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/command.stdout
+' covers: _work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/command.stderr
+' status: PASS_METADATA_ONLY / inventory-source-3 PASS_INPUT_SOURCE_ONLY / OPERATOR_HOST_GRANT_UNEXECUTED / HOST_INPUTS_UNSELECTED / trainingReady:false
+' see: _spec/gpu-build.puml
+' see: _spec/gpu-readiness.md#current-qualification-source-and-flags
+' see: _spec/gate-closure.md#current-qualification-source-and-flags
+' see: _spec/gpu-readiness.md#current-input-inventory
+' see: _spec/gate-closure.md#current-input-inventory
+' current authority: Executor selected Inventory inputs Recommended; input-request.json separates spent coding metadata scope from pending operator-only Rust image pull/inspection
+' coding metadata result: gpu-qualification-input-inventory-1 PASS_METADATA_ONLY, sourceChanged:false; one invocation consumed / zero remaining, no replay
+' operator scope: one exact Rust pull 600s, one combined image/non-CUDA container inspection 60s, exact-CID cleanup at most 30s; approved but UNEXECUTED, agent execution prohibited
+' availability: operator-host script availability unverified; no original host files received, no publishing/transfer/copy authority inferred
+' inventory source proof: gpu-input-inventory-source-3 PASS_INPUT_SOURCE_ONLY, 8 mocked/static cases / 64 assertions, strict qualification types and direct existing Fish 4.9.3 syntax all exit 0
+' inventory history: input-helper source-1 FAIL at Mise shim before Fish parsing; classification overrides its misleading fishSyntaxChecked counter; source-2 7/59 PASS predates final reporting fixes
+' inventory reviews (lead-reported): adversarial ses_e3db08ecaffe7JpgpwIKHCgyMl READY after MEDIUM receipt-failure and LOW syntax-attempt fixes; security ses_e3db08ecaffd8jrnYUsS9UQS84 READY within new grant; DevOps ses_e3ec46b44ffe7CbnV5rwv23shT READY source-only
+' metadata post-outcome review: not claimed by this docs pass; pre-execution source/grant READY is not completed-record acceptance
+' preparation authority: Executor selected Prepare + query Recommended; source preparation plus one five-query batch only
+' consumed query authority: request.json retains its original projection; receipt closes the batch, 5 consumed / 0 remaining, no retry
+' source generation: source-2 manifest 48d4c9705a02d775d6f58a3bce58346e34a8f43e58e604dcdbcd0de5dda72f3b; 277 bound inputs / 64 native inputs, sourceChanged:false
+' history: source-1 28 tests / 201 assertions predates review fixes; immutable historical evidence, not current source proof
+' review (lead-reported): adversarial ses_e3dde36f7ffe7zUOt5TLO5go8p READY source-only; HIGH approval replay and both MEDIUM evidence-reporting findings resolved
+' review (lead-reported): security ses_e3dde36f6ffeV2dAqWyTQ89u5u READY source-only, no findings; not runtime/custody assurance
+' review (lead-reported): backend ses_e3df78573ffeXo04nE7v4wNCrB no functional findings; DevOps ses_e3ec46b44ffe7CbnV5rwv23shT READY source-only, LOW test-loop budget scope resolved
+' template: _spec/template.txt absent; no remote template fetched in this docs-only pass
+' readability: manual syllable counts, two sentences per note; CPU/GPU each count as three syllables
+' FK: PACKET 12.2; FLAGS 11.7; RECIPE 11.7; ARTIFACTS 11.3; RUNNER 12.9
+' FK: COUNTS 12.0; MANIFEST 11.5; RESULT 11.6; NUMERICS 12.9
+' FK: APPROVAL 11.7; ATTEMPT 11.1; SOURCE_CHECK 11.9; LIMITS 10.6
+' FK: INPUT_REQUEST 12.2; METADATA_RESULT 12.3; HOST_PACKET 12.8; INPUT_SOURCE 12.7; HOST_RESULT 11.9
+title Coding LLVM metadata PASS and spent - operator-only builder inspection pending; no build/GPU proof
+left to right direction
+
+component "_work/gpu-owner-recovery/qualification/\nrequest.json\nsource preparation approved\nfive exact queries, 10 seconds each\nfirst failure STOP; no retry" as REQUEST
+component "_work/gpu-owner-recovery/qualification/\nllvm-flags.ts\nexact existing coding-prefix llvm-config\n--link-static plus one exact query\n--cxxflags / --includedir / --libdir /\n--libs / --system-libs" as FLAGS
+component "_work/gpu-owner-recovery/runs/\ngpu-qualification-llvm-flags-1/receipt.json\nPASS_FLAGS_ONLY / sourceChanged:false\n5 PASS at exit 0; 5 consumed / 0 remaining\nno version replay, selection, change or copy" as FLAGS_RECEIPT
+component "_work/gpu-owner-recovery/qualification/\nhost-inputs.json\nCONSOLIDATED PROPOSAL, NOT RUNNABLE APPROVAL\nLLVM / builder / runtime / CUDA unresolved\nlibdevice and several resource bounds null\nall operation approval fields false" as PACKET
+component "_work/gpu-owner-recovery/qualification/\nverify.ts + tsconfig.json\ncheckSources catches post-check read failures\nsourceChanged:true + failure data\nterminal FAIL_SOURCE_ONLY receipt retained\nno Cargo, LLVM, image or GPU invocation" as SOURCE_CHECK
+component "packages/runtime/tests/\ngpu-qualification.test.ts\n18 pure/static cases in source-2\nexisting recipe 9 + prepared verifier 5\nLLVM receipt contract reads JSON only" as STATIC_TESTS
+component "_work/gpu-owner-recovery/runs/\ngpu-qualification-source-1/receipt.json\nHISTORICAL PRE-REVIEW-FIX SOURCE PROOF\n28 tests / 201 assertions + 4 typechecks\nimmutable; no current acceptance inferred" as HISTORICAL_SOURCE_RECEIPT
+component "_work/gpu-owner-recovery/runs/\ngpu-qualification-source-2/receipt.json\nPASS_SOURCE_ONLY / sourceChanged:false\n32 tests / 223 assertions + 4 typechecks\n5 stages exit 0; 277 bound inputs\n64 native-manifest inputs; source-only scope" as SOURCE_RECEIPT
+
+component "_work/gpu-owner-recovery/qualification/\ninput-request.json\nInventory inputs Recommended\nCODING: 1 metadata walk CONSUMED / 0 remaining\nOPERATOR: 1 Rust pull + 1 inspection PENDING\nno agent host call, retry, install, build or GPU" as INPUT_REQUEST
+component "_work/gpu-owner-recovery/qualification/\ninput-inventory.ts\nrealpath root + lstat/opendir/readlink\n20,000 entries / 60s / retained output <=10 MiB\nNDJSON limit 4 MiB - 64 KiB summary reserve\nexclusive directory + worker marker\nno prefix payload read/hash or nested link walk" as METADATA
+component "_work/gpu-owner-recovery/runs/\ngpu-qualification-input-inventory-1/receipt.json\nPASS_METADATA_ONLY / sourceChanged:false\n2,684 entries: 137 dirs / 2,545 files / 2 links\n331,823 metadata bytes; stdout 332,260 / stderr 0\nfile-byte SUM 329,242,172; entry-counted\nnot allocated/deduplicated storage or selection" as METADATA_RESULT
+component "_work/gpu-owner-recovery/qualification/\nverify-inputs.ts + input-inventory.test.ts\nstandalone input-helper proof\n8 mocked/static tests / 64 assertions\nstrict qualification types + direct Fish syntax\nno metadata or operator execution in checks" as INPUT_SOURCE
+component "_work/gpu-owner-recovery/runs/\ngpu-input-inventory-source-3/receipt.json\nPASS_INPUT_SOURCE_ONLY / sourceChanged:false\n11 bound sources / all 3 stages exit 0\nFish syntax attempted, available and PASS\nhelper source-1 FAIL / source-2 PASS historical" as INPUT_SOURCE_RESULT
+component "_work/gpu-owner-recovery/qualification/\ninspect-builder.fish\nOPERATOR HOST ONLY / APPROVED_UNEXECUTED\nexact pinned Rust pull <=600s\ncombined image facts + one container <=60s\n1 CPU / 1 GiB / non-CUDA / pull=never\none exact-CID cleanup <=30s" as HOST_PACKET
+component "inspect-builder.fish\nfuture plaintext result contract\nphase stdout/stderr + exit files + root receipt\nmissing tools or unresolved C++ library => FAIL\nreceipt write/read/output failure cannot PASS\nNO ORIGINAL HOST FILES RECEIVED\nno host Bun dependency" as HOST_RESULT
+
+package "tooling/runtime/Dockerfile.gpu-qualification\nSEPARATE RECIPE; BUILD AND EXECUTION UNRUN" {
+  component "inputs\ncurrent-native + cargo-home\nqualification-tools\ngpu-build/rootfs\nfrozen source-manifest.json supplied in context" as INPUTS
+  component "cpu-build\ndefault features; 2 packages --tests\n--locked --offline --jobs 2\n--no-run --message-format=json\n/build/native/target-cpu" as CPU_BUILD
+  component "gpu-build\ngpu-prepared-llvm\nfinite_difference + gpu test targets\n--locked --offline --jobs 2\n--no-run --message-format=json\n/build/native/target-gpu" as GPU_BUILD
+  component "cpu-qualification / gpu-qualification\nBun runtime + gpu-runtime/rootfs\nunchanged absolute target-* copies\npost-COPY chown of /build/native/_work\nthen USER 1000:1000\nscratch + runs writable by design, not image proof" as RECIPE
+}
+
+component "tooling/runtime/qualification.ts\nreadArtifacts\nexact workspace package IDs / profile.test\nmode-specific prefix and features\ncomplete unique harness set + 3 policy binaries\nfinal build-finished success:true required" as ARTIFACTS
+component "tooling/runtime/qualification.ts\nsourceInventory\nroot Cargo files + all crate manifests/Rust\nrunner / recipe / input contract\n2 unchanged supervision files\nmanifest SHA and inventory before/after" as MANIFEST
+component "tooling/runtime/qualification.ts\nvalidateHostApproval + main\napproval.runId must equal CLI label\nimage mode match / maximum invocations 1\nexclusive mkdir within retained evidence\nfresh approval and source manifest SHA" as APPROVAL
+component "tooling/runtime/qualification.ts\nmain + executeQualification\nserial test loop / hostExecutionApproved:true\nsource and artifact preflight\nno retry or automatic escalation" as RUNNER
+component "tooling/runtime/qualification.ts\nvalidateLimits + executeQualification\nper-test / total / cleanup-reserve budgets\nTEST LOOP ONLY, not whole host invocation\npreflight and final receipt work outside clock" as LIMITS
+component "tooling/runtime/qualification.ts\nrecordAttempt\nappend STARTED before command\nretain result before stream capture\ncapture failure keeps argv/timeout/exit code\nFAIL_EXECUTION, not FAIL_PREFLIGHT" as ATTEMPT
+component "_work/gpu-owner-recovery/verify.ts\nrunBounded\n_work/gpu-owner-recovery/command-supervisor.ts\nexisting two files copied unchanged\n4 MiB per stream; deadline failure retained" as SUPERVISION
+component "crates/policy-io/tests/gpu.rs\nGPU feasibility: first 2 exact tests\nnonzero scoring + record round trip\nautodiff/backward + direct SGD + reload\n1 pass / 0 fail / 0 ignored per test" as FEASIBILITY
+component "crates/learning/tests/finite_difference.rs\ncrates/policy-io/tests/gpu.rs\nGPU full: fixed 6 exact ignored tests\nfirst pair, active sweep, inactive sweep,\nredundant channels, channel subprocesses\n2,335 + 2,335 coordinates; exact C12" as NUMERICS
+component "tooling/runtime/qualification.ts\ncpuCoverage\nCPU regression: 16 default-feature harnesses\nlearning 22 + policy-io 17 = 39 tests\nfixed per-harness counts; empty harness valid\nCURRENT GENERATION CPU TESTS UNRUN" as COUNTS
+component "tooling/runtime/qualification.ts\nreceipt construction\nPASS_TESTS_ONLY or scoped failure\napprovalSha256 / runId / testLoopLimits\nsource + executable hashes / attempts / streams\nall training/readiness qualification flags false" as RESULT
+
+REQUEST --> FLAGS : completed separately by lead\nnot rerun by this docs pass
+FLAGS --> FLAGS_RECEIPT : five retained outputs; no CUDA work
+FLAGS_RECEIPT --> PACKET : C++17 / GNU C++11 ABI 1 / fno-exceptions\nNVPTX CodeGen, Desc, Info listed\nsystem libraries ONLY rt, dl, m
+PACKET ..> INPUTS : FUTURE only after input choices and fresh scope\nno acquisition, staging or build approval
+STATIC_TESTS --> SOURCE_CHECK : pure plans, parsers, counts and declarations
+HISTORICAL_SOURCE_RECEIPT ..> SOURCE_RECEIPT : later separately captured generation\nold receipt and streams unchanged
+SOURCE_CHECK --> SOURCE_RECEIPT : retained source-2 receipt and raw test summary\npost-check read failure yields FAIL_SOURCE_ONLY
+SOURCE_RECEIPT ..> INPUTS : source evidence does not assemble a context\nor qualify native artifacts
+INPUT_REQUEST --> METADATA : completed coding-only metadata allowance\nrequest projection unchanged; no replay
+METADATA --> METADATA_RESULT : same resolved prefix root; complete walk\n2 nested symlink targets recorded, not traversed
+METADATA_RESULT --> PACKET : metadata informs input planning only\nno automatic prefix selection or staging
+INPUT_SOURCE --> INPUT_SOURCE_RESULT : retained helper source-3 proof only\nnot another qualification or CPU/GPU campaign
+INPUT_SOURCE_RESULT ..> HOST_PACKET : source/syntax READY does not prove\noperator-host script availability
+INPUT_REQUEST ..> HOST_PACKET : APPROVED / UNEXECUTED operator-only exception\nno agent Docker call or handoff-file transfer grant
+HOST_PACKET ..> HOST_RESULT : APPROVED / UNEXECUTED\npull success gates combined inspection; cleanup separate
+HOST_RESULT ..> PACKET : future returned operator evidence only\nno compiler/libc/image fact received yet
+INPUT_REQUEST --> PACKET : broader packet's all-false projection unchanged\nonly this separate narrow grant is an exception
+INPUTS ..> CPU_BUILD : FUTURE --no-run build; Cargo exit checked by Docker
+INPUTS ..> GPU_BUILD : FUTURE prepared LLVM copy + version guard\nexplicit supported CUDARC version required
+CPU_BUILD ..> RECIPE : FUTURE same absolute target-cpu path + JSON logs
+GPU_BUILD ..> RECIPE : FUTURE same absolute target-gpu path + JSON logs
+RECIPE ..> ARTIFACTS : FUTURE runtime reads successful build logs\nbuild-script records cannot select executables
+RECIPE ..> APPROVAL : FUTURE explicit invocation, not build-time test execution
+APPROVAL --> RUNNER : same approval with another label rejected\nexisting run directory also rejects reuse
+MANIFEST --> RUNNER : approved SHA + exact inventory match before execution\nchanged/unreadable source rejects final result
+ARTIFACTS --> RUNNER : harnesses + policy-score/channel/initialize\npreserve embedded CARGO_BIN_EXE locations
+RUNNER --> LIMITS : loop clock starts after preflight\nreserve cannot fund another test
+RUNNER --> ATTEMPT : append attempt before calling supervisor
+ATTEMPT --> SUPERVISION : serial / stop first failure / no retry\nCUDA_PATH + host-injected library/device env retained
+SUPERVISION --> ATTEMPT : save command result before reading streams
+ATTEMPT --> RESULT : capture exception retains attempted work\nand available exit code as execution failure
+SUPERVISION ..> FEASIBILITY : FUTURE separately approved GPU feasibility campaign
+SUPERVISION ..> NUMERICS : FUTURE separately approved GPU full campaign\nno automatic escalation after feasibility
+SUPERVISION ..> COUNTS : FUTURE separately approved CPU regression campaign
+FEASIBILITY ..> RESULT : exact selector + --exact --ignored\nzero matches cannot pass
+NUMERICS ..> RESULT : exact selector + --exact --ignored\neach invocation requires exactly one pass
+COUNTS ..> RESULT : every frozen count checked; 0 failures / 0 ignored
+RESULT --> MANIFEST : final source inventory comparison
+
+note bottom of INPUT_REQUEST
+  The separate grant permits one operator
+  image pull without approving a GPU build.
+  Its coding walk allowance is already
+  spent, so the unchanged broad packet cannot
+  authorize further work by implication.
+end note
+
+note bottom of METADATA_RESULT
+  The apparent byte sum counts each recorded
+  file entry, so hard links can repeat
+  the same underlying storage.
+  Metadata alone cannot establish actual
+  disk use or a usable compiler installation.
+end note
+
+note bottom of HOST_PACKET
+  Compiler versions and a resolved library
+  path identify candidate builder inputs,
+  not successful native linking.
+  The combined inspection stays bounded,
+  while cleanup targets only this run's container.
+end note
+
+note bottom of INPUT_SOURCE
+  Direct Fish selection bypasses the Mise
+  shim that failed before syntax inspection.
+  Passing mocked checks and parsing still
+  does not establish packet availability
+  or actual execution on the operator host.
+end note
+
+note bottom of HOST_RESULT
+  Receipt write or output failure cannot
+  count as success after the inspection ran.
+  The packet preserves separate phase results
+  so missing evidence remains an unresolved
+  outcome rather than successful completion.
+end note
+
+note bottom of APPROVAL
+  Approval binds one run label so another
+  label cannot replay the same approved work.
+  Exclusive creation relies on retained evidence,
+  not hardened custody across new containers.
+end note
+
+note bottom of ATTEMPT
+  Recording the attempt before execution
+  preserves evidence when stream capture fails.
+  A retained exit code distinguishes failed
+  capture after real work from a preflight
+  failure that never started the command.
+end note
+
+note bottom of SOURCE_CHECK
+  Post-check read failures mark bound sources
+  as changed instead of discarding the result.
+  The verifier retains failure data so a
+  deleted input still produces a terminal
+  receipt rather than an unrecorded exception.
+end note
+
+note bottom of LIMITS
+  The total budget bounds only the test loop,
+  so preflight and final receipt work remain
+  outside that clock.
+  A separate host invocation bound must cover
+  those operations before execution is approved.
+end note
+
+note bottom of PACKET
+  The consolidated packet keeps unresolved
+  inputs and limits visible without approval.
+  Its false operation flags distinguish
+  proposed host work from fresh authority
+  to perform that work.
+end note
+
+note bottom of FLAGS
+  Flag output specifies compiler requirements,
+  but no native build or relocation ran.
+  The system library list cannot establish
+  which other dependencies the runtime needs.
+end note
+
+note bottom of RECIPE
+  Distinct build stages keep both production
+  recipes unchanged for their existing roles.
+  The runtime retains absolute target paths
+  because compiled policy tests embed their
+  subprocess locations.
+end note
+
+note bottom of ARTIFACTS
+  Compiler artifacts supply test paths,
+  while build script records cannot select tests.
+  A successful Cargo exit and final build
+  message are both necessary, because partial
+  output does not establish a completed build.
+end note
+
+note bottom of RUNNER
+  The cleanup reserve cannot fund another test,
+  because campaign limits bound serial execution.
+  The first rejected result stops the campaign
+  without retry or automatic escalation.
+end note
+
+note bottom of COUNTS
+  Frozen counts retain CPU coverage, even
+  when a known harness contains no tests.
+  A selected GPU fixture must pass once,
+  because an empty selection proves nothing
+  about execution of the numerical path.
+end note
+
+note bottom of MANIFEST
+  The source manifest binds native inputs,
+  runner code and unchanged supervision files.
+  Checks before and after execution reject
+  source changes, so a prior receipt cannot
+  qualify a new build generation.
+end note
+
+note bottom of NUMERICS
+  The full campaign keeps both coordinate
+  sweeps and their existing error thresholds.
+  Exact digests remain mandatory for the
+  redundant learners, because tolerances could
+  hide different updates after checkpoint reload.
+end note
+
+note bottom of RESULT
+  A pass cannot enable training while the
+  canonical path and normal job entry still
+  lack accepted proof on the selected host.
+  Shared GPU limits and telemetry also need
+  host evidence before training begins.
+end note
+
+legend bottom
+  Solid edges describe implemented source or retained evidence; FUTURE dotted edges remain unexecuted and unapproved.
+  APPROVED / UNEXECUTED edges refer only to the separate pending operator-host grant, never permission for an agent to execute it.
+  Current coding metadata: 2,684 entries = 137 directories + 2,545 files + 2 symlinks + 0 other; complete:true, one invocation consumed / zero remaining.
+  metadataBytes 331,823 excludes the final summary line; retained stdout is 332,260 bytes and stderr is empty, below the 10 MiB grant.
+  Unchanged runBounded keeps 4 MiB per stream; the worker reserves 64 KiB inside stdout for its summary, with no duplicate full inventory file.
+  The resolved root equals the existing coding-prefix candidate; bin/ld64.lld and bin/lld-link target lld, recorded without traversal.
+  Apparent regular-file bytes 329,242,172 sum directory entries, not allocated storage or deduplicated data; no prefix payload open/read/hash, LLVM execution, compilation, copy, staging or automatic selection.
+  Input-helper source-3: 8 mocked/static cases / 64 assertions, strict qualification types, direct existing Fish 4.9.3 --no-config --no-execute syntax; all 3 stages exit 0.
+  Historical input-helper source-1 remains FAIL before Fish parsing: Mise shim trust error; original counter is not syntax proof, classification preserves the correction, no trust/install or operational grant consumed.
+  Historical input-helper source-2 7 cases / 59 assertions PASS predates final MEDIUM host-receipt failure handling and LOW launched-stage counter fixes.
+  Input-helper proofs are separate from unchanged qualification source-2 32/223 + four types and its prior 64-native-input scope; no new app/Rust/math or production-recipe change.
+  Host grant remains unexecuted: one exact pinned Rust pull 600s; only pull success permits a 60s combined image-inspect + one non-CUDA container worker; at most one cleanup 30s.
+  Container contract: --pull=never, --cpus=1, --memory=1g, /bin/sh entrypoint, no GPU flags; client bounds do not establish physical stop or host containment assurance.
+  Worker records tool paths, requested compiler/linker versions and libc/OS facts; C++ library path must resolve to a file, missing tools or unresolved libstdc++.so fail. No actual compiler/link test.
+  Host preflight: explicit operator environment, approved repo root, frozen Cargo.lock SHA, existing runs parent, required tools; exclusive host-builder-inputs-1 output directory and inspection marker prevent replay there.
+  Host phase outputs are plaintext; state/exit files bracket work, cleanup addresses only this run's valid saved CID, and receipt write/read/output failures cannot become PASS.
+  Host script availability is unverified; no original host outputs received. Permission does not authorize publishing, transferring or copying the handoff file, staging inputs or running agent host calls.
+  GPU full order: cuda_f64_nonzero_native_scores_round_trip; cuda_f64_direct_sgd_changes_policy_parameters;
+  cuda_feature_complete_sweep_for_active_relu_checks_2335_coordinates; cuda_feature_complete_sweep_for_inactive_relu_checks_2335_coordinates;
+  cuda_f64_redundant_learning_channels_agree_and_reload; cuda_f64_policy_channel_subprocesses_agree_and_reload.
+  F64 only; 4,670 coordinates; eps=1e-6, atol=1e-8, rtol=1e-5. Exact C12 has no tolerance substitution.
+  Reuse all six existing Rust fixtures; no toy test, numerical change, activation or training dispatch.
+  CPU Flex initialization and five masters 101..105 stay unchanged; prior local-3 CPU39 is historical pre-prepared evidence.
+  Current source-2 manifest: 48d4c9705a02d775d6f58a3bce58346e34a8f43e58e604dcdbcd0de5dda72f3b; 277 bound / 64 native inputs; sourceChanged:false.
+  Source-1 manifest f493636ab6d2b03816553671db77ea2ad736f2b6b21f7d836c461ec57aa6eac9 and its 28/201 result remain immutable pre-review-fix history.
+  Source-2 adds run-ID binding, attempted-command/capture-failure retention, terminal unreadable-source failure data and a JSON-only prior-LLVM-receipt check.
+  Adversarial HIGH replay and two MEDIUM reporting findings resolved; lead-reported adversarial/security/DevOps READY is source-only, not host acceptance.
+  The one-attempt contract requires retained persistent evidence; it does not establish cross-container anti-replay or physical custody assurance.
+  Earlier local-6 277-input feature-tree proof stays valid for its recorded unchanged inputs, not the newly added whole generation.
+  Runtime overlay must supply libdevice; host driver still supplies libcuda. No driver replacement or library closure is proved.
+  Child environment keeps GPU CUDA_PATH and host-injected LD_LIBRARY_PATH, NVIDIA_VISIBLE_DEVICES and CUDA_VISIBLE_DEVICES when present.
+  totalMs >= steps * perTestMs + cleanupReserveMs; these are TEST_LOOP_ONLY_NOT_OVERALL_HOST_INVOCATION limits, not an end-to-end deadline.
+  DevOps LOW scope clarification resolved: proposedLimitsNotApproved.overallHostInvocationMs remains null; no whole-invocation bound is claimed.
+  Proposed test timings are not approved; build/context/image/CPU-memory/cooperative-GPU and transfer/resource bounds remain unresolved.
+  Rust historically ABSENT: a separate exact operator-only pull is now approved but unexecuted; Bun last CACHED_NOT_FRESHLY_INSPECTED, no new Bun acquisition or inspection grant.
+  All earlier Rust install, Cargo fetch, LLVM metadata/version and visibility grants remain consumed; five flag queries are now consumed too.
+  The new coding metadata allowance is spent; the operator-only Rust packet remains available only within its exact unexecuted grant, not to an agent or through an assumed handoff copy.
+  Continue the bounded inventory and consolidated functional input resolution; all other acquisitions and input choices, transfer/resource bounds and build/GPU/training work remain unapproved.
+  Source proof does not qualify actual Cargo artifact compatibility, compiled linking/ABI, image usability or GPU behavior.
+  Canonical init/BOTH/independent reference/orderly close, integrated R4, activation/five-master scheduling and accepted telemetry/coexistence remain outside qualification.
+  PASS_TESTS_ONLY never sets trainingReady, canonicalBothQualified, integratedR4Qualified, operationalTelemetryQualified, fullAssuranceQualified or trainingExecuted true.
+  All security/privacy/isolation hardening remains LAST, after ALL planned training completes and results validate; full-assurance gates remain OPEN.
+  The broader host-inputs.json all-false approval projection stays unchanged; input-request.json records the only new narrow exception, not an approved complete acquisition/build/training packet.
+  This diagram renews no grant and performs no operation; metadata post-outcome record acceptance remains outside this docs pass.
+endlegend
+@enduml

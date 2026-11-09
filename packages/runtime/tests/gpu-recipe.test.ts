@@ -14,16 +14,37 @@ test("GPU recipe opts into the package feature without changing the CPU recipe",
   expect(inputs.recipe).toBe("tooling/runtime/Dockerfile.gpu");
   expect(inputs.cpuRecipe).toBe("tooling/runtime/Dockerfile");
   expect(inputs.nativePackage).toBe("chess-coach-policy-io");
-  expect(inputs.feature).toBe("gpu-cuda");
-  expect(commands[0]).toContain("-p chess-coach-policy-io --features gpu-cuda");
+  expect(inputs.feature).toBe("gpu-prepared-llvm");
+  expect(commands[0]).toContain("-p chess-coach-policy-io --features gpu-prepared-llvm");
   expect(commands[0]).toContain("--locked --offline --jobs 2");
   expect(cpu).not.toContain("--features gpu-cuda");
+  expect(cpu).not.toContain("gpu-prepared-llvm");
   for (const name of ["learning", "policy-io"]) {
     const manifest = Bun.TOML.parse(await read(`crates/${name}/Cargo.toml`)) as { features: Record<string, string[]> };
     expect(manifest.features.default).toEqual([]);
-    expect(manifest.features["gpu-cuda"]).toContain("burn/cuda");
-    if (name === "policy-io") expect(manifest.features["gpu-cuda"]).toContain("chess-coach-learning/gpu-cuda");
+    expect(manifest.features["gpu-cuda"]).toEqual(name === "learning" ? ["burn/cuda"] : ["burn/cuda", "chess-coach-learning/gpu-cuda"]);
   }
+});
+
+test("prepared LLVM activates only the pinned optional host build dependency", async () => {
+  const learning = Bun.TOML.parse(await read("crates/learning/Cargo.toml")) as {
+    features: Record<string, string[]>;
+    dependencies: Record<string, unknown>;
+    "build-dependencies": Record<string, unknown>;
+  };
+  const policy = Bun.TOML.parse(await read("crates/policy-io/Cargo.toml")) as { features: Record<string, string[]> };
+  expect(learning.features["gpu-prepared-llvm"]).toEqual(["gpu-cuda", "dep:tracel-llvm-bundler"]);
+  expect(policy.features["gpu-prepared-llvm"]).toEqual(["gpu-cuda", "chess-coach-learning/gpu-prepared-llvm"]);
+  expect(learning["build-dependencies"]["tracel-llvm-bundler"]).toEqual({ version: "=23.1.0-4", optional: true, features: ["xtask"] });
+  expect(learning.dependencies).not.toHaveProperty("tracel-llvm-bundler");
+  const workspace = Bun.TOML.parse(await read("Cargo.toml")) as { workspace: { resolver: string } };
+  expect(workspace.workspace.resolver).toBe("3");
+  const lock = Bun.TOML.parse(await read("Cargo.lock")) as { package: { name: string; version: string; source?: string; checksum?: string; dependencies?: string[] }[] };
+  const bundlers = lock.package.filter(pkg => pkg.name === "tracel-llvm-bundler");
+  expect(bundlers).toHaveLength(1);
+  expect(bundlers[0]).toMatchObject({ version: "23.1.0-4", source: "registry+https://github.com/rust-lang/crates.io-index",
+    checksum: "da7f3434b87c37611d7298bbf08e0dd47da5a43f3aadf36163b02d77eb01c157" });
+  expect(lock.package.find(pkg => pkg.name === "chess-coach-learning")?.dependencies).toEqual(["burn", "tracel-llvm-bundler"]);
 });
 
 test("CUDA bindings require an explicit supported encoded version before Cargo", () => {
@@ -39,16 +60,22 @@ test("CUDA bindings require an explicit supported encoded version before Cargo",
   expect(commands[0]!.indexOf("esac")).toBeLessThan(commands[0]!.indexOf("cargo build"));
 });
 
-test("LLVM consumes an installed bundle at the actual bundler location", () => {
+test("prepared LLVM uses the bundler location without fabricating its cache marker", () => {
+  expect(inputs.llvm.mode).toBe("prepared-offline");
   expect(inputs.llvm.bundleVersion).toBe("23.1.0-4");
   expect(inputs.llvm.configVersion).toBe("23.1.0");
   expect(gpu).toContain("ENV XDG_DATA_HOME=/opt/tracel-data");
   expect(gpu).toContain(`COPY ${inputs.llvm.context}/ ${inputs.llvm.destination}/`);
-  expect(commands[0]).toContain(`test -f ${inputs.llvm.destination}/${inputs.llvm.installationMarker}`);
+  expect(inputs.llvm.installationMarkerRequired).toBe(false);
+  expect(inputs.llvm.installerBypass).toEqual({ package: "tracel-llvm-bundler", version: "23.1.0-4", hostBuildFeature: "xtask" });
+  expect(gpu).not.toContain(inputs.llvm.installationMarker);
   expect(commands[0]).toContain(`test -x ${inputs.llvm.destination}/bin/llvm-config`);
   expect(commands[0]).toContain(`test "$(${inputs.llvm.destination}/bin/llvm-config --version)" = "${inputs.llvm.configVersion}"`);
   expect(gpu).not.toContain("DOCS_RS");
   expect(gpu).not.toContain("LLVM_SYS_231_PREFIX");
+  expect(gpu).not.toContain("CARGO_FEATURE_XTASK");
+  expect(gpu).not.toContain("TRACEL_LLVM_BUNDLER_SKIP_CHECKSUM_DOWNLOAD");
+  expect(gpu).not.toContain("/home/agent/");
   expect(gpu).not.toContain("touch ");
 });
 
@@ -102,7 +129,7 @@ test("GPU feature selection leaves CPU master initialization and GPU failure sem
 });
 
 test("unselected prepared inputs and static checks cannot become GPU qualification", () => {
-  expect(inputs.version).toBe("chess-coach.gpu-build-inputs.v1");
+  expect(inputs.version).toBe("chess-coach.gpu-build-inputs.v2");
   expect(inputs.status).toBe("AWAITING_PREPARED_INPUT_SELECTION");
   for (const role of [inputs.llvm, inputs.builderDependencies, inputs.runtimeDependencies]) expect(role.selection).toBeNull();
   expect(inputs.qualification).toEqual({ imageBuilt: false, actualHostExecuted: false, cudaGpuCodeExecuted: false, trainingReady: false });

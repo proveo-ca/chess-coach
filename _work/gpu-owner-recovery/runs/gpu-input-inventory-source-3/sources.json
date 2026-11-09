@@ -1,0 +1,46 @@
+[
+  {
+    "path": "_work/gpu-owner-recovery/qualification/input-request.json",
+    "sha256": "eed1759ebd11d28420988eea21c7730465701381506e01e17eb2b0678fe9e7e7"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/qualification/input-inventory.ts",
+    "sha256": "4838a66286eccdbb91b96d3fa76513d0cdbc43553dceaf593a7b12b32fa05deb"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/qualification/input-inventory.test.ts",
+    "sha256": "8ae02592b106a15a9ada5009d79906a3ba920eabfe67df5159a981800f996357"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/qualification/inspect-builder.fish",
+    "sha256": "aeebbd52e9c7805213cd3d821c702658d899a1a462ab8a701f2186fd35cb9fe9"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/qualification/verify-inputs.ts",
+    "sha256": "15dd7d6b2c1b9c6ce1889f6146c4bb99e4d8104db2ba23b7b3e16bdd8d4491fa"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/qualification/tsconfig.json",
+    "sha256": "b328520d0a04776b0e0931f6fb0e6de92c4a2f37494bc37129c3dc24b63a098b"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/provision.ts",
+    "sha256": "446bafb616dce8f642216268cb10d6c30e1e485b45428b8c83295358964a8efb"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.ts",
+    "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+    "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+  },
+  {
+    "path": "tsconfig.json",
+    "sha256": "a0cf0b388c7327624fa7f91061dbf4ee4280e9f27d095740399fe5c83682e913"
+  },
+  {
+    "path": "Cargo.lock",
+    "sha256": "77f674cc26a01f26558fd99c45bdcd5566017be05833fce1d39cae98cda05955"
+  }
+]

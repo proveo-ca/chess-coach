@@ -1,17 +1,24 @@
 {
-  "version": "chess-coach.gpu-build-inputs.v1",
+  "version": "chess-coach.gpu-build-inputs.v2",
   "status": "AWAITING_PREPARED_INPUT_SELECTION",
   "recipe": "tooling/runtime/Dockerfile.gpu",
   "cpuRecipe": "tooling/runtime/Dockerfile",
   "nativePackage": "chess-coach-policy-io",
-  "feature": "gpu-cuda",
+  "feature": "gpu-prepared-llvm",
   "binaries": ["policy-score", "policy-channel", "policy-initialize"],
   "llvm": {
+    "mode": "prepared-offline",
     "bundleVersion": "23.1.0-4",
     "configVersion": "23.1.0",
     "context": "gpu-build/llvm",
     "destination": "/opt/tracel-data/tracel/tracel-llvm-23.1.0-4",
     "installationMarker": ".tracel-llvm-installed",
+    "installationMarkerRequired": false,
+    "installerBypass": {
+      "package": "tracel-llvm-bundler",
+      "version": "23.1.0-4",
+      "hostBuildFeature": "xtask"
+    },
     "selection": null
   },
   "builderDependencies": {

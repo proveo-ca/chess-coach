@@ -1,0 +1,59 @@
+{
+  "version": "chess-coach.gpu-container-visibility-host-probe.v2",
+  "status": "FAIL_QUERY_EXIT_6_WITH_GPU_ENUMERATION_REPORTED_AUTHORITY_CONSUMED",
+  "provenance": "NORMALIZED_FROM_OPERATOR_PASTED_OUTPUT_NOT_ORIGINAL_MACHINE_CAPTURE",
+  "operatorPaste": "_work/gpu-owner-recovery/runs/gpu-container-visibility-host-probe-2/operator-paste.txt",
+  "operatorSourceCommit": null,
+  "authorityRecord": "_work/gpu-owner-recovery/gpu-container-visibility-renewal-2.json",
+  "commandPacket": "_work/gpu-owner-recovery/gpu-container-visibility.fish",
+  "authorityDisposition": {
+    "probeInvocationsConsumed": 1,
+    "containersCreated": 1,
+    "remainingProbeInvocations": 0,
+    "remainingContainers": 0,
+    "pullInvocationsAuthorized": 0,
+    "automaticRetryAuthorized": false,
+    "authorityRecordRetainedUnchanged": true
+  },
+  "images": {
+    "rustInspectExitCode": 1,
+    "rustImageReportedMissing": true,
+    "bunInspectExitCode": 0,
+    "bunReportedPlatform": "linux/amd64",
+    "bunReportedDigest": "sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038"
+  },
+  "container": {
+    "reportedCid": "ccb4eea1008855df75383447e27e4d02dddc8852d0a9f2c537b6b0e692c18f3c",
+    "processStarted": true,
+    "reportedNvidiaSmiPath": "/usr/bin/nvidia-smi",
+    "gpuEnumerationReported": true,
+    "reportedGpu": {
+      "name": "NVIDIA GeForce RTX 3070 Laptop GPU",
+      "uuid": "GPU-713c95e0-6952-a576-794b-9ef1fb527ff0",
+      "driverVersion": "615.78.08",
+      "memoryTotalMiB": 8192,
+      "memoryFreeMiB": 7742,
+      "freeMemoryIsReservation": false
+    },
+    "queryExitCode": 6,
+    "reportedQueryError": "No devices were found",
+    "initialCsvCommandExitCodeReported": null,
+    "uuidMemoryDetailCommandExitCodeReported": null,
+    "uuidMemoryDetailResultReceived": false,
+    "apparentFailureStep": "UUID_SCOPED_MEMORY_DETAIL_QUERY_NOT_SEPARATELY_CAPTURED",
+    "actualNvidiaVisibleDevicesValueReceived": false,
+    "completeVisibilityPacketPassed": false,
+    "cleanupExitCode": 0,
+    "cleanupReportedSuccessful": true,
+    "reportedHostEvidenceDirectory": "_work/gpu-owner-recovery/runs/host-visibility-A2lyzIc2",
+    "originalHostEvidenceFilesReceived": false
+  },
+  "failureCause": "UNDETERMINED_OBJECT_QUERY_FAILURE",
+  "cooperativeUuidCsvTelemetryQualified": false,
+  "operationsGrantedByThisObservation": false,
+  "newProbeAuthorized": false,
+  "agentExecutedHostCommands": false,
+  "cudaGpuCodeExecuted": false,
+  "gpuF64Qualified": false,
+  "trainingReady": false
+}

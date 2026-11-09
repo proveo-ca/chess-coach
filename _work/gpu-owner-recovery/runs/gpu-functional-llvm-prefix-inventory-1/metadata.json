@@ -1,0 +1,72 @@
+{
+  "version": "chess-coach.gpu-functional-llvm-prefix-inventory.v1",
+  "status": "BOUNDED_METADATA_CAPTURED_PREFIX_NOT_READY_FOR_CURRENT_RECIPE",
+  "provenance": "NORMALIZED_FROM_AGENT_STAT_AND_DIRECTORY_READ_TOOL_RETURNS",
+  "request": "_work/gpu-owner-recovery/gpu-functional-llvm-prefix-inventory-request.json",
+  "prefix": "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4",
+  "realm": "CODING_ENVIRONMENT_NOT_OPERATOR_HOST",
+  "statPhases": [
+    { "phase": "root", "exitCode": 0 },
+    { "phase": "layout", "exitCode": 1 },
+    { "phase": "compiler", "exitCode": 0 },
+    { "phase": "nvptx-libraries", "exitCode": 0 }
+  ],
+  "paths": [
+    { "path": ".", "type": "directory", "bytes": 4096, "mode": "755" },
+    { "path": ".tracel-llvm-installed", "status": "MISSING_ENOENT" },
+    { "path": "bin", "type": "directory", "bytes": 4096, "mode": "755" },
+    { "path": "lib", "type": "directory", "bytes": 4096, "mode": "755" },
+    { "path": "include", "type": "directory", "bytes": 4096, "mode": "755" },
+    { "path": "share", "status": "MISSING_ENOENT" },
+    { "path": "bin/llvm-config", "type": "regular file", "bytes": 362392, "mode": "755" },
+    { "path": "include/llvm", "type": "directory", "bytes": 4096, "mode": "755" },
+    { "path": "lib/libLLVMNVPTXCodeGen.a", "type": "regular file", "bytes": 3532984, "mode": "644" },
+    { "path": "lib/libLLVMNVPTXDesc.a", "type": "regular file", "bytes": 2040036, "mode": "644" },
+    { "path": "lib/libLLVMNVPTXInfo.a", "type": "regular file", "bytes": 7210, "mode": "644" },
+    { "path": "lib/libLLVMCore.a", "type": "regular file", "bytes": 9947956, "mode": "644" },
+    { "path": "lib/libLLVMSupport.a", "type": "regular file", "bytes": 6202272, "mode": "644" }
+  ],
+  "directoryListings": {
+    ".": { "entries": ["bin/", "include/", "lib/"], "truncated": false },
+    "bin": { "entries": ["ld64.lld", "lld-link", "llvm-config"], "truncated": false },
+    "include": { "entries": ["lld/", "llvm-c/", "llvm/"], "truncated": false },
+    "lib": {
+      "entries": [
+        "cmake/", "liblldCOFF.a", "liblldCommon.a", "liblldELF.a", "liblldMachO.a", "liblldMinGW.a", "liblldWasm.a",
+        "libLLVMABI.a", "libLLVMAggressiveInstCombine.a", "libLLVMAMDGPUAsmParser.a", "libLLVMAMDGPUCodeGen.a",
+        "libLLVMAMDGPUDesc.a", "libLLVMAMDGPUDisassembler.a", "libLLVMAMDGPUInfo.a", "libLLVMAMDGPUTargetMCA.a",
+        "libLLVMAMDGPUUtils.a", "libLLVMAnalysis.a", "libLLVMAsmParser.a", "libLLVMAsmPrinter.a", "libLLVMBinaryFormat.a",
+        "libLLVMBitReader.a", "libLLVMBitstreamReader.a", "libLLVMBitWriter.a", "libLLVMCAS.a", "libLLVMCFGuard.a",
+        "libLLVMCFIVerify.a", "libLLVMCGData.a", "libLLVMCodeGen.a", "libLLVMCodeGenTypes.a", "libLLVMCore.a",
+        "libLLVMCoroutines.a", "libLLVMCoverage.a", "libLLVMDebugInfoBTF.a", "libLLVMDebugInfoCodeView.a",
+        "libLLVMDebuginfod.a", "libLLVMDebugInfoDWARF.a", "libLLVMDebugInfoDWARFLowLevel.a", "libLLVMDebugInfoGSYM.a",
+        "libLLVMDebugInfoLogicalView.a", "libLLVMDebugInfoMSF.a", "libLLVMDebugInfoPDB.a", "libLLVMDemangle.a",
+        "libLLVMDiff.a", "libLLVMDlltoolDriver.a", "libLLVMDTLTO.a", "libLLVMDWARFCFIChecker.a", "libLLVMDWARFLinker.a",
+        "libLLVMDWARFLinkerClassic.a", "libLLVMDWARFLinkerParallel.a", "libLLVMDWP.a", "libLLVMExecutionEngine.a",
+        "libLLVMExegesis.a", "libLLVMExegesisX86.a", "libLLVMExtensions.a", "libLLVMFileCheck.a", "libLLVMFrontendAtomic.a",
+        "libLLVMFrontendDirective.a", "libLLVMFrontendDriver.a", "libLLVMFrontendHLSL.a", "libLLVMFrontendOffloading.a",
+        "libLLVMFrontendOpenACC.a", "libLLVMFrontendOpenMP.a", "libLLVMFuzzerCLI.a", "libLLVMFuzzMutate.a"
+      ],
+      "limit": 64,
+      "truncated": true
+    }
+  },
+  "recipeInstallMarkerPresent": false,
+  "reportedVersionDirectory": "23.1.0-4",
+  "actualLlvmVersion": null,
+  "installationVerified": false,
+  "libraryDependenciesResolved": false,
+  "fullTreeInventoryComplete": false,
+  "llvmConfigExecuted": false,
+  "fileContentsRead": false,
+  "filesCopied": false,
+  "archiveBytesRead": false,
+  "downloadsPerformed": false,
+  "symlinkTargetsTraversed": false,
+  "markerCreated": false,
+  "selected": false,
+  "nativeCudaCompilationPerformed": false,
+  "cudaGpuCodeExecuted": false,
+  "operatorHostInputsEstablished": false,
+  "trainingReady": false
+}

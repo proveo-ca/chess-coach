@@ -9,6 +9,7 @@ publish.workspace = true
 [features]
 default = []
 gpu-cuda = ["burn/cuda", "chess-coach-learning/gpu-cuda"]
+gpu-prepared-llvm = ["gpu-cuda", "chess-coach-learning/gpu-prepared-llvm"]
 
 [dependencies]
 burn.workspace = true

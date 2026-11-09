@@ -1,0 +1,27 @@
+{
+  "version": "chess-coach.gpu-container-visibility-renewal-local.v1",
+  "scope": "AUTHORITY_RECORD_PASTE_AND_PRIOR_SOURCE_INTEGRITY_ONLY",
+  "status": "PASS",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/gpu-container-visibility-renewal-2.json",
+      "sha256": "b1c823f22bd95bb168c1b61a1de5c8b7cf3bb6f415ac0a725b16a9e91965dbba"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-runtime-lookup-host-2/operator-observation.json",
+      "sha256": "2b5bfdabafbf72a939bd393411bffdea0b39f0b80daf635b50f66c42ff96a0b1"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-runtime-lookup-host-2/operator-paste.txt",
+      "sha256": "d80f7020b780ddbf9d686b4c04828c9950e92eeecaa26ea5c09fdbf97b4caf9d"
+    }
+  ],
+  "priorSyntaxSourceHashesChecked": 4,
+  "priorLookupSourceHashesChecked": 6,
+  "priorFunctionalSourceHashesChecked": 273,
+  "testsRerun": false,
+  "packetExecutedByAgent": false,
+  "dockerCommandsExecutedByAgent": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

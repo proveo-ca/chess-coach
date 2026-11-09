@@ -9,6 +9,10 @@ publish.workspace = true
 [features]
 default = []
 gpu-cuda = ["burn/cuda"]
+gpu-prepared-llvm = ["gpu-cuda", "dep:tracel-llvm-bundler"]
 
 [dependencies]
 burn.workspace = true
+
+[build-dependencies]
+tracel-llvm-bundler = { version = "=23.1.0-4", optional = true, features = ["xtask"] }

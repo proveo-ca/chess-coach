@@ -13,10 +13,9 @@ RUN --network=none case "$CUDARC_CUDA_VERSION" in \
       13040|13030|13020|13010|13000|12090|12080|12060|12050|12040|12030|12020|12010|12000|11080|11070|11060|11050|11040) ;; \
       *) echo "An explicit supported CUDARC_CUDA_VERSION is required" >&2; exit 1 ;; \
     esac \
-    && test -f /opt/tracel-data/tracel/tracel-llvm-23.1.0-4/.tracel-llvm-installed \
     && test -x /opt/tracel-data/tracel/tracel-llvm-23.1.0-4/bin/llvm-config \
     && test "$(/opt/tracel-data/tracel/tracel-llvm-23.1.0-4/bin/llvm-config --version)" = "23.1.0" \
-    && cargo build --release --target x86_64-unknown-linux-gnu --locked --offline --jobs 2 -p chess-coach-policy-io --features gpu-cuda --bin policy-score --bin policy-channel --bin policy-initialize
+    && cargo build --release --target x86_64-unknown-linux-gnu --locked --offline --jobs 2 -p chess-coach-policy-io --features gpu-prepared-llvm --bin policy-score --bin policy-channel --bin policy-initialize
 
 FROM docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038 AS javascript
 WORKDIR /build/current

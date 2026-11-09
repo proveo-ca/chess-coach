@@ -14,3 +14,4 @@ __pycache__/
 *.bpk
 /_work/gpu-owner-recovery/scratch/
 /_work/gpu-owner-recovery/cache/
+/_work/gpu-owner-recovery/runs/*/home/.bun/

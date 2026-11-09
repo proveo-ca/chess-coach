@@ -1,0 +1,126 @@
+{
+  "version": "chess-coach.gpu-prepared-llvm-cache-source.v1",
+  "status": "PASS_SOURCE_PREFETCH_ONLY",
+  "scope": "MOCKED_LOCKED_FETCH_PLAN_AND_TYPES_ONLY",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/prepared-llvm-cache/request.json",
+      "sha256": "168d2bb55f331e58e68acd4ef7f12279f8de152d78661fe4e5a34ee85b0eac12"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/prepared-llvm-cache/fetch.ts",
+      "sha256": "a496fa7aed0a535769064a23870ec1b8e7ee65ba6471141a8f0d825b9c29a67a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/prepared-llvm-cache/fetch.test.ts",
+      "sha256": "6f67b40099321337522eef0bc10e34ff66f692c9aba34fc314a6b65ec9d2dfc2"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/prepared-llvm-cache/tsconfig.json",
+      "sha256": "b328520d0a04776b0e0931f6fb0e6de92c4a2f37494bc37129c3dc24b63a098b"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "77f674cc26a01f26558fd99c45bdcd5566017be05833fce1d39cae98cda05955"
+    },
+    {
+      "path": "Cargo.toml",
+      "sha256": "553b6e3cf5a8d30f53f19bf6623332d4d6c5df69099d5f2a51ae9260f07b74bc"
+    },
+    {
+      "path": "crates/learning/Cargo.toml",
+      "sha256": "8c624552cd6174bd48b74e3ff54b6f203cf96956ec5980f7bb2115ff3374843d"
+    },
+    {
+      "path": "crates/policy-io/Cargo.toml",
+      "sha256": "44d7e51a15605c67a777915c673739005e1614c9cec4ef37fe3a49d4613c4de4"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/provision.ts",
+      "sha256": "446bafb616dce8f642216268cb10d6c30e1e485b45428b8c83295358964a8efb"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/verify.ts",
+      "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+      "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/prepared-llvm-mise/provision.ts",
+      "sha256": "274bcfe60d32d48dca56e2b75de79e275e3c09da2203f77fad6ea7fc77c04f6d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/prepared-llvm/verify.ts",
+      "sha256": "2e9bd159e543aa62d496a8c45cdf4e6cf86c582ad8c2f42fa92c1fe87e37bb97"
+    }
+  ],
+  "sourceChanged": false,
+  "results": [
+    {
+      "name": "unit",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "./_work/gpu-owner-recovery/prepared-llvm-cache/fetch.test.ts"
+      ],
+      "timeoutMs": 30000,
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 28,
+      "stderrBytes": 649,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-cache-source-1/unit/command.stdout",
+          "bytes": 28,
+          "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-cache-source-1/unit/command.stderr",
+          "bytes": 649,
+          "sha256": "48b37a1b7a0b18f409b632f307da477ca973cd7fac6e6307b332f065904e5acf"
+        }
+      ]
+    },
+    {
+      "name": "types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "-p",
+        "_work/gpu-owner-recovery/prepared-llvm-cache/tsconfig.json"
+      ],
+      "timeoutMs": 120000,
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-cache-source-1/types/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-cache-source-1/types/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "preparedSourceHashesChecked": 277,
+  "priorMismatches": [],
+  "fetchInvocations": 0,
+  "dependencyDownloadsPerformed": false,
+  "compilationPerformed": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}
