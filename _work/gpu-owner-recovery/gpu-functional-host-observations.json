@@ -1,0 +1,48 @@
+{
+  "version": "chess-coach.gpu-functional-host-observations.v1",
+  "status": "OPERATOR_REPORTED_METADATA_CONTAINER_GPU_ACCESS_PENDING",
+  "provenance": "NORMALIZED_FROM_OPERATOR_PASTED_OUTPUT_NOT_AN_ORIGINAL_MACHINE_CAPTURE",
+  "sourceCommit": "87c576e9200cdc37f1d257e364bf3eb122d397fe",
+  "commands": [
+    "nvidia-smi --query-gpu=name,uuid,driver_version,memory.total,memory.free --format=csv",
+    "docker info --format '{{.OSType}}/{{.Architecture}} {{json .Runtimes}}'"
+  ],
+  "operatorDisplayedTimes": {
+    "gpu": "Sun 08 Nov 2026 08:13:50 PM MST",
+    "docker": "Sun 08 Nov 2026 08:14:01 PM MST"
+  },
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 3070 Laptop GPU",
+    "uuid": "GPU-713c95e0-6952-a576-794b-9ef1fb527ff0",
+    "driverVersion": "615.78.08",
+    "memoryTotalMiB": 8192,
+    "memoryFreeMiB": 7742,
+    "freeMemoryIsReservation": false
+  },
+  "docker": {
+    "osType": "linux",
+    "architecture": "x86_64",
+    "reportedRuntimes": ["io.containerd.runc.v2", "nvidia", "runc"],
+    "nvidiaRuntimePath": "nvidia-container-runtime"
+  },
+  "compatibility": {
+    "officialReference": "https://docs.nvidia.com/deploy/cuda-compatibility/minor-version-compatibility.html",
+    "cuda13FamilyMinimumDriverBranch": 580,
+    "reportedDriverBranch": 615,
+    "meetsCuda13FamilyMinimum": true,
+    "selectedCudarcBindingVersion": null,
+    "exactCudaApiVersion": null,
+    "ptxCompatibility": "NOT_ESTABLISHED"
+  },
+  "qualification": {
+    "containerGpuVisibility": "NOT_ESTABLISHED",
+    "preparedCompilerInputs": "NOT_SELECTED",
+    "gpuF64ScoringBackwardSgdReload": "NOT_ESTABLISHED",
+    "gpuFiniteDifferenceCoordinates": 0,
+    "exactGpuC12Agreement": "NOT_ESTABLISHED",
+    "trainingReady": false
+  },
+  "agentExecutedHostCommands": false,
+  "newContainerOperationAuthorizedByTheseObservations": false,
+  "fullPipelineAuthorityRenewed": false
+}

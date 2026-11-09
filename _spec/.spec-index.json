@@ -52,7 +52,9 @@
         "packages/runtime/tests/gpu-recipe.test.ts",
         "_work/gpu-owner-recovery/gpu-functional-verify.ts",
         "crates/learning/tests/finite_difference.rs",
-        "crates/policy-io/tests/gpu.rs"
+        "crates/policy-io/tests/gpu.rs",
+        "_work/gpu-owner-recovery/gpu-container-visibility-request.json",
+        "_work/gpu-owner-recovery/gpu-container-visibility.fish"
       ],
       "fingerprint": null
     }

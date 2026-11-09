@@ -48,7 +48,7 @@ Only local-3 supplies the current generation's local verification result; neithe
 These results qualify the ordinary local source/test stage only, not image construction, selected-host GPU capability, training dispatch, full assurance or review acceptance.
 The lead confirms scoped adversarial, DevOps and security source-wiring acceptance in `_work/gpu-owner-recovery/gpu-functional-source-review.json`; run 3 satisfies the security review's local-verification condition.
 This acceptance supplies no image, runtime, activation or training qualification.
-The next operator verification collects GPU/driver and Docker-runtime metadata before selecting explicit CUDA bindings and prepared compiler inputs; the record lists the two read-only command proposals, neither executed by the agent.
+The operator has supplied GPU/driver and Docker-runtime metadata in [the normalized host-observation record](../_work/gpu-owner-recovery/gpu-functional-host-observations.json); these are operator-reported facts, not an agent-run host verification or selected bindings.
 The local manifest does not capture `_spec/` documents; this documentation-only update neither changes that source generation nor calls for rerunning its commands.
 
 The existing six ignored host GPU tests remain unrun evidence targets: two sweeps in `crates/learning/tests/finite_difference.rs` and four score/update/channel/reload tests in `crates/policy-io/tests/gpu.rs`.
@@ -62,11 +62,80 @@ The recipe has neither approved nor implemented activation of those normal GPU t
 After selected-host GPU capability is established, activation remains separately scoped functional implementation/wiring with ordinary source/test/readiness verification and separate execution/training authority.
 It is not deferred security hardening, a new audit gauntlet, or an extra decision before the current prepared-input choice.
 
-The next genuine decision selects prepared compiler/library/LLVM/libdevice inputs and the explicit CUDA version, or grants narrow fresh authority to prepare the exact cached LLVM archive/libdevice inputs.
+Executor selected `Cached-image probe (Recommended)`; the [exact request](../_work/gpu-owner-recovery/gpu-container-visibility-request.json) now records `APPROVED_OPERATOR_EXECUTION_PENDING` for one conditional cached-Bun NVML/device-visibility attempt through the [Fish command packet](../_work/gpu-owner-recovery/gpu-container-visibility.fish).
+This is operator-host-only authority, not coding-agent execution permission or an actual visibility PASS.
+The later choice of compatible prepared compiler/library/LLVM/libdevice inputs and explicit CUDA bindings, versus narrow fresh authority to prepare the exact cached LLVM archive/libdevice inputs, remains unresolved.
 No context-assembly helper is added by this spec pass, and no input preparation is inferred before that selection.
-No image build, real-archive read/rehash/mount, capture, acquisition, download, upgrade, helper compilation, native/host/GPU operation or training is authorized here; the prior hold remains in force, no grant is renewed, and actual GPU work stays outside the coding sandbox.
+Apart from that exact operator-only metadata attempt and its bounded cleanup, no image build, real-archive read/rehash/mount, capture, acquisition, download, upgrade, helper compilation, other native/host/GPU operation or training is authorized here; the prior full-pipeline hold remains in force and actual GPU work stays outside the coding sandbox.
 Do not require reenacting the old isolated Bun/archive pipeline; its requests remain unchanged, diagnostics remain 0/3 with no accepted binding, and the full request stays halted.
 Native capture, pidfd/cgroup/strict-stop work and ALL security/privacy hardening and isolation remain LAST, after **COMPLETE PLANNED TRAINING AND VALIDATE RESULTS**.
+
+### Current host observations — received, operator-reported metadata only
+
+[The host-observation record](../_work/gpu-owner-recovery/gpu-functional-host-observations.json) is normalized from pasted operator output, not an original machine capture.
+Its displayed `Sun 08 Nov 2026 08:13:50 PM MST` GPU time and `08:14:01 PM MST` Docker time are not independently attested execution times.
+
+| Reported field | Operator-reported value |
+|---|---|
+| GPU | NVIDIA GeForce RTX 3070 Laptop GPU |
+| UUID | `GPU-713c95e0-6952-a576-794b-9ef1fb527ff0` |
+| Driver | `615.78.08` |
+| VRAM | 8,192 MiB total; 7,742 MiB free at the reported snapshot |
+| Docker | `linux/x86_64`; runtime names `io.containerd.runc.v2`, `nvidia`, `runc` |
+| NVIDIA runtime path | `nvidia-container-runtime`, reported registered, not functionally qualified |
+
+Free VRAM is neither a reservation nor a sustained availability or admitted-fit guarantee.
+The record cites [NVIDIA minor-version compatibility](https://docs.nvidia.com/deploy/cuda-compatibility/minor-version-compatibility.html): CUDA 13.x has a minimum driver branch of 580, so reported branch 615 meets that family floor only.
+This comparison establishes neither an exact CUDA API/PTX ceiling nor actual F64 scoring, backward, SGD, reload or C12 agreement.
+`13000` is an **ADVISORY candidate only**, not a selected CUDARC binding or compatible-input proof; the CUDA version and all three prepared-input selections remain `null`.
+No global `selectedUuid`, host binding or Gate0 acceptance follows from this reported identity.
+
+The approved operator-only cached-base NVML visibility attempt is functional work, not a security inspection, GPU-kernel test or training activation.
+Its authority comes from Executor's explicit selection and the new request, not from the earlier observations; it permits at most one conditional metadata container, not image pulls/downloads, LLVM archive preparation, native CUDA compilation or training.
+No host commands or operator tools ran through this agent; no image build, container GPU visibility, GPU kernel or training result is established.
+The unchanged local-3 273-input source verification remains separate evidence; this metadata/spec-only update requires no full retest.
+
+### Approved operator-only visibility packet — execution pending
+
+The [request](../_work/gpu-owner-recovery/gpu-container-visibility-request.json) and [packet](../_work/gpu-owner-recovery/gpu-container-visibility.fish) supersede earlier pending-approval wording for this exact attempt only.
+The operator runs the packet on the host; the coding agent may provide its pasteable contents but must not invoke Docker or any host tool, even for metadata.
+No automatic retry is authorized, and no visibility result has been received.
+
+| Approved operation | Exact boundary |
+|---|---|
+| Cached-image inspection | Inspect the request's pinned Rust and Bun images with 10-second client deadlines each and a three-second kill-after. Bun must already exist as `linux/amd64`, or stop without pull/substitution; report missing Rust for later input selection without pulling it. |
+| One conditional container | Use only the pinned cached Bun base, `nvidia` runtime, GPU UUID `GPU-713c95e0-6952-a576-794b-9ef1fb527ff0`, UID/GID `1000:1000` and `compute,utility` driver capabilities. No additional user mounts. |
+| Metadata and ordinary caps | Resolve `nvidia-smi`, collect its fixed GPU CSV and UUID-scoped memory query only; use `--pull=never`, 2 CPUs, `512m` memory and 64 PIDs. These are probe limits, not production runtime or containment qualification. |
+| Client deadline | The Docker query client has 30 seconds plus a three-second kill-after. This does not guarantee a physical hard stop, daemon/container termination or a hard return from native work. |
+| Cleanup | A 10-second client deadline plus three-second kill-after applies only to force-removing the valid 64-hex CID recorded in this attempt's fresh CID file. Missing/invalid CID or failed cleanup remains unverified; do not target other containers. |
+| Output | Use the packet's fresh `_work/gpu-owner-recovery/runs/host-visibility-XXXXXXXX` directory for query/cleanup streams, CID and reported exit statuses; no evidence directory is created by this spec pass. |
+
+The operator approval grants no image build, install, pull, additional user mount, libdevice/LLVM archive operation, native CUDA compilation, CUDA kernel, training or host configuration change.
+It supplies no new isolation/containment proof and does not reopen deferred hardening work.
+Driver branch 615 still establishes only the reported CUDA 13.x family-floor comparison; the exact API/PTX ceiling, CUDARC binding version and three prepared-input selections remain unestablished/unselected.
+The new operator packet is outside the existing local-3 result; that PASS is not packet execution, GPU visibility, activation or training acceptance.
+`containerGpuVisibilityEstablished` and `trainingReady` remain `false`; old diagnostic cases remain 0/3 unspent and the full pipeline remains halted.
+ALL security/privacy hardening and isolation remain LAST, after completed planned training and validated results.
+
+#### Local packet syntax evidence — no packet commands executed
+
+[The syntax-only receipt](../_work/gpu-owner-recovery/runs/gpu-container-visibility-local-1/receipt.json) records Fish `4.9.3` with `--no-config --no-execute`, `PASS`, exit 0, and scope `FISH_SYNTAX_ONLY_NO_PACKET_COMMAND_EXECUTION`.
+It records four artifact SHA-256s: the Fish packet, visibility request, normalized host observations and compiler-candidate inventory.
+This proves only the recorded syntax check; it executed no Docker commands and establishes no image availability, container launch, NVML visibility, compiler usability or native/GPU qualification.
+The lead reports DevOps READY for the operator proposal's source only; adversarial and security read-only checks of this handoff remain ongoing, with no acceptance claimed until explicit verdicts.
+Those handoff checks are distinct from the earlier recipe/source-wiring acceptance; the request remains `APPROVED_OPERATOR_EXECUTION_PENDING` and no visibility result is claimed.
+
+### Coding-realm compiler candidate — directory metadata only, unselected
+
+[The compiler-candidate record](../_work/gpu-owner-recovery/gpu-functional-compiler-candidates.json) reports only an existing coding-realm Mise version directory named `23.1.0-4`:
+
+`/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4`
+
+The directory name is not verification of a genuine installed LLVM prefix, usable compiler, compatible dependency set or operator-host input.
+The record marks installation verification, `llvm-config` execution, copying and selection false; its scope is directory metadata only, not LLVM-file inspection, archive access, new acquisition or native CUDA compilation.
+This is a candidate for a later explicitly approved functional source inventory that might avoid new acquisition, not permission to read/copy/execute its LLVM files now or a new security-hardening gate.
+The CUDA version and all three prepared-input selections remain `null`; selected-host F64 coordinates remain zero, and the reported driver 615 versus family minimum 580 still supplies no exact API/PTX or kernel proof.
+No host inputs, runtime readiness, activation or training enablement follow from the candidate or the syntax receipt.
 
 Status: `SOURCE_RECONSTRUCTED` / `VERIFIED_TEST_SUBSETS` / `SOURCE_REVIEWS_ACCEPTED_SCOPED` / GPU LEARNING REQUIRED / SHARED-GPU HOST DOCKER DESIGN SELECTED / BACKEND AND TARGET UNQUALIFIED / `trainingReady:false`.
 

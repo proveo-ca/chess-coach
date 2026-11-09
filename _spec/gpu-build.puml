@@ -6,9 +6,17 @@
 ' covers: _work/gpu-owner-recovery/gpu-functional-verify.ts
 ' covers: crates/learning/tests/finite_difference.rs
 ' covers: crates/policy-io/tests/gpu.rs
+' covers: _work/gpu-owner-recovery/gpu-container-visibility-request.json
+' covers: _work/gpu-owner-recovery/gpu-container-visibility.fish
 ' status: SOURCE_IMPLEMENTED / AWAITING_PREPARED_INPUT_SELECTION / trainingReady:false
 ' verification: gpu-functional-local-3 PASS, six stages, sourceChanged:false; no image build or GPU execution
 ' evidence: _work/gpu-owner-recovery/runs/gpu-functional-local-3/receipt.json
+' host evidence: _work/gpu-owner-recovery/gpu-functional-host-observations.json; normalized operator paste, not original capture
+' compatibility reference: https://docs.nvidia.com/deploy/cuda-compatibility/minor-version-compatibility.html
+' operator approval: _work/gpu-owner-recovery/gpu-container-visibility-request.json; APPROVED_OPERATOR_EXECUTION_PENDING
+' operator packet: _work/gpu-owner-recovery/gpu-container-visibility.fish; no packet commands executed; outside local-3
+' syntax evidence: _work/gpu-owner-recovery/runs/gpu-container-visibility-local-1/receipt.json; Fish 4.9.3 --no-config --no-execute PASS only; four artifact hashes
+' compiler candidate evidence: _work/gpu-owner-recovery/gpu-functional-compiler-candidates.json; coding-realm directory metadata only, not selected or verified
 ' manifest: 273 selected inputs; 3e5b58c02eeab08783051e087c57381dc0059605c2de6b07fac70e240bf09d45
 ' history: local-1 FAIL (three TS2339 errors); local-2 PASS is an earlier five-stage generation
 ' activation context: packages/runtime/src/job.ts:11; packages/runtime/src/gpu-job.ts:142; crates/gpu-owner/src/main.rs:10
@@ -20,6 +28,9 @@ title Optional GPU build - local/CPU PASS only, prepared inputs unselected
 left to right direction
 
 component "tooling/runtime/gpu-build-inputs.json\nAWAITING_PREPARED_INPUT_SELECTION" as INPUTS
+component "_work/gpu-owner-recovery/\ngpu-functional-host-observations.json\noperator-reported metadata only\nRTX 3070 Laptop; driver 615.78.08\nDocker nvidia runtime reported registered" as HOST_REPORT
+component "_work/gpu-owner-recovery/\ngpu-container-visibility-request.json\nAPPROVED_OPERATOR_EXECUTION_PENDING" as PROBE_REQUEST
+component "_work/gpu-owner-recovery/\ngpu-container-visibility.fish\nOPERATOR_HOST_ONLY; commands not executed\nFish 4.9.3 syntax-only PASS" as OPERATOR_PACKET
 package "tooling/runtime/Dockerfile.gpu" {
   component "native\npinned Rust stage\n-p chess-coach-policy-io --features gpu-cuda" as NATIVE
   component "javascript\npinned Bun stage" as JAVASCRIPT
@@ -30,6 +41,9 @@ component "_work/gpu-owner-recovery/\ngpu-functional-verify.ts\n6 stages PASS: r
 component "crates/learning/tests/finite_difference.rs\n2 ignored host GPU sweeps" as SWEEPS
 component "crates/policy-io/tests/gpu.rs\n4 ignored host GPU tests" as HOST_TESTS
 
+HOST_REPORT ..> INPUTS : reported driver/runtime facts, not runtime PASS\n13000 advisory only; bindings/inputs remain null
+PROBE_REQUEST --> OPERATOR_PACKET : approved one-attempt handoff\nconditional cached Bun; no retry/pull
+OPERATOR_PACKET ..> INPUTS : future operator visibility evidence only\nno current PASS, binding or GPU-kernel proof
 INPUTS --> NATIVE : explicit CUDARC version; no default\nbuilder rootfs before current-native\nprepared LLVM prefix; config 23.1.0
 INPUTS --> RUNTIME : runtime rootfs before app outputs\nnonempty libdevice.10.bc guard
 NATIVE --> RUNTIME : policy-score / policy-channel / policy-initialize\nsame copies as CPU recipe; no built outputs claimed
@@ -58,13 +72,39 @@ note bottom of LOCAL
   with reload and matching learner digests.
 end note
 
+note bottom of OPERATOR_PACKET
+  Client deadlines request termination;
+  they do not prove a physical host stop.
+  Cleanup uses only this run's saved
+  container ID, and missing evidence
+  cannot count as successful removal.
+end note
+
 legend bottom
   Current local-3: six stages PASS, exit 0; sourceChanged:false; 273 selected inputs.
   Source/test/tooling typechecks pass; tooling includes the verifier itself.
   CPU learning/policy: 39 tests; CPU host-facts recipe: 2 tests; no actual host operation.
   Local-1 FAIL and local-2 earlier PASS remain unchanged; only local-3 is current.
   Scoped source-wiring reviews accepted: gpu-functional-source-review.json.
-  Next: operator GPU/driver and Docker-runtime metadata; no command run by the agent.
+  Host metadata received as normalized operator paste; displayed times are not attested.
+  Reported driver branch 615 meets CUDA 13.x family floor 580, not an API/PTX or F64 proof.
+  13000 is advisory only; no selected UUID, host binding, Gate0 or runtime acceptance.
+  Reported 8,192 MiB total / 7,742 MiB free is a snapshot, not a VRAM reservation.
+  Approved operator-only metadata attempt; visibility remains unestablished, not PASS.
+  Inspect both pinned images: 10s each; require cached linux/amd64 Bun or stop, no pull.
+  Missing Rust is reported only; at most one Bun container, UID/GID 1000:1000, fixed GPU UUID.
+  NVML/nvidia-smi metadata only; 2 CPUs / 512m / 64 PIDs; no additional user mounts.
+  Query client 30s; cleanup client 10s, only this attempt's fresh recorded CID; kill-after 3s.
+  No hard-termination guarantee or new containment proof; no coding-agent host execution.
+  No builds, pulls, installs, LLVM/libdevice operations, CUDA kernels, training or config change.
+  Local-3 does not verify or execute the new operator handoff artifacts.
+  Separate local-1 visibility receipt: Fish 4.9.3 --no-config --no-execute PASS, exit 0.
+  Four artifact hashes; no Docker command execution, image availability or visibility proof.
+  DevOps READY covers operator-proposal source only; handoff adversarial/security checks ongoing.
+  No handoff adversarial/security acceptance is claimed; operator execution remains pending.
+  Compiler candidate: coding-realm Mise version directory named 23.1.0-4, metadata only.
+  No verified LLVM installation, file inspection, llvm-config execution, copy or host input.
+  A later approved functional inventory might avoid acquisition; candidate remains unselected.
   Same 3 pinned stages; CPU recipe and Rust source/manifests unchanged in this slice.
   LLVM selection, builder selection, runtime selection and CUDA version remain null.
   Consume the genuine upstream install marker; never fabricate an installed prefix.
@@ -78,7 +118,7 @@ legend bottom
   Activation is separate functional work after selected-host capability, not security hardening.
   No activation change/approval, training enablement or new audit gauntlet follows from local PASS.
   imageBuilt / actualHostExecuted / cudaGpuCodeExecuted / trainingReady remain false.
-  No build, input preparation, archive access, native/host/GPU execution or training grant.
+  Only the exact operator visibility attempt is approved; no broader operation or training grant.
   All security/privacy hardening and isolation are LAST, after completed planned training
   and validated results; existing requests remain unchanged.
   Diagnostics: 0/3, no accepted binding; full archive request remains halted.
