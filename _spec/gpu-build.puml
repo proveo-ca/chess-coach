@@ -15,6 +15,8 @@
 ' covers: _work/gpu-owner-recovery/tests/tsconfig.json
 ' covers: _work/gpu-owner-recovery/runs/gpu-container-visibility-host-probe-1/operator-observation.json
 ' covers: _work/gpu-owner-recovery/runs/gpu-container-visibility-host-probe-1/operator-paste.txt
+' covers: _work/gpu-owner-recovery/runs/gpu-runtime-lookup-host-1/operator-observation.json
+' covers: _work/gpu-owner-recovery/runs/gpu-runtime-lookup-host-1/operator-paste.txt
 ' status: SOURCE_IMPLEMENTED / AWAITING_PREPARED_INPUT_SELECTION / trainingReady:false
 ' verification: gpu-functional-local-3 PASS, six stages, sourceChanged:false; no image build or GPU execution
 ' evidence: _work/gpu-owner-recovery/runs/gpu-functional-local-3/receipt.json
@@ -25,7 +27,8 @@
 ' operator packet: _work/gpu-owner-recovery/gpu-container-visibility.fish; unchanged historical packet, not a rerun handoff; outside local-3
 ' cache result: _work/gpu-owner-recovery/runs/gpu-container-visibility-host-inspection-1/operator-observation.json; normalized operator paste, not original capture
 ' latest result: _work/gpu-owner-recovery/runs/gpu-container-visibility-host-probe-1/operator-observation.json and operator-paste.txt; no original host machine files received
-' lookup proposal: _work/gpu-owner-recovery/gpu-runtime-lookup.fish; operator handoff only, not executed or newly authorized
+' lookup source: _work/gpu-owner-recovery/gpu-runtime-lookup.fish; exact inline/repository handoff execution unknown, no fresh authority
+' lookup operator evidence: _work/gpu-owner-recovery/runs/gpu-runtime-lookup-host-1/operator-observation.json and operator-paste.txt; partial paste, source commit unknown
 ' lookup tests: _work/gpu-owner-recovery/tests/gpu-runtime-lookup.test.ts; _work/gpu-owner-recovery/tests/tsconfig.json
 ' lookup verifier: _work/gpu-owner-recovery/tests/verify-runtime-lookup.ts; six input hashes, stdout/stderr, 10/30/30s client deadlines plus 3s kill-after
 ' lookup local proof: _work/gpu-owner-recovery/runs/gpu-runtime-lookup-local-3/receipt.json; PASS/sourceChanged:false, five tests/53 assertions, no packet/Docker/GPU execution
@@ -35,8 +38,12 @@
 ' lookup review (lead-reported): security ses_e41520898ffer9yrOkXEAM23ZI READY yes, narrow operator proposal only
 ' lookup review (lead-reported): DevOps ses_e415ccaf5ffeKtkUCGX1sfkYVh confirms proposal-only readiness after exported-env correction
 ' candidate references: https://github.com/moby/moby/blob/v27.5.1/daemon/nvidia_linux.go (NVIDIA hook registration)
-' candidate references: https://github.com/moby/moby/blob/master/daemon/devices_nvidia_linux.go
+' candidate references: https://github.com/moby/moby/blob/561a5a9b36f971b4b543e1aac3efda12998a6e33/daemon/devices_nvidia_linux.go#L38-L79
 ' candidate references: https://github.com/NVIDIA/nvidia-container-toolkit/blob/main/cmd/nvidia-container-runtime/README.md#notes-on-using-the-docker-cli
+' upstream research: lead-supplied prior DevOps read-only findings, not actual host inventory or fresh verification
+' package reference: https://github.com/NVIDIA/nvidia-container-toolkit/blob/v1.20.1/packaging/rpm/SPECS/nvidia-container-toolkit.spec#L159-L169
+' Fedora instructions: https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#with-dnf-rhel-centos-fedora-amazon-linux
+' tested platforms: https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/supported-platforms.html
 ' registry metadata: _work/gpu-owner-recovery/gpu-functional-base-image-metadata.json; manifest/config only, no layer payloads
 ' syntax evidence: _work/gpu-owner-recovery/runs/gpu-container-visibility-local-1/receipt.json; Fish 4.9.3 --no-config --no-execute PASS only; four artifact hashes
 ' compiler candidate evidence: _work/gpu-owner-recovery/gpu-functional-compiler-candidates.json; coding-realm directory metadata only, not selected or verified
@@ -56,8 +63,9 @@ component "_work/gpu-owner-recovery/\ngpu-container-visibility-request.json\nori
 component "_work/gpu-owner-recovery/\ngpu-container-visibility-renewal.json\nhistorical pending status retained unchanged\nCURRENT: CONSUMED (1 pull / 1 attempt)" as RENEWAL
 component "_work/gpu-owner-recovery/\ngpu-container-visibility.fish\noriginal no-pull packet unchanged; do not rerun\nFish 4.9.3 historical syntax-only PASS" as OPERATOR_PACKET
 component "_work/gpu-owner-recovery/runs/\ngpu-container-visibility-host-probe-1/\noperator-observation.json\nOCI launcher lookup failed; operator paste only\nquery 127 / cleanup 0; no process started" as PROBE_RESULT
-component "_work/gpu-owner-recovery/\ngpu-runtime-lookup.fish\nsource-only read-only operator proposal\npacket not executed; local-only checks PASS" as LOOKUP
+component "_work/gpu-owner-recovery/\ngpu-runtime-lookup.fish\noperator handoff source; exact execution unknown\nLOCAL receipt only: lookupPacketExecuted false" as LOOKUP
 component "_work/gpu-owner-recovery/tests/\ngpu-runtime-lookup.test.ts\nverify-runtime-lookup.ts\ntsconfig.json\nlookup-local-3: local-only PASS; 6 hashed inputs" as LOOKUP_LOCAL
+component "_work/gpu-owner-recovery/runs/\ngpu-runtime-lookup-host-1/\noperator-observation.json\noperator-paste.txt\nOPERATOR_REPORTED_PARTIAL; headers missing" as LOOKUP_RESULT
 package "tooling/runtime/Dockerfile.gpu" {
   component "native\npinned Rust stage\n-p chess-coach-policy-io --features gpu-cuda" as NATIVE
   component "javascript\npinned Bun stage" as JAVASCRIPT
@@ -73,9 +81,11 @@ PROBE_REQUEST --> OPERATOR_PACKET : historical no-pull scope unchanged\nno repla
 RENEWAL --> OPERATOR_PACKET : historical exact Bun pull + one probe\nnow consumed; no retry
 OPERATOR_PACKET --> PROBE_RESULT : reported one container object\nlauncher failed before process start
 PROBE_RESULT ..> INPUTS : no visibility, F64 or binding proof\nprepared inputs remain unselected
-PROBE_RESULT ..> LOOKUP : proposal only, not fresh authority\ninstallation / PATH / host unresolved
-LOOKUP_LOCAL ..> LOOKUP : syntax-only / 5 static tests / strict types PASS\nno packet or Docker execution
+PROBE_RESULT ..> LOOKUP : handoff source, not fresh authority\ninstallation / PATH / host unresolved
+LOOKUP_LOCAL ..> LOOKUP : syntax-only / 5 static tests / strict types PASS\nLOCAL checks: no packet or Docker execution
 LOOKUP_LOCAL ..> PROBE_RESULT : checks recorded claims, not the host
+LOOKUP ..> LOOKUP_RESULT : related paste; inline/script unknown\nsource commit not attested
+LOOKUP_RESULT ..> INPUTS : partial shell/context observations only\nno runtime, GPU or binding qualification
 INPUTS --> NATIVE : explicit CUDARC version; no default\nbuilder rootfs before current-native\nprepared LLVM prefix; config 23.1.0
 INPUTS --> RUNTIME : runtime rootfs before app outputs\nnonempty libdevice.10.bc guard
 NATIVE --> RUNTIME : policy-score / policy-channel / policy-initialize\nsame copies as CPU recipe; no built outputs claimed
@@ -145,21 +155,29 @@ legend bottom
   Authority CONSUMED: pull 1 / probe 1, zero remaining; original pending records stay unchanged.
   Do not rerun the historical acquisition handoff or packet; no retry/new pull/container approval.
   Installation versus service PATH versus execution host remains unknown; no Bun/CUDA numerical failure.
-  No visibility or GPU proof; Engine/endpoint/default runtime/daemon PATH/hook mode remain unknown.
+  No visibility or GPU proof; Engine/effective endpoint/default runtime/daemon PATH/hook mode remain unknown.
   runc 1.5.2 is not the Engine version; omitting runtime does not establish the unknown default.
-  Lookup proposal: only exported DOCKER_HOST/DOCKER_CONTEXT values; set -qx, otherwise unset.
-  Docker metadata remains version/info/current-context/endpoint; no new host/daemon facts returned.
-  At most four 10s Docker client deadlines + kill-after 3s; no container or NVIDIA-tool execution.
-  Shell /etc/os-release plus five fixed tool names in six fixed directories; no daemon-host shell assumed.
-  Client/context and shell paths do not establish effective daemon host or daemon/containerd PATH.
+  Partial operator lookup: context show/inspect 0, default, unix:///var/run/docker.sock; shell Fedora 44 Workstation.
+  Info exit 0 but formatted values omitted; DOCKER environment and all version values/exit omitted.
+  Shell PATH: runtime / legacy hook / CLI each 127 empty; ctk / runc 0 at /usr/bin, executable /bin candidates.
+  No RPM inventory, package owner or nvidia-cdi-hook result supplied; daemon-side root cause remains unknown.
+  Unix context socket and shell paths do not establish effective endpoint, physical daemon host or daemon PATH.
+  Exact inline/script handoff and source commit unknown; normalized paste is not original machine capture.
+  Next lead/operator decision: omitted existing headers or small read-only RPM/owner inventory, not a new gauntlet.
+  Lookup source uses four maximum 10s client deadlines + kill-after 3s; no container or NVIDIA-tool execution.
   Lookup-local-3 PASS: Fish syntax-only exit 0; five static tests / 53 assertions; strict test/verifier types exit 0.
   Six source hashes and retained stdout/stderr; 10/30/30s stage deadlines + kill-after 3s; sourceChanged:false.
   Lookup-local-1 stays FAIL: syntax 0, static 4 pass/1 fail from regex matching build in SPEC filename; types unrun.
   Corrected test excludes the SPEC line, not the pointer; no packet/Docker/GPU command executed by local checks.
+  LOCAL receipt flags remain false; they do not negate the separate OPERATOR_REPORTED_PARTIAL lookup.
   Candidate only: explicit runtime=runc + gpus depends on Engine hook registration and required tools.
-  Direct gpus needs a compatible legacy hook path, not assumed CDI/non-legacy support; route unverified/unapproved.
+  Pinned modern Moby also recognizes the CDI hook independently; unknown Engine/hook evidence rules route neither in nor out.
+  Prior DevOps upstream research: v1.20.1 base supplies ctk/runtime/CDI hook; ctk alone cannot prove a base-only install.
+  Full toolkit adds legacy hook + libnvidia-container-tools dependency; that dependency supplies the CLI.
+  Fedora DNF instructions are not Fedora 44 qualification; the tested-platform table does not list Fedora.
   No builds, installs, configuration changes, restarts, archive operations, kernels, training or publication.
   GPU-functional-local-3 retains its unchanged 273-input scope; it does not cover the new lookup artifacts.
+  Six lookup source hashes and both local receipt scopes stay unchanged; new operator files are outside them.
   Lookup-local-3 freshly rechecks all 273 gpu-functional-local-3 source hashes; no mismatches or new CPU test run.
   Separate local-1 visibility receipt: Fish 4.9.3 --no-config --no-execute PASS, exit 0.
   Four artifact hashes; no Docker command execution, image availability or visibility proof.

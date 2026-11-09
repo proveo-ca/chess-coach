@@ -115,7 +115,7 @@ Do not rerun either handoff; the coding agent must not invoke Docker or any host
 The unchanged probe packet itself grants no pull; the separate renewal is consumed and grants no repeat pull/probe, Rust pull, image build, install, additional user mount, libdevice/LLVM archive operation, native CUDA compilation, CUDA kernel, training or host configuration change.
 It supplies no new isolation/containment proof and does not reopen deferred hardening work.
 Driver branch 615 still establishes only the reported CUDA 13.x family-floor comparison; the exact API/PTX ceiling, CUDARC binding version and three prepared-input selections remain unestablished/unselected.
-The operator packet and proposed runtime lookup are outside the existing local-3 result; that PASS is not packet execution, GPU visibility, activation or training acceptance.
+The operator packet and runtime-lookup source checks are outside the existing local-3 result; that PASS is not operator execution, GPU visibility, activation or training acceptance.
 `containerGpuVisibilityEstablished` and `trainingReady` remain `false`; old diagnostic cases remain 0/3 unspent and the full pipeline remains halted.
 ALL security/privacy hardening and isolation remain LAST, after completed planned training and validated results.
 
@@ -157,14 +157,33 @@ The historical acquisition command remains in the renewal record for traceabilit
 
 The lookup failure does not distinguish missing installation, a service PATH issue or a different daemon execution host; the root cause remains undetermined.
 No `nvidia-smi`, CUDA kernel or Bun application ran, so no Bun/CUDA numerical failure or GPU proof follows.
-Engine version, effective daemon endpoint, default runtime, daemon/containerd PATH and NVIDIA hook mode remain unknown; `runc 1.5.2` is not the Docker Engine version.
+Engine version, effective daemon endpoint, default runtime, daemon/containerd PATH and NVIDIA hook mode remain unknown after the later partial lookup; `runc 1.5.2` is not the Docker Engine version.
 `containerGpuVisibilityEstablished` and `trainingReady` remain `false`; CUDA and all three prepared-input selections remain `null`.
-Existing gpu-functional-local-3 and visibility-local-1 syntax receipts remain unchanged and do not cover the new runtime-lookup proposal.
+Existing gpu-functional-local-3 and visibility-local-1 syntax receipts remain unchanged and cover neither runtime-lookup source checks nor the latest partial operator lookup.
 ALL security/privacy hardening and isolation remain LAST, after completed planned training and validated results.
 
-#### Proposed read-only runtime lookup — not executed
+#### Current partial runtime lookup — operator-reported only
 
-[gpu-runtime-lookup.fish](../_work/gpu-owner-recovery/gpu-runtime-lookup.fish) is a source-only operator-handoff proposal, not an executed lookup or fresh authority claim.
+The [partial operator paste](../_work/gpu-owner-recovery/runs/gpu-runtime-lookup-host-1/operator-paste.txt) and [normalized observation](../_work/gpu-owner-recovery/runs/gpu-runtime-lookup-host-1/operator-observation.json) now supply `OPERATOR_REPORTED_PARTIAL_LOOKUP_REQUIRED_HEADER_FIELDS_MISSING`, not an original machine capture or host qualification.
+The source commit and exact executed handoff remain unknown: the paste does not attest inline handoff versus repository script.
+
+| Partial operator-reported result | Boundary / missing evidence |
+|---|---|
+| Context show/inspect exit 0; `default`, `unix:///var/run/docker.sock` | Reported context endpoint only; exported `DOCKER_HOST`/`DOCKER_CONTEXT` lines were omitted, so the effective endpoint and physical daemon host remain unknown |
+| Docker info exit 0 | Formatted values omitted; all version values and version exit omitted; Engine version, server OS, default runtime and current runtime map remain unknown |
+| Shell OS: Fedora Linux 44 Workstation | Describes the shell machine, not an established daemon execution host |
+| Shell PATH: `nvidia-container-runtime`, `nvidia-container-runtime-hook`, `nvidia-container-cli` each exit 127 with empty path | Does not establish installed RPMs, daemon/containerd PATH or the daemon-side cause |
+| Shell PATH: `nvidia-ctk` and `runc` exit 0 at `/usr/bin`; executable candidates also reported under `/bin` | Path/executable checks only; no tool-execution, package-owner or base-only-installation proof |
+
+No RPM inventory, package-owner result or `nvidia-cdi-hook` lookup was supplied; daemon-side root cause remains unknown.
+The [record-only check](../_work/gpu-owner-recovery/runs/gpu-runtime-lookup-host-record-local-2/receipt.json) passes paste consistency and unchanged six lookup / 273 functional source hashes; it reruns no tests or host commands.
+The earlier record-local-1 receipt predates the correction from an asserted CDI lookup history to the supplied result's absence; retain it as prior-generation evidence only.
+The next lead/operator decision is limited to the missing existing header lines or a small read-only RPM/package-owner inventory, not a new prerequisite gauntlet; this update issues no operation or authority.
+The prior pull/probe allowance remains consumed with zero remaining; no retry, runc variant, install, configuration/restart/tool/driver change or training follows.
+
+##### Repository handoff source and local evidence — unchanged
+
+[gpu-runtime-lookup.fish](../_work/gpu-owner-recovery/gpu-runtime-lookup.fish) remains operator-handoff source; the partial paste does not prove execution of that exact script or supply fresh authority.
 It reports only exported `DOCKER_HOST`/`DOCKER_CONTEXT` values (`set -qx`; otherwise `<unset>`), Docker version/info/current context/context endpoint with at most four 10-second client deadlines plus three-second kill-after, and shell-machine `/etc/os-release` and fixed path checks.
 The five names are `nvidia-container-runtime`, `nvidia-container-runtime-hook`, `nvidia-container-cli`, `nvidia-ctk` and `runc`; the six directories are `/usr/bin`, `/usr/sbin`, `/usr/local/bin`, `/usr/local/sbin`, `/bin` and `/sbin`.
 It resolves/checks paths without executing those tools or starting a container; client/context and shell-machine paths do not prove the daemon execution host or daemon/containerd PATH.
@@ -176,15 +195,22 @@ The original gpu-functional-local-3 inputs/evidence stay unchanged; this is no n
 Earlier [lookup-local-2 PASS](../_work/gpu-owner-recovery/runs/gpu-runtime-lookup-local-2/receipt.json) recorded 52 assertions before the exported-environment fix and regression assertion.
 Preserve [lookup-local-1 FAIL](../_work/gpu-owner-recovery/runs/gpu-runtime-lookup-local-1/receipt.json): Fish syntax exit 0, four static passes/one failure because the negative regex matched `build` in the `SPEC:` filename, not a forbidden command; typechecking did not run.
 The corrected test excludes the `SPEC:` line; the pointer and original packet remain intact.
-`lookupPacketExecuted`, `dockerCommandsExecuted` and `cudaGpuCodeExecuted` remain `false`; local PASS is not executed lookup or host/GPU proof.
+Within the unchanged **LOCAL** receipt, `lookupPacketExecuted`, `dockerCommandsExecuted` and `cudaGpuCodeExecuted` remain `false`; these scoped flags do not negate the separate partial operator report.
+The two new operator files lie outside its six hashed inputs and the older 273-input CPU manifest; no source/test/verifier or receipt changed, and no tests were rerun for this docs-only addition.
 The lead reports adversarial `ses_e41520899ffeQKIuTNgX9L1MpP` READY yes after the LOW stale-doc fix and security `ses_e41520898ffer9yrOkXEAM23ZI` READY yes for the narrow operator proposal.
 DevOps `ses_e415ccaf5ffeKtkUCGX1sfkYVh` confirms proposal-only readiness after the exported-variable correction covered by lookup-local-3.
-These scoped source/proposal reviews grant no operational authority or GPU qualification; no new host/daemon facts have returned.
+These scoped source/proposal reviews grant no operational authority or GPU qualification; the later partial report supplies shell/context observations, not established daemon-host facts.
 
-**Candidate only:** a later explicit `--runtime=runc` + `--gpus` route depends on the actual Engine's NVIDIA hook registration and required executables; it is not selected, approved or verified.
-Direct `--gpus` needs a compatible legacy hook path and cannot be assumed to work in CDI/non-legacy mode.
+##### Prior DevOps read-only upstream research — not host inventory
+
+- The lead reports prior official-source research of [NVIDIA's v1.20.1 RPM spec](https://github.com/NVIDIA/nvidia-container-toolkit/blob/v1.20.1/packaging/rpm/SPECS/nvidia-container-toolkit.spec#L159-L169): the base package supplies `nvidia-ctk`, the runtime and CDI hook; the full toolkit adds the legacy hook and a `libnvidia-container-tools` dependency, which supplies the CLI. `nvidia-ctk` alone therefore does **not** prove base-only installation: the upstream base also supplies the runtime unresolved by this shell PATH lookup.
+- NVIDIA publishes [Fedora DNF instructions](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#with-dnf-rhel-centos-fedora-amazon-linux), but its [tested-platform table](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/supported-platforms.html) does not list Fedora. These sources do not qualify Fedora 44 or identify installed packages here.
+
+**Candidate only:** a later explicit `--runtime=runc` + `--gpus` route depends on the actual Engine's NVIDIA hook registration and required executables; it is neither selected nor approved, and current evidence neither rules it in nor rules it out.
+Legacy handling uses `nvidia-container-runtime-hook`; [pinned modern Moby](https://github.com/moby/moby/blob/561a5a9b36f971b4b543e1aac3efda12998a6e33/daemon/devices_nvidia_linux.go#L38-L79) also recognizes `nvidia-cdi-hook` independently, per the lead's prior DevOps research.
+The Engine version is missing and no `nvidia-cdi-hook` result was supplied; neither a working route nor a universal legacy-only restriction follows.
 Omitting `--runtime` does not establish runc because the default runtime is unknown.
-Previously verified upstream references: [Moby v27.5.1 NVIDIA hook registration](https://github.com/moby/moby/blob/v27.5.1/daemon/nvidia_linux.go), [Moby current NVIDIA device handling](https://github.com/moby/moby/blob/master/daemon/devices_nvidia_linux.go), and [NVIDIA's direct `--gpus` mode caveat](https://github.com/NVIDIA/nvidia-container-toolkit/blob/main/cmd/nvidia-container-runtime/README.md#notes-on-using-the-docker-cli).
+Retained upstream references: [Moby v27.5.1 NVIDIA hook registration](https://github.com/moby/moby/blob/v27.5.1/daemon/nvidia_linux.go) and [NVIDIA's direct `--gpus` mode caveat](https://github.com/NVIDIA/nvidia-container-toolkit/blob/main/cmd/nvidia-container-runtime/README.md#notes-on-using-the-docker-cli).
 These references describe candidates, not this unknown Engine/host; no new operation or publication is approved.
 
 #### Local packet syntax evidence — no packet commands executed

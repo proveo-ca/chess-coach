@@ -61,7 +61,9 @@
         "_work/gpu-owner-recovery/tests/verify-runtime-lookup.ts",
         "_work/gpu-owner-recovery/tests/tsconfig.json",
         "_work/gpu-owner-recovery/runs/gpu-container-visibility-host-probe-1/operator-observation.json",
-        "_work/gpu-owner-recovery/runs/gpu-container-visibility-host-probe-1/operator-paste.txt"
+        "_work/gpu-owner-recovery/runs/gpu-container-visibility-host-probe-1/operator-paste.txt",
+        "_work/gpu-owner-recovery/runs/gpu-runtime-lookup-host-1/operator-observation.json",
+        "_work/gpu-owner-recovery/runs/gpu-runtime-lookup-host-1/operator-paste.txt"
       ],
       "fingerprint": null
     }
