@@ -115,7 +115,8 @@
         "_work/gpu-owner-recovery/runs/host-input-receive-source-3/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-source-4/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**",
-        "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/**"
+        "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/**",
+        "_work/gpu-owner-recovery/runs/host-build-inventory-observation-2/**"
       ],
       "fingerprint": null
     },
@@ -165,7 +166,8 @@
         "_work/gpu-owner-recovery/runs/host-input-receive-source-3/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-source-4/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**",
-        "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/**"
+        "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/**",
+        "_work/gpu-owner-recovery/runs/host-build-inventory-observation-2/**"
       ],
       "fingerprint": null
     },
@@ -242,7 +244,8 @@
         "_work/gpu-owner-recovery/runs/host-input-receive-source-3/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-source-4/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**",
-        "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/**"
+        "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/**",
+        "_work/gpu-owner-recovery/runs/host-build-inventory-observation-2/**"
       ],
       "fingerprint": null
     },
@@ -270,7 +273,8 @@
         "_work/gpu-owner-recovery/qualification/transfer/publish.ts",
         "_work/gpu-owner-recovery/qualification/transfer/publish.test.ts",
         "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**",
-        "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/**"
+        "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/**",
+        "_work/gpu-owner-recovery/runs/host-build-inventory-observation-2/**"
       ],
       "fingerprint": null
     },
@@ -292,7 +296,25 @@
         "_work/gpu-owner-recovery/runs/host-build-inventory-observation-1/**",
         "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/**",
         "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/**",
-        "_work/gpu-owner-recovery/runs/host-build-inventory-handoff-2/request.json"
+        "_work/gpu-owner-recovery/runs/host-build-inventory-handoff-2/request.json",
+        "_work/gpu-owner-recovery/runs/host-build-inventory-observation-2/**"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/gpu-host-build.puml",
+      "covers": [
+        "_work/gpu-owner-recovery/qualification/host-build/**",
+        "_work/gpu-owner-recovery/verify.ts",
+        "_work/gpu-owner-recovery/command-supervisor.ts",
+        "tooling/runtime/qualification.ts",
+        "tooling/runtime/Dockerfile.gpu-qualification",
+        "_work/gpu-owner-recovery/runs/host-gpu-build-source-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-build-source-2/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-build-source-3/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-build-source-4/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-build-source-5/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-build-handoff-1/request.json"
       ],
       "fingerprint": null
     }

@@ -69,9 +69,11 @@
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-source-4/**
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-observation-2/**
-' status: 2026-11-10 / RECEIVE2_REPORTED_PASS_CONSUMED / EXACT_MISSING_ARCHIVE_LIST_FALSE / PACKET_PUBLISHED_87c0e90 / HOST_INVENTORY1_REPORTED_FAIL_CONSUMED / HOST_INVENTORY2_APPROVED_CONDITIONAL_PUBLICATION_UNCONSUMED_UNOBSERVED / FIX_PUBLICATION_APPROVED_PENDING / HOST_BUILD_GPU_UNAUTHORIZED / trainingReady:false
-' current: receive-2 report-only PASS/consumed/ntapi mismatch and HOST1 FAIL/consumed/exact stderr unknown remain unchanged. gpu-host-build-inventory.puml now owns actual handoff-2 approval: source-5 HOST2 remaining 1/UNCONSUMED_UNOBSERVED, ONLY AFTER successful source publication; include active record in the separately approved commit/push, then full-literal/published-link HOST COPY handoff and wait only for actual output. Source plan/proof/review false flags retain preapproval scope; no HOST2 output/replay/install/build authority, Rust-base+Bun/native65/numerics/recipes unchanged.
-' current publication (Executor-reported): latest confirmed HTTPS push 87c0e90b16d0e2a69f674148e48698a7464c5309/prior 159-text packet grant consumed; LATEST separate fix/tests/observation/proofs/docs normal commit + fixed-HTTPS push <=600s APPROVED_PENDING/local uncommitted, no new OID or operational scope. gpu-host-build-inventory.puml owns bounds; helper 9874941/assets f3e277d fixed/distinct, older publication projections remain history.
+' covers: _work/gpu-owner-recovery/runs/host-build-inventory-observation-2/**
+' status: 2026-11-10 / RECEIVE2_REPORTED_PASS_CONSUMED / EXACT_MISSING_ARCHIVE_LIST_FALSE / HOST_INVENTORY2_REPORTED_METADATA_PASS_CONSUMED / CURRENT_SOURCE_VERIFIED_HOST_BUILD_ONLY_APPROVED_UNCONSUMED_UNOBSERVED / SOURCE_PACKET_PUBLICATION_APPROVED_PENDING / HOST_BUILD_APPROVED_UNOBSERVED_GPU_UNAUTHORIZED / trainingReady:false
+' current: receive-2 mismatch/HOST1 FAIL/HOST2 report-only metadata PASS/consumed unchanged. gpu-host-build.puml retains ONE exact source-5 ten-operation HOST-only invocation/remaining 1/unobserved at record scope, not proof of no unreported attempt. Source-1..4/old flags/six-match snapshot historical, source-5 SOURCE ONLY. AFTER separately approved publication, redisplay SAME command; run ONLY if never attempted, otherwise return existing output, no retry/renewal. No HOST result/qualification image/GPU proof; Rust+Bun/native65/layout/runner/recipes/numerics unchanged.
+' current publication: last actual HTTPS push 42574a598a8cd47260d9c37264e4da0c635b864d/prior 143-text grant CONSUMED, not renewed. Latest separate user request authorizes ONE normal commit +fixed-HTTPS push of the bounded current build-only packet: SOURCE_PACKET_PUBLICATION_APPROVED_PENDING/work LOCAL_UNCOMMITTED/no new OID/result. HOST request.gitPublicationAuthorized:false stays immutable/HOST-only; helper 9874941/assets f3e277d fixed/distinct, older publication/handoff projections historical.
+' see: _spec/gpu-host-build.puml
 ' history scope: older receive-2 unrun/unconsumed, pending-docs and LOCAL_UNCOMMITTED statements below are PRE-OBSERVATION-2 / PRE-283897c snapshots only; retained requests/proofs/FAIL/alignment PASS stay immutable, not current grants.
 ' see: _spec/gpu-host-build-inventory.puml
 ' see: _spec/gpu-build.puml
@@ -151,7 +153,7 @@
 ' FK: APPROVAL 11.7; ATTEMPT 11.1; SOURCE_CHECK 11.9; LIMITS 10.6
 ' FK: INPUT_REQUEST 11.5; METADATA_RESULT 12.3; HOST_PACKET 12.8; INPUT_SOURCE 12.7; HOST_RESULT 10.4
 ' FK: RUNTIME_REQUEST 12.4; HOST_DETAILS 12.7; LIBDEVICE 12.4 (29 words / 2 sentences / 55 syllables)
-title Receive-2 report accepted with list discrepancy; metadata decision next, build/GPU unproved
+title Inventory-2 metadata accepted; owned-container HOST build-only approved, no result; GPU unproved
 left to right direction
 
 component "_work/gpu-owner-recovery/qualification/\nrequest.json\nsource preparation approved\nfive exact queries, 10 seconds each\nfirst failure STOP; no retry" as REQUEST
@@ -441,7 +443,7 @@ note bottom of RESULT
 end note
 
 legend bottom
-  CURRENT precedence: receive-2 report-only PASS/exact-list match FALSE and HOST1 FAIL/consumed/exact diagnostic unknown unchanged. Actual handoff-2 approves source-5 HOST2 UNCONSUMED_UNOBSERVED/remaining 1, conditional on successful separately approved source publication; include its record before commit/push, then post-push full-literal handoff/wait actual HOST output only. Publication remains APPROVED_PENDING/last confirmed 87c0e90/no new OID or build authority; older proposal/proof/review false flags and source-3 projections remain scoped history.
+  CURRENT precedence: HOST2 metadata PASS/8 exits 0/metadata grant consumed, normalized JSON not original bytes; HOST1 failure/receive-2 mismatch retained. Last push 42574a5/prior grant consumed, not renewed; latest separate user request approves ONE normal commit +fixed-HTTPS push of current bounded build-only packet, APPROVED_PENDING/no new OID/result. HOST request.gitPublicationAuthorized:false and old source/proof/review flags remain immutable. AFTER publication redisplay SAME source-5 command with actual OID/HOST-checkout precondition for saved-file form, otherwise whole literal COPY. Run ONLY if never attempted, otherwise existing output/no retry; record-scope remaining 1/unobserved is no HOST renewal/result, image build/shared-builder change/GPU PASS. Earlier projections retain historical scope.
   Solid edges describe source, historical authority or retained evidence; build/GPU dotted edges stay unexecuted/unapproved. Both prior STOPs/third asset publication/source handoff/later docs publication are consumed; the operator reports Bun-version bootstrap FAIL, invocation consumed 1/1 at report scope/zero remaining.
   Operator-result edges describe normalized pasted reports, not original machine captures or verified executed-source identity.
   Historical root summary remains OPERATOR_REPORTED_INPUT_METADATA_PASS_AUTHORITY_CONSUMED_DETAILS_PENDING; later operator-details.json supplies reported tool facts without rewriting it.

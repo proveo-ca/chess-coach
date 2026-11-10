@@ -1,0 +1,203 @@
+@startuml gpu_host_build
+' purpose: current one-shot owned-container native-build authority and unobserved execution goals, not a qualification-image build or GPU test campaign
+' covers: _work/gpu-owner-recovery/qualification/host-build/**
+' covers: _work/gpu-owner-recovery/verify.ts
+' covers: _work/gpu-owner-recovery/command-supervisor.ts
+' covers: tooling/runtime/qualification.ts
+' covers: tooling/runtime/Dockerfile.gpu-qualification
+' covers: _work/gpu-owner-recovery/runs/host-gpu-build-source-1/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-build-source-2/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-build-source-3/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-build-source-4/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-build-source-5/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-build-handoff-1/request.json
+' status: CURRENT_SOURCE_VERIFIED_HOST_BUILD_ONLY_APPROVED_UNCONSUMED_UNOBSERVED / remainingHostInvocations:1 / hostInvocationObserved:false / SOURCE_PACKET_PUBLICATION_APPROVED_PENDING / trainingReady:false
+' see: _spec/gpu-host-build-inventory.puml
+' see: _spec/gpu-qualification.puml
+' see: _spec/gpu-readiness.md#current-host-native-build
+' see: _spec/gate-closure.md#current-host-native-build
+' method: OWNED_DOCKER_CONTAINER_NATIVE_BUILD_ONLY_NOT_QUALIFICATION_IMAGE_BUILD explicitly ACCEPTED by the fresh Build-only selection; this changes execution topology and staging, not the accepted pinned Rust-base+Bun-interpreter/native65 layout or either production/qualification Dockerfile
+' current source proof: source-5 PASS_HOST_NATIVE_BUILD_SOURCE_ONLY / sourceChanged:false / 283 frozen hashes / 162 tests / 8133 assertions / 3 persisted PURE MOCK lifecycle cases + 37 qualification/280/four typechecks, six PASS stages. Source verification only: no real Docker API/CLI compatibility, native compilation, HOST result, GPU/training or assurance acceptance. Guardian fake-emitter cases cover lifetime and receipt-finalization signal observations without actual HOST signals.
+' current command (exactly bound by the active request, not rehashed in this docs pass): _work/gpu-owner-recovery/runs/host-gpu-build-source-5/host-command.fish / 40054 bytes / SHA-256 50123eaff0efebb93f7c03210afd765c0ddb02273c08b7ac63a262e37dcd962e; source-5 record/index/hash snapshot predates this authority metadata update, not new HOST evidence
+' historical source proof: source-1 FAIL_HOST_NATIVE_BUILD_SOURCE_ONLY from a fragile renderer false-vs-!1 assertion, not HOST failure; source-2 PASS_HOST_NATIVE_BUILD_SOURCE_ONLY/282 hashes/76 tests/4777 assertions/3 pure MOCKED lifecycle e2e + 37 qualification/280/four types is PRE_FUNCTIONAL_REVIEW_FIX history, not proof for current modified source. Neither receipt/source hash/old command scope is rewritten.
+' historical source-3 proof: PASS_HOST_NATIVE_BUILD_SOURCE_ONLY / 282 frozen hashes / 148 tests / 7329 assertions / 3 pure MOCKED lifecycle cases + 37 qualification/280/four types. PRE_FINAL_TWO_REVIEW_CORRECTIONS, not current modified-source proof; retain source-1/source-2/source-3 receipts and failure findings unchanged.
+' historical source-4 proof: FAIL_HOST_NATIVE_BUILD_SOURCE_ONLY / 162 tests / 161 pass + one trailing-whitespace formatting-regex assertion failure. Retain this failed snapshot unchanged; source-5 supplies current acceptance, never rewrite the failed receipt or raw captures.
+' functional review history (Executor-reported): initial DevOps 3 MEDIUM, adversarial 2 HIGH + 4 MEDIUM and security MEDIUM start/stop race concern existing bounded lifecycle/evidence correctness, NOT deferred security/privacy/isolation hardening.
+' historical re-review (Executor-reported, source-3 scope): DevOps all three initial findings resolved/READY; scoped security both races closed/risk low. Adversarial then reported two NEW MEDIUM/NOT READY: watcher removed SIGTERM before outer 4080s TERM during cleanup to 4140s, and operation catch overwrote actual supervisor failure with a wrapper. Preserve that pre-source-5 review history.
+' current reviews: _work/gpu-owner-recovery/runs/host-gpu-build-source-5/review.json records architect acceptance of the ten-operation method, DevOps READY, adversarial all eight prior findings resolved/no new findings/READY, and final security READY_FOR_PROPOSAL_DECISION_ONLY/low/no findings/no additional hardening prerequisite. These completed source/proposal reviews alone grant no operation; active authority comes from the separate approved request, not an operational or deferred-assurance PASS.
+' record checker: host-build/verify-records.ts completed PASS_HOST_NATIVE_BUILD_SOURCE_AND_COMMAND_RECORDS_ONLY; existing source-5/record-check.json records 283 source hashes, 12 verification streams, 12 fixture files across 3 PURE MOCK lifecycle cases, generated-program/exact-command checks and 6 ORDERED diagram/index matches. Source proof SHA-256 c8e1048dcf8640371398ece6cfc0b3f33559ee2d3c21f185d2ff4c85d79983d6. PRE_APPROVAL/PRE_AUTHORITY_METADATA_UPDATE snapshot: source graph excludes docs; not fresh validation of the newly added authority coverage, no checker or source-proof rerun here.
+' pre-approval snapshots: source plan/proof/proposal/review retain their false HOST/publication approval flags unchanged; source-5/host-command-approval.json remains the original inactive proposal. The active handoff request, not mutation of those records or source programs, supplies the new HOST-only grant. No extra HOST metadata or hardening gate.
+' HOST authority: _work/gpu-owner-recovery/runs/host-gpu-build-handoff-1/request.json still records APPROVED_ONE_HOST_BUILD_ONLY_INVOCATION_UNCONSUMED_UNOBSERVED/remaining 1/observed:false at RECORD scope, binding the exact source-5 proof/command/method. Its gitPublicationAuthorized:false is immutable and correctly limits that HOST-only grant; the separate latest user request supplies Git authority. Coding Docker/native execution remains unauthorized, no HOST output/receipt has arrived and record scope is not proof that the operator has never attempted the command.
+' next delivery: AFTER requested publication, lead redisplays the SAME 40054-byte command; "once more" means redisplay, NOT another invocation or retry. Run ONLY if never attempted; otherwise provide existing HOST_NATIVE_BUILD_EXIT/output/receipt if any, never rerun/overwrite/delete the workspace. If HOST checkout already contains the actual published commit and saved command, use the documented Fish script invocation at repo root; otherwise COPY the whole coding-local command into HOST Fish. No implicit Git fetch, helper acquisition or coding native/payload work.
+' rationale input (Executor-reported): inventory-2 PASS_METADATA_ONLY accepts eight exit-0 facts/16 capture metadata rows, not original bytes or finite shared-builder caps. Existing shared proveo-multiarch/proveo-multiarch0 has zero declared CPU/memory caps; leave it untouched, never configure/stop/reuse its container for this work.
+' architecture (Executor-reported): architect ses_e39898a35ffeov4v7e8zm7rL25 accepts the minimal separate-start/log-follow refinement to this method; earlier method advice is not current review clearance, human approval or a new assurance prerequisite
+' publication authority: latest user "commit & push, then output the command to be run once more" separately APPROVES ONE normal commit + ONE fixed-HTTPS push of the current bounded build-only source/tests/specs/observation-2/handoff-1/proof-1..5/pure-mock packet and small relative test-fixture symlinks. SOURCE_PACKET_PUBLICATION_APPROVED_PENDING; new work remains LOCAL_UNCOMMITTED. Prior 143-text grant at actual last push 42574a598a8cd47260d9c37264e4da0c635b864d stays CONSUMED, not renewed. No new OID/publication result is known; do not invent a future OID or insert a self-cycle into frozen proof.
+' publication audit: pending validation of UTF-8 text and bounded relative test-link targets; exclude actual compiler outputs/cache/binaries. No audit counts or success claim yet. Publication is the requested delivery order, not a new native/helper-fetch prerequisite, HOST allowance renewal, coding-native/GPU grant or hardening gate.
+' conditional saved-file command: AFTER publication, lead supplies its ACTUAL observed Git OID as the HOST-checkout precondition for fish --no-config _work/gpu-owner-recovery/runs/host-gpu-build-source-5/host-command.fish. Do not assume that commit/path exists on HOST or fetch it implicitly; otherwise deliver the whole unchanged coding-local command for COPY. Both forms use the SAME original allowance, ONLY if not previously attempted.
+' dependency contract: existing HOST checkout verify.ts SHA-256 9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58 and command-supervisor.ts SHA-256 88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6 plus frozen Cargo.lock must already exist; check before absolute import, missing/mismatched => STOP, no fetch/repair
+' native generation: manifest SHA-256 9141aaefa2fab3f3a812aeabec4bdfdd818415333f9e5cba6d5ef822dac90863/native65, exact unchanged sourceInventory before/after; trial CUDARC_CUDA_VERSION=13000 is expressed candidate, not qualified binding/PTX/runtime proof
+' template: local template absent; existing conventions retained, no template/network/render/command/agent operation in this GOALS pass
+' note ratchet: no enforcement-list implementation found in prior inspection; notes fit five lines/50 columns without test edits
+' readability: manually counted syllables; SHARED 31 words/2 sentences/56 syllables FK 11.8; HELPERS 33/2/55 FK 10.5; EVIDENCE 32/2/57 FK 11.7
+' readability refinement notes: HOST/start admission 33 words/2 sentences/58 syllables FK 11.6; FISH/bootstrap clock 31/2/53 FK 10.6, Mise one syllable; both five lines/<=50 columns
+title GOALS - HOST approved at record scope; publication approved/pending, no HOST result
+
+actor Executor as EXECUTOR
+participant "host-build/plan.json\nPRE-APPROVAL snapshot / flags false" as PLAN
+participant "_work/gpu-owner-recovery/runs/\nhost-gpu-build-handoff-1/request.json\nACTIVE HOST-only authority / remaining 1" as AUTH
+participant "host-build/verify.ts\nsource-5 PASS / SOURCE ONLY" as VERIFY
+participant "host-build/verify-records.ts\nrecords-only PASS / pre-approval snapshot" as RECORDS
+participant "host-build/render.ts\nsource-5 saved inline delivery" as RENDER
+participant "Fish + Mise\nfuture HOST parent/worker" as FISH
+participant "host-build/build.ts\nrunHostBuild / executeBuild" as HOST
+participant "verify.ts + command-supervisor.ts\nexisting HOST / staged native helpers" as HELPERS
+participant "Docker CLI\n--host=unix:///var/run/docker.sock" as DOCKER
+participant "buildx_buildkit_proveo-multiarch0\nEXISTING SHARED worker - untouched" as SHARED
+participant "host-build/driver.ts\nfuture owned native worker" as NATIVE
+participant "tooling/runtime/qualification.ts\nsourceInventory / readArtifacts" as QUAL
+participant "Future owned HOST workspace\ncompiler outputs retained, no coding copy" as FILES
+participant "Future HOST evidence\nseparate native-log bind mount" as EVIDENCE
+
+group CURRENT SOURCE VERIFIED / HOST APPROVED - record-scope remaining 1/unobserved
+  PLAN -> VERIFY : retained source-5 verification: Bun mock/pure cases + qualification tests + four types\n283 frozen source hashes, unchanged helpers/native65; no actual Docker/native/GPU
+  VERIFY --> EXECUTOR : source-5 PASS / 162 tests / 8133 assertions +37 qualification/280/four types\nsix PASS stages, 3 persisted PURE MOCK lifecycle cases, not Docker/native evidence\nsource-1 FAIL/source-2 PASS/source-3 PASS/source-4 FAIL stay historical
+  EXECUTOR -> RECORDS : recorded source-5 checker run: source/capture/program/exact-command checks\n283 source hashes / 12 streams / 12 fixture files / 3 PURE MOCK cases / 6 ORDERED index matches
+  RECORDS --> EXECUTOR : retained records-only PASS + original inactive proposal\nPRE_APPROVAL/PRE_AUTHORITY_METADATA_UPDATE, not validation of new authority metadata\noriginal false approval flags remain unchanged; not HOST evidence
+  EXECUTOR -> AUTH : fresh TUI SELECTED Build-only (Recommended)\nONE exact source-5 command/proof + owned-method/staging/native/cleanup bounds
+  AUTH --> EXECUTOR : HOST-only grant: approved/remaining 1/observed:false at record scope\nits gitPublicationAuthorized:false stays unchanged; no coding native/image/GPU/tests/training grant
+  EXECUTOR -> EXECUTOR : LATEST separate request authorizes ONE normal commit + fixed-HTTPS push\nSOURCE_PACKET_PUBLICATION_APPROVED_PENDING; no new OID/result or HOST allowance renewal
+end
+
+note over SHARED
+  The shared builder reports zero resource caps,
+  so its metadata cannot establish finite bounds.
+  A separately owned worker keeps requested
+  build limits local without changing or stopping
+  the host's existing builder.
+end note
+
+group APPROVED HOST-ONLY contract - record scope UNCONSUMED/UNOBSERVED, no retry
+  RENDER --> EXECUTOR : AFTER publication, lead redisplays SAME saved 40054-byte command + actual Git OID\nsaved-file form ONLY if HOST checkout contains that commit/command; otherwise COPY whole literal\n"once more" is redisplay, NOT a second invocation/retry; no implicit fetch or coding native action
+  alt operator has already attempted the approved command
+    EXECUTOR -> EXECUTOR : provide existing HOST_NATIVE_BUILD_EXIT/output/receipt if created\nNO rerun, retry, overwrite or workspace deletion
+  else not previously attempted - original ONE allowance only
+  EXECUTOR -> FISH : FUTURE operator runs SAME approved command ONLY if not already attempted\nallow up to 70 minutes; three Mise auto-install flags false, exact Bun/Rust, stdin closed
+  FISH -> FISH : timed worker 4080s TERM + 120s KILL = 4200s\nONE readonly date timestamp BEFORE syntax/Mise: HOST_NATIVE_BUILD_STARTED_MS\ninside-worker syntax precheck/common exit finalizer, no clock reset
+  FISH -> HOST : inline Bun --no-env-file --no-install\nexact active grant --approved-host-gpu-native-build-1, HOST ONLY
+  HOST -> HOST : install independent protectFinalizationSignals BEFORE preflight\nSIGTERM/SIGINT guardian only records interruption; no Docker action\npreflight interruption blocks Docker admission
+  HOST -> HOST : correlate elapsed timestamp to BuildIO.startedAt before preflight\nclip normal/cleanup deadlines; syntax/Mise/preflight consume same budget
+  HOST -> HELPERS : exact existing helper hashes + Cargo.lock before absolute HOST import\nreuse unchanged runBounded/command-supervisor, <=4 MiB per stream
+  HOST -> FILES : exclusive fresh workspace/evidence; >=64 GiB initial free\nretain partial files, no workspace deletion/retry/overwrite
+  HOST -> EVIDENCE : future exclusive deadline.json: normalDeadlineEpoch\nnative driver clips its 3600s to remaining HOST normal time
+
+note over HELPERS
+  The inline command carries its build drivers,
+  not the repository helpers they import.
+  Pinned helper hashes bind those existing files,
+  so a missing dependency must stop rather
+  than trigger a download or repair.
+end note
+
+note over FISH
+  Syntax checks and Mise consume the same
+  host budget as staging and compilation.
+  A timestamp recorded before those steps
+  clips later deadlines, so native startup
+  cannot grant another full execution window.
+end note
+
+  group Closed set <=10 Docker CLI operations - fixed local endpoint, no shared Buildx operation
+    HOST -> DOCKER : donor-create: ONE exact pinned Bun image, --pull=never\nnetwork=none; capture owned CID; donor NEVER STARTED
+    HOST -> DOCKER : bun-copy: ONE cp -L <donorCID>:/usr/local/bin/bun\ninto fresh workspace/bun; no other donor payload
+    HOST -> FILES : AFTER COPY require regular/executable/positive-size Bun <=128 MiB\npost-copy admission only, not a streaming transfer cap
+    HOST -> DOCKER : worker-create: ONE exact pinned Rust image, --pull=never\n2 CPUs / memory 8 GiB / memory+swap 8 GiB / network=none\ncurrent numeric operator uid:gid, no TTY/stdin/GPU or NVIDIA runtime request
+    HOST -> HOST : set startPending BEFORE start admission\nwatcher records failure but MUST NOT stop/memoize stop while pending\nfailure before admission prevents start
+    HOST -> DOCKER : worker-start: ONE docker start <ownedCID>, <=120s\nNEVER start --attach
+    HOST -> HOST : clear startPending only when start request settles\nrecorded failure skips log-follow; cleanup may now stop possible running worker
+
+note over HOST
+  An interruption can arrive while Docker still
+  admits a start request for the owned worker.
+  Deferring the stop until that request settles
+  avoids recording completed cleanup before
+  the start operation returns its result.
+end note
+
+    opt start settled and no recorded failure
+    HOST -> DOCKER : worker-logs: ONE docker logs --follow <ownedCID>\n<=min(3600s, remaining normal budget); interruption stops owned worker/closes logs
+    DOCKER -> NATIVE : received context RO; /build/native and /capture/cargo-home RW\nprepared LLVM + copied Bun RO; source driver/evidence RO\nnative run root bind-mounted RW onto evidence/native
+    group ONE clipped native clock includes startup + staging + guards + compilation
+    NATIVE -> EVIDENCE : read HOST normalDeadlineEpoch BEFORE staging\nclip native <=3600s to remaining HOST normal time; no fresh full budget
+    NATIVE -> NATIVE : Bun.version === 1.4.0 property guard\nnot a sixth supervised version command
+    NATIVE -> FILES : stage ONLY current-native + qualification-tools + Cargo cache\n<=0.5 GiB / <=3800 regular files; LLVM stays RO, no old archive read
+    NATIVE -> HELPERS : import unchanged staged helper from /build/native\nsame 4 MiB/stream supervisor, no replacement runner
+    NATIVE -> QUAL : native65 sourceInventory equals supplied manifest SHA\nfixed /build/native and /capture/cargo-home layout
+      NATIVE -> EVIDENCE : register EACH native attempt BEFORE runBounded\npersist result BEFORE capture/mirror, including failed command results
+      NATIVE -> HELPERS : three supervised native guards: rustc 1.95.0 / Cargo 1.95.0 / LLVM 23.1.0\nversion steps <=10s each within shrinking native budget
+      NATIVE -> HELPERS : TWO exact recipe Cargo GPU compilations, --release GNU target\n--locked --offline --jobs 2 --features gpu-prepared-llvm\nfinite_difference + gpu test targets, --no-run --message-format=json
+      HELPERS -> FILES : native build scripts/proc macros/compiler/LLVM allowed INSIDE capped worker\nnever coding-realm native work or project test execution
+      HELPERS -> EVIDENCE : five supervised commands, separate raw stdout/stderr\n<=40 MiB raw native captures, failures retained/first failure STOP
+      NATIVE -> FILES : COPY four Cargo log streams to canonical qualification paths\n<=16 MiB ADDITIONAL mirror copies, no cross-mount rename
+      NATIVE -> EVIDENCE : keep primary command failure + separate captureFailures/canonicalCopyFailures\nfailed capture/copy cannot discard the attempted command/result
+    end
+    NATIVE -> QUAL : AFTER try/catch: compare source even after failed build if initial inventory/time allow\nunchecked/read-failed/deadline => sourceChanged:null / sourceStabilityChecked:false + reason\nnever unchecked sourceChanged:false
+    NATIVE --> HOST : future native PASS requires exactly 2 successful compilations\nsourceStabilityChecked:true AND sourceChanged:false; no capture/copy failure
+    end
+
+    opt native/log-follow accepted and no first failure - NORMAL phase only
+      HOST -> DOCKER : terminal-inspect ONCE <=10s in normal budget\nrequire Running:false / ExitCode:0 / OOMKilled:false; mark attempted BEFORE admission
+      HOST -> QUAL : artifacts <=min(120s, remaining NORMAL budget)\nreadArtifacts requires 2 GPU harnesses + 3 policy bins at exact target-gpu paths
+      HOST -> FILES : five future HOST-only hashes; checks before/after logs/stat/each hash chunk\nartifact work never spends the 120s cleanup reserve or executes an artifact
+    end
+
+    HOST -> HOST : await watchWorkspace.close: reject ticks/remove WATCHER signal handlers\ndrain in-flight scan AND its stop calls; independent guardian remains installed\nchild ENOENT during Cargo churn ignored; missing root/other error fails
+    opt first failure/interruption and owned worker captured
+      HOST -> DOCKER : owned worker-stop ONCE <=20s, Docker grace 10s\nconditional worker-kill ONCE <=15s only if stop fails; no guessed CID
+    end
+    opt owned worker AND terminal inspection not already attempted
+      HOST -> DOCKER : same ONE terminal inspection in failure cleanup, <=10s\nno repeat inspection/setup/query; failed state precludes PASS
+    end
+    HOST -> DOCKER : remove captured worker + donor CIDs, <=20s EACH\n<=2 removals; never shared builder CID or host workspace deletion
+  end
+
+note over EVIDENCE
+  An evidence mount keeps retained command logs
+  outside the ignored compiler workspace.
+  The expected log paths need bounded copies,
+  because a rename cannot cross the separate
+  evidence mount without a filesystem error.
+end note
+
+  HOST -> HOST : preserve first failure + separate cleanupFailures\ncleanup failure/unknown state cannot become PASS
+  HOST -> EVIDENCE : operation metadata retains raw supervisorResult.status/exitCode/failure\nentry.failure keeps actual deadline/output-bound cause; operationFailure wrapper separate\npre-result throw retains message; stdout stays in raw captures, never receipt duplicate
+  HOST -> HOST : guardian remains through 120s cleanup +60s receipt reserve\npre-write signal check downgrades PASS, preserving any earlier primary failure\nclosed/drained watcher starts no late callback or Docker action
+  HOST -> EVIDENCE : future EXCLUSIVE wx receipt <=2 MiB: immutable pre-marker snapshot\nreceiptStatusRequiresZeroHostMarker:true + retained attempts/CIDs/state/native/artifacts\nPASS_HOST_GPU_NATIVE_BUILD_ONLY or scoped FAIL, not overall operational acceptance
+  HOST -> HOST : POST-WRITE signal recheck downgrades console status + process.exitCode to FAIL\npreserve earlier primary failure; NEVER rewrite the wx receipt/raw evidence
+  HOST -> HOST : emit status marker + select exit code while guardian remains installed\nrelease ONLY in final finally after metadata I/O + logging/exit-code selection
+  HOST --> FISH : future immutable receipt + final status/exit code; retain workspace/logs\nlate interrupt can leave receipt PASS while overall invocation FAILS
+  FISH --> EXECUTOR : future HOST_NATIVE_BUILD_EXIT=<code>; PASS receipt REQUIRES marker 0\nnonzero/missing zero marker => no overall PASS; parent diagnostics <=64 KiB POST-EXIT SOFT
+  end
+end
+
+legend bottom
+  CURRENT_SOURCE_VERIFIED_HOST_BUILD_ONLY_APPROVED_UNCONSUMED_UNOBSERVED remains the HOST request's RECORD scope: ONE exact source-5 command/remaining 1/no observed HOST_NATIVE_BUILD_EXIT or receipt. Latest user request separately makes source-packet publication APPROVED_PENDING for ONE normal commit + fixed-HTTPS push; no actual new OID/result, no HOST renewal or retry. Source-5 frozen proof/counts/reviews and source-1..4 failure/PASS histories stay unchanged; no coding native/Docker authority, operational PASS or deferred-assurance PASS.
+  Method change explicitly ACCEPTED: ONE owned Docker-container NATIVE BUILD ONLY, NOT qualification-image construction. Keep exact Rust userspace + pinned Bun interpreter/native65/layout, both production/qualification Dockerfiles and existing qualification runner unchanged. Active HOST-only scope includes donor interpreter extraction, fresh source/tools/Cargo staging, Bun property + three native Rust/Cargo/LLVM guards and two offline Cargo --no-run compilations including build scripts/proc macros. No project tests/GPU/training/image build/acquisition/install/retry/old workspace deletion or shared Buildx mutation.
+  Exact Engine target for EVERY Docker call: --host=unix:///var/run/docker.sock. Exact images are Rust 4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb and Bun 18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038, --pull=never/linux-amd64. Do not change, stop or claim ownership of shared container 672c2d1a91724f4699e8403634f05a4d8b19f0fae2a178b9915c49cc805eaa25.
+  Approved mount layout for the unobserved invocation: received context RO at /received; owned native RW at /build/native; owned Cargo RW at /capture/cargo-home; received gpu-build/llvm RO at /opt/tracel-data/tracel/tracel-llvm-23.1.0-4; donor Bun RO at /usr/local/bin/bun; source-driver/evidence RO at /evidence; evidence/native RW at /build/native/_work/gpu-owner-recovery/runs/host-gpu-native-build-1. Native logs stay outside ignored compiler workspace; canonical copies add 16 MiB, not a rename across mounts.
+  Delivery is inline, not dependency-free: HOST checkout must already supply Cargo.lock plus the two exact hash-pinned helpers before absolute import. Native staging reuses their unchanged baseline copies under /build/native; missing/mismatched dependencies fail without acquisition/repair. Received qualification module supplies pure sourceInventory/readArtifacts, not a new runner or executed test.
+  Two package/target pairs: chess-coach-learning/finite_difference and chess-coach-policy-io/gpu. Both use cargo test --release --target x86_64-unknown-linux-gnu --locked --offline --jobs 2 --features gpu-prepared-llvm --test <target> --no-run --message-format=json. CUDARC_CUDA_VERSION=13000 is an EXPRESSED TRIAL, not qualified binding, PTX/driver or F64 evidence; CARGO_NET_OFFLINE=true/NET_RETRY=0/RUSTUP_AUTO_INSTALL=0, RAYON_NUM_THREADS=2.
+  Active request approves HOST-only staging/native guards/build scripts/proc macros/native compilation inside this capped non-GPU worker, donor create/copy, worker create/separate start/log-follow, terminal inspection, owned stop/conditional kill/two removals and unchanged limits. No start --attach, extra metadata/setup query, coding native/Docker work, project test binary, GPU device/test, download/install/fetch/fallback/retry or shared-builder operation.
+  Closed maximum TEN Docker operations: donor-create, bun-copy, worker-create, worker-start, worker-logs, worker-state, worker-stop, conditional worker-kill, worker-remove, donor-remove. CID recovery uses fresh captured/validated matching 64-hex IDs only. Start/default CLI <=120s; log-follow <=min(3600s, normal remaining), terminal inspect <=10s, stop <=20s/Docker grace 10s, conditional kill <=15s, removals <=20s each. startPending is set BEFORE admission; watcher records failure but neither stops nor memoizes stop while start is pending, then failure prevents logs and cleanup handles possible started worker.
+  Budgets: normal <=4020s, cleanup 120s, receipt reserve 60s within 4200s; timed checked Fish records fresh HOST_NATIVE_BUILD_STARTED_MS with ONE read-only date +%s%3N BEFORE syntax/Mise. BuildIO.startedAt accounts for elapsed bootstrap/preflight rather than restarting clocks; future evidence/deadline.json normalDeadlineEpoch clips the native <=3600s clock including staging/guards/compile. Outer 4080s TERM +120s KILL unchanged; date/time correlation is cooperative ordinary bounding, not NTP/physical-stop/strict-crash assurance.
+  Artifact phase is NORMAL work <=min(120s, normal remaining), deadline checked around log/stat reads and per hash chunk, never funded by cleanup reserve. Successful path inspects terminal state once BEFORE artifacts; finally inspects only when no inspection was attempted. Source/native/start-or-log exit alone cannot admit success.
+  Storage remains 64 GiB initial/16 GiB running free/32 GiB new-workspace+evidence SOFT, 5s monitor; Docker writable layers excluded, no quota. treeBytes ignores child ENOENT caused by concurrent Cargo deletion/rename, but missing root/other errors fail. Async monitor close rejects new ticks/removes handlers/drains in-flight scan and its stop calls BEFORE final cleanup/removals/receipt, preventing late mutation of a PASS. Bun 128 MiB POST-COPY admission/staging 0.5 GiB/3800 files unchanged, preserve workspaces/logs.
+  Watcher shutdown removes only its own SIGTERM/SIGINT handlers; independent protectFinalizationSignals stays installed BEFORE preflight through owned cleanup, receipt write, POST-WRITE check, status marker and exit-code selection, released only in final finally after metadata I/O/logging. It records a flag without late Docker actions; preflight interruption blocks Docker and signals observed before OR after receipt I/O downgrade final console/exit to FAIL without replacing an earlier primary failure. Fake-emitter tests verify source logic, not real signal delivery. Existing 120s cleanup/60s receipt opportunity spans outer 4080s TERM/cleanup to 4140s/before 4200s KILL; ordinary cooperative bounds, not NTP/crash/physical-stop assurance.
+  Receipt is an immutable exclusive-wx PRE-MARKER snapshot with receiptStatusRequiresZeroHostMarker:true. A late signal during receipt write may leave its file status PASS while post-write console/process exit and HOST_NATIVE_BUILD_EXIT report failure; NEVER rewrite the receipt or raw evidence to hide that timing. Overall build-only acceptance requires both PASS_HOST_GPU_NATIVE_BUILD_ONLY and HOST_NATIVE_BUILD_EXIT=0; a PASS file alone cannot establish success.
+  Native evidence registers each attempted command BEFORE runBounded and retains its result BEFORE capture/mirror; primary command failure survives auxiliary captureFailures/canonicalCopyFailures. Final source comparison runs AFTER try/catch, including failed compilation when initial inventory/time permit; unchecked/read-failed/deadline => sourceChanged:null/sourceStabilityChecked:false with reason, never falsely unchanged. Native PASS and HOST admission require sourceStabilityChecked:true AND sourceChanged:false.
+  HOST operation catch preserves raw supervisorResult status/exitCode/failure; entry.failure keeps the actual deadline/output-bound cause separately from contextual operationFailure. A throw before a result retains its thrown message. Supervisor stdout is not duplicated into receipt metadata, avoiding 4 MiB capture content overflowing the 2 MiB receipt admission; original raw stdout/stderr capture files remain separate and unchanged.
+  Stream accounting now TEN Docker operations * two streams *4 MiB = <=80 MiB raw HOST Docker captures; five native commands *two streams *4 MiB = <=40 MiB raw native; canonical Cargo COPY adds <=16 MiB. Combined supervised/mirror <=136 MiB EXCLUDES receipts/artifact metadata/copied Bun/compiler outputs/parent diagnostics; native 40 MiB excludes mirrors. Parent diagnostics 64 KiB POST-EXIT SOFT and HOST receipt 2 MiB admission remain separate, not streaming quotas.
+  Future success requires terminal Running:false/ExitCode:0/OOMKilled:false AND inner native PASS/exactly two compilations/sourceStabilityChecked:true/sourceChanged:false AND five artifacts admitted within NORMAL deadline AND drained monitor/no first or cleanup failure AND final zero HOST_NATIVE_BUILD_EXIT marker with the PASS receipt. Build-only PASS remains neither a qualification image nor F64 feasibility/CPU39/full coordinates/C12/canonical BOTH/reference/close/R4/telemetry/coexistence/training evidence.
+  Coverage is unchanged: source-1..5 and the exact existing handoff-1/request.json edge remain, no new metadata file created. Source-plan/proof/review false publication flags stay snapshots; request.gitPublicationAuthorized:false limits its HOST-only scope, while the LATER user request separately authorizes pending publication. Recorded six ordered index matches predate current docs metadata, not fresh doc/hash verification; source graph excludes docs, no source-proof rerun. Future HOST evidence/cache remain unreceived/uncovered. AFTER publication lead redisplays SAME command with actual observed Git OID; saved-file form requires that HOST checkout/command, otherwise whole coding-local literal COPY. Run ONLY if not already attempted, otherwise provide existing output; no automatic retry/renewal/implicit Git fetch. No source/plan/proof/request/record edit or commands/network/native/HOST/payload/agent/Git operation in this docs pass.
+  Native65/source manifest/Rust/model/F64/all 4,670 coordinates/eps=1e-6/atol=1e-8/rtol=1e-5/exact C12/CPU Flex/masters 101..105/recipes remain unchanged; dispatch disabled/trainingReady:false. ALL security/privacy/isolation hardening follows ALL planned training and validated results; no extra assurance gate or access/replay of the old halted LLVM archive.
+endlegend
+@enduml

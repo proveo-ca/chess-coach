@@ -1,0 +1,71 @@
+{
+  "scope": "SOURCE_ONLY_MOCK_NOT_HOST_EVIDENCE",
+  "actualDockerProcesses": 0,
+  "actualNativeProcesses": 0,
+  "gpuExecuted": false,
+  "dockerCliCompatibilityValidated": false,
+  "nativeCliCompatibilityValidated": false,
+  "hostEvidence": false,
+  "events": [
+    {
+      "id": "watch"
+    },
+    {
+      "id": "run:donor-create"
+    },
+    {
+      "id": "recover:donor",
+      "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "id": "recover:worker",
+      "value": null
+    },
+    {
+      "id": "run:bun-copy"
+    },
+    {
+      "id": "validate-bun"
+    },
+    {
+      "id": "run:worker-create"
+    },
+    {
+      "id": "recover:donor",
+      "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "id": "recover:worker",
+      "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    {
+      "id": "run:worker-attach"
+    },
+    {
+      "id": "native-receipt"
+    },
+    {
+      "id": "recover:donor",
+      "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "id": "recover:worker",
+      "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    {
+      "id": "run:worker-state"
+    },
+    {
+      "id": "artifacts"
+    },
+    {
+      "id": "run:worker-remove"
+    },
+    {
+      "id": "run:donor-remove"
+    },
+    {
+      "id": "unwatch"
+    }
+  ]
+}

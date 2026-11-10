@@ -1,0 +1,23 @@
+{
+  "status": "READY_FOR_EXACT_HOST_BUILD_ONLY_APPROVAL_DECISION",
+  "architecture": {"session":"ses_e39898a35ffeov4v7e8zm7rL25","acceptedMethod":"OWNED_CONTAINER_NATIVE_BUILD_ONLY_WITH_EXISTING_SUPERVISORS","acceptedLifecycle":"SEPARATE_START_AND_LOG_FOLLOW_TEN_DOCKER_OPERATIONS"},
+  "devops": {"session":"ses_e39847a59ffeGm317EAvDa0aJS","verdict":"READY_NO_NEW_BLOCKING_FINDING","priorFindingsResolved":true},
+  "adversarial": {"session":"ses_e38dde9a2ffdsu0JKVmp5DdnWG","verdict":"READY_TO_MERGE_YES","eightPriorFindingsResolved":true,"newFindings":[]},
+  "security": {"session":"ses_e3971033effeXIBzUy80U91Rbw","verdict":"READY_FOR_PROPOSAL_DECISION_ONLY","risk":"low","newFindings":[],"additionalHardeningPrerequisite":false},
+  "sourceHashes":283,
+  "buildTests":162,
+  "buildAssertions":8133,
+  "persistedPureMockLifecycleCases":3,
+  "qualificationTests":37,
+  "qualificationAssertions":280,
+  "passingTypechecks":4,
+  "localFishSyntaxValidated":false,
+  "realDockerOrNativeCompatibilityValidated":false,
+  "hostBuildApproved":false,
+  "gitPublicationApproved":false,
+  "actualHostOrDockerOperationsPerformed":false,
+  "nativeCompilationPerformed":false,
+  "qualificationImageBuilt":false,
+  "gpuExecuted":false,
+  "trainingReady":false
+}
