@@ -1,5 +1,5 @@
 @startuml gpu_host_receive
-' purpose: approved but unrun source-only handoff publication and one bounded operator receive invocation, with immutable proposal history and distinct helper/asset identities
+' purpose: completed source-only handoff publication after a scoped static-check correction, preserving the full-check FAIL and one unconsumed operator receive invocation
 ' covers: _work/gpu-owner-recovery/qualification/host-receive/**
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-source-1/**
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-source-2/**
@@ -8,29 +8,35 @@
 ' covers: _work/gpu-owner-recovery/runs/host-feasibility-inputs-1/context-manifest.json
 ' covers: Cargo.lock
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-handoff-1/**
-' status: SOURCE_IMPLEMENTED / SOURCE_2_PASS_HOST_RECEIVE_SOURCE_ONLY / PUBLISH_PLUS_RECEIVE_SELECTED / CODING_AND_OPERATOR_GRANTS_APPROVED_UNCONSUMED_UNRUN / FISH_SYNTAX_NOT_RUN / trainingReady:false
+' covers: _work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-07/command.stderr
+' status: SOURCE_2_PASS_HOST_RECEIVE_SOURCE_ONLY / ORIGINAL_FULL_CHECK_FAIL_RETAINED / SCOPED_CHECK_PASS / SOURCE_PUBLICATION_PASS_CONSUMED / OPERATOR_OUTPUT_PENDING_APPROVED_UNCONSUMED / FISH_SYNTAX_NOT_RUN / trainingReady:false
 ' see: _spec/gpu-input-transfer.puml
 ' see: _spec/gpu-qualification.puml
 ' see: _spec/gpu-build.puml
 ' see: _spec/gpu-readiness.md#current-host-receive
 ' see: _spec/gate-closure.md#current-host-receive
 ' proposal history: plan.json false flags and source-2/host-command-approval.json AWAITING/false fields remain immutable, not current authority; all old operational grants stay consumed
-' resolved decision: Executor selected Publish+receive Recommended; active handoff-1/request.json separately approves coding commit 1/fixed-HTTPS push 1 <=600s plus operator receive invocation 1 <=900s, both unconsumed/unrun
-' authority: active request binds frozen source-2 proof and fixed helper SHA; only actual future helper-handoff OID late-bound, no new planning/approval question within this scope
+' resolved decision: Publish+receive Recommended grant supplied coding commit 1/fixed-HTTPS push 1 within its original 600s deadline, now PASS/CONSUMED; operator receive invocation 1 <=900s remains APPROVED/UNCONSUMED/UNRUN, no new planning/approval question
+' authority: historical proposal false flags/old consumed grants unchanged; actual helper-handoff OID 33b29dd095a3582a02861cef0f155e675a6721cc differs from immutable asset OID f3e277dbbf33c0aa69172cca1890792656d4cd09
 ' source-2: receipt.json PASS_HOST_RECEIVE_SOURCE_ONLY, failure:null/sourceChanged:false; 34 receiver tests/352 assertions + 89 transfer/438 + 37 qualification/280 + five typechecks, eight stages PASS exit 0
 ' helper: receive.ts 17,994 bytes / SHA-256 091a431757ef83710a95156816e085cb1ed36b632e4923c9632695ffe821bafa
-' publisher source: handoff-1/publish-source.ts implements source-only publication, private metadata in memory/64 KiB/same cwd+env+remaining clock, controlled UTF-8 audit, frozen source-2 318 source hashes/raw committed blobs and original native65; no operation has run
-' script verification (Executor-reported): strict standalone TSC PASS, separate from unchanged source-2 34/352 + 89/438 + 37/280 + five typechecks; no checker rerun here
-' current handoff directory: request.json + publish-source.ts ONLY; publication.started/stage-audit.json/command captures/publication.json/host-command.fish/handoff.json ABSENT, no generated evidence claim
-' continuation: parent publishes approved reviewed source once after ordinary review, then supplies literal command pinned to actual pushed helper OID; stop only awaiting operator receipt/stdout verification, not another planning/diff/helper-done decision
+' original result: publication.json FAIL/SOURCE_PUBLICATION_COMMAND_FAILED after 213.214362 ms, unrestricted git diff --cached --check exit 2/command-06; commit 0/push 0, raw pub3 publish-07 stderr whitespace retained, never trim or rewrite that FAIL
+' internal correction: continue-source.ts admits only the initial static-check failure with commit/push 0/0, shares publication.started mtime + original 600s deadline, 210411 ms left at continuation start; not a new budget or operational retry
+' completed continuation: continuation.json PASS_SOURCE_PUBLISHED_OPERATOR_OUTPUT_PENDING, failure:null/commitSucceeded:true/commit 1/push 1, sourceCommit=pushedCommit=33b29dd095a3582a02861cef0f155e675a6721cc; original rawEvidenceWhitespacePreserved:true, no hooks bypass
+' check boundary: continuation-02 scoped git diff --cached --check covers _spec, qualification source and runs/**/*.ts only, PASS exit 0; raw captures excluded, original unrestricted full-index FAIL still true, no full-check PASS claim
+' retained outputs NOW EXIST: publication.json/.started/stage-audit.json/command-01..06 plus continue-source.ts/continuation.json/.started/continuation-types streams/continuation-01..06, literal host-command.fish and handoff.json
+' command binding: handoff.json READY_FOR_ONE_APPROVED_OPERATOR_INVOCATION, helper OID 33b29dd... in contents URL/Bun argument, command SHA-256 8def4344fb3179ed0c6fc3d7275c9c644da2ae6dd61eb9950c749dba3af7eb76; generated AFTER source push
+' continuation: parent delivers the retained literal Fish command NOW and stops only awaiting operator receipt/stdout/stderr verification; no host command has run, no extra source commit/push/approval allowed
 ' history: source-1 PASS with 31 receiver tests/280 assertions predates final fixes; neither source receipt proves Fish syntax, helper publication, asset acquisition or host execution
 ' template: _spec/template.txt absent; no remote template fetched, no commands/render/network/agents in this docs-only pass
 ' note ratchet: no TestSpecNotesFitTheBox/specNotesEnforced implementation exists in the inspected tree; notes checked manually
 ' readability: manual words/sentences/syllables; lineage 31/2/59 FK 12.9; quoting 31/2/53 FK 10.6; parent timeout 30/2/55 FK 11.9; tar environment 30/2/56 FK 12.3; partial writes 33/2/55 FK 10.5
-title Publish+receive selected - coding publication and operator receive APPROVED / UNCONSUMED / UNRUN
+' readability new notes: raw gate 29/2/53 FK 11.6; shared deadline 31/2/58 FK 12.5
+title Helper 33b29dd published - source grant consumed; full-check FAIL retained, operator output pending
 
 actor Executor as EXECUTOR
 participant "_work/gpu-owner-recovery/runs/\nhost-input-receive-handoff-1/publish-source.ts" as CODE
+participant "_work/gpu-owner-recovery/runs/\nhost-input-receive-handoff-1/continue-source.ts" as CONT
 participant "git\nfixed HTTPS source transport" as GIT
 participant "bootstrap.ts\nrenderHostReceive / quoteFish" as BOOT
 participant "Host Fish\nparent + timed worker" as FISH
@@ -40,15 +46,39 @@ participant "GNU tar" as TAR
 participant "Host filesystem\nPLANNED outputs only" as FILES
 
 EXECUTOR -> CODE : SELECTED Publish+receive Recommended\nactive request approves two separate one-shot allowances
-group APPROVED / UNCONSUMED / NOT RUN - no further scope question
-  CODE -> CODE : FUTURE one shrinking 600s publication clock\nprivate origin/rewrite/identity metadata in memory\nexisting auth/identity, no config changes
-  CODE -> CODE : FUTURE frozen source-2 318 hashes/native65\nempty index + controlled UTF-8 audit/stage\n4 MiB per file / 16 MiB text total, no payload/cache
-  CODE -> GIT : FUTURE one normal commit\nthen inspect actual OID and raw committed 318 blobs
-  GIT --> CODE : future exact helper-handoff OID, not asset OID\npost-hook frozen checks/transport/branch must pass
-  CODE -> GIT : FUTURE one fixed-HTTPS OID:branch push\nhttps://github.com/proveo-ca/chess-coach.git
-  GIT --> CODE : require successful push, unchanged HEAD\nand frozen reviewed source before handoff output
-  CODE -> BOOT : AFTER exact source push, render actual handoff OID\nfixed reviewed helper SHA, never placeholder zeros
-  BOOT --> CODE : FUTURE literal host command after successful push\nexclusive host-command.fish + handoff.json
+group COMPLETED source publication - one commit/push, grant CONSUMED
+  CODE -> CODE : original 600s clock/private metadata/frozen proof\ncontrolled UTF-8 audit and stage completed
+  CODE -> GIT : unrestricted git diff --cached --check
+  GIT --> CODE : FAIL exit 2 / raw pub3 GitHub stderr whitespace\npublication.json retains commit 0/push 0
+  CODE -> CONT : internal static-check correction only\noriginal full-check FAIL remains immutable
+
+note over CODE,CONT
+  Raw command streams retain their original bytes,
+  even when remote output contains whitespace.
+  The source-only check excludes those captures,
+  so its successful result cannot replace
+  the earlier full-index failure.
+end note
+
+  CONT -> CONT : original publication.started mtime + 600s\n210411 ms budget remained, no renewal
+
+note over CONT
+  That check stopped before any commit
+  or push, leaving both command limits unused.
+  The follow-up consumes the original deadline,
+  so correcting that check cannot renew authority
+  or replay a completed publication.
+end note
+
+  CONT -> GIT : scoped git diff --cached --check\n_spec + qualification + runs/**/*.ts, not captures
+  GIT --> CONT : PASS exit 0 / continuation-02\nnot an unrestricted full-index PASS
+  CONT -> GIT : actual one normal commit / continuation-03
+  GIT --> CONT : 33b29dd095a3582a02861cef0f155e675a6721cc
+  CONT -> CONT : all 318 raw committed source blobs match\nreviewed helper/source-2, native65 unchanged
+  CONT -> GIT : actual one fixed-HTTPS OID:branch push\nhttps://github.com/proveo-ca/chess-coach.git
+  GIT --> CONT : PASS exit 0 / continuation-06\nsourceCommit=pushedCommit=33b29dd...
+  CONT -> BOOT : AFTER exact source push, render 33b29dd...\nfixed reviewed helper SHA, no placeholder
+  BOOT --> CONT : actual literal host-command.fish + handoff.json\nPASS_SOURCE_PUBLISHED_OPERATOR_OUTPUT_PENDING
 
   note over CODE,BOOT
     Receiver changes need their own source commit,
@@ -58,7 +88,10 @@ group APPROVED / UNCONSUMED / NOT RUN - no further scope question
     only the reviewed standalone helper.
   end note
 
-  CODE --> EXECUTOR : FUTURE provide exact pinned operator command\nthen await operator receipt/stdout verification
+end
+
+  CONT --> EXECUTOR : deliver retained literal Fish command NOW\nthen await operator receipt/stdout/stderr verification
+group FUTURE operator receive - APPROVED / UNCONSUMED / UNRUN
   EXECUTOR -> FISH : FUTURE one already-approved operator invocation\nthree quote layers; no placeholder or new approval
 
   note over BOOT
@@ -123,16 +156,20 @@ group APPROVED / UNCONSUMED / NOT RUN - no further scope question
 end
 
 legend bottom
-  This is implemented source behavior, not executed publication/host evidence. Publish+receive Recommended is now selected; the active handoff-1/request.json approves coding and operator allowances separately, both UNCONSUMED/UNRUN.
-  The combined HOST-command decision is resolved, not a new planning question. Parent will perform the approved source publication once after ordinary review, provide the exact pinned command, and stop only awaiting operator receipt/stdout verification; no planning/diff/helper-completion authorization gate.
+  Coding source publication is completed evidence, operator receive is not. Source grant CONSUMED at one normal commit/one fixed-HTTPS push; one operator invocation remains APPROVED/UNCONSUMED/UNRUN, no further source commit/push or new scope question.
+  Parent delivers the existing literal Fish command NOW, unchanged, then stops only awaiting operator receipt/stdout/stderr verification; no planning/diff/helper-completion approval gate, no extra install/auth/build/training allowance.
   Preserve historical plan.json false flags and source-2/host-command-approval.json AWAITING/false fields unchanged; active handoff-1/request.json supplies distinct authority, never replay of an old consumed grant. Adjust destination/defer were not selected.
-  Approved coding scope: normal commit 1/fixed-HTTPS push 1 <=600s, reviewed helper/evidence/docs including retained pub3 outcomes, existing identity/auth only, no new DRAFT/release/assets/uploads or unrelated template/maintenance publication.
+  Consumed coding scope: normal commit 1/fixed-HTTPS push 1 within the original 600s deadline, reviewed helper/evidence/docs including retained pub3 outcomes, existing identity/auth only; no new DRAFT/release/assets/uploads or template/maintenance operation.
   publish-source.ts keeps expanded origin/rewrite/identity outputs private in memory, 64 KiB query buffer, same child cwd/env and shrinking clock; no private-query output persistence, config setters/new auth, hooks bypass or retry.
   Controlled text audit requires empty initial index, exact allowed helper/evidence/doc roots, regular UTF-8 files without NUL, <=4 MiB/file and <=16 MiB aggregate, no home/tmp/cache/node_modules/target or binary payload; stage audit precedes normal commit.
   Frozen checks bind source-2 PASS, fixed helper SHA, all 318 recorded source hashes and original 65 native identities; raw committed Git blobs must match after hooks with lazy fetch disabled, transport/branch rechecked before literal HTTPS commit-OID push.
-  handoff-1 directory NOW EXISTS with request.json + publish-source.ts only. Future publication.started/stage-audit.json/command-* captures/publication.json/host-command.fish/handoff.json are ABSENT; bounded root coverage does not assert those individual outputs exist.
-  Only AFTER successful exact source push and post-push frozen/HEAD checks does the script write literal host-command.fish/handoff.json, with future PASS_SOURCE_PUBLISHED_OPERATOR_OUTPUT_PENDING. No helper handoff OID, generated command, handoff result or publication outcome exists yet.
-  Asset source OID remains f3e277dbbf33c0aa69172cca1890792656d4cd09; the actual future helper-handoff OID is different and presently unknown. The source-2 zero-OID command template is not an executable approved command.
+  Original publication.json stays FAIL/SOURCE_PUBLICATION_COMMAND_FAILED/213.214362 ms: command-06 unrestricted git diff --cached --check exit 2, commit 0/push 0/commitSucceeded:false. Raw pub3 publish-07/command.stderr bytes with trailing whitespace remain unchanged, no trimming or hook bypass.
+  continue-source.ts requires precisely that initial static-only failure before mutations. Original publication.started mtime + request's 600s anchors the unchanged deadline; continuation began with 210411 ms left, not another 600s grant or an operational retry.
+  continuation-02 scoped whitespace check covers _spec, _work/gpu-owner-recovery/qualification and runs/**/*.ts, PASS exit 0; raw streams excluded from this source/spec/task gate, not from retained evidence or the source commit. Do not relabel the earlier unrestricted full-index FAIL as PASS.
+  continuation.json NOW records PASS_SOURCE_PUBLISHED_OPERATOR_OUTPUT_PENDING/failure:null, commitSucceeded:true/commit 1/push 1, sourceCommit=pushedCommit=33b29dd095a3582a02861cef0f155e675a6721cc, rawEvidenceWhitespacePreserved:true. Original failed receipt stays unchanged.
+  Existing handoff root retains request/publisher/audit/initial command-01..06/FAIL marker and receipt, continue-source.ts/continuation.started/continuation-types.stdout/.stderr/continuation-01..06/continuation.json, plus generated host-command.fish/handoff.json; all covered by the bounded existing root.
+  host-command.fish and handoff.json were generated AFTER successful exact source push. Handoff READY_FOR_ONE_APPROVED_OPERATOR_INVOCATION binds helper OID 33b29dd... in GitHub contents URL and Bun argument, fixed helper SHA, command SHA-256 8def4344fb3179ed0c6fc3d7275c9c644da2ae6dd61eb9950c749dba3af7eb76, expected host status/receipt path.
+  Asset source OID remains f3e277dbbf33c0aa69172cca1890792656d4cd09, distinct from actual published helper OID 33b29dd095a3582a02861cef0f155e675a6721cc. Source-2 zero-OID template remains history, not the delivered command.
   Fixed helper SHA-256 091a431757ef83710a95156816e085cb1ed36b632e4923c9632695ffe821bafa / 17,994 bytes; 128 KiB admission follows fetch and is a soft bound, not a streaming quota.
   Existing DRAFT release 439935095 remains unchanged; manifest ID 730048215 / 868,843 bytes / SHA-256 2676780f2b932d0453fef05ad39581152f47efeaea11ae22b9079875fece1829.
   Existing bundle ID 730047564 / 140,694,281 bytes / SHA-256 9001bfeb88ce5433138d5f0fd23b3c7ab0590cc0bd47900cc1c0a1d6923c65f7. API tag_name is not an actual Git tag: retained remote tag remains ABSENT_WHILE_DRAFT, no public release claim.
@@ -147,8 +184,8 @@ legend bottom
   Prepared Cargo stays 568 archives/618 index files/103 missing archives/zero missing metadata, completeOfflineBuildCoverageQualified:false; receiving assets does not qualify an offline build or authorize Cargo fetch/repair.
   Source-2 PASS_HOST_RECEIVE_SOURCE_ONLY: 34 receiver tests/352 assertions + 89 transfer/438 + 37 qualification/280 + five typechecks, eight stages PASS exit 0/sourceChanged:false. Source-1 31/280 is pre-fix history, not current proof or Fish syntax acceptance.
   Executor-reported scoped reviews: DevOps ses_e3ec46b44ffe7CbnV5rwv23shT READY to present this combined decision; adversarial ses_e3c122320ffdrHp4JsMATl2iN7 all four findings resolved/READY; security ses_e3cea2a12ffe9TMeXvXBhDE8n7 two MEDIUM fixes accepted, no extra gate.
-  No fresh coding publication/helper fetch/asset download/extraction/host operation has occurred. Helpers/proofs and proposal flags remain frozen; the new script is separately reported strict-standalone-TSC PASS, not part of the earlier source-2 five-typecheck proof, no command rerun here.
-  Last confirmed push remains f3e277dbbf33c0aa69172cca1890792656d4cd09; Executor reports stale local origin tracking/ahead 1 after prior explicit-URL push, not new unpushed evidence or reason to fetch. No fetch is needed or authorized by this handoff scope.
+  No operator helper download/asset fetch/extraction/host operation has occurred; coding source commit/push did complete. Frozen receiver/source-2 proof/proposal flags remain unchanged; task/continuation typecheck streams are separate from source-2's five typechecks, no fresh checker or Fish syntax claim here.
+  Last confirmed push is 33b29dd095a3582a02861cef0f155e675a6721cc; stale origin tracking is not contrary evidence or reason to fetch. Source grant exhausted, post-push outcomes/command/handoff and these postpublication docs remain LOCAL_UNCOMMITTED, no further commit/push by this pass.
   No coding-prefix payload read/copy, refetch/repack/preparation replay, LLVM/Cargo/Docker/native compilation, GPU or training command is authorized. Native65/Rust/model/F64/all 4,670 coordinates/eps=1e-6/atol=1e-8/rtol=1e-5/exact C12/CPU Flex/masters 101..105/production recipes remain unchanged.
   Functional readiness/BOTH/reference/orderly-close/R4/telemetry/coexistence remain unqualified; runtime/training entrypoints disabled, trainingReady:false. ALL security/privacy/isolation hardening stays LAST after ALL planned training completes and results validate, no additional gates.
 endlegend
