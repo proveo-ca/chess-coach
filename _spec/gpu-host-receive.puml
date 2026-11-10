@@ -1,5 +1,5 @@
 @startuml gpu_host_receive
-' purpose: completed receive-2 SOURCE_ONLY publication, separately approved docs/evidence publication and generated operator handoff, preserving unconsumed operator scope and immutable assets
+' purpose: receive-2 reported receive/extract PASS with a retained Cargo-list discrepancy, consumed authority and immutable publication history
 ' covers: _work/gpu-owner-recovery/qualification/host-receive/**
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-source-1/**
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-source-2/**
@@ -21,7 +21,14 @@
 ' covers: _work/gpu-owner-recovery/qualification/transfer/publish.ts
 ' covers: _work/gpu-owner-recovery/qualification/transfer/publish.test.ts
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**
-' status: RUN1_BUN_MISMATCH_CONSUMED / ALIGNMENT_OPERATOR_REPORTED_PASS_CONSUMED / SOURCE_4_FROZEN_329 / RECEIVE2_SOURCE_ONLY_PUBLICATION_PASS_CONSUMED / HELPER_PUBLISHED_9874941 / DOCS_EVIDENCE_PUBLICATION_SEPARATELY_APPROVED_PENDING / OPERATOR_RECEIVE2_APPROVED_UNCONSUMED_UNRUN / GENERATED_HANDOFF_LOCAL_UNCOMMITTED / NO_HOST_OUTPUTS_RECEIVED / trainingReady:false
+' covers: _work/gpu-owner-recovery/runs/host-input-receive-observation-2/**
+' status: RECEIVE2_OPERATOR_REPORTED_RECEIVE_EXTRACT_PASS_CONSUMED_1_OF_1 / EXACT_MISSING_ARCHIVE_LIST_FALSE / DOCS_PUBLICATION_COMPLETED_283897c / SOURCE_VERIFIED_HOST_INVENTORY_APPROVED_UNCONSUMED_UNOBSERVED / trainingReady:false
+' current publication: latest confirmed HEAD/HTTPS docs push 283897c010258d7ae7222b8c5e9caf061472172c completed 31 texts (7 spec + 24 outcomes), that grant CONSUMED. Executor's LATEST separate "commit & push" now makes pending inventory source/tests/specs/receive-2 observation/bounded proof/MOCKED-e2e publication APPROVED_PENDING, including six new inventory source files, no source changes during publication or new OID asserted; gpu-host-build-inventory.puml owns the scope. Helper 98749410eda3dcadd7a210d3ddb1ac097a9ba13d/assets f3e277dbbf33c0aa69172cca1890792656d4cd09 remain fixed/distinct.
+' current report: observation-2 accepts functional receive/extract facts from the full pasted receipt, not original host files or independently verified operator command bytes; FETCH_EXIT=0/HELPER_HASH_VERIFIED/RECEIVE_EXIT=0/HOST_COMMAND_EXIT=0, 9074.734218 ms, downloads 2/list 1/extract 1/verify 1; operator 1/1 CONSUMED, zero remaining, no retry.
+' current discrepancy: exactly one differing entry among 103 missing archives, reported ntapi@0.3.1 vs prepared ntapi@0.4.3, zero missing metadata; initial-check-failure.json remains FAIL, scoped record-check.json PASS_OPERATOR_REPORTED_RECEIVE2_RECORDS_WITH_LIST_DISCREPANCY does not establish exact-list PASS or host-byte hashes.
+' history scope: all unrun/unconsumed, pending-docs, LOCAL_UNCOMMITTED and future receive-2 wording below describes the PRE-OBSERVATION-2 / PRE-283897c handoff snapshot, not current authority; old requests, source proofs, run-1 FAIL and alignment PASS remain immutable.
+' see: _spec/gpu-host-build-inventory.puml
+' see: _spec/gpu-readiness.md#current-host-build-inventory
 ' see: _spec/gpu-input-transfer.puml
 ' see: _spec/gpu-qualification.puml
 ' see: _spec/gpu-build.puml
@@ -66,7 +73,8 @@
 ' readability report notes: expected command 30/2/56 FK 12.3; saved records 33/2/54 FK 10.2
 ' readability alignment notes: child selection 29/2/55 FK 12.4; config trust 30/2/54 FK 11.5; manual syllables, Mise one syllable/PATH one syllable
 ' readability run-2 notes: selected paths 33/2/54 FK 10.2; source-only publication 30/2/57 FK 12.7; manual counts, no reasoning migrated from source
-title Receive-2 SOURCE_ONLY publication PASS/consumed at 9874941; operator approved/unconsumed
+' readability current report note: REPORT2 30 words/2 sentences/55 manually counted syllables, FK 11.9; five lines, <=50 columns, no source prose migrated
+title Receive-2 reported receive/extract PASS; list discrepancy retained; grants consumed
 
 actor Executor as EXECUTOR
 participant "_work/gpu-owner-recovery/runs/\nhost-input-receive-handoff-1/publish-source.ts" as CODE
@@ -89,6 +97,7 @@ participant "_work/gpu-owner-recovery/qualification/\nhost-receive/publish-run2.
 participant "_work/gpu-owner-recovery/qualification/\ntransfer/publish.ts / runPublisher" as PUBLISHER
 participant "bootstrap.ts\nrenderHostReceive2" as BOOT2
 participant "_work/gpu-owner-recovery/runs/\nhost-input-receive-handoff-2/request.json" as AUTH2
+participant "_work/gpu-owner-recovery/runs/\nhost-input-receive-observation-2/verify-report.ts" as REPORT2
 
 EXECUTOR -> CODE : HISTORICAL Publish+receive Recommended selection\nrequest supplied two now-consumed one-shot allowances
 group COMPLETED source publication - one commit/push, grant CONSUMED
@@ -275,7 +284,7 @@ end note
 end
 EXECUTOR -> PLAN2 : continue SOURCE work to exact fresh HOST decision\nnot alignment reinstall, native-version-query grant or run-1 replay
 
-group SOURCE_ONLY publication PASS / source grant CONSUMED - operator APPROVED_UNCONSUMED / UNRUN
+group HISTORICAL pre-observation-2 handoff - source PASS, operator then APPROVED_UNCONSUMED
   EXECUTOR -> AUTH2 : Publish+receive 2 Recommended SELECTED\ninspect/defer are historical unselected alternatives
   AUTH2 --> PUB2 : actual approved request/source-4 SHA/helper identity\nsource 1 normal commit/1 HTTPS push <=600s; operator 1 <=900s
   EXECUTOR -> PUB2 : COMPLETED controlled staging + ONE TOP-LEVEL adapter invocation\nstage-audit 65 text files/1,005,678 bytes, no cache/binary payloads
@@ -314,10 +323,30 @@ end note
   RECEIVE -> FILES : FUTURE cache/host-receive-2 + runs/host-input-receive-2\nrun-2 receipt/labels, >=8 GiB free/8 GiB soft/context <=3 GiB
   FISH -->> EXECUTOR : FUTURE HOST_COMMAND_EXIT + available run-2 receipt\nretain partial output, no retry/delete/overwrite
 end
-EXECUTOR -> AUTH2 : helper-source grant CONSUMED 1/1, no additional publication UNDER THIS REQUEST\noperator receive-2 remains separately APPROVED_UNCONSUMED/unobserved
-EXECUTOR -> GIT : LATER explicit "commit & push": SEPARATE docs/evidence approval, publication PENDING\ncurrent outcome/spec/command records ONLY, helper 9874941/source code fixed; no rerun or future OID asserted
+group CURRENT receive-2 operator report - records only, no host replay
+  EXECUTOR -> REPORT2 : full operator paste + normalized observation\nFETCH_EXIT=0 / HELPER_HASH_VERIFIED / RECEIVE_EXIT=0 / HOST_COMMAND_EXIT=0
+  REPORT2 -> REPORT2 : accept reported lineage, exact asset identities and context\n429,218,730 bytes / 3,800 files / 137 dirs / 2 links / native65
+  REPORT2 -> REPORT2 : retain initial-check-failure.json FAIL_INITIAL_REPORT_CHECK\n103 missing archives, one different entry; no exact-list PASS
+  REPORT2 --> EXECUTOR : PASS_OPERATOR_REPORTED_RECEIVE2_RECORDS_WITH_LIST_DISCREPANCY\n8 reported artifact metadata records, no host artifact bytes rehashed
+  EXECUTOR -> AUTH2 : operator receive-2 CONSUMED 1/1 at report scope\nzero remaining; no retry/refetch/reacquisition authority
+
+note over REPORT2
+  The report lists a different archive version
+  despite matching preparation's aggregate counts.
+  Its cause remains unknown, so the scoped
+  record check preserves that difference without
+  granting another download or extraction.
+end note
+
+end
+EXECUTOR -> GIT : REPORTED COMPLETED docs/evidence normal commit + HTTPS push\n283897c010258d7ae7222b8c5e9caf061472172c / 31 texts / grant CONSUMED
+REPORT2 --> EXECUTOR : Run inventory Recommended SELECTED; operator-only metadata approved/unconsumed/unobserved\nNEXT parent delivers complete source-3 literal for HOST COPY once, then waits only for actual HOST output
 
 legend bottom
+  CURRENT precedence: receive-2 functional report accepted with exact missing-list match FALSE; operator allowance CONSUMED 1/1, zero remaining. Original host files/actual command bytes remain unverified, not an added custody gate; all older pending/unrun receive-2 and docs-publication wording below is preserved pre-observation-2/pre-283897c history.
+  observation-2 contains operator-paste.txt, observation.json, verify-report.ts, reported-receipt.json, record-check.json and initial-check-failure.json. reported-receipt.json copies the pasted receipt, not original host files; scoped PASS checks reported lineage/assets/context and 8 artifact metadata records, never host payload bytes. Raw ntapi@0.3.1 remains unchanged against prepared ntapi@0.4.3; cause unknown, asset corruption not established, no retry authority or blocker to the read-only next inventory.
+  Reported context native-manifest SHA-256 is 9141aaefa2fab3f3a812aeabec4bdfdd818415333f9e5cba6d5ef822dac90863; reported assets retain exact IDs/digests and DRAFT 439935095 at f3e277d, helper 9874941/ac1cd8af.../18,396 bytes. completeOfflineBuildCoverageQualified:false, compilation/LLVM/Cargo/GPU/training false; no original host artefact bytes were received or rehashed in coding.
+  NEXT HOST authority remains ONE metadata-only operator invocation, UNCONSUMED/UNOBSERVED/remaining 1, no outputs received; parent delivers the complete source-3 literal for HOST COPY then waits only for actual output. That HOST grant adds no coding execution/build/helper fetch/source push. SEPARATE latest "commit & push" approves pending inventory source/tests/specs/receive-2 observation/bounded proof/MOCKED-e2e publication ONLY, APPROVED_PENDING/no new OID, not the consumed 283897c docs grant. HOST request/proof flags stay immutable; no extra gate, host scope, packaging replacement or old archive access.
   Historical RUN-1 source publication remains completed evidence; its operator report records bootstrap FAIL/BUN_VERSION_MISMATCH and HOST_COMMAND_EXIT=1. That invocation is CONSUMED 1/1 at report scope, zero remaining and no replay authority; the distinct approved/unconsumed receive-2 grant appears separately below.
   Executor then directed host alignment to this runtime's Bun/Rust pins. This supersedes the saved-file-only next step, not the retained observation or unknown actual version; saved version records are not a prerequisite for presenting the exact host-command decision.
   Preserve plan.json false flags/source-2 proposal AWAITING fields/original handoff request approved fields unchanged. That request supplied distinct now-consumed source/operator authority, not a replay or fresh grant; adjust destination/defer were not selected.

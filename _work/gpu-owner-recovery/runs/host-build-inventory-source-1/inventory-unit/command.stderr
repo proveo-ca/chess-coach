@@ -1,0 +1,31 @@
+
+_work/gpu-owner-recovery/qualification/host-build-inventory/render.test.ts:
+(pass) proposal grants no operation and requires no publication or helper fetch [0.05ms]
+(pass) one fixed sequence inspects only the selected builder, both pins and one derived container [1.01ms]
+(pass) metadata PASS does not certify configured zero limits or any build capability [0.20ms]
+(pass) nonzero context-name stops without repair, fallback query or retry [0.35ms]
+(pass) nonzero context-endpoint stops without repair, fallback query or retry [0.09ms]
+(pass) nonzero selected-builder stops without repair, fallback query or retry [0.04ms]
+(pass) nonzero engine stops without repair, fallback query or retry [0.04ms]
+(pass) nonzero pinned-images stops without repair, fallback query or retry [0.20ms]
+(pass) nonzero host-filesystem stops without repair, fallback query or retry [0.04ms]
+(pass) nonzero host-memory stops without repair, fallback query or retry [0.05ms]
+(pass) nonzero selected-builder-container stops without repair, fallback query or retry [0.10ms]
+(pass) QUERY_DEADLINE remains failure evidence [0.14ms]
+(pass) QUERY_OUTPUT_LIMIT remains failure evidence [0.03ms]
+(pass) QUERY_CAPTURE_FAILED remains failure evidence
+(pass) QUERY_SPAWN_FAILED remains failure evidence [0.01ms]
+(pass) HOST_INVENTORY_INTERRUPTED remains failure evidence
+(pass) malformed or unsupported JSON format stops before subsequent queries [0.30ms]
+(pass) single-node local derivation rejects alternative endpoints, states and ambiguous names [0.13ms]
+(pass) non-container drivers yield seven metadata queries and explicit unknowns, not setup [0.11ms]
+(pass) monotonic sequence deadline and query-count bounds stop the orchestration [0.14ms]
+(pass) stream retention keeps only the bounded prefix, including exact-boundary chunks [0.18ms]
+(pass) inline JS contains only builtin imports, no local helper dependency or invocation during rendering [1.82ms]
+(pass) Fish literal selects exact Mise pins without implicit install and retains status and streams [1.00ms]
+(pass) native65 and both production recipes retain their prepared identities [2.25ms]
+
+ 24 pass
+ 0 fail
+ 140 expect() calls
+Ran 24 tests across 1 file. [26.00ms]

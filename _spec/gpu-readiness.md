@@ -11,9 +11,50 @@ CPU fallback remains excluded; actual GPU work stays outside the coding sandbox.
 The retained status/evidence below change neither the reported 0/3 diagnostics, absent binding, full-pipeline halt nor `trainingReady:false`.
 This amendment renews no execution, acquisition, installation, runtime-change or training grant.
 
+<a id="current-host-build-inventory"></a>
+
+## CURRENT 2026-11-10 — receive-2 consumed; source-verified HOST inventory approved/unconsumed/unobserved
+
+The full [receive-2 paste](../_work/gpu-owner-recovery/runs/host-input-receive-observation-2/operator-paste.txt) reports **PASS_HOST_RECEIVE_AND_EXTRACT_ONLY**, `FETCH_EXIT=0`, `HELPER_HASH_VERIFIED`, `RECEIVE_EXIT=0` and `HOST_COMMAND_EXIT=0` in **9,074.734218 ms**.
+The [observation](../_work/gpu-owner-recovery/runs/host-input-receive-observation-2/observation.json) accepts functional receive/extraction facts and closes the operator allowance **1/1 CONSUMED, zero remaining, no retries**.
+Reported attempts are **2 downloads / 1 listing / 1 extraction / 1 verification** against the fixed asset IDs/digests and DRAFT **439935095** at asset source **f3e277d…**, using helper **9874941… / ac1cd8af… / 18,396 bytes**.
+Reported context is **429,218,730 bytes / 3,800 files / 137 recorded directories / 2 links / native65**, native-manifest SHA **`9141aaefa2fab3f3a812aeabec4bdfdd818415333f9e5cba6d5ef822dac90863`**.
+
+**Exact missing-list equality is FALSE:** the reported **`ntapi@0.3.1`** differs from prepared **`ntapi@0.4.3`**, exactly one entry among **103 missing archives**, with **zero missing metadata**.
+The [initial checker FAIL](../_work/gpu-owner-recovery/runs/host-input-receive-observation-2/initial-check-failure.json) remains retained.
+The later [scoped check](../_work/gpu-owner-recovery/runs/host-input-receive-observation-2/record-check.json) is **PASS_OPERATOR_REPORTED_RECEIVE2_RECORDS_WITH_LIST_DISCREPANCY**, validating reported lineage/context/assets and eight artifact metadata records, not exact-list PASS or original host bytes.
+`reported-receipt.json` copies the paste; original host files and independently verified actual operator command bytes remain unreceived, and no host artefact bytes were read or rehashed in coding.
+The discrepancy's cause is unknown; it establishes neither asset corruption nor retry/reacquisition authority and does not block the next read-only inventory.
+Offline-build completeness remains false; no compilation, LLVM/Cargo, GPU or training result follows.
+
+Executor reports the separate docs/evidence **normal commit + HTTPS push completed at `283897c010258d7ae7222b8c5e9caf061472172c`**, **31 controlled texts (7 spec + 24 outcomes)**, clean at that snapshot.
+That publication grant is **CONSUMED**; helper **9874941…** and asset source **f3e277d…** stay distinct and fixed.
+Executor's **LATEST separate "commit & push"** now authorizes **ONE normal commit + fixed-HTTPS push** of pending **inventory source/tests/specs, receive-2 observation and bounded proof/MOCKED-e2e evidence ONLY**, including the **six new inventory source files**, unlike the consumed 31-text docs-only grant.
+This fresh source/spec/evidence publication is **APPROVED_PENDING**; those local records remain unpublished until it completes, **no source changes during publication**, no new OID or self-containing-commit requirement asserted.
+The HOST request's unchanged `additionalGitPublicationApproved:false` limits **that HOST grant**, not this later separate Git approval; it adds no publisher-helper change, release/asset, installation, native/host/build/GPU/training or payload operation.
+
+Executor **SELECTED Run inventory Recommended**; the actual [handoff-1/request.json](../_work/gpu-owner-recovery/runs/host-build-inventory-handoff-1/request.json) records **APPROVED_ONE_METADATA_ONLY_HOST_INVOCATION_UNCONSUMED_UNOBSERVED / hostExecutionApproved:true / remainingHostInvocations:1**.
+[gpu-host-build-inventory.puml](gpu-host-build-inventory.puml) owns that current authority; [plan.json](../_work/gpu-owner-recovery/qualification/host-build-inventory/plan.json) and source proposal/proof/review false flags remain unchanged **preapproval snapshots**, not current authority or consumption records.
+**Next: parent delivers the existing source-3 `host-command.fish` coding-local contents for COPY of the ENTIRE Fish literal at HOST repo root once, then waits only for actual HOST output including `HOST_BUILD_INVENTORY_EXIT` and the future HOST receipt if created.** No source file is required on HOST; inline JS needs no helper fetch/new source push, and this grant permits no coding execution.
+The approved source-3 binding is **13,231 bytes**, command SHA below, proof SHA **`8deb36f92441c96724ffb84451c7b195da31eafba4d3992d016d8a05deb76af6`**; only an operator report closes the currently unconsumed allowance.
+One approved operator invocation permits **at most eight fixed read-only queries** to the existing current Docker/selected Buildx endpoints, which may be remote; it permits no endpoint changes, bootstrap/startup/create/pull/build/container exec, native query, payload copy/staging, GPU or training.
+The source embeds complete Fish/inline builtin-only Bun JS without helper download, disables all three Mise auto-install flags before explicit **core:bun@1.4.0 / core:rust@1.95.0** selection, and closes stdin.
+Bounds are **4s TERM + 1s KILL/query**, **55s TERM + 5s KILL/worker**, **32 KiB retained prefix per stdout/stderr/query, 512 KiB total**, and **64 KiB receipt admission**; parent diagnostics have only a **64 KiB post-exit soft check**, not a streaming quota or cancellation proof.
+The selected builder's effective resource bounds/offline content remain unknown; Engine image presence and host df/memory do not prove BuildKit availability/capacity, finite zero-cap enforcement, no egress, image usability or effective cancellation, even on metadata PASS.
+This is one functional build-planning inventory, not a security/isolation gate or a silent direct-container packaging replacement.
+
+The retained [source-3 receipt](../_work/gpu-owner-recovery/runs/host-build-inventory-source-3/receipt.json) records **PASS_HOST_BUILD_INVENTORY_SOURCE_ONLY**, unchanged **288 frozen inputs excluding docs**, **27 inventory tests / 259 assertions**, **37 qualification / 280**, and **four TypeScript checks**.
+Its three mocked-query e2e fixtures retain streams/receipts but explicitly say **NOT_HOST_EVIDENCE**; local Fish syntax remains **NOT RUN**, with the host precheck embedded and no installation authorized.
+Current command SHA is **`c13e8a9a878b0192480d0dd13f71da603f53455e8bdb520c0de3e7416cc7b7f4`**; source-1 strict-TypeScript FAIL and source-2 pre-finalizer PASS remain immutable history.
+The future HOST `_work/gpu-owner-recovery/runs/host-build-inventory-1/receipt.json` remains absent/unobserved/uncovered; actual handoff-1 contains only the approved request, not host outputs. No host query ran here and no checker was rerun for these docs.
+Keep the accepted Rust-base+Bun recipe, existing fail-closed two-test F64 feasibility boundary, native65, all **4,670** coordinates/thresholds, exact C12, CPU Flex/masters **101..105**, production recipes and disabled dispatch unchanged; **trainingReady:false**, hardening LAST after **ALL planned training and validated results**.
+
 <a id="current-runtime-packaging"></a>
 
-## CURRENT 2026-11-10 — receive-2 SOURCE_ONLY publication PASS/CONSUMED; operator APPROVED_UNCONSUMED
+## Historical runtime/publication packet — before receive-2 report and docs push 283897c
+
+The packet below preserves its pre-observation-2/pre-283897c snapshot; its unrun/unconsumed, pending-publication and LOCAL_UNCOMMITTED wording is historical, not current authority.
+The [current status and next decision](#current-host-build-inventory) above govern.
 
 Executor selected **`Rust base+Bun Recommended`** for **source packaging only** after the reported builder details arrived.
 The [runtime request](../_work/gpu-owner-recovery/qualification/runtime-request.json) records `SAME_PINNED_RUST_BASE_PLUS_PINNED_BUN_INTERPRETER` and retains its original false operation flags.
@@ -577,7 +618,10 @@ ALL security/privacy/isolation hardening remains AFTER **ALL planned training co
 
 <a id="current-host-receive-run2"></a>
 
-#### Receive-2 SOURCE_ONLY publication PASS/CONSUMED — generated handoff, operator APPROVED_UNCONSUMED
+#### Historical receive-2 publication/handoff snapshot — before operator report and docs push
+
+**Snapshot scope:** the pending/unrun/local wording in this section predates the accepted receive-2 report and completed docs push **283897c**; preserve it as history, not permission to replay.
+The [current report, discrepancy, consumed grants and fresh inventory decision](#current-host-build-inventory) supersede that next-step projection without changing old requests, proofs or receipts.
 
 The lead continued source work under Executor's instruction to stop only at the exact HOST-command decision.
 Executor has selected **Publish+receive 2 Recommended**.

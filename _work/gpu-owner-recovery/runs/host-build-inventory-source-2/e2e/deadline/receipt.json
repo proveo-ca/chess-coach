@@ -1,0 +1,179 @@
+{
+  "version": "chess-coach.host-build-inventory.v1",
+  "status": "FAIL_METADATA_ONLY",
+  "failure": "QUERY_DEADLINE",
+  "results": [
+    {
+      "id": "context-name",
+      "argv": [
+        "docker",
+        "context",
+        "show"
+      ],
+      "exitCode": 0,
+      "failure": null
+    },
+    {
+      "id": "context-endpoint",
+      "argv": [
+        "docker",
+        "context",
+        "inspect",
+        "default",
+        "--format",
+        "{\"DockerEndpoint\":{{json .Endpoints.docker.Host}}}"
+      ],
+      "exitCode": 0,
+      "failure": null
+    },
+    {
+      "id": "selected-builder",
+      "argv": [
+        "docker",
+        "buildx",
+        "inspect",
+        "--format",
+        "{{json .}}"
+      ],
+      "exitCode": 0,
+      "failure": null
+    },
+    {
+      "id": "engine",
+      "argv": [
+        "docker",
+        "info",
+        "--format",
+        "{\"ID\":{{json .ID}},\"ServerVersion\":{{json .ServerVersion}},\"NCPU\":{{json .NCPU}},\"MemTotal\":{{json .MemTotal}},\"DockerRootDir\":{{json .DockerRootDir}},\"CgroupDriver\":{{json .CgroupDriver}},\"CgroupVersion\":{{json .CgroupVersion}}}"
+      ],
+      "exitCode": null,
+      "failure": "QUERY_DEADLINE"
+    }
+  ],
+  "skipped": [],
+  "metadata": {
+    "contextName": "default",
+    "contextEndpoint": {
+      "DockerEndpoint": "unix:///var/run/docker.sock"
+    },
+    "dockerHostOverridePresent": false,
+    "builder": {
+      "Name": "selected",
+      "Driver": "docker-container",
+      "Nodes": [
+        {
+          "Name": "selected0",
+          "Endpoint": "default",
+          "Status": "running"
+        }
+      ]
+    }
+  },
+  "unknowns": [
+    "EFFECTIVE_WORKER_RESOURCE_ENFORCEMENT",
+    "BUILDKIT_CONTENT_STORE_IMAGE_AVAILABILITY",
+    "OFFLINE_IMAGE_RESOLUTION",
+    "COMPILER_AND_RUNTIME_USABILITY",
+    "CANCELLATION_EFFECTIVENESS",
+    "HOST_CAPACITY_EQUALS_BUILDER_CAPACITY"
+  ],
+  "hostInvocationsConsumed": 1,
+  "remainingHostInvocations": 0,
+  "automaticRetryAuthorized": false,
+  "buildAuthorized": false,
+  "buildPerformed": false,
+  "containerExecutionPerformed": false,
+  "imagePullPerformed": false,
+  "nativeExecuted": false,
+  "gpuExecuted": false,
+  "trainingExecuted": false,
+  "trainingReady": false,
+  "limits": {
+    "maximumQueries": 8,
+    "queryTermMs": 300,
+    "queryKillGraceMs": 100,
+    "workerTermMs": 55000,
+    "workerKillGraceMs": 5000,
+    "overallMs": 60000,
+    "perQueryStreamBytes": 32768,
+    "allQueryStreamBytes": 524288,
+    "receiptBytes": 65536,
+    "parentDiagnosticSoftLimitBytes": 65536
+  },
+  "endpointScope": "READ_ONLY_METADATA_RPC_TO_EXISTING_SELECTED_DOCKER_AND_BUILDX_ENDPOINTS",
+  "captures": [
+    {
+      "id": "context-name",
+      "elapsedMs": 14.722716,
+      "streams": [
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-build-inventory-source-2/e2e/deadline/context-name.stdout",
+          "bytes": 8,
+          "seenBytes": 8,
+          "sha256": "01666ec060466c14b9fa06c613fbac449163f2a2017558fe16526209ab78c6b0"
+        },
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-build-inventory-source-2/e2e/deadline/context-name.stderr",
+          "bytes": 0,
+          "seenBytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "context-endpoint",
+      "elapsedMs": 14.243460000000002,
+      "streams": [
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-build-inventory-source-2/e2e/deadline/context-endpoint.stdout",
+          "bytes": 48,
+          "seenBytes": 48,
+          "sha256": "69a06bf43cf4bc22da29ae77d11be9a89c73e9bd044bda18376b5fc5c547b82a"
+        },
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-build-inventory-source-2/e2e/deadline/context-endpoint.stderr",
+          "bytes": 0,
+          "seenBytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "selected-builder",
+      "elapsedMs": 15.477092999999996,
+      "streams": [
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-build-inventory-source-2/e2e/deadline/selected-builder.stdout",
+          "bytes": 118,
+          "seenBytes": 118,
+          "sha256": "ac1cef883bb77529258cef8a83de4eeb49db515e75a3433ab33f7143212a85cd"
+        },
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-build-inventory-source-2/e2e/deadline/selected-builder.stderr",
+          "bytes": 0,
+          "seenBytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "engine",
+      "elapsedMs": 402.140043,
+      "streams": [
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-build-inventory-source-2/e2e/deadline/engine.stdout",
+          "bytes": 0,
+          "seenBytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-build-inventory-source-2/e2e/deadline/engine.stderr",
+          "bytes": 0,
+          "seenBytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "parentDiagnosticsHaveOnlyPostExitSoftSizeCheck": true
+}

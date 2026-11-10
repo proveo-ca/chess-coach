@@ -1,0 +1,63 @@
+{
+  "version": "chess-coach.host-build-inventory-approval-proposal.v1",
+  "status": "AWAITING_EXECUTOR_EXACT_HOST_METADATA_DECISION",
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-3/receipt.json",
+    "sha256": "8deb36f92441c96724ffb84451c7b195da31eafba4d3992d016d8a05deb76af6"
+  },
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-3/host-command.fish",
+    "bytes": 13231,
+    "sha256": "c13e8a9a878b0192480d0dd13f71da603f53455e8bdb520c0de3e7416cc7b7f4"
+  },
+  "plan": {
+    "version": "chess-coach.host-build-inventory-proposal.v1",
+    "status": "SOURCE_ONLY_AWAITING_ONE_HOST_INVOCATION_APPROVAL",
+    "evidence": "_work/gpu-owner-recovery/runs/host-build-inventory-1",
+    "context": "_work/gpu-owner-recovery/cache/host-receive-2/context",
+    "grant": "--approved-host-build-inventory-1",
+    "images": [
+      "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+      "docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038"
+    ],
+    "execution": {
+      "pins": [
+        "core:bun@1.4.0",
+        "core:rust@1.95.0"
+      ],
+      "automaticInstallation": false
+    },
+    "limits": {
+      "maximumQueries": 8,
+      "queryTermMs": 4000,
+      "queryKillGraceMs": 1000,
+      "workerTermMs": 55000,
+      "workerKillGraceMs": 5000,
+      "overallMs": 60000,
+      "perQueryStreamBytes": 32768,
+      "allQueryStreamBytes": 524288,
+      "receiptBytes": 65536,
+      "parentDiagnosticSoftLimitBytes": 65536
+    },
+    "endpointScope": "READ_ONLY_METADATA_RPC_TO_EXISTING_SELECTED_DOCKER_AND_BUILDX_ENDPOINTS",
+    "conditionalContainerInspection": "ONE_RUNNING_SINGLE_NODE_DOCKER_CONTAINER_BUILDER_ON_SELECTED_LOCAL_ENDPOINT_ONLY",
+    "maximumHostInvocations": 1,
+    "helperDownloads": 0,
+    "sourcePublicationRequired": false,
+    "hostExecutionApproved": false,
+    "startupOrBootstrapOrConfigurationChangesAuthorized": false,
+    "imagePullOrBuildOrContainerExecutionAuthorized": false,
+    "payloadCopyOrStagingAuthorized": false,
+    "nativeOrGpuExecutionAuthorized": false,
+    "trainingAuthorized": false,
+    "automaticRetryAuthorized": false,
+    "trainingReady": false
+  },
+  "maximumHostInvocations": 1,
+  "helperDownloads": 0,
+  "sourcePublicationRequired": false,
+  "hostExecutionApproved": false,
+  "imagePullOrBuildOrNativeOrGpuExecutionAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

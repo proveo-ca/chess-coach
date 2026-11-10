@@ -1,0 +1,37 @@
+{
+  "version": "chess-coach.host-build-inventory-proposal.v1",
+  "status": "SOURCE_ONLY_AWAITING_ONE_HOST_INVOCATION_APPROVAL",
+  "evidence": "_work/gpu-owner-recovery/runs/host-build-inventory-1",
+  "context": "_work/gpu-owner-recovery/cache/host-receive-2/context",
+  "grant": "--approved-host-build-inventory-1",
+  "images": [
+    "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+    "docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038"
+  ],
+  "execution": { "pins": ["core:bun@1.4.0", "core:rust@1.95.0"], "automaticInstallation": false },
+  "limits": {
+    "maximumQueries": 8,
+    "queryTermMs": 4000,
+    "queryKillGraceMs": 1000,
+    "workerTermMs": 55000,
+    "workerKillGraceMs": 5000,
+    "overallMs": 60000,
+    "perQueryStreamBytes": 32768,
+    "allQueryStreamBytes": 524288,
+    "receiptBytes": 65536,
+    "parentDiagnosticSoftLimitBytes": 65536
+  },
+  "endpointScope": "READ_ONLY_METADATA_RPC_TO_EXISTING_SELECTED_DOCKER_AND_BUILDX_ENDPOINTS",
+  "conditionalContainerInspection": "ONE_RUNNING_SINGLE_NODE_DOCKER_CONTAINER_BUILDER_ON_SELECTED_LOCAL_ENDPOINT_ONLY",
+  "maximumHostInvocations": 1,
+  "helperDownloads": 0,
+  "sourcePublicationRequired": false,
+  "hostExecutionApproved": false,
+  "startupOrBootstrapOrConfigurationChangesAuthorized": false,
+  "imagePullOrBuildOrContainerExecutionAuthorized": false,
+  "payloadCopyOrStagingAuthorized": false,
+  "nativeOrGpuExecutionAuthorized": false,
+  "trainingAuthorized": false,
+  "automaticRetryAuthorized": false,
+  "trainingReady": false
+}

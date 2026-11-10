@@ -1,0 +1,20 @@
+{
+  "status": "READY_FOR_FRESH_METADATA_ONLY_HOST_COMMAND_DECISION",
+  "architecture": { "session": "ses_e39898a35ffeov4v7e8zm7rL25", "scope": "BOUNDED_READ_ONLY_INVENTORY_BEFORE_BUILD_DECISION" },
+  "devops": { "session": "ses_e39847a59ffeGm317EAvDa0aJS", "syntaxFailureFinalizerLowResolved": true, "snapshot": "host-build-inventory-source-3", "verdict": "READY_FOR_FRESH_METADATA_APPROVAL" },
+  "adversarial": { "session": "ses_e39710380ffeaUnNLQd4qcTj2u", "sourceAndFinalDocsReviewed": true, "verdict": "READY_TO_MERGE_YES" },
+  "security": { "session": "ses_e3971033effeXIBzUy80U91Rbw", "snapshot": "host-build-inventory-source-2", "subsequentChange": "SYNTAX_GUARD_MOVED_INSIDE_TIMED_WORKER_WITH_COMMON_STATUS_FINALIZATION", "queryOrOperationalScopeWidened": false, "findings": [], "additionalHardeningPrerequisite": false },
+  "sourceHashes": 288,
+  "inventoryTests": 27,
+  "inventoryAssertions": 259,
+  "mockedQueryE2eCases": 3,
+  "qualificationTests": 37,
+  "qualificationAssertions": 280,
+  "passingTypechecks": 4,
+  "localFishSyntaxValidated": false,
+  "hostExecutionApproved": false,
+  "hostQueriesPerformed": false,
+  "sourcePublicationRequired": false,
+  "buildOrNativeOrGpuExecutionAuthorized": false,
+  "trainingReady": false
+}

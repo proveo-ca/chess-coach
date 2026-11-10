@@ -114,7 +114,8 @@
         "_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-source-3/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-source-4/**",
-        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**"
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**",
+        "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/**"
       ],
       "fingerprint": null
     },
@@ -163,7 +164,8 @@
         "_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-source-3/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-source-4/**",
-        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**"
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**",
+        "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/**"
       ],
       "fingerprint": null
     },
@@ -239,7 +241,8 @@
         "_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-source-3/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-source-4/**",
-        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**"
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**",
+        "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/**"
       ],
       "fingerprint": null
     },
@@ -266,7 +269,24 @@
         "_work/gpu-owner-recovery/runs/host-input-receive-source-4/**",
         "_work/gpu-owner-recovery/qualification/transfer/publish.ts",
         "_work/gpu-owner-recovery/qualification/transfer/publish.test.ts",
-        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**"
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**",
+        "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/**"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/gpu-host-build-inventory.puml",
+      "covers": [
+        "_work/gpu-owner-recovery/qualification/host-build-inventory/plan.json",
+        "_work/gpu-owner-recovery/qualification/host-build-inventory/collector.ts",
+        "_work/gpu-owner-recovery/qualification/host-build-inventory/render.ts",
+        "_work/gpu-owner-recovery/qualification/host-build-inventory/render.test.ts",
+        "_work/gpu-owner-recovery/qualification/host-build-inventory/verify.ts",
+        "_work/gpu-owner-recovery/qualification/host-build-inventory/tsconfig.json",
+        "_work/gpu-owner-recovery/runs/host-build-inventory-source-1/**",
+        "_work/gpu-owner-recovery/runs/host-build-inventory-source-2/**",
+        "_work/gpu-owner-recovery/runs/host-build-inventory-source-3/**",
+        "_work/gpu-owner-recovery/runs/host-build-inventory-handoff-1/request.json"
       ],
       "fingerprint": null
     }

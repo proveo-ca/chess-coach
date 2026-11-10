@@ -32,9 +32,32 @@ Every phase below is planned work, not a new execution grant or a claim that its
 Use one inventory for the selected functional path, not a new open-ended prerequisite audit at each slice.
 The rows below identify known evidence gaps; they do not establish missing host facts or approve a concrete implementation.
 
+<a id="current-host-build-inventory"></a>
+
+#### CURRENT 2026-11-10 — source-verified read-only HOST inventory approved/unconsumed/unobserved
+
+The [current readiness status](gpu-readiness.md#current-host-build-inventory) and [owning receive diagram](gpu-host-receive.puml) accept the full receive-2 report as **PASS_HOST_RECEIVE_AND_EXTRACT_ONLY**, all three reported exits **0**, and operator allowance **1/1 CONSUMED / zero remaining / no retries**.
+The [scoped record check](../_work/gpu-owner-recovery/runs/host-input-receive-observation-2/record-check.json) retains **exact missing-list match FALSE**: reported **ntapi@0.3.1** versus prepared **ntapi@0.4.3**, one differing entry among **103 missing archives**, zero missing metadata; the initial checker FAIL remains immutable.
+Original host files/actual command bytes and host artefact hashes remain independently unverified, not a custody gate; the unknown discrepancy cause establishes neither corrupt assets nor reacquisition authority and does not block read-only metadata.
+Latest confirmed HEAD/HTTPS push remains **283897c010258d7ae7222b8c5e9caf061472172c**, prior **31-text (7 spec + 24 outcomes)** docs/evidence grant consumed; helper **9874941…** and assets **f3e277d…** stay fixed.
+Executor's **LATEST separate "commit & push"** now approves **ONE normal commit + fixed-HTTPS push** of pending **inventory source/tests/specs, receive-2 observation and bounded proof/MOCKED-e2e evidence ONLY**, including six new inventory source files: **APPROVED_PENDING**, local until completion, no source changes during publication/new OID/self-cycle asserted.
+The HOST request's immutable `additionalGitPublicationApproved:false` scopes that HOST grant only; this separate publication adds no publisher-helper change/release/asset/install/native/host/build/GPU/training/payload operation.
+
+Executor **SELECTED Run inventory Recommended**; actual [handoff-1/request.json](../_work/gpu-owner-recovery/runs/host-build-inventory-handoff-1/request.json) records **APPROVED_ONE_METADATA_ONLY_HOST_INVOCATION_UNCONSUMED_UNOBSERVED / hostExecutionApproved:true / remaining 1**, binding the exact source-3 command/proof in [current readiness](gpu-readiness.md#current-host-build-inventory).
+**Next: parent delivers existing source-3 coding-local command contents for COPY of the ENTIRE Fish literal at HOST repo root once, then waits only for actual HOST output including `HOST_BUILD_INVENTORY_EXIT` and future `runs/host-build-inventory-1/receipt.json` if created.** Inline JS requires no source file on HOST, helper fetch or new source push; no coding execution is approved, and the future HOST root remains absent/unobserved/uncovered.
+[gpu-host-build-inventory.puml](gpu-host-build-inventory.puml) owns the approved operator-only contract: one invocation, <=8 fixed metadata queries/60s, existing current Docker/selected Buildx endpoints (possibly remote), no bootstrap/startup/configuration change/pull/build/container exec/native query/payload staging/GPU/training. Source plan/proposal/proof/review false flags stay immutable preapproval history; that HOST request supplies neither build nor Git authority, independent of the later separate publication approval above.
+The retained source-3 receipt is **PASS_HOST_BUILD_INVENTORY_SOURCE_ONLY**, **288 frozen inputs excluding docs / 27 inventory tests / 259 assertions / 37 qualification / 280 / four types**; mocked-query e2e outputs are coding fixtures, **not host evidence**, and local Fish syntax remains NOT RUN.
+The source records worker/query deadlines and bounded query prefixes, but parent diagnostic size checks are **post-exit soft only**; metadata PASS retains unknown effective resources, BuildKit offline content, cancellation and image usability, never an assurance PASS.
+Ordinary Docker build CPU/memory flags and Engine cached-image metadata cannot establish selected-builder enforcement/content; host df/memory need not describe builder capacity, and zero declared caps do not prove finite enforcement.
+This approved functional inventory informs the later build decision, not a new security/isolation gate or a direct-container packaging substitution; keep the accepted qualification Rust-base+Bun strategy and existing two F64 tests/fail-closed boundary unchanged.
+Native65/Rust/model/all **4,670** coordinates/`eps=1e-6`/`atol=1e-8`/`rtol=1e-5`/exact C12/CPU Flex/masters **101..105**/production recipes remain unchanged, dispatch disabled and **trainingReady:false**; ALL security/privacy/isolation hardening stays after **ALL planned training and validated results**.
+
 <a id="current-runtime-packaging"></a>
 
-#### CURRENT 2026-11-10 — receive-2 SOURCE_ONLY publication PASS/CONSUMED; operator APPROVED_UNCONSUMED
+#### Historical runtime/publication packet — before receive-2 report and docs push 283897c
+
+The packet below preserves its pre-observation-2/pre-283897c snapshot; pending/unrun/local-publication wording is historical, not current authority.
+The [current next decision](#current-host-build-inventory) above governs without rewriting old requests, proofs, FAIL receipts or alignment PASS.
 
 The new [builder-detail paste](../_work/gpu-owner-recovery/runs/host-builder-inputs-1/operator-details-paste.txt) and [normalized detail record](../_work/gpu-owner-recovery/runs/host-builder-inputs-1/operator-details.json) now report Linux/amd64, Debian 12 bookworm, cc/c++ GCC 12.2.0 (`12.2.0-14+deb12u1`), GNU ar/ld 2.40, glibc 2.36 and `/usr/lib/gcc/x86_64-linux-gnu/12/libstdc++.so`.
 All 12 command frames and the C++ query report exit 0; these concatenate existing outputs, not original files or separately bounded streams, and they required no new Docker/compiler replay.
@@ -398,7 +421,10 @@ ALL security/privacy/isolation hardening remains AFTER **ALL planned training co
 
 <a id="current-host-receive-run2"></a>
 
-##### Receive-2 SOURCE_ONLY publication PASS/CONSUMED — generated handoff, operator APPROVED_UNCONSUMED
+##### Historical receive-2 publication/handoff snapshot — before operator report and docs push
+
+**Snapshot scope:** pending/unrun/local wording in this section predates the accepted receive-2 report and completed docs push **283897c**, not authority to repeat them.
+The [current status](#current-host-build-inventory) records the list discrepancy, consumed grants and fresh inventory-only decision; original source proofs/requests/receipts stay immutable.
 
 The lead continued source work until the exact HOST decision, not another implementation/planning fork.
 Executor selected **Publish+receive 2 Recommended**; actual [handoff-2/request.json](../_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/request.json) now records **APPROVED_ONE_SOURCE_PUBLICATION_AND_ONE_OPERATOR_RECEIVE_RUN2 / sourcePublicationApproved:true / operatorReceiveApproved:true**.

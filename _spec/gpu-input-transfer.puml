@@ -43,7 +43,12 @@
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-source-3/**
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-source-4/**
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**
-' status: 2026-11-10 / ORIGINAL_PREPARATION_AND_DRAFT_PASS_CONSUMED / PRIOR_STOPS_AND_RUN1_CONSUMED / ALIGNMENT_REPORT_PASS_CONSUMED / SOURCE_4_FROZEN_329 / RECEIVE2_SOURCE_ONLY_PUBLICATION_PASS_CONSUMED_9874941 / DOCS_EVIDENCE_PUBLICATION_SEPARATELY_APPROVED_PENDING / OPERATOR_RECEIVE2_APPROVED_UNCONSUMED_UNRUN / GENERATED_HANDOFF_LOCAL_UNCOMMITTED / trainingReady:false
+' covers: _work/gpu-owner-recovery/runs/host-input-receive-observation-2/**
+' status: 2026-11-10 / RECEIVE2_REPORTED_RECEIVE_EXTRACT_PASS_CONSUMED / EXACT_MISSING_ARCHIVE_LIST_FALSE / DOCS_PUBLISHED_283897c / SOURCE_VERIFIED_HOST_INVENTORY_APPROVED_UNCONSUMED_UNOBSERVED / trainingReady:false
+' current: gpu-host-receive.puml owns observation-2 report-only receive/extract PASS, operator 1/1 CONSUMED/zero remaining, no original host files/verified command bytes. Reported ntapi@0.3.1 vs prepared ntapi@0.4.3 remains one discrepancy among 103 missing archives/zero missing metadata; initial checker FAIL retained, scoped PASS does not certify exact-list equality, offline build or asset corruption.
+' current publication: latest confirmed HEAD/HTTPS push 283897c010258d7ae7222b8c5e9caf061472172c completed prior 31-text docs/evidence scope, grant CONSUMED. Executor's LATEST separate "commit & push" now approves pending inventory source/tests/specs/receive-2 observation/bounded proof/MOCKED-e2e publication ONLY, including six new inventory source files, APPROVED_PENDING/no new OID or source changes during publication. HOST request false Git field remains HOST-only scope; helper 9874941/assets f3e277d fixed/distinct, no new operational scope; gpu-host-build-inventory.puml owns publication bounds.
+' history scope: older receive-2 unrun/unconsumed, pending-docs and LOCAL_UNCOMMITTED wording below retains PRE-OBSERVATION-2 / PRE-283897c scope; old requests/proofs/run-1 FAIL/alignment PASS stay immutable, not retry authority.
+' see: _spec/gpu-host-build-inventory.puml
 ' see: _spec/gpu-qualification.puml
 ' see: _spec/gpu-readiness.md#current-input-transfer
 ' see: _spec/gate-closure.md#current-input-transfer
@@ -114,7 +119,7 @@
 ' FK (words/sentences/syllables): PUBLICATION_STOP 28/2/54 = 12.6
 ' FK (words/sentences/syllables): NETWORK_TARGETS 33/2/61 = 12.7; PRIVATE_QUERIES 24/2/48 = 12.7; REUSE 31/2/58 = 12.5
 ' FK (words/sentences/syllables): IDENTITY_FIELDS 30/2/55 = 11.9; OUTCOME_CHECK 30/2/55 = 11.9; PRIVATE_IDENTITY 37/2/60 = 10.8
-title DRAFT/alignment consumed; receive-2 SOURCE_ONLY published at 9874941, operator approved/unconsumed
+title DRAFT/alignment/receive-2 grants consumed; reported receive PASS retains list discrepancy
 left to right direction
 
 component "_work/gpu-owner-recovery/qualification/\ninput-transfer-proposal.json\nHISTORICAL UNSELECTED PROJECTION\nold false/null flags remain unchanged\nruntime/host/libdevice projections also retained" as HISTORY
@@ -319,6 +324,7 @@ note bottom of PRIVATE_IDENTITY
 end note
 
 legend bottom
+  CURRENT precedence: receive-2 reported PASS/exact-list match FALSE/grant CONSUMED remain unchanged; HOST inventory remains source verified/operator APPROVED_UNCONSUMED_UNOBSERVED/remaining 1, no outputs received. That HOST grant supplies no coding execution/build/helper fetch/source push; LATEST separate "commit & push" approves pending inventory source/tests/specs/receive-2 observation/bounded proof/MOCKED-e2e publication ONLY, APPROVED_PENDING/no new OID. Prior 283897c docs grant stays consumed; older snapshots/source proof/HOST-request false Git flags stay scoped history, no custody prerequisite.
   Solid edges describe source contracts, historical authority or retained outcomes. Asset preparation/three publication grants/later source handoff/docs publication are consumed; the operator invocation is also consumed 1/1 at report scope, no replay or new authority from retained approved request fields.
   Original records remain unchanged; preparation and first-publication allowances stay consumed, source-3 remains payload lineage. Initial failure still has commit 0/push 0/createRelease 0/upload 0, no auth/API/external mutation, not a consumed commit invocation/grant.
   Distinct https-publication-request.json preserves the consumed second grant. Later identity-publication-request.json supplied the distinct third attempt, now PASS/CONSUMED; its original approval projection stays unchanged, not permission for another commit/push or attempt.

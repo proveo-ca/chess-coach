@@ -70,6 +70,12 @@
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-source-3/**
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-source-4/**
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**
+' covers: _work/gpu-owner-recovery/runs/host-input-receive-observation-2/**
+' current: receive-2 reported receive/extract PASS accepted at report scope, operator 1/1 CONSUMED/zero remaining; ntapi@0.3.1 vs prepared ntapi@0.4.3 remains one discrepancy among 103 missing archives/zero missing metadata, exact-list match FALSE. gpu-host-receive.puml owns records, not original host bytes or a custody gate.
+' next: gpu-host-build-inventory.puml documents source-verified metadata with Run inventory Recommended SELECTED/operator APPROVED_UNCONSUMED_UNOBSERVED/remaining 1; parent delivers source-3 literal for entire HOST COPY once, then waits only for actual HOST output. Existing selected Docker/Buildx endpoints may be remote; that HOST grant excludes coding execution/bootstrap/build/pull/exec/helper fetch/source push or packaging substitution. Ordinary build flags/Engine image metadata do not establish effective BuildKit limits/offline content.
+' current publication: latest confirmed HEAD/HTTPS push 283897c010258d7ae7222b8c5e9caf061472172c completed prior 31-text docs/evidence scope, grant CONSUMED. Executor's LATEST separate "commit & push" now approves pending inventory source/tests/specs/receive-2 observation/bounded proof/MOCKED-e2e publication ONLY, including six new inventory source files, APPROVED_PENDING/no new OID or source changes during publication. HOST request false Git field remains HOST-only scope; helper 9874941/assets f3e277d fixed/distinct, no new operational scope; gpu-host-build-inventory.puml owns publication bounds.
+' history scope: receive-2 unrun/unconsumed, pending-docs and LOCAL_UNCOMMITTED wording below retains PRE-OBSERVATION-2 / PRE-283897c scope; all old evidence remains immutable, not current operation authority.
+' see: _spec/gpu-host-build-inventory.puml
 ' scope precedence: this diagram retains the completed prepared-bridge snapshot; current qualification source/flags live in _spec/gpu-qualification.puml
 ' generation boundary: local-6's 277-input graph proof is historical relative to new qualification files, not invalidated evidence for unchanged recorded inputs
 ' qualification successor: separate Dockerfile.gpu-qualification leaves both production recipes and existing recipe tests unchanged; no native build or CPU/GPU campaign has run
@@ -502,6 +508,7 @@ note bottom of CACHE_RECHECK
 end note
 
 legend bottom
+  CURRENT precedence: receive-2 report accepted with retained exact-list mismatch/consumed grant; HOST inventory remains APPROVED_UNCONSUMED_UNOBSERVED/remaining 1, no output received or coding HOST execution/build/assurance PASS. SEPARATE latest "commit & push" now approves pending inventory source/tests/specs/receive-2 observation/bounded proof/MOCKED-e2e publication ONLY, APPROVED_PENDING/no new OID; prior 283897c docs grant remains consumed. Source plan/proof/HOST-request false Git flags and earlier snapshots retain their original scope; no new operational authority follows.
   Retained bridge/visibility chronology below keeps its original phase scope; current qualification, both consumed STOPs and completed third DRAFT publication live in the header and linked diagrams, not old missing-input/publication exclusions.
   Original preparation is complete and both prior STOPs stay consumed; source-5 belongs to the second attempt, current source-6 freezes modified publisher code. Second actual commit 1/exit 128 after 838.463473 ms, push/release/uploads 0 and receipt null remain unchanged.
   SECOND private origins/rewrite rules 0/repo permission API passed; push:true proves no asset-upload rights. Old child omitted identity fields and retained check records parent presence flags only; current publicationEnvironment forwards existing four fields unchanged in memory, no defaults/value serialization/config change.

@@ -68,7 +68,12 @@
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-source-3/**
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-source-4/**
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**
-' status: 2026-11-10 / RUST_BASE_PLUS_BUN_SOURCE_SELECTED / RETAINED_DRAFT_SOURCE_6_PASS / PRIOR_DRAFT_RUN1_ALIGNMENT_GRANTS_CONSUMED / SOURCE_4_FROZEN_329 / RECEIVE2_SOURCE_ONLY_PUBLICATION_PASS_CONSUMED_9874941 / DOCS_EVIDENCE_PUBLICATION_SEPARATELY_APPROVED_PENDING / OPERATOR_RECEIVE2_APPROVED_UNCONSUMED_UNRUN / GENERATED_HANDOFF_LOCAL_UNCOMMITTED / HOST_BUILD_GPU_UNAUTHORIZED / trainingReady:false
+' covers: _work/gpu-owner-recovery/runs/host-input-receive-observation-2/**
+' status: 2026-11-10 / RECEIVE2_REPORTED_RECEIVE_EXTRACT_PASS_CONSUMED / EXACT_MISSING_ARCHIVE_LIST_FALSE / DOCS_PUBLISHED_283897c / SOURCE_VERIFIED_HOST_INVENTORY_APPROVED_UNCONSUMED_UNOBSERVED / HOST_BUILD_GPU_UNAUTHORIZED / trainingReady:false
+' current: gpu-host-receive.puml owns observation-2 report-only PASS, original host files/command bytes unverified, ntapi@0.3.1 vs prepared ntapi@0.4.3 retained/103 missing archives/zero missing metadata; operator 1/1 CONSUMED, no retry. gpu-host-build-inventory.puml owns the SELECTED metadata-only operator handoff, remaining 1/UNCONSUMED/UNOBSERVED, not coding execution/build/assurance; parent delivers complete source-3 literal for HOST COPY then waits only for actual HOST output. Rust-base+Bun/native65/numerics/production recipes stay unchanged.
+' current publication: latest confirmed HEAD/HTTPS push 283897c010258d7ae7222b8c5e9caf061472172c completed prior 31-text docs/evidence scope, grant CONSUMED. Executor's LATEST separate "commit & push" now approves pending inventory source/tests/specs/receive-2 observation/bounded proof/MOCKED-e2e publication ONLY, including six new inventory source files, APPROVED_PENDING/no new OID or source changes during publication. HOST request false Git field remains HOST-only scope; helper 9874941/assets f3e277d fixed/distinct, no new operational scope; gpu-host-build-inventory.puml owns publication bounds.
+' history scope: older receive-2 unrun/unconsumed, pending-docs and LOCAL_UNCOMMITTED statements below are PRE-OBSERVATION-2 / PRE-283897c snapshots only; retained requests/proofs/FAIL/alignment PASS stay immutable, not current grants.
+' see: _spec/gpu-host-build-inventory.puml
 ' see: _spec/gpu-build.puml
 ' see: _spec/gpu-readiness.md#current-qualification-source-and-flags
 ' see: _spec/gate-closure.md#current-qualification-source-and-flags
@@ -146,7 +151,7 @@
 ' FK: APPROVAL 11.7; ATTEMPT 11.1; SOURCE_CHECK 11.9; LIMITS 10.6
 ' FK: INPUT_REQUEST 11.5; METADATA_RESULT 12.3; HOST_PACKET 12.8; INPUT_SOURCE 12.7; HOST_RESULT 10.4
 ' FK: RUNTIME_REQUEST 12.4; HOST_DETAILS 12.7; LIBDEVICE 12.4 (29 words / 2 sentences / 55 syllables)
-title Prepared inputs + DRAFT publication PASS - third grant consumed; qualification/build/GPU remain unproved
+title Receive-2 report accepted with list discrepancy; metadata decision next, build/GPU unproved
 left to right direction
 
 component "_work/gpu-owner-recovery/qualification/\nrequest.json\nsource preparation approved\nfive exact queries, 10 seconds each\nfirst failure STOP; no retry" as REQUEST
@@ -436,6 +441,7 @@ note bottom of RESULT
 end note
 
 legend bottom
+  CURRENT precedence: receive-2 report-only receive/extract PASS is accepted with exact missing-list match FALSE; grant CONSUMED 1/1. Host inventory is source verified/operator APPROVED_UNCONSUMED_UNOBSERVED under the actual handoff request; no coding execution/build is authorized, source plan/proof false flags remain preapproval history. Older pending/unrun/publication-local descriptions below retain pre-observation-2/pre-283897c scope; linked owning diagrams carry current authority and bounds.
   Solid edges describe source, historical authority or retained evidence; build/GPU dotted edges stay unexecuted/unapproved. Both prior STOPs/third asset publication/source handoff/later docs publication are consumed; the operator reports Bun-version bootstrap FAIL, invocation consumed 1/1 at report scope/zero remaining.
   Operator-result edges describe normalized pasted reports, not original machine captures or verified executed-source identity.
   Historical root summary remains OPERATOR_REPORTED_INPUT_METADATA_PASS_AUTHORITY_CONSUMED_DETAILS_PENDING; later operator-details.json supplies reported tool facts without rewriting it.
