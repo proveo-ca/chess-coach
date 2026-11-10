@@ -19,6 +19,8 @@ async function main() {
   await mkdir(directory);
   await mkdir(resolve(directory, "home")); await mkdir(resolve(directory, "tmp"));
   const paths = new Set([...(await sourceFilePaths("typecheck-source")), ...(await sourceInventory(repository)).map(source => source.path)]);
+  for (const path of ["tooling/runtime/Dockerfile", "tooling/runtime/Dockerfile.gpu", "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-local-6/sources.json",
+    "_work/gpu-owner-recovery/runs/gpu-qualification-llvm-flags-1/receipt.json"]) paths.add(path);
   for (const pattern of ["_work/gpu-owner-recovery/qualification/*.{ts,json}", "_work/gpu-owner-recovery/prepared-llvm*/**/*.{ts,json}"]) {
     for await (const path of new Bun.Glob(pattern).scan({ cwd: repository, onlyFiles: true })) paths.add(path);
   }

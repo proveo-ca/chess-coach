@@ -1,0 +1,51 @@
+{
+  "version": "chess-coach.host-feasibility-proposal.v1",
+  "status": "SOURCE_PACKAGING_SELECTED_OPERATIONAL_PACKET_INCOMPLETE_NOT_AUTHORIZED",
+  "recipe": "tooling/runtime/Dockerfile.gpu-qualification",
+  "runtimeRequest": "_work/gpu-owner-recovery/qualification/runtime-request.json",
+  "builderMetadata": "_work/gpu-owner-recovery/runs/host-builder-inputs-1/operator-details.json",
+  "libdeviceMetadataProposal": "_work/gpu-owner-recovery/qualification/libdevice-proposal.json",
+  "inputTransferProposal": "_work/gpu-owner-recovery/qualification/input-transfer-proposal.json",
+  "runtimeStrategy": "SAME_PINNED_RUST_BASE_PLUS_PINNED_BUN_INTERPRETER",
+  "builderOverlayCandidate": "EMPTY",
+  "additionalCompilerInstallationProposed": false,
+  "productionRecipesChanged": false,
+  "llvm": {
+    "candidatePrefix": "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4",
+    "reportedApparentFileBytes": 329242172,
+    "reportedMetadataEntries": 2684,
+    "selectionMade": false,
+    "payloadsHashedOrStaged": false
+  },
+  "cudaBindingCandidate": "13000",
+  "cudaBindingSelected": false,
+  "libdeviceCandidateArchive": {
+    "url": "https://developer.download.nvidia.com/compute/cuda/redist/libnvvm/linux-x86_64/libnvvm-linux-x86_64-13.0.48-archive.tar.xz",
+    "bytes": 43941232,
+    "sha256": "8c5676a65a2e6d13e3c229f025af18677de46c220d77992fe932200fa798b19b",
+    "member": null,
+    "memberPresenceEstablished": false,
+    "extractedBitcodeHash": null,
+    "automaticAlternativePackageAcquisitionAllowed": false
+  },
+  "newNvidiaRuntimePayloadCandidate": "LIBDEVICE_BITCODE_ONLY_PLUS_HOST_INJECTED_DRIVER_AND_ITS_PTX_JIT_SUPPORT",
+  "tracedSourceLibraryLimits": {
+    "libnvrtc": "FEATURE_ENABLED_LAZY_UNUSED_BY_TRACED_LLVM_BRANCH",
+    "libnvvmSharedCompiler": "NO_DYNAMIC_CALL_FOUND_ON_TRACED_LLVM_BRANCH",
+    "nccl": "OPTIONAL_PRESENCE_PROBE_NOT_A_REQUIRED_SINGLE_DEVICE_COLLECTIVE",
+    "fullCudaToolkit": "NOT_PROPOSED",
+    "actualLibraryCoverageQualified": false
+  },
+  "transfer": { "transport": null, "operatorDestination": null, "maximumContextBytes": null, "maximumDiskBytes": null, "publicationAuthorized": false },
+  "buildPreflightPlanned": ["Use existing pinned images without another pull", "Capture image ID/config-field discrepancy without inferring a wrong image", "Check actual Rust 1.95.0 and Cargo 1.95.0 before project compilation", "Check pinned Bun 1.4.0 startup in the Rust-based runtime", "Require exact prepared LLVM/config and supported explicit CUDARC binding"],
+  "hostBuildAndExecutionLimits": { "buildAttempts": null, "buildDeadlineMs": null, "buildCpus": null, "buildMemoryBytes": null, "overallHostDeadlineMs": null, "gpuCooperativeBounds": null },
+  "initialCampaign": "TWO_EXISTING_F64_TESTS_SCORE_ROUND_TRIP_THEN_BACKWARD_SGD_RELOAD",
+  "automaticFullCampaignOrTrainingEscalationAllowed": false,
+  "outstandingDecisions": ["Explicit input transport and host destination", "Bounded exact acquisition/inventory/extraction of libdevice candidate, with stop on absent or ambiguous member", "LLVM/source/locked Cargo-cache payload hashing and transfer size/disk limits", "Operator-host build, cooperative GPU admission/monitoring, deadline and cleanup bounds", "Fresh explicit operational approval after packet completion"],
+  "approval": { "acquisition": false, "installation": false, "payloadHashingOrCopying": false, "staging": false, "publication": false, "imageBuild": false, "hostGpuExecution": false, "training": false },
+  "allFiniteDifferenceCoordinates": 4670,
+  "fullNumericalAndC12QualificationStillRequired": true,
+  "canonicalReferenceBothCloseAndIntegratedR4StillRequired": true,
+  "hardeningOrder": "ALL_SECURITY_PRIVACY_ISOLATION_AFTER_ALL_PLANNED_TRAINING_AND_VALIDATED_RESULTS",
+  "trainingReady": false
+}

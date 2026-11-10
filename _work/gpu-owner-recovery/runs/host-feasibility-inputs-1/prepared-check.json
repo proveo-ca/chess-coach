@@ -1,0 +1,28 @@
+{
+  "version": "chess-coach.prepared-input-record-verification.v1",
+  "status": "PASS_PREPARED_INPUT_BYTES_ONLY",
+  "sourceGate": {
+    "path": "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-3/receipt.json",
+    "sha256": "71eacd85ecbcb69752f8814181e975eb92d7b7b5432fa921c388305eae9caaa5"
+  },
+  "contextManifestSha256": "64e8c6f2ea895fb8fac1821d48fc5b39a93122e8fdb5f35c4f8fbcd6494c7838",
+  "contextFiles": 3800,
+  "recordedDirectories": 137,
+  "links": 2,
+  "contextBytes": 429218730,
+  "bundle": {
+    "bytes": 140694281,
+    "sha256": "9001bfeb88ce5433138d5f0fd23b3c7ab0590cc0bd47900cc1c0a1d6923c65f7"
+  },
+  "preparationStreamsChecked": 4,
+  "nativeInputs": 65,
+  "cachedCrateArchives": 568,
+  "missingArchives": 103,
+  "missingMetadata": 0,
+  "completeOfflineBuildCoverageQualified": false,
+  "publicationPerformed": false,
+  "compilationPerformed": false,
+  "hostOrGpuExecuted": false,
+  "trainingReady": false,
+  "checkerSha256": "748cbb381872251ac6b603d5e28678d9c34d56bdb98e9e6c277e421ba746c9df"
+}

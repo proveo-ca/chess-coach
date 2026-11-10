@@ -144,11 +144,15 @@ export async function executeQualification(plan: TestStep[], limits: Limits, io:
   return { status: io.now() <= deadline - limits.cleanupReserveMs ? "PASS_TESTS_ONLY" : "FAIL_CAMPAIGN_DEADLINE", results };
 }
 
-export async function sourceInventory(root: string) {
-  const paths = new Set(["Cargo.toml", "Cargo.lock", "tooling/runtime/qualification.ts", "tooling/runtime/Dockerfile.gpu-qualification",
+export async function sourceInputPaths(root: string) {
+  const paths = new Set(["Cargo.toml", "Cargo.lock", "schemas/feature-layout.json", "tooling/runtime/qualification.ts", "tooling/runtime/Dockerfile.gpu-qualification",
     "tooling/runtime/gpu-build-inputs.json", "_work/gpu-owner-recovery/verify.ts", "_work/gpu-owner-recovery/command-supervisor.ts"]);
   for (const pattern of ["crates/*/Cargo.toml", "crates/**/*.rs"]) for await (const path of new Bun.Glob(pattern).scan({ cwd: root, onlyFiles: true })) paths.add(path);
-  return Promise.all([...paths].sort().map(async path => ({ path, sha256: hash(await readFile(resolve(root, path))) })));
+  return [...paths].sort();
+}
+
+export async function sourceInventory(root: string) {
+  return Promise.all((await sourceInputPaths(root)).map(async path => ({ path, sha256: hash(await readFile(resolve(root, path))) })));
 }
 
 async function main() {

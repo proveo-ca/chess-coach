@@ -49,21 +49,56 @@
 ' covers: _work/gpu-owner-recovery/prepared-llvm-cache/fetch.test.ts
 ' covers: _work/gpu-owner-recovery/prepared-llvm-cache/tsconfig.json
 ' covers: _work/gpu-owner-recovery/runs/gpu-prepared-llvm-cache-1/outcome.json
+' covers: _work/gpu-owner-recovery/qualification/transfer/request.json
+' covers: _work/gpu-owner-recovery/runs/gpu-input-transfer-source-3/receipt.json
+' covers: schemas/feature-layout.json
+' covers: _work/gpu-owner-recovery/runs/host-feasibility-inputs-1/**
+' covers: _work/gpu-owner-recovery/qualification/transfer/https-publication-request.json
+' covers: _work/gpu-owner-recovery/runs/gpu-input-transfer-source-5/**
+' covers: _work/gpu-owner-recovery/runs/host-feasibility-publication-2/**
+' covers: _work/gpu-owner-recovery/qualification/transfer/identity-publication-request.json
+' covers: _work/gpu-owner-recovery/runs/gpu-input-transfer-source-6/**
 ' scope precedence: this diagram retains the completed prepared-bridge snapshot; current qualification source/flags live in _spec/gpu-qualification.puml
 ' generation boundary: local-6's 277-input graph proof is historical relative to new qualification files, not invalidated evidence for unchanged recorded inputs
 ' qualification successor: separate Dockerfile.gpu-qualification leaves both production recipes and existing recipe tests unchanged; no native build or CPU/GPU campaign has run
-' qualification current scope: gpu-qualification-source-2 PASS_SOURCE_ONLY, 32 tests/223 assertions + four typechecks; lead-reported final source-only READY after review fixes, not Cargo artifact compatibility, image usability or GPU proof
+' qualification/publisher current scope (2026-11-10): transfer-source-6 PASS_TRANSFER_SOURCE_ONLY, 316 hashes / 65 unchanged native inputs, 89/438 helpers + 37/280 qualification + four types, six stages exit 0/sourceChanged:false; no actual third publication/identity query or native/image/CPU-regression/GPU qualification
+' payload lineage: source-3 303/83/371 remains original preparation lineage; source-5 311/88/428 is historical second-attempt gate, source-4 87/422 earlier history, active identity request binds source-6 exactly after helper edits
+' qualification source choice: Executor selected Rust base+Bun Recommended SOURCE_PACKAGING_ONLY; same pinned Rust inputs/runtime, copy only pinned Bun interpreter, no qualification builder rootfs copy or GNU library transplant, actual Rust/Cargo/Bun guards await a build
+' production boundary: both production Dockerfiles unchanged and SHA-checked against retained local-6 baseline; qualification source-4 36/278 is historical PRE_65_SCHEMA_INPUT, schema unchanged but now bound for policy compile-time include_str; source-3 36/265/source-2 32/223 historical, source-2 PRE_RUST_BASE
 ' qualification boundaries: qualification source-1 28/201 is historical; five LLVM flag queries remain consumed without replay; broader host-input packet approvals stay false, with a separate narrow operator-only Rust inventory exception
 ' current input inventory: _spec/gpu-qualification.puml; coding metadata PASS_METADATA_ONLY, 2,684 entries / stdout 332,260 bytes / apparent regular-file byte SUM 329,242,172 counting directory entries, not allocated storage; one invocation spent / zero remaining
 ' input helper scope: gpu-input-inventory-source-3 PASS_INPUT_SOURCE_ONLY, 8 mocked/static cases / 64 assertions + strict qualification types + direct Fish 4.9.3 syntax; older helper source-1 FAIL before parsing/source-2 7/59 PASS historical, no prior app/Rust/math/production-recipe edits
 ' current operator result: _work/gpu-owner-recovery/runs/host-builder-inputs-1/operator-observation.json + _work/gpu-owner-recovery/runs/host-builder-inputs-1/operator-paste.txt normalize reported PASS_INPUT_METADATA_ONLY, all five exits 0; one pull/container/cleanup consumed, zero remaining, no retry; original request/approval projections unchanged
 ' current image status: reported exact Rust-pin acquisition clears the old acquisition blocker at report scope; old ABSENT is historical, not a current missing-image or pending-pull finding
-' missing functional details: original image.stdout/image.stderr/inspection.stdout/inspection.stderr unreceived; OS/architecture/local image ID/compiler/libc/C++ path remain null, next handoff reads existing outputs only with no Docker/compiler replay
-' publication boundary: last confirmed published source 2c17a189ecba08cb7078ea8daf991317d09c3ef1; operator-executed commit unknown, no new custody gate; pasted 11-second duration is not phase-deadline proof
-' current scope precedence: no prefix payload read/hash/LLVM query/copy/staging/selection, native build or GPU/training qualification; metadata post-outcome review not claimed, other input/transfer/resource choices remain unresolved
+' current builder details: _work/gpu-owner-recovery/runs/host-builder-inputs-1/operator-details.json + _work/gpu-owner-recovery/runs/host-builder-inputs-1/operator-details-paste.txt normalize concatenated existing outputs, not original streams; Linux/amd64, Debian 12, GCC 12.2, GNU ar/ld 2.40, glibc 2.36, C++ library path reported, no compile/link proof
+' identity comparison: pasted .Id repeats manifest pin versus retained configDigest d617f1b5c2a18778ba357ba0528e973bd24992b0dd18000dfbca059f4a15ebda; cause unknown, wrong image not established, no acquisition invalidation or custody gate; actual Rust/Cargo versions remain null
+' publication boundary: latest confirmed pushed source d3bb6bcc6420f50c559ad7260f968578e20cf725; original pre-handoff 2c17a189ecba08cb7078ea8daf991317d09c3ef1 remains historical; operator commit unknown, pasted 11-second duration not phase-deadline proof
+' current prepared input: exact libnvvm 13.0.48 archive acquired, HTTP 200 / 43,941,232 bytes / SHA 8c5676a65a2e6d13e3c229f025af18677de46c220d77992fe932200fa798b19b; regular libdevice member 464,132 bytes / SHA 91334d6e12748f6cb5bbf0a1cd965a56bcd93dc4f496d2e5c5f8c6e523094356 and regular LICENSE retained; 13000 remains candidate, actual runtime library coverage false
+' original transfer boundary: prepared-byte PASS and first publication FAIL / PUBLICATION_ORIGIN_MISMATCH at origin-fetch / 31.82 ms stay unchanged; download/preparation and first attempt consumed/closed, not automatically retried
+' historical first accounting: SSH fetch URL rejected by initial metadata rule, command exit 0/empty stderr, no push-origin/auth/API check; commit 0/push 0/release 0/uploads 0, commits/release ID null/assets empty, no external mutation or consumed commit invocation/grant
+' second grant chronology: Explicit HTTPS Recommended attempt and actual commit invocation are CONSUMED/STOP under source-5, no replay from that grant; later Inherit Identity Recommended selection separately approves implemented inheritance/source-6 proof + one fresh 600s third attempt, unconsumed
+' transport source: exact SSH origin accepted as metadata only; private read-only origin/rewrite queries use same cwd/env/remaining clock and 64 KiB bound, persist counts/verdicts not raw values; applicable insteadOf/pushInsteadOf rejects, Git network targets are literal HTTPS, not origin/HEAD
+' reuse source: publish-https exports publishPreparedHttps(activeRequest), binding original source-3/native65/bundle/context/first-failure lineage separately from current full source-6; optional priorFailure validates second commit FAIL/counters 1/0/0/0, new gate freezes pub2 publication/reuse/outcome metadata, no old full-helper comparison or preparation replay
+' current second outcome: NOW-EXISTING runs/host-feasibility-publication-2/publication.json FAIL / PUBLICATION_COMMAND_FAILED / commit / 838.463473 ms; one commit exit 128, push 0/createRelease 0/upload 0/manifest callback 0, no tag/release checks; both attempts consumed, no preparation/build/host/GPU/training authority
+' second preflight/reuse: both private origins and rewrite rules 0 PASS, gh repo permission API PASS / push:true not asset-upload-rights proof; original native65/bundle/context/source-3 lineage/then-current source-5 freeze PASS, no copy/repack/fetch
+' SECOND identity evidence: old source-5 child omitted four author/committer fields; retained missing-author stderr/parent presence-only flags/unchanged HEAD and commitSucceeded:null stay historical, not current helper behavior or third-attempt validation
+' active identity implementation: publicationEnvironment forwards existing four fields unchanged in memory, no default/value serialization/config setter; private git var author/committer ident shares same child cwd/env, remaining clock/64 KiB buffer, Boolean only before mutation, no hooks bypass
+' active third authority: identity-publication-request.json / Inherit Identity Recommended, fresh normal commit 1/fixed-HTTPS verified commit-OID push 1/DRAFT 1/uploads 2, existing auth/identity only; no actual third attempt/identity/auth/origin/rewrite query yet, future runs/host-feasibility-publication-3 ABSENT/NOT CREATED and not covered
+' entry/stage boundary: publish-inherited-identity.ts calls shared export at TOP LEVEL after reviews/controlled-text stage, no new authorization within fresh scope; old 161-text/source-5 staging slice retains original 122, new helpers/request/proof6/spec/status unstaged/uncommitted, no preparation/download/copy/repack/build/host/GPU/training grant
+' prepared bytes: source/tools 663,642 / LLVM 329,242,172 / Cargo 98,780,903; 568 locked archives + 618 index files, 103 archives missing/zero metadata missing, offline completeness unproven; context 429,218,730, bundle 140,694,281 SHA 9001bfeb88ce5433138d5f0fd23b3c7ab0590cc0bd47900cc1c0a1d6923c65f7
+' byte-check scope: PASS_PREPARED_INPUT_BYTES_ONLY, 3,800 files/137 recorded dirs/2 links, 65 native inputs/303 frozen source hashes/four captures/three then-current index matches; checker preceded current docs edits, no rerun or fresh byte/index receipt claimed
+' historical source/authority reviews (Executor-reported): prior DevOps/adversarial/security verdicts retain their original slice scope, not current functional READY or permission to override publication STOP; source-2 security review predates four fixes
+' staging boundary (Executor-reported): 161 old controlled texts staged, original 122 preserved, no new commit; earlier source-5/stage snapshots do not bind new inherited-identity helpers/request/proof6/spec/status, all unstaged/uncommitted; this docs pass stages/resets/runs nothing, latest push stays d3bb6bcc6420f50c559ad7260f968578e20cf725
 ' see: _spec/gpu-qualification.puml
 ' see: _spec/gpu-readiness.md#current-input-inventory
-' status: SOURCE_IMPLEMENTED / RUST_TOOLCHAIN_PROVISIONED / LOCKED_CACHE_AND_FEATURE_TREES_PASS_NO_COMPILATION / INSTALL_AND_FETCH_AUTHORITY_CONSUMED / AWAITING_PREPARED_INPUT_SELECTION / trainingReady:false
+' see: _spec/gpu-readiness.md#current-runtime-packaging
+' see: _spec/gpu-input-transfer.puml
+' see: _spec/gpu-readiness.md#current-prepared-input-bytes
+' see: _spec/gpu-readiness.md#current-publication-stop
+' see: _spec/gpu-readiness.md#current-https-publication
+' see: _spec/gpu-readiness.md#current-identity-publication
+' see: _spec/gate-closure.md#current-identity-publication
+' status: RETAINED_PREPARED_BRIDGE_SNAPSHOT / SOURCE_IMPLEMENTED / RUST_TOOLCHAIN_PROVISIONED / LOCKED_CACHE_AND_FEATURE_TREES_PASS_NO_COMPILATION / INSTALL_AND_FETCH_AUTHORITY_CONSUMED / AWAITING_PREPARED_INPUT_SELECTION / trainingReady:false
 ' current graph verification: gpu-prepared-llvm-local-6 PASS_STATIC_AND_FEATURE_TREE_ONLY / PASS_FEATURE_TREE_ONLY; six static stages exit 0, 14 cases/109 assertions + four typechecks; THREE separate actual offline Cargo trees PASS 0 with matched predicates, no compilation
 ' evidence: _work/gpu-owner-recovery/runs/gpu-prepared-llvm-local-6/receipt.json
 ' historical pre-fetch graph: gpu-prepared-llvm-local-5 FAIL_OR_INCOMPLETE_GRAPH, prepared tree exit 101/first uncached bundler, ordinary-CUDA/CPU unrun in that phase; immutable, not current result
@@ -176,13 +211,13 @@
 ' observed local-6 tree predicates: prepared/ordinary CUDA both contain cubecl-llvm v0.11.3 and tracel-llvm-bundler v23.1.0-4; prepared xtask present at stdout line 2429, ordinary xtask absent, CPU bundler absent; all predicates matched
 ' proof ceiling: three actual resolved feature trees PASS, not compiled host dependency coupling/sharing, native/static link/ABI, NVPTX kernel, relocation, native CPU regression, image, GPU or training proof
 ' historical availability: local-4 was PREINSTALLATION UNAVAILABLE_CARGO; local-5 now records exact repo Cargo/rustc available with bound environment, not the old global Mise link
-' current route: tools/cache task completed positively, both install/fetch authority consumed; remaining functional input preparation/selection/staging and actual compiled API/ABI binding require separate explicit scope, no automatic proposal/operation approval
+' retained bridge-phase route: tools/cache task completed positively, install/fetch authority consumed; original preparation completed and BOTH publication attempts stopped/consumed. The second consumed one actual commit invocation, not a new HEAD commit or compiled API/ABI/host authority
 ' historical manifest: 273 selected inputs; 3e5b58c02eeab08783051e087c57381dc0059605c2de6b07fac70e240bf09d45 ; six baseline hashes now changed
 ' history: gpu-functional-local-1 FAIL (three TS2339 errors); gpu-functional-local-2 PASS is an earlier five-stage generation
 ' activation context: packages/runtime/src/job.ts:11; packages/runtime/src/gpu-job.ts:142; crates/gpu-owner/src/main.rs:10
 ' see: _spec/gpu-readiness.md
 ' see: _spec/gate-closure.md
-' contexts: gpu-build/rootfs, gpu-build/llvm and gpu-runtime/rootfs are unselected build inputs, not captured directories
+' retained production contexts: original production input-contract selections remain unset; separate qualification context now prepared under its consumed grant, not a production recipe change or built image; ignored-cache payloads stay out of Git
 ' llvm prefix: /opt/tracel-data/tracel/tracel-llvm-23.1.0-4
 title Locked cache and three offline feature trees PASS - no compilation; grants consumed
 left to right direction
@@ -435,6 +470,14 @@ note bottom of CACHE_RECHECK
 end note
 
 legend bottom
+  Retained bridge/visibility chronology below keeps its original phase scope; current qualification, both consumed STOPs and active inherited-identity third scope live in the header and linked diagrams, not old missing-input/publication exclusions.
+  Original preparation is complete and both prior STOPs stay consumed; source-5 belongs to the second attempt, current source-6 freezes modified publisher code. Second actual commit 1/exit 128 after 838.463473 ms, push/release/uploads 0 and receipt null remain unchanged.
+  SECOND private origins/rewrite rules 0/repo permission API passed; push:true proves no asset-upload rights. Old child omitted identity fields and retained check records parent presence flags only; current publicationEnvironment forwards existing four fields unchanged in memory, no defaults/value serialization/config change.
+  Existing runs/host-feasibility-publication-2 evidence is now covered/indexed; supplemental metadata-only check observes unchanged HEAD/no new commit, preserving receipt commitSucceeded:null. Pre-attempt NOT CREATED/UNCONSUMED descriptions remain chronology only.
+  Inherit Identity Recommended is now selected, helper repair implemented and source-6 PASS: 316 hashes/65 native/89 helpers/438 assertions + 37 qualification/280 assertions/four types, six stages exit 0/sourceChanged:false. One fresh 600s third attempt is approved/unconsumed, not replay of either STOP.
+  Private git var author/committer ident uses same child cwd/env, shrinking deadline/64 KiB bound, Boolean only before mutation. No actual third identity/auth/origin/rewrite query or publication ran; future publication-3 root is ABSENT/NOT CREATED, no coverage glob or fabricated outcomes.
+  New top-level publish-inherited-identity entry uses shared publishPreparedHttps(activeRequest), source-6 + original source-3/native65/bundle/context/first-failure lineage + optional second priorFailure validation; new gate binds pub2 publication/reuse/outcome metadata, not obsolete full helper proof.
+  Parent will stage controlled texts/proof then invoke once after reviews, no repeated authorization within scope. Old 161-text/source-5 stage keeps original 122; new identity helpers/request/proof6/spec/status remain unstaged/uncommitted, latest push d3bb6bcc6420f50c559ad7260f968578e20cf725; this docs pass runs/stages/resets nothing.
   COMPLETED CACHE: CACHE_AND_FEATURE_TREES_PASS_NO_COMPILATION, failure:null, sourceChanged:false, 282 bound inputs; both steps exit 0.
   Fetch grant CONSUMED: one invocation / zero remaining; original request bytes unchanged, no further fetch/retry/download/tool install.
   Automatic completion received; actual local-6 PASS is tree-only evidence, not compiled host coupling, static link/ABI/NVPTX or relocation proof.

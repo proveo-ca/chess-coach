@@ -1,7 +1,7 @@
 // SPEC: _spec/gpu-qualification.puml
 import { expect, test } from "bun:test";
 import { readFile } from "node:fs/promises";
-import { cpuCoverage, executeQualification, gpuSelectors, qualificationPlan, readArtifacts, recordAttempt, testPassed, validateHostApproval, validateLimits } from "../../../tooling/runtime/qualification";
+import { cpuCoverage, executeQualification, gpuSelectors, qualificationPlan, readArtifacts, recordAttempt, sourceInventory, testPassed, validateHostApproval, validateLimits } from "../../../tooling/runtime/qualification";
 import { checkSources } from "../../../_work/gpu-owner-recovery/qualification/verify";
 
 const root = new URL("../../../", import.meta.url);
@@ -210,6 +210,65 @@ test("qualification recipe builds tests without execution and preserves separate
   for (const forbidden of ["curl ", "wget ", "apt-get ", "mise install", "DOCS_RS", "CARGO_FEATURE_XTASK"]) expect(recipe).not.toContain(forbidden);
 });
 
+test("qualification uses the same pinned Rust userspace and copies only the pinned Bun interpreter", async () => {
+  const recipe = await read("tooling/runtime/Dockerfile.gpu-qualification");
+  const request = JSON.parse(await read("_work/gpu-owner-recovery/qualification/runtime-request.json"));
+  expect(request.runtimeStrategy).toBe("SAME_PINNED_RUST_BASE_PLUS_PINNED_BUN_INTERPRETER");
+  expect(recipe).toContain(`FROM ${request.rustImage} AS inputs`);
+  expect(recipe).toContain(`FROM ${request.rustImage} AS runtime`);
+  expect(recipe).toContain(`FROM ${request.bunImage} AS bun-interpreter`);
+  expect(recipe).toContain("COPY --from=bun-interpreter /usr/local/bin/bun /usr/local/bin/bun");
+  expect(recipe).not.toContain("COPY gpu-build/rootfs/");
+  expect(recipe).toContain("COPY gpu-runtime/rootfs/ /");
+  expect(request.productionRecipesChangeAuthorized).toBe(false);
+  for (const name of ["downloadAuthorized", "copyingOrStagingAuthorized", "imageOperationAuthorized", "compilationAuthorized", "hostGpuExecutionAuthorized", "trainingAuthorized"]) expect(request[name]).toBe(false);
+});
+
+test("future builds check executable versions without installing or changing production recipes", async () => {
+  const recipe = await read("tooling/runtime/Dockerfile.gpu-qualification");
+  expect(recipe).toContain('case "$rust_version" in "rustc 1.95.0 "*)');
+  expect(recipe).toContain('case "$cargo_version" in "cargo 1.95.0 "*)');
+  expect(recipe).toContain('test "$bun_version" = "1.4.0"');
+  expect(recipe.indexOf("rustc --version")).toBeLessThan(recipe.indexOf("cargo test"));
+  expect(recipe.indexOf("cargo --version")).toBeLessThan(recipe.indexOf("cargo test"));
+  const sources = JSON.parse(await read("_work/gpu-owner-recovery/runs/gpu-prepared-llvm-local-6/sources.json")) as { path: string; sha256: string }[];
+  for (const path of ["tooling/runtime/Dockerfile", "tooling/runtime/Dockerfile.gpu"]) {
+    const expected = sources.find(source => source.path === path);
+    expect(expected).toBeDefined();
+    expect(new Bun.CryptoHasher("sha256").update(await read(path)).digest("hex")).toBe(expected!.sha256);
+  }
+});
+
+test("qualification RUN commands pass POSIX syntax checks without executing their contents", async () => {
+  const recipe = (await read("tooling/runtime/Dockerfile.gpu-qualification")).replace(/\\\n\s*/g, " ");
+  for (const command of recipe.split("\n").filter(line => line.startsWith("RUN "))) {
+    const parsed = Bun.spawnSync(["/bin/sh", "-n"], { stdin: new TextEncoder().encode(command.replace(/^RUN --network=none /, "")),
+      env: { PATH: "/usr/bin:/bin", HOME: "/nonexistent" }, stdout: "pipe", stderr: "pipe", timeout: 1000 });
+    expect({ exitCode: parsed.exitCode, stderr: new TextDecoder().decode(parsed.stderr) }).toEqual({ exitCode: 0, stderr: "" });
+  }
+});
+
+test("the remaining build proposal distinguishes packaging choice from operational authority", async () => {
+  const proposal = JSON.parse(await read("_work/gpu-owner-recovery/qualification/host-build-proposal.json"));
+  const libdevice = JSON.parse(await read("_work/gpu-owner-recovery/qualification/libdevice-proposal.json"));
+  const transfer = JSON.parse(await read("_work/gpu-owner-recovery/qualification/input-transfer-proposal.json"));
+  expect(Object.values(proposal.approval).every(value => value === false)).toBe(true);
+  expect(proposal.additionalCompilerInstallationProposed).toBe(false);
+  expect(proposal.transfer.transport).toBeNull();
+  expect(proposal.cudaBindingSelected).toBe(false);
+  expect(proposal.libdeviceCandidateArchive.sha256).toBe(libdevice.candidate.archiveSha256);
+  expect(proposal.libdeviceCandidateArchive.memberPresenceEstablished).toBe(false);
+  expect(proposal.libdeviceCandidateArchive.extractedBitcodeHash).toBeNull();
+  expect(proposal.automaticFullCampaignOrTrainingEscalationAllowed).toBe(false);
+  expect(proposal.trainingReady).toBe(false);
+  expect(transfer.selectedTransport).toBeNull();
+  expect(transfer.releaseMustRemainDraft).toBe(true);
+  expect(transfer.inputScopes.llvm.llvmExecutableInvocationProposed).toBe(false);
+  expect(transfer.inputScopes.cargo.newFetchesProposed).toBe(0);
+  expect(transfer.inputScopes.libdevice.archiveSha256).toBe(libdevice.candidate.archiveSha256);
+  for (const name of ["payloadReadHashOrCopyApproved", "acquisitionApproved", "stagingApproved", "sourceCommitPushApproved", "releaseOrUploadApproved", "hostBuildOrExecutionApproved", "gpuExecutionApproved", "trainingApproved"]) expect(transfer[name]).toBe(false);
+});
+
 test("the input packet leaves operations, unresolved inputs and training unapproved", async () => {
   const packet = JSON.parse(await read("_work/gpu-owner-recovery/qualification/host-inputs.json"));
   expect(Object.values(packet.approval).every(value => value === false)).toBe(true);
@@ -221,4 +280,11 @@ test("the input packet leaves operations, unresolved inputs and training unappro
     initialization: "CPU_FLEX", masters: [101, 102, 103, 104, 105], c12: "EXACT_DIGEST_AGREEMENT_NO_TOLERANCE" });
   expect(packet.proposedLimitsNotApproved.gpuCooperativeCeilingsAndTelemetry).toBeNull();
   expect(packet.fullAssuranceHardening).toBe("DEFERRED_UNTIL_ALL_PLANNED_TRAINING_COMPLETES_AND_RESULTS_VALIDATE");
+});
+
+test("native input inventory includes the policy test's compile-time feature schema", async () => {
+  const source = await read("crates/policy-io/tests/score.rs");
+  expect(source).toContain('include_str!("../../../schemas/feature-layout.json")');
+  const inventory = await sourceInventory(new URL("../../../", import.meta.url).pathname);
+  expect(inventory.find(input => input.path === "schemas/feature-layout.json")?.sha256).toBe(new Bun.CryptoHasher("sha256").update(await read("schemas/feature-layout.json")).digest("hex"));
 });
