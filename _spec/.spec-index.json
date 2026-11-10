@@ -114,7 +114,7 @@
         "_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-source-3/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-source-4/**",
-        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/request.json"
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**"
       ],
       "fingerprint": null
     },
@@ -163,7 +163,7 @@
         "_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-source-3/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-source-4/**",
-        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/request.json"
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**"
       ],
       "fingerprint": null
     },
@@ -239,7 +239,7 @@
         "_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-source-3/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-source-4/**",
-        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/request.json"
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**"
       ],
       "fingerprint": null
     },
@@ -266,7 +266,7 @@
         "_work/gpu-owner-recovery/runs/host-input-receive-source-4/**",
         "_work/gpu-owner-recovery/qualification/transfer/publish.ts",
         "_work/gpu-owner-recovery/qualification/transfer/publish.test.ts",
-        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/request.json"
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**"
       ],
       "fingerprint": null
     }
