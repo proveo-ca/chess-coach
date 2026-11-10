@@ -102,7 +102,10 @@
         "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-5/**",
         "_work/gpu-owner-recovery/runs/host-feasibility-publication-2/**",
         "_work/gpu-owner-recovery/qualification/transfer/identity-publication-request.json",
-        "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-6/**"
+        "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-6/**",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/**",
+        "_work/gpu-owner-recovery/qualification/host-receive/plan.json",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/request.json"
       ],
       "fingerprint": null
     },
@@ -139,7 +142,10 @@
         "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-4/**",
         "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-5/**",
         "_work/gpu-owner-recovery/runs/host-feasibility-publication-2/**",
-        "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-6/**"
+        "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-6/**",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/**",
+        "_work/gpu-owner-recovery/qualification/host-receive/plan.json",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/request.json"
       ],
       "fingerprint": null
     },
@@ -203,7 +209,24 @@
         "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-5/**",
         "_work/gpu-owner-recovery/runs/host-feasibility-publication-2/**",
         "_work/gpu-owner-recovery/qualification/transfer/identity-publication-request.json",
-        "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-6/**"
+        "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-6/**",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/**",
+        "_work/gpu-owner-recovery/qualification/host-receive/plan.json",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/request.json"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/gpu-host-receive.puml",
+      "covers": [
+        "_work/gpu-owner-recovery/qualification/host-receive/**",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/**",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/**",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/outcome-check.json",
+        "_work/gpu-owner-recovery/runs/host-feasibility-inputs-1/preparation.json",
+        "_work/gpu-owner-recovery/runs/host-feasibility-inputs-1/context-manifest.json",
+        "Cargo.lock",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/**"
       ],
       "fingerprint": null
     }

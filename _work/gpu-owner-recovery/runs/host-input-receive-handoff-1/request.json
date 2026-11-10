@@ -1,0 +1,19 @@
+{
+  "version": "chess-coach.approved-host-input-receive-handoff.v1",
+  "status": "APPROVED_ONE_SOURCE_PUBLICATION_AND_ONE_OPERATOR_RECEIVE_INVOCATION",
+  "authorizationSource": "EXECUTOR_SELECTED_PUBLISH_PLUS_RECEIVE_RECOMMENDED",
+  "approvedProposal": "_work/gpu-owner-recovery/runs/host-input-receive-source-2/host-command-approval.json",
+  "sourceProof": "_work/gpu-owner-recovery/runs/host-input-receive-source-2/receipt.json",
+  "helperSha256": "091a431757ef83710a95156816e085cb1ed36b632e4923c9632695ffe821bafa",
+  "sourcePublication": { "maximumCommits": 1, "maximumHttpsPushes": 1, "deadlineMs": 600000, "url": "https://github.com/proveo-ca/chess-coach.git", "branch": "feat-ml-adjuntant-ii", "existingIdentityAndAuthenticationOnly": true },
+  "operatorCommand": { "maximumInvocations": 1, "maximumHelperDownloads": 1, "maximumAssetDownloads": 2, "maximumExtractions": 1, "totalMs": 900000, "helperMs": 60000, "sharedAssetDownloadMs": 600000, "sharedExtractVerifyMs": 180000, "minimumFreeBytes": 8589934592, "workspaceBytes": 8589934592 },
+  "additionalReleaseOrAssetUploadAuthorized": false,
+  "installationOrAuthenticationOrGitConfigurationChangesAuthorized": false,
+  "automaticRetryOrOverwriteOrDeletionAuthorized": false,
+  "codingEnvironmentPayloadAcquisitionOrCopyOrRepackAuthorized": false,
+  "imageBuildOrCompilationAuthorized": false,
+  "llvmOrCargoExecutionAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

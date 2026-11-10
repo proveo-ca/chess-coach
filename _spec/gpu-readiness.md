@@ -13,13 +13,13 @@ This amendment renews no execution, acquisition, installation, runtime-change or
 
 <a id="current-runtime-packaging"></a>
 
-## CURRENT 2026-11-10 — Inherit Identity selected; source-6 PASS, third publication APPROVED/UNCONSUMED
+## CURRENT 2026-11-10 — Publish+receive selected; coding/operator grants APPROVED / UNCONSUMED / UNRUN
 
 Executor selected **`Rust base+Bun Recommended`** for **source packaging only** after the reported builder details arrived.
 The [runtime request](../_work/gpu-owner-recovery/qualification/runtime-request.json) records `SAME_PINNED_RUST_BASE_PLUS_PINNED_BUN_INTERPRETER` and retains its original false operation flags.
 Executor later selected **`Draft assets Recommended`** in the distinct [original transfer request](../_work/gpu-owner-recovery/qualification/transfer/request.json).
 That request approved **one bounded preparation and DRAFT-asset publication**, not image construction, compilation, host/GPU execution or training.
-[gpu-qualification.puml](gpu-qualification.puml) owns qualification; [gpu-input-transfer.puml](gpu-input-transfer.puml) owns the implemented helpers, **completed preparation**, **closed first publication STOP** and **distinct fresh HTTPS scope**.
+[gpu-qualification.puml](gpu-qualification.puml) owns qualification; [gpu-input-transfer.puml](gpu-input-transfer.puml) owns the helpers, completed preparation, two closed STOPs and successful third DRAFT publication.
 The [preparation receipt](../_work/gpu-owner-recovery/runs/host-feasibility-inputs-1/receipt.json) retains **PASS_PREPARATION_ONLY_PUBLICATION_PENDING** as its pre-attempt snapshot.
 The first [publication receipt](../_work/gpu-owner-recovery/runs/host-feasibility-inputs-1/publication.json) remains **FAIL / PUBLICATION_ORIGIN_MISMATCH**, closed and consumed with zero mutation invocations.
 **After that STOP**, Executor selected **Explicit HTTPS Recommended** in the distinct [HTTPS publication request](../_work/gpu-owner-recovery/qualification/transfer/https-publication-request.json).
@@ -28,8 +28,13 @@ That second attempt has now run once and stopped **FAIL / PUBLICATION_COMMAND_FA
 The second publication attempt and **one actual commit invocation stay CONSUMED**.
 The separate [publication-2 outcome](#current-https-publication) retains the failure and narrow inherited-identity evidence without changing earlier records.
 Executor has now selected **Inherit Identity Recommended** in the distinct [identity publication request](../_work/gpu-owner-recovery/qualification/transfer/identity-publication-request.json).
-That request approves the implemented inheritance repair, source-6 proof and **ONE fresh 600s third publication attempt**, not replay of either STOP or preparation.
-The third attempt remains **APPROVED / UNCONSUMED / NOT RUN**; [its current scope](#current-identity-publication) needs no new authorization within the selected bounds after ordinary reviews and controlled-text staging.
+That request supplied one distinct third attempt, not replay of either STOP or preparation.
+The [third publication](#current-identity-publication) completed **PASS in 21,178.921619 ms**: one normal commit and fixed-HTTPS push of **`f3e277dbbf33c0aa69172cca1890792656d4cd09`**, one **DRAFT release 439935095** and two verified uploads.
+Its grant is now **CONSUMED** and authorizes no further attempt, commit or push; the later host-receive handoff grant below supplies distinct fresh scope.
+Upgrade completion covers **input preparation and DRAFT publication only**, not operator acquisition, build/GPU qualification or training readiness.
+Executor has now selected **Publish+receive Recommended** at the [exact combined HOST-command decision](#current-host-receive).
+The active request separately approves one coding source publication and one operator invocation, both **unconsumed/unrun**; the historical false proposal flags remain unchanged.
+Parent will publish the approved source once after ordinary review, provide the actual-OID-pinned command, and stop only awaiting operator receipt/stdout verification, not ask another planning/scope question.
 This docs pass reads retained sources/evidence only; it runs no command, syntax check, test, native tool, network request, host operation or agent.
 Earlier requests, receipts, summaries and the source-2 `host-inputs.json` remain byte-unchanged historical projections.
 
@@ -60,7 +65,7 @@ It is not current full-publisher proof after the authorized helper edits.
 Shared `sourceInputPaths`/`sourceInventory` now include unchanged `schemas/feature-layout.json`, required by policy-io's CPU score test through compile-time `include_str!`; the prior native inventory had 64 entries.
 Source-6 freezes current publisher/request/helper sources, original preparation/first failure, and the second attempt's **publication.json, reuse.json and outcome-check.json** metadata.
 It retains the unchanged 65-native filename/hash binding.
-Keep those source-6-covered files frozen before the one approved attempt; this docs pass changes no helper or frozen evidence.
+Those source-6-covered files stay frozen; the third retained outcome check matched all **316 raw committed source blobs** to that gate, and this docs pass changes no helper or frozen evidence.
 The earlier second-attempt reuse/outcome check matched source-5 at its own capture time, not the later modified publisher.
 The qualification tests retain **ten `/bin/sh -n` RUN-body syntax checks only**; those checks execute no RUN body, compiler/version preflight, Cargo build or image operation.
 Production Dockerfiles, the retained local-6 baseline JSON and the LLVM receipt used by static tests remain explicitly bound.
@@ -71,7 +76,8 @@ The separate inventory input-helper **8/64 + strict types + direct Fish syntax**
 The source-6 receipt records acquisition, LLVM payload reads, preparation, publication, LLVM/Cargo execution and host/GPU execution **false during its checks**.
 The pure/mock tests performed no live identity/git-var, origin, rewrite or authentication query.
 The original actual preparation outcome below is separate; source-only false fields describe those checks, not denial of completed preparation.
-No native-build/image/CUDA/current CPU-regression or publication success follows; entrypoints remain **`SOURCE_ONLY_DISABLED`** and `trainingReady:false`.
+No native-build/image/CUDA/current CPU-regression or publication success follows from source-only proof; the separate third outcome below establishes DRAFT publication only.
+Runtime/training entrypoints remain **`SOURCE_ONLY_DISABLED`** and `trainingReady:false`.
 
 ### Historical libdevice research — metadata projection retained; actual preparation recorded separately
 
@@ -113,9 +119,9 @@ Original flags remain unchanged; the later **https-publication-request.json** su
 The only assets are **`host-feasibility-inputs-1.tar.gz`** and **`host-feasibility-inputs-1.manifest.json`**.
 The initial publisher rejected SSH origin metadata before auth/API; that closed failure is retained below.
 The HTTPS transport contract still accepts exact repository SSH metadata while fixing every Git network target to HTTPS.
-The second scope is consumed; the distinct [current identity scope](#current-identity-publication) supplies the one unrun third attempt.
+The second scope is consumed; the distinct [identity scope](#current-identity-publication) supplied the third DRAFT publication, now successful and consumed too.
 No credential/auth/Git configuration changes, overwrite, public release publication, deletion, automatic retry or preparation replay is authorized.
-Operator download/extraction, image builds, compilation, host/GPU execution and training remain **unauthorized**.
+That old transfer grant authorizes no further operator download/extraction or host work; the later [active handoff grant](#current-host-receive) separately approves one bounded operator receive only, never builds/GPU/training.
 All earlier pull/container/cleanup, LLVM/Mise/cache/metadata and other native grants remain spent; that narrow transfer grant did not renew them.
 The download/preparation allowances are now also spent and **cannot be rerun**, even though their original request remains approved in source.
 
@@ -131,8 +137,8 @@ The download/preparation allowances are now also spent and **cannot be rerun**, 
 - The original [publish-prepared.ts](../_work/gpu-owner-recovery/qualification/transfer/publish-prepared.ts) belongs to the closed first attempt.
   [publish-https.ts](../_work/gpu-owner-recovery/qualification/transfer/publish-https.ts) now exports shared `publishPreparedHttps(activeRequest)`; the fresh [publish-inherited-identity.ts](../_work/gpu-owner-recovery/qualification/transfer/publish-inherited-identity.ts) entry supplies the new identity request and source-6 gate.
   [runPublisher](../_work/gpu-owner-recovery/qualification/transfer/publish.ts) runs **at top level**, never inside a `runBounded` worker; only individual commands use `runBounded` with the shrinking remaining publication budget.
-- The unexecuted post-push path creates the asset manifest **after the exact source push**, inside ignored cache, to name that commit without a commit/hash cycle or changed bundle.
-  The first stopped attempt reached neither source push nor manifest creation; this design description is not replay authority.
+- The third attempt created the asset manifest **after the exact source push**, inside ignored cache, to name that commit without a commit/hash cycle or changed bundle.
+  The first two attempts reached neither source push nor manifest creation; the successful third grant is consumed, not replay authority.
   Before release creation and finally, the publisher uses actual `git ls-remote` tag/peeled resolution; only absence or the exact pushed commit is allowed.
   Wrong/malformed refs, changed source/bundle, non-draft/wrong-target releases or unexpected assets stop without repair.
 - Attempts are recorded **before** mutations; `commitSucceeded` becomes `null` after an attempted commit until success is confirmed.
@@ -197,9 +203,9 @@ The attempt did not reach the push-origin query or any GitHub auth/permission AP
 **The first attempt remains consumed; the distinct later HTTPS attempt is now consumed too.**
 Zero commit invocations do not mean that a commit grant was consumed, and they do not leave the stopped publication replayable.
 Do not change the Git remote/auth configuration, rerun the publisher, manually commit/push, clear/reset the stage or rerun preparation under the old request.
-Latest confirmed pushed source remains **`d3bb6bcc6420f50c559ad7260f968578e20cf725`**.
+At that first STOP, the latest confirmed pushed source was **`d3bb6bcc6420f50c559ad7260f968578e20cf725`**; the later third outcome advances it to **`f3e277dbbf33c0aa69172cca1890792656d4cd09`**.
 At the first STOP, Executor reported **122 controlled text paths staged but NOT committed/pushed**.
-That pre-second-attempt state remains chronology; the current expanded **161-file** staging report appears below.
+That state and the later **161-file** stage snapshot remain chronology; the third outcome records **193 controlled changed text paths** in the actual source commit.
 The [stage audit](../_work/gpu-owner-recovery/runs/host-feasibility-inputs-1/stage-audit.json) and its expected pre-attempt snapshot remain historical; these later documentation edits are not a fresh stage-audit result.
 This docs pass changes only working-tree `_spec/` text, never the Git index/stage, requests, audit or receipts.
 Prepared bytes/context/bundle and original source-3 receipt remain retained; current publisher helpers are separately frozen by source-6, not falsely declared unchanged against source-3's old full helper hashes or the second attempt's source-5 gate.
@@ -242,8 +248,8 @@ The exported shared helper now uses the active request's gate; the new third req
 It hashes the original source-3 receipt bytes as lineage; it deliberately does **not** compare source-3's old full helper hash set against the authorized publisher edits.
 `requireUnchangedNative` requires exactly 65 original/current native path+hash entries and unchanged membership in the new gate.
 It revalidates the approved prepared bundle/context identities without recopying LLVM, fetching Cargo or repacking anything.
-Its unexecuted post-commit path requires raw committed Git blobs to match the current publisher gate, with no lazy fetching.
-The unexecuted external manifest path writes **exclusively after the exact source push** in ignored cache, binding publisher proof and original payload lineage without a commit/hash cycle.
+The second attempt never reached its post-commit raw-blob check or external manifest path.
+Those paths subsequently passed under source-6 in the third attempt, with no lazy fetch and an exclusive ignored-cache manifest created **after exact source push**, outside the source commit.
 
 The evidence root `_work/gpu-owner-recovery/runs/host-feasibility-publication-2` **NOW EXISTS**.
 It retains [publication.json](../_work/gpu-owner-recovery/runs/host-feasibility-publication-2/publication.json), [publication.operation](../_work/gpu-owner-recovery/runs/host-feasibility-publication-2/publication.operation), [reuse.json](../_work/gpu-owner-recovery/runs/host-feasibility-publication-2/reuse.json), `publish-01..04` command streams and the separate [verify-outcome.ts](../_work/gpu-owner-recovery/runs/host-feasibility-publication-2/verify-outcome.ts) / [outcome-check.json](../_work/gpu-owner-recovery/runs/host-feasibility-publication-2/outcome-check.json).
@@ -269,7 +275,7 @@ The check's **PASS_RETAINED_FAILURE_RECORD_CHECK_ONLY** is a separate retained o
 It checks retained text/record/source-gate metadata and observes HEAD read-only; it does not reacquire, copy, repack or read prepared payloads.
 This docs pass does not rerun that checker or any query/hash operation.
 
-**Both publication attempts are CONSUMED / STOP.**
+**Both prior publication attempts are CONSUMED / STOP.**
 The second attempt consumed **one actual commit invocation**; unused push/release/upload maxima authorize no retry.
 At that second STOP, inheritance/new proof/a third attempt were not yet approved or implemented.
 Executor has since resolved the three-proposal fork through **Inherit Identity Recommended** and the distinct active request below:
@@ -280,10 +286,10 @@ Executor has since resolved the three-proposal fork through **Inherit Identity R
 
 Do not set/invent an identity, follow captured Git configuration advice, retry either old attempt or replay preparation.
 At the second STOP, Executor reported **161 bounded text files / 2,235,091 text bytes staged**, original 122 preserved, with pub2 evidence untracked and no new HEAD commit.
-That snapshot remains historical; current staging still contains 161 old controlled texts, while identity helpers/request/source-6 proof and latest specs/status are unstaged/uncommitted.
+That snapshot and the later pre-third-attempt unstaged state remain historical; the third source commit now includes the controlled identity helpers/request/source-6 proof and prepublication docs/status.
 This docs pass does not stage/reset or modify those snapshots.
 The [gate-closure outcome](gate-closure.md#current-https-publication) records the same consumed boundary; [gpu-input-transfer.puml](gpu-input-transfer.puml) owns its lineage and environment reasoning.
-Last confirmed push remains `d3bb6bcc6420f50c559ad7260f968578e20cf725`.
+At the second STOP, the last confirmed push was `d3bb6bcc6420f50c559ad7260f968578e20cf725`; the third outcome below confirms `f3e277dbbf33c0aa69172cca1890792656d4cd09`.
 No new functional or hardening gate is introduced here.
 The [host-build proposal](../_work/gpu-owner-recovery/qualification/host-build-proposal.json) keeps its original false/null fields; this grant does not populate or approve operator destination/download, image/native build, host deadline/CPU/RAM or cooperative GPU limits.
 Original requests and both failure receipts remain retained; the HTTPS publisher ran once but its attempt failed at commit, without a source push or broader host/build/GPU grant.
@@ -292,11 +298,12 @@ ALL security/privacy/isolation hardening remains LAST after **ALL planned traini
 
 <a id="current-identity-publication"></a>
 
-#### Inherit Identity publication-3 — implemented/source-6 PASS, APPROVED / UNCONSUMED / NOT RUN
+#### Inherit Identity publication-3 — PASS / grant CONSUMED; DRAFT and two assets verified
 
 Executor selected **Inherit Identity Recommended** after the second STOP.
-The active [identity-publication-request.json](../_work/gpu-owner-recovery/qualification/transfer/identity-publication-request.json) approves **ONE fresh 600s publication attempt**, not replay of either old request.
-It authorizes only the **existing four author/committer fields unchanged**, existing authentication, a private within-budget Git identity check, **one normal commit / one literal fixed-HTTPS commit-OID push / one DRAFT / two named uploads**.
+The [identity-publication-request.json](../_work/gpu-owner-recovery/qualification/transfer/identity-publication-request.json) supplied **ONE fresh 600s publication attempt**, not replay of either old request.
+The approved top-level invocation completed **PASS**, consuming **one normal commit / one literal fixed-HTTPS commit-OID push / one DRAFT / two named uploads** with existing auth and unchanged inherited identity.
+Its original approval projection stays byte-unchanged; the retained outcome now closes that grant with **zero further attempt/commit/push authority**.
 Repository, branch, tag, assets, original **140,694,281-byte bundle/context identities** and **65 native inputs** retain the exact bounds above.
 It authorizes no identity value changes/persistence, configuration changes, hooks bypass, automatic retry, download/copy/repack/preparation replay, operator download/extraction, image/native build, host/GPU execution or training.
 
@@ -307,29 +314,129 @@ The new private `identity-preflight` first requires all four fields, then querie
 Both queries use the shrinking publication deadline and **64 KiB** buffer cap; they require exit 0, empty stderr and nonempty stdout.
 Only the Boolean callback decision reaches publication status; raw identity output stays in memory, outside persisted command streams.
 False stops with **EXISTING_GIT_IDENTITY_NOT_ACCEPTED** before mutations.
-This implements the approved bounded check, not a new identity-hardening gate or a live-query PASS.
+The actual private `identity-preflight` passed once within the publication budget; no raw identity output or identity values enter these docs.
+This is the selected bounded check, not a new identity-hardening gate.
 Private origin/rewrite handling and literal HTTPS/verified commit-OID push remain unchanged, with no config setters or hooks bypass.
 
-The fresh top-level entry is [publish-inherited-identity.ts](../_work/gpu-owner-recovery/qualification/transfer/publish-inherited-identity.ts).
-It checks the identity scope and calls exported **publishPreparedHttps(activeRequest)** from [publish-https.ts](../_work/gpu-owner-recovery/qualification/transfer/publish-https.ts).
+The single completed top-level entry was [publish-inherited-identity.ts](../_work/gpu-owner-recovery/qualification/transfer/publish-inherited-identity.ts), calling exported **publishPreparedHttps(activeRequest)** from [publish-https.ts](../_work/gpu-owner-recovery/qualification/transfer/publish-https.ts).
 The shared helper preserves original preparation/source-3 receipt/native65/bundle/context/first-failure lineage and uses **source-6**, not obsolete full source-3 or source-5 helper hashes, for current publisher proof.
 Its optional `priorFailure` validates the retained second FAIL at commit with **commit 1 / push 0 / createRelease 0 / upload 0**.
 Source-6 additionally freezes the second publication/reuse/outcome metadata; no old receipt or `commitSucceeded:null` value changes.
-Post-hook raw committed Git blobs must match the active gate without lazy fetch; the external manifest stays exclusive and post-exact-source-push.
+Post-hook raw committed Git blobs matched the active gate without lazy fetch; the exclusive external manifest was created after exact source push and intentionally remains outside that commit.
 Reuse validation checks existing identities; it is not another preparation, LLVM prefix read/copy, Cargo fetch or repack grant.
 
 The exact current gate is [gpu-input-transfer-source-6/receipt.json](../_work/gpu-owner-recovery/runs/gpu-input-transfer-source-6/receipt.json): **316 hashes / 89 helper tests / 438 assertions / 37 qualification tests / 280 assertions / four typechecks**, six PASS/exit-0 stages and unchanged native65.
-Its source-only/mocked identity evidence establishes no actual Git-var, auth, origin or rewrite result.
-**No third publication attempt or actual identity/Git-var/auth/origin/rewrite query has run since selection.**
-Future root `_work/gpu-owner-recovery/runs/host-feasibility-publication-3` is **ABSENT / NOT CREATED**.
-No coverage glob claims it exists; future outcomes must use it without overwriting either consumed STOP or original preparation.
-Current source-6-covered files remain frozen; this docs pass edits no helper/request/receipt and reruns no test/checker/hash/query.
-The parent will stage controlled text/new proof and invoke top-level **publish-inherited-identity** once after ordinary reviews; **no new authorization is needed within this fresh scope**.
-Old 161-file/source-5 staging snapshots remain earlier-slice history; new helper/spec/status/source-6 changes remain unstaged/uncommitted at this boundary.
-Last confirmed push remains `d3bb6bcc6420f50c559ad7260f968578e20cf725`.
-The [gate-closure identity scope](gate-closure.md#current-identity-publication) records the same authority; [gpu-input-transfer.puml](gpu-input-transfer.puml) owns the environment/lineage contracts.
-No publication success, functional readiness or broader execution authority follows; native65/Rust/math/F64/C12/CPU/master/production recipes stay unchanged, entrypoints disabled and `trainingReady:false`.
+Its source-only/mocked checks remain separate from the actual publication outcome.
+The now-existing [publication-3 receipt](../_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publication.json) records **PASS**, `failure:null`, `failedStep:null`, **21,178.921619 ms** and `commitSucceeded:true`.
+Its root also retains `publication.operation`, [reuse.json](../_work/gpu-owner-recovery/runs/host-feasibility-publication-3/reuse.json), **publish-01..17** streams, [verify-outcome.ts](../_work/gpu-owner-recovery/runs/host-feasibility-publication-3/verify-outcome.ts) and [outcome-check.json](../_work/gpu-owner-recovery/runs/host-feasibility-publication-3/outcome-check.json) plus stdout/stderr.
+The bounded root is now covered/indexed; both prior STOPs and original preparation remain unchanged.
+
+| Actual third-attempt result | Retained evidence / boundary |
+|---|---|
+| Mutations | **commit 1 / push 1 / createRelease 1 / upload 2**; no retry or pipeline replay |
+| Source/pushed commit | **`f3e277dbbf33c0aa69172cca1890792656d4cd09`**, normal commit and explicit `https://github.com/proveo-ca/chess-coach.git` OID push to `feat-ml-adjuntant-ii` |
+| Private checks/callbacks | **checkIdentity 1 / checkOrigin 6 / checkTransport 4**, all PASS, rewrite rules 0; **validateFrozen 3 / commitManifest 1** PASS |
+| Reuse | **PASS_UNCHANGED_PREPARED_BYTES_AND_CURRENT_PUBLISHER**, original native65/source-3/bundle/context/both failures plus current source-6; no download/copy/repack/compilation |
+| Release | **439935095**, **draft:true**, **published_at:null**, target exact source OID, `tag_name:gpu-feasibility-inputs-20261110-1` |
+| Final Git tag lookup | Empty retained `publish-17/command.stdout`: **ABSENT_WHILE_DRAFT**, accepted; API `tag_name` is not a created remote Git tag or public release |
+| Source commit boundary | **193 controlled changed text paths**, matching stage audit; no binary/cache payloads; prepublication docs/status only |
+
+The final retained API supplies the actual [DRAFT release HTML URL](https://github.com/proveo-ca/chess-coach/releases/tag/untagged-56714ddf138f3c4ba16c).
+Both final assets have **state:uploaded** and matching size/SHA-256 metadata:
+
+| Asset / ID | Bytes | SHA-256 |
+|---|---:|---|
+| `host-feasibility-inputs-1.tar.gz` / **730047564** | **140,694,281** | `9001bfeb88ce5433138d5f0fd23b3c7ab0590cc0bd47900cc1c0a1d6923c65f7` |
+| `host-feasibility-inputs-1.manifest.json` / **730048215** | **868,843** | `2676780f2b932d0453fef05ad39581152f47efeaea11ae22b9079875fece1829` |
+
+The separate checker records **PASS_RETAINED_PUBLICATION_EVIDENCE_ONLY**.
+It rehashed the external sidecar and checked its source/gate binding, validated the retained final API's exact DRAFT/target/tag/two uploaded asset metadata, checked **316 raw committed source hashes** and **193 controlled changed text paths** against stage audit, and hashed **38 pre-check evidence files**.
+It repeated **no live GitHub query**, download/copy/repack or preparation; this docs pass reruns neither it nor any hash/query/payload read.
+The sidecar was written **after source push**, intentionally uncommitted to avoid a source-commit/hash cycle; publication outcomes likewise do not belong inside the source commit they describe.
+
+Last confirmed push is now **`f3e277dbbf33c0aa69172cca1890792656d4cd09`**.
+Executor reports local `origin` tracking still at `d3bb6bcc6420f50c559ad7260f968578e20cf725` after the explicit-URL push; `ahead 1` does not establish an unpushed commit, and no fetch is needed or authorized.
+Earlier 122/161-file/source-5 stage snapshots remain history, not the final source-6 commit audit.
+Executor reports pub3 outcome evidence and postpublication docs/status remain **LOCAL / UNCOMMITTED**; this pass does not stage, commit or push them. The consumed asset-publication grant provides no extra allowance, while the later [active handoff request](#current-host-receive) separately approves their controlled inclusion in one future source commit/push.
+Source-6 helpers/requests/proof and every historical receipt remain frozen.
+The [gate-closure outcome](gate-closure.md#current-identity-publication) records the same consumed boundary; [gpu-input-transfer.puml](gpu-input-transfer.puml) owns environment/lineage contracts.
+
+**Upgrade complete: input preparation + DRAFT publication only.**
+Offline-build completeness stays **UNPROVEN**; original preparation sizes/missing-archive counts and all bounds remain unchanged, with no compiler/Cargo/GPU execution in this publication step.
+The [active host-receive handoff grant](#current-host-receive) now approves the exact combined coding-publication/operator-command scope; both allowances are unconsumed/unrun, and build/GPU/training remain excluded.
+No functional readiness follows: native65/Rust/model/F64/all 4,670 coordinates/exact C12/CPU Flex/masters `101..105`/production recipes remain unchanged; canonical BOTH/reference/orderly-close/R4/telemetry/coexistence remain unproved, runtime/training entrypoints disabled and `trainingReady:false`.
 ALL security/privacy/isolation hardening remains AFTER **ALL planned training completes and results validate**, with no new gates.
+
+<a id="current-host-receive"></a>
+
+#### Publish+receive Recommended selected — separate coding/operator allowances APPROVED / UNCONSUMED / UNRUN
+
+Executor corrected the prior stop: **"stop only when a decision of a host command verification is needed"**.
+The lead continued source work to the exact combined decision with a reviewed standalone receiver/bootstrap and retained source-only proof.
+Executor has now resolved that fork by selecting **Publish+receive Recommended**, not a new planning question:
+
+| Resolved choice | Exact scope |
+|---|---|
+| **Publish+receive Recommended — SELECTED** | ONE fresh coding normal commit + fixed-HTTPS push <=600s of reviewed helper/evidence, then ONE bounded operator receive command <=900s at its actual helper-handoff OID; no new release/assets/uploads |
+| **Adjust host destination — NOT SELECTED** | No destination change or new source rework is authorized by this selection |
+| **Defer — NOT SELECTED** | No longer the selected route; neither approved allowance has run yet |
+
+The distinct active [handoff-1/request.json](../_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/request.json) records **APPROVED_ONE_SOURCE_PUBLICATION_AND_ONE_OPERATOR_RECEIVE_INVOCATION**, from Executor's **Publish+receive Recommended** selection.
+It approves one normal coding commit/one literal fixed-HTTPS commit-OID push to **feat-ml-adjuntant-ii** within **600s**, existing identity/auth only, and one operator receive invocation within **900s** under the unchanged command bounds below.
+Both allowances are **APPROVED / UNCONSUMED / UNRUN**; no fresh source publication, helper fetch, asset download, extraction or host execution has occurred.
+The [plan.json proposal](../_work/gpu-owner-recovery/qualification/host-receive/plan.json) keeps **codingSourcePublicationApproved:false / operatorReceiveCommandApproved:false** unchanged as history, not current authority.
+The referenced [host-command-approval.json proposal](../_work/gpu-owner-recovery/runs/host-input-receive-source-2/host-command-approval.json) likewise retains its original **AWAITING/false** fields; the active request supplies the later authority without rewriting either proposal or replaying any old grant.
+All old publication/host grants remain consumed.
+The [focused owning diagram](gpu-host-receive.puml) documents the contract; [transfer](gpu-input-transfer.puml), [qualification](gpu-qualification.puml) and [build](gpu-build.puml) reference it rather than duplicating receiver internals.
+
+**Keep the two source identities distinct.** Asset source stays **`f3e277dbbf33c0aa69172cca1890792656d4cd09`**, with unchanged DRAFT **439935095**, manifest **730048215** and bundle **730047564**, sizes/SHA identities [recorded above](#current-identity-publication).
+The reviewed standalone [receive.ts](../_work/gpu-owner-recovery/qualification/host-receive/receive.ts) is **17,994 bytes**, SHA-256 **`091a431757ef83710a95156816e085cb1ed36b632e4923c9632695ffe821bafa`**.
+Only its **actual future helper-handoff commit OID** remains late-bound; the helper hash is fixed, and the source proof's zero-OID template is not an approved runnable command.
+The approved future helper commit publishes reviewed source/evidence/docs, including retained pub3 outcomes/postpublication records, not new assets or a replacement asset-source commit; retained remote Git tag remains **ABSENT_WHILE_DRAFT**, not created/published.
+
+The [source-2 receipt](../_work/gpu-owner-recovery/runs/host-input-receive-source-2/receipt.json) records **PASS_HOST_RECEIVE_SOURCE_ONLY**, `failure:null`, `sourceChanged:false`, **34 receiver tests / 352 assertions**, **89 transfer tests / 438 assertions**, **37 qualification tests / 280 assertions** and **five typechecks**, eight stages PASS/exit 0.
+[Source-1](../_work/gpu-owner-recovery/runs/host-input-receive-source-1/receipt.json) remains historical **31 receiver tests / 280 assertions**, before the final fixes.
+Fish syntax remains **NOT RUN** in coding: `/usr/bin/fish` absent, Mise shim unconfigured; no installation is authorized, and pure quote fixtures do not prove Fish parsing.
+The source-proven [bootstrap.ts](../_work/gpu-owner-recovery/qualification/host-receive/bootstrap.ts) embeds host `fish --no-config -n` before helper fetch, with pure one/two/three-layer backslash/apostrophe quote round trips.
+
+The new [publish-source.ts task script](../_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/publish-source.ts) implements **coding source publication only**, not the operator command or asset upload.
+Its single shrinking **600s** clock covers private in-memory Git origin/rewrite/identity metadata, same child cwd/environment and **64 KiB** private-query bound, existing identity/auth without configuration mutation.
+It requires an empty initial index and audits exact allowed helper/evidence/doc roots as regular UTF-8 controlled text, <=**4 MiB/file / 16 MiB aggregate**, with payload/cache/home/tmp/node_modules/target excluded.
+It stages the controlled text and audit, makes one normal commit, validates all **318 frozen source-2 hashes/raw committed Git blobs** and the original **65 native identities**, rechecks transport/branch, and pushes the inspected OID once to the literal approved HTTPS URL without lazy fetch or hooks bypass.
+Only after successful source push and frozen/HEAD checks does it render the literal operator command using that actual helper OID and fixed SHA, writing exclusive future `host-command.fish` and `handoff.json`.
+Its future successful status is **PASS_SOURCE_PUBLISHED_OPERATOR_OUTPUT_PENDING**, not an operator receive PASS.
+Executor reports **strict standalone task-script TSC PASS**; that is separate from the unchanged source-2 five-typecheck receipt, not another combined runtime/host verification.
+The handoff run directory currently contains **request.json and publish-source.ts only**.
+`publication.started`, `stage-audit.json`, command captures, `publication.json`, `host-command.fish` and `handoff.json` are **ABSENT / NOT GENERATED**; its bounded root coverage does not claim those individual outputs exist.
+Parent will run the approved source publication once after ordinary review, then provide the exact pinned operator command and **stop only awaiting operator receipt/stdout verification**; no new authorization/planning/diff/helper-completion gate is needed inside this selected scope.
+
+| Approved operator-command bound | Source contract, not executed evidence |
+|---|---|
+| Outer worker | GNU timeout TERM **895s** + KILL grace **5s**, within **900s** worker budget; surviving parent owns exclusive bootstrap evidence and retains `command.exit` even after worker timeout |
+| Helper fetch | ONE plaintext GitHub contents GET at the actual full helper OID, explicit `--hostname github.com`, TERM **55s** + KILL grace **5s**; **128 KiB post-fetch soft admission**, then fixed SHA check before execution |
+| Asset downloads | Exact manifest asset first, validate it, then exact bundle asset; explicit GitHub hostname, exact bytes/SHA, **one shared 600s** deadline checked after every completion including the last |
+| Archive/verification | Standard GNU tar listing exactly matches unique union of **3,939 manifest rows + five literal roots**, then **one extraction** into fresh context; listing/extraction/verification share **180s** inside outer **900s** |
+| Extracted context | **3,800 regular-file hashes / 137 recorded directories / two recorded LLVM links / embedded native65 manifest**, **429,218,730 bytes**, <=3 GiB |
+| Workspace | >=**8 GiB** initial free, <=**8 GiB soft workspace use**, bundle <=1 GiB; no filesystem-quota or physical-containment claim |
+| Failure accounting | Increment attempts before work; hash/count actual retained bytes after each partial write; preserve partial files/status, no retry/delete/overwrite |
+
+Only the child command environment drops `TAR_OPTIONS`; parent/global configuration remains unchanged, and no new tar engine/arbitrary-archive auditor is introduced.
+The file-kind scope is the known generated/published bundle, not the old halted LLVM archive pipeline.
+Use only existing **Bun 1.4.0, gh, Fish, GNU tar/coreutils and authentication**; Mise auto-install stays false, with no installation, new login or auth/config change.
+Approved but uncreated host workspace is `_work/gpu-owner-recovery/cache/host-receive-1`; receiver receipt is `_work/gpu-owner-recovery/runs/host-input-receive-1/receipt.json`; parent-owned bootstrap evidence is the separate `_work/gpu-owner-recovery/runs/host-input-bootstrap-1`.
+Those host outputs remain **ABSENT** and deliberately uncovered; the existing handoff directory alone gains bounded coverage alongside actual source-1/source-2 proofs.
+
+Executor reports DevOps `ses_e3ec46b44ffe7CbnV5rwv23shT` READY **to present this combined decision**, adversarial `ses_e3c122320ffdrHp4JsMATl2iN7` all four findings resolved/READY, and scoped security `ses_e3cea2a12ffe9TMeXvXBhDE8n7` accepting two MEDIUM fixes.
+Those preselection source-review verdicts were not operation authority; Executor's later active request now supplies it and adds no further gate.
+Last confirmed push stays **`f3e277dbbf33c0aa69172cca1890792656d4cd09`**; local stale origin tracking/ahead 1 does not prove new unpushed work or require an unauthorized fetch.
+The approved controlled source commit may include currently local/uncommitted pub3 evidence and postpublication docs; it has not happened yet, and this pass stages/commits/pushes nothing.
+No configuration/auth changes, installs, retry/overwrite/delete, new release/assets/uploads, coding payload acquisition/copy/repack, LLVM/Cargo execution, image/native build, GPU or training operation is authorized; no unrelated template-fetch or maintenance publication belongs to this fresh scope.
+Helpers/source proofs remain frozen; this docs pass changes no source/helper/proposal/receipt, runs no command/test/render/query/agent and reads no payload.
+Prepared Cargo still has **568 archives / 618 index files / 103 missing archives / zero missing metadata**; `completeOfflineBuildCoverageQualified:false` remains honest, not fetch authority or offline-build proof.
+No coding-prefix payload read/copy, refetch/repack, preparation replay, LLVM/Cargo/Docker/native compilation, GPU or training command is authorized.
+Native65/Rust/model/F64/all 4,670 coordinates/`eps=1e-6`/`atol=1e-8`/`rtol=1e-5`/exact C12/CPU Flex/masters `101..105`/production recipes remain unchanged; BOTH/reference/orderly-close/R4/telemetry/coexistence remain unqualified, runtime/training entrypoints disabled and `trainingReady:false`.
+ALL security/privacy/isolation hardening remains LAST, after **ALL planned training completes and results validate**, with no extra gate.
+The [gate-closure grant](gate-closure.md#current-host-receive) records the same approved/unconsumed/unrun boundary.
 
 <a id="current-input-inventory"></a>
 
@@ -395,7 +502,7 @@ These are newly retained coding-side records normalized from pasted output, **no
 This report **clears the pinned Rust-image acquisition blocker at report scope**; do not describe the current state as image still absent, pull pending or an unexecuted available grant.
 It does not establish compiled builder ABI/native linking, a built qualification image, actual GPU work or training readiness.
 The original summary's pre-handoff publication `2c17a189ecba08cb7078ea8daf991317d09c3ef1` remains correct historical context.
-The latest lead-confirmed pushed commit is now **`d3bb6bcc6420f50c559ad7260f968578e20cf725`**; the actual operator-executed commit remains unknown.
+The latest confirmed pushed commit is now **`f3e277dbbf33c0aa69172cca1890792656d4cd09`**; the earlier `d3bb6bcc6420f50c559ad7260f968578e20cf725` remains history, and the actual operator-executed commit stays unknown.
 That unknown does not add a hardened source-custody gate.
 This docs pass claims no post-record review acceptance.
 
@@ -424,8 +531,8 @@ It specifies per-command tool/library result handling and plaintext phase/receip
 Those prescribed bounds and source declarations are not independently verified by the pasted 11-second summary.
 The original request and older approval projections remain history, **NOT RERUN**; the report grants no new install/acquisition, LLVM query/prefix-payload read, copy/staging, build, GPU or training operation.
 The coding agent must not invoke Docker or any host tool or repeat the spent coding inventory/LLVM queries.
-The broader host operational packet remains unresolved; original preparation and both publication attempts are consumed.
-The [second HTTPS outcome](#current-https-publication) records the commit failure, not replay authority; the distinct [active identity request](#current-identity-publication) approves one unrun third attempt without expanding host scope.
+The broader host operational packet remains unresolved; original preparation and all three publication attempts are consumed.
+The [second HTTPS outcome](#current-https-publication) records its closed failure; the distinct [third identity outcome](#current-identity-publication) records DRAFT publication PASS, not replay authority or expanded host scope.
 Host builds, actual GPU qualification and training still require separate explicit scope; do not repeat the spent inventory or add full-assurance gates.
 ALL security/privacy/isolation hardening remains LAST, after **ALL planned training completes and results validate**; full-assurance gates remain OPEN and `trainingReady:false` remains unchanged.
 
@@ -507,13 +614,13 @@ The later transfer request separately permitted that bounded payload copy, now c
 
 The [host input packet](../_work/gpu-owner-recovery/qualification/host-inputs.json) consolidates context roles, image pins, exact campaign ordering/paths and proposed limits without approving any operation.
 All its acquisition, installation, context-copy/staging, image-build, host-execution, GPU-execution and training approval fields are **false**.
-The old packet retains its original null selections; source packaging, completed preparation, both consumed FAILs and the separate approved/unconsumed identity attempt are recorded separately, while host build/GPU bounds remain unapproved.
+The old packet retains its original null selections; source packaging, completed preparation, both consumed FAILs and the successful/consumed third DRAFT publication are recorded separately, while host build/GPU bounds remain unapproved.
 Proposed per-campaign timings are not approved bounds, so this is **not a complete approved runnable host packet**.
 The Rust pin's old `ABSENT` field remains unchanged only as historical projection; current operator details are received as concatenated paste, not original streams. Bun was last reported cached, not freshly inspected here, with no new Bun grant.
 The original Draft-assets choice/failure are historical; Executor has resolved the transport fork through the [distinct explicit-HTTPS request](#current-https-publication), without rewriting old false/null fields.
 No prior pull/container/cleanup, download/preparation or first-publication allowance remains; zero original commit invocations do not permit replay.
 The distinct second publication attempt is also consumed, including one actual commit invocation.
-The later [identity request](#current-identity-publication) independently approves the implemented inheritance repair/source-6 proof and one unrun third attempt, not preparation or prior-attempt replay.
+The later [identity request/outcome](#current-identity-publication) independently supplied the successful third DRAFT publication, now consumed; no preparation/prior-attempt replay or further commit/push is authorized.
 Native/image builds, host/GPU campaigns and training still need separate explicit scope.
 Prior Rust-install, Cargo-fetch, LLVM-metadata/version and visibility grants remain consumed, as do the flag-query batch and coding metadata walk.
 Canonical init/BOTH/independent-reference/orderly-close proof, integrated R4, operational activation/five-master scheduling and accepted selected-path telemetry/coexistence remain outside this qualification.
@@ -1020,7 +1127,7 @@ The cooperative policy rejects expired old leases before accepting replacement t
 Legacy NVIDIA runtime/device-request injection is only a candidate with independently required inventory; inspect cannot certify hidden OCI/loader closure.
 Actual UUID, thresholds, controls/paths, state/evidence locations, provider, image, proc permissions, provider caching, and Gate0 acceptance remain unset.
 Both ordinary new mains remain disabled; host/GPU/image/capture/build/production/acquisition/training operations still need separate exact grants.
-The [second publication-only attempt](#current-https-publication) failed at commit and stays consumed; the [active identity scope](#current-identity-publication) separately approves the implemented repair/source-6 proof and one unrun third attempt, without functional readiness.
+The [second publication-only attempt](#current-https-publication) failed at commit and stays consumed; the separate [third identity outcome](#current-identity-publication) is DRAFT publication PASS/consumed, without functional readiness or further mutation authority.
 Historical input restoration recorded `TOOLCHAIN_OWNER_DEFAULT_CPU_RESTORED` / `LOCKED_INPUTS_RESTORED_AND_FRESHLY_VERIFIED`: Rust `1.95.0` minimal/rustfmt/Clippy, restored Zig `0.15.2` CPU linker, and selected locked owner/default-CPU inputs under scoped minimal-config mise trust; root mise remains untrusted/unchanged.
 That earlier restoration status is not current build/GPU readiness: local-4 absence and local-5 cache failure are historical, while the separate install/cache grants now completed and local-6 passed three actual offline feature trees; no compiled host coupling, build or fresh CPU regression follows.
 Zig restoration changes no CUDA compiler route and supplies no CUDA/LLVM/NVIDIA/SDK/image/host/GPU grant.

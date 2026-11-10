@@ -1,0 +1,155 @@
+@startuml gpu_host_receive
+' purpose: approved but unrun source-only handoff publication and one bounded operator receive invocation, with immutable proposal history and distinct helper/asset identities
+' covers: _work/gpu-owner-recovery/qualification/host-receive/**
+' covers: _work/gpu-owner-recovery/runs/host-input-receive-source-1/**
+' covers: _work/gpu-owner-recovery/runs/host-input-receive-source-2/**
+' covers: _work/gpu-owner-recovery/runs/host-feasibility-publication-3/outcome-check.json
+' covers: _work/gpu-owner-recovery/runs/host-feasibility-inputs-1/preparation.json
+' covers: _work/gpu-owner-recovery/runs/host-feasibility-inputs-1/context-manifest.json
+' covers: Cargo.lock
+' covers: _work/gpu-owner-recovery/runs/host-input-receive-handoff-1/**
+' status: SOURCE_IMPLEMENTED / SOURCE_2_PASS_HOST_RECEIVE_SOURCE_ONLY / PUBLISH_PLUS_RECEIVE_SELECTED / CODING_AND_OPERATOR_GRANTS_APPROVED_UNCONSUMED_UNRUN / FISH_SYNTAX_NOT_RUN / trainingReady:false
+' see: _spec/gpu-input-transfer.puml
+' see: _spec/gpu-qualification.puml
+' see: _spec/gpu-build.puml
+' see: _spec/gpu-readiness.md#current-host-receive
+' see: _spec/gate-closure.md#current-host-receive
+' proposal history: plan.json false flags and source-2/host-command-approval.json AWAITING/false fields remain immutable, not current authority; all old operational grants stay consumed
+' resolved decision: Executor selected Publish+receive Recommended; active handoff-1/request.json separately approves coding commit 1/fixed-HTTPS push 1 <=600s plus operator receive invocation 1 <=900s, both unconsumed/unrun
+' authority: active request binds frozen source-2 proof and fixed helper SHA; only actual future helper-handoff OID late-bound, no new planning/approval question within this scope
+' source-2: receipt.json PASS_HOST_RECEIVE_SOURCE_ONLY, failure:null/sourceChanged:false; 34 receiver tests/352 assertions + 89 transfer/438 + 37 qualification/280 + five typechecks, eight stages PASS exit 0
+' helper: receive.ts 17,994 bytes / SHA-256 091a431757ef83710a95156816e085cb1ed36b632e4923c9632695ffe821bafa
+' publisher source: handoff-1/publish-source.ts implements source-only publication, private metadata in memory/64 KiB/same cwd+env+remaining clock, controlled UTF-8 audit, frozen source-2 318 source hashes/raw committed blobs and original native65; no operation has run
+' script verification (Executor-reported): strict standalone TSC PASS, separate from unchanged source-2 34/352 + 89/438 + 37/280 + five typechecks; no checker rerun here
+' current handoff directory: request.json + publish-source.ts ONLY; publication.started/stage-audit.json/command captures/publication.json/host-command.fish/handoff.json ABSENT, no generated evidence claim
+' continuation: parent publishes approved reviewed source once after ordinary review, then supplies literal command pinned to actual pushed helper OID; stop only awaiting operator receipt/stdout verification, not another planning/diff/helper-done decision
+' history: source-1 PASS with 31 receiver tests/280 assertions predates final fixes; neither source receipt proves Fish syntax, helper publication, asset acquisition or host execution
+' template: _spec/template.txt absent; no remote template fetched, no commands/render/network/agents in this docs-only pass
+' note ratchet: no TestSpecNotesFitTheBox/specNotesEnforced implementation exists in the inspected tree; notes checked manually
+' readability: manual words/sentences/syllables; lineage 31/2/59 FK 12.9; quoting 31/2/53 FK 10.6; parent timeout 30/2/55 FK 11.9; tar environment 30/2/56 FK 12.3; partial writes 33/2/55 FK 10.5
+title Publish+receive selected - coding publication and operator receive APPROVED / UNCONSUMED / UNRUN
+
+actor Executor as EXECUTOR
+participant "_work/gpu-owner-recovery/runs/\nhost-input-receive-handoff-1/publish-source.ts" as CODE
+participant "git\nfixed HTTPS source transport" as GIT
+participant "bootstrap.ts\nrenderHostReceive / quoteFish" as BOOT
+participant "Host Fish\nparent + timed worker" as FISH
+participant "receive.ts\nstandalone main / receive" as RECEIVE
+participant "gh api\n--hostname github.com" as GH
+participant "GNU tar" as TAR
+participant "Host filesystem\nPLANNED outputs only" as FILES
+
+EXECUTOR -> CODE : SELECTED Publish+receive Recommended\nactive request approves two separate one-shot allowances
+group APPROVED / UNCONSUMED / NOT RUN - no further scope question
+  CODE -> CODE : FUTURE one shrinking 600s publication clock\nprivate origin/rewrite/identity metadata in memory\nexisting auth/identity, no config changes
+  CODE -> CODE : FUTURE frozen source-2 318 hashes/native65\nempty index + controlled UTF-8 audit/stage\n4 MiB per file / 16 MiB text total, no payload/cache
+  CODE -> GIT : FUTURE one normal commit\nthen inspect actual OID and raw committed 318 blobs
+  GIT --> CODE : future exact helper-handoff OID, not asset OID\npost-hook frozen checks/transport/branch must pass
+  CODE -> GIT : FUTURE one fixed-HTTPS OID:branch push\nhttps://github.com/proveo-ca/chess-coach.git
+  GIT --> CODE : require successful push, unchanged HEAD\nand frozen reviewed source before handoff output
+  CODE -> BOOT : AFTER exact source push, render actual handoff OID\nfixed reviewed helper SHA, never placeholder zeros
+  BOOT --> CODE : FUTURE literal host command after successful push\nexclusive host-command.fish + handoff.json
+
+  note over CODE,BOOT
+    Receiver changes need their own source commit,
+    not a different identity for prepared assets.
+    The fixed asset commit preserves preparation
+    lineage while the separate handoff selects
+    only the reviewed standalone helper.
+  end note
+
+  CODE --> EXECUTOR : FUTURE provide exact pinned operator command\nthen await operator receipt/stdout verification
+  EXECUTOR -> FISH : FUTURE one already-approved operator invocation\nthree quote layers; no placeholder or new approval
+
+  note over BOOT
+    Nested quoting preserves backslashes and
+    apostrophes through each Fish command layer.
+    Pure fixtures establish string round trips,
+    not shell syntax, so the operator command
+    checks Fish syntax before fetching its helper.
+  end note
+
+  FISH -> FILES : parent exclusively creates bootstrap evidence\nno mkdir -p/reuse/overwrite/deletion
+  FISH -> FISH : GNU timeout TERM 895s + KILL grace 5s\nworker budget <=900s; host fish -n before fetch
+
+  note over FISH
+    The outer Fish parent survives worker timeout
+    so exit capture retains the actual status.
+    Its deadline includes a termination grace,
+    not another workload allowance or proof
+    of physical host containment.
+  end note
+
+  FISH -> FISH : existing Bun 1.4.0, gh, Fish, GNU tar/coreutils\nMise auto-install false; no login/config/install
+  FISH -> GH : one plaintext contents GET at actual helper OID\nTERM 55s + KILL grace 5s, hostname github.com
+  GH --> FISH : retain source/exit; <=128 KiB post-fetch soft cap\nverify fixed SHA before Bun --no-env-file --no-install
+  FISH -> RECEIVE : --approved-host-receive-1 + actual helper OID\nstandalone imports node: only
+  RECEIVE -> FILES : pinned Cargo.lock/Bun preflight\nexclusive receive evidence + fresh workspace/context\n>=8 GiB free; workspace <=8 GiB soft usage
+  RECEIVE -> RECEIVE : child environment removes TAR_OPTIONS only\nno global environment/configuration mutation
+
+  note over RECEIVE,TAR
+    The tar environment can request extra commands
+    outside this bounded archive extraction.
+    Removing its options only in the child
+    preserves the global configuration while
+    keeping the existing extractor in use.
+  end note
+
+  group Two asset GETs share one shrinking 600s deadline
+    RECEIVE -> GH : manifest asset ID 730048215 FIRST\n868,843 bytes + exact fixed SHA-256
+    GH --> RECEIVE : retained bytes/digest/exit, then deadline check
+    RECEIVE -> RECEIVE : validate assetSourceCommit f3e277d + bundle identity\n3,939 manifest rows/native65/offline limitation
+    RECEIVE -> GH : bundle asset ID 730047564 SECOND\n140,694,281 bytes + exact fixed SHA-256
+    GH --> RECEIVE : retained bytes/digest/exit, then deadline check\nlast download cannot reset or escape the deadline
+  end
+
+  note over RECEIVE
+    A failed write can leave only part of a chunk
+    in the retained command output.
+    Hashing completed write operations preserves
+    evidence of the bytes, rather than describing
+    data that the filesystem never accepted.
+  end note
+
+  group Listing, extraction and verification share 180s within total 900s
+    RECEIVE -> TAR : standard GNU tar -t / gzip, bounded listing\nexact unique set = manifest rows UNION five roots
+    TAR --> RECEIVE : list <=2 MiB; mismatch stops before extraction
+    RECEIVE -> TAR : extract ONCE into fresh owned context\n--no-same-owner, no replacement archive engine
+    RECEIVE -> FILES : verify 3,800 regular hashes + 137 recorded dirs\n2 recorded LLVM links + embedded native65 manifest\n429,218,730 context bytes <=3 GiB
+  end
+  RECEIVE -> FILES : exclusive receive receipt, actual attempts/artifact hashes\nPASS_HOST_RECEIVE_AND_EXTRACT_ONLY only if complete\noffline build unproven / trainingReady:false
+  RECEIVE --> FISH : retain receive stdout/stderr/exit; print receipt if present
+  FISH -> FILES : surviving parent records command.exit\nretain partial files, no retry/delete/overwrite
+end
+
+legend bottom
+  This is implemented source behavior, not executed publication/host evidence. Publish+receive Recommended is now selected; the active handoff-1/request.json approves coding and operator allowances separately, both UNCONSUMED/UNRUN.
+  The combined HOST-command decision is resolved, not a new planning question. Parent will perform the approved source publication once after ordinary review, provide the exact pinned command, and stop only awaiting operator receipt/stdout verification; no planning/diff/helper-completion authorization gate.
+  Preserve historical plan.json false flags and source-2/host-command-approval.json AWAITING/false fields unchanged; active handoff-1/request.json supplies distinct authority, never replay of an old consumed grant. Adjust destination/defer were not selected.
+  Approved coding scope: normal commit 1/fixed-HTTPS push 1 <=600s, reviewed helper/evidence/docs including retained pub3 outcomes, existing identity/auth only, no new DRAFT/release/assets/uploads or unrelated template/maintenance publication.
+  publish-source.ts keeps expanded origin/rewrite/identity outputs private in memory, 64 KiB query buffer, same child cwd/env and shrinking clock; no private-query output persistence, config setters/new auth, hooks bypass or retry.
+  Controlled text audit requires empty initial index, exact allowed helper/evidence/doc roots, regular UTF-8 files without NUL, <=4 MiB/file and <=16 MiB aggregate, no home/tmp/cache/node_modules/target or binary payload; stage audit precedes normal commit.
+  Frozen checks bind source-2 PASS, fixed helper SHA, all 318 recorded source hashes and original 65 native identities; raw committed Git blobs must match after hooks with lazy fetch disabled, transport/branch rechecked before literal HTTPS commit-OID push.
+  handoff-1 directory NOW EXISTS with request.json + publish-source.ts only. Future publication.started/stage-audit.json/command-* captures/publication.json/host-command.fish/handoff.json are ABSENT; bounded root coverage does not assert those individual outputs exist.
+  Only AFTER successful exact source push and post-push frozen/HEAD checks does the script write literal host-command.fish/handoff.json, with future PASS_SOURCE_PUBLISHED_OPERATOR_OUTPUT_PENDING. No helper handoff OID, generated command, handoff result or publication outcome exists yet.
+  Asset source OID remains f3e277dbbf33c0aa69172cca1890792656d4cd09; the actual future helper-handoff OID is different and presently unknown. The source-2 zero-OID command template is not an executable approved command.
+  Fixed helper SHA-256 091a431757ef83710a95156816e085cb1ed36b632e4923c9632695ffe821bafa / 17,994 bytes; 128 KiB admission follows fetch and is a soft bound, not a streaming quota.
+  Existing DRAFT release 439935095 remains unchanged; manifest ID 730048215 / 868,843 bytes / SHA-256 2676780f2b932d0453fef05ad39581152f47efeaea11ae22b9079875fece1829.
+  Existing bundle ID 730047564 / 140,694,281 bytes / SHA-256 9001bfeb88ce5433138d5f0fd23b3c7ab0590cc0bd47900cc1c0a1d6923c65f7. API tag_name is not an actual Git tag: retained remote tag remains ABSENT_WHILE_DRAFT, no public release claim.
+  Approved but unrun host outputs are ABSENT and deliberately have no coverage: workspace _work/gpu-owner-recovery/cache/host-receive-1; receive receipt _work/gpu-owner-recovery/runs/host-input-receive-1/receipt.json; separate parent-owned _work/gpu-owner-recovery/runs/host-input-bootstrap-1.
+  Parent bootstrap ownership precedes worker execution; receiver separately creates its evidence and fresh context. Worker TERM 895s/KILL+5s uses the 900s budget; helper fetch TERM 55s/KILL+5s uses 60s; parent exit retention is not physical-containment assurance.
+  Coding Fish syntax NOT RUN: /usr/bin/fish absent, Mise shim unconfigured, no installation authorized. Pure quote fixtures cover one/two/three nested levels and both backslashes/apostrophes; host fish -n precedes the helper fetch under the same worker deadline.
+  Use only existing Bun 1.4.0/gh/Fish/GNU tar/coreutils and existing authentication; MISE_AUTO_INSTALL/MISE_TASK_RUN_AUTO_INSTALL false, no login/auth/config/tool installation. All three GETs explicitly bind github.com.
+  Receiver validates only the known generated/published bundle's file kinds and exact manifest membership; this is not the halted old LLVM archive pipeline, a new tar engine, an arbitrary-archive auditor or a new security-hardening gate.
+  Literal roots: current-native, qualification-tools, cargo-home, gpu-build/llvm, gpu-runtime/rootfs. Exact unique listing is their union with 3,939 recorded rows; then one extraction and regular-file hashes/recorded directories/LLVM link targets/native embedded manifest verification.
+  Attempt counters increment before each download/list/extract/verify call; each actual partial write updates retained size/hash before a later failure. Every download completion, including the last, checks the shared deadline; no retries, removal, deletion or overwrite.
+  Context 429,218,730 bytes/3,800 regular files/137 recorded directories/2 LLVM links/native65; >=8 GiB initial free, <=8 GiB soft workspace usage, <=3 GiB context, <=1 GiB bundle contract, none is filesystem-quota assurance.
+  Prepared Cargo stays 568 archives/618 index files/103 missing archives/zero missing metadata, completeOfflineBuildCoverageQualified:false; receiving assets does not qualify an offline build or authorize Cargo fetch/repair.
+  Source-2 PASS_HOST_RECEIVE_SOURCE_ONLY: 34 receiver tests/352 assertions + 89 transfer/438 + 37 qualification/280 + five typechecks, eight stages PASS exit 0/sourceChanged:false. Source-1 31/280 is pre-fix history, not current proof or Fish syntax acceptance.
+  Executor-reported scoped reviews: DevOps ses_e3ec46b44ffe7CbnV5rwv23shT READY to present this combined decision; adversarial ses_e3c122320ffdrHp4JsMATl2iN7 all four findings resolved/READY; security ses_e3cea2a12ffe9TMeXvXBhDE8n7 two MEDIUM fixes accepted, no extra gate.
+  No fresh coding publication/helper fetch/asset download/extraction/host operation has occurred. Helpers/proofs and proposal flags remain frozen; the new script is separately reported strict-standalone-TSC PASS, not part of the earlier source-2 five-typecheck proof, no command rerun here.
+  Last confirmed push remains f3e277dbbf33c0aa69172cca1890792656d4cd09; Executor reports stale local origin tracking/ahead 1 after prior explicit-URL push, not new unpushed evidence or reason to fetch. No fetch is needed or authorized by this handoff scope.
+  No coding-prefix payload read/copy, refetch/repack/preparation replay, LLVM/Cargo/Docker/native compilation, GPU or training command is authorized. Native65/Rust/model/F64/all 4,670 coordinates/eps=1e-6/atol=1e-8/rtol=1e-5/exact C12/CPU Flex/masters 101..105/production recipes remain unchanged.
+  Functional readiness/BOTH/reference/orderly-close/R4/telemetry/coexistence remain unqualified; runtime/training entrypoints disabled, trainingReady:false. ALL security/privacy/isolation hardening stays LAST after ALL planned training completes and results validate, no additional gates.
+endlegend
+@enduml

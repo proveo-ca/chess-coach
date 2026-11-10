@@ -1,5 +1,5 @@
 @startuml gpu_input_transfer
-' purpose: approved inherited-identity publication with source-6 proof and immutable prepared-byte lineage, preserving both consumed prior STOPs
+' purpose: completed inherited-identity DRAFT publication with source-6 and prepared-byte lineage, preserving both consumed prior STOPs and excluding host execution
 ' covers: _work/gpu-owner-recovery/qualification/input-transfer-proposal.json
 ' covers: _work/gpu-owner-recovery/qualification/host-build-proposal.json
 ' covers: _work/gpu-owner-recovery/qualification/libdevice-proposal.json
@@ -31,7 +31,10 @@
 ' covers: _work/gpu-owner-recovery/runs/gpu-input-transfer-source-5/**
 ' covers: _work/gpu-owner-recovery/runs/host-feasibility-publication-2/**
 ' covers: _work/gpu-owner-recovery/runs/gpu-input-transfer-source-6/**
-' status: 2026-11-10 / ORIGINAL_PREPARATION_PASS / BOTH_PRIOR_STOPS_CLOSED_CONSUMED / SOURCE_6_PASS_TRANSFER_SOURCE_ONLY / INHERIT_IDENTITY_IMPLEMENTED / THIRD_PUBLICATION_APPROVED_UNCONSUMED / trainingReady:false
+' covers: _work/gpu-owner-recovery/runs/host-feasibility-publication-3/**
+' covers: _work/gpu-owner-recovery/qualification/host-receive/plan.json
+' covers: _work/gpu-owner-recovery/runs/host-input-receive-handoff-1/request.json
+' status: 2026-11-10 / ORIGINAL_PREPARATION_PASS / BOTH_PRIOR_STOPS_CLOSED_CONSUMED / SOURCE_6_PASS_TRANSFER_SOURCE_ONLY / THIRD_PUBLICATION_PASS_CONSUMED / DRAFT_TWO_ASSETS_VERIFIED / REMOTE_TAG_ABSENT_WHILE_DRAFT / trainingReady:false
 ' see: _spec/gpu-qualification.puml
 ' see: _spec/gpu-readiness.md#current-input-transfer
 ' see: _spec/gate-closure.md#current-input-transfer
@@ -43,6 +46,9 @@
 ' see: _spec/gate-closure.md#current-https-publication
 ' see: _spec/gpu-readiness.md#current-identity-publication
 ' see: _spec/gate-closure.md#current-identity-publication
+' see: _spec/gpu-host-receive.puml
+' see: _spec/gpu-readiness.md#current-host-receive
+' see: _spec/gate-closure.md#current-host-receive
 ' authority: transfer/request.json records Executor's later Draft assets Recommended selection; old proposals and source-only requests retain their original false/null projections unchanged
 ' current publisher proof: gpu-input-transfer-source-6/receipt.json PASS_TRANSFER_SOURCE_ONLY, sourceChanged:false, 316 frozen hashes / 65 unchanged native inputs; 89 helper tests/438 assertions, 37 qualification tests/280 assertions, four typechecks, six stages exit 0
 ' original payload lineage: source-3 PASS_TRANSFER_SOURCE_ONLY / 303 hashes / 83 helper tests/371 assertions / 37 qualification tests/280 assertions + four types remains immutable preparation history, not current publisher proof
@@ -67,13 +73,19 @@
 ' supplemental observation: PASS_RETAINED_FAILURE_RECORD_CHECK_ONLY, read-only HEAD equals d3bb6bcc6420f50c559ad7260f968578e20cf725, observedNewHeadCommitCreated:false; original publication.json commitSucceeded:null stays unchanged, no sidecar manifest or tag/release checks reached
 ' prior authority: BOTH completed publication attempts stay consumed/STOP, second actual commit invocation consumed 1; neither old request grants replay or a new author/configuration
 ' evidence NOW EXISTS: _work/gpu-owner-recovery/runs/host-feasibility-publication-2; publication.json/.operation, reuse.json, publish-01..04 streams, metadata-only verify-outcome.ts and outcome-check.json; no payload read/hash/checker run by this docs pass
-' resolved choice: Executor selected Inherit Identity Recommended; identity-publication-request.json now authorizes helper inheritance/private identity preflight + new source proof + ONE fresh <=600s attempt, normal commit 1/fixed HTTPS commit-OID push 1/DRAFT 1/uploads 2, existing auth/identity values only
+' resolved choice: Inherit Identity Recommended supplied ONE distinct <=600s third attempt; it completed PASS in 21178.921619 ms, normal commit 1/fixed HTTPS commit-OID push 1/DRAFT 1/uploads 2, grant now CONSUMED with no further commit/push/attempt authority
 ' implemented identity contract: publicationEnvironment copies only existing four author/committer fields unchanged in memory, no defaults or value serialization; private git var GIT_AUTHOR_IDENT/GIT_COMMITTER_IDENT uses same child cwd/env, shrinking publication budget and 64 KiB cap, Boolean only before mutation
 ' shared entry: publish-inherited-identity.ts calls exported publishPreparedHttps(activeRequest) at top level; original native65/bundle/context/source-3 lineage and first failure remain bound, optional priorFailure validates second FAIL at commit with attempts 1/0/0/0, current gate6 freezes pub2 publication/reuse/outcome metadata
-' execution boundary: third attempt and actual identity/auth/origin/rewrite queries have NOT RUN since selection; source-6 tests use pure/mocked identity behavior, no live git var success or publication outcome follows
-' future evidence (ABSENT / NOT CREATED): _work/gpu-owner-recovery/runs/host-feasibility-publication-3; no coverage glob until outcomes actually exist, no prior evidence overwritten
-' staged state (Executor-reported): 161 old controlled texts staged, original 122 preserved; old source-5/stage snapshots belong to that earlier slice, new identity helpers/request/proof6/spec/status changes unstaged/uncommitted; parent will stage controlled texts and invoke top-level entry once after reviews, no new authorization within fresh scope
-' publication boundary: latest confirmed push remains d3bb6bcc6420f50c559ad7260f968578e20cf725; original prepared/native bytes and all historical receipts unchanged, current publisher is separately frozen by source-6; this docs pass performs no query/hash/checker/staging operation
+' actual private checks: identity-preflight PASS/checkIdentity 1, checkOrigin 6 PASS and checkTransport 4 PASS/rules 0; existing four identity values unchanged in memory, raw private outputs not retained, no config/auth mutation or replay
+' third evidence NOW EXISTS: _work/gpu-owner-recovery/runs/host-feasibility-publication-3; publication.json/.operation, reuse.json, publish-01..17 streams, verify-outcome.ts and outcome-check.json/.stdout/.stderr, bounded coverage added without changing old records
+' publication outcome: sourceCommit/pushedCommit f3e277dbbf33c0aa69172cca1890792656d4cd09, commitSucceeded:true; DRAFT release 439935095 targets that OID, tag_name gpu-feasibility-inputs-20261110-1, published_at:null; final remote tag lookup empty/ABSENT_WHILE_DRAFT, no created tag/public-release claim
+' retained record check: PASS_RETAINED_PUBLICATION_EVIDENCE_ONLY; external sidecar bytes/hash/source OID, final retained API assets state/size/SHA, 316 raw committed gate blobs and 193 controlled changed text paths match, 38 pre-check evidence files hashed; no repeated GitHub query or preparation
+' commit/local boundary: f3e277d contains 193 controlled changed text paths including prepublication docs/status and stage audit, no binary/cache payloads; new pub3 outcomes/postpublication docs remain LOCAL_UNCOMMITTED (Executor-reported), no stage/commit/push by this pass
+' tracking boundary (Executor-reported): local origin tracking remains d3bb6bcc6420f50c559ad7260f968578e20cf725 after explicit-URL push; ahead 1 does not refute confirmed f3e277d push, no fetch needed or authorized
+' resolved decision: Executor selected Publish+receive Recommended; active handoff-1/request.json separately approves coding normal commit 1/fixed-HTTPS push 1 <=600s plus operator receive invocation 1 <=900s, both unconsumed/unrun, no renewed planning/scope question
+' host-receive authority: historical plan.json false flags remain unchanged, not authority; the new request supplies distinct fresh scope, old grants consumed, immutable asset OID f3e277d differs from unknown future helper-handoff OID, fixed helper SHA/command bounds owned by gpu-host-receive.puml
+' continuation: reviewed publish-source.ts remains unrun; parent will publish approved controlled text once after ordinary review, generate/provide literal host command AFTER exact source push, then stop only awaiting operator receipt/stdout verification; no new release/assets/maintenance scope
+' publication boundary: latest confirmed push is f3e277dbbf33c0aa69172cca1890792656d4cd09; source-6/current helpers and original native/preparation/history stay frozen, this docs pass performs no query/hash/checker/staging operation
 ' template: _spec/template.txt absent; no template download, command, test, render, network, payload or agent operation in this docs-only pass
 ' readability: manual word/syllable counts; two sentences per reasoning note, markup excluded
 ' FK (words/sentences/syllables): REQUEST 28/2/53 = 12.2; FREEZE 29/2/54 = 12.0; PACKAGER 30/2/55 = 11.9
@@ -82,7 +94,7 @@
 ' FK (words/sentences/syllables): PUBLICATION_STOP 28/2/54 = 12.6
 ' FK (words/sentences/syllables): NETWORK_TARGETS 33/2/61 = 12.7; PRIVATE_QUERIES 24/2/48 = 12.7; REUSE 31/2/58 = 12.5
 ' FK (words/sentences/syllables): IDENTITY_FIELDS 30/2/55 = 11.9; OUTCOME_CHECK 30/2/55 = 11.9; PRIVATE_IDENTITY 37/2/60 = 10.8
-title Inherit Identity approved, source-6 PASS - third attempt unrun; both prior STOPs remain consumed
+title Prepared inputs + inherited-identity DRAFT publication PASS - third grant consumed; no host/build/GPU authority
 left to right direction
 
 component "_work/gpu-owner-recovery/qualification/\ninput-transfer-proposal.json\nHISTORICAL UNSELECTED PROJECTION\nold false/null flags remain unchanged\nruntime/host/libdevice projections also retained" as HISTORY
@@ -112,14 +124,17 @@ component "_work/gpu-owner-recovery/qualification/\ntransfer/publish.ts\nprivate
 component "_work/gpu-owner-recovery/qualification/\ntransfer/publish-https.ts\nexport publishPreparedHttps(activeRequest)\nvalidateFrozen + requireUnchangedNative\noriginal source-3 receipt/native65/bundle/context lineage\ncurrent full publisher gate from active request: source-6\nfirst FAIL preserved; optional priorFailure checks second STOP\nnever apply old full helper hashes to modified publishers" as REUSE
 component "_work/gpu-owner-recovery/runs/\nhost-feasibility-publication-2/reuse.json\nHISTORICAL SECOND-ATTEMPT REUSE PASS\nPASS_UNCHANGED_PREPARED_BYTES_AND_CURRENT_PUBLISHER\noriginal native65/bundle/context + then-current source-5\nno download/copy/repack or compilation" as REUSE_RESULT
 component "_work/gpu-owner-recovery/runs/\nhost-feasibility-publication-2/publication.json\npublication.operation retained\nFAIL / PUBLICATION_COMMAND_FAILED / commit\n838.463473 ms / git commit exit 128\ncommit 1 / push 0 / createRelease 0 / upload 0\ncommitSucceeded:null retained, no manifest/tag checks\nSECOND ATTEMPT + COMMIT INVOCATION CONSUMED/STOP" as HTTPS_STOP
-component "_work/gpu-owner-recovery/qualification/\ntransfer/publish.ts / HISTORICAL SOURCE-5 child environment\nold allowlist omitted four Git identity fields\nGIT_AUTHOR_NAME / GIT_AUTHOR_EMAIL\nGIT_COMMITTER_NAME / GIT_COMMITTER_EMAIL\nsecond publish-04: Author identity unknown / empty ident\nold omission now repaired in source-6, not live-qualified" as IDENTITY_FIELDS
+component "_work/gpu-owner-recovery/qualification/\ntransfer/publish.ts / HISTORICAL SOURCE-5 child environment\nold allowlist omitted four Git identity fields\nGIT_AUTHOR_NAME / GIT_AUTHOR_EMAIL\nGIT_COMMITTER_NAME / GIT_COMMITTER_EMAIL\nsecond publish-04: Author identity unknown / empty ident\nsource-6 repair passed third private identity preflight" as IDENTITY_FIELDS
 component "_work/gpu-owner-recovery/runs/\nhost-feasibility-publication-2/verify-outcome.ts\noutcome-check.json / METADATA-ONLY RECORD CHECK\nPASS_RETAINED_FAILURE_RECORD_CHECK_ONLY\n4 parent presence flags true, no values recorded\nchild forwarding false / HEAD unchanged at d3bb6bcc...\nobservedNewHeadCommitCreated:false\nreceipt commitSucceeded:null never rewritten" as OUTCOME_CHECK
 component "_work/gpu-owner-recovery/qualification/\ntransfer/publish.ts / HISTORICAL SOURCE-5 runPublisher\nsecond top-level publish-https.ts invocation only\nold child environment omitted inherited identity fields\nprivate origins/rewrite and repo permission API PASS\nfrozen reuse PASS; commit exit 128\nnot current adapter behavior or replay authority" as SECOND_PUBLISHER
-component "_work/gpu-owner-recovery/qualification/\ntransfer/identity-publication-request.json\nInherit Identity Recommended / APPROVED_UNCONSUMED\nONE fresh 600s attempt / commit 1 / HTTPS OID push 1\nDRAFT 1 / uploads 2 / existing auth + four identity fields\nprivate Git identity preflight authorized within budget\nno value/config change, persistence, retry or preparation replay" as IDENTITY_REQUEST
-component "_work/gpu-owner-recovery/qualification/\ntransfer/publish-inherited-identity.ts\nfresh TOP-LEVEL entrypoint, import guarded\nchecks identity scope then publishPreparedHttps(request)\nactive request binds exact source-6 gate\nno actual third invocation or output yet" as IDENTITY_ENTRY
-component "_work/gpu-owner-recovery/runs/\ngpu-input-transfer-source-6/receipt.json\nCURRENT PASS_TRANSFER_SOURCE_ONLY\n316 frozen hashes / 65 unchanged native inputs\n89 helper tests / 438 assertions\n37 qualification tests / 280 assertions + four types\n6 stages PASS exit 0 / sourceChanged:false\nno live identity/auth/origin/rewrite/publication operation" as SOURCE_6
+component "_work/gpu-owner-recovery/qualification/\ntransfer/identity-publication-request.json\noriginal approval projection unchanged\nTHIRD ATTEMPT CONSUMED / PASS\nactual commit 1 / HTTPS OID push 1 / DRAFT 1 / uploads 2\nexisting auth + four identity fields unchanged\nno further commit/push/attempt or preparation authority" as IDENTITY_REQUEST
+component "_work/gpu-owner-recovery/qualification/\ntransfer/publish-inherited-identity.ts\nTOP-LEVEL entrypoint, import guarded\ncalled publishPreparedHttps(request) ONCE\nexact source-6 gate / distinct pub3 outcomes\ncompleted, no repeat invocation authorized" as IDENTITY_ENTRY
+component "_work/gpu-owner-recovery/runs/\ngpu-input-transfer-source-6/receipt.json\nCURRENT PASS_TRANSFER_SOURCE_ONLY\n316 frozen hashes / 65 unchanged native inputs\n89 helper tests / 438 assertions\n37 qualification tests / 280 assertions + four types\n6 stages PASS exit 0 / sourceChanged:false\nno live publication operation DURING SOURCE CHECKS" as SOURCE_6
 component "_work/gpu-owner-recovery/qualification/\ntransfer/publish.ts / publicationEnvironment\ncopy existing four identity fields unchanged in memory\nno default identity, config setter or value serialization\nmissing fields stay missing; source environment unchanged\nsame child environment for private checks and commit" as INHERITED_ENV
 component "_work/gpu-owner-recovery/qualification/\ntransfer/publish.ts / checkIdentity + privateQuery\nrequire existing four fields, no substitutes\nprivate git var GIT_AUTHOR_IDENT + GIT_COMMITTER_IDENT\nsame child cwd/env / total remaining budget / 64 KiB bound\nexit 0 + empty stderr + nonempty output, Boolean only\nidentity-preflight/checkIdentity before permission + commit\nfalse => EXISTING_GIT_IDENTITY_NOT_ACCEPTED" as PRIVATE_IDENTITY
+component "_work/gpu-owner-recovery/runs/\nhost-feasibility-publication-3/publication.json\npublication.operation / reuse.json / publish-01..17\nPASS / failure:null / 21178.921619 ms\ncommitSucceeded:true / commit 1 / push 1 / DRAFT 1 / uploads 2\nf3e277dbbf33c0aa69172cca1890792656d4cd09\nprivate identity PASS, unchanged prepared bytes/source-6\nTHIRD GRANT CONSUMED / no retry" as THIRD_PASS
+component "_work/gpu-owner-recovery/runs/\nhost-feasibility-publication-3/outcome-check.json\nverify-outcome.ts + outcome-check.stdout/.stderr\nPASS_RETAINED_PUBLICATION_EVIDENCE_ONLY\n316 raw committed hashes / 193 controlled text paths\n38 pre-check evidence files hashed\nexternal sidecar + retained final API metadata match\nno repeated GitHub query / no download/copy/repack" as THIRD_CHECK
+component "_work/gpu-owner-recovery/runs/\nhost-feasibility-publication-3/publish-16/command.stdout\nretained final API: release 439935095 / draft:true\ntarget f3e277dbbf33c0aa69172cca1890792656d4cd09\ntag_name gpu-feasibility-inputs-20261110-1\npublished_at:null / both assets uploaded with size+SHA\npublish-17 final Git tag lookup empty / ABSENT_WHILE_DRAFT" as REMOTE_DRAFT
 
 HISTORY --> REQUEST : later distinct authorization\nnever rewrite historical false/null flags
 VERIFY --> SOURCE_6 : current six source-only stages PASS\npure/mocked checks, no live git var query
@@ -145,7 +160,7 @@ PUBLICATION_STOP --> FRESH_REQUEST : later explicit human selection, distinct gr
 PUBLISHER_PROOF --> FRESH_REQUEST : historical source-5 gate used by second attempt\nsource-4 87/422 remains historical
 FRESH_REQUEST --> SECOND_PUBLISHER : second attempt actually invoked ONCE\ndistinct pub2 output, original evidence unchanged
 PREPARATION_BYTES --> REUSE : original bytes/metadata reused, not regenerated\nsource-3 payload lineage retained
-REUSE ..> PUBLISHER : FUTURE direct top-level runPublisher\nnever inside a bounded worker
+REUSE --> PUBLISHER : THIRD direct top-level runPublisher completed\nnever inside a bounded worker
 SECOND_PUBLISHER --> PRIVATE_QUERIES : SECOND observed origin/rewrite checks PASS\nrules 0, not a third-attempt query
 PRIVATE_QUERIES --> NETWORK_TARGETS : metadata cannot change fixed target\napplicable URL rewrite => STOP, no config repair
 SECOND_PUBLISHER --> REUSE_RESULT : SECOND freeze-before-commit callback 1 PASS\noriginal bytes + then-current source-5 matched
@@ -155,18 +170,21 @@ HTTPS_STOP --> OUTCOME_CHECK : separate retained-failure observation\nread-only 
 OUTCOME_CHECK --> IDENTITY_FIELDS : historical parent presence true / old child omitted fields\nno values recorded or replacement identity selected
 HTTPS_STOP --> IDENTITY_REQUEST : later explicit Inherit Identity selection\nseparate third grant, not replay of either STOP
 SOURCE_6 --> IDENTITY_REQUEST : exact current publisher gate frozen\nsource-5 is earlier-slice proof, not substituted
-IDENTITY_REQUEST ..> IDENTITY_ENTRY : FUTURE one approved invocation after reviews/stage\nno additional authorization within this scope
-IDENTITY_ENTRY ..> REUSE : FUTURE activeRequest supplies source-6 + priorFailure\nfresh pub3 root, no old-record overwrite
+IDENTITY_REQUEST --> IDENTITY_ENTRY : one approved invocation completed\nthird grant consumed, no further commit/push
+IDENTITY_ENTRY --> REUSE : source-6 + original lineage + second priorFailure\npub3 reuse PASS, no old-record overwrite
 PUBLISHER --> INHERITED_ENV : implemented in-memory environment construction
 INHERITED_ENV --> PRIVATE_IDENTITY : identical child context, no invented identity
-PUBLISHER ..> PRIVATE_IDENTITY : FUTURE private preflight before mutations\nno git var or auth query has run for attempt 3
-PRIVATE_IDENTITY ..> PUBLISHER : FUTURE Boolean only, same shrinking clock\nno raw output in command captures or receipts
-PUBLISHER ..> PRIVATE_QUERIES : FUTURE origin/rewrite callbacks unchanged\nnot third-attempt PASS evidence yet
-PUBLISHER ..> REUSE : FUTURE frozen checks against current full source-6\noriginal native65 + payload lineage + both prior failures
-PUBLISHER ..> NETWORK_TARGETS : FUTURE fixed-HTTPS commit-OID push/tag queries\nno origin/HEAD transport selection or hook bypass
-PUBLISHER ..> MANIFEST : FUTURE exclusive manifest after exact source push\nno manifest or third-attempt output created yet
-MANIFEST ..> DRAFT : FUTURE unchanged bundle and source-bound sidecar
-PUBLISHER ..> DRAFT : FUTURE one DRAFT and two uploads\nno automatic retry, overwrite, public publish or delete
+PUBLISHER --> PRIVATE_IDENTITY : actual identity-preflight PASS / callback 1\nbefore permission/commit, existing fields unchanged
+PRIVATE_IDENTITY --> PUBLISHER : Boolean only, same shrinking clock\nno raw private output in command captures or receipts
+PUBLISHER --> PRIVATE_QUERIES : actual checkOrigin 6 PASS\ncheckTransport 4 PASS / rules 0 each
+PUBLISHER --> REUSE : actual validateFrozen 3 PASS\noriginal native65 + source-6 + both prior failures
+PUBLISHER --> NETWORK_TARGETS : exact f3e277d OID pushed once over fixed HTTPS\nno origin/HEAD selection, config setter or hooks bypass
+PUBLISHER --> MANIFEST : actual commitManifest 1 PASS after exact source push\n868,843-byte sidecar in ignored cache, not committed
+MANIFEST --> DRAFT : unchanged bundle + source-bound sidecar uploaded
+PUBLISHER --> DRAFT : actual one DRAFT / two uploads PASS\nno automatic retry or public release publication
+DRAFT --> THIRD_PASS : release 439935095 / both assets verified\n21178.921619 ms within original 600s budget
+THIRD_PASS --> THIRD_CHECK : separate retained-evidence check PASS\nno live GitHub query repeated
+THIRD_CHECK --> REMOTE_DRAFT : tag_name is API metadata, not a created Git ref\nfinal Git tag lookup empty and accepted for DRAFT
 
 note bottom of REQUEST
   The later request approved preparation
@@ -281,10 +299,10 @@ note bottom of PRIVATE_IDENTITY
 end note
 
 legend bottom
-  Solid edges describe source contracts, historical authority or retained outcomes; FUTURE dotted edges are the approved but unrun third attempt. Both prior STOPs remain consumed, never replay permission.
+  Solid edges describe source contracts, historical authority or retained outcomes. Third asset publication completed PASS; all three old publication grants/preparation allowances are consumed and grant no replay, while the later host-receive handoff request separately approves one new source-only commit/push and one operator invocation.
   Original records remain unchanged; preparation and first-publication allowances stay consumed, source-3 remains payload lineage. Initial failure still has commit 0/push 0/createRelease 0/upload 0, no auth/API/external mutation, not a consumed commit invocation/grant.
-  Distinct https-publication-request.json preserves the old second grant; that attempt and its commit invocation stay consumed. Later identity-publication-request.json records Executor's Inherit Identity Recommended selection and ONE fresh <=600s third attempt, unconsumed.
-  Pre-attempt APPROVED_UNCONSUMED / NOT RUN and future/NOT CREATED descriptions remain chronology, not current denials of the now-retained pub2 operation and outcomes.
+  Distinct https-publication-request.json preserves the consumed second grant. Later identity-publication-request.json supplied the distinct third attempt, now PASS/CONSUMED; its original approval projection stays unchanged, not permission for another commit/push or attempt.
+  Pre-attempt APPROVED_UNCONSUMED / NOT RUN and future/NOT CREATED descriptions remain chronology, not current denials of the now-retained pub2/pub3 operations and outcomes.
   Current exact gate is gpu-input-transfer-source-6: PASS_TRANSFER_SOURCE_ONLY / 316 hashes / 65 unchanged native inputs / sourceChanged:false / 89 helper tests/438 assertions + 37 qualification tests/280 assertions + four types, six stages exit 0. Source-5 311/88/428 is second-attempt history, source-4 87/422 earlier history.
   Completed exact NVIDIA download: HTTP 200, libnvvm 13.0.48 linux-x86_64, 43,941,232 bytes, SHA-256 8c5676a65a2e6d13e3c229f025af18677de46c220d77992fe932200fa798b19b; download worker PASS under configured 600s deadline.
   Actual unique regular member: libnvvm-linux-x86_64-13.0.48-archive/nvvm/libdevice/libdevice.10.bc, 464,132 bytes, SHA-256 91334d6e12748f6cb5bbf0a1cd965a56bcd93dc4f496d2e5c5f8c6e523094356.
@@ -311,28 +329,36 @@ legend bottom
   Optional priorFailure validates the retained second FAIL at commit with commit 1/push 0/createRelease 0/upload 0; source-6 also freezes pub2 publication.json, reuse.json and outcome-check.json. Original native65 and approved bundle/context identities must match; post-hook raw committed blobs bind source-6 without lazy fetch.
   Asset manifest is created exclusively in original ignored cache AFTER exact source push, binding current publisher gate plus original preparation lineage; no commit/hash cycle, download, copy, repack or preparation replay.
   Exact assets: host-feasibility-inputs-1.tar.gz and host-feasibility-inputs-1.manifest.json; manifest created after source push in ignored cache to avoid a self-referential commit/hash cycle.
-  Unreached source contract: git ls-remote tag/peeled resolution before creation and finally allows absence or exact pushed commit only; neither attempt reached tag checks, no tag repair authority.
+  FIRST/SECOND failed attempts never reached tag checks. THIRD completed both fixed-HTTPS git ls-remote tag/peeled lookups with empty output; ABSENT_WHILE_DRAFT is accepted, API tag_name does not establish a created Git tag or public release.
   Release must remain DRAFT with exact tag/target/ID and asset names/sizes; provided API digests must match, absent digests explicitly record sha256:null, not remote hash verification.
   Consumed HTTPS grant used existing auth only; no Git/auth config changes, automatic retry, overwrite/public publish/delete, force/amend/no-verify or download/copy/repack/preparation replay. No identity fix or operator commit/push/build/GPU/training authority follows.
   runs/host-feasibility-inputs-1 retains publication.json, publication.operation and publish-01/publish-02 streams as the actual FAIL outcome; preparation receipt's old pubpending/continuation fields remain historical, not current authority.
   PASS_PREPARED_INPUT_BYTES_ONLY verifies 3,800 file hashes/sizes, recorded dirs/links and no unlisted payload, bundle, 65 native bindings, 303 gate hashes, four captures and three then-current index matches; no checker rerun here.
   Original prepared-check/spec-index/stage-audit results remain historical; source-3 is preparation lineage, source-5 is closed-second-attempt proof and source-6 freezes current inherited-identity publisher code. No old receipt or false/null field is rewritten.
-  Executor reports 161 old controlled text files staged, original 122 preserved; new identity helpers/request/source-6 proof/spec/status edits remain unstaged/uncommitted. Parent will stage controlled text then invoke top-level publish-inherited-identity once after reviews; this docs pass never stages/resets/commits or edits source/evidence/request bytes.
+  Earlier 122/161-file stage snapshots retain their capture-time scope. f3e277d now contains 193 controlled changed text paths, including source-6 proof/stage audit and prepublication docs/status, no binary/cache payload; pub3 outcomes and postpublication docs remain LOCAL_UNCOMMITTED, no stage/reset/commit/push by this pass.
   NOW-EXISTING runs/host-feasibility-publication-2 retains publication.json/.operation, reuse.json, publish-01..04 command streams and verify-outcome.ts/outcome-check.json; bounded root coverage includes these records, never ignored prepared payloads.
   SECOND ATTEMPT: FAIL / PUBLICATION_COMMAND_FAILED / commit / 838.463473 ms; branch, both private origins, rewrite preflight rules 0 and gh repo permission API passed; permissions.push:true is not asset-upload-rights proof.
   SECOND freeze/reuse PASS bound original native65/bundle/context/source-3 lineage plus then-current source-5; downloadCopyOrRepackPerformed:false. Commit invoked 1/exit 128; push 0/createRelease 0/upload 0, commitManifest 0, no sidecar or tag/release checks.
   SECOND captured stderr says Author identity unknown / fatal: empty ident name; the old source-5 allowlist omitted four author/committer fields. Retained metadata check records four parent presence booleans true, no identity values or valid-author claim; current source repair does not rewrite that observation.
   Retained receipt keeps commitSucceeded:null; separate PASS_RETAINED_FAILURE_RECORD_CHECK_ONLY observes HEAD d3bb6bcc6420f50c559ad7260f968578e20cf725 unchanged / observedNewHeadCommitCreated:false, not a rewritten failure receipt or permission to retry.
-  The fork is resolved: Inherit Identity Recommended is selected; operator-owned commit/push and stop-local were not selected. New identity request approves exactly one fresh normal commit/fixed-HTTPS commit-OID push/DRAFT/two uploads, existing auth and four inherited identity values unchanged, no configuration mutation.
+  Inherit Identity Recommended supplied the successful third invocation; actual normal commit 1/fixed-HTTPS commit-OID push 1/DRAFT 1/uploads 2 consumed that grant, existing auth and four inherited values unchanged, no configuration mutation or pipeline replay.
   publicationEnvironment copies only existing GIT_AUTHOR_NAME, GIT_AUTHOR_EMAIL, GIT_COMMITTER_NAME and GIT_COMMITTER_EMAIL values unchanged in memory; no defaults, replacement values or identity-value serialization in helper results/captures, no setters or hooks bypass.
   New private identity-preflight checks all four fields exist, then git var GIT_AUTHOR_IDENT and GIT_COMMITTER_IDENT with same child cwd/env, remaining clock and 64 KiB cap. Both require exit 0/empty stderr/nonempty stdout; callback returns Boolean only, raw identity output never enters command streams, failure stops before mutations.
-  This check is inside the accepted publication budget, not a separate hardened identity gate. Pure/mock fixtures pass, but no actual git var/identity/auth/origin/rewrite query or third publication attempt has run since selection.
-  Future runs/host-feasibility-publication-3 is ABSENT/NOT CREATED and deliberately has no coverage glob. No new download/copy/repack/Cargo fetch/preparation replay, operator download/extract, build/host/GPU/training is approved; original preparation 1/1 stays consumed.
-  Current source-6-covered files stay frozen before the one approved attempt; no new authorization is needed after ordinary reviews/staging within this scope. No third receipt/reuse/manifest, commit, push, DRAFT or upload success is claimed.
-  Original preparation remains accepted byte-only evidence; source-6 is source-only publisher proof, neither actual publication nor offline/native/image/GPU qualification or functional readiness READY.
+  Actual identity-preflight PASS stayed inside the original publication budget, not a separate hardened identity gate. Callback count 1, six private origin checks and four rewrite checks/rules 0 passed without raw private-query captures.
+  NOW-EXISTING runs/host-feasibility-publication-3 is covered/indexed: publication.json/.operation, reuse.json, publish-01..17 streams, verify-outcome.ts and outcome-check.json/.stdout/.stderr; no old failure/preparation bytes changed.
+  THIRD PASS in 21178.921619 ms: sourceCommit=pushedCommit=f3e277dbbf33c0aa69172cca1890792656d4cd09, commitSucceeded:true; latest confirmed push is that OID, not d3bb6bcc6420f50c559ad7260f968578e20cf725.
+  Final retained API: DRAFT release 439935095 targets f3e277d, tag_name gpu-feasibility-inputs-20261110-1, published_at:null; HTML https://github.com/proveo-ca/chess-coach/releases/tag/untagged-56714ddf138f3c4ba16c, no public release or actual remote Git tag claimed.
+  Uploaded bundle asset 730047564: host-feasibility-inputs-1.tar.gz / 140,694,281 bytes / SHA-256 9001bfeb88ce5433138d5f0fd23b3c7ab0590cc0bd47900cc1c0a1d6923c65f7; retained final API state uploaded/size/digest matched.
+  Uploaded sidecar asset 730048215: host-feasibility-inputs-1.manifest.json / 868,843 bytes / SHA-256 2676780f2b932d0453fef05ad39581152f47efeaea11ae22b9079875fece1829; exclusive ignored-cache manifest created AFTER source push, intentionally not in that commit.
+  PASS_RETAINED_PUBLICATION_EVIDENCE_ONLY rehashed the external manifest, checked its source OID/current gate, retained final API asset state/size/SHA, 316 raw committed source blobs and 193 controlled changed text paths against stage audit; 38 pre-check evidence files hashed, no repeated GitHub query/download/copy/repack.
+  Source-6 helpers/requests/proof and all historical records stay frozen. Publication-3 outcomes and this postpublication documentation remain LOCAL_UNCOMMITTED, no additional commit/push allowance and no attempt to make the source commit contain its own outcome.
+  Executor reports local origin tracking still d3bb6bcc... after explicit-URL push, so ahead 1 is not unpushed evidence; do not fetch or query again to repair that display.
+  Publish+receive Recommended is SELECTED, not another planning question. Active handoff-1/request.json supplies coding commit 1/fixed-HTTPS push 1 <=600s and operator receive invocation 1 <=900s, both APPROVED/UNCONSUMED/UNRUN; old proposal flags remain false history, no new release/upload or replay.
+  gpu-host-receive.puml owns the focused receiver/publisher/bootstrap contract. Parent publishes approved reviewed helper/evidence/docs once after ordinary review, then provides the exact actual-OID-pinned command and stops only awaiting operator receipt/stdout verification; no additional planning/diff/helper-completion authority gate.
+  Existing handoff-1 directory holds request.json + publish-source.ts only; publication.json/host-command.fish/handoff.json and host receipts remain ABSENT, no new success claimed. Asset source/release/assets unchanged, future helper OID unknown, source-2 frozen318/native65 unchanged.
   Ignored cache payloads stay outside tracked evidence and coverage; the bounded run-directory glob covers receipts/manifests/captures/checker without listing thousands of payload paths.
   Source-only receipt's old operation-false fields describe its checks, not denial of the later completed preparation; neither source proof nor byte-check PASS qualifies publication, offline/native/image/GPU behavior.
-  Operator download/extraction, image construction, compilation, host/GPU execution and training remain UNAUTHORIZED; runtime/training entrypoints remain SOURCE_ONLY_DISABLED, trainingReady:false.
+  The active handoff request alone approves ONE bounded operator receive/download/extraction invocation, still unrun. Image construction, compilation, GPU execution and training remain UNAUTHORIZED; runtime/training entrypoints stay SOURCE_ONLY_DISABLED, trainingReady:false.
   Rust/model/F64/4,670/eps=1e-6/atol=1e-8/rtol=1e-5/exact C12/CPU Flex/masters 101..105 and production Dockerfiles remain unchanged.
   Canonical BOTH/reference/orderly close, integrated R4, five-master activation and UUID telemetry/coexistence remain outside backend feasibility.
   No new security/custody assurance prerequisite: ALL security/privacy/isolation hardening remains AFTER ALL planned training completes and results validate; full assurance OPEN.
