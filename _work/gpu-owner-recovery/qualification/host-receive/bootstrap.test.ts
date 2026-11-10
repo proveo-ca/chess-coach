@@ -1,6 +1,6 @@
 // SPEC: _spec/gpu-input-transfer.puml
 import { expect, test } from "bun:test";
-import { quoteFish, renderHostReceive } from "./bootstrap";
+import { quoteFish, renderHostReceive, renderHostReceive2 } from "./bootstrap";
 
 const commit = "0123456789abcdef0123456789abcdef01234567";
 const helperSha256 = "0123456789abcdef".repeat(4);
@@ -42,6 +42,31 @@ test("renders one deterministic Fish command preserving nested backslashes and a
   const body = bodyOf(command);
   expect(body).toContain("'Accept: application/vnd.github.raw+json'");
   expect(body).not.toMatch(/\$\(|\[\[|&&|\|\||\breturn\b/);
+});
+
+test("legacy run-1 rendering stays byte-identical to the retained published command", async () => {
+  const expected = await Bun.file(new URL("../../runs/host-input-receive-handoff-1/host-command.fish", import.meta.url)).text();
+  expect(renderHostReceive("33b29dd095a3582a02861cef0f155e675a6721cc", "091a431757ef83710a95156816e085cb1ed36b632e4923c9632695ffe821bafa") + "\n").toBe(expected);
+});
+
+test("run 2 places the whole bootstrap body under exact Mise pins with implicit installs disabled first", () => {
+  const command = renderHostReceive2(commit, helperSha256), parent = unquoteFish(command.slice(prefix.length));
+  const marker = "; timeout --signal=TERM --kill-after=5s 895s fish --no-config -c ";
+  const end = ' > "$bootstrap/worker.stdout"';
+  const wrapper = unquoteFish(parent.slice(parent.indexOf(marker) + marker.length, parent.indexOf(end)));
+  const bodyStart = "set -l program ", bodyEnd = '; fish --no-config -n -c "$program"';
+  const body = unquoteFish(wrapper.slice(wrapper.indexOf(bodyStart) + bodyStart.length, wrapper.indexOf(bodyEnd)));
+  expect(wrapper).toContain('mise exec core:bun@1.4.0 core:rust@1.95.0 -- fish --no-config -c "$program" < /dev/null');
+  for (const name of ["MISE_AUTO_INSTALL", "MISE_EXEC_AUTO_INSTALL", "MISE_TASK_RUN_AUTO_INSTALL"]) expect(wrapper.indexOf(`set -gx ${name} false`)).toBeLessThan(wrapper.indexOf("mise exec "));
+  expect(wrapper.indexOf("fish --no-config -n -c")).toBeLessThan(wrapper.indexOf("mise exec "));
+  expect(body).toContain("BUN_VERSION_MISMATCH"); expect(body).toContain("command bun --version");
+  expect(body).toContain(`--approved-host-receive-2 '${commit}'`);
+  expect(body).toContain("_work/gpu-owner-recovery/runs/host-input-bootstrap-2");
+  expect(body).toContain("_work/gpu-owner-recovery/runs/host-input-receive-2/receipt.json");
+  expect(body).not.toMatch(/host-input-bootstrap-1|host-input-receive-1|--approved-host-receive-1/);
+  expect(parent).toContain('2> "$bootstrap/worker.stderr"');
+  expect(parent).toContain('set -l host_status $status; printf \'%s\\n\' $host_status > "$bootstrap/command.exit"');
+  expect(command).not.toMatch(/[\r\n\0]|mise install|mise trust|mise use|mise upgrade|rustc --version|cargo --version|\brm\b/);
 });
 
 test("rejects every non-full commit before returning a command", () => {

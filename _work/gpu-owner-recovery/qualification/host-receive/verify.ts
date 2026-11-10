@@ -5,7 +5,7 @@ import { relative, resolve } from "node:path";
 import { repository, work } from "../../provision";
 import { runBounded, sourceFilePaths } from "../../verify";
 import { sourceInventory } from "../../../../tooling/runtime/qualification";
-import { renderHostReceive } from "./bootstrap";
+import { renderHostReceive2 } from "./bootstrap";
 
 const hash = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
 const [label] = Bun.argv.slice(2);
@@ -16,6 +16,8 @@ const native = await sourceInventory(repository);
 const paths = new Set([...(await sourceFilePaths("typecheck-source")), ...native.map(source => source.path), "_work/gpu-owner-recovery/provision.ts",
   "_work/gpu-owner-recovery/runs/host-feasibility-inputs-1/context-manifest.json", "_work/gpu-owner-recovery/runs/host-feasibility-inputs-1/preparation.json",
   "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/outcome-check.json", "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-6/receipt.json",
+  "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/host-command.fish", "_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/observation.json",
+  "_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/operator-paste.txt", "_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/verify-report.ts",
   "tooling/runtime/Dockerfile", "tooling/runtime/Dockerfile.gpu", "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-local-6/sources.json",
   "_work/gpu-owner-recovery/runs/gpu-qualification-llvm-flags-1/receipt.json", "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-cache-1/registry-manifest.json",
   "_work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/command.stdout"]);
@@ -27,9 +29,9 @@ await writeFile(resolve(directory, "sources.json"), JSON.stringify(sources, null
 const helper = await readFile(resolve(work, "qualification/host-receive/receive.ts"));
 if (helper.length > 131072) throw Error("BOUNDED_STANDALONE_HELPER_REQUIRED");
 const helperSha256 = hash(helper);
-await writeFile(resolve(directory, "host-command.template.fish"), renderHostReceive("0".repeat(40), helperSha256) + "\n", { flag: "wx" });
+await writeFile(resolve(directory, "host-command.template.fish"), renderHostReceive2("0".repeat(40), helperSha256) + "\n", { flag: "wx" });
 const commands = [
-  { name: "receive-unit", argv: [process.execPath, "--no-env-file", "--no-install", "test", "./_work/gpu-owner-recovery/qualification/host-receive/receive.test.ts", "./_work/gpu-owner-recovery/qualification/host-receive/bootstrap.test.ts"] },
+  { name: "receive-unit", argv: [process.execPath, "--no-env-file", "--no-install", "test", "./_work/gpu-owner-recovery/qualification/host-receive/receive.test.ts", "./_work/gpu-owner-recovery/qualification/host-receive/bootstrap.test.ts", "./_work/gpu-owner-recovery/qualification/host-receive/publish-run2.test.ts"] },
   { name: "transfer-unit", argv: [process.execPath, "--no-env-file", "--no-install", "test", "./_work/gpu-owner-recovery/qualification/transfer/archive.test.ts", "./_work/gpu-owner-recovery/qualification/transfer/prepare.test.ts", "./_work/gpu-owner-recovery/qualification/transfer/publish.test.ts"] },
   { name: "qualification-unit", argv: [process.execPath, "--no-env-file", "--no-install", "test", "./packages/runtime/tests/gpu-recipe.test.ts", "./packages/runtime/tests/gpu-qualification.test.ts", "./_work/gpu-owner-recovery/prepared-llvm/verify.test.ts"] },
   ...["tsconfig.json", "tsconfig.tests.json", "_work/gpu-owner-recovery/qualification/tsconfig.json", "_work/gpu-owner-recovery/qualification/transfer/tsconfig.json", "_work/gpu-owner-recovery/qualification/host-receive/tsconfig.json"].map((project, index) => ({ name: "types-" + index,

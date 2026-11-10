@@ -90,6 +90,25 @@ test("publishes exactly one commit, push, draft, and two assets on one shrinking
   expect(result.trainingReady).toBe(false);
 });
 
+test("source-only handoffs perform one commit/push without assets, manifests or releases", async () => {
+  const f = fixture(); f.plan.sourceOnly = true; f.plan.bundle.path = "";
+  f.io.commitManifest = async () => { throw Error("ASSET_CALLBACK_NOT_AUTHORIZED"); };
+  const result = await publishDraft(f.io, f.plan);
+  expect(result.status).toBe("PASS");
+  expect(result.publicationScope).toBe("SOURCE_ONLY");
+  expect(result.attempts.commit).toBe(1); expect(result.attempts.push).toBe(1);
+  expect(result.attempts.createRelease).toBe(0); expect(result.attempts.upload).toBe(0); expect(result.attempts.commitManifest).toBe(0);
+  expect(result.assets).toEqual([]); expect(result.releaseId).toBeNull();
+  expect(f.calls.some(call => call.argv.includes("POST") || call.argv.includes("upload") || call.argv.includes("ls-remote"))).toBe(false);
+});
+
+test("source-only failure after commit never creates or repairs remote assets", async () => {
+  const f = fixture(); f.plan.sourceOnly = true; f.state.fail = "push";
+  const result = await publishDraft(f.io, f.plan);
+  expect(result.status).toBe("FAIL"); expect(result.commitSucceeded).toBe(true);
+  expect(result.attempts.push).toBe(1); expect(result.attempts.createRelease).toBe(0); expect(result.attempts.upload).toBe(0);
+});
+
 test("either repository visibility permits the approved draft", async () => {
   for (const visibility of [true, false]) {
     const f = fixture(); f.state.permission.private = visibility;

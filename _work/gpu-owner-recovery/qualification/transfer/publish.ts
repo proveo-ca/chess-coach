@@ -16,7 +16,7 @@ export const publication = {
 } as const;
 
 export type PublicationAsset = { path: string; bytes: number; sha256: string };
-export type PublicationPlan = { repositoryDirectory: string; bundle: PublicationAsset; receiptDirectory?: string };
+export type PublicationPlan = { repositoryDirectory: string; bundle: PublicationAsset; receiptDirectory?: string; sourceOnly?: true };
 export type TransportCheck = { allowed: boolean; rules: number; failure: string | null };
 export type PublicationCommandResult = { exitCode: number; stdout: string; status?: "PASS" | "FAIL"; failure?: string | null };
 export type PublicationCallbacks = {
@@ -36,6 +36,7 @@ export type PublicationOperation = {
 };
 export type PublicationResult = {
   version: "chess-coach.qualification-input-publication.v1";
+  publicationScope: "DRAFT_ASSETS" | "SOURCE_ONLY";
   status: "PASS" | "FAIL"; failure: string | null; failedStep: string | null; elapsedMs: number;
   attempts: { commit: number; push: number; createRelease: number; upload: number; validateFrozen: number; commitManifest: number; checkTransport: number; checkOrigin: number; checkIdentity: number };
   operations: PublicationOperation[];
@@ -53,6 +54,7 @@ const assetDirectory = (root: string) => resolve(root, "_work/gpu-owner-recovery
 const receiptDirectory = (root: string) => resolve(root, "_work/gpu-owner-recovery/runs/host-feasibility-inputs-1");
 const httpsReceiptDirectory = (root: string) => resolve(root, "_work/gpu-owner-recovery/runs/host-feasibility-publication-2");
 const identityReceiptDirectory = (root: string) => resolve(root, "_work/gpu-owner-recovery/runs/host-feasibility-publication-3");
+const receive2ReceiptDirectory = (root: string) => resolve(root, "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/publication");
 export const identityFields = ["GIT_AUTHOR_NAME", "GIT_AUTHOR_EMAIL", "GIT_COMMITTER_NAME", "GIT_COMMITTER_EMAIL"] as const;
 
 export function publicationEnvironment(source: NodeJS.ProcessEnv) {
@@ -101,7 +103,7 @@ function jsonObject(text: string): Record<string, unknown> {
 
 export async function publishDraft(io: PublicationIO, plan: PublicationPlan): Promise<PublicationResult> {
   const result: PublicationResult = {
-    version: "chess-coach.qualification-input-publication.v1", status: "FAIL", failure: null, failedStep: null, elapsedMs: 0,
+    version: "chess-coach.qualification-input-publication.v1", publicationScope: plan?.sourceOnly === true ? "SOURCE_ONLY" : "DRAFT_ASSETS", status: "FAIL", failure: null, failedStep: null, elapsedMs: 0,
     attempts: { commit: 0, push: 0, createRelease: 0, upload: 0, validateFrozen: 0, commitManifest: 0, checkTransport: 0, checkOrigin: 0, checkIdentity: 0 }, operations: [], transportChecks: [],
     commitSucceeded: false, sourceCommit: null, pushedCommit: null, releaseId: null, releaseDraft: null,
     assets: [], uploadedAssets: [], verifiedAssets: [], actualHostExecuted: false, cudaGpuCodeExecuted: false, trainingReady: false,
@@ -204,8 +206,9 @@ export async function publishDraft(io: PublicationIO, plan: PublicationPlan): Pr
   try {
     remaining();
     if (!plan || typeof plan.repositoryDirectory !== "string" || !isAbsolute(plan.repositoryDirectory)) fail("PUBLICATION_ROOT_REQUIRED");
+    if (plan.sourceOnly !== undefined && plan.sourceOnly !== true) fail("PUBLICATION_SCOPE_REQUIRED");
     const root = resolve(plan.repositoryDirectory), bundle = { ...plan.bundle };
-    if (!validAsset(bundle, resolve(assetDirectory(root), publication.bundleName))) fail("PREPARED_BUNDLE_REQUIRED");
+    if (plan.sourceOnly !== true && !validAsset(bundle, resolve(assetDirectory(root), publication.bundleName))) fail("PREPARED_BUNDLE_REQUIRED");
     await location("");
     await transport("preflight");
     if (await callback("identity-preflight", "checkIdentity", ms => io.checkIdentity(ms)) !== true) fail("EXISTING_GIT_IDENTITY_NOT_ACCEPTED");
@@ -226,6 +229,7 @@ export async function publishDraft(io: PublicationIO, plan: PublicationPlan): Pr
     if ((await command("head-after-push", ["/usr/bin/git", "rev-parse", "--verify", "HEAD"])).trim() !== commit) fail("SOURCE_COMMIT_CHANGED");
     await location("-before-publication");
     await frozen("freeze-before-publication", commit);
+    if (plan.sourceOnly === true) { remaining(); result.status = "PASS"; return result; }
     const assets = await callback("manifest", "commitManifest", ms => io.commitManifest(commit, ms));
     if (!assets || !validAsset(assets.bundle, bundle.path) || assets.bundle.bytes !== bundle.bytes || assets.bundle.sha256 !== bundle.sha256 || !validAsset(assets.manifest, resolve(assetDirectory(root), publication.manifestName))) fail("COMMITTED_MANIFEST_ASSETS_REQUIRED");
     result.assets = [{ ...assets.bundle }, { ...assets.manifest }];
@@ -260,7 +264,8 @@ export async function publishDraft(io: PublicationIO, plan: PublicationPlan): Pr
 export async function runPublisher(plan: PublicationPlan, callbacks: PublicationCallbacks): Promise<PublicationResult> {
   if (resolve(plan.repositoryDirectory) !== resolve(repository) || resolve(process.cwd()) !== resolve(repository)) throw Error("REPOSITORY_ROOT_REQUIRED");
   const directory = plan.receiptDirectory ?? receiptDirectory(repository);
-  if (![receiptDirectory(repository), httpsReceiptDirectory(repository), identityReceiptDirectory(repository)].includes(directory)) throw Error("APPROVED_PUBLICATION_RECEIPT_ROOT_REQUIRED");
+  if (![receiptDirectory(repository), httpsReceiptDirectory(repository), identityReceiptDirectory(repository), receive2ReceiptDirectory(repository)].includes(directory)) throw Error("APPROVED_PUBLICATION_RECEIPT_ROOT_REQUIRED");
+  if ((plan.sourceOnly === true) !== (directory === receive2ReceiptDirectory(repository))) throw Error("PUBLICATION_SCOPE_RECEIPT_ROOT_MISMATCH");
   if (directory !== receiptDirectory(repository)) await mkdir(directory, { mode: 0o700 });
   const environment = publicationEnvironment(process.env);
   const privateQuery = (args: string[], remainingMs: number) => new Promise<{ exitCode: number; stdout: string; stderr: string }>(resolveQuery => {
@@ -293,7 +298,7 @@ export async function runPublisher(plan: PublicationPlan, callbacks: Publication
     },
     run: async (argv, timeoutMs) => {
       const started = performance.now();
-      if (ordinal === 0) await writeFile(resolve(directory, "publication.operation"), JSON.stringify({ version: "chess-coach.qualification-input-publication-operation.v1", tag: publication.tag }) + "\n", { flag: "wx", mode: 0o600 });
+      if (ordinal === 0) await writeFile(resolve(directory, "publication.operation"), JSON.stringify({ version: "chess-coach.qualification-input-publication-operation.v1", scope: plan.sourceOnly === true ? "SOURCE_ONLY" : "DRAFT_ASSETS", tag: plan.sourceOnly === true ? null : publication.tag }) + "\n", { flag: "wx", mode: 0o600 });
       const step = resolve(directory, `publish-${String(++ordinal).padStart(2, "0")}`);
       await mkdir(step, { mode: 0o700 });
       const remainingMs = Math.floor(timeoutMs - (performance.now() - started));

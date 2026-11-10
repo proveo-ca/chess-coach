@@ -12,6 +12,11 @@ export const receivePlan = {
   limits: { downloadsMs: 600000, extractAndVerifyMs: 180000, totalMs: 900000, contextBytes: 3221225472, minimumFreeBytes: 8589934592, workspaceBytes: 8589934592 },
   contextBytes: 429218730, contextFiles: 3800, recordedDirectories: 137, recordedLinks: 2, nativeInputs: 65,
 } as const;
+export function selectReceivePaths(grant: unknown) {
+  if (grant === "--approved-host-receive-1") return { workspace: receivePlan.workspace, evidence: receivePlan.evidence };
+  if (grant === "--approved-host-receive-2") return { workspace: "_work/gpu-owner-recovery/cache/host-receive-2", evidence: "_work/gpu-owner-recovery/runs/host-input-receive-2" };
+  throw Error("APPROVED_HOST_RECEIVE_COMMAND_REQUIRED");
+}
 type Asset = { id: number; name: string; bytes: number; sha256: string };
 export type InputRow = { path: string; kind: "file" | "directory" | "symlink"; bytes: number; sha256?: string; target?: string };
 type Source = { path: string; sha256: string };
@@ -140,10 +145,11 @@ async function fileDigest(path: string, deadline: number): Promise<Digest> {
 
 async function main() {
   const [grant, helperCommit] = Bun.argv.slice(2);
-  check(Bun.argv.length === 4 && grant === "--approved-host-receive-1" && /^[a-f0-9]{40}$/.test(helperCommit ?? ""), "APPROVED_HOST_RECEIVE_COMMAND_REQUIRED");
+  check(Bun.argv.length === 4 && /^[a-f0-9]{40}$/.test(helperCommit ?? ""), "APPROVED_HOST_RECEIVE_COMMAND_REQUIRED");
+  const selected = selectReceivePaths(grant);
   check(Bun.version === "1.4.0", "EXISTING_BUN_1_4_0_REQUIRED");
   check(hash(await readFile("Cargo.lock")) === "77f674cc26a01f26558fd99c45bdcd5566017be05833fce1d39cae98cda05955", "HOST_REPOSITORY_CONTEXT_REQUIRED");
-  const workspace = resolve(receivePlan.workspace), evidence = resolve(receivePlan.evidence), context = resolve(workspace, "context");
+  const workspace = resolve(selected.workspace), evidence = resolve(selected.evidence), context = resolve(workspace, "context");
   await mkdir(evidence);
   let outcome: ReceiveResult | { status: string; failure: string } = { status: "FAIL_PREFLIGHT", failure: "PREFLIGHT_NOT_FINISHED" };
   const artifacts: { path: string; bytes: number; sha256: string; exitCode: number | null }[] = [];
@@ -167,8 +173,8 @@ async function main() {
       catch (error) { child.kill("SIGKILL"); await Promise.allSettled([...tasks, done]); throw error; }
       finally {
         await output.close(); await stderr.close();
-        artifacts.push({ path: binary ? receivePlan.workspace + "/" + stdoutPath.split("/").at(-1) : receivePlan.evidence + "/" + stdoutPath.split("/").at(-1), bytes, sha256: digest.copy().digest("hex"), exitCode });
-        artifacts.push({ path: receivePlan.evidence + "/" + label + ".stderr", bytes: errorBytes, sha256: errorDigest.digest("hex"), exitCode });
+        artifacts.push({ path: binary ? selected.workspace + "/" + stdoutPath.split("/").at(-1) : selected.evidence + "/" + stdoutPath.split("/").at(-1), bytes, sha256: digest.copy().digest("hex"), exitCode });
+        artifacts.push({ path: selected.evidence + "/" + label + ".stderr", bytes: errorBytes, sha256: errorDigest.digest("hex"), exitCode });
       }
       return { digest: { bytes, sha256: digest.digest("hex") }, text: Buffer.concat(chunks).toString("utf8") };
     }
@@ -198,10 +204,10 @@ async function main() {
     });
   } catch (error) { outcome = { status: "FAIL_PREFLIGHT", failure: error instanceof Error ? error.message : "HOST_RECEIVE_PREFLIGHT_FAILED" }; }
   const receipt = { ...outcome, helperSourceCommit: helperCommit, helperSha256: hash(await readFile(Bun.main)), assetSourceCommit: receivePlan.assetSourceCommit,
-    releaseId: receivePlan.releaseId, workspace: receivePlan.workspace, evidence: receivePlan.evidence, artifacts, automaticRetryAuthorized: false,
+    releaseId: receivePlan.releaseId, grant, workspace: selected.workspace, evidence: selected.evidence, artifacts, automaticRetryAuthorized: false,
     workspaceIsFilesystemQuota: false, compilationPerformed: false, llvmOrCargoExecuted: false, gpuExecuted: false, trainingReady: false };
   await writeFile(resolve(evidence, "receipt.json"), JSON.stringify(receipt, null, 2) + "\n", { flag: "wx" });
-  console.log(JSON.stringify({ status: receipt.status, failure: receipt.failure, receipt: receivePlan.evidence + "/receipt.json", assetSourceCommit: receivePlan.assetSourceCommit,
+  console.log(JSON.stringify({ status: receipt.status, failure: receipt.failure, receipt: selected.evidence + "/receipt.json", assetSourceCommit: receivePlan.assetSourceCommit,
     helperSourceCommit: helperCommit, trainingReady: false }));
   process.exitCode = receipt.status === "PASS_HOST_RECEIVE_AND_EXTRACT_ONLY" ? 0 : 1;
 }

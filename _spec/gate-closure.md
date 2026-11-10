@@ -34,19 +34,19 @@ The rows below identify known evidence gaps; they do not establish missing host 
 
 <a id="current-runtime-packaging"></a>
 
-#### CURRENT 2026-11-10 — Bun-version FAIL consumed; separate host alignment approved, awaiting outputs
+#### CURRENT 2026-11-10 — receive-2 source/operator grants APPROVED, UNCONSUMED, prepublication
 
 The new [builder-detail paste](../_work/gpu-owner-recovery/runs/host-builder-inputs-1/operator-details-paste.txt) and [normalized detail record](../_work/gpu-owner-recovery/runs/host-builder-inputs-1/operator-details.json) now report Linux/amd64, Debian 12 bookworm, cc/c++ GCC 12.2.0 (`12.2.0-14+deb12u1`), GNU ar/ld 2.40, glibc 2.36 and `/usr/lib/gcc/x86_64-linux-gnu/12/libstdc++.so`.
 All 12 command frames and the C++ query report exit 0; these concatenate existing outputs, not original files or separately bounded streams, and they required no new Docker/compiler replay.
-Executable Rust/Cargo versions remain null; Rust 1.95.0 is registry-declared only.
+Executable Rust/Cargo versions in that builder-image inspection remain null; the later host-Mise alignment report accepts host version facts, not executed versions inside the image.
 The pasted image ID repeats the pinned manifest digest while retained config digest is `d617f1b5c2a18778ba357ba0528e973bd24992b0dd18000dfbca059f4a15ebda`; cause unknown, wrong image not established, no acquisition invalidation or new custody gate.
 The old root observation/paste remain byte-unchanged details-pending snapshots; current received facts supersede that missing-detail state without rewriting history.
-Executor reports latest docs/evidence commit/push **`cca45f6b2978398f68d0db1a84119e1b5a3c0ee2`**, 24 controlled texts, separate from expected helper **33b29dd095a3582a02861cef0f155e675a6721cc** and asset source **f3e277dbbf33c0aa69172cca1890792656d4cd09**; actual operator-executed identity remains unknown.
+Latest Executor-confirmed push is **`5c236ef24785d937f415cae70900d7825f7baa5f`**, the prior alignment packet under its consumed grant; earlier docs **cca45f6…**, run-1 helper **33b29dd095a3582a02861cef0f155e675a6721cc** and asset source **f3e277dbbf33c0aa69172cca1890792656d4cd09** keep distinct historical roles. Receive-2 helper publication and actual operator-executed identity remain unestablished.
 
 Executor selected `Rust base+Bun Recommended` in the [source-only runtime request](../_work/gpu-owner-recovery/qualification/runtime-request.json).
 The qualification recipe now uses the same Rust pin for inputs/runtime and copies only the Bun interpreter from its own pinned stage, removes only its builder rootfs copy, and guards future actual Rust/Cargo 1.95.0 and Bun 1.4.0 startup.
 All RUN instructions remain network-disabled; four locked/offline Cargo no-run builds, CPU/GPU paths and UID 1000 scratch remain; production Dockerfiles/Rust/math/F64/C12/initialization/master contracts remain unchanged.
-The current [source-6 publisher receipt](../_work/gpu-owner-recovery/runs/gpu-input-transfer-source-6/receipt.json) records **PASS_TRANSFER_SOURCE_ONLY**, sourceChanged:false, **316 frozen hashes / 65 unchanged native inputs**, six passing stages, **89 helper tests / 438 assertions**, **37 qualification tests / 280 assertions** and **four typechecks**.
+The retained DRAFT-generation [source-6 publisher receipt](../_work/gpu-owner-recovery/runs/gpu-input-transfer-source-6/receipt.json) records **PASS_TRANSFER_SOURCE_ONLY**, sourceChanged:false, **316 hashes / 65 unchanged native inputs**, six PASS stages, **89/438 helper / 37/280 qualification / four types**; new receive-2/shared-publisher code binds separate source-4, not those old full helper hashes.
 The active identity request binds **source-6 exactly**, not source-5/source-4.
 Source-5 **311 hashes / 88 helper tests / 428 assertions + 37/280 qualification + four types** remains immutable closed-second-attempt proof, not current modified-publisher proof.
 Transfer source-4 **87/422** remains historical before the final private-origin capture fix; source-3 **303 hashes / 83 helper tests / 371 assertions / 37 qualification tests / 280 assertions + four types** remains immutable original preparation lineage, not current full-publisher proof.
@@ -67,7 +67,8 @@ The distinct HTTPS second attempt failed at commit and remains consumed.
 Executor's **Inherit Identity Recommended** third attempt completed **PASS in 21,178.921619 ms**: normal commit/fixed-HTTPS OID push **1/1**, **DRAFT release 439935095**, **two verified uploads**, grant **CONSUMED**.
 The [current outcome](#current-identity-publication) establishes input preparation/DRAFT publication only, not a created Git tag, public release, host execution or training readiness.
 The [operator observation](#current-host-receive) reports **BOOTSTRAP_STARTED / BUN_VERSION_MISMATCH / HOST_COMMAND_EXIT=1**, consuming **1/1 invocation at report scope**.
-Executor then selected **Align host Recommended**; the [distinct alignment handoff](#current-host-toolchain) is **APPROVED / UNCONSUMED at request point**, one operator install/three-query invocation, outputs not received; lead supplies the literal command for COPY into host Fish, then waits only for HOST verification.
+Executor's [alignment report](#current-host-toolchain) now reports six exit-0 phases, exact Bun/Rust/Cargo banners and **PASS_HOST_TOOLCHAIN_ALIGNMENT_ONLY / HOST_TOOLCHAIN_EXIT=0**, consuming alignment/install **1/1** and queries **3/3** at report scope, zero remaining.
+Executor selected **Publish+receive 2 Recommended** in the [new actual handoff-2 request](#current-host-receive-run2); source and operator grants are both **APPROVED / UNCONSUMED / UNRUN**, with frozen source-4 **329 inputs / 40-410 / 91-453 / 37-280 / five types**. Lead stages controlled UTF-8 source/spec/evidence without cache/binaries and invokes the adapter **ONCE at top level**, then delivers the actual post-push command and waits only for HOST verification, no new planning question.
 Canonical BOTH/reference/close, integrated R4, five-master activation and literal-UUID telemetry/coexistence remain outside backend feasibility; hardening stays LAST after ALL planned training completes and results validate, full assurance OPEN and trainingReady:false.
 
 <a id="current-input-transfer"></a>
@@ -258,7 +259,7 @@ At that DRAFT-asset publication, confirmed push was **`f3e277dbbf33c0aa69172cca1
 Executor reports local origin tracking still `d3bb6bcc6420f50c559ad7260f968578e20cf725` after explicit-URL push; `ahead 1` is not evidence of an unpushed commit, and no fetch is needed or authorized.
 The 193-path source commit contains controlled text/source-6 proof/prepublication docs/status, **no binary/cache payloads**.
 Source handoff 33b29dd… published retained pub3 evidence/pre-handoff docs; Executor reports later docs/post-handoff records published at cca45f6… under a now-consumed allowance. New observation/alignment/source-proof records/latest docs remain **LOCAL / UNCOMMITTED**, no additional publication or staging/commit/push by this pass.
-Source-6 helper/request/proof bytes and both failure receipts stay frozen; no receipt is rewritten to claim inclusion in the commit it describes.
+Source-6 request/proof bytes and both failure receipts stay immutable; changed shared-publisher/receive-2 source binds source-4, and no receipt is rewritten to claim inclusion in the commit it describes.
 The [readiness outcome](gpu-readiness.md#current-identity-publication) and [owning diagram](gpu-input-transfer.puml) record the same PASS/consumed boundary.
 
 **Upgrade complete: input preparation + DRAFT publication only.**
@@ -282,8 +283,8 @@ The [plan.json proposal](../_work/gpu-owner-recovery/qualification/host-receive/
 The referenced [host-command-approval.json proposal](../_work/gpu-owner-recovery/runs/host-input-receive-source-2/host-command-approval.json) also retains its original AWAITING/false fields; the later request supplied distinct, now-consumed authority, never a rewrite or replay of an old grant.
 
 [gpu-host-receive.puml](gpu-host-receive.puml) owns the source/command contract and links back to transfer/qualification/build; the [readiness packet](gpu-readiness.md#current-host-receive) records the same bounds/options.
-Keep three published identities separate: Executor-reported latest **DOCS cca45f6b2978398f68d0db1a84119e1b5a3c0ee2**, expected **helper 33b29dd095a3582a02861cef0f155e675a6721cc**, **assets f3e277dbbf33c0aa69172cca1890792656d4cd09**; none independently identifies the actual operator-executed command/source.
-Helper **receive.ts / 17,994 bytes / SHA-256 `091a431757ef83710a95156816e085cb1ed36b632e4923c9632695ffe821bafa`** is unchanged; coding-known expected command pins 33b29dd… in URL/Bun argument, but actual operator bytes are unverified.
+Keep historical run-1 identities separate: **DOCS cca45f6b2978398f68d0db1a84119e1b5a3c0ee2**, **helper 33b29dd095a3582a02861cef0f155e675a6721cc**, **assets f3e277dbbf33c0aa69172cca1890792656d4cd09**; later alignment push **5c236ef…** changes none into independently verified operator-executed identity.
+Historical run-1 helper **17,994 bytes / SHA-256 `091a431757ef83710a95156816e085cb1ed36b632e4923c9632695ffe821bafa`** stays bound to old receipts and the 33b29dd… command; current receive-2 helper differs and binds source-4 below. Actual operator bytes remain unverified.
 Existing DRAFT **439935095**, manifest asset **730048215 / 868,843 bytes / SHA `2676780f2b932d0453fef05ad39581152f47efeaea11ae22b9079875fece1829`** and bundle **730047564 / 140,694,281 bytes / SHA `9001bfeb88ce5433138d5f0fd23b3c7ab0590cc0bd47900cc1c0a1d6923c65f7`** remain unchanged.
 Remote Git tag remains **ABSENT_WHILE_DRAFT**, no created-tag/public-release claim or new upload scope.
 
@@ -344,7 +345,7 @@ Executor reports the preselection DevOps `ses_e3ec46b44ffe7CbnV5rwv23shT` READY 
 Executor reports latest docs/post-handoff-evidence normal commit/HTTPS push **`cca45f6b2978398f68d0db1a84119e1b5a3c0ee2`**, **24 controlled texts**, worktree clean before this observation; that publication grant is consumed, with no fresh Git query/fetch/publication authorized.
 Helper remains **33b29dd…**, assets **f3e277d…**, actual operator execution identity unknown. New observation/alignment/source-proof records/current docs remain local/uncommitted; this pass stages/commits/pushes nothing.
 No coding installation/native query, auth/config change, retry/overwrite/delete, new release/assets/uploads, coding payload acquisition/copy/repack, LLVM/Cargo execution, image/native build, GPU or training work is approved; the separate operator alignment below adds none of those coding permissions or extraneous template-fetch/maintenance publication scope.
-Source/helper/proof bytes remain frozen; no docs-side source/proposal/receipt changes, commands, network/auth/native/payload operations or agents.
+Historical requests/receipts/proofs remain immutable, while current receive-2 source binds source-4; no docs-side source/proposal/receipt changes, commands, network/auth/native/payload operations or agents.
 Original **568 Cargo archives / 618 index files / 103 missing archives / zero missing metadata** and `completeOfflineBuildCoverageQualified:false` remain unchanged.
 No coding-prefix payload read/copy/refetch/repack/preparation replay, LLVM/Cargo/Docker/native compilation, GPU or training command is authorized; future host receive success would qualify only receipt/extraction, not build or training readiness.
 Native65/Rust/model/F64/4,670 coordinates/existing tolerances/exact C12/CPU Flex/masters `101..105`/production recipes remain unchanged; BOTH/reference/orderly-close/R4/telemetry/coexistence stay unqualified, runtime/training entrypoints disabled and trainingReady:false.
@@ -352,16 +353,16 @@ ALL security/privacy/isolation hardening remains LAST after ALL planned training
 
 <a id="current-host-toolchain"></a>
 
-##### APPROVED operator alignment — UNCONSUMED at request point; await HOST outputs
+##### Operator-reported alignment PASS — functional version facts accepted; grant CONSUMED
 
 Executor directed **"the host needs to adjust to bun/rust versions set in this runtime"** after the failed bootstrap report.
 Executor has selected **Align host Recommended** in distinct [host-toolchain-align-handoff-1/request.json](../_work/gpu-owner-recovery/runs/host-toolchain-align-handoff-1/request.json).
-Its status **APPROVED_ONE_OPERATOR_ALIGNMENT_INVOCATION_NOT_YET_OBSERVED** grants **ONE operator invocation / ONE existing-Mise install / at most THREE version queries**, **APPROVED / UNCONSUMED at request point**, with **operatorResultsReceived:false**.
+Its original **APPROVED_ONE_OPERATOR_ALIGNMENT_INVOCATION_NOT_YET_OBSERVED / operatorResultsReceived:false** fields stay pre-execution history; the newer report consumes alignment/install **1/1** and version queries **3/3** at report scope, **zero remaining**.
 The [alignment proposal](../_work/gpu-owner-recovery/qualification/host-toolchain/plan.json) retains its **AWAITING/false** fields as preapproval history; the actual later request supplies approval without rewriting proposal or source-proof receipt.
 Inspect-only and deferral remain unselected historical alternatives, not a repeated prompt.
-Lead next supplies the artifact's literal one-liner for **COPY into host Fish at repository root**; its source command remains **LOCAL / UNCOMMITTED in coding**, not a path assumed present on host.
-No helper/source fetch or Git publication is needed/authorized; existing committed root pins already supply the config, and saved version records are not prerequisites.
-After literal-command handoff the parent waits **only for HOST outputs verification**, not new approval, general planning or extra gates.
+The earlier inline COPY handoff is consumed history, not a command to repeat or a host-path assumption.
+Its prior alignment packet is now confirmed pushed at **5c236ef…**; that publication grant is consumed too, no fresh receive/helper publication authority.
+The report resolves the functional-version handoff; source work continued to [receive-2's exact combined HOST decision](#current-host-receive-run2), not reinstall/native-version-query replay, general planning or an assurance gate.
 The [readiness contract](gpu-readiness.md#current-host-toolchain) and [owning sequence](gpu-host-receive.puml) give the exact fixed inline Fish command and bounds.
 
 - Root [mise.toml](../mise.toml) stays unchanged: **core:bun 1.4.0 / core:rust 1.95.0**, minimal profile, **rustfmt/clippy/llvm-tools**, target **x86_64-unknown-linux-musl**, `auto_install` / `task.run_auto_install` false.
@@ -375,18 +376,52 @@ The [readiness contract](gpu-readiness.md#current-host-toolchain) and [owning se
 
 The actual coding handoff directory contains **request.json**, **verify-handoff.ts** and **handoff-check.json**, covered by its bounded directory glob, not hypothetical host results.
 Its **PASS_APPROVED_ALIGNMENT_COMMAND_RECORDS_ONLY** checks the fixed command SHA, 23 frozen source hashes and four diagram/index matches **before this correction**, not fresh verification of these edits, host installation/version queries or Fish parsing.
-Future host outputs under `_work/gpu-owner-recovery/runs/host-toolchain-align-1` remain **NOT RECEIVED / NOT OBSERVED**, uncovered; approval establishes no host-file existence or installation/version PASS.
-Expected success is **HOST_TOOLCHAIN_EXIT=0**, **PASS_HOST_TOOLCHAIN_ALIGNMENT_ONLY** and all three exact version stdout; none received, failure retains available streams/exits/partial records without automatic retry.
-The existing [source receipt](../_work/gpu-owner-recovery/runs/host-toolchain-align-source-1/receipt.json) is **PASS_HOST_TOOLCHAIN_ALIGNMENT_SOURCE_ONLY**, sourceChanged:false, **four stages PASS/exit 0**: **10 alignment tests / 91 assertions**, fresh **34 receiver regression / 352 assertions**, strict new-project TypeScript and the corrected failure-record check producing **record-check-2.json**.
+New coding-side [operator-paste.txt](../_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/operator-paste.txt), [observation.json](../_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/observation.json), [verify-report.ts](../_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/verify-report.ts) and [record-check.json](../_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/record-check.json) now record **PASS_OPERATOR_REPORTED_ALIGNMENT_RECORDS_ONLY**.
+The paste reports **free-before/install/bun/rustc/cargo/free-after_EXIT=0**, **Bun 1.4.0**, **rustc 1.95.0 (59807616e 2026-04-14)**, **cargo 1.95.0 (f2d3ce0bd 2026-03-21)** and **PASS_HOST_TOOLCHAIN_ALIGNMENT_ONLY / HOST_TOOLCHAIN_EXIT=0**.
+**functionalVersionFactsAccepted:true** accepts those host Mise-context facts at report scope; it proves neither independently available components/target, actual executed bytes/source identity nor individual stream boundaries.
+Original host `runs/host-toolchain-align-1` files remain unreceived/uncovered; child selection establishes no global plain Bun switch or builder-image executable version. No reinstall/new native-version query or receiver/download/extraction grant remains, and no custody gate is added.
+The historical [alignment source receipt](../_work/gpu-owner-recovery/runs/host-toolchain-align-source-1/receipt.json) is **PASS_HOST_TOOLCHAIN_ALIGNMENT_SOURCE_ONLY**, sourceChanged:false, **four stages PASS/exit 0**: **10/91 alignment**, **34/352 receiver regression**, strict new-project TypeScript and corrected report check; its old helper hashes do not qualify receive-2 changes.
 Its retained [literal command](../_work/gpu-owner-recovery/runs/host-toolchain-align-source-1/host-command.fish) SHA is **`aff6b95234f47a031fa41f929922f3a05a0b3b8bdcb152c97c8886de281037e7`**; the source receipt's operatorExecutionApproved:false stays preapproval history, not current authority after the later request.
-Local Fish syntax is **NOT_RUN_LOCALLY_HOST_PRECHECK_EMBEDDED**; old unconfigured shim/no `/usr/bin/fish` history stays unchanged, and future host `fish -n` before install is not an actual syntax PASS.
+Local Fish syntax is **NOT_RUN_LOCALLY_HOST_PRECHECK_EMBEDDED**; old unconfigured shim/no `/usr/bin/fish` history stays unchanged, and the reported stages are not formal host Fish-parse PASS evidence.
 Old receiver source-2 **34/352 + 89/438 + 37/280 + five types** remains separate, not fresh alignment transfer/qualification proof.
 
 Executor reports architect **ses_e3b8133fcffefFIv2vv6VoYyeG** accepting minimal reuse/no framework, DevOps **ses_e3ec46b44ffe7CbnV5rwv23shT** READY for the install/verify TUI, adversarial **ses_e3b76f121ffeprkWd1uLezbJvD** no findings/READY and security **ses_e3cea2a12ffe9TMeXvXBhDE8n7** READY for scoped approval, not execution or extra assurance gates.
 No host installation/native Rust query, receiver/asset/rootfs input download, native/image build, GPU or training operation occurred in coding.
-Helpers/old requests/receipts/pins remain unchanged; new reports/alignment/source-proof/docs stay local/uncommitted, latest reported push **cca45f6…** remains separate from helper **33b29dd…** and assets **f3e277d…**, no current Git publication allowance or need.
+Old requests/receipts/pins remain unchanged; new alignment observation/receive-2 source/proof/docs stay local, latest confirmed push **5c236ef…** remains separate from old helper **33b29dd…** and assets **f3e277d…**. The distinct receive-2 publication grant is now approved but unrun; its new commit remains unknown.
 Actual CPU regression/GPU/backend/canonical BOTH/reference/close/R4/telemetry/coexistence remain unproved and **trainingReady:false** remains unchanged.
 ALL security/privacy/isolation hardening remains AFTER **ALL planned training completes and results validate**, with no additional gates.
+
+<a id="current-host-receive-run2"></a>
+
+##### APPROVED receive-2 — distinct source/operator grants UNCONSUMED, request-only prepublication
+
+The lead continued source work until the exact HOST decision, not another implementation/planning fork.
+Executor selected **Publish+receive 2 Recommended**; actual [handoff-2/request.json](../_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/request.json) now records **APPROVED_ONE_SOURCE_PUBLICATION_AND_ONE_OPERATOR_RECEIVE_RUN2 / sourcePublicationApproved:true / operatorReceiveApproved:true**.
+Both distinct grants are **APPROVED / UNCONSUMED / UNRUN**; [plan-run2.json](../_work/gpu-owner-recovery/qualification/host-receive/plan-run2.json) and source-4 proposal false flags remain unchanged preapproval history, not current authority.
+The handoff-2 directory currently contains **request.json only**; `publication/`, `host-command.fish` and `handoff.json` remain **ABSENT**, no generated command or source-publication outcome yet.
+The request binds source-4 receipt SHA **`9a34af7785ff55ee1b52bb7c5d71a7297847d3a3a0a1d0cc49316f1c1fa71efd`** and helper **18,396 bytes / ac1cd8af…**, current source bytes/proof unchanged.
+Lead next stages controlled UTF-8 source/spec/evidence, including prior alignment records, excluding caches/binaries, then invokes `publish-run2.ts` **ONCE at TOP LEVEL**, not in a bounded worker.
+After exact successful push, deliver the pinned literal using its **actual new commit OID**, then wait **only for HOST output verification**; inspect/defer are historical unselected alternatives, no repeated planning/approval question.
+The [readiness packet](gpu-readiness.md#current-host-receive-run2) and [owning sequence](gpu-host-receive.puml) bind the exact source-only publication and per-run path contract.
+
+- Approved coding publication, UNRUN: **ONE normal hooks-enabled commit / ONE literal fixed-HTTPS commit-OID push / shared 600s**, existing private identity/origin/auth/transport checks, same counters and no automatic retry.
+- [publish-run2.ts](../_work/gpu-owner-recovery/qualification/host-receive/publish-run2.ts) validates actual exact approved version/status, safe proof revision **>=3** including **10/29/30**, receipt SHA, helper identity and exact source/operator limits; checks current source hashes/raw committed blobs with lazy fetch off and original preparation's exact native65 metadata.
+- [transfer/publish.ts](../_work/gpu-owner-recovery/qualification/transfer/publish.ts) admits `sourceOnly:true` only at future `runs/host-input-receive-handoff-2/publication`; skip bundle validation/payload reads and return after **post-push frozen check before manifest/tag/release/upload**. Assets/DRAFT/original preparation stay unchanged, no repack or acquisition.
+- Only future exact push success generates the literal receive-2 command using the **actual new helper commit OID**; old 33b29dd… and zero-OID templates cannot stand in for the new source.
+- Approved operator scope, UNRUN: **ONE receive-2 invocation**, worker **895s TERM + 5s KILL grace = 900s**, helper **55s + 5s <=60s**, helper GET 1/assets 2/extraction 1; fresh cache/host-receive-2, bootstrap-2 and receive-2 paths, old run-1/alignment directories never deleted/reused.
+- Closed `selectReceivePaths` accepts grants 1/2 only; all main artifact labels, receipt fields and stdout paths use that selection, while asset/numeric receivePlan and receive(io) remain unchanged. Legacy renderHostReceive still reproduces exact old **8def4344…** literal; new renderHostReceive2 owns the new grant/paths/context.
+- Set **all three Mise auto-install flags false BEFORE** `mise exec core:bun@1.4.0 core:rust@1.95.0 -- fish --no-config -c program < /dev/null`; host fish -n precedes helper GET. Both Bun guard and helper share the pinned context, no install/Rust-Cargo query/global PATH/trust/settings/config/auth change.
+- Parent saves worker stdout/stderr and exit even if Mise fails before the body. Manifest-first asset-ID downloads retain exact bytes/SHA and shared **600s**; listing/one extraction/hash retain shared **180s** within outer **900s**, >=8 GiB free/8 GiB soft/context <=3 GiB, not quota/storage-isolation assurance.
+
+Current [source-4](../_work/gpu-owner-recovery/runs/host-input-receive-source-4/receipt.json): **PASS_HOST_RECEIVE_SOURCE_ONLY**, failure:null/sourceChanged:false, **329 sources**, **40 receiver tests / 410 assertions + 91 transfer / 453 + 37 qualification / 280 + five types**, eight stages PASS/exit 0.
+Current helper: **18,396 bytes / SHA `ac1cd8afdf8332917d153e871d9400fec1e926eaa4a2380265df646c3f53b6f2`**.
+[Source-3](../_work/gpu-owner-recovery/runs/host-input-receive-source-3/receipt.json) **40/407** is history before the numeric revision regex LOW fix; old source-2/318, alignment source-1 and DRAFT source-6 remain immutable snapshots, not current modified-helper proof.
+Local Fish syntax remains **NOT RUN**, not a new host syntax PASS; no publication/auth query/acquisition/Cargo/LLVM/Docker/native build/host/GPU/training operation occurred in coding checks.
+Executor reports accepted architect/DevOps fresh-host-decision plan, adversarial **ses_e3a0074baffeSZU9bZbE1aaeb3** LOW fixed/current recheck and security **ses_e3cea2a12ffe9TMeXvXBhDE8n7** no scoped findings/READY to that decision, not execution.
+Only actual handoff-2 request gains coverage; future publication/command/handoff and host receive-2 outputs remain absent/unreceived and uncovered, no operator execution in coding. Original asset source **f3e277d…**, release **439935095**, manifest **730048215** and bundle **730047564** stay unchanged; approved source publication authorizes no coding asset payload read/mutation, new install/native query/global config/auth change/retry/release/upload/build/GPU/training.
+Latest confirmed push remains **5c236ef24785d937f415cae70900d7825f7baa5f** under its spent old grant; new helper OID is late-bound only after the approved future commit/push, never old **5c236ef… / 33b29dd… / f3e277d…** or a placeholder, no origin fetch needed.
+Native65/Rust/model/F64/4,670 coordinates/`eps=1e-6`/`atol=1e-8`/`rtol=1e-5`/exact C12/CPU Flex/masters `101..105`/production Dockerfiles remain unchanged; canonical BOTH/reference/close/R4/telemetry/coexistence unqualified, entrypoints disabled, **trainingReady:false**.
+ALL security/privacy/isolation hardening remains AFTER **ALL planned training completes and results validate**, no extra gates or template fetch.
 
 <a id="current-input-inventory"></a>
 
@@ -417,7 +452,7 @@ Prepared inputs are retained and the first STOP stays closed.
 Executor resolved the original transport fork through the [distinct HTTPS grant](#current-https-publication), whose second attempt failed at commit.
 Executor resolved the later fork through [Inherit Identity Recommended](#current-identity-publication); its source-6-bound third DRAFT publication passed and consumed its grant.
 Reported timestamps `1794266630` to `1794266641` span 11 wall seconds, not independent proof of the prescribed 600s pull / 60s combined inspection / 30s cleanup deadlines or physical stop.
-Original pre-handoff/earlier publication identities remain historical; Executor reports latest docs/evidence push **cca45f6b2978398f68d0db1a84119e1b5a3c0ee2**, distinct from expected helper **33b29dd…** and assets **f3e277d…**. Old and current operator-executed identities remain independently unestablished, no new custody gate.
+Original pre-handoff/earlier publication identities remain historical; earlier docs push **cca45f6b2978398f68d0db1a84119e1b5a3c0ee2**, run-1 helper **33b29dd…**, assets **f3e277d…** and latest prior-alignment push **5c236ef…** remain distinct. Actual operator-executed identities remain independently unestablished, no new custody gate.
 The [Fish source](../_work/gpu-owner-recovery/qualification/inspect-builder.fish) and prescribed 1 CPU / 1 GiB non-CUDA contract remain unchanged; no compiled ABI/linking, qualification-image build, GPU/training proof or post-record review acceptance follows.
 The report authorizes no new installation/acquisition, LLVM query/prefix-payload read, copy/staging, build or host/GPU/training execution; the broad packet is still not a complete runnable acquisition/build/GPU packet.
 The report itself grants no operation; original preparation and all three publication attempts are consumed, preserving the second attempt's failed commit invocation and third attempt's successful commit/push.

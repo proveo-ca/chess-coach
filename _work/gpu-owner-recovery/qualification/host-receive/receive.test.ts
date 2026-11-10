@@ -1,6 +1,6 @@
 // SPEC: _spec/gpu-input-transfer.puml
 import { expect, test } from "bun:test";
-import { hostCommandEnvironment, inputPath, nativePath, receive, receivePlan, validateManifest, verifyListing, writeRetained } from "./receive";
+import { hostCommandEnvironment, inputPath, nativePath, receive, receivePlan, selectReceivePaths, validateManifest, verifyListing, writeRetained } from "./receive";
 import type { ContextResult, Manifest, ReceiveIO } from "./receive";
 
 const rows = await Bun.file(new URL("../../runs/host-feasibility-inputs-1/context-manifest.json", import.meta.url)).json();
@@ -36,6 +36,26 @@ test("host proposal matches exact retained draft asset metadata without authoriz
   expect(proposal.codingSourcePublicationApproved).toBe(false);
   expect(proposal.operatorReceiveCommandApproved).toBe(false);
   for (const key of ["installationOrAuthenticationChangesAuthorized", "automaticRetryOrOverwriteOrDeletionAuthorized", "imageBuildOrCompilationAuthorized", "llvmOrCargoExecutionAuthorized", "gpuExecutionAuthorized", "trainingAuthorized", "trainingReady"]) expect(proposal[key]).toBe(false);
+});
+
+test("closed run selectors preserve run 1 and choose distinct run-2 destinations", () => {
+  expect(selectReceivePaths("--approved-host-receive-1")).toEqual({ workspace: receivePlan.workspace, evidence: receivePlan.evidence });
+  expect(selectReceivePaths("--approved-host-receive-2")).toEqual({ workspace: "_work/gpu-owner-recovery/cache/host-receive-2", evidence: "_work/gpu-owner-recovery/runs/host-input-receive-2" });
+  for (const value of [undefined, null, "", "--approved-host-receive-3", "../../other", "--approved-host-receive-2 "]) expect(() => selectReceivePaths(value)).toThrow("APPROVED_HOST_RECEIVE_COMMAND_REQUIRED");
+});
+
+test("run-2 paths drive artifact and receipt labels without changing asset inputs", async () => {
+  const plan = await Bun.file(new URL("./plan-run2.json", import.meta.url)).json();
+  expect(selectReceivePaths(plan.grant)).toEqual({ workspace: plan.workspace, evidence: plan.evidence });
+  expect(plan.manifest).toEqual(receivePlan.manifest); expect(plan.bundle).toEqual(receivePlan.bundle);
+  expect(plan.execution).toEqual({ tool: "mise", pins: ["core:bun@1.4.0", "core:rust@1.95.0"], autoInstall: false, execAutoInstall: false, taskAutoInstall: false });
+  expect(plan.sourcePublicationApproved).toBe(false); expect(plan.operatorReceiveApproved).toBe(false); expect(plan.installationOrTrustOrConfigurationChangesAuthorized).toBe(false);
+  const source = await Bun.file(new URL("./receive.ts", import.meta.url)).text();
+  const main = source.slice(source.indexOf("async function main()"));
+  expect(main).not.toContain("receivePlan.workspace"); expect(main).not.toContain("receivePlan.evidence");
+  expect(main).toContain('receipt: selected.evidence + "/receipt.json"');
+  expect(main).toContain('artifacts.push({ path: selected.evidence + "/"');
+  expect(main.indexOf("selectReceivePaths(grant)")).toBeLessThan(main.indexOf("await mkdir(evidence)"));
 });
 
 test("manifest binds the original 65 source inputs and honest offline-build limitations", () => {

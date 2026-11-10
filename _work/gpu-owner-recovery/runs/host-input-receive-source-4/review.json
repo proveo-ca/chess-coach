@@ -1,0 +1,22 @@
+{
+  "version": "chess-coach.mise-host-receive-run2-source-review.v1",
+  "status": "READY_FOR_COMBINED_SOURCE_PUBLICATION_AND_HOST_COMMAND_APPROVAL_ONLY",
+  "sourceReceipt": "_work/gpu-owner-recovery/runs/host-input-receive-source-4/receipt.json",
+  "proposal": "_work/gpu-owner-recovery/qualification/host-receive/plan-run2.json",
+  "adversarial": { "session": "ses_e3a0074baffeSZU9bZbE1aaeb3", "verdict": "READY_SOURCE_ONLY", "proofRevisionFindingResolved": true },
+  "devops": { "session": "ses_e3ec46b44ffe7CbnV5rwv23shT", "verdict": "READY_FOR_FRESH_COMBINED_APPROVAL" },
+  "security": { "session": "ses_e3cea2a12ffe9TMeXvXBhDE8n7", "verdict": "READY_FOR_SCOPED_DECISION_NOT_EXECUTION", "reviewedSnapshot": "host-input-receive-source-3", "subsequentNumericRevisionFixChangesOperationalScope": false },
+  "frozenSourceHashes": 329,
+  "receiveTests": 40,
+  "receiveAssertions": 410,
+  "transferTests": 91,
+  "transferAssertions": 453,
+  "qualificationTests": 37,
+  "qualificationAssertions": 280,
+  "passingTypechecks": 5,
+  "fishSyntaxValidatedLocally": false,
+  "sourcePublicationApproved": false,
+  "operatorRun2Approved": false,
+  "installationOrGpuOrTrainingAuthorized": false,
+  "trainingReady": false
+}
