@@ -2,7 +2,7 @@
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import { open, readFile, stat, writeFile } from "node:fs/promises";
-import type plan from "./plan.json";
+import type plan from "./plan-run2.json";
 
 type Plan = typeof plan;
 export type Query = { id: string; argv: string[] };
@@ -19,7 +19,35 @@ const engineFormat = '{"ID":{{json .ID}},"ServerVersion":{{json .ServerVersion}}
 const imageFormat = '{"Id":{{json .Id}},"RepoDigests":{{json .RepoDigests}},"Os":{{json .Os}},"Architecture":{{json .Architecture}},"Size":{{json .Size}}}';
 const containerFormat = '{"Id":{{json .Id}},"State":{{json .State.Status}},"NanoCpus":{{json .HostConfig.NanoCpus}},"CpuQuota":{{json .HostConfig.CpuQuota}},"CpuPeriod":{{json .HostConfig.CpuPeriod}},"Memory":{{json .HostConfig.Memory}},"MemorySwap":{{json .HostConfig.MemorySwap}},"CgroupParent":{{json .HostConfig.CgroupParent}},"NetworkMode":{{json .HostConfig.NetworkMode}}}';
 
+type BuilderNode = { Name: string; Endpoint?: string; Status?: string; Error?: string };
+type BuilderMetadata = { Name: string; Driver: string; Error?: string; Nodes: BuilderNode[] };
+export function parseBuilderInspect(text: string): BuilderMetadata {
+  const header: Record<string, string> = {}, nodes: BuilderNode[] = [];
+  let inNodes = false, node: BuilderNode | undefined;
+  for (const line of text.split(/\r?\n/)) {
+    if (!line || /^\s/.test(line)) continue;
+    if (/^Nodes:\s*$/.test(line)) { requireValue(!inNodes, "DUPLICATE_BUILDER_NODES_SECTION"); inNodes = true; continue; }
+    const field = /^(Name|Driver|Endpoint|Status|Error):[ \t]*(.*)$/.exec(line);
+    if (!field) continue;
+    const key = field[1]!, value = field[2]!.trim();
+    requireValue(value.length > 0, "EMPTY_BUILDER_FIELD:" + key);
+    if (!inNodes) {
+      requireValue(["Name", "Driver", "Error"].includes(key) && !Object.hasOwn(header, key), "AMBIGUOUS_BUILDER_HEADER:" + key);
+      header[key] = value;
+    } else if (key === "Name") {
+      requireValue(!nodes.some(row => row.Name === value), "DUPLICATE_BUILDER_NODE");
+      node = { Name: value }; nodes.push(node);
+    } else {
+      requireValue(node && ["Endpoint", "Status", "Error"].includes(key) && !Object.hasOwn(node, key), "AMBIGUOUS_BUILDER_NODE_FIELD:" + key);
+      Object.assign(node!, { [key]: value });
+    }
+  }
+  requireValue(header.Name && header.Driver && (inNodes || header.Error), "BUILDER_TEXT_HEADERS_REQUIRED");
+  return { Name: header.Name!, Driver: header.Driver!, ...(header.Error ? { Error: header.Error } : {}), Nodes: nodes };
+}
+
 export function selectedContainer(builder: Record<string, any>, context: string, endpoint: string, dockerHost?: string) {
+  if (builder.Error || builder.Nodes?.some((node: BuilderNode) => node?.Error)) return { container: null, reason: "SKIPPED_BUILDER_REPORTED_ERROR" };
   if (builder.Driver !== "docker-container") return { container: null, reason: "SKIPPED_DRIVER_HAS_NO_SELECTED_BUILDER_CONTAINER" };
   if (!Array.isArray(builder.Nodes) || builder.Nodes.length !== 1) return { container: null, reason: "SKIPPED_NOT_SINGLE_NODE" };
   const node = builder.Nodes[0];
@@ -42,20 +70,19 @@ export async function collectInventory(p: Plan, io: InventoryIO) {
     try {
       const out = await io.run(query); attempt.exitCode = out.exitCode; attempt.failure = out.failure;
       requireValue(out.exitCode === 0 && out.failure === null, out.failure ?? "QUERY_NONZERO:" + id);
-      return out.stdout.trim();
+      return out.stdout;
     } catch (error) { attempt.failure ??= error instanceof Error ? error.message : "QUERY_FAILED"; throw error; }
   };
   try {
-    const context = await run("context-name", ["docker", "context", "show"]);
+    const context = (await run("context-name", ["docker", "context", "show"])).trim();
     requireValue(/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,127}$/.test(context), "CONTEXT_NAME_REQUIRED"); metadata.contextName = context;
     const endpoint = object(await run("context-endpoint", ["docker", "context", "inspect", context, "--format", contextFormat]));
     requireValue(typeof endpoint.DockerEndpoint === "string", "DOCKER_ENDPOINT_REQUIRED"); metadata.contextEndpoint = endpoint;
     metadata.dockerHostOverridePresent = io.dockerHost !== undefined;
-    const builder = object(await run("selected-builder", ["docker", "buildx", "inspect", "--format", "{{json .}}"]));
-    requireValue(typeof builder.Name === "string" && typeof builder.Driver === "string" && Array.isArray(builder.Nodes), "SELECTED_BUILDER_METADATA_REQUIRED");
+    const builder = parseBuilderInspect(await run("selected-builder", ["docker", "buildx", "inspect"]));
     metadata.builder = builder;
     metadata.engine = object(await run("engine", ["docker", "info", "--format", engineFormat]));
-    const images = (await run("pinned-images", ["docker", "image", "inspect", ...p.images, "--format", imageFormat])).split("\n").map(object);
+    const images = (await run("pinned-images", ["docker", "image", "inspect", ...p.images, "--format", imageFormat])).trim().split("\n").map(object);
     requireValue(images.length === 2 && images.every(image => typeof image.Id === "string" && Array.isArray(image.RepoDigests)), "TWO_LOCAL_IMAGE_METADATA_RECORDS_REQUIRED");
     metadata.images = images;
     metadata.hostFilesystem = await run("host-filesystem", ["df", "-Pk", "--", p.context]);

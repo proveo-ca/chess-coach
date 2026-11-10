@@ -6,7 +6,7 @@ import { repository, work } from "../../provision";
 import { runBounded, sourceFilePaths } from "../../verify";
 import { sourceInventory } from "../../../../tooling/runtime/qualification";
 import { renderHostBuildInventory } from "./render";
-import plan from "./plan.json";
+import plan from "./plan-run2.json";
 
 const [label] = Bun.argv.slice(2);
 if (Bun.argv.length !== 3 || !/^host-build-inventory-source-[1-9][0-9]*$/.test(label ?? "") || resolve(process.cwd()) !== resolve(repository)) throw Error("HOST_BUILD_INVENTORY_SOURCE_CONTEXT_REQUIRED");
@@ -14,9 +14,11 @@ const directory = resolve(work, "runs", label!), hash = (bytes: Uint8Array) => c
 await mkdir(directory); await mkdir(resolve(directory, "home")); await mkdir(resolve(directory, "tmp")); await mkdir(resolve(directory, "e2e"));
 const native = await sourceInventory(repository), paths = new Set([...(await sourceFilePaths("typecheck-source")), ...native.map(row => row.path),
   "_work/gpu-owner-recovery/provision.ts", "tooling/runtime/Dockerfile", "tooling/runtime/Dockerfile.gpu",
-  "_work/gpu-owner-recovery/runs/host-feasibility-inputs-1/preparation.json", "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-local-6/sources.json"]);
-for (const pattern of ["_work/gpu-owner-recovery/qualification/host-build-inventory/*.{ts,json}", "_work/gpu-owner-recovery/qualification/host-receive/*.{ts,json}",
-  "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/*.{ts,json,txt}"]) for await (const path of new Bun.Glob(pattern).scan({ cwd: repository, onlyFiles: true })) paths.add(path);
+  "_work/gpu-owner-recovery/runs/host-feasibility-inputs-1/preparation.json", "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-local-6/sources.json",
+  "_work/gpu-owner-recovery/runs/host-build-inventory-source-3/receipt.json", "_work/gpu-owner-recovery/runs/host-build-inventory-source-3/host-command.fish",
+  "_work/gpu-owner-recovery/runs/host-build-inventory-handoff-1/request.json"]);
+for (const pattern of ["_work/gpu-owner-recovery/qualification/host-build-inventory/*.{ts,json}", "_work/gpu-owner-recovery/qualification/host-build-inventory/fixtures/*.json", "_work/gpu-owner-recovery/qualification/host-receive/*.{ts,json}",
+  "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/*.{ts,json,txt}", "_work/gpu-owner-recovery/runs/host-build-inventory-observation-1/*.{ts,json,txt}"]) for await (const path of new Bun.Glob(pattern).scan({ cwd: repository, onlyFiles: true })) paths.add(path);
 const sources = await Promise.all([...paths].sort().map(async path => ({ path, sha256: hash(await readFile(resolve(repository, path))) })));
 const command = Buffer.from(await renderHostBuildInventory() + "\n");
 await writeFile(resolve(directory, "host-command.fish"), command, { flag: "wx" });

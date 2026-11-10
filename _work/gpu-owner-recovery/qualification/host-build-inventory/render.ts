@@ -1,6 +1,6 @@
 // SPEC: _spec/gpu-host-build-inventory.puml
 import { readFile } from "node:fs/promises";
-import plan from "./plan.json";
+import plan from "./plan-run2.json";
 import { quoteFish as q } from "../host-receive/bootstrap";
 
 export async function inventoryProgram() {

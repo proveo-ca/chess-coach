@@ -286,7 +286,13 @@
         "_work/gpu-owner-recovery/runs/host-build-inventory-source-1/**",
         "_work/gpu-owner-recovery/runs/host-build-inventory-source-2/**",
         "_work/gpu-owner-recovery/runs/host-build-inventory-source-3/**",
-        "_work/gpu-owner-recovery/runs/host-build-inventory-handoff-1/request.json"
+        "_work/gpu-owner-recovery/runs/host-build-inventory-handoff-1/request.json",
+        "_work/gpu-owner-recovery/qualification/host-build-inventory/plan-run2.json",
+        "_work/gpu-owner-recovery/qualification/host-build-inventory/fixtures/buildx-inspect.json",
+        "_work/gpu-owner-recovery/runs/host-build-inventory-observation-1/**",
+        "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/**",
+        "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/**",
+        "_work/gpu-owner-recovery/runs/host-build-inventory-handoff-2/request.json"
       ],
       "fingerprint": null
     }

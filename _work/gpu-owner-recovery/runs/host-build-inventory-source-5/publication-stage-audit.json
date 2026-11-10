@@ -1,0 +1,740 @@
+{
+  "status": "PASS_CONTROLLED_CORRECTED_INVENTORY_PUBLICATION_AUDIT",
+  "authorizationSource": "EXECUTOR_COMMIT_AND_PUSH_IF_ANY_CHANGE_REQUEST",
+  "sources": [
+    {
+      "path": "_spec/.spec-index.json",
+      "bytes": 17664,
+      "sha256": "601ba7240d3ed58356c974760b194964a7a3ea322f54ede29bdb5c03783f2aa5"
+    },
+    {
+      "path": "_spec/gate-closure.md",
+      "bytes": 147170,
+      "sha256": "7231d57c8345d396397866e35c19e6f6c02be6850d36c1cd9aab43fdd3bc8f20"
+    },
+    {
+      "path": "_spec/gpu-build.puml",
+      "bytes": 97387,
+      "sha256": "3357ccb54b956c24b5689127c77b1681486482cc1e56abfc49f1f30b2703987c"
+    },
+    {
+      "path": "_spec/gpu-host-build-inventory.puml",
+      "bytes": 20300,
+      "sha256": "e2b7ac4765f68c11a50f579d7d9720d0bebd9a6bd23d1b65a2f1c3c8b9b671f6"
+    },
+    {
+      "path": "_spec/gpu-host-receive.puml",
+      "bytes": 53017,
+      "sha256": "d2adce6ff536c47565e6987abd6d71ca3624c900a74d32ef6db3f5846fb570fb"
+    },
+    {
+      "path": "_spec/gpu-input-transfer.puml",
+      "bytes": 59821,
+      "sha256": "0c6dc4c764d828353a641c2ae61ee2820ddb4a99114b3b154ce40ce37a9972d0"
+    },
+    {
+      "path": "_spec/gpu-qualification.puml",
+      "bytes": 70846,
+      "sha256": "84923e3ee2b3d8fa939e7239e264a251fb250494d2b4be082d389faf6f01cd29"
+    },
+    {
+      "path": "_spec/gpu-readiness.md",
+      "bytes": 210519,
+      "sha256": "c9219b3a455ac6f8d489d376cf7802d28908d1d7af003c729c170c179695915b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/host-build-inventory/collector.ts",
+      "bytes": 12807,
+      "sha256": "6a088d1b12e7cc1ce6f9d747a28db6126b63be32254e1b4b2421cd4450daad0e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/host-build-inventory/fixtures/buildx-inspect.json",
+      "bytes": 1783,
+      "sha256": "d7faaf6a95a117154780a3a79ec6735cff8dc12d984f69ba6211509dd38c808d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/host-build-inventory/plan-run2.json",
+      "bytes": 1779,
+      "sha256": "035320534364d7936ae70879e4544246308e01fa24eb8caca34dfd51c4dbbda2"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/host-build-inventory/render.test.ts",
+      "bytes": 20143,
+      "sha256": "fa8c18b7f567533e18e7a2f290d40b8a167de2869470c8524b76590b27ce79f3"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/host-build-inventory/render.ts",
+      "bytes": 2040,
+      "sha256": "e1242b661dd3d706b570a198d933a0fe703dd7e1d744ba436dc8165fc6c2aa24"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/host-build-inventory/verify.ts",
+      "bytes": 5594,
+      "sha256": "5bf1ae7c4ce4baf85818bd6360a734ec28e2390bacb697a4dd3183bb9c8575ae"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-handoff-2/request.json",
+      "bytes": 1870,
+      "sha256": "87eb835db9f3989cc1b3decde8a16d8f6b010609ed7a887985f8b10c2781f4cd"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-observation-1/observation.json",
+      "bytes": 1236,
+      "sha256": "0bb0ce83239d29ba5b9c4d3c105b50e61a74aa61a5ad8de2f94f1f8e0c08846e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-observation-1/operator-paste.txt",
+      "bytes": 4163,
+      "sha256": "101dce5003464c73771ae5104ea57497c9bd0633912448ea48215c68cc621701"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-observation-1/record-check.json",
+      "bytes": 1241,
+      "sha256": "2690b5357732ad8a667bb0cb3b5f9b40e07e9aadef6a14c770d12559210fcb45"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-observation-1/reported-receipt.json",
+      "bytes": 3948,
+      "sha256": "b817c5a6135d97ab4703367fdb924bd92f8ac8afdd30bfa63ac81d5a0d52c631"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-observation-1/verify-report.ts",
+      "bytes": 4062,
+      "sha256": "77498b6898b4c794e724b15f3ad27be9e5f628e3c1f63ed067f0a5ad9757a59c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/deadline/context-endpoint.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/deadline/context-endpoint.stdout",
+      "bytes": 48,
+      "sha256": "69a06bf43cf4bc22da29ae77d11be9a89c73e9bd044bda18376b5fc5c547b82a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/deadline/context-name.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/deadline/context-name.stdout",
+      "bytes": 8,
+      "sha256": "01666ec060466c14b9fa06c613fbac449163f2a2017558fe16526209ab78c6b0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/deadline/engine.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/deadline/engine.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/deadline/fixture-scope.json",
+      "bytes": 110,
+      "sha256": "653a4311546b62c201737b8caf87d7a3fc8e77d14eb291075d3f79ae04b565f8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/deadline/outer.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/deadline/outer.stdout",
+      "bytes": 232,
+      "sha256": "2eae3959ee9b17640aceabb120d88a6b187745fe2878e667acbaa71f67f128fd"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/deadline/receipt.json",
+      "bytes": 5586,
+      "sha256": "ee14b6d861c147d286968f9faa449b95e6b7a09c9f98ff8cd8f393fc65bd9f8e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/deadline/selected-builder.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/deadline/selected-builder.stdout",
+      "bytes": 127,
+      "sha256": "540d9b258d323e7d59c5641f2ca7afe5f9c0a62077e7ca3e5b21396f06647e75"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/overflow/context-endpoint.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/overflow/context-endpoint.stdout",
+      "bytes": 48,
+      "sha256": "69a06bf43cf4bc22da29ae77d11be9a89c73e9bd044bda18376b5fc5c547b82a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/overflow/context-name.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/overflow/context-name.stdout",
+      "bytes": 8,
+      "sha256": "01666ec060466c14b9fa06c613fbac449163f2a2017558fe16526209ab78c6b0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/overflow/engine.stderr",
+      "bytes": 32768,
+      "sha256": "65be48e7ef751399d65711c5c053c6cec0c412ea22fae85872c867336b955a46"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/overflow/engine.stdout",
+      "bytes": 32768,
+      "sha256": "427965f49a857174e308658227325dbd23ff4eccbe399d5ad4817dda3ec79f87"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/overflow/fixture-scope.json",
+      "bytes": 110,
+      "sha256": "653a4311546b62c201737b8caf87d7a3fc8e77d14eb291075d3f79ae04b565f8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/overflow/outer.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/overflow/outer.stdout",
+      "bytes": 236,
+      "sha256": "9bf74f97f98aac35832b8c0b469606201d27b52a3afc2e116f22e0e5c96656fd"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/overflow/receipt.json",
+      "bytes": 5599,
+      "sha256": "83ac2520a9c2bc98f8e6469e06e6104262937282d9b19fa3a5259af0549f060a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/overflow/selected-builder.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/overflow/selected-builder.stdout",
+      "bytes": 127,
+      "sha256": "540d9b258d323e7d59c5641f2ca7afe5f9c0a62077e7ca3e5b21396f06647e75"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/context-endpoint.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/context-endpoint.stdout",
+      "bytes": 48,
+      "sha256": "69a06bf43cf4bc22da29ae77d11be9a89c73e9bd044bda18376b5fc5c547b82a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/context-name.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/context-name.stdout",
+      "bytes": 8,
+      "sha256": "01666ec060466c14b9fa06c613fbac449163f2a2017558fe16526209ab78c6b0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/engine.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/engine.stdout",
+      "bytes": 10,
+      "sha256": "3dc506e3da4c1c4e833301096e2c6c30ced141a08c51d849f82a8e84d1b7ef24"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/fixture-scope.json",
+      "bytes": 110,
+      "sha256": "653a4311546b62c201737b8caf87d7a3fc8e77d14eb291075d3f79ae04b565f8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/host-filesystem.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/host-filesystem.stdout",
+      "bytes": 18,
+      "sha256": "998591eee9e7849785ea03fcd8b797856a634f869a0417033a3e6f4e1f92432c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/host-memory.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/host-memory.stdout",
+      "bytes": 23,
+      "sha256": "e8318916de5ded30d8c49d610a2ad3a4d58e06ee7bc3c01369d9f07be19f750f"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/outer.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/outer.stdout",
+      "bytes": 216,
+      "sha256": "d0176c161aa87e06de1d3d48e12b71db29d49dee23d8ac9b0f84918b5fb06fed"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/pinned-images.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/pinned-images.stdout",
+      "bytes": 61,
+      "sha256": "16b8d666cdc529fde81c24bb98145a29122d64a9f816f860a91db8ce5bfc2b20"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/receipt.json",
+      "bytes": 10276,
+      "sha256": "1c78364a78e3368505931d8346bbaed6c8670ffc1615c4772a3025f304d17795"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/selected-builder-container.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/selected-builder-container.stdout",
+      "bytes": 30,
+      "sha256": "b67cc33855088194e5280a9558f21d6bcd4b53532a32200c532ff0a7b3cee41b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/selected-builder.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/e2e/pass/selected-builder.stdout",
+      "bytes": 127,
+      "sha256": "540d9b258d323e7d59c5641f2ca7afe5f9c0a62077e7ca3e5b21396f06647e75"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/host-command.fish",
+      "bytes": 14816,
+      "sha256": "078a6ae255a4e408d17941ff7204368c65ad31d3eb719eb56e1351c3c516907b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/inventory-unit/command.stderr",
+      "bytes": 3176,
+      "sha256": "91c48e4d1f1de09f112814007c7ef698bcf2dea72e47cf60898edc8d70b791a2"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/inventory-unit/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/qualification-unit/command.stderr",
+      "bytes": 3618,
+      "sha256": "51ff04aff7177223f89c49b6b9b3e16fe3c90d63befebed7ba1bba739bb2c8f6"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/qualification-unit/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/receipt.json",
+      "bytes": 53998,
+      "sha256": "71ceeb14cd7f836edb68564ade4d8264792aebd9b0d3bf0c0381f72011f7bd1b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/sources.json",
+      "bytes": 43766,
+      "sha256": "87650eba5e815d62c7e19e360680cb7ee1510b15f9cfc4d8938b09223bc67324"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/types-0/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/types-0/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/types-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/types-1/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/types-2/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/types-2/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/types-3/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-4/types-3/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/deadline/context-endpoint.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/deadline/context-endpoint.stdout",
+      "bytes": 48,
+      "sha256": "69a06bf43cf4bc22da29ae77d11be9a89c73e9bd044bda18376b5fc5c547b82a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/deadline/context-name.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/deadline/context-name.stdout",
+      "bytes": 8,
+      "sha256": "01666ec060466c14b9fa06c613fbac449163f2a2017558fe16526209ab78c6b0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/deadline/engine.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/deadline/engine.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/deadline/fixture-scope.json",
+      "bytes": 110,
+      "sha256": "653a4311546b62c201737b8caf87d7a3fc8e77d14eb291075d3f79ae04b565f8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/deadline/outer.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/deadline/outer.stdout",
+      "bytes": 232,
+      "sha256": "c4daded0d99f9cfd43d7fe7970a16856b50d3f8408c48d435a2382c74f59bf22"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/deadline/receipt.json",
+      "bytes": 5585,
+      "sha256": "b0e338d3273840e5d7f11a3d36b31a3c9d24fff2b10fd04150088d4b77095245"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/deadline/selected-builder.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/deadline/selected-builder.stdout",
+      "bytes": 127,
+      "sha256": "540d9b258d323e7d59c5641f2ca7afe5f9c0a62077e7ca3e5b21396f06647e75"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/overflow/context-endpoint.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/overflow/context-endpoint.stdout",
+      "bytes": 48,
+      "sha256": "69a06bf43cf4bc22da29ae77d11be9a89c73e9bd044bda18376b5fc5c547b82a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/overflow/context-name.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/overflow/context-name.stdout",
+      "bytes": 8,
+      "sha256": "01666ec060466c14b9fa06c613fbac449163f2a2017558fe16526209ab78c6b0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/overflow/engine.stderr",
+      "bytes": 32768,
+      "sha256": "65be48e7ef751399d65711c5c053c6cec0c412ea22fae85872c867336b955a46"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/overflow/engine.stdout",
+      "bytes": 32768,
+      "sha256": "427965f49a857174e308658227325dbd23ff4eccbe399d5ad4817dda3ec79f87"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/overflow/fixture-scope.json",
+      "bytes": 110,
+      "sha256": "653a4311546b62c201737b8caf87d7a3fc8e77d14eb291075d3f79ae04b565f8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/overflow/outer.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/overflow/outer.stdout",
+      "bytes": 236,
+      "sha256": "e366339ce6544b95dce2ec5fe4c1db1e51c555c10c4d3c28c9424093b0e29559"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/overflow/receipt.json",
+      "bytes": 5608,
+      "sha256": "b91bb025e1869f9fa431d0732ea8a2832bb94f13c6758d882c33dc2b34c67688"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/overflow/selected-builder.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/overflow/selected-builder.stdout",
+      "bytes": 127,
+      "sha256": "540d9b258d323e7d59c5641f2ca7afe5f9c0a62077e7ca3e5b21396f06647e75"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/context-endpoint.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/context-endpoint.stdout",
+      "bytes": 48,
+      "sha256": "69a06bf43cf4bc22da29ae77d11be9a89c73e9bd044bda18376b5fc5c547b82a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/context-name.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/context-name.stdout",
+      "bytes": 8,
+      "sha256": "01666ec060466c14b9fa06c613fbac449163f2a2017558fe16526209ab78c6b0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/engine.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/engine.stdout",
+      "bytes": 10,
+      "sha256": "3dc506e3da4c1c4e833301096e2c6c30ced141a08c51d849f82a8e84d1b7ef24"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/fixture-scope.json",
+      "bytes": 110,
+      "sha256": "653a4311546b62c201737b8caf87d7a3fc8e77d14eb291075d3f79ae04b565f8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/host-filesystem.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/host-filesystem.stdout",
+      "bytes": 18,
+      "sha256": "998591eee9e7849785ea03fcd8b797856a634f869a0417033a3e6f4e1f92432c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/host-memory.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/host-memory.stdout",
+      "bytes": 23,
+      "sha256": "e8318916de5ded30d8c49d610a2ad3a4d58e06ee7bc3c01369d9f07be19f750f"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/outer.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/outer.stdout",
+      "bytes": 216,
+      "sha256": "6adc58622c124585c47353cff7582956193997353fc41f1227a9e84fac9f7834"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/pinned-images.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/pinned-images.stdout",
+      "bytes": 61,
+      "sha256": "16b8d666cdc529fde81c24bb98145a29122d64a9f816f860a91db8ce5bfc2b20"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/receipt.json",
+      "bytes": 10269,
+      "sha256": "481609939bf6a0382a70b3c868b4da7276cf8fc040c9fa61e7ac88a343bca4ab"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/selected-builder-container.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/selected-builder-container.stdout",
+      "bytes": 30,
+      "sha256": "b67cc33855088194e5280a9558f21d6bcd4b53532a32200c532ff0a7b3cee41b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/selected-builder.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/e2e/pass/selected-builder.stdout",
+      "bytes": 127,
+      "sha256": "540d9b258d323e7d59c5641f2ca7afe5f9c0a62077e7ca3e5b21396f06647e75"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/host-command-approval.json",
+      "bytes": 2668,
+      "sha256": "1572f2a99baf5dca8feca00d1c87e3dbe1473d35824a35213fec4c42dce7e23e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/host-command.fish",
+      "bytes": 14816,
+      "sha256": "078a6ae255a4e408d17941ff7204368c65ad31d3eb719eb56e1351c3c516907b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/inventory-unit/command.stderr",
+      "bytes": 3176,
+      "sha256": "b5ef3025a9b9f020522b5085cf079342776dc3b90ce5d23afba6046e129b4cfd"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/inventory-unit/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/qualification-unit/command.stderr",
+      "bytes": 3627,
+      "sha256": "275f4f8697eb61d4f9ab195f5bf2b8ad086a32cc170e45c212083a9a03d396f7"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/qualification-unit/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/receipt.json",
+      "bytes": 54562,
+      "sha256": "d2d049b0c5211812311d10383c5a07958052121001a60d165fdadd4e0b93bee6"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/record-check.json",
+      "bytes": 657,
+      "sha256": "5b516d1f850165af665f98b8b3d5d2b1262b8632c7c603f5919f597977654fdc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/review.json",
+      "bytes": 908,
+      "sha256": "dc1ba5b88be613984fa5ec221f4bf8ecf4a777024020d1bf5275322f99b65cba"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/sources.json",
+      "bytes": 44306,
+      "sha256": "e81d432584c7037f32c63bfb630e1228de600d247deb86acd81b1c4b12322771"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/types-0/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/types-0/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/types-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/types-1/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/types-2/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/types-2/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/types-3/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/types-3/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/verify-records.ts",
+      "bytes": 4425,
+      "sha256": "7cd7f17ab99110852f445e7f91eda0deb332031edd8e95a7629e075a5997468f"
+    }
+  ],
+  "textBytes": 1163426,
+  "auditExcludesItself": true,
+  "currentSourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/receipt.json",
+    "sha256": "d2d049b0c5211812311d10383c5a07958052121001a60d165fdadd4e0b93bee6"
+  },
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/host-command.fish",
+    "bytes": 14816,
+    "sha256": "078a6ae255a4e408d17941ff7204368c65ad31d3eb719eb56e1351c3c516907b"
+  },
+  "currentSourceHashesChecked": 298,
+  "nativeInputsChecked": 65,
+  "sourceCaptureStreamsChecked": 24,
+  "mockedE2eStreamsChecked": 64,
+  "diagramIndexMatches": 5,
+  "hostRun1FailureRetained": true,
+  "hostRun1ExactStderrUnknown": true,
+  "hostRun2ApprovedConditionalOnSourcePublication": true,
+  "remainingHostRun2Invocations": 1,
+  "sourcePublicationPerformed": false,
+  "actualHostQueriesPerformed": false,
+  "binaryOrCacheIncluded": false,
+  "trainingReady": false
+}

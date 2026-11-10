@@ -1,0 +1,43 @@
+{
+  "version": "chess-coach.approved-corrected-host-build-inventory.v1",
+  "status": "APPROVED_ONE_CORRECTED_HOST_INVOCATION_UNCONSUMED_UNOBSERVED",
+  "authorizationSource": "EXECUTOR_SELECTED_RUN_INVENTORY_2_RECOMMENDED",
+  "approvedProposal": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/host-command-approval.json",
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/receipt.json",
+    "sha256": "d2d049b0c5211812311d10383c5a07958052121001a60d165fdadd4e0b93bee6"
+  },
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/host-command.fish",
+    "bytes": 14816,
+    "sha256": "078a6ae255a4e408d17941ff7204368c65ad31d3eb719eb56e1351c3c516907b"
+  },
+  "expectedReceipt": "_work/gpu-owner-recovery/runs/host-build-inventory-2/receipt.json",
+  "hostExecutionRequiresSuccessfulSourcePublication": true,
+  "sourcePublicationAuthorization": "SEPARATE_EXECUTOR_COMMIT_AND_PUSH_IF_ANY_CHANGE_REQUEST",
+  "endpointScope": "READ_ONLY_METADATA_RPC_TO_EXISTING_SELECTED_DOCKER_AND_BUILDX_ENDPOINTS",
+  "maximumHostInvocations": 1,
+  "remainingHostInvocations": 1,
+  "maximumQueries": 8,
+  "limits": {
+    "queryTermMs": 4000,
+    "queryKillGraceMs": 1000,
+    "workerTermMs": 55000,
+    "workerKillGraceMs": 5000,
+    "overallMs": 60000,
+    "perQueryStreamBytes": 32768,
+    "allQueryStreamBytes": 524288,
+    "receiptBytes": 65536,
+    "parentDiagnosticSoftLimitBytes": 65536
+  },
+  "hostExecutionApproved": true,
+  "hostInvocationObserved": false,
+  "helperDownloads": 0,
+  "startupOrBootstrapOrConfigurationChangesAuthorized": false,
+  "imagePullOrBuildOrContainerExecutionAuthorized": false,
+  "nativeOrGpuExecutionAuthorized": false,
+  "payloadCopyOrStagingAuthorized": false,
+  "trainingAuthorized": false,
+  "automaticRetryOrOverwriteAuthorized": false,
+  "trainingReady": false
+}

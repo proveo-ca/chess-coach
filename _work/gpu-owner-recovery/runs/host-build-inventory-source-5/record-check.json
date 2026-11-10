@@ -1,0 +1,17 @@
+{
+  "status": "PASS_CORRECTED_HOST_INVENTORY_SOURCE_AND_COMMAND_RECORDS_ONLY",
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/receipt.json",
+    "sha256": "d2d049b0c5211812311d10383c5a07958052121001a60d165fdadd4e0b93bee6"
+  },
+  "sourceHashesChecked": 298,
+  "verificationStreamsChecked": 12,
+  "mockedE2eStreamsChecked": 32,
+  "diagramIndexMatches": 5,
+  "commandSha256": "078a6ae255a4e408d17941ff7204368c65ad31d3eb719eb56e1351c3c516907b",
+  "localFishSyntaxValidated": false,
+  "sourcePublicationPerformed": false,
+  "actualHostQueriesPerformed": false,
+  "hostRun2Approved": false,
+  "trainingReady": false
+}

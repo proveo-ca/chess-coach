@@ -1,5 +1,5 @@
 @startuml gpu_host_build_inventory
-' purpose: source contract for one bounded read-only selected-builder inventory before any separately approved host build
+' purpose: consumed HOST inventory-1 failure and corrected HOST2 contract conditionally approved after successful source publication
 ' covers: _work/gpu-owner-recovery/qualification/host-build-inventory/plan.json
 ' covers: _work/gpu-owner-recovery/qualification/host-build-inventory/collector.ts
 ' covers: _work/gpu-owner-recovery/qualification/host-build-inventory/render.ts
@@ -10,28 +10,40 @@
 ' covers: _work/gpu-owner-recovery/runs/host-build-inventory-source-2/**
 ' covers: _work/gpu-owner-recovery/runs/host-build-inventory-source-3/**
 ' covers: _work/gpu-owner-recovery/runs/host-build-inventory-handoff-1/request.json
-' status: SOURCE_VERIFIED_HOST_INVENTORY_APPROVED_UNCONSUMED_UNOBSERVED / SOURCE_SPEC_EVIDENCE_PUBLICATION_APPROVED_PENDING / hostExecutionApproved:true / remainingHostInvocations:1 / sourcePublicationRequired:false / trainingReady:false
-' active HOST authority: handoff-1/request.json APPROVED_ONE_METADATA_ONLY_HOST_INVOCATION_UNCONSUMED_UNOBSERVED records Executor SELECTED Run inventory Recommended; binds source-3 receipt SHA-256 8deb36f92441c96724ffb84451c7b195da31eafba4d3992d016d8a05deb76af6 and the exact 13,231-byte c13e8a9a... command below, ONE operator-only invocation, not coding execution or Git publication UNDER THAT HOST GRANT.
-' separate current publication authority: Executor's LATEST explicit "commit & push" is APPROVED_PENDING for ONE normal commit + fixed-HTTPS push of pending inventory source/tests/specs, receive-2 observation and bounded proof/MOCKED-e2e evidence ONLY, including the six new inventory source files rather than the prior docs-only scope; no source changes during publication. Latest confirmed HEAD/HTTPS push remains 283897c010258d7ae7222b8c5e9caf061472172c, its prior 31-text grant CONSUMED; no new OID/self-cycle or completed publication asserted. HOST request additionalGitPublicationApproved:false remains immutable scope of that HOST grant, not denial of this later separate Git approval. No publisher-helper change/release/asset/install/native/host/build/GPU/training/payload operation is added.
-' source snapshot boundary: plan/proposal/source-proof/review hostExecutionApproved:false fields remain immutable PREAPPROVAL history; the actual handoff request supplies current true authority, not a source-record rewrite or review verdict. Host invocation remains unobserved/unconsumed until an operator report closes its allowance.
+' covers: _work/gpu-owner-recovery/qualification/host-build-inventory/plan-run2.json
+' covers: _work/gpu-owner-recovery/qualification/host-build-inventory/fixtures/buildx-inspect.json
+' covers: _work/gpu-owner-recovery/runs/host-build-inventory-observation-1/**
+' covers: _work/gpu-owner-recovery/runs/host-build-inventory-source-4/**
+' covers: _work/gpu-owner-recovery/runs/host-build-inventory-source-5/**
+' covers: _work/gpu-owner-recovery/runs/host-build-inventory-handoff-2/request.json
+' status: HOST_INVENTORY1_REPORTED_FAIL_CONSUMED / HOST_INVENTORY2_APPROVED_CONDITIONAL_PUBLICATION_UNCONSUMED_UNOBSERVED / remainingHostInvocations:1 / FIX_SOURCE_SPEC_EVIDENCE_PUBLICATION_APPROVED_PENDING / trainingReady:false
+' current HOST authority: Executor SELECTED Run inventory-2 Recommended; actual handoff-2/request.json APPROVED_ONE_CORRECTED_HOST_INVOCATION_UNCONSUMED_UNOBSERVED/hostExecutionApproved:true/remaining 1 binds source-5 proof SHA-256 d2d049b0c5211812311d10383c5a07958052121001a60d165fdadd4e0b93bee6 and the exact 14,816-byte 078a6ae2... command. hostExecutionRequiresSuccessfulSourcePublication:true; no HOST2 output/invocation observed. HOST1 remains consumed 1/1/zero remaining; source plan2/proposal/proof/review false flags retain immutable preapproval scope.
+' current publication (Executor-reported): latest confirmed HTTPS push 87c0e90b16d0e2a69f674148e48698a7464c5309 completed the prior 159-text packet, grant CONSUMED. LATEST "commit & push if any change was added, then output the host command" separately approves ONE normal source/spec/evidence commit + fixed-HTTPS push <=600s for THIS fix/tests/observation/proofs/docs ONLY, existing identity/auth, APPROVED_PENDING/local until completion; no new OID/self-cycle or completed publication asserted. No release/assets/install/native/host/build/GPU/training/payload operation is added; helper 9874941/assets f3e277d remain fixed/distinct.
+' handoff order: include the active handoff-2 approval record in the single separately approved source/spec/evidence commit, then complete its successful fixed-HTTPS push BEFORE HOST command delivery/execution. Publication remains APPROVED_PENDING, not renewed by the HOST grant. After success, parent outputs the FULL inline literal or an actual published link and instructs COPY of the ENTIRE literal into HOST Fish at repo root ONCE, no assumed HOST file; then waits only for actual HOST output/HOST_BUILD_INVENTORY_EXIT and future receipt if created. The command already exists, needs no helper fetch/late-bound OID, but execution authority explicitly requires successful publication; no new planning fork or future OID asserted.
+' history: source-3's 13,231-byte command SHA c13e8a9a878b0192480d0dd13f71da603f53455e8bdb520c0de3e7416cc7b7f4 and proof SHA 8deb36f92441c96724ffb84451c7b195da31eafba4d3992d016d8a05deb76af6 remain immutable HOST1 lineage, not current modified-helper proof; original plan/request/source flags and all failure histories stay unchanged.
 ' see: _spec/gpu-host-receive.puml
 ' see: _spec/gpu-qualification.puml
 ' see: _spec/gpu-readiness.md#current-host-build-inventory
 ' see: _spec/gate-closure.md#current-host-build-inventory
-' source proof: source-3 PASS_HOST_BUILD_INVENTORY_SOURCE_ONLY/failure:null/sourceChanged:false, 288 frozen inputs excluding docs, 27 inventory tests/259 assertions + 37 qualification tests/280 assertions + four TypeScript checks, six PASS stages; no rerun by this docs pass
-' retained record check: source-3/verify-records.ts + record-check.json PASS_HOST_METADATA_SOURCE_AND_COMMAND_RECORDS_ONLY, 288 hashes/12 verification streams/32 MOCKED e2e streams/5 header-index matches BEFORE this authority update; checker strict TypeScript PASS reported, not rerun here, no host/native/Git queries or host evidence.
-' command: source-3/host-command.fish 13,231 bytes, SHA-256 c13e8a9a878b0192480d0dd13f71da603f53455e8bdb520c0de3e7416cc7b7f4; complete inline Bun JS/node builtins, no helper download or source publication prerequisite
-' history: source-1 FAIL at strict TypeScript implicit-any handles remains retained; source-2 PASS predates the LOW Fish-syntax failure finalizer fix, source-3 is current
-' review (Executor-reported): architect ses_e39898a35ffeov4v7e8zm7rL25 accepted bounded non-trivial infrastructure plan; DevOps ses_e39847a59ffeGm317EAvDa0aJS identifies actual BuildKit resource/offline-content unknowns, not a security/isolation gate; source-3 finalizer recheck LOW resolved/READY for fresh metadata approval only
-' review (retained source-3/review.json): adversarial ses_e39710380ffeaUnNLQd4qcTj2u final source/docs READY/no findings; security ses_e3971033effeXIBzUy80U91Rbw reviewed source-2, subsequent timed-worker/common-finalizer render delta annotated with query scope unchanged/no findings or additional hardening prerequisite. Reviews grant no execution authority; the later request does.
+' current source proof: source-5 PASS_HOST_BUILD_INVENTORY_SOURCE_ONLY/failure:null/sourceChanged:false, 298 frozen hashes excluding docs, 34 inventory tests/302 assertions + 37 qualification tests/280 assertions + four TypeScript checks, six PASS stages; no rerun here. Source-4 PASS/295 hashes predates freezing historical source-3 receipt/command/handoff-1 request; neither supersedes the retained failures.
+' retained source-5 records: verify-records.ts/record-check.json/review.json/proposal exist under the covered source-5 root; PASS_CORRECTED_HOST_INVENTORY_SOURCE_AND_COMMAND_RECORDS_ONLY checked 298 hashes/12 source captures/32 MOCKED e2e streams/5 header-index matches BEFORE this active-request coverage update, not a new check of these docs or HOST evidence. Both record-script strict TypeScript checks passed as reported; proof/review/checker hostRun2Approved:false remains preapproval history, no record changed or checker rerun here.
+' historical record check: source-3/verify-records.ts + record-check.json PASS_HOST_METADATA_SOURCE_AND_COMMAND_RECORDS_ONLY checked 288 hashes/12 verification streams/32 MOCKED e2e streams/5 then-current header-index matches, BEFORE later source/docs corrections; not current helper proof or HOST evidence.
+' current command: source-5/host-command.fish 14,816 bytes, SHA-256 078a6ae255a4e408d17941ff7204368c65ad31d3eb719eb56e1351c3c516907b; complete standalone inline builtin-only Bun JS, no helper fetch, old grant/path reuse or late-bound publication OID.
+' source defect: Executor-supplied official CLI/source references independently establish that buildx inspect has NO --format option; old tests incorrectly mocked JSON. This does not establish the unreceived exact HOST stderr, an unknown-flag diagnostic, missing Buildx or installation need.
+' reference: https://docs.docker.com/reference/cli/docker/buildx/inspect/
+' reference: https://github.com/docker/buildx/blob/master/commands/inspect.go
+' review (Executor-reported): architect ses_e39898a35ffeov4v7e8zm7rL25 accepted correction; DevOps ses_e39847a59ffeGm317EAvDa0aJS READY/no issues; adversarial ses_e39710380ffeaUnNLQd4qcTj2u source/observation READY/no findings; security ses_e3971033effeXIBzUy80U91Rbw low risk/no actions. No verdict grants HOST2 execution or adds an assurance gate.
 ' template: local template absent; existing diagram conventions retained, no network/template fetch, render, shell, host or native operation
 ' note ratchet: no TestSpecNotesFitTheBox/specNotesEnforced implementation found; note dimensions checked without changing tests
 ' readability: manual syllables, two sentences/note; COLLECTOR,DOCKER 31/2/55 FK 11.4; DOCKER 30/2/54 FK 11.5; COLLECTOR,FILES 29/2/54 FK 12.0; all five lines, <=50 columns
-title Source verified - HOST inventory approved/unconsumed/unobserved; no build
+title HOST1 FAIL/consumed; HOST2 approved/unconsumed/unobserved ONLY AFTER successful source push
 
 actor Executor as EXECUTOR
 participant "_work/gpu-owner-recovery/runs/\nhost-build-inventory-handoff-1/request.json" as AUTH
-participant "host-build-inventory/verify.ts\nretained source-3 proof" as VERIFY
+participant "_work/gpu-owner-recovery/runs/\nhost-build-inventory-handoff-2/request.json" as AUTH2
+participant "_work/gpu-owner-recovery/runs/\nhost-build-inventory-observation-1/verify-report.ts" as REPORT
+participant "host-build-inventory/plan-run2.json\nSOURCE_ONLY proposal, not approval" as PLAN2
+participant "host-build-inventory/verify.ts\ncurrent source-5 proof" as VERIFY
 participant "host-build-inventory/render.test.ts\nmock/static checks + Bun fake children" as TESTS
 participant "host-build-inventory/render.ts\nrenderHostBuildInventory" as RENDER
 participant "Fish\nparent + timed worker" as FISH
@@ -40,19 +52,25 @@ participant "host-build-inventory/collector.ts\nrunHostInventory / collectInvent
 participant "docker\ncurrent Engine / selected Buildx endpoints" as DOCKER
 participant "Host filesystem\nmetadata + proposed evidence outputs" as FILES
 
-group RETAINED SOURCE_ONLY proof - not host evidence
-  VERIFY -> TESTS : six PASS stages / frozen 288 inputs unchanged\n27 inventory tests/259 assertions + 37/280 qualification + four types
-  TESTS --> VERIFY : three MOCKED-query e2e fixtures: pass / overflow / deadline\nretained streams/receipts, actual Docker queries 0
-  VERIFY -> RENDER : render complete inline literal without executing it
-  RENDER --> VERIFY : source-3/host-command.fish / SHA c13e8a9a...\nlocal Fish absent/shim unconfigured: syntax NOT RUN, no install
+group HOST inventory-1 report - FAIL retained, grant CONSUMED
+  EXECUTOR -> AUTH : HISTORICAL approved source-3 c13e8a9a... / proof 8deb36f9...\noriginal request fields unchanged, not retry authority
+  EXECUTOR -> REPORT : normalized paste + reported receipt, not original files\ncontext-name/context-endpoint exits 0; selected-builder exit 125
+  REPORT --> EXECUTOR : PASS_OPERATOR_REPORTED_FAILED_INVENTORY_RECORDS_ONLY\nrun remains FAIL_METADATA_ONLY / QUERY_NONZERO:selected-builder\nHOST1 consumed 1/1, zero remaining
 end
 
-EXECUTOR -> AUTH : SELECTED Run inventory Recommended\nexact source-3 proof/command, ONE metadata-only HOST invocation
-AUTH --> EXECUTOR : APPROVED_UNCONSUMED_UNOBSERVED / remaining 1\nHOST grant excludes coding execution/helper fetch/source push/build; later Git approval is separate
-EXECUTOR -> EXECUTOR : NEXT deliver source-3/host-command.fish coding-local contents\nCOPY entire Fish literal at HOST repo root ONCE; then wait only for actual HOST output
+group CURRENT SOURCE_ONLY correction proof - not HOST evidence
+  VERIFY -> TESTS : six PASS stages / frozen 298 inputs unchanged\n34 inventory tests/302 assertions + 37/280 qualification + four types
+  TESTS --> VERIFY : three MOCKED-query e2e fixtures: pass / overflow / deadline\nretained streams/receipts, actual Docker queries 0
+  VERIFY -> RENDER : render complete inline literal without executing it
+  RENDER --> VERIFY : source-5/host-command.fish / SHA 078a6ae2... / 14,816 bytes\nlocal Fish syntax NOT RUN, timed HOST precheck retained/no install
+end
 
-group APPROVED HOST contract - ONE operator invocation, still UNCONSUMED / UNOBSERVED
-  RENDER --> EXECUTOR : direct complete Fish literal, inline builtin-only Bun JS\nno helper/source fetch, no source-publication prerequisite
+EXECUTOR -> AUTH2 : SELECTED Run inventory-2 Recommended\nexact source-5 proof d2d049b0... / command 078a6ae2... / 14,816 bytes
+AUTH2 --> EXECUTOR : ONE HOST2 invocation APPROVED_UNCONSUMED_UNOBSERVED / remaining 1\nCONDITIONAL successful source publication; no old-grant replay
+EXECUTOR -> EXECUTOR : NEXT include active approval in the one separately approved publication\nONLY AFTER successful push: output full literal or actual published link for HOST COPY once\nthen wait only for actual HOST output; no assumed HOST file or new planning fork
+
+group APPROVED HOST2 contract - UNCONSUMED / UNOBSERVED, execution ONLY AFTER successful source publication
+  RENDER --> EXECUTOR : existing complete inline builtin-only Bun JS literal\nno helper fetch/late-bound OID; execution authority still requires successful publication
   EXECUTOR -> FISH : FUTURE approved metadata RPC to existing current endpoints\nEngine/selected Buildx may be remote; no endpoint configuration change
   FISH -> FILES : exclusive evidence mkdir; never overwrite/reuse\nmkdir failure before worker can prevent final marker
   FISH -> FISH : worker TERM 55s + KILL grace 5s = 60s\ninside worker: fish -n before Mise or queries
@@ -63,11 +81,15 @@ group APPROVED HOST contract - ONE operator invocation, still UNCONSUMED / UNOBS
   group Fixed serial queries - <=8, each TERM 4s + KILL grace 1s; stop first failure
     COLLECTOR -> DOCKER : 1 context show: current context name
     COLLECTOR -> DOCKER : 2 context inspect that name: Docker endpoint only
-    COLLECTOR -> DOCKER : 3 selected buildx inspect --format JSON\nNO --bootstrap, no other builder enumeration
+    COLLECTOR -> DOCKER : 3 EXACT [docker, buildx, inspect] - no flags\nNO --format / --bootstrap / fallback / retry
+    DOCKER --> COLLECTOR : FUTURE ordinary text, not JSON; nonzero stops
+    COLLECTOR -> COLLECTOR : parseBuilderInspect: raw column-zero Name/Driver/Nodes\nnode Name/Endpoint/Status/Error; reject duplicates/empty/malformed\nignore indented CDI/label fields BEFORE trim; CRLF supported
     COLLECTOR -> DOCKER : 4 minimal Engine info: ID/version/CPU/memory/root/cgroup
     COLLECTOR -> DOCKER : 5 ONE image inspect of BOTH exact Rust + Bun pins\nId/RepoDigests/OS/architecture/size only
     COLLECTOR -> FILES : 6 df of existing received context\n7 cat /proc/meminfo; no payload read/copy/staging
-    alt selected docker-container / one node reported RUNNING / matching local Unix endpoint / valid node name
+    alt builder or node reports Error
+      COLLECTOR -> COLLECTOR : SKIPPED_BUILDER_REPORTED_ERROR\nno selected-container query, setup or repair
+    else error-free docker-container / one node RUNNING / matching local Unix endpoint / valid node name
       COLLECTOR -> DOCKER : 8 inspect ONE derived buildx_buildkit_<node> container\nstate + resource/cgroup/network HostConfig fields only
     else any condition absent, remote/ambiguous endpoint or DOCKER_HOST mismatch
       COLLECTOR -> COLLECTOR : SKIPPED_* reason + unknowns\nno fallback enumeration, setup, startup or bootstrap
@@ -106,7 +128,10 @@ end note
 end
 
 legend bottom
-  CURRENT: source verified, Run inventory Recommended SELECTED, actual handoff-1/request.json hostExecutionApproved:true/remainingHostInvocations:1; ONE metadata-only operator invocation APPROVED_UNCONSUMED_UNOBSERVED, no coding HOST execution/build approval or received HOST output. Parent delivers the existing entire source-3 literal for HOST COPY once, then waits only for HOST_BUILD_INVENTORY_EXIT and FUTURE receipt if created; inline JS requires no helper fetch/source push. SEPARATE latest "commit & push" now approves pending inventory source/tests/specs/receive-2 observation/bounded proof/MOCKED-e2e publication, APPROVED_PENDING, including six new inventory source files; no source changes during publication. Prior 283897c/31-text docs grant remains consumed/latest confirmed push, no new OID asserted; HOST request additionalGitPublicationApproved:false stays immutable HOST-only scope. Helper 9874941/assets f3e277d fixed/distinct, no publisher-helper/release/asset/native/host/build/GPU/training scope added.
+  CURRENT HOST1: reported FAIL_METADATA_ONLY / QUERY_NONZERO:selected-builder / exits [0,0,125], HOST_BUILD_INVENTORY_EXIT=1; grant CONSUMED 1/1, zero remaining/no retry. Reported default/unix:///var/run/docker.sock, no DOCKER_HOST override. Third-query stdout 0 bytes/stderr 118 bytes/SHA-256 efc09f33c161340d92b67de0d7b3cdf5b7e414f3730315c879d9bfedcacb2353; stderr TEXT/original HOST files/actual executed bytes remain unreceived or independently unverified. Record-only PASS does not turn the inventory into metadata PASS; the source CLI defect does not identify the exact HOST diagnostic or justify installation.
+  CURRENT HOST2: Run inventory-2 Recommended SELECTED; actual handoff-2/request.json hostExecutionApproved:true/remaining 1/UNCONSUMED_UNOBSERVED requires successful source publication. Source-5 proof d2d049b0.../command 078a6ae2.../14,816 bytes is fixed; plan2/proposal/proof/review false flags remain preapproval history. Include this approval record in the one separately approved source/spec/evidence commit, then successful HTTPS push, THEN parent outputs full literal or an actual published link for COPY of the ENTIRE literal into HOST Fish at repo root ONCE; no assumed HOST file, no helper fetch/late-bound OID/new planning fork. Wait only for actual HOST output including HOST_BUILD_INVENTORY_EXIT and future receipt if created; no output or completed invocation claimed.
+  CURRENT publication: last confirmed HTTPS push 87c0e90b16d0e2a69f674148e48698a7464c5309/prior 159-text packet grant consumed. LATEST separate fix/tests/observation/proofs/docs normal commit + fixed-HTTPS push <=600s is APPROVED_PENDING, existing identity/auth only; local changes stay unpublished until completion, no future OID/self-cycle asserted. No release/assets/host/native/build/GPU/training operation follows; helper 9874941/assets f3e277d fixed/distinct.
+  Parser uses only column-zero section fields; duplicate headers/sections/node names/fields and empty required values fail. Top Error without Nodes, node Error without endpoint, stopped/multiple/empty Nodes remain representable metadata; error-bearing builders/nodes skip the selected-container inspection. All other supported Docker --format calls remain unchanged. fixtures/buildx-inspect.json is DOCS_DERIVED_TEST_FIXTURES_NOT_HOST_EVIDENCE; mocked CLI rejects legacy --format with exit 125 instead of returning invented JSON, and e2e still uses Bun fake children only.
   Exact images in ONE inspect: docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb and docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038. Engine cache presence is not BuildKit content-store presence, offline image resolution, no-egress assurance, compiler usability or Bun startup proof.
   Selected-container query requires driver docker-container, exactly one node reported running, a Unix selected-context endpoint, matching node Endpoint (context name or that Unix endpoint), no differing DOCKER_HOST and an unambiguous 1..120-character node name. Inspect only buildx_buildkit_<node>; otherwise record SKIPPED_* and unknowns, with no alternative builder/container enumeration or repair.
   Engine fields: ID/ServerVersion/NCPU/MemTotal/DockerRootDir/CgroupDriver/CgroupVersion. Container fields: Id/State/NanoCpus/CpuQuota/CpuPeriod/Memory/MemorySwap/CgroupParent/NetworkMode. Declared zero caps do not establish finite enforcement; host df/memory need not describe selected-builder capacity, including remote endpoints.
@@ -114,8 +139,8 @@ legend bottom
   Preflight requires the existing received-context directory and exact frozen repository Cargo.lock; it opens no received payload. Query sequencing checks monotonic elapsed time <45s before each launch; each launched query owns a process group and 4s TERM/1s KILL timers within the 55s/5s worker. Timers request termination, not physical stop or cancellation-effectiveness proof.
   Overflow marks failure and retains raw prefixes plus seen-byte counts rather than trimming to PASS. Receipt has a 64 KiB hard admission check; worker diagnostic streams have only a 64 KiB POST-EXIT SOFT check, not a streaming hard cap/quota. Fish syntax failure inside the timed worker still reaches parent exit finalization; pre-worker mkdir failure is an exception where printing is not guaranteed.
   Three Mise auto-install flags are false before exec; no version queries/install/trust/global selection/configuration change. Complete inline program uses Bun/node builtins with no helper download; local Fish syntax remains NOT_RUN_LOCALLY_HOST_PRECHECK_EMBEDDED, not a host parse PASS.
-  Existing source-{1,2,3} roots contain bounded coding proof only. source-3 e2e/{pass,overflow,deadline}/fixture-scope.json explicitly says SOURCE_ONLY_MOCKED_QUERIES_NOT_HOST_EVIDENCE; fake Bun children test collector orchestration/streams/deadlines without actual Docker/host/native/GPU queries. Source-1 TypeScript FAIL and source-2 pre-finalizer PASS stay immutable.
-  FUTURE host runs/host-build-inventory-1 remains absent/unobserved and intentionally uncovered; received-context/cache binary payloads are uncovered too. Coverage adds only actual handoff-1/request.json to the six inventory source/config files and three existing source-proof roots; handoff-1 currently contains only that request. Docs remain outside the unchanged frozen 288 source hashes.
+  Existing source-{1,2,3,4,5} roots contain coding proof only; source-5 is current 298 hashes/34 tests/302 assertions + 37/280 qualification/four types. Source-4 PASS/295 hashes predates historical-input freezing, source-3/288/27-259 is old invalid-CLI generation, source-1 FAIL/source-2 pre-finalizer PASS stay immutable. MOCKED e2e pass/overflow/deadline receipts test streams/caps/termination only, not Docker/native/GPU or HOST execution.
+  Coverage now adds only the actual handoff-2/request.json to existing plan2/fixture/observation/source-proof coverage. Original HOST files are unreceived/uncovered; FUTURE HOST2 outputs and received-context/cache payloads stay uncovered. Source-5 records remain covered by its existing wildcard; docs stay outside the unchanged frozen 298 source hashes, no record/source edit, checker/native/host command or network request in this pass.
   No startup/bootstrap/create/pull/build/container exec, native LLVM/Cargo query/compilation, GPU/training command, payload copy/staging or endpoint setter is included. No direct-container packaging replacement: accepted qualification Rust base + pinned Bun interpreter, existing two F64 feasibility tests and fail-closed boundary remain unchanged.
   Native65/production recipes/Rust/model/F64/all 4,670 coordinates/eps=1e-6/atol=1e-8/rtol=1e-5/exact C12/CPU Flex/masters 101..105 stay unchanged; runtime/training dispatch disabled and trainingReady:false. ALL security/privacy/isolation hardening follows ALL planned training and validated results; no extra assurance gate, old halted LLVM archive access or replay.
 endlegend

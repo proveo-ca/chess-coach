@@ -3,12 +3,14 @@ import { expect, test } from "bun:test";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { createHash } from "node:crypto";
-import plan from "./plan.json";
-import { collectInventory, retainedPrefix, selectedContainer, type InventoryIO, type Query } from "./collector";
+import plan from "./plan-run2.json";
+import fixtures from "./fixtures/buildx-inspect.json";
+import { collectInventory, parseBuilderInspect, retainedPrefix, selectedContainer, type InventoryIO, type Query } from "./collector";
 import { inventoryProgram, renderHostBuildInventory } from "./render";
 import { sourceInventory } from "../../../../tooling/runtime/qualification";
 
 const builder = () => ({ Name: "selected", Driver: "docker-container", Nodes: [{ Name: "selected0", Endpoint: "default", Status: "running" }] });
+const builderText = (value: ReturnType<typeof builder>) => `Name: ${value.Name}\nDriver: ${value.Driver}\nNodes:\n` + value.Nodes.map(node => `Name: ${node.Name}\nEndpoint: ${node.Endpoint}\nStatus: ${node.Status}\n`).join("\n");
 function fixture() {
   const calls: Query[] = [], state = { builder: builder(), fail: "", malformed: "", now: 0, dockerHost: undefined as string | undefined };
   const values: Record<string, string> = { "context-name": "default\n", "context-endpoint": '{"DockerEndpoint":"unix:///var/run/docker.sock"}',
@@ -16,7 +18,8 @@ function fixture() {
     "host-filesystem": "Filesystem 1024-blocks Used Available Capacity Mounted on\n", "host-memory": "MemAvailable: 10000000 kB\n", "selected-builder-container": '{"State":"running","Memory":0,"NanoCpus":0}' };
   const io: InventoryIO = { now: () => state.now, get dockerHost() { return state.dockerHost; }, run: async query => {
     calls.push(query);
-    return { exitCode: query.id === state.fail ? 1 : 0, failure: null, stdout: query.id === state.malformed ? "not-json" : query.id === "selected-builder" ? JSON.stringify(state.builder) : values[query.id]! };
+    if (query.argv[0] === "docker" && query.argv[1] === "buildx" && query.argv.includes("--format")) return { exitCode: 125, failure: null, stdout: "" };
+    return { exitCode: query.id === state.fail ? 1 : 0, failure: null, stdout: query.id === state.malformed ? "not-metadata" : query.id === "selected-builder" ? builderText(state.builder) : values[query.id]! };
   } };
   return { calls, state, io };
 }
@@ -29,11 +32,71 @@ test("proposal grants no operation and requires no publication or helper fetch",
   expect(plan.limits.queryTermMs + plan.limits.queryKillGraceMs).toBe(5000);
 });
 
+test("docs-derived fixture parses ordinary inspect output rather than invented JSON", () => {
+  expect(fixtures.scope).toBe("DOCS_DERIVED_TEST_FIXTURES_NOT_HOST_EVIDENCE");
+  expect(parseBuilderInspect(fixtures.documentedExampleExcerpt)).toEqual({ Name: "elated_tesla", Driver: "docker-container", Nodes: [{ Name: "elated_tesla0", Endpoint: "unix:///var/run/docker.sock", Status: "running" }] });
+  expect(parseBuilderInspect(fixtures.selectedRunningDerived)).toEqual(builder());
+  expect(parseBuilderInspect(fixtures.selectedRunningDerived.replaceAll("\n", "\r\n"))).toEqual(builder());
+  expect(() => parseBuilderInspect(JSON.stringify(builder()))).toThrow("BUILDER_TEXT_HEADERS_REQUIRED");
+});
+
+test("mocked CLI rejects the invalid legacy flag instead of returning convenient JSON", async () => {
+  const f = fixture();
+  const result = await f.io.run({ id: "selected-builder", argv: ["docker", "buildx", "inspect", "--format", "{{json .}}"] });
+  expect(result.exitCode).toBe(125); expect(result.stdout).toBe("");
+});
+
+test("only column-zero section fields define nodes; nested device and label names are ignored", () => {
+  expect(parseBuilderInspect(fixtures.nestedDeviceDerived)).toEqual(builder());
+  expect(() => parseBuilderInspect(" Name: selected\nDriver: docker-container\nNodes:\n")).toThrow("BUILDER_TEXT_HEADERS_REQUIRED");
+  expect(parseBuilderInspect("Name: selected\nDriver: docker\nNodes:\nName: default\nEndpoint: unix:///var/run/docker.sock\nStatus: running\n").Nodes[0]?.Endpoint).toBe("unix:///var/run/docker.sock");
+});
+
+test("stopped, empty and multiple nodes remain metadata rather than startup authority", () => {
+  const endpoint = "unix:///var/run/docker.sock";
+  const stopped = parseBuilderInspect(fixtures.stoppedDerived), empty = parseBuilderInspect(fixtures.emptyNodesDerived), multi = parseBuilderInspect(fixtures.multiNodeDerived);
+  expect(stopped.Nodes[0]?.Status).toBe("stopped"); expect(empty.Nodes).toEqual([]); expect(multi.Nodes).toHaveLength(2);
+  expect(selectedContainer(stopped, "default", endpoint).reason).toBe("SKIPPED_NODE_NOT_REPORTED_RUNNING");
+  expect(selectedContainer(empty, "default", endpoint).reason).toBe("SKIPPED_NOT_SINGLE_NODE");
+  expect(selectedContainer(multi, "default", endpoint).reason).toBe("SKIPPED_NOT_SINGLE_NODE");
+});
+
+test("builder and node errors survive parsing and prevent container inspection", () => {
+  for (const input of [fixtures.builderErrorDerived, fixtures.nodeErrorDerived]) {
+    const value = parseBuilderInspect(input);
+    expect(value.Error ?? value.Nodes[0]?.Error).toContain("unavailable");
+    expect(selectedContainer(value, "default", "unix:///var/run/docker.sock").reason).toBe("SKIPPED_BUILDER_REPORTED_ERROR");
+  }
+  expect(parseBuilderInspect(fixtures.nodeErrorDerived).Nodes[0]?.Endpoint).toBeUndefined();
+});
+
+test("empty, malformed and duplicate headers stop without silently overwriting fields", () => {
+  for (const text of ["", "not builder output", "Name: selected\nNodes:\n", "Name: selected\nDriver: docker\n",
+    "Name: one\nName: two\nDriver: docker\nNodes:\n", "Name: selected\nDriver: docker\nDriver: docker-container\nNodes:\n",
+    "Name: selected\nDriver: docker\nNodes:\nNodes:\n", "Name: selected\nDriver: docker\nNodes:\nStatus: running\n",
+    "Name: selected\nDriver: docker\nNodes:\nName: first\nStatus: running\nStatus: stopped\n",
+    "Name: selected\nDriver: docker\nNodes:\nName: first\nName: first\n", "Name: \nDriver: docker\nNodes:\n"]) expect(() => parseBuilderInspect(text)).toThrow();
+});
+
+test("run-2 proposal preserves original budgets and historical files without reusing run 1", async () => {
+  const original = JSON.parse(await readFile(new URL("./plan.json", import.meta.url), "utf8"));
+  expect(original.evidence).toBe("_work/gpu-owner-recovery/runs/host-build-inventory-1");
+  expect(plan.evidence).toBe("_work/gpu-owner-recovery/runs/host-build-inventory-2");
+  expect(plan.grant).toBe("--approved-host-build-inventory-2");
+  expect(plan.limits).toEqual(original.limits); expect(plan.images).toEqual(original.images); expect(plan.execution).toEqual(original.execution);
+  const proofBytes = await readFile("_work/gpu-owner-recovery/runs/host-build-inventory-source-3/receipt.json");
+  expect(createHash("sha256").update(proofBytes).digest("hex")).toBe("8deb36f92441c96724ffb84451c7b195da31eafba4d3992d016d8a05deb76af6");
+  const proof = JSON.parse(proofBytes.toString()), oldPlan = proof.sources.find((row: { path: string }) => row.path.endsWith("host-build-inventory/plan.json"));
+  expect(createHash("sha256").update(await readFile(oldPlan.path)).digest("hex")).toBe(oldPlan.sha256);
+  const command = await readFile("_work/gpu-owner-recovery/runs/host-build-inventory-source-3/host-command.fish");
+  expect(createHash("sha256").update(command).digest("hex")).toBe("c13e8a9a878b0192480d0dd13f71da603f53455e8bdb520c0de3e7416cc7b7f4");
+});
+
 test("one fixed sequence inspects only the selected builder, both pins and one derived container", async () => {
   const f = fixture(), result = await collectInventory(plan, f.io);
   expect(result.status).toBe("PASS_METADATA_ONLY"); expect(result.failure).toBeNull();
   expect(f.calls.map(call => call.id)).toEqual(["context-name", "context-endpoint", "selected-builder", "engine", "pinned-images", "host-filesystem", "host-memory", "selected-builder-container"]);
-  expect(f.calls[2]!.argv).toEqual(["docker", "buildx", "inspect", "--format", "{{json .}}"]);
+  expect(f.calls[2]!.argv).toEqual(["docker", "buildx", "inspect"]);
   expect(f.calls[4]!.argv.slice(0, 5)).toEqual(["docker", "image", "inspect", ...plan.images]);
   expect(f.calls[7]!.argv.slice(0, 4)).toEqual(["docker", "container", "inspect", "buildx_buildkit_selected0"]);
   expect(f.calls[5]!.argv).toEqual(["df", "-Pk", "--", "_work/gpu-owner-recovery/cache/host-receive-2/context"]);
@@ -127,7 +190,8 @@ test("Fish literal selects exact Mise pins without implicit install and retains 
   expect(checked).toContain('; or exit $status; fish --no-config -c "$program"');
   expect(parent.indexOf("set -l code $status")).toBeGreaterThan(parent.indexOf(marker));
   expect(parent).toContain('"$evidence/command.exit"');
-  for (const text of ["--kill-after=5s 55s", "worker.stdout", "worker.stderr", "command.exit", "HOST_BUILD_INVENTORY_EXIT=%s", "--approved-host-build-inventory-1"]) expect(command).toContain(text);
+  for (const text of ["--kill-after=5s 55s", "worker.stdout", "worker.stderr", "command.exit", "HOST_BUILD_INVENTORY_EXIT=%s", "--approved-host-build-inventory-2"]) expect(command).toContain(text);
+  expect(command).not.toContain("--approved-host-build-inventory-1"); expect(command).not.toContain("/runs/host-build-inventory-1/");
   expect(command).not.toMatch(/mise (install|trust|use|upgrade)|rustc --version|cargo --version|llvm-config --version|nvidia-smi|gh api/);
 });
 
@@ -149,9 +213,9 @@ for (const mode of ["pass", "overflow", "deadline"] as const) {
     await writeFile(evidence + "/fixture-scope.json", JSON.stringify({ scope: "SOURCE_ONLY_MOCKED_QUERIES_NOT_HOST_EVIDENCE", actualDockerQueries: 0, nativeOrGpuExecution: false }) + "\n", { flag: "wx" });
     const p = { ...plan, context: ".", evidence, limits: { ...plan.limits, queryTermMs: 300, queryKillGraceMs: 100 } };
     const outputs: Record<string, string> = { context: "default\n", endpoint: '{"DockerEndpoint":"unix:///var/run/docker.sock"}',
-      builder: JSON.stringify(builder()), engine: '{"NCPU":2}', images: '{"Id":"rust","RepoDigests":[]}\n{"Id":"bun","RepoDigests":[]}\n',
+      builder: fixtures.selectedRunningDerived, engine: '{"NCPU":2}', images: '{"Id":"rust","RepoDigests":[]}\n{"Id":"bun","RepoDigests":[]}\n',
       filesystem: "Filesystem mocked\n", memory: "MemAvailable: 12345 kB\n", container: '{"State":"running","Memory":0}' };
-    const fixtureJs = `const a=JSON.parse(process.argv.at(-1)); const outputs=${JSON.stringify(outputs)}; let id=a[0]==="context"?(a[1]==="show"?"context":"endpoint"):a[0]==="buildx"?"builder":a[0]==="info"?"engine":a[0]==="image"?"images":a[0]==="container"?"container":a[0]==="-Pk"?"filesystem":"memory"; if(id==="engine"&&${JSON.stringify(mode)}==="overflow"){process.stdout.write("x".repeat(65536));process.stderr.write("y".repeat(65536));setInterval(()=>{},10000);} else if(id==="engine"&&${JSON.stringify(mode)}==="deadline"){process.on("SIGTERM",()=>{});setInterval(()=>{},10000);} else process.stdout.write(outputs[id]);`;
+    const fixtureJs = `const a=JSON.parse(process.argv.at(-1)); if(a[0]==="buildx"&&a.includes("--format")){process.stderr.write("mock CLI rejects unsupported --format\\n");process.exit(125);} const outputs=${JSON.stringify(outputs)}; let id=a[0]==="context"?(a[1]==="show"?"context":"endpoint"):a[0]==="buildx"?"builder":a[0]==="info"?"engine":a[0]==="image"?"images":a[0]==="container"?"container":a[0]==="-Pk"?"filesystem":"memory"; if(id==="engine"&&${JSON.stringify(mode)}==="overflow"){process.stdout.write("x".repeat(65536));process.stderr.write("y".repeat(65536));setInterval(()=>{},10000);} else if(id==="engine"&&${JSON.stringify(mode)}==="deadline"){process.on("SIGTERM",()=>{});setInterval(()=>{},10000);} else process.stdout.write(outputs[id]);`;
     const original = await inventoryProgram(), suffix = `\nawait runHostInventory(${JSON.stringify(plan)});`;
     expect(original.endsWith(suffix)).toBe(true);
     const program = original.slice(0, -suffix.length) + `\nawait runHostInventory(${JSON.stringify(p)}, (_file,args,options)=>spawn(process.execPath,["--no-env-file","--no-install","--eval",${JSON.stringify(fixtureJs)},"--",JSON.stringify(args)],options));`;
