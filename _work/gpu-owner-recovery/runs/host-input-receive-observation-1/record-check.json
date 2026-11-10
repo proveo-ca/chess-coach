@@ -1,0 +1,31 @@
+{
+  "version": "chess-coach.host-receive-report-record-check.v1",
+  "status": "PASS_OPERATOR_REPORT_RECORDS_ONLY",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-input-receive-observation-1/operator-paste.txt",
+      "sha256": "279fef888d2241ee365146763f50fb3a95dd6ea5a9e26473428e4ff32e86aadf"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-input-receive-observation-1/observation.json",
+      "sha256": "b40a4b0e5bc92691818f96ac26369410def8f61d587267160efaa41e90d1b817"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-input-receive-observation-1/verify-report.ts",
+      "sha256": "eedb8f5997c242f8866f0c1c5cdc4653fa64ea3efd20bec78a3d49eb99adda55"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/host-receive/bootstrap.ts",
+      "sha256": "bbe4944a74d0370312bc1f73255ad9dc3955ab7b5243898966c0ece631b213f8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/host-command.fish",
+      "sha256": "8def4344fb3179ed0c6fc3d7275c9c644da2ae6dd61eb9950c749dba3af7eb76"
+    }
+  ],
+  "originalHostFilesReceived": false,
+  "actualHostBunVersionEstablished": false,
+  "hostReceiveOrExtractionQualified": false,
+  "hostOrGpuOperationsPerformed": false,
+  "trainingReady": false
+}

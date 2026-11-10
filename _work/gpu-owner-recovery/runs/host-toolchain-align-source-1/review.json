@@ -1,0 +1,19 @@
+{
+  "version": "chess-coach.host-toolchain-alignment-source-review.v1",
+  "status": "READY_FOR_HOST_INSTALLATION_AND_VERSION_VERIFICATION_DECISION_ONLY",
+  "proposal": "_work/gpu-owner-recovery/qualification/host-toolchain/plan.json",
+  "sourceReceipt": "_work/gpu-owner-recovery/runs/host-toolchain-align-source-1/receipt.json",
+  "adversarial": { "session": "ses_e3b76f121ffeprkWd1uLezbJvD", "verdict": "READY_SOURCE_ONLY" },
+  "devops": { "session": "ses_e3ec46b44ffe7CbnV5rwv23shT", "verdict": "READY_FOR_HOST_COMMAND_APPROVAL" },
+  "security": { "session": "ses_e3cea2a12ffe9TMeXvXBhDE8n7", "verdict": "READY_FOR_SCOPED_APPROVAL_NOT_EXECUTION" },
+  "alignmentTests": 10,
+  "alignmentAssertions": 91,
+  "receiverRegressionTests": 34,
+  "receiverRegressionAssertions": 352,
+  "passingProjectTypechecks": 1,
+  "reportedFailureRecordCheck": "PASS_OPERATOR_REPORT_RECORDS_ONLY",
+  "fishSyntaxValidatedLocally": false,
+  "hostInstallationOrVersionQueriesPerformed": false,
+  "receiverReplayAuthorized": false,
+  "trainingReady": false
+}

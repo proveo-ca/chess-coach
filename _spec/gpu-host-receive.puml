@@ -1,5 +1,5 @@
 @startuml gpu_host_receive
-' purpose: completed source-only handoff publication after a scoped static-check correction, preserving the full-check FAIL and one unconsumed operator receive invocation
+' purpose: consumed Bun-version failure and separately approved pinned host alignment awaiting outputs, preserving report-only evidence and distinct docs/helper/asset identities
 ' covers: _work/gpu-owner-recovery/qualification/host-receive/**
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-source-1/**
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-source-2/**
@@ -9,15 +9,23 @@
 ' covers: Cargo.lock
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-handoff-1/**
 ' covers: _work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-07/command.stderr
-' status: SOURCE_2_PASS_HOST_RECEIVE_SOURCE_ONLY / ORIGINAL_FULL_CHECK_FAIL_RETAINED / SCOPED_CHECK_PASS / SOURCE_PUBLICATION_PASS_CONSUMED / OPERATOR_OUTPUT_PENDING_APPROVED_UNCONSUMED / FISH_SYNTAX_NOT_RUN / trainingReady:false
+' covers: _work/gpu-owner-recovery/runs/host-input-receive-observation-1/**
+' covers: _work/gpu-owner-recovery/qualification/host-toolchain/**
+' covers: _work/gpu-owner-recovery/runs/host-toolchain-align-source-1/**
+' covers: mise.toml
+' covers: package.json
+' covers: _work/gpu-owner-recovery/runs/host-toolchain-align-handoff-1/**
+' status: SOURCE_2_PASS_UNCHANGED / SOURCE_PUBLICATION_PASS_CONSUMED / OPERATOR_REPORTED_BOOTSTRAP_FAIL_BUN_VERSION_MISMATCH / OPERATOR_INVOCATION_CONSUMED_AT_REPORT_SCOPE / PASS_OPERATOR_REPORT_RECORDS_ONLY / PASS_HOST_TOOLCHAIN_ALIGNMENT_SOURCE_ONLY / ALIGNMENT_APPROVED_UNCONSUMED_AT_REQUEST_POINT / HOST_OUTPUTS_NOT_RECEIVED / ACTUAL_HOST_VERSION_AND_IDENTITY_UNKNOWN / trainingReady:false
 ' see: _spec/gpu-input-transfer.puml
 ' see: _spec/gpu-qualification.puml
 ' see: _spec/gpu-build.puml
 ' see: _spec/gpu-readiness.md#current-host-receive
 ' see: _spec/gate-closure.md#current-host-receive
+' see: _spec/gpu-readiness.md#current-host-toolchain
+' see: _spec/gate-closure.md#current-host-toolchain
 ' proposal history: plan.json false flags and source-2/host-command-approval.json AWAITING/false fields remain immutable, not current authority; all old operational grants stay consumed
-' resolved decision: Publish+receive Recommended grant supplied coding commit 1/fixed-HTTPS push 1 within its original 600s deadline, now PASS/CONSUMED; operator receive invocation 1 <=900s remains APPROVED/UNCONSUMED/UNRUN, no new planning/approval question
-' authority: historical proposal false flags/old consumed grants unchanged; actual helper-handoff OID 33b29dd095a3582a02861cef0f155e675a6721cc differs from immutable asset OID f3e277dbbf33c0aa69172cca1890792656d4cd09
+' resolved receive authority: source publication and operator receive allowances are CONSUMED, operator 1/1 at report scope/zero remaining; original approved request/proposal fields stay unchanged history, no retry/refetch/install/query/new scope FROM THOSE GRANTS
+' identities: latest DOCS/evidence commit cca45f6b2978398f68d0db1a84119e1b5a3c0ee2 (Executor-reported normal commit/HTTPS push, 24 controlled texts, publication grant consumed); expected helper 33b29dd095a3582a02861cef0f155e675a6721cc; assets f3e277dbbf33c0aa69172cca1890792656d4cd09; actual operator-executed identity unknown
 ' source-2: receipt.json PASS_HOST_RECEIVE_SOURCE_ONLY, failure:null/sourceChanged:false; 34 receiver tests/352 assertions + 89 transfer/438 + 37 qualification/280 + five typechecks, eight stages PASS exit 0
 ' helper: receive.ts 17,994 bytes / SHA-256 091a431757ef83710a95156816e085cb1ed36b632e4923c9632695ffe821bafa
 ' original result: publication.json FAIL/SOURCE_PUBLICATION_COMMAND_FAILED after 213.214362 ms, unrestricted git diff --cached --check exit 2/command-06; commit 0/push 0, raw pub3 publish-07 stderr whitespace retained, never trim or rewrite that FAIL
@@ -26,13 +34,23 @@
 ' check boundary: continuation-02 scoped git diff --cached --check covers _spec, qualification source and runs/**/*.ts only, PASS exit 0; raw captures excluded, original unrestricted full-index FAIL still true, no full-check PASS claim
 ' retained outputs NOW EXIST: publication.json/.started/stage-audit.json/command-01..06 plus continue-source.ts/continuation.json/.started/continuation-types streams/continuation-01..06, literal host-command.fish and handoff.json
 ' command binding: handoff.json READY_FOR_ONE_APPROVED_OPERATOR_INVOCATION, helper OID 33b29dd... in contents URL/Bun argument, command SHA-256 8def4344fb3179ed0c6fc3d7275c9c644da2ae6dd61eb9950c749dba3af7eb76; generated AFTER source push
-' continuation: parent delivers the retained literal Fish command NOW and stops only awaiting operator receipt/stdout/stderr verification; no host command has run, no extra source commit/push/approval allowed
+' operator report: exact three pasted frames BOOTSTRAP_STARTED / BUN_VERSION_MISMATCH / HOST_COMMAND_EXIT=1; observation.json normalized from paste, no original host files or independently verified operator command bytes
+' record-only result: record-check.json remains first history; record-check-2.json PASS_OPERATOR_REPORT_RECORDS_ONLY binds the corrected nonnegative marker checks and coding-known expected command SHA, not actual host bytes/version/download history or qualification
+' superseded next step: saved-file-only cat loop remains history; Executor then directed the host to align with this runtime's Bun/Rust pins, not relax guards or wait for saved version records as a prerequisite
+' next handoff: Executor selected Align host Recommended; distinct host-toolchain-align-handoff-1/request.json approves ONE operator 900s install/three-query invocation, UNCONSUMED at request point, results NOT RECEIVED; parent supplies literal command then waits only for HOST output verification
+' delivery boundary: source command remains LOCAL_UNCOMMITTED in coding workspace; COPY its literal one-liner into host Fish at repository root, never assume that unpushed artifact path exists on host; no helper/source fetch or Git publication needed/authorized, existing committed root pins unchanged
+' alignment proof: host-toolchain-align-source-1/receipt.json PASS_HOST_TOOLCHAIN_ALIGNMENT_SOURCE_ONLY, sourceChanged:false; 10 alignment tests/91 assertions + 34 receiver regression/352 + strict new-project types + corrected failure-record check, four stages PASS exit 0; not a fresh source-2 transfer/qualification rerun
+' alignment command SHA-256: aff6b95234f47a031fa41f929922f3a05a0b3b8bdcb152c97c8886de281037e7; fixed inline Fish, unchanged quoteFish, no helper download or source-publication prerequisite
+' root pin binding: mise.toml SHA-256 d8f7c2e137514c6cd051fff8972bed14dd1039bc8d00454aa27db6add83168d7; core:bun 1.4.0/core:rust 1.95.0 minimal + rustfmt/clippy/llvm-tools + x86_64-unknown-linux-musl; root auto_install/task.run_auto_install false, package Bun and qualification Rust/Cargo pins unchanged
+' alignment review (Executor-reported): architect ses_e3b8133fcffefFIv2vv6VoYyeG accepted minimal reuse/no framework; DevOps ses_e3ec46b44ffe7CbnV5rwv23shT READY for TUI; adversarial ses_e3b76f121ffeprkWd1uLezbJvD no findings/READY; security ses_e3cea2a12ffe9TMeXvXBhDE8n7 READY for scoped approval, not execution or extra assurance gates
 ' history: source-1 PASS with 31 receiver tests/280 assertions predates final fixes; neither source receipt proves Fish syntax, helper publication, asset acquisition or host execution
 ' template: _spec/template.txt absent; no remote template fetched, no commands/render/network/agents in this docs-only pass
 ' note ratchet: no TestSpecNotesFitTheBox/specNotesEnforced implementation exists in the inspected tree; notes checked manually
 ' readability: manual words/sentences/syllables; lineage 31/2/59 FK 12.9; quoting 31/2/53 FK 10.6; parent timeout 30/2/55 FK 11.9; tar environment 30/2/56 FK 12.3; partial writes 33/2/55 FK 10.5
 ' readability new notes: raw gate 29/2/53 FK 11.6; shared deadline 31/2/58 FK 12.5
-title Helper 33b29dd published - source grant consumed; full-check FAIL retained, operator output pending
+' readability report notes: expected command 30/2/56 FK 12.3; saved records 33/2/54 FK 10.2
+' readability alignment notes: child selection 29/2/55 FK 12.4; config trust 30/2/54 FK 11.5; manual syllables, Mise one syllable/PATH one syllable
+title Bun mismatch consumed; separate host alignment approved - awaiting operator outputs
 
 actor Executor as EXECUTOR
 participant "_work/gpu-owner-recovery/runs/\nhost-input-receive-handoff-1/publish-source.ts" as CODE
@@ -43,9 +61,14 @@ participant "Host Fish\nparent + timed worker" as FISH
 participant "receive.ts\nstandalone main / receive" as RECEIVE
 participant "gh api\n--hostname github.com" as GH
 participant "GNU tar" as TAR
-participant "Host filesystem\nPLANNED outputs only" as FILES
+participant "Host filesystem\nNO ORIGINAL HOST RECORDS RECEIVED" as FILES
+participant "_work/gpu-owner-recovery/runs/\nhost-input-receive-observation-1/verify-report.ts" as REPORT
+participant "_work/gpu-owner-recovery/qualification/\nhost-toolchain/render.ts" as ALIGN
+participant "mise.toml\nunchanged repository pins" as CONFIG
+participant "mise\nexisting host tool required, not queried" as MISE
+participant "_work/gpu-owner-recovery/runs/\nhost-toolchain-align-handoff-1/request.json" as AUTH
 
-EXECUTOR -> CODE : SELECTED Publish+receive Recommended\nactive request approves two separate one-shot allowances
+EXECUTOR -> CODE : HISTORICAL Publish+receive Recommended selection\nrequest supplied two now-consumed one-shot allowances
 group COMPLETED source publication - one commit/push, grant CONSUMED
   CODE -> CODE : original 600s clock/private metadata/frozen proof\ncontrolled UTF-8 audit and stage completed
   CODE -> GIT : unrestricted git diff --cached --check
@@ -90,9 +113,9 @@ end note
 
 end
 
-  CONT --> EXECUTOR : deliver retained literal Fish command NOW\nthen await operator receipt/stdout/stderr verification
-group FUTURE operator receive - APPROVED / UNCONSUMED / UNRUN
-  EXECUTOR -> FISH : FUTURE one already-approved operator invocation\nthree quote layers; no placeholder or new approval
+  CONT --> EXECUTOR : HISTORICAL generated expected command\nhelper 33b29dd... / SHA 8def4344...
+group PUBLISHED bootstrap/receiver contract - not an independently verified host trace
+  EXECUTOR -> FISH : intended one-shot command now reported attempted\nactual operator command bytes/OID unverified
 
   note over BOOT
     Nested quoting preserves backslashes and
@@ -102,8 +125,8 @@ group FUTURE operator receive - APPROVED / UNCONSUMED / UNRUN
     checks Fish syntax before fetching its helper.
   end note
 
-  FISH -> FILES : parent exclusively creates bootstrap evidence\nno mkdir -p/reuse/overwrite/deletion
-  FISH -> FISH : GNU timeout TERM 895s + KILL grace 5s\nworker budget <=900s; host fish -n before fetch
+  FISH -> FILES : PUBLISHED parent creates bootstrap evidence\nnot proof of actual host file existence
+  FISH -> FISH : PUBLISHED timeout TERM 895s + KILL grace 5s\nfish -n before fetch, not a host syntax PASS
 
   note over FISH
     The outer Fish parent survives worker timeout
@@ -113,7 +136,23 @@ group FUTURE operator receive - APPROVED / UNCONSUMED / UNRUN
     of physical host containment.
   end note
 
-  FISH -> FISH : existing Bun 1.4.0, gh, Fish, GNU tar/coreutils\nMise auto-install false; no login/config/install
+  FISH -> FISH : PUBLISHED existing-tool check and Bun 1.4.0 guard\nsaved stdout/stderr/exit precede comparison
+alt Bun text mismatch - reported stage, executed bytes unverified
+  FISH -->> EXECUTOR : OPERATOR PASTE: BOOTSTRAP_STARTED\nBUN_VERSION_MISMATCH / HOST_COMMAND_EXIT=1
+  EXECUTOR -> REPORT : retain operator-paste.txt + normalized observation.json\noperator allowance CONSUMED 1/1 at report scope
+  REPORT -> BOOT : read published guard ordering, do not execute
+  REPORT -> REPORT : verify local expected command SHA 8def4344...\nnot actual operator command bytes
+  REPORT --> EXECUTOR : record-check-2.json PASS_OPERATOR_REPORT_RECORDS_ONLY\nrecord-check.json first history / actual Bun null / no original files
+
+note over BOOT,REPORT
+  The retained command hash identifies the
+  coding-side command, not the operator's bytes.
+  Published guard ordering explains the reported
+  stage without establishing the host version
+  or proving which operations had run.
+end note
+
+else Bun text matches - source contract only, not reported execution or retry authority
   FISH -> GH : one plaintext contents GET at actual helper OID\nTERM 55s + KILL grace 5s, hostname github.com
   GH --> FISH : retain source/exit; <=128 KiB post-fetch soft cap\nverify fixed SHA before Bun --no-env-file --no-install
   FISH -> RECEIVE : --approved-host-receive-1 + actual helper OID\nstandalone imports node: only
@@ -154,11 +193,68 @@ group FUTURE operator receive - APPROVED / UNCONSUMED / UNRUN
   RECEIVE --> FISH : retain receive stdout/stderr/exit; print receipt if present
   FISH -> FILES : surviving parent records command.exit\nretain partial files, no retry/delete/overwrite
 end
+end
+
+group HISTORICAL saved-file route - superseded by the later alignment directive
+EXECUTOR -> FISH : prior proposed read-only cat loop for four saved files\nno original file contents received
+
+note over FISH,REPORT
+  The version mismatch reports a failed check,
+  not the actual version or a missing tool.
+  Reading the retained bootstrap files preserves
+  that distinction without rerunning the command
+  or changing the pinned runtime requirement.
+end note
+
+FISH -->> EXECUTOR : no saved-file result received or verified\nnot a prerequisite for the new alignment decision
+end
+
+EXECUTOR -> ALIGN : LATER directive: host adjusts to runtime Bun/Rust\nkeep pins, do not rerun consumed bootstrap-1
+ALIGN -> BOOT : reuse unchanged quoteFish only\nno receiver/helper/request/receipt changes
+ALIGN -> CONFIG : bind root SHA d8f7c2e...\nBun 1.4.0 / Rust and Cargo 1.95.0
+ALIGN --> EXECUTOR : SOURCE_ONLY PASS / command SHA aff6b952...\n10/91 + receiver regression 34/352 + types + report-check
+
+group APPROVED alignment contract - UNCONSUMED at request point, no observed host trace
+EXECUTOR -> AUTH : Align host Recommended SELECTED\ndistinct one-shot operator grant, not old receive replay
+AUTH --> EXECUTOR : APPROVED_ONE_OPERATOR_ALIGNMENT_INVOCATION_NOT_YET_OBSERVED\ninstall 1 / at most 3 version queries / worker budget 900s
+ALIGN --> EXECUTOR : NEXT lead supplies literal one-liner from coding artifact\nCOPY into host Fish at repo root, not a host-path assumption
+  EXECUTOR -> FISH : APPROVED fixed inline Fish, execution NOT OBSERVED\nexisting Mise required; no helper/source fetch or Git publish
+  FISH -> FILES : FUTURE parent exclusively creates metadata directory\nhost-toolchain-align-1 BEFORE timed worker; outputs NOT RECEIVED
+  FISH -> FISH : FUTURE worker TERM 895s + KILL grace 5s = 900s\nfish --no-config -n before worker operations
+  FISH -> CONFIG : FUTURE exact root digest check\nstop on mismatch; no config/trust setter
+
+note over CONFIG,MISE
+  The configuration digest checks existing pins,
+  without granting trust to the root file.
+  Noninteractive input rejects a trust prompt,
+  so the command stops rather than changing
+  the host's existing configuration.
+end note
+
+  FISH -> FISH : FUTURE all three Mise auto-install flags false\nstep stdin /dev/null, separated stdout/stderr/exit
+  FISH -> FILES : FUTURE GNU df HOME + repo, each >=8 GiB\nordinary preflight, not tool-store/quota assurance
+  FISH -> MISE : FUTURE ONE mise install --jobs 1\ncore:bun@1.4.0 core:rust@1.95.0
+  MISE --> FISH : configured Rust minimal/components/musl target\nroutine Rustup bootstrap if missing included
+  FISH -> MISE : FUTURE mise exec core:bun@1.4.0 core:rust@1.95.0\n-- bun --version, then rustc --version, then cargo --version
+  MISE --> FISH : require exact Bun 1.4.0 / stable Rust and Cargo 1.95.0 tokens\nthree separate query streams/exits, stop first failure
+
+note over ALIGN,MISE
+  Explicit tool selection applies to each child,
+  rather than changing global defaults.
+  Subsequent receiver execution needs its own
+  approved Mise context, because installation
+  cannot repair the shell's existing PATH.
+end note
+
+  FISH -> FILES : FUTURE post-install df observation + alignment-only status\nretain step streams/exits and parent command.exit
+  FISH -->> EXECUTOR : EXPECTED HOST_TOOLCHAIN_EXIT=0 + 3 version stdout\nPASS_HOST_TOOLCHAIN_ALIGNMENT_ONLY only if complete\nno actual output received; failure retains partial records, no retry
+end
+EXECUTOR -> AUTH : NEXT wait only for HOST outputs verification\nnot another approval/planning/publication gate
 
 legend bottom
-  Coding source publication is completed evidence, operator receive is not. Source grant CONSUMED at one normal commit/one fixed-HTTPS push; one operator invocation remains APPROVED/UNCONSUMED/UNRUN, no further source commit/push or new scope question.
-  Parent delivers the existing literal Fish command NOW, unchanged, then stops only awaiting operator receipt/stdout/stderr verification; no planning/diff/helper-completion approval gate, no extra install/auth/build/training allowance.
-  Preserve historical plan.json false flags and source-2/host-command-approval.json AWAITING/false fields unchanged; active handoff-1/request.json supplies distinct authority, never replay of an old consumed grant. Adjust destination/defer were not selected.
+  Source publication remains completed evidence; the operator now reports bootstrap FAIL/BUN_VERSION_MISMATCH and HOST_COMMAND_EXIT=1. Operator invocation is CONSUMED 1/1 at report scope, zero remaining, no automatic retry or fresh receive/refetch permission.
+  Executor then directed host alignment to this runtime's Bun/Rust pins. This supersedes the saved-file-only next step, not the retained observation or unknown actual version; saved version records are not a prerequisite for presenting the exact host-command decision.
+  Preserve plan.json false flags/source-2 proposal AWAITING fields/original handoff request approved fields unchanged. That request supplied distinct now-consumed source/operator authority, not a replay or fresh grant; adjust destination/defer were not selected.
   Consumed coding scope: normal commit 1/fixed-HTTPS push 1 within the original 600s deadline, reviewed helper/evidence/docs including retained pub3 outcomes, existing identity/auth only; no new DRAFT/release/assets/uploads or template/maintenance operation.
   publish-source.ts keeps expanded origin/rewrite/identity outputs private in memory, 64 KiB query buffer, same child cwd/env and shrinking clock; no private-query output persistence, config setters/new auth, hooks bypass or retry.
   Controlled text audit requires empty initial index, exact allowed helper/evidence/doc roots, regular UTF-8 files without NUL, <=4 MiB/file and <=16 MiB aggregate, no home/tmp/cache/node_modules/target or binary payload; stage audit precedes normal commit.
@@ -173,10 +269,11 @@ legend bottom
   Fixed helper SHA-256 091a431757ef83710a95156816e085cb1ed36b632e4923c9632695ffe821bafa / 17,994 bytes; 128 KiB admission follows fetch and is a soft bound, not a streaming quota.
   Existing DRAFT release 439935095 remains unchanged; manifest ID 730048215 / 868,843 bytes / SHA-256 2676780f2b932d0453fef05ad39581152f47efeaea11ae22b9079875fece1829.
   Existing bundle ID 730047564 / 140,694,281 bytes / SHA-256 9001bfeb88ce5433138d5f0fd23b3c7ab0590cc0bd47900cc1c0a1d6923c65f7. API tag_name is not an actual Git tag: retained remote tag remains ABSENT_WHILE_DRAFT, no public release claim.
-  Approved but unrun host outputs are ABSENT and deliberately have no coverage: workspace _work/gpu-owner-recovery/cache/host-receive-1; receive receipt _work/gpu-owner-recovery/runs/host-input-receive-1/receipt.json; separate parent-owned _work/gpu-owner-recovery/runs/host-input-bootstrap-1.
+  No original host files or receiver receipt have been received. Published mismatch branch fails before helper fetch/receiver invocation/root creation, but actual operator bytes and host filesystem state are unverified; do not claim independent proof of no downloads, path existence or path absence.
+  Host workspace/receiver receipt/bootstrap paths remain uncovered, not established local artefacts: _work/gpu-owner-recovery/cache/host-receive-1; _work/gpu-owner-recovery/runs/host-input-receive-1/receipt.json; _work/gpu-owner-recovery/runs/host-input-bootstrap-1.
   Parent bootstrap ownership precedes worker execution; receiver separately creates its evidence and fresh context. Worker TERM 895s/KILL+5s uses the 900s budget; helper fetch TERM 55s/KILL+5s uses 60s; parent exit retention is not physical-containment assurance.
-  Coding Fish syntax NOT RUN: /usr/bin/fish absent, Mise shim unconfigured, no installation authorized. Pure quote fixtures cover one/two/three nested levels and both backslashes/apostrophes; host fish -n precedes the helper fetch under the same worker deadline.
-  Use only existing Bun 1.4.0/gh/Fish/GNU tar/coreutils and existing authentication; MISE_AUTO_INSTALL/MISE_TASK_RUN_AUTO_INSTALL false, no login/auth/config/tool installation. All three GETs explicitly bind github.com.
+  Source-proof coding Fish syntax NOT RUN remains historical. The reported bootstrap/guard stage is not formal all-host syntax/runtime qualification; published fish -n precedes fetch, but neither actual operator command bytes nor original host records are verified.
+  The published, now-consumed command required existing Bun 1.4.0/gh/Fish/GNU tar/coreutils/authentication, MISE_AUTO_INSTALL/MISE_TASK_RUN_AUTO_INSTALL false and explicit github.com for all three GETs; it grants no current install/login/auth/config/refetch scope.
   Receiver validates only the known generated/published bundle's file kinds and exact manifest membership; this is not the halted old LLVM archive pipeline, a new tar engine, an arbitrary-archive auditor or a new security-hardening gate.
   Literal roots: current-native, qualification-tools, cargo-home, gpu-build/llvm, gpu-runtime/rootfs. Exact unique listing is their union with 3,939 recorded rows; then one extraction and regular-file hashes/recorded directories/LLVM link targets/native embedded manifest verification.
   Attempt counters increment before each download/list/extract/verify call; each actual partial write updates retained size/hash before a later failure. Every download completion, including the last, checks the shared deadline; no retries, removal, deletion or overwrite.
@@ -184,8 +281,25 @@ legend bottom
   Prepared Cargo stays 568 archives/618 index files/103 missing archives/zero missing metadata, completeOfflineBuildCoverageQualified:false; receiving assets does not qualify an offline build or authorize Cargo fetch/repair.
   Source-2 PASS_HOST_RECEIVE_SOURCE_ONLY: 34 receiver tests/352 assertions + 89 transfer/438 + 37 qualification/280 + five typechecks, eight stages PASS exit 0/sourceChanged:false. Source-1 31/280 is pre-fix history, not current proof or Fish syntax acceptance.
   Executor-reported scoped reviews: DevOps ses_e3ec46b44ffe7CbnV5rwv23shT READY to present this combined decision; adversarial ses_e3c122320ffdrHp4JsMATl2iN7 all four findings resolved/READY; security ses_e3cea2a12ffe9TMeXvXBhDE8n7 two MEDIUM fixes accepted, no extra gate.
-  No operator helper download/asset fetch/extraction/host operation has occurred; coding source commit/push did complete. Frozen receiver/source-2 proof/proposal flags remain unchanged; task/continuation typecheck streams are separate from source-2's five typechecks, no fresh checker or Fish syntax claim here.
-  Last confirmed push is 33b29dd095a3582a02861cef0f155e675a6721cc; stale origin tracking is not contrary evidence or reason to fetch. Source grant exhausted, post-push outcomes/command/handoff and these postpublication docs remain LOCAL_UNCOMMITTED, no further commit/push by this pass.
+  observation-1 NOW EXISTS with operator-paste.txt/observation.json/verify-report.ts/record-check.json/record-check-2.json; bounded coverage covers coding-side records only. First record-check remains immutable history; corrected marker checks require both markers >=0 and guard before fetch, with current result in record-check-2.json.
+  PASS_OPERATOR_REPORT_RECORDS_ONLY checks expected coding-side command SHA 8def4344fb3179ed0c6fc3d7275c9c644da2ae6dd61eb9950c749dba3af7eb76 and published guard ordering, not actual operator bytes. Actual Bun version null, saved Bun stdout/stderr not received, host qualification false; source ordering establishes no independent host download count or source identity.
+  Prior requested bootstrap bun-version.stdout/.stderr/.exit and command.exit remain NOT RECEIVED. observation.json nextEvidence/new-query-false fields retain their pre-alignment meaning, not current roadmap authority; no original host files, receiver/assets/rootfs inputs downloaded in coding.
+  Executor reports a later normal docs/evidence commit + HTTPS push cca45f6b2978398f68d0db1a84119e1b5a3c0ee2 containing 24 controlled texts, worktree clean before this observation; that publication grant is CONSUMED. Helper remains 33b29dd..., assets f3e277d..., actual operator identity unknown; no fetch or new Git publication allowed.
+  New observation/alignment/source-proof records and these docs remain LOCAL_UNCOMMITTED, no stage/commit/push by this pass. Frozen receiver/source-2 proof318/native65/Bun 1.4.0 pin/proposal flags/all prior failed receipts remain unchanged, no source/helper/request/receipt edits or prohibited operations here.
+  qualification/host-toolchain/plan.json AWAITING/false flags and source receipt operatorExecutionApproved:false remain unchanged preapproval history. Executor selected Align host Recommended; later host-toolchain-align-handoff-1/request.json supplies the actual distinct operator install/three-query approval, not a rewrite or permission from source-review READY.
+  Handoff-1 contains request.json, verify-handoff.ts and handoff-check.json, covered by its bounded directory glob. Status APPROVED_ONE_OPERATOR_ALIGNMENT_INVOCATION_NOT_YET_OBSERVED means APPROVED/UNCONSUMED at request point, operatorResultsReceived:false, not an install/version PASS, a consumed attempt or coding execution permission; no host results observed.
+  handoff-check.json records PASS_APPROVED_ALIGNMENT_COMMAND_RECORDS_ONLY: fixed command SHA aff6b952..., 23 frozen source hashes and four diagram/index matches BEFORE this correction. Those matches remain historical, not a fresh check of changed docs/index, host installation/version queries or Fish parsing; no checker or source test rerun here.
+  Lead next delivers the literal aff6b952... one-liner from the LOCAL_UNCOMMITTED coding source artifact for COPY into host Fish at repository root. Do not assume its unpushed path exists on host; no new helper/source fetch, Git publication, saved-version-record prerequisite or approval question is needed/authorized; existing committed root config supplies unchanged pins.
+  Root mise.toml SHA-256 d8f7c2e137514c6cd051fff8972bed14dd1039bc8d00454aa27db6add83168d7 binds core:bun 1.4.0 and core:rust 1.95.0/minimal/components rustfmt,clippy,llvm-tools/target x86_64-unknown-linux-musl. package Bun 1.4.0 and qualification Rust/Cargo 1.95.0 guards remain unchanged; align the host, never relax pins.
+  Fixed inline Fish command SHA-256 aff6b95234f47a031fa41f929922f3a05a0b3b8bdcb152c97c8886de281037e7 uses unchanged quoteFish. Existing Mise required; one explicit mise install --jobs 1 core:bun@1.4.0 core:rust@1.95.0 includes configured components/target and routine Rustup bootstrap if missing, not installation/upgrade of Mise.
+  Three explicit mise exec core:bun@1.4.0 core:rust@1.95.0 -- <tool> --version queries check bun/rustc/cargo serially: exact Bun 1.4.0 and stable rustc/cargo 1.95.0 tokens, not nightly or precision suffix drift. Every step retains separate stdout/stderr/exit; failure stops without retry/force/deletion or receipt repair.
+  Root auto_install/task.run_auto_install and child MISE_AUTO_INSTALL/MISE_EXEC_AUTO_INSTALL/MISE_TASK_RUN_AUTO_INSTALL stay false. The explicit install is intentional; stdin /dev/null cannot autoapprove untrusted configuration, and no mise use/trust/settings/upgrade, sudo, global default/PATH fix or auth/config setter is included.
+  FUTURE host-toolchain-align-1 outputs remain NOT RECEIVED and uncovered; no actual host-file existence or installation result follows from approval. Exclusive parent metadata creation is outside the timed worker; TERM 895s + KILL grace 5s is the full 900s worker budget, surviving parent retains command.exit and HOST_TOOLCHAIN_EXIT, not containment assurance.
+  GNU df measures HOME and repository available bytes >=8 GiB before install and observes them afterward. These are ordinary preflight observations, not complete tool-store-filesystem coverage, storage isolation, quota or installation-size assurance.
+  host-toolchain-align-source-1 NOW EXISTS: PASS_HOST_TOOLCHAIN_ALIGNMENT_SOURCE_ONLY/sourceChanged:false, 10/91 alignment + fresh receiver regression 34/352 + strict alignment project types + corrected failure-record check, all four stages PASS exit 0. Old receiver source-2's 34/89/37 + five types remains separate historical proof, not fresh alignment transfer/qualification evidence.
+  Alignment Fish syntax NOT_RUN_LOCALLY_HOST_PRECHECK_EMBEDDED: old unconfigured shim/no /usr/bin/fish history stays unchanged. The embedded host fish -n precedes installation but has not run; no host install/native Rust query, receiver replay, source publication, native/LLVM/image/GPU/training operation occurred in coding checks.
+  Successful future alignment would select tools only for explicit child commands, not change global defaults or repair PATH. A later receiver needs separately approved fresh scope/run-2 and a Mise context; never rerun old bootstrap-1/receive-1 directories or consume this alignment decision as receiver authority.
+  Expected success is HOST_TOOLCHAIN_EXIT=0 plus PASS_HOST_TOOLCHAIN_ALIGNMENT_ONLY and all three exact version stdout; none received. Parent now waits only for HOST outputs verification; failures retain available streams/exits/partial records without automatic retry, receiver/assets/extraction/build/GPU/training remain unauthorized, plain system bun outside Mise remains unchanged by child selection.
   No coding-prefix payload read/copy, refetch/repack/preparation replay, LLVM/Cargo/Docker/native compilation, GPU or training command is authorized. Native65/Rust/model/F64/all 4,670 coordinates/eps=1e-6/atol=1e-8/rtol=1e-5/exact C12/CPU Flex/masters 101..105/production recipes remain unchanged.
   Functional readiness/BOTH/reference/orderly-close/R4/telemetry/coexistence remain unqualified; runtime/training entrypoints disabled, trainingReady:false. ALL security/privacy/isolation hardening stays LAST after ALL planned training completes and results validate, no additional gates.
 endlegend

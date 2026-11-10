@@ -1,0 +1,15 @@
+{
+  "version": "chess-coach.approved-alignment-handoff-record-check.v1",
+  "status": "PASS_APPROVED_ALIGNMENT_COMMAND_RECORDS_ONLY",
+  "command": "_work/gpu-owner-recovery/runs/host-toolchain-align-source-1/host-command.fish",
+  "commandSha256": "aff6b95234f47a031fa41f929922f3a05a0b3b8bdcb152c97c8886de281037e7",
+  "sourceHashesChecked": 23,
+  "diagramIndexMatches": 4,
+  "operatorAlignmentApproved": true,
+  "operatorResultsReceived": false,
+  "hostInstallationOrVersionQueriesPerformedByCodingAgent": false,
+  "fishSyntaxValidated": false,
+  "receiverReplayAuthorized": false,
+  "sourcePublicationPerformed": false,
+  "trainingReady": false
+}

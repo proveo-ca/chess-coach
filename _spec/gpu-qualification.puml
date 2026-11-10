@@ -59,7 +59,11 @@
 ' covers: _work/gpu-owner-recovery/runs/host-feasibility-publication-3/**
 ' covers: _work/gpu-owner-recovery/qualification/host-receive/plan.json
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-handoff-1/**
-' status: 2026-11-10 / RUST_BASE_PLUS_BUN_SOURCE_SELECTED / CURRENT_PUBLISHER_SOURCE_6_PASS / PREPARED_INPUTS_AND_DRAFT_PUBLICATION_PASS / BOTH_PRIOR_STOPS_CONSUMED / THIRD_PUBLICATION_PASS_CONSUMED / HOST_BUILD_GPU_UNAUTHORIZED / trainingReady:false
+' covers: _work/gpu-owner-recovery/runs/host-input-receive-observation-1/**
+' covers: _work/gpu-owner-recovery/qualification/host-toolchain/plan.json
+' covers: _work/gpu-owner-recovery/runs/host-toolchain-align-source-1/receipt.json
+' covers: _work/gpu-owner-recovery/runs/host-toolchain-align-handoff-1/**
+' status: 2026-11-10 / RUST_BASE_PLUS_BUN_SOURCE_SELECTED / CURRENT_PUBLISHER_SOURCE_6_PASS / PREPARED_INPUTS_AND_DRAFT_PUBLICATION_PASS / BOTH_PRIOR_STOPS_CONSUMED / THIRD_PUBLICATION_PASS_CONSUMED / OPERATOR_REPORT_BUN_MISMATCH_CONSUMED_RECORDS_ONLY / ALIGNMENT_APPROVED_UNCONSUMED_AT_REQUEST_POINT / HOST_OUTPUTS_NOT_RECEIVED / HOST_BUILD_GPU_UNAUTHORIZED / trainingReady:false
 ' see: _spec/gpu-build.puml
 ' see: _spec/gpu-readiness.md#current-qualification-source-and-flags
 ' see: _spec/gate-closure.md#current-qualification-source-and-flags
@@ -74,7 +78,9 @@
 ' see: _spec/gpu-host-receive.puml
 ' see: _spec/gpu-readiness.md#current-host-receive
 ' see: _spec/gate-closure.md#current-host-receive
-' source authority: both prior STOPs and successful third asset publication stay consumed, no replay from those requests; the later active host-receive handoff request separately approves one coding source publication and one bounded operator receive, not build/GPU/training
+' see: _spec/gpu-readiness.md#current-host-toolchain
+' see: _spec/gate-closure.md#current-host-toolchain
+' source authority: both prior STOPs/third asset publication/later source handoff/docs publication stay consumed; operator now reports bootstrap version FAIL, invocation consumed 1/1 at report scope/zero remaining; unchanged request approval fields are history, no receive retry/build/GPU/training scope
 ' current recipe: qualification inputs/runtime share the exact Rust pin; bun-interpreter stage supplies only /usr/local/bin/bun, no qualification builder rootfs overlay or speculative GNU transplant
 ' current publisher evidence: gpu-input-transfer-source-6 PASS_TRANSFER_SOURCE_ONLY, 316 frozen hashes / 65 unchanged native inputs, sourceChanged:false; 89 helper tests/438 assertions + 37 qualification tests/280 assertions + four types, six stages exit 0; no live query DURING SOURCE CHECKS
 ' lineage/history: source-3 303 hashes/83 helper tests/371 assertions remains original preparation lineage, not current full publisher proof; transfer-source-4 87/422 predates final private-origin capture fix and is not the fresh gate
@@ -87,7 +93,7 @@
 ' coding metadata result: gpu-qualification-input-inventory-1 PASS_METADATA_ONLY, sourceChanged:false; one invocation consumed / zero remaining, no replay
 ' operator result: normalized pasted PASS_INPUT_METADATA_ONLY, all five reported phase exits 0; one pull / one container / one cleanup consumed, zero remaining, no retry
 ' evidence boundary: operator-details-paste.txt/operator-details.json now supply concatenated builder details, not original files or individual stream boundaries; old root summary remains a details-pending snapshot
-' publication: latest confirmed helper-source push 33b29dd095a3582a02861cef0f155e675a6721cc, immutable asset-source f3e277dbbf33c0aa69172cca1890792656d4cd09; earlier d3bb6bcc/2c17a189 remain history, old operator-executed commit unknown
+' publication: latest Executor-reported DOCS/evidence push cca45f6b2978398f68d0db1a84119e1b5a3c0ee2, distinct from expected helper 33b29dd095a3582a02861cef0f155e675a6721cc and assets f3e277dbbf33c0aa69172cca1890792656d4cd09; earlier identities stay history, old/current operator-executed identities unknown
 ' current acquisition status: the report clears the pinned Rust-image acquisition blocker at report scope; the old ABSENT and all-false packet projections remain historical, not current absence or pending-pull state
 ' original transfer outcome: retained preparation PASS/byte-check snapshot unchanged; first publication FAIL / PUBLICATION_ORIGIN_MISMATCH at origin-fetch after 31.82 ms, SSH fetch metadata rejected by initial publisher; closed, consumed, not overwritten
 ' FIRST publication accounting: original top-level attempt consumed/STOP, all mutation counters 0, no auth/API/external mutation; it consumed no commit invocation/grant and grants no replay
@@ -103,11 +109,14 @@
 ' third outcome: publication-3 PASS / failure:null / 21178.921619 ms, commitSucceeded:true, sourceCommit=pushedCommit=f3e277dbbf33c0aa69172cca1890792656d4cd09; normal commit 1/fixed HTTPS push 1/DRAFT 1/uploads 2, identity 1/origins 6/transport 4 PASS, rules 0
 ' third evidence NOW EXISTS: _work/gpu-owner-recovery/runs/host-feasibility-publication-3 covered/indexed; receipt/marker/reuse/publish-01..17/checker/outcome streams, PASS_RETAINED_PUBLICATION_EVIDENCE_ONLY, 316 raw committed hashes/193 controlled changed text paths/38 pre-check captures, no repeated GitHub query
 ' release boundary: DRAFT 439935095 targets f3e277d, tag_name gpu-feasibility-inputs-20261110-1/published_at:null, two uploaded assets size/SHA verified; final Git tag lookup empty/ABSENT_WHILE_DRAFT, no created Git tag/public release claim, external sidecar after push and not committed
-' commit/local boundary: f3e277d's 193-path snapshot is historical; helper commit 33b29dd later published retained pub3 evidence/pre-handoff docs, no binary/cache payload. New post-push outcomes/latest docs LOCAL_UNCOMMITTED, no extra source commit/push, stale origin tracking requires no fetch
-' resolved decision: Publish+receive source publication PASS/CONSUMED at normal commit/fixed-HTTPS push 1/1, helper OID 33b29dd095a3582a02861cef0f155e675a6721cc; operator invocation 1 <=900s remains APPROVED/UNCONSUMED/UNRUN, no new planning/approval question
+' commit/local boundary: f3e277d's 193-path snapshot/helper 33b29dd retain their scopes; Executor reports later docs/post-handoff evidence push cca45f6.../24 controlled texts/clean worktree before this observation, grant consumed; new observation/alignment/source-proof/current docs LOCAL_UNCOMMITTED, no extra Git publication/fetch
+' resolved receive decision: source publication PASS/CONSUMED at helper 33b29dd; operator paste BOOTSTRAP_STARTED / BUN_VERSION_MISMATCH / HOST_COMMAND_EXIT=1 consumes 1/1 invocation at report scope/zero remaining, no automatic retry/refetch/install/auth/config/new native query FROM THAT GRANT
 ' receiver boundary: gpu-host-receive.puml owns actual helper OID 33b29dd vs immutable asset OID f3e277d; historical false flags/failed receipts unchanged, source-2 frozen318/native65/helper SHA retained, no new release/upload/build/GPU/training grant
 ' continuation outcome: full-index static check FAIL exit 2 before commit/push 0/0 retained; internal source/spec/task-only whitespace check PASS excludes unchanged raw captures, continuation shares original 600s marker deadline/210411 ms left, not operational retry/full-check PASS
-' next handoff: actual literal host-command.fish/handoff.json generated AFTER source push now exist; parent delivers command NOW and stops only awaiting operator receipt/stdout/stderr verification, no operator execution/Fish syntax PASS yet
+' record boundary: observation-1 record-check.json first history retained; corrected record-check-2.json PASS_OPERATOR_REPORT_RECORDS_ONLY checks frames/consumption/marker presence/published guard-before-fetch ordering/coding-known expected command SHA, not actual operator bytes/source identity/Bun version/download history/path existence or qualification
+' next handoff: Executor selected Align host Recommended; distinct actual handoff-1/request.json approves one operator 900s install/three queries, UNCONSUMED at request point, outputs NOT RECEIVED; parent delivers literal coding one-liner for COPY into host Fish at repo root, then waits only for HOST verification
+' delivery boundary: command artifact LOCAL_UNCOMMITTED in coding, never assume its unpushed path exists on host; existing committed root pins need no source fetch/publication, proposal/source receipt false flags remain preapproval history, no receiver replay or coding install/query authorized
+' alignment successor: gpu-host-receive.puml owns fixed inline Fish/unchanged quoteFish, Bun 1.4.0/Rust-Cargo 1.95.0 unchanged, explicit install includes configured Rust components/target/Rustup bootstrap if missing, child selection not global/PATH repair; no source-publication prerequisite
 ' new detail-record integrity/reviews: not claimed by this docs pass; earlier source/grant verdicts remain scoped to their original evidence
 ' inventory source proof: gpu-input-inventory-source-3 PASS_INPUT_SOURCE_ONLY, 8 mocked/static cases / 64 assertions, strict qualification types and direct existing Fish 4.9.3 syntax all exit 0
 ' inventory history: input-helper source-1 FAIL at Mise shim before Fish parsing; classification overrides its misleading fishSyntaxChecked counter; source-2 7/59 PASS predates final reporting fixes
@@ -417,7 +426,7 @@ note bottom of RESULT
 end note
 
 legend bottom
-  Solid edges describe source, historical authority or retained evidence; build/GPU dotted edges stay unexecuted/unapproved. Both prior STOPs/third asset publication and the later successful source handoff are consumed; only one already-approved operator receive invocation remains unconsumed/unrun.
+  Solid edges describe source, historical authority or retained evidence; build/GPU dotted edges stay unexecuted/unapproved. Both prior STOPs/third asset publication/source handoff/later docs publication are consumed; the operator reports Bun-version bootstrap FAIL, invocation consumed 1/1 at report scope/zero remaining.
   Operator-result edges describe normalized pasted reports, not original machine captures or verified executed-source identity.
   Historical root summary remains OPERATOR_REPORTED_INPUT_METADATA_PASS_AUTHORITY_CONSUMED_DETAILS_PENDING; later operator-details.json supplies reported tool facts without rewriting it.
   Reported pin: Rust 4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb; frozen lock 77f674cc26a01f26558fd99c45bdcd5566017be05833fce1d39cae98cda05955.
@@ -451,7 +460,7 @@ legend bottom
   Worker records tool paths, requested compiler/linker versions and libc/OS facts; C++ library path must resolve to a file, missing tools or unresolved libstdc++.so fail. No actual compiler/link test.
   Host preflight: explicit operator environment, approved repo root, frozen Cargo.lock SHA, existing runs parent, required tools; exclusive host-builder-inputs-1 output directory and inspection marker prevent replay there.
   Host phase outputs are plaintext; state/exit files bracket work, cleanup addresses only this run's valid saved CID, and receipt write/read/output failures cannot become PASS.
-  Latest confirmed helper-source push: 33b29dd095a3582a02861cef0f155e675a6721cc; asset source f3e277dbbf33c0aa69172cca1890792656d4cd09/earlier d3bb6bcc/2c17a189 stay history, old operator commit unknown, no custody gate.
+  Latest Executor-reported DOCS/evidence push cca45f6b2978398f68d0db1a84119e1b5a3c0ee2, expected helper 33b29dd095a3582a02861cef0f155e675a6721cc and assets f3e277dbbf33c0aa69172cca1890792656d4cd09 remain distinct. Earlier identities stay history, old/current actual operator identities unknown, no custody gate.
   No original host outputs received; that operator report grants no new operation. Original preparation/first publication and the later distinct HTTPS attempt are all consumed, with no replay or host/build/GPU grant.
   GPU full order: cuda_f64_nonzero_native_scores_round_trip; cuda_f64_direct_sgd_changes_policy_parameters;
   cuda_feature_complete_sweep_for_active_relu_checks_2335_coordinates; cuda_feature_complete_sweep_for_inactive_relu_checks_2335_coordinates;
@@ -499,18 +508,23 @@ legend bottom
   NOW-EXISTING runs/host-feasibility-publication-3 is covered/indexed with receipt/marker/reuse/publish-01..17/checker/outcome streams. Final retained API: release 439935095 / draft:true / published_at:null / tag_name gpu-feasibility-inputs-20261110-1 / exact f3e277d target; final Git tag lookup empty/ABSENT_WHILE_DRAFT, no tag-created/public-release claim.
   Both assets state uploaded/size/SHA matched: bundle 140,694,281 bytes/id 730047564, sidecar 868,843 bytes/id 730048215. Exclusive ignored-cache manifest followed exact source push and stays outside source commit, no self-cycle.
   PASS_RETAINED_PUBLICATION_EVIDENCE_ONLY validates external sidecar and retained API, 316 raw committed source hashes/193 controlled changed text paths/stage audit, 38 pre-check evidence hashes; no repeated GitHub query/download/copy/repack or preparation replay, no new acceptance gate.
-  Old 122/161-file stages and f3e277d's 193-path snapshot remain history; helper commit 33b29dd published retained pub3 evidence/pre-handoff docs without binary/cache payload, new post-push outcomes/latest docs LOCAL_UNCOMMITTED. No stage/reset/commit/push/source/request/receipt edit by this pass.
-  Stale origin tracking does not refute confirmed helper push 33b29dd; no fetch needed/allowed, frozen sources/requests/proofs unchanged.
-  Publish+receive source allowance is PASS/CONSUMED at one normal commit/fixed-HTTPS push, operator invocation 1 <=900s remains APPROVED/UNCONSUMED/UNRUN, old false proposals unchanged. Initial full-index static check FAIL exit 2/commit-push 0/0 stays retained, scoped source/spec/task check PASS does not replace it.
+  Old stage snapshots/helper 33b29dd retain their scopes; Executor reports later docs/post-handoff records published at cca45f6.../24 controlled texts/clean worktree before this observation, allowance consumed. New observation/alignment/source-proof/current docs LOCAL_UNCOMMITTED, no stage/reset/commit/push/source/request/receipt edit by this pass.
+  Stale origin tracking grants no fetch/query/publication authority; frozen sources/requests/proofs remain unchanged.
+  Publish+receive source allowance remains PASS/CONSUMED; operator now reports BOOTSTRAP_STARTED / BUN_VERSION_MISMATCH / HOST_COMMAND_EXIT=1, invocation CONSUMED 1/1 at report scope/zero remaining. Original approved fields/false proposals stay history; original full-index FAIL exit 2/commit-push 0/0 and separate scoped check PASS remain distinct.
   Focused gpu-host-receive.puml records internal continuation inside original marker+600s deadline/210411 ms left, no operational retry, raw capture bytes unchanged/no hooks bypass. Actual literal command/handoff generated AFTER source push bind helper 33b29dd vs asset f3e277d.
-  Parent delivers the literal pinned Fish command NOW and awaits only operator receipt/stdout/stderr verification, no new scope/planning/diff/helper-done gate. Helpers/source-2 frozen318/native65 unchanged; host receipts absent/uncovered, coding Fish syntax NOT RUN, no host receive PASS/build/GPU/training qualification follows.
+  observation-1's five coding-side records include immutable first record-check.json and corrected record-check-2.json; report-only PASS checks frames/consumption/marker presence/published guard-before-fetch order/expected coding-side command SHA, not actual operator bytes/source identity or host qualification. Actual Bun version null/original host files and receiver receipt NOT RECEIVED; host path existence/absence/download history unverified, paths uncovered.
+  Published mismatch branch precedes helper fetch/receiver invocation/root creation, not independent host-history proof. Executor's later alignment directive supersedes the saved-file-only next step; saved records remain unknown, not a prerequisite for presenting the exact host-command decision.
+  Executor selected Align host Recommended; distinct host-toolchain-align-handoff-1/request.json approves one operator 900s install/three queries, APPROVED/UNCONSUMED at request point, outputs NOT RECEIVED. Proposal/source receipt false flags stay preapproval history; focused gpu-host-receive.puml owns unchanged pins/components/target/Rustup bootstrap if missing, child selection not global/PATH fix or change to plain system bun, no receiver replay.
+  Actual coding handoff request/checker/check result now covered by its bounded directory glob; future host-toolchain-align-1 outputs unreceived/unobserved and uncovered. Unchanged alignment proof: 10/91 alignment + fresh 34/352 receiver regression + strict new-project types + corrected report check, four stages PASS, not fresh old source-2 transfer/qualification/five-types proof; local Fish syntax NOT RUN and host fish -n unexecuted.
+  Lead delivers literal coding artifact one-liner for COPY into host Fish at repo root; LOCAL_UNCOMMITTED command path is not assumed present on host, no helper/source fetch or Git publication needed/authorized. Parent waits only for HOST output verification: expected HOST_TOOLCHAIN_EXIT=0/PASS_HOST_TOOLCHAIN_ALIGNMENT_ONLY/three version stdout, none received; retain partial failure records, no retry or additional approval gate.
+  No host install/native Rust query, helper/assets/rootfs input download, new auth/config, receiver replay, image/build/GPU/training operation occurred in coding. Helpers/source-2 frozen318/native65/pins unchanged; any later receiver needs fresh scope/run-2 in Mise context, not old bootstrap/receive directory replay or qualification by alignment alone.
   Freeze includes imported provision.ts and current native filename-set checks; staging rejects unreviewed paths and hash drift, remote tag resolution rejects wrong/malformed refs, attempted commit stays unknown until confirmed.
   Source proof does not qualify actual Cargo artifact compatibility, compiled linking/ABI, image usability or GPU behavior.
   Canonical init/BOTH/independent reference/orderly close, integrated R4, activation/five-master scheduling and accepted telemetry/coexistence remain outside qualification.
   PASS_TESTS_ONLY never sets trainingReady, canonicalBothQualified, integratedR4Qualified, operationalTelemetryQualified, fullAssuranceQualified or trainingExecuted true.
   All security/privacy/isolation hardening remains LAST, after ALL planned training completes and results validate; full-assurance gates remain OPEN.
   Broader source-2 host-inputs and historical request/proposal/receipt flags remain unchanged; both transfer/request.json and https-publication-request.json preserve their original authority projections, now consumed rather than replay permission.
-  One bounded operator receive/download/extraction is now approved by the distinct handoff request but unrun; image construction, compilation, GPU execution and training remain unauthorized, runtime/training entrypoints SOURCE_ONLY_DISABLED.
+  Original handoff request approval fields stay unchanged history; its invocation is consumed at report scope, no receive/download/extraction replay authority. Image construction, compilation, GPU execution and training remain unauthorized, runtime/training entrypoints SOURCE_ONLY_DISABLED.
   This diagram renews no grant and performs no operation; no post-record review acceptance is claimed for the new operator records.
 endlegend
 @enduml

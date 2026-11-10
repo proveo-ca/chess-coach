@@ -1,0 +1,13 @@
+{
+  "version": "chess-coach.host-toolchain-alignment-record-check.v1",
+  "status": "PASS_ALIGNMENT_COMMAND_RECORDS_ONLY",
+  "sourceHashesChecked": 23,
+  "captureStreamsChecked": 8,
+  "diagramIndexMatches": 4,
+  "commandSha256": "aff6b95234f47a031fa41f929922f3a05a0b3b8bdcb152c97c8886de281037e7",
+  "hostExecutionApproved": false,
+  "hostInstallationOrVersionQueryPerformed": false,
+  "fishSyntaxValidated": false,
+  "receiverRetried": false,
+  "trainingReady": false
+}

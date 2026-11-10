@@ -105,7 +105,11 @@
         "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-6/**",
         "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/**",
         "_work/gpu-owner-recovery/qualification/host-receive/plan.json",
-        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/**"
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/**",
+        "_work/gpu-owner-recovery/runs/host-input-receive-observation-1/**",
+        "_work/gpu-owner-recovery/qualification/host-toolchain/plan.json",
+        "_work/gpu-owner-recovery/runs/host-toolchain-align-source-1/receipt.json",
+        "_work/gpu-owner-recovery/runs/host-toolchain-align-handoff-1/**"
       ],
       "fingerprint": null
     },
@@ -145,7 +149,11 @@
         "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-6/**",
         "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/**",
         "_work/gpu-owner-recovery/qualification/host-receive/plan.json",
-        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/**"
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/**",
+        "_work/gpu-owner-recovery/runs/host-input-receive-observation-1/**",
+        "_work/gpu-owner-recovery/qualification/host-toolchain/plan.json",
+        "_work/gpu-owner-recovery/runs/host-toolchain-align-source-1/receipt.json",
+        "_work/gpu-owner-recovery/runs/host-toolchain-align-handoff-1/**"
       ],
       "fingerprint": null
     },
@@ -212,7 +220,11 @@
         "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-6/**",
         "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/**",
         "_work/gpu-owner-recovery/qualification/host-receive/plan.json",
-        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/**"
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/**",
+        "_work/gpu-owner-recovery/runs/host-input-receive-observation-1/**",
+        "_work/gpu-owner-recovery/qualification/host-toolchain/plan.json",
+        "_work/gpu-owner-recovery/runs/host-toolchain-align-source-1/receipt.json",
+        "_work/gpu-owner-recovery/runs/host-toolchain-align-handoff-1/**"
       ],
       "fingerprint": null
     },
@@ -227,7 +239,13 @@
         "_work/gpu-owner-recovery/runs/host-feasibility-inputs-1/context-manifest.json",
         "Cargo.lock",
         "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/**",
-        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-07/command.stderr"
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-07/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-observation-1/**",
+        "_work/gpu-owner-recovery/qualification/host-toolchain/**",
+        "_work/gpu-owner-recovery/runs/host-toolchain-align-source-1/**",
+        "mise.toml",
+        "package.json",
+        "_work/gpu-owner-recovery/runs/host-toolchain-align-handoff-1/**"
       ],
       "fingerprint": null
     }
