@@ -1,0 +1,2 @@
+url.https://github.com/.insteadof git@github.com:
+url.https://github.com/.insteadof ssh://git@github.com/

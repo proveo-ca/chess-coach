@@ -1,0 +1,31 @@
+{
+  "status": "PASS_ONE_HOST_GPU_FEASIBILITY_ISSUED_APPROVAL_RECORDS_ONLY",
+  "request": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/host-command-approval.json",
+    "bytes": 3483,
+    "sha256": "fbdbdf94fa605dc325cd1e617fce05a4228d5b93faf5b2dbeb8e56568c0ded1d"
+  },
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/receipt.json",
+    "sha256": "cf632c5896bd5d46b453a67aeb87d2f0bd735b252960c7eca6917cee802d6f60"
+  },
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/host-command.fish",
+    "bytes": 49023,
+    "sha256": "c690e8b0261e6bf09e834a41394369f694393ec6c60e18aa31b0375110f00054"
+  },
+  "plan": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/plan.json",
+    "bytes": 5932,
+    "sha256": "104f3ece4ae325beed3b53035f108a72342ee347c76fbdc613da0436405ff132"
+  },
+  "sourceHashesChecked": 327,
+  "remainingHostInvocations": 1,
+  "hostInvocationObserved": false,
+  "hostAuthority": "EXACT_OPERATOR_HOST_ATTEMPT_ONLY",
+  "codingHostNativeOrGpuExecutionApproved": false,
+  "publicationApproved": false,
+  "trainingApproved": false,
+  "originalProofAndProposalApprovalFlagsPreserved": true,
+  "trainingReady": false
+}

@@ -1,0 +1,23 @@
+{
+  "status": "READY_EXACT_BOUNDED_STAGING_AND_SINGLE_NORMAL_COMMIT_FIXED_HTTPS_PUSH",
+  "adversarial": { "session": "ses_e36649e3affeJjY53mEb5Dxjo5", "verdict": "READY_TO_MERGE_YES", "remainingFindings": [] },
+  "security": { "session": "ses_e3845fff1ffeE092hXAV6pfhiW", "verdict": "READY_AUTHORIZED_NORMAL_COMMIT_FIXED_HTTPS_PUSH_AND_LITERAL_HANDOFF", "remainingFindings": [], "risk": "low" },
+  "devops": { "session": "ses_e384ffa7bffecNc429YDN25STS", "verdict": "READY_PUBLICATION_PREFLIGHT_ACCEPTED", "remainingFindings": [] },
+  "sourceProof": { "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/receipt.json", "sha256": "cf632c5896bd5d46b453a67aeb87d2f0bd735b252960c7eca6917cee802d6f60" },
+  "command": { "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/host-command.fish", "bytes": 49023, "sha256": "c690e8b0261e6bf09e834a41394369f694393ec6c60e18aa31b0375110f00054" },
+  "publicationRequest": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/publication-request.json",
+  "acceptedPreflight": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/publication-preflight-2.json",
+  "acceptedHandoffCheck": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/pre-publication-handoff-check.json",
+  "contentAuditScope": "PRE_FINAL_SPEC_AND_METADATA_ENVELOPE_TEXT_ONLY",
+  "normalCommitInvocationsAuthorized": 1,
+  "fixedHttpsPushInvocationsAuthorized": 1,
+  "normalCommitInvocations": 0,
+  "httpsPushInvocations": 0,
+  "remainingHostInvocations": 1,
+  "hostInvocationObserved": false,
+  "publicationRenewsHostAllowance": false,
+  "codingHostNativeOrGpuExecutionApproved": false,
+  "trainingApproved": false,
+  "publicationSucceeded": false,
+  "trainingReady": false
+}

@@ -1,0 +1,158 @@
+{
+  "status": "PASS_NATIVE_BUILD_TWO_REPORTED_RECORDS_AND_DOCS_CLOSEOUT_ONLY",
+  "sources": [
+    {
+      "path": "_spec/gpu-host-build-reuse.puml",
+      "sha256": "44d69d9f872c2182518e521755aa3446275e6f223cbc6ce836613de675ad3cf9"
+    },
+    {
+      "path": "_spec/gpu-host-build.puml",
+      "sha256": "4221da2ebb763cfb0bb281330939f322af586044430ee86286275f238a151e6d"
+    },
+    {
+      "path": "_spec/gpu-host-build-inventory.puml",
+      "sha256": "a83891a92ab00999de04fe22b2f781fa56abae1b87348ca43d6dddac0f740cb0"
+    },
+    {
+      "path": "_spec/gpu-build.puml",
+      "sha256": "97ae266105ac2b46630322399ad39a6653841022f4d296b24cdc356edc1e725c"
+    },
+    {
+      "path": "_spec/gpu-qualification.puml",
+      "sha256": "6b173f04ad5341e5047aad42b665c95d4ba69c24f8c9c0db9aff74d91988920d"
+    },
+    {
+      "path": "_spec/gpu-input-transfer.puml",
+      "sha256": "5eb95192e8c39bc23c535795541fba4d6cb00a1180d969c6e19c2060d91cf2d1"
+    },
+    {
+      "path": "_spec/gpu-host-receive.puml",
+      "sha256": "ea15c426160e02459836a6035b3e9039eb0b61d7a682ef1e80a05df08a07a2a1"
+    },
+    {
+      "path": "_spec/gpu-readiness.md",
+      "sha256": "44e74c5065fd187f6bdfe2c117347ee93d464dd08b096f561e421aab046eea82"
+    },
+    {
+      "path": "_spec/gate-closure.md",
+      "sha256": "059fb706f6df5c6b3955a42a68815a0673ac699d686934f8dfc5e9f348fdb583"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "sha256": "3f64744597a6f93daab4c9ff0223220f062aa799a760c1dfacc98288d70b2a12"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/record-check.json",
+      "sha256": "b08dd6a352e1c7cf210a7c855a2b022042da8e2887d91c15cceda38f27068b7c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/verification.json",
+      "sha256": "a872ae5b6712532c4f07363760e093a71b109f80786adc8dca9089e6ea4c1695"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/review.json",
+      "sha256": "2cf1b52c011302822bcb7cf972222b6f6132c8d988f7ae9c8c3f0c551350a2db"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/final-records-and-docs-check.json",
+      "sha256": "c78cd8ff253ea49b81d6ffc68daf8ecf39b40763012e60a99c787da073520a4b"
+    }
+  ],
+  "results": [
+    {
+      "id": "git-head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 41,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/closeout-verification/git-head/command.stdout",
+          "bytes": 41,
+          "sha256": "b80e785a954371e47acfdbec23434a7d0baeea1128b36d69d4142a8821aad893"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/closeout-verification/git-head/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "spec-whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "_spec"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/closeout-verification/spec-whitespace/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/closeout-verification/spec-whitespace/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "working-scope",
+      "argv": [
+        "git",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=normal"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 370,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/closeout-verification/working-scope/command.stdout",
+          "bytes": 370,
+          "sha256": "21b3e2a0adce77ee7354d9db97dd6b416c8ac6c18cde580143e7f2f52976dd0b"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/closeout-verification/working-scope/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "recordInputHashesChecked": 10,
+  "localVerificationCaptureStreamsChecked": 6,
+  "protectedSourceHashesChecked": 307,
+  "orderedDiagramIndexMatches": 7,
+  "observationOwnerCount": 1,
+  "currentInventoryConsumedAuthorityProjectionChecked": true,
+  "head": "25bcfb61ddde6849d10e61536266b5e2f50c5598",
+  "workingScope": "TEN_SPEC_FILES_PLUS_OBSERVATION_TWO_ONLY",
+  "originalConsistencyReceiptRetainedAsPreCloseoutGeneration": true,
+  "hostInvocationsRemaining": 0,
+  "originalHostArtifactBytesRehashed": false,
+  "newHostOrGpuExecutionAuthorized": false,
+  "newPublicationAuthorized": false,
+  "codingHostDockerOrNativeOperationsPerformed": false,
+  "trainingReady": false
+}

@@ -1,0 +1,24 @@
+
+_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/verify-report.test.ts:
+(pass) the complete reported native-build pass is accepted without reading host artifacts [0.91ms]
+(pass) reported PASS rejects failed compilation [0.56ms]
+(pass) reported PASS rejects missing compilation [0.11ms]
+(pass) reported PASS rejects unchecked source [0.10ms]
+(pass) reported PASS rejects changed source [0.10ms]
+(pass) reported PASS rejects wrong generation [0.09ms]
+(pass) reported PASS rejects foreign start target [1.97ms]
+(pass) reported PASS rejects unapproved cache scope [0.37ms]
+(pass) reported PASS rejects cleanup error [0.18ms]
+(pass) reported PASS rejects running worker [0.18ms]
+(pass) reported PASS rejects missing artifact [0.22ms]
+(pass) reported PASS rejects wrong artifact target [0.20ms]
+(pass) reported PASS rejects malformed artifact digest [0.16ms]
+(pass) reported PASS rejects invented GPU evidence [0.15ms]
+(pass) reported PASS rejects invented readiness [0.21ms]
+(pass) reported PASS rejects renewed allowance [0.18ms]
+(pass) a pass receipt cannot replace a missing or nonzero final host marker [0.08ms]
+
+ 17 pass
+ 0 fail
+ 19 expect() calls
+Ran 17 tests across 1 file. [24.00ms]

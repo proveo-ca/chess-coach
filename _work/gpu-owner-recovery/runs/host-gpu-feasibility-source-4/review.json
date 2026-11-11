@@ -1,0 +1,22 @@
+{
+  "status": "READY_GPU_FEASIBILITY_SOURCE_FOUR_EXACT_APPROVAL_DECISION_ONLY",
+  "architecture": { "session": "ses_e36783826ffetiRNpE54VUigWv", "consultedBeforeImplementation": true, "verdict": "ADDITIVE_SOURCE_ONLY_BOUNDARY_ACCEPTED" },
+  "adversarial": { "session": "ses_e36649e3affeJjY53mEb5Dxjo5", "verdict": "READY_TO_MERGE_YES", "remainingFindings": [] },
+  "security": { "session": "ses_e3845fff1ffeE092hXAV6pfhiW", "verdict": "READY_SOURCE_FOUR_EXACT_COMMAND_DECISION_ONLY", "remainingFindings": [], "risk": "low", "additionalHardeningGate": false },
+  "devops": { "session": "ses_e384ffa7bffecNc429YDN25STS", "verdict": "READY_SOURCE4_FOR_FRESH_EXACT_HOST_DECISION_ONLY", "remainingFindings": [] },
+  "predecessorReview": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-3/review.json",
+  "reviewedDelta": "Check Bun 1.4.0 and original working directory inside the future container before any container work",
+  "allThreeEarlierFunctionalFindingsClosed": true,
+  "verification": { "sourceHashes": 327, "protectedBaselineSources": 307, "wrapperTests": 48, "wrapperAssertions": 322, "qualificationTests": 41, "qualificationAssertions": 296, "strictTypechecks": 4, "persistedPureMockE2eCases": 4 },
+  "sourceProof": { "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/receipt.json", "sha256": "cf632c5896bd5d46b453a67aeb87d2f0bd735b252960c7eca6917cee802d6f60" },
+  "command": { "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/host-command.fish", "bytes": 49023, "sha256": "c690e8b0261e6bf09e834a41394369f694393ec6c60e18aa31b0375110f00054" },
+  "remainingHostInvocationsAuthorized": 0,
+  "hostExecutionAuthorized": false,
+  "copyingOrStagingAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "kernelJitCompilationAuthorized": false,
+  "publicationAuthorized": false,
+  "trainingAuthorized": false,
+  "originalHostArtifactBytesRehashed": false,
+  "trainingReady": false
+}

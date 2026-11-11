@@ -378,7 +378,21 @@
         "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-1/**",
         "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-2/**",
         "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/**",
-        "_work/gpu-owner-recovery/runs/host-gpu-build-handoff-2/request.json"
+        "_work/gpu-owner-recovery/runs/host-gpu-build-handoff-2/request.json",
+        "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/**"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/gpu-feasibility.puml",
+      "covers": [
+        "_work/gpu-owner-recovery/qualification/host-feasibility/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-2/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-3/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-feasibility-parent-source-check-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-feasibility-parent-source-check-2/**"
       ],
       "fingerprint": null
     }

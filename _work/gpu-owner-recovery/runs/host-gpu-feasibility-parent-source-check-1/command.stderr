@@ -1,0 +1,44 @@
+
+_work/gpu-owner-recovery/qualification/host-feasibility/plan.test.ts:
+(pass) selected source preparation carries no execution, cache-write or publication approval [1.34ms]
+(pass) the draft maps only retained RO inputs and fresh writable output roots [0.43ms]
+
+_work/gpu-owner-recovery/qualification/host-feasibility/host.test.ts:
+(pass) the GPU packet fixes the UUID, resources and RO inputs without Cargo or copy commands [0.50ms]
+(pass) pure mock happy e2e retains exactly five owned-container operations [1.60ms]
+(pass) pure mock journal abort stops pending owned work and accepts no missing inner receipt [1.02ms]
+(pass) pure mock late watchdog drain failure cannot promote apparent test PASS [0.41ms]
+(pass) abort during start settles before the owned stop and never starts log-follow [0.36ms]
+(pass) failed owned stop permits only one conditional kill and retains cleanup failure [0.33ms]
+(pass) removal failure alone prevents PASS [0.16ms]
+(pass) invalid or absent captured CIDs never authorize guessed cleanup [0.41ms]
+(pass) partial or altered successful inner metadata cannot replace the complete exact pair [0.30ms]
+93 | });
+94 | 
+95 | test("the runtime keeps original helper paths and protects finalization through the final exit check", async () => {
+96 |   const source = await readFile(new URL("./runtime.ts", import.meta.url), "utf8");
+97 |   expect(source).toContain("import(pathToFileURL(resolve(p.existingHelpers[0]!.path)).href)");
+98 |   expect(source.indexOf("protectFinalizationSignals()")).toBeLessThan(source.indexOf("try {"));
+                                                              ^
+error: expect(received).toBeLessThan(expected)
+
+Expected: < 1030
+Received: 1742
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/qualification/host-feasibility/host.test.ts:98:58)
+(fail) the runtime keeps original helper paths and protects finalization through the final exit check [0.31ms]
+
+_work/gpu-owner-recovery/qualification/host-feasibility/watchdog.test.ts:
+(pass) the independent watchdog accepts exactly two ordered attempts and a drained guard [0.19ms]
+(pass) a replacement cannot rejuvenate stale progress at the exact age boundary [0.08ms]
+(pass) watchdog rejects wrong UUID [0.06ms]
+(pass) watchdog rejects low startup headroom [0.04ms]
+(pass) watchdog rejects invalid total [0.02ms]
+(pass) watchdog rejects fractional bytes [0.02ms]
+(pass) journal identity, prefix, partial lines, completion and abort stay fail closed [0.13ms]
+(pass) the runtime watcher drains its last read and turns a late abort into owned-stop intent [0.37ms]
+
+ 19 pass
+ 1 fail
+ 87 expect() calls
+Ran 20 tests across 3 files. [30.00ms]
