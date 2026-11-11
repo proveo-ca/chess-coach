@@ -1,0 +1,10 @@
+
+_work/gpu-owner-recovery/qualification/host-full/plan.test.ts:
+(pass) selected HOST bounds authorize source preparation only [1.25ms]
+(pass) full-six plan preserves qualification selectors, acceptance and per-step harnesses [0.87ms]
+(pass) 18-minute bounds preserve reserves, ordinary cooperation and bounded-failure disk sizing [0.53ms]
+
+ 3 pass
+ 0 fail
+ 38 expect() calls
+Ran 3 tests across 1 file. [16.00ms]

@@ -1,0 +1,14 @@
+{
+  "status": "READY_ISSUED_OPERATOR_HOST_RECORD_AND_WHOLE_LITERAL_DELIVERY_ONLY",
+  "approval": { "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-approval.json", "sha256": "3be5e0f26e602928af6c41127a53cf41516c04c1dc84fb266a5e713a2b427e76" },
+  "adversarial": { "session": "ses_e36649e3affeJjY53mEb5Dxjo5", "verdict": "READY_TO_MERGE_YES", "remainingFindings": [] },
+  "security": { "session": "ses_e3845fff1ffeE092hXAV6pfhiW", "verdict": "READY_ISSUED_RECORD_AND_EXACT_LITERAL_TEXT_DELIVERY", "remainingFindings": [], "risk": "low" },
+  "activePostApprovalDocsProjectionReviewed": false,
+  "operatorHostInvocationsRemainingAtIssuance": 1,
+  "hostInvocationObserved": false,
+  "codingHostOperationsAuthorized": false,
+  "automaticRetryAuthorized": false,
+  "publicationApproved": false,
+  "experimentTrainingApproved": false,
+  "trainingReady": false
+}

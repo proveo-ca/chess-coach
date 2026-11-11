@@ -1,0 +1,14 @@
+{
+  "status": "NOT_READY_SOURCE_ONLY_EXECUTION_FACT_MEDIUM_FINDING",
+  "adversarial": {
+    "session": "ses_e36649e3affeJjY53mEb5Dxjo5",
+    "verdict": "READY_TO_MERGE_NO",
+    "findings": [{ "severity": "MEDIUM", "path": "_work/gpu-owner-recovery/qualification/host-full/host.ts", "finding": "Registered attempts could set testsExecuted before native runner invocation." }]
+  },
+  "security": { "session": "ses_e3845fff1ffeE092hXAV6pfhiW", "verdict": "READY_SOURCE_ONLY", "remainingFindings": [] },
+  "replacementCandidate": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/receipt.json",
+  "hostCommandApprovalIssued": false,
+  "hostExecutionAuthorized": false,
+  "publicationAuthorized": false,
+  "trainingReady": false
+}

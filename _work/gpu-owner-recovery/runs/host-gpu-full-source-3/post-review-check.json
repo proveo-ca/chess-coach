@@ -1,0 +1,23 @@
+{
+  "status": "PASS_SOURCE_THREE_POST_REVIEW_BINDINGS_ONLY",
+  "docsCloseoutReview": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/docs-closeout-review.json",
+    "sha256": "2759ff1ffed1c1273e3242d5a318b735f37fde3195a20d798ffcb6071e71337f"
+  },
+  "closeout": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/final-docs-and-source-check.json",
+    "sha256": "635183f5673d9c34e0b5e15c74e44b8335e761a63b406e6cad3c389b5babda24"
+  },
+  "currentCommand": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command.fish",
+    "bytes": 56775,
+    "sha256": "83919afa384f09b2f597d8c8d3e6eeee108fc47c68aaf32c3a2fba2fc0b50666"
+  },
+  "sourceHashesChecked": 347,
+  "docHashesChecked": 12,
+  "closeoutInputHashesChecked": 9,
+  "hostGrantIssued": false,
+  "publicationGrantIssued": false,
+  "trainingGrantIssued": false,
+  "trainingReady": false
+}

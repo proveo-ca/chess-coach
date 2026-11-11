@@ -1,0 +1,104 @@
+{
+  "status": "PASS_PUBLICATION_LOCAL_PREFLIGHT_TYPES_AND_PURE_TESTS",
+  "results": [
+    {
+      "id": "preflight",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication.ts",
+        "preflight"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 100,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-validation/preflight/command.stdout",
+          "bytes": 100,
+          "sha256": "5739db7e83ca399eeca9c1658102b43b050bb55d26a19fddcdae78babd3a4d1a"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-validation/preflight/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "--noEmit",
+        "--strict",
+        "--noUnusedLocals",
+        "--noUnusedParameters",
+        "--target",
+        "ES2022",
+        "--module",
+        "ESNext",
+        "--moduleResolution",
+        "Bundler",
+        "--resolveJsonModule",
+        "--types",
+        "bun",
+        "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication.ts",
+        "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication.test.ts"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-validation/types/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-validation/types/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "./_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication.test.ts"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 28,
+      "stderrBytes": 73,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-validation/tests/command.stdout",
+          "bytes": 28,
+          "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-validation/tests/command.stderr",
+          "bytes": 73,
+          "sha256": "8bde8ab8fb1b5081a5d93bff5f672152cedd2347ed4c9c507f9e52f15622cd65"
+        }
+      ]
+    }
+  ],
+  "normalCommitInvocations": 0,
+  "httpsPushInvocations": 0,
+  "codingHostOperationsPerformed": false,
+  "trainingReady": false
+}

@@ -391,8 +391,21 @@
         "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-2/**",
         "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-3/**",
         "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/**",
         "_work/gpu-owner-recovery/runs/host-gpu-feasibility-parent-source-check-1/**",
         "_work/gpu-owner-recovery/runs/host-gpu-feasibility-parent-source-check-2/**"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/gpu-full-qualification.puml",
+      "covers": [
+        "_work/gpu-owner-recovery/qualification/host-full/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-full-source-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-full-source-2/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/**",
+        "_work/gpu-owner-recovery/runs/host-full-plan-source-1/**",
+        "_work/gpu-owner-recovery/runs/host-full-regression-source-1/**"
       ],
       "fingerprint": null
     }

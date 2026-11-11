@@ -1,0 +1,33 @@
+
+_work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/verify-report.test.ts:
+(pass) accepts the complete reported F64 pair with zero marker without reading HOST artifacts or journal [1.74ms]
+(pass) reported PASS rejects a failed test [0.63ms]
+(pass) reported PASS rejects a missing test [0.20ms]
+(pass) reported PASS rejects empty test acceptance [0.44ms]
+(pass) reported PASS rejects ignored test acceptance [0.18ms]
+(pass) reported PASS rejects duplicate summaries [0.16ms]
+(pass) reported PASS rejects wrong source generation [0.15ms]
+(pass) reported PASS rejects unchecked source [0.12ms]
+(pass) reported PASS rejects changed source [0.12ms]
+(pass) reported PASS rejects wrong artifact hash [0.13ms]
+(pass) reported PASS rejects wrong test argv [0.11ms]
+(pass) reported PASS rejects foreign GPU UUID [0.24ms]
+(pass) reported PASS rejects low headroom [0.23ms]
+(pass) reported PASS rejects stale replacement [0.21ms]
+(pass) reported PASS rejects overlapping query [0.24ms]
+(pass) reported PASS rejects failed telemetry [0.24ms]
+(pass) reported PASS rejects unchecked guard [0.19ms]
+(pass) reported PASS rejects journal write failure [0.19ms]
+(pass) reported PASS rejects foreign cleanup target [2.28ms]
+(pass) reported PASS rejects failed cleanup [0.43ms]
+(pass) reported PASS rejects running container [0.33ms]
+(pass) reported PASS rejects renewed HOST allowance [0.34ms]
+(pass) reported PASS rejects invented readiness [0.27ms]
+(pass) reported PASS rejects invented full assurance [0.26ms]
+(pass) reported PASS rejects capture mismatch [0.72ms]
+(pass) neither a missing nor nonzero nor duplicate HOST marker accepts a PASS receipt [0.12ms]
+
+ 26 pass
+ 0 fail
+ 28 expect() calls
+Ran 26 tests across 1 file. [35.00ms]

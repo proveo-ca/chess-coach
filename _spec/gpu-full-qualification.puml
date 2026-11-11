@@ -1,0 +1,133 @@
+@startuml gpu_full_qualification
+' purpose: source3-verified full-campaign contract and issued one-shot OPERATOR HOST authority, execution unobserved
+' covers: _work/gpu-owner-recovery/qualification/host-full/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-full-source-1/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-full-source-2/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-full-source-3/**
+' covers: _work/gpu-owner-recovery/runs/host-full-plan-source-1/**
+' covers: _work/gpu-owner-recovery/runs/host-full-regression-source-1/**
+' status: HOST_FULL_APPROVED_ONE_UNOBSERVED / sourceEvidence:SOURCE_ONLY_PASS / currentCandidate:SOURCE3 / verificationScope:STATIC_TYPES_AND_PURE_MOCK_ONLY / sourceReviews:READY_SOURCE3_AND_UNAPPROVED_REQUEST_ONLY / preApprovalDocsCloseout:COMPLETED_FOR_PRE_APPROVAL_GENERATION / selection:APPROVE_HOST_RECOMMENDED / executor:OPERATOR_HOST_ONLY_NEVER_CODING / remainingHostInvocations:1 / hostInvocationObserved:false / hostExecutionApproved:true / retainedInputCopyingOrMutationApproved:false / gpuExecutionApproved:true / kernelJitExecutionApproved:true / freshEmbeddedTextScratchEvidenceJitWritesApproved:true / manualCommandTextDeliveryApproved:true / nativeCompilationApproved:false / hostGrantPublicationApproved:false / separatePublicationStatus:APPROVED_ONE_NORMAL_COMMIT_AND_FIXED_HTTPS_PUSH_PENDING / publicationObserved:false / trainingApproved:false / trainingReady:false
+' see: _spec/gpu-feasibility.puml
+' see: _spec/gpu-qualification.puml
+' see: _spec/gpu-cooperative-policy.puml
+' see: _spec/gpu-readiness.md#current-gpu-full-source-preparation
+' see: _spec/gate-closure.md#current-gpu-full-source-preparation
+' decision: Executor selected 18-min full Recommended in the HOST-command bounds question. Actual host-full/selection.json records SELECTED_18_MINUTE_FULL_CAMPAIGN_SOURCE_PREPARATION_ONLY/sourcePreparationSelected:true with every execution/staging/publication/training approval false. Lead owns this new record; old unselected proposal/review/observation and issued authority snapshots remain immutable.
+' implementation boundary: actual15 files now exist: selection/plan/host/runtime/render/verify/verify-records/tsconfig, driver/watchdog and five driver/host/plan/render/watchdog test files. Frozen host-feasibility/guard.ts supplies PURE logic only, never a generic refactor/old-wrapper mutation. Frozen327/qualification/Rust/Dockerfiles/image pins/math/CPU Flex/masters101..105 stay unchanged.
+' coverage state: actual host-full source plus exact existing full-source-1/2/3 and partial plan/regression roots ONLY. No source4/future proof/HOST/cache/full-run evidence root is covered. The lead owns source/selection/proof records; this docs pass changes none of them.
+' current source proof: actual _work/gpu-owner-recovery/runs/host-gpu-full-source-3/receipt.json PASS_GPU_FULL_SOURCE_ONLY/347 hashes/protected327/sourceChanged:false/seven PASS stages:62 full tests629 assertions +48 frozen feasibility322 +41 qualification296 +four strict TSC. Proof SHA62d0fad77fc9538673ef0d69b2bdade57fc320dacb1168ea31564e4e61e5f7a5. Scope BUN_STATIC_AND_PURE_MOCK_E2E_NOT_HOST_GPU_NATIVE_OR_JIT_EXECUTION; no full GPU qualification or actual HOST artifact-byte rehash follows.
+' current packet proof: source-3/record-check.json PASS_GPU_FULL_SOURCE_PACKET_RECORDS_ONLY binds347 source hashes/14 verification stream hashes/3 program-plan hashes/full regenerated56775-byte command SHA83919afa384f09b2f597d8c8d3e6eeee108fc47c68aaf32c3a2fba2fc0b50666 and four persisted PURE MOCK e2e:happy/journal-abort/late-watchdog-failure/connected-driver-watchdog. records-verification.json PASS/exit0/captured. Source-verification scope records actual Docker0/native0/GPU:false, not an operator run. Source3 replaces source2; no proof/request is rewritten.
+' retained full-source-1 failure: immutable FAIL_GPU_FULL_SOURCE_ONLY/FULL_SOURCE_CHECK_FAILED:types-3 despite all pure tests passing; final stage reported annotation issues in driver.test.ts, plan.test.ts and verify-records.ts. Test/checker type corrections only, no runtime change; the new source-2 proof is current. Explicit types bun fixed ambient typing before all four strict TSC passed. Preserve failed receipt/streams; never rewrite them into PASS.
+' partial history: actual host-full-plan-source-1 scope PARTIAL_SOURCE_ONLY_PLAN_TESTS_NOT_FULL_WRAPPER_PROOF/PASS3 tests38 assertions; host-full-regression-source-1 scope FROZEN_REGRESSION_CHECKS_ONLY_NOT_FULL_WRAPPER_PROOF/PASS48 feasibility+41 qualification. These roots are partial evidence ONLY, not substitutes for the complete source-2 proof.
+' retained source2: PASS347/59 full tests601/four TSC/four MOCK/full56292-byte command/proof70008f4169b3b2f4800cfbafafcf241401e29e59b4e224a61b6bf45776f3578a remain historical, not current handoff. Actual source2/review.json NOT_READY_SOURCE_ONLY_EXECUTION_FACT_MEDIUM_FINDING/adversarial READY_TO_MERGE_NO found testsExecuted could follow registration before native invocation. Its proof/request false flags remain unchanged; its security READY_SOURCE_ONLY is also only that older scope. source2/verify-closeout.ts supports later docs checks but is outside frozen347, not a source-proof stage or a claimed current DOCS result.
+' source3 execution-fact contract: driver initializes commandInvoked:false before journal/mkdir, then sets true immediately before runCommand. ALL6 successful attempts require commandInvoked:true in addition to exact argv/PASS0/summary admission. Registration alone is not native invocation. New regressions cover first-step journal/mkdir failures with0 native IO, throwing runner and host receipt fact mapping; no math/resource/mount/GPU behaviour changes.
+' source3 receipt facts: host testExecutionFacts returns testExecutionAttempted/testsExecuted false/false when only registered, true/null when a runner was invoked without an observed integer exit>=0 (throw/-1), true/true when such an exit was observed. Missing/non-array results return null/null; never convert unknown execution into completed or skipped work.
+' current source3 reviews: actual source3/review.json READY_SOURCE_THREE_ONLY_PENDING_CURRENT_DOCS_CLOSEOUT_AND_FRESH_EXACT_HOST_APPROVAL. Adversarial ses_e36649e3affeJjY53mEb5Dxjo5 READY_TO_MERGE_YES/REGISTRATION_IS_NOT_NATIVE_EXECUTION MEDIUM closed/no new findings; security ses_e3845fff1ffeE092hXAV6pfhiW READY_SOURCE_THREE_AND_UNAPPROVED_REQUEST_ONLY/no remaining findings/low/no added hardening gate. Architecture accepted additive18min source plan; DevOps HOST contracts accepted/ambient Bun typing finding closed by four TSC. These remain immutable PRE_APPROVAL source3/unapproved-request review scopes, not issued HOST authority.
+' pre-approval binding: source3/host-command-request.json AWAITING_FRESH_EXACT_OPERATOR_HOST_APPROVAL, request SHAbf06597608243ae4ed83c716e795f5628d0ac7d0a3e44a58a35aadd948644b54, binds unchanged56775-byte command/proof. Its false flags and source3/pre-approval-bindings.json PASS_CURRENT_DRAFT_AND_CONSUMED_PRIOR_GRANTS_ONLY/no new approval issued remain immutable PRE_APPROVAL snapshots, not live permission or denial; prior HOST/commit/push remaining0 stays unchanged.
+' current issued authority: _work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-approval.json SHA3be5e0f26e602928af6c41127a53cf41516c04c1dc84fb266a5e713a2b427e76 records APPROVED_ONE_OPERATOR_HOST_FULL_INVOCATION_UNCONSUMED_UNOBSERVED after Approve HOST Recommended. It alone grants one OPERATOR_HOST_ONLY_NEVER_CODING invocation/remaining1/unobserved, exact command56775 bytes/SHA83919afa384f09b2f597d8c8d3e6eeee108fc47c68aaf32c3a2fba2fc0b50666/proof62d0fad77fc9538673ef0d69b2bdade57fc320dacb1168ea31564e4e61e5f7a5/requestbf06597608243ae4ed83c716e795f5628d0ac7d0a3e44a58a35aadd948644b54 unchanged. Any attempt including preflight consumes it, no retry; future consumption is recorded separately without rewriting issued remaining1/unobserved fields.
+' approval scope: HOST-local read preflight/fresh embedded TEXT+scratch/evidence/JIT writes/one owned container/same-container telemetry/six exact GPU tests with LLVM-NVPTX-CUDA kernel JIT/owned-CID cleanup ONLY. Manual delivery is EXACT WHOLE COMMAND TEXT, never an assumed HOST file. No retained-input copying/mutation/native compilation/acquisition/installation/publication/experiment training or coding HOST/GPU/JIT authority.
+' prior docs closeout: source3/final-docs-and-source-check.json PASS +docs-closeout-review.json READY_TO_MERGE_YES +post-review-check.json PASS completed PRE_APPROVAL. Later issued-approval-check.json PASS +issued-docs-closeout-review.json READY_TO_MERGE_YES bound9 ordered index/12 docs/347 sources/protected327 at PRE_PUBLICATION, not subsequent publication-authority wording. Their false publication fields stay immutable historical snapshots, not current denial. Fresh checks/hash/literal-text audit/manifest/read-only reviews precede Git actions; no new verification or publication result is claimed.
+' separate publication authority: actual source3/publication-request.json APPROVED_ONE_NORMAL_COMMIT_AND_FIXED_HTTPS_PUSH_PENDING records Executor's explicit commit & push, then output the command to be run. ONE ordinary commit +ONE fixed HTTPS push from HEAD250d438685d2fc7560b0e31439f282bb2c145888 on feat-ml-adjuntant-ii to https://github.com/proveo-ca/chess-coach.git; existing identity/auth only, no force/amend/hook bypass/new credentials/transport change/retry. No commit/push observed yet. This grants no new or renewed HOST/native/GPU/JIT/install/acquisition/training authority.
+' publication boundary: exact membership must be frozen before commit:12 matching docs+15 full-source files+retained source1 FAIL/source2 pre-review blocked/source3 READY+feasibility observation1+old feasibility source4 post-publication receipts. Bounded text ONLY, no caches/binaries/home/tmp/compiled native outputs. COMMIT_AND_PUSH_FIRST_THEN_OUTPUT_THE_SAME_APPROVED_WHOLE_LITERAL_COMMAND binds unchanged56775-byte command/proof/HOST approval above; never output its body before publication. Issued pending fields remain immutable after completion; consumption/result/post-action receipts stay separate LOCAL_UNCOMMITTED outside that commit, no implicit follow-up commit.
+' original selectors: qualificationPlan('gpu','full') selects cuda_f64_nonzero_native_scores_round_trip; cuda_f64_direct_sgd_changes_policy_parameters; cuda_feature_complete_sweep_for_active_relu_checks_2335_coordinates; cuda_feature_complete_sweep_for_inactive_relu_checks_2335_coordinates; cuda_f64_redundant_learning_channels_agree_and_reload; cuda_f64_policy_channel_subprocesses_agree_and_reload. Repeat the pair AGAIN; each of ALL six must report1 passed/0 failed/0 ignored/exit0. Steps3/4 use learning:test:finite_difference; all other steps use policy-io:test:gpu, never a hardcoded policy executable for finite differences.
+' numeric contract: active2335+inactive2335 coordinates=4670; eps1e-6/atol1e-8/rtol1e-5, C12 redundant learning channels and policy subprocess agreement/reload unchanged. Preserve absolute policy-channel executable/env bindings from admitted artifact metadata.
+' approved but unobserved runtime inputs: same RO native2 source/logs, target1, Bun1, prepared LLVM and CUDA; existing pinned Rust runtime/image bindings unchanged, no image build/pull or source/Cargo compilation. Fresh scratch/JIT/evidence RW only. The implemented packet aliases the SAME fresh HOST scratch directory at /scratch AND /build/native/_work/gpu-owner-recovery/scratch, counted ONCE; the latter is compiled into the subprocess test. Only the separate issued approval grants bounded OPERATOR mount/write/run authority, not source-only proof.
+' approved exact full limits: HOST1080s=960 normal+90 cleanup+30 receipt; driver890s=120 preflight+750 campaign+20 final, clipped to HOST normal remaining MINUS20s; per step120000ms; campaign750000ms INCLUDING30000ms cleanup reserve. The separate full grant does not renew the consumed feasibility HOST allowance.
+' guard/resources: same2 CPU/8 GiB memory/8 GiB memory+swap/no extra swap; exact UUID GPU-713c95e0-6952-a576-794b-9ef1fb527ff0/ordinal0;3 GiB startup/stop below2 GiB/2s query-start/1s query/4s sample age, max400 queries; journal max1 MiB. Ordinary functional cooperation, not strict physical-stop/lease/full-telemetry assurance; pure-policy10/297/300 remains unchanged/unqualified.
+' disk/capture envelope: fresh workspace+evidence SOFT4 GiB; initial free8 GiB/running free4 GiB. Worst native captures3248 MiB+Docker56 MiB=3304 MiB leaves792 MiB for JIT/scratch/metadata, NOT a fit guarantee. The cap can fail; no deletion/bypass/quota/reservation. Scratch aliases count the same HOST directory once.
+' implemented wire contracts, runtime unobserved: runId host-gpu-full-1; event version chess-coach.gpu-full-event.v1; inner version chess-coach.gpu-full-driver.v1 with future success PASS_GPU_FULL_TESTS_ONLY; outer version chess-coach.owned-gpu-full.v1 with future success PASS_HOST_GPU_FULL_ONLY. No full HOST/GPU execution/success observed. --approved-host-gpu-full-1 is a grant-binding argument, NEVER authorization by string; the separate issued approval alone owns exact one-shot OPERATOR authority.
+' assurance/training: feasibility observation-1 remains accepted functional REPORT pair PASS/CONSUMED0, not full evidence. Full qualification, CPU39, canonical BOTH/reference/close/R4 evidence must be accepted before any trainingReady lift; trainingReady remains false now. ALL security/privacy/isolation hardening follows ALL planned training and validated results, not a new preparation gate.
+' template: local template absent; existing vanilla sequence conventions retained, no fetch/install/command/render/agent operation. Human must fetch and commit the repository template once when permitted.
+' note ratchet: no enforcement-list implementation exists in the previously inspected tree; no tests are edited. Note bodies have four lines each, none wider than50 columns.
+' readability: manual words/sentences/syllables; DRIVER scratch24/2/47 FK12.2 (aliases four syllables); HOST disk25/2/49 FK12.4 (JIT one syllable); new DRIVER,HOST invocation28/2/48 FK10.1. Notes describe source rationale, not observed full GPU execution.
+title HOST_FULL_APPROVED_ONE_UNOBSERVED - source3 SOURCE_ONLY_PASS, no full GPU result
+
+actor Executor as EXECUTOR
+actor "Operator HOST ONLY\nnever coding" as OPERATOR
+participant "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-approval.json" as AUTH
+participant "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-request.json" as PUB
+participant "host-full/selection.json\nimmutable PRE_APPROVAL source-only selection" as SELECTION
+participant "host-full/plan.ts\nselected bounds and artifact bindings" as PLAN
+participant "host-full/render.ts + verify.ts + verify-records.ts\nsource-3 static/pure MOCK/types proof" as SOURCE
+participant "host-full/runtime.ts\nHOST entry, capture and outer receipt" as RUNTIME
+participant "host-full/host.ts\nowned CID and phase-bounded cleanup" as HOST
+participant "host-full/driver.ts\nfull six-test controller" as DRIVER
+participant "host-full/watchdog.ts\nHOST-local journal progress" as WATCHDOG
+participant "host-feasibility/guard.ts\nFROZEN pure guard ONLY" as GUARD
+participant "tooling/runtime/qualification.ts\nUNCHANGED qualificationPlan + runner" as QUAL
+participant "Docker CLI\none approved OPERATOR invocation, unobserved" as DOCKER
+
+group CURRENT HOST_FULL_APPROVED_ONE_UNOBSERVED - SOURCE_ONLY_PASS remains source evidence only
+  EXECUTOR -> SELECTION : selected 18-min full Recommended; actual NEW selected-source record\nSELECTED_18_MINUTE_FULL_CAMPAIGN_SOURCE_PREPARATION_ONLY
+  SELECTION -> PLAN : immutable PRE_APPROVAL selection: additive LOCAL source/static/pure MOCK/types only\nits HOST/staging/GPU/JIT/publication/training flags stay false, not live authority
+  PLAN -> SOURCE : actual15-file implementation; source-3 frozen347 inputs/protected327/sourceChanged:false\nseven PASS stages:62 full tests629 +48 feasibility322 +41 qualification296 +4 strict TSC
+  SOURCE --> EXECUTOR : source3 PASS_GPU_FULL_SOURCE_ONLY +packet records PASS\n14 streams/3 program-plan hashes/regenerated56775-byte command/four persisted PURE MOCK e2e\nsource1 types-3 FAIL/source2 NOT_READY execution-fact MEDIUM remain immutable history
+  SOURCE --> EXECUTOR : proof SHA62d0fad77fc9538673ef0d69b2bdade57fc320dacb1168ea31564e4e61e5f7a5\ncommand SHA83919afa384f09b2f597d8c8d3e6eeee108fc47c68aaf32c3a2fba2fc0b50666\nsource3 adversarial READY/MEDIUM closed/security READY source+unapproved request only/low/no findings
+  SOURCE --> EXECUTOR : PRE_APPROVAL request/bindings false flags remain immutable snapshots\nprior HOST+commit+push remaining0; PRE_APPROVAL DOCS closeout PASS/final adversarial READY/post-review PASS completed\nissued-approval-check PASS/issued-docs-closeout READY bind PRE_PUBLICATION9-index/12-doc/347+327 only
+  EXECUTOR -> AUTH : selected Approve HOST Recommended for exact source3 command\nAPPROVED_ONE_OPERATOR_HOST_FULL_INVOCATION_UNCONSUMED_UNOBSERVED
+  AUTH --> OPERATOR : ONE invocation/remaining1/unobserved; any attempt including preflight consumes it\nno retry; future consumption recorded separately, never rewrite issued remaining1
+  AUTH --> OPERATOR : manual delivery: EXACT WHOLE COMMAND TEXT ONLY, not an assumed HOST file\nHOST preflight/fresh embedded TEXT-scratch-evidence-JIT/one owned container/telemetry/ALL6 GPU+kernel JIT/owned cleanup\nno retained-input copy or mutation/native compile/install/acquisition/publication/experiment training/coding execution
+  EXECUTOR -> PUB : separate explicit commit & push, then output the command to be run\nAPPROVED_ONE_NORMAL_COMMIT_AND_FIXED_HTTPS_PUSH_PENDING; no commit/push observed
+  PUB --> EXECUTOR : ONE ordinary commit +ONE fixed HTTPS push; freeze exact text-only membership first\nfresh checks/hash/literal-text audit/manifest/read-only reviews BEFORE Git actions\nexisting identity/auth only; no force/amend/hook bypass/new credentials/transport change/retry
+  PUB --> EXECUTOR : COMMIT_AND_PUSH_FIRST_THEN_OUTPUT_THE_SAME_APPROVED_WHOLE_LITERAL_COMMAND\nunchanged56775-byte command/proof/HOST approval; no earlier command-body output\nHOST1 stays OPERATOR-only/unobserved; no new native/GPU/JIT/install/acquisition/training grant
+  PUB --> EXECUTOR : issued pending snapshot remains immutable after completion; separate records consume it\npost-action result/receipts LOCAL_UNCOMMITTED outside commit; no implicit follow-up commit
+end
+
+group APPROVED BUT UNOBSERVED runtime contract - not an execution trace
+  OPERATOR -> RUNTIME : exact issued host-gpu-full-1 whole command ONLY, one attempt\n--approved-host-gpu-full-1 string alone grants NOTHING
+  RUNTIME -> HOST : whole HOST1080s:960 normal/90 cleanup/30 receipt\nfresh workspace+evidence SOFT4 GiB; free8 GiB initial/4 GiB running
+  HOST -> DOCKER : one new owned worker using unchanged pinned runtime/UUID/ordinal0\n2 CPU/8 GiB memory and memory+swap/no extra swap\nRO native2/target1/Bun1/LLVM/CUDA; fresh scratch/JIT/evidence RW only
+  DOCKER -> DRIVER : SAME fresh scratch at /scratch AND compiled original scratch path\n/build/native/_work/gpu-owner-recovery/scratch, counted ONCE
+
+note over DRIVER
+  Compiled subprocess bindings require writable
+  scratch at the original build path.
+  Both aliases share one directory, so duplicate
+  accounting would distort the workspace budget.
+end note
+
+  DRIVER -> DRIVER : bounded120s preflight; same original artifact/helper context\n890s driver bound clipped to HOST normal remaining MINUS20s
+  DRIVER -> QUAL : unchanged qualificationPlan('gpu','full'), ALL6 exact selectors\nsteps3/4 learning finite-difference harness, all others policy harness\nretain absolute policy-channel executable/env; no source/Cargo rebuild
+  HOST -> WATCHDOG : full-run progress journal <=1 MiB, HOST-local clock\nnew event version chess-coach.gpu-full-event.v1
+  par ordinary functional GPU guard
+    DRIVER -> GUARD : reuse FROZEN PURE guard only; no generic refactor\n3 GiB startup/stop below2 GiB;2s query-start/1s query/4s stale\nsame-container selected UUID CSV, max400 queries
+    GUARD --> DRIVER : first failure latches; stale/failed guard blocks test acceptance
+  else full six-test campaign
+    loop ALL6 exact steps, including feasibility pair AGAIN
+      DRIVER -> DRIVER : register commandInvoked:false BEFORE journal append and capture mkdir\nset true ONLY immediately before runCommand; registration failure invokes no native IO
+      DRIVER -> QUAL :120000ms/step;750000ms loop INCLUDING30000ms cleanup reserve\n1 passed/0 failed/0 ignored/exit0 required for EVERY selector
+      QUAL --> DRIVER : retained per-step result/capture; preserve partials on any failure
+    end
+  else HOST watchdog and disk accounting
+    WATCHDOG -> HOST : run-bound progress failure requests only owned-CID cleanup
+    HOST -> HOST : soft disk/workspace checks, scratch aliases counted once\nworst3248 MiB native+56 MiB Docker=3304 MiB, remainder792 MiB
+  end
+
+note over DRIVER,HOST
+  Attempt registration does not invoke native work,
+  because journal or capture writes can fail first.
+  An invoked runner without an observed exit
+  still leaves actual test execution unknown.
+end note
+
+  HOST -> HOST : testExecutionFacts: attempted/executed=false/false for registration only\ntrue/null if invoked without observed integer exit>=0; true/true with observed exit\nmissing/non-array results=null/null; ALL6 success also requires commandInvoked:true
+
+note over HOST
+  Capture budgeting leaves limited space
+  for JIT artifacts and temporary scratch data.
+  The soft limit detects excess usage, but
+  cannot reserve capacity or guarantee fit.
+end note
+
+  DRIVER -> DRIVER :20s finalization; source checked unchanged/ALL6 accepted\nnew inner version chess-coach.gpu-full-driver.v1
+  DRIVER --> RUNTIME : FUTURE success PASS_GPU_FULL_TESTS_ONLY only if every gate holds\nno actual HOST/GPU full inner receipt or PASS observed now
+  HOST -> DOCKER : terminal state and owned cleanup; preserve raw supervisor/capture facts\nenforce phase cutoffs after I/O, never borrow receipt reserve\nno deletion of prior/partial work or soft-cap bypass
+  HOST --> RUNTIME : owned cleanup complete/no hidden failures required
+  RUNTIME --> EXECUTOR : FUTURE outer chess-coach.owned-gpu-full.v1 /PASS_HOST_GPU_FULL_ONLY\nonly after truthful full acceptance + zero exact HOST marker\nno full execution observed, no trainingReady lift now
+end
+
+legend bottom
+  HOST_FULL_APPROVED_ONE_UNOBSERVED. SOURCE_ONLY_PASS remains source evidence: current source3 PASS_GPU_FULL_SOURCE_ONLY/347 hashes/protected327/sourceChanged:false/seven stages/62 full tests629 +48 feasibility322 +41 qualification296 +four TSC/four PURE MOCK e2e; packet/records PASS14 streams/3 program-plan hashes/full56775-byte command. Adversarial source3 READY/MEDIUM closed/no new findings; security READY source3+unapproved request only/low/no remaining findings retain PRE_APPROVAL scopes. commandInvoked separates registration from invocation; false/false, true/null, true/true and missing/non-array null/null facts remain distinct. Request AWAITING_FRESH_EXACT_OPERATOR_HOST_APPROVAL/all false and pre-approval bindings PASS/prior HOST+commit+push0/no new approval remain immutable PRE_APPROVAL snapshots. Separate issued approval alone grants OPERATOR HOST1/unobserved, including fresh embedded TEXT/scratch/evidence/JIT/one container/telemetry/ALL6 GPU tests/LLVM-NVPTX-CUDA kernel JIT/owned cleanup; exact whole-command text delivery only. Any attempt including preflight consumes it/no retry; future consumption is separate, issued remaining1 stays unchanged. No retained-input copy/mutation/native compile/install/acquisition/publication/experiment training/coding HOST-GPU-JIT permission. Static/types/MOCK proof is not actual full HOST/GPU/numerical/C12/CPU39/canonical/BOTH/reference/close/R4/training/cold/full-telemetry evidence.
+  Source1 types-3 FAIL/source2 PASS59-601 plus NOT_READY execution-fact MEDIUM stay immutable, not current handoff. Partial plan3/38/frozen regression48+41 remain partial ONLY. Exact actual source1/2/3/partial coverage, never source4/future HOST/cache/full-run evidence; source2 closeout helper is outside frozen347, not a source-proof stage. Old feasibility REPORT pair/publication250d/grants remain consumed0; separate full HOST1 renews none of them. Original unselected/issued snapshots/frozen327/old wrapper/qualification/Rust/Dockerfiles/math/CPU Flex/masters unchanged, pure guard only. Source3 DOCS closeout/final adversarial READY/post-review check completed PRE_APPROVAL; later issued-approval PASS/issued-docs-closeout READY bound PRE_PUBLICATION9-index/12-doc/347+327 only, not subsequent wording. Separate publication-request alone grants pending ordinary commit1/fixed HTTPS push1 from250d on feat-ml-adjuntant-ii to https://github.com/proveo-ca/chess-coach.git, existing identity/auth only/no force/amend/hook bypass/new credentials/transport change/retry. Exact bounded-text membership freezes before commit; checks/audit/manifest/read-only reviews precede actions. Publish FIRST, then deliver SAME whole approved56775-byte literal command, never before. Issued pending fields stay immutable; separate post-action consumption/result/receipts remain LOCAL_UNCOMMITTED outside commit/no follow-up commit. No publication action/result observed, no HOST renewal/native/GPU/JIT/install/acquisition/training grant. Full functional/CPU39/canonical BOTH/reference/close/R4 evidence required before trainingReady lift; strict10/297/300 unchanged/unqualified, trainingReady:false. ALL hardening after ALL planned training and validated results.
+endlegend
+@enduml
