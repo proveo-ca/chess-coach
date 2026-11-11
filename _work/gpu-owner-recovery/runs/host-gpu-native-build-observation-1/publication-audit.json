@@ -1,0 +1,160 @@
+{
+  "status": "PASS_FAILED_BUILD_OBSERVATION_PUBLICATION_AUDIT",
+  "authorizationSource": "EXECUTOR_LATEST_COMMIT_AND_PUSH_REQUEST",
+  "sources": [
+    {
+      "path": "_spec/.spec-index.json",
+      "bytes": 19334,
+      "sha256": "fcd52a812104eb26444fc51e9fce0c7cfa8f3bd06350a7ff7bbd06e085aaf96b"
+    },
+    {
+      "path": "_spec/gate-closure.md",
+      "bytes": 158459,
+      "sha256": "943fda0e36adf35a6af665e6844ae74bfd0e4034e7e26dbaf4a63954f2a26700"
+    },
+    {
+      "path": "_spec/gpu-build.puml",
+      "bytes": 98439,
+      "sha256": "3b8d99efc1af6228fa0eabdc5c9c8707c2948d1aa8922996c1a14a661de49a97"
+    },
+    {
+      "path": "_spec/gpu-host-build-inventory.puml",
+      "bytes": 22470,
+      "sha256": "e98268d578468b126addc226fc996efd6ef6e42b0d88c902e640d1e463f93984"
+    },
+    {
+      "path": "_spec/gpu-host-build.puml",
+      "bytes": 36006,
+      "sha256": "f4fba0374ac36a308f3f7d1aa3f513289792598c06ce91680f9f7ec9f8ab23e1"
+    },
+    {
+      "path": "_spec/gpu-host-receive.puml",
+      "bytes": 54139,
+      "sha256": "45dca8ca62cc09efc2968cafc43340830f32d6d4445b40572acc6fcd37635154"
+    },
+    {
+      "path": "_spec/gpu-input-transfer.puml",
+      "bytes": 61070,
+      "sha256": "4c8d7facfb51c00e76c44d4cd164a448cb95ab587d64da9ea9b40a30e80fc64d"
+    },
+    {
+      "path": "_spec/gpu-qualification.puml",
+      "bytes": 71632,
+      "sha256": "65af6aa683e4a66c4b509fbe2ef5be6ffbce32d9fa8c6b375a067187d7cc897a"
+    },
+    {
+      "path": "_spec/gpu-readiness.md",
+      "bytes": 225770,
+      "sha256": "3c59f5b34401406fccc2168235dab5c89e4122975f82bc9fea9f63a99fb25c33"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/current-input-check.json",
+      "bytes": 813,
+      "sha256": "1555b888fd46d158061f73ff8c934f1175dbf4f3ce70938e894002c4929dcc0f"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/docs-check.json",
+      "bytes": 1504,
+      "sha256": "10004e148197d4bd3b854ec6fcd2dea1db8b6e807bf7bff63f5a246219486bcc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/observation.json",
+      "bytes": 1541,
+      "sha256": "2751d77dcde9513ea5889f6c028ad6665b46b8488838f6e6f5c0717ab6b241e3"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/operator-summary.txt",
+      "bytes": 230,
+      "sha256": "0816a9feddd06cb8c7c8ea219b5c9451c49a65ef3b6228489b27e02cc082dd92"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/publication-typecheck.json",
+      "bytes": 1401,
+      "sha256": "6c77d8189b51fe9cab9420df5e92e37e93002981f1933e5b338f35b23861122b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/publication-verification-types/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/publication-verification-types/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/record-check-2.json",
+      "bytes": 2327,
+      "sha256": "6c43552c1faba160ff8c0765ecf54cd745e82bf133aa7fb11114c8ca632e9575"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/record-check.json",
+      "bytes": 2107,
+      "sha256": "b941267b7e38005a36273338247151f306889942b0dc04e0bd89fdda1cb6b701"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/reported-receipt.json",
+      "bytes": 16447,
+      "sha256": "c3da0eb282a32151118eb843254b6d9d84cff48060194ba9867ab4debd4af2ec"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/review.json",
+      "bytes": 1633,
+      "sha256": "ad4c94522d093b80b6ad7f7da14c122bb9b36c365fa33fc9109abc1bc2aa5a3e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/typecheck-2.json",
+      "bytes": 1440,
+      "sha256": "916a45220d3750f21b4cc6afad652375756df0ba319fdaeb4b8f94dd2943cdc1"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/typecheck.json",
+      "bytes": 1138,
+      "sha256": "2a8ee9a037d2db9e77a6ff7fab6e1963f2e0ce53f6b82c8a0b4ac7234a32d7f9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/verification-types-2/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/verification-types-2/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/verification-types/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/verification-types/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/verify-report.ts",
+      "bytes": 10731,
+      "sha256": "1e20306e321d7833014737acbd5e865708759de95943b44058cd33c0be8789a2"
+    }
+  ],
+  "auditExcludesItself": true,
+  "textBytes": 788631,
+  "regularTextFiles": 27,
+  "frozenSourceHashesChecked": 283,
+  "nativeSourceInputsChecked": 65,
+  "currentRecordInputHashesChecked": 7,
+  "diagramIndexMatches": 6,
+  "typecheckCaptureStreamsChecked": 4,
+  "freshTypecheckPassed": true,
+  "historicalChecksRetained": true,
+  "reportedBuildAcceptedAsSuccess": false,
+  "compilerFailureCauseEstablished": false,
+  "originalHostArtifactBytesRehashed": false,
+  "hostGrantRenewed": false,
+  "hostInvocationsRemaining": 0,
+  "codingHostDockerOrNativeOperationsPerformed": false,
+  "sourcePublicationPerformed": false,
+  "binaryOrCacheIncluded": false,
+  "trainingReady": false
+}

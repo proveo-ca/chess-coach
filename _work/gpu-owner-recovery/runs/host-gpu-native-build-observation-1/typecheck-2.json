@@ -1,0 +1,47 @@
+{
+  "status": "PASS_RECORD_CHECKER_TYPES_ONLY",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "node_modules/typescript/lib/_tsc.js",
+    "--noEmit",
+    "--strict",
+    "--target",
+    "ES2022",
+    "--module",
+    "ESNext",
+    "--moduleResolution",
+    "Bundler",
+    "--resolveJsonModule",
+    "--types",
+    "bun",
+    "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/verify-report.ts"
+  ],
+  "result": {
+    "status": "PASS",
+    "exitCode": 0,
+    "failure": null,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/verification-types-2/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/verification-types-2/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "source": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/verify-report.ts",
+    "sha256": "1e20306e321d7833014737acbd5e865708759de95943b44058cd33c0be8789a2"
+  },
+  "supersedes": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/typecheck.json",
+  "codingHostDockerOrNativeOperationsPerformed": false,
+  "trainingReady": false
+}

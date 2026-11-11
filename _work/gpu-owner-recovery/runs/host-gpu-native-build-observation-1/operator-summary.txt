@@ -1,0 +1,2 @@
+{"status":"FAIL_HOST_GPU_NATIVE_BUILD_ONLY","failure":"SUCCESSFUL_NATIVE_COMPILATION_RECEIPT_REQUIRED","receipt":"_work/gpu-owner-recovery/runs/host-gpu-native-build-1/receipt.json","trainingReady":false}
+HOST_NATIVE_BUILD_EXIT=1
