@@ -1,0 +1,38 @@
+/*
+ * Milestone-turn broadcast — bubble anchored over the board for the whole
+ * planning window; nothing is locked and the clock runs underneath it.
+ */
+.slot {
+  position: fixed;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+}
+
+.turn {
+  background-color: var(--primary-color);
+  color: #fff;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  padding: 0.1rem 0.6rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.grant {
+  display: inline-flex;
+  align-items: center;
+  margin-inline-start: 0.5rem;
+}
+
+.stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--text-strong, #f5f5f5);
+  white-space: nowrap;
+}
+
+.stat + .stat {
+  margin-inline-start: 0.55rem;
+}

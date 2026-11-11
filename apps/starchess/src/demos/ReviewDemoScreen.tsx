@@ -1,0 +1,459 @@
+// SPEC: _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/navigation-chrome.md, _spec/apps/starchess/architecture/reactivity/tutorial.md
+
+import { placementToMap, type StarChessColor } from "@chess-coach/starchess-core";
+import type { Square } from "chess.js";
+import {
+  createEffect,
+  createMemo,
+  onCleanup,
+  onMount,
+  Show,
+  untrack,
+  type Component,
+  type JSX,
+} from "solid-js";
+
+import {
+  achievementBubbles,
+  clearAchievementBubbles,
+  pushAchievementBubbles,
+} from "~/achievements/achievementLive";
+import { foldGame, foldPlyFromResolve, plySeenBy } from "~/achievements/analysis";
+import { createMatchStore } from "~/app/MatchStoreContext";
+import { MatchStoreProvider, useMatchStore } from "~/ports/matchStore";
+import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
+import { readDisplayedSnapshot } from "~/app/selectors";
+import { useMediaQuery } from "~/hooks/useMediaQuery";
+import { DYNAMIC_MOBILE_MQ, MOBILE_MQ } from "~/utils/breakpoints";
+import { Label } from "@chess-coach/ui-web/primitives/Label";
+import { Screen } from "@chess-coach/ui-web/primitives/Screen";
+import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
+import styles from "~/demos/ReviewDemoScreen.module.css";
+import { clearSiegedTanks, setTankMode } from "~/presentation/animations/tankModeStore";
+import { StarChessMobileBanner as MobileBanner } from "@chess-coach/ui-web/atoms/StarChessMobileBanner";
+import { LiveBoardBinding } from "~/presentation/board/components/LiveBoardBinding";
+import { displayPlayerName } from "~/utils/playerName";
+import { formatScriptLabel } from "~/utils/matchTitle";
+import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
+import { HudDock } from "~/presentation/hud/components/HudDock";
+import { MatchBoardHost } from "~/presentation/hud/components/MatchBoardHost";
+import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
+import { ReviewTurnNav } from "@chess-coach/ui-web/atoms/ReviewTurnNav";
+import { TurnBarSidebar } from "~/presentation/hud/components/TurnBarSidebar";
+import { CapabilitiesProvider, LIVE_CAPABILITIES, TUTORIAL_CAPABILITIES } from "~/store/capabilitiesStore";
+import { AchievementBubblesProvider } from "~/presentation/board/achievementBubbles";
+import {
+  resetReviewVisionFilter,
+  reviewVisionFilter,
+  setReviewVisionFilter,
+} from "~/store/reviewVisionStore";
+import type { BoardSkin, PieceSet, VisionMode } from "~/types/board";
+import type { ReviewHistory, StarChessMatchResult } from "~/types/review";
+
+export type ReviewMatchTitle = {
+
+  resultLine: string;
+
+  result: StarChessMatchResult;
+
+  matchup: string;
+};
+
+export type ReviewDemoScreenProps = {
+  history: ReviewHistory;
+
+  reviewLabel?: string;
+
+  matchTitle?: ReviewMatchTitle;
+  visionMode?: VisionMode;
+  fog?: boolean;
+  variant?: BoardSkin;
+  pieceSet?: PieceSet;
+
+  packedTank?: boolean;
+
+  playerColor?: StarChessColor;
+
+  playerName?: string;
+
+  arenaPlayers?: { w: string; b: string };
+
+  onHome?: () => void;
+
+  hideResources?: boolean;
+
+  hideDualNav?: boolean;
+
+
+  tutorial?: boolean;
+
+  header?: JSX.Element;
+  footerExtra?: JSX.Element;
+
+  /**
+   * Replay both sides' achievement bubbles as turns play forward. `winner`
+   * gates the end-of-game levels; `opponent` names the Adjutant tier a side
+   * beat (Flawless levels on it).
+   */
+  achievements?: {
+    winner: StarChessColor | null;
+    opponent?: Partial<Record<StarChessColor, string>>;
+  };
+};
+
+const syncTankModes = (
+  placement: string,
+  sieged: readonly Square[] | undefined,
+  forceTank: boolean | undefined,
+) => {
+  clearSiegedTanks();
+  if (!forceTank) {
+    for (const sq of sieged ?? []) setTankMode(sq, "siege");
+    return;
+  }
+  try {
+    const map = placementToMap(placement);
+    for (const [sq, piece] of map) {
+      if (piece.type === "r") setTankMode(sq as Square, "tank");
+    }
+  } catch {
+
+  }
+};
+
+const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
+  const store = useMatchStore();
+  const snap = createMemo(() => readDisplayedSnapshot(store));
+  const timelineActive = createMemo(() => store.timeline().active);
+  const reviewIndex = createMemo(() => store.shell().reviewIndex);
+
+  const dynamicMobile = useMediaQuery(DYNAMIC_MOBILE_MQ);
+  const bannerBars = () => dynamicMobile();
+  const mobileViewport = useMediaQuery(MOBILE_MQ);
+  /**
+   * Tall phones step the review from the footer tray (centred, as the
+   * tutorial replays), so the top row is the two ResourceBars alone and they
+   * take the width the ‹ › used to hold.
+   */
+  const footerNav = () => mobileViewport() && !dynamicMobile();
+
+  const reviewBusy = () =>
+    timelineActive() ||
+    store.reviewPhase() === "check" ||
+    store.reviewPhase() === "intent" ||
+    store.reviewPhase() === "resolve";
+
+  const reviewTurnNumber = createMemo(() => {
+    const settled = store.shell().settledSnapshots[reviewIndex()];
+    return Math.max(1, settled?.turn ?? snap().turn);
+  });
+
+  const caption = createMemo(() => {
+    const index = reviewIndex();
+    const resolves = store.shell().settledResolves;
+    const phase = store.reviewPhase();
+    const steps = props.history.steps;
+    const startCaption = props.history.startCaption;
+    if (index <= 0 && (phase === "start" || phase === "final")) {
+      return startCaption;
+    }
+    let endsBefore = 0;
+    for (let i = 0; i < index; i += 1) {
+      const r = resolves[i];
+      if (r && !isCheckOnlyResolve(r)) endsBefore += 1;
+    }
+    const playing = phase === "check" || phase === "intent" || phase === "resolve";
+    const stepIdx = playing ? endsBefore : Math.max(0, endsBefore - 1);
+    const step = steps[Math.min(stepIdx, Math.max(0, steps.length - 1))];
+    if (!step) return startCaption;
+    if (phase === "intent" && step.intentCaption) return step.intentCaption;
+    if (phase === "check") return `Check · ${step.caption}`;
+    if (phase === "intent") return `Intent · ${step.caption}`;
+    return step.caption;
+  });
+
+  createEffect(() => {
+    const s = snap();
+    syncTankModes(s.placement, s.siegedTanks, props.packedTank);
+  });
+
+  // Achievements: the whole match is folded once; each forward step raises the
+  // bubbles of the resolve that just finished. Any other seek clears the board.
+  const plies = props.history.settledResolves.map((esr, i) =>
+    foldPlyFromResolve(esr, props.history.settledSnapshots[i]?.placement),
+  );
+  const opening = props.history.settledSnapshots[0];
+  const game =
+    props.achievements && opening ? foldGame(opening, plies, props.achievements) : null;
+  let shownIndex = untrack(reviewIndex);
+  createEffect(() => {
+    const index = reviewIndex();
+    if (!game || index === shownIndex) return;
+    const from = shownIndex;
+    shownIndex = index;
+    if (index !== from + 1) {
+      clearAchievementBubbles();
+      return;
+    }
+    const ply = plies[from];
+    const filter = reviewVisionFilter();
+    const last = index >= props.history.settledSnapshots.length - 1;
+    const raised = [...(game.perPly[from] ?? []), ...(last ? game.final : [])];
+    // A side's vision filter hides the other side's bubbles it could not see.
+    pushAchievementBubbles(
+      raised.filter(
+        (bubble) =>
+          filter === "both" ||
+          bubble.side === filter ||
+          (ply != null && plySeenBy(ply, filter, bubble.origin)),
+      ),
+    );
+  });
+  onCleanup(clearAchievementBubbles);
+
+  onMount(() => {
+
+    if (props.visionMode === "player" || props.fog === true) {
+      setReviewVisionFilter("w");
+      store.dispatch({ type: "SET_VIEWER", viewer: "w" });
+    } else {
+      resetReviewVisionFilter();
+    }
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (props.hideDualNav) return;
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        store.reviewBack();
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        store.reviewForward();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    onCleanup(() => {
+      window.removeEventListener("keydown", onKey);
+      store.cancelEffects();
+      clearSiegedTanks();
+      resetReviewVisionFilter();
+    });
+  });
+
+  const showWhiteResources = () => {
+    const f = reviewVisionFilter();
+    return f === "both" || f === "w";
+  };
+  const showBlackResources = () => {
+    const f = reviewVisionFilter();
+    return f === "both" || f === "b";
+  };
+
+  const sideName = (color: StarChessColor): string => {
+    if (props.arenaPlayers) {
+      return formatScriptLabel(props.arenaPlayers[color]);
+    }
+    return color === (props.playerColor ?? "w")
+      ? displayPlayerName(props.playerName)
+      : "Adjutant";
+  };
+
+  const dualResourceBars = () => (
+    <div
+      class={styles.dualResources}
+      classList={{
+        [styles.dualInBanner]: bannerBars(),
+        [styles.dualFullWidth]: footerNav(),
+      }}
+      role="group"
+      aria-label={
+        reviewVisionFilter() === "both"
+          ? "Both sides resources"
+          : reviewVisionFilter() === "w"
+            ? "Blue side resources"
+            : "Red side resources"
+      }
+    >
+
+      <Show when={showWhiteResources()}>
+        <ResourceBar
+          compact={bannerBars()}
+          fill={footerNav()}
+          color="w"
+          snapshot={snap()}
+          name={bannerBars() ? undefined : sideName("w")}
+        />
+      </Show>
+      <Show when={showBlackResources()}>
+        <ResourceBar
+          compact={bannerBars()}
+          fill={footerNav()}
+          color="b"
+          snapshot={snap()}
+          name={bannerBars() ? undefined : sideName("b")}
+        />
+      </Show>
+    </div>
+  );
+
+  const reviewNavDisabled = createMemo(
+    () => ({
+      back: reviewBusy() || reviewIndex() <= 0,
+      forward: reviewBusy() || reviewIndex() >= store.shell().settledSnapshots.length - 1,
+    }),
+    undefined,
+    { equals: (a, b) => a.back === b.back && a.forward === b.forward },
+  );
+
+  const sidebarReview = createMemo(() => ({
+    turn: reviewTurnNumber(),
+    phase: store.reviewPhase(),
+    hideDualNav: true,
+    onBack: () => store.reviewBack(),
+    onForward: () => store.reviewForward(),
+    backDisabled: reviewNavDisabled().back,
+    forwardDisabled: reviewNavDisabled().forward,
+  }));
+
+  const header = createMemo(() => props.header);
+
+  return (
+    <Screen>
+
+      <MobileBanner
+        onBack={() => props.onHome?.()}
+        title={props.matchTitle?.resultLine ?? props.reviewLabel}
+        titleColor={props.matchTitle?.result}
+      />
+      <Show
+        when={header()}
+        fallback={
+          <Screen.SidebarInset
+            class={styles.topPane}
+          >
+
+            <ScreenBackNav
+              onBack={() => props.onHome?.()}
+              class={styles.inFlowBack}
+              data-testid="review-detail-back"
+            >
+              <Show when={props.matchTitle}>
+                {(title) => (
+                  <div
+                    class={styles.matchTitle}
+                    data-testid="review-match-title"
+                  >
+                    <Label
+                      variant="title"
+                      color={title().result}
+                      class={styles.resultLine}
+                    >
+                      {title().resultLine}
+                    </Label>
+                  </div>
+                )}
+              </Show>
+            </ScreenBackNav>
+            <Show when={!props.hideResources}>
+              <Show when={!props.hideDualNav && !footerNav()} fallback={dualResourceBars()}>
+                <ReviewTurnNav
+                  onBack={() => store.reviewBack()}
+                  onForward={() => store.reviewForward()}
+                  backDisabled={reviewNavDisabled().back}
+                  forwardDisabled={reviewNavDisabled().forward}
+                >
+                  {dualResourceBars()}
+                </ReviewTurnNav>
+              </Show>
+            </Show>
+          </Screen.SidebarInset>
+        }
+      >
+        <Screen.Header>{header()}</Screen.Header>
+      </Show>
+      <MatchBoardHost>
+        <MatchBoardHost.BoardColumn>
+          <MatchBoardHost.BoardHost class={styles.host}>
+            <LiveBoardBinding
+              variant={props.variant ?? "eclipse"}
+              pieceSet={props.pieceSet}
+              fog={props.fog}
+              visionMode={props.visionMode}
+            />
+          </MatchBoardHost.BoardHost>
+        </MatchBoardHost.BoardColumn>
+        <MatchBoardHost.Rail
+          onHome={props.onHome}
+          controlsVisible={!props.hideDualNav}
+        >
+          <TurnBarSidebar review={sidebarReview()} />
+        </MatchBoardHost.Rail>
+      </MatchBoardHost>
+      <Screen.Footer>
+        <div class={styles.footerStack}>
+          {props.footerExtra}
+          <Show when={footerNav() && !props.hideDualNav}>
+            <HudDock
+              center={
+                <ReviewTurnNav
+                  onBack={() => store.reviewBack()}
+                  onForward={() => store.reviewForward()}
+                  backDisabled={reviewNavDisabled().back}
+                  forwardDisabled={reviewNavDisabled().forward}
+                >
+                  <span class={styles.navLabel} data-testid="review-dock-caption">
+                    {caption()}
+                  </span>
+                </ReviewTurnNav>
+              }
+            />
+          </Show>
+          <p class={styles.caption}>
+            Review · {props.reviewLabel ?? "Review"} · {caption()}
+          </p>
+        </div>
+      </Screen.Footer>
+
+    </Screen>
+  );
+};
+
+export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
+  const store = createMatchStore({
+    initial: createMatchStateFromReviewHistory(props.history, {
+      playerColor: props.playerColor ?? "w",
+      ...(props.arenaPlayers ? { arenaPlayers: props.arenaPlayers } : {}),
+    }),
+    autoArmTimer: false,
+  });
+
+  return (
+    <CapabilitiesProvider value={() => (props.tutorial ? TUTORIAL_CAPABILITIES : LIVE_CAPABILITIES)}>
+      <AchievementBubblesProvider value={achievementBubbles}>
+        <MatchStoreProvider store={store}>
+          <ReviewDemoInner
+            history={props.history}
+            reviewLabel={props.reviewLabel}
+            matchTitle={props.matchTitle}
+            visionMode={props.visionMode}
+            fog={props.fog}
+            variant={props.variant}
+            pieceSet={props.pieceSet}
+            packedTank={props.packedTank}
+            playerColor={props.playerColor}
+            playerName={props.playerName}
+            arenaPlayers={props.arenaPlayers}
+            onHome={props.onHome}
+            hideResources={props.hideResources}
+            hideDualNav={props.hideDualNav}
+            tutorial={props.tutorial}
+            header={props.header}
+            footerExtra={props.footerExtra}
+            achievements={props.achievements}
+          />
+        </MatchStoreProvider>
+      </AchievementBubblesProvider>
+    </CapabilitiesProvider>
+  );
+};
+

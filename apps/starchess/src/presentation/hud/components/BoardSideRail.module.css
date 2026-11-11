@@ -1,0 +1,25 @@
+.rail {
+  padding-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.4rem;
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.divider {
+  width: 60%;
+  margin: 0.15rem 0;
+  border: 0;
+  border-top: 1px solid var(--border-color, #3a4550);
+  flex-shrink: 0;
+}
+
+@media (max-width: 719px) {
+  .rail {
+    display: none;
+  }
+}

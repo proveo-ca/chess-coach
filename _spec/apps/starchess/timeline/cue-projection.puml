@@ -1,0 +1,101 @@
+@startuml cue-projection
+' SPEC: _spec/apps/starchess/timeline/cue-projection.puml
+' purpose: projectResolveTimeline emission order — the cue list is the script,
+' so the order below *is* the animation.
+' covers: apps/starchess/src/__tests__/timelinePlayer.test.ts
+!include ../../../themes/proveo.puml
+
+skinparam defaultTextAlignment left
+
+title StarChess · ""projectResolveTimeline"" — emission order
+
+start
+:one **gas drop** per actor square per rank\n(a 2-gas special still absorbs a single canister);
+:emit the **B** drops;
+:**B gas steps** (""result.bMoves"") — stim hop timing;
+
+partition "B specials that need the pre-afterB board" {
+  :**Charon** ""ch"" shot + ""chd"" victim read from the ""afterPending"" map;
+  :**gas step onto a hostile mine** → ""armm"" boom + ""armd"" hull\n(the marine already hopped above, now the mine takes it) —\nonly when the step **ends** the walk; a marine whose classical leg\ncarries it on hands the mine to phase 3 instead\n(""mine-contact.puml"" · one walk per marine);
+  :**Tactical Jump** ""qj"" hull travel, then ""qjm"" boom + ""qjd"" wreck\nwhen the landing tile was mined;
+}
+
+partition "deploys" {
+  :diff ""afterPending"" ▸ ""afterB"" for units that appeared;
+  :**always** emit the drop — even when the spawned unit dies later in\nthe turn, or captures-and-occupies / walks off the landing square;\nthe drop reads before anything kills it (deploys precede phase 1);
+  :a drop that **crushed** an occupant pairs with the crush death\n(played mid-drop by the interpreter);
+  :a drop that died **on arrival** never reaches ""afterB"", so the diff\ncannot see it — synthesise ""spawn-mine"" deploy + ""crush"" (if any)\n+ ""armm"" / ""armd"" straight from the event;
+  :emit deploys, then all ""crush"" deaths, then the arrival blasts;
+  :**F-rank spawns** project in the F block instead (""spawn-f"" /\n""fcrush"" / ""farmm"" / ""farmd"") — a post-attack deploy must not\nplay ahead of the attack/move waves that precede it;
+}
+
+partition "phase 1" {
+  :attacks and deaths are emitted as two blocks, never interleaved —\nthe interpreter plays them as one synchronised wave;
+  :""moveCollision"" captures are **excluded** here: they belong after moves;
+  :""mineBlast"" in ""attacks"" means a unit **cleared** the mine and lives —\nthe boom is drawn as the mine owner's hull (""m"");
+  :a ""capture"" carrying ""mineColor"" took a unit **and** the mine it stood\non: the victim's ""d"" **and** a second ""m"" on the same tile, both in the\none death wave (""Rxe5"" onto a mined e5);
+  :a lethal ""ccShot"" gets a real death cue (""dk"") so the king collapses\ninstead of snapping to ruins;
+}
+
+:**classical moves** (""c"") — one simultaneous wave;
+:**move collisions** — ""mc"" victim, ""mcm"" mine (no attack cue: the mover\nnever saw what it hit); a fogged capture onto a mined tile pairs them\nthe same way phase 1 does; each carries ""collision: true"" (data, not an\nid prefix) so the board can clear the landing ghost on that square;
+
+partition "phase-2 mine triggers" {
+  :chase → ""mm"" missile from the wake tile to the landing tile;
+  :always → ""mtm"" boom, then ""mt"" victim when the mover died;
+}
+
+partition "phase-3 fog approaches (sequential chains, one per approach)" {
+  :""prd"" approach slide (origin → discovery square) when they differ;
+  :""pra"" shot — ""ccShot"" carries the HP chip, ""prdth"" the victim /\nlethal king;
+  :ccShot → ""prs"" stop-short slide · capture → ""pro"" occupy slide;
+  :approach that **captured** onto a mine → ""prdm"" boom beside ""prdth"",\nbefore the ""pro"" occupy slide (the shot took both; the attacker lands);
+  :approach that **crossed** a mine → ""prmm"" missile (chase only),\n""prm"" boom, ""prv"" hull — the mover dies with it;
+}
+
+:**F** gas drops, then ""f"" gas steps, then any F arrival blast —\n""farmx"" missile (a mine the classical leg **held** for this hop chases here),\nthen ""farmm"" boom + ""farmd"" hull, all on the ""afterMove"" rung;
+:**promotions** — ""pw"" walk-off one square past the edge, then ""pd"" deploy;
+note right
+  **Why the order is load-bearing:** the interpreter is a single forward walk
+  with ""takeWhile"" batching. A cue batches with its neighbours, so emission
+  order decides which cues share a window (simultaneous) and which play in
+  sequence. Moving a cue is a timing change, not a cosmetic one.
+
+  **Lane stamping is the last step:** ""cues.map(withLane)"" gives every cue its
+  ""lane"" / ""board"" / ""group"" from the registry (""cue-lanes.puml""), so the
+  interpreter never reads an id.
+
+  **Never re-derive rules here.** Everything drawn comes from a list the engine
+  already stamped (""attacks"", ""moves"", ""mineTriggers"", ""moveCollisions"",
+  ""pathRevealAttacks"", ""pathRevealMineTriggers"", ""promotions"", ""events"").
+   If a cue cannot be built from the result, the engine is missing a field —
+   add it there, not a second rules pass here.
+ end note
+
+' N_PROMO_MINE: classical promotion detonating on hostile mine
+note right
+  A classical promotion detonating on a
+  hostile mine projects move, mine boom,
+  hull in order. The resolver suppresses
+  the promotion pair for a dead marine.
+end note
+
+' N_SAME_TYPE: same-type substitution synthesises deploy+crush from event
+note right
+  A same-type occupant substitution emits
+  no placement diff because the board is
+  unchanged. Deploy and crush synthesise
+  solely from the crush event, not diff.
+end note
+
+' N_F_SPECIAL_PARITY: every B cue family has an F twin on the afterMove rung
+note right
+  Jumps project travel plus arrival blast
+  in both phases: B reads qj/qjm/qjd on
+  preAfterB, F reads qjf/qjfm/qjfd on
+  afterMove. Charon volleys pair ch/chd
+  with chf/chfd the same way, so waves
+  never play a second-gas special early.
+end note
+stop
+@enduml

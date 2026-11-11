@@ -1,0 +1,158 @@
+.identity-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 280px;
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.identity-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-color);
+  white-space: nowrap;
+}
+
+.identity-row select,
+.identity-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.menu-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 280px;
+}
+
+.coming-soon {
+  font-size: 0.75rem;
+  margin-top: -0.4rem;
+  text-align: center;
+}
+
+.credits-btn {
+  margin-top: 1.5rem;
+  opacity: 0.7;
+  font-size: 0.85rem;
+}
+
+.play-row {
+  width: 100%;
+}
+
+/*
+ * StarChess shortcut — carries that app's neon green (apps/starchess
+ * `--sc-menu-neon`) so it reads as the door out of Chess rather than another
+ * Coach mode. Coach's theme has no such token; this is the only place it lands.
+ */
+.starchess-btn {
+  --sc-menu-neon: #7dff6a;
+
+  border-color: var(--sc-menu-neon);
+  color: var(--sc-menu-neon);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 8px color-mix(in srgb, var(--sc-menu-neon) 45%, transparent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--sc-menu-neon) 22%, transparent);
+}
+
+.starchess-btn:hover:not(:disabled),
+.starchess-btn:focus-visible {
+  border-color: var(--sc-menu-neon);
+  background-color: color-mix(in srgb, var(--sc-menu-neon) 14%, transparent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--sc-menu-neon) 38%, transparent);
+}
+
+.coach-intro {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: fit-content;
+  margin-inline: auto;
+}
+
+.coach-line {
+  display: none;
+}
+
+/* Splash goes two-column at desktop and in the short-and-wide dynamic band
+   (SplashScreen.module.css); place the menu in it. Portrait mobile stays one
+   column — plain `--sm-up` would split tall 480–719px phones too. */
+@media (--desktop), (--dynamic-mobile) {
+  .menu-options {
+    display: contents;
+  }
+
+  .identity-row,
+  .play-row {
+    grid-column: 1;
+    max-width: none;
+    margin-bottom: 0;
+  }
+
+  .menu-options > button,
+  .coming-soon {
+    grid-column: 2;
+  }
+
+  /* Stays under Play with Selena when the splash splits — the right column is
+     the Coach modes, and this is the way out of them. */
+  .menu-options > .starchess-btn {
+    grid-column: 1;
+  }
+
+  .credits-btn {
+    grid-column: 1 / -1;
+    justify-self: center;
+    margin-top: 0.25rem;
+  }
+}
+
+/* Narrow **and** short (below the dynamic band's 480px, so still one column):
+   tighten the rhythm and shrink the cat so the stack clears the fold. */
+@media (max-width: 479px) and (max-height: 639px) {
+  .coach-intro :global([data-testid="coach-avatar"]) {
+    margin-top: 0;
+    transform: scale(0.75);
+    transform-origin: top center;
+    /* Transform doesn't shrink the layout box — reclaim the freed 25%. */
+    margin-bottom: -1.5rem;
+  }
+
+  .identity-row {
+    margin-bottom: 0.5rem;
+  }
+
+  .menu-options {
+    gap: 0.5rem;
+  }
+
+  .credits-btn {
+    margin-top: 0.75rem;
+  }
+}
+
+@media (--dynamic-mobile) {
+  .coach-line {
+    --bubble-gap: 0.75rem;
+
+    display: flex;
+    position: absolute;
+    top: 50%;
+    left: calc(100% + var(--bubble-gap));
+    transform: translateY(-50%);
+    /* Anchor is only as wide as Selena, so an auto width would collapse to one
+       word per line; the cap keeps the bubble inside the viewport. */
+    width: max-content;
+    max-width: min(12rem, calc(50vw - 3.75rem - var(--bubble-gap)));
+    padding: 0.6rem 0.95rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+  }
+}

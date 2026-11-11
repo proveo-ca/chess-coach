@@ -1,0 +1,11 @@
+<!-- Promote Marines in a game -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60" fill="#000">
+  <g transform="rotate(-14 17 37)">
+    <path fill-rule="evenodd" d="M8 39V29C8 23 12 19 17 19S26 23 26 29V39Q17 43 8 39ZM12 27V30H22V27ZM12 34V37H22V34Z"/>
+    <path d="M9 44Q17 47 25 44V50Q25 55 20 55H14Q9 55 9 50Z"/>
+  </g>
+  <g transform="rotate(14 43 23)">
+    <path fill-rule="evenodd" d="M34 25V15C34 9 38 5 43 5S52 9 52 15V25Q43 29 34 25ZM38 13V16H48V13ZM38 20V23H48V20Z"/>
+    <path d="M35 30Q43 33 51 30V36Q51 41 46 41H40Q35 41 35 36Z"/>
+  </g>
+</svg>

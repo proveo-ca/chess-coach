@@ -1,0 +1,84 @@
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+skinparam noteTextAlignment left
+' SPEC: _spec/_plans/android-p2p-wiring.puml
+' purpose: native Android UI consumes shared domain and P2P contracts
+' status: proposed — native UI target supersedes browser-screen wiring
+' covers: none — target layout and native wiring are not implemented
+' related: _spec/_plans/chess-ui-primitives.puml
+' reference: _spec/apps/android/distribution.puml
+' reference: _spec/apps/android/webrtc-p2p.puml
+ title PLANNED — native Android screens; shared domain and P2P contracts
+
+package "Web composition and proposed native presentation" {
+  component "apps/chess\nBrowser screens using packages/ui/web" as WEB <<app>>
+  component "apps/chess/android\nNative Android screens" as NATIVE <<app>>
+}
+component "Shared domain contracts\ncommands · state · capabilities" as DOMAIN <<app>>
+component "Native P2P adapter\nhost / join / peer moves" as P2P <<app>>
+node "Android service / thin Go host\nsession · tailnet transport" as HOST <<host>>
+component "Peer-game capabilities\naiOpponent = false" as CAP <<app>>
+
+WEB ARROW_MAIN DOMAIN : web adapter
+NATIVE ARROW_MAIN DOMAIN : native presentation adapter
+NATIVE ARROW_MAIN P2P : pair / connect / disconnect
+P2P ARROW_MAIN HOST : native service interface
+P2P ARROW_MAIN DOMAIN : validated peer commands
+DOMAIN ARROW_MAIN CAP : suppress AI reply in peer mode
+
+note bottom of NATIVE
+  **Android UIs are expected to be native.**
+  Applies to /chess and /starchess alternatives.
+  Native screens own pairing and gameplay.
+  Browser LanScreen is not the target Android UI.
+  A WebView does not satisfy this requirement.
+end note
+
+note bottom of WEB
+  **Shared web kit: packages/ui/web.**
+  apps/chess/android remains a likely native location.
+  Native UI shares domain contracts, not web views.
+  StarChess directory placement remains open.
+  This plan does not relocate source files.
+end note
+
+note right of DOMAIN
+  Share serializable state / command contracts.
+  Native code need not import TypeScript directly.
+  Spike runtime / bridge or domain port first.
+  Verify equivalent rules with shared fixtures.
+  See chess-ui-primitives.puml for analytics.
+end note
+
+note right of P2P
+  Coach P2P remains this plan's wiring scope.
+  Native adapter implements transport contracts.
+  P2PClient / window.ChessNative describe the
+  earlier browser bridge, not a native UI API.
+  StarChess P2P protocol requires a separate plan.
+end note
+
+note bottom of HOST
+  Keep service and transport responsibilities thin.
+  Do not add Maia or Stockfish to the Go host.
+  Reassess loopback static UI hosting for native UI.
+  Existing distribution specs describe earlier wiring.
+  Reconcile them before implementing this target.
+end note
+
+legend bottom
+  **Implementation order and verification — planned**
+  1. Confirm native toolkit, runtime integration and likely web/android layout.
+     Reconcile Android distribution and transport specs with native presentation.
+  2. Define shared commands, state and native service interfaces.
+     Persist contract fixtures for legal moves, results and peer capabilities.
+  3. Wire native Coach pairing and gameplay through the native P2P adapter.
+     Keep aiOpponent false for human-peer games; prevent duplicate move application.
+  4. Validate host/join, move exchange, disconnect/reconnect and service lifecycle
+     on Android devices; APK assembly alone does not establish runtime behavior.
+  5. Run affected static checks and browser regressions after any directory split.
+     Link implementing source and persisted tests when those files exist.
+  **Open:** native runtime; final source layout; Headscale vs auth-key provisioning.
+  **Scope now:** specification only; no file moves, provisioning or runtime changes.
+end legend
+@enduml

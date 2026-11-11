@@ -1,0 +1,20 @@
+/* Host — board footprint matches apps/chess ChessBoard (--board-size). */
+.host {
+  position: relative;
+  display: block;
+  overflow: visible;
+  width: var(--board-size);
+  height: var(--board-size);
+  box-sizing: border-box;
+}
+
+.caption {
+  margin: 0;
+  font-size: 12px;
+  color: #6a7564;
+  letter-spacing: 0.02em;
+  text-align: center;
+  max-width: var(--board-size);
+  line-height: 1.35;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+}

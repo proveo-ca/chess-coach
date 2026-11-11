@@ -1,0 +1,81 @@
+@startuml lesson-gates
+' purpose: how lesson gates, timers, and board geometry advance lessons
+' covers: apps/starchess/src/tutorial/tutorialScript.config.ts
+' covers: apps/starchess/src/screens/TutorialScreen.tsx
+' covers: apps/starchess/src/__tests__/tutorialScript.test.ts
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Tutorial lesson gates and geometry
+
+component "fog catalog\n8 stories" as Fog <<db>>
+component "specials catalog\n6 stories" as Specials <<db>>
+component "resolve catalog\n2 replays" as Resolve <<db>>
+component "king catalog\n9 live boards" as King <<db>>
+component "matchesCompleteWhen\ngate evaluator" as Gates <<app>>
+component "TutorialScreen outcome\nactive ending success failed" as Outcome <<app>>
+component "adjutant opponent\nlive reply" as Adjutant <<async>>
+component "planning timer\nking lessons armed" as Timer <<async>>
+
+Fog ARROW_MAIN Gates : seed must not match
+Specials ARROW_MAIN Gates : seed must not match
+King ARROW_MAIN Gates : seed must not match
+Resolve ARROW_OPTIONAL Gates : typewriter + elapsed
+Gates ARROW_MAIN Outcome : complete or restart
+Adjutant ARROW_QUEUE Gates : reply moves the wire
+Timer ARROW_OPTIONAL Outcome : clock pressure only
+Outcome ARROW_ERROR Gates : failed remounts seed
+
+note as M1
+No gate may match its seed, or lessons end
+before they start; SCFEN, queue, typewriter,
+and elapsed cover every stage. Hints keep
+one step whose rings and lines draw as one,
+above fog, with no legality checks at all.
+end note
+M1 .. Gates
+
+note as M2
+Fog hands positions forward and siege wins
+at one pawn, keeping the tank while killing
+one mark per turn. Marine and hoverbike run
+four beats across two turns, specific first,
+and off-script orders still coach aloud.
+end note
+M2 .. Specials
+
+note as M3
+Defense races pin gates to engine resolve,
+where gas lands before attacks and paired
+movers trade. The loss line holds the bubble
+while restart counts down, so players read
+why before the retry lands at all.
+end note
+M3 .. King
+
+note as M4
+Attack one clears the b7 choke so rank and
+diagonal checkers meet, with mines never
+blocking the x-ray. Two checkers stack the
+kill while one alone invites the tank
+counter that shoots the ship for retry.
+end note
+M4 .. King
+
+note as M5
+Attack two sails a lone hull the adjutant
+punishes when still, with jumps budgeted
+each tier-three turn. Every king lesson
+arms its timer and every closing line earns
+bounded reading time before handoff.
+end note
+M5 .. Outcome
+
+' --- IGNORE: layout hints (do not edit) ---
+Fog -[hidden]- Specials
+Specials -[hidden]- Resolve
+Resolve -[hidden]- King
+' --- END IGNORE ---
+@enduml

@@ -1,4 +1,4 @@
-# SPEC: _spec/architecture.puml
+# SPEC: _spec/ml-runtime-architecture.puml
 [settings]
 auto_install = false
 task.run_auto_install = false

@@ -1,0 +1,149 @@
+@startuml timeline-perf
+' SPEC: _spec/apps/starchess/architecture/timeline-perf.puml
+' purpose: Shipped timeline perf — gate + dual-signal + compositor relief (paint audit · phase ring · review caps) + measured evidence + decisions.
+' constraint: Sole clock = playTimeline → TIMELINE_* only; no component-owned clocks; no per-layer Show; review never mutates liveSnapshot mid-replay.
+!include ../../../themes/proveo.puml
+
+skinparam defaultTextAlignment left
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+hide empty members
+
+title StarChess · Timeline perf\nShipped gate/dual-signal + compositor relief
+
+package "Shipped · sole clock + isolate" as SHIPPED {
+
+  component "timelinePlayer\nplayTimeline (sole clock)" as TL <<async>>
+  component "TimelineCommitGate\nmerge · delay(0) · flush" as GATE <<async>>
+  component "matchReducer\nstructural share" as RED <<async>>
+  database "shell()\nphase · snaps · economies" as SHELL <<db>>
+  database "timeline()\ncues · playing · display*" as TLS <<db>>
+  component "HUD / DualNav\nshell + timeline.active" as HUD <<app>>
+  component "readDisplayedSnapshot\n+ StarChessBoard" as BOARD <<app>>
+  component "useCombatOverlays\ntimeline() + shell().phase\n(review caps signal)" as UCO <<app>>
+  component "CombatOverlayRoot\ncapCues · DPR · contain layout style\nwill-change on active anim only" as VFX <<app>>
+
+  TL ARROW_QUEUE GATE : onStart / onCommit / onDone
+  GATE ARROW_MAIN RED : TIMELINE_*
+  RED ARROW_OPTIONAL SHELL : shell fields changed
+  RED ARROW_MAIN TLS : timeline fields
+  SHELL ARROW_MAIN HUD
+  SHELL ARROW_MAIN BOARD
+  TLS ARROW_OPTIONAL BOARD : display*
+  TLS ARROW_MAIN UCO
+  UCO ARROW_MAIN VFX
+}
+
+package "Shipped · compositor relief (…105537)" as NEXT {
+
+  component "paint-animation audit\noutline-color · border-*-color · box-shadow\n→ transform/opacity | static + opacity" as PAINT <<async>>
+  component "Board phase ring\n.board-phase-ring overlay\nopacity-only fade" as ISO <<app>>
+  component "vfxDensity mode\nfull | review → capForDensity\ncaps · trails" as DEN <<host>>
+  component "CSS Animation budget\ntransform/opacity only\nno root contain:paint" as CSS <<app>>
+
+  PAINT ARROW_MAIN VFX : fewer paint targets
+  PAINT ARROW_OPTIONAL ISO : ring = opacity only
+  ISO ARROW_MAIN BOARD : no container repaint
+  DEN ARROW_MAIN UCO : tighter capCues
+  DEN ARROW_MAIN VFX
+  CSS ARROW_MAIN VFX
+}
+
+note as N_GOAL
+  **Goal:** timeline-active FPS → idle FPS on the same machine.
+  **Invariants:** sole clock = ""playTimeline"" (components never own clocks) ·
+  only MatchStore dispatch writes presentation state · review never mutates
+  terminal ""liveSnapshot"" mid-replay · trail fade outlives ""TIMELINE_DONE"" ·
+  no per-layer Show (CSS restart).
+end note
+
+note as N_CONTRACT
+  **Public clock (unchanged):** ""playTimeline → { onStart, onCommit, onDone }"" →
+  ""TIMELINE_START | TIMELINE_COMMIT | TIMELINE_DONE | TIMELINE_SOFT_DONE"".
+  **TimelineCommitGate:** merge = last-write-wins field replace · flush =
+  ""scheduler.delay(0)"" (not rAF) · **always** flush synchronously before onDone /
+  next onStart / cancel.
+  **Dual-signal store:** ""shell()"" = phase · snaps · economies · selection ·
+  ""timeline()"" = cues · playing · progress · display* · ""state()"" = merge (tests).
+  ""useCombatOverlays"" reads timeline() + shell().phase (review-caps signal);
+  ""readDisplayedSnapshot"" reads shell + timeline display* only.
+  **Light paint/GPU:** root contain = layout style only (**never paint** — trails
+  overflow) · ""--overlay-dpr"" ≤2 · will-change on **active** anim classes only ·
+  capCues on cue lists **and** jump/mine trails.
+end note
+
+note as N_EVIDENCE
+  **Evidence (same machine · DualNav combat-heavy REVIEW_PLAY · Chrome trace · same window):**
+  * Baseline ""…092356"": FPS 41–165 · timeline-on ~72 vs idle ~135 ·
+    TIMELINE_COMMIT storms · timelinePlayer FC **609ms** · runTop ~207ms ·
+    paint max **7.5ms** · DroppedFrame **4045** · GPU ~37s · hot paint:
+    _pieceFace · board wrapper · _aimWrap · _aura · _fragL · _hull.
+  * After gate + dual-signal + light paint/GPU ""…101115"": FC **162ms**
+    (+ gate 394ms) · runTop 150ms · paint max **1.1ms** · layout max 0.8ms ·
+    DroppedFrame ~4208 (**miss**) · GPU ~39s — still compositor/GPU bound.
+  * Compositor relief ""…105537"": DroppedFrame **330 (8% of 4045 — met)** ·
+    GPU main busy **8.3s** (was ~39s) · GPUTask 39s→6s · paint max **0.88ms** ·
+    renderer main ~6.8s · board-wrapper + gas ""_aura"" paint hotspots gone.
+  * Env note: Swap 251→567/s · Paint/Commit ~doubled — frames got cheap, the
+    vsync-off env produces near max rate. **Signals = DroppedFrame + GPU busy +
+    paint max** (per-second Paint/Commit counts are NOT a signal; Blink Animation
+    count stayed ~67/s, so that proxy was replaced).
+end note
+
+note as N_DECIDE
+  **Decisions:**
+  * Q1 — gate timing: ""scheduler.delay(0)"".
+  * Q2 — isolation: dual-signal shell ∥ timeline.
+  * Q3 — contain:paint **rejected** on root (clips trails).
+  * Q4 — compositor relief: paint audit + .board-phase-ring + review caps
+    (**rejects fog-cull** — the review perf case has no fog).
+  * Q5 — canvas/WebGL **deferred → closed** (phase met DroppedFrame ≤50%).
+  * Q6 — measurement: force 60Hz when possible; signals = DroppedFrame + GPU busy
+    + paint max; Animation-count proxy replaced.
+end note
+
+note as N_NONGOAL
+  **Non-goals:** changing cue math · impact timing · ""deriveVisualFrame"" priority ·
+  second playback engine · component-owned rAF clocks · per-layer Show ·
+  transition / @keyframes on paint-only props (outline-color · border-*-color ·
+  box-shadow) · Chip phase border · InlineMecha crank loop · fog-cull (rejected) ·
+  full-app createStore path-proxy migration · WebGL rewrite (closed) ·
+  DualNav UX · resolve rules · SCFEN wire changes.
+end note
+
+note as N_SOURCES
+  **Key sources:** ""presentation/timeline/timelineCommitGate.ts"" ·
+  ""app/timelineStructuralShare.ts"" · ""app/MatchStoreContext.tsx"" ·
+  ""app/matchReducer.ts"" · ""app/selectors.ts"" ·
+  ""presentation/combat/hooks/useCombatOverlays.ts"" ·
+  ""presentation/animations/vfxPerf.ts"" ·
+  ""presentation/animations/components/GasDropAnimation.module.css"" ·
+  ""presentation/board/components/StarChessBoard.module.css"" / "".tsx"".
+end note
+
+N_GOAL .. TL
+N_CONTRACT .. GATE
+N_EVIDENCE .. VFX
+N_DECIDE .. DEN
+N_NONGOAL .. HUD
+N_SOURCES .. TLS
+
+note bottom
+  **Diagnosis (…101115):** renderer JS main ~12% busy; GPU process main ~90%
+  busy — Swap ~260/s · Paint ~200/s · Commit ~192/s · BeginImplFrame ~448/s,
+  driven by paint-invalidating CSS animations (outline/border-color/box-shadow)
+  + simultaneous VFX volume.
+  **Measured (…105537):** DroppedFrame **330 vs 4045 baseline (8% — met)** ·
+  GPU main busy **8.3s** (was ~39s) · paint max 0.88ms · Swap 567/s (cheap
+  frames — vsync-off env no longer throttles).
+  **Shipped:** paint-animation audit · .board-phase-ring · gas .aura opacity-only ·
+  review caps (capForDensity, VFX_CAP_REVIEW_*).
+  **Shipped (P2):** AttackAnimation fragShockwave border-color → two-ring
+  opacity cross-fade.
+  **P2:** .pieceSpecialUsed outline (30ms hotspot, accepted) · optional-FX drop.
+  **Deferred:** Chip phase border · InlineMecha crank loop.
+  See ""timeline-vfx-density.puml"".
+  **Invariant:** no per-layer Show · components never own the clock.
+end note
+
+@enduml

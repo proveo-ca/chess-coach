@@ -1,0 +1,58 @@
+@startuml client-platform-entities
+' SPEC: _spec/packages/client-platform/entities.puml
+' purpose: @chess-coach/client-platform — the one client-device table both apps
+' ask, and the rule that keeps keyboard copy honest. Authority: shipped.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title client-platform · one device table, two consumers
+
+package "packages/client-platform (framework-free)" {
+  component "resolveClientOS(ua, hintPlatform, maxTouchPoints)\n→ linux | macos | windows | ios | android | unknown" as OS <<app>>
+  component "detectClientDevice()\n→ { os, isMobile }  · reads navigator once" as DEV <<app>>
+  component "isDesktopClient({ device, finePointer })\n→ boolean  · pure predicate" as PRED <<app>>
+  component "DESKTOP_POINTER_MQ\n""(pointer: fine) and (hover: hover)""" as MQ <<db>>
+}
+
+package "consumers" {
+  component "apps/chess services/platform.ts\ndetectPlatform() → PlatformInfo\n(Tailscale label · download · docs)" as UI <<app>>
+  component "apps/starchess hooks/useIsDesktopClient.ts\nuseMediaQuery(DESKTOP_POINTER_MQ) + device" as SC <<app>>
+  component "GasRack cancel hint\nEsc copy vs drop-outside copy" as GAS <<async>>
+}
+
+DEV ARROW_MAIN OS : ua + UA-CH hint + touch points
+UI ARROW_MAIN DEV : os · isMobile only
+SC ARROW_MAIN DEV
+SC ARROW_MAIN MQ : live band
+SC ARROW_MAIN PRED
+GAS ARROW_QUEUE SC : which half of the contract to name
+
+note right of PRED
+  **Both opinions must agree.** Either signal alone ships wrong copy:
+  * fine pointer alone → offers **Esc** to a phone with a Bluetooth mouse;
+  * desktop UA alone → offers **Esc** to a Windows tablet held in two hands.
+  Disagreement ⇒ say nothing about keys. The drop-outside sentence is true
+  on every device, so it is the safe default, never a downgrade.
+
+  ""isDesktopClient"" takes ""finePointer"" as an **argument** rather than
+  reading ""matchMedia"" itself: that keeps the package framework-free and the
+  rule unit-testable without a DOM.
+end note
+
+note bottom of OS
+  iPadOS 13+ ships a **desktop Safari UA** — ""maxTouchPoints > 1"" is the only
+  tell, so it is passed in rather than sniffed. Safari implements no UA-CH at
+  all, so the UA string stays the fallback, never dead code.
+  Pinned by ""apps/starchess/src/__tests__/platform/clientPlatform.test.ts""
+  (the suite lives in the consumer: this package ships no runner, same as
+  ""engine-core"").
+end note
+
+note bottom of UI
+  ""PlatformInfo"" keeps the **Tailscale** mapping (label / download / install
+  docs) — app business, deliberately not in the shared package. The UA table it
+  used to own moved here; ""OS"" and ""ClientOS"" are the same union.
+end note
+@enduml

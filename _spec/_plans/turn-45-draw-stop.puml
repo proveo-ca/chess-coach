@@ -1,0 +1,48 @@
+@startuml
+!include ../themes/proveo.puml
+skinparam noteTextAlignment left
+' SPEC: _spec/_plans/turn-45-draw-stop.puml
+' purpose: turn 45 is MAX_GAME_TURNS — HP compare, equal HP draws; not an incident
+' status: OUTDATED — shipped cap; product = StarChess
+' covers: packages/starchess-core/src/outcome.ts
+'         packages/starchess-core/src/rules/constants.ts
+' live spec: _spec/packages/starchess-core/resolve.puml
+'   leave mapping that must stay distinct _spec/_plans/forfeit-as-loss.puml
+' Notes are capped at 5 lines x 50 columns; one idea per anchor.
+'
+' The backlog treated "game stopped? Turn 45 draw failed?" as a hang.
+' Live: ""scOutcome"" at ""turn >= 45"" compares ""ccLives"". That is the
+' engine cap. Inventing a second draw law would conceal it.
+title OUTDATED — turn 45 is the HP cap;\ndo not invent a draw rule
+
+component "MAX_GAME_TURNS = 45" as CAP <<app>>
+component "scOutcome\nkingLives compare" as OUT <<app>>
+component "equal HP → draw" as DRAW <<app>>
+component "**a new draw rule**\nwith no failing dump" as FAKE <<error>>
+
+CAP ARROW_MAIN OUT
+OUT ARROW_MAIN DRAW : designed terminal
+OUT ARROW_ERROR FAKE : if patched from the title
+
+note bottom of OUT
+  **Both kings alive at the cap: higher
+  HP wins, equal draws.** Dead kings
+  still resolve first. This is not a
+  hung UI and not a refused claim.
+end note
+
+note right of FAKE
+  **A dump that shows ""scOutcome""
+  mis-firing is a bug against this
+  function.** Do not add a house draw
+  at forty-five to paper over it.
+end note
+
+legend bottom
+  **Do not implement this file.**
+  ==
+  Open ""outcome.ts"". Reproduce only
+  with an export blob; do not map a
+  failed cap onto forfeit-as-loss.
+end legend
+@enduml

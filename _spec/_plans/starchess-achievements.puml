@@ -1,0 +1,263 @@
+@startuml
+!include ../themes/proveo.puml
+skinparam noteTextAlignment left
+' SPEC: _spec/_plans/starchess-achievements.puml
+' purpose: StarChess trophy gallery + a new-unlock gate before rematch
+' status: type + catalog defined 2026-09-22; evaluators and UI not built
+' covers: apps/starchess/src/screens/ReviewScreen.tsx
+'         apps/starchess/src/screens/SingleScreen.tsx
+'         apps/starchess/src/store/matchHistoryStore.ts
+'         apps/starchess/src/achievements/catalog.ts
+'         apps/starchess/src/achievements/evaluate.ts
+'         apps/starchess/src/store/achievementStore.ts
+'         apps/starchess/src/components/features/AchievementsModal.tsx
+' live spec to update when this ships:
+'         _spec/apps/starchess/menu-flow.puml
+'         (today: gameOver opens MatchResultModal directly)
+' difficulty plan this branch also honors, and does not reopen:
+'         _spec/_plans/chess-save-difficulty.puml
+'         OUTDATED — Coach elo already restores. Achievements key off
+'         StarChessGameRecord.opponent (naive|strategic), never a second
+'         difficulty enum and never chess_coach_settings_state.
+' Notes are capped at 5 lines x 50 columns; one idea per anchor.
+'
+' ── WHAT THE LINE ITEM SETTLES ─────────────────────────────────────────────
+' Two surfaces, one catalog.
+'   1. Review list: a third button in ArenaLibrary's .arenaFileRow,
+'      after "Choose arena JSON" and "Export history JSON".
+'      Label: Achievements. It opens the gallery modal.
+'   2. /single gameOver: after addMatchRecord, if this game is the
+'      witness for any newly filled id, show that modal first.
+'      Continue then opens MatchResultModal (Another Game / Replay).
+'      Zero new ids skips straight to MatchResultModal.
+'
+' The gallery is 12 cards, one per shortId. Desktop lays them
+' three across, using the desktop width. An obtained card reads
+' "Obtained (Level N)" and fills N of 5 bars. Its glyph uses that
+' level's material. A missing card is dimmed, bars empty, and is
+' not a link. Not a piece under public/pieces.
+'
+' Clicking an obtained card navigates to /review/:id for the witness
+' game and closes the modal. A higher level replaces the lower id.
+' The card shows that highest level, not a row per level.
+'
+' One AchievementsModal. Gallery mode: 12 cards, NeonModal close.
+' On desktop the sheet is min(56rem, calc(100vw - 4rem)). Do not
+' widen .panel--md / .panel--lg. Fresh mode: only the new cards,
+' dismissible false, no overlay close, one Continue button
+' (variant neon). Fresh title: Achievements (2026-10-05: "New" dropped —
+' the list holds every badge the match reached, not only first unlocks).
+' A row whose level beats the stored unlock (unlockedLevel with career
+' levels zeroed — finalize already raised the career floor for beat /
+' beat50) gets a "(new)" title suffix and data-new="true".
+'
+' ── TYPE ───────────────────────────────────────────────────────────────────
+' Achievement.id = "<level>-<type>-<shortId>"
+'   level 1..5, type scfen | count | analysis, shortId has no hyphen.
+'   title max 25, description max 75, icon is that svg file's URL.
+' Materials: 1 wood, 2 Silver, 3 Gold, 4 BTC, 5 Anti-matter.
+' Source of the rows: apps/starchess/src/achievements/catalog.ts
+'
+' Every description names its level. Adjutant-scaled families name who
+' was beaten: "Beat the Naive Adjutant" … "Beat the RLCD Adjutant"
+' (Naive, Strategic, ML, RLHF, RLCD). Score families state the
+' threshold: "Promote 3 Marines in a game".
+' A win vs Strategic grants level 2 instead of level 1. A harder
+' tier levels the same shortId up, through RLCD at level 5.
+' Wins at a tier or harder count toward that level's threshold.
+' SHIPPED: the win tally is every game ever recorded — the union of
+' match-history wins and the won ids kept in starchess_achievement_career
+' (careerWins in achievementLive.ts). The kept ids outlive the 150-game
+' history window; the old per-tier counters are a floor, never added on top.
+' SHIPPED: in-game (analysis/scfen score) levels announced mid-match are
+' granted with the match record at game end, win, loss or draw
+' (finalizeAchievementLive returns them). Leaving mid-match grants nothing.
+' SHIPPED: a bubble rises from the achieving unit's square once the ply has
+' settled (where it fell, if it died); board-level badges from a Command
+' Center. Every bubble carries its side. Live play keeps a second tally for
+' the Adjutant: its bubbles show only on squares the player can see (fog
+' never leaks a unit) and are never granted. Review folds the whole record
+' for both sides (foldGame) and raises each resolve's bubbles as it finishes
+' playing forward; any other seek clears them; a side's vision filter hides
+' the other side's unseen bubbles.
+' FIXED: ReviewDemoScreen's outer component built `game` from `props.achievements`
+' but never forwarded that prop to the inner component that reads it — `game`
+' was always null, so review never raised a bubble (`achievements` prop wired
+' through in ReviewDemoScreen.tsx now).
+' SHIPPED (2026-09-27): bubbles reach the board through
+' AchievementBubblesProvider (presentation/board/achievementBubbles.ts),
+' provided by the two match hosts (SingleScreen, ReviewDemoScreen) from
+' achievementLive's signal. A board with no match host (tutorial, demos)
+' paints none; the board used to read the global signal directly.
+' SHIPPED (2026-10-05): pushAchievementBubbles queues. An idle queue shows
+' the first bubble at once; the rest reach the board one per
+' BUBBLE_STAGGER_MS (600), so a ply that mints several no longer stacks
+' them on one square. clear / reset / ensure drop the queue and its timer.
+' SHIPPED: mines counts a detonation only. An opponent defusing a mine
+' (a ranged attack clears an empty mined square, no casualty) never counts.
+' SHIPPED: medal counts a Marine captured in the same ply its own gas step
+' (`stimStep`) landed it on that square — the only requirement is that gas
+' carried it into the shot; attacker type and what stood behind it are
+' irrelevant. Canonical case: tutorial live-play-defense-5.
+' FIXED: an earlier version credited any Marine capture where a non-pawn
+' friendly happened to sit further out on the same rank/file/diagonal —
+' true for any adjacent capture (King, another Marine) regardless of gas,
+' which is what actually made this achievement fire on ordinary trades.
+'
+'   shortId   title                 type      levels
+'   beat      Human Training        count     1 win, easy, adjutant tier
+'   beat50   Human Training        count     50 wins, easy
+'   flawless  Flawless Training     scfen     1 flawless win, hard, tier
+'   cheese    Cheese Master         scfen     20/16/13/11/9 turns, easy
+'   stonks    Stonks                analysis  3/6/10/15/20, easy
+'   Stonks nets one piece: captured UNIT_COST, starting at minus that
+'   piece's own cost. The cost is the birth type on turn-type-origin.
+'   A queen trade nets 0. A pawn (1) that takes a queen (9) nets 8.
+'   gogo      GO GO GO!             analysis  1/2/3/5/7 promotions, hard
+'   medal     Medal of Honor        analysis  marine dies intercepting, 1/3/5/7/10, impossible
+'   vision    Ready to roll out!    scfen     2/4/7/10/15 full-vision, hard
+'   mines     Is that it?           analysis  1/2/4/7/10 mine hits, hard
+'   mecha     Target Designated     analysis  1/2/3/5/7, impossible
+'   juke      Make it happen        scfen     2/4/7/10/15 jumps, hard
+'   light     Let there be Light    scfen     3/7/10/14/20 defensive captures, hard
+'   Light counts captures landing within 3 squares of our Command Center
+'   (the 7x7). The first enemy seen in the 3x3 beside it (on the ply's start
+'   or settled board, or captured / mined there) sets `ccBreached`: no later
+'   capture counts that game. Captures in the breaching ply do not count;
+'   levels already announced stand.
+' Medal of Honor and Ready to roll out! were both numbered 8.
+' Dropping the 10-win Human Training card leaves 12.
+'
+' ── EVALUATION ─────────────────────────────────────────────────────────────
+' Pure read of stored records. Never call endScTurn or scOutcome.
+' count reads win tallies. scfen and analysis read saved snapshots
+' and resolves. They do not replay the rules engine.
+'
+' A live record has no arenaPlayers. Tutorials never write history.
+' Arena imports and file imports do not open the end modal. They also
+' do not satisfy predicates. Re-imported live games (no arenaPlayers)
+' can fill a still-empty slot on the next backfill. History export
+' JSON gains no field.
+'
+' Witness order: live records by endedAt ascending, then id ascending.
+' The first record that reaches a level owns that level.
+' A higher level replaces the lower id for the same shortId.
+' unlockedAt is that record's endedAt.
+' A missing opponent matches no Adjutant tier.
+' Leave-without-a-record still unlocks nothing. If forfeit-as-loss
+' later writes a live loss, that record is eligible like any other.
+'
+' Store key starchess_achievements, via createPersistedStore:
+'   { unlocks: { [id]: { gameId, unlockedAt } } }
+' achievementStore does not import matchHistoryStore.
+' It publishes pinnedGameIds() at init. addMatchRecord reads that
+' set: non-witness games still cap at MAX_GAMES (150); a witness id
+' is kept even when it falls outside that window. One copy of each id.
+'
+' End-of-game order inside SingleScreen, after the record is saved:
+'   before = unlock ids
+'   backfill(matchHistory())     ' oldest witness fills empty slots
+'   fresh = ids added whose gameId is this match
+'   fresh.length > 0 → Achievements modal, else result modal
+' Continue sets the fresh modal closed and the result modal open.
+' Another Game / Replay stay on MatchResultModal; this plan does
+' not add a third button there.
+' backfill also runs when the Review list mounts, so the gallery
+' reflects games already in history without popping the end modal.
+'
+' ── WHAT IT DOES NOT SETTLE ────────────────────────────────────────────────
+'   Coach achievements or settingsStore.difficulty
+'   the evaluator bodies (catalog names each measure)
+'   putting achievements in the history export file
+'   tutorial clears as achievements
+'   analytics charts (chess-analytics.puml)
+title PLANNED — trophies from saved games;\nnew ones precede rematch
+
+component "ReviewScreen\nAchievements button" as BTN <<app>>
+component "AchievementsModal\ngallery" as GAL <<app>>
+component "catalog + backfill" as EVAL <<app>>
+database "starchess_achievements" as UNLOCK <<db>>
+database "starchess_match_history" as HIST <<db>>
+component "SingleScreen\nafter addMatchRecord" as END <<app>>
+component "New achievements\nfresh ids only" as NEW <<app>>
+component "MatchResultModal\nAnother Game · Replay" as RESULT <<app>>
+component "**re-resolve the match**" as RESCORE <<error>>
+component "**arena or tutorial\ncounts as a win**" as ARENA <<error>>
+
+BTN ARROW_MAIN GAL : open
+GAL ARROW_MAIN EVAL : read catalog
+EVAL ARROW_MAIN UNLOCK : first witness
+EVAL ARROW_OPTIONAL HIST : live records
+END ARROW_MAIN EVAL : backfill then diff
+EVAL ARROW_MAIN NEW : this game witnessed
+NEW ARROW_MAIN RESULT : Continue
+EVAL ARROW_OPTIONAL RESULT : no new id
+GAL ARROW_MAIN HIST : opens ""/review/:id""
+EVAL ARROW_ERROR RESCORE
+EVAL ARROW_ERROR ARENA
+
+note right of BTN
+  **Third control in the arena row,
+  after Export history JSON.**
+  The label is Achievements. It
+  opens the gallery only.
+end note
+
+note bottom of GAL
+  **Twelve cards, three across
+  on desktop.** Obtained reads
+  "Obtained (Level N)" and fills
+  N of 5 bars. Missing stays dim
+  and does not open a game.
+end note
+
+note bottom of NEW
+  **Open only when this save is
+  the witness for a new id.**
+  Continue then shows Another
+  Game and Replay. No new id
+  skips this modal.
+end note
+
+note bottom of RESCORE
+  **Read the saved record, never
+  ""endScTurn"".** ""count"" levels
+  by Adjutant tier. Other levels
+  are one game's measure. A blank
+  opponent matches no tier.
+end note
+
+note bottom of ARENA
+  **A record with ""arenaPlayers""
+  is not a live game.** Tutorials
+  never write history. The fresh
+  modal runs only on ""/single"".
+end note
+
+note right of HIST
+  **A higher level replaces the
+  lower id for that shortId.**
+  The witness is the game that
+  reached the current level.
+  Trim still keeps that game.
+end note
+
+legend bottom
+  **Order**
+  ==
+  **1. Type and catalog.** Families
+  live in ""achievements/catalog.ts"".
+  Tests pin ids, limits, ladders.
+  --
+  **2. Review button and gallery.**
+  Unlocked card → ""/review/:id"".
+  ==
+  **3. End gate on /single.** Backfill,
+  then the fresh modal, then the
+  existing result modal.
+  --
+  **Also on this branch:** leave
+  ""chess-save-difficulty.puml"" closed.
+  No Coach elo key, no export field.
+end legend
+@enduml

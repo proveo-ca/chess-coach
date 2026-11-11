@@ -1,0 +1,95 @@
+@startuml base-screen
+' SPEC: _spec/apps/starchess/architecture/base-screen.puml
+' purpose: BaseScreen live chrome — props, HUD regions, MatchBoardHost composition.
+!include ../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+hide empty members
+
+title StarChess · BaseScreen (live chrome assembler)
+
+class BaseScreen <<app>> {
+  app/BaseScreen.tsx
+  --
+  starChessMode? fog? boardVariant? pieceSet?
+  autoQueueOpponent?
+  onExitToMenu? matchTitle?
+  turnChrome: bar | sidebar | none
+  tutorial? fullMatchHud? hideResources? hideGas?
+  endTurnAfterQueue? coachEmotion?
+  header? guideBubble? footerExtra?
+  hintSquares? hintAlertSquares? hintGasSquares? hintArrows?
+  hudResources? (coach-header band: ResourceBar once the coach hides)
+}
+
+class MatchBoardHost <<host>> {
+  BoardColumn · BoardHost · Rail
+}
+
+class LiveBoardBinding <<app>>
+class ResourceBar <<app>> {
+  presentation/hud/components/ResourceBar.tsx
+}
+class GasRack <<app>> {
+  presentation/hud/components/GasRack.tsx
+}
+class TurnBarSidebar <<app>> {
+  presentation/hud/components/TurnBarSidebar.tsx
+}
+class DeployModal <<app>> {
+  presentation/hud/components/DeployModal.tsx
+}
+class PromotionModal <<app>> {
+  components/primitives/PromotionModal.tsx
+}
+class ReviewTurnNav <<app>> {
+  packages/ui/web/src/atoms/ReviewTurnNav.tsx
+  ‹ › + slot; owns **keyboard** ← / →
+  (opt-in: `keyboard`, one per screen)
+}
+
+note as N_PROPS
+  **starChessMode** (default true) — StarChess rules + fog default on.
+  Maps gallery may set false for open terrain preview.
+  **turnChrome** — bar (default) | sidebar (BoardSideRail) | none (fog tutorial).
+  **tutorial** — HOME-only rail, optional auto-End on queue threshold.
+  **fullMatchHud** (tutorial only) — full SingleScreen-style top pane
+  (Home + matchTitle + ResourceBar) instead of the coach lesson-nav
+  header; tutorial mobile hero hidden; guide bubble docks below the pane
+  (""hudGuideSlot""). Used by the final lesson live-play-attack-3.
+  **status line** — gated ""!tutorial || fullMatchHud"": hidden for regular
+  tutorials; visible on /single and the fullMatchHud lesson; carries
+  statusText incl. QUEUE_REJECT feedback.
+  **endTurnAfterQueue** — first | moveAndSpecial (tutorial only).
+  **matchTitle** — live label above ResourceBar; hidden at max-height 639px.
+  Spawn / Charon / Jump overlays + DeployModal live in BoardHost children.
+  Overlay measure (spawn hit boxes) stays in BaseScreen, not Host.
+end note
+
+N_PROPS .. BaseScreen
+BaseScreen *-- MatchBoardHost
+MatchBoardHost *-- LiveBoardBinding
+BaseScreen *-- ResourceBar
+BaseScreen *-- GasRack
+BaseScreen *-- TurnBarSidebar
+BaseScreen *-- DeployModal
+BaseScreen *-- PromotionModal
+BaseScreen *-- ReviewTurnNav
+
+note bottom
+  **HUD vs shell:** match chrome (ResourceBar, GasRack, TurnBar*) lives under
+  ""presentation/hud/"". Pure layout shells (PromotionModal) live under
+  ""components/primitives/"". ``ReviewTurnNav`` sits in
+  ""packages/ui/web/src/atoms/"":
+  it binds ← / → to its own arrows, so a keypress and a click are the same
+  call with the same disabled guard — a side effect, which the
+  ``pure-primitive`` lint rule keeps out of ""primitives/"". Opt in with
+  ``keyboard`` on exactly **one** instance per screen; hosts that draw the nav
+  twice (banner + header) would otherwise step twice per press.
+  Naming: piece set id remains ""nerd"" — now an inline unit set
+  (""presentation/pieces/""), not an asset directory.
+  Product chrome uses ""starchess-*"" testids — not ""nerd-*"".
+end note
+
+@enduml

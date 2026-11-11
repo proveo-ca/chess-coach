@@ -1,0 +1,138 @@
+@startuml menu-flow
+' SPEC: _spec/apps/starchess/menu-flow.puml
+' purpose: Menu → Single Player / Tutorial; gameOver → result modal → rematch|/review/:id.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Menu → Single Player / Tutorial / Review replay
+
+actor Player
+
+package "apps/starchess" {
+  component "StarChessMenuRoute\n/ (Router base /starchess)" as MENU <<app>>
+  component "StarChessMenuScreen\n+ MenuSky / MenuArrival" as UI <<app>>
+  component "ChessMenuMockup\nglass · shatter SVGs" as MOCK <<async>>
+  component "NewGamePanel\nMAP · TEAM · OPPONENT · START" as SETUP <<app>>
+  component "navigate /single?map=&team=&opponent=" as NAV <<async>>
+  component "navigate /tutorial" as NAVT <<async>>
+  component "navigate /review" as NAVR <<async>>
+  component "StarChessSingleScreen\nMatchStore + LiveMatchShell\nStarChessScreen turnChrome=sidebar\nAdjutant = opposite of team\nscript = ?opponent (naive|strategic)" as LIVE <<app>>
+  component "StarChessTutorialScreen\n/tutorial/:section/:story\n(TUTORIAL_SCRIPT ids)\nKerrigan header · HOME-only\ne.g. /tutorial/fog/king" as TUT <<app>>
+  component "TutorialCompleteConfirm\nlive-play-attack-3 enemy HP=0\nwhen tutorialCleared=false" as TUTDONE <<app>>
+  component "localStorage\nstarchess_tutorial_cleared" as TUTFLAG <<db>>
+  component "ExitGameConfirm\nHome during planning/targeting/resolving" as EXIT <<error>>
+  component "gameOver → matchHistory\nMatchResultModal\nVICTORY|DEFEAT (+DRAW)" as END <<db>>
+  component "MatchResultModal\nAnother Game · Replay" as RESULT <<app>>
+  component "StarChessReviewScreen\n/review list · /review/:id DualNav" as REV <<app>>
+}
+
+Player ARROW_MAIN MENU
+MENU ARROW_MAIN UI
+UI ARROW_OPTIONAL MOCK : from /chess/\n(session flag)
+MOCK ARROW_MAIN UI : glass · Kerrigan\n· shatter · chrome in
+UI ARROW_MAIN SETUP : Single Player
+SETUP ARROW_MAIN NAV : START
+NAV ARROW_MAIN LIVE
+UI ARROW_MAIN NAVT : Tutorial
+NAVT ARROW_MAIN TUT
+UI ARROW_MAIN NAVR : Review
+NAVR ARROW_MAIN REV
+LIVE ARROW_ERROR EXIT : Home
+EXIT ARROW_OPTIONAL MENU : Leave confirmed
+TUT ARROW_OPTIONAL MENU : Home
+TUT ARROW_MAIN TUTDONE : live-play-attack-3 win\n+ uncleared
+TUTDONE ARROW_MAIN TUTFLAG : Go Home → cleared=true
+TUTDONE ARROW_MAIN MENU : Go Home
+LIVE ARROW_MAIN END : gameOver
+END ARROW_MAIN RESULT : save + open modal
+RESULT ARROW_MAIN LIVE : Another Game\n(same map+team rematch)
+RESULT ARROW_MAIN REV : Replay\nreplace /review/:id
+
+note bottom
+  Multiplayer **MenuAnchor** stays ``disabled`` + ``Coming Soon``.
+  **Opponent** picks the Adjutant script: ``naive`` (engine rules only) or
+  ``strategic`` (engine rules + vision + tactics). The Single Player modal
+  restores the last choice from ``starchess_setup`` — a fresh open shows that
+  script, not a hardcoded naive default. That key is not Coach ``difficulty``.
+  The choice rides the URL as
+  ``?opponent=``, so refresh-resume and **Another Game** keep the choice, and
+  an unknown value falls back to ``naive``. For ``strategic`` the screen folds
+  ``ccIntel`` / ``kvs`` forward once per turn through core's
+  ``ai/strategic/tracking.ts`` — the same folds the arena runner uses — so the
+  CC posterior accumulates in live play. See ``core/adjutant/cc-focus.puml``.
+  The choice is also written to the match record (``opponent``), so Review and
+  the history list name the script that played. It is **optional** on
+  ``StarChessGameRecord``: records saved before the select shipped carry none
+  and keep reading as the unqualified ``Adjutant``. ``arenaPlayers`` still wins
+  for imported arena games, which name both sides.
+  The resume blob carries it too (``MatchSessionBlob.opponent``, still ``v: 1``
+  — additive and optional), so a bare ``/single`` with a live session resumes on
+  the right script. Resolution order: ``?opponent=`` wins, else the blob, else
+  ``naive``. A session whose script disagrees is **not** resumed — that is a
+  different game, not the same one on a different opponent.
+  Live gameOver → ``matchHistory`` + ``MatchResultModal``
+  (``VICTORY`` / ``DEFEAT`` / ``DRAW``): **Another Game** remounts
+  ``/single?map=&team=&opponent=``; **Replay** → ``/review/:id`` DualNav.
+  Review list remains at ``/review``: ``MatchHistoryFilters``
+  (Playing as Blue/Red + date pages; no First move; no Review title) via
+  ``useMatchHistoryFilters`` · ``‹ Back`` only. On the dynamic band a
+  ``MobileBanner`` (``href="/"``) owns that chrome — ``‹ Back`` + ``compact``
+  filters (swatches + date pager, no caption); the in-flow inset stands down
+  because its min-content height collides with the list. See ``screens.puml``.
+  Review detail ``/review/:id``: Coach-style title stack
+  (``Win (Blue)`` · ``Alex (Blue) vs Adjutant (Red)``) above ``ReviewTurnNav``.
+  Coach ``/chess/`` → ``/starchess/`` (nerd yes / ``StarChessRedirect``)
+  sets ``starchess_from_chess``; menu plays ``MenuArrival``:
+  Chess mockup (Coach light/dark tokens via ``data-theme``) → glass clears
+  to sky → Selena→Kerrigan → buttons shatter → StarChess anchors fade in.
+  Storybook: Screens/Menu · StarChess toggle · Theme toolbar.
+  The mockup must match Coach ``MenuScreen`` box-for-box at Desktop / Mobile /
+  Dynamic — two columns on desktop **and** dynamic, one on portrait mobile,
+  plus Coach's sub-480 root-font scale and the dynamic-band chat bubble.
+  That includes Coach's ``isNerd`` shortcut: **Play StarChess** under the fused
+  Play control, column 1, in ``--sc-menu-neon``. The mock reads the flag through
+  ``store/nerdFlag`` (read-only — Coach owns the key) and reads it once, since
+  Coach sets it before the full-page hop.
+  Contract + the two hand-copied Coach details: ``_spec/apps/chess/responsiveness/rules.md`` §5.
+  **Board hints** — one ``hints`` step wins per beat (first matching ``when``,
+  else the unconditional entry) and carries both ``squares`` (destination rings)
+  and ``arrows`` (lines drawn square-to-square, e.g. the ``live-play-attack-1`` h1-a8
+  x-ray and the Ship's d8-a8 shot). Arrows paint above the fog veil on purpose —
+  the lines a lesson draws usually run *through* fog. Purely presentational: the
+  board never checks the line is legal or unobstructed.
+  Tutorial → ``/tutorial/:section/:story`` (ids from ``TUTORIAL_SCRIPT``,
+  e.g. ``/tutorial/fog/king`` · ``/tutorial/specials/marine``).
+  Bare ``/tutorial`` canonicalizes to the first Fog story.
+  **Lesson loop — objective → ending → success → next.** The lesson's
+  goal is carried by the coach bubble alone — no text under the board.
+  ``completeWhen`` / ``restartWhen`` are judged
+  **only on a settled board** (timeline idle). A hit lands in ``ending`` first:
+  the bubble keeps the coach's closing line for its reading time
+  (``lessonEndMessageMs`` — ~200 wpm, floor 1.2s, ceiling 4s; no line → no
+  hold), because the success bubble **hides** that line. Then the guide bubble
+  flips to its success variant (``✓ Objective complete`` + ``Next lesson →``,
+  message suppressed between them) and auto-advances after
+  ``LESSON_ADVANCE_MS`` (3s, drawn as the CTA's border); the CTA skips the
+  wait. Failure offers Retry and keeps its line.
+  Every live lesson must carry a ``completeWhen`` — a lesson without one is a
+  dead end (guarded by ``tutorial/tutorialLessons.test.tsx``).
+  **Stage 3 (Turn Resolution)** owns both observer replays —
+  ``combat-chain`` (COMBAT_HISTORY) then ``king-hunt`` (KING_HISTORY), keyed on
+  story so switching remounts the timeline. Stage 4 is live boards only.
+  It wears ``/review/:id`` chrome: ``‹ Back`` +
+  ``ReviewTurnNav`` arrows above the board, turn/phase in the rail
+  (``hideDualNav``). The arrows step one **phase** (Check → Intent → Resolve)
+  rather than a whole turn — ``playReviewTurn`` plays a turn straight through,
+  so the lesson is the slow-motion version of the Review screen it introduces.
+  The bespoke ``TutorialTypewriterNav`` transcript is gone; the phase readout
+  between the arrows replaces it.
+  ``starchess_tutorial_cleared`` (default false): King Attack #3 enemy
+  HP=0 opens ``TutorialCompleteConfirm`` when still false —
+  Go Home sets cleared=true and returns to menu.
+  Deployment / PWA: ``deployment.puml``. HUD: ``screens.puml``.
+  Leave chrome: ``ScreenBackNav`` + ``ChevronNav`` (+ ``PanelTitle`` where
+  labeled) on tutorial / live ``/single`` (top panel · ``‹ Back``).
+end note
+@enduml

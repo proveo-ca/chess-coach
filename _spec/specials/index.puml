@@ -1,0 +1,56 @@
+@startuml specials-index
+' SPEC: _spec/specials/index.puml
+' purpose: Consolidated specials index — StarChess names vs frozen SCFEN wire kinds, owners, economy. Replaces scattered tracking.
+!include ../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Specials Index (consolidated owner)
+
+package "Specials (StarChess name → wire kind, frozen)" {
+  component "Marine Extra Step\np · stimStep · 1 gas\n+1 forward, stacks with classical" as S_MAR <<app>>
+  component "Hoverbike Spider Mine\nn · spiderMine · 1 gas\nM: overlay, cap 3 / side" as S_HOV <<app>>
+  component "Mecha Charon Missiles\nb · charonMissiles · 2 gas\nfree aim, first-ship strike, fizzle off-board\nsee mecha-charon.puml" as S_MEC <<app>>
+  component "Tank Siege Toggle\nr · siegeMode · 1 gas\ntank <-> siege vision / mobility" as S_TNK <<app>>
+  component "BattleShip Tactical Jump\nq · tacticalJump · 3 gas\nvisible empty square" as S_SHP <<app>>
+  component "Command Center Deploy\nk · spawn · 1 gas + minerals\nadjacent ring, crushes non-kings" as S_CC <<app>>
+}
+
+package "Owners" {
+  component "packages/starchess-core\nsrc/rules/specials/\ngeometry + validation + resolve" as CORE <<app>>
+  component "apps/starchess\npresentation/specials/\narms + copy + queue + planning" as PRES <<app>>
+  database "SCFEN Q:\nkind strings are wire-frozen\nscfen-queue.puml" as WIRE <<db>>
+}
+
+package "Economy" {
+  component "Most specials 1 gas\nCharon 2 · Jump 3\none special per unit (B and/or F)" as ECON <<async>>
+}
+
+S_MAR ARROW_MAIN WIRE : stimStep
+S_HOV ARROW_MAIN WIRE : spiderMine
+S_MEC ARROW_MAIN WIRE : charonMissiles
+S_TNK ARROW_MAIN WIRE : siegeMode
+S_SHP ARROW_MAIN WIRE : tacticalJump
+S_CC ARROW_MAIN WIRE : spawn
+CORE ARROW_MAIN S_MEC : mechaCharon.ts (StarChess name;\nwire charonMissiles frozen)
+PRES ARROW_MAIN S_MEC : arms/mechaCharon.ts (StarChess name;\nwire charonMissiles frozen)
+ECON ARROW_OPTIONAL S_MEC : 2 gas unchanged
+
+note bottom
+  **Consolidation point.** Specials were scattered across
+  ""starchess-mode.puml"" (product), ""scfen-queue.puml"" (wire kinds),
+  ""sc-moves.puml"" / ""resolve.puml"" / ""submit-turn-activity.puml"" /
+  ""mine-contact.puml"" / ""deploy-reach.puml"", ""turn/command-queue.puml"",
+  timeline ""overview/cue-projection.puml"", ""vfx-guarantees.md"",
+  and ""_plans/PLAN-specials-consolidation.md"".
+  This folder is the owner going forward; per-special details live
+  in sibling diagrams (starting with ""mecha-charon.puml"").
+  ----
+  **Wire freeze.** SCFEN ""kind"" strings (spawn / stimStep / spiderMine /
+  charonMissiles / siegeMode / tacticalJump), the ""OPEN_BISHOP_SNIPE"" store
+  action, and the ""bishopCharon"" VFX cue id stay frozen for replay
+  compat — only file / symbol / copy names move to StarChess terms.
+  Display-name map: Marine / Hoverbike / Mecha / Tank / BattleShip / Command Center.
+end note
+@enduml

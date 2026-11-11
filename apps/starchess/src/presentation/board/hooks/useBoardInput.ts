@@ -1,0 +1,487 @@
+// SPEC: _spec/apps/starchess/core/board/planning-projection.puml, _spec/apps/starchess/core/engine-boundary.puml, _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/reactivity/presentation.md
+import type { Square } from "chess.js";
+import { batch, createMemo, createSignal } from "solid-js";
+import {
+  UNIT_COST,
+  placementToMap,
+  scMovesFrom,
+  type ScFenSnapshot,
+  type StarChessColor,
+  type StarChessPiece,
+} from "@chess-coach/starchess-core";
+import { ccDeployTargets } from "~/presentation/specials/deployTargets";
+import { specialTimingFor } from "~/presentation/specials/queue";
+
+import { playerFogOccultsMoves } from "~/presentation/combat/intentOverlayPolicy";
+import { useMatchStore } from "~/ports/matchStore";
+import {
+  isViewerBRelocateOrigin,
+  occupancyForQueuedMoves,
+  pieceAtQueuedSquare,
+} from "~/presentation/specials/planning/occupancy";
+import { occupancyForViewerMoves } from "~/presentation/board/occupancyForViewerMoves";
+import { minesVisibleToViewer } from "~/presentation/board/fogVisibility";
+import { legalDestsWithFogMarineAttacks } from "~/presentation/board/marineFogAttackDests";
+import { tankModeForSieged } from "~/presentation/board/tankMode";
+import { useBoardVision } from "~/presentation/combat/hooks/useIntentOverlays";
+import type { VisionMode } from "~/types/board";
+import type { PromotionPiece } from "~/types/chess";
+
+/** Unified pointer-drag ghost — one path for mouse/touch/pen via pointer capture. */
+export type BoardDragGhost = {
+  from: Square;
+  color: StarChessColor;
+  piece: StarChessPiece;
+  x: number;
+  y: number;
+};
+
+const DRAG_THRESHOLD_PX = 6;
+
+const squareFromPoint = (x: number, y: number): { square: Square; el: HTMLElement } | null => {
+  const el = document.elementFromPoint(x, y);
+  const target = el?.closest("[data-square]") as HTMLElement | null;
+  const square = target?.dataset.square;
+  return target && square ? { square: square as Square, el: target } : null;
+};
+
+/**
+ * Gas then same-vector classical (B e6→e7 + C e6→e7) rewrites to e7→e8.
+ * That stack is how a stim+step reaches the last rank in one End — open the
+ * picker and attach `promotion` on the pre-rewrite C (core rewrite keeps it).
+ */
+export const gasStackPromotes = (
+  snap: ScFenSnapshot,
+  color: StarChessColor,
+  from: Square,
+  to: Square,
+): boolean => {
+  const b = (snap.queue?.actions ?? []).find(
+    (a) =>
+      a.timing === "B" &&
+      a.kind === "stimStep" &&
+      a.color === color &&
+      a.from === from &&
+      a.to === to,
+  );
+  if (!b?.to) return false;
+  const dir = color === "w" ? 1 : -1;
+  const land = Number(to[1]) + dir;
+  return land === (color === "w" ? 8 : 1);
+};
+
+/**
+ * Classical mid-step already queued (C from→mid) + gas on the same vector would
+ * F-step from mid onto the last rank — parks a marine with no picker.
+ * Caller should peel C, queue B, and open {@link PromotionModal}.
+ */
+export const moveThenGasPromotes = (
+  snap: ScFenSnapshot,
+  color: StarChessColor,
+  from: Square,
+  gasTo: Square,
+): { seq: number } | null => {
+  const c = (snap.queue?.actions ?? []).find(
+    (a) =>
+      a.timing === "C" &&
+      a.kind === "classical" &&
+      a.color === color &&
+      a.from === from &&
+      a.to === gasTo,
+  );
+  if (!c || c.timing !== "C") return null;
+  const dir = color === "w" ? 1 : -1;
+  const land = Number(gasTo[1]) + dir;
+  if (land !== (color === "w" ? 8 : 1)) return null;
+  return { seq: c.seq };
+};
+
+/**
+ * @param visionOverrides — same optional fog / visionMode overrides as
+ *   {@link useBoardVision} / LiveStarChessBoard (maps gallery fog-off, etc.).
+ *   Live play defaults: fog on + player → occulted occupancy always.
+ */
+export const useBoardInput = (
+  visionOverrides?: () => { fog?: boolean; visionMode?: VisionMode },
+) => {
+  const store = useMatchStore();
+  const vision = useBoardVision(store, visionOverrides);
+  const pendingPromotion = createMemo(() => store.shell().pendingPromotion);
+
+  const clearSelection = () => {
+    store.dispatch({ type: "SELECT_SQUARE", square: null });
+    store.dispatch({ type: "SET_LEGAL_DESTS", dests: [] });
+  };
+
+  /** Pre-B fog map + viewer B projection (spawn / gas / warp) + post-B siege. */
+  const planningMoves = (state: ReturnType<typeof store.state>) => {
+    const snap = store.view.displayedSnapshot();
+    const raw = placementToMap(snap.placement);
+    return occupancyForQueuedMoves(
+      raw,
+      state.viewer,
+      playerFogOccultsMoves(vision()),
+      snap,
+      state.siegedTanks,
+    );
+  };
+
+  const queueClassical = (
+    from: Square,
+    to: Square,
+    color: "w" | "b",
+    promotion?: PromotionPiece,
+  ) => {
+    store.dispatch({
+      type: "QUEUE_ACTION",
+      action: {
+        timing: "C",
+        kind: "classical",
+        color,
+        from,
+        to,
+        ...(promotion ? { promotion } : {}),
+      },
+    });
+  };
+
+  const resolvePromotion = (piece: PromotionPiece) => batch(() => resolvePromotionNow(piece));
+
+  const resolvePromotionNow = (piece: PromotionPiece) => {
+    const pending = pendingPromotion();
+    if (!pending) return;
+    store.dispatch({ type: "CLEAR_PENDING_PROMOTION" });
+    if (pending.via === "gas") {
+      store.dispatch({
+        type: "QUEUE_ACTION",
+        action: {
+          timing: "B",
+          kind: "stimStep",
+          color: pending.color,
+          from: pending.from,
+          to: pending.to,
+          promotion: piece,
+        },
+      });
+      store.dispatch({ type: "MARK_SPECIAL_USED", square: pending.from });
+      return;
+    }
+    queueClassical(pending.from, pending.to, pending.color, piece);
+  };
+
+  const cancelPromotion = () => {
+    store.dispatch({ type: "CLEAR_PENDING_PROMOTION" });
+  };
+
+  const onSquareClick = (square: Square) => batch(() => handleSquareClick(square));
+
+  const handleSquareClick = (square: Square) => {
+    const state = store.state();
+    if (!store.view.canSubmit()) return;
+    if (state.pendingPromotion) return;
+
+    if (state.targeting?.kind === "deploy") {
+      const color = state.targeting.color;
+      const unit = state.targeting.unit;
+      const map = placementToMap(state.liveSnapshot.placement);
+      const ccSq = [...map.entries()].find(
+        ([, p]) => p.type === "k" && p.color === color,
+      )?.[0];
+      if (!ccSq) return;
+      const timing = specialTimingFor(state.liveSnapshot.queue, color);
+      // Ally and enemy non-Command Center squares are deployable (crush replaces the
+      // occupant); Command Centers never are. Single owner: specials/deployTargets.
+      const { commandCenter: anchor, targets } = ccDeployTargets(state.liveSnapshot, color);
+      if (!anchor || !targets.includes(square)) {
+        return;
+      }
+      const cost = UNIT_COST[unit];
+      const before = state.economies[color].stored;
+      store.dispatch({ type: "SPEND_STORED", color, amount: cost });
+      if (store.state().economies[color].stored === before) return;
+      store.dispatch({
+        type: "QUEUE_ACTION",
+        action: {
+          timing,
+          kind: "deploy",
+          color,
+          from: ccSq,
+          to: square,
+          unit,
+        },
+      });
+      if (store.state().targeting) {
+        store.dispatch({ type: "REFUND_STORED", color, amount: cost });
+        return;
+      }
+      store.dispatch({ type: "MARK_SPECIAL_USED", square: ccSq });
+      return;
+    }
+
+    if (state.targeting?.kind === "charonMissiles") {
+      const t = state.targeting;
+      if (!t.targets.includes(square)) return;
+      const timing = specialTimingFor(state.liveSnapshot.queue, t.color);
+      const before = store.state().liveSnapshot;
+      store.dispatch({
+        type: "QUEUE_ACTION",
+        action: {
+          timing,
+          kind: "charonMissiles",
+          color: t.color,
+          from: t.from,
+          to: square,
+        },
+      });
+      if (store.state().liveSnapshot === before) return;
+      store.dispatch({ type: "MARK_SPECIAL_USED", square: t.from });
+      store.dispatch({
+        type: "QUEUE_REJECT",
+        message: `Charon Booster Missiles ${t.from}→${square} queued · End to fire`,
+      });
+      return;
+    }
+
+    if (state.targeting?.kind === "tacticalJump") {
+      const t = state.targeting;
+      if (!t.targets.includes(square)) return;
+      const timing = specialTimingFor(state.liveSnapshot.queue, t.color);
+      const before = store.state().liveSnapshot;
+      store.dispatch({
+        type: "QUEUE_ACTION",
+        action: {
+          timing,
+          kind: "tacticalJump",
+          color: t.color,
+          from: t.from,
+          to: square,
+        },
+      });
+      if (store.state().liveSnapshot === before) return;
+      store.dispatch({ type: "MARK_SPECIAL_USED", square: t.from });
+      store.dispatch({
+        type: "QUEUE_REJECT",
+        message: `Tactical Jump ${t.from}→${square} queued · End to resolve`,
+      });
+      return;
+    }
+
+    const selected = state.selected;
+    const snap = store.view.displayedSnapshot();
+    const raw = placementToMap(snap.placement);
+    const actions = snap.queue?.actions;
+    const { map: postBMap, siegedTanks } = planningMoves(state);
+    // Gas/warp origin: legal dests from pre-B occupancy (engine rewrite stack).
+    // Landing / spawn: legal dests from post-B occupancy.
+    const mapFor = (from: Square) => {
+      if (isViewerBRelocateOrigin(from, state.viewer, actions)) {
+        return occupancyForViewerMoves(
+          raw,
+          state.viewer,
+          playerFogOccultsMoves(vision()),
+          { tankModeFor: tankModeForSieged(siegedTanks) },
+        );
+      }
+      return postBMap;
+    };
+    const piece =
+      pieceAtQueuedSquare(raw, square, state.viewer, actions) ??
+      raw.get(square) ??
+      null;
+
+    const fogOccult = playerFogOccultsMoves(vision());
+    // Mines make two shapes legal that occupancy alone does not: a marine front
+    // diagonal and sieged-tank fire onto an empty mined tile (both attack it).
+    // Fogged hostile mines are dropped — offering the square would leak them.
+    const mines = minesVisibleToViewer(
+      snap.placement,
+      state.viewer,
+      snap.mines,
+      fogOccult,
+      { siegedTanks },
+    );
+    const destsFor = (from: Square, p: NonNullable<typeof piece>) => {
+      const map = mapFor(from);
+      const classical = scMovesFrom(map, from, p.color, {
+        siegedTanks,
+        mines,
+      }).map((m) => m.to);
+      return legalDestsWithFogMarineAttacks(classical, from, p, map, fogOccult);
+    };
+
+    if (!selected) {
+      if (!piece || piece.color !== state.viewer) {
+        store.dispatch({ type: "SELECT_SQUARE", square: null });
+        return;
+      }
+      store.dispatch({ type: "SELECT_SQUARE", square });
+      store.dispatch({
+        type: "SET_LEGAL_DESTS",
+        dests: destsFor(square, piece),
+      });
+      return;
+    }
+
+    if (selected === square) {
+      clearSelection();
+      return;
+    }
+
+    if (!state.legalDests.includes(square)) {
+      if (piece && piece.color === state.viewer) {
+        store.dispatch({ type: "SELECT_SQUARE", square });
+        store.dispatch({
+          type: "SET_LEGAL_DESTS",
+          dests: destsFor(square, piece),
+        });
+      } else {
+        clearSelection();
+      }
+      return;
+    }
+
+    const mover =
+      pieceAtQueuedSquare(raw, selected, state.viewer, actions) ??
+      raw.get(selected) ??
+      null;
+    if (!mover) return;
+    const map = mapFor(selected);
+    const move = scMovesFrom(map, selected, mover.color, {
+      siegedTanks,
+      mines,
+    }).find((m) => m.to === square);
+
+    const lastRank = mover.color === "w" ? 8 : 1;
+    const needsPromo =
+      !!move?.promotes ||
+      (mover.type === "p" && Number(square[1]) === lastRank) ||
+      (mover.type === "p" &&
+        gasStackPromotes(state.liveSnapshot, mover.color, selected, square));
+
+    if (needsPromo) {
+      store.dispatch({
+        type: "SET_PENDING_PROMOTION",
+        pending: {
+          color: mover.color,
+          from: selected,
+          to: square,
+        },
+      });
+      store.dispatch({
+        type: "QUEUE_REJECT",
+        message: `Promote ${selected}→${square} — pick a unit`,
+      });
+      return;
+    }
+
+    queueClassical(selected, square, mover.color);
+  };
+
+  // ── Pointer drag (classical moves only; deploy/Charon/Jump stay tap-only) ──
+  type DragCandidate = {
+    from: Square;
+    pointerId: number;
+    el: HTMLElement;
+    startX: number;
+    startY: number;
+  };
+  let dragCandidate: DragCandidate | null = null;
+  const [dragGhost, setDragGhost] = createSignal<BoardDragGhost | null>(null);
+  const [hoveredDragSquare, setHoveredDragSquare] = createSignal<Square | null>(null);
+
+  const pieceAt = (square: Square) =>
+    placementToMap(store.view.displayedSnapshot().placement).get(square) ?? null;
+
+  const clearDrag = () => {
+    dragCandidate = null;
+    setDragGhost(null);
+    setHoveredDragSquare(null);
+  };
+
+  const onPointerDown = (e: PointerEvent) => {
+    if (dragCandidate) return;
+    const state = store.state();
+    if (state.targeting || state.pendingPromotion || !store.view.canSubmit()) return;
+    const hit = squareFromPoint(e.clientX, e.clientY);
+    if (!hit) return;
+    const piece = pieceAt(hit.square);
+    if (!piece || piece.color !== state.viewer) return;
+    e.preventDefault();
+    dragCandidate = {
+      from: hit.square,
+      pointerId: e.pointerId,
+      el: hit.el,
+      startX: e.clientX,
+      startY: e.clientY,
+    };
+  };
+
+  const onPointerMove = (e: PointerEvent) => {
+    const candidate = dragCandidate;
+    if (!candidate || candidate.pointerId !== e.pointerId) return;
+    if (!dragGhost()) {
+      const dx = e.clientX - candidate.startX;
+      const dy = e.clientY - candidate.startY;
+      if (Math.hypot(dx, dy) < DRAG_THRESHOLD_PX) return;
+      const piece = pieceAt(candidate.from);
+      if (!piece) {
+        dragCandidate = null;
+        return;
+      }
+      // Deferred select: this is the gesture's "first tap" — calling it only
+      // now (not on pointerdown) means a plain stationary click never reaches
+      // handleSquareClick twice (see onPointerUp / the onClick suppression flag).
+      candidate.el.setPointerCapture(candidate.pointerId);
+      onSquareClick(candidate.from);
+      setDragGhost({ from: candidate.from, color: piece.color, piece: piece.type, x: e.clientX, y: e.clientY });
+      setHoveredDragSquare(candidate.from);
+      return;
+    }
+    setDragGhost((g) => (g ? { ...g, x: e.clientX, y: e.clientY } : g));
+    setHoveredDragSquare(squareFromPoint(e.clientX, e.clientY)?.square ?? null);
+  };
+
+  /**
+   * True when this pointerup resolved a tracked candidate (tap-select/confirm
+   * or a drop) — the caller suppresses the click that otherwise follows the
+   * same gesture so it is never applied twice.
+   */
+  const onPointerUp = (e: PointerEvent): boolean => {
+    const candidate = dragCandidate;
+    if (!candidate || candidate.pointerId !== e.pointerId) return false;
+    if (candidate.el.hasPointerCapture(candidate.pointerId)) {
+      candidate.el.releasePointerCapture(candidate.pointerId);
+    }
+    if (!dragGhost()) {
+      clearDrag();
+      onSquareClick(candidate.from);
+      return true;
+    }
+    const drop = squareFromPoint(e.clientX, e.clientY)?.square ?? null;
+    clearDrag();
+    if (drop && drop !== candidate.from) onSquareClick(drop);
+    return true;
+  };
+
+  const onPointerCancel = (e: PointerEvent) => {
+    const candidate = dragCandidate;
+    if (!candidate || candidate.pointerId !== e.pointerId) return;
+    if (candidate.el.hasPointerCapture(candidate.pointerId)) {
+      candidate.el.releasePointerCapture(candidate.pointerId);
+    }
+    clearDrag();
+  };
+
+  return {
+    onSquareClick,
+    pendingPromotion,
+    resolvePromotion,
+    cancelPromotion,
+    onPointerDown,
+    onPointerMove,
+    onPointerUp,
+    onPointerCancel,
+    dragGhost,
+    hoveredDragSquare,
+  };
+};

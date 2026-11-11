@@ -1,35 +1,80 @@
-@startuml clean_runtime
-!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Clean game / learning boundaries
-component "packages/game-core\ncanonical init + B/C/F physics\nactual-mutation causal sink" as GAME <<app>>
-component "Rollout + evaluation harness\nnot implemented" as RUN <<app>>
-component "crates/learning\nBurn model + episodic objective" as ML <<app>>
-component "packages/contracts\nZod recipient observation + JSON Schema" as CONTRACT <<app>>
-component "crates/policy-io\nstandard JSON / Serde scoring" as IO <<app>>
-component "packages/policy\nbounded candidates + versioned encoder" as POLICY <<app>>
-database "Burn native model records\nsynthetic round-trip test" as STORE <<db>>
-component "Product applications\nmigration pending" as UI <<app>>
-node "Cargo + Bun\nstandard development tools" as TOOLS <<host>>
-node "Host mise\npreflight / planned seeding + provisioning" as HOST <<host>>
-node "Coding agent sbx\nnot the training target" as SBX <<host>>
-node "Host Docker GPU job\nselected design / unqualified" as GPU <<host>>
-HOST ..> GPU : separate provisioning / execution grants
-GPU ..> RUN : required F64 GPU learning
-SBX ..> TOOLS : authorized source / synthetic verification
-UI ..> GAME : game API
-RUN ..> GAME : observations / legal actions / replay
-RUN ..> POLICY : recipient observation / candidates
-POLICY --> CONTRACT : standard validation
-POLICY --> IO : 2271 numeric coordinates / candidate
-IO --> ML : frozen model / bounded feature batch
-RUN ..> CONTRACT : recipient-local data; producer pending
-ML --> STORE : Burn record API
-TOOLS --> ML : build / synthetic tests
-TOOLS --> GAME : Bun regression tests
-TOOLS --> CONTRACT : strict static + invariant tests
-TOOLS --> IO : native / cross-language e2e
-note bottom of RUN
-  Proposed boundaries grant no runtime authority.
-  Host verification and training remain separate.
+@startuml
+!includeurl https://raw.githubusercontent.com/proveo-ca/identity/refs/heads/main/proveo.iuml
+skinparam componentStyle rectangle
+
+actor User
+actor "Player B / Observers" as MpUser2
+
+package "Distribution 1: Cloudflare (Web Mode)" {
+    package "Browser Environment" {
+        [SolidJS UI] as WebUI
+        
+        package "Web Workers" {
+            [Stockfish Worker\n(Hints & Hover)] as WebSFHint
+            [Orchestrator Worker\n(Game Loop)] as WebOrch
+            [Stockfish Worker\n(AI Moves & Eval)] as WebSFAi
+            [WebLLM Worker\n(WebGPU Inference)] as WebLLM
+        }
+    }
+}
+
+package "Distribution 2: Docker / Native (Server Mode)" {
+    package "Browser Environment " {
+        [SolidJS UI] as DockerUI
+        [Stockfish Worker\n(Hints & Hover)] as DockerSFHint
+    }
+
+    package "Docker Container" {
+        [Bun Server\n(apps/server: API + in-process orchestrator)] as Bun
+
+        package "Native Binaries" {
+            [Stockfish] as NativeSF
+            [Maia / lc0] as NativeMaia
+        }
+    }
+
+    [Ollama Server] as Ollama
+}
+
+package "Distribution 3: Serverless P2P Multiplayer (Tailscale + WebRTC)" {
+    package "Host Browser (room authority)" {
+        [SolidJS UI\n(LanScreen)] as MpHostUI
+        [HostHubTransport] as MpHostHub
+    }
+
+    package "Guest Browser (player / observer)" {
+        [SolidJS UI\n(LanScreen) ] as MpGuestUI
+        [GuestLinkTransport] as MpGuestLink
+    }
+}
+
+' Web Mode Connections
+User --> WebUI
+WebUI <-> WebSFHint : Local UCI
+WebUI <-> WebOrch : postMessage (Move/Advice)
+WebOrch <-> WebSFAi : UCI
+WebOrch <-> WebLLM : Prompt/Stream
+
+' Docker Mode Connections
+User --> DockerUI
+DockerUI <-> DockerSFHint : Local UCI
+DockerUI <-> Bun : HTTP REST
+Bun <-> NativeSF : UCI (Bun.spawn)
+Bun <-> NativeMaia : UCI (Bun.spawn)
+Bun <-> Ollama : HTTP POST
+
+' Serverless Multiplayer Connections (no server)
+User --> MpHostUI : Create room (host)
+MpUser2 --> MpGuestUI : Join (player / spectate)
+MpHostUI <-> MpHostHub
+MpGuestUI <-> MpGuestLink
+MpGuestLink <-> MpHostHub : WebRTC DataChannel\n(direct over Tailscale 100.x,\nno STUN / TURN / relay)
+
+note bottom of MpHostHub
+  No backend. Signaling is manual (QR/link) per joiner.
+  Host = room authority; relays moves to the other player
+  + ≤4 optional observers. Colors are picked/swapped in the
+  lobby. Pure human-vs-human (no AI/LLM).
 end note
+
 @enduml

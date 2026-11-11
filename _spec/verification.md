@@ -263,7 +263,7 @@ Template check: `SKIP` because the local template is absent and the parent repor
 
 ## Goals
 
-- [architecture.puml](architecture.puml): separate game, learning, rollout/evaluation and product boundaries.
+- [ml-runtime-architecture.puml](ml-runtime-architecture.puml): separate game, learning, rollout/evaluation and product boundaries.
 - [game-core.puml](game-core.puml): retain canonical native moves, fog, economy and terminal semantics without legacy planners.
 - [observations.puml](observations.puml): preserve recipient-local observation invariants through standard schemas and serialization.
 - [learning.puml](learning.puml): preserve the episodic policy objective through Burn operations and autodiff.

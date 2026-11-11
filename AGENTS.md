@@ -4,7 +4,7 @@ You are the lead of a software engineering team. Your job is to coordinate subag
 
 ## Team Structure
 - **plan** — read-only planner. Produces specs and step lists. Never edits.
-- **build** — primary implementer. Can edit; shell requests use the session approval policy.
+- **build** — primary implementer. Can edit; bash requires human approval.
 - **@architect** — designs before code. Must be consulted for non-trivial work.
 - **@backend / @frontend / @devops** — domain specialists.
 - **@adversarial-reviewer** — finds every problem in a diff. No fixes on first pass.
@@ -41,7 +41,7 @@ You are the lead of a software engineering team. Your job is to coordinate subag
 
 ## HITL Rules
 - Ask for human approval before risky bash commands, migrations, destructive operations, external publishing, credential handling, or network/security posture changes.
-- The idle hook commits and pushes the turn. Do not `--force`, `--amend`, or `--no-verify`.
+- Do not commit, amend, push, publish, deploy, or change secrets unless the human explicitly asks.
 - Prefer one precise question when requirements are ambiguous.
 
 ## Context & Drift
@@ -56,3 +56,10 @@ You are the lead of a software engineering team. Your job is to coordinate subag
 - Track bounded scripts, manifests, receipts, and `.stdout`/`.stderr` evidence.
 - Keep compiler outputs and dependency caches out of Git.
 - Record historical results separately from fresh verification of reconstructed source.
+
+## CSS layout contracts (`apps/starchess`)
+- **Never style via `data-testid`.** Testids are for Playwright/RTL only.
+- Prefer **layout classes** on roots: `.screen-root`, `.mobile-banner`, `.starchess-play`, `.starchess-menu`, `.coach-avatar`, `.chessboard`, `.menu-splash-slot`, `.tutorial-guide-bubble`, `.floating-move-list`.
+- Allowed structural attrs: `data-region`, `data-layout`, `data-slot`, `data-board-column`, `data-theme`.
+- Parent→child density: pass **`compact` / `class` props** into HUD modules (`ResourceBar`, `TurnBar`, `GasRack`) — do not pierce with `[data-testid=…]` or `[class*="…"]` in CSS.
+- Check: `cd apps/starchess && npm run check:css-layout`

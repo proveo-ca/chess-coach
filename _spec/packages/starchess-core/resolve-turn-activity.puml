@@ -1,0 +1,139 @@
+@startuml resolve-turn-activity
+' SPEC: _spec/packages/starchess-core/resolve-turn-activity.puml
+' purpose: resolveTurn control flow — how one classical plan is classified into a
+' bucket, and what each phase then does with those buckets.
+' covers: packages/starchess-core/src/resolve/resolve-turn.ts
+' covers: packages/starchess-core/src/__tests__/rook/**
+' see also: _spec/packages/starchess-core/gas-phase-vacancy.puml
+!include ../../themes/proveo.puml
+
+skinparam defaultTextAlignment left
+
+title StarChess Core · ""resolveTurn"" — plan classification and phase run
+
+start
+:Read ""placement"" once (""start"" map), clamp ""ccLives"",\ncollect plans white-then-black (""plansOf"");
+:Buckets for this pass:\n""attacks"" · ""moveCollisions"" · ""occupy"" · ""quiets""\n""pathRevealPending"" · ""deadSquares"";
+
+partition "Classify — an ordered rule list, first match wins" {
+  :build ""PlanContext"" once: actor · target · ""visible0"" · ""leaps"" ·\nsieged flags · a **memoised** ""scanRay"";
+  :walk ""RULES"" — each returns a ""PlanOutcome"" or ""null"" (pass);
+  :""applyOutcome"" is the **only** writer into the phase buckets;
+
+  note right
+    **The list is the precedence.** Reordering ""RULES"" is a one-line diff;
+    that ordering used to be implicit in ~200 lines of control flow.
+
+    | # | rule | claims when |
+    | 1 | ""jumpImmunity"" | enemy queen listed in ""ignoreAttacksOn"" — a jumping BattleShip is untouchable this turn |
+    | 2 | ""marineFrontStep"" | marine, same file: the whole path is walked and the **first occupant blocks** — quiet step onto the last empty square, or stay put. Never a victim, never a discovery, whatever the fog says; a truncated step drops its ""promotion"" |
+    | 3 | ""enemyKingSquare"" | enemy king on ""to"" — never arms deferred HP (checks are implicit at turn open). A non-king enemy on the ray is taken: visible ⇒ phase-1 capture, still fogged ⇒ move collision, lights mid-walk ⇒ phase-3 approach. An ally, a king, or a clear ray fizzles — the slider never occupies the king |
+    | 4 | ""allyOccupied"" | own unit on ""to"" |
+    | 5 | ""marineDiagonalEmpty"" | marine diagonal onto an empty tile — capture-only, unless a **visible** hostile mine is the target |
+    | 6 | ""midPathPrecedence"" | slider aimed at an enemy: a unit met **on the ray** always beats the further target (""Re1→e8"" with ""pe7"" + ""re8"" takes the pawn). Ally ⇒ quiet truncate; a **king** passes to rule 9 |
+    | 7 | ""targetOnDestination"" | enemy on ""to"" — visible ⇒ phase-1 attack · lights mid-walk ⇒ phase-3 approach · still fogged ⇒ move collision (sieged rooks fizzle: they never relocate, so they never contact a fogged square) |
+    | 8 | ""minedEmptyDestination"" | empty ""to"" with a hostile mine — ""attacksOwnDest"" + visible + reachable ⇒ attack-clear (a sieged tank fires without vacating), else quiet so phase 2 takes the mover. ""attacksOwnDest"" now admits the **king**: it shoots the tile and moves in, so "walking over" a mine is attack/move (""mine-contact.puml""), and a king always sees its own destination so it never falls through to the quiet path |
+    | 9 | ""slideIntoFog"" | slider into an empty ""to"" — first enemy that is (or becomes) visible on the ray. A king only chips via fog discovery, otherwise the slide stops short |
+    | 10 | ""siegedEmptyShelling"" | sieged rook, empty ""to"" on the cross, clear ray, visible — victimless ""shelling"" at ""to"" (no death, no occupy, never relocates). Ally/king contact holds fire (drop); fogged stays quiet (never relocates) |
+    | 11 | ""quietFallthrough"" | nothing claimed it |
+  end note
+
+  note right
+    **Outcomes, not mutations.** A rule returns ""drop"" · ""quiet"" · ""occupy"" ·
+    ""capture(fogged?)"" · ""mineClear"" · ""shelling"" · ""approach"" — and ""applyOutcome"" owns
+    every bucket write. One consequence is structural rather than remembered:
+    a **fogged** capture can only reach ""moveCollisions"" and a visible one only
+    ""attacks"", because a single ""fogged"" flag picks the list. Dual-listing is
+    no longer expressible.
+
+    **Buckets carry the plan, not a copy of three fields.** Every bucket write
+    spreads the plan and overrides ""to"" — a rebuilt ""{color, from, to}"" literal
+    silently drops ""promotion"", which is how a last-rank **capture** used to
+    land a marine on rank 8 and leave it a marine while the quiet push (pushed
+    by reference) promoted fine. Rule 2's truncated step is the one deliberate
+    drop, and it drops the whole step, not just the choice.
+
+    ""pathRevealSteps"" does not test vision from ""from"", so a target already
+    lit can still report steps > 0. Path discovery therefore needs **fogged at
+    start** *and* lit while walking — otherwise a visible target would wrongly
+    defer to a phase-3 approach.
+  end note
+
+  note right
+    A fogged capture or approach whose
+    START-board victim departs via its
+    own queued plan never books the
+    kill. The plan parks on "delayed".
+  end note
+}
+
+partition "Phase 1 — attack" {
+  :remove ""deadSquares"" → **afterAttack** snapshot;
+}
+
+partition "Phase 2 — move (""moveWave"": plan every landing, then time them)" {
+  :skip movers that died in phase 1, and sieged rooks (never relocate);
+  :""planLanding"" — every mover plans against the **same** pre-wave board,
+so plan order (white first) can never decide an outcome. Quiet slides
+truncate on the first **stationary** blocker — enemy blocker is captured,
+ally / king blocker stops the slide one square short;
+  :two opposite-colour landings → ""moverContact(timedMover(a), timedMover(b))""
+(""move-timing.puml"": Hoverbike 1 tick / square, everything else 2,
+leapers hold only their landing, sliders every ray square,
+a mover a mine takes on landing holds nothing afterwards);
+  if (contact at X?) then (yes)
+    if (a Command Center in the pair?) then (yes)
+      :CC reached X **first** → CC lands, the other stops one ray
+square short (a leaper stays home) · CC arrived on or after the
+other → CC **takes** it (""moveCollisions"" capture, occupies,
+clears the mine on X) · CC vs CC → neither moves;
+    else (no)
+      :**both die on X**, mines untouched, no cue — whether the other
+was parked there, arrived the same tick, or they passed head-on
+mid-edge (reported on the lower-named square);
+    endif
+  else (no)
+    :``land`` each mover as planned;
+  endif
+  :``land``: destination still held by an enemy → capture + occupy, **unless**\nanother mover already landed there (""destinationsWritten"", phase 3 only)\n→ **both die**, tile empty, no cue;
+  :""mineContact"" over ""[extraStepFrom?, …pathContactSquares, dest]""
+(mode **walk**) — one ordered scan answers chase **and** walk-over.
+A plan carrying ""extraStepTo"" **stands down**: its landing is one hop
+further, so the phase-4 arrival owns the contact list
+(""mine-contact.puml"" · one walk per marine);
+  :land the mover, stamp ""destinationsWritten"", defer promotion;
+  :""detonated"" → blast at the landing tile, mover dies, no promotion\nand no occupy left behind; ""chaseFrom"" set when the mine was woken\nmid-path (the first mine touched wins);
+  :→ **afterMove** snapshot;
+}
+
+partition "Phase 3 — fog approaches" {
+  :fizzle gates (in order): sieged origin · origin re-occupied by a\nphase-2 mover · attacker no longer on ""pathRevealFrom"" ·\n""to"" no longer holds the exact discovered victim;
+  :fired → ""pathRevealAttacks"" (the only mid-resolve king HP chip);
+  :the approach **walked** its ray — ""mineContact"" over that walk takes\nthe mover on its landing tile → ""pathRevealMineTriggers"".\nThe shot already fired, so capture / HP chip stand;
+}
+
+partition "Delayed landings — fogged aims whose victim vacated" {
+  :sync ""mines"" to the phase-3 epoch, order the pair so a plan\nlanding on the other's origin runs second (mutual swap lands both);
+  :skip fired approaches (""firedFrom""), dead or moved actors,\nand destinations a phase-3 actor now owns (fizzle);
+  :a destination holding a ghost the snapshot lost is cleared,\nthen ""relocate"" with occupy trust — victim still home means\na single move-phase collision, never a second kill;
+  :mirror the landing onto the phase-3 snapshot (move / blast /\ncollision, ""chaseFrom""-aware mine filter) → **afterMove** snapshot;
+}
+
+partition "Phase 4 — promotion" {
+  :pawns that survived every phase promote on the ""afterAll"" board;
+}
+:return the four lists + the three snapshots;
+note right
+  **Shared with the UI replay:** ""applyPathRevealAttack"" /
+  ""applyPathRevealCCShot"" are the single source of truth for the
+  board-state fizzles; the loop above pre-filters the two engine-context
+  gates (siege, re-occupied origin) so the UI only ever replays fired
+  approaches. Neither helper clears mines — the walk-contact check owns that.
+
+  **Do not "fix":** ""applyPendingCCShots"" gates firing on board occupancy
+  and target identity only, never on the shooter's own HP. A king already at
+  0 in the same pass still returns fire — that is what makes equal-HP contact
+  end 0/0 as a draw instead of a win for whoever is ordered first.
+end note
+stop
+@enduml

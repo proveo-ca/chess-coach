@@ -1,0 +1,43 @@
+/* SPEC: _spec/apps/chess/responsiveness/rules.md */
+
+/* Tall mobile: hero CoachAvatar floats over MobileBanner (z-index), then
+   BoardControls hug the board. Hidden on desktop (Header owns the avatar via
+   ScreenBackNav) and on short / dynamic (compact stays in BoardControls fuse).
+   Always mounted — visibility is CSS-only so the avatar does not remount.
+   SPEC: _spec/apps/chess/responsiveness/rules.md */
+.mobileHero {
+  display: none;
+}
+
+@media (--tall-mobile) {
+  /* Banner is absolute flush-top; header padding clears the bar. Hero owns the
+     leftover spacer and may paint over the banner strip (z-index). */
+  .mobileHero {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    position: relative;
+    z-index: 6; /* above MobileBanner (z-index: 5) */
+    width: 100%;
+    max-width: var(--board-size);
+    margin-inline: auto;
+    /* Pull into the banner pad so the cat overlaps the strip (spec §3). */
+    margin-top: calc(-0.45 * var(--mobile-banner-height, calc(40px + 0.7rem)));
+    margin-bottom: auto;
+    min-height: 0;
+    pointer-events: none; /* keep banner Back / menu clickable under the float */
+  }
+
+  /* Default cat uses a large top margin for desktop header — collapse it here. */
+  .mobileHero :global([data-testid="coach-avatar"]) {
+    margin-top: 0.35rem;
+    pointer-events: auto;
+  }
+}
+
+/* Dynamic fuse: hero stays hidden; compact avatar in the fused strip is 0.75. */
+@media (--dynamic-mobile) {
+  .mobileHero {
+    display: none;
+  }
+}

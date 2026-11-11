@@ -1,0 +1,58 @@
+@startuml
+!include ../themes/proveo.puml
+skinparam noteTextAlignment left
+' SPEC: _spec/_plans/tutorial-siege-lines.puml
+' purpose: live-play-attack-4 — take sieged lines for strong
+'   positions; live-play-attack-5 next is openings 3x3
+' status: ACTIVE — spec only, no source this turn
+'   product = StarChess; latest attack is live-play-attack-3
+' covers: apps/starchess/src/tutorial/tutorialScript.config.ts
+'         (future live-play-attack-4 siege-lines lesson and
+'          live-play-attack-5 openings-tree lesson)
+' live spec: _spec/specials/index.puml
+'            _spec/packages/starchess-core/scfen-wire.puml
+' Notes are capped at 5 lines x 50 columns; one idea per anchor.
+'
+' Siege lines are sieged-rook lines (S: field plus the
+' siegeMode packed-vs-sieged toggle), never a placed or
+' drawn object. King-attack-4 guides the player into
+' taking those lines for strong positions. King-attack-5
+' will be a sample single-player game hinting common
+' openings: 3 moves with 3 branches each.
+title King Attack 4 — take siege lines;\nKing Attack 5 next: openings 3x3
+
+component "lesson config\nlive-play-attack-4 lines" as CFG <<app>>
+component "TutorialScreen\nlive engine + gates" as RUN <<app>>
+component "siegedTanks / siegeMode\nstrong positions" as MODE <<app>>
+component "live-play-attack-5 openings\n3 moves x 3 branches" as OPEN <<app>>
+component "**placed line type**\nengine has none" as LINE <<error>>
+
+CFG ARROW_MAIN RUN
+RUN ARROW_MAIN MODE : take sieged lines
+RUN ARROW_OPTIONAL OPEN : next game hints
+LINE ARROW_ERROR MODE : do not add
+
+note bottom of RUN
+  **Guide the player onto sieged lines.**
+  Hints mark strong-position squares;
+  gates judge the held line, not a
+  drawing. King-attack-3 stays last
+  until live-play-attack-4 ships.
+end note
+
+note bottom of LINE
+  **Do not teach the player to draw a
+  line, and do not add a line store
+  so the backlog title looks true.**
+  Placement vs severance is not a
+  StarChess verb.
+end note
+
+legend bottom
+  **Spec only this turn — no source.**
+  ==
+  live-play-attack-4 takes siege lines;
+  live-play-attack-5 hints openings 3x3.
+  Diff config when building either.
+end legend
+@enduml

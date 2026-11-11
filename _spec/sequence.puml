@@ -1,0 +1,58 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/proveo-ca/identity/refs/heads/main/proveo.iuml
+actor User
+participant "SolidJS UI" as SolidJS
+participant "Stockfish Web Worker\n(hints / hover)" as StockfishWorker
+participant "Bun Server\n(apps/server)" as Server
+participant "Orchestrator\n(in-process)" as Orch
+participant "EngineBridge\n(→ native Stockfish / lc0)" as Engine
+participant "OllamaLlmClient" as Llm
+
+== Hint Request Flow (Local Worker) ==
+User -> SolidJS: Clicks "Get Hint"
+SolidJS -> StockfishWorker: uci / isready (once)
+SolidJS -> StockfishWorker: position fen <current>
+SolidJS -> StockfishWorker: go depth 10
+StockfishWorker --> SolidJS: bestmove e2e4
+SolidJS -> User: Displays hint (bestmove)
+
+== Hover Blunder Flow (Local Worker) ==
+User -> SolidJS: Hovers candidate move square
+SolidJS -> StockfishWorker: position fen <after hypothetical move>
+SolidJS -> StockfishWorker: go depth 6
+StockfishWorker --> SolidJS: info score cp -250 ...
+SolidJS -> User: Hover override advice + shocked emotion
+
+== Replayability Flow (Local History) ==
+User -> SolidJS: Clicks "Back" / "Forward"
+SolidJS -> SolidJS: Update currentIndex in gameState
+SolidJS -> User: Renders historical FEN (no API call)
+
+== Standard Move Flow (Move + Advice) ==
+User -> SolidJS: Click-to-move (e2 -> e4)
+SolidJS -> Server: POST /move { humanMoveSan: "e4",\nfenAfterHuman: "<fen>", difficulty: "<difficulty>" }
+Server -> Orch: executeTurn(humanMoveSan, difficulty)  ' in-process
+
+note over Orch, Engine: AI move generation (Maia + Stockfish FEN derivation)
+
+Orch -> Engine: getEvaluation / getMaiaMove / getFenAfterMove
+Engine --> Orch: AI move (Maia) + resulting FEN (Stockfish)
+
+Orch --> Server: { fen: "<updated>", move: "e7e5" }
+Server --> SolidJS: HTTP 200 OK { fen: "<updated>", move: "e7e5" }
+SolidJS -> User: Renders updated position
+
+SolidJS -> Server: POST /advice { humanMove: "e4", aiMove: "e7e5", fen: "<updated>" }
+
+note over Orch, Llm: Coaching commentary generation
+
+Server -> Orch: generateAdviceStream(...)
+Orch -> Engine: getEvaluation (context)
+Engine --> Orch: score cp 45
+Orch -> Llm: promptStream(SYSTEM_PROMPT, structured prompt)  ' prompt via engine-core
+Llm --> Orch: commentary tokens (buffered → extractCommentary)
+Orch --> Server: single cleaned commentary chunk
+Server --> SolidJS: HTTP 200 text/plain stream
+SolidJS -> User: Displays coach advice (and emotion)
+
+@enduml

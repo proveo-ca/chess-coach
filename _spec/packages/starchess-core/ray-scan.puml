@@ -1,0 +1,48 @@
+@startuml ray-scan
+' SPEC: _spec/packages/starchess-core/ray-scan.puml
+' purpose: board/ray-scan.ts — walk a ray once, classify the first thing met.
+' Authority: this is shipped.
+!include ../../themes/proveo.puml
+
+skinparam defaultTextAlignment left
+
+title StarChess Core · ""scanRay"" — one walk, one contact
+
+start
+:""mids = rayBetween(from, intentTo)"";
+repeat :next intermediate ""at"";
+  if (occupied?) then (no)
+    :keep walking;
+  else (yes)
+    :""startVisible = canSee(color, at)"";
+    :""revealSteps = pathRevealSteps(from → intentTo, at)"";
+    :""becomesVisible = !startVisible && revealSteps > 0"";
+    :""discovery"" = the intermediate that first lights ""at"";
+    :""stopBefore"" = the last empty square before ""at"";
+    :**return this contact** — nothing past it can matter;
+    stop
+  endif
+repeat while (more intermediates?) is (yes)
+->no;
+:no contact — the ray is clear;
+note right
+  **What it replaced.** ""resolveTurn"" walked a ray in two places with
+  near-identical ~90-line bodies (mid-path unit beats a further target; generic
+  slide into fog), each re-deciding ally / king / fogged / lit / discovery in
+  its own order. Both now call ""scanRay"" and keep only their distinct tail:
+  * **targeted intent** — ally ⇒ quiet truncate · king ⇒ fall through to the
+    generic walk · enemy ⇒ ""takeRayContact"";
+  * **generic slide** — ally ⇒ quiet · king ⇒ fog ccShot or stop short ·
+    enemy ⇒ ""takeRayContact"".
+
+  ""takeRayContact"" is the shared classification the two loops used to spell out
+  twice: still fogged ⇒ ""moveCollisions"" + occupy (sieged rooks fizzle) ·
+  lights mid-walk ⇒ phase-3 approach · visible ⇒ phase-1 attack + occupy.
+
+  **Still open:** ""scanRay"" calls ""pathRevealSteps"" once per contact, and that
+  helper still rebuilds the placement map and full side vision for every
+  intermediate it tests. A ""litAtStep"" map computed in the same single walk
+  would answer every target on the ray for one pass.
+end note
+stop
+@enduml

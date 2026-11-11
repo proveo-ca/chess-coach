@@ -1,0 +1,475 @@
+/* // SPEC: _spec/apps/starchess/animation-pipeline.md */
+.boardOverlay {
+  position: absolute;
+  pointer-events: none;
+  z-index: 35;
+  overflow: visible;
+  contain: layout style;
+  isolation: isolate;
+  /* Single hard timeline — every death cue finishes here. */
+  --death-ms: 500ms;
+}
+
+.originSlot {
+  position: absolute;
+  z-index: 2;
+  overflow: visible;
+}
+
+/* Damaged Command Center hull — slides with the piece (no pristine <img> clone). */
+.ccDamageSlot {
+  transition: left var(--move-ms, 550ms) ease-in-out, top var(--move-ms, 550ms) ease-in-out;
+  z-index: 6;
+}
+
+.pieceFace {
+  position: absolute;
+  inset: 4%;
+  display: grid;
+  place-items: center;
+  overflow: visible;
+}
+
+.pieceFace svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Brief central flash at death start */
+.boomFlash {
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    #ffffff 0%,
+    #ffe08a 28%,
+    #ff9a3c 48%,
+    rgba(59, 125, 216, 0.55) 68%,
+    transparent 78%
+  );
+  opacity: 0;
+  transform: scale(0.35);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.boomRing {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 230, 160, 0.95);
+  box-shadow: 0 0 10px rgba(59, 125, 216, 0.55);
+  opacity: 0;
+  transform: scale(0.4);
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Command Center HP hit — explosion flash over fire for HIT_BOOM_MS (= FRAG_FLIGHT_MS). */
+.ccHitBoom {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  z-index: 6;
+  --hit-boom-ms: 250ms;
+  pointer-events: none;
+}
+
+.ccHitBoom .boomFlash {
+  animation: boomFlash var(--hit-boom-ms) ease-out 1 forwards;
+  inset: 8%;
+  background: radial-gradient(
+    circle,
+    #ffffff 0%,
+    #ffe08a 22%,
+    #ff7a18 48%,
+    #c42800 68%,
+    transparent 80%
+  );
+}
+
+.ccHitBoom .boomRing {
+  animation: boomRing var(--hit-boom-ms) ease-out 1 forwards;
+  border-color: rgba(255, 180, 80, 0.95);
+  box-shadow: 0 0 12px rgba(255, 120, 20, 0.65);
+}
+
+/* ── Keyframes (all bound to --death-ms = 500ms) ─────────────────── */
+
+/* Flash peaks early (~70ms / 14%), gone by end of window */
+@keyframes boomFlash {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  8% {
+    opacity: 1;
+    transform: scale(0.95);
+  }
+  18% {
+    opacity: 0.45;
+    transform: scale(1.25);
+  }
+  28%,
+  100% {
+    opacity: 0;
+    transform: scale(1.55);
+  }
+}
+
+@keyframes boomRing {
+  0% {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+  10% {
+    opacity: 0.95;
+    transform: scale(0.7);
+  }
+  40% {
+    opacity: 0.25;
+    transform: scale(1.45);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+
+/* Soap-film rings: expand outward and dissolve — never shrink */
+@keyframes bubbleRingOut {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  12% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  45% {
+    opacity: 0.7;
+    transform: scale(1.55);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.35);
+  }
+}
+
+@keyframes bubbleRingOuterOut {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  18% {
+    opacity: 0.75;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.8);
+  }
+}
+
+@keyframes bubbleShineOut {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(1);
+  }
+  10% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-18px, -22px) scale(1.8);
+  }
+}
+
+@keyframes shardFly {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  /* Brief hold through boom flash, then peel apart on unique vectors. */
+  10% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1.04);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx, 40px), var(--dy, -40px)) rotate(var(--spin, 180deg))
+      scale(0.65);
+  }
+}
+
+/* Command Center: parts drop into a rubble pile (stay visible — no outward shatter). */
+@keyframes rubbleCollapse {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  18% {
+    opacity: 1;
+    transform: translate(0, 1px) rotate(0deg) scale(1.02);
+  }
+  100% {
+    opacity: 0.95;
+    filter: saturate(0.45) brightness(0.78);
+    transform: translate(var(--rx, 0), var(--ry, 12px)) rotate(var(--rspin, 0deg)) scale(0.92);
+  }
+}
+
+@keyframes liteBurst {
+  0%,
+  30% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+}
+
+:global(html[data-vfx-tier="lite"]) .dyingDrama :global([data-shard]:not([data-shard-lite])),
+:global(html[data-vfx-tier="lite"]) .dyingMarine :global([data-shard]:not([data-shard-lite])) {
+  animation: none;
+}
+
+:global(html[data-vfx-tier="lite"]) .dyingDrama .pieceFace > svg,
+:global(html[data-vfx-tier="lite"]) .dyingMarine .pieceFace > svg {
+  transform-origin: center;
+  animation: liteBurst var(--death-ms) ease-in 1 forwards;
+}
+
+/* ── Phase bindings — every animation is exactly --death-ms, no delay ─ */
+
+.dying .boomFlash {
+  animation: boomFlash var(--death-ms) ease-out 1 forwards;
+}
+
+.dying .boomRing {
+  animation: boomRing var(--death-ms) ease-out 1 forwards;
+}
+
+.dyingMarine :global([data-part="bubble-ring"]) {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bubbleRingOut var(--death-ms) ease-out 1 forwards;
+}
+
+.dyingMarine :global([data-part="bubble-ring-outer"]) {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bubbleRingOuterOut var(--death-ms) ease-out 1 forwards;
+}
+
+.dyingMarine :global([data-part="bubble-shine"]) {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bubbleShineOut var(--death-ms) ease-out 1 forwards;
+}
+
+.dyingMarine .boomFlash,
+.dyingMarine .boomRing {
+  filter: saturate(0.7) brightness(1.2);
+  inset: 16%;
+}
+
+/* Marine body shreds with the bubble (was missing — SVG stayed after burst). */
+.dyingMarine :global([data-shard]) {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: shardFly var(--death-ms) cubic-bezier(0.15, 0.75, 0.2, 1) 1 forwards;
+}
+
+/* All pieces except Command Center: shards fly outward */
+.dyingDrama :global([data-shard]) {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: shardFly var(--death-ms) cubic-bezier(0.15, 0.75, 0.2, 1) 1 forwards;
+}
+
+/* Command Center death: rubble collapse downward */
+.dyingCC :global([data-rubble]) {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rubbleCollapse var(--death-ms) cubic-bezier(0.33, 0.05, 0.2, 1) 1 forwards;
+}
+
+/* Softer impact flash — collapse, not explosion */
+.dyingCC .boomFlash,
+.dyingCC .boomRing {
+  filter: saturate(0.55) brightness(0.9);
+  inset: 18%;
+}
+
+/*
+ * A mine is the smallest thing on the board — the shared flash at ""inset: 12%""
+ * covers 88% of the tile and swallows the whole wreck, the way the Marine and
+ * the Command Center already pull theirs in. Tuck it to the middle so the crown
+ * and legs read through the boom instead of behind it.
+ */
+.dying[data-death-mine="true"] .boomFlash {
+  inset: 30%;
+}
+
+.dying[data-death-mine="true"] .boomRing {
+  inset: 26%;
+}
+
+/*
+ * ""shardFly"" is tuned for a hull: its curve is front-loaded, so 12% into the
+ * window a part has already travelled 70% and faded to ~0.3 opacity. That reads
+ * fine on a 12px chunk of Hoverbike and not at all on a 4px mine leg — the
+ * wreck appears to blink out. Hold the parts opaque through the first half and
+ * let them drift, so the break-up is legible on a 55px tile.
+ */
+.dying[data-death-mine="true"] :global([data-shard]) {
+  animation: mineShardFly var(--death-ms) cubic-bezier(0.25, 0.6, 0.35, 1) 1 forwards;
+}
+
+@keyframes mineShardFly {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  14% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1.06);
+  }
+  58% {
+    opacity: 0.95;
+    transform: translate(calc(var(--dx, 40px) * 0.5), calc(var(--dy, -40px) * 0.5))
+      rotate(calc(var(--spin, 180deg) * 0.5)) scale(0.92);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx, 40px), var(--dy, -40px)) rotate(var(--spin, 180deg))
+      scale(0.72);
+  }
+}
+
+/* ── Mine wreck: hoverbike frag boom, fired in place ─────────────────
+ * The mine is Hoverbike ordnance, so it detonates with the bike's own
+ * signature: `fragExplode` / `fragShockwave` from AttackAnimation.module.css.
+ * Re-declared here because CSS-module keyframes are file-scoped — the shape is
+ * copied, the flight delay is not (the frag lands on impact; the mine *is* the
+ * impact). Both keyframes stay transform + opacity only, so the V29/V30 paint
+ * budget holds without joining the allowlist: the ring's border colour is
+ * static and only its scale/opacity move.
+ *
+ * **It must not curtain the wreck.** The frag is positioned, the wreck's ""svg""
+ * is not, so the frag always paints on top — it therefore has to behave like
+ * ""boomFlash"": small, translucent at peak, and finished inside the first half
+ * of the window so the shards are visible flying out. A full-window opaque
+ * fireball reads as the mine blipping away with no death animation at all.
+ */
+.mineFrag {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.mineFragCore {
+  position: absolute;
+  width: 34%;
+  height: 34%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    #ffffff 0%,
+    #d0d5dc 18%,
+    #8b93a0 36%,
+    var(--team-tint, #3b7dd8) 52%,
+    rgba(var(--team-rgb, 59, 125, 216), 0.4) 68%,
+    transparent 76%
+  );
+  box-shadow:
+    0 0 0 1px rgba(180, 188, 198, 0.75),
+    0 0 5px rgba(var(--team-rgb, 59, 125, 216), 0.7),
+    0 0 9px rgba(140, 148, 160, 0.5);
+  opacity: 0;
+  transform: scale(0.15);
+  animation: mineFragExplode var(--death-ms) ease-in-out 1 forwards;
+}
+
+.mineFragRing {
+  position: absolute;
+  width: 26%;
+  height: 26%;
+  border-radius: 50%;
+  border: 1.5px solid rgba(var(--team-rgb, 59, 125, 216), 0.9);
+  box-shadow: 0 0 0 0.5px rgba(160, 168, 176, 0.55);
+  opacity: 0;
+  transform: scale(0.25);
+  animation: mineFragRing var(--death-ms) ease-in-out 1 forwards;
+}
+
+/*
+ * Double pulse — the frag's tell that it is cluster ordnance, not one bang —
+ * compressed into the opening of the window and capped below full opacity, so
+ * the wreck reads *through* it and the scatter owns the rest of the death.
+ */
+@keyframes mineFragExplode {
+  0% {
+    opacity: 0;
+    transform: scale(0.15);
+  }
+  4% {
+    opacity: 0.9;
+    transform: scale(0.4);
+  }
+  14% {
+    opacity: 0.8;
+    transform: scale(1.15);
+  }
+  24% {
+    opacity: 0.7;
+    transform: scale(0.6);
+  }
+  34% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  45%,
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+@keyframes mineFragRing {
+  0% {
+    opacity: 0;
+    transform: scale(0.25);
+  }
+  4% {
+    opacity: 0.85;
+    transform: scale(0.45);
+  }
+  16% {
+    opacity: 0.6;
+    transform: scale(1.5);
+  }
+  30% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  40% {
+    opacity: 0.25;
+    transform: scale(1.7);
+  }
+  50%,
+  100% {
+    opacity: 0;
+    transform: scale(2.1);
+  }
+}

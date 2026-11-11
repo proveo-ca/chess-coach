@@ -1,0 +1,66 @@
+@startuml index
+' SPEC: _spec/apps/starchess/index.puml
+' purpose: Live StarChess UI/PWA spec map.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Live Spec Map (_spec/apps/starchess)
+
+package "_spec/apps/starchess" {
+  component "deployment.puml\nPWA / Worker / Coach redirect" as DEP <<host>>
+  component "menu-flow.puml\nMenu → NewGame → /single · Review" as MENU <<app>>
+  component "screens.puml\nScreen HUD chrome" as HUD <<app>>
+  component "architecture/\nboard + screen entities\nstructure accepted · perf IN PROGRESS" as ARCH <<app>>
+  component "match-store.puml\nMatchStore / gate / dual-signal" as MS <<async>>
+  component "animation-pipeline.md\nplayTimeline / TIMELINE_* / perf status" as ANIM <<async>>
+  component "architecture/timeline-perf\nshipped + compositor relief" as TPERF <<async>>
+  component "core/\nturn · board · adjutant · scfen\nengine-boundary (interaction plan)" as COREPLAN <<app>>
+  component "demos.puml / starchess-mode.puml" as DEMO <<app>>
+  component "replay-import.puml\n?game= / ?scfens= arena replay" as RIMP <<app>>
+  component "roadmap.md\nremediation + timeline perf track" as ROAD <<db>>
+}
+
+package "apps/starchess (runtime)" {
+  component "StarChessMenuRoute / MenuScreen" as RMENU <<app>>
+  component "StarChessSingleScreen + LiveMatchShell" as RSINGLE <<app>>
+  component "StarChessReviewScreen\n/review · /review/:id" as RREV <<app>>
+  component "StarChessScreen + MatchStore" as RSCREEN <<app>>
+  component "useBoardInput + timelinePlayer" as RINPUT <<async>>
+}
+
+package "rules" {
+  component "_spec/packages/starchess-core/*\nSCFEN · resolve · sc-moves · turn queue" as RULES <<app>>
+}
+
+MENU ARROW_MAIN RMENU
+MENU ARROW_MAIN RSINGLE
+MENU ARROW_MAIN RREV
+HUD ARROW_MAIN RSCREEN
+ARCH ARROW_MAIN RSCREEN
+ARCH ARROW_MAIN RSINGLE
+ARCH ARROW_MAIN RREV
+MS ARROW_MAIN RSCREEN
+ANIM ARROW_MAIN RINPUT
+TPERF ARROW_MAIN ANIM : perf budget / gate
+TPERF ARROW_MAIN MS : commit path
+TPERF ARROW_OPTIONAL ARCH : design home
+COREPLAN ARROW_MAIN MS : state machine / playback
+COREPLAN ARROW_MAIN RINPUT : planning / boundary
+COREPLAN ARROW_OPTIONAL RULES : package detail
+DEP ARROW_MAIN RSINGLE
+DEP ARROW_MAIN RREV
+RULES ARROW_OPTIONAL RINPUT : legality / End
+DEMO ARROW_OPTIONAL RSCREEN
+RIMP ARROW_MAIN RREV : arena records → replay host
+ROAD ARROW_OPTIONAL RULES
+ROAD ARROW_OPTIONAL TPERF
+
+note bottom
+  Rules detail: ""_spec/packages/starchess-core/"".
+  Interaction **plan** (patterns + allowed edges):
+  ""_spec/apps/starchess/core/"".
+  ""architecture/"" = board/screen class maps + timeline perf.
+end note
+@enduml

@@ -1,0 +1,34 @@
+/* SPEC: _spec/apps/starchess/navigation-chrome.md */
+.subBanner {
+  display: none;
+}
+
+@media (max-width: 719px) {
+  .subBanner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    position: absolute;
+    top: var(--mobile-banner-row-height, 48px);
+    left: 0;
+    right: 0;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.25rem 0.5rem;
+    background: rgb(0 0 0 / 0.3);
+    z-index: 5;
+  }
+
+  .subBanner[data-sub-banner="float"] {
+    z-index: 60;
+  }
+
+  .subBanner:empty {
+    display: none;
+  }
+
+  .subBanner > * {
+    flex: 0 0 auto;
+  }
+}

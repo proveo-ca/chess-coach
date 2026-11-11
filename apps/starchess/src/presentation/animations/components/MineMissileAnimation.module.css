@@ -1,0 +1,157 @@
+.boardOverlay {
+  position: absolute;
+  pointer-events: none;
+  z-index: 44;
+  overflow: visible;
+  contain: layout style;
+  isolation: isolate;
+  --mine-missile-ms: 250ms;
+  --mine-missile-lift-ms: 200ms;
+  --mine-missile-launch-ms: 50ms;
+  --mine-trail-ms: 700ms;
+}
+
+.boardFx {
+  position: absolute;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.travel,
+.trailFrame {
+  position: absolute;
+  overflow: visible;
+  transform-origin: center;
+}
+
+.travel {
+  z-index: 45;
+}
+
+/* Screen-space lift (before aim rotate) so a-file chases stay centered. */
+.lift {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transform-origin: center center;
+  animation: mineMissileLift var(--mine-missile-ms) ease-out 1 forwards;
+  
+}
+
+.aimed {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transform-origin: center;
+  overflow: visible;
+}
+
+.hull {
+  position: absolute;
+  inset: 4%;
+  display: grid;
+  place-items: center;
+  will-change: transform;
+  animation: mineMissileTravel var(--mine-missile-ms) linear 1 forwards;
+}
+
+.hull.hullStationary {
+  animation: mineMissilePulse var(--mine-missile-ms) ease-out 1 forwards;
+}
+
+/* Kill any residual SpiderMine transform — aimed hull owns flight. */
+.hull :global([data-spider-mine]) {
+  position: relative;
+  inset: auto;
+  width: 88%;
+  height: 88%;
+  transform: none;
+  transform-origin: center center;
+  transition: none;
+}
+
+/* 0–80% (200ms): lift; 80–100% (50ms): hold lift while hull launches. */
+@keyframes mineMissileLift {
+  0% {
+    transform: translateY(0);
+  }
+  80%,
+  100% {
+    transform: translateY(-28%);
+  }
+}
+
+/* Stay put for lift window, then snap-launch along +x in the aimed frame. */
+@keyframes mineMissileTravel {
+  0%,
+  80% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  100% {
+    opacity: 0.15;
+    transform: translateX(var(--mine-span)) scale(0.75);
+  }
+}
+
+@keyframes mineMissilePulse {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1.12) translateY(-10%);
+  }
+  100% {
+    opacity: 0.2;
+    transform: scale(0.9) translateY(-4%);
+  }
+}
+
+.trailFrame {
+  z-index: 43;
+}
+
+/* Single trail — same green as battleship Tactical Jump.
+   Starts with the launch (after lift delay). */
+.trail {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--mine-span) * 0.62);
+  height: 5px;
+  margin-top: -2.5px;
+  border-radius: 999px;
+  transform-origin: left center;
+  background: linear-gradient(90deg, rgba(47, 208, 106, 0.95), rgba(47, 208, 106, 0));
+  box-shadow: 0 0 10px rgba(47, 208, 106, 0.65);
+  animation: mineMissileTrail var(--mine-trail-ms) linear var(--mine-missile-lift-ms) 1 forwards;
+  opacity: 0;
+}
+
+@keyframes mineMissileTrail {
+  0% {
+    opacity: 0.95;
+    transform: translateX(-5px) scaleX(0.12);
+  }
+  22% {
+    opacity: 0.85;
+    transform: translateX(calc(var(--mine-span) * -0.12)) scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(calc(var(--mine-span) * -0.28)) scaleX(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lift,
+  .hull,
+  .trail {
+    animation-duration: 1ms;
+    animation-delay: 0ms;
+  }
+}

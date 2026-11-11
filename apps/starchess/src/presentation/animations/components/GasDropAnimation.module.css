@@ -1,0 +1,119 @@
+.boardOverlay {
+  position: absolute;
+  pointer-events: none;
+  z-index: 34;
+  overflow: visible;
+  contain: layout style;
+  isolation: isolate;
+}
+
+.slot {
+  position: absolute;
+  overflow: visible;
+  z-index: 4;
+  /* Top-edge start X — always falls downward into the piece. */
+  --drop-x: 50%;
+}
+
+.slot[data-gas-drop="left"] {
+  --drop-x: 18%;
+}
+
+.slot[data-gas-drop="mid"] {
+  --drop-x: 50%;
+}
+
+.slot[data-gas-drop="right"] {
+  --drop-x: 82%;
+}
+
+/* Green special-used aura eases in as the canister absorbs.
+   Outline + glow are static (paint cost paid once); only opacity animates
+   so the 260ms absorb stays on the compositor. */
+.aura {
+  position: absolute;
+  inset: 6%;
+  border-radius: 10%;
+  pointer-events: none;
+  outline: 2px solid rgba(61, 206, 106, 0.9);
+  outline-offset: -2px;
+  box-shadow:
+    0 0 12px rgba(61, 206, 106, 0.85),
+    inset 0 0 8px rgba(61, 206, 106, 0.18);
+  animation: gasAuraIn var(--gas-drop-ms, 260ms) ease-out 1 forwards;
+}
+
+.canister {
+  position: absolute;
+  left: var(--drop-x);
+  top: 0;
+  width: 36px;
+  height: 36px;
+  margin-left: -18px;
+  display: grid;
+  place-items: center;
+  line-height: 0;
+  will-change: transform;
+  color: #2a9b6a;
+  animation: gasFall var(--gas-drop-ms, 260ms) cubic-bezier(0.35, 0.05, 0.65, 1) 1 forwards;
+}
+
+/* Baked contact shadow — a gradient child instead of `filter: drop-shadow`,
+   which gave the falling canister a filter layer to raster on mount. It rides
+   the canister's transform (its stacking context), painted under the icon. */
+.canisterShadow {
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 12%;
+  height: 22%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0));
+  transform: translateY(2px);
+  pointer-events: none;
+}
+
+/* Lite VFX tier: the aura keeps its outline, drops the 12px glow raster. */
+:global(html[data-vfx-tier="lite"]) .aura {
+  box-shadow: none;
+}
+
+@keyframes gasFall {
+  0% {
+    transform: translate(0, -35%) scale(1) rotate(-8deg);
+    opacity: 1;
+  }
+  55% {
+    transform: translate(0, 42%) scale(0.92) rotate(4deg);
+    opacity: 1;
+  }
+  82% {
+    transform: translate(0, 52%) scale(0.55) rotate(0deg);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(0, 58%) scale(0.2) rotate(0deg);
+    opacity: 0;
+  }
+}
+
+@keyframes gasAuraIn {
+  0%,
+  35% {
+    opacity: 0;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canister,
+  .aura {
+    animation-duration: 1ms;
+  }
+}

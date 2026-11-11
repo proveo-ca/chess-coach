@@ -1,0 +1,66 @@
+@startuml deployment
+' SPEC: _spec/apps/starchess/deployment.puml
+' purpose: Scoped PWA + Worker routes for standalone StarChess.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Scoped PWA / Worker
+
+cloud "proveo.ca" {
+  component "Worker **starchess**\n/starchess + /starchess/*\nASSETS · run_worker_first" as W <<cloud>>
+  component "Worker **chess**\n/chess + /chess/*" as C <<cloud>>
+}
+
+package "StarChess shell" {
+  component "Vite base /starchess/\noutDir dist/starchess" as V <<app>>
+  component "Manifest + sw.js\nscope /starchess/\ncacheId starchess-shell" as P <<app>>
+  component "worker.js\n308 /starchess → /starchess/\nSPA nav fallback · asset 404\nno-cache bootstrap" as J <<app>>
+}
+
+package "Coach compatibility" {
+  component "/chess/starchess\n→ /starchess/ + search/hash\nStarChessRedirect" as R <<app>>
+  component "NerdModePrompt\nLevenshtein on name **blur/commit**\nyes → /starchess/\nkeep classic → Nerd identity\neither answer → **isNerd**" as N <<app>>
+  component "MenuScreen\n**isNerd** → Play StarChess\n(neon green, under Play with Selena)" as M <<app>>
+  component "goStarChess(assign|replace)\nsole hop: stamps starchess_from_chess,\nkeeps search + hash" as G <<app>>
+}
+
+V --> P
+V --> J
+W --> J
+C --> R
+R ..> G : replace
+N ..> G : assign
+M ..> G : assign
+G ..> W : external navigate
+
+note bottom of V
+  SPA routes (Router base ``/starchess``):
+  ``/`` menu · ``/single?map=&team=`` live match ·
+  ``/review`` list · ``/review/:id`` DualNav replay ·
+  ``/tutorial`` · ``/tutorial/:section`` · ``/tutorial/:section/:story``
+  (``TUTORIAL_SCRIPT`` ids — e.g. ``/tutorial/fog/king``).
+  Adjutant plays the **opposite** of ``team`` (not always Black).
+  ``/single`` HUD: ResourceBar (top) · TurnBarSidebar (rail) · GasDeploy (footer;
+  floats top-right when ``max-height: 639px``).
+  gameOver → save ``starchess_match_history`` → ``MatchResultModal``
+  (Another Game rematch · Replay → ``/review/:id``).
+  From Coach ``/chess/`` (nerd yes / ``StarChessRedirect``):
+  ``starchess_from_chess`` → ``MenuArrival`` (Chess mockup → sky).
+  Tutorial: CoachScreen-shaped (Kerrigan header) · HOME-only sidebar · story demos.
+end note
+
+note bottom of N
+  Local dual-serve: ``pnpm dev`` (nx ui + starchess).
+  Coach vite ``:5173`` proxies ``/starchess`` → starchess ``:5175``.
+end note
+
+note bottom of W
+  **Root deploy (both workers):** ``npm run deploy:web-no-llm``
+    → ``apps/chess`` (``chess`` /chess) then ``apps/starchess`` (``starchess`` /starchess).
+  **StarChess only:** ``npm run deploy:starchess``
+  **Dry-run:** pnpm --filter @chess-coach/starchess deploy:dry-run
+  **Do not** treat dry-run as production deploy.
+end note
+@enduml

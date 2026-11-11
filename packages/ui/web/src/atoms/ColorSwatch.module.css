@@ -1,0 +1,25 @@
+/* SPEC: _spec/apps/ui/components.puml */
+
+/* Literal chess-piece colors — White / Black sides (LAN seats · Review filters). */
+.swatch {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 0.2rem;
+  border: 1px solid var(--border-color);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.swatch--md {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 0.25rem;
+}
+
+.swatch--w {
+  background: var(--piece-side-white);
+}
+
+.swatch--b {
+  background: var(--piece-side-black);
+}

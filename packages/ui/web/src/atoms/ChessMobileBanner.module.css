@@ -1,0 +1,104 @@
+.banner {
+  display: none;
+}
+
+@media (max-width: 719px) {
+  .banner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 0.5rem;
+
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+    margin: 0;
+    flex-shrink: 0;
+    padding-block: 0.35rem;
+    padding-inline: var(--board-chrome-inline, 0.7rem);
+    min-height: 40px;
+    background: var(--panel-bg);
+    border-bottom: 1px solid var(--border-color);
+    z-index: 5;
+  }
+}
+
+@media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
+  :global([data-fuse-root]) > .banner {
+    display: contents;
+  }
+
+  :global([data-fuse-root]) [data-fuse="back"] {
+    order: -20;
+    flex: 0 0 auto;
+  }
+
+  :global([data-fuse-root]) [data-fuse="centre"] {
+    order: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    justify-content: stretch;
+  }
+
+  :global([data-fuse-root]) [data-fuse="centre"] > .title {
+    display: flex;
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    overflow: visible;
+  }
+
+  :global([data-fuse-root]) [data-fuse="menu"] {
+    order: 3;
+    flex: 0 0 auto;
+  }
+
+  :global([data-fuse-root]) > .banner[data-hide-centre] [data-fuse="centre"],
+  .banner[data-hide-centre] [data-fuse="centre"] {
+    display: none;
+  }
+}
+
+.side {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.side:first-child {
+  justify-content: flex-start;
+}
+
+.trailing {
+  justify-content: flex-end;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.title {
+  margin: 0 !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.95rem !important;
+  font-weight: 600;
+  line-height: 1.2 !important;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  max-width: 100%;
+  min-width: 0;
+}

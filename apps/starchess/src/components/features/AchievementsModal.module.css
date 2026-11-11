@@ -1,0 +1,37 @@
+.sheet.sheet {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: min(28rem, calc(100vw - 2rem));
+  max-height: min(85vh, 44rem);
+}
+
+.sheet.sheet > :last-child {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+@media (min-width: 720px) {
+  .sheet.sheet {
+    width: min(56rem, calc(100vw - 4rem));
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+}

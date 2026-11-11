@@ -1,0 +1,135 @@
+import { cleanup, fireEvent, render, screen } from "@solidjs/testing-library";
+import { createSignal } from "solid-js";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+import { createMatchStateFromScfen } from "~/app/matchReducer";
+import { createMatchStore } from "~/app/MatchStoreContext";
+import { MatchStoreProvider } from "~/ports/matchStore";
+import { BoardSideRail } from "~/presentation/hud/components/BoardSideRail";
+import { TurnBarSidebar } from "~/presentation/hud/components/TurnBarSidebar";
+import {
+  ANALYSIS_CAPABILITIES,
+  CapabilitiesProvider,
+  TUTORIAL_CAPABILITIES,
+} from "~/store/capabilitiesStore";
+import type { ScreenCapabilities } from "~/types/capabilities";
+import { STAR_STARTING_SCFEN } from "~/app/seeds";
+
+afterEach(() => cleanup());
+
+const directDividers = (rail: HTMLElement) =>
+  Array.from(rail.children).filter((child) => child.tagName === "HR");
+
+describe("BoardSideRail", () => {
+  it("wraps live controls and confirms before leaving", () => {
+    const onHome = vi.fn();
+    const store = createMatchStore({
+      initial: createMatchStateFromScfen(STAR_STARTING_SCFEN, 1),
+    });
+
+    render(() => (
+      <MatchStoreProvider store={store}>
+        <BoardSideRail
+          controlsVisible
+          controls={<TurnBarSidebar autoStart={false} resolveOnEnd={false} />}
+          onHome={onHome}
+        />
+      </MatchStoreProvider>
+    ));
+
+    const rail = screen.getByTestId("starchess-side-rail");
+    expect(screen.getByTestId("turn-bar-sidebar")).not.toBeNull();
+    expect(screen.getByTestId("turn-end").textContent).toContain("End Turn");
+    expect(screen.getByTestId("starchess-sidebar")).not.toBeNull();
+    expect(directDividers(rail)).toHaveLength(1);
+    expect(screen.queryByTestId("review-vision-filter")).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Home" }));
+    expect(onHome).not.toHaveBeenCalled();
+    expect(screen.getByTestId("exit-game-confirm")).not.toBeNull();
+
+    fireEvent.click(screen.getByTestId("exit-game-leave"));
+    expect(onHome).toHaveBeenCalledOnce();
+  });
+
+  it("wraps review controls and exposes review-only tools", () => {
+    const onHome = vi.fn();
+    const base = createMatchStateFromScfen(STAR_STARTING_SCFEN, 1);
+    const store = createMatchStore({
+      initial: { ...base, phase: "gameOver" },
+    });
+
+    render(() => (
+      <CapabilitiesProvider value={() => ANALYSIS_CAPABILITIES}>
+        <MatchStoreProvider store={store}>
+          <BoardSideRail
+            controlsVisible
+            controls={<TurnBarSidebar review={{ turn: 1, phase: "resolve", hideDualNav: true }} />}
+            onHome={onHome}
+          />
+        </MatchStoreProvider>
+      </CapabilitiesProvider>
+    ));
+
+    const rail = screen.getByTestId("starchess-side-rail");
+    expect(screen.getByTestId("turn-bar-sidebar-review")).not.toBeNull();
+    expect(screen.queryByTestId("turn-end")).toBeNull();
+    expect(screen.getByTestId("review-vision-filter")).not.toBeNull();
+    expect(directDividers(rail)).toHaveLength(1);
+
+    fireEvent.click(screen.getByRole("button", { name: "Home" }));
+    expect(onHome).toHaveBeenCalledOnce();
+    expect(screen.queryByTestId("exit-game-confirm")).toBeNull();
+  });
+
+  it("reactively toggles controls and the shared divider together", () => {
+    const store = createMatchStore({
+      initial: createMatchStateFromScfen(STAR_STARTING_SCFEN, 1),
+    });
+    const [controlsVisible, setControlsVisible] = createSignal(false);
+
+    render(() => (
+      <MatchStoreProvider store={store}>
+        <BoardSideRail
+          controlsVisible={controlsVisible()}
+          controls={<div data-testid="hidden-controls" />}
+        />
+      </MatchStoreProvider>
+    ));
+
+    const rail = screen.getByTestId("starchess-side-rail");
+    expect(screen.queryByTestId("hidden-controls")).toBeNull();
+    expect(directDividers(rail)).toHaveLength(0);
+    expect(screen.getByTestId("starchess-sidebar")).not.toBeNull();
+
+    setControlsVisible(true);
+    expect(screen.getByTestId("hidden-controls")).not.toBeNull();
+    expect(directDividers(rail)).toHaveLength(1);
+
+    setControlsVisible(false);
+    expect(screen.queryByTestId("hidden-controls")).toBeNull();
+    expect(directDividers(rail)).toHaveLength(0);
+  });
+
+  const reviewRail = (caps?: ScreenCapabilities) => {
+    const base = createMatchStateFromScfen(STAR_STARTING_SCFEN, 1);
+    const store = createMatchStore({ initial: { ...base, phase: "gameOver" } });
+    const rail = () => (
+      <MatchStoreProvider store={store}>
+        <BoardSideRail controlsVisible controls={<div />} />
+      </MatchStoreProvider>
+    );
+    return render(() =>
+      caps ? <CapabilitiesProvider value={() => caps}>{rail()}</CapabilitiesProvider> : rail(),
+    );
+  };
+
+  it("a tutorial host hides the vision filter only inside its own tree", () => {
+    const tutorial = reviewRail(TUTORIAL_CAPABILITIES);
+    expect(screen.queryByTestId("review-vision-filter")).toBeNull();
+    tutorial.unmount();
+
+    reviewRail();
+    expect(screen.getByTestId("review-vision-filter")).not.toBeNull();
+  });
+});

@@ -1,0 +1,53 @@
+@startuml record-packing
+' SPEC: _spec/packages/starchess-core/record-packing.puml
+' purpose: replay/packed.ts — the lossless storage codec for a record's
+' resolves, and the per-ply SCSan intent line. Authority: this is shipped.
+' covers: packages/starchess-core/src/replay/packed.ts
+' covers: packages/starchess-core/src/__tests__/packed.test.ts
+' covers: apps/starchess/src/store/matchHistoryStore.ts
+' see also: apps/starchess/replay-import.puml (export / import channels)
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess Core · Record packing — same data, deflated, proven
+
+package "replay/packed.ts" {
+  component "packRecord(record)\nresolves → packed · scsan\nno-op when already packed\nkeeps plain when packResolves says null" as PR <<app>>
+  component "packResolves(scfens, resolves)\n1. omit ply ""next"" only where\n    parseScFen(scfens[i+1]) gives it back exactly\n2. JSON → deflate (fflate, level 9) → base64\n3. **unpack and compare** — mismatch ⇒ null" as PK <<app>>
+  component "unpackResolves(scfens, packed)\ninflate · count check · rebuild omitted ""next""\nthrows on a corrupt payload" as UP <<app>>
+  component "resolvesOf(record) / unpackRecord(record)\nread either form" as RO <<db>>
+  component "scsanOf(resolves)\nper-ply ""Q:"" line, today's kind names\nnull where the ply stored no queue" as SS <<db>>
+}
+
+package "replay/record.ts" {
+  component "historyFromRecord(payload)\nplain or packed" as HFR <<app>>
+  component "validateArenaRecord(value)\npacked import → plain record" as VAL <<app>>
+}
+
+package "apps/starchess" {
+  component "matchHistoryStore\naddMatchRecord packs · load packs\nany plain record once" as MHS <<app>>
+  database "localStorage\n""starchess_match_history""" as LS <<db>>
+  component "historyExport\nexport unpacks · import takes either" as EXP <<app>>
+}
+
+MHS ARROW_MAIN PR
+PR ARROW_MAIN PK
+PR ARROW_MAIN SS
+PK ARROW_MAIN UP : round-trip proof
+MHS ARROW_MAIN LS : packed records
+HFR ARROW_MAIN RO
+VAL ARROW_MAIN UP
+EXP ARROW_MAIN RO
+
+note bottom of PK
+  **Never re-derived.** A resolve is what happened under the rules of the
+  day it was played; nothing here runs ""resolveTurn"". A replay from
+  ""scfens"" + ""scsan"" under today's rules could tell a different story
+  (e.g. the timed-collision rework), so SCSan is a readable log stored
+  **beside** the resolves, never in place of them.
+  Measured on a real 96-game phone history: 4.18 M → 0.72 M chars
+  (packed resolves 0.41 M · scfens 0.20 M · scsan ≈ 0.10 M).
+end note
+@enduml

@@ -1,0 +1,17 @@
+import type { GasDeployTarget } from "~/presentation/specials/types";
+import {
+  armPieceSpecial,
+  type PieceSpecialArmHandlers,
+} from "~/presentation/specials/pieceSpecials";
+import { useMatchStore } from "~/ports/matchStore";
+
+/**
+ * Connects {@link GasDeploy} drops to per-piece special activators.
+ */
+export const usePieceSpecialArm = (handlers: PieceSpecialArmHandlers) => {
+  const store = useMatchStore();
+  const onGasDeploy = (target: GasDeployTarget) => {
+    armPieceSpecial(store, target, handlers);
+  };
+  return { onGasDeploy };
+};

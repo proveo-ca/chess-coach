@@ -1,0 +1,62 @@
+@startuml starchess-replay-import
+' SPEC: _spec/apps/starchess/replay-import.puml
+' WEB APP — import recorded arena SCFENs and replay them (DualNav), extending the ?scfen= deep link.
+' anchors to apps/starchess/routes + reviewHistory.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Web app — import & replay recorded arena games
+
+package "sources" {
+  component "GET /starchess/arena/games/:id\n(node service)" as SRV <<app>>
+  component "record JSON export\nfile input / drag-drop (offline)" as FILE <<host>>
+  component "?game= (review route)\n?scfens= (short games)\n?scfen= (single, today)" as URL <<host>>
+}
+
+package "apps/starchess" {
+  component "adapters/browser\nreadScfenQuery (extended)" as READ <<app>>
+  component "reviewHistory\ncreateMatchStateFromReviewHistory" as BUILD <<app>>
+  component "ReviewDemoScreen\n(DualNav replay host)" as REVIEW <<app>>
+  component "ReviewScreen\nArena library section" as LIST <<app>>
+}
+
+package "packages/starchess-core (shared)" {
+  component "replay/record.ts\nhistoryFromRecord" as HFR <<app>>
+}
+
+database "matchReducer (MatchState)\nsettledSnapshots · settledResolves" as ST <<db>>
+
+SRV ARROW_MAIN READ : fetch record JSON
+FILE ARROW_MAIN READ : readAsText → validate → localStorage
+URL ARROW_MAIN READ : decode scfens / game list
+READ ARROW_MAIN HFR : { scfens[], resolves[] | packed }
+HFR ARROW_MAIN BUILD : settled plies
+BUILD ARROW_MAIN ST : seeded gameOver state
+ST ARROW_MAIN REVIEW : replay /review/:id host
+SRV ARROW_MAIN LIST : game list
+
+note bottom
+  **Same seam as today:** ""/review/:id"" already replays persisted records
+  (""historyFromRecord"" → ""createMatchStateFromReviewHistory"" →
+  ""ReviewDemoScreen""); importing an arena game just swaps the *source*
+  of the record (server fetch or URL) for the localStorage record.
+  **Route separation:** the single route keeps ""?scfen="" (singular); the
+  review route takes ""?game="" (server fetch, for sharing) and ""?scfens=""
+  (multi, scoped to short games — full games overflow URL length limits).
+  **File import (recommended offline channel):** record JSON via ""<input
+  type=file>""/drag-drop → ""FileReader"" → validate → localStorage
+  (""starchess_match_history""). No HTTP, so no CORP/COEP issue; per-origin
+  localStorage caveat — file export↔import is the portable round-trip.
+  **Stored packed:** ""starchess_match_history"" holds records with
+  ""packed"" (deflated resolves) in place of ""resolves"" — see
+  ""packages/starchess-core/record-packing.puml"". Export unpacks to plain
+  JSON; import accepts either form.
+  **Cross-origin:** the ""?game="" fetch needs the server to send
+  ""Cross-Origin-Resource-Policy: cross-origin"" (COEP-isolated app); the
+  arena library also gets explicit loading/error states.
+  **No board changes:** ""LiveStarChessBoard"" reads only the store's
+  displayed snapshot, so seeding the store is the whole import.
+end note
+@enduml

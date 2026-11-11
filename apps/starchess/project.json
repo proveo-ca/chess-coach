@@ -1,0 +1,31 @@
+{
+  "name": "starchess",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/starchess/src",
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run dev",
+        "cwd": "apps/starchess"
+      }
+    },
+    "storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run storybook",
+        "cwd": "apps/starchess"
+      }
+    },
+    "e2e": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "docker compose run --build --rm e2e-starchess",
+        "cwd": "."
+      }
+    }
+  },
+  "tags": ["type:app", "scope:starchess"]
+}

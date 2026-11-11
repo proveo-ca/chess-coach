@@ -1,0 +1,176 @@
+import { describe, expect, it } from "vitest";
+import { readFileSync, readdirSync, statSync } from "node:fs";
+import { join } from "node:path";
+
+const SRC = join(import.meta.dirname, "../..");
+
+const walk = (dir: string): string[] => {
+  const out: string[] = [];
+  for (const name of readdirSync(dir)) {
+    if (name === ".gitkeep") continue;
+    const p = join(dir, name);
+    if (statSync(p).isDirectory()) out.push(...walk(p));
+    else if (/\.(ts|tsx|js|mjs)$/.test(p)) out.push(p);
+  }
+  return out;
+};
+
+describe("apps/starchess boundary", () => {
+  it("does not import apps/chess, gameStore, coach, EnginePool, stockfish, web-llm", () => {
+    // Ban Coach UI / engine paths. StarChess may use its own `~/store/*`
+    // (settings, capabilities, review vision) — not apps/chess's store tree.
+    const forbidden =
+      /from ["'](?:.*apps\/ui|~\/(?:engine|hooks\/useChessBoard)|.*gameStore|.*coachStore|.*EnginePool|.*stockfish|.*web-llm|@mlc-ai)/;
+    const offenders: string[] = [];
+    for (const file of walk(SRC)) {
+      const text = readFileSync(file, "utf8");
+      for (const line of text.split("\n")) {
+        if (!line.includes("import")) continue;
+        if (line.trimStart().startsWith("//") || line.trimStart().startsWith("*")) continue;
+        if (forbidden.test(line)) offenders.push(`${file}: ${line.trim()}`);
+        if (line.includes("/chess/pieces/")) offenders.push(`${file}: ${line.trim()}`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("ACL: only public @chess-coach/starchess-core — no deep resolve/rules/board paths", () => {
+    // SPEC: _spec/apps/starchess/core/engine-boundary.puml
+    const deep =
+      /from ["']@chess-coach\/starchess-core\/(?:src\/)?(?:resolve|rules|board|commands|scfen|ai)\//;
+    const relativeDeep =
+      /from ["'](?:\.\.\/)+packages\/starchess-core\/src\/(?:resolve|rules)\//;
+    const offenders: string[] = [];
+    for (const file of walk(SRC)) {
+      if (file.includes(`${join("src", "__tests__")}`)) continue;
+      const text = readFileSync(file, "utf8");
+      for (const line of text.split("\n")) {
+        if (!line.includes("import") && !line.includes("require")) continue;
+        if (line.trimStart().startsWith("//") || line.trimStart().startsWith("*")) continue;
+        if (deep.test(line) || relativeDeep.test(line)) {
+          offenders.push(`${file}: ${line.trim()}`);
+        }
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("live presentation never imports addScAction/endScTurn/beginScTurn (reducer/store only)", () => {
+    // SPEC: _spec/apps/starchess/core/turn/match-state-machine.puml
+    // Demos/tests/reviewHistory builders may call engine offline.
+    const allow = [
+      `${join("src", "app", "matchReducer.ts")}`,
+      `${join("src", "app", "reviewHistory.ts")}`,
+      `${join("src", "demos")}`,
+      `${join("src", "__tests__")}`,
+      `${join("src", "stories")}`,
+    ];
+    const engineWrite =
+      /\b(?:addScAction|removeScAction|endScTurn|beginScTurn)\b/;
+    const offenders: string[] = [];
+    for (const file of walk(SRC)) {
+      if (allow.some((a) => file.includes(a))) continue;
+      // MatchStoreContext must not call beginScTurn (TURN_OPEN owns it).
+      const text = readFileSync(file, "utf8");
+      if (!engineWrite.test(text)) continue;
+      for (const line of text.split("\n")) {
+        const t = line.trim();
+        if (t.startsWith("//") || t.startsWith("*") || t.startsWith("/*")) continue;
+        if (t.includes("import") && engineWrite.test(t)) {
+          // type-only imports ok; value imports of writers forbidden outside allow
+          if (/\bimport\b/.test(t) && !/\btype\b/.test(t.split("{")[0] ?? "")) {
+            offenders.push(`${file}: ${t}`);
+          }
+        } else if (
+          engineWrite.test(t) &&
+          !t.includes("SPEC") &&
+          !t.includes("addScAction") && // comments about snap.gas
+          !t.startsWith("*") &&
+          !t.includes("`") &&
+          (t.includes("beginScTurn(") ||
+            t.includes("endScTurn(") ||
+            t.includes("addScAction(") ||
+            t.includes("removeScAction("))
+        ) {
+          offenders.push(`${file}: ${t}`);
+        }
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  /**
+   * `cburnett` is the fog tutorial's Chess skin and nothing else. Exactly one
+   * place may *choose* it; everywhere else only reads `pieceSet` to pick a
+   * glyph, and that reading stays in presentation. Otherwise the skin drifts
+   * into being a board / rules concept.
+   */
+  it("cburnett is chosen only by the fog tutorial, and read only by presentation", () => {
+    const chooses = /pieceSet=\{[^\n]*["']cburnett["']/;
+    const names = /["']cburnett["']/;
+    const choosers = new Set<string>();
+    const readers = new Set<string>();
+    for (const file of walk(SRC)) {
+      if (file.includes(join("src", "__tests__"))) continue;
+      const rel = file.slice(SRC.length + 1);
+      for (const line of readFileSync(file, "utf8").split("\n")) {
+        if (!names.test(line)) continue;
+        (chooses.test(line) ? choosers : readers).add(rel);
+      }
+    }
+
+    expect([...choosers]).toEqual([join("screens", "TutorialScreen.tsx")]);
+    // Glyph switches + the PieceSet union itself — no app / store / core reader.
+    expect([...readers].sort()).toEqual([
+      join("presentation", "animations", "components", "ccDamageOverlay.tsx"),
+      join("presentation", "board", "components", "PieceGlyph.tsx"),
+      join("types", "board.ts"),
+    ]);
+
+    const core = join(SRC, "..", "..", "..", "packages", "starchess-core", "src");
+    const inCore = walk(core).filter((f) =>
+      readFileSync(f, "utf8").includes("cburnett"),
+    );
+    expect(inCore).toEqual([]);
+  });
+
+  /**
+   * `public/pieces/` is tutorial-only art. Product units are inline components
+   * from `presentation/pieces/`, so a static asset may be reached from exactly
+   * two glyph switches — and on both, only the `cburnett` branch resolves.
+   *
+   * This is what stops the board and the combat overlay drifting apart: when a
+   * resting unit is a traced SVG and the animating one is a component, an edit
+   * to either is invisible on the other half of the frame.
+   */
+  it("pieceUrl is reachable only from the two cburnett glyph switches", () => {
+    const allowed = [
+      join("presentation", "board", "components", "PieceGlyph.tsx"),
+      join("presentation", "animations", "components", "ccDamageOverlay.tsx"),
+      join("presentation", "board", "pieceUrl.ts"),
+    ].sort();
+
+    const importers = new Set<string>();
+    for (const file of walk(SRC)) {
+      if (file.includes(join("src", "__tests__"))) continue;
+      const rel = file.slice(SRC.length + 1);
+      for (const line of readFileSync(file, "utf8").split("\n")) {
+        if (!line.includes("import")) continue;
+        if (/from ["'][^"']*board\/pieceUrl["']/.test(line)) importers.add(rel);
+      }
+    }
+    expect([...importers].sort()).toEqual(allowed.filter((f) => !f.endsWith("pieceUrl.ts")));
+
+    // No one hand-rolls the asset path around the switch either.
+    const handRolled: string[] = [];
+    for (const file of walk(SRC)) {
+      if (file.includes(join("src", "__tests__"))) continue;
+      const rel = file.slice(SRC.length + 1);
+      for (const line of readFileSync(file, "utf8").split("\n")) {
+        if (line.trimStart().startsWith("*") || line.trimStart().startsWith("//")) continue;
+        if (/pieces\/(?:nerd|cburnett)\//.test(line)) handRolled.push(`${rel}: ${line.trim()}`);
+      }
+    }
+    expect(handRolled).toEqual([]);
+  });
+});

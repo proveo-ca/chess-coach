@@ -1,0 +1,80 @@
+@startuml index
+' SPEC: _spec/packages/starchess-core/index.puml
+' purpose: Live StarChess rules spec map (packages/starchess-core).
+' covers: packages/starchess-core/src/index.ts
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess Core · Spec Map (_spec/packages/starchess-core)
+
+package "_spec/packages/starchess-core" {
+  component "scfen-wire.puml" as WIRE <<db>>
+  component "scfen-queue.puml" as QUEUE <<async>>
+  component "resolve.puml" as RESOLVE <<app>>
+  component "turn-queue-sequence.puml" as SEQ <<async>>
+  component "sc-moves.puml" as MOVES <<app>>
+  component "mine-contact.puml" as MINE <<app>>
+  component "deploy-reach.puml" as DEPLOY <<app>>
+  component "ray-scan.puml" as RAY <<app>>
+}
+
+package "packages/starchess-core/src" {
+  component "scfen/codec.ts" as COD <<app>>
+  component "commands/queue-action.ts" as QACT <<async>>
+  component "resolve/submit-turn.ts" as SUB <<app>>
+  component "resolve/resolve-turn.ts" as RT <<app>>
+  component "board/moves.ts" as SCM <<app>>
+  component "outcome.ts" as OUT <<app>>
+  component "board/{placement,mines,vision,siege}.ts" as BRD <<db>>
+  component "board/mine-contact.ts\nthe one spider-mine table" as MCS <<db>>
+  component "board/deploy-reach.ts\nthe one deploy-reach table" as DRS <<db>>
+  component "board/ray-scan.ts" as RAYS <<db>>
+  component "ai/adjutant.ts\n+ ai/strategic/** (strategic script)" as AI <<app>>
+  component "ai/strategic/tracking.ts\ncross-ply CCIntel + KnownVsSeen folds —\none owner, threaded by the app AND the arena" as SCTRACK <<db>>
+  component "replay/{fen.ts,record.ts}" as RPL <<app>>
+  component "rules/economy.ts" as ECO <<app>>
+}
+
+package "UI (apps/starchess)" {
+  component "_spec/apps/starchess/*\nHUD · match-store · demos · mode" as UI <<host>>
+}
+
+WIRE ARROW_MAIN COD
+QUEUE ARROW_MAIN COD
+QUEUE ARROW_MAIN QACT
+RESOLVE ARROW_MAIN SUB
+RESOLVE ARROW_MAIN RT
+RESOLVE ARROW_MAIN OUT
+RESOLVE ARROW_OPTIONAL BRD
+SEQ ARROW_MAIN SUB
+SEQ ARROW_MAIN RT
+MOVES ARROW_MAIN SCM
+MOVES ARROW_OPTIONAL BRD
+MOVES ARROW_OPTIONAL AI
+MINE ARROW_MAIN MCS
+DEPLOY ARROW_MAIN DRS
+RAY ARROW_MAIN RAYS
+DRS ARROW_OPTIONAL MCS : hostileMineOn
+AI ARROW_OPTIONAL DRS : is that Marine really undefended?
+AI ARROW_OPTIONAL MCS : never step / drop / jump onto a mine
+RPL ARROW_OPTIONAL WIRE : settle scfens → resolves → history
+SUB ARROW_OPTIONAL ECO : income after endScTurn
+RPL ARROW_OPTIONAL UI : ReviewScreen · arena replay
+SEQ ARROW_OPTIONAL UI : MatchStore End
+MOVES ARROW_OPTIONAL UI : useBoardInput
+
+note bottom
+  Product/UX diagrams live under ""_spec/apps/starchess/"". The Adjutant's own
+  diagrams live under ""_spec/apps/starchess/core/adjutant/"" — ""naive/"" and
+  ""strategic/"" for the two scripts, plus ""cc-focus.puml"" (which square the
+  Command Center weights aim at) and ""weight-ladder.puml"" (every weight and
+  the orderings a test enforces).
+
+  **The ""board/"" consolidation tables.** ""mine-contact.ts"", ""deploy-reach.ts""
+  and ""ray-scan.ts"" each answer one question for every caller in the package,
+  the Adjutant included. Adding a private copy of any of them in a strategy or
+  in ""resolve-turn.ts"" is the drift each was extracted to stop.
+end note
+@enduml

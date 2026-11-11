@@ -1,0 +1,264 @@
+.boardOverlay {
+  position: absolute;
+  pointer-events: none;
+  z-index: 30;
+  overflow: visible;
+  contain: layout style;
+  isolation: isolate;
+}
+
+.mover {
+  position: absolute;
+  z-index: 6;
+  overflow: visible;
+  transition: left var(--move-ms, 250ms) ease-in-out, top var(--move-ms, 250ms) ease-in-out;
+}
+
+.pieceFace {
+  position: absolute;
+  inset: 4%;
+  display: grid;
+  place-items: center;
+  overflow: visible;
+}
+
+.pieceFace svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Hoverbike: L-path (long leg → elbow → short leg); hull faces travel direction. */
+.moverHoverbike {
+  transition: none;
+  will-change: transform;
+  animation: hoverbikeLMove var(--move-ms, 375ms) linear 1 forwards;
+}
+
+.moverFace {
+  transition: transform 90ms ease-out;
+}
+
+/*
+ * Hoverbike touchdown: a short squash-and-stretch on the pad. A bike that flew
+ * right lands mirrored and snaps back to its left-facing rest here (a side
+ * change never tweens — see `styles/unitPose.css`), so the squash is what the
+ * eye reads instead of the snap. Bottom-anchored so it compresses onto the pad.
+ */
+.hoverbikeLanding {
+  transform-origin: 50% 90%;
+  animation: hoverbikeLand var(--settle-ms, 260ms) cubic-bezier(0.22, 0.61, 0.36, 1) 1;
+}
+
+@keyframes hoverbikeLand {
+  0% {
+    transform: scale(1.08, 0.84);
+  }
+  45% {
+    transform: scale(0.96, 1.05);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hoverbikeLanding {
+    animation: none;
+  }
+}
+
+/*
+ * BattleShip slide settle. The hull's own normalize unwinds inside InlineBattleShip; this
+ * unwinds the travel aim its parent applies, over the same window, so the two
+ * land together on the resting bow-down silhouette. Without it the ship snaps
+ * the instant the overlay hands the square back to the board glyph.
+ */
+.settleFace {
+  transition: transform var(--settle-ms, 260ms) cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settleFace {
+    transition: none;
+  }
+}
+
+@keyframes hoverbikeLMove {
+  /* Distance-proportional: 2 squares then 1 → elbow at ~67%. */
+  0% {
+    transform: translate(0, 0);
+  }
+  67% {
+    transform: translate(var(--kx1), var(--ky1));
+  }
+  100% {
+    transform: translate(var(--kx2), var(--ky2));
+  }
+}
+
+/* ── Marine: springy hop while sliding to destination ─────────── */
+
+.moverMarine {
+  transition: none;
+  will-change: transform;
+  animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;
+}
+
+.moverMarine .marineFace {
+  transform-origin: center 70%;
+  animation-name: marineTiltHop;
+  animation-duration: var(--marine-hop-ms, 180ms);
+  animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+  animation-iteration-count: var(--hop-count, 3);
+}
+
+.moverMarine :global([data-part="leg-left"]),
+.moverMarine :global([data-part="leg-right"]) {
+  transform-box: fill-box;
+  transform-origin: center top;
+}
+
+.moverMarine :global([data-part="leg-left"]) {
+  animation-name: marineLegLeft;
+  animation-duration: var(--marine-hop-ms, 180ms);
+  animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+  animation-iteration-count: var(--hop-count, 3);
+}
+
+.moverMarine :global([data-part="leg-right"]) {
+  animation-name: marineLegRight;
+  animation-duration: var(--marine-hop-ms, 180ms);
+  animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+  animation-iteration-count: var(--hop-count, 3);
+}
+
+/* Gas-step stim — snappier lean (packed 2× hop cycles in half travel time). */
+.moverMarineStim .marineFace {
+  animation-name: marineTiltHopStim;
+  animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0);
+}
+
+.moverMarineStim :global([data-part="leg-left"]),
+.moverMarineStim :global([data-part="leg-right"]) {
+  animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0);
+}
+
+/*
+ * Tilt ≤20° to the right on an exponential-ish ease, then mirror left.
+ * Left leg tucks up on the right-lean; right leg tucks on the left-lean.
+ */
+@keyframes marineTiltHop {
+  0% {
+    transform: rotate(0deg);
+  }
+  22% {
+    transform: rotate(20deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  72% {
+    transform: rotate(-20deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes marineTiltHopStim {
+  0% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(26deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  70% {
+    transform: rotate(-26deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes marineLegLeft {
+  0%,
+  50%,
+  100% {
+    transform: scaleY(1) translateY(0);
+  }
+  22% {
+    transform: scaleY(0.42) translateY(-3px);
+  }
+  72% {
+    transform: scaleY(1) translateY(0);
+  }
+}
+
+@keyframes marineLegRight {
+  0%,
+  50%,
+  100% {
+    transform: scaleY(1) translateY(0);
+  }
+  22% {
+    transform: scaleY(1) translateY(0);
+  }
+  72% {
+    transform: scaleY(0.42) translateY(-3px);
+  }
+}
+
+/* ── Mecha: hull slide; leg crank is SVG animateTransform ──── */
+
+.moverMecha {
+  transition: none;
+  will-change: transform;
+  animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;
+}
+
+/* BattleShip: slide while hull faces travel (same aim as attack). */
+.moverBattleShip {
+  transition: none;
+  will-change: transform;
+  animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;
+}
+
+.moverSlide {
+  transition: none;
+  will-change: transform;
+  animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;
+}
+
+/* Siege Tank (tank mode): slide while twin battery faces travel. */
+.moverTank {
+  transition: none;
+  will-change: transform;
+  animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;
+}
+
+@keyframes humanoidSlide {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(var(--mx), var(--my));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .moverHoverbike,
+  .moverMarine,
+  .moverMecha,
+  .moverBattleShip,
+  .moverTank,
+  .moverSlide,
+  .moverMarine .marineFace,
+  .moverMarine :global([data-part="leg-left"]),
+  .moverMarine :global([data-part="leg-right"]) {
+    animation-duration: 1ms;
+  }
+}

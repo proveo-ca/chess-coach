@@ -1,0 +1,113 @@
+@startuml mecha-charon
+' SPEC: _spec/specials/mecha-charon.puml
+' purpose: Mecha Charon rename (bishopCharon -> mechaCharon) + ship-collision free-aim redesign — IMPLEMENTED.
+!include ../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title Mecha Charon Missiles · Rename + Ship-Collision Free Aim
+
+package "packages/starchess-core — rules" {
+  component "rules/specials/mechaCharon.ts\ncharonDiagonalSquares (free aim)\ncharonTargetShips (AI kill list)\ncharonStrikeTarget (kill check)\ncharonRayEdge (fizzle edge)\nplacementAfterMechaCharon()" as RULE <<app>>
+  component "rules/validation.ts\nbishopSnipe case: any Mecha diagonal queues\nCharon requires mecha / needs aim square /\naim must be on a Mecha diagonal" as VAL <<error>>
+  component "resolve/submit-turn.ts\nfire-and-forget: paid gas resolves\nfrom queued square (no live Mecha needed)\nkill iff aim is first ship for action color\nF origin rewrites only on own C move" as RES <<app>>
+  component "ai/strategies/captures.ts\n+ strategic twin + plans/stacks.ts\n1 candidate per killable ship, CHARON_COMBO kept" as AI <<app>>
+}
+
+package "apps/starchess — presentation" {
+  component "specials/arms/mechaCharon.ts\nmechaCharonArm: all diagonals, click-to-pick\nnever rejects for lack of ships" as ARM <<app>>
+  component "specials/copy.ts[b]\nMecha / Charon Booster Missiles\nany diagonal — first ship detonates\nelse flies off-board" as COPY <<app>>
+  component "animations/mechaCharon.ts\nsymbol MECHA_CHARON, value bishopCharon\ncue id + OPEN_BISHOP_SNIPE frozen\nfizzle: extended span, no impact burst" as VFX <<app>>
+}
+
+database "SCFEN Q:\nB/F=charonMissiles:from:to\nwire kind frozen" as WIRE <<db>>
+
+RULE ARROW_MAIN VAL : diagonal set
+VAL ARROW_MAIN RES : queued aim
+RULE ARROW_MAIN AI : killable list
+ARM ARROW_MAIN RULE : diagonals via core index
+ARM ARROW_MAIN WIRE : queue B/F charonMissiles
+RES ARROW_MAIN WIRE : placement delete on kill
+ARM ARROW_OPTIONAL VFX : attack + death / fizzle cues
+
+note right of RULE
+  **Ray walk (implemented).**
+  4 Mecha diagonals, step to edge.
+  Aim set: every on-board diagonal square
+  (""charonDiagonalSquares"", sorted).
+  Kill (""charonStrikeTarget""): aim holds an enemy
+  Ship (q) with no ship strictly between —
+  i.e. aim is the first ship on its ray.
+  Non-ships (p/n/b/r/k, either color; mines are
+  not on the placement map) are transparent.
+  Ally ships screen but never die (no ally-fire).
+  Engine stays omniscient; fog filters highlights only.
+end note
+
+note right of VAL
+  **Superseded behavior.**
+  ""charonTargetQueen"": exactly one enemy queen
+  anywhere on the diagonals, blockers ignored,
+  single Square|null. Replaced by free aim +
+  first-ship strike check (clean cut, no queen API).
+end note
+
+note bottom
+  **Rename map (wire frozen).**
+  bishopCharon.ts → mechaCharon.ts; charonTargetQueen* →
+  charonTargetShips* + charonDiagonalSquares* + charonStrikeTarget +
+  charonRayEdge (clean cut, no queen); placementAfterCharon →
+  placementAfterMechaCharon; CHARON_GAS_COST + MECHA_CHARON_GAS_COST
+  alias; arms/charonMissiles.ts → arms/mechaCharon.ts;
+  bishopSnipeArm → mechaCharonArm; animations/bishopCharon.ts →
+  animations/mechaCharon.ts; BISHOP_CHARON → MECHA_CHARON (string
+  value ""bishopCharon"" frozen); copy [b] rewritten to free aim;
+  queen → BattleShip in q copy.
+  SCFEN kind ""charonMissiles"", store action ""OPEN_BISHOP_SNIPE"",
+  VFX cue ""bishopCharon"" stay frozen for replay compat.
+  ----
+  **2nd gas phase (F) dynamics.** B evaluates on turn-open placement;
+  F on post-C placement. F Charon now projects attack+death cues
+  (previously B-only). Ally ships screen; empty diagonals are
+  selectable and fizzle visibly instead of rejecting.
+  ----
+  **Decided (human).**
+  R1 F-drift / empty ray → fizzle with off-board flight animation
+  (extended volley span to ray edge + 2.5 cells, no impact burst,
+  no death cue) instead of silent no-op or error.
+  R2 public API clean cut (no queen names).
+  R3 highlight-all + click-to-pick on any diagonal square.
+  R4 (human) fire-and-forget over dead-actor fizzle: the Mecha need not
+  be alive at resolve — paid gas resolves from the queued square using
+  the action color (differs from classical/F-gas dead-actor skips).
+  F origin rewrites to post-C square only when the unit's own classical
+  moved it; otherwise the shot stays on its arming square (no borrowing
+  another unit's square).
+  ----
+  **Verification.** Core ""bishop/mechaCharon.test.ts"": fly-through,
+  ally screen, enemy screen, multi-ray, free-aim diagonals (13 from
+  d4), validation accept/reject, kill, F-fizzle, ray edge.
+  AI ""ai/charonHunt.test.ts"": pre-21 B insta, post-21 F guess as C+F,
+  income (not turn) gating, predictor determinism, composer screen-drops;
+  ""tactics/weightOrdering.test.ts"" pins INSTA > COMBO > GUESS×rate.
+  Presentation ""specials/pieceArms.test.ts"" (free-aim arm),
+  ""boardInput/useBoardInputCoverage"" + ""matchReducer.actions""
+  (targets list), ""timelinePlayer"" (B kill cues), ""tutorialScript""
+  (frozen charonMissiles SCFEN). Full core + app suites green.
+  ----
+  **Adjutant hunt (two-mode, naive + strategic twin).**
+  Gate ""enemyCanJump"" = enemy gasIncome ≥ 3 (never the turn number).
+  Pre-jump: B insta-targets at killable first-ships, bonus CHARON_INSTA
+  3_200 (near-guaranteed — B resolves before either classical and no
+  enemy B jump is affordable). Post-jump: F guesses at top-3 mirrored
+  warp predictions per (mecha, ship) — center + safety + king-menace,
+  no vision filter (mechas see board-wide) — filtered to free-aim
+  diagonals and strike-verified on the predicted board, committed via
+  C+F ""charonForwardStacks"" (mecha stays put; own classical must not
+  occupy/screen the aim), bonus CHARON_GUESS 2_000 × HIT_RATE 0.4
+  (≈800, hotter by human call). Never both modes in one turn.
+  F singles commit only inside C+F stacks (orchestrators exclude lone-F);
+  partners come from top-scored classicals (cap 16) that leave the aim clear.
+end note
+@enduml

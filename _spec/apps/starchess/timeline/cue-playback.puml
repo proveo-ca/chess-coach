@@ -1,0 +1,123 @@
+@startuml cue-playback
+' SPEC: _spec/apps/starchess/timeline/cue-playback.puml
+' purpose: playTimeline dispatch — how the head of the cue queue picks a
+' handler, what each handler commits, and when the board ladder advances.
+' covers: apps/starchess/src/__tests__/timelinePlayer.test.ts
+!include ../../../themes/proveo.puml
+
+skinparam defaultTextAlignment left
+
+title StarChess · ""playTimeline"" — dispatch and commit semantics
+
+start
+:commit the ""afterPending"" board + pre-shot king HP;
+note right
+  ""livesBeforeAnimatedShots"" **undoes** the chips ""afterPending"" already
+  applied, so a king hull stays pristine until frag impact. Only turn-open
+  chips are undone — classical chips live in ""next"" and land at impact
+  without an undo.
+end note
+if (no cues?) then (yes)
+  :apply ""afterB"", commit ""next"", done;
+  stop
+endif
+
+repeat :read cue at ""index"", ""takeWhile"" its batch;
+
+  if (gas drop?) then (yes)
+    :absorb window — pull an adjacent deploy batch and its crush deaths\ninto the **same** window so a trailing attack cannot clip the drop;
+    :crush deaths start ~""CRUSH_DEATH_MS"" into the deploy (mid-drop\ncollapse), window = max(gas, deploy, crush);
+    :stamp ""U:"" aura squares on completion;
+  elseif (spawn deploy?) then (yes)
+    :same shape without the canister (auto-deploy / edge cases);
+    :**late windows** (F wave, after moves/attacks mutated placement)\npatch the board **forward** (""commitDeployBoard"") — re-applying\n""afterB"" would rewind relocates and resurrect the dead;
+  elseif (phase-1 attack?) then (yes)
+    :one window for **both** sides' shots; deaths overlap at the max\nper-weapon ""attackImpactMs"" so impact meets collapse;
+    :ccShot HP lands at that impact (the damage boom syncs to the hit);
+    :reciprocal fire → ""attackDying"" suppresses the attacker hull so the\ndeath animation owns the square; flags held until the wave ends so\nhulls cannot flash back;
+    :mine cleared by an attack → ""spentMines"" hides the glyph as the boom\nstarts (the mine stays in the snapshot until ""afterAttack"");
+    :deaths done → stamp ""afterAttack"" but keep the attack cues mounted\nuntil ""ATTACK_MS"" (clearing early truncates the shot);
+  elseif (phase-1 death, no attack ahead of it?) then (yes)
+    :fallback window, then stamp ""afterAttack"";
+  elseif (chase missile?) then (yes)
+    :trails + ""spentMines"" for the wake tile; the mine snapshot comes from\n""cue.board"" — ""afterMove"" for a phase-3 chase, ""afterAttack"" otherwise;
+    :trails outlive the cue (CSS fade cleared later, fire-and-forget);
+  elseif (move-collision death?) then (yes)
+    :only when no wave absorbed it (see the move wave below): death window,\nthen vacate the square in ""displayPlacement"";
+    :a mine among them takes ""spentMines"" too — this lane's ""mineBlast""\nbranch has no producer today, kept honest rather than exercised;
+  elseif (mine-trigger death — phase 2 **and** phase-3 approach?) then (yes)
+    :commit the ""afterMove"" mine snapshot + ""spentMines"" for the boom tile\n(plus the wake tile a chase left behind), then vacate;
+  elseif (simultaneous move wave?) then (yes)
+    :group by ""cue.group"" — B gas steps, classical, F steps each form one\nwave; opposing sides move together;
+    :progress 0 → 1 on the next frame drives the slide; knights flip their\nleg at the elbow; a hoverbike/battleship wave is held one SETTLE_MS\npast touchdown so the aim→rest unwind lands before hand-off;\nwindow = slowest cue in the batch + that settle hold;
+    :**collisions meet at contact** — the wave absorbs the collision deaths\nthat follow it when every one sits on a square ≥ 2 of its movers target\n(core already ends both movers' ""to"" on ""moverContact"".at). A square's\ncontact is the later mover's arrival (""cueDuration"", no settle): there the\ndying movers leave ""playingIds"", vanish from ""displayPlacement"" (the\nboard derives hides from playing cues, so a kept origin would reappear),\nand the square's deaths play for DEATH_MS. A survivor (a Command Center\nthat took the unit) keeps sliding and relocates at the end. Window =\nmax(survivors + settle, contact + DEATH_MS); a wave with no collision\nkeeps the old window.;
+  elseif (promo walk-off / promo deploy?) then (yes)
+    :walk-offs in parallel (square vacated at the end), then deploys —\npromoted units are placed **before** the deploy animation so nothing\ndownstream sees a late spawn after ""TIMELINE_DONE"";
+  else (sequential tail)
+    :approach chains, Tactical Jump, arrival blasts and any leftover cue\nplay one at a time;
+    :a mine death here — ""armm"" / ""qjm"" / ""farmm"", the rungs with no\nbatching handler of their own — takes ""spentMines"" for its tile;
+    :a lethal ccShot immediately followed by its king death is fused —\nthe king crumples at frag impact instead of after the full shot;
+    :Tactical Jump owns its own travel + trail timing (never a slide);
+    :any death vacates its square on completion so a corpse cannot flash\nback between the death VFX and an occupy that follows;
+  endif
+
+  :advance the board ladder **lazily**: a cue whose ""cue.board"" is past\n""preAfterB"" applies ""afterB""; nothing re-applies a rung;
+  note right
+    ""afterB"" is committed as ""afterBDisplay"" — the same board with every
+    ""resolved.promotions"" square **rewound to a marine**.
+
+    A gas promotion resolves inside ""submit-turn"" (""applyGasPromotion"" and
+    the F-step path), which writes the promoted unit straight into ""afterB"".
+    Showing that rung verbatim deploys the unit, then the promo walk-off
+    yanks it away, then the promo deploy plays it again — one promotion,
+    two deploys.
+
+    Core stays right: everything after B must treat the square as a queen.
+    Only the **display** board rewinds, and only per-square where ""afterB""
+    actually holds that promotion's unit — a blanket rewrite would plant a
+    phantom pawn on a *classical* promotion's destination, where the pawn
+    has not moved yet at B.
+
+    With no promotions it returns ""afterB.placement"" itself, preserving the
+    object identity ""commitDeployBoard"" branches on.
+  end note
+
+  note right
+    **Every lane that plays a ""mine: true"" death owes ""spentMines""**
+    (""spentMineSquares""). ""hidden"" gates piece glyphs only; the mine glyph is
+    gated by ""StarChessBoard.showMine()"", which reads ""spentMines"" — so a lane
+    that forgets it leaves an intact mine drawn **under** its own wreck.
+    Omitting the field on a commit means *keep* (""withSquareList""), so one
+    commit at boom start covers the window; the list resets with the resolve.
+  end note
+
+repeat while (more cues?) is (yes)
+->no;
+:finalize → commit ""next"" (placement, HP, mines, siege, ""U:"") and ""onDone"".\nWith ""finalize: false"" (mid-wave tutorial) stop at the last rung reached;
+note right
+  **Cancellation contract:** every scheduled callback is registered in
+  ""cancels"" and every callback re-checks the ""cancelled"" flag before it
+  commits. The returned disposer flips the flag and drains the list. A handler
+  that schedules work without registering it leaks a commit past teardown —
+   the one rule that must survive any refactor of this file.
+
+   **The scheduler is injected** (""Scheduler"" port), so tests drive the whole
+   timeline deterministically with a fake clock — no real timers, no flake.
+ end note
+
+' N_ATTACK_DYING: reciprocal fire suppresses attacker hull on at==from
+note right
+  Reciprocal fire suppresses the attacker
+  hull exactly when death.at matches the
+  attack.from square. Flags persist until
+  the attack wave clears, never flicker.
+end note
+
+' N_JUMP_TRAIL: Jump trails linger 1000ms past hull clear
+note right
+  Tactical Jump trails persist 1000ms past
+  hull collapse for the CSS fade. onDone
+  fires at hull clear, never waits fade.
+end note
+stop
+@enduml

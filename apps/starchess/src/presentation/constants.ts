@@ -1,0 +1,117 @@
+/**
+ * Caps / costs / timeout / income — rules live in `@chess-coach/starchess-core`.
+ * Animation durations stay here (presentation).
+ */
+
+export {
+  CC_MAX_LIVES,
+  MAX_STORED_MATERIAL,
+  MAX_DEPLOYED_MATERIAL,
+  TURN_TIMEOUT_MS,
+  UNIT_COST,
+  incomeForTurn,
+  energyForTurn,
+  turnTimeoutMsForTurn,
+  SPECIAL_ENERGY_COST,
+} from "@chess-coach/starchess-core";
+
+import { TURN_TIMEOUT_MS } from "@chess-coach/starchess-core";
+
+/**
+ * Attack VFX phase (CSS `--attack-ms`) — 1/10 of a turn.
+ * Idle-front between looping demo attacks uses the same duration.
+ */
+export const ATTACK_MS = TURN_TIMEOUT_MS / 10;
+
+/**
+ * Attack impact / frag land / Command Center hit-boom (CSS `--frag-flight-ms`) —
+ * 1/4 of an attack (= 1/40 of a turn). Kill-death delay aligns here.
+ */
+export const FRAG_FLIGHT_MS = ATTACK_MS / 4;
+
+/**
+ * Spider Mine chase missile after the victim lands:
+ * lift in place → self-launch along the trail. Total = {@link MINE_MISSILE_MS}.
+ */
+export const MINE_MISSILE_LIFT_MS = 200;
+export const MINE_MISSILE_LAUNCH_MS = 50;
+export const MINE_MISSILE_MS = MINE_MISSILE_LIFT_MS + MINE_MISSILE_LAUNCH_MS;
+
+/** Green trail fade after the mine missile (shorter than Tactical Jump twin trails). */
+export const MINE_TRAIL_MS = 700;
+
+/** Mine added to the board — legs burrow independently within this window. */
+export const MINE_DEPLOY_MS = 250;
+
+/** Chase wake — legs leave the ground independently within this window. */
+export const MINE_EMERGE_MS = 50;
+
+/**
+ * Death / rubble collapse (CSS `--death-ms`) — 1/2 of an attack
+ * (= 1/20 of a turn).
+ */
+export const DEATH_MS = ATTACK_MS / 2;
+
+/**
+ * Quiet-move travel time per board square.
+ * Total move duration = squares × this (Chebyshev for slides; L-length for Hoverbikes).
+ * 200ms = prior 250ms × 1.25 speed.
+ */
+export const MOVE_SQUARE_MS = 200;
+
+/**
+ * Marine gas-step (stim) — half the classical per-square travel
+ * ({@link MOVE_SQUARE_MS} / 2 = 100ms) with a matching 2× hop gait.
+ */
+export const STIM_MOVE_SQUARE_MS = MOVE_SQUARE_MS / 2;
+
+/**
+ * Orientation settle — a unit whose art was normalized for aiming rotates back
+ * into its resting silhouette over this window, finishing *before* the combat
+ * overlay hands the square back to the board glyph. A CSS transition cannot
+ * span that unmount, so the mover must already be at rest when it happens;
+ * `styles/unitPose.css` reads it as `--settle-ms`.
+ */
+export const SETTLE_MS = 260;
+
+/**
+ * Hoverbike in-flight turn — rest → first leg at lift-off, and long leg → short
+ * leg at the elbow. Half a Hoverbike square ({@link MOVE_SQUARE_MS} / 4), so the
+ * short leg still flies nose-first; the landing unwind keeps {@link SETTLE_MS}.
+ */
+export const HOVERBIKE_TURN_MS = 90;
+
+/**
+ * Siege Tank pack ↔ unpack (CSS `--siege-toggle-ms`) — the whole staggered
+ * plate sequence fits in this window. Same 250ms beat every other unit state
+ * change uses ({@link MINE_DEPLOY_MS}, {@link FRAG_FLIGHT_MS}); at the old 480
+ * the tank visibly lagged the pieces around it.
+ *
+ * Sole declaration — `presentation/pieces/tankAim` re-exports this one.
+ */
+export const SIEGE_TOGGLE_MS = 250;
+
+/** Single-square travel (Command Center flee cover, 1-step default). */
+export const MOVE_MS = MOVE_SQUARE_MS;
+
+/** Command Center deploy — total drop + landing. */
+export const DEPLOY_MS = 500;
+
+/** Free-fall from above the board into the square. */
+export const DEPLOY_DROP_MS = 200;
+
+/** Landing phase (humanoid crouch / mechanoid thrust brake). */
+export const DEPLOY_LAND_MS = 300;
+
+/**
+ * Deploy-crush death delay — a Command Center drop onto an enemy square
+ * collapses the occupant ~100ms after the deploy begins (mid free-fall).
+ * Crush window total = max({@link DEPLOY_MS}, CRUSH_DEATH_MS + {@link DEATH_MS}).
+ */
+export const CRUSH_DEATH_MS = 100;
+
+/**
+ * Gas special resolve — canister falls from the top of the square into the unit
+ * while the green special-used aura eases in.
+ */
+export const GAS_DROP_MS = 260;

@@ -1,4 +1,4 @@
-// SPEC: _spec/architecture.puml
+// SPEC: _spec/ml-runtime-architecture.puml
 mod common;
 
 use burn::module::Module;

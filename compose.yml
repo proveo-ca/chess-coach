@@ -1,0 +1,46 @@
+# SPEC: _spec/apps/e2e/nx-compose.puml
+x-e2e: &e2e
+  build:
+    context: .
+    dockerfile: apps/e2e/Dockerfile
+  working_dir: /work/apps/e2e
+  environment:
+    E2E_TARGET: web-no-llm
+    CI: "1"
+  init: true
+  shm_size: 1gb
+
+services:
+  e2e-chess:
+    <<: *e2e
+    volumes:
+      - ./apps/e2e/test-results/chess:/work/apps/e2e/test-results
+    command:
+      - sh
+      - -c
+      - >-
+        status=0;
+        pnpm exec playwright test --output=test-results/chess || status=$$?;
+        pnpm exec playwright test --config=primitives.config.ts --output=test-results/primitives || status=$$?;
+        exit $$status
+
+  e2e-starchess:
+    <<: *e2e
+    environment:
+      E2E_TARGET: starchess
+      CI: "1"
+    volumes:
+      - ./apps/e2e/test-results/starchess:/work/apps/e2e/test-results
+    command: ["pnpm", "exec", "playwright", "test"]
+
+  dev:
+    profiles: ["dev"]
+    image: node:24-bookworm
+    working_dir: /work
+    volumes:
+      - .:/work
+      - /work/node_modules
+      - /work/apps/chess/node_modules
+      - /work/apps/starchess/node_modules
+    network_mode: host
+    command: ["pnpm", "dev"]

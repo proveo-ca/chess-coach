@@ -1,4 +1,4 @@
-// SPEC: _spec/architecture.puml
+// SPEC: _spec/ml-runtime-architecture.puml
 pub const FEATURES: usize = 2271;
 pub const STATE_FEATURES: usize = 1679;
 pub const HIDDEN_UNITS: usize = 32;

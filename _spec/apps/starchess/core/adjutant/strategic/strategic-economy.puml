@@ -1,0 +1,187 @@
+@startuml strategic-economy
+' SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-economy.puml
+' purpose: ADJUTANT (SCRIPT STRATEGIC) — Command Center economy reacts to the known-vs-seen dials.
+' covers: packages/starchess-core/src/ai/strategic/strategies/economy.ts
+' covers: packages/starchess-core/src/ai/strategic/deployLookahead.ts
+' covers: packages/starchess-core/src/ai/strategies/economy.ts
+' covers: packages/starchess-core/src/__tests__/strategic/economy.test.ts
+' see also: ../weight-ladder.puml (these dials in the full roster)
+' see also: promotion-defense.puml (the runner tiers the deploy dial multiplies)
+' see also: ../cc-focus.puml (whose CC guess the warp bonus reads)
+' see also: _spec/packages/starchess-core/deploy-reach.puml (the non-goal split)
+' see also: ../naive/opponent-strategy.puml (shared Mecha gate, always-visible twin)
+!include ../../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Strategic economy — deploy dials on known-vs-seen
+
+package "Inputs" {
+  database "kvs\nknown · scouted · captured" as KVS <<db>>
+  component "bank · unit mix · king proximity" as BANK <<db>>
+  component "ccThreatened" as HOT <<app>>
+  component "turn · income tiers → horizon 5\nprojectedBank(bank, turn, 5)" as HORIZON <<app>>
+}
+
+package "Strategic economy" {
+  component "strategies/economy.ts\ndeploys()" as ECO <<app>>
+  component "deployLookahead.ts\nbestDeploySequence(horizon:5)\np+p+q vs n+b+r on budget 11" as LOOK <<app>>
+  package "Dials" {
+    component "BATTLESHIP_FINISH 3200\nwinning ∧ gap = 0 ∧ bank ≥ 9" as SHIP <<app>>
+    component "HIDDEN_GUARD 1450\ngap > 0 (cheese window)\n**or** RUNNER_GUARD 1450\nurgent runner — same shape,\nseparate constant" as GUARD <<app>>
+    component "skip p/n\nwinning ∧ gap = 0 ∧ bank < 9 ∧ horizonBank ≥ 9" as SAVE <<app>>
+    component "SHIP_WARP_READY 800\n(+ SHIP_HORIZON_BONUS 600)\nCC guess within warp reach" as WARP <<app>>
+    component "direct spawn crush\ntrade × (1 + UNIT_COST[victim])\n**not** deploy-reach" as CRUSH <<app>>
+    component "runnerDeployValue(to)\ncrush 1 (seen) / 0.8 (remembered)\n· block 0.8 · cover 0.35\n× runnerUrgency — **max, not sum**\n0 on ally-held squares" as RUND <<app>>
+  }
+}
+
+package "Deploy choice" {
+  database "Command Center\nB: spawn unit" as DROP <<db>>
+}
+
+KVS ARROW_MAIN ECO : gap = known − (scouted − captured)
+BANK ARROW_OPTIONAL ECO : deployPolicy (naive)
+HORIZON ARROW_MAIN ECO : budget over 5 turns
+HOT ARROW_OPTIONAL ECO : survival outranks saving
+ECO ARROW_MAIN LOOK : score sequences on projected budget
+ECO ARROW_OPTIONAL SHIP : close the game
+ECO ARROW_OPTIONAL GUARD : rook guard vs unseen
+ECO ARROW_OPTIONAL SAVE : bank toward a ship within horizon
+LOOK ARROW_MAIN DROP : first unit of best sequence
+SHIP ARROW_MAIN DROP : drop ""q"" at King perimeter
+GUARD ARROW_MAIN DROP : rook / shore pawns
+SAVE ARROW_MAIN DROP : wait (no light drops)
+ECO ARROW_OPTIONAL WARP : ccIntel.focus one away\nor on a clear line
+ECO ARROW_OPTIONAL CRUSH : ring square holds an enemy unit
+WARP ARROW_MAIN DROP : drop ""q"" ready to jump
+CRUSH ARROW_MAIN DROP : land on the victim
+ECO ARROW_OPTIONAL RUND : ctx.runners — seen **or** remembered
+RUND ARROW_MAIN DROP : land on / in front of the runner
+
+note bottom
+  **Rules, in priority order:**
+  * ""ccThreatened"" — survival dials dominate (unchanged from naive).
+  * ""gap > 0"" — hidden enemy material (promotion runner / cheese):
+    defense outranks saving; rook guard ""HIDDEN_GUARD""; ship rush cancelled.
+  * **an urgent runner** (""isUrgentRunner"": unobstructed **and** ≤ 2 turns from
+    promoting **and** believed at ""RUNNER_URGENT_CONFIDENCE"" 0.5 or better) —
+    the *located* half of the same worry, and it feeds the same ""defending""
+    gate: no saving spree, and a tank guard paid by ""RUNNER_GUARD"" 1_450 — its
+    **own** constant, so a retune of the cheese window cannot silently retune
+    the promotion defense. ""hidden"" pays ""HIDDEN_GUARD"", a runner pays
+    ""RUNNER_GUARD"", and the tank collects one of the two, never both. Our
+    deploy ring is our own last ranks, exactly where the runner is heading, so
+    ""runnerDeployValue"" pays a drop that lands **on** it (a crush, or merely a
+    body when the runner is only remembered) or **in front of** it; when its
+    path crosses the ring, the ""preferHeavy"" filter also gives way so a
+    1-mineral marine can be the answer. Model: ""promotion-defense.puml"".
+  * ""winning ∧ gap = 0"" — our board + captures exceed what the enemy
+    knows: rush the BattleShip once the bank pays for a queen
+    (""BATTLESHIP_FINISH"") and skip pawn / hoverbike drops that delay it —
+    saving only when the ship is reachable within 5 turns
+    (""horizonBank ≥ 9"").
+  * **Deploy budget over 5:** projects stored minerals after 5 turns of
+    income (capped 12) and scores sequences e.g. ""p+p+q"" (1+1+9=11) vs
+    ""n+b+r"" (3+3+5=11) when projected budget is 11 in 3 turns; the
+    immediate deploy is the first unit of the best horizon sequence
+    (discounted, horizon-aligned bonus).
+  * otherwise — naive deploy mix, unchanged.
+end note
+
+note as N_WARP
+  **The warp-ready bonus, and whose guess it trusts.** A Battleship drop is
+  worth ""SHIP_HORIZON_BONUS + SHIP_WARP_READY"" (600 + 800) when the CC guess
+  is one square from a lit tile, or on a clear line from one — because the ship
+  can then Tactical Jump straight into check next turn. The distance test is
+  ""chebyshev"", shared from ""ai/context/geometry.ts""; it replaced an inline
+  ""charCodeAt"" pair that computed the same thing a third way.
+
+  It reads the cross-ply CC posterior (""ctx.ccIntel.focus""), as does the
+  strategic ""captures"" sac term; the check weights read the one-turn centroid
+  instead. Both hosts now thread the posterior forward, so the bonus no longer
+  fires off the home prior every ply — but no host ever supplies a probe
+  result, so ""excluded"" only learns what vision already proved. See
+  ""../cc-focus.puml"".
+end note
+
+note as N_CRUSH
+  **Deploying to crush is a *score*, not a proof.** A ring square holding an
+  enemy unit earns ""trade × (1 + UNIT_COST[victim])"" and then competes with
+  every other deploy that turn, which is the right shape for a preference the
+  tuning is meant to move.
+
+  The mirror-image question — can the **opponent** deploy onto a square and
+  recapture there — is a deterministic boolean and lives in
+  ""board/deploy-reach.ts"" instead. Conflating the two would turn one of them
+  into the wrong kind of answer, so the split is deliberate and load-bearing;
+  ""_spec/packages/starchess-core/deploy-reach.puml"" states the non-goal from
+  the other side.
+end note
+
+note as N_LANDINGS
+  <color:#CB2000>**OPEN — four derivations of one rule.**</color>
+  "Which ring squares may a deploy land on" is answered in four places, and
+  only the first matches the validator (""rules/specials/adjacent.ts"" +
+  ""rules/validation.ts"": only King squares blocked, ally and enemy
+  non-Kings crushed):
+
+  | site | filter | own colour | enemy non-King | enemy CC | verdict |
+  | ""board/deploy-reach.ts"" ""deployTargets"" | King test only | **kept** (non-King) | **kept** | blocked | correct |
+  | ""ai/strategies/economy.ts"" ""deploys"" (naive) | ""!map.has(at)"" | blocked | **blocked** | blocked | too strict |
+  | ""ai/strategic/strategies/economy.ts"" ""deploys"" | mine only | **kept** | kept | **kept** | too loose |
+  | ""ai/strategic/deployLookahead.ts"" ""bestScoreForUnit"" | ""!map.has(at)"" | blocked | **blocked** | blocked | too strict |
+
+  **Consequences, in order of cost.** The strategic generator being too loose
+  costs only wasted candidates (see the note beside it). The two strict sites
+  cost real play: requiring an empty tile means neither the naive economy nor
+  the horizon lookahead ever proposes a crush deploy, so a legal and often
+  strong move is simply never played. Worst of the four, the strategic
+  generator and its own lookahead disagree, so a horizon sequence can be scored
+  on tiles the generator would not have offered.
+
+  The strategic generator's ring filter tests hostile mines and nothing else,
+  so it is the "too loose" row above by omission rather than by intent. The
+  binding statement of the rule is the validator; the executable one is
+  ""src/__tests__/deploy-reach.test.ts"", at the cases "keeps enemy and ally
+  occupants (either crushes, victim recorded)" and "drops every King square — an
+  enemy Command Center cannot be crushed". **Not fixed on this branch.**
+end note
+
+note as N_DEAD
+  **What the cleanup removed.** A dead ""_isOpenFile"" helper and the comment
+  that described the open-file gate it never actually implemented are gone, so
+  the file no longer documents a rule the code does not have. A tank deploy is
+  therefore preferred by ""TANK_AFTER_HOVERBIKES"" and ""HIDDEN_GUARD"" alone, with
+  no file-openness term anywhere in the pure core.
+
+  A separate closed-file cap does still exist, but it is an **arena** concern
+  in ""players/strategic.ts"" — it caps how far Stockfish may boost a tank drop,
+  and it never changes the deterministic score.
+end note
+
+ECO .. N_WARP
+ECO .. N_CRUSH
+ECO .. N_LANDINGS
+ECO .. N_DEAD
+
+note as N_BISHOP_CAPS
+  Strategic imports shared Mecha gate where
+  same-color bishops share diagonals, capping
+  at four total and two per color (a1 dark parity).
+  Total four stays absolute and crush-replaced
+  own bishop nets out before per-color test.
+end note
+
+note as N_BISHOP_FOG
+  Per-color two still needs big-threat crush
+  or classical queen/rook take, but victim must
+  read lit or revealed. Knight, bishop and pawn
+  takes still fail with Charon excluded, preserving
+  visibility honesty, ladder untouched.
+end note
+
+ECO .. N_BISHOP_CAPS
+ECO .. N_BISHOP_FOG
+@enduml

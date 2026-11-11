@@ -1,0 +1,57 @@
+@startuml demos
+' SPEC: _spec/apps/starchess/demos.puml
+' Live demos: apps/starchess Storybook :6007 (starchess-demo--*, fog, specials).
+' purpose: Canonical demos, shipped vs pending, verify commands.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Canonical Demos, Shipped vs Pending
+
+package "Canonical demos" {
+  component "Combat Chain\nstory: starchess-demo--combat-chain\nW & B per turn; attack → death → occupy" as D1 <<app>>
+  component "King Hunt\nstory: starchess-demo--king-hunt\nimplicit legal checks + HP; tank on g6" as D2 <<app>>
+  component "GasDeploy specials\nstory: starchess-special-moves--*\n+ features-turn-chrome--gas-deploy\n+ features-gasdeploy--*\n""LiveLessonHost"" + catalog\n(""lessonStory('specials', id)"")" as D5 <<app>>
+  component "Fog-edge Bishop / Rook tank\nstory: starchess-fog-of-war-and-move-animations--bishop\n(+ King/Pawn/Knight/Queen/Rook tank|siege)\nmove into fog → capture/occupy blocker" as D4 <<app>>
+  component "Spider Mines\nstory: starchess-spider-mines--*\npath collide · ally mine · attack mine\n+ Promotion × mine (core mine/minePathContact.test)\nFog vision: starchess-fog-of-war-and-move-animations--spider-mine" as D6 <<app>>
+  component "Attack Animations\nstory: starchess-attack-animations--*\none weapon per unit, cycling every legal vector from d4\n""AttackBoardDemo"" + ""attackVectorsFor"" (store-free ""attackCues"")" as D8 <<app>>
+  component "Death Animations\nstory: starchess-death-animations--*\none death per unit on d4, looping idle → dying → gone;\nSiege Tank shows tank c4 + siege e4 together;\n**Spider Mine** rides an SCFEN snapshot (mines are not\nin a placement) and darkens its glyph via ""spentMines""\n""DeathBoardDemo"" (store-free ""deathCues"")" as D9 <<app>>
+  component "Collision races\nstory: starchess-collision--*\npath block · ally truncate · same-square bishops\nknight speed (gas pawn + bishop 1/2/3)\ncore: collisionRaces.test · e2e: starchess-collision" as D7 <<app>>
+}
+
+package "Shipped (do not re-ticket)" {
+  component "Types — ScAction, ScTurnQueue, gas,\nScFenSnapshot.queue\n""packages/starchess-core/src/model/types.ts""" as SH1 <<app>>
+  component "SCFEN parse/format — G: Q: U: M: S: H:\n""packages/starchess-core/src/scfen/codec.ts""" as SH2 <<app>>
+  component "Queue actions — addScAction / addScMove /\nendScTurn\n""commands/queue-action.ts"" + ""resolve/submit-turn.ts""" as SH3 <<app>>
+  component "Fog-aware classify + move collision\n""resolve/resolve-turn.ts"" + ""board/vision.ts"" via ""endScTurn""" as SH4 <<app>>
+  component "Intent C= vs progressive path resolve\n""pathRevealSteps"" / ""pathRevealFrom""\nfog approach = phase-3 event: fires after moves;\nfizzle: attacker dead / origin re-occupied or sieged,\nor ""to"" lost the in-the-way victim\n""pathRevealAttacks"" = fired only" as SH5 <<app>>
+  component "King-shot ray / legal check\n""collectLegalCCChecks"" +\n""beginScTurn"" / ""applyPendingCCShots""\nat turn open (before intent);\nkings are legal checkers too" as SH6 <<app>>
+  component "Implicit check → turn-open HP\n(""beginScTurn""); mid-resolve king HP only\nfog path-discovery; no king-aimed ""C=""" as SH7 <<app>>
+  component "Spider Mines M:\n""board/mines.ts"" + ""resolve-turn""" as SH8 <<app>>
+  component "Fog-edge DualNav\n""demos/fogEdge*.ts"" + ""FogEdgeDemo""\n(+ fogMoveSamples · FogOfWar stories)\nDualNav review demos (NerdCombat, PathCollide,\nPathCollideAllyMine, AttackMine, KingHunt): both\nplayers' intent overlays pre-resolve\n(""intentOverlays.ts"", no viewer);\nKing Hunt: **check → intent → resolve**;\nobserver dual-vision borders\n(""visionMode=observer"" — full board +\n""getSideVision"" w/b strokes, no fog veil);\nFog-of-war move stories use player fog veil" as SH9 <<app>>
+  component "Sieged rook immobile S:\n""rules/validation.ts"" + ""endScTurn"" toggle" as SH10 <<app>>
+  component "King duel — adjacent kings fight\nface-to-face: mutual 1 HP/turn, parting shot,\ndeploy doubling, 0/0 = draw, phase O absorbing\n""board/placement.ts"" + ""resolve-turn"" + ""outcome.ts""\ntests: ""packages/starchess-core/src/__tests__/""" as SH11 <<app>>
+  component "Intent overlay rings **both** kings\nwhen they are in contact\n""intentOverlays.ts""" as SH12 <<app>>
+  component "Adjutant lockstep — an adjacent enemy king\nis a real threat; the adjutant breaks off\ncontact rather than trading HP\n""packages/starchess-core/ai/adjutant.ts""" as SH13 <<app>>
+}
+
+package "Pending / polish" {
+  component "History serializer — optional\n""C=a1a8>xa5"" for finished plies" as PD1 <<async>>
+  component "Dedicated win/draw banner chrome\n(live uses status + DualNav review;\nCoach GameOverBanner path deleted)" as PD2 <<async>>
+  component "Optional winner field on state\n(outcome already via ""scOutcome"")" as PD3 <<async>>
+  component "Classical chess.js cannot walk into\nking contact — SC movegen / specials / SCFEN / AI" as PD4 <<app>>
+}
+
+note bottom
+  **Live demos inventory** for apps/starchess + starchess-core.
+  **Live:** demos → ""apps/starchess""; rules → ""packages/starchess-core"";
+  deploy/HUD → ""_spec/apps/starchess/{deployment,screens,menu-flow}.puml"".
+  **Verify:** ""pnpm --filter @chess-coach/starchess-core test"" ·
+  ""pnpm --filter @chess-coach/starchess test"" · storybook :6007.
+  **Seed ownership:** product positions → ""app/seeds.ts""; live lesson boards →
+  ""TutorialStoryScript.board""; demo-only samples → ""demos/samples.ts"";
+  scenario packages → ""demos/*.ts"". Storybook owns none of them —
+  ""architecture/storybook-projection.puml"".
+end note
+@enduml

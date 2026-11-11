@@ -1,0 +1,50 @@
+/* Tutorial naming layer — neutral (never guide-green) labels measured onto HUD
+   anchors. Painted over everything, clickable through. */
+
+.layer {
+  position: fixed;
+  inset: 0;
+  /* Above `Modal` (100) — the pickers are half of what this layer names. */
+  z-index: 101;
+  pointer-events: none;
+}
+
+.slot {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  /* `left` / `top` are the anchor's centre and near edge. */
+  transform: translateX(-50%);
+}
+
+.above {
+  transform: translate(-50%, -100%);
+}
+
+/*
+ * Doubled class on purpose: this has to beat `ChatBubble`'s own single-class
+ * rule regardless of which stylesheet the bundler emits first.
+ */
+.label.label {
+  max-width: var(--label-max, 10rem);
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.5rem;
+  /*
+   * Neutral chrome — the green rim is the coach's voice, and these are labels.
+   * Pinned dark, rim and ink included: the fill is a fixed tooltip slate, not a
+   * themed surface, so themed ink would flip to near-black in the light theme
+   * and the label would read dark-on-dark (the pickers themselves are light
+   * there, and this chip is legible over either).
+   */
+  border: 1px solid color-mix(in srgb, #444 90%, transparent);
+  background: color-mix(in srgb, #2a2e32 92%, transparent);
+  box-shadow: 0 2px 8px color-mix(in srgb, #000 45%, transparent);
+  color: #e8eaed;
+  font-size: 0.58rem;
+  font-weight: 600;
+  /* Tight: the ResourceBar names wrap to 2–3 lines at strip pitch. */
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  text-align: center;
+  text-wrap: balance;
+}

@@ -1,0 +1,114 @@
+/* // SPEC: _spec/apps/starchess/navigation-chrome.md */
+.bar {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  padding: 8px 10px;
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.bar:has(.name) {
+  width: 18rem;
+}
+
+.strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 1 auto;
+  min-width: 0;
+  color: var(--text-color, #e8eaed);
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  color: #3b7dd8;
+  flex-shrink: 0;
+}
+
+/*
+ * Vespene green. Addressed by class, not `:nth-child(2)` — any element added
+ * before the strips (the side name) shifts positional selectors and silently
+ * recolours every icon.
+ */
+.gas .icon {
+  color: #2a9b6a;
+}
+
+.value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.income {
+  color: color-mix(in srgb, #7dff6a 70%, #e8ffb8);
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.muted {
+  color: color-mix(in srgb, var(--text-color, #e8eaed) 62%, transparent);
+  font-weight: 500;
+}
+
+/* MobileBanner density */
+.compact {
+  padding: 2px 4px;
+  gap: 4px;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.compact .strip {
+  font-size: 11px;
+  gap: 3px;
+}
+
+.compact .income {
+  font-size: 10px;
+}
+
+/* Side name at the left of the bar — the frame already carries the team colour. */
+.name {
+  display: flex;
+  align-items: center;
+  width: 6rem;
+  padding-right: 2px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: color-mix(in srgb, var(--text) 88%, transparent);
+}
+
+.compact .name {
+  max-width: 4.5rem;
+  font-size: 0.78rem;
+}
+
+.bar.compact:has(.name) {
+  width: 12rem;
+}
+
+/* `fill`: stretched to the row. After `.bar:has(.name)` on purpose — same
+   specificity, so order is what lets this width win. */
+.bar.fill {
+  width: 100%;
+}
+
+.fill .name {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 6rem;
+}

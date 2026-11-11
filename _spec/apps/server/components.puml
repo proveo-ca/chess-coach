@@ -1,0 +1,119 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/proveo-ca/identity/refs/heads/main/proveo.iuml
+skinparam componentStyle rectangle
+
+title Chess Coach Backend: Component Architecture (Bun server)
+
+actor "SolidJS UI" as UI
+
+package "Bun Server (apps/server)" {
+
+    [Bun.serve\n(HTTP)] as SERVER
+
+    package "HTTP layer (app.ts / http.ts)" {
+        [createFetchHandler\n(routes; validates FEN/move\n+ Content-Type at boundary)] as ROUTER
+        [corsHeaders\n(COOP + COEP + Origin allowlist)] as HEADERS
+        [errorResponse\n(structured JSON; 400/403/415/504)] as STATUS
+        [serveStatic\n(SolidJS build, /chess/ + SPA)] as STATIC
+        [Mutex + withTimeout\n(serialize engines, 504)] as GUARD
+    }
+
+    note bottom of ROUTER
+      Security boundary: FEN/move validated via
+      @chess-coach/engine-core (isValidFen/isValidMoveToken)
+      before any engine/state I/O → 400. POST bodies require
+      application/json (415 otherwise); /new rejects a
+      disallowed Origin (403). See behavior.md §2.
+    end note
+
+    package "Routes" {
+        [GET /hello] as EP_HELLO
+        [POST /move] as EP_MOVE
+        [POST /advice  (streamed)] as EP_ADVICE
+        [POST /explain (streamed)] as EP_EXPLAIN
+        [POST /new] as EP_NEW
+    }
+
+    package "Orchestration (in-process)" {
+        [Orchestrator] as ORCH
+        [EngineBridge] as BRIDGE
+        [StockfishEngine] as SF
+        [MaiaEngine] as MAIA
+        [UciDriver\n(Bun.spawn)] as UCI
+        [OllamaLlmClient\n(LlmClient.ts)] as LLM
+        [StateManager\n(game_state.fen)] as STATE
+        [EngineConfig\n(config.ts — temps/tokens,\nprompt defaults)] as CONFIG
+    }
+}
+
+ORCH ..> CONFIG : reads temps/defaults
+
+package "@chess-coach/engine-core (shared TS)" {
+    [llmPromptFormat\n(prompt build, classify,\nextractCommentary, SYSTEM_PROMPT)] as CORE
+}
+
+package "External Processes / Services" {
+    [stockfish (native)] as NATIVE_SF
+    [lc0 + Maia weights] as LC0
+    [Ollama] as OLLAMA
+    database "File System" as FS {
+        [game_state.fen]
+        [openings.bin / syzygy]
+    }
+}
+
+' --- Relationships ---
+UI -> SERVER : "HTTP / JSON"
+SERVER --> ROUTER
+ROUTER --> EP_HELLO
+ROUTER --> EP_MOVE
+ROUTER --> EP_ADVICE
+ROUTER --> EP_EXPLAIN
+ROUTER --> EP_NEW
+ROUTER --> STATIC : "GET /chess/* (index.html SPA fallback)"
+
+EP_HELLO  --> ORCH : "generateUiPhrases()"
+EP_MOVE   --> ORCH : "executeTurn() (unary)"
+EP_ADVICE --> ORCH : "generateAdviceStream()"
+EP_EXPLAIN --> ORCH : "generateExplanationStream()"
+EP_NEW    --> STATE : "resetGame() + readFen()"
+
+ORCH --> BRIDGE : "eval / Maia move / FEN"
+ORCH --> LLM : "prompt / promptStream"
+ORCH --> CORE : "buildPromptFromAnalysis,\ncreateMoveAnalysis, extractCommentary"
+ORCH --> STATE : "read/write FEN"
+BRIDGE --> SF
+BRIDGE --> MAIA
+SF --> UCI
+MAIA --> UCI
+UCI --> NATIVE_SF : "UCI (stdin/stdout)"
+UCI --> LC0 : "UCI (stdin/stdout)"
+LLM --> OLLAMA : "POST /v1/chat/completions"
+STATE --> FS
+
+note right of GUARD
+  Async Mutex serializes engine access
+  (single subprocesses). Unary ops wrapped
+  in withTimeout(HARNESS_REQUEST_TIMEOUT_MS,
+  default 60s) → 504. No daemon, no JSON-line
+  protocol — the orchestrator runs in-process.
+end note
+
+note bottom of EP_ADVICE
+  Streamed as a text/plain ReadableStream: the
+  orchestrator buffers the full LLM output,
+  runs extractCommentary, and emits a single
+  cleaned chunk. On client abort it keeps
+  draining the generator (stops writing).
+end note
+
+STATUS ..> ROUTER : "Timeout→504, bad JSON→400,\nelse→500 (ErrorResponse)"
+
+note top of CORE
+  The behaviour-defining prompt logic is shared
+  verbatim between this server and the browser
+  engine (apps/chess/src/engine) — one tested impl.
+  See _spec/apps/server/behavior.md + _spec/packages/engine-core/ui-engine-parity.md.
+end note
+
+@enduml

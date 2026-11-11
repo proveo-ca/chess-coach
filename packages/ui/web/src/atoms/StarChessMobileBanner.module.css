@@ -1,0 +1,56 @@
+/* SPEC: _spec/apps/starchess/navigation-chrome.md */
+.banner {
+  display: none;
+}
+
+@media (max-width: 719px) {
+  .banner {
+    display: grid;
+    grid-template-columns: 4rem minmax(0, 1fr) 4rem;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: var(--mobile-banner-row-height, 48px);
+    margin: 0;
+    padding-inline: 0.5rem;
+    background: #000;
+    z-index: 60;
+  }
+
+  .banner[data-fill="true"] {
+    grid-template-columns: 4rem minmax(0, 1fr) 0;
+  }
+
+  .banner[data-fill="true"] .title {
+    justify-content: flex-end;
+  }
+
+  .back {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .title .titleText {
+    margin: 0;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+}

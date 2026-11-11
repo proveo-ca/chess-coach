@@ -1,0 +1,68 @@
+@startuml timeline-overview
+' SPEC: _spec/apps/starchess/timeline/overview.puml
+' purpose: timelinePlayer.ts interior — projector, interpreter, the cue-id
+' protocol that routes them, and the board ladder every commit walks.
+!include ../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Timeline player overview (""presentation/timeline/timelinePlayer.ts"")
+
+package "projector — pure" {
+  component "projectResolveTimeline(result)\nEndScTurnResult → TimelineCue[]" as PROJ <<app>>
+  component "attackCue · moveCue · arrivalMineCues\ncue builders" as BUILD <<db>>
+  component "deployCuesForPlacementDiff\n(afterPending ▸ afterB)" as DIFF <<db>>
+}
+
+package "interpreter — scheduled" {
+  component "playTimeline(result, scheduler, cb)\nHANDLERS[cue.lane] → runStep → run(next)" as PLAY <<async>>
+  component "HANDLERS — one command per lane\ngas · deploy · phase1 wave / deaths\nmissile · collision · mine · move wave\npromo walk / deploy · sequential fallback" as PRED <<db>>
+  component "timing table\ncueDuration · attackImpactMs\ncrushDurationMs · hoverbikeElbowMs" as TIME <<db>>
+  component "board ladder\napplyAfterB · stampAfterAttackBoard\ndisplayPlacement · displayLives · usedSquares" as LADDER <<db>>
+}
+
+package "sinks" {
+  component "TimelineCallbacks\nonStart · onCommit · onDone" as CB <<host>>
+  database "TimelineCommitPatch\nplacement · ccLives · mines · spentMines\nhidden · playingIds · moveProgress · moveLeg\njumpTrails · mineMissileTrails · attackDying" as PATCH <<db>>
+  component "matchReducer TIMELINE_*\n→ AnimationStage" as RED <<async>>
+}
+
+PROJ ARROW_MAIN BUILD
+PROJ ARROW_OPTIONAL DIFF
+PROJ ARROW_QUEUE PLAY : cues (or an injected subset — tutorial waves)
+PLAY ARROW_MAIN PRED : dispatch on cue.lane
+PLAY ARROW_MAIN TIME
+PLAY ARROW_MAIN LADDER
+PLAY ARROW_QUEUE CB
+CB ARROW_MAIN PATCH
+PATCH ARROW_QUEUE RED
+
+note right of PRED
+  **Routing is declared, not parsed.** Every cue carries ""lane"" / ""board"" /
+  ""group"", stamped once by ""cueLanes.withLane"" from a single prefix registry;
+  the predicates above are field comparisons and the player parses no ids at
+  all. Lane vocabulary, the shipped registry and what it replaced:
+  ""cue-lanes.puml"".
+end note
+
+note bottom
+  **Board ladder** — the player never recomputes a board; it steps through the
+  snapshots the engine already stamped, and each rung is applied at most once,
+  lazily, by the first cue that needs it:
+  ""afterPending"" (initial commit) → ""afterB"" (""applyAfterB"") →
+  ""afterAttack"" (""stampAfterAttackBoard"") → ""afterMove"" (mine handlers) →
+  ""next"" (finalize). The rung a cue needs is ""cue.board"", ordered by
+  ""BOARD_RUNG"" — the player advances, never rewinds.
+  Cues that must play **before** ""afterB"" locks — Charon, Tactical Jump, gas
+  drops, gas-step / deploy arrival blasts — keep the pre-B board so the hull
+  and the mine glyph are still there to shred.
+  ""spentMines"" hides a mine glyph while its boom plays without editing the
+  mine snapshot; ""hidden"" hides a piece glyph while its cue owns the square.
+
+  **Pattern:** Projector (pure) + Interpreter (scheduled). ""playResolveWave""
+  filters cues, it is not a second engine; nothing here re-resolves rules.
+  Perf / batching: ""../architecture/timeline-perf.puml"",
+  ""../architecture/timeline-commit-batching.mmd"".
+end note
+@enduml

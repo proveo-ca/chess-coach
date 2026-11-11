@@ -1,0 +1,107 @@
+/* Invisible board cropped to top-right 2×2 (g7 h7 / g8 h8),
+   plus 2rem gutter on each side so move / FX animations aren’t clipped.
+   Moves to g5 / jumps to f5 intentionally leave the frame. */
+
+.root {
+  --cell: min(20vmin, 112px);
+  --board-size: calc(var(--cell) * 8);
+  --square-size: var(--cell);
+  --crop-gutter: 2rem;
+
+  position: absolute;
+  left: 6%;
+  top: 6%;
+  z-index: 3;
+  width: calc(var(--cell) * 2 + var(--crop-gutter) * 2);
+  height: calc(var(--cell) * 2 + var(--crop-gutter) * 2);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Nested under MenuAnchor — same 2×2 + gutter; negative margin keeps
+   the title / hit-target footprint on the 2×2 content box. */
+.embedded {
+  position: relative;
+  left: auto;
+  top: auto;
+  z-index: 0;
+  --cell: min(12vmin, 72px);
+  --crop-gutter: 2rem;
+  width: calc(var(--cell) * 2 + var(--crop-gutter) * 2);
+  height: calc(var(--cell) * 2 + var(--crop-gutter) * 2);
+  margin: calc(-1 * var(--crop-gutter)) calc(-1 * var(--crop-gutter))
+    calc(0.15rem - var(--crop-gutter));
+}
+
+
+.shift {
+  width: var(--board-size);
+  height: var(--board-size);
+  /* Reveal files g–h (skip a–f) and ranks 8–7 (top), inset by crop gutter. */
+  transform: translate(
+    calc(var(--cell) * -6 + var(--crop-gutter, 0px)),
+    var(--crop-gutter, 0px)
+  );
+}
+
+/* Strip board chrome — layout class on the board root. */
+.invisible :global(.chessboard) {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  outline: none !important;
+  border-radius: 0 !important;
+  filter: none !important;
+}
+
+.invisible :global([data-board-grid]) {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  isolation: auto !important;
+  width: var(--board-size) !important;
+  height: var(--board-size) !important;
+}
+
+/* Eclipse (etc.) terrain noise lives on the board ::after — kill it. */
+.invisible :global([data-board-grid])::before,
+.invisible :global([data-board-grid])::after,
+.invisible :global(.chessboard)::before,
+.invisible :global(.chessboard)::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+  opacity: 0 !important;
+}
+
+.invisible :global([data-square]),
+.invisible :global([data-square][data-tone]) {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  cursor: default !important;
+}
+
+.invisible :global([data-square])::before,
+.invisible :global([data-square])::after,
+.invisible :global([data-square][data-tone])::before,
+.invisible :global([data-square][data-tone])::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+  opacity: 0 !important;
+}
+
+/*
+ * Square chrome only. `:not([data-piece])` matters: units render as a
+ * `<span data-piece>` directly inside the square (`PieceGlyph`), so a bare
+ * `[data-square] > span` blanks every resting marine and the parked Ship —
+ * which is exactly the window this playground exists to show.
+ */
+.invisible :global([data-square] > span:not([data-piece])),
+.invisible :global([data-board-grid] > svg),
+.invisible :global(.fog-overlay),
+.invisible :global(.observer-vision-overlay) {
+  display: none !important;
+}

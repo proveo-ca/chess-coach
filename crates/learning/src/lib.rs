@@ -1,4 +1,4 @@
-// SPEC: _spec/architecture.puml, _spec/learning.puml
+// SPEC: _spec/ml-runtime-architecture.puml, _spec/learning.puml
 #![forbid(unsafe_code)]
 
 mod accumulation;

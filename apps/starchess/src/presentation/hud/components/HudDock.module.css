@@ -1,0 +1,88 @@
+/*
+ * One tray behind all three pieces, in the rack's own fill and border, so the
+ * rack's circle reads as a bulge of the tray rather than a fourth widget.
+ * Rack and `[End Turn] [timer]` sit in fixed tracks, so the queue column takes
+ * whatever is left and nothing — a chip, the countdown, a hidden control —
+ * ever moves the rack or End Turn.
+ * The tray runs to the 16px screen gutter, past the board's 2rem one: on a
+ * 360px phone the board-width row cannot fit chip + rack + End + timer.
+ *
+ * Everything here stays `position: static`: GasRack's cancel hint anchors to
+ * the footer row, which only works with no positioned box in between.
+ */
+.dock {
+  --tray-height: 48px;
+
+  display: grid;
+  /* Fixed tracks, not `auto`: a lesson that hides the turn controls (or the
+     gas) leaves its slot empty, and the rack must not slide into it.
+     Rack = GasRack circle + tail (60px + 0.6 × 60px). Controls = compact
+     TurnBar `[End Turn 4.75rem] 0.35rem [timer 2rem]` + 0.3rem inset. */
+  --rack-track: 96px;
+  --controls-track: 7.4rem;
+
+  grid-template-columns: minmax(0, 1fr) var(--rack-track) var(--controls-track);
+  align-items: center;
+  column-gap: 0.35rem;
+  flex-shrink: 0;
+  width: calc(100vw - 2rem);
+  max-width: 30rem;
+  height: var(--tray-height);
+  /* Room for the rack's circle, which stands proud of the tray. */
+  margin-block: 6px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text-color, #e0e0e0) 10%, var(--bg-color, #242424));
+  border: 1px solid color-mix(in srgb, var(--text-color, #e0e0e0) 22%, var(--bg-color, #242424));
+  box-shadow: 0 4px 14px color-mix(in srgb, #000 45%, transparent);
+}
+
+.queue,
+.rack,
+.controls {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+/* 60px rack in a 48px tray: count as tray height, overhang both edges. */
+.rack {
+  grid-area: 1 / 2;
+  margin-block: -6px;
+}
+
+/* Every slot is pinned to row 1 so `.center`, which spans the row, overlaps
+   them rather than pushing them to a second row.
+   The queued chip fills its column and runs on under the rack to the circle's
+   centre — GasRack's circle and tail are positioned with z-index 1–2, so they
+   paint over it. Its left end follows the tray's round end, like the timer
+   ring on the right. Two classes beat Chip's own 6px radius. */
+.queue {
+  grid-area: 1 / 1 / 2 / 3;
+  justify-content: stretch;
+  padding-left: 0.3rem;
+  padding-right: calc(var(--rack-track) - 30px);
+}
+
+.queue :global([data-timing]) {
+  border-top-left-radius: 999px;
+  border-bottom-left-radius: 999px;
+  padding-left: 14px;
+  /* Keep the × clear of the 30px the circle covers. */
+  padding-right: calc(30px + 0.5rem);
+}
+
+.controls {
+  grid-area: 1 / 3;
+  justify-content: flex-start;
+  padding-right: 0.3rem;
+}
+
+/* Spans every track and centres on the tray, not on the rack's column. */
+.center {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  justify-self: center;
+  display: flex;
+  align-items: center;
+}

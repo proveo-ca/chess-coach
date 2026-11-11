@@ -1,0 +1,104 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 14rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-color, #e8eaed);
+  background: transparent;
+  border: 2px solid color-mix(in srgb, var(--text-color, #e8eaed) 28%, transparent);
+  box-sizing: border-box;
+  /* Phase tones share width so check / intent / resolve morph without layout jump. */
+  transition:
+    border-color 280ms ease,
+    border-style 280ms ease,
+    background-color 280ms ease,
+    color 280ms ease;
+}
+
+.chip:where([data-size="sm"]) {
+  padding: 3px 4px 3px 8px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.remove {
+  flex: 0 0 auto;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0 2px;
+  opacity: 0.65;
+}
+
+.chip:where([data-removable]) {
+  appearance: none;
+  margin: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.chip:where([data-removable]):hover .remove,
+.chip:where([data-removable]):focus-visible .remove {
+  opacity: 1;
+}
+
+.chip:where([data-removable]):hover,
+.chip:where([data-removable]):focus-visible {
+  outline: none;
+  border-color: color-mix(in srgb, var(--text-color, #e8eaed) 55%, transparent);
+}
+
+.chip:where([data-tone="before"], [data-tone="after"]) {
+  /* Same green as GasDeploy / VespeneIcon canisters. */
+  background: color-mix(in srgb, #2a9b6a 22%, transparent);
+}
+
+.chip:where([data-tone="classical"]) {
+  background: color-mix(in srgb, #3b7dd8 22%, transparent);
+}
+
+.chip:where([data-tone="muted"]) {
+  background: transparent;
+  opacity: 0.45;
+  font-weight: 500;
+}
+
+.chip:where([data-tone="turn"]) {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.chip:where([data-tone="check"]) {
+  background: transparent;
+  border-style: solid;
+  border-color: #c43c3c;
+  color: var(--text-color, #e8eaed);
+}
+
+.chip:where([data-tone="intent"]) {
+  background: transparent;
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--text-color, #e8eaed) 55%, transparent);
+  color: var(--text-color, #e8eaed);
+}
+
+.chip:where([data-tone="resolve"]) {
+  background: transparent;
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--text-color, #e8eaed) 55%, transparent);
+  color: var(--text-color, #e8eaed);
+}

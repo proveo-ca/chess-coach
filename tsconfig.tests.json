@@ -1,7 +1,18 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "types": ["bun"]
+    "types": [
+      "bun"
+    ]
   },
-  "include": ["packages/*/src", "packages/*/tests"]
+  "include": [
+    "packages/contracts/src",
+    "packages/contracts/tests",
+    "packages/game-core/src",
+    "packages/game-core/tests",
+    "packages/policy/src",
+    "packages/policy/tests",
+    "packages/runtime/src",
+    "packages/runtime/tests"
+  ]
 }

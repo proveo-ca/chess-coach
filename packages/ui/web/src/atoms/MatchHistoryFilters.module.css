@@ -1,0 +1,156 @@
+/* // SPEC: _spec/apps/starchess/navigation-chrome.md */
+/* Review list: Playing as + date pagination (Coach GameHistoryFilters parity, no First move). */
+
+.filters {
+  display: grid;
+  grid-template-columns: auto;
+  gap: 0.75rem;
+  justify-content: start;
+  align-items: start;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 719px) {
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-inline: 0.75rem;
+    box-sizing: border-box;
+  }
+
+  .group {
+    flex: 0 1 auto;
+  }
+
+  .colorName {
+    display: none;
+  }
+
+  /*
+   * Mobile touch target — date page arrows must clear 40×40px. Desktop keeps
+   * the slim pager look; only the small-viewport hit area grows.
+   */
+  .page-btn {
+    min-width: 40px;
+    min-height: 40px;
+    box-sizing: border-box;
+    padding: 0.5rem 0.6rem;
+  }
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.25rem;
+  width: max-content;
+  max-width: 100%;
+}
+
+.label {
+  font-size: 0.75rem;
+  color: color-mix(in srgb, #e8eaed 55%, transparent);
+  text-align: center;
+  width: 100%;
+}
+
+.tiles {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  min-height: 1.6rem;
+  padding: 0.15rem 0.45rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  color: color-mix(in srgb, #e8eaed 65%, transparent);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.tile:hover:not(:disabled) {
+  border-color: var(--sc-menu-neon, #7dff6a);
+  color: #e8eaed;
+}
+
+.tile--active {
+  border-color: var(--sc-menu-neon, #7dff6a);
+  background-color: color-mix(in srgb, var(--sc-menu-neon, #7dff6a) 28%, #0a1a12);
+  color: #e8ffb8;
+}
+
+.tile--active:hover:not(:disabled),
+.tile--active:focus-visible {
+  border-color: var(--sc-guide-green, #3ecf8e);
+  background-color: color-mix(in srgb, var(--sc-menu-neon, #7dff6a) 40%, #0a1a12);
+  color: #e8ffb8;
+}
+
+.page-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding-bottom: 0.35rem;
+  margin-bottom: 0.25rem;
+  border-bottom: 1px solid #3a4550;
+}
+
+.page-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.25rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  color: color-mix(in srgb, #e8eaed 55%, transparent);
+  cursor: pointer;
+  font: inherit;
+}
+
+.page-btn:hover:not(:disabled) {
+  border-color: var(--sc-menu-neon, #7dff6a);
+  color: #e8eaed;
+}
+
+.page-btn:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.page-indicator {
+  color: color-mix(in srgb, #e8eaed 55%, transparent);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  min-width: 3rem;
+  text-align: center;
+}
+
+/*
+ * MobileBanner density (`compact`) — last so it wins over `.filters` /
+ * `.page-nav` above. The strip is a single ~40px row, so the "Playing as"
+ * caption and the page divider stand down; swatches + date pager carry it.
+ */
+.compact {
+  margin-bottom: 0;
+  padding-inline: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+  flex-wrap: nowrap;
+}
+
+.compact .label {
+  display: none;
+}

@@ -1,0 +1,333 @@
+/* Mobile-only horizontal control bar, centred above the board. Hidden on
+   desktop, where the vertical Sidebar is used instead. */
+.bar {
+  display: none;
+}
+
+@media (max-width: 719px) {
+  .bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    /* Tight gap so ::after rules between left tools read as shared edges. */
+    gap: 0.15rem;
+    width: 100%;
+    max-width: var(--board-size);
+    margin-inline: auto;
+    margin-block: clamp(0.15rem, 2cqh, 0.85rem);
+    padding-block: 0.3rem;
+    border-radius: var(--border-radius-md);
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    box-sizing: border-box;
+  }
+
+  /* Fused into full-width banner host — never cap to board width. */
+  :global([data-fuse-root]) > .bar {
+    max-width: none;
+    margin-inline: 0;
+    width: auto;
+  }
+
+  /* Segmented toolbar: IconButtons drop their own border; DualNav keeps its
+     internal half-divider. Floated timeline / tall-drawer chips keep chrome. */
+  .bar:not(.timeline) > .item :is(button, a) {
+    border: 0;
+  }
+
+  @media (max-height: 639px) {
+    .bar {
+      margin-block: 0.1rem;
+    }
+  }
+
+  /* Replay / travel: collapse the bar so the board rises into its place.
+     Nav + drawer float top-right (menu outermost). The dock → corner
+     move for nav is FLIP-animated in BoardControls. */
+  .bar.timeline {
+    margin: 0;
+    padding: 0;
+    min-height: 0;
+    background: transparent;
+    border-color: transparent;
+  }
+
+  .bar.timeline > .main,
+  .bar.timeline > .item:not(.nav-item):not(.drawer-item) {
+    display: none;
+  }
+
+  .bar.timeline > .nav-item {
+    position: fixed;
+    top: 0.75rem;
+    /* Sit just left of the hamburger so both clear the corner. */
+    right: 3.75rem;
+    z-index: 1000;
+    padding: 0.3rem;
+    border-radius: var(--border-radius-md);
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+  }
+
+  .bar.timeline > .drawer-item {
+    display: flex;
+    position: fixed;
+    top: 0.75rem;
+    right: 0.75rem;
+    left: auto;
+    z-index: 1000;
+    padding: 0.3rem;
+    border-radius: var(--border-radius-md);
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+  }
+
+  /* Tall mobile: float menu top-right even when the tool bar is visible
+     (matches --tall-mobile). Short / dynamic keeps the drawer in-bar on
+     the right so the compact CoachAvatar can sit closer to the board. */
+  @media (min-height: 640px) {
+    .bar:not(.toolbar) > .drawer-item {
+      display: flex;
+      position: fixed;
+      top: 0.75rem;
+      right: 0.75rem;
+      left: auto;
+      z-index: 1000;
+      padding: 0.3rem;
+      border-radius: var(--border-radius-md);
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+    }
+
+    /* Hero avatar owns the cat — hide compact centre + restore full bar height. */
+    .bar.center-overflow {
+      height: auto;
+      overflow: visible;
+    }
+
+    .bar.center-overflow > .main {
+      display: none;
+    }
+  }
+}
+
+/* Centre slot — a <span>, so it's excluded from the item <div> numbering.
+   Absolutely pinned to 50% so CoachAvatar (etc.) stays geometrically centred
+   even when three left icons outweigh the single right-side nav control. */
+.main {
+  order: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+  min-width: 0;
+  pointer-events: auto;
+}
+
+.main-label {
+  display: block;
+  overflow: hidden;
+  min-width: 0;
+  max-width: min(12rem, 42vw);
+}
+
+.main-label > * {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0 !important;
+  font-size: 0.85rem !important;
+  line-height: 1.2 !important;
+  font-weight: 600;
+}
+
+/* Review /:id matchup — full-width label · trailing back/share (not avatar-centred). */
+@media (max-width: 719px) {
+  .bar.toolbar {
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .bar.toolbar > .main {
+    /* Matchup label is a flex child again — not geometrically centred. */
+    position: static;
+    left: auto;
+    transform: none;
+    z-index: auto;
+    flex: 1 1 auto;
+    justify-content: flex-start;
+    padding: 0 0.25rem;
+    min-width: 0;
+  }
+
+  .bar.toolbar .main-label {
+    max-width: none;
+    width: 100%;
+    text-align: left;
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.2;
+  }
+
+  .bar.toolbar > .item.nav-item {
+    order: 1;
+    flex: 0 0 auto;
+  }
+
+  /* Menu left of the matchup / analysis title (in-flow — never fixed overlay). */
+  .bar.toolbar > .item.drawer-item {
+    order: -10;
+    flex: 0 0 auto;
+    position: static;
+  }
+
+  /* Analysis short / dynamic: optional collapse for legacy title toolbars. */
+  @media (max-height: 639px) {
+    .bar.toolbar.collapse-on-short {
+      display: none;
+    }
+  }
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Coach screen: slim the bar so the centre avatar overflows it (peeks out),
+   and give the slot room so the surrounding quick-actions clear the avatar. */
+@media (max-width: 719px) {
+  .bar.center-overflow {
+    height: 3.2rem;
+    box-sizing: border-box;
+    overflow: visible;
+  }
+
+  .center-overflow > .main {
+    overflow: visible;
+    padding: 0 2rem;
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* Vertical rule between left tool Items. BoardControls puts nearest-centre
+   tools first in DOM; flex order fans later items further left — so a rule on
+   the trailing edge of every left Item *after* the first left Item in DOM
+   lands between visual neighbours. A lone left tool gets no dangling line. */
+.item:not(.nav-item):not(.drawer-item)
+  ~ .item:not(.nav-item):not(.drawer-item)::after {
+  content: "";
+  position: absolute;
+  top: 20%;
+  bottom: 20%;
+  right: 0;
+  width: 1px;
+  background: var(--border-color);
+  pointer-events: none;
+}
+
+/* The single-button quick-actions stack on the LEFT in source order (1st sits
+   inner-left, nearest the centre); nth-of-type counts only the item divs, so
+   this re-balances as capability-gated items appear / disappear. `.main` itself
+   is absolutely centred, independent of how many left icons render. */
+.bar > div:nth-of-type(1) {
+  order: -1;
+}
+.bar > div:nth-of-type(2) {
+  order: -2;
+}
+.bar > div:nth-of-type(3) {
+  order: -3;
+}
+.bar > div:nth-of-type(4) {
+  order: -4;
+}
+.bar > div:nth-of-type(n + 5) {
+  display: none;
+}
+
+/* History nav packs to the trailing edge; menu sits after it (far right).
+   (`.main` is out of flow, so ml:auto packs left icons startward). */
+.bar > .item.nav-item {
+  order: 1;
+  margin-left: auto;
+}
+
+/* Menu trigger — rightmost in-bar (floats top-right when tall / timeline). */
+.bar > .item.drawer-item {
+  order: 2;
+}
+
+/* Dynamic-only fuse tools — never a standalone bar on tall/narrow mobile. */
+.bar[data-dynamic-only] {
+  display: none;
+}
+
+/* Dynamic fuse: bar cells hoist into [data-fuse-root] beside banner.
+   Left-tool fan-out stays on `.bar > div:nth-of-type(*)` (do not override order).
+   SPEC: _spec/apps/chess/responsiveness/rules.md */
+@media (--dynamic-mobile) {
+  :global([data-fuse-root]) > .bar:not(.timeline) {
+    display: contents;
+  }
+
+  :global([data-fuse-root]) > .bar:not(.timeline) > .item.nav-item {
+    margin-left: auto;
+    flex: 0 0 auto;
+  }
+
+  :global([data-fuse-root]) > .bar:not(.timeline) > .item.drawer-item {
+    flex: 0 0 auto;
+  }
+
+  :global([data-fuse-root]) > .bar:not(.timeline) > .item:not(.nav-item):not(.drawer-item) {
+    flex: 0 0 auto;
+  }
+
+  /* hideCentre (Coach avatar / Analysis EngineDepth): absolute centre slot. */
+  :global([data-fuse-root]:has([data-hide-centre])) > .bar:not(.timeline) > .main {
+    order: 0;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    padding: 0 1.25rem;
+    overflow: visible;
+  }
+
+  /* LAN / title banners: keep banner centre; drop bar Main to avoid double-centre. */
+  :global([data-fuse-root]:not(:has([data-hide-centre]))) > .bar:not(.timeline) > .main {
+    display: none;
+  }
+
+  /* Dynamic-only tools: force hoist even when base CSS hides the bar. */
+  :global([data-fuse-root]) > .bar[data-dynamic-only] {
+    display: contents;
+  }
+
+  /* Coach compact avatar — 0.75 of bar size so it fits the fused strip. */
+  :global([data-fuse-root])
+    > .bar.center-overflow
+    > .main
+    :global([data-testid="coach-avatar"]) {
+    transform: scale(0.75);
+    transform-origin: center center;
+  }
+
+  /* Segmented tools drop own borders inside the fused strip. */
+  :global([data-fuse-root]) > .bar:not(.timeline) > .item :is(button, a) {
+    border: 0;
+  }
+}

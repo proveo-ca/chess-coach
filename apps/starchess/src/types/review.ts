@@ -1,0 +1,69 @@
+/**
+ * Observer DualNav review — phase chip + store-backed history packages.
+ */
+import type {
+  EndScTurnResult,
+  PackedResolves,
+  ScFenSnapshot,
+  StarChessColor,
+} from "@chess-coach/starchess-core";
+
+import type { BoardVariant } from "~/types/board";
+import type { AdjutantKind } from "~/types/newGame";
+
+export type ReviewTurnPhase =
+  /** Settled idle (turn start or Final). */
+  | "start"
+  /** Turn-open Command Center-checks animating. */
+  | "check"
+  /** Intent ghosts / rings held before End. */
+  | "intent"
+  /** End combat timeline (B → C → path-reveal → F). */
+  | "resolve"
+  /** Last settled ply. */
+  | "final";
+
+export type ReviewHistoryStep = {
+  caption: string;
+  intentCaption?: string;
+};
+
+/** Settled DualNav package — MatchStore reviewForward/Back consume this. */
+export type ReviewHistory = {
+  settledSnapshots: ScFenSnapshot[];
+  settledResolves: EndScTurnResult[];
+  startCaption: string;
+  steps: readonly ReviewHistoryStep[];
+};
+
+export type StarChessMatchResult = "win" | "loss" | "draw";
+
+/** Persisted finished match for `/review/:id` DualNav replay. */
+export type StarChessGameRecord = {
+  id: string;
+  startedAt: string;
+  endedAt: string;
+  result: StarChessMatchResult;
+  map: BoardVariant;
+  playerColor: StarChessColor;
+  playerName?: string;
+  /** For arena imports, preserve both sides' script ids for display (max 2 lines). */
+  arenaPlayers?: { w: string; b: string };
+  /**
+   * Which Adjutant script played the opponent. Absent on records written before
+   * the opponent was selectable — those read as the unqualified "Adjutant".
+   */
+  opponent?: AdjutantKind;
+  /** Settled DualNav plies as SCFEN strings. */
+  scfens: string[];
+  /**
+   * Resolve that produced scfens[i+1] from scfens[i]. Present on a record in
+   * flight (just finished, imported, exported); a stored record carries
+   * `packed` instead — read either with core `resolvesOf` / `historyFromRecord`.
+   */
+  resolves?: EndScTurnResult[];
+  /** Verified lossless storage form of `resolves` (core `packRecord`). */
+  packed?: PackedResolves;
+  /** Per-ply `Q:` intent line; `null` where the ply recorded no queue. */
+  scsan?: (string | null)[];
+};

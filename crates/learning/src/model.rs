@@ -1,4 +1,4 @@
-// SPEC: _spec/architecture.puml, _spec/learning.puml, _spec/representation.puml
+// SPEC: _spec/ml-runtime-architecture.puml, _spec/learning.puml, _spec/representation.puml
 use burn::module::Module;
 use burn::nn::{Initializer, Linear, LinearConfig};
 use burn::tensor::activation::relu;

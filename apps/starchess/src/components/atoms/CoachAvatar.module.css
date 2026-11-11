@@ -1,0 +1,777 @@
+/* =========================================
+   Selena — cat face + Ghost sniper helm
+   Helmet: dark gray brow→eye band only (no mouth muzzle).
+   ========================================= */
+
+.cat {
+  --helm: #3a3d42;
+  --helm-deep: #2a2c30;
+  --helm-edge: #1a1c1f;
+  --scope-glow: #7dff6a;
+  --scope-core: #c8ff9a;
+  --scope-rim: #1e2226;
+  /*
+   * Ferry target (px), measured to [data-helm-ferry-stage] top.
+   * Default is a long upward yeet until JS measures.
+   */
+  --helm-ferry-y: -40rem;
+
+  position: relative;
+  height: 6rem;
+  width: 6.78rem;
+  margin: 2rem auto 0;
+  z-index: 1;
+}
+
+.cat.compact {
+  height: 5.8rem;
+  width: 6.56rem;
+  margin: 0;
+}
+
+.ear {
+  position: absolute;
+  top: -30%;
+  height: 60%;
+  width: 25%;
+  background: var(--avatar-fur);
+  border: 3px solid var(--avatar-outline);
+  transition:
+    transform 0.3s ease,
+    top 0.3s ease;
+  z-index: 1;
+}
+
+.ear::before,
+.ear::after {
+  content: "";
+  position: absolute;
+  bottom: 24%;
+  height: 10%;
+  width: 5%;
+  border-radius: 50%;
+  background: var(--avatar-nose);
+}
+
+.ear::after {
+  transform-origin: 50% 100%;
+}
+
+.ear--left {
+  left: -7%;
+  border-radius: 70% 30% 0% 0% / 100% 100% 0% 0%;
+  transform: rotate(-15deg);
+}
+
+.ear--left::before,
+.ear--left::after {
+  right: 10%;
+}
+
+.ear--left::after {
+  transform: rotate(-45deg);
+}
+
+.ear--right {
+  right: -7%;
+  border-radius: 30% 70% 0% 0% / 100% 100% 0% 0%;
+  transform: rotate(15deg);
+}
+
+.ear--right::before,
+.ear--right::after {
+  left: 10%;
+}
+
+.ear--right::after {
+  transform: rotate(45deg);
+}
+
+.face {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background: var(--avatar-outline);
+  border-radius: 50%;
+  /* Above eyes; below parked/scanning helm. */
+  z-index: 2;
+}
+
+.eye {
+  position: absolute;
+  top: 35%;
+  height: 30%;
+  width: 31%;
+  background: var(--avatar-fur);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  transition:
+    height 0.2s ease,
+    top 0.2s ease,
+    border-radius 0.2s ease,
+    background-color 0.2s ease;
+  box-sizing: border-box;
+  /* Lower than .face (and under the Ghost helm). */
+  z-index: 1;
+}
+
+.eye::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 0;
+  width: 100%;
+  border-radius: 0 0 50% 50% / 0 0 40% 40%;
+  background: var(--avatar-outline);
+}
+
+.eye::before {
+  content: "";
+  position: absolute;
+  top: 60%;
+  height: 10%;
+  width: 15%;
+  background: var(--avatar-fur);
+  border-radius: 50%;
+}
+
+.eye--left {
+  overflow: hidden;
+  left: 0;
+}
+
+.eye--left::before {
+  right: -5%;
+}
+
+.eye--right {
+  overflow: hidden;
+  right: 0;
+}
+
+.eye--right::before {
+  left: -5%;
+}
+
+.eye-pupil {
+  position: absolute;
+  top: 15%;
+  height: 60%;
+  width: 25%;
+  background: var(--avatar-outline); /* Black slit pupil */
+  border: 3px solid var(--avatar-iris); /* Green Iris */
+  border-radius: 50%;
+  transform: translate(0, 0);
+  transition:
+    transform 0.2s ease,
+    width 0.2s ease,
+    height 0.2s ease,
+    border-width 0.2s ease;
+  box-sizing: content-box;
+}
+
+.eye--left .eye-pupil {
+  right: 25%;
+}
+
+.eye--right .eye-pupil {
+  left: 25%;
+}
+
+.eye-pupil::after {
+  content: "";
+  position: absolute;
+  top: 10%;
+  right: -4px;
+  height: 6px;
+  width: 6px;
+  border-radius: 50%;
+  background: var(--avatar-fur);
+}
+
+/* Cat nose only — Ghost respirator / muzzle plate is intentionally omitted. */
+.muzzle {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  height: 6%;
+  width: 10%;
+  background: var(--avatar-fur);
+  transform: translateX(-50%);
+  border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+  /* Always above the visor (scanning uses helmet z-index 8). */
+  z-index: 9;
+}
+
+.zzz-container {
+  display: none;
+  position: absolute;
+  top: -30%;
+  right: -25%;
+  width: 50%;
+  height: 50%;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.z {
+  position: absolute;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: var(--avatar-fur);
+  text-shadow: 0 0 3px var(--avatar-outline);
+  opacity: 0;
+}
+
+.z-1 {
+  font-size: 1rem;
+  right: 20%;
+  bottom: 20%;
+}
+.z-2 {
+  font-size: 1.4rem;
+  right: 10%;
+  bottom: 40%;
+}
+.z-3 {
+  font-size: 1.8rem;
+  right: 0%;
+  bottom: 60%;
+}
+
+/* =========================================
+   Ghost helmet — crown-fitted arc (parked + scanning)
+   ========================================= */
+
+/*
+ * Cap is a clipped full-face circle so the arc matches her head exactly —
+ * no outline black above the visor. Parked = forehead band; scanning grows
+ * down over the eyes. Scopes stay on the helm. Never covers the muzzle.
+ */
+.helmet {
+  --helm-clip: 0.38;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* Forehead park — clip of the head circle. */
+  height: calc(100% * var(--helm-clip));
+  overflow: hidden;
+  z-index: 4;
+  pointer-events: none;
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+  transition:
+    height 0.4s ease,
+    z-index 0s linear 0.4s,
+    transform 500ms cubic-bezier(0.33, 0.85, 0.35, 1);
+}
+
+/*
+ * Full-face circle, clipped by .helmet — same radius as .face.
+ * No border / inset edge ring: those inset the fill and leave near-black
+ * (--helm-edge) peeking at the crown. Soft highlight only.
+ */
+.helmetBrow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% / var(--helm-clip));
+  background: linear-gradient(180deg, var(--helm) 0%, var(--helm-deep) 55%);
+  border: none;
+  border-radius: 50%;
+  box-sizing: border-box;
+  box-shadow: inset 0 2px 0 color-mix(in srgb, #fff 10%, transparent);
+  transition: height 0.4s ease;
+}
+
+.helmetRidge {
+  position: absolute;
+  top: 2%;
+  left: 50%;
+  width: 36%;
+  height: 28%;
+  transform: translateX(-50%);
+  z-index: 2;
+  background: linear-gradient(180deg, var(--helm) 0%, var(--helm-deep) 100%);
+  /* No stroke — a top border reads as black above the crown fill. */
+  border: none;
+  border-radius: 14% 14% 6% 6% / 40% 40% 20% 20%;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 12%, transparent);
+  transition:
+    top 0.4s ease,
+    height 0.4s ease,
+    width 0.4s ease,
+    border-radius 0.4s ease;
+}
+
+.scope {
+  position: absolute;
+  top: 28%;
+  height: 70%;
+  width: 31%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6%;
+  z-index: 3;
+  pointer-events: none;
+  transition:
+    top 0.4s ease,
+    height 0.4s ease,
+    width 0.4s ease,
+    left 0.4s ease,
+    right 0.4s ease;
+}
+
+.scope--left {
+  left: 0;
+}
+
+.scope--right {
+  right: 0;
+  gap: 4%;
+}
+
+.scopeLens {
+  position: relative;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 38% 32%,
+    #e8ffb8 0%,
+    var(--scope-core) 18%,
+    var(--scope-glow) 52%,
+    #3db84a 82%,
+    var(--scope-rim) 100%
+  );
+  border: 2px solid var(--scope-rim);
+  box-shadow:
+    0 0 8px color-mix(in srgb, var(--scope-glow) 90%, transparent),
+    0 0 16px color-mix(in srgb, var(--scope-glow) 45%, transparent),
+    inset 0 1px 2px color-mix(in srgb, #fff 25%, transparent);
+  box-sizing: border-box;
+}
+
+.scopeLens[data-size="large"] {
+  width: 100%;
+  height: 100%;
+}
+
+.scopeLens[data-size="small"] {
+  width: 42%;
+  height: 55%;
+}
+
+.scopeLens::after {
+  content: "";
+  position: absolute;
+  top: 14%;
+  left: 18%;
+  width: 28%;
+  height: 20%;
+  border-radius: 50%;
+  background: color-mix(in srgb, #fff 50%, transparent);
+  filter: blur(0.4px);
+  pointer-events: none;
+}
+
+/*
+ * Scanning: same crown fit (top 0, full head width), taller clip through eyes.
+ */
+.cat.scanning .helmet {
+  --helm-clip: 0.62;
+  z-index: 8;
+  transition:
+    height 0.4s ease,
+    z-index 0s;
+}
+
+.cat.scanning .helmetRidge {
+  /*
+   * Same crest width as parked (unscoped) helmet; length runs from
+   * the crown down to 8px above the solid green scope tops.
+   */
+  top: 2%;
+  width: 36%;
+  height: calc(35% / var(--helm-clip) - 2% - 8px);
+  border-radius: 14% 14% 6% 6% / 40% 40% 20% 20%;
+  z-index: 6;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 12%, transparent),
+    0 1px 3px color-mix(in srgb, #000 45%, transparent);
+}
+
+.cat.scanning .scope {
+  top: calc(35% / var(--helm-clip));
+  height: calc(30% / var(--helm-clip));
+  width: 31%;
+}
+
+.cat.scanning .scope--left {
+  left: 0;
+}
+
+.cat.scanning .scope--right {
+  right: 0;
+}
+
+.cat.scanning .ear {
+  z-index: 9;
+}
+
+/* =========================================
+   Identity — Selena ↔ Selena helm ferry
+   Drop / lift each last 500ms (see CoachAvatar.tsx HELM_MS).
+   Helm stays fully opaque in flight — only transform ferries it.
+   ========================================= */
+
+/* Settled Selena: solid helm parked at the stage top-middle, then hidden. */
+.cat.helmOff .helmet {
+  transform: translateY(var(--helm-ferry-y));
+  opacity: 1;
+  /* Hide only once stashed at the box top — never mid-flight. */
+  visibility: hidden;
+  transition: none;
+}
+
+.cat.helmOn .helmet {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Helm falls from top-middle onto the forehead — no fade. */
+.cat.helmDropping .helmet {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+  transition: transform 500ms cubic-bezier(0.33, 0.85, 0.35, 1);
+}
+
+/* Happy bounce while the helm lands. */
+.cat.helmDropping {
+  animation: selena-helm-bounce 500ms ease-out;
+}
+
+@keyframes selena-helm-bounce {
+  0% {
+    transform: translateY(0);
+  }
+  28% {
+    transform: translateY(5px);
+  }
+  48% {
+    transform: translateY(-7px);
+  }
+  68% {
+    transform: translateY(3px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* Helm levitates to top-middle — solid the whole way, no mid-flight vanish. */
+.cat.helmLifting .helmet {
+  transform: translateY(var(--helm-ferry-y));
+  opacity: 1;
+  visibility: visible;
+  transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Eyes track the departing helm (top-middle). */
+.cat.watching--up .eye::after {
+  animation: none;
+}
+.cat.watching--up .eye--left .eye-pupil {
+  width: 36%;
+  transform: translate(28%, -42%);
+}
+.cat.watching--up .eye--right .eye-pupil {
+  width: 36%;
+  transform: translate(-28%, -42%);
+}
+
+/* =========================================
+   Keyframes
+   ========================================= */
+
+@keyframes float-z {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(20px, -40px) rotate(20deg);
+    opacity: 0;
+  }
+}
+
+@keyframes blink {
+  0% {
+    height: 0;
+  }
+  90% {
+    height: 0;
+  }
+  92.5% {
+    height: 100%;
+  }
+  95% {
+    height: 0;
+  }
+  97.5% {
+    height: 100%;
+  }
+  100% {
+    height: 0;
+  }
+}
+
+@keyframes look-around {
+  0% {
+    transform: translate(0);
+  }
+  5% {
+    transform: translate(50%, -10%);
+  }
+  10% {
+    transform: translate(50%, -10%);
+  }
+  15% {
+    transform: translate(-80%, -10%);
+  }
+  20% {
+    transform: translate(-70%, -10%);
+  }
+  25% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes think-look {
+  0%,
+  100% {
+    transform: translate(0, 30%);
+  }
+  25% {
+    transform: translate(-40%, 30%);
+  }
+  75% {
+    transform: translate(40%, 30%);
+  }
+}
+
+@keyframes scope-low-battery {
+  0%,
+  100% {
+    filter: brightness(1);
+    opacity: 1;
+  }
+  40% {
+    filter: brightness(0.35);
+    opacity: 1;
+  }
+  55% {
+    filter: brightness(1.05);
+    opacity: 1;
+  }
+  70% {
+    filter: brightness(0.25);
+    opacity: 1;
+  }
+}
+
+/* =========================================
+   Emotions
+   ========================================= */
+
+.cat.idle .eye::after {
+  animation: blink 6s infinite ease-in;
+}
+.cat.idle .eye-pupil {
+  animation: look-around 6s infinite;
+}
+
+.cat.watching .eye::after,
+.cat.watching--left .eye::after,
+.cat.watching--right .eye::after {
+  animation: blink 4s infinite ease-in;
+}
+
+.cat.watching .eye-pupil {
+  width: 36%;
+  transform: translate(0, 25%);
+}
+.cat.watching--left .eye-pupil {
+  width: 36%;
+  transform: translate(-40%, 25%);
+}
+.cat.watching--right .eye-pupil {
+  width: 36%;
+  transform: translate(40%, 25%);
+}
+
+.cat.thinking .eye-pupil {
+  animation: think-look 1.2s infinite ease-in-out;
+}
+.cat.thinking .ear--left {
+  transform: rotate(-25deg);
+}
+.cat.thinking .ear--right {
+  transform: rotate(5deg);
+}
+
+.cat.sleepy .zzz-container {
+  display: block;
+}
+.cat.sleepy .z-1 {
+  animation: float-z 4s infinite 0s;
+}
+.cat.sleepy .z-2 {
+  animation: float-z 4s infinite 1.3s;
+}
+.cat.sleepy .z-3 {
+  animation: float-z 4s infinite 2.6s;
+}
+.cat.sleepy .eye {
+  height: 15%;
+  top: 45%;
+  border-radius: 50% 50% 50% 50% / 20% 20% 80% 80%;
+}
+.cat.sleepy .eye::after {
+  display: none;
+}
+.cat.sleepy .eye-pupil {
+  height: 40%;
+  transform: translate(0, 10%);
+}
+.cat.sleepy .scopeLens {
+  /* Low-battery pulse — visor stays solid. */
+  animation: scope-low-battery 2.4s infinite ease-in-out;
+}
+.cat.sleepy .ear--left {
+  transform: rotate(-30deg);
+  top: -20%;
+}
+.cat.sleepy .ear--right {
+  transform: rotate(30deg);
+  top: -20%;
+}
+
+.cat.sleeping .zzz-container {
+  display: block;
+}
+.cat.sleeping .z-1 {
+  animation: float-z 5s infinite 0s;
+}
+.cat.sleeping .z-2 {
+  animation: float-z 5s infinite 1.6s;
+}
+.cat.sleeping .z-3 {
+  animation: float-z 5s infinite 3.2s;
+}
+.cat.sleeping .eye {
+  height: 36%;
+  top: 36%;
+  background-color: transparent;
+  border: solid var(--avatar-fur);
+  border-width: 0 0 6px 0;
+  border-radius: 0 0 50% 50%;
+}
+.cat.sleeping .eye::before,
+.cat.sleeping .eye::after,
+.cat.sleeping .eye-pupil {
+  display: none;
+}
+.cat.sleeping .scopeLens {
+  /* Optics off — gray, no glow; helmet stays solid. */
+  background: radial-gradient(
+    circle at 38% 32%,
+    #6a6d72 0%,
+    #4a4d52 45%,
+    #2e3034 82%,
+    var(--scope-rim) 100%
+  );
+  box-shadow: inset 0 1px 2px color-mix(in srgb, #000 40%, transparent);
+  filter: none;
+  animation: none;
+}
+.cat.sleeping .scopeLens::after {
+  background: color-mix(in srgb, #fff 18%, transparent);
+}
+.cat.sleeping .ear--left {
+  transform: rotate(-45deg);
+  top: -15%;
+}
+.cat.sleeping .ear--right {
+  transform: rotate(45deg);
+  top: -15%;
+}
+
+.cat.happy .eye {
+  height: 36%;
+  top: 36%;
+  background-color: transparent;
+  border: solid var(--avatar-fur);
+  border-width: 6px 0 0 0;
+  border-radius: 50% 50% 0 0;
+}
+.cat.happy .eye::before,
+.cat.happy .eye::after,
+.cat.happy .eye-pupil {
+  display: none;
+}
+.cat.happy .scope {
+  opacity: 0.85;
+}
+.cat.happy .scopeLens {
+  filter: brightness(1.15);
+}
+
+/* Identity ferry — keep Ghost gear fully solid (overrides happy scope fade). */
+.cat.helmDropping .scope,
+.cat.helmLifting .scope,
+.cat.helmDropping .scopeLens,
+.cat.helmLifting .scopeLens {
+  opacity: 1;
+  filter: none;
+}
+
+.cat.shocked .eye-pupil {
+  width: 40%;
+  height: 75%;
+  border-width: 2px;
+  transform: translate(0, 0);
+}
+.cat.shocked .scopeLens {
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--scope-glow) 90%, transparent),
+    0 0 22px color-mix(in srgb, var(--scope-glow) 50%, transparent),
+    inset 0 0 3px color-mix(in srgb, var(--scope-glow) 40%, transparent);
+  filter: brightness(1.35);
+}
+.cat.shocked .ear--left {
+  transform: rotate(-45deg);
+  top: -20%;
+}
+.cat.shocked .ear--right {
+  transform: rotate(45deg);
+  top: -20%;
+}
+
+:global(.highlight) .cat {
+  z-index: 1000;
+  position: relative;
+}

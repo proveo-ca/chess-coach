@@ -1,0 +1,136 @@
+@startuml chess-coach-ui-blunder-detection
+' SPEC: _spec/apps/chess/blunder-detection.puml
+!includeurl https://raw.githubusercontent.com/proveo-ca/identity/refs/heads/main/proveo.iuml
+
+skinparam defaultTextAlignment left
+skinparam arrowColor #446688
+skinparam ActivityBackgroundColor #FEFEFE
+skinparam ActivityBorderColor #446688
+skinparam NoteBackgroundColor #FFF8E7
+skinparam NoteBorderColor #AA8844
+skinparam LegendBackgroundColor #FFF8E7
+skinparam LegendBorderColor #AA8844
+
+title Chess Coach UI · Blunder Detection\n(current behavior — three parallel pipelines)
+
+' ══════════════════════════════════════════════════════════════
+' A. LIVE HOVER  (capability blunderDetection)
+' ══════════════════════════════════════════════════════════════
+
+partition "A. Hover  [useHoverEvaluator · matingNetExitAdvice · settingsStore]" {
+  start
+  :Stockfish evaluates hovered destination\n(EnginePool priority = interactive);
+  :scoreToHumanCp(base) — human to move\nscoreToHumanCp(hover) — after move, invert;
+  :delta = humanHoverCp − humanBaseCp;
+  floating note right
+    **Mate encoding (hover):** 100000 − |mate|×100
+    **Thresholds (delta ≤ T):**
+    intermediate −200 · advanced −150 · expert −80
+    **Labels** (wording only): "a blunder" /
+    "a mistake" / "an inaccuracy"
+    Empty PV ignored unless mate 0 (checkmate).
+  end note
+  if (exitsMatingNet?\nbase mate>0 and after not mate<0) then (yes)
+    :Semantic loss = MATING_NET_EXIT_CP (−9000);
+    if (hovered UCI equals humanBestMove?) then (yes)
+      :Skip — already lost / forced;
+      stop
+    else (no)
+      :setHoverAdvice(pickMatingNetExitAdvice)\nsetHoverBlunder + travel\n(isBlunder=true explain);
+      stop
+    endif
+  elseif (delta <= blunderThresholdCp?) then (yes)
+    if (hovered UCI equals humanBestMove?) then (yes)
+      :Skip — already lost / forced\n(nothing better to point at);
+      stop
+    else (no)
+      :setHoverAdvice(piece + blunderLabel)\nsetHoverBlunder + travel\nexplain with isBlunder=true;
+      stop
+    endif
+  else (no)
+    :Not a hover blunder;
+    stop
+  endif
+}
+
+' ══════════════════════════════════════════════════════════════
+' B. REVIEW / MOVE-LIST ANNOTATIONS
+' ══════════════════════════════════════════════════════════════
+
+partition "B. Review annotations  [resolveAnnotations · useGameAnalysis]" {
+  start
+  :Per ply: cp = playedCp − bestCp\n(mate → ±10000; side-normalized);
+  floating note right
+    Default BLUNDER_THRESHOLD_CP = −200;
+    call sites pass difficulty-scaled T.
+    INACCURACY_THRESHOLD_CP = −50 (fixed).
+    formatCp: |cp| ≥ 10000 → "M+" / "M-".
+  end note
+  if (move is AI?) then (yes)
+    :No annotation tags;
+    stop
+  else (human)
+    if (wasBest AND cp <= blunderThreshold?) then (yes)
+      :Tag forced;
+      :Retro-tag prior human ply i−2\nas blunder (strip best if present);
+    else (no)
+      if (wasBest AND cp > threshold?) then (yes)
+        :Tag best;
+      elseif (cp <= threshold?) then (yes)
+        :Tag blunder;
+      elseif (cp <= -50 AND not best\nAND bestMoveUci present?) then (yes)
+        :Tag inaccuracy;
+      else (none)
+        :No quality tag;
+      endif
+    endif
+    if (hasPressedHint?) then (yes)
+      :Also add hint;
+    endif
+    stop
+  endif
+}
+
+' ══════════════════════════════════════════════════════════════
+' C. LLM PROMPT TAG  (advice + explain)
+' ══════════════════════════════════════════════════════════════
+
+partition "C. LLM classifyMoveTag  [engine-core · Orchestrator]" {
+  start
+  :scoreForPrompt(evalBefore/After)\nmate → ±9999 (MATE_SCORE_FOR_PROMPT);
+  floating note right
+    **isForcedBlunder** only on explain when UI
+    sends isBlunder=true (travel/hover Why?).
+    Advice path never sets it → never emits
+    Blunder from eval alone (large mate Δ → Mistake).
+    Book / Brilliant exist on PromptTag but
+    are never assigned by classifyMoveTag.
+  end note
+  if (isForcedBlunder?) then (yes)
+    :PromptTag = Blunder;
+    stop
+  else (no)
+    :delta = |afterScore − beforeScore|;
+    if (delta < 20?) then (yes)
+      :Tag Best;
+    elseif (delta > 200?) then (yes)
+      :Tag Mistake;
+    elseif (delta > 100?) then (yes)
+      :Tag Inaccuracy;
+    else (20 to 100)
+      :Tag Good;
+    endif
+    stop
+  endif
+}
+
+legend left
+  |= Topic |= Notes |
+  | Meaning of "Blunder" | Differs per pipeline (hover flag / review tag / LLM PromptTag). |
+  | Mate encodings | Hover 100000−\|mate\|×100 · review ±10000 · LLM ±9999. |
+  | Orthogonal | useMoveExecutor mating-sequence **advice strings** are not classifier tags. |
+  | Mating-net exit (hover) | Distinct case: base mate>0 and after not mate<0 → **−9000** + one of 5 phrases (matingNetExitAdvice). |
+  | Remaining gap | Review / LLM still treat net-exit as generic large-Δ only (no −9000 tag). |
+end legend
+
+@enduml

@@ -1,0 +1,52 @@
+/* Positioned glyph marker — rise 2 squares in 1s, exponential fade through 3s. */
+
+.bubble {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  animation: bubble-rise 3s linear forwards;
+}
+
+.mark {
+  width: 70%;
+  height: 70%;
+  display: block;
+  background: var(--glyph);
+  mask-image: var(--glyph-url);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-image: var(--glyph-url);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+}
+
+@keyframes bubble-rise {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  33.333% {
+    transform: translateY(var(--bubble-rise));
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(var(--bubble-rise));
+    opacity: 0.367879;
+  }
+  66.667% {
+    transform: translateY(var(--bubble-rise));
+    opacity: 0.135335;
+  }
+  83.333% {
+    transform: translateY(var(--bubble-rise));
+    opacity: 0.049787;
+  }
+  100% {
+    transform: translateY(var(--bubble-rise));
+    opacity: 0;
+  }
+}

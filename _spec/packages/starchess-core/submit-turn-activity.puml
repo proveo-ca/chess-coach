@@ -1,0 +1,91 @@
+@startuml submit-turn-activity
+' SPEC: _spec/packages/starchess-core/submit-turn-activity.puml
+' purpose: beginScTurn / endScTurn rank pipeline — ordering, bail-outs, event
+' stamping and the invariants that throw.
+!include ../../themes/proveo.puml
+
+skinparam defaultTextAlignment left
+
+title StarChess Core · ""beginScTurn"" / ""endScTurn"" — rank pipeline
+
+partition "beginScTurn — turn open, **before** players choose intent" {
+  start
+  :require phase **P**;
+  :fog-visible legal king-checks (""collectLegalCCChecks"")\n→ ""applyPendingCCShots"";
+  if (nothing fired?) then (yes)
+    :refill gas to income − ""queueGasSpent"" of the kept queue, clear ""U:"" → return unchanged;
+    stop
+  endif
+  :""turn"" does **not** advance unless a king died (then phase **O**, turn+1);
+  :synthesise ""asResolve"" (checks-only ""EndScTurnResult"") so the timeline\nplayer can animate the parting shots with empty B/C/F;
+  note right
+    A unit that breaks contact later in the same turn still paid this shot —
+    the check is a parting shot at open, not a standing threat.
+    Live play then calls ""endScTurn(..., { skipTurnStartChecks: true })"";
+    tests / atomic replay let End run the checks itself.
+  end note
+  stop
+}
+
+partition "endScTurn — the End pass" {
+  start
+  :require phase **P**; read ""queue.actions"", ""mines"", siege flags;
+  :vision gate for checks = pre-B side vision (siege mode + own mines);
+
+  :**1 · checks** — skipped when ""skipTurnStartChecks"";
+  :→ **afterPending** snapshot;
+  if (a king reached 0 HP?) then (yes)
+    :**bail out** — no B / C / F resolves behind a dead king.\nBoth shots of a face-to-face duel already applied, so mutual\ndestruction still reads 0/0 = draw;
+    stop
+  endif
+
+  :**2 · rank B specials** — white then black, queue order within a side;
+  :""siegeMode"" toggles the flag set only (placement untouched);
+  :""applySpecial"" → snipe · warp · **gas step** · **deploy** · mine drop;
+  :warp / gas step / deploy end in ""applyArrivalMine(squares)"": the last\nentry is the tile the unit rests on, so a hostile mine anywhere on that\nwalk detonates there (event carries ""mineColor"" + ""victim"" / ""unit"",\nplus ""chaseFrom"" when the mine was woken earlier on the walk);\nan allied mine stays inert;
+  :a gas step that died on a mine leaves ""bMoves"" (it did hop) but\n**cancels its promotion** — nothing left to deploy;
+  :**hold** a gas step's arrival mine when a C is queued on the same\nmarine: only the rewrite knows whether the walk is handed on, so its\n""specialBefore"" event is *collected*, not logged (""mine-contact.puml"");
+
+  :**3 · rank C classical** — post-B vision for attack fog;
+  :""rewriteClassicalAfterB"": a C sharing ""from"" with a B relocate is\nre-based onto the square the stack actually reaches;
+  :**settle the held gas steps** against the rewrite — handed on ⇒ leave the\nmine armed and tag the plan ""extraStepFrom""; not handed on ⇒ blow it on\nthe marine's own tile. Then flush the collected B events, so ""ev-<n>""\nstays in queue order;
+  :→ **afterB** snapshot (placement · mines · siegedTanks);
+  :throw if a surviving pawn's last-rank C carries no promotion;
+  :""resolveTurn(...)"" → phases 1–4;
+  :stamp events: attacks → moves → mineTriggers → moveCollisions →\npathRevealAttacks (semantic cue order, ids ""ev-<n>"" in sequence);
+  :drop siege flags for squares that no longer hold a rook;
+  if (a king reached 0 HP during the classical pass?) then (yes)
+    :**bail out** on the far side of C — the pass is simultaneous and\nresolves as one unit, so no F special resolves behind a dead king.\nIncludes fog-discovered checks (a slider walking onto a hidden king);
+    stop
+  endif
+
+  :**4 · rank F specials** — post-move siege / late drops;
+  :actor square = first candidate still holding one of our units\n(""a.from"" → rewritten C ""to"" / ""from"" → original C ""to"" / ""from"")\nso fire-in-place, quiet relocate and gas-ride all land;
+  :""spiderMine"" re-bases its drop onto that post-move square;
+  :F gas step recomputes +1 from the post-C square and takes the arrival-mine\ncontact over **both** hops (""[at, to]""), so a mine the classical leg held\nback chases onto the Extra Step tile. Blocked / off-board ⇒ the step fizzles\nand the held mine fires on ""at"" — the walk ends where it really ends;
+
+  :**invariants — throw, never repair:** mine cap per side, exactly one\nking per side in the final placement;
+  :stamp ""U:"" (""collectSpecialsUsed"") — gas-spend squares, migrated\nthrough B moves / warps / rewritten C / F moves, minus promotion\nlandings (a deployed unit is new, not the gas carrier);
+  :next snap: turn+1, gas 0, fresh income, empty queue, mines, siege;
+  note right
+  **""rewriteClassicalAfterB"" is a published contract** (exported, pure):
+  presentation paints intent ghosts with it and the Adjutant scores plans with
+  it, so neither can diverge from the resolver. It rewrites only:
+  * ""stimStep"" — same-file **forward** C, one rank, or the start-rank
+    classical double (""B e2→e3"" + ""C e2→e4"" ⇒ ""C e3→e5"");
+  * ""tacticalJump"" — only the C that matches the warp step exactly.
+  A blocked final square skips the rewrite: gas-then-move must fizzle at the
+  gas step exactly like move-then-gas fizzles at its post-C step. Captures and
+  off-vector C are left alone — a pre-B C would have fizzled anyway.
+
+  **Event vocabulary** (""ResolveEvent""): ""victim"" = the unit a deploy crushed,
+  or the hull a mine took on a warp / gas step; ""mineColor"" = the mine owner
+  for any **arrival** blast; ""chaseFrom"" = the wake tile when that mine chased
+  the unit off an earlier hop (the timeline draws the missile from it);
+  ""unit"" = the deployed type on every ""spawn"" (with
+  ""mineColor"" set it is also the unit the mine destroyed — one tile, two
+  deaths, both reported).
+  end note
+  stop
+}
+@enduml

@@ -1,0 +1,49 @@
+@startuml turn-bonus-broadcast
+' SPEC: _spec/apps/starchess/core/turn/turn-bonus-broadcast.puml
+' purpose: Milestone-turn broadcast — the bubble rides the whole planning window; the clock is never held.
+!include ../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Turn bonus broadcast (turns 1 · 11 · 21 …)
+
+package "Presenters" {
+  component "MatchStore armWhenIdle / TIMELINE_DONE\nTurnBarSidebar onMount" as ARM <<host>>
+  component "TurnBonusBubble\nclick-to-dismiss · nothing locked" as UI <<host>>
+  component "TurnBar / CountdownRing polls" as POLL <<host>>
+}
+
+package "Broadcast policy + store" {
+  component "turnBonusPolicy\nturnBonusFor(turn)" as POL <<app>>
+  component "MatchStoreContext\narmTimer seam · dismissTurnBonus" as SEAM <<async>>
+  component "matchReducer" as RED <<async>>
+  component "turnBonus · lastAnnouncedBonusTurn" as ST <<db>>
+}
+
+ARM ARROW_MAIN SEAM : armTimer()
+SEAM ARROW_MAIN POL : milestone?
+POL ARROW_OPTIONAL SEAM : "bonus — not yet announced"
+SEAM ARROW_MAIN RED : SHOW_TURN_BONUS
+SEAM ARROW_MAIN RED : "SET_DEADLINE (always, same call)"
+RED ARROW_MAIN ST : set turnBonus · mark
+ST ARROW_MAIN UI : "shell().turnBonus"
+UI ARROW_OPTIONAL SEAM : click → dismissTurnBonus()
+SEAM ARROW_OPTIONAL RED : HIDE_TURN_BONUS
+RED ARROW_MAIN ST : "SUBMIT_TURN (End / timeout) clears turnBonus"
+POLL ARROW_MAIN RED : counts from deadlineAt
+
+note bottom
+  **Invariants**
+  * The broadcast never holds the clock: ""armTimer()"" shows the bubble **and**
+  arms ""deadlineAt"" in the same call; no auto-dismiss is scheduled.
+  * The bubble lasts the whole planning window — ""SUBMIT_TURN"" (End or
+  timeout) clears it; a click dismisses it early and leaves the clock alone.
+  * Nothing is locked while it shows: board, resource bar and End stay live.
+  * Each milestone broadcasts once per match (""lastAnnouncedBonusTurn"" mark),
+  so re-entrant ""armTimer()"" calls never re-show it.
+  * Live single-player only — stores opt in via ""createMatchStore({turnBonuses:true})"";
+  tutorial / review / demos never broadcast.
+  * Displayed tier follows HUD numbering: ""max(1, rawTurn)"" (engine starts at 0).
+end note
+@enduml

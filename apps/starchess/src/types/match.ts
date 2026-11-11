@@ -1,0 +1,408 @@
+import type {
+  EndScTurnResult,
+  PlayerEconomy,
+  ScAction,
+  ScActionInput,
+  ScFenSnapshot,
+  ScOutcome,
+  SpawnPiece,
+  StarChessColor,
+  StarChessPiece,
+} from "@chess-coach/starchess-core";
+import type { Square } from "chess.js";
+
+import type { PendingPromotion } from "~/types/chess";
+import type { AttackAnimKind } from "~/types/cues";
+import type { ReviewTurnPhase } from "~/types/review";
+import type { ResolveWaveId } from "~/types/tutorial";
+
+export type MatchPhase = "loading" | "planning" | "targeting" | "resolving" | "gameOver";
+
+export type ViewerColor = StarChessColor;
+
+/** Read-only match derivations presentation uses without importing app/. */
+export type MatchView = {
+  viewerColor: () => StarChessColor;
+  /** Viewer's stored minerals. */
+  storedMaterial: () => number;
+  /** A special already fired from `square` this planning window. */
+  specialUsed: (square: Square) => boolean;
+  /** Viewer's gas after the live queue and any review intent ghosts. */
+  energyRemaining: () => number;
+  /** Viewer's deployed supply on the displayed board. */
+  deployedMaterial: () => number;
+  /** `color`'s bank as the HUD shows it for the displayed snapshot. */
+  displayedStoredMaterial: (color: StarChessColor, snap: ScFenSnapshot | null) => number;
+  /** Displayed board as a classic FEN from the viewer's side. */
+  classicFenForViewer: () => string;
+  /** The live queue's actions (both colours). */
+  currentQueue: () => readonly ScAction[];
+  turnDeadlineAt: () => number | null;
+  /** Whole seconds left on the planning clock; 0 when unarmed. */
+  turnSecondsRemaining: () => number;
+  /** The board the screen shows (live, mid-timeline, or review seek). */
+  displayedSnapshot: () => ScFenSnapshot;
+  /** Planning or targeting — End Turn / timeout may submit. */
+  canSubmit: () => boolean;
+};
+
+export type TargetingState =
+  | null
+  | { kind: "deploy"; unit: SpawnPiece; color: StarChessColor }
+  | {
+      kind: "charonMissiles";
+      from: Square;
+      targets: readonly Square[];
+      color: StarChessColor;
+    }
+  | {
+      kind: "tacticalJump";
+      from: Square;
+      targets: readonly Square[];
+      color: StarChessColor;
+    };
+
+export type CueLane =
+  | "gasDrop"
+  | "bSpecial"
+  | "deploy"
+  | "crush"
+  | "arrivalBlast"
+  | "phase1Attack"
+  | "phase1Death"
+  | "move"
+  | "collision"
+  | "mineMissile"
+  | "mine"
+  | "approach"
+  | "promoWalk"
+  | "promoDeploy";
+
+export type CueBoard = "preAfterB" | "afterB" | "afterAttack" | "afterMove";
+
+export type CueRouting = {
+  lane?: CueLane;
+  board?: CueBoard;
+  group?: string;
+};
+
+export type TimelineCue = CueRouting &
+  (
+  | {
+      kind: "move";
+      id: string;
+      piece: StarChessPiece;
+      color: StarChessColor;
+      from: Square;
+      to: Square;
+      /** BattleShip Tactical Jump — ShipJumpAnimation, not a hull slide. */
+      shipJump?: boolean;
+      /** Marine gas-step (B/F stimStep) — stim square + hop timing. */
+      stim?: boolean;
+    }
+  | {
+      kind: "attack";
+      id: string;
+      piece: StarChessPiece;
+      color: StarChessColor;
+      from: Square;
+      to: Square;
+      /** When set, HP chips at frag impact (live Command Center-damage boom). */
+      ccShot?: { target: StarChessColor; livesAfter: number };
+      /** Override ANIM_BY_PIECE (e.g. mechaCharon — wire-frozen cue id). */
+      anim?: AttackAnimKind;
+      /** Siege Tank mode for tankBattery VFX (from afterB siegedTanks). */
+      tankMode?: "siege" | "tank";
+      /** Charon fizzle — no ship at resolve: missiles fly the full ray off-board, no impact burst. */
+      fizzle?: boolean;
+    }
+  | {
+      kind: "death";
+      id: string;
+      piece: StarChessPiece;
+      color: StarChessColor;
+      at: Square;
+      mine?: boolean;
+      /**
+       * Mine glyph square to hide while this boom plays — a chase blows up on
+       * the landing tile, so the burrowed glyph it left behind is elsewhere.
+       */
+      spentAt?: Square;
+      tankMode?: "siege" | "tank";
+      /** A move-phase collision: both movers meet and die here (or a Command Center takes the other). */
+      collision?: boolean;
+    }
+  | {
+      kind: "deploy";
+      id: string;
+      piece: StarChessPiece;
+      color: StarChessColor;
+      at: Square;
+    }
+  | {
+      kind: "gasDrop";
+      id: string;
+      color: StarChessColor;
+      at: Square;
+      /** Top-edge start: left / mid / right (always falls from the top). */
+      corner: "left" | "mid" | "right";
+    }
+  | {
+      /** Spider Mine chase — lift+launch from wake square to impact (`chaseFrom` → `to`). */
+      kind: "mineMissile";
+      id: string;
+      color: StarChessColor;
+      from: Square;
+      to: Square;
+    }
+  );
+
+export type TimelineState = {
+  active: boolean;
+  cues: TimelineCue[];
+  /** Cue id(s) currently animating — multiple for parallel spawn deploys. */
+  playingIds: readonly string[];
+  /**
+   * Attack cue ids whose hull is suppressed (attacker died mid-shot).
+   * Keys match attack cue ids; DeathAnimation owns those squares.
+   */
+  attackDying: Readonly<Record<string, boolean>>;
+  /** Squares whose piece glyph is hidden while a cue plays. */
+  hiddenSquares: ReadonlySet<Square>;
+  /** Move slide progress (0 = at from, 1 = sliding/at to). */
+  moveProgress: Readonly<Record<string, 0 | 1>>;
+  /** Hoverbike L-path facing: 0 = long leg, 1 = short leg (after elbow). */
+  moveLeg: Readonly<Record<string, 0 | 1>>;
+  /** Tactical Jump thruster trails (outlive the hull cue). */
+  jumpTrails: ReadonlyArray<{ id: string; from: Square; to: Square }>;
+  /** Spider Mine chase trails (outlive the missile hull cue). */
+  mineMissileTrails: ReadonlyArray<{ id: string; from: Square; to: Square }>;
+  /** Hide board mine glyphs after boom / while missile owns the square. */
+  spentMines: readonly Square[];
+  /** Temporary placement overrides during resolve (mid-timeline commits). */
+  displayPlacement: string | null;
+  /** Review-replay overlays — never rewrite `liveSnapshot` while `gameOver`. */
+  displayCCLives: ScFenSnapshot["ccLives"] | null;
+  displayMines: ScFenSnapshot["mines"] | null;
+  displaySiegedTanks: readonly Square[] | null;
+};
+
+/** Patch shape for TIMELINE_COMMIT / TimelineCallbacks.onCommit. */
+export type TimelineCommitPatch = {
+  placement?: string;
+  ccLives?: EndScTurnResult["next"]["ccLives"];
+  mines?: EndScTurnResult["next"]["mines"];
+  siegedTanks?: readonly Square[];
+  /** In-resolve U: stamps — migrate with gas drops / moves for green aura. */
+  specialsUsed?: readonly Square[];
+  hidden?: readonly Square[];
+  playingIds?: readonly string[];
+  /**
+   * Attack cue ids whose hull is suppressed mid-shot (attacker died —
+   * reciprocal fire). DeathAnimation owns the square until death ends;
+   * keep flags until the attack wave clears so hulls do not flash back.
+   */
+  attackDying?: Record<string, boolean>;
+  moveProgress?: Record<string, 0 | 1>;
+  /** Hoverbike L facing — 0 long leg, 1 short leg after elbow. */
+  moveLeg?: Record<string, 0 | 1>;
+  /** Tactical Jump thruster trails (outlive hull cue). */
+  jumpTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
+  /** Spider Mine chase trails (outlive missile hull). */
+  mineMissileTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
+  /** Hide board mine glyphs while missile / after boom. */
+  spentMines?: readonly Square[];
+};
+
+/** Playback binder: timelinePlayer → match store TIMELINE_* commits. */
+export type TimelineCallbacks = {
+  onStart: (cues: TimelineCue[], placement: string) => void;
+  onCommit: (patch: TimelineCommitPatch) => void;
+  onDone: () => void;
+};
+
+// SPEC: _spec/apps/starchess/core/turn/turn-bonus-broadcast.puml
+export type TurnBonus = {
+  turn: number;
+  minerals: number;
+  gas: number;
+  seconds: number;
+};
+
+export type MatchState = {
+  phase: MatchPhase;
+  liveSnapshot: ScFenSnapshot;
+  economies: Record<StarChessColor, PlayerEconomy>;
+  /**
+   * Minerals moved stored→deployed during the current planning window
+   * (SPEND_STORED on spawn queue − REFUND_STORED / spawn-removal refunds).
+   * Reset at each turn open; REMOVE_ACTION refunds only up to this so seeded
+   * or imported queued spawns never inflate the bank.
+   */
+  planningMineralSpend: Record<StarChessColor, number>;
+  /**
+   * Whose fog / input seat is active (live play = human; review VISION may
+   * temporarily switch to the Adjutant color).
+   */
+  viewer: ViewerColor;
+  /**
+   * Human’s chosen team for this match — stable across review vision toggles.
+   * SideRailTools labels: You = playerColor, Adjutant = opposite.
+   * For arena imports, both sides are bots — show script ids instead.
+   */
+  playerColor: ViewerColor;
+  arenaPlayers?: { w: string; b: string };
+  deadlineAt: number | null;
+  targeting: TargetingState;
+  specialsUsed: ReadonlySet<Square>;
+  siegedTanks: ReadonlySet<Square>;
+  timeline: TimelineState;
+  outcome: ScOutcome | null;
+  settledSnapshots: ScFenSnapshot[];
+  /**
+   * Resolve that produced `settledSnapshots[i+1]` from `[i]`.
+   * Length is always `settledSnapshots.length - 1` (empty for deep-link terminals).
+   */
+  settledResolves: readonly EndScTurnResult[];
+  reviewIndex: number;
+  statusText: string;
+  lastResolve: EndScTurnResult | null;
+  selected: Square | null;
+  legalDests: readonly Square[];
+  /**
+   * Last-rank marine move awaiting {@link PromotionModal}.
+   * Timeout / End defaults the choice to BattleShip.
+   */
+  pendingPromotion: PendingPromotion | null;
+  /**
+   * True after turn-open Command Center-checks were applied (`beginScTurn`) for this
+   * planning window. `SUBMIT_TURN` then skips re-applying those checks.
+   */
+  turnStartChecksApplied: boolean;
+  turnBonus: TurnBonus | null;
+  lastAnnouncedBonusTurn: number;
+};
+
+export type MatchAction =
+  | { type: "LOAD_SCFEN"; scfen: string; stored?: number }
+  | { type: "LOAD_ERROR"; message: string }
+  | { type: "SELECT_SQUARE"; square: Square | null }
+  | { type: "SET_LEGAL_DESTS"; dests: readonly Square[] }
+  | { type: "QUEUE_ACTION"; action: ScActionInput }
+  | { type: "QUEUE_REJECT"; message: string }
+  | { type: "SET_PENDING_PROMOTION"; pending: PendingPromotion }
+  | { type: "CLEAR_PENDING_PROMOTION" }
+  | { type: "REMOVE_ACTION"; seq: number }
+  | { type: "OPEN_SPAWN"; color: StarChessColor; unit: SpawnPiece }
+  | {
+      type: "OPEN_MECHA_SNIPE";
+      color: StarChessColor;
+      from: Square;
+      targets: readonly Square[];
+    }
+  | {
+      type: "OPEN_BATTLESHIP_WARP";
+      color: StarChessColor;
+      from: Square;
+      targets: readonly Square[];
+    }
+  | { type: "CANCEL_TARGET" }
+  | { type: "MARK_SPECIAL_USED"; square: Square }
+  | { type: "APPLY_SNAPSHOT"; snapshot: ScFenSnapshot }
+  | { type: "SUBMIT_TURN"; reason: "end" | "timeout" }
+  | { type: "RESOLVE_READY"; result: EndScTurnResult }
+  /**
+   * Turn-open facade — sole path to `beginScTurn` (checks + gas refill).
+   * Store only dispatches; never calls beginScTurn directly.
+   */
+  | { type: "TURN_OPEN" }
+  /** Turn-open: refill G: remaining from gasIncome (check chip / no-check arm). */
+  | { type: "REFILL_GAS" }
+  | { type: "MARK_CHECKS_APPLIED" }
+  | { type: "BEGIN_CHECKS_DONE" }
+  | { type: "TIMELINE_START"; cues: TimelineCue[]; placement: string }
+  | {
+      type: "TIMELINE_COMMIT";
+      placement?: string;
+      ccLives?: ScFenSnapshot["ccLives"];
+      mines?: ScFenSnapshot["mines"];
+      siegedTanks?: readonly Square[];
+      /** In-resolve gas-used squares (green aura follows relocating units). */
+      specialsUsed?: readonly Square[];
+      hidden?: readonly Square[];
+      playingIds?: readonly string[];
+      /** Attack cue ids suppressed mid-shot (reciprocal / attacker death). */
+      attackDying?: Record<string, boolean>;
+      moveProgress?: Record<string, 0 | 1>;
+      moveLeg?: Record<string, 0 | 1>;
+      jumpTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
+      mineMissileTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
+      spentMines?: readonly Square[];
+    }
+  | { type: "TIMELINE_DONE" }
+  /**
+   * Mid-resolve tutorial wave finished — clear `active` so the next wave can
+   * `REVIEW_PLAY`, but keep display overlays for the partial board.
+   */
+  | { type: "TIMELINE_SOFT_DONE" }
+  | { type: "REVIEW_SEEK"; index: number }
+  /** Arm a stored resolve for terminal DualNav replay (phase stays `gameOver`). */
+  | { type: "REVIEW_PLAY"; result: EndScTurnResult }
+  | { type: "SET_VIEWER"; viewer: ViewerColor }
+  | { type: "SET_PLAYER_COLOR"; playerColor: ViewerColor }
+  | { type: "SET_DEADLINE"; at: number | null }
+  | { type: "SHOW_TURN_BONUS"; bonus: TurnBonus }
+  | { type: "HIDE_TURN_BONUS" }
+  | { type: "SPEND_STORED"; color: StarChessColor; amount: number }
+  | { type: "REFUND_STORED"; color: StarChessColor; amount: number }
+  | { type: "CANCEL_EFFECTS" };
+
+/** Match state without timeline — HUD / planning shell. */
+export type MatchShell = Omit<MatchState, "timeline">;
+
+/** Match store surface — dual-signal shell ∥ timeline + reducer runners. */
+export type MatchStore = {
+  /** Full snapshot (reads shell + timeline). Prefer shell/timeline in hot paths. */
+  state: () => MatchState;
+  /** Phase, snaps, economies, selection — not cue ticks. */
+  shell: () => MatchShell;
+  /** Timeline presentation only. */
+  timeline: () => TimelineState;
+  dispatch: (action: MatchAction) => void;
+  submitTurn: (reason?: "end" | "timeout") => void;
+  /** End the turn one task later; `cancelEffects` and disposal drop it. */
+  submitTurnNextTask: () => void;
+  view: MatchView;
+  /** Re-seed in place for a new lesson: drop in-flight effects, load, apply the gas override — one batch. */
+  loadLesson: (seed: { scfen: string; stored: number; gas?: number }) => void;
+  /** Viewer's vespene, clamped to 0–3; a no-op when unchanged. */
+  setViewerGas: (gas: number) => void;
+  armTimer: () => void;
+  /** Resolve turn-open Command Center-checks before intent; then arm timer when requested. */
+  ensureTurnOpenChecks: (opts?: { armTimer?: boolean }) => void;
+  /**
+   * Terminal DualNav — Back seeks previous turn start; Forward runs one full turn
+   * (check → intent hold → End) with phase chip updates.
+   */
+  reviewBack: () => void;
+  reviewForward: () => void;
+  reviewPhase: () => ReviewTurnPhase;
+  reviewIntentActions: () => readonly ScAction[] | null;
+  /** Tutorial / stepped DualNav — show or clear intent ghosts. */
+  reviewShowIntent: (actions: readonly ScAction[] | null) => void;
+  /** Tutorial / stepped DualNav — set phase chip without running playReviewTurn. */
+  reviewSetPhase: (phase: ReviewTurnPhase) => void;
+  /**
+   * Tutorial resolve wave — plays one partitioned cue batch. Last wave runs
+   * {@link TIMELINE_DONE}; earlier waves use {@link TIMELINE_SOFT_DONE}.
+   */
+  playReviewResolveWave: (
+    result: EndScTurnResult,
+    waveId: ResolveWaveId,
+    opts?: { isLastWave?: boolean },
+  ) => Promise<void>;
+  /** Full resolve timeline (check-only ply or unpartitioned End). */
+  playReviewResolve: (result: EndScTurnResult) => Promise<void>;
+  dismissTurnBonus: () => void;
+  cancelEffects: () => void;
+};

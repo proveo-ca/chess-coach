@@ -1,0 +1,287 @@
+@startuml starchess-board-entities
+' SPEC: _spec/apps/starchess/architecture/board-entities.puml
+' purpose: Current-state class entities for apps/starchess board presentation stack
+'          (leaves → StarChessBoard → AnimationStage → Live | Static).
+!include ../../../themes/proveo.puml
+
+skinparam defaultTextAlignment left
+skinparam arrowColor #446688
+skinparam packageStyle rectangle
+hide empty members
+
+title StarChess · Board presentation entities\n(current)
+
+note as BOUNDARY
+  **apps/starchess/public/pieces holds cburnett only.**
+  Product boards — live match, review, demos, deploy and
+  promotion pickers — render the inline units. A static asset
+  is reachable on exactly one branch, `cburnett`, whose sole
+  entry point is TutorialScreen's fog-lesson skin toggle.
+  Guarded by __tests__/bundle/bundleBoundary.test.ts:
+  pieceUrl is importable only from PieceGlyph and
+  ccDamageOverlay, and no hand-rolled asset path may appear.
+end note
+
+package "leaves" {
+
+  class PieceGlyph <<app>> {
+    one unit on a square
+    nerd -> Inline* (presentation/pieces)
+    cburnett -> pieceUrl <img>
+    stamps data-piece on both
+  }
+  class SpiderMine <<app>>
+  class VespeneIcon <<app>>
+  class pieceUrl <<app>> {
+    cburnett assets only
+    nerd art is inline, not fetched
+  }
+  class fogProjection <<app>>
+  class tankMode <<app>>
+  class StarChessSquare <<app>>
+  class TEAM_PRIMARY <<app>>
+
+}
+
+package "vision" {
+
+  interface VisionStrategy <<app>> {
+    id: VisionMode
+    usePlayerFog(fog?)
+    isObserver
+  }
+
+  class PlayerFogStrategy <<app>>
+  class ObserverDualVisionStrategy <<app>>
+  class visionStrategyFor <<app>>
+
+}
+
+package "vfx overlays" {
+
+  class CombatCueFrame <<db>> {
+    Parameter Object
+  }
+
+  class CombatOverlayRoot <<async>> {
+    Composite — stable layers
+  }
+
+  class CCDamageOverlay <<app>>
+  class GasDropAnimation <<app>>
+  class AttackAnimation <<app>>
+  class DeathAnimation <<app>>
+  class MoveAnimation <<app>>
+  class ShipJumpAnimation <<app>>
+  class MineMissileAnimation <<app>>
+  class DeployAnimation <<app>>
+  class vfxPerf <<app>>
+
+}
+
+package "board hosts" {
+
+  class StarChessBoard <<app>> {
+    presentation/board/components/StarChessBoard.tsx
+    --
+    snapshot square grid
+    VisionStrategy pick
+  }
+
+  class AnimationStage <<app>> {
+    Facade — board + CombatOverlayRoot
+    combat?: CombatCueFrame
+  }
+
+  class LiveStarChessBoard <<app>> {
+    MatchStore-backed
+    builds CombatCueFrame
+  }
+
+  class LiveBoardBinding <<app>> {
+    sole Live mount
+  }
+
+  class StaticScfenBoard <<app>> {
+    store-free → AnimationStage
+  }
+
+  class MapScreen <<app>> {
+    terrain gallery
+    store-free → AnimationStage
+  }
+
+}
+
+package "hooks" {
+
+  class useBoardVision <<app>>
+  class useIntentOverlays <<app>>
+  class useBoardInput <<app>>
+  class useCombatOverlays <<app>>
+  class useAutoDeploy <<app>>
+  class deriveVisualFrame <<app>>
+  class teamTintStyle <<app>>
+  class ccDamageCuesFromBoard <<app>>
+  class visibleKingDamageCues <<app>>
+  class withCCFire <<app>>
+  class liveMatchPhase <<app>>
+  class pieceVisibleToViewer <<app>>
+  class charonArmed <<app>> {
+    queuedCharonSquares(queue, side?)
+    charonTrailSquares(resolve)
+    restingCharonSquares(resolve, U:)
+  }
+
+  note bottom of charonArmed
+    Sole owner of "which Mecha shows Charon launchers".
+    Launchers are the Mecha's **own** charonMissiles spend and
+    follow that unit — arming, a queued strike, the squares it
+    held mid-resolve, then its resting square until turn-open
+    clears U:. Never "gas was used on this square": U: and the
+    absorb squares drive the green special-used aura only.
+  end note
+
+}
+
+package "geometry / local stores" {
+  class tankModeStore <<db>>
+  class boardGeom <<app>>
+}
+
+package "presentation/pieces (units)" {
+
+  class units <<app>> {
+    InlinePawn / InlineKnight / InlineMecha
+    InlineRook / InlineQueen / InlineKing
+    TwinBattery · ccFire
+    geometry.ts — pivots, rest aims, AimPose
+    teamColors.ts — swatches, PIECE_FRAME
+  }
+
+  note bottom of units
+    Sits **below** presentation/animations: the same unit draws
+    a resting square and a combat cue, so animations/ imports
+    down into here and never the reverse.
+
+    Rest pose == apps/chess/public/pieces/nerd/*.svg — same
+    PIECE_FRAME nest, same main stroke, no aim normalize.
+    Aiming applies that normalize as a CSS transform
+    (`styles/unitPose.css` .sc-unit-pose) so a mover settles
+    back to rest over SETTLE_MS **at touchdown**; the move wave
+    holds the mover one SETTLE_MS past arrival so the unwind
+    finishes before the overlay hands the square to PieceGlyph
+    (a CSS transition cannot span that unmount).
+
+    **Never tween a reflection** — it squashes through a paper-thin
+    frame. The Hoverbike's aim factors as [side] · rotate(40 − r):
+    an outer .sc-unit-side group snaps the mirror, only the inner
+    .sc-unit-pose rotation tweens. MoveAnimation fixes the side once
+    per L (from the move's file direction) so the elbow only
+    rotates; the touchdown snap hides behind a landing squash.
+    Travel ticks come from core ""move-timing.ts"".
+  end note
+
+}
+
+package "app state (external)" {
+  class MatchStore <<db>>
+  class capabilitiesStore <<db>>
+}
+
+StarChessBoard *-- PieceGlyph
+StarChessBoard *-- SpiderMine
+StarChessBoard *-- VespeneIcon
+PieceGlyph *-- units
+PieceGlyph ..> pieceUrl : cburnett branch only
+DeployModal ..> PieceGlyph
+PromotionModal ..> PieceGlyph
+MoveAnimation ..> PieceGlyph : rook mover
+ccDamageOverlay ..> pieceUrl : cburnett king
+StarChessBoard ..> fogProjection
+StarChessBoard ..> tankMode
+StarChessBoard ..> StarChessSquare
+StarChessBoard ..> TEAM_PRIMARY
+StarChessBoard ..> visionStrategyFor
+visionStrategyFor ..> VisionStrategy
+PlayerFogStrategy ..|> VisionStrategy
+ObserverDualVisionStrategy ..|> VisionStrategy
+
+AnimationStage *-- StarChessBoard
+AnimationStage *-- CombatOverlayRoot
+AnimationStage ..> boardGeom
+AnimationStage ..> tankModeStore
+CombatOverlayRoot ..> CombatCueFrame
+CombatOverlayRoot ..> vfxPerf
+CombatOverlayRoot *-- CCDamageOverlay
+CombatOverlayRoot *-- GasDropAnimation
+CombatOverlayRoot *-- AttackAnimation
+CombatOverlayRoot *-- DeathAnimation
+DeathAnimation ..> SpiderMine : wreck mirrors this silhouette
+CombatOverlayRoot *-- MoveAnimation
+CombatOverlayRoot *-- ShipJumpAnimation
+CombatOverlayRoot *-- MineMissileAnimation
+CombatOverlayRoot *-- DeployAnimation
+
+LiveStarChessBoard *-- AnimationStage
+LiveStarChessBoard ..> CombatCueFrame : builds
+LiveBoardBinding *-- LiveStarChessBoard
+StaticScfenBoard *-- AnimationStage
+MapScreen *-- AnimationStage
+
+LiveStarChessBoard ..> useBoardVision
+LiveStarChessBoard ..> useIntentOverlays
+LiveStarChessBoard ..> useBoardInput
+LiveStarChessBoard ..> charonArmed : armedMechas · charonSquares
+LiveStarChessBoard ..> useCombatOverlays
+LiveStarChessBoard ..> useAutoDeploy
+LiveStarChessBoard ..> deriveVisualFrame
+LiveStarChessBoard ..> ccDamageCuesFromBoard
+LiveStarChessBoard ..> visibleKingDamageCues
+LiveStarChessBoard ..> withCCFire : dresses king hulls
+visibleKingDamageCues ..> pieceVisibleToViewer : fog gate
+LiveStarChessBoard ..> liveMatchPhase
+LiveStarChessBoard ..> pieceVisibleToViewer : fog-gates VFX
+LiveStarChessBoard ..> MatchStore
+LiveStarChessBoard ..> capabilitiesStore : LIVE_CAPABILITIES on mount
+
+note right of teamTintStyle
+  **Whose colour is it?** VFX that paints the *unit's own* ordnance — a
+  Hoverbike's deploy jet and frag boom, a Ship's laser, a mine wreck's boom —
+  reads ""--team-tint"" (hex, for ""color-mix"") and ""--team-rgb"" (triplet, for
+  ""rgba"") with the white swatch as the CSS fallback. Fire and smoke stay fire
+  and smoke: the tank's fuel plume and the shared death ""boomFlash"" are not
+  team colours.
+
+  It must sit on the **cue element**, never a layer root — a phase-1 window
+  plays both sides' shots at once, so one tint per layer paints black's
+  ordnance blue. Custom properties inherit, so a cue's slot covers its
+  descendants (the Ship's laser pulse rides its hull slot).
+end note
+
+note bottom of DeathAnimation
+  **A mine death draws the mine.** The cue carries ""piece = n"" — the
+  Hoverbike that laid it owns the colour, not the shape — so ""deathNode""
+  branches on ""cue.mine"" first and renders ""DeathMine"" (SpiderMine's own
+  coordinates, shard-wrapped for the ""dyingDrama"" scatter) plus the bike's
+  frag boom in place. Before that branch a shot-out mine had no hull at all:
+  it vanished behind the generic ""boomFlash"".
+end note
+
+note right of withCCFire
+  **One CC, one hull.** ""visibleKingDamageCues"" drops the persistent fire slot
+  for a king whose square an attack owns (""attackFrom"") or whose side is mid-move
+  (""movingColors""), so the animating layer owes that king its fire:
+  ""withCCFire"" copies ""damage"" + ""seed"" onto the ""AttackCue"" / ""MoveCue"".
+  Skip either half and the CC reads full HP for the length of the cue — skip the
+  gate instead and two hulls draw it, fire (z 35) over mover (z 30).
+  Shared ""seed"" keeps the flame spots from jumping at the handoff.
+end note
+
+note bottom
+  StarChessBoard + VisionStrategy · CombatOverlayRoot + CombatCueFrame.
+  ""useBoardVision"" ships beside ""useIntentOverlays"" (""presentation/combat/hooks/"").
+  Design history: strategy-starchess-board · composite-vfx-stack. Screen hosts: ""screen-entities.puml"" (this folder).
+end note
+
+@enduml

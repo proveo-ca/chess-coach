@@ -1,0 +1,69 @@
+@startuml coach-line
+' purpose: how tutorial coach lines are chosen, held, and shown
+' covers: apps/starchess/src/tutorial/tutorialScript.config.ts
+' covers: apps/starchess/src/screens/TutorialScreen.tsx
+' covers: apps/starchess/src/__tests__/tutorialScript.test.ts
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Tutorial coach line resolution
+
+component "tutorialScript.config.ts\nchecked catalog" as Config <<db>>
+component "resolveTutorialLine\nfirst match wins" as Resolver <<app>>
+component "holdTutorialLine\nsticky intro latch" as Hold <<app>>
+component "TutorialScreen\nline + outcome effects" as Screen <<app>>
+component "TutorialGuideBubble\ncoach / success" as Bubble <<app>>
+component "fog skin demo\nChess → StarChess @1.2s" as SkinDemo <<async>>
+component "resolveTutorialHints\n+ Arrows, same step" as Hints <<app>>
+
+Config ARROW_MAIN Resolver : catalog reactions + hints
+Resolver ARROW_MAIN Hold : raw intro or reaction
+Hold ARROW_MAIN Screen : held line per lesson key
+Screen ARROW_MAIN Bubble : message + action CTA
+SkinDemo ARROW_OPTIONAL Screen : auto flip, cancels on hand
+Hints ARROW_OPTIONAL Screen : rings + lines, demo-gated
+
+note as N1
+Resolver walks the declared reaction
+catalog in order and returns the first
+clause matching board context. Copy
+edits stay safe because tests name each
+reaction by order, so guards catch moves.
+end note
+N1 .. Resolver
+
+note as N2
+Hold shows the intro until acting, then
+latches the reaction and never revives
+the opener. Turn-open bookkeeping
+re-baselines seed on checks flip, while
+unflagged hosts still retire on any move.
+end note
+N2 .. Hold
+
+note as N3
+Fog lessons auto-play the skin toggle
+after two seconds and hold hints until
+the round trip ends. Arming lives only
+in interface targeting state and never
+reaches the wire, so targeting announces.
+end note
+N3 .. SkinDemo
+
+note as N4
+Outcome judges settled boards only, so
+mid-resolve placements never trip gates.
+Ending holds the closing line for reading
+time, then success offers Next with a
+visible auto-advance border countdown.
+end note
+N4 .. Screen
+
+' --- IGNORE: layout hints (do not edit) ---
+Config -[hidden]- Resolver
+Resolver -[hidden]- Hold
+Screen -[hidden]- Bubble
+' --- END IGNORE ---
+@enduml

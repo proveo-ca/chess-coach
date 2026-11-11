@@ -1,0 +1,192 @@
+@startuml storybook-projection
+' SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
+' purpose: Invert the Storybook dependency — source owns the catalog, stories project it.
+' constraint: NO BEHAVIORAL CHANGE — same seeds, same lessons, same story ids.
+!include ../../../themes/proveo.puml
+
+skinparam defaultTextAlignment left
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+hide empty members
+
+title StarChess · Storybook as projection\nscenario catalog + LiveLessonHost (BEFORE → AFTER)
+
+package "BEFORE · product reads out of Storybook" as BEFORE {
+
+  class StoriesFixtures <<error>> {
+    stories/fixtures/seeds.ts
+    stories/fixtures/scenarios.ts
+    --
+    STAR_STARTING_SCFEN
+    GAS_DEPLOY_FIXTURES · mapFixture
+    re-exports ""demos/kingHunt""
+  }
+
+  class SingleScreen_B <<app>> {
+    ships ""/single""
+    opening position from fixtures
+  }
+
+  class TutorialScreen_B <<app>> {
+    ships ""/tutorial""
+    6 specials seeds from fixtures
+    FOG_LESSONS · SPECIAL_LESSONS
+  }
+
+  class Tests_B <<app>> {
+    4 unit tests assert
+    against fixtures
+  }
+
+  class LiveHosts_B <<app>> {
+    6 hosts · 818 lines
+    each seeds its own store
+    narration effect ×5
+  }
+
+  class Stories_B <<host>> {
+    36 files · 2326 lines
+    own SCFENs · own MatchStores
+    ""addMatchRecord"" side effects
+  }
+
+  note as N_BEFORE
+    **Inverted:** 9 non-story files import ""~/stories/"".
+    ""FOG_MINE_LIVE_SCFEN"" / ""FOG_SIEGE_LIVE_SCFEN"" defined
+    twice — story **and** TutorialScreen.
+    Fog (8) + Specials (6) catalogs maintained twice.
+  end note
+
+  N_BEFORE .. StoriesFixtures
+
+  SingleScreen_B ARROW_ERROR StoriesFixtures : opening SCFEN
+  TutorialScreen_B ARROW_ERROR StoriesFixtures : lesson seeds
+  Tests_B ARROW_ERROR StoriesFixtures : assertions
+  Stories_B ARROW_MAIN LiveHosts_B
+  Stories_B ARROW_MAIN StoriesFixtures
+}
+
+package "AFTER · Storybook projects the source" as AFTER {
+
+  package "catalog (source of truth)" {
+    class AppSeeds <<db>> {
+      app/seeds.ts
+      --
+      STAR_STARTING_SCFEN
+      PROMOTION_* · GAS_USED_FOG_*
+      **product** positions
+    }
+
+    class TutorialScript <<db>> {
+      tutorial/tutorialScript.config.ts
+      --
+      **data-only, type-checked**
+      ""as const satisfies""
+      board · hints · gates · docs
+    }
+
+    class DemoSamples <<db>> {
+      demos/samples.ts
+      --
+      demo-only live seeds
+      (vermeer · fullArmy · fog)
+    }
+
+    class DemoPackages <<db>> {
+      demos/*.ts
+      --
+      DualNav scenario packages
+      (unchanged)
+    }
+  }
+
+  class LiveLessonHost <<app>> {
+    demos/LiveLessonHost.tsx
+    --
+    seed · narration · hints
+    → BaseScreen
+    replaces the 6 hosts
+  }
+
+  class Choreography <<async>> {
+    demos/choreography/*.ts
+    --
+    useKingDefenseOpening
+    useKingDefenseIIChecks
+    useKingHuntGraduation
+    useForcedTankMode
+    useViewerGasOverride
+  }
+
+  class LessonNarration <<app>> {
+    useLessonNarration(store)
+    --
+    sole tutorialNarration publisher
+  }
+
+  class Stories_A <<host>> {
+    ""*.stories.tsx""
+    --
+    **projection only**
+    ids + factory calls
+    no SCFEN · no MatchStore
+  }
+
+  class Guards <<async>> {
+    __tests__/storybook/storybookProjection.test.ts
+    --
+    1· nothing outside ""*.stories.tsx""
+       imports ""~/stories/""
+    2· catalog entry ⟷ story, 1:1
+  }
+
+  note as N_AFTER
+    **Pattern:** Catalog + Projection. Stories enumerate ids;
+    seed / flags / caption resolve from the catalog.
+    **Template that already worked:** ""StarChessTutorialScreen.stories.tsx""
+    derives its routes from ""tutorialPath()"" and holds no data.
+    **Story ids are preserved** — projection is not a rename.
+    **no behavioral change**
+  end note
+
+  N_AFTER .. Stories_A
+
+  SingleScreen_A ARROW_MAIN AppSeeds
+  TutorialScreen_A ARROW_MAIN TutorialScript
+  TutorialScreen_A ARROW_MAIN LiveLessonHost
+  LiveLessonHost ARROW_MAIN LessonNarration
+  LiveLessonHost ARROW_OPTIONAL Choreography : per-lesson
+  LiveLessonHost ARROW_MAIN TutorialScript
+  LiveLessonHost ARROW_MAIN DemoSamples
+  Stories_A ARROW_MAIN TutorialScript : project
+  Stories_A ARROW_MAIN DemoSamples : project
+  Stories_A ARROW_MAIN DemoPackages : project
+  Guards ARROW_ERROR Stories_A : ban reverse imports
+
+  class SingleScreen_A <<app>> {
+    ships ""/single""
+  }
+
+  class TutorialScreen_A <<app>> {
+    ships ""/tutorial""
+    routing + lesson gates only
+  }
+}
+
+BEFORE -[hidden]- AFTER
+
+note bottom
+  **Phases** — this diagram is the AFTER (post-phase-4) target.
+  | 1 | invert fixtures → ""app/seeds.ts"" + ""demos/samples.ts""; delete ""stories/fixtures/"" | **APPLIED** |
+  | 2 | lesson catalog onto ""TutorialStoryScript.board"" | **APPLIED** |
+  | 3 | ""LiveLessonHost"" + choreography hooks replace the 6 live hosts | **APPLIED** |
+  | 4 | regenerate stories as projections; content → ""board.docs"" | **APPLIED** |
+  | 5 | drift guards (""__tests__/storybook/storybookProjection.test.ts"") | **APPLIED** |
+  **Config format:** ""tutorialScript.config.ts"", not ""*.json"" — JSON imports
+  widen to ""string"", so a misspelled ""kind"" / ""emotion"" would only fail at
+  runtime. ""as const satisfies"" checks all 19 stories + 45 patterns.
+  **Current-state maps:** ""screen-entities.puml"" · ""board-entities.puml"" ·
+  ""../demos.puml"" — updated as each phase lands.
+end note
+
+@enduml

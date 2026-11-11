@@ -1,0 +1,86 @@
+.eval-bar {
+  --eval-bar-offset: -2rem;
+  --eval-bar-thickness: calc(var(--square-size) * 0.5);
+  position: absolute;
+  left: var(--eval-bar-offset);
+  width: var(--eval-bar-thickness);
+  height: var(--board-size);
+  background: var(--eval-bar-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow:
+    0 4px 20px rgba(var(--shadow-rgb), 0.53),
+    inset 0 0 10px rgba(var(--shadow-rgb), 0.67);
+  border: 2px solid var(--eval-bar-border);
+  contain: layout paint style;
+}
+
+.eval-white,
+.eval-black {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  transform-origin: top;
+  transition: transform 0.7s cubic-bezier(0.22, 0.8, 0.3, 1);
+  will-change: transform;
+}
+
+.eval-white {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--eval-white-from),
+    var(--eval-white-mid) 40%,
+    var(--eval-white-to)
+  );
+  box-shadow: inset 0 1px 6px rgba(var(--white-rgb), 0.27);
+}
+
+.eval-black {
+  transform-origin: bottom;
+  background: linear-gradient(
+    to top,
+    var(--eval-black-from),
+    var(--eval-black-mid) 40%,
+    var(--eval-black-to)
+  );
+  box-shadow: inset 0 -1px 6px rgba(var(--shadow-rgb), 0.53);
+}
+
+.eval-value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(0.7rem, 3.5vw, 0.75rem);
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  z-index: 6;
+  min-width: 52px;
+  max-width: calc(100% - 8px);
+  text-align: center;
+  pointer-events: none;
+  background: rgba(20, 20, 35, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 3px 8px;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  box-sizing: border-box;
+}
+
+/* Mobile: bar sits in a narrow gutter left of the board — hide the numeric
+   pill (min-width: 52px can't fit) and let the fill convey the eval. */
+@media (max-width: 719px) {
+  .eval-bar {
+    --eval-bar-offset: -0.75rem;
+    --eval-bar-thickness: 0.9rem;
+  }
+
+  .eval-value {
+    display: none;
+  }
+}

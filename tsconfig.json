@@ -12,5 +12,11 @@
     "noUnusedParameters": true,
     "types": []
   },
-  "include": ["packages/*/src", "tooling/**/*.ts"]
+  "include": [
+    "packages/contracts/src",
+    "packages/game-core/src",
+    "packages/policy/src",
+    "packages/runtime/src",
+    "tooling/**/*.ts"
+  ]
 }

@@ -1,0 +1,106 @@
+@startuml planning-projection
+' SPEC: _spec/apps/starchess/core/board/planning-projection.puml
+' purpose: Projection — intent-time view models; clicks become commands, never resolve.
+' covers: apps/starchess/src/presentation/combat/intentOverlays.ts
+' covers: apps/starchess/src/presentation/specials/planning/occupancy.ts
+' see also: _spec/packages/starchess-core/gas-phase-vacancy.puml
+!include ../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Planning projection (plan)
+
+package "Live chrome" {
+  component "BaseScreen\ndeploy · gas · auto-queue glue" as BASE <<host>>
+  component "presentation/board/hooks/useBoardInput.ts\nselect · C queue · spawn/snipe/warp" as IN <<app>>
+}
+
+package "Intent projections (stacked, single owner each)" {
+  component "specials/planning/occupancy\n(occupancyForQueuedMoves → occupancyForViewerMoves)" as OCC <<app>>
+  component "intentOverlays.ts\npolicy → hook → pure" as OV <<app>>
+  component "tankModeForSieged\nshared siege helper" as ROOK <<db>>
+  component "fogVisibility.ts\ntargetVisibleGate · pieceVisible" as FOG <<db>>
+  component "matchEconomy\napplyTurnIncome · display" as ECO <<db>>
+}
+
+package "Dispatch" {
+  component "matchReducer" as RED <<async>>
+}
+
+package "Board queries (public core)" {
+  component "scMovesFrom · spawnCCAnchor\nadjacentSquares · getSideVision\ncollectLegalKingChecks · costs" as BQ <<db>>
+  component "rewriteClassicalAfterB\npawnSingleTarget\n(pure stack folding)" as FOLD <<db>>
+}
+
+BASE ARROW_MAIN IN : board host
+BASE ARROW_OPTIONAL ECO : HUD bind
+BASE ARROW_MAIN RED : SUBMIT / spend / auto paths
+IN ARROW_MAIN OCC : post-B origins
+IN ARROW_MAIN OV : ghosts
+IN ARROW_MAIN BQ : dests / fog policy
+OCC ARROW_MAIN ROOK
+OV ARROW_MAIN ROOK
+OV ARROW_MAIN FOG : check rings
+OV ARROW_MAIN FOLD : stack endpoints
+OCC ARROW_OPTIONAL BQ
+OV ARROW_OPTIONAL BQ
+ECO ARROW_OPTIONAL BQ : income / unit / gas
+IN ARROW_MAIN RED : QUEUE_ACTION · SELECT_* · SPEND_*
+
+note bottom
+  **Pattern:** Projection stack — no third occupancy fork.
+  Vision base: resolved placement + B gas/warp relocates (**not** spawn).
+  Fog filter on vision base → layer spawn ghosts → scMovesFrom.
+  Deploy intent grants **no** vision; End resolves the unit first.
+  Under player fog: pawn front-diagonals stay attack intents without a
+  visible victim; intent attack/move rings paint **above** fog (enemies stay hidden).
+  A pawn diagonal rings whether or not the target holds a fogged enemy — ringing
+  only the empty ones would mark occupancy by omission.
+  A marine **front** step never rings and never projects a capture: marines only
+  attack their diagonals, so a unit ahead blocks the advance and a mine ahead
+  takes the marine with it (resolve.puml). The move ghost still paints — under
+  fog the player does not know the step is blocked — and the projection
+  truncates the marine before the blocker instead of walking it through.
+  King-check rings are gated on the viewer's **current** vision: a projected
+  check (post-queue placement) never rings a king the viewer cannot see yet,
+  or the ring would confirm its square at intent time.
+  Intent: policy → hook → pure overlays.
+  Fog gate: ""targetVisibleGate"" / ""pieceVisibleToViewer"" (one predicate family).
+  U: specialsUsed is **not** a fog pierce.
+  A special stacked with a same-vector classical resolves as **one** longer
+  advance, and the queue never records the composed square. Ghosts paint the
+  classical leg on the raw ""C.to"" and the gas leg on the folded endpoint —
+  ""rewriteClassicalAfterB"" (gas-then-move) or ""marineSingleTarget"" from the
+  post-C square (move-then-gas). A declined fold (blocked landing / outside
+  the double-step band) means the C fizzles: the ghost stays on ""B.to"".
+   **Allowed:** the pure folding helpers above — never re-derive the vector by
+   hand, the guards are the contract.
+   **Forbidden:** endScTurn / resolveTurn / addScAction from projections.
+ end note
+
+note as N_CANISTER
+  Spawn badges ride the deploy square so a
+  drop reads with-gas versus a pure move.
+  Relocates badge both live actor square
+  and folded endpoint via vespene arrival.
+end note
+N_CANISTER .. OV
+
+note as N_PROJECTION_GUARD
+  Classical after deploy resolves actor via
+  post-B occupancy, never live placement.
+  Opponent queue never enters projection;
+  observers without viewer keep all rings.
+end note
+N_PROJECTION_GUARD .. OV
+
+note as N_VACANCY_GAP
+  Vacated origins paint selectable
+  destinations with gas badges on
+  both endpoints. Collision truth
+  stays in resolve, never projection.
+end note
+N_VACANCY_GAP .. OCC
+@enduml
+

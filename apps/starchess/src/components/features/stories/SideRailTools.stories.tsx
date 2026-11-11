@@ -1,0 +1,44 @@
+import type { Meta, StoryObj } from "storybook-solidjs-vite";
+
+import { createMatchStateFromScfen } from "~/app/matchReducer";
+import { createMatchStore } from "~/app/MatchStoreContext";
+import { MatchStoreProvider } from "~/ports/matchStore";
+import { SideRailTools } from "~/components/features/SideRailTools";
+import {
+  ANALYSIS_CAPABILITIES,
+  CapabilitiesProvider,
+  LIVE_CAPABILITIES,
+} from "~/store/capabilitiesStore";
+import { STAR_STARTING_SCFEN } from "~/app/seeds";
+
+function SideRailToolsHarness(props: { flipBoard: boolean }) {
+  const store = createMatchStore({
+    initial: createMatchStateFromScfen(STAR_STARTING_SCFEN, 1),
+  });
+  return (
+    <CapabilitiesProvider value={() => (props.flipBoard ? ANALYSIS_CAPABILITIES : LIVE_CAPABILITIES)}>
+      <MatchStoreProvider store={store}>
+        <SideRailTools />
+      </MatchStoreProvider>
+    </CapabilitiesProvider>
+  );
+}
+
+const meta = {
+  title: "Features/Side Rail Tools",
+  component: SideRailTools,
+  parameters: { layout: "centered" },
+} satisfies Meta<typeof SideRailTools>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Live: Story = {
+  render: () => <SideRailToolsHarness flipBoard={false} />,
+  globals: { viewport: { value: "desktop", isRotated: false } },
+};
+
+export const WithFlip: Story = {
+  render: () => <SideRailToolsHarness flipBoard={true} />,
+  globals: { viewport: { value: "desktop", isRotated: false } },
+};

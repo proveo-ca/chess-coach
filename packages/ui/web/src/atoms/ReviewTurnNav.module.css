@@ -1,0 +1,74 @@
+/* // SPEC: _spec/apps/starchess/navigation-chrome.md */
+/* Tutorial-style green turn arrows flanking ResourceBars — no DualNav chrome.
+   Parent topPane centers this row on the board (SidebarInset ignores sidebar). */
+
+.row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.center {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
+  max-width: calc(var(--board-size) - 3rem);
+}
+
+.btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0.35rem 0.3rem;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.btn:hover:not(:disabled) .arrow {
+  filter: brightness(1.15);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--sc-guide-green, #3ecf8e);
+  outline-offset: 2px;
+  border-radius: 0.2rem;
+}
+
+.btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.arrow {
+  color: var(--sc-guide-green, #3ecf8e);
+  font-weight: 700;
+}
+
+/*
+ * Mobile touch target — turn arrows must clear 40×40px. Desktop keeps the
+ * slim text-button look; only the small-viewport hit area grows.
+ */
+@media (max-width: 719px) {
+  .btn {
+    min-width: 40px;
+    min-height: 40px;
+    box-sizing: border-box;
+    padding: 0.5rem 0.6rem;
+  }
+}

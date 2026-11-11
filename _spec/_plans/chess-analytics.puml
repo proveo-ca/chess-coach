@@ -1,0 +1,78 @@
+@startuml
+!include ../themes/proveo.puml
+skinparam noteTextAlignment left
+' SPEC: _spec/_plans/chess-analytics.puml
+' purpose: StarChess analytics reads StarChessGameRecord.result — it does not re-score
+' status: proposed 2026-09-17, not implemented; product = StarChess
+' covers: apps/starchess/src/store/matchHistoryStore.ts
+'         apps/starchess/src/types/review.ts
+'         apps/starchess/src/screens/ReviewScreen.tsx
+' live spec: _spec/apps/starchess/replay-import.puml
+'   outcome mapping it must wait on ..... _spec/_plans/forfeit-as-loss.puml
+'   export as a fixture source .......... _spec/_plans/game-export-localstorage.puml
+' Notes are capped at 5 lines x 50 columns; one idea per anchor.
+'
+' ── WHAT THE LINE ITEM SETTLES ─────────────────────────────────────────────
+' Analytics is a READ MODEL over finished StarChess games. Wins, losses,
+' draws, forfeits-as-losses, maybe opponent script. It does not decide a
+' winner and does not call ""scOutcome"" / ""endScTurn"" again.
+'
+' ── WHAT IT DOES NOT SETTLE ────────────────────────────────────────────────
+'   Coach gameHistoryStore dashboards (different product)
+'   which charts, which time window
+'   whether tutorials count
+title PLANNED — analytics is a read model;\nit does not re-score a match
+
+database "StarChessGameRecord\nresult · opponent" as GAMES <<db>>
+component "tally / read model" as TALLY <<app>>
+component "Review list / summary" as DASH <<app>>
+component "forfeit → loss mapping" as MAP <<app>>
+component "**re-resolve SCFEN**\nfights the engine" as RESCORE <<error>>
+
+GAMES ARROW_MAIN TALLY
+MAP ARROW_MAIN GAMES : writes the enum
+TALLY ARROW_MAIN DASH
+TALLY ARROW_ERROR RESCORE
+
+note bottom of RESCORE
+  **Charts must not replay StarChess,
+  because walking ""resolves"" to decide
+  a winner forks the dashboard on a
+  rules patch.** Count ""result"".
+end note
+
+note bottom of MAP
+  **Leave-as-loss has to land before
+  tallies, because counts built against
+  a void jump when concede becomes a
+  loss.** Snapshot after that write.
+end note
+
+note right of DASH
+  **First surface is the Review list
+  plus a summary row, not a new app.**
+  Group on ""opponent"" (naive |
+  strategic), not a Coach elo enum.
+end note
+
+legend bottom
+  **The order to do it in**
+  ==
+  **1. After forfeit-as-loss.** Confirm
+  ""StarChessMatchResult"", then define
+  tallies: games, wins, losses (including
+  leave), draws, by ""opponent"" if present.
+  --
+  **2. Read, do not replay.** The dashboard
+  binds to the tally. Export files can
+  backfill; a dump is a fixture, not a
+  second scorer.
+  ==
+  **3. Stay on Review chrome.** Fancy
+  charts are a later slice and still
+  consume the same tally.
+  --
+  **Left open**: time windows; whether
+  arena imports count; tutorial games.
+end legend
+@enduml

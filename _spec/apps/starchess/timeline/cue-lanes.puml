@@ -1,0 +1,98 @@
+@startuml cue-lanes
+' SPEC: _spec/apps/starchess/timeline/cue-lanes.puml
+' purpose: presentation/timeline/cueLanes.ts — the cue routing registry that
+' replaced id-prefix parsing. Authority: this is shipped.
+!include ../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Cue lanes — routing is declared, not parsed
+
+package "presentation/timeline/cueLanes.ts" {
+  component "REGISTRY: prefix → { lane, board }\nthe **only** place a cue id is read" as REG <<db>>
+  component "withLane(cue)\nstamps lane · board · group" as WITH <<app>>
+  component "BOARD_RUNG\npreAfterB < afterB < afterAttack < afterMove" as RUNG <<db>>
+}
+
+package "types/match.ts" {
+  component "CueRouting { lane? · board? · group? }\nintersected onto every TimelineCue" as TYPE <<db>>
+}
+
+package "timelinePlayer.ts" {
+  component "projectResolveTimeline\n… → ""cues.map(withLane)""" as PROJ <<app>>
+  component "predicates\nisPhase1Attack · isPhase1Death · isCrushDeath\nisMoveCollisionDeath · isMineTriggerDeath\nisSimulMoveWave · isPromo* · isSpawnDeploy" as PRED <<async>>
+  component "playTimeline dispatch + board ladder" as PLAY <<async>>
+}
+
+PROJ ARROW_MAIN WITH
+WITH ARROW_MAIN REG
+WITH ARROW_MAIN TYPE
+PRED ARROW_MAIN TYPE : ""cue.lane === …""
+PLAY ARROW_MAIN RUNG : advance to ""cue.board""
+PLAY ARROW_MAIN PRED
+
+note right of REG
+  **Lanes** — ""gasDrop"" · ""bSpecial"" · ""deploy"" · ""crush"" ·
+  ""arrivalBlast"" · ""phase1Attack"" ·
+  ""phase1Death"" · ""move"" · ""collision"" · ""mineMissile"" · ""mine"" ·
+  ""approach"" · ""promoWalk"" · ""promoDeploy"".
+
+  Prefixes are matched longest-first, so ""prm"" / ""prmm"" / ""prv"" and
+  ""mt"" / ""mtm"" cannot shadow each other. Ids keep their historic spelling —
+  they are React keys and overlay handles now, nothing routes on them.
+
+  **Arrival-mine cues carry the phase in the prefix**, because the same
+  ""arrivalMineCues"" projector serves both ends of the resolve:
+  | prefix | asked by | lane | board |
+  | ""armx"" / ""armm"" / ""armd"" | ""B"" gas step · mined deploy | ""bSpecial"" | ""preAfterB"" |
+  | ""farmx"" | ""F"" held mine's chase missile | ""mineMissile"" | ""afterMove"" |
+  | ""farmm"" / ""farmd"" | ""F"" Extra Step · F-rank spawn arrival | ""arrivalBlast"" | ""afterMove"" |
+  A held mine detonates on the marine's *real* destination, so its cues have to
+  sit past the stim move on the ""afterMove"" rung — stamping them ""arm*"" would
+  send a phase-4 boom back to rung 0. ""farm*"" beats the bare ""f"" move prefix by
+  the longest-first rule. See ""../../../packages/starchess-core/mine-contact.puml"".
+end note
+
+note bottom
+  **What it removed.** Routing was **26** ""id.startsWith(...)"" tests across
+  eleven predicates, and ""isPhase1Death"" was a *deny*-list: every new cue
+  prefix had to be added to it or it silently joined the wrong wave (exactly
+  what the ""arm"" / ""prm"" / ""prv"" mine cues had to be hand-audited against).
+  The player now contains **zero** id parsing.
+
+  Three more things became data instead of convention:
+  * **batching** — the simultaneous-move wave groups on ""cue.group"" instead of
+    ""id.replace(/\\d+$/, "")"";
+  * **the board ladder** — ""applyAfterB"" fires when ""BOARD_RUNG[cue.board]""
+    is past ""preAfterB"", replacing the ""preAfterBSpecial"" prefix list and its
+    two hand-written guards;
+  * **mine snapshots** — the chase-missile handler picks ""afterMove"" vs
+    ""afterAttack"" from ""cue.board"", not from a ""prmm"" prefix test.
+
+  **The step runner shipped too.** ""runStep({ begin, beats, durationMs, end,
+  next })"" owns scheduling, the ""cancelled"" re-check, cancel registration and
+  the hand-off to the next cue; the nine handlers now declare only their
+  patches and their extra beats (crush collapse, missile trail clear).
+  ""scheduler.delay"" 30 → 20 and ""cancels.push"" 29 → 19, and a handler can no
+  longer forget a leak guard.
+
+  **Dispatch is a table.** ""run(index)"" was an eleven-branch ""if / else if""
+  cascade; each branch is now a named **command** —
+  ""handleGasWindow"" · ""handleDeployWindow"" · ""handlePhase1Wave"" ·
+  ""handlePhase1Deaths"" · ""handleMineMissile"" · ""handleCollisionDeaths"" ·
+  ""handleMineDeaths"" · ""handleMoveWave"" · ""handlePromoWalks"" ·
+  ""handlePromoDeploys"" — registered in ""HANDLERS: Partial<Record<CueLane,
+  CueHandler>>"" and dispatched in three lines:
+
+  ""const handle = HANDLERS[cue.lane ?? "move"] ?? handleSequential;""
+
+  Lanes are disjoint, so **order no longer matters** — the cascade's implicit
+  precedence (deploys before phase-1, promo before the tail) was a hazard, not
+  a rule. Lanes with no entry (""bSpecial"" · ""crush"" · ""approach"") fall to
+  ""handleSequential"", which owns the fog-approach chains, the Tactical Jump
+  and the fused lethal ccShot. Each command is now readable — and
+  greppable — on its own instead of as a paragraph inside a 400-line closure.
+
+end note
+@enduml

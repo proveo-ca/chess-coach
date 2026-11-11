@@ -1,0 +1,73 @@
+@startuml scfen-queue
+' SPEC: _spec/packages/starchess-core/scfen-queue.puml
+' purpose: Queue ABNF, per-side shape (≤1 C + one special per unit, B and/or F), resolve order B < C < F then w then b.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title SCFEN · Queue ABNF, Shape & Order
+
+package "ABNF" {
+  queue "queueField\n\"Q:\" sideQueue \";\" sideQueue" as QF <<async>>
+  component "sideQueue\nside \":\" [action *(\",\" action)]\naction = special / classical\n(wire order = seq order)" as SQ <<async>>
+  component "special\n(\"B\" / \"F\") \"=\" kind \":\" from\n[\":\" to [\":\" unit]]" as SP <<app>>
+  component "classical\n\"C=\" from to [promotion]" as CL <<app>>
+  component "kind\nspawn / stimStep / spiderMine /\nbishopSnipe / siegeMode / tacticalJump" as KD <<db>>
+}
+
+package "Shape & order" {
+  component "Per side: ≤1 classical + **one special per unit**\n**before and/or after** it (B and F may mix)" as SHAPE <<async>>
+  component "Resolve rank: B < C < F" as RANK <<app>>
+  component "Then white, then black" as WB <<app>>
+}
+
+package "packages/starchess-core" {
+  component "scfen/codec.ts\nformatQueueField / parseQueueField\nassertQueueShape / assertQueueGas" as COD <<app>>
+  component "commands/queue-action.ts\naddScAction / removeScAction\naddScMove" as QACT <<async>>
+}
+
+QF ARROW_MAIN SQ : expands to two
+SQ ARROW_OPTIONAL SP : may hold
+SQ ARROW_OPTIONAL CL : may hold
+SP ARROW_OPTIONAL KD : kind
+CL ARROW_OPTIONAL KD : resolves to
+COD ARROW_MAIN QF : serializes
+QACT ARROW_MAIN COD : mutates snap.queue
+
+note right of QF
+  ""queueField = 'Q:' sideQueue ';' sideQueue""
+end note
+
+note right of SQ
+  ""sideQueue = side ':' [ action *( ',' action ) ]""
+  ""action    = special / classical""
+  Order is free — the shape rules are **≤1 classical per side** and
+  **one special per unit**. Specials may precede the C, follow it, or both,
+  as long as each is a different unit:
+  ""w:B=spiderMine:b4:b4,C=e2e3,F=siegeMode:e4"" is legal.
+end note
+
+note right of SP
+  ""special = ('B' / 'F') '=' kind ':' from [ ':' to [ ':' unit ] ]""
+end note
+
+note right of CL
+  ""classical = 'C=' from to [ promotion ]""
+  King-shot actions encode ""to"" as intent (see scfen-wire).
+end note
+
+note right of KD
+  ""kind = 'spawn' / 'stimStep' / 'spiderMine' /""
+  ""       'charonMissiles' / 'siegeMode' / 'tacticalJump'""
+end note
+
+note bottom
+  Ordering rules: **≤1 C per side** and **one special per unit** (keyed on
+  ""from""). Timing is free — **B and/or F** — so a side may act before *and*
+  after its own classical in one turn, on different units (gas budgets the rest).
+  Resolve rank **B < C < F**, then **w then b**.
+  F specials rewrite actor square to the unit's post-C position
+  (move-then-gas lands on the destination).
+end note
+@enduml

@@ -1,0 +1,6 @@
+/** Gas / U: special-used aura — outline only (no CSS filter / drop-shadow). */
+.sc-special-used {
+  outline: 2px solid rgba(61, 206, 106, 0.95);
+  outline-offset: -2px;
+  border-radius: 8%;
+}

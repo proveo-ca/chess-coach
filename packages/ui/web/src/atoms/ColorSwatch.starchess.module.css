@@ -1,0 +1,26 @@
+/* Tiny Blue (w) / Red (b) team squares — Review Playing-as filters. */
+
+.swatch {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 0.2rem;
+  border: 1px solid color-mix(in srgb, #e8eaed 35%, transparent);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.swatch--md {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 0.25rem;
+}
+
+.swatch--w {
+  /* Blue team (white / Terran) */
+  background: #3b7dd8;
+}
+
+.swatch--b {
+  /* Red team (black / Zerg) */
+  background: #c43c3c;
+}

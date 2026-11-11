@@ -1,4 +1,4 @@
-// SPEC: _spec/architecture.puml, _spec/initialization.puml, _spec/causal-journal.puml
+// SPEC: _spec/ml-runtime-architecture.puml, _spec/initialization.puml, _spec/causal-journal.puml
 import { expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";

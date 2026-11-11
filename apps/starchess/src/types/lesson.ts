@@ -1,0 +1,44 @@
+// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
+/** Props for the sole live-lesson host (`demos/LiveLessonHost.tsx`). */
+import type { JSX } from "solid-js";
+
+import type { BoardSkin, BoardVariant, PieceSet } from "~/types/board";
+import type { KerriganEmotion } from "~/types/coach";
+import type { LiveLessonBoard, NarrationSink, TutorialBeat } from "~/types/tutorial";
+
+export type LiveLessonHostProps = {
+  /** Seed + board chrome from the lesson catalog. */
+  board: LiveLessonBoard;
+  lessonKey?: string;
+  /** Hand this lesson's narration to the tutorial screen (tutorial lessons only). */
+  onNarration?: NarrationSink;
+  /** Tutorial chrome — HOME-only rail, no ExitGameConfirm. */
+  tutorial?: boolean;
+  /** Full `/single`-style top pane instead of the coach lesson header. */
+  fullMatchHud?: boolean;
+  matchTitle?: string;
+  bannerTitle?: string;
+  /** Player fog veil (fog lessons). */
+  fog?: boolean;
+  boardVariant?: BoardSkin;
+  pieceSet?: PieceSet;
+  hideResources?: boolean;
+  hudResources?: boolean;
+  hideGas?: boolean;
+  turnChrome?: "bar" | "sidebar" | "none";
+  /** Storybook override; otherwise the catalog decides. */
+  armTimer?: boolean;
+  onExitToMenu?: () => void;
+  header?: JSX.Element;
+  coachEmotion?: KerriganEmotion;
+  guideBubble?: JSX.Element;
+  footerExtra?: JSX.Element;
+  /** Centred in the tall-phone footer tray; in the footer elsewhere. */
+  hudCenter?: JSX.Element;
+  /** Script-driven destination rings, resolved against the live SCFEN. */
+  boardHints?: readonly TutorialBeat[];
+  /** Wrap in a sky shell; omit when nested in one already. */
+  shell?: BoardVariant;
+  /** Storybook control — override the viewer's remaining vespene. */
+  gas?: number;
+};

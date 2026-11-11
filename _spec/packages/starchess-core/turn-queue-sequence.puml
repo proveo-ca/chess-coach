@@ -1,0 +1,118 @@
+@startuml turn-queue-sequence
+' SPEC: _spec/packages/starchess-core/turn-queue-sequence.puml
+' purpose: Simultaneous turn queue — planning Q:<w>;<b>, End submits, B < C < F then w then b, next snap.
+!include ../../themes/proveo.puml
+
+title StarChess · Simultaneous Turn Queue
+
+actor Player as P
+participant "apps/starchess\nMatchStore + StarChessScreen" as UI <<app>>
+participant "beginScTurn / endScTurn\nresolve/submit-turn.ts" as ES <<app>>
+participant "resolveTurn\nresolve/resolve-turn.ts" as RT <<app>>
+participant "scOutcome\noutcome.ts" as OUT <<app>>
+database "ScFenSnapshot" as FEN <<db>>
+
+== Turn open ==
+
+UI ARROW_MAIN ES : ""beginScTurn(snapshot)""\n(fog-visible legal king-checks)
+note right of ES
+  Checks resolve **before** intent.
+  Breaking contact later still paid the
+  **parting shot** at turn open.
+  **Refills ""G:""** from income (vespene arrives here).
+  Live End passes ""skipTurnStartChecks"".
+  Atomic replay / tests may still run
+  checks inside ""endScTurn"" (default).
+end note
+
+== Planning ==
+
+P ARROW_MAIN UI : queue special + classical for own side
+UI ARROW_MAIN FEN : ""Q:<sideQueue>;<sideQueue>""\n(specials before and/or after the C — free order)
+P ARROW_MAIN UI : End / timeout submits
+note right of UI
+  Planning clock = ""turnTimeoutMsForTurn"":
+  gas income tier 1→**10s**, 2→**15s**, 3→**22s**
+  (+50% per tier from base ""TURN_TIMEOUT_MS"").
+  Attack VFX fractions stay on the 10s base.
+  Queue via MatchStore ""QUEUE_ACTION"" → ""addScAction"".
+end note
+UI ARROW_MAIN ES : ""endScTurn(snapshot, { skipTurnStartChecks })""
+
+== Resolve ==
+
+ES ARROW_MAIN ES : resolve rank-major: B → C → F\n(+ king-checks unless skipped)\nw then b within each rank
+
+group 1 · turn-open legal king-checks (when not skipped)
+  ES ARROW_MAIN ES : white, then black\n""applyPendingCCShots"" + ""collectLegalCCChecks""
+  ES ARROW_ERROR ES : adjacent kings — **mutual** chip, **1 HP per checker**\n(a king left at 0 HP bails — no B/C/F)
+end
+
+group 2 · rank B (specials before combat)
+  ES ARROW_MAIN ES : white B, then black B\n(applySpecial: spawn / mine / warp / siege)
+  ES ARROW_MAIN ES : ""rewriteClassicalAfterB"" — a B relocate + same-vector C\nfold into one longer advance (C rewritten to start at ""B.to"")
+end
+
+note over ES
+  **Stack order-independence.** Gas-then-move and move-then-gas MUST land the
+  same square: B folds the C by its own vector, F recomputes +1 from the
+  post-C square. The fold is **declined** when the composed landing is
+  occupied or the C's 2-rank leg starts outside the double-step band
+  (""canMarineDoubleStep"") — the C then fizzles and the unit parks on the gas
+  step, mirroring a blocked F. ""rewriteClassicalAfterB"" is pure and public:
+  planning projections and the adjutant's plan simulation reuse it rather than
+  re-deriving the vector, so no consumer can disagree with this resolve.
+end note
+
+group 3 · rank C (classical, both sides on same board)
+  ES ARROW_MAIN RT : resolveTurn(white, black)
+  RT ARROW_MAIN RT : attacks — visible targets (start board)\n(attack → death → occupy)
+  RT ARROW_MAIN RT : moves — occupy, move collisions, mine triggers
+  RT ARROW_MAIN RT : path-reveal fog approaches — ""pathRevealFrom"" →\ndiscovery square; fired only — fizzle unless attacker\nstill on ""pathRevealFrom"" and ""to"" holds the\nexact in-the-way victim
+end
+
+group 4 · rank F (specials after combat)
+  ES ARROW_MAIN ES : white F, then black F\n(applySpecial: post-move siege / late drops)
+end
+
+note over ES
+  The same side may hold **B and F specials in one turn** — nothing forbids
+  acting before *and* after its own classical, on *different* units. The shape
+  rules (""assertQueueShape"") are **≤1 C per side** and **one special per
+  unit** (keyed on ""from""); gas caps the special count on top of that.
+  F actor squares are resolved post-C, so a B relocate, the C and a late
+  F drop all compose on the square the unit actually ends on.
+end note
+
+== Next snap ==
+
+ES ARROW_MAIN FEN : new snapshot (turn+1, ""G:"" remaining 0,\nincome tier on gasIncome)
+ES ARROW_ERROR FEN : phase ""O"" when either ""ccLives"" side hits 0
+FEN ARROW_OPTIONAL OUT : " ""scOutcome(snap)"" "
+FEN ARROW_QUEUE UI : cumulative fog (""board/vision.ts"")\n+ ""playTimeline"" presentation
+
+note over ES
+  Gas does not accumulate; ""endScTurn"" leaves remaining at **0**
+  and sets income tier. ""beginScTurn"" / turn-open **refills**
+  ""G:"" to income − ""queueGasSpent(queue)"" (check chip, or no-check arm).
+end note
+
+note over OUT
+  **Terminal outcome, derived from HP.** ""scOutcome(snap)"" reads
+  ""ccLives"" only: both at 0 → **draw**, exactly one at 0 → the other
+  side wins, otherwise ""null"". No persisted winner field, no SCFEN
+  grammar change.
+  A draw is reachable because **adjacent kings chip each other
+  simultaneously** — see resolve.puml. Phase ""O"" is **absorbing**:
+  ""endScTurn"" throws on a non-""P"" snapshot.
+end note
+
+note over RT
+  **Three phases.** 1) attacks on targets visible at resolve start;
+  2) moves + collisions for phase-1 survivors; 3) path-reveal fog
+  approaches fire **after** moves — fizzle unless attacker still on
+  ""pathRevealFrom"" and ""to"" holds exact victim. Snapshots:
+  ""afterMove"" (post-phase-2) and ""afterAll"" (post-phase-3).
+  UI replay: ""playTimeline"" (""animation-pipeline.md"").
+end note
+@enduml

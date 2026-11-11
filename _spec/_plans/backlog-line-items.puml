@@ -1,0 +1,80 @@
+@startuml
+!include ../themes/proveo.puml
+skinparam noteTextAlignment left
+' SPEC: _spec/_plans/backlog-line-items.puml
+' purpose: 2026-09-17 backlog retargeted onto this tree — remaining vs shipped
+' status: map; remaining children are SPEC-referenced from the files they cover.
+'   OUTDATED files point at the live spec that already owns the behavior.
+' live map: _spec/apps/starchess/index.puml
+' android: origin/feat-android · apps/android · _spec/apps/android/*
+' Notes are capped at 5 lines x 50 columns; one idea per anchor.
+'
+' Sandbox post-close / tunnels / connect-IDE files were never in this
+' repo. Android is the distribution shell on feat-android, not a new
+' engine and not an in-app Coach. Coach vs StarChess stay separate
+' products — one remaining plan does not restyle both.
+title PLANNED — remaining work vs this tree;\nlive map is starchess/index.puml
+
+package "remaining — StarChess" as SC <<app>> {
+  component "leave writes a loss\nforfeit-as-loss.puml" as FORF <<app>>
+  component "file copy of history\ngame-export-localstorage.puml" as EX <<app>>
+  component "read-model tallies\nchess-analytics.puml" as AN <<app>>
+  component "trophy gallery\nstarchess-achievements.puml" as ACH <<app>>
+}
+
+package "remaining — Coach Android" as ANDR <<host>> {
+  component "LanScreen wires P2PClient\nandroid-p2p-wiring.puml" as P2P <<app>>
+  component "apps/android thin server\ndistribution.puml · webrtc-p2p.puml" as GO <<host>>
+}
+
+package "shipped / withdrawn — do not redo" as DONE <<db>> {
+  component "stimStep B occupy\npawn-first-phase-gas-move.puml" as GAS <<app>>
+  component "MAX_GAME_TURNS HP cap\nturn-45-draw-stop.puml" as T45 <<app>>
+  component "TUTORIAL_SCRIPT_CONFIG\ntutorial-*.puml" as TUT <<app>>
+  component "menu-flow + primitives\nchess-user-journey · chess-ui-primitives" as JOUR <<app>>
+  component "settingsStore.difficulty\nchess-save-difficulty.puml" as DIFF <<app>>
+}
+
+FORF ARROW_MAIN EX
+FORF ARROW_MAIN AN
+EX ARROW_OPTIONAL AN
+P2P ARROW_MAIN GO : " ""ChessNative"" / tsnet "
+
+note bottom of SC
+  **StarChess remaining work is outcome,
+  then a file copy, then a read model.**
+  Achievements are a parallel slice.
+  Leave is still a void today.
+end note
+
+note bottom of ANDR
+  **Android remaining work is UI wiring,
+  not a second topology.** Thin server
+  and P2P sequence already live under
+  ""_spec/apps/android/"".
+end note
+
+note right of DONE
+  **Shipped files stay in this folder as
+  OUTDATED pointers so the backlog is
+  not re-planned against empty-tree
+  measurements.** Open the live spec.
+end note
+
+legend bottom
+  **Suggested order**
+  ==
+  **Coach Android:** wire ""LanScreen"" to ""P2PClient""
+  (""aiOpponent = false""); keep the Go server thin.
+  Device runtime is validation, not a new design.
+  --
+  **StarChess:** forfeit-as-loss → export copy of
+  ""starchess_match_history"" → analytics tallies
+  over ""StarChessGameRecord.result"".
+  Achievements can land beside that chain.
+  ==
+  **Do not:** invent siege lines, a turn-21 prep
+  levy, a turn-45 draw rule, or a sandbox cluster.
+  **Live map:** ""_spec/apps/starchess/index.puml"".
+end legend
+@enduml
