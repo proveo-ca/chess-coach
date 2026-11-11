@@ -1,0 +1,86 @@
+{
+  "version": "chess-coach.mise-host-receive-run2-approval-proposal.v1",
+  "status": "AWAITING_EXECUTOR_COMBINED_HOST_COMMAND_DECISION",
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-input-receive-source-4/receipt.json",
+    "sha256": "9a34af7785ff55ee1b52bb7c5d71a7297847d3a3a0a1d0cc49316f1c1fa71efd"
+  },
+  "helper": {
+    "path": "_work/gpu-owner-recovery/qualification/host-receive/receive.ts",
+    "bytes": 18396,
+    "sha256": "ac1cd8afdf8332917d153e871d9400fec1e926eaa4a2380265df646c3f53b6f2"
+  },
+  "template": {
+    "path": "_work/gpu-owner-recovery/runs/host-input-receive-source-4/host-command.template.fish",
+    "sha256": "23d9a6f51db6e796a5407231e5792baf42c94625534df95917ffda107c2c90e5",
+    "lateBoundFields": [
+      "helperSourceCommit"
+    ],
+    "placeholderMustNotBeExecuted": true
+  },
+  "reportedAlignment": "_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/observation.json",
+  "sourcePublication": {
+    "maximumCommits": 1,
+    "maximumHttpsPushes": 1,
+    "deadlineMs": 600000,
+    "url": "https://github.com/proveo-ca/chess-coach.git",
+    "branch": "feat-ml-adjuntant-ii"
+  },
+  "operatorCommand": {
+    "maximumInvocations": 1,
+    "maximumHelperDownloads": 1,
+    "maximumAssetDownloads": 2,
+    "maximumExtractions": 1,
+    "totalMs": 900000,
+    "grant": "--approved-host-receive-2",
+    "workspace": "_work/gpu-owner-recovery/cache/host-receive-2",
+    "evidence": "_work/gpu-owner-recovery/runs/host-input-receive-2",
+    "bootstrapEvidence": "_work/gpu-owner-recovery/runs/host-input-bootstrap-2",
+    "execution": {
+      "tool": "mise",
+      "pins": [
+        "core:bun@1.4.0",
+        "core:rust@1.95.0"
+      ],
+      "autoInstall": false,
+      "execAutoInstall": false,
+      "taskAutoInstall": false
+    },
+    "limits": {
+      "helperMs": 60000,
+      "downloadsMs": 600000,
+      "extractAndVerifyMs": 180000,
+      "totalMs": 900000,
+      "helperTermMs": 55000,
+      "workloadTermMs": 895000,
+      "killGraceMs": 5000,
+      "helperBytes": 131072,
+      "contextBytes": 3221225472,
+      "minimumFreeBytes": 8589934592,
+      "workspaceBytes": 8589934592
+    },
+    "manifest": {
+      "id": 730048215,
+      "name": "host-feasibility-inputs-1.manifest.json",
+      "bytes": 868843,
+      "sha256": "2676780f2b932d0453fef05ad39581152f47efeaea11ae22b9079875fece1829"
+    },
+    "bundle": {
+      "id": 730047564,
+      "name": "host-feasibility-inputs-1.tar.gz",
+      "bytes": 140694281,
+      "sha256": "9001bfeb88ce5433138d5f0fd23b3c7ab0590cc0bd47900cc1c0a1d6923c65f7"
+    }
+  },
+  "sourcePublicationApproved": false,
+  "operatorReceiveApproved": false,
+  "installationOrTrustOrConfigurationChangesAuthorized": false,
+  "automaticRetryOrOverwriteOrDeletionAuthorized": false,
+  "additionalReleaseOrAssetUploadAuthorized": false,
+  "codingPayloadAcquisitionCopyOrRepackAuthorized": false,
+  "imageBuildOrCompilationAuthorized": false,
+  "llvmOrCargoExecutionAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

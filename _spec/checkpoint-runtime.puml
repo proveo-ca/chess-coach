@@ -1,0 +1,35 @@
+@startuml checkpoint_runtime
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title C11 - private supported SQLite completion transaction
+start
+:Bind selected master seed/model, provenance and persistent streams;
+:Retain initial config / native record in the first fixed master packet;
+:Compute next frozen curriculum-A STARTED descriptor;
+:Durably commit STARTED / consumed cursors before launch;
+:Run and independently verify whole-match ACK and stop proofs inside job;
+if (Infrastructure / integrity / storage failure?) then (yes)
+  :Preserve STARTED and known-prefix diagnostics;
+  :Abort all masters without retry / resume;
+  stop
+else (no)
+  :Release only owned scratch model inputs after verified close/reap;
+  if (At least one verified sampled choice?) then (yes)
+    :Verify one native Burn proposal against the frozen baseline/model;
+    :Atomically commit model / baseline / counters / RNG / journal;
+    if (Checkpoint bucket due?) then (yes)
+      :Commit exact actual-epoch checkpoint and fulfilled bucket together;
+    endif
+  else (no)
+    :Commit verified diagnostic state only;
+    :No PG, L2, baseline insertion or checkpoint;
+  endif
+endif
+:Export only selected config/native record to inference;
+note right
+  SQLite / JSON / method names do not establish eligibility.
+  No pending-gradient checkpoint or automatic failure resume.
+  Actual storage durability / fit remain separately qualified.
+  C15: fifty fixed 100-slot evidence packets, no failure rollover.
+end note
+stop
+@enduml

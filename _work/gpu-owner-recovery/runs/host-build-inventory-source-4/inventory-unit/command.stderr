@@ -1,0 +1,41 @@
+
+_work/gpu-owner-recovery/qualification/host-build-inventory/render.test.ts:
+(pass) proposal grants no operation and requires no publication or helper fetch [0.05ms]
+(pass) docs-derived fixture parses ordinary inspect output rather than invented JSON [0.62ms]
+(pass) mocked CLI rejects the invalid legacy flag instead of returning convenient JSON [0.16ms]
+(pass) only column-zero section fields define nodes; nested device and label names are ignored [0.13ms]
+(pass) stopped, empty and multiple nodes remain metadata rather than startup authority [0.16ms]
+(pass) builder and node errors survive parsing and prevent container inspection [0.12ms]
+(pass) empty, malformed and duplicate headers stop without silently overwriting fields [0.21ms]
+(pass) run-2 proposal preserves original budgets and historical files without reusing run 1 [0.98ms]
+(pass) one fixed sequence inspects only the selected builder, both pins and one derived container [0.84ms]
+(pass) metadata PASS does not certify configured zero limits or any build capability [0.17ms]
+(pass) nonzero context-name stops without repair, fallback query or retry [0.29ms]
+(pass) nonzero context-endpoint stops without repair, fallback query or retry [0.09ms]
+(pass) nonzero selected-builder stops without repair, fallback query or retry [0.03ms]
+(pass) nonzero engine stops without repair, fallback query or retry [0.03ms]
+(pass) nonzero pinned-images stops without repair, fallback query or retry [0.12ms]
+(pass) nonzero host-filesystem stops without repair, fallback query or retry [0.14ms]
+(pass) nonzero host-memory stops without repair, fallback query or retry [0.09ms]
+(pass) nonzero selected-builder-container stops without repair, fallback query or retry [0.10ms]
+(pass) QUERY_DEADLINE remains failure evidence [0.11ms]
+(pass) QUERY_OUTPUT_LIMIT remains failure evidence [0.02ms]
+(pass) QUERY_CAPTURE_FAILED remains failure evidence
+(pass) QUERY_SPAWN_FAILED remains failure evidence [0.01ms]
+(pass) HOST_INVENTORY_INTERRUPTED remains failure evidence
+(pass) malformed or unsupported JSON format stops before subsequent queries [0.37ms]
+(pass) single-node local derivation rejects alternative endpoints, states and ambiguous names [0.13ms]
+(pass) non-container drivers yield seven metadata queries and explicit unknowns, not setup [0.12ms]
+(pass) monotonic sequence deadline and query-count bounds stop the orchestration [0.14ms]
+(pass) stream retention keeps only the bounded prefix, including exact-boundary chunks [0.23ms]
+(pass) inline JS contains only builtin imports, no local helper dependency or invocation during rendering [1.60ms]
+(pass) Fish literal selects exact Mise pins without implicit install and retains status and streams [1.10ms]
+(pass) native65 and both production recipes retain their prepared identities [2.24ms]
+(pass) standalone mocked-query e2e pass preserves receipt and separate bounded streams [142.48ms]
+(pass) standalone mocked-query e2e overflow preserves receipt and separate bounded streams [74.94ms]
+(pass) standalone mocked-query e2e deadline preserves receipt and separate bounded streams [461.52ms]
+
+ 34 pass
+ 0 fail
+ 302 expect() calls
+Ran 34 tests across 1 file. [707.00ms]

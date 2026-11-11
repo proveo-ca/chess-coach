@@ -1,0 +1,12 @@
+{
+  "version": "chess-coach.gpu-qualification-integrity-failure.v1",
+  "status": "FAIL_COVERAGE_PATTERN_HANDLING_ONLY",
+  "exitCode": 1,
+  "reportedError": "ENOENT: no such file or directory, open 'crates/*/Cargo.toml'",
+  "cause": "THE_RECORD_CHECK_TREATED_A_SPEC_COVERAGE_GLOB_AS_A_LITERAL_FILE",
+  "sourceQualificationInvalidated": false,
+  "nativeOperationPerformed": false,
+  "llvmQueriesRepeated": false,
+  "compilationPerformed": false,
+  "trainingReady": false
+}

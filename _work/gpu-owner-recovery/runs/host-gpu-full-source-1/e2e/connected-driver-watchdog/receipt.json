@@ -1,0 +1,416 @@
+{
+  "scope": "SOURCE_ONLY_PURE_MOCK_E2E_NOT_HOST_GPU_EVIDENCE",
+  "actualDockerProcesses": 0,
+  "actualNativeProcesses": 0,
+  "gpuExecuted": false,
+  "result": {
+    "version": "chess-coach.owned-gpu-full.v1",
+    "status": "FAIL_HOST_GPU_FULL_ONLY",
+    "failure": "Error: DRIVER_ABORT:Error: TELEMETRY_RUNNING_HEADROOM",
+    "cleanupFailures": [],
+    "ids": {
+      "worker": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "state": {
+      "Running": false,
+      "ExitCode": 137,
+      "OOMKilled": false
+    },
+    "innerReceipt": {
+      "version": "chess-coach.gpu-full-driver.v1",
+      "runId": "host-gpu-full-1",
+      "status": "FAIL_GPU_FULL_TESTS_ONLY",
+      "failure": "Error: TELEMETRY_RUNNING_HEADROOM",
+      "sourceStabilityChecked": true,
+      "sourceChanged": false,
+      "sourceCheckFailure": null,
+      "sourceManifestSha256": "7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec",
+      "artifacts": [
+        {
+          "path": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/finite_difference-f3db0ac172c2e4d6",
+          "executable": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/finite_difference-f3db0ac172c2e4d6",
+          "bytes": 154335984,
+          "sha256": "1fab1e69af8a4f9acf2af7b649e6bc1c24c5506c34e294de9fda043dbec57750"
+        },
+        {
+          "path": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/gpu-1c80603e75bb2c83",
+          "executable": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/gpu-1c80603e75bb2c83",
+          "bytes": 156637512,
+          "sha256": "9091cb81c4caa234b356e0edb357843a260130d9d7a6d66ee2ee4d563c714f9f"
+        },
+        {
+          "path": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-channel",
+          "executable": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-channel",
+          "bytes": 155205160,
+          "sha256": "ce126693630543a220eef3689fc8dfef24b38e5f93e24550e451b54956528688"
+        },
+        {
+          "path": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-initialize",
+          "executable": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-initialize",
+          "bytes": 151302720,
+          "sha256": "95c806fe1db205bde5fda1d38104bdcf45333051f35fb07744b4d5d5bb33d5de"
+        },
+        {
+          "path": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-score",
+          "executable": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-score",
+          "bytes": 152001728,
+          "sha256": "fc1b0f6f303ffa7c2198d8698ea7e8115c3c160ae01107138e09f784e9e21607"
+        }
+      ],
+      "results": [
+        {
+          "id": "cuda_f64_nonzero_native_scores_round_trip",
+          "argv": [
+            "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/gpu-1c80603e75bb2c83",
+            "cuda_f64_nonzero_native_scores_round_trip",
+            "--exact",
+            "--ignored",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ],
+          "timeoutMs": 120000,
+          "attempted": true,
+          "status": "FAIL",
+          "captureDirectory": "/build/native/_work/gpu-owner-recovery/runs/host-gpu-full-1/cuda_f64_nonzero_native_scores_round_trip",
+          "commandResult": {
+            "status": "FAIL",
+            "exitCode": 137,
+            "failure": "MOCK_OWNED_STOP",
+            "stdoutBytes": 0,
+            "stderrBytes": 0
+          },
+          "exitCode": 137,
+          "failure": "MOCK_OWNED_STOP",
+          "stdoutBytes": 0,
+          "stderrBytes": 0,
+          "streams": [
+            {
+              "path": "/build/native/_work/gpu-owner-recovery/runs/host-gpu-full-1/cuda_f64_nonzero_native_scores_round_trip/command.stdout",
+              "bytes": 31,
+              "sha256": "2002737e2b72ba3c195fa1a8bd40b84742f4a39ee2b0b921f6bcda6094ce040f"
+            },
+            {
+              "path": "/build/native/_work/gpu-owner-recovery/runs/host-gpu-full-1/cuda_f64_nonzero_native_scores_round_trip/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "captureFailures": []
+        }
+      ],
+      "qualificationResults": [
+        {
+          "id": "cuda_f64_nonzero_native_scores_round_trip",
+          "status": "FAIL",
+          "exitCode": 137,
+          "failure": "MOCK_OWNED_STOP",
+          "stdoutSummaries": [],
+          "accepted": false
+        }
+      ],
+      "telemetry": {
+        "samples": [
+          {
+            "uuid": "GPU-713c95e0-6952-a576-794b-9ef1fb527ff0",
+            "freeBytes": 3221225472,
+            "totalBytes": 8589934592,
+            "query": 1,
+            "queryStartedAtMs": 0,
+            "observedAtMs": 0
+          }
+        ],
+        "queries": [
+          {
+            "id": "telemetry-0001",
+            "argv": [
+              "nvidia-smi",
+              "--id=GPU-713c95e0-6952-a576-794b-9ef1fb527ff0",
+              "--query-gpu=uuid,memory.free,memory.total",
+              "--format=csv,noheader,nounits"
+            ],
+            "timeoutMs": 1000,
+            "attempted": true,
+            "status": "PASS",
+            "query": 1,
+            "queryStartedMs": 0,
+            "captureDirectory": "/build/native/_work/gpu-owner-recovery/runs/host-gpu-full-1/telemetry-0001",
+            "commandResult": {
+              "status": "PASS",
+              "exitCode": 0,
+              "failure": null,
+              "stdoutBytes": 53,
+              "stderrBytes": 0
+            },
+            "exitCode": 0,
+            "failure": null,
+            "stdoutBytes": 53,
+            "stderrBytes": 0,
+            "streams": [
+              {
+                "path": "/build/native/_work/gpu-owner-recovery/runs/host-gpu-full-1/telemetry-0001/command.stdout",
+                "bytes": 53,
+                "sha256": "01b36c1fb900df9582281e5a36335475795dc787e2dfe4fbb637445c8990d2cd"
+              },
+              {
+                "path": "/build/native/_work/gpu-owner-recovery/runs/host-gpu-full-1/telemetry-0001/command.stderr",
+                "bytes": 0,
+                "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              }
+            ],
+            "captureFailures": []
+          },
+          {
+            "id": "telemetry-0002",
+            "argv": [
+              "nvidia-smi",
+              "--id=GPU-713c95e0-6952-a576-794b-9ef1fb527ff0",
+              "--query-gpu=uuid,memory.free,memory.total",
+              "--format=csv,noheader,nounits"
+            ],
+            "timeoutMs": 1000,
+            "attempted": true,
+            "status": "FAIL",
+            "query": 2,
+            "queryStartedMs": 2000,
+            "captureDirectory": "/build/native/_work/gpu-owner-recovery/runs/host-gpu-full-1/telemetry-0002",
+            "commandResult": {
+              "status": "PASS",
+              "exitCode": 0,
+              "failure": null,
+              "stdoutBytes": 53,
+              "stderrBytes": 0
+            },
+            "exitCode": 0,
+            "failure": "Error: TELEMETRY_RUNNING_HEADROOM",
+            "stdoutBytes": 53,
+            "stderrBytes": 0,
+            "streams": [
+              {
+                "path": "/build/native/_work/gpu-owner-recovery/runs/host-gpu-full-1/telemetry-0002/command.stdout",
+                "bytes": 53,
+                "sha256": "09298c946beccdd12cb8480a6a7548b080b91982a5d8dcf24bb5eed1aceca1f2"
+              },
+              {
+                "path": "/build/native/_work/gpu-owner-recovery/runs/host-gpu-full-1/telemetry-0002/command.stderr",
+                "bytes": 0,
+                "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              }
+            ],
+            "captureFailures": []
+          }
+        ],
+        "events": {
+          "path": "/evidence/inner/events.ndjson",
+          "bytes": 816,
+          "sha256": "00f700f4011fdb88889b7f35b11130b196d8e6f097cf3a9bc43d59b86b1b8edc",
+          "attemptedBytes": 816,
+          "writeFailed": false,
+          "count": 5,
+          "lastSequence": 5
+        }
+      },
+      "testLoopLimits": {
+        "perTestMs": 120000,
+        "totalMs": 750000,
+        "cleanupReserveMs": 30000
+      },
+      "elapsedMs": 2000,
+      "campaignInvocationsConsumed": 1,
+      "remainingCampaignInvocations": 0,
+      "automaticRetryAuthorized": false,
+      "outputBytesPerStreamLimit": 4194304,
+      "trainingReady": false,
+      "canonicalBothQualified": false,
+      "integratedR4Qualified": false,
+      "operationalTelemetryQualified": false,
+      "fullAssuranceQualified": false,
+      "trainingExecuted": false
+    },
+    "guardComplete": false,
+    "results": [
+      {
+        "id": "worker-create",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "create",
+          "--pull=never",
+          "--platform=linux/amd64",
+          "--network=none",
+          "--cpus=2",
+          "--memory=8g",
+          "--memory-swap=8g",
+          "--user=1000:1000",
+          "--runtime=nvidia",
+          "--gpus=device=GPU-713c95e0-6952-a576-794b-9ef1fb527ff0",
+          "--cidfile=/source-only-mock/_work/gpu-owner-recovery/runs/host-gpu-full-1/worker.cid",
+          "--label=chess-coach.gpu-full=host-gpu-full-1",
+          "--workdir=/build/native",
+          "--entrypoint=/usr/local/bin/bun",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-gpu-native-build-2/native,target=/build/native,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu,target=/build/native/target-gpu,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun,target=/usr/local/bin/bun,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-build/llvm,target=/opt/tracel-data/tracel/tracel-llvm-23.1.0-4,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-runtime/rootfs/usr/local/cuda,target=/usr/local/cuda,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/runs/host-gpu-full-1,target=/evidence,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/runs/host-gpu-full-1/inner,target=/evidence/inner",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/runs/host-gpu-full-1/inner-runs,target=/build/native/_work/gpu-owner-recovery/runs",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-gpu-full-1/scratch,target=/scratch",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-gpu-full-1/scratch,target=/build/native/_work/gpu-owner-recovery/scratch",
+          "--env",
+          "NVIDIA_VISIBLE_DEVICES=GPU-713c95e0-6952-a576-794b-9ef1fb527ff0",
+          "--env",
+          "NVIDIA_DRIVER_CAPABILITIES=compute,utility",
+          "--env",
+          "CUDA_VISIBLE_DEVICES=0",
+          "--env",
+          "CUDA_PATH=/usr/local/cuda",
+          "--env",
+          "XDG_DATA_HOME=/opt/tracel-data",
+          "--env",
+          "HOME=/scratch/home",
+          "--env",
+          "TMPDIR=/scratch/tmp",
+          "--env",
+          "CUDA_CACHE_PATH=/scratch/cuda-cache",
+          "--env",
+          "XDG_CACHE_HOME=/scratch/cache",
+          "--env",
+          "RAYON_NUM_THREADS=2",
+          "--env",
+          "RUST_TEST_THREADS=1",
+          "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+          "--no-env-file",
+          "--no-install",
+          "/evidence/driver.mjs"
+        ],
+        "timeoutMs": 20000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-start",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "start",
+          "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        ],
+        "timeoutMs": 20000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-logs",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "logs",
+          "--follow",
+          "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        ],
+        "timeoutMs": 890000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-stop",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "stop",
+          "--time=2",
+          "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        ],
+        "timeoutMs": 10000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-state",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "container",
+          "inspect",
+          "--format",
+          "{{json .State}}",
+          "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        ],
+        "timeoutMs": 10000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-remove",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "rm",
+          "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        ],
+        "timeoutMs": 15000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      }
+    ],
+    "elapsedMs": 2000,
+    "gpuExecutionAttempted": true,
+    "testsExecuted": true,
+    "hostInvocationsConsumed": 1,
+    "remainingHostInvocations": 0,
+    "automaticRetryAuthorized": false,
+    "trainingReady": false,
+    "qualificationImageBuilt": false,
+    "fullAssuranceQualified": false,
+    "operationalTelemetryQualified": false,
+    "trainingExecuted": false
+  }
+}

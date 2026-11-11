@@ -1,0 +1,14 @@
+{
+  "status": "READY_ISSUED_HOST_ONLY_AUTHORITY_SPEC_PROJECTION_ONLY",
+  "session": "ses_e340bb15bffe86c4P5emUBuYUL",
+  "verdict": "READY_TO_MERGE_YES",
+  "findings": [],
+  "reviewedCheck": {"path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/issued-approval-check.json", "sha256": "a3bc90ea1ce3c286cbedbf6e079828c944f025b11e2c8fb943b4e1a4a50bcfce"},
+  "reviewedVerification": {"path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/issued-approval-verification.json", "sha256": "5d76ba00a5df53695e43be61ca722c34ec0f98073c5637503a42a0f6562880cd"},
+  "scope": "ISSUED_AUTHORITY_DOCS_AND_INDEX_PROJECTION_WITH_PERSISTED_VERIFICATION_NOT_PUBLICATION_PAYLOAD_OR_OPERATIONAL_EXECUTION",
+  "remainingOperatorHostInvocations": 1,
+  "hostInvocationObserved": false,
+  "commandDeliveryOrPublicationAuthorized": false,
+  "publicationApproved": false,
+  "trainingReady": false
+}

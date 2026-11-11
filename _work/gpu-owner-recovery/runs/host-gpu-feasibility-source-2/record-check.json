@@ -1,0 +1,76 @@
+{
+  "status": "PASS_GPU_FEASIBILITY_SOURCE_PACKET_RECORDS_ONLY",
+  "proof": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-2/receipt.json",
+    "sha256": "3f2d134bfedc2df7f09442968eb4dd8a15a7de09a4ab11f651ac44bd09b6de1f"
+  },
+  "sourceHashesChecked": 327,
+  "protectedBaselineSources": 307,
+  "verificationStreamHashesChecked": 12,
+  "programHashesChecked": 3,
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-2/host-command.fish",
+    "bytes": 48862,
+    "sha256": "d77ae430a9b392c7e77d4a47d05af2a9d86fbc4b82c217a81a7f4a823ae67511"
+  },
+  "counts": {
+    "feasibility": {
+      "tests": 47,
+      "assertions": 314
+    },
+    "qualification": {
+      "tests": 41,
+      "assertions": 296
+    }
+  },
+  "typechecks": 4,
+  "mockE2e": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-2/e2e/happy/receipt.json",
+      "bytes": 10205,
+      "sha256": "91735814100d624170f01875e3236621eb8366584ba6e5a92c5247657483ee95"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-2/e2e/happy/argv.json",
+      "bytes": 4223,
+      "sha256": "e9e5011e6fdf4c7c825194a128cdee1e963d8d179c4b655a9a52584a6bee3ef3"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-2/e2e/journal-abort/receipt.json",
+      "bytes": 6752,
+      "sha256": "f9d86124c99a8d8dd7eaf6d6311e9ad1c455b527883aebbe88504275bd80db93"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-2/e2e/journal-abort/argv.json",
+      "bytes": 4481,
+      "sha256": "f1b6ff4a334579dde4f49b3b81151229c83cd122b358c2d8cf60aa546010d644"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-2/e2e/late-watchdog-failure/receipt.json",
+      "bytes": 10717,
+      "sha256": "dbae91ea6a21de7476777a77014448c2cd0df638da7d8a82885f001be6f7f165"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-2/e2e/late-watchdog-failure/argv.json",
+      "bytes": 4481,
+      "sha256": "8ef538d52dee12a83cb64b414d3b0fb97a3fd557679b85bb42b39256cbbebce5"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-2/e2e/connected-driver-watchdog/receipt.json",
+      "bytes": 15116,
+      "sha256": "9624f887669b6b7be1f15af813b9f1b1a3c98a7b64f4736f2ae7218603fd53a5"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-2/e2e/connected-driver-watchdog/argv.json",
+      "bytes": 4366,
+      "sha256": "0a6806cbbe1d433d6e46fc95255459fe9df511b6a39966e43f6dfcd465f05bde"
+    }
+  ],
+  "retainedInputsReadOnly": true,
+  "operationalAuthority": "NONE_FRESH_EXACT_APPROVAL_REQUIRED",
+  "originalHostArtifactBytesRehashed": false,
+  "actualDockerProcesses": 0,
+  "actualNativeProcesses": 0,
+  "gpuExecuted": false,
+  "trainingReady": false
+}

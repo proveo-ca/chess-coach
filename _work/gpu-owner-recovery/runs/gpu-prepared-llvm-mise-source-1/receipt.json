@@ -1,0 +1,115 @@
+{
+  "version": "chess-coach.gpu-prepared-llvm-mise-source.v1",
+  "status": "PASS_SOURCE_PREINSTALL_ONLY",
+  "scope": "MOCKED_PROVISION_PLAN_AND_TYPES_ONLY",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/prepared-llvm-mise/request.json",
+      "sha256": "bade5dc26c138371fca20951e1c83cf82f79e075194207366a6e2f3b1659a8f5"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/prepared-llvm-mise/provision.ts",
+      "sha256": "274bcfe60d32d48dca56e2b75de79e275e3c09da2203f77fad6ea7fc77c04f6d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/prepared-llvm-mise/provision.test.ts",
+      "sha256": "7ff13630c2b8e7ad71e24b675662feee7f31c861665d579be3090de5ff2e7e69"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/prepared-llvm-mise/tsconfig.json",
+      "sha256": "b328520d0a04776b0e0931f6fb0e6de92c4a2f37494bc37129c3dc24b63a098b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/mise.toml",
+      "sha256": "09b27b21573e66a53fb59c29feb97b15a8b0887384b21b09fac8599d8ecb5df8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/provision.ts",
+      "sha256": "446bafb616dce8f642216268cb10d6c30e1e485b45428b8c83295358964a8efb"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/verify.ts",
+      "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+      "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/prepared-llvm/verify.ts",
+      "sha256": "2e9bd159e543aa62d496a8c45cdf4e6cf86c582ad8c2f42fa92c1fe87e37bb97"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/prepared-llvm/tsconfig.json",
+      "sha256": "b328520d0a04776b0e0931f6fb0e6de92c4a2f37494bc37129c3dc24b63a098b"
+    }
+  ],
+  "sourceChanged": false,
+  "results": [
+    {
+      "name": "unit",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "./_work/gpu-owner-recovery/prepared-llvm-mise/provision.test.ts"
+      ],
+      "timeoutMs": 30000,
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 28,
+      "stderrBytes": 716,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-mise-source-1/unit/command.stdout",
+          "bytes": 28,
+          "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-mise-source-1/unit/command.stderr",
+          "bytes": 716,
+          "sha256": "812e42f881a995fd8239da096755a2782d0164e8f6ad258fd6624ca4a2f481c7"
+        }
+      ]
+    },
+    {
+      "name": "types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "-p",
+        "_work/gpu-owner-recovery/prepared-llvm-mise/tsconfig.json"
+      ],
+      "timeoutMs": 120000,
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-mise-source-1/types/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-mise-source-1/types/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "preparedSourceHashesChecked": 277,
+  "priorMismatches": [],
+  "miseCommandsExecuted": false,
+  "installationInvocations": 0,
+  "downloadsPerformed": false,
+  "compilationPerformed": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

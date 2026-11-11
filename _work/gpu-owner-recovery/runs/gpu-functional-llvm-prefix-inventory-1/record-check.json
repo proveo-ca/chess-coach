@@ -1,0 +1,31 @@
+{
+  "version": "chess-coach.gpu-functional-llvm-prefix-record-check.v1",
+  "status": "PASS",
+  "scope": "METADATA_RECORD_AND_PRIOR_SOURCE_INTEGRITY_ONLY",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/gpu-functional-llvm-prefix-inventory-request.json",
+      "sha256": "624a995a90934b84c1f3b676e2903366ee0f5f5b024f70df428ac0a7382808d4"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-functional-llvm-prefix-inventory-1/metadata.json",
+      "sha256": "f1b8733af2dec8f97a8bbd3a7cb2e1af55f215c27c48e48206a4837973aa1422"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-functional-llvm-prefix-inventory-1/stat-transcript.txt",
+      "sha256": "f4496249f7eebfe274840bfe5fa085f36937a68fd3047c65aaa20800d0b25fa3"
+    }
+  ],
+  "observedInventoryStatus": "BOUNDED_METADATA_CAPTURED_PREFIX_NOT_READY_FOR_CURRENT_RECIPE",
+  "layoutStatExitCode": 1,
+  "fullTreeInventoryComplete": false,
+  "priorSyntaxSourceHashesChecked": 4,
+  "priorLookupSourceHashesChecked": 6,
+  "priorFunctionalSourceHashesChecked": 273,
+  "testsRerun": false,
+  "inventoryRepeated": false,
+  "llvmConfigExecuted": false,
+  "llvmSelected": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

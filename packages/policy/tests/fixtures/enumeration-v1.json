@@ -1,0 +1,23 @@
+{
+  "version": "chess-coach.enumeration.v1",
+  "scenarios": {
+    "rich": {
+      "retained": 512,
+      "attemptedExtensions": 646,
+      "stopReason": "capacity",
+      "sha256": "a2ac3cf8d7f3882bc08b1830899a9c1f11d1ea4533ba48db9f9235c0f7f5a62b"
+    },
+    "no-resources": {
+      "retained": 42,
+      "attemptedExtensions": 4096,
+      "stopReason": "attempts",
+      "sha256": "c82456d324d8588b5008150e350b5cce31d75b8498af59c0022a7e031330a265"
+    },
+    "pass-only": {
+      "retained": 1,
+      "attemptedExtensions": 69,
+      "stopReason": "exhausted",
+      "sha256": "f98311fc101482d53b03dae63602392eda6f141770aadb2031bbc178e430fd68"
+    }
+  }
+}

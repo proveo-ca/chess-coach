@@ -1,0 +1,80 @@
+{
+  "status": "PASS_APPROVED_HOST_AND_SEPARATE_PUBLICATION_HANDOFF_RECORDS_ONLY",
+  "sources": [
+    {
+      "path": "_spec/gpu-feasibility.puml",
+      "sha256": "dae4e90c19f1459942a6baa8aa99e061e997720f601a5cc1fec8a3868ad196fe"
+    },
+    {
+      "path": "_spec/gpu-host-build-reuse.puml",
+      "sha256": "843c330b5fde07fb62f251937f1a9a29b09ce835d7cf0120681088228e8f2a78"
+    },
+    {
+      "path": "_spec/gpu-host-build.puml",
+      "sha256": "761293347f2ac9c196129e89349364d83221470daa5933c21b0bcdbee3790768"
+    },
+    {
+      "path": "_spec/gpu-host-build-inventory.puml",
+      "sha256": "8f9ee7091346b1ca1c661f775fabd97667c0f2bd489317050a6665f94c53a04b"
+    },
+    {
+      "path": "_spec/gpu-build.puml",
+      "sha256": "9c9e02910f4c90c8128e7ba32e02725d58a74e53e23aff97ea4ebc3f2ce4600d"
+    },
+    {
+      "path": "_spec/gpu-qualification.puml",
+      "sha256": "56cf49a865a7cb32b3ee8844dfa3b7e5d09f27ad02636500b27cd731dbc112f7"
+    },
+    {
+      "path": "_spec/gpu-input-transfer.puml",
+      "sha256": "0dacc01fee5ec84d99683c5ef8da71de8b3ccf36277151829bf2525c77a83ba3"
+    },
+    {
+      "path": "_spec/gpu-host-receive.puml",
+      "sha256": "1de53bdebb0a066fae97613847523fc102e575da6e2ac415dc77cf4a2abc8bbf"
+    },
+    {
+      "path": "_spec/gpu-readiness.md",
+      "sha256": "732e28228841219bf0dc97844d38beee6f6370643f43f934a5e02c994bbf255b"
+    },
+    {
+      "path": "_spec/gate-closure.md",
+      "sha256": "d36d09afaf28bcdd2a10a19f625acb0925f8e7df5aafccb22dc936adcad3cc29"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "sha256": "718b2e2f79ce7d0da6b735f9966d0fbab54eb9225025fc10ca7bb8a4ee1ecfa0"
+    }
+  ],
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/receipt.json",
+    "sha256": "cf632c5896bd5d46b453a67aeb87d2f0bd735b252960c7eca6917cee802d6f60"
+  },
+  "hostApproval": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/host-command-approval.json",
+    "sha256": "fbdbdf94fa605dc325cd1e617fce05a4228d5b93faf5b2dbeb8e56568c0ded1d"
+  },
+  "publicationRequest": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/publication-request.json",
+    "sha256": "6bf523a6d094f3523b9000117c90830074580fb6a1b0fbe141de3a90d441b687"
+  },
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/host-command.fish",
+    "bytes": 49023,
+    "sha256": "c690e8b0261e6bf09e834a41394369f694393ec6c60e18aa31b0375110f00054"
+  },
+  "sourceHashesChecked": 327,
+  "orderedDiagramIndexMatches": 8,
+  "docHashes": 11,
+  "nonSpecTextMembersChecked": 225,
+  "nonSpecTextBytes": 1509244,
+  "normalCommitInvocationsAuthorized": 1,
+  "fixedHttpsPushInvocationsAuthorized": 1,
+  "normalCommitInvocations": 0,
+  "httpsPushInvocations": 0,
+  "remainingHostInvocations": 1,
+  "hostInvocationObserved": false,
+  "publicationRenewsHostGrant": false,
+  "codingDockerRustCudaLlvmOrGpuOperationsPerformed": false,
+  "trainingReady": false
+}

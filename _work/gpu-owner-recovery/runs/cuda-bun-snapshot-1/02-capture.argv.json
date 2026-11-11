@@ -1,0 +1,6 @@
+[
+  "/usr/local/bin/mise",
+  "run",
+  "--raw",
+  "cuda:capture-audit-bun"
+]

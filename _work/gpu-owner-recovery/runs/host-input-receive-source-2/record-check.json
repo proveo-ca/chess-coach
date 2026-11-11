@@ -1,0 +1,15 @@
+{
+  "version": "chess-coach.host-command-source-record-check.v1",
+  "status": "PASS_REVIEWED_HOST_COMMAND_RECORDS_ONLY",
+  "sourceHashesChecked": 318,
+  "captureStreamsChecked": 16,
+  "diagramIndexMatches": 4,
+  "helperSha256": "091a431757ef83710a95156816e085cb1ed36b632e4923c9632695ffe821bafa",
+  "commandTemplateSha256": "7196a8aa265900de7f949980efcb6bf60cbe3ca5de53f8af4a7da7430bc0e35b",
+  "fishSyntaxValidated": false,
+  "sourcePublicationPerformed": false,
+  "operatorHostExecuted": false,
+  "compilationPerformed": false,
+  "gpuExecuted": false,
+  "trainingReady": false
+}

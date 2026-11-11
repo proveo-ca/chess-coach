@@ -1,0 +1,39 @@
+{
+  "status": "PASS_CURRENT_REVIEWED_SOURCE_FOUR_FULL_TWO_DECISION_ONLY",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/verify-closeout.ts",
+    "closeout-2"
+  ],
+  "result": {
+    "status": "PASS",
+    "exitCode": 0,
+    "failure": null,
+    "stdoutBytes": 75,
+    "stderrBytes": 0
+  },
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/closeout-execution-2/command.stdout",
+      "bytes": 75,
+      "sha256": "a3a1e25652e7e114bb2759e45a9940414a7bd3438035b5b249296f03bf143e2d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/closeout-execution-2/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "review": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/docs-closeout-review.json",
+    "sha256": "bf8afb14f26f318050990637d84abdeaaa21ba17c8f2396d0ae81baef460bb5a"
+  },
+  "reviewedDocsUnchanged": true,
+  "remainingHostInvocations": 0,
+  "hostExecutionAuthorized": false,
+  "deliveryOrPublicationAuthorized": false,
+  "codingHostOperationsPerformed": false,
+  "trainingReady": false
+}

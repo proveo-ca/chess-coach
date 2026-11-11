@@ -1,0 +1,32 @@
+
+import { readFile, lstat } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+const base='_work/gpu-owner-recovery/',planRoot=base+'runs/cuda-archive-plan-1/',hash=bytes=>createHash('sha256').update(bytes).digest('hex'),load=async path=>JSON.parse(await readFile(path,'utf8'));
+const assert=(value,message)=>{if(!value)throw Error(message);};
+const same=(left,right)=>JSON.stringify(left,(_key,item)=>item&&typeof item==='object'&&!Array.isArray(item)?Object.fromEntries(Object.entries(item).sort(([a],[b])=>a.localeCompare(b))):item)===JSON.stringify(right,(_key,item)=>item&&typeof item==='object'&&!Array.isArray(item)?Object.fromEntries(Object.entries(item).sort(([a],[b])=>a.localeCompare(b))):item);
+const rawReview=await readFile(base+'cuda-archive-reviewed.json'),review=JSON.parse(rawReview);
+assert(hash(rawReview)==='e5d24c1d29be99e5989d0eddde26b94077b786e770b7338815a7ecd5d3cd453a','ACCEPTED_ARCHIVE_BINDING_CHANGED');
+const retained=await readFile(planRoot+'authenticated-request-retained-after-plan.json'),approved=JSON.parse(retained);
+assert(hash(retained)==='27ee06aafbbc64eb936f5ea39d03ba0bdecd0b9109e8c3472ee4999d917b6321'&&review.requestSha256===hash(retained),'POST_PLAN_RETAINED_REQUEST_PIN');
+const request=await load(base+'cuda-llvm-request.json'),classification=await load(base+'cuda-archive-plan-1-classification.json');
+const expected={...approved,status:'HALTED_AFTER_READ_ONLY_ARCHIVE_ROOT_PLAN_FAILURE_DECISION_REQUIRED',authorityGranted:false,authorization:{...approved.authorization,grantStatus:'HALTED_AFTER_FIRST_FAILURE'},phase:'HALTED_BEFORE_PASSIVE_ARCHIVE_AUDIT',archiveRootPlanFailure:{receipt:planRoot+'receipt.json',classification:base+'cuda-archive-plan-1-classification.json',failureCode:'UNTRUSTED_FILE_ANCESTOR',rejectedAncestor:'/usr/local/bin',observedOwnerUid:1001,currentUid:1000,nativeAuditLaunched:false,automaticRetryPerformed:false,trustPolicyDecisionRequired:true},renewedExecutorDecisionRequired:true,sourceCorrection:{...approved.sourceCorrection,actualRetryAuthorized:false},nativeLayoutCorrection:{...approved.nativeLayoutCorrection,actualRetryAuthorized:false}};
+assert(same(request,expected),'HALTED_REQUEST_SCOPE_OR_DENIAL_CHANGED');
+const closure=await load(base+'closure.json');
+assert(closure.newOperationalOrAcquisitionAuthorityGranted===false&&closure.newLocalDevelopmentNamespaceAndNoRunAuthorityGranted===false&&closure.newOperationalAuthorityGranted===false&&closure.trainingReady===false&&closure.nextDecisionRequest===base+'cuda-llvm-request.json','CLOSURE_MUST_ENFORCE_HALT');
+for(const [path,expected]of Object.entries({...review.files,...review.predecessorProofs}))assert(hash(await readFile(path))===expected,'ACCEPTED_SOURCE_OR_HISTORY_CHANGED:'+path);
+for(const label of ['cuda-archive-static-parent-4','cuda-archive-types-parent-4','cuda-archive-runner-parent-4','cuda-archive-acquire-regression-4','cuda-archive-isolation-regression-4']){
+ const receipt=await load(base+'runs/'+label+'/receipt.json'),manifest=await readFile(base+'runs/'+label+'/sources.json');
+ assert(receipt.status==='PASS'&&receipt.sourceChanged===false&&hash(manifest)===receipt.sourceManifestSha256,'SOURCE_GATE_HISTORY');
+ for(const item of JSON.parse(manifest))assert(hash(await readFile(item.path===base+'cuda-llvm-request.json'?planRoot+'authenticated-request-retained-after-plan.json':item.path))===item.sha256,'SOURCE_GATE_INPUT_CHANGED:'+item.path);
+ for(const stream of [receipt.stdout,receipt.stderr]){const bytes=await readFile(stream.path);assert(bytes.length===stream.bytes&&hash(bytes)===stream.sha256,'SOURCE_GATE_STREAM_CHANGED');}
+}
+const failed=await load(planRoot+'receipt.json');assert(failed.status==='FAIL'&&failed.exitCode===1&&failed.pinnedReviewSha256===hash(rawReview)&&failed.pinnedRequestSha256===hash(retained)&&failed.scope==='READ_ONLY_DEVELOPMENT_PLAN_NOT_NATIVE_AUDIT_ATTEMPT','FAILED_PLAN_CLASSIFICATION');
+for(const stream of failed.streams){const bytes=await readFile(stream.path);assert(bytes.length===stream.bytes&&hash(bytes)===stream.sha256,'FAILED_PLAN_STREAM_CHANGED');}
+assert((await readFile(planRoot+'command.stderr','utf8')).includes('UNTRUSTED_FILE_ANCESTOR'),'GUARD_FAILURE_EVIDENCE');
+assert(failed.nativeExecutableInvocations===0&&failed.decompressionPerformed===false&&failed.llvmCodeExecuted===false&&classification.plannerBunCommandRan===true&&classification.bwrapLaunched===false&&classification.xzLaunched===false&&classification.miseInvoked===false,'NO_NATIVE_AUDIT_LAUNCH');
+const metadata=await load(planRoot+'ancestor-metadata.json'),ancestor=metadata.files.find(file=>file.path==='/usr/local/bin');
+assert(metadata.currentUid===1000&&ancestor.uid===1001&&ancestor.mode===0o40755&&ancestor.physicalPath==='/usr/local/bin'&&ancestor.directory&&!ancestor.symlink,'EXACT_REJECTED_ANCESTOR');
+const packet=await load(planRoot+'source-snapshot.json');assert(packet.files.length===23,'COMPLETE_ARCHIVE_SOURCE_PACKET');
+for(const item of packet.files){const bytes=await readFile(item.snapshot);assert(bytes.length===item.bytes&&hash(bytes)===item.sha256&&item.sha256===review.files[item.path],'SOURCE_PACKET_CHANGED');}
+for(const path of [base+'runs/cuda-archive-audit-1',base+'scratch/cuda-archive-audit-1']){try{await lstat(path);throw Error('NATIVE_AUDIT_OUTPUT_UNEXPECTED');}catch(error){if(error.code!=='ENOENT')throw error;}}
+console.log(JSON.stringify({status:'PASS',scope:'HALT_RECORD_AND_IMMUTABLE_SOURCE_EVIDENCE_ONLY',historicalArchiveSource:{tests:159,assertions:713,types:'PASS'},historicalRegressions:{runner:[15,216],acquisition:[28,522],isolation:[16,276]},sourcePacketFiles:23,retainedRequestTiming:'POST_PLAN_RETENTION_MATCHED_PRE_EXECUTION_PIN_NOT_ORIGINAL_CAPTURE',failedReadOnlyPlanPreserved:true,ancestorGuardRejectedAcceptedPolicy:true,authorityGranted:false,renewalRequired:true,nativeAuditLaunched:false,ownershipOrTrustChanged:false,extractionPerformed:false,llvmCodeExecuted:false,trainingReady:false},null,2));

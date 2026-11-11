@@ -1,0 +1,142 @@
+{
+  "version": "chess-coach.gpu-runtime-lookup-local.v1",
+  "scope": "FISH_SYNTAX_STATIC_TESTS_AND_TEST_TYPES_ONLY",
+  "status": "PASS",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/gpu-runtime-lookup.fish",
+      "sha256": "4add1a1863372d74ad48725413608bea797bfaa9d6f94e2d3637d1fb7865815b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/tests/gpu-runtime-lookup.test.ts",
+      "sha256": "c58042962b22d5141807ccff0e9c77d65eb2cce7d11e7fa000f2d94bcd99928b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/tests/verify-runtime-lookup.ts",
+      "sha256": "189657bc7883b6c32aaced7704957364f1857ae7036ed9b237feb783cd446906"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/tests/tsconfig.json",
+      "sha256": "b328520d0a04776b0e0931f6fb0e6de92c4a2f37494bc37129c3dc24b63a098b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-container-visibility-host-probe-1/operator-observation.json",
+      "sha256": "8f235ff365c654f8f7579ad0e8afcd4f5b2297af613c42a206ee0cc64eaeb9f3"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-container-visibility-host-probe-1/operator-paste.txt",
+      "sha256": "406d272b14f23770a5afc488dc4fa8251843bf80f21f8e5766d220189b57a7d2"
+    }
+  ],
+  "sourceChanged": false,
+  "results": [
+    {
+      "name": "fish-syntax",
+      "argv": [
+        "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-fish-shell-fish-shell/4.9.3/fish",
+        "--no-config",
+        "--no-execute",
+        "_work/gpu-owner-recovery/gpu-runtime-lookup.fish"
+      ],
+      "timeoutSeconds": 10,
+      "executedArgv": [
+        "/usr/bin/timeout",
+        "--kill-after=3s",
+        "10s",
+        "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-fish-shell-fish-shell/4.9.3/fish",
+        "--no-config",
+        "--no-execute",
+        "_work/gpu-owner-recovery/gpu-runtime-lookup.fish"
+      ],
+      "exitCode": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-runtime-lookup-local-3/fish-syntax.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-runtime-lookup-local-3/fish-syntax.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "static-tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "./_work/gpu-owner-recovery/tests/gpu-runtime-lookup.test.ts"
+      ],
+      "timeoutSeconds": 30,
+      "executedArgv": [
+        "/usr/bin/timeout",
+        "--kill-after=3s",
+        "30s",
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "./_work/gpu-owner-recovery/tests/gpu-runtime-lookup.test.ts"
+      ],
+      "exitCode": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-runtime-lookup-local-3/static-tests.stdout",
+          "bytes": 28,
+          "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-runtime-lookup-local-3/static-tests.stderr",
+          "bytes": 585,
+          "sha256": "6d1b4ed8db1a5350ba605418a2b10ac7de24b43f06bff369afd155182f5bdea7"
+        }
+      ]
+    },
+    {
+      "name": "test-types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "-p",
+        "_work/gpu-owner-recovery/tests/tsconfig.json"
+      ],
+      "timeoutSeconds": 30,
+      "executedArgv": [
+        "/usr/bin/timeout",
+        "--kill-after=3s",
+        "30s",
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "-p",
+        "_work/gpu-owner-recovery/tests/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-runtime-lookup-local-3/test-types.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-runtime-lookup-local-3/test-types.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "previousLocal3SourceHashesChecked": 273,
+  "previousLocal3Mismatches": [],
+  "lookupPacketExecuted": false,
+  "dockerCommandsExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

@@ -1,0 +1,28 @@
+@startuml runtime_protocol
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Private staged BOTH runtime transaction
+start
+:Issue fixed session / cursor operation to owned main and reference pipes;
+:Receive bounded closed JSON from both children;
+:Validate expected roles, message ordinals and recipient prefixes;
+:Compare independently produced canonical data;
+if (All checks pass?) then (yes)
+  :ACK the exact staged data to both owned children;
+  if (Both commit acknowledgements pass?) then (yes)
+    :Publish one BOTH successor;
+  else (no)
+    :Fail-stop both children without partial publication;
+    stop
+  endif
+else (no)
+  :Fail-stop both children without retry;
+  stop
+endif
+:Require close reply, stdin closure, bounded EOF and successful reap;
+note right
+  Parsing / hashes do not confer runtime authority.
+  Native proof cannot dispatch policy or learning work.
+  Synthetic transports are not F9 qualification.
+end note
+stop
+@enduml

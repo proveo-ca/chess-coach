@@ -1,0 +1,43 @@
+{
+  "status": "READY_REPORTED_NATIVE_BUILD_TWO_DOCS_RECORDS_AND_SOURCE_PLANNING_DECISION_ONLY",
+  "reviewerSession": "ses_e36649e3affeJjY53mEb5Dxjo5",
+  "firstPassVerdict": "READY_TO_MERGE_NO",
+  "findings": [
+    {
+      "severity": "HIGH",
+      "path": "_spec/gpu-host-build-inventory.puml",
+      "finding": "CURRENT sequence retained unconsumed BUILD2 authority and publication delivery instructions",
+      "resolution": "CURRENT sequence now reports native-build-only PASS, consumed HOST2 and publication grants, and an unanswered source-planning choice",
+      "status": "CLOSED_BY_FINAL_REVIEW"
+    },
+    {
+      "severity": "MEDIUM",
+      "path": "_spec/gpu-readiness.md",
+      "finding": "Current projections still marked completed consistency checks pending",
+      "resolution": "Docs scope the prior PASS to its immutable pre-closeout generation; a separate fresh closeout receipt binds the final wording",
+      "status": "CLOSED_BY_FINAL_REVIEW"
+    }
+  ],
+  "finalReviewVerdict": "READY_TO_MERGE_YES",
+  "finalReviewResponse": "Executor — both findings closed; no new findings. Scope: docs/records and source-planning decision only, with no execution or publication authority. READY TO MERGE: yes",
+  "acceptedConsistencyReceipt": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/closeout-records-and-docs-check.json",
+    "bytes": 5465,
+    "sha256": "13dfd22ca6403277689316cec2b352edb434727672578fd3a49663025bb494e3",
+    "status": "PASS_NATIVE_BUILD_TWO_REPORTED_RECORDS_AND_DOCS_CLOSEOUT_ONLY"
+  },
+  "postReviewDocAndReceiptHashesChecked": 14,
+  "postReviewReadOnlyGitStreamHashesChecked": 6,
+  "earlierConsistencyReceiptRetainedUnchanged": true,
+  "originalRequestsAndSourceProofsRetainedUnchanged": true,
+  "remainingHostInvocations": 0,
+  "gpuSourcePlanningChoice": "UNSELECTED",
+  "gpuWrapperImplemented": false,
+  "newHostOrGpuExecutionAuthorized": false,
+  "newKernelJitCompilationAuthorized": false,
+  "newCopyingOrStagingAuthorized": false,
+  "newPublicationAuthorized": false,
+  "originalHostArtifactBytesRehashed": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

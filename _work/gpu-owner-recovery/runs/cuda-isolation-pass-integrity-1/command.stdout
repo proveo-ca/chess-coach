@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "inertNamespaceLaunchEstablished": true,
+  "approvedRequestWasCapturedBeforeExecution": true,
+  "completedStages": [
+    "00-trust",
+    "01-config",
+    "02-inert-probe"
+  ],
+  "rawStreamsAndHistoricalFailuresPreserved": true,
+  "buildIsolationQualified": false,
+  "custodyQualified": false,
+  "cudaCompilationEstablished": false,
+  "trainingReady": false
+}

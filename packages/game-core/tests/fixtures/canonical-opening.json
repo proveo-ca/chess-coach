@@ -1,0 +1,25 @@
+{
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "source": "packages/starchess-core/src/scfen/codec.ts + board/vision.ts",
+  "input": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+  "snapshot": {
+    "placement": "4k3/2pppp2/8/8/8/8/2PPPP2/4K3",
+    "turn": 0,
+    "ccLives": { "w": 3, "b": 3 },
+    "phase": "P",
+    "gas": { "w": 1, "b": 1 },
+    "gasIncome": { "w": 1, "b": 1 },
+    "stored": { "w": 3, "b": 3 },
+    "queue": { "actions": [] }
+  },
+  "vision": {
+    "w": {
+      "lit": ["b3", "c2", "c3", "c4", "d1", "d2", "d3", "d4", "e1", "e2", "e3", "e4", "f1", "f2", "f3", "f4", "g3"],
+      "revealed": []
+    },
+    "b": {
+      "lit": ["b6", "c5", "c6", "c7", "d5", "d6", "d7", "d8", "e5", "e6", "e7", "e8", "f5", "f6", "f7", "f8", "g6"],
+      "revealed": []
+    }
+  }
+}

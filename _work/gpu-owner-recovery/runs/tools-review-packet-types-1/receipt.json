@@ -1,0 +1,35 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "tools-review-packet-types-1",
+  "stage": "typecheck-tools",
+  "sourceManifestSha256": "b04a8d6696201b6be4051cca984cde54ecdbee1a528954c931f5a3c5e74e29f8",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "node_modules/typescript/lib/_tsc.js",
+    "-p",
+    "_work/gpu-owner-recovery/tsconfig.json"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/tools-review-packet-types-1/command.stdout",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/tools-review-packet-types-1/command.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "sourceCount": 14,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

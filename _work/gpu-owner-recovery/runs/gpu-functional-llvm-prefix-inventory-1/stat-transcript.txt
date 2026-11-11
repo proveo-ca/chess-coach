@@ -1,0 +1,22 @@
+Provenance: transcribed from metadata-tool returns, not original raw stream files.
+
+[root; exit=0]
+/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4	type=directory	bytes=4096	mode=755
+
+[layout; exit=1]
+stat: cannot stat '/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/.tracel-llvm-installed': No such file or directory (os error 2)
+/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/bin	type=directory	bytes=4096	mode=755
+/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/lib	type=directory	bytes=4096	mode=755
+/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/include	type=directory	bytes=4096	mode=755
+stat: cannot stat '/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/share': No such file or directory (os error 2)
+
+[compiler; exit=0]
+/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/bin/llvm-config	type=regular file	bytes=362392	mode=755
+/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/include/llvm	type=directory	bytes=4096	mode=755
+
+[nvptx-libraries; exit=0]
+/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/lib/libLLVMNVPTXCodeGen.a	type=regular file	bytes=3532984	mode=644
+/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/lib/libLLVMNVPTXDesc.a	type=regular file	bytes=2040036	mode=644
+/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/lib/libLLVMNVPTXInfo.a	type=regular file	bytes=7210	mode=644
+/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/lib/libLLVMCore.a	type=regular file	bytes=9947956	mode=644
+/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/lib/libLLVMSupport.a	type=regular file	bytes=6202272	mode=644

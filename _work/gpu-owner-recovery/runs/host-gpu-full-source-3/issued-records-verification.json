@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "./_work/gpu-owner-recovery/runs/host-gpu-full-source-3/verify-issued-approval.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 52,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/issued-records-verification/command.stdout",
+      "bytes": 52,
+      "sha256": "a428879e876242ef6d8d064d0c6e237caa281248b100d88647b4059b1c5d7a06"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/issued-records-verification/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "hostOperationsPerformed": false,
+  "trainingReady": false
+}

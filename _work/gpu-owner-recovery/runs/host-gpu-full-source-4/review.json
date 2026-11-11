@@ -1,0 +1,35 @@
+{
+  "status": "READY_SOURCE_FOUR_CORRECTION_AND_UNAPPROVED_FULL_TWO_REQUEST_ONLY",
+  "scope": "READ_ONLY_PERSISTED_SOURCE_AND_EVIDENCE_REVIEW_NOT_HOST_GPU_OR_DOCS_CLOSEOUT",
+  "adversarial": {
+    "session": "ses_e340bb15bffe86c4P5emUBuYUL",
+    "verdict": "READY_TO_MERGE_YES",
+    "findings": [],
+    "requestScopeAdditionReviewed": true,
+    "verification": "Read-only inspection of persisted evidence; no reruns or HOST/native/GPU/JIT operations."
+  },
+  "security": {
+    "session": "ses_e340bb158ffe4KsU34VYavEHL5",
+    "verdict": "READY_TO_MERGE_YES",
+    "findings": [],
+    "risk": "LOW_FOR_REVIEWED_DELTA",
+    "requestScopeAdditionReviewed": true,
+    "verification": "Read-only scoped review; no delivery, execution, commit, push, or training authority."
+  },
+  "inputs": [
+    {"path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/receipt.json", "sha256": "b3c6f85338b295e466fa2edb9625e36b89b84f977e97be492bfa7d6b931b9683"},
+    {"path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/record-check.json", "sha256": "e46b2fd4562455bc7b52bf2079409039e2dfdeff06e7aa868a9860d3db52216b"},
+    {"path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/source-delta-check.json", "sha256": "b068b1a873175b079a4fe460c3e90a65577eb5252f4aebe044ba47c40d3a1947"},
+    {"path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command-request.json", "sha256": "cd8120322c11cd1107a07d1cab883933d1327b1e06ba463d930f23d51a6ab4bf"},
+    {"path": "_work/gpu-owner-recovery/runs/host-gpu-full-observation-1/observation.json", "sha256": "2d9b2c4c63b07db038ba9b1e882f5372744fedc8266b9bd653cf75255518e066"},
+    {"path": "_work/gpu-owner-recovery/runs/host-gpu-full-observation-1/record-check.json", "sha256": "bbd577d991e59b16d247f39f98ea028b1bc83935b093a3de6117ec74c121fd85"},
+    {"path": "_work/gpu-owner-recovery/runs/host-gpu-full-observation-1/verification.json", "sha256": "7b3de44a895570f2e4ae0319eed6062b5a6e30ce2bd73b8686e010e2d2603cf6"}
+  ],
+  "docsCloseoutReviewed": false,
+  "newHardeningGateAdded": false,
+  "hostExecutionAuthorized": false,
+  "copyingOrStagingAuthorized": false,
+  "deliveryOrPublicationAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

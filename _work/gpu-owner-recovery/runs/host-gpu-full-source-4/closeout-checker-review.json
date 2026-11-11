@@ -1,0 +1,21 @@
+{
+  "status": "READY_BOUNDED_CLOSEOUT_CHECKER_ONLY_DOCS_AND_EXECUTION_PENDING",
+  "session": "ses_e340bb15bffe86c4P5emUBuYUL",
+  "firstPass": {
+    "verdict": "READY_TO_MERGE_NO",
+    "findings": [{"severity": "MEDIUM", "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/verify-closeout.ts", "lines": "86-87", "finding": "Unstaged-only Git scope and whitespace checks could miss staged HEAD changes."}],
+    "typecheck": {"path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/closeout-static-1/receipt.json", "sha256": "c51b35d4c980d1dd24b3644df266d26a3755c3fe89787558b552aadc4380cd92"}
+  },
+  "reReview": {
+    "verdict": "READY_TO_MERGE_YES",
+    "previousMediumClosed": true,
+    "remainingFindings": [],
+    "verification": "Both Git checks compare against HEAD and cover staged plus unstaged tracked changes.",
+    "typecheck": {"path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/closeout-static-2/receipt.json", "sha256": "5bc6e021b4b546bc00947eff65c784127e21a0e6e8ad7e1ec4a0644036c9f975"}
+  },
+  "checker": {"path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/verify-closeout.ts", "sha256": "6a7e9923d9f3102c467153a4f95ba11f0ea84b158e2b1698965b4c25f555ef40"},
+  "reviewScope": "READ_ONLY_CHECKER_DELTA_NOT_CURRENT_SPEC_DOCS_OR_HOST_GPU_EXECUTION",
+  "hostExecutionAuthorized": false,
+  "deliveryOrPublicationAuthorized": false,
+  "trainingReady": false
+}

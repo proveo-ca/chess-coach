@@ -1,0 +1,34 @@
+{
+  "version": "chess-coach.cuda-numeric-source-inventory.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "-e",
+    "\nimport { readFile } from 'node:fs/promises';\nimport { createHash } from 'node:crypto';\nconst paths=['Cargo.toml','Cargo.lock','crates/learning/Cargo.toml','crates/learning/tests/finite_difference.rs','crates/policy-io/Cargo.toml','crates/policy-io/src/device.rs','crates/policy-io/src/bin/policy-initialize.rs','crates/policy-io/tests/gpu.rs'];\nconst source=Object.fromEntries(await Promise.all(paths.map(async path=>[path,await readFile(path)])));\nconst hash=bytes=>createHash('sha256').update(bytes).digest('hex');\nconst fd=source['crates/learning/tests/finite_difference.rs'].toString(),gpu=source['crates/policy-io/tests/gpu.rs'].toString(),device=source['crates/policy-io/src/device.rs'].toString();\nconst ignored=text=>[...text.matchAll(/#\\[ignore = \"([^\"\\n]+)\"\\]\\s*fn (cuda_[a-z0-9_]+)\\(/g)].map(match=>({name:match[2],reason:match[1]}));\nconst fixtures=[...ignored(fd).map(item=>({path:'crates/learning/tests/finite_difference.rs',...item})),...ignored(gpu).map(item=>({path:'crates/policy-io/tests/gpu.rs',...item}))];\nif(fixtures.length!==6||fixtures.some(item=>!item.reason.includes('never run in sbx')))throw Error('SIX_EXPLICIT_HOST_ONLY_FIXTURES_REQUIRED');\nfor(const needle of ['assert_eq!(coordinates.len(), 2335)','index, 1e-6','index, -1e-6','1e-8 + 1e-5 * expected.abs().max(central.abs())'])if(!fd.includes(needle))throw Error('NUMERIC_SOURCE_CONTRACT_CHANGED');\nif(!gpu.includes('assert_eq!(results[0], results[1]);')||!device.includes('.configure(FloatDType::F64)'))throw Error('F64_OR_EXACT_REDUNDANT_COMPARISON_SOURCE_CHANGED');\nconst metadata=JSON.parse(await readFile('_work/gpu-owner-recovery/runs/readiness-real-cuda-metadata-2/receipt.json','utf8'));\nfor(const item of metadata.sources)if(source[item.path]&&hash(source[item.path])!==item.sha256)throw Error('LOCK_OR_MANIFEST_CHANGED_AFTER_METADATA');\nconsole.log(JSON.stringify({status:'PASS',scope:'STATIC_TEXT_AND_BYTE_INVENTORY_NOT_RUST_PARSER_COMPILATION_OR_NUMERIC_EXECUTION',files:paths.map(path=>({path,bytes:source[path].length,sha256:hash(source[path])})),hostOnlyIgnoredFixtures:fixtures,retainedContract:{coordinatesPerSweep:2335,sweeps:2,totalCoordinates:4670,eps:0.000001,atol:0.00000001,rtol:0.00001,f64Required:true,redundantParameterDigestComparison:'EXACT_EQUALITY_NOT_TOLERANCE'},compilationPerformed:false,fixturesExecuted:false,actualHostExecuted:false,cudaGpuCodeExecuted:false,trainingReady:false},null,2));\n"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 3143,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "stream": "stdout",
+      "path": "_work/gpu-owner-recovery/runs/cuda-numeric-source-inventory-1/command.stdout",
+      "bytes": 3143,
+      "sha256": "6a70e5d32555b7ec3e8745406b02f49d2006f8e8fc272d9b98f7827409adf0fb"
+    },
+    {
+      "stream": "stderr",
+      "path": "_work/gpu-owner-recovery/runs/cuda-numeric-source-inventory-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scope": "SOURCE_INVENTORY_ONLY",
+  "compilationPerformed": false,
+  "fixturesExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

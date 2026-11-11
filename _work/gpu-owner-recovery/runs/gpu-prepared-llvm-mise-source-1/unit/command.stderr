@@ -1,0 +1,14 @@
+
+_work/gpu-owner-recovery/prepared-llvm-mise/provision.test.ts:
+(pass) only the pinned minimal profile and configured components are admitted [0.42ms]
+(pass) fresh discovery excludes unrelated root/global configuration [0.25ms]
+(pass) the approved plan installs once after fresh checks and uses fixed deadlines [0.52ms]
+(pass) each preflight failure stops without installation [0.44ms]
+(pass) an installation failure consumes one attempt without a retry [0.32ms]
+(pass) configuration changes between discovery and installation stop the attempt [0.15ms]
+(pass) installation or static success alone cannot qualify offline feature trees [0.21ms]
+
+ 7 pass
+ 0 fail
+ 46 expect() calls
+Ran 7 tests across 1 file. [18.00ms]

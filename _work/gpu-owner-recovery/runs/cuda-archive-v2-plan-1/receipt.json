@@ -1,0 +1,39 @@
+{
+  "version": "chess-coach.cuda-archive-v2-readonly-root-plan.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "-e",
+    "\nimport { readFile } from 'node:fs/promises';\nimport { createHash } from 'node:crypto';\nconst base='_work/gpu-owner-recovery/',expectedReviewSha='dacf7e484328711b65f72d48ee6cba4808164fd6ce9ddb7bf3366868486f173c',expectedRequestSha='a968cc2761869c8634a3cc929f2b1d21a7804f7128bd1fb6b045f76598fbd9f1',hash=bytes=>createHash('sha256').update(bytes).digest('hex');\nconst raw=await readFile(base+'cuda-archive-reviewed-v2.json');if(hash(raw)!==expectedReviewSha)throw Error('PINNED_ARCHIVE_V2_REVIEW_REQUIRED');const record=JSON.parse(raw);\nif(record.version!=='chess-coach.cuda-archive-audit-source-review.v2'||['staticUnitTestsPassed','staticTypesPassed','adversarialSourceAccepted','securitySourceAccepted','devopsSourceAccepted'].some(key=>record[key]!==true)||Object.keys(record.files).length!==26||Object.keys(record.predecessorProofs).length!==97||record.requestSha256!==expectedRequestSha||hash(await readFile(base+'cuda-llvm-request.json'))!==expectedRequestSha)throw Error('EXACT_ARCHIVE_V2_OUTSIDE_GATE');\nfor(const [path,expected]of Object.entries({...record.files,...record.predecessorProofs}))if(hash(await readFile(path))!==expected)throw Error('PINNED_ARCHIVE_V2_INPUT_CHANGED:'+path);\nconst {readArchiveContinuationInputs,validateArchiveContinuation,prepareArchiveAuditPlan,validateArchivePlanSnapshot,archiveAuditArgv}=await import('./_work/gpu-owner-recovery/cuda-archive.ts');\nconst input=await readArchiveContinuationInputs(),capture=validateArchiveContinuation(input),plan=await prepareArchiveAuditPlan();validateArchivePlanSnapshot(plan,capture);const argv=archiveAuditArgv(plan);\nif(plan.files.find(mount=>mount.guest==='/audit/cuda-tar.ts').file.sha256!==record.files[base+'cuda-tar.ts'])throw Error('PLANNED_TAR_SOURCE_CHANGED');\nconsole.log(JSON.stringify({status:'PASS',scope:'READ_ONLY_AUTHENTICATED_PRIVATE_BUN_NATIVE_CLOSURE_AND_EXACT_INPUT_BYTES_NOT_AUDIT_EXECUTION',pinnedReviewSha256:expectedReviewSha,pinnedRequestSha256:expectedRequestSha,rootPlan:plan,argv,privateSnapshotMatchesCommittedIdentity:true,quarantineLaunched:false,privateSnapshotExecuted:false,decompressionPerformed:false,extractionPerformed:false,llvmCodeExecuted:false,buildIsolationQualified:false,custodyQualified:false,cudaCompilationEstablished:false,trainingReady:false},null,2));\n"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 21030,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "stream": "stdout",
+      "path": "_work/gpu-owner-recovery/runs/cuda-archive-v2-plan-1/command.stdout",
+      "bytes": 21030,
+      "sha256": "a72c2619f49833814849fae5a70769f81c81a7bba562462725b9991ca2c23eb7"
+    },
+    {
+      "stream": "stderr",
+      "path": "_work/gpu-owner-recovery/runs/cuda-archive-v2-plan-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "sourceChanged": false,
+  "pinnedReviewSha256": "dacf7e484328711b65f72d48ee6cba4808164fd6ce9ddb7bf3366868486f173c",
+  "pinnedRequestSha256": "a968cc2761869c8634a3cc929f2b1d21a7804f7128bd1fb6b045f76598fbd9f1",
+  "scope": "READ_ONLY_PLAN_QUALIFICATION_NOT_NATIVE_AUDIT_ATTEMPT",
+  "quarantineLaunched": false,
+  "privateSnapshotExecuted": false,
+  "decompressionPerformed": false,
+  "extractionPerformed": false,
+  "llvmCodeExecuted": false,
+  "trainingReady": false
+}

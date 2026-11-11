@@ -1,0 +1,54 @@
+{
+  "version": "chess-coach.offline-diagram.v1",
+  "argv": [
+    "/opt/jre/bin/java",
+    "-Djava.io.tmpdir=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/tmp",
+    "-Djava.awt.headless=true",
+    "-jar",
+    "/opt/plantuml.jar",
+    "-charset",
+    "UTF-8",
+    "-tsvg",
+    "-nometadata",
+    "-failfast2",
+    "-o",
+    "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/scratch/offline-recovery-diagrams-first",
+    "/home/gu1lty/Projects/proveo/chess-coach/_spec/gpu-owner.puml",
+    "/home/gu1lty/Projects/proveo/chess-coach/_spec/gpu-cooperative-policy.puml"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "sources": [
+    {
+      "path": "_spec/gpu-owner.puml",
+      "sha256": "8235fcc5e4a6696f96b084f8251c5c18b9da71e25addb49b4ae1bfb769f19fc2"
+    },
+    {
+      "path": "_spec/gpu-cooperative-policy.puml",
+      "sha256": "33fb0959c59cca403c1166151b3f2e08ad1b49d0f91057bd5916fa2d6b24e113"
+    }
+  ],
+  "sourceChanged": false,
+  "outputs": [
+    {
+      "path": "_work/gpu-owner-recovery/scratch/offline-recovery-diagrams-first/gpu_cooperative_policy_reconstruction.svg",
+      "byteLength": 17576,
+      "sha256": "5f0d0b368fcf921a442266271b18ab7ebb60b2e979724c4ce5de27960a4c1b0f",
+      "validSvg": true
+    },
+    {
+      "path": "_work/gpu-owner-recovery/scratch/offline-recovery-diagrams-first/gpu_owner_reconstruction.svg",
+      "byteLength": 34833,
+      "sha256": "5ef333bdc634c4effee9475448ce8117f33fcd155a2bc4d9c6f0025dbe225f43",
+      "validSvg": true
+    }
+  ],
+  "offline": true,
+  "securityProfile": "SANDBOX",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

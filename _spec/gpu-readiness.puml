@@ -1,0 +1,25 @@
+@startuml gpu_readiness
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title GPU learning readiness - required, not qualified
+start
+:Retain operator-reported 8 GB GPU / host currently uses it;
+:Keep active GPU attached; shared host Docker GPU design selected;
+if (Actual GPU/vendor/runtime prerequisites identified?) then (no)
+  :trainingReady=false; no CPU fallback or active GPU rebind;
+  stop
+else (yes)
+  :Select GPU/backend/driver and immutable runtime inputs;
+endif
+:Executor accepts complete Gate0 design and prerequisites;
+:Obtain separate exact capture/build/qualification grants;
+:Admit host-backed state, CPU/RAM/VRAM and original clocks;
+:Qualify actual-target F64 scoring, autodiff, SGD and record reload;
+:Verify redundant learners, numerical checks and owned cleanup;
+if (GPU evidence and every existing Gate0/F9/R4 check accepted?) then (no)
+  :trainingReady=false; preserve failures without retry/reset;
+  stop
+else (yes)
+  :Technical readiness only; training execution still needs its own grant;
+endif
+stop
+@enduml

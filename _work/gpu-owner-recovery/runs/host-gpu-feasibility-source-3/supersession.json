@@ -1,0 +1,8 @@
+{
+  "status": "HISTORICAL_PRE_INNER_BUN_PROPERTY_GUARD",
+  "originalProofAndReviewRetainedUnchanged": true,
+  "successor": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/receipt.json",
+  "delta": "Require the existing Bun 1.4.0 property inside the future container entrypoint and add one static regression assertion",
+  "newOperationalAuthority": false,
+  "trainingReady": false
+}

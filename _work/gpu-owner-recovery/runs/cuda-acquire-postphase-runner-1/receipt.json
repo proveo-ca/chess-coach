@@ -1,0 +1,35 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "cuda-acquire-postphase-runner-1",
+  "stage": "runner",
+  "sourceManifestSha256": "b06edcaa2115bde62a7474b89a9fc6d99276a895879dbd2463b0a8058a00d104",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./_work/gpu-owner-recovery/verify.test.ts",
+    "./_work/gpu-owner-recovery/audit-lock.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 1520,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-acquire-postphase-runner-1/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-acquire-postphase-runner-1/command.stderr",
+    "bytes": 1520,
+    "sha256": "7431f6fe9b96a1740f2581bbda899e5be10937fc297ce96e4d9f42dcacb27a5c"
+  },
+  "sourceCount": 45,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

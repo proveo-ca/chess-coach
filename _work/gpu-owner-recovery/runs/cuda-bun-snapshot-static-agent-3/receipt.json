@@ -1,0 +1,34 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "cuda-bun-snapshot-static-agent-3",
+  "stage": "cuda-bun-snapshot",
+  "sourceManifestSha256": "caa265477f236656e97317ccd93eeaeec02de233fffe6b00a10f6493779cfe9f",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts"
+  ],
+  "status": "FAIL",
+  "exitCode": 1,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 1491,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-static-agent-3/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-static-agent-3/command.stderr",
+    "bytes": 1491,
+    "sha256": "0229591f5d43acfdadf3b08c94bb6642005dd05cd6af44976fcf237efef988c8"
+  },
+  "sourceCount": 143,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

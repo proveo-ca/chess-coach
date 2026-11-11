@@ -1,0 +1,1 @@
+PASS: 277 current source hashes; 20 stream hashes; five flags-only LLVM queries; 277 prior prepared-source hashes unchanged; two diagram/index inventories match; no compilation, staging, image or host/GPU operation

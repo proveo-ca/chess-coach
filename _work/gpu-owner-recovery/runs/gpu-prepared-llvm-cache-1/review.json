@@ -1,0 +1,16 @@
+{
+  "version": "chess-coach.gpu-functional-cargo-cache-record-review.v1",
+  "status": "ACCEPTED_COMPLETED_OPERATION_RECORDS_ONLY",
+  "outcome": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-cache-1/outcome.json",
+  "integrity": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-cache-1/integrity-check.json",
+  "adversarial": { "session": "ses_e3e279074ffecatzIlWgyKAeHe", "verdict": "READY", "scope": "CACHE_AND_FEATURE_TREE_RECORDS_ONLY" },
+  "security": { "session": "ses_e3e279068ffdYBUGpvUXWkOlML", "verdict": "READY", "scope": "COMPLETED_RECORDS_ONLY" },
+  "fetchInvocationsConsumed": 1,
+  "remainingFetchInvocations": 0,
+  "compiledHostDependencyCouplingQualified": false,
+  "nativeBuildQualified": false,
+  "gpuF64OrC12Qualified": false,
+  "trainingReady": false,
+  "deferredAssuranceFindingsClosed": false,
+  "additionalOperationsAuthorized": false
+}

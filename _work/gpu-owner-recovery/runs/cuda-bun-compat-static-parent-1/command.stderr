@@ -1,0 +1,32 @@
+
+_work/gpu-owner-recovery/cuda-bun-compatibility-fixture.test.ts:
+(pass) pure CRC32 and canonical TAR pass chunked in-memory auditTar qualification [5.39ms]
+(pass) pure XZ header, LZMA2, VLI, index and CRC layout; actual XZ decoder NOT RUN [0.76ms]
+(pass) exact JSON regeneration rejects all payload-byte, hash, base64, schema and length corruption [316.82ms]
+
+_work/gpu-owner-recovery/cuda-bun-compatibility.test.ts:
+(pass) immutable diagnostic request and exact 33-source/140-proof packet authenticate saved historical code only [18.46ms]
+(pass) raw request pin rejects every phase, bound, denial, full-grant and formatting mutation before effects [35.54ms]
+(pass) all five source gates, closed membership, byte caps and raw halted request remain mandatory [248.42ms]
+(pass) historical failed receipt, old 26-source packet, 97-proof map, raw streams and qualification cannot change [287.91ms]
+(pass) fixed CLI and parent invocation reject arbitrary arguments before any operational effects [3.53ms]
+(pass) all-compatible DI suite launches each fixed case once, shares one stable root and publishes last [48.11ms]
+(pass) startup, parser and xz Bun aborts complete diagnostics without compatibility or dependent launches [110.82ms]
+(pass) unexpected failure stops before all later effects, retains failure metadata and never publishes a completion [103.40ms]
+(pass) classification requires exact marker, canonical unmixed abort banner, launcher status and complete clean lifecycle [0.45ms]
+(pass) result validation closes ordered dependency states, invocation counts, stream metadata, lifecycle and denied authority [100.36ms]
+(pass) builtin-only outside result validation correlates exact raw streams without post-deadline project imports [168.22ms]
+(pass) argv fixes the common native closure, private Bun, synthetic-only inputs and one private output without expanded isolation [43.74ms]
+(pass) private identity, source hash, prepared fixture and revalidation faults stop before launch or publication [78.00ms]
+(pass) concurrent bounded launcher collection retains prefixes and requires actual reap and both stream EOFs [1.35ms]
+(pass) launcher kill failure never replaces the first empty stream error or settles before EOF and reap [0.25ms]
+(pass) default launch adapter passes only fixed argv and the four-variable environment to a replaced Bun.spawn [43.55ms]
+(pass) synthetic XZ helper drains concurrent stderr and awaits EOF plus actual zero exit without a success shortcut [1.32ms]
+(pass) exclusive claim and staged publication preserve first empty errors and never publish before stream files close [18.86ms]
+(pass) tasks-only Mise plan uses outside gates before and after each stage and treats empty failure as failure [1.34ms]
+(pass) fixed case sources contain no original Bun lookup, real archive, helper generation, renewed deadline or operational escape [0.69ms]
+
+ 23 pass
+ 0 fail
+ 4161 expect() calls
+Ran 23 tests across 2 files. [1.66s]

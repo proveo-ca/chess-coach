@@ -1,0 +1,14 @@
+{
+  "status": "PASS_READ_ONLY_PUBLICATION_TRANSPORT_IDENTITY_PREFLIGHT",
+  "parentCommit": "65febc83b9ab6e043b233f03d390d6b262538118",
+  "branch": "feat-ml-adjuntant-ii",
+  "transport": "FIXED_HTTPS_WITH_NO_APPLICABLE_REWRITE",
+  "identity": "EXISTING_INHERITED_NOT_PRINTED_OR_CHANGED",
+  "hooksDirectory": ".git/hooks",
+  "executableOrLinkedHooks": [],
+  "normalCommitInvocations": 0,
+  "httpsPushInvocations": 0,
+  "hostInvocationObserved": false,
+  "codingHostDockerOrNativeOperationsPerformed": false,
+  "trainingReady": false
+}

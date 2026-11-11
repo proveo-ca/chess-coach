@@ -1,0 +1,12 @@
+{
+  "status": "FAIL_INITIAL_REPORT_CHECK",
+  "failure": "OFFLINE_LIMITATION_PRESERVED",
+  "exitCode": 1,
+  "cause": "REPORTED_MISSING_ARCHIVES_NOT_EXACTLY_EQUAL_TO_PREPARATION",
+  "reportedOnly": ["ntapi@0.3.1"],
+  "preparedOnly": ["ntapi@0.4.3"],
+  "originalHostBytesExamined": false,
+  "originalOperatorPasteEdited": false,
+  "initialFailureSupersededByExactArchiveListPass": false,
+  "trainingReady": false
+}

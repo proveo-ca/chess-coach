@@ -1,0 +1,10 @@
+{
+  "stage": "02-inert-probe",
+  "argv": [
+    "/usr/local/bin/mise",
+    "run",
+    "--raw",
+    "cuda:isolation-probe"
+  ],
+  "exitCode": 0
+}

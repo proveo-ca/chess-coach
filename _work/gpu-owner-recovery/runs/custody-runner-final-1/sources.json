@@ -1,0 +1,66 @@
+[
+  {
+    "path": "_work/gpu-owner-recovery/audit-lock.test.ts",
+    "sha256": "334a2fb42f8a4d369f25153295bafc6f487d81989341ea905f8b6e94c4159bfe"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/audit-lock.ts",
+    "sha256": "0f7210560b22170231d0373f4f338e698d89392824ae13f3ac933a5d576a3886"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/cargo.ts",
+    "sha256": "1850444aae040348d4b1035b98f629e52afc5db51925f8190c514f6804772960"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+    "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/compiler-driver.ts",
+    "sha256": "bfa3cd2f8bd12d5a0466914eb74d33ff749b727d46e3a9057a11950d5e62885c"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/diagrams.ts",
+    "sha256": "529160a222254997c139be99783b8e819255e1408185119b7480493e7e5aba7a"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/provision.ts",
+    "sha256": "446bafb616dce8f642216268cb10d6c30e1e485b45428b8c83295358964a8efb"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/recover-runner-output.ts",
+    "sha256": "9970188819bf6024fc5733e01b319eca0bf81064015c681bd617528e16377b51"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/review-packet.ts",
+    "sha256": "23fc6e74e4a1072e7b370a4f035976d0ad163f1224fdafcf1de7091fd97b7c94"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/tsconfig.json",
+    "sha256": "e70ffa726d5b3b004982a4705b17b778c4326fe9964b9ce76e006ed1310c793d"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.test.ts",
+    "sha256": "f84b82c55a4c9f9af6d7daf6a1bdb59b5f548e40e8d3b07c040dedbc2fb4b7b5"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.ts",
+    "sha256": "af86d7e86b29b830be7a9d420d8d7c49eb9a9e6a520c3d8862f8d458ecfc02fc"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/zig-ar.ts",
+    "sha256": "b2ae0f3ed032f1db45c2cc31e072f31033a642c23ca928083cab39499145d6a0"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/zig-cc.ts",
+    "sha256": "af9a8708d2acf0052f61acab96f23fe4b9c47ae0396622b5a11a05173ea6e28a"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/zig-cxx.ts",
+    "sha256": "f4205337b3d55f50b91dd618c38ebb063e093d1af514da7f3b981d93eb469ce7"
+  },
+  {
+    "path": "tooling/reference-entrypoints.json",
+    "sha256": "4fb9727741bb4778d260be6e6d14c3b9e38bbfd5751f49d7262273a83b5d5396"
+  }
+]

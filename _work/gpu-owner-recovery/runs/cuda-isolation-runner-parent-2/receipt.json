@@ -1,0 +1,35 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "cuda-isolation-runner-parent-2",
+  "stage": "runner",
+  "sourceManifestSha256": "c7606eee218a1d684acadacf2463af4322d33d6bdbff23b209b7381e7af7a70d",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./_work/gpu-owner-recovery/verify.test.ts",
+    "./_work/gpu-owner-recovery/audit-lock.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 1408,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-isolation-runner-parent-2/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-isolation-runner-parent-2/command.stderr",
+    "bytes": 1408,
+    "sha256": "74ab3df28c8c50911f6a624260a700eff1b38e4d2a207b9bf0fed0285726f833"
+  },
+  "sourceCount": 21,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

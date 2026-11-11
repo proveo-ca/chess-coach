@@ -1,0 +1,20 @@
+{
+  "status": "READY_FOR_ONE_APPROVED_MISE_OPERATOR_RECEIVE_RUN2",
+  "helperSourceCommit": "98749410eda3dcadd7a210d3ddb1ac097a9ba13d",
+  "assetSourceCommit": "f3e277dbbf33c0aa69172cca1890792656d4cd09",
+  "helper": {
+    "path": "_work/gpu-owner-recovery/qualification/host-receive/receive.ts",
+    "bytes": 18396,
+    "sha256": "ac1cd8afdf8332917d153e871d9400fec1e926eaa4a2380265df646c3f53b6f2"
+  },
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-input-receive-source-4/receipt.json",
+    "sha256": "9a34af7785ff55ee1b52bb7c5d71a7297847d3a3a0a1d0cc49316f1c1fa71efd"
+  },
+  "commandSha256": "f0feb2c81df00e635e920ad55fd24396305b323a99e5ca87302bf545bf19e95b",
+  "command": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/host-command.fish",
+  "expectedReceipt": "_work/gpu-owner-recovery/runs/host-input-receive-2/receipt.json",
+  "expectedStatus": "PASS_HOST_RECEIVE_AND_EXTRACT_ONLY",
+  "hostExecuted": false,
+  "trainingReady": false
+}

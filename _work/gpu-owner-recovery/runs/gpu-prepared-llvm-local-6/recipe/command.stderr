@@ -1,0 +1,16 @@
+
+packages/runtime/tests/gpu-recipe.test.ts:
+(pass) GPU recipe opts into the package feature without changing the CPU recipe [0.60ms]
+(pass) prepared LLVM activates only the pinned optional host build dependency [2.88ms]
+(pass) CUDA bindings require an explicit supported encoded version before Cargo [0.12ms]
+(pass) prepared LLVM uses the bundler location without fabricating its cache marker [0.08ms]
+(pass) prepared builder and runtime inputs precede application outputs [0.06ms]
+(pass) GPU and CPU recipes retain the same pinned stages and registered application copies [0.43ms]
+(pass) recipe steps cannot silently provision missing compiler inputs [0.07ms]
+(pass) GPU feature selection leaves CPU master initialization and GPU failure semantics unchanged [0.13ms]
+(pass) unselected prepared inputs and static checks cannot become GPU qualification [0.05ms]
+
+ 9 pass
+ 0 fail
+ 97 expect() calls
+Ran 9 tests across 1 file. [14.00ms]

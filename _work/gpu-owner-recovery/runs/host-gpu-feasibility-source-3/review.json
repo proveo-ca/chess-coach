@@ -1,0 +1,25 @@
+{
+  "status": "READY_GPU_FEASIBILITY_SOURCE_THREE_EXACT_APPROVAL_DECISION_ONLY",
+  "classification": ["NON_TRIVIAL", "INFRASTRUCTURE", "BACKEND", "SPEC_IMPACTING"],
+  "architecture": { "session": "ses_e36783826ffetiRNpE54VUigWv", "consultedBeforeImplementation": true, "verdict": "ADDITIVE_SOURCE_ONLY_BOUNDARY_ACCEPTED" },
+  "adversarial": { "session": "ses_e36649e3affeJjY53mEb5Dxjo5", "verdict": "READY_TO_MERGE_YES", "remainingFindings": [] },
+  "security": { "session": "ses_e3845fff1ffeE092hXAV6pfhiW", "verdict": "READY_SOURCE_THREE_EXACT_COMMAND_DECISION_ONLY", "remainingFindings": [], "risk": "low", "additionalHardeningGate": false },
+  "devops": { "session": "ses_e384ffa7bffecNc429YDN25STS", "verdict": "READY_FOR_FRESH_EXACT_HOST_DECISION_ONLY", "remainingFindings": [] },
+  "closedFindings": [
+    { "severity": "HIGH", "finding": "Malformed inner results could discard the completed operation ledger", "resolution": "Validate arrays and report unknown test execution without throwing after cleanup" },
+    { "severity": "MEDIUM", "finding": "Capture read failures could discard the original supervisor result", "resolution": "Retain raw status, exit, primary failure, partial streams and auxiliary capture failures" },
+    { "severity": "MEDIUM", "finding": "Post-command capture could consume a later phase reserve", "resolution": "Check the operation phase deadline after capture while retaining raw supervisor facts" }
+  ],
+  "verification": { "sourceHashes": 327, "protectedBaselineSources": 307, "wrapperTests": 48, "wrapperAssertions": 321, "qualificationTests": 41, "qualificationAssertions": 296, "strictTypechecks": 4, "persistedPureMockE2eCases": 4 },
+  "sourceProof": { "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-3/receipt.json", "sha256": "e2900956610d70828ce53fa128eeaa7b2c6e035665a4ac90ab4ff272660f86d2" },
+  "command": { "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-3/host-command.fish", "bytes": 48963, "sha256": "633c17f628566cdf0cd06d49ec59fb918c7b1b8e74b9b458810c2b462ee85e08" },
+  "remainingHostInvocationsAuthorized": 0,
+  "hostExecutionAuthorized": false,
+  "copyingOrStagingAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "kernelJitCompilationAuthorized": false,
+  "publicationAuthorized": false,
+  "trainingAuthorized": false,
+  "originalHostArtifactBytesRehashed": false,
+  "trainingReady": false
+}

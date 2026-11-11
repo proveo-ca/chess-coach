@@ -1,0 +1,29 @@
+@startuml turn_resolution
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Canonical turn composition - actual causal effect sink
+start
+:Validate phase, queue shape and native dependencies;
+:Apply visible turn-open CC checks unless already begun;
+if (Terminal?) then (yes)
+  :Return terminal chip consequence;
+else (no)
+  :Apply heads-first B specials and held Marine steps;
+  :Rewrite classical actors and settle held mines;
+  :Derive native-double context from actual actor transfers;
+  :Resolve classical attack / move / path phase;
+  if (Terminal?) then (yes)
+    :Stop before F;
+  else (no)
+    :Apply F own-actor anchors, specials and promotions;
+  endif
+  :Check mine and CC invariants;
+endif
+:Return next turn, gas income and physical timeline;
+note right
+  Separate session/recipient owner retains explicit banks.
+  Typed journal records actual causal mutations.
+  Physical timeline alone is not a witness journal.
+  No runtime, F9 or training grant.
+end note
+stop
+@enduml

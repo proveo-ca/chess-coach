@@ -1,0 +1,22 @@
+[
+  {
+    "path": "_work/gpu-owner-recovery/cuda-tar.ts",
+    "sha256": "414e579f89e79038bb7fc1a3c9ac0a5f52ca89a3e1cc0590e8861a99a133cf64"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/cuda-tar.test.ts",
+    "sha256": "31f873e65ab39887ae2c05128a5537a188156674135d5d6119ace9ebb440d26d"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/fixtures/cuda-tar-cases.json",
+    "sha256": "d9ed3b7ca08501243e2a0201e3b4906897c79b028745874993891b57a5e540a9"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.ts",
+    "sha256": "00205057b14e144b22e4524ecf866766ace4bb21ae2c7d4bdc146a5dda5e2fd9"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+    "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+  }
+]

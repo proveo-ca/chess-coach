@@ -1,0 +1,25 @@
+{
+  "kind": "EXACT_RECOVERED_LOCK_DELTA_AUDIT",
+  "baselineCommit": "c04a8da9468f7d443bd27d73a08c0bd7ee0e9d20",
+  "addedLocalPackage": "chess-coach-gpu-owner",
+  "addedRegistryPackage": "cubek-fft@0.3.1",
+  "changedDependencyLists": {
+    "burn-linalg": [
+      "burn-cubecl"
+    ],
+    "burn-signal": [
+      "burn-cubecl"
+    ],
+    "burn-vision": [
+      "burn-cubecl",
+      "cubecl"
+    ],
+    "cubek": [
+      "cubek-fft"
+    ]
+  },
+  "allExistingVersionsAndChecksumsUnchanged": true,
+  "allOtherPackageBlocksUnchanged": true,
+  "lockSha256": "b2852cbabb1fcedc29146c33a9323eb04401005afa4cb3c8e5de89e16ae66555",
+  "trainingReady": false
+}

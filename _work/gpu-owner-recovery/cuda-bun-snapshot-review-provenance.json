@@ -1,0 +1,61 @@
+{
+  "version": "chess-coach.cuda-bun-snapshot-source-review-provenance.v1",
+  "scope": "ONE_FIXED_BYTE_IDENTICAL_PRIVATE_BUN_CAPTURE_ONLY",
+  "reviewRecord": "_work/gpu-owner-recovery/cuda-bun-snapshot-reviewed.json",
+  "reviewRecordSha256": "780a907710d5a934c5f02414db2bedfb91d56d7cc97fd6badf6015bfcf8f58ce",
+  "requestSha256": "e4a2dca4aa4f0cd9b463f40400912299f16765339723f1a6b371cb11da03150a",
+  "sourceManifestSha256": "0661a9478a2942281a101983040fa50188db1601bcc6246b850ccd9e34b376b9",
+  "reviews": [
+    {
+      "role": "security-reviewer",
+      "sessionId": "ses_e4439a2c0ffeTD6G2gSAPqPEyM",
+      "verdict": "READY_FOR_SINGLE_PINNED_BUN_CAPTURE",
+      "scope": "SOURCE_ONLY_CONDITIONAL_ON_OUTSIDE_PIN_AND_30_SECOND_ENVELOPE",
+      "remainingFindings": 0
+    },
+    {
+      "role": "adversarial-reviewer",
+      "sessionId": "ses_e4439a2b6ffeD4aw7uSogI27Fg",
+      "verdict": "READY_FOR_SINGLE_PINNED_BUN_CAPTURE",
+      "scope": "SOURCE_ONLY_CONDITIONAL_ON_OUTSIDE_PIN_AND_30_SECOND_ENVELOPE",
+      "remainingFindings": 0
+    },
+    {
+      "role": "devops",
+      "sessionId": "ses_e44a58336ffePB4MyFlISk7KQC",
+      "verdict": "READY_FOR_SINGLE_PINNED_BUN_CAPTURE",
+      "scope": "SOURCE_ONLY_CONDITIONAL_ON_OUTSIDE_PIN_AND_30_SECOND_ENVELOPE",
+      "remainingFindings": 0
+    }
+  ],
+  "staticReceipts": [
+    "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-static-parent-2/receipt.json",
+    "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-types-parent-1/receipt.json",
+    "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-runner-parent-1/receipt.json",
+    "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-archive-regression-1/receipt.json",
+    "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-acquire-regression-1/receipt.json",
+    "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-isolation-regression-1/receipt.json"
+  ],
+  "staticTests": {
+    "tests": 32,
+    "assertions": 717
+  },
+  "runnerTests": {
+    "tests": 16,
+    "assertions": 278
+  },
+  "types": "PASS",
+  "sourceCount": 18,
+  "predecessorProofCount": 69,
+  "preservedParallelSourceCheckFailure": "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-static-parent-1/receipt.json",
+  "oneOutsideDeadlineMs": 30000,
+  "firstActualFailureStopsSequence": true,
+  "actualCapturePerformed": false,
+  "privateSnapshotExecuted": false,
+  "outerBootstrapTrustRetained": true,
+  "buildIsolationQualified": false,
+  "custodyQualified": false,
+  "llvmCodeExecuted": false,
+  "cudaCompilationEstablished": false,
+  "trainingReady": false
+}

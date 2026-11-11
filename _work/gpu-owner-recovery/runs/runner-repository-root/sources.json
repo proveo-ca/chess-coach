@@ -1,0 +1,30 @@
+[
+  {
+    "path": "Cargo.lock",
+    "sha256": "da638b7f420330cf304d01c62971260b637a86802ac3b5807ee59634a9e83008"
+  },
+  {
+    "path": "Cargo.toml",
+    "sha256": "73a72c20a8122c096b310fd6a0aa7d6bd185e6cdfcc16d4b7dbf23883aee1936"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.test.ts",
+    "sha256": "6ce4f65241f6df349386e5452bc543418ed2ebb5badd289d1ce953592ef13eec"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.ts",
+    "sha256": "f531b0d852b7d91c22aaf96a0ed9b032595960ea70d1109f5159ff476d1b87ff"
+  },
+  {
+    "path": "packages/runtime/src/fixed-attempt.ts",
+    "sha256": "6c79beca6c46dc9f78027b806a3c55a0e7adcd4daec99910fdcc07603074a897"
+  },
+  {
+    "path": "packages/runtime/src/match-session.ts",
+    "sha256": "a233ef60d84f8b2e14cc2fdcdabcaebc146a64e98f6624d2ffc3eb9a641ac880"
+  },
+  {
+    "path": "packages/runtime/src/training-coordinator.ts",
+    "sha256": "dc12df7eaa661d02006304f8a1df5b31e168d262f876fb3cd2ffe66c05faeb59"
+  }
+]

@@ -1,0 +1,26 @@
+{
+  "version": "chess-coach.qualification-prepared-reuse.v1",
+  "status": "PASS_UNCHANGED_PREPARED_BYTES_AND_CURRENT_PUBLISHER",
+  "originalPreparation": "_work/gpu-owner-recovery/runs/host-feasibility-inputs-1/preparation.json",
+  "originalPreparationSha256": "fd5eaf5e9e24440e75d7e26f05b43545a1f7c9069e61c755b6afe30ee14903e3",
+  "originalSourceGate": {
+    "path": "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-3/receipt.json",
+    "sha256": "71eacd85ecbcb69752f8814181e975eb92d7b7b5432fa921c388305eae9caaa5"
+  },
+  "originalFailure": "_work/gpu-owner-recovery/runs/host-feasibility-inputs-1/publication.json",
+  "originalFailureSha256": "75457e6a549719a98db43cf563315e98e71aac3bb62fc37153f5a0ef0db76015",
+  "currentSourceGate": {
+    "path": "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-5/receipt.json",
+    "sha256": "078270440ee5994c9de26c205451cd2582dd81e2fccd44c55261ab905ac03eb8"
+  },
+  "bundle": {
+    "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-feasibility-inputs-1/host-feasibility-inputs-1.tar.gz",
+    "bytes": 140694281,
+    "sha256": "9001bfeb88ce5433138d5f0fd23b3c7ab0590cc0bd47900cc1c0a1d6923c65f7"
+  },
+  "contextManifestSha256": "64e8c6f2ea895fb8fac1821d48fc5b39a93122e8fdb5f35c4f8fbcd6494c7838",
+  "nativeInputs": 65,
+  "downloadCopyOrRepackPerformed": false,
+  "compilationPerformed": false,
+  "trainingReady": false
+}

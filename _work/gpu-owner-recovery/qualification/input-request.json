@@ -1,0 +1,38 @@
+{
+  "version": "chess-coach.gpu-qualification-input-inventory-request.v1",
+  "status": "APPROVED_ONE_CODING_METADATA_INVENTORY_AND_OPERATOR_HOST_BUILDER_PACKET",
+  "authorizationSource": "EXECUTOR_SELECTED_INVENTORY_INPUTS_RECOMMENDED",
+  "llvm": {
+    "prefix": "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4",
+    "maximumInvocations": 1,
+    "maximumEntries": 20000,
+    "maximumRetainedOutputBytes": 10485760,
+    "metadataStreamLimitBytes": 4128768,
+    "deadlineMs": 60000,
+    "payloadReadsAuthorized": false,
+    "llvmExecutionAuthorized": false,
+    "nestedSymlinkFollowingAuthorized": false,
+    "prefixCopyOrStagingAuthorized": false
+  },
+  "operatorHost": {
+    "image": "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+    "maximumPullInvocations": 1,
+    "pullDeadlineSeconds": 600,
+    "maximumContainers": 1,
+    "combinedImageAndContainerInspectionDeadlineSeconds": 60,
+    "containerCpus": 1,
+    "containerMemoryBytes": 1073741824,
+    "maximumCleanupInvocations": 1,
+    "cleanupDeadlineSeconds": 30,
+    "script": "_work/gpu-owner-recovery/qualification/inspect-builder.fish",
+    "evidenceDirectory": "_work/gpu-owner-recovery/runs/host-builder-inputs-1",
+    "agentMayExecuteHostPacket": false
+  },
+  "automaticRetryAuthorized": false,
+  "packageInstallationAuthorized": false,
+  "copyingOrStagingAuthorized": false,
+  "compilationAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "trainingAuthorized": false,
+  "haltedArchivePipelineRenewed": false
+}

@@ -1,0 +1,33 @@
+{
+  "version": "chess-coach.gpu-qualification-source-review.v1",
+  "status": "ACCEPTED_REVIEWED_SOURCE_ONLY",
+  "sourceReceipt": "_work/gpu-owner-recovery/runs/gpu-qualification-source-2/receipt.json",
+  "sourceManifestSha256": "48d4c9705a02d775d6f58a3bce58346e34a8f43e58e604dcdbcd0de5dda72f3b",
+  "adversarial": {
+    "session": "ses_e3dde36f7ffe7zUOt5TLO5go8p",
+    "verdict": "READY",
+    "resolvedFindings": [
+      "HIGH_APPROVAL_RUN_ID_REPLAY",
+      "MEDIUM_ATTEMPT_CAPTURE",
+      "MEDIUM_TERMINAL_SOURCE_CHECK"
+    ]
+  },
+  "security": {
+    "session": "ses_e3dde36f6ffeV2dAqWyTQ89u5u",
+    "verdict": "READY_SOURCE_ONLY"
+  },
+  "backend": {
+    "session": "ses_e3df78573ffeXo04nE7v4wNCrB",
+    "verdict": "NO_FUNCTIONAL_FINDINGS"
+  },
+  "devops": {
+    "session": "ses_e3ec46b44ffe7CbnV5rwv23shT",
+    "verdict": "READY_SOURCE_ONLY",
+    "lowBudgetScopeClarified": true
+  },
+  "compilationQualified": false,
+  "currentCpuRegressionQualified": false,
+  "gpuQualified": false,
+  "trainingReady": false,
+  "furtherOperationsAuthorized": false
+}

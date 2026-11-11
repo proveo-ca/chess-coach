@@ -1,0 +1,28 @@
+{
+  "status": "FROZEN_PUBLICATION_IDENTITY_OUTSIDE_CANDIDATE",
+  "envelope": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-envelope.json",
+    "bytes": 119233,
+    "sha256": "35cb23adc3c8002d776c84cd3155f241251a5f47af3ec833229a49f5ab0b7e67"
+  },
+  "members": 302,
+  "payload": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-payload-2.json",
+    "sha256": "94161f2a3b8b08b5f242e7a670c112c7cb5ec8894502479af339d18694882007",
+    "mode": "100644"
+  },
+  "check": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-check-2.json",
+    "sha256": "e0f4566d6db14bce0b8e3b3ec8a43cdab4a315fb4008c9ad81e1f0c056e9d32f",
+    "mode": "100644"
+  },
+  "review": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-review-2.json",
+    "sha256": "25f3b6c8ea51942cb864960b6ddce402039e6e6df766d2bec92d0591f8253745",
+    "mode": "100644"
+  },
+  "normalCommitInvocations": 0,
+  "httpsPushInvocations": 0,
+  "hostAllowanceNotRenewed": true,
+  "trainingReady": false
+}

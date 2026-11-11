@@ -4,13 +4,25 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  bun-types>@types/node: 26.6.6
+
 importers:
 
   .:
     devDependencies:
+      '@types/bun':
+        specifier: 1.4.0
+        version: 1.4.0
+      '@types/node':
+        specifier: 26.6.6
+        version: 26.6.6
       nx:
         specifier: ^21.6.11
         version: 21.6.11
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
 
   apps/chess:
     dependencies:
@@ -230,7 +242,42 @@ importers:
 
   packages/client-platform: {}
 
+  packages/contracts:
+    dependencies:
+      '@chess-coach/game-core':
+        specifier: workspace:*
+        version: link:../game-core
+      zod:
+        specifier: 4.6.7
+        version: 4.6.7
+
   packages/engine-core: {}
+
+  packages/game-core: {}
+
+  packages/policy:
+    dependencies:
+      '@chess-coach/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+      '@chess-coach/game-core':
+        specifier: workspace:*
+        version: link:../game-core
+
+  packages/runtime:
+    dependencies:
+      '@chess-coach/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+      '@chess-coach/game-core':
+        specifier: workspace:*
+        version: link:../game-core
+      '@chess-coach/policy':
+        specifier: workspace:*
+        version: link:../policy
+      zod:
+        specifier: 4.6.7
+        version: 4.6.7
 
   packages/starchess-arena:
     dependencies:
@@ -265,7 +312,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^4.1.5
-        version: 4.1.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(vite@7.3.6(@types/node@24.13.3)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))
+        version: 4.1.10(@types/node@26.6.6)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(vite@7.3.6(@types/node@26.6.6)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))
 
   packages/ui/web:
     dependencies:
@@ -2329,6 +2376,9 @@ packages:
   '@types/bun@1.3.14':
     resolution: {integrity: sha512-h1hFqFVcvAvD9j9K7ZW7vd82aSA+rTdznZa+5bwvCwqSB1jmmfLcbIWhOLx1/+boy/xmjgCs/OMUL8hRJSmnPw==}
 
+  '@types/bun@1.4.0':
+    resolution: {integrity: sha512-K+lZULY23vRgK/CfTjFIV+tyifaNdSMlPh9j+6mQ/cLfpOznLyAuzgV/JQysyECpkBQLVMSyvjlr2fBUSA9wFQ==}
+
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
 
@@ -2355,6 +2405,9 @@ packages:
 
   '@types/node@24.13.3':
     resolution: {integrity: sha512-Dh8vAsV36ig5wa9OX4pXvMc9D3Veibfw2wix0CUwYODLD8nkj9UsLjASr49nPg+2eKzxhBV+v7L8pXvT4e639Q==}
+
+  '@types/node@26.6.6':
+    resolution: {integrity: sha512-MzQj+8Kx3XI40OmUAE6Qoh58ZMNstNNMwn2nfd3qWsfe7nDNSqJNzes4njhz6AHwrSHOffSLwXU6yb474Q4aog==}
 
   '@types/qrcode@1.5.6':
     resolution: {integrity: sha512-te7NQcV2BOvdj2b1hCAHzAoMNuj65kNBMz0KBaxM6c3VGBOhU0dURQKOtH8CFNI/dsKkwlv32p26qYQTWoB5bw==}
@@ -2679,6 +2732,9 @@ packages:
 
   bun-types@1.3.14:
     resolution: {integrity: sha512-4N0ig0fEomHt5R0KCFWjovxow98rIoRwKolrYdCcknNwMekCXRnWEUvgu5soYV8QXtVsrUD8B95MBOZGPvr6KQ==}
+
+  bun-types@1.4.0:
+    resolution: {integrity: sha512-iIKw23BspnQQYd3prITOBxeUsxBHnwzX6YJfGMuNOZzeNcMmVqzIIVGRm1l69ogaPQmb4wB6BN8mA5bE9YuC5Q==}
 
   bundle-name@4.1.0:
     resolution: {integrity: sha512-tjwM5exMg6BGRI+kNmTntNsvdZS1X8BFYS6tnJ2hdH0kVxM6/eVZ2xy+FqStSWvYmtfFMDLIxurorHwDKfDz5Q==}
@@ -4294,6 +4350,9 @@ packages:
   undici-types@7.18.2:
     resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
 
+  undici-types@8.9.0:
+    resolution: {integrity: sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==}
+
   undici@7.28.0:
     resolution: {integrity: sha512-cRZYrTDwWznlnRiPjggAGxZXanty6M8RV1ff8Wm4LWXBp7/IG8v5DnOm74DtUBp9OONpK75YlPnIjQqX0dBDtA==}
     engines: {node: '>=20.18.1'}
@@ -4684,6 +4743,9 @@ packages:
 
   youch@4.1.0-beta.10:
     resolution: {integrity: sha512-rLfVLB4FgQneDr0dv1oddCVZmKjcJ6yX6mS4pU82Mq/Dt9a3cLZQ62pDBL4AUO+uVrCvtWz3ZFUL2HFAFJ/BXQ==}
+
+  zod@4.6.7:
+    resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
 snapshots:
 
@@ -6407,6 +6469,10 @@ snapshots:
     dependencies:
       bun-types: 1.3.14
 
+  '@types/bun@1.4.0':
+    dependencies:
+      bun-types: 1.4.0
+
   '@types/chai@5.2.3':
     dependencies:
       '@types/deep-eql': 4.0.2
@@ -6433,6 +6499,10 @@ snapshots:
   '@types/node@24.13.3':
     dependencies:
       undici-types: 7.18.2
+
+  '@types/node@26.6.6':
+    dependencies:
+      undici-types: 8.9.0
 
   '@types/qrcode@1.5.6':
     dependencies:
@@ -6525,6 +6595,14 @@ snapshots:
       magic-string: 0.30.21
     optionalDependencies:
       vite: 7.3.6(@types/node@24.13.3)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0)
+
+  '@vitest/mocker@4.1.10(vite@7.3.6(@types/node@26.6.6)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))':
+    dependencies:
+      '@vitest/spy': 4.1.10
+      estree-walker: 3.0.3
+      magic-string: 0.30.21
+    optionalDependencies:
+      vite: 7.3.6(@types/node@26.6.6)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0)
 
   '@vitest/pretty-format@3.2.4':
     dependencies:
@@ -6784,7 +6862,11 @@ snapshots:
 
   bun-types@1.3.14:
     dependencies:
-      '@types/node': 24.13.3
+      '@types/node': 26.6.6
+
+  bun-types@1.4.0:
+    dependencies:
+      '@types/node': 26.6.6
 
   bundle-name@4.1.0:
     dependencies:
@@ -8655,6 +8737,8 @@ snapshots:
 
   undici-types@7.18.2: {}
 
+  undici-types@8.9.0: {}
+
   undici@7.28.0: {}
 
   undici@7.29.0: {}
@@ -8768,6 +8852,21 @@ snapshots:
       tsx: 4.23.12
       yaml: 2.9.0
 
+  vite@7.3.6(@types/node@26.6.6)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0):
+    dependencies:
+      esbuild: 0.28.1
+      fdir: 6.5.0(picomatch@4.0.5)
+      picomatch: 4.0.5
+      postcss: 8.5.25
+      rollup: 4.62.4
+      tinyglobby: 0.2.17
+    optionalDependencies:
+      '@types/node': 26.6.6
+      fsevents: 2.3.3
+      terser: 5.49.2
+      tsx: 4.23.12
+      yaml: 2.9.0
+
   vitefu@1.1.3(vite@7.3.6(@types/node@24.13.3)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0)):
     optionalDependencies:
       vite: 7.3.6(@types/node@24.13.3)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0)
@@ -8825,6 +8924,35 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.13.3
+      '@vitest/coverage-v8': 4.1.10(vitest@4.1.10)
+      jsdom: 28.1.0
+    transitivePeerDependencies:
+      - msw
+
+  vitest@4.1.10(@types/node@26.6.6)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(vite@7.3.6(@types/node@26.6.6)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0)):
+    dependencies:
+      '@vitest/expect': 4.1.10
+      '@vitest/mocker': 4.1.10(vite@7.3.6(@types/node@26.6.6)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))
+      '@vitest/pretty-format': 4.1.10
+      '@vitest/runner': 4.1.10
+      '@vitest/snapshot': 4.1.10
+      '@vitest/spy': 4.1.10
+      '@vitest/utils': 4.1.10
+      es-module-lexer: 2.3.1
+      expect-type: 1.4.0
+      magic-string: 0.30.21
+      obug: 2.1.4
+      pathe: 2.0.3
+      picomatch: 4.0.5
+      std-env: 4.2.0
+      tinybench: 2.9.0
+      tinyexec: 1.3.0
+      tinyglobby: 0.2.17
+      tinyrainbow: 3.1.1
+      vite: 7.3.6(@types/node@26.6.6)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0)
+      why-is-node-running: 2.3.0
+    optionalDependencies:
+      '@types/node': 26.6.6
       '@vitest/coverage-v8': 4.1.10(vitest@4.1.10)
       jsdom: 28.1.0
     transitivePeerDependencies:
@@ -9124,3 +9252,5 @@ snapshots:
       '@speed-highlight/core': 1.2.23
       cookie: 1.1.1
       youch-core: 0.3.3
+
+  zod@4.6.7: {}

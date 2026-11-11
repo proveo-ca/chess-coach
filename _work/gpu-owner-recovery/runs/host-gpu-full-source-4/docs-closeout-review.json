@@ -1,0 +1,14 @@
+{
+  "status": "READY_CURRENT_SOURCE_FOUR_SPEC_PROJECTION_AND_CLOSEOUT_ONLY",
+  "session": "ses_e340bb15bffe86c4P5emUBuYUL",
+  "verdict": "READY_TO_MERGE_YES",
+  "findings": [],
+  "reviewedCloseout": {"path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/closeout-1.json", "sha256": "2ffb628d2f858d85480ad1a52db2ecfa55577ea11a7e79c5e4169238801f8673"},
+  "reviewedVerification": {"path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/closeout-verification-1.json", "sha256": "08dc73eb985c7f132d9e4e331c30800a70f3d123992d6e8e333c2b0a0ba402fb"},
+  "scope": "TWELVE_SPEC_DOCS_AND_ORDERED_INDEX_PROJECTION_PLUS_PERSISTED_FRESH_CLOSEOUT_RECORDS",
+  "verification": "Read-only review of persisted verification; no reruns.",
+  "hostExecutionAuthorized": false,
+  "deliveryOrPublicationAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

@@ -1,0 +1,130 @@
+[
+  {
+    "path": "Cargo.lock",
+    "sha256": "4d8f835ca9b97347e16eff2d1f91939514fa7930578aa6976bd826a2907a97ff"
+  },
+  {
+    "path": "Cargo.toml",
+    "sha256": "553b6e3cf5a8d30f53f19bf6623332d4d6c5df69099d5f2a51ae9260f07b74bc"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.test.ts",
+    "sha256": "6ce4f65241f6df349386e5452bc543418ed2ebb5badd289d1ce953592ef13eec"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.ts",
+    "sha256": "14d209b87d40a85c4dee830310b8fe9028b7dd7bbc2099ca788cba445c38931e"
+  },
+  {
+    "path": "crates/gpu-owner/Cargo.toml",
+    "sha256": "ceb98a71e3a5c16c1c3f6d5035843b8441995339b5d49f62340b395540b2c3aa"
+  },
+  {
+    "path": "crates/gpu-owner/src/docker.rs",
+    "sha256": "689d8f75e3cb67d4841a419e0ac755a69e4bc110159ed5ae4643f693750317c1"
+  },
+  {
+    "path": "crates/gpu-owner/src/evidence.rs",
+    "sha256": "a34cf548744ea451abb38e288fe0a4c632b0aab0699fb31f53708ca83e1601fa"
+  },
+  {
+    "path": "crates/gpu-owner/src/input.rs",
+    "sha256": "5ffe57f4dec561f72c7a153768cfd4778e953c210a804613e6ad28f0f12b85b7"
+  },
+  {
+    "path": "crates/gpu-owner/src/json.rs",
+    "sha256": "ed57f5e5b9f5b3b1516311c9be49c7492bf3a4089c574e87bed215e7419a61f1"
+  },
+  {
+    "path": "crates/gpu-owner/src/lib.rs",
+    "sha256": "ccb3abed8e7b5910c3e16f8e87c2757b224bb267c68c58ae956d42848c593a12"
+  },
+  {
+    "path": "crates/gpu-owner/src/linux.rs",
+    "sha256": "6c4b72448b1a7fc0e057c3e9ae11d8915f86099158c1b948d8bba1ff1a977808"
+  },
+  {
+    "path": "crates/gpu-owner/src/main.rs",
+    "sha256": "5134cf06bcd693a56c01cd00931c5127d3efda6f1ad8db4953c231334f53cc03"
+  },
+  {
+    "path": "crates/gpu-owner/src/policy.rs",
+    "sha256": "69db6ae63bea90ec6b73b2a6aacb4b8269a2cf8bf9f43fc1e97555a9bf7bf6e7"
+  },
+  {
+    "path": "crates/gpu-owner/src/process.rs",
+    "sha256": "c4b3541c3b137361204345a0822e7c573fb5ffd3d93ad613ba585a0f50450684"
+  },
+  {
+    "path": "crates/gpu-owner/src/telemetry.rs",
+    "sha256": "9c51cd1ef4b073773dc92a086a8a3fe9900a283c7364bf6cd984cf7ead6df737"
+  },
+  {
+    "path": "packages/contracts/src/gpu-job.ts",
+    "sha256": "cfb56f04dc3c3d438fdeae082987eb70fec59ba27fe6ea34a8ecad430af3bcb3"
+  },
+  {
+    "path": "packages/contracts/tests/gpu-job.test.ts",
+    "sha256": "68fd07ecbcbe863a785f4fd7fcc5182ec8fb29dbaeaf69166e045c350f6f8bbf"
+  },
+  {
+    "path": "packages/runtime/src/fixed-attempt.ts",
+    "sha256": "4ba0f6dc4bd0bf75c782e80b5ed3e775acf69c81cb5637626954f3a042c72fbb"
+  },
+  {
+    "path": "packages/runtime/src/gpu-job.ts",
+    "sha256": "edf7838bafb256e0ba380c234ea255e642220ed6338d95fb41416cbe9ce7f876"
+  },
+  {
+    "path": "packages/runtime/src/match-session.ts",
+    "sha256": "6dbcd36fe4fda9aa6495617a9ee3ea5558e44bfc6ec9d2ecd7986852db2b051f"
+  },
+  {
+    "path": "packages/runtime/src/training-coordinator.ts",
+    "sha256": "4d3b9abb4b3f87c306ccc532c82fa64041cc730a72119f1d451d5cbbc3758ae4"
+  },
+  {
+    "path": "packages/runtime/tests/fixed-attempt-gpu-owner.test.ts",
+    "sha256": "af07a0e977dc984b5102e25ebd9da9bc97e24b561c91297a48bb41c180ee84c7"
+  },
+  {
+    "path": "packages/runtime/tests/fixtures/gpu-owner/driver.ts",
+    "sha256": "7b41d419ad9e526f3d2903deb9d24f6c35f40a8630e7ef71f2bd21f9b411492d"
+  },
+  {
+    "path": "packages/runtime/tests/fixtures/gpu-owner/learner.ts",
+    "sha256": "ae99ebc0cb11d6671d1c19ad9ae2ede6a4ef06b4066f477464927546724726ab"
+  },
+  {
+    "path": "packages/runtime/tests/fixtures/gpu-owner/match.ts",
+    "sha256": "af6e778913caa6536f0a1ceb4be9a19a4439f149aa712b29d4de759d358519a8"
+  },
+  {
+    "path": "packages/runtime/tests/fixtures/gpu-owner/register.ts",
+    "sha256": "91bc489906920e2efce5ad97eac703876042745afdb8f69e39a44a63e6cd6aec"
+  },
+  {
+    "path": "packages/runtime/tests/fixtures/gpu-owner/support.ts",
+    "sha256": "3ce935ea675c7d2fca9c8a17d79ba907c66add0d992b7c3ae9df323cf5d5c905"
+  },
+  {
+    "path": "packages/runtime/tests/gpu-job.test.ts",
+    "sha256": "fb3260d59348844cb6334d53c67aa7d6bbca07f2fb96a37ccae3f8a328b82227"
+  },
+  {
+    "path": "packages/runtime/tests/gpu-policy-conformance.test.ts",
+    "sha256": "0daa0e71d814b4df27aaba67daae6ca900939d6e2e0ecec42f5262019c45ef64"
+  },
+  {
+    "path": "packages/runtime/tests/gpu-policy.test.ts",
+    "sha256": "6e37238e43bc356b32a3a6af0f96003fc4556b2cce678657815b74f5577b6cfd"
+  },
+  {
+    "path": "tooling/runtime/fixtures/gpu-policy-traces.json",
+    "sha256": "f246e067c59f82830d8bd41bfcc4cc60ac5ceb0374d85b8b43370eab8f192d51"
+  },
+  {
+    "path": "tooling/runtime/gpu-policy.ts",
+    "sha256": "874440c3d42a0597ffd985b71236bc31ace4aff1cf1d221932f2a1910fef1252"
+  }
+]

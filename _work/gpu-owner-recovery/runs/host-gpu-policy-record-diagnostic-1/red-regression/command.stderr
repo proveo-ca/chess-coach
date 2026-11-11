@@ -1,0 +1,24 @@
+
+packages/runtime/tests/gpu-policy-record.test.ts:
+(pass) record coercion rule accepts only the single borrowed-slice replacement [0.38ms]
+(pass) record coercion rule rejects an unrelated write or duplicate write sites [0.08ms]
+20 |   expect(() => assertRecordSliceCorrection(duplicate, duplicate.replace(beforeWrite, afterWrite))).toThrow();
+21 | });
+22 | 
+23 | test("actual GPU subprocess source writes the existing serialized record as a borrowed slice", async () => {
+24 |   const source = await readFile(new URL("../../../" + nativePath, import.meta.url), "utf8");
+25 |   expect(source.split(afterWrite)).toHaveLength(2);
+                                        ^
+error: expect(received).toHaveLength(expected)
+
+Expected length: 2
+Received length: 1
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/packages/runtime/tests/gpu-policy-record.test.ts:25:36)
+(fail) actual GPU subprocess source writes the existing serialized record as a borrowed slice [0.84ms]
+(pass) new native generation retains all 65 members and changes only the policy GPU fixture [1.29ms]
+
+ 3 pass
+ 1 fail
+ 14 expect() calls
+Ran 4 tests across 1 file. [12.00ms]

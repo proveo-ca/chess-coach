@@ -1,0 +1,49 @@
+# SPEC: _spec/gpu-build.puml
+FROM docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb AS native
+ENV CARGO_HOME=/capture/cargo-home CARGO_BUILD_JOBS=2 RAYON_NUM_THREADS=2
+ENV XDG_DATA_HOME=/opt/tracel-data
+ARG CUDARC_CUDA_VERSION
+ENV CUDARC_CUDA_VERSION=${CUDARC_CUDA_VERSION}
+WORKDIR /build/native
+COPY gpu-build/rootfs/ /
+COPY gpu-build/llvm/ /opt/tracel-data/tracel/tracel-llvm-23.1.0-4/
+COPY cargo-home/ /capture/cargo-home/
+COPY current-native/ /build/native/
+RUN --network=none case "$CUDARC_CUDA_VERSION" in \
+      13040|13030|13020|13010|13000|12090|12080|12060|12050|12040|12030|12020|12010|12000|11080|11070|11060|11050|11040) ;; \
+      *) echo "An explicit supported CUDARC_CUDA_VERSION is required" >&2; exit 1 ;; \
+    esac \
+    && test -x /opt/tracel-data/tracel/tracel-llvm-23.1.0-4/bin/llvm-config \
+    && test "$(/opt/tracel-data/tracel/tracel-llvm-23.1.0-4/bin/llvm-config --version)" = "23.1.0" \
+    && cargo build --release --target x86_64-unknown-linux-gnu --locked --offline --jobs 2 -p chess-coach-policy-io --features gpu-prepared-llvm --bin policy-score --bin policy-channel --bin policy-initialize
+
+FROM docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038 AS javascript
+WORKDIR /build/current
+COPY current-runtime/ /build/current/
+COPY bun-cache/ /capture/bun-cache/
+RUN --network=none bun --no-env-file install --frozen-lockfile --production --ignore-scripts --cache-dir=/capture/bun-cache
+COPY reference-input/ /build/reference-input/
+COPY builder-tools/ /build/builder-tools/
+RUN --network=none bun --no-env-file --no-install /build/builder-tools/build-reference.ts /build/reference-input /build/reference-output
+
+FROM docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038
+ENV CUDA_PATH=/usr/local/cuda
+COPY gpu-runtime/rootfs/ /
+RUN --network=none test -s /usr/local/cuda/nvvm/libdevice/libdevice.10.bc
+WORKDIR /app
+COPY --from=javascript /build/current/ /app/
+COPY --from=native /build/native/target/x86_64-unknown-linux-gnu/release/policy-score /usr/local/bin/policy-score
+COPY --from=native /build/native/target/x86_64-unknown-linux-gnu/release/policy-channel /usr/local/bin/policy-channel
+COPY --from=native /build/native/target/x86_64-unknown-linux-gnu/release/policy-initialize /usr/local/bin/policy-initialize
+COPY --from=javascript /build/reference-output/packages/starchess-core/src/index.ts /app/reference/packages/starchess-core/src/index.ts
+COPY --from=javascript /build/reference-output/packages/starchess-arena/src/challenge/r3Session.ts /app/reference/packages/starchess-arena/src/challenge/r3Session.ts
+COPY --from=javascript /build/reference-output/packages/starchess-arena/src/challenge/admission.ts /app/reference/packages/starchess-arena/src/challenge/admission.ts
+COPY --from=javascript /build/reference-output/packages/starchess-arena/src/run/bank.ts /app/reference/packages/starchess-arena/src/run/bank.ts
+COPY --from=javascript /build/reference-output/packages/starchess-arena/src/players/strategic.ts /app/reference/packages/starchess-arena/src/players/strategic.ts
+COPY --from=javascript /build/reference-output/packages/starchess-arena/src/challenge/corpus.ts /app/reference/packages/starchess-arena/src/challenge/corpus.ts
+COPY --from=javascript /build/reference-input/_spec/corpora/ml-adjutant-corpus.manifest.json /app/reference/_spec/corpora/ml-adjutant-corpus.manifest.json
+COPY --from=javascript /build/reference-input/starchess-match-history-20260929-203446.json /app/reference/starchess-match-history-20260929-203446.json
+COPY --chmod=0555 init/tini-static-amd64 /sbin/chess-init
+USER 1000:1000
+ENTRYPOINT ["/sbin/chess-init", "-g", "--"]
+CMD ["/usr/local/bin/bun", "--no-env-file", "--no-install", "/app/packages/runtime/src/job.ts"]

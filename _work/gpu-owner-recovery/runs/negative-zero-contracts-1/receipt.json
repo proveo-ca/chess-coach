@@ -1,0 +1,36 @@
+{
+  "version": "chess-coach.negative-zero-contracts.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "packages/contracts/tests/gpu-job.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 1839,
+  "sourceCount": 87,
+  "sourceManifestSha256": "c0c77ce74c8fb2d6779d84fc6c149ee34e8bf4bb69839d95b08af90950901bc9",
+  "sourceChanged": false,
+  "streams": [
+    {
+      "stream": "stdout",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/negative-zero-contracts-1/command.stdout",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "stream": "stderr",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/negative-zero-contracts-1/command.stderr",
+      "byteLength": 1839,
+      "sha256": "dfbbe81f839300da25b5181b626062fa1c14bbf5b0b5bfa43ce96416320684fe"
+    }
+  ],
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

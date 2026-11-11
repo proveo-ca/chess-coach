@@ -1,0 +1,21 @@
+{
+  "version": "chess-coach.gpu-runtime-lookup-host-record-local.v1",
+  "status": "PASS",
+  "scope": "NORMALIZED_RECORD_AND_EXISTING_SOURCE_HASH_INTEGRITY_ONLY",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-runtime-lookup-host-1/operator-observation.json",
+      "sha256": "8044247693ec2673aebf417f7b6799c63a6d5f146ecec8418d60cf7a22db6159"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-runtime-lookup-host-1/operator-paste.txt",
+      "sha256": "e41dd52a7b84694163782d2ac1705f17221bbcb33ec2c06b8c6338d9b6ae7940"
+    }
+  ],
+  "existingLookupSourceHashesChecked": 6,
+  "existingFunctionalSourceHashesChecked": 273,
+  "testsRerun": false,
+  "hostCommandsExecutedByAgent": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

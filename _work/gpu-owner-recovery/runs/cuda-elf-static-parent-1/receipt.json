@@ -1,0 +1,53 @@
+{
+  "version": "chess-coach.cuda-elf-module-verification.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./_work/gpu-owner-recovery/cuda-elf.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 4830,
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/cuda-elf.ts",
+      "sha256": "7abe293976287a0df2aabfdd5f55fc286704defd04e11e73af2bccae24dfa61d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-elf.test.ts",
+      "sha256": "cf18659d651be571f648741f7f5e1560dabb4cd1811e4a1b5048d1c3a34b0eda"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/verify.ts",
+      "sha256": "00205057b14e144b22e4524ecf866766ace4bb21ae2c7d4bdc146a5dda5e2fd9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+      "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+    }
+  ],
+  "sourceChanged": false,
+  "streams": [
+    {
+      "stream": "stdout",
+      "path": "_work/gpu-owner-recovery/runs/cuda-elf-static-parent-1/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "stream": "stderr",
+      "path": "_work/gpu-owner-recovery/runs/cuda-elf-static-parent-1/command.stderr",
+      "bytes": 4830,
+      "sha256": "a4e98cb751399592ce005c6bbf4ed57c0bcadcbdcb6328fda1166a02f5867b64"
+    }
+  ],
+  "scope": "PURE_SYNTHETIC_ELF_MODULE_ONLY_NOT_GLOBAL_TOOL_TYPECHECK",
+  "nativeExecutableInvocations": 0,
+  "decompressionPerformed": false,
+  "llvmCodeExecuted": false,
+  "trainingReady": false
+}

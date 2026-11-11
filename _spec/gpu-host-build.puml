@@ -1,0 +1,257 @@
+@startuml gpu_host_build
+' purpose: consumed build1 and verified policy-record correction, with reported consumed HOST2 native-build PASS owned by the reuse sibling
+' covers: _work/gpu-owner-recovery/qualification/host-build/**
+' covers: _work/gpu-owner-recovery/verify.ts
+' covers: _work/gpu-owner-recovery/command-supervisor.ts
+' covers: tooling/runtime/qualification.ts
+' covers: tooling/runtime/Dockerfile.gpu-qualification
+' covers: _work/gpu-owner-recovery/runs/host-gpu-build-source-1/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-build-source-2/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-build-source-3/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-build-source-4/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-build-source-5/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-build-handoff-1/request.json
+' covers: _work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-policy-record-diagnostic-1/**
+' covers: _work/gpu-owner-recovery/qualification/policy-record-fix/**
+' covers: packages/runtime/tests/gpu-policy-record.test.ts
+' covers: crates/policy-io/tests/gpu.rs
+' covers: _work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-1/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/**
+' covers: _work/gpu-owner-recovery/qualification/host-build-reuse/selection.json
+' covers: _work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/receipt.json
+' status: REPORTED_PAIR_PASS_CONSUMED / feasibilityRemaining:0 / feasibilityInvocationReported:true / publicationStatus:PASS_SOURCE_FOUR_NORMAL_COMMIT_AND_FIXED_HTTPS_PUSH / publicationRemaining:0 / fullSourceStatus:SOURCE_ONLY_PASS / fullSourceCandidate:SOURCE4 / fullSourceReviews:READY_SOURCE4_AND_UNAPPROVED_FULL2_REQUEST_ONLY / fullHostStatus:HOST_ONLY_APPROVED_ONE_UNOBSERVED_DELIVERY_PENDING / fullHostRemaining:1 / fullHostInvocationObserved:false / priorFull1RetryRemaining:0 / full2Decision:APPROVE_HOST_ONLY / fullDeliveryPublicationDecision:PENDING / issuedDocsCloseout:PENDING / build1Remaining:0 / build2Remaining:0 / build2Reported:true / LOCAL_UNCOMMITTED_OBSERVATION_AND_DOCS / trainingReady:false
+' see: _spec/gpu-host-build-reuse.puml
+' see: _spec/gpu-feasibility.puml
+' recorded consistency: _work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/final-records-and-docs-check.json / PASS_NATIVE_BUILD_TWO_REPORTED_RECORDS_AND_DOCS_ONLY / bound PRE_CLOSEOUT_DOCS_GENERATION:10 doc hashes/7 ordered index matches/1 observation owner/307 protected source hashes/10 record input hashes/6 local verification stream hashes. Immutable snapshot, not later wording validation; final review pending. HEAD25bc/scoped spec diff PASS are separate parent observations, not receipt fields.
+' see: _spec/gpu-host-build-inventory.puml
+' see: _spec/gpu-qualification.puml
+' see: _spec/gpu-readiness.md#current-host-native-build
+' see: _spec/gate-closure.md#current-host-native-build
+' see: _spec/gpu-readiness.md#current-policy-record-correction
+' see: _spec/gate-closure.md#current-policy-record-correction
+' method: OWNED_DOCKER_CONTAINER_NATIVE_BUILD_ONLY_NOT_QUALIFICATION_IMAGE_BUILD was explicitly ACCEPTED by the original Build-only selection; the historical topology/staging contract preserves pinned Rust-base+Bun-interpreter/native65 layout and production/qualification Dockerfiles, not remaining authority
+' retained pre-correction source proof: source-5 PASS_HOST_NATIVE_BUILD_SOURCE_ONLY / sourceChanged:false / 283 frozen hashes / 162 tests / 8133 assertions / 3 persisted PURE MOCK lifecycle cases + 37 qualification/280/four typechecks, six PASS stages. This verifies only its frozen generation, NOT the corrected policy-record generation; no real Docker API/CLI compatibility/native/GPU/training or assurance acceptance. Guardian fake-emitter cases cover source logic without actual HOST signals.
+' retained command (bound by the consumed request, not rehashed in this docs pass): _work/gpu-owner-recovery/runs/host-gpu-build-source-5/host-command.fish / 40054 bytes / SHA-256 50123eaff0efebb93f7c03210afd765c0ddb02273c08b7ac63a262e37dcd962e; source-5 record/index/hash snapshot predates this observation projection, not new HOST evidence
+' historical source proof: source-1 FAIL_HOST_NATIVE_BUILD_SOURCE_ONLY from a fragile renderer false-vs-!1 assertion, not HOST failure; source-2 PASS_HOST_NATIVE_BUILD_SOURCE_ONLY/282 hashes/76 tests/4777 assertions/3 pure MOCKED lifecycle e2e + 37 qualification/280/four types is PRE_FUNCTIONAL_REVIEW_FIX history, not proof for current modified source. Neither receipt/source hash/old command scope is rewritten.
+' historical source-3 proof: PASS_HOST_NATIVE_BUILD_SOURCE_ONLY / 282 frozen hashes / 148 tests / 7329 assertions / 3 pure MOCKED lifecycle cases + 37 qualification/280/four types. PRE_FINAL_TWO_REVIEW_CORRECTIONS, not current modified-source proof; retain source-1/source-2/source-3 receipts and failure findings unchanged.
+' historical source-4 proof: FAIL_HOST_NATIVE_BUILD_SOURCE_ONLY / 162 tests / 161 pass + one trailing-whitespace formatting-regex assertion failure. Retain this failed snapshot unchanged; source-5 supplies only its frozen pre-correction acceptance, never rewrite the failed receipt or raw captures.
+' functional review history (Executor-reported): initial DevOps 3 MEDIUM, adversarial 2 HIGH + 4 MEDIUM and security MEDIUM start/stop race concern existing bounded lifecycle/evidence correctness, NOT deferred security/privacy/isolation hardening.
+' historical re-review (Executor-reported, source-3 scope): DevOps all three initial findings resolved/READY; scoped security both races closed/risk low. Adversarial then reported two NEW MEDIUM/NOT READY: watcher removed SIGTERM before outer 4080s TERM during cleanup to 4140s, and operation catch overwrote actual supervisor failure with a wrapper. Preserve that pre-source-5 review history.
+' current reviews: _work/gpu-owner-recovery/runs/host-gpu-build-source-5/review.json records architect acceptance of the ten-operation method, DevOps READY, adversarial all eight prior findings resolved/no new findings/READY, and final security READY_FOR_PROPOSAL_DECISION_ONLY/low/no findings/no additional hardening prerequisite. These source/proposal reviews grant no operation or operational/deferred-assurance PASS; the separate HOST grant is consumed.
+' record checker: host-build/verify-records.ts completed PASS_HOST_NATIVE_BUILD_SOURCE_AND_COMMAND_RECORDS_ONLY; existing source-5/record-check.json records 283 source hashes, 12 verification streams, 12 fixture files across 3 PURE MOCK lifecycle cases, generated-program/exact-command checks and 6 ORDERED diagram/index matches. Source proof SHA-256 c8e1048dcf8640371398ece6cfc0b3f33559ee2d3c21f185d2ff4c85d79983d6. PRE_APPROVAL/PRE_AUTHORITY_METADATA_UPDATE snapshot: source graph excludes docs; not fresh validation of the newly added authority coverage, no checker or source-proof rerun here.
+' pre-approval snapshots: source plan/proof/proposal/review false flags and source-5/host-command-approval.json remain unchanged history. The handoff supplied the historical HOST-only grant; the separate observation consumes it without changing requests/source/proof. No extra HOST metadata or hardening gate.
+' HOST authority: handoff-1/request.json retains APPROVED_ONE_HOST_BUILD_ONLY_INVOCATION_UNCONSUMED_UNOBSERVED/remaining 1/observed:false as an IMMUTABLE ISSUED SNAPSHOT. observation-1 records CONSUMED 1/1/remaining 0/no retry and reported HOST_NATIVE_BUILD_EXIT=1. Its gitPublicationAuthorized:false remains HOST-only history; no coding/native, extraction or renewed publication authority exists.
+' current diagnostic: diagnostic-1/operator-diagnostic.txt faithfully retains USER_PASTED_DIAGNOSTIC_TEXT_NOT_ORIGINAL_HOST_CAPTURE_BYTES. ERROR_RECORDS=1 reports E0277 at crates/policy-io/tests/gpu.rs:345:30: burn::tensor::Bytes lacks AsRef<[u8]> for fs::write(&record_path, &record); compiler suggests &*record. POLICY_DIAGNOSTIC_READ_EXIT was NOT pasted; no original 334214-byte stdout/full capture, independently rehashed HOST bytes or native-build PASS. Accept the provided compiler-text facts without a new custody gate; prior observation-1 cause-unknown metadata stays immutable PRE-DIAGNOSTIC history.
+' correction sequence: architect ses_e36f4b6d9ffeCMclo9ifqwusMu was consulted BEFORE continuation; goals synchronized before the native edit. diagnostic-1/red-regression.json retains expected pre-fix STATIC red (reported 3 pass/1 fail, exit 1). The native line is now EXACTLY fs::write(&record_path, &*record).unwrap(); inside cuda_f64_policy_channel_subprocesses_agree_and_reload: borrow underlying [u8], preserve the record owner/serialized bytes, no clone/reserialization/semantic or Rust-harness-count change. This docs pass applies no source change.
+' CURRENT source-only proof: actual policy-record-fix/verify.ts + correction.ts completed source-2 PASS_POLICY_RECORD_SOURCE_CORRECTION_ONLY / 291 frozen hashes / sourceChanged:false / 8 PASS stages. Bounded read-only Git show at 65febc83b9ab6e043b233f03d390d6b262538118 matches the original prepared native entry and exact whole-file replacement in the named test. Native65 membership unchanged/64 hashes unchanged/ONLY gpu.rs changed; old source-5 other 282 of 283 inputs equal. Recorded checks: 41 tests/296 assertions (4 new record +37 qualification), 162 tests/8133 assertions pure-mock lifecycle/unit with 3 persisted MOCK e2e, 5 TypeScript checks. No native/Rust/LLVM/CUDA/Docker/GPU or project-test-binary execution.
+' generation: actual source-2/native-source-manifest.json SHA-256 7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec, exactly 65 inputs/changedPaths:[crates/policy-io/tests/gpu.rs]. Original 9141aaefa2fab3f3a812aeabec4bdfdd818415333f9e5cba6d5ef822dac90863 manifests/received contexts/requests/source-1..5/host-build plan remain immutable. Generation binding changed: original build command is NOT reusable; old verifiers correctly reject PREPARED_NATIVE_GENERATION_CHANGED, never rewrite/rerun/loosen those guards to admit new bytes.
+' correction source-1 history: FAIL_POLICY_RECORD_SOURCE_CORRECTION_ONLY / SOURCE_CHECK_FAILED:types-1 from the new static test's ES2023 toReversed method under project ES2022. The static fixture now uses [...corrected].reverse(); original failed receipt/raw captures remain unchanged, source-2 is the fresh accepted generation. Both actual proof roots are covered; no executable or native-cache admission follows.
+' source-2 reviews (Executor-reported): backend ses_e36f4b6cbffdofbGVKAUJzfiBO READY/no findings; adversarial ses_e36e97fdfffeVGF6ZBu1ANNkto READY/no findings; security ses_e3845fff1ffeE092hXAV6pfhiW READY/source-only/low/no findings/no new hardening gate. DevOps accepts the preparation-choice wording, not a new isolation priority. Retained correction-source-2/record-check.json checked291 sources/16 streams/12 MOCK fixture files; reuse-source-3 separately checked307 inputs. Later recorded consistency PASS covers bound PRE_CLOSEOUT_DOCS_GENERATION, not these subsequent wording edits; final review pending.
+' CURRENT handoff: gpu-feasibility.puml alone owns observation-1 normalized functional pair PASS/zero marker/feasibility HOST1 consumed0/no retry; publication250d PASS/consumed0. Local records PASS26 tests28 assertions/one TSC/12 inputs/327 frozen hashes/2 test+2 query+5 COMPLETE Docker argv/28 rows18 paths/5 artifact metadata; scalar modeling is not raw CSV/journal replay/HOST-byte rehash. Frozen feasibility source4 stays SOURCE-ONLY; native observation-2 belongs only to reuse. _spec/gpu-full-qualification.puml owns full1 retry CONSUMED0 and full source4 SOURCE_ONLY_PASS/PRE_APPROVAL READY reviews. Separate full2 HOST-only1 approved/unobserved; delivery/publication unapproved, issued-doc closeout pending, no coding/train authority. Original UNSELECTED snapshots remain historical.
+' rationale input (Executor-reported): inventory-2 PASS_METADATA_ONLY accepts eight exit-0 facts/16 capture metadata rows, not original bytes or finite shared-builder caps. Existing shared proveo-multiarch/proveo-multiarch0 has zero declared CPU/memory caps; leave it untouched, never configure/stop/reuse its container for this work.
+' architecture (Executor-reported): architect ses_e39898a35ffeov4v7e8zm7rL25 accepts the minimal separate-start/log-follow refinement to this method; earlier method advice is not current review clearance, human approval or a new assurance prerequisite
+' publication checkpoints: actual source-4/publication-result.json records PASS250d438685d2fc7560b0e31439f282bb2c145888/feat-ml-adjuntant-ii/244 text entries/normal commit1+fixed HTTPS push1 CONSUMED0. Original publication-request APPROVED_PENDING stays immutable issued history, not current authority. Result/actions are separate post-publication LOCAL_UNCOMMITTED metadata; current observation/docs also LOCAL_UNCOMMITTED. Older25bc/65feb/publications/helper9874941/assetsf3e277d/source proofs retain their bound generations; no fresh Git grant or current-doc verification follows.
+' publication audit: existing source-5/publication-stage-audit.json audited 361 entries before itself, 2649266 text/link bytes, including 10 bounded relative SOURCE-fixture links; actual packet total 362 entries, no binaries/cache. These are pre-publication scope facts, not an audit self-hash or verification of later docs.
+' reported evidence: observation-1 contains SEMANTICALLY_NORMALIZED_COMPLETE_OPERATOR_JSON_AND_SUMMARY_NOT_ORIGINAL_HOST_BYTES. CURRENT record-check-2.json PASS_OPERATOR_REPORTED_FAILED_NATIVE_BUILD_RECORDS_ONLY checks 7 sources/5 native results/9 COMPLETE Docker argv with reported owned CIDs/28 capture metadata rows; typecheck-2.json PASS. Initial record-check.json/typecheck.json are PRE_REVIEW_CHECKER_SOURCE_CHANGED_NOT_CURRENT_ACCEPTANCE; records-only adversarial recheck closed the incomplete-argv MEDIUM, not original HOST byte/actual-command identity or compiler-cause proof. HOST evidence/cache remain HOST-only, unavailable in coding/unreceived/uncovered; retain partial workspace/cache/logs.
+' reported native result: outer FAIL_HOST_GPU_NATIVE_BUILD_ONLY/SUCCESSFUL_NATIVE_COMPILATION_RECEIPT_REQUIRED + HOST_NATIVE_BUILD_EXIT=1; inner FAIL_NATIVE_COMPILATION_ONLY/NATIVE_COMMAND_FAILED:gpu-policy. Bun 1.4 startup/property and Rust/Cargo 1.95/LLVM 23.1 guards PASS; learning --no-run PASS 0, policy --no-run FAIL 101, two compilation attempts/five results; all captureFailures/canonicalCopyFailures empty. Actual compilation occurred ONLY in the approved OPERATOR container, not coding/test-binary/GPU/training/qualification-image execution.
+' reported stability and cleanup: sourceStabilityChecked:true/sourceChanged:false/sourceCheckFailure:null, manifest 9141aaefa2fab3f3a812aeabec4bdfdd818415333f9e5cba6d5ef822dac90863; staging 99444545 bytes/1253 files; native 921820.616072ms/outer 923501.887534ms (~15m23.5s). Nine fixed Docker operations all PASS 0, worker-stop/state/worker-remove/donor-remove included, no kill needed/cleanupFailures:[]; Running:false/ExitCode:1/OOMKilled:false does NOT identify failure cause. Artifact admission not reached/artifacts:[]; partial learning compile is not overall build PASS/offline completeness or effective-hardening assurance.
+' retained diagnostic request history: HOST policy command.stderr 1919 bytes/SHA af41c7f5a3f964c289f6ce2a6dc3489e7fc481bab06beaf00be524844c20ab4a; command.stdout 334214 bytes/SHA 28819440f6b1ef9b57a061d80197274dd92853649bc1b1fbecb7fce724683ff1. The later paste supplies stderr/rendered Cargo error TEXT, not independently verified original capture bytes or POLICY_DIAGNOSTIC_READ_EXIT. It renews no read/build/staging/native-query/GPU/training/install/acquisition/Git grant; HOST workspace/cache remain untouched/uncovered.
+' dependency contract: existing HOST checkout verify.ts SHA-256 9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58 and command-supervisor.ts SHA-256 88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6 plus frozen Cargo.lock must already exist; check before absolute import, missing/mismatched => STOP, no fetch/repair
+' native generation: manifest SHA-256 9141aaefa2fab3f3a812aeabec4bdfdd818415333f9e5cba6d5ef822dac90863/native65, exact unchanged sourceInventory before/after; trial CUDARC_CUDA_VERSION=13000 is expressed candidate, not qualified binding/PTX/runtime proof
+' template: local template absent; existing conventions retained, no template/network/render/command/agent operation in this record-only pass
+' note ratchet: no enforcement-list implementation found in prior inspection; notes fit five lines/50 columns without test edits
+' readability: manually counted syllables; SHARED 31 words/2 sentences/56 syllables FK 11.8; HELPERS 33/2/55 FK 10.5; EVIDENCE 32/2/57 FK 11.7
+' readability refinement notes: HOST/start admission 33 words/2 sentences/58 syllables FK 11.6; FISH/bootstrap clock 31/2/53 FK 10.6, Mise one syllable; both five lines/<=50 columns
+title Build1 failure preserved; HOST2 reported native-build PASS/consumed belongs to reuse sibling
+
+actor Executor as EXECUTOR
+participant "host-build/plan.json\nPRE-APPROVAL snapshot / flags false" as PLAN
+participant "_work/gpu-owner-recovery/runs/\nhost-gpu-build-handoff-1/request.json\nCONSUMED grant / immutable issued snapshot" as AUTH
+participant "_work/gpu-owner-recovery/runs/\nhost-gpu-native-build-observation-1/verify-report.ts\nreported-receipt + observation + record-check-2" as REPORT
+participant "_work/gpu-owner-recovery/runs/\nhost-gpu-policy-record-diagnostic-1/observation.json\noperator-diagnostic.txt / user-pasted text" as DIAGNOSTIC
+participant "policy-record-fix/correction.ts + verify.ts\nsource-2 fresh SOURCE-ONLY proof" as CORRECTION
+participant "host-build-reuse/selection.json\nselected SOURCE PLANNING ONLY" as REUSE_SELECTION
+participant "packages/runtime/tests/\ngpu-policy-record.test.ts\n4 static Bun cases, captured red then green" as CORRECTION_TESTS
+participant "crates/policy-io/tests/gpu.rs\nline 345 borrowed-slice source verified" as POLICY_SOURCE
+participant "host-build/verify.ts\nsource-5 PASS / SOURCE ONLY" as VERIFY
+participant "host-build/verify-records.ts\nrecords-only PASS / pre-approval snapshot" as RECORDS
+participant "host-build/render.ts\nsource-5 saved inline delivery" as RENDER
+participant "Fish + Mise\nreported OPERATOR HOST parent/worker" as FISH
+participant "host-build/build.ts\nrunHostBuild / executeBuild" as HOST
+participant "verify.ts + command-supervisor.ts\nexisting HOST / staged native helpers" as HELPERS
+participant "Docker CLI\n--host=unix:///var/run/docker.sock" as DOCKER
+participant "buildx_buildkit_proveo-multiarch0\nEXISTING SHARED worker - untouched" as SHARED
+participant "host-build/driver.ts\napproved OPERATOR native worker, reported run" as NATIVE
+participant "tooling/runtime/qualification.ts\nsourceInventory / readArtifacts" as QUAL
+participant "HOST-only partial workspace/cache\nretained, unavailable in coding" as FILES
+participant "HOST-only original evidence\nunreceived, separate native-log bind mount" as EVIDENCE
+
+group PRE-CORRECTION source proof retained / HOST grant CONSUMED / publication COMPLETED
+  PLAN -> VERIFY : retained source-5 verification: Bun mock/pure cases + qualification tests + four types\n283 frozen source hashes, unchanged helpers/native65; no actual Docker/native/GPU
+  VERIFY --> EXECUTOR : source-5 PASS / 162 tests / 8133 assertions +37 qualification/280/four types\nsix PASS stages, 3 persisted PURE MOCK lifecycle cases, not Docker/native evidence\nsource-1 FAIL/source-2 PASS/source-3 PASS/source-4 FAIL stay historical
+  EXECUTOR -> RECORDS : recorded source-5 checker run: source/capture/program/exact-command checks\n283 source hashes / 12 streams / 12 fixture files / 3 PURE MOCK cases / 6 ORDERED index matches
+  RECORDS --> EXECUTOR : retained records-only PASS + original inactive proposal\nPRE_APPROVAL/PRE_AUTHORITY_METADATA_UPDATE, not validation of new authority metadata\noriginal false approval flags remain unchanged; not HOST evidence
+  EXECUTOR -> AUTH : HISTORICAL TUI selected Build-only; issued ONE exact command/proof\noriginal remaining 1/observed:false fields stay immutable, not current authority
+  EXECUTOR -> REPORT : complete semantically normalized operator JSON + summary\nobservation consumes HOST 1/1, remaining 0, no retry; marker 1
+  EXECUTOR -> EXECUTOR : observed publication COMPLETED at 4350306f97150789812075718d04d8367b4f07c1\n362 entries including 10 bounded relative SOURCE-fixture links; grant CONSUMED
+  EXECUTOR -> EXECUTOR : HISTORICAL failure-record/spec publication COMPLETED at reported HEAD 65febc83...\n28 files, that grant CONSUMED; fresh HOST2 packet publication belongs to reuse sibling
+end
+
+note over SHARED
+  The shared builder reports zero resource caps,
+  so its metadata cannot establish finite bounds.
+  A separately owned worker keeps requested
+  build limits local without changing or stopping
+  the host's existing builder.
+end note
+
+group HISTORICAL accepted execution contract - CONSUMED, no present execution permission
+  RENDER --> EXECUTOR : original saved 40054-byte command; publication preceded delivery\nretained source-5 bytes/proof/request unchanged; not a command to run again
+  EXECUTOR -> FISH : HISTORICAL ONE approved operator invocation, now reported/consumed\n70-minute bound; three Mise auto-install flags false, exact Bun/Rust, stdin closed
+  FISH -> FISH : timed worker 4080s TERM + 120s KILL = 4200s\nONE readonly date timestamp BEFORE syntax/Mise: HOST_NATIVE_BUILD_STARTED_MS\ninside-worker syntax precheck/common exit finalizer, no clock reset
+  FISH -> HOST : historical inline Bun --no-env-file --no-install\noriginal grant --approved-host-gpu-native-build-1, HOST ONLY; now CONSUMED
+  HOST -> HOST : install independent protectFinalizationSignals BEFORE preflight\nSIGTERM/SIGINT guardian only records interruption; no Docker action\npreflight interruption blocks Docker admission
+  HOST -> HOST : correlate elapsed timestamp to BuildIO.startedAt before preflight\nclip normal/cleanup deadlines; syntax/Mise/preflight consume same budget
+  HOST -> HELPERS : exact existing helper hashes + Cargo.lock before absolute HOST import\nreuse unchanged runBounded/command-supervisor, <=4 MiB per stream
+  HOST -> FILES : exclusive fresh workspace/evidence; >=64 GiB initial free\nretain partial files, no workspace deletion/retry/overwrite
+  HOST -> EVIDENCE : contracted exclusive deadline.json: normalDeadlineEpoch\nnative driver clips its 3600s to remaining HOST normal time
+
+note over HELPERS
+  The inline command carries its build drivers,
+  not the repository helpers they import.
+  Pinned helper hashes bind those existing files,
+  so a missing dependency must stop rather
+  than trigger a download or repair.
+end note
+
+note over FISH
+  Syntax checks and Mise consume the same
+  host budget as staging and compilation.
+  A timestamp recorded before those steps
+  clips later deadlines, so native startup
+  cannot grant another full execution window.
+end note
+
+  group Closed set <=10 Docker CLI operations - fixed local endpoint, no shared Buildx operation
+    HOST -> DOCKER : donor-create: ONE exact pinned Bun image, --pull=never\nnetwork=none; capture owned CID; donor NEVER STARTED
+    HOST -> DOCKER : bun-copy: ONE cp -L <donorCID>:/usr/local/bin/bun\ninto fresh workspace/bun; no other donor payload
+    HOST -> FILES : AFTER COPY require regular/executable/positive-size Bun <=128 MiB\npost-copy admission only, not a streaming transfer cap
+    HOST -> DOCKER : worker-create: ONE exact pinned Rust image, --pull=never\n2 CPUs / memory 8 GiB / memory+swap 8 GiB / network=none\ncurrent numeric operator uid:gid, no TTY/stdin/GPU or NVIDIA runtime request
+    HOST -> HOST : set startPending BEFORE start admission\nwatcher records failure but MUST NOT stop/memoize stop while pending\nfailure before admission prevents start
+    HOST -> DOCKER : worker-start: ONE docker start <ownedCID>, <=120s\nNEVER start --attach
+    HOST -> HOST : clear startPending only when start request settles\nrecorded failure skips log-follow; cleanup may now stop possible running worker
+
+note over HOST
+  An interruption can arrive while Docker still
+  admits a start request for the owned worker.
+  Deferring the stop until that request settles
+  avoids recording completed cleanup before
+  the start operation returns its result.
+end note
+
+    opt start settled and no recorded failure
+    HOST -> DOCKER : worker-logs: ONE docker logs --follow <ownedCID>\n<=min(3600s, remaining normal budget); interruption stops owned worker/closes logs
+    DOCKER -> NATIVE : received context RO; /build/native and /capture/cargo-home RW\nprepared LLVM + copied Bun RO; source driver/evidence RO\nnative run root bind-mounted RW onto evidence/native
+    group ONE clipped native clock includes startup + staging + guards + compilation
+    NATIVE -> EVIDENCE : read HOST normalDeadlineEpoch BEFORE staging\nclip native <=3600s to remaining HOST normal time; no fresh full budget
+    NATIVE -> NATIVE : Bun.version === 1.4.0 property guard\nnot a sixth supervised version command
+    NATIVE -> FILES : stage ONLY current-native + qualification-tools + Cargo cache\n<=0.5 GiB / <=3800 regular files; LLVM stays RO, no old archive read
+    NATIVE -> HELPERS : import unchanged staged helper from /build/native\nsame 4 MiB/stream supervisor, no replacement runner
+    NATIVE -> QUAL : native65 sourceInventory equals supplied manifest SHA\nfixed /build/native and /capture/cargo-home layout
+      NATIVE -> EVIDENCE : register EACH native attempt BEFORE runBounded\npersist result BEFORE capture/mirror, including failed command results
+      NATIVE -> HELPERS : three supervised native guards: rustc 1.95.0 / Cargo 1.95.0 / LLVM 23.1.0\nversion steps <=10s each within shrinking native budget
+      NATIVE -> HELPERS : TWO exact recipe Cargo GPU compilations, --release GNU target\n--locked --offline --jobs 2 --features gpu-prepared-llvm\nfinite_difference + gpu test targets, --no-run --message-format=json
+      HELPERS -> FILES : native build scripts/proc macros/compiler/LLVM allowed INSIDE capped worker\nnever coding-realm native work or project test execution
+      HELPERS -> EVIDENCE : five supervised commands, separate raw stdout/stderr\n<=40 MiB raw native captures, failures retained/first failure STOP
+      NATIVE -> FILES : COPY four Cargo log streams to canonical qualification paths\n<=16 MiB ADDITIONAL mirror copies, no cross-mount rename
+      NATIVE -> EVIDENCE : keep primary command failure + separate captureFailures/canonicalCopyFailures\nfailed capture/copy cannot discard the attempted command/result
+    end
+    NATIVE -> QUAL : AFTER try/catch: compare source even after failed build if initial inventory/time allow\nunchecked/read-failed/deadline => sourceChanged:null / sourceStabilityChecked:false + reason\nnever unchecked sourceChanged:false
+    NATIVE --> HOST : contracted native PASS required exactly 2 successful compilations\nsourceStabilityChecked:true AND sourceChanged:false; no capture/copy failure
+    end
+
+    opt native/log-follow accepted and no first failure - NORMAL phase only
+      HOST -> DOCKER : terminal-inspect ONCE <=10s in normal budget\nrequire Running:false / ExitCode:0 / OOMKilled:false; mark attempted BEFORE admission
+      HOST -> QUAL : artifacts <=min(120s, remaining NORMAL budget)\nreadArtifacts requires 2 GPU harnesses + 3 policy bins at exact target-gpu paths
+      HOST -> FILES : contracted five HOST-only artifact hashes, NOT reached in reported run\nchecks before/after logs/stat/each hash chunk; never cleanup reserve or artifact execution
+    end
+
+    HOST -> HOST : await watchWorkspace.close: reject ticks/remove WATCHER signal handlers\ndrain in-flight scan AND its stop calls; independent guardian remains installed\nchild ENOENT during Cargo churn ignored; missing root/other error fails
+    opt first failure/interruption and owned worker captured
+      HOST -> DOCKER : owned worker-stop ONCE <=20s, Docker grace 10s\nconditional worker-kill ONCE <=15s only if stop fails; no guessed CID
+    end
+    opt owned worker AND terminal inspection not already attempted
+      HOST -> DOCKER : same ONE terminal inspection in failure cleanup, <=10s\nno repeat inspection/setup/query; failed state precludes PASS
+    end
+    HOST -> DOCKER : remove captured worker + donor CIDs, <=20s EACH\n<=2 removals; never shared builder CID or host workspace deletion
+  end
+
+note over EVIDENCE
+  An evidence mount keeps retained command logs
+  outside the ignored compiler workspace.
+  The expected log paths need bounded copies,
+  because a rename cannot cross the separate
+  evidence mount without a filesystem error.
+end note
+
+  HOST -> HOST : preserve first failure + separate cleanupFailures\ncleanup failure/unknown state cannot become PASS
+  HOST -> EVIDENCE : operation metadata retains raw supervisorResult.status/exitCode/failure\nentry.failure keeps actual deadline/output-bound cause; operationFailure wrapper separate\npre-result throw retains message; stdout stays in raw captures, never receipt duplicate
+  HOST -> HOST : guardian remains through 120s cleanup +60s receipt reserve\npre-write signal check downgrades PASS, preserving any earlier primary failure\nclosed/drained watcher starts no late callback or Docker action
+  HOST -> EVIDENCE : contracted EXCLUSIVE wx receipt <=2 MiB: immutable pre-marker snapshot\nreceiptStatusRequiresZeroHostMarker:true + retained attempts/CIDs/state/native/artifacts\nPASS_HOST_GPU_NATIVE_BUILD_ONLY or scoped FAIL, not overall operational acceptance
+  HOST -> HOST : POST-WRITE signal recheck downgrades console status + process.exitCode to FAIL\npreserve earlier primary failure; NEVER rewrite the wx receipt/raw evidence
+  HOST -> HOST : emit status marker + select exit code while guardian remains installed\nrelease ONLY in final finally after metadata I/O + logging/exit-code selection
+  HOST --> FISH : contracted immutable receipt + final status/exit code; retain workspace/logs\nlate interrupt can leave receipt PASS while overall invocation FAILS
+  FISH --> EXECUTOR : historical marker contract: HOST_NATIVE_BUILD_EXIT=<code>; PASS requires 0\nnonzero/missing zero marker => no overall PASS; parent diagnostics <=64 KiB POST-EXIT SOFT
+end
+
+group BUILD1 retained reported failure - not the later HOST2 outcome or original HOST bytes
+  EXECUTOR -> REPORT : reported outer FAIL/SUCCESSFUL_NATIVE_COMPILATION_RECEIPT_REQUIRED\ninner FAIL_NATIVE_COMPILATION_ONLY/NATIVE_COMMAND_FAILED:gpu-policy; HOST marker 1
+  REPORT --> EXECUTOR : record-check-2 PASS_OPERATOR_REPORTED_FAILED_NATIVE_BUILD_RECORDS_ONLY\n7 sources / 9 COMPLETE owned-CID Docker argv / 28 capture metadata rows\ntypecheck-2 PASS; initial checks historical, no HOST log rehash
+  REPORT --> EXECUTOR : Bun startup/property + 3 Rust/Cargo/LLVM guards PASS\nlearning --no-run PASS 0; policy --no-run FAIL 101; 2 compilation attempts
+  REPORT --> EXECUTOR : sourceStabilityChecked:true/sourceChanged:false/sourceCheckFailure:null\nstaging 99444545 bytes/1253 files; native 921820.616072ms/outer 923501.887534ms
+  REPORT --> EXECUTOR : all 9 Docker operations PASS 0; cleanupFailures:[]; no kill needed\nRunning:false/ExitCode:1/OOMKilled:false; artifacts:[]/admission not reached
+  EXECUTOR -> EXECUTOR : retain this PRE-DIAGNOSTIC observation unchanged\nouter guard/state alone did not identify the compiler cause; not overall build PASS
+end
+
+group Retained SOURCE-ONLY correction proof - later HOST2 reported native-build PASS owned by sibling
+  EXECUTOR -> DIAGNOSTIC : supplied saved-log extraction TEXT; stderr + rendered Cargo error\nERROR_RECORDS=1; no POLICY_DIAGNOSTIC_READ_EXIT or full original stdout
+  DIAGNOSTIC --> EXECUTOR : reported E0277 at gpu.rs:345, Bytes lacks AsRef<[u8]>\ncompiler suggests fs::write(&record_path, &*record).unwrap();\nprovided-text scope only; original HOST digests not independently verified
+  CORRECTION_TESTS --> EXECUTOR : retained expected pre-fix static red: 3 pass/1 fail, exit 1\ngoals/architect consultation preceded the native edit; no Rust execution
+  EXECUTOR -> POLICY_SOURCE : actual sole native edit: &record -> &*record in the named subprocess test\nborrow existing serialized [u8]; record owner/bytes unchanged, no clone/reserialization
+  CORRECTION -> CORRECTION_TESTS : source-1 FAIL SOURCE_CHECK_FAILED:types-1, ES2023 toReversed in ES2022\nstatic fixture changed to [...corrected].reverse(); old failed receipt/raw captures retained
+  CORRECTION -> QUAL : source-2 bounded Git show baseline 65febc83... + original sourceInventory METADATA\nexact scoped whole-file replacement; 65 members same/64 hashes same/only gpu.rs changed\nold source-5 other 282 inputs equal; no payload/cache/native/HOST operation
+  CORRECTION -> CORRECTION_TESTS : source-2 PASS_POLICY_RECORD_SOURCE_CORRECTION_ONLY\n291 frozen sources/sourceChanged:false/eight PASS stages\n41 tests/296 assertions +162 tests/8133 assertions/3 persisted MOCK e2e +5 TSC
+  CORRECTION --> EXECUTOR : new native manifest 7e0aa13c.../65 entries; old 9141... generation immutable\noriginal command NOT reusable; old generation guards correctly reject new bytes\nsource-only PASS, native recompile/execution NOT performed
+  EXECUTOR -> EXECUTOR : backend/adversarial/security retained source-only acceptance\ncorrection records checked291 inputs; reuse records checked307\nlater recorded PRE_CLOSEOUT_DOCS_GENERATION consistency PASS, not validation of these later edits
+  EXECUTOR -> REUSE_SELECTION : retained Reuse cache source-planning selection, operational flags false\nimmutable snapshot, not the later active HOST2/publication authority
+  REUSE_SELECTION --> EXECUTOR : sibling source-3 remains SOURCE-ONLY PASS/307; issued request snapshot immutable\nLATER observation-2 reports BOTH compilations PASS/zero marker/HOST2 consumed1/1\npublication25bcfb61 completed/commit-push grant consumed
+  EXECUTOR -> EXECUTOR : reported feasibility pair PASS/CONSUMED0 and publication250d CONSUMED0 unchanged\nfull owner: full1 retry CONSUMED0/source4 SOURCE_ONLY_PASS; full2 HOST-only1 approved/unobserved\ndelivery/publication unapproved; old snapshots unchanged, no coding/train authority
+end
+
+legend bottom
+  BUILD1 retained result: reported outer FAIL_HOST_GPU_NATIVE_BUILD_ONLY/SUCCESSFUL_NATIVE_COMPILATION_RECEIPT_REQUIRED, inner FAIL_NATIVE_COMPILATION_ONLY/NATIVE_COMMAND_FAILED:gpu-policy, HOST_NATIVE_BUILD_EXIT=1. Learning compilation PASS0 remains partial; policy FAIL101/artifacts:[], no overall build1 PASS/offline completeness. observation-1 accepts normalized operator facts, not original HOST bytes/command identity. BUILD1 1/1 CONSUMED/remaining0/no retry; issued request/source-1..5 stay immutable. Separate HOST2 reported native-build PASS/consumed1/1 belongs to the reuse sibling and does not rewrite this failure.
+  Publication checkpoints: actual source-4/publication-result.json PASS250d438685d2fc7560b0e31439f282bb2c145888/feat-ml-adjuntant-ii/244 text entries/commit1+fixed HTTPS push1 CONSUMED0. Result/actions are separate post-publication LOCAL_UNCOMMITTED metadata, as are current observation/docs; the original publication-request APPROVED_PENDING stays immutable issued history, not a fresh grant. Older25bc/65feb/publications/precommit audits/proofs retain their generations; whole-index whitespace FAIL/one RAW red stderr excerpt persists, scoped PASS is not whole-index PASS.
+  CURRENT diagnostic: user-pasted saved stderr/rendered Cargo error reports ERROR_RECORDS=1/E0277 at gpu.rs:345, burn::tensor::Bytes lacks AsRef<[u8]>, compiler suggestion &*record. Provenance USER_PASTED_DIAGNOSTIC_TEXT_NOT_ORIGINAL_HOST_CAPTURE_BYTES; no POLICY_DIAGNOSTIC_READ_EXIT pasted, full original stdout/independent HOST-byte rehash absent. Accept these compiler-text facts without a custody gate; old observation-1 unknown-cause fields stay PRE-DIAGNOSTIC history, never rewritten. This is not a native build PASS or any renewed grant.
+  HISTORICAL accepted contract below, NOT present execution permission: ONE owned Docker-container NATIVE BUILD ONLY, not qualification-image construction. Exact Rust userspace + pinned Bun interpreter/native65/layout, production/qualification Dockerfiles and qualification runner remain unchanged. Original staging/guards/compilation scope was HOST-only; no project test binaries/GPU/training/coding native/image build/acquisition/install/retry/old workspace deletion or shared Buildx mutation is authorized now.
+  Exact Engine target for EVERY Docker call: --host=unix:///var/run/docker.sock. Exact images are Rust 4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb and Bun 18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038, --pull=never/linux-amd64. Do not change, stop or claim ownership of shared container 672c2d1a91724f4699e8403634f05a4d8b19f0fae2a178b9915c49cc805eaa25.
+  Historical accepted mount layout: received context RO at /received; owned native RW at /build/native; owned Cargo RW at /capture/cargo-home; received gpu-build/llvm RO at /opt/tracel-data/tracel/tracel-llvm-23.1.0-4; donor Bun RO at /usr/local/bin/bun; source-driver/evidence RO at /evidence; evidence/native RW at /build/native/_work/gpu-owner-recovery/runs/host-gpu-native-build-1. Native logs stay outside ignored compiler workspace; canonical copies add 16 MiB, not a rename across mounts. Original HOST files remain unavailable in coding.
+  Delivery is inline, not dependency-free: HOST checkout must already supply Cargo.lock plus the two exact hash-pinned helpers before absolute import. Native staging reuses their unchanged baseline copies under /build/native; missing/mismatched dependencies fail without acquisition/repair. Received qualification module supplies pure sourceInventory/readArtifacts, not a new runner or executed test.
+  Two package/target pairs: chess-coach-learning/finite_difference and chess-coach-policy-io/gpu. Both use cargo test --release --target x86_64-unknown-linux-gnu --locked --offline --jobs 2 --features gpu-prepared-llvm --test <target> --no-run --message-format=json. CUDARC_CUDA_VERSION=13000 is an EXPRESSED TRIAL, not qualified binding, PTX/driver or F64 evidence; CARGO_NET_OFFLINE=true/NET_RETRY=0/RUSTUP_AUTO_INSTALL=0, RAYON_NUM_THREADS=2.
+  The consumed request originally approved HOST-only staging/native guards/build scripts/proc macros/native compilation inside this capped non-GPU worker, donor create/copy, worker create/separate start/log-follow, terminal inspection, owned stop/conditional kill/two removals and unchanged limits. It grants no present execution, start --attach, extra metadata/setup query, coding native/Docker work, project test binary, GPU device/test, download/install/fetch/fallback/retry or shared-builder operation.
+  Closed maximum TEN Docker operations: donor-create, bun-copy, worker-create, worker-start, worker-logs, worker-state, worker-stop, conditional worker-kill, worker-remove, donor-remove. CID recovery uses fresh captured/validated matching 64-hex IDs only. Start/default CLI <=120s; log-follow <=min(3600s, normal remaining), terminal inspect <=10s, stop <=20s/Docker grace 10s, conditional kill <=15s, removals <=20s each. startPending is set BEFORE admission; watcher records failure but neither stops nor memoizes stop while start is pending, then failure prevents logs and cleanup handles possible started worker.
+  Budgets: normal <=4020s, cleanup 120s, receipt reserve 60s within 4200s; timed checked Fish records fresh HOST_NATIVE_BUILD_STARTED_MS with ONE read-only date +%s%3N BEFORE syntax/Mise. BuildIO.startedAt accounts for elapsed bootstrap/preflight rather than restarting clocks; future evidence/deadline.json normalDeadlineEpoch clips the native <=3600s clock including staging/guards/compile. Outer 4080s TERM +120s KILL unchanged; date/time correlation is cooperative ordinary bounding, not NTP/physical-stop/strict-crash assurance.
+  Artifact phase is NORMAL work <=min(120s, normal remaining), deadline checked around log/stat reads and per hash chunk, never funded by cleanup reserve. Successful path inspects terminal state once BEFORE artifacts; finally inspects only when no inspection was attempted. Source/native/start-or-log exit alone cannot admit success.
+  Storage remains 64 GiB initial/16 GiB running free/32 GiB new-workspace+evidence SOFT, 5s monitor; Docker writable layers excluded, no quota. treeBytes ignores child ENOENT caused by concurrent Cargo deletion/rename, but missing root/other errors fail. Async monitor close rejects new ticks/removes handlers/drains in-flight scan and its stop calls BEFORE final cleanup/removals/receipt, preventing late mutation of a PASS. Bun 128 MiB POST-COPY admission/staging 0.5 GiB/3800 files unchanged, preserve workspaces/logs.
+  Watcher shutdown removes only its own SIGTERM/SIGINT handlers; independent protectFinalizationSignals stays installed BEFORE preflight through owned cleanup, receipt write, POST-WRITE check, status marker and exit-code selection, released only in final finally after metadata I/O/logging. It records a flag without late Docker actions; preflight interruption blocks Docker and signals observed before OR after receipt I/O downgrade final console/exit to FAIL without replacing an earlier primary failure. Fake-emitter tests verify source logic, not real signal delivery. Existing 120s cleanup/60s receipt opportunity spans outer 4080s TERM/cleanup to 4140s/before 4200s KILL; ordinary cooperative bounds, not NTP/crash/physical-stop assurance.
+  Receipt is an immutable exclusive-wx PRE-MARKER snapshot with receiptStatusRequiresZeroHostMarker:true. A late signal during receipt write may leave its file status PASS while post-write console/process exit and HOST_NATIVE_BUILD_EXIT report failure; NEVER rewrite the receipt or raw evidence to hide that timing. Overall build-only acceptance requires both PASS_HOST_GPU_NATIVE_BUILD_ONLY and HOST_NATIVE_BUILD_EXIT=0; a PASS file alone cannot establish success.
+  Native evidence registers each attempted command BEFORE runBounded and retains its result BEFORE capture/mirror; primary command failure survives auxiliary captureFailures/canonicalCopyFailures. Final source comparison runs AFTER try/catch, including failed compilation when initial inventory/time permit; unchecked/read-failed/deadline => sourceChanged:null/sourceStabilityChecked:false with reason, never falsely unchanged. Native PASS and HOST admission require sourceStabilityChecked:true AND sourceChanged:false.
+  HOST operation catch preserves raw supervisorResult status/exitCode/failure; entry.failure keeps the actual deadline/output-bound cause separately from contextual operationFailure. A throw before a result retains its thrown message. Supervisor stdout is not duplicated into receipt metadata, avoiding 4 MiB capture content overflowing the 2 MiB receipt admission; original raw stdout/stderr capture files remain separate and unchanged.
+  Stream accounting now TEN Docker operations * two streams *4 MiB = <=80 MiB raw HOST Docker captures; five native commands *two streams *4 MiB = <=40 MiB raw native; canonical Cargo COPY adds <=16 MiB. Combined supervised/mirror <=136 MiB EXCLUDES receipts/artifact metadata/copied Bun/compiler outputs/parent diagnostics; native 40 MiB excludes mirrors. Parent diagnostics 64 KiB POST-EXIT SOFT and HOST receipt 2 MiB admission remain separate, not streaming quotas.
+  The historical acceptance predicate required terminal Running:false/ExitCode:0/OOMKilled:false AND inner native PASS/exactly two compilations/sourceStabilityChecked:true/sourceChanged:false AND five artifacts admitted within NORMAL deadline AND drained monitor/no first or cleanup failure AND final zero HOST_NATIVE_BUILD_EXIT marker with the PASS receipt. The reported run FAILED this predicate; even build-only PASS would not establish qualification-image/F64/CPU39/full-coordinate/C12/canonical BOTH/reference/close/R4/telemetry/coexistence/training evidence.
+  Coverage includes actual diagnostic-1/**, policy-record-fix/** (now including verify.ts), its static Bun test/gpu.rs and BOTH existing correction-source-1/** and correction-source-2/** roots. Prior observation/source-1..5/handoff coverage remains. Original HOST evidence/cache stay HOST-only/unavailable in coding/unreceived/uncovered and untouched; old failure/cause-unknown metadata stays pre-diagnostic history. This docs pass edits no source/proof/request/diagnostic record and runs no command/network/native/HOST/cache/payload/agent/Git operation.
+  RETAINED SOURCE-ONLY CORRECTION PROOF: captured pre-fix static RED preceded the exact one-line borrowed-slice edit. Source-1 FAIL at types-1 preserves the ES2023 toReversed/ES2022 mismatch; [...corrected].reverse() corrects only the static fixture. Source-2 PASS_POLICY_RECORD_SOURCE_CORRECTION_ONLY: 291 frozen inputs/sourceChanged:false/eight PASS stages; 41 tests/296 assertions (4 record+37 qualification), 162 tests/8133 assertions/3 persisted MOCK e2e, five TSC. Bounded Git-show baseline matches the prepared original; new manifest 7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec has the SAME 65 members/64 same hashes/ONLY gpu.rs changed, old source-5 other 282 inputs equal. This proof remains source/static/mock/type evidence, NOT retroactive native/GPU evidence; later HOST2 report is separate. Original command is not reusable; never loosen prepared-generation guards or rewrite9141 manifests/source-1..5/contexts/requests.
+  CURRENT feasibility REPORT pair PASS/CONSUMED0 and publication250d CONSUMED0 remain unchanged. Record checks remain report-only, not original HOST bytes/coldJIT/full telemetry/strict-stop/full assurance. gpu-full-qualification.puml owns full1 retry CONSUMED0, source4 SOURCE_ONLY_PASS and PRE_APPROVAL READY reviews. Separate full2 HOST-only1 approved/unobserved; delivery/publication unapproved, issued-doc closeout pending. No execution occurred; no coding/training authority or accepted full qualification evidence. Original snapshots/frozen327/math/CPU/master/strict10-297-300 remain unchanged/unqualified, trainingReady:false; no old LLVM archive access. Prior/partial work retained. ALL hardening follows ALL planned training and validated results.
+  Actual native delta is ONLY gpu.rs bytes, not native65 membership, Rust harness counts, product recipes/qualification runner/host drivers/supervisors/model/F64/all 4,670 coordinates/eps=1e-6/atol=1e-8/rtol=1e-5/exact C12/CPU Flex/masters 101..105. Existing record owner/serialized bytes stay unchanged; consumed HOST2 reports compilation of the ignored Rust subprocess test, NOT execution. Dispatch stays disabled/trainingReady:false; ALL security/privacy/isolation hardening follows ALL planned training and validated results. No GPU/global Upgrade or assurance PASS follows; this pass synchronizes current docs without changing source/proofs/requests.
+endlegend
+@enduml

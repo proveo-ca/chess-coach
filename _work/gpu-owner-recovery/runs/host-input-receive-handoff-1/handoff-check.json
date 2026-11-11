@@ -1,0 +1,17 @@
+{
+  "version": "chess-coach.pinned-host-command-verification.v1",
+  "status": "PASS_PINNED_HANDOFF_RECORDS_ONLY",
+  "helperSourceCommit": "33b29dd095a3582a02861cef0f155e675a6721cc",
+  "assetSourceCommit": "f3e277dbbf33c0aa69172cca1890792656d4cd09",
+  "helperSha256": "091a431757ef83710a95156816e085cb1ed36b632e4923c9632695ffe821bafa",
+  "commandSha256": "8def4344fb3179ed0c6fc3d7275c9c644da2ae6dd61eb9950c749dba3af7eb76",
+  "sourcePublicationCaptureStreamsChecked": 24,
+  "diagramIndexMatches": 4,
+  "sourcePublicationAllowanceConsumed": true,
+  "operatorInvocationApproved": true,
+  "operatorInvocationObserved": false,
+  "fishSyntaxValidated": false,
+  "compilationPerformed": false,
+  "gpuExecuted": false,
+  "trainingReady": false
+}

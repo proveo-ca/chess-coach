@@ -1,0 +1,19 @@
+{
+  "status": "PASS_LOCAL_FAILED_BUILD_OBSERVATION_INPUTS_ONLY",
+  "currentRecordCheck": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/record-check-2.json",
+    "sha256": "6c43552c1faba160ff8c0765ecf54cd745e82bf133aa7fb11114c8ca632e9575"
+  },
+  "typecheck": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/typecheck-2.json",
+    "sha256": "916a45220d3750f21b4cc6afad652375756df0ba319fdaeb4b8f94dd2943cdc1"
+  },
+  "frozenSourceHashesChecked": 283,
+  "nativeSourceInputsChecked": 65,
+  "reportedMetadataRows": 28,
+  "originalHostArtifactBytesRehashed": false,
+  "compilerDiagnosticContentsReceived": false,
+  "codingHostDockerOrNativeOperationsPerformed": false,
+  "newHostReadBuildRetryOrPublicationAuthorized": false,
+  "trainingReady": false
+}

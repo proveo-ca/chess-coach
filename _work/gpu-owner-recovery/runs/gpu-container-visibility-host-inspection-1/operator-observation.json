@@ -1,0 +1,29 @@
+{
+  "version": "chess-coach.gpu-container-visibility-host-inspection.v1",
+  "status": "STOPPED_BEFORE_CONTAINER_CREATION_MISSING_CACHED_IMAGES",
+  "provenance": "NORMALIZED_FROM_OPERATOR_PASTED_OUTPUT_NOT_ORIGINAL_MACHINE_CAPTURE",
+  "packetCommit": "17a0ed9cf2fffac883c8002f51c4105bcc85c774",
+  "request": "_work/gpu-owner-recovery/gpu-container-visibility-request.json",
+  "commandPacket": "_work/gpu-owner-recovery/gpu-container-visibility.fish",
+  "rust": {
+    "inspectExitCode": 1,
+    "reportedError": "Error response from daemon: No such image: rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb"
+  },
+  "bun": {
+    "inspectExitCode": 1,
+    "reportedBase": "",
+    "reportedError": "Error response from daemon: No such image: oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038"
+  },
+  "packetControlFlow": {
+    "containerCreationAttempted": false,
+    "containersCreated": 0,
+    "inContainerGpuQueries": 0
+  },
+  "reportedQueryExitCode": null,
+  "reportedCleanupExitCode": null,
+  "nvidiaRuntimeFailureEstablished": false,
+  "cudaFailureEstablished": false,
+  "imagePullAuthorizedByThisResult": false,
+  "containerGpuVisibilityEstablished": false,
+  "trainingReady": false
+}

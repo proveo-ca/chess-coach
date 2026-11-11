@@ -1,0 +1,33 @@
+{
+  "version": "chess-coach.gpu-container-visibility-local.v1",
+  "scope": "FISH_SYNTAX_ONLY_NO_PACKET_COMMAND_EXECUTION",
+  "argv": [
+    "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-fish-shell-fish-shell/4.9.3/fish",
+    "--no-config",
+    "--no-execute",
+    "_work/gpu-owner-recovery/gpu-container-visibility.fish"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/gpu-container-visibility.fish",
+      "sha256": "f9b8718bfb60736be17a4da80833cb634afc10230f0cb54e8c34e2eb6ce3511a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/gpu-container-visibility-request.json",
+      "sha256": "247f2ed71b0bda260cc8566fddab0dd12ee293ec06a89f361b4e1be06ba61e2b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/gpu-functional-host-observations.json",
+      "sha256": "34a0c26e4cea99f38440ac751081bb6ce8c17db042796e1e420891d2910984a7"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/gpu-functional-compiler-candidates.json",
+      "sha256": "e58bd56d23ca3b20d5139e4acbc34101522621c371f52f9b4742acd30f200b40"
+    }
+  ],
+  "dockerCommandsExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

@@ -1,0 +1,21 @@
+{
+  "status": "SELECTED_PREPARE_PUBLICATION_ONLY_FRESH_GIT_APPROVAL_REQUIRED",
+  "authorizationSource": "EXECUTOR_SELECTED_PREPARE_PUBLICATION_RECOMMENDED_AFTER_HOST_ONLY_APPROVAL",
+  "publicationPreparationSelected": true,
+  "sourceGeneration": "host-gpu-full-source-4",
+  "parentCommit": "3d35125bdcf27542e6a0ad266a9ed118f9d14658",
+  "branch": "feat-ml-adjuntant-ii",
+  "destination": "https://github.com/proveo-ca/chess-coach.git",
+  "hostApproval": {"path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command-approval.json", "sha256": "4065ab7a48d5d1afd9f724a91206483cd6bc5fd61ad269f03e03c52183a67b6d"},
+  "remainingOperatorHostInvocations": 1,
+  "hostInvocationObserved": false,
+  "manualCommandTextDeliveryApproved": false,
+  "gitStagingApproved": false,
+  "normalCommitApproved": false,
+  "httpsPushApproved": false,
+  "publicationApproved": false,
+  "automaticRetryAuthorized": false,
+  "codingHostOperationsApproved": false,
+  "trainingApproved": false,
+  "trainingReady": false
+}

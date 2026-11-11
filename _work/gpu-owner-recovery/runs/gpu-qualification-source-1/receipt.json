@@ -1,0 +1,158 @@
+{
+  "version": "chess-coach.gpu-qualification-source.v1",
+  "status": "PASS_SOURCE_ONLY",
+  "sourceManifestSha256": "f493636ab6d2b03816553671db77ea2ad736f2b6b21f7d836c461ec57aa6eac9",
+  "sourceCount": 277,
+  "sourceChanged": false,
+  "results": [
+    {
+      "name": "tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "./packages/runtime/tests/gpu-recipe.test.ts",
+        "./packages/runtime/tests/gpu-qualification.test.ts",
+        "./_work/gpu-owner-recovery/prepared-llvm/verify.test.ts"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 28,
+      "stderrBytes": 2739,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-source-1/tests/command.stdout",
+          "bytes": 28,
+          "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-source-1/tests/command.stderr",
+          "bytes": 2739,
+          "sha256": "61ced1455e1c4ef2daab1e1886ffb57cffb441d5d2084f47f476b5cc94e808b5"
+        }
+      ]
+    },
+    {
+      "name": "types-0",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "-p",
+        "tsconfig.json"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-source-1/types-0/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-source-1/types-0/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "types-1",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "-p",
+        "tsconfig.tests.json"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-source-1/types-1/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-source-1/types-1/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "types-2",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "-p",
+        "_work/gpu-owner-recovery/tsconfig.json"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-source-1/types-2/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-source-1/types-2/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "types-3",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "-p",
+        "_work/gpu-owner-recovery/qualification/tsconfig.json"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-source-1/types-3/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-source-1/types-3/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "nativeSourceCount": 64,
+  "cargoInvocations": 0,
+  "llvmInvocations": 0,
+  "compilationPerformed": false,
+  "downloadsPerformed": false,
+  "imageOperationPerformed": false,
+  "hostGpuOperationPerformed": false,
+  "trainingReady": false
+}

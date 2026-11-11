@@ -1,0 +1,35 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "policy-recovery-test-types",
+  "stage": "typecheck-tests",
+  "sourceManifestSha256": "65edf1c76076556556d629ea2e608974eb95e52872b26d5b2a748f01e6b90985",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "node_modules/typescript/lib/_tsc.js",
+    "-p",
+    "tsconfig.tests.json"
+  ],
+  "status": "FAIL",
+  "exitCode": 2,
+  "failure": null,
+  "stdoutBytes": 1684,
+  "stderrBytes": 0,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/policy-recovery-test-types/command.stdout",
+    "bytes": 1684,
+    "sha256": "18cb0515e5b9cfd352fc56082fa6c1259bfdadce87df694d1469dcd9b3ed60cc"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/policy-recovery-test-types/command.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "sourceCount": 32,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

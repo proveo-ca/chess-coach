@@ -1,0 +1,4 @@
+error: no matching package named `tracel-llvm-bundler` found
+location searched: crates.io index
+required by package `chess-coach-learning v0.1.0 (/home/gu1lty/Projects/proveo/chess-coach/crates/learning)`
+As a reminder, you're using offline mode (--offline) which can sometimes cause surprising resolution failures, if this error is too confusing you may wish to retry without `--offline`.

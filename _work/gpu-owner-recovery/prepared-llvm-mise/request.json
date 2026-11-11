@@ -1,0 +1,28 @@
+{
+  "version": "chess-coach.gpu-functional-rust-provision-request.v1",
+  "status": "APPROVED_ONE_SCOPED_MISE_RUST_INSTALL_AND_OFFLINE_GRAPH_RECHECK",
+  "authorization": {
+    "source": "EXECUTOR_SELECTED_PROVISION_RUST_RECOMMENDED_IN_PARENT_SESSION",
+    "executor": "CODING_ENVIRONMENT_ONLY",
+    "maximumInstallInvocations": 1,
+    "automaticRetry": false,
+    "toolchainDownloadsAuthorized": true,
+    "projectDependencyDownloadsAuthorized": false
+  },
+  "configuration": "_work/gpu-owner-recovery/mise.toml",
+  "configurationTrust": "ONLY_THE_EXISTING_SCOPED_CONFIGURATION_IN_REPOSITORY_OWNED_MISE_STATE",
+  "toolchain": { "tool": "core:rust", "version": "1.95.0", "profile": "minimal", "components": ["rustfmt", "clippy"], "additionalTargets": [], "host": "x86_64-unknown-linux-gnu" },
+  "installArgv": ["/usr/local/bin/mise", "install", "--jobs", "1", "core:rust"],
+  "installDeadlineMs": 600000,
+  "preflightDeadlineMsPerCommand": 10000,
+  "runId": "gpu-prepared-llvm-mise-1",
+  "graphVerificationRunId": "gpu-prepared-llvm-local-5",
+  "homes": "REUSE_SCOPED_ENVIRONMENT_FROM_PROVISION_TS_UNDER_REPOSITORY_CACHE",
+  "rootOrHostConfigurationChangeAuthorized": false,
+  "compilationAuthorized": false,
+  "llvmOperationAuthorized": false,
+  "archiveReplayAuthorized": false,
+  "imageOperationAuthorized": false,
+  "hostGpuOperationAuthorized": false,
+  "trainingAuthorized": false
+}

@@ -1,0 +1,56 @@
+{
+  "version": "chess-coach.gpu-qualification-input-inventory.v1",
+  "status": "PASS_METADATA_ONLY",
+  "failure": null,
+  "sourceChanged": false,
+  "result": {
+    "status": "PASS",
+    "exitCode": 0,
+    "failure": null,
+    "stdoutBytes": 332260,
+    "stderrBytes": 0
+  },
+  "summary": {
+    "kind": "inventory-summary",
+    "complete": true,
+    "root": "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4",
+    "entries": 2684,
+    "metadataBytes": 331823,
+    "apparentRegularFileBytes": 329242172,
+    "apparentBytesCountEachDirectoryEntry": true,
+    "allocatedStorageEstablished": false,
+    "counts": {
+      "directory": 137,
+      "file": 2545,
+      "symlink": 2,
+      "other": 0
+    },
+    "failure": null,
+    "payloadsRead": false,
+    "nestedSymlinksFollowed": false
+  },
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/command.stdout",
+      "bytes": 332260,
+      "sha256": "7ce0ef73b0234e6a0233d76695c8eb58e09e72978f83a8b53e2195d58f99805c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "invocationsConsumed": 1,
+  "remainingInvocations": 0,
+  "automaticRetryAuthorized": false,
+  "inventoryComplete": true,
+  "nativeLlvmExecuted": false,
+  "prefixPayloadsRead": false,
+  "prefixCopied": false,
+  "prefixSelected": false,
+  "operatorHostPacketExecuted": false,
+  "compilationPerformed": false,
+  "gpuExecutionPerformed": false,
+  "trainingReady": false
+}

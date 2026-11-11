@@ -1,0 +1,16 @@
+{
+  "version": "chess-coach.host-builder-inputs-record-review.v1",
+  "status": "ACCEPTED_COMPLETED_NORMALIZED_RECORDS_ONLY",
+  "observation": "_work/gpu-owner-recovery/runs/host-builder-inputs-1/operator-observation.json",
+  "recordCheck": "_work/gpu-owner-recovery/runs/host-builder-inputs-1/record-check.json",
+  "adversarial": { "session": "ses_e3db08ecaffe7JpgpwIKHCgyMl", "verdict": "READY_NORMALIZED_RECORDS_ONLY" },
+  "security": { "session": "ses_e3db08ecaffd8jrnYUsS9UQS84", "verdict": "READY_COMPLETED_NORMALIZED_RECORDS_ONLY" },
+  "operatorHostGrantConsumed": true,
+  "originalHostFilesReceived": false,
+  "compilerDetailsReceived": false,
+  "compiledBuilderAbiQualified": false,
+  "gpuQualified": false,
+  "trainingReady": false,
+  "additionalOperationsAuthorized": false,
+  "nextStep": "READ_THE_FOUR_EXISTING_IMAGE_AND_INSPECTION_OUTPUT_FILES_WITHOUT_REPLAY"
+}

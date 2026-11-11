@@ -1,0 +1,32 @@
+{
+  "status": "PASS_LOCAL_RECORD_HASHES_AND_UNSELECTED_HOST_BOUNDS_PROPOSAL",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/record-check.json",
+      "sha256": "bb9af3ce915f284bd3bb6c357a9acd91f7baa711f7c5c62d41e920eeda8209f4"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/verification.json",
+      "sha256": "b58fffcc5592e295498aa3c419afb24a59af4bc7647a7f1f78ee2738c0e259fd"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/next-source-planning-proposals.json",
+      "sha256": "a0722082900a47904ddc3df616ed9995c080d92e37f92876d304f4ef00fd3b58"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/verify-record-hashes.ts",
+      "sha256": "4879af10662e088af5e53b235ec14d8c4a2e22ed3c0a64a13ad04b49a4d3ff0a"
+    }
+  ],
+  "observationInputHashesChecked": 12,
+  "protectedSourceHashesChecked": 327,
+  "localVerificationStreamsChecked": 6,
+  "preservedPublicationStreamsChecked": 18,
+  "fullSelectorsChecked": 6,
+  "mockExecutableNamesExecuted": false,
+  "sourcePreparationSelected": false,
+  "hostOperationsPerformed": false,
+  "originalHostArtifactBytesRehashedInCoding": false,
+  "publicationAuthorized": false,
+  "trainingReady": false
+}

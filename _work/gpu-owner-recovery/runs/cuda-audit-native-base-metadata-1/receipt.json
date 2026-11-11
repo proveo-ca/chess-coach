@@ -1,0 +1,34 @@
+{
+  "version": "chess-coach.cuda-audit-native-base-metadata.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "-e",
+    "\nimport { constants } from 'node:fs';\nimport { open, realpath } from 'node:fs/promises';\nimport { createHash } from 'node:crypto';\nconst files=[];\nfor(const logicalPath of ['/usr/local/bin/bun','/usr/bin/xz','/usr/bin/bwrap']){\n const physicalPath=await realpath(logicalPath),handle=await open(physicalPath,constants.O_RDONLY|constants.O_NOFOLLOW);\n try{\n  const before=await handle.stat({bigint:true});\n  if(!before.isFile()||before.size<64n||before.size>536870912n)throw Error('BOUNDED_EXISTING_NATIVE_FILE_REQUIRED');\n  const hash=createHash('sha256'),header=Buffer.alloc(64),buffer=Buffer.alloc(65536);let offset=0;\n  while(true){const result=await handle.read(buffer,0,buffer.length,offset);if(result.bytesRead===0)break;if(offset===0)buffer.copy(header,0,0,64);offset+=result.bytesRead;if(BigInt(offset)>before.size)throw Error('NATIVE_FILE_GREW');hash.update(buffer.subarray(0,result.bytesRead));}\n  const after=await handle.stat({bigint:true});\n  if(BigInt(offset)!==before.size||before.dev!==after.dev||before.ino!==after.ino||before.size!==after.size||before.mtimeNs!==after.mtimeNs||before.ctimeNs!==after.ctimeNs)throw Error('NATIVE_FILE_CHANGED');\n  if(!header.subarray(0,4).equals(Buffer.from([127,69,76,70])))throw Error('BASE_TOOL_IS_NOT_ELF');\n  files.push({logicalPath,physicalPath,uid:Number(before.uid),gid:Number(before.gid),mode:Number(before.mode),byteLength:offset,device:String(before.dev),inode:String(before.ino),sha256:hash.digest('hex'),elfClass:header[4],elfByteOrder:header[5],elfType:header.readUInt16LE(16),machine:header.readUInt16LE(18),programHeaderOffset:String(header.readBigUInt64LE(32)),programHeaderEntryBytes:header.readUInt16LE(54),programHeaderCount:header.readUInt16LE(56)});\n }finally{await handle.close();}\n}\nconsole.log(JSON.stringify({status:'PASS',scope:'READ_ONLY_EXISTING_CODING_REALM_BASE_TOOLS_NOT_LOADER_CLOSURE_OR_EXECUTION_PROOF',files,nativeExecutableInvocations:0,decompressionPerformed:false,extractionPerformed:false,llvmCodeExecuted:false,loaderClosureQualified:false,trainingReady:false},null,2));\n"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 1813,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "stream": "stdout",
+      "path": "_work/gpu-owner-recovery/runs/cuda-audit-native-base-metadata-1/command.stdout",
+      "bytes": 1813,
+      "sha256": "4ab29ae3bcac418cbeb106e84824cd80f017d3341bd336aeec75d399ed702518"
+    },
+    {
+      "stream": "stderr",
+      "path": "_work/gpu-owner-recovery/runs/cuda-audit-native-base-metadata-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scope": "READ_ONLY_FS_AND_ELF_HEADER_METADATA",
+  "nativeExecutableInvocations": 0,
+  "decompressionPerformed": false,
+  "llvmCodeExecuted": false,
+  "trainingReady": false
+}

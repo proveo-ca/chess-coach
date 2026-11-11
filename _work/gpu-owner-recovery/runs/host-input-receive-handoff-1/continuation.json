@@ -1,0 +1,168 @@
+{
+  "status": "PASS_SOURCE_PUBLISHED_OPERATOR_OUTPUT_PENDING",
+  "failure": null,
+  "originalReceipt": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/publication.json",
+  "originalBudgetRemainingAtContinuationMs": 210411,
+  "attempts": {
+    "commit": 1,
+    "push": 1
+  },
+  "commitSucceeded": true,
+  "sourceCommit": "33b29dd095a3582a02861cef0f155e675a6721cc",
+  "pushedCommit": "33b29dd095a3582a02861cef0f155e675a6721cc",
+  "rawEvidenceWhitespacePreserved": true,
+  "operations": [
+    {
+      "argv": [
+        "/usr/bin/git",
+        "add",
+        "--",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-05/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-05/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-06/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-06/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/continuation-types.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/continuation-types.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/continuation.started",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/continue-source.ts",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/publication.json",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/publication.started"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/continuation-01/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/continuation-01/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        "_spec",
+        "_work/gpu-owner-recovery/qualification",
+        ":(glob)_work/gpu-owner-recovery/runs/**/*.ts"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/continuation-02/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/continuation-02/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "commit",
+        "-m",
+        "chore: prepare bounded operator input receive"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/continuation-03/command.stdout",
+          "bytes": 12011,
+          "sha256": "27e5d843e892b9a76c57dfc7a1c8b93f608605d40b655499a63b258c96bf3e21"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/continuation-03/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "rev-parse",
+        "--verify",
+        "HEAD"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/continuation-04/command.stdout",
+          "bytes": 41,
+          "sha256": "e349507e2f019b8071033a1fc3d7f22d575c0a1294b4db6b1cb6b6638fe69105"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/continuation-04/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "branch",
+        "--show-current"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/continuation-05/command.stdout",
+          "bytes": 21,
+          "sha256": "3467ae26a897ab942a1376913a429c19c2045ee00c3a1fddb0919214c1fc5841"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/continuation-05/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "push",
+        "https://github.com/proveo-ca/chess-coach.git",
+        "33b29dd095a3582a02861cef0f155e675a6721cc:refs/heads/feat-ml-adjuntant-ii"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/continuation-06/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/continuation-06/command.stderr",
+          "bytes": 398,
+          "sha256": "b9b5aa2fcae721c5241df1269f13186df233f7c83f19ef6a6eb242b3e3785c9f"
+        }
+      ]
+    }
+  ],
+  "operatorHostExecuted": false,
+  "trainingReady": false
+}

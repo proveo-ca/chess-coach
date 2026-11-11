@@ -1,0 +1,33 @@
+{
+  "version": "chess-coach.closing-git-hygiene.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "-e",
+    "\nimport { readFileSync } from 'node:fs';\nimport { createHash } from 'node:crypto';\nconst excluded = [':(exclude,glob)_work/gpu-owner-recovery/runs/**/*.stdout',':(exclude,glob)_work/gpu-owner-recovery/runs/**/*.stderr'];\nfunction git(args) {\n  const result = Bun.spawnSync(['git','--no-replace-objects','--no-optional-locks','-c','core.fsmonitor=false','-c','core.hooksPath=/dev/null',...args],{cwd:process.cwd(),stdin:'ignore',stdout:'pipe',stderr:'pipe',timeout:10000,maxBuffer:4194304,env:{PATH:'/usr/local/bin:/usr/bin:/bin',HOME:'/nonexistent',LANG:'C',GIT_CONFIG_NOSYSTEM:'1',GIT_NO_LAZY_FETCH:'1',GIT_TERMINAL_PROMPT:'0'}});\n  if (result.error || result.stdout.length > 4194304 || result.stderr.length > 4194304) throw Error('BOUNDED_GIT_RESULT_REQUIRED');\n  return result;\n}\nconst scoped = git(['diff','--cached','--no-ext-diff','--no-textconv','--check','--','.',...excluded]);\nif (scoped.exitCode !== 0 || scoped.stdout.length || scoped.stderr.length) throw Error('SCOPED_WHITESPACE_FAILED:' + scoped.stdout.toString() + scoped.stderr.toString());\nconst namespace = git(['ls-files','-z','--','_work/gpu-owner-recovery/cache','_work/gpu-owner-recovery/scratch','target','node_modules']);\nif (namespace.exitCode !== 0 || namespace.stdout.length || namespace.stderr.length) throw Error('GENERATED_NAMESPACE_TRACKED');\nconst index = git(['ls-files','--stage','-z','--','_work/gpu-owner-recovery/runs']);\nif (index.exitCode !== 0 || index.stderr.length) throw Error('INDEX_REQUIRED');\nlet rawStreamCount = 0;\nfor (const record of index.stdout.toString('utf8').split('\\0').filter(Boolean)) {\n  const match = /^100644 ([0-9a-f]{40}) 0\\t(.+)$/.exec(record);\n  if (!match) throw Error('CLOSED_INDEX_RECORD_REQUIRED');\n  if (!/\\.(stdout|stderr)$/.test(match[2])) continue;\n  const bytes = readFileSync(match[2]);\n  const oid = createHash('sha1').update(Buffer.from('blob ' + bytes.length + '\\0')).update(bytes).digest('hex');\n  if (oid !== match[1]) throw Error('STAGED_RAW_STREAM_BYTES_CHANGED:' + match[2]);\n  rawStreamCount++;\n}\nif (!rawStreamCount) throw Error('RAW_EVIDENCE_REQUIRED');\nconst unfiltered = git(['diff','--cached','--no-ext-diff','--no-textconv','--check','--','.']);\nif (unfiltered.exitCode !== 2 || unfiltered.stderr.length) throw Error('EXPECTED_PRESERVED_RAW_WHITESPACE_RESULT');\nconst diagnostics = unfiltered.stdout.toString('utf8');\nfor (const line of diagnostics.split('\\n')) {\n  if (/^[^+].+:\\d+:/.test(line) && !/^_work\\/gpu-owner-recovery\\/runs\\/.+\\.(stdout|stderr):\\d+:/.test(line)) throw Error('NON_RAW_WHITESPACE_DIAGNOSTIC:' + line);\n}\nconsole.log(JSON.stringify({status:'PASS',scope:'STAGED_INDEX_BEFORE_THIS_RECEIPT_IS_ADDED',scopedWhitespace:{exitCode:scoped.exitCode,excludedOnly:excluded},trackedGeneratedNamespaces:[],rawStreamCount,allStagedRawStreamsMatchPhysicalBytes:true,unfilteredWhitespace:{expectedFailure:true,exitCode:unfiltered.exitCode,stdout:diagnostics,stderr:unfiltered.stderr.toString('utf8')},gitAttributesOrFiltersAdded:false,rawStreamsNormalized:false,trainingReady:false},null,2));\n"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 5377,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "stream": "stdout",
+      "path": "_work/gpu-owner-recovery/runs/closure-git-hygiene-1/command.stdout",
+      "bytes": 5377,
+      "sha256": "8d926adc04904fb045bc473121febbcc88dcb80c22741746654e74348c6e7401"
+    },
+    {
+      "stream": "stderr",
+      "path": "_work/gpu-owner-recovery/runs/closure-git-hygiene-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scope": "STAGED_INDEX_BEFORE_THIS_RECEIPT_IS_ADDED",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

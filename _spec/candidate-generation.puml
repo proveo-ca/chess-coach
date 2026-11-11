@@ -1,0 +1,22 @@
+@startuml candidate_generation
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Versioned bounded recipient candidate enumeration
+component "Validated recipient observation\nno simulator or stale-memory occupancy" as OBS <<app>>
+component "Finite per-prefix action families\nround-robin generators; no retention quotas" as PRIMITIVE <<app>>
+component "Known append + resource + own-dependency checks" as CHECK <<app>>
+component "Depth-cyclic FIFO prefix expansion\n4096 attempted extensions maximum" as SEARCH <<app>>
+component "chess-coach.enumeration.v1\npass first; <=512 unique candidates; <=4 actions" as BATCH <<app>>
+component "Versioned encoder + Burn scorer" as POLICY <<app>>
+OBS --> PRIMITIVE
+OBS --> CHECK
+PRIMITIVE --> SEARCH
+SEARCH --> CHECK : each extension
+CHECK --> BATCH : accepted unique prefix
+BATCH --> SEARCH : continue bounded prefixes
+BATCH --> POLICY
+note bottom of BATCH
+  Explicitly replaces legacy family quotas and traversal.
+  Local eligibility does not guarantee resolution success.
+  Algorithm bounds do not grant production admission.
+end note
+@enduml

@@ -1,0 +1,21 @@
+@startuml causal_journal
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title New flat causal journal - actual mutation integration
+start
+:Bind actual native operands to stable private engine IDs;
+:Capture logical group's live causal recipient geometry;
+:Emit typed effects at native mutation sites;
+:Record only actual successful target consumption;
+:Attach target-only observation before casualty clearing;
+:Emit changed recipient cells after the group;
+:Validate final entities, modes, mines and lives against kernel;
+:Validate bounded standard JSON / Zod journal;
+:Stage both recipient successors before commit;
+note right
+  No old companion/frame-key/authority wire.
+  Speculative prefix visibility stays private.
+  IDs and parse success grant no runtime permission.
+  No F9 or training-readiness claim.
+end note
+stop
+@enduml

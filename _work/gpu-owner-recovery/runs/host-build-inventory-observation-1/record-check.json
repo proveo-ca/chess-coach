@@ -1,0 +1,30 @@
+{
+  "status": "PASS_OPERATOR_REPORTED_FAILED_INVENTORY_RECORDS_ONLY",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-observation-1/observation.json",
+      "sha256": "0bb0ce83239d29ba5b9c4d3c105b50e61a74aa61a5ad8de2f94f1f8e0c08846e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-observation-1/operator-paste.txt",
+      "sha256": "101dce5003464c73771ae5104ea57497c9bd0633912448ea48215c68cc621701"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-observation-1/verify-report.ts",
+      "sha256": "77498b6898b4c794e724b15f3ad27be9e5f628e3c1f63ed067f0a5ad9757a59c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-build-inventory-handoff-1/request.json",
+      "sha256": "20fc6e86e461ad04c9c69daacafa93f736d69ad9b7164e0e2527a0ad77a35d0b"
+    }
+  ],
+  "reportedReceiptSha256": "b817c5a6135d97ab4703367fdb924bd92f8ac8afdd30bfa63ac81d5a0d52c631",
+  "reportedQueries": 3,
+  "reportedCaptureMetadata": 6,
+  "originalHostBytesRehashed": false,
+  "exactHostDiagnosticEstablished": false,
+  "remainingHostInvocations": 0,
+  "automaticRetryAuthorized": false,
+  "hostOrNativeOrGpuOperationsPerformed": false,
+  "trainingReady": false
+}

@@ -1,0 +1,36 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "reference-physical-pin-integrated-1",
+  "stage": "reference-guards",
+  "sourceManifestSha256": "9619eb4e16b22641104bfb17fe096d29b3d48ac5db48f7d851f899e8fc7e9b84",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "packages/runtime/tests/reference-bundles.test.ts",
+    "--test-name-pattern",
+    "reference source guard"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 1461,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/reference-physical-pin-integrated-1/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/reference-physical-pin-integrated-1/command.stderr",
+    "bytes": 1461,
+    "sha256": "026f87025171481096843d3d7a7c1ef958b6bb0b9bd2d434cb6c62df92ba7624"
+  },
+  "sourceCount": 197,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

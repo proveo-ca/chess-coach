@@ -1,0 +1,74 @@
+
+_work/gpu-owner-recovery/qualification/host-full/watchdog.test.ts:
+(pass) independent full watchdog accepts exactly six ordered accepted attempts and a drained guard [0.55ms]
+(pass) full completion cannot substitute the previous pair for six attempts [0.28ms]
+(pass) a replacement cannot rejuvenate stale progress at the exact age boundary [0.09ms]
+(pass) watchdog rejects wrong UUID [0.09ms]
+(pass) watchdog rejects low startup headroom [0.04ms]
+(pass) watchdog rejects invalid total [0.02ms]
+(pass) watchdog rejects fractional bytes [0.02ms]
+(pass) watchdog rejects nonfinite start [0.02ms]
+(pass) watchdog rejects negative start [0.01ms]
+(pass) watchdog rejects skipped query [0.06ms]
+(pass) watchdog rejects changed capacity, low running headroom and replayed or early replacement queries [0.30ms]
+(pass) out-of-order, overlapping, duplicate or unfinished attempts never complete [0.23ms]
+(pass) a failed or unaccepted finish latches failure even if later data claims all six passed [0.24ms]
+(pass) foreign feasibility events, run IDs and sequence replacements fail closed [0.34ms]
+(pass) partial lines require final draining and incomplete finalization latches failure [0.27ms]
+(pass) abort, unknown phases, byte bounds and post-completion events reject the journal [3.40ms]
+(pass) watchdog rejects backwards and nonfinite observation clocks [0.08ms]
+(pass) the full runtime watcher drains its last read and reports late abort as owned-stop intent [3.68ms]
+(pass) reused capture adapter preserves original Docker result and partial metadata without starting a process [0.58ms]
+
+_work/gpu-owner-recovery/qualification/host-full/driver.test.ts:
+(pass) pure mocked full campaign reruns the first pair and executes all six original exact selectors [5.91ms]
+(pass) full selector routing does not depend on admitted artifact order [1.35ms]
+(pass) explicit child environment preserves only inherited LD_LIBRARY_PATH for policy subprocess inheritance [1.30ms]
+(pass) receipt keeps bounded summaries and hashes full raw native captures [5.97ms]
+(pass) empty, filtered, ignored, failed or duplicated summaries never count as an accepted selector [4.38ms]
+(pass) each failed step including both finite differences and C12 retains its command and stops the full campaign [4.17ms]
+(pass) artifact and preflight phase failures issue no telemetry or test command and leave sources unknown [0.52ms]
+(pass) source inventory or parsed artifact path mismatch cannot start telemetry [0.83ms]
+(pass) the original full planner must return six selectors with the explicit learning and policy mapping [2.04ms]
+(pass) the driver rejects altered callback argv and a two-result completion from the original executor [2.40ms]
+(pass) low headroom aborts while a native test remains pending without pretending to cancel it [1.18ms]
+(pass) query deadline latches while both pending operations remain uncancelled [0.81ms]
+(pass) late initial and replacement samples cannot refresh a deadline-expired guard [1.41ms]
+(pass) failed telemetry preserves the primary result and raw stderr and admits no tests [0.58ms]
+(pass) serialized journal write failure and byte overflow cannot yield PASS [1.33ms]
+(pass) capture errors retain primary PASS or FAIL commandResult and partial output at finite-difference and C12 steps [3.81ms]
+(pass) a capture-directory failure retains the started attempt ledger without executing the failed step [0.86ms]
+(pass) guard drain failure after six apparent passing results prevents completion [1.18ms]
+(pass) source postcheck failure remains unknown and source mutation prevents done [1.92ms]
+(pass) finalization deadline aborts a pending source postcheck without inventing cancellation [1.60ms]
+(pass) the clipped native-work deadline and invalid budgets cannot borrow finalization time [0.71ms]
+(pass) source-only import leaves the Bun-property-gated container adapter inert before any I/O [0.90ms]
+(pass) connected pure mock driver watchdog requests owned HOST stop while a test is pending [3.43ms]
+
+_work/gpu-owner-recovery/qualification/host-full/render.test.ts:
+(pass) full rendering stays inert, pinned and inside the selected 1080-second envelope [13.16ms]
+(pass) the full command regenerates deterministically without renewing any grant [14.85ms]
+
+_work/gpu-owner-recovery/qualification/host-full/plan.test.ts:
+(pass) selected HOST bounds authorize source preparation only [0.58ms]
+(pass) full-six plan preserves qualification selectors, acceptance and per-step harnesses [0.62ms]
+(pass) 18-minute bounds preserve reserves, ordinary cooperation and bounded-failure disk sizing [0.48ms]
+
+_work/gpu-owner-recovery/qualification/host-full/host.test.ts:
+(pass) full packet adds both fresh scratch aliases beneath RO native source [0.23ms]
+(pass) pure mock full happy e2e retains six results and five owned operations [0.89ms]
+(pass) pure mock journal abort stops only the owned work and keeps a failed receipt [0.62ms]
+(pass) pure mock late watchdog drain failure cannot promote apparent six-test PASS [0.57ms]
+(pass) abort during start settles before stop and never starts log-follow [0.23ms]
+(pass) failed stop permits one conditional kill and preserves the cleanup failure [0.26ms]
+(pass) removal failure alone prevents full PASS [0.14ms]
+(pass) late captured operations cannot borrow cleanup or receipt reserves [0.37ms]
+(pass) invalid or absent CIDs never authorize guessed cleanup [0.26ms]
+(pass) two-test receipts, wrong FD harnesses and false summaries cannot replace full-six evidence [0.52ms]
+(pass) malformed inner results retain the ledger and GPU attempt fact [0.15ms]
+(pass) runtime retains original helpers, single-count scratch and finalization protection [0.17ms]
+
+ 59 pass
+ 0 fail
+ 601 expect() calls
+Ran 59 tests across 5 files. [119.00ms]

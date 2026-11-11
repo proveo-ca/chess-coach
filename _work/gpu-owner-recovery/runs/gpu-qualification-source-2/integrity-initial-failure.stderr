@@ -1,0 +1,7 @@
+ENOENT: no such file or directory, open 'crates/*/Cargo.toml'
+    path: "crates/*/Cargo.toml",
+ syscall: "open",
+   errno: -2,
+    code: "ENOENT"
+
+Bun v1.4.0 (Linux x64)

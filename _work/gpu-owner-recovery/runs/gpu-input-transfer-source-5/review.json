@@ -1,0 +1,21 @@
+{
+  "version": "chess-coach.qualification-https-publication-source-review.v1",
+  "status": "ACCEPTED_WITHIN_FRESH_PUBLICATION_REQUEST_ONLY",
+  "sourceReceipt": "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-5/receipt.json",
+  "activeRequest": "_work/gpu-owner-recovery/qualification/transfer/https-publication-request.json",
+  "adversarial": { "session": "ses_e3cea2a1cffeBacqiaDdQkXxlq", "verdict": "READY_SOURCE_ONLY" },
+  "devops": { "session": "ses_e3ec46b44ffe7CbnV5rwv23shT", "verdict": "READY_EXPLICIT_HTTPS_PUBLICATION_ONLY", "reviewedSnapshot": "gpu-input-transfer-source-4", "subsequentPrivateOriginFixChangesTransportOrApprovalScope": false },
+  "security": { "session": "ses_e3cea2a12ffe9TMeXvXBhDE8n7", "verdict": "SCOPED_PREEXEC_READY", "rawOriginOutputPersistenceFindingResolved": true },
+  "helperTests": 88,
+  "helperAssertions": 428,
+  "qualificationTests": 37,
+  "qualificationAssertions": 280,
+  "passingTypechecks": 4,
+  "frozenSourceHashes": 311,
+  "freshPublicationAttemptExecuted": false,
+  "originalFailureClosed": true,
+  "downloadCopyRepackOrPreparationReplayAuthorized": false,
+  "operatorDownloadOrBuildOrGpuExecutionAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

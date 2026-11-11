@@ -1,0 +1,29 @@
+{
+  "name": "types-verifier",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "node_modules/typescript/lib/_tsc.js",
+    "-p",
+    "_work/gpu-owner-recovery/prepared-llvm/tsconfig.json"
+  ],
+  "timeoutMs": 120000,
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-local-1/types-verifier/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-local-1/types-verifier/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

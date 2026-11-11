@@ -1,0 +1,24 @@
+ M _spec/.spec-index.json
+ M _spec/gate-closure.md
+ M _spec/gpu-build.puml
+ M _spec/gpu-feasibility.puml
+ M _spec/gpu-host-build-inventory.puml
+ M _spec/gpu-host-build-reuse.puml
+ M _spec/gpu-host-build.puml
+ M _spec/gpu-host-receive.puml
+ M _spec/gpu-input-transfer.puml
+ M _spec/gpu-qualification.puml
+ M _spec/gpu-readiness.md
+?? _spec/gpu-full-qualification.puml
+?? _work/gpu-owner-recovery/qualification/host-full/
+?? _work/gpu-owner-recovery/runs/host-full-plan-source-1/
+?? _work/gpu-owner-recovery/runs/host-full-regression-source-1/
+?? _work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/
+?? _work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/publication-actions/
+?? _work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/publication-attempt.json
+?? _work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/publication-result.json
+?? _work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/publication-staging.json
+?? _work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/push-attempt.json
+?? _work/gpu-owner-recovery/runs/host-gpu-full-source-1/
+?? _work/gpu-owner-recovery/runs/host-gpu-full-source-2/
+?? _work/gpu-owner-recovery/runs/host-gpu-full-source-3/

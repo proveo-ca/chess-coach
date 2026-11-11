@@ -1,0 +1,10 @@
+{
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "scope": "BOUNDED_IN_PROCESS_STATIC_RULE_FIXTURE_ONLY",
+  "coldF9Proof": false,
+  "stages": [
+    { "stage": "initial", "bytes": 8617, "sha256": "616499c6c4a4cea1ce272885d460688b1fc88124d00a5ba443c11d211642e2d4" },
+    { "stage": "opened", "bytes": 8956, "sha256": "7bae2f798c5d5514d5f6ba9f4f4c688adcd1f086767c82a03fe4f11ee0b5fcc8" },
+    { "stage": "settled", "bytes": 9509, "sha256": "9c1532bc9e1695e1ef49aba34afc08fb0fc2567af2d9b43ef912202bf83407f4" }
+  ]
+}

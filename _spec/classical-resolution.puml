@@ -1,0 +1,21 @@
+@startuml classical_resolution
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Canonical classical settlement - canonical physics and causal sink
+start
+:Capture common initial board, plans and visibility;
+:Apply ordered first-matching attack / approach rules;
+:Retire direct attack-wave casualties and spent mines;
+:Resolve timed occupant / quiet movement contacts;
+:Apply landing and chase mines;
+:Apply deferred path-reveal attacks to live operands;
+:Resolve delayed departures and swaps;
+:Promote only live eligible Marine arrivals;
+:Return attack / move / path snapshots and consequences;
+note right
+  Preserve canonical physics and intermediate results.
+  No historical companion wire or runtime permission.
+  Actual-mutation sink preserves a separate causal journal.
+  No F9 or training-readiness claim.
+end note
+stop
+@enduml

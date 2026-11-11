@@ -1,0 +1,65 @@
+
+_work/gpu-owner-recovery/qualification/host-feasibility/watchdog.test.ts:
+(pass) the independent watchdog accepts exactly two ordered attempts and a drained guard [0.36ms]
+(pass) a replacement cannot rejuvenate stale progress at the exact age boundary [0.18ms]
+(pass) watchdog rejects wrong UUID [0.06ms]
+(pass) watchdog rejects low startup headroom [0.03ms]
+(pass) watchdog rejects invalid total [0.02ms]
+(pass) watchdog rejects fractional bytes [0.02ms]
+(pass) journal identity, prefix, partial lines, completion and abort stay fail closed [0.13ms]
+(pass) the runtime watcher drains its last read and turns a late abort into owned-stop intent [0.37ms]
+(pass) capture failure preserves the original Docker result, primary cause and partial metadata [0.42ms]
+
+_work/gpu-owner-recovery/qualification/host-feasibility/driver.test.ts:
+(pass) pure mocked pair validates five artifacts and 65 sources before GPU commands [5.09ms]
+(pass) explicit child environment preserves only inherited LD_LIBRARY_PATH [0.06ms]
+(pass) receipt keeps bounded summaries and hashes full raw native captures [1.57ms]
+(pass) requires one passing test summary rather than empty, filtered or duplicate success [2.77ms]
+(pass) artifact or preflight deadline failure invokes no GPU or test operation and leaves source unknown [0.29ms]
+(pass) source inventory and parsed artifact path mismatch cannot start telemetry [0.67ms]
+(pass) low headroom aborts while native test remains pending and blocks the second test [1.03ms]
+(pass) query deadline latches without pretending to cancel either pending operation [0.72ms]
+(pass) failed query keeps raw stderr and admits no tests [0.62ms]
+(pass) serialized journal failure and byte overflow never produce PASS [1.12ms]
+(pass) capture failure retains primary native failure and the available partial stream [0.81ms]
+(pass) guard drain failure after two apparent PASS results prevents done [0.90ms]
+(pass) source postcheck error stays unknown and source mutation blocks done [1.05ms]
+(pass) finalization deadline aborts a pending source postcheck without inventing cancellation [0.99ms]
+(pass) source-only import leaves container adapter inert and has no project GPU or build operations [0.89ms]
+(pass) connected pure mock driver journal abort reaches owned HOST stop while a test is pending [2.39ms]
+
+_work/gpu-owner-recovery/qualification/host-feasibility/render.test.ts:
+(pass) rendering prepares inert JavaScript and Fish without activating any entrypoint [9.06ms]
+(pass) the source packet remains deterministic for the frozen reported build metadata [10.98ms]
+
+_work/gpu-owner-recovery/qualification/host-feasibility/plan.test.ts:
+(pass) selected source preparation carries no execution, cache-write or publication approval [0.62ms]
+(pass) the draft maps only retained RO inputs and fresh writable output roots [0.21ms]
+
+_work/gpu-owner-recovery/qualification/host-feasibility/guard.test.ts:
+(pass) strict raw CSV and fixed selected-device argv [0.07ms]
+(pass) rejects fractions, units, negatives, wrong UUID, extra rows, and unsafe memory [0.13ms]
+(pass) startup and running equality pass; running below 2 GiB latches [0.11ms]
+(pass) startup below 3 GiB and unstable total fail closed [0.06ms]
+(pass) timestamps use query start and stale equality fails before a late replacement [0.09ms]
+(pass) cadence, one in-flight query, query deadline and 150-query cap [0.42ms]
+(pass) clock regression fails and a prior failure never clears [0.05ms]
+
+_work/gpu-owner-recovery/qualification/host-feasibility/host.test.ts:
+(pass) the GPU packet fixes the UUID, resources and RO inputs without Cargo or copy commands [0.25ms]
+(pass) pure mock happy e2e retains exactly five owned-container operations [0.62ms]
+(pass) pure mock journal abort stops pending owned work and accepts no missing inner receipt [0.34ms]
+(pass) pure mock late watchdog drain failure cannot promote apparent test PASS [0.21ms]
+(pass) abort during start settles before the owned stop and never starts log-follow [0.22ms]
+(pass) failed owned stop permits only one conditional kill and retains cleanup failure [0.23ms]
+(pass) removal failure alone prevents PASS [0.12ms]
+(pass) late captured operation results cannot borrow cleanup or receipt reserves [0.32ms]
+(pass) invalid or absent captured CIDs never authorize guessed cleanup [0.23ms]
+(pass) partial or altered successful inner metadata cannot replace the complete exact pair [0.29ms]
+(pass) malformed inner results retain the completed operation ledger and GPU attempt fact [0.15ms]
+(pass) the runtime keeps original helper paths and protects finalization through the final exit check [0.18ms]
+
+ 48 pass
+ 0 fail
+ 322 expect() calls
+Ran 48 tests across 6 files. [68.00ms]

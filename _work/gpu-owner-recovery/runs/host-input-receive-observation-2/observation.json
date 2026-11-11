@@ -1,0 +1,23 @@
+{
+  "version": "chess-coach.operator-receive-observation.v2",
+  "status": "OPERATOR_REPORTED_PASS_HOST_RECEIVE_AND_EXTRACT_ONLY",
+  "provenance": "NORMALIZED_OPERATOR_PASTE_NOT_ORIGINAL_HOST_FILES",
+  "paste": "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/operator-paste.txt",
+  "request": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/request.json",
+  "handoff": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/handoff.json",
+  "reportedFetchExit": 0,
+  "reportedReceiveExit": 0,
+  "reportedHostCommandExit": 0,
+  "functionalReceiveAndExtractionFactsAccepted": true,
+  "reportedHostInvocationsConsumed": 1,
+  "remainingHostInvocations": 0,
+  "automaticRetryAuthorized": false,
+  "originalHostFilesReceived": false,
+  "actualOperatorCommandBytesIndependentlyVerified": false,
+  "reportedMissingArchiveListExactlyMatchesPreparation": false,
+  "missingArchiveListDiscrepancy": { "reportedOnly": ["ntapi@0.3.1"], "preparedOnly": ["ntapi@0.4.3"] },
+  "buildOrNativeExecutionAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

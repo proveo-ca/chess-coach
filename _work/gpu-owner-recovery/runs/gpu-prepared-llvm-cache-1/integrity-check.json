@@ -1,0 +1,30 @@
+{
+  "version": "chess-coach.gpu-functional-cargo-cache-integrity.v1",
+  "status": "PASS_RECORD_STREAM_AND_SOURCE_INTEGRITY_ONLY",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-cache-1/receipt.json",
+      "sha256": "2868b0085171c85a20bce0a67c1caebc71a081dd7af3d50ce1bced81461e0ff8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-cache-1/outcome.json",
+      "sha256": "07998cbe550aba0be5110d23c2dd07cf1d0984070d73d70e3294d10db0fd6aae"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-cache-1/registry-manifest.json",
+      "sha256": "84495a7676e59742345610b51562cdd4d5163f0fe03ea23b7d99609b3e618b4c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-local-6/receipt.json",
+      "sha256": "525d78d68d8f3f9c90af5af9f0dd4b7134ebe097909f099d4658f98ff69ebf23"
+    }
+  ],
+  "streamsChecked": 22,
+  "boundFetchSourceHashesChecked": 282,
+  "preparedSourceHashesChecked": 277,
+  "fetchRepeated": false,
+  "nativeQueriesRepeated": false,
+  "compilationPerformed": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

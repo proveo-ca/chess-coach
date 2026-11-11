@@ -1,0 +1,191 @@
+{
+  "status": "PASS_READ_ONLY_PUBLICATION_PREFLIGHT",
+  "failure": null,
+  "parent": "250d438685d2fc7560b0e31439f282bb2c145888",
+  "branch": "feat-ml-adjuntant-ii",
+  "destination": "https://github.com/proveo-ca/chess-coach.git",
+  "transportPolicy": "EXISTING_FIXED_HTTPS_POLICY_UNCHANGED",
+  "identityAndAuthentication": "EXISTING_INHERITED_ONLY_NOT_PRINTED_OR_CHANGED",
+  "results": [
+    {
+      "id": "head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "--verify",
+        "HEAD"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 41,
+      "stderrBytes": 0,
+      "expectedExitCodes": [
+        0
+      ],
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-preflight-2/head/command.stdout",
+          "bytes": 41,
+          "sha256": "8b965c289a2afa23516a8e9e48631ae9fed3c9d6159475aa59a72067d352f28a"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-preflight-2/head/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "branch",
+      "argv": [
+        "git",
+        "symbolic-ref",
+        "-q",
+        "HEAD"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 32,
+      "stderrBytes": 0,
+      "expectedExitCodes": [
+        0
+      ],
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-preflight-2/branch/command.stdout",
+          "bytes": 32,
+          "sha256": "4fd0fdfea0f8c95283126ca075fdf15282ffd4465d8cf40647b4506ca7d18922"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-preflight-2/branch/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "staged",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "expectedExitCodes": [
+        0
+      ],
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-preflight-2/staged/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-preflight-2/staged/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "hooks",
+      "argv": [
+        "git",
+        "rev-parse",
+        "--git-path",
+        "hooks"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 11,
+      "stderrBytes": 0,
+      "expectedExitCodes": [
+        0
+      ],
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-preflight-2/hooks/command.stdout",
+          "bytes": 11,
+          "sha256": "0e80aa3e00491eab353c789ed23d8e6d729074f135dbf9d5803fef5986f77f70"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-preflight-2/hooks/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "hook-config",
+      "argv": [
+        "git",
+        "config",
+        "--path",
+        "--get",
+        "core.hooksPath"
+      ],
+      "status": "FAIL",
+      "exitCode": 1,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "expectedExitCodes": [
+        0,
+        1
+      ],
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-preflight-2/hook-config/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-preflight-2/hook-config/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "rewrites",
+      "argv": [
+        "git",
+        "config",
+        "--get-regexp",
+        "^url\\..*\\.(insteadof|pushinsteadof)$"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 106,
+      "stderrBytes": 0,
+      "expectedExitCodes": [
+        0,
+        1
+      ],
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-preflight-2/rewrites/command.stdout",
+          "bytes": 106,
+          "sha256": "4568ede68b45a61a3a98775f331911d1bafdcdd12284e8e801ea510e39df7216"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-preflight-2/rewrites/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "commitInvocations": 0,
+  "pushInvocations": 0,
+  "trainingReady": false
+}

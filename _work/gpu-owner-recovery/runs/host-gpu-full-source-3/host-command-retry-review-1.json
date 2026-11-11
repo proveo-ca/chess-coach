@@ -1,0 +1,30 @@
+{
+  "status": "READY_ONE_FRESH_OPERATOR_HOST_RETRY_RECORD_AND_CANONICAL_PUBLISHED_FILE_LAUNCH_ONLY",
+  "approval": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-approval-1.json",
+    "sha256": "79e605b7dc999597206d1642260ccf4b098c0de3a7cde65dd84e100b1412fcff"
+  },
+  "adversarial": {
+    "session": "ses_e344b3677ffeTWBSkwYLAQeILD",
+    "verdict": "READY_TO_MERGE_YES",
+    "remainingFindings": []
+  },
+  "security": {
+    "session": "ses_e344b3680ffeVAudXCvJu3Vivu",
+    "verdict": "READY_ONE_OPERATOR_HOST_RETRY_ONLY",
+    "remainingFindings": [],
+    "risk": "low"
+  },
+  "launchArgv": [
+    "fish",
+    "--no-config",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command.fish"
+  ],
+  "priorAllowanceConservativelyClosed": true,
+  "newCommitOrPushNeeded": false,
+  "freshHostInvocationObserved": false,
+  "codingHostOperationsPerformed": false,
+  "automaticRetryAuthorized": false,
+  "publicationApproved": false,
+  "trainingReady": false
+}

@@ -1,0 +1,36 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "ts-slice-bridge-02",
+  "stage": "bridge",
+  "sourceManifestSha256": "99cec9153783c1aa3b3f19edbaa9d6e0b4a7097171b6660bb2224262731ecb80",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "packages/contracts/tests/gpu-job.test.ts",
+    "packages/runtime/tests/gpu-job.test.ts",
+    "packages/runtime/tests/fixed-attempt-gpu-owner.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 2788,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/ts-slice-bridge-02/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/ts-slice-bridge-02/command.stderr",
+    "bytes": 2788,
+    "sha256": "b5727b2b7d846cf3f321b4e930f1282c498e515a4ec1ad83ac5dcbe2121f310e"
+  },
+  "sourceCount": 33,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

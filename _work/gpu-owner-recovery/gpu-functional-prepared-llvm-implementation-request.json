@@ -1,0 +1,23 @@
+{
+  "version": "chess-coach.gpu-functional-prepared-llvm-implementation-request.v1",
+  "status": "APPROVED_SOURCE_STATIC_AND_AVAILABLE_OFFLINE_GRAPH_CHECKS_ONLY",
+  "authorization": {
+    "source": "EXECUTOR_SELECTED_REUSE_LLVM_RECOMMENDED_IN_PARENT_SESSION",
+    "preparedInstallerSkipPrimaryPurposeExceptionAccepted": true,
+    "sourceChangesAuthorized": true,
+    "staticChecksAuthorized": true,
+    "availableOfflineCargoGraphChecksAuthorized": true,
+    "automaticInstallationOrDependencyAcquisitionAuthorized": false
+  },
+  "mode": "EXPLICIT_PREPARED_OFFLINE_LLVM",
+  "feature": "gpu-prepared-llvm",
+  "bundler": { "package": "tracel-llvm-bundler", "version": "23.1.0-4", "hostBuildFeature": "xtask" },
+  "preserve": ["CPU defaults", "existing gpu-cuda feature", "backend/dependency versions", "F64", "4670 finite differences", "exact C12", "master seeds 101..105", "model and training semantics", "cooperative UUID telemetry"],
+  "compilationAuthorized": false,
+  "prefixCopyingOrSelectionAuthorized": false,
+  "downloadsAuthorized": false,
+  "markerCreationAuthorized": false,
+  "imageOperationsAuthorized": false,
+  "hostGpuOperationsAuthorized": false,
+  "trainingAuthorized": false
+}

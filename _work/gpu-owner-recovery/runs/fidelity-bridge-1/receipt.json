@@ -1,0 +1,36 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "fidelity-bridge-1",
+  "stage": "bridge",
+  "sourceManifestSha256": "913839b7822f7b6b8b0750f3245852f8a40bc7abb070e7b720f590788bd2f66d",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "packages/contracts/tests/gpu-job.test.ts",
+    "packages/runtime/tests/gpu-job.test.ts",
+    "packages/runtime/tests/fixed-attempt-gpu-owner.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 3200,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/fidelity-bridge-1/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/fidelity-bridge-1/command.stderr",
+    "bytes": 3200,
+    "sha256": "d0b2c7d88b619515a18e7296f67e034c7fa58f3564601f56c7da1c446c2fac92"
+  },
+  "sourceCount": 194,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

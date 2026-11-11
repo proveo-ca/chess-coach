@@ -24,10 +24,15 @@
     "deploy:starchess:dry-run": "pnpm --filter @chess-coach/starchess deploy:dry-run",
     "storybook:primitives": "pnpm --filter @chess-coach/ui-web storybook",
     "build:storybook:primitives": "pnpm --filter @chess-coach/ui-web build-storybook",
-    "e2e": "nx run-many -t e2e --projects=ui,starchess --parallel=2"
+    "e2e": "nx run-many -t e2e --projects=ui,starchess --parallel=2",
+    "ml:test": "bun test packages/game-core/tests packages/contracts/tests packages/policy/tests packages/runtime/tests",
+    "ml:typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.tests.json"
   },
   "devDependencies": {
-    "nx": "^21.6.11"
+    "@types/bun": "1.4.0",
+    "@types/node": "26.6.6",
+    "nx": "^21.6.11",
+    "typescript": "5.9.3"
   },
   "engines": {
     "node": ">=22"

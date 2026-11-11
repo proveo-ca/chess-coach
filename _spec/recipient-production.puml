@@ -1,0 +1,22 @@
+@startuml recipient_production
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Continuing recipient knowledge and economic ownership
+start
+:Validate native journal continuity and explicit bank;
+:Bind accepted own deployments to local receipt references;
+while (Another causal group?) is (yes)
+  :Publish target-only successful consumption assertions;
+  :Fold own lifecycle and witnessed actual enemy casualties;
+  :Fold completed geometric visibility deltas;
+endwhile (no)
+:Reconcile live own identities with the actual successor;
+:Fold final cells at the successor turn;
+:Validate paid conservation and recipient observation;
+:Return detached local batch and private reducer successor;
+note right
+  No engine IDs or speculative prefix cells in public bytes.
+  Native parse success grants no runtime authority.
+  Bank owner never estimates or resets mineral history.
+end note
+stop
+@enduml

@@ -1,0 +1,28 @@
+{
+  "version": "chess-coach.source-review.v1",
+  "reviewer": "devops",
+  "sessionId": "ses_e463e78dfffe4YAnf2hT72bQKo",
+  "scope": "REPOSITORY_LOCAL_DEVELOPMENT_PROVISIONING_AND_VERIFICATION_RUNNER",
+  "readOnly": true,
+  "reviewerExecutedCommands": false,
+  "findingsAddressed": [
+    "Immediate command exit must not remove deadline authority while a descendant holds inherited pipes.",
+    "Unexpected supervisor loss must fail even after the original command reports exit zero.",
+    "IPC disconnect must terminate the supervisor's still-anchored owned process group."
+  ],
+  "finalReviewedFiles": [
+    "_work/gpu-owner-recovery/verify.ts",
+    "_work/gpu-owner-recovery/verify.test.ts",
+    "_work/gpu-owner-recovery/command-supervisor.ts"
+  ],
+  "freshVerificationReceipts": [
+    "_work/gpu-owner-recovery/runs/runner-supervisor-loss-fix-1/receipt.json",
+    "_work/gpu-owner-recovery/runs/tooling-supervisor-loss-fix-1/receipt.json"
+  ],
+  "finalVerdict": "READY_TO_CONTINUE_SELECTED_OFFLINE_CHECKS_ONLY",
+  "remainingBlockingFindingsInReviewedScope": 0,
+  "adversarialReviewAcceptance": false,
+  "securityReviewAcceptance": false,
+  "operationalAcceptance": false,
+  "trainingReady": false
+}

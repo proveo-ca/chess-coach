@@ -1,0 +1,276 @@
+{
+  "version": "chess-coach.host-receive-source-publication.v1",
+  "status": "FAIL",
+  "failure": "SOURCE_PUBLICATION_COMMAND_FAILED",
+  "attempts": {
+    "commit": 0,
+    "push": 0
+  },
+  "commitSucceeded": false,
+  "sourceCommit": null,
+  "pushedCommit": null,
+  "elapsedMs": 213.214362,
+  "sourceProof": "_work/gpu-owner-recovery/runs/host-input-receive-source-2/receipt.json",
+  "helperSha256": "091a431757ef83710a95156816e085cb1ed36b632e4923c9632695ffe821bafa",
+  "operations": [
+    {
+      "argv": [
+        "/usr/bin/git",
+        "branch",
+        "--show-current"
+      ],
+      "timeoutMs": 599999,
+      "status": "PASS",
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-01/command.stdout",
+          "bytes": 21,
+          "sha256": "3467ae26a897ab942a1376913a429c19c2045ee00c3a1fddb0919214c1fc5841"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-01/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "exitCode": 0,
+      "failure": null
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "timeoutMs": 599943,
+      "status": "PASS",
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-02/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-02/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "exitCode": 0,
+      "failure": null
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "diff",
+        "HEAD",
+        "--name-only"
+      ],
+      "timeoutMs": 599915,
+      "status": "PASS",
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-03/command.stdout",
+          "bytes": 148,
+          "sha256": "b5371a8fae6f9515bcd8ac6c222feee87d2168e324923579f959cafb7f73bd0c"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-03/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "exitCode": 0,
+      "failure": null
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "ls-files",
+        "--others",
+        "--exclude-standard"
+      ],
+      "timeoutMs": 599895,
+      "status": "PASS",
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-04/command.stdout",
+          "bytes": 8716,
+          "sha256": "e45c6fe76f690a06e06e321b62d568e2ecc4f47f255147ce5db73dd1543deedd"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-04/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "exitCode": 0,
+      "failure": null
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "add",
+        "--",
+        "_spec/.spec-index.json",
+        "_spec/gate-closure.md",
+        "_spec/gpu-build.puml",
+        "_spec/gpu-host-receive.puml",
+        "_spec/gpu-input-transfer.puml",
+        "_spec/gpu-qualification.puml",
+        "_spec/gpu-readiness.md",
+        "_work/gpu-owner-recovery/qualification/host-receive/bootstrap.test.ts",
+        "_work/gpu-owner-recovery/qualification/host-receive/bootstrap.ts",
+        "_work/gpu-owner-recovery/qualification/host-receive/plan.json",
+        "_work/gpu-owner-recovery/qualification/host-receive/receive.test.ts",
+        "_work/gpu-owner-recovery/qualification/host-receive/receive.ts",
+        "_work/gpu-owner-recovery/qualification/host-receive/tsconfig.json",
+        "_work/gpu-owner-recovery/qualification/host-receive/verify.ts",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/outcome-check.json",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/outcome-check.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/outcome-check.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publication.json",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publication.operation",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-01/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-01/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-02/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-02/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-03/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-03/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-04/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-04/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-05/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-05/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-06/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-06/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-07/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-07/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-08/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-08/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-09/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-09/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-10/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-10/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-11/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-11/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-12/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-12/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-13/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-13/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-14/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-14/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-15/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-15/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-16/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-16/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-17/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/publish-17/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/reuse.json",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/spec-check.json",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/verify-outcome.ts",
+        "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/verify-specs.ts",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-01/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-01/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-02/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-02/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-03/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-03/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-04/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-04/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/publish-source.ts",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/request.json",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/review.json",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/types.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/types.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/host-command.template.fish",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/qualification-unit/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/qualification-unit/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/receipt.json",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/receive-unit/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/receive-unit/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/sources.json",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/transfer-unit/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/transfer-unit/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/types-0/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/types-0/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/types-1/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/types-1/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/types-2/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/types-2/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/types-3/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/types-3/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/types-4/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-1/types-4/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/host-command-approval.json",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/host-command.template.fish",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/qualification-unit/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/qualification-unit/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/receipt.json",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/receive-unit/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/receive-unit/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/record-check.json",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/review.json",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/sources.json",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/transfer-unit/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/transfer-unit/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/types-0/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/types-0/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/types-1/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/types-1/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/types-2/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/types-2/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/types-3/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/types-3/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/types-4/command.stderr",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/types-4/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-input-receive-source-2/verify-records.ts",
+        "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/stage-audit.json"
+      ],
+      "timeoutMs": 599859,
+      "status": "PASS",
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-05/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-05/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "exitCode": 0,
+      "failure": null
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "timeoutMs": 599815,
+      "status": "FAIL",
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-06/command.stdout",
+          "bytes": 708,
+          "sha256": "8c007dbb8ebaf3e734cc31fbf7f3662c13e163576d78fd8ea8b63a3585cb5512"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/command-06/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "exitCode": 2,
+      "failure": null
+    }
+  ],
+  "operatorHostExecuted": false,
+  "compilationPerformed": false,
+  "gpuExecuted": false,
+  "trainingReady": false
+}

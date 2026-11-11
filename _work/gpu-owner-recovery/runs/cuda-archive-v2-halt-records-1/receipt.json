@@ -1,0 +1,68 @@
+{
+  "version": "chess-coach.cuda-archive-v2-halt-record-validation.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "-e",
+    "\nimport { readFile, readdir } from 'node:fs/promises';\nimport { createHash } from 'node:crypto';\nconst base='_work/gpu-owner-recovery/',run=base+'runs/cuda-archive-audit-2/',hash=bytes=>createHash('sha256').update(bytes).digest('hex'),load=async path=>JSON.parse(await readFile(path,'utf8'));\nconst assert=(condition,code)=>{if(!condition)throw Error(code);};\nconst canonical=value=>JSON.stringify(value,(_key,item)=>item&&typeof item==='object'&&!Array.isArray(item)?Object.fromEntries(Object.entries(item).sort(([a],[b])=>a.localeCompare(b))):item);\nconst raw=await readFile(base+'cuda-archive-reviewed-v2.json'),review=JSON.parse(raw),approvedBytes=await readFile(run+'approved-request.json'),approved=JSON.parse(approvedBytes);\nassert(hash(raw)==='dacf7e484328711b65f72d48ee6cba4808164fd6ce9ddb7bf3366868486f173c'&&hash(approvedBytes)==='a968cc2761869c8634a3cc929f2b1d21a7804f7128bd1fb6b045f76598fbd9f1'&&review.requestSha256===hash(approvedBytes),'PRE_EXECUTION_REVIEW_REQUEST_PINS');\nfor(const [path,expected]of Object.entries({...review.files,...review.predecessorProofs}))assert(hash(await readFile(path))===expected,'ACCEPTED_SOURCE_OR_PROOF_CHANGED:'+path);\nconst request=await load(base+'cuda-llvm-request.json');\nassert(canonical(request)===canonical({...approved,status:'HALTED_AFTER_PRIVATE_BUN_ARCHIVE_AUDIT_INVOCATION_FAILURE_DECISION_REQUIRED',authorityGranted:false,authorization:{...approved.authorization,grantStatus:'HALTED_AFTER_FIRST_FAILURE'},phase:'HALTED_AFTER_PRIVATE_BUN_ARCHIVE_AUDIT_INVOCATION_FAILURE',archiveAuditFailure:{receipt:run+'receipt.json',classification:base+'cuda-archive-audit-2-classification.json',stageClassificationPending:false,failureStage:'02-audit',failureCategory:'PRIVATE_BUN_ABORT_INSIDE_MINIMAL_AUDIT_ROOT',rootCause:'UNDETERMINED',privateBunStartupEstablished:true,xzLaunchStatus:'UNESTABLISHED',decompressionStatus:'UNESTABLISHED',structuralInventoryPublished:false,automaticRetryPerformed:false},renewedExecutorDecisionRequired:true}),'HALT_TRANSITION_ONLY_NO_SCOPE_CHANGE');\nconst closure=await load(base+'closure.json');\nassert(closure.newOperationalOrAcquisitionAuthorityGranted===false&&closure.newLocalDevelopmentNamespaceAndNoRunAuthorityGranted===false&&closure.newOperationalAuthorityGranted===false&&closure.trainingReady===false&&closure.latestDevelopmentFailure===base+'cuda-archive-audit-2-classification.json'&&closure.activeRenewalFailure===closure.latestDevelopmentFailure,'CURRENT_AUTHORITY_HALTED_AND_FAILURE_POINTERS');\nfor(const label of ['cuda-archive-v2-snapshot-parent-2','cuda-archive-v2-static-parent-2','cuda-archive-v2-types-parent-2','cuda-archive-v2-runner-parent-2','cuda-archive-v2-acquire-regression-2','cuda-archive-v2-isolation-regression-2']){\n const receipt=await load(base+'runs/'+label+'/receipt.json'),manifest=await readFile(base+'runs/'+label+'/sources.json');assert(receipt.status==='PASS'&&receipt.sourceChanged===false&&hash(manifest)===receipt.sourceManifestSha256,'HISTORICAL_V2_SOURCE_GATE_PASS');\n for(const item of JSON.parse(manifest))assert(hash(await readFile(item.path===base+'cuda-llvm-request.json'?run+'approved-request.json':item.path))===item.sha256,'SOURCE_GATE_SNAPSHOT_CHANGED:'+item.path);\n for(const stream of [receipt.stdout,receipt.stderr]){const bytes=await readFile(stream.path);assert(bytes.length===stream.bytes&&hash(bytes)===stream.sha256,'SOURCE_GATE_STREAM_CHANGED');}\n}\nconst failed=await load(run+'receipt.json');assert(failed.status==='FAIL'&&failed.exitCode===1&&failed.failure===null&&failed.sourceChanged===false&&failed.oneOutsideDeadlineMs===30000&&failed.pinnedReviewSha256===hash(raw)&&failed.pinnedRequestSha256===hash(approvedBytes),'FAILED_AUDIT_RECEIPT_PRESERVED');\nfor(const stream of failed.streams){const bytes=await readFile(stream.path);assert(bytes.length===stream.bytes&&hash(bytes)===stream.sha256,'FAILED_AUDIT_RAW_STREAM_CHANGED');}\nconst frames=(await readFile(run+'command.stdout','utf8')).trimEnd().split('\\n').map(line=>JSON.parse(line));\nassert(frames.at(-1).failedStage==='02-audit'&&canonical(frames.at(-1).completedStages)===canonical(['00-trust','01-config']),'FAILURE_STAGE');\nconst stderr=await readFile(run+'command.stderr','utf8');assert(stderr.includes('panic(main thread): abort() called')&&stderr.includes(\"import { auditTar } from '/audit/cuda-tar.ts'\"),'PRIVATE_BUN_ABORT_DIAGNOSTIC');\nconst classification=await load(base+'cuda-archive-audit-2-classification.json'),observation=await load(run+'output-state-after-failure.json');\nassert(classification.privateBunExecutionEstablished===true&&classification.rootCause==='UNDETERMINED'&&classification.xzLaunchStatus==='UNESTABLISHED'&&classification.decompressionStatus==='UNESTABLISHED'&&classification.structuralInventoryPublished===false&&classification.sequenceHaltedAtFirstActualFailure===true,'NO_UNSUPPORTED_RUNTIME_OR_DECODER_CLAIMS');\nassert(classification.crashReportUrlVisited===false&&classification.externalCrashReportSubmitted===false&&classification.automaticRetryPerformed===false&&observation.scratchEntries.length===0,'NO_REPORT_RETRY_OR_OUTPUT');\nassert((await readdir(base+'scratch/cuda-archive-audit-2')).length===0&&!(await readdir(run)).some(name=>name==='inventory.json'||name==='inventory.pending.json'),'NO_STRUCTURAL_INVENTORY');\nconst packet=await load(run+'source-snapshot.json');assert(packet.captureTiming==='BEFORE_ACTUAL_PASSIVE_AUDIT_INVOCATION'&&packet.files.length===26,'ACTUAL_SOURCE_CAPTURE_TIMING');\nfor(const item of packet.files){const bytes=await readFile(item.snapshot);assert(bytes.length===item.bytes&&hash(bytes)===item.sha256&&review.files[item.path]===item.sha256,'EXECUTED_SOURCE_PACKET_CHANGED');}\nconst qualification=await load(failed.readOnlyRootPlan);assert(qualification.status==='PASS'&&qualification.sourceChanged===false&&hash(await readFile(failed.readOnlyRootPlan))===failed.readOnlyRootPlanSha256,'PRESERVED_READ_ONLY_QUALIFICATION');\nfor(const stream of qualification.streams){const bytes=await readFile(stream.path);assert(bytes.length===stream.bytes&&hash(bytes)===stream.sha256,'READ_ONLY_QUALIFICATION_STREAM_CHANGED');}\nconsole.log(JSON.stringify({status:'PASS',scope:'HALT_RECORD_AND_EXECUTED_SOURCE_EVIDENCE_ONLY_NOT_OPERATIONAL_RETRY',historicalSourceGates:{snapshot:[46,1065],archive:[163,842],runner:[16,326],types:'PASS'},current26SourcesAnd97ProofsUnchanged:true,executed26SourceFilesCapturedBeforeInvocation:true,readOnlyPlanPassPreserved:true,failedAuditStreamsPreserved:true,trustAndDiscoveryPassed:true,privateBunExecutionAndAbortEstablished:true,xzLaunch:'UNESTABLISHED',decompression:'UNESTABLISHED',rootCause:'UNDETERMINED',inventoryPublished:false,authorityGranted:false,freshDecisionRequired:true,externalReportSubmitted:false,automaticRetryPerformed:false,trainingReady:false},null,2));\n"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 848,
+  "stderrBytes": 0,
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/cuda-llvm-request.json",
+      "sha256": "e0b54ee82895a3da613e92e764ccd7db2c10f2001e95241543b36f49b6f1cc63"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/closure.json",
+      "sha256": "79286d46c41484b3156d2e6cc912a40e6bd66db4f4f8bc81dcb551b578fd2b0b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-archive-audit-2-classification.json",
+      "sha256": "d88adf1297c649d326c149e2d1109ea3afd090e5dc53e6e95929b73efbabc66b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-archive-reviewed-v2.json",
+      "sha256": "dacf7e484328711b65f72d48ee6cba4808164fd6ce9ddb7bf3366868486f173c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/receipt.json",
+      "sha256": "12e6d4610b71353faf2ab1080ea3ec9315cd9fb200374970c38a0cbaf8ea121d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/approved-request.json",
+      "sha256": "a968cc2761869c8634a3cc929f2b1d21a7804f7128bd1fb6b045f76598fbd9f1"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot.json",
+      "sha256": "0479cb99502bfe128f7490120fe16872a168b119be251a004068220c47f173ed"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/output-state-after-failure.json",
+      "sha256": "5ffbd440f7f78b37228056aeafa5ec676382c791b336db1d7c9b2c0a9f4d3076"
+    }
+  ],
+  "sourceChanged": false,
+  "streams": [
+    {
+      "stream": "stdout",
+      "path": "_work/gpu-owner-recovery/runs/cuda-archive-v2-halt-records-1/command.stdout",
+      "bytes": 848,
+      "sha256": "872aa65b372dc9658166a9ecf4124fa485b2f21af7302df8777ba9db2ae008eb"
+    },
+    {
+      "stream": "stderr",
+      "path": "_work/gpu-owner-recovery/runs/cuda-archive-v2-halt-records-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scope": "RECORD_VALIDATION_ONLY_NOT_NATIVE_PROBE_OR_ARCHIVE_RETRY",
+  "authorityGranted": false,
+  "nativeProbePerformed": false,
+  "trainingReady": false
+}

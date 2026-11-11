@@ -1,0 +1,18 @@
+[
+  {
+    "path": "_work/gpu-owner-recovery/qualification/request.json",
+    "sha256": "a5cdf92fd9cdd4410d5e417d33503e0bd6a8a6875d75f3a1f2dee2ad9d9aadba"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/qualification/llvm-flags.ts",
+    "sha256": "bdafee6f99125b4dad0fc04ef4f6cd9754f7a9c21cb4945cf9a95a133eec3aae"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.ts",
+    "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+    "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+  }
+]

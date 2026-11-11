@@ -1,0 +1,18 @@
+{
+  "version": "chess-coach.gpu-feasibility-source-selection.v1",
+  "status": "SOURCE_PREPARATION_SELECTED_NO_OPERATIONAL_AUTHORITY",
+  "choice": "Prepare runtime (Recommended)",
+  "sourcePreparationSelected": true,
+  "localMockAndStaticVerificationAuthorized": true,
+  "selectedUuid": "GPU-713c95e0-6952-a576-794b-9ef1fb527ff0",
+  "resources": { "cpus": 2, "memoryBytes": 8589934592, "memoryPlusSwapBytes": 8589934592 },
+  "guard": { "startupMinFreeBytes": 3221225472, "runningStopBelowFreeBytes": 2147483648, "sampleIntervalMs": 2000, "queryTimeoutMs": 1000, "maxSampleAgeMs": 4000 },
+  "hostExecutionApproved": false,
+  "stagingOrCopyingApproved": false,
+  "gpuExecutionApproved": false,
+  "kernelJitCompilationApproved": false,
+  "installationOrAcquisitionApproved": false,
+  "publicationApproved": false,
+  "trainingApproved": false,
+  "trainingReady": false
+}

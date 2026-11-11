@@ -1,0 +1,20 @@
+@startuml resolution_primitives
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Deterministic collision prerequisites
+component "Travel-time schedules\nairborne vs ground occupancy" as TIMING <<app>>
+component "Timed mover contact\nsquare / tick / first arrival" as CONTACT <<app>>
+component "Ordered mine path contact\nclear / chase / detonate" as MINES <<app>>
+component "Ray occupancy + cumulative path visibility\nfirst discovery and stop-before" as RAY <<app>>
+component "Charon aimed / fire-and-forget strikes\nfirst BattleShip blocks each diagonal" as CHARON <<app>>
+component "Simultaneous resolver + typed causal journal\nintegration pending" as RESOLVE <<app>>
+TIMING --> CONTACT
+CONTACT --> RESOLVE
+MINES --> RESOLVE
+RAY --> RESOLVE
+CHARON --> RESOLVE
+note bottom of RESOLVE
+  Pure primitives retain canonical rule results.
+  They do not yet emit loss receipts or authenticate witnesses.
+  Attach causal events to actual mutations, not final snapshots.
+end note
+@enduml

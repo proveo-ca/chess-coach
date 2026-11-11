@@ -1,0 +1,207 @@
+{
+  "scope": "SOURCE_ONLY_PURE_MOCK_E2E_NOT_HOST_GPU_EVIDENCE",
+  "actualDockerProcesses": 0,
+  "actualNativeProcesses": 0,
+  "gpuExecuted": false,
+  "result": {
+    "version": "chess-coach.owned-gpu-full.v1",
+    "status": "FAIL_HOST_GPU_FULL_ONLY",
+    "failure": "Error: DRIVER_ABORT:MOCK_HEADROOM",
+    "cleanupFailures": [],
+    "ids": {
+      "worker": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "state": {
+      "Running": false,
+      "ExitCode": 0,
+      "OOMKilled": false
+    },
+    "innerReceipt": null,
+    "guardComplete": true,
+    "results": [
+      {
+        "id": "worker-create",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "create",
+          "--pull=never",
+          "--platform=linux/amd64",
+          "--network=none",
+          "--cpus=2",
+          "--memory=8g",
+          "--memory-swap=8g",
+          "--user=1000:1000",
+          "--runtime=nvidia",
+          "--gpus=device=GPU-713c95e0-6952-a576-794b-9ef1fb527ff0",
+          "--cidfile=/source-only-mock/_work/gpu-owner-recovery/runs/host-gpu-full-2/worker.cid",
+          "--label=chess-coach.gpu-full=host-gpu-full-2",
+          "--workdir=/build/native",
+          "--entrypoint=/usr/local/bin/bun",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-gpu-native-build-2/native,target=/build/native,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu,target=/build/native/target-gpu,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun,target=/usr/local/bin/bun,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-build/llvm,target=/opt/tracel-data/tracel/tracel-llvm-23.1.0-4,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-runtime/rootfs/usr/local/cuda,target=/usr/local/cuda,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/runs/host-gpu-full-2,target=/evidence,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/runs/host-gpu-full-2/inner,target=/evidence/inner",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/runs/host-gpu-full-2/inner-runs,target=/build/native/_work/gpu-owner-recovery/runs",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-gpu-full-2/scratch,target=/scratch",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-gpu-full-2/scratch,target=/build/native/_work/gpu-owner-recovery/scratch",
+          "--env",
+          "NVIDIA_VISIBLE_DEVICES=GPU-713c95e0-6952-a576-794b-9ef1fb527ff0",
+          "--env",
+          "NVIDIA_DRIVER_CAPABILITIES=compute,utility",
+          "--env",
+          "CUDA_VISIBLE_DEVICES=0",
+          "--env",
+          "CUDA_PATH=/usr/local/cuda",
+          "--env",
+          "XDG_DATA_HOME=/opt/tracel-data",
+          "--env",
+          "HOME=/scratch/home",
+          "--env",
+          "TMPDIR=/scratch/tmp",
+          "--env",
+          "CUDA_CACHE_PATH=/scratch/cuda-cache",
+          "--env",
+          "XDG_CACHE_HOME=/scratch/cache",
+          "--env",
+          "RAYON_NUM_THREADS=2",
+          "--env",
+          "RUST_TEST_THREADS=1",
+          "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+          "--no-env-file",
+          "--no-install",
+          "/evidence/driver.mjs"
+        ],
+        "timeoutMs": 20000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-start",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "start",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "timeoutMs": 20000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-logs",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "logs",
+          "--follow",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "timeoutMs": 890000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-stop",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "stop",
+          "--time=2",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "timeoutMs": 10000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-state",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "container",
+          "inspect",
+          "--format",
+          "{{json .State}}",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "timeoutMs": 10000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-remove",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "rm",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "timeoutMs": 15000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      }
+    ],
+    "elapsedMs": 30,
+    "gpuExecutionAttempted": true,
+    "testExecutionAttempted": null,
+    "testsExecuted": null,
+    "hostInvocationsConsumed": 1,
+    "remainingHostInvocations": 0,
+    "automaticRetryAuthorized": false,
+    "trainingReady": false,
+    "qualificationImageBuilt": false,
+    "fullAssuranceQualified": false,
+    "operationalTelemetryQualified": false,
+    "trainingExecuted": false
+  }
+}

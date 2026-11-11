@@ -1,0 +1,19 @@
+    Finished `test` profile [unoptimized] target(s) in 0.31s
+     Running unittests src/lib.rs (target/gpu-owner-recovery/debug/deps/chess_coach_learning-16f10fc079dcbbaf)
+     Running tests/accumulation.rs (target/gpu-owner-recovery/debug/deps/accumulation-caff360fe5fee9b6)
+     Running tests/context.rs (target/gpu-owner-recovery/debug/deps/context-54b1f30b96a884b9)
+     Running tests/episode.rs (target/gpu-owner-recovery/debug/deps/episode-89d71db5b1fb5e49)
+     Running tests/finite_difference.rs (target/gpu-owner-recovery/debug/deps/finite_difference-a8fb6d119cb6ad43)
+     Running tests/initialization.rs (target/gpu-owner-recovery/debug/deps/initialization-1c8757da49e2ce45)
+     Running tests/model.rs (target/gpu-owner-recovery/debug/deps/model-0adc0dfe8c74ae44)
+     Running unittests src/lib.rs (target/gpu-owner-recovery/debug/deps/chess_coach_policy_io-63d3080372947436)
+     Running unittests src/bin/policy-channel.rs (target/gpu-owner-recovery/debug/deps/policy_channel-ec4854928d9d62ab)
+     Running unittests src/bin/policy-initialize.rs (target/gpu-owner-recovery/debug/deps/policy_initialize-9cf9d3eb144fcfbd)
+     Running unittests src/bin/policy-score.rs (target/gpu-owner-recovery/debug/deps/policy_score-d43c5735514f2fd0)
+     Running tests/channel.rs (target/gpu-owner-recovery/debug/deps/channel-ca689c8e4c631d2a)
+     Running tests/f32.rs (target/gpu-owner-recovery/debug/deps/f32-e6723cf87270073d)
+     Running tests/gpu.rs (target/gpu-owner-recovery/debug/deps/gpu-97ae8f68274474eb)
+     Running tests/initialize.rs (target/gpu-owner-recovery/debug/deps/initialize-9fbec8ce02ca3385)
+     Running tests/score.rs (target/gpu-owner-recovery/debug/deps/score-64837b633fc1b902)
+   Doc-tests chess_coach_learning
+   Doc-tests chess_coach_policy_io

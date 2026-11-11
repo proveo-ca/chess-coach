@@ -1,0 +1,249 @@
+{
+  "version": "chess-coach.gpu-functional-local-verification.v1",
+  "scope": "LOCAL_RECIPE_TYPES_AND_DEFAULT_CPU_ONLY",
+  "status": "PASS",
+  "sourceManifestSha256": "3e5b58c02eeab08783051e087c57381dc0059605c2de6b07fac70e240bf09d45",
+  "sourceCount": 273,
+  "sourceChanged": false,
+  "environment": {
+    "HOME": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/home",
+    "PATH": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/rustup/toolchains/1.95.0-x86_64-unknown-linux-gnu/bin:/usr/local/bin:/usr/bin:/bin",
+    "TMPDIR": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/tmp",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "TZ": "UTC",
+    "XDG_CONFIG_HOME": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/xdg/config",
+    "XDG_CACHE_HOME": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/xdg/cache",
+    "XDG_DATA_HOME": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/xdg/data",
+    "XDG_STATE_HOME": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/xdg/state",
+    "MISE_DATA_DIR": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/data",
+    "MISE_CACHE_DIR": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/cache",
+    "MISE_STATE_DIR": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/state",
+    "MISE_CONFIG_DIR": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/config",
+    "MISE_TMP_DIR": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/tmp",
+    "MISE_GLOBAL_CONFIG_FILE": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/config/config.toml",
+    "MISE_SYSTEM_CONFIG_DIR": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/system",
+    "MISE_SYSTEM_DIR": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/system",
+    "MISE_SYSTEM_CONFIG_FILE": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/system/config.toml",
+    "MISE_CEILING_PATHS": "/home/gu1lty/Projects/proveo/chess-coach/_work",
+    "MISE_OVERRIDE_CONFIG_FILENAMES": "mise.toml",
+    "MISE_AUTO_ENV": "false",
+    "MISE_NO_ENV": "1",
+    "MISE_NO_HOOKS": "1",
+    "MISE_PARANOID": "1",
+    "MISE_AUTO_INSTALL": "false",
+    "MISE_TASK_RUN_AUTO_INSTALL": "false",
+    "MISE_RUSTUP_HOME": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/rustup",
+    "RUSTUP_HOME": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/rustup",
+    "MISE_CARGO_HOME": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo",
+    "CARGO_HOME": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo",
+    "MISE_RUST_DEFAULT_HOST": "x86_64-unknown-linux-gnu",
+    "RUSTUP_DIST_SERVER": "https://static.rust-lang.org",
+    "RUSTUP_UPDATE_ROOT": "https://static.rust-lang.org/rustup",
+    "RUSTUP_AUTO_INSTALL": "0",
+    "CARGO_TARGET_DIR": "/home/gu1lty/Projects/proveo/chess-coach/target/gpu-owner-recovery",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_PROFILE_DEV_DEBUG": "0",
+    "CARGO_PROFILE_TEST_DEBUG": "0",
+    "RAYON_NUM_THREADS": "2",
+    "RUST_TEST_THREADS": "2",
+    "RUSTC": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/rustup/toolchains/1.95.0-x86_64-unknown-linux-gnu/bin/rustc",
+    "RUSTDOC": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/rustup/toolchains/1.95.0-x86_64-unknown-linux-gnu/bin/rustdoc",
+    "CC": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/zig-cc.ts",
+    "CXX": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/zig-cxx.ts",
+    "AR": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/zig-ar.ts",
+    "CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/zig-cc.ts",
+    "ZIG_GLOBAL_CACHE_DIR": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/zig/global",
+    "ZIG_LOCAL_CACHE_DIR": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/zig/local",
+    "CARGO_TERM_COLOR": "never",
+    "CARGO_NET_OFFLINE": "true"
+  },
+  "results": [
+    {
+      "stage": "recipe",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "./packages/runtime/tests/gpu-recipe.test.ts"
+      ],
+      "timeoutMs": 30000,
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 28,
+      "stderrBytes": 834,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-3/recipe/command.stdout",
+          "bytes": 28,
+          "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-3/recipe/command.stderr",
+          "bytes": 834,
+          "sha256": "32efb98296d6c54308239f67a4421f5d278abb0db823698a23034eb2c43ae30c"
+        }
+      ]
+    },
+    {
+      "stage": "types-source",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "-p",
+        "tsconfig.json"
+      ],
+      "timeoutMs": 120000,
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-3/types-source/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-3/types-source/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "stage": "types-tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "-p",
+        "tsconfig.tests.json"
+      ],
+      "timeoutMs": 120000,
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-3/types-tests/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-3/types-tests/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "stage": "types-tools",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "-p",
+        "_work/gpu-owner-recovery/tsconfig.json"
+      ],
+      "timeoutMs": 120000,
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-3/types-tools/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-3/types-tools/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "stage": "cpu",
+      "argv": [
+        "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/rustup/toolchains/1.95.0-x86_64-unknown-linux-gnu/bin/cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--jobs",
+        "2",
+        "-p",
+        "chess-coach-learning",
+        "-p",
+        "chess-coach-policy-io"
+      ],
+      "timeoutMs": 600000,
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 4798,
+      "stderrBytes": 1775,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-3/cpu/command.stdout",
+          "bytes": 4798,
+          "sha256": "3ea7fd117af621b3af8857d2c38b0a89f23d2d1e04e36ea78fef0c5449c07654"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-3/cpu/command.stderr",
+          "bytes": 1775,
+          "sha256": "be8ea557786db1d0bfb55353a4ba395371f0bf556a792fadad57f5b4d968c5c5"
+        }
+      ]
+    },
+    {
+      "stage": "cpu-recipe",
+      "argv": [
+        "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/rustup/toolchains/1.95.0-x86_64-unknown-linux-gnu/bin/cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--jobs",
+        "2",
+        "-p",
+        "chess-coach-host-facts",
+        "--test",
+        "recipe"
+      ],
+      "timeoutMs": 120000,
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 278,
+      "stderrBytes": 153,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-3/cpu-recipe/command.stdout",
+          "bytes": 278,
+          "sha256": "beb87b717aebe234ef6f6fb5b6d549a3206a7206591d1a2f9f4f3cbf194d635a"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-3/cpu-recipe/command.stderr",
+          "bytes": 153,
+          "sha256": "747fd681305cda92eeda4b6931532b5510d3f55be90c9947ec305cde017d6f0a"
+        }
+      ]
+    }
+  ],
+  "imageBuilt": false,
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

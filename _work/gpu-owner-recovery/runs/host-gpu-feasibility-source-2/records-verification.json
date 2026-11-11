@@ -1,0 +1,31 @@
+{
+  "scope": "SOURCE_PACKET_RECORDS_ONLY",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "./_work/gpu-owner-recovery/qualification/host-feasibility/verify-records.ts",
+    "host-gpu-feasibility-source-2"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 189,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-2/records-check/command.stdout",
+      "bytes": 189,
+      "sha256": "dc9c6ded6a1fe04afb89866a84fbefc79bd3260f4998898e17885b87ae3395a1"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-2/records-check/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "actualDockerProcesses": 0,
+  "actualNativeProcesses": 0,
+  "gpuExecuted": false,
+  "trainingReady": false
+}

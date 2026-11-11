@@ -1,0 +1,18 @@
+{
+  "version":"chess-coach.host-gpu-feasibility-observation.v1",
+  "status":"OPERATOR_REPORTED_PASS_GPU_F64_FEASIBILITY_PAIR_AUTHORITY_CONSUMED",
+  "provenance":"SEMANTICALLY_NORMALIZED_COMPLETE_OPERATOR_JSON_AND_SUMMARY_NOT_ORIGINAL_HOST_BYTES",
+  "request":"_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/host-command-approval.json",
+  "reportedReceipt":"_work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/reported-receipt.json",
+  "reportedHostExitCode":0,"reportedHostInvocationsConsumed":1,"remainingHostInvocations":0,"automaticRetryAuthorized":false,
+  "reportedGpuFeasibilityPairPassed":true,"reportedTestsExecuted":2,"reportedEachTestPassCount":1,"reportedEachTestFailCount":0,"reportedEachTestIgnoredCount":0,
+  "reportedSourceStabilityChecked":true,"reportedSourceChanged":false,"reportedArtifactsAdmitted":5,"reportedGuardComplete":true,"reportedTelemetryQueriesPassed":2,"reportedTelemetrySamples":2,
+  "reportedHostElapsedMs":4514.140361,"reportedInnerElapsedMs":3407.88992,"reportedOwnedContainerCleanupPassed":true,
+  "reportedJournalEvents":8,"reportedJournalBytes":1476,
+  "originalHostFilesReceived":false,"originalHostArtifactBytesRehashedInCoding":false,"originalHostJournalBytesVerified":false,"actualOperatorCommandBytesIndependentlyVerified":false,"operatorSourceCommit":null,
+  "lastPublishedCommit":"250d438685d2fc7560b0e31439f282bb2c145888",
+  "publicationResult":"_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/publication-result.json","previousPublicationGrantConsumed":true,
+  "priorRequestsProofsFailedRecordsAndPartialWorkspacesRetained":true,
+  "fullNumericalAndC12Qualified":false,"cpu39Qualified":false,"canonicalBothQualified":false,"integratedR4Qualified":false,"operationalTelemetryQualified":false,"fullAssuranceQualified":false,"coldJitQualified":false,
+  "newHostReadsAuthorized":false,"newCopyingOrStagingAuthorized":false,"newGpuExecutionAuthorized":false,"newKernelJitExecutionAuthorized":false,"newPublicationAuthorized":false,"trainingAuthorized":false,"trainingReady":false
+}

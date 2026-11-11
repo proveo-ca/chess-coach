@@ -1,0 +1,37 @@
+{
+  "status": "READY_SOURCE_FOUR_DOCS_RECORDS_AND_FRESH_EXACT_HOST_APPROVAL_DECISION_ONLY",
+  "reviewerSession": "ses_e36649e3affeJjY53mEb5Dxjo5",
+  "firstPassVerdict": "READY_TO_MERGE_NO",
+  "closedFinding": {
+    "severity": "MEDIUM",
+    "finding": "Current summaries conflated completed build-two closeout with the later source-four documentation gate",
+    "paths": ["_spec/gpu-readiness.md", "_spec/gate-closure.md", "_spec/gpu-host-build-reuse.puml"],
+    "resolution": "Identify the completed build-two PASS and READY receipts as pre-GPU checkpoints and keep later source-four acceptance separate",
+    "status": "CLOSED_BY_FINAL_REVIEW"
+  },
+  "finalReviewVerdict": "READY_TO_MERGE_YES",
+  "remainingFindings": [],
+  "acceptedConsistencyReceipt": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/final-docs-and-source-check-2.json",
+    "bytes": 6661,
+    "sha256": "9bda0179089f77625cf15931818bf5a76869ea60987af5775dbd17274f3afe7e"
+  },
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/receipt.json",
+    "sha256": "cf632c5896bd5d46b453a67aeb87d2f0bd735b252960c7eca6917cee802d6f60"
+  },
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/host-command.fish",
+    "bytes": 49023,
+    "sha256": "c690e8b0261e6bf09e834a41394369f694393ec6c60e18aa31b0375110f00054"
+  },
+  "earlierProofsReceiptsAndReviewsRetainedUnchanged": true,
+  "remainingHostInvocationsAuthorized": 0,
+  "hostExecutionAuthorized": false,
+  "copyingOrStagingAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "kernelJitCompilationAuthorized": false,
+  "publicationAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

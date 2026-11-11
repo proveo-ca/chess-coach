@@ -1,0 +1,4 @@
+# SPEC: _spec/recovery.md
+[tasks."cuda:isolation-probe"]
+dir = "../.."
+run = "/usr/local/bin/bun --no-env-file --no-install _work/gpu-owner-recovery/cuda-isolation.ts probe"

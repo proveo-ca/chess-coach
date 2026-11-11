@@ -1,0 +1,16 @@
+{
+  "version":"chess-coach.host-native-build-observation.v2",
+  "status":"OPERATOR_REPORTED_PASS_HOST_GPU_NATIVE_BUILD_ONLY",
+  "provenance":"SEMANTICALLY_NORMALIZED_COMPLETE_OPERATOR_JSON_AND_SUMMARY_NOT_ORIGINAL_HOST_BYTES",
+  "request":"_work/gpu-owner-recovery/runs/host-gpu-build-handoff-2/request.json",
+  "reportedReceipt":"_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/reported-receipt.json",
+  "reportedHostExitCode":0,"reportedHostInvocationsConsumed":1,"remainingHostInvocations":0,"automaticRetryAuthorized":false,
+  "originalHostFilesReceived":false,"originalHostArtifactBytesRehashed":false,"actualOperatorCommandBytesIndependentlyVerified":false,
+  "reportedNativeCompilationPassed":true,"reportedLearningCompilationPassed":true,"reportedPolicyCompilationPassed":true,
+  "reportedSourceStabilityChecked":true,"reportedSourceChanged":false,"reportedArtifactsAdmitted":5,"reportedOwnedContainerCleanupPassed":true,
+  "reportedHostElapsedMs":18384.74729,"reportedNativeElapsedMs":16200.1312,
+  "lastPublishedCommit":"25bcfb61ddde6849d10e61536266b5e2f50c5598","previousPublicationGrantConsumed":true,
+  "partialHostWorkspaceAndCacheRetentionRequired":true,
+  "newHostReadsAuthorized":false,"copyingOrStagingAuthorized":false,"nativeBuildRetryAuthorized":false,"newPublicationAuthorized":false,
+  "gpuExecutionAuthorized":false,"kernelJitCompilationAuthorized":false,"trainingAuthorized":false,"trainingReady":false
+}

@@ -1,0 +1,65 @@
+linux/amd64 sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb ["rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb"]
+COMMAND= command -v cc
+/usr/bin/cc
+COMMAND_EXIT=0
+COMMAND= command -v c++
+/usr/bin/c++
+COMMAND_EXIT=0
+COMMAND= command -v ar
+/usr/bin/ar
+COMMAND_EXIT=0
+COMMAND= command -v ld
+/usr/bin/ld
+COMMAND_EXIT=0
+COMMAND= command -v getconf
+/usr/bin/getconf
+COMMAND_EXIT=0
+COMMAND= command -v readelf
+/usr/bin/readelf
+COMMAND_EXIT=0
+COMMAND= cc --version
+cc (Debian 12.2.0-14+deb12u1) 12.2.0
+Copyright (C) 2022 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+COMMAND_EXIT=0
+COMMAND= c++ --version
+c++ (Debian 12.2.0-14+deb12u1) 12.2.0
+Copyright (C) 2022 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+COMMAND_EXIT=0
+COMMAND= ar --version
+GNU ar (GNU Binutils for Debian) 2.40
+Copyright (C) 2023 Free Software Foundation, Inc.
+This program is free software; you may redistribute it under the terms of
+the GNU General Public License version 3 or (at your option) any later version.
+This program has absolutely no warranty.
+COMMAND_EXIT=0
+COMMAND= ld --version
+GNU ld (GNU Binutils for Debian) 2.40
+Copyright (C) 2023 Free Software Foundation, Inc.
+This program is free software; you may redistribute it under the terms of
+the GNU General Public License version 3 or (at your option) a later version.
+This program has absolutely no warranty.
+COMMAND_EXIT=0
+COMMAND= getconf GNU_LIBC_VERSION
+glibc 2.36
+COMMAND_EXIT=0
+COMMAND= cat /etc/os-release
+PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"
+NAME="Debian GNU/Linux"
+VERSION_ID="12"
+VERSION="12 (bookworm)"
+VERSION_CODENAME=bookworm
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+COMMAND_EXIT=0
+CXX_LIBRARY_EXIT=0
+CXX_LIBRARY=/usr/lib/gcc/x86_64-linux-gnu/12/libstdc++.so
+COMPILATION_PERFORMED=false
+GPU_EXECUTION_PERFORMED=false

@@ -1,0 +1,2 @@
+{"status":"PASS_METADATA_ONLY","failure":null,"receipt":"_work/gpu-owner-recovery/runs/host-build-inventory-2/receipt.json","queries":8,"trainingReady":false}
+HOST_BUILD_INVENTORY_EXIT=0

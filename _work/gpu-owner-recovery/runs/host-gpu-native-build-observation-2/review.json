@@ -1,0 +1,13 @@
+{
+  "status":"READY_REPORTED_BUILD_TWO_RECORDS_AND_GPU_SOURCE_PLANNING_DECISION_ONLY",
+  "classification":["CONTAINED_REPORTED_EVIDENCE","INFRASTRUCTURE","SPEC_IMPACTING"],
+  "architecture":{"session":"ses_e36783826ffetiRNpE54VUigWv","nextBoundary":"RECORD_REPORTED_PASS_THEN_SELECT_GPU_SOURCE_PREPARATION_BEFORE_RUNNER_IMPLEMENTATION"},
+  "devops":{"session":"ses_e384ffa7bffecNc429YDN25STS","verdict":"PREPARED_RUNTIME_BINDINGS_AND_FUTURE_HEADROOM_PROPOSAL_SOURCE_ONLY"},
+  "adversarial":{"session":"ses_e36649e3affeJjY53mEb5Dxjo5","verdict":"READY_TO_MERGE_YES"},
+  "security":{"session":"ses_e3845fff1ffeE092hXAV6pfhiW","verdict":"NO_SERIALIZATION_OR_AUTHORITY_OVERCLAIM_FINDINGS","risk":"low","additionalHardeningGate":false},
+  "localReportedEvidenceTests":17,"localReportedEvidenceAssertions":19,"localTypechecks":1,
+  "reportedNativeCompilationsPassed":2,"reportedArtifactsAdmitted":5,"reportedDockerOperationsPassed":5,
+  "originalHostArtifactBytesRehashed":false,"remainingHostBuildInvocations":0,
+  "newHostOrGpuExecutionAuthorized":false,"newKernelJitCompilationAuthorized":false,"newCopyingOrStagingAuthorized":false,
+  "newPublicationAuthorized":false,"trainingAuthorized":false,"trainingReady":false
+}

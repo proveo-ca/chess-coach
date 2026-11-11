@@ -1,0 +1,38 @@
+{
+  "scope": "SOURCE_ONLY_MOCK_NOT_HOST_EVIDENCE",
+  "actualDockerProcesses": 0,
+  "actualNativeProcesses": 0,
+  "gpuExecuted": false,
+  "dockerCliCompatibilityValidated": false,
+  "nativeCliCompatibilityValidated": false,
+  "hostEvidence": false,
+  "calls": [
+    {
+      "id": "donor-create",
+      "argv": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "create",
+        "--pull=never",
+        "--platform=linux/amd64",
+        "--network=none",
+        "--cidfile=/source-only-mock/evidence/donor.cid",
+        "--label=chess-coach.native-build=host-gpu-native-build-1",
+        "docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038"
+      ],
+      "timeoutMs": 120000,
+      "at": 0
+    },
+    {
+      "id": "donor-remove",
+      "argv": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "rm",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "timeoutMs": 20000,
+      "at": 11
+    }
+  ]
+}

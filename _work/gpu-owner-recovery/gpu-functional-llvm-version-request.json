@@ -1,0 +1,26 @@
+{
+  "version": "chess-coach.gpu-functional-llvm-version-request.v1",
+  "status": "APPROVED_ONE_NON_CUDA_VERSION_PROBE_PENDING",
+  "authorization": {
+    "source": "EXECUTOR_SELECTED_VERIFY_VERSION_RECOMMENDED_IN_PARENT_SESSION",
+    "executor": "CODING_ENVIRONMENT_ONLY",
+    "maximumInvocations": 1,
+    "automaticRetry": false
+  },
+  "executable": "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/bin/llvm-config",
+  "argv": [
+    "--version"
+  ],
+  "clientDeadlineSeconds": 10,
+  "clientKillAfterSeconds": 3,
+  "sourceOnlyCubeclIntegrationReviewAuthorized": true,
+  "compilationAuthorized": false,
+  "cudaGpuExecutionAuthorized": false,
+  "downloadAuthorized": false,
+  "copyingAuthorized": false,
+  "markerCreationAuthorized": false,
+  "recipeChangeAuthorized": false,
+  "automaticSelectionAuthorized": false,
+  "hostOperationAuthorized": false,
+  "trainingAuthorized": false
+}
