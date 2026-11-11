@@ -19,8 +19,8 @@ export async function fullPlan() {
     && report.status === "PASS_HOST_GPU_FEASIBILITY_ONLY" && report.innerReceipt.status === "PASS_GPU_FEASIBILITY_TESTS_ONLY"
     && report.innerReceipt.sourceManifestSha256 === base.sourceManifestSha256, "ACCEPTED_REPORTED_F64_PAIR_AND_CONSUMED_HOST_GRANT_REQUIRED");
   return { ...base, version: "chess-coach.owned-gpu-full-proposal.v1", status: "DRAFT_SOURCE_ONLY_FRESH_HOST_GPU_JIT_APPROVAL_REQUIRED",
-    method: "OWNED_GPU_CONTAINER_PRECOMPILED_F64_FULL_SIX", runId: "host-gpu-full-1", grant: "--approved-host-gpu-full-1",
-    workspace: "_work/gpu-owner-recovery/cache/host-gpu-full-1", evidence: "_work/gpu-owner-recovery/runs/host-gpu-full-1",
+    method: "OWNED_GPU_CONTAINER_PRECOMPILED_F64_FULL_SIX", runId: "host-gpu-full-2", grant: "--approved-host-gpu-full-2",
+    workspace: "_work/gpu-owner-recovery/cache/host-gpu-full-2", evidence: "_work/gpu-owner-recovery/runs/host-gpu-full-2",
     reportedFeasibility: { observation: { path: feasibilityObservation, sha256: digest(observationBytes) }, report: { path: feasibilityReport, sha256: digest(reportBytes) } },
     testLoop: { perTestMs: 120000, totalMs: 750000, cleanupReserveMs: 30000 },
     limits: { ...base.limits, overallMs: 1080000, normalOperationsMs: 960000, nativeWorkMs: 890000, telemetryQueries: 400, nativeStreamsBytes: 3405774848 },

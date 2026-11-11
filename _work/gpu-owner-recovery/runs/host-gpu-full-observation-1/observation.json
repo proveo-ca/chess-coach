@@ -1,0 +1,18 @@
+{
+  "version":"chess-coach.host-gpu-full-observation.v1",
+  "status":"OPERATOR_REPORTED_FULL_CAMPAIGN_CADENCE_ABORT_RETRY_GRANT_CONSUMED",
+  "provenance":"SEMANTICALLY_NORMALIZED_COMPLETE_OPERATOR_JSON_AND_SUMMARY_NOT_ORIGINAL_HOST_BYTES",
+  "reportedReceipt":"_work/gpu-owner-recovery/runs/host-gpu-full-observation-1/reported-receipt.json",
+  "issuedApproval":{"path":"_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-approval-1.json","sha256":"79e605b7dc999597206d1642260ccf4b098c0de3a7cde65dd84e100b1412fcff"},
+  "reportedHostExitCode":1,"reportedHostInvocationsConsumed":1,"remainingHostInvocations":0,"automaticRetryAuthorized":false,
+  "reportedFailure":"DRIVER_ABORT:Error: TELEMETRY_QUERY_CADENCE","reportedInnerReceipt":null,"reportedGuardComplete":false,
+  "reportedGpuExecutionAttempted":true,"reportedTestExecutionAttempted":null,"reportedTestsExecuted":null,"reportedHostElapsedMs":9865.080253,
+  "reportedOwnedContainerRemoved":true,"reportedContainerExitCode":137,"reportedOomKilled":false,"reportedCleanupFailures":[],
+  "reportedDockerOperationsPassed":6,"reportedCaptureMetadataRows":24,"reportedUniqueCapturePaths":12,
+  "sourceStabilityOrArtifactAdmissionEvidenceReceived":false,"telemetrySamplesOrJournalBytesReceived":false,"perTestResultsReceived":false,
+  "originalHostFilesReceived":false,"originalHostArtifactBytesRehashedInCoding":false,"actualOperatorCommandBytesIndependentlyVerified":false,
+  "lastPublishedCommit":"3d35125bdcf27542e6a0ad266a9ed118f9d14658","priorPublicationGrantConsumed":true,
+  "failedWorkspaceAndEvidenceRetained":true,"priorRequestsProofsFailedRecordsAndPartialWorkspacesRetained":true,
+  "fullNumericalAndC12Qualified":false,"cpu39Qualified":false,"canonicalBothQualified":false,"integratedR4Qualified":false,"operationalTelemetryQualified":false,"fullAssuranceQualified":false,"coldJitQualified":false,
+  "newHostReadsAuthorized":false,"newCopyingOrStagingAuthorized":false,"newGpuExecutionAuthorized":false,"newKernelJitExecutionAuthorized":false,"newPublicationAuthorized":false,"trainingAuthorized":false,"trainingReady":false
+}

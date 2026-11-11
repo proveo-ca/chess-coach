@@ -123,17 +123,20 @@ export async function executeFull(p: FullPlan, io: FullDriverIO) {
     const due = [phaseDeadline];
     if (state.sample) due.push(state.sample.queryStartedAtMs + p.guard.maxSampleAgeMs);
     if (state.pending) due.push(state.pending.queryStartedAtMs + p.guard.queryTimeoutMs + 1);
-    else due.push(state.lastQueryStartedAtMs === null ? now : state.lastQueryStartedAtMs + p.guard.sampleIntervalMs);
-    cancelTimer = io.schedule(Math.max(1, Math.min(...due) - now), () => {
+    else if (!pendingQuery) due.push(state.lastQueryStartedAtMs === null ? now : state.lastQueryStartedAtMs + p.guard.sampleIntervalMs);
+    cancelTimer = io.schedule(Math.max(1, Math.ceil(Math.min(...due) - now)), () => {
       cancelTimer = null;
       try {
         ensureActive();
-        if (!pendingQuery) startQuery();
+        const latest = guard.snapshot(), current = io.now();
+        if (!pendingQuery && !latest.pending && (latest.lastQueryStartedAtMs === null
+          || current - latest.lastQueryStartedAtMs >= p.guard.sampleIntervalMs)) startQuery();
         arm();
       } catch (error) { void abort(String(error)); }
     });
   };
   const startQuery = () => {
+    ensureActive();
     const query = guard.startQuery();
     const id = `telemetry-${String(query.query).padStart(4, "0")}`, directory = `${captureDirectory}/${id}`;
     const attempt: QueryAttempt = { id, argv: telemetryArgv(p), timeoutMs: p.guard.queryTimeoutMs, attempted: true, status: "STARTED",
@@ -169,7 +172,7 @@ export async function executeFull(p: FullPlan, io: FullDriverIO) {
   };
   try {
     checkDeadline(preflightDeadline);
-    requireValue(p.runId === "host-gpu-full-1" && p.grant === "--approved-host-gpu-full-1"
+    requireValue(p.runId === "host-gpu-full-2" && p.grant === "--approved-host-gpu-full-2"
       && p.selectedUuid === "GPU-713c95e0-6952-a576-794b-9ef1fb527ff0", "FIXED_FULL_CONTEXT_REQUIRED");
     requireValue(fullSelectors.length === 6 && JSON.stringify(fullSelectors) === JSON.stringify([
       "cuda_f64_nonzero_native_scores_round_trip", "cuda_f64_direct_sgd_changes_policy_parameters",
@@ -312,7 +315,7 @@ export async function runFullDriver(p: FullPlan): Promise<void> {
   const budgetMs = Math.min(p.limits.nativeWorkMs, deadline.normalDeadlineEpoch - Date.now() - 20000);
   requireValue(budgetMs > 0, "HOST_NORMAL_BUDGET_EXHAUSTED");
   const captureDirectory = `/build/native/_work/gpu-owner-recovery/runs/${p.runId}`;
-  requireValue(p.runId === "host-gpu-full-1" && p.grant === "--approved-host-gpu-full-1", "FIXED_FULL_CONTEXT_REQUIRED");
+  requireValue(p.runId === "host-gpu-full-2" && p.grant === "--approved-host-gpu-full-2", "FIXED_FULL_CONTEXT_REQUIRED");
   await mkdir(captureDirectory, { mode: 0o700 });
   for (const path of ["/scratch/home", "/scratch/tmp", "/scratch/cuda-cache", "/scratch/cache"]) await mkdir(path, { recursive: true, mode: 0o700 });
   const journal = await open("/evidence/inner/events.ndjson", "ax", 0o600);

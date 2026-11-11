@@ -43,6 +43,12 @@ class Clock {
     }
     this.time = time; await flush();
   }
+  async wakeNextAt(time: number) {
+    await flush();
+    const next = [...this.timers.entries()].sort((a, b) => a[1].at - b[1].at)[0];
+    if (!next) throw Error("MOCK_TIMER_REQUIRED");
+    this.time = time; this.timers.delete(next[0]); next[1].callback(); await flush();
+  }
   count() { return this.timers.size; }
 }
 type Reply = { stdout: string; stderr?: string; result?: CommandResult };
@@ -131,7 +137,7 @@ test("pure mocked full campaign reruns the first pair and executes all six origi
   }
   expect(h.events.map(event => String(event.kind))).toEqual(["guard-start", "sample", ...fullSelectors.flatMap(() => ["attempt-start", "attempt-finish"]), "done"]);
   expect(h.events.map(event => event.sequence)).toEqual(Array.from({ length: 15 }, (_, index) => index + 1));
-  expect(h.events.every(event => event.version === "chess-coach.gpu-full-event.v1" && event.runId === "host-gpu-full-1")).toBe(true);
+  expect(h.events.every(event => event.version === "chess-coach.gpu-full-event.v1" && event.runId === "host-gpu-full-2")).toBe(true);
   expect(h.events[1]).toMatchObject({ uuid: p.selectedUuid, freeBytes: 3221225472, totalBytes: 8589934592, queryStartedMs: 0, query: 1 });
   expect(receipt.telemetry.queries[0]!.streams![0]!.sha256).toBe(digest(Buffer.from(csv())));
   expect(receipt.trainingReady || receipt.fullAssuranceQualified || receipt.operationalTelemetryQualified || receipt.canonicalBothQualified || receipt.integratedR4Qualified || receipt.trainingExecuted).toBe(false);
@@ -208,6 +214,13 @@ test("artifact and preflight phase failures issue no telemetry or test command a
   expect((await executeFull(p, h.io)).failure).toContain("DRIVER_DEADLINE"); expect(h.commands).toHaveLength(0);
 });
 
+test("full-2 rejects consumed full-1 identifiers before artifact or command admission", async () => {
+  const prior = structuredClone(p); prior.runId = "host-gpu-full-1"; prior.grant = "--approved-host-gpu-full-1";
+  const h = harness(prior), receipt = await executeFull(prior, h.io);
+  expect(receipt.failure).toContain("FIXED_FULL_CONTEXT_REQUIRED"); expect(h.commands).toHaveLength(0);
+  expect(h.order.some(entry => entry.startsWith("hash:"))).toBe(false); expect(receipt.sourceStabilityChecked).toBe(false);
+});
+
 test("source inventory or parsed artifact path mismatch cannot start telemetry", async () => {
   const h = harness(); h.hooks.inventory = async () => [];
   expect((await executeFull(p, h.io)).status).toBe("FAIL_GPU_FULL_TESTS_ONLY"); expect(h.commands).toHaveLength(0);
@@ -264,6 +277,99 @@ test("low headroom aborts while a native test remains pending without pretending
   const receipt = await execution;
   expect(receipt.status).toBe("FAIL_GPU_FULL_TESTS_ONLY"); expect(receipt.results).toHaveLength(1);
   expect(h.events.some(event => event.kind === "done")).toBe(false);
+});
+
+test("early timer from fractional delay truncation cannot start telemetry before cadence", async () => {
+  const h = harness(), native = deferred<Reply>(), requested: number[] = [];
+  h.clock.time = 0.25; h.hooks.test = () => native.promise;
+  h.hooks.query = async index => { if (index === 1) h.clock.time += 7.125; return { stdout: csv() }; };
+  h.io.schedule = (delay, callback) => { requested.push(delay); return h.clock.schedule(Math.max(1, Math.floor(delay)), callback); };
+  const execution = executeFull(p, h.io); await flush(); await h.clock.advance(2001.25);
+  native.resolve({ stdout: summary }); const receipt = await execution;
+  expect(receipt.failure).toBeNull(); expect(receipt.status).toBe("PASS_GPU_FULL_TESTS_ONLY"); expect(receipt.telemetry.queries).toHaveLength(2);
+  const starts = receipt.telemetry.queries.map(query => query.queryStartedMs);
+  expect(starts[1]! - starts[0]!).toBeGreaterThanOrEqual(2000);
+  expect(requested.every(delay => Number.isInteger(delay) && delay >= 1)).toBe(true);
+  expect(h.clock.count()).toBe(0);
+});
+
+test("early timer callbacks recheck cadence repeatedly and permit the exact boundary", async () => {
+  const h = harness(), native = deferred<Reply>(), counts: number[] = [], timers: number[] = [], requested: number[] = [];
+  h.clock.time = 0.25; h.hooks.test = () => native.promise;
+  h.io.schedule = (delay, callback) => { requested.push(delay); return h.clock.schedule(delay, callback); };
+  const execution = executeFull(p, h.io); await flush();
+  for (const time of [1999.75, 1999.875, 2000.249999]) {
+    if (h.clock.count()) await h.clock.wakeNextAt(time);
+    counts.push(h.commands.filter(command => command.argv[0] === "nvidia-smi").length); timers.push(h.clock.count());
+  }
+  if (h.clock.count()) await h.clock.wakeNextAt(2000.25);
+  native.resolve({ stdout: summary }); const receipt = await execution;
+  expect(receipt.failure).toBeNull(); expect(receipt.status).toBe("PASS_GPU_FULL_TESTS_ONLY"); expect(counts).toEqual([1, 1, 1]); expect(timers).toEqual([1, 1, 1]);
+  expect(receipt.telemetry.queries.map(query => query.queryStartedMs)).toEqual([0.25, 2000.25]);
+  expect(requested.every(delay => Number.isInteger(delay) && delay >= 1)).toBe(true); expect(h.clock.count()).toBe(0);
+});
+
+test("pending sample journal keeps a bounded liveness timer without one-millisecond polling", async () => {
+  const h = harness(), journal = deferred<void>(), native = deferred<Reply>(), requested: number[] = [];
+  h.hooks.append = event => event.kind === "sample" && event.query === 1 ? journal.promise : Promise.resolve();
+  h.hooks.test = () => native.promise;
+  h.io.schedule = (delay, callback) => { requested.push(delay); return h.clock.schedule(delay, callback); };
+  const execution = executeFull(p, h.io); await flush(); await h.clock.advance(3000);
+  const beforeRelease = requested.length, pendingTimers = h.clock.count();
+  journal.resolve(); await flush(); await h.clock.advance(3001); native.resolve({ stdout: summary });
+  const receipt = await execution;
+  expect(receipt.status).toBe("PASS_GPU_FULL_TESTS_ONLY"); expect(beforeRelease).toBeLessThanOrEqual(3); expect(pendingTimers).toBe(1);
+  expect(receipt.telemetry.queries.map(query => query.queryStartedMs)).toEqual([0, 3001]); expect(h.clock.count()).toBe(0);
+});
+
+test("late telemetry wake does not launch a catch-up burst during a long native wait", async () => {
+  const h = harness(), native = deferred<Reply>(); h.clock.time = 0.125; h.hooks.test = () => native.promise;
+  const execution = executeFull(p, h.io); await flush(); await h.clock.wakeNextAt(3500.125);
+  await h.clock.advance(4500.125); const duringWait = h.commands.filter(command => command.argv[0] === "nvidia-smi").length;
+  await h.clock.advance(5500.125); native.resolve({ stdout: summary }); const receipt = await execution;
+  expect(receipt.status).toBe("PASS_GPU_FULL_TESTS_ONLY"); expect(duringWait).toBe(2);
+  expect(receipt.telemetry.queries.map(query => query.queryStartedMs)).toEqual([0.125, 3500.125, 5500.125]); expect(h.clock.count()).toBe(0);
+});
+
+test("held sample journal still fails at the exact stale boundary without dispatching native work", async () => {
+  const h = harness(), journal = deferred<void>();
+  h.hooks.append = event => event.kind === "sample" && event.query === 1 ? journal.promise : Promise.resolve();
+  const execution = executeFull(p, h.io); await flush(); await h.clock.advance(4000); journal.resolve();
+  const receipt = await execution;
+  expect(receipt.failure).toContain("TELEMETRY_SAMPLE_STALE"); expect(receipt.results).toHaveLength(0);
+  expect(h.commands).toHaveLength(1); expect(h.clock.count()).toBe(0);
+});
+
+test("early wake at the exact pending-query timeout does not overlap or prematurely expire it", async () => {
+  const h = harness(), native = deferred<Reply>(), query = deferred<Reply>(); h.hooks.test = () => native.promise;
+  h.hooks.query = index => index === 1 ? Promise.resolve({ stdout: csv() }) : query.promise;
+  const execution = executeFull(p, h.io); await flush(); await h.clock.advance(2000); await h.clock.wakeNextAt(3000);
+  const expiredAtEquality = h.events.some(event => event.kind === "abort");
+  await h.clock.advance(3001); native.resolve({ stdout: summary }); query.resolve({ stdout: csv() });
+  const receipt = await execution;
+  expect(expiredAtEquality).toBe(false); expect(receipt.failure).toContain("TELEMETRY_QUERY_DEADLINE");
+  expect(receipt.telemetry.queries).toHaveLength(2); expect(h.clock.count()).toBe(0);
+});
+
+test("an early phase-deadline wake cannot start an ineligible replacement or mask deadline expiry", async () => {
+  const h = harness(), native = deferred<Reply>(), postcheck = deferred<void>(), entered = deferred<void>();
+  const clipped = structuredClone(p); clipped.limits.driverFinalizationMs = 500;
+  h.hooks.test = () => native.promise;
+  h.hooks.inventory = async index => { if (index === 2) { entered.resolve(); await postcheck.promise; } return structuredClone(manifest); };
+  const execution = executeFull(clipped, h.io); await flush(); native.resolve({ stdout: summary }); await entered.promise;
+  await h.clock.wakeNextAt(499.999); const queriesBeforeDeadline = h.commands.filter(command => command.argv[0] === "nvidia-smi").length;
+  await h.clock.wakeNextAt(500); postcheck.resolve(); const receipt = await execution;
+  expect(queriesBeforeDeadline).toBe(1); expect(receipt.failure).toContain("DRIVER_DEADLINE");
+  expect(receipt.telemetry.queries).toHaveLength(1); expect(h.clock.count()).toBe(0);
+});
+
+test("last fractional-millisecond directory work crossing the driver cutoff dispatches no expired query", async () => {
+  const h = harness(), native = deferred<Reply>(); h.clock.time = 0.25; h.io.budgetMs = 2000.75; h.hooks.test = () => native.promise;
+  h.hooks.mkdir = async path => { if (path.endsWith("telemetry-0002")) h.clock.time = 2001; };
+  const execution = executeFull(p, h.io); await flush(); await h.clock.wakeNextAt(2000.999);
+  native.resolve({ stdout: summary }); const receipt = await execution;
+  expect(receipt.failure).toContain("DRIVER_DEADLINE"); expect(h.commands.filter(command => command.argv[0] === "nvidia-smi")).toHaveLength(1);
+  expect(h.commands.every(command => command.timeout > 0)).toBe(true); expect(h.clock.count()).toBe(0);
 });
 
 test("query deadline latches while both pending operations remain uncancelled", async () => {

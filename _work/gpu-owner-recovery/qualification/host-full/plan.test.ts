@@ -8,7 +8,9 @@ test("selected HOST bounds authorize source preparation only", async () => {
   expect(selection.sourcePreparationSelected).toBe(true);
   for (const key of ["hostExecutionApproved", "stagingOrCopyingApproved", "gpuExecutionApproved", "kernelJitCompilationApproved", "publicationApproved", "trainingApproved", "automaticRetryAuthorized", "trainingReady"] as const) expect(selection[key]).toBe(false);
   const p = await fullPlan();
-  expect(p.runId).toBe("host-gpu-full-1"); expect(p.grant).toBe("--approved-host-gpu-full-1");
+  expect(p.runId).toBe("host-gpu-full-2"); expect(p.grant).toBe("--approved-host-gpu-full-2");
+  expect(p.workspace).toBe("_work/gpu-owner-recovery/cache/host-gpu-full-2");
+  expect(p.evidence).toBe("_work/gpu-owner-recovery/runs/host-gpu-full-2");
   expect(p.workspace).not.toContain("feasibility-1"); expect(p.evidence).not.toContain("feasibility-1");
   for (const key of ["hostExecutionApproved", "stagingAndNativeCompilationApproved", "stagingOrCopyingApproved", "gpuExecutionAuthorized", "kernelJitCompilationAuthorized", "publicationAuthorized", "trainingAuthorized", "automaticRetryAuthorized", "trainingReady"] as const) expect(p[key]).toBe(false);
 });

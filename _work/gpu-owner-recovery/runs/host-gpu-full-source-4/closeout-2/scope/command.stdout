@@ -1,0 +1,16 @@
+_spec/.spec-index.json
+_spec/gate-closure.md
+_spec/gpu-build.puml
+_spec/gpu-feasibility.puml
+_spec/gpu-full-qualification.puml
+_spec/gpu-host-build-inventory.puml
+_spec/gpu-host-build-reuse.puml
+_spec/gpu-host-build.puml
+_spec/gpu-host-receive.puml
+_spec/gpu-input-transfer.puml
+_spec/gpu-qualification.puml
+_spec/gpu-readiness.md
+_work/gpu-owner-recovery/qualification/host-full/driver.test.ts
+_work/gpu-owner-recovery/qualification/host-full/driver.ts
+_work/gpu-owner-recovery/qualification/host-full/plan.test.ts
+_work/gpu-owner-recovery/qualification/host-full/plan.ts

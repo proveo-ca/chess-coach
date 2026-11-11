@@ -405,7 +405,11 @@
         "_work/gpu-owner-recovery/runs/host-gpu-full-source-2/**",
         "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/**",
         "_work/gpu-owner-recovery/runs/host-full-plan-source-1/**",
-        "_work/gpu-owner-recovery/runs/host-full-regression-source-1/**"
+        "_work/gpu-owner-recovery/runs/host-full-regression-source-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-full-observation-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-full-cadence-red-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-full-cadence-green-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/**"
       ],
       "fingerprint": null
     }

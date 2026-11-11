@@ -1,0 +1,11 @@
+
+_work/gpu-owner-recovery/qualification/host-full/driver.test.ts:
+(pass) early timer from fractional delay truncation cannot start telemetry before cadence [6.22ms]
+(pass) early timer callbacks recheck cadence repeatedly and permit the exact boundary [2.09ms]
+(pass) pending sample journal keeps a bounded liveness timer without one-millisecond polling [1.38ms]
+
+ 3 pass
+ 25 filtered out
+ 0 fail
+ 24 expect() calls
+Ran 3 tests across 1 file. [31.00ms]

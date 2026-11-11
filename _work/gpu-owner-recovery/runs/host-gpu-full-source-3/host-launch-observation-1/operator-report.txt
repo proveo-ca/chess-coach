@@ -1,0 +1,7 @@
+fish --no-config ./host-gpu-full-1.fish
+error: Error reading script file './host-gpu-full-1.fish':
+No such file or directory (os error 2)
+git pull origin --ff-only feat-ml-adjuntant-ii
+From github.com:proveo-ca/chess-coach
+ * branch feat-ml-adjuntant-ii -> FETCH_HEAD
+Already up to date.

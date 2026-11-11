@@ -1,0 +1,34 @@
+{
+  "status": "PRE_FIX_REGRESSION_INPUTS_PRESERVED_BYTE_IDENTICAL",
+  "snapshots": [
+    {
+      "origin": {
+        "path": "_work/gpu-owner-recovery/qualification/host-full/driver.ts",
+        "sha256": "2f01ce35eedcd7d71a6198c1f1c4ac14cc0707bb0da6e46b2dcd63c4020c9415"
+      },
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-cadence-red-1/snapshots/0-driver.ts.txt",
+      "bytes": 24746,
+      "sha256": "2f01ce35eedcd7d71a6198c1f1c4ac14cc0707bb0da6e46b2dcd63c4020c9415"
+    },
+    {
+      "origin": {
+        "path": "_work/gpu-owner-recovery/qualification/host-full/driver.test.ts",
+        "sha256": "f37fb5d6d8b86a49fcaf358138b6bb14ec3d7619f838abb91b8c226a1851f2ab"
+      },
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-cadence-red-1/snapshots/1-driver.test.ts.txt",
+      "bytes": 37209,
+      "sha256": "f37fb5d6d8b86a49fcaf358138b6bb14ec3d7619f838abb91b8c226a1851f2ab"
+    },
+    {
+      "origin": {
+        "path": "_work/gpu-owner-recovery/qualification/host-feasibility/guard.ts",
+        "sha256": "a9631a18c6dafb75cb82d41d45d745157e38199fa7201c9555dc96dd440fa1ba"
+      },
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-cadence-red-1/snapshots/2-guard.ts.txt",
+      "bytes": 3866,
+      "sha256": "a9631a18c6dafb75cb82d41d45d745157e38199fa7201c9555dc96dd440fa1ba"
+    }
+  ],
+  "codingHostOperationsPerformed": false,
+  "trainingReady": false
+}
