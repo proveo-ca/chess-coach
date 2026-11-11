@@ -117,7 +117,12 @@
         "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/**",
         "_work/gpu-owner-recovery/runs/host-build-inventory-observation-2/**",
-        "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/**"
+        "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-diagnostic-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/**",
+        "_work/gpu-owner-recovery/qualification/host-build-reuse/selection.json",
+        "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/receipt.json"
       ],
       "fingerprint": null
     },
@@ -169,7 +174,12 @@
         "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/**",
         "_work/gpu-owner-recovery/runs/host-build-inventory-observation-2/**",
-        "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/**"
+        "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-diagnostic-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/**",
+        "_work/gpu-owner-recovery/qualification/host-build-reuse/selection.json",
+        "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/receipt.json"
       ],
       "fingerprint": null
     },
@@ -248,7 +258,12 @@
         "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/**",
         "_work/gpu-owner-recovery/runs/host-build-inventory-observation-2/**",
-        "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/**"
+        "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-diagnostic-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/**",
+        "_work/gpu-owner-recovery/qualification/host-build-reuse/selection.json",
+        "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/receipt.json"
       ],
       "fingerprint": null
     },
@@ -278,7 +293,12 @@
         "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/**",
         "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/**",
         "_work/gpu-owner-recovery/runs/host-build-inventory-observation-2/**",
-        "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/**"
+        "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-diagnostic-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/**",
+        "_work/gpu-owner-recovery/qualification/host-build-reuse/selection.json",
+        "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/receipt.json"
       ],
       "fingerprint": null
     },
@@ -302,7 +322,12 @@
         "_work/gpu-owner-recovery/runs/host-build-inventory-source-5/**",
         "_work/gpu-owner-recovery/runs/host-build-inventory-handoff-2/request.json",
         "_work/gpu-owner-recovery/runs/host-build-inventory-observation-2/**",
-        "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/**"
+        "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-diagnostic-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/**",
+        "_work/gpu-owner-recovery/qualification/host-build-reuse/selection.json",
+        "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/receipt.json"
       ],
       "fingerprint": null
     },
@@ -320,7 +345,40 @@
         "_work/gpu-owner-recovery/runs/host-gpu-build-source-4/**",
         "_work/gpu-owner-recovery/runs/host-gpu-build-source-5/**",
         "_work/gpu-owner-recovery/runs/host-gpu-build-handoff-1/request.json",
-        "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/**"
+        "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-diagnostic-1/**",
+        "_work/gpu-owner-recovery/qualification/policy-record-fix/**",
+        "packages/runtime/tests/gpu-policy-record.test.ts",
+        "crates/policy-io/tests/gpu.rs",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/**",
+        "_work/gpu-owner-recovery/qualification/host-build-reuse/selection.json",
+        "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/receipt.json"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/gpu-host-build-reuse.puml",
+      "covers": [
+        "_work/gpu-owner-recovery/qualification/host-build-reuse/**",
+        "_work/gpu-owner-recovery/qualification/host-build/plan.json",
+        "_work/gpu-owner-recovery/qualification/host-build/build.ts",
+        "_work/gpu-owner-recovery/qualification/host-build/driver.ts",
+        "_work/gpu-owner-recovery/qualification/host-receive/bootstrap.ts",
+        "_work/gpu-owner-recovery/qualification/policy-record-fix/correction.ts",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/receipt.json",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/native-source-manifest.json",
+        "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/baseline-source/command.stdout",
+        "_work/gpu-owner-recovery/runs/host-feasibility-inputs-1/preparation.json",
+        "_work/gpu-owner-recovery/verify.ts",
+        "_work/gpu-owner-recovery/command-supervisor.ts",
+        "tooling/runtime/qualification.ts",
+        "Cargo.lock",
+        "_work/gpu-owner-recovery/provision.ts",
+        "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-1/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-2/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/**",
+        "_work/gpu-owner-recovery/runs/host-gpu-build-handoff-2/request.json"
       ],
       "fingerprint": null
     }

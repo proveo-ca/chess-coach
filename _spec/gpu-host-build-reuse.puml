@@ -1,0 +1,176 @@
+@startuml gpu_host_build_reuse
+' purpose: verified cache-reuse source packet and freshly approved one-shot HOST2/publication scope, without claiming execution or publication results
+' covers: _work/gpu-owner-recovery/qualification/host-build-reuse/**
+' covers: _work/gpu-owner-recovery/qualification/host-build/plan.json
+' covers: _work/gpu-owner-recovery/qualification/host-build/build.ts
+' covers: _work/gpu-owner-recovery/qualification/host-build/driver.ts
+' covers: _work/gpu-owner-recovery/qualification/host-receive/bootstrap.ts
+' covers: _work/gpu-owner-recovery/qualification/policy-record-fix/correction.ts
+' covers: _work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/receipt.json
+' covers: _work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/native-source-manifest.json
+' covers: _work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/baseline-source/command.stdout
+' covers: _work/gpu-owner-recovery/runs/host-feasibility-inputs-1/preparation.json
+' covers: _work/gpu-owner-recovery/verify.ts
+' covers: _work/gpu-owner-recovery/command-supervisor.ts
+' covers: tooling/runtime/qualification.ts
+' covers: Cargo.lock
+' covers: _work/gpu-owner-recovery/provision.ts
+' covers: _work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-1/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-2/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-build-handoff-2/request.json
+' status: CURRENT_SOURCE_VERIFIED_CACHE_REUSE_HOST_BUILD_APPROVED_UNCONSUMED_UNOBSERVED / remainingHostInvocations:1 / hostInvocationObserved:false / SOURCE_PACKET_PUBLICATION_APPROVED_PENDING / trainingReady:false
+' see: _spec/gpu-host-build.puml
+' see: _spec/gpu-host-build-inventory.puml
+' see: _spec/gpu-qualification.puml
+' see: _spec/gpu-build.puml
+' see: _spec/gpu-input-transfer.puml
+' see: _spec/gpu-host-receive.puml
+' see: _spec/gpu-readiness.md#current-host-build-reuse
+' see: _spec/gate-closure.md#current-host-build-reuse
+' architect: Executor reports ses_e36f4b6d9ffeCMclo9ifqwusMu reconsulted BEFORE adapter implementation; accepted ADDITIVE source-only adapter, not changes to old host-build code. DevOps accepts future explicitly bounded cache writes, not an unchanged-cache promise or a new isolation priority.
+' source boundary: host-build-reuse owns selection/plan/native/render/host/runtime and its local tests/config. Imported baseline files above are specific dependency edges, not ownership of a historical archive. Existing lifecycle/driver/supervisor/qualification implementations remain unchanged; no generic executor/broker/manager.
+' current correction proof: source-2 PASS_POLICY_RECORD_SOURCE_CORRECTION_ONLY/291 frozen inputs remains CURRENT for the ONE-LINE gpu.rs correction only, NOT this additive adapter. New manifest 7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec retains native65 membership/64 hashes/one changed gpu.rs; old 9141 manifests/received contexts/source-1..5/requests stay immutable.
+' CURRENT verification: host-gpu-cache-reuse-source-3 PASS_CACHE_REUSE_SOURCE_ONLY /307 frozen inputs/sourceChanged:false/nine PASS stages: 89 adapter tests/6444 assertions +41 qualification tests/296 assertions +162 original mock tests/8133 assertions +six TypeScript checks. Three new PURE MOCK lifecycle cases and three retained old cases are NOT Docker/native compatibility or HOST cache admission. Scope BUN_STATIC_AND_PURE_MOCK_LIFECYCLES_NOT_HOST_OR_NATIVE_EXECUTION; source-only acceptance, never native-build PASS.
+' history: source-1 FAIL/89 tests/88 pass/one fragile render regex assumed root concatenation, but Bun constant-folded the absolute dynamic helper-import path. Only the test's module-path assertion changed, delivery remained identical. Source-2 PASS is PRE_LOW_PROPOSAL_METADATA_FIX; its proof/proposal and source-1 failure/raw captures remain immutable history.
+' LOW correction: security CWE269 found proposal.cacheMutationScope incorrectly included RO Bun, NOT a writable Bun mount/runtime flaw. Only verify.ts proposal metadata changed to EXACTLY cargoHome +cargoTarget, with retainedBunReadOnly separate. Fresh source-3 re-verifies307 inputs; actual command bytes remain identical across1/2/3. Never repair the older proposals or claim broader cache-write permission.
+' bound packet: source-3 command76732 bytes/SHA47cdea246668505ef6b2fe682900c7735adf59f388cbfcfde3abb20a306559c4 and proof SHA268a7750faeca4c349769e62b67276fe16a3d5f9347f3d2448f45bfccbed5c5e are now bound by the separate ACTIVE handoff-2/request.json. Source-3 approval-proposal/plan/review/check false approval fields stay IMMUTABLE PRE-APPROVAL snapshots, not current denial or permission. This docs pass rehashes nothing and rewrites no source/proof/request/record.
+' source records/reviews: source-3 record-check.json PASS_EXACT_CACHE_REUSE_DRAFT_RECORDS_ONLY checked307 source hashes/18 streams/3 programs/regenerated full76732 command+plan/24 fixture files across6 PURE MOCK cases and exactly TWO writable caches+Bun RO. review.json persists adversarial ses_e36ba7131ffeo2U1MjPrDpWjkp source-3 re-review READY/no findings, DevOps ses_e384ffa7bffecNc429YDN25STS READY exact-decision-only/no findings and security ses_e3845fff1ffeE092hXAV6pfhiW LOW CLOSED/no remaining/risk low/no added hardening gate. These are SOURCE/records-only results, not HOST/native execution. Lead's post-DOCS ordered-index checks/quality gate remain PENDING.
+' approved handoff records: source-3/approved-handoff-check.json PASS_APPROVED_CACHE_REUSE_HOST_HANDOFF_RECORDS_ONLY binds the exact fresh request2/command/proof/307 inputs, ONLY two mutable caches/Bun RO and remaining HOST2 attempts:1/normal commits:1/HTTPS pushes:1. It reports hostInvocationObserved:false/coding operations:false/trainingReady:false; acceptance is records-only, not execution or publication.
+' ACTIVE authority: Executor selected Approve+push Recommended. Actual handoff-2/request.json APPROVED_ONE_HOST_BUILD_ONLY_INVOCATION_UNCONSUMED_UNOBSERVED grants ONE exact OPERATOR HOST2 attempt/remaining1/observed:false at record scope, including fresh staging/native guards/two compilations/build scripts/proc macros and ONLY retained Cargo/target writes, Bun RO. Old build1 and all prior publication grants remain CONSUMED; selection/proofs/plans/old requests stay unchanged. No coding Docker/native, donor/cp/pull/install/acquisition/shared-builder/project-test/GPU/training/retained-work deletion/evidence overwrite/automatic-retry authority.
+' overlay authority: request binds old9141/new7e native65 manifests and ONLY fresh gpu.rs old SHA b1cb7ebe67ec15cb198db413ad5ad03d883aa07e408e78afbb9d6d8e9dc5f9ce -> corrected89b80da22602fbfa679e79e1fb6339d08714ea89ed3e7e81b692f61324f0394c. Old failed source/evidence preserved; retained cache1/bun RO, ONLY cargo-home and native/target-gpu writable/cache bytes MAY change within this exact new grant. Actual HOST/cache/evidence outputs remain unreceived/uncovered.
+' publication authority: fresh combined request APPROVES ONE normal commit +ONE fixed-HTTPS exact-OID push to https://github.com/proveo-ca/chess-coach.git /feat-ml-adjuntant-ii of corrected source/tests/specs/bounded text+MOCK packet. SOURCE_PACKET_PUBLICATION_APPROVED_PENDING; no new OID/result or completed whole-packet audit, latest known65feb remains old consumed publication. Audit only UTF-8 regular text/known small relative SOURCE-fixture links; exclude caches/binaries/compiler artifacts/payload. No future OID enters frozen307 proof or immutable old records.
+' precommit records: publication-preflight.json PASS_READ_ONLY_PUBLICATION_TRANSPORT_IDENTITY_PREFLIGHT records inherited identity/fixed HTTPS/no applicable rewrite/NO executable or linked Git hooks, normal commit0/push0. No native Cargo hook is selected by that recorded configuration. publication-source-audit.json PASS_NON_SPEC_CORRECTED_SOURCE_AND_REUSE_PACKET_PUBLICATION_AUDIT records413 NON-SPEC entries before itself/2900794 text-link bytes/8 bounded relative SOURCE-fixture links, excludes _spec AND itself/no binaries-cache. PRECOMMIT/PRE_FINAL_SPEC_ENVELOPE only, not final packet/Git publication; all307 source inputs/programs/full76732 command remain the checked generation.
+' delivery: next parent completes final spec envelope/ordered-index/quality gate, then publishes the authorized packet and delivers SAME76732-byte Fish command; those final gates remain PENDING. Saved-file form requires ACTUAL new published commit AND saved path already on HOST; otherwise whole unchanged coding-local literal COPY, no assumed HOST file/Git fetch/helper acquisition. Publication is requested delivery order, not a native dependency. Operator runs ONLY if never attempted; if already attempted, provide existing HOST_NATIVE_BUILD_EXIT/receipt2 if created, NEVER rerun/overwrite/delete partials. Any invocation consumes allowance even on preflight failure; remaining1 is not proof of no unreported attempt.
+' bundling: pinned Bun.build has NO supported write:false option. NO outdir/outfile means in-memory BuildArtifacts/Blob.text; target:bun/local JS only, no old CLI/native activation. builtinModules accepts normalized bare fs, fs/promises, crypto, url and node:-prefixed forms; dynamic absolute HOST helper imports keep baseline SHA checks. Embedded UTF-8/manifest metadata is source data, not binary; existing two helper hashes/Cargo.lock before import, no helper download. No coding HOST/native operation or implicit Git fetch/publication occurs in this docs pass.
+' template: _spec/template.txt is absent; existing repository conventions remain. No template acquisition forms a HOST prerequisite. No URL/template fetch, render, command or agent operation occurs here.
+' note ratchet: new notes use five body lines, each <=50 columns; no source/test edit or enforcement-list change in this docs-only task.
+' readability: manual words/sentences/syllables, markup absent; CACHE 30/2/52 FK 10.7; HELPERS 33/2/55 FK 10.5; NATIVE 31/2/54 FK 11.0.
+title HOST2 source verified/approved, remaining1 unobserved; publication approved/pending
+
+actor Executor as EXECUTOR
+participant "host-build-reuse/selection.json\nSOURCE PLANNING ONLY" as SELECTION
+participant "_work/gpu-owner-recovery/runs/\nhost-gpu-build-handoff-2/request.json\nACTIVE HOST2+publication authority, remaining1" as AUTH2
+participant "host-build-reuse/plan.ts\nreusePlan / corrected overlay metadata" as PLAN
+participant "host-build-reuse/render.ts\nbuildReusePrograms / renderReusePacket" as RENDER
+participant "host-build-reuse/verify.ts\nsource-3 SOURCE-ONLY proof /307 inputs" as VERIFY
+participant "OPERATOR Fish + Mise\nHOST2 contract, no execution observed" as FISH
+participant "host-build-reuse/runtime.ts\nrunReuseHost" as RUNTIME
+participant "host-build-reuse/host.ts\nworkerCreateReuse / executeReuseBuild" as HOST
+participant "host-build/build.ts\nwatchWorkspace / treeBytes / signal guardian" as MONITOR
+participant "verify.ts + command-supervisor.ts\nunchanged existing HOST helpers" as HELPERS
+participant "Docker CLI\nfixed local Unix Engine, no shared builder" as DOCKER
+participant "host-build-reuse/native.ts\nrunReuseNative / applyRecordOverlay" as NATIVE
+participant "tooling/runtime/qualification.ts\nsourceInventory / readArtifacts" as QUAL
+participant "Reported HOST-only retained cache\nBun RO / ONLY Cargo+target RW\nexact OPERATOR HOST2 grant, no coding access" as CACHE
+participant "Approved future HOST source/evidence\nexclusive roots, not current coding outputs" as FRESH
+
+group CURRENT source-verified packet + fresh separate HOST2/publication approval
+  EXECUTOR -> SELECTION : Reuse cache Recommended selected\nsourcePreparationSelected:true; cache writes/HOST/stage/copy/publication/GPU/train false
+  SELECTION -> PLAN : draft additive method and future bindings only\nold host-build code/proofs/requests remain unchanged
+  PLAN -> PLAN : bind source-2 correction proof + original prepared native metadata\nembed exact corrected gpu.rs UTF-8/old+new hashes and corrected manifest\nno binary payload or claim that 291-input proof verifies the adapter
+  PLAN --> RENDER : retained DRAFT_SOURCE_ONLY_HOST_APPROVAL_REQUIRED\nold false approval flags stay immutable; active grant is separate AUTH2
+  RENDER -> RENDER : Bun.build target:bun with NO outdir/outfile -> memory BuildArtifacts/Blob.text\nlocal JS only, normalized builtin imports; no old CLI/native/HOST activation
+  VERIFY -> RENDER : fresh source-3 frozen307 inputs/nine stages PASS/sourceChanged:false\n89/6444 +41/296 +162/8133 +six TSC; 3 new +3 old PURE MOCK lifecycle cases
+  RENDER --> EXECUTOR : SAME exact command all3 generations:76732 bytes/SHA47cdea246668505e...\nsource-3 proposal names ONLY Cargo/target writable, Bun RO separately
+  EXECUTOR -> AUTH2 : fresh TUI selected Approve+push Recommended\nONE exact OPERATOR HOST2 invocation +ONE normal commit/fixed-HTTPS OID push
+  AUTH2 --> EXECUTOR : APPROVED_UNCONSUMED_UNOBSERVED/remaining1/observed:false\npublication APPROVED_PENDING, no new OID/result; old build1/publications remain consumed
+  EXECUTOR -> EXECUTOR : records-only approved-handoff check PASS; read-only identity/HTTPS/hooks preflight PASS\nNON-SPEC audit413 entries/2900794 bytes/8 links EXCLUDES specs/itself, not final envelope\nNEXT parent final envelope/index/quality gate, then publication/SAME delivery; no re-ask
+end
+
+note over CACHE
+  Cache writes require a separately approved grant,
+  not merely selection of the reuse strategy.
+  Fresh source and evidence preserve the failed
+  attempt without promising that retained cache
+  contents remain unchanged.
+end note
+
+group APPROVED HOST2 contract - record-scope remaining1/unobserved, not an execution trace
+  EXECUTOR -> FISH : OPERATOR ONLY if this approved invocation was NEVER attempted\nafter requested publication: saved-file ONLY with actual new commit/path already on HOST\notherwise whole coding-local literal COPY; if attempted, return existing marker/receipt2, no rerun
+  FISH -> FISH : one date epoch BEFORE syntax/Mise; all auto-install flags false\nouter 4080s TERM +120s KILL; one original HOST2 4200s invocation clock
+  FISH -> RUNTIME : inline Bun 1.4 --no-env-file --no-install, closed stdin\nno saved HOST Git revision prerequisite; existing checkout helpers/lock required
+  RUNTIME -> MONITOR : protectFinalizationSignals BEFORE preflight\nguardian survives watcher close/drain through final marker/exit selection
+  RUNTIME -> HELPERS : exact existing verify.ts + command-supervisor.ts SHAs and Cargo.lock\ncheck BEFORE absolute import, no fetch/repair/replacement supervisor
+
+note over HELPERS
+  The inline command carries its build drivers,
+  not the repository helpers they import.
+  Pinned helper hashes bind those existing files,
+  so a missing dependency must stop rather
+  than trigger a download or repair.
+end note
+
+  RUNTIME -> CACHE : future ordinary admission ONLY: Bun regular/positive/executable <=128 MiB\nexisting Cargo/target directories; no claimed Bun-file SHA or present cache validation
+  RUNTIME -> FRESH : future exclusive workspace/native + evidence roots\nplan.json and build-driver.mjs EXCLUSIVE wx; plan embedded source metadata only
+  RUNTIME -> FRESH : deadline.json normalDeadlineEpoch from pre-syntax epoch\n4020s normal +120s cleanup +60s receipt =4200s, no new clock
+  RUNTIME -> MONITOR : 5s watcher: >=64 GiB initial /16 GiB running free\n32 GiB SOFT logical fresh workspace+evidence+retained Cargo+target, counted once\nDocker writable layer excluded; oversized cache fails, no delete or extra HOST query grant
+  RUNTIME -> HOST : approved fixed reuse lifecycle, not general orchestration\nretained Bun RO; only Cargo/target mutable under THIS exact OPERATOR HOST2 grant
+
+  group Maximum SEVEN Docker operations - normal successful path FIVE
+    HOST -> DOCKER : ONE worker-create: exact pinned Rust, --pull=never, --network=none\n2 CPU /8 GiB memory /8 GiB memory+swap /numeric current UID:GID\nno donor/cp/cache copy/GPU request/NVIDIA runtime/TTY/stdin
+    HOST -> HOST : recover saved full 64-hex CID, validate BEFORE storing\ncreate-client failure may recover only this invocation's captured CID
+    HOST -> HOST : startPending BEFORE start admission\nwatcher latches failure but defers stop/memoization until start settles
+    HOST -> DOCKER : ONE separate start CID <=120s; NEVER start --attach
+    HOST -> HOST : settle startPending; failure skips log-follow and enters owned cleanup
+    opt start settled and no retained failure
+      HOST -> DOCKER : ONE logs --follow CID <=min(3600s, remaining normal time)
+      DOCKER -> NATIVE : fresh source RW /received+LLVM RO /retained Bun RO\nretained Cargo RW and ONLY old native/target-gpu RW, not old native parent\nread /evidence/plan.json RO; separate fresh native capture bind RW
+      NATIVE -> NATIVE : Bun.version 1.4 property check, not a sixth supervised native command\nclip native deadline to min(start+3600s, HOST normal cutoff-120s acceptance reserve)\nremaining helper work also reserves 30s for internal native receipt
+      NATIVE -> FRESH : stage ONLY current-native + qualification-tools, <=512 MiB/3800 files\nno Cargo cache copy, target traversal/clearing or old source/evidence copy
+      NATIVE -> QUAL : require FULL original native65 inventory and manifest 9141...\nrequire exact old gpu.rs SHA before applying the embedded UTF-8 overlay
+      NATIVE -> FRESH : overlay ONLY freshly staged gpu.rs and qualification/source-manifest.json\nold hashes precondition both writes; original received context/source/evidence unchanged
+      NATIVE -> QUAL : verify corrected native65/full manifest 7e0aa13c...\nsame members/64 same hashes/one exact gpu.rs delta
+      loop three existing native guards + BOTH current GPU Cargo --no-run commands
+        NATIVE -> HELPERS : register attempt BEFORE execution: three baseline guards, then BOTH packages\nrustc/Cargo 1.95 +LLVM 23.1; GNU --release --locked --offline --jobs 2\n--features gpu-prepared-llvm --no-run --message-format=json; trial13000 UNQUALIFIED
+        HELPERS --> NATIVE : retain result BEFORE capture/mirror\nfresh captures even on cache hit; primary failure survives auxiliary faults
+        NATIVE -> FRESH : raw streams + exclusive canonical COPY, never old learning-PASS substitution
+      end
+      NATIVE -> QUAL : source stability after success OR failure when possible\nchecked:true/changed:false required; unchecked is null with reason, never false
+      NATIVE -> FRESH : immutable native receipt with five results/two attempted compilations\nno project test binary/GPU execution, no qualification image
+    end
+
+note over NATIVE
+  The native pass requires both current
+  compilations, even when retained targets
+  avoid compiler work. Fresh captures bind the
+  new source generation, so an earlier learning
+  pass cannot replace this attempt's results.
+end note
+
+    HOST -> HOST : native admission requires comp2/checked:true/changed:false\nsourceManifestSha256 == new7e AND previousSourceManifestSha256 == old9141\nnever accept an old learning receipt or unbound manifest pair
+    opt native PASS and no first failure - NORMAL deadline only
+      HOST -> DOCKER : ONE terminal state inspection, Running:false/ExitCode:0/OOMKilled:false
+      HOST -> QUAL : five current artifacts from fresh Cargo logs, <=min(120s, normal remaining)\nstat/hash retained target files without running them; no cleanup-reserve spending
+    end
+    HOST -> MONITOR : close watcher and drain scans/owned stop calls BEFORE final cleanup\nindependent guardian remains installed; no late watcher callback mutates acceptance
+    HOST -> HOST : recover ONLY this invocation's saved full64hex CID if needed\nvalidate before storing; missing/invalid CID never authorizes guessed cleanup
+    opt captured validated owned CID
+      opt failure
+        HOST -> DOCKER : ONE stop CID, conditional ONE kill CID only if stop fails\nno broad kill or old-container/cache/source/workspace cleanup
+      end
+      opt terminal state not already attempted
+        HOST -> DOCKER : same ONE state inspection during failure cleanup, never repeat
+      end
+      HOST -> DOCKER : ONE rm captured CID, <=20s; retain all partial HOST paths
+    end
+  end
+
+  HOST --> RUNTIME : retain primary failure/cleanup failures/raw supervisor cause separately\nany failure/unknown source/terminal/artifact state precludes PASS
+  RUNTIME -> FRESH : EXCLUSIVE wx <=2 MiB PRE-MARKER receipt, receiptStatusRequiresZeroHostMarker:true\ncache scope identifies ONLY Cargo/target writable; old source/evidence not writable
+  RUNTIME -> RUNTIME : post-write signal check can fail console/process exit without rewriting receipt\nrelease guardian ONLY in final finally after status/exit selection
+  RUNTIME --> FISH : hypothetical native-build-only receipt + final status, not qualification/training
+  FISH --> EXECUTOR : HOST_NATIVE_BUILD_EXIT marker; overall acceptance requires PASS receipt AND marker 0\nparent diagnostics <=64 KiB/stream POST-EXIT SOFT, not streaming quota
+end
+
+legend bottom
+  CURRENT_SOURCE_VERIFIED_CACHE_REUSE_HOST_BUILD_APPROVED_UNCONSUMED_UNOBSERVED: source-3 PASS_CACHE_REUSE_SOURCE_ONLY/307 inputs/nine stages/89-6444 +41-296 +162-8133 +six types, current draft-record checker307 hashes/18 streams/3 programs/full regenerated command/24 files across6 PURE MOCK cases and source reviews READY. These prove no actual Docker/native compatibility/cache validity/HOST execution. Source-1 FAIL/source-2 PRE_LOW_PROPOSAL_METADATA_FIX history and source-3 false approval fields remain immutable. Fresh separate actual handoff-2/request.json, NOT those snapshots, now supplies HOST2/publication authority.
+  Fresh Approve+push selection approves ONE exact OPERATOR HOST2 command76732 bytes/SHA47cdea246668505ef6b2fe682900c7735adf59f388cbfcfde3abb20a306559c4 /source-proof SHA268a7750faeca4c349769e62b67276fe16a3d5f9347f3d2448f45bfccbed5c5e. Record scope remaining1/observed:false, no HOST output/receipt2 reported or received; old build1 remains consumed0. Scope: fresh exclusive source/evidence, retained Bun RO, ONLY Cargo/target RW/cache bytes MAY change, fresh-only overlay, exact pins/current UID/seven Docker/4200s/2 CPU/8 GiB/no extra swap/network none/pull never/offline jobs2/three native guards/two compilations/build scripts/proc macros. No donor/cp/pull/install/acquisition/shared-builder mutation/project tests/GPU/train/retained-work delete/evidence overwrite/automatic retry/coding Docker-native authority.
+  Publication stays APPROVED_PENDING: ONE normal commit +ONE fixed-HTTPS exact-OID push to https://github.com/proveo-ca/chess-coach.git /feat-ml-adjuntant-ii, bounded corrected source/tests/specs/text+MOCK packet, no new OID/result. Approved-handoff records-only PASS binds exact request/command/proof307/two mutable caches/Bun RO/remaining HOST2 attempts:1+commit:1+push:1. Read-only identity/HTTPS/no-rewrite preflight found NO executable/linked hooks; ordinary commit selects no native Cargo hook in that recorded configuration. NON-SPEC audit PASS records413 entries BEFORE itself/2900794 text-link bytes/8 relative SOURCE-fixture links EXCLUDING specs/itself/binaries/cache; PRECOMMIT/PRE_FINAL_SPEC_ENVELOPE, never completed whole-packet audit or publication. Parent final spec envelope/ordered-index/quality gate remains PENDING, THEN publication/SAME command delivery. Saved-file requires actual new commit/path already on HOST, else literal COPY/no fetch/helper acquisition. Run ONLY if never attempted; otherwise existing HOST_NATIVE_BUILD_EXIT/receipt2, NEVER retry/overwrite/delete partials. Any attempt consumes allowance even on preflight failure; no repeated strategy/HOST approval TUI.
+  Approved future HOST paths ONLY, unobserved/not coding evidence/coverage: workspace cache/host-gpu-native-build-2/native and evidence runs/host-gpu-native-build-2 under _work/gpu-owner-recovery. Retained cache1/bun RO, cargo-home RW and native/target-gpu RW are the ONLY reuse paths; old source parent/evidence not mounted/copied/overwritten. Target/Cargo bytes may change ONLY within this exact fresh OPERATOR grant; preserve old failed source/evidence/all partial new outputs. Coverage adds actual handoff-2/request.json only, not future HOST/cache paths.
+  Rust/Bun image pins/provenance stay unchanged; no new Bun donor or cp. Existing Bun file admission/startup is a future functional check, not an invented file SHA/custody prerequisite. Exact two baseline helper hashes and Cargo.lock pre-import checks stay unchanged; inline code is not a claim that required repository helpers already exist on HOST. Received context/LLVM stay RO; no old halted LLVM archive read/replay/install or payload acquisition.
+  Timing/resource bounds are ordinary cooperative GOALS, not physical-stop/NTP/signal/strict-crash/security-isolation assurance PASS. New native clock clips the 3600s maximum to normal cutoff MINUS 120s acceptance reserve; helper remaining also retains 30s internal receipt reserve. Artifacts stay normal-phase <=120s; cleanup 120s/receipt 60s do not fund new work. No extra metadata HOST round, cache deletion or cap bypass for an oversized retained target.
+  Logical storage SOFT cap counts fresh workspace/evidence PLUS retained RW Cargo/target ONCE. Fresh host native/target-gpu is an empty bind point; the target mount exists only in the container namespace. No filesystem quota/Docker-writable-layer accounting claim. Stream maxima: 7 Docker operations *2*4 MiB =56 MiB HOST +40 MiB native +16 MiB canonical COPY =112 MiB, EXCLUDING plan/receipts/Bun/compiler outputs/parent logs; native40 excludes mirrors. Parent64 KiB is post-exit SOFT, receipt2 MiB admission separate.
+  Build1 failed result remains learning compile PASS0/policy FAIL101/nine Docker0/source checked unchanged/artifacts:[], consumed0; no HOST2 result has been reported or received. New7e generation does not rewrite old9141 manifests/proofs/requests. Latest known published65febc83 and prior grants remain consumed; fresh Git grant is APPROVED_PENDING/new workLOCAL_UNCOMMITTED, no future OID inserted. No recipe/qualification runner/dispatcher/model/F64/4670/eps1e-6/atol1e-8/rtol1e-5/C12/CPU Flex/masters101..105 change; trainingReady:false. ALL security/privacy/isolation hardening follows ALL planned training and validated results, no assurance gauntlet/old LLVM archive access. This docs pass executes/publishes nothing.
+endlegend
+@enduml

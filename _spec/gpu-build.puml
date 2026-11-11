@@ -73,9 +73,15 @@
 ' covers: _work/gpu-owner-recovery/runs/host-input-receive-observation-2/**
 ' covers: _work/gpu-owner-recovery/runs/host-build-inventory-observation-2/**
 ' covers: _work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-policy-record-diagnostic-1/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-1/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/**
+' covers: _work/gpu-owner-recovery/qualification/host-build-reuse/selection.json
+' covers: _work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/receipt.json
+' see: _spec/gpu-host-build-reuse.puml
 ' current: receive-2 reported receive/extract PASS accepted at report scope, operator 1/1 CONSUMED/zero remaining; ntapi@0.3.1 vs prepared ntapi@0.4.3 remains one discrepancy among 103 missing archives/zero missing metadata, exact-list match FALSE. gpu-host-receive.puml owns records, not original host bytes or a custody gate.
-' current native build: gpu-host-build.puml owns observation-1 normalized complete report, outer FAIL/inner NATIVE_COMMAND_FAILED:gpu-policy/HOST marker 1, HOST CONSUMED 1/1/remaining 0/no retry. Actual compilation ran ONLY in the approved OPERATOR container: learning --no-run PASS 0/policy FAIL 101; nine Docker operations/owned cleanup PASS, no artifact admission/qualification image/tests/GPU/training. Current record-check-2/typecheck-2 accept report facts/9 complete owned-CID argv, not original HOST bytes or compiler cause. BLOCKED_COMPILER_DIAGNOSTICS; no extraction grant, infer no fix. Original source-1..5 proof/request flags and shared builder stay unchanged.
-' current publication: Executor/lead observed ONE normal commit/fixed-HTTPS push COMPLETED at 4350306f97150789812075718d04d8367b4f07c1 on feat-ml-adjuntant-ii, clean immediately after; 362 entries/10 bounded relative SOURCE-fixture links/no binaries-cache. Grant CONSUMED, no fresh publication authority; prior 42574a5/143-text grant consumed, helper 9874941/assets f3e277d fixed/distinct. Older pending/unobserved/publication wording below is historical, not current permission.
+' current native build: gpu-host-build-reuse.puml owns source-3 PASS_CACHE_REUSE_SOURCE_ONLY/307 inputs/nine stages/89-6444 +41-296 +162-8133 +six types and six PURE MOCK cases, not actual Docker/native/cache admission. NEW Approve+push request separately grants ONE exact OPERATOR HOST2/remaining1/unobserved, fresh staging/overlay/three guards/two compilations/build scripts/proc macros, ONLY Cargo/target RW/Bun RO. Build1 stays consumed0; old291 correction proof/9141 contexts/false planning-proof flags unchanged. No strategy/HOST approval re-ask, coding native/Docker/GPU/train/retry or shared-builder mutation.
+' current publication: last known65febc83b9ab6e043b233f03d390d6b262538118/28 files and prior435/425 grants remain consumed. Fresh combined HOST2 request approves ONE normal commit +ONE fixed-HTTPS exact-OID push of bounded corrected source/tests/specs/text+MOCK packet; APPROVED_PENDING/LOCAL_UNCOMMITTED/no new OID/result. Reuse sibling owns non-spec audit/read-only preflight scopes; final spec envelope/ordered-index/quality gate still pending, then parent publishes/delivers SAME76732 command. Saved-file requires actual new commit/path already on HOST, otherwise whole literal COPY/no fetch; if attempted, existing marker/receipt2 only/no retry. Helper9874941/assetsf3e277d unchanged.
 ' see: _spec/gpu-host-build.puml
 ' history scope: receive-2 unrun/unconsumed, pending-docs and LOCAL_UNCOMMITTED wording below retains PRE-OBSERVATION-2 / PRE-283897c scope; all old evidence remains immutable, not current operation authority.
 ' see: _spec/gpu-host-build-inventory.puml
@@ -139,7 +145,7 @@
 ' see: _spec/gate-closure.md#current-host-toolchain
 ' see: _spec/gpu-readiness.md#current-host-receive-run2
 ' see: _spec/gate-closure.md#current-host-receive-run2
-' status: HOST_NATIVE_BUILD_REPORTED_FAIL_CONSUMED_1_OF_1 / remainingHostInvocations:0 / SOURCE_PACKET_PUBLICATION_COMPLETED_4350306f9 / BLOCKED_COMPILER_DIAGNOSTICS / trainingReady:false
+' status: CURRENT_SOURCE_VERIFIED_CACHE_REUSE_HOST_BUILD_APPROVED_UNCONSUMED_UNOBSERVED / build1Remaining:0 / build2Remaining:1 / build2Observed:false / SOURCE_PACKET_PUBLICATION_APPROVED_PENDING / LOCAL_UNCOMMITTED / trainingReady:false
 ' retained bridge status: RETAINED_PREPARED_BRIDGE_SNAPSHOT / SOURCE_IMPLEMENTED / RUST_TOOLCHAIN_PROVISIONED / LOCKED_CACHE_AND_FEATURE_TREES_PASS_NO_COMPILATION / INSTALL_AND_FETCH_AUTHORITY_CONSUMED / AWAITING_PREPARED_INPUT_SELECTION; this older static phase remains distinct from the later reported OPERATOR compilation
 ' current graph verification: gpu-prepared-llvm-local-6 PASS_STATIC_AND_FEATURE_TREE_ONLY / PASS_FEATURE_TREE_ONLY; six static stages exit 0, 14 cases/109 assertions + four typechecks; THREE separate actual offline Cargo trees PASS 0 with matched predicates, no compilation
 ' evidence: _work/gpu-owner-recovery/runs/gpu-prepared-llvm-local-6/receipt.json
@@ -261,7 +267,7 @@
 ' see: _spec/gate-closure.md
 ' retained production contexts: original production input-contract selections remain unset; separate qualification context now prepared under its consumed grant, not a production recipe change or built image; ignored-cache payloads stay out of Git
 ' llvm prefix: /opt/tracel-data/tracel/tracel-llvm-23.1.0-4
-title Retained offline feature-tree PASS; separate HOST native build FAIL/consumed
+title HOST2 source verified/approved unobserved; publication pending, native recompile unproved
 left to right direction
 
 component "tooling/runtime/gpu-build-inputs.json\nv2 / gpu-prepared-llvm / prepared-offline\ninstallationMarkerRequired:false\ninstallerBypass: exact bundler + xtask\nAWAITING_PREPARED_INPUT_SELECTION" as INPUTS
@@ -512,7 +518,7 @@ note bottom of CACHE_RECHECK
 end note
 
 legend bottom
-  CURRENT precedence: HOST2 metadata PASS/consumed and shared builder untouched. Linked owned-container native build reported FAIL/marker 1; learning --no-run PASS 0/policy FAIL 101, no artifacts. HOST grant CONSUMED 1/1/remaining 0/no retry; publication COMPLETED at observed 4350306f97150789812075718d04d8367b4f07c1, grant consumed. observation-1 record-check-2/typecheck-2 accept complete reported failure facts/9 owned-CID argv, not original HOST bytes or compiler cause. BLOCKED on existing policy diagnostics; paste logs/errors, freshly approve bounded read-only extraction of the two existing files, or defer. No extraction/native coding/GPU/training/publication approval; retain HOST-only partial workspace/cache/logs unreceived/uncovered. Source-1..5 proofs/request flags/pins/numerics remain unchanged; older unobserved/pending wording is history.
+  CURRENT reuse sibling owns source-3 SOURCE-ONLY PASS/307/nine stages/89-6444 +41-296 +162-8133 +six types/six PURE MOCK cases and records-only checks, not HOST/native/cache admission. NEW Approve+push request grants ONE exact OPERATOR HOST2/remaining1/unobserved plus ONE bounded normal commit/fixed-HTTPS OID push APPROVED_PENDING. Build1 FAIL/marker1/learning PASS0/policy101/nine Docker0/source unchanged/artifacts:[] stays consumed0. Old291 correction proof verifies ONLY the one-line fix/new7e native65; old9141/source-1 FAIL/source-2 pre-LOW/false approval snapshots remain immutable. ONLY Cargo/target may change within exact HOST2, Bun RO/old source-evidence preserved. Parent final spec envelope/index/quality gate remains pending, then publication/SAME76732 command delivery; saved-file requires actual new commit/path on HOST, otherwise literal COPY/no fetch. Run ONLY if never attempted, else existing marker/receipt2/no retry; any attempt consumes allowance. No new HOST/native/publication result, coding Docker/native/GPU/train authority or strategy/HOST approval re-ask; numerics/trainingReady:false/hardening LAST unchanged.
   Retained bridge/visibility chronology below keeps its original phase scope; current qualification, both consumed STOPs and completed third DRAFT publication live in the header and linked diagrams, not old missing-input/publication exclusions.
   Original preparation is complete and both prior STOPs stay consumed; source-5 belongs to the second attempt, current source-6 freezes modified publisher code. Second actual commit 1/exit 128 after 838.463473 ms, push/release/uploads 0 and receipt null remain unchanged.
   SECOND private origins/rewrite rules 0/repo permission API passed; push:true proves no asset-upload rights. Old child omitted identity fields and retained check records parent presence flags only; current publicationEnvironment forwards existing four fields unchanged in memory, no defaults/value serialization/config change.

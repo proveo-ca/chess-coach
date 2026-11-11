@@ -1,0 +1,15 @@
+{
+  "status": "READY_FOR_APPROVED_BOUNDED_PUBLICATION_AND_HOST_HANDOFF",
+  "adversarialSession": "ses_e36ba7131ffeo2U1MjPrDpWjkp",
+  "sourceReview": "READY_NO_FINDINGS",
+  "approvedHandoffReview": "READY_NO_SCOPED_METADATA_FINDINGS",
+  "finalDocsFirstPass": "LOW_UNREPORTED_HOST_RESULT_ASSERTION",
+  "finalDocsCorrection": "STATE_NO_HOST2_RESULT_REPORTED_OR_RECEIVED_WITHOUT_ASSERTING_NO_ATTEMPT_EXISTS",
+  "finalDocsRecheck": "LOW_CLOSED_NO_REMAINING_SCOPED_FINDINGS_READY_TO_MERGE_YES",
+  "currentDocsCheck": "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/final-docs-check-2.json",
+  "fullPublicationEnvelopeAudit": "PENDING_AT_THIS_REVIEW_SNAPSHOT",
+  "hostInvocationObserved": false,
+  "sourcePublicationPerformed": false,
+  "codingHostDockerOrNativeOperationsPerformed": false,
+  "trainingReady": false
+}

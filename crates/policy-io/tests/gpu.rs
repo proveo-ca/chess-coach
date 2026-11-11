@@ -342,7 +342,7 @@ fn cuda_f64_policy_channel_subprocesses_agree_and_reload() {
     let record_path = directory.path().join("record.bin");
     let config_path = directory.path().join("config.json");
     let input_path = directory.path().join("requests.ndjson");
-    fs::write(&record_path, &record).unwrap();
+    fs::write(&record_path, &*record).unwrap();
     fs::write(&config_path, serde_json::to_vec(&config).unwrap()).unwrap();
     fs::write(&input_path, channel_input(&config.record_sha256)).unwrap();
     let mut results = Vec::new();
