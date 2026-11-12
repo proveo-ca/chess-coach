@@ -1,0 +1,85 @@
+{
+  "status": "PASS_FRESH_TEXT_REDELIVERY_AUTHORITY_AND_UNCHANGED_COMMITTED_COMMAND_BYTES",
+  "parentCommit": "b6827cdc40305d641aff717f38cf85bfdfe326aa",
+  "freshGrant": "cpu39-receipt-publication-and-text-redelivery-1",
+  "inputs": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-4/receipt.json",
+      "bytes": 3128,
+      "sha256": "ec3bff03dc5e995bc2e9d08a5c0df8b6924a381ba60fb7d4e157a3cb5e1e6724"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-4/whitespace.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-4/whitespace.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/commit-check.json",
+      "bytes": 557,
+      "sha256": "742bd234798363ffec4a42cb0fd87abf58aae752308103db47e708f32a4804e3"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/commit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/commit.stdout",
+      "bytes": 23509,
+      "sha256": "d04716ab657629a69ac4754afdca80d21852eef98ae30c82b7156004d65846fa"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/index-check.json",
+      "bytes": 448,
+      "sha256": "f647e24094429ee8a8edc5bc2982c16e2b2a88e9f40ca593af37cee665456dd0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/index-whitespace.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/index-whitespace.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/manual-handoff-observation.json",
+      "bytes": 1676,
+      "sha256": "9d3df162c6ab2badac0c9bab9ad168b6887cbe343d72710c27485b2dff3411c1"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/publication-result.json",
+      "bytes": 1989,
+      "sha256": "b823f3bdae2b21e9d239c1e14b42950f1b5f077b3bf9be231d4ec976cf4bbfa9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/push.stderr",
+      "bytes": 260,
+      "sha256": "aeb2c7fac9f62cc5479ca092a9de0091f5353b5dee7d15ac64632ae1c9ab2c10"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/push.stdout",
+      "bytes": 136,
+      "sha256": "52c30de1db2bd79348dbc252d45a0f8287078af9dbc908f7735d4f644e714a52"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/redelivery-1.json",
+      "bytes": 1966,
+      "sha256": "5c40d03b85f311c089a968f62a5d6ae6d02b641d616c46504ba1b2e3efd8a005"
+    }
+  ],
+  "inputFiles": 14,
+  "inputBytes": 33669,
+  "cpuSourceOrCanonicalCommandChanged": false,
+  "freshHostAttemptOrRetryAuthorized": false,
+  "operatorHostOutcome": "UNOBSERVED",
+  "unrelatedHomeCachesPreservedAndExcluded": true,
+  "gitMutationPerformed": false,
+  "trainingReady": false
+}

@@ -1,0 +1,46 @@
+{
+  "status": "PASS_ONE_APPROVED_COMMIT_AND_CONTINUATION_HTTPS_PUSH_BEFORE_HOST_HANDOFF",
+  "commit": "b6827cdc40305d641aff717f38cf85bfdfe326aa",
+  "parent": "a44d79bda7c8824c1aa611fe7a6a8cb5e653d746",
+  "repository": "https://github.com/proveo-ca/chess-coach.git",
+  "destinationRef": "refs/heads/feat-ml-adjuntant-ii-continuation-2b24d9c5a",
+  "publishedPaths": 201,
+  "canonicalCommittedRawBlobVerified": true,
+  "canonicalBytes": 104604,
+  "canonicalSha256": "02f358d0abc05a9ab1081f8512abdf455257ec69c69a74361ac5a5a5fa52f1b8",
+  "canonicalGitBlobSha": "6d4837cd8aaa80f4c73aedbaedd17aea7ea11264",
+  "normalCommitsConsumed": 1,
+  "remainingNormalCommits": 0,
+  "httpsPushesConsumed": 1,
+  "remainingHttpsPushes": 0,
+  "commitExitCode": 0,
+  "pushExitCode": 0,
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/commit.stdout",
+      "bytes": 23509,
+      "sha256": "d04716ab657629a69ac4754afdca80d21852eef98ae30c82b7156004d65846fa"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/commit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/push.stdout",
+      "bytes": 136,
+      "sha256": "52c30de1db2bd79348dbc252d45a0f8287078af9dbc908f7735d4f644e714a52"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/push.stderr",
+      "bytes": 260,
+      "sha256": "aeb2c7fac9f62cc5479ca092a9de0091f5353b5dee7d15ac64632ae1c9ab2c10"
+    }
+  ],
+  "existingDefaultBranchAdvisoriesReportedByRemote": true,
+  "hardeningPerformed": false,
+  "originalRemoteFeatureBranchUpdateAttempted": false,
+  "hostExecutionObserved": false,
+  "codingNativeProjectExecutionPerformed": false,
+  "trainingReady": false
+}

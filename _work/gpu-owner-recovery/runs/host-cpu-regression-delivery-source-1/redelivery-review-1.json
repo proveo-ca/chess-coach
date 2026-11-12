@@ -1,0 +1,14 @@
+{
+  "status": "READY_FRESH_RECEIPT_PUBLICATION_AND_EXACT_TEXT_REDELIVERY_ONLY",
+  "grant": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/redelivery-1.json",
+  "verification": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/redelivery-check-1.json",
+  "packetIntegrity": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-4/receipt.json",
+  "devopsSession": "ses_e2f5806f4ffe6r1Ok7cwQRf69z",
+  "adversarial": {"session":"ses_e2f550d7affempck1fB6a3NpXX","verdict":"READY_TO_MERGE_YES","findings":[]},
+  "security": {"session":"ses_e2f550d78ffexnrEwQ41ySUK3p","verdict":"READY_TO_MERGE_YES","findings":[]},
+  "specKeeper": {"session":"ses_e2f56c5dfffeAeMcjuBZByvfY5","status":"NO_OP_EXISTING_COVERAGE_IN_SYNC"},
+  "redeliveryMustWarnOnlyIfNotAlreadyAttempted": true,
+  "freshHostAttemptOrRetryAuthorized": false,
+  "operatorHostOutcome": "UNOBSERVED",
+  "trainingReady": false
+}

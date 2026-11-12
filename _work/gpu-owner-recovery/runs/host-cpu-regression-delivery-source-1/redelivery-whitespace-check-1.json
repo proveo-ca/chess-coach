@@ -1,0 +1,15 @@
+{
+  "status": "RAW_CAPTURE_WHITESPACE_PRESERVED_SOURCE_RECORD_STYLE_CHECK_SCOPED_SEPARATELY",
+  "initialCommand": ["git","diff","--cached","--check"],
+  "initialExitCode": 2,
+  "reportedRawCaptureFindings": [
+    {"path":"_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/push.stderr","lines":[1,2,3,4],"kind":"TRAILING_WHITESPACE_IN_ORIGINAL_GITHUB_OUTPUT"},
+    {"path":"_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/push.stdout","lines":[2],"kind":"SPACE_BEFORE_TAB_IN_ORIGINAL_GIT_PORCELAIN_OUTPUT"}
+  ],
+  "rawCaptureBytesChanged": false,
+  "rawCaptureHashBindingsRemainVerified": true,
+  "styleCheckExcludesOnlyRawStdoutAndStderrCaptures": true,
+  "gitHooksBypassed": false,
+  "gitMutationFromThisCheck": false,
+  "trainingReady": false
+}

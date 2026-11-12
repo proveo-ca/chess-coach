@@ -1,0 +1,15 @@
+{
+  "status": "PASS_COMMITTED_APPROVED_COHORT_AND_RAW_CANONICAL_BLOB",
+  "commit": "b6827cdc40305d641aff717f38cf85bfdfe326aa",
+  "parent": "a44d79bda7c8824c1aa611fe7a6a8cb5e653d746",
+  "changedPaths": 201,
+  "filesDeleted": 0,
+  "canonicalBytes": 104604,
+  "canonicalSha256": "02f358d0abc05a9ab1081f8512abdf455257ec69c69a74361ac5a5a5fa52f1b8",
+  "canonicalGitBlobSha": "6d4837cd8aaa80f4c73aedbaedd17aea7ea11264",
+  "normalCommitsConsumed": 1,
+  "remainingNormalCommits": 0,
+  "httpsPushAttempted": false,
+  "hostExecuted": false,
+  "trainingReady": false
+}
