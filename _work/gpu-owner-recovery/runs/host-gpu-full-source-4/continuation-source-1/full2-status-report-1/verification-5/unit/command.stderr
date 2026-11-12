@@ -1,0 +1,19 @@
+
+_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/records.test.ts:
+(pass) complete pasted report establishes only reported current absence [0.09ms]
+(pass) missing markers, nonzero exits and container rows cannot establish the recorded absence [0.07ms]
+(pass) current absence does not resolve the prior submission or renew its grant [0.04ms]
+(pass) status-command identity is a delivered binding and its separate allowance is consumed [0.35ms]
+(pass) pending request binds the unchanged full-two command and historical source proof [0.54ms]
+(pass) fresh request retains original bounds and requests only one manual HOST attempt [0.11ms]
+(pass) request preparation grants no execution, installation, copying, training or Git permission [0.19ms]
+(pass) separate fresh approval binds the issued request and grants one manual attempt [0.29ms]
+(pass) fresh approval preserves previous consumption, historical uncertainty and excluded operations [0.16ms]
+(pass) one delivered invocation text does not establish a HOST attempt or leave another delivery [0.28ms]
+(pass) publication approval targets only the continuation branch and renews no HOST authority [0.20ms]
+(pass) reported unstarted attempt permits one post-publication text replacement without another GPU allowance [0.32ms]
+
+ 12 pass
+ 0 fail
+ 163 expect() calls
+Ran 12 tests across 1 file. [17.00ms]

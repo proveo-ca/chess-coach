@@ -1,0 +1,37 @@
+{
+  "status": "READY_ONE_APPROVED_MANUAL_INVOCATION_NOT_HOST_EXECUTION",
+  "grantId": "full2-manual-grant-1",
+  "approval": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/fresh-manual-host-approval.json",
+    "sha256": "7030c3b743a98c9c8a5d03a0450361907c67343cd3b7ec80809682fa676012fe"
+  },
+  "adversarialReview": {
+    "session": "ses_e31d1b57dffeE0VApmmEeB2XmN",
+    "verdict": "READY_FOR_MANUAL_DELIVERY_YES",
+    "findings": []
+  },
+  "securityReview": {
+    "session": "ses_e31d1b57cffeij86laTtsGS0e4",
+    "verdict": "READY_MANUAL_DELIVERY_YES",
+    "findings": [],
+    "risk": "LOW_FOR_REVIEWED_AUTHORITY_AND_SERIALIZATION_SCOPE"
+  },
+  "verification": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/verification-2/receipt.json",
+  "localTestsPassed": 9,
+  "localAssertionsPassed": 109,
+  "localStagesPassed": 4,
+  "manualWorkingDirectory": "/home/gu1lty/Projects/proveo/chess-coach",
+  "manualInvocation": "fish --no-config _work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command.fish",
+  "manualInvocationTextStatus": "PREPARED_FOR_ONE_APPROVED_DELIVERY",
+  "previousFull2GrantRemaining": 0,
+  "previousStatusQueriesRemaining": 0,
+  "previousFull2ExecutionOutcome": "UNKNOWN",
+  "newGrantIssuedRemaining": 1,
+  "newHostInvocationObserved": false,
+  "codingHostNativeGpuOrJitExecutionPerformed": false,
+  "automaticRetryAuthorized": false,
+  "gitOperationsPerformed": false,
+  "filesDeleted": 0,
+  "experimentTrainingAuthorized": false,
+  "trainingReady": false
+}

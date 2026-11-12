@@ -1,0 +1,67 @@
+{
+  "status": "PASS_EXACT_APPROVED_MANUAL_HANDOFF_BINDINGS_AND_CURRENT_DOCS_ONLY",
+  "sources": [
+    {
+      "path": "_spec/gate-closure.md",
+      "sha256": "035e28266b5b5c1ed6846b57f9e5de99a2998438fcefbb2421f75cd4d709b8e3"
+    },
+    {
+      "path": "_spec/gpu-full-qualification.puml",
+      "sha256": "7b6ad1dd36138248a724cf42fda68b82048e4c51d47ddda012135620e2afef64"
+    },
+    {
+      "path": "_spec/gpu-readiness.md",
+      "sha256": "657a79124cf8927c1ed79a97f23f6899d3434f0dbd709af544697c9aa17d927e"
+    }
+  ],
+  "index": {
+    "path": "_spec/.spec-index.json",
+    "sha256": "31013e271bd6201ee9259f03d7da579fa36780c38237919e58af2e3da11daea5",
+    "coverageUnchanged": true
+  },
+  "verification": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/verification-3/receipt.json",
+    "sha256": "01a3a2d62d44e1a506b0595314072d3e25a639d35bad2650fa93cae87cbe1965"
+  },
+  "approval": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/fresh-manual-host-approval.json",
+    "sha256": "7030c3b743a98c9c8a5d03a0450361907c67343cd3b7ec80809682fa676012fe"
+  },
+  "manualInvocation": "fish --no-config _work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command.fish",
+  "workingDirectory": "/home/gu1lty/Projects/proveo/chess-coach",
+  "whitespace": {
+    "argv": [
+      "git",
+      "diff",
+      "--check",
+      "--",
+      "_spec"
+    ],
+    "status": "PASS",
+    "exitCode": 0,
+    "failure": null,
+    "stdoutBytes": 0,
+    "stderrBytes": 0,
+    "streams": [
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/final-docs-whitespace-1/command.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/final-docs-whitespace-1/command.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "remainingNewGrantInvocations": 1,
+  "previousFull2GrantRemaining": 0,
+  "previousStatusQueriesRemaining": 0,
+  "previousFull2ExecutionOutcome": "UNKNOWN",
+  "newHostInvocationObserved": false,
+  "hostNativeGpuOrJitExecutedByCoding": false,
+  "gitOperationsPerformed": false,
+  "filesDeleted": 0,
+  "trainingReady": false
+}

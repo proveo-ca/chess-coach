@@ -1,0 +1,61 @@
+{
+  "status": "PASS_POST_DELIVERY_DOC_WORDING_AND_LEDGER_ONLY",
+  "sources": [
+    {
+      "path": "_spec/gate-closure.md",
+      "sha256": "a91a415d36694b87f57befbb320c3fcc2a9a117368bf7127316d8e29e588c8d4"
+    },
+    {
+      "path": "_spec/gpu-full-qualification.puml",
+      "sha256": "1cb2f7b790acd26af1143cd6ab72972ee62c5f01b2be84bd10c0562c4f948037"
+    },
+    {
+      "path": "_spec/gpu-readiness.md",
+      "sha256": "657a79124cf8927c1ed79a97f23f6899d3434f0dbd709af544697c9aa17d927e"
+    }
+  ],
+  "manualDelivery": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/manual-delivery-observation.json",
+    "sha256": "e0d1aa2fbad9c32b8042937915f7c53cbbeb905703141405a8a21b8ecec84041"
+  },
+  "whitespace": {
+    "argv": [
+      "git",
+      "diff",
+      "--check",
+      "--",
+      "_spec/gate-closure.md",
+      "_spec/gpu-full-qualification.puml",
+      "_spec/gpu-readiness.md"
+    ],
+    "status": "PASS",
+    "exitCode": 0,
+    "failure": null,
+    "stdoutBytes": 0,
+    "stderrBytes": 0,
+    "streams": [
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/final-docs-whitespace-2/command.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/final-docs-whitespace-2/command.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "lateAdversarialFinding": {
+    "session": "ses_e31d1b57dffeE0VApmmEeB2XmN",
+    "severity": "LOW",
+    "status": "CORRECTED_TWO_DOCUMENTATION_AVAILABILITY_OVERSTATEMENTS"
+  },
+  "manualInvocationTextDeliveriesConsumed": 1,
+  "remainingManualInvocationTextDeliveries": 0,
+  "newHostAttemptOutcome": "UNOBSERVED",
+  "codingHostNativeGpuOrJitExecuted": false,
+  "automaticRetryAuthorized": false,
+  "filesDeleted": 0,
+  "trainingReady": false
+}
