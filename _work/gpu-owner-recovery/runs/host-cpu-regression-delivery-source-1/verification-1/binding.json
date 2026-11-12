@@ -1,0 +1,16 @@
+{
+  "sourceLabel": "host-cpu-regression-source-2",
+  "canonicalPath": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/canonical-host-command.fish",
+  "cpuProofReceipt": {
+    "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/receipt.json",
+    "sha256": "a875dce053e2931de32d83e65841d49305540eab13d9f8308a48ff72d65bdeec"
+  },
+  "acceptedCpuProgramBinding": {
+    "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/canonical-host-command.fish",
+    "sha256": "02f358d0abc05a9ab1081f8512abdf455257ec69c69a74361ac5a5a5fa52f1b8",
+    "bytes": 104604
+  },
+  "gitBlobSha": "6d4837cd8aaa80f4c73aedbaedd17aea7ea11264",
+  "bytes": 104604,
+  "sha256": "02f358d0abc05a9ab1081f8512abdf455257ec69c69a74361ac5a5a5fa52f1b8"
+}

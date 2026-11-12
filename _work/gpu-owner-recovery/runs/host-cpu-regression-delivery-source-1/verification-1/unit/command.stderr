@@ -1,0 +1,13 @@
+
+_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/delivery.test.ts:
+(pass) delivery binds canonical bytes to the accepted CPU proof rather than a later edited file [0.22ms]
+(pass) a canonical edit after the bound snapshot remains source drift instead of a new baseline [0.31ms]
+(pass) fixed Git blob identity includes the Git length header and exact SHA-256 [0.14ms]
+(pass) all three pipeline statuses, exact length and exact digest gate launch [0.21ms]
+(pass) Fish delivery uses one immutable HTTPS blob fetch with overflow detection and no fallback [0.27ms]
+(pass) renderer rejects malformed literal identities rather than interpolating commands [0.07ms]
+
+ 6 pass
+ 0 fail
+ 45 expect() calls
+Ran 6 tests across 1 file. [17.00ms]

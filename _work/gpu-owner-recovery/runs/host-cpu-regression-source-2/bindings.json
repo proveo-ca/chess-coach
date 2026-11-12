@@ -1,0 +1,92 @@
+{
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/qualification/cpu-host-plan.json",
+      "sha256": "41b6334cb5c4d07591f6a8e64a26824c18a4d0d4200e5602d99cbeee8f017758"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/cpu-host.ts",
+      "sha256": "4a28840ef2d796b6e649d344cdae650ac4d07b262a72c16b84afef9117b397f7"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/cpu-host.test.ts",
+      "sha256": "51608488e59abfe5e4b9d5d7a87f7949951dd8de1d049e0faa9a26cd1cba3e9f"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/verify.ts",
+      "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+      "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/host-build/build.ts",
+      "sha256": "3b83c50932c5092f45b147602bb26ae530628e2fdbf7d6e5a7e4363ae65c1ac8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/native-source-manifest.json",
+      "sha256": "7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec"
+    },
+    {
+      "path": "tooling/runtime/qualification.ts",
+      "sha256": "e08f52f793474bd803ee4ead91b5b2ad6425fc42c24fdab98b586e5997e7af9a"
+    },
+    {
+      "path": "tooling/runtime/Dockerfile.gpu-qualification",
+      "sha256": "62998fe447f02055dd1e55637e229cd498a6d90376df5552c74d32166853bfdd"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/host-build/plan.json",
+      "sha256": "5e8d1558707dc79f09ba8105daf7f33125517e957962797ca505bf3e95da9413"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/tsconfig.json",
+      "sha256": "b328520d0a04776b0e0931f6fb0e6de92c4a2f37494bc37129c3dc24b63a098b"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "a0cf0b388c7327624fa7f91061dbf4ee4280e9f27d095740399fe5c83682e913"
+    },
+    {
+      "path": "package.json",
+      "sha256": "eec978d7f787b0bbdc1eba99d15d8972a0d2751fb5e0078d821b5cf09004cbae"
+    },
+    {
+      "path": "packages/runtime/tests/gpu-qualification.test.ts",
+      "sha256": "544a8937344523eefe2fb0e2acb6f394bcd0bfc5e86438dc1d532e5548b69871"
+    }
+  ],
+  "programs": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/driver.mjs",
+      "sha256": "7ebaf9cb05fb9ca2c7b73b192c73f38ac4ce2af78b29d9860e60163caf705a6f",
+      "bytes": 46878
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/host.mjs",
+      "sha256": "aa6d18dfb98327facc1b69482d7e0c242ab9a73b8e9658317fb5515c5bc29b15",
+      "bytes": 94851
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/canonical-host-command.fish",
+      "sha256": "02f358d0abc05a9ab1081f8512abdf455257ec69c69a74361ac5a5a5fa52f1b8",
+      "bytes": 104604
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/worker-body.fish",
+      "sha256": "d3d5609e4fd51f03104fe4ce72a51d13441131e0e2f95daebaa1821a2ad7e1db",
+      "bytes": 96593
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/parent-body.fish",
+      "sha256": "3720f23b61972b77e9c97540956a7de9db270204992e2ade6d655596e62575d9",
+      "bytes": 99745
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/argument-bounds.json",
+      "sha256": "680005a7ebca28a6b539c60397baeda3d019f4ddc578a04f509a1ff0f5d746c0",
+      "bytes": 321
+    }
+  ]
+}

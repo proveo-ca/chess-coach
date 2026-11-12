@@ -1,0 +1,14 @@
+
+_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/records.test.ts:
+(pass) complete normalized full-six report passes existing GPU contracts without readiness promotion [5.29ms]
+(pass) missing or nonzero HOST marker cannot establish outer PASS [1.64ms]
+(pass) every exact selector must have an invoked, passing and accepted unignored result [11.29ms]
+(pass) source drift, artifact drift and nonzero remaining allowance reject PASS [5.91ms]
+(pass) reported telemetry remains subject to the frozen guard and metadata checks [12.56ms]
+(pass) cleanup, complete Docker argv and excluded qualification flags retain their meanings [16.49ms]
+(pass) persisted observation consumes only the fresh grant and accepts operator-report scope [4.48ms]
+
+ 7 pass
+ 0 fail
+ 54 expect() calls
+Ran 7 tests across 1 file. [85.00ms]

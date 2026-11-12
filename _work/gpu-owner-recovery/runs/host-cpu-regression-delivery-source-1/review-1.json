@@ -1,0 +1,15 @@
+{
+  "status": "INITIAL_DELIVERY_SOURCE_CORRECTIONS_REQUESTED_BEFORE_VERIFICATION",
+  "devopsSession": "ses_e2fd5fc9affeLdBUzjh85zAq3g",
+  "adversarialSession": "ses_e2fa80f58ffe0cW14ZJ4Aqp6wW",
+  "ready": false,
+  "findings": [
+    {"severity":"HIGH","issue":"Relative verify import resolves outside gpu-owner-recovery.","correction":"Use ../../verify."},
+    {"severity":"MEDIUM","issue":"Current canonical bytes lack linkage to accepted CPU source proof.","correction":"Bind canonical SHA-256 against program bindings inside the CPU proof receipt and reject mismatches."},
+    {"severity":"MEDIUM","issue":"Re-reading canonical bytes after binding can establish an inconsistent source baseline.","correction":"Use the same captured canonical and CPU-receipt bytes for bindings and source baselines; compare their final bytes against those snapshots."}
+  ],
+  "verificationHasNotEstablishedCorrectionYet": true,
+  "actualHostExecuted": false,
+  "downloadsPerformed": false,
+  "trainingReady": false
+}

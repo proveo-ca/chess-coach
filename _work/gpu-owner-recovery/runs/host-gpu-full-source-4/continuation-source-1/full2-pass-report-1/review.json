@@ -1,0 +1,22 @@
+{
+  "status": "READY_OPERATOR_REPORTED_FULL_SIX_GPU_PASS_RECORD_ACCEPTANCE_ONLY",
+  "adversarial": {"session": "ses_e2fbf4e72ffeYrPDIB4hlMCu6j", "verdict": "READY_TO_MERGE_YES", "findings": []},
+  "security": {"session": "ses_e2fbf4e6effeOHi0XQq52JgKsJ", "verdict": "READY_RECORD_ACCEPTANCE_YES_OPERATOR_REPORTED_PASS_ONLY", "findings": [], "risk": "LOW_FOR_SCOPED_RECORDS"},
+  "verification": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-3/receipt.json",
+  "localRecordTests": 7,
+  "localAssertions": 58,
+  "localStages": 3,
+  "acceptedScope": "OPERATOR_REPORTED_FULL_SIX_GPU_F64_NUMERICAL_AND_C12_PASS_WITH_ZERO_HOST_MARKER",
+  "originalHostFilesReceived": false,
+  "originalCaptureOrJournalBytesRehashed": false,
+  "priorTuiOutcomeRemainsHistoricalUnknown": true,
+  "freshHostAndCampaignAllowancesRemaining": 0,
+  "replacementInvocationTextDeliveriesRemaining": 0,
+  "gpuRerunRequired": false,
+  "cpu39Qualified": false,
+  "canonicalBothQualified": false,
+  "integratedR4Qualified": false,
+  "operationalWiringQualified": false,
+  "experimentTrainingAuthorized": false,
+  "trainingReady": false
+}

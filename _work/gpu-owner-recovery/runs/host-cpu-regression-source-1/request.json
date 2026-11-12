@@ -1,0 +1,216 @@
+{
+  "version": "chess-coach.cpu39-host-request.v1",
+  "status": "UNAPPROVED",
+  "plan": {
+    "version": "chess-coach.closed-cpu-host-proposal.v1",
+    "status": "UNAPPROVED_SOURCE_ONLY",
+    "method": "OWNED_CPU_CONTAINER_FRESH_OFFLINE_BUILD_AND_CPU39_REGRESSION",
+    "runId": "host-cpu39-1",
+    "grant": "--approved-host-cpu39-1",
+    "root": "/home/gu1lty/Projects/proveo/chess-coach",
+    "workspace": "_work/gpu-owner-recovery/cache/host-cpu39-1",
+    "evidence": "_work/gpu-owner-recovery/runs/host-cpu39-1",
+    "engine": "unix:///var/run/docker.sock",
+    "rustImage": "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+    "retained": {
+      "native": "_work/gpu-owner-recovery/cache/host-gpu-native-build-2/native",
+      "bun": "_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun",
+      "cargo": "_work/gpu-owner-recovery/cache/host-gpu-native-build-1/cargo-home"
+    },
+    "nativeManifestMetadata": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/native-source-manifest.json",
+    "sourceManifestSha256": "7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec",
+    "cargoLockSha256": "77f674cc26a01f26558fd99c45bdcd5566017be05833fce1d39cae98cda05955",
+    "existingHelpers": [
+      {
+        "path": "_work/gpu-owner-recovery/verify.ts",
+        "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+        "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/qualification/host-build/build.ts",
+        "sha256": "3b83c50932c5092f45b147602bb26ae530628e2fdbf7d6e5a7e4363ae65c1ac8"
+      }
+    ],
+    "resources": {
+      "cpus": 2,
+      "memoryBytes": 8589934592,
+      "memoryPlusSwapBytes": 8589934592,
+      "cargoJobs": 2,
+      "rayonThreads": 2,
+      "serialTestThreads": 1,
+      "class": "C1_ORDINARY_CAPS_NOT_QUOTA_OR_FIT_GUARANTEES"
+    },
+    "testLoop": {
+      "perTestMs": 120000,
+      "totalMs": 1950000,
+      "cleanupReserveMs": 30000
+    },
+    "coverage": {
+      "sourceFiles": 65,
+      "copiedFiles": 66,
+      "harnesses": 16,
+      "executables": 19,
+      "learningTests": 22,
+      "policyTests": 17,
+      "tests": 39,
+      "emptyHarnesses": 5
+    },
+    "limits": {
+      "overallMs": 4200000,
+      "normalOperationsMs": 4020000,
+      "cleanupMs": 120000,
+      "receiptReserveMs": 60000,
+      "workerMs": 3600000,
+      "compilationMs": 1500000,
+      "startupAndFinalizationMs": 150000,
+      "workerFinalizationMs": 30000,
+      "dockerCommandMs": 120000,
+      "versionMs": 10000,
+      "minimumFreeBytes": 68719476736,
+      "minimumRunningFreeBytes": 17179869184,
+      "workspaceSoftBytes": 34359738368,
+      "scratchSoftBytes": 2147483648,
+      "evidenceSoftBytes": 268435456,
+      "watchMs": 5000,
+      "stagingBytes": 2097152,
+      "stagingFiles": 66,
+      "supervisedStreamBytes": 4194304,
+      "hostReceiptBytes": 2097152
+    },
+    "maximums": {
+      "hostInvocations": 1,
+      "dockerOperations": 7,
+      "workerCreates": 1,
+      "workerStarts": 1,
+      "workerLogFollows": 1,
+      "terminalInspections": 1,
+      "workerStops": 1,
+      "workerKills": 1,
+      "containerRemovals": 1,
+      "cargoCompilations": 2,
+      "versionCommands": 2,
+      "donors": 0,
+      "imageBuilds": 0,
+      "imagePulls": 0,
+      "gpuRequests": 0
+    },
+    "hostExecutionApproved": false,
+    "sourcePublicationRequiredBeforeHostExecution": true,
+    "stagingAndNativeCompilationApproved": false,
+    "nativeManifestCopyApproved": false,
+    "cargoArchiveUnpackIntoFreshWritableHomeApproved": false,
+    "cpuRegressionExecutionApproved": false,
+    "retainedMutationAuthorized": false,
+    "imageOperationAuthorized": false,
+    "dependencyAcquisitionAuthorized": false,
+    "sharedBuilderModificationAuthorized": false,
+    "gpuExecutionAuthorized": false,
+    "llvmExecutionAuthorized": false,
+    "automaticRetryAuthorized": false,
+    "trainingAuthorized": false,
+    "publicationAuthorized": false,
+    "trainingReady": false
+  },
+  "bindings": {
+    "sources": [
+      {
+        "path": "_work/gpu-owner-recovery/qualification/cpu-host-plan.json",
+        "sha256": "2d2dc2a056fb662b0c8acb37faa8f315cfececae8a9d528e23322a9f79138977"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/qualification/cpu-host.ts",
+        "sha256": "205aa51440e132c9cb4e561ee1c8d6d23ebc80fc4d10b2435ffa9e74a834db7f"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/qualification/cpu-host.test.ts",
+        "sha256": "79b803c4bfe1b02a64b1ba2b94eacd1d7b420f57e866e59b0dadd201ae3a005e"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/verify.ts",
+        "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+        "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/qualification/host-build/build.ts",
+        "sha256": "3b83c50932c5092f45b147602bb26ae530628e2fdbf7d6e5a7e4363ae65c1ac8"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/native-source-manifest.json",
+        "sha256": "7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec"
+      },
+      {
+        "path": "tooling/runtime/qualification.ts",
+        "sha256": "e08f52f793474bd803ee4ead91b5b2ad6425fc42c24fdab98b586e5997e7af9a"
+      },
+      {
+        "path": "tooling/runtime/Dockerfile.gpu-qualification",
+        "sha256": "62998fe447f02055dd1e55637e229cd498a6d90376df5552c74d32166853bfdd"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/qualification/host-build/plan.json",
+        "sha256": "5e8d1558707dc79f09ba8105daf7f33125517e957962797ca505bf3e95da9413"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/qualification/tsconfig.json",
+        "sha256": "b328520d0a04776b0e0931f6fb0e6de92c4a2f37494bc37129c3dc24b63a098b"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "a0cf0b388c7327624fa7f91061dbf4ee4280e9f27d095740399fe5c83682e913"
+      },
+      {
+        "path": "package.json",
+        "sha256": "eec978d7f787b0bbdc1eba99d15d8972a0d2751fb5e0078d821b5cf09004cbae"
+      },
+      {
+        "path": "packages/runtime/tests/gpu-qualification.test.ts",
+        "sha256": "544a8937344523eefe2fb0e2acb6f394bcd0bfc5e86438dc1d532e5548b69871"
+      }
+    ],
+    "programs": [
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/driver.mjs",
+        "sha256": "6c5098849bf9958fb9894ece5a05e604d50daaae8705afdea20289cd5d45bae1"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/host.mjs",
+        "sha256": "61f3ff70efe231f9e8caaa7eb5906856b1f09dc75315da39d46a9c7c0b5c2775"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/canonical-host-command.fish",
+        "sha256": "89a15595fbf43b7f27046fbbb589a1e7205d0255c39d99834aed288d30102375"
+      }
+    ]
+  },
+  "grantIsIdentityNotAuthority": true,
+  "separateExplicitHumanApprovalRequired": true,
+  "reviewedPacketCommitPushRequiredBeforeHostCommand": true,
+  "requestedOperations": {
+    "nativeSourceCopies": 66,
+    "nativeSourceCopyMaximumBytes": 2097152,
+    "readOnlyRetainedCargoRegistryIndexAndCache": true,
+    "cargoArchiveUnpackOnlyIntoFreshWritableCargoHome": true,
+    "offlineCpuCompilations": 2,
+    "completeCpuHarnesses": 16,
+    "cpuTests": 39,
+    "ownedContainerLifecycle": true,
+    "maximumHostAttemptsIncludingPreflight": 1
+  },
+  "hostExecutionApproved": false,
+  "stagingAndNativeCompilationApproved": false,
+  "cargoArchiveUnpackIntoFreshWritableHomeApproved": false,
+  "cpuRegressionExecutionApproved": false,
+  "gpuExecutionAuthorized": false,
+  "llvmExecutionAuthorized": false,
+  "retainedMutationAuthorized": false,
+  "oldGrantsReusable": false,
+  "trainingAuthorized": false,
+  "publicationAuthorized": false,
+  "trainingReady": false
+}

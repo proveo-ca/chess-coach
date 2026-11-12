@@ -1,0 +1,13 @@
+{
+  "status": "UNCONFIGURED_SHIM_FAILURE_RETAINED_INSTALLED_DIRECT_FISH_FOUND_FOR_SYNTAX_ONLY",
+  "discoveredShim": "/home/agent/toolchains/linux-amd64/.local/share/mise/shims/fish",
+  "attemptedCommand": "MISE_AUTO_INSTALL=false MISE_EXEC_AUTO_INSTALL=false MISE_TASK_RUN_AUTO_INSTALL=false fish --version",
+  "exitCode": 1,
+  "reportedFailure": "mise ERROR No version is set for shim: fish",
+  "installedDirectBinary": "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-fish-shell-fish-shell/4.9.3/fish",
+  "configurationChanged": false,
+  "installationAttempted": false,
+  "hostExecuted": false,
+  "nativeProjectCommandExecuted": false,
+  "trainingReady": false
+}

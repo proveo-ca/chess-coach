@@ -1,0 +1,113 @@
+{
+  "version": "chess-coach.closed-cpu-host-proposal.v1",
+  "status": "UNAPPROVED_SOURCE_ONLY",
+  "method": "OWNED_CPU_CONTAINER_FRESH_OFFLINE_BUILD_AND_CPU39_REGRESSION",
+  "runId": "host-cpu39-1",
+  "grant": "--approved-host-cpu39-1",
+  "root": "/home/gu1lty/Projects/proveo/chess-coach",
+  "workspace": "_work/gpu-owner-recovery/cache/host-cpu39-1",
+  "evidence": "_work/gpu-owner-recovery/runs/host-cpu39-1",
+  "engine": "unix:///var/run/docker.sock",
+  "rustImage": "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+  "retained": {
+    "native": "_work/gpu-owner-recovery/cache/host-gpu-native-build-2/native",
+    "bun": "_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun",
+    "cargo": "_work/gpu-owner-recovery/cache/host-gpu-native-build-1/cargo-home"
+  },
+  "nativeManifestMetadata": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/native-source-manifest.json",
+  "sourceManifestSha256": "7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec",
+  "cargoLockSha256": "77f674cc26a01f26558fd99c45bdcd5566017be05833fce1d39cae98cda05955",
+  "existingHelpers": [
+    {
+      "path": "_work/gpu-owner-recovery/verify.ts",
+      "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+      "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/host-build/build.ts",
+      "sha256": "3b83c50932c5092f45b147602bb26ae530628e2fdbf7d6e5a7e4363ae65c1ac8"
+    }
+  ],
+  "resources": {
+    "cpus": 2,
+    "memoryBytes": 8589934592,
+    "memoryPlusSwapBytes": 8589934592,
+    "cargoJobs": 2,
+    "rayonThreads": 2,
+    "serialTestThreads": 1,
+    "class": "C1_ORDINARY_CAPS_NOT_QUOTA_OR_FIT_GUARANTEES"
+  },
+  "testLoop": {
+    "perTestMs": 120000,
+    "totalMs": 1950000,
+    "cleanupReserveMs": 30000
+  },
+  "coverage": {
+    "sourceFiles": 65,
+    "copiedFiles": 66,
+    "harnesses": 16,
+    "executables": 19,
+    "learningTests": 22,
+    "policyTests": 17,
+    "tests": 39,
+    "emptyHarnesses": 5
+  },
+  "limits": {
+    "overallMs": 4200000,
+    "normalOperationsMs": 4020000,
+    "cleanupMs": 120000,
+    "receiptReserveMs": 60000,
+    "workerMs": 3600000,
+    "compilationMs": 1500000,
+    "startupAndFinalizationMs": 150000,
+    "workerFinalizationMs": 30000,
+    "dockerCommandMs": 120000,
+    "versionMs": 10000,
+    "minimumFreeBytes": 68719476736,
+    "minimumRunningFreeBytes": 17179869184,
+    "workspaceSoftBytes": 34359738368,
+    "scratchSoftBytes": 2147483648,
+    "evidenceSoftBytes": 268435456,
+    "watchMs": 5000,
+    "stagingBytes": 2097152,
+    "stagingFiles": 66,
+    "supervisedStreamBytes": 4194304,
+    "hostReceiptBytes": 2097152
+  },
+  "maximums": {
+    "hostInvocations": 1,
+    "dockerOperations": 7,
+    "workerCreates": 1,
+    "workerStarts": 1,
+    "workerLogFollows": 1,
+    "terminalInspections": 1,
+    "workerStops": 1,
+    "workerKills": 1,
+    "containerRemovals": 1,
+    "cargoCompilations": 2,
+    "versionCommands": 2,
+    "donors": 0,
+    "imageBuilds": 0,
+    "imagePulls": 0,
+    "gpuRequests": 0
+  },
+  "hostExecutionApproved": false,
+  "sourcePublicationRequiredBeforeHostExecution": true,
+  "stagingAndNativeCompilationApproved": false,
+  "nativeManifestCopyApproved": false,
+  "cargoArchiveUnpackIntoFreshWritableHomeApproved": false,
+  "cpuRegressionExecutionApproved": false,
+  "retainedMutationAuthorized": false,
+  "imageOperationAuthorized": false,
+  "dependencyAcquisitionAuthorized": false,
+  "sharedBuilderModificationAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "llvmExecutionAuthorized": false,
+  "automaticRetryAuthorized": false,
+  "trainingAuthorized": false,
+  "publicationAuthorized": false,
+  "trainingReady": false
+}

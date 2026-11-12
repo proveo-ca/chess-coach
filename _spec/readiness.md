@@ -6,9 +6,11 @@ Executor accepted **training first; ALL security/privacy hardening and isolation
 The [canonical amendment and phase 0–LAST roadmap](gate-closure.md#current-precedence-amendment--accepted-2026-11-09) govern current priority; [gate-closure.puml](gate-closure.puml) shows training before full-assurance qualification.
 The old runner-cancellation decision and full-assurance conjunction below no longer govern pretraining sequencing.
 Prior strict STOP, escaped-group and dual-crash requirements are deferred assurance work, not accepted implementations or new functional gates.
-The Bun abort remains unresolved; phase 0 must determine whether the selected functional path actually needs any part of that halted isolated diagnostic pipeline.
+The Bun abort remains unresolved historical evidence from the isolated diagnostic path; it is not the next gate for the selected HOST path, whose full-six GPU result is accepted below. No archive-pipeline replay follows.
 
-### Current functional acceptance checklist — planned, not passed
+<a id="current-functional-acceptance-checklist--planned-not-passed"></a>
+
+### Current functional acceptance checklist — conjunction not yet satisfied
 
 ```text
 trainingFunctionalReadiness =
@@ -25,7 +27,7 @@ trainingFunctionalReadiness =
 ```
 
 This checklist defines the newly selected training-functional profile, not full-assurance Gate0/F9/R4 PASS.
-Only future accepted functional proof can change observed `trainingReady:false`; this planning amendment changes no runtime flag.
+Accepted partial functional proof below leaves observed `trainingReady:false` until the whole functional profile is explicitly accepted; this amendment changes no runtime flag.
 Functional readiness must precede the separately approved planned training phase and validation of its results.
 All security/privacy/isolation hardening, custody/provenance assurance and final full-assurance acceptance follow the completed planned training phase and validated results, not its first episode or checkpoint.
 Do not remove or relabel existing functional tests, permit hidden model facts, alter learning/eligibility/RNG/curriculum/checkpoint semantics, reduce precision or substitute CPU learning.
@@ -35,19 +37,43 @@ Existing configuration stays unchanged.
 
 AGENTS.md implementation reviews remain required; their current scope checks functional correctness and records deferred assurance findings.
 Executor already supplied the policy deferral for security/privacy/isolation hardening; preserve open findings and severities without claiming fixes, passes or new source acceptance.
-Observed status remains **0/3 diagnostics, no accepted binding, full pipeline halted, `trainingReady:false`**.
-No grant is renewed; an unspent allowance does not authorize the existing blocked pipeline, archive replay/capture/acquisition, runtime/tool/helper changes or training.
-This pass authorizes planning-document edits only; it runs no verification commands or native execution.
+The isolated diagnostic checkpoint remains **HISTORICAL: 0/3 diagnostics, absent binding and halted archive pipeline**, not the selected HOST path's current status or next gate. Current full-six GPU REPORT PASS does not lift **trainingReady:false**.
+No old grant is renewed; the separate CPU39 approval below does not authorize the existing blocked pipeline, archive replay/capture/acquisition, runtime/tool/helper changes or training.
+**HISTORICAL:** The earlier planning amendment authorized planning-document edits only. Later source-only preparation and persisted local verification below authorize no native/HOST execution.
 Reviews are read-only.
 
-## Retained operational checkpoint and full-assurance narrative
+### CURRENT functional evidence — GPU REPORT PASS; CPU39 source prepared and reviewed, NOT HOST PASS
+
+[Current GPU readiness](gpu-readiness.md#current-gpu-full-source-preparation) and [gpu-full-qualification.puml](gpu-full-qualification.puml) own the complete normalized [full2 observation](../_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/observation.json): **PASS_HOST_GPU_FULL_ONLY +PASS_GPU_FULL_TESTS_ONLY +HOST_GPU_FULL_EXIT=0 /REPORT scope**, provenance **SEMANTICALLY_NORMALIZED_COMPLETE_OPERATOR_JSON_AND_SUMMARY_NOT_ORIGINAL_HOST_BYTES**. All **six exact invoked/accepted tests** passed **each1/0/0/exit0**, including active2335 +inactive2335 (**4670 /F64 /eps1e-6 /atol1e-8 /rtol1e-5 /exact C12**) under unchanged source assertions. Native65/manifest7e was checked unchanged;113 telemetry samples/guard complete and owned cleanup report PASS. These facts accept functional GPU results, not original HOST-byte/custody/full-assurance qualification; no new custody gate follows.
+
+GPU manual HOST/campaign and replacement-text allowances are **CONSUMED1/remaining0**; old TUI outcome UNKNOWN/grants0 remains historical. Preserve immutable issued remaining1 fields, failed full1 roots and every partial result. Current [GPU report verification3](../_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-3/receipt.json) records **7 mutation tests58 assertions +strict TSC +report check /three PASS stages**; [persisted adversarial/security review](../_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/review.json) is **READY/no findings/REPORT-only**. Prior verification1 typing FAIL and verification2 PASS7/54 remain historical, not current proof or local native/GPU execution. That GPU report grants no rerun or new operation; the distinct CPU approval below renews none of its allowances.
+
+| Existing functional concern | Current projection |
+|---|---|
+| Selected HOST F64 GPU scoring/backward/SGD/reload,4670 coordinates and exact C12 | **REPORT PASS**, without a whole-profile readiness lift |
+| Current-generation CPU39 default-feature regression | CPU/delivery **SOURCE PREPARED + REVIEWED; approval ISSUED1/remaining1 AT ISSUANCE, publication NOT ATTEMPTED/HOST UNOBSERVED, NOT HOST PASS** |
+| Canonical init/BOTH/independent reference/orderly close, integrated R4 and operational wiring | **PENDING**, not proven by the GPU report |
+| Full-assurance Gate0/F9/R4 and all hardening | **OPEN/deferred until ALL planned training completes and results validate**, not closed by functional evidence |
+| Training/dispatch | **trainingReady:false**, dispatch disabled, no training grant |
+
+[gpu-qualification.puml](gpu-qualification.puml) owns the **closed three-file CPU39 adapter**: **cpu-host-plan.json /cpu-host.ts /cpu-host.test.ts**, not GPU-wrapper generalization. [Source1 proof](../_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/receipt.json) retains **PRE_REVIEW PASS23 mocks+8 contracts+TSC** and [initial NOT_READY review](../_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/review-1.json). [Corrected source2](../_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/receipt.json) records **PASS_SOURCE_ONLY /sourceChanged:false /programsChanged:false /six stages /32 mocks387 assertions+8 contracts+strict TSC+three Fish NOEXEC checks**, binding six programs. [Bounded delivery proof](../_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/receipt.json) records **PASS_DELIVERY_SOURCE_TESTS_AND_TYPES_ONLY /six stages /6 pure tests45 assertions /strict TSC/two Fish NOEXEC/root and runtime-test TSC**. [Final CPU review3](../_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/review-3.json) and [delivery review2](../_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/review-2.json) record adversarial/security/DevOps **READY/source-only/no findings**, not HOST PASS or authority; CPU review2 stays historical. Frozen347/327/native65 source hashes remain unchanged without cache/archive payload access. Trial fit/RO-index compatibility remain unqualified, not new gates. Actor activation v1/single-versus-five-master remains a later decision, not a preparation blocker.
+
+Executor selected **Approve CPU39 (Recommended)**. [Issued approval](../_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/approval.json), **cpu39-manual-grant-1**, permits one normal scoped text commit+one fixed continuation HTTPS push from **a44d79bda7c8824c1aa611fe7a6a8cb5e653d746**, then one text delivery and one combined manual attempt to **OPERATOR HOST ONLY, never coding**. Commit/push/text/manual counters each retain **remaining1 AT ISSUANCE**; **publication NOT ATTEMPTED/text pending/HOST UNOBSERVED, NOT CPU39 PASS**. **Successful publication +actual committed canonical raw-blob match must precede command delivery.** The [proposal](../_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/campaign-request.json) stays **UNAPPROVED/all-false PRE_APPROVAL history**. Issued fields stay immutable; record later outcomes/consumption separately. Parent owns fresh post-approval packet checking.
+
+Bounded delivery remains a task script, not a fourth adapter/framework: ONE Git blob via existing gh/HTTPS/bounded base64 and overflow/exact length+SHA256+Git identity/captured proof snapshots, fresh **cache/host-cpu39-handoff-1** with no checkout change. Exact approval covers fresh source66/2MiB, RO-registry archive extraction into fresh CARGO_HOME, two offline default-feature builds/CPU39 and owned cleanup under unchanged reviewed bounds. **Delivery30s TERM+2s KILL ends before separate CPU4200s**, not a strict4232s global guarantee. Any delivery/preflight attempt consumes combined manual1. No coding HOST/native execution, automatic submission/retry, fallback/install/acquisition/credential or retained-input mutation/GPU/native LLVM/training authority follows. Fish parsing ran no script body; preserve its shim failure. Do not repeat the archive pipeline, rerun GPU qualification or add a training/hardening gate.
+
+<a id="retained-operational-checkpoint-and-full-assurance-narrative"></a>
+
+## HISTORICAL operational checkpoint and full-assurance narrative
 
 The original status and chronology below remain unchanged as recorded evidence and historical full-assurance requirements.
-Their old next-gate instructions and mixed acceptance checklist do not override the current training-functional amendment.
+Their old next-gate instructions and mixed acceptance checklist do not override the current training-functional amendment. Labels saying "current" within this retained chronology describe their old checkpoint, not today's selected-path gate.
 
 Status: `SOURCE_RECONSTRUCTED` / `VERIFIED_TEST_SUBSETS` / `SOURCE_REVIEWS_ACCEPTED_SCOPED` / `RUNNER_CANCELLATION_DECISION_REQUIRED_BEFORE_UNSPENT_SYNTHETIC_DIAGNOSTICS` / diagnostic source `STATIC_GATES_PASS_DEVOPS_HIGH_BLOCKS_BINDING_AND_EXECUTION` / OPERATIONAL QUALIFICATION OPEN / `trainingReady:false`.
 
-## CURRENT recovery boundary
+<a id="current-recovery-boundary"></a>
+
+## HISTORICAL recovery boundary — not the selected HOST path's next gate
 
 [recovery.md](recovery.md) restores the accepted goals after loss of earlier task work and external receipts.
 [gpu-owner.md](gpu-owner.md) and [gpu-cooperative-policy.md](gpu-cooperative-policy.md) define the reconstructed connected source and retained contracts.
@@ -84,7 +110,9 @@ No helper-build or real-archive renewal is selected, and no host-only verificati
 The completed exact FFT grant authorizes no future acquisition or operational work.
 Do not run collection or training to prove readiness.
 
-### Current next gate — runner-cancellation decision before unspent diagnostics
+<a id="current-next-gate--runner-cancellation-decision-before-unspent-diagnostics"></a>
+
+### HISTORICAL runner-cancellation gate before diagnostics — not a CPU39 prerequisite
 
 `_work/gpu-owner-recovery/cuda-llvm-request.json` records `authorityGranted:false`, authorization `HALTED_AFTER_FIRST_FAILURE`, status `HALTED_AFTER_PRIVATE_BUN_ARCHIVE_AUDIT_INVOCATION_FAILURE_DECISION_REQUIRED`, and phase `HALTED_AFTER_PRIVATE_BUN_ARCHIVE_AUDIT_INVOCATION_FAILURE`.
 `renewedExecutorDecisionRequired:true` still applies to that full request; keep its bytes identical to `runs/cuda-bun-compatibility-1/llvm-request-halted.json`, pinned SHA-256 `e0b54ee82895a3da613e92e764ccd7db2c10f2001e95241543b36f49b6f1cc63` under `_work/gpu-owner-recovery/`.

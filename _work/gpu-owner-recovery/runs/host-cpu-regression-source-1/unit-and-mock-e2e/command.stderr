@@ -1,0 +1,30 @@
+
+_work/gpu-owner-recovery/qualification/cpu-host.test.ts:
+(pass) closed immutable plan grants no HOST, unpack, CPU, GPU, training or publication operations [0.34ms]
+(pass) two CPU commands exactly match the existing recipe without GPU features, ignored tests or selectors [0.26ms]
+(pass) CPU container has only RO donor source/Bun/index/archive mounts and fresh writable build/home/scratch [0.50ms]
+(pass) manifest staging copies exactly native65 plus its manifest with EXCL, without recursive donor discovery [1.66ms]
+(pass) staging rejects nonregular files, oversize copies, changed content and late I/O without repair [0.91ms]
+(pass) MOCK e2e compiles twice, executes all sixteen harnesses/39 tests, records 19 CPU artifacts and removes its owned container [8.37ms]
+(pass) failed compilation stops before the second build or CPU harness and retains its actual failed attempt [0.87ms]
+(pass) CPU mock fails closed and retains partial attempts: {"missing":true} [0.61ms]
+(pass) CPU mock fails closed and retains partial attempts: {"duplicate":true} [0.53ms]
+(pass) CPU mock fails closed and retains partial attempts: {"ignored":true} [0.49ms]
+(pass) CPU mock fails closed and retains partial attempts: {"nonzero":true} [0.51ms]
+(pass) CPU mock fails closed and retains partial attempts: {"captureFail":true} [0.52ms]
+(pass) CPU mock fails closed and retains partial attempts: {"sourceChanged":true} [0.71ms]
+(pass) CPU mock fails closed and retains partial attempts: {"badVersion":true} [0.15ms]
+(pass) CPU mock fails closed and retains partial attempts: {"missingArtifact":true} [0.31ms]
+(pass) complete CPU budgets cannot omit empty harnesses or borrow cleanup reserve [0.10ms]
+(pass) worker includes startup, enforces aggregate compilation, checks artifact I/O and rejects late successful final harness [1.50ms]
+(pass) HOST rejects claimed registration without explicit command invocation and rejects failed terminal state [2.39ms]
+(pass) HOST capture failure recovers its CID file and cleans only that owned container without create retry [0.94ms]
+(pass) HOST invalid or changed CID never becomes an unowned cleanup target [0.88ms]
+(pass) HOST watch failures consume the attempt and await held owned cleanup before return [0.97ms]
+(pass) HOST rejects late Docker success rather than extending its whole normal-operation clock [0.74ms]
+(pass) rendering builds JS only in memory and keeps bundle evaluation inert until an explicit appended function [8.56ms]
+
+ 23 pass
+ 0 fail
+ 239 expect() calls
+Ran 23 tests across 1 file. [56.00ms]

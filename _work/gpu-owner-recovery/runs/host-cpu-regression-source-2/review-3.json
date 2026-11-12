@@ -1,0 +1,21 @@
+{
+  "status": "READY_CPU39_SOURCE_ONLY_ALL_SCOPED_REVIEWS_ACCEPTED",
+  "sourceProof": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/receipt.json",
+  "priorFindings": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/review-1.json",
+  "adversarial": {"session":"ses_e2fb4bad6ffeZo2vxm6KkikmFp","verdict":"READY_TO_MERGE_YES","findings":[]},
+  "security": {"session":"ses_e2fb4bac6ffe3oqIaM1dWF2rmH","verdict":"READY_TO_MERGE_YES_SOURCE_ONLY","findings":[],"risk":"LOW_FOR_SCOPED_SOURCE"},
+  "devops": {"session":"ses_e2fd5fc9affeLdBUzjh85zAq3g","verdict":"READY_YES_SCOPED_SOURCE_ONLY","findings":[]},
+  "priorFunctionalFindingsResolvedInSource": true,
+  "localAdapterTests": 32,
+  "localAdapterAssertions": 387,
+  "selectedFrozenContractTests": 8,
+  "passingStages": 6,
+  "fishChecksAreSyntaxOnly": true,
+  "source1HistoricalProofRetained": true,
+  "actualHostExecuted": false,
+  "hostExecutionApproved": false,
+  "scriptFetchingApproved": false,
+  "publicationApproved": false,
+  "experimentTrainingApproved": false,
+  "trainingReady": false
+}

@@ -122,7 +122,13 @@
         "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-1/**",
         "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/**",
         "_work/gpu-owner-recovery/qualification/host-build-reuse/selection.json",
-        "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/receipt.json"
+        "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/receipt.json",
+        "_work/gpu-owner-recovery/qualification/cpu-host-plan.json",
+        "_work/gpu-owner-recovery/qualification/cpu-host.ts",
+        "_work/gpu-owner-recovery/qualification/cpu-host.test.ts",
+        "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/**",
+        "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/**",
+        "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/**"
       ],
       "fingerprint": null
     },
