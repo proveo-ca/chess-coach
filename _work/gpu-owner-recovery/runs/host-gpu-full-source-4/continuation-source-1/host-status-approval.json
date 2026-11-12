@@ -1,0 +1,21 @@
+{
+  "status": "EXECUTOR_APPROVED_ONE_READ_ONLY_HOST_FULL_TWO_STATUS_COMMAND",
+  "authorizationSource": "EXECUTOR_SELECTED_APPROVE_STATUS_COMMAND_RECOMMENDED_AFTER_UNCERTAIN_TERMINAL_SUBMISSION",
+  "executor": "OPERATOR_HOST_ONLY_NOT_CODING",
+  "maximumDockerMetadataQueries": 1,
+  "dockerEndpoint": "unix:///var/run/docker.sock",
+  "dockerFilter": "label=chess-coach.gpu-full=host-gpu-full-2",
+  "maximumDockerOutputBytes": 4096,
+  "maximumReceiptBytes": 2097152,
+  "overallSeconds": 30,
+  "receipt": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-full-2/receipt.json",
+  "workspaceAndEvidencePresenceOnly": true,
+  "hostFilesystemWritesApproved": false,
+  "containerCreationMutationOrRemovalApproved": false,
+  "nativeCompilationOrGpuExecutionApproved": false,
+  "acquisitionOrInstallationApproved": false,
+  "previousFullTwoAttemptRenewed": false,
+  "automaticRetryAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

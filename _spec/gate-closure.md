@@ -27,6 +27,13 @@ Every phase below is planned work, not a new execution grant or a claim that its
 | 4 | Accepted functional readiness, then **COMPLETE PLANNED TRAINING AND VALIDATE RESULTS** | Explicitly accept the frozen functional evidence; obtain a separate explicit training-execution grant before any training; complete the authorized planned training phase and validate its results under the unchanged model, five-master experiment, learning and eligibility contracts |
 | LAST | **ALL security/privacy hardening, isolation and full-assurance qualification** | Only after completion of the planned training phase and validation of its results: separately scope, approve, implement and qualify runtime-domain security, isolation, custody/provenance assurance and final full-assurance acceptance; no historical finding or gate passes by deferral |
 
+**Pre-merge follow-up:** Review historical `_work/` files for obsolescence before merging.
+Check frozen **347/327 source/proof/reference bindings** and active use before any exact-file deletion decision.
+Preserve current proofs, failed receipts, raw captures, partial workspaces and HOST inputs by default.
+**No deletion is authorized now.**
+This follow-up adds no training-readiness, security or custody gate.
+ALL hardening remains after ALL planned training is complete and its results are validated.
+
 ### Phase 0 — bounded dependency/blocker inventory
 
 Use one inventory for the selected functional path, not a new open-ended prerequisite audit at each slice.

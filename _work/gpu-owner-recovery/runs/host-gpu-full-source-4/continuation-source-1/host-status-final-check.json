@@ -1,0 +1,29 @@
+{
+  "status": "PASS_CURRENT_REVIEWED_BOUNDED_HOST_STATUS_COMMAND_AND_PRE_MERGE_NOTE_ONLY",
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status-command.fish",
+    "bytes": 1940,
+    "sha256": "79c2aa96b1944d629d70d5aa669999070a0c02c45b65a526ebd348e0db49fb47"
+  },
+  "literalEqualsReviewedBody": true,
+  "review": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status-review.json",
+    "sha256": "0ccd51ebcadd3660d22cd888a1c4d61d77de97d71d8f7df413e220a83668e994"
+  },
+  "verification": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status-verification-2/receipt.json",
+    "sha256": "b08d3cb94eff64ba6192d30f89644525e0389e2df2358bcfbf15f8a8067bf5bf"
+  },
+  "sourceHashesChecked": 347,
+  "protectedFeasibilitySources": 327,
+  "fishParsingNotExecuted": true,
+  "hostStatusCommandExecuted": false,
+  "previousFullTwoAttemptRenewed": false,
+  "filesDeleted": 0,
+  "preMergeNote": {
+    "path": "_spec/gate-closure.md",
+    "sha256": "eec293107156724649558a5d606b044fd1d42b614a18bb66b6e0acbf6f030a88"
+  },
+  "trainingAuthorized": false,
+  "trainingReady": false
+}
