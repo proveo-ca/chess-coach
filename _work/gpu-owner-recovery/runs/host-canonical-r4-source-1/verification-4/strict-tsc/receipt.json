@@ -1,0 +1,31 @@
+{
+  "name": "strict-tsc",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "node_modules/typescript/lib/_tsc.js",
+    "--noEmit",
+    "-p",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/tsconfig.json"
+  ],
+  "result": {
+    "status": "PASS",
+    "exitCode": 0,
+    "failure": null,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verification-4/strict-tsc/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verification-4/strict-tsc/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

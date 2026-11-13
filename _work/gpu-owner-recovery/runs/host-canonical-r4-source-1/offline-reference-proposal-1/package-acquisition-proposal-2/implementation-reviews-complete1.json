@@ -1,0 +1,42 @@
+{
+  "version": "chess-coach.r2-current-implementation-reviews.v1",
+  "status": "TWELVE_CURRENT_SCOPED_READY_VERDICTS_RECORDED_FINAL_SEAL_PENDING",
+  "nonAuthorizing": true,
+  "approvalSha256": "4e68d36f8076e213744364cf4cd5f793ef3dbffda6157b93070edf2ffc282d3f",
+  "launchBoundarySha256": "44aa077f7db10d3bc3a462da355198973a6f2afba29b7745d4c2bba53f94cdc5",
+  "transportAmendmentSha256": "f53b4985052f242a453d24e1bcccde47d1589288952543ea0a5b7d5756291918",
+  "acceptedScopeVerdicts": 12,
+  "rolesPerScope": ["backend", "devops", "adversarial", "security"],
+  "scopeBindings": {
+    "capture": {
+      "reviewDirectory": "implementation-review-2/capture",
+      "status": "READY_CAPTURE_IMPLEMENTATION_SCOPE",
+      "proof": "../package-acquisition-bun-source2/fullverification-9/receipt.json",
+      "proofSha256": "f780bbf4aa007deece850ba688b7200df1b4b31feebaea52045d5259b3dbfe27",
+      "recordedTestsPassed": 751
+    },
+    "caller": {
+      "reviewDirectory": "implementation-review-2/caller",
+      "status": "READY_CALLER_IMPLEMENTATION_SCOPE",
+      "proof": "invocation-verification-6/receipt.json",
+      "proofSha256": "d006193dbbcdcdb802b939eb531f157dcfc18d960f9f11d8f3e7b657127e684c",
+      "recordedTestsPassed": 185
+    },
+    "delivery": {
+      "reviewDirectory": "implementation-review-4/delivery",
+      "status": "READY_DELIVERY_IMPLEMENTATION_SCOPE",
+      "proof": "delivery-verification-15/receipt.json",
+      "proofSha256": "7b7a6469cbbab55b929c125741ef668063bf886b91ac057b9b08c3dafa1e603d",
+      "recordedTestsPassed": 190
+    }
+  },
+  "historicalReviewGenerationsRewritten": false,
+  "sealHelperCurrentVerificationAndQualityReviewsPending": true,
+  "actualExecutionBindingReadyRecordOrPacketCreated": false,
+  "publicationPerformed": false,
+  "operatorCommandDelivered": false,
+  "assistantMayExecuteActualHandoffOrAcquisition": false,
+  "allowancesRenewedOrConsumedByThisRecord": false,
+  "executionReadinessClaimed": false,
+  "trainingReady": false
+}

@@ -1,0 +1,12 @@
+{
+  "status": "NOT_READY_IMPLEMENTATION_SOURCE_ONLY",
+  "session": "ses_e2e5a7bfaffeXVaGBozd4pJB26",
+  "verification": "verification-3/receipt.json",
+  "readOnly": true,
+  "verificationRerunByReviewer": false,
+  "findings": [{"severity":"HIGH","path":"capture.ts","line":146,"code":"BOOTSTRAP_REQUIRES_SPEC_INSTEAD_OF_BACKEND_REVIEW"}],
+  "otherBackendFindings": [],
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

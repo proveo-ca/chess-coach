@@ -1,0 +1,5 @@
+// SPEC: _spec/packages/starchess-training/candidate-generation.puml
+import type { Square } from "@chess-coach/starchess-core/planning-v1";
+
+export const SQUARES = Array.from({ length: 64 }, (_, index) =>
+  `${"abcdefgh"[Math.floor(index / 8)]}${index % 8 + 1}` as Square);

@@ -1,0 +1,35 @@
+{
+  "scope": "OFFLINE_SEAL_PREPARATION_SOURCE_ONLY",
+  "sources": {
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet.ts": {
+      "bytes": 20373,
+      "sha256": "fbea56536386a311995361f2d2764a614b6184c3db325d5bde8277777fb16dc8",
+      "gitBlobOid": "a4b07b9f7a6a7d69c421b8473a6009635c7cd70d"
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet.test.ts": {
+      "bytes": 22401,
+      "sha256": "259e5e515f9996054a33a01ec7d1717c10b360c7e64f4d3f27372c56b13f1402",
+      "gitBlobOid": "63a30459e5587173796ce007dc3eb8806f520269"
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet.tsconfig.json": {
+      "bytes": 616,
+      "sha256": "c8776d875407d71c7afc16e23d5c174c53e66dfc64bbe90af0a744792f1a18be",
+      "gitBlobOid": "590ff514c532f6467f2713faaec16236badf7240"
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet-verify.ts": {
+      "bytes": 23803,
+      "sha256": "3366b6e916b248bb7983d1ce5d0b43acb3e90c62af624fd10788d8a7c1927d5e",
+      "gitBlobOid": "7313c7ab3046d9b84092318c03d94af268e3b6aa"
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet-emit.ts": {
+      "bytes": 10596,
+      "sha256": "1692ca6b6c7ff6eba5f7d411fbe158ebec7cc5de9820a160578ab698a1536ce7",
+      "gitBlobOid": "9b034736cba58e3fdf99abcd77308a96078a5b84"
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet-emit.test.ts": {
+      "bytes": 14647,
+      "sha256": "129592e407507d5fcfb93b2acc8f362b141a52bf4492a1f94873e29ffddd1449",
+      "gitBlobOid": "5c4ddf79904c408134d892fc5ca1bc088431e82e"
+    }
+  }
+}

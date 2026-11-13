@@ -1,0 +1,24 @@
+{
+  "status": "AWAITING_OPERATOR_DIRECTION_ONLY",
+  "sourceProof": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verification-4/receipt.json",
+  "sourceReview": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/review-2.json",
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "bunVersion": "1.4.0",
+  "existingBuilder": "tooling/build-reference.ts",
+  "entrypoints": "tooling/reference-entrypoints.json",
+  "choices": [
+    {"id":"PLAN_BOUNDED_OFFLINE_PREPARATION","recommended":true,"scope":"Prepare a bounded offline proposal from named existing pinned Git and installed package inputs; no network installation or fallback."},
+    {"id":"OPERATOR_SUPPLIED_PREPARED_INPUTS","recommended":false,"scope":"Use operator-supplied prepared reference inputs with pin and input/output metadata."},
+    {"id":"DEFER_REFERENCE_DELIVERY","recommended":false,"scope":"Preserve the source-only packet and defer reference-input delivery."}
+  ],
+  "selectedChoice": null,
+  "routeSelectionGrantsOperationalAuthority": false,
+  "referenceCaptureCopyExtractBuildStageOrAcquisitionApproved": false,
+  "hostExecutionApproved": false,
+  "publicationApproved": false,
+  "trainingApproved": false,
+  "newHostInventoryOrCustodyGateRequired": false,
+  "preparedPacketCommitAndPushRequiredBeforeAnyHostCommandDelivery": true,
+  "referenceInputDelivery": "REFERENCE_INPUT_DELIVERY_UNSELECTED",
+  "trainingReady": false
+}

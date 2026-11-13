@@ -1,0 +1,45 @@
+{
+  "status": "PASS_PRE_INVOCATION_PACKET_ONLY",
+  "failure": null,
+  "checks": {
+    "frozen347": 347,
+    "protected327": 327,
+    "native65": 65,
+    "canonical92": 92,
+    "materializedInputs": {
+      "files": 429,
+      "bytes": 4522249,
+      "assembledRuntimeRoot": false
+    },
+    "preservedStoppedPythonFiles": 8,
+    "reviewRoles": {
+      "helper": 4,
+      "caller": 4,
+      "operationalPermissionFromReviews": false
+    },
+    "sourceProofs": {
+      "capture": {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/verification-10/receipt.json",
+        "tests": 281,
+        "typecheckExitCode": 0
+      },
+      "caller": {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invocation-verification-4/receipt.json",
+        "tests": 170,
+        "typecheckExitCode": 0
+      }
+    },
+    "readOnlyIdentitySha256": "e842bb35a4bf6da17d337965cc71a03a6cd12401c8e8f5fd7b47088e43c5ead6"
+  },
+  "sourceManifestSha256": "b80e7f9fbc98ff50b0a7f55d139619c4ba4ea63119f2e22060356291652588aa",
+  "actualCaptureEntryOrWorkerInvoked": false,
+  "actualGetRequests": 0,
+  "operationalPreflightPerformed": false,
+  "combinedAttemptClaimed": false,
+  "rawArchiveOrCachePayloadRead": false,
+  "nativeHostGpuReferenceOrTrainingExecuted": false,
+  "gitMutationOrPublicationPerformed": false,
+  "acquisitionGrantConsumedOrRenewed": false,
+  "qualificationOrTrainingReadinessGranted": false,
+  "trainingReady": false
+}

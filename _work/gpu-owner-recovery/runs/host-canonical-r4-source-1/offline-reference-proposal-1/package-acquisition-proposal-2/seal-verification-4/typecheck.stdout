@@ -1,0 +1,4 @@
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet.test.ts(78,12): error TS18048: 'actual.candidateSummary' is possibly 'undefined'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet.test.ts(78,66): error TS18048: 'actual.candidateSummary' is possibly 'undefined'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet.test.ts(79,12): error TS18048: 'actual.candidateSummary' is possibly 'undefined'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet.test.ts(80,12): error TS18048: 'actual.candidateSummary' is possibly 'undefined'.

@@ -1,0 +1,424 @@
+
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.test.ts:
+(pass) imports leave production observer and readiness absent [1.15ms]
+79 |   assert.deepEqual(ENVIRONMENT, { LANG: "C", LC_ALL: "C", TZ: "UTC" });
+80 |   assert.equal(CALLER_FILES.length, 4); assert.equal(SOURCE_FILES.length, 5);
+81 | });
+82 | test("exact synthetic completion qualifies with fixed argv, destination, budget and environment", async () => {
+83 |   const s = scenario(), result = await runSyntheticInvocation(s.context);
+84 |   assert.equal(result.assessment, "PASS"); assert.equal(s.calls, 1);
+              ^
+AssertionError: Expected values to be strictly equal:
+
+'FAIL' !== 'PASS'
+
+ generatedMessage: true,
+     actual: "FAIL",
+   expected: "PASS",
+   operator: "strictEqual",
+       diff: "simple",
+       code: "ERR_ASSERTION"
+
+      at /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.test.ts:84:10
+      at node:test:1445:26
+      at executeTestNode (node:test:1448:63)
+(fail) exact synthetic completion qualifies with fixed argv, destination, budget and environment [8.83ms]
+(pass) eligibility rejection performs no invocation or observer preparation [3.40ms]
+(pass) readiness rejection performs no invocation or observer preparation [4.36ms]
+(pass) existing observer blocks even before eligibility [1.75ms]
+(pass) existing operation blocks replay [1.61ms]
+(pass) second caller invocation never retries a completed launcher [3.58ms]
+(pass) synthetic scope rejects acquisition-invocation-1 [1.67ms]
+(pass) synthetic scope rejects  [2.22ms]
+(pass) synthetic scope rejects invocation-verification-1/fixtures/new_case [1.39ms]
+(pass) synthetic scope rejects invocation-verification-2/escape [1.51ms]
+(pass) synthetic scope rejects invocation-verification-2/fixtures/escape/child [1.47ms]
+(pass) synthetic scope rejects invocation-verification-2/fixtures/nested/child [2.19ms]
+(pass) synthetic export rejects missing context [0.13ms]
+(pass) synthetic context rejects the real acquisition runner [1.35ms]
+(pass) prelaunch identity drift stops before the runner [1.65ms]
+(pass) whole-call setup delay rejects late runner PASS [3.04ms]
+(pass) whole-call open delay rejects late runner PASS [2.48ms]
+(pass) whole-call sync delay rejects late runner PASS [4.04ms]
+(pass) outer elapsed boundary ending at 121000 never qualifies [2.65ms]
+(pass) outer elapsed boundary ending at 121001 never qualifies [2.44ms]
+(pass) runner FAIL preserves COMMAND_DEADLINE without inventing EOF [2.62ms]
+(pass) runner FAIL preserves COMMAND_OUTPUT_BOUND without inventing EOF [3.02ms]
+(pass) runner FAIL preserves COMMAND_SUPERVISOR_EXIT without inventing EOF [2.30ms]
+(pass) runner FAIL preserves null without inventing EOF [2.27ms]
+(pass) launcher throw preserves partial artifacts, unknown witness and no retry [3.24ms]
+(pass) launch failure before capture never establishes consumption [1.88ms]
+(pass) missing receipt never qualifies [2.19ms]
+(pass) receipt over 64 KiB rejects before loading [2.48ms]
+(pass) stdout over 4 KiB rejects before loading [4.11ms]
+(pass) stderr metadata over bound never qualifies [2.81ms]
+(pass) actual stderr mismatch never qualifies [2.83ms]
+(pass) returned stderr byte count stays exact [2.64ms]
+(pass) stdout metadata mismatch never qualifies [3.49ms]
+(pass) completion receipt hash mismatch never qualifies [2.67ms]
+(pass) receipt identity drift never replaces the expected identity [2.42ms]
+(pass) postlaunch identity drift rejects even valid completion [3.12ms]
+(pass) postlaunch observer or caller binding drift rejects [2.43ms]
+(pass) missing capture workerReaped never qualifies [2.32ms]
+(pass) missing capture workerExitCode never qualifies [2.36ms]
+(pass) missing capture workerStdoutEof never qualifies [3.77ms]
+(pass) missing capture workerStderrEof never qualifies [2.18ms]
+(pass) missing capture doneEvidenceReceived never qualifies [2.17ms]
+(pass) missing capture interrupted never qualifies [2.16ms]
+(pass) missing capture selectedManifestSha256 never qualifies [3.11ms]
+(pass) missing capture bindingRechecked never qualifies [2.18ms]
+(pass) nonzero exit 1 stays exact and never qualifies [2.40ms]
+(pass) nonzero exit 137 stays exact and never qualifies [2.26ms]
+(pass) nonzero exit -1 stays exact and never qualifies [2.97ms]
+(pass) contradictory runner PASS never establishes EOF [2.32ms]
+(pass) fresh invocation identities distinguish two observations by the same actual caller PID [4.48ms]
+186 |   for (const elapsed of [1, 119999, 120000, 120001]) {
+187 |     test(`independent outer/supervisor/worker epochs ${outerStart}/${supervisorOrigin}/${workerStart} with outer elapsed ${elapsed}`, async () => {
+188 |       const s = scenario(); install(s, completion(s.id, {}, supervisorOrigin, workerStart)); s.time = outerStart!;
+189 |       const runner = s.context.runner; s.context.runner = async (...args) => { const result = await runner(...args); s.time = outerStart! + elapsed; return result; };
+190 |       const result = await runSyntheticInvocation(s.context);
+191 |       assert.equal(result.assessment, elapsed < 120000 ? "PASS" : "FAIL"); assert.equal(result.startedMonoMs, outerStart); assert.equal(result.completionObservedMonoMs, outerStart! + elapsed);
+                   ^
+AssertionError: Expected values to be strictly equal:
+
+'FAIL' !== 'PASS'
+
+ generatedMessage: true,
+     actual: "FAIL",
+   expected: "PASS",
+   operator: "strictEqual",
+       diff: "simple",
+       code: "ERR_ASSERTION"
+
+      at /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.test.ts:191:14
+      at node:test:1445:26
+      at executeTestNode (node:test:1448:63)
+(fail) independent outer/supervisor/worker epochs 0/9000000000000/1 with outer elapsed 1 [4.07ms]
+186 |   for (const elapsed of [1, 119999, 120000, 120001]) {
+187 |     test(`independent outer/supervisor/worker epochs ${outerStart}/${supervisorOrigin}/${workerStart} with outer elapsed ${elapsed}`, async () => {
+188 |       const s = scenario(); install(s, completion(s.id, {}, supervisorOrigin, workerStart)); s.time = outerStart!;
+189 |       const runner = s.context.runner; s.context.runner = async (...args) => { const result = await runner(...args); s.time = outerStart! + elapsed; return result; };
+190 |       const result = await runSyntheticInvocation(s.context);
+191 |       assert.equal(result.assessment, elapsed < 120000 ? "PASS" : "FAIL"); assert.equal(result.startedMonoMs, outerStart); assert.equal(result.completionObservedMonoMs, outerStart! + elapsed);
+                   ^
+AssertionError: Expected values to be strictly equal:
+
+'FAIL' !== 'PASS'
+
+ generatedMessage: true,
+     actual: "FAIL",
+   expected: "PASS",
+   operator: "strictEqual",
+       diff: "simple",
+       code: "ERR_ASSERTION"
+
+      at /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.test.ts:191:14
+      at node:test:1445:26
+      at executeTestNode (node:test:1448:63)
+(fail) independent outer/supervisor/worker epochs 0/9000000000000/1 with outer elapsed 119999 [2.39ms]
+(pass) independent outer/supervisor/worker epochs 0/9000000000000/1 with outer elapsed 120000 [2.22ms]
+(pass) independent outer/supervisor/worker epochs 0/9000000000000/1 with outer elapsed 120001 [2.28ms]
+186 |   for (const elapsed of [1, 119999, 120000, 120001]) {
+187 |     test(`independent outer/supervisor/worker epochs ${outerStart}/${supervisorOrigin}/${workerStart} with outer elapsed ${elapsed}`, async () => {
+188 |       const s = scenario(); install(s, completion(s.id, {}, supervisorOrigin, workerStart)); s.time = outerStart!;
+189 |       const runner = s.context.runner; s.context.runner = async (...args) => { const result = await runner(...args); s.time = outerStart! + elapsed; return result; };
+190 |       const result = await runSyntheticInvocation(s.context);
+191 |       assert.equal(result.assessment, elapsed < 120000 ? "PASS" : "FAIL"); assert.equal(result.startedMonoMs, outerStart); assert.equal(result.completionObservedMonoMs, outerStart! + elapsed);
+                   ^
+AssertionError: Expected values to be strictly equal:
+
+'FAIL' !== 'PASS'
+
+ generatedMessage: true,
+     actual: "FAIL",
+   expected: "PASS",
+   operator: "strictEqual",
+       diff: "simple",
+       code: "ERR_ASSERTION"
+
+      at /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.test.ts:191:14
+      at node:test:1445:26
+      at executeTestNode (node:test:1448:63)
+(fail) independent outer/supervisor/worker epochs 9000000000000/1/5000 with outer elapsed 1 [3.06ms]
+186 |   for (const elapsed of [1, 119999, 120000, 120001]) {
+187 |     test(`independent outer/supervisor/worker epochs ${outerStart}/${supervisorOrigin}/${workerStart} with outer elapsed ${elapsed}`, async () => {
+188 |       const s = scenario(); install(s, completion(s.id, {}, supervisorOrigin, workerStart)); s.time = outerStart!;
+189 |       const runner = s.context.runner; s.context.runner = async (...args) => { const result = await runner(...args); s.time = outerStart! + elapsed; return result; };
+190 |       const result = await runSyntheticInvocation(s.context);
+191 |       assert.equal(result.assessment, elapsed < 120000 ? "PASS" : "FAIL"); assert.equal(result.startedMonoMs, outerStart); assert.equal(result.completionObservedMonoMs, outerStart! + elapsed);
+                   ^
+AssertionError: Expected values to be strictly equal:
+
+'FAIL' !== 'PASS'
+
+ generatedMessage: true,
+     actual: "FAIL",
+   expected: "PASS",
+   operator: "strictEqual",
+       diff: "simple",
+       code: "ERR_ASSERTION"
+
+      at /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.test.ts:191:14
+      at node:test:1445:26
+      at executeTestNode (node:test:1448:63)
+(fail) independent outer/supervisor/worker epochs 9000000000000/1/5000 with outer elapsed 119999 [2.28ms]
+(pass) independent outer/supervisor/worker epochs 9000000000000/1/5000 with outer elapsed 120000 [2.21ms]
+(pass) independent outer/supervisor/worker epochs 9000000000000/1/5000 with outer elapsed 120001 [2.56ms]
+186 |   for (const elapsed of [1, 119999, 120000, 120001]) {
+187 |     test(`independent outer/supervisor/worker epochs ${outerStart}/${supervisorOrigin}/${workerStart} with outer elapsed ${elapsed}`, async () => {
+188 |       const s = scenario(); install(s, completion(s.id, {}, supervisorOrigin, workerStart)); s.time = outerStart!;
+189 |       const runner = s.context.runner; s.context.runner = async (...args) => { const result = await runner(...args); s.time = outerStart! + elapsed; return result; };
+190 |       const result = await runSyntheticInvocation(s.context);
+191 |       assert.equal(result.assessment, elapsed < 120000 ? "PASS" : "FAIL"); assert.equal(result.startedMonoMs, outerStart); assert.equal(result.completionObservedMonoMs, outerStart! + elapsed);
+                   ^
+AssertionError: Expected values to be strictly equal:
+
+'FAIL' !== 'PASS'
+
+ generatedMessage: true,
+     actual: "FAIL",
+   expected: "PASS",
+   operator: "strictEqual",
+       diff: "simple",
+       code: "ERR_ASSERTION"
+
+      at /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.test.ts:191:14
+      at node:test:1445:26
+      at executeTestNode (node:test:1448:63)
+(fail) independent outer/supervisor/worker epochs 3/2000/8000000000000 with outer elapsed 1 [3.27ms]
+186 |   for (const elapsed of [1, 119999, 120000, 120001]) {
+187 |     test(`independent outer/supervisor/worker epochs ${outerStart}/${supervisorOrigin}/${workerStart} with outer elapsed ${elapsed}`, async () => {
+188 |       const s = scenario(); install(s, completion(s.id, {}, supervisorOrigin, workerStart)); s.time = outerStart!;
+189 |       const runner = s.context.runner; s.context.runner = async (...args) => { const result = await runner(...args); s.time = outerStart! + elapsed; return result; };
+190 |       const result = await runSyntheticInvocation(s.context);
+191 |       assert.equal(result.assessment, elapsed < 120000 ? "PASS" : "FAIL"); assert.equal(result.startedMonoMs, outerStart); assert.equal(result.completionObservedMonoMs, outerStart! + elapsed);
+                   ^
+AssertionError: Expected values to be strictly equal:
+
+'FAIL' !== 'PASS'
+
+ generatedMessage: true,
+     actual: "FAIL",
+   expected: "PASS",
+   operator: "strictEqual",
+       diff: "simple",
+       code: "ERR_ASSERTION"
+
+      at /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.test.ts:191:14
+      at node:test:1445:26
+      at executeTestNode (node:test:1448:63)
+(fail) independent outer/supervisor/worker epochs 3/2000/8000000000000 with outer elapsed 119999 [2.46ms]
+(pass) independent outer/supervisor/worker epochs 3/2000/8000000000000 with outer elapsed 120000 [2.43ms]
+(pass) independent outer/supervisor/worker epochs 3/2000/8000000000000 with outer elapsed 120001 [2.43ms]
+186 |   for (const elapsed of [1, 119999, 120000, 120001]) {
+187 |     test(`independent outer/supervisor/worker epochs ${outerStart}/${supervisorOrigin}/${workerStart} with outer elapsed ${elapsed}`, async () => {
+188 |       const s = scenario(); install(s, completion(s.id, {}, supervisorOrigin, workerStart)); s.time = outerStart!;
+189 |       const runner = s.context.runner; s.context.runner = async (...args) => { const result = await runner(...args); s.time = outerStart! + elapsed; return result; };
+190 |       const result = await runSyntheticInvocation(s.context);
+191 |       assert.equal(result.assessment, elapsed < 120000 ? "PASS" : "FAIL"); assert.equal(result.startedMonoMs, outerStart); assert.equal(result.completionObservedMonoMs, outerStart! + elapsed);
+                   ^
+AssertionError: Expected values to be strictly equal:
+
+'FAIL' !== 'PASS'
+
+ generatedMessage: true,
+     actual: "FAIL",
+   expected: "PASS",
+   operator: "strictEqual",
+       diff: "simple",
+       code: "ERR_ASSERTION"
+
+      at /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.test.ts:191:14
+      at node:test:1445:26
+      at executeTestNode (node:test:1448:63)
+(fail) independent outer/supervisor/worker epochs 4000000000/7000000000/100 with outer elapsed 1 [3.84ms]
+186 |   for (const elapsed of [1, 119999, 120000, 120001]) {
+187 |     test(`independent outer/supervisor/worker epochs ${outerStart}/${supervisorOrigin}/${workerStart} with outer elapsed ${elapsed}`, async () => {
+188 |       const s = scenario(); install(s, completion(s.id, {}, supervisorOrigin, workerStart)); s.time = outerStart!;
+189 |       const runner = s.context.runner; s.context.runner = async (...args) => { const result = await runner(...args); s.time = outerStart! + elapsed; return result; };
+190 |       const result = await runSyntheticInvocation(s.context);
+191 |       assert.equal(result.assessment, elapsed < 120000 ? "PASS" : "FAIL"); assert.equal(result.startedMonoMs, outerStart); assert.equal(result.completionObservedMonoMs, outerStart! + elapsed);
+                   ^
+AssertionError: Expected values to be strictly equal:
+
+'FAIL' !== 'PASS'
+
+ generatedMessage: true,
+     actual: "FAIL",
+   expected: "PASS",
+   operator: "strictEqual",
+       diff: "simple",
+       code: "ERR_ASSERTION"
+
+      at /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.test.ts:191:14
+      at node:test:1445:26
+      at executeTestNode (node:test:1448:63)
+(fail) independent outer/supervisor/worker epochs 4000000000/7000000000/100 with outer elapsed 119999 [2.45ms]
+(pass) independent outer/supervisor/worker epochs 4000000000/7000000000/100 with outer elapsed 120000 [2.27ms]
+(pass) independent outer/supervisor/worker epochs 4000000000/7000000000/100 with outer elapsed 120001 [2.51ms]
+186 |   for (const elapsed of [1, 119999, 120000, 120001]) {
+187 |     test(`independent outer/supervisor/worker epochs ${outerStart}/${supervisorOrigin}/${workerStart} with outer elapsed ${elapsed}`, async () => {
+188 |       const s = scenario(); install(s, completion(s.id, {}, supervisorOrigin, workerStart)); s.time = outerStart!;
+189 |       const runner = s.context.runner; s.context.runner = async (...args) => { const result = await runner(...args); s.time = outerStart! + elapsed; return result; };
+190 |       const result = await runSyntheticInvocation(s.context);
+191 |       assert.equal(result.assessment, elapsed < 120000 ? "PASS" : "FAIL"); assert.equal(result.startedMonoMs, outerStart); assert.equal(result.completionObservedMonoMs, outerStart! + elapsed);
+                   ^
+AssertionError: Expected values to be strictly equal:
+
+'FAIL' !== 'PASS'
+
+ generatedMessage: true,
+     actual: "FAIL",
+   expected: "PASS",
+   operator: "strictEqual",
+       diff: "simple",
+       code: "ERR_ASSERTION"
+
+      at /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.test.ts:191:14
+      at node:test:1445:26
+      at executeTestNode (node:test:1448:63)
+(fail) independent outer/supervisor/worker epochs 7000000000/4000000000/9000000000 with outer elapsed 1 [2.96ms]
+186 |   for (const elapsed of [1, 119999, 120000, 120001]) {
+187 |     test(`independent outer/supervisor/worker epochs ${outerStart}/${supervisorOrigin}/${workerStart} with outer elapsed ${elapsed}`, async () => {
+188 |       const s = scenario(); install(s, completion(s.id, {}, supervisorOrigin, workerStart)); s.time = outerStart!;
+189 |       const runner = s.context.runner; s.context.runner = async (...args) => { const result = await runner(...args); s.time = outerStart! + elapsed; return result; };
+190 |       const result = await runSyntheticInvocation(s.context);
+191 |       assert.equal(result.assessment, elapsed < 120000 ? "PASS" : "FAIL"); assert.equal(result.startedMonoMs, outerStart); assert.equal(result.completionObservedMonoMs, outerStart! + elapsed);
+                   ^
+AssertionError: Expected values to be strictly equal:
+
+'FAIL' !== 'PASS'
+
+ generatedMessage: true,
+     actual: "FAIL",
+   expected: "PASS",
+   operator: "strictEqual",
+       diff: "simple",
+       code: "ERR_ASSERTION"
+
+      at /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.test.ts:191:14
+      at node:test:1445:26
+      at executeTestNode (node:test:1448:63)
+(fail) independent outer/supervisor/worker epochs 7000000000/4000000000/9000000000 with outer elapsed 119999 [2.35ms]
+(pass) independent outer/supervisor/worker epochs 7000000000/4000000000/9000000000 with outer elapsed 120000 [2.25ms]
+(pass) independent outer/supervisor/worker epochs 7000000000/4000000000/9000000000 with outer elapsed 120001 [2.31ms]
+(pass) equal outer readings remain truthful but cannot qualify as positive elapsed time [3.25ms]
+(pass) invalid outer start NaN prevents invocation [1.80ms]
+(pass) invalid outer start Infinity prevents invocation [1.69ms]
+(pass) invalid outer start -Infinity prevents invocation [1.80ms]
+(pass) invalid outer start -1 prevents invocation [3.28ms]
+(pass) invalid outer start 0.25 prevents invocation [1.67ms]
+(pass) invalid outer start 9007199254740992 prevents invocation [1.67ms]
+(pass) invalid outer start 1 prevents invocation [1.62ms]
+(pass) invalid outer start null prevents invocation [2.31ms]
+(pass) invalid or regressed outer completion NaN cannot be replaced by a later sample [2.42ms]
+(pass) invalid or regressed outer completion Infinity cannot be replaced by a later sample [2.31ms]
+(pass) invalid or regressed outer completion -Infinity cannot be replaced by a later sample [2.43ms]
+(pass) invalid or regressed outer completion -1 cannot be replaced by a later sample [3.01ms]
+(pass) invalid or regressed outer completion 999 cannot be replaced by a later sample [2.38ms]
+(pass) invalid or regressed outer completion 1000.5 cannot be replaced by a later sample [2.18ms]
+(pass) invalid or regressed outer completion 9007199254740992 cannot be replaced by a later sample [2.42ms]
+(pass) runner throw with regressed completion keeps both failures without retry or invented witness [2.21ms]
+225 | });
+226 | test("post-operation work cannot replace completion time or extend the outer bracket", async () => {
+227 |   const s = scenario(), readiness = s.context.readiness; let readinessCalls = 0, clockReads = 0;
+228 |   s.context.clock = () => { clockReads++; return s.time; };
+229 |   s.context.readiness = id => { if (++readinessCalls === 3) s.time = 9000000000000; return readiness(id); };
+230 |   const result = await runSyntheticInvocation(s.context); assert.equal(result.assessment, "PASS"); assert.equal(result.completionObservedMonoMs, 3000); assert.equal(clockReads, 2);
+                                                                       ^
+AssertionError: Expected values to be strictly equal:
+
+'FAIL' !== 'PASS'
+
+ generatedMessage: true,
+     actual: "FAIL",
+   expected: "PASS",
+   operator: "strictEqual",
+       diff: "simple",
+       code: "ERR_ASSERTION"
+
+      at /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.test.ts:230:66
+      at node:test:1445:26
+      at executeTestNode (node:test:1448:63)
+(fail) post-operation work cannot replace completion time or extend the outer bracket [4.50ms]
+(pass) assessor rejects invalid outer provenance domain  [0.78ms]
+(pass) assessor rejects invalid outer provenance domain shared-epoch [0.64ms]
+(pass) assessor rejects invalid outer provenance domain clock:supervisor:211 [0.68ms]
+(pass) assessor rejects invalid outer provenance domain clock:worker:212 [0.88ms]
+(pass) assessor rejects invalid outer provenance domain clock:outer:0 [0.88ms]
+(pass) assessor rejects invalid outer provenance domain clock:outer:-1 [1.50ms]
+(pass) assessor rejects invalid outer provenance domain clock:outer:1.5 [1.22ms]
+(pass) assessor rejects invalid outer provenance domain clock:outer:9007199254740992 [1.16ms]
+(pass) assessor rejects invalid outer provenance domain xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:outer:1 [1.15ms]
+(pass) assessor rejects invalid outer provenance domain clock:outer:1:offset [1.10ms]
+(pass) legacy outer witness without a domain cannot qualify [0.97ms]
+(pass) caller rejects supervisor-domain independently of timely local outer clocks [3.86ms]
+(pass) caller rejects worker-domain independently of timely local outer clocks [2.34ms]
+(pass) caller rejects snapshot-domain independently of timely local outer clocks [2.27ms]
+(pass) caller rejects worker-timing-domain independently of timely local outer clocks [2.22ms]
+(pass) caller rejects worker-order independently of timely local outer clocks [3.11ms]
+(pass) caller rejects snapshot-order independently of timely local outer clocks [2.19ms]
+(pass) caller rejects candidate-domain independently of timely local outer clocks [2.19ms]
+(pass) caller rejects candidate-order independently of timely local outer clocks [2.18ms]
+(pass) caller rejects legacy-candidate independently of timely local outer clocks [3.82ms]
+(pass) caller rejects legacy-receipt independently of timely local outer clocks [2.22ms]
+(pass) missing completion stdout never qualifies and preserves the remaining evidence [2.43ms]
+(pass) nondeadline failure text cannot establish a timeout or EOF [2.53ms]
+(pass) valid readiness binds source, observer, caller and both proofs without writing a binding [2.75ms]
+(pass) readiness rejects missing [1.65ms]
+(pass) readiness rejects authorizing [1.24ms]
+(pass) readiness rejects caller-review [1.43ms]
+(pass) readiness rejects capture-review [1.35ms]
+(pass) readiness rejects identity [1.89ms]
+(pass) readiness rejects caller-hash [1.71ms]
+(pass) readiness rejects observer-hash [1.60ms]
+(pass) readiness rejects source-hash [2.74ms]
+(pass) readiness rejects capture-proof [1.34ms]
+(pass) readiness rejects invocation-proof [1.27ms]
+(pass) readiness rejects manifest [1.30ms]
+(pass) readiness rejects typecheck [1.18ms]
+(pass) readiness rejects tests [1.73ms]
+(pass) readiness rejects production [1.21ms]
+(pass) readiness rejects old-clock-proof [1.20ms]
+(pass) readiness rejects capture-proof-mismatch [1.16ms]
+(pass) readiness rejects unmatched-source-proof [1.72ms]
+(pass) readiness rejects extra-key [1.20ms]
+(pass) verification assessment reports only observed counts and documented complete command results [0.38ms]
+(pass) verification assessment cannot convert runner-fail into PASS [0.10ms]
+(pass) verification assessment cannot convert exit into PASS [0.03ms]
+(pass) verification assessment cannot convert deadline into PASS [0.01ms]
+(pass) verification assessment cannot convert throw into PASS
+(pass) verification assessment cannot convert output-read into PASS [0.04ms]
+(pass) verification assessment cannot convert stdout-count into PASS [0.03ms]
+(pass) verification assessment cannot convert stderr-count into PASS [0.02ms]
+(pass) verification assessment cannot convert missing-output-hash into PASS [0.01ms]
+(pass) verification assessment cannot convert invalid-output-count into PASS [0.02ms]
+(pass) verification assessment cannot convert source-drift into PASS [0.02ms]
+(pass) verification assessment cannot convert production-present into PASS [0.01ms]
+(pass) verification assessment cannot convert source-proof-mismatch into PASS [0.02ms]
+(pass) verification assessment cannot convert typecheck-fail into PASS [0.03ms]
+(pass) verification assessment cannot convert missing-summary into PASS [0.02ms]
+(pass) verification assessment cannot convert duplicate-summary into PASS [0.01ms]
+(pass) verification assessment cannot convert noninteger-summary into PASS [0.04ms]
+(pass) verification assessment cannot convert unsafe-summary into PASS [0.05ms]
+(pass) verification assessment cannot convert zero-tests into PASS [0.02ms]
+(pass) verification assessment cannot convert failed-tests into PASS [0.01ms]
+(pass) existing bounded runner kills an owned offline hanging Bun fixture [608.12ms]
+
+12 tests failed:
+(fail) exact synthetic completion qualifies with fixed argv, destination, budget and environment [8.83ms]
+(fail) independent outer/supervisor/worker epochs 0/9000000000000/1 with outer elapsed 1 [4.07ms]
+(fail) independent outer/supervisor/worker epochs 0/9000000000000/1 with outer elapsed 119999 [2.39ms]
+(fail) independent outer/supervisor/worker epochs 9000000000000/1/5000 with outer elapsed 1 [3.06ms]
+(fail) independent outer/supervisor/worker epochs 9000000000000/1/5000 with outer elapsed 119999 [2.28ms]
+(fail) independent outer/supervisor/worker epochs 3/2000/8000000000000 with outer elapsed 1 [3.27ms]
+(fail) independent outer/supervisor/worker epochs 3/2000/8000000000000 with outer elapsed 119999 [2.46ms]
+(fail) independent outer/supervisor/worker epochs 4000000000/7000000000/100 with outer elapsed 1 [3.84ms]
+(fail) independent outer/supervisor/worker epochs 4000000000/7000000000/100 with outer elapsed 119999 [2.45ms]
+(fail) independent outer/supervisor/worker epochs 7000000000/4000000000/9000000000 with outer elapsed 1 [2.96ms]
+(fail) independent outer/supervisor/worker epochs 7000000000/4000000000/9000000000 with outer elapsed 119999 [2.35ms]
+(fail) post-operation work cannot replace completion time or extend the outer bracket [4.50ms]
+
+ 140 pass
+ 12 fail
+Ran 152 tests across 1 file. [949.00ms]

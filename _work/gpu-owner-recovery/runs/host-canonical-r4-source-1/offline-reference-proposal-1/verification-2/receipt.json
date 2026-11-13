@@ -1,0 +1,70 @@
+{
+  "status": "PASS_POST_REVIEW_DIRECTION_ONLY_RECORDS",
+  "failure": null,
+  "bindings": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/selection.json",
+      "bytes": 673,
+      "sha256": "b709b6b1465739de7956402b9d3babe8976bd94066f1e1cd5f909cfc89844aa2"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/plan.json",
+      "bytes": 3113,
+      "sha256": "95a777d19fd868ad1ad2533828e2ad20a14d9bb3a436d487e6338e42308ea985"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/verification-1/check.py",
+      "bytes": 6888,
+      "sha256": "7dcc0977f995f24753fb83a2f59f7efd63a1890b2f9a5c95a0723d006269aa92"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/verification-1/receipt.json",
+      "bytes": 1981,
+      "sha256": "31b046664c06b97c0387300221a4036f29ea1eebcee09e8ea49a6735bfeb2136"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/verification-2/check.py",
+      "bytes": 4232,
+      "sha256": "a8ba68b03cbf70b67bc4bb88cee4c3b9c2530a432ded0fd3b343cf3e7b2c484e"
+    },
+    {
+      "path": "tooling/build-reference.ts",
+      "bytes": 3519,
+      "sha256": "41885a3bb70f4b86e131bd3176a65fe7aefe724846db961ea6c070b4f6537054"
+    },
+    {
+      "path": "tooling/reference-entrypoints.json",
+      "bytes": 478,
+      "sha256": "4fb9727741bb4778d260be6e6d14c3b9e38bbfd5751f49d7262273a83b5d5396"
+    }
+  ],
+  "priorNegativeCasesAcceptedAtUnchangedBindings": [
+    "selection.newAuthorityGranted",
+    "selection.hostExecutionApproved",
+    "selection.publicationApproved",
+    "selection.trainingApproved",
+    "selection.inputAvailabilityEstablished",
+    "plan.operationsAuthorized",
+    "plan.referenceSourceRoot",
+    "plan.installedPackageRoot",
+    "plan.outputRoot",
+    "plan.executableHandoff",
+    "plan.networkFallbackAuthorized",
+    "plan.trainingReady"
+  ],
+  "priorRoundTripClaimNotUsed": true,
+  "freshRoundTripRecords": [
+    "selection.json",
+    "plan.json"
+  ],
+  "recordRoundTripPassed": true,
+  "scope": "PRIOR_BOUND_12_NEGATIVE_CASES_PLUS_TWO_FRESH_SERIALIZE_REPARSE_COMPARISONS",
+  "pythonSyntaxPassed": true,
+  "referencePayloadAccessed": false,
+  "historicalExternalInventoryAccessed": false,
+  "captureCopyExtractBuildStageOrAcquisitionPerformed": false,
+  "hostNativeGpuOrReferenceExecuted": false,
+  "publicationPerformed": false,
+  "newAuthorityGranted": false,
+  "trainingReady": false
+}

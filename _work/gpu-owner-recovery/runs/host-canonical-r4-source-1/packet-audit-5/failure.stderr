@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/packet-audit.py", line 354, in <module>
+    doc_projection(text)
+    ~~~~~~~~~~~~~~^^^^^^
+  File "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/packet-audit.py", line 123, in doc_projection
+    assert any(
+           ~~~^
+        re.search(
+        ^^^^^^^^^^
+    ...<3 lines>...
+        for line in review_lines
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+AssertionError

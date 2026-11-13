@@ -1,0 +1,8 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+  - 'packages/ui/*'
+allowBuilds:
+  esbuild: true
+  nx: true
+  workerd: true

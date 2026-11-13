@@ -1,0 +1,8 @@
+{
+  "operation": "LOCAL_INJECTED_TESTS_AND_STRICT_TSC_ONLY",
+  "bunVersion": "1.4.0",
+  "referenceInputDelivery": "REFERENCE_INPUT_DELIVERY_UNSELECTED",
+  "actualHostExecuted": false,
+  "trainingExecuted": false,
+  "trainingReady": false
+}

@@ -1,0 +1,2 @@
+{"status":"PASS_HOST_CPU39_ONLY","failure":null,"receipt":"_work/gpu-owner-recovery/runs/host-cpu39-1/receipt.json","trainingReady":false}
+HOST_CPU39_EXIT=0

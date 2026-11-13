@@ -1,0 +1,24 @@
+{
+  "version": "chess-coach.r2-scoped-implementation-review.v1",
+  "scope": "capture",
+  "role": "backend",
+  "session": "ses_e2c6065efffeSB0LrZSZkwl2RW",
+  "status": "READY_CAPTURE_IMPLEMENTATION_SCOPE",
+  "reviewedSource": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.ts",
+    "sha256": "bd6a1214171c833639bf0d363e107f0cd1346f890e26b3d2d32447271335b6af"
+  },
+  "verificationReceipt": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-8/receipt.json",
+    "sha256": "c6f9f5206505c35f88aff6d7ad3c1a64812767f54ff223e25861797efa9416b2"
+  },
+  "recordedTestsPassed": 667,
+  "recordedTestsFailed": 0,
+  "recordedStrictTypecheckExitCode": 0,
+  "remainingFindings": [],
+  "productionOnlyAdapterRuntimeExercised": false,
+  "verificationRerunByReviewer": false,
+  "nonAuthorizing": true,
+  "executionReadinessClaimed": false,
+  "trainingReady": false
+}

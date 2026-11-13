@@ -1,0 +1,13 @@
+{
+  "status": "READY_SOURCE_ONLY_EXCLUDING_CLOCK_COMPARISON_AND_CALLER",
+  "session": "ses_e2e4b1ef3ffeptPhqouftYEoBl",
+  "verification": "verification-6/receipt.json",
+  "readOnly": true,
+  "lateInterruptionFindingCleared": true,
+  "remainingInScopeFindings": [],
+  "clockAndCallerAcceptedByVerdict": false,
+  "operationalReadinessGranted": false,
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

@@ -1,0 +1,22 @@
+{
+  "version": "chess-coach.r2-scoped-implementation-review.v1",
+  "scope": "delivery",
+  "role": "security",
+  "session": "ses_e2c5f28d5ffe8nEnuu4EhhwVin",
+  "status": "READY_DELIVERY_IMPLEMENTATION_SCOPE",
+  "reviewedSource": {"path":"_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-bootstrap.ts","sha256":"f056e6ace00596d1246bbb5f0055552245d811b61f700e456c703b995c326cbc"},
+  "verificationReceipt": {"path":"_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-15/receipt.json","sha256":"7b7a6469cbbab55b929c125741ef668063bf886b91ac057b9b08c3dafa1e603d"},
+  "sourceManifest": {"path":"_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-15/source-manifest.json","sha256":"c7d36e5287bf4683b0e13f405f6e7d0af313fa0c9ea4dc8717d153e11bcd6400"},
+  "reviewedSourceFiles": 7,
+  "recordedTestsPassed": 190,
+  "recordedTestsFailed": 0,
+  "recordedStrictTypecheckExitCode": 0,
+  "recordedFishNoExecuteExitCode": 0,
+  "remainingFindings": [],
+  "supersedesProof14DeliveryVerdictOnly": true,
+  "risk": "LOW",
+  "verificationRerunByReviewer": false,
+  "nonAuthorizing": true,
+  "executionReadinessClaimed": false,
+  "trainingReady": false
+}

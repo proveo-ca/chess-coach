@@ -1,0 +1,143 @@
+{
+  "version": "pinned-corpus-sidecar-materialization.v1",
+  "status": "PARTIAL_PINNED_CORPUS_SIDECAR_MATERIALIZED_PACKAGES_MISSING",
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "inputManifestSha256": "25c53eae03508b523fc36a962984c4aad23a0f0784b6c71123ac6e320f335460",
+  "manifestPersistedBeforeFirstPayloadCopy": true,
+  "usage": {
+    "sealedFiles": 427,
+    "sealedBytes": 3850400,
+    "sidecarFiles": 2,
+    "sidecarBytes": 671849,
+    "aggregateFiles": 429,
+    "aggregateBytes": 4522249
+  },
+  "sealedApplicationSourceSha256": "eeef9552914021a71018ffbd6f81a0c8b2afc56926ae45efd28dd5c0cfcf5bf7",
+  "corpusSourceSha256": "1ea4a7554b6968281b6720e749238995c057380d2d29f016d9061fb3c3ea4acc",
+  "files": [
+    {
+      "path": "_spec/corpora/ml-adjutant-corpus.manifest.json",
+      "gitBlobOid": "44e043d45e83c363213f01d91bb79207d130c839",
+      "sourceMode": "100644",
+      "bytes": 7309,
+      "sha256": "31ac6f865340a95f8e85c2c1577aaea0aada87feb92a37637cda90aee288cc3f"
+    },
+    {
+      "path": "starchess-match-history-20260929-203446.json",
+      "gitBlobOid": "f24680e5b26ebb742de846ec6a73bbeab379e827",
+      "sourceMode": "100644",
+      "bytes": 664540,
+      "sha256": "e6770cb032aa76dc05432c7a49e61c4905d1a1f7b859aa860a090821213e7ae6"
+    }
+  ],
+  "gitCommands": [
+    {
+      "argv": [
+        "git",
+        "--no-replace-objects",
+        "--no-optional-locks",
+        "-c",
+        "core.fsmonitor=false",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "cat-file",
+        "blob",
+        "44e043d45e83c363213f01d91bb79207d130c839"
+      ],
+      "cwd": "/home/gu1lty/Projects/proveo/chess-coach",
+      "environment": {
+        "PATH": "/usr/local/bin:/usr/bin:/bin",
+        "HOME": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/verification-1/home",
+        "TMPDIR": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/verification-1/tmp",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "TZ": "UTC",
+        "GIT_NO_LAZY_FETCH": "1",
+        "GIT_TERMINAL_PROMPT": "0",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null"
+      },
+      "timeoutMs": 10000,
+      "maxBuffer": 16777216,
+      "exitCode": 0,
+      "signal": null,
+      "stdoutBytes": 7309,
+      "stdoutSha256": "31ac6f865340a95f8e85c2c1577aaea0aada87feb92a37637cda90aee288cc3f",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "--no-replace-objects",
+        "--no-optional-locks",
+        "-c",
+        "core.fsmonitor=false",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "cat-file",
+        "blob",
+        "f24680e5b26ebb742de846ec6a73bbeab379e827"
+      ],
+      "cwd": "/home/gu1lty/Projects/proveo/chess-coach",
+      "environment": {
+        "PATH": "/usr/local/bin:/usr/bin:/bin",
+        "HOME": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/verification-1/home",
+        "TMPDIR": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/verification-1/tmp",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "TZ": "UTC",
+        "GIT_NO_LAZY_FETCH": "1",
+        "GIT_TERMINAL_PROMPT": "0",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null"
+      },
+      "timeoutMs": 10000,
+      "maxBuffer": 16777216,
+      "exitCode": 0,
+      "signal": null,
+      "stdoutBytes": 664540,
+      "stdoutSha256": "e6770cb032aa76dc05432c7a49e61c4905d1a1f7b859aa860a090821213e7ae6",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    }
+  ],
+  "missingPackages": [
+    {
+      "name": "fflate",
+      "version": "0.8.3",
+      "selectedRuntimeFile": "esm/index.mjs",
+      "installedRoot": null
+    },
+    {
+      "name": "jssha",
+      "version": "3.3.2",
+      "selectedRuntimeFile": "dist/sha256.mjs",
+      "installedRoot": null
+    }
+  ],
+  "fullC14GuardExecuted": false,
+  "fullTreeAncestryAuthenticated": false,
+  "selectedBundleClosureEstablished": false,
+  "completeOfflineInput": false,
+  "referenceBundlingApproved": false,
+  "referenceQualificationPassed": false,
+  "nativeQualificationPassed": false,
+  "referenceCodeExecuted": false,
+  "nativeOrGpuExecuted": false,
+  "dependencyAcquisitionPerformed": false,
+  "installationPerformed": false,
+  "networkOperations": 0,
+  "gitMutations": 0,
+  "commitOrPushPerformed": false,
+  "trainingReady": false,
+  "oneAssembledRuntimeTreeEstablished": false,
+  "corpusRolloutsExecuted": false,
+  "corpusAuditExecuted": false,
+  "sealedApplicationFilesRehashedBySidecar": false,
+  "installedPackageFilesCopied": 0,
+  "installedPackageStatus": "MISSING_IN_BOUNDED_LOCAL_SEARCH",
+  "packageAbsenceEverywhereEstablished": false
+}

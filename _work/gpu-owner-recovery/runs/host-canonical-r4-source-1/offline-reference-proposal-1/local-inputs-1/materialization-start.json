@@ -1,0 +1,22 @@
+{
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "inputManifestSha256": "bb03f45257fae1d8ca11710b53547936c3042380188ab10117b704b692d39fb0",
+  "discoverySha256": "72f17fe086326de9df75c2bae1618834535137a69a6b6e6f600114920493da37",
+  "manifestPersistedBeforeFirstPayloadCopy": true,
+  "inputFileCount": 427,
+  "fullC14GuardExecuted": false,
+  "fullTreeAncestryAuthenticated": false,
+  "selectedBundleClosureEstablished": false,
+  "completeOfflineInput": false,
+  "referenceBundlingApproved": false,
+  "referenceQualificationPassed": false,
+  "nativeQualificationPassed": false,
+  "referenceCodeExecuted": false,
+  "nativeOrGpuExecuted": false,
+  "dependencyAcquisitionPerformed": false,
+  "installationPerformed": false,
+  "networkOperations": 0,
+  "gitMutations": 0,
+  "commitOrPushPerformed": false,
+  "trainingReady": false
+}

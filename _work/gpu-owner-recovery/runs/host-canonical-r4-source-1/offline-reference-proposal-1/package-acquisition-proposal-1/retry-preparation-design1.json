@@ -1,0 +1,31 @@
+{
+  "status": "ACCEPTED_OFFLINE_RETRY_PROPOSAL_AND_ISOLATED_FIX_DESIGN_ONLY",
+  "architect": "ses_e2f47580affedkCSE0PvqFHby6",
+  "preparationSelection": "retry-preparation-selection1.json",
+  "newProposalRoot": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2",
+  "isolatedFixRoot": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2",
+  "proposedFreshGrantId": "reference-two-package-source-acquisition-2",
+  "proposedGrantApprovedOrIssued": false,
+  "proposedFreshPaths": {
+    "fixedCommonCacheParent": "_work/gpu-owner-recovery/cache",
+    "rawArchiveRoot": "_work/gpu-owner-recovery/cache/reference-package-inputs-2",
+    "selectedOutputRoot": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-2",
+    "selectedFiles": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-2/files",
+    "operation": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/acquisition-execution-1",
+    "observer": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/acquisition-invocation-1"
+  },
+  "prepareNow": ["UNAPPROVED_FRESH_REQUEST_AND_PLAN","ISOLATED_FIXED_PARENT_PREPARATION_MODULE","SYNTHETIC_TESTS_AND_STRICT_TYPES","INTEGRATION_DELTA","FOUR_PROPOSAL_AND_FIX_REVIEWS"],
+  "cacheParentContract": {"fixedPathNotApiParameter":true,"onlyAfterFreshApprovedClaim":true,"createOnlyIfAbsent":true,"nonrecursive":true,"newMode":"0700","existingDirectoryWithoutSymlinkAccepted":true,"enumerationChmodOldCacheReadsOrDeletionPermitted":false,"descriptorFsyncCloseFailuresFailClaimedAttempt":true,"preservePartialsWithoutRollback":true},
+  "deferredUntilFreshActualApproval": ["GENUINE_APPROVAL_RECORD","FULL_CAPTURE_AND_CALLER_INSTANTIATION_WITH_REAL_APPROVAL_HASH","FRESH_COMPLETE_VERIFICATION_AND_REVIEWS","NON_AUTHORIZING_EXECUTION_BINDINGS","ANY_ACTUAL_DIRECTORY_CREATION_OR_ACQUISITION"],
+  "placeholderApprovalHashOrFabricatedApprovalAllowed": false,
+  "eligibilityRelaxationOrNewAuthorizationFrameworkAllowed": false,
+  "existingClockDeadlineCleanupAndMemberContractsChange": false,
+  "oldFailedSourceAndEvidenceMayBeModified": false,
+  "oldGrantRemainingAuthorizedCombinedAttempts": 0,
+  "oldGrantRemainingAuthorizedGetRequests": 0,
+  "newActualRetryApproved": false,
+  "actualProductionCacheParentCreationApproved": false,
+  "actualGetRequestsPerformedByPreparation": 0,
+  "nativeHostGpuReferenceBuildPublicationOrTrainingApproved": false,
+  "trainingReady": false
+}

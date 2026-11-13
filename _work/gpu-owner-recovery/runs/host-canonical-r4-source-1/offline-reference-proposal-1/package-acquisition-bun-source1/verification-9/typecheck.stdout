@@ -1,0 +1,1 @@
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.test.ts(422,16): error TS2367: This comparison appears to be unintentional because the types '"FAIL"' and '"PROVISIONAL_PASS"' have no overlap.

@@ -1,0 +1,25 @@
+{
+  "scope": "OFFLINE_SEAL_PREPARATION_SOURCE_ONLY",
+  "sources": {
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet.ts": {
+      "bytes": 20339,
+      "sha256": "a2837fe33fe36b401a57e594a83119d4acb9c8beca414566fa9acc82f0482dc7",
+      "gitBlobOid": "946214b6e89fb56588e3cc28d51610abbce73d0a"
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet.test.ts": {
+      "bytes": 19023,
+      "sha256": "b491466666ace4bc77a48d2303fbce29927bd13a870d7b7fde4766419659bdcd",
+      "gitBlobOid": "2faaeedb70c75f72d901bc5ea65ffb55e6c52826"
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet.tsconfig.json": {
+      "bytes": 553,
+      "sha256": "985df75aa74a16d20281f493bb13017b9e53d423f1acb5159a0aad01cf7a32fa",
+      "gitBlobOid": "eb7765c5d2b558215a7b415e713db0abf2db5027"
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet-verify.ts": {
+      "bytes": 18082,
+      "sha256": "ac67d1f33df8e3aa96ee95546eb98cdf9e017afe4e91a7586fef70f6e1b9c24a",
+      "gitBlobOid": "ee2b894dc012d9e70a64bea04e899784f39ef7ad"
+    }
+  }
+}

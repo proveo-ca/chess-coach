@@ -1,0 +1,12 @@
+{
+  "status": "PASS_STATIC_TYPES_AND_EXPECTED_MISSING_CALLER_READINESS_REJECTION_ONLY",
+  "typecheckExitCode": 0,
+  "typecheckStdout": "typecheck-3.stdout",
+  "typecheckStderr": "typecheck-3.stderr",
+  "negativeCase": {"expectedExitCode":1,"observedExitCode":1,"reason":"CALLER_READINESS_RECORD_MISSING","receipt":"../pre-invocation-check-1/receipt.json","preInvocationPacketAccepted":false},
+  "actualCaptureEntryOrWorkerInvoked": false,
+  "actualGetRequests": 0,
+  "combinedAttemptClaimed": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

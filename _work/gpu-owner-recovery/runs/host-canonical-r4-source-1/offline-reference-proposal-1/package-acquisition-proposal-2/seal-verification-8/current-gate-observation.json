@@ -1,0 +1,469 @@
+{
+  "currentReviewPaths": [
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/backend.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/devops.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/adversarial.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/security.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/backend.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/devops.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/adversarial.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/security.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/backend.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/devops.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/adversarial.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/security.json"
+  ],
+  "observationTiming": "AFTER_OFFLINE_TESTS_TYPECHECK_FISH_BEFORE_FINAL_IMMUTABLE_READCHECKS",
+  "status": "ALL_VALID_IN_MEMORY_NOT_EMITTED",
+  "missing": [],
+  "absentAtRead": [],
+  "observedRolePins": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/backend.json",
+      "bytes": 1274,
+      "sha256": "33276db67f4c45b6a029cca976faab4eecdfaacedd1835323096e3a50b2d102e",
+      "gitBlobOid": "5dad8fe9c57e022f3aa5523f0f19f2b2111ea8b9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/devops.json",
+      "bytes": 1226,
+      "sha256": "13c2c895c42bca1fb328c2ed73dad982cf8951db9488880d9ba9f5f086c065e5",
+      "gitBlobOid": "c398812ff6212ec32e2c661edd0963bfcd435481"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/adversarial.json",
+      "bytes": 1172,
+      "sha256": "29c8f72a5303d3993e0b922368745c1856d231602de11c65c6887c604aba0e0a",
+      "gitBlobOid": "d5d3701d079842e4d67243b70d14bef5ff9c3fc8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/security.json",
+      "bytes": 1409,
+      "sha256": "5682418a3507983892e39e3aaaf47f6175a4f98bd0f02587a170792cffc327a0",
+      "gitBlobOid": "94ee9c512561fb8d16ca394e29029105897df225"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/backend.json",
+      "bytes": 1292,
+      "sha256": "8e1dfc9580084a6606aa8e4229e7d780defc6009018c4539098732a1fcd2769b",
+      "gitBlobOid": "1e3b9b8096f88afa79e0c13ec6e1f6fdf1be8eff"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/devops.json",
+      "bytes": 1291,
+      "sha256": "e630c8ee38f08c39a7999553ac425b60a84df2ad17e099787f4ac0810e87ccc6",
+      "gitBlobOid": "e93fb1a199aee990f27514ab3af97adaa21f824d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/adversarial.json",
+      "bytes": 1237,
+      "sha256": "99edd1a8c8ba59f70485cdee8afbf0bd0a634a573cffde4d82807313e237c0cd",
+      "gitBlobOid": "e072b1069259438a1770de92cf80eafb9b289e2e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/security.json",
+      "bytes": 1310,
+      "sha256": "9b9962b3cf60919fb98cf01d1fd675d557aff4ac5bac52b41a29e0b33027440f",
+      "gitBlobOid": "dbacf140c077709378a0aec2ffd5a3c6ea029c68"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/backend.json",
+      "bytes": 1491,
+      "sha256": "a40885f240d3b81863a8b1811070af08f2bee2eedf72cd023a3915021cb67c7b",
+      "gitBlobOid": "4caf5eba9a60dae913ee8bc284c47feb19585526"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/devops.json",
+      "bytes": 1443,
+      "sha256": "346a0f4a3e50a3244efa0bb4bc7c0b34c1f4bbb76b167974cccf7cbccc1cae78",
+      "gitBlobOid": "45a67cf083750f1d16c77cd10a268f78f8f6d469"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/adversarial.json",
+      "bytes": 1218,
+      "sha256": "a09980e995303f3845b561801b38f101a02c22c8b6c2d98dd811c424deb4e72a",
+      "gitBlobOid": "4b02109501e57a4e77633fd203e3476b6f85ae90"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/security.json",
+      "bytes": 1381,
+      "sha256": "50c4f8e0a196d3352de00460bb3b5a2a248e510ff5aceda0ee6b55f245bcec08",
+      "gitBlobOid": "771673f3bbd38e51f570cff197db4416183b4831"
+    }
+  ],
+  "actualDerivedRecordsWritten": false,
+  "candidateSummary": {
+    "scope": "IN_MEMORY_NONAUTHORIZING_CANDIDATE_EVIDENCE_ONLY",
+    "nonAuthorizing": true,
+    "candidateBytesPersisted": false,
+    "memberCount": 48,
+    "aggregateBytes": 840987,
+    "directoryCount": 21,
+    "packetBytes": 1138673,
+    "apiResponseBytes": 1518330,
+    "maximumMemberBytes": 313664,
+    "limits": {
+      "files": 96,
+      "file": 1048576,
+      "source": 6291456,
+      "packet": 8388608,
+      "response": 12582912,
+      "directories": 256,
+      "stageA": 120000,
+      "fetch": 30000,
+      "stderr": 65536
+    },
+    "sourceHashes": {
+      "capture.ts": "0a2a08b38758c9e8e59a240aba3902ef23d43da65ac7644ebc7c5b8792273e10",
+      "capture.test.ts": "8ef9aa480564ff0c93ba9434082f9d75f94bdb27108f5fd3680b67abdc869a73",
+      "capture-full.test.ts": "85268411235586ed4b84fdd1a585d687ed495e17c65150db485fa8ad9b4aa236",
+      "root-context.ts": "bc540101a8699c2bd9e5b075342bd3776e6d9ee579a641a6a1757ac640a6dd7f",
+      "root-context.test.ts": "7caef259ee7ba34c8cfda01b6a060996d7d436bfd7fe4fd3c72a93f8bcd4da0f",
+      "cache-parent.ts": "62db5298937cf1c752a76b39f42fa19876e36e637d9d21dba6de323de347b27c",
+      "cache-parent.test.ts": "83d8e91683140c35de498a9457060f47ec00b94ef59c9d83e47593456c24205f",
+      "cache-parent-adapter.ts": "bc3df6e27bdc9a48164e8926a06d09c1ea9d104c3ffa1b19051dc2422b1a1d45",
+      "cache-parent-adapter.test.ts": "da10f7ce4bc74fa30200fd17f277fc72d5f58d8e847f7ee7c75edc4a10a5748d",
+      "verify.ts": "3c0e5494e7c1eea2883d071f6f53c2ee1ced065d9c0a8257db429fa738403e5e",
+      "tsconfig.json": "0083541937af45cc505e9bde2afc99ece5af54fe1855060d20c498bc01488391",
+      ".gitignore": "91317cffd2ef9526d9d0ba70fcefa8499556f916a21327cb5492407dd679db0d"
+    },
+    "hashes": {
+      "caller": {
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.ts": "c307f222997e3a72f3b00360aee7c08494ba8841b1be6e75ee9f7a1fcf0b612d",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.test.ts": "375bcdd0dac0cab4930b9e09d270938f0ff26d2588e2a60f3d77fe5a2564969c",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.tsconfig.json": "475349522320904b0f41ec6fa19b785ddccfe51f97bc5b36c0c123bcf9eee56a",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun-verify.ts": "233203a84716055fcc8f064f0a158a3b2b6a39c2a62ff1418a534c2186340819"
+      },
+      "source": {
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.ts": "0a2a08b38758c9e8e59a240aba3902ef23d43da65ac7644ebc7c5b8792273e10",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.test.ts": "8ef9aa480564ff0c93ba9434082f9d75f94bdb27108f5fd3680b67abdc869a73",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture-full.test.ts": "85268411235586ed4b84fdd1a585d687ed495e17c65150db485fa8ad9b4aa236",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/root-context.ts": "bc540101a8699c2bd9e5b075342bd3776e6d9ee579a641a6a1757ac640a6dd7f",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/root-context.test.ts": "7caef259ee7ba34c8cfda01b6a060996d7d436bfd7fe4fd3c72a93f8bcd4da0f",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent.ts": "62db5298937cf1c752a76b39f42fa19876e36e637d9d21dba6de323de347b27c",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent.test.ts": "83d8e91683140c35de498a9457060f47ec00b94ef59c9d83e47593456c24205f",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent-adapter.ts": "bc3df6e27bdc9a48164e8926a06d09c1ea9d104c3ffa1b19051dc2422b1a1d45",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent-adapter.test.ts": "da10f7ce4bc74fa30200fd17f277fc72d5f58d8e847f7ee7c75edc4a10a5748d",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/verify.ts": "3c0e5494e7c1eea2883d071f6f53c2ee1ced065d9c0a8257db429fa738403e5e",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/tsconfig.json": "0083541937af45cc505e9bde2afc99ece5af54fe1855060d20c498bc01488391",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/.gitignore": "91317cffd2ef9526d9d0ba70fcefa8499556f916a21327cb5492407dd679db0d"
+      },
+      "observer": {
+        "_work/gpu-owner-recovery/verify.ts": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58",
+        "_work/gpu-owner-recovery/command-supervisor.ts": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+      }
+    },
+    "identitySha256": "dcca4ff8ca3f283ee2a2471cd555836e36620e5df7e3eed1e9c9034d3295f27d",
+    "captureProof": {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/receipt.json",
+      "sha256": "f780bbf4aa007deece850ba688b7200df1b4b31feebaea52045d5259b3dbfe27"
+    },
+    "invocationProof": {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/receipt.json",
+      "sha256": "d006193dbbcdcdb802b939eb531f157dcfc18d960f9f11d8f3e7b657127e684c"
+    },
+    "deliveryProof": {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-15/receipt.json",
+      "sha256": "7b7a6469cbbab55b929c125741ef668063bf886b91ac057b9b08c3dafa1e603d"
+    },
+    "deliveryManifest": {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-15/source-manifest.json",
+      "sha256": "c7d36e5287bf4683b0e13f405f6e7d0af313fa0c9ea4dc8717d153e11bcd6400"
+    },
+    "pureValidation": {
+      "validateEligibility": "PASS_PURE_INJECTED_READER",
+      "validateInvocationReady": "PASS_PURE_INJECTED_READER",
+      "validatePacket": "PASS_PURE_IN_MEMORY"
+    },
+    "table": [
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/request.json",
+        "bytes": 3065,
+        "sha256": "c0288e1e34e24d2f7a81e12ee1967ffafbd2768b4c2a5bc2ba15826b6384ff3f",
+        "gitBlobOid": "b5d7bb30d66565b36013a25d87362381c20a7a56"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/plan.json",
+        "bytes": 10354,
+        "sha256": "7f6a90ca105d6a7c5a45951b508d4a1ecdd5e217625d1cefe08da23557847405",
+        "gitBlobOid": "208481afb833947e0c6ee319cf4702af257c53d2"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/approval2.json",
+        "bytes": 5671,
+        "sha256": "4e68d36f8076e213744364cf4cd5f793ef3dbffda6157b93070edf2ffc282d3f",
+        "gitBlobOid": "37d15a0bf824a0030f58cf98433de55f059b8a1e"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/manual-handoff-request1.json",
+        "bytes": 5433,
+        "sha256": "47d63b8cb446cdc8a83323788c9106cdb82437992e7bd3a88f55821aa6bde52b",
+        "gitBlobOid": "09f61cb0667c38ac90b7a73257049f8812b6ee0d"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/manual-handoff-plan1.json",
+        "bytes": 14449,
+        "sha256": "4297e4f1b763b5aa152b88a7a3e288a19cafc85331cbed2d776f38d043f8817a",
+        "gitBlobOid": "e44605f27e3b975f4dbec9bfbd4db1575f02f7d0"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/plan.json",
+        "bytes": 3716,
+        "sha256": "8ecfce5156322da42fb852cd071a6091b96187e19a88226bec68295936505f6c",
+        "gitBlobOid": "e9f5fd7698d8cd3f2a5dc51df0eed976ea47d58a"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/check.json",
+        "bytes": 3274,
+        "sha256": "acca1e84beb0ebfacf3fb0a7967ffe5d16552861b0da98a4f7e6b4367cee9c63",
+        "gitBlobOid": "ac60f986a3c4bae4884b6ee99b9a2367f4b93fa1"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/inputs/reference/pnpm-lock.yaml",
+        "bytes": 313664,
+        "sha256": "1d05ed3d8de5a94873f26a2fb51b88c080704d2e90bf942f9f0bb2ce75a504e0",
+        "gitBlobOid": "5a5aeb96b68fd8832e545da159aa622e4a08c5d1"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.ts",
+        "bytes": 65298,
+        "sha256": "0a2a08b38758c9e8e59a240aba3902ef23d43da65ac7644ebc7c5b8792273e10",
+        "gitBlobOid": "21948ef03d1a1bab8a2c19e1afcb4deb7b60467c"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.test.ts",
+        "bytes": 93313,
+        "sha256": "8ef9aa480564ff0c93ba9434082f9d75f94bdb27108f5fd3680b67abdc869a73",
+        "gitBlobOid": "2b5f7afeff85bb64f9b834a9ce9c7626745a7df5"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture-full.test.ts",
+        "bytes": 19591,
+        "sha256": "85268411235586ed4b84fdd1a585d687ed495e17c65150db485fa8ad9b4aa236",
+        "gitBlobOid": "da1ceb740c44e476765cf2ddd09a1682f63ff953"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/root-context.ts",
+        "bytes": 1875,
+        "sha256": "bc540101a8699c2bd9e5b075342bd3776e6d9ee579a641a6a1757ac640a6dd7f",
+        "gitBlobOid": "95c292161382224417d1e510a21d3e25928a14af"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/root-context.test.ts",
+        "bytes": 1720,
+        "sha256": "7caef259ee7ba34c8cfda01b6a060996d7d436bfd7fe4fd3c72a93f8bcd4da0f",
+        "gitBlobOid": "a77be93fcc9d6de5f32c1bd06aee07d42597a90f"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent.ts",
+        "bytes": 4052,
+        "sha256": "62db5298937cf1c752a76b39f42fa19876e36e637d9d21dba6de323de347b27c",
+        "gitBlobOid": "3608c74f46e1b406b5e8a82df3b1e15fefc26f12"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent.test.ts",
+        "bytes": 53554,
+        "sha256": "83d8e91683140c35de498a9457060f47ec00b94ef59c9d83e47593456c24205f",
+        "gitBlobOid": "f5479ed43ecc8044c7a3452e6afbb1edf41517c0"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent-adapter.ts",
+        "bytes": 5757,
+        "sha256": "bc3df6e27bdc9a48164e8926a06d09c1ea9d104c3ffa1b19051dc2422b1a1d45",
+        "gitBlobOid": "f2753a7ca5f3ccf965bbfe557c738e422809ea2f"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent-adapter.test.ts",
+        "bytes": 5551,
+        "sha256": "da10f7ce4bc74fa30200fd17f277fc72d5f58d8e847f7ee7c75edc4a10a5748d",
+        "gitBlobOid": "18699caf3a496ffb1c9d8199f87545a5bd468315"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/verify.ts",
+        "bytes": 35946,
+        "sha256": "3c0e5494e7c1eea2883d071f6f53c2ee1ced065d9c0a8257db429fa738403e5e",
+        "gitBlobOid": "587424ebda3002596965a71030b742296f6df3a2"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/tsconfig.json",
+        "bytes": 770,
+        "sha256": "0083541937af45cc505e9bde2afc99ece5af54fe1855060d20c498bc01488391",
+        "gitBlobOid": "8164ae3f16af5d02ddf81fe5d51ab21c8a178c65"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/.gitignore",
+        "bytes": 163,
+        "sha256": "91317cffd2ef9526d9d0ba70fcefa8499556f916a21327cb5492407dd679db0d",
+        "gitBlobOid": "ad8f5186f6079bce278d4a4a0b3b78032da89c49"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/execution-binding2.json",
+        "bytes": 1927,
+        "sha256": "4260d7b78bec7b0b63fb440cf1de8153c873b44b3325b64a2dd7464f8f03d456",
+        "gitBlobOid": "842f71bb7d96c384ca2edd4ca0b7dd836319b1b5"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.ts",
+        "bytes": 16248,
+        "sha256": "c307f222997e3a72f3b00360aee7c08494ba8841b1be6e75ee9f7a1fcf0b612d",
+        "gitBlobOid": "f2c87080523843316808e0c76a69c5e865e42791"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.test.ts",
+        "bytes": 42812,
+        "sha256": "375bcdd0dac0cab4930b9e09d270938f0ff26d2588e2a60f3d77fe5a2564969c",
+        "gitBlobOid": "8d758f0b901c4e88ce926ddfd16d1eea1aaf3f07"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.tsconfig.json",
+        "bytes": 645,
+        "sha256": "475349522320904b0f41ec6fa19b785ddccfe51f97bc5b36c0c123bcf9eee56a",
+        "gitBlobOid": "31be4a7c97408bfbe9a2cf75c851162ee588c99b"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun-verify.ts",
+        "bytes": 1838,
+        "sha256": "233203a84716055fcc8f064f0a158a3b2b6a39c2a62ff1418a534c2186340819",
+        "gitBlobOid": "ac03ddeefe3ae162dd9d03319b37628ee59bc87b"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/verify.ts",
+        "bytes": 12723,
+        "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58",
+        "gitBlobOid": "108936008e2e2fe62e046227f21f47de263986b9"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+        "bytes": 910,
+        "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6",
+        "gitBlobOid": "e436672b6d5775e16f34f65408b397a2312fe231"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-ready2.json",
+        "bytes": 4423,
+        "sha256": "4496bcf8d93ea147ed5f78b47d469f772848863d0f9da395f69946f2f433b52c",
+        "gitBlobOid": "42efd61454cfc77a9c5f96ff35858e0275c97f47"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/receipt.json",
+        "bytes": 35386,
+        "sha256": "f780bbf4aa007deece850ba688b7200df1b4b31feebaea52045d5259b3dbfe27",
+        "gitBlobOid": "67c56e29d0d3080c416ecc2fc47948fe1ebbb1e1"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/source-manifest.json",
+        "bytes": 1570,
+        "sha256": "9de207966836330d95e72af6f433850669412b0eafe28b214e0531794c71bad7",
+        "gitBlobOid": "d8ad7688888bc4339a8aae04dc1ad38bddf86b2b"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/receipt.json",
+        "bytes": 33983,
+        "sha256": "d006193dbbcdcdb802b939eb531f157dcfc18d960f9f11d8f3e7b657127e684c",
+        "gitBlobOid": "ff802a39e1a3aa5b5ccd9f42f6ba49747522ba27"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/source-manifest.json",
+        "bytes": 3700,
+        "sha256": "3a2a69719e40bb3b6622f5a43651b9d8414652a6136fbcd21f257847bbec6e1f",
+        "gitBlobOid": "1fa7c5a4271348135e7562db29e6e41baafe6e46"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/manual-launch-boundary-selection1.json",
+        "bytes": 2525,
+        "sha256": "44aa077f7db10d3bc3a462da355198973a6f2afba29b7745d4c2bba53f94cdc5",
+        "gitBlobOid": "ae6ceb2d09312556ecbe3423751e10d16f486055"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/manual-source-transport-amendment1.json",
+        "bytes": 3813,
+        "sha256": "f53b4985052f242a453d24e1bcccde47d1589288952543ea0a5b7d5756291918",
+        "gitBlobOid": "310097e5f0e86f242abe9ffe9c5d2e5af76c45a5"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/backend.json",
+        "bytes": 1274,
+        "sha256": "33276db67f4c45b6a029cca976faab4eecdfaacedd1835323096e3a50b2d102e",
+        "gitBlobOid": "5dad8fe9c57e022f3aa5523f0f19f2b2111ea8b9"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/devops.json",
+        "bytes": 1226,
+        "sha256": "13c2c895c42bca1fb328c2ed73dad982cf8951db9488880d9ba9f5f086c065e5",
+        "gitBlobOid": "c398812ff6212ec32e2c661edd0963bfcd435481"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/adversarial.json",
+        "bytes": 1172,
+        "sha256": "29c8f72a5303d3993e0b922368745c1856d231602de11c65c6887c604aba0e0a",
+        "gitBlobOid": "d5d3701d079842e4d67243b70d14bef5ff9c3fc8"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/security.json",
+        "bytes": 1409,
+        "sha256": "5682418a3507983892e39e3aaaf47f6175a4f98bd0f02587a170792cffc327a0",
+        "gitBlobOid": "94ee9c512561fb8d16ca394e29029105897df225"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/backend.json",
+        "bytes": 1292,
+        "sha256": "8e1dfc9580084a6606aa8e4229e7d780defc6009018c4539098732a1fcd2769b",
+        "gitBlobOid": "1e3b9b8096f88afa79e0c13ec6e1f6fdf1be8eff"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/devops.json",
+        "bytes": 1291,
+        "sha256": "e630c8ee38f08c39a7999553ac425b60a84df2ad17e099787f4ac0810e87ccc6",
+        "gitBlobOid": "e93fb1a199aee990f27514ab3af97adaa21f824d"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/adversarial.json",
+        "bytes": 1237,
+        "sha256": "99edd1a8c8ba59f70485cdee8afbf0bd0a634a573cffde4d82807313e237c0cd",
+        "gitBlobOid": "e072b1069259438a1770de92cf80eafb9b289e2e"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/security.json",
+        "bytes": 1310,
+        "sha256": "9b9962b3cf60919fb98cf01d1fd675d557aff4ac5bac52b41a29e0b33027440f",
+        "gitBlobOid": "dbacf140c077709378a0aec2ffd5a3c6ea029c68"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/backend.json",
+        "bytes": 1491,
+        "sha256": "a40885f240d3b81863a8b1811070af08f2bee2eedf72cd023a3915021cb67c7b",
+        "gitBlobOid": "4caf5eba9a60dae913ee8bc284c47feb19585526"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/devops.json",
+        "bytes": 1443,
+        "sha256": "346a0f4a3e50a3244efa0bb4bc7c0b34c1f4bbb76b167974cccf7cbccc1cae78",
+        "gitBlobOid": "45a67cf083750f1d16c77cd10a268f78f8f6d469"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/adversarial.json",
+        "bytes": 1218,
+        "sha256": "a09980e995303f3845b561801b38f101a02c22c8b6c2d98dd811c424deb4e72a",
+        "gitBlobOid": "4b02109501e57a4e77633fd203e3476b6f85ae90"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/security.json",
+        "bytes": 1381,
+        "sha256": "50c4f8e0a196d3352de00460bb3b5a2a248e510ff5aceda0ee6b55f245bcec08",
+        "gitBlobOid": "771673f3bbd38e51f570cff197db4416183b4831"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-15/receipt.json",
+        "bytes": 13145,
+        "sha256": "7b7a6469cbbab55b929c125741ef668063bf886b91ac057b9b08c3dafa1e603d",
+        "gitBlobOid": "31648cf1b3be364de25d8092da894806b8805f21"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-15/source-manifest.json",
+        "bytes": 2379,
+        "sha256": "c7d36e5287bf4683b0e13f405f6e7d0af313fa0c9ea4dc8717d153e11bcd6400",
+        "gitBlobOid": "7013460ea4e46e88322a20708517d94d09f628de"
+      }
+    ]
+  }
+}

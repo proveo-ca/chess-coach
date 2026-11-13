@@ -1,0 +1,15 @@
+{
+  "status": "READY_PREINVOCATION_PACKET_ONLY",
+  "session": "ses_e2e4b1ef3ffdEFzyU31y2Xzl0Z",
+  "risk": "LOW_SCOPED_PACKET_ONLY",
+  "remainingFindings": [],
+  "operationalAuthorityGrantedByReview": false,
+  "existingGrant": "reference-two-package-source-acquisition-1",
+  "maximumCombinedAttempts": 1,
+  "maximumGetRequests": 2,
+  "maximumGetRequestsPerUrl": 1,
+  "retryOrRenewalAuthorized": false,
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

@@ -1,0 +1,26 @@
+{
+  "status": "AUTHORIZED_TWO_FILE_CORPUS_EXTENSION_OF_EXISTING_LOCAL_INPUT_MATERIALIZATION",
+  "authorizationSource": "EXECUTOR_EXISTING_FIND_INPUTS_USE_WORK_REQUEST",
+  "architectSession": "ses_e2f47580affedkCSE0PvqFHby6",
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "gitRoot": "/home/gu1lty/Projects/proveo/chess-coach",
+  "sealedSourceGenerationPreserved": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/input-manifest.json",
+  "freshSidecarRoot": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/inputs/reference",
+  "entries": [
+    {"path":"_spec/corpora/ml-adjutant-corpus.manifest.json","mode":"100644","gitBlobOid":"44e043d45e83c363213f01d91bb79207d130c839","bytes":7309},
+    {"path":"starchess-match-history-20260929-203446.json","mode":"100644","gitBlobOid":"f24680e5b26ebb742de846ec6a73bbeab379e827","bytes":664540}
+  ],
+  "additionalFiles": 2,
+  "additionalBytes": 671849,
+  "aggregateApplicationSourceAndCorpusFiles": 429,
+  "aggregateApplicationSourceAndCorpusBytes": 4522249,
+  "aggregateLimitsUnchanged": {"files":4096,"inputBytes":134217728,"individualInputBytes":16777216},
+  "exactManifestRequiredBeforeCopying": true,
+  "sidecarDoesNotEstablishOneAssembledRuntimeTree": true,
+  "referenceBundlingApproved": false,
+  "dependencyAcquisitionOrInstallationApproved": false,
+  "hostExecutionApproved": false,
+  "actualCommitOrPushApproved": false,
+  "experimentTrainingApproved": false,
+  "trainingReady": false
+}

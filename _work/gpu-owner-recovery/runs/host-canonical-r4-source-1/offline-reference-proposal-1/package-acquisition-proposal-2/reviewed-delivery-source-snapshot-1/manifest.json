@@ -1,0 +1,1121 @@
+{
+  "scope": "REVIEWED_DELIVERY_GENERATION_BEFORE_CONTAINED_LIFECYCLE_AND_ASSESSMENT_FIXES",
+  "proofTenSha256": "6580b856618b95270bb5fe0fbe8d6c1d64d168bb32dcdd0ead4d8a8e28c1dddf",
+  "sourceCount": 7,
+  "historicalProofFiles": 11,
+  "deliveryReviews": 4,
+  "originalProofsFailedFixturesAndHistoryPreserved": true,
+  "files": [
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-bootstrap.ts",
+      "copy": "sources/delivery-bootstrap.ts",
+      "bytes": 38057,
+      "sha256": "ab295d3d4967b67794af957c6c0873b91b58cc8fca6e3eb4eb4efd1db6032723",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3026820",
+        "mode": "33188",
+        "size": "38057",
+        "mtimeNs": "1794552972848865465",
+        "ctimeNs": "1794552972848865465"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036549",
+        "mode": "33024",
+        "size": "38057",
+        "mtimeNs": "1794554263871688393",
+        "ctimeNs": "1794554263871688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-packet.ts",
+      "copy": "sources/delivery-packet.ts",
+      "bytes": 3202,
+      "sha256": "b6f891d83dbafdccbd740ae90bb949aea3587deb96561d04b451e4509fd50e58",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3026821",
+        "mode": "33188",
+        "size": "3202",
+        "mtimeNs": "1794552972848865465",
+        "ctimeNs": "1794552972848865465"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036550",
+        "mode": "33024",
+        "size": "3202",
+        "mtimeNs": "1794554263871688393",
+        "ctimeNs": "1794554263871688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-render.ts",
+      "copy": "sources/delivery-render.ts",
+      "bytes": 2458,
+      "sha256": "b62649edd8e115d7d829acd2f71f445ca32c89777e041abba545669b8ca2b4eb",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3026822",
+        "mode": "33188",
+        "size": "2458",
+        "mtimeNs": "1794552559652867042",
+        "ctimeNs": "1794552559652867042"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036551",
+        "mode": "33024",
+        "size": "2458",
+        "mtimeNs": "1794554263871688393",
+        "ctimeNs": "1794554263871688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.test.ts",
+      "copy": "sources/delivery.test.ts",
+      "bytes": 40189,
+      "sha256": "bf7c839426c3cf7a5b512c4fc77a37c1573d91bfd8fb96424f7c1709846ab1fa",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3027137",
+        "mode": "33188",
+        "size": "40189",
+        "mtimeNs": "1794552972848865465",
+        "ctimeNs": "1794552972848865465"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036552",
+        "mode": "33024",
+        "size": "40189",
+        "mtimeNs": "1794554263871688393",
+        "ctimeNs": "1794554263871688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verify.ts",
+      "copy": "sources/delivery-verify.ts",
+      "bytes": 13437,
+      "sha256": "8412de81b74ffc0a95d3fda384ff62dad73591285f00427454bbbe4c5eb11789",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3027138",
+        "mode": "33188",
+        "size": "13437",
+        "mtimeNs": "1794552588500866932",
+        "ctimeNs": "1794552588500866932"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036553",
+        "mode": "33024",
+        "size": "13437",
+        "mtimeNs": "1794554263871688393",
+        "ctimeNs": "1794554263871688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.tsconfig.json",
+      "copy": "sources/delivery.tsconfig.json",
+      "bytes": 580,
+      "sha256": "e661d19127ec2cd1d202eb94412d733aa92d4ae15e308711be44648f593fceaa",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3026823",
+        "mode": "33188",
+        "size": "580",
+        "mtimeNs": "1794548883217219052",
+        "ctimeNs": "1794548883217219052"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036554",
+        "mode": "33024",
+        "size": "580",
+        "mtimeNs": "1794554263871688393",
+        "ctimeNs": "1794554263871688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-contract1.json",
+      "copy": "sources/delivery-contract1.json",
+      "bytes": 3827,
+      "sha256": "4c38e3f1d7ef62837cbfddb53304154819555e1eb65608e44c1ceecc080ff2f0",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3026824",
+        "mode": "33188",
+        "size": "3827",
+        "mtimeNs": "1794552559652867042",
+        "ctimeNs": "1794552559652867042"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036555",
+        "mode": "33024",
+        "size": "3827",
+        "mtimeNs": "1794554263871688393",
+        "ctimeNs": "1794554263871688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-10/receipt.json",
+      "copy": "historical-proof-10/receipt.json",
+      "bytes": 7756,
+      "sha256": "6580b856618b95270bb5fe0fbe8d6c1d64d168bb32dcdd0ead4d8a8e28c1dddf",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3149310",
+        "mode": "33024",
+        "size": "7756",
+        "mtimeNs": "1794553052396865162",
+        "ctimeNs": "1794553052396865162"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036556",
+        "mode": "33024",
+        "size": "7756",
+        "mtimeNs": "1794554263871688393",
+        "ctimeNs": "1794554263871688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-10/source-manifest.json",
+      "copy": "historical-proof-10/source-manifest.json",
+      "bytes": 2379,
+      "sha256": "5f22251535c5a26b1e0ba5e29731e89e73d720ed9f49c1583173c3b27f6a77a0",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3148168",
+        "mode": "33024",
+        "size": "2379",
+        "mtimeNs": "1794553046836176593",
+        "ctimeNs": "1794553046836176593"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036557",
+        "mode": "33024",
+        "size": "2379",
+        "mtimeNs": "1794554263871688393",
+        "ctimeNs": "1794554263871688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-10/readchecks-before.json",
+      "copy": "historical-proof-10/readchecks-before.json",
+      "bytes": 362599,
+      "sha256": "4cc6d06bc08be6329f044d22c0be6a36a67568b1dbd14aadbc50035bea46ec38",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3148167",
+        "mode": "33024",
+        "size": "362599",
+        "mtimeNs": "1794553046832865183",
+        "ctimeNs": "1794553046832865183"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036558",
+        "mode": "33024",
+        "size": "362599",
+        "mtimeNs": "1794554263871688393",
+        "ctimeNs": "1794554263871688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-10/readchecks-after.json",
+      "copy": "historical-proof-10/readchecks-after.json",
+      "bytes": 362599,
+      "sha256": "4cc6d06bc08be6329f044d22c0be6a36a67568b1dbd14aadbc50035bea46ec38",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3149309",
+        "mode": "33024",
+        "size": "362599",
+        "mtimeNs": "1794553052388865162",
+        "ctimeNs": "1794553052388865162"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036559",
+        "mode": "33024",
+        "size": "362599",
+        "mtimeNs": "1794554263875688393",
+        "ctimeNs": "1794554263875688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-10/tests.stdout",
+      "copy": "historical-proof-10/tests.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3149303",
+        "mode": "33024",
+        "size": "28",
+        "mtimeNs": "1794553049992865171",
+        "ctimeNs": "1794553049992865171"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036560",
+        "mode": "33024",
+        "size": "28",
+        "mtimeNs": "1794554263875688393",
+        "ctimeNs": "1794554263875688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-10/tests.stderr",
+      "copy": "historical-proof-10/tests.stderr",
+      "bytes": 14696,
+      "sha256": "d80903196afff11facfab91b0df69109cf9793ef0f7c4ef89073890abad4900f",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3149304",
+        "mode": "33024",
+        "size": "14696",
+        "mtimeNs": "1794553049994997106",
+        "ctimeNs": "1794553049994997106"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036561",
+        "mode": "33024",
+        "size": "14696",
+        "mtimeNs": "1794554263875688393",
+        "ctimeNs": "1794554263875688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-10/typecheck.stdout",
+      "copy": "historical-proof-10/typecheck.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3149305",
+        "mode": "33024",
+        "size": "0",
+        "mtimeNs": "1794553052360865162",
+        "ctimeNs": "1794553052360865162"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036562",
+        "mode": "33024",
+        "size": "0",
+        "mtimeNs": "1794554263875688393",
+        "ctimeNs": "1794554263875688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-10/typecheck.stderr",
+      "copy": "historical-proof-10/typecheck.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3149306",
+        "mode": "33024",
+        "size": "0",
+        "mtimeNs": "1794553052360865162",
+        "ctimeNs": "1794553052360865162"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036563",
+        "mode": "33024",
+        "size": "0",
+        "mtimeNs": "1794554263875688393",
+        "ctimeNs": "1794554263875688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-10/fish-syntax.stdout",
+      "copy": "historical-proof-10/fish-syntax.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3149307",
+        "mode": "33024",
+        "size": "0",
+        "mtimeNs": "1794553052363152508",
+        "ctimeNs": "1794553052363152508"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036564",
+        "mode": "33024",
+        "size": "0",
+        "mtimeNs": "1794554263875688393",
+        "ctimeNs": "1794554263875688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-10/fish-syntax.stderr",
+      "copy": "historical-proof-10/fish-syntax.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3149308",
+        "mode": "33024",
+        "size": "0",
+        "mtimeNs": "1794553052365460926",
+        "ctimeNs": "1794553052365460926"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036565",
+        "mode": "33024",
+        "size": "0",
+        "mtimeNs": "1794554263875688393",
+        "ctimeNs": "1794554263875688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-10/synthetic-nonrunning.fish",
+      "copy": "historical-proof-10/synthetic-nonrunning.fish",
+      "bytes": 40254,
+      "sha256": "c894a48db029f314cdda9b1c83b65c57d8e52c9c636e26ae0095af4ab45630a4",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3148169",
+        "mode": "33024",
+        "size": "40254",
+        "mtimeNs": "1794553046837024992",
+        "ctimeNs": "1794553046837024992"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036566",
+        "mode": "33024",
+        "size": "40254",
+        "mtimeNs": "1794554263875688393",
+        "ctimeNs": "1794554263875688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/delivery/backend.json",
+      "copy": "delivery-reviews/backend.json",
+      "bytes": 1309,
+      "sha256": "6b7a21191f83043ecd85cc720192a6b1fb297c031a97e5a8fe371f0629505699",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3036540",
+        "mode": "33188",
+        "size": "1309",
+        "mtimeNs": "1794554117943688950",
+        "ctimeNs": "1794554117943688950"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036567",
+        "mode": "33024",
+        "size": "1309",
+        "mtimeNs": "1794554263875688393",
+        "ctimeNs": "1794554263875688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/delivery/devops.json",
+      "copy": "delivery-reviews/devops.json",
+      "bytes": 1365,
+      "sha256": "43411f5f5e41df6e4d650c0ba6716318a275452269eed6940f89be7d80cf9fce",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3036543",
+        "mode": "33188",
+        "size": "1365",
+        "mtimeNs": "1794554117944590993",
+        "ctimeNs": "1794554117944590993"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036568",
+        "mode": "33024",
+        "size": "1365",
+        "mtimeNs": "1794554263875688393",
+        "ctimeNs": "1794554263875688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/delivery/adversarial.json",
+      "copy": "delivery-reviews/adversarial.json",
+      "bytes": 1829,
+      "sha256": "3119dfe1532046be04894327470f834e83751b053869a6d87d385af5a50ac587",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3036537",
+        "mode": "33188",
+        "size": "1829",
+        "mtimeNs": "1794553854179689956",
+        "ctimeNs": "1794553854179689956"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036569",
+        "mode": "33024",
+        "size": "1829",
+        "mtimeNs": "1794554263875688393",
+        "ctimeNs": "1794554263875688393"
+      }
+    },
+    {
+      "original": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/delivery/security.json",
+      "copy": "delivery-reviews/security.json",
+      "bytes": 1333,
+      "sha256": "3e1c6fee079210bf5d13133439f5f44952ae2244d3d3a76db63f1cc554639e30",
+      "originalMetadata": {
+        "dev": "65088",
+        "ino": "3036534",
+        "mode": "33188",
+        "size": "1333",
+        "mtimeNs": "1794553807043690136",
+        "ctimeNs": "1794553807043690136"
+      },
+      "copyMetadata": {
+        "dev": "65088",
+        "ino": "3036570",
+        "mode": "33024",
+        "size": "1333",
+        "mtimeNs": "1794554263875688393",
+        "ctimeNs": "1794554263875688393"
+      }
+    }
+  ],
+  "protectedRuntimeSourceCount": 18,
+  "protectedRuntime": {
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.ts": {
+      "bytes": 65298,
+      "sha256": "0a2a08b38758c9e8e59a240aba3902ef23d43da65ac7644ebc7c5b8792273e10",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3026811",
+        "mode": "33188",
+        "size": "65298",
+        "mtimeNs": "1794552770300866238",
+        "ctimeNs": "1794552770300866238"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.test.ts": {
+      "bytes": 93313,
+      "sha256": "8ef9aa480564ff0c93ba9434082f9d75f94bdb27108f5fd3680b67abdc869a73",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3026812",
+        "mode": "33188",
+        "size": "93313",
+        "mtimeNs": "1794549772648877673",
+        "ctimeNs": "1794549772648877673"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture-full.test.ts": {
+      "bytes": 19591,
+      "sha256": "85268411235586ed4b84fdd1a585d687ed495e17c65150db485fa8ad9b4aa236",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3026828",
+        "mode": "33188",
+        "size": "19591",
+        "mtimeNs": "1794552963516865501",
+        "ctimeNs": "1794552963516865501"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/root-context.ts": {
+      "bytes": 1875,
+      "sha256": "bc540101a8699c2bd9e5b075342bd3776e6d9ee579a641a6a1757ac640a6dd7f",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3026817",
+        "mode": "33188",
+        "size": "1875",
+        "mtimeNs": "1794548652184881947",
+        "ctimeNs": "1794548652184881947"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/root-context.test.ts": {
+      "bytes": 1720,
+      "sha256": "7caef259ee7ba34c8cfda01b6a060996d7d436bfd7fe4fd3c72a93f8bcd4da0f",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3026826",
+        "mode": "33188",
+        "size": "1720",
+        "mtimeNs": "1794549077224880326",
+        "ctimeNs": "1794549077224880326"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent.ts": {
+      "bytes": 4052,
+      "sha256": "62db5298937cf1c752a76b39f42fa19876e36e637d9d21dba6de323de347b27c",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3026743",
+        "mode": "33188",
+        "size": "4052",
+        "mtimeNs": "1794533929279858561",
+        "ctimeNs": "1794533929279858561"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent.test.ts": {
+      "bytes": 53554,
+      "sha256": "83d8e91683140c35de498a9457060f47ec00b94ef59c9d83e47593456c24205f",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3026746",
+        "mode": "33188",
+        "size": "53554",
+        "mtimeNs": "1794548883196881066",
+        "ctimeNs": "1794548883196881066"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent-adapter.ts": {
+      "bytes": 5757,
+      "sha256": "bc3df6e27bdc9a48164e8926a06d09c1ea9d104c3ffa1b19051dc2422b1a1d45",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3026818",
+        "mode": "33188",
+        "size": "5757",
+        "mtimeNs": "1794549452116878896",
+        "ctimeNs": "1794549452116878896"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent-adapter.test.ts": {
+      "bytes": 5551,
+      "sha256": "da10f7ce4bc74fa30200fd17f277fc72d5f58d8e847f7ee7c75edc4a10a5748d",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3026827",
+        "mode": "33188",
+        "size": "5551",
+        "mtimeNs": "1794549746912877771",
+        "ctimeNs": "1794549746912877771"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/verify.ts": {
+      "bytes": 35946,
+      "sha256": "3c0e5494e7c1eea2883d071f6f53c2ee1ced065d9c0a8257db429fa738403e5e",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3026747",
+        "mode": "33188",
+        "size": "35946",
+        "mtimeNs": "1794552903452865730",
+        "ctimeNs": "1794552903452865730"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/tsconfig.json": {
+      "bytes": 770,
+      "sha256": "0083541937af45cc505e9bde2afc99ece5af54fe1855060d20c498bc01488391",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3026744",
+        "mode": "33188",
+        "size": "770",
+        "mtimeNs": "1794549272016879583",
+        "ctimeNs": "1794549272016879583"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/.gitignore": {
+      "bytes": 163,
+      "sha256": "91317cffd2ef9526d9d0ba70fcefa8499556f916a21327cb5492407dd679db0d",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3026745",
+        "mode": "33188",
+        "size": "163",
+        "mtimeNs": "1794549272016879583",
+        "ctimeNs": "1794549272016879583"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.ts": {
+      "bytes": 16248,
+      "sha256": "c307f222997e3a72f3b00360aee7c08494ba8841b1be6e75ee9f7a1fcf0b612d",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3026813",
+        "mode": "33188",
+        "size": "16248",
+        "mtimeNs": "1794549772652877673",
+        "ctimeNs": "1794549772652877673"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.test.ts": {
+      "bytes": 42812,
+      "sha256": "375bcdd0dac0cab4930b9e09d270938f0ff26d2588e2a60f3d77fe5a2564969c",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3026814",
+        "mode": "33188",
+        "size": "42812",
+        "mtimeNs": "1794552998324865368",
+        "ctimeNs": "1794552998324865368"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.tsconfig.json": {
+      "bytes": 645,
+      "sha256": "475349522320904b0f41ec6fa19b785ddccfe51f97bc5b36c0c123bcf9eee56a",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3026815",
+        "mode": "33188",
+        "size": "645",
+        "mtimeNs": "1794548602078231167",
+        "ctimeNs": "1794548602078231167"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun-verify.ts": {
+      "bytes": 1838,
+      "sha256": "233203a84716055fcc8f064f0a158a3b2b6a39c2a62ff1418a534c2186340819",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3026816",
+        "mode": "33188",
+        "size": "1838",
+        "mtimeNs": "1794552827624866019",
+        "ctimeNs": "1794552827624866019"
+      }
+    },
+    "_work/gpu-owner-recovery/verify.ts": {
+      "bytes": 12723,
+      "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3019632",
+        "mode": "33188",
+        "size": "12723",
+        "mtimeNs": "1794431771227855428",
+        "ctimeNs": "1794431771227855428"
+      }
+    },
+    "_work/gpu-owner-recovery/command-supervisor.ts": {
+      "bytes": 910,
+      "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3014666",
+        "mode": "33188",
+        "size": "910",
+        "mtimeNs": "1794431770981027215",
+        "ctimeNs": "1794431770981027215"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/backend.json": {
+      "bytes": 1274,
+      "sha256": "33276db67f4c45b6a029cca976faab4eecdfaacedd1835323096e3a50b2d102e",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036538",
+        "mode": "33188",
+        "size": "1274",
+        "mtimeNs": "1794554117939688950",
+        "ctimeNs": "1794554117939688950"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/receipt.json": {
+      "bytes": 35386,
+      "sha256": "f780bbf4aa007deece850ba688b7200df1b4b31feebaea52045d5259b3dbfe27",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036525",
+        "mode": "33152",
+        "size": "35386",
+        "mtimeNs": "1794553024796865267",
+        "ctimeNs": "1794553024796865267"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/source-manifest.json": {
+      "bytes": 1570,
+      "sha256": "9de207966836330d95e72af6f433850669412b0eafe28b214e0531794c71bad7",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036474",
+        "mode": "33152",
+        "size": "1570",
+        "mtimeNs": "1794553012096865316",
+        "ctimeNs": "1794553012096865316"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/devops.json": {
+      "bytes": 1226,
+      "sha256": "13c2c895c42bca1fb328c2ed73dad982cf8951db9488880d9ba9f5f086c065e5",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036541",
+        "mode": "33188",
+        "size": "1226",
+        "mtimeNs": "1794554117943688950",
+        "ctimeNs": "1794554117943688950"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/adversarial.json": {
+      "bytes": 1172,
+      "sha256": "29c8f72a5303d3993e0b922368745c1856d231602de11c65c6887c604aba0e0a",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036535",
+        "mode": "33188",
+        "size": "1172",
+        "mtimeNs": "1794553854175689956",
+        "ctimeNs": "1794553854175689956"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/security.json": {
+      "bytes": 1409,
+      "sha256": "5682418a3507983892e39e3aaaf47f6175a4f98bd0f02587a170792cffc327a0",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036530",
+        "mode": "33188",
+        "size": "1409",
+        "mtimeNs": "1794553807043690136",
+        "ctimeNs": "1794553807043690136"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/clock-domain-proof.json": {
+      "bytes": 1139,
+      "sha256": "52ef35004cf9b639e6e89c0fd9cf216b91ff99015778c359d94023a0a7501120",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036517",
+        "mode": "33152",
+        "size": "1139",
+        "mtimeNs": "1794553024788865267",
+        "ctimeNs": "1794553024788865267"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/parent-child-events.jsonl": {
+      "bytes": 3618,
+      "sha256": "62d9a1e7dbbf0c1b24e7ccf7c0f8f7845c49e1b605778498d5940ee485d10912",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036523",
+        "mode": "33152",
+        "size": "3618",
+        "mtimeNs": "1794553024794264077",
+        "ctimeNs": "1794553024794264077"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/parent-child-fixture.ts": {
+      "bytes": 4881,
+      "sha256": "d7bf1dcdac660bacb10a22b17df407b3ea25a69f6fcea3c64e6ca42a9f618f5f",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036519",
+        "mode": "33152",
+        "size": "4881",
+        "mtimeNs": "1794553024793415304",
+        "ctimeNs": "1794553024793415304"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/parent-child-receipt.json": {
+      "bytes": 12837,
+      "sha256": "78dd888f06538ce4e747f2e56d7d1e8e3a5f88ffcddd19a3d7a0cd060039bb83",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036522",
+        "mode": "33152",
+        "size": "12837",
+        "mtimeNs": "1794553024794061564",
+        "ctimeNs": "1794553024794061564"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/parent-child-trace.json": {
+      "bytes": 228,
+      "sha256": "ce05e12e638d520850566967862dca73751e3c3947188ea05cf2d88f351cdcb1",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036524",
+        "mode": "33152",
+        "size": "228",
+        "mtimeNs": "1794553024794449629",
+        "ctimeNs": "1794553024794449629"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/parent-child.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036521",
+        "mode": "33152",
+        "size": "0",
+        "mtimeNs": "1794553024793694196",
+        "ctimeNs": "1794553024793694196"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/parent-child.stdout": {
+      "bytes": 328,
+      "sha256": "716d0984486d5cdf2998999e84b4d92c39fe185bb7f28046e0818251badabf8b",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036520",
+        "mode": "33152",
+        "size": "328",
+        "mtimeNs": "1794553024793694196",
+        "ctimeNs": "1794553024793694196"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/parent-integration-proof.json": {
+      "bytes": 497,
+      "sha256": "11c8de7082bf3e30183f4c10c3765466e23eeb90b1a19e241ba3a550118c4492",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036518",
+        "mode": "33152",
+        "size": "497",
+        "mtimeNs": "1794553024788865267",
+        "ctimeNs": "1794553024788865267"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/readchecks-after.json": {
+      "bytes": 593056,
+      "sha256": "871a114baa04368a72123449e17acc0350712bffd5d19038232368e4d9823189",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036516",
+        "mode": "33152",
+        "size": "593056",
+        "mtimeNs": "1794553024788865267",
+        "ctimeNs": "1794553024788865267"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/readchecks-before.json": {
+      "bytes": 593056,
+      "sha256": "871a114baa04368a72123449e17acc0350712bffd5d19038232368e4d9823189",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036475",
+        "mode": "33152",
+        "size": "593056",
+        "mtimeNs": "1794553012100865316",
+        "ctimeNs": "1794553012100865316"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/tests.stderr": {
+      "bytes": 84975,
+      "sha256": "920c8ff58514ad6fdbbabf28481159314e1f0ef7d73d61f781bad2d53b0c29ce",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036513",
+        "mode": "33152",
+        "size": "84975",
+        "mtimeNs": "1794553022032865278",
+        "ctimeNs": "1794553022032865278"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/tests.stdout": {
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036512",
+        "mode": "33152",
+        "size": "28",
+        "mtimeNs": "1794553022032865278",
+        "ctimeNs": "1794553022032865278"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/typecheck.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036515",
+        "mode": "33152",
+        "size": "0",
+        "mtimeNs": "1794553024708865268",
+        "ctimeNs": "1794553024708865268"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/typecheck.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036514",
+        "mode": "33152",
+        "size": "0",
+        "mtimeNs": "1794553024708865268",
+        "ctimeNs": "1794553024708865268"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/backend.json": {
+      "bytes": 1292,
+      "sha256": "8e1dfc9580084a6606aa8e4229e7d780defc6009018c4539098732a1fcd2769b",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036539",
+        "mode": "33188",
+        "size": "1292",
+        "mtimeNs": "1794554117943688950",
+        "ctimeNs": "1794554117943688950"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/receipt.json": {
+      "bytes": 33983,
+      "sha256": "d006193dbbcdcdb802b939eb531f157dcfc18d960f9f11d8f3e7b657127e684c",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3148165",
+        "mode": "33152",
+        "size": "33983",
+        "mtimeNs": "1794553037376865219",
+        "ctimeNs": "1794553037376865219"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/source-manifest.json": {
+      "bytes": 3700,
+      "sha256": "3a2a69719e40bb3b6622f5a43651b9d8414652a6136fbcd21f257847bbec6e1f",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3147488",
+        "mode": "33152",
+        "size": "3700",
+        "mtimeNs": "1794553033692865233",
+        "ctimeNs": "1794553033692865233"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/devops.json": {
+      "bytes": 1291,
+      "sha256": "e630c8ee38f08c39a7999553ac425b60a84df2ad17e099787f4ac0810e87ccc6",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036542",
+        "mode": "33188",
+        "size": "1291",
+        "mtimeNs": "1794554117944590993",
+        "ctimeNs": "1794554117944590993"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/adversarial.json": {
+      "bytes": 1237,
+      "sha256": "99edd1a8c8ba59f70485cdee8afbf0bd0a634a573cffde4d82807313e237c0cd",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036536",
+        "mode": "33188",
+        "size": "1237",
+        "mtimeNs": "1794553854179689956",
+        "ctimeNs": "1794553854179689956"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/security.json": {
+      "bytes": 1310,
+      "sha256": "9b9962b3cf60919fb98cf01d1fd675d557aff4ac5bac52b41a29e0b33027440f",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036532",
+        "mode": "33188",
+        "size": "1310",
+        "mtimeNs": "1794553807043690136",
+        "ctimeNs": "1794553807043690136"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/readchecks-after.json": {
+      "bytes": 593056,
+      "sha256": "871a114baa04368a72123449e17acc0350712bffd5d19038232368e4d9823189",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3148164",
+        "mode": "33152",
+        "size": "593056",
+        "mtimeNs": "1794553037368865219",
+        "ctimeNs": "1794553037368865219"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/readchecks-before.json": {
+      "bytes": 593056,
+      "sha256": "871a114baa04368a72123449e17acc0350712bffd5d19038232368e4d9823189",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3147489",
+        "mode": "33152",
+        "size": "593056",
+        "mtimeNs": "1794553033696865233",
+        "ctimeNs": "1794553033696865233"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/tests.stderr": {
+      "bytes": 15218,
+      "sha256": "ac526348073ffa8d240a9f4a7a580b5ef1bb1d4f4022075e99f5a698da22317b",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3148161",
+        "mode": "33152",
+        "size": "15218",
+        "mtimeNs": "1794553034796865229",
+        "ctimeNs": "1794553034796865229"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/tests.stdout": {
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3148160",
+        "mode": "33152",
+        "size": "28",
+        "mtimeNs": "1794553034796865229",
+        "ctimeNs": "1794553034796865229"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/typecheck.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3148163",
+        "mode": "33152",
+        "size": "0",
+        "mtimeNs": "1794553037288865220",
+        "ctimeNs": "1794553037288865220"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/typecheck.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3148162",
+        "mode": "33152",
+        "size": "0",
+        "mtimeNs": "1794553037288865220",
+        "ctimeNs": "1794553037288865220"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/runtime-eligibility-reads2.json": {
+      "bytes": 5547,
+      "sha256": "a5291e1f2e2e1c3a59faedec3c2c48045b18548413ff5c0ef91a53369cba56b8",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3036526",
+        "mode": "33188",
+        "size": "5547",
+        "mtimeNs": "1794553125476864883",
+        "ctimeNs": "1794553125476864883"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/runtime-entry-contract1.json": {
+      "bytes": 2089,
+      "sha256": "96a3872c788df576ff39f7f841bfcf8b54c268e528f2c39834f4e7fceccc0229",
+      "metadata": {
+        "dev": "65088",
+        "ino": "3029598",
+        "mode": "33188",
+        "size": "2089",
+        "mtimeNs": "1794549656556878116",
+        "ctimeNs": "1794549656556878116"
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "status": "NOT_READY_IMPLEMENTATION_SOURCE_ONLY",
+  "session": "ses_e2e5a7bfaffeXVaGBozd4pJB26",
+  "verification": "verification-8/receipt.json",
+  "readOnly": true,
+  "previousClockHighCleared": true,
+  "lateInterruptionFindingRemainsCleared": true,
+  "findings": [{"severity":"MEDIUM","path":"capture.ts","lines":[514,521],"code":"CLOCK_FAILURE_BETWEEN_CLEANUP_AVAILABILITY_AND_CUTOFF_CAN_SKIP_TERMINATION"}],
+  "callerReviewed": false,
+  "operationalReadinessGranted": false,
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

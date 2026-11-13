@@ -1,0 +1,46 @@
+
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/canonical.test.ts:
+(pass) MOCK plan fixes the selected pin, six entries, four paths and unselected delivery [0.11ms]
+(pass) MOCK boot preserves NativeJob v1 and the constructor's first clock origin without creating ports [0.62ms]
+(pass) MOCK exact BOTH protocol commits three actual fixture boundaries and two independent finish results [81.14ms]
+(pass) MOCK rejects reference finish stdinClosed and withholds completion [36.21ms]
+(pass) MOCK rejects reference finish stdoutEof and withholds completion [36.66ms]
+(pass) MOCK rejects reference finish stderrEof and withholds completion [34.77ms]
+(pass) MOCK rejects reference finish reaped and withholds completion [34.07ms]
+(pass) MOCK rejects reference finish exitCode and withholds completion [36.05ms]
+(pass) MOCK rejects reference finish forced and withholds completion [34.50ms]
+(pass) MOCK one rejected finish preserves the other actual receipt without fabricating EOF [36.84ms]
+(pass) MOCK rejects role corruption before completion [5.55ms]
+(pass) MOCK rejects reference-boundary corruption before completion [7.90ms]
+(pass) MOCK rejects commit corruption before completion [6.62ms]
+(pass) MOCK rejects init-scope corruption before completion [5.36ms]
+(pass) MOCK rejects digest corruption before completion [5.53ms]
+(pass) MOCK rejects ordinal corruption before completion [6.92ms]
+(pass) MOCK rejects session corruption before completion [4.88ms]
+(pass) MOCK swapped port roles fail the existing session binding [4.59ms]
+(pass) MOCK same underlying port fails before wrappers can defeat identity rejection [0.25ms]
+(pass) MOCK factory startup consumes the original ten seconds instead of resetting it [0.26ms]
+(pass) MOCK boot wait cannot renew the original deadline or create a late port [0.13ms]
+(pass) MOCK clean exit at the ten-second boundary still cannot publish success [27.48ms]
+(pass) MOCK partial factory failure stops only the first owned port and never retries [0.34ms]
+(pass) MOCK failed cleanup uses origin plus 300 seconds and does not grant a fresh 300 [0.28ms]
+(pass) MOCK task cleanup bounds a non-resolving owned termination to the remaining original budget [1.34ms]
+(pass) MOCK rejected owned termination cannot mask itself as successful cleanup [7.57ms]
+(pass) MOCK actual NativeJob v1 consumes one start and rejects replay without a second session [0.19ms]
+(pass) MOCK successful composed job also refuses a second start and revokes its receipt [25.85ms]
+(pass) MOCK wrong operation or extra authority never creates a port [1.15ms]
+
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/r4.test.ts:
+(pass) NONNATIVE selected economics debits deployment once and credits only settlement income [20.11ms]
+(pass) NONNATIVE selected unaffordable action withholds both-seat settlement without mutating its parent [3.62ms]
+(pass) NONNATIVE selected hidden opponent move twins preserve identical recipient bytes [17.97ms]
+(pass) NONNATIVE MOCK selected match retains exact attempt/model binding and diagnostic zero-window completion [24.73ms]
+(pass) NONNATIVE MOCK selected attempt mismatch withholds an eligible completion [2.81ms]
+(pass) NONNATIVE MOCK selected completion mismatch withholds an eligible completion [10.21ms]
+(pass) NONNATIVE MOCK selected ordinal mismatch withholds an eligible completion [2.12ms]
+(pass) NONNATIVE MOCK selected worker rejects a descriptor for a different frozen model [0.65ms]
+
+ 37 pass
+ 0 fail
+ 305 expect() calls
+Ran 37 tests across 2 files. [629.00ms]

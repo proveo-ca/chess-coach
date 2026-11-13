@@ -1,0 +1,10 @@
+{
+  "status": "READY_SELECTED_CLOCK_SPEC_GOAL_PROJECTION_ONLY",
+  "adversarial": {"session":"ses_e2e582911ffe8NNgAwLpEKFv0k","readyToMerge":true,"remainingFindings":[]},
+  "verification": {"receipt":"receipt.json","strictTypecheckExitCode":0,"stdout":"typecheck.stdout","stderr":"typecheck.stderr","checklistNegativeCasesRejected":3},
+  "preservedEarlierChecks": {"bun-spec-check-4":"FAIL_EXACT_PARSER_DELIMITER_STRING","bun-spec-check-5":"FAIL_TRANSPORT_DETAIL_REQUIRED_IN_SUMMARY_DOC"},
+  "helperCallerOrOperationalReadinessGranted": false,
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

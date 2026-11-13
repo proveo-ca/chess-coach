@@ -1,0 +1,15 @@
+{
+  "status": "READY_SOURCE_ONLY_FULL_SOURCE_AND_CLOCK_SCOPE",
+  "session": "ses_e2e4b1ef3ffdEFzyU31y2Xzl0Z",
+  "verification": "verification-10/receipt.json",
+  "risk": "LOW_SCOPED_SOURCE_ONLY",
+  "readOnly": true,
+  "cleanupFindingsCleared": true,
+  "remainingFindings": [],
+  "callerReviewed": false,
+  "deferredHardeningRemainsDeferred": true,
+  "operationalReadinessGranted": false,
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

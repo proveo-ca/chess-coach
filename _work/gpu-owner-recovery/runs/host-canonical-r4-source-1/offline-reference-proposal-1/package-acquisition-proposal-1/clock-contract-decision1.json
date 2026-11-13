@@ -1,0 +1,27 @@
+{
+  "status": "PENDING_EXECUTOR_CLOCK_COORDINATION_DECISION_NO_IMPLEMENTATION_AUTHORIZED_BY_THIS_RECORD",
+  "architect": "ses_e2f47580affedkCSE0PvqFHby6",
+  "failedClockProof": "clock-comparison-1/receipt.json",
+  "captureVerification": "../package-acquisition-bun-source1/verification-6/receipt.json",
+  "captureRecordedTests": 185,
+  "captureStrictTypecheckExitCode": 0,
+  "captureClockFindingSeverity": "HIGH",
+  "callerPreservedVerification": "invocation-verification-1/receipt.json",
+  "callerReportedTests": 66,
+  "callerReportedStrictTypecheckExitCode": 0,
+  "callerStoppedPendingDecision": true,
+  "selectedProposal": null,
+  "proposals": [
+    {"id":"translate-process-local-domains","recommended":true,"contract":"KEEP_SUPERVISOR_ORIGINAL_ABSOLUTE_DEADLINES_EXCHANGE_CONSERVATIVE_DURATIONS_AND_ASSESS_OUTER_LOCAL_ELAPSED_TIME","newNativeHelperRequired":false},
+    {"id":"specify-shared-clock-adapter","recommended":false,"contract":"SELECT_AND_VERIFY_A_GENUINELY_SHARED_CLOCK_WITH_RESOLUTION_AND_SUSPEND_SEMANTICS_EXPLICIT_ANY_NATIVE_HELPER_NEEDS_SEPARATE_HOST_SCOPE"},
+    {"id":"defer-acquisition","recommended":false,"contract":"PRESERVE_ALL_PARTIAL_SOURCE_EVIDENCE_AND_UNUSED_GRANT_WITHOUT_CLOCK_IMPLEMENTATION"}
+  ],
+  "originalLimitsAndGrantMayBeRenewedByDecision": false,
+  "existingGrant": "reference-two-package-source-acquisition-1",
+  "existingGrantRemainsUnused": true,
+  "actualGetRequests": 0,
+  "actualCaptureEntryOrWorkerInvoked": false,
+  "productionRootsOrBindingCreated": false,
+  "referenceBuildHostPublicationOrTrainingApproved": false,
+  "trainingReady": false
+}

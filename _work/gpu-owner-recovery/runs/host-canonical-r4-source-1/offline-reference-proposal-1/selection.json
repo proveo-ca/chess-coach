@@ -1,0 +1,14 @@
+{
+  "status": "DIRECTION_ONLY",
+  "direction": "OFFLINE_PREPARATION",
+  "authorizationSource": "EXECUTOR_INTERACTIVE_SELECTION_OFFLINE_PREPARATION_RECOMMENDED_DIRECTION_ONLY",
+  "issuedDirectionRequest": {"path":"_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/reference-delivery-decision.json","sha256":"333de911651b8336d0032ae4399054dd4c7b90899077e3db7aa5d5002df938cb"},
+  "issuedRequestPreserved": true,
+  "newAuthorityGranted": false,
+  "captureCopyExtractBuildStageOrAcquisitionApproved": false,
+  "hostExecutionApproved": false,
+  "publicationApproved": false,
+  "trainingApproved": false,
+  "inputAvailabilityEstablished": false,
+  "trainingReady": false
+}

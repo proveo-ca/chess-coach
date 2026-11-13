@@ -1,0 +1,12 @@
+{
+  "status": "PROPOSAL_RECORDS_ACCEPTABLE_ROUNDTRIP_PROOF_CORRECTION_REQUIRED",
+  "adversarialSession": "ses_e2ef57739ffe243r8K2ytkCf80",
+  "securitySession": "ses_e2ef57738ffenD2ct3g3sOKXhY",
+  "adversarialReady": false,
+  "securityReadyDirectionOnly": true,
+  "finding": {"severity":"MEDIUM","path":"verification-1/check.py","issue":"The receipt claims record round-trip success without a serialize/reparse comparison."},
+  "verification1AndItsClaimRetainedAsPreCorrectionHistory": true,
+  "freshRoundtripProofRequired": true,
+  "newAuthorityGranted": false,
+  "trainingReady": false
+}

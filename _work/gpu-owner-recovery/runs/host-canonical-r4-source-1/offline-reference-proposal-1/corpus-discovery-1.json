@@ -1,0 +1,15 @@
+{
+  "status": "REQUIRED_CORPUS_INPUTS_REPORTED_PRESENT_IN_PINNED_LOCAL_GIT_TREE_NOT_MATERIALIZED_BY_THIS_RECORD",
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "gitRoot": "/home/gu1lty/Projects/proveo/chess-coach",
+  "provenance": "BOUNDED_READ_ONLY_GIT_LS_TREE_LONG_QUERY_NO_FETCH_NO_CHECKOUT",
+  "entries": [
+    {"path":"_spec/corpora/ml-adjutant-corpus.manifest.json","mode":"100644","gitBlobOid":"44e043d45e83c363213f01d91bb79207d130c839","bytes":7309},
+    {"path":"starchess-match-history-20260929-203446.json","mode":"100644","gitBlobOid":"f24680e5b26ebb742de846ec6a73bbeab379e827","bytes":664540}
+  ],
+  "payloadReadOrCopiedByThisQuery": false,
+  "fullTreeAncestryAuthenticated": false,
+  "fullC14GuardExecuted": false,
+  "trainingExecuted": false,
+  "trainingReady": false
+}

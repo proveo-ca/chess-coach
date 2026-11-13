@@ -1,0 +1,3468 @@
+{
+  "version": "local-pinned-input-manifest.v1",
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "gitRoot": "/home/gu1lty/Projects/proveo/chess-coach",
+  "sourceRoot": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/inputs/reference",
+  "sourceClassification": "GIT_REPORTED_PINNED_APPLICATION_SOURCE_SUPERSET_NOT_SELECTED_BUNDLE_CLOSURE",
+  "limits": {
+    "inputFiles": 4096,
+    "inputBytes": 134217728,
+    "individualInputBytes": 16777216,
+    "discoveryMetadataBytes": 8388608
+  },
+  "discoveryMetadataSha256": "37ab2be0a844bebd362ef34f819ab49ce64bb91998ff1d233c2101ef1ef15f01",
+  "scopeSha256": "22b0549ddc4f80816ef8c904979b73640fd8854cddabdeb1a6e55bdf95d28203",
+  "packageDiscoverySha256": "fff2d5968738396077cf0e3de952c910409185e95f3d7f6bec5a0462809c2bba",
+  "missingPackages": [
+    {
+      "name": "fflate",
+      "version": "0.8.3",
+      "selectedRuntimeFile": "esm/index.mjs",
+      "installedRoot": null
+    },
+    {
+      "name": "jssha",
+      "version": "3.3.2",
+      "selectedRuntimeFile": "dist/sha256.mjs",
+      "installedRoot": null
+    }
+  ],
+  "entries": [
+    {
+      "path": "nx.json",
+      "origin": "pinned-git",
+      "gitBlobOid": "a0500fccfb6a74f99c1c754853ad8ce8b3ef3ed7",
+      "sourceMode": "100644",
+      "expectedBytes": 278,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "package.json",
+      "origin": "pinned-git",
+      "gitBlobOid": "02c0a65f591558b15fb4940424c4be9e9086d70f",
+      "sourceMode": "100644",
+      "expectedBytes": 2966,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/client-platform/package.json",
+      "origin": "pinned-git",
+      "gitBlobOid": "e7eac27223a1517e275e273fa8bff8f7c5693302",
+      "sourceMode": "100644",
+      "expectedBytes": 180,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/client-platform/src/index.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "f384d83560ca83a7cc5cb3151ff69f1a2544ab1a",
+      "sourceMode": "100644",
+      "expectedBytes": 3475,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/client-platform/tsconfig.json",
+      "origin": "pinned-git",
+      "gitBlobOid": "58834c2a5f599bdef8453e9ba824d2ea583d3e53",
+      "sourceMode": "100644",
+      "expectedBytes": 561,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/engine-core/package.json",
+      "origin": "pinned-git",
+      "gitBlobOid": "4bbd984e2235ba8a85af04c388a7f267d6d7b1f6",
+      "sourceMode": "100644",
+      "expectedBytes": 176,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/engine-core/src/fenValidation.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "943a85e4557656daf076f0f8247cc55bc13dd5bd",
+      "sourceMode": "100644",
+      "expectedBytes": 2946,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/engine-core/src/index.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "ec0305efe2565608e597266a617ac0430ff80318",
+      "sourceMode": "100644",
+      "expectedBytes": 399,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/engine-core/src/llmPromptFormat.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "f4861edb9d7a96b114ba6eaef79bf05d906220bd",
+      "sourceMode": "100644",
+      "expectedBytes": 7999,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/engine-core/tsconfig.json",
+      "origin": "pinned-git",
+      "gitBlobOid": "39d7c74b912f710ffa412d0077e49d68ce6cdd13",
+      "sourceMode": "100644",
+      "expectedBytes": 258,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/package.json",
+      "origin": "pinned-git",
+      "gitBlobOid": "80679f3a9f36104c11384a33ee9f6d282a63705c",
+      "sourceMode": "100644",
+      "expectedBytes": 717,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeBoundariesV2.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "0b63321552456345cac965e8e691ac8435dfba58",
+      "sourceMode": "100644",
+      "expectedBytes": 40543,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeCandidateCodec.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "04b22ac1e3cf94a9b4d17422b0979c9ed930baf3",
+      "sourceMode": "100644",
+      "expectedBytes": 12254,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeCheckedBoundaryV2.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "c5f6305d115c5650c199312990cbd7c830ddb0db",
+      "sourceMode": "100644",
+      "expectedBytes": 8014,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeContractAdmission.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "ce45100d0b997ea2ccd6461ef1e3a83ae7f58cfa",
+      "sourceMode": "100644",
+      "expectedBytes": 14000,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeContractCoverage.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "e08109832b078bd9ebdf8bfb52c37e54951813df",
+      "sourceMode": "100644",
+      "expectedBytes": 3740,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeCorpus.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "816ec71fb9ba5cc4adc543301c3ef674376f8d60",
+      "sourceMode": "100644",
+      "expectedBytes": 4364,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeDtoInspection.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "3ee072e406d09ea7718aeeb033a2ee0529b3298d",
+      "sourceMode": "100644",
+      "expectedBytes": 5751,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeEconomicLedger.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "9930fe26b650d0f1def8d59f43c69cb2f83936d9",
+      "sourceMode": "100644",
+      "expectedBytes": 29655,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeEvidence.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "6a14b71a7cc2ffc80d6898faeab4f0180ee7211b",
+      "sourceMode": "100644",
+      "expectedBytes": 6490,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeEvidenceImport.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "63d351053005ff58b9d22a6d07dd10e34d4d0935",
+      "sourceMode": "100644",
+      "expectedBytes": 53784,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeFeatures.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "ddf67cfccd23c1ba82120ebeeb162ffe3a366a5a",
+      "sourceMode": "100644",
+      "expectedBytes": 15408,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeLifecycle.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "809379696347942509975a465917b0b125e137dc",
+      "sourceMode": "100644",
+      "expectedBytes": 11988,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeObservation.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "79c9c082742323ac505c211857c956f896a2e039",
+      "sourceMode": "100644",
+      "expectedBytes": 3778,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeObservationCodec.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "9ffd8c0a87901193ffde8ca2cf172f52c13a7db6",
+      "sourceMode": "100644",
+      "expectedBytes": 11381,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeObservationV2.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "1130edfa253c04ea77b18579d277387fa35b67e3",
+      "sourceMode": "100644",
+      "expectedBytes": 17754,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengePinMigration.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "758f84bbe5034bbfc8f7b1e0fe0829dee98af742",
+      "sourceMode": "100644",
+      "expectedBytes": 8608,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeProvenancePrivacy.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "6e37aa2bd6dc9cbcb0c62e7aab7eeed0c0d86f86",
+      "sourceMode": "100644",
+      "expectedBytes": 22053,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengePublication.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "cd67a493ed1ac2d1c3abefbc02382e10d0802b71",
+      "sourceMode": "100644",
+      "expectedBytes": 1214,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeSourceInventory.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "70e7510c6e0ec03a016ed3c92ea054b74eda5ffd",
+      "sourceMode": "100644",
+      "expectedBytes": 193511,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeSuites.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "7d4eadad15f027c4cbfe0bd727eb659bbfb24556",
+      "sourceMode": "100644",
+      "expectedBytes": 4636,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/challengeWatchdog.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "4552b415b84609a28c195e3907d3bef9f71492ad",
+      "sourceMode": "100644",
+      "expectedBytes": 13800,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/chipPly.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "4de8d5580542f6f15e4195a15b127cee01672b0c",
+      "sourceMode": "100644",
+      "expectedBytes": 2560,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/compare.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "65018f221570275d84764171c399c48dba90a7fb",
+      "sourceMode": "100644",
+      "expectedBytes": 2822,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/computedArrayAcquisition.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "78199fae43baab6c4c5cd9540fdb8f31a9849b99",
+      "sourceMode": "100644",
+      "expectedBytes": 4368,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/corpusManifest.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "fd9857f16bd6765a06e269063359a51ffa9278f0",
+      "sourceMode": "100644",
+      "expectedBytes": 6754,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/determinism.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "4c1fcdcd31aa940c7f6d015f0ca0e9d427bce905",
+      "sourceMode": "100644",
+      "expectedBytes": 4238,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/feedRescue.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "64c857743bd58537d7bfd4d9facc0a296e6defdc",
+      "sourceMode": "100644",
+      "expectedBytes": 5531,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/fixtures/challenge-history-pins.json",
+      "origin": "pinned-git",
+      "gitBlobOid": "a058b89b992e9cab7825591935045266ee7e95a9",
+      "sourceMode": "100644",
+      "expectedBytes": 1113,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/fixtures/challengeAnnouncementEscape.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "518d19d69134335179830b75ff2d781976d4e7a1",
+      "sourceMode": "100644",
+      "expectedBytes": 451,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/fixtures/challengeBeforeReady.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "11c15fc4e77ccb179b073cacb214a4f386a68083",
+      "sourceMode": "100644",
+      "expectedBytes": 222,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/fixtures/challengeChildCases.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "a0ac1ebb756a7359857e1f5203d189357079f1b6",
+      "sourceMode": "100644",
+      "expectedBytes": 7610,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/fixtures/challengeEvidence.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "27ccfc5ae1c020c436221094e8108f083598e82f",
+      "sourceMode": "100644",
+      "expectedBytes": 28262,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/fixtures/challengeStartupHang.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "64869c25a5e5bbceb8eeee81cc94e692eee6d1cf",
+      "sourceMode": "100644",
+      "expectedBytes": 104,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/fixtures/challengeWorker.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d2a9386f01645d2a3bc4862a650d14ccd9cc24f5",
+      "sourceMode": "100644",
+      "expectedBytes": 7502,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/fixtures/invocationCases.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "8b7c83e98e43c81c040c28e6448b1919941ba1c0",
+      "sourceMode": "100644",
+      "expectedBytes": 4622,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/forkCompatibility.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "173ef9bf678b2acf7b18c6a1ec6519bab43aca6b",
+      "sourceMode": "100644",
+      "expectedBytes": 8719,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/intentCodecV1Bridge.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "67f92ffd67589f8c7d2d9e3a29bcef9644d94970",
+      "sourceMode": "100644",
+      "expectedBytes": 15113,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/kvs.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "6dc3722ca64caff556b3f7db1138ef97fe092dc4",
+      "sourceMode": "100644",
+      "expectedBytes": 2108,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/observationIsolation.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "313f6d3c7690f50ea5e6c5a3113e8ea3c881392d",
+      "sourceMode": "100644",
+      "expectedBytes": 12688,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/observationV1Bridge.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "ecb0ed85892cacdd2b72eaeb4e19a26490edc156",
+      "sourceMode": "100644",
+      "expectedBytes": 11125,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/publicClosureInvocation.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "03fc52498caf5d812426cf16b6c41e5b5c004661",
+      "sourceMode": "100644",
+      "expectedBytes": 68364,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/publicV1BridgeIsolation.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "dfed54a8d5bfedeea21bd9ea9e0a2e9ede8195fb",
+      "sourceMode": "100644",
+      "expectedBytes": 7960,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/r2CompositionEvidence.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "11c2b6c6c50f4eb1d6b0184d049a274e2405dc3b",
+      "sourceMode": "100644",
+      "expectedBytes": 4003,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/r3EconomicVisitor.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "c770ddcc050343a1762071dee2d8e7d2ed2ae716",
+      "sourceMode": "100644",
+      "expectedBytes": 24580,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/resourceLedger.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "10088a6194a2383f88dc6f3f5f72163470c8f659",
+      "sourceMode": "100644",
+      "expectedBytes": 7434,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/sourceInventoryCallbackGrounding.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "3e5ef4e7f3860dd7158518648efb53fb9f43e1d8",
+      "sourceMode": "100644",
+      "expectedBytes": 9754,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/sourceInventoryInvocation.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "2eb1269bd68fe959a2949bcd60c764ff85eb67a8",
+      "sourceMode": "100644",
+      "expectedBytes": 9108,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/strategicSmoke.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "957430079175d2a7296e5b4b234a54271a788ba5",
+      "sourceMode": "100644",
+      "expectedBytes": 1152,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/__tests__/strictRecordedQueues.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "756b563b37eb1148a639068840c37683b593519e",
+      "sourceMode": "100644",
+      "expectedBytes": 18309,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/authorized/v1/canonical.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d92a2f5112f0714f4c9422de2bab2b264df93975",
+      "sourceMode": "100644",
+      "expectedBytes": 759,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/authorized/v1/observationCodec.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "231e8987f0020eed3709cdb301c2c19d54844dd5",
+      "sourceMode": "100644",
+      "expectedBytes": 5792,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/authorized/v1/squares.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "45851cb65591489af869270353061b29f13bf21a",
+      "sourceMode": "100644",
+      "expectedBytes": 274,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/authorized/v1/types.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "e3e43dc37edf97d2c2ca7638cb646c37d5f5929a",
+      "sourceMode": "100644",
+      "expectedBytes": 850,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/authorized/v2/batch.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "1662fb3e9531145f318dc5e55ba49cb12df33870",
+      "sourceMode": "100644",
+      "expectedBytes": 11084,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/authorized/v2/observation.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "06e31d1bebc3fee64ffa451061e9f255da730144",
+      "sourceMode": "100644",
+      "expectedBytes": 13025,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/authorized/v2/reducer.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "b4253a77da93e1c615b2fe0ee7dfb30e9900129b",
+      "sourceMode": "100644",
+      "expectedBytes": 18285,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/authorized/v2/schema.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "121fff5a3df4eff61973d974913e40af69ca4207",
+      "sourceMode": "100644",
+      "expectedBytes": 8790,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/authorized/v2/types.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "4964f3a15a5cd7a63e7f0bfceb80575e3fbf2ae1",
+      "sourceMode": "100644",
+      "expectedBytes": 5099,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/admission.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d00ad1da9efc66e9fffb33e630e3d80397fff377",
+      "sourceMode": "100644",
+      "expectedBytes": 3861,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/baseline.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "18e9a4b1a049626036485c4016a78813c6b76c7e",
+      "sourceMode": "100644",
+      "expectedBytes": 2482,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/config.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "678928b8a9ed17db56d5fbb3dbb2e36f7910d866",
+      "sourceMode": "100644",
+      "expectedBytes": 615,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/corpus.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "75f319537f1dd0f7c9e030e7b706005d33e5497b",
+      "sourceMode": "100644",
+      "expectedBytes": 6194,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/evidence.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "9a78abde4a83ef6b626a5a99051b3b6efce29ece",
+      "sourceMode": "100644",
+      "expectedBytes": 8818,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/integrity.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "fba4f3bfb31d7aa049d070c79d1066100cf2ebe6",
+      "sourceMode": "100644",
+      "expectedBytes": 6547,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/observation.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "1234ac13ef83481aac196c3be0569a380f8de243",
+      "sourceMode": "100644",
+      "expectedBytes": 2523,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/pinMigration.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "1633d6813b5350a6827c59568aa1fb0fa361d7be",
+      "sourceMode": "100644",
+      "expectedBytes": 8828,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/publication.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "1bea70e0c02e9bb09497a34ab287e97fba7c2f3b",
+      "sourceMode": "100644",
+      "expectedBytes": 857,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/r3Private.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "7550a55813c703c658a93bb79dedc73437b70183",
+      "sourceMode": "100644",
+      "expectedBytes": 16920,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/r3Projection.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "6a68f130b59552da263409ff186c6fa77a3cc460",
+      "sourceMode": "100644",
+      "expectedBytes": 22133,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/r3Session.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "cd1b5369f8e7e17bbe74eb869f23c76b65b959cc",
+      "sourceMode": "100644",
+      "expectedBytes": 21511,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/runChallengeMatch.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "11f1045ef5e9f5ab89e6d2e2099bc97c975f96d2",
+      "sourceMode": "100644",
+      "expectedBytes": 11421,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/schedule.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "2a19451cb330dac0e8e4c3fa7df2f757ac9c7e33",
+      "sourceMode": "100644",
+      "expectedBytes": 2492,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/sourceInventory.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "7515a6dfb3d4614e6b3e8de0bd06127f0bf51b12",
+      "sourceMode": "100644",
+      "expectedBytes": 183588,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/supervisor.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "2ce791d6a123d9869fc18953d07525fc0d93991d",
+      "sourceMode": "100644",
+      "expectedBytes": 23243,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/types.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "9d1b9723a86b3e64f63999e833c6f2302dce673a",
+      "sourceMode": "100644",
+      "expectedBytes": 2987,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/worker.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "43f91d7b16fb3fd45119bdf9be7925d33e8f322c",
+      "sourceMode": "100644",
+      "expectedBytes": 3973,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challengeContract/candidateCodec.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "e315a793435dcf0606efe0f43e486b482448bab5",
+      "sourceMode": "100644",
+      "expectedBytes": 848,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challengeContract/candidateWire.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "a105b6bdf33c0078f781a15f61b0abe91877a7e8",
+      "sourceMode": "100644",
+      "expectedBytes": 4827,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challengeContract/coverage.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "ff92ac8c2597076fca3154946ea9402e1845d1fa",
+      "sourceMode": "100644",
+      "expectedBytes": 6480,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challengeContract/features.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "476b6477250a20aee353554d79c790f9cceb5abf",
+      "sourceMode": "100644",
+      "expectedBytes": 9056,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challengeContract/observationCodec.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d8fbfda6e96e32bd9d98860515406218245b67e8",
+      "sourceMode": "100644",
+      "expectedBytes": 212,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/challengeContract/validation.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "b31b7056b4588bc756c0860d41d7e0d95a170e4a",
+      "sourceMode": "100644",
+      "expectedBytes": 6002,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/cli/challenge.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "f326ddc16e37211dce586757fc7f836e04309c77",
+      "sourceMode": "100644",
+      "expectedBytes": 1585,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/cli/main.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "95faef4d171809005a3e9f636dbba345f7f5dccb",
+      "sourceMode": "100644",
+      "expectedBytes": 5656,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/compare/compare.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "92266d91d171a1190d0ee5e9bf8d50aa5c5ea090",
+      "sourceMode": "100644",
+      "expectedBytes": 3696,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/events.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "f38424f0c7f681b98f804f9138d81ad1acbce376",
+      "sourceMode": "100644",
+      "expectedBytes": 410,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/feed/nodeStockfishFeed.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "0594945605a6157d22be9eea48ce444f4a9f9ff0",
+      "sourceMode": "100644",
+      "expectedBytes": 7121,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/feed/types.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "bda3505812608c046d95816e8a3497f8765c3b55",
+      "sourceMode": "100644",
+      "expectedBytes": 2351,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/index.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "cfb8523fa3e22b8be06b5738a0b024095132587b",
+      "sourceMode": "100644",
+      "expectedBytes": 1735,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/intent-codec-v1.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "e882e0d91af7db8918f8f4bdcb82df1b4d03c1bc",
+      "sourceMode": "100644",
+      "expectedBytes": 1540,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/observations.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "05a500b1d4d2e51578eb2eed25a6f058acc507ac",
+      "sourceMode": "100644",
+      "expectedBytes": 1722,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/players/naive.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "397d86cf3f0b535e974f600ea1bde5779b58bd66",
+      "sourceMode": "100644",
+      "expectedBytes": 1305,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/players/strategic.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "51d87390dc438e713b507a94fa515981423dd7d8",
+      "sourceMode": "100644",
+      "expectedBytes": 8008,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/players/types.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "27e98640d959b0a04b621a9a5d6f1823ed7edb68",
+      "sourceMode": "100644",
+      "expectedBytes": 2526,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/record/record.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "4fa919d71f3d13be82d1f8ab53f786eaaa9fa71c",
+      "sourceMode": "100644",
+      "expectedBytes": 1736,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/run/bank.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "3defea5723bed74863a7ce63cfef0612ba6fca67",
+      "sourceMode": "100644",
+      "expectedBytes": 1486,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/run/runMatch.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "05f4f031932adf664878bd9b81fbe4cf6ac3f2ec",
+      "sourceMode": "100644",
+      "expectedBytes": 9240,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/src/seeds.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "529afedcb4392b933dd7d1117715140ccc6d0d30",
+      "sourceMode": "100644",
+      "expectedBytes": 940,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-arena/tsconfig.json",
+      "origin": "pinned-git",
+      "gitBlobOid": "d2c2c9e0a4cbe33159e26d916ef54a9f8e5df9ff",
+      "sourceMode": "100644",
+      "expectedBytes": 261,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/package.json",
+      "origin": "pinned-git",
+      "gitBlobOid": "0d202a33e682e97a4310ee700f6e00a2b292fc31",
+      "sourceMode": "100644",
+      "expectedBytes": 472,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/adjutant.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "435b1f4bdb1b682b6c5a319487be78f05060cbec",
+      "sourceMode": "100644",
+      "expectedBytes": 19729,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/adjutantDefinitions.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "0948a294894acc42ddcf1f59bb3fa79478a06b9e",
+      "sourceMode": "100644",
+      "expectedBytes": 1181,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/ai/charonHunt.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "cdc8cf69169fea9383f3c745e3c81bdf14bd136b",
+      "sourceMode": "100644",
+      "expectedBytes": 5775,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/bank/storedBank.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "8b63835045ea7382ba38aaf17445f94fa7ea0224",
+      "sourceMode": "100644",
+      "expectedBytes": 809,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/boundary/boundary.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "86b6940fb5b16badd2d8401d26747cac467c9583",
+      "sourceMode": "100644",
+      "expectedBytes": 1207,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/collision/collisionRaces.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "e6d34da2698be7133723aaa93b7ee588fbd5a4f0",
+      "sourceMode": "100644",
+      "expectedBytes": 7607,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/collision/fogVacatedTarget.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "b0d5ce507c48b6ccf3cd503847e6f8e465cff35d",
+      "sourceMode": "100644",
+      "expectedBytes": 4296,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/corpus/goldenCorpus.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "22dd9141db7545b88c39da8792f84380492f73b0",
+      "sourceMode": "100644",
+      "expectedBytes": 5820,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/countedPlanning.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "04c3014f31370278a8cacc12aff0c1a472094ca4",
+      "sourceMode": "100644",
+      "expectedBytes": 7062,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/deploy-reach.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "8cedbc944bbb57794783ebf87aea42aa1e9f2391",
+      "sourceMode": "100644",
+      "expectedBytes": 6146,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/deployLegality.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "060820f3c623df6681b86736c96800899d1402d6",
+      "sourceMode": "100644",
+      "expectedBytes": 32805,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/economy/applyStoredIncome.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "352f2634c372012d492ae90e3bcca7cf00cab0cf",
+      "sourceMode": "100644",
+      "expectedBytes": 1341,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/economy/estimateStoredFromSnap.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "a06360e2a3c45447a32a3e29c97142327cc878d0",
+      "sourceMode": "100644",
+      "expectedBytes": 634,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/economy/mechaDeployCaps.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "c5b9a203736c82b95377dbfa451951031234bfdf",
+      "sourceMode": "100644",
+      "expectedBytes": 5598,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/gas/gasLastRank.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "9aaa3ff8795916b3a80e1eaf7a2b482c77ed978f",
+      "sourceMode": "100644",
+      "expectedBytes": 5249,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/gas/gasRemainingFor.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "04de2f24178f805f3765058ee97a04ce3709c8ca",
+      "sourceMode": "100644",
+      "expectedBytes": 1527,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/gas/marineGasStackOrder.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "992e17800dca1869a6145e2d178657047b407e8b",
+      "sourceMode": "100644",
+      "expectedBytes": 8521,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/gasPromotionOwnership.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "a60ab6756f1c5d0d73d10e428a588b2b3b70c08c",
+      "sourceMode": "100644",
+      "expectedBytes": 6926,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/legacyKinds.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "a647022e67f288d96768c800aa717828fdd9be94",
+      "sourceMode": "100644",
+      "expectedBytes": 3579,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/marine/marineDiagonalCaptureOnly.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "415c2de03a4295901d0877827f2c865f01c6b0eb",
+      "sourceMode": "100644",
+      "expectedBytes": 2868,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/marine/marineDoubleBand.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "27adcff9a8e32fa6d438845e62146b292aac38cb",
+      "sourceMode": "100644",
+      "expectedBytes": 5288,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/marine/marineFrontBlocked.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "00f51a5c9aed53a56b0bcd6e668f800160fe063b",
+      "sourceMode": "100644",
+      "expectedBytes": 5818,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mecha/mechaCCLine.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d04a6e38eafb7d9a807a8758834d78de6ce87ac8",
+      "sourceMode": "100644",
+      "expectedBytes": 4527,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mecha/mechaCharon.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "62998a62198fa7446a587619684e7bac4dc953a2",
+      "sourceMode": "100644",
+      "expectedBytes": 7715,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mine/mineChecks.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "462759dd3287087754ba03c7576fb59257982dd6",
+      "sourceMode": "100644",
+      "expectedBytes": 3309,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mine/mineContactRoutes.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "68865172b8e2975c6c2ab010975d9a049632be31",
+      "sourceMode": "100644",
+      "expectedBytes": 20441,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mine/minePathContact.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "331426cf8ded9a099afcbf239db84cc46aa40d35",
+      "sourceMode": "100644",
+      "expectedBytes": 10403,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mine/mineTargets.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "5d26a4b0d3977e8aee3714dd07c4924aaed452ee",
+      "sourceMode": "100644",
+      "expectedBytes": 1938,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/move-timing.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "4c87ca7b6169ddf940536dcb0cd02ccfcd2d2b54",
+      "sourceMode": "100644",
+      "expectedBytes": 1509,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/nativeClassical.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "1d45be44e65c0355021a2d3456d503e8fe43be40",
+      "sourceMode": "100644",
+      "expectedBytes": 8903,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/packed.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "58c2cb5cb17f46f2e56bce8e9629b4d782522f40",
+      "sourceMode": "100644",
+      "expectedBytes": 5027,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/planning-v1.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "1bf56eba3b541e1b2d5110648c64a4fba7334683",
+      "sourceMode": "100644",
+      "expectedBytes": 1719,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/planningFeatures.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "31178d41c2f11ebdf5934cf43c76a30cffaaa02a",
+      "sourceMode": "100644",
+      "expectedBytes": 6615,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/planningIntents.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "54095afcccc95688394db82db084685c86d78249",
+      "sourceMode": "100644",
+      "expectedBytes": 16973,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/planningOrder.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "58dd6004e605d0032c5f5c0a6b57e6c7953c87ad",
+      "sourceMode": "100644",
+      "expectedBytes": 5818,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/promotion/lastRankPromotion.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "f6d0911056adc43ca41ab3a3a84568c9aac730d6",
+      "sourceMode": "100644",
+      "expectedBytes": 4111,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/provenance.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "7659cee67c38440327ba159bcab8441198c71239",
+      "sourceMode": "100644",
+      "expectedBytes": 25385,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/provenanceMines.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "6d41c671e06368680dc329a5d4e89b7d1bdfef4f",
+      "sourceMode": "100644",
+      "expectedBytes": 6531,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/provenanceQueries.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "b3e322aca5ead1071eff7a7137fca25a8fbe59c3",
+      "sourceMode": "100644",
+      "expectedBytes": 8840,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/queue/queueMultiSpecial.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "98f10c574dacb0ecb57c3b36271954d6d4f3ea36",
+      "sourceMode": "100644",
+      "expectedBytes": 6908,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/registry/specialRegistry.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "1acd77169d315d47b86b6ad765d206251fe4a7bf",
+      "sourceMode": "100644",
+      "expectedBytes": 2528,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/replay/fen.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "ab563cfc5afe8a16f53d966e544ba2cf224fc06e",
+      "sourceMode": "100644",
+      "expectedBytes": 2377,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/replay/record.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "574221b290ecb6a35ccf840fa6e6dc1fbcd014e8",
+      "sourceMode": "100644",
+      "expectedBytes": 2854,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/replay/validateRecord.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "2d47fba363b72c12ffc6737f1ab5fbda919509ea",
+      "sourceMode": "100644",
+      "expectedBytes": 3901,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/shipJumpCollision.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "b6afb39660d1acaaa92eda7b485f0164a335b5d6",
+      "sourceMode": "100644",
+      "expectedBytes": 2672,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/spawn/crushSpawn.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "cbf6e90163527683636b05614c2a41c90d460934",
+      "sourceMode": "100644",
+      "expectedBytes": 6697,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/spawn/spawnCCAnchor.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "937ca96edc2ce77403087b7723334745098baf02",
+      "sourceMode": "100644",
+      "expectedBytes": 3788,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/attackers.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "856afcba2707d62f7bfb853194996d204898e282",
+      "sourceMode": "100644",
+      "expectedBytes": 4766,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/candidates-parity.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "265161a6aa8bab4db46611550e801ad4a76f3a68",
+      "sourceMode": "100644",
+      "expectedBytes": 2593,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/deployLegality.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "2053900f1359f3372e3d22c43aa4d8074a22cb23",
+      "sourceMode": "100644",
+      "expectedBytes": 10603,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/deployLookahead.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "ce0fd6e5aa609b213a21f10b4dfb9fd019b327c0",
+      "sourceMode": "100644",
+      "expectedBytes": 2441,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/economy.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "752e9d719a23d202811ed1a78f7902fde1117255",
+      "sourceMode": "100644",
+      "expectedBytes": 5519,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/economyAllyCrush.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "fa5f1f229425e456c4cf1e2ed65a38fd85b8c216",
+      "sourceMode": "100644",
+      "expectedBytes": 10540,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/intel.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "3c544a6bc432efdb7174956d5b0d5a91c2e32358",
+      "sourceMode": "100644",
+      "expectedBytes": 2775,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/orchestrator.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d3f52a5fbf9a2473160b057ea113e1d8d045a551",
+      "sourceMode": "100644",
+      "expectedBytes": 3424,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/runnerMemory.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "ff2cfaf1ad52c09bf29d0fe46456f0c9023e37bc",
+      "sourceMode": "100644",
+      "expectedBytes": 9128,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/runners.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "c7ceebc71410bc24293ddd1b7a1aaf8f4ae416ca",
+      "sourceMode": "100644",
+      "expectedBytes": 8579,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/witness.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "a03428f7f7da8cfe896bdcb38a85a8ad77abbe49",
+      "sourceMode": "100644",
+      "expectedBytes": 7031,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/tactics/ccFocus.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "508a003c1616d1dddbf076bf442a929b3383d1e5",
+      "sourceMode": "100644",
+      "expectedBytes": 2913,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/tactics/weightOrdering.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "38347695072ce6fd836bcd924b0953b4dcadf8e0",
+      "sourceMode": "100644",
+      "expectedBytes": 10232,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/tank/siegedTankMoves.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "719e8a44dd4c4c5e4e166ce92cc3aa9bbf915890",
+      "sourceMode": "100644",
+      "expectedBytes": 6142,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/tank/siegedTankShelling.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "6de20dc0f3a5b2be7d21da6e06f96d640f259f20",
+      "sourceMode": "100644",
+      "expectedBytes": 6225,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/turn/beginScTurn.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "369087547111c25c177f08616a6318f2fdf9ab43",
+      "sourceMode": "100644",
+      "expectedBytes": 3446,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/turn/gasVacancy.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "ed6221bdf5b185554eeeb4f20e249536dd5dec26",
+      "sourceMode": "100644",
+      "expectedBytes": 6048,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/turn/turnTimeout.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d1e3305b0b32a2eedff015b3a148c2d95e37aa70",
+      "sourceMode": "100644",
+      "expectedBytes": 638,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/adjutant.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "28af30a5e8985e1c6bd489865997c7e50763b97f",
+      "sourceMode": "100644",
+      "expectedBytes": 4952,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/ccFocusIntel.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "c614d40a7c8af586eb906bc0b10ab4353f4516b6",
+      "sourceMode": "100644",
+      "expectedBytes": 3513,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/ccIntel.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "4b1c9e72a2f3b2ba7592123a7b22ed728fdd649d",
+      "sourceMode": "100644",
+      "expectedBytes": 4246,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/geometry.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "e51cef8e89acfb6df8e3b59c74a50c93ea301869",
+      "sourceMode": "100644",
+      "expectedBytes": 2852,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/index.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "83bef62603e80b7961c35dc893fc42dc0cee955e",
+      "sourceMode": "100644",
+      "expectedBytes": 3698,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/marines.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "85a5fbb35726e517321dc934bf50de0f0a6baeb0",
+      "sourceMode": "100644",
+      "expectedBytes": 2343,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/material.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "9b46ac209b6b69c31e7923e15349bb00800777c5",
+      "sourceMode": "100644",
+      "expectedBytes": 1981,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/mines.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "77f5263a58eba0d03f313b11be99813549ec16d4",
+      "sourceMode": "100644",
+      "expectedBytes": 1257,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/posture.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "fbb533b8dddb714871db4bd871a0620c08d25d54",
+      "sourceMode": "100644",
+      "expectedBytes": 2029,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/rng.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d4acad492da445c1a264e01645e0c7214dad79e9",
+      "sourceMode": "100644",
+      "expectedBytes": 530,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/tactical.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "e739d4830cd05881aff39cf5ae16968b616e2742",
+      "sourceMode": "100644",
+      "expectedBytes": 2055,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/types.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "53e6d97bb373c3703a3365cd57621f59274d6404",
+      "sourceMode": "100644",
+      "expectedBytes": 5521,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/vision.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "0305fb55f7260df15bb8ecd0811af52adcc0841d",
+      "sourceMode": "100644",
+      "expectedBytes": 1548,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/definitions.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "5fdd7572d31da15e505d589c49bdb9919d494b6d",
+      "sourceMode": "100644",
+      "expectedBytes": 1156,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/plans/simulate.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "88c5ffa17a345ddf957f8d97b9d5b772975a9ec1",
+      "sourceMode": "100644",
+      "expectedBytes": 3740,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/plans/stacks.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "bb324b1be72e689b1d673f71df4ef72ac3c92ce8",
+      "sourceMode": "100644",
+      "expectedBytes": 12272,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/attackers.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "4e6edeb003f6cec61ae7bb84ad68bf50644ab32b",
+      "sourceMode": "100644",
+      "expectedBytes": 3929,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/context.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "2a23ee337c21c8cd8ca6161abf1029aa5efb7710",
+      "sourceMode": "100644",
+      "expectedBytes": 5218,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/deployLookahead.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "0ae4b8269def01dd56c1ac328da96b9a0dde36e8",
+      "sourceMode": "100644",
+      "expectedBytes": 5449,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/index.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "00bfba1fb0ed9b2db8dcfbef45ab76856b202574",
+      "sourceMode": "100644",
+      "expectedBytes": 3032,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/intel.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "caad337e9c3566348153ed84c282ae58addf2e63",
+      "sourceMode": "100644",
+      "expectedBytes": 5230,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/orchestrator.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "3febdbfe53803c952a6207b6f305dcb1083037ea",
+      "sourceMode": "100644",
+      "expectedBytes": 5881,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/runners.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "9a42bf7f0a574b24e4afa5c72fc8cadbe366f558",
+      "sourceMode": "100644",
+      "expectedBytes": 19495,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/attackers.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "00f1ca6592d5fbdcaa9712375f699c63a6443679",
+      "sourceMode": "100644",
+      "expectedBytes": 3445,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/captures.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "831e7f5250e6ce7fbe485960589cc1e9325f94b2",
+      "sourceMode": "100644",
+      "expectedBytes": 5053,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/checks.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "ca30db8f2fc939b6e867258665adb12a584112a5",
+      "sourceMode": "100644",
+      "expectedBytes": 3587,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/economy.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "5260645160f10d3f0f6ab851ba9732cf0fdedeba",
+      "sourceMode": "100644",
+      "expectedBytes": 15038,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/index.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "4027f15fc3ac6c9636e8838ac7f225636ae4f5f8",
+      "sourceMode": "100644",
+      "expectedBytes": 2473,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/runners.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "cc0eba7ab26e68afc1229d8d9eeef1815bbf57a2",
+      "sourceMode": "100644",
+      "expectedBytes": 7779,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/survival.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "f0e61ae84f5cdbdc7768cbdabe964161011cbfef",
+      "sourceMode": "100644",
+      "expectedBytes": 2448,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/threats.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "4d3b735d6d406cb4483157bbbc723b772dac5266",
+      "sourceMode": "100644",
+      "expectedBytes": 1690,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/types.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "976db6997e8c28ca488cdf15915e4bd50352a02b",
+      "sourceMode": "100644",
+      "expectedBytes": 1179,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/tracking.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "fc0015ac7e5eb99b93ffe9c3a21c7cdc46fa9ed6",
+      "sourceMode": "100644",
+      "expectedBytes": 7206,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/witness.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d0e8fdd210f5eb38a8ac623081750138253ba2a8",
+      "sourceMode": "100644",
+      "expectedBytes": 9576,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/captures.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "7c102f233a55b232c1bbb49e21b187f2da194db1",
+      "sourceMode": "100644",
+      "expectedBytes": 8992,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/checks.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "174d96566a5fa04326cf14afadc36da6e7f38d44",
+      "sourceMode": "100644",
+      "expectedBytes": 2371,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/economy.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "1f08b891714685fdaa7eaeab694d5c0b5a0297ce",
+      "sourceMode": "100644",
+      "expectedBytes": 8371,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/index.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "1edd9b149f23f56ff20e695f36ec3d72d084dde4",
+      "sourceMode": "100644",
+      "expectedBytes": 2114,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/mapControl.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "fbcf06c8e78a0acdde869a8be16b3a66df350250",
+      "sourceMode": "100644",
+      "expectedBytes": 7786,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/survival.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "438bdda6f024cdc3db0c83ec69bb7a218720957b",
+      "sourceMode": "100644",
+      "expectedBytes": 5829,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/threats.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "aa0f1211b2445eb21c012d41180206bd85df76d1",
+      "sourceMode": "100644",
+      "expectedBytes": 1102,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/types.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "459a0b27da8516841bdca599ab9ce32f372fcd90",
+      "sourceMode": "100644",
+      "expectedBytes": 1296,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/board/classicFen.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "189711c7ef61d508a1bed195190e364099bcf25b",
+      "sourceMode": "100644",
+      "expectedBytes": 339,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/board/deploy-reach.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "46e7603cb76dc8c0f36afd1ffcf05a7a7386efef",
+      "sourceMode": "100644",
+      "expectedBytes": 3315,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/board/mine-contact.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "8385883f6a2b3d2674357efadee188d66ad2c99e",
+      "sourceMode": "100644",
+      "expectedBytes": 2362,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/board/mines.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "284da34f891ad11d7ef351c7c8de197e0ac0d597",
+      "sourceMode": "100644",
+      "expectedBytes": 3834,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/board/move-timing.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "dcda7e1eca6e621b36295cee8b1fb090560106c7",
+      "sourceMode": "100644",
+      "expectedBytes": 3815,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/board/moves.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d346841ecb308561dde8d1cb03a579e5a62a5200",
+      "sourceMode": "100644",
+      "expectedBytes": 10462,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/board/placement.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "e94455cf370f99b3b0d113cd0edd62f9509adb5c",
+      "sourceMode": "100644",
+      "expectedBytes": 7185,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/board/ray-scan.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "9ffdf33a0a4ba2b78614158cd3e417c42ba8ee3a",
+      "sourceMode": "100644",
+      "expectedBytes": 2242,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/board/siege.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "32254dd3697315d8c3db3fdb68f1077002abbf91",
+      "sourceMode": "100644",
+      "expectedBytes": 1030,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/board/vision.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "fe724c19eee49ff722ac41496ab73fa208f23519",
+      "sourceMode": "100644",
+      "expectedBytes": 10107,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/commands/queue-action.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "8f5c749f47c5d7f1684226cce712b21afad821f2",
+      "sourceMode": "100644",
+      "expectedBytes": 6847,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/index.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "b21a84653757a2652687398549ed45202ed9b5ad",
+      "sourceMode": "100644",
+      "expectedBytes": 7356,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/model/square.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "4e442af57924af9937de0bb56163fef67b9c3883",
+      "sourceMode": "100644",
+      "expectedBytes": 106,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/model/types.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "39d847853374d1835f98820ed394bec6c5169390",
+      "sourceMode": "100644",
+      "expectedBytes": 4962,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/outcome.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "fa20f274595bd7b502a6a14a7ab20c95571affb6",
+      "sourceMode": "100644",
+      "expectedBytes": 1177,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/planning-v1.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "be4f42f7930592f7f8d8b9438201423a366a208a",
+      "sourceMode": "100644",
+      "expectedBytes": 1494,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/replay/fen.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "7610fdc17c2c82bcf4fccfaf75483375a32c14c8",
+      "sourceMode": "100644",
+      "expectedBytes": 2196,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/replay/packed.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "84264886c668c804a439c7d0aae5d7c97ee5acc1",
+      "sourceMode": "100644",
+      "expectedBytes": 6223,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/replay/record.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d923c1b3f4ac4a3b7476df905b6a1fc5b43973b9",
+      "sourceMode": "100644",
+      "expectedBytes": 8719,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/replay/validate-history.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "dc0672aea38d5315c398947daa487081bbe3dea8",
+      "sourceMode": "100644",
+      "expectedBytes": 4309,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/provenance-recorder.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "1901a519020227708c776fc62f419e25e82e7429",
+      "sourceMode": "100644",
+      "expectedBytes": 12309,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/provenance-types.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "64d7766634b88e3b71afeb3bc8ef1d5c4194b534",
+      "sourceMode": "100644",
+      "expectedBytes": 4704,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/provenance-validation.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "0a5fbcd7a577c3fdaa7b7d8cb52da1ef36aef250",
+      "sourceMode": "100644",
+      "expectedBytes": 21769,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/provenance.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "5ae6bbedcce5ddfb06d65c3e8c1a7316dbd39ee0",
+      "sourceMode": "100644",
+      "expectedBytes": 7397,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/resolve-turn.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d35342a77814dc1d7c1270c8f34230d124c72b8a",
+      "sourceMode": "100644",
+      "expectedBytes": 48708,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/submit-turn.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "8fcec489526ee1a0632d9318b330adeb951daf24",
+      "sourceMode": "100644",
+      "expectedBytes": 40256,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/constants.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "2d9d7900805a9875d9d46005b82c1b50811d2230",
+      "sourceMode": "100644",
+      "expectedBytes": 2062,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/counted-planning.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "61478c7770c5f7ec9334307d36f6b2deee1d238b",
+      "sourceMode": "100644",
+      "expectedBytes": 5181,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/economy.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "a3e2e9772c9dabaca984d6b026cd39c563caf3ab",
+      "sourceMode": "100644",
+      "expectedBytes": 3658,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/nativeClassical.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "bd8b114a51f0576aeb8f79274b0d1e572583735f",
+      "sourceMode": "100644",
+      "expectedBytes": 7638,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/planning-intents.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "cf33e38098070195f222ac0cfb117bed79f10685",
+      "sourceMode": "100644",
+      "expectedBytes": 8148,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/planning-order.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "6449e433dca1f60bca3b1637e3862696cd8a0d0c",
+      "sourceMode": "100644",
+      "expectedBytes": 2421,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/adjacent.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "ce45583597429908e072d48ef722f7ffa6ec44d4",
+      "sourceMode": "100644",
+      "expectedBytes": 3651,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "3e9f1eb841e3578ace0ca495e1fcdf57af6faf56",
+      "sourceMode": "100644",
+      "expectedBytes": 5451,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/registry.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "77c8c75c0549e59c03e2936967371fbda6b3b449",
+      "sourceMode": "100644",
+      "expectedBytes": 1212,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/stimStep.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "6a80564f3ee86917b48473951221e3d6e0936cf6",
+      "sourceMode": "100644",
+      "expectedBytes": 1421,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/validation.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "e7f088214ac6eeb422621cee7b3311fcc1547027",
+      "sourceMode": "100644",
+      "expectedBytes": 13188,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/classic.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "09669d272a5cfdd568c155754ec852b8b55a430d",
+      "sourceMode": "100644",
+      "expectedBytes": 44,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/codec.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "3d73eb3d6f73fc837964e96d538875650f0aeb41",
+      "sourceMode": "100644",
+      "expectedBytes": 20022,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/index.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "18afc94ca5b93d24557489a399aeacf715a679d3",
+      "sourceMode": "100644",
+      "expectedBytes": 733,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/legacyKinds.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "70bcd29edb71b9244bd3c5545c83b7c9c4ef7f7d",
+      "sourceMode": "100644",
+      "expectedBytes": 2018,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-core/tsconfig.json",
+      "origin": "pinned-git",
+      "gitBlobOid": "58834c2a5f599bdef8453e9ba824d2ea583d3e53",
+      "sourceMode": "100644",
+      "expectedBytes": 561,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/package.json",
+      "origin": "pinned-git",
+      "gitBlobOid": "27943b7b160199efeeefa78925bf07187fc2d6df",
+      "sourceMode": "100644",
+      "expectedBytes": 523,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/accountedConstruction.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "e18f7f5af943f17414eb228727ee602d9b80cb1a",
+      "sourceMode": "100644",
+      "expectedBytes": 27402,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/candidateIdentityOwnership.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "b34775182c425156063c855840778499a1dfff5f",
+      "sourceMode": "100644",
+      "expectedBytes": 3441,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/candidates.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "4ee757a6071195b1d1f3727cb4ea6b2e518d4136",
+      "sourceMode": "100644",
+      "expectedBytes": 23680,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/candidatesHistoryV2.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "061d731549ee4206913857f17f7521afb4d02ed3",
+      "sourceMode": "100644",
+      "expectedBytes": 30274,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/closure.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "a72f004f75c1e7fdeb5d4db379e0aeaefc931371",
+      "sourceMode": "100644",
+      "expectedBytes": 8463,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/composition-kernel.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "104bdf4d5263d000b51ad088e2e439fbe21b06fc",
+      "sourceMode": "100644",
+      "expectedBytes": 14590,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/constructionAccounting.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "0bb7e9fc4f7f63f20f12d9a90e45744a289d6d3e",
+      "sourceMode": "100644",
+      "expectedBytes": 11146,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/constructionAccountingPrimitives.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "6ab71a1ac36530b0f08ce1d42effdd2f5d606923",
+      "sourceMode": "100644",
+      "expectedBytes": 2722,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/constructionInvoices.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "e8371beb23a9218a982f582cc6a8e2d51f0150eb",
+      "sourceMode": "100644",
+      "expectedBytes": 5895,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/domain.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "483fe2dc9c7857dffae2e8a71bc063128203230f",
+      "sourceMode": "100644",
+      "expectedBytes": 16503,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/economicA2.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "67cc383f9b9b0ca1b8eb7b18b51b4e9952803f10",
+      "sourceMode": "100644",
+      "expectedBytes": 8617,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/economicAdapter.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "3b107746354bf6758862a86dd0dcb166cf4490f0",
+      "sourceMode": "100644",
+      "expectedBytes": 11789,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/economicBelief.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "a2c3987dbe0d0fbde90b80f40e1927048a14499a",
+      "sourceMode": "100644",
+      "expectedBytes": 12454,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/economicBudget.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "a3670813311b73e7c3b51f3db849045aa7a105cf",
+      "sourceMode": "100644",
+      "expectedBytes": 2692,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/economicEvaluatorParity.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "276ca3f5bba8f393923d37242b6bff1ad8657e96",
+      "sourceMode": "100644",
+      "expectedBytes": 12351,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/economicReadout.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "b1b11b65aaeedc1cc9a299d5c1f72cbb9dc4a616",
+      "sourceMode": "100644",
+      "expectedBytes": 4642,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/economicSpatial.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "16b99b7dc4444454ffb92951cef37e01cb15d884",
+      "sourceMode": "100644",
+      "expectedBytes": 9260,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/economicSupport.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "94f2f0fed92720c5f40d8f59d724f59bd2f6a31b",
+      "sourceMode": "100644",
+      "expectedBytes": 7229,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/economicTypeContracts.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "5c9e897a4fa0a78ea240a1721bdb0bbde25818a3",
+      "sourceMode": "100644",
+      "expectedBytes": 19409,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/episodeProtocol.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d6dacc89bc55b58167dee574506a112928139932",
+      "sourceMode": "100644",
+      "expectedBytes": 24430,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/episodeRequest.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "b6f57d3d9acf58ca96e12c7caf05a56fcb4a45de",
+      "sourceMode": "100644",
+      "expectedBytes": 29425,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/episodeRng.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "8cf0506c4edc19dd353a669866c16b96a2b97425",
+      "sourceMode": "100644",
+      "expectedBytes": 10332,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/episodeSupervision.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "6a49a5247e101cc86af98493f96b55a9755ef386",
+      "sourceMode": "100644",
+      "expectedBytes": 10946,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/featureManifestV3.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "8da8e8b45eef28b00b6413bfcb887eaae2bef3b5",
+      "sourceMode": "100644",
+      "expectedBytes": 6121,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/featurePrefix370.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "4f644f573b4e50b217494807ae68f8d4b8b9dd1a",
+      "sourceMode": "100644",
+      "expectedBytes": 16750,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/featuresV3.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "b2aeeebc07d17a1a52054c8fa16e020ab2a5cb68",
+      "sourceMode": "100644",
+      "expectedBytes": 7388,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/fixtures.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "346e39bcc9e8265af37b34034d6be15f890b330e",
+      "sourceMode": "100644",
+      "expectedBytes": 2366,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/hostedAdmission.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "4e3a5fe48c8bbcf1c4774e4d81c81fbc76499c6c",
+      "sourceMode": "100644",
+      "expectedBytes": 5455,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/ownedBoundarySource.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "0074b7ca8c498087aab2987239b2d8f2045e2325",
+      "sourceMode": "100644",
+      "expectedBytes": 11760,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/ownedConstructionBounds.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "8a0ca0b20609debd71c9dcf27c75cb81bb821aba",
+      "sourceMode": "100644",
+      "expectedBytes": 3656,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/ownedFoundationBoundary.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "c4ef008ef10b11afbc450b4fba4ccaf831873c4d",
+      "sourceMode": "100644",
+      "expectedBytes": 16177,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/ownedPrototype.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "f8fa87e64f860e07ede8a5c69a86ecb2d3620879",
+      "sourceMode": "100644",
+      "expectedBytes": 5389,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/ownedR4Roles.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "32abe6608920d1493bb9d60167e375d4a5a6cf9f",
+      "sourceMode": "100644",
+      "expectedBytes": 10484,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/ownedR4Schema.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d52925e5cd7ecb731a5177c4c6bec0480cc69a7e",
+      "sourceMode": "100644",
+      "expectedBytes": 13599,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/ownedScalars.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "c814b613d78e06b74c53d532866e3f7fd4b17ce5",
+      "sourceMode": "100644",
+      "expectedBytes": 8591,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/ownedSchemaBytes.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "29a0546e28d4591cc2ecae68753ae1b53d73dc32",
+      "sourceMode": "100644",
+      "expectedBytes": 17296,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/ownedSurface.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "81114d93241922698c1cf99e94510c2e305bf310",
+      "sourceMode": "100644",
+      "expectedBytes": 5227,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/planningCleanup.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "5cc0b73babeb69acb1a91145af8e407f82f2ec3c",
+      "sourceMode": "100644",
+      "expectedBytes": 2059,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/planningLedger.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "a3137000c4c571169fa1420a4f0be47a5844b6ad",
+      "sourceMode": "100644",
+      "expectedBytes": 12757,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/planningScheduleReservation.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "997c7c76bb38a97232938ee34e5b4a220c5705c7",
+      "sourceMode": "100644",
+      "expectedBytes": 2235,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/planningWork.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "184d4a75683236875dac6ea2580263c23b98ad66",
+      "sourceMode": "100644",
+      "expectedBytes": 10829,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/privateScratch.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "ac255ed8b67a1da2bd7fbeec232f213b0e747fd1",
+      "sourceMode": "100644",
+      "expectedBytes": 4053,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/privateScratch.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "9395398041512df6eb64521423da6cb3ced79b62",
+      "sourceMode": "100644",
+      "expectedBytes": 2668,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/promotionFeatures.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d0d152606ae6e96ecbd80fbc984c4a83283ddcf8",
+      "sourceMode": "100644",
+      "expectedBytes": 11074,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/r4AcceptedBodies.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "dba249772c9c30384e785dab8641d3c10fa50d82",
+      "sourceMode": "100644",
+      "expectedBytes": 1579,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/registeredBytes.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "7e6ba9835ce8e68b0f07050002b209febc43602b",
+      "sourceMode": "100644",
+      "expectedBytes": 21428,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/sourceBootstrap.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "7aede70a3d93f8c6530564cd36b1eac3021f0757",
+      "sourceMode": "100644",
+      "expectedBytes": 21863,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/sourceManifest.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "9ac998cd2133fe41df7cf35d4b1a51116ad8f527",
+      "sourceMode": "100644",
+      "expectedBytes": 7528,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/sourceMemoryFs.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "3030a90cdfe2bc74bd53e9484b4369c8526a6280",
+      "sourceMode": "100644",
+      "expectedBytes": 3990,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/sourceModuleLoader.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "f93cfabb709828eb10c57cb28ac62df086adc240",
+      "sourceMode": "100644",
+      "expectedBytes": 18165,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/sourceRuntimeSnapshot.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "34dacac6cfb42f5b511f2cbd6e70e704200cb108",
+      "sourceMode": "100644",
+      "expectedBytes": 2754,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/sourceSnapshotFixture.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d6a2478387cc23f79794e795c7fe9b83bc2dabdc",
+      "sourceMode": "100644",
+      "expectedBytes": 2037,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/startupScope.test.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "fb19eaecc79b0606b8b355787686d1fcb63a7ada",
+      "sourceMode": "100644",
+      "expectedBytes": 9911,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/__tests__/tiny-oracle.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "dd9f2fb3b2534c725a53fb0487fa411145f9511a",
+      "sourceMode": "100644",
+      "expectedBytes": 8792,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/candidates.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "dd6153ce870793b1db0841b29c794b3bc7a75ac9",
+      "sourceMode": "100644",
+      "expectedBytes": 921,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/composition.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "bf5052721e674b70a95269f1080637f6f03b4213",
+      "sourceMode": "100644",
+      "expectedBytes": 13567,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/contracts.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "953968efc4cc96ec1335c5632365fff29d16f2d9",
+      "sourceMode": "100644",
+      "expectedBytes": 1667,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/accountedConstruction.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "fc03e21440a2a2c8593e2cf07e911927d89a20ba",
+      "sourceMode": "100644",
+      "expectedBytes": 2414,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/constructionAccounting.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "5387406138304c513c2bcded381526485171bd13",
+      "sourceMode": "100644",
+      "expectedBytes": 6835,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/constructionInvoices.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "10a314b985e687a7dcb584c7dddddf8bd560fbaa",
+      "sourceMode": "100644",
+      "expectedBytes": 2240,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/economicAdapter.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "3c747993f5f2a173894eae7185943b9755623b53",
+      "sourceMode": "100644",
+      "expectedBytes": 28090,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/episodeContracts.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "df55cc7ac542cc4ec2549b8bded29e6fcc6b2dfb",
+      "sourceMode": "100644",
+      "expectedBytes": 6003,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/episodeProtocol.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d355816046e1259f25a56f0da9254c2788a9a513",
+      "sourceMode": "100644",
+      "expectedBytes": 27910,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/episodeRequest.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "454322091d44cbbc0dc17ec497a1d197b85b12fc",
+      "sourceMode": "100644",
+      "expectedBytes": 25209,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/episodeRng.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "26b68ae39b3feeca8bf5da576d42fce4f432b962",
+      "sourceMode": "100644",
+      "expectedBytes": 8326,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/episodeSupervisor.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "fda8ff32bf596b07e21ac480e8e19d6a7e837117",
+      "sourceMode": "100644",
+      "expectedBytes": 9825,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/episodeVerification.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "600674db3af6a534a205a6ac91d2c6aa02cdaef4",
+      "sourceMode": "100644",
+      "expectedBytes": 37005,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/episodeWorker.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "199d306c0086aad18427a0d58ec3bd406ec23d21",
+      "sourceMode": "100644",
+      "expectedBytes": 5409,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/planningScope.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "c10192cff5cc207fcd8d30cb69c6010c7e779161",
+      "sourceMode": "100644",
+      "expectedBytes": 14083,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/registeredBytes.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "a89ae0818c7e581d22ea7ce069feaeadee39d815",
+      "sourceMode": "100644",
+      "expectedBytes": 8013,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/sourceBootstrap.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "493cd0927bc09cd4e7aea3af6eb72f1c7bbb04ba",
+      "sourceMode": "100644",
+      "expectedBytes": 21647,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/sourceManifest.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "b7eb5f670b71b566c1124ca7cc64a10dc069294a",
+      "sourceMode": "100644",
+      "expectedBytes": 12064,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/sourceMemoryFs.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "4b72a4ef61efd8410d22be91f31e85e1afd6fe3b",
+      "sourceMode": "100644",
+      "expectedBytes": 10141,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/sourceModuleLoader.mjs",
+      "origin": "pinned-git",
+      "gitBlobOid": "706fe385d006b0064550e774b24b7a14baf2fa3b",
+      "sourceMode": "100644",
+      "expectedBytes": 32296,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/sourcePolicy.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "787cb60425d5a39ca78fa9004a82393ae73c949c",
+      "sourceMode": "100644",
+      "expectedBytes": 14317,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/sourceRuntimeSnapshot.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "8b9919b4225b0fe8a8e409ae134f5ad2aa5c3c9e",
+      "sourceMode": "100644",
+      "expectedBytes": 6154,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/coordinator/startupScope.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "0b9f19ca8fde3e3ae7b7e8129ed218a5427186b3",
+      "sourceMode": "100644",
+      "expectedBytes": 28273,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/domain.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "3215626eff5f59a67220a7d3eed8690930fc170a",
+      "sourceMode": "100644",
+      "expectedBytes": 6305,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/economic/accountingPrimitives.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "584c5c2c9768df037251edaf3680aa680068aa9d",
+      "sourceMode": "100644",
+      "expectedBytes": 1131,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/economic/belief.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "a021fc9ddeab67ec555d3a90114d810599b50f16",
+      "sourceMode": "100644",
+      "expectedBytes": 6714,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/economic/contracts.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "1fd1a23b7ebaf9daca297b4f8caac660fec4c1a4",
+      "sourceMode": "100644",
+      "expectedBytes": 11673,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/economic/evaluator.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "8afc6e77381736e3a0b621eb841f2d95ce5f9e8d",
+      "sourceMode": "100644",
+      "expectedBytes": 19306,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/economic/float64.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "bce9fc9cb6ad7ab251b8803f79dac820b8152466",
+      "sourceMode": "100644",
+      "expectedBytes": 1493,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/economic/innovation.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "a2a0226b73960a3484b138f66fcca6252124a8ed",
+      "sourceMode": "100644",
+      "expectedBytes": 6857,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/economic/invoices.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "95a8491622ad39be58feca0560d332ead48b66ae",
+      "sourceMode": "100644",
+      "expectedBytes": 4207,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/economic/ownedBytes.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "dc3272e855ee2bc10c4429b1dc738b9e422aa965",
+      "sourceMode": "100644",
+      "expectedBytes": 281,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/economic/ownedErrors.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "3a5a77b00bbe2f9f40fa59dc579ba544c21fdc96",
+      "sourceMode": "100644",
+      "expectedBytes": 457,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/economic/ownedGuards.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "52202dcf7ce047d15d8db6e316de891cd69f889d",
+      "sourceMode": "100644",
+      "expectedBytes": 1250,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/economic/ownedKernel.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "c3a523212a7e0a0740d917cefa115075adedda38",
+      "sourceMode": "100644",
+      "expectedBytes": 147514,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/economic/ownedR4Schema.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "89ddefdc77311def753669e2eda976a0dd11d362",
+      "sourceMode": "100644",
+      "expectedBytes": 46060,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/economic/ownedScalars.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "084d55336017c93d3f9ccb832986e8c001b2c3e0",
+      "sourceMode": "100644",
+      "expectedBytes": 1220,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/economic/ownedSchema.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "6c503033623439590c6ecf56a2826c9dea2ef6b6",
+      "sourceMode": "100644",
+      "expectedBytes": 4569,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/economic/readout.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "f195799f44ec4591ba498c758875fa14f17382aa",
+      "sourceMode": "100644",
+      "expectedBytes": 12413,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/economic/spatial.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "c117c94b0617eff1f59c22089f418eafe8433027",
+      "sourceMode": "100644",
+      "expectedBytes": 10946,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/economic/work.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "cd74358bdce69e05b7a3c18743a09b951a8549cf",
+      "sourceMode": "100644",
+      "expectedBytes": 4209,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/feature/economic.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "8358e1a52a205062adde7436c013c549e544ba09",
+      "sourceMode": "100644",
+      "expectedBytes": 4421,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/feature/encoder.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "69554eb52ce87e86dc192ea045a29b84463ee790",
+      "sourceMode": "100644",
+      "expectedBytes": 16200,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/feature/manifest.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "dd1ac9b72a02c97aed554f515ad8f05fbb4705e2",
+      "sourceMode": "100644",
+      "expectedBytes": 9955,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/feature/projection.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "1a771536b9f54176af25498a584aa988652378d6",
+      "sourceMode": "100644",
+      "expectedBytes": 10218,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/feature/promotion.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "b5eaf003d4761370a656923f0d6f329d121fca8c",
+      "sourceMode": "100644",
+      "expectedBytes": 16321,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/feature/relations.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "3f2626d245e94d9a1941387a24f12fb402488f13",
+      "sourceMode": "100644",
+      "expectedBytes": 7926,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/features.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d152b71e439354c66ac07bc6b066de086ffaf4c6",
+      "sourceMode": "100644",
+      "expectedBytes": 4095,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/src/identity.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "70aa0f3bc4073b5e4f01dea507668e98a9697909",
+      "sourceMode": "100644",
+      "expectedBytes": 1410,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/starchess-training/tsconfig.json",
+      "origin": "pinned-git",
+      "gitBlobOid": "5d420d75fb78d2e68999f1df81ee4a32335adf01",
+      "sourceMode": "100644",
+      "expectedBytes": 250,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/package.json",
+      "origin": "pinned-git",
+      "gitBlobOid": "fbb33038528f9192ab16a2a5369d0133dbe35083",
+      "sourceMode": "100644",
+      "expectedBytes": 1268,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/UiProvider.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "7411eb5ad3dfcf595612a8e9d28802125aae239f",
+      "sourceMode": "100644",
+      "expectedBytes": 1047,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/__tests__/common.test.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "242693e46d7465057abca2beb051876898506cd4",
+      "sourceMode": "100644",
+      "expectedBytes": 4124,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/__tests__/extras.test.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "82e39c00e80661cf95a93573491381c413327434",
+      "sourceMode": "100644",
+      "expectedBytes": 2426,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/atoms/ChessMobileBanner.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "277495c5fbfaeeab8dd55ff876a78fb93545b614",
+      "sourceMode": "100644",
+      "expectedBytes": 1690,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/atoms/ColorSwatch.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "3cd8f6528018e41c11d024fb50008d1a5c8e8fc2",
+      "sourceMode": "100644",
+      "expectedBytes": 881,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/atoms/GameHistoryFilters.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "e66aac7c0bb493e888dc22bc51d9e3f9fa56aafe",
+      "sourceMode": "100644",
+      "expectedBytes": 4387,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/atoms/LightSpeedOverlay.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "d7fe815e1ea265cdb9211c057a2d19aabcb92d6e",
+      "sourceMode": "100644",
+      "expectedBytes": 1602,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/atoms/MapSwatch.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "99f21bbfcb9b507daa9fb0fa8382e357bcd4408c",
+      "sourceMode": "100644",
+      "expectedBytes": 1279,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/atoms/MatchHistoryFilters.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "fdaa906e68bd1b018204bd1f4f9bc7b79e4d917c",
+      "sourceMode": "100644",
+      "expectedBytes": 2991,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/atoms/MatrixOverlay.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "0565e3d942a667855567e49b093959302efcf562",
+      "sourceMode": "100644",
+      "expectedBytes": 2677,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/atoms/MenuAnchor.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "58b9bfd702dbe901efae813707e596fd9d8e819b",
+      "sourceMode": "100644",
+      "expectedBytes": 1545,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/atoms/Modal.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "8ef3133dd928c3903f877b274fcaa08aae517894",
+      "sourceMode": "100644",
+      "expectedBytes": 3754,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/atoms/NeonModal.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "a9daaf13eb1d67eae4139c7d8584b32c3ab61f2d",
+      "sourceMode": "100644",
+      "expectedBytes": 1182,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/atoms/NetworkSignal.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "474e54fddf262bc1b52ece19f1ce2f65271b22e6",
+      "sourceMode": "100644",
+      "expectedBytes": 1895,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/atoms/ReviewTurnNav.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "7c2582b6b32c53663607d26f499e74b23f8e340e",
+      "sourceMode": "100644",
+      "expectedBytes": 2395,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/atoms/SelectCard.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "70aa56cfaf5b83f3b53602a1f6af0d4a6114e433",
+      "sourceMode": "100644",
+      "expectedBytes": 1224,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/atoms/StarChessMobileBanner.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "3b1500c336b5ee3bab4c27d812d78d2ad3383c98",
+      "sourceMode": "100644",
+      "expectedBytes": 1915,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/atoms/StarChessMobileSubBanner.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "773148112c1286e20925a1490b3fb2f81d8192fa",
+      "sourceMode": "100644",
+      "expectedBytes": 675,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/atoms/TeamSwatch.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "16d592a0790a6021ca822a5cc50c479615c35686",
+      "sourceMode": "100644",
+      "expectedBytes": 893,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/atoms/VisionSwatch.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "d595ce0e6d49a56dba73556c30fbd9311ea54464",
+      "sourceMode": "100644",
+      "expectedBytes": 1161,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/index.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "e84882e6e396bec4555aea434bc2f2636f6fe97e",
+      "sourceMode": "100644",
+      "expectedBytes": 2062,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/Breadcrumb.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "87eb89969605452877f7fbdfe8512dbedd78a484",
+      "sourceMode": "100644",
+      "expectedBytes": 2126,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/Bubble.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "9a1cc86b425bd1adff2c2776ffcee07bc4f7244c",
+      "sourceMode": "100644",
+      "expectedBytes": 1125,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/Button.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "539e5a0ea5c9efed9fe751d3ffadd536273aa53a",
+      "sourceMode": "100644",
+      "expectedBytes": 1394,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/Card.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "c557d9f7c25dae5a442a9cdfb85d114933ea0d08",
+      "sourceMode": "100644",
+      "expectedBytes": 1053,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/ChatBubble.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "877c578d6e5361ec3762835daa1d360c68b98c58",
+      "sourceMode": "100644",
+      "expectedBytes": 1236,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/ChevronNav.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "436f14e96b8dbb83bc220fb384dbfce14032c026",
+      "sourceMode": "100644",
+      "expectedBytes": 1746,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/Chip.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "05a7890ac5cedd05970dbdabeab3b51f8cce6185",
+      "sourceMode": "100644",
+      "expectedBytes": 1424,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/CoachEmotionIcon.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "1922f9912fd9e7aaf337a55871fb3152ea449ed7",
+      "sourceMode": "100644",
+      "expectedBytes": 2530,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/Collapsible.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "d0bc54b0ba2d60bf4fffa3a7130fa3cf3c9e487a",
+      "sourceMode": "100644",
+      "expectedBytes": 1642,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/ColorSelector.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "8194aa03f90c3313b50be32b0c9046149b3340c4",
+      "sourceMode": "100644",
+      "expectedBytes": 1183,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/CountdownRing.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "425492829ae9b2f52853c6a7a712820d04b0ea13",
+      "sourceMode": "100644",
+      "expectedBytes": 1855,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/Divider.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "95fb38e791c63ce9b1e0543fb3af1d7930651638",
+      "sourceMode": "100644",
+      "expectedBytes": 232,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/DualNavButton.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "b309f7b84e6f03e375cab96100436bf6c732d882",
+      "sourceMode": "100644",
+      "expectedBytes": 1903,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/EvalBar.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "c3f30145a89dfbe569649e00fb1048d0db0ff73a",
+      "sourceMode": "100644",
+      "expectedBytes": 2646,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/HistoryOverlay.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "ba4807b663c8be4baeef3dead86c31b27c9c0765",
+      "sourceMode": "100644",
+      "expectedBytes": 379,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/IconButton.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "829e25747f1721ac3141cd7e9f0d963a07e0c9f0",
+      "sourceMode": "100644",
+      "expectedBytes": 1226,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/Input.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "0f9d5425b81104b770013acfd96f4d3515033261",
+      "sourceMode": "100644",
+      "expectedBytes": 605,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/Label.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "370dd32bf95520425571567be80464520ef3a617",
+      "sourceMode": "100644",
+      "expectedBytes": 1026,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/MenuButton.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "3aa9819caed25ed48312c498a0d7abbec726ce59",
+      "sourceMode": "100644",
+      "expectedBytes": 669,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/MenuTitle.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "37efeb94776271e2194433744f0ad4a41b299262",
+      "sourceMode": "100644",
+      "expectedBytes": 678,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/PanelTitle.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "37288407ccfbbfe0a0912a46fd5ebb1118411bfd",
+      "sourceMode": "100644",
+      "expectedBytes": 475,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/ProgressBar.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "7065db338818d235c9b8cf05620e220e4fcec0b0",
+      "sourceMode": "100644",
+      "expectedBytes": 729,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/QrCode.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "392688f9be292874eda58c3dce5d369aed669708",
+      "sourceMode": "100644",
+      "expectedBytes": 1060,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/Screen.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "a29811bbb075dd837b7904905771cabadc2c9045",
+      "sourceMode": "100644",
+      "expectedBytes": 2287,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/ScreenBackNav.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "fee22a52dfd6b0570c99036d0fe0f7083e3d77ae",
+      "sourceMode": "100644",
+      "expectedBytes": 1763,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/Select.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "d6ee170517bd181d2c6369ebc93210a4b1247bcd",
+      "sourceMode": "100644",
+      "expectedBytes": 768,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/SpecialPreview.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "4436056041276d54ca1e8271e4f9badc7ccd0f01",
+      "sourceMode": "100644",
+      "expectedBytes": 632,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/SplashScreen.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "d18124c0a44e495c010db1e9184d6db433abc613",
+      "sourceMode": "100644",
+      "expectedBytes": 1421,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/SplitButton.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "db68a665e6f4a9ce76d405e550399a70e1c796bf",
+      "sourceMode": "100644",
+      "expectedBytes": 1480,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/TeamFrame.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "4f6a3dfc71ae07fbf978922a655c522ba1badf3d",
+      "sourceMode": "100644",
+      "expectedBytes": 1084,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/Toggle.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "8dd132d28601adebfbb1e604d954a9772fbfb931",
+      "sourceMode": "100644",
+      "expectedBytes": 1055,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/primitives/icons.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "dc2ac02a59c985112dbe40b1aa6df30e4ec771ce",
+      "sourceMode": "100644",
+      "expectedBytes": 11049,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/stories/Controls.stories.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "600bbc6bec1e5053b584142012fb93ae77ab4b6d",
+      "sourceMode": "100644",
+      "expectedBytes": 3343,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/stories/Extras.stories.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "4daa2dc529545fde4f8d0d3979306116ffcc72ac",
+      "sourceMode": "100644",
+      "expectedBytes": 8748,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/stories/Layouts.stories.tsx",
+      "origin": "pinned-git",
+      "gitBlobOid": "2010ab70c26ed8f15932fe227e438c93bad2c1a7",
+      "sourceMode": "100644",
+      "expectedBytes": 1785,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/types/ui.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "21b1241a725a748f9b4fa7b626a79e72d715e594",
+      "sourceMode": "100644",
+      "expectedBytes": 462,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/src/types/visual.ts",
+      "origin": "pinned-git",
+      "gitBlobOid": "d0cded4142fbd6a5747f124696b324d91966bc72",
+      "sourceMode": "100644",
+      "expectedBytes": 323,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "packages/ui/web/tsconfig.json",
+      "origin": "pinned-git",
+      "gitBlobOid": "d5d3198bc447e83e30bb7a36c54737bf4f0e4ff2",
+      "sourceMode": "100644",
+      "expectedBytes": 764,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "origin": "pinned-git",
+      "gitBlobOid": "5a5aeb96b68fd8832e545da159aa622e4a08c5d1",
+      "sourceMode": "100644",
+      "expectedBytes": 313664,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "pnpm-workspace.yaml",
+      "origin": "pinned-git",
+      "gitBlobOid": "ea79f3f784c853279ba5662437d45ae08c42e420",
+      "sourceMode": "100644",
+      "expectedBytes": 116,
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    }
+  ],
+  "inputFileCount": 427,
+  "inputBytes": 3850400,
+  "installedPackageFilesCopied": 0,
+  "installedPackageStatus": "MISSING_IN_BOUNDED_LOCAL_SEARCH",
+  "packageAbsenceEverywhereEstablished": false,
+  "fullC14GuardExecuted": false,
+  "fullTreeAncestryAuthenticated": false,
+  "selectedBundleClosureEstablished": false,
+  "completeOfflineInput": false,
+  "referenceBundlingApproved": false,
+  "referenceQualificationPassed": false,
+  "nativeQualificationPassed": false,
+  "referenceCodeExecuted": false,
+  "nativeOrGpuExecuted": false,
+  "dependencyAcquisitionPerformed": false,
+  "installationPerformed": false,
+  "networkOperations": 0,
+  "gitMutations": 0,
+  "commitOrPushPerformed": false,
+  "trainingReady": false
+}

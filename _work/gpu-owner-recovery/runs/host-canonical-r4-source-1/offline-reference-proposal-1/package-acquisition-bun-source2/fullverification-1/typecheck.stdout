@@ -1,0 +1,8 @@
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.test.ts(10,45): error TS6133: 'D' is declared but its value is never read.
+_work/gpu-owner-recovery/verify.ts(40,64): error TS2868: Cannot find name 'Bun'. Do you need to install type definitions for Bun? Try `npm i --save-dev @types/bun` and then add 'bun' to the types field in your tsconfig.
+_work/gpu-owner-recovery/verify.ts(56,32): error TS2868: Cannot find name 'Bun'. Do you need to install type definitions for Bun? Try `npm i --save-dev @types/bun` and then add 'bun' to the types field in your tsconfig.
+_work/gpu-owner-recovery/verify.ts(89,13): error TS2868: Cannot find name 'Bun'. Do you need to install type definitions for Bun? Try `npm i --save-dev @types/bun` and then add 'bun' to the types field in your tsconfig.
+_work/gpu-owner-recovery/verify.ts(101,36): error TS7006: Parameter 'code' implicitly has an 'any' type.
+_work/gpu-owner-recovery/verify.ts(122,26): error TS2868: Cannot find name 'Bun'. Do you need to install type definitions for Bun? Try `npm i --save-dev @types/bun` and then add 'bun' to the types field in your tsconfig.
+_work/gpu-owner-recovery/verify.ts(123,7): error TS2868: Cannot find name 'Bun'. Do you need to install type definitions for Bun? Try `npm i --save-dev @types/bun` and then add 'bun' to the types field in your tsconfig.
+_work/gpu-owner-recovery/verify.ts(140,71): error TS2868: Cannot find name 'Bun'. Do you need to install type definitions for Bun? Try `npm i --save-dev @types/bun` and then add 'bun' to the types field in your tsconfig.

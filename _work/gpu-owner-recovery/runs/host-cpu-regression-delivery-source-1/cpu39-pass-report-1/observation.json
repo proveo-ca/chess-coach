@@ -1,0 +1,162 @@
+{
+  "status": "OPERATOR_REPORTED_CPU39_PASS_WITH_METADATA_ANOMALY_CONSUMED",
+  "provenance": "SEMANTICALLY_NORMALIZED_COMPLETE_OPERATOR_JSON_AND_SUMMARY_NOT_ORIGINAL_HOST_BYTES",
+  "acceptanceScope": "COMPLETE_OPERATOR_REPORT_AND_HOST_CPU39_EXIT0_ONLY",
+  "reportedCpuTests": 39,
+  "reportedLearningTests": 22,
+  "reportedPolicyTests": 17,
+  "reportedHarnesses": 16,
+  "reportedEmptyHarnesses": 5,
+  "reportedOfflineBuilds": 2,
+  "reportedNativeCommandsInvoked": 20,
+  "reportedCpuArtifacts": 19,
+  "reportedNativeSourceFiles": 65,
+  "reportedCopiedFiles": 66,
+  "reportedCopiedBytes": 663643,
+  "reportedDockerOperations": 5,
+  "fullMetadataConsistency": false,
+  "metadataAnomalyCount": 1,
+  "metadataAnomalies": [
+    {
+      "kind": "OPERATOR_REPORTED_METADATA_ANOMALY",
+      "id": "policy-io:test:f32",
+      "field": "stdoutBytes",
+      "outcomeStdoutBytes": 192,
+      "nativeAttemptStdoutBytes": 179,
+      "nativeStreamStdoutBytes": 179,
+      "disposition": "PRESERVED_VERBATIM_REPORT_ACCEPTED_BY_EXISTING_CPU_WORKER_PREDICATE_WITHOUT_BYTE_COUNT_AGREEMENT"
+    }
+  ],
+  "reportedInput": {
+    "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/cpu39-pass-report-1/reported-input.json",
+    "bytes": 11107,
+    "sha256": "6600db06b805f63e561bd4e56d4f2bc9f23aea13e6a4ce6b74ab304522e52673"
+  },
+  "reportedReceipt": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/cpu39-pass-report-1/reported-receipt.json",
+  "operatorSummary": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/cpu39-pass-report-1/operator-summary.txt",
+  "reportedHostExitCode": 0,
+  "reportedHostExitMarker": "HOST_CPU39_EXIT=0",
+  "issuedApproval": {
+    "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/approval.json",
+    "bytes": 2981,
+    "sha256": "5e925919b5e3b227a846312b77c4765abf56abb2a3f25519be844b2e4792d9cb",
+    "grantId": "cpu39-manual-grant-1"
+  },
+  "snapshots": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/cpu39-pass-report-1/reported-input.json",
+      "bytes": 11107,
+      "sha256": "6600db06b805f63e561bd4e56d4f2bc9f23aea13e6a4ce6b74ab304522e52673"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/plan.json",
+      "bytes": 4474,
+      "sha256": "fb146d38205f378dccb8e7520c0b134642f8c44effcef2722326d69ed0e2467d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/native-source-manifest.json",
+      "bytes": 8956,
+      "sha256": "7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/approval.json",
+      "bytes": 2981,
+      "sha256": "5e925919b5e3b227a846312b77c4765abf56abb2a3f25519be844b2e4792d9cb"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/publication-result.json",
+      "bytes": 1989,
+      "sha256": "b823f3bdae2b21e9d239c1e14b42950f1b5f077b3bf9be231d4ec976cf4bbfa9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/manual-handoff-observation.json",
+      "bytes": 1676,
+      "sha256": "9d3df162c6ab2badac0c9bab9ad168b6887cbe343d72710c27485b2dff3411c1"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/redelivery-1.json",
+      "bytes": 1966,
+      "sha256": "5c40d03b85f311c089a968f62a5d6ae6d02b641d616c46504ba1b2e3efd8a005"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-redelivery-execution-1/publication-and-redelivery-result.json",
+      "bytes": 1938,
+      "sha256": "fba1638afd0dc21fa1f153e13b987dfa751a86abd37e0c16d43870ae98ec35ee"
+    }
+  ],
+  "normalization": {
+    "commonLiteralStatusesAndFlagsExpanded": true,
+    "operatorListedIdenticalInventoryExpandedFromBoundSnapshot": true,
+    "operatorIncludedCompletePlanExpandedFromBoundSnapshot": true,
+    "originalHostByteHashingPerformed": false,
+    "normalizedSummaryLinesOnly": true,
+    "rawNativeStdoutReconstructed": false,
+    "outerDockerTimeoutsNotSuppliedAndNotInvented": true,
+    "nativeCompilationTimeoutsMs": [
+      1499999,
+      1349744
+    ],
+    "actualPerBuildElapsedMs": null,
+    "buildTimingInferredFromTimeoutDifference": false
+  },
+  "sourceManifestSha256": "7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec",
+  "reportedSourceUnchanged": true,
+  "reportedCpu39Passed": true,
+  "reportedOwnedCleanupPassed": true,
+  "reportedHostElapsedMs": 267919.336645,
+  "reportedWorkerElapsedMs": 266647.54226200003,
+  "grantId": "cpu39-manual-grant-1",
+  "maximumCombinedManualHostAttempts": 1,
+  "hostInvocationsConsumed": 1,
+  "remainingHostInvocations": 0,
+  "maximumNativeBuildInvocations": 2,
+  "nativeBuildInvocationsConsumed": 2,
+  "remainingNativeBuildInvocations": 0,
+  "manualCommandTextDeliveriesConsumed": 1,
+  "remainingManualCommandTextDeliveries": 0,
+  "normalCommitsConsumed": 1,
+  "remainingNormalCommits": 0,
+  "httpsPushesConsumed": 1,
+  "remainingHttpsPushes": 0,
+  "freshRedelivery": {
+    "grantId": "cpu39-receipt-publication-and-text-redelivery-1",
+    "publishedCommit": "6fdc92c7eb90eb625e6d54c6a448009d5db34423",
+    "normalCommitsConsumed": 1,
+    "remainingNormalCommits": 0,
+    "httpsPushesConsumed": 1,
+    "remainingHttpsPushes": 0,
+    "exactTextRedeliveryAttemptsConsumed": 1,
+    "remainingExactTextRedeliveries": 0,
+    "hostAttemptOrRetryRenewed": false
+  },
+  "issuedSnapshotsAndCountersUnchanged": true,
+  "originalHostFilesReceived": false,
+  "originalCaptureOrJournalBytesReceived": false,
+  "originalCaptureOrJournalBytesRehashed": false,
+  "actualHostCommandBytesIndependentlyVerified": false,
+  "fullAssuranceQualified": false,
+  "reportAcceptanceRequiresOriginalByteCustody": false,
+  "cpu39QualifiedAtReportScope": true,
+  "cpuReportContainsGpuProof": false,
+  "previouslyAcceptedFullGpuAndC12ResultUnchanged": true,
+  "trialStorageFitDemonstratedForThisOneReportedRunOnly": true,
+  "readOnlyRegistryIndexCompatibilityDemonstratedForThisOneReportedRunOnly": true,
+  "generalStorageFitAssurance": false,
+  "generalReadOnlyRegistryCompatibilityAssurance": false,
+  "filesystemQuotaEstablished": false,
+  "canonicalBothQualified": false,
+  "referenceQualified": false,
+  "integratedR4Qualified": false,
+  "operationalWiringQualified": false,
+  "cpuRerunRequired": false,
+  "gpuRerunRequired": false,
+  "automaticRetryAuthorized": false,
+  "newHostOrNativeExecutionAuthorized": false,
+  "newGpuOrLlvmExecutionAuthorized": false,
+  "newPublicationAuthorized": false,
+  "newManualCommandDeliveryAuthorized": false,
+  "experimentTrainingAuthorized": false,
+  "trainingReady": false,
+  "hardeningPerformed": false,
+  "hardeningDeferredUntilAllPlannedTrainingCompleteAndResultsValidated": true
+}

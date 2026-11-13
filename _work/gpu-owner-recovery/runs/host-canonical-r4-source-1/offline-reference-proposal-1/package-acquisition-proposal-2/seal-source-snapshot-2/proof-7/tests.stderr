@@ -1,0 +1,151 @@
+
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet-emit.test.ts:
+(pass) bounded source writer protected fixtures > writes all five 0600 records and materializes all actual 48 members as 0400 [145.31ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects open failure 1 [34.21ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects open failure 2 [71.86ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects open failure 3 [71.78ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects open failure 4 [63.31ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects open failure 5 [67.93ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects open failure 6 [68.26ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects open failure 7 [68.27ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects open failure 8 [68.40ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects open failure 9 [76.94ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects open failure 10 [82.45ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects sync failure 1 [62.12ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects sync failure 2 [63.61ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects sync failure 3 [64.45ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects sync failure 4 [60.17ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects sync failure 5 [64.21ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects sync failure 6 [63.32ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects sync failure 7 [65.70ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects sync failure 8 [63.42ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects sync failure 9 [80.45ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects sync failure 10 [80.81ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects close failure 1 [61.74ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects close failure 2 [61.49ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects close failure 3 [61.21ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects close failure 4 [62.70ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects close failure 5 [64.68ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects close failure 6 [61.06ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects close failure 7 [67.93ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects close failure 8 [63.29ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects close failure 9 [81.20ms]
+(pass) bounded source writer protected fixtures > preserves partials and rejects close failure 10 [84.16ms]
+(pass) bounded source writer protected fixtures > preserves write failure 1 without a successful result [31.66ms]
+(pass) bounded source writer protected fixtures > preserves write failure 2 without a successful result [36.46ms]
+(pass) bounded source writer protected fixtures > preserves write failure 3 without a successful result [35.23ms]
+(pass) bounded source writer protected fixtures > preserves write failure 4 without a successful result [34.37ms]
+(pass) bounded source writer protected fixtures > preserves write failure 5 without a successful result [52.03ms]
+(pass) bounded source writer protected fixtures > positive short writes complete every byte [61.18ms]
+(pass) bounded source writer protected fixtures > zero-progress short write rejects and closes both descriptors [30.83ms]
+(pass) bounded source writer protected fixtures > first failure stays sticky while file and directory close attempts continue [34.86ms]
+(pass) bounded source writer protected fixtures > preflights collision before any output write: execution-binding2.json [29.85ms]
+(pass) bounded source writer protected fixtures > preflights collision before any output write: invocation-ready2.json [30.91ms]
+(pass) bounded source writer protected fixtures > preflights collision before any output write: source-packet1.json [32.82ms]
+(pass) bounded source writer protected fixtures > preflights collision before any output write: sealed-packet-manifest1.json [28.76ms]
+(pass) bounded source writer protected fixtures > preflights collision before any output write: sealed-packet-result1.json [28.78ms]
+(pass) bounded source writer protected fixtures > readback mismatch stops before result and preserves four records [42.89ms]
+(pass) bounded source writer protected fixtures > uncached source drift after output 4 fails without repair [36.05ms]
+(pass) bounded source writer protected fixtures > uncached source drift after output 5 fails without repair [56.27ms]
+(pass) bounded source writer protected fixtures > missing current role prevents all target writes [2.05ms]
+(pass) bounded source writer protected fixtures > malformed cloned review cannot redirect targets [1.67ms]
+(pass) bounded source writer protected fixtures > prohibited phase roots reject before reader or writes [0.26ms]
+(pass) bounded source writer protected fixtures > symlink output parent rejects without following into another root [31.04ms]
+(pass) bounded source writer protected fixtures > dangling target symlink counts as a collision before all writes [29.76ms]
+(pass) bounded source writer protected fixtures > real issued records, source metadata, historical files, and five output absences stay unchanged [35.34ms]
+
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet.test.ts:
+(pass) offline seal preparation > actual frozen twelve-role gate validates only in memory [25.53ms]
+(pass) offline seal preparation > missing all twelve rejects without source/derived reads [0.25ms]
+(pass) offline seal preparation > nonliteral/duplicate/extra role set fails before reader: 11:_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/adversarial.json [0.08ms]
+(pass) offline seal preparation > nonliteral/duplicate/extra role set fails before reader: 13:_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/backend.json
+(pass) offline seal preparation > nonliteral/duplicate/extra role set fails before reader: 12:_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/backend.json [0.01ms]
+(pass) offline seal preparation > nonliteral/duplicate/extra role set fails before reader: 12:_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/backend.json
+(pass) offline seal preparation > nonliteral/duplicate/extra role set fails before reader: 12:_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/delivery/security.json
+(pass) offline seal preparation > nonliteral/duplicate/extra role set fails before reader: 12:_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-3/delivery/security.json [0.01ms]
+(pass) offline seal preparation > reject review status before binding/ready reads [1.11ms]
+(pass) offline seal preparation > reject review scope before binding/ready reads [0.78ms]
+(pass) offline seal preparation > reject review role before binding/ready reads [0.78ms]
+(pass) offline seal preparation > reject review nonAuthorizing before binding/ready reads [0.75ms]
+(pass) offline seal preparation > reject review executionReadinessClaimed before binding/ready reads [0.75ms]
+(pass) offline seal preparation > reject review trainingReady before binding/ready reads [0.71ms]
+(pass) offline seal preparation > reject review remainingFindings before binding/ready reads [0.70ms]
+(pass) offline seal preparation > reject review reasoningBearingSourceCommentFindings before binding/ready reads [0.72ms]
+(pass) offline seal preparation > reject review session before binding/ready reads [0.70ms]
+(pass) offline seal preparation > synthetic reviews remain nonauthorizing and marked in memory [0.08ms]
+(pass) offline seal preparation > wrong review reviewedSource hash rejects [4.28ms]
+(pass) offline seal preparation > wrong review verificationReceipt hash rejects [2.80ms]
+(pass) offline seal preparation > wrong review sourceManifest hash rejects [2.67ms]
+(pass) offline seal preparation > inconsistent four delivery proof references reject [3.95ms]
+(pass) offline seal preparation > delivery review cannot select historical proof by resolver [2.73ms]
+(pass) offline seal preparation > strict delivery proof rejects testsPassed=0 [5.36ms]
+(pass) offline seal preparation > strict delivery proof rejects testsPassed=1.5 [3.23ms]
+(pass) offline seal preparation > strict delivery proof rejects testsPassed=9007199254740992 [3.01ms]
+(pass) offline seal preparation > strict delivery proof rejects testsFailed=1 [3.01ms]
+(pass) offline seal preparation > strict delivery proof rejects status=PASS [3.76ms]
+(pass) offline seal preparation > strict delivery proof rejects immutableAndHistoricalReadchecksMatch=false [3.21ms]
+(pass) offline seal preparation > strict delivery proof rejects sourceUnchanged=false [3.26ms]
+(pass) offline seal preparation > strict delivery proof rejects productionRunEntered=true [3.83ms]
+(pass) offline seal preparation > strict delivery proof rejects productionTransportInvoked=true [2.96ms]
+(pass) offline seal preparation > strict delivery proof rejects realNetworkRequests=1 [3.75ms]
+(pass) offline seal preparation > strict delivery proof rejects fishExecuted=true [3.06ms]
+(pass) offline seal preparation > strict delivery proof rejects fishNoExecuteChecked=false [2.97ms]
+(pass) offline seal preparation > delivery command reaped fails closed [6.18ms]
+(pass) offline seal preparation > delivery command outEOF fails closed [3.24ms]
+(pass) offline seal preparation > delivery command errEOF fails closed [3.14ms]
+(pass) offline seal preparation > delivery command cleanupConfirmed fails closed [4.12ms]
+(pass) offline seal preparation > delivery command cleanupExpired fails closed [3.39ms]
+(pass) offline seal preparation > delivery command pipeCleanupFailed fails closed [3.05ms]
+(pass) offline seal preparation > delivery command pipeDestructionAttempted fails closed [3.91ms]
+(pass) offline seal preparation > delivery command exitCode fails closed [2.97ms]
+(pass) offline seal preparation > delivery command signal fails closed [3.86ms]
+(pass) offline seal preparation > delivery command pid fails closed [3.09ms]
+(pass) offline seal preparation > duplicate command names fail closed [3.07ms]
+(pass) offline seal preparation > strict binding and readiness schemas validate actual source bytes through overlays [7.68ms]
+(pass) offline seal preparation > pure preparation never reads actual derived records [0.08ms]
+(pass) offline seal preparation > exact 48-member union excludes packet, delivery sources, final evidence, and operational payload [0.22ms]
+(pass) offline seal preparation > each table row binds byte length, SHA256, and Git blob identity [6.33ms]
+(pass) offline seal preparation > actual source/proof/closure drift rejects: _work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-bootstrap.ts [2.80ms]
+(pass) offline seal preparation > actual source/proof/closure drift rejects: _work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/receipt.json [0.37ms]
+(pass) offline seal preparation > actual source/proof/closure drift rejects: _work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/runtime-eligibility-reads2.json [0.25ms]
+(pass) offline seal preparation > malicious reader cannot ignore per-file cap [0.12ms]
+(pass) offline seal preparation > bounded repository reader rejects traversal and operational roots [0.10ms]
+(pass) offline seal preparation > packet helper rejects file cap before materialization [1.29ms]
+(pass) offline seal preparation > packet helper rejects aggregate source cap [16.96ms]
+(pass) offline seal preparation > packet helper rejects excess count before any member read [0.49ms]
+(pass) offline seal preparation > packet helper rejects binary and duplicate members [0.22ms]
+(pass) offline seal preparation > only full-candidate nonrunning Fish syntax fixture renders [0.48ms]
+(pass) offline seal preparation > protected fixture materializes exact 36-member review-free packet as 0400 and validates without adapters [27.43ms]
+(pass) offline seal preparation > tampered packet fails pure validation before any fixture mkdir [0.13ms]
+(pass) offline seal preparation > fixture materializer rejects real source roots before I/O [0.07ms]
+(pass) offline seal preparation > real roots, source files, reviews, and derived-record absence remain unchanged [35.14ms]
+(pass) exact safe-integer verification summary > accepts one positive pass and one zero fail line [0.26ms]
+(pass) exact safe-integer verification summary > accepts unrelated Bun case label "pass case label:" [0.02ms]
+(pass) exact safe-integer verification summary > accepts unrelated Bun case label "fail closed parser:"
+(pass) exact safe-integer verification summary > accepts unrelated Bun case label "some pass:"
+(pass) exact safe-integer verification summary > accepts unrelated Bun case label "some pass"
+(pass) exact safe-integer verification summary > accepts unrelated Bun case label "some fail"
+(pass) exact safe-integer verification summary > accepts unrelated Bun case label "1 fail trailing"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1 pass\n1 pass\n0 fail" [0.01ms]
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1 pass\n0 fail\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "0 pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1.5 pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "01 pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "+1 pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "-1 pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "9007199254740992 pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "NaN pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "Infinity pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1 pass trailing\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1 pass\n1 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1 pass"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "pass 12\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1e2 pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1 pass\n0 fail\n1.5 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1 pass\n0 fail\n 1 pass"
+
+ 142 pass
+ 0 fail
+ 1608 expect() calls
+Ran 142 tests across 2 files. [3.58s]

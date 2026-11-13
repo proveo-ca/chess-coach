@@ -1,0 +1,23 @@
+{
+  "version": "chess-coach.r2-publication-freeze.v1",
+  "status": "FROZEN_NOT_STAGED_OR_PUBLISHED",
+  "contentFiles": 1744,
+  "stagedPathCount": 1747,
+  "cohort": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/publication-1/cohort.json",
+    "bytes": 778361,
+    "sha256": "65396d903d6b56a20785bc57135998db9eff36cf01f8560375e02a8f5b0e52ae",
+    "gitBlobOid": "829a3b78ac9c7894bff926c034c100aa50ddc09c"
+  },
+  "pathspec": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/publication-1/paths.nul",
+    "bytes": 271583,
+    "sha256": "5e95a272980942d0aab5fc237d2fb0f43c38750ab1369e7872058fa8bd37a74e",
+    "gitBlobOid": "05d7c0d6aec32856de79f2403de6c6b365a6510b"
+  },
+  "controlSelfHashExcluded": true,
+  "activeHooks": [],
+  "applicableAttributes": "ALL_UNSPECIFIED",
+  "normalCommitsConsumed": 0,
+  "httpsPushesConsumed": 0
+}

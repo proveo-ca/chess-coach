@@ -1,0 +1,1 @@
+{"trace":["claim","lstat","lstat","lstat","lstat","lstat","lstat","lstat","lstat","lstat","parent","lstat","roots","spawn","validate"],"actualGetRequests":0,"productionAdapterInstantiated":false,"originalDeadlineUnchanged":true}

@@ -1,0 +1,86 @@
+{
+  "version": "local-pinned-input-check.v1",
+  "status": "PARTIAL_PINNED_SOURCE_MATERIALIZED_PACKAGES_MISSING",
+  "check": "PASS_EXACT_STAGED_MEMBERSHIP_BYTES_GIT_BLOB_SHA1_AND_SHA256",
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "sourceClassification": "GIT_REPORTED_PINNED_APPLICATION_SOURCE_SUPERSET_NOT_SELECTED_BUNDLE_CLOSURE",
+  "inputManifestSha256": "bb03f45257fae1d8ca11710b53547936c3042380188ab10117b704b692d39fb0",
+  "discoverySha256": "72f17fe086326de9df75c2bae1618834535137a69a6b6e6f600114920493da37",
+  "materializationSha256": "2b13f0daad567013823ea2859a0107818ee9b09766347c2190ec3dfe47949506",
+  "materializedFileCount": 427,
+  "materializedBytes": 3850400,
+  "sourceSha256": "eeef9552914021a71018ffbd6f81a0c8b2afc56926ae45efd28dd5c0cfcf5bf7",
+  "lockProvenance": [
+    {
+      "name": "fflate",
+      "requiredVersion": "0.8.3",
+      "status": "EXACT_VERSION_INTEGRITY_FOUND",
+      "lockPath": "pnpm-lock.yaml",
+      "lockSha256": "1d05ed3d8de5a94873f26a2fb51b88c080704d2e90bf942f9f0bb2ce75a504e0",
+      "observedVersions": [
+        "0.8.3"
+      ],
+      "matches": [
+        {
+          "headerLine": 3094,
+          "integrityLine": 3095,
+          "integrity": "sha512-tbZNuJrLwGUp3zshBtdy4W+ORxZuIh8a5ilyIEQDC5rY1f3U20JMry0Ll3WBzU58EZKsEuJFXhb5gwv8CsPvgA==",
+          "excerpt": "  fflate@0.8.3:\n    resolution: {integrity: sha512-tbZNuJrLwGUp3zshBtdy4W+ORxZuIh8a5ilyIEQDC5rY1f3U20JMry0Ll3WBzU58EZKsEuJFXhb5gwv8CsPvgA==}"
+        }
+      ],
+      "installedPackageFilesCopied": 0
+    },
+    {
+      "name": "jssha",
+      "requiredVersion": "3.3.2",
+      "status": "EXACT_VERSION_INTEGRITY_FOUND",
+      "lockPath": "pnpm-lock.yaml",
+      "lockSha256": "1d05ed3d8de5a94873f26a2fb51b88c080704d2e90bf942f9f0bb2ce75a504e0",
+      "observedVersions": [
+        "3.3.2"
+      ],
+      "matches": [
+        {
+          "headerLine": 3539,
+          "integrityLine": 3540,
+          "integrity": "sha512-0RhFxzijV4W0qTXa97D5b6twAWXX7SEOpw8qzAZyZ+oeGOP9e84PnDSLjl7SBB1vBQ+chSUwsZR06i1AzA+nEA==",
+          "excerpt": "  jssha@3.3.2:\n    resolution: {integrity: sha512-0RhFxzijV4W0qTXa97D5b6twAWXX7SEOpw8qzAZyZ+oeGOP9e84PnDSLjl7SBB1vBQ+chSUwsZR06i1AzA+nEA==}"
+        }
+      ],
+      "installedPackageFilesCopied": 0
+    }
+  ],
+  "exactMembershipChecked": true,
+  "installedPackageFilesCopied": 0,
+  "installedPackageStatus": "MISSING_IN_BOUNDED_LOCAL_SEARCH",
+  "missingPackages": [
+    {
+      "name": "fflate",
+      "version": "0.8.3",
+      "selectedRuntimeFile": "esm/index.mjs",
+      "installedRoot": null
+    },
+    {
+      "name": "jssha",
+      "version": "3.3.2",
+      "selectedRuntimeFile": "dist/sha256.mjs",
+      "installedRoot": null
+    }
+  ],
+  "packageAbsenceEverywhereEstablished": false,
+  "fullC14GuardExecuted": false,
+  "fullTreeAncestryAuthenticated": false,
+  "selectedBundleClosureEstablished": false,
+  "completeOfflineInput": false,
+  "referenceBundlingApproved": false,
+  "referenceQualificationPassed": false,
+  "nativeQualificationPassed": false,
+  "referenceCodeExecuted": false,
+  "nativeOrGpuExecuted": false,
+  "dependencyAcquisitionPerformed": false,
+  "installationPerformed": false,
+  "networkOperations": 0,
+  "gitMutations": 0,
+  "commitOrPushPerformed": false,
+  "trainingReady": false
+}

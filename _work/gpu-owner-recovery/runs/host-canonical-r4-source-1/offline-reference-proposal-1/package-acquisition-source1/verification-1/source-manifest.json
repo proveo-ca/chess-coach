@@ -1,0 +1,13 @@
+{
+  "bindings": {
+    "approval": "62af17fc6199b5537c3488c10680b9269baf170a05a322facfdfad3737fea945",
+    "lock": "1d05ed3d8de5a94873f26a2fb51b88c080704d2e90bf942f9f0bb2ce75a504e0",
+    "plan": "8ecfce5156322da42fb852cd071a6091b96187e19a88226bec68295936505f6c",
+    "request": "2eb3c9727f788f9c95f0f2650ee89bbd94a5eb5ed289db67d91226e978140b70"
+  },
+  "sourceHashes": {
+    "capture.py": "cb8b4b8b40e54009bc28ba5c09c7221f8ce049d2c0b5ab5a41a9c7d332970560",
+    "test_capture.py": "e578c8bfa6529da2798e708cded31d9ae3bc266648d82f8dda62aa5d39be5579",
+    "verify.py": "f7be92ec69417b275c49ad9da6d4a74ed7c70972c81360d2d105c4dff859cdcb"
+  }
+}

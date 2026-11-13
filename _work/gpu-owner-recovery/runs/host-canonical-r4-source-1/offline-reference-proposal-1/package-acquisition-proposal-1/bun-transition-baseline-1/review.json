@@ -1,0 +1,10 @@
+{
+  "status": "READY_BASELINE_PRESERVATION_EVIDENCE_ONLY",
+  "adversarial": {"session":"ses_e2e582911ffe8NNgAwLpEKFv0k","readyToMerge":true,"remainingFindings":[]},
+  "receipt": "receipt.json",
+  "verification": "verification.json",
+  "bunHelperImplementationReviewed": false,
+  "acquisitionAuthorizedOrInvokedByReview": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

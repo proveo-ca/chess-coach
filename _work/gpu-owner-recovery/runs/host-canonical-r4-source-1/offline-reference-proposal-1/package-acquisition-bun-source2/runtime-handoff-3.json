@@ -1,0 +1,1204 @@
+{
+  "version": "chess-coach.r2-runtime-handoff-audit.v1",
+  "status": "PASS_OFFLINE_POST_FIRST_PASS_FIXES_NOT_READINESS",
+  "supersedesEarlierSourceVersionAuditOnly": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/runtime-handoff-2.json",
+  "captureProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/receipt.json",
+    "bytes": 35386,
+    "sha256": "f780bbf4aa007deece850ba688b7200df1b4b31feebaea52045d5259b3dbfe27",
+    "testsPassed": 751,
+    "testsFailed": 0,
+    "typecheckExitCode": 0
+  },
+  "callerProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/receipt.json",
+    "bytes": 33983,
+    "sha256": "d006193dbbcdcdb802b939eb531f157dcfc18d960f9f11d8f3e7b657127e684c",
+    "testsPassed": 185,
+    "testsFailed": 0,
+    "typecheckExitCode": 0,
+    "captureProofMatchesSource": true
+  },
+  "captureSourceCount": 12,
+  "callerSourceCount": 4,
+  "unchangedObserverSourceCount": 2,
+  "sourcePaths": [
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.ts",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.test.ts",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.tsconfig.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun-verify.ts",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.ts",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.test.ts",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture-full.test.ts",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/root-context.ts",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/root-context.test.ts",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent.ts",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent.test.ts",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent-adapter.ts",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent-adapter.test.ts",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/verify.ts",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/tsconfig.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/.gitignore",
+    "_work/gpu-owner-recovery/verify.ts",
+    "_work/gpu-owner-recovery/command-supervisor.ts"
+  ],
+  "aggregateSourceBytes": 362766,
+  "sourceHashesMatchBothFreshProofs": true,
+  "eligibilityClosure": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/runtime-eligibility-reads2.json",
+    "bytes": 5547,
+    "sha256": "a5291e1f2e2e1c3a59faedec3c2c48045b18548413ff5c0ef91a53369cba56b8",
+    "requiredReads": 32,
+    "presentReads": 30,
+    "presentReadBytes": 797031,
+    "exportEqualityCheck": "PASS_READ_ONLY_POST_REVIEW_EXACT_RUNTIME_CLOSURE_32"
+  },
+  "pendingNonAuthorizingRecords": [
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/execution-binding2.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-ready2.json"
+  ],
+  "records": {
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.ts": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 16248,
+      "sha256": "c307f222997e3a72f3b00360aee7c08494ba8841b1be6e75ee9f7a1fcf0b612d",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026813",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "16248",
+        "st_mtime_ns": "1794549772652877673",
+        "st_ctime_ns": "1794549772652877673"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.test.ts": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 42812,
+      "sha256": "375bcdd0dac0cab4930b9e09d270938f0ff26d2588e2a60f3d77fe5a2564969c",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026814",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "42812",
+        "st_mtime_ns": "1794552998324865368",
+        "st_ctime_ns": "1794552998324865368"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.tsconfig.json": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 645,
+      "sha256": "475349522320904b0f41ec6fa19b785ddccfe51f97bc5b36c0c123bcf9eee56a",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026815",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "645",
+        "st_mtime_ns": "1794548602078231167",
+        "st_ctime_ns": "1794548602078231167"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun-verify.ts": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 1838,
+      "sha256": "233203a84716055fcc8f064f0a158a3b2b6a39c2a62ff1418a534c2186340819",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026816",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "1838",
+        "st_mtime_ns": "1794552827624866019",
+        "st_ctime_ns": "1794552827624866019"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.ts": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 65298,
+      "sha256": "0a2a08b38758c9e8e59a240aba3902ef23d43da65ac7644ebc7c5b8792273e10",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026811",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "65298",
+        "st_mtime_ns": "1794552770300866238",
+        "st_ctime_ns": "1794552770300866238"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.test.ts": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 93313,
+      "sha256": "8ef9aa480564ff0c93ba9434082f9d75f94bdb27108f5fd3680b67abdc869a73",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026812",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "93313",
+        "st_mtime_ns": "1794549772648877673",
+        "st_ctime_ns": "1794549772648877673"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture-full.test.ts": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 19591,
+      "sha256": "85268411235586ed4b84fdd1a585d687ed495e17c65150db485fa8ad9b4aa236",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026828",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "19591",
+        "st_mtime_ns": "1794552963516865501",
+        "st_ctime_ns": "1794552963516865501"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/root-context.ts": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 1875,
+      "sha256": "bc540101a8699c2bd9e5b075342bd3776e6d9ee579a641a6a1757ac640a6dd7f",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026817",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "1875",
+        "st_mtime_ns": "1794548652184881947",
+        "st_ctime_ns": "1794548652184881947"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/root-context.test.ts": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 1720,
+      "sha256": "7caef259ee7ba34c8cfda01b6a060996d7d436bfd7fe4fd3c72a93f8bcd4da0f",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026826",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "1720",
+        "st_mtime_ns": "1794549077224880326",
+        "st_ctime_ns": "1794549077224880326"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent.ts": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 4052,
+      "sha256": "62db5298937cf1c752a76b39f42fa19876e36e637d9d21dba6de323de347b27c",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026743",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "4052",
+        "st_mtime_ns": "1794533929279858561",
+        "st_ctime_ns": "1794533929279858561"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent.test.ts": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 53554,
+      "sha256": "83d8e91683140c35de498a9457060f47ec00b94ef59c9d83e47593456c24205f",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026746",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "53554",
+        "st_mtime_ns": "1794548883196881066",
+        "st_ctime_ns": "1794548883196881066"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent-adapter.ts": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 5757,
+      "sha256": "bc3df6e27bdc9a48164e8926a06d09c1ea9d104c3ffa1b19051dc2422b1a1d45",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026818",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "5757",
+        "st_mtime_ns": "1794549452116878896",
+        "st_ctime_ns": "1794549452116878896"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent-adapter.test.ts": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 5551,
+      "sha256": "da10f7ce4bc74fa30200fd17f277fc72d5f58d8e847f7ee7c75edc4a10a5748d",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026827",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "5551",
+        "st_mtime_ns": "1794549746912877771",
+        "st_ctime_ns": "1794549746912877771"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/verify.ts": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 35946,
+      "sha256": "3c0e5494e7c1eea2883d071f6f53c2ee1ced065d9c0a8257db429fa738403e5e",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026747",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "35946",
+        "st_mtime_ns": "1794552903452865730",
+        "st_ctime_ns": "1794552903452865730"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/tsconfig.json": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 770,
+      "sha256": "0083541937af45cc505e9bde2afc99ece5af54fe1855060d20c498bc01488391",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026744",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "770",
+        "st_mtime_ns": "1794549272016879583",
+        "st_ctime_ns": "1794549272016879583"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/.gitignore": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 163,
+      "sha256": "91317cffd2ef9526d9d0ba70fcefa8499556f916a21327cb5492407dd679db0d",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026745",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "163",
+        "st_mtime_ns": "1794549272016879583",
+        "st_ctime_ns": "1794549272016879583"
+      }
+    },
+    "_work/gpu-owner-recovery/verify.ts": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 12723,
+      "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3019632",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "12723",
+        "st_mtime_ns": "1794431771227855428",
+        "st_ctime_ns": "1794431771227855428"
+      }
+    },
+    "_work/gpu-owner-recovery/command-supervisor.ts": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 910,
+      "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3014666",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "910",
+        "st_mtime_ns": "1794431770981027215",
+        "st_ctime_ns": "1794431770981027215"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/request.json": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 3065,
+      "sha256": "c0288e1e34e24d2f7a81e12ee1967ffafbd2768b4c2a5bc2ba15826b6384ff3f",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026740",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "3065",
+        "st_mtime_ns": "1794533929277632276",
+        "st_ctime_ns": "1794533929277632276"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/plan.json": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 10354,
+      "sha256": "7f6a90ca105d6a7c5a45951b508d4a1ecdd5e217625d1cefe08da23557847405",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026741",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "10354",
+        "st_mtime_ns": "1794534418269630411",
+        "st_ctime_ns": "1794534418269630411"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/approval2.json": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 5671,
+      "sha256": "4e68d36f8076e213744364cf4cd5f793ef3dbffda6157b93070edf2ffc282d3f",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026802",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "5671",
+        "st_mtime_ns": "1794547300698615340",
+        "st_ctime_ns": "1794547300698615340"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/manual-handoff-request1.json": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 5433,
+      "sha256": "47d63b8cb446cdc8a83323788c9106cdb82437992e7bd3a88f55821aa6bde52b",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026776",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "5433",
+        "st_mtime_ns": "1794537899631794469",
+        "st_ctime_ns": "1794537899631794469"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/manual-handoff-plan1.json": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 14449,
+      "sha256": "4297e4f1b763b5aa152b88a7a3e288a19cafc85331cbed2d776f38d043f8817a",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026777",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "14449",
+        "st_mtime_ns": "1794538318751792870",
+        "st_ctime_ns": "1794538318751792870"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/plan.json": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 3716,
+      "sha256": "8ecfce5156322da42fb852cd071a6091b96187e19a88226bec68295936505f6c",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3021212",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "3716",
+        "st_mtime_ns": "1794512711093366268",
+        "st_ctime_ns": "1794512711093366268"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/check.json": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 3274,
+      "sha256": "acca1e84beb0ebfacf3fb0a7967ffe5d16552861b0da98a4f7e6b4367cee9c63",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3021145",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "3274",
+        "st_mtime_ns": "1794511801763547756",
+        "st_ctime_ns": "1794511801763547756"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/inputs/reference/pnpm-lock.yaml": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 313664,
+      "sha256": "1d05ed3d8de5a94873f26a2fb51b88c080704d2e90bf942f9f0bb2ce75a504e0",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3021139",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "313664",
+        "st_mtime_ns": "1794511801657408087",
+        "st_ctime_ns": "1794511801657408087"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/receipt.json": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 35386,
+      "sha256": "f780bbf4aa007deece850ba688b7200df1b4b31feebaea52045d5259b3dbfe27",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3036525",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "35386",
+        "st_mtime_ns": "1794553024796865267",
+        "st_ctime_ns": "1794553024796865267"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/source-manifest.json": {
+      "kind": "FRESH_OFFLINE_VERIFICATION_EVIDENCE",
+      "bytes": 1570,
+      "sha256": "9de207966836330d95e72af6f433850669412b0eafe28b214e0531794c71bad7",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3036474",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "1570",
+        "st_mtime_ns": "1794553012096865316",
+        "st_ctime_ns": "1794553012096865316"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/receipt.json": {
+      "kind": "RUNTIME_ELIGIBILITY_INPUT",
+      "bytes": 33983,
+      "sha256": "d006193dbbcdcdb802b939eb531f157dcfc18d960f9f11d8f3e7b657127e684c",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3148165",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "33983",
+        "st_mtime_ns": "1794553037376865219",
+        "st_ctime_ns": "1794553037376865219"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/source-manifest.json": {
+      "kind": "FRESH_OFFLINE_VERIFICATION_EVIDENCE",
+      "bytes": 3700,
+      "sha256": "3a2a69719e40bb3b6622f5a43651b9d8414652a6136fbcd21f257847bbec6e1f",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3147488",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "3700",
+        "st_mtime_ns": "1794553033692865233",
+        "st_ctime_ns": "1794553033692865233"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/runtime-entry-contract1.json": {
+      "kind": "PRESERVED_PRIOR_RECORD",
+      "bytes": 2089,
+      "sha256": "96a3872c788df576ff39f7f841bfcf8b54c268e528f2c39834f4e7fceccc0229",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3029598",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "2089",
+        "st_mtime_ns": "1794549656556878116",
+        "st_ctime_ns": "1794549656556878116"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/runtime-eligibility-reads1.json": {
+      "kind": "PRESERVED_PRIOR_RECORD",
+      "bytes": 5524,
+      "sha256": "d7dd5bfb80e1defd54866b51ece978dfcc64858a872e0dd86c8e9fe646e9460c",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3033933",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "5524",
+        "st_mtime_ns": "1794550301584875655",
+        "st_ctime_ns": "1794550301584875655"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/runtime-handoff-1.json": {
+      "kind": "PRESERVED_PRIOR_RECORD",
+      "bytes": 20115,
+      "sha256": "ad9154445de97425103d9ae80ddc1a91aded66d247a32c23e1591b1d5ff6df72",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3034620",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "20115",
+        "st_mtime_ns": "1794550121136876344",
+        "st_ctime_ns": "1794550121136876344"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/runtime-handoff-2.json": {
+      "kind": "PRESERVED_PRIOR_RECORD",
+      "bytes": 22268,
+      "sha256": "691da903f9e38c4ca2c61c8ec28d812d2b433ecba37c02ae35fa5fe211bc4054",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3035634",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "22268",
+        "st_mtime_ns": "1794550352472824918",
+        "st_ctime_ns": "1794550352472824918"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/preparatory-source-snapshot-1/manifest.json": {
+      "kind": "PRESERVED_PRIOR_RECORD",
+      "bytes": 5156,
+      "sha256": "3c5d157cb04216bc44c4c46dbeec0e1a976db1c05a483d9d2d3ee74c0aa1f45e",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026809",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "5156",
+        "st_mtime_ns": "1794548547359674866",
+        "st_ctime_ns": "1794548547359674866"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/preparatory-source-snapshot-1/preservation.json": {
+      "kind": "PRESERVED_PRIOR_RECORD",
+      "bytes": 520362,
+      "sha256": "59de36730be5b9db5f33ce240467ef1c8e2b4121ac984ae8535fe3f97719088d",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3026810",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "520362",
+        "st_mtime_ns": "1794548602072882139",
+        "st_ctime_ns": "1794548602072882139"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/runtime-eligibility-reads2.json": {
+      "kind": "NEW_READ_ONLY_CLOSURE_CONTRACT",
+      "bytes": 5547,
+      "sha256": "a5291e1f2e2e1c3a59faedec3c2c48045b18548413ff5c0ef91a53369cba56b8",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3036526",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "5547",
+        "st_mtime_ns": "1794553125476864883",
+        "st_ctime_ns": "1794553125476864883"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/manifest.json": {
+      "kind": "PRESERVED_REVIEWED_SOURCE_MANIFEST",
+      "bytes": 20337,
+      "sha256": "49ef0469252db90d0061adcb4f22ce8dcc27ca67f4711e3db5ba0208d1ca00c3",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3035687",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "20337",
+        "st_mtime_ns": "1794552365580867782",
+        "st_ctime_ns": "1794552365580867782"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/readchecks-before.json": {
+      "kind": "FRESH_OFFLINE_VERIFICATION_EVIDENCE",
+      "bytes": 593056,
+      "sha256": "871a114baa04368a72123449e17acc0350712bffd5d19038232368e4d9823189",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3036475",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "593056",
+        "st_mtime_ns": "1794553012100865316",
+        "st_ctime_ns": "1794553012100865316"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/readchecks-after.json": {
+      "kind": "FRESH_OFFLINE_VERIFICATION_EVIDENCE",
+      "bytes": 593056,
+      "sha256": "871a114baa04368a72123449e17acc0350712bffd5d19038232368e4d9823189",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3036516",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "593056",
+        "st_mtime_ns": "1794553024788865267",
+        "st_ctime_ns": "1794553024788865267"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/tests.stdout": {
+      "kind": "FRESH_OFFLINE_VERIFICATION_EVIDENCE",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3036512",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "28",
+        "st_mtime_ns": "1794553022032865278",
+        "st_ctime_ns": "1794553022032865278"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/tests.stderr": {
+      "kind": "FRESH_OFFLINE_VERIFICATION_EVIDENCE",
+      "bytes": 84975,
+      "sha256": "920c8ff58514ad6fdbbabf28481159314e1f0ef7d73d61f781bad2d53b0c29ce",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3036513",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "84975",
+        "st_mtime_ns": "1794553022032865278",
+        "st_ctime_ns": "1794553022032865278"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/typecheck.stdout": {
+      "kind": "FRESH_OFFLINE_VERIFICATION_EVIDENCE",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3036514",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "0",
+        "st_mtime_ns": "1794553024708865268",
+        "st_ctime_ns": "1794553024708865268"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/typecheck.stderr": {
+      "kind": "FRESH_OFFLINE_VERIFICATION_EVIDENCE",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3036515",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "0",
+        "st_mtime_ns": "1794553024708865268",
+        "st_ctime_ns": "1794553024708865268"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-1/capture/backend.json": {
+      "kind": "PRESERVED_FIRST_PASS_REVIEW",
+      "bytes": 1041,
+      "sha256": "cf25ed0fead97e7a21489bd031545b1da742fe608fea026c31a260164940810b",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3035666",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "1041",
+        "st_mtime_ns": "1794552243504868248",
+        "st_ctime_ns": "1794552243504868248"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-1/capture/devops.json": {
+      "kind": "PRESERVED_FIRST_PASS_REVIEW",
+      "bytes": 990,
+      "sha256": "9553f934e919d3a30a021b536cc50b763c2ce159a95ab74e0c5afab6650d2f93",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3035661",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "990",
+        "st_mtime_ns": "1794552116956868730",
+        "st_ctime_ns": "1794552116956868730"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-1/capture/adversarial.json": {
+      "kind": "PRESERVED_FIRST_PASS_REVIEW",
+      "bytes": 1374,
+      "sha256": "6b394a6f90dd8ed14ee053e704bbe86942eb55d62bb3b4f6897584fc55d4cf80",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3035688",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "1374",
+        "st_mtime_ns": "1794552465432867401",
+        "st_ctime_ns": "1794552465432867401"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-1/capture/security.json": {
+      "kind": "PRESERVED_FIRST_PASS_REVIEW",
+      "bytes": 1266,
+      "sha256": "0ec85293e89e1535ac5221e4b06b41c9da2b6f421717ef7e422dbfc88d10c468",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3035664",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "1266",
+        "st_mtime_ns": "1794552217932868345",
+        "st_ctime_ns": "1794552217932868345"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-1/caller/backend.json": {
+      "kind": "PRESERVED_FIRST_PASS_REVIEW",
+      "bytes": 1006,
+      "sha256": "c4cdc5431d10854096cb00660372af1ea983a033f11dce623efa3dcf79822bc1",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3035667",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "1006",
+        "st_mtime_ns": "1794552243504868248",
+        "st_ctime_ns": "1794552243504868248"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-1/caller/devops.json": {
+      "kind": "PRESERVED_FIRST_PASS_REVIEW",
+      "bytes": 1005,
+      "sha256": "956390f2fe0250a75bce0ef16d114c6df2aca7aa59581d90fc7cd3b1bd4d0703",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3035663",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "1005",
+        "st_mtime_ns": "1794552116956868730",
+        "st_ctime_ns": "1794552116956868730"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-1/caller/adversarial.json": {
+      "kind": "PRESERVED_FIRST_PASS_REVIEW",
+      "bytes": 1129,
+      "sha256": "c2e7b674eb2fb4e82e7a7e96a883f2dc88cd8db3c785bb10258e67a2f5d1f808",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3035689",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "1129",
+        "st_mtime_ns": "1794552465436867401",
+        "st_ctime_ns": "1794552465436867401"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-1/caller/security.json": {
+      "kind": "PRESERVED_FIRST_PASS_REVIEW",
+      "bytes": 1063,
+      "sha256": "176ae2dd2aa3b12c6f43b2330e4c7754353dd9fe2a7ca9038754300b95d7cd4e",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3035665",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "1063",
+        "st_mtime_ns": "1794552217932868345",
+        "st_ctime_ns": "1794552217932868345"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/readchecks-before.json": {
+      "kind": "FRESH_OFFLINE_VERIFICATION_EVIDENCE",
+      "bytes": 593056,
+      "sha256": "871a114baa04368a72123449e17acc0350712bffd5d19038232368e4d9823189",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3147489",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "593056",
+        "st_mtime_ns": "1794553033696865233",
+        "st_ctime_ns": "1794553033696865233"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/readchecks-after.json": {
+      "kind": "FRESH_OFFLINE_VERIFICATION_EVIDENCE",
+      "bytes": 593056,
+      "sha256": "871a114baa04368a72123449e17acc0350712bffd5d19038232368e4d9823189",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3148164",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "593056",
+        "st_mtime_ns": "1794553037368865219",
+        "st_ctime_ns": "1794553037368865219"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/tests.stdout": {
+      "kind": "FRESH_OFFLINE_VERIFICATION_EVIDENCE",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3148160",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "28",
+        "st_mtime_ns": "1794553034796865229",
+        "st_ctime_ns": "1794553034796865229"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/tests.stderr": {
+      "kind": "FRESH_OFFLINE_VERIFICATION_EVIDENCE",
+      "bytes": 15218,
+      "sha256": "ac526348073ffa8d240a9f4a7a580b5ef1bb1d4f4022075e99f5a698da22317b",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3148161",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "15218",
+        "st_mtime_ns": "1794553034796865229",
+        "st_ctime_ns": "1794553034796865229"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/typecheck.stdout": {
+      "kind": "FRESH_OFFLINE_VERIFICATION_EVIDENCE",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3148162",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "0",
+        "st_mtime_ns": "1794553037288865220",
+        "st_ctime_ns": "1794553037288865220"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/typecheck.stderr": {
+      "kind": "FRESH_OFFLINE_VERIFICATION_EVIDENCE",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3148163",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "0",
+        "st_mtime_ns": "1794553037288865220",
+        "st_ctime_ns": "1794553037288865220"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/clock-domain-proof.json": {
+      "kind": "FRESH_SYNTHETIC_SUBPROCESS_EVIDENCE",
+      "bytes": 1139,
+      "sha256": "52ef35004cf9b639e6e89c0fd9cf216b91ff99015778c359d94023a0a7501120",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3036517",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "1139",
+        "st_mtime_ns": "1794553024788865267",
+        "st_ctime_ns": "1794553024788865267"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/parent-integration-proof.json": {
+      "kind": "FRESH_SYNTHETIC_SUBPROCESS_EVIDENCE",
+      "bytes": 497,
+      "sha256": "11c8de7082bf3e30183f4c10c3765466e23eeb90b1a19e241ba3a550118c4492",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3036518",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "497",
+        "st_mtime_ns": "1794553024788865267",
+        "st_ctime_ns": "1794553024788865267"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/parent-child-fixture.ts": {
+      "kind": "FRESH_SYNTHETIC_SUBPROCESS_EVIDENCE",
+      "bytes": 4881,
+      "sha256": "d7bf1dcdac660bacb10a22b17df407b3ea25a69f6fcea3c64e6ca42a9f618f5f",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3036519",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "4881",
+        "st_mtime_ns": "1794553024793415304",
+        "st_ctime_ns": "1794553024793415304"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/parent-child.stdout": {
+      "kind": "FRESH_SYNTHETIC_SUBPROCESS_EVIDENCE",
+      "bytes": 328,
+      "sha256": "716d0984486d5cdf2998999e84b4d92c39fe185bb7f28046e0818251badabf8b",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3036520",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "328",
+        "st_mtime_ns": "1794553024793694196",
+        "st_ctime_ns": "1794553024793694196"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/parent-child.stderr": {
+      "kind": "FRESH_SYNTHETIC_SUBPROCESS_EVIDENCE",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3036521",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "0",
+        "st_mtime_ns": "1794553024793694196",
+        "st_ctime_ns": "1794553024793694196"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/parent-child-receipt.json": {
+      "kind": "FRESH_SYNTHETIC_SUBPROCESS_EVIDENCE",
+      "bytes": 12837,
+      "sha256": "78dd888f06538ce4e747f2e56d7d1e8e3a5f88ffcddd19a3d7a0cd060039bb83",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3036522",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "12837",
+        "st_mtime_ns": "1794553024794061564",
+        "st_ctime_ns": "1794553024794061564"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/parent-child-events.jsonl": {
+      "kind": "FRESH_SYNTHETIC_SUBPROCESS_EVIDENCE",
+      "bytes": 3618,
+      "sha256": "62d9a1e7dbbf0c1b24e7ccf7c0f8f7845c49e1b605778498d5940ee485d10912",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3036523",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "3618",
+        "st_mtime_ns": "1794553024794264077",
+        "st_ctime_ns": "1794553024794264077"
+      }
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/parent-child-trace.json": {
+      "kind": "FRESH_SYNTHETIC_SUBPROCESS_EVIDENCE",
+      "bytes": 228,
+      "sha256": "ce05e12e638d520850566967862dca73751e3c3947188ea05cf2d88f351cdcb1",
+      "metadata": {
+        "st_dev": "65088",
+        "st_ino": "3036524",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "228",
+        "st_mtime_ns": "1794553024794449629",
+        "st_ctime_ns": "1794553024794449629"
+      }
+    }
+  },
+  "readchecks": {
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/receipt.json": {
+      "beforeSha256": "871a114baa04368a72123449e17acc0350712bffd5d19038232368e4d9823189",
+      "afterSha256": "871a114baa04368a72123449e17acc0350712bffd5d19038232368e4d9823189",
+      "match": true,
+      "historicalRecords": 352,
+      "reviewedSnapshotSources": 16,
+      "protectedFrozenManifestCounts": [
+        347,
+        327,
+        65
+      ]
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-6/receipt.json": {
+      "beforeSha256": "871a114baa04368a72123449e17acc0350712bffd5d19038232368e4d9823189",
+      "afterSha256": "871a114baa04368a72123449e17acc0350712bffd5d19038232368e4d9823189",
+      "match": true,
+      "historicalRecords": 352,
+      "reviewedSnapshotSources": 16,
+      "protectedFrozenManifestCounts": [
+        347,
+        327,
+        65
+      ]
+    }
+  },
+  "reviewedRuntimeSourceSnapshot": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/manifest.json",
+    "sha256": "49ef0469252db90d0061adcb4f22ce8dcc27ca67f4711e3db5ba0208d1ca00c3",
+    "files": 16,
+    "bytesAndStableMetadataUnchanged": true
+  },
+  "findingResolutionMap": [
+    {
+      "code": "LEADING_WHITESPACE_IGNORED_IN_HOST_ARCHIVE_EXCLUSION_RULE",
+      "implementation": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.ts:625",
+      "function": "assertFixedCacheIgnore",
+      "change": "Exact literal LF/CRLF exclusion matching without whitespace normalization; conservative negation rejection; unchanged postclaim fixed HOST preflight",
+      "tests": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture-full.test.ts:50-56"
+    },
+    {
+      "code": "PRODUCTION_SIGNAL_DELIVERY_BOOLEAN_DISCARDED",
+      "implementation": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.ts:519",
+      "function": "killOwnedWorker",
+      "change": "Known-exit and false delivery throw; production WorkerHandle delegates to the tested wrapper; cleanup taint and sent facts remain sticky after fixture exit zero",
+      "tests": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture-full.test.ts:57-93"
+    },
+    {
+      "code": "ACTUAL_VERIFICATION_BYPASSES_STRICT_TEST_SUMMARY_PARSER",
+      "implementation": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/verify.ts:218-238,334",
+      "functions": [
+        "assessVerification",
+        "assessRuntimeVerification"
+      ],
+      "change": "Capture and caller actual receipt decisions share the strict tested parser and process/proof gates; caller verification delegates and re-exports without a second parser",
+      "tests": [
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture-full.test.ts:94-131",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.test.ts"
+      ]
+    }
+  ],
+  "historicalPreparatoryTests": 305,
+  "all352HistoricalByteHashesAndMetadataVerifiedByFreshReadchecks": true,
+  "firstPassReviewRecordsPreserved": 8,
+  "requiredBeforeReadiness": [
+    "EIGHT_REFRESHED_CAPTURE_AND_CALLER_SCOPED_ROLE_VERDICTS",
+    "FOUR_INDEPENDENT_DELIVERY_SCOPED_ROLE_VERDICTS",
+    "LEAD_CREATED_NON_AUTHORIZING_EXECUTION_BINDING2_AND_INVOCATION_READY2",
+    "REMAINING_APPROVED_DELIVERY_SEAL_AND_PUBLICATION_GATES"
+  ],
+  "runtimeEntryContractUnchanged": true,
+  "manualCallerArgs": [
+    "execute"
+  ],
+  "approvalSha256": "4e68d36f8076e213744364cf4cd5f793ef3dbffda6157b93070edf2ffc282d3f",
+  "actualGetRequests": 0,
+  "actualGitHubRequests": 0,
+  "productionEntryInvoked": false,
+  "productionWorkerInvoked": false,
+  "productionAdapterInstantiated": false,
+  "productionCacheParentCreated": false,
+  "actualManualHandoffs": 0,
+  "newAuthorizationOrAllowancesIssued": false,
+  "publicationPerformed": false,
+  "executionReadinessClaimed": false,
+  "trainingReady": false
+}

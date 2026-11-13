@@ -1,0 +1,19 @@
+{
+  "version": "chess-coach.r2-scoped-implementation-review.v1",
+  "scope": "capture",
+  "role": "backend",
+  "session": "ses_e2c6065efffeSB0LrZSZkwl2RW",
+  "status": "READY_CAPTURE_IMPLEMENTATION_SCOPE",
+  "reviewedSource": {"path":"_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.ts","sha256":"0a2a08b38758c9e8e59a240aba3902ef23d43da65ac7644ebc7c5b8792273e10"},
+  "verificationReceipt": {"path":"_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/receipt.json","sha256":"f780bbf4aa007deece850ba688b7200df1b4b31feebaea52045d5259b3dbfe27"},
+  "sourceManifest": {"path":"_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/source-manifest.json","sha256":"9de207966836330d95e72af6f433850669412b0eafe28b214e0531794c71bad7"},
+  "recordedTestsPassed": 751,
+  "recordedTestsFailed": 0,
+  "recordedStrictTypecheckExitCode": 0,
+  "remainingFindings": [],
+  "reasoningBearingSourceCommentFindings": [],
+  "verificationRerunByReviewer": false,
+  "nonAuthorizing": true,
+  "executionReadinessClaimed": false,
+  "trainingReady": false
+}

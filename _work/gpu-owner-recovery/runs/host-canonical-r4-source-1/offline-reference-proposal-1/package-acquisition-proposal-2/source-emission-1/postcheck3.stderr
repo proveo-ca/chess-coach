@@ -1,0 +1,15 @@
+59 | }
+60 | function addTime(anchor: number, ms: number): number {
+61 |   const result = anchor + ms; requireThat(Number.isSafeInteger(anchor) && anchor >= 0 && Number.isSafeInteger(result) && result >= anchor, "clock-cutoff-invalid"); return result;
+62 | }
+63 | export function requireThat(condition: unknown, code: string): asserts condition {
+64 |   if (!condition) throw new Error(code);
+                                 ^
+error: postcheck-no-cache-or-binary
+      at requireThat (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.ts:64:29)
+      at safe (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/source-emission-1/postcheck.ts:20:3)
+      at read (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/source-emission-1/postcheck.ts:30:12)
+      at verifyRows (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/source-emission-1/postcheck.ts:55:35)
+      at /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/source-emission-1/postcheck.ts:102:1
+
+Bun v1.4.0 (Linux x64)

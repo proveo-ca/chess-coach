@@ -1,0 +1,49 @@
+{
+  "version": "chess-coach.reference-package-manual-launch-boundary.v1",
+  "status": "EXECUTOR_CONFIRMED_BOOTSTRAP_CLOCK_BOUNDARY",
+  "authorizationSource": "EXECUTOR_INTERACTIVE_BOOTSTRAP_BOUNDARY_RECOMMENDED",
+  "selectedOption": "Bootstrap boundary (Recommended)",
+  "approval": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/approval2.json",
+    "sha256": "4e68d36f8076e213744364cf4cd5f793ef3dbffda6157b93070edf2ffc282d3f"
+  },
+  "manualPlan": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/manual-handoff-plan1.json",
+    "sha256": "4297e4f1b763b5aa152b88a7a3e288a19cafc85331cbed2d776f38d043f8817a"
+  },
+  "architectSession": "ses_e2f47580affedkCSE0PvqFHby6",
+  "launchPrecondition": {
+    "clockedByBootstrap": false,
+    "scope": "EXISTING_MISE_SELECTS_INSTALLED_CORE_BUN_1_4_0_AND_LAUNCHES_INLINE_BOOTSTRAP",
+    "autoInstall": false,
+    "handoffClaimAllowed": false,
+    "sourceFetchAllowed": false,
+    "materializationAllowed": false
+  },
+  "stageA": {
+    "clockOrigin": "FIRST_INLINE_BOOTSTRAP_ENTRY_BEFORE_BOOTSTRAP_CONTROLLED_PREFLIGHT",
+    "budgetMs": 120000,
+    "githubFetchMs": 30000,
+    "includes": ["bootstrap-controlled preflight", "exclusive handoff claim", "gh startup", "source transfer", "validation", "materialization", "sealing", "owned cleanup"],
+    "clockModel": "PROCESS_LOCAL_MONOTONIC_ELAPSED",
+    "absoluteCrossProcessClockComparisonsAllowed": false
+  },
+  "stageB": {
+    "budgetMs": 120000,
+    "existingAcquisitionEnvelopeUnchanged": true,
+    "acquisitionDeadlineResetAllowed": false
+  },
+  "globalManualDeadlineMs": null,
+  "endToEndFishInvocationBoundClaimed": false,
+  "newPrelaunchClockNativeHelperFetchOrCancellationFrameworkApproved": false,
+  "issuedApprovalRequestPlanOrAddendaRewritten": false,
+  "archiveGrantId": "reference-two-package-source-acquisition-2",
+  "manualHandoffGrantId": "reference-package-manual-host-handoff-2",
+  "additionalAttemptsOrRequestsGranted": 0,
+  "existingAllowancesRenewedOrMultiplied": false,
+  "allowancesConsumedByThisRecord": false,
+  "assistantMayExecuteActualHandoffOrAcquisition": false,
+  "requiredBeforePublication": ["bind clarified delivery contract", "test clarified boundary", "complete required implementation verification and twelve scoped reviews", "seal complete literal packet"],
+  "actualHandoffOrAcquisitionExecuted": false,
+  "trainingReady": false
+}

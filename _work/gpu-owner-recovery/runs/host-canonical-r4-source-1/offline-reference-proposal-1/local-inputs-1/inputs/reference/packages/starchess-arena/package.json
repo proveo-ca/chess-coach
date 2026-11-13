@@ -1,0 +1,29 @@
+{
+  "name": "@chess-coach/starchess-arena",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./observations": "./src/observations.ts",
+    "./events": "./src/events.ts",
+    "./intent-codec-v1": "./src/intent-codec-v1.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "cli": "tsx src/cli/main.ts",
+    "challenge": "tsx src/cli/challenge.ts"
+  },
+  "dependencies": {
+    "@chess-coach/starchess-core": "workspace:*",
+    "jssha": "3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "tsx": "^4.19.5",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.5"
+  }
+}

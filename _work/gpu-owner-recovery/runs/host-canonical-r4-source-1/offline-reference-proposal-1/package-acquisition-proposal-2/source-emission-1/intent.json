@@ -1,0 +1,23 @@
+{
+  "version": "chess-coach.r2-offline-source-emission-intent.v1",
+  "status": "LEAD_RELEASED_REVIEWED_OFFLINE_SOURCE_WRITER_ONLY",
+  "authorizationBasis": "EXECUTOR_APPROVED_FULL_PACKET_PREPARATION_AND_PUBLICATION_WHEN_READY",
+  "scope": "FIVE_NONAUTHORIZING_SOURCE_ARTIFACTS_IN_THIS_CHECKOUT_ONLY",
+  "writer": "../seal-ready-packet-emit.ts",
+  "applicationArgument": "emit-offline-source-packet",
+  "runtime": {"bun":"1.4.0","flags":["--no-env-file","--no-install"]},
+  "verificationReceipt": {"path":"../seal-verification-8/receipt.json","sha256":"ab42e7d7be89b278c603d41964edb60af9d66f8030ca54bfd5c9727cc107faeb"},
+  "sourceManifest": {"path":"../seal-verification-8/source-manifest.json","sha256":"9209cd2242dc8340fd4979685189708369fd4fa0f70333e291f6e0e21444c1f1"},
+  "qualityReviews": ["../seal-quality-review-2/adversarial.json","../seal-quality-review-2/security.json"],
+  "currentImplementationVerdictsRequired": 12,
+  "resultRequiresMatchingExternalExit0AndPostcheck": true,
+  "manualHandoffExecutionAuthorizedHere": false,
+  "archiveAcquisitionExecutionAuthorizedHere": false,
+  "productionRootsOrCacheParentCreationAuthorizedHere": false,
+  "networkRequestsAuthorizedByThisRecord": 0,
+  "operationalAllowancesRenewedOrConsumedByThisRecord": false,
+  "automaticRetryOrPartialRepairAuthorized": false,
+  "publicationPerformed": false,
+  "executionReadinessClaimed": false,
+  "trainingReady": false
+}

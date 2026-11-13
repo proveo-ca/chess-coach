@@ -1,0 +1,16 @@
+{
+  "version": "chess-coach.r2-offline-seal-quality-review.v1",
+  "role": "adversarial",
+  "session": "ses_e2c5f9288ffeNLMbi5vIhbKzGr",
+  "status": "READY_OFFLINE_SEAL_SOURCE_AND_WRITER",
+  "verificationReceipt": {"path":"_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-verification-8/receipt.json","sha256":"ab42e7d7be89b278c603d41964edb60af9d66f8030ca54bfd5c9727cc107faeb"},
+  "sourceManifest": {"path":"_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-verification-8/source-manifest.json","sha256":"9209cd2242dc8340fd4979685189708369fd4fa0f70333e291f6e0e21444c1f1"},
+  "reviewedSourceFiles": 6,
+  "remainingFindings": [],
+  "readyToMerge": true,
+  "verificationRerunByReviewer": false,
+  "nonAuthorizing": true,
+  "actualEmissionPerformed": false,
+  "executionReadinessClaimed": false,
+  "trainingReady": false
+}

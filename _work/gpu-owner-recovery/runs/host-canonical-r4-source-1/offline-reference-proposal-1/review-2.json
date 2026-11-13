@@ -1,0 +1,23 @@
+{
+  "status": "READY_DIRECTION_ONLY_OFFLINE_REFERENCE_PROPOSAL_RECORDS",
+  "adversarial": {"session":"ses_e2ef57739ffe243r8K2ytkCf80","verdict":"READY_YES","originalRoundTripFindingCleared":true,"remainingFindings":[]},
+  "security": {"session":"ses_e2ef57738ffenD2ct3g3sOKXhY","verdict":"READY_DIRECTION_ONLY_YES","roundTripNoteCleared":true,"risk":"LOW","remainingFindings":[]},
+  "verification": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/verification-2/receipt.json",
+  "freshSerializeReparseComparisons": 2,
+  "priorNegativeCasesAcceptedOnlyAtUnchangedSourceBindings": 12,
+  "priorRoundTripClaimNotUsed": true,
+  "verification1AndReview1RetainedAsPreCorrectionHistory": true,
+  "direction": "OFFLINE_PREPARATION",
+  "referenceSourceRoot": null,
+  "installedPackageRoot": null,
+  "outputRoot": null,
+  "executableHandoff": null,
+  "newAuthorityGranted": false,
+  "historicalExternalInventoryAccessed": false,
+  "referencePayloadAccessed": false,
+  "captureCopyExtractBuildStageOrAcquisitionPerformed": false,
+  "hostNativeGpuOrReferenceExecuted": false,
+  "publicationPerformed": false,
+  "experimentTrainingAuthorized": false,
+  "trainingReady": false
+}

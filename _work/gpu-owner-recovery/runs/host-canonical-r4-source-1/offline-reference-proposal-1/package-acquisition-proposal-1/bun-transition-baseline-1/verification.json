@@ -1,0 +1,13 @@
+{
+  "status": "PASS_BASELINE_PROOF_AND_CORRECTED_STRICT_TYPECHECK_ONLY",
+  "proof": {"exitCode":0,"stdout":"proof.stdout","stderr":"proof.stderr","receipt":"receipt.json"},
+  "typechecks": [
+    {"exitCode":2,"stdout":"typecheck.stdout","stderr":"typecheck.stderr","types":["bun","node"],"failure":"TS2688_DIRECT_NODE_TYPE_ENTRY_NOT_PRESENT"},
+    {"exitCode":0,"stdout":"typecheck-2.stdout","stderr":"typecheck-2.stderr","types":["bun"],"strict":true,"noEmit":true,"noUnusedLocals":true,"noUnusedParameters":true}
+  ],
+  "sourceChangedBetweenTypechecks": false,
+  "bunAcquisitionHelperVerification": false,
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

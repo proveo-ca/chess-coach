@@ -1,0 +1,13 @@
+{
+  "status": "PASS_REDELIVERY_COMMIT_SCOPE_AND_BOTH_RAW_COMMAND_BINDINGS",
+  "commit": "6fdc92c7eb90eb625e6d54c6a448009d5db34423",
+  "parent": "b6827cdc40305d641aff717f38cf85bfdfe326aa",
+  "changedPaths": 17,
+  "sourceOrCanonicalScriptChanged": false,
+  "normalCommitsConsumed": 1,
+  "remainingNormalCommits": 0,
+  "httpsPushAttempted": false,
+  "hostAttemptOrRetryRenewed": false,
+  "hostExecuted": false,
+  "trainingReady": false
+}

@@ -1,0 +1,10 @@
+{
+  "status": "READY_BUN_SPEC_PROJECTION_ONLY",
+  "adversarial": {"session":"ses_e2e582911ffe8NNgAwLpEKFv0k","readyToMerge":true,"priorMediumCleared":true,"remainingFindings":[]},
+  "verification": {"receipt":"receipt.json","strictTypecheckExitCode":0,"stdout":"typecheck.stdout","stderr":"typecheck.stderr","checklistNegativeCasesRejected":3},
+  "bunHelperImplementationReviewed": false,
+  "operationalReadinessGranted": false,
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

@@ -1,0 +1,11 @@
+{
+  "status": "NOT_READY_CALLER_SOURCE_ONLY",
+  "session": "ses_e2e4b1ef3ffeptPhqouftYEoBl",
+  "verification": "invocation-verification-3/receipt.json",
+  "readOnly": true,
+  "findings": [{"severity":"MEDIUM","path":"invoke-approved-bun-verify.ts","line":14,"code":"CALLER_VERIFIER_REJECTS_LEGITIMATE_NON_AUTHORIZING_CAPTURE_BINDING"}],
+  "operationalReadinessGranted": false,
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

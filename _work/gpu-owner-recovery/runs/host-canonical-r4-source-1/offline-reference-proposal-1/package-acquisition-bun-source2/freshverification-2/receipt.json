@@ -1,0 +1,112 @@
+{
+  "version": "chess-coach.retry-preparation-offline-verification.v1",
+  "status": "PASS_OFFLINE_PREPARATION_ONLY",
+  "scope": "Isolated fixed-parent module with in-memory IO and request/plan contract checks only; not full acquisition or end-to-end integration qualification",
+  "runtime": {
+    "path": "/usr/local/bin/bun",
+    "bun": "1.4.0",
+    "typescript": "5.9.3",
+    "flags": [
+      "--no-env-file",
+      "--no-install"
+    ],
+    "strictNoEmit": true
+  },
+  "packetHashes": {
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/request.json": "c0288e1e34e24d2f7a81e12ee1967ffafbd2768b4c2a5bc2ba15826b6384ff3f",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/plan.json": "fc43ccf4ed870e1a7ac2ff723e4381dfbcf7747070c294ba049eb05349534269",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent.ts": "62db5298937cf1c752a76b39f42fa19876e36e637d9d21dba6de323de347b27c",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent.test.ts": "1f44088e32ffed92945674a7f89664f89fcb3ea9063e969a46f4f274feb1f482",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/verify.ts": "f0c7bb2247511316988949cea3386bd04e6d12699d0c1b4df2e8b8b013360d5f",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/tsconfig.json": "1ec7eab6a783b472526f07e1551bbb171a5a5d1b55158950cd5e1844a64e245f",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/.gitignore": "f268bfc2d8d6a4d3ed06aaf9f7ac8db724e586b9a03a0005a42441ba6393f7b5"
+  },
+  "sourceManifestSha256": "a2f8ca1fec84d35afac22d1a6118ae966a0f3ad3441a274622b9adccc6d4a7ae",
+  "readchecksBeforeSha256": "31dee15367e2c6d5fbd559b59a11728c24a0b8403d89ec5d6de445bf36229ade",
+  "readchecksAfterSha256": "31dee15367e2c6d5fbd559b59a11728c24a0b8403d89ec5d6de445bf36229ade",
+  "readchecksMatch": true,
+  "testsPassed": 226,
+  "testsFailed": 0,
+  "typecheckExitCode": 0,
+  "tests": {
+    "args": [
+      "--no-env-file",
+      "--no-install",
+      "test",
+      "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent.test.ts",
+      "--timeout",
+      "10000"
+    ],
+    "exitCode": 0,
+    "signal": null,
+    "reaped": true,
+    "pipesCompleted": true,
+    "failure": null,
+    "stdoutBytes": 28,
+    "stderrBytes": 33563,
+    "stdoutSha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94",
+    "stderrSha256": "f0a1b62a2211372408994c8376588f21320a907cc613366423251f4582557cb0"
+  },
+  "typecheck": {
+    "args": [
+      "--no-env-file",
+      "--no-install",
+      "/home/gu1lty/Projects/proveo/chess-coach/node_modules/typescript/bin/tsc",
+      "-p",
+      "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/tsconfig.json"
+    ],
+    "exitCode": 0,
+    "signal": null,
+    "reaped": true,
+    "pipesCompleted": true,
+    "failure": null,
+    "stdoutBytes": 0,
+    "stderrBytes": 0,
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "historicalProofs": {
+    "sourceProof10Sha256": "c8544b2d06ba31b3ec8fc3d7a35d507443d66b8e2c5ddb4442e0577368f586c1",
+    "callerProof4Sha256": "6bff069e999f20aa0370052dcba54620abecd5e7bc9caba8ba2eb5da6bbdc2fa",
+    "failureEvidenceFilesVerified": 6,
+    "oldApprovalSha256": "62af17fc6199b5537c3488c10680b9269baf170a05a322facfdfad3737fea945",
+    "oldCombinedAttemptsConsumed": 1,
+    "oldRemainingCombinedAttempts": 0,
+    "oldRemainingGetRequests": 0,
+    "oldUnusedUrlSlotsAreAuthority": false
+  },
+  "preservedHistoricalRecordCount": 352,
+  "syntheticFixtureScope": "In-memory maps only; no real filesystem adapter or production mkdir",
+  "actualGetRequests": 0,
+  "networkOperationsPerformed": 0,
+  "productionAdapterInstantiated": false,
+  "acquisitionEntrypointPresent": false,
+  "productionEntryInvoked": false,
+  "productionWorkerInvoked": false,
+  "productionCacheParentCreated": false,
+  "productionDestinationsCreated": false,
+  "oldEvidenceSourcesBindingsAndMetadataUnchanged": true,
+  "oldRawFilesOrCachePayloadsRead": false,
+  "oldLlvmPipelineOrFailedFull1Used": false,
+  "realNetworkUsed": false,
+  "listenersStarted": false,
+  "nativeCompilation": false,
+  "packageExecution": false,
+  "installInvoked": false,
+  "f64FloatmathChanged": false,
+  "gitMutationOrPublicationPerformed": false,
+  "currentLiveGrant": 0,
+  "currentAuthorizedAcquisitionAttempts": 0,
+  "newAcquisitionGrantIssued": false,
+  "executionReadinessClaimed": false,
+  "trainingReady": false,
+  "deferred": [
+    "fresh actual approval and real approval SHA pin",
+    "full S2 capture and caller",
+    "real OP2-bound adapter",
+    "fresh full tests and end-to-end qualification",
+    "backend/DevOps/adversarial/security reviews",
+    "execution bindings and readiness records"
+  ],
+  "mockPhaseGuardQualifiesFullIntegration": false
+}

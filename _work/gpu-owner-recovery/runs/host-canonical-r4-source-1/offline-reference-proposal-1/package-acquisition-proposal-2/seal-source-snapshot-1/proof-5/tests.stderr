@@ -1,0 +1,96 @@
+
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet.test.ts:
+(pass) offline seal preparation > actual frozen twelve-role gate validates only in memory [38.39ms]
+(pass) offline seal preparation > missing all twelve rejects without source/derived reads [0.33ms]
+(pass) offline seal preparation > nonliteral/duplicate/extra role set fails before reader: 11:_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/adversarial.json [0.08ms]
+(pass) offline seal preparation > nonliteral/duplicate/extra role set fails before reader: 13:_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/backend.json [0.02ms]
+(pass) offline seal preparation > nonliteral/duplicate/extra role set fails before reader: 12:_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/backend.json [0.02ms]
+(pass) offline seal preparation > nonliteral/duplicate/extra role set fails before reader: 12:_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/backend.json
+(pass) offline seal preparation > nonliteral/duplicate/extra role set fails before reader: 12:_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/delivery/security.json
+(pass) offline seal preparation > nonliteral/duplicate/extra role set fails before reader: 12:_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-3/delivery/security.json
+(pass) offline seal preparation > reject review status before binding/ready reads [1.22ms]
+(pass) offline seal preparation > reject review scope before binding/ready reads [0.94ms]
+(pass) offline seal preparation > reject review role before binding/ready reads [0.85ms]
+(pass) offline seal preparation > reject review nonAuthorizing before binding/ready reads [0.87ms]
+(pass) offline seal preparation > reject review executionReadinessClaimed before binding/ready reads [0.88ms]
+(pass) offline seal preparation > reject review trainingReady before binding/ready reads [0.95ms]
+(pass) offline seal preparation > reject review remainingFindings before binding/ready reads [0.92ms]
+(pass) offline seal preparation > reject review reasoningBearingSourceCommentFindings before binding/ready reads [0.83ms]
+(pass) offline seal preparation > reject review session before binding/ready reads [0.74ms]
+(pass) offline seal preparation > synthetic reviews remain nonauthorizing and marked in memory [0.18ms]
+(pass) offline seal preparation > wrong review reviewedSource hash rejects [4.42ms]
+(pass) offline seal preparation > wrong review verificationReceipt hash rejects [4.89ms]
+(pass) offline seal preparation > wrong review sourceManifest hash rejects [2.97ms]
+(pass) offline seal preparation > inconsistent four delivery proof references reject [4.91ms]
+(pass) offline seal preparation > delivery review cannot select historical proof by resolver [2.84ms]
+(pass) offline seal preparation > strict delivery proof rejects testsPassed=0 [3.82ms]
+(pass) offline seal preparation > strict delivery proof rejects testsPassed=1.5 [2.77ms]
+(pass) offline seal preparation > strict delivery proof rejects testsPassed=9007199254740992 [3.56ms]
+(pass) offline seal preparation > strict delivery proof rejects testsFailed=1 [4.12ms]
+(pass) offline seal preparation > strict delivery proof rejects status=PASS [4.15ms]
+(pass) offline seal preparation > strict delivery proof rejects immutableAndHistoricalReadchecksMatch=false [5.12ms]
+(pass) offline seal preparation > strict delivery proof rejects sourceUnchanged=false [4.27ms]
+(pass) offline seal preparation > strict delivery proof rejects productionRunEntered=true [3.38ms]
+(pass) offline seal preparation > strict delivery proof rejects productionTransportInvoked=true [3.85ms]
+(pass) offline seal preparation > strict delivery proof rejects realNetworkRequests=1 [3.21ms]
+(pass) offline seal preparation > strict delivery proof rejects fishExecuted=true [3.80ms]
+(pass) offline seal preparation > strict delivery proof rejects fishNoExecuteChecked=false [3.15ms]
+(pass) offline seal preparation > delivery command reaped fails closed [5.31ms]
+(pass) offline seal preparation > delivery command outEOF fails closed [3.30ms]
+(pass) offline seal preparation > delivery command errEOF fails closed [4.08ms]
+(pass) offline seal preparation > delivery command cleanupConfirmed fails closed [3.49ms]
+(pass) offline seal preparation > delivery command cleanupExpired fails closed [3.90ms]
+(pass) offline seal preparation > delivery command pipeCleanupFailed fails closed [3.11ms]
+(pass) offline seal preparation > delivery command pipeDestructionAttempted fails closed [3.67ms]
+(pass) offline seal preparation > delivery command exitCode fails closed [3.12ms]
+(pass) offline seal preparation > delivery command signal fails closed [4.48ms]
+(pass) offline seal preparation > delivery command pid fails closed [3.37ms]
+(pass) offline seal preparation > duplicate command names fail closed [3.84ms]
+(pass) offline seal preparation > strict binding and readiness schemas validate actual source bytes through overlays [7.36ms]
+(pass) offline seal preparation > pure preparation never reads actual derived records [0.09ms]
+(pass) offline seal preparation > exact 48-member union excludes packet, delivery sources, final evidence, and operational payload [0.22ms]
+(pass) offline seal preparation > each table row binds byte length, SHA256, and Git blob identity [6.82ms]
+(pass) offline seal preparation > actual source/proof/closure drift rejects: _work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-bootstrap.ts [3.86ms]
+(pass) offline seal preparation > actual source/proof/closure drift rejects: _work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-9/receipt.json [0.40ms]
+(pass) offline seal preparation > actual source/proof/closure drift rejects: _work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/runtime-eligibility-reads2.json [0.25ms]
+(pass) offline seal preparation > malicious reader cannot ignore per-file cap [0.16ms]
+(pass) offline seal preparation > bounded repository reader rejects traversal and operational roots [0.08ms]
+(pass) offline seal preparation > packet helper rejects file cap before materialization [2.13ms]
+(pass) offline seal preparation > packet helper rejects aggregate source cap [33.03ms]
+(pass) offline seal preparation > packet helper rejects excess count before any member read [0.42ms]
+(pass) offline seal preparation > packet helper rejects binary and duplicate members [0.21ms]
+(pass) offline seal preparation > only full-candidate nonrunning Fish syntax fixture renders [0.42ms]
+(pass) offline seal preparation > protected fixture materializes exact 36-member review-free packet as 0400 and validates without adapters [29.63ms]
+(pass) offline seal preparation > tampered packet fails pure validation before any fixture mkdir [0.16ms]
+(pass) offline seal preparation > fixture materializer rejects real source roots before I/O [0.08ms]
+(pass) offline seal preparation > real roots, source files, reviews, and derived-record absence remain unchanged [31.12ms]
+(pass) exact safe-integer verification summary > accepts one positive pass and one zero fail line [0.23ms]
+(pass) exact safe-integer verification summary > accepts unrelated Bun case label "pass case label:" [0.03ms]
+(pass) exact safe-integer verification summary > accepts unrelated Bun case label "fail closed parser:"
+(pass) exact safe-integer verification summary > accepts unrelated Bun case label "some pass:"
+(pass) exact safe-integer verification summary > accepts unrelated Bun case label "some pass"
+(pass) exact safe-integer verification summary > accepts unrelated Bun case label "some fail"
+(pass) exact safe-integer verification summary > accepts unrelated Bun case label "1 fail trailing"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1 pass\n1 pass\n0 fail" [0.01ms]
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1 pass\n0 fail\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "0 pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1.5 pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "01 pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "+1 pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "-1 pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "9007199254740992 pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "NaN pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "Infinity pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1 pass trailing\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1 pass\n1 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1 pass"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "pass 12\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1e2 pass\n0 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1 pass\n0 fail\n1.5 fail"
+(pass) exact safe-integer verification summary > rejects malformed/duplicate summary "1 pass\n0 fail\n 1 pass"
+
+ 89 pass
+ 0 fail
+ 317 expect() calls
+Ran 89 tests across 1 file. [692.00ms]

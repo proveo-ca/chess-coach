@@ -1,0 +1,12 @@
+{
+  "status": "NOT_READY_EXECUTION_BINDING_REVIEW_ROLE_MISMATCH",
+  "reviewedGeneration": "verification-3/receipt.json",
+  "findings": [
+    {"severity":"HIGH","path":"capture.ts","line":146,"code":"BOOTSTRAP_REQUIRES_SPEC_INSTEAD_OF_BACKEND_REVIEW","expectedImplementationReviews":["backend","devops","adversarial","security"],"observedGateRoles":["adversarial","security","devops","spec"]}
+  ],
+  "requiredTeamReviewsInProgress": true,
+  "actualAcquisitionInvoked": false,
+  "executionBindingCreated": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

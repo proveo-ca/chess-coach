@@ -1,0 +1,15 @@
+{
+  "version": "chess-coach.r2-captured-test-stream-classification.v1",
+  "status": "CAPTURED_UTF8_NEGATIVE_TEST_LABELS_PRESERVED_AS_ISSUED",
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-1/tests.stderr",
+      "bytes": 9562,
+      "sha256": "d6262d5bc0a58f442f60ccf54309c10c509271a7661f5fb5bc586fa9ba4e8834",
+      "nulBytes": 1,
+      "firstLabelContext": " packet and genuine authorization > rejects path a\u0000b.ts\n(pass) literal packet and genuine authorizat"
+    }
+  ],
+  "bytesChanged": 0,
+  "nativeBinaryOrArchiveInputsAdmitted": false
+}

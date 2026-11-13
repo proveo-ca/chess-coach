@@ -1,0 +1,11 @@
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/canonical.test.ts(96,122): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(expected: { stage: "initial" | "opened" | "settled"; bytes: number; sha256: string; }[]): void', gave the following error.
+    Argument of type '{ stage: string; bytes: number; sha256: string; }[]' is not assignable to parameter of type '{ stage: "initial" | "opened" | "settled"; bytes: number; sha256: string; }[]'.
+      Type '{ stage: string; bytes: number; sha256: string; }' is not assignable to type '{ stage: "initial" | "opened" | "settled"; bytes: number; sha256: string; }'.
+        Types of property 'stage' are incompatible.
+          Type 'string' is not assignable to type '"initial" | "opened" | "settled"'.
+  Overload 2 of 2, '(expected: NoInfer<{ stage: "initial" | "opened" | "settled"; bytes: number; sha256: string; }[]>): void', gave the following error.
+    Argument of type '{ stage: string; bytes: number; sha256: string; }[]' is not assignable to parameter of type '{ stage: "initial" | "opened" | "settled"; bytes: number; sha256: string; }[]'.
+      Type '{ stage: string; bytes: number; sha256: string; }' is not assignable to type '{ stage: "initial" | "opened" | "settled"; bytes: number; sha256: string; }'.
+        Types of property 'stage' are incompatible.
+          Type 'string' is not assignable to type '"initial" | "opened" | "settled"'.

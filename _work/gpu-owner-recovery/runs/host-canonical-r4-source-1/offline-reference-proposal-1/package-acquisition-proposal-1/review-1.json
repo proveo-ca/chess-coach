@@ -1,0 +1,21 @@
+{
+  "status": "READY_UNAPPROVED_TWO_PACKAGE_SOURCE_ACQUISITION_PROPOSAL_RECORDS_ONLY",
+  "adversarial": {"session":"ses_e2eb10c8cffeictrfBVteX1q0Z","verdict":"READY_YES","remainingFindings":[]},
+  "security": {"session":"ses_e2eb10c83ffev9kIsH9sG8uk2Z","verdict":"READY_UNAPPROVED_REQUEST_SCOPE_ONLY_YES","risk":"LOW","remainingFindings":[]},
+  "devops": {"session":"ses_e2f3a8747ffeb4lnwJXASkIIi2","verdict":"READY_PROPOSAL_RECORD_CONSISTENCY_ONLY_YES","remainingFindings":[]},
+  "verification": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/verification-1/receipt.json",
+  "rejectedNegativeCases": 13,
+  "freshSerializeReparseComparisons": 2,
+  "pinnedLockMetadataChecked": true,
+  "packages": ["fflate@0.8.3", "jssha@3.3.2"],
+  "proposedGetRequests": 2,
+  "currentAuthorizedAcquisitionAttempts": 0,
+  "urlAvailabilityEstablished": false,
+  "downloaderOrExtractionImplementationReviewed": false,
+  "archiveAcquisitionOrExtractionPerformed": false,
+  "packageCodeExecuted": false,
+  "referenceBundlingPerformed": false,
+  "hostNativeGpuOrTrainingExecuted": false,
+  "newExecutionOrPublicationAuthorityGranted": false,
+  "trainingReady": false
+}

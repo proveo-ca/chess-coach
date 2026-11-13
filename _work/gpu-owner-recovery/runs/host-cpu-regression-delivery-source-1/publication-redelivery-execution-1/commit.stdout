@@ -1,0 +1,19 @@
+[feat-ml-adjuntant-ii 6fdc92c7] Record CPU39 publication receipts and approved command redelivery
+ 17 files changed, 536 insertions(+)
+ create mode 100644 _work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-4/receipt.json
+ create mode 100644 _work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-4/whitespace.stderr
+ create mode 100644 _work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-4/whitespace.stdout
+ create mode 100644 _work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/commit-check.json
+ create mode 100644 _work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/commit.stderr
+ create mode 100644 _work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/commit.stdout
+ create mode 100644 _work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/index-check.json
+ create mode 100644 _work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/index-whitespace.stderr
+ create mode 100644 _work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/index-whitespace.stdout
+ create mode 100644 _work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/manual-handoff-observation.json
+ create mode 100644 _work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/publication-result.json
+ create mode 100644 _work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/push.stderr
+ create mode 100644 _work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-execution-1/push.stdout
+ create mode 100644 _work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/redelivery-1.json
+ create mode 100644 _work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/redelivery-check-1.json
+ create mode 100644 _work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/redelivery-review-1.json
+ create mode 100644 _work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/redelivery-whitespace-check-1.json

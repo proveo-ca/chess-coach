@@ -1,0 +1,108 @@
+{
+  "version": "chess-coach.host-canonical-r4-local-verification.v1",
+  "label": "verification-4",
+  "status": "PASS",
+  "scope": "SOURCE_ONLY_INJECTED_LOCAL_TESTS_AND_STRICT_TSC",
+  "spec": "_spec/runtime-protocol.puml",
+  "bunVersion": "1.4.0",
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "referenceInputDelivery": "REFERENCE_INPUT_DELIVERY_UNSELECTED",
+  "beforeManifestSha256": "ab8c972d1a26d22cb8ea721ddd255f9564484433633fc83b7936918ac26b142c",
+  "afterManifestSha256": "ab8c972d1a26d22cb8ea721ddd255f9564484433633fc83b7936918ac26b142c",
+  "sourceCount": 92,
+  "changed": [],
+  "stages": [
+    {
+      "name": "selected-pure-tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "./_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/canonical.test.ts",
+        "./_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/r4.test.ts"
+      ],
+      "result": {
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "stdoutBytes": 28,
+        "stderrBytes": 4489
+      },
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verification-4/selected-pure-tests/command.stdout",
+          "bytes": 28,
+          "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verification-4/selected-pure-tests/command.stderr",
+          "bytes": 4489,
+          "sha256": "483397423530df248dad6d7da01606d9206c789b3662f0c2369e57865538ad7d"
+        }
+      ]
+    },
+    {
+      "name": "strict-tsc",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "--noEmit",
+        "-p",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/tsconfig.json"
+      ],
+      "result": {
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "stdoutBytes": 0,
+        "stderrBytes": 0
+      },
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verification-4/strict-tsc/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verification-4/strict-tsc/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "mockEvidence": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verification-4/e2e/canonical-mock.json",
+      "bytes": 1074142,
+      "sha256": "6678ea5eb184c36a1f02befeb707553e42ac533f36a0985f0dfc1da66e378286"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verification-4/e2e/r4-selected-pure.json",
+      "bytes": 2844,
+      "sha256": "cf7f00b4896495b23039d982f8041c3b6ac75bb323c1ea662a08fab24f3e74ab"
+    }
+  ],
+  "failures": [],
+  "actualHostExecuted": false,
+  "actualProcessTransportInstantiated": false,
+  "workerProcessExecuted": false,
+  "nativeExecuted": false,
+  "gpuExecuted": false,
+  "referenceCaptured": false,
+  "referenceBuilt": false,
+  "referenceStaged": false,
+  "referenceAcquired": false,
+  "trainingExecuted": false,
+  "trainingReady": false,
+  "independentReferenceQualified": false,
+  "canonicalQualified": false,
+  "bothQualified": false,
+  "closeQualified": false,
+  "r4Qualified": false,
+  "wiringQualified": false,
+  "r4Scope": "SELECTED_PURE_CONTRACT_CASES_ONLY"
+}

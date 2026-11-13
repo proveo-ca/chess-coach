@@ -1,0 +1,499 @@
+{
+  "version": "chess-coach.r2-reviewed-runtime-source-snapshot.v1",
+  "status": "PRESERVED_REVIEWED_667_172_SOURCE_WITH_OPEN_CAPTURE_FINDING_NOT_READY",
+  "captureProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/fullverification-8/receipt.json",
+    "sha256": "c6f9f5206505c35f88aff6d7ad3c1a64812767f54ff223e25861797efa9416b2",
+    "testsPassed": 667,
+    "typecheckExitCode": 0
+  },
+  "callerProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-5/receipt.json",
+    "sha256": "2ebafc2897684610208872a93d211d4f2ec13074c626c91992e857fe6058359f",
+    "testsPassed": 172,
+    "typecheckExitCode": 0
+  },
+  "sourceMetadataBaseline": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/runtime-handoff-2.json",
+    "sha256": "691da903f9e38c4ca2c61c8ec28d812d2b433ecba37c02ae35fa5fe211bc4054"
+  },
+  "s2FileCount": 12,
+  "callerFileCount": 4,
+  "totalSourceBytes": 334684,
+  "files": [
+    {
+      "sourcePath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.ts",
+      "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/s2/capture.ts",
+      "bytes": 64851,
+      "sha256": "bd6a1214171c833639bf0d363e107f0cd1346f890e26b3d2d32447271335b6af",
+      "sourceMetadataMatchedRuntimeHandoff2": true,
+      "sourceMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3026811",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "64851",
+        "st_mtime_ns": "1794549656556878116",
+        "st_ctime_ns": "1794549656556878116"
+      },
+      "snapshotMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3035671",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "64851",
+        "st_mtime_ns": "1794552365572867782",
+        "st_ctime_ns": "1794552365572867782"
+      }
+    },
+    {
+      "sourcePath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.test.ts",
+      "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/s2/capture.test.ts",
+      "bytes": 93313,
+      "sha256": "8ef9aa480564ff0c93ba9434082f9d75f94bdb27108f5fd3680b67abdc869a73",
+      "sourceMetadataMatchedRuntimeHandoff2": true,
+      "sourceMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3026812",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "93313",
+        "st_mtime_ns": "1794549772648877673",
+        "st_ctime_ns": "1794549772648877673"
+      },
+      "snapshotMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3035672",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "93313",
+        "st_mtime_ns": "1794552365572867782",
+        "st_ctime_ns": "1794552365572867782"
+      }
+    },
+    {
+      "sourcePath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture-full.test.ts",
+      "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/s2/capture-full.test.ts",
+      "bytes": 10982,
+      "sha256": "fc534d5156a9dec15eea9843b053d5cf6abe2b384fb661214206af98fb330a2f",
+      "sourceMetadataMatchedRuntimeHandoff2": true,
+      "sourceMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3026828",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "10982",
+        "st_mtime_ns": "1794550219744875968",
+        "st_ctime_ns": "1794550219744875968"
+      },
+      "snapshotMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3035673",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "10982",
+        "st_mtime_ns": "1794552365576867782",
+        "st_ctime_ns": "1794552365576867782"
+      }
+    },
+    {
+      "sourcePath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/root-context.ts",
+      "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/s2/root-context.ts",
+      "bytes": 1875,
+      "sha256": "bc540101a8699c2bd9e5b075342bd3776e6d9ee579a641a6a1757ac640a6dd7f",
+      "sourceMetadataMatchedRuntimeHandoff2": true,
+      "sourceMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3026817",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "1875",
+        "st_mtime_ns": "1794548652184881947",
+        "st_ctime_ns": "1794548652184881947"
+      },
+      "snapshotMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3035674",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "1875",
+        "st_mtime_ns": "1794552365576867782",
+        "st_ctime_ns": "1794552365576867782"
+      }
+    },
+    {
+      "sourcePath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/root-context.test.ts",
+      "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/s2/root-context.test.ts",
+      "bytes": 1720,
+      "sha256": "7caef259ee7ba34c8cfda01b6a060996d7d436bfd7fe4fd3c72a93f8bcd4da0f",
+      "sourceMetadataMatchedRuntimeHandoff2": true,
+      "sourceMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3026826",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "1720",
+        "st_mtime_ns": "1794549077224880326",
+        "st_ctime_ns": "1794549077224880326"
+      },
+      "snapshotMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3035675",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "1720",
+        "st_mtime_ns": "1794552365576867782",
+        "st_ctime_ns": "1794552365576867782"
+      }
+    },
+    {
+      "sourcePath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent.ts",
+      "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/s2/cache-parent.ts",
+      "bytes": 4052,
+      "sha256": "62db5298937cf1c752a76b39f42fa19876e36e637d9d21dba6de323de347b27c",
+      "sourceMetadataMatchedRuntimeHandoff2": true,
+      "sourceMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3026743",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "4052",
+        "st_mtime_ns": "1794533929279858561",
+        "st_ctime_ns": "1794533929279858561"
+      },
+      "snapshotMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3035676",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "4052",
+        "st_mtime_ns": "1794552365576867782",
+        "st_ctime_ns": "1794552365576867782"
+      }
+    },
+    {
+      "sourcePath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent.test.ts",
+      "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/s2/cache-parent.test.ts",
+      "bytes": 53554,
+      "sha256": "83d8e91683140c35de498a9457060f47ec00b94ef59c9d83e47593456c24205f",
+      "sourceMetadataMatchedRuntimeHandoff2": true,
+      "sourceMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3026746",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "53554",
+        "st_mtime_ns": "1794548883196881066",
+        "st_ctime_ns": "1794548883196881066"
+      },
+      "snapshotMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3035677",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "53554",
+        "st_mtime_ns": "1794552365576867782",
+        "st_ctime_ns": "1794552365576867782"
+      }
+    },
+    {
+      "sourcePath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent-adapter.ts",
+      "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/s2/cache-parent-adapter.ts",
+      "bytes": 5757,
+      "sha256": "bc3df6e27bdc9a48164e8926a06d09c1ea9d104c3ffa1b19051dc2422b1a1d45",
+      "sourceMetadataMatchedRuntimeHandoff2": true,
+      "sourceMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3026818",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "5757",
+        "st_mtime_ns": "1794549452116878896",
+        "st_ctime_ns": "1794549452116878896"
+      },
+      "snapshotMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3035678",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "5757",
+        "st_mtime_ns": "1794552365576867782",
+        "st_ctime_ns": "1794552365576867782"
+      }
+    },
+    {
+      "sourcePath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent-adapter.test.ts",
+      "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/s2/cache-parent-adapter.test.ts",
+      "bytes": 5551,
+      "sha256": "da10f7ce4bc74fa30200fd17f277fc72d5f58d8e847f7ee7c75edc4a10a5748d",
+      "sourceMetadataMatchedRuntimeHandoff2": true,
+      "sourceMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3026827",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "5551",
+        "st_mtime_ns": "1794549746912877771",
+        "st_ctime_ns": "1794549746912877771"
+      },
+      "snapshotMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3035679",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "5551",
+        "st_mtime_ns": "1794552365576867782",
+        "st_ctime_ns": "1794552365576867782"
+      }
+    },
+    {
+      "sourcePath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/verify.ts",
+      "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/s2/verify.ts",
+      "bytes": 31007,
+      "sha256": "52c9e3ddcd005b63a1a928227efdc676c749abb7bd9a72eb3d1feeae78ea44bd",
+      "sourceMetadataMatchedRuntimeHandoff2": true,
+      "sourceMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3026747",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "31007",
+        "st_mtime_ns": "1794550257184875825",
+        "st_ctime_ns": "1794550257184875825"
+      },
+      "snapshotMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3035680",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "31007",
+        "st_mtime_ns": "1794552365576867782",
+        "st_ctime_ns": "1794552365576867782"
+      }
+    },
+    {
+      "sourcePath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/tsconfig.json",
+      "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/s2/tsconfig.json",
+      "bytes": 770,
+      "sha256": "0083541937af45cc505e9bde2afc99ece5af54fe1855060d20c498bc01488391",
+      "sourceMetadataMatchedRuntimeHandoff2": true,
+      "sourceMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3026744",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "770",
+        "st_mtime_ns": "1794549272016879583",
+        "st_ctime_ns": "1794549272016879583"
+      },
+      "snapshotMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3035681",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "770",
+        "st_mtime_ns": "1794552365576867782",
+        "st_ctime_ns": "1794552365576867782"
+      }
+    },
+    {
+      "sourcePath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/.gitignore",
+      "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/s2/.gitignore",
+      "bytes": 163,
+      "sha256": "91317cffd2ef9526d9d0ba70fcefa8499556f916a21327cb5492407dd679db0d",
+      "sourceMetadataMatchedRuntimeHandoff2": true,
+      "sourceMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3026745",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "163",
+        "st_mtime_ns": "1794549272016879583",
+        "st_ctime_ns": "1794549272016879583"
+      },
+      "snapshotMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3035682",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "163",
+        "st_mtime_ns": "1794552365576867782",
+        "st_ctime_ns": "1794552365576867782"
+      }
+    },
+    {
+      "sourcePath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.ts",
+      "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/caller/invoke-approved-bun.ts",
+      "bytes": 16248,
+      "sha256": "c307f222997e3a72f3b00360aee7c08494ba8841b1be6e75ee9f7a1fcf0b612d",
+      "sourceMetadataMatchedRuntimeHandoff2": true,
+      "sourceMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3026813",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "16248",
+        "st_mtime_ns": "1794549772652877673",
+        "st_ctime_ns": "1794549772652877673"
+      },
+      "snapshotMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3035683",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "16248",
+        "st_mtime_ns": "1794552365576867782",
+        "st_ctime_ns": "1794552365576867782"
+      }
+    },
+    {
+      "sourcePath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.test.ts",
+      "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/caller/invoke-approved-bun.test.ts",
+      "bytes": 40848,
+      "sha256": "05b749b8f8565c1260bba0498b0cddac60316a351169057b1d5ff76d56255fb7",
+      "sourceMetadataMatchedRuntimeHandoff2": true,
+      "sourceMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3026814",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "40848",
+        "st_mtime_ns": "1794549582804878397",
+        "st_ctime_ns": "1794549582804878397"
+      },
+      "snapshotMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3035684",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "40848",
+        "st_mtime_ns": "1794552365576867782",
+        "st_ctime_ns": "1794552365576867782"
+      }
+    },
+    {
+      "sourcePath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.tsconfig.json",
+      "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/caller/invoke-approved-bun.tsconfig.json",
+      "bytes": 645,
+      "sha256": "475349522320904b0f41ec6fa19b785ddccfe51f97bc5b36c0c123bcf9eee56a",
+      "sourceMetadataMatchedRuntimeHandoff2": true,
+      "sourceMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3026815",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "645",
+        "st_mtime_ns": "1794548602078231167",
+        "st_ctime_ns": "1794548602078231167"
+      },
+      "snapshotMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3035685",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "645",
+        "st_mtime_ns": "1794552365576867782",
+        "st_ctime_ns": "1794552365576867782"
+      }
+    },
+    {
+      "sourcePath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun-verify.ts",
+      "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1/caller/invoke-approved-bun-verify.ts",
+      "bytes": 3348,
+      "sha256": "7267eec08409c36a6c5bb75352b2419646f19bc2d60d22e229487f18fed988d7",
+      "sourceMetadataMatchedRuntimeHandoff2": true,
+      "sourceMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3026816",
+        "st_mode": "33188",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "3348",
+        "st_mtime_ns": "1794549017390550995",
+        "st_ctime_ns": "1794549017390550995"
+      },
+      "snapshotMetadata": {
+        "st_dev": "65088",
+        "st_ino": "3035686",
+        "st_mode": "33152",
+        "st_nlink": "1",
+        "st_uid": "1000",
+        "st_gid": "1000",
+        "st_size": "3348",
+        "st_mtime_ns": "1794552365580867782",
+        "st_ctime_ns": "1794552365580867782"
+      }
+    }
+  ],
+  "allSourceBytesAndStableMetadataMatchedBeforeAndAfterCopy": true,
+  "onlyCreatedSubtree": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/reviewed-runtime-source-snapshot-1",
+  "runtimeProgramsTestsAndContractsEdited": false,
+  "newVerificationExecuted": false,
+  "productionEntryInvoked": false,
+  "productionWorkerInvoked": false,
+  "productionCacheIoPerformed": false,
+  "networkOperationsPerformed": 0,
+  "bindingsOrReadinessCreated": false,
+  "executionReadinessClaimed": false
+}

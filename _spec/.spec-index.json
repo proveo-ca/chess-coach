@@ -418,6 +418,13 @@
         "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/**"
       ],
       "fingerprint": null
+    },
+    {
+      "spec": "_spec/runtime-protocol.puml",
+      "covers": [
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/**"
+      ],
+      "fingerprint": null
     }
   ],
   "unresolved": []

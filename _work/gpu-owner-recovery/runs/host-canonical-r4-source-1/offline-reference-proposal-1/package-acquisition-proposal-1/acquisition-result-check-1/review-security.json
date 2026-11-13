@@ -1,0 +1,12 @@
+{
+  "status": "READY_FAILURE_RECORDS_ONLY",
+  "session": "ses_e2e4b1ef3ffdEFzyU31y2Xzl0Z",
+  "risk": "LOW_RECORDS_ONLY",
+  "remainingFindings": [],
+  "remainingAuthorizedCombinedAttempts": 0,
+  "remainingAuthorizedGetRequests": 0,
+  "unusedUrlSlotsReusable": false,
+  "newRepairOrRetryAuthorityGranted": false,
+  "acquisitionSuccessEstablished": false,
+  "trainingReady": false
+}

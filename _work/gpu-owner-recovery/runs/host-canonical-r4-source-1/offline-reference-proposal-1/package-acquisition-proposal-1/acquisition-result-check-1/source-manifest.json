@@ -1,0 +1,127 @@
+[
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/acquisition-result-check-1/proof.ts",
+    "bytes": 6468,
+    "sha256": "13806545da999c8369400fd35b7765769f0dee40b78961b768a4838ff41c73f7"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/acquisition-result1.json",
+    "bytes": 3247,
+    "sha256": "ba448866c3dd608d30e933bb6a2a597b9b7e01ab79f30fadf924a1bcbcdd84cc"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/approval1.json",
+    "bytes": 2150,
+    "sha256": "62af17fc6199b5537c3488c10680b9269baf170a05a322facfdfad3737fea945"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/acquisition-execution-1/attempt.json",
+    "bytes": 351,
+    "sha256": "6863938d03f1e9933f56f48e8cd5e230a191823f093da34b750526fccb07f77c"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/acquisition-execution-1/events.jsonl",
+    "bytes": 569,
+    "sha256": "3ce1436d14c609c7420b77073ccde91a8940605cd37162b89f748c795aa43306"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/acquisition-execution-1/consumption-receipt.json",
+    "bytes": 5794,
+    "sha256": "d5bc310324d6049e8d6b5381e6f7df5e965d8ce4e0dc2a49ade7fd5649db85e2"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/acquisition-invocation-1/observation.json",
+    "bytes": 8118,
+    "sha256": "438d5549c97b3d828d279d1d993396328d707fe5b8e47e1498ab84629bc270a8"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/acquisition-invocation-1/command.stdout",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/acquisition-invocation-1/command.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.ts",
+    "bytes": 61948,
+    "sha256": "9aae7af2eb26e801d78023a7a68e12c59fea3b1ac3355db6af10ca3a5161d5dd"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.test.ts",
+    "bytes": 91398,
+    "sha256": "67f0d2af4a71af183da17838bbc3f4a4bad185b586cce1eae1cd8b1891599612"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/verify.ts",
+    "bytes": 9556,
+    "sha256": "0faef58fd1f60fdec59aa1e4ac6345a9ea43b4c49ac7bc2af2b3c8d85e49a554"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/tsconfig.json",
+    "bytes": 594,
+    "sha256": "8da47e49f561f2ca4855f73d531b994cbd7bae04af883216e4eccaf004b25691"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/.gitignore",
+    "bytes": 88,
+    "sha256": "6d70cee011f6d2c622496916b8cf1cfd12b5ce0acf5bfd1068df511d1f92f0ce"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.ts",
+    "bytes": 14523,
+    "sha256": "3b73ad2c7048f2d21004b5bb891b09d0fc6ed758903495ea386cf6733ee0891d"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.test.ts",
+    "bytes": 39810,
+    "sha256": "64cf0c31883367f224b8554894748a1c1c9492e3be380b83563bf3142fcdebfe"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.tsconfig.json",
+    "bytes": 645,
+    "sha256": "475349522320904b0f41ec6fa19b785ddccfe51f97bc5b36c0c123bcf9eee56a"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun-verify.ts",
+    "bytes": 12113,
+    "sha256": "cc6b94c7ee74a40ecc77c96baf1def45c1febca0be4bbaa481e368df58a66735"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.ts",
+    "bytes": 61948,
+    "sha256": "9aae7af2eb26e801d78023a7a68e12c59fea3b1ac3355db6af10ca3a5161d5dd"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.test.ts",
+    "bytes": 91398,
+    "sha256": "67f0d2af4a71af183da17838bbc3f4a4bad185b586cce1eae1cd8b1891599612"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/verify.ts",
+    "bytes": 9556,
+    "sha256": "0faef58fd1f60fdec59aa1e4ac6345a9ea43b4c49ac7bc2af2b3c8d85e49a554"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/tsconfig.json",
+    "bytes": 594,
+    "sha256": "8da47e49f561f2ca4855f73d531b994cbd7bae04af883216e4eccaf004b25691"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/.gitignore",
+    "bytes": 88,
+    "sha256": "6d70cee011f6d2c622496916b8cf1cfd12b5ce0acf5bfd1068df511d1f92f0ce"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.ts",
+    "bytes": 12723,
+    "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+    "bytes": 910,
+    "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+  }
+]
