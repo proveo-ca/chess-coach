@@ -1,0 +1,41 @@
+{
+  "status": "HISTORICAL_REPORT_TESTS20_PASS_TSC2_UNUSED_IMPORT",
+  "entries": [
+    {
+      "originalPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/acquisition-report1.ts",
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/acquisition-verification-1/source-snapshot/acquisition-report1.ts",
+      "bytes": 7332,
+      "sha256": "31cb49878cb9b9deeb52bd31c7fc890f89f4e4f3e21e255d123e9bcc0f919da7"
+    },
+    {
+      "originalPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/prepare-acquisition-report1.ts",
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/acquisition-verification-1/source-snapshot/prepare-acquisition-report1.ts",
+      "bytes": 9309,
+      "sha256": "ccb1e24969ed99e3da44e1fcb08caf60bffd74a590d445258b507e3cd4aceb95"
+    },
+    {
+      "originalPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/validate-acquisition-report1.ts",
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/acquisition-verification-1/source-snapshot/validate-acquisition-report1.ts",
+      "bytes": 4977,
+      "sha256": "06fa82e2a9f2ca6ad3adc50484e81f6f2bddb67512ccbdf205e3b10a3a0e3973"
+    },
+    {
+      "originalPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/run-acquisition-verification1.ts",
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/acquisition-verification-1/source-snapshot/run-acquisition-verification1.ts",
+      "bytes": 1922,
+      "sha256": "28675e5b6f18025a96432a698e5ad31af8ce01223c209645d3d9bf8b50942169"
+    },
+    {
+      "originalPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/acquisition-report1.test.ts",
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/acquisition-verification-1/source-snapshot/acquisition-report1.test.ts",
+      "bytes": 3733,
+      "sha256": "da13fb4e747e084277be906c099b48e33aecfaf0e55dee6a63b7f2aceeba1708"
+    },
+    {
+      "originalPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/acquisition-report1.tsconfig.json",
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/acquisition-verification-1/source-snapshot/acquisition-report1.tsconfig.json",
+      "bytes": 248,
+      "sha256": "b1d4e21525bb9234183c7927b6f0a96d86bf05b67f711c539292eb7bbfd4260a"
+    }
+  ]
+}

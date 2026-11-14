@@ -1,0 +1,26 @@
+
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/acquisition-report1.test.ts:
+(pass) REPORT consistency preserves failure and exhausted combined allowance [1.15ms]
+(pass) reject attempt identity [1.54ms]
+(pass) reject receipt attempt binding [0.43ms]
+(pass) reject observer receipt binding [0.22ms]
+(pass) reject caller failure promotion [0.19ms]
+(pass) reject empty failure array does not imply runner PASS [1.09ms]
+(pass) reject combined allowance refund [0.28ms]
+(pass) reject unused slot is not another GET [0.19ms]
+(pass) reject response completion is not URL completion [0.17ms]
+(pass) reject worker clock cannot become supervisor clock [0.41ms]
+(pass) reject deadline snapshot stays supervisor-local [0.25ms]
+(pass) reject global timeout cannot be invented [0.18ms]
+(pass) reject EOF cannot be invented [0.22ms]
+(pass) reject null worker exit cannot be rewritten [0.17ms]
+(pass) reject selected output qualification cannot be invented [0.16ms]
+(pass) reject retry remains unauthorized [0.14ms]
+(pass) reject training remains blocked [0.20ms]
+(pass) reject nested source identity mismatch [3.01ms]
+(pass) reject same-length receipt mutation breaks observer hash [0.49ms]
+(pass) reconstructed records do not claim original HOST captures [0.10ms]
+
+ 20 pass
+ 0 fail
+Ran 20 tests across 1 file. [445.00ms]

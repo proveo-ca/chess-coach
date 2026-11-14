@@ -1,0 +1,18 @@
+{
+  "scope": "FISH_SYNTAX_ONLY_NOT_HOST_EXECUTION",
+  "body": "set -l F /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/acquisition-execution-1/events.jsonl\nstat -c 'type=%F bytes=%s' -- \"$F\"\nif test -f \"$F\"; and not test -L \"$F\"\n    head -c 16384 -- \"$F\"\nend\n",
+  "executable": "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-fish-shell-fish-shell/4.9.3/fish",
+  "argv": [
+    "--no-config",
+    "--no-execute"
+  ],
+  "signal": null,
+  "error": null,
+  "stdout": "",
+  "stderr": "",
+  "bodyExecuted": false,
+  "newAuthorityAdded": 0,
+  "priorPublishedCommandCommit": "66dd53098f95d0a78872655957a8c318ee47f2a7",
+  "exitCode": 0,
+  "preservesPriorMissingExecutableFailure": true
+}

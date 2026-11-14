@@ -1,0 +1,29 @@
+{
+  "version": "chess-coach.h3-diagnostic-publication-request.v1",
+  "authoritySource": "GENUINE_EXECUTOR_MESSAGE",
+  "verbatimRequest": "commit & push, then specify the branch host needs and repeat the command to be run",
+  "scope": "DIAGNOSTIC_REPORT_BATCH_AND_ITS_SPEC_ONLY",
+  "normalCommits": 1,
+  "httpsPushes": 1,
+  "remote": "https://github.com/proveo-ca/chess-coach.git",
+  "destinationBranch": "feat-ml-adjuntant-ii-continuation-2b24d9c5a",
+  "expectedParent": "66dd53098f95d0a78872655957a8c318ee47f2a7",
+  "includedPaths": [
+    "_spec/manual-handoff-implementation-3.puml",
+    "_spec/.spec-index.json:HEAD_PLUS_IMPLEMENTATION_ENTRY_ONLY",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/**"
+  ],
+  "excluded": ["unrelated work","unpublished frozen runtime source and proofs outside the REPORT directory","caches","archives","binaries","dependency copies","generated workspaces"],
+  "verificationBoundary": {
+    "pureReportTests": "20 tests use included REPORT fixtures",
+    "preparerAndFullValidator": "Require prior local frozen metadata and source outside this publication scope",
+    "historicalVerification": "Preserved separately from fresh REPORT tests",
+    "hostCommand": "Read only the existing OP2/events.jsonl with stat and head, maximum 16384 content bytes"
+  },
+  "priorPublicationGrantsRemainSpent": true,
+  "worktreeSpecIndexAndHistoricalCopiesMustRemainUnchanged": true,
+  "additionalHandoffSourceOrNpmAllowance": 0,
+  "forceAmendBypassHooksOrRemoteFeatureIntegrationAuthorized": false,
+  "retryReplayCleanupAdoptionRetargetingOrTrainingAuthorized": false,
+  "trainingReady": false
+}

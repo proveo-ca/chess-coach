@@ -1,0 +1,26 @@
+cd /home/gu1lty/Projects/proveo/chess-coach
+and git fetch https://github.com/proveo-ca/chess-coach.git feat-ml-adjuntant-ii-continuation-2b24d9c5a
+and git switch --detach 66dd53098f95d0a78872655957a8c318ee47f2a7
+and fish --no-config _work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/operator-command3.fish
+remote: Enumerating objects: 18, done.
+remote: Counting objects: 100% (18/18), done.
+remote: Compressing objects: 100% (5/5), done.
+remote: Total 18 (delta 10), reused 18 (delta 10), pack-reused 0 (from 0)
+Unpacking objects: 100% (18/18), 513.33 KiB | 1.14 MiB/s, done.
+From https://github.com/proveo-ca/chess-coach
+ * branch                feat-ml-adjuntant-ii-continuation-2b24d9c5a -> FETCH_HEAD
+HEAD is now at 66dd53098 Publish approved H3 operator command
+Untimed installed Bun selection; no installation or claim in launcher selection.
+{"phase":"preflight","warning":"Ctrl-C after the exclusive handoff claim consumes the attempt. Preserve the claimed root and all partials. No automatic retry."}
+{"phase":"claimed","attemptsConsumed":1}
+{"phase":"request-start"}
+{"phase":"http-status","statusCode":200}
+{"phase":"http-wait","clockScope":"PROCESS_LOCAL_HTTP","elapsedMs":1002,"remainingMs":28997,"statusCode":200,"receivedBytes":82696}
+{"phase":"http-wait","clockScope":"PROCESS_LOCAL_HTTP","elapsedMs":2006,"remainingMs":27993,"statusCode":200,"receivedBytes":643646}
+{"phase":"http-wait","clockScope":"PROCESS_LOCAL_HTTP","elapsedMs":3010,"remainingMs":26989,"statusCode":200,"receivedBytes":1343488}
+{"phase":"validated","files":66}
+{"phase":"materializing"}
+{"phase":"sealed","status":"VERIFIED_FSYNC_CANDIDATE_NOT_OS_DURABILITY_GUARANTEE"}
+{"phase":"inner-caller-launch","clockScope":"OUTER_PROCESS_LOCAL_INFORMATIONAL","remainingMs":null}
+{"phase":"terminal","status":"FAIL_PRESERVE_PARTIALS","failureCode":"DELIVERY_FAILED","observedSignal":null,"observedHup":false,"outcomePath":null,"outcomeUnavailableReason":"UNCONFIRMED_OWNED_CLEANUP"}
+launcher_exit_status=1

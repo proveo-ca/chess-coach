@@ -1,0 +1,57 @@
+{
+  "version": "chess-coach.h3-private-outcome-report-validation.v1",
+  "status": "PASS_REPORT_SOURCE_TRANSPORT_CALLER_EXIT_AND_STDOUT_IDENTITY_CONSISTENCY",
+  "evidenceScope": "REPORT",
+  "outcome": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/private-outcome.report.json",
+    "bytes": 3189,
+    "sha256": "3293b30e2506c53aae6170ddbdeb4b15f690fe01d5f0f22406666d8e341e8c28",
+    "gitBlobOid": "0cf457975dad769f83a379c46dcda2bfc31675cd"
+  },
+  "diagnostic": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/diagnostic-report-1.json",
+    "bytes": 2619,
+    "sha256": "dcb82951054aeb12e8eb738252505d3f4595822bd68cbfb314ceb468079c947d",
+    "gitBlobOid": "f1fbf79abfab512265b6efbe74c3352fe3e10dfc"
+  },
+  "consumptionClarification": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/consumption-clarification-1.json",
+    "bytes": 1424,
+    "sha256": "bb100503c74de1ee7faa0c6568f6915dcddc77a2270a389306a37db40f73abfc",
+    "gitBlobOid": "4c1a70dcf3d2e35e832a1ee9c3547d1686098c95"
+  },
+  "sourceRequestCalls": 1,
+  "sourceResponseBytes": 2351418,
+  "sourceTransportCleanupConfirmed": true,
+  "callerExitCode": 1,
+  "callerSignal": null,
+  "callerReapedClosedAndBothEof": true,
+  "callerProcessGroupReportedGone": true,
+  "callerCleanupRemainsUnconfirmed": true,
+  "recordedSignalFailure": true,
+  "signalErrnoKnown": false,
+  "derivedCallerFailLine": {
+    "observationPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/acquisition-invocation-1/observation.json",
+    "identity": {
+      "bytes": 159,
+      "sha256": "0ba6ad66f96cae58f3e5689d6ff2aaa69ce38d84057f45613ea5ea4fb2e257e1",
+      "gitBlobOid": "d290848de0ef8509e16d7e9a973fc77df24817d5"
+    },
+    "matchesReportedStdoutIdentity": true,
+    "isAnOriginalHostStdoutCapture": false
+  },
+  "originalReportAndConsumptionBytesPreserved": true,
+  "primaryApplicationFailureStillUnknown": true,
+  "innerExclusiveClaimAndNpmConsumption": "UNCONFIRMED",
+  "handoffBalance": 0,
+  "sourceGetBalance": 0,
+  "goalBaseline": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/spec-baseline2/manifest.json",
+    "bytes": 1433,
+    "sha256": "e3989d82c3db98c1332dbd3522931fe0f9ae17c03cafcad953178a89fee4d13e",
+    "gitBlobOid": "3be7a6596195f4729ed298efaf31b2c4563faa1b"
+  },
+  "actualHostOrAcquisitionExecutedByValidator": false,
+  "newAllowancesAdded": 0,
+  "trainingReady": false
+}

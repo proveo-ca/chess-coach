@@ -1,0 +1,44 @@
+{
+  "version": "chess-coach.h3-host-report-validation.v1",
+  "status": "PASS_REPORT_TRANSCRIPTION_ACCOUNTING_AND_FROZEN_ISSUANCE_CONSISTENCY",
+  "evidenceScope": "REPORT",
+  "nonAuthorizing": true,
+  "report": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/operator-report.json",
+    "bytes": 2852,
+    "sha256": "60d0ea1b4eaf844cf19658f34538d86b1a8721c230564ed33692401108b624b8",
+    "gitBlobOid": "ad5d1f470e26f6a621ee1e86849f72be61cd0330"
+  },
+  "console": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/operator-console.report.txt",
+    "bytes": 2046,
+    "sha256": "cba49cbbfb34bd67fdccf8cddf982e79804a1ef790f1a1e69d3e7786963708b0",
+    "gitBlobOid": "0d8eacdc8ad3af6da9e813a1f7cd4bd34df02604"
+  },
+  "consumption": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/consumption.json",
+    "bytes": 1616,
+    "sha256": "644a516027d177a52ddfa1fe2b354e320864229c65ab71af780bb6d29da15dc7",
+    "gitBlobOid": "c2235e56c1985e65f01a61b5eb1ffbcfe225bb9e"
+  },
+  "phaseRecords": 12,
+  "consoleOrderAndTerminalMatch": true,
+  "lastProgressBytesNotFinalResponseTotal": true,
+  "sourceAndHandoffBalances": {
+    "handoffAttempts": 0,
+    "anonymousSourceGets": 0
+  },
+  "innerConsumption": "UNCONFIRMED",
+  "historicalSourceVerdictsAndIssuanceSnapshotsUnchanged": true,
+  "originalHostCaptureRequiredForReportAcceptance": false,
+  "privateHostOutcomeReadByAssistant": false,
+  "goalBaseline": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/spec-baseline1/manifest.json",
+    "bytes": 1503,
+    "sha256": "faa36fb65d83eb288da5af2b45e7d5b77971311b4455b7a3c273ed81e8e665e4",
+    "gitBlobOid": "f1dca791f0bd3b29cd81f802ebfb89e9830bcdaa"
+  },
+  "actualHandoffOrAcquisitionReplayed": false,
+  "publicationAuthorityAdded": 0,
+  "trainingReady": false
+}

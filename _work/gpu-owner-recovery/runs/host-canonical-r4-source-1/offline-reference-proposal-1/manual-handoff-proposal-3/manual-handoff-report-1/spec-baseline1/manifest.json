@@ -1,0 +1,29 @@
+{
+  "version": "chess-coach.h3-host-report-goal-baseline.v1",
+  "nonAuthorizing": true,
+  "goals": [
+    {
+      "originalPath": "_spec/manual-handoff-implementation-3.puml",
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/spec-baseline1/spec-goal.puml",
+      "bytes": 183778,
+      "sha256": "7e55e855f5589fe52cd3b165481e6b51964a6c5126cd0c1926cddf4f5792ff17",
+      "gitBlobOid": "b0e86524e1268e8bcc03bacef2d05063cba1f9ed"
+    },
+    {
+      "originalPath": "_spec/.spec-index.json",
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/spec-baseline1/spec-index.json",
+      "bytes": 38608,
+      "sha256": "d30b7057dfabacbbe17f72c6920fbe3454db23a9abfc31cc750409e035b7e525",
+      "gitBlobOid": "3a207cc552090ed868c0155e2879b5decb57a594"
+    },
+    {
+      "originalPath": "_spec/runtime-protocol.puml",
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/spec-baseline1/runtime-discovery.puml",
+      "bytes": 67940,
+      "sha256": "7cae64bfb4c5a626b95b78a9eb6bde4c22883f0128626b09990edf6650c50e87",
+      "gitBlobOid": "f10c4dece48f72c3ef27cd9a4ebbf6c7ab82490b"
+    }
+  ],
+  "currentPublishedCommandCommit": "66dd53098f95d0a78872655957a8c318ee47f2a7",
+  "sourceAndAuthorityFilesModified": false
+}

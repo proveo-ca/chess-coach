@@ -1,0 +1,117 @@
+{
+  "status": "FAIL_PRESERVE_PARTIALS",
+  "provisionalAtTimeOfRecord": true,
+  "scope": "EXECUTOR_MANUAL_OPERATOR_ONLY",
+  "failure": "caller-child:child-nonzero-or-signal",
+  "claimed": true,
+  "fetched": true,
+  "sealed": true,
+  "stageB": true,
+  "sourceWriteAttempts": 66,
+  "observedSignal": null,
+  "observedHup": false,
+  "innerAttemptsConsumedByDelivery": 0,
+  "sourceRequest": {
+    "body": {
+      "bytes": 2351418,
+      "sha256": "3fa7147803e53e37107e81e01853ddde870ebfd0b8efde6fac18269db19edaaa",
+      "gitBlobOid": "59adc3b6af0ea65bc305a15bf8a1512e74f105bd"
+    },
+    "requestCalls": 1,
+    "receivedBytes": 2351418,
+    "retainedBytes": 2351418,
+    "statusCode": 200,
+    "failure": null,
+    "requestFinished": true,
+    "requestClosed": true,
+    "responseEOF": true,
+    "responseComplete": true,
+    "responseClosed": true,
+    "socketClosed": true,
+    "cleanupConfirmed": true,
+    "aborted": false,
+    "interrupted": false,
+    "clockFailure": false,
+    "cleanupFailure": false,
+    "finalizationDeadlineExceeded": false,
+    "observedSignal": null
+  },
+  "callerChild": {
+    "stdout": {
+      "bytes": 159,
+      "sha256": "0ba6ad66f96cae58f3e5689d6ff2aaa69ce38d84057f45613ea5ea4fb2e257e1",
+      "gitBlobOid": "d290848de0ef8509e16d7e9a973fc77df24817d5"
+    },
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlobOid": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    "spawnAttempted": true,
+    "spawned": true,
+    "pid": 1684027,
+    "spawnError": false,
+    "noChildCreated": false,
+    "exitCode": 1,
+    "signal": null,
+    "reaped": true,
+    "closed": true,
+    "outEOF": true,
+    "errEOF": true,
+    "failure": "child-nonzero-or-signal",
+    "interrupted": false,
+    "cancellationSignal": null,
+    "cleanupStarted": true,
+    "cleanupReason": "FAILURE",
+    "cleanupOriginElapsedMs": 30302.376695,
+    "cleanupOriginsStarted": 1,
+    "cleanupBudgetMs": 2000,
+    "cleanupExpired": false,
+    "cleanupClockFailed": false,
+    "finalizationDeadlineExceeded": false,
+    "pipesDestroyed": false,
+    "pipeDestructionAttempted": false,
+    "pipeCleanupFailed": false,
+    "pipeDestruction": {
+      "cleanupCalls": 0,
+      "destructionAttempted": false,
+      "pipesDestroyed": false,
+      "cleanupFailed": false,
+      "stdout": {
+        "present": null,
+        "attempts": 0,
+        "confirmed": false,
+        "destroyed": null,
+        "failed": false,
+        "firstFailure": null,
+        "getterErrors": 0,
+        "destroyErrors": 0,
+        "streamErrors": 0,
+        "stateErrors": 0
+      },
+      "stderr": {
+        "present": null,
+        "attempts": 0,
+        "confirmed": false,
+        "destroyed": null,
+        "failed": false,
+        "firstFailure": null,
+        "getterErrors": 0,
+        "destroyErrors": 0,
+        "stateErrors": 0,
+        "streamErrors": 0
+      }
+    },
+    "processGroupGone": true,
+    "cleanupConfirmed": false,
+    "descendantsConfirmedGone": false,
+    "signalFailure": true,
+    "signalAttempts": [
+      {
+        "target": "GROUP",
+        "signal": "SIGTERM",
+        "result": "THREW"
+      }
+    ]
+  }
+}

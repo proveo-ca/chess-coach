@@ -1,0 +1,53 @@
+{
+  "version": "chess-coach.h3-failed-host-report-triage.v1",
+  "status": "PRIVATE_OUTCOME_REPORT_NEEDED_NO_SOURCE_CHANGE_OR_REPLAY",
+  "nonAuthorizing": true,
+  "evidenceScope": "REPORT",
+  "consultations": {
+    "architect": "ses_e29ae9e86ffeCwG0apYJvZEb4R",
+    "backend": "ses_e299b97d2ffevyaxWuDc69LCHT",
+    "sre": "ses_e25b0b2fbffe1tezm8A79rFftU"
+  },
+  "acceptedReportPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/operator-report.json",
+  "reportValidation": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/report-validation1.json",
+    "sha256": "cbb1146400b8fdae5372f453ffe4fea67a6f74ad4b3a12ec03c34c6305ebfa69"
+  },
+  "rootCause": "UNDETERMINED_PENDING_PRIVATE_OUTCOME_REPORT",
+  "minimumNextHostInspection": {
+    "kind": "BOUNDED_READ_ONLY_EXISTING_FILE_REPORT",
+    "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/reference-package-handoff-3/delivery-outcome.json",
+    "maximumContentBytes": 65536,
+    "reportTypeSizeReadErrorOrTruncation": true,
+    "followSymlinkOrReadNonregularFileRequested": false,
+    "fields": ["failure","stageB","sourceRequest.failure","sourceRequest.cleanupConfirmed","callerChild"],
+    "fileAbsenceOrReadErrorIsValidDiagnosticReport": true,
+    "newRepositoryScriptRequired": false,
+    "priorPublishedCommandCommit": "66dd53098f95d0a78872655957a8c318ee47f2a7",
+    "additionalCommitPushOrExecutionGrantRequiredForThisExistingFileRead": false
+  },
+  "conditionalFollowupOnlyIfOutcomeInsufficient": [
+    "Existing snapshot observer observation.json and command.stderr",
+    "Existing OP2 attempt.json and consumption-receipt.json or bounded claim metadata"
+  ],
+  "candidateClassification": "HYPOTHESES_NOT_HOST_FINDINGS",
+  "unprovedCandidates": [
+    "Nonzero caller exit combined with sticky failed signaling of an already-gone process group",
+    "Spawn, caller-entry, pipe, clock, process-group or cleanup-confirmation failure",
+    "Escaping child-supervision exception with no returned caller result"
+  ],
+  "privateOutcomeContainsChildStreamIdentitiesNotRecoverableRawChildText": true,
+  "publicNullOutcomePathDoesNotEstablishPrivateFileAbsence": true,
+  "cleanupFailureDoesNotEstablishActualResourceLeak": true,
+  "sourceQualificationVerdictsMayBeRewrittenAsHostVerdicts": false,
+  "source23Seal6AndAllSevenDerivedRecordBytesRemainFrozen": true,
+  "oldApprovalsIssuanceSnapshotsAndH2EvidenceRemainUnchanged": true,
+  "innerConsumptionRemainsUnconfirmed": true,
+  "h3HandoffAndSourceGetBalances": {"handoffAttempts":0,"anonymousSourceGets":0},
+  "rerunRetryAdoptionRetargetDeletionSignalOrCacheReuseAuthorized": false,
+  "newOriginalHostCaptureHardwareOrCustodyPrerequisiteAdded": false,
+  "newManualInnerOrPublicationAllowanceAdded": 0,
+  "nativeGpuLlvmReferenceAssemblyOrTrainingAuthorized": false,
+  "executionReadinessClaimed": false,
+  "trainingReady": false
+}
