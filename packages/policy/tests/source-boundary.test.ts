@@ -6,9 +6,9 @@ import * as ts from "typescript";
 
 const root = fileURLToPath(new URL("../../../", import.meta.url));
 const entry = `${root}packages/policy/src/index.ts`;
-const core = `${root}packages/game-core/src/index.ts`;
+const core = `${root}packages/starchess-core/src/engine/index.ts`;
 const producer = `${root}packages/contracts/src/initialization.ts`;
-const causalProducers = ["packages/game-core/src/causal-producer.ts", "packages/game-core/src/causal-events.ts",
+const causalProducers = ["packages/starchess-core/src/engine/causal-producer.ts", "packages/starchess-core/src/engine/causal-events.ts",
   "packages/contracts/src/causal-journal.ts", "packages/contracts/src/recipient.ts", "packages/contracts/src/recipient-codec.ts",
   "packages/contracts/src/game-session.ts", "packages/contracts/src/native-protocol.ts", "packages/contracts/src/resolution.ts",
   "packages/contracts/src/episode.ts", "packages/contracts/src/learning-channel.ts", "packages/contracts/src/training-state.ts",
@@ -31,11 +31,12 @@ function boundaryIssues(overrides: ReadonlyMap<string, string> = new Map()): str
     const path = source.fileName;
     const relative = path.slice(root.length);
     if (path === producer || causalProducers.includes(path) || path.startsWith(`${root}packages/runtime/src/`)) issues.push("HOST_PRODUCER");
-    if (!path.startsWith(root) || !/^(packages\/(game-core|contracts|policy)\/src\/.*\.ts|schemas\/feature-layout\.json)$/.test(relative)) {
+    if (!path.startsWith(root) || !/^(packages\/(contracts|policy)\/src\/.*\.ts|packages\/starchess-core\/src\/((model|rules|board|commands|resolve|scfen)\/.*\.ts|engine\/(?!causal-(producer|events)\.ts$).*\.ts|outcome\.ts)|schemas\/feature-layout\.json)$/.test(relative)) {
       issues.push("OUTSIDE_MODEL_SOURCE");
     }
     const inspectSpecifier = (specifier: string): void => {
-      if (!specifier.startsWith(".") && !["zod", "@chess-coach/contracts", "@chess-coach/game-core"].includes(specifier)) {
+      if (!specifier.startsWith(".") && !["zod", "@chess-coach/contracts", "@chess-coach/starchess-core/causal-types"].includes(specifier) &&
+        !/^@chess-coach\/starchess-core\/engine(?:\/(?!causal-(?:producer|events)$)[a-z-]+)?$/.test(specifier)) {
         issues.push("UNAPPROVED_IMPORT");
       }
       if (!ts.resolveModuleName(specifier, path, options, host).resolvedModule) issues.push("UNRESOLVED_IMPORT");
@@ -63,7 +64,7 @@ test("host producer import and transitive core reexport fail the first-party bou
   const original = readFileSync(entry, "utf8");
   expect(boundaryIssues(new Map([[entry, `${original}\nexport { canonicalInitialObservation } from '@chess-coach/contracts/initialization';`]])))
     .toContain("HOST_PRODUCER");
-  expect(boundaryIssues(new Map([[core, `${readFileSync(core, "utf8")}\nexport { canonicalInitialObservation } from '../../contracts/src/initialization';`]])))
+  expect(boundaryIssues(new Map([[core, `${readFileSync(core, "utf8")}\nexport { canonicalInitialObservation } from '../../../contracts/src/initialization';`]])))
     .toContain("HOST_PRODUCER");
 });
 
@@ -73,21 +74,21 @@ test("type-only producer dependencies also fail the first-party boundary", () =>
     .toContain("HOST_PRODUCER");
 });
 
-for (const [dependency, relative] of [["@chess-coach/game-core/causal-producer", "./causal-producer"],
-    ["@chess-coach/contracts/causal-journal", "../../contracts/src/causal-journal"],
-    ["@chess-coach/contracts/recipient", "../../contracts/src/recipient"],
-    ["@chess-coach/contracts/recipient-codec", "../../contracts/src/recipient-codec"],
-    ["@chess-coach/contracts/game-session", "../../contracts/src/game-session"],
-    ["@chess-coach/contracts/native-protocol", "../../contracts/src/native-protocol"],
-    ["@chess-coach/contracts/episode", "../../contracts/src/episode"],
-    ["../../contracts/src/learning-channel", "../../contracts/src/learning-channel"],
-    ["../../contracts/src/training-state", "../../contracts/src/training-state"],
-    ["../../contracts/src/match", "../../contracts/src/match"],
-    ["../../runtime/src/match-session", "../../runtime/src/match-session"],
-    ["../../runtime/src/training-coordinator", "../../runtime/src/training-coordinator"],
-    ["../../runtime/src/training-store", "../../runtime/src/training-store"],
-    ["../../runtime/src/curriculum", "../../runtime/src/curriculum"],
-    ["../../runtime/src/index", "../../runtime/src/index"]]) {
+for (const [dependency, relative] of [["@chess-coach/starchess-core/causal-producer", "./causal-producer"],
+    ["@chess-coach/contracts/causal-journal", "../../../contracts/src/causal-journal"],
+    ["@chess-coach/contracts/recipient", "../../../contracts/src/recipient"],
+    ["@chess-coach/contracts/recipient-codec", "../../../contracts/src/recipient-codec"],
+    ["@chess-coach/contracts/game-session", "../../../contracts/src/game-session"],
+    ["@chess-coach/contracts/native-protocol", "../../../contracts/src/native-protocol"],
+    ["@chess-coach/contracts/episode", "../../../contracts/src/episode"],
+    ["../../contracts/src/learning-channel", "../../../contracts/src/learning-channel"],
+    ["../../contracts/src/training-state", "../../../contracts/src/training-state"],
+    ["../../contracts/src/match", "../../../contracts/src/match"],
+    ["../../runtime/src/match-session", "../../../runtime/src/match-session"],
+    ["../../runtime/src/training-coordinator", "../../../runtime/src/training-coordinator"],
+    ["../../runtime/src/training-store", "../../../runtime/src/training-store"],
+    ["../../runtime/src/curriculum", "../../../runtime/src/curriculum"],
+    ["../../runtime/src/index", "../../../runtime/src/index"]]) {
   test(`private runtime/type/transitive model closure rejects ${dependency}`, () => {
     const original = readFileSync(entry, "utf8"), originalCore = readFileSync(core, "utf8");
     expect(boundaryIssues(new Map([[entry, `${original}\nimport '${dependency}';`]]))).toContain("HOST_PRODUCER");
@@ -98,6 +99,29 @@ for (const [dependency, relative] of [["@chess-coach/game-core/causal-producer",
 test("actual-mutation sink reexports stay outside the model closure", () => {
   const originalCore = readFileSync(core, "utf8");
   expect(boundaryIssues(new Map([[core, `${originalCore}\nexport { CausalJournal } from './causal-events';`]]))).toContain("HOST_PRODUCER");
+});
+
+test("retired game-core aliases and source reexports cannot enter the model closure", () => {
+  const original = readFileSync(entry, "utf8"), originalCore = readFileSync(core, "utf8");
+  for (const dependency of ["@chess-coach/game-core", "@chess-coach/game-core/causal-producer"]) {
+    for (const injected of [`import '${dependency}';`, `export type Retired = typeof import('${dependency}');`]) {
+      const issues = boundaryIssues(new Map([[entry, `${original}\n${injected}`]]));
+      expect(issues).toContain("UNAPPROVED_IMPORT");
+      expect(issues).toContain("UNRESOLVED_IMPORT");
+    }
+    const transitive = boundaryIssues(new Map([[core, `${originalCore}\nexport * from '${dependency}';`]]));
+    expect(transitive).toContain("UNAPPROVED_IMPORT");
+    expect(transitive).toContain("UNRESOLVED_IMPORT");
+  }
+  for (const path of ["../../../game-core/src/index", "../../../game-core/src/causal-producer"]) {
+    expect(boundaryIssues(new Map([[core, `${originalCore}\nexport * from '${path}';`]]))).toContain("UNRESOLVED_IMPORT");
+  }
+});
+
+test("product root, AI and replay entries stay outside the model closure", () => {
+  for (const dependency of ["@chess-coach/starchess-core", "../../starchess-core/src/ai/adjutant", "../../starchess-core/src/replay/packed"]) {
+    expect(boundaryIssues(new Map([[entry, `${readFileSync(entry, "utf8")}\nimport '${dependency}';`]]))).toContain("OUTSIDE_MODEL_SOURCE");
+  }
 });
 
 test("first-party model source rejects host builtins and dynamic loaders", () => {

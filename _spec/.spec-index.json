@@ -2,6 +2,106 @@
   "version": 1,
   "specs": [
     {
+      "spec": "_spec/engine-consolidation.puml",
+      "covers": [
+        "packages/starchess-core/src/engine/**",
+        "packages/starchess-core/src/index.ts",
+        "packages/starchess-core/src/commands/queue-action.ts",
+        "packages/starchess-core/src/resolve/submit-turn.ts",
+        "packages/starchess-core/src/resolve/resolve-turn.ts",
+        "packages/starchess-core/src/board/vision.ts",
+        "packages/starchess-core/src/board/ray-scan.ts",
+        "packages/starchess-core/src/board/siege.ts",
+        "packages/starchess-core/src/model/square.ts",
+        "packages/starchess-core/src/__tests__/engine-consolidation.test.ts",
+        "packages/starchess-core/tsconfig.integration-tests.json",
+        "packages/starchess-core/tests/native/**",
+        "packages/starchess-core/package.json",
+        "package.json",
+        "tsconfig.json",
+        "tsconfig.tests.json",
+        "packages/contracts/package.json",
+        "packages/policy/package.json",
+        "tooling/tests/workspace-integration.test.ts",
+        "artifacts/engine-layout/run_check.ts",
+        "packages/contracts/tests/shared-engine.e2e.test.ts",
+        "packages/contracts/tests/causal-journal.test.ts",
+        "packages/contracts/src/game-session.ts",
+        "packages/contracts/src/causal-journal.ts",
+        "packages/policy/src/**",
+        "packages/policy/tests/source-boundary.test.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/game-core.puml",
+      "covers": [
+        "packages/starchess-core/src/engine/**",
+        "packages/starchess-core/src/model/square.ts",
+        "packages/starchess-core/tests/native/**",
+        "packages/starchess-core/package.json"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/causal-journal.puml",
+      "covers": [
+        "packages/starchess-core/src/engine/causal-*.ts",
+        "packages/starchess-core/src/resolve/submit-turn.ts",
+        "packages/starchess-core/src/resolve/resolve-turn.ts",
+        "packages/starchess-core/src/board/vision.ts",
+        "packages/starchess-core/src/board/ray-scan.ts",
+        "packages/contracts/src/causal-journal.ts",
+        "packages/contracts/tests/causal-journal.test.ts",
+        "packages/starchess-core/tests/native/causal-events.test.ts",
+        "packages/starchess-core/tests/native/causal-parity.test.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/turn-resolution.puml",
+      "covers": [
+        "packages/starchess-core/src/engine/resolve.ts",
+        "packages/starchess-core/src/engine/queue-validation.ts",
+        "packages/starchess-core/src/resolve/submit-turn.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/classical-resolution.puml",
+      "covers": [
+        "packages/starchess-core/src/engine/classical-resolution.ts",
+        "packages/starchess-core/src/resolve/resolve-turn.ts",
+        "packages/starchess-core/src/resolve/submit-turn.ts",
+        "packages/starchess-core/src/__tests__/engine-consolidation.test.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/ml-runtime-architecture.puml",
+      "covers": [
+        "packages/starchess-core/src/engine/**",
+        "packages/starchess-core/src/resolve/**",
+        "packages/starchess-core/tests/native/**",
+        "packages/starchess-core/package.json",
+        "packages/contracts/package.json",
+        "packages/policy/package.json",
+        "package.json",
+        "tsconfig.json",
+        "tsconfig.tests.json",
+        "packages/contracts/src/game-session.ts",
+        "tooling/tests/workspace-integration.test.ts",
+        "_spec/architecture.md",
+        "crates/learning/Cargo.toml",
+        "crates/learning/src/batch.rs",
+        "crates/learning/src/lib.rs",
+        "crates/learning/src/model.rs",
+        "crates/learning/tests/model.rs",
+        "packages/policy/tests/source-boundary.test.ts"
+      ],
+      "fingerprint": null
+    },
+    {
       "spec": "_spec/apps/e2e/nx-compose.puml",
       "covers": [
         "package.json",
@@ -395,7 +495,13 @@
         "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-1/**",
         "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/**",
         "_work/gpu-owner-recovery/qualification/host-build-reuse/selection.json",
-        "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/receipt.json"
+        "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/receipt.json",
+        "_work/gpu-owner-recovery/qualification/cpu-host-plan.json",
+        "_work/gpu-owner-recovery/qualification/cpu-host.ts",
+        "_work/gpu-owner-recovery/qualification/cpu-host.test.ts",
+        "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/**",
+        "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/**",
+        "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/**"
       ],
       "fingerprint": null
     },
@@ -683,6 +789,98 @@
         "_work/gpu-owner-recovery/runs/host-gpu-full-cadence-red-1/**",
         "_work/gpu-owner-recovery/runs/host-gpu-full-cadence-green-1/**",
         "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/**"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/runtime-protocol.puml",
+      "covers": [
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/**"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/manual-handoff-implementation-3.puml",
+      "covers": [
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/proposal-result-1.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/approved-proposal-spec-snapshot-1/manifest.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/authority-selection2.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/approval3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/implementation-plan1.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/approval3.test.ts",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/approval3.tsconfig.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/authority-verification-*/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/authority-lead-postcheck-1.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/authority-review-1/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/authority-review-result-1.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/shared-identity-contract1.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/approved-scope-snapshot-1/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/scope-freeze-review-*/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/scope-freeze-lead-postcheck-1.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/runtime-implementation-release1.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source3/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/invoke-approved-bun*",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/invocation-verification-*/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/capture-caller-source-lead-postcheck-1.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/capture-caller-source-lead-postcheck-2.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/capture-caller-source-lead-postcheck-3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/source-review-baseline1.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/source-review-baseline2/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/source-review-baseline3/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/source-review-*/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/source-review-result-1.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/source-review-result-2.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/source-review-result-3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/source-review-result-4.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/source-review-result-5.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/source-review-result-6.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/source-review-result-7.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/source-review-result-8.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/invocation-ready3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/caller-eligibility-reads3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery*",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-implementation-release1.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-release-baseline1/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-task-1/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-source-lead-postcheck-1.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-source-lead-postcheck-2.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-source-lead-postcheck-3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-source-review-baseline1/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-source-review-baseline2/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-source-review-baseline3/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-source-review-*/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-verification-*/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/seal-implementation-release1.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/seal-release-baseline1/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/seal-source-lead-postcheck-1.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/seal-source-lead-postcheck-2.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/seal-source-review-baseline1/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/seal-source-review-baseline2/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/seal-correction-baseline1/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/seal-task-1/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/source12-derivation3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-observation-correction3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/packet-emission-release3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/packet-emission-expectation3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/source-packet3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/packet-postcheck3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/sealed-packet-result3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/packet-emission-audit3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/packet-publication-approval3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/packet-publication-selection3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/packet-publication3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/packet-publication-observations3/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/packet-publication-task-1/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/operator-command3.fish",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/command-render-task-1/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/command-publication-selection3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/command-publication-approval3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/command-publication3.json",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/command-publication-observations3/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/command-publication-task-1/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/**",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/seal-ready-packet*",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/seal-verification-*/**"
       ],
       "fingerprint": null
     }

@@ -14,7 +14,7 @@
     "./episode": "./src/episode.ts"
   },
   "dependencies": {
-    "@chess-coach/game-core": "workspace:*",
+    "@chess-coach/starchess-core": "workspace:*",
     "zod": "4.6.7"
   }
 }

@@ -14,7 +14,7 @@
   },
   "include": [
     "packages/contracts/src",
-    "packages/game-core/src",
+    "packages/starchess-core/src/engine",
     "packages/policy/src",
     "packages/runtime/src",
     "tooling/**/*.ts"

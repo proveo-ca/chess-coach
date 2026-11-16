@@ -1,0 +1,37 @@
+
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/prepare.test.ts:
+(pass) fixed source selection > selects exactly the source allowlist shapes [0.58ms]
+(pass) fixed source selection > preserves regular modes and exact membership [0.47ms]
+(pass) fixed source selection > rejects unsupported selected symlink, gitlink and tree modes [0.67ms]
+(pass) fixed source selection > rejects path escape, absolute paths, controls and ambiguous components [0.25ms]
+(pass) fixed source selection > rejects duplicate membership before copying [0.12ms]
+(pass) fixed source selection > enforces metadata cap and NUL framing [0.13ms]
+(pass) fixed source selection > rejects invalid UTF-8 and empty selection [0.11ms]
+(pass) fixed source selection > enforces per-file cap [0.04ms]
+(pass) fixed source selection > enforces total bytes cap [0.04ms]
+(pass) fixed source selection > enforces file count cap [0.11ms]
+(pass) local Git-only discovery and exclusive staging > uses only fixed read-only Git argv, environment, cwd, timeout and buffers [3.47ms]
+(pass) local Git-only discovery and exclusive staging > persists complete discovery and manifest before first payload copy [0.73ms]
+(pass) local Git-only discovery and exclusive staging > cannot materialize without the persisted manifest [0.39ms]
+(pass) local Git-only discovery and exclusive staging > rejects a modified manifest before any payload read [0.51ms]
+(pass) local Git-only discovery and exclusive staging > refuses changed scope bindings [1.48ms]
+(pass) local Git-only discovery and exclusive staging > preserves exact source bytes as data and never claims offline completeness [1.52ms]
+(pass) local Git-only discovery and exclusive staging > refuses reused discovery, staging and check outputs without overwriting [1.43ms]
+(pass) local Git-only discovery and exclusive staging > records failed blob reads and preserves partial staged work [0.91ms]
+(pass) local Git-only discovery and exclusive staging > rejects source byte count or blob hash mismatch before creating a payload [1.03ms]
+(pass) local Git-only discovery and exclusive staging > rejects oversized Git metadata and non-commit pins before creating a manifest [5.91ms]
+(pass) local Git-only discovery and exclusive staging > enforces the 180-second trial cap before Git or writes [0.21ms]
+(pass) exact staged verification > rejects missing files [0.99ms]
+(pass) exact staged verification > rejects extra files without reading them [0.89ms]
+(pass) exact staged verification > rejects extra directories [0.69ms]
+(pass) exact staged verification > rejects symlinks and nonregular inputs [1.56ms]
+(pass) exact staged verification > rejects symlinked staged directories [0.98ms]
+(pass) exact staged verification > rejects same-length hash changes [0.82ms]
+(pass) exact staged verification > rejects receipt SHA256 changes [0.97ms]
+(pass) exact staged verification > extracts exact lock integrities only as bounded copied-data provenance [0.81ms]
+(pass) exact staged verification > reports lock version mismatch without guessing an integrity [0.07ms]
+
+ 30 pass
+ 0 fail
+ 153 expect() calls
+Ran 30 tests across 1 file. [50.00ms]

@@ -2,12 +2,10 @@
 import type {} from "bun";
 import { createHash } from "node:crypto";
 import { z } from "zod";
-import { AddScActionError, addScAction, applyStoredIncome, createCanonicalGame, scOutcome, UNIT_COST } from "@chess-coach/game-core";
-import type { ScActionInput, ScFenSnapshot, StarChessColor } from "@chess-coach/game-core";
-import { beginWithJournal, endWithJournal, seedCausalState } from "@chess-coach/game-core/causal-producer";
-import type { CausalState } from "@chess-coach/game-core/causal-producer";
-import type { Journaled } from "../../game-core/src/causal-producer";
-import type { BeginScTurnResult, EndScTurnResult } from "@chess-coach/game-core";
+import { AddScActionError, addScAction, applyStoredIncome, createCanonicalGame, scOutcome, UNIT_COST } from "@chess-coach/starchess-core/engine";
+import type { ScActionInput, ScFenSnapshot, StarChessColor, BeginScTurnResult, EndScTurnResult } from "@chess-coach/starchess-core/engine";
+import { beginWithJournal, endWithJournal, seedCausalState } from "@chess-coach/starchess-core/causal-producer";
+import type { CausalState, Journaled } from "@chess-coach/starchess-core/causal-producer";
 import { decodeNativeIntents, nativeIntentsShape } from "./native-intents";
 import { decodeCausalState } from "./causal-journal";
 import { produceRecipient, seedRecipient } from "./recipient";

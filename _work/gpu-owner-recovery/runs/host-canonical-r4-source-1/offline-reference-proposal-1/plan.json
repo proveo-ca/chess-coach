@@ -1,0 +1,53 @@
+{
+  "status": "UNAPPROVED_UNRESOLVED_NAMED_INPUTS",
+  "direction": "OFFLINE_PREPARATION",
+  "operationsAuthorized": false,
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "bunVersion": "1.4.0",
+  "builder": {"path":"tooling/build-reference.ts","sha256":"41885a3bb70f4b86e131bd3176a65fe7aefe724846db961ea6c070b4f6537054"},
+  "entrypointMetadata": {"path":"tooling/reference-entrypoints.json","sha256":"4fb9727741bb4778d260be6e6d14c3b9e38bbfd5751f49d7262273a83b5d5396"},
+  "entries": [
+    "packages/starchess-arena/src/challenge/admission.ts",
+    "packages/starchess-arena/src/challenge/corpus.ts",
+    "packages/starchess-arena/src/challenge/r3Session.ts",
+    "packages/starchess-arena/src/players/strategic.ts",
+    "packages/starchess-arena/src/run/bank.ts",
+    "packages/starchess-core/src/index.ts"
+  ],
+  "referenceSourceRoot": null,
+  "installedPackageRoot": null,
+  "outputRoot": null,
+  "executableHandoff": null,
+  "missingContext": ["NAMED_EXISTING_PINNED_REFERENCE_SOURCE_OR_GIT_OBJECT_INPUT", "NAMED_SELECTED_INSTALLED_PACKAGE_INPUT_LOCATIONS"],
+  "proposedOperations": [
+    "Read specifically named reference and selected installed-package inputs only after separate scope approval.",
+    "Use the unchanged existing builder against an absolute physical source root containing every resolved input.",
+    "Create one exclusive output root outside the source root after separate scope approval.",
+    "Run the existing six Bun builds with their existing per-entry limits in a separately approved operator-HOST container.",
+    "Retain selected-reference.json and the existing separate input/output inventories."
+  ],
+  "existingBuilderLimits": {"builds":6,"perEntryTimeoutMs":30000,"maximumIndividualInputBytes":16777216,"maximumIndividualOutputBytes":16777216,"maximumPerEntryMetafileBytes":1048576,"wholeOperationDeadlineMs":null,"filesystemQuotaEstablished":false},
+  "allResolvedInputsMustRemainInsideReferenceSourceRoot": true,
+  "inputNamesArePlanningContextNotAvailabilityProof": true,
+  "historicalMetadataOnly": {
+    "logicalProjectRoot": "/home/gu1lty/Projects/proveo/chess-coach",
+    "logicalRootSources": ["tooling/verify-corpus-reference.ts", "tooling/verify-strategic-reference.ts"],
+    "closureSummary": "_spec/closure-audit.md:47-50",
+    "selectedInputCountAtHistoricalReceipt": 95,
+    "selectedPackageFilesAtHistoricalReceipt": ["fflate@0.8.3/esm/index.mjs", "jssha@3.3.2/dist/sha256.mjs"],
+    "historicalExternalInventoryAccessed": false,
+    "historicalCountsOrPackagesAcceptedAsCurrentClosure": false
+  },
+  "automaticInstallationAuthorized": false,
+  "networkFallbackAuthorized": false,
+  "broadDependencyCacheCopyAuthorized": false,
+  "newResolverOrAuthorizationFrameworkProposed": false,
+  "newHostInventoryOrCustodyGateRequired": false,
+  "exactOperationalApprovalStillRequired": true,
+  "preparedPacketCommitAndPushRequiredBeforeAnyHostCommandDelivery": true,
+  "referenceCapturedBuiltStagedOrAcquired": false,
+  "actualHostNativeOrGpuExecuted": false,
+  "publicationApproved": false,
+  "experimentTrainingAuthorized": false,
+  "trainingReady": false
+}

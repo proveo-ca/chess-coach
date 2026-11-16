@@ -1,0 +1,18 @@
+{
+  "version": "chess-coach.r2-source-postcheck-review.v1",
+  "role": "adversarial",
+  "session": "ses_e2c5f9288ffeNLMbi5vIhbKzGr",
+  "status": "NOT_READY_SOURCE_POSTCHECK_AND_EMITTED_PACKET",
+  "source": {"path":"../source-emission-1/postcheck.ts","sha256":"2f450e24894776127284434e203592f6a76014e0ebde2d0a5fc085adceb36a3e"},
+  "postcheckReceipt": {"path":"../source-emission-1/postcheck.json","sha256":"1fd4a716f5440a32f5135492d988cbc23c299aa2a1f77830b13b106261e27615"},
+  "remainingFindings": [
+    {"severity":"MEDIUM","location":"source-emission-1/postcheck.ts:118","code":"INPUT_PRESERVATION_ANCHORS_USE_UNPINNED_LIVE_MATERIALIZATION_RECORDS"},
+    {"severity":"LOW","location":"source-emission-1/postcheck.ts:80","code":"EMITTED_METADATA_CROSSLINKS_AND_VERSIONS_NOT_FULLY_COMPARED"}
+  ],
+  "readyToMerge": false,
+  "sourceEmitterReplayRequired": false,
+  "verificationRerunByReviewer": false,
+  "nonAuthorizing": true,
+  "executionReadinessClaimed": false,
+  "trainingReady": false
+}

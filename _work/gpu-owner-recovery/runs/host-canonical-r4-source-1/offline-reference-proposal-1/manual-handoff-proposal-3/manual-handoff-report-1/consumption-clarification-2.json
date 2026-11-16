@@ -1,0 +1,35 @@
+{
+  "version": "chess-coach.h3-consumption-report-clarification.v2",
+  "evidenceScope": "REPORT",
+  "nonAuthorizing": true,
+  "supplements": [
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/consumption.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/consumption-clarification-1.json"
+  ],
+  "evidence": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/acquisition-diagnostic-report-1.json",
+  "h3Remaining": {
+    "handoffAttempts": 0,
+    "anonymousSourceGets": 0
+  },
+  "innerGrantId": "reference-two-package-source-acquisition-2",
+  "innerCeilingUnchanged": {
+    "combinedAttempts": 1,
+    "npmGetRequests": 2,
+    "npmGetRequestsPerUrl": 1
+  },
+  "combinedAttemptsConsumed": 1,
+  "remainingCombinedAttempts": 0,
+  "urlStartsConsumed": 1,
+  "confirmedGetInvocations": 1,
+  "actualGetRequests": 1,
+  "responsesCompleted": 1,
+  "urlsCompleted": 0,
+  "remainingGetSlots": 1,
+  "unusedGetSlotAuthorizesAnotherCombinedAttempt": false,
+  "automaticRetryAuthorized": false,
+  "retriesPerformed": 0,
+  "priorUnknownAtReportTimeFieldsRewritten": false,
+  "renewedRefundedRetargetedOrNewAllowances": 0,
+  "retryReplayAdoptionOrContinuationAuthorized": false,
+  "trainingReady": false
+}

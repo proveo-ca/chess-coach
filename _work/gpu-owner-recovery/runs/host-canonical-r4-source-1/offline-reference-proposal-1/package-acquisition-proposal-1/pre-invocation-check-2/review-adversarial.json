@@ -1,0 +1,11 @@
+{
+  "status": "READY_PREINVOCATION_PACKET_ONLY",
+  "session": "ses_e2e582911ffe8NNgAwLpEKFv0k",
+  "readyToMerge": true,
+  "remainingFindings": [],
+  "operationalPassEstablished": false,
+  "authorityExpanded": false,
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

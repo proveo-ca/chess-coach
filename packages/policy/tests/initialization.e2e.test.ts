@@ -2,7 +2,7 @@
 import { expect, test } from "bun:test";
 import { canonicalInitialObservation } from "@chess-coach/contracts/initialization";
 import { encodeObservation } from "@chess-coach/contracts";
-import { addScAction, createCanonicalGame } from "@chess-coach/game-core";
+import { addScAction, createCanonicalGame } from "@chess-coach/starchess-core/engine";
 import { FEATURES, encodeFeatures, enumerateCandidates } from "../src";
 
 test("both canonical recipients feed bounded candidates and actual features without fabricated fixtures", () => {

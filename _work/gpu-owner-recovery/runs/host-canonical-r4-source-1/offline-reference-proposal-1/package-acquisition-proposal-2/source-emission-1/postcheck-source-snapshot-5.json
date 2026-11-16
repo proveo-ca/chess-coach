@@ -1,0 +1,42 @@
+{
+  "originalPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/source-emission-1/postcheck.ts",
+  "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/source-emission-1/postcheck-source-snapshot-5.ts",
+  "bytes": 13787,
+  "sha256": "2f450e24894776127284434e203592f6a76014e0ebde2d0a5fc085adceb36a3e",
+  "metadata": {
+    "dev": "65088",
+    "ino": "3158022",
+    "mode": "33188",
+    "size": "13787",
+    "mtimeNs": "1794561300005797356",
+    "ctimeNs": "1794561300005797356"
+  },
+  "supersededReadOnlyPostcheck": {
+    "postcheck.json": {
+      "bytes": 3984,
+      "sha256": "1fd4a716f5440a32f5135492d988cbc23c299aa2a1f77830b13b106261e27615"
+    },
+    "postcheck5.stdout": {
+      "bytes": 195,
+      "sha256": "6c74668c69c4e304783858084728bb2eff4a3155ddc23cd5051a686f0d365337"
+    },
+    "postcheck5.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "postcheck5-exit-code.txt": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "postcheck5-typecheck-exit-code.txt": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "observation.json": {
+      "bytes": 2208,
+      "sha256": "8043c089b1df10eaa52baa9d034fb42037fa55650feca671aa30b03f41004256"
+    }
+  },
+  "remainingReviewFinding": "EMITTED_METADATA_CROSSLINKS_AND_VERSIONS_NOT_FULLY_COMPARED",
+  "sourceEmitterRerun": false
+}

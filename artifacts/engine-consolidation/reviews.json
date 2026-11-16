@@ -1,0 +1,19 @@
+{
+  "scope": "ENGINE_SOURCE_CONSOLIDATION",
+  "adversarial": {
+    "sessionID": "ses_e1a54b186ffeIIn3ewSKQvlGlk",
+    "ready": true,
+    "findings": []
+  },
+  "security": {
+    "sessionID": "ses_e1a54b181ffewL3veZmZpblBIm",
+    "ready": true,
+    "findings": []
+  },
+  "spec": {
+    "sessionID": "ses_e1a72c7baffeOLr6QqZ4r51Ft7",
+    "status": "in-sync"
+  },
+  "reviewersExecutedTests": false,
+  "publicationApproved": false
+}

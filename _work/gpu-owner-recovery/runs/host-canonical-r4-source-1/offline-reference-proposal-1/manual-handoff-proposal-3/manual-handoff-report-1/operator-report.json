@@ -1,0 +1,54 @@
+{
+  "version": "chess-coach.h3-operator-host-report.v1",
+  "status": "ACCEPTED_REPORT_FAIL_PRESERVE_PARTIALS",
+  "evidenceScope": "REPORT",
+  "reportSource": "GENUINE_EXECUTOR_MESSAGE",
+  "consoleRecord": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/operator-console.report.txt",
+    "kind": "USER_PROVIDED_MERGED_CONSOLE_TRANSCRIPTION",
+    "commandIndentationNormalized": true,
+    "originalHostStreamBytesOrChannelSeparationClaimed": false
+  },
+  "publishedCommandCommitOid": "66dd53098f95d0a78872655957a8c318ee47f2a7",
+  "publishedPacketCommitOid": "b14202b876e3cef4de898f8269b52dbfcadb3d02",
+  "publishedPacketBlobOid": "d3fc4bba5cab9201dde25b59390691d5e9ab59a2",
+  "handoffGrantId": "reference-package-manual-host-handoff-3",
+  "handoffRoot": "_work/gpu-owner-recovery/runs/reference-package-handoff-3",
+  "reportedPhases": ["preflight","claimed","request-start","http-status","http-wait","validated","materializing","sealed","inner-caller-launch","terminal"],
+  "reportedClaim": {"attemptsConsumed":1},
+  "reportedSourceResponse": {
+    "statusCode": 200,
+    "progress": [
+      {"clockScope":"PROCESS_LOCAL_HTTP","elapsedMs":1002,"remainingMs":28997,"receivedBytes":82696},
+      {"clockScope":"PROCESS_LOCAL_HTTP","elapsedMs":2006,"remainingMs":27993,"receivedBytes":643646},
+      {"clockScope":"PROCESS_LOCAL_HTTP","elapsedMs":3010,"remainingMs":26989,"receivedBytes":1343488}
+    ],
+    "finalResponseBytes": null,
+    "finalResponseBytesNotReported": true,
+    "validatedFiles": 66
+  },
+  "reportedSealStatus": "VERIFIED_FSYNC_CANDIDATE_NOT_OS_DURABILITY_GUARANTEE",
+  "reportedInnerCallerLaunch": {"clockScope":"OUTER_PROCESS_LOCAL_INFORMATIONAL","remainingMs":null},
+  "reportedTerminal": {
+    "status": "FAIL_PRESERVE_PARTIALS",
+    "failureCode": "DELIVERY_FAILED",
+    "observedSignal": null,
+    "observedHup": false,
+    "outcomePath": null,
+    "outcomeUnavailableReason": "UNCONFIRMED_OWNED_CLEANUP"
+  },
+  "reportedLauncherExitStatus": 1,
+  "callerSpawnExitReapAndPipeFacts": "NOT_ESTABLISHED_BY_THIS_CONSOLE_REPORT",
+  "actualOwnedResourceLeakEstablished": false,
+  "privateOutcomeFileExistence": "NOT_REPORTED_PUBLIC_NULL_PATH_DOES_NOT_ESTABLISH_ABSENCE",
+  "inner2ExclusiveAcquisitionClaim": "NOT_ESTABLISHED_BY_THIS_CONSOLE_REPORT",
+  "npmRequestsPerformed": "NOT_ESTABLISHED_BY_THIS_CONSOLE_REPORT",
+  "failedHostQualificationInvalidatesHistoricalOfflineSourceVerdicts": false,
+  "automaticRetryAuthorized": false,
+  "preserveClaimedRootSnapshotEvidenceObserverAndAnyAcquisitionPartials": true,
+  "newHostCaptureOrCustodyPrerequisiteAdded": false,
+  "newManualInnerOrPublicationAllowanceAdded": 0,
+  "assistantExecutedActualHostOrAcquisition": false,
+  "executionReadinessClaimed": false,
+  "trainingReady": false
+}

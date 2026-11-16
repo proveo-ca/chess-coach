@@ -1,0 +1,8 @@
+{
+  "scope": "STATIC_TYPECHECK_OF_FIXED_PRE_INVOCATION_PACKET_CHECKER_ONLY",
+  "source": "../pre-invocation-check.ts",
+  "preInvocationCheckerExecuted": false,
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

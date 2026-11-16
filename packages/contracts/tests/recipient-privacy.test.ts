@@ -1,6 +1,6 @@
 // SPEC: _spec/recipient-production.puml, _spec/causal-journal.puml
 import { expect, test } from "bun:test";
-import type { ScActionInput, Square } from "@chess-coach/game-core";
+import type { ScActionInput, Square } from "@chess-coach/starchess-core/engine";
 import type { RecipientBatch } from "../src/recipient";
 import { causalBoard } from "./causal-fixture";
 import { recipientRun } from "./recipient-fixture";

@@ -2,7 +2,9 @@
 
 ## Scope
 
-Selectively adapt canonical `rules/planning-order.ts`, `rules/nativeClassical.ts`, `rules/planning-intents.ts` and their required geometry from the read-only reference at `b4b241481fb12de4a7344e6dba8eda775af57675`. Keep the new flat game-core layout. Do not migrate legacy planners, economic estimators, ownership kernels or operational grants.
+The historical rebuild selectively adapted canonical `rules/planning-order.ts`, `rules/nativeClassical.ts`, `rules/planning-intents.ts` and their required geometry from the read-only reference at `b4b241481fb12de4a7344e6dba8eda775af57675`. Current ownership is `packages/starchess-core/src/engine`; **Move tests; retire shim** relocates the retained corpus to `packages/starchess-core/tests/native` and removes the forwarding workspace. Canonical source remains unchanged. Do not migrate legacy planners, economic estimators, ownership kernels or operational grants.
+
+Current command: `bun test packages/starchess-core/tests/native`. Fresh layout verification is pending. Relative corpus paths below now live under that directory; recorded historical results and fixture source fields retain their original meanings and bytes.
 
 `knownAppendFailure` applies known-board actor, shape, timing, mine-cap and vacancy constraints. It accepts player knowledge, not a simulator snapshot. A caller must provide currently known pieces, not unseen occupancy or stale sightings as current blockers. Hidden paths remain resolution concerns. This recipient helper does not enforce gas/mineral affordability, charge resources, enforce the complete queue contract or resolve actions.
 

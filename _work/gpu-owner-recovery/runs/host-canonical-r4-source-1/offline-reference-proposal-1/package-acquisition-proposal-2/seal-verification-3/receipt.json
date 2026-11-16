@@ -1,0 +1,453 @@
+{
+  "version": "chess-coach.offline-seal-preparation-verification.v1",
+  "status": "PASS_OFFLINE_SOURCE_PREPARATION_AWAITING_LEAD_REVIEW_AND_RELEASE",
+  "evidence": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-verification-3",
+  "sources": {
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet.ts": {
+      "bytes": 20339,
+      "sha256": "a2837fe33fe36b401a57e594a83119d4acb9c8beca414566fa9acc82f0482dc7",
+      "gitBlobOid": "946214b6e89fb56588e3cc28d51610abbce73d0a"
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet.test.ts": {
+      "bytes": 19023,
+      "sha256": "b491466666ace4bc77a48d2303fbce29927bd13a870d7b7fde4766419659bdcd",
+      "gitBlobOid": "2faaeedb70c75f72d901bc5ea65ffb55e6c52826"
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet.tsconfig.json": {
+      "bytes": 553,
+      "sha256": "985df75aa74a16d20281f493bb13017b9e53d423f1acb5159a0aad01cf7a32fa",
+      "gitBlobOid": "eb7765c5d2b558215a7b415e713db0abf2db5027"
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet-verify.ts": {
+      "bytes": 18082,
+      "sha256": "ac67d1f33df8e3aa96ee95546eb98cdf9e017afe4e91a7586fef70f6e1b9c24a",
+      "gitBlobOid": "ee2b894dc012d9e70a64bea04e899784f39ef7ad"
+    }
+  },
+  "valid": true,
+  "testsPassed": 89,
+  "testsFailed": 0,
+  "commandsValid": true,
+  "readchecksMatch": true,
+  "preservationMatch": true,
+  "sourceUnchanged": true,
+  "results": [
+    {
+      "name": "tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet.test.ts",
+        "--timeout",
+        "10000"
+      ],
+      "spawnAttempted": true,
+      "spawned": true,
+      "pid": 157140,
+      "spawnError": false,
+      "noChildCreated": false,
+      "exitCode": 0,
+      "signal": null,
+      "reaped": true,
+      "closed": true,
+      "outEOF": true,
+      "errEOF": true,
+      "failure": null,
+      "interrupted": false,
+      "cancellationSignal": null,
+      "cleanupStarted": true,
+      "cleanupReason": "POST_EXIT_DRAIN",
+      "cleanupOriginElapsedMs": 667.280191,
+      "cleanupOriginsStarted": 1,
+      "cleanupBudgetMs": 2000,
+      "cleanupExpired": false,
+      "cleanupClockFailed": false,
+      "pipesDestroyed": false,
+      "pipeDestructionAttempted": false,
+      "pipeCleanupFailed": false,
+      "pipeDestruction": {
+        "cleanupCalls": 0,
+        "destructionAttempted": false,
+        "pipesDestroyed": false,
+        "cleanupFailed": false,
+        "stdout": {
+          "present": null,
+          "attempts": 0,
+          "confirmed": false,
+          "destroyed": null,
+          "failed": false,
+          "firstFailure": null,
+          "getterErrors": 0,
+          "destroyErrors": 0,
+          "streamErrors": 0,
+          "stateErrors": 0
+        },
+        "stderr": {
+          "present": null,
+          "attempts": 0,
+          "confirmed": false,
+          "destroyed": null,
+          "failed": false,
+          "firstFailure": null,
+          "getterErrors": 0,
+          "destroyErrors": 0,
+          "streamErrors": 0,
+          "stateErrors": 0
+        }
+      },
+      "processGroupGone": true,
+      "cleanupConfirmed": true,
+      "descendantsConfirmedGone": false,
+      "signalFailure": false,
+      "signalAttempts": [],
+      "stdout": {
+        "bytes": 28,
+        "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94",
+        "gitBlobOid": "5e2bf50d860b7d789a5b5b130aafb9763e6c2c01"
+      },
+      "stderr": {
+        "bytes": 10482,
+        "sha256": "ffa9f4bcdf2ede0bdbe55a9520ca54b7fe179f84b809f48fa830c021280e00c6",
+        "gitBlobOid": "65a7c955c66a2f7367ed4a7dab9a05489301e68a"
+      }
+    },
+    {
+      "name": "typecheck",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-ready-packet.tsconfig.json"
+      ],
+      "spawnAttempted": true,
+      "spawned": true,
+      "pid": 157160,
+      "spawnError": false,
+      "noChildCreated": false,
+      "exitCode": 0,
+      "signal": null,
+      "reaped": true,
+      "closed": true,
+      "outEOF": true,
+      "errEOF": true,
+      "failure": null,
+      "interrupted": false,
+      "cancellationSignal": null,
+      "cleanupStarted": true,
+      "cleanupReason": "POST_EXIT_DRAIN",
+      "cleanupOriginElapsedMs": 2531.538631,
+      "cleanupOriginsStarted": 1,
+      "cleanupBudgetMs": 2000,
+      "cleanupExpired": false,
+      "cleanupClockFailed": false,
+      "pipesDestroyed": false,
+      "pipeDestructionAttempted": false,
+      "pipeCleanupFailed": false,
+      "pipeDestruction": {
+        "cleanupCalls": 0,
+        "destructionAttempted": false,
+        "pipesDestroyed": false,
+        "cleanupFailed": false,
+        "stdout": {
+          "present": null,
+          "attempts": 0,
+          "confirmed": false,
+          "destroyed": null,
+          "failed": false,
+          "firstFailure": null,
+          "getterErrors": 0,
+          "destroyErrors": 0,
+          "streamErrors": 0,
+          "stateErrors": 0
+        },
+        "stderr": {
+          "present": null,
+          "attempts": 0,
+          "confirmed": false,
+          "destroyed": null,
+          "failed": false,
+          "firstFailure": null,
+          "getterErrors": 0,
+          "destroyErrors": 0,
+          "streamErrors": 0,
+          "stateErrors": 0
+        }
+      },
+      "processGroupGone": true,
+      "cleanupConfirmed": true,
+      "descendantsConfirmedGone": false,
+      "signalFailure": false,
+      "signalAttempts": [],
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "gitBlobOid": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "gitBlobOid": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      }
+    },
+    {
+      "name": "fish-syntax",
+      "argv": [
+        "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-fish-shell-fish-shell/4.9.3/fish",
+        "--no-config",
+        "--no-execute",
+        "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/seal-verification-3/synthetic-nonrunning.fish"
+      ],
+      "spawnAttempted": true,
+      "spawned": true,
+      "pid": 157172,
+      "spawnError": false,
+      "noChildCreated": false,
+      "exitCode": 0,
+      "signal": null,
+      "reaped": true,
+      "closed": true,
+      "outEOF": true,
+      "errEOF": true,
+      "failure": null,
+      "interrupted": false,
+      "cancellationSignal": null,
+      "cleanupStarted": true,
+      "cleanupReason": "POST_EXIT_DRAIN",
+      "cleanupOriginElapsedMs": 2.026371,
+      "cleanupOriginsStarted": 1,
+      "cleanupBudgetMs": 2000,
+      "cleanupExpired": false,
+      "cleanupClockFailed": false,
+      "pipesDestroyed": false,
+      "pipeDestructionAttempted": false,
+      "pipeCleanupFailed": false,
+      "pipeDestruction": {
+        "cleanupCalls": 0,
+        "destructionAttempted": false,
+        "pipesDestroyed": false,
+        "cleanupFailed": false,
+        "stdout": {
+          "present": null,
+          "attempts": 0,
+          "confirmed": false,
+          "destroyed": null,
+          "failed": false,
+          "firstFailure": null,
+          "getterErrors": 0,
+          "destroyErrors": 0,
+          "streamErrors": 0,
+          "stateErrors": 0
+        },
+        "stderr": {
+          "present": null,
+          "attempts": 0,
+          "confirmed": false,
+          "destroyed": null,
+          "failed": false,
+          "firstFailure": null,
+          "getterErrors": 0,
+          "destroyErrors": 0,
+          "streamErrors": 0,
+          "stateErrors": 0
+        }
+      },
+      "processGroupGone": true,
+      "cleanupConfirmed": true,
+      "descendantsConfirmedGone": false,
+      "signalFailure": false,
+      "signalAttempts": [],
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "gitBlobOid": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "gitBlobOid": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      }
+    }
+  ],
+  "actualGate": {
+    "status": "PENDING_CURRENT_REVIEWS",
+    "missing": [
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/security.json"
+    ],
+    "absentAtRead": [
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/security.json"
+    ],
+    "observedRolePins": [
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/backend.json",
+        "bytes": 1274,
+        "sha256": "33276db67f4c45b6a029cca976faab4eecdfaacedd1835323096e3a50b2d102e",
+        "gitBlobOid": "5dad8fe9c57e022f3aa5523f0f19f2b2111ea8b9"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/devops.json",
+        "bytes": 1226,
+        "sha256": "13c2c895c42bca1fb328c2ed73dad982cf8951db9488880d9ba9f5f086c065e5",
+        "gitBlobOid": "c398812ff6212ec32e2c661edd0963bfcd435481"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/adversarial.json",
+        "bytes": 1172,
+        "sha256": "29c8f72a5303d3993e0b922368745c1856d231602de11c65c6887c604aba0e0a",
+        "gitBlobOid": "d5d3701d079842e4d67243b70d14bef5ff9c3fc8"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/security.json",
+        "bytes": 1409,
+        "sha256": "5682418a3507983892e39e3aaaf47f6175a4f98bd0f02587a170792cffc327a0",
+        "gitBlobOid": "94ee9c512561fb8d16ca394e29029105897df225"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/backend.json",
+        "bytes": 1292,
+        "sha256": "8e1dfc9580084a6606aa8e4229e7d780defc6009018c4539098732a1fcd2769b",
+        "gitBlobOid": "1e3b9b8096f88afa79e0c13ec6e1f6fdf1be8eff"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/devops.json",
+        "bytes": 1291,
+        "sha256": "e630c8ee38f08c39a7999553ac425b60a84df2ad17e099787f4ac0810e87ccc6",
+        "gitBlobOid": "e93fb1a199aee990f27514ab3af97adaa21f824d"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/adversarial.json",
+        "bytes": 1237,
+        "sha256": "99edd1a8c8ba59f70485cdee8afbf0bd0a634a573cffde4d82807313e237c0cd",
+        "gitBlobOid": "e072b1069259438a1770de92cf80eafb9b289e2e"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/security.json",
+        "bytes": 1310,
+        "sha256": "9b9962b3cf60919fb98cf01d1fd675d557aff4ac5bac52b41a29e0b33027440f",
+        "gitBlobOid": "dbacf140c077709378a0aec2ffd5a3c6ea029c68"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/backend.json",
+        "bytes": 1491,
+        "sha256": "a40885f240d3b81863a8b1811070af08f2bee2eedf72cd023a3915021cb67c7b",
+        "gitBlobOid": "4caf5eba9a60dae913ee8bc284c47feb19585526"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/devops.json",
+        "bytes": 1443,
+        "sha256": "346a0f4a3e50a3244efa0bb4bc7c0b34c1f4bbb76b167974cccf7cbccc1cae78",
+        "gitBlobOid": "45a67cf083750f1d16c77cd10a268f78f8f6d469"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/adversarial.json",
+        "bytes": 1218,
+        "sha256": "a09980e995303f3845b561801b38f101a02c22c8b6c2d98dd811c424deb4e72a",
+        "gitBlobOid": "4b02109501e57a4e77633fd203e3476b6f85ae90"
+      }
+    ],
+    "actualDerivedRecordsWritten": false
+  },
+  "currentReviewPaths": [
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/backend.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/devops.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/adversarial.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/security.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/backend.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/devops.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/adversarial.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/security.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/backend.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/devops.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/adversarial.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/security.json"
+  ],
+  "runtime": {
+    "bun": "1.4.0",
+    "executable": "/usr/local/bin/bun",
+    "typescript": "5.9.3",
+    "strictNoEmit": true,
+    "noInstall": true
+  },
+  "syntheticCandidate": {
+    "scope": "OFFLINE_SYNTHETIC",
+    "explicitlySelectedProofPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-15/receipt.json",
+    "deliveryProof": {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-15/receipt.json",
+      "sha256": "7b7a6469cbbab55b929c125741ef668063bf886b91ac057b9b08c3dafa1e603d"
+    },
+    "deliveryManifest": {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-15/source-manifest.json",
+      "sha256": "c7d36e5287bf4683b0e13f405f6e7d0af313fa0c9ea4dc8717d153e11bcd6400"
+    },
+    "deliverySources": {
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-bootstrap.ts": {
+        "bytes": 46568,
+        "sha256": "f056e6ace00596d1246bbb5f0055552245d811b61f700e456c703b995c326cbc",
+        "gitBlobOid": "58eee514695732ea2a9f3d91804de8a546fcf3e8"
+      },
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-packet.ts": {
+        "bytes": 3202,
+        "sha256": "b6f891d83dbafdccbd740ae90bb949aea3587deb96561d04b451e4509fd50e58",
+        "gitBlobOid": "8991d5c9ca73ba3f549a622cf9b5a8c09ee68110"
+      },
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-render.ts": {
+        "bytes": 2458,
+        "sha256": "b62649edd8e115d7d829acd2f71f445ca32c89777e041abba545669b8ca2b4eb",
+        "gitBlobOid": "8c94c12dfa51ef6f3398feaf61858d9b01a9bfb2"
+      },
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.test.ts": {
+        "bytes": 64574,
+        "sha256": "b87e22861d16b14967bfed805485a1e4411f27491625876e57f0753c0f3addfc",
+        "gitBlobOid": "15d05dc7f48affb2d4147f48e5fdaf626458b573"
+      },
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verify.ts": {
+        "bytes": 18274,
+        "sha256": "f5f7eac8672b9684a8c96fd904beaa9790ddfc76db9593d6ffc32bf0c5e7168b",
+        "gitBlobOid": "6b2004671601ab4f77eb3fdbfe235e6d1b554e49"
+      },
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.tsconfig.json": {
+        "bytes": 580,
+        "sha256": "e661d19127ec2cd1d202eb94412d733aa92d4ae15e308711be44648f593fceaa",
+        "gitBlobOid": "dcd517b97787308f82f0251993bd4e81bf13338c"
+      },
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-contract1.json": {
+        "bytes": 5450,
+        "sha256": "6f862efb6a024a248ebc042b75b7f353349dc0a40c00d49d13092758464672ae",
+        "gitBlobOid": "861b04794cc0fb8e3ecd77c99e8fa32a722fc31b"
+      }
+    },
+    "members": 48,
+    "protectedMaterializedMembers": 36,
+    "syntheticReviewFilesMaterialized": 0,
+    "packetBytes": 1136885,
+    "aggregateBytes": 839646,
+    "fixtureOnly": true,
+    "fakeCommitOidUsedOnlyInNonrunningSyntaxFixture": true
+  },
+  "actualBindingCreated": false,
+  "actualReadinessCreated": false,
+  "actualPacketCreated": false,
+  "finalSealCreated": false,
+  "historical352FreshlyRevalidated": true,
+  "historicalFiles": 352,
+  "historicalMetadataEntries": 421,
+  "runtimeProtectedRecords": 52,
+  "runtimeSourceFiles": 18,
+  "readyRuntimeReviews": 8,
+  "productionEntryInvoked": false,
+  "productionWorkerInvoked": false,
+  "productionAdapterInstantiated": false,
+  "realNetworkRequests": 0,
+  "networkListenersStarted": false,
+  "fishExecuted": false,
+  "fishNoExecuteChecked": true,
+  "publicationPerformed": false,
+  "gitMutationPerformed": false,
+  "manualAttemptsConsumed": 0,
+  "innerAttemptsConsumed": 0,
+  "nonAuthorizing": true,
+  "executionReadinessClaimed": false
+}

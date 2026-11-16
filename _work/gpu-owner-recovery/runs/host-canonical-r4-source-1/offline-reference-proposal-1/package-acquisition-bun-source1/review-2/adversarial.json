@@ -1,0 +1,11 @@
+{
+  "status": "NOT_READY_IMPLEMENTATION_SOURCE_ONLY",
+  "session": "ses_e2e4b1ef3ffeptPhqouftYEoBl",
+  "verification": "verification-4/receipt.json",
+  "readOnly": true,
+  "fivePriorFindingsCleared": true,
+  "findings": [{"severity":"HIGH","path":"capture.ts","line":637,"code":"INTERRUPTION_DURING_COMPLETION_CAN_LEAVE_EXIT_ZERO"}],
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

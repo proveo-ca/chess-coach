@@ -1,0 +1,19 @@
+{
+  "status": "EXECUTOR_APPROVED_OFFLINE_RETRY_PACKET_PREPARATION_ONLY",
+  "authorizationSource": "EXECUTOR_INTERACTIVE_PREPARE_RETRY_PACKET_RECOMMENDED",
+  "selectedLabel": "Prepare retry packet (Recommended)",
+  "scope": "PREPARE_AND_REVIEW_MISSING_PARENT_FIX_AND_FRESH_RETRY_REQUEST",
+  "offlinePlanningSourceAndSyntheticVerificationApproved": true,
+  "actualNetworkRetryApproved": false,
+  "actualProductionCacheParentCreationApproved": false,
+  "actualProductionDestinationPreparationApproved": false,
+  "newAcquisitionGrantIssued": false,
+  "oldGrant": "reference-two-package-source-acquisition-1",
+  "oldGrantRemainingAuthorizedCombinedAttempts": 0,
+  "oldGrantRemainingAuthorizedGetRequests": 0,
+  "oldGrantRenewedOrWidened": false,
+  "preserveAllFailedMarkersEvidenceBindingsAndSources": true,
+  "freshActualOperationRequiresSeparateApprovalAfterPacketReview": true,
+  "nativeHostGpuReferenceBuildPublicationOrTrainingApproved": false,
+  "trainingReady": false
+}

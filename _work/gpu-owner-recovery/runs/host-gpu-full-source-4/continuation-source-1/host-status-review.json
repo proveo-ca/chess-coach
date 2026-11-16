@@ -1,0 +1,20 @@
+{
+  "status": "READY_MANUAL_READ_ONLY_HOST_STATUS_COMMAND_NOT_GPU_RETRY",
+  "adversarial": {"session": "ses_e32b04138ffeVjWdr2YVsUIOar", "verdict": "READY_TO_MERGE_YES", "findings": []},
+  "security": {"session": "ses_e32b04137ffeYdfjBDPpd1LsUm", "verdict": "READY_TO_MERGE_YES", "findings": [], "risk": "LOW_FOR_METADATA_HELPER_ONLY"},
+  "devops": {
+    "session": "ses_e32b0413fffeeEsjifhSYtXEas",
+    "verdict": "READY_TO_MERGE_YES",
+    "manualFishGrammarReview": "NO_CURRENT_MISMATCH_OR_BLOCKER_FOUND",
+    "findings": [{"severity": "LOW", "finding": "Unit test does not bind the generated literal artifact to its body", "status": "NON_BLOCKING_TEST_COVERAGE_GAP_CURRENT_LITERAL_EQUALITY_CHECKED_SEPARATELY_BEFORE_DELIVERY"}]
+  },
+  "command": {"path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status-command.fish", "bytes": 1940, "sha256": "79c2aa96b1944d629d70d5aa669999070a0c02c45b65a526ebd348e0db49fb47"},
+  "verification": "STATIC_POLICY_TESTS_STRICT_TYPES_DOCS_WHITESPACE_AND_MANUAL_FISH_REVIEW_ONLY",
+  "fishParserExecution": "UNAVAILABLE_LOCAL_MISE_PROJECT_TRUST_REQUIRED_NO_TRUST_OR_INSTALL_CHANGED",
+  "hostStatusCommandExecutedByCoding": false,
+  "previousFullTwoAttemptRenewed": false,
+  "filesDeleted": 0,
+  "historicalWorkReviewDeferredUntilBeforeMerge": true,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

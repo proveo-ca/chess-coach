@@ -1,0 +1,45 @@
+{
+  "version": "chess-coach.cpu39-script-delivery-request.v1",
+  "status": "UNAPPROVED_SOURCE_ONLY",
+  "canonicalPath": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/canonical-host-command.fish",
+  "binding": {
+    "gitBlobSha": "6d4837cd8aaa80f4c73aedbaedd17aea7ea11264",
+    "bytes": 104604,
+    "sha256": "02f358d0abc05a9ab1081f8512abdf455257ec69c69a74361ac5a5a5fa52f1b8"
+  },
+  "repository": "https://github.com/proveo-ca/chess-coach.git",
+  "publicationRef": "refs/heads/feat-ml-adjuntant-ii-continuation-2b24d9c5a",
+  "handoff": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-cpu39-handoff-1",
+  "successfulPublicationRequired": true,
+  "committedBlobByteCheckRequired": true,
+  "hostCheckoutChangeRequired": false,
+  "requestedTextFetches": 1,
+  "maximumDeliveryAttemptsIncludingPreflight": 1,
+  "sourceDeliveryPhaseTimeoutMs": 30000,
+  "sourceDeliveryKillGraceMs": 2000,
+  "sourceDeliveryStoredBytesMaximum": 106653,
+  "cpuCampaignPhaseMaximumMs": 4200000,
+  "clocksAreSeparatePhaseCeilingsNotStrictEndToEnd4232Seconds": true,
+  "pipelineExitCodesRequired": [
+    0,
+    0,
+    0
+  ],
+  "existingToolsOnly": [
+    "fish",
+    "timeout",
+    "gh",
+    "base64",
+    "head",
+    "wc",
+    "sha256sum"
+  ],
+  "fetchAuthorized": false,
+  "publicationAuthorized": false,
+  "hostExecutionApproved": false,
+  "automaticRetryAuthorized": false,
+  "installationOrDependencyAcquisitionAuthorized": false,
+  "credentialModificationAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

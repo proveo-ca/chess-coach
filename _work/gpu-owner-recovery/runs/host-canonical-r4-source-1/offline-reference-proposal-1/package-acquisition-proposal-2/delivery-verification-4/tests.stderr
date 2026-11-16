@@ -1,0 +1,86 @@
+
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.test.ts:
+(pass) literal packet and genuine authorization > computes exact source lengths, sha256, Git blob and packet pins [3.28ms]
+(pass) literal packet and genuine authorization > pins the actual immutable launch-boundary record [0.06ms]
+(pass) literal packet and genuine authorization > rejects missing or replaced launch-boundary row [0.95ms]
+(pass) literal packet and genuine authorization > requires genuine approval and all four unchanged byte bindings [0.40ms]
+(pass) literal packet and genuine authorization > requires unchanged helper and reference lock members [16.77ms]
+(pass) literal packet and genuine authorization > rejects changed packet length sha and Git blob [0.86ms]
+(pass) literal packet and genuine authorization > rejects unknown members and missing caller helpers [1.76ms]
+(pass) literal packet and genuine authorization > rejects path "/absolute.ts" [0.03ms]
+(pass) literal packet and genuine authorization > rejects path "../escape.ts" [0.01ms]
+(pass) literal packet and genuine authorization > rejects path "a//b.ts"
+(pass) literal packet and genuine authorization > rejects path "a/./b.ts"
+(pass) literal packet and genuine authorization > rejects path "a/../b.ts"
+(pass) literal packet and genuine authorization > rejects path "a\\b.ts"
+(pass) literal packet and genuine authorization > rejects path "a\u0000b.ts"
+(pass) literal packet and genuine authorization > rejects path "a/cache/b.ts"
+(pass) literal packet and genuine authorization > rejects path "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/acquisition-invocation-1/b.json"
+(pass) literal packet and genuine authorization > rejects path "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/acquisition-execution-1/b.json"
+(pass) literal packet and genuine authorization > rejects path "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-2/b.json"
+(pass) literal packet and genuine authorization > rejects path "archive.tgz"
+(pass) literal packet and genuine authorization > rejects path "native.so"
+(pass) literal packet and genuine authorization > rejects path "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/source-packet1.json"
+(pass) literal packet and genuine authorization > rejects duplicate table members [1.09ms]
+(pass) literal packet and genuine authorization > rejects repeated packet members [1.56ms]
+(pass) literal packet and genuine authorization > rejects tampered source bytes [2.20ms]
+(pass) literal packet and genuine authorization > rejects tampered source sha256 [3.72ms]
+(pass) literal packet and genuine authorization > rejects tampered source gitBlobOid [3.97ms]
+(pass) literal packet and genuine authorization > rejects bytes changed with unchanged table [2.56ms]
+(pass) literal packet and genuine authorization > rejects noncanonical base64 %%% [0.03ms]
+(pass) literal packet and genuine authorization > rejects noncanonical base64 YQ=
+(pass) literal packet and genuine authorization > rejects noncanonical base64 YR==
+(pass) literal packet and genuine authorization > rejects noncanonical base64 YQ==
+
+(pass) literal packet and genuine authorization > rejects nonUTF8 or binary {"type":"Buffer","data":[255]} [0.06ms]
+(pass) literal packet and genuine authorization > rejects nonUTF8 or binary {"type":"Buffer","data":[0]}
+(pass) literal packet and genuine authorization > rejects nonUTF8 or binary {"type":"Buffer","data":[31]}
+(pass) literal packet and genuine authorization > rejects nonUTF8 or binary {"type":"Buffer","data":[239,187,191,65]}
+(pass) literal packet and genuine authorization > enforces file directory and aggregate caps [30.22ms]
+(pass) literal packet and genuine authorization > rejects changed totals, directories and packet self-reference fields [9.42ms]
+(pass) literal packet and genuine authorization > decodes one exact GitHub blob response [35.22ms]
+(pass) literal packet and genuine authorization > rejects bad GitHub sha [4.86ms]
+(pass) literal packet and genuine authorization > rejects bad GitHub size [4.75ms]
+(pass) literal packet and genuine authorization > rejects bad GitHub encoding [4.10ms]
+(pass) literal packet and genuine authorization > rejects bad GitHub content [4.00ms]
+(pass) literal packet and genuine authorization > enforces API and decoded packet caps [319.11ms]
+(pass) literal packet and genuine authorization > uses only the caller-supplied finite literal array [4.24ms]
+(pass) offline fake-subprocess handoff lifecycle > materializes complete validated text then calls literal execute in snapshot [67.04ms]
+(pass) offline fake-subprocess handoff lifecycle > rejects duplicate packets before any source write and preserves claimed roots [46.28ms]
+(pass) offline fake-subprocess handoff lifecycle > rejects traversal before source writes [48.97ms]
+(pass) offline fake-subprocess handoff lifecycle > rejects bad response blob before source writes [24.99ms]
+(pass) offline fake-subprocess handoff lifecycle > requires the genuine boundary row before materialization [47.31ms]
+(pass) offline fake-subprocess handoff lifecycle > rejects plant-directory collisions without overwrite or adoption [48.01ms]
+(pass) offline fake-subprocess handoff lifecycle > rejects plant-file collisions without overwrite or adoption [46.72ms]
+(pass) offline fake-subprocess handoff lifecycle > rejects plant-symlink collisions without overwrite or adoption [49.09ms]
+(pass) offline fake-subprocess handoff lifecycle > claims once and rejects replay without adoption [4.49ms]
+(pass) offline fake-subprocess handoff lifecycle > rejects symlink ancestors without claiming or repair [4.17ms]
+(pass) offline fake-subprocess handoff lifecycle > rejects symlink handoff roots without adoption [4.60ms]
+(pass) offline fake-subprocess handoff lifecycle > leaves existing valid host operation parents unchanged [61.23ms]
+(pass) offline fake-subprocess handoff lifecycle > rejects fake GH nonzero and never starts caller [19.46ms]
+(pass) offline fake-subprocess handoff lifecycle > rejects fake GH oversize and never starts caller [37.21ms]
+(pass) offline fake-subprocess handoff lifecycle > rejects fake GH stderr-cap and never starts caller [21.51ms]
+(pass) offline fake-subprocess handoff lifecycle > kills a noncooperating owned child within local fetch cleanup budget [210.26ms]
+(pass) offline fake-subprocess handoff lifecycle > waits for actual exit after complete stdout [214.98ms]
+(pass) offline fake-subprocess handoff lifecycle > waits for descendant pipe EOF before Stage B [214.62ms]
+(pass) offline fake-subprocess handoff lifecycle > keeps cleanup failure sticky and preserves partials [22.35ms]
+(pass) offline fake-subprocess handoff lifecycle > keeps interrupt failure sticky and preserves partials [12.71ms]
+(pass) offline fake-subprocess handoff lifecycle > keeps clock-after-fetch failure sticky and preserves partials [21.25ms]
+(pass) offline fake-subprocess handoff lifecycle > keeps file-close failure sticky and preserves partials [50.06ms]
+(pass) offline fake-subprocess handoff lifecycle > keeps receipt-close failure sticky and preserves partials [51.96ms]
+(pass) offline fake-subprocess handoff lifecycle > keeps directory-close failure sticky and preserves partials [50.29ms]
+(pass) offline fake-subprocess handoff lifecycle > keeps finalization-deadline failure sticky and preserves partials [56.14ms]
+(pass) offline fake-subprocess handoff lifecycle > keeps seal-deadline failure sticky and preserves partials [50.02ms]
+(pass) offline fake-subprocess handoff lifecycle > does not apply Stage A or a new whole-script deadline to the inner-owned caller [317.83ms]
+(pass) offline fake-subprocess handoff lifecycle > clock failure before claim creates nothing [5.00ms]
+(pass) offline fake-subprocess handoff lifecycle > starts Stage A at first factory entry before imports or preflight [34.42ms]
+(pass) offline fake-subprocess handoff lifecycle > restricts injected subprocess roots to protected fixtures [5.10ms]
+(pass) offline fake-subprocess handoff lifecycle > exclusive materialization rejects existing regular or symlink files [5.07ms]
+(pass) inline renderer and fixed tool contracts > embeds self-contained builtin-only implementation in nonrunning Fish syntax fixture [0.54ms]
+(pass) inline renderer and fixed tool contracts > refuses production renderer and bootstrap before any claim or tool invocation [0.14ms]
+(pass) inline renderer and fixed tool contracts > fixes one GitHub endpoint and excludes unsafe parent environment [0.11ms]
+
+ 78 pass
+ 0 fail
+ 313 expect() calls
+Ran 78 tests across 1 file. [2.48s]

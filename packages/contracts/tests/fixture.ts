@@ -1,5 +1,5 @@
 // SPEC: _spec/observations.puml
-import { getSideVision, placementToMap, sq } from "@chess-coach/game-core";
+import { getSideVision, placementToMap, sq } from "@chess-coach/starchess-core/engine";
 import type { Observation } from "../src";
 
 type Writable<T> = T extends readonly (infer Item)[] ? Writable<Item>[] :

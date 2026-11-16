@@ -1,0 +1,2862 @@
+{
+  "status": "PASS_MOCK_CPU39_ONLY",
+  "actualHostExecuted": false,
+  "execution": "ALL_EXEC_INJECTED_MOCKS",
+  "tests": 39,
+  "harnesses": 16,
+  "executables": 19,
+  "worker": {
+    "version": "chess-coach.cpu39-worker.v1",
+    "status": "PASS_CPU39_TESTS_ONLY",
+    "failure": null,
+    "phase": "complete",
+    "staging": {
+      "inventory": [
+        {
+          "path": "Cargo.lock",
+          "sha256": "77f674cc26a01f26558fd99c45bdcd5566017be05833fce1d39cae98cda05955"
+        },
+        {
+          "path": "Cargo.toml",
+          "sha256": "553b6e3cf5a8d30f53f19bf6623332d4d6c5df69099d5f2a51ae9260f07b74bc"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+          "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/verify.ts",
+          "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58"
+        },
+        {
+          "path": "crates/gpu-owner/Cargo.toml",
+          "sha256": "ceb98a71e3a5c16c1c3f6d5035843b8441995339b5d49f62340b395540b2c3aa"
+        },
+        {
+          "path": "crates/gpu-owner/src/docker.rs",
+          "sha256": "4e49b8c65a735339bdfb5891e182bc636c590e2ae341109d9c1864b699f74720"
+        },
+        {
+          "path": "crates/gpu-owner/src/evidence.rs",
+          "sha256": "34d139a627fd2d3e066d3600a753be2dc599b23d7469ff5b2ba11794dfde4fa4"
+        },
+        {
+          "path": "crates/gpu-owner/src/input.rs",
+          "sha256": "f23eff4854b12d575b527ed250c13284364b903e6ba5a65a084849c057d91674"
+        },
+        {
+          "path": "crates/gpu-owner/src/json.rs",
+          "sha256": "92fb2fdd5fe6b9c2ce8337238a0581aa56a99167f590a3d80e9bfec92f4b1e81"
+        },
+        {
+          "path": "crates/gpu-owner/src/lib.rs",
+          "sha256": "ccb3abed8e7b5910c3e16f8e87c2757b224bb267c68c58ae956d42848c593a12"
+        },
+        {
+          "path": "crates/gpu-owner/src/linux.rs",
+          "sha256": "3780278f9fc74d09ebd841a0162546e38f855609b6c943816022dfa0edb973c5"
+        },
+        {
+          "path": "crates/gpu-owner/src/main.rs",
+          "sha256": "5134cf06bcd693a56c01cd00931c5127d3efda6f1ad8db4953c231334f53cc03"
+        },
+        {
+          "path": "crates/gpu-owner/src/observe.rs",
+          "sha256": "06497a88f90fc025aea28b5debe77adfc212a73b493c1d12100096ed8b53f9cc"
+        },
+        {
+          "path": "crates/gpu-owner/src/owner.rs",
+          "sha256": "bdd44713775077f937648c60d045e8d31ebf0720f4c6e00ea352b675e229d96d"
+        },
+        {
+          "path": "crates/gpu-owner/src/policy.rs",
+          "sha256": "5657425403da4a456e657ecd9604e04d4be724e56d5428e90e407121066f7799"
+        },
+        {
+          "path": "crates/gpu-owner/src/process.rs",
+          "sha256": "6a7361d12263aa9a96b2cf64948871aa6dd857ffdda2cf6e7454179b1893e3e8"
+        },
+        {
+          "path": "crates/gpu-owner/src/telemetry.rs",
+          "sha256": "f1b8d5ca3aa1643f17af464338aa3eb9f82110b35d07a3dbcc42acb7aa2252e1"
+        },
+        {
+          "path": "crates/gpu-owner/src/wire.rs",
+          "sha256": "35d9b0094fa45dcc4650a104983deb82e08aafe3d3c480d6e62d193b7230b97b"
+        },
+        {
+          "path": "crates/gpu-owner/tests/adapters.rs",
+          "sha256": "378b9a33f835317c2beb76399fc0f892637bff52014b1a01fd669263905b858f"
+        },
+        {
+          "path": "crates/gpu-owner/tests/cli.rs",
+          "sha256": "ef3d75bec0f06bacd363bd0c4d696650efbf4ef24c5bbe4012b580660b5e7ab5"
+        },
+        {
+          "path": "crates/gpu-owner/tests/conformance.rs",
+          "sha256": "7998a3bbdd28760d5fe83c1633871b06606a0481a03d51947bd7438910959b78"
+        },
+        {
+          "path": "crates/gpu-owner/tests/contracts.rs",
+          "sha256": "eeea6aadd0f96ed50b1e2a014b4fa184304a73d780f7023f22505c95a9d4528c"
+        },
+        {
+          "path": "crates/gpu-owner/tests/lifecycle.rs",
+          "sha256": "c31475672e1506bf0df7f9f2391e3a0c77f7e20965b622cde2475bca29871441"
+        },
+        {
+          "path": "crates/gpu-owner/tests/observation.rs",
+          "sha256": "b608ef1c90c83df55561530c20325051351aed0710db9ce4e2071a1bf4ed59cf"
+        },
+        {
+          "path": "crates/gpu-owner/tests/support/mod.rs",
+          "sha256": "cfa8f2e72975afad6a755d51127b01e2b03c362f0105a4b90fb9c028760e47f8"
+        },
+        {
+          "path": "crates/gpu-owner/tests/wire.rs",
+          "sha256": "971e2fe6a687a9d980120a095b22d72c82886bae4ed9e023e6299719810daf8d"
+        },
+        {
+          "path": "crates/host-facts/Cargo.toml",
+          "sha256": "852c6df40e26aff5ac82e347db1f7cc4fdebb069a54095a8a92fb714183f64c8"
+        },
+        {
+          "path": "crates/host-facts/src/cgroup.rs",
+          "sha256": "c8adac710d8ffb805917ea330f34cfbfc32d7674bad761d54c00eb1c4456d484"
+        },
+        {
+          "path": "crates/host-facts/src/http.rs",
+          "sha256": "46e034bf976d7266a8e22ad60747cda95b35a2876b4da5fb8c44dfb3dab6f858"
+        },
+        {
+          "path": "crates/host-facts/src/lib.rs",
+          "sha256": "193700f9c3d3286c4af5202e955813702f65f0d44163de491c2523faeb6054f8"
+        },
+        {
+          "path": "crates/host-facts/src/main.rs",
+          "sha256": "d70817dc0139c1a6b3da357ba9834a2ce451fd06d090f777c1ab2cf37f302668"
+        },
+        {
+          "path": "crates/host-facts/src/projection.rs",
+          "sha256": "dd7a6f81b4b294dc5233c3d8a6b868a41d70520c922a6ca41379c8c003573323"
+        },
+        {
+          "path": "crates/host-facts/src/socket.rs",
+          "sha256": "208ef13bcd7274364f6f4690550566ea0c549a48cccaddd1343cdcd1186f63d1"
+        },
+        {
+          "path": "crates/host-facts/tests/cli.rs",
+          "sha256": "96e9323f84a378cb8be3cb33a4473702f26d009f1ec8d1a984bf0594f88fd569"
+        },
+        {
+          "path": "crates/host-facts/tests/recipe.rs",
+          "sha256": "8d5c9aee1eb2de0e916d32ff04597b6722d13ec255d4da8d95abbca2fa4ce97e"
+        },
+        {
+          "path": "crates/learning/Cargo.toml",
+          "sha256": "8c624552cd6174bd48b74e3ff54b6f203cf96956ec5980f7bb2115ff3374843d"
+        },
+        {
+          "path": "crates/learning/src/accumulation.rs",
+          "sha256": "54f9ad68942e1e47253dcc69250904e0e02f02645442a594bc2fc3fb7da5fb02"
+        },
+        {
+          "path": "crates/learning/src/batch.rs",
+          "sha256": "69bbf5ffa44b5f0bc5488827c53a7e6178bec928ab1afb2258cfe41f14b693ea"
+        },
+        {
+          "path": "crates/learning/src/episode.rs",
+          "sha256": "e5f89405c0582b2307004cdd1941f17fa571cc8d97088a8b9c66269862c5d99b"
+        },
+        {
+          "path": "crates/learning/src/lib.rs",
+          "sha256": "088b073209e23d4e36e7fef03d974fc60f4d645f0d6c674ad44d3407703a42c9"
+        },
+        {
+          "path": "crates/learning/src/model.rs",
+          "sha256": "d44db1ad8e155afc3ecfbd52e7b56807bb029e6dfe0e8ef6593236d1a3f651e4"
+        },
+        {
+          "path": "crates/learning/tests/accumulation.rs",
+          "sha256": "0682e892d60625413ae9d82eac98d534fe1a9e83f82a6b60ce45c0495656c56e"
+        },
+        {
+          "path": "crates/learning/tests/common/mod.rs",
+          "sha256": "f56b0811cabe5ff453e85d6acad699b519305b0a7900c80471e1c02cff2eb493"
+        },
+        {
+          "path": "crates/learning/tests/context.rs",
+          "sha256": "15309553796ea4875563c4d73fb4888c7a9740f28a269e3cb8be0b5883e3db9e"
+        },
+        {
+          "path": "crates/learning/tests/episode.rs",
+          "sha256": "0d9a51484207063ab9a3ae072d631ce306bd46fa25821314feae9777bfc8a8f1"
+        },
+        {
+          "path": "crates/learning/tests/finite_difference.rs",
+          "sha256": "701a56b8d88677b578393b06d7d47f0ebb1f7df56690ba990e362bdb5776c696"
+        },
+        {
+          "path": "crates/learning/tests/initialization.rs",
+          "sha256": "0a1ebc7bf0f84f567432b0fbfdf60849acb691c35c06fb14969a04eb48920c56"
+        },
+        {
+          "path": "crates/learning/tests/model.rs",
+          "sha256": "48a0f3742b7f40f2a47f764848f99ec392f71f3eece175300cbc053171a1c5e2"
+        },
+        {
+          "path": "crates/policy-io/Cargo.toml",
+          "sha256": "44d7e51a15605c67a777915c673739005e1614c9cec4ef37fe3a49d4613c4de4"
+        },
+        {
+          "path": "crates/policy-io/examples/initial-record.rs",
+          "sha256": "44cb4727be3007a0cc0a97176d5c1efd2c255ea8909a2cb1e82c31192bb7238c"
+        },
+        {
+          "path": "crates/policy-io/src/bin/policy-channel.rs",
+          "sha256": "45e3652ec19ea28f021377d1d020d5b6cdbc9bf1f2d02235425410ad2d48e993"
+        },
+        {
+          "path": "crates/policy-io/src/bin/policy-initialize.rs",
+          "sha256": "1024cb2f47bcb5cf494be6da0016ca583342346544a3eb20ca52bf19a001fdf2"
+        },
+        {
+          "path": "crates/policy-io/src/bin/policy-score.rs",
+          "sha256": "6d2cb5f6264b7e05b3e6a05bf35ced608e4426d0947d3db07286e23cbe52f613"
+        },
+        {
+          "path": "crates/policy-io/src/channel.rs",
+          "sha256": "0e2c054c42c7c5549982fc4b1b7f27b2427e8dbffb187ac6917364e78433703e"
+        },
+        {
+          "path": "crates/policy-io/src/device.rs",
+          "sha256": "edf458da0efed270cc53a081d9d7a270cbe8c8e9ba1a77503cd9899e6a5ed9ae"
+        },
+        {
+          "path": "crates/policy-io/src/lib.rs",
+          "sha256": "ac9010eaa10a5526534e7d89c0b8b2e3f147a7e2e85e0831f9f4138d9bf3a839"
+        },
+        {
+          "path": "crates/policy-io/tests/channel.rs",
+          "sha256": "5e0feaf08e69efd2557718d6214e22cc064d3a429007cc6eee6acf5bbd20dc63"
+        },
+        {
+          "path": "crates/policy-io/tests/f32.rs",
+          "sha256": "baf6a9720b5033149d1aac099de4571a2cca3116d2560c2367eb5ee4562902ea"
+        },
+        {
+          "path": "crates/policy-io/tests/gpu.rs",
+          "sha256": "89b80da22602fbfa679e79e1fb6339d08714ea89ed3e7e81b692f61324f0394c"
+        },
+        {
+          "path": "crates/policy-io/tests/initialize.rs",
+          "sha256": "fc939d34b4e443e389b00f01d6609248da8a5195a7722cab5e27954bb7be6c15"
+        },
+        {
+          "path": "crates/policy-io/tests/score.rs",
+          "sha256": "0f04e838805314de0591f5a73919af1e802c6dacad21b364e6adb594b2c7b5b5"
+        },
+        {
+          "path": "schemas/feature-layout.json",
+          "sha256": "bca25ea10220001845ad8a5f419f32baf250073b150c9bbe78f17a75c7c08f74"
+        },
+        {
+          "path": "tooling/runtime/Dockerfile.gpu-qualification",
+          "sha256": "62998fe447f02055dd1e55637e229cd498a6d90376df5552c74d32166853bfdd"
+        },
+        {
+          "path": "tooling/runtime/gpu-build-inputs.json",
+          "sha256": "888f1c6b2a3352f54b3eec5ab0fd517c90e3b2433d0da66d490562d734921c8a"
+        },
+        {
+          "path": "tooling/runtime/qualification.ts",
+          "sha256": "e08f52f793474bd803ee4ead91b5b2ad6425fc42c24fdab98b586e5997e7af9a"
+        }
+      ],
+      "copiedBytes": 9021,
+      "copiedFiles": 66,
+      "sourceManifestSha256": "7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec"
+    },
+    "sourceChanged": false,
+    "sourceStabilityChecked": true,
+    "sourceManifestSha256": "7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec",
+    "compilationAttempts": 2,
+    "artifacts": [
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/chess_coach_learning-mock",
+        "bytes": 64,
+        "sha256": "affea8804585de3139eae697950ab7293ab03f364314b3ae8211f435b3174c95"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/accumulation-mock",
+        "bytes": 64,
+        "sha256": "b263a4bb5d39066ce30abf00db5f6cdf4703147b617bec52bc8f3d56e54acea8"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/context-mock",
+        "bytes": 64,
+        "sha256": "b641392961ec11b3f1c90c328034085b30b05f4b2b9d739de61ea391a68ed44d"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/episode-mock",
+        "bytes": 64,
+        "sha256": "09005f3fb217bb7cb41d37323d2af91548e77e6b60e651721a4b492f70cd631c"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/finite_difference-mock",
+        "bytes": 64,
+        "sha256": "273b97d7cc5a007db2cf7ff00d19fed98c2cf1688a383c948e2c4ff5c01c6ea3"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/initialization-mock",
+        "bytes": 64,
+        "sha256": "2459ded449bab40f8ab14cc1d48cab7effbcc382c054b0cd168a293694747ef5"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/model-mock",
+        "bytes": 64,
+        "sha256": "55392c1f510ed3afdb3f44b1bc32d50ff6cff37ed10d02ee9eb8e4eea978f763"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/chess_coach_policy_io-mock",
+        "bytes": 64,
+        "sha256": "1f8eda835831df00597642faa6daf77cd849fed6fdd8db7fc5930cdbdf938e3b"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/policy-channel-mock",
+        "bytes": 64,
+        "sha256": "afe5e02aa0e3a6e98bc98c074c5a7790bd7ab07bbdae324730ef7d3a031cd1eb"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/policy-initialize-mock",
+        "bytes": 64,
+        "sha256": "ade3beea740499a1d0057c71d40e0d7b2a6acf59a3ea7895b7f177f7bcf179ac"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/policy-score-mock",
+        "bytes": 64,
+        "sha256": "31dd368bfeba7dcb8e556e5ad754075502db91ce3535f8cccbc23d507f8f4c07"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/channel-mock",
+        "bytes": 64,
+        "sha256": "5216482a6fd695b9c0a33cb2a5de0fa40c927eb325fd9f11abba4b2182a35846"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/f32-mock",
+        "bytes": 64,
+        "sha256": "33d4c5eb136522ecf6043b94988787e3c458626548805d03d7bde0895096d261"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/gpu-mock",
+        "bytes": 64,
+        "sha256": "10e26f878e739420c0adb9af990c8b7805d3ebee73b078093a7549bf34bf5d50"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/initialize-mock",
+        "bytes": 64,
+        "sha256": "f9fc9f2ddcd8e08b418eda318bf7d4e2b6ddabc92cd0d03e9d2a3e6db2777047"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/score-mock",
+        "bytes": 64,
+        "sha256": "243abf34c7cce082cdc3fa87eaab75573ea5fac97acc9bd5dff45c86e497788f"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/policy-score",
+        "bytes": 64,
+        "sha256": "9c7146361b1a693e01816e0449ed77959729b10d2d77e2a8aa22460432243567"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/policy-channel",
+        "bytes": 64,
+        "sha256": "78b3c1ac0378d8e4be481ecdf98ca771d478bb5358f4b1513eefd9266467beaf"
+      },
+      {
+        "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/policy-initialize",
+        "bytes": 64,
+        "sha256": "3626127f4ce3ce9780f78432a1ec23ffcff0309ed1a4035fe0c0ad9fc17cb05c"
+      }
+    ],
+    "outcome": {
+      "status": "PASS_TESTS_ONLY",
+      "results": [
+        {
+          "id": "learning:lib:chess_coach_learning",
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdout": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+          "accepted": true
+        },
+        {
+          "id": "learning:test:accumulation",
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdout": "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+          "accepted": true
+        },
+        {
+          "id": "learning:test:context",
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdout": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+          "accepted": true
+        },
+        {
+          "id": "learning:test:episode",
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdout": "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+          "accepted": true
+        },
+        {
+          "id": "learning:test:finite_difference",
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdout": "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+          "accepted": true
+        },
+        {
+          "id": "learning:test:initialization",
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdout": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+          "accepted": true
+        },
+        {
+          "id": "learning:test:model",
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdout": "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+          "accepted": true
+        },
+        {
+          "id": "policy-io:lib:chess_coach_policy_io",
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdout": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+          "accepted": true
+        },
+        {
+          "id": "policy-io:bin:policy-channel",
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdout": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+          "accepted": true
+        },
+        {
+          "id": "policy-io:bin:policy-initialize",
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdout": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+          "accepted": true
+        },
+        {
+          "id": "policy-io:bin:policy-score",
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdout": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+          "accepted": true
+        },
+        {
+          "id": "policy-io:test:channel",
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdout": "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+          "accepted": true
+        },
+        {
+          "id": "policy-io:test:f32",
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdout": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+          "accepted": true
+        },
+        {
+          "id": "policy-io:test:gpu",
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdout": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+          "accepted": true
+        },
+        {
+          "id": "policy-io:test:initialize",
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdout": "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+          "accepted": true
+        },
+        {
+          "id": "policy-io:test:score",
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdout": "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+          "accepted": true
+        }
+      ]
+    },
+    "results": [
+      {
+        "id": "rustc-version",
+        "argv": [
+          "rustc",
+          "--version"
+        ],
+        "timeoutMs": 10000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "rustc-version/command.stdout",
+            "bytes": 20,
+            "sha256": "111b38f74205ea2884c814be072f3b32d139e2560d3206618f3185f93fcf9bcc"
+          },
+          {
+            "path": "rustc-version/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "cargo-version",
+        "argv": [
+          "cargo",
+          "--version"
+        ],
+        "timeoutMs": 10000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "cargo-version/command.stdout",
+            "bytes": 20,
+            "sha256": "70abb86eac6c1460caaed0307f5b57483e4999a7a0305ae54d0beabfc8b10b05"
+          },
+          {
+            "path": "cargo-version/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "cpu-learning",
+        "argv": [
+          "cargo",
+          "test",
+          "--release",
+          "--target",
+          "x86_64-unknown-linux-gnu",
+          "--locked",
+          "--offline",
+          "--jobs",
+          "2",
+          "-p",
+          "chess-coach-learning",
+          "--tests",
+          "--no-run",
+          "--message-format=json"
+        ],
+        "timeoutMs": 1500000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "cpu-learning/command.stdout",
+            "bytes": 2187,
+            "sha256": "ddef81fd06f776d060c77e91f6ca93d9adcd223aeb9dce63bc8ed7a3a9d616a3"
+          },
+          {
+            "path": "cpu-learning/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "cpu-policy",
+        "argv": [
+          "cargo",
+          "test",
+          "--release",
+          "--target",
+          "x86_64-unknown-linux-gnu",
+          "--locked",
+          "--offline",
+          "--jobs",
+          "2",
+          "-p",
+          "chess-coach-policy-io",
+          "--tests",
+          "--no-run",
+          "--message-format=json"
+        ],
+        "timeoutMs": 1499999,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "cpu-policy/command.stdout",
+            "bytes": 3699,
+            "sha256": "5afb0ea7064c5912c6ed07ea327a80e9490ef9b6f42117f38f774a6ff4f5e047"
+          },
+          {
+            "path": "cpu-policy/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "learning:lib:chess_coach_learning",
+        "argv": [
+          "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/chess_coach_learning-mock",
+          "--test-threads=1",
+          "--nocapture",
+          "--color=never"
+        ],
+        "timeoutMs": 120000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "learning:lib:chess_coach_learning/command.stdout",
+            "bytes": 94,
+            "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+          },
+          {
+            "path": "learning:lib:chess_coach_learning/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "learning:test:accumulation",
+        "argv": [
+          "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/accumulation-mock",
+          "--test-threads=1",
+          "--nocapture",
+          "--color=never"
+        ],
+        "timeoutMs": 120000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "learning:test:accumulation/command.stdout",
+            "bytes": 94,
+            "sha256": "ff6d06bac77e357835fa47529bda67f4ef19b555373c2624fe46d7fe744ab7dc"
+          },
+          {
+            "path": "learning:test:accumulation/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "learning:test:context",
+        "argv": [
+          "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/context-mock",
+          "--test-threads=1",
+          "--nocapture",
+          "--color=never"
+        ],
+        "timeoutMs": 120000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "learning:test:context/command.stdout",
+            "bytes": 94,
+            "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+          },
+          {
+            "path": "learning:test:context/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "learning:test:episode",
+        "argv": [
+          "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/episode-mock",
+          "--test-threads=1",
+          "--nocapture",
+          "--color=never"
+        ],
+        "timeoutMs": 120000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "learning:test:episode/command.stdout",
+            "bytes": 94,
+            "sha256": "ff6d06bac77e357835fa47529bda67f4ef19b555373c2624fe46d7fe744ab7dc"
+          },
+          {
+            "path": "learning:test:episode/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "learning:test:finite_difference",
+        "argv": [
+          "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/finite_difference-mock",
+          "--test-threads=1",
+          "--nocapture",
+          "--color=never"
+        ],
+        "timeoutMs": 120000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "learning:test:finite_difference/command.stdout",
+            "bytes": 94,
+            "sha256": "82013fa5ece13932676e7b678c765f584d53461d8473a285d61e1eb9899fa858"
+          },
+          {
+            "path": "learning:test:finite_difference/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "learning:test:initialization",
+        "argv": [
+          "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/initialization-mock",
+          "--test-threads=1",
+          "--nocapture",
+          "--color=never"
+        ],
+        "timeoutMs": 120000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "learning:test:initialization/command.stdout",
+            "bytes": 94,
+            "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+          },
+          {
+            "path": "learning:test:initialization/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "learning:test:model",
+        "argv": [
+          "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/model-mock",
+          "--test-threads=1",
+          "--nocapture",
+          "--color=never"
+        ],
+        "timeoutMs": 120000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "learning:test:model/command.stdout",
+            "bytes": 94,
+            "sha256": "ff6d06bac77e357835fa47529bda67f4ef19b555373c2624fe46d7fe744ab7dc"
+          },
+          {
+            "path": "learning:test:model/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "policy-io:lib:chess_coach_policy_io",
+        "argv": [
+          "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/chess_coach_policy_io-mock",
+          "--test-threads=1",
+          "--nocapture",
+          "--color=never"
+        ],
+        "timeoutMs": 120000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "policy-io:lib:chess_coach_policy_io/command.stdout",
+            "bytes": 94,
+            "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+          },
+          {
+            "path": "policy-io:lib:chess_coach_policy_io/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "policy-io:bin:policy-channel",
+        "argv": [
+          "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/policy-channel-mock",
+          "--test-threads=1",
+          "--nocapture",
+          "--color=never"
+        ],
+        "timeoutMs": 120000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "policy-io:bin:policy-channel/command.stdout",
+            "bytes": 94,
+            "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+          },
+          {
+            "path": "policy-io:bin:policy-channel/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "policy-io:bin:policy-initialize",
+        "argv": [
+          "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/policy-initialize-mock",
+          "--test-threads=1",
+          "--nocapture",
+          "--color=never"
+        ],
+        "timeoutMs": 120000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "policy-io:bin:policy-initialize/command.stdout",
+            "bytes": 94,
+            "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+          },
+          {
+            "path": "policy-io:bin:policy-initialize/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "policy-io:bin:policy-score",
+        "argv": [
+          "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/policy-score-mock",
+          "--test-threads=1",
+          "--nocapture",
+          "--color=never"
+        ],
+        "timeoutMs": 120000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "policy-io:bin:policy-score/command.stdout",
+            "bytes": 94,
+            "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+          },
+          {
+            "path": "policy-io:bin:policy-score/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "policy-io:test:channel",
+        "argv": [
+          "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/channel-mock",
+          "--test-threads=1",
+          "--nocapture",
+          "--color=never"
+        ],
+        "timeoutMs": 120000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "policy-io:test:channel/command.stdout",
+            "bytes": 94,
+            "sha256": "caba22662dde7033114f5828b7f4c5ca582e25dc0a272cdcfce5068b52143eef"
+          },
+          {
+            "path": "policy-io:test:channel/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "policy-io:test:f32",
+        "argv": [
+          "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/f32-mock",
+          "--test-threads=1",
+          "--nocapture",
+          "--color=never"
+        ],
+        "timeoutMs": 120000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "policy-io:test:f32/command.stdout",
+            "bytes": 94,
+            "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+          },
+          {
+            "path": "policy-io:test:f32/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "policy-io:test:gpu",
+        "argv": [
+          "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/gpu-mock",
+          "--test-threads=1",
+          "--nocapture",
+          "--color=never"
+        ],
+        "timeoutMs": 120000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "policy-io:test:gpu/command.stdout",
+            "bytes": 94,
+            "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+          },
+          {
+            "path": "policy-io:test:gpu/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "policy-io:test:initialize",
+        "argv": [
+          "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/initialize-mock",
+          "--test-threads=1",
+          "--nocapture",
+          "--color=never"
+        ],
+        "timeoutMs": 120000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "policy-io:test:initialize/command.stdout",
+            "bytes": 94,
+            "sha256": "82013fa5ece13932676e7b678c765f584d53461d8473a285d61e1eb9899fa858"
+          },
+          {
+            "path": "policy-io:test:initialize/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      },
+      {
+        "id": "policy-io:test:score",
+        "argv": [
+          "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/score-mock",
+          "--test-threads=1",
+          "--nocapture",
+          "--color=never"
+        ],
+        "timeoutMs": 120000,
+        "attempted": true,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "streams": [
+          {
+            "path": "policy-io:test:score/command.stdout",
+            "bytes": 94,
+            "sha256": "c8027f44bd097220fac5024d3f72a9bebf7f11bca8db3c8c20cb1aec7b2f971f"
+          },
+          {
+            "path": "policy-io:test:score/command.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "commandInvoked": true
+      }
+    ],
+    "elapsedMs": 20,
+    "cpuOnly": true,
+    "gpuExecuted": false,
+    "llvmExecuted": false,
+    "trainingExecuted": false,
+    "trainingReady": false
+  },
+  "host": {
+    "version": "chess-coach.cpu39-host.v1",
+    "status": "PASS_HOST_CPU39_ONLY",
+    "failure": null,
+    "cleanupFailures": [],
+    "cid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "state": {
+      "Running": false,
+      "ExitCode": 0,
+      "OOMKilled": false
+    },
+    "innerReceipt": {
+      "version": "chess-coach.cpu39-worker.v1",
+      "status": "PASS_CPU39_TESTS_ONLY",
+      "failure": null,
+      "phase": "complete",
+      "staging": {
+        "inventory": [
+          {
+            "path": "Cargo.lock",
+            "sha256": "77f674cc26a01f26558fd99c45bdcd5566017be05833fce1d39cae98cda05955"
+          },
+          {
+            "path": "Cargo.toml",
+            "sha256": "553b6e3cf5a8d30f53f19bf6623332d4d6c5df69099d5f2a51ae9260f07b74bc"
+          },
+          {
+            "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+            "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+          },
+          {
+            "path": "_work/gpu-owner-recovery/verify.ts",
+            "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58"
+          },
+          {
+            "path": "crates/gpu-owner/Cargo.toml",
+            "sha256": "ceb98a71e3a5c16c1c3f6d5035843b8441995339b5d49f62340b395540b2c3aa"
+          },
+          {
+            "path": "crates/gpu-owner/src/docker.rs",
+            "sha256": "4e49b8c65a735339bdfb5891e182bc636c590e2ae341109d9c1864b699f74720"
+          },
+          {
+            "path": "crates/gpu-owner/src/evidence.rs",
+            "sha256": "34d139a627fd2d3e066d3600a753be2dc599b23d7469ff5b2ba11794dfde4fa4"
+          },
+          {
+            "path": "crates/gpu-owner/src/input.rs",
+            "sha256": "f23eff4854b12d575b527ed250c13284364b903e6ba5a65a084849c057d91674"
+          },
+          {
+            "path": "crates/gpu-owner/src/json.rs",
+            "sha256": "92fb2fdd5fe6b9c2ce8337238a0581aa56a99167f590a3d80e9bfec92f4b1e81"
+          },
+          {
+            "path": "crates/gpu-owner/src/lib.rs",
+            "sha256": "ccb3abed8e7b5910c3e16f8e87c2757b224bb267c68c58ae956d42848c593a12"
+          },
+          {
+            "path": "crates/gpu-owner/src/linux.rs",
+            "sha256": "3780278f9fc74d09ebd841a0162546e38f855609b6c943816022dfa0edb973c5"
+          },
+          {
+            "path": "crates/gpu-owner/src/main.rs",
+            "sha256": "5134cf06bcd693a56c01cd00931c5127d3efda6f1ad8db4953c231334f53cc03"
+          },
+          {
+            "path": "crates/gpu-owner/src/observe.rs",
+            "sha256": "06497a88f90fc025aea28b5debe77adfc212a73b493c1d12100096ed8b53f9cc"
+          },
+          {
+            "path": "crates/gpu-owner/src/owner.rs",
+            "sha256": "bdd44713775077f937648c60d045e8d31ebf0720f4c6e00ea352b675e229d96d"
+          },
+          {
+            "path": "crates/gpu-owner/src/policy.rs",
+            "sha256": "5657425403da4a456e657ecd9604e04d4be724e56d5428e90e407121066f7799"
+          },
+          {
+            "path": "crates/gpu-owner/src/process.rs",
+            "sha256": "6a7361d12263aa9a96b2cf64948871aa6dd857ffdda2cf6e7454179b1893e3e8"
+          },
+          {
+            "path": "crates/gpu-owner/src/telemetry.rs",
+            "sha256": "f1b8d5ca3aa1643f17af464338aa3eb9f82110b35d07a3dbcc42acb7aa2252e1"
+          },
+          {
+            "path": "crates/gpu-owner/src/wire.rs",
+            "sha256": "35d9b0094fa45dcc4650a104983deb82e08aafe3d3c480d6e62d193b7230b97b"
+          },
+          {
+            "path": "crates/gpu-owner/tests/adapters.rs",
+            "sha256": "378b9a33f835317c2beb76399fc0f892637bff52014b1a01fd669263905b858f"
+          },
+          {
+            "path": "crates/gpu-owner/tests/cli.rs",
+            "sha256": "ef3d75bec0f06bacd363bd0c4d696650efbf4ef24c5bbe4012b580660b5e7ab5"
+          },
+          {
+            "path": "crates/gpu-owner/tests/conformance.rs",
+            "sha256": "7998a3bbdd28760d5fe83c1633871b06606a0481a03d51947bd7438910959b78"
+          },
+          {
+            "path": "crates/gpu-owner/tests/contracts.rs",
+            "sha256": "eeea6aadd0f96ed50b1e2a014b4fa184304a73d780f7023f22505c95a9d4528c"
+          },
+          {
+            "path": "crates/gpu-owner/tests/lifecycle.rs",
+            "sha256": "c31475672e1506bf0df7f9f2391e3a0c77f7e20965b622cde2475bca29871441"
+          },
+          {
+            "path": "crates/gpu-owner/tests/observation.rs",
+            "sha256": "b608ef1c90c83df55561530c20325051351aed0710db9ce4e2071a1bf4ed59cf"
+          },
+          {
+            "path": "crates/gpu-owner/tests/support/mod.rs",
+            "sha256": "cfa8f2e72975afad6a755d51127b01e2b03c362f0105a4b90fb9c028760e47f8"
+          },
+          {
+            "path": "crates/gpu-owner/tests/wire.rs",
+            "sha256": "971e2fe6a687a9d980120a095b22d72c82886bae4ed9e023e6299719810daf8d"
+          },
+          {
+            "path": "crates/host-facts/Cargo.toml",
+            "sha256": "852c6df40e26aff5ac82e347db1f7cc4fdebb069a54095a8a92fb714183f64c8"
+          },
+          {
+            "path": "crates/host-facts/src/cgroup.rs",
+            "sha256": "c8adac710d8ffb805917ea330f34cfbfc32d7674bad761d54c00eb1c4456d484"
+          },
+          {
+            "path": "crates/host-facts/src/http.rs",
+            "sha256": "46e034bf976d7266a8e22ad60747cda95b35a2876b4da5fb8c44dfb3dab6f858"
+          },
+          {
+            "path": "crates/host-facts/src/lib.rs",
+            "sha256": "193700f9c3d3286c4af5202e955813702f65f0d44163de491c2523faeb6054f8"
+          },
+          {
+            "path": "crates/host-facts/src/main.rs",
+            "sha256": "d70817dc0139c1a6b3da357ba9834a2ce451fd06d090f777c1ab2cf37f302668"
+          },
+          {
+            "path": "crates/host-facts/src/projection.rs",
+            "sha256": "dd7a6f81b4b294dc5233c3d8a6b868a41d70520c922a6ca41379c8c003573323"
+          },
+          {
+            "path": "crates/host-facts/src/socket.rs",
+            "sha256": "208ef13bcd7274364f6f4690550566ea0c549a48cccaddd1343cdcd1186f63d1"
+          },
+          {
+            "path": "crates/host-facts/tests/cli.rs",
+            "sha256": "96e9323f84a378cb8be3cb33a4473702f26d009f1ec8d1a984bf0594f88fd569"
+          },
+          {
+            "path": "crates/host-facts/tests/recipe.rs",
+            "sha256": "8d5c9aee1eb2de0e916d32ff04597b6722d13ec255d4da8d95abbca2fa4ce97e"
+          },
+          {
+            "path": "crates/learning/Cargo.toml",
+            "sha256": "8c624552cd6174bd48b74e3ff54b6f203cf96956ec5980f7bb2115ff3374843d"
+          },
+          {
+            "path": "crates/learning/src/accumulation.rs",
+            "sha256": "54f9ad68942e1e47253dcc69250904e0e02f02645442a594bc2fc3fb7da5fb02"
+          },
+          {
+            "path": "crates/learning/src/batch.rs",
+            "sha256": "69bbf5ffa44b5f0bc5488827c53a7e6178bec928ab1afb2258cfe41f14b693ea"
+          },
+          {
+            "path": "crates/learning/src/episode.rs",
+            "sha256": "e5f89405c0582b2307004cdd1941f17fa571cc8d97088a8b9c66269862c5d99b"
+          },
+          {
+            "path": "crates/learning/src/lib.rs",
+            "sha256": "088b073209e23d4e36e7fef03d974fc60f4d645f0d6c674ad44d3407703a42c9"
+          },
+          {
+            "path": "crates/learning/src/model.rs",
+            "sha256": "d44db1ad8e155afc3ecfbd52e7b56807bb029e6dfe0e8ef6593236d1a3f651e4"
+          },
+          {
+            "path": "crates/learning/tests/accumulation.rs",
+            "sha256": "0682e892d60625413ae9d82eac98d534fe1a9e83f82a6b60ce45c0495656c56e"
+          },
+          {
+            "path": "crates/learning/tests/common/mod.rs",
+            "sha256": "f56b0811cabe5ff453e85d6acad699b519305b0a7900c80471e1c02cff2eb493"
+          },
+          {
+            "path": "crates/learning/tests/context.rs",
+            "sha256": "15309553796ea4875563c4d73fb4888c7a9740f28a269e3cb8be0b5883e3db9e"
+          },
+          {
+            "path": "crates/learning/tests/episode.rs",
+            "sha256": "0d9a51484207063ab9a3ae072d631ce306bd46fa25821314feae9777bfc8a8f1"
+          },
+          {
+            "path": "crates/learning/tests/finite_difference.rs",
+            "sha256": "701a56b8d88677b578393b06d7d47f0ebb1f7df56690ba990e362bdb5776c696"
+          },
+          {
+            "path": "crates/learning/tests/initialization.rs",
+            "sha256": "0a1ebc7bf0f84f567432b0fbfdf60849acb691c35c06fb14969a04eb48920c56"
+          },
+          {
+            "path": "crates/learning/tests/model.rs",
+            "sha256": "48a0f3742b7f40f2a47f764848f99ec392f71f3eece175300cbc053171a1c5e2"
+          },
+          {
+            "path": "crates/policy-io/Cargo.toml",
+            "sha256": "44d7e51a15605c67a777915c673739005e1614c9cec4ef37fe3a49d4613c4de4"
+          },
+          {
+            "path": "crates/policy-io/examples/initial-record.rs",
+            "sha256": "44cb4727be3007a0cc0a97176d5c1efd2c255ea8909a2cb1e82c31192bb7238c"
+          },
+          {
+            "path": "crates/policy-io/src/bin/policy-channel.rs",
+            "sha256": "45e3652ec19ea28f021377d1d020d5b6cdbc9bf1f2d02235425410ad2d48e993"
+          },
+          {
+            "path": "crates/policy-io/src/bin/policy-initialize.rs",
+            "sha256": "1024cb2f47bcb5cf494be6da0016ca583342346544a3eb20ca52bf19a001fdf2"
+          },
+          {
+            "path": "crates/policy-io/src/bin/policy-score.rs",
+            "sha256": "6d2cb5f6264b7e05b3e6a05bf35ced608e4426d0947d3db07286e23cbe52f613"
+          },
+          {
+            "path": "crates/policy-io/src/channel.rs",
+            "sha256": "0e2c054c42c7c5549982fc4b1b7f27b2427e8dbffb187ac6917364e78433703e"
+          },
+          {
+            "path": "crates/policy-io/src/device.rs",
+            "sha256": "edf458da0efed270cc53a081d9d7a270cbe8c8e9ba1a77503cd9899e6a5ed9ae"
+          },
+          {
+            "path": "crates/policy-io/src/lib.rs",
+            "sha256": "ac9010eaa10a5526534e7d89c0b8b2e3f147a7e2e85e0831f9f4138d9bf3a839"
+          },
+          {
+            "path": "crates/policy-io/tests/channel.rs",
+            "sha256": "5e0feaf08e69efd2557718d6214e22cc064d3a429007cc6eee6acf5bbd20dc63"
+          },
+          {
+            "path": "crates/policy-io/tests/f32.rs",
+            "sha256": "baf6a9720b5033149d1aac099de4571a2cca3116d2560c2367eb5ee4562902ea"
+          },
+          {
+            "path": "crates/policy-io/tests/gpu.rs",
+            "sha256": "89b80da22602fbfa679e79e1fb6339d08714ea89ed3e7e81b692f61324f0394c"
+          },
+          {
+            "path": "crates/policy-io/tests/initialize.rs",
+            "sha256": "fc939d34b4e443e389b00f01d6609248da8a5195a7722cab5e27954bb7be6c15"
+          },
+          {
+            "path": "crates/policy-io/tests/score.rs",
+            "sha256": "0f04e838805314de0591f5a73919af1e802c6dacad21b364e6adb594b2c7b5b5"
+          },
+          {
+            "path": "schemas/feature-layout.json",
+            "sha256": "bca25ea10220001845ad8a5f419f32baf250073b150c9bbe78f17a75c7c08f74"
+          },
+          {
+            "path": "tooling/runtime/Dockerfile.gpu-qualification",
+            "sha256": "62998fe447f02055dd1e55637e229cd498a6d90376df5552c74d32166853bfdd"
+          },
+          {
+            "path": "tooling/runtime/gpu-build-inputs.json",
+            "sha256": "888f1c6b2a3352f54b3eec5ab0fd517c90e3b2433d0da66d490562d734921c8a"
+          },
+          {
+            "path": "tooling/runtime/qualification.ts",
+            "sha256": "e08f52f793474bd803ee4ead91b5b2ad6425fc42c24fdab98b586e5997e7af9a"
+          }
+        ],
+        "copiedBytes": 9021,
+        "copiedFiles": 66,
+        "sourceManifestSha256": "7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec"
+      },
+      "sourceChanged": false,
+      "sourceStabilityChecked": true,
+      "sourceManifestSha256": "7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec",
+      "compilationAttempts": 2,
+      "artifacts": [
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/chess_coach_learning-mock",
+          "bytes": 64,
+          "sha256": "affea8804585de3139eae697950ab7293ab03f364314b3ae8211f435b3174c95"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/accumulation-mock",
+          "bytes": 64,
+          "sha256": "b263a4bb5d39066ce30abf00db5f6cdf4703147b617bec52bc8f3d56e54acea8"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/context-mock",
+          "bytes": 64,
+          "sha256": "b641392961ec11b3f1c90c328034085b30b05f4b2b9d739de61ea391a68ed44d"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/episode-mock",
+          "bytes": 64,
+          "sha256": "09005f3fb217bb7cb41d37323d2af91548e77e6b60e651721a4b492f70cd631c"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/finite_difference-mock",
+          "bytes": 64,
+          "sha256": "273b97d7cc5a007db2cf7ff00d19fed98c2cf1688a383c948e2c4ff5c01c6ea3"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/initialization-mock",
+          "bytes": 64,
+          "sha256": "2459ded449bab40f8ab14cc1d48cab7effbcc382c054b0cd168a293694747ef5"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/model-mock",
+          "bytes": 64,
+          "sha256": "55392c1f510ed3afdb3f44b1bc32d50ff6cff37ed10d02ee9eb8e4eea978f763"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/chess_coach_policy_io-mock",
+          "bytes": 64,
+          "sha256": "1f8eda835831df00597642faa6daf77cd849fed6fdd8db7fc5930cdbdf938e3b"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/policy-channel-mock",
+          "bytes": 64,
+          "sha256": "afe5e02aa0e3a6e98bc98c074c5a7790bd7ab07bbdae324730ef7d3a031cd1eb"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/policy-initialize-mock",
+          "bytes": 64,
+          "sha256": "ade3beea740499a1d0057c71d40e0d7b2a6acf59a3ea7895b7f177f7bcf179ac"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/policy-score-mock",
+          "bytes": 64,
+          "sha256": "31dd368bfeba7dcb8e556e5ad754075502db91ce3535f8cccbc23d507f8f4c07"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/channel-mock",
+          "bytes": 64,
+          "sha256": "5216482a6fd695b9c0a33cb2a5de0fa40c927eb325fd9f11abba4b2182a35846"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/f32-mock",
+          "bytes": 64,
+          "sha256": "33d4c5eb136522ecf6043b94988787e3c458626548805d03d7bde0895096d261"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/gpu-mock",
+          "bytes": 64,
+          "sha256": "10e26f878e739420c0adb9af990c8b7805d3ebee73b078093a7549bf34bf5d50"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/initialize-mock",
+          "bytes": 64,
+          "sha256": "f9fc9f2ddcd8e08b418eda318bf7d4e2b6ddabc92cd0d03e9d2a3e6db2777047"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/score-mock",
+          "bytes": 64,
+          "sha256": "243abf34c7cce082cdc3fa87eaab75573ea5fac97acc9bd5dff45c86e497788f"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/policy-score",
+          "bytes": 64,
+          "sha256": "9c7146361b1a693e01816e0449ed77959729b10d2d77e2a8aa22460432243567"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/policy-channel",
+          "bytes": 64,
+          "sha256": "78b3c1ac0378d8e4be481ecdf98ca771d478bb5358f4b1513eefd9266467beaf"
+        },
+        {
+          "executable": "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/policy-initialize",
+          "bytes": 64,
+          "sha256": "3626127f4ce3ce9780f78432a1ec23ffcff0309ed1a4035fe0c0ad9fc17cb05c"
+        }
+      ],
+      "outcome": {
+        "status": "PASS_TESTS_ONLY",
+        "results": [
+          {
+            "id": "learning:lib:chess_coach_learning",
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null,
+            "stdout": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+            "accepted": true
+          },
+          {
+            "id": "learning:test:accumulation",
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null,
+            "stdout": "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+            "accepted": true
+          },
+          {
+            "id": "learning:test:context",
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null,
+            "stdout": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+            "accepted": true
+          },
+          {
+            "id": "learning:test:episode",
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null,
+            "stdout": "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+            "accepted": true
+          },
+          {
+            "id": "learning:test:finite_difference",
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null,
+            "stdout": "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+            "accepted": true
+          },
+          {
+            "id": "learning:test:initialization",
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null,
+            "stdout": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+            "accepted": true
+          },
+          {
+            "id": "learning:test:model",
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null,
+            "stdout": "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+            "accepted": true
+          },
+          {
+            "id": "policy-io:lib:chess_coach_policy_io",
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null,
+            "stdout": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+            "accepted": true
+          },
+          {
+            "id": "policy-io:bin:policy-channel",
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null,
+            "stdout": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+            "accepted": true
+          },
+          {
+            "id": "policy-io:bin:policy-initialize",
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null,
+            "stdout": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+            "accepted": true
+          },
+          {
+            "id": "policy-io:bin:policy-score",
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null,
+            "stdout": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+            "accepted": true
+          },
+          {
+            "id": "policy-io:test:channel",
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null,
+            "stdout": "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+            "accepted": true
+          },
+          {
+            "id": "policy-io:test:f32",
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null,
+            "stdout": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+            "accepted": true
+          },
+          {
+            "id": "policy-io:test:gpu",
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null,
+            "stdout": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+            "accepted": true
+          },
+          {
+            "id": "policy-io:test:initialize",
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null,
+            "stdout": "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+            "accepted": true
+          },
+          {
+            "id": "policy-io:test:score",
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null,
+            "stdout": "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n",
+            "accepted": true
+          }
+        ]
+      },
+      "results": [
+        {
+          "id": "rustc-version",
+          "argv": [
+            "rustc",
+            "--version"
+          ],
+          "timeoutMs": 10000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "rustc-version/command.stdout",
+              "bytes": 20,
+              "sha256": "111b38f74205ea2884c814be072f3b32d139e2560d3206618f3185f93fcf9bcc"
+            },
+            {
+              "path": "rustc-version/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "cargo-version",
+          "argv": [
+            "cargo",
+            "--version"
+          ],
+          "timeoutMs": 10000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "cargo-version/command.stdout",
+              "bytes": 20,
+              "sha256": "70abb86eac6c1460caaed0307f5b57483e4999a7a0305ae54d0beabfc8b10b05"
+            },
+            {
+              "path": "cargo-version/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "cpu-learning",
+          "argv": [
+            "cargo",
+            "test",
+            "--release",
+            "--target",
+            "x86_64-unknown-linux-gnu",
+            "--locked",
+            "--offline",
+            "--jobs",
+            "2",
+            "-p",
+            "chess-coach-learning",
+            "--tests",
+            "--no-run",
+            "--message-format=json"
+          ],
+          "timeoutMs": 1500000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "cpu-learning/command.stdout",
+              "bytes": 2187,
+              "sha256": "ddef81fd06f776d060c77e91f6ca93d9adcd223aeb9dce63bc8ed7a3a9d616a3"
+            },
+            {
+              "path": "cpu-learning/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "cpu-policy",
+          "argv": [
+            "cargo",
+            "test",
+            "--release",
+            "--target",
+            "x86_64-unknown-linux-gnu",
+            "--locked",
+            "--offline",
+            "--jobs",
+            "2",
+            "-p",
+            "chess-coach-policy-io",
+            "--tests",
+            "--no-run",
+            "--message-format=json"
+          ],
+          "timeoutMs": 1499999,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "cpu-policy/command.stdout",
+              "bytes": 3699,
+              "sha256": "5afb0ea7064c5912c6ed07ea327a80e9490ef9b6f42117f38f774a6ff4f5e047"
+            },
+            {
+              "path": "cpu-policy/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "learning:lib:chess_coach_learning",
+          "argv": [
+            "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/chess_coach_learning-mock",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ],
+          "timeoutMs": 120000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "learning:lib:chess_coach_learning/command.stdout",
+              "bytes": 94,
+              "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+            },
+            {
+              "path": "learning:lib:chess_coach_learning/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "learning:test:accumulation",
+          "argv": [
+            "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/accumulation-mock",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ],
+          "timeoutMs": 120000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "learning:test:accumulation/command.stdout",
+              "bytes": 94,
+              "sha256": "ff6d06bac77e357835fa47529bda67f4ef19b555373c2624fe46d7fe744ab7dc"
+            },
+            {
+              "path": "learning:test:accumulation/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "learning:test:context",
+          "argv": [
+            "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/context-mock",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ],
+          "timeoutMs": 120000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "learning:test:context/command.stdout",
+              "bytes": 94,
+              "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+            },
+            {
+              "path": "learning:test:context/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "learning:test:episode",
+          "argv": [
+            "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/episode-mock",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ],
+          "timeoutMs": 120000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "learning:test:episode/command.stdout",
+              "bytes": 94,
+              "sha256": "ff6d06bac77e357835fa47529bda67f4ef19b555373c2624fe46d7fe744ab7dc"
+            },
+            {
+              "path": "learning:test:episode/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "learning:test:finite_difference",
+          "argv": [
+            "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/finite_difference-mock",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ],
+          "timeoutMs": 120000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "learning:test:finite_difference/command.stdout",
+              "bytes": 94,
+              "sha256": "82013fa5ece13932676e7b678c765f584d53461d8473a285d61e1eb9899fa858"
+            },
+            {
+              "path": "learning:test:finite_difference/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "learning:test:initialization",
+          "argv": [
+            "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/initialization-mock",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ],
+          "timeoutMs": 120000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "learning:test:initialization/command.stdout",
+              "bytes": 94,
+              "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+            },
+            {
+              "path": "learning:test:initialization/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "learning:test:model",
+          "argv": [
+            "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/model-mock",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ],
+          "timeoutMs": 120000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "learning:test:model/command.stdout",
+              "bytes": 94,
+              "sha256": "ff6d06bac77e357835fa47529bda67f4ef19b555373c2624fe46d7fe744ab7dc"
+            },
+            {
+              "path": "learning:test:model/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "policy-io:lib:chess_coach_policy_io",
+          "argv": [
+            "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/chess_coach_policy_io-mock",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ],
+          "timeoutMs": 120000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "policy-io:lib:chess_coach_policy_io/command.stdout",
+              "bytes": 94,
+              "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+            },
+            {
+              "path": "policy-io:lib:chess_coach_policy_io/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "policy-io:bin:policy-channel",
+          "argv": [
+            "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/policy-channel-mock",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ],
+          "timeoutMs": 120000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "policy-io:bin:policy-channel/command.stdout",
+              "bytes": 94,
+              "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+            },
+            {
+              "path": "policy-io:bin:policy-channel/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "policy-io:bin:policy-initialize",
+          "argv": [
+            "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/policy-initialize-mock",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ],
+          "timeoutMs": 120000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "policy-io:bin:policy-initialize/command.stdout",
+              "bytes": 94,
+              "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+            },
+            {
+              "path": "policy-io:bin:policy-initialize/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "policy-io:bin:policy-score",
+          "argv": [
+            "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/policy-score-mock",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ],
+          "timeoutMs": 120000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "policy-io:bin:policy-score/command.stdout",
+              "bytes": 94,
+              "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+            },
+            {
+              "path": "policy-io:bin:policy-score/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "policy-io:test:channel",
+          "argv": [
+            "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/channel-mock",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ],
+          "timeoutMs": 120000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "policy-io:test:channel/command.stdout",
+              "bytes": 94,
+              "sha256": "caba22662dde7033114f5828b7f4c5ca582e25dc0a272cdcfce5068b52143eef"
+            },
+            {
+              "path": "policy-io:test:channel/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "policy-io:test:f32",
+          "argv": [
+            "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/f32-mock",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ],
+          "timeoutMs": 120000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "policy-io:test:f32/command.stdout",
+              "bytes": 94,
+              "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+            },
+            {
+              "path": "policy-io:test:f32/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "policy-io:test:gpu",
+          "argv": [
+            "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/gpu-mock",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ],
+          "timeoutMs": 120000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "policy-io:test:gpu/command.stdout",
+              "bytes": 94,
+              "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+            },
+            {
+              "path": "policy-io:test:gpu/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "policy-io:test:initialize",
+          "argv": [
+            "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/initialize-mock",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ],
+          "timeoutMs": 120000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "policy-io:test:initialize/command.stdout",
+              "bytes": 94,
+              "sha256": "82013fa5ece13932676e7b678c765f584d53461d8473a285d61e1eb9899fa858"
+            },
+            {
+              "path": "policy-io:test:initialize/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        },
+        {
+          "id": "policy-io:test:score",
+          "argv": [
+            "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/score-mock",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ],
+          "timeoutMs": 120000,
+          "attempted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "streams": [
+            {
+              "path": "policy-io:test:score/command.stdout",
+              "bytes": 94,
+              "sha256": "c8027f44bd097220fac5024d3f72a9bebf7f11bca8db3c8c20cb1aec7b2f971f"
+            },
+            {
+              "path": "policy-io:test:score/command.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "commandInvoked": true
+        }
+      ],
+      "elapsedMs": 20,
+      "cpuOnly": true,
+      "gpuExecuted": false,
+      "llvmExecuted": false,
+      "trainingExecuted": false,
+      "trainingReady": false
+    },
+    "results": [
+      {
+        "id": "worker-create",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "create",
+          "--pull=never",
+          "--platform=linux/amd64",
+          "--network=none",
+          "--cpus=2",
+          "--memory=8g",
+          "--memory-swap=8g",
+          "--user=1000:1000",
+          "--cidfile=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu39-1/worker.cid",
+          "--label=chess-coach.cpu39=host-cpu39-1",
+          "--workdir=/build/native",
+          "--entrypoint=/usr/local/bin/bun",
+          "--mount",
+          "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-2/native,target=/retained/native,readonly",
+          "--mount",
+          "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun,target=/usr/local/bin/bun,readonly",
+          "--mount",
+          "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-cpu39-1/native,target=/build/native",
+          "--mount",
+          "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-cpu39-1/cargo-home,target=/capture/cargo-home",
+          "--mount",
+          "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/cargo-home/registry/index,target=/capture/cargo-home/registry/index,readonly",
+          "--mount",
+          "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/cargo-home/registry/cache,target=/capture/cargo-home/registry/cache,readonly",
+          "--mount",
+          "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu39-1,target=/evidence,readonly",
+          "--mount",
+          "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu39-1/inner,target=/build/native/_work/gpu-owner-recovery/runs/host-cpu39-1",
+          "--mount",
+          "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-cpu39-1/scratch,target=/build/native/_work/gpu-owner-recovery/scratch",
+          "--env",
+          "CARGO_HOME=/capture/cargo-home",
+          "--env",
+          "CARGO_TARGET_DIR=/build/native/target-cpu",
+          "--env",
+          "CARGO_BUILD_JOBS=2",
+          "--env",
+          "CARGO_NET_OFFLINE=true",
+          "--env",
+          "CARGO_NET_RETRY=0",
+          "--env",
+          "RAYON_NUM_THREADS=2",
+          "--env",
+          "RUST_TEST_THREADS=1",
+          "--env",
+          "RUSTUP_AUTO_INSTALL=0",
+          "--env",
+          "HOME=/build/native/_work/gpu-owner-recovery/scratch/home",
+          "--env",
+          "TMPDIR=/build/native/_work/gpu-owner-recovery/scratch/tmp",
+          "--env",
+          "PATH=/usr/local/cargo/bin:/usr/local/bin:/usr/bin:/bin",
+          "--env",
+          "LANG=C.UTF-8",
+          "--env",
+          "LC_ALL=C.UTF-8",
+          "--env",
+          "TZ=UTC",
+          "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+          "--no-env-file",
+          "--no-install",
+          "/evidence/driver.mjs"
+        ],
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-start",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "start",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-logs",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "logs",
+          "--follow",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-state",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "container",
+          "inspect",
+          "--format",
+          "{{json .State}}",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-remove",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "rm",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      }
+    ],
+    "elapsedMs": 5,
+    "hostInvocationsConsumed": 1,
+    "remainingHostInvocations": 0,
+    "automaticRetryAuthorized": false,
+    "cpuOnly": true,
+    "gpuDevicesRequested": false,
+    "gpuExecuted": false,
+    "trainingExecuted": false,
+    "trainingReady": false,
+    "workspaceIsFilesystemQuota": false,
+    "dockerWritableLayerIncludedInWorkspaceAccounting": false,
+    "limitsAreTrialCapsNotFitGuarantees": true
+  },
+  "calls": [
+    {
+      "id": "rustc-version",
+      "argv": [
+        "rustc",
+        "--version"
+      ],
+      "timeoutMs": 10000
+    },
+    {
+      "id": "cargo-version",
+      "argv": [
+        "cargo",
+        "--version"
+      ],
+      "timeoutMs": 10000
+    },
+    {
+      "id": "cpu-learning",
+      "argv": [
+        "cargo",
+        "test",
+        "--release",
+        "--target",
+        "x86_64-unknown-linux-gnu",
+        "--locked",
+        "--offline",
+        "--jobs",
+        "2",
+        "-p",
+        "chess-coach-learning",
+        "--tests",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "timeoutMs": 1500000
+    },
+    {
+      "id": "cpu-policy",
+      "argv": [
+        "cargo",
+        "test",
+        "--release",
+        "--target",
+        "x86_64-unknown-linux-gnu",
+        "--locked",
+        "--offline",
+        "--jobs",
+        "2",
+        "-p",
+        "chess-coach-policy-io",
+        "--tests",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "timeoutMs": 1499999
+    },
+    {
+      "id": "learning:lib:chess_coach_learning",
+      "argv": [
+        "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/chess_coach_learning-mock",
+        "--test-threads=1",
+        "--nocapture",
+        "--color=never"
+      ],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "learning:test:accumulation",
+      "argv": [
+        "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/accumulation-mock",
+        "--test-threads=1",
+        "--nocapture",
+        "--color=never"
+      ],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "learning:test:context",
+      "argv": [
+        "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/context-mock",
+        "--test-threads=1",
+        "--nocapture",
+        "--color=never"
+      ],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "learning:test:episode",
+      "argv": [
+        "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/episode-mock",
+        "--test-threads=1",
+        "--nocapture",
+        "--color=never"
+      ],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "learning:test:finite_difference",
+      "argv": [
+        "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/finite_difference-mock",
+        "--test-threads=1",
+        "--nocapture",
+        "--color=never"
+      ],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "learning:test:initialization",
+      "argv": [
+        "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/initialization-mock",
+        "--test-threads=1",
+        "--nocapture",
+        "--color=never"
+      ],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "learning:test:model",
+      "argv": [
+        "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/model-mock",
+        "--test-threads=1",
+        "--nocapture",
+        "--color=never"
+      ],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "policy-io:lib:chess_coach_policy_io",
+      "argv": [
+        "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/chess_coach_policy_io-mock",
+        "--test-threads=1",
+        "--nocapture",
+        "--color=never"
+      ],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "policy-io:bin:policy-channel",
+      "argv": [
+        "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/policy-channel-mock",
+        "--test-threads=1",
+        "--nocapture",
+        "--color=never"
+      ],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "policy-io:bin:policy-initialize",
+      "argv": [
+        "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/policy-initialize-mock",
+        "--test-threads=1",
+        "--nocapture",
+        "--color=never"
+      ],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "policy-io:bin:policy-score",
+      "argv": [
+        "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/policy-score-mock",
+        "--test-threads=1",
+        "--nocapture",
+        "--color=never"
+      ],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "policy-io:test:channel",
+      "argv": [
+        "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/channel-mock",
+        "--test-threads=1",
+        "--nocapture",
+        "--color=never"
+      ],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "policy-io:test:f32",
+      "argv": [
+        "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/f32-mock",
+        "--test-threads=1",
+        "--nocapture",
+        "--color=never"
+      ],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "policy-io:test:gpu",
+      "argv": [
+        "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/gpu-mock",
+        "--test-threads=1",
+        "--nocapture",
+        "--color=never"
+      ],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "policy-io:test:initialize",
+      "argv": [
+        "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/initialize-mock",
+        "--test-threads=1",
+        "--nocapture",
+        "--color=never"
+      ],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "policy-io:test:score",
+      "argv": [
+        "/build/native/target-cpu/x86_64-unknown-linux-gnu/release/deps/score-mock",
+        "--test-threads=1",
+        "--nocapture",
+        "--color=never"
+      ],
+      "timeoutMs": 120000
+    }
+  ],
+  "dockerCalls": [
+    {
+      "id": "worker-create",
+      "argv": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "create",
+        "--pull=never",
+        "--platform=linux/amd64",
+        "--network=none",
+        "--cpus=2",
+        "--memory=8g",
+        "--memory-swap=8g",
+        "--user=1000:1000",
+        "--cidfile=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu39-1/worker.cid",
+        "--label=chess-coach.cpu39=host-cpu39-1",
+        "--workdir=/build/native",
+        "--entrypoint=/usr/local/bin/bun",
+        "--mount",
+        "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-2/native,target=/retained/native,readonly",
+        "--mount",
+        "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun,target=/usr/local/bin/bun,readonly",
+        "--mount",
+        "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-cpu39-1/native,target=/build/native",
+        "--mount",
+        "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-cpu39-1/cargo-home,target=/capture/cargo-home",
+        "--mount",
+        "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/cargo-home/registry/index,target=/capture/cargo-home/registry/index,readonly",
+        "--mount",
+        "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/cargo-home/registry/cache,target=/capture/cargo-home/registry/cache,readonly",
+        "--mount",
+        "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu39-1,target=/evidence,readonly",
+        "--mount",
+        "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu39-1/inner,target=/build/native/_work/gpu-owner-recovery/runs/host-cpu39-1",
+        "--mount",
+        "type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-cpu39-1/scratch,target=/build/native/_work/gpu-owner-recovery/scratch",
+        "--env",
+        "CARGO_HOME=/capture/cargo-home",
+        "--env",
+        "CARGO_TARGET_DIR=/build/native/target-cpu",
+        "--env",
+        "CARGO_BUILD_JOBS=2",
+        "--env",
+        "CARGO_NET_OFFLINE=true",
+        "--env",
+        "CARGO_NET_RETRY=0",
+        "--env",
+        "RAYON_NUM_THREADS=2",
+        "--env",
+        "RUST_TEST_THREADS=1",
+        "--env",
+        "RUSTUP_AUTO_INSTALL=0",
+        "--env",
+        "HOME=/build/native/_work/gpu-owner-recovery/scratch/home",
+        "--env",
+        "TMPDIR=/build/native/_work/gpu-owner-recovery/scratch/tmp",
+        "--env",
+        "PATH=/usr/local/cargo/bin:/usr/local/bin:/usr/bin:/bin",
+        "--env",
+        "LANG=C.UTF-8",
+        "--env",
+        "LC_ALL=C.UTF-8",
+        "--env",
+        "TZ=UTC",
+        "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+        "--no-env-file",
+        "--no-install",
+        "/evidence/driver.mjs"
+      ],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "worker-start",
+      "argv": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "start",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "worker-logs",
+      "argv": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "logs",
+        "--follow",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "timeoutMs": 3600000
+    },
+    {
+      "id": "worker-state",
+      "argv": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "container",
+        "inspect",
+        "--format",
+        "{{json .State}}",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "timeoutMs": 10000
+    },
+    {
+      "id": "worker-remove",
+      "argv": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "rm",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "timeoutMs": 20000
+    }
+  ],
+  "captures": [
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/rustc-version/command.stdout",
+      "bytes": 20,
+      "sha256": "111b38f74205ea2884c814be072f3b32d139e2560d3206618f3185f93fcf9bcc"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/rustc-version/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cargo-version/command.stdout",
+      "bytes": 20,
+      "sha256": "70abb86eac6c1460caaed0307f5b57483e4999a7a0305ae54d0beabfc8b10b05"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cargo-version/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cpu-learning/command.stdout",
+      "bytes": 2187,
+      "sha256": "ddef81fd06f776d060c77e91f6ca93d9adcd223aeb9dce63bc8ed7a3a9d616a3"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cpu-learning/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cpu-policy/command.stdout",
+      "bytes": 3699,
+      "sha256": "5afb0ea7064c5912c6ed07ea327a80e9490ef9b6f42117f38f774a6ff4f5e047"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cpu-policy/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:lib:chess_coach_learning/command.stdout",
+      "bytes": 94,
+      "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:lib:chess_coach_learning/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:accumulation/command.stdout",
+      "bytes": 94,
+      "sha256": "ff6d06bac77e357835fa47529bda67f4ef19b555373c2624fe46d7fe744ab7dc"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:accumulation/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:context/command.stdout",
+      "bytes": 94,
+      "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:context/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:episode/command.stdout",
+      "bytes": 94,
+      "sha256": "ff6d06bac77e357835fa47529bda67f4ef19b555373c2624fe46d7fe744ab7dc"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:episode/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:finite_difference/command.stdout",
+      "bytes": 94,
+      "sha256": "82013fa5ece13932676e7b678c765f584d53461d8473a285d61e1eb9899fa858"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:finite_difference/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:initialization/command.stdout",
+      "bytes": 94,
+      "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:initialization/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:model/command.stdout",
+      "bytes": 94,
+      "sha256": "ff6d06bac77e357835fa47529bda67f4ef19b555373c2624fe46d7fe744ab7dc"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:model/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:lib:chess_coach_policy_io/command.stdout",
+      "bytes": 94,
+      "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:lib:chess_coach_policy_io/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-channel/command.stdout",
+      "bytes": 94,
+      "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-channel/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-initialize/command.stdout",
+      "bytes": 94,
+      "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-initialize/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-score/command.stdout",
+      "bytes": 94,
+      "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-score/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:channel/command.stdout",
+      "bytes": 94,
+      "sha256": "caba22662dde7033114f5828b7f4c5ca582e25dc0a272cdcfce5068b52143eef"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:channel/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:f32/command.stdout",
+      "bytes": 94,
+      "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:f32/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:gpu/command.stdout",
+      "bytes": 94,
+      "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:gpu/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:initialize/command.stdout",
+      "bytes": 94,
+      "sha256": "82013fa5ece13932676e7b678c765f584d53461d8473a285d61e1eb9899fa858"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:initialize/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:score/command.stdout",
+      "bytes": 94,
+      "sha256": "c8027f44bd097220fac5024d3f72a9bebf7f11bca8db3c8c20cb1aec7b2f971f"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:score/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "trainingReady": false
+}

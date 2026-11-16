@@ -1,0 +1,482 @@
+
+packages/game-core/tests/classical-resolution.test.ts:
+(pass) pass preserves the initialized board and does not mutate its input [1.93ms]
+(pass) public classical resolution rejects unsupported native-double shapes [0.32ms]
+(pass) visible mutual captures retire the whole attack wave before movement [0.91ms]
+(pass) unseen departing Hoverbikes swap instead of inventing capture witnesses [0.36ms]
+(pass) simultaneous Marine arrival destroys both movers [0.52ms]
+(pass) two moving Command Centers cancel contact without unit destruction [0.17ms]
+(pass) a Command Center takes a simultaneously arriving nonCC mover [0.56ms]
+(pass) a later slider stops short of an already landed Command Center [0.41ms]
+(pass) landing mine death cancels a later potential mover contact [0.33ms]
+(pass) only surviving last-rank Marine arrivals promote to n [0.23ms]
+(pass) only surviving last-rank Marine arrivals promote to b [0.16ms]
+(pass) only surviving last-rank Marine arrivals promote to r [0.21ms]
+(pass) only surviving last-rank Marine arrivals promote to q [0.22ms]
+(pass) sieged visible empty fire shells without moving and unseen empty fire fizzles [0.28ms]
+(pass) Marine empty diagonal mine clearing requires current target visibility [0.31ms]
+(pass) pending CC rays hit blockers and clear every mine on a consumed tile [0.24ms]
+(pass) pending shots execute White before Black even when both lives reach zero [0.09ms]
+(pass) deferred path capture verifies live actor and victim descriptors [0.16ms]
+(pass) deferred CC shot refuses an occupied stop square before changing lives [0.14ms]
+
+packages/game-core/tests/moves.test.ts:
+(pass) native classical moves > retains w Marine double band from d1 [0.26ms]
+(pass) native classical moves > retains w Marine double band from d2 [0.02ms]
+(pass) native classical moves > retains w Marine double band from d3
+(pass) native classical moves > retains b Marine double band from d8
+(pass) native classical moves > retains b Marine double band from d7
+(pass) native classical moves > retains b Marine double band from d6
+(pass) native classical moves > keeps Marine diagonals capture-only except hostile mine targets [0.22ms]
+(pass) native classical moves > denies forward captures and blocked double steps [0.10ms]
+(pass) native classical moves > marks last-rank w Marine moves for promotion [0.10ms]
+(pass) native classical moves > marks last-rank b Marine moves for promotion
+(pass) native classical moves > lists sieged fire missions through blockers without relocation [0.50ms]
+(pass) native classical moves > marks hostile mines on sieged empty fire targets [0.07ms]
+(pass) native classical moves > flags CC-target intents as dropped at resolution rather than captures [0.34ms]
+(pass) native classical moves > keeps shape-only intents separate from occupancy legality [0.23ms]
+
+packages/game-core/tests/canonical-resolution.test.ts:
+(pass) matches canonical schedules, mover contacts, mine effects, Charon targets and ray discoveries [736.06ms]
+
+packages/game-core/tests/native-classical.test.ts:
+(pass) canonical own classical dependency fold > keeps insertion and resulting actor/siege contexts separate [0.94ms]
+(pass) canonical own classical dependency fold > requires a genuine one-step B with matching transfer identity for w [0.15ms]
+(pass) canonical own classical dependency fold > requires a genuine one-step B with matching transfer identity for b [0.02ms]
+(pass) canonical own classical dependency fold > refuses the projected double after an injected two-rank B [0.24ms]
+(pass) canonical own classical dependency fold > uses heads-first dependencies instead of kind sorting or insertion order [0.27ms]
+(pass) canonical own classical dependency fold > preserves cycles and excludes a mover's own origin from head blocking [0.26ms]
+(pass) canonical own classical dependency fold > uses fresh birth identities and preserves relocation type and identity [0.30ms]
+(pass) canonical own classical dependency fold > retains replacement and origin-refill restrictions [0.20ms]
+(pass) canonical own classical dependency fold > toggles siege only for the current own Tank [0.31ms]
+(pass) canonical own classical dependency fold > retains lawful held-promotion drops despite replacement by p [0.17ms]
+(pass) canonical own classical dependency fold > retains lawful held-promotion drops despite replacement by n [0.08ms]
+(pass) canonical own classical dependency fold > retains lawful held-promotion drops despite replacement by b [0.07ms]
+(pass) canonical own classical dependency fold > retains lawful held-promotion drops despite replacement by r [0.05ms]
+(pass) canonical own classical dependency fold > retains lawful held-promotion drops despite replacement by q [0.03ms]
+(pass) canonical own classical dependency fold > promotes immediately without replacing identity [0.16ms]
+(pass) canonical own classical dependency fold > ignores forbidden simulator fields and opponent actions without mutating inputs [0.38ms]
+(pass) canonical own classical dependency fold > preserves invalid insertion diagnostics after a later actor replacement [0.20ms]
+
+packages/game-core/tests/collision-primitives.e2e.test.ts:
+(pass) a chased mine's landing death prevents a later mover contact [0.10ms]
+
+packages/game-core/tests/causal-parity.test.ts:
+(pass) journal sink preserves every canonical full-turn outcome for variant 0 [4937.06ms]
+(pass) journal sink preserves every canonical full-turn outcome for variant 1 [4044.16ms]
+(pass) journal sink preserves every canonical full-turn outcome for variant 2 [3506.22ms]
+(pass) journal sink preserves every canonical full-turn outcome for variant 3 [3848.23ms]
+(pass) journal sink preserves every canonical full-turn outcome for variant 4 [2233.09ms]
+
+packages/game-core/tests/canonical.test.ts:
+(pass) matches canonical move, fog and shape fingerprints across the board corpus [87.89ms]
+
+packages/game-core/tests/turn-resolution.e2e.test.ts:
+(pass) both seats submit to one common opened board and settle through actual B/C/F kernels [3.44ms]
+
+packages/game-core/tests/queue-action.test.ts:
+(pass) canonical authoritative queue edits > charges each side independently, keeps C free and never mutates its source [0.56ms]
+(pass) canonical authoritative queue edits > rejects insufficient gas, duplicate classicals and repeated special origins [0.40ms]
+(pass) canonical authoritative queue edits > rejects nonplanning phases, missing removals and invalid CC baselines [0.27ms]
+(pass) canonical authoritative queue edits > refunds removed specials without reindexing or exceeding income [0.28ms]
+(pass) canonical authoritative queue edits > rejects removal of a birth needed by the remaining classical actor [0.17ms]
+(pass) canonical authoritative queue edits > does not erase invalid insertion rules with a later replacement or toggle [0.18ms]
+(pass) canonical authoritative queue edits > validates special geometry, promotion, mine state and siege dependencies [0.25ms]
+(pass) canonical authoritative queue edits > gas invariants reject accumulation and overspend independently of edit checks [0.12ms]
+
+packages/game-core/tests/resolution-primitives.test.ts:
+(pass) ordered mine contact > keeps empty and own-only paths inert in attack mode [0.04ms]
+(pass) ordered mine contact > keeps empty and own-only paths inert in walk mode
+(pass) ordered mine contact > keeps empty and own-only paths inert in arrive mode
+(pass) ordered mine contact > keeps empty and own-only paths inert in walkThenAttack mode
+(pass) ordered mine contact > clears an attacked mine and chases a walker to landing [0.06ms]
+(pass) ordered mine contact > walk-then-attack clears only a landing mine and triggers an intermediate mine [0.02ms]
+(pass) ordered mine contact > CCs clear mines in attack mode [0.01ms]
+(pass) ordered mine contact > CCs clear mines in walk mode
+(pass) ordered mine contact > CCs clear mines in arrive mode
+(pass) ordered mine contact > CCs clear mines in walkThenAttack mode
+(pass) ordered mine contact > preserves native first-mine selection and removes all identities on the spent tile [0.04ms]
+(pass) simultaneous travel timing > retains p travel and airborne rules [0.05ms]
+(pass) simultaneous travel timing > retains n travel and airborne rules
+(pass) simultaneous travel timing > retains b travel and airborne rules
+(pass) simultaneous travel timing > retains r travel and airborne rules
+(pass) simultaneous travel timing > retains q travel and airborne rules
+(pass) simultaneous travel timing > retains k travel and airborne rules
+(pass) simultaneous travel timing > airborne movers occupy only landing while ground movers traverse ray tiles [0.03ms]
+(pass) simultaneous travel timing > reports the first holder and a lower-named head-on swap tile [0.04ms]
+(pass) simultaneous travel timing > keeps landing deaths present at contact tick but absent from later collisions [0.03ms]
+(pass) causal ray discovery prerequisites > records exact first discovery, stop-before and evaluated path taps [0.26ms]
+(pass) causal ray discovery prerequisites > stops at the first adjacent blocker and avoids querying later contacts [0.10ms]
+(pass) Charon strike primitives > ignores nonships but respects first allied or enemy ship screens [0.08ms]
+(pass) Charon strike primitives > bound paid side can fire after the actor disappears while planning requires a Mecha [0.03ms]
+(pass) Charon strike primitives > removes only the chosen ship and preserves fizzle ray edges [0.04ms]
+
+packages/game-core/tests/compatibility-exports.test.ts:
+(pass) all legacy game-core modules contain explicit canonical forwards only [4.89ms]
+(pass) unobserved product and native entrypoints do not load a causal producer implementation [10.85ms]
+
+packages/game-core/tests/canonical-planning.test.ts:
+(pass) matches canonical native-dependency and append fingerprints across both sides [687.81ms]
+
+packages/game-core/tests/canonical-queue.test.ts:
+(pass) matches canonical queue acceptance, refusal, gas and removal fingerprints [558.17ms]
+
+packages/game-core/tests/economy.test.ts:
+(pass) canonical economy > retains locked caps, opening banks and costs [0.13ms]
+(pass) canonical economy > preserves turn 0 income and clock [0.07ms]
+(pass) canonical economy > preserves turn 1 income and clock
+(pass) canonical economy > preserves turn 10 income and clock
+(pass) canonical economy > preserves turn 11 income and clock
+(pass) canonical economy > preserves turn 20 income and clock
+(pass) canonical economy > preserves turn 21 income and clock
+(pass) canonical economy > preserves turn 45 income and clock
+(pass) canonical economy > adds turn income without mutating the bank [0.10ms]
+(pass) canonical economy > caps both stored banks [0.02ms]
+(pass) canonical economy > estimates missing stored banks from advanced turns [0.18ms]
+(pass) canonical economy > counts deployed material consistently across board representations [0.62ms]
+(pass) canonical economy > retains deploy gas and actor [0.03ms]
+(pass) canonical economy > retains stimStep gas and actor
+(pass) canonical economy > retains spiderMine gas and actor
+(pass) canonical economy > retains charonMissiles gas and actor
+(pass) canonical economy > retains siegeMode gas and actor
+(pass) canonical economy > retains tacticalJump gas and actor
+(pass) canonical economy > debits only unqueued same-side overlay specials [0.34ms]
+(pass) canonical economy > clamps overlay gas at zero [0.04ms]
+
+packages/game-core/tests/mines.test.ts:
+(pass) canonical mine geometry > enumerates ordered exclusive intermediates and rejects non-rays [0.06ms]
+(pass) canonical mine geometry > exempts Hoverbike leaps and Command Centers from mine path contact [0.03ms]
+(pass) canonical mine geometry > packs sorted side-local mines and parses recognized coordinates [0.22ms]
+(pass) canonical mine geometry > retains the actual three-mine per-side cap [0.28ms]
+
+packages/game-core/tests/initialization.test.ts:
+(pass) canonical initialization matches the exact reference snapshot without a grant [0.10ms]
+(pass) w: public opening seeds endowed identities, not payments [0.27ms]
+(pass) b: public opening seeds endowed identities, not payments [0.08ms]
+(pass) canonical game calls own independent nested state and identity records [0.07ms]
+
+packages/game-core/tests/turn-resolution.test.ts:
+(pass) canonical init, open and pass settlement use actual kernels without changing input banks [0.35ms]
+(pass) B Marine transfer preserves positional double eligibility without public override flags [0.51ms]
+(pass) a held B mine follows the Marine to its true classical destination [0.25ms]
+(pass) blocked rewrite settles the held mine at the B arrival instead of inventing a continuation [0.23ms]
+(pass) F Marine step follows its own classical actor and holds a landing mine through the final hop [0.34ms]
+(pass) F-before-C authored order retains the canonical unpromoted last-rank Marine [0.22ms]
+(pass) F deployment anchors on the same Command Center's actual classical result [0.24ms]
+(pass) paid F Charon remains fire-and-forget after the Mecha dies [0.31ms]
+(pass) B siege fires in place and F siege follows its own moved Tank [0.41ms]
+(pass) two B jumps onto one initially empty tile destroy both ships [0.23ms]
+(pass) F mines migrate only with the arming Hoverbike's own classical action [0.35ms]
+(pass) terminal turn-open chips advance once without a planning queue or hidden grant [0.27ms]
+
+packages/game-core/tests/canonical-classical.test.ts:
+(pass) classical phase matches canonical reference for d3 / d5 [1218.59ms]
+(pass) classical phase matches canonical reference for c3 / f6 [1107.67ms]
+(pass) classical phase matches canonical reference for d4 / e4 [1241.56ms]
+(pass) classical phase matches canonical reference for c7 / f2 [960.89ms]
+(pass) classical phase matches canonical reference for a7 / h2 [649.92ms]
+(pass) classical phase matches canonical reference for b2 / g7 [924.31ms]
+
+packages/game-core/tests/planning.e2e.test.ts:
+(pass) public planning primitives hide an unseen blocker without consulting it for intent shape [0.22ms]
+
+packages/game-core/tests/planning-intents.test.ts:
+(pass) canonical recipient append constraints > classifies known action {"kind":"classical","timing":"C","color":"w","from":"a1","to":"a8"} [0.12ms]
+(pass) canonical recipient append constraints > classifies known action {"kind":"classical","timing":"C","color":"w","from":"d2","to":"e3"}
+(pass) canonical recipient append constraints > classifies known action {"kind":"stimStep","timing":"B","color":"w","from":"d2","to":"d3"}
+(pass) canonical recipient append constraints > classifies known action {"kind":"deploy","timing":"B","color":"w","from":"e1","to":"f2","unit":"p"} [0.02ms]
+(pass) canonical recipient append constraints > classifies known action {"kind":"stimStep","timing":"B","color":"w","from":"a1","to":"d3"}
+(pass) canonical recipient append constraints > classifies known action {"kind":"stimStep","timing":"B","color":"b","from":"d2","to":"d3"}
+(pass) canonical recipient append constraints > classifies known action {"kind":"stimStep","timing":"B","color":"w","from":"d2","to":"d4"}
+(pass) canonical recipient append constraints > classifies known action {"kind":"deploy","timing":"B","color":"w","from":"e1","to":"h8","unit":"p"}
+(pass) canonical recipient append constraints > classifies known action {"kind":"tacticalJump","timing":"B","color":"w","from":"d1","to":"d1"}
+(pass) canonical recipient append constraints > classifies known action {"kind":"tacticalJump","timing":"B","color":"w","from":"d1","to":"a1"}
+(pass) canonical recipient append constraints > classifies known action {"kind":"spiderMine","timing":"B","color":"w","from":"b1","to":"b2"}
+(pass) canonical recipient append constraints > keeps unknown paths and target occupancy outside classical shape eligibility [0.07ms]
+(pass) canonical recipient append constraints > allows deployment crushing except on Command Centers [0.04ms]
+(pass) canonical recipient append constraints > projects F deploys around the CC landing but leaves B at its origin [0.07ms]
+(pass) canonical recipient append constraints > distinguishes vacated B origins, reserved transit and matching gas pairs [0.08ms]
+(pass) canonical recipient append constraints > finds prior B births and transfers only for own classical actors [0.12ms]
+(pass) canonical recipient append constraints > enforces one C and one special per original actor [0.04ms]
+(pass) canonical recipient append constraints > enforces promotion fields and excludes deferred F promotion [0.04ms]
+(pass) canonical recipient append constraints > applies mine cap and F anchors without requiring a known Charon victim [0.09ms]
+(pass) canonical recipient append constraints > denies sieged fire at own mines but permits unsieged targeting [0.05ms]
+(pass) canonical recipient append constraints > rewrites only genuine forward Marine-band and matching warp structures [0.12ms]
+
+packages/game-core/tests/vision.test.ts:
+(pass) canonical cumulative fog > retains k central vision shape [0.06ms]
+(pass) canonical cumulative fog > retains p central vision shape [0.01ms]
+(pass) canonical cumulative fog > retains n central vision shape
+(pass) canonical cumulative fog > retains b central vision shape
+(pass) canonical cumulative fog > retains r central vision shape
+(pass) canonical cumulative fog > retains q central vision shape
+(pass) canonical cumulative fog > mirrors Marine vision and clips board edges [0.03ms]
+(pass) canonical cumulative fog > expands siege vision without occupancy blocking [0.09ms]
+(pass) canonical cumulative fog > keeps Mecha BattleShip pings dark until cumulative friendly vision lights them [0.04ms]
+(pass) canonical cumulative fog > lets only own mines light their tile and leaves an empty army in fog [0.03ms]
+(pass) canonical cumulative fog > uses cumulative side visibility and explicit shot reveals [0.31ms]
+(pass) canonical cumulative fog > records the first intermediate path reveal without mutating occupancy [0.13ms]
+
+packages/game-core/tests/board.test.ts:
+(pass) canonical board geometry > round-trips all 64 coordinates and rejects off-board coordinates [0.09ms]
+(pass) canonical board geometry > round-trips canonical placement 8/8/8/8/8/8/8/8 [0.02ms]
+(pass) canonical board geometry > round-trips canonical placement rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR [0.01ms]
+(pass) canonical board geometry > round-trips canonical placement 4k3/8/3r4/8/2R5/8/8/4K3
+(pass) canonical board geometry > reports invalid placement rank count and occupied overflow [0.07ms]
+(pass) canonical board geometry > finds both Command Centers and tanks [0.14ms]
+(pass) canonical board geometry > uses directional Marine attacks rather than forward movement [0.07ms]
+(pass) canonical board geometry > stops sliding rays at occupancy but permits attacking the blocker square [0.03ms]
+(pass) canonical board geometry > keeps leaps independent of blockers and excludes self-attacks [0.04ms]
+(pass) canonical board geometry > retains mutual adjacent Command Center attacks [0.10ms]
+(pass) canonical board geometry > uses attacking-side visibility and stable checker ordering [0.55ms]
+
+packages/game-core/tests/outcome.test.ts:
+(pass) canonical terminal outcomes > resolves CC lives 0:0 [0.05ms]
+(pass) canonical terminal outcomes > resolves CC lives -1:0
+(pass) canonical terminal outcomes > resolves CC lives 0:3
+(pass) canonical terminal outcomes > resolves CC lives 3:0
+(pass) canonical terminal outcomes > keeps unequal surviving lives nonterminal before the cap [0.02ms]
+(pass) canonical terminal outcomes > compares surviving CC lives at turn 45 [0.02ms]
+(pass) canonical terminal outcomes > compares surviving CC lives at turn 46
+
+packages/game-core/tests/canonical-turn.test.ts:
+(pass) full canonical begin/admission/settlement matches variant 0 [755.99ms]
+(pass) full canonical begin/admission/settlement matches variant 1 [677.45ms]
+(pass) full canonical begin/admission/settlement matches variant 2 [677.98ms]
+(pass) full canonical begin/admission/settlement matches variant 3 [721.77ms]
+(pass) full canonical begin/admission/settlement matches variant 4 [431.55ms]
+
+packages/game-core/tests/causal-events.test.ts:
+(pass) journaled init/open/pass retains private identities and returns detached successors [1.41ms]
+(pass) birth, immediate mine death and native mine multiplicity retain distinct actual identities [0.95ms]
+(pass) promotion preserves the Marine identity through B and C transformations [1.24ms]
+(pass) mutual casualties share the same live preimage and both recipients retain their witnesses [0.54ms]
+(pass) starting snapshot checks reject substituted placement, ordered mines, native siege and turn [0.23ms]
+(pass) failed, nested and out-of-group mutations cannot publish a successor [0.32ms]
+(pass) collector rejects final drift and cannot be reused after successful completion [0.23ms]
+(pass) successful native guard retains evaluation and applied target identities without imposing equality [0.51ms]
+
+packages/contracts/tests/observation.test.ts:
+(pass) standard recipient observation contract > round-trips JSON with paid deployment = %s [6.14ms]
+(pass) standard recipient observation contract > round-trips JSON with paid deployment = %s [2.45ms]
+(pass) standard recipient observation contract > accepts standard whitespace and key ordering rather than canonical bytes [0.40ms]
+(pass) standard recipient observation contract > exports standard shape schema separately from semantic invariants [0.04ms]
+(pass) standard recipient observation contract > rejects invalid JSON or shape { [0.10ms]
+(pass) standard recipient observation contract > rejects invalid JSON or shape null [0.55ms]
+(pass) standard recipient observation contract > rejects invalid JSON or shape [] [0.06ms]
+(pass) standard recipient observation contract > rejects invalid JSON or shape {} [0.19ms]
+(pass) standard recipient observation contract > rejects invalid JSON or shape {"version":"challenge-observation-v2"} [0.11ms]
+(pass) standard recipient observation contract > rejects extra hidden state instead of stripping it [1.08ms]
+(pass) standard recipient observation contract > rejects size limits before parsing [4.31ms]
+(pass) standard recipient observation contract > rejects missing light history [0.82ms]
+(pass) standard recipient observation contract > rejects reordered light history [0.48ms]
+(pass) standard recipient observation contract > rejects wrong side [0.42ms]
+(pass) standard recipient observation contract > rejects gas beyond income [0.28ms]
+(pass) standard recipient observation contract > rejects missing cell [0.98ms]
+(pass) standard recipient observation contract > rejects reordered cells [0.54ms]
+(pass) standard recipient observation contract > rejects own color mismatch [0.48ms]
+(pass) standard recipient observation contract > rejects missing own piece [0.47ms]
+(pass) standard recipient observation contract > rejects missing CC [0.43ms]
+(pass) standard recipient observation contract > rejects hidden own piece [0.49ms]
+(pass) standard recipient observation contract > rejects non-BattleShip reveal [0.47ms]
+(pass) standard recipient observation contract > rejects missing current enemy memory [0.34ms]
+(pass) standard recipient observation contract > rejects future sighting [0.44ms]
+(pass) standard recipient observation contract > rejects own sighting [0.30ms]
+(pass) standard recipient observation contract > rejects stale visible sighting [0.29ms]
+(pass) standard recipient observation contract > rejects memory on visible empty cell [0.46ms]
+(pass) standard recipient observation contract > rejects wrong ledger side [0.25ms]
+(pass) standard recipient observation contract > rejects opening paid basis [0.29ms]
+(pass) standard recipient observation contract > rejects wrong replacement cost [0.78ms]
+(pass) standard recipient observation contract > rejects wrong lineage side [0.37ms]
+(pass) standard recipient observation contract > rejects duplicate live identity [0.29ms]
+(pass) standard recipient observation contract > rejects missing lineage [0.32ms]
+(pass) standard recipient observation contract > rejects live retired identity [0.43ms]
+(pass) standard recipient observation contract > rejects unwitnessed paid enemy claim [0.28ms]
+(pass) standard recipient observation contract > rejects invalid enemy replacement bound [0.40ms]
+(pass) standard recipient observation contract > rejects unlit own mine [0.46ms]
+(pass) standard recipient observation contract > rejects wrong mine opening identity [0.28ms]
+(pass) standard recipient observation contract > rejects mine counter overflow [0.25ms]
+(pass) standard recipient observation contract > rejects missing mine lineage [0.29ms]
+(pass) standard recipient observation contract > rejects sieged non-Tank [0.38ms]
+(pass) standard recipient observation contract > rejects wrong paid total [0.31ms]
+(pass) standard recipient observation contract > rejects wrong paid surviving [0.36ms]
+(pass) standard recipient observation contract > rejects receipt cost mismatch [0.35ms]
+(pass) standard recipient observation contract > rejects receipt reference mismatch [0.29ms]
+(pass) standard recipient observation contract > rejects creation identity gap [0.29ms]
+(pass) standard recipient observation contract > rejects duplicate deployment turn [0.30ms]
+(pass) standard recipient observation contract > rejects orphaned created lineage [0.25ms]
+(pass) standard recipient observation contract > rejects unaccounted waste [0.53ms]
+(pass) standard recipient observation contract > rejects retired unknown created identity [0.28ms]
+(pass) standard recipient observation contract > preserves paid basis through transformation without repricing receipts [0.33ms]
+(pass) standard recipient observation contract > conserves destroyed paid deployments [0.53ms]
+(pass) standard recipient observation contract > conserves wasted paid deployments [0.26ms]
+
+packages/contracts/tests/inference.test.ts:
+(pass) numeric inference contract > serializes ordinary finite F64 JSON values and normalizes negative zero [2.12ms]
+(pass) numeric inference contract > rejects row count 0 [3.95ms]
+(pass) numeric inference contract > rejects row count 513 [0.96ms]
+(pass) numeric inference contract > rejects feature %s [1.10ms]
+(pass) numeric inference contract > rejects feature %s [1.02ms]
+(pass) numeric inference contract > rejects feature %s [1.02ms]
+(pass) numeric inference contract > rejects feature %s [0.89ms]
+(pass) numeric inference contract > rejects feature %s [0.98ms]
+(pass) numeric inference contract > rejects wrong dimensions and malformed identifiers [3.93ms]
+(pass) numeric inference contract > accepts maximum candidate count [1352.34ms]
+(pass) numeric inference contract > requires response identities and row count to match [5.97ms]
+
+packages/contracts/tests/initialization.test.ts:
+(pass) w: canonical recipient comes from current vision with no invented history [5.90ms]
+(pass) b: canonical recipient comes from current vision with no invented history [0.97ms]
+(pass) initial producer returns detached frozen recipients and stays out of model-facing root exports [0.69ms]
+
+packages/contracts/tests/causal-journal.test.ts:
+(pass) standard JSON/Zod round trips actual mutation journals and state [3.82ms]
+(pass) journal rejects byte exhaustion before parsing, including multibyte input [59.98ms]
+(pass) journal rejects structurally or causally inconsistent version [1.99ms]
+(pass) journal rejects structurally or causally inconsistent extra [1.29ms]
+(pass) journal rejects structurally or causally inconsistent ordinal [1.36ms]
+(pass) journal rejects structurally or causally inconsistent group [1.03ms]
+(pass) journal rejects structurally or causally inconsistent phase [0.93ms]
+(pass) journal rejects structurally or causally inconsistent target [1.00ms]
+(pass) journal rejects structurally or causally inconsistent source [0.92ms]
+(pass) journal rejects structurally or causally inconsistent applied [0.91ms]
+(pass) journal rejects structurally or causally inconsistent evaluation [0.83ms]
+(pass) journal rejects structurally or causally inconsistent trace [0.81ms]
+(pass) journal rejects structurally or causally inconsistent cells [0.90ms]
+(pass) journal rejects structurally or causally inconsistent effect-order [0.90ms]
+(pass) journal rejects structurally or causally inconsistent duplicate-target [0.88ms]
+(pass) state rejects duplicate identities, stale modes, missing mines and counter substitution [1.10ms]
+
+packages/contracts/tests/recipient-codec.test.ts:
+(pass) public standard batch codec rejects private fields, cross-recipient IDs and event gaps [12.91ms]
+
+packages/contracts/tests/recipient-privacy.test.ts:
+(pass) hidden-prefix Hoverbike twins keep actual target facts but identical acting-recipient bytes [14.66ms]
+(pass) retired-enemy-siege discovery step differences do not change recipient bytes [22.44ms]
+(pass) an incidental moved Battleship from a speculative Tank prefix stays private [6.47ms]
+(pass) hidden paid replacement identities do not change consumed target or enemy paid lower bounds [11.49ms]
+(pass) consumed casualty memory clears before mine death and hidden F p replacement [9.20ms]
+(pass) consumed casualty memory clears before mine death and hidden F n replacement [6.18ms]
+(pass) a later crush does not restore the consumed dead target to memory [5.77ms]
+(pass) nonacting recipient receives own loss but no consumed enemy target or incidental enemy loss [5.01ms]
+(pass) positive stationary-siege and failed-victim-guard probes emit no public target [15.23ms]
+(pass) dead C-wave vision source cannot witness later fire-and-forget enemy loss [6.51ms]
+(pass) public recipient event numbering never includes private query or hidden-effect ordinals [5.67ms]
+
+packages/contracts/tests/game-session.test.ts:
+(pass) actual canonical recipients start with the approved opening and no income grant [7.05ms]
+(pass) explicit banks debit deployment once, grant settlement income once and survive omitted core stored fields [17.53ms]
+(pass) paid basis survives promotion and retires independently of replacement value [15.23ms]
+(pass) birth followed by immediate mine loss is paid destruction rather than waste [9.38ms]
+(pass) suppressed F deployment pays once and records unmaterialized waste after a terminal C chip [7.10ms]
+(pass) terminal opening chips preserve explicit banks without a planning or mineral grant [3.14ms]
+(pass) both-seat staging rejects invalid side, extra fields and insufficient minerals without partial commit [4.76ms]
+(pass) recipient references use accepted own ordinals rather than combined native action sequences [7.46ms]
+(pass) source-bound deterministic replay rejects gaps and conflicts and accepts identical repeats without new facts [19.65ms]
+
+packages/contracts/tests/native-intents.test.ts:
+(pass) native recorded/opponent codec keeps 65 intents without enlarging learned candidates [0.56ms]
+(pass) actual native queue denial has a typed side/index while malformed structures do not [4.22ms]
+
+packages/contracts/tests/native-protocol.test.ts:
+(pass) native protocol accepts actual bounded initial data but no code selectors or self-issued authority [6.23ms]
+(pass) native codec rejects oversized raw text before parsing and wrong BOTH recipient pairing [9.82ms]
+
+packages/contracts/tests/gpu-job.test.ts:
+(pass) GPU closed boundary > accepts exact input and outer identities without control frames [11.45ms]
+(pass) GPU closed boundary > binds original input bytes, all model identities and nested closed fields [1.62ms]
+(pass) GPU closed boundary > rejects recursively escaped duplicate keys, malformed JSON and resource excess [3.38ms]
+(pass) GPU original descriptor token commitment > accepts literal negative-zero integers only with the exact changed descriptor commitment [1.93ms]
+(pass) GPU original descriptor token commitment > accepts literal negative-zero live ordinals without changing descriptor token hashing [1.08ms]
+(pass) GPU original descriptor token commitment > retains Bun semantic integer spellings beyond the narrower Rust integer token grammar [1.96ms]
+(pass) GPU original descriptor token commitment > accepts outer formatting and decoded escaped property names [1.22ms]
+(pass) GPU original descriptor token commitment > rejects inside-token whitespace, reordering and Unicode escapes despite refreshed enclosing hashes [1.91ms]
+(pass) GPU original descriptor token commitment > rejects escaped descriptor duplicates in the same bounded parse [0.73ms]
+(pass) GPU original descriptor token commitment > accepts opaque alternate RNG roots, valid prefixes and a different corpus permutation [0.80ms]
+(pass) GPU original descriptor token commitment > accepts schema-valid descriptor, journal, model and update alternatives without replay [3.03ms]
+(pass) GPU original descriptor token commitment > retains existing closed state, prefix, counter, history and control predicates [6.88ms]
+(pass) GPU original descriptor token commitment > retains exactly the accepted first-attempt proposal bindings [2.11ms]
+
+packages/contracts/tests/shared-engine.e2e.test.ts:
+(pass) product and GameSession share B/C/F physics, host banks and private lineage across multiple turns [66.64ms]
+
+packages/policy/tests/features.test.ts:
+(pass) new recipient-local feature contract > encodes categorical fields for classical [0.90ms]
+(pass) new recipient-local feature contract > encodes categorical fields for deploy [0.66ms]
+(pass) new recipient-local feature contract > encodes categorical fields for stimStep [0.35ms]
+(pass) new recipient-local feature contract > encodes categorical fields for spiderMine [0.46ms]
+(pass) new recipient-local feature contract > encodes categorical fields for charonMissiles [0.53ms]
+(pass) new recipient-local feature contract > encodes categorical fields for siegeMode [0.35ms]
+(pass) new recipient-local feature contract > encodes categorical fields for tacticalJump [0.33ms]
+(pass) new recipient-local feature contract > derives its dimensions from actual state and action layouts [0.05ms]
+(pass) new recipient-local feature contract > encodes visible, dark-revealed and own economic facts without hidden occupancy [3.79ms]
+(pass) new recipient-local feature contract > distinguishes remembered enemies from current observation and records age [0.56ms]
+(pass) new recipient-local feature contract > encodes ordered action presence, kind, timing, coordinates and spawn choices [0.42ms]
+(pass) new recipient-local feature contract > normalizes color-relative views and candidates identically [0.83ms]
+(pass) new recipient-local feature contract > bounds rows, rejects malformed candidates and returns caller-owned buffers [6.25ms]
+
+packages/policy/tests/candidates.test.ts:
+(pass) new bounded candidate selection > is deterministic, bounded, deduplicated, detached and readonly [61.99ms]
+(pass) new bounded candidate selection > covers all seven families and lengths one through four in the rich fixture [13.82ms]
+(pass) new bounded candidate selection > every retained prefix respects recipient admission, resources, mines and own dependencies [27.79ms]
+(pass) new bounded candidate selection > does not spend unavailable gas or deployment minerals [30.44ms]
+(pass) new bounded candidate selection > returns only pass on a genuinely exhausted recipient domain [2.64ms]
+(pass) new bounded candidate selection > ignores stale sightings as occupancy and never accepts extra simulator fields [29.09ms]
+(pass) new bounded candidate selection > enumerates mirrored recipients in identical relative discovery order [28.24ms]
+(pass) new bounded candidate selection > caps mine compositions against existing own lineage-backed mines [12.90ms]
+(pass) new bounded candidate selection > retains genuine unknown-target intents rather than asking the host validator [14.67ms]
+(pass) new bounded candidate selection > returns terminal pass without searching at turn 45 with own HP 3 [0.55ms]
+(pass) new bounded candidate selection > returns terminal pass without searching at turn 21 with own HP 0 [0.29ms]
+(pass) new bounded candidate selection > returns terminal pass without searching at turn 45 with own HP 0 [0.28ms]
+
+packages/policy/tests/enumeration-golden.test.ts:
+(pass) pins the new enumeration version's discovery order and stopping boundaries [24.42ms]
+
+packages/policy/tests/initialization.e2e.test.ts:
+(pass) both canonical recipients feed bounded candidates and actual features without fabricated fixtures [146.30ms]
+
+packages/policy/tests/queue-planning.e2e.test.ts:
+(pass) validated recipient actions pass append and dependency checks before encoding [1.56ms]
+
+packages/policy/tests/source-boundary.test.ts:
+(pass) actual first-party policy runtime/type/reexport closure excludes host producers [307.45ms]
+(pass) host producer import and transitive core reexport fail the first-party boundary [396.44ms]
+(pass) type-only producer dependencies also fail the first-party boundary [175.23ms]
+(pass) private runtime/type/transitive model closure rejects @chess-coach/starchess-core/causal-producer [534.29ms]
+(pass) private runtime/type/transitive model closure rejects @chess-coach/game-core/causal-producer [547.55ms]
+(pass) private runtime/type/transitive model closure rejects @chess-coach/contracts/causal-journal [479.97ms]
+(pass) private runtime/type/transitive model closure rejects @chess-coach/contracts/recipient [478.12ms]
+(pass) private runtime/type/transitive model closure rejects @chess-coach/contracts/recipient-codec [491.07ms]
+(pass) private runtime/type/transitive model closure rejects @chess-coach/contracts/game-session [1044.28ms]
+(pass) private runtime/type/transitive model closure rejects @chess-coach/contracts/native-protocol [515.89ms]
+(pass) private runtime/type/transitive model closure rejects @chess-coach/contracts/episode [445.74ms]
+(pass) private runtime/type/transitive model closure rejects ../../contracts/src/learning-channel [462.42ms]
+(pass) private runtime/type/transitive model closure rejects ../../contracts/src/training-state [476.62ms]
+(pass) private runtime/type/transitive model closure rejects ../../contracts/src/match [485.43ms]
+(pass) private runtime/type/transitive model closure rejects ../../runtime/src/match-session [1059.38ms]
+(pass) private runtime/type/transitive model closure rejects ../../runtime/src/training-coordinator [1062.04ms]
+(pass) private runtime/type/transitive model closure rejects ../../runtime/src/training-store [991.98ms]
+(pass) private runtime/type/transitive model closure rejects ../../runtime/src/curriculum [1003.51ms]
+(pass) private runtime/type/transitive model closure rejects ../../runtime/src/index [1071.75ms]
+(pass) actual-mutation sink reexports stay outside the model closure [182.01ms]
+(pass) product root, AI and replay entries stay outside the model closure [560.16ms]
+(pass) first-party model source rejects host builtins and dynamic loaders [956.10ms]
+
+packages/runtime/tests/rng.test.ts:
+(pass) 20 derived roots are distinct and match frozen reference draw fingerprints [11.31ms]
+(pass) standard JSON restore preserves the next draw and rejects impossible stream prefixes [0.84ms]
+
+packages/runtime/tests/strategic.test.ts:
+(pass) strategic planning waits for permit and exact replay ACK commits only the tentative opponent stream [16.04ms]
+(pass) wrong permit, missing open, first-side mutation and late receipts cannot become opponent ACKs [31.03ms]
+(pass) tampered actions/RNG/spend fail replay and repeated ACK cannot roll back known state [9.02ms]
+
+packages/runtime/tests/closure.test.ts:
+(pass) selected reference worker runtime closure cannot load the current resolver or producer as a reference [21.43ms]
+(pass) current driver uses the canonical product kernels without compatibility, AI or replay implementations [25.77ms]
+(pass) selected native-proof workers exclude policy preparation, feature encoding and native learning dispatch [53.44ms]
+
+ 387 pass
+ 0 fail
+ 17569 expect() calls
+Ran 387 tests across 45 files. [46.52s]

@@ -1,0 +1,9 @@
+
+_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status.test.ts:
+(pass) status command reads only full-two metadata and a bounded receipt [0.22ms]
+(pass) literal delivery adds no shell write or extra operation [0.04ms]
+
+ 2 pass
+ 0 fail
+ 16 expect() calls
+Ran 2 tests across 1 file. [9.00ms]

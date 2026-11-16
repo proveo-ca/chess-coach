@@ -1,8 +1,8 @@
 // SPEC: _spec/candidate-generation.puml
 import { describe, expect, test } from "bun:test";
 import { decodeCandidate, decodeObservation } from "@chess-coach/contracts";
-import { MAX_MINES_PER_SIDE, UNIT_COST, appendTimeSpecialAnchor, knownAppendFailure, nativeClassicalChecks, specialGasCost } from "@chess-coach/game-core";
-import type { ScAction, Square } from "@chess-coach/game-core";
+import { MAX_MINES_PER_SIDE, UNIT_COST, appendTimeSpecialAnchor, knownAppendFailure, nativeClassicalChecks, specialGasCost } from "@chess-coach/starchess-core/engine";
+import type { ScAction, Square } from "@chess-coach/starchess-core/engine";
 import { ENUMERATION_VERSION, MAX_CANDIDATES, MAX_CANDIDATE_ACTIONS, MAX_CANDIDATE_EXTENSIONS, enumerateCandidates, relativeSquare } from "../src";
 import { candidateFixture, mirroredCandidateFixture } from "./candidate-fixture";
 

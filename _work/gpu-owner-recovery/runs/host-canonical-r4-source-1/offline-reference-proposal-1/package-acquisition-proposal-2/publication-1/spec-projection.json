@@ -1,0 +1,48 @@
+{
+  "version": "chess-coach.r2-final-spec-projection.v1",
+  "status": "IN_SYNC_FOR_PREPUBLICATION_FREEZE",
+  "specKeeperSession": "ses_e2a2b3d66ffeG8mQWqCNGmpl5U",
+  "sourceArtifactStatus": "OFFLINE_PACKET_REVIEWED_AND_SEALED_PUBLICATION_PREFLIGHT_PENDING",
+  "publicationPhase": "SOURCE_PACKET_REVIEWED_SEALED_FINAL_COHORT_FREEZE_AND_STAGE_CHECK_PENDING",
+  "aliasContract": "_spec/runtime-protocol.puml:2",
+  "strongPostcheck": "source-emission-1/postcheck-2.json",
+  "strongPostcheckSha256": "604cbe129da32587520e3ece910757288111605ac2dfadec8207708594ab6720",
+  "finalSourceReviews": "source-postcheck-review-2",
+  "finalSourceReviewsReady": 2,
+  "checkerReviewsReady": 3,
+  "whitespaceExitCode": 0,
+  "files": [
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "bytes": 66874,
+      "sha256": "acdbe6fe49c5988f05f65a8ae0e7b78f202af6afa7b80e187055983de6c30f11"
+    },
+    {
+      "path": "_spec/gpu-qualification.puml",
+      "bytes": 114228,
+      "sha256": "a7d17a8a4516a9c9bbe86638e3094178387f3ff25f741aa07254660a0bea5ffb"
+    },
+    {
+      "path": "_spec/gpu-full-qualification.puml",
+      "bytes": 65222,
+      "sha256": "2b1af1451070cfee8fe6e9a25a559af230847994ff6ad516196ba1fe89c6d481"
+    },
+    {
+      "path": "_spec/gpu-readiness.md",
+      "bytes": 343968,
+      "sha256": "f8530d20c8e5ef5fe23ab7d4e3d0daad8141eed90e788a5855d6b74c3164be81"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "bytes": 103426,
+      "sha256": "5a722055ba6b0f5fc6d8e7e0f93d94664373159fcea4850d857d60a702c67687"
+    },
+    {
+      "path": "_spec/gate-closure.md",
+      "bytes": 253970,
+      "sha256": "728edda0d38ba35fd4fb08c41a84a97fe9d64abeb68a488c6d5486bebdc9bdb3"
+    }
+  ],
+  "publicationNotYetPerformed": true,
+  "trainingReady": false
+}

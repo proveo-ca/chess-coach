@@ -2,8 +2,8 @@
 import { expect, test } from "bun:test";
 import * as contracts from "../src";
 import { canonicalInitialObservation } from "@chess-coach/contracts/initialization";
-import type { StarChessColor } from "@chess-coach/game-core";
-import fixture from "../../game-core/tests/fixtures/canonical-opening.json";
+import type { StarChessColor } from "@chess-coach/starchess-core/engine";
+import fixture from "../../starchess-core/tests/native/fixtures/canonical-opening.json";
 
 for (const side of ["w", "b"] as const) {
   test(`${side}: canonical recipient comes from current vision with no invented history`, () => {

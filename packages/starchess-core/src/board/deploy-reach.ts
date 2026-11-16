@@ -1,5 +1,5 @@
 // SPEC: _spec/packages/starchess-core/deploy-reach.puml
-import type { Square } from "chess.js";
+import type { Square } from "../model/square";
 
 import { attacksSquare, parseSquare, sq, type ScPiece } from "./placement";
 import { hostileMineOn } from "./mine-contact";

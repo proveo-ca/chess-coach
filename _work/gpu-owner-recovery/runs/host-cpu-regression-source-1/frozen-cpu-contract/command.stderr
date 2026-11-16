@@ -1,0 +1,16 @@
+
+packages/runtime/tests/gpu-qualification.test.ts:
+(pass) capture failure retains the attempted command and result instead of a preflight label [0.33ms]
+(pass) CPU coverage preserves all 39 tests including valid zero-test harnesses [0.86ms]
+(pass) CPU and GPU artifacts cannot substitute for one another [0.65ms]
+(pass) artifact admission requires successful builds and complete unique harness coverage [0.18ms]
+(pass) only compiler artifacts select executables, never build-script output [0.11ms]
+(pass) compiled policy subprocess paths must survive unchanged [0.12ms]
+(pass) the CPU runner checks each frozen count rather than treating zero aggregate as regression [0.58ms]
+(pass) source selectors, coordinate counts and CPU coverage match the unchanged Rust fixtures [0.74ms]
+
+ 8 pass
+ 15 filtered out
+ 0 fail
+ 42 expect() calls
+Ran 8 tests across 1 file. [18.00ms]

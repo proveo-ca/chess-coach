@@ -1,6 +1,6 @@
 // SPEC: _spec/match-runtime.puml
 import { createHash } from "node:crypto";
-import { scOutcome } from "@chess-coach/game-core";
+import { scOutcome } from "@chess-coach/starchess-core/engine";
 import type { GameSession, GameTransition } from "../../contracts/src/game-session";
 import { matchBoundaryShape } from "../../contracts/src/match";
 import type { MatchBoundary, MatchStop } from "../../contracts/src/match";

@@ -1,0 +1,23 @@
+{
+  "version": "chess-coach.r2-scoped-implementation-review.v1",
+  "scope": "caller",
+  "role": "adversarial",
+  "session": "ses_e2c5f9288ffeNLMbi5vIhbKzGr",
+  "status": "NOT_READY_CALLER_IMPLEMENTATION_SCOPE",
+  "reviewedSource": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.ts",
+    "sha256": "c307f222997e3a72f3b00360aee7c08494ba8841b1be6e75ee9f7a1fcf0b612d"
+  },
+  "verificationReceipt": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invocation-verification-5/receipt.json",
+    "sha256": "2ebafc2897684610208872a93d211d4f2ec13074c626c91992e857fe6058359f"
+  },
+  "remainingFindings": [
+    {"severity":"MEDIUM","location":"package-acquisition-bun-source2/verify.ts:253 and both actual verification paths","code":"ACTUAL_VERIFICATION_BYPASSES_STRICT_TEST_SUMMARY_PARSER"}
+  ],
+  "readyToMerge": false,
+  "verificationRerunByReviewer": false,
+  "nonAuthorizing": true,
+  "executionReadinessClaimed": false,
+  "trainingReady": false
+}

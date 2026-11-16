@@ -1,0 +1,263 @@
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
+import { describe, expect, it } from "vitest";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { beginScTurn, endScTurn, formatScFen, normalizeSnapGas, parseScFen } from "@chess-coach/starchess-core";
+import { seedBankForOpening, grantStoredIncome } from "../run/bank";
+import { commitPair, stageQueue } from "../challenge/admission";
+import { runSupervised } from "../challenge/supervisor";
+import { replayExecutionIntegrity } from "../challenge/integrity";
+import type { ChallengeEvidence, ScheduledMatch } from "../challenge/types";
+
+const opening = "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:";
+const request = (key: string): ScheduledMatch => ({
+  key, suite: "live-strategic", candidateSide: "w", arenaSeed: 42, inferenceSeed: 0, opening,
+});
+const workerUrl = new URL("./fixtures/challengeWorker.ts", import.meta.url);
+const childCasesUrl = new URL("./fixtures/challengeChildCases.ts", import.meta.url);
+const budgets = { startupMs: 3000, planMs: 100, matchMs: 1500 };
+const run = (key: string, override: Partial<typeof budgets> = {}) =>
+  runSupervised(request(key), { workerUrl, budgets: { ...budgets, ...override } });
+const expectFailure = (evidence: ChallengeEvidence, key: string) => {
+  expect(evidence.match).toEqual(request(key));
+  expect(evidence).toMatchObject({
+    outcome: null, policy: "baseline-v1", modelArtifact: null,
+    learnedGateEligible: false, fallbackCount: 0,
+  });
+  expect(evidence.stop.reason).toEqual(expect.any(String));
+  expect(evidence.scfens.length).toBe(evidence.resolves.length + 1);
+  expect(evidence.bankTrail.length).toBe(evidence.resolves.length);
+};
+
+describe("challenge child watchdog", () => {
+  it("rejects a session-bound cross-phase announcement in a separate input chunk", async () => {
+    const evidence = await runSupervised(request("crossphase-announcement"), { workerUrl: childCasesUrl, budgets });
+    expect(evidence.stop).toMatchObject({
+      kind: "script-contract", phase: "candidate-plan", side: "w",
+      reason: "worker protocol error: phase contradicts checked stage",
+    });
+  });
+
+  it.each(["direct-rejection", "permit-rejection", "direct-progress-limit"])(
+    "rejects unbuffered %s completion that bypasses the checked stages", async (key) => {
+      const evidence = await runSupervised(request(key), { workerUrl: childCasesUrl, budgets });
+      expectFailure(evidence, key);
+      expect(evidence.stop).toMatchObject({ kind: "script-contract", reason: "worker protocol error: malformed completion" });
+      expect(evidence.resolves).toEqual([]);
+    },
+  );
+
+  it.each(["permit-exception", "permit-watchdog"])("finishes %s with an active permit without outcome credit", async (key) => {
+    const evidence = await runSupervised(request(key), { workerUrl: childCasesUrl, budgets });
+    expectFailure(evidence, key);
+    expect(evidence.stop.kind).toBe(key === "permit-exception" ? "exception" : "watchdog");
+    expect(replayExecutionIntegrity(evidence, request(key))).toBe(true);
+  });
+
+  it.each(["permit-false-bank", "permit-false-outcome"])("rejects %s even when an active error may finish", async (key) => {
+    const evidence = await runSupervised(request(key), { workerUrl: childCasesUrl, budgets });
+    expect(evidence.stop).toMatchObject({ kind: "script-contract", reason: "worker protocol error: malformed completion" });
+    expect(evidence.outcome).toBeNull();
+    expect(evidence.finalBank).toEqual({ w: 3, b: 3 });
+  });
+
+  it("accepts a rejection only after checking the decisions and admission witness", async () => {
+    const match = request("checked-rejection");
+    const evidence = await runSupervised(match, { workerUrl: childCasesUrl, budgets });
+    expect(evidence.stop).toMatchObject({ kind: "queue-rejected", phase: "admission", side: "w" });
+    expect(replayExecutionIntegrity(evidence, match)).toBe(true);
+  });
+
+  it.each(["guessed-permit", "replayed-permit"])("rejects %s in a later input chunk", async (key) => {
+    const evidence = await runSupervised(request(key), { workerUrl: childCasesUrl, budgets });
+    expect(evidence.stop).toMatchObject({ kind: "script-contract", reason: "worker protocol error: unexpected decision" });
+  });
+
+  it("issues distinct 128-bit nonce permits for the required sides", async () => {
+    const evidence = await runSupervised(request("nonce-permits"), { workerUrl: childCasesUrl, budgets }) as
+      ChallengeEvidence & { permitIds: string[] };
+    expect(evidence.stop.kind).toBe("exception");
+    expect(evidence.permitIds).toHaveLength(2);
+    expect(evidence.permitIds[0]).toMatch(/^[0-9a-f]{32}$/);
+    expect(evidence.permitIds[1]).toMatch(/^[0-9a-f]{32}$/);
+    expect(new Set(evidence.permitIds).size).toBe(2);
+  });
+
+  it("bounds stdout message count after preserving a checked settlement", async () => {
+    const evidence = await runSupervised(request("message-limit"), {
+      workerUrl: childCasesUrl, budgets: { ...budgets, matchMs: 3000 },
+    });
+    expect(evidence.stop).toMatchObject({ kind: "script-contract", reason: "worker protocol error: message count limit exceeded" });
+    expect(evidence.resolves).toHaveLength(1);
+  });
+
+  it.skipIf(process.platform !== "linux").each([
+    "descendant-complete", "descendant-crash", "descendant-watchdog", "detached-descendant",
+  ])("bounds %s with inherited stdout and reaps the direct child before resolving", async (mode) => {
+    const directory = mkdtempSync(join(tmpdir(), "challenge-descendant-"));
+    const pidFile = join(directory, "pids.json");
+    let pids: { workerPid: number; descendantPid: number } | undefined;
+    let timeout: NodeJS.Timeout | undefined;
+    const dead = (pid: number) => {
+      try { return readFileSync(`/proc/${pid}/stat`, "utf8").split(") ")[1]!.startsWith("Z "); }
+      catch (error) {
+        if ((error as NodeJS.ErrnoException).code === "ENOENT") return true;
+        throw error;
+      }
+    };
+    try {
+      const match = request(`${mode}:${pidFile}`);
+      const evidence = await Promise.race([
+        runSupervised(match, { workerUrl: childCasesUrl, budgets: { ...budgets, matchMs: 700 } }),
+        new Promise<never>((_resolve, reject) => {
+          timeout = setTimeout(() => reject(new Error("supervisor waited on descendant stdout")), 5000);
+        }),
+      ]);
+      pids = JSON.parse(readFileSync(pidFile, "utf8"));
+      expect(evidence.stop.kind).toBe(mode === "descendant-watchdog" ? "watchdog" : "exception");
+      expect(evidence.resolves).toHaveLength(1);
+      expect(evidence.bankTrail).toHaveLength(1);
+      expect(replayExecutionIntegrity(evidence, match)).toBe(true);
+      expect(() => process.kill(pids!.workerPid, 0)).toThrow(expect.objectContaining({ code: "ESRCH" }));
+      if (mode === "detached-descendant") {
+        expect(dead(pids!.descendantPid)).toBe(false);
+        expect(() => process.kill(pids!.descendantPid, 0)).not.toThrow();
+      } else {
+        await expect.poll(() => dead(pids!.descendantPid), { timeout: 1000 }).toBe(true);
+      }
+    } finally {
+      clearTimeout(timeout);
+      pids ??= (() => { try { return JSON.parse(readFileSync(pidFile, "utf8")); } catch { return undefined; } })();
+      for (const pid of pids ? [pids.workerPid, pids.descendantPid] : []) {
+        if (!dead(pid)) { try { process.kill(pid, "SIGKILL"); } catch {} }
+      }
+      rmSync(directory, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects a child announcement that cancels an unfinished decision", async () => {
+    const evidence = await runSupervised(request("announcement-escape"), {
+      workerUrl: new URL("./fixtures/challengeAnnouncementEscape.ts", import.meta.url),
+      budgets: { ...budgets, matchMs: 300 },
+    });
+    expect(evidence.stop.kind).toBe("script-contract");
+  });
+  it("reaps a child that never becomes ready", async () => {
+    const evidence = await runSupervised(request("startup-hang"), {
+      workerUrl: new URL("./fixtures/challengeStartupHang.ts", import.meta.url),
+      budgets: { ...budgets, startupMs: 500 },
+    });
+    expectFailure(evidence, "startup-hang");
+    expect(evidence.stop).toMatchObject({ kind: "watchdog", phase: "startup", reason: "startup timeout" });
+    expect(evidence.resolves).toEqual([]);
+  });
+
+  it.each(["plan-loop", "plan-promise"])("interrupts %s at the planning deadline", async (key) => {
+    const evidence = await run(key);
+    expectFailure(evidence, key);
+    expect(evidence.stop).toMatchObject({
+      kind: "watchdog", phase: key.includes("promise") ? "strategic-plan" : "candidate-plan",
+      reason: "plan timeout", planningOrdinal: 0, turn: 0, side: key.includes("promise") ? "b" : "w",
+    });
+  });
+
+  it("rejects a matching decision that arrives after the original deadline", async () => {
+    const evidence = await run("late-decision");
+    expectFailure(evidence, "late-decision");
+    expect(evidence.stop).toMatchObject({ kind: "watchdog", reason: "plan timeout", side: "w" });
+  });
+
+  it("uses the match deadline outside a planning phase", async () => {
+    const evidence = await run("match-loop", { matchMs: 200 });
+    expectFailure(evidence, "match-loop");
+    expect(evidence.stop).toMatchObject({ kind: "watchdog", phase: "ready", reason: "match timeout" });
+  });
+
+  it("does not renew the plan deadline for repeated phase messages", async () => {
+    const evidence = await run("repeat-plan", { matchMs: 500 });
+    expectFailure(evidence, "repeat-plan");
+    expect(evidence.stop.reason).toBe("plan timeout");
+  });
+
+  it("does not renew the match deadline for progress messages", async () => {
+    const evidence = await run("match-chatter", { matchMs: 200 });
+    expectFailure(evidence, "match-chatter");
+    expect(evidence.stop.reason).toBe("match timeout");
+  });
+
+  it("returns evidence when the child crashes", async () => {
+    const evidence = await run("crash");
+    expectFailure(evidence, "crash");
+    expect(evidence.stop).toMatchObject({ kind: "exception", phase: "ready", planningOrdinal: 0, turn: 0 });
+  });
+
+  it.each([
+    "malformed-identity", "malformed-arrays", "malformed-resolve", "malformed-outcome",
+    "malformed-policy", "malformed-ply-prefix", "malformed-resolve-body", "malformed-scfens", "malformed-final-bank",
+    "fabricated-terminal", "wrong-ledger", "altered-resolve", "invalid-stop",
+  ])("rejects %s completion", async (key) => {
+    const evidence = await run(key);
+    expectFailure(evidence, key);
+    expect(evidence.stop).toMatchObject({ kind: "script-contract", reason: "worker protocol error: malformed completion" });
+  });
+
+  it.each(["duplicate-ready", "malformed-phase", "malformed-ply", "unknown-message", "oversized-ply", "duplicate-ply", "oversized-frame"])("rejects %s IPC", async (key) => {
+    const evidence = await run(key);
+    expectFailure(evidence, key);
+    expect(evidence.stop.kind).toBe("script-contract");
+  });
+
+  it("rejects progress before ready", async () => {
+    const evidence = await runSupervised(request("before-ready"), {
+      workerUrl: new URL("./fixtures/challengeBeforeReady.ts", import.meta.url), budgets,
+    });
+    expectFailure(evidence, "before-ready");
+    expect(evidence.stop).toMatchObject({ kind: "script-contract", reason: "worker protocol error: message before ready" });
+  });
+
+  it.each(["ply-loop", "ply-promise", "ply-crash"])("preserves completed plies after %s", async (key) => {
+    const evidence = await run(key);
+    expectFailure(evidence, key);
+    const snapshot = parseScFen(opening);
+    const begun = beginScTurn(snapshot);
+    const initialBank = seedBankForOpening(snapshot);
+    const white = stageQueue(begun.next, initialBank, "w", [], 0);
+    const black = stageQueue(begun.next, initialBank, "b", [], 0);
+    if (!white.ok || !black.ok) throw new Error("fixture settlement did not admit");
+    const committed = commitPair(begun.next, initialBank, white.staged, black.staged);
+    const resolved = endScTurn(committed.snapshot, { skipTurnStartChecks: true });
+    expect(evidence.scfens).toEqual([
+      formatScFen(normalizeSnapGas(snapshot)), formatScFen(normalizeSnapGas(resolved.next)),
+    ]);
+    expect(evidence.resolves).toEqual([resolved]);
+    expect(evidence.bankTrail).toEqual([grantStoredIncome(committed.bank, resolved.next.turn)]);
+    expect(evidence.finalBank).toEqual(evidence.bankTrail[0]);
+    expect(evidence.stop).toMatchObject({ planningOrdinal: 1, turn: resolved.next.turn });
+  });
+
+  it("derives failure counters from an accepted ply before the next phase arrives", async () => {
+    const evidence = await run("ply-before-phase-crash");
+    expectFailure(evidence, "ply-before-phase-crash");
+    expect(evidence.stop).toMatchObject({ kind: "exception", phase: "settlement", planningOrdinal: 1, turn: 1 });
+    expect(evidence.resolves).toHaveLength(1);
+    expect(replayExecutionIntegrity(evidence, request("ply-before-phase-crash"))).toBe(true);
+  });
+
+  it("accepts normal completion only after reaping the child", async () => {
+    const evidence = await run("normal") as ChallengeEvidence & { workerPid: number };
+    expect(evidence.stop.kind).toBe("exception");
+    expect(evidence.match).toEqual(request("normal"));
+    expect(evidence.resolves).toHaveLength(1);
+    expect(evidence.bankTrail).toHaveLength(1);
+    expect(() => process.kill(evidence.workerPid, 0)).toThrow(expect.objectContaining({ code: "ESRCH" }));
+  });
+
+  it("returns evidence for launch configuration errors", async () => {
+    const evidence = await runSupervised(request("bad-url"), {
+      workerUrl: new URL("https://invalid.example/worker.ts"), budgets,
+    });
+    expectFailure(evidence, "bad-url");
+    expect(evidence.stop.kind).toBe("exception");
+  });
+});

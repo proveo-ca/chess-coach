@@ -1,6 +1,7 @@
-// SPEC: _spec/causal-journal.puml
+// SPEC: _spec/causal-journal.puml, _spec/engine-consolidation.puml
 import { z } from "zod";
-import type { CausalJournalData, CausalState } from "../../game-core/src/causal-types";
+import { rayBetween } from "@chess-coach/starchess-core/engine/mines";
+import type { CausalJournalData, CausalState } from "@chess-coach/starchess-core/causal-types";
 
 export const MAX_CAUSAL_JSON_BYTES = 16 * 1024 * 1024;
 const side = z.enum(["w", "b"]), type = z.enum(["p", "n", "b", "r", "q", "k"]), mode = z.enum(["tank", "siege"]);
@@ -47,6 +48,35 @@ export const causalStateShape = z.strictObject({ version: z.literal("chess-coach
   callOrdinal: z.int().min(0).max(91), unitCounter: z.int().min(2).max(192), mineCounter: z.int().min(0).max(512),
   ccLives: z.strictObject({ w: z.int().min(0).max(3), b: z.int().min(0).max(3) }),
   entities: z.array(z.discriminatedUnion("kind", [unit, mine])).min(2).max(70), mineOrder: z.array(engineMine).max(6), nativeSiegedSquares: z.array(square).max(64) });
+
+function stationaryCCShot(journal: CausalJournalData, query: CausalJournalData["discoveries"][number]): boolean {
+  const applied = query.applied;
+  if (!applied || applied.operation !== "cc-shot" || !query.deferred || query.site !== "scan-ray" || query.returnedStep !== 1 ||
+    query.steps.length !== 1 || !query.steps[0]!.visible || query.steps[0]!.square !== query.target ||
+    rayBetween(query.from, query.to)[0] !== query.target || applied.actorId !== query.evaluationActorId ||
+    applied.targetId !== query.evaluationTargetId || journal.discoveries.filter(value => value.applied && value.actionSeq === query.actionSeq).length !== 1) return false;
+  const effects = journal.events.filter(event => event.group === applied.group && event.kind !== "visibility");
+  const damage = effects[0];
+  if (effects.length !== 1 || damage?.kind !== "cc-damaged" || damage.phase !== "C-path" || damage.actionSeq !== query.actionSeq ||
+    damage.side === query.side || damage.targets.length !== 1 || damage.targets[0]!.discoveryOrdinal !== query.ordinal) return false;
+  const before = new Map(journal.initialCells[query.side].map(cell => [cell.square, cell]));
+  let actorPosition = query.from, actorCoherent = true;
+  for (const event of journal.events) {
+    if (event.group >= applied.group) break;
+    if (event.kind === "visibility" && event.recipient === query.side) {
+      for (const cell of event.changes) before.set(cell.square, cell);
+    }
+    if (event.kind === "unit-moved" && event.entityId === applied.actorId) actorPosition = event.to;
+    if (event.kind === "unit-created" && event.entity.id === applied.actorId) {
+      actorPosition = event.entity.square;
+      actorCoherent &&= event.entity.side === query.side;
+    }
+    if (event.kind === "unit-destroyed" && event.entity.id === applied.actorId) actorCoherent = false;
+  }
+  const actor = before.get(query.from), target = before.get(query.target);
+  return actorCoherent && actorPosition === query.from && actor?.visibility === "lit" && actor.piece?.color === query.side &&
+    ["r", "b", "q"].includes(actor.piece.type) && target?.visibility === "lit" && target.piece?.type === "k" && target.piece.color === damage.side;
+}
 
 function journalIssues(journal: CausalJournalData): string[] {
   const issues: string[] = [];
@@ -102,7 +132,8 @@ function journalIssues(journal: CausalJournalData): string[] {
       !query.mineInputProvided && query.mines.length !== 0 || new Set(query.siegedSquares).size !== query.siegedSquares.length ||
       query.modeSource === "default-tank" && query.siegedSquares.length !== 0) issues.push("DISCOVERY_TRACE");
     if (query.applied && !journal.events.some(event => event.group === query.applied!.group && event.kind === "unit-moved" &&
-      event.entityId === query.applied!.actorId && event.from === query.from && (query.applied!.operation !== "capture" || event.to === query.target))) issues.push("APPLIED_ACTOR");
+      event.entityId === query.applied!.actorId && event.from === query.from && (query.applied!.operation !== "capture" || event.to === query.target)) &&
+      !stationaryCCShot(journal, query)) issues.push("APPLIED_ACTOR");
   }
   return issues;
 }

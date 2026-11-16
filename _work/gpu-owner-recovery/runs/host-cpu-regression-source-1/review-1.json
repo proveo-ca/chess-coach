@@ -1,0 +1,38 @@
+{
+  "status": "PRE_REVIEW_SOURCE_PROOF_RETAINED_FUNCTIONAL_CORRECTIONS_REQUIRED",
+  "sourceProof": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/receipt.json",
+  "adversarial": {
+    "session": "ses_e2fb4bad6ffeZo2vxm6KkikmFp",
+    "readyToMerge": false,
+    "findings": [
+      {"severity":"MEDIUM","path":"_work/gpu-owner-recovery/qualification/cpu-host.ts","line":350,"issue":"Evidence setup and parent diagnostics extend outside advertised whole-HOST clock."},
+      {"severity":"MEDIUM","path":"_work/gpu-owner-recovery/qualification/cpu-host.ts","line":165,"issue":"HOST admission does not bind exact frozen harness identities, counts and attempt/outcome correspondence."},
+      {"severity":"LOW","path":"_work/gpu-owner-recovery/qualification/cpu-host.ts","line":344,"issue":"Latent argument allowance exceeds Linux single-argument limit; current source-1 fits."},
+      {"severity":"LOW","path":"_work/gpu-owner-recovery/qualification/cpu-host.ts","line":148,"issue":"Unconditional source-postcheck phase obscures original failure phase."}
+    ]
+  },
+  "security": {
+    "session": "ses_e2fb4bac6ffe3oqIaM1dWF2rmH",
+    "readyToMerge": false,
+    "findings": [
+      {"severity":"MEDIUM","line":161,"issue":"Exact CPU39 identities/counts and outcome/attempt/artifact correspondence remain unbound."},
+      {"severity":"MEDIUM","line":270,"issue":"Allowed bulk stdout can exceed receipt limit and lose structured terminal results."},
+      {"severity":"LOW","line":243,"issue":"Worker startup preflight failures escape receipt capture."},
+      {"severity":"LOW","line":350,"issue":"Evidence setup precedes accounting and timeout."}
+    ]
+  },
+  "devops": {
+    "session": "ses_e2fd5fc9affeLdBUzjh85zAq3g",
+    "sourceCorrectionsRequested": true,
+    "additionalFindings": [
+      {"severity":"MEDIUM","line":100,"issue":"A late command can lose its actual exit result before recordAttempt saves it."},
+      {"severity":"MEDIUM","line":365,"issue":"Hardcoded source-1 paths prevent fresh successor verification."}
+    ],
+    "dockerCargoHighOrBlockerFound": false
+  },
+  "lineNumbersDescribeSource1Generation": true,
+  "nextProofMustUseFreshSuccessorLabel": true,
+  "originalSourceProofIsNotPostCorrectionVerification": true,
+  "hostExecutionApproved": false,
+  "trainingReady": false
+}

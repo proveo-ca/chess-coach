@@ -1,2 +1,1 @@
-/** Board square — chess.js coordinate string (`a1`…`h8`). */
-export type { Square } from "chess.js";
+export type Square = `${"a" | "b" | "c" | "d" | "e" | "f" | "g" | "h"}${1 | 2 | 3 | 4 | 5 | 6 | 7 | 8}`;

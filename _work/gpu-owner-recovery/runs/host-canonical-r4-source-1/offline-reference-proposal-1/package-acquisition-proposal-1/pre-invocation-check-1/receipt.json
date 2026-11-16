@@ -1,0 +1,16 @@
+{
+  "status": "FAIL_PRE_INVOCATION_PACKET_CHECK",
+  "failure": "Error: ENOENT: no such file or directory, open '/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invocation-ready1.json'",
+  "checks": {},
+  "sourceManifestSha256": "e7e0cf38f3bd2ad57a0b454d93b69d86032d4d0c7750eaa6d682dbfc9c227df9",
+  "actualCaptureEntryOrWorkerInvoked": false,
+  "actualGetRequests": 0,
+  "operationalPreflightPerformed": false,
+  "combinedAttemptClaimed": false,
+  "rawArchiveOrCachePayloadRead": false,
+  "nativeHostGpuReferenceOrTrainingExecuted": false,
+  "gitMutationOrPublicationPerformed": false,
+  "acquisitionGrantConsumedOrRenewed": false,
+  "qualificationOrTrainingReadinessGranted": false,
+  "trainingReady": false
+}

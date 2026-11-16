@@ -1,0 +1,139 @@
+
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.test.ts:
+(pass) literal packet and genuine authorization > computes exact source lengths, sha256, Git blob and packet pins [4.22ms]
+(pass) literal packet and genuine authorization > pins the actual immutable launch-boundary record [0.06ms]
+(pass) literal packet and genuine authorization > rejects missing or replaced launch-boundary row [0.26ms]
+(pass) literal packet and genuine authorization > pins the exact approved transport amendment and its four bindings [0.25ms]
+(pass) literal packet and genuine authorization > accepts historical explicit path grammar without freezing the changing runtime closure [0.45ms]
+(pass) literal packet and genuine authorization > requires genuine approval and all four unchanged byte bindings [0.38ms]
+(pass) literal packet and genuine authorization > requires unchanged helper and reference lock members [12.82ms]
+(pass) literal packet and genuine authorization > rejects changed packet length sha and Git blob [0.87ms]
+(pass) literal packet and genuine authorization > rejects unknown members and missing caller helpers [3.71ms]
+(pass) literal packet and genuine authorization > rejects path "/absolute.ts" [0.04ms]
+(pass) literal packet and genuine authorization > rejects path "../escape.ts"
+(pass) literal packet and genuine authorization > rejects path "a//b.ts"
+(pass) literal packet and genuine authorization > rejects path "a/./b.ts"
+(pass) literal packet and genuine authorization > rejects path "a/../b.ts"
+(pass) literal packet and genuine authorization > rejects path "a\\b.ts"
+(pass) literal packet and genuine authorization > rejects path "a\u0000b.ts"
+(pass) literal packet and genuine authorization > rejects path "a/cache/b.ts"
+(pass) literal packet and genuine authorization > rejects path "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/acquisition-invocation-1/b.json"
+(pass) literal packet and genuine authorization > rejects path "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/acquisition-execution-1/b.json"
+(pass) literal packet and genuine authorization > rejects path "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-2/b.json"
+(pass) literal packet and genuine authorization > rejects path "archive.tgz"
+(pass) literal packet and genuine authorization > rejects path "native.so"
+(pass) literal packet and genuine authorization > rejects path "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/source-packet1.json"
+(pass) literal packet and genuine authorization > rejects duplicate table members [1.84ms]
+(pass) literal packet and genuine authorization > rejects repeated packet members [2.22ms]
+(pass) literal packet and genuine authorization > rejects tampered source bytes [4.24ms]
+(pass) literal packet and genuine authorization > rejects tampered source sha256 [2.52ms]
+(pass) literal packet and genuine authorization > rejects tampered source gitBlobOid [2.13ms]
+(pass) literal packet and genuine authorization > rejects bytes changed with unchanged table [3.50ms]
+(pass) literal packet and genuine authorization > rejects noncanonical base64 %%% [0.05ms]
+(pass) literal packet and genuine authorization > rejects noncanonical base64 YQ=
+(pass) literal packet and genuine authorization > rejects noncanonical base64 YR==
+(pass) literal packet and genuine authorization > rejects noncanonical base64 YQ==
+
+(pass) literal packet and genuine authorization > rejects nonUTF8 or binary {"type":"Buffer","data":[255]} [0.06ms]
+(pass) literal packet and genuine authorization > rejects nonUTF8 or binary {"type":"Buffer","data":[0]}
+(pass) literal packet and genuine authorization > rejects nonUTF8 or binary {"type":"Buffer","data":[31]}
+(pass) literal packet and genuine authorization > rejects nonUTF8 or binary {"type":"Buffer","data":[239,187,191,65]}
+(pass) literal packet and genuine authorization > enforces file directory and aggregate caps [33.14ms]
+(pass) literal packet and genuine authorization > rejects changed totals, directories and packet self-reference fields [8.16ms]
+(pass) literal packet and genuine authorization > decodes one exact GitHub blob response [33.92ms]
+(pass) literal packet and genuine authorization > rejects bad GitHub sha [4.92ms]
+(pass) literal packet and genuine authorization > rejects bad GitHub size [6.71ms]
+(pass) literal packet and genuine authorization > rejects bad GitHub encoding [4.01ms]
+(pass) literal packet and genuine authorization > rejects bad GitHub content [2.72ms]
+(pass) literal packet and genuine authorization > enforces API and decoded packet caps [320.15ms]
+(pass) literal packet and genuine authorization > uses only the caller-supplied finite literal array [4.40ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > materializes complete validated text then calls literal execute in snapshot [54.68ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects duplicate packets before any source write and preserves claimed roots [31.93ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects traversal before source writes [31.36ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects bad response blob before source writes [9.95ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > requires the genuine boundary row before materialization [34.01ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > requires the genuine amendment row before materialization [33.21ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects plant-directory collisions without overwrite or adoption [30.10ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects plant-file collisions without overwrite or adoption [32.51ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects plant-symlink collisions without overwrite or adoption [31.41ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > claims once and rejects replay without adoption [4.54ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects symlink ancestors without claiming or repair [3.81ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects symlink handoff roots without adoption [5.14ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > leaves existing valid host operation parents unchanged [47.26ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > accepts an existing valid common cache parent without payload or metadata changes [49.93ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects a file common cache parent before claim [4.86ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects a symlink common cache parent before claim [5.76ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > requires fresh raw roots without consuming the handoff [5.36ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > requires fresh output roots without consuming the handoff [5.00ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > requires fresh operation roots without consuming the handoff [4.62ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS construction-error with exactly one request and no fallback [7.34ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS request-error with exactly one request and no fallback [10.39ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS socket-reset with exactly one request and no fallback [7.05ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS response-error with exactly one request and no fallback [6.08ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS aborted with exactly one request and no fallback [6.62ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS premature-close with exactly one request and no fallback [7.91ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS incomplete with exactly one request and no fallback [6.05ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS missing-finish with exactly one request and no fallback [6.93ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS oversize with exactly one request and no fallback [20.86ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS status-301 with exactly one request and no fallback [7.42ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS status-302 with exactly one request and no fallback [6.12ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS status-307 with exactly one request and no fallback [5.56ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS status-308 with exactly one request and no fallback [5.98ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS status-401 with exactly one request and no fallback [6.86ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS status-403 with exactly one request and no fallback [6.41ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS status-429 with exactly one request and no fallback [6.46ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS status-500 with exactly one request and no fallback [6.45ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > aborts timeout within the source budget and records cleanup certainty [159.30ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > aborts no-eof within the source budget and records cleanup certainty [161.26ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > aborts cleanup-never-close within the source budget and records cleanup certainty [211.36ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > waits for real response EOF after all body bytes [203.21ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > waits for request, response, and socket close before Stage B [107.82ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps successful-body request-destroy-throws cleanup failure sticky [8.42ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps successful-body response-destroy-throws cleanup failure sticky [8.35ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps successful-body socket-destroy-throws cleanup failure sticky [6.28ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps successful-body socket-error-after-eof cleanup failure sticky [15.20ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps cleanup failure sticky and preserves partials [7.67ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps interrupt failure sticky and preserves partials [11.80ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps clock-after-fetch failure sticky and preserves partials [8.64ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps transport-clock failure sticky and preserves partials [5.79ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps transport-finalization-deadline failure sticky and preserves partials [6.71ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps file-close failure sticky and preserves partials [32.66ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps receipt-close failure sticky and preserves partials [36.03ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps directory-close failure sticky and preserves partials [34.25ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps finalization-deadline failure sticky and preserves partials [36.22ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps seal-deadline failure sticky and preserves partials [32.02ms]
+344 |   });
+345 |   test("does not apply Stage A or a new whole-script deadline to the inner-owned caller", async () => {
+346 |     const changed = new Map(sources); changed.set(C.CALLER, Buffer.from(`await new Promise(resolve=>setTimeout(resolve,250));\n${callerText}`));
+347 |     const delayed = await buildLiteralPacket({ scope: "OFFLINE_SYNTHETIC", paths: literalPaths }, name => changed.get(name)!);
+348 |     const start = process.hrtime.bigint(), { result } = await execute("independent-stage-b", "success", { stageMs: 150 }, response(delayed.bytes), { ...pins, ...delayed.pin, fileTable: delayed.table });
+349 |     expect(result.failure).toBeNull(); expect(result.stageB).toBe(true); expect(Number(process.hrtime.bigint() - start) / 1e6).toBeGreaterThan(250);
+                                 ^
+error: expect(received).toBeNull()
+
+Received: "github-https:https-local-duration-required"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.test.ts:349:28)
+(fail) offline fake HTTPS and subprocess handoff lifecycle > does not apply Stage A or a new whole-script deadline to the inner-owned caller [11.17ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > clock failure before claim creates nothing [4.17ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > starts Stage A at first factory entry before imports or preflight [35.02ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > restricts injected request factories to protected fixtures [4.37ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > exclusive materialization rejects existing regular or symlink files [4.84ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps owned synthetic caller success exit EOF cleanup bounded [17.39ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps owned synthetic caller timeout exit EOF cleanup bounded [159.61ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps owned synthetic caller stdout-cap exit EOF cleanup bounded [19.63ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps owned synthetic caller stderr-cap exit EOF cleanup bounded [18.58ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps owned synthetic caller interrupt exit EOF cleanup bounded [10.54ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps owned synthetic caller cleanup exit EOF cleanup bounded [18.76ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > waits for synthetic caller descendants and pipe EOF rather than stdout completion [177.35ms]
+(pass) inline renderer and fixed tool contracts > embeds self-contained builtin-only implementation in nonrunning Fish syntax fixture [0.73ms]
+(pass) inline renderer and fixed tool contracts > refuses production rendering and statically gates bootstrap before any claim or tool invocation [0.13ms]
+(pass) inline renderer and fixed tool contracts > fixes one anonymous direct HTTPS endpoint without environment or credential configuration reads [0.11ms]
+
+1 tests failed:
+(fail) offline fake HTTPS and subprocess handoff lifecycle > does not apply Stage A or a new whole-script deadline to the inner-owned caller [11.17ms]
+
+ 115 pass
+ 1 fail
+ 720 expect() calls
+Ran 116 tests across 1 file. [2.82s]

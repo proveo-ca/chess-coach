@@ -1,0 +1,19 @@
+{
+  "status": "POST_CORRECTION_SOURCE_REVIEWS_IN_PROGRESS_NO_HOST_AUTHORITY",
+  "sourceProof": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/receipt.json",
+  "priorReview": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/review-1.json",
+  "adversarial": {"session":"ses_e2fb4bad6ffeZo2vxm6KkikmFp","verdict":"READY_TO_MERGE_YES","findings":[]},
+  "devops": {"session":"ses_e2fd5fc9affeLdBUzjh85zAq3g","verdict":"READY_YES_SCOPED_SOURCE_ONLY","findings":[]},
+  "securityReviewPending": true,
+  "localAdapterTests": 32,
+  "localAdapterAssertions": 387,
+  "selectedFrozenContractTests": 8,
+  "passingStages": 6,
+  "fishChecksAreSyntaxOnly": true,
+  "largeStdoutWorkerReceiptBytes": 40415,
+  "largeStdoutNestedHostReceiptBytes": 56580,
+  "maximumGeneratedArgumentBytesIncludingTerminator": 104605,
+  "committedBlobByteCheckAndSuccessfulPublicationRequiredBeforeHandoff": true,
+  "hostExecutionApproved": false,
+  "trainingReady": false
+}

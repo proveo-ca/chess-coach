@@ -1,0 +1,124 @@
+{
+  "status": "FAIL_GPU_FULL_PASS_REPORT_VERIFICATION",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/reported-input.json",
+      "sha256": "8707d18449380de93dd46b3cbe429e0cdfd562d7d1499acf6d1b549ccff5f8d8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/records.ts",
+      "sha256": "f5aa8f83e3f362273277e00af124a8ec9459a4e79de20c70cf344f34b110a662"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/records.test.ts",
+      "sha256": "220faaec7908ac6b7c3929e952011adc55a33c19fb6eb7be24b80f746959187c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verify.ts",
+      "sha256": "a6e355842bed30202d792e8f70babdb5583811f060f4417c45ce1060e869a49e"
+    }
+  ],
+  "sourceChanged": false,
+  "results": [
+    {
+      "id": "records",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/records.ts",
+        "--receive-report"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 465,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/records/command.stdout",
+          "bytes": 465,
+          "sha256": "2af53dcd1dc25f9ba85948e5c0791e142d3db1e00d9c1f92c54732bccb08d473"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/records/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "unit",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "./_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/records.test.ts"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 28,
+      "stderrBytes": 854,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/unit/command.stdout",
+          "bytes": 28,
+          "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/unit/command.stderr",
+          "bytes": 854,
+          "sha256": "5b139e88a7aa142d5f30561d466b5084f11b0d6b85eebb241f446b4d2ef08d42"
+        }
+      ]
+    },
+    {
+      "id": "types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "--noEmit",
+        "--strict",
+        "--noUnusedLocals",
+        "--noUnusedParameters",
+        "--target",
+        "ES2022",
+        "--module",
+        "ESNext",
+        "--moduleResolution",
+        "Bundler",
+        "--types",
+        "bun",
+        "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/records.ts",
+        "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/records.test.ts",
+        "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verify.ts"
+      ],
+      "status": "FAIL",
+      "exitCode": 2,
+      "failure": null,
+      "stdoutBytes": 612,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/types/command.stdout",
+          "bytes": 612,
+          "sha256": "0b6f430d9648aae6dd592cd540b900f589cfaff589c21dcd6f1d80328547560d"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/types/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "originalHostFilesReceived": false,
+  "originalCaptureBytesRehashed": false,
+  "actualHostGpuOrNativeExecutedByCoding": false,
+  "automaticRetryAuthorized": false,
+  "trainingReady": false
+}

@@ -1,0 +1,4 @@
+{
+  "extends": "../../package-acquisition-bun-source3/tsconfig.json",
+  "include": ["acquisition-report1.ts", "prepare-acquisition-report1.ts", "validate-acquisition-report1.ts", "run-acquisition-verification1.ts", "acquisition-report1.test.ts"]
+}

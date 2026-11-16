@@ -1,0 +1,74 @@
+{
+  "version": "chess-coach.reference-package-manual-source-transport-amendment.v1",
+  "status": "EXECUTOR_APPROVED_ANONYMOUS_SINGLE_HTTPS_REQUEST",
+  "authorizationSource": "EXECUTOR_INTERACTIVE_ANONYMOUS_HTTPS_RECOMMENDED",
+  "selectedOption": "Anonymous HTTPS (Recommended)",
+  "approval": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/approval2.json",
+    "sha256": "4e68d36f8076e213744364cf4cd5f793ef3dbffda6157b93070edf2ffc282d3f"
+  },
+  "manualRequest": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/manual-handoff-request1.json",
+    "sha256": "47d63b8cb446cdc8a83323788c9106cdb82437992e7bd3a88f55821aa6bde52b"
+  },
+  "manualPlan": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/manual-handoff-plan1.json",
+    "sha256": "4297e4f1b763b5aa152b88a7a3e288a19cafc85331cbed2d776f38d043f8817a"
+  },
+  "launchBoundary": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/manual-launch-boundary-selection1.json",
+    "sha256": "44aa077f7db10d3bc3a462da355198973a6f2afba29b7745d4c2bba53f94cdc5"
+  },
+  "architectSession": "ses_e2f47580affedkCSE0PvqFHby6",
+  "precedence": {
+    "replacesGhTransportAndGhInstalledToolPreconditionOnly": true,
+    "replacesSourceRequestHostnameWithApiGithubCom": true,
+    "issuedApprovalRequestPlanAndBoundaryBytesRemainImmutable": true,
+    "archiveAcquisitionContractUnchanged": true,
+    "launchClockBoundaryUnchanged": true
+  },
+  "sourceTransport": {
+    "implementation": "node:https.request",
+    "method": "GET",
+    "scheme": "https",
+    "hostname": "api.github.com",
+    "port": 443,
+    "repository": "proveo-ca/chess-coach",
+    "pathTemplate": "/repos/proveo-ca/chess-coach/git/blobs/<published-blob-oid>",
+    "blobOidMustBePublishedLiteralPin": true,
+    "maximumRequests": 1,
+    "agent": false,
+    "connectionReuse": false,
+    "redirectFollowing": false,
+    "retryLogic": false,
+    "ghFallback": false,
+    "alternateEndpointOrMirrorFallback": false,
+    "authentication": "ANONYMOUS_ONLY",
+    "credentialsTokensCookiesProxyOrConfigurationReads": false,
+    "ghInvocation": false,
+    "failOnAuthenticationRequirementsRateLimitsRedirectsOrOtherErrors": true,
+    "failureMayConsumeManualHandoffAttempt": true,
+    "publicAccessibilityVerified": false
+  },
+  "sourceTransferEnvelope": {
+    "maximumFiles": 96,
+    "maximumBytesPerFile": 1048576,
+    "maximumAggregateSourceBytes": 6291456,
+    "maximumDecodedPacketBytes": 8388608,
+    "maximumGitHubApiResponseBytes": 12582912,
+    "maximumSnapshotDirectories": 256,
+    "sourceFetchMsIncludingOwnedCleanup": 30000,
+    "bootstrapControlledStageAMsIncludingOwnedCleanup": 120000
+  },
+  "manualHandoffGrantId": "reference-package-manual-host-handoff-2",
+  "archiveGrantId": "reference-two-package-source-acquisition-2",
+  "existingSourceFetchAllowanceReplacedNotAdded": true,
+  "additionalAttemptsOrRequestsGranted": 0,
+  "existingAllowancesRenewedOrMultiplied": false,
+  "allowancesConsumedByThisAmendment": false,
+  "assistantMayExecuteActualHandoffOrAcquisition": false,
+  "requiredBeforePublication": ["preserve blocked delivery generation and proofs", "bind amendment in delivery source and exact packet row", "verify amended transport offline with fault injection and strict static analysis", "complete four amended delivery implementation reviews and all twelve scoped verdicts", "seal complete packet and pass final publication checks"],
+  "actualSourceRequestHandoffOrAcquisitionExecuted": false,
+  "executionReadinessClaimed": false,
+  "trainingReady": false
+}

@@ -1,0 +1,13 @@
+test_architecture_coverage_matches_existing_spec (__main__.WorkspaceIntegrationTests.test_architecture_coverage_matches_existing_spec) ... ok
+test_cargo_members_and_burn_pin_remain_present (__main__.WorkspaceIntegrationTests.test_cargo_members_and_burn_pin_remain_present) ... ok
+test_consolidation_does_not_enable_gpu_training (__main__.WorkspaceIntegrationTests.test_consolidation_does_not_enable_gpu_training) ... ok
+test_ml_typecheck_does_not_replace_application_configs (__main__.WorkspaceIntegrationTests.test_ml_typecheck_does_not_replace_application_configs) ... ok
+test_product_and_ml_commands_coexist (__main__.WorkspaceIntegrationTests.test_product_and_ml_commands_coexist) ... ok
+test_product_entrypoints_remain_present (__main__.WorkspaceIntegrationTests.test_product_entrypoints_remain_present) ... ok
+test_shared_feature_dimensions_match_rust (__main__.WorkspaceIntegrationTests.test_shared_feature_dimensions_match_rust) ... ok
+test_workspace_discovers_product_and_ml_packages (__main__.WorkspaceIntegrationTests.test_workspace_discovers_product_and_ml_packages) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.006s
+
+OK

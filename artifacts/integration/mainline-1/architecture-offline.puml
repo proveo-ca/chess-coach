@@ -1,0 +1,68 @@
+@startuml clean_runtime
+' purpose: product and ML ownership in the integrated workspace
+' covers: tooling/tests/test_workspace_integration.py
+' covers: _spec/architecture.md
+' covers: crates/learning/Cargo.toml
+' covers: crates/learning/src/batch.rs
+' covers: crates/learning/src/lib.rs
+' covers: crates/learning/src/model.rs
+' covers: crates/learning/tests/model.rs
+' covers: packages/policy/tests/source-boundary.test.ts
+' details: _spec/architecture.md
+title Product / ML workspace boundaries
+component "apps/chess\nchess coaching application" as CHESS <<app>>
+component "apps/starchess\nStarChess product application" as UI <<app>>
+component "packages/engine-core\ncommentary + FEN/move helpers" as COMMENTARY <<app>>
+component "packages/starchess-core\nproduct StarChess rules" as PRODUCT <<app>>
+component "packages/game-core\ncanonical init + B/C/F physics\nactual-mutation causal sink" as GAME <<app>>
+component "packages/runtime\nmatch / policy / learner coordination" as RUN <<app>>
+component "packages/contracts/src/game-session.ts\nGameSession" as SESSION <<app>>
+component "packages/contracts/src/recipient.ts\nrecipient-local projection" as RECIPIENT <<app>>
+component "crates/learning\nBurn model + episodic objective" as ML <<app>>
+component "packages/contracts\nZod recipient observation + JSON Schema" as CONTRACT <<app>>
+component "crates/policy-io\nstandard JSON / Serde scoring" as IO <<app>>
+component "packages/policy\nbounded candidates + versioned encoder" as POLICY <<app>>
+database "Burn native model records\nsynthetic round-trip test" as STORE <<db>>
+node "Cargo + Bun\nstandard development tools" as TOOLS <<host>>
+node "Host mise\npreflight / planned seeding + provisioning" as HOST <<host>>
+node "Coding agent sbx\nnot the training target" as SBX <<host>>
+node "Host Docker GPU job\nseparate execution approval" as GPU <<host>>
+HOST ..> GPU : separate provisioning / execution grants
+GPU ..> RUN : F64 learning requirement; not admission
+SBX ..> TOOLS : authorized source / synthetic verification
+CHESS --> COMMENTARY : prompts / validation
+UI --> PRODUCT : game API
+RUN --> SESSION : initialize / open / settle
+SESSION --> GAME : begin / end causal journaling
+SESSION --> RECIPIENT : project each game transition
+GAME ..> RECIPIENT : journal / snapshot through GameSession
+RECIPIENT --> CONTRACT : recipient-local schemas
+RECIPIENT ..> POLICY : recipient-local observation\nthrough packages/runtime
+RUN --> POLICY : enumerate / encode recipient candidates
+POLICY --> CONTRACT : standard validation
+POLICY ..> IO : 2271 numeric coordinates / candidate\nthrough packages/runtime
+RUN --> IO : frozen scoring / learner sessions
+IO --> ML : frozen model / bounded feature batch
+ML --> STORE : Burn record API
+TOOLS --> ML : build / synthetic tests
+TOOLS --> GAME : Bun regression tests
+TOOLS --> CONTRACT : strict static + invariant tests
+TOOLS --> IO : native / cross-language e2e
+note bottom of PRODUCT
+  Shared engine convergence is not implemented.
+  Product and ML still use separate rules engines;
+  one shared implementation remains the target,
+  not a result of merging the workspace.
+end note
+note bottom of RUN
+  Runtime orchestration and synthetic tests do not
+  establish readiness for training on game data.
+  The actual corpus and a production training run
+  still need separate proof and explicit approval.
+end note
+note right of GPU
+  The accepted F64 qualification keeps its scope.
+  This integration neither reruns that proof
+  nor enables the disabled GPU owner main entry.
+end note
+@enduml

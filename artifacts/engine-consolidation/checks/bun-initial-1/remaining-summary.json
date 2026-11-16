@@ -1,0 +1,62 @@
+[
+  {
+    "check": "arena",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"arena\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"elapsedSeconds\":2.7834760299999997,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "core-types",
+    "exitCode": 1,
+    "stdout": "Executor: {\"check\":\"core-types\",\"status\":\"FAIL\",\"exitCode\":2,\"error\":null,\"elapsedSeconds\":2.144838341,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "core-test-types",
+    "exitCode": 1,
+    "stdout": "Executor: {\"check\":\"core-test-types\",\"status\":\"FAIL\",\"exitCode\":2,\"error\":null,\"elapsedSeconds\":2.130221004,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "ml-test-types",
+    "exitCode": 1,
+    "stdout": "Executor: {\"check\":\"ml-test-types\",\"status\":\"FAIL\",\"exitCode\":2,\"error\":null,\"elapsedSeconds\":7.273844359,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "arena-types",
+    "exitCode": 1,
+    "stdout": "Executor: {\"check\":\"arena-types\",\"status\":\"FAIL\",\"exitCode\":2,\"error\":null,\"elapsedSeconds\":2.090456733,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "server-types",
+    "exitCode": 1,
+    "stdout": "Executor: {\"check\":\"server-types\",\"status\":\"FAIL\",\"exitCode\":2,\"error\":null,\"elapsedSeconds\":2.5157364359999996,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "app-boundaries",
+    "exitCode": 1,
+    "stdout": "Executor: {\"check\":\"app-boundaries\",\"status\":\"FAIL\",\"exitCode\":1,\"error\":null,\"elapsedSeconds\":0.00894588,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "workspace",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"workspace\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"elapsedSeconds\":0.021445919,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "app-types",
+    "exitCode": 1,
+    "stdout": "Executor: {\"check\":\"app-types\",\"status\":\"FAIL\",\"exitCode\":2,\"error\":null,\"elapsedSeconds\":7.736445305,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "app",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"app\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"elapsedSeconds\":79.518151708,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  }
+]

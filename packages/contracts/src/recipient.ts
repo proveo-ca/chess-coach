@@ -1,7 +1,7 @@
 // SPEC: _spec/recipient-production.puml
-import { UNIT_COST, getSideVision, placementToMap, sq } from "@chess-coach/game-core";
-import type { ScAction, ScFenSnapshot, ScPiece, Square, StarChessColor } from "@chess-coach/game-core";
-import type { CausalEvent, CausalJournalData, CausalState, EngineMineId, EngineUnitId } from "../../game-core/src/causal-types";
+import { UNIT_COST, getSideVision, placementToMap, sq } from "@chess-coach/starchess-core/engine";
+import type { ScAction, ScFenSnapshot, ScPiece, Square, StarChessColor } from "@chess-coach/starchess-core/engine";
+import type { CausalEvent, CausalJournalData, CausalState, EngineMineId, EngineUnitId } from "@chess-coach/starchess-core/causal-types";
 import { decodeObservation } from "./index";
 import { decodeCausalJournal, encodeCausalJournal } from "./causal-journal";
 import type { Observation, ObservedCell } from "./shape";

@@ -1,0 +1,120 @@
+{
+  "scope": "SELECTED_PURE_CONTRACT_CASES_ONLY",
+  "execution": "MOCK",
+  "scoring": "SYNTHETIC_LOGITS",
+  "model": "SYNTHETIC_NON_BURN_MODEL",
+  "nativeExecuted": false,
+  "referenceExecuted": false,
+  "trainingExecuted": false,
+  "trainingReady": false,
+  "r4Qualified": false,
+  "cases": [
+    {
+      "name": "paid-debit-and-income",
+      "result": {
+        "bank": {
+          "w": 1,
+          "b": 4
+        },
+        "economy": {
+          "side": "w",
+          "ownPaidDebits": 3,
+          "ownPaidSurviving": 3,
+          "ownPaidDestroyed": 0,
+          "ownPaidWasted": 0,
+          "ownReplacementDestroyed": 0,
+          "enemyLoss": {
+            "confirmedUnitCount": 0,
+            "replacementLowerBound": 0,
+            "paidLowerBound": 0,
+            "upper": "unknown",
+            "completeness": "witnessed-only"
+          },
+          "receipts": [
+            {
+              "receiptId": "w:receipt:0:0",
+              "actionRef": {
+                "planningOrdinal": 0,
+                "acceptedActionOrdinal": 0
+              },
+              "unit": "n",
+              "requestedSquare": "f1",
+              "minerals": 3,
+              "disposition": {
+                "kind": "materialized",
+                "lineageId": "w:unit:created:1"
+              }
+            }
+          ],
+          "retiredOwnIds": []
+        }
+      }
+    },
+    {
+      "name": "unaffordable-settlement-withheld",
+      "result": {
+        "unchanged": true,
+        "historyLength": 1
+      }
+    },
+    {
+      "name": "hidden-opponent-twins",
+      "result": {
+        "sameRecipientBytes": true,
+        "distinctFullPlacements": true
+      }
+    },
+    {
+      "name": "bound-zero-window-diagnostic",
+      "result": {
+        "descriptor": {
+          "version": "chess-coach.attempt.v1",
+          "attemptId": "synthetic-match",
+          "master": 101,
+          "startedOrdinal": 0,
+          "modelId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "frozenBaseline": 0,
+          "schedule": {
+            "kind": "corpus",
+            "corpusIndex": 0,
+            "candidateSide": "b"
+          }
+        },
+        "reason": "trace-exhaustion",
+        "proposal": {
+          "kind": "diagnostic"
+        }
+      }
+    },
+    {
+      "name": "attempt-mismatch-withheld",
+      "result": {
+        "proposed": 0,
+        "aborted": 1,
+        "stopped": 1
+      }
+    },
+    {
+      "name": "completion-mismatch-withheld",
+      "result": {
+        "proposed": 0,
+        "aborted": 1,
+        "stopped": 1
+      }
+    },
+    {
+      "name": "ordinal-mismatch-withheld",
+      "result": {
+        "proposed": 0,
+        "aborted": 1,
+        "stopped": 1
+      }
+    },
+    {
+      "name": "wrong-frozen-model-withheld",
+      "result": {
+        "scores": 0
+      }
+    }
+  ]
+}

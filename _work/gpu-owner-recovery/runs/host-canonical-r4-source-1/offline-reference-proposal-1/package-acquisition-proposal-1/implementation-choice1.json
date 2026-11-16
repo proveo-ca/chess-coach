@@ -1,0 +1,28 @@
+{
+  "status": "BUN_IMPLEMENTATION_SELECTED_PYTHON_ATTEMPT_PRESERVED_UNUSED_APPROVAL_UNCHANGED",
+  "decisionSource": "LEAD_IMPLEMENTATION_REVISION_AFTER_EXECUTOR_TOOLCHAIN_QUESTION",
+  "executorQuestion": "why using python when there is bun and rust available",
+  "activeImplementation": "BUN_1_4_TYPESCRIPT",
+  "activeSource": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1",
+  "preservedPythonSource": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-source1",
+  "pythonImplementationStopped": true,
+  "pythonDevelopmentEvidence": {
+    "receipt": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-source1/verification-1/receipt.json",
+    "recordedMockTests": 85,
+    "recordedNegativeCases": 104,
+    "latePythonSourceEditsNotVerifiedByThatReceipt": true,
+    "countsAreNotBunVerification": true
+  },
+  "stoppedImplementerReport": "ses_e2e781a0cffeSz3Fd5GqQUAa4W",
+  "reportedActualNetworkOrAttemptMarkerCreatedByPythonWork": false,
+  "grantId": "reference-two-package-source-acquisition-1",
+  "languageRevisionRenewsOrWidensApproval": false,
+  "newAcquisitionGrantIssued": false,
+  "realGetRequestsPerformedByThisRevision": 0,
+  "rustCompilationRemainsApprovedHostOnly": true,
+  "referenceBundlingApproved": false,
+  "hostExecutionApproved": false,
+  "actualCommitOrPushApproved": false,
+  "experimentTrainingApproved": false,
+  "trainingReady": false
+}

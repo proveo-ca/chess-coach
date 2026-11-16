@@ -5,10 +5,15 @@
   "type": "module",
   "main": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./engine": "./src/engine/index.ts",
+    "./engine/*": "./src/engine/*.ts",
+    "./causal-producer": "./src/engine/causal-producer.ts",
+    "./causal-types": "./src/engine/causal-types.ts"
   },
   "scripts": {
     "test": "vitest run",
+    "test:native": "bun --no-env-file --no-install test ./tests/native",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {

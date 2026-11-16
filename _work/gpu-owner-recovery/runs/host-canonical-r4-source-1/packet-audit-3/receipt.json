@@ -1,0 +1,173 @@
+{
+  "status": "PASS_LOCAL_PACKET_RECONCILIATION_ONLY",
+  "failure": null,
+  "bindings": [
+    {
+      "path": "_spec/.spec-index.json",
+      "bytes": 25730,
+      "sha256": "4ef1cf6d48830137601ade8ff4c2a90575e3d90e79f4ee9ecfd1f259ded61fac"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "bytes": 15319,
+      "sha256": "547e27a2c798b16fb43603ca9063cf9c2c5b050b974e57e7b5ead4e7ffd8d853"
+    },
+    {
+      "path": "_spec/gpu-qualification.puml",
+      "bytes": 89259,
+      "sha256": "2a95cbd5232c854f77847b2336af9819ee0edf41cb0b6d9c4d94221323f6aecd"
+    },
+    {
+      "path": "_spec/gpu-full-qualification.puml",
+      "bytes": 40462,
+      "sha256": "693cb1d43f90db30b3605730849f0803899b09ab1ec9959f73353aa3ae5ce8cf"
+    },
+    {
+      "path": "_spec/gpu-readiness.md",
+      "bytes": 297713,
+      "sha256": "4967492f806a3b1d2579e5c8f2006551ead894b86232f3b5adcfa1fd36dd20df"
+    },
+    {
+      "path": "_spec/gate-closure.md",
+      "bytes": 218851,
+      "sha256": "b1c7a4a752170e32a2a6321e34b53791ddef412ccfade9ffe62221b5553f191c"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "bytes": 68620,
+      "sha256": "95499013f859433519f681e6a5c2fa62b6a14f8fd30a8edf0fa1e90751ce2901"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/plan.json",
+      "bytes": 2537,
+      "sha256": "96cf8bdbfb101f094711425df7eb0ca4ad5adbce696a0e9a4d77152f768aeeeb"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/canonical.ts",
+      "bytes": 9816,
+      "sha256": "301d8e9e42bfcef4782efa0a188c570e1f035f165296deb8fba6f07f57d5d74c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/canonical.test.ts",
+      "bytes": 22536,
+      "sha256": "32227ff4470b3f08ec04706d1f2bfc5dc04e353811203e468b785b3ba3a89a57"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/r4.test.ts",
+      "bytes": 6785,
+      "sha256": "cb55f59e07c9fa2d537a7f4c0c91f435b5f8f01cd73a082984c49d64bba4c653"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verify.ts",
+      "bytes": 9374,
+      "sha256": "cf3415bcd062ebd9e512cce0b4b4643f8f59133bc3bbfab8552ee4b59910e708"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/tsconfig.json",
+      "bytes": 213,
+      "sha256": "cfb2bae14ef240a76395b70f1a442426b9a70c2805b35a711fa23263461c6d20"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/packet-audit.py",
+      "bytes": 16103,
+      "sha256": "501cb5226a5f61c449075af2d1d70433dda725899f902a89293c01568118c044"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/review-1.json",
+      "bytes": 1469,
+      "sha256": "f4c46c31b725b4395eb12fd95676b226ecfc27d6b72b42e4e4209289dd4c496a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/review-2.json",
+      "bytes": 1973,
+      "sha256": "49c418155e0e41b2dcffa784613c70f3ce6fc0e612dc8e37ffcec4f39eafe9e6"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/cpu39-pass-report-1/review.json",
+      "bytes": 1359,
+      "sha256": "a6fc9da0698404f3c618aeeb771594978b88a3f7a7899251fab4e66977175460"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/cpu39-pass-report-1/observation.json",
+      "bytes": 6934,
+      "sha256": "8f156733cf96e288b6b26ef2ef15fc5d8ce2a0ad0fe2becd883d54cf590102ef"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/cpu39-pass-report-1/reported-receipt.json",
+      "bytes": 62473,
+      "sha256": "73a0def3e002f1e5e80c08f66509e6bc83c377a3980e59c68335a7bf6d263dd0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/cpu39-pass-report-1/operator-summary.txt",
+      "bytes": 157,
+      "sha256": "8588c6953135cda20580782dc91be91a02e6f8759f1191bd240a0ca8827ac945"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/reference-delivery-decision.json",
+      "bytes": 1428,
+      "sha256": "333de911651b8336d0032ae4399054dd4c7b90899077e3db7aa5d5002df938cb"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-redelivery-execution-1/publication-and-redelivery-result.json",
+      "bytes": 1938,
+      "sha256": "fba1638afd0dc21fa1f153e13b987dfa751a86abd37e0c16d43870ae98ec35ee"
+    }
+  ],
+  "checks": {
+    "frozenSourceBindings": [
+      347,
+      327,
+      65
+    ],
+    "canonicalSourceOnly": {
+      "generation": 4,
+      "tests": 46,
+      "assertions": 367,
+      "sourceBindings": 92,
+      "reviewsReady": 3
+    },
+    "historicalCanonicalProofsPreserved": [
+      "FAIL",
+      "FAIL",
+      "PRE_CORRECTION_PASS"
+    ],
+    "cpuReportAnomalyPreserved": [
+      192,
+      179,
+      179
+    ],
+    "diagramIndexMatches": 3,
+    "diagramVerification": "LOCAL_DELIMITERS_AND_COVERAGE_ONLY_NOT_RENDERED_REMOTE_INCLUDE_NOT_FETCHED",
+    "specDiff": {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/packet-audit-3/spec.diff",
+      "bytes": 141256,
+      "sha256": "f363404de5c43c87f6b5854bd46c2b1b72c7335892b973182ac31e536c5b5f34"
+    },
+    "auditContractMutationsRejected": [
+      "substring-test-count",
+      "substring-assertion-count",
+      "nonzero-failure-count",
+      "remaining-publication",
+      "wrong-consumption",
+      "wrong-branch",
+      "detached-head",
+      "staged-outside-scope",
+      "stale-projected-totals",
+      "stale-canonical-review:_spec/runtime-protocol.puml",
+      "stale-canonical-review:_spec/gpu-qualification.puml",
+      "stale-canonical-review:_spec/gpu-full-qualification.puml",
+      "stale-canonical-review:_spec/gpu-readiness.md",
+      "stale-canonical-review:_spec/gate-closure.md",
+      "stale-canonical-review:_spec/readiness.md"
+    ],
+    "scopedWhitespacePassed": true
+  },
+  "cacheOrArchivePayloadAccessed": false,
+  "rawCaptureBytesModified": false,
+  "gitMutationPerformed": false,
+  "nativeHostGpuOrReferenceExecuted": false,
+  "publicationAuthorized": false,
+  "experimentTrainingAuthorized": false,
+  "referenceInputDelivery": "REFERENCE_INPUT_DELIVERY_UNSELECTED",
+  "trainingReady": false
+}

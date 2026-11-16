@@ -1,0 +1,18 @@
+{
+  "version": "chess-coach.r2-publication-checker-review.v1",
+  "role": "security",
+  "session": "ses_e2a23a6eeffeprOcUekDEj71ti",
+  "status": "READY_PUBLICATION_CHECKER",
+  "sources": {
+    "verify-publication.ts": "8615956059a7c13d46407fa1621606926fcf752f2b9d4321549b0ebd2d5a2c52",
+    "verify-publication.test.ts": "faa75d25106f947b8a3ce40198e29a663566280f333c1dc7dfdc5c69af1405a4"
+  },
+  "recordedTestsPassed": 30,
+  "recordedTestsFailed": 0,
+  "recordedAssertions": 47,
+  "recordedStrictTypecheckExitCode": 0,
+  "remainingFindings": [],
+  "risk": "LOW",
+  "nonAuthorizing": true,
+  "commitAndPushStillRequireFinalFreezeAndStagedByteVerification": true
+}

@@ -1,0 +1,35 @@
+{
+  "status": "READY_ONE_NORMAL_COMMIT_AND_FIXED_HTTPS_CONTINUATION_BRANCH_PUSH",
+  "adversarial": {
+    "session": "ses_e31d1b57dffeE0VApmmEeB2XmN",
+    "recordsVerdict": "READY_FOR_BOUNDED_PUBLICATION_RECORDS_YES",
+    "replacementRecordVerdict": "READY_FOR_ONE_TEXT_REPLACEMENT_AFTER_SUCCESSFUL_COMMIT_PUSH_YES",
+    "docsVerdict": "READY_FOR_COMMIT_PUSH_AND_POST_PUBLICATION_REPLACEMENT_TEXT_YES",
+    "findings": [{"severity": "LOW", "finding": "Three current projections still called verification-5 pending", "status": "CORRECTED_BEFORE_PUBLICATION_FINAL_CHECK"}]
+  },
+  "security": {
+    "session": "ses_e31d1b57cffeij86laTtsGS0e4",
+    "recordsVerdict": "READY_PUBLICATION_RECORDS_YES",
+    "replacementVerdict": "READY_ONLY_AFTER_SUCCESSFUL_APPROVED_COMMIT_AND_PUSH",
+    "findings": []
+  },
+  "devops": {
+    "session": "ses_e31baac32ffe8WabKsYOTqyUQ5",
+    "verdict": "READY_PUBLICATION_PLAN_WITH_FRESH_EXACT_COHORT_INDEX_BLOB_TREE_AND_PARENT_GATES"
+  },
+  "finalCheck": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/publication-final-check.json",
+  "verification": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/verification-5/receipt.json",
+  "localTestsPassed": 12,
+  "localAssertionsPassed": 163,
+  "localStagesPassed": 4,
+  "stagedNamesModesBlobsAndTreeMustMatchExactFinalCohort": true,
+  "commitAndPushAttemptsAtThisSnapshot": 0,
+  "postActionResultSource": "GIT_TOOL_OUTPUT_AND_COMMIT_OBJECT_HISTORY_NO_ADDITIONAL_RECEIPT_COMMIT",
+  "hostAttemptReportedNotStarted": true,
+  "newHostOrGpuAllowanceIssued": 0,
+  "replacementTextRequiresSuccessfulCommitAndPush": true,
+  "automaticRetryAuthorized": false,
+  "codingHostNativeGpuOrJitExecuted": false,
+  "filesDeleted": 0,
+  "trainingReady": false
+}

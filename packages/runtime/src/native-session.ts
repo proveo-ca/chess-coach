@@ -1,7 +1,7 @@
 // SPEC: _spec/runtime-protocol.puml
 import type {} from "bun";
 import { isDeepStrictEqual } from "node:util";
-import { CANONICAL_OPENING_PLACEMENT } from "@chess-coach/game-core";
+import { CANONICAL_OPENING_PLACEMENT } from "@chess-coach/starchess-core/engine";
 import { decodeNativeReply, decodeNativeRequest, encodeNativeRequest } from "../../contracts/src/native-protocol";
 import type { NativeBoundary, NativeMode, NativeReply, NativeRequest, NativeRole } from "../../contracts/src/native-protocol";
 import type { GamePlans } from "../../contracts/src/game-session";

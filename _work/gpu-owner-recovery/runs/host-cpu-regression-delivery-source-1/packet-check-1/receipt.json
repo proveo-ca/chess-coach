@@ -1,0 +1,81 @@
+{
+  "status": "PASS_SOURCE_PACKET_RECONCILIATION_ONLY",
+  "failure": null,
+  "bindings": [
+    {
+      "path": "_spec/.spec-index.json",
+      "sha256": "050645063a722ae1a5563cdc120fb3742eaf9aeab5332dd2bc17fc99c00316e0"
+    },
+    {
+      "path": "_spec/gate-closure.md",
+      "sha256": "1fb13710b82b897081da6cd3c9121da00f4da58ade68d4e9e0829c709f480675"
+    },
+    {
+      "path": "_spec/gpu-full-qualification.puml",
+      "sha256": "4d6f9e6ab9ff0bdef7b9bcad26b4d049f1aca25bf61b8ad5add6ef80d8bceef6"
+    },
+    {
+      "path": "_spec/gpu-qualification.puml",
+      "sha256": "490fd2c4c7a2bb61ff2298ade46cac9831bdb1cd27c66d91d1a78b807adda17c"
+    },
+    {
+      "path": "_spec/gpu-readiness.md",
+      "sha256": "d7fcf32afe8347cd669171b57910dd9038bd847b96186a5da66b95b0bff2c080"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "sha256": "82dd87f857f3a01cf2c8bb41aa365fb837832fe755aa025bca20e0fbbe2a2a10"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/receipt.json",
+      "sha256": "a875dce053e2931de32d83e65841d49305540eab13d9f8308a48ff72d65bdeec"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/receipt.json",
+      "sha256": "2a1646a6701b6daf16f35f6e8d8d0eda57d4449d6ba54764909bca30ecbb23bf"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/binding.json",
+      "sha256": "2a2ff82b36136ada51fe43fa2ea5a8ff21b00af0ba5a0524f923789cf78cb8f9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/campaign-request.json",
+      "sha256": "4b5d86782f35d7ba25e58db61e73cb189f75fc7f5c32436031ae089e1cdf08e9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check.py",
+      "sha256": "1fb477ecbce6a4b96eb2f21acdb7ed2d662016c5c3d2abb3e429ecb321322922"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-3/receipt.json",
+      "sha256": "43a0aeede89f35ed8aa4c9d6544a16fe1ff76a4f9a6dcba475ebd0b61554f1cb"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/review.json",
+      "sha256": "9a8cdaae3087f79ef08984d94efec44c25aea7ba7823b5bea250b290c0c8251c"
+    }
+  ],
+  "checks": {
+    "frozenRepositorySourceHashes": [
+      347,
+      327,
+      65
+    ],
+    "passingLocalStages": [
+      6,
+      6,
+      3
+    ],
+    "canonicalScript": {
+      "bytes": 104604,
+      "sha256": "02f358d0abc05a9ab1081f8512abdf455257ec69c69a74361ac5a5a5fa52f1b8",
+      "gitBlobSha": "6d4837cd8aaa80f4c73aedbaedd17aea7ea11264"
+    },
+    "owningDiagramIndexMatches": 2
+  },
+  "gitMutationPerformed": false,
+  "hostExecuted": false,
+  "downloadsPerformed": false,
+  "nativeProjectCommandsExecuted": false,
+  "trainingReady": false
+}

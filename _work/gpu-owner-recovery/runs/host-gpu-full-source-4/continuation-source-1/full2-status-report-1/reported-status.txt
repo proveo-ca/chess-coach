@@ -1,0 +1,7 @@
+FULL2_PATH_ABSENT /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-full-2
+FULL2_PATH_ABSENT /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-full-2
+FULL2_CONTAINER_METADATA_BEGIN
+
+FULL2_CONTAINER_METADATA_END exit=0
+FULL2_RECEIPT_ABSENT
+FULL2_STATUS_ONLY_EXIT=0

@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "runtime": "Bun",
+  "specs": [
+    {
+      "path": "_spec/engine-consolidation.puml",
+      "sha256": "460a3ca06ee448dbae9d07daa5f19fd0ee9691bc0db40e279af75dccce7861cf",
+      "coveragePaths": 21,
+      "notes": 10
+    },
+    {
+      "path": "_spec/ml-runtime-architecture.puml",
+      "sha256": "fee408ed0df4556dd519f205d40915bd51aaaea6dd4599b452c089f54dc1ad1b",
+      "coveragePaths": 12,
+      "notes": 3
+    },
+    {
+      "path": "_spec/game-core.puml",
+      "sha256": "1d865235b108d5ef03fabb44c6687142d97fbf795cda3a88b54990c884e51180",
+      "coveragePaths": 4,
+      "notes": 1
+    },
+    {
+      "path": "_spec/causal-journal.puml",
+      "sha256": "923b93d600b1a8aa8ab8844e050e92676116d0f76a7c10871a34191a5ae1f620",
+      "coveragePaths": 8,
+      "notes": 4
+    },
+    {
+      "path": "_spec/turn-resolution.puml",
+      "sha256": "5c03a1e8bfd590a1a4c9b1e3ae2c5606573e314dbf9b3ecd77d7e9527ac5c30a",
+      "coveragePaths": 3,
+      "notes": 2
+    },
+    {
+      "path": "_spec/classical-resolution.puml",
+      "sha256": "3eefff40d25eb70cc8f56a5baaea94b5756d191520ad21112f3bb8e97d7a8ca6",
+      "coveragePaths": 4,
+      "notes": 1
+    }
+  ],
+  "sourcePointersChecked": 54,
+  "externalDependencyGraphUnchanged": true,
+  "rustAndFeatureSchemaUnchanged": true,
+  "ownedPythonEntrypointsRetired": true,
+  "unrelatedHistoricalPythonUnchanged": true,
+  "diagramNativeRenderingRerun": false,
+  "remoteThemeFetched": false,
+  "diagramRenderSkipReason": "Bun/Rust-only steering; full remote theme remains unverified"
+}

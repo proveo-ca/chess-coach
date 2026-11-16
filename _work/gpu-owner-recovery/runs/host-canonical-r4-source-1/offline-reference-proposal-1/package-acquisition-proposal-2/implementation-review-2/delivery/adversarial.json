@@ -1,0 +1,21 @@
+{
+  "version": "chess-coach.r2-scoped-implementation-review.v1",
+  "scope": "delivery",
+  "role": "adversarial",
+  "session": "ses_e2c5f9288ffeNLMbi5vIhbKzGr",
+  "status": "NOT_READY_DELIVERY_IMPLEMENTATION_SCOPE",
+  "reviewedSource": {"path":"_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-bootstrap.ts","sha256":"ab295d3d4967b67794af957c6c0873b91b58cc8fca6e3eb4eb4efd1db6032723"},
+  "verificationReceipt": {"path":"_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-10/receipt.json","sha256":"6580b856618b95270bb5fe0fbe8d6c1d64d168bb32dcdd0ead4d8a8e28c1dddf"},
+  "sourceManifest": {"path":"_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verification-10/source-manifest.json","sha256":"5f22251535c5a26b1e0ba5e29731e89e73d720ed9f49c1583173c3b27f6a77a0"},
+  "remainingFindings": [
+    {"severity":"HIGH","location":"package-acquisition-proposal-2/delivery-bootstrap.ts:217","code":"INNER_CALLER_FAILURE_CLEANUP_DISABLED_CAN_WAIT_INDEFINITELY"},
+    {"severity":"HIGH","location":"package-acquisition-proposal-2/delivery-bootstrap.ts:197","code":"SIGHUP_NOT_FORWARDED_TO_DETACHED_STAGE_B_CALLER"},
+    {"severity":"MEDIUM","location":"package-acquisition-proposal-2/delivery-bootstrap.ts:230","code":"SPAWN_ERROR_FABRICATES_REAPED_WITHOUT_EXIT_OBSERVATION"},
+    {"severity":"MEDIUM","location":"package-acquisition-proposal-2/delivery-verify.ts:117","code":"FIRST_MATCH_SUMMARY_PARSER_ACCEPTS_DUPLICATE_AND_UNSAFE_COUNTS"}
+  ],
+  "readyToMerge": false,
+  "verificationRerunByReviewer": false,
+  "nonAuthorizing": true,
+  "executionReadinessClaimed": false,
+  "trainingReady": false
+}

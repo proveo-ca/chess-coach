@@ -1,0 +1,30 @@
+{
+  "name": "selected-pure-tests",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/canonical.test.ts",
+    "./_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/r4.test.ts"
+  ],
+  "result": {
+    "status": "PASS",
+    "exitCode": 0,
+    "failure": null,
+    "stdoutBytes": 28,
+    "stderrBytes": 4489
+  },
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verification-4/selected-pure-tests/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verification-4/selected-pure-tests/command.stderr",
+      "bytes": 4489,
+      "sha256": "483397423530df248dad6d7da01606d9206c789b3662f0c2369e57865538ad7d"
+    }
+  ]
+}

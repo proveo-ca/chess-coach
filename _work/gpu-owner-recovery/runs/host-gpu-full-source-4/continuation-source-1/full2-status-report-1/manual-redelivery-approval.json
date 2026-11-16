@@ -1,0 +1,39 @@
+{
+  "status": "EXECUTOR_REPORTED_NOT_STARTED_APPROVED_ONE_POST_PUBLICATION_INVOCATION_TEXT_REDELIVERY",
+  "grantId": "full2-manual-redelivery-1",
+  "authorizationSource": "EXECUTOR_SELECTED_NOT_STARTED_REISSUE_BEFORE_THE_PENDING_COMMIT_AND_PUSH",
+  "provenance": "EXECUTOR_INTERACTIVE_REPORT_AND_TEXT_REDELIVERY_APPROVAL_NOT_INDEPENDENT_HOST_QUERY",
+  "existingHostGrant": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/fresh-manual-host-approval.json",
+    "sha256": "7030c3b743a98c9c8a5d03a0450361907c67343cd3b7ec80809682fa676012fe",
+    "grantId": "full2-manual-grant-1"
+  },
+  "reportedExistingFreshHostAttemptStatus": "NOT_STARTED",
+  "reportedExistingHostInvocationsRemaining": 1,
+  "newHostInvocationAllowanceIssued": 0,
+  "previousFull2TerminalSubmissionOutcome": "UNKNOWN",
+  "previousFull2HostGrantRemaining": 0,
+  "previousStatusQueriesRemaining": 0,
+  "previousInvocationTextDeliveriesRemaining": 0,
+  "maximumReplacementInvocationTextDeliveries": 1,
+  "remainingReplacementInvocationTextDeliveriesAtIssuance": 1,
+  "replacementInvocationTextDeliveryApproved": true,
+  "successfulCurrentPacketCommitAndPushRequiredBeforeDelivery": true,
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command.fish",
+    "bytes": 56981,
+    "sha256": "8705a79ab07681a82531c411f200cee7a82d015ee3a401d3be617919abf7e210"
+  },
+  "manualExecution": {
+    "cwd": "/home/gu1lty/Projects/proveo/chess-coach",
+    "argv": ["fish", "--no-config", "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command.fish"]
+  },
+  "unchangedExistingHostGrantBoundsAndOperations": true,
+  "anyHostAttemptConsumesExistingOneShotAllowanceIncludingPreflightFailure": true,
+  "automaticRetryAuthorized": false,
+  "newGpuExecutionAllowanceIssued": false,
+  "nativeCompilationOrInstallationApproved": false,
+  "retainedInputCopyingOrMutationApproved": false,
+  "experimentTrainingApproved": false,
+  "trainingReady": false
+}

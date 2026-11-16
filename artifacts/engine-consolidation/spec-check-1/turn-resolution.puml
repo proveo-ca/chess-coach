@@ -1,0 +1,50 @@
+@startuml turn_resolution
+' purpose: distinct admission facades composing one shared B/C/F mutation kernel
+' covers: packages/starchess-core/src/engine/resolve.ts
+' covers: packages/starchess-core/src/engine/queue-validation.ts
+' covers: packages/starchess-core/src/resolve/submit-turn.ts
+' details: _spec/turn-resolution.md
+' consolidation goal: _spec/engine-consolidation.puml
+' status: approved consolidation target; final source alignment and fresh verification pending
+title Turn composition · one physical kernel target
+participant "starchess-core/src/index.ts\nproduct facade" as PRODUCT <<app>>
+participant "starchess-core/src/engine/resolve.ts\nnative ML facade" as NATIVE <<app>>
+participant "starchess-core/src/resolve/submit-turn.ts\nendScTurnKernel" as TURN <<app>>
+participant "starchess-core/src/resolve/resolve-turn.ts\nresolveTurnKernel" as CLASSICAL <<app>>
+
+alt Product incoming-action contract
+  PRODUCT -> TURN : accepted product queue
+else Native classical-dependency contract
+  NATIVE -> NATIVE : validate queue shape + native dependencies
+  NATIVE -> TURN : accepted native queue; optional effects
+end
+TURN -> TURN : require phase P; visible turn-open CC checks
+alt Turn-open terminal
+  TURN -> TURN : no B/C/F; record requested deploys as no birth
+else Continue
+  TURN -> TURN : heads-first B; held Marine steps; live promotion guard
+  TURN -> TURN : rewrite C; settle held mines; actual transfer context
+  TURN -> CLASSICAL : common physical attack / move / path kernel
+  CLASSICAL --> TURN : intermediate snapshots + physical consequences
+  alt Classical terminal
+    TURN -> TURN : no F; record remaining deploys as no birth
+  else Continue
+    TURN -> TURN : F own-actor anchors; specials; surviving promotions
+  end
+  TURN -> TURN : verify mine and CC invariants
+end
+TURN --> PRODUCT : next turn + gas income + timeline result
+TURN --> NATIVE : same result surface
+
+note over PRODUCT,NATIVE
+  Product and native facades apply distinct
+  contracts before the same kernel resolves each
+  accepted queue. Per-game effects record actual
+  mutations, but adding a sink must never change
+  validation or physical results.
+end note
+note over TURN
+  GameSession: banks and paid receipts.
+  Timeline events: presentation, not witnesses.
+end note
+@enduml

@@ -1,0 +1,3403 @@
+{
+  "scope": "USER_APPROVED_NATIVE_TEST_RELOCATION_AND_SHIM_RETIREMENT",
+  "runtime": "Bun",
+  "oldTestRoot": "packages/game-core/tests",
+  "newTestRoot": "packages/starchess-core/tests/native",
+  "directTestDirectoryEntries": [
+    "board.test.ts",
+    "canonical-classical.test.ts",
+    "canonical-planning.test.ts",
+    "canonical-queue.test.ts",
+    "canonical-resolution.test.ts",
+    "canonical-turn.test.ts",
+    "canonical.test.ts",
+    "causal-events.test.ts",
+    "causal-parity.test.ts",
+    "classical-corpus.ts",
+    "classical-resolution.test.ts",
+    "collision-primitives.e2e.test.ts",
+    "compatibility-exports.test.ts",
+    "economy.test.ts",
+    "fixtures",
+    "initialization.test.ts",
+    "mines.test.ts",
+    "moves.test.ts",
+    "native-classical.test.ts",
+    "outcome.test.ts",
+    "planning-corpus.ts",
+    "planning-intents.test.ts",
+    "planning.e2e.test.ts",
+    "queue-action.test.ts",
+    "queue-corpus.ts",
+    "resolution-corpus.ts",
+    "resolution-primitives.test.ts",
+    "turn-corpus.ts",
+    "turn-resolution.e2e.test.ts",
+    "turn-resolution.test.ts",
+    "vision.test.ts"
+  ],
+  "testTree": [
+    {
+      "relative": "board.test.ts",
+      "path": "packages/game-core/tests/board.test.ts",
+      "mode": 420,
+      "sizeBytes": 4581,
+      "sha256": "2fb029928eda3342d46ba8a4efcf7b5af0b9533a75b8bad55df4ec8c2aeac2fd"
+    },
+    {
+      "relative": "canonical-classical.test.ts",
+      "path": "packages/game-core/tests/canonical-classical.test.ts",
+      "mode": 420,
+      "sizeBytes": 1135,
+      "sha256": "5a994e8b577da1e1e3a42f586265972cecdd421d7cfc7ae0d51f01f89fd5a316"
+    },
+    {
+      "relative": "canonical-planning.test.ts",
+      "path": "packages/game-core/tests/canonical-planning.test.ts",
+      "mode": 420,
+      "sizeBytes": 386,
+      "sha256": "eab639fa815d1e3e2335af7853bd8cd01a672a85598e05fd7554dffd95d46ad1"
+    },
+    {
+      "relative": "canonical-queue.test.ts",
+      "path": "packages/game-core/tests/canonical-queue.test.ts",
+      "mode": 420,
+      "sizeBytes": 370,
+      "sha256": "3a56c772081acc98e1f38d4b84bf90a240bcc355d81cdeadc4eef46a8b050548"
+    },
+    {
+      "relative": "canonical-resolution.test.ts",
+      "path": "packages/game-core/tests/canonical-resolution.test.ts",
+      "mode": 420,
+      "sizeBytes": 429,
+      "sha256": "6b1550e2dc5f0bb6279f771006a5e80e38509d340c8b155c8cc1695aa27bfa69"
+    },
+    {
+      "relative": "canonical-turn.test.ts",
+      "path": "packages/game-core/tests/canonical-turn.test.ts",
+      "mode": 420,
+      "sizeBytes": 1401,
+      "sha256": "98f4ee589dfc620989339559593ce48306297892849675ff2ad238df7c99fb47"
+    },
+    {
+      "relative": "canonical.test.ts",
+      "path": "packages/game-core/tests/canonical.test.ts",
+      "mode": 420,
+      "sizeBytes": 2394,
+      "sha256": "c02b5ce7f3c1e73799c6a5b9ab336f2f589fc06c599886822861c26239272e93"
+    },
+    {
+      "relative": "causal-events.test.ts",
+      "path": "packages/game-core/tests/causal-events.test.ts",
+      "mode": 420,
+      "sizeBytes": 14555,
+      "sha256": "2458783d194e4e9e99cb2ca8e44037a53543faf5156a376d27522bb2bccc9de9"
+    },
+    {
+      "relative": "causal-parity.test.ts",
+      "path": "packages/game-core/tests/causal-parity.test.ts",
+      "mode": 420,
+      "sizeBytes": 1491,
+      "sha256": "f566ce5f2d88816f5ecb79df4e0ef4eae213364b2e5d4e8c04110a23e75911ec"
+    },
+    {
+      "relative": "classical-corpus.ts",
+      "path": "packages/game-core/tests/classical-corpus.ts",
+      "mode": 420,
+      "sizeBytes": 3548,
+      "sha256": "23503dae0c208dc1f666458d237581b22a21aee462d378b6596c6aec934ace40"
+    },
+    {
+      "relative": "classical-resolution.test.ts",
+      "path": "packages/game-core/tests/classical-resolution.test.ts",
+      "mode": 420,
+      "sizeBytes": 10219,
+      "sha256": "4fa4f129322b6abedcfcbe3eeb658bb686224060894d04ac1475d92abc5660eb"
+    },
+    {
+      "relative": "collision-primitives.e2e.test.ts",
+      "path": "packages/game-core/tests/collision-primitives.e2e.test.ts",
+      "mode": 420,
+      "sizeBytes": 812,
+      "sha256": "5fec59a7c87300eff549b8fd21050a10f606e22a0c11add60bb3c751981a9bbd"
+    },
+    {
+      "relative": "compatibility-exports.test.ts",
+      "path": "packages/game-core/tests/compatibility-exports.test.ts",
+      "mode": 420,
+      "sizeBytes": 2661,
+      "sha256": "fa4bebc2d2c01cfeadb01898ea956864c9468a49767940db06565a53a21512c5"
+    },
+    {
+      "relative": "economy.test.ts",
+      "path": "packages/game-core/tests/economy.test.ts",
+      "mode": 420,
+      "sizeBytes": 4399,
+      "sha256": "639ae7fbc99fb636ff13b4702ba41ee9685b3c709d639b1274c31e6439de1d79"
+    },
+    {
+      "relative": "fixtures/canonical-classical-resolution.json",
+      "path": "packages/game-core/tests/fixtures/canonical-classical-resolution.json",
+      "mode": 420,
+      "sizeBytes": 904,
+      "sha256": "c99a0c3ab572923e6b7872d119f336fc0ba4e942caf42f6078ff57dbadefcdd2"
+    },
+    {
+      "relative": "fixtures/canonical-opening.json",
+      "path": "packages/game-core/tests/fixtures/canonical-opening.json",
+      "mode": 420,
+      "sizeBytes": 819,
+      "sha256": "79feb2c7490224a3453c683b4a07c51b0e4d459ae3e3ac0237ca9a6ce80def75"
+    },
+    {
+      "relative": "fixtures/canonical-planning.json",
+      "path": "packages/game-core/tests/fixtures/canonical-planning.json",
+      "mode": 420,
+      "sizeBytes": 315,
+      "sha256": "b9042ecd11e064be58dab817f0a78391507be7529d2ee74910447d47bc993f15"
+    },
+    {
+      "relative": "fixtures/canonical-primitives.json",
+      "path": "packages/game-core/tests/fixtures/canonical-primitives.json",
+      "mode": 420,
+      "sizeBytes": 368,
+      "sha256": "c95265d60a52996814c1173d69806b74fedf5b0fb63a31cf3065f7a63371aba4"
+    },
+    {
+      "relative": "fixtures/canonical-queue.json",
+      "path": "packages/game-core/tests/fixtures/canonical-queue.json",
+      "mode": 420,
+      "sizeBytes": 220,
+      "sha256": "6fd2e99173f76b8a47d4b120cc342f66da438dbd778185db09605ef32d013292"
+    },
+    {
+      "relative": "fixtures/canonical-resolution-primitives.json",
+      "path": "packages/game-core/tests/fixtures/canonical-resolution-primitives.json",
+      "mode": 420,
+      "sizeBytes": 503,
+      "sha256": "1a04c3442f5dfe913f0eac092e18875dda6104d67dd3947315c98f20bfaa3ec3"
+    },
+    {
+      "relative": "fixtures/canonical-turn-resolution.json",
+      "path": "packages/game-core/tests/fixtures/canonical-turn-resolution.json",
+      "mode": 420,
+      "sizeBytes": 943,
+      "sha256": "b29749bd3d361f0c0a468b15b7dbb27351bc214630cdb3c8ea19eb8fa4ec8262"
+    },
+    {
+      "relative": "initialization.test.ts",
+      "path": "packages/game-core/tests/initialization.test.ts",
+      "mode": 420,
+      "sizeBytes": 2744,
+      "sha256": "2d912cb593a3401158161420242fa864d32822f24652d73cf3450f1455d3b76a"
+    },
+    {
+      "relative": "mines.test.ts",
+      "path": "packages/game-core/tests/mines.test.ts",
+      "mode": 420,
+      "sizeBytes": 2330,
+      "sha256": "bf05ba63ac5fd65cc244da04825dfa31780abac4eabe806ca32ba4104862ab90"
+    },
+    {
+      "relative": "moves.test.ts",
+      "path": "packages/game-core/tests/moves.test.ts",
+      "mode": 420,
+      "sizeBytes": 4746,
+      "sha256": "626d2e2cd69d511f121c7898af850b8b3cafdbcf8a75f107f692a5b63717f4d4"
+    },
+    {
+      "relative": "native-classical.test.ts",
+      "path": "packages/game-core/tests/native-classical.test.ts",
+      "mode": 420,
+      "sizeBytes": 9277,
+      "sha256": "20b63c31d6736c96a1c4fdd2ec4ee87395e33af41d4662a095cbb003b4b5dd10"
+    },
+    {
+      "relative": "outcome.test.ts",
+      "path": "packages/game-core/tests/outcome.test.ts",
+      "mode": 420,
+      "sizeBytes": 1082,
+      "sha256": "4b28ff4f50790eba07386172b7bd9b6c3952963f095f23c4908f6a9dfaddad8c"
+    },
+    {
+      "relative": "planning-corpus.ts",
+      "path": "packages/game-core/tests/planning-corpus.ts",
+      "mode": 420,
+      "sizeBytes": 4450,
+      "sha256": "8f0a3ae04113853862544f72bbd72d390454a989b86ecd8400e50150a0729853"
+    },
+    {
+      "relative": "planning-intents.test.ts",
+      "path": "packages/game-core/tests/planning-intents.test.ts",
+      "mode": 420,
+      "sizeBytes": 7175,
+      "sha256": "910dab6aa56204af13dc1265a62d1c9c4d5352652d6115972001be9614270f83"
+    },
+    {
+      "relative": "planning.e2e.test.ts",
+      "path": "packages/game-core/tests/planning.e2e.test.ts",
+      "mode": 420,
+      "sizeBytes": 877,
+      "sha256": "0a3ead1dddc281f6ee1cbce3de154c93e61afd40be63cf6dec0c3ade761d8c96"
+    },
+    {
+      "relative": "queue-action.test.ts",
+      "path": "packages/game-core/tests/queue-action.test.ts",
+      "mode": 420,
+      "sizeBytes": 6785,
+      "sha256": "40dd14a074b3e7a85a74291f824648e79648d2f3493a319340a0fd619b99a13f"
+    },
+    {
+      "relative": "queue-corpus.ts",
+      "path": "packages/game-core/tests/queue-corpus.ts",
+      "mode": 420,
+      "sizeBytes": 3401,
+      "sha256": "4a5e5474f7337d611ee804e6977e6cf9d7452d9a88873670d817f661ce90a749"
+    },
+    {
+      "relative": "resolution-corpus.ts",
+      "path": "packages/game-core/tests/resolution-corpus.ts",
+      "mode": 420,
+      "sizeBytes": 5215,
+      "sha256": "a6f3c0d979a00ce3368628ba72ba55700d5a87a0b562b80946148ab3757aecef"
+    },
+    {
+      "relative": "resolution-primitives.test.ts",
+      "path": "packages/game-core/tests/resolution-primitives.test.ts",
+      "mode": 420,
+      "sizeBytes": 8624,
+      "sha256": "8bff3f484a4518eb79aad4fa3b64a46fa7403daeffc9a3a9e4ff4a51ecaf9615"
+    },
+    {
+      "relative": "turn-corpus.ts",
+      "path": "packages/game-core/tests/turn-corpus.ts",
+      "mode": 420,
+      "sizeBytes": 4743,
+      "sha256": "5adbf17be55a3111fe6216cbc3490e8da8aac8cb6e794a98699214be5906832f"
+    },
+    {
+      "relative": "turn-resolution.e2e.test.ts",
+      "path": "packages/game-core/tests/turn-resolution.e2e.test.ts",
+      "mode": 420,
+      "sizeBytes": 1332,
+      "sha256": "f3b776ab97a87bceb45b578d56684c0df1eae75b042d231c68a113f058537cb9"
+    },
+    {
+      "relative": "turn-resolution.test.ts",
+      "path": "packages/game-core/tests/turn-resolution.test.ts",
+      "mode": 420,
+      "sizeBytes": 9116,
+      "sha256": "fa701ce2ed10750c52d485eac011e36318da059cb7bf6a7903f7ac17d83f0b1a"
+    },
+    {
+      "relative": "vision.test.ts",
+      "path": "packages/game-core/tests/vision.test.ts",
+      "mode": 420,
+      "sizeBytes": 3812,
+      "sha256": "12d28f031be94e7e68bd130a5874fc75ec4f0cc6fd96be60bb34c88a9e7c47b5"
+    }
+  ],
+  "fixtures": [
+    {
+      "relative": "fixtures/canonical-classical-resolution.json",
+      "path": "packages/game-core/tests/fixtures/canonical-classical-resolution.json",
+      "mode": 420,
+      "sizeBytes": 904,
+      "sha256": "c99a0c3ab572923e6b7872d119f336fc0ba4e942caf42f6078ff57dbadefcdd2"
+    },
+    {
+      "relative": "fixtures/canonical-opening.json",
+      "path": "packages/game-core/tests/fixtures/canonical-opening.json",
+      "mode": 420,
+      "sizeBytes": 819,
+      "sha256": "79feb2c7490224a3453c683b4a07c51b0e4d459ae3e3ac0237ca9a6ce80def75"
+    },
+    {
+      "relative": "fixtures/canonical-planning.json",
+      "path": "packages/game-core/tests/fixtures/canonical-planning.json",
+      "mode": 420,
+      "sizeBytes": 315,
+      "sha256": "b9042ecd11e064be58dab817f0a78391507be7529d2ee74910447d47bc993f15"
+    },
+    {
+      "relative": "fixtures/canonical-primitives.json",
+      "path": "packages/game-core/tests/fixtures/canonical-primitives.json",
+      "mode": 420,
+      "sizeBytes": 368,
+      "sha256": "c95265d60a52996814c1173d69806b74fedf5b0fb63a31cf3065f7a63371aba4"
+    },
+    {
+      "relative": "fixtures/canonical-queue.json",
+      "path": "packages/game-core/tests/fixtures/canonical-queue.json",
+      "mode": 420,
+      "sizeBytes": 220,
+      "sha256": "6fd2e99173f76b8a47d4b120cc342f66da438dbd778185db09605ef32d013292"
+    },
+    {
+      "relative": "fixtures/canonical-resolution-primitives.json",
+      "path": "packages/game-core/tests/fixtures/canonical-resolution-primitives.json",
+      "mode": 420,
+      "sizeBytes": 503,
+      "sha256": "1a04c3442f5dfe913f0eac092e18875dda6104d67dd3947315c98f20bfaa3ec3"
+    },
+    {
+      "relative": "fixtures/canonical-turn-resolution.json",
+      "path": "packages/game-core/tests/fixtures/canonical-turn-resolution.json",
+      "mode": 420,
+      "sizeBytes": 943,
+      "sha256": "b29749bd3d361f0c0a468b15b7dbb27351bc214630cdb3c8ea19eb8fa4ec8262"
+    }
+  ],
+  "legacyForwarders": [
+    {
+      "relative": "board.ts",
+      "path": "packages/game-core/src/board.ts",
+      "mode": 420,
+      "sizeBytes": 354,
+      "sha256": "2780b5e746ef856fd9e1c3d0c5bd5e9cd57a2d29a043815abdbbf6163ae207eb"
+    },
+    {
+      "relative": "causal-events.ts",
+      "path": "packages/game-core/src/causal-events.ts",
+      "mode": 420,
+      "sizeBytes": 179,
+      "sha256": "26fd3727baf5ed41f5cef6ae89d1e9e642ed9db018fefe9f3e2ba9fb55cc7f55"
+    },
+    {
+      "relative": "causal-producer.ts",
+      "path": "packages/game-core/src/causal-producer.ts",
+      "mode": 420,
+      "sizeBytes": 294,
+      "sha256": "b125fbacb0cf29725bdeedce63f1c5878814ce6ba5d20108143dcf15da6a8e83"
+    },
+    {
+      "relative": "causal-types.ts",
+      "path": "packages/game-core/src/causal-types.ts",
+      "mode": 420,
+      "sizeBytes": 346,
+      "sha256": "a3e49037f6a1986bfb6d072932e093613e47e454e893157a350b07cb67445975"
+    },
+    {
+      "relative": "charon.ts",
+      "path": "packages/game-core/src/charon.ts",
+      "mode": 420,
+      "sizeBytes": 182,
+      "sha256": "0c674b7fe2d7c3f55816a5a26d506dd0fa6dd78b02bef72826b358ba2351f464"
+    },
+    {
+      "relative": "classical-resolution.ts",
+      "path": "packages/game-core/src/classical-resolution.ts",
+      "mode": 420,
+      "sizeBytes": 520,
+      "sha256": "48910f27a3ee9d66543bb11775bd4a600458152f604195852d2ffd8c2a0c8b77"
+    },
+    {
+      "relative": "constants.ts",
+      "path": "packages/game-core/src/constants.ts",
+      "mode": 420,
+      "sizeBytes": 326,
+      "sha256": "2f226e84371d4faa12bde016cde37e439a43f10d9d4e8828e9c2a342b353806c"
+    },
+    {
+      "relative": "economy.ts",
+      "path": "packages/game-core/src/economy.ts",
+      "mode": 420,
+      "sizeBytes": 286,
+      "sha256": "4a7cca2641c7671f927394548bc9f5f478f7d2437dae71b92ebb830a81d1fc8f"
+    },
+    {
+      "relative": "index.ts",
+      "path": "packages/game-core/src/index.ts",
+      "mode": 420,
+      "sizeBytes": 3068,
+      "sha256": "771ff7f8187e2b94d29d69ca00fda19f69e5e9d8d4fb4fbf9bff5e1e34591870"
+    },
+    {
+      "relative": "initialization.ts",
+      "path": "packages/game-core/src/initialization.ts",
+      "mode": 420,
+      "sizeBytes": 262,
+      "sha256": "1137c0a6e2cb50e3765ff530cdddbf8b5e789cecbde267bd275d6d1b275e118d"
+    },
+    {
+      "relative": "mine-contact.ts",
+      "path": "packages/game-core/src/mine-contact.ts",
+      "mode": 420,
+      "sizeBytes": 267,
+      "sha256": "26846e4543315dbb3903f2dac1acc8dc95fd1423f826d325370d6c1e76185105"
+    },
+    {
+      "relative": "mines.ts",
+      "path": "packages/game-core/src/mines.ts",
+      "mode": 420,
+      "sizeBytes": 239,
+      "sha256": "2a3669f085178cfe9ec5716a56c433918fd87af88af1a827f902ca18ca96262a"
+    },
+    {
+      "relative": "move-timing.ts",
+      "path": "packages/game-core/src/move-timing.ts",
+      "mode": 420,
+      "sizeBytes": 295,
+      "sha256": "9fd57645b343947cd3422909a315d8fad90036268e64a05ccc6c081ceeaa2d94"
+    },
+    {
+      "relative": "moves.ts",
+      "path": "packages/game-core/src/moves.ts",
+      "mode": 420,
+      "sizeBytes": 294,
+      "sha256": "5790189958733bbf2fa6de65e5d82882662be5e1fdb15e0e27c5931fd97ae2ed"
+    },
+    {
+      "relative": "native-classical.ts",
+      "path": "packages/game-core/src/native-classical.ts",
+      "mode": 420,
+      "sizeBytes": 360,
+      "sha256": "6df448be444709f9b7eba67f09cff3bab2294762c3a59f37e41987c0f08b0326"
+    },
+    {
+      "relative": "outcome.ts",
+      "path": "packages/game-core/src/outcome.ts",
+      "mode": 420,
+      "sizeBytes": 190,
+      "sha256": "f4175b42e7ef11564ca08b0bd1eaa1118bb2f3c7f4ae61469ac7e05f4eb08950"
+    },
+    {
+      "relative": "planning-intents.ts",
+      "path": "packages/game-core/src/planning-intents.ts",
+      "mode": 420,
+      "sizeBytes": 344,
+      "sha256": "bc1b6ada0c7e6aa31683cfc186cb5fed76bad42419bbd8192ff850ca5be5dd5d"
+    },
+    {
+      "relative": "planning-order.ts",
+      "path": "packages/game-core/src/planning-order.ts",
+      "mode": 420,
+      "sizeBytes": 162,
+      "sha256": "9297ade7bde90dd7679082fd11f146ae983be6792864197c996d76607edd701d"
+    },
+    {
+      "relative": "planning-specials.ts",
+      "path": "packages/game-core/src/planning-specials.ts",
+      "mode": 420,
+      "sizeBytes": 187,
+      "sha256": "374b1ad0bd27c9a20d3cdf92fab39b62abf1ddb8df685f923f15fc45d46c83bc"
+    },
+    {
+      "relative": "queue-action.ts",
+      "path": "packages/game-core/src/queue-action.ts",
+      "mode": 420,
+      "sizeBytes": 268,
+      "sha256": "5720005c5ab417d75bf9ef96265fb27b2f45a45973480889885aaf305f288cce"
+    },
+    {
+      "relative": "queue-contract.ts",
+      "path": "packages/game-core/src/queue-contract.ts",
+      "mode": 420,
+      "sizeBytes": 158,
+      "sha256": "c8b731a51e97187acddbd0979488f5c3026171cc302350855fc9134f69e21cb1"
+    },
+    {
+      "relative": "queue-validation.ts",
+      "path": "packages/game-core/src/queue-validation.ts",
+      "mode": 420,
+      "sizeBytes": 225,
+      "sha256": "9ce16b806006772be8e6f8a9c4b5f29d8f2caf7e9be749ed7bbe8e08d3867c57"
+    },
+    {
+      "relative": "ray-scan.ts",
+      "path": "packages/game-core/src/ray-scan.ts",
+      "mode": 420,
+      "sizeBytes": 229,
+      "sha256": "bfb9438c1b93d6b38767275cb783f6d56e2eb4ea5fe4bd414dfad5aa1d621e64"
+    },
+    {
+      "relative": "resolve.ts",
+      "path": "packages/game-core/src/resolve.ts",
+      "mode": 420,
+      "sizeBytes": 335,
+      "sha256": "fb9c3ace7ae99b2b3d30f8f47863b2b5256ad8bdb6830033e9047474995e2627"
+    },
+    {
+      "relative": "specials.ts",
+      "path": "packages/game-core/src/specials.ts",
+      "mode": 420,
+      "sizeBytes": 226,
+      "sha256": "ee4000cdc126d14e843cb8a50b58f375bda7d6b71645fc01f007ac17338a5ff6"
+    },
+    {
+      "relative": "types.ts",
+      "path": "packages/game-core/src/types.ts",
+      "mode": 420,
+      "sizeBytes": 300,
+      "sha256": "605cd6efd3b46266aea19ccc2f08704e5f6616851e5d4730caa3b3462f7b19c4"
+    },
+    {
+      "relative": "vision.ts",
+      "path": "packages/game-core/src/vision.ts",
+      "mode": 420,
+      "sizeBytes": 364,
+      "sha256": "93560d6d9652183f95c903646374c0b8575631db496a63fcccb12ce2baead0b3"
+    }
+  ],
+  "legacyManifest": {
+    "path": "packages/game-core/package.json",
+    "sha256": "9613b41d47a69e884d6f3849f0d2be14be57f2d90d3bfeb65916830889049e0f"
+  },
+  "canonicalSource": [
+    {
+      "relative": "__tests__/adjutant.test.ts",
+      "path": "packages/starchess-core/src/__tests__/adjutant.test.ts",
+      "mode": 420,
+      "sizeBytes": 19657,
+      "sha256": "5e3ac30f39718924dba457bf5348d889cde38d685df8b269578ce5214c0040f6"
+    },
+    {
+      "relative": "__tests__/ai/charonHunt.test.ts",
+      "path": "packages/starchess-core/src/__tests__/ai/charonHunt.test.ts",
+      "mode": 420,
+      "sizeBytes": 5766,
+      "sha256": "22faa41b5ec8fb650d2b5fee0a33d60709e654b8aed13f11be3c29ee386dd7d9"
+    },
+    {
+      "relative": "__tests__/bank/storedBank.test.ts",
+      "path": "packages/starchess-core/src/__tests__/bank/storedBank.test.ts",
+      "mode": 420,
+      "sizeBytes": 809,
+      "sha256": "93b931a14f3b1a85fe9d4a254ac591067ec0d7d42781c82c1ec650d7a58c1c6c"
+    },
+    {
+      "relative": "__tests__/boundary/boundary.test.ts",
+      "path": "packages/starchess-core/src/__tests__/boundary/boundary.test.ts",
+      "mode": 420,
+      "sizeBytes": 1207,
+      "sha256": "abd143d0ef6d051d059e2380bb214e37f809d0056d251ac906168aa873702807"
+    },
+    {
+      "relative": "__tests__/collision/collisionRaces.test.ts",
+      "path": "packages/starchess-core/src/__tests__/collision/collisionRaces.test.ts",
+      "mode": 420,
+      "sizeBytes": 7535,
+      "sha256": "702d782ae27da992c7c434e92c37795346dc88e6dc5b038ff021f06a3b639142"
+    },
+    {
+      "relative": "__tests__/collision/fogVacatedTarget.test.ts",
+      "path": "packages/starchess-core/src/__tests__/collision/fogVacatedTarget.test.ts",
+      "mode": 420,
+      "sizeBytes": 4296,
+      "sha256": "c24ac4d910d09e30a9c9274e593877f13fa5c7d2d32ed83cbb3c2c4e211693da"
+    },
+    {
+      "relative": "__tests__/corpus/goldenCorpus.test.ts",
+      "path": "packages/starchess-core/src/__tests__/corpus/goldenCorpus.test.ts",
+      "mode": 420,
+      "sizeBytes": 5820,
+      "sha256": "b10bdafeab3d4c60f47f78214aeab01f835a59a08fec7150df6cf80ef2005561"
+    },
+    {
+      "relative": "__tests__/deploy-reach.test.ts",
+      "path": "packages/starchess-core/src/__tests__/deploy-reach.test.ts",
+      "mode": 420,
+      "sizeBytes": 6146,
+      "sha256": "eab0f9305cb1f233ccb2099db5a82fe3a16d5661492f64e9cf45bb31b8d31288"
+    },
+    {
+      "relative": "__tests__/economy/applyStoredIncome.test.ts",
+      "path": "packages/starchess-core/src/__tests__/economy/applyStoredIncome.test.ts",
+      "mode": 420,
+      "sizeBytes": 1341,
+      "sha256": "07443dc64d7519c3924968b10720fdcddffaefb377fbe38c317bffe363f59f5a"
+    },
+    {
+      "relative": "__tests__/economy/estimateStoredFromSnap.test.ts",
+      "path": "packages/starchess-core/src/__tests__/economy/estimateStoredFromSnap.test.ts",
+      "mode": 420,
+      "sizeBytes": 634,
+      "sha256": "9ebe05db3ab210a429815089b5506a7c50ea6de708698f24a37d256e22109208"
+    },
+    {
+      "relative": "__tests__/economy/mechaDeployCaps.test.ts",
+      "path": "packages/starchess-core/src/__tests__/economy/mechaDeployCaps.test.ts",
+      "mode": 420,
+      "sizeBytes": 5598,
+      "sha256": "afd1bd0af980b5ffadfa3e38ed3f87469f3b6f70735b054b2fd4ca6854cf04a2"
+    },
+    {
+      "relative": "__tests__/engine-consolidation.test.ts",
+      "path": "packages/starchess-core/src/__tests__/engine-consolidation.test.ts",
+      "mode": 420,
+      "sizeBytes": 11436,
+      "sha256": "b3ac183abc5f87e77a7dcc23887d11d38a26954f3015c6010aeba8fc99611f93"
+    },
+    {
+      "relative": "__tests__/gas/gasLastRank.test.ts",
+      "path": "packages/starchess-core/src/__tests__/gas/gasLastRank.test.ts",
+      "mode": 420,
+      "sizeBytes": 5249,
+      "sha256": "506d3314fe05574eef47680273f43673b540cc670782cfa2f1c60cc01f7d00e6"
+    },
+    {
+      "relative": "__tests__/gas/gasRemainingFor.test.ts",
+      "path": "packages/starchess-core/src/__tests__/gas/gasRemainingFor.test.ts",
+      "mode": 420,
+      "sizeBytes": 1527,
+      "sha256": "6fb59c9768b7f2813a5e6f78cb11f25580cd69bfb07dd0a449bb8c666567ac76"
+    },
+    {
+      "relative": "__tests__/gas/marineGasStackOrder.test.ts",
+      "path": "packages/starchess-core/src/__tests__/gas/marineGasStackOrder.test.ts",
+      "mode": 420,
+      "sizeBytes": 8396,
+      "sha256": "63d1f1c596f81fb8e02dab06c08905c587ece7d2aef58b9743f1c8994728ed38"
+    },
+    {
+      "relative": "__tests__/legacyKinds.test.ts",
+      "path": "packages/starchess-core/src/__tests__/legacyKinds.test.ts",
+      "mode": 420,
+      "sizeBytes": 2313,
+      "sha256": "f4d6214e21bc9de94dec90d200f0080a06fb5e259e21f360d343de1d9d2bc21e"
+    },
+    {
+      "relative": "__tests__/marine/marineDiagonalCaptureOnly.test.ts",
+      "path": "packages/starchess-core/src/__tests__/marine/marineDiagonalCaptureOnly.test.ts",
+      "mode": 420,
+      "sizeBytes": 2868,
+      "sha256": "6cc62d3f672df060b24f84a6c865c56fc8cc3f79c9480107b1398ba7e47593a3"
+    },
+    {
+      "relative": "__tests__/marine/marineDoubleBand.test.ts",
+      "path": "packages/starchess-core/src/__tests__/marine/marineDoubleBand.test.ts",
+      "mode": 420,
+      "sizeBytes": 5288,
+      "sha256": "8d3647e2f04dc1f3f984e7aaba266dbcd889a9ca9e0ab5d0ed1758df819dd432"
+    },
+    {
+      "relative": "__tests__/marine/marineFrontBlocked.test.ts",
+      "path": "packages/starchess-core/src/__tests__/marine/marineFrontBlocked.test.ts",
+      "mode": 420,
+      "sizeBytes": 5818,
+      "sha256": "0049e588c20d62d63586e473cec6366787d89fd7d9158f28adae3f2f9f342202"
+    },
+    {
+      "relative": "__tests__/mecha/mechaCCLine.test.ts",
+      "path": "packages/starchess-core/src/__tests__/mecha/mechaCCLine.test.ts",
+      "mode": 420,
+      "sizeBytes": 4527,
+      "sha256": "0b523c0acc39a24b3548b986e493fbb00f0f6758e4871de8e2b40661f36519ed"
+    },
+    {
+      "relative": "__tests__/mecha/mechaCharon.test.ts",
+      "path": "packages/starchess-core/src/__tests__/mecha/mechaCharon.test.ts",
+      "mode": 420,
+      "sizeBytes": 7715,
+      "sha256": "6fe6baaf4f5cdad17a9c7c2288e87a05bcf785432451a6ec7d92493b4af90fb3"
+    },
+    {
+      "relative": "__tests__/mine/mineChecks.test.ts",
+      "path": "packages/starchess-core/src/__tests__/mine/mineChecks.test.ts",
+      "mode": 420,
+      "sizeBytes": 3309,
+      "sha256": "4cb2b8e87d1b19b4135e0fe201cbc8f29137ed13cf5aa40d5040eee5cc9f79f6"
+    },
+    {
+      "relative": "__tests__/mine/mineContactRoutes.test.ts",
+      "path": "packages/starchess-core/src/__tests__/mine/mineContactRoutes.test.ts",
+      "mode": 420,
+      "sizeBytes": 16868,
+      "sha256": "d8eeeae59cea9cf4471fb35d2cfaf343a1e8a11669f7f29aa8c0a4dae7911004"
+    },
+    {
+      "relative": "__tests__/mine/minePathContact.test.ts",
+      "path": "packages/starchess-core/src/__tests__/mine/minePathContact.test.ts",
+      "mode": 420,
+      "sizeBytes": 10403,
+      "sha256": "26c4c2621b6bd9cfb5c609cf2561b8ed393839874de609694fd5f3ecf0fcdaa9"
+    },
+    {
+      "relative": "__tests__/mine/mineTargets.test.ts",
+      "path": "packages/starchess-core/src/__tests__/mine/mineTargets.test.ts",
+      "mode": 420,
+      "sizeBytes": 1938,
+      "sha256": "088c5badbff1f3887ceb489d9c20661ca7ce4b83cc82b85ad5d8ec2d1c9f3846"
+    },
+    {
+      "relative": "__tests__/move-timing.test.ts",
+      "path": "packages/starchess-core/src/__tests__/move-timing.test.ts",
+      "mode": 420,
+      "sizeBytes": 1509,
+      "sha256": "1d99176ce6768fdb27ddb9d652cee73ca3697bc66d831f7d484c3fb043da8b4a"
+    },
+    {
+      "relative": "__tests__/packed.test.ts",
+      "path": "packages/starchess-core/src/__tests__/packed.test.ts",
+      "mode": 420,
+      "sizeBytes": 4366,
+      "sha256": "44cc8c00c3ca22e26ddf32b14e33aae5f7679a579adcc42608ab88f69ea29838"
+    },
+    {
+      "relative": "__tests__/promotion/lastRankPromotion.test.ts",
+      "path": "packages/starchess-core/src/__tests__/promotion/lastRankPromotion.test.ts",
+      "mode": 420,
+      "sizeBytes": 4111,
+      "sha256": "cfa01f9056904d83ab59bb8400cee92e55f297e9a317fb5cc353089741727bf3"
+    },
+    {
+      "relative": "__tests__/queue/queueMultiSpecial.test.ts",
+      "path": "packages/starchess-core/src/__tests__/queue/queueMultiSpecial.test.ts",
+      "mode": 420,
+      "sizeBytes": 6908,
+      "sha256": "8949963eea053fe457d04153a2c0bd44aa0fd68006de66d382273b8afe30bc62"
+    },
+    {
+      "relative": "__tests__/registry/specialRegistry.test.ts",
+      "path": "packages/starchess-core/src/__tests__/registry/specialRegistry.test.ts",
+      "mode": 420,
+      "sizeBytes": 551,
+      "sha256": "3c94b5a9a33b6607d7776d1299c4bbc49f9a4f7c20d77222f3b8a20887521466"
+    },
+    {
+      "relative": "__tests__/replay/fen.test.ts",
+      "path": "packages/starchess-core/src/__tests__/replay/fen.test.ts",
+      "mode": 420,
+      "sizeBytes": 2377,
+      "sha256": "4ff599212f48b5740e332d8165bfdd56d1967639e1507dd3bfe30abf1c74524e"
+    },
+    {
+      "relative": "__tests__/replay/record.test.ts",
+      "path": "packages/starchess-core/src/__tests__/replay/record.test.ts",
+      "mode": 420,
+      "sizeBytes": 2811,
+      "sha256": "c44c5745f746be1f213a1c3c353a5a569d7195b59d31546fbf147da766e01d25"
+    },
+    {
+      "relative": "__tests__/replay/validateRecord.test.ts",
+      "path": "packages/starchess-core/src/__tests__/replay/validateRecord.test.ts",
+      "mode": 420,
+      "sizeBytes": 3901,
+      "sha256": "053800b983df58d98f98efd5521d0ff64a1a772e378080908a8b6e6ce3c56425"
+    },
+    {
+      "relative": "__tests__/shipJumpCollision.test.ts",
+      "path": "packages/starchess-core/src/__tests__/shipJumpCollision.test.ts",
+      "mode": 420,
+      "sizeBytes": 2672,
+      "sha256": "48914a642e1bdec4b8a8e6760a28216cc75b3aedfb8c916e541de1eae2f75b10"
+    },
+    {
+      "relative": "__tests__/spawn/crushSpawn.test.ts",
+      "path": "packages/starchess-core/src/__tests__/spawn/crushSpawn.test.ts",
+      "mode": 420,
+      "sizeBytes": 6697,
+      "sha256": "e0cfe7617a69918cc4c95eca5d32b737a00731b8af31dd972e4cb1d1ad88cbba"
+    },
+    {
+      "relative": "__tests__/spawn/spawnCCAnchor.test.ts",
+      "path": "packages/starchess-core/src/__tests__/spawn/spawnCCAnchor.test.ts",
+      "mode": 420,
+      "sizeBytes": 3788,
+      "sha256": "c80a36facee2594b208f0a3fee2892786cdaa574640483dfe94aff01960652e2"
+    },
+    {
+      "relative": "__tests__/strategic/attackers.test.ts",
+      "path": "packages/starchess-core/src/__tests__/strategic/attackers.test.ts",
+      "mode": 420,
+      "sizeBytes": 4766,
+      "sha256": "b81cbf71f42a2bcadc467e5dfed568f8641b92c98ad9ad0ee379d1b307e5d60f"
+    },
+    {
+      "relative": "__tests__/strategic/candidates-parity.test.ts",
+      "path": "packages/starchess-core/src/__tests__/strategic/candidates-parity.test.ts",
+      "mode": 420,
+      "sizeBytes": 2593,
+      "sha256": "7331e7ed72ccfcba7e3e5b1da997773fb93220a294a94b7a83cadaa8c47192d6"
+    },
+    {
+      "relative": "__tests__/strategic/deployLookahead.test.ts",
+      "path": "packages/starchess-core/src/__tests__/strategic/deployLookahead.test.ts",
+      "mode": 420,
+      "sizeBytes": 2441,
+      "sha256": "81f01a041bfa98c1dbbc9c73d75111d10decd8b6a2257368c31d41897527da9a"
+    },
+    {
+      "relative": "__tests__/strategic/economy.test.ts",
+      "path": "packages/starchess-core/src/__tests__/strategic/economy.test.ts",
+      "mode": 420,
+      "sizeBytes": 5261,
+      "sha256": "ca4a6b4030072b427e678acb508dd86f27c4d6fd647ed44de6fd0592bf027550"
+    },
+    {
+      "relative": "__tests__/strategic/economyAllyCrush.test.ts",
+      "path": "packages/starchess-core/src/__tests__/strategic/economyAllyCrush.test.ts",
+      "mode": 420,
+      "sizeBytes": 10386,
+      "sha256": "25d3864ab52d9487d5f494457ce36aa23ec85760655c62a688d30f264453ba9e"
+    },
+    {
+      "relative": "__tests__/strategic/intel.test.ts",
+      "path": "packages/starchess-core/src/__tests__/strategic/intel.test.ts",
+      "mode": 420,
+      "sizeBytes": 2775,
+      "sha256": "059f9e1cae7ecac85b506bfcaaa2d8b19871cf1fd4ba3116e4eacf8efd2502a8"
+    },
+    {
+      "relative": "__tests__/strategic/orchestrator.test.ts",
+      "path": "packages/starchess-core/src/__tests__/strategic/orchestrator.test.ts",
+      "mode": 420,
+      "sizeBytes": 3344,
+      "sha256": "9b1666999c6ac5c1a50884bdf6b19f0be1631cf7d47735eab284fbb514062728"
+    },
+    {
+      "relative": "__tests__/strategic/runnerMemory.test.ts",
+      "path": "packages/starchess-core/src/__tests__/strategic/runnerMemory.test.ts",
+      "mode": 420,
+      "sizeBytes": 9128,
+      "sha256": "deea8c185fea767f6a7d2814489e7a91aa7613cc4c5f1b2f6a0974d832926d10"
+    },
+    {
+      "relative": "__tests__/strategic/runners.test.ts",
+      "path": "packages/starchess-core/src/__tests__/strategic/runners.test.ts",
+      "mode": 420,
+      "sizeBytes": 8579,
+      "sha256": "b22d26005b40c946e9f81e54838c358f7c550b67fc1738f2be574c5593cd9f1c"
+    },
+    {
+      "relative": "__tests__/strategic/witness.test.ts",
+      "path": "packages/starchess-core/src/__tests__/strategic/witness.test.ts",
+      "mode": 420,
+      "sizeBytes": 7458,
+      "sha256": "fea602787f69a1c9119b2939813fd47d6adbb3f892ff5e2af692f453020e4d33"
+    },
+    {
+      "relative": "__tests__/tactics/ccFocus.test.ts",
+      "path": "packages/starchess-core/src/__tests__/tactics/ccFocus.test.ts",
+      "mode": 420,
+      "sizeBytes": 2913,
+      "sha256": "05e383d2125afa6a8c9f54c72af743b9470d060ba410d2253ab96aafa92cc190"
+    },
+    {
+      "relative": "__tests__/tactics/weightOrdering.test.ts",
+      "path": "packages/starchess-core/src/__tests__/tactics/weightOrdering.test.ts",
+      "mode": 420,
+      "sizeBytes": 10232,
+      "sha256": "e262daaff68b3f6283d82184a4cf0dc4043781b013d8d4d564c0fa3a523b8193"
+    },
+    {
+      "relative": "__tests__/tank/siegedTankMoves.test.ts",
+      "path": "packages/starchess-core/src/__tests__/tank/siegedTankMoves.test.ts",
+      "mode": 420,
+      "sizeBytes": 6142,
+      "sha256": "2c3a37a14d96ff32876347179f9fcfa6df1491705db40db5cd81a103571ea7a2"
+    },
+    {
+      "relative": "__tests__/tank/siegedTankShelling.test.ts",
+      "path": "packages/starchess-core/src/__tests__/tank/siegedTankShelling.test.ts",
+      "mode": 420,
+      "sizeBytes": 6225,
+      "sha256": "827fbd3c1b18263212f6c03b73fcec8e58f55ee216a568604b085eab6a8a6d6c"
+    },
+    {
+      "relative": "__tests__/turn/beginScTurn.test.ts",
+      "path": "packages/starchess-core/src/__tests__/turn/beginScTurn.test.ts",
+      "mode": 420,
+      "sizeBytes": 3446,
+      "sha256": "c1f459e27722ab7e609eef7cabc707133198a319f3df37cb96f227aec7f7d597"
+    },
+    {
+      "relative": "__tests__/turn/gasVacancy.test.ts",
+      "path": "packages/starchess-core/src/__tests__/turn/gasVacancy.test.ts",
+      "mode": 420,
+      "sizeBytes": 6048,
+      "sha256": "2a0a3f2da44ddae0a9bcc5c1ebd63b581242fe8053d2f4e46a112c8d06ef19e3"
+    },
+    {
+      "relative": "__tests__/turn/turnTimeout.test.ts",
+      "path": "packages/starchess-core/src/__tests__/turn/turnTimeout.test.ts",
+      "mode": 420,
+      "sizeBytes": 638,
+      "sha256": "9973aafa2d3b47a4579f7e3c97d4db1ae8ae5336e0b1aca7295d82a78edc332f"
+    },
+    {
+      "relative": "ai/adjutant.ts",
+      "path": "packages/starchess-core/src/ai/adjutant.ts",
+      "mode": 420,
+      "sizeBytes": 4952,
+      "sha256": "002bc6395fa1b7bdedb52fbb017f7e6907708416d272917dd068bc90de179448"
+    },
+    {
+      "relative": "ai/context/ccFocusIntel.ts",
+      "path": "packages/starchess-core/src/ai/context/ccFocusIntel.ts",
+      "mode": 420,
+      "sizeBytes": 3513,
+      "sha256": "a5d61257443d603b05a7705985a7497cd079ff8f5f0d1d06582e1b8227b86e90"
+    },
+    {
+      "relative": "ai/context/ccIntel.ts",
+      "path": "packages/starchess-core/src/ai/context/ccIntel.ts",
+      "mode": 420,
+      "sizeBytes": 4246,
+      "sha256": "186dbd78f1c2930795c095c8993b28010a6067ca3c001f2a13f143eeb028955f"
+    },
+    {
+      "relative": "ai/context/geometry.ts",
+      "path": "packages/starchess-core/src/ai/context/geometry.ts",
+      "mode": 420,
+      "sizeBytes": 2852,
+      "sha256": "2fac7042660bff7809a680e913219042a51f0d8e9beded3c620f160203c3d0df"
+    },
+    {
+      "relative": "ai/context/index.ts",
+      "path": "packages/starchess-core/src/ai/context/index.ts",
+      "mode": 420,
+      "sizeBytes": 3606,
+      "sha256": "2adfd5687e9bf18c7f1e1b305ab312b66cedc9a80f4a550956ea755e4b413103"
+    },
+    {
+      "relative": "ai/context/marines.ts",
+      "path": "packages/starchess-core/src/ai/context/marines.ts",
+      "mode": 420,
+      "sizeBytes": 2343,
+      "sha256": "0d2585cc30edb2c712e24c36c9b1f4d36aced7996feffa7d4b2ab7c62ac48711"
+    },
+    {
+      "relative": "ai/context/material.ts",
+      "path": "packages/starchess-core/src/ai/context/material.ts",
+      "mode": 420,
+      "sizeBytes": 1981,
+      "sha256": "9c054ee2ec293d26be329b7eea3d39505fdec535c6b2080affd3feff2bc6d857"
+    },
+    {
+      "relative": "ai/context/mines.ts",
+      "path": "packages/starchess-core/src/ai/context/mines.ts",
+      "mode": 420,
+      "sizeBytes": 1257,
+      "sha256": "16f61498ddc3001f1c3f0707366dee82113b57edaf3c3c4ace57f615f570e3ee"
+    },
+    {
+      "relative": "ai/context/posture.ts",
+      "path": "packages/starchess-core/src/ai/context/posture.ts",
+      "mode": 420,
+      "sizeBytes": 2029,
+      "sha256": "442702d963e06dddfa68a796da096ecbc07e3a99497d1ed3c3d018aa9e8ef7d1"
+    },
+    {
+      "relative": "ai/context/rng.ts",
+      "path": "packages/starchess-core/src/ai/context/rng.ts",
+      "mode": 420,
+      "sizeBytes": 530,
+      "sha256": "08850895113d9c1f85b902ac1c920cd7e254165c5d2b229ca8183e06d90eba44"
+    },
+    {
+      "relative": "ai/context/tactical.ts",
+      "path": "packages/starchess-core/src/ai/context/tactical.ts",
+      "mode": 420,
+      "sizeBytes": 2055,
+      "sha256": "252b53e3c9bbfbf3150e47599d18e1d3f2ddd71f0741058438dd3ddeb0bfaf6c"
+    },
+    {
+      "relative": "ai/context/types.ts",
+      "path": "packages/starchess-core/src/ai/context/types.ts",
+      "mode": 420,
+      "sizeBytes": 5521,
+      "sha256": "d5ce767f0c20580f4e1de60c15e26c5464da76ae392830b7fa2e84eea3d80964"
+    },
+    {
+      "relative": "ai/context/vision.ts",
+      "path": "packages/starchess-core/src/ai/context/vision.ts",
+      "mode": 420,
+      "sizeBytes": 1548,
+      "sha256": "266f6b47a08127e5f6331c1d950f8d95237a4560909495857411b37def07199e"
+    },
+    {
+      "relative": "ai/plans/simulate.ts",
+      "path": "packages/starchess-core/src/ai/plans/simulate.ts",
+      "mode": 420,
+      "sizeBytes": 3740,
+      "sha256": "f6ce90d726767deddcd683e438a62ab5d542f72edd1f75e45e27e8ec702969e6"
+    },
+    {
+      "relative": "ai/plans/stacks.ts",
+      "path": "packages/starchess-core/src/ai/plans/stacks.ts",
+      "mode": 420,
+      "sizeBytes": 12186,
+      "sha256": "4d1fcba35a514d9c413d406a90574ccb29e1c88bf0f58cfea54d3672e271bf1d"
+    },
+    {
+      "relative": "ai/strategic/attackers.ts",
+      "path": "packages/starchess-core/src/ai/strategic/attackers.ts",
+      "mode": 420,
+      "sizeBytes": 3929,
+      "sha256": "5c3e15340515f9d8d56f4ddb6cbd777a2f421baabb8172ea8716774df309df3b"
+    },
+    {
+      "relative": "ai/strategic/context.ts",
+      "path": "packages/starchess-core/src/ai/strategic/context.ts",
+      "mode": 420,
+      "sizeBytes": 5218,
+      "sha256": "4788aa2fb8f2a2104fcec142c7d42881876d02431b62198ef3a4a993cf243017"
+    },
+    {
+      "relative": "ai/strategic/deployLookahead.ts",
+      "path": "packages/starchess-core/src/ai/strategic/deployLookahead.ts",
+      "mode": 420,
+      "sizeBytes": 5449,
+      "sha256": "a33c0933df06fb9ce1d51440060a2f6ff5ee4963e4c1aa872224586661e2a619"
+    },
+    {
+      "relative": "ai/strategic/index.ts",
+      "path": "packages/starchess-core/src/ai/strategic/index.ts",
+      "mode": 420,
+      "sizeBytes": 3032,
+      "sha256": "e6d24c9c2ad0888778a77add01e21ab0289bda574577cbec86ddc3d44a8a1eb9"
+    },
+    {
+      "relative": "ai/strategic/intel.ts",
+      "path": "packages/starchess-core/src/ai/strategic/intel.ts",
+      "mode": 420,
+      "sizeBytes": 5230,
+      "sha256": "2e4100d83793d95ea600073f72e4df621717dda6d99a7fced395c7197b3f8b03"
+    },
+    {
+      "relative": "ai/strategic/orchestrator.ts",
+      "path": "packages/starchess-core/src/ai/strategic/orchestrator.ts",
+      "mode": 420,
+      "sizeBytes": 5881,
+      "sha256": "dba79266db741bf0b616a757dad69659cd9342c1a6c6c95fa663ccbb1109c444"
+    },
+    {
+      "relative": "ai/strategic/runners.ts",
+      "path": "packages/starchess-core/src/ai/strategic/runners.ts",
+      "mode": 420,
+      "sizeBytes": 19495,
+      "sha256": "5973edcc44e89887197b67855f576c4bb58c1fb3262bfc02efbcd77adfd54037"
+    },
+    {
+      "relative": "ai/strategic/strategies/attackers.ts",
+      "path": "packages/starchess-core/src/ai/strategic/strategies/attackers.ts",
+      "mode": 420,
+      "sizeBytes": 3445,
+      "sha256": "4695d6a2e4cb1eb18f5a171c8673acdceea6899e3aa90e1cdd76415e63a33be5"
+    },
+    {
+      "relative": "ai/strategic/strategies/captures.ts",
+      "path": "packages/starchess-core/src/ai/strategic/strategies/captures.ts",
+      "mode": 420,
+      "sizeBytes": 5008,
+      "sha256": "6147f852f2fd203050eb42215264d9040026fe08e9c3fccfef3bfc540ac02800"
+    },
+    {
+      "relative": "ai/strategic/strategies/checks.ts",
+      "path": "packages/starchess-core/src/ai/strategic/strategies/checks.ts",
+      "mode": 420,
+      "sizeBytes": 3587,
+      "sha256": "6e4c07ad8408b62ebe87ab87eaf0e369c9c4fa21d235336a5c07ce0715adf1e1"
+    },
+    {
+      "relative": "ai/strategic/strategies/economy.ts",
+      "path": "packages/starchess-core/src/ai/strategic/strategies/economy.ts",
+      "mode": 420,
+      "sizeBytes": 15038,
+      "sha256": "87e0e1358611e809da7a526bfd568d78060a4d2f7352dcecdde5c42ef3d2cfb0"
+    },
+    {
+      "relative": "ai/strategic/strategies/index.ts",
+      "path": "packages/starchess-core/src/ai/strategic/strategies/index.ts",
+      "mode": 420,
+      "sizeBytes": 2473,
+      "sha256": "bb23ab162ccdbe661c56be2af6d9f14203bb7a01251a95ee50a0a83a486f0e6e"
+    },
+    {
+      "relative": "ai/strategic/strategies/runners.ts",
+      "path": "packages/starchess-core/src/ai/strategic/strategies/runners.ts",
+      "mode": 420,
+      "sizeBytes": 7779,
+      "sha256": "f981562f4ea16e85a7ba6f415249f3196c21951237d8cfb553d6fa012ca9bd0a"
+    },
+    {
+      "relative": "ai/strategic/strategies/survival.ts",
+      "path": "packages/starchess-core/src/ai/strategic/strategies/survival.ts",
+      "mode": 420,
+      "sizeBytes": 2448,
+      "sha256": "b61dd29726872f30da351e8b843c91e0def45bbed2fe44e58f7d6aa7aac10c38"
+    },
+    {
+      "relative": "ai/strategic/strategies/threats.ts",
+      "path": "packages/starchess-core/src/ai/strategic/strategies/threats.ts",
+      "mode": 420,
+      "sizeBytes": 1690,
+      "sha256": "6b77b0d9a62f69ac08b52222139fc89eca41f0bf9faf1c701d1042ccc4cf37ef"
+    },
+    {
+      "relative": "ai/strategic/strategies/types.ts",
+      "path": "packages/starchess-core/src/ai/strategic/strategies/types.ts",
+      "mode": 420,
+      "sizeBytes": 1179,
+      "sha256": "55f4f326e4f79b60457a25d0d004c3e40dbe390fbe4d988f71062e70865d698e"
+    },
+    {
+      "relative": "ai/strategic/tracking.ts",
+      "path": "packages/starchess-core/src/ai/strategic/tracking.ts",
+      "mode": 420,
+      "sizeBytes": 7206,
+      "sha256": "ccd6b5413853c1c33165228f55eff047e4f03ea29506329a68b050eda91286b5"
+    },
+    {
+      "relative": "ai/strategic/witness.ts",
+      "path": "packages/starchess-core/src/ai/strategic/witness.ts",
+      "mode": 420,
+      "sizeBytes": 9576,
+      "sha256": "94e080bed32c43f6748c28f9cd7155d88556f8ba622a380aec0ea545d01033f4"
+    },
+    {
+      "relative": "ai/strategies/captures.ts",
+      "path": "packages/starchess-core/src/ai/strategies/captures.ts",
+      "mode": 420,
+      "sizeBytes": 8899,
+      "sha256": "1832899838d7564b3f12bb8086df909160045dae75e2c49004c97aedc3708d69"
+    },
+    {
+      "relative": "ai/strategies/checks.ts",
+      "path": "packages/starchess-core/src/ai/strategies/checks.ts",
+      "mode": 420,
+      "sizeBytes": 2371,
+      "sha256": "14f1b3f8ba49818ecf85b5eb4cc85100423a83d8f02ef32374fbb7c312d8cb18"
+    },
+    {
+      "relative": "ai/strategies/economy.ts",
+      "path": "packages/starchess-core/src/ai/strategies/economy.ts",
+      "mode": 420,
+      "sizeBytes": 8371,
+      "sha256": "54b27aa3427a2e73d9928dcbd34499c587836122a8cb5a34aa6b92ad011925c8"
+    },
+    {
+      "relative": "ai/strategies/index.ts",
+      "path": "packages/starchess-core/src/ai/strategies/index.ts",
+      "mode": 420,
+      "sizeBytes": 2114,
+      "sha256": "877bc4d5d7f425c917bab2fe52f09d87613c4c13cb822c9441bf4aed2a69c656"
+    },
+    {
+      "relative": "ai/strategies/mapControl.ts",
+      "path": "packages/starchess-core/src/ai/strategies/mapControl.ts",
+      "mode": 420,
+      "sizeBytes": 7786,
+      "sha256": "0c95b69b4882164df78f01318d9bcf2dd12ab1e1b0a200b32ecd39dba67611a5"
+    },
+    {
+      "relative": "ai/strategies/survival.ts",
+      "path": "packages/starchess-core/src/ai/strategies/survival.ts",
+      "mode": 420,
+      "sizeBytes": 5829,
+      "sha256": "e518d3d4a14f922929b6a51456b7dc826343bf11224905e4fdc052a1522ada54"
+    },
+    {
+      "relative": "ai/strategies/threats.ts",
+      "path": "packages/starchess-core/src/ai/strategies/threats.ts",
+      "mode": 420,
+      "sizeBytes": 1102,
+      "sha256": "d7aa1dd4ff324ee9e2499315fd9c7b5bf26d87fb953620da2b233263a1ad361c"
+    },
+    {
+      "relative": "ai/strategies/types.ts",
+      "path": "packages/starchess-core/src/ai/strategies/types.ts",
+      "mode": 420,
+      "sizeBytes": 1296,
+      "sha256": "dddb6defbb4b917e7ac6cbff9acf65703c260135ddf8067b5c6b4c6316425194"
+    },
+    {
+      "relative": "board/classicFen.ts",
+      "path": "packages/starchess-core/src/board/classicFen.ts",
+      "mode": 420,
+      "sizeBytes": 339,
+      "sha256": "b005f66aa7e878b4c5db0e0fce7caa31f15a7d1bb052a2fdc485616d888e3adc"
+    },
+    {
+      "relative": "board/deploy-reach.ts",
+      "path": "packages/starchess-core/src/board/deploy-reach.ts",
+      "mode": 420,
+      "sizeBytes": 3322,
+      "sha256": "62a7bfbc37b5d88d789948c01900fc471031abf4603777ca218a2565c3feba36"
+    },
+    {
+      "relative": "board/mine-contact.ts",
+      "path": "packages/starchess-core/src/board/mine-contact.ts",
+      "mode": 420,
+      "sizeBytes": 2369,
+      "sha256": "16cdde5417ed37568ca9aac64fffb7c6fa58c35fd76a93726a05192aace0086f"
+    },
+    {
+      "relative": "board/mines.ts",
+      "path": "packages/starchess-core/src/board/mines.ts",
+      "mode": 420,
+      "sizeBytes": 3834,
+      "sha256": "1c9082d89051e6ffdfba71c97b709f7d33cced372cf149c02c84bffebbd31fff"
+    },
+    {
+      "relative": "board/move-timing.ts",
+      "path": "packages/starchess-core/src/board/move-timing.ts",
+      "mode": 420,
+      "sizeBytes": 3822,
+      "sha256": "4009773b2d47deeb83cceaab502af5692e5de0e4254d053166374043d9b8ba69"
+    },
+    {
+      "relative": "board/moves.ts",
+      "path": "packages/starchess-core/src/board/moves.ts",
+      "mode": 420,
+      "sizeBytes": 10469,
+      "sha256": "2479c4eed2fca89a1a1de08d210c2fa1cd0b40c22a330ebdf8c48b6069c57df6"
+    },
+    {
+      "relative": "board/placement.ts",
+      "path": "packages/starchess-core/src/board/placement.ts",
+      "mode": 420,
+      "sizeBytes": 7285,
+      "sha256": "083952137e3b5cd829494140edb5b995efe7941f227e30bcd303698bb7475544"
+    },
+    {
+      "relative": "board/ray-scan.ts",
+      "path": "packages/starchess-core/src/board/ray-scan.ts",
+      "mode": 420,
+      "sizeBytes": 2149,
+      "sha256": "46c3fc691517e50c13969c5b45d998c4e5b76670556b39f7a8007f3ef995a418"
+    },
+    {
+      "relative": "board/siege.ts",
+      "path": "packages/starchess-core/src/board/siege.ts",
+      "mode": 420,
+      "sizeBytes": 1071,
+      "sha256": "eb57a7d6715067681cab6da2872840f8f9935ec2cccbc9badf78e73f9bebb452"
+    },
+    {
+      "relative": "board/vision.ts",
+      "path": "packages/starchess-core/src/board/vision.ts",
+      "mode": 420,
+      "sizeBytes": 10114,
+      "sha256": "6e6def04466f3eee6dbd4cdfe0599c8da8255282e34e42ff0d55f6e4533c516c"
+    },
+    {
+      "relative": "commands/queue-action.ts",
+      "path": "packages/starchess-core/src/commands/queue-action.ts",
+      "mode": 420,
+      "sizeBytes": 7351,
+      "sha256": "6e493f3bcaa7de70b7c7b5e7398385e007ebcf138dbec8abbf844e2b6277b94d"
+    },
+    {
+      "relative": "engine/board.ts",
+      "path": "packages/starchess-core/src/engine/board.ts",
+      "mode": 420,
+      "sizeBytes": 381,
+      "sha256": "ddac9d5352ecd1d3494b3c6129998cbf61cee14c3dbf42652b5c9fea17e5b85c"
+    },
+    {
+      "relative": "engine/causal-events.ts",
+      "path": "packages/starchess-core/src/engine/causal-events.ts",
+      "mode": 420,
+      "sizeBytes": 24503,
+      "sha256": "116fe05325b3e5287ce058d8bf73588318024c979c122d066189c4dd39144624"
+    },
+    {
+      "relative": "engine/causal-producer.ts",
+      "path": "packages/starchess-core/src/engine/causal-producer.ts",
+      "mode": 420,
+      "sizeBytes": 1300,
+      "sha256": "f7f5e9225ef8785d6eddaa1d89634514652de4d6ad0937a9031e095749506d97"
+    },
+    {
+      "relative": "engine/causal-types.ts",
+      "path": "packages/starchess-core/src/engine/causal-types.ts",
+      "mode": 420,
+      "sizeBytes": 5324,
+      "sha256": "2af0eed1bfd165a190a69370c80e7e284814fdf53cdc4b510c70723ba25f9601"
+    },
+    {
+      "relative": "engine/charon.ts",
+      "path": "packages/starchess-core/src/engine/charon.ts",
+      "mode": 420,
+      "sizeBytes": 170,
+      "sha256": "860bef6bc8a249576c0ba50eff6e49cdb4dd7f8c0a1d4dad9ef090d5d31516d6"
+    },
+    {
+      "relative": "engine/classical-resolution.ts",
+      "path": "packages/starchess-core/src/engine/classical-resolution.ts",
+      "mode": 420,
+      "sizeBytes": 1769,
+      "sha256": "652c7787052870b31571e85a9e8d949cb54a1ba78aa28e6823eddcd71bbc190d"
+    },
+    {
+      "relative": "engine/constants.ts",
+      "path": "packages/starchess-core/src/engine/constants.ts",
+      "mode": 420,
+      "sizeBytes": 300,
+      "sha256": "8d40aef2d7b98ff3a998e7ab7d0dc2eafc404a046b9ccc9695d2dc013489e390"
+    },
+    {
+      "relative": "engine/economy.ts",
+      "path": "packages/starchess-core/src/engine/economy.ts",
+      "mode": 420,
+      "sizeBytes": 260,
+      "sha256": "c0f1fc790bc351324fd1d6a43b617701032afe2a25d86ba03ea26ddc79acba32"
+    },
+    {
+      "relative": "engine/index.ts",
+      "path": "packages/starchess-core/src/engine/index.ts",
+      "mode": 420,
+      "sizeBytes": 1287,
+      "sha256": "59804e608176d5eacd4589cbdb7fd966d19d4a88c48a188db388553f7ee7a9f4"
+    },
+    {
+      "relative": "engine/initialization.ts",
+      "path": "packages/starchess-core/src/engine/initialization.ts",
+      "mode": 420,
+      "sizeBytes": 1536,
+      "sha256": "b835651978b742dc96b749dad934f5e758a2adade75d56511ae274887f45a330"
+    },
+    {
+      "relative": "engine/mine-contact.ts",
+      "path": "packages/starchess-core/src/engine/mine-contact.ts",
+      "mode": 420,
+      "sizeBytes": 215,
+      "sha256": "37c97e4c119bf0bcdcdb0a7df3f4de012d0dfc21f7703e3623af83c795354dc8"
+    },
+    {
+      "relative": "engine/mines.ts",
+      "path": "packages/starchess-core/src/engine/mines.ts",
+      "mode": 420,
+      "sizeBytes": 213,
+      "sha256": "3fda1228b2d0fda3b065bb4f8969961eee99781ae951378944e41a94f25ad9a1"
+    },
+    {
+      "relative": "engine/move-timing.ts",
+      "path": "packages/starchess-core/src/engine/move-timing.ts",
+      "mode": 420,
+      "sizeBytes": 243,
+      "sha256": "abd7e82fb2761429e2d0f56bd77a3add7fb66b3c11ff5911e3fe7c9a183bed3d"
+    },
+    {
+      "relative": "engine/moves.ts",
+      "path": "packages/starchess-core/src/engine/moves.ts",
+      "mode": 420,
+      "sizeBytes": 287,
+      "sha256": "eb26f1f1ab2c17f16202b4bcd08f127d834c5aecd32e79e8bb9e720338373eb5"
+    },
+    {
+      "relative": "engine/native-classical.ts",
+      "path": "packages/starchess-core/src/engine/native-classical.ts",
+      "mode": 420,
+      "sizeBytes": 8275,
+      "sha256": "246ec95a8277fb4468df7aa10569a0e36c55a0d983b175baebabea52d8cad173"
+    },
+    {
+      "relative": "engine/outcome.ts",
+      "path": "packages/starchess-core/src/engine/outcome.ts",
+      "mode": 420,
+      "sizeBytes": 126,
+      "sha256": "7f2cbeeed979b8d9f5a97f55173e2c4000479350b2b9f0cbdd5edbe2a7a4c0f6"
+    },
+    {
+      "relative": "engine/planning-intents.ts",
+      "path": "packages/starchess-core/src/engine/planning-intents.ts",
+      "mode": 420,
+      "sizeBytes": 7728,
+      "sha256": "1fb8cb64521add5cd111ae001b9d85603e207485f5f4d1590ead09a9c72e100a"
+    },
+    {
+      "relative": "engine/planning-order.ts",
+      "path": "packages/starchess-core/src/engine/planning-order.ts",
+      "mode": 420,
+      "sizeBytes": 2200,
+      "sha256": "0636b6ae52c94c841d42dd0b5baad82846d283ffa95a6987cf06a9dfbe554c1d"
+    },
+    {
+      "relative": "engine/planning-specials.ts",
+      "path": "packages/starchess-core/src/engine/planning-specials.ts",
+      "mode": 420,
+      "sizeBytes": 242,
+      "sha256": "fd90584ec2b755a2be2cd724860fe0489186c2c84e882254235ece9ed57177e8"
+    },
+    {
+      "relative": "engine/queue-action.ts",
+      "path": "packages/starchess-core/src/engine/queue-action.ts",
+      "mode": 420,
+      "sizeBytes": 915,
+      "sha256": "a8fade891926e99a330f3009d9dcf8e248a96281a54272f3e36af7e30fd0af11"
+    },
+    {
+      "relative": "engine/queue-contract.ts",
+      "path": "packages/starchess-core/src/engine/queue-contract.ts",
+      "mode": 420,
+      "sizeBytes": 123,
+      "sha256": "e6c4c3d4ba563903c0c3beacd637cc59bb8d7f46186e5264e594d04c134724dd"
+    },
+    {
+      "relative": "engine/queue-validation.ts",
+      "path": "packages/starchess-core/src/engine/queue-validation.ts",
+      "mode": 420,
+      "sizeBytes": 4529,
+      "sha256": "802ae995610f453e79d6e88eef386b9c856a94b77276b153d317c4f03678e24b"
+    },
+    {
+      "relative": "engine/ray-scan.ts",
+      "path": "packages/starchess-core/src/engine/ray-scan.ts",
+      "mode": 420,
+      "sizeBytes": 177,
+      "sha256": "ffd5f7a3bf24694e84d9f421620e3898bb10bda62c61cdaa9a186611c49797ae"
+    },
+    {
+      "relative": "engine/resolve.ts",
+      "path": "packages/starchess-core/src/engine/resolve.ts",
+      "mode": 420,
+      "sizeBytes": 877,
+      "sha256": "e58af101b6e1a1b5a94567de5484ce346e5a605cf6f1ec21239661dd73fe4e09"
+    },
+    {
+      "relative": "engine/specials.ts",
+      "path": "packages/starchess-core/src/engine/specials.ts",
+      "mode": 420,
+      "sizeBytes": 192,
+      "sha256": "cf5c83e811458b7a68f6ca88da450c499c6675f84c8cb466a1d7393af12f55a7"
+    },
+    {
+      "relative": "engine/types.ts",
+      "path": "packages/starchess-core/src/engine/types.ts",
+      "mode": 420,
+      "sizeBytes": 355,
+      "sha256": "1f3ec1b3b203837432bfd0b5847f833dc05ce03decf3a739850116154ceb9f17"
+    },
+    {
+      "relative": "engine/vision.ts",
+      "path": "packages/starchess-core/src/engine/vision.ts",
+      "mode": 420,
+      "sizeBytes": 330,
+      "sha256": "f65e344d5e36e293a69dea3184cdabcbe24c08816b69bc182d0f2a38f89ba411"
+    },
+    {
+      "relative": "index.ts",
+      "path": "packages/starchess-core/src/index.ts",
+      "mode": 420,
+      "sizeBytes": 6540,
+      "sha256": "cba85345925c1407231882a0749f684c11629847faf64aa3891491d0a65e317d"
+    },
+    {
+      "relative": "model/square.ts",
+      "path": "packages/starchess-core/src/model/square.ts",
+      "mode": 420,
+      "sizeBytes": 105,
+      "sha256": "2659d82a4057ea33684f4f18934c0c47f1f5b789402727a8751bb2313ac50825"
+    },
+    {
+      "relative": "model/types.ts",
+      "path": "packages/starchess-core/src/model/types.ts",
+      "mode": 420,
+      "sizeBytes": 4962,
+      "sha256": "2a43424bed449bf930ae557c950b634ad3ec641e5d2ac5ff9a8ee6c84e64264e"
+    },
+    {
+      "relative": "outcome.ts",
+      "path": "packages/starchess-core/src/outcome.ts",
+      "mode": 420,
+      "sizeBytes": 1177,
+      "sha256": "0413b7e440087b08fb66275dbb83b3e7f5adc34af5dbf3e6e09049c6855fb217"
+    },
+    {
+      "relative": "replay/fen.ts",
+      "path": "packages/starchess-core/src/replay/fen.ts",
+      "mode": 420,
+      "sizeBytes": 2196,
+      "sha256": "17f78350954e297a5c1efe210ac6436a3ddffd3fe309d60026bc5d2e5862eeca"
+    },
+    {
+      "relative": "replay/packed.ts",
+      "path": "packages/starchess-core/src/replay/packed.ts",
+      "mode": 420,
+      "sizeBytes": 6293,
+      "sha256": "b4c941fde1d40304e675a87e091f2c544f3647e7c0c64fba988ea0a1c9e62126"
+    },
+    {
+      "relative": "replay/record.ts",
+      "path": "packages/starchess-core/src/replay/record.ts",
+      "mode": 420,
+      "sizeBytes": 8719,
+      "sha256": "c664e31138a20c60d589f891d225ee04a24b1a8bc8815a7c6e288a2282d3e9a4"
+    },
+    {
+      "relative": "replay/validate-history.ts",
+      "path": "packages/starchess-core/src/replay/validate-history.ts",
+      "mode": 420,
+      "sizeBytes": 4309,
+      "sha256": "849ffef4cdc6f5cd30416b8814b56c2719ef2801ef25cf05cf2f9c3dd7214c9a"
+    },
+    {
+      "relative": "resolve/resolve-turn.ts",
+      "path": "packages/starchess-core/src/resolve/resolve-turn.ts",
+      "mode": 420,
+      "sizeBytes": 46101,
+      "sha256": "169f4e5726f66cfd24a1a5a4a5832f8eaba05ee2c63dd10f0619358eb77757b8"
+    },
+    {
+      "relative": "resolve/submit-turn.ts",
+      "path": "packages/starchess-core/src/resolve/submit-turn.ts",
+      "mode": 420,
+      "sizeBytes": 39066,
+      "sha256": "d5e3325ea985a4c19b784c90b1955d740068a26d0bc38a37d9a5d2de41b62f06"
+    },
+    {
+      "relative": "rules/constants.ts",
+      "path": "packages/starchess-core/src/rules/constants.ts",
+      "mode": 420,
+      "sizeBytes": 2062,
+      "sha256": "66acdcc1abc05197fbe3ae9df57a0efe4acea88c6ada78e4db9590f3343b6ff7"
+    },
+    {
+      "relative": "rules/economy.ts",
+      "path": "packages/starchess-core/src/rules/economy.ts",
+      "mode": 420,
+      "sizeBytes": 3611,
+      "sha256": "6fed53b09bf42f75fc6f9621f40361d99a072a551c6dbc76a29977211c99d579"
+    },
+    {
+      "relative": "rules/specials/adjacent.ts",
+      "path": "packages/starchess-core/src/rules/specials/adjacent.ts",
+      "mode": 420,
+      "sizeBytes": 3694,
+      "sha256": "96a671566e971bfbbe80aa64205fa04f7ef1b6a23ef2cf337b321945b2d5e540"
+    },
+    {
+      "relative": "rules/specials/mechaCharon.ts",
+      "path": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+      "mode": 420,
+      "sizeBytes": 5451,
+      "sha256": "b2c8af310fe33f83a18eb3e5e53b41734c147e5f62440d9422b2e757b376c4e4"
+    },
+    {
+      "relative": "rules/specials/registry.ts",
+      "path": "packages/starchess-core/src/rules/specials/registry.ts",
+      "mode": 420,
+      "sizeBytes": 1212,
+      "sha256": "0965a88ac773afe43ca72915d2ddccac4cc84c31f58121a1514f6511de8f6b5d"
+    },
+    {
+      "relative": "rules/specials/stimStep.ts",
+      "path": "packages/starchess-core/src/rules/specials/stimStep.ts",
+      "mode": 420,
+      "sizeBytes": 1421,
+      "sha256": "fbe990595fe42e41aad17460eb76b3a3f134672144a867a52ee618034f4069a1"
+    },
+    {
+      "relative": "rules/validation.ts",
+      "path": "packages/starchess-core/src/rules/validation.ts",
+      "mode": 420,
+      "sizeBytes": 13598,
+      "sha256": "a18e038feb83f3b15f4f9309e33101b23dac2080155af46ac51474f09c0a064c"
+    },
+    {
+      "relative": "scfen/classic.ts",
+      "path": "packages/starchess-core/src/scfen/classic.ts",
+      "mode": 420,
+      "sizeBytes": 44,
+      "sha256": "43e7cdf70d4d0789aa4bc7c808361c1581e0493da21d7027448d669f9a849c1b"
+    },
+    {
+      "relative": "scfen/codec.ts",
+      "path": "packages/starchess-core/src/scfen/codec.ts",
+      "mode": 420,
+      "sizeBytes": 20029,
+      "sha256": "74ab468ff05e53e419a5fe151ebcc266cf89c4c9b3789731a8d9e89e954be3eb"
+    },
+    {
+      "relative": "scfen/index.ts",
+      "path": "packages/starchess-core/src/scfen/index.ts",
+      "mode": 420,
+      "sizeBytes": 733,
+      "sha256": "6fe29e70afd2d6c615a31379174d24de2d011e42d52c693f0ea7954a1cfa64ad"
+    },
+    {
+      "relative": "scfen/legacyKinds.ts",
+      "path": "packages/starchess-core/src/scfen/legacyKinds.ts",
+      "mode": 420,
+      "sizeBytes": 1828,
+      "sha256": "263e4ba87bdeaccf41d18e3c0495430f2b6b0af332ff374f707e2df7babc030b"
+    }
+  ],
+  "historicalArtifacts": [
+    {
+      "relative": "acceptance.json",
+      "path": "artifacts/engine-consolidation/acceptance.json",
+      "mode": 420,
+      "sizeBytes": 4728,
+      "sha256": "af54d844716bb1f814b70fd93118e24930145650c1912728dc1acbd6d37bf2e7"
+    },
+    {
+      "relative": "bun-transition-1/cancel-python.json",
+      "path": "artifacts/engine-consolidation/bun-transition-1/cancel-python.json",
+      "mode": 420,
+      "sizeBytes": 196,
+      "sha256": "c73d458a66bc1db0584a3af965382193d9c2aef917569ca8e8e22fc6251a76d2"
+    },
+    {
+      "relative": "checks/bun-final-1/app-boundaries/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/app-boundaries/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-1/app-boundaries/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/app-boundaries/command.stdout",
+      "mode": 420,
+      "sizeBytes": 78,
+      "sha256": "b89f92a6bbb389199da0b2691a234a99260fbdae053ca62ecaa8eeaf6d0d279d"
+    },
+    {
+      "relative": "checks/bun-final-1/app-boundaries/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/app-boundaries/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126328,
+      "sha256": "a42734708bd5ef4f5fc779eaefe28d95921cc845b59590c62a9bf3687bf33e57"
+    },
+    {
+      "relative": "checks/bun-final-1/app-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/app-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-1/app-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/app-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-1/app-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/app-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126248,
+      "sha256": "cccda8cb6d1825ae46a05191189d23859af4d517a9ba6bf2e6fc545b7f8fa349"
+    },
+    {
+      "relative": "checks/bun-final-1/app/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/app/command.stderr",
+      "mode": 420,
+      "sizeBytes": 2208,
+      "sha256": "1400fd69b8e06a19f175256bd9cf667a3d47867f053d36af64ec8ccf9bc065ba"
+    },
+    {
+      "relative": "checks/bun-final-1/app/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/app/command.stdout",
+      "mode": 420,
+      "sizeBytes": 13676,
+      "sha256": "c82a40ca0a31167a7ab8ee2231071caa22b845b7e2c9ed62007617fa8aa6a0dd"
+    },
+    {
+      "relative": "checks/bun-final-1/app/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/app/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126260,
+      "sha256": "791833399b33e7f8129c2b595975703154e96189bef0104e77dc4a2361391a7b"
+    },
+    {
+      "relative": "checks/bun-final-1/arena-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/arena-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-1/arena-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/arena-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-1/arena-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/arena-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126258,
+      "sha256": "d7ce0b677fdd66c100bc29ef3ff6ef30f22148d5d09c91d032894a41da7579ac"
+    },
+    {
+      "relative": "checks/bun-final-1/arena/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/arena/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-1/arena/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/arena/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1062,
+      "sha256": "0780aeb49f7808744bd1917997488ff37aed23aeda04692c3e0e216a6f183c41"
+    },
+    {
+      "relative": "checks/bun-final-1/arena/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/arena/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126266,
+      "sha256": "3442b413c9931577e0daee2ce6a8f110acd56297799f88f20b1afba5b60cc405"
+    },
+    {
+      "relative": "checks/bun-final-1/core-test-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/core-test-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-1/core-test-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/core-test-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-1/core-test-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/core-test-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126279,
+      "sha256": "bd7662782964f7f70f501af9fdcf6c4287b958425d356bfc4edf0b9153c502ce"
+    },
+    {
+      "relative": "checks/bun-final-1/core-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/core-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-1/core-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/core-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-1/core-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/core-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126256,
+      "sha256": "72c567b142f4434308d8ada26495e730d2065464190f0fee380767bd2b9beedd"
+    },
+    {
+      "relative": "checks/bun-final-1/core/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/core/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-1/core/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/core/command.stdout",
+      "mode": 420,
+      "sizeBytes": 6672,
+      "sha256": "dd0ef7983ae3e53c50430955b8dce6582928ced667a8aa4e4476c80e726ce32c"
+    },
+    {
+      "relative": "checks/bun-final-1/core/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/core/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126271,
+      "sha256": "1aa38d296d6e4c567236606add8ae651c0a1c6a1d384e469e8aaadb8fc524bb5"
+    },
+    {
+      "relative": "checks/bun-final-1/ml-source-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/ml-source-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-1/ml-source-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/ml-source-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-1/ml-source-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/ml-source-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126239,
+      "sha256": "97167236a0a7e41e6cd3ab6d186fc692952c6515de91f3c5458bc0d58a87a1fa"
+    },
+    {
+      "relative": "checks/bun-final-1/ml-test-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/ml-test-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-1/ml-test-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/ml-test-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-1/ml-test-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/ml-test-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126243,
+      "sha256": "4aec95fce0c82e4b2bfe6ea52e7de53433a42aa5d8e4688ad92e1d4058250383"
+    },
+    {
+      "relative": "checks/bun-final-1/ml/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/ml/command.stderr",
+      "mode": 420,
+      "sizeBytes": 40388,
+      "sha256": "94516f8fe134711f1b7642c453f3806c069079d5d7f49a1ec312067feade647a"
+    },
+    {
+      "relative": "checks/bun-final-1/ml/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/ml/command.stdout",
+      "mode": 420,
+      "sizeBytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "relative": "checks/bun-final-1/ml/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/ml/receipt.json",
+      "mode": 420,
+      "sizeBytes": 127280,
+      "sha256": "c581180f9a32dca9473f84174f0eea3bf28234cce5d81b6808c9c5676f75c82c"
+    },
+    {
+      "relative": "checks/bun-final-1/server-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/server-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-1/server-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/server-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-1/server-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/server-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126253,
+      "sha256": "83614760d3010d67e26def45f678a8e8bcd7c441075a6055a93bcb54ce7724a6"
+    },
+    {
+      "relative": "checks/bun-final-1/summary.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/summary.json",
+      "mode": 420,
+      "sizeBytes": 3046,
+      "sha256": "84605d188ba1974071385e85a66e0821bebb69ae1b6dfd892720c42c50806321"
+    },
+    {
+      "relative": "checks/bun-final-1/workspace/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/workspace/command.stderr",
+      "mode": 420,
+      "sizeBytes": 722,
+      "sha256": "040de69a9955ee0a51138ceeafbce6ff941d7d463269fdabbda7ddbc0e8dc385"
+    },
+    {
+      "relative": "checks/bun-final-1/workspace/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/workspace/command.stdout",
+      "mode": 420,
+      "sizeBytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "relative": "checks/bun-final-1/workspace/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-1/workspace/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126221,
+      "sha256": "9a83c5a1a0e69e6fe486746cf6e74ed79e7a865caf4711cdd24832fbbce0d100"
+    },
+    {
+      "relative": "checks/bun-final-2/app-boundaries/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/app-boundaries/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-2/app-boundaries/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/app-boundaries/command.stdout",
+      "mode": 420,
+      "sizeBytes": 78,
+      "sha256": "b89f92a6bbb389199da0b2691a234a99260fbdae053ca62ecaa8eeaf6d0d279d"
+    },
+    {
+      "relative": "checks/bun-final-2/app-boundaries/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/app-boundaries/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126330,
+      "sha256": "a47a5b24237a48dfa0977f2185ee03247c8176a59175c1a4f33d5e0eb0fa3c96"
+    },
+    {
+      "relative": "checks/bun-final-2/app-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/app-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-2/app-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/app-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-2/app-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/app-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126250,
+      "sha256": "93341e774e08ccf1d96cc6cf15957706b223c7598629d51d6332d52359a01e73"
+    },
+    {
+      "relative": "checks/bun-final-2/app/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/app/command.stderr",
+      "mode": 420,
+      "sizeBytes": 2208,
+      "sha256": "1400fd69b8e06a19f175256bd9cf667a3d47867f053d36af64ec8ccf9bc065ba"
+    },
+    {
+      "relative": "checks/bun-final-2/app/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/app/command.stdout",
+      "mode": 420,
+      "sizeBytes": 13681,
+      "sha256": "6bbca4852626c3c681abeb664ab5885a912144d6c9d59ee636914184da00bdf8"
+    },
+    {
+      "relative": "checks/bun-final-2/app/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/app/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126262,
+      "sha256": "562090f9871e61596819db2dcd54e91e33ee423f011c465d106223d986d7fccc"
+    },
+    {
+      "relative": "checks/bun-final-2/arena-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/arena-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-2/arena-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/arena-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-2/arena-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/arena-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126260,
+      "sha256": "de9cc1ecf47b7edc9c9bb209ba4e7b506371e6b019777d8f31e433b9171faa05"
+    },
+    {
+      "relative": "checks/bun-final-2/arena/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/arena/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-2/arena/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/arena/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1062,
+      "sha256": "bd459bd4d39f885794f821dd527f579d216c4ca002a16a60b583ec3e6e54085a"
+    },
+    {
+      "relative": "checks/bun-final-2/arena/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/arena/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126268,
+      "sha256": "f961644b0e0077c37a4673bccb172f306a6f3fd9b42368d73dd6a071119d42d8"
+    },
+    {
+      "relative": "checks/bun-final-2/core-test-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/core-test-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-2/core-test-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/core-test-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-2/core-test-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/core-test-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126281,
+      "sha256": "198974963d65c81f9a681baad86167881a7b6b24793f97c590bb158332daf153"
+    },
+    {
+      "relative": "checks/bun-final-2/core-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/core-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-2/core-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/core-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-2/core-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/core-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126258,
+      "sha256": "c153aad3646afbaf7b3b9bdc751a8c5760ef33c6eafabf423fd32fb463d83c1b"
+    },
+    {
+      "relative": "checks/bun-final-2/core/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/core/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-2/core/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/core/command.stdout",
+      "mode": 420,
+      "sizeBytes": 6673,
+      "sha256": "bbf33f64b4b976b19cf87cf60f2d6e8c967d9b49035723a5116d163993305c8b"
+    },
+    {
+      "relative": "checks/bun-final-2/core/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/core/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126266,
+      "sha256": "4e51e8e529561af2545205bcc0bebad31db8ffc1c91dbee349d23d77269e700f"
+    },
+    {
+      "relative": "checks/bun-final-2/ml-source-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/ml-source-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-2/ml-source-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/ml-source-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-2/ml-source-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/ml-source-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126241,
+      "sha256": "fc922a869728a04b515b9a24a4b871573522957543224cbb6e91bcc2eb8ceff9"
+    },
+    {
+      "relative": "checks/bun-final-2/ml-test-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/ml-test-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-2/ml-test-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/ml-test-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-2/ml-test-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/ml-test-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126245,
+      "sha256": "602d95c86db64b408d437c67e58bf725327f39d643391141f151a0f61688e2b6"
+    },
+    {
+      "relative": "checks/bun-final-2/ml/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/ml/command.stderr",
+      "mode": 420,
+      "sizeBytes": 41861,
+      "sha256": "eb470186291b7e22b58337278f791ef77dea5ce72f541e24d86e924f6d51d871"
+    },
+    {
+      "relative": "checks/bun-final-2/ml/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/ml/command.stdout",
+      "mode": 420,
+      "sizeBytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "relative": "checks/bun-final-2/ml/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/ml/receipt.json",
+      "mode": 420,
+      "sizeBytes": 127276,
+      "sha256": "6bc244e8b0085b585655dae46e1075fa2dfeef7d650a62e5cac8000423dacee0"
+    },
+    {
+      "relative": "checks/bun-final-2/server-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/server-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-2/server-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/server-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-final-2/server-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/server-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126248,
+      "sha256": "865bce3969c3abdf8ecfc111569714e78fc5136087fd6ac930a3af56b7cea35d"
+    },
+    {
+      "relative": "checks/bun-final-2/summary.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/summary.json",
+      "mode": 420,
+      "sizeBytes": 3026,
+      "sha256": "98db731b7f999cca85bf15000c6e923d81e613382e4d402160bb19ab45393f1b"
+    },
+    {
+      "relative": "checks/bun-final-2/workspace/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/workspace/command.stderr",
+      "mode": 420,
+      "sizeBytes": 722,
+      "sha256": "bd1ba055b1e4b3d6168bf9560ea9098446ab7199233ea676e7044bbd47879fdd"
+    },
+    {
+      "relative": "checks/bun-final-2/workspace/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/workspace/command.stdout",
+      "mode": 420,
+      "sizeBytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "relative": "checks/bun-final-2/workspace/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-final-2/workspace/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126223,
+      "sha256": "bbf18289b419dc02dd26ea6bdf4dee0c0a04a2031bdfceb724f46f5d27c5bc77"
+    },
+    {
+      "relative": "checks/bun-initial-1/app-boundaries/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/app-boundaries/command.stderr",
+      "mode": 420,
+      "sizeBytes": 84,
+      "sha256": "bf1e9374c26ab33378747447ee2997b3d78156c6efbe90225c2404611913e9ca"
+    },
+    {
+      "relative": "checks/bun-initial-1/app-boundaries/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/app-boundaries/command.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-initial-1/app-boundaries/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/app-boundaries/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126315,
+      "sha256": "a9e6b2d5ca574afead8eff4a34719dcae3599596e0bbdd88575630908d5a2bec"
+    },
+    {
+      "relative": "checks/bun-initial-1/app-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/app-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-initial-1/app-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/app-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1292,
+      "sha256": "f31230b3d4c3ab2500d3fb31ae5c397620886a1e7e2aa07ab178ef501aef66d0"
+    },
+    {
+      "relative": "checks/bun-initial-1/app-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/app-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126244,
+      "sha256": "3368c34dfe1b2f2af34e7a3d08ed0d662a925726cca3e7aa1f8e627509e27873"
+    },
+    {
+      "relative": "checks/bun-initial-1/app/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/app/command.stderr",
+      "mode": 420,
+      "sizeBytes": 2208,
+      "sha256": "48782227410a5a20823cacbfae379e3ffd209f4f64bc9bcef76eea570a135589"
+    },
+    {
+      "relative": "checks/bun-initial-1/app/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/app/command.stdout",
+      "mode": 420,
+      "sizeBytes": 13685,
+      "sha256": "70282b2461be239ea929eb94a653d79c0b294766d85efa6ca513d9da99c6a705"
+    },
+    {
+      "relative": "checks/bun-initial-1/app/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/app/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126251,
+      "sha256": "5c71d83a50b9b47e8241c10aa2671686f130a5aa195b9c30e0464a9b69d8eeb9"
+    },
+    {
+      "relative": "checks/bun-initial-1/arena-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/arena-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-initial-1/arena-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/arena-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1286,
+      "sha256": "4a9ab8360b006ea1bda22366d6bff54cb7004abf56c798c61f769b647f3fd552"
+    },
+    {
+      "relative": "checks/bun-initial-1/arena-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/arena-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126254,
+      "sha256": "8eb1c6b045271fd9d6229ebac27b2021695e061d43987c7454af63eb37d2786d"
+    },
+    {
+      "relative": "checks/bun-initial-1/arena/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/arena/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-initial-1/arena/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/arena/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1061,
+      "sha256": "a0c9f0ec1ec55f1cc179f6cabe8848ed8c6a2280bcf5e0b5b6bd6eb3d7cd0969"
+    },
+    {
+      "relative": "checks/bun-initial-1/arena/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/arena/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126269,
+      "sha256": "5e71fbd2507d0ccd9464092d75987e8641d8ff789e5bf9160a67ef3c1c80692e"
+    },
+    {
+      "relative": "checks/bun-initial-1/core-test-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/core-test-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-initial-1/core-test-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/core-test-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1268,
+      "sha256": "cdaa94936240e3c3ae0e20751a873f069e05c9adab1892f0fd482ddeccf4d38a"
+    },
+    {
+      "relative": "checks/bun-initial-1/core-test-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/core-test-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126275,
+      "sha256": "53d2bdfff9e2960bfcec2bbcb6c6f9ff6f5796ca351e80c3f7fbfb77a3173451"
+    },
+    {
+      "relative": "checks/bun-initial-1/core-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/core-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-initial-1/core-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/core-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1268,
+      "sha256": "cdaa94936240e3c3ae0e20751a873f069e05c9adab1892f0fd482ddeccf4d38a"
+    },
+    {
+      "relative": "checks/bun-initial-1/core-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/core-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126252,
+      "sha256": "92dd8d5cc9f87bc2191b9a580b0d96060d75c9b6b29ea70be19f502b87527e90"
+    },
+    {
+      "relative": "checks/bun-initial-1/core/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/core/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-initial-1/core/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/core/command.stdout",
+      "mode": 420,
+      "sizeBytes": 6668,
+      "sha256": "380c8738537400dd94b459b1ffa28f89e6952fbe1a71aad532a4501d2c825784"
+    },
+    {
+      "relative": "checks/bun-initial-1/core/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/core/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126259,
+      "sha256": "afdf2363fc14a264c413885f085dabb7e9047bb9345a7a9f1a46214de028ac06"
+    },
+    {
+      "relative": "checks/bun-initial-1/ml-source-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/ml-source-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-initial-1/ml-source-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/ml-source-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1292,
+      "sha256": "b76a72319b3ee1ab34ea3383ecaee7e7294076c4dc976201786b11b396c1339e"
+    },
+    {
+      "relative": "checks/bun-initial-1/ml-source-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/ml-source-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126235,
+      "sha256": "7dc4e6f717df33dd31c7366fb252e23ffd8ecb707bb28052d814da50bc7aa07f"
+    },
+    {
+      "relative": "checks/bun-initial-1/ml-test-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/ml-test-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-initial-1/ml-test-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/ml-test-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1292,
+      "sha256": "b76a72319b3ee1ab34ea3383ecaee7e7294076c4dc976201786b11b396c1339e"
+    },
+    {
+      "relative": "checks/bun-initial-1/ml-test-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/ml-test-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126239,
+      "sha256": "6fbef3a56f5ba16afa0510dd099bf8e7acf22eeeedce463815837dd1b18fab1e"
+    },
+    {
+      "relative": "checks/bun-initial-1/ml/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/ml/command.stderr",
+      "mode": 420,
+      "sizeBytes": 39931,
+      "sha256": "89a6e0c9bb7fd699095a64b4bd3c5225e69477e6df1b75bcf22888362739f497"
+    },
+    {
+      "relative": "checks/bun-initial-1/ml/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/ml/command.stdout",
+      "mode": 420,
+      "sizeBytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "relative": "checks/bun-initial-1/ml/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/ml/receipt.json",
+      "mode": 420,
+      "sizeBytes": 127276,
+      "sha256": "50e3236dd977b4495d04388b35edc8d135cdd8e7b8654050a116e94dcaa73f39"
+    },
+    {
+      "relative": "checks/bun-initial-1/remaining-summary.json",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/remaining-summary.json",
+      "mode": 420,
+      "sizeBytes": 2339,
+      "sha256": "2d4b86f4ea737ca633665abb5605da2e878ee70d10c5cde4c6ccfef56f41de37"
+    },
+    {
+      "relative": "checks/bun-initial-1/server-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/server-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/bun-initial-1/server-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/server-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1298,
+      "sha256": "a997000f8b7b617be0ae12659c54479ee6e3e84df9327bc3c2937faa668e81bd"
+    },
+    {
+      "relative": "checks/bun-initial-1/server-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/server-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126249,
+      "sha256": "a0d248e97bb28e27a54402f6c9fb17316565c5e011a1e3f1fd690f81f5a79e73"
+    },
+    {
+      "relative": "checks/bun-initial-1/workspace/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/workspace/command.stderr",
+      "mode": 420,
+      "sizeBytes": 722,
+      "sha256": "de306b0ab21fed1f96e371a70958a2ad30738b097f9c21c707db4c47737861b4"
+    },
+    {
+      "relative": "checks/bun-initial-1/workspace/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/workspace/command.stdout",
+      "mode": 420,
+      "sizeBytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "relative": "checks/bun-initial-1/workspace/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/bun-initial-1/workspace/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126208,
+      "sha256": "9cde01bce8e664f9bf59aaa30c7f17d31584847bdd879ae38775d1d935fd7c9c"
+    },
+    {
+      "relative": "checks/initial-1/app-boundaries/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/initial-1/app-boundaries/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/initial-1/app-boundaries/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/initial-1/app-boundaries/command.stdout",
+      "mode": 420,
+      "sizeBytes": 257,
+      "sha256": "8ffd39807c7b3f3a5d35331d8a198411d6c8ba5d7e65bdda3396ae4b34e4494f"
+    },
+    {
+      "relative": "checks/initial-1/app-boundaries/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/initial-1/app-boundaries/receipt.json",
+      "mode": 420,
+      "sizeBytes": 125865,
+      "sha256": "30edbd4a7cd5b1954aa24a1de0a71d8d3fc07a701b0ae3589bb24510f1ccdaba"
+    },
+    {
+      "relative": "checks/initial-1/app-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/initial-1/app-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/initial-1/app-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/initial-1/app-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1610,
+      "sha256": "4857d589372e6023ae636a3bf895737d0f307802485defe1a34e5dd4726c678c"
+    },
+    {
+      "relative": "checks/initial-1/app-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/initial-1/app-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 125859,
+      "sha256": "d048ee530fb09c65a6310ea4ad2648b7558c257478d57de23c899c06133a70ef"
+    },
+    {
+      "relative": "checks/initial-1/app/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/initial-1/app/command.stderr",
+      "mode": 420,
+      "sizeBytes": 1900,
+      "sha256": "e9bcdc36d06cfa38a4ccbc5d45fad45cc8fcc1abe896127a783a35f7d7d7e3b9"
+    },
+    {
+      "relative": "checks/initial-1/app/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/initial-1/app/command.stdout",
+      "mode": 420,
+      "sizeBytes": 10352,
+      "sha256": "f89415c81fd610fc13cb01fdc9f2d91d0f9d66e63c4fde64324eedfbfec74a95"
+    },
+    {
+      "relative": "checks/initial-1/arena-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/initial-1/arena-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/initial-1/arena-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/initial-1/arena-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1286,
+      "sha256": "4a9ab8360b006ea1bda22366d6bff54cb7004abf56c798c61f769b647f3fd552"
+    },
+    {
+      "relative": "checks/initial-1/arena-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/initial-1/arena-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 125837,
+      "sha256": "76130407bd1c9c03cde5eca500d2d8fc10bbbde92816b0fd4ca1d9291716daa5"
+    },
+    {
+      "relative": "checks/initial-1/arena/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/initial-1/arena/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/initial-1/arena/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/initial-1/arena/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1061,
+      "sha256": "0e6c6800a2cef6358edb0747fb0902b9336f3479ab82b6391b940148cfbfded5"
+    },
+    {
+      "relative": "checks/initial-1/arena/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/initial-1/arena/receipt.json",
+      "mode": 420,
+      "sizeBytes": 125843,
+      "sha256": "12192910ea4943f1a905bc631b7d319bc4fd94d768ced6b01b1e61e861d373ea"
+    },
+    {
+      "relative": "checks/initial-1/core-test-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/initial-1/core-test-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/initial-1/core-test-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/initial-1/core-test-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1268,
+      "sha256": "cdaa94936240e3c3ae0e20751a873f069e05c9adab1892f0fd482ddeccf4d38a"
+    },
+    {
+      "relative": "checks/initial-1/core-test-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/initial-1/core-test-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 125858,
+      "sha256": "7030be908fbe54dc4ab1e36148a055673e0c3bc13b5fe6eed528d2b60aca0dfb"
+    },
+    {
+      "relative": "checks/initial-1/core-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/initial-1/core-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/initial-1/core-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/initial-1/core-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1268,
+      "sha256": "cdaa94936240e3c3ae0e20751a873f069e05c9adab1892f0fd482ddeccf4d38a"
+    },
+    {
+      "relative": "checks/initial-1/core-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/initial-1/core-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 125835,
+      "sha256": "308834ec6e534ac2885cff9e0006cf5059e798ae030378b9c5f62d5e4f1da4fe"
+    },
+    {
+      "relative": "checks/initial-1/core/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/initial-1/core/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/initial-1/core/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/initial-1/core/command.stdout",
+      "mode": 420,
+      "sizeBytes": 6668,
+      "sha256": "616e7f95d1af3f7a20b5fe69eddde66080b6452589e8f20079181ac4e9b67c67"
+    },
+    {
+      "relative": "checks/initial-1/core/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/initial-1/core/receipt.json",
+      "mode": 420,
+      "sizeBytes": 125843,
+      "sha256": "697edb576d30e37793b0c786bc652cff80c8eb34423449794348746f81d3da90"
+    },
+    {
+      "relative": "checks/initial-1/ml-source-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/initial-1/ml-source-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/initial-1/ml-source-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/initial-1/ml-source-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1292,
+      "sha256": "b76a72319b3ee1ab34ea3383ecaee7e7294076c4dc976201786b11b396c1339e"
+    },
+    {
+      "relative": "checks/initial-1/ml-source-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/initial-1/ml-source-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 125801,
+      "sha256": "9aca19f5486046b1990aaa47bb7e5060a7898d254477ac43eb3b58c60bc7c5e9"
+    },
+    {
+      "relative": "checks/initial-1/ml-test-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/initial-1/ml-test-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/initial-1/ml-test-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/initial-1/ml-test-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1292,
+      "sha256": "b76a72319b3ee1ab34ea3383ecaee7e7294076c4dc976201786b11b396c1339e"
+    },
+    {
+      "relative": "checks/initial-1/ml-test-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/initial-1/ml-test-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 125805,
+      "sha256": "893316d7eb458673230379b2d6f1c631d7ea52d6dff7250859d68d587c04e50f"
+    },
+    {
+      "relative": "checks/initial-1/ml/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/initial-1/ml/command.stderr",
+      "mode": 420,
+      "sizeBytes": 39950,
+      "sha256": "531578c69e31d9c57d6c695f99e097dcf20c12ab05174e9794be0034c6b481c1"
+    },
+    {
+      "relative": "checks/initial-1/ml/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/initial-1/ml/command.stdout",
+      "mode": 420,
+      "sizeBytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "relative": "checks/initial-1/ml/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/initial-1/ml/receipt.json",
+      "mode": 420,
+      "sizeBytes": 126890,
+      "sha256": "f8b9d3dca594d144eca85bf8cc205e285300b009e39a2f73ee5d18f1d695320b"
+    },
+    {
+      "relative": "checks/initial-1/server-types/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/initial-1/server-types/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/initial-1/server-types/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/initial-1/server-types/command.stdout",
+      "mode": 420,
+      "sizeBytes": 1298,
+      "sha256": "a997000f8b7b617be0ae12659c54479ee6e3e84df9327bc3c2937faa668e81bd"
+    },
+    {
+      "relative": "checks/initial-1/server-types/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/initial-1/server-types/receipt.json",
+      "mode": 420,
+      "sizeBytes": 125794,
+      "sha256": "a19c3e8fd0d8c565a4b6360b0338f0395c43bb63937fdb29f5dc7877707fc2e8"
+    },
+    {
+      "relative": "checks/initial-1/workspace/command.stderr",
+      "path": "artifacts/engine-consolidation/checks/initial-1/workspace/command.stderr",
+      "mode": 420,
+      "sizeBytes": 1184,
+      "sha256": "d7759b53a816d65d20f5a48afafa787a5f8d19549ea0022f00260f71cf6d30a0"
+    },
+    {
+      "relative": "checks/initial-1/workspace/command.stdout",
+      "path": "artifacts/engine-consolidation/checks/initial-1/workspace/command.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "checks/initial-1/workspace/receipt.json",
+      "path": "artifacts/engine-consolidation/checks/initial-1/workspace/receipt.json",
+      "mode": 420,
+      "sizeBytes": 125804,
+      "sha256": "f7ec54a039560c7b54884b498bfe3e7942e26c2001524c5c09fffe142438696a"
+    },
+    {
+      "relative": "closure-0leUzt/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-0leUzt/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 798327,
+      "sha256": "8b038203260a443b2b2934ce647b2af16ba7210d93aca18b615bf59bc7e6fb78"
+    },
+    {
+      "relative": "closure-0leUzt/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-0leUzt/metafile.json",
+      "mode": 420,
+      "sizeBytes": 81032,
+      "sha256": "815a69bfa0398dbdb08fd71250fffc25f035a55f26ee3420e3d965dbb4ef2f0c"
+    },
+    {
+      "relative": "closure-ASiz40/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-ASiz40/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 953311,
+      "sha256": "32a6773dedac801f91610c28fd20323b73019b3ff992bb9088cb394e467794b6"
+    },
+    {
+      "relative": "closure-ASiz40/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-ASiz40/metafile.json",
+      "mode": 420,
+      "sizeBytes": 110980,
+      "sha256": "117a736a1cf99e9e0618b23401e557d5b45d38bad828619bdbc67404161b716b"
+    },
+    {
+      "relative": "closure-AWea3h/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-AWea3h/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 802774,
+      "sha256": "0ba841d9a63287e4f5b39590dd34f4f3806d87d1d393b383f872ce3efc8c983f"
+    },
+    {
+      "relative": "closure-AWea3h/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-AWea3h/metafile.json",
+      "mode": 420,
+      "sizeBytes": 109340,
+      "sha256": "6ffac7676591522f86c4d213a2863871883242bcecbf8226a9dd8af1fb40a077"
+    },
+    {
+      "relative": "closure-BeT65c/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-BeT65c/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 802774,
+      "sha256": "0ba841d9a63287e4f5b39590dd34f4f3806d87d1d393b383f872ce3efc8c983f"
+    },
+    {
+      "relative": "closure-BeT65c/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-BeT65c/metafile.json",
+      "mode": 420,
+      "sizeBytes": 109340,
+      "sha256": "f6b916e8b1bc5b607cda1d501e3f2de847b0896405c73a6f57840a4730b8aea9"
+    },
+    {
+      "relative": "closure-du6MuJ/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-du6MuJ/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 952377,
+      "sha256": "ebb878579a0db52295495628908b2e1b12379ca0040666bba6764150fee09135"
+    },
+    {
+      "relative": "closure-du6MuJ/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-du6MuJ/metafile.json",
+      "mode": 420,
+      "sizeBytes": 110980,
+      "sha256": "210586bfff5b0153ac0ad8f91ab90e97b5fcab8b928abe5d57b88d6cc630e47f"
+    },
+    {
+      "relative": "closure-EAlMav/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-EAlMav/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 802774,
+      "sha256": "0ba841d9a63287e4f5b39590dd34f4f3806d87d1d393b383f872ce3efc8c983f"
+    },
+    {
+      "relative": "closure-EAlMav/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-EAlMav/metafile.json",
+      "mode": 420,
+      "sizeBytes": 109340,
+      "sha256": "58249a820155785422f391de5f8aaa7f8c8f764e239857ea819d0cdcfba8be4f"
+    },
+    {
+      "relative": "closure-ffne9h/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-ffne9h/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 955516,
+      "sha256": "c88169cac367563b6c88a4d9e071b47fffb4f4937eb784499ec669f0cecddc0c"
+    },
+    {
+      "relative": "closure-ffne9h/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-ffne9h/metafile.json",
+      "mode": 420,
+      "sizeBytes": 111169,
+      "sha256": "c17d6799780822e77ab7985c8bc8fb5e7d99bd21a23e3d8374c584057397a549"
+    },
+    {
+      "relative": "closure-HoOjdi/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-HoOjdi/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 798327,
+      "sha256": "8b038203260a443b2b2934ce647b2af16ba7210d93aca18b615bf59bc7e6fb78"
+    },
+    {
+      "relative": "closure-HoOjdi/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-HoOjdi/metafile.json",
+      "mode": 420,
+      "sizeBytes": 81032,
+      "sha256": "f42de4c2f41b1313b4caf332ecccb9493c85aef9ecffe6054fdf8ae606e210ca"
+    },
+    {
+      "relative": "closure-jZdVb8/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-jZdVb8/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 798327,
+      "sha256": "8b038203260a443b2b2934ce647b2af16ba7210d93aca18b615bf59bc7e6fb78"
+    },
+    {
+      "relative": "closure-jZdVb8/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-jZdVb8/metafile.json",
+      "mode": 420,
+      "sizeBytes": 81032,
+      "sha256": "9dfae2a78e161be849d9bad0e9b87f6eca6d8063d5cf933093bc8cfa314b9d77"
+    },
+    {
+      "relative": "closure-n57DeH/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-n57DeH/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 798327,
+      "sha256": "8b038203260a443b2b2934ce647b2af16ba7210d93aca18b615bf59bc7e6fb78"
+    },
+    {
+      "relative": "closure-n57DeH/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-n57DeH/metafile.json",
+      "mode": 420,
+      "sizeBytes": 81032,
+      "sha256": "3fcf5ee43626ab1272b11d77d017d6723a8a694b707c0f85aa599c3290437748"
+    },
+    {
+      "relative": "closure-PkaQqV/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-PkaQqV/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 963534,
+      "sha256": "f63849732468f6c7a01d3b375f3fb309b4c1e665bbe625cb52b63f46fea34262"
+    },
+    {
+      "relative": "closure-PkaQqV/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-PkaQqV/metafile.json",
+      "mode": 420,
+      "sizeBytes": 113086,
+      "sha256": "bca8d5e045f573d2aeef7fb03cfcdb083d258363dfc0d40b48d5f762942199d6"
+    },
+    {
+      "relative": "closure-POQkrF/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-POQkrF/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 798327,
+      "sha256": "8b038203260a443b2b2934ce647b2af16ba7210d93aca18b615bf59bc7e6fb78"
+    },
+    {
+      "relative": "closure-POQkrF/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-POQkrF/metafile.json",
+      "mode": 420,
+      "sizeBytes": 81032,
+      "sha256": "52205185193eefc9ab7b13793449456da8b09502decc3942985eee0b593063a2"
+    },
+    {
+      "relative": "closure-qCIIzr/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-qCIIzr/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 960395,
+      "sha256": "f446e70a101f88410fde9cca60e1fa803af86e84e878eab515d0954bc6033460"
+    },
+    {
+      "relative": "closure-qCIIzr/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-qCIIzr/metafile.json",
+      "mode": 420,
+      "sizeBytes": 112897,
+      "sha256": "cffe6d0623e08447e4ff0c7392ff2938dabbdf589b2e857d2c88db07bf8299b1"
+    },
+    {
+      "relative": "closure-r0Wcl9/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-r0Wcl9/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 960395,
+      "sha256": "f446e70a101f88410fde9cca60e1fa803af86e84e878eab515d0954bc6033460"
+    },
+    {
+      "relative": "closure-r0Wcl9/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-r0Wcl9/metafile.json",
+      "mode": 420,
+      "sizeBytes": 112897,
+      "sha256": "2ded0eb9f21b40c378e5176d7a7387771a4d7f5b647f878d905af85d4e7b12d6"
+    },
+    {
+      "relative": "closure-r4ys5j/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-r4ys5j/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 798327,
+      "sha256": "8b038203260a443b2b2934ce647b2af16ba7210d93aca18b615bf59bc7e6fb78"
+    },
+    {
+      "relative": "closure-r4ys5j/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-r4ys5j/metafile.json",
+      "mode": 420,
+      "sizeBytes": 81032,
+      "sha256": "fde3c2c8eeabfb39246deb75d315819a685ac2dff11b17af26a07953a999606b"
+    },
+    {
+      "relative": "closure-RTnB11/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-RTnB11/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 961329,
+      "sha256": "25e5b0fea99689cbcd101ee9f753c79113eabb3b2cdf5aa74c3e1f629c7ffc60"
+    },
+    {
+      "relative": "closure-RTnB11/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-RTnB11/metafile.json",
+      "mode": 420,
+      "sizeBytes": 112897,
+      "sha256": "87bbeb939f63c0e5de4e672f3d47611bec81a533e43918aa5002f249cc5d7123"
+    },
+    {
+      "relative": "closure-UHrSWY/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-UHrSWY/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 952377,
+      "sha256": "ebb878579a0db52295495628908b2e1b12379ca0040666bba6764150fee09135"
+    },
+    {
+      "relative": "closure-UHrSWY/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-UHrSWY/metafile.json",
+      "mode": 420,
+      "sizeBytes": 110980,
+      "sha256": "8c203d4bca73f873e304395d988bc144df5aa09f5f127dda6939c3106fc337b7"
+    },
+    {
+      "relative": "closure-xdEgAg/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-xdEgAg/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 798327,
+      "sha256": "8b038203260a443b2b2934ce647b2af16ba7210d93aca18b615bf59bc7e6fb78"
+    },
+    {
+      "relative": "closure-xdEgAg/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-xdEgAg/metafile.json",
+      "mode": 420,
+      "sizeBytes": 81032,
+      "sha256": "bff6e7880ad7d0a553b971e176c468a5e15c37e6f2389e0f6b2673eb899afb5d"
+    },
+    {
+      "relative": "closure-ZePzi3/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-ZePzi3/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 798327,
+      "sha256": "8b038203260a443b2b2934ce647b2af16ba7210d93aca18b615bf59bc7e6fb78"
+    },
+    {
+      "relative": "closure-ZePzi3/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-ZePzi3/metafile.json",
+      "mode": 420,
+      "sizeBytes": 81032,
+      "sha256": "48e39cd1d8021e76fe787923c1032242afcc3e922570393fed94646a27cddb06"
+    },
+    {
+      "relative": "closure-zsPG8A/audit-only.js",
+      "path": "artifacts/engine-consolidation/closure-zsPG8A/audit-only.js",
+      "mode": 420,
+      "sizeBytes": 802774,
+      "sha256": "0ba841d9a63287e4f5b39590dd34f4f3806d87d1d393b383f872ce3efc8c983f"
+    },
+    {
+      "relative": "closure-zsPG8A/metafile.json",
+      "path": "artifacts/engine-consolidation/closure-zsPG8A/metafile.json",
+      "mode": 420,
+      "sizeBytes": 109340,
+      "sha256": "cf775042a5038b26f56549fbb559ba09a566fececb4ea48cf66a363ea4d5cdc3"
+    },
+    {
+      "relative": "install-1/command.stderr",
+      "path": "artifacts/engine-consolidation/install-1/command.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "install-1/command.stdout",
+      "path": "artifacts/engine-consolidation/install-1/command.stdout",
+      "mode": 420,
+      "sizeBytes": 738,
+      "sha256": "e42b853b1dfd88a192949f393d2257bc3e8ea7b3971fcab155533b68d4dda62b"
+    },
+    {
+      "relative": "install-1/receipt.json",
+      "path": "artifacts/engine-consolidation/install-1/receipt.json",
+      "mode": 420,
+      "sizeBytes": 2871,
+      "sha256": "27c8d665b2c4cc833f63c1a9c5036a7f028bc1d79846d1442df8d92d280cebd1"
+    },
+    {
+      "relative": "reviews.json",
+      "path": "artifacts/engine-consolidation/reviews.json",
+      "mode": 420,
+      "sizeBytes": 427,
+      "sha256": "242de34096d2063b893e7e3d563408a68139ae135c57c2a4e770a11b95c290c6"
+    },
+    {
+      "relative": "run_check.ts",
+      "path": "artifacts/engine-consolidation/run_check.ts",
+      "mode": 420,
+      "sizeBytes": 5356,
+      "sha256": "9c120716364b35a6361589f6eb3434068461351cbc79066a83e0743d2795e94a"
+    },
+    {
+      "relative": "spec-bun-1/receipt.json",
+      "path": "artifacts/engine-consolidation/spec-bun-1/receipt.json",
+      "mode": 420,
+      "sizeBytes": 1405,
+      "sha256": "16819dec8f401237c4ce16f346cc2baaee89e2fcc7cdf62ccd4dbd5d14616171"
+    },
+    {
+      "relative": "spec-bun-2/receipt.json",
+      "path": "artifacts/engine-consolidation/spec-bun-2/receipt.json",
+      "mode": 420,
+      "sizeBytes": 1545,
+      "sha256": "c4d3c032420d48bf2769ea0653af5388e085049a41f0bffe9e9ec5a27ad86ce1"
+    },
+    {
+      "relative": "spec-bun-3/receipt.json",
+      "path": "artifacts/engine-consolidation/spec-bun-3/receipt.json",
+      "mode": 420,
+      "sizeBytes": 2680,
+      "sha256": "6e1f90aea1907625fba4ea13c3c222739e789a2d7893da7fe89bd4cd1dab1d88"
+    },
+    {
+      "relative": "spec-bun-3/workspace.stderr",
+      "path": "artifacts/engine-consolidation/spec-bun-3/workspace.stderr",
+      "mode": 420,
+      "sizeBytes": 722,
+      "sha256": "32b5877383d740b1db34c7c6a93ad889b238f6a843c39ce99fdc4e30364dd9ab"
+    },
+    {
+      "relative": "spec-bun-3/workspace.stdout",
+      "path": "artifacts/engine-consolidation/spec-bun-3/workspace.stdout",
+      "mode": 420,
+      "sizeBytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "relative": "spec-check-1/causal-journal.puml",
+      "path": "artifacts/engine-consolidation/spec-check-1/causal-journal.puml",
+      "mode": 420,
+      "sizeBytes": 2423,
+      "sha256": "709ef68fc4efd42efdf3fdf421ff234ce2fe43e4a15c391033e83e2737b94499"
+    },
+    {
+      "relative": "spec-check-1/causal-journal.stderr",
+      "path": "artifacts/engine-consolidation/spec-check-1/causal-journal.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "spec-check-1/causal-journal.stdout",
+      "path": "artifacts/engine-consolidation/spec-check-1/causal-journal.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "spec-check-1/classical-resolution.puml",
+      "path": "artifacts/engine-consolidation/spec-check-1/classical-resolution.puml",
+      "mode": 420,
+      "sizeBytes": 1972,
+      "sha256": "63ea27814c57fd285a79d4c817514cbd27024088fd36d32b7a114fc53185aa21"
+    },
+    {
+      "relative": "spec-check-1/classical-resolution.stderr",
+      "path": "artifacts/engine-consolidation/spec-check-1/classical-resolution.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "spec-check-1/classical-resolution.stdout",
+      "path": "artifacts/engine-consolidation/spec-check-1/classical-resolution.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "spec-check-1/engine-consolidation.puml",
+      "path": "artifacts/engine-consolidation/spec-check-1/engine-consolidation.puml",
+      "mode": 420,
+      "sizeBytes": 6096,
+      "sha256": "98bd0447de51fc66142649667781f7a7303a2571812476b1758a367a61cd6e89"
+    },
+    {
+      "relative": "spec-check-1/engine-consolidation.stderr",
+      "path": "artifacts/engine-consolidation/spec-check-1/engine-consolidation.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "spec-check-1/engine-consolidation.stdout",
+      "path": "artifacts/engine-consolidation/spec-check-1/engine-consolidation.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "spec-check-1/game-core.puml",
+      "path": "artifacts/engine-consolidation/spec-check-1/game-core.puml",
+      "mode": 420,
+      "sizeBytes": 1892,
+      "sha256": "c2d18b64e01d2e17ea27f7869aa3276505c7d539dbb37160c400a38861573c6e"
+    },
+    {
+      "relative": "spec-check-1/game-core.stderr",
+      "path": "artifacts/engine-consolidation/spec-check-1/game-core.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "spec-check-1/game-core.stdout",
+      "path": "artifacts/engine-consolidation/spec-check-1/game-core.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "spec-check-1/ml-runtime-architecture.puml",
+      "path": "artifacts/engine-consolidation/spec-check-1/ml-runtime-architecture.puml",
+      "mode": 420,
+      "sizeBytes": 4641,
+      "sha256": "23003ee3673e86be2aa866fbe20e469559809ffcc3608c26ef4d8085e8285548"
+    },
+    {
+      "relative": "spec-check-1/ml-runtime-architecture.stderr",
+      "path": "artifacts/engine-consolidation/spec-check-1/ml-runtime-architecture.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "spec-check-1/ml-runtime-architecture.stdout",
+      "path": "artifacts/engine-consolidation/spec-check-1/ml-runtime-architecture.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "spec-check-1/receipt.json",
+      "path": "artifacts/engine-consolidation/spec-check-1/receipt.json",
+      "mode": 420,
+      "sizeBytes": 1978,
+      "sha256": "7c81276874650eb57030fcb6131815bb54c0871f7f8b04708d664b03668665a5"
+    },
+    {
+      "relative": "spec-check-1/turn-resolution.puml",
+      "path": "artifacts/engine-consolidation/spec-check-1/turn-resolution.puml",
+      "mode": 420,
+      "sizeBytes": 2276,
+      "sha256": "09e0e5be6ad396d3d3e98e129501862e8eb8086e2763c3b27509b92ee0639938"
+    },
+    {
+      "relative": "spec-check-1/turn-resolution.stderr",
+      "path": "artifacts/engine-consolidation/spec-check-1/turn-resolution.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "spec-check-1/turn-resolution.stdout",
+      "path": "artifacts/engine-consolidation/spec-check-1/turn-resolution.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "architecture-offline.puml",
+      "path": "artifacts/integration/mainline-1/architecture-offline.puml",
+      "mode": 420,
+      "sizeBytes": 3538,
+      "sha256": "240fd9d1968080f21fbee0b24f541bc383003ecf8b3645563d25f6ba9121507c"
+    },
+    {
+      "relative": "diagram-offline-syntax.stderr",
+      "path": "artifacts/integration/mainline-1/diagram-offline-syntax.stderr",
+      "mode": 420,
+      "sizeBytes": 224,
+      "sha256": "b6613e8b471df83cdab710b57046b5f1b54eed0c3d54f39ebb7b215311a5bd06"
+    },
+    {
+      "relative": "diagram-offline-syntax.stdout",
+      "path": "artifacts/integration/mainline-1/diagram-offline-syntax.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "integration-head.stderr",
+      "path": "artifacts/integration/mainline-1/integration-head.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "integration-head.stdout",
+      "path": "artifacts/integration/mainline-1/integration-head.stdout",
+      "mode": 420,
+      "sizeBytes": 41,
+      "sha256": "c8bfb79c8727d1d8e6f0c4d1d0a5db42ca1493856ab9483c60c79c4c4b031d62"
+    },
+    {
+      "relative": "main-ancestry.stderr",
+      "path": "artifacts/integration/mainline-1/main-ancestry.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "main-ancestry.stdout",
+      "path": "artifacts/integration/mainline-1/main-ancestry.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "original-head.stderr",
+      "path": "artifacts/integration/mainline-1/original-head.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "original-head.stdout",
+      "path": "artifacts/integration/mainline-1/original-head.stdout",
+      "mode": 420,
+      "sizeBytes": 41,
+      "sha256": "b9ecd4855081534f404811bb17c8fc33375535facd835b4e5878832c2b684341"
+    },
+    {
+      "relative": "original-tracked-state.stderr",
+      "path": "artifacts/integration/mainline-1/original-tracked-state.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "original-tracked-state.stdout",
+      "path": "artifacts/integration/mainline-1/original-tracked-state.stdout",
+      "mode": 420,
+      "sizeBytes": 130,
+      "sha256": "44ef41f48d27fe69f1a461240f86ae1081b333d371b264b0afa374801d97a8cf"
+    },
+    {
+      "relative": "pending-parent.stderr",
+      "path": "artifacts/integration/mainline-1/pending-parent.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "pending-parent.stdout",
+      "path": "artifacts/integration/mainline-1/pending-parent.stdout",
+      "mode": 420,
+      "sizeBytes": 41,
+      "sha256": "b9ecd4855081534f404811bb17c8fc33375535facd835b4e5878832c2b684341"
+    },
+    {
+      "relative": "product-tree-preserved.stderr",
+      "path": "artifacts/integration/mainline-1/product-tree-preserved.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "product-tree-preserved.stdout",
+      "path": "artifacts/integration/mainline-1/product-tree-preserved.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "receipt.json",
+      "path": "artifacts/integration/mainline-1/receipt.json",
+      "mode": 420,
+      "sizeBytes": 7599,
+      "sha256": "6df75937566865a7a317f48828d99b8129c4ca2a47314576cba96e5200d06f59"
+    },
+    {
+      "relative": "reviews.json",
+      "path": "artifacts/integration/mainline-1/reviews.json",
+      "mode": 420,
+      "sizeBytes": 624,
+      "sha256": "b6736d7bcc9650f05e2a5060eb4342a568a67b9f2708d9a91f6a0a61fa0b5fd5"
+    },
+    {
+      "relative": "staged-maintained-whitespace.stderr",
+      "path": "artifacts/integration/mainline-1/staged-maintained-whitespace.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "staged-maintained-whitespace.stdout",
+      "path": "artifacts/integration/mainline-1/staged-maintained-whitespace.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "unmerged-paths.stderr",
+      "path": "artifacts/integration/mainline-1/unmerged-paths.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "unmerged-paths.stdout",
+      "path": "artifacts/integration/mainline-1/unmerged-paths.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "unstaged-maintained-whitespace.stderr",
+      "path": "artifacts/integration/mainline-1/unstaged-maintained-whitespace.stderr",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "unstaged-maintained-whitespace.stdout",
+      "path": "artifacts/integration/mainline-1/unstaged-maintained-whitespace.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "workspace-tests.stderr",
+      "path": "artifacts/integration/mainline-1/workspace-tests.stderr",
+      "mode": 420,
+      "sizeBytes": 1184,
+      "sha256": "4a2976fdb4ca9b4c467a7b5e44278315b6c5cdf563ebddd5a827f04f34fbece7"
+    },
+    {
+      "relative": "workspace-tests.stdout",
+      "path": "artifacts/integration/mainline-1/workspace-tests.stdout",
+      "mode": 420,
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "filesRead": 471,
+  "bytesRead": 26919628,
+  "network": false,
+  "nativeExecution": false
+}

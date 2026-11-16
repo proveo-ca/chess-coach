@@ -1,7 +1,7 @@
 // SPEC: _spec/causal-journal.puml
-import { addScAction, mapToPlacement } from "@chess-coach/game-core";
-import type { ScActionInput, ScFenSnapshot, ScPiece, Square } from "@chess-coach/game-core";
-import { beginWithJournal, endWithJournal, seedCausalState } from "@chess-coach/game-core/causal-producer";
+import { addScAction, mapToPlacement } from "@chess-coach/starchess-core/engine";
+import type { ScActionInput, ScFenSnapshot, ScPiece, Square } from "@chess-coach/starchess-core/engine";
+import { beginWithJournal, endWithJournal, seedCausalState } from "@chess-coach/starchess-core/causal-producer";
 
 export function causalBoard(pieces: readonly (readonly [Square, ScPiece["type"], "w" | "b"])[], extra: Partial<ScFenSnapshot> = {}): ScFenSnapshot {
   return { placement: mapToPlacement(new Map(pieces.map(([at, type, color]) => [at, { type, color }]))), turn: 21, phase: "P",

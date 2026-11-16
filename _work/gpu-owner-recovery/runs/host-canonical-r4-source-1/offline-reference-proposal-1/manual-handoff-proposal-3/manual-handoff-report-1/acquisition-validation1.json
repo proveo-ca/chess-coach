@@ -1,0 +1,55 @@
+{
+  "status": "PASS_REPORT_CONSISTENCY_NOT_HOST_QUALIFICATION",
+  "evidenceScope": "REPORT",
+  "receiptReconstructionMatchesReportedObserverHash": true,
+  "outerElapsedMs": 30245,
+  "supervisorOperationCutoffExceededAtReportedSnapshot": false,
+  "clockDomainsComparedAcrossProcesses": false,
+  "remainingCombinedAttempts": 0,
+  "npmGetsConsumed": 1,
+  "unusedGetSlots": 1,
+  "retryAuthorized": false,
+  "trainingReady": false,
+  "diagnosticReport": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/acquisition-diagnostic-report-1.json",
+    "bytes": 4464,
+    "sha256": "49079596faaaa36ae7a98aa4a19ed369e7f97a540fb19707e746c16c3bc5ac26",
+    "gitBlobOid": "6ffe7dbfa2cdab0dfa01030a5828af62032b4018"
+  },
+  "consumptionClarification": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/consumption-clarification-2.json",
+    "bytes": 1462,
+    "sha256": "f926aa4a4ec695ee695bafb9168ce2a81e0561cd7f0a999ce0718d108762ae64",
+    "gitBlobOid": "725acd69b9e64ce3b6b0a898af250a3cb79c09fc"
+  },
+  "artifacts": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/observation.report.json",
+      "bytes": 21494,
+      "sha256": "0a73854d02448b3c3644dacd5a9ea654cea1e95164a1973f3dc099b7c854445a",
+      "gitBlobOid": "847d97299c2af4e39f26cf501724aebfb666e1d4"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/attempt.report.json",
+      "bytes": 353,
+      "sha256": "e431cb391f3f1c068cd5092e37db3959c9182ce4cef0ac137d3f68b7e09923e1",
+      "gitBlobOid": "87934acf1d9c8de46d5e2ac2a9c4a3d0f29b4094"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/receipt.report.json",
+      "bytes": 17825,
+      "sha256": "7e030044a024fb973b359448847396b651b44a284d9556126bae46c8419dfe48",
+      "gitBlobOid": "67a25ccd6457ee76a9453106634d21f95c2b0f7e"
+    }
+  ],
+  "preservedFiles": 55,
+  "goalGenerationsPreserved": 3,
+  "source23Helpers2Seal6SevenRecordsAndPublicationBytesUnchanged": true,
+  "originalReportUnknownsPreserved": true,
+  "deliveryCallerEofAndObserverCaptureEofAreDifferentWitnesses": true,
+  "responseCompletionDoesNotEstablishSriExtractionOrUrlDone": true,
+  "exactBlockingInstruction": "UNRESOLVED",
+  "perUrlDeadlineCause": "INFERENCE_PENDING_EXISTING_JOURNAL_REPORT",
+  "actualHostNetworkNativeGpuLlvmAssemblyOrTrainingPerformed": false,
+  "newAllowancesAdded": 0
+}

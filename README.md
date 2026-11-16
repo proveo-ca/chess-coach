@@ -199,7 +199,8 @@ apps/
   e2e/       Playwright end-to-end tests (+ `npm run capture:hero`)
 packages/
   engine-core/   shared prompt/classification/commentary logic (@chess-coach/engine-core)
-  contracts/ game-core/ policy/ runtime/   Bun/TS game integration for the ML runtime
+  starchess-core/   shared product/ML rules; retained native corpus in tests/native
+  contracts/ policy/ runtime/   Bun/TS game integration for the ML runtime
 crates/          Rust + Burn ML runtime (see "ML runtime" below)
 tooling/         ML runtime host tooling (mise host:* tasks)
 _spec/           living architecture specs (.puml + .md) — see CLAUDE.md for the index
@@ -207,9 +208,10 @@ docs/            README assets (hero.gif — regenerated, not hand-drawn)
 Dockerfile       desktop-edition image (UI + native engines + Bun server)
 ```
 
-## ML runtime (`crates/`, `packages/{contracts,game-core,policy,runtime}`)
+## ML runtime (`crates/`, `packages/{starchess-core,contracts,policy,runtime}`)
 
-Clean rebuild on `feat-ml-adjuntant-ii`.
+The ML runtime originated as a clean rebuild on `feat-ml-adjuntant-ii`.
+It now shares the product rules kernel through `packages/starchess-core`.
 
 ### Foundation
 
@@ -219,7 +221,9 @@ Clean rebuild on `feat-ml-adjuntant-ii`.
 - No custom compiler, linker, kernel patch or bootstrap framework.
 - Bun/TypeScript for the canonical game integration and application tooling.
 
-The learning crate uses a standard Burn MLP and episodic objective. `packages/game-core` supplies canonical initialization, native rules, gas-aware queue edits, complete B/C/F physics and an actual-mutation causal journal. Host-only `packages/contracts` entrypoints produce continuing recipient observations, retain side-local identities and paid receipts, own explicit banks and support deterministic source-bound replay. Standard JSON/Zod schemas validate observations, journals, public batches, candidates and inference messages. `packages/policy` enumerates bounded recipient-local candidates and encodes 2,271 observation/action coordinates without a custom enemy-economic estimator. `crates/policy-io` binds model configuration, feature version and native checkpoint identity before scoring. Supervised independent-reference runtime qualification, integrated episode admission/learning, rollout/evaluation and product applications remain pending. This is not a trained model or a production-readiness claim.
+The learning crate uses a standard Burn MLP and episodic objective. `packages/starchess-core` owns the shared product/ML rules kernel, canonical initialization, gas-aware queue edits, complete B/C/F physics and optional mutation-time causal journaling. Its `tests/native` directory retains the native corpus and fixtures. Host-only `packages/contracts` entrypoints produce continuing recipient observations, retain side-local identities and paid receipts, own explicit banks and support deterministic source-bound replay. Standard JSON/Zod schemas validate observations, journals, public batches, candidates and inference messages. `packages/policy` enumerates bounded recipient-local candidates and encodes 2,271 observation/action coordinates without a custom enemy-economic estimator. `crates/policy-io` binds model configuration, feature version and native checkpoint identity before scoring. Runtime orchestration exists, but qualified game-data training and a learned product opponent remain unestablished. This is not a trained model or a production-readiness claim.
+
+See [_spec/engine-consolidation.puml](_spec/engine-consolidation.puml) for shared ownership and the distinct product/ML admission facades.
 
 ### Host entrypoint
 
@@ -242,10 +246,11 @@ MISE_AUTO_INSTALL=false mise exec -- cargo fmt --all -- --check
 MISE_AUTO_INSTALL=false mise exec -- cargo build --workspace --all-targets --locked --offline --jobs 2
 MISE_AUTO_INSTALL=false mise exec -- cargo test --workspace --all-targets --locked --offline --jobs 2
 MISE_AUTO_INSTALL=false mise exec -- cargo clippy --workspace --all-targets --locked --offline --jobs 2 -- -D warnings
-MISE_AUTO_INSTALL=false mise exec -- bun --no-env-file --no-install test packages/game-core/tests packages/contracts/tests packages/policy/tests packages/runtime/tests
+MISE_AUTO_INSTALL=false mise exec -- bun --no-env-file --no-install test packages/starchess-core/tests/native packages/contracts/tests packages/policy/tests packages/runtime/tests
 MISE_AUTO_INSTALL=false mise exec -- bun --no-env-file --no-install run --bun typecheck
 ```
 
+Run `bun run --cwd packages/starchess-core test:native` for the retained native corpus alone.
 Include `packages/runtime/tests` in the Bun suite for private protocol, synthetic native learner, SQL checkpoint and lifecycle fixtures.
 Run `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tooling/runtime/tests -v` for fake-manager, read-only fake-cgroup and bounded evidence-writer checks.
 Those suites authorize no Docker operation or gameplay/training run.

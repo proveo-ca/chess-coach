@@ -1,0 +1,295 @@
+{
+  "status": "LOCAL_MERGE_PREPARED_STATIC_CHECKS_PASS",
+  "branch": "integrate/starchess-ml-main",
+  "existingPullRequest": {
+    "number": 51,
+    "url": "https://github.com/proveo-ca/chess-coach/pull/51",
+    "base": "main",
+    "head": "feat-ml-adjuntant-ii",
+    "observedHead": "f6bce72a2cd10f66acf77162166a1d03fc87cd13"
+  },
+  "mainSha": "2c74922d14cb3e5334058c8025fe140fa23a072d",
+  "pendingMergeParent": "1f279852549086759518d6359597867bc9297c20",
+  "mergeCommitted": false,
+  "productTreeMatchesMain": true,
+  "unresolvedConflicts": 0,
+  "staticTests": 8,
+  "commands": [
+    {
+      "label": "pending-parent",
+      "argv": [
+        "git",
+        "--no-pager",
+        "--no-optional-locks",
+        "rev-parse",
+        "MERGE_HEAD"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 0.001483140978962183
+    },
+    {
+      "label": "integration-head",
+      "argv": [
+        "git",
+        "--no-pager",
+        "--no-optional-locks",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 0.0012929589720442891
+    },
+    {
+      "label": "main-ancestry",
+      "argv": [
+        "git",
+        "--no-pager",
+        "--no-optional-locks",
+        "merge-base",
+        "--is-ancestor",
+        "2c74922d14cb3e5334058c8025fe140fa23a072d",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 0.002506132994312793
+    },
+    {
+      "label": "unmerged-paths",
+      "argv": [
+        "git",
+        "--no-pager",
+        "--no-optional-locks",
+        "diff",
+        "--name-only",
+        "--diff-filter=U"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 0.18588982900837436
+    },
+    {
+      "label": "product-tree-preserved",
+      "argv": [
+        "git",
+        "--no-pager",
+        "--no-optional-locks",
+        "diff",
+        "--cached",
+        "--exit-code",
+        "origin/main",
+        "--",
+        "apps",
+        "packages/starchess-core",
+        "packages/starchess-arena",
+        "packages/engine-core",
+        "packages/client-platform",
+        "packages/ui"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 0.004270365985576063
+    },
+    {
+      "label": "staged-maintained-whitespace",
+      "argv": [
+        "git",
+        "--no-pager",
+        "--no-optional-locks",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        ".gitignore",
+        "README.md",
+        "AGENTS.md",
+        "package.json",
+        "pnpm-workspace.yaml",
+        "pnpm-lock.yaml",
+        "Cargo.toml",
+        "Cargo.lock",
+        "_spec",
+        "apps",
+        "packages",
+        "crates",
+        "tooling",
+        "schemas",
+        "tsconfig.json",
+        "tsconfig.tests.json",
+        "mise.toml"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 0.014452550967689604
+    },
+    {
+      "label": "unstaged-maintained-whitespace",
+      "argv": [
+        "git",
+        "--no-pager",
+        "--no-optional-locks",
+        "diff",
+        "--check",
+        "--",
+        ".gitignore",
+        "README.md",
+        "AGENTS.md",
+        "package.json",
+        "pnpm-workspace.yaml",
+        "pnpm-lock.yaml",
+        "Cargo.toml",
+        "Cargo.lock",
+        "_spec",
+        "apps",
+        "packages",
+        "crates",
+        "tooling",
+        "schemas",
+        "tsconfig.json",
+        "tsconfig.tests.json",
+        "mise.toml"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 0.00874243798898533
+    },
+    {
+      "label": "workspace-tests",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-I",
+        "-S",
+        "tooling/tests/test_workspace_integration.py"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 0.047769049007911235
+    },
+    {
+      "label": "original-head",
+      "argv": [
+        "git",
+        "--no-pager",
+        "--no-optional-locks",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 0.001253900001756847
+    },
+    {
+      "label": "original-tracked-state",
+      "argv": [
+        "git",
+        "--no-pager",
+        "--no-optional-locks",
+        "status",
+        "--short",
+        "--untracked-files=no"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 0.004526078992057592
+    },
+    {
+      "label": "diagram-offline-syntax",
+      "argv": [
+        "plantuml",
+        "-checkonly",
+        "/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/integration/mainline-1/architecture-offline.puml"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 0.5516361640184186
+    }
+  ],
+  "sourcePins": [
+    {
+      "path": "tooling/tests/test_workspace_integration.py",
+      "sizeBytes": 5958,
+      "sha256": "838da130be308444cb176334b9c6f6b16674a4d6730c6a000cd1e3ddd6ecb9ff"
+    },
+    {
+      "path": "_spec/ml-runtime-architecture.puml",
+      "sizeBytes": 3617,
+      "sha256": "dd18a5d9b1846bfc0c24ac91abf0adb4f7173e3fcc6070f54a466c9ad9f0dcda"
+    },
+    {
+      "path": "_spec/architecture.md",
+      "sizeBytes": 12132,
+      "sha256": "aef2208f13d505212117b8843e19c3a2847a8f75f4a5dc10db0f7a698e4d1680"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "sizeBytes": 48662,
+      "sha256": "f4cc8ddbe23d27ce007987d0cf0ac4dd52cb3ccf92077d24e40fcb424991946d"
+    },
+    {
+      "path": "package.json",
+      "sizeBytes": 2599,
+      "sha256": "e77aa0da28728252ffb186cb4d4ca8326ec345d3ae87da2741be4f03a0cdd49b"
+    },
+    {
+      "path": "pnpm-workspace.yaml",
+      "sizeBytes": 161,
+      "sha256": "563a42b9ca873b6e5b7fc304c4778e27f73a30afc6c1415a436316f414be003a"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sizeBytes": 315002,
+      "sha256": "7e6f4dc3055a3f93be730a438cf7a06af097545697c66ba418076e8ea44ab569"
+    },
+    {
+      "path": "Cargo.toml",
+      "sizeBytes": 509,
+      "sha256": "cac3a7e2201dff0ebe9e5d005a9416c7d751523a5e724ad0c8df84cd5063c14f"
+    },
+    {
+      "path": "Cargo.lock",
+      "sizeBytes": 173498,
+      "sha256": "77f674cc26a01f26558fd99c45bdcd5566017be05833fce1d39cae98cda05955"
+    },
+    {
+      "path": "tsconfig.json",
+      "sizeBytes": 481,
+      "sha256": "b632c9b2ab623a3cc74d39601336c8a06ff2bed9233da6c8a9145c67f6a3276c"
+    },
+    {
+      "path": "tsconfig.tests.json",
+      "sizeBytes": 353,
+      "sha256": "28b4b3f31033b2718f3c1431c407f22b7438750ae6d5fc66672b1aefaf83ab17"
+    },
+    {
+      "path": "schemas/feature-layout.json",
+      "sizeBytes": 1399,
+      "sha256": "bca25ea10220001845ad8a5f419f32baf250073b150c9bbe78f17a75c7c08f74"
+    },
+    {
+      "path": "packages/runtime/src/gpu-job.ts",
+      "sizeBytes": 8798,
+      "sha256": "edf7838bafb256e0ba380c234ea255e642220ed6338d95fb41416cbe9ce7f876"
+    }
+  ],
+  "originalCheckoutTrackedStateMatchesBefore": true,
+  "originalUncommittedChangesTransferred": false,
+  "diagramCheck": {
+    "scope": "OFFLINE_SYNTAX_ONLY",
+    "remoteThemeFetched": false,
+    "originalThemeResolutionVerified": false
+  },
+  "skipped": [
+    {
+      "check": "product/ML runtime suites and builds",
+      "reason": "isolated worktree has no installed dependencies or native build outputs; no dependency installation or native execution was authorized"
+    }
+  ],
+  "sharedEngineIntegrated": false,
+  "trainingReady": false,
+  "trainingPerformed": false,
+  "pushed": false,
+  "pullRequestsCreatedOrClosed": 0
+}

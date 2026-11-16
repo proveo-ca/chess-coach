@@ -1,6 +1,6 @@
 // SPEC: _spec/observations.puml
-import { UNIT_COST } from "../../game-core/src/constants";
-import { sq } from "../../game-core/src/board";
+import { UNIT_COST } from "@chess-coach/starchess-core/engine/constants";
+import { sq } from "@chess-coach/starchess-core/engine/board";
 import type { Observation } from "./shape";
 
 export type SemanticIssue = { path: (string | number)[]; message: string };

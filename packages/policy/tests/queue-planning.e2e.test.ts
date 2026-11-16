@@ -1,8 +1,8 @@
 // SPEC: _spec/turn-planning.puml
 import { expect, test } from "bun:test";
 import { decodeCandidate, decodeObservation } from "@chess-coach/contracts";
-import { addScAction, assertQueueGas, knownAppendFailure, nativeClassicalChecks, removeScAction } from "@chess-coach/game-core";
-import type { PlanningKnowledge, ScAction, ScActionInput, ScFenSnapshot } from "@chess-coach/game-core";
+import { addScAction, assertQueueGas, knownAppendFailure, nativeClassicalChecks, removeScAction } from "@chess-coach/starchess-core/engine";
+import type { PlanningKnowledge, ScAction, ScActionInput, ScFenSnapshot } from "@chess-coach/starchess-core/engine";
 import { fixture } from "../../contracts/tests/fixture";
 import { FEATURES, encodeFeatures } from "../src";
 

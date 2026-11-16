@@ -1,0 +1,187 @@
+[
+  {
+    "path": "_spec/.spec-index.json",
+    "bytes": 25730,
+    "sha256": "4ef1cf6d48830137601ade8ff4c2a90575e3d90e79f4ee9ecfd1f259ded61fac"
+  },
+  {
+    "path": "_spec/runtime-protocol.puml",
+    "bytes": 39122,
+    "sha256": "26aac474e4f1ceb6b26fa321725a124d854bc594bab66b868ab74ac1d8cc251e"
+  },
+  {
+    "path": "_spec/gpu-qualification.puml",
+    "bytes": 101271,
+    "sha256": "bee38bfd8ace7dbb07ba22c0ee7366e57b60ef73c3f714bc7f6e9a73658331bf"
+  },
+  {
+    "path": "_spec/gpu-full-qualification.puml",
+    "bytes": 52242,
+    "sha256": "30ba4be8b687fb5693a7f230fa005c5f2870f8d6644d3f23e27b58800489b7be"
+  },
+  {
+    "path": "_spec/gpu-readiness.md",
+    "bytes": 324651,
+    "sha256": "04132ee43d6bb473904f09fdfcbb446d7d9ed95b98fb20c0599b0024504f450f"
+  },
+  {
+    "path": "_spec/gate-closure.md",
+    "bytes": 237814,
+    "sha256": "8575b1e242c4d3a2e08d28b49a120f19052c7ce5a174c531ca4070627e122fa4"
+  },
+  {
+    "path": "_spec/readiness.md",
+    "bytes": 86872,
+    "sha256": "c2e6168503704cb1cecf70cec08ae0ea04c5abbf9c682e47911aa4f17842d47f"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/pre-invocation-check.ts",
+    "bytes": 10829,
+    "sha256": "3e6af9ab0538d084ee7a6c4359c3367905cf40b7e9048fc8ec26428117439910"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invocation-ready1.json",
+    "bytes": 3151,
+    "sha256": "434c1bd59f9b250f77b028576ea06e8c2ea95e165d67284e5172e7de805cb574"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/execution-binding1.json",
+    "bytes": 1402,
+    "sha256": "a2bd47924bc88b167599cabf3aa3b3bc4c3cc085ba7b250341c00593ab9b30e6"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/verification-10/receipt.json",
+    "bytes": 3369,
+    "sha256": "c8544b2d06ba31b3ec8fc3d7a35d507443d66b8e2c5ddb4442e0577368f586c1"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invocation-verification-4/receipt.json",
+    "bytes": 5498,
+    "sha256": "6bff069e999f20aa0370052dcba54620abecd5e7bc9caba8ba2eb5da6bbdc2fa"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/verification-10/clock-domain-proof.json",
+    "bytes": 1134,
+    "sha256": "343d190688af80b8abc886e01f94c012002b53cbc1d3d9526c2741274fc4a10d"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/native-source-manifest.json",
+    "bytes": 8956,
+    "sha256": "7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/sources.json",
+    "bytes": 52763,
+    "sha256": "f10040975443ea4e00bc82a682c9a01dbd9109f34390be9286a5386134c21d8e"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/receipt.json",
+    "bytes": 65032,
+    "sha256": "cf632c5896bd5d46b453a67aeb87d2f0bd735b252960c7eca6917cee802d6f60"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verification-4/sources-after.json",
+    "bytes": 14955,
+    "sha256": "ab8c972d1a26d22cb8ea721ddd255f9564484433633fc83b7936918ac26b142c"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/bun-transition-baseline-1/source-manifest.json",
+    "bytes": 2078,
+    "sha256": "0eeb94d76c688b3a83b7b35e2085a86fdc99c0bc5c532be7aece1fab26f46eab"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/materialization.json",
+    "bytes": 708505,
+    "sha256": "2b13f0daad567013823ea2859a0107818ee9b09766347c2190ec3dfe47949506"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/input-manifest.json",
+    "bytes": 130490,
+    "sha256": "bb03f45257fae1d8ca11710b53547936c3042380188ab10117b704b692d39fb0"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/check.json",
+    "bytes": 3274,
+    "sha256": "acca1e84beb0ebfacf3fb0a7967ffe5d16552861b0da98a4f7e6b4367cee9c63"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/materialization.json",
+    "bytes": 5184,
+    "sha256": "b95bbe9c1568d8169c91d6ce3cb174afceab37ab65f973f66fbc62bb32f4841b"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/input-manifest.json",
+    "bytes": 3820,
+    "sha256": "25c53eae03508b523fc36a962984c4aad23a0f0784b6c71123ac6e320f335460"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/check.json",
+    "bytes": 3797,
+    "sha256": "663a17aafd8b3ee4eb2db83e0c58e2074b113c6b99e07fa96d3d6e6733d86f8d"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/review-5/backend.json",
+    "bytes": 410,
+    "sha256": "106c246b31aa2671cb81d29d55ad15d20c2d9a8377ed8b9f9044cbb4e208f740"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/caller-review-2/backend.json",
+    "bytes": 379,
+    "sha256": "4249bd58a9e5ba9be8c767425c7a98fe09dbe1ed292e81a3f616d262483bea87"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/review-5/devops.json",
+    "bytes": 410,
+    "sha256": "11a8daa51e1988296316d76bad4d0149c48be63d77426c1c5bef0b435f143d4d"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/caller-review-2/devops.json",
+    "bytes": 338,
+    "sha256": "d9c3ad85269985d03e7f236ad930d057350a386a552d13e054471727370ab537"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/review-5/adversarial.json",
+    "bytes": 415,
+    "sha256": "3bde374bb736c985a0f652b2d9e72f3d0e0b61d05f0ae8d9aa151d5e367d8a7c"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/caller-review-2/adversarial.json",
+    "bytes": 368,
+    "sha256": "05edc90818ccd2de68fe60950f4a11a2aace2b831131e9f3a67611ac33968b2a"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/review-5/security.json",
+    "bytes": 490,
+    "sha256": "0879421c73888e2b797ad741cfbb8245e9ddefbcc272d338243cd86e77038935"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/caller-review-2/security.json",
+    "bytes": 459,
+    "sha256": "cf6123d7b6bc932765e4f08dfea0b5f8f60febb5f93953147641ede2feaa7336"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/approval1.json",
+    "bytes": 2150,
+    "sha256": "62af17fc6199b5537c3488c10680b9269baf170a05a322facfdfad3737fea945"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/request.json",
+    "bytes": 1697,
+    "sha256": "2eb3c9727f788f9c95f0f2650ee89bbd94a5eb5ed289db67d91226e978140b70"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/plan.json",
+    "bytes": 3716,
+    "sha256": "8ecfce5156322da42fb852cd071a6091b96187e19a88226bec68295936505f6c"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/bun-clock-selection1.json",
+    "bytes": 1457,
+    "sha256": "1cd6f276d19dbe8d8f6f3a5abab67e2f74ed4435e59dce8528dcb843e95d602a"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/bun-design3.json",
+    "bytes": 2986,
+    "sha256": "a01043a889b591d186cf13744154fcae51d4fc2fada62bc08bd7bd54496889cd"
+  }
+]

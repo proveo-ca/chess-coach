@@ -1,0 +1,367 @@
+// SPEC: _spec/runtime-protocol.puml
+import { strict as assert } from "node:assert";
+import { createHash } from "node:crypto";
+import { closeSync, constants, fstatSync, lstatSync, mkdirSync, openSync, readSync, readdirSync, writeFileSync } from "node:fs";
+import { dirname, join, relative, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+export const ROOT = "/home/gu1lty/Projects/proveo/chess-coach";
+export const PIN = "b4b241481fb12de4a7344e6dba8eda775af57675";
+export const SLICE = "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1";
+export const BASE = resolve(ROOT, SLICE);
+export const LIMITS = { inputFiles: 4096, inputBytes: 134217728, individualInputBytes: 16777216, discoveryMetadataBytes: 8388608 };
+export const CLASSIFICATION = "GIT_REPORTED_PINNED_APPLICATION_SOURCE_SUPERSET_NOT_SELECTED_BUNDLE_CLOSURE";
+export const PARTIAL = "PARTIAL_PINNED_SOURCE_MATERIALIZED_PACKAGES_MISSING";
+export const ALLOWLIST = ["packages/**/src/**/*.{ts,tsx,mts,cts,js,mjs,cjs,json}", "packages/**/package.json", "packages/**/tsconfig*.json", "package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml", "nx.json", "tsconfig*.json"];
+export const QUALIFICATION = {
+  fullC14GuardExecuted: false, fullTreeAncestryAuthenticated: false, selectedBundleClosureEstablished: false,
+  completeOfflineInput: false, referenceBundlingApproved: false, referenceQualificationPassed: false,
+  nativeQualificationPassed: false, referenceCodeExecuted: false, nativeOrGpuExecuted: false,
+  dependencyAcquisitionPerformed: false, installationPerformed: false, networkOperations: 0,
+  gitMutations: 0, commitOrPushPerformed: false, trainingReady: false,
+};
+export const sha256 = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
+export const blobOid = (bytes: Uint8Array) => createHash("sha1").update(`blob ${bytes.byteLength}\0`).update(bytes).digest("hex");
+
+type Kind = "file" | "directory" | "symlink" | "other";
+export interface Store {
+  kind(path: string): Kind | null;
+  read(path: string, limit: number): Buffer;
+  create(path: string, bytes: Uint8Array): void;
+  mkdir(path: string): void;
+  list(path: string): string[];
+}
+export type Entry = { path: string; origin: "pinned-git"; gitBlobOid: string; sourceMode: "100644" | "100755"; expectedBytes: number; reference: typeof PIN };
+export type GitOptions = { cwd: string; environment: Record<string, string>; timeoutMs: number; maxBuffer: number };
+export type GitResult = { exitCode: number; stdout: Buffer; stderr: Buffer; signal: string | null };
+export type GitRunner = (argv: string[], options: GitOptions) => GitResult;
+type GitRecord = { argv: string[]; cwd: string; environment: Record<string, string>; timeoutMs: number; maxBuffer: number; exitCode: number; signal: string | null; stdoutBytes: number; stdoutSha256: string; stderrBytes: number; stderrSha256: string; stderr: string };
+export type Context = { store: Store; git: GitRunner; now: () => number; startedAt: number; commands: GitRecord[]; environment: Record<string, string>; copiedFiles: number; copiedBytes: number };
+
+export function safeRelative(path: string): string {
+  assert.ok(path.length > 0 && Buffer.byteLength(path) <= 4096, "UNSAFE_RELATIVE_PATH");
+  assert.ok(!path.startsWith("/") && !path.includes("\\") && !/[\x00-\x1f\x7f:]/.test(path), "UNSAFE_RELATIVE_PATH");
+  const parts = path.split("/");
+  assert.ok(parts.length <= 64 && parts.every(part => part !== "" && part !== "." && part !== ".."), "UNSAFE_RELATIVE_PATH");
+  return path;
+}
+
+export function sourceSelected(path: string): boolean {
+  safeRelative(path);
+  if (["package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml", "nx.json"].includes(path)) return true;
+  if (/^tsconfig[^/]*\.json$/.test(path)) return true;
+  if (!path.startsWith("packages/")) return false;
+  const parts = path.split("/");
+  if (parts.length < 3) return false;
+  if (parts.at(-1) === "package.json" || /^tsconfig[^/]*\.json$/.test(parts.at(-1)!)) return true;
+  return parts.slice(2, -1).includes("src") && /\.(ts|tsx|mts|cts|js|mjs|cjs|json)$/.test(path);
+}
+
+export function selectEntries(metadata: Buffer, limits = LIMITS): Entry[] {
+  assert.ok(metadata.length <= limits.discoveryMetadataBytes, "DISCOVERY_METADATA_BOUND");
+  assert.ok(metadata.length === 0 || metadata.at(-1) === 0, "TREE_METADATA_TERMINATOR");
+  const text = new TextDecoder("utf-8", { fatal: true }).decode(metadata);
+  const seen = new Set<string>(), entries: Entry[] = [];
+  let total = 0;
+  for (const record of text.length ? text.slice(0, -1).split("\0") : []) {
+    const match = /^([0-7]{6}) (blob|tree|commit) ([0-9a-f]{40}) +([0-9]+|-)\t(.+)$/.exec(record);
+    assert.ok(match, "INVALID_TREE_RECORD");
+    const [, mode, type, oid, size, path] = match;
+    safeRelative(path!);
+    assert.ok(!seen.has(path!), "DUPLICATE_TREE_PATH"); seen.add(path!);
+    if (!sourceSelected(path!)) continue;
+    assert.ok(type === "blob" && (mode === "100644" || mode === "100755"), "UNSUPPORTED_SELECTED_MODE");
+    const bytes = Number(size);
+    assert.ok(size !== "-" && Number.isSafeInteger(bytes) && bytes >= 0 && bytes <= limits.individualInputBytes, "INDIVIDUAL_INPUT_BOUND");
+    total += bytes;
+    assert.ok(total <= limits.inputBytes, "TOTAL_INPUT_BOUND");
+    assert.ok(entries.length < limits.inputFiles, "INPUT_FILE_BOUND");
+    entries.push({ path: path!, origin: "pinned-git", gitBlobOid: oid!, sourceMode: mode, expectedBytes: bytes, reference: PIN });
+  }
+  assert.ok(entries.length > 0, "SOURCE_INPUTS_EMPTY");
+  return entries.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
+}
+
+export function gitArgv(operation: "type" | "tree" | "blob", oid?: string): string[] {
+  const prefix = ["git", "--no-replace-objects", "--no-optional-locks", "-c", "core.fsmonitor=false", "-c", "core.hooksPath=/dev/null"];
+  if (operation === "type") { assert.equal(oid, undefined); return [...prefix, "cat-file", "-t", PIN]; }
+  if (operation === "tree") { assert.equal(oid, undefined); return [...prefix, "ls-tree", "-r", "--long", "-z", PIN]; }
+  assert.equal(operation, "blob"); assert.match(oid ?? "", /^[0-9a-f]{40}$/);
+  return [...prefix, "cat-file", "blob", oid!];
+}
+
+export function gitEnvironment(): Record<string, string> {
+  return { PATH: "/usr/local/bin:/usr/bin:/bin", HOME: process.env.HOME ?? "", TMPDIR: process.env.TMPDIR ?? "", LANG: "C.UTF-8", LC_ALL: "C.UTF-8", TZ: "UTC",
+    GIT_NO_LAZY_FETCH: "1", GIT_TERMINAL_PROMPT: "0", GIT_CONFIG_NOSYSTEM: "1", GIT_CONFIG_GLOBAL: "/dev/null" };
+}
+
+export function context(store: Store, git: GitRunner, now = () => performance.now()): Context {
+  return { store, git, now, startedAt: now(), commands: [], environment: gitEnvironment(), copiedFiles: 0, copiedBytes: 0 };
+}
+
+function withinTrial(ctx: Context) {
+  assert.ok(ctx.now() - ctx.startedAt < 180000, "PREPARATION_TRIAL_DEADLINE_180S");
+}
+
+function gitRead(ctx: Context, operation: "type" | "tree" | "blob", oid?: string): Buffer {
+  withinTrial(ctx);
+  const argv = gitArgv(operation, oid), maxBuffer = operation === "blob" ? LIMITS.individualInputBytes : LIMITS.discoveryMetadataBytes;
+  const timeoutMs = Math.max(1, Math.min(operation === "blob" ? 10000 : 20000, Math.floor(180000 - (ctx.now() - ctx.startedAt))));
+  const options = { cwd: ROOT, environment: ctx.environment, timeoutMs, maxBuffer };
+  const result = ctx.git(argv, options);
+  ctx.commands.push({ argv, ...options, exitCode: result.exitCode, signal: result.signal, stdoutBytes: result.stdout.length, stdoutSha256: sha256(result.stdout),
+    stderrBytes: result.stderr.length, stderrSha256: sha256(result.stderr), stderr: result.stderr.subarray(0, 8192).toString("utf8") });
+  withinTrial(ctx);
+  assert.ok(result.stdout.length <= maxBuffer && result.stderr.length <= maxBuffer, "GIT_OUTPUT_BOUND");
+  assert.ok(result.exitCode === 0 && result.signal === null, "LOCAL_GIT_READ_FAILED");
+  return result.stdout;
+}
+
+function jsonBytes(value: unknown) { return Buffer.from(JSON.stringify(value, null, 2) + "\n"); }
+function readJson(store: Store, path: string, limit: number): { bytes: Buffer; value: any } {
+  assert.equal(store.kind(path), "file", "REGULAR_METADATA_REQUIRED:" + path);
+  const bytes = store.read(path, limit);
+  assert.ok(bytes.length <= limit, "METADATA_READ_BOUND");
+  return { bytes, value: JSON.parse(bytes.toString("utf8")) };
+}
+
+function controls(store: Store) {
+  const scope = readJson(store, "scope.json", 65536), packages = readJson(store, "package-discovery.json", 65536);
+  assert.equal(scope.value.localDiscoveryAndSelectedInputMaterializationAuthorized, true);
+  assert.equal(scope.value.gitRoot, ROOT); assert.equal(scope.value.reference, PIN);
+  assert.equal(scope.value.sourceRoot, SLICE + "/inputs/reference");
+  assert.deepEqual(scope.value.sourceAllowlist, ALLOWLIST); assert.deepEqual(scope.value.limits, LIMITS);
+  assert.deepEqual(scope.value.selectedPackageVersions, { fflate: "0.8.3", jssha: "3.3.2" });
+  assert.equal(scope.value.manifestRequiredBeforeCopying, true); assert.equal(scope.value.preservePartialResults, true);
+  for (const key of ["symlinksOrNonRegularSourceInputsAuthorized", "broadDependencyCacheCopyAuthorized", "failedFull1CacheUseAuthorized", "haltedLlvmArchivePipelineAccessAuthorized", "newResolverOrAuthorizationFrameworkAuthorized", "referenceBundlingApproved", "dependencyAcquisitionOrInstallationApproved", "hostExecutionApproved", "nativeOrGpuExecutionApproved", "actualCommitOrPushApproved", "experimentTrainingApproved", "trainingReady"]) assert.equal(scope.value[key], false);
+  assert.equal(packages.value.status, "MISSING_IN_BOUNDED_LOCAL_INSTALLED_PACKAGE_SEARCH");
+  assert.equal(packages.value.absenceEverywhereEstablished, false);
+  assert.deepEqual(packages.value.required, [
+    { name: "fflate", version: "0.8.3", selectedRuntimeFile: "esm/index.mjs", installedRoot: null },
+    { name: "jssha", version: "3.3.2", selectedRuntimeFile: "dist/sha256.mjs", installedRoot: null },
+  ]);
+  return { scopeSha256: sha256(scope.bytes), packageDiscoverySha256: sha256(packages.bytes), missingPackages: packages.value.required };
+}
+
+function manifestFor(metadata: Buffer, store: Store) {
+  const entries = selectEntries(metadata), control = controls(store);
+  return { version: "local-pinned-input-manifest.v1", reference: PIN, gitRoot: ROOT, sourceRoot: SLICE + "/inputs/reference", sourceClassification: CLASSIFICATION,
+    limits: LIMITS, discoveryMetadataSha256: sha256(metadata), ...control, entries, inputFileCount: entries.length,
+    inputBytes: entries.reduce((sum, entry) => sum + entry.expectedBytes, 0), installedPackageFilesCopied: 0,
+    installedPackageStatus: "MISSING_IN_BOUNDED_LOCAL_SEARCH", packageAbsenceEverywhereEstablished: false, ...QUALIFICATION };
+}
+
+function plan(ctx: Context) {
+  const discovery = readJson(ctx.store, "discovery.json", 16 * 1024 * 1024), manifest = readJson(ctx.store, "input-manifest.json", LIMITS.discoveryMetadataBytes);
+  assert.equal(discovery.value.version, "local-pinned-input-discovery.v1");
+  assert.equal(discovery.value.reference, PIN); assert.equal(discovery.value.commitObjectTypeReportedByGit, "commit");
+  assert.equal(discovery.value.metadata.encoding, "base64");
+  const metadata = Buffer.from(discovery.value.metadata.data, "base64");
+  assert.equal(metadata.toString("base64"), discovery.value.metadata.data, "NONCANONICAL_METADATA_ENCODING");
+  assert.equal(metadata.length, discovery.value.metadata.bytes); assert.equal(sha256(metadata), discovery.value.metadata.sha256);
+  assert.equal(sha256(manifest.bytes), discovery.value.inputManifestSha256, "MANIFEST_BINDING_MISMATCH");
+  const expected = manifestFor(metadata, ctx.store);
+  assert.deepEqual(manifest.value, expected, "MANIFEST_MEMBERSHIP_MISMATCH");
+  return { manifest: expected, manifestSha256: sha256(manifest.bytes), discoverySha256: sha256(discovery.bytes) };
+}
+
+export function discover(ctx: Context) {
+  withinTrial(ctx);
+  for (const path of ["discovery.json", "input-manifest.json", "inputs", "materialization-start.json", "materialization.json", "check.json"]) assert.equal(ctx.store.kind(path), null, "EXCLUSIVE_DISCOVERY_REQUIRED:" + path);
+  controls(ctx.store);
+  const type = gitRead(ctx, "type"); assert.equal(type.toString("utf8"), "commit\n", "PIN_NOT_REPORTED_COMMIT");
+  const metadata = gitRead(ctx, "tree"), manifest = manifestFor(metadata, ctx.store), bytes = jsonBytes(manifest);
+  const discovery = { version: "local-pinned-input-discovery.v1", status: "DISCOVERED_PINNED_SOURCE_PACKAGES_MISSING", reference: PIN, sourceClassification: CLASSIFICATION,
+    commitObjectTypeReportedByGit: "commit", metadata: { encoding: "base64", bytes: metadata.length, sha256: sha256(metadata), data: metadata.toString("base64") },
+    inputManifestSha256: sha256(bytes), inputFileCount: manifest.inputFileCount, inputBytes: manifest.inputBytes,
+    gitCommands: ctx.commands, manifestPersistedBeforeFirstPayloadCopy: true, ...QUALIFICATION };
+  withinTrial(ctx);
+  ctx.store.create("discovery.json", jsonBytes(discovery));
+  ctx.store.create("input-manifest.json", bytes);
+  return { status: discovery.status, inputFileCount: manifest.inputFileCount, inputBytes: manifest.inputBytes, inputManifestSha256: sha256(bytes), ...QUALIFICATION };
+}
+
+function mkdirParents(store: Store, path: string) {
+  const parts = safeRelative(path).split("/");
+  for (let count = 1; count < parts.length; count++) {
+    const directory = parts.slice(0, count).join("/"), kind = store.kind(directory);
+    if (kind === null) store.mkdir(directory);
+    else assert.equal(kind, "directory", "REGULAR_DIRECTORY_REQUIRED:" + directory);
+  }
+}
+
+type Materialized = { path: string; gitBlobOid: string; sourceMode: string; bytes: number; sha256: string };
+function verifyBytes(entry: Entry, bytes: Buffer): Materialized {
+  assert.equal(bytes.length, entry.expectedBytes, "INPUT_BYTE_COUNT_MISMATCH:" + entry.path);
+  assert.equal(blobOid(bytes), entry.gitBlobOid, "GIT_BLOB_OID_MISMATCH:" + entry.path);
+  return { path: entry.path, gitBlobOid: entry.gitBlobOid, sourceMode: entry.sourceMode, bytes: bytes.length, sha256: sha256(bytes) };
+}
+
+export function materialize(ctx: Context) {
+  withinTrial(ctx);
+  const binding = plan(ctx);
+  for (const path of ["inputs", "materialization-start.json", "materialization.json", "check.json"]) assert.equal(ctx.store.kind(path), null, "EXCLUSIVE_MATERIALIZATION_REQUIRED:" + path);
+  ctx.store.create("materialization-start.json", jsonBytes({ reference: PIN, inputManifestSha256: binding.manifestSha256, discoverySha256: binding.discoverySha256,
+    manifestPersistedBeforeFirstPayloadCopy: true, inputFileCount: binding.manifest.inputFileCount, ...QUALIFICATION }));
+  ctx.store.mkdir("inputs"); ctx.store.mkdir("inputs/reference");
+  const rows: Materialized[] = [];
+  for (const entry of binding.manifest.entries) {
+    withinTrial(ctx);
+    const bytes = gitRead(ctx, "blob", entry.gitBlobOid), row = verifyBytes(entry, bytes);
+    const destination = "inputs/reference/" + safeRelative(entry.path);
+    mkdirParents(ctx.store, destination);
+    ctx.store.create(destination, bytes);
+    rows.push(row); ctx.copiedFiles++; ctx.copiedBytes += bytes.length;
+    withinTrial(ctx);
+  }
+  const receipt = { version: "local-pinned-input-materialization.v1", status: PARTIAL, reference: PIN, sourceClassification: CLASSIFICATION,
+    inputManifestSha256: binding.manifestSha256, discoverySha256: binding.discoverySha256, manifestPersistedBeforeFirstPayloadCopy: true,
+    materializedFileCount: rows.length, materializedBytes: ctx.copiedBytes, sourceSha256: sha256(jsonBytes(rows)), files: rows,
+    gitCommands: ctx.commands, installedPackageFilesCopied: 0, installedPackageStatus: "MISSING_IN_BOUNDED_LOCAL_SEARCH",
+    missingPackages: binding.manifest.missingPackages, packageAbsenceEverywhereEstablished: false, ...QUALIFICATION };
+  withinTrial(ctx); ctx.store.create("materialization.json", jsonBytes(receipt));
+  return { status: PARTIAL, materializedFileCount: rows.length, materializedBytes: ctx.copiedBytes, sourceSha256: receipt.sourceSha256, inputManifestSha256: binding.manifestSha256, ...QUALIFICATION };
+}
+
+export function lockProvenance(bytes: Buffer, lockPath = "pnpm-lock.yaml") {
+  assert.ok(bytes.length <= LIMITS.individualInputBytes, "LOCKFILE_BOUND");
+  const lines = new TextDecoder("utf-8", { fatal: true }).decode(bytes).split("\n");
+  return [ ["fflate", "0.8.3"], ["jssha", "3.3.2"] ].map(([name, version]) => {
+    const observedVersions = new Set<string>();
+    let inPackages = false;
+    const matches: { headerLine: number; integrityLine: number; integrity: string; excerpt: string }[] = [];
+    for (let index = 0; index < lines.length; index++) {
+      const line = lines[index]!;
+      if (/^\S/.test(line)) inPackages = line === "packages:";
+      if (!inPackages) continue;
+      const header = new RegExp("^  ['\"]?/?" + name + "@([^'\" :]+)['\"]?:\\s*$").exec(line);
+      if (!header) continue;
+      observedVersions.add(header[1]!);
+      if (header[1] !== version) continue;
+      for (let next = index + 1; next < Math.min(lines.length, index + 17); next++) {
+        if (/^\S|^  \S/.test(lines[next]!)) break;
+        const integrity = /\bintegrity: ['"]?([a-z0-9]+-[A-Za-z0-9+/=]+)['"]?/.exec(lines[next]!);
+        if (integrity) {
+          const excerpt = lines.slice(index, next + 1).join("\n");
+          assert.ok(Buffer.byteLength(excerpt) <= 16384, "LOCK_EXCERPT_BOUND");
+          matches.push({ headerLine: index + 1, integrityLine: next + 1, integrity: integrity[1]!, excerpt }); break;
+        }
+      }
+    }
+    return { name, requiredVersion: version, status: matches.length === 1 ? "EXACT_VERSION_INTEGRITY_FOUND" : observedVersions.has(version!) ? "EXACT_VERSION_INTEGRITY_UNRESOLVED" : "REQUIRED_LOCK_VERSION_NOT_FOUND",
+      lockPath, lockSha256: sha256(bytes), observedVersions: [...observedVersions].sort(), matches, installedPackageFilesCopied: 0 };
+  });
+}
+
+export function check(ctx: Context) {
+  withinTrial(ctx);
+  const priorCheck = ctx.store.kind("check.json") === null ? null : readJson(ctx.store, "check.json", LIMITS.discoveryMetadataBytes);
+  const binding = plan(ctx), recorded = readJson(ctx.store, "materialization.json", LIMITS.discoveryMetadataBytes);
+  assert.equal(recorded.value.version, "local-pinned-input-materialization.v1"); assert.equal(recorded.value.status, PARTIAL);
+  assert.equal(recorded.value.inputManifestSha256, binding.manifestSha256); assert.equal(recorded.value.discoverySha256, binding.discoverySha256);
+  const entries = new Map(binding.manifest.entries.map(entry => [entry.path, entry])), directories = new Set<string>([""]);
+  for (const path of entries.keys()) {
+    const parts = path.split("/");
+    for (let index = 1; index < parts.length; index++) directories.add(parts.slice(0, index).join("/"));
+  }
+  const found = new Set<string>();
+  function walk(path: string) {
+    withinTrial(ctx);
+    const root = "inputs/reference" + (path ? "/" + path : "");
+    assert.equal(ctx.store.kind(root), "directory", "REGULAR_DIRECTORY_REQUIRED:" + root);
+    for (const name of ctx.store.list(root)) {
+      safeRelative(name); assert.ok(!name.includes("/"), "INVALID_DIRECTORY_ENTRY");
+      const child = path ? path + "/" + name : name, kind = ctx.store.kind(root + "/" + name);
+      if (kind === "directory") { assert.ok(directories.has(child), "EXTRA_STAGED_DIRECTORY:" + child); walk(child); }
+      else {
+        assert.equal(kind, "file", "NONREGULAR_STAGED_INPUT:" + child);
+        assert.ok(entries.has(child), "EXTRA_STAGED_FILE:" + child); found.add(child);
+      }
+    }
+  }
+  walk("");
+  assert.equal(found.size, entries.size, "MISSING_STAGED_INPUT");
+  const rows: Materialized[] = [];
+  for (const entry of binding.manifest.entries) {
+    withinTrial(ctx); assert.ok(found.has(entry.path), "MISSING_STAGED_INPUT:" + entry.path);
+    rows.push(verifyBytes(entry, ctx.store.read("inputs/reference/" + entry.path, LIMITS.individualInputBytes)));
+  }
+  assert.deepEqual(rows, recorded.value.files, "STAGED_SHA256_MISMATCH");
+  const sourceSha256 = sha256(jsonBytes(rows)); assert.equal(sourceSha256, recorded.value.sourceSha256);
+  const lock = entries.has("pnpm-lock.yaml") ? lockProvenance(ctx.store.read("inputs/reference/pnpm-lock.yaml", LIMITS.individualInputBytes)) : [];
+  const receipt = { version: "local-pinned-input-check.v1", status: PARTIAL, check: "PASS_EXACT_STAGED_MEMBERSHIP_BYTES_GIT_BLOB_SHA1_AND_SHA256", reference: PIN,
+    sourceClassification: CLASSIFICATION, inputManifestSha256: binding.manifestSha256, discoverySha256: binding.discoverySha256, materializationSha256: sha256(recorded.bytes),
+    materializedFileCount: rows.length, materializedBytes: rows.reduce((sum, row) => sum + row.bytes, 0), sourceSha256, lockProvenance: lock,
+    exactMembershipChecked: true, installedPackageFilesCopied: 0, installedPackageStatus: "MISSING_IN_BOUNDED_LOCAL_SEARCH", missingPackages: binding.manifest.missingPackages,
+    packageAbsenceEverywhereEstablished: false, ...QUALIFICATION };
+  withinTrial(ctx);
+  if (priorCheck) assert.deepEqual(priorCheck.value, receipt, "PRESERVED_CHECK_RECEIPT_MISMATCH");
+  else ctx.store.create("check.json", jsonBytes(receipt));
+  return receipt;
+}
+
+export function runPhase(phase: "discover" | "materialize" | "check", ctx: Context) {
+  try {
+    for (const name of ["discover", "materialize", "check"]) assert.equal(ctx.store.kind(name + "-failure.json"), null, "FAILED_PREPARATION_CANNOT_BE_REUSED");
+    return ({ discover, materialize, check })[phase](ctx);
+  }
+  catch (error) {
+    const failure = { status: "FAIL_LOCAL_INPUT_PHASE_PRESERVED", phase, error: error instanceof Error ? error.message : String(error), reference: PIN,
+      copiedFiles: ctx.copiedFiles, copiedBytes: ctx.copiedBytes, gitCommands: ctx.commands, ...QUALIFICATION };
+    const path = phase + "-failure.json";
+    if (ctx.store.kind(path) === null) ctx.store.create(path, jsonBytes(failure));
+    throw error;
+  }
+}
+
+function nativeStore(): Store {
+  assert.equal(dirname(fileURLToPath(import.meta.url)), BASE, "FIXED_LOCAL_SLICE_REQUIRED");
+  function full(path: string) {
+    if (path !== "") safeRelative(path);
+    const target = join(BASE, path), ancestors = dirname(target).split("/").filter(Boolean);
+    let current = "/";
+    for (const part of ancestors) { current = join(current, part); assert.ok(lstatSync(current).isDirectory(), "NO_SYMLINK_ANCESTORS:" + current); }
+    return target;
+  }
+  return {
+    kind(path) {
+      const target = full(path);
+      let stat;
+      try { stat = lstatSync(target); } catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return null; throw error; }
+      return stat.isSymbolicLink() ? "symlink" : stat.isFile() ? "file" : stat.isDirectory() ? "directory" : "other";
+    },
+    read(path, limit) {
+      const fd = openSync(full(path), constants.O_RDONLY | constants.O_NOFOLLOW);
+      try {
+        const stat = fstatSync(fd); assert.ok(stat.isFile() && stat.size <= limit, "REGULAR_BOUNDED_FILE_REQUIRED:" + path);
+        const bytes = Buffer.alloc(stat.size + 1);
+        let count = 0;
+        while (count < bytes.length) { const received = readSync(fd, bytes, count, bytes.length - count, count); if (!received) break; count += received; }
+        assert.ok(count === stat.size && fstatSync(fd).size === stat.size, "FILE_CHANGED_DURING_BOUNDED_READ:" + path);
+        return bytes.subarray(0, count);
+      }
+      finally { closeSync(fd); }
+    },
+    create(path, bytes) {
+      const fd = openSync(full(path), constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW, 0o600);
+      try { writeFileSync(fd, bytes); } finally { closeSync(fd); }
+    },
+    mkdir(path) { mkdirSync(full(path), { mode: 0o700 }); },
+    list(path) { return readdirSync(full(path)); },
+  };
+}
+
+function main() {
+  assert.equal(process.execPath, "/usr/local/bin/bun"); assert.equal(Bun.version, "1.4.0"); assert.equal(process.cwd(), ROOT);
+  const args = Bun.argv.slice(2); assert.equal(args.length, 1); assert.ok(["--discover", "--materialize", "--check"].includes(args[0]!));
+  const home = relative(BASE, process.env.HOME ?? ""), tmp = relative(BASE, process.env.TMPDIR ?? "");
+  assert.match(home, /^verification-[1-9][0-9]?\/home$/); assert.equal(tmp, home.replace(/\/home$/, "/tmp"));
+  assert.equal(process.env.BUN_RUNTIME_TRANSPILER_CACHE_PATH, "0");
+  const git: GitRunner = (argv, options) => {
+    const result = Bun.spawnSync(argv, { cwd: options.cwd, env: options.environment, stdin: "ignore", stdout: "pipe", stderr: "pipe", timeout: options.timeoutMs, maxBuffer: options.maxBuffer });
+    return { exitCode: result.exitCode, stdout: Buffer.from(result.stdout), stderr: Buffer.from(result.stderr), signal: result.signalCode ?? null };
+  };
+  console.log(JSON.stringify(runPhase(args[0]!.slice(2) as "discover" | "materialize" | "check", context(nativeStore(), git))));
+}
+
+if (import.meta.main) main();

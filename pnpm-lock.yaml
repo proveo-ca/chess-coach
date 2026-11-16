@@ -244,34 +244,32 @@ importers:
 
   packages/contracts:
     dependencies:
-      '@chess-coach/game-core':
+      '@chess-coach/starchess-core':
         specifier: workspace:*
-        version: link:../game-core
+        version: link:../starchess-core
       zod:
         specifier: 4.6.7
         version: 4.6.7
 
   packages/engine-core: {}
 
-  packages/game-core: {}
-
   packages/policy:
     dependencies:
       '@chess-coach/contracts':
         specifier: workspace:*
         version: link:../contracts
-      '@chess-coach/game-core':
+      '@chess-coach/starchess-core':
         specifier: workspace:*
-        version: link:../game-core
+        version: link:../starchess-core
 
   packages/runtime:
     dependencies:
       '@chess-coach/contracts':
         specifier: workspace:*
         version: link:../contracts
-      '@chess-coach/game-core':
+      '@chess-coach/starchess-core':
         specifier: workspace:*
-        version: link:../game-core
+        version: link:../starchess-core
       '@chess-coach/policy':
         specifier: workspace:*
         version: link:../policy

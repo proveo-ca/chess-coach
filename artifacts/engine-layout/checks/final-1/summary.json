@@ -1,0 +1,86 @@
+[
+  {
+    "check": "arena",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"arena\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"layout\":null,\"elapsedSeconds\":2.784866062,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "ml-source-types",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"ml-source-types\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"layout\":null,\"elapsedSeconds\":6.099318075,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "core",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"core\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"layout\":null,\"elapsedSeconds\":10.288485555,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "core-types",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"core-types\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"layout\":null,\"elapsedSeconds\":2.347370887,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "core-test-types",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"core-test-types\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"layout\":null,\"elapsedSeconds\":2.0144983670000003,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "ml-test-types",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"ml-test-types\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"layout\":null,\"elapsedSeconds\":7.486479407999999,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "arena-types",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"arena-types\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"layout\":null,\"elapsedSeconds\":1.7781364610000001,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "server-types",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"server-types\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"layout\":null,\"elapsedSeconds\":2.506233144,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "app-boundaries",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"app-boundaries\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"layout\":null,\"elapsedSeconds\":1.616513316,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "workspace",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"workspace\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"layout\":null,\"elapsedSeconds\":0.028609024000000035,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "layout",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"layout\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"layout\":{\"movedFiles\":37,\"byteIdenticalFixtures\":7,\"importOnlyTypeScriptFiles\":29,\"canonicalFilesUnchanged\":153,\"recordedHistoricalFilesUnchanged\":254,\"retiredForwarders\":27},\"elapsedSeconds\":0.11069930699999998,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "app-types",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"app-types\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"layout\":null,\"elapsedSeconds\":7.338730036,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "ml",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"ml\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"layout\":null,\"elapsedSeconds\":55.67949022799999,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "app",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"app\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"layout\":null,\"elapsedSeconds\":64.777300655,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "status": "ONE_APPROVED_MANUAL_INVOCATION_TEXT_DELIVERED_HOST_OUTCOME_UNOBSERVED",
+  "provenance": "ASSISTANT_FINAL_RESPONSE_IN_THIS_CONVERSATION_NOT_HOST_COMMAND_OUTPUT",
+  "grantId": "full2-manual-grant-1",
+  "approval": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/fresh-manual-host-approval.json",
+    "sha256": "7030c3b743a98c9c8a5d03a0450361907c67343cd3b7ec80809682fa676012fe"
+  },
+  "workingDirectory": "/home/gu1lty/Projects/proveo/chess-coach",
+  "invocationText": "fish --no-config _work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command.fish",
+  "manualInvocationTextDeliveriesConsumed": 1,
+  "remainingManualInvocationTextDeliveries": 0,
+  "hostAllowanceStatus": "ISSUED_ONE_AWAITING_OPERATOR_EXECUTION_REPORT_ANY_ATTEMPT_CONSUMES",
+  "hostInvocationObserved": false,
+  "hostInvocationOccurred": null,
+  "hostExitCode": null,
+  "generatedReceiptReceived": false,
+  "gpuExecutionAttempted": null,
+  "testsExecuted": null,
+  "previousFull2GrantRemaining": 0,
+  "previousStatusQueriesRemaining": 0,
+  "previousFull2ExecutionOutcome": "UNKNOWN",
+  "automaticRetryAuthorized": false,
+  "codingHostNativeGpuOrJitExecutionPerformed": false,
+  "experimentTrainingAuthorized": false,
+  "trainingReady": false
+}

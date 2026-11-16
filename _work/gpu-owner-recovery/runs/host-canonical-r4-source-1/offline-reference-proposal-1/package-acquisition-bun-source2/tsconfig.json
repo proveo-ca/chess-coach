@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noEmit": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "useUnknownInCatchVariables": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "typeRoots": ["../../../../../../node_modules/.bun/node_modules/@types"],
+    "types": ["bun", "node"],
+    "skipLibCheck": false
+  },
+  "include": ["capture.ts", "capture.test.ts", "capture-full.test.ts", "root-context.ts", "root-context.test.ts", "cache-parent.ts", "cache-parent.test.ts", "cache-parent-adapter.ts", "cache-parent-adapter.test.ts", "verify.ts"]
+}

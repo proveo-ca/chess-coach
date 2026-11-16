@@ -1,0 +1,106 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
+/**
+ * Assembles every input variable the Adjutant reads from one SCFEN snapshot.
+ *
+ * Built once per planning turn, then treated as read-only. Strategies receive
+ * this object and nothing else — if a strategy needs a new board fact, it is
+ * derived here rather than recomputed inside the scoring pass.
+ */
+
+import type { Square } from "chess.js";
+
+import {
+  findCC,
+  isSquareAttackedBy,
+  placementToMap,
+  type ScPiece,
+} from "../../board/placement";
+import type { PieceColor, ScFenSnapshot } from "../../model/types";
+import { cloneWithMove, enemyOf } from "./geometry";
+import { DEFAULT_RNG } from "./rng";
+import { gatherCCFocusIntel } from "./ccFocusIntel";
+import { buildMaterialIntel, estimateStoredFor } from "./material";
+import { hasHubPresence, hubMineTaken } from "./mines";
+import { WEIGHTS, resolvePosture } from "./posture";
+import { buildTacticalBoard } from "./tactical";
+import type { AdjutantContext, AdjutantCtx, Move, MoveEval } from "./types";
+import { buildVisionIntel } from "./vision";
+
+export * from "./types";
+export * from "./rng";
+export * from "./geometry";
+export * from "./marines";
+export * from "./mines";
+export { countType, estimateStoredFor } from "./material";
+export { gatherCCFocusIntel } from "./ccFocusIntel";
+export { buildTacticalBoard } from "./tactical";
+export { WEIGHTS, resolvePosture } from "./posture";
+export { buildVisionIntel } from "./vision";
+
+/**
+ * Build the planning context, or `null` when the board has no Command Center (CC) for us
+ * (nothing to plan for — the caller returns the snapshot untouched).
+ */
+export const buildAdjutantCtx = (
+  snap: ScFenSnapshot,
+  ctx?: AdjutantContext,
+): AdjutantCtx | null => {
+  const us: PieceColor = ctx?.color ?? "b";
+  const enemy = enemyOf(us);
+
+  const map = placementToMap(snap.placement);
+  const commandCenter = findCC(map, us);
+  if (!commandCenter) return null;
+
+  const storedFor = ctx?.storedFor ?? estimateStoredFor(snap, us);
+  const sieged: ReadonlySet<Square> = new Set(snap.siegedTanks ?? []);
+  const enemyCC = findCC(map, enemy);
+
+  const vision = buildVisionIntel(snap, map, us, enemy, enemyCC, sieged);
+  const hubHeld = hasHubPresence(map, us);
+  const posture = resolvePosture(hubHeld, vision.enemyCCVisible);
+
+  return {
+    snap,
+    map,
+    us,
+    enemy,
+    commandCenter,
+    enemyCC,
+    // An adjacent enemy Command Center (CC) counts: face-to-face command centers (CCs) chip each other.
+    ccThreatened: isSquareAttackedBy(map, commandCenter, enemy),
+    sieged,
+    gas: Object.entries(snap.gas).find(([side]) => side === us)![1],
+    posture,
+    weights: Object.entries(WEIGHTS).find(([name]) => name === posture)![1],
+    vision,
+    intel: gatherCCFocusIntel(map, vision.litSquares, vision.revealedPieces, enemy),
+    tactical: buildTacticalBoard(map, us, enemy, commandCenter, sieged),
+    material: buildMaterialIntel(map, us, storedFor),
+    hubHeld,
+    hubMineTaken: hubMineTaken(snap, us),
+    storedFor,
+    rng: ctx?.rng ?? DEFAULT_RNG,
+  };
+};
+
+/**
+ * Wrap a move so the post-move board and its safety test are computed at most
+ * once, however many strategies ask for them.
+ */
+export const evaluateMove = (
+  move: Move,
+  ctx: AdjutantCtx,
+): MoveEval | null => {
+  const piece = ctx.map.get(move.from);
+  if (!piece) return null;
+
+  let afterMap: Map<Square, ScPiece> | undefined;
+  const after = () => (afterMap ??= cloneWithMove(ctx.map, move, ctx.sieged));
+
+  let safe: boolean | undefined;
+  const destSafe = () =>
+    (safe ??= !isSquareAttackedBy(after(), move.to, ctx.enemy));
+
+  return { move, piece, isCCMove: piece.type === "k", after, destSafe };
+};

@@ -28,6 +28,8 @@ flowchart LR
 
 Each step keeps the **same rules API**: `ScFenSnapshot` in → queued actions out → `endScTurn` resolves. Learning never forks a second ruleset. Color is agnostic (`ctx.color` = side to plan).
 
+The shared-engine consolidation contract is [_spec/engine-consolidation.puml](_spec/engine-consolidation.puml).
+
 ---
 
 ## 0. Strategy algorithms — named tactics before the heuristic

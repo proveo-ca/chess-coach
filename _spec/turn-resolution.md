@@ -1,5 +1,7 @@
 # Canonical full-turn composition
 
+Current ownership: [engine-consolidation.puml](engine-consolidation.puml) places both product and native ML settlement on one `starchess-core` physics kernel. Their validation contracts remain distinct, and optional journaling does not choose validation. **Move tests; retire shim** places the retained turn tests, corpus helper and fixture under `packages/starchess-core/tests/native` and retires the forwarding workspace without changing canonical core source. Current command: `bun test packages/starchess-core/tests/native`. Fresh layout verification is pending; [architecture.md](architecture.md#current-consolidation-verification--scoped-bun-pass) retains the historical consolidation pass. Native/runtime/training qualifications remain separate. The reference results and paths below describe historical source; fixture bytes/modes and raw historical source fields remain unchanged.
+
 ## Goal
 
 Migrate canonical `beginScTurn` / `endScTurn` physics from `packages/starchess-core/src/resolve/submit-turn.ts` at `b4b241481fb12de4a7344e6dba8eda775af57675`.
@@ -11,7 +13,7 @@ Preserve heads-first B order, held Marine mine walks, positional rewrite/identit
 The canonical kernel owns physical settlement and its timeline consequences.
 It does not issue a session or a model planning permission.
 Timeline event IDs and final snapshots do not authenticate a recipient loss witness.
-The approved typed causal journal still needs actual-mutation integration.
+The approved consolidation retains actual-mutation causal journaling at the canonical kernel, with host-only collection and no final-snapshot witness inference.
 
 Keep ephemeral native actor/transfer identity only for rule-level positional double eligibility.
 Pass the rules-derived result directly to the internal classical composer.
@@ -23,7 +25,7 @@ The separate mineral owner must retain explicit banks across every kernel result
 Do not infer historical payments or restore missing bank fields with a turn-based estimate.
 Canonical core result fields alone are not the complete game/learning state.
 
-## Verification
+## Historical verification and retained obligations
 
 Persist canonical complete-result fingerprints for bounded both-seat special/classical combinations, identity-replacing B effects, ordering, mine continuation, F anchors, promotion and terminal chips.
 Keep positive init/open/pass process proof separate from source-level fixtures.

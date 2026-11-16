@@ -1,0 +1,198 @@
+
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.test.ts:
+(pass) literal packet and genuine authorization > computes exact source lengths, sha256, Git blob and packet pins [3.81ms]
+(pass) literal packet and genuine authorization > pins the actual immutable launch-boundary record [0.06ms]
+(pass) literal packet and genuine authorization > rejects missing or replaced launch-boundary row [0.22ms]
+(pass) literal packet and genuine authorization > pins the exact approved transport amendment and its four bindings [0.23ms]
+(pass) literal packet and genuine authorization > accepts historical explicit path grammar without freezing the changing runtime closure [0.49ms]
+(pass) literal packet and genuine authorization > requires genuine approval and all four unchanged byte bindings [0.38ms]
+(pass) literal packet and genuine authorization > requires unchanged helper and reference lock members [12.46ms]
+(pass) literal packet and genuine authorization > rejects changed packet length sha and Git blob [0.85ms]
+(pass) literal packet and genuine authorization > rejects unknown members and missing caller helpers [2.19ms]
+(pass) literal packet and genuine authorization > rejects path "/absolute.ts" [0.04ms]
+(pass) literal packet and genuine authorization > rejects path "../escape.ts"
+(pass) literal packet and genuine authorization > rejects path "a//b.ts"
+(pass) literal packet and genuine authorization > rejects path "a/./b.ts"
+(pass) literal packet and genuine authorization > rejects path "a/../b.ts"
+(pass) literal packet and genuine authorization > rejects path "a\\b.ts"
+(pass) literal packet and genuine authorization > rejects path "a\u0000b.ts"
+(pass) literal packet and genuine authorization > rejects path "a/cache/b.ts"
+(pass) literal packet and genuine authorization > rejects path "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/acquisition-invocation-1/b.json"
+(pass) literal packet and genuine authorization > rejects path "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/acquisition-execution-1/b.json"
+(pass) literal packet and genuine authorization > rejects path "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-2/b.json"
+(pass) literal packet and genuine authorization > rejects path "archive.tgz"
+(pass) literal packet and genuine authorization > rejects path "native.so"
+(pass) literal packet and genuine authorization > rejects path "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/source-packet1.json"
+(pass) literal packet and genuine authorization > rejects duplicate table members [0.87ms]
+(pass) literal packet and genuine authorization > rejects repeated packet members [3.65ms]
+(pass) literal packet and genuine authorization > rejects tampered source bytes [3.03ms]
+(pass) literal packet and genuine authorization > rejects tampered source sha256 [1.84ms]
+(pass) literal packet and genuine authorization > rejects tampered source gitBlobOid [2.01ms]
+(pass) literal packet and genuine authorization > rejects bytes changed with unchanged table [1.65ms]
+(pass) literal packet and genuine authorization > rejects noncanonical base64 %%% [0.03ms]
+(pass) literal packet and genuine authorization > rejects noncanonical base64 YQ=
+(pass) literal packet and genuine authorization > rejects noncanonical base64 YR==
+(pass) literal packet and genuine authorization > rejects noncanonical base64 YQ==
+
+(pass) literal packet and genuine authorization > rejects nonUTF8 or binary {"type":"Buffer","data":[255]} [0.05ms]
+(pass) literal packet and genuine authorization > rejects nonUTF8 or binary {"type":"Buffer","data":[0]}
+(pass) literal packet and genuine authorization > rejects nonUTF8 or binary {"type":"Buffer","data":[31]}
+(pass) literal packet and genuine authorization > rejects nonUTF8 or binary {"type":"Buffer","data":[239,187,191,65]}
+(pass) literal packet and genuine authorization > enforces file directory and aggregate caps [34.75ms]
+(pass) literal packet and genuine authorization > rejects changed totals, directories and packet self-reference fields [9.90ms]
+(pass) literal packet and genuine authorization > decodes one exact GitHub blob response [33.64ms]
+(pass) literal packet and genuine authorization > rejects bad GitHub sha [5.62ms]
+(pass) literal packet and genuine authorization > rejects bad GitHub size [4.44ms]
+(pass) literal packet and genuine authorization > rejects bad GitHub encoding [5.66ms]
+(pass) literal packet and genuine authorization > rejects bad GitHub content [2.69ms]
+(pass) literal packet and genuine authorization > enforces API and decoded packet caps [310.17ms]
+(pass) literal packet and genuine authorization > uses only the caller-supplied finite literal array [5.21ms]
+(pass) literal packet and genuine authorization > preserves explicitly named empty UTF8 text evidence with exact zero-byte identity [6.93ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > materializes complete validated text then calls literal execute in snapshot [56.08ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects duplicate packets before any source write and preserves claimed roots [30.10ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects traversal before source writes [32.60ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects bad response blob before source writes [10.64ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > requires the genuine boundary row before materialization [31.92ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > requires the genuine amendment row before materialization [33.65ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects plant-directory collisions without overwrite or adoption [30.39ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects plant-file collisions without overwrite or adoption [30.50ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects plant-symlink collisions without overwrite or adoption [32.86ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > claims once and rejects replay without adoption [3.79ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects symlink ancestors without claiming or repair [3.48ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects symlink handoff roots without adoption [3.65ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > leaves existing valid host operation parents unchanged [48.65ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > accepts an existing valid common cache parent without payload or metadata changes [48.39ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects a file common cache parent before claim [5.11ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects a symlink common cache parent before claim [3.30ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > requires fresh raw roots without consuming the handoff [3.78ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > requires fresh output roots without consuming the handoff [4.50ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > requires fresh operation roots without consuming the handoff [4.56ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS construction-error with exactly one request and no fallback [6.58ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS request-error with exactly one request and no fallback [5.53ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS socket-reset with exactly one request and no fallback [5.41ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS response-error with exactly one request and no fallback [5.51ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS aborted with exactly one request and no fallback [8.19ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS premature-close with exactly one request and no fallback [8.51ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS incomplete with exactly one request and no fallback [5.90ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS missing-finish with exactly one request and no fallback [6.22ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS oversize with exactly one request and no fallback [19.72ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS status-301 with exactly one request and no fallback [5.97ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS status-302 with exactly one request and no fallback [6.41ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS status-307 with exactly one request and no fallback [6.37ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS status-308 with exactly one request and no fallback [5.36ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS status-401 with exactly one request and no fallback [6.60ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS status-403 with exactly one request and no fallback [6.55ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS status-429 with exactly one request and no fallback [7.57ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > rejects fake HTTPS status-500 with exactly one request and no fallback [5.99ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > aborts timeout within the source budget and records cleanup certainty [159.50ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > aborts no-eof within the source budget and records cleanup certainty [159.41ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > aborts cleanup-never-close within the source budget and records cleanup certainty [204.84ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > waits for real response EOF after all body bytes [200.55ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > waits for request, response, and socket close before Stage B [112.56ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps successful-body request-destroy-throws cleanup failure sticky [8.36ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps successful-body response-destroy-throws cleanup failure sticky [7.85ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps successful-body socket-destroy-throws cleanup failure sticky [6.43ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps successful-body socket-error-after-eof cleanup failure sticky [6.48ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps cleanup failure sticky and preserves partials [7.60ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps interrupt failure sticky and preserves partials [10.61ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps clock-after-fetch failure sticky and preserves partials [5.71ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps transport-clock failure sticky and preserves partials [5.93ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps transport-finalization-deadline failure sticky and preserves partials [6.87ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps file-close failure sticky and preserves partials [35.70ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps receipt-close failure sticky and preserves partials [35.47ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps directory-close failure sticky and preserves partials [36.09ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps finalization-deadline failure sticky and preserves partials [33.48ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps seal-deadline failure sticky and preserves partials [34.38ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > does not apply Stage A or a new whole-script deadline to the inner-owned caller [303.89ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > clock failure before claim creates nothing [5.01ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > starts Stage A at first factory entry before imports or preflight [35.38ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > restricts injected request factories to protected fixtures [4.37ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > exclusive materialization rejects existing regular or symlink files [5.14ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps owned synthetic caller success exit EOF cleanup bounded [25.06ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps owned synthetic caller timeout exit EOF cleanup bounded [160.08ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps owned synthetic caller stdout-cap exit EOF cleanup bounded [20.21ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps owned synthetic caller stderr-cap exit EOF cleanup bounded [19.61ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps owned synthetic caller interrupt exit EOF cleanup bounded [10.23ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > keeps owned synthetic caller cleanup exit EOF cleanup bounded [21.45ms]
+(pass) offline fake HTTPS and subprocess handoff lifecycle > waits for synthetic caller descendants and pipe EOF rather than stdout completion [175.13ms]
+(pass) confirmed per-pipe destruction evidence > retries a first thrown destroy and still attempts the other pipe [0.35ms]
+(pass) confirmed per-pipe destruction evidence > does not confirm a no-op destroy and reattempts only the unconfirmed pipe [0.06ms]
+(pass) confirmed per-pipe destruction evidence > records throwing state getters as unknown even when destruction itself returns [0.08ms]
+(pass) confirmed per-pipe destruction evidence > a throw after actual destruction or a later pipe error remains a failed cleanup [0.07ms]
+(pass) confirmed per-pipe destruction evidence > repeated failures stay bounded per call and do not block attempts on either pipe [0.11ms]
+(pass) confirmed per-pipe destruction evidence > absent pipes are not fabricated as confirmed destructions [0.03ms]
+(pass) confirmed per-pipe destruction evidence > the real runChild uses the same tested per-pipe helper [0.03ms]
+(pass) confirmed per-pipe destruction evidence > real isolated runChild retries its native pipe after a first destroy throw without clearing failure [2058.09ms]
+(pass) exact INNER_CALLER cleanup and cancellation > bounds retained grandchild pipes after the real caller exit without fabricating EOF [2063.43ms]
+(pass) exact INNER_CALLER cleanup and cancellation > allows clean late EOF within the original drain window without a healthy work deadline [209.16ms]
+(pass) exact INNER_CALLER cleanup and cancellation > never restarts post-exit cleanup when a later pipe overflow latches failure [2063.12ms]
+(pass) exact INNER_CALLER cleanup and cancellation > late actual EOF and exit zero cannot erase a failure latched before cleanup [84.85ms]
+(pass) exact INNER_CALLER cleanup and cancellation > forwards real isolated SIGINT to the detached caller and removes lifetime listeners [100.10ms]
+(pass) exact INNER_CALLER cleanup and cancellation > forwards real isolated SIGTERM to the detached caller and removes lifetime listeners [104.36ms]
+(pass) exact INNER_CALLER cleanup and cancellation > forwards real isolated SIGHUP to the detached caller and removes lifetime listeners [99.47ms]
+(pass) exact INNER_CALLER cleanup and cancellation > real forwarded SIGHUP produces the default caller exit witness independently of TERM handling [48.21ms]
+(pass) exact INNER_CALLER cleanup and cancellation > records a real owned-group signal adapter false result without reporting delivery [122.90ms]
+(pass) exact INNER_CALLER cleanup and cancellation > records a real owned-group signal adapter throw result without reporting delivery [125.45ms]
+(pass) exact INNER_CALLER cleanup and cancellation > records false child forwarding separately from successful group termination [46.92ms]
+(pass) exact INNER_CALLER cleanup and cancellation > reports failed spawn as no child rather than a fabricated exit witness [39.79ms]
+(pass) exact INNER_CALLER cleanup and cancellation > a real isolated post-spawn local clock exception starts cleanup once and stays failed [56.05ms]
+(pass) exact INNER_CALLER cleanup and cancellation > a non-inner parent clock failure cannot become successful cleanup or renew its origin [48.81ms]
+(pass) shared strict verification assessment > is the exported assessment actually wired into the real receipt PASS decision [0.55ms]
+(pass) shared strict verification assessment > rejects malformed duplicate unsafe or contradictory counts "1 pass\n0 fail\n1 pass\n" [0.06ms]
+(pass) shared strict verification assessment > rejects malformed duplicate unsafe or contradictory counts "1 pass\n0 fail\n1 fail\n"
+(pass) shared strict verification assessment > rejects malformed duplicate unsafe or contradictory counts "9007199254740992 pass\n0 fail\n" [0.02ms]
+(pass) shared strict verification assessment > rejects malformed duplicate unsafe or contradictory counts "9007199254740993 pass\n0 fail\n" [0.01ms]
+(pass) shared strict verification assessment > rejects malformed duplicate unsafe or contradictory counts "NaN pass\n0 fail\n" [0.01ms]
+(pass) shared strict verification assessment > rejects malformed duplicate unsafe or contradictory counts "Infinity pass\n0 fail\n"
+(pass) shared strict verification assessment > rejects malformed duplicate unsafe or contradictory counts "1.5 pass\n0 fail\n"
+(pass) shared strict verification assessment > rejects malformed duplicate unsafe or contradictory counts "1e2 pass\n0 fail\n"
+(pass) shared strict verification assessment > rejects malformed duplicate unsafe or contradictory counts "-1 pass\n0 fail\n" [0.01ms]
+(pass) shared strict verification assessment > rejects malformed duplicate unsafe or contradictory counts "0 pass\n0 fail\n" [0.01ms]
+(pass) shared strict verification assessment > rejects malformed duplicate unsafe or contradictory counts "01 pass\n0 fail\n" [0.02ms]
+(pass) shared strict verification assessment > rejects malformed duplicate unsafe or contradictory counts "1 pass\n1 fail\n" [0.02ms]
+(pass) shared strict verification assessment > rejects malformed duplicate unsafe or contradictory counts "1 pass\n0 fail trailing\n" [0.02ms]
+(pass) shared strict verification assessment > rejects malformed duplicate unsafe or contradictory counts "1 pass\n0 fail\nNaN fail\n" [0.02ms]
+(pass) shared strict verification assessment > rejects malformed duplicate unsafe or contradictory counts "1\n pass\n0 fail\n" [0.03ms]
+(pass) shared strict verification assessment > rejects malformed duplicate unsafe or contradictory counts "1 pass\n"
+(pass) shared strict verification assessment > rejects malformed duplicate unsafe or contradictory counts "0 fail\n"
+(pass) shared strict verification assessment > accepts one line-local canonical summary pair and ignores ordinary Bun case labels [0.05ms]
+(pass) shared strict verification assessment > accepts a legitimate Bun case label "(pass) pass through" without treating its title as a summary [0.04ms]
+(pass) shared strict verification assessment > accepts a legitimate Bun case label "(pass) failover route" without treating its title as a summary [0.02ms]
+(pass) shared strict verification assessment > accepts a legitimate Bun case label "(pass) passfailwords" without treating its title as a summary
+(pass) shared strict verification assessment > accepts a legitimate Bun case label "(fail) fail through" without treating its title as a summary
+(pass) shared strict verification assessment > accepts a legitimate Bun case label "(skip) pass through" without treating its title as a summary
+(pass) shared strict verification assessment > accepts a legitimate Bun case label "(todo) fail through" without treating its title as a summary
+(pass) shared strict verification assessment > accepts a legitimate Bun case label "\t(pass) 9007199254740992 pass" without treating its title as a summary
+(pass) shared strict verification assessment > case label recognition does not hide invalid numeric summary lines "(pass) pass through\n1 pass\n0 fail\n1 pass\n" [0.04ms]
+(pass) shared strict verification assessment > case label recognition does not hide invalid numeric summary lines "(skip) pass through\nNaN pass\n0 fail\n" [0.01ms]
+(pass) shared strict verification assessment > case label recognition does not hide invalid numeric summary lines "(todo) fail through\n9007199254740992 pass\n0 fail\n"
+(pass) shared strict verification assessment > case label recognition does not hide invalid numeric summary lines "1 pass (pass) label\n0 fail\n"
+(pass) shared strict verification assessment > rejects an additional malformed summary-shaped line "pass 3" [0.05ms]
+(pass) shared strict verification assessment > rejects an additional malformed summary-shaped line "fail"
+(pass) shared strict verification assessment > rejects an additional malformed summary-shaped line "1\u000bpass"
+(pass) shared strict verification assessment > rejects an additional malformed summary-shaped line "3 pass."
+(pass) shared strict verification assessment > command exitCode facts override valid summaries [0.15ms]
+(pass) shared strict verification assessment > command failure facts override valid summaries [0.08ms]
+(pass) shared strict verification assessment > command reaped facts override valid summaries [0.03ms]
+(pass) shared strict verification assessment > command closed facts override valid summaries
+(pass) shared strict verification assessment > command outEOF facts override valid summaries
+(pass) shared strict verification assessment > command errEOF facts override valid summaries [0.01ms]
+(pass) shared strict verification assessment > command cleanupConfirmed facts override valid summaries
+(pass) shared strict verification assessment > command cleanupExpired facts override valid summaries
+(pass) shared strict verification assessment > command pipesDestroyed facts override valid summaries
+(pass) shared strict verification assessment > command pipeDestructionAttempted facts override valid summaries
+(pass) shared strict verification assessment > command pipeCleanupFailed facts override valid summaries
+(pass) shared strict verification assessment > command processGroupGone facts override valid summaries [0.01ms]
+(pass) shared strict verification assessment > command signalFailure facts override valid summaries
+(pass) shared strict verification assessment > command spawned facts override valid summaries
+(pass) shared strict verification assessment > command pid facts override valid summaries [0.01ms]
+(pass) shared strict verification assessment > requires unchanged readchecks/source and the real Fish and TypeScript commands [0.07ms]
+(pass) pass through [0.02ms]
+(pass) inline renderer and fixed tool contracts > embeds self-contained builtin-only implementation in nonrunning Fish syntax fixture [0.58ms]
+(pass) inline renderer and fixed tool contracts > refuses production rendering and statically gates bootstrap before any claim or tool invocation [0.14ms]
+(pass) inline renderer and fixed tool contracts > fixes one anonymous direct HTTPS endpoint without environment or credential configuration reads [0.14ms]
+
+ 190 pass
+ 0 fail
+ 1003 expect() calls
+Ran 190 tests across 1 file. [10.45s]

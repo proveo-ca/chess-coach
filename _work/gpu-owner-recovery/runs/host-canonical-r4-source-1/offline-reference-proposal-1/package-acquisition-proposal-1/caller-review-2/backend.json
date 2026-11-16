@@ -1,0 +1,12 @@
+{
+  "status": "READY_CALLER_SOURCE_ONLY",
+  "session": "ses_e2e5a7bfaffeXVaGBozd4pJB26",
+  "verification": "invocation-verification-4/receipt.json",
+  "readOnly": true,
+  "bindingPresenceFindingCleared": true,
+  "remainingFindings": [],
+  "operationalReadinessGranted": false,
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

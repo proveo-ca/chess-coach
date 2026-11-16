@@ -88,13 +88,17 @@ No final application image or effective runtime closure has been registered yet.
 
 The native/policy/learner/observer source and synthetic fixtures exist where marked below.
 Unimplemented live e2e, whole-match and registration work remains proposed.
+The approved **Move tests; retire shim** layout removes the `game-core` forwards and private package manifest; canonical implementation ownership remains under `packages/starchess-core/src` without source-byte changes.
+All 37 retained corpus files move to `packages/starchess-core/tests/native`, with seven JSON fixture bytes/modes and historical source fields preserved.
+Current command: `bun test packages/starchess-core/tests/native`; fresh layout verification is pending under `artifacts/engine-layout`.
+Historical proof commands, counts, frozen runtime records and Source23/seal6 evidence remain unchanged; none supplies fresh layout verification or new execution authority.
 
 | File | Private API / responsibility | Persisted test target |
 |---|---|---|
-| `packages/game-core/src/initialization.ts` | `createCanonicalGame()`; actual approved opening and zero-paid endowed identities; implemented | `packages/game-core/tests/initialization.test.ts`; passes |
+| `packages/starchess-core/src/engine/initialization.ts` | `createCanonicalGame()`; actual approved opening and zero-paid endowed identities; implemented | `packages/starchess-core/tests/native/initialization.test.ts`; layout rerun pending |
 | `packages/contracts/src/initialization.ts` | `canonicalInitialObservation(side)` on the separate producer subpath; implemented | `packages/contracts/tests/initialization.test.ts`; passes |
-| `packages/game-core/src/causal-events.ts`, `causal-producer.ts` | Implemented private stable unit/mine identities, action references and ordered actual-mutation effects | `packages/game-core/tests/causal-events.test.ts`, `causal-parity.test.ts` |
-| `packages/game-core/src/classical-resolution.ts`, `resolve.ts` | Implemented complete B/C/F, collision, mine, origin and promotion physics | `packages/game-core/tests/classical-resolution.test.ts`, `canonical-classical.test.ts`, `turn-resolution.test.ts`, `canonical-turn.test.ts`, `turn-resolution.e2e.test.ts` |
+| `packages/starchess-core/src/engine/causal-events.ts`, `causal-producer.ts` | Implemented private stable unit/mine identities, action references and ordered actual-mutation effects | `packages/starchess-core/tests/native/causal-events.test.ts`, `causal-parity.test.ts`; layout rerun pending |
+| `packages/starchess-core/src/engine/classical-resolution.ts`, `resolve.ts`; `src/resolve/resolve-turn.ts`, `submit-turn.ts` | Native facade over one complete B/C/F, collision, mine, origin and promotion kernel | `packages/starchess-core/tests/native/classical-resolution.test.ts`, `canonical-classical.test.ts`, `turn-resolution.test.ts`, `canonical-turn.test.ts`, `turn-resolution.e2e.test.ts`; layout rerun pending |
 | `packages/contracts/src/causal-journal.ts` | Implemented bounded private standard JSON/Zod state/journal data and JSON Schema exports | `packages/contracts/tests/causal-journal.test.ts` |
 | `packages/contracts/src/recipient.ts`, `recipient-codec.ts` | Implemented continuing recipient reduction, side-local IDs/receipts/witnesses and bounded public batches | `packages/contracts/tests/recipient-privacy.test.ts`, `recipient-codec.test.ts` |
 | `packages/contracts/src/game-session.ts` | Implemented explicit bank owner, atomic BOTH data successors and deterministic source-level record replay; no runtime authority | `packages/contracts/tests/game-session.test.ts`, `packages/policy/tests/recipient-noninterference.e2e.test.ts` |

@@ -4,7 +4,7 @@
  * // SPEC: _spec/packages/starchess-core/scfen-queue.puml, _spec/apps/starchess/core/turn/command-queue.puml
  */
 
-import type { Square } from "chess.js";
+import type { Square } from "../model/square";
 
 import { specialGasCost, assertQueueShape } from "../scfen";
 import { assertActionDeep, ScValidateError } from "../rules/validation";
@@ -60,14 +60,19 @@ const nextSeq = (snap: ScFenSnapshot): number => {
 export const addScAction = (input: {
   snapshot: ScFenSnapshot;
   action: ScActionInput;
-}): { snapshot: ScFenSnapshot; action: ScAction } => {
+}): { snapshot: ScFenSnapshot; action: ScAction } => addScActionKernel(input);
+
+export const addScActionKernel = (input: {
+  snapshot: ScFenSnapshot;
+  action: ScActionInput;
+}, admit = assertActionDeep, dependencies?: (snapshot: ScFenSnapshot, actions: readonly ScAction[], color: PieceColor) => void): { snapshot: ScFenSnapshot; action: ScAction } => {
   const { snapshot: snap } = input;
   if (snap.phase !== "P") {
     throw new AddScActionError("SC_PHASE", `addScAction requires phase P (got ${snap.phase})`);
   }
 
   try {
-    assertActionDeep(snap, input.action);
+    admit(snap, input.action);
   } catch (e) {
     if (e instanceof ScValidateError) {
       throw new AddScActionError(e.code, e.message);
@@ -109,6 +114,12 @@ export const addScAction = (input: {
 
   const actions = [...existing, action];
   assertQueueShape(actions);
+  try {
+    dependencies?.(snap, actions, action.color);
+  } catch (error) {
+    if (error instanceof ScValidateError) throw new AddScActionError(error.code, error.message);
+    throw error;
+  }
 
   const gas =
     action.timing === "C"
@@ -133,7 +144,12 @@ export const addScAction = (input: {
 export const removeScAction = (input: {
   snapshot: ScFenSnapshot;
   seq: number;
-}): { snapshot: ScFenSnapshot; removed: ScAction } => {
+}): { snapshot: ScFenSnapshot; removed: ScAction } => removeScActionKernel(input);
+
+export const removeScActionKernel = (input: {
+  snapshot: ScFenSnapshot;
+  seq: number;
+}, dependencies?: (snapshot: ScFenSnapshot, actions: readonly ScAction[], color: PieceColor) => void): { snapshot: ScFenSnapshot; removed: ScAction } => {
   const { snapshot: snap } = input;
   if (snap.phase !== "P") {
     throw new RemoveScActionError(
@@ -151,6 +167,7 @@ export const removeScAction = (input: {
   }
   const actions = existing.filter((a) => a.seq !== input.seq);
   assertQueueShape(actions);
+  dependencies?.(snap, actions, removed.color);
 
   let gas = snap.gas;
   if (removed.timing === "B" || removed.timing === "F") {

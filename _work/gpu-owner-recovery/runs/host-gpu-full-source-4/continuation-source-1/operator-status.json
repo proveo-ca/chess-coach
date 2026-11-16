@@ -1,0 +1,13 @@
+{
+  "status": "EXECUTOR_CONFIRMED_FULL_TWO_NEVER_ATTEMPTED",
+  "source": "FRESH_INTERACTIVE_ANSWER_NOT_ATTEMPTED",
+  "issuedApproval": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command-approval.json",
+    "sha256": "4065ab7a48d5d1afd9f724a91206483cd6bc5fd61ad269f03e03c52183a67b6d"
+  },
+  "remainingOperatorHostInvocations": 1,
+  "hostInvocationObserved": false,
+  "newOrRenewedHostInvocationsAuthorized": 0,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

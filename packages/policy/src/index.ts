@@ -1,7 +1,7 @@
 // SPEC: _spec/representation.puml
 import { decodeCandidate, decodeObservation } from "@chess-coach/contracts";
 import type { Candidate, Observation } from "@chess-coach/contracts";
-import type { Square, StarChessColor } from "@chess-coach/game-core";
+import type { Square, StarChessColor } from "@chess-coach/starchess-core/engine";
 import layout from "../../../schemas/feature-layout.json";
 
 export { ENUMERATION_VERSION, MAX_CANDIDATES, MAX_CANDIDATE_ACTIONS, MAX_CANDIDATE_EXTENSIONS, enumerateCandidates } from "./candidates";

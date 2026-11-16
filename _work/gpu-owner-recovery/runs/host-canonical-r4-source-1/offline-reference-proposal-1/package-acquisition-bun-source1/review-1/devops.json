@@ -1,0 +1,15 @@
+{
+  "status": "NOT_READY_IMPLEMENTATION_SOURCE_ONLY",
+  "session": "ses_e2e5a7bf7ffeszqAmNJvPwNoUX",
+  "verification": "verification-3/receipt.json",
+  "readOnly": true,
+  "verificationRerunByReviewer": false,
+  "findings": [
+    {"severity":"HIGH","path":"capture.ts","line":146,"code":"BOOTSTRAP_REQUIRES_SPEC_INSTEAD_OF_BACKEND_REVIEW"},
+    {"severity":"HIGH","path":"capture.ts","lines":[548,557],"code":"PERSISTED_PASS_CAN_PRECEDE_DEADLINE_OVERRUN_DURING_FINAL_DURABILITY"},
+    {"severity":"MEDIUM","path":"capture.ts","lines":[431,435],"code":"EXPIRED_CLEANUP_BUDGET_SKIPS_NONBLOCKING_WORKER_TERMINATION"}
+  ],
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

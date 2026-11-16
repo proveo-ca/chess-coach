@@ -1,6 +1,6 @@
 // SPEC: _spec/recipient-production.puml
-import { applyStoredIncome, UNIT_COST } from "@chess-coach/game-core";
-import type { ScActionInput, ScFenSnapshot } from "@chess-coach/game-core";
+import { applyStoredIncome, UNIT_COST } from "@chess-coach/starchess-core/engine";
+import type { ScActionInput, ScFenSnapshot } from "@chess-coach/starchess-core/engine";
 import { produceRecipient, seedRecipient } from "../src/recipient";
 import { causalRun } from "./causal-fixture";
 

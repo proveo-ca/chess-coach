@@ -1,0 +1,8 @@
+{
+  "status": "FAIL_OFFLINE_ONLY",
+  "failure": "record-source-extension",
+  "productionEntryInvoked": false,
+  "productionWorkerInvoked": false,
+  "actualGetRequests": 0,
+  "executionReadinessClaimed": false
+}

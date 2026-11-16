@@ -1,0 +1,12 @@
+{
+  "status": "PASS_READ_ONLY_ELIGIBILITY_PROOF_AND_CORRECTED_STRICT_TYPECHECK",
+  "proof": {"exitCode":0,"stdout":"proof.stdout","stderr":"proof.stderr","receipt":"receipt.json"},
+  "typechecks": [
+    {"exitCode":2,"stdout":"typecheck.stdout","stderr":"typecheck.stderr","failure":"TS5097_ALLOW_IMPORTING_TS_EXTENSIONS_FLAG_OMITTED"},
+    {"exitCode":0,"stdout":"typecheck-2.stdout","stderr":"typecheck-2.stderr","strict":true,"noEmit":true,"allowImportingTsExtensions":true}
+  ],
+  "sourceChangedBetweenTypechecks": false,
+  "operationalPreflightOrAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

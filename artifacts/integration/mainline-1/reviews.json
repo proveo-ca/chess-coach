@@ -1,0 +1,22 @@
+{
+  "scope": "LOCAL_INTEGRATION_PREPARATION_ONLY",
+  "adversarial": {
+    "sessionId": "ses_e1aa68ecbffelNfkmP6P9ZQJB9",
+    "readyForLocalPreparation": true,
+    "mergeAndPublicationReadinessAssessed": false,
+    "findings": []
+  },
+  "security": {
+    "sessionId": "ses_e1aa68ec3ffeov3UjJqV52MNOY",
+    "readyForLocalPreparation": true,
+    "mergeAndPublicationReadinessAssessed": false,
+    "findings": []
+  },
+  "spec": {
+    "sessionId": "ses_e1ab10668ffeeWhgULd4YzR1Qx",
+    "status": "in-sync"
+  },
+  "currentSourcePinsStillMatch": true,
+  "publishingApproved": false,
+  "originalUncommittedWorkTransferred": false
+}

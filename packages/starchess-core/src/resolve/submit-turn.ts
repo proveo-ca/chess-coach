@@ -1,12 +1,10 @@
-// SPEC: _spec/packages/starchess-core/resolve.puml, _spec/packages/starchess-core/overview.puml, _spec/packages/starchess-core/submit-turn-activity.puml, _spec/packages/starchess-core/mine-contact.puml, _spec/packages/starchess-core/turn-queue-sequence.puml, _spec/apps/starchess/core/turn/turn-facade.puml, _spec/packages/starchess-core/gas-phase-vacancy.puml
-import type { Square } from "chess.js";
+// SPEC: _spec/packages/starchess-core/resolve.puml, _spec/packages/starchess-core/overview.puml, _spec/packages/starchess-core/submit-turn-activity.puml, _spec/packages/starchess-core/mine-contact.puml, _spec/packages/starchess-core/turn-queue-sequence.puml, _spec/apps/starchess/core/turn/turn-facade.puml, _spec/packages/starchess-core/gas-phase-vacancy.puml, _spec/engine-consolidation.puml
+import type { Square } from "../model/square";
 
 import {
   collectLegalCCChecks,
   mapToPlacement,
-  parseSquare,
   placementToMap,
-  sq,
   type ScPiece,
 } from "../board/placement";
 import { energyForTurn } from "../rules/constants";
@@ -18,12 +16,11 @@ import {
 import { mineContact, withoutMine } from "../board/mine-contact";
 import { charonStrikeTarget, placementAfterMechaCharon } from "../rules/specials/mechaCharon";
 import {
-  canMarineDoubleStep,
   marineSingleTarget,
 } from "../rules/specials/stimStep";
 import {
   applyPendingCCShots,
-  resolveTurn,
+  resolveTurnKernel,
   type ResolvePromotion,
   type ResolveTurnResult,
   type ResolveMove,
@@ -40,6 +37,21 @@ import type {
   StarChessColor,
   StarChessPiece,
 } from "../model/types";
+import { classicalRewriteCoordinatesAfterB, orderBHeadsFirst } from "../engine/planning-order";
+import { matchedMarineDouble } from "../engine/native-classical";
+import { assertNativeClassicalDependencies } from "../engine/queue-validation";
+import { assertQueueShape } from "../scfen/codec";
+import { resolveClassical } from "../engine/classical-resolution";
+import type { CausalPhase, ResolutionEffects } from "../engine/causal-types";
+
+export { orderBHeadsFirst } from "../engine/planning-order";
+
+type NativeIdentity = ScPiece & { id: string };
+type NativeIdentities = {
+  units: Map<Square, NativeIdentity>;
+  transfers: Map<ScAction, { actor: NativeIdentity; from: Square; to: Square }>;
+  next: number;
+};
 
 export type ResolveEvent = {
   id: string;
@@ -130,7 +142,9 @@ export const refillTurnGas = (snap: ScFenSnapshot): ScFenSnapshot => {
   };
 };
 
-export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
+export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => beginScTurnKernel(snapshot);
+
+export const beginScTurnKernel = (snapshot: ScFenSnapshot, effects?: ResolutionEffects): BeginScTurnResult => {
   if (snapshot.phase !== "P") {
     throw new Error(`beginScTurn requires phase P (got ${snapshot.phase})`);
   }
@@ -148,7 +162,7 @@ export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
       isTargetVisible: isCheckVisible,
     }),
     mines: minesIn,
-  });
+  }, effects);
 
   const afterPending = {
     placement: pendingApplied.placement,
@@ -250,37 +264,27 @@ const byTiming = (actions: readonly ScAction[], timing: "B" | "C" | "F") =>
       return a.seq - b.seq;
     });
 
-export const orderBHeadsFirst = (
-  actions: readonly ScAction[],
-): ScAction[] => {
-  const ordered: ScAction[] = [];
-  const pending = [...actions].sort((a, b) => a.seq - b.seq);
-  while (pending.length) {
-    const heads = new Set(
-      pending
-        .filter(
-          (a) => (a.kind === "stimStep" || a.kind === "tacticalJump") && !!a.to,
-        )
-        .map((a) => a.from),
-    );
-    const idx = pending.findIndex((a) => {
-      if ((a.kind !== "stimStep" && a.kind !== "tacticalJump") || !a.to)
-        return true;
-      const others = new Set(heads);
-      others.delete(a.from);
-      return ![...others].some((from) => from === a.to);
-    });
-    ordered.push(idx >= 0 ? pending.splice(idx, 1)[0]! : pending.shift()!);
-  }
-  return ordered;
-};
-
-const relocate = (placement: string, from: Square, to: Square): string => {
+const relocate = (placement: string, from: Square, to: Square, identities?: NativeIdentities, source?: ScAction, effects?: ResolutionEffects): string => {
   const map = placementToMap(placement);
   const piece = map.get(from);
+  effects?.bindBoard(map);
   if (!piece) return placement;
+  effects?.group(source?.timing === "F" ? "F" : "B", () => {
+    const occupant = map.get(to);
+    if (occupant && occupant !== piece) effects.destroy(occupant, source?.seq ?? null);
+    effects.move(piece, from, to, source?.seq ?? null);
+  });
   map.delete(from);
   map.set(to, piece);
+  if (identities) {
+    const identity = identities.units.get(from);
+    identities.units.delete(from);
+    identities.units.delete(to);
+    if (identity) {
+      identities.units.set(to, identity);
+      if (source) identities.transfers.set(source, { actor: { ...identity }, from, to });
+    }
+  }
   return mapToPlacement(map);
 };
 
@@ -309,6 +313,10 @@ const applyArrivalMine = (
   squares: readonly Square[],
   color: StarChessColor,
   arriving: ScPiece,
+  identities?: NativeIdentities,
+  effects?: ResolutionEffects,
+  phase: CausalPhase = "B",
+  seq: number | null = null,
 ): ArrivalMine => {
   const hit = mineContact({
     mines,
@@ -319,7 +327,14 @@ const applyArrivalMine = (
   });
   if (hit.kind !== "detonated") return { placement, mines };
   const board = placementToMap(placement);
+  effects?.bindBoard(board);
+  effects?.group(phase, () => {
+    const victim = board.get(hit.at);
+    if (victim) effects.destroy(victim, seq);
+    effects.mineContact(hit, seq, mines);
+  });
   board.delete(hit.at);
+  identities?.units.delete(hit.at);
   return {
     placement: mapToPlacement(board),
     mines: withoutMine(mines, hit),
@@ -334,6 +349,8 @@ const applySpecial = (
   mines: ScMine[],
   action: Extract<ScAction, { timing: "B" | "F" }>,
   ignoreAttacksOn: Square[],
+  identities?: NativeIdentities,
+  effects?: ResolutionEffects,
 ): {
   placement: string;
   mines: ScMine[];
@@ -353,6 +370,9 @@ const applySpecial = (
       const kill = charonStrikeTarget(board, action.from, action.to, action.color);
       if (!kill) return { placement, mines };
       const victim = board.get(kill)!;
+      effects?.bindBoard(board);
+      effects?.group(action.timing, () => effects.destroy(victim, action.seq));
+      identities?.units.delete(kill);
       return {
         placement: placementAfterMechaCharon(placement, kill),
         mines,
@@ -364,14 +384,18 @@ const applySpecial = (
       ignoreAttacksOn.push(action.from);
       const board = placementToMap(placement);
       const hull = board.get(action.from);
+      effects?.bindBoard(board);
       if (!hull || hull.color !== action.color) return { placement, mines };
       const occupant = board.get(action.to);
       if (occupant && occupant.color === action.color) return { placement, mines };
       if (occupant && occupant.type !== "k") {
+        effects?.group(action.timing, () => { effects.destroy(occupant, action.seq); effects.destroy(hull, action.seq); });
         // Jump collision: ship and occupant meet on the landing square —
         // both die, neither survives onto it.
         board.delete(action.from);
         board.delete(action.to);
+        identities?.units.delete(action.from);
+        identities?.units.delete(action.to);
         return {
           placement: mapToPlacement(board),
           mines,
@@ -380,39 +404,48 @@ const applySpecial = (
         };
       }
       if (occupant) {
+        effects?.group(action.timing, () => effects.destroy(hull, action.seq));
         // A Command Center takes the jumper: the ship dies on its square.
         board.delete(action.from);
+        identities?.units.delete(action.from);
         return {
           placement: mapToPlacement(board),
           mines,
           victim: { type: hull.type, color: hull.color },
         };
       }
-      const landed = relocate(placement, action.from, action.to);
-      return applyArrivalMine(landed, mines, [action.to], action.color, hull);
+      const landed = relocate(placement, action.from, action.to, identities, action, effects);
+      return applyArrivalMine(landed, mines, [action.to], action.color, hull, identities, effects, action.timing, action.seq);
     }
     case "stimStep": {
       if (!action.to) return { placement, mines };
       const marine = placementToMap(placement).get(action.from);
-      const stepped = relocate(placement, action.from, action.to);
+      const stepped = relocate(placement, action.from, action.to, identities, action, effects);
       if (!marine) return { placement: stepped, mines };
-      return applyArrivalMine(stepped, mines, [action.to], action.color, marine);
+      return applyArrivalMine(stepped, mines, [action.to], action.color, marine, identities, effects, action.timing, action.seq);
     }
     case "deploy": {
       if (!action.to || !action.unit) return { placement, mines };
-      const occupant = placementToMap(placement).get(action.to);
+      const board = placementToMap(placement), occupant = board.get(action.to);
+      effects?.bindBoard(board);
       // Command Centers are never crushable (validation rejects them); defense in depth
       // so a bypassed queue can never delete a Command Center via deploy.
       if (occupant?.type === "k") {
         throw new Error(`spawn cannot crush Command Center on ${action.to}`);
       }
       const deployed = { type: action.unit, color: action.color };
+      effects?.group(action.timing, () => {
+        if (occupant) effects.destroy(occupant, action.seq);
+        const id = effects.create(deployed, action.to!, action.seq);
+        effects.disposition(action.seq, id);
+      });
       const landed = placeUnit(placement, action.to, deployed);
+      if (identities) identities.units.set(action.to, { ...deployed, id: `u:${identities.next++}` });
       // Deploy over ally or enemy non-ccs — victim shows death, deployed survives
       const crush = occupant
         ? { victim: { type: occupant.type, color: occupant.color } }
         : {};
-      const blast = applyArrivalMine(landed, mines, [action.to], action.color, deployed);
+      const blast = applyArrivalMine(landed, mines, [action.to], action.color, deployed, identities, effects, action.timing, action.seq);
       if (blast.mineColor) {
         return {
           placement: blast.placement,
@@ -427,6 +460,7 @@ const applySpecial = (
       const at = action.to ?? action.from;
       const next = [...mines, { color: action.color, at }];
       assertMineCap(next, action.color);
+      effects?.group(action.timing, () => effects.mineCreate(next[next.length - 1]!, action.seq));
       return { placement, mines: next };
     }
     case "siegeMode":
@@ -441,11 +475,16 @@ const toggleTankSiege = (
   sieged: Set<Square>,
   color: PieceColor,
   at: Square,
+  effects?: ResolutionEffects,
+  phase: "B" | "F" = "B",
+  seq = 0,
 ): boolean => {
-  const actor = placementToMap(placement).get(at);
+  const board = placementToMap(placement), actor = board.get(at);
+  effects?.bindBoard(board);
   if (!actor || actor.color !== color || actor.type !== "r") return false;
   if (sieged.has(at)) sieged.delete(at);
   else sieged.add(at);
+  effects?.group(phase, () => effects.mode(actor, sieged.has(at) ? "siege" : "tank", seq));
   return true;
 };
 
@@ -532,11 +571,6 @@ const collectSpecialsUsed = (
   return [...used].filter((sq) => map.has(sq)).sort();
 };
 
-const shiftSquare = (s: Square, df: number, dr: number): Square | null => {
-  const { file, rank } = parseSquare(s);
-  return sq(file + df, rank + dr);
-};
-
 export const rewriteClassicalAfterB = (
   actions: readonly ScAction[],
   placement: string,
@@ -556,33 +590,9 @@ export const rewriteClassicalAfterB = (
     );
     if (!b || !b.to) continue;
 
-    const fromP = parseSquare(b.from);
-    const toP = parseSquare(b.to);
-    const df = toP.file - fromP.file;
-    const dr = toP.rank - fromP.rank;
-    const newTo = shiftSquare(c.to, df, dr);
-    if (!newTo) continue;
-
-    if (b.kind === "stimStep") {
-      const sameFile = c.from[0] === c.to[0];
-      const ranks = Math.abs(Number(c.to[1]) - Number(c.from[1]));
-      const forward =
-        (Number(c.to[1]) - Number(c.from[1])) * (b.color === "w" ? 1 : -1) > 0;
-      const onStartRank = canMarineDoubleStep(c.from, b.color);
-      if (
-        c.kind !== "classical" ||
-        !sameFile ||
-        !forward ||
-        (ranks !== 1 && (ranks !== 2 || !onStartRank)) ||
-        occupied.has(newTo)
-      ) {
-        continue;
-      }
-    } else if (b.to !== c.to) {
-      continue;
-    }
-
-    out[i] = { ...c, from: b.to, to: newTo };
+    const coordinates = classicalRewriteCoordinatesAfterB(out, c);
+    if (!coordinates || (b.kind === "stimStep" && occupied.has(coordinates.to))) continue;
+    out[i] = { ...c, ...coordinates };
   }
   return out;
 };
@@ -603,6 +613,10 @@ const eventFor = (
 export const endScTurn = (
   snapshot: ScFenSnapshot,
   opts?: EndScTurnOptions,
+): EndScTurnResult => endScTurnKernel(snapshot, opts);
+
+export const endScTurnKernel = (
+  snapshot: ScFenSnapshot, opts?: EndScTurnOptions, effects?: ResolutionEffects, nativeClassical = false,
 ): EndScTurnResult => {
   if (snapshot.phase !== "P") {
     throw new Error(`endScTurn requires phase P (got ${snapshot.phase})`);
@@ -610,6 +624,10 @@ export const endScTurn = (
 
   const skipChecks = opts?.skipTurnStartChecks === true;
   const actions = snapshot.queue?.actions ?? [];
+  if (nativeClassical) {
+    assertQueueShape(actions);
+    assertNativeClassicalDependencies(snapshot, actions);
+  }
   const events: ResolveEvent[] = [];
   const ignoreAttacksOn: Square[] = [];
   let placement = snapshot.placement;
@@ -617,6 +635,10 @@ export const endScTurn = (
   let eventSeq = 0;
   const siegedThisTurn: Square[] = [];
   const sieged = new Set(snapshot.siegedTanks ?? []);
+  if (effects) effects.modeAt = at => sieged.has(at) ? "siege" : "tank";
+  const noBirth = (requested: readonly ScAction[]): void => {
+    for (const action of requested) if (action.kind === "deploy") effects?.group(action.timing, () => effects.disposition(action.seq, null));
+  };
   const bMoves: ResolveMove[] = [];
   const fMoves: ResolveMove[] = [];
   const warped: { from: Square; to: Square }[] = [];
@@ -713,7 +735,7 @@ export const endScTurn = (
           isTargetVisible: isCheckVisible,
         }),
         mines,
-      });
+      }, effects);
   placement = pendingApplied.placement;
   mines = pendingApplied.mines;
   let ccLives = pendingApplied.ccLives;
@@ -725,6 +747,7 @@ export const endScTurn = (
   for (const atk of pendingApplied.attacks) log.shot(atk);
 
   if (ccLives.w === 0 || ccLives.b === 0) {
+    noBirth(actions);
     const terminalBoard = {
       placement,
       ccLives: { ...ccLives },
@@ -759,6 +782,8 @@ export const endScTurn = (
    * order while the held step gets to fill in its blast.
    */
   type BeforeEvent = { action: ScAction; extra: Partial<ResolveEvent> };
+  const identities: NativeIdentities = { units: new Map(), transfers: new Map(), next: 0 };
+  for (const [at, piece] of placementToMap(placement)) identities.units.set(at, { ...piece, id: `u:${identities.next++}` });
   const extrasBySeq = new Map<number, BeforeEvent>();
   /** Marines mid-Extra-Step: their mine waits for the classical leg to land. */
   const heldExtraSteps: {
@@ -775,7 +800,13 @@ export const endScTurn = (
   ) => {
     const lastRank = a.color === "w" ? 8 : 1;
     if (!survived || Number(at[1]) !== lastRank || !a.promotion) return;
+    const board = placementToMap(placement), current = board.get(at);
+    effects?.bindBoard(board);
+    if (!current || current.type !== "p" || current.color !== a.color) return;
+    effects?.group(a.timing, () => effects.transform(current, a.promotion!, a.seq));
     placement = placeUnit(placement, at, { type: a.promotion, color: a.color });
+    const identity = identities.units.get(at);
+    if (identity) identities.units.set(at, { ...identity, type: a.promotion });
     gasPromotions.push({ color: a.color, from: a.from, at, unit: a.promotion });
   };
 
@@ -785,7 +816,7 @@ export const endScTurn = (
     for (const a of ordered) {
       if (a.timing !== "B") continue;
       if (a.kind === "siegeMode") {
-        if (toggleTankSiege(placement, sieged, a.color, a.from)) {
+        if (toggleTankSiege(placement, sieged, a.color, a.from, effects, "B", a.seq)) {
           siegedThisTurn.push(a.from);
           extrasBySeq.set(a.seq, { action: a, extra: {} });
         }
@@ -808,8 +839,8 @@ export const endScTurn = (
       const applied = allyBlocked
         ? { placement, mines }
         : held
-          ? { placement: relocate(placement, a.from, a.to!), mines }
-          : applySpecial(placement, mines, a, ignoreAttacksOn);
+          ? { placement: relocate(placement, a.from, a.to!, identities, a, effects), mines }
+          : applySpecial(placement, mines, a, ignoreAttacksOn, identities, effects);
       const event: BeforeEvent = { action: a, extra: {} };
       const relocated = applied.placement !== placement;
       const stepped =
@@ -852,7 +883,7 @@ export const endScTurn = (
     if (continues) continue;
     const marine = placementToMap(placement).get(at);
     if (!marine) continue;
-    const blast = applyArrivalMine(placement, mines, [at], action.color, marine);
+    const blast = applyArrivalMine(placement, mines, [at], action.color, marine, identities, effects, "B", action.seq);
     placement = blast.placement;
     mines = blast.mines;
     step.event.extra = {
@@ -897,7 +928,15 @@ export const endScTurn = (
   }
   const white = withExtraStepLegs(classicalFor(actionsAfterB, "w"), actions);
   const black = withExtraStepLegs(classicalFor(actionsAfterB, "b"), actions);
-  const classical = resolveTurn({
+  const nativeDoubles = { w: false, b: false };
+  for (const action of actions) {
+    if (action.timing !== "C") continue;
+    const selected = actionsAfterB.find((value): value is Extract<ScAction, { timing: "C" }> => value.timing === "C" && value.color === action.color && value.seq === action.seq);
+    const matched = actions.find(value => value.timing === "B" && value.color === action.color && value.from === action.from && value.to &&
+      (value.kind === "stimStep" || value.kind === "tacticalJump"));
+    if (selected && matchedMarineDouble(actions, action, selected, identities.units.get(selected.from), matched ? identities.transfers.get(matched) : undefined)) nativeDoubles[action.color] = true;
+  }
+  const classicalInput = {
     placement,
     ccLives,
     white,
@@ -907,7 +946,14 @@ export const endScTurn = (
     isTargetVisible,
     pathVisionOpts: { mines, tankModeFor },
     siegedTanks: afterB.siegedTanks,
-  });
+  };
+  const sources = {
+    w: actions.find(action => action.timing === "C" && action.color === "w")?.seq ?? null,
+    b: actions.find(action => action.timing === "C" && action.color === "b")?.seq ?? null,
+  };
+  const classical = nativeClassical
+    ? resolveClassical(classicalInput, nativeDoubles, effects, sources)
+    : resolveTurnKernel(classicalInput, effects, sources);
 
   let resolved: ResolveTurnResult = {
     ...classical,
@@ -931,6 +977,7 @@ export const endScTurn = (
   }
 
   if (ccLives.w === 0 || ccLives.b === 0) {
+    noBirth(byTiming(actions, "F"));
     return finish({ resolved, afterB, bMoves, queue: [...actions] });
   }
 
@@ -961,7 +1008,7 @@ export const endScTurn = (
     const actor = boardAfter.get(at);
     // Fire-and-forget Charon resolves from the queued square even with no
     // live Mecha; every other F special needs its actor.
-    if ((!actor || actor.color !== a.color) && a.kind !== "charonMissiles") continue;
+    if ((!actor || actor.color !== a.color) && a.kind !== "charonMissiles") { noBirth([a]); continue; }
 
     const rewritten: ScAction =
       a.kind === "spiderMine"
@@ -970,7 +1017,7 @@ export const endScTurn = (
 
     if (a.kind === "siegeMode") {
       if (!actor || actor.type !== "r") continue;
-      if (toggleTankSiege(placement, sieged, a.color, at)) {
+      if (toggleTankSiege(placement, sieged, a.color, at, effects, "F", a.seq)) {
         siegedThisTurn.push(at);
         log.special("specialAfter", rewritten);
       }
@@ -983,7 +1030,7 @@ export const endScTurn = (
       if (!to || boardAfter.has(to)) {
         // The Extra Step never lands, so `at` *is* the destination: a mine the
         // classical leg held back for this hop has to fire here instead.
-        const held = applyArrivalMine(placement, mines, [at], a.color, actor);
+        const held = applyArrivalMine(placement, mines, [at], a.color, actor, undefined, effects, "F", a.seq);
         placement = held.placement;
         mines = held.mines;
         if (held.mineColor) {
@@ -995,17 +1042,23 @@ export const endScTurn = (
         continue;
       }
       const stepped = applyArrivalMine(
-        relocate(placement, at, to),
+        relocate(placement, at, to, undefined, a, effects),
         mines,
         [at, to],
         a.color,
         actor,
+        undefined, effects, "F", a.seq,
       );
       placement = stepped.placement;
       mines = stepped.mines;
       fMoves.push({ piece: "p", color: a.color, from: at, to });
       const lastRank = a.color === "w" ? 8 : 1;
       if (Number(to[1]) === lastRank && a.promotion && !stepped.mineColor) {
+        if (effects) {
+          const current = placementToMap(placement);
+          effects.bindBoard(current);
+          effects.group("F", () => effects.transform(current.get(to)!, a.promotion!, a.seq));
+        }
         placement = placeUnit(placement, to, {
           type: a.promotion,
           color: a.color,
@@ -1025,7 +1078,7 @@ export const endScTurn = (
       continue;
     }
 
-    const applied = applySpecial(placement, mines, rewritten, ignoreAttacksOn);
+    const applied = applySpecial(placement, mines, rewritten, ignoreAttacksOn, undefined, effects);
     if (
       a.kind === "tacticalJump" &&
       rewritten.to &&

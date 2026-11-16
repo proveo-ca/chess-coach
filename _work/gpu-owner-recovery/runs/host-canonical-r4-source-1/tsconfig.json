@@ -1,0 +1,9 @@
+{
+  "extends": "../../../../tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "types": ["bun"]
+  },
+  "include": ["canonical.ts", "canonical.test.ts", "r4.test.ts", "verify.ts"]
+}

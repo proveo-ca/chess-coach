@@ -1,0 +1,13 @@
+{
+  "status": "ONE_APPROVED_BOUNDED_GENERATED_HOST_RECEIPT_READ_REGISTERED",
+  "authorization": "EXPLICIT_TERMINAL_ROUTE_SELECTION_INCLUDES_ONLY_THIS_GENERATED_RECEIPT_READ",
+  "terminal": "pty_persistent_4248932387136641",
+  "commandText": "fish --no-config -c 'command head -c 2097152 -- _work/gpu-owner-recovery/runs/host-gpu-full-2/receipt.json'",
+  "maximumBytes": 2097152,
+  "maximumReadSubmissions": 1,
+  "receiptBytesReceived": false,
+  "newGpuOrNativeInvocationAuthorized": false,
+  "existingOperatorHostInvocationsRemaining": 0,
+  "automaticRetryAuthorized": false,
+  "trainingReady": false
+}

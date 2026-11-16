@@ -1,6 +1,6 @@
 // SPEC: _spec/initialization.puml
-import { createCanonicalGame, getSideVision, placementToMap, sq } from "@chess-coach/game-core";
-import type { Square, StarChessColor } from "@chess-coach/game-core";
+import { createCanonicalGame, getSideVision, placementToMap, sq } from "@chess-coach/starchess-core/engine";
+import type { Square, StarChessColor } from "@chess-coach/starchess-core/engine";
 import { decodeObservation } from "./index";
 import type { Observation, ObservedCell } from "./shape";
 

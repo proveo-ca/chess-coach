@@ -1,0 +1,16 @@
+{
+  "version": "chess-coach.r2-source-postcheck-review.v1",
+  "role": "security",
+  "session": "ses_e2c5f28d5ffe8nEnuu4EhhwVin",
+  "status": "NOT_READY_SOURCE_POSTCHECK_AND_EMITTED_PACKET",
+  "source": {"path":"../source-emission-1/postcheck.ts","sha256":"2f450e24894776127284434e203592f6a76014e0ebde2d0a5fc085adceb36a3e"},
+  "postcheckReceipt": {"path":"../source-emission-1/postcheck.json","sha256":"1fd4a716f5440a32f5135492d988cbc23c299aa2a1f77830b13b106261e27615"},
+  "remainingFindings": [{"severity":"LOW","classification":"CWE-20","location":"source-emission-1/postcheck.ts:79-83","code":"EMITTED_METADATA_CROSSLINKS_AND_VERSIONS_NOT_FULLY_COMPARED","example":"Changing only result.readiness.sha256 does not affect the current assertions."}],
+  "packetCorruptionEstablished": false,
+  "sourceEmitterReplayRequired": false,
+  "risk": "LOW",
+  "verificationRerunByReviewer": false,
+  "nonAuthorizing": true,
+  "executionReadinessClaimed": false,
+  "trainingReady": false
+}

@@ -1,0 +1,157 @@
+{
+  "status": "NATIVE_CORPUS_RELOCATED_LEGACY_PACKAGE_RETIRED",
+  "runtime": "Bun",
+  "move": {
+    "from": "packages/game-core/tests",
+    "to": "packages/starchess-core/tests/native",
+    "renamedFile": {
+      "from": "compatibility-exports.test.ts",
+      "to": "canonical-exports.test.ts"
+    }
+  },
+  "retiredPackage": "@chess-coach/game-core",
+  "preservation": {
+    "movedFiles": 37,
+    "byteIdenticalFixtures": 7,
+    "importOnlyTypeScriptFiles": 29,
+    "canonicalFilesUnchanged": 153,
+    "recordedHistoricalFilesUnchanged": 254,
+    "retiredForwarders": 27
+  },
+  "baseline": {
+    "path": "artifacts/engine-layout/baseline-1.json",
+    "mode": 420,
+    "sha256": "4cac987fcfa2558de7aae3e2cf768375f54033ac947894dafa4d366a10e7f5ea",
+    "sizeBytes": 131390
+  },
+  "verification": {
+    "gates": 14,
+    "totalTests": 1664,
+    "counts": {
+      "core": 432,
+      "arena": 24,
+      "app": 790,
+      "ml": 410,
+      "workspace": 8
+    },
+    "typechecks": 7,
+    "currentSourcePins": 318,
+    "receipts": [
+      {
+        "path": "artifacts/engine-layout/checks/final-1/core/receipt.json",
+        "mode": 420,
+        "sha256": "c1a74728806cbd188fe736ab28120ce6b13e70e35be693b0615ac37150ec96e0",
+        "sizeBytes": 132261
+      },
+      {
+        "path": "artifacts/engine-layout/checks/final-1/arena/receipt.json",
+        "mode": 420,
+        "sha256": "346d7a0ac6abdf7a907ce7eb627d3d168308f43b4bf82c89fa290ffe586c06ec",
+        "sizeBytes": 132262
+      },
+      {
+        "path": "artifacts/engine-layout/checks/final-1/ml/receipt.json",
+        "mode": 420,
+        "sha256": "c36c04a9c3b169101275f4b2ad1d6d057314e6485c0d7617228f76ae9fa6b394",
+        "sizeBytes": 133287
+      },
+      {
+        "path": "artifacts/engine-layout/checks/final-1/ml-source-types/receipt.json",
+        "mode": 420,
+        "sha256": "ee22a1c4bbb3c5b9bc947c387f8841a8c24e8bf988d1ed2aebb67f825826460e",
+        "sizeBytes": 132235
+      },
+      {
+        "path": "artifacts/engine-layout/checks/final-1/ml-test-types/receipt.json",
+        "mode": 420,
+        "sha256": "37e4cd0e05c471cb7f052b902bc78626e0b50f029e597549eb737cb7b308c7ac",
+        "sizeBytes": 132245
+      },
+      {
+        "path": "artifacts/engine-layout/checks/final-1/core-types/receipt.json",
+        "mode": 420,
+        "sha256": "3f72a80b709820f5a3dc057b63dc401ea39a0a75dcbf4f935af6e3fc28144122",
+        "sizeBytes": 132252
+      },
+      {
+        "path": "artifacts/engine-layout/checks/final-1/core-test-types/receipt.json",
+        "mode": 420,
+        "sha256": "e93f1c392acff79292ac4ff84364b713f63db7a344a9a4b0f238264dfad6ff8e",
+        "sizeBytes": 132282
+      },
+      {
+        "path": "artifacts/engine-layout/checks/final-1/arena-types/receipt.json",
+        "mode": 420,
+        "sha256": "6a692be5de434b556d1cf50370fa3645bcdcae609efc40eacdfd1fee07149e63",
+        "sizeBytes": 132261
+      },
+      {
+        "path": "artifacts/engine-layout/checks/final-1/server-types/receipt.json",
+        "mode": 420,
+        "sha256": "8fd6d055e29357a1f7f52f6f81fb591381b4fb27f1fe03ad08fbe4187a5fe0cd",
+        "sizeBytes": 132242
+      },
+      {
+        "path": "artifacts/engine-layout/checks/final-1/app-types/receipt.json",
+        "mode": 420,
+        "sha256": "e75f52d31d1c5a145273d701cded2c31e407084614ae7d4401c26b7f655c8eaf",
+        "sizeBytes": 132244
+      },
+      {
+        "path": "artifacts/engine-layout/checks/final-1/app-boundaries/receipt.json",
+        "mode": 420,
+        "sha256": "7fd2915ff8bbc57995a1240c2723ded0a0bc6535a1eebac028862056b47ea58c",
+        "sizeBytes": 132317
+      },
+      {
+        "path": "artifacts/engine-layout/checks/final-1/workspace/receipt.json",
+        "mode": 420,
+        "sha256": "c53d83cc92cc32bf7e2fa08560cc215514688867c5bbe1a444f183b051966126",
+        "sizeBytes": 132217
+      },
+      {
+        "path": "artifacts/engine-layout/checks/final-1/layout/receipt.json",
+        "mode": 420,
+        "sha256": "8476e26d1312459ade7bcf07338f772d4dbc952bf84ea111af59915aa3964621",
+        "sizeBytes": 132357
+      },
+      {
+        "path": "artifacts/engine-layout/checks/final-1/app/receipt.json",
+        "mode": 420,
+        "sha256": "72eb1f5d8926ebe4e08cf6bae091aab7795a2eea67dc04720ce1cc6008538dea",
+        "sizeBytes": 132251
+      }
+    ],
+    "nativeEntrypoint": {
+      "path": "artifacts/engine-layout/checks/initial-1/native/receipt.json",
+      "mode": 420,
+      "sha256": "eacf78bbb5c91df158ffbb5a617cb2921c530f48c02f1b29da3936807c956556",
+      "sizeBytes": 132193
+    },
+    "nativeEntrypointTests": 211,
+    "nativeEntrypointDoubleCounted": false,
+    "spec": {
+      "path": "artifacts/engine-layout/spec-final-1/receipt.json",
+      "mode": 420,
+      "sha256": "f0e58133b2adfd76356ccb9646347a035a745e3211e4dd7811a7b7d9ce26773d",
+      "sizeBytes": 2114
+    }
+  },
+  "reviews": {
+    "path": "artifacts/engine-layout/reviews.json",
+    "mode": 420,
+    "sha256": "b9de3cd4e321247182ba2f166aa71d2f537dd39da26ce002910659c75cc3aec9",
+    "sizeBytes": 409
+  },
+  "canonicalEngineAlgorithmChanged": false,
+  "externalDependencyGraphChanged": false,
+  "frozenRustAndFeatureSchemaChanged": false,
+  "historicalEvidenceChanged": false,
+  "ignoredDependencyCacheDeleted": false,
+  "registryAccess": false,
+  "dependencyInstall": false,
+  "rustBuilds": 0,
+  "trainingPerformed": false,
+  "committed": false,
+  "pushed": false
+}

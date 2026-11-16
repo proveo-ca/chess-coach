@@ -25,7 +25,7 @@
     "storybook:primitives": "pnpm --filter @chess-coach/ui-web storybook",
     "build:storybook:primitives": "pnpm --filter @chess-coach/ui-web build-storybook",
     "e2e": "nx run-many -t e2e --projects=ui,starchess --parallel=2",
-    "ml:test": "bun test packages/game-core/tests packages/contracts/tests packages/policy/tests packages/runtime/tests",
+    "ml:test": "bun test packages/starchess-core/tests/native packages/contracts/tests packages/policy/tests packages/runtime/tests",
     "ml:typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.tests.json"
   },
   "devDependencies": {

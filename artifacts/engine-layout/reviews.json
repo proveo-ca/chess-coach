@@ -1,0 +1,18 @@
+{
+  "scope": "NATIVE_TEST_LAYOUT_AND_PACKAGE_RETIREMENT",
+  "adversarial": {
+    "sessionID": "ses_e19f8b80effepgJ7oC0nZ9foSQ",
+    "ready": true,
+    "findings": []
+  },
+  "security": {
+    "sessionID": "ses_e19f8b7f9ffeMaNmScApSXUFJp",
+    "ready": true,
+    "findings": []
+  },
+  "spec": {
+    "sessionID": "ses_e1a05e4f8ffesniFLXj0S0JsO1",
+    "status": "in-sync"
+  },
+  "reviewersExecutedTests": false
+}

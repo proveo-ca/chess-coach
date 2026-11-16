@@ -1,0 +1,53 @@
+{
+  "version": "chess-coach.reference-package-manual-handoff-request.v1",
+  "id": "reference-package-manual-host-handoff-2",
+  "status": "UNAPPROVED_COMPOSITE_MANUAL_AND_ACQUISITION_SCOPE",
+  "preparationOnly": true,
+  "purpose": "Request one operator-only manual source-packet handoff separately from the proposed new inner two-package acquisition allowance.",
+  "architectAcceptedSession": "ses_e2f47580affedkCSE0PvqFHby6",
+  "manualPlan": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/manual-handoff-plan1.json",
+  "immutableAcquisitionInputs": {
+    "request": {"path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/request.json", "sha256": "c0288e1e34e24d2f7a81e12ee1967ffafbd2768b4c2a5bc2ba15826b6384ff3f"},
+    "plan": {"path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/plan.json", "sha256": "7f6a90ca105d6a7c5a45951b508d4a1ecdd5e217625d1cefe08da23557847405"}
+  },
+  "proposedInnerGrant": "reference-two-package-source-acquisition-2",
+  "requestedOperations": {"manualHostHandoffAttempts": 1, "githubSourcePacketFetchRequests": 1, "innerCombinedAcquisitionAttempts": 1, "innerNpmGets": 2, "innerGetsPerUrl": 1, "containerInvocations": 0},
+  "requestedTiming": {"sourceTransferAndMaterializationMs": 120000, "sourceGitHubFetchMs": 30000, "acquisitionOperationMs": 120000, "globalManualDeadlineMs": null, "nominalSequentialStageSumMs": 240000, "nominalSumIsUnconditionalWholeScriptBound": false, "stageBudgetsAreSequentialAndDistinct": true, "resetInsideAcquisitionAuthorized": false, "stageToolStartupAndCleanupIncluded": true, "newWholeScriptCancellationAuthorized": false},
+  "requestedSourceEnvelope": {"maximumFiles": 96, "maximumBytesPerFile": 1048576, "maximumAggregateSourceBytes": 6291456, "maximumDecodedPacketBytes": 8388608, "maximumGitHubApiResponseBytes": 12582912, "maximumSnapshotDirectories": 256, "githubFetchRequests": 1, "githubFetchMs": 30000, "textFilesOnly": true, "literalFiniteFileTableRequired": true, "verifyLengthSha256AndCommittedGitBlobIdentityBeforeMaterialization": true},
+  "requestedHostRoot": "/home/gu1lty/Projects/proveo/chess-coach",
+  "requestedGitHubSource": {"scheme": "https", "hostname": "github.com", "repository": "proveo-ca/chess-coach", "existingHostGhConfigurationOnly": true, "loginOrNewSecretsAuthorized": false, "credentialConfigWritesAuthorized": false, "credentialPrintingAuthorized": false},
+  "requestedDirectoryPolicy": {"requiredAncestorsAlreadyExist": true, "handoffRootExclusiveClaimFirst": true, "hostOperationParentsOnlyAsEnumeratedInManualPlan": true, "snapshotAndEvidenceMustBeFresh": true, "snapshotObserverIsOnlyExplicitWritableSubtree": true, "cacheParentOnlyAfterNewInnerClaim": true, "recursiveAncestorRepairAuthorized": false, "overwriteAdoptionSubstitutionFallbackRetriesOrDeletionAuthorized": false},
+  "requiredCompositeApproval": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/approval2.json",
+    "mustBeFreshActualApproval": true,
+    "requiredRecordHashBindingPaths": [
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/request.json",
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/plan.json",
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/manual-handoff-request1.json",
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/manual-handoff-plan1.json"
+    ],
+    "manualRecordHashesMustBeComputedFromActualBytes": true,
+    "realApprovalSha256MustBePinnedInFutureFullSource": true,
+    "placeholderApprovalFilesOrHashesAuthorized": false,
+    "publicationSelectionIsApproval": false,
+    "thisRequestIsApproval": false
+  },
+  "publicationContext": {"selection": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/ready-retry-publication-selection1.json", "conditionalMaximumNormalCommits": 1, "conditionalMaximumHttpsPushes": 1, "afterFreshActualApprovalFullImplementationAndReviewsOnly": true, "selectionGrantsManualSourceFetchRegistryOrCacheAuthority": false, "publishDuringThisPreparation": false, "manualFishCommandOnlyAfterSuccessfulPublication": true, "assistantMayExecuteManualCommand": false},
+  "oldGrant": {"id": "reference-two-package-source-acquisition-1", "state": "SPENT", "remainingAuthorizedCombinedAttempts": 0, "remainingAuthorizedGetRequests": 0, "unusedUrlSlotsAreAuthority": false},
+  "currentAuthorizedManualHandoffAttempts": 0,
+  "currentLiveAcquisitionGrant": 0,
+  "newGrantIssued": false,
+  "actualCompositeApprovalExists": false,
+  "manualHandoffApproved": false,
+  "githubSourceFetchApproved": false,
+  "registryAcquisitionApproved": false,
+  "productionCacheOrDestinationCreationApproved": false,
+  "hostNativeGpuAssemblyOrTrainingApproved": false,
+  "targetAvailabilityVerified": false,
+  "sourceFileTableFrozen": false,
+  "fullImplementationPresent": false,
+  "executionReadinessClaimed": false,
+  "actualNetworkRequests": 0,
+  "actualManualHandoffs": 0,
+  "trainingReady": false
+}

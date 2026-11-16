@@ -1,5 +1,15 @@
 # Source verification, scoped review acceptance, and retained history
 
+## Current engine layout — 14 fresh Bun checks PASS
+
+Executor selected **Move tests; retire shim** after the shared-engine consolidation. [engine-consolidation.puml](engine-consolidation.puml) and [game-core.md](game-core.md) define canonical ownership. All 37 retained native corpus files move to `packages/starchess-core/tests/native`: 25 tests, five helpers and seven JSON fixtures. `canonical-exports.test.ts` replaces the obsolete compatibility-exports check with canonical API/ownership and producer-free product/native closure assertions. Fixture bytes, modes and raw historical source fields stay unchanged. All 153 canonical core source files must match the lead's pre-edit baseline byte for byte.
+
+Current command: `bun test packages/starchess-core/tests/native`. The core `test:native` script uses Bun only and stays separate from product Vitest `src/__tests__`; root `ml:test` and source/test TypeScript roots follow the relocated corpus and canonical engine. Retired-package negatives now reject unapproved or unresolved imports; canonical host-producer negatives retain their prior exclusion purpose. Runtime-closure outputs and new proof belong under `artifacts/engine-layout`, never the frozen consolidation evidence tree.
+
+**PASS:** [artifacts/engine-layout/checks/final-1/summary.json](../artifacts/engine-layout/checks/final-1/summary.json) records all **14 checks** passing with exit 0 and matching before/after source pins. The lead records **1,664 tests** (core 432, arena 24, app 790, selected pure ML 410, workspace 8), **seven strict TypeScript gates**, app boundaries and layout preservation. The separate 211-test native-entrypoint pass under `artifacts/engine-layout/checks/initial-1/native` is not added to that total. [architecture.md](architecture.md#current-layout--move-tests-retire-shim) records preservation counts and the lead-reported zero-finding static source reviews. Neither those reviews nor this documentation closure recomputed hashes.
+
+`artifacts/engine-layout/baseline-1.json` remains the pre-edit comparison, not post-edit PASS evidence. The earlier consolidation result of 1,664 tests, **13 gates** and seven strict TypeScript gates remains historical; the same test count does not merge the two evidence namespaces. The final-1 result supersedes earlier pending-layout annotations. The persisted-test index below uses current retained test locations; historical proof commands, counts, path fields, receipts and Source23/seal6 records elsewhere remain as actually recorded. This task performed no install, network acquisition, Rust/GPU execution, training, commit or push. No old verification or runtime grant is renewed. Native PlantUML rendering is skipped under Bun-only verification scope; full remote-theme rendering remains unverified.
+
 ## CURRENT — verified subsets and scoped source acceptance, operations unqualified
 
 Status: `SOURCE_RECONSTRUCTED` / `VERIFIED_TEST_SUBSETS` / `SOURCE_REVIEWS_ACCEPTED_SCOPED` / OPERATIONAL QUALIFICATION OPEN / `trainingReady:false`.
@@ -325,30 +335,31 @@ The grant permits only the stated toolchain/CPU-linker and selected locked owner
 | `crates/learning/tests/episode.rs` | Summed policy-gradient objective, baseline scaling, L2, empty episodes and bounds |
 | `crates/policy-io/tests/score.rs` | Native-record identity, nonzero scores, F64 JSON, shape/domain rejection and executable success/failure |
 | `crates/policy-io/tests/f32.rs` | Reject silent F32 inference |
-| `packages/game-core/tests/board.test.ts` | Placement, coordinates, blocked rays, mutual CC attacks, checker order and visibility |
-| `packages/game-core/tests/initialization.test.ts` | Exact reference opening, initial geometry, zero endowed paid basis, CC exclusion and detached game state |
-| `packages/game-core/tests/economy.test.ts` | Caps, costs, income, turn clocks, stored banks, deployed material and overlay gas |
-| `packages/game-core/tests/outcome.test.ts` | CC deaths and turn-cap outcomes |
-| `packages/game-core/tests/moves.test.ts` | Marine bands/promotion, siege fire, mine targets and shape-only intents |
-| `packages/game-core/tests/mines.test.ts` | Ray contact, exemptions, packing and three-mine cap |
-| `packages/game-core/tests/vision.test.ts` | Unit/side fog, dark BattleShip pings, own mine light and path-reveal taps |
-| `packages/game-core/tests/canonical.test.ts` | Canonical fingerprints for 1,536 move/fog boards and 49,152 shape queries |
-| `packages/game-core/tests/planning.e2e.test.ts` | Public planning-API flow from placement through fog filtering to recipient intents |
-| `packages/game-core/tests/native-classical.test.ts` | Heads-first ordering, transfer identity, insertion/result contexts, promotions and native drops |
-| `packages/game-core/tests/planning-intents.test.ts` | Known-board shape, vacancy, special anchors, CC crushing exclusions and timing |
-| `packages/game-core/tests/queue-action.test.ts` | Pure authoritative append/remove, gas debit/refund, stable sequence IDs and failure nonmutation |
-| `packages/game-core/tests/canonical-planning.test.ts` | 49,152 dependency checks and 344,064 append decisions against recorded canonical fingerprints |
-| `packages/game-core/tests/canonical-queue.test.ts` | 92,518 authoritative append attempts and 6,502 removals against the canonical fingerprint |
-| `packages/game-core/tests/resolution-primitives.test.ts` | Mine ordering/chase, timed collisions/deaths, path taps and Charon screens/fire-and-forget |
-| `packages/game-core/tests/canonical-resolution.test.ts` | 554,496 canonical schedule/contact/mine/Charon/ray cases |
-| `packages/game-core/tests/collision-primitives.e2e.test.ts` | Mine landing death through travel schedule to later-contact cancellation |
-| `packages/game-core/tests/classical-resolution.test.ts` | Common-board attack wave, fogged swaps, timed collisions, CC contacts, landing death, promotions, siege, pending rays and live path operands |
-| `packages/game-core/tests/canonical-classical.test.ts` | 122,160 canonical classical-phase cases with full intermediate/result fingerprints |
-| `packages/game-core/tests/turn-resolution.test.ts` | B/C/F Marine walks, native doubles, held/chasing mines, F actor anchors, promotions, dead-actor Charon, siege, jumps and terminal chips |
-| `packages/game-core/tests/canonical-turn.test.ts` | 11,045 canonical begin/admission/settlement cases, including 1,727 retained rejections |
-| `packages/game-core/tests/turn-resolution.e2e.test.ts` | Both canonical seats staged from the same opened board through actual simultaneous B/C/F settlement |
-| `packages/game-core/tests/causal-events.test.ts` | Stable identities, immediate birth/loss, ordered mine multiplicity, common preimages, promotion, snapshot/failure guards and separate evaluation/applied operands |
-| `packages/game-core/tests/causal-parity.test.ts` | All 11,045 canonical begin/admission/settlement outcomes with and without the journal sink and standard journal round trips |
+| `packages/starchess-core/tests/native/canonical-exports.test.ts` | Canonical ownership/API and producer-free product/native closure; replaces obsolete shim export-identity checks |
+| `packages/starchess-core/tests/native/board.test.ts` | Placement, coordinates, blocked rays, mutual CC attacks, checker order and visibility |
+| `packages/starchess-core/tests/native/initialization.test.ts` | Exact reference opening, initial geometry, zero endowed paid basis, CC exclusion and detached game state |
+| `packages/starchess-core/tests/native/economy.test.ts` | Caps, costs, income, turn clocks, stored banks, deployed material and overlay gas |
+| `packages/starchess-core/tests/native/outcome.test.ts` | CC deaths and turn-cap outcomes |
+| `packages/starchess-core/tests/native/moves.test.ts` | Marine bands/promotion, siege fire, mine targets and shape-only intents |
+| `packages/starchess-core/tests/native/mines.test.ts` | Ray contact, exemptions, packing and three-mine cap |
+| `packages/starchess-core/tests/native/vision.test.ts` | Unit/side fog, dark BattleShip pings, own mine light and path-reveal taps |
+| `packages/starchess-core/tests/native/canonical.test.ts` | Canonical fingerprints for 1,536 move/fog boards and 49,152 shape queries |
+| `packages/starchess-core/tests/native/planning.e2e.test.ts` | Public planning-API flow from placement through fog filtering to recipient intents |
+| `packages/starchess-core/tests/native/native-classical.test.ts` | Heads-first ordering, transfer identity, insertion/result contexts, promotions and native drops |
+| `packages/starchess-core/tests/native/planning-intents.test.ts` | Known-board shape, vacancy, special anchors, CC crushing exclusions and timing |
+| `packages/starchess-core/tests/native/queue-action.test.ts` | Pure authoritative append/remove, gas debit/refund, stable sequence IDs and failure nonmutation |
+| `packages/starchess-core/tests/native/canonical-planning.test.ts` | 49,152 dependency checks and 344,064 append decisions against recorded canonical fingerprints |
+| `packages/starchess-core/tests/native/canonical-queue.test.ts` | 92,518 authoritative append attempts and 6,502 removals against the canonical fingerprint |
+| `packages/starchess-core/tests/native/resolution-primitives.test.ts` | Mine ordering/chase, timed collisions/deaths, path taps and Charon screens/fire-and-forget |
+| `packages/starchess-core/tests/native/canonical-resolution.test.ts` | 554,496 canonical schedule/contact/mine/Charon/ray cases |
+| `packages/starchess-core/tests/native/collision-primitives.e2e.test.ts` | Mine landing death through travel schedule to later-contact cancellation |
+| `packages/starchess-core/tests/native/classical-resolution.test.ts` | Common-board attack wave, fogged swaps, timed collisions, CC contacts, landing death, promotions, siege, pending rays and live path operands |
+| `packages/starchess-core/tests/native/canonical-classical.test.ts` | 122,160 canonical classical-phase cases with full intermediate/result fingerprints |
+| `packages/starchess-core/tests/native/turn-resolution.test.ts` | B/C/F Marine walks, native doubles, held/chasing mines, F actor anchors, promotions, dead-actor Charon, siege, jumps and terminal chips |
+| `packages/starchess-core/tests/native/canonical-turn.test.ts` | 11,045 canonical begin/admission/settlement cases, including 1,727 retained rejections |
+| `packages/starchess-core/tests/native/turn-resolution.e2e.test.ts` | Both canonical seats staged from the same opened board through actual simultaneous B/C/F settlement |
+| `packages/starchess-core/tests/native/causal-events.test.ts` | Stable identities, immediate birth/loss, ordered mine multiplicity, common preimages, promotion, snapshot/failure guards and separate evaluation/applied operands |
+| `packages/starchess-core/tests/native/causal-parity.test.ts` | All 11,045 canonical begin/admission/settlement outcomes with and without the journal sink and standard journal round trips |
 | `packages/contracts/tests/observation.test.ts` | JSON round-trips, readonly copies, field bounds, visibility/memory, lineage and economic conservation |
 | `packages/contracts/tests/initialization.test.ts` | Both actual initial recipients, fogged opening knowledge without fabricated sightings, zero ledgers and producer/root separation |
 | `packages/contracts/tests/recipient.e2e.test.ts` | Recipient JSON through validation and serialization to core move generation |

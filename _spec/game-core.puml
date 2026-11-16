@@ -1,13 +1,31 @@
 @startuml game_core
+' purpose: canonical native admission and physics regressions after game-core workspace retirement
+' covers: packages/starchess-core/src/engine/**
+' covers: packages/starchess-core/src/model/square.ts
+' covers: packages/starchess-core/tests/native/**
+' covers: packages/starchess-core/package.json
+' details: _spec/game-core.md
+' consolidation goal: _spec/engine-consolidation.puml
+' provenance: retain this spec path for existing source SPEC pointers; it does not identify a live game-core workspace
+' status: test relocation and shim retirement complete; 14/14 fresh layout Bun checks PASS; native/runtime/training qualifications remain separate
+' verification command: bun test packages/starchess-core/tests/native
+' note register: bottom of TESTS FK 11.2 (33 words, 57 syllables, 2 sentences)
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title Canonical game primitives
-component "Typed squares + actions + snapshots" as TYPES <<app>>
-component "Board placement + attack geometry" as BOARD <<app>>
-component "Economy + special costs + turn clocks" as ECONOMY <<app>>
-component "Terminal outcomes" as OUTCOME <<app>>
-component "Native moves + mine geometry" as MOVES <<app>>
-component "Cumulative fog + path reveals" as VISION <<app>>
-component "Bun regression tests" as TESTS <<app>>
+title Canonical native regressions · retired shim, layout Bun checks passed
+component "starchess-core/src/engine/index.ts\npure native facade" as ENGINE <<app>>
+component "starchess-core/src/engine/types.ts\nmodel/square.ts" as TYPES <<app>>
+component "starchess-core/src/engine/board.ts\nboard placement + attack geometry" as BOARD <<app>>
+component "starchess-core/src/engine/economy.ts\nspecial costs + turn clocks" as ECONOMY <<app>>
+component "starchess-core/src/engine/outcome.ts" as OUTCOME <<app>>
+component "starchess-core/src/engine/moves.ts\nmines.ts / mine-contact.ts" as MOVES <<app>>
+component "starchess-core/src/engine/vision.ts\ncumulative fog + path reveals" as VISION <<app>>
+component "packages/starchess-core/tests/native\nretained admission + physics regressions" as TESTS <<app>>
+TESTS ..> ENGINE : canonical ownership + API
+ENGINE --> BOARD
+ENGINE --> ECONOMY
+ENGINE --> OUTCOME
+ENGINE --> MOVES
+ENGINE --> VISION
 BOARD --> TYPES
 ECONOMY --> TYPES
 ECONOMY --> BOARD : deployed material
@@ -20,8 +38,10 @@ TESTS ..> OUTCOME
 TESTS ..> MOVES
 TESTS ..> VISION
 note bottom of TESTS
-  Retain canonical rules, not legacy AI planners.
-  Move generation is not queue/resolve eligibility.
-  Simultaneous resolution and recipient DTOs remain pending.
+  Native regressions import the canonical engine
+  without keeping a second runtime workspace.
+  The seven stored fixtures keep exact bytes and
+  modes, because relocation must not rewrite the
+  historical source fields that bind them.
 end note
 @enduml

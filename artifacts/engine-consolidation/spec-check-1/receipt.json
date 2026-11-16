@@ -1,0 +1,51 @@
+{
+  "status": "PASS",
+  "scope": "OFFLINE_DIAGRAM_BODY_SYNTAX_AND_SCOPED_INDEX_COVERAGE",
+  "remoteThemeFetched": false,
+  "themeAndArrowStylingVerified": false,
+  "macroExpansion": "primary/queue/error to solid arrows; optional/cloud to dotted arrows",
+  "results": [
+    {
+      "source": "_spec/engine-consolidation.puml",
+      "sourceSha256": "5bf3842602f354afb1c5db72542ddd06d8dde69d05e3a3973855beae7f4e381d",
+      "fixture": "artifacts/engine-consolidation/spec-check-1/engine-consolidation.puml",
+      "exitCode": 0,
+      "coveragePaths": 15
+    },
+    {
+      "source": "_spec/ml-runtime-architecture.puml",
+      "sourceSha256": "385662a3d97e16f881273e7a59ae6203834f057b96e5258df007c1c56fa671c9",
+      "fixture": "artifacts/engine-consolidation/spec-check-1/ml-runtime-architecture.puml",
+      "exitCode": 0,
+      "coveragePaths": 12
+    },
+    {
+      "source": "_spec/game-core.puml",
+      "sourceSha256": "4df4adf6c42328854754402afc27b41efe8242234e3167d7bc501b073b5b6473",
+      "fixture": "artifacts/engine-consolidation/spec-check-1/game-core.puml",
+      "exitCode": 0,
+      "coveragePaths": 4
+    },
+    {
+      "source": "_spec/causal-journal.puml",
+      "sourceSha256": "95092e5dc808610e9f7fafbc499ba0160c47ac7447a00e19eff7d0abbe3040c5",
+      "fixture": "artifacts/engine-consolidation/spec-check-1/causal-journal.puml",
+      "exitCode": 0,
+      "coveragePaths": 6
+    },
+    {
+      "source": "_spec/turn-resolution.puml",
+      "sourceSha256": "fd339a9f0d67cc0d82f4f463b025449864d952b4279ff62f73597ce44f0343ba",
+      "fixture": "artifacts/engine-consolidation/spec-check-1/turn-resolution.puml",
+      "exitCode": 0,
+      "coveragePaths": 3
+    },
+    {
+      "source": "_spec/classical-resolution.puml",
+      "sourceSha256": "cbda0a88eaf4122b353ea3c8606dfe029ba9f3928e7603012d16ece48da1f612",
+      "fixture": "artifacts/engine-consolidation/spec-check-1/classical-resolution.puml",
+      "exitCode": 0,
+      "coveragePaths": 4
+    }
+  ]
+}

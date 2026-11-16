@@ -1,5 +1,5 @@
 // SPEC: _spec/packages/starchess-core/move-timing.puml
-import type { Square } from "chess.js";
+import type { Square } from "../model/square";
 
 import { rayBetween } from "./mines";
 import type { ScPiece } from "./placement";

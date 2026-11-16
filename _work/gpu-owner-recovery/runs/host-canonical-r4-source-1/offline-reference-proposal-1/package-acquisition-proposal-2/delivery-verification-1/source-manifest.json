@@ -1,0 +1,42 @@
+{
+  "scope": "OFFLINE_DELIVERY_SOURCE_ONLY",
+  "sources": {
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-bootstrap.ts": {
+      "bytes": 26504,
+      "sha256": "c89f3b0d0693e71bd4caa01714183151f484addf02192df064e2208d542e0e3c",
+      "gitBlobOid": "af2bc2f447c358948a1a7d0a33f4204f2cbf2727"
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-packet.ts": {
+      "bytes": 3145,
+      "sha256": "f7878c3eba64146e14c5f8385fc602f73d0f4fbc55280460d7a62314d933097b",
+      "gitBlobOid": "3a281894edda4fa1a92757de9f1df5aa828394ae"
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-render.ts": {
+      "bytes": 1509,
+      "sha256": "bacd5a257f5b771bd1529548d64c41fa5a04332610f1e5c2dca1ebb3e058c444",
+      "gitBlobOid": "19b2c0c2286055b6cb10396be364d9a77bb15351"
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.test.ts": {
+      "bytes": 24106,
+      "sha256": "9b728c88919c7954d486a4b71e4a72bb6d3a60ca7bc895a22d848ddcf7b029b4",
+      "gitBlobOid": "a99277bddced624ca9c9858c88305b6892f46902"
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-verify.ts": {
+      "bytes": 10123,
+      "sha256": "190210bbbe8920a95ddebbc40489be968c50d68c0d9d5c75cac50f107c1f3f98",
+      "gitBlobOid": "34b05a286b505e8840a6a688864ed82c6ddfc2dd"
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.tsconfig.json": {
+      "bytes": 580,
+      "sha256": "e661d19127ec2cd1d202eb94412d733aa92d4ae15e308711be44648f593fceaa",
+      "gitBlobOid": "dcd517b97787308f82f0251993bd4e81bf13338c"
+    },
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-contract1.json": {
+      "bytes": 2433,
+      "sha256": "1475790e2fb91b90f0f4ba4b9c352582638cd71764103bb0040d90d0e63d3609",
+      "gitBlobOid": "6aef21835e9d4ddc0164877295148516b8e43714"
+    }
+  },
+  "finalPacketCreated": false,
+  "finalClosureFrozen": false
+}

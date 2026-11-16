@@ -1,0 +1,53 @@
+{
+  "version": "chess-coach.h3-private-outcome-diagnostic-report.v1",
+  "status": "ACCEPTED_REPORT_CALLER_EXIT1_CLEAN_SOURCE_TRANSPORT_SIGNAL_FAILURE_REQUIRES_OBSERVER_REPORT",
+  "evidenceScope": "REPORT",
+  "reportSource": "GENUINE_EXECUTOR_MESSAGE",
+  "reportedFile": {
+    "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/reference-package-handoff-3/delivery-outcome.json",
+    "type": "regular file",
+    "bytes": 3189,
+    "contentPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/private-outcome.report.json",
+    "transcriptionIsAnOriginalHostByteCapture": false
+  },
+  "reportedPrimaryFailure": "caller-child:child-nonzero-or-signal",
+  "reportedCaller": {
+    "spawned": true,
+    "pid": 1684027,
+    "exitCode": 1,
+    "signal": null,
+    "reaped": true,
+    "closed": true,
+    "stdoutEOF": true,
+    "stderrEOF": true,
+    "processGroupGone": true,
+    "cleanupConfirmed": false,
+    "signalFailure": true,
+    "signalAttempt": {"target":"GROUP","signal":"SIGTERM","result":"THREW"},
+    "signalErrno": "NOT_RECORDED",
+    "descendantsConfirmedGone": false
+  },
+  "reportedSourceTransport": {
+    "requestCalls": 1,
+    "statusCode": 200,
+    "receivedBytes": 2351418,
+    "retainedBytes": 2351418,
+    "responseEOF": true,
+    "responseComplete": true,
+    "cleanupConfirmed": true,
+    "failure": null
+  },
+  "callerAssessmentStdoutIdentityCanBeComparedWithFrozenFormat": true,
+  "underlyingCallerApplicationFailure": "NOT_YET_REPORTED",
+  "innerAcquisitionConsumption": "UNCONFIRMED",
+  "deliveryOwnedConsumptionZeroMeansNoInnerClaim": false,
+  "nextExistingArtifacts": [
+    "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/reference-package-handoff-3/snapshot/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/acquisition-invocation-1/observation.json",
+    "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/acquisition-execution-1/attempt.json",
+    "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/acquisition-execution-1/consumption-receipt.json"
+  ],
+  "reportAddsNoCaptureHardwareOrCustodyRequirement": true,
+  "preserveOriginalConsoleReportAndConsumptionRecord": true,
+  "retryReplayCleanupAdoptionRetargetOrNewAllowanceAuthorized": false,
+  "trainingReady": false
+}

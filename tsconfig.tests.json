@@ -8,8 +8,8 @@
   "include": [
     "packages/contracts/src",
     "packages/contracts/tests",
-    "packages/game-core/src",
-    "packages/game-core/tests",
+    "packages/starchess-core/src/engine",
+    "packages/starchess-core/tests/native",
     "packages/policy/src",
     "packages/policy/tests",
     "packages/runtime/src",

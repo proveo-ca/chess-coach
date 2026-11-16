@@ -1,0 +1,15 @@
+{
+  "status": "PASS_FAILURE_AND_CONSUMPTION_RECORDS_ONLY",
+  "combinedAttemptsConsumed": 1,
+  "actualGetRequests": 0,
+  "unusedUrlSlotsReusable": false,
+  "issuedApprovalUnchanged": true,
+  "originalEvidenceFilesRehashed": 6,
+  "captureCallerObserverSourcesUnchanged": true,
+  "productionFailureRepaired": false,
+  "retryOrNewAcquisitionInvoked": false,
+  "archiveOrCachePayloadRead": false,
+  "nativeHostGpuReferenceOrTrainingExecuted": false,
+  "gitMutationOrPublicationPerformed": false,
+  "trainingReady": false
+}

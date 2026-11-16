@@ -1,0 +1,15 @@
+{
+  "status": "NOT_READY_IMPLEMENTATION_SOURCE_ONLY",
+  "session": "ses_e2e4b1ef3ffdEFzyU31y2Xzl0Z",
+  "risk": "MEDIUM",
+  "verification": "verification-3/receipt.json",
+  "readOnly": true,
+  "findings": [
+    {"severity":"MEDIUM","path":"capture.ts","line":146,"code":"BOOTSTRAP_REQUIRES_SPEC_INSTEAD_OF_BACKEND_REVIEW"},
+    {"severity":"MEDIUM","path":"capture.ts","lines":[548,557],"code":"PERSISTED_PASS_CAN_PRECEDE_DEADLINE_OVERRUN_DURING_RECEIPT_WRITE"}
+  ],
+  "deferredHardeningRemainsDeferred": true,
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

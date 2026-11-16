@@ -1,0 +1,67 @@
+{
+  "version": "chess-coach.reference-package-input-plan.v1",
+  "status": "UNAPPROVED_NOT_EXECUTED",
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "lockSource": {"path":"_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/inputs/reference/pnpm-lock.yaml","sha256":"1d05ed3d8de5a94873f26a2fb51b88c080704d2e90bf942f9f0bb2ce75a504e0"},
+  "lockProvenance": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/check.json",
+  "archiveRoot": "_work/gpu-owner-recovery/cache/reference-package-inputs-1",
+  "archiveRootMustBeFresh": true,
+  "rawArchivesExcludedFromGit": true,
+  "selectedSourcesRoot": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files",
+  "selectedSourcesRootMustBeFresh": true,
+  "archives": [
+    {
+      "name": "fflate",
+      "version": "0.8.3",
+      "url": "https://registry.npmjs.org/fflate/-/fflate-0.8.3.tgz",
+      "urlStatus": "PROPOSED_NOT_CONTACTED",
+      "archiveFile": "fflate-0.8.3.tgz",
+      "integrity": "sha512-tbZNuJrLwGUp3zshBtdy4W+ORxZuIh8a5ilyIEQDC5rY1f3U20JMry0Ll3WBzU58EZKsEuJFXhb5gwv8CsPvgA==",
+      "requiredMembers": [
+        {"member":"package/package.json","retainedFile":"fflate-0.8.3-package.json","futureRelativePath":"node_modules/fflate/package.json"},
+        {"member":"package/esm/index.mjs","retainedFile":"fflate-0.8.3-esm-index.mjs","futureRelativePath":"node_modules/fflate/esm/index.mjs"}
+      ],
+      "optionalLicenseMembersInPreferenceOrder": ["package/LICENSE", "package/LICENSE.md", "package/LICENSE.txt"],
+      "maximumLicenseFiles": 1,
+      "licenseRetainedFilePrefix": "fflate-0.8.3-"
+    },
+    {
+      "name": "jssha",
+      "version": "3.3.2",
+      "url": "https://registry.npmjs.org/jssha/-/jssha-3.3.2.tgz",
+      "urlStatus": "PROPOSED_NOT_CONTACTED",
+      "archiveFile": "jssha-3.3.2.tgz",
+      "integrity": "sha512-0RhFxzijV4W0qTXa97D5b6twAWXX7SEOpw8qzAZyZ+oeGOP9e84PnDSLjl7SBB1vBQ+chSUwsZR06i1AzA+nEA==",
+      "requiredMembers": [
+        {"member":"package/package.json","retainedFile":"jssha-3.3.2-package.json","futureRelativePath":"node_modules/jssha/package.json"},
+        {"member":"package/dist/sha256.mjs","retainedFile":"jssha-3.3.2-dist-sha256.mjs","futureRelativePath":"node_modules/jssha/dist/sha256.mjs"}
+      ],
+      "optionalLicenseMembersInPreferenceOrder": ["package/LICENSE", "package/LICENSE.md", "package/LICENSE.txt"],
+      "maximumLicenseFiles": 1,
+      "licenseRetainedFilePrefix": "jssha-3.3.2-"
+    }
+  ],
+  "requireSuccessfulHttpResponse": true,
+  "enforceActualStreamedByteLimits": true,
+  "verifyPinnedArchiveIntegrityBeforeDecompressionOrExtraction": true,
+  "selectedMembersMustBeRegularFiles": true,
+  "validatePackageJsonNameAndVersionWithoutExecutingCode": true,
+  "unselectedMembersMaterialized": false,
+  "licenseAbsenceRecordedWithoutClaimingLegalClearance": true,
+  "preserveOriginalSelectedBytesAndNotices": true,
+  "flatRetainedNamesAvoidIgnoredNodeModulesAndDistDirectories": true,
+  "futurePathMappingsAuthorizeNoAssemblyNow": true,
+  "flatFilesEstablishOneAssembledReferenceRoot": false,
+  "limitsAreOperationCapsNotFitOrQuotaGuarantees": true,
+  "rawArchiveOrSourceCacheDeletionAuthorized": false,
+  "failedFull1CacheOrHaltedLlvmPipelineUseAuthorized": false,
+  "packageManagerOrInstallerInvocations": 0,
+  "newResolverOrAuthorizationFrameworkProposed": false,
+  "networkOperationsPerformed": 0,
+  "archiveExtractionsPerformed": 0,
+  "packageCodeExecuted": false,
+  "referenceBundlingPerformed": false,
+  "hostNativeGpuOrTrainingExecuted": false,
+  "actualCommitOrPushPerformed": false,
+  "trainingReady": false
+}

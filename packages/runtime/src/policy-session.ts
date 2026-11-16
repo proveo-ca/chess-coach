@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 import { isDeepStrictEqual } from "node:util";
 import { decodeObservation, decodeScoreResponse, encodeScoreRequest } from "@chess-coach/contracts";
 import type { Candidate, ScoreRequest } from "@chess-coach/contracts";
-import { specialGasCost, UNIT_COST } from "@chess-coach/game-core";
+import { specialGasCost, UNIT_COST } from "@chess-coach/starchess-core/engine";
 import { encodeFeatures, enumerateCandidates, ENUMERATION_VERSION, FEATURE_VERSION } from "@chess-coach/policy";
 import { decodeDecisionJournal, decisionJournalShape, planPermitShape, streamStateShape } from "../../contracts/src/episode";
 import type { DecisionJournal, PlanPermit, StreamState } from "../../contracts/src/episode";

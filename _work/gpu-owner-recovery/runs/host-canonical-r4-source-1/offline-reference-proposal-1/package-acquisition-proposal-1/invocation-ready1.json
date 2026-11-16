@@ -1,0 +1,34 @@
+{
+  "version": "chess-coach.bun-invocation-readiness.v1",
+  "nonAuthorizing": true,
+  "grantId": "reference-two-package-source-acquisition-1",
+  "hashes": {
+    "caller": {
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.ts": "3b73ad2c7048f2d21004b5bb891b09d0fc6ed758903495ea386cf6733ee0891d",
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.test.ts": "64cf0c31883367f224b8554894748a1c1c9492e3be380b83563bf3142fcdebfe",
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun.tsconfig.json": "475349522320904b0f41ec6fa19b785ddccfe51f97bc5b36c0c123bcf9eee56a",
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invoke-approved-bun-verify.ts": "cc6b94c7ee74a40ecc77c96baf1def45c1febca0be4bbaa481e368df58a66735"
+    },
+    "source": {
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.ts": "9aae7af2eb26e801d78023a7a68e12c59fea3b1ac3355db6af10ca3a5161d5dd",
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.test.ts": "67f0d2af4a71af183da17838bbc3f4a4bad185b586cce1eae1cd8b1891599612",
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/verify.ts": "0faef58fd1f60fdec59aa1e4ac6345a9ea43b4c49ac7bc2af2b3c8d85e49a554",
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/tsconfig.json": "8da47e49f561f2ca4855f73d531b994cbd7bae04af883216e4eccaf004b25691",
+      "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/.gitignore": "6d70cee011f6d2c622496916b8cf1cfd12b5ce0acf5bfd1068df511d1f92f0ce"
+    },
+    "observer": {
+      "_work/gpu-owner-recovery/verify.ts": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58",
+      "_work/gpu-owner-recovery/command-supervisor.ts": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+    }
+  },
+  "identitySha256": "e842bb35a4bf6da17d337965cc71a03a6cd12401c8e8f5fd7b47088e43c5ead6",
+  "invocationProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/invocation-verification-4/receipt.json",
+    "sha256": "6bff069e999f20aa0370052dcba54620abecd5e7bc9caba8ba2eb5da6bbdc2fa"
+  },
+  "captureProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/verification-10/receipt.json",
+    "sha256": "c8544b2d06ba31b3ec8fc3d7a35d507443d66b8e2c5ddb4442e0577368f586c1"
+  },
+  "reviews": {"caller":"READY","capture":{"backend":"READY","devops":"READY","adversarial":"READY","security":"READY"}}
+}

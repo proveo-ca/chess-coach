@@ -1,0 +1,56 @@
+{
+  "actualAcquisitionInvoked": false,
+  "actualNativeInstallBuildGitMutation": false,
+  "actualWorkerInvoked": false,
+  "binaryFixturesExcludedBySourceGitignore": true,
+  "bindings": {
+    "approval": "62af17fc6199b5537c3488c10680b9269baf170a05a322facfdfad3737fea945",
+    "lock": "1d05ed3d8de5a94873f26a2fb51b88c080704d2e90bf942f9f0bb2ce75a504e0",
+    "plan": "8ecfce5156322da42fb852cd071a6091b96187e19a88226bec68295936505f6c",
+    "request": "2eb3c9727f788f9c95f0f2650ee89bbd94a5eb5ed289db67d91226e978140b70"
+  },
+  "negativeCases": 104,
+  "networkTransport": "IN_MEMORY_SYNTHETIC_ONLY",
+  "productionPathsTouched": false,
+  "scope": "STDLIB_AST_AND_SYNTHETIC_UNIT_PROTOCOL_TESTS",
+  "sourceHashes": {
+    "capture.py": "cb8b4b8b40e54009bc28ba5c09c7221f8ce049d2c0b5ab5a41a9c7d332970560",
+    "test_capture.py": "e578c8bfa6529da2798e708cded31d9ae3bc266648d82f8dda62aa5d39be5579",
+    "verify.py": "f7be92ec69417b275c49ad9da6d4a74ed7c70972c81360d2d105c4dff859cdcb"
+  },
+  "sourceManifestSha256": "356199060837e60ccae16a07330b72fe9b4c8b6ee901d2f11b3774ecbe8253d9",
+  "staticChecks": [
+    "capture.py:AST_PARSE",
+    "STDLIB_IMPORTS",
+    "REQUIRED_MOCK_FACTORY",
+    "ONE_ISOLATED_WORKER_SPAWN",
+    "NO_EVAL_OR_TAR_EXTRACTION_TO_FILESYSTEM",
+    "test_capture.py:AST_PARSE",
+    "verify.py:AST_PARSE"
+  ],
+  "status": "PASS_MOCK_ONLY",
+  "streams": {
+    "unittest.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "unittest.stdout": {
+      "bytes": 9374,
+      "sha256": "7d1d2f84d74d987a2681d1f7284b5767150c7cf6b026a15d4b92331e6a61f67d"
+    }
+  },
+  "unitExitCode": 0,
+  "unitFailure": null,
+  "unitProcessReaped": true,
+  "unitSummary": {
+    "actualAcquisitionInvoked": false,
+    "actualWorkerInvoked": false,
+    "errors": 0,
+    "failures": 0,
+    "guardViolations": [],
+    "negativeCases": 104,
+    "productionPathsTouched": false,
+    "unitTests": 85
+  },
+  "unitTests": 85
+}

@@ -1,0 +1,81 @@
+{
+  "status": "PASS_OFFLINE_REPORT_EVIDENCE_POSTCHECK_NOT_HOST_QUALIFICATION",
+  "verification": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/acquisition-verification-3/result.json",
+    "bytes": 6530,
+    "sha256": "6573ed855caa85e26545842061d4f2613a6f81175b941093ce4a43ec432f4abd",
+    "gitBlobOid": "a86ceeae6ea8dfbb1635f6f90030650da8506687"
+  },
+  "sourcePins": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/acquisition-report1.ts",
+      "bytes": 7332,
+      "sha256": "31cb49878cb9b9deeb52bd31c7fc890f89f4e4f3e21e255d123e9bcc0f919da7",
+      "gitBlobOid": "bf26047d68d5101eb96ffa3f8d9b3d78277cf4d8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/prepare-acquisition-report1.ts",
+      "bytes": 9299,
+      "sha256": "f4bebd20bdc7996ec0a464fdaf7e3fefd30797418708eeebb5c6b60b180fbd2a",
+      "gitBlobOid": "8846569963b9070820f8ddc7f0f7779433edbda6"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/validate-acquisition-report1.ts",
+      "bytes": 4977,
+      "sha256": "06fa82e2a9f2ca6ad3adc50484e81f6f2bddb67512ccbdf205e3b10a3a0e3973",
+      "gitBlobOid": "0c255bd03d7334f3a98bd7a481e75991f536c67c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/run-acquisition-verification1.ts",
+      "bytes": 2265,
+      "sha256": "72080078fcadcea025c7fe1126efdb9e1f06cb2067e4b10d4634e2f599a941b1",
+      "gitBlobOid": "de6bdc23b2a8b771f08ac153549735b712bd2047"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/acquisition-report1.test.ts",
+      "bytes": 3733,
+      "sha256": "da13fb4e747e084277be906c099b48e33aecfaf0e55dee6a63b7f2aceeba1708",
+      "gitBlobOid": "7b119d7b2910ea78ab72235062b63c5d7902a934"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/acquisition-report1.tsconfig.json",
+      "bytes": 248,
+      "sha256": "b1d4e21525bb9234183c7927b6f0a96d86bf05b67f711c539292eb7bbfd4260a",
+      "gitBlobOid": "9601fa8fac252fa77ba8b33c47d44ca00cc85c30"
+    }
+  ],
+  "reportValidation": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/acquisition-validation1.json",
+    "bytes": 2801,
+    "sha256": "125df8315910efb7d8153cd52061493a18e880f1f032ecd1ea4100b874df4ab5",
+    "gitBlobOid": "f29e2ceaadeab50d936d67102ce59acd88fa0aaf"
+  },
+  "specPostcheck": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/spec-postcheck3.json",
+    "bytes": 363,
+    "sha256": "b7015e21134ad50cbb2c9fd49bd3e131fdffea79d9c1f8a99ab989426582c148",
+    "gitBlobOid": "65247bc3928b8843c6ecd4724487076d7e5052bc"
+  },
+  "runtimeVersions": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/report-runtime-versions1.json",
+    "bytes": 628,
+    "sha256": "ef134fe873556510ba0b9b74cebd72cb328f37b780c0b0173aa9e943f3ddca37",
+    "gitBlobOid": "1fe570fcf023ddc0889b0ead1e39d592e5567c8e"
+  },
+  "fishSyntax": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/journal-report-command-syntax2.json",
+    "bytes": 825,
+    "sha256": "633f3dd131dfcc0b2c6475d2978354f8d9f6e715d8396640613f0c3be22c25f2",
+    "gitBlobOid": "82b2a832d280d1282efd0e5c0172eaea3c9e241e"
+  },
+  "preservedFiles": 55,
+  "reportedReceiptHashBindingMatched": true,
+  "testsPassed": 20,
+  "testsFailed": 0,
+  "strictTscExitCode": 0,
+  "historicalTsc2AndMissingFishFailurePreserved": true,
+  "sourceQualificationsReplayed": false,
+  "actualHostOrNetworkExecuted": false,
+  "newAllowancesAdded": 0,
+  "trainingReady": false
+}

@@ -1,6 +1,6 @@
 // SPEC: _spec/observations.puml
 import { expect, test } from "bun:test";
-import { scMovesFrom } from "@chess-coach/game-core";
+import { scMovesFrom } from "@chess-coach/starchess-core/engine";
 import { decodeObservation, encodeObservation } from "../src";
 import { fixture } from "./fixture";
 

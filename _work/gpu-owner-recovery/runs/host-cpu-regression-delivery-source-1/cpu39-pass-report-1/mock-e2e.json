@@ -1,0 +1,15 @@
+{
+  "status": "PASS_MOCK_REPORT_RECEIVE_ONLY",
+  "reportedCpuTests": 39,
+  "reportedHarnesses": 16,
+  "nativeCommandsReportedNotExecuted": 20,
+  "metadataAnomalyPreserved": true,
+  "fullMetadataConsistency": false,
+  "originalHostFilesReceived": false,
+  "actualHostExecuted": false,
+  "actualNativeExecuted": false,
+  "actualGpuExecuted": false,
+  "automaticRetryAuthorized": false,
+  "hostGrantConsumedByLocalTests": 0,
+  "trainingReady": false
+}

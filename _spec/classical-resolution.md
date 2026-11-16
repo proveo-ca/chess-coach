@@ -1,5 +1,7 @@
 # Canonical classical settlement
 
+Current ownership: [engine-consolidation.puml](engine-consolidation.puml) retains `starchess-core/src/resolve/resolve-turn.ts` as the single physical resolver behind product and native validation facades. [game-core.md](game-core.md) specifies the approved live own-Marine promotion guard and delayed-swap `phase3.mines` synchronization. **Move tests; retire shim** places the retained classical tests, corpus helper and fixture under `packages/starchess-core/tests/native` and retires the forwarding workspace without changing canonical core source. Current command: `bun test packages/starchess-core/tests/native`. Fresh layout verification is pending; [architecture.md](architecture.md#current-consolidation-verification--scoped-bun-pass) retains the historical consolidation pass. Native/runtime/training qualifications remain separate. The reference results and paths below describe historical source; fixture bytes/modes and raw historical source fields remain unchanged.
+
 ## Goal
 
 Migrate the canonical classical phase from `packages/starchess-core/src/resolve/resolve-turn.ts` at `b4b241481fb12de4a7344e6dba8eda775af57675`.
@@ -22,7 +24,7 @@ Preserve B/C/F Marine walk annotations and positional native-double permission f
 Public `resolveTurn` has no caller-supplied native-double permission.
 The internal composer entrypoint takes rules-derived context, not a serialized authorization flag.
 
-## Verification
+## Historical verification and retained obligations
 
 Persist reference fingerprints for same-window pairs, fog modes, mines, siege, move timing, path discovery and promotions.
 Test pending CC shots and path-application operand changes separately.

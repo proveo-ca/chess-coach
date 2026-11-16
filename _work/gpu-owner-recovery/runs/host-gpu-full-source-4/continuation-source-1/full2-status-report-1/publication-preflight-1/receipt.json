@@ -1,0 +1,20 @@
+{
+  "status": "PASS_FIXED_CONTINUATION_BRANCH_PUBLICATION_PREFLIGHT",
+  "argv": [
+    "git",
+    "ls-remote",
+    "--refs",
+    "--exit-code",
+    "https://github.com/proveo-ca/chess-coach.git",
+    "refs/heads/feat-ml-adjuntant-ii-continuation-2b24d9c5a"
+  ],
+  "exitCode": 0,
+  "parentCommit": "2b24d9c5ab4a3904d792e93c83e0715a862ab3ea",
+  "destinationRef": "refs/heads/feat-ml-adjuntant-ii-continuation-2b24d9c5a",
+  "redactedLocalGitPreflightPassed": true,
+  "rawIdentityConfigurationOrCredentialsPersisted": false,
+  "normalCommitAttempts": 0,
+  "httpsPushAttempts": 0,
+  "automaticRetryAuthorized": false,
+  "hostGpuOrTrainingExecuted": false
+}

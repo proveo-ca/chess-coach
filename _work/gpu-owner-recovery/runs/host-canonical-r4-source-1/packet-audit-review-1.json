@@ -1,0 +1,15 @@
+{
+  "status": "AUDIT_SCRIPT_FIRST_PASS_CORRECTIONS_REQUIRED",
+  "adversarialSession": "ses_e2f12cf9fffeWm7bfMxFM6pEbv",
+  "ready": false,
+  "findings": [
+    {"severity":"MEDIUM","issue":"Unanchored test-summary matching accepts larger counts containing the expected substrings."},
+    {"severity":"MEDIUM","issue":"The current publication receipt consumption counters are not checked independently."},
+    {"severity":"MEDIUM","issue":"Pinned HEAD alone does not establish the expected local branch."},
+    {"severity":"MEDIUM","issue":"A verification4 mention alone does not check projected test totals or review generation."},
+    {"severity":"MEDIUM","issue":"Unstaged diff checks alone omit staged scope and whitespace changes."}
+  ],
+  "scriptHadNotExecutedAtFirstReview": true,
+  "primaryCanonicalVerification4AndReview2Unaffected": true,
+  "trainingReady": false
+}

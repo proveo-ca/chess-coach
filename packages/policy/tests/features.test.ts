@@ -3,7 +3,7 @@ import { describe, expect, test } from "bun:test";
 import { FEATURES, FEATURE_VERSION, STATE_FEATURES, encodeFeatures, relativeSquare } from "../src";
 import { fixture } from "../../contracts/tests/fixture";
 import type { ObservationInput } from "../../contracts/tests/fixture";
-import type { Square } from "@chess-coach/game-core";
+import type { Square } from "@chess-coach/starchess-core/engine";
 import layout from "../../../schemas/feature-layout.json";
 
 const candidate = (actions: unknown[] = []) => JSON.stringify({ version: "chess-coach.candidate.v1", actions });

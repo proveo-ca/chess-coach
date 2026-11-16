@@ -1,0 +1,80 @@
+[
+  {
+    "check": "arena",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"arena\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"elapsedSeconds\":3.134844382,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "ml-source-types",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"ml-source-types\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"elapsedSeconds\":6.100139932,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "core",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"core\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"elapsedSeconds\":10.90542155,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "core-types",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"core-types\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"elapsedSeconds\":2.565126024,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "core-test-types",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"core-test-types\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"elapsedSeconds\":2.474756101,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "arena-types",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"arena-types\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"elapsedSeconds\":2.295108403,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "ml-test-types",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"ml-test-types\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"elapsedSeconds\":9.090661727,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "server-types",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"server-types\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"elapsedSeconds\":3.083395646,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "app-boundaries",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"app-boundaries\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"elapsedSeconds\":1.6874513580000001,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "workspace",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"workspace\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"elapsedSeconds\":0.025575146999999996,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "app-types",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"app-types\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"elapsedSeconds\":9.391233197,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "ml",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"ml\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"elapsedSeconds\":61.400965908,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  },
+  {
+    "check": "app",
+    "exitCode": 0,
+    "stdout": "Executor: {\"check\":\"app\",\"status\":\"PASS\",\"exitCode\":0,\"error\":null,\"elapsedSeconds\":71.11063374599999,\"sourcePinsMatch\":true}",
+    "stderr": ""
+  }
+]

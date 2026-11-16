@@ -29,6 +29,10 @@ export const charonDiagonalSquares = (
 ): Square[] => {
   const attacker = map.get(from);
   if (!attacker || attacker.type !== "b") return [];
+  return charonDiagonalSquaresFromSquare(from);
+};
+
+export const charonDiagonalSquaresFromSquare = (from: Square): Square[] => {
   const { file, rank } = parseSquare(from);
   const out: Square[] = [];
 

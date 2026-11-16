@@ -1,6 +1,6 @@
 // SPEC: _spec/candidate-generation.puml
-import { UNIT_COST, getSideVision, placementToMap, sq } from "@chess-coach/game-core";
-import type { Square } from "@chess-coach/game-core";
+import { UNIT_COST, getSideVision, placementToMap, sq } from "@chess-coach/starchess-core/engine";
+import type { Square } from "@chess-coach/starchess-core/engine";
 import { fixture } from "../../contracts/tests/fixture";
 import type { ObservationInput } from "../../contracts/tests/fixture";
 

@@ -1,0 +1,7 @@
+
+> @chess-coach/starchess@0.0.1 check:deps /home/gu1lty/Projects/proveo/chess-coach-integration/apps/starchess
+> depcruise src --config .dependency-cruiser.cjs --output-type err
+
+
+✔ no dependency violations found (425 modules, 1863 dependencies cruised)
+

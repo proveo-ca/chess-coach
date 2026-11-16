@@ -1,0 +1,29 @@
+{
+  "version": "challenge-locked-history-v1",
+  "files": {
+    "_spec/evidence/ml-adjutant-phase1/baseline-report.json": {
+      "bytes": 2267404,
+      "sha256": "940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b"
+    },
+    "_spec/evidence/ml-adjutant-phase1/verification.json": {
+      "bytes": 4508,
+      "sha256": "55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508"
+    },
+    "_spec/evidence/ml-adjutant-phase2/baseline-report.json": {
+      "bytes": 2529932,
+      "sha256": "5de86d94caaa626402b73ac9fa8f6bbc7a9b111e69a8b3801461380635cbd87f"
+    },
+    "_spec/evidence/ml-adjutant-phase2/coverage.json": {
+      "bytes": 129641,
+      "sha256": "f3c81dd7204c11ffc853cb6a60d073a6edf03b42bc9d6bdffcfa1176602cedac"
+    },
+    "_spec/evidence/ml-adjutant-phase2/contract-report.json": {
+      "bytes": 313399,
+      "sha256": "8260962cf429cbb2275ce60fe93750aa2360d9109ff935a9e2506a81aadf8bc8"
+    },
+    "_spec/evidence/ml-adjutant-phase2/pin-migration.json": {
+      "bytes": 18904,
+      "sha256": "99f8f53a20bfb7e424d56ac119cc8e06578c680dfdb05931ccef474034e726a6"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+*.tsbuildinfo
+*.tgz
+*.tar
+*.gz
+freshverification-*/fixtures/
+freshverification-*/compiler-output/
