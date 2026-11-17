@@ -1,0 +1,37 @@
+{
+  "status": "PASS_IMMUTABLE_PACKET_WORKER_BINDINGS_AND_PRIOR_NON_SPEC_PUBLICATION_PINS",
+  "publicationBase": "c60a45e1588fabf16c76da7127e160b17147dcf7",
+  "sourceManifest": {
+    "path": "artifacts/training-functional/full-training-packet-1/source-manifest.json",
+    "byteLength": 20642,
+    "sha256": "be01645f51edeacacdb54908100766bad580fcd6c0d1da37b2f00d44e268dd51"
+  },
+  "bindingDocuments": {
+    "path": "artifacts/training-functional/full-training-packet-1/binding-documents.json",
+    "byteLength": 5006,
+    "sha256": "990875a2422d1901733a44f61408cb3e510929be98769d3e46a2c45c8a320c1d"
+  },
+  "packetRequest": {
+    "path": "artifacts/training-functional/full-training-packet-1/request.json",
+    "byteLength": 8142,
+    "sha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331"
+  },
+  "packetCompletion": {
+    "path": "artifacts/training-functional/full-training-packet-1/completion.json",
+    "byteLength": 7322,
+    "sha256": "2e1513ee58d43cc4ec82f28422fc9b5a8150941d5191f2a4c2be626688f64d98"
+  },
+  "workerExecutionFilesRehashed": 112,
+  "bindingDocumentsRehashed": 14,
+  "priorPublicationNonSpecOrUnchangedSpecFilesRehashed": 113,
+  "expectedSpecAuthorityDeltaPaths": [
+    "_spec/readiness.md",
+    "_spec/runtime-protocol.puml",
+    "_spec/.spec-index.json"
+  ],
+  "unchangedIntakeSourceAndObservationPins": true,
+  "oldPlanIsBudgetRequestContextNotNewTarget": true,
+  "hostFactsCollected": false,
+  "oldPacketChanged": false,
+  "trainingExecuted": false
+}

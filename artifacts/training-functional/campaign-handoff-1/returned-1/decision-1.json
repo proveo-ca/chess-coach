@@ -1,0 +1,30 @@
+{
+  "status": "ALTERNATE_VOLUME_SELECTED_EXISTING_ABSOLUTE_PATH_REQUIRED",
+  "origin": "EXECUTOR_INTERACTIVE_STORAGE_DECISION",
+  "selectedOption": "Existing alternate volume (Recommended)",
+  "existingAbsoluteMountPath": null,
+  "scope": "STORAGE_ROUTE_PLANNING_NOT_HOST_OPERATIONS_OR_TRAINING",
+  "intakeVerification": "artifacts/training-functional/campaign-handoff-1/returned-1/verification.json",
+  "reviews": {
+    "adversarial": {
+      "session": "ses_e14540f25ffesGiGjB5vrcaU2h",
+      "ready": true,
+      "findings": []
+    },
+    "security": {
+      "session": "ses_e14540f20ffe3LQlj5cMVNdzsJ",
+      "ready": true,
+      "highOrBlockerFindings": [],
+      "risk": "low"
+    }
+  },
+  "nextInformation": "EXISTING_ABSOLUTE_MOUNT_PATH_OR_EXPLICIT_METADATA_DISCOVERY_CHOICE",
+  "requiresFreshPacketIfRootsRelocate": true,
+  "originalPacketPreserved": true,
+  "admissionRulesChanged": false,
+  "cleanupAuthorized": false,
+  "hostPreparationAuthorized": false,
+  "trainingExecutionAuthorized": false,
+  "hostCommandsExecuted": false,
+  "publicationPerformed": false
+}

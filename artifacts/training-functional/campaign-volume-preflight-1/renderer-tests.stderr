@@ -1,0 +1,24 @@
+
+artifacts/training-functional/campaign-handoff-1/preflight.test.ts:
+(pass) pure projection retains exact packet thresholds and excludes new unstaged input paths [0.11ms]
+(pass) exact-boundary metadata passes without readiness, preparation, quota, tool-usability or execution claims [1.61ms]
+(pass) insufficient bytes and free entries remain explicit blockers [0.47ms]
+(pass) unsupported or negative exposed filesystem counters never pass [0.63ms]
+(pass) large counts serialize losslessly rather than rounding through Number [0.17ms]
+(pass) missing, inaccessible or symlink runs parent cannot turn children into absent roots [0.36ms]
+(pass) only ENOENT means absent; occupied roots and permission errors stay blocked [0.43ms]
+(pass) wrong retained kinds and missing execute mode never prove tool usability [0.30ms]
+(pass) malformed plans fail before any metadata operation [0.17ms]
+(pass) clock failure prevents subsequent metadata calls rather than issuing renewals [0.09ms]
+(pass) production source exposes metadata only and imports remain inert [0.19ms]
+(pass) retained Bun metadata APIs work on repository-local fixtures without collecting HOST facts [0.69ms]
+(pass) the actual hashed TypeScript payload imports through a data URL before injected-only inspection [1.73ms]
+(pass) literal Bash command accepts Fish handoff shape, explicit cached Bun and neutral sanitized startup [24.87ms]
+(pass) transport tampering fails before source evaluation or any filesystem payload side effect [21.68ms]
+(pass) shell executable assignment never evaluates dollar or command substitutions [6.92ms]
+(pass) the delivered Bash starts with BASH_ENV removed before its command body [19.17ms]
+
+ 17 pass
+ 0 fail
+ 88 expect() calls
+Ran 17 tests across 1 file. [397.00ms]

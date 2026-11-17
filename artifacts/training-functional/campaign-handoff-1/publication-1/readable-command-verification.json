@@ -1,0 +1,20 @@
+{
+  "status": "PASS_READABLE_HOST_COMMAND_EXACT_INTERPRETER_ARGUMENT_BYTES",
+  "publicationCommit": "c60a45e1588fabf16c76da7127e160b17147dcf7",
+  "original": {
+    "path": "artifacts/training-functional/campaign-handoff-1/publication-1/HOST-command.sh",
+    "byteLength": 6572,
+    "sha256": "ecb22877df86530a4d7e35cf0e0e4a6c734208b201ac346802909298e858a37e"
+  },
+  "readable": {
+    "path": "artifacts/training-functional/campaign-handoff-1/publication-1/HOST-command-readable.sh",
+    "byteLength": 6582,
+    "sha256": "03c5d5ab058a66ecfc85e4be34ecfdee03672a12263604921f9221b1fa873863"
+  },
+  "method": "LOCAL_CAPTURE_EXECUTABLE_REPLACES_ONLY_B_ASSIGNMENT_AND_NEVER_EVALUATES_INSPECTOR_PROGRAM",
+  "capturedArgumentBytesSha256": "b50f118339a7e1a9e37499c965ee984d9f88cfa512ce55cfa2dc004b7e86ef59",
+  "maximumRenderedLineBytes": 1201,
+  "actualHostCommandExecuted": false,
+  "actualHostMetadataCollected": false,
+  "trainingExecuted": false
+}

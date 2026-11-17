@@ -1,0 +1,23 @@
+
+artifacts/training-functional/campaign-volume-preflight-1/preflight.test.ts:
+(pass) exact thresholds pass only the fixed HOST path metadata [1.03ms]
+(pass) old plan paths and sandbox targets cannot redirect the HOST probe [0.12ms]
+(pass) insufficient bytes and entries remain distinct false comparisons [0.11ms]
+(pass) unsupported zero/zero inode accounting stays unknown with raw counters retained [0.08ms]
+(pass) exposed zero free entries with a nonzero total means insufficient rather than unknown [0.07ms]
+(pass) negative filesystem counters stay raw and do not become capacity [0.11ms]
+(pass) large counters use exact integer arithmetic and serialize losslessly [0.25ms]
+(pass) missing or inaccessible path stops before statfs [0.42ms]
+(pass) symlink and non-directory leaves never receive statfs [0.15ms]
+(pass) directory mode remains an observation rather than an effective-access proof [0.13ms]
+(pass) statfs permission errors return unknown capacity rather than success [0.14ms]
+(pass) observation timeout returns a blocked report without retry [0.19ms]
+(pass) malformed context and clock fail before metadata IO [0.15ms]
+(pass) payload imports are inert and production adapter reads only metadata on local fixtures [2.51ms]
+(pass) the retained renderer carries the new source with old budget context without executing HOST metadata locally [5.74ms]
+(pass) corrupting this payload fails at the reused transport check before import [22.75ms]
+
+ 16 pass
+ 0 fail
+ 81 expect() calls
+Ran 16 tests across 1 file. [453.00ms]

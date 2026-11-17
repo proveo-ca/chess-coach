@@ -1,0 +1,96 @@
+{
+  "status": "PASS_LOCAL_RETURNED_METADATA_INTAKE_AND_SCOPED_STRICT_TYPES",
+  "scope": "LOCAL_VERIFICATION_NOT_FRESH_HOST_FACTS_OR_TRAINING",
+  "observation": {
+    "path": "artifacts/training-functional/campaign-handoff-1/returned-1/observation.json",
+    "byteLength": 5229,
+    "sha256": "857c7685ef3ae033a46c4851f1ad219b30bb2aef178a2d314987f618bc53d639"
+  },
+  "source": {
+    "path": "artifacts/training-functional/campaign-handoff-1/returned-1/intake.ts",
+    "byteLength": 7806,
+    "sha256": "9c5fcb60ce562a2b2f6878935280d117b463a08c5d1784ea79743e306905d42a"
+  },
+  "tsconfig": {
+    "path": "artifacts/training-functional/campaign-handoff-1/returned-1/tsconfig.json",
+    "byteLength": 66,
+    "sha256": "54046e4758bc7c277cb90e4a4c743bf8d842ad4b4a8169c9a66ece4516296da8"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "artifacts/training-functional/campaign-handoff-1/returned-1/intake.ts"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-handoff-1/returned-1/intake.stdout",
+        "byteLength": 368,
+        "sha256": "56ef72eb075132768cc649089c63476c53bfdf39079932c08e1a03c84ca0cc62"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-handoff-1/returned-1/intake.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/campaign-handoff-1/returned-1/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-handoff-1/returned-1/types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-handoff-1/returned-1/types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "trackedChangeChecks": [
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "diff",
+        "--name-only",
+        "-z"
+      ],
+      "exitCode": 0,
+      "trackedChanges": 0
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "diff",
+        "--cached",
+        "--name-only",
+        "-z"
+      ],
+      "exitCode": 0,
+      "trackedChanges": 0
+    }
+  ],
+  "newTestCohortClaimed": false,
+  "existingPublishedTestResultsUnchanged": true,
+  "hostCommandsExecuted": false,
+  "networkRequestsMade": false,
+  "publicationPerformed": false,
+  "admissionRulesChanged": false,
+  "trainingExecuted": false
+}

@@ -808,6 +808,7 @@
         "artifacts/training-functional/qualification-result-1/**",
         "artifacts/training-functional/full-training-packet-1/**",
         "artifacts/training-functional/campaign-handoff-1/**",
+        "artifacts/training-functional/campaign-volume-preflight-1/**",
         "packages/runtime/src/fixed-attempt.ts",
         "Cargo.toml",
         "crates/learning/Cargo.toml",

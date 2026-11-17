@@ -1,0 +1,145 @@
+{
+  "version": "chess-coach.campaign-selected-host-volume-handoff.v1",
+  "status": "SOURCE_ONLY_SELECTED_VOLUME_HOST_METADATA_PUBLICATION_PENDING",
+  "selectedHostPath": "/var/lib/chess-coach/training-volume-1",
+  "codingSandbox": {
+    "name": "proveo-opencode-11c4aed0",
+    "target": "/mnt/training",
+    "identitySource": "EXECUTOR_SUPPLIED",
+    "mountConfirmation": "Executor: mounted",
+    "observation": {
+      "path": "artifacts/training-functional/campaign-handoff-1/returned-1/mount-confirmation-1.json",
+      "byteLength": 1236,
+      "sha256": "7792895e9772e33d5e01f68418a29d829a9c52ea10b43d78670ae46d1e6562c5"
+    },
+    "viewIsNotIndependentHostCapacityEvidence": true
+  },
+  "source": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/preflight.ts",
+    "byteLength": 5916,
+    "sha256": "722595e63962f0321fe83594a40f516d89660062bc7045047df29e737553f240"
+  },
+  "renderer": {
+    "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+    "byteLength": 4355,
+    "sha256": "faf0c74bf328a0e2b67cbbb070caeb396ea3f17d7d2435d81c8f7bcc8de0ef69"
+  },
+  "plan": {
+    "version": "chess-coach.campaign-host-preflight.v1",
+    "host": "/home/gu1lty/Projects/proveo/chess-coach",
+    "cachedBun": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun",
+    "runsParent": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs",
+    "requestSha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331",
+    "minimumUsableBytes": "283467841536",
+    "minimumFreeEntries": "835600",
+    "freshRoots": [
+      "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-delivery-1",
+      "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-inputs-1",
+      "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-1"
+    ],
+    "retained": [
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs",
+        "kind": "directory"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/app",
+        "kind": "directory"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/reference",
+        "kind": "directory"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/qualification-inputs",
+        "kind": "directory"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/app/artifacts/training-functional/qualification-policy-score.ts",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/app/artifacts/training-functional/qualification-policy-channel.ts",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-score",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-channel",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-cpu39-1/native/target-cpu/x86_64-unknown-linux-gnu/release/policy-initialize",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-build/llvm",
+        "kind": "directory"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-runtime/rootfs/usr/local/cuda",
+        "kind": "directory"
+      }
+    ]
+  },
+  "planRole": "UNCHANGED_BUDGET_AND_REQUEST_CONTEXT_NOT_A_PROBE_TARGET",
+  "packetRequest": {
+    "path": "artifacts/training-functional/full-training-packet-1/request.json",
+    "byteLength": 8142,
+    "sha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331"
+  },
+  "packetCompletion": {
+    "path": "artifacts/training-functional/full-training-packet-1/completion.json",
+    "byteLength": 7322,
+    "sha256": "2e1513ee58d43cc4ec82f28422fc9b5a8150941d5191f2a4c2be626688f64d98"
+  },
+  "publication": {
+    "authority": "STANDING_EXECUTOR_CONTINUE_UNTIL_DECISION_OR_REQUIRED_HOST_VERIFICATION_WITH_COMMIT_PUSH_PRIOR_APPLIED_TO_NEW_CONFIRMED_SELECTED_PATH",
+    "normalCommits": 1,
+    "nonForcePushes": 1,
+    "targetRef": "refs/heads/feat-ml-adjuntant-ii",
+    "pullRequest": 51,
+    "baseBranch": "main",
+    "priorGrantsRenewed": false,
+    "force": false,
+    "amend": false,
+    "automaticRetry": false
+  },
+  "allowedOperations": [
+    "lstat exact selected HOST path",
+    "statfs same path only after directory leaf observation"
+  ],
+  "forbidden": [
+    "HOST payload content reads",
+    "HOST writes or preparation",
+    "broad mount discovery",
+    "subprocesses inside inspector",
+    "network",
+    "SELinux enforcement/label/policy changes",
+    "root relocation or packet reassembly",
+    "cleanup",
+    "Docker GPU/native installation/build/training"
+  ],
+  "metadataPassDoesNotProve": [
+    "quota availability",
+    "reserved capacity",
+    "effective-user write or search access",
+    "container access",
+    "SELinux compatibility",
+    "tool usability"
+  ],
+  "hostOperations": "USER_RUN_METADATA_ONLY_AFTER_CHECKED_PUBLICATION",
+  "probeTargetIsCodingSandboxPath": false,
+  "hostFactsIndependentlyCollected": false,
+  "hostPreparationAuthorized": false,
+  "trainingExecutionAuthorized": false,
+  "workerPacketOrAdmissionRulesChanged": false,
+  "deadlineSemantics": "TWO_SECONDS_PER_OBSERVATION_FIVE_SECONDS_TOTAL_COOPERATIVE_NOT_KERNEL_CANCELLATION",
+  "postPublication": "Generate the literal command with actual checked OID outside committed records; do not amend"
+}

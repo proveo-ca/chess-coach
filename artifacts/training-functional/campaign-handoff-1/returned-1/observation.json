@@ -1,0 +1,131 @@
+{
+  "status": "PASS_LOCAL_INTAKE_VALIDATION_REPORTED_HOST_STORAGE_BLOCKED",
+  "scope": "USER_PASTED_METADATA_NOT_RAW_HOST_CAPTURE_OR_INDEPENDENT_ATTESTATION",
+  "provenance": {
+    "origin": "USER_MESSAGE_JSON_SAVED_WITH_FINAL_LF",
+    "userReport": {
+      "path": "artifacts/training-functional/campaign-handoff-1/returned-1/user-report.json",
+      "byteLength": 4367,
+      "sha256": "847218cbc9b435d879172bd8a1e80161391ac40b6064d4c852bbe6cf4710587a"
+    },
+    "source": {
+      "path": "artifacts/training-functional/campaign-handoff-1/returned-1/intake.ts",
+      "byteLength": 7806,
+      "sha256": "9c5fcb60ce562a2b2f6878935280d117b463a08c5d1784ea79743e306905d42a"
+    },
+    "publicationCommit": "c60a45e1588fabf16c76da7127e160b17147dcf7",
+    "publicationReceipt": {
+      "path": "artifacts/training-functional/campaign-handoff-1/publication-1/post-publication.json",
+      "byteLength": 2892,
+      "sha256": "3f70773ec926bb473bbf9a9efef9f8d09e99617163f232d51726f3ba5efef31f"
+    },
+    "publicationReceiptIsHistorical": true,
+    "currentRemoteQueried": false,
+    "independentlyCollectedHostFacts": false
+  },
+  "validation": {
+    "publishedSourcePlanRequestBindingsMatch": true,
+    "frozenCommitBytesMatch": true,
+    "injectedMetadataInterpretationMatchesEntireReport": true,
+    "freshRootsReportedAbsent": 3,
+    "retainedKindModeChecksReportedMatching": 12,
+    "immutablePinsBefore": [
+      {
+        "path": "artifacts/training-functional/campaign-handoff-1/handoff.json",
+        "byteLength": 6035,
+        "sha256": "1aa555e0b656f9fac390793ffa9ca0e5f6067f69fd31407618c89494c87f64ce"
+      },
+      {
+        "path": "artifacts/training-functional/full-training-packet-1/plan.json",
+        "byteLength": 8774,
+        "sha256": "a5e676864f99b15ff8c1ecf5f33a5dc6198c11ef6e674db81116d09b2af5df86"
+      },
+      {
+        "path": "artifacts/training-functional/campaign-handoff-1/preflight.ts",
+        "byteLength": 8262,
+        "sha256": "c7e599332531b6d940f323a69768ec70a0e1a0e2b87cd5a632275afb59057559"
+      },
+      {
+        "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+        "byteLength": 4355,
+        "sha256": "faf0c74bf328a0e2b67cbbb070caeb396ea3f17d7d2435d81c8f7bcc8de0ef69"
+      },
+      {
+        "path": "artifacts/training-functional/full-training-packet-1/request.json",
+        "byteLength": 8142,
+        "sha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331"
+      },
+      {
+        "path": "artifacts/training-functional/full-training-packet-1/completion.json",
+        "byteLength": 7322,
+        "sha256": "2e1513ee58d43cc4ec82f28422fc9b5a8150941d5191f2a4c2be626688f64d98"
+      }
+    ],
+    "immutablePinsAfter": [
+      {
+        "path": "artifacts/training-functional/campaign-handoff-1/handoff.json",
+        "byteLength": 6035,
+        "sha256": "1aa555e0b656f9fac390793ffa9ca0e5f6067f69fd31407618c89494c87f64ce"
+      },
+      {
+        "path": "artifacts/training-functional/full-training-packet-1/plan.json",
+        "byteLength": 8774,
+        "sha256": "a5e676864f99b15ff8c1ecf5f33a5dc6198c11ef6e674db81116d09b2af5df86"
+      },
+      {
+        "path": "artifacts/training-functional/campaign-handoff-1/preflight.ts",
+        "byteLength": 8262,
+        "sha256": "c7e599332531b6d940f323a69768ec70a0e1a0e2b87cd5a632275afb59057559"
+      },
+      {
+        "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+        "byteLength": 4355,
+        "sha256": "faf0c74bf328a0e2b67cbbb070caeb396ea3f17d7d2435d81c8f7bcc8de0ef69"
+      },
+      {
+        "path": "artifacts/training-functional/full-training-packet-1/request.json",
+        "byteLength": 8142,
+        "sha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331"
+      },
+      {
+        "path": "artifacts/training-functional/full-training-packet-1/completion.json",
+        "byteLength": 7322,
+        "sha256": "2e1513ee58d43cc4ec82f28422fc9b5a8150941d5191f2a4c2be626688f64d98"
+      }
+    ]
+  },
+  "admission": {
+    "status": "BLOCKED_METADATA_PRECONDITIONS",
+    "failures": [
+      "USABLE_BYTES_INSUFFICIENT",
+      "FREE_ENTRIES_UNKNOWN"
+    ],
+    "reportedAvailableBytes": "168357556224",
+    "requiredAvailableBytes": "283467841536",
+    "shortfallBytes": "115110285312",
+    "reportedAvailableGiBApprox": "156.80",
+    "requiredAvailableGiB": "264",
+    "shortfallGiBApprox": "107.20",
+    "conservativeStorageBoundBytes": "191396683776",
+    "conservativeBoundAlsoExceedsReportedAvailability": true,
+    "freeEntries": null,
+    "freeEntriesMeaning": "UNKNOWN_NOT_ZERO",
+    "requiredFreeEntries": "835600",
+    "filesystemType": "NOT_RECORDED",
+    "quotaVerified": false,
+    "reservationCreated": false
+  },
+  "nextBoundary": "EXECUTOR_STORAGE_ROUTE_DECISION_REQUIRED_BEFORE_PLAN_CHANGES_OR_NEW_HOST_VERIFICATION",
+  "effects": {
+    "hostCommandExecuted": false,
+    "hostPreparationExecuted": false,
+    "nativeGpuDockerCommandsExecuted": false,
+    "trainingExecuted": false,
+    "readinessFlagsChanged": false,
+    "admissionRulesChanged": false,
+    "packetChanged": false,
+    "cleanupAuthorized": false,
+    "publicationPerformed": false,
+    "trainingExecutionAuthorized": false
+  }
+}

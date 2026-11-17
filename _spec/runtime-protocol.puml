@@ -1,5 +1,5 @@
 @startuml runtime_protocol
-' purpose: retained qualification, full-campaign ownership and the separate read-only USER HOST metadata handoff
+' purpose: retained qualification, full-campaign ownership and separate read-only USER HOST metadata checks including the selected volume
 ' covers: _work/gpu-owner-recovery/runs/host-canonical-r4-source-1/**
 ' covers: artifacts/training-functional/*.ts
 ' covers: artifacts/training-functional/plan.json
@@ -13,6 +13,7 @@
 ' covers: artifacts/training-functional/qualification-result-1/**
 ' covers: artifacts/training-functional/full-training-packet-1/**
 ' covers: artifacts/training-functional/campaign-handoff-1/**
+' covers: artifacts/training-functional/campaign-volume-preflight-1/**
 ' covers: packages/runtime/src/fixed-attempt.ts
 ' covers: Cargo.toml
 ' covers: crates/learning/Cargo.toml
@@ -20,11 +21,11 @@
 ' covers: crates/learning/src/lib.rs
 ' covers: crates/learning/src/model.rs
 ' covers: crates/learning/tests/model.rs
-' CURRENT 2026-11-17: SOURCE_PACKET_COMPLETE_CONDITIONAL_PUBLICATION_THEN_USER_HOST_METADATA. Executor's fresh stop correction requires publication BEFORE a necessary USER HOST verification command. H=artifacts/training-functional/campaign-handoff-1; H/handoff.json records ONE normal commit+nonforce push of SOURCE packet/handoff to existing feat-ml-adjuntant-ii/PR51/main, PENDING. Prior grants stay spent; no amend/force/retry/training.
+' CURRENT 2026-11-17: SELECTED_HOST_VOLUME_METADATA_PENDING_SOURCE_ONLY. V=artifacts/training-functional/campaign-volume-preflight-1; V/handoff.json applies standing continue-until-decision-or-required-HOST-verification authority to the newly confirmed path: ONE fresh normal commit+nonforce push to existing feat-ml-adjuntant-ii/PR51/main BEFORE literal USER command, PENDING. Prior c60a45e1588fabf16c76da7127e160b17147dcf7 grant stays spent; no amend/force/automatic retry/new PR/training.
 ' current completion: P=artifacts/training-functional/full-training-packet-1; P/completion.json EXISTS/167 represented tests=39fresh+90/38 pin-carried/2strictTSC/static/four HIGH CLOSED/source+metadata READY. Preserve ALL P/worker112/14bindings/original108+14 bytes;139 verification pins including4 specs remain ISSUANCE, not current authority-spec pins. Fresh SUPPLEMENTAL verification only; no P rewrite/reassembly.
-' current HOST boundary: H OUTSIDE worker112/request; inert built-in preflight/explicit inspect/exact3 statfs-lstat groups/3 fresh roots/12 exact retained nodes including parent. Known DIRECTORY parent precedes ENOENT->ABSENT; permissions/unsupported counters UNKNOWN. Threshold264GiB=283467841536B/835600 exposed free entries is not quota/reservation; kind-mode not usability/payload compatibility. No actual HOST facts;157GiB remains history.
-' current transport: pure renderer/Fish-safe Bash/zero interior single quotes/cd /env-i/absolute cached Bun1.4.0/no-env-file/no-install/compressed+raw SHA BEFORE built-in TS/dataURL import/stdout metadata only. No download/content reads/HOST file writes/mkdir/copy/network/inspector subprocess/Docker/GPU/native/acquisition/install/build/preparation/train. After checked publication, LOCAL actualOID command/receipt stay OUTSIDE commit; assistant never executes HOST command.
-' current precedence: later checked supplemental final-verification/publication receipts supersede pending issuance fields without amend/another commit; ALL older CURRENT/pending/false/LOCAL labels retain issuance scope, including P's old no-publication grant. Training unauthorized/unexecuted; checkpoint lifetime/GPUv1/mainsOFF/raw flags unchanged; ALL hardening LAST. Fresh lead checks/types/static pending; no commands/agents/HOST/network/Git writes here; native PlantUML SKIP, Java/remote theme outside Bun/TypeScript-or-Rust scope.
+' current HOST boundary: H=artifacts/training-functional/campaign-handoff-1; H/returned-1 retains USER-pasted old-root BLOCKED intake and Executor's mounted report for HOST /var/lib/chess-coach/training-volume-1 -> coding SBX proveo-opencode-11c4aed0:/mnt/training rw. Local168235544576B/entries UNKNOWN is CODING_SBX_NOT_HOST_ATTESTATION, not HOST failure/filesystem/capacity/SELinux proof; nominal mount is not disk-allocation evidence. No discovery helper implemented. V imports INERT/OUTSIDE worker112/request; fixed HOST_VOLUME lstat kind-mode-uid-gid THEN statfs ONLY for directory leaf; raw decimal BigInt counters/type;283467841536B/835600 entries;zero-zero entries UNKNOWN;comparisons true/false/null;2s/5s cooperative, not kernel cancellation.
+' current transport: frozen H/render-command.ts unchanged; old FrozenPlan supplies budget/request context ONLY, old paths NOT probed. V source hash722595e63962f0321fe83594a40f516d89660062bc7045047df29e737553f240; Fish-safe clean-env Bash/cd /absolute retained Bun1.4.0/no-env-file/no-install/cache0/compressed+raw SHA BEFORE built-in TS/dataURL import/stdout metadata only. Checked publication precedes LOCAL actualOID command/receipt OUTSIDE commit; assistant never executes HOST command.
+' current precedence: later checked supplemental verification/publication receipts supersede pending issuance fields; ALL older CURRENT/pending/false/LOCAL labels retain issuance scope. Selected-volume HOST facts and new tests/strict TSC/static remain PENDING; functional acceptance true/training unauthorized/unexecuted/P-H1-worker112-request-completion-checkpoint lifetime-GPUv1-mainsOFF unchanged. No content reads/HOST writes/spawn/network/discovery/SELinux changes/cleanup/relocation/preparation/native/GPU/Docker/build/install/train; PASS proves no quota/reservation/write-search/container/SELinux/tool usability. Root relocation needs actual HOST facts then a fresh immutable packet LATER; ALL hardening LAST. No commands/agents/HOST/network/Git writes here; PlantUML SKIP, Java/remote theme outside Bun/TypeScript-or-Rust scope.
 ' see: _spec/readiness.md#campaign-handoff-2026-11-17
 ' HISTORICAL PACKET-PREPARATION ISSUANCE 2026-11-17: PUBLISHED_FUNCTIONAL_READINESS_SOURCE_ONLY_FULL_TRAINING_PACKET_PREPARATION. LOCAL qualification-result-1/publication-1/post-publication.json records PASS/HEAD=remote=existing PR51 head dad29306a83268aeed720b7e9b8311a6d9d941e1/feat-ml-adjuntant-ii/base main/normal commit1+nonforce push1/grant CONSUMED; no amend/second publication. Acceptance9207B/SHA832754f33b6d06dc45cb795ee92718c92a2b9bab1e84a743416f6f91d435f0c2 and historical completion/raw/runtime flags remain unchanged; technical readiness accepted, actual TrainingCampaign.run/finalize/full5000 NOT executed.
 ' current packet P=artifacts/training-functional/full-training-packet-1; P/plan.json records explicit SOURCE_ONLY 18-day envelope selection, NOT capacity confirmation/execution permission. Original monotonic origin BEFORE preflight fixes work18days/validation<=12h/cleanup10min; early validation never earns >12h. Writable256GiB SOFT/initial free264GiB/835600 free entries/600s without verified-attempt or validation progress; telemetry cannot reset inactivity. Fixed2CPU/8GiB/no extra swap/GPU3GiB admission2GiB running; actual HOST capacity and proposed delivery-input-run roots UNVERIFIED.
@@ -214,7 +215,34 @@ participant "retained Bun1.4.0\nclean environment; neutral cwd" as HBUN
 participant "campaign-handoff-1/preflight.ts\ninert import; explicit inspect" as HINSPECT
 participant "node:fs/promises\nstatfs + exact lstat only" as HMETA
 
-group Required USER HOST metadata handoff - publication pending; actual HOST inspection NOT RUN
+participant "campaign-volume-preflight-1/preflight.ts\ninert inspect; fixed HOST_VOLUME" as VINSPECT <<app>>
+participant "/var/lib/chess-coach/training-volume-1\nselected HOST leaf; not /mnt/training" as VOLUME <<host>>
+
+group Required selected-volume HOST metadata - fresh publication and USER inspection pending
+  HLEAD ARROW_MAIN HRENDER : AFTER fresh checks +checked normal commit/nonforce PR51 push: V source/old context/actual OID
+  HRENDER --> HLEAD : literal command; lead keeps LOCAL command/receipt outside its commit
+  HLEAD ARROW_MAIN HUSER : ONE future HOST metadata command; no relocation or training command
+  HUSER ARROW_MAIN HBUN : clean-env Bash; cd /; retained Bun1.4.0; no-env-file/no-install/cache0
+  HBUN -> HBUN : compressed+raw SHA checks BEFORE built-in TS transpilation/dataURL import
+  HBUN ARROW_MAIN VINSPECT : explicit inspect; old FrozenPlan = request/threshold context ONLY
+  VINSPECT ARROW_MAIN VOLUME : lstat fixed leaf: kind/mode/UID/GID; no old-root or SBX-path probe
+  alt observed leaf is a directory
+    VINSPECT ARROW_MAIN VOLUME : statfs same leaf ONLY
+    VOLUME --> VINSPECT : raw decimal BigInt type/bsize/bavail/files/ffree
+  else inaccessible, symlink or non-directory leaf
+    VINSPECT -> VINSPECT : skip statfs; retain BLOCKED/unknown capacity
+  end
+  VINSPECT -> VINSPECT : >=283467841536B /835600 entries; files0+ffree0 ->UNKNOWN; comparisons true/false/null
+  VINSPECT --> HBUN : report<=8192B; metadata PASS/BLOCKED only; readiness/preparation/training unchanged
+  HBUN --> HUSER : stdout JSON; no quota/reservation/write-search/container/SELinux/usability proof
+end
+
+note over VINSPECT,VOLUME
+  Fixed HOST leaf only.
+  Cooperative limits: 2s per call, 5s total.
+end note
+
+group Historical H1 metadata handoff - c60 publication grant consumed; returned old-root report BLOCKED
   HLEAD -> HLEAD : fresh supplemental verification/staged-byte checks; ONE normal commit +nonforce push to existing PR51
   HLEAD -> HRENDER : ONLY AFTER checked publication: pinned source/plan +actual immutable OID
   HRENDER --> HLEAD : literal Fish-safe Bash command; retain LOCAL command/receipt outside its commit
@@ -557,8 +585,8 @@ end note
 ' publication freeze/staging contract: exact content manifest Q/cohort.json members bind path/classification/length/SHA256/Git blob/mode; THREE named controls Q/cohort.json,Q/paths.nul,Q/freeze-observation.json are outside recursive content-table/selfhash. paths.nul contains ALL content+THREE controls. Staged check requires exact NUL path-set/stage0 modes/raw Git blobs+SHA256 AND current live bytes for EVERY content/control member, with attrs rechecked. Whitespace ONLY SEVEN specs+TWO Q sources; never reformat pinned inputs/historical streams. Stage-check/post-freeze/post-publication receipts/actual committed pins/consumption/operator command stay OUTSIDE cohort/may remain untracked/NO second commit-amend-selfref.
 ' publication preflight CURRENT: lead reports all applicable filter/text/eol/working-tree-encoding UNSPECIFIED/core.hooksPath UNSET/named commit-push hooks ABSENT; exact staged cohort must recheck them. APPROVED bounded fixed-HTTPS ls-remote completed: Q/remote-preflight.stdout exact refs/heads/feat-ml-adjuntant-ii-continuation-2b24d9c5a at6fdc92c7eb90eb625e6d54c6a448009d5db34423/stderr0/exit0. This read-only Git publication query is NOT manual source API GET or operational attempt; source public access still UNVERIFIED/sourceGET0/manual grants UNUSED. Whole-cohort review/freeze/NUL staged-byte gate remains PENDING/NOT frozen-staged/index mutation0/commit0/push0/publication allowance UNUSED. No verified final total from prior DevOps report; no original-feature integration. Literal Fish delivery ONLY/no execution after actual checked publication; projection hands back to lead before freeze/no later spec edits in this pass.
 legend bottom
-  CURRENT: P SOURCE complete/167 represented=39fresh+90/38 carried/2types/static/four HIGH CLOSED/source+metadata READY. Fresh conditional normal commit1/nonforce push1 to existing feat-ml-adjuntant-ii/PR51/main precedes ONE required USER metadata command; both remain PENDING, prior grants stay spent. Training unauthorized/unexecuted; no amend/force/retry.
-  Handoff stays OUTSIDE worker112/request:3 metadata groups/3 fresh roots/12 exact retained nodes/264GiB/835600 exposed entries; unknown never PASS. No fresh HOST facts, preparation or tool/payload compatibility proof. P's139 pins including4 specs remain issuance; supplemental verification and LOCAL checked publication records supersede pending fields only when checked, actualOID outside commit. All older CURRENT/pending/false/LOCAL labels retain issuance scope; checkpoint lifetime/GPUv1/mainsOFF/raw flags unchanged; ALL hardening LAST.
+  CURRENT: selected HOST /var/lib/chess-coach/training-volume-1 reported mounted at coding SBX /mnt/training; SBX metadata is NOT HOST capacity/failure/filesystem/SELinux proof or disk allocation. V reads ONLY fixed HOST leaf lstat then directory-only statfs; old plan is budget/request context, not probe targets. Raw BigInt counters/zero-zero entries UNKNOWN/true-false-null comparisons/283467841536B/835600 entries/cooperative2s-5s. Selected-volume HOST facts remain PENDING.
+  Fresh conditional normal commit1/nonforce push1 to existing feat-ml-adjuntant-ii/PR51/main precedes USER command; prior c60 grant stays spent/no amend-force-autoRetry-newPR. Frozen H1 renderer/P/worker112/request/completion/lifetime unchanged; fresh tests/strict TSC/static and supplemental pins pending, old pins remain issuance. ActualOID/command stay LOCAL outside commit. Metadata PASS proves no quota/reservation/write-search/container/SELinux/tool usability; no relocation/preparation/train, future relocation needs HOST facts+fresh immutable packet. Functional acceptance true/training unauthorized; all older CURRENT/pending/false/LOCAL labels retain issuance scope; ALL hardening LAST.
   CURRENT: Executor explicitly ACCEPTED the fixed functional inventory on retained two-attempt native qualification + preserved campaign source/test proof. Technical trainingReady:true; trainingExecutionAuthorized:false; fullAssuranceQualified:false.
   Fresh publication-1 grants ONE checked normal commit/non-force push, UNUSED at source issuance; old grants/facts retry stay spent. Checked publication precedes SOURCE_ONLY full-training packet preparation, budget UNSET; execution exclusions remain unchanged, with no training or second publication authorized. Older CURRENT/pending/PROSPECTIVE/no-authority/LOCAL-uncommitted/no-next-plan labels retain prior issuance scope; only a later checked LOCAL post-publication receipt supersedes publication/local status. Fresh verification pending; raw/runtime flags unchanged; no TrainingCampaign.run/finalize/5000 completion claim; hardening LAST after all planned training and validated results.
   CURRENT: QUALIFICATION_DELIVERY_SOURCE_VERIFIED_PUBLICATION_PENDING /SOURCE_ONLY/trainingReady:false. Bootstrap source2 102/2208/strict TSC+command7/35; delivery-2 ALL12PASS/920tests/3 types/SAME358 matching source pins per lead. Both review2 READY/no findings/security LOW/static-only close both permission findings; source1 bootstrap95/delivery1 913/review1 MEDIUM stay known-bug history. Completion conditions: final static ->checked final-verification with final static replacing old specs ->source/staged-byte freeze ->ONE normal existing-PR51 commit/push ->LOCAL post-publication/literal command outside commit. Written/checked conditional records supersede committed pending conditions; no selfref/amend/second commit. New commit1+push1 unconsumed at source acceptance/prior6a grant spent. Source3 worker108/14 documents/historical811/Git120s/preparation240s/separate operator800s/numerical contracts unchanged; no actual compatibility/HOST-native qualification/training readiness. ALL hardening follows ALL planned training+validated results.
