@@ -1,0 +1,175 @@
+{
+  "status": "PASS_PACKET_AND_READONLY_HOST_HANDOFF_PUBLICATION_CANDIDATE",
+  "scope": "LOCAL_TESTS_TYPES_STATIC_PINNED_PACKET_AND_REVIEW_NOT_HOST_VERIFICATION",
+  "baseCommit": "dad29306a83268aeed720b7e9b8311a6d9d941e1",
+  "targetRef": "refs/heads/feat-ml-adjuntant-ii",
+  "pullRequest": 51,
+  "verification": {
+    "path": "artifacts/training-functional/campaign-handoff-1/checks-3/receipt.json",
+    "byteLength": 11281,
+    "sha256": "9ed2542f66ed226f425eab6ecbeb3d815b9570f95813e064a042ecb2adef293d"
+  },
+  "reviews": {
+    "path": "artifacts/training-functional/campaign-handoff-1/reviews-2.json",
+    "byteLength": 1565,
+    "sha256": "72f81cc5472575ad53aad0c9ce7d263994fbfc7a0b542b6e27ae076f2901f226"
+  },
+  "handoff": {
+    "path": "artifacts/training-functional/campaign-handoff-1/handoff.json",
+    "byteLength": 6035,
+    "sha256": "1aa555e0b656f9fac390793ffa9ca0e5f6067f69fd31407618c89494c87f64ce"
+  },
+  "publicationPreflight": {
+    "path": "artifacts/training-functional/campaign-handoff-1/publication-preflight.json",
+    "byteLength": 28655,
+    "sha256": "e3104efba9d3282a4a68571c884caf004c97c47522ce88f074da788247ea3ecc"
+  },
+  "packetRequest": {
+    "path": "artifacts/training-functional/full-training-packet-1/request.json",
+    "byteLength": 8142,
+    "sha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331"
+  },
+  "packetCompletion": {
+    "path": "artifacts/training-functional/full-training-packet-1/completion.json",
+    "byteLength": 7322,
+    "sha256": "2e1513ee58d43cc4ec82f28422fc9b5a8150941d5191f2a4c2be626688f64d98"
+  },
+  "sourcePins": [
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/preflight.ts",
+      "byteLength": 8262,
+      "sha256": "c7e599332531b6d940f323a69768ec70a0e1a0e2b87cd5a632275afb59057559"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/preflight.test.ts",
+      "byteLength": 11756,
+      "sha256": "d89bf5576b76778e44370eed66a2396e5f7586a15198f5bad3637a7cda316f98"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+      "byteLength": 4355,
+      "sha256": "faf0c74bf328a0e2b67cbbb070caeb396ea3f17d7d2435d81c8f7bcc8de0ef69"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/tsconfig.json",
+      "byteLength": 61,
+      "sha256": "3884c64fe86cacd8a33dd016dbb843b3bbb6c625090eda74ed06a9a58a13d92c"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/HOST.md",
+      "byteLength": 1692,
+      "sha256": "bcc44672c4774679f02e7fd5ffc6d73340269f405fa7c2c101a535ccc0dc0919"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/handoff.json",
+      "byteLength": 6035,
+      "sha256": "1aa555e0b656f9fac390793ffa9ca0e5f6067f69fd31407618c89494c87f64ce"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 182993,
+      "sha256": "0a3f5a09b44025af37cf72f0b1bb74febf8dce773169139f68ddbb8e0c0f6e58"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 151192,
+      "sha256": "23d0bcb67bf139a2e722e12f26b33176ce7ab629a8022f9500f4d94acda54634"
+    },
+    {
+      "path": "_spec/checkpoint-runtime.puml",
+      "byteLength": 13324,
+      "sha256": "d36a91aebeca20b95bc4325580c4056f523f429f4ef7d2c466e439c81b17bc99"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 54173,
+      "sha256": "19fbbbf52332d08095c2c674f152026ca37a9a7a983a759c009c74c995d54e00"
+    }
+  ],
+  "freshTests": {
+    "hostHandoff": 17,
+    "campaignPlanOperator": 39,
+    "total": 56,
+    "assertions": 1002
+  },
+  "unchangedCarriedTests": {
+    "campaignEvidence": 90,
+    "existingCampaign": 38,
+    "total": 128,
+    "notRerunOrDoubleCounted": true
+  },
+  "representedTests": 184,
+  "strictTypechecks": 2,
+  "staticSpecsPassed": true,
+  "oldPacketIssuancePinsUnchangedExcludingDeclaredSpecs": 135,
+  "specIssuance": [
+    {
+      "issuance": {
+        "path": "_spec/.spec-index.json",
+        "byteLength": 54110,
+        "sha256": "de0e2d08599f5df3ea16346be26b7fb7c1cbbc2587aeb49917aa09056a5a61c1"
+      },
+      "current": {
+        "path": "_spec/.spec-index.json",
+        "byteLength": 54173,
+        "sha256": "19fbbbf52332d08095c2c674f152026ca37a9a7a983a759c009c74c995d54e00"
+      },
+      "matches": false,
+      "reason": "SUPPLEMENTAL_CURRENT_AUTHORITY_AND_HOST_HANDOFF_NOT_WORKER_CODE_OR_REQUEST_MUTATION"
+    },
+    {
+      "issuance": {
+        "path": "_spec/checkpoint-runtime.puml",
+        "byteLength": 13324,
+        "sha256": "d36a91aebeca20b95bc4325580c4056f523f429f4ef7d2c466e439c81b17bc99"
+      },
+      "current": {
+        "path": "_spec/checkpoint-runtime.puml",
+        "byteLength": 13324,
+        "sha256": "d36a91aebeca20b95bc4325580c4056f523f429f4ef7d2c466e439c81b17bc99"
+      },
+      "matches": true,
+      "reason": "SUPPLEMENTAL_CURRENT_AUTHORITY_AND_HOST_HANDOFF_NOT_WORKER_CODE_OR_REQUEST_MUTATION"
+    },
+    {
+      "issuance": {
+        "path": "_spec/readiness.md",
+        "byteLength": 179927,
+        "sha256": "0d105b533f6840d1173a68124ba83d1dfdd76f88db21f888ba484d58ede9e81e"
+      },
+      "current": {
+        "path": "_spec/readiness.md",
+        "byteLength": 182993,
+        "sha256": "0a3f5a09b44025af37cf72f0b1bb74febf8dce773169139f68ddbb8e0c0f6e58"
+      },
+      "matches": false,
+      "reason": "SUPPLEMENTAL_CURRENT_AUTHORITY_AND_HOST_HANDOFF_NOT_WORKER_CODE_OR_REQUEST_MUTATION"
+    },
+    {
+      "issuance": {
+        "path": "_spec/runtime-protocol.puml",
+        "byteLength": 146754,
+        "sha256": "7c547a32c6f985c3f77d1ade6904769298a88012a4e8226b4983142b7f35b3f1"
+      },
+      "current": {
+        "path": "_spec/runtime-protocol.puml",
+        "byteLength": 151192,
+        "sha256": "23d0bcb67bf139a2e722e12f26b33176ce7ab629a8022f9500f4d94acda54634"
+      },
+      "matches": false,
+      "reason": "SUPPLEMENTAL_CURRENT_AUTHORITY_AND_HOST_HANDOFF_NOT_WORKER_CODE_OR_REQUEST_MUTATION"
+    }
+  ],
+  "workerExecutionFilesRehashed": 112,
+  "bindingDocumentFilesRehashed": 14,
+  "credentialScanCandidates": 0,
+  "actualHostMetadataCollected": false,
+  "hostPreparationExecuted": false,
+  "trainingExecuted": false,
+  "trainingExecutionAuthorized": false,
+  "publicationPerformed": false,
+  "publicationAuthority": "FRESH_USER_CONDITIONAL_COMMIT_PUSH_PRIOR_TO_REQUIRED_USER_HOST_VERIFICATION",
+  "postPublication": "Generate actual-OID literal command only after local/remote/existing-PR-head match, outside committed/hash-bound records",
+  "nativePlantUmlRendered": false,
+  "renderSkipReason": "Java and remote-theme access remain outside Bun/TypeScript-or-Rust scope"
+}

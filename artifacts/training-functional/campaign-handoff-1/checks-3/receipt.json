@@ -1,0 +1,327 @@
+{
+  "status": "PASS_SUPPLEMENTAL_HANDOFF_AND_PUBLICATION_CANDIDATE",
+  "scope": "LOCAL_TESTS_TYPES_STATIC_AND_RETAINED_PACKET_PIN_VERIFICATION_NOT_HOST_FACTS",
+  "sourcePinsBefore": [
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/preflight.ts",
+      "byteLength": 8262,
+      "sha256": "c7e599332531b6d940f323a69768ec70a0e1a0e2b87cd5a632275afb59057559"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/preflight.test.ts",
+      "byteLength": 11756,
+      "sha256": "d89bf5576b76778e44370eed66a2396e5f7586a15198f5bad3637a7cda316f98"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+      "byteLength": 4355,
+      "sha256": "faf0c74bf328a0e2b67cbbb070caeb396ea3f17d7d2435d81c8f7bcc8de0ef69"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/tsconfig.json",
+      "byteLength": 61,
+      "sha256": "3884c64fe86cacd8a33dd016dbb843b3bbb6c625090eda74ed06a9a58a13d92c"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/HOST.md",
+      "byteLength": 1692,
+      "sha256": "bcc44672c4774679f02e7fd5ffc6d73340269f405fa7c2c101a535ccc0dc0919"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/handoff.json",
+      "byteLength": 6035,
+      "sha256": "1aa555e0b656f9fac390793ffa9ca0e5f6067f69fd31407618c89494c87f64ce"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 182993,
+      "sha256": "0a3f5a09b44025af37cf72f0b1bb74febf8dce773169139f68ddbb8e0c0f6e58"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 151192,
+      "sha256": "23d0bcb67bf139a2e722e12f26b33176ce7ab629a8022f9500f4d94acda54634"
+    },
+    {
+      "path": "_spec/checkpoint-runtime.puml",
+      "byteLength": 13324,
+      "sha256": "d36a91aebeca20b95bc4325580c4056f523f429f4ef7d2c466e439c81b17bc99"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 54173,
+      "sha256": "19fbbbf52332d08095c2c674f152026ca37a9a7a983a759c009c74c995d54e00"
+    }
+  ],
+  "sourcePinsAfter": [
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/preflight.ts",
+      "byteLength": 8262,
+      "sha256": "c7e599332531b6d940f323a69768ec70a0e1a0e2b87cd5a632275afb59057559"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/preflight.test.ts",
+      "byteLength": 11756,
+      "sha256": "d89bf5576b76778e44370eed66a2396e5f7586a15198f5bad3637a7cda316f98"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+      "byteLength": 4355,
+      "sha256": "faf0c74bf328a0e2b67cbbb070caeb396ea3f17d7d2435d81c8f7bcc8de0ef69"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/tsconfig.json",
+      "byteLength": 61,
+      "sha256": "3884c64fe86cacd8a33dd016dbb843b3bbb6c625090eda74ed06a9a58a13d92c"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/HOST.md",
+      "byteLength": 1692,
+      "sha256": "bcc44672c4774679f02e7fd5ffc6d73340269f405fa7c2c101a535ccc0dc0919"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/handoff.json",
+      "byteLength": 6035,
+      "sha256": "1aa555e0b656f9fac390793ffa9ca0e5f6067f69fd31407618c89494c87f64ce"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 182993,
+      "sha256": "0a3f5a09b44025af37cf72f0b1bb74febf8dce773169139f68ddbb8e0c0f6e58"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 151192,
+      "sha256": "23d0bcb67bf139a2e722e12f26b33176ce7ab629a8022f9500f4d94acda54634"
+    },
+    {
+      "path": "_spec/checkpoint-runtime.puml",
+      "byteLength": 13324,
+      "sha256": "d36a91aebeca20b95bc4325580c4056f523f429f4ef7d2c466e439c81b17bc99"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 54173,
+      "sha256": "19fbbbf52332d08095c2c674f152026ca37a9a7a983a759c009c74c995d54e00"
+    }
+  ],
+  "sourcePinsMatch": true,
+  "results": [
+    {
+      "name": "helper-tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "30000",
+        "artifacts/training-functional/campaign-handoff-1/preflight.test.ts"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 395.34262,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-3/helper-tests.stdout",
+        "byteLength": 28,
+        "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-3/helper-tests.stderr",
+        "byteLength": 1755,
+        "sha256": "e0ae33d1bbff134ee1066a699b5013dcaa7c51ecdbb308d39d998f62595c791e"
+      },
+      "summary": [
+        " 17 pass",
+        " 0 fail",
+        " 88 expect() calls",
+        "Ran 17 tests across 1 file. [378.00ms]"
+      ]
+    },
+    {
+      "name": "campaign-tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "30000",
+        "artifacts/training-functional/campaign-plan.test.ts",
+        "artifacts/training-functional/campaign-operator.e2e.test.ts"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 2911.748374,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-3/campaign-tests.stdout",
+        "byteLength": 28,
+        "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-3/campaign-tests.stderr",
+        "byteLength": 3741,
+        "sha256": "8639c00a8d91ae6e93df0f4c3d580243d99eeb0f1fb959318854883a30a524ec"
+      },
+      "summary": [
+        " 39 pass",
+        " 0 fail",
+        " 914 expect() calls",
+        "Ran 39 tests across 2 files. [2.89s]"
+      ]
+    },
+    {
+      "name": "root-types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 6066.217218,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-3/root-types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-3/root-types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "summary": []
+    },
+    {
+      "name": "helper-types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/campaign-handoff-1/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 4430.5213650000005,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-3/helper-types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-3/helper-types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "summary": []
+    },
+    {
+      "name": "specs",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "artifacts/training-functional/check-specs.ts"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 22.18023699999867,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-3/specs.stdout",
+        "byteLength": 2306,
+        "sha256": "e6e39aa54c25e7c944b685d451b33b38dbddba055ef9d052f8ff853029808606"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-3/specs.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "summary": []
+    }
+  ],
+  "packetRequest": {
+    "path": "artifacts/training-functional/full-training-packet-1/request.json",
+    "byteLength": 8142,
+    "sha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331"
+  },
+  "packetCompletion": {
+    "path": "artifacts/training-functional/full-training-packet-1/completion.json",
+    "byteLength": 7322,
+    "sha256": "2e1513ee58d43cc4ec82f28422fc9b5a8150941d5191f2a4c2be626688f64d98"
+  },
+  "unchangedPacketIssuancePinsMatched": 135,
+  "workerExecutionFilesRehashed": 112,
+  "bindingDocumentsRehashed": 14,
+  "specIssuance": [
+    {
+      "issuance": {
+        "path": "_spec/.spec-index.json",
+        "byteLength": 54110,
+        "sha256": "de0e2d08599f5df3ea16346be26b7fb7c1cbbc2587aeb49917aa09056a5a61c1"
+      },
+      "current": {
+        "path": "_spec/.spec-index.json",
+        "byteLength": 54173,
+        "sha256": "19fbbbf52332d08095c2c674f152026ca37a9a7a983a759c009c74c995d54e00"
+      },
+      "matches": false,
+      "reason": "SUPPLEMENTAL_CURRENT_AUTHORITY_AND_HOST_HANDOFF_NOT_WORKER_CODE_OR_REQUEST_MUTATION"
+    },
+    {
+      "issuance": {
+        "path": "_spec/checkpoint-runtime.puml",
+        "byteLength": 13324,
+        "sha256": "d36a91aebeca20b95bc4325580c4056f523f429f4ef7d2c466e439c81b17bc99"
+      },
+      "current": {
+        "path": "_spec/checkpoint-runtime.puml",
+        "byteLength": 13324,
+        "sha256": "d36a91aebeca20b95bc4325580c4056f523f429f4ef7d2c466e439c81b17bc99"
+      },
+      "matches": true,
+      "reason": "SUPPLEMENTAL_CURRENT_AUTHORITY_AND_HOST_HANDOFF_NOT_WORKER_CODE_OR_REQUEST_MUTATION"
+    },
+    {
+      "issuance": {
+        "path": "_spec/readiness.md",
+        "byteLength": 179927,
+        "sha256": "0d105b533f6840d1173a68124ba83d1dfdd76f88db21f888ba484d58ede9e81e"
+      },
+      "current": {
+        "path": "_spec/readiness.md",
+        "byteLength": 182993,
+        "sha256": "0a3f5a09b44025af37cf72f0b1bb74febf8dce773169139f68ddbb8e0c0f6e58"
+      },
+      "matches": false,
+      "reason": "SUPPLEMENTAL_CURRENT_AUTHORITY_AND_HOST_HANDOFF_NOT_WORKER_CODE_OR_REQUEST_MUTATION"
+    },
+    {
+      "issuance": {
+        "path": "_spec/runtime-protocol.puml",
+        "byteLength": 146754,
+        "sha256": "7c547a32c6f985c3f77d1ade6904769298a88012a4e8226b4983142b7f35b3f1"
+      },
+      "current": {
+        "path": "_spec/runtime-protocol.puml",
+        "byteLength": 151192,
+        "sha256": "23d0bcb67bf139a2e722e12f26b33176ce7ab629a8022f9500f4d94acda54634"
+      },
+      "matches": false,
+      "reason": "SUPPLEMENTAL_CURRENT_AUTHORITY_AND_HOST_HANDOFF_NOT_WORKER_CODE_OR_REQUEST_MUTATION"
+    }
+  ],
+  "unchangedCarriedTests": {
+    "evidence": 90,
+    "existingCampaign": 38,
+    "notRerunOrDoubleCounted": true
+  },
+  "actualHostMetadataCollected": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false
+}

@@ -1,0 +1,168 @@
+{
+  "status": "UPGRADE_COMPLETE_SOURCE_ONLY_FULL_TRAINING_EXECUTION_PACKET",
+  "scope": "PREPARED_AND_VERIFIED_LOCAL_SOURCE_METADATA_NOT_HOST_PREPARATION_OR_TRAINING",
+  "readinessPublication": {
+    "commit": "dad29306a83268aeed720b7e9b8311a6d9d941e1",
+    "pullRequest": "https://github.com/proveo-ca/chess-coach/pull/51",
+    "baseBranch": "main",
+    "receipt": {
+      "path": "artifacts/training-functional/qualification-result-1/publication-1/post-publication.json",
+      "byteLength": 2624,
+      "sha256": "6e0e4443c29aae9d13c0c925e9092d528e64703ce28be17bb98429af46d65c1f"
+    },
+    "grantConsumed": true
+  },
+  "packet": {
+    "path": "artifacts/training-functional/full-training-packet-1",
+    "status": "LOCAL_UNCOMMITTED_UNPUBLISHED",
+    "request": {
+      "path": "artifacts/training-functional/full-training-packet-1/request.json",
+      "byteLength": 8142,
+      "sha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331"
+    },
+    "sourceManifest": {
+      "path": "artifacts/training-functional/full-training-packet-1/source-manifest.json",
+      "byteLength": 20642,
+      "sha256": "be01645f51edeacacdb54908100766bad580fcd6c0d1da37b2f00d44e268dd51"
+    },
+    "bindingDocuments": {
+      "path": "artifacts/training-functional/full-training-packet-1/binding-documents.json",
+      "byteLength": 5006,
+      "sha256": "990875a2422d1901733a44f61408cb3e510929be98769d3e46a2c45c8a320c1d"
+    },
+    "inputManifest": {
+      "path": "artifacts/training-functional/full-training-packet-1/input-manifest.json",
+      "byteLength": 178218,
+      "sha256": "5974678c3835dde421e94f58b754dbe436817c23a8816d94b37e607eeaa5f503"
+    },
+    "runtimeConfiguration": {
+      "path": "artifacts/training-functional/full-training-packet-1/runtime-configuration.json",
+      "byteLength": 4567,
+      "sha256": "1fe8b18f21470b6a3f459d418fc9f8d0809e960679ba76f76ddc695bc10665ef"
+    },
+    "plan": {
+      "path": "artifacts/training-functional/full-training-packet-1/plan.json",
+      "byteLength": 8774,
+      "sha256": "a5e676864f99b15ff8c1ecf5f33a5dc6198c11ef6e674db81116d09b2af5df86"
+    }
+  },
+  "verification": {
+    "path": "artifacts/training-functional/full-training-packet-1/verification.json",
+    "byteLength": 56472,
+    "sha256": "132b2120494e8851408128aa26f206c47ad7172ab6fae6260a918d799ec0b80d"
+  },
+  "finalVerification": {
+    "path": "artifacts/training-functional/full-training-packet-1/final-verification.json",
+    "byteLength": 1875,
+    "sha256": "03b15e8b7d8e0fbc31739d73b201b56ed1f1f688e43e055b8f18e979d94bf8c4"
+  },
+  "assembly": {
+    "path": "artifacts/training-functional/full-training-packet-1/assembly.json",
+    "byteLength": 1446,
+    "sha256": "89d5775d7895bea5a12a88e4aca0a9f6b73713c8566aacbf0eeb2aa66a24a0d9"
+  },
+  "assemblyVerification": {
+    "path": "artifacts/training-functional/full-training-packet-1/assembly-verification.json",
+    "byteLength": 2448,
+    "sha256": "57e1ff8cfa6bb68e02a4f1c826fb635b6740aecc164e82ad242781d5611bb238"
+  },
+  "sourceReviews": {
+    "path": "artifacts/training-functional/full-training-packet-1/reviews-2.json",
+    "byteLength": 2704,
+    "sha256": "01e27e97a42b82496045c2904381f1c8af942b4bd451b7a2191bddc52e684ed1"
+  },
+  "metadataReview": {
+    "path": "artifacts/training-functional/full-training-packet-1/metadata-review-3.json",
+    "byteLength": 971,
+    "sha256": "bde5dcd8e8715d273a6690716d0aca09fad66b60cad0045023d3b0d7865a2ed8"
+  },
+  "priorHighFindings": {
+    "path": "artifacts/training-functional/full-training-packet-1/review-1.json",
+    "byteLength": 1579,
+    "sha256": "63d926817bbf08188449bc684da7fd1d1f67206feda2fde47496e50ab36528fd"
+  },
+  "allFourHighFindingsClosed": true,
+  "testFiles": [
+    {
+      "path": "artifacts/training-functional/campaign-plan.test.ts",
+      "purpose": "Explicit selected budgets, fresh roots, immutable closure extension and approval separation",
+      "count": 13,
+      "generation": "checks-4",
+      "source": {
+        "path": "artifacts/training-functional/campaign-plan.test.ts",
+        "byteLength": 4437,
+        "sha256": "8e2b06d6003c25e4e6381ec4ddbe89ec6559db7dbeea3b3b1b887f5edfec19d5"
+      }
+    },
+    {
+      "path": "artifacts/training-functional/campaign-operator.e2e.test.ts",
+      "purpose": "MOCK 5000-attempt orchestration, ownership, bounded monitoring and four HIGH regressions",
+      "count": 26,
+      "generation": "checks-4",
+      "source": {
+        "path": "artifacts/training-functional/campaign-operator.e2e.test.ts",
+        "byteLength": 26273,
+        "sha256": "e097c5b3a4667278427b4051b2659478e5e9031c4a09ba10d756e59c171ae532"
+      }
+    },
+    {
+      "path": "artifacts/training-functional/campaign-evidence.test.ts",
+      "purpose": "Bounded synthetic 5000-attempt readback, metrics, tamper rejection and real repository-local SQLite capacity",
+      "count": 90,
+      "generation": "checks-2; unchanged source/tests pinned through checks-4",
+      "source": {
+        "path": "artifacts/training-functional/campaign-evidence.test.ts",
+        "byteLength": 41369,
+        "sha256": "768182e11dfa08eeec0816a39bc6cfa066fe818f07b0c5d56e0589f7f1e25234"
+      }
+    },
+    {
+      "path": "packages/runtime/tests/training-campaign.test.ts",
+      "purpose": "Preserved campaign serial lifetime, final-validity and no-retry source proof",
+      "count": 38,
+      "generation": "checks-2; unchanged source/tests pinned through checks-4",
+      "source": {
+        "path": "packages/runtime/tests/training-campaign.test.ts",
+        "byteLength": 20952,
+        "sha256": "4fa9a7717e9ec4436b0bfc4989d8e1de75655dc1944a382bf832444ffe7c91be"
+      }
+    }
+  ],
+  "testCount": 167,
+  "assertions": 47109,
+  "strictTypechecks": 2,
+  "staticSpecsPassed": true,
+  "carriedTests": "90 evidence and 38 existing-campaign tests retain checks-2 results against unchanged current source/test pins; checks-4 freshly verifies 39 plan/operator tests",
+  "executionFiles": 112,
+  "physicalSourceRows": 952,
+  "retainedDependencyRows": 840,
+  "bindingRoles": 14,
+  "replacedBindingRoles": 4,
+  "unchangedBindingRoles": 10,
+  "referenceRows": 9,
+  "selectedBudget": {
+    "workMs": 1555200000,
+    "validationMs": 43200000,
+    "cleanupMs": 600000,
+    "inactivityMs": 600000,
+    "workspaceBytes": 274877906944,
+    "minimumFreeBytes": 283467841536
+  },
+  "proposedRootsHostChecked": false,
+  "hostCapacityConfirmed": false,
+  "retainedHostDependencyAndReferencePayloadsRehashed": false,
+  "nativePlantUmlRendered": false,
+  "nativePlantUmlSkipReason": "Java and remote-theme access remain outside Bun/TypeScript-or-Rust scope",
+  "existingReadinessAcceptanceAndRawRuntimeFlagsChanged": false,
+  "trainingCampaignOperationallyExecuted": false,
+  "trainingFinalizationOperationallyExecuted": false,
+  "plannedFullCampaignExecuted": false,
+  "trainingExecutionAuthorized": false,
+  "trainingExecuted": false,
+  "hostNativeGpuContainerBuildAcquisitionInstallOperationsExecuted": false,
+  "newPacketPublicationAuthorized": false,
+  "newPacketCommitOrPushPerformed": false,
+  "fullAssuranceQualified": false,
+  "deferredHardening": "ALL_AFTER_ALL_PLANNED_TRAINING_AND_VALIDATED_RESULTS",
+  "next": "Fresh approval is required to publish this packet; HOST preparation and matching one-campaign execution remain separately authorized future actions"
+}

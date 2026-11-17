@@ -806,6 +806,8 @@
         "artifacts/training-functional/host-facts-1/**",
         "artifacts/training-functional/qualification-packet-1/**",
         "artifacts/training-functional/qualification-result-1/**",
+        "artifacts/training-functional/full-training-packet-1/**",
+        "artifacts/training-functional/campaign-handoff-1/**",
         "packages/runtime/src/fixed-attempt.ts",
         "Cargo.toml",
         "crates/learning/Cargo.toml",
@@ -836,7 +838,8 @@
         "packages/runtime/tests/training-coordinator.test.ts",
         "packages/runtime/tests/training-store.test.ts",
         "packages/runtime/tests/repository-scratch.ts",
-        "packages/runtime/tests/training-fixture.ts"
+        "packages/runtime/tests/training-fixture.ts",
+        "artifacts/training-functional/full-training-packet-1/**"
       ],
       "fingerprint": null
     },

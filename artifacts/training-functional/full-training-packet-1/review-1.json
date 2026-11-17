@@ -1,0 +1,22 @@
+{
+  "scope": "READ_ONLY_SOURCE_PACKET_REVIEW_NOT_EXECUTION_AUTHORIZATION",
+  "generation": "checks-3",
+  "ready": false,
+  "security": {
+    "session": "ses_e14c28048ffe5JaIfZxfKHAW06",
+    "findings": [{ "severity": "HIGH", "path": "artifacts/training-functional/campaign-operator.ts", "line": 274, "code": "CWE-59", "description": "Container-writable telemetry path permits HOST append redirection through a symlink", "resolutionAtReview": "OPEN" }]
+  },
+  "adversarial": {
+    "session": "ses_e14c2804fffeSvkBpEWrOVdMsE",
+    "findings": [
+      { "severity": "HIGH", "path": "artifacts/training-functional/campaign-operator.ts", "line": 231, "description": "Unbounded final worker-report read can exceed cleanup deadline and prevent CID removal", "resolutionAtReview": "OPEN" },
+      { "severity": "HIGH", "path": "artifacts/training-functional/campaign-operator.ts", "line": 270, "description": "Normal scratch/journal removals can cause ENOENT during workspace traversal and abort valid training", "resolutionAtReview": "OPEN" },
+      { "severity": "HIGH", "path": "artifacts/training-functional/campaign-operator.ts", "line": 251, "description": "Atomic progress replacement can change old inode ctime and spuriously trigger FILE_DRIFT", "resolutionAtReview": "OPEN" }
+    ]
+  },
+  "devops": { "session": "ses_e14f65c65ffeT3ojCy0PwM2WyJ", "additionalInfrastructureBlockers": [], "securityFindingStillOpen": true },
+  "olderPassingTestsDoNotCloseTheseFindings": true,
+  "trainingExecutionAuthorized": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false
+}

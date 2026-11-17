@@ -1,0 +1,208 @@
+{
+  "status": "SOURCE_ONLY_EXECUTION_PACKET_NOT_HOST_PREPARED",
+  "scope": "PREPARE_AFTER_CHECKED_READINESS_PUBLICATION_NOT_EXECUTE_OR_REPUBLISH",
+  "readinessCommit": "dad29306a83268aeed720b7e9b8311a6d9d941e1",
+  "readinessPublicationReceipt": "artifacts/training-functional/qualification-result-1/publication-1/post-publication.json",
+  "decision": {
+    "selectedOption": "18-day envelope (Recommended)",
+    "sourceOnlySelection": true,
+    "hostCapacityConfirmed": false,
+    "trainingExecutionAuthorized": false
+  },
+  "plan": {
+    "version": "chess-coach.training-campaign-plan.v1",
+    "scope": "SOURCE_ONLY_FULL_TRAINING_PACKET",
+    "readinessCommit": "dad29306a83268aeed720b7e9b8311a6d9d941e1",
+    "host": "/home/gu1lty/Projects/proveo/chess-coach",
+    "cachedBun": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun",
+    "root": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-1",
+    "inputs": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-inputs-1",
+    "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-inputs-1/app",
+    "reference": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-inputs-1/reference",
+    "documents": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-inputs-1/qualification-inputs",
+    "delivery": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-delivery-1",
+    "entrypoint": "artifacts/training-functional/campaign-operator.ts",
+    "image": "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+    "gpu": "GPU-713c95e0-6952-a576-794b-9ef1fb527ff0",
+    "mounts": [
+      {
+        "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-inputs-1/app",
+        "target": "/app",
+        "readonly": true
+      },
+      {
+        "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-inputs-1/reference",
+        "target": "/app/reference",
+        "readonly": true
+      },
+      {
+        "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-inputs-1/qualification-inputs",
+        "target": "/app/qualification-inputs",
+        "readonly": true
+      },
+      {
+        "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun",
+        "target": "/usr/local/bin/bun",
+        "readonly": true
+      },
+      {
+        "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-score",
+        "target": "/opt/retained-gpu/policy-score",
+        "readonly": true
+      },
+      {
+        "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-inputs-1/app/artifacts/training-functional/qualification-policy-score.ts",
+        "target": "/usr/local/bin/policy-score",
+        "readonly": true
+      },
+      {
+        "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-channel",
+        "target": "/opt/retained-gpu/policy-channel",
+        "readonly": true
+      },
+      {
+        "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-inputs-1/app/artifacts/training-functional/qualification-policy-channel.ts",
+        "target": "/usr/local/bin/policy-channel",
+        "readonly": true
+      },
+      {
+        "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-cpu39-1/native/target-cpu/x86_64-unknown-linux-gnu/release/policy-initialize",
+        "target": "/usr/local/bin/policy-initialize",
+        "readonly": true
+      },
+      {
+        "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-build/llvm",
+        "target": "/opt/tracel-data/tracel/tracel-llvm-23.1.0-4",
+        "readonly": true
+      },
+      {
+        "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-runtime/rootfs/usr/local/cuda",
+        "target": "/usr/local/cuda",
+        "readonly": true
+      },
+      {
+        "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-1/state",
+        "target": "/state",
+        "readonly": false
+      },
+      {
+        "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-1/tmp",
+        "target": "/tmp",
+        "readonly": false
+      },
+      {
+        "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-1/home",
+        "target": "/scratch/home",
+        "readonly": false
+      },
+      {
+        "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-1/evidence",
+        "target": "/evidence",
+        "readonly": false
+      }
+    ],
+    "roots": "PROPOSED_NOT_HOST_CHECKED_MUST_BE_ABSENT_EXCLUSIVE_CREATE_NO_ADOPTION_OR_RETRY",
+    "retainedPreparedInputs": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1",
+    "preparation": "FUTURE_APPROVAL_COPY_RETAINED_INPUTS_READONLY_EXTEND_SOURCE_AND_FOUR_DOCUMENTS_NO_BUILDS_OR_ACQUISITION",
+    "requiredSourceAdditions": [
+      "packages/runtime/src/training-campaign.ts",
+      "artifacts/training-functional/campaign-plan.ts",
+      "artifacts/training-functional/campaign-operator.ts",
+      "artifacts/training-functional/campaign-evidence.ts"
+    ],
+    "replacedDocumentRoles": [
+      "source",
+      "tests",
+      "runtimeConfiguration",
+      "recipe"
+    ],
+    "campaign": {
+      "masters": [
+        101,
+        102,
+        103,
+        104,
+        105
+      ],
+      "verifiedPerMaster": 1000,
+      "attempts": 5000,
+      "coordinators": 1,
+      "factories": 1,
+      "finalizations": 1,
+      "closes": 1,
+      "primaryMaster": 101
+    },
+    "nativeScope": "FULL_FIVE_MASTER_TRAINING_NOT_GPUV1_EXTENSION",
+    "gpuV1": "UNCHANGED_MASTER101_ORDINAL0",
+    "ordinaryGpuMains": "UNCHANGED_OFF",
+    "numeric": {
+      "precision": "F64",
+      "finiteDifferenceCoordinates": 4670,
+      "eps": 0.000001,
+      "atol": 1e-8,
+      "rtol": 0.00001,
+      "c12": "DISTINCT_ASSERTIONS_UNCHANGED"
+    },
+    "resources": {
+      "cpus": 2,
+      "memoryBytes": 8589934592,
+      "swapBytes": 0,
+      "gpuAdmissionMiB": 3072,
+      "gpuRunningMiB": 2048
+    },
+    "budget": {
+      "workMs": 1555200000,
+      "validationMs": 43200000,
+      "cleanupMs": 600000,
+      "inactivityMs": 600000,
+      "workspaceBytes": 274877906944,
+      "minimumFreeBytes": 283467841536
+    },
+    "limits": {
+      "queryMs": 1000,
+      "intervalMs": 2000,
+      "maxAgeMs": 4000,
+      "queryCapacity": 799202,
+      "workspaceCheckMs": 60000,
+      "reportBytes": 1048576,
+      "progressBytes": 4096,
+      "telemetryBytes": 1073741824,
+      "dockerCommands": 7
+    },
+    "storageAdmission": {
+      "perAttemptBytes": 35659776,
+      "privatePipelineBytes": 178511781888,
+      "combinedPayloadBytes": 182806749184,
+      "requiredUsableBytes": 191396683776,
+      "requiredFreeEntries": 835600,
+      "configuredPrivateCeilingBytes": 214748364800
+    },
+    "rawNativeTrace": "NOT_RETAINED_NO_QUALIFICATION_TRACE_ARRAY_REUSE",
+    "progress": "ONLY_VERIFIED_COMPLETIONS_OR_VALIDATION_PROGRESS_RESET_INACTIVITY",
+    "trainingExecutionAuthorized": false,
+    "publicationAuthorized": false,
+    "technicalTrainingReady": true,
+    "deferredHardening": "AFTER_ALL_PLANNED_TRAINING_AND_VALIDATED_RESULTS"
+  },
+  "readinessAcceptance": {
+    "path": "artifacts/training-functional/qualification-result-1/functional-acceptance-1.json",
+    "byteLength": 9207,
+    "sha256": "832754f33b6d06dc45cb795ee92718c92a2b9bab1e84a743416f6f91d435f0c2"
+  },
+  "immutableQualification": {
+    "files": 108,
+    "byteLength": 641523,
+    "sourceManifestSha256": "9820e6bfb34f5891117379b207cfd193330d5bd1efbf6c8d36f6ff6e0328836b",
+    "documents": 14,
+    "changed": false
+  },
+  "pendingExternalApprovals": [
+    "publish new packet",
+    "fresh HOST preparation",
+    "execute full-five-master campaign once against exact request"
+  ],
+  "trainingExecuted": false,
+  "trainingExecutionAuthorized": false,
+  "publicationAuthorized": false,
+  "hardening": "AFTER_ALL_PLANNED_TRAINING_AND_VALIDATED_RESULTS"
+}

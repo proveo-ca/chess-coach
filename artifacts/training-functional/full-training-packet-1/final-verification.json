@@ -1,0 +1,52 @@
+{
+  "status": "PASS_FINAL_ASSEMBLED_PACKET_STATIC_PIN_AND_CREDENTIAL_CHECK",
+  "scope": "LOCAL_REPOSITORY_SOURCE_AND_METADATA_ONLY",
+  "command": {
+    "argv": [
+      "/usr/local/bin/bun",
+      "--no-env-file",
+      "--no-install",
+      "artifacts/training-functional/check-specs.ts"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-4/final-specs.stdout",
+      "byteLength": 2252,
+      "sha256": "6ae0897b344be74f9b90079db1a54e7a667ce99c8f5e81e4904051b9c96fb79a"
+    },
+    "stderr": {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-4/final-specs.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "request": {
+    "path": "artifacts/training-functional/full-training-packet-1/request.json",
+    "byteLength": 8142,
+    "sha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331"
+  },
+  "verification": {
+    "path": "artifacts/training-functional/full-training-packet-1/verification.json",
+    "byteLength": 56472,
+    "sha256": "132b2120494e8851408128aa26f206c47ad7172ab6fae6260a918d799ec0b80d"
+  },
+  "assemblyVerification": {
+    "path": "artifacts/training-functional/full-training-packet-1/assembly-verification.json",
+    "byteLength": 2448,
+    "sha256": "57e1ff8cfa6bb68e02a4f1c826fb635b6740aecc164e82ad242781d5611bb238"
+  },
+  "metadataReview": {
+    "path": "artifacts/training-functional/full-training-packet-1/metadata-review-3.json",
+    "byteLength": 971,
+    "sha256": "bde5dcd8e8715d273a6690716d0aca09fad66b60cad0045023d3b0d7865a2ed8"
+  },
+  "currentSourcePinsMatch": true,
+  "credentialScan": {
+    "files": 65,
+    "totalBytes": 1080441,
+    "candidates": 0
+  },
+  "trainingExecuted": false,
+  "hostCapacityConfirmed": false,
+  "publicationPerformed": false
+}

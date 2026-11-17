@@ -1,0 +1,36 @@
+{
+  "status": "PASS_IMMUTABLE_SOURCE_DOCUMENT_EVIDENCE_AND_TRACKED_CHANGE_SCOPE",
+  "head": "dad29306a83268aeed720b7e9b8311a6d9d941e1",
+  "originalExecutionFiles": 108,
+  "originalExecutionBytes": 641523,
+  "originalDocuments": 14,
+  "returnedExport": {
+    "path": "artifacts/training-functional/qualification-result-1/returned-2/export.json",
+    "byteLength": 262703,
+    "sha256": "fea1c2807458c3f51698e7e2c38e1c3b15367ae8ef337cf5e057b9e8fc3b0103"
+  },
+  "returnedExtractedFiles": 6,
+  "readinessAcceptance": {
+    "path": "artifacts/training-functional/qualification-result-1/functional-acceptance-1.json",
+    "byteLength": 9207,
+    "sha256": "832754f33b6d06dc45cb795ee92718c92a2b9bab1e84a743416f6f91d435f0c2"
+  },
+  "historicalCompletion": {
+    "path": "artifacts/training-functional/qualification-result-1/completion.json",
+    "byteLength": 5022,
+    "sha256": "75363ee9fb56ea26e121395187ec7eb3cce40a827c9c5014009f11f4b2915c36"
+  },
+  "trackedChanges": [
+    "_spec/.spec-index.json",
+    "_spec/checkpoint-runtime.puml",
+    "_spec/readiness.md",
+    "_spec/runtime-protocol.puml"
+  ],
+  "indexClean": true,
+  "existingRuntimeOrNativeSourceChanged": false,
+  "originalProtectedHostCheckoutInspected": false,
+  "retainedHostRuntimeCachesReadOrWritten": false,
+  "trainingExecuted": false,
+  "nativeGpuContainerOrHostOperationsExecuted": false,
+  "secondPublicationPerformed": false
+}

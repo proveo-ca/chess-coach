@@ -1,0 +1,41 @@
+{
+  "status": "PASS_LOCAL_PACKET_ASSEMBLY_NOT_HOST_PREPARATION",
+  "source": {
+    "path": "artifacts/training-functional/full-training-packet-1/source-manifest.json",
+    "byteLength": 20642,
+    "sha256": "be01645f51edeacacdb54908100766bad580fcd6c0d1da37b2f00d44e268dd51"
+  },
+  "bindingDocuments": {
+    "path": "artifacts/training-functional/full-training-packet-1/binding-documents.json",
+    "byteLength": 5006,
+    "sha256": "990875a2422d1901733a44f61408cb3e510929be98769d3e46a2c45c8a320c1d"
+  },
+  "preparedInputManifest": {
+    "path": "artifacts/training-functional/full-training-packet-1/input-manifest.json",
+    "byteLength": 178218,
+    "sha256": "5974678c3835dde421e94f58b754dbe436817c23a8816d94b37e607eeaa5f503"
+  },
+  "request": {
+    "path": "artifacts/training-functional/full-training-packet-1/request.json",
+    "byteLength": 8142,
+    "sha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331"
+  },
+  "executionFiles": 112,
+  "physicalRows": 952,
+  "retainedDependencyRows": 840,
+  "documentRoles": 14,
+  "replacedDocumentRoles": [
+    "source",
+    "tests",
+    "runtimeConfiguration",
+    "recipe"
+  ],
+  "retainedReferenceRows": 9,
+  "originalExecutionFilesRehashed": 108,
+  "originalDocumentsRehashed": 14,
+  "retainedHostDependencyAndReferencePayloadsRehashed": false,
+  "rootsHostChecked": false,
+  "trainingExecutionAuthorized": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false
+}

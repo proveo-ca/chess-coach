@@ -1,0 +1,207 @@
+{
+  "status": "FAIL",
+  "scope": "MOCK_METADATA_AND_SANDBOX_COMMAND_TRANSPORT_NOT_HOST_VERIFICATION",
+  "sourcePinsBefore": [
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/preflight.ts",
+      "byteLength": 8262,
+      "sha256": "c7e599332531b6d940f323a69768ec70a0e1a0e2b87cd5a632275afb59057559"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/preflight.test.ts",
+      "byteLength": 11122,
+      "sha256": "c49ba7c38bcce64e402497b4f19c1a8c4df9c63355e26c629a439c4287f67a05"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+      "byteLength": 4278,
+      "sha256": "911ed880467c2b265a9100eb20105ea5122f89db0b8e9f10fe69de8fe82d6c8a"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/tsconfig.json",
+      "byteLength": 61,
+      "sha256": "3884c64fe86cacd8a33dd016dbb843b3bbb6c625090eda74ed06a9a58a13d92c"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/HOST.md",
+      "byteLength": 1692,
+      "sha256": "bcc44672c4774679f02e7fd5ffc6d73340269f405fa7c2c101a535ccc0dc0919"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/handoff.json",
+      "byteLength": 5883,
+      "sha256": "c730995bf2bff174e93c17859cd95235a3aa19969460237762969ee0a544996e"
+    }
+  ],
+  "sourcePinsAfter": [
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/preflight.ts",
+      "byteLength": 8262,
+      "sha256": "c7e599332531b6d940f323a69768ec70a0e1a0e2b87cd5a632275afb59057559"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/preflight.test.ts",
+      "byteLength": 11122,
+      "sha256": "c49ba7c38bcce64e402497b4f19c1a8c4df9c63355e26c629a439c4287f67a05"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+      "byteLength": 4278,
+      "sha256": "911ed880467c2b265a9100eb20105ea5122f89db0b8e9f10fe69de8fe82d6c8a"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/tsconfig.json",
+      "byteLength": 61,
+      "sha256": "3884c64fe86cacd8a33dd016dbb843b3bbb6c625090eda74ed06a9a58a13d92c"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/HOST.md",
+      "byteLength": 1692,
+      "sha256": "bcc44672c4774679f02e7fd5ffc6d73340269f405fa7c2c101a535ccc0dc0919"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/handoff.json",
+      "byteLength": 5883,
+      "sha256": "c730995bf2bff174e93c17859cd95235a3aa19969460237762969ee0a544996e"
+    }
+  ],
+  "sourcePinsMatch": true,
+  "results": [
+    {
+      "name": "helper-tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "30000",
+        "artifacts/training-functional/campaign-handoff-1/preflight.test.ts"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 395.34513599999997,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-1/helper-tests.stdout",
+        "byteLength": 28,
+        "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-1/helper-tests.stderr",
+        "byteLength": 1666,
+        "sha256": "67431563f7c11d1a40f82f4ecd230e88d72c27fa391411a675cc6feb9819fb0a"
+      },
+      "summary": [
+        " 16 pass",
+        " 0 fail",
+        " 86 expect() calls",
+        "Ran 16 tests across 1 file. [378.00ms]"
+      ]
+    },
+    {
+      "name": "campaign-tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "30000",
+        "artifacts/training-functional/campaign-plan.test.ts",
+        "artifacts/training-functional/campaign-operator.e2e.test.ts"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 2895.4325910000002,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-1/campaign-tests.stdout",
+        "byteLength": 28,
+        "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-1/campaign-tests.stderr",
+        "byteLength": 3741,
+        "sha256": "636cb805d84bafe7e4b75b8532644a407f442206bddd5ed91e988924ea532f7e"
+      },
+      "summary": [
+        " 39 pass",
+        " 0 fail",
+        " 914 expect() calls",
+        "Ran 39 tests across 2 files. [2.87s]"
+      ]
+    },
+    {
+      "name": "root-types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 5910.527435999999,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-1/root-types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-1/root-types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "summary": []
+    },
+    {
+      "name": "helper-types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/campaign-handoff-1/tsconfig.json"
+      ],
+      "exitCode": 2,
+      "elapsedMs": 4340.980449000001,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-1/helper-types.stdout",
+        "byteLength": 760,
+        "sha256": "410dce9305df3a960ca47774e27f49ad3f553d5dfb60a76242eaec58ca52f1cf"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-1/helper-types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "summary": []
+    }
+  ],
+  "packetRequest": {
+    "path": "artifacts/training-functional/full-training-packet-1/request.json",
+    "byteLength": 8142,
+    "sha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331"
+  },
+  "packetCompletion": {
+    "path": "artifacts/training-functional/full-training-packet-1/completion.json",
+    "byteLength": 7322,
+    "sha256": "2e1513ee58d43cc4ec82f28422fc9b5a8150941d5191f2a4c2be626688f64d98"
+  },
+  "unchangedPacketIssuancePinsMatched": 135,
+  "specIssuancePins": "FOUR_DOCUMENTS_HANDLED_AS_EXPLICIT_NEW_AUTHORITY_DELTAS_IN_SUPPLEMENTAL_STATIC_RECORD",
+  "unchangedCarriedTests": {
+    "evidence": 90,
+    "existingCampaign": 38,
+    "notRerunOrDoubleCounted": true
+  },
+  "actualHostMetadataCollected": false,
+  "trainingExecuted": false,
+  "hostNativeGpuContainerOperationsExecuted": false,
+  "publicationPerformed": false
+}

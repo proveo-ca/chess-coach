@@ -1,0 +1,32 @@
+{
+  "status": "PASS_EXACT_FROZEN_STAGED_BLOBS_AND_LIVE_BYTES",
+  "baseCommit": "e821b5169f29b191b8418763508bd54292774aef",
+  "targetRef": "refs/heads/feat-ml-adjuntant-ii",
+  "pullRequest": 51,
+  "fileCount": 99,
+  "totalBytes": 1712654,
+  "freeze": {
+    "path": "artifacts/training-functional/qualification-result-1/publication-1/freeze.json",
+    "sha256": "6a9f9256ac9bcb11c8eb9926e8c796dea30246dffbb2de0d5573acff6453537a"
+  },
+  "allModesLengthsSha256AndGitBlobIdsMatch": true,
+  "credentialScan": "PASS_STAGED_RAW_AND_PARSED_JSON_STRINGS_NO_CANDIDATES",
+  "attributes": "ALL_UNSPECIFIED",
+  "scopedSourceWhitespace": "PASS_RAW_EVIDENCE_UNMODIFIED",
+  "hooks": "CUSTOM_PATH_UNSET_NAMED_COMMIT_PUSH_HOOKS_ABSENT",
+  "remoteStillAtBase": true,
+  "adversarial": {
+    "session": "ses_e158f9ccfffemYMoC24R3Xy3oz",
+    "ready": true,
+    "findings": []
+  },
+  "security": {
+    "session": "ses_e158f9cceffeFyxihO1Eyk9kYW",
+    "ready": true,
+    "risk": "low",
+    "findings": []
+  },
+  "trainingExecuted": false,
+  "commitPerformed": false,
+  "pushPerformed": false
+}

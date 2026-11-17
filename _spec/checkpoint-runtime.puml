@@ -8,6 +8,14 @@
 ' covers: packages/runtime/tests/training-store.test.ts
 ' covers: packages/runtime/tests/repository-scratch.ts
 ' covers: packages/runtime/tests/training-fixture.ts
+' covers: artifacts/training-functional/full-training-packet-1/**
+' CURRENT 2026-11-17: PUBLISHED_FUNCTIONAL_READINESS_SOURCE_ONLY_FULL_TRAINING_PACKET_PREPARATION. LOCAL qualification-result-1/publication-1/post-publication.json records checked dad29306a83268aeed720b7e9b8311a6d9d941e1/remote/existing feat-ml-adjuntant-ii/PR51/main; normal commit1/nonforce push1 grant CONSUMED/no amend-second publication. Explicit bounded functional acceptance remains technical trainingReady:true; raw/runtime flags and historical source/test proof stay unchanged. Actual TrainingCampaign.run/finalize/full5000 NOT executed.
+' current packet boundary: artifacts/training-functional/full-training-packet-1/plan.json selects18days work/<=12h validation/10min cleanup from original preflight origin for SOURCE ONLY, not capacity/execution approval. The lifetime below remains unchanged; runtime-protocol.puml owns new campaign-plan/operator/evidence wrapper, original outer clock, cooperative GPU/workspace monitoring and separate AFTER-close sequential read-only result validation. The worker forwards progress through ONE coordinator/factory, never reimplements the5000-loop or closes/finalizes again.
+' current goals: five CPU Flex initialRecord callbacks for101..105; exact1000 verified completions each; actual return {experiment,ref} AFTER campaign-owned close. New result validation joins private.sqlite<=64MiB and bounded per-attempt payloads, global cumulative journal across masters/history/model handoffs/checkpoints/five VALID masters/primary101 and packet-49/attempt-final-artifacts/000015-experiment-proposal.bin; no raw qualification trace/query arrays, native-score rescore or new quality thresholds. These are source packet goals, not results of actual training.
+' current boundaries: immutable108/source3/all14 original documents unchanged; new112-code closure and four replaced roles, other10 refs/nine reference rows/840 Zod pins retained. Proposed fresh roots/capacity UNVERIFIED; no actual HOST/native/GPU/container/build/install/acquisition/training/publication now. Future operational modes require human approval matching exact request SHA and FULL_FIVE_MASTER_TRAINING_NOT_GPUV1_EXTENSION; budget/readiness/CLI is not approval. GPUv1 master101/ordinal0 and both mainsOFF unchanged; trainingExecutionAuthorized:false/publicationAuthorized:false; ALL hardening after ALL planned training and validated results.
+' local metadata boundary: runtime-protocol.puml owns full-training-packet-1/assemble.ts + scoped tsconfig.json, OUTSIDE worker112. Verification PASS/current source pins precede exclusive wx metadata writes; local108-source/14-original-document rehash does NOT rehash absent HOST Zod/reference payloads. New952-row input manifest is metadata only, not HOST preparation; assembly.json then completion evidence actual success only when produced/checked, not now. Operator runtimeConfiguration budget/resources/limits and recipe.plan must equal the approved request plan; campaign lifetime below stays unchanged.
+' current completion: new full-training-packet-1/verification.json and completion.json close only SOURCE work WHEN PRESENT and checked PASS/current source-spec-document pins, after lead final checks/reviews. No current all-tests/review PASS or renderer PASS claimed; native PlantUML SKIP/Java-remote theme outside scope. These lines supersede older CURRENT/pending qualification labels below for current status only; preserve all historical evidence and prior issuance scopes.
+' see: _spec/readiness.md#full-training-packet-2026-11-17
 ' status CURRENT 2026-11-17: SOURCE_AND_REFERENCE_PREPARATION_VERIFIED_HOST_QUALIFICATION_PENDING; campaign source COMPLETE; final-4 ALL11 gates PASS/433 tests0fail/equal source pins/3 strict TypeScript/static specs/preservation/native bridge59+6. Not an actual5000-attempt campaign, operational qualification, native R4, or training.
 ' current verification: artifacts/training-functional/checks/final-4/summary.json; focused65/runtime62/contracts25/R4 93/reference180/workspace8=433 tests. Static PASS names its recorded pre-closeout diagram/index bytes, not a rerun of this edit; Java/remote-theme render remains SKIP.
 ' R4 boundary: runtime-protocol.puml owns executable artifacts/training-functional/r4-observation.ts::observeR4; it uses existing instance initializeMaster/runAttempt/snapshot/close for TWO master101 corpus/live composition attempts, never finalize or a shortened TrainingCampaign. Every observation remains qualified:false/COMPOSITION_ONLY_INPUTS_UNQUALIFIED; runtime interfaces and the full five-master contract stay unchanged.
@@ -24,9 +32,9 @@
 ' see: _spec/runtime-protocol.puml
 ' see: _spec/readiness.md#current-functional-path-2026-11-16
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title SOURCE_AND_REFERENCE_PREPARATION_VERIFIED_HOST_QUALIFICATION_PENDING - C11 campaign
+title Full campaign lifetime - SOURCE ONLY packet; training not authorized
 
-actor "Prepared campaign caller" as CALLER
+actor "Future approved campaign caller\nSOURCE ONLY; no execution approval issued" as CALLER
 participant "packages/runtime/src/training-campaign.ts\nTrainingCampaign" as CAMPAIGN
 participant "initialRecord(master, timing)\npreprepared CPU Flex record callback" as INIT
 participant "packages/runtime/src/training-coordinator.ts\nTrainingCoordinator" as COORD
@@ -98,13 +106,13 @@ end
 CAMPAIGN -> COORD : finalize; original final-phase work297s
 COORD -> STORE : finalModels; require all five valid, no pending attempt or abort
 STORE --> COORD : selected config/native records only; never export private state to scoring
-COORD --> CAMPAIGN : existing bounded artifacts/experiment; primary101
+COORD --> CAMPAIGN : existing bounded {experiment,ref}; five VALID artifacts; primary101
 break finalization or artifact validation fails
   CAMPAIGN -> COORD : close exactly once; preserve failure and original final-phase cutoff
   CAMPAIGN --> CALLER : reject; no COMPLETE result or retry
 end
 CAMPAIGN -> COORD : close exactly once; original final-phase cleanup300s
-CAMPAIGN --> CALLER : return only after checked final artifacts and close
+CAMPAIGN --> CALLER : return {experiment,ref} only after checked final artifacts and close
 
 note over COORD,MATCH
   Mark the release callback before invocation

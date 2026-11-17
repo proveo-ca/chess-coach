@@ -1,0 +1,63 @@
+{
+  "status": "PASS_ASSEMBLED_LOCAL_PACKET_PINS_MEMBERSHIP_AND_PERMISSION_SEPARATION",
+  "request": {
+    "path": "artifacts/training-functional/full-training-packet-1/request.json",
+    "byteLength": 8142,
+    "sha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331"
+  },
+  "assembly": {
+    "path": "artifacts/training-functional/full-training-packet-1/assembly.json",
+    "byteLength": 1446,
+    "sha256": "89d5775d7895bea5a12a88e4aca0a9f6b73713c8566aacbf0eeb2aa66a24a0d9"
+  },
+  "verification": {
+    "path": "artifacts/training-functional/full-training-packet-1/verification.json",
+    "byteLength": 56472,
+    "sha256": "132b2120494e8851408128aa26f206c47ad7172ab6fae6260a918d799ec0b80d"
+  },
+  "metadata": [
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/source-manifest.json",
+      "byteLength": 20642,
+      "sha256": "be01645f51edeacacdb54908100766bad580fcd6c0d1da37b2f00d44e268dd51"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/binding-documents.json",
+      "byteLength": 5006,
+      "sha256": "990875a2422d1901733a44f61408cb3e510929be98769d3e46a2c45c8a320c1d"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/input-manifest.json",
+      "byteLength": 178218,
+      "sha256": "5974678c3835dde421e94f58b754dbe436817c23a8816d94b37e607eeaa5f503"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/runtime-configuration.json",
+      "byteLength": 4567,
+      "sha256": "1fe8b18f21470b6a3f459d418fc9f8d0809e960679ba76f76ddc695bc10665ef"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/plan.json",
+      "byteLength": 8774,
+      "sha256": "a5e676864f99b15ff8c1ecf5f33a5dc6198c11ef6e674db81116d09b2af5df86"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/request.json",
+      "byteLength": 8142,
+      "sha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331"
+    }
+  ],
+  "executionFiles": 112,
+  "physicalSourceRows": 952,
+  "retainedDependencyRows": 840,
+  "bindingRoles": 14,
+  "replacedBindingRoles": 4,
+  "unchangedBindingRoles": 10,
+  "referenceRows": 9,
+  "allLocalExecutionAndDocumentBytesRehashed": true,
+  "retainedHostDependencyAndReferencePayloadsRehashed": false,
+  "hostRootsInspected": false,
+  "trainingExecuted": false,
+  "trainingExecutionAuthorized": false,
+  "publicationPerformed": false
+}

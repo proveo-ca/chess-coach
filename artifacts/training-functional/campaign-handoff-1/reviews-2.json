@@ -1,0 +1,47 @@
+{
+  "status": "READY_SOURCE_ONLY_HANDOFF_AND_PUBLICATION_BOUNDARY",
+  "scope": "READ_ONLY_REVIEW_NOT_HOST_FACTS_OR_TRAINING_AUTHORIZATION",
+  "source": [
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/preflight.ts",
+      "byteLength": 8262,
+      "sha256": "c7e599332531b6d940f323a69768ec70a0e1a0e2b87cd5a632275afb59057559"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+      "byteLength": 4355,
+      "sha256": "faf0c74bf328a0e2b67cbbb070caeb396ea3f17d7d2435d81c8f7bcc8de0ef69"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/preflight.test.ts",
+      "byteLength": 11756,
+      "sha256": "d89bf5576b76778e44370eed66a2396e5f7586a15198f5bad3637a7cda316f98"
+    }
+  ],
+  "adversarial": {
+    "session": "ses_e148156edffeLR4dLLedwHvS9V",
+    "ready": true,
+    "findings": []
+  },
+  "security": {
+    "session": "ses_e148156e7ffeKJMkWsuohIJdlL",
+    "ready": true,
+    "risk": "low",
+    "findings": []
+  },
+  "architect": {
+    "session": "ses_e1497c1f5ffeGhugdYDu4UHOx1",
+    "decision": "GO_READONLY_HOST_METADATA_BOUNDARY"
+  },
+  "devops": {
+    "session": "ses_e1497c1edffeVxf6tFoIjlUzz0",
+    "decision": "CONDITIONAL_GO_FINAL_STAGED_BYTE_GATE_REQUIRED"
+  },
+  "verification": {
+    "path": "artifacts/training-functional/campaign-handoff-1/checks-3/receipt.json",
+    "byteLength": 11281,
+    "sha256": "9ed2542f66ed226f425eab6ecbeb3d815b9570f95813e064a042ecb2adef293d"
+  },
+  "actualHostMetadataCollected": false,
+  "trainingExecutionAuthorized": false
+}

@@ -1,0 +1,62 @@
+{
+  "status": "PASS_READINESS_COMMIT_REMOTE_AND_EXISTING_PR_HEAD_MATCH",
+  "head": "dad29306a83268aeed720b7e9b8311a6d9d941e1",
+  "parent": "e821b5169f29b191b8418763508bd54292774aef",
+  "remote": {
+    "ref": "refs/heads/feat-ml-adjuntant-ii",
+    "oid": "dad29306a83268aeed720b7e9b8311a6d9d941e1"
+  },
+  "pullRequest": {
+    "baseRefName": "main",
+    "headRefName": "feat-ml-adjuntant-ii",
+    "headRefOid": "dad29306a83268aeed720b7e9b8311a6d9d941e1",
+    "number": 51,
+    "state": "OPEN",
+    "url": "https://github.com/proveo-ca/chess-coach/pull/51"
+  },
+  "freeze": {
+    "path": "artifacts/training-functional/qualification-result-1/publication-1/freeze.json",
+    "byteLength": 30961,
+    "sha256": "6a9f9256ac9bcb11c8eb9926e8c796dea30246dffbb2de0d5573acff6453537a"
+  },
+  "stageAudit": {
+    "path": "artifacts/training-functional/qualification-result-1/publication-1/stage-audit.json",
+    "byteLength": 1069,
+    "sha256": "c55c910127a91cff432c3e613d93b5b73472e83ee46f0a484f29b22888ad835c"
+  },
+  "commitStdout": {
+    "path": "artifacts/training-functional/qualification-result-1/publication-1/commit.stdout",
+    "byteLength": 9583,
+    "sha256": "2818c1e19e2481953ab8e2101c8f32d60ed00f70a10ba26edef95344e8e432dd"
+  },
+  "commitStderr": {
+    "path": "artifacts/training-functional/qualification-result-1/publication-1/commit.stderr",
+    "byteLength": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "pushStdout": {
+    "path": "artifacts/training-functional/qualification-result-1/publication-1/push.stdout",
+    "byteLength": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "pushStderr": {
+    "path": "artifacts/training-functional/qualification-result-1/publication-1/push.stderr",
+    "byteLength": 362,
+    "sha256": "6d094b1365f6f9987150dd76d410d87e53c08d597858cd2d368f0bb6e66911a6"
+  },
+  "normalCommitsPerformed": 1,
+  "nonForcePushesPerformed": 1,
+  "publicationGrant": "CONSUMED",
+  "amendForceRetryOrSecondPublicationPerformed": false,
+  "merged": false,
+  "indexClean": true,
+  "sourceOnlyNextPhasePreparationMayProceed": true,
+  "nextPhasePublicationAuthorized": false,
+  "trainingExecutionAuthorized": false,
+  "trainingExecuted": false,
+  "hostNativeGpuContainerOperationsExecuted": false,
+  "rawHistoricalAndRuntimeFlagsChanged": false,
+  "technicalTrainingReady": true,
+  "scope": "LOCAL_POST_PUBLICATION_RECEIPT_OUTSIDE_COMMIT_NO_SELF_REFERENCE_OR_AMEND",
+  "remoteNotice": "GitHub reported default-branch dependency vulnerabilities in retained push stderr; no hardening or dependency changes performed"
+}

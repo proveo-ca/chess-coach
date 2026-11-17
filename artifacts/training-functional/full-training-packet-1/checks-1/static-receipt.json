@@ -1,0 +1,236 @@
+{
+  "status": "FAIL",
+  "sourcePinsBefore": [
+    {
+      "path": "artifacts/training-functional/campaign-plan.ts",
+      "byteLength": 7857,
+      "sha256": "364bc16215013c5f7325857beb88125935b393e89b7f0db533bad68bd13b76d9"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-plan.test.ts",
+      "byteLength": 4437,
+      "sha256": "8e2b06d6003c25e4e6381ec4ddbe89ec6559db7dbeea3b3b1b887f5edfec19d5"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-operator.ts",
+      "byteLength": 29587,
+      "sha256": "6dd04be41a2b49a71bf2f64a6969022c530aa93733e04e8c041a6a857228291f"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-operator.e2e.test.ts",
+      "byteLength": 20581,
+      "sha256": "039a19d3b1d273da43b1ae3d8dda1dd25698e00d419e01dd1bd3b5146a5636da"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-evidence.ts",
+      "byteLength": 38934,
+      "sha256": "25fb22018e45f15d0d7df05e772fe98c2c932fc94220827bfae9d45ee707be71"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-evidence.test.ts",
+      "byteLength": 41369,
+      "sha256": "768182e11dfa08eeec0816a39bc6cfa066fe818f07b0c5d56e0589f7f1e25234"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/assemble.ts",
+      "byteLength": 5604,
+      "sha256": "8b99384f49ad0d4bd021b2cf32d51931671e4fcde64bf7c6a505c5afaa163925"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/tsconfig.json",
+      "byteLength": 68,
+      "sha256": "346311494eb223ffd34eaf0cc49d744791e74d0afba231dcfd17efce9db8e552"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/README.md",
+      "byteLength": 5246,
+      "sha256": "737ba5a8ddb466e0e6b21ae5430c47d8f9d4dcdca7de6cb7b7770153549d002b"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/plan.json",
+      "byteLength": 8774,
+      "sha256": "a5e676864f99b15ff8c1ecf5f33a5dc6198c11ef6e674db81116d09b2af5df86"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/runtime-configuration.json",
+      "byteLength": 4567,
+      "sha256": "1fe8b18f21470b6a3f459d418fc9f8d0809e960679ba76f76ddc695bc10665ef"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 178787,
+      "sha256": "6714b0ed548440206816cf4510ea1ea1ce78cfb01d887d01312086ce54834e7f"
+    },
+    {
+      "path": "_spec/checkpoint-runtime.puml",
+      "byteLength": 13324,
+      "sha256": "d36a91aebeca20b95bc4325580c4056f523f429f4ef7d2c466e439c81b17bc99"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 144725,
+      "sha256": "d11e8f445176990bdefe8242b888743f23c58919e66ca5e6f8207f43ae1b86ad"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 54110,
+      "sha256": "de0e2d08599f5df3ea16346be26b7fb7c1cbbc2587aeb49917aa09056a5a61c1"
+    }
+  ],
+  "sourcePinsAfter": [
+    {
+      "path": "artifacts/training-functional/campaign-plan.ts",
+      "byteLength": 7857,
+      "sha256": "364bc16215013c5f7325857beb88125935b393e89b7f0db533bad68bd13b76d9"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-plan.test.ts",
+      "byteLength": 4437,
+      "sha256": "8e2b06d6003c25e4e6381ec4ddbe89ec6559db7dbeea3b3b1b887f5edfec19d5"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-operator.ts",
+      "byteLength": 29587,
+      "sha256": "6dd04be41a2b49a71bf2f64a6969022c530aa93733e04e8c041a6a857228291f"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-operator.e2e.test.ts",
+      "byteLength": 20581,
+      "sha256": "039a19d3b1d273da43b1ae3d8dda1dd25698e00d419e01dd1bd3b5146a5636da"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-evidence.ts",
+      "byteLength": 38934,
+      "sha256": "25fb22018e45f15d0d7df05e772fe98c2c932fc94220827bfae9d45ee707be71"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-evidence.test.ts",
+      "byteLength": 41369,
+      "sha256": "768182e11dfa08eeec0816a39bc6cfa066fe818f07b0c5d56e0589f7f1e25234"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/assemble.ts",
+      "byteLength": 5604,
+      "sha256": "8b99384f49ad0d4bd021b2cf32d51931671e4fcde64bf7c6a505c5afaa163925"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/tsconfig.json",
+      "byteLength": 68,
+      "sha256": "346311494eb223ffd34eaf0cc49d744791e74d0afba231dcfd17efce9db8e552"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/README.md",
+      "byteLength": 5246,
+      "sha256": "737ba5a8ddb466e0e6b21ae5430c47d8f9d4dcdca7de6cb7b7770153549d002b"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/plan.json",
+      "byteLength": 8774,
+      "sha256": "a5e676864f99b15ff8c1ecf5f33a5dc6198c11ef6e674db81116d09b2af5df86"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/runtime-configuration.json",
+      "byteLength": 4567,
+      "sha256": "1fe8b18f21470b6a3f459d418fc9f8d0809e960679ba76f76ddc695bc10665ef"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 178787,
+      "sha256": "6714b0ed548440206816cf4510ea1ea1ce78cfb01d887d01312086ce54834e7f"
+    },
+    {
+      "path": "_spec/checkpoint-runtime.puml",
+      "byteLength": 13324,
+      "sha256": "d36a91aebeca20b95bc4325580c4056f523f429f4ef7d2c466e439c81b17bc99"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 144725,
+      "sha256": "d11e8f445176990bdefe8242b888743f23c58919e66ca5e6f8207f43ae1b86ad"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 54110,
+      "sha256": "de0e2d08599f5df3ea16346be26b7fb7c1cbbc2587aeb49917aa09056a5a61c1"
+    }
+  ],
+  "sourcePinsMatch": true,
+  "results": [
+    {
+      "name": "types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/tsconfig.json"
+      ],
+      "exitCode": 2,
+      "elapsedMs": 6369.320224,
+      "stdout": {
+        "path": "artifacts/training-functional/full-training-packet-1/checks-1/types.stdout",
+        "byteLength": 1796,
+        "sha256": "9ecea9bdb9080d0dc13bf4713621a58d402c1735acb7effacb296cea0510e13a"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-1/checks-1/types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "assembly-types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/full-training-packet-1/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 5123.3831470000005,
+      "stdout": {
+        "path": "artifacts/training-functional/full-training-packet-1/checks-1/assembly-types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-1/checks-1/assembly-types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "specs",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "artifacts/training-functional/check-specs.ts"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 28.812202000000003,
+      "stdout": {
+        "path": "artifacts/training-functional/full-training-packet-1/checks-1/specs.stdout",
+        "byteLength": 2252,
+        "sha256": "d0ecdc6094c00ce5d03d4ee7ac37a9b15b06ba2f55e54e28d0247b8834a6e308"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-1/checks-1/specs.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "trainingExecuted": false,
+  "nativeOrGpuExecuted": false,
+  "publicationPerformed": false
+}
