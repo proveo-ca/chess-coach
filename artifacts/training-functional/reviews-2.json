@@ -1,0 +1,28 @@
+{
+  "scope": "CONSOLIDATED_FUNCTIONAL_SOURCE_AND_COMPLETED_REFERENCE_PREPARATION_NOT_HOST_QUALIFICATION",
+  "priorSourceReviews": "artifacts/training-functional/reviews.json",
+  "referenceRetryReviews": "artifacts/training-functional/reference-prep-2/observation.json",
+  "r4": {
+    "architect": "ses_e19a71b90ffe0M1NtmgBPRS4rf",
+    "adversarial": {
+      "sessionID": "ses_e192c2adcffewzELWsBT07z9f5",
+      "ready": true,
+      "clearedFinding": "MEDIUM later deadline masked captured setup/delegate failure",
+      "redEvidence": "artifacts/training-functional/checks/r4-review-red-1/r4/receipt.json",
+      "fix": "Preserve current.fault before post-attempt deadline check; keep original close cutoff",
+      "newRegressions": 2,
+      "conditionalApprovalSatisfiedBy": "artifacts/training-functional/checks/final-4/summary.json"
+    },
+    "security": {
+      "sessionID": "ses_e192c2ad4ffecuxnEMRGPgAEeL",
+      "ready": true,
+      "findings": [],
+      "scope": "R4 source composition; before the narrow adversarial primary-error ordering correction"
+    }
+  },
+  "reviewersExecutedTests": false,
+  "remainingBlockingSourceFindings": [],
+  "deferredAssurance": "Keep all hardening after all planned training and validated results",
+  "nativeOrHostOrGpuQualificationAccepted": false,
+  "trainingReady": false
+}

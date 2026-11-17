@@ -1,0 +1,56 @@
+{
+  "purpose": "Publish verified functional preparation and deliver one bounded operator-only read-only HOST facts query",
+  "decisionSource": "Executor selected Publish + HOST facts",
+  "statusAtIssuance": "APPROVED_SOURCE_PREPARATION_AND_PUBLICATION_PENDING",
+  "publication": {
+    "maximumCommits": 1,
+    "maximumPushes": 1,
+    "destination": "origin/refs/heads/feat-ml-adjuntant-ii",
+    "existingPullRequest": 51,
+    "baseBranch": "main",
+    "expectedPriorHead": "b7d4eae58288bfbac3b5f947f524b2342b1b9fa3",
+    "scope": "Prepared functional source, tests, specifications, bounded evidence, and six flat dependency-source/license inputs",
+    "excludes": ["caches", "raw archives", "compiled bundles", "model records", "original-checkout changes", "unrelated work"],
+    "forcePush": false,
+    "amend": false,
+    "bypassHooks": false
+  },
+  "query": {
+    "operatorInvocations": 1,
+    "assistantMayExecuteOnHost": false,
+    "deliveryRequiresCheckedPublication": true,
+    "hostRoot": "/home/gu1lty/Projects/proveo/chess-coach",
+    "maximumQueryGroups": 12,
+    "maximumMilliseconds": 30000,
+    "maximumOutputBytes": 131072,
+    "allowed": [
+      "Fixed local Docker image metadata",
+      "Named retained binary/dependency path metadata",
+      "Cached Bun interpreter version",
+      "One selected GPU UUID/free/total-memory snapshot",
+      "Read-only free-disk snapshot"
+    ],
+    "writesOnHost": false,
+    "containers": false,
+    "projectNativeExecution": false,
+    "gpuKernelExecution": false,
+    "acquisitionOrInstall": false,
+    "broadCacheEnumeration": false,
+    "binaryPayloadReads": false,
+    "training": false,
+    "actualExecutionAtIssuance": false
+  },
+  "retainedReportedInputs": {
+    "currentAvailability": "UNKNOWN_NOT_QUERIED",
+    "image": "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+    "gpuUuid": "GPU-713c95e0-6952-a576-794b-9ef1fb527ff0",
+    "cpuInitializerPathStatus": "INFERRED_FROM_REPORTED_CPU_TARGET_LAYOUT_NOT_CURRENT_EXISTENCE_PROOF"
+  },
+  "retainedFlatInputs": "artifacts/training-functional/reference-inputs/manifest.json",
+  "retainedFlatFiles": 6,
+  "retainedFlatBytes": 113300,
+  "oldGrantsRenewed": false,
+  "functionalReadinessGateAdded": false,
+  "numericalCampaignReruns": 0,
+  "trainingReady": false
+}

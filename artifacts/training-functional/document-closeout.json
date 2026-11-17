@@ -1,0 +1,40 @@
+{
+  "scope": "CURRENT_DOCUMENT_REFRESH_AFTER_IMMUTABLE_SOURCE_ACCEPTANCE_2",
+  "status": "PASS_STATIC_DOCUMENT_CLOSEOUT",
+  "sourceAcceptance": {
+    "path": "artifacts/training-functional/source-acceptance-2.json",
+    "bytes": 7011,
+    "sha256": "b12bf0da43401b1858a3b3f1c3be9820d8030b6f07329e9448239886c5911e70"
+  },
+  "documentPins": [
+    {
+      "path": "_spec/readiness.md",
+      "bytes": 123142,
+      "sha256": "19c27572ac24650a1c45ecd1100335ed80d21d52e47711c311928d376c328b6e"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "bytes": 89189,
+      "sha256": "c6e3b68d05fd2928a0da5b72ba7e4ff913814aae0774e19fd0f94673a32adfdc"
+    },
+    {
+      "path": "_spec/checkpoint-runtime.puml",
+      "bytes": 9689,
+      "sha256": "66622454f51c611c054d6884637bb5a05ee92666a2bcb8506bcbe18c66326006"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "bytes": 53273,
+      "sha256": "5c68d6fd1e71e4f92d08afa20d4c41d8acfac5c15fd7741b58a601e5447cd52e"
+    }
+  ],
+  "staticSpecReceipt": {
+    "path": "artifacts/training-functional/checks/post-docs-3/specs/receipt.json",
+    "bytes": 146568,
+    "sha256": "de75ad2e0d0392f0d004bce0f080fed5b0915b878411fc30763cfcf6f25c4911"
+  },
+  "sourceChanged": false,
+  "priorReceiptsRewritten": false,
+  "nativeOrHostOrGpuExecuted": false,
+  "trainingReady": false
+}

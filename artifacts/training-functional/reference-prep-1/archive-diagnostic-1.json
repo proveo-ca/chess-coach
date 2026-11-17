@@ -1,0 +1,1736 @@
+{
+  "scope": "READ_ONLY_VERIFIED_ARCHIVE_NUMERIC_HEADER_DIAGNOSTIC_NOT_EXTRACTION",
+  "archive": {
+    "path": "artifacts/training-functional/scratch/reference-prep-1/raw/jssha-3.3.2.tgz",
+    "bytes": 135944,
+    "sha256": "c372d61fc6843661abbdb868e9d28e8d3c7ce1c19fd7ce559d77fca90d02bd08",
+    "sha512SRI": "sha512-0RhFxzijV4W0qTXa97D5b6twAWXX7SEOpw8qzAZyZ+oeGOP9e84PnDSLjl7SBB1vBQ+chSUwsZR06i1AzA+nEA==",
+    "integrityVerified": true
+  },
+  "expandedBytes": 730112,
+  "headerCountObserved": 45,
+  "firstFrozenOctalRejection": {
+    "headerOrdinal": 0,
+    "path": "package/LICENSE",
+    "field": "uid",
+    "hex": "0000000000000000"
+  },
+  "headers": [
+    {
+      "ordinal": 0,
+      "offset": 0,
+      "path": "package/LICENSE",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303030333030332000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031303236312000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 1,
+      "offset": 2560,
+      "path": "package/dist/sha.d.cts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303031363230372000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313734312000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 2,
+      "offset": 10752,
+      "path": "package/dist/sha1.d.cts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303031343230332000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031323031342000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 3,
+      "offset": 17920,
+      "path": "package/dist/sha256.d.cts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303031343237352000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031323230312000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 4,
+      "offset": 25088,
+      "path": "package/dist/sha3.d.cts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303032313634332000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031323032342000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 5,
+      "offset": 34816,
+      "path": "package/dist/sha512.d.cts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303031353037322000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031323137302000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 6,
+      "offset": 42496,
+      "path": "package/dist/sha.js",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303035353636342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313335342000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 7,
+      "offset": 66560,
+      "path": "package/dist/sha1.js",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303032343034302000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313431352000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 8,
+      "offset": 77824,
+      "path": "package/dist/sha256.js",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303032363333362000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313630332000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 9,
+      "offset": 90112,
+      "path": "package/dist/sha3.js",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303033333033322000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313432302000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 10,
+      "offset": 104960,
+      "path": "package/dist/sha512.js",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303033353037312000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313537322000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 11,
+      "offset": 120832,
+      "path": "package/package.json",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303031323334372000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313535352000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 12,
+      "offset": 126976,
+      "path": "package/dist/sha.js.map",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303530333735322000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031323132342000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 13,
+      "offset": 293376,
+      "path": "package/dist/sha.mjs.map",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303433323331322000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031323237322000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 14,
+      "offset": 438784,
+      "path": "package/CHANGELOG.md",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303032333336352000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313130322000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 15,
+      "offset": 449536,
+      "path": "package/CONTRIBUTING.md",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303030323636322000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313531372000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 16,
+      "offset": 451584,
+      "path": "package/README.md",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303032303234342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031303534312000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 17,
+      "offset": 460800,
+      "path": "package/SECURITY.md",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303030313132362000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313035312000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 18,
+      "offset": 462336,
+      "path": "package/dist/sha.mjs",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303035333234352000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313532322000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 19,
+      "offset": 485376,
+      "path": "package/dist/sha1.mjs",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303032313133352000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313537342000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 20,
+      "offset": 495104,
+      "path": "package/dist/sha256.mjs",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303032333436312000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313735342000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 21,
+      "offset": 505856,
+      "path": "package/dist/sha3.mjs",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303033303337332000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313630322000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 22,
+      "offset": 519168,
+      "path": "package/dist/sha512.mjs",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303033323231342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313734332000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 23,
+      "offset": 533504,
+      "path": "package/dist/sha.d.mts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303031363232342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313735322000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 24,
+      "offset": 541696,
+      "path": "package/dist/sha1.d.mts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303031343232302000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031323032352000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 25,
+      "offset": 548864,
+      "path": "package/dist/sha256.d.mts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303031343331322000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031323230332000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 26,
+      "offset": 556032,
+      "path": "package/dist/sha3.d.mts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303032313636302000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031323033352000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 27,
+      "offset": 565760,
+      "path": "package/dist/sha512.d.mts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303031353130372000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031323230312000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 28,
+      "offset": 573440,
+      "path": "package/src/common.ts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303033363434302000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313731362000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 29,
+      "offset": 589824,
+      "path": "package/src/converters.ts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303035323233302000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031323631332000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 30,
+      "offset": 612352,
+      "path": "package/src/custom_types.ts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303030333532312000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031333135362000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 31,
+      "offset": 614912,
+      "path": "package/src/primitives_32.ts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303031333030342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031333131342000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 32,
+      "offset": 621568,
+      "path": "package/src/primitives_64.ts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303032323232372000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031333133302000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 33,
+      "offset": 631808,
+      "path": "package/dist/sha.d.ts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303031363230372000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313537362000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 34,
+      "offset": 640000,
+      "path": "package/src/sha.ts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303031373134362000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313230332000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 35,
+      "offset": 648704,
+      "path": "package/dist/sha1.d.ts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303031343230332000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313635312000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 36,
+      "offset": 655872,
+      "path": "package/src/sha1.ts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303031323735372000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313236372000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 37,
+      "offset": 662016,
+      "path": "package/dist/sha256.d.ts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303031343237352000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031323033362000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 38,
+      "offset": 669184,
+      "path": "package/src/sha256.ts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303031343037312000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313433322000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 39,
+      "offset": 676352,
+      "path": "package/dist/sha3.d.ts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303032313634332000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313636312000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 40,
+      "offset": 686080,
+      "path": "package/src/sha3.ts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303034373437372000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313330302000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 41,
+      "offset": 707072,
+      "path": "package/dist/sha512.d.ts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303031353037322000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031323032352000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 42,
+      "offset": 714752,
+      "path": "package/src/sha512.ts",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303032343434322000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031313433302000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 43,
+      "offset": 726016,
+      "path": "package/src/license_header.es3.txt",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303030323135352000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031343233362000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    },
+    {
+      "ordinal": 44,
+      "offset": 728064,
+      "path": "package/src/license_header.es6.txt",
+      "typeByte": 48,
+      "numeric": [
+        {
+          "name": "mode",
+          "hex": "3030303634342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "uid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "gid",
+          "hex": "0000000000000000",
+          "frozenOctalAccepted": false
+        },
+        {
+          "name": "size",
+          "hex": "303030303030303630332000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "mtime",
+          "hex": "333536303131363630342000",
+          "frozenOctalAccepted": true
+        },
+        {
+          "name": "checksum",
+          "hex": "3031343233352000",
+          "frozenOctalAccepted": true
+        }
+      ]
+    }
+  ],
+  "selectedFilesWritten": 0,
+  "referenceAssemblyPerformed": false,
+  "referenceBuildPerformed": false,
+  "newNetworkRequests": 0,
+  "frozenInspectorModified": false,
+  "trainingReady": false
+}

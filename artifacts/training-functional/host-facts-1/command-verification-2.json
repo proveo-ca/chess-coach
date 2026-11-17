@@ -1,0 +1,20 @@
+{
+  "status": "PASS_BASH_SYNTAX_AND_EXACT_ARGUMENT_BYTES_WITH_STUB_ONLY",
+  "shell": "bash",
+  "source": {
+    "path": "artifacts/training-functional/host-facts.ts",
+    "bytes": 16483,
+    "sha256": "d1d82ba1bcb07a52412755cc183965519586705076ce6e46829c5657afcc16aa"
+  },
+  "command": {
+    "path": "artifacts/training-functional/host-facts-1/operator-command-2.sh",
+    "bytes": 16589,
+    "sha256": "cf566b4f55a1d00fe835918b4e97388fba1e5ddf7c5e15e7d568103da6d7da6e"
+  },
+  "syntaxExitCode": 0,
+  "stubExitCode": 0,
+  "hostFactsEvaluatedDuringProbe": false,
+  "hostQueriesExecuted": 0,
+  "operatorInstructions": "Run the published command once with Bash from the exact HOST root; return its JSON even if the exit code is nonzero",
+  "trainingReady": false
+}

@@ -74,8 +74,8 @@ export class TrainingCoordinator {
       this.active = session;
       const result = await session.run();
       check();
-      dependencies.releaseInputs?.();
       inputsReleased = true;
+      dependencies.releaseInputs?.();
       check();
       const journalRef = this.state.appendJournal(attemptId, result.auditJson);
       if (Buffer.byteLength(result.historyJson) > STORAGE_BOUNDS.historyBytes) throw new Error("Training coordinator: HISTORY_BOUND");
@@ -103,7 +103,8 @@ export class TrainingCoordinator {
         const cleanup = await Promise.allSettled([dependencies.transport.terminate(error), dependencies.learners.abort(error)]);
         errors.push(...cleanup.flatMap(value => value.status === "rejected" && value.reason !== error ? [value.reason] : []));
       }
-      if (dependencies !== null && !inputsReleased) {
+      if (session === null && dependencies !== null && !inputsReleased) {
+        inputsReleased = true;
         try { dependencies.releaseInputs?.(); } catch (release) { errors.push(release); }
       }
       try { this.stop(error); } catch (storage) { errors.push(storage); }

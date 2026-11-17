@@ -1,0 +1,68 @@
+{
+  "purpose": "Close the fixed training-functional readiness inventory on the consolidated engine",
+  "baselineCommit": "b7d4eae58288bfbac3b5f947f524b2342b1b9fa3",
+  "decision": "Implement functional path",
+  "decisionSource": "Executor selected the interactive functional-scope proposal in this session",
+  "scope": "SOURCE_IMPLEMENTATION_AND_BOUNDED_BUN_VERIFICATION_ONLY",
+  "inventory": [
+    {
+      "id": "numerical-components",
+      "acceptedEvidence": "GPU full-six and CPU39 REPORT PASS",
+      "requiredProof": "Exact bridge of six SPEC-pointer-only native-file changes; retain existing report scopes and CPU metadata anomaly"
+    },
+    {
+      "id": "reference-inputs",
+      "acceptedEvidence": "Pinned application427 plus corpus2 partial assets; installed fflate0.8.3 metadata",
+      "requiredProof": "Exact jssha3.3.2 input delivery, physical dependency closure, and six independently pinned reference bundles"
+    },
+    {
+      "id": "canonical-lifecycle",
+      "acceptedEvidence": "Existing canonical source-only injected tests",
+      "requiredProof": "Actual current canonical versus independent reference init/open/pass BOTH histories and separate natural stdin-close/EOF/reap/exit0 receipts"
+    },
+    {
+      "id": "integrated-r4",
+      "acceptedEvidence": "Existing game/economic/recipient tests and separate native component reports",
+      "requiredProof": "Selected-path actual scoring/context, recipient facts, economics, model/episode bindings, redundant proposals, reload and retained completion"
+    },
+    {
+      "id": "campaign-wiring",
+      "acceptedEvidence": "Existing coordinator, factory, curriculum, checkpoint and artifact contracts",
+      "requiredProof": "One persistent coordinator and factory; serial masters101..105; exactly1000 verified attempts each; existing final validity; source tests followed by approved operational qualification"
+    },
+    {
+      "id": "functional-acceptance",
+      "acceptedEvidence": "Executor accepted this fixed inventory and the source implementation path",
+      "requiredProof": "Scoped implementation verification/reviews and explicit acceptance of complete functional evidence before readiness; separate approval before planned training"
+    }
+  ],
+  "frozenContracts": {
+    "precision": "F64",
+    "finiteDifferenceCoordinates": 4670,
+    "eps": 0.000001,
+    "atol": 0.00000001,
+    "rtol": 0.00001,
+    "c12": "Keep distinct scoring, backward, SGD and reload digest assertions",
+    "masters": [101, 102, 103, 104, 105],
+    "initialization": "Unchanged CPU Flex master initialization",
+    "gpuV1": "master101/ordinal0",
+    "ordinaryGpuMains": "UNCHANGED_OFF"
+  },
+  "deferredUntilCompletedTrainingAndValidatedResults": [
+    "security/privacy hardening",
+    "isolation and custody/provenance assurance",
+    "strict STOP, escaped-group and dual-crash qualification",
+    "full-assurance Gate0/F9/R4 acceptance"
+  ],
+  "notAuthorizedByThisDecision": [
+    "source acquisition or dependency installation",
+    "reference source assembly or reference builds",
+    "native builds or native execution",
+    "HOST or GPU operations",
+    "training execution",
+    "commit, push or external publication",
+    "reuse of failed full1 writable cache or halted LLVM/archive operations"
+  ],
+  "trainingReady": false,
+  "trainingExecuted": false
+}

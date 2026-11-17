@@ -1,0 +1,35 @@
+
+packages/runtime/tests/training-coordinator.test.ts:
+68 | test("failed scratch release aborts publication without advancing counters or permitting a replacement", async () => {
+69 |   const env = setup();
+70 |   let releases = 0;
+71 |   try {
+72 |     await expect(env.coordinator.runAttempt(101, "synthetic", env.clock, async input => ({ ...await env.create(input),
+73 |       releaseInputs: () => { releases++; throw new Error("synthetic scratch refusal"); } }))).rejects.toThrow("scratch refusal");
+                                                                                                           ^
+error: expect(received).toThrow(expected)
+
+Expected substring: "scratch refusal"
+Received message: "Training coordinator: ABORT_ALL"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach-integration/packages/runtime/tests/training-coordinator.test.ts:73:103)
+(fail) failed scratch release aborts publication without advancing counters or permitting a replacement [24.31ms]
+105 |     await expect(env.coordinator.runAttempt(101, "synthetic", env.clock, async input => {
+106 |       const dependencies = await env.create(input);
+107 |       dependencies.transport.exchange = async () => { throw new Error("synthetic lifecycle failure"); };
+108 |       return { ...dependencies, releaseInputs: () => { released = true; } };
+109 |     })).rejects.toThrow("lifecycle failure");
+110 |     expect(released).toBe(false);
+                           ^
+error: expect(received).toBe(expected)
+
+Expected: false
+Received: true
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach-integration/packages/runtime/tests/training-coordinator.test.ts:110:22)
+(fail) failed match lifecycle preserves scratch instead of invoking successful-close release [8.35ms]
+
+ 8 pass
+ 2 fail
+ 54 expect() calls
+Ran 10 tests across 1 file. [411.00ms]

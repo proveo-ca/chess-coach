@@ -1,6 +1,6 @@
 // SPEC: _spec/checkpoint-runtime.puml, _spec/match-runtime.puml
 import { Database } from "bun:sqlite";
-import { mkdtempSync, readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { expect, test } from "bun:test";
 import { TrainingCoordinator } from "../src/training-coordinator";
 import type { AttemptSetup } from "../src/training-coordinator";
@@ -8,9 +8,10 @@ import { MatchWorker } from "../src/match-worker";
 import type { MatchClock } from "../src/match-session";
 import { SyntheticMatchLearners, SyntheticMatchScorer, SyntheticMatchTransport, syntheticCorpus } from "./match-fixture";
 import { bindings, syntheticRecord } from "./training-fixture";
+import { repositoryScratch } from "./repository-scratch";
 
 function setup() {
-  const root = `${mkdtempSync("/tmp/opencode/chess-coach-ii-coordinator-")}/state`, coordinator = new TrainingCoordinator(root, bindings());
+  const root = `${repositoryScratch("coordinator-")}/state`, coordinator = new TrainingCoordinator(root, bindings());
   const initial = syntheticRecord("synthetic-initial-not-a-burn-model");
   coordinator.initializeMaster(101, initial);
   const clock: MatchClock = { clockNs: () => 0n, originNs: 0n, startupDeadlineNs: 10_000_000_000n, workDeadlineNs: 297_000_000_000n, cleanupDeadlineNs: 300_000_000_000n };
@@ -66,13 +67,36 @@ test("coordinator releases scratch only after verified lifecycle closure and bef
 
 test("failed scratch release aborts publication without advancing counters or permitting a replacement", async () => {
   const env = setup();
+  let releases = 0;
   try {
     await expect(env.coordinator.runAttempt(101, "synthetic", env.clock, async input => ({ ...await env.create(input),
-      releaseInputs: () => { throw new Error("synthetic scratch refusal"); } }))).rejects.toThrow("scratch refusal");
+      releaseInputs: () => { releases++; throw new Error("synthetic scratch refusal"); } }))).rejects.toThrow("scratch refusal");
+    expect(releases).toBe(1);
     expect(env.coordinator.snapshot(101).counters).toMatchObject({ started: 1, verifiedCompleted: 0 });
     await expect(env.coordinator.runAttempt(101, "retry", env.clock, env.create)).rejects.toThrow("CLOSED");
   } finally { env.coordinator.close(); }
 });
+
+for (const failure of ["constructor", "deadline"] as const) {
+  test(`pre-session ${failure} failure releases inputs and terminates owned dependencies once`, async () => {
+    const env = setup();
+    let releases = 0;
+    let transport!: SyntheticMatchTransport, learners!: SyntheticMatchLearners;
+    try {
+      await expect(env.coordinator.runAttempt(101, "synthetic", env.clock, async input => {
+        const dependencies = await env.create(input);
+        transport = dependencies.transport as SyntheticMatchTransport;
+        learners = dependencies.learners as SyntheticMatchLearners;
+        env.clock.clockNs = () => failure === "constructor" ? env.clock.startupDeadlineNs : env.clock.workDeadlineNs;
+        return { ...dependencies, releaseInputs: () => { releases++; } };
+      })).rejects.toThrow(failure === "constructor" ? "CONTEXT" : "ORIGINAL_DEADLINE");
+      expect(releases).toBe(1);
+      expect(transport.stopped).toBe(1);
+      expect(learners.aborted).toBe(1);
+      expect(env.coordinator.snapshot(101).counters).toMatchObject({ started: 1, verifiedCompleted: 0 });
+    } finally { env.coordinator.close(); }
+  });
+}
 
 test("failed match lifecycle preserves scratch instead of invoking successful-close release", async () => {
   const env = setup();

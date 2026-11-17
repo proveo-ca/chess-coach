@@ -1,0 +1,14 @@
+{
+  "scope": "PRESERVED_FIRST_STAGE_AUDIT_FAILURE_NOT_PUBLICATION_OR_HOST_EXECUTION",
+  "error": "Publication audit: GIT_READ at staged git diff --check",
+  "fullStagedDiffCheckExitCode": 2,
+  "warnings": [
+    "host-review-red-1/command.stderr: captured Bun diagnostic trailing whitespace at lines32,33,40",
+    "r4-review-red-1/r4/command.stderr: captured Bun diagnostic trailing whitespace at lines50,62,85,97",
+    "reference-inputs/jssha-LICENSE: exact upstream blank line at EOF at line26"
+  ],
+  "correction": "Exclude only these three exact immutable-data paths from formatting checks; retain their staged hash/scope/credential checks",
+  "capturedEvidenceOrUpstreamBytesChanged": false,
+  "commitOrPushPerformed": false,
+  "hostQueriesExecuted": 0
+}

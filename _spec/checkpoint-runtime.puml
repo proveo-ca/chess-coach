@@ -1,35 +1,131 @@
 @startuml checkpoint_runtime
+' purpose: serial five-master campaign and private SQLite completion publication
+' covers: packages/runtime/src/training-campaign.ts
+' covers: packages/runtime/src/training-coordinator.ts
+' covers: packages/runtime/src/training-store.ts
+' covers: packages/runtime/tests/training-campaign.test.ts
+' covers: packages/runtime/tests/training-coordinator.test.ts
+' covers: packages/runtime/tests/training-store.test.ts
+' covers: packages/runtime/tests/repository-scratch.ts
+' covers: packages/runtime/tests/training-fixture.ts
+' status CURRENT 2026-11-17: SOURCE_AND_REFERENCE_PREPARATION_VERIFIED_HOST_QUALIFICATION_PENDING; campaign source COMPLETE; final-4 ALL11 gates PASS/433 tests0fail/equal source pins/3 strict TypeScript/static specs/preservation/native bridge59+6. Not an actual5000-attempt campaign, operational qualification, native R4, or training.
+' current verification: artifacts/training-functional/checks/final-4/summary.json; focused65/runtime62/contracts25/R4 93/reference180/workspace8=433 tests. Static PASS names its recorded pre-closeout diagram/index bytes, not a rerun of this edit; Java/remote-theme render remains SKIP.
+' R4 boundary: runtime-protocol.puml owns executable artifacts/training-functional/r4-observation.ts::observeR4; it uses existing instance initializeMaster/runAttempt/snapshot/close for TWO master101 corpus/live composition attempts, never finalize or a shortened TrainingCampaign. Every observation remains qualified:false/COMPOSITION_ONLY_INPUTS_UNQUALIFIED; runtime interfaces and the full five-master contract stay unchanged.
+' current review scope: reviews-2.json records adversarial correction recheck READY/final-4 condition met and security READY_SOURCE_ONLY before the narrow setup-fault/deadline ordering correction. Original last-phase cleanup cutoff is retained; neither source verdict qualifies hardware, inputs, or campaign execution.
+' retained prior-source verification: artifacts/training-functional/checks/final-2/summary.json; focused65=coordinator10+campaign38+bridge10+canonical7; runtime62/contracts25/workspace8; root-source/root-tests/task strict TSC PASS; all9 before-after source pins equal. Its recorded diagram/index bytes remain historical, not current-closeout verification.
+' preserved evidence: builder RED8pass2expected-fail then GREEN48pass; final-1 root-test-types FAIL at campaign.test100-101; tests-only [...MASTERS] correction precedes final-2 PASS. Historical6431 tracked files unchanged/lead aggregate108729726B; native bridge59direct+6exact SPEC inverses PASS/manifest7e unchanged/no native execution or new math PASS.
+' retained prior review boundary: adversarial ses_e198b2522ffefBhCjzpLpTTbI1 READY_SOURCE_ONLY/no findings; security ses_e198b251effeh5l7zkhu89C39t READY_SOURCE_ONLY after the LOW readonly-array typing finding cleared against final-2. Neither verdict qualifies execution.
+' campaign contract: one persistent coordinator instance; CampaignCoordinator=Pick<TrainingCoordinator,initializeMaster|runAttempt|finalize|close>; caller supplies one createOwned from ONE FixedAttemptFactory and initialRecord(master,timing) for preprepared CPU Flex records
+' timing: each initialization origin has10s; each attempt has its own origin+10s startup/+297s work/+300s cleanup; finalization and close share the original final-phase origin+297s/+300s. No clock reset or whole-campaign preemption claim.
+' preserved: exact masters101..105;1000 verified completions each; C12/numerics/curriculum/RNG/checkpoint semantics unchanged; GPUv1 master101/ordinal0 and both GPU mains OFF
+' evidence scope: injected5000 calls are schedule tests, not training; one real SQLite-coordinator zero-choice synthetic match then intentional failure is not native R4 qualification
+' fixture scope: repository-scratch.ts and training-fixture.ts retain new ignored synthetic work under artifacts/training-functional/scratch/, never /tmp/opencode. No HOST/native/GPU/reference-build/acquisition/training/publication follows.
+' rendering: native PlantUML SKIP; Java and remote-theme access are outside the Bun/TypeScript-or-Rust-only scope. Static PASS is not renderer PASS; no render attempted.
+' see: _spec/runtime-protocol.puml
+' see: _spec/readiness.md#current-functional-path-2026-11-16
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title C11 - private supported SQLite completion transaction
-start
-:Bind selected master seed/model, provenance and persistent streams;
-:Retain initial config / native record in the first fixed master packet;
-:Compute next frozen curriculum-A STARTED descriptor;
-:Durably commit STARTED / consumed cursors before launch;
-:Run and independently verify whole-match ACK and stop proofs inside job;
-if (Infrastructure / integrity / storage failure?) then (yes)
-  :Preserve STARTED and known-prefix diagnostics;
-  :Abort all masters without retry / resume;
-  stop
-else (no)
-  :Release only owned scratch model inputs after verified close/reap;
-  if (At least one verified sampled choice?) then (yes)
-    :Verify one native Burn proposal against the frozen baseline/model;
-    :Atomically commit model / baseline / counters / RNG / journal;
-    if (Checkpoint bucket due?) then (yes)
-      :Commit exact actual-epoch checkpoint and fulfilled bucket together;
-    endif
-  else (no)
-    :Commit verified diagnostic state only;
-    :No PG, L2, baseline insertion or checkpoint;
-  endif
-endif
-:Export only selected config/native record to inference;
-note right
-  SQLite / JSON / method names do not establish eligibility.
-  No pending-gradient checkpoint or automatic failure resume.
-  Actual storage durability / fit remain separately qualified.
-  C15: fifty fixed 100-slot evidence packets, no failure rollover.
+title SOURCE_AND_REFERENCE_PREPARATION_VERIFIED_HOST_QUALIFICATION_PENDING - C11 campaign
+
+actor "Prepared campaign caller" as CALLER
+participant "packages/runtime/src/training-campaign.ts\nTrainingCampaign" as CAMPAIGN
+participant "initialRecord(master, timing)\npreprepared CPU Flex record callback" as INIT
+participant "packages/runtime/src/training-coordinator.ts\nTrainingCoordinator" as COORD
+participant "packages/runtime/src/fixed-attempt.ts\nONE FixedAttemptFactory.create" as FACTORY
+participant "packages/runtime/src/match-session.ts\nMatchSession" as MATCH
+database "packages/runtime/src/training-store.ts\nprivate SQLite" as STORE
+
+CALLER -> CAMPAIGN : construct with one coordinator, initialRecord, one createOwned
+CALLER -> CAMPAIGN : run once; no cap override, resume, or retry
+note over CALLER,CAMPAIGN
+  observeR4: two composition attempts.
+  TrainingCampaign: 5,000 verified attempts.
 end note
-stop
+loop exact serial masters 101..105
+  CAMPAIGN -> INIT : initialRecord(master, timing); original initialization10s
+  INIT --> CAMPAIGN : selected config/native record; hash and bounds checked
+  CAMPAIGN -> COORD : initializeMaster(master, record); within same10s
+  COORD -> STORE : bind master seed/model, provenance, persistent streams
+  COORD -> COORD : retain initial config/record in first fixed master packet
+  COORD --> CAMPAIGN : exact initial state; consistent experiment bindings
+
+  loop exact ordinals 0..999
+    CAMPAIGN -> COORD : runAttempt(master, id, original10/297/300s timing, createOwned)
+    COORD -> STORE : compute frozen curriculum-A descriptor; commit STARTED/cursors
+    STORE --> COORD : owned descriptor/model/RNG/frozen baseline
+    COORD -> COORD : retain STARTED in fifty fixed100-slot packets; no failure rollover
+    COORD -> FACTORY : createOwned only after durable STARTED
+    FACTORY --> COORD : owned transport/learners/verifier/corpus/strategy/releaseInputs
+
+    break dependency acquisition, constructor, or pre-session deadline fails
+      COORD -> COORD : terminate acquired dependencies; mark release attempted BEFORE callback
+      COORD -> COORD : invoke releaseInputs at most once if dependencies returned
+      COORD -> STORE : stopAll; preserve STARTED/known-prefix diagnostics
+      COORD --> CAMPAIGN : fail; admit no further attempt or master
+      CAMPAIGN -> COORD : close exactly once; retain failure
+    end
+
+    COORD -> MATCH : construct and run owned whole-match session
+    MATCH -> MATCH : verify ACK prefixes, stop classification, C12 proposal, close/reap
+    break session/integrity/lifecycle failure
+      COORD -> COORD : retain failed-prefix and failed-session model inputs
+      COORD -> STORE : stopAll; no completion, retry, or resume
+      COORD --> CAMPAIGN : fail; admit no further attempt or master
+      CAMPAIGN -> COORD : close exactly once; retain failure
+    end
+    MATCH --> COORD : independently verified completion and retained evidence
+    COORD -> COORD : mark release attempted BEFORE releaseInputs; check original deadline
+    break release or publication failure
+      COORD -> STORE : stopAll; preserve known state; never invoke release again
+      COORD --> CAMPAIGN : fail; no next attempt or master
+      CAMPAIGN -> COORD : close exactly once; retain failure
+    end
+
+    alt at least one verified sampled choice
+      COORD -> STORE : atomically commit verified native model/baseline/counters/RNG/journal
+      opt checkpoint bucket due
+        STORE -> STORE : actual-epoch completed checkpoint + fulfilled bucket together
+      end
+    else zero-choice verified completion
+      COORD -> STORE : commit diagnostics/control/streams only; no PG/L2/baseline/checkpoint
+    end
+    STORE -> STORE : never checkpoint pending gradients
+    STORE --> COORD : checked completion; terminal master requires nonzeroPGUpdates>=1
+    COORD --> CAMPAIGN : checked state; verify monotone counters/journal/history/bindings
+  end
+  CAMPAIGN -> CAMPAIGN : require started=verifiedCompleted=1000 and nonzeroPGUpdates>=1
+end
+
+CAMPAIGN -> COORD : finalize; original final-phase work297s
+COORD -> STORE : finalModels; require all five valid, no pending attempt or abort
+STORE --> COORD : selected config/native records only; never export private state to scoring
+COORD --> CAMPAIGN : existing bounded artifacts/experiment; primary101
+break finalization or artifact validation fails
+  CAMPAIGN -> COORD : close exactly once; preserve failure and original final-phase cutoff
+  CAMPAIGN --> CALLER : reject; no COMPLETE result or retry
+end
+CAMPAIGN -> COORD : close exactly once; original final-phase cleanup300s
+CAMPAIGN --> CALLER : return only after checked final artifacts and close
+
+note over COORD,MATCH
+  Mark the release callback before invocation
+  so a throwing cleanup cannot run twice.
+  Preserve failed session inputs because
+  successful lifecycle verification never
+  occurred.
+end note
+
+note over COORD,STORE
+  Schemas, JSON, and method names cannot prove
+  that an episode qualifies for learning.
+  Actual storage fit and durability remain
+  unqualified by the transaction design.
+end note
+
+note over CAMPAIGN,COORD
+  Reentry revokes further admissions without
+  claiming that an active callback has been
+  stopped. Separate phase clocks retain finite
+  bounds, not a strict whole campaign
+  termination guarantee.
+end note
 @enduml

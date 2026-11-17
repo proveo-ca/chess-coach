@@ -138,3 +138,4 @@ __pycache__/
 *.bpk
 /_work/gpu-owner-recovery/scratch/
 /_work/gpu-owner-recovery/cache/
+/artifacts/training-functional/scratch/

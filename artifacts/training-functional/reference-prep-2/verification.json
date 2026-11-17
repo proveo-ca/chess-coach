@@ -1,0 +1,55 @@
+{
+  "status": "PASS_READ_ONLY_REFERENCE_RECHECK",
+  "command": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "artifacts/training-functional/reference-retry.ts",
+    "verify"
+  ],
+  "exitCode": 0,
+  "sourceFiles": 435,
+  "sourceBytes": 4635549,
+  "bundleCount": 6,
+  "bundleBytes": 939123,
+  "distinctResolvedBundleInputs": 95,
+  "outputs": [
+    {
+      "path": "packages/starchess-arena/src/challenge/admission.ts",
+      "byteLength": 77587,
+      "sha256": "50255867609e615113aa7dbb1e9d315b7194494a03219b5d9b3aaff737889c26"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/corpus.ts",
+      "byteLength": 81433,
+      "sha256": "9a59255f598343896d1d42d8566cb4facdbfa7354e673d0c4e3adcf6fd3d431c"
+    },
+    {
+      "path": "packages/starchess-arena/src/challenge/r3Session.ts",
+      "byteLength": 315327,
+      "sha256": "f22b0322b03400a14fe1fc41af3091610d2d5ad60169e1f67df1a4e396d431e3"
+    },
+    {
+      "path": "packages/starchess-arena/src/players/strategic.ts",
+      "byteLength": 115300,
+      "sha256": "f48eb1a6016202272d609f373718c33ca2f4dba13b7d9ebe7499be4960b36499"
+    },
+    {
+      "path": "packages/starchess-arena/src/run/bank.ts",
+      "byteLength": 51664,
+      "sha256": "f03b36d791e4d68d3784b6702b83c1b85ede43ea8ab38b94ee779cffe98ef1c6"
+    },
+    {
+      "path": "packages/starchess-core/src/index.ts",
+      "byteLength": 297812,
+      "sha256": "5b7e795c733da1f6ffadbe04c0c1a9763b52933de0cd44e547eae8bf3c787024"
+    }
+  ],
+  "selectedReferenceSha256": "09cd6b6dd97fd1b3984b71b5f0d3f540e21b38285897062148e16c0e388fc45a",
+  "actualGetRequestsDuringRecheck": 0,
+  "referenceCodeEvaluated": false,
+  "nativeExecuted": false,
+  "hostExecuted": false,
+  "gpuExecuted": false,
+  "trainingReady": false
+}

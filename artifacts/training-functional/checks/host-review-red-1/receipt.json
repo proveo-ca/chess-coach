@@ -1,0 +1,14 @@
+{
+  "scope": "RED_REGRESSIONS_BEFORE_HOST_FACTS_REVIEW_FIX",
+  "command": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "--timeout",
+    "1000",
+    "./artifacts/training-functional/host-facts.test.ts"
+  ],
+  "exitCode": 1,
+  "hostQueriesExecuted": 0
+}

@@ -1,0 +1,6 @@
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent-adapter.ts(4,41): error TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent-adapter.ts(6,59): error TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.ts(10,97): error TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.ts(11,68): error TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.
+artifacts/training-functional/reference-prep.test.ts(9,113): error TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.
+artifacts/training-functional/reference-prep.ts(7,40): error TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.

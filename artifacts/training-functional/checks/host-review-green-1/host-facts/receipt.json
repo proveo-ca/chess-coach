@@ -1,0 +1,4620 @@
+{
+  "check": "host-facts",
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "command": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "--timeout",
+    "30000",
+    "./artifacts/training-functional/host-facts.test.ts"
+  ],
+  "details": null,
+  "sourcePinsBefore": [
+    {
+      "path": "Cargo.lock",
+      "kind": "file",
+      "sizeBytes": 173498,
+      "mode": 420,
+      "sha256": "77f674cc26a01f26558fd99c45bdcd5566017be05833fce1d39cae98cda05955"
+    },
+    {
+      "path": "Cargo.toml",
+      "kind": "file",
+      "sizeBytes": 509,
+      "mode": 420,
+      "sha256": "cac3a7e2201dff0ebe9e5d005a9416c7d751523a5e724ad0c8df84cd5063c14f"
+    },
+    {
+      "path": "artifacts/training-functional/check-specs.ts",
+      "kind": "file",
+      "sizeBytes": 3171,
+      "mode": 420,
+      "sha256": "21b3ff43618610ee4da79dafe50ad8862f5a1803038a9dd60850c353d506c16d"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts.test.ts",
+      "kind": "file",
+      "sizeBytes": 21568,
+      "mode": 420,
+      "sha256": "590de759e5147b1b792a9c2b09b6fb7f4b9c97ad96240521757307e9c948f27c"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts.ts",
+      "kind": "file",
+      "sizeBytes": 16483,
+      "mode": 420,
+      "sha256": "d1d82ba1bcb07a52412755cc183965519586705076ce6e46829c5657afcc16aa"
+    },
+    {
+      "path": "artifacts/training-functional/input-status.json",
+      "kind": "file",
+      "sizeBytes": 1614,
+      "mode": 420,
+      "sha256": "de94aefcc6695875743645f11fe5580a94b72c1c4f72acba0c386c55348c4db4"
+    },
+    {
+      "path": "artifacts/training-functional/jssha-archive.test.ts",
+      "kind": "file",
+      "sizeBytes": 18643,
+      "mode": 420,
+      "sha256": "28876a8996326924639951a5b844d23c38f4606dd7dae8a68a007c86cf4dee47"
+    },
+    {
+      "path": "artifacts/training-functional/jssha-archive.ts",
+      "kind": "file",
+      "sizeBytes": 8028,
+      "mode": 420,
+      "sha256": "9455a03bb9cf77cb0c0a35f432cce62b4941d48e587f99389cc18a77fc38eb9e"
+    },
+    {
+      "path": "artifacts/training-functional/native-comment-bridge.test.ts",
+      "kind": "file",
+      "sizeBytes": 2448,
+      "mode": 420,
+      "sha256": "55bf43115a05361162e2011101174a9871ddf9b8b07928e85f88dd98fee67263"
+    },
+    {
+      "path": "artifacts/training-functional/native-comment-bridge.ts",
+      "kind": "file",
+      "sizeBytes": 3952,
+      "mode": 420,
+      "sha256": "2aeee1a02f2015ff5e5b41a185fd33d98c8fe5fd4882f7ce0e93d213ae27db29"
+    },
+    {
+      "path": "artifacts/training-functional/plan.json",
+      "kind": "file",
+      "sizeBytes": 3336,
+      "mode": 420,
+      "sha256": "b464a174b03a058764be9c779e3eb12b5a5e5e066a7f4ac574487f68e3fee9c5"
+    },
+    {
+      "path": "artifacts/training-functional/qualification.test.ts",
+      "kind": "file",
+      "sizeBytes": 6690,
+      "mode": 420,
+      "sha256": "33e5d289985ba9ffbc4273380e169dd1b89bcb1394a2ffeb2f9f33e4a17f479d"
+    },
+    {
+      "path": "artifacts/training-functional/qualification.ts",
+      "kind": "file",
+      "sizeBytes": 2144,
+      "mode": 420,
+      "sha256": "e2893a4b19927390d2c2deb7369e3d445c87dd2060ceb1193b7082daee5014c2"
+    },
+    {
+      "path": "artifacts/training-functional/r4-observation.test.ts",
+      "kind": "file",
+      "sizeBytes": 36167,
+      "mode": 420,
+      "sha256": "56dcf78f5d8d3ca0eab132d6f61a4dd6a21d940afd69cc0417c0afff958b1e25"
+    },
+    {
+      "path": "artifacts/training-functional/r4-observation.ts",
+      "kind": "file",
+      "sizeBytes": 11964,
+      "mode": 420,
+      "sha256": "9df9bbfaccbc01d77a625b5962b0dd636c563f7bb0318160e2de89d34b6812e9"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep.test.ts",
+      "kind": "file",
+      "sizeBytes": 17177,
+      "mode": 420,
+      "sha256": "e5a2ad16291c02c3dd398f2fe94c6369fd6647e2f6127c9f86532c0287c03287"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep.ts",
+      "kind": "file",
+      "sizeBytes": 27394,
+      "mode": 420,
+      "sha256": "49599141613de07469176a848cc6745077cda89ecfce2fec7daed0354c14f5a2"
+    },
+    {
+      "path": "artifacts/training-functional/reference-retry.test.ts",
+      "kind": "file",
+      "sizeBytes": 19429,
+      "mode": 420,
+      "sha256": "d3a03e6dd949a14da19e45696ad1aff1d0735c8477e6853af195a996d3e8a1ca"
+    },
+    {
+      "path": "artifacts/training-functional/reference-retry.ts",
+      "kind": "file",
+      "sizeBytes": 27463,
+      "mode": 420,
+      "sha256": "ce19c0c7e54034119713d22ffa5c227c657187add45d3bea2919767251a182a1"
+    },
+    {
+      "path": "artifacts/training-functional/render-host-command.ts",
+      "kind": "file",
+      "sizeBytes": 2823,
+      "mode": 420,
+      "sha256": "89ff21ad5dc5c0bf00502af761ff997bde350955b714c4df45479d63ba7001be"
+    },
+    {
+      "path": "artifacts/training-functional/retain-reference-inputs.ts",
+      "kind": "file",
+      "sizeBytes": 3403,
+      "mode": 420,
+      "sha256": "3144338170d14b6c92a8a95fc476bc4a375520d245a10082dd672ed1b7934a67"
+    },
+    {
+      "path": "artifacts/training-functional/run-check.ts",
+      "kind": "file",
+      "sizeBytes": 7799,
+      "mode": 420,
+      "sha256": "492247e4bb7ef0759b3a02f0501462a7dc45f514baeb08bf4210d1a23b60b289"
+    },
+    {
+      "path": "artifacts/training-functional/tsconfig.json",
+      "kind": "file",
+      "sizeBytes": 145,
+      "mode": 420,
+      "sha256": "64e66b484c47a3d87257ec9884e45fc1c2181e6ada8cf31b89de4bdf5d1df046"
+    },
+    {
+      "path": "crates/gpu-owner/Cargo.toml",
+      "kind": "file",
+      "sizeBytes": 463,
+      "mode": 420,
+      "sha256": "ceb98a71e3a5c16c1c3f6d5035843b8441995339b5d49f62340b395540b2c3aa"
+    },
+    {
+      "path": "crates/gpu-owner/src/docker.rs",
+      "kind": "file",
+      "sizeBytes": 12873,
+      "mode": 420,
+      "sha256": "4e49b8c65a735339bdfb5891e182bc636c590e2ae341109d9c1864b699f74720"
+    },
+    {
+      "path": "crates/gpu-owner/src/evidence.rs",
+      "kind": "file",
+      "sizeBytes": 4316,
+      "mode": 420,
+      "sha256": "34d139a627fd2d3e066d3600a753be2dc599b23d7469ff5b2ba11794dfde4fa4"
+    },
+    {
+      "path": "crates/gpu-owner/src/input.rs",
+      "kind": "file",
+      "sizeBytes": 14875,
+      "mode": 420,
+      "sha256": "f23eff4854b12d575b527ed250c13284364b903e6ba5a65a084849c057d91674"
+    },
+    {
+      "path": "crates/gpu-owner/src/json.rs",
+      "kind": "file",
+      "sizeBytes": 11015,
+      "mode": 420,
+      "sha256": "92fb2fdd5fe6b9c2ce8337238a0581aa56a99167f590a3d80e9bfec92f4b1e81"
+    },
+    {
+      "path": "crates/gpu-owner/src/lib.rs",
+      "kind": "file",
+      "sizeBytes": 635,
+      "mode": 420,
+      "sha256": "ccb3abed8e7b5910c3e16f8e87c2757b224bb267c68c58ae956d42848c593a12"
+    },
+    {
+      "path": "crates/gpu-owner/src/linux.rs",
+      "kind": "file",
+      "sizeBytes": 8971,
+      "mode": 420,
+      "sha256": "3780278f9fc74d09ebd841a0162546e38f855609b6c943816022dfa0edb973c5"
+    },
+    {
+      "path": "crates/gpu-owner/src/main.rs",
+      "kind": "file",
+      "sizeBytes": 399,
+      "mode": 420,
+      "sha256": "5134cf06bcd693a56c01cd00931c5127d3efda6f1ad8db4953c231334f53cc03"
+    },
+    {
+      "path": "crates/gpu-owner/src/observe.rs",
+      "kind": "file",
+      "sizeBytes": 14738,
+      "mode": 420,
+      "sha256": "06497a88f90fc025aea28b5debe77adfc212a73b493c1d12100096ed8b53f9cc"
+    },
+    {
+      "path": "crates/gpu-owner/src/owner.rs",
+      "kind": "file",
+      "sizeBytes": 28599,
+      "mode": 420,
+      "sha256": "bdd44713775077f937648c60d045e8d31ebf0720f4c6e00ea352b675e229d96d"
+    },
+    {
+      "path": "crates/gpu-owner/src/policy.rs",
+      "kind": "file",
+      "sizeBytes": 8581,
+      "mode": 420,
+      "sha256": "5657425403da4a456e657ecd9604e04d4be724e56d5428e90e407121066f7799"
+    },
+    {
+      "path": "crates/gpu-owner/src/process.rs",
+      "kind": "file",
+      "sizeBytes": 11761,
+      "mode": 420,
+      "sha256": "6a7361d12263aa9a96b2cf64948871aa6dd857ffdda2cf6e7454179b1893e3e8"
+    },
+    {
+      "path": "crates/gpu-owner/src/telemetry.rs",
+      "kind": "file",
+      "sizeBytes": 2715,
+      "mode": 420,
+      "sha256": "f1b8d5ca3aa1643f17af464338aa3eb9f82110b35d07a3dbcc42acb7aa2252e1"
+    },
+    {
+      "path": "crates/gpu-owner/src/wire.rs",
+      "kind": "file",
+      "sizeBytes": 19934,
+      "mode": 420,
+      "sha256": "35d9b0094fa45dcc4650a104983deb82e08aafe3d3c480d6e62d193b7230b97b"
+    },
+    {
+      "path": "crates/gpu-owner/tests/adapters.rs",
+      "kind": "file",
+      "sizeBytes": 13112,
+      "mode": 420,
+      "sha256": "378b9a33f835317c2beb76399fc0f892637bff52014b1a01fd669263905b858f"
+    },
+    {
+      "path": "crates/gpu-owner/tests/cli.rs",
+      "kind": "file",
+      "sizeBytes": 1150,
+      "mode": 420,
+      "sha256": "ef3d75bec0f06bacd363bd0c4d696650efbf4ef24c5bbe4012b580660b5e7ab5"
+    },
+    {
+      "path": "crates/gpu-owner/tests/conformance.rs",
+      "kind": "file",
+      "sizeBytes": 2918,
+      "mode": 420,
+      "sha256": "7998a3bbdd28760d5fe83c1633871b06606a0481a03d51947bd7438910959b78"
+    },
+    {
+      "path": "crates/gpu-owner/tests/contracts.rs",
+      "kind": "file",
+      "sizeBytes": 9821,
+      "mode": 420,
+      "sha256": "eeea6aadd0f96ed50b1e2a014b4fa184304a73d780f7023f22505c95a9d4528c"
+    },
+    {
+      "path": "crates/gpu-owner/tests/lifecycle.rs",
+      "kind": "file",
+      "sizeBytes": 14293,
+      "mode": 420,
+      "sha256": "c31475672e1506bf0df7f9f2391e3a0c77f7e20965b622cde2475bca29871441"
+    },
+    {
+      "path": "crates/gpu-owner/tests/observation.rs",
+      "kind": "file",
+      "sizeBytes": 12899,
+      "mode": 420,
+      "sha256": "b608ef1c90c83df55561530c20325051351aed0710db9ce4e2071a1bf4ed59cf"
+    },
+    {
+      "path": "crates/gpu-owner/tests/support/mod.rs",
+      "kind": "file",
+      "sizeBytes": 20246,
+      "mode": 420,
+      "sha256": "cfa8f2e72975afad6a755d51127b01e2b03c362f0105a4b90fb9c028760e47f8"
+    },
+    {
+      "path": "crates/gpu-owner/tests/wire.rs",
+      "kind": "file",
+      "sizeBytes": 28552,
+      "mode": 420,
+      "sha256": "971e2fe6a687a9d980120a095b22d72c82886bae4ed9e023e6299719810daf8d"
+    },
+    {
+      "path": "crates/host-facts/Cargo.toml",
+      "kind": "file",
+      "sizeBytes": 455,
+      "mode": 420,
+      "sha256": "852c6df40e26aff5ac82e347db1f7cc4fdebb069a54095a8a92fb714183f64c8"
+    },
+    {
+      "path": "crates/host-facts/src/cgroup.rs",
+      "kind": "file",
+      "sizeBytes": 17786,
+      "mode": 420,
+      "sha256": "c8adac710d8ffb805917ea330f34cfbfc32d7674bad761d54c00eb1c4456d484"
+    },
+    {
+      "path": "crates/host-facts/src/http.rs",
+      "kind": "file",
+      "sizeBytes": 25151,
+      "mode": 420,
+      "sha256": "46e034bf976d7266a8e22ad60747cda95b35a2876b4da5fb8c44dfb3dab6f858"
+    },
+    {
+      "path": "crates/host-facts/src/lib.rs",
+      "kind": "file",
+      "sizeBytes": 15071,
+      "mode": 420,
+      "sha256": "193700f9c3d3286c4af5202e955813702f65f0d44163de491c2523faeb6054f8"
+    },
+    {
+      "path": "crates/host-facts/src/main.rs",
+      "kind": "file",
+      "sizeBytes": 1017,
+      "mode": 420,
+      "sha256": "d70817dc0139c1a6b3da357ba9834a2ce451fd06d090f777c1ab2cf37f302668"
+    },
+    {
+      "path": "crates/host-facts/src/projection.rs",
+      "kind": "file",
+      "sizeBytes": 28883,
+      "mode": 420,
+      "sha256": "dd7a6f81b4b294dc5233c3d8a6b868a41d70520c922a6ca41379c8c003573323"
+    },
+    {
+      "path": "crates/host-facts/src/socket.rs",
+      "kind": "file",
+      "sizeBytes": 5682,
+      "mode": 420,
+      "sha256": "208ef13bcd7274364f6f4690550566ea0c549a48cccaddd1343cdcd1186f63d1"
+    },
+    {
+      "path": "crates/host-facts/tests/cli.rs",
+      "kind": "file",
+      "sizeBytes": 1041,
+      "mode": 420,
+      "sha256": "96e9323f84a378cb8be3cb33a4473702f26d009f1ec8d1a984bf0594f88fd569"
+    },
+    {
+      "path": "crates/host-facts/tests/recipe.rs",
+      "kind": "file",
+      "sizeBytes": 2033,
+      "mode": 420,
+      "sha256": "8d5c9aee1eb2de0e916d32ff04597b6722d13ec255d4da8d95abbca2fa4ce97e"
+    },
+    {
+      "path": "crates/learning/Cargo.toml",
+      "kind": "file",
+      "sizeBytes": 438,
+      "mode": 420,
+      "sha256": "2f62653838674286c3aba22be71d320ab1a1a937a8881ef28507f24eceeeef55"
+    },
+    {
+      "path": "crates/learning/src/accumulation.rs",
+      "kind": "file",
+      "sizeBytes": 8151,
+      "mode": 420,
+      "sha256": "54f9ad68942e1e47253dcc69250904e0e02f02645442a594bc2fc3fb7da5fb02"
+    },
+    {
+      "path": "crates/learning/src/batch.rs",
+      "kind": "file",
+      "sizeBytes": 1190,
+      "mode": 420,
+      "sha256": "60df035815fb53d9c9c3dffd1f7d94870cf47895a5b61a2bd1d287e48bc6545b"
+    },
+    {
+      "path": "crates/learning/src/episode.rs",
+      "kind": "file",
+      "sizeBytes": 2210,
+      "mode": 420,
+      "sha256": "e5f89405c0582b2307004cdd1941f17fa571cc8d97088a8b9c66269862c5d99b"
+    },
+    {
+      "path": "crates/learning/src/lib.rs",
+      "kind": "file",
+      "sizeBytes": 504,
+      "mode": 420,
+      "sha256": "1adad3654f02259c7a97b843544d3af54f868ee898e196d20f6c9eedbbdc11e9"
+    },
+    {
+      "path": "crates/learning/src/model.rs",
+      "kind": "file",
+      "sizeBytes": 2322,
+      "mode": 420,
+      "sha256": "6e05965998d36a494600d7da9150dc32d5b989a4283801ab56f70abb981a0d96"
+    },
+    {
+      "path": "crates/learning/tests/accumulation.rs",
+      "kind": "file",
+      "sizeBytes": 7967,
+      "mode": 420,
+      "sha256": "0682e892d60625413ae9d82eac98d534fe1a9e83f82a6b60ce45c0495656c56e"
+    },
+    {
+      "path": "crates/learning/tests/common/mod.rs",
+      "kind": "file",
+      "sizeBytes": 1376,
+      "mode": 420,
+      "sha256": "f56b0811cabe5ff453e85d6acad699b519305b0a7900c80471e1c02cff2eb493"
+    },
+    {
+      "path": "crates/learning/tests/context.rs",
+      "kind": "file",
+      "sizeBytes": 1842,
+      "mode": 420,
+      "sha256": "15309553796ea4875563c4d73fb4888c7a9740f28a269e3cb8be0b5883e3db9e"
+    },
+    {
+      "path": "crates/learning/tests/episode.rs",
+      "kind": "file",
+      "sizeBytes": 4826,
+      "mode": 420,
+      "sha256": "0d9a51484207063ab9a3ae072d631ce306bd46fa25821314feae9777bfc8a8f1"
+    },
+    {
+      "path": "crates/learning/tests/finite_difference.rs",
+      "kind": "file",
+      "sizeBytes": 6993,
+      "mode": 420,
+      "sha256": "701a56b8d88677b578393b06d7d47f0ebb1f7df56690ba990e362bdb5776c696"
+    },
+    {
+      "path": "crates/learning/tests/initialization.rs",
+      "kind": "file",
+      "sizeBytes": 2604,
+      "mode": 420,
+      "sha256": "0a1ebc7bf0f84f567432b0fbfdf60849acb691c35c06fb14969a04eb48920c56"
+    },
+    {
+      "path": "crates/learning/tests/model.rs",
+      "kind": "file",
+      "sizeBytes": 3749,
+      "mode": 420,
+      "sha256": "74e54b60512fd3d42417023561c9eac719a40e411e4ea8269cc4d75afc4b3d45"
+    },
+    {
+      "path": "crates/policy-io/Cargo.toml",
+      "kind": "file",
+      "sizeBytes": 526,
+      "mode": 420,
+      "sha256": "44d7e51a15605c67a777915c673739005e1614c9cec4ef37fe3a49d4613c4de4"
+    },
+    {
+      "path": "crates/policy-io/examples/initial-record.rs",
+      "kind": "file",
+      "sizeBytes": 445,
+      "mode": 420,
+      "sha256": "44cb4727be3007a0cc0a97176d5c1efd2c255ea8909a2cb1e82c31192bb7238c"
+    },
+    {
+      "path": "crates/policy-io/src/bin/policy-channel.rs",
+      "kind": "file",
+      "sizeBytes": 1489,
+      "mode": 420,
+      "sha256": "45e3652ec19ea28f021377d1d020d5b6cdbc9bf1f2d02235425410ad2d48e993"
+    },
+    {
+      "path": "crates/policy-io/src/bin/policy-initialize.rs",
+      "kind": "file",
+      "sizeBytes": 1142,
+      "mode": 420,
+      "sha256": "1024cb2f47bcb5cf494be6da0016ca583342346544a3eb20ca52bf19a001fdf2"
+    },
+    {
+      "path": "crates/policy-io/src/bin/policy-score.rs",
+      "kind": "file",
+      "sizeBytes": 1645,
+      "mode": 420,
+      "sha256": "6d2cb5f6264b7e05b3e6a05bf35ced608e4426d0947d3db07286e23cbe52f613"
+    },
+    {
+      "path": "crates/policy-io/src/channel.rs",
+      "kind": "file",
+      "sizeBytes": 14059,
+      "mode": 420,
+      "sha256": "0e2c054c42c7c5549982fc4b1b7f27b2427e8dbffb187ac6917364e78433703e"
+    },
+    {
+      "path": "crates/policy-io/src/device.rs",
+      "kind": "file",
+      "sizeBytes": 787,
+      "mode": 420,
+      "sha256": "edf458da0efed270cc53a081d9d7a270cbe8c8e9ba1a77503cd9899e6a5ed9ae"
+    },
+    {
+      "path": "crates/policy-io/src/lib.rs",
+      "kind": "file",
+      "sizeBytes": 5626,
+      "mode": 420,
+      "sha256": "ac9010eaa10a5526534e7d89c0b8b2e3f147a7e2e85e0831f9f4138d9bf3a839"
+    },
+    {
+      "path": "crates/policy-io/tests/channel.rs",
+      "kind": "file",
+      "sizeBytes": 7533,
+      "mode": 420,
+      "sha256": "5e0feaf08e69efd2557718d6214e22cc064d3a429007cc6eee6acf5bbd20dc63"
+    },
+    {
+      "path": "crates/policy-io/tests/f32.rs",
+      "kind": "file",
+      "sizeBytes": 650,
+      "mode": 420,
+      "sha256": "baf6a9720b5033149d1aac099de4571a2cca3116d2560c2367eb5ee4562902ea"
+    },
+    {
+      "path": "crates/policy-io/tests/gpu.rs",
+      "kind": "file",
+      "sizeBytes": 13699,
+      "mode": 420,
+      "sha256": "89b80da22602fbfa679e79e1fb6339d08714ea89ed3e7e81b692f61324f0394c"
+    },
+    {
+      "path": "crates/policy-io/tests/initialize.rs",
+      "kind": "file",
+      "sizeBytes": 3179,
+      "mode": 420,
+      "sha256": "fc939d34b4e443e389b00f01d6609248da8a5195a7722cab5e27954bb7be6c15"
+    },
+    {
+      "path": "crates/policy-io/tests/score.rs",
+      "kind": "file",
+      "sizeBytes": 9647,
+      "mode": 420,
+      "sha256": "0f04e838805314de0591f5a73919af1e802c6dacad21b364e6adb594b2c7b5b5"
+    },
+    {
+      "path": "packages/contracts/src/candidate.ts",
+      "kind": "file",
+      "sizeBytes": 1921,
+      "mode": 420,
+      "sha256": "01422c6e5b8f289cd387e3cf488363c810277db5aae7117cd7354b7b14c8af1e"
+    },
+    {
+      "path": "packages/contracts/src/causal-journal.ts",
+      "kind": "file",
+      "sizeBytes": 14428,
+      "mode": 420,
+      "sha256": "ad86bff14c051e98a35adae057a1be8ab2363ac6c253cec245200a9eca5a5c2f"
+    },
+    {
+      "path": "packages/contracts/src/episode.ts",
+      "kind": "file",
+      "sizeBytes": 2612,
+      "mode": 420,
+      "sha256": "ae8c21913bf58d1688f4136bab05c6b55ad051a2dc39b5640c6d94ab603ee370"
+    },
+    {
+      "path": "packages/contracts/src/game-session.ts",
+      "kind": "file",
+      "sizeBytes": 10357,
+      "mode": 420,
+      "sha256": "797d7b35465fef380b73c913e6777b20dedee9a10f1ae2cd6e90dab9a83bb07f"
+    },
+    {
+      "path": "packages/contracts/src/gpu-job.ts",
+      "kind": "file",
+      "sizeBytes": 7112,
+      "mode": 420,
+      "sha256": "c374aa8faff00b3f17294a7f7645a62e46e50e17ae39c4b895cbc4c7b30150d9"
+    },
+    {
+      "path": "packages/contracts/src/index.ts",
+      "kind": "file",
+      "sizeBytes": 1200,
+      "mode": 420,
+      "sha256": "989ccb211f8be99a88787832fa082a5f129ef52682c2087ae1b584fbda2baab3"
+    },
+    {
+      "path": "packages/contracts/src/inference.ts",
+      "kind": "file",
+      "sizeBytes": 1979,
+      "mode": 420,
+      "sha256": "c8212f109e8027bfecd6202c0edb58a4c201bbbdd74a4ede18ba2102314663ec"
+    },
+    {
+      "path": "packages/contracts/src/initialization.ts",
+      "kind": "file",
+      "sizeBytes": 2507,
+      "mode": 420,
+      "sha256": "0f6a3ee523040bd4ddc5acb4cc4ee6e5c35e68f52415709d5de99efd53a8431e"
+    },
+    {
+      "path": "packages/contracts/src/learning-channel.ts",
+      "kind": "file",
+      "sizeBytes": 2486,
+      "mode": 420,
+      "sha256": "01abdbf580e2c9cd5cc2a718a52284b58b32bda24f901f44321490fb8e444982"
+    },
+    {
+      "path": "packages/contracts/src/match.ts",
+      "kind": "file",
+      "sizeBytes": 4415,
+      "mode": 420,
+      "sha256": "fd13cf6822e37fc14d220576c6568cbfaa586fed481b089307dc702145ba5d30"
+    },
+    {
+      "path": "packages/contracts/src/native-intents.ts",
+      "kind": "file",
+      "sizeBytes": 1389,
+      "mode": 420,
+      "sha256": "cbb8f024001fac6c8f682fbb42677d19dc922c0a7ea317285ea480f914a8fe37"
+    },
+    {
+      "path": "packages/contracts/src/native-protocol.ts",
+      "kind": "file",
+      "sizeBytes": 3947,
+      "mode": 420,
+      "sha256": "df684ebaacdff2d6472d6f47c067d1850aae0db39826618c3118cbc03b9b9560"
+    },
+    {
+      "path": "packages/contracts/src/recipient-codec.ts",
+      "kind": "file",
+      "sizeBytes": 4082,
+      "mode": 420,
+      "sha256": "75cb4a7b83ca9e9e1970754e6fcffec9067a4ee8be37f704eb1c8ce7fbde8447"
+    },
+    {
+      "path": "packages/contracts/src/recipient.ts",
+      "kind": "file",
+      "sizeBytes": 16399,
+      "mode": 420,
+      "sha256": "950744bac63d7d44b92dcb8fdc0122f2c3ad4f933198e27aff8702bafefbe7fb"
+    },
+    {
+      "path": "packages/contracts/src/resolution.ts",
+      "kind": "file",
+      "sizeBytes": 4532,
+      "mode": 420,
+      "sha256": "af02d9f13f69d359784d9a201c32b6dae0a5b15bd2d0dec00c31358fb45f1ef1"
+    },
+    {
+      "path": "packages/contracts/src/semantics.ts",
+      "kind": "file",
+      "sizeBytes": 8430,
+      "mode": 420,
+      "sha256": "cbc1217a2cfee44d68c216d5c9a173965d301247c73835990a58e0c321ae5690"
+    },
+    {
+      "path": "packages/contracts/src/shape.ts",
+      "kind": "file",
+      "sizeBytes": 3459,
+      "mode": 420,
+      "sha256": "74c7a52ca90949da256e07ad4e6f7581c53834ba9abdc45cd4b7f51150a269d1"
+    },
+    {
+      "path": "packages/contracts/src/training-artifact.ts",
+      "kind": "file",
+      "sizeBytes": 1542,
+      "mode": 420,
+      "sha256": "0203e6183d543b5fa54ee7c62887bc74cfcd62cb7bc6f3a9b17adbeb1a7d56af"
+    },
+    {
+      "path": "packages/contracts/src/training-state.ts",
+      "kind": "file",
+      "sizeBytes": 4119,
+      "mode": 420,
+      "sha256": "e17d980ca2bc03566bf43cf75869862c81fa3d6f9febcfc52044669242d7b5ff"
+    },
+    {
+      "path": "packages/policy/src/candidates.ts",
+      "kind": "file",
+      "sizeBytes": 9552,
+      "mode": 420,
+      "sha256": "8ee944b2c26f8cf60e07181b07b04dfa41494c200df2f935487bf661d156f99f"
+    },
+    {
+      "path": "packages/policy/src/index.ts",
+      "kind": "file",
+      "sizeBytes": 5043,
+      "mode": 420,
+      "sha256": "96adc38377d7dfafe35e2594a2a94f72cbdc1caf6ebbc1785c5318ffe086a094"
+    },
+    {
+      "path": "packages/runtime/src/artifacts.ts",
+      "kind": "file",
+      "sizeBytes": 3890,
+      "mode": 420,
+      "sha256": "59d0f3697366d2280eb6ddf06ad97f0659e347613fd862c9574e46a8fbe7f5a0"
+    },
+    {
+      "path": "packages/runtime/src/corpus.ts",
+      "kind": "file",
+      "sizeBytes": 5320,
+      "mode": 420,
+      "sha256": "6ab7fc22ed51977b63178988496059621cc83df8f62adc6066a47639b84c09b9"
+    },
+    {
+      "path": "packages/runtime/src/current-driver.ts",
+      "kind": "file",
+      "sizeBytes": 1184,
+      "mode": 420,
+      "sha256": "7049fabb4b39e285acf5c10dc2e9a84c072f37e4794bc4ef52f4b1dcae13fba4"
+    },
+    {
+      "path": "packages/runtime/src/curriculum.ts",
+      "kind": "file",
+      "sizeBytes": 4646,
+      "mode": 420,
+      "sha256": "2621c4a99d94f92eb61357375822038e5d3e288d9f0a4c6af05dc9b8425253d4"
+    },
+    {
+      "path": "packages/runtime/src/fixed-attempt.ts",
+      "kind": "file",
+      "sizeBytes": 3589,
+      "mode": 420,
+      "sha256": "4ba0f6dc4bd0bf75c782e80b5ed3e775acf69c81cb5637626954f3a042c72fbb"
+    },
+    {
+      "path": "packages/runtime/src/framing.ts",
+      "kind": "file",
+      "sizeBytes": 1985,
+      "mode": 420,
+      "sha256": "344d03a78e94dce87c3b958d02f7499e7927b25388830d3062dfdfc00655f026"
+    },
+    {
+      "path": "packages/runtime/src/frozen-scorer.ts",
+      "kind": "file",
+      "sizeBytes": 3566,
+      "mode": 420,
+      "sha256": "9e5f051b9487b53f34259075298ea9f65b905ed3f6ef895a20a1a3d31b58c72e"
+    },
+    {
+      "path": "packages/runtime/src/game-worker.ts",
+      "kind": "file",
+      "sizeBytes": 353,
+      "mode": 420,
+      "sha256": "d7ec081fe81c1f3ef1c5257a840305c5d2be821378d106a28ea3a801b9ddd7ab"
+    },
+    {
+      "path": "packages/runtime/src/gpu-job.ts",
+      "kind": "file",
+      "sizeBytes": 8798,
+      "mode": 420,
+      "sha256": "edf7838bafb256e0ba380c234ea255e642220ed6338d95fb41416cbe9ce7f876"
+    },
+    {
+      "path": "packages/runtime/src/index.ts",
+      "kind": "file",
+      "sizeBytes": 156,
+      "mode": 420,
+      "sha256": "a21ced057537a81fe1006e8d13ccc3fbccee831ee034361f76122dad0f669588"
+    },
+    {
+      "path": "packages/runtime/src/job.ts",
+      "kind": "file",
+      "sizeBytes": 4762,
+      "mode": 420,
+      "sha256": "bea66950267f27d02fd91e9c35fc2cde914637506a63a39e33b251f71de8da09"
+    },
+    {
+      "path": "packages/runtime/src/learner-pair.ts",
+      "kind": "file",
+      "sizeBytes": 3034,
+      "mode": 420,
+      "sha256": "fe75719f6dcdcb3a4a621c2aeba284cfbabca9e6b6f84d43d7457693666e3d26"
+    },
+    {
+      "path": "packages/runtime/src/match-process.ts",
+      "kind": "file",
+      "sizeBytes": 7100,
+      "mode": 420,
+      "sha256": "5960e488179b87b7fe2eb2df0c371518771c837a632f5844024d905d97731e18"
+    },
+    {
+      "path": "packages/runtime/src/match-session.ts",
+      "kind": "file",
+      "sizeBytes": 21583,
+      "mode": 420,
+      "sha256": "6dbcd36fe4fda9aa6495617a9ee3ea5558e44bfc6ec9d2ecd7986852db2b051f"
+    },
+    {
+      "path": "packages/runtime/src/match-state.ts",
+      "kind": "file",
+      "sizeBytes": 2075,
+      "mode": 420,
+      "sha256": "b1b04f78dc57fbaef24bdd515bb03a1ef0c98932c199ecb444cbb7f7c015e02c"
+    },
+    {
+      "path": "packages/runtime/src/match-worker-main.ts",
+      "kind": "file",
+      "sizeBytes": 2093,
+      "mode": 420,
+      "sha256": "7fbfda7c1898ae904990e8e4184780a36cca62069b5c4710ac4dd7082dfe198e"
+    },
+    {
+      "path": "packages/runtime/src/match-worker.ts",
+      "kind": "file",
+      "sizeBytes": 10498,
+      "mode": 420,
+      "sha256": "7333ae7a643441f0a6d254db853315b8431fe558e03e410468a9ad3977c4cbb4"
+    },
+    {
+      "path": "packages/runtime/src/model-inputs.ts",
+      "kind": "file",
+      "sizeBytes": 1491,
+      "mode": 420,
+      "sha256": "5ca0cbe0196a7c481255b0989e52c95c1f95d7f0e66c7c0d4e3b7979b27f5927"
+    },
+    {
+      "path": "packages/runtime/src/native-learner.ts",
+      "kind": "file",
+      "sizeBytes": 7892,
+      "mode": 420,
+      "sha256": "bd42911e886b352a97e1aea22552dd596d79ba2d55d490e35267a637d215340c"
+    },
+    {
+      "path": "packages/runtime/src/native-session.ts",
+      "kind": "file",
+      "sizeBytes": 9263,
+      "mode": 420,
+      "sha256": "fce16d1d955745308ebc0eca8c3ed8133531b96b34d579110777464dc9280076"
+    },
+    {
+      "path": "packages/runtime/src/policy-session.ts",
+      "kind": "file",
+      "sizeBytes": 10688,
+      "mode": 420,
+      "sha256": "bf66312f05965de4461219068912f68cecfdc4e1037749fd73bc4eba2a3e6479"
+    },
+    {
+      "path": "packages/runtime/src/private-state.ts",
+      "kind": "file",
+      "sizeBytes": 5741,
+      "mode": 420,
+      "sha256": "c129175e1e6f6a0ef4df2e0e8f0a9843b7087770064cde3c44b6ea8936bd4999"
+    },
+    {
+      "path": "packages/runtime/src/process-transport.ts",
+      "kind": "file",
+      "sizeBytes": 5657,
+      "mode": 420,
+      "sha256": "bb8dde00851642d2b2faaa00909092e35e5676b093aebb652b1088daba34cac1"
+    },
+    {
+      "path": "packages/runtime/src/reference-driver.ts",
+      "kind": "file",
+      "sizeBytes": 8759,
+      "mode": 420,
+      "sha256": "f9623f1ec68354139140ee142f1ac280d2995e81dbd8eaef77b3bde57aef8f30"
+    },
+    {
+      "path": "packages/runtime/src/reference-worker.ts",
+      "kind": "file",
+      "sizeBytes": 398,
+      "mode": 420,
+      "sha256": "db1438a09e0dd5c28c8bfa2c1fd5789bce00914ad217dcfb3bdd606b1703163f"
+    },
+    {
+      "path": "packages/runtime/src/rng.ts",
+      "kind": "file",
+      "sizeBytes": 1900,
+      "mode": 420,
+      "sha256": "1e2311763946768b7d1323b4717a203699ea057c88525a66a764465ad2fa5f5a"
+    },
+    {
+      "path": "packages/runtime/src/storage-bounds.ts",
+      "kind": "file",
+      "sizeBytes": 1412,
+      "mode": 420,
+      "sha256": "f86f351c51d09529d751564b85aa3d150283c2ae5a09c7f632de12a84b5a1d38"
+    },
+    {
+      "path": "packages/runtime/src/strategic.ts",
+      "kind": "file",
+      "sizeBytes": 10385,
+      "mode": 420,
+      "sha256": "c5d748fe9ccc7787c32a20cc29820b80bfba3fa6c9f585aaeb2d56c24094e9cf"
+    },
+    {
+      "path": "packages/runtime/src/training-campaign.ts",
+      "kind": "file",
+      "sizeBytes": 8766,
+      "mode": 420,
+      "sha256": "92d0362057bf386fb7713a6929a429a89e97e5998e9921b0e9b790823772d5db"
+    },
+    {
+      "path": "packages/runtime/src/training-coordinator.ts",
+      "kind": "file",
+      "sizeBytes": 9497,
+      "mode": 420,
+      "sha256": "29ffc66842cb8588d4c3c5c419b5cf19b18ea780ffde82c35435001a3f5ea5ec"
+    },
+    {
+      "path": "packages/runtime/src/training-store.ts",
+      "kind": "file",
+      "sizeBytes": 13190,
+      "mode": 420,
+      "sha256": "9ed0b2a9457a3e92c3c8b69d70fa5ad83783d7bef6e7e4ec4d5ee39513ae3b42"
+    },
+    {
+      "path": "packages/runtime/src/worker-loop.ts",
+      "kind": "file",
+      "sizeBytes": 1080,
+      "mode": 420,
+      "sha256": "afd57b55b54a2f982e882f3337ce1d2468f066bf94c61f09ba8a1d6249d4347f"
+    },
+    {
+      "path": "packages/runtime/src/worker.ts",
+      "kind": "file",
+      "sizeBytes": 4384,
+      "mode": 420,
+      "sha256": "0c6fab7a35bb5be6f99eb62fc02b3c6f2309cc110cb48bbbbfbb2111dfc5d830"
+    },
+    {
+      "path": "packages/runtime/tests/artifacts.test.ts",
+      "kind": "file",
+      "sizeBytes": 3045,
+      "mode": 420,
+      "sha256": "487662c84c165579830ea19076d61ab856c6058c27ed319141d5b4435b2ad01b"
+    },
+    {
+      "path": "packages/runtime/tests/closure.test.ts",
+      "kind": "file",
+      "sizeBytes": 3634,
+      "mode": 420,
+      "sha256": "5ac90a558b4ab251ef260e84da28cb3f818eb0b514fcf88ec1d8b11c964c86ee"
+    },
+    {
+      "path": "packages/runtime/tests/corpus.test.ts",
+      "kind": "file",
+      "sizeBytes": 2649,
+      "mode": 420,
+      "sha256": "36e908b35d6896e20eaf435d6d76879450290cc000e0ba5c088ef908c4f3032e"
+    },
+    {
+      "path": "packages/runtime/tests/curriculum.test.ts",
+      "kind": "file",
+      "sizeBytes": 2034,
+      "mode": 420,
+      "sha256": "bfec18bc45f71793b2db29ee9375276a267cfaa30ba70f7dfc86107d32674ff9"
+    },
+    {
+      "path": "packages/runtime/tests/fixed-attempt-gpu-owner.test.ts",
+      "kind": "file",
+      "sizeBytes": 9374,
+      "mode": 420,
+      "sha256": "af07a0e977dc984b5102e25ebd9da9bc97e24b561c91297a48bb41c180ee84c7"
+    },
+    {
+      "path": "packages/runtime/tests/fixture.ts",
+      "kind": "file",
+      "sizeBytes": 2038,
+      "mode": 420,
+      "sha256": "bea76570d542cb5c580aada7f9c5589f6913e7b2c5768bbc34dfaa40f88ec5ad"
+    },
+    {
+      "path": "packages/runtime/tests/gpu-job.test.ts",
+      "kind": "file",
+      "sizeBytes": 8627,
+      "mode": 420,
+      "sha256": "fb3260d59348844cb6334d53c67aa7d6bbca07f2fb96a37ccae3f8a328b82227"
+    },
+    {
+      "path": "packages/runtime/tests/gpu-policy-conformance.test.ts",
+      "kind": "file",
+      "sizeBytes": 4780,
+      "mode": 420,
+      "sha256": "0dbd03855d05c6b53521b00bdadc3456f5cc5fc86109f25f06691ea22e22048b"
+    },
+    {
+      "path": "packages/runtime/tests/gpu-policy-record.test.ts",
+      "kind": "file",
+      "sizeBytes": 2657,
+      "mode": 420,
+      "sha256": "aba60c00e5703912bff06236359a48d2eadd71bea7f0384f504209c9f59c9812"
+    },
+    {
+      "path": "packages/runtime/tests/gpu-policy.test.ts",
+      "kind": "file",
+      "sizeBytes": 25313,
+      "mode": 420,
+      "sha256": "4fae9b67a64518021eb7512b48dc53a8f84e70591fa0111f2a9092c7c1db0cb1"
+    },
+    {
+      "path": "packages/runtime/tests/gpu-qualification.test.ts",
+      "kind": "file",
+      "sizeBytes": 19945,
+      "mode": 420,
+      "sha256": "544a8937344523eefe2fb0e2acb6f394bcd0bfc5e86438dc1d532e5548b69871"
+    },
+    {
+      "path": "packages/runtime/tests/gpu-recipe.test.ts",
+      "kind": "file",
+      "sizeBytes": 9189,
+      "mode": 420,
+      "sha256": "bb786e58adf994a6c4443d74b7eaba66ac0a9ba3a59921db2b13324db126ec81"
+    },
+    {
+      "path": "packages/runtime/tests/host-facts-task.test.ts",
+      "kind": "file",
+      "sizeBytes": 5288,
+      "mode": 420,
+      "sha256": "b9c74387756d7461a55a434a8fb7c7580ebf0fd6af899a836f0f0088fcd4e0eb"
+    },
+    {
+      "path": "packages/runtime/tests/job.test.ts",
+      "kind": "file",
+      "sizeBytes": 2746,
+      "mode": 420,
+      "sha256": "556fba3fe3d50750c009145c427894a4ab2f0e32be5a7e6e70793ae57be5db90"
+    },
+    {
+      "path": "packages/runtime/tests/learner-pair.e2e.test.ts",
+      "kind": "file",
+      "sizeBytes": 4131,
+      "mode": 420,
+      "sha256": "3a287f04dc0855d7405597ecddef1bea8215b44a3cef61537851d8cada9eff83"
+    },
+    {
+      "path": "packages/runtime/tests/learner-pair.test.ts",
+      "kind": "file",
+      "sizeBytes": 6014,
+      "mode": 420,
+      "sha256": "3ed99ac38e97beb3b75e79c8250a3844089ca7723240ee478499e1fa923aeea6"
+    },
+    {
+      "path": "packages/runtime/tests/match-fixture.ts",
+      "kind": "file",
+      "sizeBytes": 6737,
+      "mode": 420,
+      "sha256": "d4a2bdafb8c2f6a1bf87673e4300d8cec9109d7ee29d254b83dfb960a306e384"
+    },
+    {
+      "path": "packages/runtime/tests/match-process.test.ts",
+      "kind": "file",
+      "sizeBytes": 1829,
+      "mode": 420,
+      "sha256": "cdfbaeb8ad33f7330fb144698862c625872f1eb50f30800593a8e5820f213fba"
+    },
+    {
+      "path": "packages/runtime/tests/match-session.e2e.test.ts",
+      "kind": "file",
+      "sizeBytes": 5232,
+      "mode": 420,
+      "sha256": "7262c3cf1665bf6d5b85ec4c17271bc5d0d187885540aed1e3a762fb92169b6e"
+    },
+    {
+      "path": "packages/runtime/tests/match-session.test.ts",
+      "kind": "file",
+      "sizeBytes": 8289,
+      "mode": 420,
+      "sha256": "4f4218516e9b52a0ed32cb750855e0c963b17a5e8b6688cebb50b551c40c3366"
+    },
+    {
+      "path": "packages/runtime/tests/model-inputs.test.ts",
+      "kind": "file",
+      "sizeBytes": 1758,
+      "mode": 420,
+      "sha256": "eed24724926e13871ca2beaf55e5a439bbfc4ffb39c392025d5330d450b97f91"
+    },
+    {
+      "path": "packages/runtime/tests/native-learner.e2e.test.ts",
+      "kind": "file",
+      "sizeBytes": 5682,
+      "mode": 420,
+      "sha256": "f3df04e3f43b3a951784e846c734e33481f477f924be1ea734cf0c804011eaf6"
+    },
+    {
+      "path": "packages/runtime/tests/native-session.test.ts",
+      "kind": "file",
+      "sizeBytes": 7977,
+      "mode": 420,
+      "sha256": "57caedd0eaaf2f8af97363eb8af6e19bdeb3dda52b1c0083ef56d5471d9d1e8c"
+    },
+    {
+      "path": "packages/runtime/tests/policy-session.test.ts",
+      "kind": "file",
+      "sizeBytes": 8255,
+      "mode": 420,
+      "sha256": "c83db6c1d537eac7328045095949fc5eca3d132b3b072dd17a9907c2dd000123"
+    },
+    {
+      "path": "packages/runtime/tests/private-state.test.ts",
+      "kind": "file",
+      "sizeBytes": 3416,
+      "mode": 420,
+      "sha256": "7333f28284eb842adc22354fcd5236e9e8955d83ec7239fce9dabef25fe07e2b"
+    },
+    {
+      "path": "packages/runtime/tests/process-transport.test.ts",
+      "kind": "file",
+      "sizeBytes": 2660,
+      "mode": 420,
+      "sha256": "b93aea737f1497a2c08180753187bdf17d0bdfedf8393cfc3945d0c360d8cf3b"
+    },
+    {
+      "path": "packages/runtime/tests/reference-bundles.test.ts",
+      "kind": "file",
+      "sizeBytes": 39816,
+      "mode": 420,
+      "sha256": "bd0631beec091187e79abba83141828d6f2f4d45052649c0a1be1d425939edbc"
+    },
+    {
+      "path": "packages/runtime/tests/reference.test.ts",
+      "kind": "file",
+      "sizeBytes": 1188,
+      "mode": 420,
+      "sha256": "1cd72c7d5bd257986720836d1fa59f4691abc59b73927ee1658c236855494021"
+    },
+    {
+      "path": "packages/runtime/tests/repository-scratch.ts",
+      "kind": "file",
+      "sizeBytes": 545,
+      "mode": 420,
+      "sha256": "b9f51235fdffbaf671c3df83c0b03a70c3fb578470a48e85dcf08344bf8f60dd"
+    },
+    {
+      "path": "packages/runtime/tests/rng.test.ts",
+      "kind": "file",
+      "sizeBytes": 2005,
+      "mode": 420,
+      "sha256": "4755addcead5fcd307899b94ea1a11dce0fa81628a4586629eec8db6f38cc446"
+    },
+    {
+      "path": "packages/runtime/tests/storage-bounds.test.ts",
+      "kind": "file",
+      "sizeBytes": 1562,
+      "mode": 420,
+      "sha256": "21c3318761932fd8d2a53eafe8ddd01a51709ba4052dc25dd8270001c4a25176"
+    },
+    {
+      "path": "packages/runtime/tests/strategic.test.ts",
+      "kind": "file",
+      "sizeBytes": 5182,
+      "mode": 420,
+      "sha256": "dcaecb7917583d4f8a4b6f2f0b3917470f25d6b1d26a484888c700df017c501e"
+    },
+    {
+      "path": "packages/runtime/tests/training-artifact.test.ts",
+      "kind": "file",
+      "sizeBytes": 3030,
+      "mode": 420,
+      "sha256": "0d6988b1362df03600f7dc769331ad15adbe9af45bb4849d3aaf249cd4fca24a"
+    },
+    {
+      "path": "packages/runtime/tests/training-campaign.test.ts",
+      "kind": "file",
+      "sizeBytes": 20952,
+      "mode": 420,
+      "sha256": "4fa9a7717e9ec4436b0bfc4989d8e1de75655dc1944a382bf832444ffe7c91be"
+    },
+    {
+      "path": "packages/runtime/tests/training-coordinator.test.ts",
+      "kind": "file",
+      "sizeBytes": 8759,
+      "mode": 420,
+      "sha256": "7e4dd2cb7fe32fc9f15733126229d81df079357af34c5b00d4c5be2a25178073"
+    },
+    {
+      "path": "packages/runtime/tests/training-fixture.ts",
+      "kind": "file",
+      "sizeBytes": 2510,
+      "mode": 420,
+      "sha256": "8995676cd85fd953a74b9239e7923563f89caeffc2718ea96ba4336dd12ee91d"
+    },
+    {
+      "path": "packages/runtime/tests/training-store.test.ts",
+      "kind": "file",
+      "sizeBytes": 6664,
+      "mode": 420,
+      "sha256": "63a638809f5d20f3215e963ecf4c8a234e4169dcd3d239413d609b97e5253874"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/adjutant.test.ts",
+      "kind": "file",
+      "sizeBytes": 19657,
+      "mode": 420,
+      "sha256": "5e3ac30f39718924dba457bf5348d889cde38d685df8b269578ce5214c0040f6"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/ai/charonHunt.test.ts",
+      "kind": "file",
+      "sizeBytes": 5766,
+      "mode": 420,
+      "sha256": "22faa41b5ec8fb650d2b5fee0a33d60709e654b8aed13f11be3c29ee386dd7d9"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/bank/storedBank.test.ts",
+      "kind": "file",
+      "sizeBytes": 809,
+      "mode": 420,
+      "sha256": "93b931a14f3b1a85fe9d4a254ac591067ec0d7d42781c82c1ec650d7a58c1c6c"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/boundary/boundary.test.ts",
+      "kind": "file",
+      "sizeBytes": 1207,
+      "mode": 420,
+      "sha256": "abd143d0ef6d051d059e2380bb214e37f809d0056d251ac906168aa873702807"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/collision/collisionRaces.test.ts",
+      "kind": "file",
+      "sizeBytes": 7535,
+      "mode": 420,
+      "sha256": "702d782ae27da992c7c434e92c37795346dc88e6dc5b038ff021f06a3b639142"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/collision/fogVacatedTarget.test.ts",
+      "kind": "file",
+      "sizeBytes": 4296,
+      "mode": 420,
+      "sha256": "c24ac4d910d09e30a9c9274e593877f13fa5c7d2d32ed83cbb3c2c4e211693da"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/corpus/goldenCorpus.test.ts",
+      "kind": "file",
+      "sizeBytes": 5820,
+      "mode": 420,
+      "sha256": "b10bdafeab3d4c60f47f78214aeab01f835a59a08fec7150df6cf80ef2005561"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/deploy-reach.test.ts",
+      "kind": "file",
+      "sizeBytes": 6146,
+      "mode": 420,
+      "sha256": "eab0f9305cb1f233ccb2099db5a82fe3a16d5661492f64e9cf45bb31b8d31288"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/economy/applyStoredIncome.test.ts",
+      "kind": "file",
+      "sizeBytes": 1341,
+      "mode": 420,
+      "sha256": "07443dc64d7519c3924968b10720fdcddffaefb377fbe38c317bffe363f59f5a"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/economy/estimateStoredFromSnap.test.ts",
+      "kind": "file",
+      "sizeBytes": 634,
+      "mode": 420,
+      "sha256": "9ebe05db3ab210a429815089b5506a7c50ea6de708698f24a37d256e22109208"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/economy/mechaDeployCaps.test.ts",
+      "kind": "file",
+      "sizeBytes": 5598,
+      "mode": 420,
+      "sha256": "afd1bd0af980b5ffadfa3e38ed3f87469f3b6f70735b054b2fd4ca6854cf04a2"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/engine-consolidation.test.ts",
+      "kind": "file",
+      "sizeBytes": 11436,
+      "mode": 420,
+      "sha256": "b3ac183abc5f87e77a7dcc23887d11d38a26954f3015c6010aeba8fc99611f93"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/gas/gasLastRank.test.ts",
+      "kind": "file",
+      "sizeBytes": 5249,
+      "mode": 420,
+      "sha256": "506d3314fe05574eef47680273f43673b540cc670782cfa2f1c60cc01f7d00e6"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/gas/gasRemainingFor.test.ts",
+      "kind": "file",
+      "sizeBytes": 1527,
+      "mode": 420,
+      "sha256": "6fb59c9768b7f2813a5e6f78cb11f25580cd69bfb07dd0a449bb8c666567ac76"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/gas/marineGasStackOrder.test.ts",
+      "kind": "file",
+      "sizeBytes": 8396,
+      "mode": 420,
+      "sha256": "63d1f1c596f81fb8e02dab06c08905c587ece7d2aef58b9743f1c8994728ed38"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/legacyKinds.test.ts",
+      "kind": "file",
+      "sizeBytes": 2313,
+      "mode": 420,
+      "sha256": "f4d6214e21bc9de94dec90d200f0080a06fb5e259e21f360d343de1d9d2bc21e"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/marine/marineDiagonalCaptureOnly.test.ts",
+      "kind": "file",
+      "sizeBytes": 2868,
+      "mode": 420,
+      "sha256": "6cc62d3f672df060b24f84a6c865c56fc8cc3f79c9480107b1398ba7e47593a3"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/marine/marineDoubleBand.test.ts",
+      "kind": "file",
+      "sizeBytes": 5288,
+      "mode": 420,
+      "sha256": "8d3647e2f04dc1f3f984e7aaba266dbcd889a9ca9e0ab5d0ed1758df819dd432"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/marine/marineFrontBlocked.test.ts",
+      "kind": "file",
+      "sizeBytes": 5818,
+      "mode": 420,
+      "sha256": "0049e588c20d62d63586e473cec6366787d89fd7d9158f28adae3f2f9f342202"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mecha/mechaCCLine.test.ts",
+      "kind": "file",
+      "sizeBytes": 4527,
+      "mode": 420,
+      "sha256": "0b523c0acc39a24b3548b986e493fbb00f0f6758e4871de8e2b40661f36519ed"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mecha/mechaCharon.test.ts",
+      "kind": "file",
+      "sizeBytes": 7715,
+      "mode": 420,
+      "sha256": "6fe6baaf4f5cdad17a9c7c2288e87a05bcf785432451a6ec7d92493b4af90fb3"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mine/mineChecks.test.ts",
+      "kind": "file",
+      "sizeBytes": 3309,
+      "mode": 420,
+      "sha256": "4cb2b8e87d1b19b4135e0fe201cbc8f29137ed13cf5aa40d5040eee5cc9f79f6"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mine/mineContactRoutes.test.ts",
+      "kind": "file",
+      "sizeBytes": 16868,
+      "mode": 420,
+      "sha256": "d8eeeae59cea9cf4471fb35d2cfaf343a1e8a11669f7f29aa8c0a4dae7911004"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mine/minePathContact.test.ts",
+      "kind": "file",
+      "sizeBytes": 10403,
+      "mode": 420,
+      "sha256": "26c4c2621b6bd9cfb5c609cf2561b8ed393839874de609694fd5f3ecf0fcdaa9"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mine/mineTargets.test.ts",
+      "kind": "file",
+      "sizeBytes": 1938,
+      "mode": 420,
+      "sha256": "088c5badbff1f3887ceb489d9c20661ca7ce4b83cc82b85ad5d8ec2d1c9f3846"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/move-timing.test.ts",
+      "kind": "file",
+      "sizeBytes": 1509,
+      "mode": 420,
+      "sha256": "1d99176ce6768fdb27ddb9d652cee73ca3697bc66d831f7d484c3fb043da8b4a"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/packed.test.ts",
+      "kind": "file",
+      "sizeBytes": 4366,
+      "mode": 420,
+      "sha256": "44cc8c00c3ca22e26ddf32b14e33aae5f7679a579adcc42608ab88f69ea29838"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/promotion/lastRankPromotion.test.ts",
+      "kind": "file",
+      "sizeBytes": 4111,
+      "mode": 420,
+      "sha256": "cfa01f9056904d83ab59bb8400cee92e55f297e9a317fb5cc353089741727bf3"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/queue/queueMultiSpecial.test.ts",
+      "kind": "file",
+      "sizeBytes": 6908,
+      "mode": 420,
+      "sha256": "8949963eea053fe457d04153a2c0bd44aa0fd68006de66d382273b8afe30bc62"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/registry/specialRegistry.test.ts",
+      "kind": "file",
+      "sizeBytes": 551,
+      "mode": 420,
+      "sha256": "3c94b5a9a33b6607d7776d1299c4bbc49f9a4f7c20d77222f3b8a20887521466"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/replay/fen.test.ts",
+      "kind": "file",
+      "sizeBytes": 2377,
+      "mode": 420,
+      "sha256": "4ff599212f48b5740e332d8165bfdd56d1967639e1507dd3bfe30abf1c74524e"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/replay/record.test.ts",
+      "kind": "file",
+      "sizeBytes": 2811,
+      "mode": 420,
+      "sha256": "c44c5745f746be1f213a1c3c353a5a569d7195b59d31546fbf147da766e01d25"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/replay/validateRecord.test.ts",
+      "kind": "file",
+      "sizeBytes": 3901,
+      "mode": 420,
+      "sha256": "053800b983df58d98f98efd5521d0ff64a1a772e378080908a8b6e6ce3c56425"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/shipJumpCollision.test.ts",
+      "kind": "file",
+      "sizeBytes": 2672,
+      "mode": 420,
+      "sha256": "48914a642e1bdec4b8a8e6760a28216cc75b3aedfb8c916e541de1eae2f75b10"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/spawn/crushSpawn.test.ts",
+      "kind": "file",
+      "sizeBytes": 6697,
+      "mode": 420,
+      "sha256": "e0cfe7617a69918cc4c95eca5d32b737a00731b8af31dd972e4cb1d1ad88cbba"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/spawn/spawnCCAnchor.test.ts",
+      "kind": "file",
+      "sizeBytes": 3788,
+      "mode": 420,
+      "sha256": "c80a36facee2594b208f0a3fee2892786cdaa574640483dfe94aff01960652e2"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/attackers.test.ts",
+      "kind": "file",
+      "sizeBytes": 4766,
+      "mode": 420,
+      "sha256": "b81cbf71f42a2bcadc467e5dfed568f8641b92c98ad9ad0ee379d1b307e5d60f"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/candidates-parity.test.ts",
+      "kind": "file",
+      "sizeBytes": 2593,
+      "mode": 420,
+      "sha256": "7331e7ed72ccfcba7e3e5b1da997773fb93220a294a94b7a83cadaa8c47192d6"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/deployLookahead.test.ts",
+      "kind": "file",
+      "sizeBytes": 2441,
+      "mode": 420,
+      "sha256": "81f01a041bfa98c1dbbc9c73d75111d10decd8b6a2257368c31d41897527da9a"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/economy.test.ts",
+      "kind": "file",
+      "sizeBytes": 5261,
+      "mode": 420,
+      "sha256": "ca4a6b4030072b427e678acb508dd86f27c4d6fd647ed44de6fd0592bf027550"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/economyAllyCrush.test.ts",
+      "kind": "file",
+      "sizeBytes": 10386,
+      "mode": 420,
+      "sha256": "25d3864ab52d9487d5f494457ce36aa23ec85760655c62a688d30f264453ba9e"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/intel.test.ts",
+      "kind": "file",
+      "sizeBytes": 2775,
+      "mode": 420,
+      "sha256": "059f9e1cae7ecac85b506bfcaaa2d8b19871cf1fd4ba3116e4eacf8efd2502a8"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/orchestrator.test.ts",
+      "kind": "file",
+      "sizeBytes": 3344,
+      "mode": 420,
+      "sha256": "9b1666999c6ac5c1a50884bdf6b19f0be1631cf7d47735eab284fbb514062728"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/runnerMemory.test.ts",
+      "kind": "file",
+      "sizeBytes": 9128,
+      "mode": 420,
+      "sha256": "deea8c185fea767f6a7d2814489e7a91aa7613cc4c5f1b2f6a0974d832926d10"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/runners.test.ts",
+      "kind": "file",
+      "sizeBytes": 8579,
+      "mode": 420,
+      "sha256": "b22d26005b40c946e9f81e54838c358f7c550b67fc1738f2be574c5593cd9f1c"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/witness.test.ts",
+      "kind": "file",
+      "sizeBytes": 7458,
+      "mode": 420,
+      "sha256": "fea602787f69a1c9119b2939813fd47d6adbb3f892ff5e2af692f453020e4d33"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/tactics/ccFocus.test.ts",
+      "kind": "file",
+      "sizeBytes": 2913,
+      "mode": 420,
+      "sha256": "05e383d2125afa6a8c9f54c72af743b9470d060ba410d2253ab96aafa92cc190"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/tactics/weightOrdering.test.ts",
+      "kind": "file",
+      "sizeBytes": 10232,
+      "mode": 420,
+      "sha256": "e262daaff68b3f6283d82184a4cf0dc4043781b013d8d4d564c0fa3a523b8193"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/tank/siegedTankMoves.test.ts",
+      "kind": "file",
+      "sizeBytes": 6142,
+      "mode": 420,
+      "sha256": "2c3a37a14d96ff32876347179f9fcfa6df1491705db40db5cd81a103571ea7a2"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/tank/siegedTankShelling.test.ts",
+      "kind": "file",
+      "sizeBytes": 6225,
+      "mode": 420,
+      "sha256": "827fbd3c1b18263212f6c03b73fcec8e58f55ee216a568604b085eab6a8a6d6c"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/turn/beginScTurn.test.ts",
+      "kind": "file",
+      "sizeBytes": 3446,
+      "mode": 420,
+      "sha256": "c1f459e27722ab7e609eef7cabc707133198a319f3df37cb96f227aec7f7d597"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/turn/gasVacancy.test.ts",
+      "kind": "file",
+      "sizeBytes": 6048,
+      "mode": 420,
+      "sha256": "2a0a3f2da44ddae0a9bcc5c1ebd63b581242fe8053d2f4e46a112c8d06ef19e3"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/turn/turnTimeout.test.ts",
+      "kind": "file",
+      "sizeBytes": 638,
+      "mode": 420,
+      "sha256": "9973aafa2d3b47a4579f7e3c97d4db1ae8ae5336e0b1aca7295d82a78edc332f"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/adjutant.ts",
+      "kind": "file",
+      "sizeBytes": 4952,
+      "mode": 420,
+      "sha256": "002bc6395fa1b7bdedb52fbb017f7e6907708416d272917dd068bc90de179448"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/ccFocusIntel.ts",
+      "kind": "file",
+      "sizeBytes": 3513,
+      "mode": 420,
+      "sha256": "a5d61257443d603b05a7705985a7497cd079ff8f5f0d1d06582e1b8227b86e90"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/ccIntel.ts",
+      "kind": "file",
+      "sizeBytes": 4246,
+      "mode": 420,
+      "sha256": "186dbd78f1c2930795c095c8993b28010a6067ca3c001f2a13f143eeb028955f"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/geometry.ts",
+      "kind": "file",
+      "sizeBytes": 2852,
+      "mode": 420,
+      "sha256": "2fac7042660bff7809a680e913219042a51f0d8e9beded3c620f160203c3d0df"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/index.ts",
+      "kind": "file",
+      "sizeBytes": 3606,
+      "mode": 420,
+      "sha256": "2adfd5687e9bf18c7f1e1b305ab312b66cedc9a80f4a550956ea755e4b413103"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/marines.ts",
+      "kind": "file",
+      "sizeBytes": 2343,
+      "mode": 420,
+      "sha256": "0d2585cc30edb2c712e24c36c9b1f4d36aced7996feffa7d4b2ab7c62ac48711"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/material.ts",
+      "kind": "file",
+      "sizeBytes": 1981,
+      "mode": 420,
+      "sha256": "9c054ee2ec293d26be329b7eea3d39505fdec535c6b2080affd3feff2bc6d857"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/mines.ts",
+      "kind": "file",
+      "sizeBytes": 1257,
+      "mode": 420,
+      "sha256": "16f61498ddc3001f1c3f0707366dee82113b57edaf3c3c4ace57f615f570e3ee"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/posture.ts",
+      "kind": "file",
+      "sizeBytes": 2029,
+      "mode": 420,
+      "sha256": "442702d963e06dddfa68a796da096ecbc07e3a99497d1ed3c3d018aa9e8ef7d1"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/rng.ts",
+      "kind": "file",
+      "sizeBytes": 530,
+      "mode": 420,
+      "sha256": "08850895113d9c1f85b902ac1c920cd7e254165c5d2b229ca8183e06d90eba44"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/tactical.ts",
+      "kind": "file",
+      "sizeBytes": 2055,
+      "mode": 420,
+      "sha256": "252b53e3c9bbfbf3150e47599d18e1d3f2ddd71f0741058438dd3ddeb0bfaf6c"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/types.ts",
+      "kind": "file",
+      "sizeBytes": 5521,
+      "mode": 420,
+      "sha256": "d5ce767f0c20580f4e1de60c15e26c5464da76ae392830b7fa2e84eea3d80964"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/vision.ts",
+      "kind": "file",
+      "sizeBytes": 1548,
+      "mode": 420,
+      "sha256": "266f6b47a08127e5f6331c1d950f8d95237a4560909495857411b37def07199e"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/plans/simulate.ts",
+      "kind": "file",
+      "sizeBytes": 3740,
+      "mode": 420,
+      "sha256": "f6ce90d726767deddcd683e438a62ab5d542f72edd1f75e45e27e8ec702969e6"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/plans/stacks.ts",
+      "kind": "file",
+      "sizeBytes": 12186,
+      "mode": 420,
+      "sha256": "4d1fcba35a514d9c413d406a90574ccb29e1c88bf0f58cfea54d3672e271bf1d"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/attackers.ts",
+      "kind": "file",
+      "sizeBytes": 3929,
+      "mode": 420,
+      "sha256": "5c3e15340515f9d8d56f4ddb6cbd777a2f421baabb8172ea8716774df309df3b"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/context.ts",
+      "kind": "file",
+      "sizeBytes": 5218,
+      "mode": 420,
+      "sha256": "4788aa2fb8f2a2104fcec142c7d42881876d02431b62198ef3a4a993cf243017"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/deployLookahead.ts",
+      "kind": "file",
+      "sizeBytes": 5449,
+      "mode": 420,
+      "sha256": "a33c0933df06fb9ce1d51440060a2f6ff5ee4963e4c1aa872224586661e2a619"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/index.ts",
+      "kind": "file",
+      "sizeBytes": 3032,
+      "mode": 420,
+      "sha256": "e6d24c9c2ad0888778a77add01e21ab0289bda574577cbec86ddc3d44a8a1eb9"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/intel.ts",
+      "kind": "file",
+      "sizeBytes": 5230,
+      "mode": 420,
+      "sha256": "2e4100d83793d95ea600073f72e4df621717dda6d99a7fced395c7197b3f8b03"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/orchestrator.ts",
+      "kind": "file",
+      "sizeBytes": 5881,
+      "mode": 420,
+      "sha256": "dba79266db741bf0b616a757dad69659cd9342c1a6c6c95fa663ccbb1109c444"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/runners.ts",
+      "kind": "file",
+      "sizeBytes": 19495,
+      "mode": 420,
+      "sha256": "5973edcc44e89887197b67855f576c4bb58c1fb3262bfc02efbcd77adfd54037"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/attackers.ts",
+      "kind": "file",
+      "sizeBytes": 3445,
+      "mode": 420,
+      "sha256": "4695d6a2e4cb1eb18f5a171c8673acdceea6899e3aa90e1cdd76415e63a33be5"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/captures.ts",
+      "kind": "file",
+      "sizeBytes": 5008,
+      "mode": 420,
+      "sha256": "6147f852f2fd203050eb42215264d9040026fe08e9c3fccfef3bfc540ac02800"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/checks.ts",
+      "kind": "file",
+      "sizeBytes": 3587,
+      "mode": 420,
+      "sha256": "6e4c07ad8408b62ebe87ab87eaf0e369c9c4fa21d235336a5c07ce0715adf1e1"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/economy.ts",
+      "kind": "file",
+      "sizeBytes": 15038,
+      "mode": 420,
+      "sha256": "87e0e1358611e809da7a526bfd568d78060a4d2f7352dcecdde5c42ef3d2cfb0"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/index.ts",
+      "kind": "file",
+      "sizeBytes": 2473,
+      "mode": 420,
+      "sha256": "bb23ab162ccdbe661c56be2af6d9f14203bb7a01251a95ee50a0a83a486f0e6e"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/runners.ts",
+      "kind": "file",
+      "sizeBytes": 7779,
+      "mode": 420,
+      "sha256": "f981562f4ea16e85a7ba6f415249f3196c21951237d8cfb553d6fa012ca9bd0a"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/survival.ts",
+      "kind": "file",
+      "sizeBytes": 2448,
+      "mode": 420,
+      "sha256": "b61dd29726872f30da351e8b843c91e0def45bbed2fe44e58f7d6aa7aac10c38"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/threats.ts",
+      "kind": "file",
+      "sizeBytes": 1690,
+      "mode": 420,
+      "sha256": "6b77b0d9a62f69ac08b52222139fc89eca41f0bf9faf1c701d1042ccc4cf37ef"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/types.ts",
+      "kind": "file",
+      "sizeBytes": 1179,
+      "mode": 420,
+      "sha256": "55f4f326e4f79b60457a25d0d004c3e40dbe390fbe4d988f71062e70865d698e"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/tracking.ts",
+      "kind": "file",
+      "sizeBytes": 7206,
+      "mode": 420,
+      "sha256": "ccd6b5413853c1c33165228f55eff047e4f03ea29506329a68b050eda91286b5"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/witness.ts",
+      "kind": "file",
+      "sizeBytes": 9576,
+      "mode": 420,
+      "sha256": "94e080bed32c43f6748c28f9cd7155d88556f8ba622a380aec0ea545d01033f4"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/captures.ts",
+      "kind": "file",
+      "sizeBytes": 8899,
+      "mode": 420,
+      "sha256": "1832899838d7564b3f12bb8086df909160045dae75e2c49004c97aedc3708d69"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/checks.ts",
+      "kind": "file",
+      "sizeBytes": 2371,
+      "mode": 420,
+      "sha256": "14f1b3f8ba49818ecf85b5eb4cc85100423a83d8f02ef32374fbb7c312d8cb18"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/economy.ts",
+      "kind": "file",
+      "sizeBytes": 8371,
+      "mode": 420,
+      "sha256": "54b27aa3427a2e73d9928dcbd34499c587836122a8cb5a34aa6b92ad011925c8"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/index.ts",
+      "kind": "file",
+      "sizeBytes": 2114,
+      "mode": 420,
+      "sha256": "877bc4d5d7f425c917bab2fe52f09d87613c4c13cb822c9441bf4aed2a69c656"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/mapControl.ts",
+      "kind": "file",
+      "sizeBytes": 7786,
+      "mode": 420,
+      "sha256": "0c95b69b4882164df78f01318d9bcf2dd12ab1e1b0a200b32ecd39dba67611a5"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/survival.ts",
+      "kind": "file",
+      "sizeBytes": 5829,
+      "mode": 420,
+      "sha256": "e518d3d4a14f922929b6a51456b7dc826343bf11224905e4fdc052a1522ada54"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/threats.ts",
+      "kind": "file",
+      "sizeBytes": 1102,
+      "mode": 420,
+      "sha256": "d7aa1dd4ff324ee9e2499315fd9c7b5bf26d87fb953620da2b233263a1ad361c"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/types.ts",
+      "kind": "file",
+      "sizeBytes": 1296,
+      "mode": 420,
+      "sha256": "dddb6defbb4b917e7ac6cbff9acf65703c260135ddf8067b5c6b4c6316425194"
+    },
+    {
+      "path": "packages/starchess-core/src/board/classicFen.ts",
+      "kind": "file",
+      "sizeBytes": 339,
+      "mode": 420,
+      "sha256": "b005f66aa7e878b4c5db0e0fce7caa31f15a7d1bb052a2fdc485616d888e3adc"
+    },
+    {
+      "path": "packages/starchess-core/src/board/deploy-reach.ts",
+      "kind": "file",
+      "sizeBytes": 3322,
+      "mode": 420,
+      "sha256": "62a7bfbc37b5d88d789948c01900fc471031abf4603777ca218a2565c3feba36"
+    },
+    {
+      "path": "packages/starchess-core/src/board/mine-contact.ts",
+      "kind": "file",
+      "sizeBytes": 2369,
+      "mode": 420,
+      "sha256": "16cdde5417ed37568ca9aac64fffb7c6fa58c35fd76a93726a05192aace0086f"
+    },
+    {
+      "path": "packages/starchess-core/src/board/mines.ts",
+      "kind": "file",
+      "sizeBytes": 3834,
+      "mode": 420,
+      "sha256": "1c9082d89051e6ffdfba71c97b709f7d33cced372cf149c02c84bffebbd31fff"
+    },
+    {
+      "path": "packages/starchess-core/src/board/move-timing.ts",
+      "kind": "file",
+      "sizeBytes": 3822,
+      "mode": 420,
+      "sha256": "4009773b2d47deeb83cceaab502af5692e5de0e4254d053166374043d9b8ba69"
+    },
+    {
+      "path": "packages/starchess-core/src/board/moves.ts",
+      "kind": "file",
+      "sizeBytes": 10469,
+      "mode": 420,
+      "sha256": "2479c4eed2fca89a1a1de08d210c2fa1cd0b40c22a330ebdf8c48b6069c57df6"
+    },
+    {
+      "path": "packages/starchess-core/src/board/placement.ts",
+      "kind": "file",
+      "sizeBytes": 7285,
+      "mode": 420,
+      "sha256": "083952137e3b5cd829494140edb5b995efe7941f227e30bcd303698bb7475544"
+    },
+    {
+      "path": "packages/starchess-core/src/board/ray-scan.ts",
+      "kind": "file",
+      "sizeBytes": 2149,
+      "mode": 420,
+      "sha256": "46c3fc691517e50c13969c5b45d998c4e5b76670556b39f7a8007f3ef995a418"
+    },
+    {
+      "path": "packages/starchess-core/src/board/siege.ts",
+      "kind": "file",
+      "sizeBytes": 1071,
+      "mode": 420,
+      "sha256": "eb57a7d6715067681cab6da2872840f8f9935ec2cccbc9badf78e73f9bebb452"
+    },
+    {
+      "path": "packages/starchess-core/src/board/vision.ts",
+      "kind": "file",
+      "sizeBytes": 10114,
+      "mode": 420,
+      "sha256": "6e6def04466f3eee6dbd4cdfe0599c8da8255282e34e42ff0d55f6e4533c516c"
+    },
+    {
+      "path": "packages/starchess-core/src/commands/queue-action.ts",
+      "kind": "file",
+      "sizeBytes": 7351,
+      "mode": 420,
+      "sha256": "6e493f3bcaa7de70b7c7b5e7398385e007ebcf138dbec8abbf844e2b6277b94d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/board.ts",
+      "kind": "file",
+      "sizeBytes": 381,
+      "mode": 420,
+      "sha256": "ddac9d5352ecd1d3494b3c6129998cbf61cee14c3dbf42652b5c9fea17e5b85c"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/causal-events.ts",
+      "kind": "file",
+      "sizeBytes": 24503,
+      "mode": 420,
+      "sha256": "116fe05325b3e5287ce058d8bf73588318024c979c122d066189c4dd39144624"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/causal-producer.ts",
+      "kind": "file",
+      "sizeBytes": 1300,
+      "mode": 420,
+      "sha256": "f7f5e9225ef8785d6eddaa1d89634514652de4d6ad0937a9031e095749506d97"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/causal-types.ts",
+      "kind": "file",
+      "sizeBytes": 5324,
+      "mode": 420,
+      "sha256": "2af0eed1bfd165a190a69370c80e7e284814fdf53cdc4b510c70723ba25f9601"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/charon.ts",
+      "kind": "file",
+      "sizeBytes": 170,
+      "mode": 420,
+      "sha256": "860bef6bc8a249576c0ba50eff6e49cdb4dd7f8c0a1d4dad9ef090d5d31516d6"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/classical-resolution.ts",
+      "kind": "file",
+      "sizeBytes": 1769,
+      "mode": 420,
+      "sha256": "652c7787052870b31571e85a9e8d949cb54a1ba78aa28e6823eddcd71bbc190d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/constants.ts",
+      "kind": "file",
+      "sizeBytes": 300,
+      "mode": 420,
+      "sha256": "8d40aef2d7b98ff3a998e7ab7d0dc2eafc404a046b9ccc9695d2dc013489e390"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/economy.ts",
+      "kind": "file",
+      "sizeBytes": 260,
+      "mode": 420,
+      "sha256": "c0f1fc790bc351324fd1d6a43b617701032afe2a25d86ba03ea26ddc79acba32"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/index.ts",
+      "kind": "file",
+      "sizeBytes": 1287,
+      "mode": 420,
+      "sha256": "59804e608176d5eacd4589cbdb7fd966d19d4a88c48a188db388553f7ee7a9f4"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/initialization.ts",
+      "kind": "file",
+      "sizeBytes": 1536,
+      "mode": 420,
+      "sha256": "b835651978b742dc96b749dad934f5e758a2adade75d56511ae274887f45a330"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/mine-contact.ts",
+      "kind": "file",
+      "sizeBytes": 215,
+      "mode": 420,
+      "sha256": "37c97e4c119bf0bcdcdb0a7df3f4de012d0dfc21f7703e3623af83c795354dc8"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/mines.ts",
+      "kind": "file",
+      "sizeBytes": 213,
+      "mode": 420,
+      "sha256": "3fda1228b2d0fda3b065bb4f8969961eee99781ae951378944e41a94f25ad9a1"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/move-timing.ts",
+      "kind": "file",
+      "sizeBytes": 243,
+      "mode": 420,
+      "sha256": "abd7e82fb2761429e2d0f56bd77a3add7fb66b3c11ff5911e3fe7c9a183bed3d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/moves.ts",
+      "kind": "file",
+      "sizeBytes": 287,
+      "mode": 420,
+      "sha256": "eb26f1f1ab2c17f16202b4bcd08f127d834c5aecd32e79e8bb9e720338373eb5"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/native-classical.ts",
+      "kind": "file",
+      "sizeBytes": 8275,
+      "mode": 420,
+      "sha256": "246ec95a8277fb4468df7aa10569a0e36c55a0d983b175baebabea52d8cad173"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/outcome.ts",
+      "kind": "file",
+      "sizeBytes": 126,
+      "mode": 420,
+      "sha256": "7f2cbeeed979b8d9f5a97f55173e2c4000479350b2b9f0cbdd5edbe2a7a4c0f6"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-intents.ts",
+      "kind": "file",
+      "sizeBytes": 7728,
+      "mode": 420,
+      "sha256": "1fb8cb64521add5cd111ae001b9d85603e207485f5f4d1590ead09a9c72e100a"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-order.ts",
+      "kind": "file",
+      "sizeBytes": 2200,
+      "mode": 420,
+      "sha256": "0636b6ae52c94c841d42dd0b5baad82846d283ffa95a6987cf06a9dfbe554c1d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-specials.ts",
+      "kind": "file",
+      "sizeBytes": 242,
+      "mode": 420,
+      "sha256": "fd90584ec2b755a2be2cd724860fe0489186c2c84e882254235ece9ed57177e8"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-action.ts",
+      "kind": "file",
+      "sizeBytes": 915,
+      "mode": 420,
+      "sha256": "a8fade891926e99a330f3009d9dcf8e248a96281a54272f3e36af7e30fd0af11"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-contract.ts",
+      "kind": "file",
+      "sizeBytes": 123,
+      "mode": 420,
+      "sha256": "e6c4c3d4ba563903c0c3beacd637cc59bb8d7f46186e5264e594d04c134724dd"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-validation.ts",
+      "kind": "file",
+      "sizeBytes": 4529,
+      "mode": 420,
+      "sha256": "802ae995610f453e79d6e88eef386b9c856a94b77276b153d317c4f03678e24b"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/ray-scan.ts",
+      "kind": "file",
+      "sizeBytes": 177,
+      "mode": 420,
+      "sha256": "ffd5f7a3bf24694e84d9f421620e3898bb10bda62c61cdaa9a186611c49797ae"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/resolve.ts",
+      "kind": "file",
+      "sizeBytes": 877,
+      "mode": 420,
+      "sha256": "e58af101b6e1a1b5a94567de5484ce346e5a605cf6f1ec21239661dd73fe4e09"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/specials.ts",
+      "kind": "file",
+      "sizeBytes": 192,
+      "mode": 420,
+      "sha256": "cf5c83e811458b7a68f6ca88da450c499c6675f84c8cb466a1d7393af12f55a7"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/types.ts",
+      "kind": "file",
+      "sizeBytes": 355,
+      "mode": 420,
+      "sha256": "1f3ec1b3b203837432bfd0b5847f833dc05ce03decf3a739850116154ceb9f17"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/vision.ts",
+      "kind": "file",
+      "sizeBytes": 330,
+      "mode": 420,
+      "sha256": "f65e344d5e36e293a69dea3184cdabcbe24c08816b69bc182d0f2a38f89ba411"
+    },
+    {
+      "path": "packages/starchess-core/src/index.ts",
+      "kind": "file",
+      "sizeBytes": 6540,
+      "mode": 420,
+      "sha256": "cba85345925c1407231882a0749f684c11629847faf64aa3891491d0a65e317d"
+    },
+    {
+      "path": "packages/starchess-core/src/model/square.ts",
+      "kind": "file",
+      "sizeBytes": 105,
+      "mode": 420,
+      "sha256": "2659d82a4057ea33684f4f18934c0c47f1f5b789402727a8751bb2313ac50825"
+    },
+    {
+      "path": "packages/starchess-core/src/model/types.ts",
+      "kind": "file",
+      "sizeBytes": 4962,
+      "mode": 420,
+      "sha256": "2a43424bed449bf930ae557c950b634ad3ec641e5d2ac5ff9a8ee6c84e64264e"
+    },
+    {
+      "path": "packages/starchess-core/src/outcome.ts",
+      "kind": "file",
+      "sizeBytes": 1177,
+      "mode": 420,
+      "sha256": "0413b7e440087b08fb66275dbb83b3e7f5adc34af5dbf3e6e09049c6855fb217"
+    },
+    {
+      "path": "packages/starchess-core/src/replay/fen.ts",
+      "kind": "file",
+      "sizeBytes": 2196,
+      "mode": 420,
+      "sha256": "17f78350954e297a5c1efe210ac6436a3ddffd3fe309d60026bc5d2e5862eeca"
+    },
+    {
+      "path": "packages/starchess-core/src/replay/packed.ts",
+      "kind": "file",
+      "sizeBytes": 6293,
+      "mode": 420,
+      "sha256": "b4c941fde1d40304e675a87e091f2c544f3647e7c0c64fba988ea0a1c9e62126"
+    },
+    {
+      "path": "packages/starchess-core/src/replay/record.ts",
+      "kind": "file",
+      "sizeBytes": 8719,
+      "mode": 420,
+      "sha256": "c664e31138a20c60d589f891d225ee04a24b1a8bc8815a7c6e288a2282d3e9a4"
+    },
+    {
+      "path": "packages/starchess-core/src/replay/validate-history.ts",
+      "kind": "file",
+      "sizeBytes": 4309,
+      "mode": 420,
+      "sha256": "849ffef4cdc6f5cd30416b8814b56c2719ef2801ef25cf05cf2f9c3dd7214c9a"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/resolve-turn.ts",
+      "kind": "file",
+      "sizeBytes": 46101,
+      "mode": 420,
+      "sha256": "169f4e5726f66cfd24a1a5a4a5832f8eaba05ee2c63dd10f0619358eb77757b8"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/submit-turn.ts",
+      "kind": "file",
+      "sizeBytes": 39066,
+      "mode": 420,
+      "sha256": "d5e3325ea985a4c19b784c90b1955d740068a26d0bc38a37d9a5d2de41b62f06"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/constants.ts",
+      "kind": "file",
+      "sizeBytes": 2062,
+      "mode": 420,
+      "sha256": "66acdcc1abc05197fbe3ae9df57a0efe4acea88c6ada78e4db9590f3343b6ff7"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/economy.ts",
+      "kind": "file",
+      "sizeBytes": 3611,
+      "mode": 420,
+      "sha256": "6fed53b09bf42f75fc6f9621f40361d99a072a551c6dbc76a29977211c99d579"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/adjacent.ts",
+      "kind": "file",
+      "sizeBytes": 3694,
+      "mode": 420,
+      "sha256": "96a671566e971bfbbe80aa64205fa04f7ef1b6a23ef2cf337b321945b2d5e540"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+      "kind": "file",
+      "sizeBytes": 5451,
+      "mode": 420,
+      "sha256": "b2c8af310fe33f83a18eb3e5e53b41734c147e5f62440d9422b2e757b376c4e4"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/registry.ts",
+      "kind": "file",
+      "sizeBytes": 1212,
+      "mode": 420,
+      "sha256": "0965a88ac773afe43ca72915d2ddccac4cc84c31f58121a1514f6511de8f6b5d"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/stimStep.ts",
+      "kind": "file",
+      "sizeBytes": 1421,
+      "mode": 420,
+      "sha256": "fbe990595fe42e41aad17460eb76b3a3f134672144a867a52ee618034f4069a1"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/validation.ts",
+      "kind": "file",
+      "sizeBytes": 13598,
+      "mode": 420,
+      "sha256": "a18e038feb83f3b15f4f9309e33101b23dac2080155af46ac51474f09c0a064c"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/classic.ts",
+      "kind": "file",
+      "sizeBytes": 44,
+      "mode": 420,
+      "sha256": "43e7cdf70d4d0789aa4bc7c808361c1581e0493da21d7027448d669f9a849c1b"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/codec.ts",
+      "kind": "file",
+      "sizeBytes": 20029,
+      "mode": 420,
+      "sha256": "74ab468ff05e53e419a5fe151ebcc266cf89c4c9b3789731a8d9e89e954be3eb"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/index.ts",
+      "kind": "file",
+      "sizeBytes": 733,
+      "mode": 420,
+      "sha256": "6fe29e70afd2d6c615a31379174d24de2d011e42d52c693f0ea7954a1cfa64ad"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/legacyKinds.ts",
+      "kind": "file",
+      "sizeBytes": 1828,
+      "mode": 420,
+      "sha256": "263e4ba87bdeaccf41d18e3c0495430f2b6b0af332ff374f707e2df7babc030b"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "kind": "file",
+      "sizeBytes": 315006,
+      "mode": 420,
+      "sha256": "0dc70cedcc188b938415b04b4625adfff643b28e7b795a0100ea1ea34303f551"
+    },
+    {
+      "path": "schemas/feature-layout.json",
+      "kind": "file",
+      "sizeBytes": 1399,
+      "mode": 420,
+      "sha256": "bca25ea10220001845ad8a5f419f32baf250073b150c9bbe78f17a75c7c08f74"
+    },
+    {
+      "path": "tsconfig.json",
+      "kind": "file",
+      "sizeBytes": 493,
+      "mode": 420,
+      "sha256": "7fc5cd6510ef19ff9ec20e39e76f14f5bc97aa71f6bf5508062a84951e1c561e"
+    },
+    {
+      "path": "tsconfig.tests.json",
+      "kind": "file",
+      "sizeBytes": 377,
+      "mode": 420,
+      "sha256": "7f0eda964089e3723c0cb05bacd89a8613979af1f8c66c7ce14250bb32eaaade"
+    }
+  ],
+  "sourcePinsAfter": [
+    {
+      "path": "Cargo.lock",
+      "kind": "file",
+      "sizeBytes": 173498,
+      "mode": 420,
+      "sha256": "77f674cc26a01f26558fd99c45bdcd5566017be05833fce1d39cae98cda05955"
+    },
+    {
+      "path": "Cargo.toml",
+      "kind": "file",
+      "sizeBytes": 509,
+      "mode": 420,
+      "sha256": "cac3a7e2201dff0ebe9e5d005a9416c7d751523a5e724ad0c8df84cd5063c14f"
+    },
+    {
+      "path": "artifacts/training-functional/check-specs.ts",
+      "kind": "file",
+      "sizeBytes": 3171,
+      "mode": 420,
+      "sha256": "21b3ff43618610ee4da79dafe50ad8862f5a1803038a9dd60850c353d506c16d"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts.test.ts",
+      "kind": "file",
+      "sizeBytes": 21568,
+      "mode": 420,
+      "sha256": "590de759e5147b1b792a9c2b09b6fb7f4b9c97ad96240521757307e9c948f27c"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts.ts",
+      "kind": "file",
+      "sizeBytes": 16483,
+      "mode": 420,
+      "sha256": "d1d82ba1bcb07a52412755cc183965519586705076ce6e46829c5657afcc16aa"
+    },
+    {
+      "path": "artifacts/training-functional/input-status.json",
+      "kind": "file",
+      "sizeBytes": 1614,
+      "mode": 420,
+      "sha256": "de94aefcc6695875743645f11fe5580a94b72c1c4f72acba0c386c55348c4db4"
+    },
+    {
+      "path": "artifacts/training-functional/jssha-archive.test.ts",
+      "kind": "file",
+      "sizeBytes": 18643,
+      "mode": 420,
+      "sha256": "28876a8996326924639951a5b844d23c38f4606dd7dae8a68a007c86cf4dee47"
+    },
+    {
+      "path": "artifacts/training-functional/jssha-archive.ts",
+      "kind": "file",
+      "sizeBytes": 8028,
+      "mode": 420,
+      "sha256": "9455a03bb9cf77cb0c0a35f432cce62b4941d48e587f99389cc18a77fc38eb9e"
+    },
+    {
+      "path": "artifacts/training-functional/native-comment-bridge.test.ts",
+      "kind": "file",
+      "sizeBytes": 2448,
+      "mode": 420,
+      "sha256": "55bf43115a05361162e2011101174a9871ddf9b8b07928e85f88dd98fee67263"
+    },
+    {
+      "path": "artifacts/training-functional/native-comment-bridge.ts",
+      "kind": "file",
+      "sizeBytes": 3952,
+      "mode": 420,
+      "sha256": "2aeee1a02f2015ff5e5b41a185fd33d98c8fe5fd4882f7ce0e93d213ae27db29"
+    },
+    {
+      "path": "artifacts/training-functional/plan.json",
+      "kind": "file",
+      "sizeBytes": 3336,
+      "mode": 420,
+      "sha256": "b464a174b03a058764be9c779e3eb12b5a5e5e066a7f4ac574487f68e3fee9c5"
+    },
+    {
+      "path": "artifacts/training-functional/qualification.test.ts",
+      "kind": "file",
+      "sizeBytes": 6690,
+      "mode": 420,
+      "sha256": "33e5d289985ba9ffbc4273380e169dd1b89bcb1394a2ffeb2f9f33e4a17f479d"
+    },
+    {
+      "path": "artifacts/training-functional/qualification.ts",
+      "kind": "file",
+      "sizeBytes": 2144,
+      "mode": 420,
+      "sha256": "e2893a4b19927390d2c2deb7369e3d445c87dd2060ceb1193b7082daee5014c2"
+    },
+    {
+      "path": "artifacts/training-functional/r4-observation.test.ts",
+      "kind": "file",
+      "sizeBytes": 36167,
+      "mode": 420,
+      "sha256": "56dcf78f5d8d3ca0eab132d6f61a4dd6a21d940afd69cc0417c0afff958b1e25"
+    },
+    {
+      "path": "artifacts/training-functional/r4-observation.ts",
+      "kind": "file",
+      "sizeBytes": 11964,
+      "mode": 420,
+      "sha256": "9df9bbfaccbc01d77a625b5962b0dd636c563f7bb0318160e2de89d34b6812e9"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep.test.ts",
+      "kind": "file",
+      "sizeBytes": 17177,
+      "mode": 420,
+      "sha256": "e5a2ad16291c02c3dd398f2fe94c6369fd6647e2f6127c9f86532c0287c03287"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep.ts",
+      "kind": "file",
+      "sizeBytes": 27394,
+      "mode": 420,
+      "sha256": "49599141613de07469176a848cc6745077cda89ecfce2fec7daed0354c14f5a2"
+    },
+    {
+      "path": "artifacts/training-functional/reference-retry.test.ts",
+      "kind": "file",
+      "sizeBytes": 19429,
+      "mode": 420,
+      "sha256": "d3a03e6dd949a14da19e45696ad1aff1d0735c8477e6853af195a996d3e8a1ca"
+    },
+    {
+      "path": "artifacts/training-functional/reference-retry.ts",
+      "kind": "file",
+      "sizeBytes": 27463,
+      "mode": 420,
+      "sha256": "ce19c0c7e54034119713d22ffa5c227c657187add45d3bea2919767251a182a1"
+    },
+    {
+      "path": "artifacts/training-functional/render-host-command.ts",
+      "kind": "file",
+      "sizeBytes": 2823,
+      "mode": 420,
+      "sha256": "89ff21ad5dc5c0bf00502af761ff997bde350955b714c4df45479d63ba7001be"
+    },
+    {
+      "path": "artifacts/training-functional/retain-reference-inputs.ts",
+      "kind": "file",
+      "sizeBytes": 3403,
+      "mode": 420,
+      "sha256": "3144338170d14b6c92a8a95fc476bc4a375520d245a10082dd672ed1b7934a67"
+    },
+    {
+      "path": "artifacts/training-functional/run-check.ts",
+      "kind": "file",
+      "sizeBytes": 7799,
+      "mode": 420,
+      "sha256": "492247e4bb7ef0759b3a02f0501462a7dc45f514baeb08bf4210d1a23b60b289"
+    },
+    {
+      "path": "artifacts/training-functional/tsconfig.json",
+      "kind": "file",
+      "sizeBytes": 145,
+      "mode": 420,
+      "sha256": "64e66b484c47a3d87257ec9884e45fc1c2181e6ada8cf31b89de4bdf5d1df046"
+    },
+    {
+      "path": "crates/gpu-owner/Cargo.toml",
+      "kind": "file",
+      "sizeBytes": 463,
+      "mode": 420,
+      "sha256": "ceb98a71e3a5c16c1c3f6d5035843b8441995339b5d49f62340b395540b2c3aa"
+    },
+    {
+      "path": "crates/gpu-owner/src/docker.rs",
+      "kind": "file",
+      "sizeBytes": 12873,
+      "mode": 420,
+      "sha256": "4e49b8c65a735339bdfb5891e182bc636c590e2ae341109d9c1864b699f74720"
+    },
+    {
+      "path": "crates/gpu-owner/src/evidence.rs",
+      "kind": "file",
+      "sizeBytes": 4316,
+      "mode": 420,
+      "sha256": "34d139a627fd2d3e066d3600a753be2dc599b23d7469ff5b2ba11794dfde4fa4"
+    },
+    {
+      "path": "crates/gpu-owner/src/input.rs",
+      "kind": "file",
+      "sizeBytes": 14875,
+      "mode": 420,
+      "sha256": "f23eff4854b12d575b527ed250c13284364b903e6ba5a65a084849c057d91674"
+    },
+    {
+      "path": "crates/gpu-owner/src/json.rs",
+      "kind": "file",
+      "sizeBytes": 11015,
+      "mode": 420,
+      "sha256": "92fb2fdd5fe6b9c2ce8337238a0581aa56a99167f590a3d80e9bfec92f4b1e81"
+    },
+    {
+      "path": "crates/gpu-owner/src/lib.rs",
+      "kind": "file",
+      "sizeBytes": 635,
+      "mode": 420,
+      "sha256": "ccb3abed8e7b5910c3e16f8e87c2757b224bb267c68c58ae956d42848c593a12"
+    },
+    {
+      "path": "crates/gpu-owner/src/linux.rs",
+      "kind": "file",
+      "sizeBytes": 8971,
+      "mode": 420,
+      "sha256": "3780278f9fc74d09ebd841a0162546e38f855609b6c943816022dfa0edb973c5"
+    },
+    {
+      "path": "crates/gpu-owner/src/main.rs",
+      "kind": "file",
+      "sizeBytes": 399,
+      "mode": 420,
+      "sha256": "5134cf06bcd693a56c01cd00931c5127d3efda6f1ad8db4953c231334f53cc03"
+    },
+    {
+      "path": "crates/gpu-owner/src/observe.rs",
+      "kind": "file",
+      "sizeBytes": 14738,
+      "mode": 420,
+      "sha256": "06497a88f90fc025aea28b5debe77adfc212a73b493c1d12100096ed8b53f9cc"
+    },
+    {
+      "path": "crates/gpu-owner/src/owner.rs",
+      "kind": "file",
+      "sizeBytes": 28599,
+      "mode": 420,
+      "sha256": "bdd44713775077f937648c60d045e8d31ebf0720f4c6e00ea352b675e229d96d"
+    },
+    {
+      "path": "crates/gpu-owner/src/policy.rs",
+      "kind": "file",
+      "sizeBytes": 8581,
+      "mode": 420,
+      "sha256": "5657425403da4a456e657ecd9604e04d4be724e56d5428e90e407121066f7799"
+    },
+    {
+      "path": "crates/gpu-owner/src/process.rs",
+      "kind": "file",
+      "sizeBytes": 11761,
+      "mode": 420,
+      "sha256": "6a7361d12263aa9a96b2cf64948871aa6dd857ffdda2cf6e7454179b1893e3e8"
+    },
+    {
+      "path": "crates/gpu-owner/src/telemetry.rs",
+      "kind": "file",
+      "sizeBytes": 2715,
+      "mode": 420,
+      "sha256": "f1b8d5ca3aa1643f17af464338aa3eb9f82110b35d07a3dbcc42acb7aa2252e1"
+    },
+    {
+      "path": "crates/gpu-owner/src/wire.rs",
+      "kind": "file",
+      "sizeBytes": 19934,
+      "mode": 420,
+      "sha256": "35d9b0094fa45dcc4650a104983deb82e08aafe3d3c480d6e62d193b7230b97b"
+    },
+    {
+      "path": "crates/gpu-owner/tests/adapters.rs",
+      "kind": "file",
+      "sizeBytes": 13112,
+      "mode": 420,
+      "sha256": "378b9a33f835317c2beb76399fc0f892637bff52014b1a01fd669263905b858f"
+    },
+    {
+      "path": "crates/gpu-owner/tests/cli.rs",
+      "kind": "file",
+      "sizeBytes": 1150,
+      "mode": 420,
+      "sha256": "ef3d75bec0f06bacd363bd0c4d696650efbf4ef24c5bbe4012b580660b5e7ab5"
+    },
+    {
+      "path": "crates/gpu-owner/tests/conformance.rs",
+      "kind": "file",
+      "sizeBytes": 2918,
+      "mode": 420,
+      "sha256": "7998a3bbdd28760d5fe83c1633871b06606a0481a03d51947bd7438910959b78"
+    },
+    {
+      "path": "crates/gpu-owner/tests/contracts.rs",
+      "kind": "file",
+      "sizeBytes": 9821,
+      "mode": 420,
+      "sha256": "eeea6aadd0f96ed50b1e2a014b4fa184304a73d780f7023f22505c95a9d4528c"
+    },
+    {
+      "path": "crates/gpu-owner/tests/lifecycle.rs",
+      "kind": "file",
+      "sizeBytes": 14293,
+      "mode": 420,
+      "sha256": "c31475672e1506bf0df7f9f2391e3a0c77f7e20965b622cde2475bca29871441"
+    },
+    {
+      "path": "crates/gpu-owner/tests/observation.rs",
+      "kind": "file",
+      "sizeBytes": 12899,
+      "mode": 420,
+      "sha256": "b608ef1c90c83df55561530c20325051351aed0710db9ce4e2071a1bf4ed59cf"
+    },
+    {
+      "path": "crates/gpu-owner/tests/support/mod.rs",
+      "kind": "file",
+      "sizeBytes": 20246,
+      "mode": 420,
+      "sha256": "cfa8f2e72975afad6a755d51127b01e2b03c362f0105a4b90fb9c028760e47f8"
+    },
+    {
+      "path": "crates/gpu-owner/tests/wire.rs",
+      "kind": "file",
+      "sizeBytes": 28552,
+      "mode": 420,
+      "sha256": "971e2fe6a687a9d980120a095b22d72c82886bae4ed9e023e6299719810daf8d"
+    },
+    {
+      "path": "crates/host-facts/Cargo.toml",
+      "kind": "file",
+      "sizeBytes": 455,
+      "mode": 420,
+      "sha256": "852c6df40e26aff5ac82e347db1f7cc4fdebb069a54095a8a92fb714183f64c8"
+    },
+    {
+      "path": "crates/host-facts/src/cgroup.rs",
+      "kind": "file",
+      "sizeBytes": 17786,
+      "mode": 420,
+      "sha256": "c8adac710d8ffb805917ea330f34cfbfc32d7674bad761d54c00eb1c4456d484"
+    },
+    {
+      "path": "crates/host-facts/src/http.rs",
+      "kind": "file",
+      "sizeBytes": 25151,
+      "mode": 420,
+      "sha256": "46e034bf976d7266a8e22ad60747cda95b35a2876b4da5fb8c44dfb3dab6f858"
+    },
+    {
+      "path": "crates/host-facts/src/lib.rs",
+      "kind": "file",
+      "sizeBytes": 15071,
+      "mode": 420,
+      "sha256": "193700f9c3d3286c4af5202e955813702f65f0d44163de491c2523faeb6054f8"
+    },
+    {
+      "path": "crates/host-facts/src/main.rs",
+      "kind": "file",
+      "sizeBytes": 1017,
+      "mode": 420,
+      "sha256": "d70817dc0139c1a6b3da357ba9834a2ce451fd06d090f777c1ab2cf37f302668"
+    },
+    {
+      "path": "crates/host-facts/src/projection.rs",
+      "kind": "file",
+      "sizeBytes": 28883,
+      "mode": 420,
+      "sha256": "dd7a6f81b4b294dc5233c3d8a6b868a41d70520c922a6ca41379c8c003573323"
+    },
+    {
+      "path": "crates/host-facts/src/socket.rs",
+      "kind": "file",
+      "sizeBytes": 5682,
+      "mode": 420,
+      "sha256": "208ef13bcd7274364f6f4690550566ea0c549a48cccaddd1343cdcd1186f63d1"
+    },
+    {
+      "path": "crates/host-facts/tests/cli.rs",
+      "kind": "file",
+      "sizeBytes": 1041,
+      "mode": 420,
+      "sha256": "96e9323f84a378cb8be3cb33a4473702f26d009f1ec8d1a984bf0594f88fd569"
+    },
+    {
+      "path": "crates/host-facts/tests/recipe.rs",
+      "kind": "file",
+      "sizeBytes": 2033,
+      "mode": 420,
+      "sha256": "8d5c9aee1eb2de0e916d32ff04597b6722d13ec255d4da8d95abbca2fa4ce97e"
+    },
+    {
+      "path": "crates/learning/Cargo.toml",
+      "kind": "file",
+      "sizeBytes": 438,
+      "mode": 420,
+      "sha256": "2f62653838674286c3aba22be71d320ab1a1a937a8881ef28507f24eceeeef55"
+    },
+    {
+      "path": "crates/learning/src/accumulation.rs",
+      "kind": "file",
+      "sizeBytes": 8151,
+      "mode": 420,
+      "sha256": "54f9ad68942e1e47253dcc69250904e0e02f02645442a594bc2fc3fb7da5fb02"
+    },
+    {
+      "path": "crates/learning/src/batch.rs",
+      "kind": "file",
+      "sizeBytes": 1190,
+      "mode": 420,
+      "sha256": "60df035815fb53d9c9c3dffd1f7d94870cf47895a5b61a2bd1d287e48bc6545b"
+    },
+    {
+      "path": "crates/learning/src/episode.rs",
+      "kind": "file",
+      "sizeBytes": 2210,
+      "mode": 420,
+      "sha256": "e5f89405c0582b2307004cdd1941f17fa571cc8d97088a8b9c66269862c5d99b"
+    },
+    {
+      "path": "crates/learning/src/lib.rs",
+      "kind": "file",
+      "sizeBytes": 504,
+      "mode": 420,
+      "sha256": "1adad3654f02259c7a97b843544d3af54f868ee898e196d20f6c9eedbbdc11e9"
+    },
+    {
+      "path": "crates/learning/src/model.rs",
+      "kind": "file",
+      "sizeBytes": 2322,
+      "mode": 420,
+      "sha256": "6e05965998d36a494600d7da9150dc32d5b989a4283801ab56f70abb981a0d96"
+    },
+    {
+      "path": "crates/learning/tests/accumulation.rs",
+      "kind": "file",
+      "sizeBytes": 7967,
+      "mode": 420,
+      "sha256": "0682e892d60625413ae9d82eac98d534fe1a9e83f82a6b60ce45c0495656c56e"
+    },
+    {
+      "path": "crates/learning/tests/common/mod.rs",
+      "kind": "file",
+      "sizeBytes": 1376,
+      "mode": 420,
+      "sha256": "f56b0811cabe5ff453e85d6acad699b519305b0a7900c80471e1c02cff2eb493"
+    },
+    {
+      "path": "crates/learning/tests/context.rs",
+      "kind": "file",
+      "sizeBytes": 1842,
+      "mode": 420,
+      "sha256": "15309553796ea4875563c4d73fb4888c7a9740f28a269e3cb8be0b5883e3db9e"
+    },
+    {
+      "path": "crates/learning/tests/episode.rs",
+      "kind": "file",
+      "sizeBytes": 4826,
+      "mode": 420,
+      "sha256": "0d9a51484207063ab9a3ae072d631ce306bd46fa25821314feae9777bfc8a8f1"
+    },
+    {
+      "path": "crates/learning/tests/finite_difference.rs",
+      "kind": "file",
+      "sizeBytes": 6993,
+      "mode": 420,
+      "sha256": "701a56b8d88677b578393b06d7d47f0ebb1f7df56690ba990e362bdb5776c696"
+    },
+    {
+      "path": "crates/learning/tests/initialization.rs",
+      "kind": "file",
+      "sizeBytes": 2604,
+      "mode": 420,
+      "sha256": "0a1ebc7bf0f84f567432b0fbfdf60849acb691c35c06fb14969a04eb48920c56"
+    },
+    {
+      "path": "crates/learning/tests/model.rs",
+      "kind": "file",
+      "sizeBytes": 3749,
+      "mode": 420,
+      "sha256": "74e54b60512fd3d42417023561c9eac719a40e411e4ea8269cc4d75afc4b3d45"
+    },
+    {
+      "path": "crates/policy-io/Cargo.toml",
+      "kind": "file",
+      "sizeBytes": 526,
+      "mode": 420,
+      "sha256": "44d7e51a15605c67a777915c673739005e1614c9cec4ef37fe3a49d4613c4de4"
+    },
+    {
+      "path": "crates/policy-io/examples/initial-record.rs",
+      "kind": "file",
+      "sizeBytes": 445,
+      "mode": 420,
+      "sha256": "44cb4727be3007a0cc0a97176d5c1efd2c255ea8909a2cb1e82c31192bb7238c"
+    },
+    {
+      "path": "crates/policy-io/src/bin/policy-channel.rs",
+      "kind": "file",
+      "sizeBytes": 1489,
+      "mode": 420,
+      "sha256": "45e3652ec19ea28f021377d1d020d5b6cdbc9bf1f2d02235425410ad2d48e993"
+    },
+    {
+      "path": "crates/policy-io/src/bin/policy-initialize.rs",
+      "kind": "file",
+      "sizeBytes": 1142,
+      "mode": 420,
+      "sha256": "1024cb2f47bcb5cf494be6da0016ca583342346544a3eb20ca52bf19a001fdf2"
+    },
+    {
+      "path": "crates/policy-io/src/bin/policy-score.rs",
+      "kind": "file",
+      "sizeBytes": 1645,
+      "mode": 420,
+      "sha256": "6d2cb5f6264b7e05b3e6a05bf35ced608e4426d0947d3db07286e23cbe52f613"
+    },
+    {
+      "path": "crates/policy-io/src/channel.rs",
+      "kind": "file",
+      "sizeBytes": 14059,
+      "mode": 420,
+      "sha256": "0e2c054c42c7c5549982fc4b1b7f27b2427e8dbffb187ac6917364e78433703e"
+    },
+    {
+      "path": "crates/policy-io/src/device.rs",
+      "kind": "file",
+      "sizeBytes": 787,
+      "mode": 420,
+      "sha256": "edf458da0efed270cc53a081d9d7a270cbe8c8e9ba1a77503cd9899e6a5ed9ae"
+    },
+    {
+      "path": "crates/policy-io/src/lib.rs",
+      "kind": "file",
+      "sizeBytes": 5626,
+      "mode": 420,
+      "sha256": "ac9010eaa10a5526534e7d89c0b8b2e3f147a7e2e85e0831f9f4138d9bf3a839"
+    },
+    {
+      "path": "crates/policy-io/tests/channel.rs",
+      "kind": "file",
+      "sizeBytes": 7533,
+      "mode": 420,
+      "sha256": "5e0feaf08e69efd2557718d6214e22cc064d3a429007cc6eee6acf5bbd20dc63"
+    },
+    {
+      "path": "crates/policy-io/tests/f32.rs",
+      "kind": "file",
+      "sizeBytes": 650,
+      "mode": 420,
+      "sha256": "baf6a9720b5033149d1aac099de4571a2cca3116d2560c2367eb5ee4562902ea"
+    },
+    {
+      "path": "crates/policy-io/tests/gpu.rs",
+      "kind": "file",
+      "sizeBytes": 13699,
+      "mode": 420,
+      "sha256": "89b80da22602fbfa679e79e1fb6339d08714ea89ed3e7e81b692f61324f0394c"
+    },
+    {
+      "path": "crates/policy-io/tests/initialize.rs",
+      "kind": "file",
+      "sizeBytes": 3179,
+      "mode": 420,
+      "sha256": "fc939d34b4e443e389b00f01d6609248da8a5195a7722cab5e27954bb7be6c15"
+    },
+    {
+      "path": "crates/policy-io/tests/score.rs",
+      "kind": "file",
+      "sizeBytes": 9647,
+      "mode": 420,
+      "sha256": "0f04e838805314de0591f5a73919af1e802c6dacad21b364e6adb594b2c7b5b5"
+    },
+    {
+      "path": "packages/contracts/src/candidate.ts",
+      "kind": "file",
+      "sizeBytes": 1921,
+      "mode": 420,
+      "sha256": "01422c6e5b8f289cd387e3cf488363c810277db5aae7117cd7354b7b14c8af1e"
+    },
+    {
+      "path": "packages/contracts/src/causal-journal.ts",
+      "kind": "file",
+      "sizeBytes": 14428,
+      "mode": 420,
+      "sha256": "ad86bff14c051e98a35adae057a1be8ab2363ac6c253cec245200a9eca5a5c2f"
+    },
+    {
+      "path": "packages/contracts/src/episode.ts",
+      "kind": "file",
+      "sizeBytes": 2612,
+      "mode": 420,
+      "sha256": "ae8c21913bf58d1688f4136bab05c6b55ad051a2dc39b5640c6d94ab603ee370"
+    },
+    {
+      "path": "packages/contracts/src/game-session.ts",
+      "kind": "file",
+      "sizeBytes": 10357,
+      "mode": 420,
+      "sha256": "797d7b35465fef380b73c913e6777b20dedee9a10f1ae2cd6e90dab9a83bb07f"
+    },
+    {
+      "path": "packages/contracts/src/gpu-job.ts",
+      "kind": "file",
+      "sizeBytes": 7112,
+      "mode": 420,
+      "sha256": "c374aa8faff00b3f17294a7f7645a62e46e50e17ae39c4b895cbc4c7b30150d9"
+    },
+    {
+      "path": "packages/contracts/src/index.ts",
+      "kind": "file",
+      "sizeBytes": 1200,
+      "mode": 420,
+      "sha256": "989ccb211f8be99a88787832fa082a5f129ef52682c2087ae1b584fbda2baab3"
+    },
+    {
+      "path": "packages/contracts/src/inference.ts",
+      "kind": "file",
+      "sizeBytes": 1979,
+      "mode": 420,
+      "sha256": "c8212f109e8027bfecd6202c0edb58a4c201bbbdd74a4ede18ba2102314663ec"
+    },
+    {
+      "path": "packages/contracts/src/initialization.ts",
+      "kind": "file",
+      "sizeBytes": 2507,
+      "mode": 420,
+      "sha256": "0f6a3ee523040bd4ddc5acb4cc4ee6e5c35e68f52415709d5de99efd53a8431e"
+    },
+    {
+      "path": "packages/contracts/src/learning-channel.ts",
+      "kind": "file",
+      "sizeBytes": 2486,
+      "mode": 420,
+      "sha256": "01abdbf580e2c9cd5cc2a718a52284b58b32bda24f901f44321490fb8e444982"
+    },
+    {
+      "path": "packages/contracts/src/match.ts",
+      "kind": "file",
+      "sizeBytes": 4415,
+      "mode": 420,
+      "sha256": "fd13cf6822e37fc14d220576c6568cbfaa586fed481b089307dc702145ba5d30"
+    },
+    {
+      "path": "packages/contracts/src/native-intents.ts",
+      "kind": "file",
+      "sizeBytes": 1389,
+      "mode": 420,
+      "sha256": "cbb8f024001fac6c8f682fbb42677d19dc922c0a7ea317285ea480f914a8fe37"
+    },
+    {
+      "path": "packages/contracts/src/native-protocol.ts",
+      "kind": "file",
+      "sizeBytes": 3947,
+      "mode": 420,
+      "sha256": "df684ebaacdff2d6472d6f47c067d1850aae0db39826618c3118cbc03b9b9560"
+    },
+    {
+      "path": "packages/contracts/src/recipient-codec.ts",
+      "kind": "file",
+      "sizeBytes": 4082,
+      "mode": 420,
+      "sha256": "75cb4a7b83ca9e9e1970754e6fcffec9067a4ee8be37f704eb1c8ce7fbde8447"
+    },
+    {
+      "path": "packages/contracts/src/recipient.ts",
+      "kind": "file",
+      "sizeBytes": 16399,
+      "mode": 420,
+      "sha256": "950744bac63d7d44b92dcb8fdc0122f2c3ad4f933198e27aff8702bafefbe7fb"
+    },
+    {
+      "path": "packages/contracts/src/resolution.ts",
+      "kind": "file",
+      "sizeBytes": 4532,
+      "mode": 420,
+      "sha256": "af02d9f13f69d359784d9a201c32b6dae0a5b15bd2d0dec00c31358fb45f1ef1"
+    },
+    {
+      "path": "packages/contracts/src/semantics.ts",
+      "kind": "file",
+      "sizeBytes": 8430,
+      "mode": 420,
+      "sha256": "cbc1217a2cfee44d68c216d5c9a173965d301247c73835990a58e0c321ae5690"
+    },
+    {
+      "path": "packages/contracts/src/shape.ts",
+      "kind": "file",
+      "sizeBytes": 3459,
+      "mode": 420,
+      "sha256": "74c7a52ca90949da256e07ad4e6f7581c53834ba9abdc45cd4b7f51150a269d1"
+    },
+    {
+      "path": "packages/contracts/src/training-artifact.ts",
+      "kind": "file",
+      "sizeBytes": 1542,
+      "mode": 420,
+      "sha256": "0203e6183d543b5fa54ee7c62887bc74cfcd62cb7bc6f3a9b17adbeb1a7d56af"
+    },
+    {
+      "path": "packages/contracts/src/training-state.ts",
+      "kind": "file",
+      "sizeBytes": 4119,
+      "mode": 420,
+      "sha256": "e17d980ca2bc03566bf43cf75869862c81fa3d6f9febcfc52044669242d7b5ff"
+    },
+    {
+      "path": "packages/policy/src/candidates.ts",
+      "kind": "file",
+      "sizeBytes": 9552,
+      "mode": 420,
+      "sha256": "8ee944b2c26f8cf60e07181b07b04dfa41494c200df2f935487bf661d156f99f"
+    },
+    {
+      "path": "packages/policy/src/index.ts",
+      "kind": "file",
+      "sizeBytes": 5043,
+      "mode": 420,
+      "sha256": "96adc38377d7dfafe35e2594a2a94f72cbdc1caf6ebbc1785c5318ffe086a094"
+    },
+    {
+      "path": "packages/runtime/src/artifacts.ts",
+      "kind": "file",
+      "sizeBytes": 3890,
+      "mode": 420,
+      "sha256": "59d0f3697366d2280eb6ddf06ad97f0659e347613fd862c9574e46a8fbe7f5a0"
+    },
+    {
+      "path": "packages/runtime/src/corpus.ts",
+      "kind": "file",
+      "sizeBytes": 5320,
+      "mode": 420,
+      "sha256": "6ab7fc22ed51977b63178988496059621cc83df8f62adc6066a47639b84c09b9"
+    },
+    {
+      "path": "packages/runtime/src/current-driver.ts",
+      "kind": "file",
+      "sizeBytes": 1184,
+      "mode": 420,
+      "sha256": "7049fabb4b39e285acf5c10dc2e9a84c072f37e4794bc4ef52f4b1dcae13fba4"
+    },
+    {
+      "path": "packages/runtime/src/curriculum.ts",
+      "kind": "file",
+      "sizeBytes": 4646,
+      "mode": 420,
+      "sha256": "2621c4a99d94f92eb61357375822038e5d3e288d9f0a4c6af05dc9b8425253d4"
+    },
+    {
+      "path": "packages/runtime/src/fixed-attempt.ts",
+      "kind": "file",
+      "sizeBytes": 3589,
+      "mode": 420,
+      "sha256": "4ba0f6dc4bd0bf75c782e80b5ed3e775acf69c81cb5637626954f3a042c72fbb"
+    },
+    {
+      "path": "packages/runtime/src/framing.ts",
+      "kind": "file",
+      "sizeBytes": 1985,
+      "mode": 420,
+      "sha256": "344d03a78e94dce87c3b958d02f7499e7927b25388830d3062dfdfc00655f026"
+    },
+    {
+      "path": "packages/runtime/src/frozen-scorer.ts",
+      "kind": "file",
+      "sizeBytes": 3566,
+      "mode": 420,
+      "sha256": "9e5f051b9487b53f34259075298ea9f65b905ed3f6ef895a20a1a3d31b58c72e"
+    },
+    {
+      "path": "packages/runtime/src/game-worker.ts",
+      "kind": "file",
+      "sizeBytes": 353,
+      "mode": 420,
+      "sha256": "d7ec081fe81c1f3ef1c5257a840305c5d2be821378d106a28ea3a801b9ddd7ab"
+    },
+    {
+      "path": "packages/runtime/src/gpu-job.ts",
+      "kind": "file",
+      "sizeBytes": 8798,
+      "mode": 420,
+      "sha256": "edf7838bafb256e0ba380c234ea255e642220ed6338d95fb41416cbe9ce7f876"
+    },
+    {
+      "path": "packages/runtime/src/index.ts",
+      "kind": "file",
+      "sizeBytes": 156,
+      "mode": 420,
+      "sha256": "a21ced057537a81fe1006e8d13ccc3fbccee831ee034361f76122dad0f669588"
+    },
+    {
+      "path": "packages/runtime/src/job.ts",
+      "kind": "file",
+      "sizeBytes": 4762,
+      "mode": 420,
+      "sha256": "bea66950267f27d02fd91e9c35fc2cde914637506a63a39e33b251f71de8da09"
+    },
+    {
+      "path": "packages/runtime/src/learner-pair.ts",
+      "kind": "file",
+      "sizeBytes": 3034,
+      "mode": 420,
+      "sha256": "fe75719f6dcdcb3a4a621c2aeba284cfbabca9e6b6f84d43d7457693666e3d26"
+    },
+    {
+      "path": "packages/runtime/src/match-process.ts",
+      "kind": "file",
+      "sizeBytes": 7100,
+      "mode": 420,
+      "sha256": "5960e488179b87b7fe2eb2df0c371518771c837a632f5844024d905d97731e18"
+    },
+    {
+      "path": "packages/runtime/src/match-session.ts",
+      "kind": "file",
+      "sizeBytes": 21583,
+      "mode": 420,
+      "sha256": "6dbcd36fe4fda9aa6495617a9ee3ea5558e44bfc6ec9d2ecd7986852db2b051f"
+    },
+    {
+      "path": "packages/runtime/src/match-state.ts",
+      "kind": "file",
+      "sizeBytes": 2075,
+      "mode": 420,
+      "sha256": "b1b04f78dc57fbaef24bdd515bb03a1ef0c98932c199ecb444cbb7f7c015e02c"
+    },
+    {
+      "path": "packages/runtime/src/match-worker-main.ts",
+      "kind": "file",
+      "sizeBytes": 2093,
+      "mode": 420,
+      "sha256": "7fbfda7c1898ae904990e8e4184780a36cca62069b5c4710ac4dd7082dfe198e"
+    },
+    {
+      "path": "packages/runtime/src/match-worker.ts",
+      "kind": "file",
+      "sizeBytes": 10498,
+      "mode": 420,
+      "sha256": "7333ae7a643441f0a6d254db853315b8431fe558e03e410468a9ad3977c4cbb4"
+    },
+    {
+      "path": "packages/runtime/src/model-inputs.ts",
+      "kind": "file",
+      "sizeBytes": 1491,
+      "mode": 420,
+      "sha256": "5ca0cbe0196a7c481255b0989e52c95c1f95d7f0e66c7c0d4e3b7979b27f5927"
+    },
+    {
+      "path": "packages/runtime/src/native-learner.ts",
+      "kind": "file",
+      "sizeBytes": 7892,
+      "mode": 420,
+      "sha256": "bd42911e886b352a97e1aea22552dd596d79ba2d55d490e35267a637d215340c"
+    },
+    {
+      "path": "packages/runtime/src/native-session.ts",
+      "kind": "file",
+      "sizeBytes": 9263,
+      "mode": 420,
+      "sha256": "fce16d1d955745308ebc0eca8c3ed8133531b96b34d579110777464dc9280076"
+    },
+    {
+      "path": "packages/runtime/src/policy-session.ts",
+      "kind": "file",
+      "sizeBytes": 10688,
+      "mode": 420,
+      "sha256": "bf66312f05965de4461219068912f68cecfdc4e1037749fd73bc4eba2a3e6479"
+    },
+    {
+      "path": "packages/runtime/src/private-state.ts",
+      "kind": "file",
+      "sizeBytes": 5741,
+      "mode": 420,
+      "sha256": "c129175e1e6f6a0ef4df2e0e8f0a9843b7087770064cde3c44b6ea8936bd4999"
+    },
+    {
+      "path": "packages/runtime/src/process-transport.ts",
+      "kind": "file",
+      "sizeBytes": 5657,
+      "mode": 420,
+      "sha256": "bb8dde00851642d2b2faaa00909092e35e5676b093aebb652b1088daba34cac1"
+    },
+    {
+      "path": "packages/runtime/src/reference-driver.ts",
+      "kind": "file",
+      "sizeBytes": 8759,
+      "mode": 420,
+      "sha256": "f9623f1ec68354139140ee142f1ac280d2995e81dbd8eaef77b3bde57aef8f30"
+    },
+    {
+      "path": "packages/runtime/src/reference-worker.ts",
+      "kind": "file",
+      "sizeBytes": 398,
+      "mode": 420,
+      "sha256": "db1438a09e0dd5c28c8bfa2c1fd5789bce00914ad217dcfb3bdd606b1703163f"
+    },
+    {
+      "path": "packages/runtime/src/rng.ts",
+      "kind": "file",
+      "sizeBytes": 1900,
+      "mode": 420,
+      "sha256": "1e2311763946768b7d1323b4717a203699ea057c88525a66a764465ad2fa5f5a"
+    },
+    {
+      "path": "packages/runtime/src/storage-bounds.ts",
+      "kind": "file",
+      "sizeBytes": 1412,
+      "mode": 420,
+      "sha256": "f86f351c51d09529d751564b85aa3d150283c2ae5a09c7f632de12a84b5a1d38"
+    },
+    {
+      "path": "packages/runtime/src/strategic.ts",
+      "kind": "file",
+      "sizeBytes": 10385,
+      "mode": 420,
+      "sha256": "c5d748fe9ccc7787c32a20cc29820b80bfba3fa6c9f585aaeb2d56c24094e9cf"
+    },
+    {
+      "path": "packages/runtime/src/training-campaign.ts",
+      "kind": "file",
+      "sizeBytes": 8766,
+      "mode": 420,
+      "sha256": "92d0362057bf386fb7713a6929a429a89e97e5998e9921b0e9b790823772d5db"
+    },
+    {
+      "path": "packages/runtime/src/training-coordinator.ts",
+      "kind": "file",
+      "sizeBytes": 9497,
+      "mode": 420,
+      "sha256": "29ffc66842cb8588d4c3c5c419b5cf19b18ea780ffde82c35435001a3f5ea5ec"
+    },
+    {
+      "path": "packages/runtime/src/training-store.ts",
+      "kind": "file",
+      "sizeBytes": 13190,
+      "mode": 420,
+      "sha256": "9ed0b2a9457a3e92c3c8b69d70fa5ad83783d7bef6e7e4ec4d5ee39513ae3b42"
+    },
+    {
+      "path": "packages/runtime/src/worker-loop.ts",
+      "kind": "file",
+      "sizeBytes": 1080,
+      "mode": 420,
+      "sha256": "afd57b55b54a2f982e882f3337ce1d2468f066bf94c61f09ba8a1d6249d4347f"
+    },
+    {
+      "path": "packages/runtime/src/worker.ts",
+      "kind": "file",
+      "sizeBytes": 4384,
+      "mode": 420,
+      "sha256": "0c6fab7a35bb5be6f99eb62fc02b3c6f2309cc110cb48bbbbfbb2111dfc5d830"
+    },
+    {
+      "path": "packages/runtime/tests/artifacts.test.ts",
+      "kind": "file",
+      "sizeBytes": 3045,
+      "mode": 420,
+      "sha256": "487662c84c165579830ea19076d61ab856c6058c27ed319141d5b4435b2ad01b"
+    },
+    {
+      "path": "packages/runtime/tests/closure.test.ts",
+      "kind": "file",
+      "sizeBytes": 3634,
+      "mode": 420,
+      "sha256": "5ac90a558b4ab251ef260e84da28cb3f818eb0b514fcf88ec1d8b11c964c86ee"
+    },
+    {
+      "path": "packages/runtime/tests/corpus.test.ts",
+      "kind": "file",
+      "sizeBytes": 2649,
+      "mode": 420,
+      "sha256": "36e908b35d6896e20eaf435d6d76879450290cc000e0ba5c088ef908c4f3032e"
+    },
+    {
+      "path": "packages/runtime/tests/curriculum.test.ts",
+      "kind": "file",
+      "sizeBytes": 2034,
+      "mode": 420,
+      "sha256": "bfec18bc45f71793b2db29ee9375276a267cfaa30ba70f7dfc86107d32674ff9"
+    },
+    {
+      "path": "packages/runtime/tests/fixed-attempt-gpu-owner.test.ts",
+      "kind": "file",
+      "sizeBytes": 9374,
+      "mode": 420,
+      "sha256": "af07a0e977dc984b5102e25ebd9da9bc97e24b561c91297a48bb41c180ee84c7"
+    },
+    {
+      "path": "packages/runtime/tests/fixture.ts",
+      "kind": "file",
+      "sizeBytes": 2038,
+      "mode": 420,
+      "sha256": "bea76570d542cb5c580aada7f9c5589f6913e7b2c5768bbc34dfaa40f88ec5ad"
+    },
+    {
+      "path": "packages/runtime/tests/gpu-job.test.ts",
+      "kind": "file",
+      "sizeBytes": 8627,
+      "mode": 420,
+      "sha256": "fb3260d59348844cb6334d53c67aa7d6bbca07f2fb96a37ccae3f8a328b82227"
+    },
+    {
+      "path": "packages/runtime/tests/gpu-policy-conformance.test.ts",
+      "kind": "file",
+      "sizeBytes": 4780,
+      "mode": 420,
+      "sha256": "0dbd03855d05c6b53521b00bdadc3456f5cc5fc86109f25f06691ea22e22048b"
+    },
+    {
+      "path": "packages/runtime/tests/gpu-policy-record.test.ts",
+      "kind": "file",
+      "sizeBytes": 2657,
+      "mode": 420,
+      "sha256": "aba60c00e5703912bff06236359a48d2eadd71bea7f0384f504209c9f59c9812"
+    },
+    {
+      "path": "packages/runtime/tests/gpu-policy.test.ts",
+      "kind": "file",
+      "sizeBytes": 25313,
+      "mode": 420,
+      "sha256": "4fae9b67a64518021eb7512b48dc53a8f84e70591fa0111f2a9092c7c1db0cb1"
+    },
+    {
+      "path": "packages/runtime/tests/gpu-qualification.test.ts",
+      "kind": "file",
+      "sizeBytes": 19945,
+      "mode": 420,
+      "sha256": "544a8937344523eefe2fb0e2acb6f394bcd0bfc5e86438dc1d532e5548b69871"
+    },
+    {
+      "path": "packages/runtime/tests/gpu-recipe.test.ts",
+      "kind": "file",
+      "sizeBytes": 9189,
+      "mode": 420,
+      "sha256": "bb786e58adf994a6c4443d74b7eaba66ac0a9ba3a59921db2b13324db126ec81"
+    },
+    {
+      "path": "packages/runtime/tests/host-facts-task.test.ts",
+      "kind": "file",
+      "sizeBytes": 5288,
+      "mode": 420,
+      "sha256": "b9c74387756d7461a55a434a8fb7c7580ebf0fd6af899a836f0f0088fcd4e0eb"
+    },
+    {
+      "path": "packages/runtime/tests/job.test.ts",
+      "kind": "file",
+      "sizeBytes": 2746,
+      "mode": 420,
+      "sha256": "556fba3fe3d50750c009145c427894a4ab2f0e32be5a7e6e70793ae57be5db90"
+    },
+    {
+      "path": "packages/runtime/tests/learner-pair.e2e.test.ts",
+      "kind": "file",
+      "sizeBytes": 4131,
+      "mode": 420,
+      "sha256": "3a287f04dc0855d7405597ecddef1bea8215b44a3cef61537851d8cada9eff83"
+    },
+    {
+      "path": "packages/runtime/tests/learner-pair.test.ts",
+      "kind": "file",
+      "sizeBytes": 6014,
+      "mode": 420,
+      "sha256": "3ed99ac38e97beb3b75e79c8250a3844089ca7723240ee478499e1fa923aeea6"
+    },
+    {
+      "path": "packages/runtime/tests/match-fixture.ts",
+      "kind": "file",
+      "sizeBytes": 6737,
+      "mode": 420,
+      "sha256": "d4a2bdafb8c2f6a1bf87673e4300d8cec9109d7ee29d254b83dfb960a306e384"
+    },
+    {
+      "path": "packages/runtime/tests/match-process.test.ts",
+      "kind": "file",
+      "sizeBytes": 1829,
+      "mode": 420,
+      "sha256": "cdfbaeb8ad33f7330fb144698862c625872f1eb50f30800593a8e5820f213fba"
+    },
+    {
+      "path": "packages/runtime/tests/match-session.e2e.test.ts",
+      "kind": "file",
+      "sizeBytes": 5232,
+      "mode": 420,
+      "sha256": "7262c3cf1665bf6d5b85ec4c17271bc5d0d187885540aed1e3a762fb92169b6e"
+    },
+    {
+      "path": "packages/runtime/tests/match-session.test.ts",
+      "kind": "file",
+      "sizeBytes": 8289,
+      "mode": 420,
+      "sha256": "4f4218516e9b52a0ed32cb750855e0c963b17a5e8b6688cebb50b551c40c3366"
+    },
+    {
+      "path": "packages/runtime/tests/model-inputs.test.ts",
+      "kind": "file",
+      "sizeBytes": 1758,
+      "mode": 420,
+      "sha256": "eed24724926e13871ca2beaf55e5a439bbfc4ffb39c392025d5330d450b97f91"
+    },
+    {
+      "path": "packages/runtime/tests/native-learner.e2e.test.ts",
+      "kind": "file",
+      "sizeBytes": 5682,
+      "mode": 420,
+      "sha256": "f3df04e3f43b3a951784e846c734e33481f477f924be1ea734cf0c804011eaf6"
+    },
+    {
+      "path": "packages/runtime/tests/native-session.test.ts",
+      "kind": "file",
+      "sizeBytes": 7977,
+      "mode": 420,
+      "sha256": "57caedd0eaaf2f8af97363eb8af6e19bdeb3dda52b1c0083ef56d5471d9d1e8c"
+    },
+    {
+      "path": "packages/runtime/tests/policy-session.test.ts",
+      "kind": "file",
+      "sizeBytes": 8255,
+      "mode": 420,
+      "sha256": "c83db6c1d537eac7328045095949fc5eca3d132b3b072dd17a9907c2dd000123"
+    },
+    {
+      "path": "packages/runtime/tests/private-state.test.ts",
+      "kind": "file",
+      "sizeBytes": 3416,
+      "mode": 420,
+      "sha256": "7333f28284eb842adc22354fcd5236e9e8955d83ec7239fce9dabef25fe07e2b"
+    },
+    {
+      "path": "packages/runtime/tests/process-transport.test.ts",
+      "kind": "file",
+      "sizeBytes": 2660,
+      "mode": 420,
+      "sha256": "b93aea737f1497a2c08180753187bdf17d0bdfedf8393cfc3945d0c360d8cf3b"
+    },
+    {
+      "path": "packages/runtime/tests/reference-bundles.test.ts",
+      "kind": "file",
+      "sizeBytes": 39816,
+      "mode": 420,
+      "sha256": "bd0631beec091187e79abba83141828d6f2f4d45052649c0a1be1d425939edbc"
+    },
+    {
+      "path": "packages/runtime/tests/reference.test.ts",
+      "kind": "file",
+      "sizeBytes": 1188,
+      "mode": 420,
+      "sha256": "1cd72c7d5bd257986720836d1fa59f4691abc59b73927ee1658c236855494021"
+    },
+    {
+      "path": "packages/runtime/tests/repository-scratch.ts",
+      "kind": "file",
+      "sizeBytes": 545,
+      "mode": 420,
+      "sha256": "b9f51235fdffbaf671c3df83c0b03a70c3fb578470a48e85dcf08344bf8f60dd"
+    },
+    {
+      "path": "packages/runtime/tests/rng.test.ts",
+      "kind": "file",
+      "sizeBytes": 2005,
+      "mode": 420,
+      "sha256": "4755addcead5fcd307899b94ea1a11dce0fa81628a4586629eec8db6f38cc446"
+    },
+    {
+      "path": "packages/runtime/tests/storage-bounds.test.ts",
+      "kind": "file",
+      "sizeBytes": 1562,
+      "mode": 420,
+      "sha256": "21c3318761932fd8d2a53eafe8ddd01a51709ba4052dc25dd8270001c4a25176"
+    },
+    {
+      "path": "packages/runtime/tests/strategic.test.ts",
+      "kind": "file",
+      "sizeBytes": 5182,
+      "mode": 420,
+      "sha256": "dcaecb7917583d4f8a4b6f2f0b3917470f25d6b1d26a484888c700df017c501e"
+    },
+    {
+      "path": "packages/runtime/tests/training-artifact.test.ts",
+      "kind": "file",
+      "sizeBytes": 3030,
+      "mode": 420,
+      "sha256": "0d6988b1362df03600f7dc769331ad15adbe9af45bb4849d3aaf249cd4fca24a"
+    },
+    {
+      "path": "packages/runtime/tests/training-campaign.test.ts",
+      "kind": "file",
+      "sizeBytes": 20952,
+      "mode": 420,
+      "sha256": "4fa9a7717e9ec4436b0bfc4989d8e1de75655dc1944a382bf832444ffe7c91be"
+    },
+    {
+      "path": "packages/runtime/tests/training-coordinator.test.ts",
+      "kind": "file",
+      "sizeBytes": 8759,
+      "mode": 420,
+      "sha256": "7e4dd2cb7fe32fc9f15733126229d81df079357af34c5b00d4c5be2a25178073"
+    },
+    {
+      "path": "packages/runtime/tests/training-fixture.ts",
+      "kind": "file",
+      "sizeBytes": 2510,
+      "mode": 420,
+      "sha256": "8995676cd85fd953a74b9239e7923563f89caeffc2718ea96ba4336dd12ee91d"
+    },
+    {
+      "path": "packages/runtime/tests/training-store.test.ts",
+      "kind": "file",
+      "sizeBytes": 6664,
+      "mode": 420,
+      "sha256": "63a638809f5d20f3215e963ecf4c8a234e4169dcd3d239413d609b97e5253874"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/adjutant.test.ts",
+      "kind": "file",
+      "sizeBytes": 19657,
+      "mode": 420,
+      "sha256": "5e3ac30f39718924dba457bf5348d889cde38d685df8b269578ce5214c0040f6"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/ai/charonHunt.test.ts",
+      "kind": "file",
+      "sizeBytes": 5766,
+      "mode": 420,
+      "sha256": "22faa41b5ec8fb650d2b5fee0a33d60709e654b8aed13f11be3c29ee386dd7d9"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/bank/storedBank.test.ts",
+      "kind": "file",
+      "sizeBytes": 809,
+      "mode": 420,
+      "sha256": "93b931a14f3b1a85fe9d4a254ac591067ec0d7d42781c82c1ec650d7a58c1c6c"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/boundary/boundary.test.ts",
+      "kind": "file",
+      "sizeBytes": 1207,
+      "mode": 420,
+      "sha256": "abd143d0ef6d051d059e2380bb214e37f809d0056d251ac906168aa873702807"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/collision/collisionRaces.test.ts",
+      "kind": "file",
+      "sizeBytes": 7535,
+      "mode": 420,
+      "sha256": "702d782ae27da992c7c434e92c37795346dc88e6dc5b038ff021f06a3b639142"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/collision/fogVacatedTarget.test.ts",
+      "kind": "file",
+      "sizeBytes": 4296,
+      "mode": 420,
+      "sha256": "c24ac4d910d09e30a9c9274e593877f13fa5c7d2d32ed83cbb3c2c4e211693da"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/corpus/goldenCorpus.test.ts",
+      "kind": "file",
+      "sizeBytes": 5820,
+      "mode": 420,
+      "sha256": "b10bdafeab3d4c60f47f78214aeab01f835a59a08fec7150df6cf80ef2005561"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/deploy-reach.test.ts",
+      "kind": "file",
+      "sizeBytes": 6146,
+      "mode": 420,
+      "sha256": "eab0f9305cb1f233ccb2099db5a82fe3a16d5661492f64e9cf45bb31b8d31288"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/economy/applyStoredIncome.test.ts",
+      "kind": "file",
+      "sizeBytes": 1341,
+      "mode": 420,
+      "sha256": "07443dc64d7519c3924968b10720fdcddffaefb377fbe38c317bffe363f59f5a"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/economy/estimateStoredFromSnap.test.ts",
+      "kind": "file",
+      "sizeBytes": 634,
+      "mode": 420,
+      "sha256": "9ebe05db3ab210a429815089b5506a7c50ea6de708698f24a37d256e22109208"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/economy/mechaDeployCaps.test.ts",
+      "kind": "file",
+      "sizeBytes": 5598,
+      "mode": 420,
+      "sha256": "afd1bd0af980b5ffadfa3e38ed3f87469f3b6f70735b054b2fd4ca6854cf04a2"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/engine-consolidation.test.ts",
+      "kind": "file",
+      "sizeBytes": 11436,
+      "mode": 420,
+      "sha256": "b3ac183abc5f87e77a7dcc23887d11d38a26954f3015c6010aeba8fc99611f93"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/gas/gasLastRank.test.ts",
+      "kind": "file",
+      "sizeBytes": 5249,
+      "mode": 420,
+      "sha256": "506d3314fe05574eef47680273f43673b540cc670782cfa2f1c60cc01f7d00e6"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/gas/gasRemainingFor.test.ts",
+      "kind": "file",
+      "sizeBytes": 1527,
+      "mode": 420,
+      "sha256": "6fb59c9768b7f2813a5e6f78cb11f25580cd69bfb07dd0a449bb8c666567ac76"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/gas/marineGasStackOrder.test.ts",
+      "kind": "file",
+      "sizeBytes": 8396,
+      "mode": 420,
+      "sha256": "63d1f1c596f81fb8e02dab06c08905c587ece7d2aef58b9743f1c8994728ed38"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/legacyKinds.test.ts",
+      "kind": "file",
+      "sizeBytes": 2313,
+      "mode": 420,
+      "sha256": "f4d6214e21bc9de94dec90d200f0080a06fb5e259e21f360d343de1d9d2bc21e"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/marine/marineDiagonalCaptureOnly.test.ts",
+      "kind": "file",
+      "sizeBytes": 2868,
+      "mode": 420,
+      "sha256": "6cc62d3f672df060b24f84a6c865c56fc8cc3f79c9480107b1398ba7e47593a3"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/marine/marineDoubleBand.test.ts",
+      "kind": "file",
+      "sizeBytes": 5288,
+      "mode": 420,
+      "sha256": "8d3647e2f04dc1f3f984e7aaba266dbcd889a9ca9e0ab5d0ed1758df819dd432"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/marine/marineFrontBlocked.test.ts",
+      "kind": "file",
+      "sizeBytes": 5818,
+      "mode": 420,
+      "sha256": "0049e588c20d62d63586e473cec6366787d89fd7d9158f28adae3f2f9f342202"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mecha/mechaCCLine.test.ts",
+      "kind": "file",
+      "sizeBytes": 4527,
+      "mode": 420,
+      "sha256": "0b523c0acc39a24b3548b986e493fbb00f0f6758e4871de8e2b40661f36519ed"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mecha/mechaCharon.test.ts",
+      "kind": "file",
+      "sizeBytes": 7715,
+      "mode": 420,
+      "sha256": "6fe6baaf4f5cdad17a9c7c2288e87a05bcf785432451a6ec7d92493b4af90fb3"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mine/mineChecks.test.ts",
+      "kind": "file",
+      "sizeBytes": 3309,
+      "mode": 420,
+      "sha256": "4cb2b8e87d1b19b4135e0fe201cbc8f29137ed13cf5aa40d5040eee5cc9f79f6"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mine/mineContactRoutes.test.ts",
+      "kind": "file",
+      "sizeBytes": 16868,
+      "mode": 420,
+      "sha256": "d8eeeae59cea9cf4471fb35d2cfaf343a1e8a11669f7f29aa8c0a4dae7911004"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mine/minePathContact.test.ts",
+      "kind": "file",
+      "sizeBytes": 10403,
+      "mode": 420,
+      "sha256": "26c4c2621b6bd9cfb5c609cf2561b8ed393839874de609694fd5f3ecf0fcdaa9"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/mine/mineTargets.test.ts",
+      "kind": "file",
+      "sizeBytes": 1938,
+      "mode": 420,
+      "sha256": "088c5badbff1f3887ceb489d9c20661ca7ce4b83cc82b85ad5d8ec2d1c9f3846"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/move-timing.test.ts",
+      "kind": "file",
+      "sizeBytes": 1509,
+      "mode": 420,
+      "sha256": "1d99176ce6768fdb27ddb9d652cee73ca3697bc66d831f7d484c3fb043da8b4a"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/packed.test.ts",
+      "kind": "file",
+      "sizeBytes": 4366,
+      "mode": 420,
+      "sha256": "44cc8c00c3ca22e26ddf32b14e33aae5f7679a579adcc42608ab88f69ea29838"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/promotion/lastRankPromotion.test.ts",
+      "kind": "file",
+      "sizeBytes": 4111,
+      "mode": 420,
+      "sha256": "cfa01f9056904d83ab59bb8400cee92e55f297e9a317fb5cc353089741727bf3"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/queue/queueMultiSpecial.test.ts",
+      "kind": "file",
+      "sizeBytes": 6908,
+      "mode": 420,
+      "sha256": "8949963eea053fe457d04153a2c0bd44aa0fd68006de66d382273b8afe30bc62"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/registry/specialRegistry.test.ts",
+      "kind": "file",
+      "sizeBytes": 551,
+      "mode": 420,
+      "sha256": "3c94b5a9a33b6607d7776d1299c4bbc49f9a4f7c20d77222f3b8a20887521466"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/replay/fen.test.ts",
+      "kind": "file",
+      "sizeBytes": 2377,
+      "mode": 420,
+      "sha256": "4ff599212f48b5740e332d8165bfdd56d1967639e1507dd3bfe30abf1c74524e"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/replay/record.test.ts",
+      "kind": "file",
+      "sizeBytes": 2811,
+      "mode": 420,
+      "sha256": "c44c5745f746be1f213a1c3c353a5a569d7195b59d31546fbf147da766e01d25"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/replay/validateRecord.test.ts",
+      "kind": "file",
+      "sizeBytes": 3901,
+      "mode": 420,
+      "sha256": "053800b983df58d98f98efd5521d0ff64a1a772e378080908a8b6e6ce3c56425"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/shipJumpCollision.test.ts",
+      "kind": "file",
+      "sizeBytes": 2672,
+      "mode": 420,
+      "sha256": "48914a642e1bdec4b8a8e6760a28216cc75b3aedfb8c916e541de1eae2f75b10"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/spawn/crushSpawn.test.ts",
+      "kind": "file",
+      "sizeBytes": 6697,
+      "mode": 420,
+      "sha256": "e0cfe7617a69918cc4c95eca5d32b737a00731b8af31dd972e4cb1d1ad88cbba"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/spawn/spawnCCAnchor.test.ts",
+      "kind": "file",
+      "sizeBytes": 3788,
+      "mode": 420,
+      "sha256": "c80a36facee2594b208f0a3fee2892786cdaa574640483dfe94aff01960652e2"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/attackers.test.ts",
+      "kind": "file",
+      "sizeBytes": 4766,
+      "mode": 420,
+      "sha256": "b81cbf71f42a2bcadc467e5dfed568f8641b92c98ad9ad0ee379d1b307e5d60f"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/candidates-parity.test.ts",
+      "kind": "file",
+      "sizeBytes": 2593,
+      "mode": 420,
+      "sha256": "7331e7ed72ccfcba7e3e5b1da997773fb93220a294a94b7a83cadaa8c47192d6"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/deployLookahead.test.ts",
+      "kind": "file",
+      "sizeBytes": 2441,
+      "mode": 420,
+      "sha256": "81f01a041bfa98c1dbbc9c73d75111d10decd8b6a2257368c31d41897527da9a"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/economy.test.ts",
+      "kind": "file",
+      "sizeBytes": 5261,
+      "mode": 420,
+      "sha256": "ca4a6b4030072b427e678acb508dd86f27c4d6fd647ed44de6fd0592bf027550"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/economyAllyCrush.test.ts",
+      "kind": "file",
+      "sizeBytes": 10386,
+      "mode": 420,
+      "sha256": "25d3864ab52d9487d5f494457ce36aa23ec85760655c62a688d30f264453ba9e"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/intel.test.ts",
+      "kind": "file",
+      "sizeBytes": 2775,
+      "mode": 420,
+      "sha256": "059f9e1cae7ecac85b506bfcaaa2d8b19871cf1fd4ba3116e4eacf8efd2502a8"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/orchestrator.test.ts",
+      "kind": "file",
+      "sizeBytes": 3344,
+      "mode": 420,
+      "sha256": "9b1666999c6ac5c1a50884bdf6b19f0be1631cf7d47735eab284fbb514062728"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/runnerMemory.test.ts",
+      "kind": "file",
+      "sizeBytes": 9128,
+      "mode": 420,
+      "sha256": "deea8c185fea767f6a7d2814489e7a91aa7613cc4c5f1b2f6a0974d832926d10"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/runners.test.ts",
+      "kind": "file",
+      "sizeBytes": 8579,
+      "mode": 420,
+      "sha256": "b22d26005b40c946e9f81e54838c358f7c550b67fc1738f2be574c5593cd9f1c"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/strategic/witness.test.ts",
+      "kind": "file",
+      "sizeBytes": 7458,
+      "mode": 420,
+      "sha256": "fea602787f69a1c9119b2939813fd47d6adbb3f892ff5e2af692f453020e4d33"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/tactics/ccFocus.test.ts",
+      "kind": "file",
+      "sizeBytes": 2913,
+      "mode": 420,
+      "sha256": "05e383d2125afa6a8c9f54c72af743b9470d060ba410d2253ab96aafa92cc190"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/tactics/weightOrdering.test.ts",
+      "kind": "file",
+      "sizeBytes": 10232,
+      "mode": 420,
+      "sha256": "e262daaff68b3f6283d82184a4cf0dc4043781b013d8d4d564c0fa3a523b8193"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/tank/siegedTankMoves.test.ts",
+      "kind": "file",
+      "sizeBytes": 6142,
+      "mode": 420,
+      "sha256": "2c3a37a14d96ff32876347179f9fcfa6df1491705db40db5cd81a103571ea7a2"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/tank/siegedTankShelling.test.ts",
+      "kind": "file",
+      "sizeBytes": 6225,
+      "mode": 420,
+      "sha256": "827fbd3c1b18263212f6c03b73fcec8e58f55ee216a568604b085eab6a8a6d6c"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/turn/beginScTurn.test.ts",
+      "kind": "file",
+      "sizeBytes": 3446,
+      "mode": 420,
+      "sha256": "c1f459e27722ab7e609eef7cabc707133198a319f3df37cb96f227aec7f7d597"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/turn/gasVacancy.test.ts",
+      "kind": "file",
+      "sizeBytes": 6048,
+      "mode": 420,
+      "sha256": "2a0a3f2da44ddae0a9bcc5c1ebd63b581242fe8053d2f4e46a112c8d06ef19e3"
+    },
+    {
+      "path": "packages/starchess-core/src/__tests__/turn/turnTimeout.test.ts",
+      "kind": "file",
+      "sizeBytes": 638,
+      "mode": 420,
+      "sha256": "9973aafa2d3b47a4579f7e3c97d4db1ae8ae5336e0b1aca7295d82a78edc332f"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/adjutant.ts",
+      "kind": "file",
+      "sizeBytes": 4952,
+      "mode": 420,
+      "sha256": "002bc6395fa1b7bdedb52fbb017f7e6907708416d272917dd068bc90de179448"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/ccFocusIntel.ts",
+      "kind": "file",
+      "sizeBytes": 3513,
+      "mode": 420,
+      "sha256": "a5d61257443d603b05a7705985a7497cd079ff8f5f0d1d06582e1b8227b86e90"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/ccIntel.ts",
+      "kind": "file",
+      "sizeBytes": 4246,
+      "mode": 420,
+      "sha256": "186dbd78f1c2930795c095c8993b28010a6067ca3c001f2a13f143eeb028955f"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/geometry.ts",
+      "kind": "file",
+      "sizeBytes": 2852,
+      "mode": 420,
+      "sha256": "2fac7042660bff7809a680e913219042a51f0d8e9beded3c620f160203c3d0df"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/index.ts",
+      "kind": "file",
+      "sizeBytes": 3606,
+      "mode": 420,
+      "sha256": "2adfd5687e9bf18c7f1e1b305ab312b66cedc9a80f4a550956ea755e4b413103"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/marines.ts",
+      "kind": "file",
+      "sizeBytes": 2343,
+      "mode": 420,
+      "sha256": "0d2585cc30edb2c712e24c36c9b1f4d36aced7996feffa7d4b2ab7c62ac48711"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/material.ts",
+      "kind": "file",
+      "sizeBytes": 1981,
+      "mode": 420,
+      "sha256": "9c054ee2ec293d26be329b7eea3d39505fdec535c6b2080affd3feff2bc6d857"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/mines.ts",
+      "kind": "file",
+      "sizeBytes": 1257,
+      "mode": 420,
+      "sha256": "16f61498ddc3001f1c3f0707366dee82113b57edaf3c3c4ace57f615f570e3ee"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/posture.ts",
+      "kind": "file",
+      "sizeBytes": 2029,
+      "mode": 420,
+      "sha256": "442702d963e06dddfa68a796da096ecbc07e3a99497d1ed3c3d018aa9e8ef7d1"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/rng.ts",
+      "kind": "file",
+      "sizeBytes": 530,
+      "mode": 420,
+      "sha256": "08850895113d9c1f85b902ac1c920cd7e254165c5d2b229ca8183e06d90eba44"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/tactical.ts",
+      "kind": "file",
+      "sizeBytes": 2055,
+      "mode": 420,
+      "sha256": "252b53e3c9bbfbf3150e47599d18e1d3f2ddd71f0741058438dd3ddeb0bfaf6c"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/types.ts",
+      "kind": "file",
+      "sizeBytes": 5521,
+      "mode": 420,
+      "sha256": "d5ce767f0c20580f4e1de60c15e26c5464da76ae392830b7fa2e84eea3d80964"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/context/vision.ts",
+      "kind": "file",
+      "sizeBytes": 1548,
+      "mode": 420,
+      "sha256": "266f6b47a08127e5f6331c1d950f8d95237a4560909495857411b37def07199e"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/plans/simulate.ts",
+      "kind": "file",
+      "sizeBytes": 3740,
+      "mode": 420,
+      "sha256": "f6ce90d726767deddcd683e438a62ab5d542f72edd1f75e45e27e8ec702969e6"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/plans/stacks.ts",
+      "kind": "file",
+      "sizeBytes": 12186,
+      "mode": 420,
+      "sha256": "4d1fcba35a514d9c413d406a90574ccb29e1c88bf0f58cfea54d3672e271bf1d"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/attackers.ts",
+      "kind": "file",
+      "sizeBytes": 3929,
+      "mode": 420,
+      "sha256": "5c3e15340515f9d8d56f4ddb6cbd777a2f421baabb8172ea8716774df309df3b"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/context.ts",
+      "kind": "file",
+      "sizeBytes": 5218,
+      "mode": 420,
+      "sha256": "4788aa2fb8f2a2104fcec142c7d42881876d02431b62198ef3a4a993cf243017"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/deployLookahead.ts",
+      "kind": "file",
+      "sizeBytes": 5449,
+      "mode": 420,
+      "sha256": "a33c0933df06fb9ce1d51440060a2f6ff5ee4963e4c1aa872224586661e2a619"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/index.ts",
+      "kind": "file",
+      "sizeBytes": 3032,
+      "mode": 420,
+      "sha256": "e6d24c9c2ad0888778a77add01e21ab0289bda574577cbec86ddc3d44a8a1eb9"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/intel.ts",
+      "kind": "file",
+      "sizeBytes": 5230,
+      "mode": 420,
+      "sha256": "2e4100d83793d95ea600073f72e4df621717dda6d99a7fced395c7197b3f8b03"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/orchestrator.ts",
+      "kind": "file",
+      "sizeBytes": 5881,
+      "mode": 420,
+      "sha256": "dba79266db741bf0b616a757dad69659cd9342c1a6c6c95fa663ccbb1109c444"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/runners.ts",
+      "kind": "file",
+      "sizeBytes": 19495,
+      "mode": 420,
+      "sha256": "5973edcc44e89887197b67855f576c4bb58c1fb3262bfc02efbcd77adfd54037"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/attackers.ts",
+      "kind": "file",
+      "sizeBytes": 3445,
+      "mode": 420,
+      "sha256": "4695d6a2e4cb1eb18f5a171c8673acdceea6899e3aa90e1cdd76415e63a33be5"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/captures.ts",
+      "kind": "file",
+      "sizeBytes": 5008,
+      "mode": 420,
+      "sha256": "6147f852f2fd203050eb42215264d9040026fe08e9c3fccfef3bfc540ac02800"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/checks.ts",
+      "kind": "file",
+      "sizeBytes": 3587,
+      "mode": 420,
+      "sha256": "6e4c07ad8408b62ebe87ab87eaf0e369c9c4fa21d235336a5c07ce0715adf1e1"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/economy.ts",
+      "kind": "file",
+      "sizeBytes": 15038,
+      "mode": 420,
+      "sha256": "87e0e1358611e809da7a526bfd568d78060a4d2f7352dcecdde5c42ef3d2cfb0"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/index.ts",
+      "kind": "file",
+      "sizeBytes": 2473,
+      "mode": 420,
+      "sha256": "bb23ab162ccdbe661c56be2af6d9f14203bb7a01251a95ee50a0a83a486f0e6e"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/runners.ts",
+      "kind": "file",
+      "sizeBytes": 7779,
+      "mode": 420,
+      "sha256": "f981562f4ea16e85a7ba6f415249f3196c21951237d8cfb553d6fa012ca9bd0a"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/survival.ts",
+      "kind": "file",
+      "sizeBytes": 2448,
+      "mode": 420,
+      "sha256": "b61dd29726872f30da351e8b843c91e0def45bbed2fe44e58f7d6aa7aac10c38"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/threats.ts",
+      "kind": "file",
+      "sizeBytes": 1690,
+      "mode": 420,
+      "sha256": "6b77b0d9a62f69ac08b52222139fc89eca41f0bf9faf1c701d1042ccc4cf37ef"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/strategies/types.ts",
+      "kind": "file",
+      "sizeBytes": 1179,
+      "mode": 420,
+      "sha256": "55f4f326e4f79b60457a25d0d004c3e40dbe390fbe4d988f71062e70865d698e"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/tracking.ts",
+      "kind": "file",
+      "sizeBytes": 7206,
+      "mode": 420,
+      "sha256": "ccd6b5413853c1c33165228f55eff047e4f03ea29506329a68b050eda91286b5"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategic/witness.ts",
+      "kind": "file",
+      "sizeBytes": 9576,
+      "mode": 420,
+      "sha256": "94e080bed32c43f6748c28f9cd7155d88556f8ba622a380aec0ea545d01033f4"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/captures.ts",
+      "kind": "file",
+      "sizeBytes": 8899,
+      "mode": 420,
+      "sha256": "1832899838d7564b3f12bb8086df909160045dae75e2c49004c97aedc3708d69"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/checks.ts",
+      "kind": "file",
+      "sizeBytes": 2371,
+      "mode": 420,
+      "sha256": "14f1b3f8ba49818ecf85b5eb4cc85100423a83d8f02ef32374fbb7c312d8cb18"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/economy.ts",
+      "kind": "file",
+      "sizeBytes": 8371,
+      "mode": 420,
+      "sha256": "54b27aa3427a2e73d9928dcbd34499c587836122a8cb5a34aa6b92ad011925c8"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/index.ts",
+      "kind": "file",
+      "sizeBytes": 2114,
+      "mode": 420,
+      "sha256": "877bc4d5d7f425c917bab2fe52f09d87613c4c13cb822c9441bf4aed2a69c656"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/mapControl.ts",
+      "kind": "file",
+      "sizeBytes": 7786,
+      "mode": 420,
+      "sha256": "0c95b69b4882164df78f01318d9bcf2dd12ab1e1b0a200b32ecd39dba67611a5"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/survival.ts",
+      "kind": "file",
+      "sizeBytes": 5829,
+      "mode": 420,
+      "sha256": "e518d3d4a14f922929b6a51456b7dc826343bf11224905e4fdc052a1522ada54"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/threats.ts",
+      "kind": "file",
+      "sizeBytes": 1102,
+      "mode": 420,
+      "sha256": "d7aa1dd4ff324ee9e2499315fd9c7b5bf26d87fb953620da2b233263a1ad361c"
+    },
+    {
+      "path": "packages/starchess-core/src/ai/strategies/types.ts",
+      "kind": "file",
+      "sizeBytes": 1296,
+      "mode": 420,
+      "sha256": "dddb6defbb4b917e7ac6cbff9acf65703c260135ddf8067b5c6b4c6316425194"
+    },
+    {
+      "path": "packages/starchess-core/src/board/classicFen.ts",
+      "kind": "file",
+      "sizeBytes": 339,
+      "mode": 420,
+      "sha256": "b005f66aa7e878b4c5db0e0fce7caa31f15a7d1bb052a2fdc485616d888e3adc"
+    },
+    {
+      "path": "packages/starchess-core/src/board/deploy-reach.ts",
+      "kind": "file",
+      "sizeBytes": 3322,
+      "mode": 420,
+      "sha256": "62a7bfbc37b5d88d789948c01900fc471031abf4603777ca218a2565c3feba36"
+    },
+    {
+      "path": "packages/starchess-core/src/board/mine-contact.ts",
+      "kind": "file",
+      "sizeBytes": 2369,
+      "mode": 420,
+      "sha256": "16cdde5417ed37568ca9aac64fffb7c6fa58c35fd76a93726a05192aace0086f"
+    },
+    {
+      "path": "packages/starchess-core/src/board/mines.ts",
+      "kind": "file",
+      "sizeBytes": 3834,
+      "mode": 420,
+      "sha256": "1c9082d89051e6ffdfba71c97b709f7d33cced372cf149c02c84bffebbd31fff"
+    },
+    {
+      "path": "packages/starchess-core/src/board/move-timing.ts",
+      "kind": "file",
+      "sizeBytes": 3822,
+      "mode": 420,
+      "sha256": "4009773b2d47deeb83cceaab502af5692e5de0e4254d053166374043d9b8ba69"
+    },
+    {
+      "path": "packages/starchess-core/src/board/moves.ts",
+      "kind": "file",
+      "sizeBytes": 10469,
+      "mode": 420,
+      "sha256": "2479c4eed2fca89a1a1de08d210c2fa1cd0b40c22a330ebdf8c48b6069c57df6"
+    },
+    {
+      "path": "packages/starchess-core/src/board/placement.ts",
+      "kind": "file",
+      "sizeBytes": 7285,
+      "mode": 420,
+      "sha256": "083952137e3b5cd829494140edb5b995efe7941f227e30bcd303698bb7475544"
+    },
+    {
+      "path": "packages/starchess-core/src/board/ray-scan.ts",
+      "kind": "file",
+      "sizeBytes": 2149,
+      "mode": 420,
+      "sha256": "46c3fc691517e50c13969c5b45d998c4e5b76670556b39f7a8007f3ef995a418"
+    },
+    {
+      "path": "packages/starchess-core/src/board/siege.ts",
+      "kind": "file",
+      "sizeBytes": 1071,
+      "mode": 420,
+      "sha256": "eb57a7d6715067681cab6da2872840f8f9935ec2cccbc9badf78e73f9bebb452"
+    },
+    {
+      "path": "packages/starchess-core/src/board/vision.ts",
+      "kind": "file",
+      "sizeBytes": 10114,
+      "mode": 420,
+      "sha256": "6e6def04466f3eee6dbd4cdfe0599c8da8255282e34e42ff0d55f6e4533c516c"
+    },
+    {
+      "path": "packages/starchess-core/src/commands/queue-action.ts",
+      "kind": "file",
+      "sizeBytes": 7351,
+      "mode": 420,
+      "sha256": "6e493f3bcaa7de70b7c7b5e7398385e007ebcf138dbec8abbf844e2b6277b94d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/board.ts",
+      "kind": "file",
+      "sizeBytes": 381,
+      "mode": 420,
+      "sha256": "ddac9d5352ecd1d3494b3c6129998cbf61cee14c3dbf42652b5c9fea17e5b85c"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/causal-events.ts",
+      "kind": "file",
+      "sizeBytes": 24503,
+      "mode": 420,
+      "sha256": "116fe05325b3e5287ce058d8bf73588318024c979c122d066189c4dd39144624"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/causal-producer.ts",
+      "kind": "file",
+      "sizeBytes": 1300,
+      "mode": 420,
+      "sha256": "f7f5e9225ef8785d6eddaa1d89634514652de4d6ad0937a9031e095749506d97"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/causal-types.ts",
+      "kind": "file",
+      "sizeBytes": 5324,
+      "mode": 420,
+      "sha256": "2af0eed1bfd165a190a69370c80e7e284814fdf53cdc4b510c70723ba25f9601"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/charon.ts",
+      "kind": "file",
+      "sizeBytes": 170,
+      "mode": 420,
+      "sha256": "860bef6bc8a249576c0ba50eff6e49cdb4dd7f8c0a1d4dad9ef090d5d31516d6"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/classical-resolution.ts",
+      "kind": "file",
+      "sizeBytes": 1769,
+      "mode": 420,
+      "sha256": "652c7787052870b31571e85a9e8d949cb54a1ba78aa28e6823eddcd71bbc190d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/constants.ts",
+      "kind": "file",
+      "sizeBytes": 300,
+      "mode": 420,
+      "sha256": "8d40aef2d7b98ff3a998e7ab7d0dc2eafc404a046b9ccc9695d2dc013489e390"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/economy.ts",
+      "kind": "file",
+      "sizeBytes": 260,
+      "mode": 420,
+      "sha256": "c0f1fc790bc351324fd1d6a43b617701032afe2a25d86ba03ea26ddc79acba32"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/index.ts",
+      "kind": "file",
+      "sizeBytes": 1287,
+      "mode": 420,
+      "sha256": "59804e608176d5eacd4589cbdb7fd966d19d4a88c48a188db388553f7ee7a9f4"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/initialization.ts",
+      "kind": "file",
+      "sizeBytes": 1536,
+      "mode": 420,
+      "sha256": "b835651978b742dc96b749dad934f5e758a2adade75d56511ae274887f45a330"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/mine-contact.ts",
+      "kind": "file",
+      "sizeBytes": 215,
+      "mode": 420,
+      "sha256": "37c97e4c119bf0bcdcdb0a7df3f4de012d0dfc21f7703e3623af83c795354dc8"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/mines.ts",
+      "kind": "file",
+      "sizeBytes": 213,
+      "mode": 420,
+      "sha256": "3fda1228b2d0fda3b065bb4f8969961eee99781ae951378944e41a94f25ad9a1"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/move-timing.ts",
+      "kind": "file",
+      "sizeBytes": 243,
+      "mode": 420,
+      "sha256": "abd7e82fb2761429e2d0f56bd77a3add7fb66b3c11ff5911e3fe7c9a183bed3d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/moves.ts",
+      "kind": "file",
+      "sizeBytes": 287,
+      "mode": 420,
+      "sha256": "eb26f1f1ab2c17f16202b4bcd08f127d834c5aecd32e79e8bb9e720338373eb5"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/native-classical.ts",
+      "kind": "file",
+      "sizeBytes": 8275,
+      "mode": 420,
+      "sha256": "246ec95a8277fb4468df7aa10569a0e36c55a0d983b175baebabea52d8cad173"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/outcome.ts",
+      "kind": "file",
+      "sizeBytes": 126,
+      "mode": 420,
+      "sha256": "7f2cbeeed979b8d9f5a97f55173e2c4000479350b2b9f0cbdd5edbe2a7a4c0f6"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-intents.ts",
+      "kind": "file",
+      "sizeBytes": 7728,
+      "mode": 420,
+      "sha256": "1fb8cb64521add5cd111ae001b9d85603e207485f5f4d1590ead09a9c72e100a"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-order.ts",
+      "kind": "file",
+      "sizeBytes": 2200,
+      "mode": 420,
+      "sha256": "0636b6ae52c94c841d42dd0b5baad82846d283ffa95a6987cf06a9dfbe554c1d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-specials.ts",
+      "kind": "file",
+      "sizeBytes": 242,
+      "mode": 420,
+      "sha256": "fd90584ec2b755a2be2cd724860fe0489186c2c84e882254235ece9ed57177e8"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-action.ts",
+      "kind": "file",
+      "sizeBytes": 915,
+      "mode": 420,
+      "sha256": "a8fade891926e99a330f3009d9dcf8e248a96281a54272f3e36af7e30fd0af11"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-contract.ts",
+      "kind": "file",
+      "sizeBytes": 123,
+      "mode": 420,
+      "sha256": "e6c4c3d4ba563903c0c3beacd637cc59bb8d7f46186e5264e594d04c134724dd"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-validation.ts",
+      "kind": "file",
+      "sizeBytes": 4529,
+      "mode": 420,
+      "sha256": "802ae995610f453e79d6e88eef386b9c856a94b77276b153d317c4f03678e24b"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/ray-scan.ts",
+      "kind": "file",
+      "sizeBytes": 177,
+      "mode": 420,
+      "sha256": "ffd5f7a3bf24694e84d9f421620e3898bb10bda62c61cdaa9a186611c49797ae"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/resolve.ts",
+      "kind": "file",
+      "sizeBytes": 877,
+      "mode": 420,
+      "sha256": "e58af101b6e1a1b5a94567de5484ce346e5a605cf6f1ec21239661dd73fe4e09"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/specials.ts",
+      "kind": "file",
+      "sizeBytes": 192,
+      "mode": 420,
+      "sha256": "cf5c83e811458b7a68f6ca88da450c499c6675f84c8cb466a1d7393af12f55a7"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/types.ts",
+      "kind": "file",
+      "sizeBytes": 355,
+      "mode": 420,
+      "sha256": "1f3ec1b3b203837432bfd0b5847f833dc05ce03decf3a739850116154ceb9f17"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/vision.ts",
+      "kind": "file",
+      "sizeBytes": 330,
+      "mode": 420,
+      "sha256": "f65e344d5e36e293a69dea3184cdabcbe24c08816b69bc182d0f2a38f89ba411"
+    },
+    {
+      "path": "packages/starchess-core/src/index.ts",
+      "kind": "file",
+      "sizeBytes": 6540,
+      "mode": 420,
+      "sha256": "cba85345925c1407231882a0749f684c11629847faf64aa3891491d0a65e317d"
+    },
+    {
+      "path": "packages/starchess-core/src/model/square.ts",
+      "kind": "file",
+      "sizeBytes": 105,
+      "mode": 420,
+      "sha256": "2659d82a4057ea33684f4f18934c0c47f1f5b789402727a8751bb2313ac50825"
+    },
+    {
+      "path": "packages/starchess-core/src/model/types.ts",
+      "kind": "file",
+      "sizeBytes": 4962,
+      "mode": 420,
+      "sha256": "2a43424bed449bf930ae557c950b634ad3ec641e5d2ac5ff9a8ee6c84e64264e"
+    },
+    {
+      "path": "packages/starchess-core/src/outcome.ts",
+      "kind": "file",
+      "sizeBytes": 1177,
+      "mode": 420,
+      "sha256": "0413b7e440087b08fb66275dbb83b3e7f5adc34af5dbf3e6e09049c6855fb217"
+    },
+    {
+      "path": "packages/starchess-core/src/replay/fen.ts",
+      "kind": "file",
+      "sizeBytes": 2196,
+      "mode": 420,
+      "sha256": "17f78350954e297a5c1efe210ac6436a3ddffd3fe309d60026bc5d2e5862eeca"
+    },
+    {
+      "path": "packages/starchess-core/src/replay/packed.ts",
+      "kind": "file",
+      "sizeBytes": 6293,
+      "mode": 420,
+      "sha256": "b4c941fde1d40304e675a87e091f2c544f3647e7c0c64fba988ea0a1c9e62126"
+    },
+    {
+      "path": "packages/starchess-core/src/replay/record.ts",
+      "kind": "file",
+      "sizeBytes": 8719,
+      "mode": 420,
+      "sha256": "c664e31138a20c60d589f891d225ee04a24b1a8bc8815a7c6e288a2282d3e9a4"
+    },
+    {
+      "path": "packages/starchess-core/src/replay/validate-history.ts",
+      "kind": "file",
+      "sizeBytes": 4309,
+      "mode": 420,
+      "sha256": "849ffef4cdc6f5cd30416b8814b56c2719ef2801ef25cf05cf2f9c3dd7214c9a"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/resolve-turn.ts",
+      "kind": "file",
+      "sizeBytes": 46101,
+      "mode": 420,
+      "sha256": "169f4e5726f66cfd24a1a5a4a5832f8eaba05ee2c63dd10f0619358eb77757b8"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/submit-turn.ts",
+      "kind": "file",
+      "sizeBytes": 39066,
+      "mode": 420,
+      "sha256": "d5e3325ea985a4c19b784c90b1955d740068a26d0bc38a37d9a5d2de41b62f06"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/constants.ts",
+      "kind": "file",
+      "sizeBytes": 2062,
+      "mode": 420,
+      "sha256": "66acdcc1abc05197fbe3ae9df57a0efe4acea88c6ada78e4db9590f3343b6ff7"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/economy.ts",
+      "kind": "file",
+      "sizeBytes": 3611,
+      "mode": 420,
+      "sha256": "6fed53b09bf42f75fc6f9621f40361d99a072a551c6dbc76a29977211c99d579"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/adjacent.ts",
+      "kind": "file",
+      "sizeBytes": 3694,
+      "mode": 420,
+      "sha256": "96a671566e971bfbbe80aa64205fa04f7ef1b6a23ef2cf337b321945b2d5e540"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+      "kind": "file",
+      "sizeBytes": 5451,
+      "mode": 420,
+      "sha256": "b2c8af310fe33f83a18eb3e5e53b41734c147e5f62440d9422b2e757b376c4e4"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/registry.ts",
+      "kind": "file",
+      "sizeBytes": 1212,
+      "mode": 420,
+      "sha256": "0965a88ac773afe43ca72915d2ddccac4cc84c31f58121a1514f6511de8f6b5d"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/stimStep.ts",
+      "kind": "file",
+      "sizeBytes": 1421,
+      "mode": 420,
+      "sha256": "fbe990595fe42e41aad17460eb76b3a3f134672144a867a52ee618034f4069a1"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/validation.ts",
+      "kind": "file",
+      "sizeBytes": 13598,
+      "mode": 420,
+      "sha256": "a18e038feb83f3b15f4f9309e33101b23dac2080155af46ac51474f09c0a064c"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/classic.ts",
+      "kind": "file",
+      "sizeBytes": 44,
+      "mode": 420,
+      "sha256": "43e7cdf70d4d0789aa4bc7c808361c1581e0493da21d7027448d669f9a849c1b"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/codec.ts",
+      "kind": "file",
+      "sizeBytes": 20029,
+      "mode": 420,
+      "sha256": "74ab468ff05e53e419a5fe151ebcc266cf89c4c9b3789731a8d9e89e954be3eb"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/index.ts",
+      "kind": "file",
+      "sizeBytes": 733,
+      "mode": 420,
+      "sha256": "6fe29e70afd2d6c615a31379174d24de2d011e42d52c693f0ea7954a1cfa64ad"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/legacyKinds.ts",
+      "kind": "file",
+      "sizeBytes": 1828,
+      "mode": 420,
+      "sha256": "263e4ba87bdeaccf41d18e3c0495430f2b6b0af332ff374f707e2df7babc030b"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "kind": "file",
+      "sizeBytes": 315006,
+      "mode": 420,
+      "sha256": "0dc70cedcc188b938415b04b4625adfff643b28e7b795a0100ea1ea34303f551"
+    },
+    {
+      "path": "schemas/feature-layout.json",
+      "kind": "file",
+      "sizeBytes": 1399,
+      "mode": 420,
+      "sha256": "bca25ea10220001845ad8a5f419f32baf250073b150c9bbe78f17a75c7c08f74"
+    },
+    {
+      "path": "tsconfig.json",
+      "kind": "file",
+      "sizeBytes": 493,
+      "mode": 420,
+      "sha256": "7fc5cd6510ef19ff9ec20e39e76f14f5bc97aa71f6bf5508062a84951e1c561e"
+    },
+    {
+      "path": "tsconfig.tests.json",
+      "kind": "file",
+      "sizeBytes": 377,
+      "mode": 420,
+      "sha256": "7f0eda964089e3723c0cb05bacd89a8613979af1f8c66c7ce14250bb32eaaade"
+    }
+  ],
+  "sourcePinsMatch": true,
+  "elapsedSeconds": 0.213546379,
+  "runtime": "Bun",
+  "nativeExecuted": false,
+  "hostExecuted": false,
+  "referenceBuilt": false,
+  "trainingExecuted": false,
+  "trainingReady": false
+}

@@ -1,0 +1,23 @@
+{
+  "status": "PASS_SYNTHETIC_SOURCE_ONLY",
+  "sourceSha256": {
+    "artifacts/training-functional/reference-prep.ts": "49599141613de07469176a848cc6745077cda89ecfce2fec7daed0354c14f5a2",
+    "artifacts/training-functional/reference-prep.test.ts": "e5a2ad16291c02c3dd398f2fe94c6369fd6647e2f6127c9f86532c0287c03287"
+  },
+  "bunVersion": "1.4.0",
+  "testsPassed": 69,
+  "testsFailed": 0,
+  "expectCalls": 117,
+  "testExitCode": 0,
+  "strictTypecheckExitCode": 0,
+  "skipLibCheck": false,
+  "evidence": ["commands.json", "source.sha256", "tests.stdout", "tests.stderr", "types.stdout", "types.stderr"],
+  "actualOperationalModesInvoked": [],
+  "actualGETRequests": 0,
+  "actualReferenceAssembly": false,
+  "actualReferenceBuild": false,
+  "packageEvaluation": false,
+  "realProcessGroupAndWatchdogExecutionTested": false,
+  "functionalQualificationClaimed": false,
+  "trainingReady": false
+}

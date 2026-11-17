@@ -1,5 +1,178 @@
 # Path to technical training readiness
 
+<a id="current-functional-path-2026-11-16"></a>
+
+## CURRENT CANDIDATE SNAPSHOT 2026-11-17 — CANDIDATE_SOURCE_VERIFIED_PUBLICATION_PENDING_OPERATOR_QUERY_NOT_RUN
+
+**This section takes precedence over every older status and next-gate instruction below.**
+This is the **pre-publication candidate snapshot**, not a perpetual claim about the published branch. A later local post-publication receipt records the actual publication result without rewriting this committed snapshot.
+Executor accepted the **FIXED training-critical inventory** and selected implementation of the functional path.
+Functional acceptance precedes separately authorized training; **ALL hardening follows ALL planned training and validated results**.
+Keep normal mandatory implementation reviews focused on functional correctness, not a new full-assurance, authorization-framework, or custody-audit gate.
+
+**“Publish + HOST facts”, APPROVED / NOT PERFORMED at this snapshot:** [host-facts-1/plan.json](../artifacts/training-functional/host-facts-1/plan.json) grants **ONE normal commit + ONE push** of the prepared functional source/tests/specs/bounded receipts and six flat dependency-source/license inputs to **origin/refs/heads/feat-ml-adjuntant-ii / existing PR51 / base main**, expected prior head `b7d4eae58288bfbac3b5f947f524b2342b1b9fa3`.
+The lead reports live API confirmation of that PR/head. Separate lead checks reported an empty index before staging and sample-only common hooks with `core.hooksPath` unset. The original HOST checkout's five dirty paths remain preserved, per the lead; this spec pass performs no Git/API check.
+Exclude caches, raw archives, compiled bundles, model records, original-checkout changes, and unrelated work; **no amend, force push, hook bypass, or reuse of consumed publication grants**.
+Publication must be **verified before operator handoff**; its result belongs in a **new local post-publication receipt**, not a self-hashing publication commit, second commit, or amend.
+**HOST-facts source is complete and source-verified:** standalone **175-line `host-facts.ts` / 27 mocked HOST-I/O tests**, inert on import, runs only through explicit Bun eval with **`-- --run`**, and admits observations only when both cwd and realpath equal **`/home/gu1lty/Projects/proveo/chess-coach`**.
+It imports no relative project source, reads no credential environment, writes no HOST files, and executes no project-native binary; cached Bun `--version` is the explicit interpreter-version exception.
+The immutable prior `source-acceptance-2.json` SHA256 `b12bf0da43401b1858a3b3f1c3be9820d8030b6f07329e9448239886c5911e70` does **not** verify this later source.
+
+**HOST query — ONE OPERATOR-ONLY invocation, NOT RUN at this snapshot:** **11 fixed groups within the approved maximum 12 / 30s controlled-main budget / 128 KiB final JSON**, read-only fixed local Docker-image metadata through the local daemon, named binary/dependency metadata, cached Bun version, one selected GPU UUID/free/total-memory snapshot, and free disk.
+The assistant must **never execute the actual query from coding**; HOST-facts tests must mock **ALL I/O**, including Docker, nvidia, and HOST cached-Bun execution.
+No HOST writes, containers, project-native binary execution, GPU kernels, network acquisition/install, broad cache/proc/secrets access, binary payload reads, native builds, or training are approved.
+Return one **FULL / PARTIAL / DEADLINE** JSON result, never readiness or compatibility proof; free-resource snapshots are not reservations, and a Docker config ID is not a manifest digest.
+All controlled phases retain the **original origin**: query admission/work uses **origin + 27s**, bounded command cleanup retains its original cutoff, final output shares **origin + 30s**, and the final JSON includes its newline within **131,072 bytes**. This ordinary watchdog excludes interpreter/shell startup and supplies **no strict OS termination guarantee**.
+`runHostFacts` bounds output emission against **`report.originMs + 30000`**; expired output admission, output failure, or output timeout returns **exit2 without a second emission**, so completed JSON is not guaranteed on that failure path. Completed FULL exits0; completed PARTIAL/DEADLINE exits1.
+JSON-package observations retain **actual source `bytesRead` even on parse errors**; aggregate raw-byte counts sum those source bytes rather than the serialized projection.
+This bounded availability query stays on the fixed functional path; it adds **no readiness gate, hardening framework, or numerical rerun**, and `trainingReady:false` remains unchanged.
+
+**Exact current operator command — generation2 only, prepared / not executed:** [operator-command-2.sh](../artifacts/training-functional/host-facts-1/operator-command-2.sh) is **16,589 bytes / SHA256 `cf566b4f55a1d00fe835918b4e97388fba1e5ddf7c5e15e7d568103da6d7da6e`** and embeds **16,483 source bytes / SHA256 `d1d82ba1bcb07a52412755cc183965519586705076ce6e46829c5657afcc16aa`**.
+[command-verification-2.json](../artifacts/training-functional/host-facts-1/command-verification-2.json) records **Bash `-n` + stub-only exact-argv PASS**, **zero actual HOST queries / no HOST-facts source evaluation during the probe**; this is not execution qualification.
+Use the explicit **Bash** wrapper, never assume Fish quoting; [operator instructions](../artifacts/training-functional/host-facts-1/README.md) require checked publication before the one operator invocation and return of its result without automatic rerun. Preserve generation1 `operator-command.sh` and `command-verification.json` as **HISTORY / NOT CURRENT / DO NOT RUN**.
+
+**Fresh source pipeline already recorded — [publication-2/summary.json](../artifacts/training-functional/checks/publication-2/summary.json): ALL TWELVE gates PASS at their recorded before/after pins.**
+
+| Publication-2 gate(s) | Recorded result, not final-candidate publication proof |
+|---|---|
+| Seven test gates | Focused **65**, runtime **62**, contracts **25**, R4 **93**, reference **180**, HOST facts **27**, workspace **8** = **460 tests / 0 failures** |
+| Three strict TypeScript gates | Root source, root tests, and task **PASS** |
+| Static specs | **PASS for that generation's diagram/index bytes**, not this documentation update or a renderer run |
+| Preservation | **6,431 historical tracked files unchanged**; native bridge **59 direct + 6 exact SPEC-only inverses PASS** |
+
+Preserve **publication-1 ALL12 PASS / 458 tests** before the two review regressions. Preserve the genuine **two RED cases in `checks/host-review-red-2`**, then **`host-review-green-1` PASS27 + strict types**; `host-review-red-1` retains its invalid readonly-import mock failure, not the genuine regression proof.
+[HOST reviews](../artifacts/training-functional/host-facts-1/reviews.json) record adversarial **`ses_e18ce0441ffeBwm3Gpd5hdEUlL`** clearing **HIGH unbounded emission / MEDIUM JSON raw-byte accounting**, and security **`ses_e18c4fdb1ffemK604CwR3d3QqN` READY / no findings**, both conditional on **fresh consolidated checks and checked publication before operator handoff**.
+
+**Final-candidate checks still pending at this snapshot:** `audit-staged-publication.ts` changed after publication-2; DevOps **`ses_e18c04e96ffetSTzt4nByug1z2`** rechecked **`--no-renames`** detection of rename-source deletions and the JS-module allowlist restricted to the **two exact manifest-pinned retained `.mjs` inputs**, and returned READY.
+[publication-audit-fix-1 task types](../artifacts/training-functional/checks/publication-audit-fix-1/task-types/receipt.json) **PASS** verifies that narrow correction, not a fresh full pipeline or staged publication.
+The auditor uses **read-only Git batch reads + working-tree hashes**, then writes an **exclusive `wx` local audit receipt after staging**; it performs no staging, commit, push, or HOST query.
+The lead must run fresh **publication-3 consolidated checks, including final static coverage**, after this documentation pass, then write the final candidate manifest at **`artifacts/training-functional/host-facts-1/verification.json`**, which is **absent at this snapshot**. No claim binds all current candidate pins to final publication verification yet.
+Staging, the exact staged-byte audit, commit, push, checked publication, and operator handoff remain pending; the later publication-result receipt stays **local / outside the publication commit**, with no self-reference, second commit, or amend.
+
+**Flat upstream inputs already retained:** [reference-inputs/manifest.json](../artifacts/training-functional/reference-inputs/manifest.json) binds six exact source/license files totaling **113,300 bytes**, copied by `retain-reference-inputs.ts` under the approved copy scope, against source manifest SHA256 `51b6e846ec9c9e0fa645b4f309a667e5a95842306f8f610a06123b2cf9af97d7` and exact paths/modes/hashes.
+The flat names are `fflate-package.json`, `fflate-esm-index.mjs`, `fflate-LICENSE`, `jssha-package.json`, `jssha-dist-sha256.mjs`, and `jssha-LICENSE`; these are **COPIED UPSTREAM INPUT DATA**, not task-authored tooling or compiler outputs.
+Preserve all comments, copyright, notices, `SPEC:` pointers, and bytes; do not migrate prose from these inputs. Fflate provenance is **selected installed bytes, not archive-SRI attestation**; jssha provenance is **selected members from its pinned SHA512-verified archive**.
+Retention made **zero new requests/builds**; the ignored 435-file source tree, compiled bundles, raw archives, failed root, and all old receipts remain unchanged and excluded from publication.
+
+**2026-11-16 preparation-2 actual PASS — SELECTED REFERENCE PREPARATION ONLY:** [observation.json](../artifacts/training-functional/reference-prep-2/observation.json) and the unchanged [receipt](../artifacts/training-functional/reference-prep-2/receipt.json) bind pin `b4b241481fb12de4a7344e6dba8eda775af57675` and **Bun 1.4.0**.
+Before execution, [source-check-1](../artifacts/training-functional/checks/source-check-1/receipt.json) passed **180 tests / 345 assertions / strict TypeScript / ten matching before-after source pins**: **100 reader cases**, including the genuine archive positive, and **80 driver cases**; adversarial `ses_e195cc7a5ffe3tgjKpzNuQLOEx` and security `ses_e195cc7a1ffeFCA7jj03k5geKw` returned **READY for the one fresh approved retry**.
+The task-local NUL uid/gid reader and fresh-root driver retain the approved narrow deltas; the actual jssha manifest uses `exports['./sha256'].import.default`, read without rewriting it or replacing its SRI.
+Actual **ONE GET / 163ms / exit0** and **assembly + six builds / 336ms / exit0** completed with both stream EOFs and empty stderr; the fresh retry is **consumed1 / remaining0**, with no automatic rerun.
+[verification.json](../artifacts/training-functional/reference-prep-2/verification.json) records **PASS_READ_ONLY_REFERENCE_RECHECK / extra GET0**, binding all six outputs and the declared resolved inputs inside the physical source tree: **435 files / 4,635,549 bytes = 429 pinned inputs + 6 package files**, **six bundles / 939,123 bytes**, **95 distinct resolved inputs**.
+The selected-reference manifest SHA256 is `09cd6b6dd97fd1b3984b71b5f0d3f540e21b38285897062148e16c0e388fc45a`; these **95 inputs form a newly built closure**, not recovered historical C14 inputs, authenticated ancestry, a C14 guard PASS, or full assurance.
+Preserve [verify-launcher-failure.json](../artifacts/training-functional/reference-prep-2/verify-launcher-failure.json): the earlier inline launcher parse error never invoked the verify CLI and did **not** fail the successful preparation; the corrected read-only recheck added no operation.
+[Preservation](../artifacts/training-functional/reference-prep-2/preservation.json) passes for the **25 prior-generation files / 252,973 bytes**; [reference-success-1 preservation](../artifacts/training-functional/checks/reference-success-1/preservation/receipt.json) confirms **6,431 historical tracked files unchanged**, with the lead's unchanged **108,729,726-byte** aggregate.
+Compiler outputs and raw archives remain ignored scratch artifacts, not Git payloads; no bundle evaluation, corpus rollout, native/HOST/GPU/training/publication ran or follows from this spent grant.
+
+**R4 source COMPLETE and verified:** [r4-observation.ts](../artifacts/training-functional/r4-observation.ts) now exports executable **`observeR4`**; architect `ses_e19a71b90ffe0M1NtmgBPRS4rf` accepted its plan before code, and **93 injected composition tests** pass in final-4.
+It captures one coordinator instance (`initializeMaster/runAttempt/snapshot/close`), a preprepared native record, **ONE supplied factory.create callback**, and master101 **corpus ordinal0 + live ordinal1**; it checks actual setup descriptor/RNG/model/timing, returned state against snapshots, counters/history/journal/bindings, **eligible >= 1**, and **nonzeroPG >= 1**.
+It retains monotonic **10s/297s/300s** phase origins and closes exactly once against the **last original cleanup cutoff**, without renewing a budget; every result retains **`qualified:false` / `COMPOSITION_ONLY_INPUTS_UNQUALIFIED`**.
+The API adds no CLI or factory construction, accepts no caller REAL labels, and is not a shortened campaign; injected local tests prove no native/HOST/GPU/training qualification.
+The unchanged old `qualification.ts` **R4_PREPARATION BLOCKED data** is prior-generation metadata; the new executable observer supersedes only the current metadata-only description, never those issued source-proof fields.
+
+**Accepted pre-HOST-task verification — [final-4/summary.json](../artifacts/training-functional/checks/final-4/summary.json): ALL ELEVEN gates PASS; every gate records equal before/after source pins.**
+
+| Final-4 gate(s) | Recorded result |
+|---|---|
+| Six test gates | Focused **65**, runtime **62**, contracts **25**, R4 **93**, reference **180**, workspace **8** = **433 tests / 0 failures** |
+| Three strict TypeScript gates | Root source, root tests, and task **PASS** |
+| Static specs | Coverage/index, note bounds, and source pointers **PASS for the recorded pre-closeout diagram/index bytes**; this edit claims no rerun |
+| Preservation | **6,431 historical tracked files unchanged**; native bridge **59 direct + 6 exact SPEC-only inverses PASS**, old manifest unchanged |
+
+Preserve **final-3 ALL11 PASS / older R4 91-test generation** and the [two RED regressions](../artifacts/training-functional/checks/r4-review-red-1/r4/receipt.json) exposing the **MEDIUM swallowed setup failure masked by a later work/cleanup deadline**.
+The narrow correction checks captured `current.fault` **before the post-attempt work-deadline check after the owned attempt promise resolves**; final-4's **93 R4 tests** preserve the primary error and original close-deadline budget.
+[reviews-2.json](../artifacts/training-functional/reviews-2.json) records adversarial `ses_e192c2adcffewzELWsBT07z9f5` **READY after static correction recheck**, with its final-4 condition now met, and security `ses_e192c2ad4ffecuxnEMRGPgAEeL` **READY SOURCE_ONLY / no findings**; the security verdict predates that narrow error-ordering correction, and no post-correction security rereview is claimed.
+Old `reviews.json` and `source-acceptance.json` remain immutable. **`artifacts/training-functional/source-acceptance-2.json` now exists** after post-docs-2 static PASS; SHA256 `b12bf0da43401b1858a3b3f1c3be9820d8030b6f07329e9448239886c5911e70`. It records source/reference preparation, not HOST qualification or new authority.
+[document-closeout.json](../artifacts/training-functional/document-closeout.json) retains the **post-docs-3 static PASS** and its prior document pins; neither that snapshot nor any accepted source receipt is rewritten for this new task.
+
+Remaining functional evidence is **actual canonical init/BOTH + independent reference + natural close**, **native R4 and selected-HOST persistent-campaign operational wiring**, and **explicit functional acceptance**; `trainingReady:false` and **ALL hardening LAST after ALL planned training and validated results** remain unchanged.
+DevOps `ses_e19715246ffeqKtdUGdxLoi78Q` supplied read-only advice to consider bounded HOST facts first because current image/binary availability is unknown; no HOST query ran, and this is **not a new readiness gate**.
+Executor selected the bounded publication and operator-only facts scope above; it approves neither native/GPU execution, actual qualification, training, nor any new approval framework. Publication and actual HOST facts are **NOT PERFORMED at this candidate snapshot**; actual HOST input availability remains **UNKNOWN until the operator returns observations**.
+
+**Preserved preparation-1 history — CONSUMED FAILED:** Executor selected **“Acquire jssha; build reference”** under [reference-prep-1/plan.json](../artifacts/training-functional/reference-prep-1/plan.json).
+The one fresh attempt ran after **69 synthetic tests / 117 assertions / strict TypeScript PASS** and both scoped reviews READY; its [receipt](../artifacts/training-functional/reference-prep-1/receipt.json) records acquisition-worker **exit1 / 173ms / `Error: tar-octal`**.
+The preserved **135,944-byte** archive matches the pinned SHA512; its SHA256 is `c372d61fc6843661abbdb868e9d28e8d3c7ce1c19fd7ce559d77fca90d02bd08`.
+The [read-only diagnostic](../artifacts/training-functional/reference-prep-1/archive-diagnostic-1.json) observes **730,112 expanded bytes / 45 headers** and NUL-filled `uid`/`gid` fields in the first `package/LICENSE` header; the frozen inspector rejects `uid` as `tar-octal`.
+Preparation-1 produced no selected package files, assembled reference tree, or bundles; preserve its failed receipt and raw archive. The [separate observation](../artifacts/training-functional/reference-prep-1/observation.json) records **one observed request invocation / attempt1 consumed / remaining0**, without rewriting the original receipt's `actualGetRequests:null`.
+Preparation-1 remains consumed with no reusable authority; the independently approved preparation-2 retry above supersedes the earlier pending-decision status. The original bounds below describe preparation-1 history, not a renewed allowance.
+Acquire only **ONE anonymous GET** of `https://registry.npmjs.org/jssha/-/jssha-3.3.2.tgz`: **2 MiB / 30s GET / 120s acquisition**, pinned **SHA512 before decompression**, existing **8 MiB expanded / 256 physical-header** bounds, selecting `package/package.json`, `package/dist/sha256.mjs`, and at most one license in the plan's preference order.
+Copy the exact existing **427 application + 2 corpus** inputs and selected installed **fflate** `package.json`, `esm/index.mjs`, and `LICENSE` into fresh ignored `artifacts/training-functional/scratch/reference-prep-1`; permit only the planned internal workspace link with its target inside that physical tree.
+Build the **SIX existing Bun 1.4.0 bundles**, **30s each within one 240s assembly/build phase**; do not evaluate the bundles.
+Architect `ses_e19715247ffeWA8c5ijEoKhwyN` and DevOps `ses_e19715246ffeqKtdUGdxLoi78Q` accepted this plan **before code**, not its implementation or execution result.
+Reuse unchanged `inspectVerifiedArchive` only as a read-only pure inspector, never as authority or an operational capture entry; do not reopen frozen **SOURCE23 / Identity3 / seal6** helper reviews.
+Keep `_work`, old receipts, partial inputs, caches, and halted LLVM immutable; ordinary bounded-phase child watchdogs add no strict-stop or isolation gate.
+No package manager/install, redirect/retry/fallback, old-cache use, HOST/native/GPU/training, Git writes/publication, or bundle evaluation is approved.
+
+**Prior source cohort remains accepted:** **160 tests / nine gates / three strict TypeScript gates PASS**, **post-docs-1 static specs PASS**, and **both adversarial/security SOURCE_ONLY READY**.
+The lead reports immutable [source-acceptance.json](../artifacts/training-functional/source-acceptance.json) SHA256 `aa4757f80864996dea6e030cd920fddbd8331403f004006af1ac511a0b33eb90`; it accepts the prior source slice, not the later preparation-2/R4 generation or operational readiness.
+
+**Published baseline — lead-reported:** `b7d4eae58288bfbac3b5f947f524b2342b1b9fa3` is the clean published unified ancestry for apps + ML.
+`@chess-coach/starchess-core` owns the canonical engine; `packages/game-core` is retired.
+Older claims that original-feature f6 remains unintegrated, or that baseline publication is still pending, describe superseded generations; the fresh candidate publication above is separate.
+This spec pass performs no Git verification or publication.
+
+| Fixed inventory | Preserved evidence / evidence still needed |
+|---|---|
+| Shared-GPU numerical component | Preserve accepted full-six **REPORT PASS**, **4,670 F64** coordinates, `eps=1e-6`, `atol=1e-8`, `rtol=1e-5`, exact distinct **C12 scoring/backward/SGD/reload digests**, masters **101..105**, and unchanged **CPU Flex initialization**. The exact static native-comment bridge now **PASSES**, linking current native source to those accepted component reports within its SPEC-only scope; it is not a new mathematical PASS or a default numerical/custody rerun. |
+| CPU regression component | Preserve **CPU39 REPORT PASS**, **16 harnesses / 39 tests**, the **192 versus 179** stdout-byte anomaly, and `fullMetadataConsistency:false`. This is neither fresh native execution nor a whole-profile readiness result. |
+| Independent reference + canonical init/BOTH/natural close | **Six selected reference bundles are built and read-only rechecked**, not evaluated. The small observer remains source-tested against **MOCK** peers and retains the **unmodified historical canonical helper's default REAL capability**; actual independent init/BOTH/natural-close qualification remains pending. |
+| Integrated native R4 game/model/economics | New **`r4-observation.ts::observeR4` is source-complete and verified / 93 injected tests**, with constant **qualified:false / COMPOSITION_ONLY_INPUTS_UNQUALIFIED** for **one corpus + one live** attempt. Old `qualification.ts` BLOCKED metadata remains historical; actual native R4 qualification remains pending. |
+| Persistent five-master campaign | Source implementation is **COMPLETE and verified** for serial **101..105 × exactly 1,000 verified attempts**, without cap override, retry, or resume. Existing state validation, terminal **nonzeroPGUpdates >= 1 per master**, final artifacts, and primary **101** only after all five valid masters remain unchanged. Operational qualification and training remain pending; injected source tests are not actual campaign execution. |
+
+**Native65 bridge — current literal bytes differ from manifest7e.**
+The old manifest is `7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec`.
+Lead's read-only `1f..HEAD` comparison reports exactly **six** current mismatches: `Cargo.toml`, `crates/learning/Cargo.toml`, `crates/learning/src/batch.rs`, `crates/learning/src/lib.rs`, `crates/learning/src/model.rs`, and `crates/learning/tests/model.rs`.
+Each difference changes only the first-line `SPEC:` target from `_spec/architecture.puml` to `_spec/ml-runtime-architecture.puml`.
+`artifacts/training-functional/native-comment-bridge.ts` and its tests now **PASS**: **59 direct matches + 6 exact first-line inverse restorations to old hashes** in the [final-2 preservation receipt](../artifacts/training-functional/checks/final-2/preservation/receipt.json), alongside all ten bridge tests.
+Preserve the original manifest, checkers, and receipts; do not claim all 65 current files are byte-identical, a fresh native run, or a new mathematical PASS.
+
+**Reference inputs — bounded observations, not completeness.**
+Current `node_modules/.pnpm/fflate@0.8.3/node_modules/fflate/package.json` identifies **fflate 0.8.3**; metadata alone proves no integrity, provisioning, or reference build.
+The earlier search found no **jssha 3.3.2** in its four checked package.json paths, not globally; preparation-2 now separately records successful acquisition, selection, and builds.
+[input-status.json](../artifacts/training-functional/input-status.json) names the exact **four checked package.json paths**; its scope establishes neither package-payload integrity nor a rehash of the 429 partial inputs.
+The original **429 pinned inputs / 4,522,249 bytes** remain unchanged; preparation-2 copied them into the fresh **435-file** physical source tree and built its selected six bundles without evaluating them.
+Frozen **SOURCE23 / Identity3 / seal6 helpers**, derived records, historical `_work` receipts, caches, partials, and halted LLVM work remain immutable.
+
+**Campaign and cleanup contract — COMPLETE and verified, SOURCE ONLY.**
+`CampaignCoordinator` selects `initializeMaster`, `runAttempt`, `finalize`, and `close` from the existing coordinator instance.
+Use `initialRecord(master, timing)` for preprepared CPU Flex records and one `createOwned` callback from **ONE FixedAttemptFactory**.
+Keep fixed phase clocks: initialization **10s**; each attempt **10s startup / 297s work / 300s cleanup** from its own original attempt origin; finalization **297s** and close **300s** from the original final-phase origin.
+Run once; reentry revokes new admissions rather than claiming strict termination of active callbacks.
+Finalize through existing artifacts and call close exactly once; ordinary finite phase bounds do not prove whole-campaign preemption.
+Mark `releaseInputs` attempted **before** invoking it after verified close; on failure release only pre-session inputs, preserve failed-session inputs, and never repeat a throwing release.
+[checkpoint-runtime.puml](checkpoint-runtime.puml) owns this lifetime/publication contract; [runtime-protocol.puml](runtime-protocol.puml) owns canonical/reference and task qualification preparation.
+Keep **both GPU mains OFF** and **GPUv1 master101/ordinal0** unchanged.
+
+**Retained prior-source verification — [final-2/summary.json](../artifacts/training-functional/checks/final-2/summary.json): ALL NINE gates PASS, with before/after source pins equal in every gate.**
+
+| Gate(s) | Recorded result |
+|---|---|
+| Focused | **65 tests** = coordinator **10** + campaign **38** + native bridge **10** + canonical observer **7** |
+| Runtime | **62 tests** |
+| Contracts | **25 tests** |
+| Workspace | **8 tests** |
+| Three strict TypeScript gates | Root source, root tests, and task **PASS** |
+| Historical preservation | **6,431 tracked files unchanged**; lead reports their aggregate as **108,729,726 bytes**. Native bridge **59 direct + 6 exact SPEC first-line inverses PASS**; old manifest7e unchanged. |
+| Static specs | Coverage/index, note bounds, and source `SPEC:` pointers **PASS** for the diagram/index bytes recorded in final-2; no PlantUML render. |
+
+The prior cohort's four test gates total **160 distinct tests**, not training episodes; preparation's **180-test generation** is retained separately, and final-4 reruns the selected suites together without adding older receipts to its **433-test** count.
+Final-2, post-docs-1, final-3, RED, and final-4 receipts retain their recorded bytes; this source-closeout documentation neither rewrites that evidence nor claims another verification run.
+Preserve builder **RED 8 pass / 2 expected failures**, then **GREEN 48 pass / 0 fail**, under [runtime-functional-sol](../artifacts/training-functional/checks/runtime-functional-sol/).
+Preserve **final-1 root test-types FAIL** at `training-campaign.test.ts:100–101`; the tests-only `[...MASTERS]` matcher correction precedes final-2's passing root test-types gate.
+
+**Scoped reviews:** adversarial `ses_e198b2522ffefBhCjzpLpTTbI1` returned **READY SOURCE_ONLY / no findings**, as reported by the lead.
+Security `ses_e198b251effeh5l7zkhu89C39t` cleared the **LOW test-types failure** against final-2 and returned **READY_TO_MERGE source-only: yes**.
+Both verdicts accept the prior **SOURCE_ONLY** cohort, not the new preparation implementation or an execution result.
+`artifacts/training-functional/source-acceptance.json` records the source-only result after both verdicts and the post-refresh static spec check.
+
+An injected **5,000-call** schedule test is not training; one actual SQLite-coordinator **zero-choice synthetic match followed by intentional failure** is not native R4 qualification.
+Keep new ignored fixtures under repository-local `artifacts/training-functional/scratch/`, never `/tmp/opencode`.
+Candidate-snapshot status is **CANDIDATE_SOURCE_VERIFIED_PUBLICATION_PENDING_OPERATOR_QUERY_NOT_RUN / trainingReady:false**; publication-2 source proofs and conditional reviews are recorded, but final publication-3/current-pin checks and checked publication remain pending. No actual HOST query ran; old consumed grants remain consumed.
+Preparation-2 PASS grants no bundle evaluation, rollout, native/HOST/GPU qualification, training, or publication; this docs-only pass executes no commands, Python/Java, network/Git, acquisition, or build.
+**Native PlantUML render: SKIP** — Java and remote-theme access lie outside the Bun/TypeScript-or-Rust-only task scope; static PASS is not renderer PASS, and no render was attempted.
+
+---
+
 ## CURRENT precedence — training-functional readiness (2026-11-09)
 
 Executor accepted **training first; ALL security/privacy hardening and isolation LAST, after the planned training phase is complete and its results are validated**.

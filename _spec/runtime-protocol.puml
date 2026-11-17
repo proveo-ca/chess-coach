@@ -1,7 +1,64 @@
 @startuml runtime_protocol
-' label contract: OFFLINE_PACKET_REVIEWED_AND_SEALED_PUBLICATION_PREFLIGHT_PENDING names offline-packet-ready1.json's issued SOURCE status; SOURCE_PACKET_REVIEWED_SEALED_FINAL_COHORT_FREEZE_AND_STAGE_CHECK_PENDING names the remaining publication phase. Both reference strong postcheck6 and both final READY verdicts; neither grants HOST or training execution.
-' purpose: staged BOTH source proof, spent R1 and approved unused manual-only R2 with full integration and publication gates
+' purpose: canonical/reference composition and bounded operator HOST-facts lifecycle
 ' covers: _work/gpu-owner-recovery/runs/host-canonical-r4-source-1/**
+' covers: artifacts/training-functional/*.ts
+' covers: artifacts/training-functional/plan.json
+' covers: artifacts/training-functional/tsconfig.json
+' covers: artifacts/training-functional/input-status.json
+' covers: artifacts/training-functional/reference-prep-1/**
+' covers: artifacts/training-functional/reference-prep-2/**
+' covers: artifacts/training-functional/reference-inputs/**
+' covers: artifacts/training-functional/host-facts-1/**
+' covers: Cargo.toml
+' covers: crates/learning/Cargo.toml
+' covers: crates/learning/src/batch.rs
+' covers: crates/learning/src/lib.rs
+' covers: crates/learning/src/model.rs
+' covers: crates/learning/tests/model.rs
+' CANDIDATE SNAPSHOT 2026-11-17: CANDIDATE_SOURCE_VERIFIED_PUBLICATION_PENDING_OPERATOR_QUERY_NOT_RUN. Publish + HOST facts remains approved under artifacts/training-functional/host-facts-1/plan.json; standalone175-line host-facts.ts +27 mocked HOST-I/O tests complete/source-verified. Publication-2 ALL12 PASS/460 tests/three strict types/static specs/preservation names its recorded generation, NOT final current pins after auditor/docs edits. Fresh publication-3 and final static checks pending; publication NOT PERFORMED/actual HOST query NOT RUN at this snapshot/trainingReady:false. A later LOCAL post-publication receipt supersedes pending flags without rewriting this committed snapshot.
+' publication contract: ONE normal commit+ONE push/current prepared functional source-tests-specs-bounded receipts+SIX flat dependency-source/license inputs ->origin/refs/heads/feat-ml-adjuntant-ii/existing PR51/base main/expected prior HEAD b7d4eae58288bfbac3b5f947f524b2342b1b9fa3. Lead reports live API confirmed target/head; no publication yet. Exclude caches/raw archives/compiled bundles/model records/original-checkout changes/unrelated work; NO amend/force/hook bypass. Checked publication BEFORE operator handoff; new LOCAL post-publication result receipt, no self-hash commit/second commit/amend. Fresh scope only, never reuse old publication grants.
+' HOST facts contract: ONE OPERATOR-ONLY invocation/assistantMayExecuteOnHost:false/30s controlled-main/11 FIXED groups within approved max12/128KiB finalJSON including newline; read-only fixed local image through local Docker daemon+named binary/dependency metadata+cached Bun --version+ONE selected GPU UUID/free-total memory+free disk. Standalone/no relative project imports/inert import/explicit Bun --eval source -- --run only/exact cwd AND realpath guard /home/gu1lty/Projects/proveo/chess-coach. Coding NEVER executes actual query; HOST-I/O mocked/no actual Docker-nvidia-HOST cached-Bun execution. NO credential-env reads/HOST file writes/containers/project-native execution/GPU kernels/acquisition-install/network expansion/broad cache-proc-secrets access/binary payload reads/native builds/training.
+' HOST output meaning: one FULL/PARTIAL/DEADLINE JSON, NOT readiness/compatibility proof; free snapshots are NOT reservations and Docker config ID is NOT manifest digest. Current availability unknown/not queried; this fixed-path facts scope adds no readiness gate/hardening framework/numerical campaign rerun, and grants no native/GPU qualification or training/publication beyond the exact fresh plan.
+' HOST review pivot: HIGH unbounded emit corrected by runHostFacts using report.originMs+30000 for output, never a renewed clock; expired output admission/failure/timeout ->exit2/NO second emission/completed JSON not guaranteed on that path. Queries use original origin+27000; final output <=131072B including newline shares original+30000. Ordinary watchdog excludes interpreter/shell startup/NO strict OS guarantee. MEDIUM JSON accounting corrected: jsonPackage retains actual bytesRead even on parse failure; aggregate rawBytes sums SOURCE bytes, not serialized projections.
+' HOST proof/reviews: artifacts/training-functional/checks/publication-2/summary.json ALL12 PASS/equal before-after pins; focused65/runtime62/contracts25/R4 93/reference180/HOST27/workspace8=460 tests0fail/three strict types/static specs/preservation6431/native59+6. Preserve publication-1 ALL12 PASS/458 before two added regressions; genuine host-review-red-2 TWO RED ->host-review-green-1 PASS27+types. host-review-red-1 invalid readonly-import mock remains history, not genuine regression proof. host-facts-1/reviews.json adversarial ses_e18ce0441ffeBwm3Gpd5hdEUlL clears HIGH emit+MEDIUM JSON bytes; security ses_e18c4fdb1ffemK604CwR3d3QqN READY/no findings; BOTH require fresh consolidated checks and checked publication before handoff.
+' exact current command: artifacts/training-functional/host-facts-1/operator-command-2.sh16589B/SHA256 cf566b4f55a1d00fe835918b4e97388fba1e5ddf7c5e15e7d568103da6d7da6e embeds host-facts.ts16483B/SHA256 d1d82ba1bcb07a52412755cc183965519586705076ce6e46829c5657afcc16aa. command-verification-2.json PASS_BASH_SYNTAX_AND_EXACT_ARGUMENT_BYTES_WITH_STUB_ONLY/Bash-n0/stub0/no HOST source evaluation/no actual query. Explicit Bash wrapper/README operator instructions, never assume Fish quoting. Preserve generation1 operator-command.sh+command-verification.json HISTORY/NOT CURRENT/DO NOT RUN; no automatic rerun.
+' publication audit correction: artifacts/training-functional/audit-staged-publication.ts changed AFTER publication-2. DevOps ses_e18c04e96ffetSTzt4nByug1z2 recheck READY after --no-renames exposes rename-source deletions and JS-module allowlist restricts to TWO EXACT manifest-pinned retained .mjs inputs. checks/publication-audit-fix-1/task-types/receipt.json PASS is narrow strict types only. Auditor performs read-only Git batch+working-tree hashes then wx LOCAL receipt AFTER staging, not Git mutation/HOST execution. Fresh publication-3+final static checks ->lead writes future host-facts-1/verification.json (ABSENT at this snapshot); no final all-current-pin verification claimed. Staging/exact staged audit/commit/push/checked publication/handoff pending; new publication result stays LOCAL outside commit/NO self-reference-second commit-amend.
+' retained upstream DATA: artifacts/training-functional/reference-inputs/manifest.json records6 flat files113300B already copied by retain-reference-inputs.ts against source manifest51b6e846ec9c9e0fa645b4f309a667e5a95842306f8f610a06123b2cf9af97d7 with exact paths/modes/hashes/new requests0/builds0. Fflate packageJSON/ESM/LICENSE originate from selected installed bytes, NOT archive-SRI attestation; jssha packageJSON/sha256.mjs/LICENSE originate from pinned SHA512-verified archive members. Copied upstream comments/copyright/notices/SPEC pointers/bytes are immutable INPUT DATA, never task-authored tooling/compiler outputs/prose-migration targets. Original ignored435 tree/bundles/raw archive/failed root remain unchanged and excluded from Git publication.
+' prior accepted source: observeR4 executable/source-verified; artifacts/training-functional/checks/final-4/summary.json ALL11 gates PASS/equal source pins/433tests0fail/3 strict TypeScript/static specs/preservation6431/native bridge59+6. source-acceptance-2.json b12bf0da43401b1858a3b3f1c3be9820d8030b6f07329e9448239886c5911e70 and document-closeout.json/post-docs-3 static PASS/document pins stay immutable; they do NOT verify later HOST-task source. Composition remains qualified:false/inputs unqualified/no actual qualification.
+' accepted prior test cohort: focused65/runtime62/contracts25/R4 93/reference180/workspace8=433, with root-source/root-tests/task strict TSC PASS plus static specs and preservation. Static PASS names final-4's recorded pre-closeout diagram/index bytes; this doc edit claims no rerun or renderer PASS. Prior160/9/3 and preparation180 receipts remain separate historical generations, not extra tests added to433.
+' current review/history: artifacts/training-functional/reviews-2.json immutable; final-3 ALL11 PASS used old91 R4 tests. Two RED cases in checks/r4-review-red-1 expose MEDIUM swallowed setup fault masked by later work/cleanup deadline. Narrow fix checks current.fault BEFORE post-attempt work-deadline check after resolved owned attempt; final-4 R4 93 PASS retains primary fault and original close cutoff/no budget renewal.
+' current verdicts: adversarial ses_e192c2adcffewzELWsBT07z9f5 READY after static correction recheck/final-4 condition now met; security ses_e192c2ad4ffecuxnEMRGPgAEeL READY_SOURCE_ONLY/no findings BEFORE the narrow error-order correction. No post-correction security rereview or execution qualification claimed. Old reviews.json/source-acceptance.json stay unchanged; source-acceptance-2.json now exists after post-docs-2 static PASS/SHA256 b12bf0da43401b1858a3b3f1c3be9820d8030b6f07329e9448239886c5911e70. No new authority follows.
+' retained 2026-11-16 preparation-2: artifacts/training-functional/reference-prep-2/{receipt,verification,observation,preservation}.json record PASS_SELECTED_REFERENCE_PREPARATION_ONLY at b4b241481fb12de4a7344e6dba8eda775af57675/Bun1.4.0. Actual ONE GET163ms0 +assembly/SIX builds336ms0/both stream EOFs/stderr0; fresh retry consumed1/remaining0/no automatic rerun/no new GET since/trainingReady:false.
+' preparation-2 source acceptance: artifacts/training-functional/checks/source-check-1/receipt.json PASS_SOURCE_ONLY/180tests345assertions/strict TSC/10 before-after pins equal;100 reader cases including genuine-archive positive+80 driver cases. Adversarial ses_e195cc7a5ffe3tgjKpzNuQLOEx and security ses_e195cc7a1ffeFCA7jj03k5geKw READY_FOR_ONE_FRESH_APPROVED_RETRY preceded actual execution; these are not R4-source verdicts.
+' built closure:435 physical source files4635549B=429 pinned+6 package files;6 bundles939123B/95 DISTINCT resolved inputs; selected-reference manifest SHA25609cd6b6dd97fd1b3984b71b5f0d3f540e21b38285897062148e16c0e388fc45a. Read-only verify PASS_READ_ONLY_REFERENCE_RECHECK binds outputs and declared inputs inside physical source/extra GET0. This is a NEW built95-input closure, not recovered old C14, ancestry/full-assurance proof, or C14 guard PASS; outputs/raw archives stay ignored scratch, not Git payloads.
+' verification history: preparation-2/verify-launcher-failure.json preserves an inline-launcher parse error AFTER actual preparation PASS; verify CLI was NOT invoked then/no operation. Corrected read-only verification PASS adds0 GETs and never rewrites the operational PASS as failure.
+' successful preservation: preparation-2/preservation.json PASS for prior25 files252973B; checks/reference-success-1/preservation/receipt.json PASS historical6431 tracked files unchanged/lead aggregate108729726B. Preparation-1 FAILED173ms/tar-octal/old raw135944B/root1/issued fields and SOURCE23/Identity3/seal6/helpers/derived records/caches/partials/native math/API stay unchanged.
+' retry acquisition/build: same ORIGINAL jssha URL/SHA512; ONE fresh anonymous GET/2MiB/30s GET/120s acquisition/SHA512 BEFORE inflate; unchanged caps/selected members; exact427 app+2 corpus+selected installed fflate; SIX existing Bun1.4.0 builds/30s each within240s assembly-build. Fresh scratch/reference-prep-2 and report root reference-prep-2 only. No automatic further retry/redirect/fallback/install/HOST/native/GPU/training/Git write/publication/bundle evaluation/old-cache use.
+' retry parser contract, accepted BEFORE code by architect ses_e19715247ffeWA8c5ijEoKhwyN: task-local artifacts/training-functional/jssha-archive.ts copies pure inspector logic with ONLY eight NUL bytes in uid(offset108,length8) or gid(offset116,length8) ->0. ALL other numerics/format/SRI-before-inflate/caps/checksum/path/PAX/GNU/duplicates/selected-payload/identity validations remain identical; no normalization/repack/derivative SRI or frozen SOURCE23 helper modification.
+' completed retry ownership: artifacts/training-functional/reference-retry.ts +test and jssha-archive.ts +test passed source180/345/TSC before actual PASS. Driver deltas are the task-local inspector, fresh OP2/report roots, and reading actual jssha exports['./sha256'].import.default without manifest rewrite. Genuine prior-archive positive ran read-only/in-memory; actual operation used a fresh GET, not old-extractor execution or archive fallback. No normalization/repack/derivative SRI/frozen-helper modification or reviewer reset; ordinary watchdogs are not strict-stop gates; ALL hardening LAST.
+' prior-generation preservation: artifacts/training-functional/reference-prep-2/prior-generation.json pins25 files252973B, including preparation-1 raw135944B/SHA256 c372d61fc6843661abbdb868e9d28e8d3c7ce1c19fd7ce559d77fca90d02bd08/pinned SRI. Original reference-prep.ts/.test.ts/root1/receipt/raw archive/issued plan1 and _work/old SOURCE23/Identity3/seal6 records stay byte-unchanged.
+' PREP1 HISTORY: the attempt ran ONCE after69 synthetic tests117 assertions/strict TypeScript PASS and both scoped reviews READY. Acquisition worker exit1/173ms/Error: tar-octal; no assembly/build. Preparation-1 CONSUMED1/remaining0 remains history; fresh plan2 alone supplies the separate retry approval.
+' consumed reference-prep acquisition bounds: ONE anonymous GET https://registry.npmjs.org/jssha/-/jssha-3.3.2.tgz; pinned SHA512 BEFORE decompression;2MiB/GET30s/acquisition120s/expanded8MiB/256 physical headers; select package/package.json+package/dist/sha256.mjs+at most ONE license. No redirect/retry/fallback/credentials/install. Bounds are history, not reusable authority.
+' reference-prep assembly/build: exact existing427 app+2 corpus inputs and selected INSTALLED fflate package.json/esm/index.mjs/LICENSE ->fresh ignored artifacts/training-functional/scratch/reference-prep-1; only planned internal workspace link whose target stays inside that physical tree. SIX existing Bun1.4.0 bundles/30s each/ONE240s assembly-build phase; no actual bundle evaluation, HOST/native/GPU/training/Git write/publication or old-cache use.
+' reference-prep ownership: reference-prep.ts +test completed source69/117/TSC PASS; adversarial ses_e195cc7a5ffe3tgjKpzNuQLOEx and security ses_e195cc7a1ffeFCA7jj03k5geKw READY for source/approved attempt, not actual PASS. Unchanged inspectVerifiedArchive rejected NUL-filled uid/gid metadata. No frozen SOURCE23/Identity3/seal6 helper changed. Preserve _work/old receipts/partials/caches/halted LLVM; no strict-stop/isolation gate.
+' archive diagnostic: artifacts/training-functional/reference-prep-1/archive-diagnostic-1.json verifies135944 compressed bytes/SHA256 c372d61fc6843661abbdb868e9d28e8d3c7ce1c19fd7ce559d77fca90d02bd08/pinned SHA512;730112 expanded bytes/45 headers. First package/LICENSE uid field is eight NUL bytes; gid also NUL-filled. Read-only headers only: zero selected files/extractions/assembly/builds/new requests. Failed receipt stays unchanged, including actualGetRequests:null; separate observation.json records one request invocation and consumed allowance.
+' retained source acceptance: artifacts/training-functional/source-acceptance.json EXISTS SOURCE_ONLY/immutable/lead SHA256 aa4757f80864996dea6e030cd920fddbd8331403f004006af1ac511a0b33eb90; final-2 all9 gates/160 tests/3 strict TypeScript PASS and post-docs-1 specs PASS; both adversarial/security READY. This prior cohort is separate from later preparation180 and completed R4 source; never sum generations as distinct engine coverage.
+' retained prior-source verification: focused65=coordinator10+campaign38+bridge10+canonical7; runtime62/contracts25/workspace8;160 DISTINCT tests; root-source/root-tests/task strict TypeScript PASS. Static coverage/index/note-bounds/SPEC-pointer PASS names final-2's recorded diagram/index bytes; this refresh claims no rerun.
+' current preservation/history:6431 tracked historical files unchanged/lead aggregate108729726B; builder RED8pass2expected-fail then GREEN48pass preserved; final-1 root-test-types FAIL at campaign.test100-101 preserved; tests-only [...MASTERS] matcher correction precedes final-2 PASS.
+' current reviews: adversarial ses_e198b2522ffefBhCjzpLpTTbI1 READY_SOURCE_ONLY/no findings; security ses_e198b251effeh5l7zkhu89C39t READY_SOURCE_ONLY after the LOW readonly-array typing finding cleared against final-2. Neither verdict qualifies execution.
+' published baseline, lead-reported: b7d4eae58288bfbac3b5f947f524b2342b1b9fa3 unifies apps+ML on @chess-coach/starchess-core; packages/game-core retired. Old f6-unintegrated/publication-pending statements below are historical, not current ancestry or next gates.
+' accepted component proof: preserve full-six GPU REPORT PASS/4670 F64/eps1e-6/atol1e-8/rtol1e-5/exact DISTINCT C12 scoring-backward-SGD-reload digests/masters101..105/unchanged CPU Flex init, and CPU39 REPORT PASS/192vs179/fullMetadataConsistency:false. Completed static bridge PASS links current native source within its exact SPEC-only scope, not a new mathematical PASS or default numerical/custody rerun.
+' native-comment bridge COMPLETE STATIC PASS: artifacts/training-functional/native-comment-bridge.ts +10 tests/final-2 preservation confirm59 direct hashes plus6 EXACT first-line inverse SPEC-pointer restorations; old manifest7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec/checkers/receipts unchanged. Do not claim65 current byte-identical files. The six paths are the Cargo/Rust covers lines above; no suffix normalization or native execution.
+' current package/build observation: preparation-2 selected jssha and local fflate inputs, assembled435-file source and built6 bundles; read-only verification PASS/extra GET0/referenceCodeEvaluated:false. Prep1 remains failed and preserved; plan2 is consumed/remaining0. No bundle evaluation/corpus rollout/native/HOST/GPU/training/publication performed or authorized by preparation PASS.
+' canonical observer SOURCE_VERIFIED: artifacts/training-functional/qualification.ts +7 tests use the UNMODIFIED old canonical helper; DEFAULT REAL ports remain only a future separately authorized capability, never invoked locally. Callable local port injections remain MOCK. Separate observations do not rewrite historical false qualification fields.
+' named input metadata: input-status.json preserves the earlier four-path package search. New reference-prep-1/input-preflight-1.json and archive-diagnostic-1.json separately record429 input rehashes and acquired archive integrity; the earlier issued metadata remains unchanged.
+' R4 CURRENT SOURCE COMPLETE: artifacts/training-functional/r4-observation.ts exports observeR4; final-4 R4 93 injected tests PASS. Existing *.ts coverage owns module/test; architect ses_e19a71b90ffe0M1NtmgBPRS4rf accepted before code. Old qualification.ts R4_PREPARATION BLOCKED data/tests stay unchanged as prior-generation metadata; the new executable observer supersedes the CURRENT metadata-only description, not issued proof fields or actual native qualification.
+' implemented R4 source contract: capture supplied coordinator.initializeMaster/runAttempt/snapshot/close +preprepared NativeRecord/ONE factory.create/master101 corpus ordinal0 then live ordinal1; validate actual setup descriptor/RNG/modelRecord/timing, returned state/readback counters/history/journal/bindings, eligible>=1/nonzeroPG>=1. Monotonic original10/297/300s per phase; close ONCE uses LAST original cleanup cutoff. Every result qualified:false/scope COMPOSITION_ONLY_INPUTS_UNQUALIFIED; no CLI/factory construction/caller REAL labels/shortened-campaign mode; injected local tests execute no native/hardware/training.
+' remaining functional evidence: actual canonical init/BOTH versus independent reference and natural close; integrated native R4 and operational campaign/HOST qualification; explicit evidence acceptance. Built bundles are not execution qualification; both GPU mains OFF/GPUv1 master101 ordinal0 unchanged; ALL hardening only after ALL planned training and validated results.
+' campaign sibling COMPLETE SOURCE_ONLY: checkpoint-runtime.puml owns one persistent coordinator, one caller-bound factory, preprepared CPU Flex init, serial101..105/exact1000 verified attempts each, state/final-validity checks and exactly-once close. Injected5000 calls are not actual campaign execution or training; SQLite zero-choice synthetic match then intentional failure is not native R4 qualification.
+' prior-cohort scope: SOURCE_ONLY; preserve SOURCE23/Identity3/seal6 helpers/derived records/historical_work receipts/caches/partials/halted LLVM. Preparation-2's bounded acquisition/assembly/build grant is consumed and grants no evaluation/qualification/rerun or auth/custody framework. Both GPU mains OFF/GPUv1 master101 ordinal0 unchanged. Functional acceptance ->separate approved training ->ALL hardening only after ALL planned training and validated results; mandatory reviews remain functional, not full-assurance gates.
+' precedence: CANDIDATE SNAPSHOT 2026-11-17 above supersedes ALL older current/status/authority/publication/package-absence labels in the retained chronology and legend below. Nov16 operation dates, issued records, and original receipt fields remain unchanged; no fresh Git or operational verification by this projection. This committed snapshot is not perpetual publication status; actual HOST availability remains UNKNOWN until the operator returns observations.
+' HISTORICAL label contract: OFFLINE_PACKET_REVIEWED_AND_SEALED_PUBLICATION_PREFLIGHT_PENDING names offline-packet-ready1.json's issued SOURCE status; SOURCE_PACKET_REVIEWED_SEALED_FINAL_COHORT_FREEZE_AND_STAGE_CHECK_PENDING names its old publication phase. Both reference strong postcheck6 and both final READY verdicts; neither grants HOST or training execution.
 ' status: SOURCE_ONLY_VERIFICATION4_PASS_REVIEW2_READY / localTests:46 / localAssertions:367 / canonicalInjectedCases:38 / selectedPureR4Cases:8 / passingStages:2 / sourceBindings:92_UNCHANGED / adversarialSecurityBackend:READY_SOURCE_ONLY / referenceDirection:OFFLINE_PREPARATION / localInputs:COMPLETED_REVIEWED_PARTIAL_ASSETS / applicationFiles:427 / corpusFiles:2 / aggregateFiles:429 / aggregateBytes:4522249 / r1AcquisitionApproval:CONSUMED_FAILED_BEFORE_NETWORK / r1CombinedRemaining:0 / r1GetAuthorityRemaining:0 / r2AcquisitionApproval:APPROVED_UNUSED_MANUAL_ONLY / r2CombinedRemaining:1 / r2NpmGetsRemaining:2 / manualHandoffRemaining:1 / githubFetchRemaining:1 / actualGetRequests:0
 ' source publication status: overall:SOURCE_PACKET_REVIEWED_SEALED_FINAL_COHORT_FREEZE_AND_STAGE_CHECK_PENDING / captureOfflineProof:9_751_0_TSC0 / callerOfflineProof:6_185_0_TSC0 / deliveryOfflineProof:15_190_TSC0_FISH0 / implementationReviews:12_CURRENT_SCOPED_READY_UNCHANGED / sealWriterProof:8_193_0_TSC0_FISH_NOEXEC0 / sealQualityReview2:ADVERSARIAL_SECURITY_READY / offlineSourceEmission:ONCE_EXIT0_FIVE_NONAUTHORIZING_ARTIFACTS_EXIST / externalPostcheck:6_TSC0_EXIT0_STDERR0_PASS / metadataNegativesRejected:23 / inputMetadataNegativesRejected:8 / sourceReceipt:PROVISIONAL_BYTES_UNCHANGED_EXTERNAL_SOURCE_ONLY_QUALIFICATION / finalArtifactAndPostcheckReviews:2_READY_SOURCE_POSTCHECK_AND_EMITTED_PACKET / publicationChecker:30_47_TSC0_ALL3_READY / remoteExactRefBaseline:PASS_6fdc92 / cohortFrozen:false / stagedBytesChecked:false / commitPushPerformed:false
 ' authority status unchanged: exactInstalledPackages:MISSING_IN_BOUNDED_LOCAL_AND_SYSTEM_SEARCHES / referenceBundlingAuthorized:false / hostExecutionAuthorized:MANUAL_ONLY_READINESS_PENDING / actualPublicationAuthorized:CONDITIONAL_FULL_READY / publicationStatus:APPROVED_NOT_PERFORMED / manualCommandDelivered:false / assistantMayExecuteActualHandoffOrAcquisition:false / implementationReviewVerdictsRequired:12 / executionReadiness:false / canonicalBothQualified:false / referenceQualified:false / closeQualified:false / integratedR4Qualified:false / operationalWiringQualified:false / trainingReady:false
@@ -90,18 +147,124 @@
 ' see: _spec/gpu-readiness.md#current-canonical-r4-source-preparation
 ' see: _spec/gate-closure.md#current-gpu-full-source-preparation
 ' see: _spec/readiness.md#current-functional-acceptance-checklist--planned-not-passed
-' template/ratchet: _spec/template.txt absent; human must fetch and commit the repository template once when permitted. No remote fetch/render/commands/tests edited here; no specNotesEnforced implementation found in the inspected tree.
-' readability: manual syllable counts; MOCK note31 words/2 sentences/59 syllables/FK12.9, five lines <=50 columns.
+' see: _spec/readiness.md#current-functional-path-2026-11-16
+' see: _spec/checkpoint-runtime.puml
+' validation snapshot 2026-11-17: publication-2 static coverage/index/notes/pointers PASS is bound to its recorded diagram/index bytes BEFORE this update; lead must run final static checks. Existing covers/index already own all new task files; fingerprint remains null. No validation commands run here. Native PlantUML render SKIP: Java and remote-theme access are outside the Bun/TypeScript-or-Rust-only task scope; no render attempted or renderer PASS claimed.
 !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
-title SOURCE_PACKET_REVIEWED_SEALED_FINAL_COHORT_FREEZE_AND_STAGE_CHECK_PENDING - SOURCE only; no HOST handoff
+title Candidate snapshot: source verified; publication pending; operator HOST query not run
 
-participant "host-canonical-r4-source-1/canonical.ts\nverification4 SOURCE_ONLY PASS; review2 READY_SOURCE_ONLY" as TASK
+actor "Operator\nONE invocation after checked publication" as HOSTOP
+participant "host-facts-1/operator-command-2.sh\nexplicit Bash; exact embedded source" as HOSTCMD
+participant "artifacts/training-functional/host-facts.ts\nstandalone; inert import; explicit eval entry" as HOSTFACTS
+participant "node:fs/promises + Bun.spawn\nfuture HOST observations; mocked in source tests" as HOSTIO
+participant "Bun.stdout\nsingle bounded observational JSON" as HOSTOUT
+
+group Prepared operator-only HOST-facts contract - NOT RUN at candidate snapshot
+  HOSTOP -> HOSTCMD : only after checked PR51 publication; Bash from exact HOST root
+  HOSTCMD -> HOSTFACTS : bun --no-env-file --no-install --eval <pinned source> -- --run
+  HOSTFACTS -> HOSTFACTS : require main + exact [bun,--run]; retain original controlled-main origin
+  HOSTFACTS -> HOSTIO : require cwd AND realpath == /home/gu1lty/Projects/proveo/chess-coach
+  HOSTIO --> HOSTFACTS : accepted context or rejection; query admission ends at origin+27s
+  alt context rejected or original query phase expired
+    HOSTFACTS -> HOSTFACTS : no HOST queries; retain error and all eleven SKIPPED results
+  else accepted context within original query phase
+    loop exact eleven fixed groups; no broad enumeration or retry
+      HOSTFACTS -> HOSTIO : fixed metadata/JSON/disk read or approved command; original phase budget
+      HOSTIO --> HOSTFACTS : bounded data/errors; actual command exit/reap/EOF/timeout facts
+      opt named package JSON, including rejected parse
+        HOSTFACTS -> HOSTFACTS : retain actual bytesRead; sum source bytes, not serialized data
+      end
+      HOSTFACTS -> HOSTFACTS : preserve uncertainty/truncation; expired phase skips remaining groups
+    end
+  end
+  HOSTFACTS -> HOSTFACTS : FULL/PARTIAL/DEADLINE; availability UNKNOWN; no qualification claim
+  HOSTFACTS -> HOSTFACTS : serialize <=131072 bytes INCLUDING newline; preserve raw-byte accounting
+  alt original origin+30s already reached before output admission
+    HOSTFACTS --> HOSTCMD : exit2; no output attempt or renewed budget
+  else output admitted before original cutoff
+    HOSTFACTS -> HOSTOUT : emit ONCE; await only until report.originMs+30000
+    alt output fails or ordinary output deadline fires
+      HOSTOUT --> HOSTFACTS : failure/timeout; complete JSON not guaranteed
+      HOSTFACTS --> HOSTCMD : exit2; NO second emission or deadline renewal
+    else one JSON emission completes
+      HOSTOUT --> HOSTFACTS : completed bounded output
+      HOSTFACTS --> HOSTCMD : FULL ->exit0; PARTIAL/DEADLINE ->exit1
+    end
+  end
+  HOSTCMD --> HOSTOP : return result/exit; no automatic rerun; no compatibility or readiness proof
+end
+
+actor "R4 caller\ninjected local fixtures" as R4CALLER
+participant "artifacts/training-functional/r4-observation.ts\nobserveR4 - executable composition API; qualified:false" as R4
+participant "packages/runtime/src/training-coordinator.ts\nsupplied R4Coordinator API; inputs unqualified" as R4COORD
+participant "packages/runtime/src/fixed-attempt.ts\nONE supplied create callback; no constructor here" as R4OWNED
+participant "artifacts/training-functional/qualification.ts\nSOURCE_VERIFIED observer; REAL not run" as QUALIFIER
+participant "host-canonical-r4-source-1/canonical.ts\nretained verification4/review2; helper unchanged" as TASK
 participant "packages/runtime/src/job.ts\nNativeJob unchanged" as JOB
 participant "packages/runtime/src/native-session.ts\nNativeSession unchanged" as SESSION
 participant "packages/runtime/src/process-transport.ts\nmain port: injected MOCK locally / real only future HOST" as MAIN
 participant "packages/runtime/src/process-transport.ts\nreference port: injected MOCK locally / real only future HOST" as REFERENCE
 
-group Injected local source proof - future HOST contract, not independent process execution or handoff
+group Current executable R4 composition - 93 injected tests, NOT native qualification
+  R4CALLER -> R4 : observeR4(coordinator, initialRecord, createOwned, clockNs)
+  R4 -> R4 : validate callables before ownership; capture methods/callbacks
+  R4 -> R4 : monotonic sticky clock; copy/hash bounded preprepared NativeRecord
+  R4 -> R4COORD : initializeMaster(101, copied record); original initialization10s
+  R4COORD --> R4 : require exact fresh initial state/model/RNG/bindings
+  R4 -> R4COORD : snapshot(101)
+  R4COORD --> R4 : require deep equality with returned initial state
+  break owned initialization/context validation fails
+    R4 -> R4 : retain primary initialization failure; admit no attempt
+    R4 -> R4COORD : close ONCE; retain original initialization cleanup cutoff
+    R4 --> R4CALLER : FAIL / qualified:false; retain close/deadline failures
+  end
+  loop exact master101 corpus ordinal0, then live ordinal1
+    R4 -> R4 : original phase10/297/300s; derive expected nextAttempt
+    R4 -> R4COORD : runAttempt(101, fixed id, phase timing, wrapped setup)
+    R4COORD -> R4 : wrapped setup with actual descriptor/RNG/model/timing
+    R4 -> R4 : require ONE setup; exact context/model hash/original startup budget
+    R4 -> R4OWNED : same caller-owned createOwned(setup)
+    R4OWNED --> R4 : owned dependencies or captured sticky setup/delegate fault
+    R4 --> R4COORD : return dependencies or propagate captured fault
+    R4COORD --> R4 : await owned attempt promise; wrapper then becomes inactive
+    R4 -> R4 : on resolved attempt, throw captured fault BEFORE work-deadline check
+    break captured fault or owned attempt failure
+      R4 -> R4 : retain primary phase failure; admit no next attempt
+      R4 -> R4COORD : close ONCE; retain LAST original cleanup cutoff
+      R4 -> R4 : retain close/deadline failures after primary; never renew cutoff
+      R4 --> R4CALLER : FAIL / qualified:false / inputs unqualified
+    end
+    R4 -> R4 : check original work deadline and exactly ONE setup
+    R4 -> R4COORD : snapshot(101)
+    R4COORD --> R4 : require deep equality with returned checked state
+    R4 -> R4 : verify counts/RNG/control/model/journal/history/binding progression
+    R4 -> R4 : check same original work deadline after observation
+    break context/readback/progress/deadline validation fails
+      R4 -> R4 : retain phase failure; admit no next attempt
+      R4 -> R4COORD : close ONCE; retain LAST original cleanup cutoff
+      R4 --> R4CALLER : FAIL / qualified:false; retain close/deadline failures
+    end
+  end
+  R4 -> R4 : require eligibleCompleted>=1 and nonzeroPGUpdates>=1; otherwise record FAIL
+  R4 -> R4COORD : close ONCE; check LAST original cleanup cutoff after close
+  R4COORD --> R4 : owned close return/error; no new phase budget
+  R4 --> R4CALLER : PASS or FAIL; qualified:false / COMPOSITION_ONLY_INPUTS_UNQUALIFIED
+end
+
+group Source-verified canonical caller contract - REAL qualification not executed
+  QUALIFIER -> TASK : future default REAL ports; no createPort override
+  QUALIFIER -> QUALIFIER : local callable injection is MOCK, never independent reference proof
+  QUALIFIER -> QUALIFIER : separate observations; preserve historical false receipt fields
+end
+
+group Retained qualification.ts R4_PREPARATION - BLOCKED data only; no native execution
+  QUALIFIER -> QUALIFIER : plan master101 corpus ordinal0, then live ordinal1
+  QUALIFIER -> QUALIFIER : name existing initializeMaster/runAttempt/snapshot/close APIs
+  QUALIFIER -> QUALIFIER : require SAME coordinator and FixedAttemptFactory.create
+  QUALIFIER -> QUALIFIER : retain future native score/context/recipient/economics/C12/reload/completion needs
+end
+
+group Retained injected source proof - future REAL contract, not independent process execution
   TASK -> TASK : reject supplied non-function factory BEFORE NativeJob construction or clock use
   TASK -> TASK : SAME validated branch: absent/undefined -> fixedPort+REAL; callable -> injected+MOCK
   TASK -> JOB : construct with original clock; work cutoff origin+10s /cleanup cutoff origin+300s
@@ -185,6 +348,14 @@ end note
 ' publication freeze/staging contract: exact content manifest Q/cohort.json members bind path/classification/length/SHA256/Git blob/mode; THREE named controls Q/cohort.json,Q/paths.nul,Q/freeze-observation.json are outside recursive content-table/selfhash. paths.nul contains ALL content+THREE controls. Staged check requires exact NUL path-set/stage0 modes/raw Git blobs+SHA256 AND current live bytes for EVERY content/control member, with attrs rechecked. Whitespace ONLY SEVEN specs+TWO Q sources; never reformat pinned inputs/historical streams. Stage-check/post-freeze/post-publication receipts/actual committed pins/consumption/operator command stay OUTSIDE cohort/may remain untracked/NO second commit-amend-selfref.
 ' publication preflight CURRENT: lead reports all applicable filter/text/eol/working-tree-encoding UNSPECIFIED/core.hooksPath UNSET/named commit-push hooks ABSENT; exact staged cohort must recheck them. APPROVED bounded fixed-HTTPS ls-remote completed: Q/remote-preflight.stdout exact refs/heads/feat-ml-adjuntant-ii-continuation-2b24d9c5a at6fdc92c7eb90eb625e6d54c6a448009d5db34423/stderr0/exit0. This read-only Git publication query is NOT manual source API GET or operational attempt; source public access still UNVERIFIED/sourceGET0/manual grants UNUSED. Whole-cohort review/freeze/NUL staged-byte gate remains PENDING/NOT frozen-staged/index mutation0/commit0/push0/publication allowance UNUSED. No verified final total from prior DevOps report; no original-feature integration. Literal Fish delivery ONLY/no execution after actual checked publication; projection hands back to lead before freeze/no later spec edits in this pass.
 legend bottom
+  CANDIDATE SNAPSHOT 2026-11-17: CANDIDATE_SOURCE_VERIFIED_PUBLICATION_PENDING_OPERATOR_QUERY_NOT_RUN. Publication-2 ALL12 PASS/460tests/three strict types/specs/preservation6431/native59+6 precedes auditor+docs changes; final publication-3/static/current-pin checks PENDING. Conditional adversarial/security READY clear HIGH emit+MEDIUM JSON-byte findings; DevOps audit recheck READY/task-types PASS. ONE normal commit+push ->origin/feat-ml-adjuntant-ii/PR51/main/expected b7d4eae58288bfbac3b5f947f524b2342b1b9fa3 remains unused at snapshot; checked publication BEFORE handoff. Future verification.json is not present yet; later LOCAL post-publication receipt records outcome without rewriting this snapshot or adding a commit/amend.
+  HOST OPERATOR CONTRACT: source complete175lines/27 mocked HOST-I/O tests/inert import/exact cwd+realpath/explicit Bun eval -- --run. Generation2 Bash command16589B/SHA cf566b4f55a1d00fe835918b4e97388fba1e5ddf7c5e15e7d568103da6d7da6e embeds16483B/SHA d1d82ba1bcb07a52412755cc183965519586705076ce6e46829c5657afcc16aa; Bash-n+stub-only argv PASS/no HOST source evaluation/query. Generation1 preserved HISTORY/DO NOT RUN. ONE OPERATOR-ONLY query/11 fixed groups within max12/original27s query+30s controlled-main/128KiB JSON incl newline NOT RUN; coding NEVER executes it. Output waits only until ORIGINAL report.originMs+30000; failure/timeout exit2/NO second emit/complete JSON not guaranteed. JSON rawBytes include actual source bytes even parse errors. No strict OS guarantee/interpreter-shell startup excluded. FULL/PARTIAL/DEADLINE is not compatibility/readiness; snapshots not reservations/config ID not manifest digest/actual availability UNKNOWN until operator returns. No native/GPU/train grant/trainingReady:false.
+  PRIOR ACCEPTED COHORT: R4 executable93/constant qualified:false/COMPOSITION_ONLY_INPUTS_UNQUALIFIED; final-4 ALL11 PASS/433 tests/3 strict TypeScript/preservation6431/native59+6. Immutable source-acceptance-2 and document-closeout/post-docs-3 pins accept only their prior generation, not new HOST-task source. Six113300B flat source/license inputs already retained/paths-modes-hashes bound; copied upstream DATA/comments/notices/SPEC pointers preserved, not tooling/compiler outputs. Publication excludes original ignored435 tree/bundles/raw archives/models/caches/failed root; result receipt stays LOCAL/no self-hash/second commit/amend/force/hook bypass.
+  RETAINED NOV16 PREPARATION PASS: source180/345/TSC/BOTH scoped READY preceded ONE GET163ms0 +assembly/SIX builds336ms0/EOFs/stderr0. Source435 files4635549B; bundles6/939123B; NEW95-input built closure/manifest09cd6b6dd97fd1b3984b71b5f0d3f540e21b38285897062148e16c0e388fc45a, not recovered C14/ancestry/guard PASS. Read-only verify PASS/extraGET0; launcher parse error is NOT preparation failure. Retry consumed1/remaining0/no new GET; old25 files252973B and6431 historical files unchanged.
+  PREP1 HISTORY: source69/117/TSC PASS/BOTH scoped READY preceded acquisition exit1/173ms/tar-octal; preserved135944-byte archive matches pinned SHA512/first uid-gid NUL-filled. One request invocation/consumed1/remaining0/zero selected files-assembly-builds remain unchanged; new plan2 is separate authority, not renewal. Prior source160/9/3 PASS remains scoped acceptance, not proof of the new reader/driver.
+  Native65 still has SIX literal mismatches, not65 unchanged files. Completed static bridge PASS:59 direct hashes+6 exact inverse SPEC first lines/unchanged manifest7e; preserve GPU full-six4670 F64/C12/CPU Flex REPORT proof and CPU39 anomaly192vs179/fullMetadataConsistency:false. Historical6431 files unchanged/lead aggregate108729726B; RED8pass2expected-fail/GREEN48pass/final-1 test-types FAIL remain history. No fresh native/math PASS or default numerical/custody rerun.
+  Canonical observer remains MOCK-tested/default REAL not executed. Old qualification.ts R4_PREPARATION stays BLOCKED historical data; executable observeR4 checks two corpus/live attempts and actual supplied setup/readback context, never a shortened5000-attempt campaign or REAL-labelled qualification. Preparation-2 bundles remain unevaluated/its grant spent. Remaining canonical/BOTH/reference/natural-close, native R4, selected-HOST campaign wiring, and explicit acceptance stay pending. ONLY the fresh scoped publication and operator read-only facts query are approved; no bundle evaluation/corpus rollout/native/GPU/training qualification follows. ALL hardening follows ALL planned training+validated results.
+  HISTORICAL GENERATIONS BELOW: every older CURRENT/package-missing/publication-pending/unused-allowance statement names its recorded generation, not today's ancestry, readiness, or a renewed operation grant. Original records remain immutable.
   PUBLICATION PRECHECK PASS: Q checker30 tests47 assertions/TSC0/ALL3 READY/no findings; prepublication-check PASS/candidate48 bytes match sealed packet/current12/strong6/final2 READY/exact HTTPS baseline6fdc92.... Remote preflight is NOT manual source API GET/operational attempt/public-access proof. Final exact cohort freeze/NUL staged-byte checks PENDING/NOT frozen-staged/no index mutation-commit-push. Exact content manifest+3 controls/NUL ALL paths/raw staged SHA256-blob-mode/live bytes remain required. Whitespace seven specs+two Q sources ONLY/pinned-history bytes unchanged. Postfreeze/postpub receipts/pins/consumption/operator command OUTSIDE cohort/NO second commit/literal Fish delivery ONLY/NO execution.
   CLOCK BOUNDARY UNCHANGED: UNTIMED existing-mise launch/no install-claim-fetch-materialize; StageA120 FIRST bootstrap entry includes controlled preflight/claim/anonymous HTTPS startup+source30s/transfer/validation/materialization/seal/cleanup. Separate StageB120/no reset/globalManualDeadline=null/NO end-to-end Fish bound/nominal240 NOT guarantee. Actual offline source packet binds BOTH immutable boundary44aa077f... and amendmentf53b4985...6291918; no actual HOST launch/request/operational consumption or new clock framework.
   CURRENT verification4 SOURCE_ONLY PASS:46 tests367 assertions/38 injected canonical+8 selected pure R4/two PASS stages including strict TSC/92 unchanged bindings/manifest ab8c972d1a26d22cb8ea721ddd255f9564484433633fc83b7936918ac26b142c. review2 adversarial/security/backend READY_SOURCE_ONLY/no remaining findings/security LOW. HIGH factory REAL/MOCK mismatch and MEDIUM late reference acquisition are cleared. Verification1/2 FAIL, pre-correction verification3 PASS37/305 and review1 remain historical. Six primary files plus retained proof/review/audit records; no runtime-interface or frozen347/327/native65/CPU helper changes.

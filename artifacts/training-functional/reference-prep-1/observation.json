@@ -1,0 +1,51 @@
+{
+  "status": "FAILED_AFTER_VERIFIED_DOWNLOAD_BEFORE_SELECTED_FILE_EXTRACTION",
+  "scope": "REFERENCE_PREPARATION_ATTEMPT_AND_READ_ONLY_FAILURE_DIAGNOSTIC",
+  "operationReceipt": "artifacts/training-functional/reference-prep-1/receipt.json",
+  "sourceVerification": "artifacts/training-functional/reference-prep-1/source-check-2/receipt.json",
+  "sourceVerificationTests": 69,
+  "sourceVerificationAssertions": 117,
+  "strictTypeScriptPassed": true,
+  "sourceVerificationFailurePreserved": "source-check-1/types.stdout: TS5097; the task compiler now explicitly accepts Bun .ts imports under noEmit",
+  "reviews": {
+    "architect": "ses_e19715247ffeWA8c5ijEoKhwyN",
+    "devops": "ses_e19715246ffeqKtdUGdxLoi78Q",
+    "adversarial": "ses_e195cc7a5ffe3tgjKpzNuQLOEx",
+    "security": "ses_e195cc7a1ffeFCA7jj03k5geKw",
+    "scope": "SOURCE_AND_FRESHLY_APPROVED_ATTEMPT_NOT_RUNTIME_PASS"
+  },
+  "freshAttemptConsumed": 1,
+  "freshAttemptsRemaining": 0,
+  "requestInvocationsObserved": 1,
+  "downloadedArchive": {
+    "path": "artifacts/training-functional/scratch/reference-prep-1/raw/jssha-3.3.2.tgz",
+    "bytes": 135944,
+    "sha256": "c372d61fc6843661abbdb868e9d28e8d3c7ce1c19fd7ce559d77fca90d02bd08",
+    "matchesPinnedSha512": true,
+    "expandedBytesReadOnlyDiagnostic": 730112,
+    "physicalHeadersObservedReadOnlyDiagnostic": 45
+  },
+  "failure": {
+    "message": "Error: tar-octal",
+    "firstHeader": "package/LICENSE",
+    "firstRejectedField": "uid",
+    "fieldHex": "0000000000000000",
+    "gidAlsoNulFilled": true,
+    "diagnostic": "artifacts/training-functional/reference-prep-1/archive-diagnostic-1.json",
+    "frozenInspectorChanged": false
+  },
+  "originalReceiptActualGetRequests": null,
+  "originalReceiptRewritten": false,
+  "selectedPackageFilesWritten": 0,
+  "referenceTreeAssembled": false,
+  "referenceBuilds": 0,
+  "automaticRetryAuthorized": false,
+  "offlineContinuationAuthorized": false,
+  "oldGrantsRenewed": false,
+  "partialArchivePreserved": true,
+  "nativeOrHostOrGpuExecuted": false,
+  "trainingExecuted": false,
+  "trainingReady": false,
+  "committed": false,
+  "pushed": false
+}

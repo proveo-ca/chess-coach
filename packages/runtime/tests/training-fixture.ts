@@ -1,11 +1,11 @@
 // SPEC: _spec/checkpoint-runtime.puml
 import { createHash } from "node:crypto";
-import { mkdtempSync } from "node:fs";
 import { bindingsShape } from "../../contracts/src/training-state";
 import type { TrainingState } from "../../contracts/src/training-state";
 import { TrainingStore } from "../src/training-store";
 import type { CompletionValues, NativeRecord } from "../src/training-store";
 import { drawStream } from "../src/rng";
+import { repositoryScratch } from "./repository-scratch";
 
 export const byteRef = (label = "synthetic") => ({ byteLength: label.length, sha256: createHash("sha256").update(label).digest("hex") });
 export function bindings() {
@@ -18,7 +18,7 @@ export function syntheticRecord(label: string): NativeRecord {
     inputFeatures: 2271, hiddenUnits: 32, recordSha256: createHash("sha256").update(record).digest("hex") } };
 }
 export function storeFixture() {
-  const root = mkdtempSync("/tmp/opencode/chess-coach-ii-sqlite-fixture-"), path = `${root}/private.sqlite`, selected = syntheticRecord("synthetic-initial-record-not-a-burn-model");
+  const root = repositoryScratch("sqlite-fixture-"), path = `${root}/private.sqlite`, selected = syntheticRecord("synthetic-initial-record-not-a-burn-model");
   return { root, path, selected, store: new TrainingStore(path, bindings()) };
 }
 export function syntheticCompletion(state: TrainingState, samples: number, reward: -1 | 0 | 1, proposal: NativeRecord | null): CompletionValues {

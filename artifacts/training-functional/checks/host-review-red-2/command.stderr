@@ -1,0 +1,53 @@
+
+artifacts/training-functional/host-facts.test.ts:
+(pass) fixed eleven groups bind exact argv, paths, environment and inferred CPU layout [0.27ms]
+(pass) complete mocked observations remain UNKNOWN availability and emit bounded named facts [1.61ms]
+(pass) pure HOST context guard rejects integration root, aliases and failed canonicalization [0.79ms]
+(pass) missing optional metadata does not suppress independent groups or assert GPU startup failure [0.31ms]
+(pass) pure bounded zod parsing rejects null, arrays, missing keys, invalid JSON and non-zod objects [0.28ms]
+(pass) initial origin includes adapter setup and context instead of renewing the phase [0.21ms]
+(pass) new commands use the remaining original phase and cleanup reserve [0.29ms]
+(pass) unresolved async context cannot indefinitely await the query phase [0.27ms]
+(pass) unresolved query cleanup returns uncertainty instead of FULL and permits later groups [0.51ms]
+(pass) regressing monotonic clock stops queries and cannot become FULL [0.29ms]
+(pass) deadline includes final serialization observation [0.33ms]
+(pass) unreaped, missing EOF, timeout, absent ownership or nonzero exit can never be FULL [0.96ms]
+(pass) raw truncation makes observations PARTIAL and keeps actual child exit/EOF/reap facts [0.18ms]
+(pass) escaped final JSON cap drops data, preserves ownership, counts newline and reports PARTIAL [21.06ms]
+(pass) errors are bounded and runner emits exactly one JSON document with nonzero partial exit [0.71ms]
+(pass) FULL runner exits zero and emits a single bounded JSON document [0.24ms]
+(fail) runner bounds blocked output by the original hard deadline without a second emission [1000.00ms]
+  ^ this test timed out after 1000ms.
+184 |     timerIO.now=()=>0;
+185 |     const io=productionIO(0), valid=await io.query(QUERIES[9],{deadlineMs:27000,cleanupDeadlineMs:27000});
+186 |     selectedBytes=invalidBytes;
+187 |     const invalid=await io.query(QUERIES[9],{deadlineMs:27000,cleanupDeadlineMs:27000});
+188 |     console.log(JSON.stringify({valid,invalid,validLength:validBytes.length,invalidLength:invalidBytes.length}));`));
+189 |   expect(result.valid.rawBytes).toBe(3 * result.validLength);
+                                      ^
+error: expect(received).toBe(expected)
+
+Expected: 435
+Received: 520
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/host-facts.test.ts:189:33)
+(fail) production JSON facts count every input byte even when parsing rejects the input [17.06ms]
+(pass) entry guard accepts only explicit eval argv with --run and remains inert for imports [0.07ms]
+(pass) literal published source parses as Bun TypeScript eval and stays inert without explicit run [33.57ms]
+(pass) literal eval accepts appended mocked collector without any factual HOST calls [14.64ms]
+(pass) explicit eval main rejects mocked wrong HOST before spawn and emits one JSON only [14.70ms]
+(pass) production command adapter captures mocked exact argv/env and distinguishes configuration Id [11.13ms]
+(pass) production command adapter bounded mocked stream captures truncation without unbounded text reads [11.78ms]
+(pass) production ordinary watchdog never waits indefinitely for mocked child exit or pipe EOF [11.24ms]
+(pass) late mocked child exit cannot rewrite an already returned cleanup observation [11.73ms]
+(pass) source adapter stays standalone, metadata-only and bounded without environment reads or writes [0.30ms]
+
+2 tests failed:
+(fail) runner bounds blocked output by the original hard deadline without a second emission [1000.00ms]
+  ^ this test timed out after 1000ms.
+(fail) production JSON facts count every input byte even when parsing rejects the input [17.06ms]
+
+ 25 pass
+ 2 fail
+ 189 expect() calls
+Ran 27 tests across 1 file. [1166.00ms]

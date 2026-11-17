@@ -1,0 +1,200 @@
+{
+  "status": "PASS_CONSOLIDATED_SOURCE_AND_SELECTED_REFERENCE_PREPARATION_ONLY",
+  "baselineCommit": "b7d4eae58288bfbac3b5f947f524b2342b1b9fa3",
+  "verification": {
+    "gates": 11,
+    "typechecks": 3,
+    "counts": {
+      "focused": 65,
+      "runtime": 62,
+      "contracts": 25,
+      "r4": 93,
+      "reference": 180,
+      "workspace": 8
+    },
+    "totalTests": 433,
+    "currentSourcePins": 324,
+    "receipts": [
+      {
+        "path": "artifacts/training-functional/checks/final-4/focused/receipt.json",
+        "kind": "file",
+        "sizeBytes": 146799,
+        "mode": 420,
+        "sha256": "55503a38b06fb4bf7320a125ad6a26b59b5431a6eaadf8eba14e541591b17e7a"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-4/runtime/receipt.json",
+        "kind": "file",
+        "sizeBytes": 146984,
+        "mode": 420,
+        "sha256": "e7dabf2be27423b75cf33f3a3cc8efc8711e7f75c142dc1624816c892535baca"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-4/contracts/receipt.json",
+        "kind": "file",
+        "sizeBytes": 146811,
+        "mode": 420,
+        "sha256": "b92e6642382df946786b0b653a128550d40d0453d9f285289cb10b23bb32e5ed"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-4/r4/receipt.json",
+        "kind": "file",
+        "sizeBytes": 146614,
+        "mode": 420,
+        "sha256": "b1f8c8e3c3f9d624c93eb6b5a3a538600c1598f13c15c05f9167521133188f25"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-4/reference/receipt.json",
+        "kind": "file",
+        "sizeBytes": 146683,
+        "mode": 420,
+        "sha256": "5dc887c21c53c9908545941cdd33264bfe1eb95600aecb44619f79a087611f9d"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-4/source-types/receipt.json",
+        "kind": "file",
+        "sizeBytes": 146597,
+        "mode": 420,
+        "sha256": "4b8f4a0af12d09725415174dc0dbfa5d4ef2d57355ce52afbafe4e4451eb373b"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-4/test-types/receipt.json",
+        "kind": "file",
+        "sizeBytes": 146608,
+        "mode": 420,
+        "sha256": "fe429a8cc78ac1a36fe2dad6303a944c7ce4f4126d4da1a584729e3908d1bfca"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-4/task-types/receipt.json",
+        "kind": "file",
+        "sizeBytes": 146632,
+        "mode": 420,
+        "sha256": "701d2097d414428c38b5fb9dbfa5c771d80b92701461f7ab7983e68026abd75e"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-4/workspace/receipt.json",
+        "kind": "file",
+        "sizeBytes": 146583,
+        "mode": 420,
+        "sha256": "04974bef9864a5e095bf38df742724590303cafae358bc105066e9c48551e02f"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-4/preservation/receipt.json",
+        "kind": "file",
+        "sizeBytes": 146713,
+        "mode": 420,
+        "sha256": "22923907ee0933e4271fe630dbeaa201c31c4fe42e5e701cb3c67217db6e72b5"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-4/specs/receipt.json",
+        "kind": "file",
+        "sizeBytes": 146568,
+        "mode": 420,
+        "sha256": "416b33839527ce92fc8b44aed68d21a0152e605195bc530087bede06640560f2"
+      }
+    ],
+    "postRefreshSpecs": {
+      "path": "artifacts/training-functional/checks/post-docs-2/specs/receipt.json",
+      "kind": "file",
+      "sizeBytes": 146568,
+      "mode": 420,
+      "sha256": "5c8c39959c2a9f053cc634570662eb2fc9bd4651de00e6fd90187497bd49c4af"
+    },
+    "historicalTrackedFilesUnchanged": 6431,
+    "failedGenerationFilesUnchanged": 25,
+    "nativeBridge": "59 exact hashes plus six exact SPEC first-line inverses; accepted numerical reports retain component scope"
+  },
+  "reference": {
+    "operation": {
+      "path": "artifacts/training-functional/reference-prep-2/receipt.json",
+      "kind": "file",
+      "sizeBytes": 2225,
+      "mode": 384,
+      "sha256": "e06b4fefc14f4b94c033173a9631d5befca64d58fe156ec716b10ca0075374d7"
+    },
+    "readOnlyRecheck": {
+      "path": "artifacts/training-functional/reference-prep-2/verification.json",
+      "kind": "file",
+      "sizeBytes": 1771,
+      "mode": 420,
+      "sha256": "08b18e44fdd0c08705764c6d9b382fb17e321846d1dd49d62dc22303df9c4b73"
+    },
+    "observation": {
+      "path": "artifacts/training-functional/reference-prep-2/observation.json",
+      "kind": "file",
+      "sizeBytes": 2030,
+      "mode": 420,
+      "sha256": "f15db8e967afed00a36d865a0468b2f074aea949479db2ab95f8e696cd69158f"
+    },
+    "sourceFiles": 435,
+    "sourceBytes": 4635549,
+    "bundles": 6,
+    "bundleBytes": 939123,
+    "distinctResolvedInputs": 95,
+    "referenceCodeEvaluated": false
+  },
+  "implementation": {
+    "campaign": "One-shot serial masters101..105; exactly1000 verified attempts each; no shortened mode",
+    "r4": "Executable two-attempt composition observer; constant qualified:false; injected tests only",
+    "canonical": "Prepared observer; actual default real workers not invoked"
+  },
+  "reviews": {
+    "path": "artifacts/training-functional/reviews-2.json",
+    "kind": "file",
+    "sizeBytes": 1320,
+    "mode": 420,
+    "sha256": "2367cd5319e4b81614c2da026320ecb89b2a1c7fdceb075ec47db22b50799bb5"
+  },
+  "documentPins": [
+    {
+      "path": "_spec/readiness.md",
+      "kind": "file",
+      "sizeBytes": 123059,
+      "mode": 420,
+      "sha256": "1a515d79f1fdd20d9a40f3bfbe1dd337784b24c886ebbb6ca70697f9b75ac760"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "kind": "file",
+      "sizeBytes": 89145,
+      "mode": 420,
+      "sha256": "29eca1545bd5850b74ea7c3c753eb7c84b205364824272f51017e6b4a7788561"
+    },
+    {
+      "path": "_spec/checkpoint-runtime.puml",
+      "kind": "file",
+      "sizeBytes": 9689,
+      "mode": 420,
+      "sha256": "66622454f51c611c054d6884637bb5a05ee92666a2bcb8506bcbe18c66326006"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "kind": "file",
+      "sizeBytes": 53273,
+      "mode": 420,
+      "sha256": "5c68d6fd1e71e4f92d08afa20d4c41d8acfac5c15fd7741b58a601e5447cd52e"
+    }
+  ],
+  "priorSourceAcceptance": {
+    "path": "artifacts/training-functional/source-acceptance.json",
+    "kind": "file",
+    "sizeBytes": 5969,
+    "mode": 420,
+    "sha256": "aa4757f80864996dea6e030cd920fddbd8331403f004006af1ac511a0b33eb90"
+  },
+  "remaining": [
+    "Actual canonical init/BOTH/independent-reference/natural-close qualification",
+    "Actual native R4 scoring/context/recipient/economic/model binding qualification",
+    "Selected HOST operational campaign path qualification",
+    "Explicit acceptance of the complete frozen functional evidence"
+  ],
+  "nativeExecuted": false,
+  "hostExecuted": false,
+  "gpuExecuted": false,
+  "trainingExecuted": false,
+  "trainingReady": false,
+  "trainingExecutionRequiresSeparateApproval": true,
+  "hardeningDeferredUntilAllPlannedTrainingAndValidatedResults": true,
+  "committed": false,
+  "pushed": false
+}
