@@ -1,0 +1,77 @@
+{
+  "status": "VERIFIER_GENERATION_SELECTION_ERROR_NO_PUBLISHED_OR_SOURCE_DRIFT",
+  "error": "Initial preflight applied all checks-6 documentation pins after completion carried final checks-7 documentation; no tests, staging, commit or push ran",
+  "rows": [
+    {
+      "path": "artifacts/training-functional/qualification-result-1/README.md",
+      "current": {
+        "byteLength": 5494,
+        "sha256": "1dbdfa153d1d44bc888c1d7ed2dc673880869defe8a54cebc93888bd05f59be2"
+      },
+      "checks6": {
+        "path": "artifacts/training-functional/qualification-result-1/README.md",
+        "byteLength": 5267,
+        "sha256": "0122145a04cdadffedba6a49a5df49010cbcf173c1ffe7d2662c6b8efb0858e0"
+      },
+      "completion": {
+        "path": "artifacts/training-functional/qualification-result-1/README.md",
+        "byteLength": 5494,
+        "sha256": "1dbdfa153d1d44bc888c1d7ed2dc673880869defe8a54cebc93888bd05f59be2"
+      }
+    },
+    {
+      "path": "_spec/readiness.md",
+      "current": {
+        "byteLength": 172818,
+        "sha256": "c8c141c9375e40e6d63ca61e77f9de641aad988999198127fa636f28a51b053f"
+      },
+      "checks6": {
+        "path": "_spec/readiness.md",
+        "byteLength": 171896,
+        "sha256": "1f46bc520ff7ed41578a4e8943eaf42f97294dd4098ee5e2b1edb3cc8de63016"
+      },
+      "completion": {
+        "path": "_spec/readiness.md",
+        "byteLength": 172818,
+        "sha256": "c8c141c9375e40e6d63ca61e77f9de641aad988999198127fa636f28a51b053f"
+      }
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "current": {
+        "byteLength": 132806,
+        "sha256": "5b2d8014b1a7dce94d077eb582c8e77f02359d0a65e216906ca6f3bf9a773ec4"
+      },
+      "checks6": {
+        "path": "_spec/runtime-protocol.puml",
+        "byteLength": 131389,
+        "sha256": "6d9913c3c750009e7e66a712b8146f647439a390dee9cd99d31b0ff56972524e"
+      },
+      "completion": {
+        "path": "_spec/runtime-protocol.puml",
+        "byteLength": 132806,
+        "sha256": "5b2d8014b1a7dce94d077eb582c8e77f02359d0a65e216906ca6f3bf9a773ec4"
+      }
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "current": {
+        "byteLength": 53976,
+        "sha256": "93eaa492415daaffaa1a06289174a4bb6526a87393b5f3e2c12d0d73b2e999f6"
+      },
+      "checks6": {
+        "path": "_spec/.spec-index.json",
+        "byteLength": 53976,
+        "sha256": "93eaa492415daaffaa1a06289174a4bb6526a87393b5f3e2c12d0d73b2e999f6"
+      },
+      "completion": {
+        "path": "_spec/.spec-index.json",
+        "byteLength": 53976,
+        "sha256": "93eaa492415daaffaa1a06289174a4bb6526a87393b5f3e2c12d0d73b2e999f6"
+      }
+    }
+  ],
+  "correctiveScope": "Use final completion documentation pins and checks-6 implementation-only pins",
+  "trainingExecuted": false,
+  "publicationPerformed": false
+}

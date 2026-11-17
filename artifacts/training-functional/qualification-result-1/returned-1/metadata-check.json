@@ -1,0 +1,15 @@
+{
+  "status": "PASS_LOCAL_METADATA_ACCOUNTING_ONLY_NOT_EXPORT_BYTE_VALIDATION",
+  "metadata": {
+    "path": "artifacts/training-functional/qualification-result-1/returned-1/user-reported-export.json",
+    "byteLength": 2773,
+    "sha256": "d22b273b8a082b1329a0f4e5f96fda8326352865facf59bac2ca46e2164a9f92"
+  },
+  "reportedFiles": 6,
+  "reportedSourceBytes": 238654,
+  "approvedReadAttempts": 1,
+  "approvedReadOpened": false,
+  "exactExportBytesVerified": false,
+  "otherHostAccessPerformed": false,
+  "trainingReady": false
+}

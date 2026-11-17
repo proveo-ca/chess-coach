@@ -1,0 +1,2417 @@
+{
+  "status": "FROZEN_EXPLICIT_APPROVED_PUBLICATION_DELTA_NOT_STAGED",
+  "baseCommit": "6a77f4c637f1d44260d5787c57a57b34fbffd754",
+  "targetBranch": "feat-ml-adjuntant-ii",
+  "pr": 51,
+  "files": [
+    {
+      "path": "_spec/.spec-index.json",
+      "mode": "100644",
+      "bytes": 53909,
+      "sha256": "39fab9d263cc89afa59482551d4621207094ed2cf0fb9603f2892e22e2f236fa"
+    },
+    {
+      "path": "_spec/qualification-bootstrap.puml",
+      "mode": "100644",
+      "bytes": 22015,
+      "sha256": "55690743085f7c0c73f32f991cb7ae7bfddb6a37b560fc4daba7ae80732503d6"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "mode": "100644",
+      "bytes": 163044,
+      "sha256": "b13ab0137feff806924d522ddb5bb54fb120d03871ba323ae343e76e0e1cdc64"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "mode": "100644",
+      "bytes": 131323,
+      "sha256": "e46af787cdc70b7d6de6530e477876cd6d81f99709d5da3ec1b9032ff63c9866"
+    },
+    {
+      "path": "artifacts/training-functional/check-specs.ts",
+      "mode": "100644",
+      "bytes": 3458,
+      "sha256": "bd87403c6658e5cd6af53a5fc02d9326f1f949e9ef2be21f1c350918e1ea33e5"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/contracts/command.stderr",
+      "mode": "100644",
+      "bytes": 2883,
+      "sha256": "1434c675667531276358a4187fa3cffd5a6b6d937affe73e9358357077fda7fe"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/contracts/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/contracts/receipt.json",
+      "mode": "100644",
+      "bytes": 163676,
+      "sha256": "d8d51d3ed76d5a4973b26d2c1d386321b415c1715c44d597ccf2e66117e9fd89"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/focused/command.stderr",
+      "mode": "100644",
+      "bytes": 6531,
+      "sha256": "d632fb5599a39f21d107ea5ad49946e08eb789029c412ceb6c9cef181d15d334"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/focused/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/focused/receipt.json",
+      "mode": "100644",
+      "bytes": 163656,
+      "sha256": "62271862eedca837e4ba39a53f3707a7f3978286b6ada623fa831e986c7863af"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/host-facts/command.stderr",
+      "mode": "100644",
+      "bytes": 2787,
+      "sha256": "7c465bd43a2f4bb797164ddda08281984cf6bdcd560ec31655b4f5cdbeb962f8"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/host-facts/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/host-facts/receipt.json",
+      "mode": "100644",
+      "bytes": 163476,
+      "sha256": "a72493bcdc3e559247105937fea042051946de91bf06c2387c91329ff6488d5f"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/preservation/native-comment-bridge.json",
+      "mode": "100644",
+      "bytes": 19712,
+      "sha256": "2d09df20f395457f229735a7ef4a27e7b25ab56d889bbc64bd69c40405ff9290"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/preservation/receipt.json",
+      "mode": "100644",
+      "bytes": 163571,
+      "sha256": "64cf73e663e0e554c1cfcb0b50fa882a00707da9a8c94eb9e066c3ea1bb45359"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/r4/command.stderr",
+      "mode": "100644",
+      "bytes": 45416,
+      "sha256": "bbdc57af8573468b72f051d175c6330d87c5b792a44f2ae0b9fc83f47775905b"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/r4/command.stdout",
+      "mode": "100644",
+      "bytes": 2753,
+      "sha256": "6ad90090422ba32a0cb6d7ba51cd031e2521d12d183dd5e09dc4920f71c5a6b2"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/r4/receipt.json",
+      "mode": "100644",
+      "bytes": 164045,
+      "sha256": "2b565e3b26f269296e803e46bd69b39513702eb5dc83843a8fe554dba949a376"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/reference/command.stderr",
+      "mode": "100644",
+      "bytes": 18012,
+      "sha256": "89f2aeff1008f34060f5e9ec147d8552b4cfe984da3ef82eddbc27e90be50214"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/reference/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/reference/receipt.json",
+      "mode": "100644",
+      "bytes": 163533,
+      "sha256": "eb30ca1811a2e37219c736bad939c3f77754d62e2f5b981ad93c727b205a326a"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/runtime/command.stderr",
+      "mode": "100644",
+      "bytes": 6459,
+      "sha256": "473f4bfa7796a3e7246f2ebf795b296209ef02ec33e4b4ef136e54f583c897be"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/runtime/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/runtime/receipt.json",
+      "mode": "100644",
+      "bytes": 163842,
+      "sha256": "3acce713b541e44ba8df355bf533f60f567d446e906a47215f3c76c374aa8556"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/source-types/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/source-types/command.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/source-types/receipt.json",
+      "mode": "100644",
+      "bytes": 163463,
+      "sha256": "f58997090301fe251627ea939f1399d6bbe9fe9d3e9b81ea273a76058821cb5a"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/specs/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/specs/command.stdout",
+      "mode": "100644",
+      "bytes": 2078,
+      "sha256": "597d3d773c5d8b186fe3bd6d3616e72d237e025697ea7feb4b614bf04dfe8935"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/specs/receipt.json",
+      "mode": "100644",
+      "bytes": 163426,
+      "sha256": "e1025ac4a1b05707e4399380f0e514e56c6e402ac9da9aefb47dd653d3386062"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/summary.json",
+      "mode": "100644",
+      "bytes": 3158,
+      "sha256": "2473e32530a37de494530f5b12b8e118ab2f4d340d3d1bb650527f07b87d6116"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/task-types/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/task-types/command.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/task-types/receipt.json",
+      "mode": "100644",
+      "bytes": 163484,
+      "sha256": "ee2b2bf68f360b2c437f703545d3ecc0965ec6cc04b058cfb1fca6060c41767c"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/test-types/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/test-types/command.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/test-types/receipt.json",
+      "mode": "100644",
+      "bytes": 163460,
+      "sha256": "b97c171ee7381b5f744bf1fe8b082840d01421e10a74a569c98d9eca3cfa6e72"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/workspace/command.stderr",
+      "mode": "100644",
+      "bytes": 724,
+      "sha256": "679e8c3432da28dd3da5f2893faacbc0ee104517b9e52fbfc4a1b7d4ec0a207a"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/workspace/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-1/workspace/receipt.json",
+      "mode": "100644",
+      "bytes": 163441,
+      "sha256": "3608a29e1e49f17f7e3573b209c0737d8f68b0f9cd2e1442e98c0037d1c01585"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/contracts/command.stderr",
+      "mode": "100644",
+      "bytes": 2885,
+      "sha256": "4ff3600cdfa333fcb7620a6e719ed10a98aaea7723d3256a29c097c8de348e9c"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/contracts/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/contracts/receipt.json",
+      "mode": "100644",
+      "bytes": 163669,
+      "sha256": "1114dff33f0a597e7dbad779df456bd8f3f4a6e68e7ce82f7ffe6bd3209a5ccb"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/focused/command.stderr",
+      "mode": "100644",
+      "bytes": 6533,
+      "sha256": "f1bab3537ae3e18fd03a54a0668319f2fd584fc0165531825173021f569b23bf"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/focused/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/focused/receipt.json",
+      "mode": "100644",
+      "bytes": 163657,
+      "sha256": "75d85e18a58a15493dcfb9af2ab1d15e8ff382fd5cdcb80db33985295b60cc1f"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/host-facts/command.stderr",
+      "mode": "100644",
+      "bytes": 2787,
+      "sha256": "d01ca4f11c6cea9e62caff03ef53da77ffe9434a71e437c675c0762b5aa044da"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/host-facts/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/host-facts/receipt.json",
+      "mode": "100644",
+      "bytes": 163468,
+      "sha256": "9e111ae7b15a5cfbc94d14514d8bcd9466d699e6fe3a5efaa3f6cc647fe6b7d6"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/preservation/native-comment-bridge.json",
+      "mode": "100644",
+      "bytes": 19712,
+      "sha256": "2d09df20f395457f229735a7ef4a27e7b25ab56d889bbc64bd69c40405ff9290"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/preservation/receipt.json",
+      "mode": "100644",
+      "bytes": 163579,
+      "sha256": "5a7c8ed524a243f3d29f6fb1b3248775b8b9b2bd1915b506727372750a4c5a74"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/r4/command.stderr",
+      "mode": "100644",
+      "bytes": 46112,
+      "sha256": "470a641116c3f63fc571fafdc5eafae21bc5167276d1696b59cad9df95b03f29"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/r4/command.stdout",
+      "mode": "100644",
+      "bytes": 2751,
+      "sha256": "88679f5b590e3dd946e23ca7640088a3ba3d2e629939c48207333adf0b09ce87"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/r4/receipt.json",
+      "mode": "100644",
+      "bytes": 164045,
+      "sha256": "7360f1b62642dce4ad99c5001da0f16199bfeed1fc8d00892c8c91419ca6aec9"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/reference/command.stderr",
+      "mode": "100644",
+      "bytes": 17976,
+      "sha256": "d26a0caa63faa835c0b068e6ba02ae5d0fc1d285bd8d6eecda466de3353e0b5a"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/reference/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/reference/receipt.json",
+      "mode": "100644",
+      "bytes": 163541,
+      "sha256": "7a5f617153418004c29d5f6ecf95f217c57645a7855688877d308835701e645d"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/runtime/command.stderr",
+      "mode": "100644",
+      "bytes": 6462,
+      "sha256": "eca082952826795b95fdbf2598bc30263e799f253d62dfbfc5792dc1eeab1781"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/runtime/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/runtime/receipt.json",
+      "mode": "100644",
+      "bytes": 163842,
+      "sha256": "ca76e223a175e3e741f63e67641d40ccd1ca5f638da95d85c3ca95e107645ccd"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/source-types/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/source-types/command.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/source-types/receipt.json",
+      "mode": "100644",
+      "bytes": 163463,
+      "sha256": "35def9ca29864e6e05ccb5c2d4d1ccb64d95db1788b161c61c03cd44596bd216"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/specs/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/specs/command.stdout",
+      "mode": "100644",
+      "bytes": 2078,
+      "sha256": "a00f8603226a65341821cfe8ce0e26b2bf2f33001c948671d592824b1a18677b"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/specs/receipt.json",
+      "mode": "100644",
+      "bytes": 163417,
+      "sha256": "3f127bc847bd57126026670b94a561cd1d34c729154fbd391669bdce6b04c286"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/summary.json",
+      "mode": "100644",
+      "bytes": 3162,
+      "sha256": "b98b5bf3d2530d2639b13adf6e5ca027bbd6fa9a1a27fc6e9c18c92e5d73b21c"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/task-types/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/task-types/command.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/task-types/receipt.json",
+      "mode": "100644",
+      "bytes": 163491,
+      "sha256": "0156f9b10cc4ef9d1716ef6abca27d0c9b6ac003d57d9c5ecc42d128b5f1a5da"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/test-types/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/test-types/command.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/test-types/receipt.json",
+      "mode": "100644",
+      "bytes": 163460,
+      "sha256": "f0e5f683a1416cf4d267ed228ddddeafcef772c6991e46884234e2c7bd1d76b2"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/workspace/command.stderr",
+      "mode": "100644",
+      "bytes": 724,
+      "sha256": "57065ae6e6d50930af76012afccaa6730180073912f0d7f5fa136c80851d7f20"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/workspace/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/workspace/receipt.json",
+      "mode": "100644",
+      "bytes": 163432,
+      "sha256": "74df4c69340cf7524e6e58e196e087cdecfe612f8196cbe53af728fe2a39615e"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-final-spec/specs/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-final-spec/specs/command.stdout",
+      "mode": "100644",
+      "bytes": 2078,
+      "sha256": "f3c045a37e4bfed2203e4b1ae6604facbd3bbe908a5c15a7c78d8227bf1676ca"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-final-spec/specs/receipt.json",
+      "mode": "100644",
+      "bytes": 163417,
+      "sha256": "3034b28e4085eff452cc85d87713fc37ba9ce7c25dcabb3b1375af382d84a35e"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/contracts/command.stderr",
+      "mode": "100644",
+      "bytes": 2887,
+      "sha256": "06d5390731856e7bc5029eb49ada9d4615ea71b72446df8edc4e219f1ffaf768"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/contracts/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/contracts/receipt.json",
+      "mode": "100644",
+      "bytes": 157021,
+      "sha256": "4b945224cbae8b0e3c9bb3bbb12e84dd17279563a78cfd9f293e89093816e40d"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/focused/command.stderr",
+      "mode": "100644",
+      "bytes": 6533,
+      "sha256": "491a09a316293fffc59edd151de3b9caf223bc724e19cb58c157c55fe4a93a24"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/focused/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/focused/receipt.json",
+      "mode": "100644",
+      "bytes": 157009,
+      "sha256": "d47db8752eae12314f1206da0c25d1fb874c095c92eeb4d91e366336026fbcad"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/host-facts/command.stderr",
+      "mode": "100644",
+      "bytes": 2787,
+      "sha256": "48255d44e3dffa7a5819ad063f3fce478fdfb126f7c924948903aaa748f6d9e7"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/host-facts/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/host-facts/receipt.json",
+      "mode": "100644",
+      "bytes": 156820,
+      "sha256": "60c8a2646234fb3da6b9c47de52210b96b25fa16ea9ca5ea477260186ddf9635"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/preservation/native-comment-bridge.json",
+      "mode": "100644",
+      "bytes": 19712,
+      "sha256": "2d09df20f395457f229735a7ef4a27e7b25ab56d889bbc64bd69c40405ff9290"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/preservation/receipt.json",
+      "mode": "100644",
+      "bytes": 156923,
+      "sha256": "eb54f0084644028b6f82374ff599c4f285c49c3791de71c83bec3c6052f3f6ca"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/r4/command.stderr",
+      "mode": "100644",
+      "bytes": 15323,
+      "sha256": "86e74b1d60c9325cd6cf1e5519d374c2bf1b98da8d9a0aaaa6553357baf6fe42"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/r4/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/r4/receipt.json",
+      "mode": "100644",
+      "bytes": 157260,
+      "sha256": "40577b1c632c74fac877b518c68e76e7d503d5508d2c417b3f26f95bd9a53c1e"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/reference/command.stderr",
+      "mode": "100644",
+      "bytes": 17985,
+      "sha256": "f4fe9eb200f212153f29cda04a7eaf7f3f2634c9eedd49366ee1739ac5b1854e"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/reference/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/reference/receipt.json",
+      "mode": "100644",
+      "bytes": 156893,
+      "sha256": "9d4ca4c5be1f8fc50a2fae066990e3f03180c02fe9a713c0e35ade57f50e6813"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/runtime/command.stderr",
+      "mode": "100644",
+      "bytes": 6456,
+      "sha256": "1b9584327b81297207fb74ce85a372828d8ad5dcf689bc428a906604ccd8fcab"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/runtime/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/runtime/receipt.json",
+      "mode": "100644",
+      "bytes": 157194,
+      "sha256": "e689135a9ef7aa2bf33c9d7e83a7bf3c184b8d4e8966abd0b4eca372717ba83e"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/source-types/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/source-types/command.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/source-types/receipt.json",
+      "mode": "100644",
+      "bytes": 156808,
+      "sha256": "f95a6a1f2388ed31e7be7c8b7c5ccadaf3316142eaf7e05a1b97d70c63c7518c"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/specs/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/specs/command.stdout",
+      "mode": "100644",
+      "bytes": 1686,
+      "sha256": "c91d4f01c5b3454e6ee00a5ad2f8cdf17c2589713d36e266e049f54fd99175c3"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/specs/receipt.json",
+      "mode": "100644",
+      "bytes": 156778,
+      "sha256": "689aff811ab3bea97e1b1e4d11122aac3fa528a57fd64bdcee5b5e6996a1e5f3"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/summary.json",
+      "mode": "100644",
+      "bytes": 2858,
+      "sha256": "76549ff293c032a2e5de92448f38adb6e647bdb4b2eafa0b64efb490c0754784"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/task-types/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/task-types/command.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/task-types/receipt.json",
+      "mode": "100644",
+      "bytes": 156836,
+      "sha256": "2f50527fe40ebe5beb0902cc36ef40f4c39b907a19c4ed41922e0ca6c03805da"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/test-types/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/test-types/command.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/test-types/receipt.json",
+      "mode": "100644",
+      "bytes": 156812,
+      "sha256": "bc42d071c10d0d88d15e763610c4bc4779cf11ca0904e23095241e19eb6d47e1"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/workspace/command.stderr",
+      "mode": "100644",
+      "bytes": 724,
+      "sha256": "bb46acb872be5b64585ea28b4aedc553aaa7be2943cceda445c4189c7bcb9756"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/workspace/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-1/workspace/receipt.json",
+      "mode": "100644",
+      "bytes": 156792,
+      "sha256": "7ebaba4166a6a80e867d89a1124b1c3a4bf2eb10809ae3b3493aef3857c4f809"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/contracts/command.stderr",
+      "mode": "100644",
+      "bytes": 2883,
+      "sha256": "e35c7f508a8ef93740911ff974d2e63958f225ad8c66fb020c628d04eab6fea1"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/contracts/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/contracts/receipt.json",
+      "mode": "100644",
+      "bytes": 159125,
+      "sha256": "9dda044af930896c7015ab1eb15fbab785664019aa448cb90d4dd8989fd206d2"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/focused/command.stderr",
+      "mode": "100644",
+      "bytes": 6529,
+      "sha256": "665048317f2613d3d296497edfdd3b773d6ac0a9cf7fc558b18ab3c25ef39439"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/focused/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/focused/receipt.json",
+      "mode": "100644",
+      "bytes": 159113,
+      "sha256": "cd4bce4648c421dfb213be0c0c94648eb23e942408805918cbc141b5743a55a3"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/host-facts/command.stderr",
+      "mode": "100644",
+      "bytes": 2787,
+      "sha256": "2c985f722b84804c2b3b7a905d2984d7dc0c16cb94be0fd6bd90e4bbb205a961"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/host-facts/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/host-facts/receipt.json",
+      "mode": "100644",
+      "bytes": 158924,
+      "sha256": "ca6bd6ee260bdc2b004dced5a2fe56cf02083cc0d6909bf1e0fe9abc7da18cf8"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/preservation/native-comment-bridge.json",
+      "mode": "100644",
+      "bytes": 19712,
+      "sha256": "2d09df20f395457f229735a7ef4a27e7b25ab56d889bbc64bd69c40405ff9290"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/preservation/receipt.json",
+      "mode": "100644",
+      "bytes": 159035,
+      "sha256": "55d5fd622a549ed7b4fa0b895bcb02a8f3476d60644a9d0400ed5738fd96d06c"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/r4/command.stderr",
+      "mode": "100644",
+      "bytes": 35030,
+      "sha256": "e4adeac689d597b5f62de35234265f82b58f43788d535e17b5c42cd5eb697c69"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/r4/command.stdout",
+      "mode": "100644",
+      "bytes": 1372,
+      "sha256": "07224a812d9126fef15fe579acec79b5baa50e4f76518b6a06cf0d4b1e3d0b76"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/r4/receipt.json",
+      "mode": "100644",
+      "bytes": 159361,
+      "sha256": "de3b8eab15b051c2e728d94151f6191d88d91b6ab994329e3c54a3a2653a85ba"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/reference/command.stderr",
+      "mode": "100644",
+      "bytes": 17957,
+      "sha256": "3eff5dcd0587441af41978c1d0f17f622bdda66b07b7a38f2cfe5fbb410f95f9"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/reference/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/reference/receipt.json",
+      "mode": "100644",
+      "bytes": 158988,
+      "sha256": "98d7885d4d29528a18dff138fab72977a64641c8ee4f966a7ffff88c1e2287f4"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/runtime/command.stderr",
+      "mode": "100644",
+      "bytes": 6461,
+      "sha256": "a9c6dc4745a74a506efab281b13b834d15bdec8ed32b153c4c67b16bb71564ea"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/runtime/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/runtime/receipt.json",
+      "mode": "100644",
+      "bytes": 159293,
+      "sha256": "45f99eb28e162a00c9a347a274eb3c7ef01cd450ac1ce53e16c76ad887893552"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/source-types/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/source-types/command.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/source-types/receipt.json",
+      "mode": "100644",
+      "bytes": 158919,
+      "sha256": "27b5afab890c75b78460deb5f107d03ee5f4bcc57d878724f3dc4bac7b8fa637"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/specs/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/specs/command.stdout",
+      "mode": "100644",
+      "bytes": 1686,
+      "sha256": "747d3d16ede202160b630092cc113a916561df7882e6f5ab06e8247ab50f1c8e"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/specs/receipt.json",
+      "mode": "100644",
+      "bytes": 158882,
+      "sha256": "878558c9aea1eb4795761f67153d0a34393a6b8b7db01cc614a265407e2cfd7c"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/summary.json",
+      "mode": "100644",
+      "bytes": 3138,
+      "sha256": "78fdc0bec51f322d68cb8991a394e121f00388fa42ae6d68fc629784082c469a"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/task-types/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/task-types/command.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/task-types/receipt.json",
+      "mode": "100644",
+      "bytes": 158940,
+      "sha256": "ac0d5ace33a3105970c3ab7bfd520e99ed6f78ab092f289a0e2d2e958394ff29"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/test-types/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/test-types/command.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/test-types/receipt.json",
+      "mode": "100644",
+      "bytes": 158916,
+      "sha256": "77201f2842059413ade324521dae465f4b855f8f7b272bae33f53b90ec77e6ea"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/workspace/command.stderr",
+      "mode": "100644",
+      "bytes": 724,
+      "sha256": "015af518e9efae45b5bb70819e75ad348cdda3dac6a8ba548a9b0829218c822e"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/workspace/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-2/workspace/receipt.json",
+      "mode": "100644",
+      "bytes": 158896,
+      "sha256": "d67c178ce7eb21db3ab017c631e52ab9378a8a3960568a1ff86f1350cb5b23bb"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3-final-spec/specs/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3-final-spec/specs/command.stdout",
+      "mode": "100644",
+      "bytes": 1686,
+      "sha256": "be00b8df847c79d97895cd624f589a0b2f6c6301f9fdb8c164394b50df648363"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3-final-spec/specs/receipt.json",
+      "mode": "100644",
+      "bytes": 160977,
+      "sha256": "f2259a378ea105768b5c9fc5267cd25b23a95833057d80586b27dde70ed2b076"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/contracts/command.stderr",
+      "mode": "100644",
+      "bytes": 2886,
+      "sha256": "2b6e21c052cbee48964d9025973be9b155da7c24d1995ec9258337b568040ec1"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/contracts/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/contracts/receipt.json",
+      "mode": "100644",
+      "bytes": 161229,
+      "sha256": "c156885080fc102a584599717cbaff875fc0911596fba373ef654b2221e35911"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/focused/command.stderr",
+      "mode": "100644",
+      "bytes": 6531,
+      "sha256": "cae8ff554a312bda61d77611841005635b8ef2cc52babb67e2a5977bba8532ff"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/focused/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/focused/receipt.json",
+      "mode": "100644",
+      "bytes": 161217,
+      "sha256": "793759391d546e9c0afb98a8f78ca6e459dcc78e61e06566fcaac4d9ad45bbf4"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/host-facts/command.stderr",
+      "mode": "100644",
+      "bytes": 2787,
+      "sha256": "2ee40d2e6ffdaff100714597ec8963288e6520b19578b9420d6798673d14b15f"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/host-facts/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/host-facts/receipt.json",
+      "mode": "100644",
+      "bytes": 161028,
+      "sha256": "641ce345616e1cde707ee35b1ce7a5d958f0f51febf10291b6cd4862512884c5"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/preservation/native-comment-bridge.json",
+      "mode": "100644",
+      "bytes": 19712,
+      "sha256": "2d09df20f395457f229735a7ef4a27e7b25ab56d889bbc64bd69c40405ff9290"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/preservation/receipt.json",
+      "mode": "100644",
+      "bytes": 161131,
+      "sha256": "4f5263a92649b292226485bc676305086721d19894a814189373c0ba40c9a37f"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/r4/command.stderr",
+      "mode": "100644",
+      "bytes": 36587,
+      "sha256": "7d3441638a5a30f4bcc2f9c71c931b43baec4975a808cdcecab6fbe29ab998cc"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/r4/command.stdout",
+      "mode": "100644",
+      "bytes": 2749,
+      "sha256": "cd726af299dab5a649f6bc6de83c95500b438c90d14422e603590bf9c9a0b3aa"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/r4/receipt.json",
+      "mode": "100644",
+      "bytes": 161466,
+      "sha256": "bf908f10fdfca090e7517efb6f635b2b2ccb71692be2f284b281c04332883158"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/reference/command.stderr",
+      "mode": "100644",
+      "bytes": 17957,
+      "sha256": "0682193fd1e8a03f1c85c11e868caf9d385ef519ed9c45c215e4e48488cb3981"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/reference/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/reference/receipt.json",
+      "mode": "100644",
+      "bytes": 161093,
+      "sha256": "29983bc6f076a4c04b719d096492baac443261fa9a3c68ca3dde675f6cc7ba31"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/runtime/command.stderr",
+      "mode": "100644",
+      "bytes": 6458,
+      "sha256": "d271ed29639e99f5af34e5cab2ea6d38a8e08baeeb70d0a7f44dd1192a33260f"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/runtime/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/runtime/receipt.json",
+      "mode": "100644",
+      "bytes": 161397,
+      "sha256": "d8c269ac7a3ff85b1f2b69bf39b726d7cf8f198100b25db91877d51d2cc50b20"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/source-types/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/source-types/command.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/source-types/receipt.json",
+      "mode": "100644",
+      "bytes": 161016,
+      "sha256": "5f3650fbe9cd8c2ad81bdd9a4d54525d3ac166ca9c0eaeffd76ed35ad0a3a118"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/specs/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/specs/command.stdout",
+      "mode": "100644",
+      "bytes": 1686,
+      "sha256": "eb669c539ebd61d32c79775e616cfc36968f668528a8788d8a427c18f07ce584"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/specs/receipt.json",
+      "mode": "100644",
+      "bytes": 160977,
+      "sha256": "eabcd48edbc870bb757f8de965cc92496893b9c620ff206cd601342f28bfe94e"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/summary.json",
+      "mode": "100644",
+      "bytes": 3140,
+      "sha256": "c08842911ff521ba1e8f2ae93a41627ccbf9276a4315d8f0f56df1ce6062db7d"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/task-types/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/task-types/command.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/task-types/receipt.json",
+      "mode": "100644",
+      "bytes": 161050,
+      "sha256": "b675b2eae194aa40596d54d2cb3212bd6ccbc0fbeb4670a87b5bda5ef7cf7bdc"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/test-types/command.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/test-types/command.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/test-types/receipt.json",
+      "mode": "100644",
+      "bytes": 161020,
+      "sha256": "3208cba3f481a362cae18a051feec4ac5ba7e8d1f948e747c8c2741d11e72bdc"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/workspace/command.stderr",
+      "mode": "100644",
+      "bytes": 723,
+      "sha256": "5dfb7edd849aa44dc95751536f1ef0f7c236aa71c0e9d0e989594fc8e0413efd"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/workspace/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-3/workspace/receipt.json",
+      "mode": "100644",
+      "bytes": 160992,
+      "sha256": "4f4f69c8742ecfdde4b3a33f7eee7c2886ab193c0c375ce3b4259710200c4774"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-adapter-launch-1/command.stderr",
+      "mode": "100644",
+      "bytes": 361,
+      "sha256": "211ddd8c3ca6cdd7dbc6af22f5f75388420e65f1b686a41063cfa18cd0069fe2"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-adapter-launch-1/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-adapter-launch-1/receipt.json",
+      "mode": "100644",
+      "bytes": 316,
+      "sha256": "283308c183b7361ed73add875f3564c1af0052fef1064315b6f1b572231a09ab"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-1/receipt.json",
+      "mode": "100644",
+      "bytes": 3885,
+      "sha256": "7cf97ea20f401017148364e11265285b3dc1c844d7d34fe829adb732dd14dd67"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-1/tests.stderr",
+      "mode": "100644",
+      "bytes": 78,
+      "sha256": "3b78b5844a62b0f5b597671205444db4fef55cae98d208f9bd913a3acdfa18de"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-1/tests.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-1/types.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-1/types.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-2/receipt.json",
+      "mode": "100644",
+      "bytes": 4950,
+      "sha256": "9bef8d00119a356c366338794c68e559c8aec975c4db46d48c2e13be3520e850"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-2/red-receipt.json",
+      "mode": "100644",
+      "bytes": 1494,
+      "sha256": "c006699eed3017f94617112b374a96018813edd6bc72b490488b6af7d572797f"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-2/red.stderr",
+      "mode": "100644",
+      "bytes": 3494,
+      "sha256": "0f756c7e2aa8f114c1b91858d466e94f1f709bb080e337b391c4fa8d2e95b7f9"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-2/red.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-2/tests.stderr",
+      "mode": "100644",
+      "bytes": 80,
+      "sha256": "c132482b59a5b8a4a402e7ba227af5b57b01c474380ef66228f42206d116be7c"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-2/tests.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-2/types.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-2/types.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-command-source-1/command.stderr",
+      "mode": "100644",
+      "bytes": 770,
+      "sha256": "a2d4b669ccf8516f3982d639c9e311687e35b4e1de386dd00475a18673cb3f33"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-command-source-1/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-command-source-1/receipt.json",
+      "mode": "100644",
+      "bytes": 423,
+      "sha256": "57108b978a5fddea4fa8600256f27aa4d798c238ad33aa82848f7f0461759e0c"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/source-facts.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/source-facts.stdout",
+      "mode": "100644",
+      "bytes": 475,
+      "sha256": "d3d05e82dc5b061e5a4d0f4304388fd0bd336499258167184054817ec9016d0d"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/tests-2.stderr",
+      "mode": "100644",
+      "bytes": 548,
+      "sha256": "d104a707444a85cee3fab936cf1a5f5e07b23fc30049fbc348388be79f75e6c9"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/tests-2.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/tests-3.stderr",
+      "mode": "100644",
+      "bytes": 76,
+      "sha256": "f6d237f8f47de1653dbdd306165936d9b0b7487ff9cbf1ac7bb455a69a225d86"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/tests-3.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/tests-4.stderr",
+      "mode": "100644",
+      "bytes": 76,
+      "sha256": "a33e5f9e7372f0e1aebb6460b99b2b1d82ddcef3dd58ecfc1f87395b495589d7"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/tests-4.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/tests-final-2.stderr",
+      "mode": "100644",
+      "bytes": 78,
+      "sha256": "cf904a2b623d56871bdf8eb08f4c694df914d16ed65ae3fc8cb1ea64ec61a9cf"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/tests-final-2.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/tests-final.stderr",
+      "mode": "100644",
+      "bytes": 78,
+      "sha256": "30cacea0cd986ccf4bb859b76cfd72fd7cd0e360101e418b5021b0ca76cc2dd4"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/tests-final.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/tests.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/tests.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/typecheck-2.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/typecheck-2.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/typecheck-3.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/typecheck-3.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/typecheck-final-2.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/typecheck-final-2.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/typecheck-final.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/typecheck-final.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/typecheck.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-1/typecheck.stdout",
+      "mode": "100644",
+      "bytes": 1142,
+      "sha256": "6f81902d8979230d62b5bb42896ba2806a7b35e8d325658034484709f94cf559"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-2/source-facts.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-2/source-facts.stdout",
+      "mode": "100644",
+      "bytes": 475,
+      "sha256": "02f1724bbf42fff4ed84985470a6adae19b797e06d9c681ade0c61970f37d94b"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-2/tests.stderr",
+      "mode": "100644",
+      "bytes": 78,
+      "sha256": "6accd24683fcf74f41470a54a4e0e7aba986d974f3bd784c0b67f2000e5a7913"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-2/tests.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-2/typecheck-final.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-2/typecheck-final.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-2/typecheck.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-2/typecheck.stdout",
+      "mode": "100644",
+      "bytes": 2745,
+      "sha256": "ac45f93ca9bf0f77c9ad821479c4720017e1d9ccb22f3724cb60bada8d66fcd8"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/array-profile-1.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/array-profile-1.stdout",
+      "mode": "100644",
+      "bytes": 494,
+      "sha256": "ed4bd48d409bc4574d3f285b3a4cc6b50ad0e0adfa3719171527412d57419fea"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/profiles-1.stderr",
+      "mode": "100644",
+      "bytes": 153,
+      "sha256": "6f3b170ce03ccf0a372eaa104d91c12ced4cea6b5771fa034a1066456554e495"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/profiles-1.stdout",
+      "mode": "100644",
+      "bytes": 1366,
+      "sha256": "c0d5f30d85c6faf6a8b17593b0b0221062f916e670559335b0edfc180663efed"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/profiles-2.stderr",
+      "mode": "100644",
+      "bytes": 153,
+      "sha256": "f6df7c0465429625521ec3029b0cf812b0b94e86145861676529e06feb3ab4b0"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/profiles-2.stdout",
+      "mode": "100644",
+      "bytes": 1388,
+      "sha256": "bc47bb6d162ed83b833620d2fe290fae0ecaa9e55e81cc4581761b21fb79912b"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/source-facts.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/source-facts.stdout",
+      "mode": "100644",
+      "bytes": 1930,
+      "sha256": "fc6257e882705eb19e0fd3da4b7cd6ccdf385d743d8926d91fae1cd86319aa8e"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/tests-final.stderr",
+      "mode": "100644",
+      "bytes": 141,
+      "sha256": "850e660573e6ba19930bf2fa12278c2fac61dbbae8b87e8db77ddff4b41bfd81"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/tests-final.stdout",
+      "mode": "100644",
+      "bytes": 1388,
+      "sha256": "931d455295362b5cfd37bc38a76e6ed79acef46e64e2a21b98a6221f76b52c8c"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/tests.stderr",
+      "mode": "100644",
+      "bytes": 1747,
+      "sha256": "b8f84918af9a573b0de4bc22d2c54eaceaf5df19ee52040169b2df33d2854923"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/tests.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/typecheck-2.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/typecheck-2.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/typecheck-final.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/typecheck-final.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/typecheck.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/typecheck.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/green-focused.stderr",
+      "mode": "100644",
+      "bytes": 153,
+      "sha256": "b4f1372ab17364cddf34061da290f05028ebc201fa32c866b746241dd0d23b4e"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/green-focused.stdout",
+      "mode": "100644",
+      "bytes": 897,
+      "sha256": "1a4a4b37b835338315f179cdfef9e60f3070a98a7967382a348d28fb3951e259"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/opponent-order-observation.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/opponent-order-observation.stdout",
+      "mode": "100644",
+      "bytes": 712,
+      "sha256": "41a10cbd3ec08c5bd6a43fe48aa9fe8b8a783c9ea840f1c243b816d10734e847"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/red-2.stderr",
+      "mode": "100644",
+      "bytes": 1302,
+      "sha256": "fc3666de613fa122916a8e9603df7944ce898cfcbf4dbe115e57605bfbcd2b8e"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/red-2.stdout",
+      "mode": "100644",
+      "bytes": 932,
+      "sha256": "8e52a3673b621337bef0c3471100cbfd0a9f24a155a38200296aaefde5c2a02a"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/red.stderr",
+      "mode": "100644",
+      "bytes": 1302,
+      "sha256": "58f7acaa21f29fc1c2a7532b2e4625a44c014f798167277562c85229944608a7"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/red.stdout",
+      "mode": "100644",
+      "bytes": 932,
+      "sha256": "1c558fe09a6b105a885b94430ffb592f04e31a41568dfe197ccaeecfa0e7e5dd"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/source-facts-final.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/source-facts-final.stdout",
+      "mode": "100644",
+      "bytes": 3448,
+      "sha256": "f18ea610feca18f93949134b09fe2133faf900248927b288fc204d0dfc01d74e"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/source-facts-red.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/source-facts-red.stdout",
+      "mode": "100644",
+      "bytes": 1554,
+      "sha256": "246b4076c083f74f85e082fa223eb3e160acaf1af10a412cc5105488366541fe"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/tests-final.stderr",
+      "mode": "100644",
+      "bytes": 142,
+      "sha256": "affa3e4b13564465771e2ee8720d7590dbcbd636619bf6378bcfe8fa3b1d6624"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/tests-final.stdout",
+      "mode": "100644",
+      "bytes": 2155,
+      "sha256": "b2e31ac5d142794a768e1801fd5a0306221cb0de5d11eefab74ebb39110e366a"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/typecheck-final.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/typecheck-final.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/typecheck-green.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/typecheck-green.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/typecheck-red-2.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/typecheck-red-2.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/typecheck-red.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/typecheck-red.stdout",
+      "mode": "100644",
+      "bytes": 5955,
+      "sha256": "cd58987e80b2bff5fd2b31cfa38ade3f6cfe4e24ad72a26758f750cf08944d3a"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/green-focused.stderr",
+      "mode": "100644",
+      "bytes": 156,
+      "sha256": "d83eedfcd30613bb35592f2cad8ed008bb4b8db3b693291b85af0a73bcb55e2a"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/green-focused.stdout",
+      "mode": "100644",
+      "bytes": 1497,
+      "sha256": "60ce0673186dbf579c56da2e3a567b941966360d30a692a323d5905fe82e7805"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/red.stderr",
+      "mode": "100644",
+      "bytes": 1335,
+      "sha256": "ee97f170bae559edfe7128fb9453497ac65f8e615616dc3f4a1065c22ff3dbd9"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/red.stdout",
+      "mode": "100644",
+      "bytes": 760,
+      "sha256": "c07ccaa146950a3e4357dc28e486cc44bd552eb3ec02f0f377cead828e64229e"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/source-facts-final.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/source-facts-final.stdout",
+      "mode": "100644",
+      "bytes": 3512,
+      "sha256": "4981587f24bf9c4cf2b24aaed516a46819ebadfe7320f2a3afd7e9a2a574bc37"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/source-facts-red.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/source-facts-red.stdout",
+      "mode": "100644",
+      "bytes": 1902,
+      "sha256": "72e58a26a17f97921e0cba67a90a8d440e6de4ce564b333bddfacefba94a85be"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/tests-final.stderr",
+      "mode": "100644",
+      "bytes": 142,
+      "sha256": "99583ed8739307fe8ea397a063abd78b4f2a6ca1949d188c3a08e7d06954a116"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/tests-final.stdout",
+      "mode": "100644",
+      "bytes": 2753,
+      "sha256": "8ff3640dd4cc2d216477e344c712c866478fb1532ee64f7bbaefded5a8d849d1"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/typecheck-final.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/typecheck-final.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/typecheck-green.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/typecheck-green.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/typecheck-red.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/typecheck-red.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-input-red-1/command.stderr",
+      "mode": "100644",
+      "bytes": 2144,
+      "sha256": "0f91c7b75cd9f7f863ab59d8f940641abd136094bb2366d02fd2ecb9fa751d29"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-input-red-1/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-input-red-1/receipt.json",
+      "mode": "100644",
+      "bytes": 288,
+      "sha256": "4f0d0bc7594578c9d277891d3862e2bf76d16b92d431ab9b55701fcb0c76bf53"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-input-source-1/command.stderr",
+      "mode": "100644",
+      "bytes": 878,
+      "sha256": "feb75b804be427a458975032e2462b0b875284b461d0e8d701bf94b88ca5578f"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-input-source-1/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-input-source-1/receipt.json",
+      "mode": "100644",
+      "bytes": 344,
+      "sha256": "497a622cf60d1680dac070f4bebebaa813696c0ee48fc72e708a8f68282f520f"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-input-source-2/command.stderr",
+      "mode": "100644",
+      "bytes": 977,
+      "sha256": "7e329174f496ad4b7dea4ad7abbac24e3509cd9916ecaef06c2ef5a3c6551c88"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-input-source-2/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-input-source-2/receipt.json",
+      "mode": "100644",
+      "bytes": 359,
+      "sha256": "73201d4e1a09ce64c3626588297a30185b0c07de5e69f8cf3758c05a4b2c08be"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-input-source-3/command.stderr",
+      "mode": "100644",
+      "bytes": 1166,
+      "sha256": "67e01a21ccea24b30492e8d446d9029e846800175198efc4584b5a9621050d69"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-input-source-3/command.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-input-source-3/receipt.json",
+      "mode": "100644",
+      "bytes": 398,
+      "sha256": "c9edb4a80c2b4c534061b49a44660eab34d5e16235bb67572af9348a918fdcce"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-native-source-1/focused.stderr",
+      "mode": "100644",
+      "bytes": 4011,
+      "sha256": "2faece50df8eb2fb5876adda40b37ee0b3a86fb36896907f23018a8618d092f4"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-native-source-1/focused.stdout",
+      "mode": "100644",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-native-source-1/receipt.json",
+      "mode": "100644",
+      "bytes": 1527,
+      "sha256": "b0d5a1c50715e5a0a2d5d2d55628acdc7abf28cf97b109c64fc76cb6a06b5115"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-native-source-1/source-types.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-native-source-1/source-types.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-native-source-1/task-types.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-native-source-1/task-types.stdout",
+      "mode": "100644",
+      "bytes": 3147,
+      "sha256": "656f2fc737dc847d4b4279eeedaf6e12d2a8c50e7fdd737711966521d38f8711"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-operator-source-1/types.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-operator-source-1/types.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-operator-source-1/verification.json",
+      "mode": "100644",
+      "bytes": 1367,
+      "sha256": "e4603d23b8c885318c4b33fe07238751d053253af888a209d97a59c60038689c"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-operator-source-2/types.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-operator-source-2/types.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-operator-source-2/verification.json",
+      "mode": "100644",
+      "bytes": 2212,
+      "sha256": "3f80da9ada7d238747245992d11d6137bfd3210c47c825b9e9244fd64ff3f0e3"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-operator-source-3/types.stderr",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-operator-source-3/types.stdout",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-operator-source-3/verification.json",
+      "mode": "100644",
+      "bytes": 1922,
+      "sha256": "e3653d33150fe8a6d4677a851cdb6a5656ff1d78d084558c047520cc51de9ab9"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts-1/operator-launch-report-1.json",
+      "mode": "100644",
+      "bytes": 1022,
+      "sha256": "77e9a3a46415abbf37b7cfffb0202ac0dcfc8909de2244576cb8b62a365ca7c1"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts-1/operator-result-1-observation.json",
+      "mode": "100644",
+      "bytes": 4834,
+      "sha256": "eba3af96a2c1090e400c1bffb48d0c16af0adef1738e5ee63bb72610fe68a6db"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts-1/operator-result-1.json",
+      "mode": "100644",
+      "bytes": 8104,
+      "sha256": "4128e7b587c40da0073c99ff86ab6711981ffc69423a74e4d41fd8870432bfd7"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts-1/post-publication-check-1-failure.json",
+      "mode": "100644",
+      "bytes": 397,
+      "sha256": "808f7dac6899276ae50f6ff42d635140fa116edd26a52bf0d848b4fec5a49625"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts-1/post-publication.json",
+      "mode": "100644",
+      "bytes": 40290,
+      "sha256": "d2b235cbc8b0a1ad6babf40c21e7ca9048fa1dca7da1891b541b1ab8eccea549"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts-1/retained-launcher-stub-verification.json",
+      "mode": "100644",
+      "bytes": 333,
+      "sha256": "4a2a83e521e7db3f7be60c694e73b6c12e03f272de2df24460e3784b5579a97f"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts-1/stage-audit-2.json",
+      "mode": "100644",
+      "bytes": 124981,
+      "sha256": "def28b5682c5833f4bfd9acc24942166d516e392f121551d13c45d765c94f465"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-adapter-launch.test.ts",
+      "mode": "100644",
+      "bytes": 1526,
+      "sha256": "b79d4bfd16f2b9676fb3a141bc8b53685025ac3616b83452b8de2d331636c1e6"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-adapters.test.ts",
+      "mode": "100644",
+      "bytes": 9230,
+      "sha256": "9a30b794992c49894d1acacb97a0b7ea810418fc81b58db5a3560064553d79a4"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-bootstrap.e2e.test.ts",
+      "mode": "100644",
+      "bytes": 62504,
+      "sha256": "1142d1f09c3a2a47d17bb9beb88aa7404fe8caff335872bf5e37bd78862b2fee"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-bootstrap.ts",
+      "mode": "100644",
+      "bytes": 38668,
+      "sha256": "e22505c5e3c492c25a6068089116a69dd70b398f3536629c8e8433a6eefbb968"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-command.test.ts",
+      "mode": "100644",
+      "bytes": 6725,
+      "sha256": "edb64e75ce63602188caa02175906ee2e1c7ab97543255166e7f404e6529894b"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/README.md",
+      "mode": "100644",
+      "bytes": 4101,
+      "sha256": "4910ef03201d95f6c2629aa51ecc271dafe0d382e68bfe5093def15f95a9fa45"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/adversarial-review-1.json",
+      "mode": "100644",
+      "bytes": 612,
+      "sha256": "2528f8135217c8d7be8c621ba2216d2c68edaa250f6aa8a2fe57469b158e64d8"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/adversarial-review-2.json",
+      "mode": "100644",
+      "bytes": 598,
+      "sha256": "f336d075b8adf2058e08a4b087545159f3fec5ac26e78e13e0b25222427e53bb"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/command-review-1.json",
+      "mode": "100644",
+      "bytes": 374,
+      "sha256": "f44ef1a339014ba14fc635dd3a09a7943495ad045a7e2e0a051cfda7ab278ce5"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/command-template.sh",
+      "mode": "100644",
+      "bytes": 1394,
+      "sha256": "f1e7f5f03be49fb50a5ec74f7c45063813b5397aee6009d7ae00bc252fba06c8"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/final-verification.json",
+      "mode": "100644",
+      "bytes": 20177,
+      "sha256": "1c9934a0eae85363b175ce3266f42bc65fcc3cc074e16ebc7095998f851e2178"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/local-bun-context-1.json",
+      "mode": "100644",
+      "bytes": 971,
+      "sha256": "3754cbca91df28ff7b8b08535c1f44d44398316cc6356b191bf827944da3881b"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/local-child-umask-1.json",
+      "mode": "100644",
+      "bytes": 693,
+      "sha256": "57af3e0d97e0336a7d26255dad814e34f5606de49e6cae3cd08c353022ad6331"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/plan.json",
+      "mode": "100644",
+      "bytes": 5245,
+      "sha256": "8c5a461539e79a8baff33a3ac224619debc6dd6ce887efbbd6376251f35eb1c9"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/preservation-1.json",
+      "mode": "100644",
+      "bytes": 1324,
+      "sha256": "954da0c7b14c81fd86b07c7cdd2c91c9e4154bc1e971329f00b537d8116cdd51"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/production-input-audit-1.json",
+      "mode": "100644",
+      "bytes": 866,
+      "sha256": "5669f8f497eaa5cdfdffc6da9ea9f88c9a218eac0afd8d00117ab6f1acd6cbf1"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/security-review-1.json",
+      "mode": "100644",
+      "bytes": 617,
+      "sha256": "a0a8c0a1904d4cc46279084317a04ae8641a19b4141a0ef2cccd18f75708fa64"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/security-review-2.json",
+      "mode": "100644",
+      "bytes": 692,
+      "sha256": "704d39a0a28ebb4a17fd73febf7d9a047cc18527c09effdc74c2be373d4bdc33"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-evidence.test.ts",
+      "mode": "100644",
+      "bytes": 65811,
+      "sha256": "8fa9d249a040683c5f2ab9eea8e4a3e89b3d3e6701027ebbb72cf62ffd293e9c"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-evidence.ts",
+      "mode": "100644",
+      "bytes": 54762,
+      "sha256": "684ce9c6a640d38cf957da2e57f97073837e428c8046b0799735b81ebbc66fe4"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-input-documents.test.ts",
+      "mode": "100644",
+      "bytes": 5250,
+      "sha256": "c1489172d073cb45c46744695c53b63d47e5812384ec3b615670d72486f9a736"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-input-documents.ts",
+      "mode": "100644",
+      "bytes": 10272,
+      "sha256": "4aacf75ad46812c18b152ed5994c862571dd74a69193a50678d69f48319f2345"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-operator.e2e.test.ts",
+      "mode": "100644",
+      "bytes": 47878,
+      "sha256": "511a043bf6957659cb9c2c2f517a5a95e7fbc472fe3e23802fe1773a28b7c997"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-operator.ts",
+      "mode": "100644",
+      "bytes": 37727,
+      "sha256": "f8a4ec4db0b765bfde06016a4cdd663d33a57d85e6b0d8bcf785883e27ef603f"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/README.md",
+      "mode": "100644",
+      "bytes": 5508,
+      "sha256": "2fe155d8bc2473bd9474ed3835a39226fcdd75b67a85416a42132875994f5348"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/adversarial-review-1.json",
+      "mode": "100644",
+      "bytes": 424,
+      "sha256": "19c1cd6ba3db16dfb3057f3b23dfbea7e1f7772bbeae1d557e8d1102fa76cbbb"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/adversarial-review-2.json",
+      "mode": "100644",
+      "bytes": 890,
+      "sha256": "22a7dc6f9b8afe1cf129df92621fbca2c9db724692cea5379f755f167aebefdc"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/adversarial-review-3.json",
+      "mode": "100644",
+      "bytes": 822,
+      "sha256": "7d5323e6aa623ebea0e7870f961cb136819a0485fedcd6235af9c0c70ae878ac"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/local-feature-profile-1.json",
+      "mode": "100644",
+      "bytes": 288,
+      "sha256": "8ae8dd8248232ed7983bed21100f94ffbd3fa087fc4004d4277062e963bd54d9"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/local-schema-profile-1.json",
+      "mode": "100644",
+      "bytes": 304,
+      "sha256": "e5886c89d8ca15ff42618cc6f61a28b3027731616fb6e0191579b28dc111dafe"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/plan.json",
+      "mode": "100644",
+      "bytes": 5858,
+      "sha256": "d9d53903cb9db66e86aafcaad41e543a4c6a8ae31cb62d00928fa33878a4364f"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/preparation-preservation-1.json",
+      "mode": "100644",
+      "bytes": 572,
+      "sha256": "b1f9f5ad77b36a9d4d6ee0a6d2f58af097bf0e39e0afcb38e031a32032018760"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/preparation-preservation-2.json",
+      "mode": "100644",
+      "bytes": 1062,
+      "sha256": "3f1221a27a9845d00aed7bcf1383f2a74ac35fcfa3a99f18e87b491cc2df752b"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/preparation-preservation-3.json",
+      "mode": "100644",
+      "bytes": 1256,
+      "sha256": "5866bba751511ebc44c5a1537a9ce39638f734b1747345d4d7adbbd53c6ec5b6"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/security-review-1.json",
+      "mode": "100644",
+      "bytes": 539,
+      "sha256": "33996569caab44fcec556ffd83e6fdc084f57b4215cc2f0f780a1b6903836589"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/security-review-2.json",
+      "mode": "100644",
+      "bytes": 615,
+      "sha256": "1725c2b3a60b117cab0aaf15a3517043376c95f6e601964bba1b023056c7d725"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/security-review-3.json",
+      "mode": "100644",
+      "bytes": 673,
+      "sha256": "e4e262946a917757eff9c28f19e5a072c71518b000129c997e922f99b89fce7f"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/settlement-followup-1.json",
+      "mode": "100644",
+      "bytes": 1263,
+      "sha256": "1c263fbbba17d9dacce1aaec800b9240a35280b1355f7d38a351899501a5d2a0"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/settlement-resolution-1.json",
+      "mode": "100644",
+      "bytes": 1401,
+      "sha256": "280aa0dc9c5600e0250aae4e8fb6908e8ab1af63f43bd9099feb9206bdc1a2d3"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-1/core-rules.json",
+      "mode": "100644",
+      "bytes": 9504,
+      "sha256": "b0c6674122ccb4ec3f113bc9f815701f8c0d77a6e254ebdba568977a85e51211"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-1/image-observation.json",
+      "mode": "100644",
+      "bytes": 1704,
+      "sha256": "13a9f9b66299f63f9eb557a104ec02d4bc533bd5d0d58acc3aa23e1df92ba358"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-1/runtime-configuration.json",
+      "mode": "100644",
+      "bytes": 1131,
+      "sha256": "7c12c73ce35db4fff96c55721e75c7b3c84e1ed8dacef27626227ad21af689db"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-1/source-manifest.json",
+      "mode": "100644",
+      "bytes": 20258,
+      "sha256": "5322853369bd7799c9f4697801ad67bf199b68c71d20d992ce19a520cbe826e1"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-2/core-rules.json",
+      "mode": "100644",
+      "bytes": 9504,
+      "sha256": "b0c6674122ccb4ec3f113bc9f815701f8c0d77a6e254ebdba568977a85e51211"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-2/image-observation.json",
+      "mode": "100644",
+      "bytes": 1704,
+      "sha256": "13a9f9b66299f63f9eb557a104ec02d4bc533bd5d0d58acc3aa23e1df92ba358"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-2/runtime-configuration.json",
+      "mode": "100644",
+      "bytes": 1131,
+      "sha256": "44174f8d38073f19262a1eda9a54a5ac98d3d8d546aaf7a60e65fd31b0dafe40"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-2/source-manifest.json",
+      "mode": "100644",
+      "bytes": 20258,
+      "sha256": "7f4f0c590fc7ba3cc96fa551b89b18e880b6618e2c0dd082cd7d0b5ce550598f"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/binding-documents.json",
+      "mode": "100644",
+      "bytes": 5087,
+      "sha256": "5cd45f5cad1b5f08e07a54cbfd68834ff00eda4f0d6c40f02922bac07d3ca7fe"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/completion.json",
+      "mode": "100644",
+      "bytes": 1789,
+      "sha256": "92204a1fb9427d68d1f47b00e52240bbe80dff7543f6fe3087a52ccc8b8be15c"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/core-rules.json",
+      "mode": "100644",
+      "bytes": 9504,
+      "sha256": "b0c6674122ccb4ec3f113bc9f815701f8c0d77a6e254ebdba568977a85e51211"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/image-observation.json",
+      "mode": "100644",
+      "bytes": 1704,
+      "sha256": "13a9f9b66299f63f9eb557a104ec02d4bc533bd5d0d58acc3aa23e1df92ba358"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/runtime-configuration.json",
+      "mode": "100644",
+      "bytes": 1131,
+      "sha256": "3bc2a838363fcd194421eb930170325f1bdec641634608cdba3e6c6743284b05"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/source-manifest.json",
+      "mode": "100644",
+      "bytes": 20258,
+      "sha256": "9820e6bfb34f5891117379b207cfd193330d5bd1efbf6c8d36f6ff6e0328836b"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/verification.json",
+      "mode": "100644",
+      "bytes": 15082,
+      "sha256": "5edf5fa735abbf8be5b38c7389a580199d947e7b845ce3a2a31ecbcc43a45f75"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-generation-failure-1.json",
+      "mode": "100644",
+      "bytes": 563,
+      "sha256": "ac9490c791080bec4120a2c9102d9cd761d4e3ffc661766ae588af5de779c051"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet.test.ts",
+      "mode": "100644",
+      "bytes": 18789,
+      "sha256": "21f8cbc866db9e78a23b0f2c206c8d4b8bdb0b2a3dff096c627806b7d9817c97"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-policy-channel.ts",
+      "mode": "100644",
+      "bytes": 3779,
+      "sha256": "ea9871209c344b894e4b9bd72b19e3508decc2a7a1f12e9ec7720239f122504e"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-policy-score.ts",
+      "mode": "100644",
+      "bytes": 3777,
+      "sha256": "5e6740635cbeeafaba07ae200a18f9848fc90e9d6351e6e3d74736f3a4ef21ea"
+    },
+    {
+      "path": "artifacts/training-functional/run-check.ts",
+      "mode": "100644",
+      "bytes": 8661,
+      "sha256": "a60c9680a0118a6ed3fb6fc724217cc5cbc61712e1966997f0b1ecdef0b989c8"
+    },
+    {
+      "path": "packages/runtime/src/fixed-attempt.ts",
+      "mode": "100644",
+      "bytes": 5485,
+      "sha256": "217a47bb57c3e8adbe7d24d15e9f511bab713a141758f7efe6a6f697b37b0b14"
+    }
+  ],
+  "fileCount": 393,
+  "bytes": 11675630,
+  "finalVerification": {
+    "path": "artifacts/training-functional/qualification-delivery-1/final-verification.json",
+    "bytes": 20177,
+    "sha256": "1c9934a0eae85363b175ce3266f42bc65fcc3cc074e16ebc7095998f851e2178"
+  },
+  "originalCheckout": {
+    "root": "/home/gu1lty/Projects/proveo/chess-coach",
+    "status": " M .gitignore\u0000 M README.md\u0000 M _spec/.spec-index.json\u0000 M _spec/manual-handoff-implementation-3.puml\u0000 M _spec/runtime-protocol.puml\u0000",
+    "pins": [
+      {
+        "path": ".gitignore",
+        "bytes": 702,
+        "sha256": "e8aea4183604bd1fe4ed0672806585dd2dee7a8f83e32968d3d1bac17145be2c"
+      },
+      {
+        "path": "README.md",
+        "bytes": 11595,
+        "sha256": "2db2735af57a3daf548ca2709c68b29fb99930e1e01f46646d3041f6b4d82b9d"
+      },
+      {
+        "path": "_spec/.spec-index.json",
+        "bytes": 39684,
+        "sha256": "ae9120fc11c480f7a89d549fba2c09dbe9dc6322e9bdd5bf53f336d006cc6448"
+      },
+      {
+        "path": "_spec/manual-handoff-implementation-3.puml",
+        "bytes": 331846,
+        "sha256": "aeca1276be763d3ba9b6dadec0f8e5d643ff8a9c01cb481473360102a4828a62"
+      },
+      {
+        "path": "_spec/runtime-protocol.puml",
+        "bytes": 67940,
+        "sha256": "7cae64bfb4c5a626b95b78a9eb6bde4c22883f0128626b09990edf6650c50e87"
+      }
+    ]
+  },
+  "localOnlyExcluded": [
+    "artifacts/training-functional/qualification-delivery-1/cohort-freeze-1.json",
+    "artifacts/training-functional/qualification-delivery-1/stage-audit-1.json",
+    "artifacts/training-functional/qualification-delivery-1/post-publication.json",
+    "artifacts/training-functional/qualification-delivery-1/operator-command.sh",
+    "artifacts/training-functional/qualification-delivery-1/operator-command-verification.json"
+  ],
+  "noGeneratedBundlesOrBinaries": true,
+  "noHighConfidenceCredentialIndicators": true,
+  "normalCommitsAuthorized": 1,
+  "pushesAuthorized": 1,
+  "commitOrPushPerformed": false,
+  "trainingReady": false
+}

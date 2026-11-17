@@ -1,0 +1,35 @@
+
+artifacts/training-functional/qualification-result-1/validate.test.ts:
+(pass) provisional transcription retains its inconsistency without blaming HOST [1.79ms]
+(pass) synthetic coherent reports pass local checks but never confer acceptance [1.00ms]
+(pass) rejects wrong publication without executing commands [0.86ms]
+(pass) rejects unqualified bootstrap scope without executing commands [0.82ms]
+(pass) rejects missing offline build without executing commands [0.78ms]
+(pass) rejects wrong manifest path without executing commands [0.81ms]
+(pass) rejects malformed manifest digest without executing commands [0.80ms]
+(pass) rejects wrong preparation path without executing commands [0.70ms]
+(pass) rejects wrong Git cwd without executing commands [0.63ms]
+(pass) rejects wrong fetch pin without executing commands [0.94ms]
+(pass) rejects renewed Git budget without executing commands [1.03ms]
+(pass) rejects wrong HEAD digest without executing commands [1.09ms]
+(pass) rejects forced preparation without executing commands [3.48ms]
+(pass) rejects missing EOF without executing commands [0.71ms]
+(pass) rejects extra Docker operation without executing commands [0.64ms]
+(pass) rejects changed mount without executing commands [0.63ms]
+(pass) rejects wrong GPU without executing commands [0.59ms]
+(pass) rejects low admission memory without executing commands [0.69ms]
+(pass) rejects renewed outer deadline without executing commands [0.54ms]
+(pass) rejects invalid elapsed without executing commands [0.38ms]
+(pass) rejects unremoved container without executing commands [0.40ms]
+(pass) rejects worker readiness bypass without executing commands [0.49ms]
+(pass) rejects OOM state without executing commands [0.51ms]
+(pass) rejects malformed report null [0.44ms]
+(pass) rejects malformed report [] [0.22ms]
+(pass) rejects malformed report {} [0.20ms]
+(pass) rejects malformed report not-json [0.33ms]
+(pass) the publication pin and retained input bytes remain unchanged [0.13ms]
+
+ 28 pass
+ 0 fail
+ 40 expect() calls
+Ran 28 tests across 1 file. [396.00ms]

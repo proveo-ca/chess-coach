@@ -1,0 +1,75 @@
+{
+  "status": "PASS_PREPARED_USER_RUN_RETAINED_JSON_EXPORT_ONLY",
+  "decisionSource": "Executor selected Prepare JSON export (Recommended)",
+  "command": {
+    "path": "artifacts/training-functional/qualification-result-1/export-command.sh",
+    "byteLength": 3102,
+    "sha256": "98032d7675d191091be12dd454668e43a2e9efd8fcfcbbec1c244b0105bfaefd"
+  },
+  "verification": {
+    "path": "artifacts/training-functional/qualification-result-1/checks-4/receipt.json",
+    "byteLength": 7579,
+    "sha256": "2a96ba5495c033e1d516a3116485be7298aa480a50a1198278fa0e95e88b8191"
+  },
+  "reviews": {
+    "path": "artifacts/training-functional/qualification-result-1/reviews-1.json",
+    "byteLength": 1457,
+    "sha256": "89bf4a8c374cef20befca1d88f0154d159101aeaa03807fa23bed1454fd5c91d"
+  },
+  "sourceContracts": {
+    "path": "artifacts/training-functional/qualification-result-1/contract-bindings-1.json",
+    "byteLength": 2732,
+    "sha256": "f84169e40904f23ce691e40c88c33795194e4ffe3a483fb9a34366ba389167de"
+  },
+  "observation": {
+    "path": "artifacts/training-functional/qualification-result-1/observation-1.json",
+    "byteLength": 3002,
+    "sha256": "ca9b26a4af7679ad3d72079e34e35a333f63021f479c180e8f69ffdee1407ea3"
+  },
+  "provenance": {
+    "path": "artifacts/training-functional/qualification-result-1/provenance-1.json",
+    "byteLength": 5271,
+    "sha256": "fc1dbe73bbb9612fa3a977db4ed674c1aa7bcf8704062274b37c64ceeafbc488"
+  },
+  "specs": [
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 170221,
+      "sha256": "193f4fb0eff5718098cdf5921738832bcf900663f9b5dda1cf008d84cfdce88c"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 131389,
+      "sha256": "6d9913c3c750009e7e66a712b8146f647439a390dee9cd99d31b0ff56972524e"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 53976,
+      "sha256": "93eaa492415daaffaa1a06289174a4bb6526a87393b5f3e2c12d0d73b2e999f6"
+    }
+  ],
+  "tests": 37,
+  "assertions": 90,
+  "strictTypecheck": true,
+  "staticSpecs": true,
+  "nativePlantUmlRendered": false,
+  "nativePlantUmlSkipReason": "Java and remote-theme access remain outside the Bun/TypeScript-or-Rust scope",
+  "export": {
+    "existingInputFiles": 6,
+    "maximumInputBytesEach": 1048576,
+    "maximumSerializedBytes": 13631488,
+    "destination": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-json-export-1.json",
+    "exclusiveCreate": true,
+    "mode": "0600",
+    "sourceFilesChanged": false,
+    "actualHostExportCreated": false
+  },
+  "historicalFullVerification": "920 and 811 are preserved historical generations, not fresh intake results",
+  "assistantHostOrNativeOrGpuExecuted": false,
+  "qualificationRerun": false,
+  "trainingExecuted": false,
+  "commitOrPushPerformed": false,
+  "publicationAllowancesRemaining": 0,
+  "qualified": false,
+  "trainingReady": false
+}

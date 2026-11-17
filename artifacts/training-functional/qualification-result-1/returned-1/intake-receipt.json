@@ -1,0 +1,22 @@
+{
+  "scope": "EXPLICITLY_APPROVED_SINGLE_EXPORT_FILE_READ_ONLY_NOT_OTHER_HOST_ACCESS",
+  "decision": "Executor selected Read export only (Recommended)",
+  "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-json-export-1.json",
+  "expectedBytes": 262703,
+  "expectedSha256": "fea1c2807458c3f51698e7e2c38e1c3b15367ae8ef337cf5e057b9e8fc3b0103",
+  "sourceOpenAttempts": 1,
+  "sourceOpened": false,
+  "sourceBytesRead": 0,
+  "status": "FAIL",
+  "failure": "Error: ENOENT: no such file or directory, open '/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-json-export-1.json'",
+  "export": null,
+  "files": [],
+  "sourceReadAllowanceRemaining": 0,
+  "otherHostFilesRead": false,
+  "hostCommandsExecuted": false,
+  "nativeOrGpuExecuted": false,
+  "trainingExecuted": false,
+  "commitOrPushPerformed": false,
+  "qualified": false,
+  "trainingReady": false
+}

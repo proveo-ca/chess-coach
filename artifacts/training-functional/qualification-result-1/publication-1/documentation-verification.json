@@ -1,0 +1,74 @@
+{
+  "status": "PASS_FRESH_STATIC_SPECS_AND_PUBLICATION_AUTHORITY_ALIGNMENT",
+  "command": {
+    "argv": [
+      "/usr/local/bin/bun",
+      "--no-env-file",
+      "--no-install",
+      "artifacts/training-functional/check-specs.ts"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 25.547362,
+    "stdout": {
+      "path": "artifacts/training-functional/qualification-result-1/publication-1/specs.stdout",
+      "byteLength": 2136,
+      "sha256": "7a9fe8ac6041f5410de31b62c9ae12f8e2ab46200919eef15e875e2c4c2a46ae"
+    },
+    "stderr": {
+      "path": "artifacts/training-functional/qualification-result-1/publication-1/specs.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "sourcePinsBefore": [
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 173597,
+      "sha256": "50eeb9526af03345860269586285aeb82d7a6560475c25e779b2e98b3fbbe016"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 133837,
+      "sha256": "1f3cd223c956addd0c8f0be63e8709924051b9b07e89f27add4f642e74464fe8"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 53976,
+      "sha256": "93eaa492415daaffaa1a06289174a4bb6526a87393b5f3e2c12d0d73b2e999f6"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/publication-1/plan.json",
+      "byteLength": 3836,
+      "sha256": "c841c628a84514b9f80c174dd6d67ba2b4e7f14ee910ae4e05b3b579b6173b9b"
+    }
+  ],
+  "sourcePinsAfter": [
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 173597,
+      "sha256": "50eeb9526af03345860269586285aeb82d7a6560475c25e779b2e98b3fbbe016"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 133837,
+      "sha256": "1f3cd223c956addd0c8f0be63e8709924051b9b07e89f27add4f642e74464fe8"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 53976,
+      "sha256": "93eaa492415daaffaa1a06289174a4bb6526a87393b5f3e2c12d0d73b2e999f6"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/publication-1/plan.json",
+      "byteLength": 3836,
+      "sha256": "c841c628a84514b9f80c174dd6d67ba2b4e7f14ee910ae4e05b3b579b6173b9b"
+    }
+  ],
+  "sourcePinsMatch": true,
+  "priorCompletionGenerationPreserved": true,
+  "nativePlantUmlRendered": false,
+  "renderSkipReason": "Java and remote-theme access remain outside the Bun/TypeScript-or-Rust task scope",
+  "trainingReady": true,
+  "trainingExecutionAuthorized": false,
+  "publicationPerformed": false
+}

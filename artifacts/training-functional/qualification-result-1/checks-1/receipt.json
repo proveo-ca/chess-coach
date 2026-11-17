@@ -1,0 +1,102 @@
+{
+  "scope": "LOCAL_TRANSCRIPTION_VALIDATION_TESTS_AND_STRICT_TYPES_ONLY",
+  "verificationStatus": "FAIL",
+  "reportAssessment": "LOCAL_TRANSCRIPTION_REQUIRES_READBACK",
+  "results": [
+    {
+      "name": "tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "30000",
+        "artifacts/training-functional/qualification-result-1/validate.test.ts"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 515.31867,
+      "stdoutBytes": 28,
+      "stderrBytes": 2057,
+      "stderr": "\nartifacts/training-functional/qualification-result-1/validate.test.ts:\n(pass) provisional transcription retains its inconsistency without blaming HOST [1.82ms]\n(pass) synthetic coherent reports pass local checks but never confer acceptance [0.96ms]\n(pass) rejects wrong publication without executing commands [0.61ms]\n(pass) rejects unqualified bootstrap scope without executing commands [0.58ms]\n(pass) rejects missing offline build without executing commands [0.53ms]\n(pass) rejects wrong manifest path without executing commands [0.66ms]\n(pass) rejects malformed manifest digest without executing commands [0.93ms]\n(pass) rejects wrong preparation path without executing commands [0.72ms]\n(pass) rejects wrong Git cwd without executing commands [0.86ms]\n(pass) rejects wrong fetch pin without executing commands [0.91ms]\n(pass) rejects renewed Git budget without executing commands [0.71ms]\n(pass) rejects wrong HEAD digest without executing commands [0.70ms]\n(pass) rejects forced preparation without executing commands [2.39ms]\n(pass) rejects missing EOF without executing commands [3.32ms]\n(pass) rejects extra Docker operation without executing commands [0.68ms]\n(pass) rejects changed mount without executing commands [0.62ms]\n(pass) rejects wrong GPU without executing commands [0.59ms]\n(pass) rejects low admission memory without executing commands [0.66ms]\n(pass) rejects renewed outer deadline without executing commands [0.63ms]\n(pass) rejects nonfinite elapsed without executing commands [0.52ms]\n(pass) rejects unremoved container without executing commands [0.52ms]\n(pass) rejects worker readiness bypass without executing commands [0.74ms]\n(pass) rejects OOM state without executing commands [0.50ms]\n(pass) rejects malformed report null [0.37ms]\n(pass) rejects malformed report [] [0.22ms]\n(pass) rejects malformed report {} [0.24ms]\n(pass) rejects malformed report not-json [0.22ms]\n(pass) the publication pin and retained input bytes remain unchanged [0.17ms]\n\n 28 pass\n 0 fail\n 40 expect() calls\nRan 28 tests across 1 file. [486.00ms]\n"
+    },
+    {
+      "name": "types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/qualification-result-1/tsconfig.json"
+      ],
+      "exitCode": 2,
+      "elapsedMs": 5308.064363,
+      "stdoutBytes": 1370,
+      "stderrBytes": 0,
+      "stderr": ""
+    }
+  ],
+  "sourcePinsBefore": [
+    {
+      "path": "artifacts/training-functional/qualification-result-1/bootstrap.json",
+      "byteLength": 6141,
+      "sha256": "4278758382c751a5881bf477b1c4eb2b7230a6f8c52a5125da9bd8e469a50216"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/operator-transcription-1-unverified.json",
+      "byteLength": 36853,
+      "sha256": "55534334e921503a8dbf58acfe8f12dd56471c75a6e71d7d61e4123a9b2bcbc3"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/validate.ts",
+      "byteLength": 10076,
+      "sha256": "31936b93ee73ec2728a142d0721df6a2086b3844823ffa7964e9068a258cd580"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/validate.test.ts",
+      "byteLength": 4816,
+      "sha256": "c5335aab5e6cd58e7e4923d9fdbca8f8b91444b62bc1e0a1084f607e3c1dc3d3"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/tsconfig.json",
+      "byteLength": 90,
+      "sha256": "6ffbad4a2fed250859c38b8b239e7d0cd43330c778bacbc5dba718375e88a260"
+    }
+  ],
+  "sourcePinsAfter": [
+    {
+      "path": "artifacts/training-functional/qualification-result-1/bootstrap.json",
+      "byteLength": 6141,
+      "sha256": "4278758382c751a5881bf477b1c4eb2b7230a6f8c52a5125da9bd8e469a50216"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/operator-transcription-1-unverified.json",
+      "byteLength": 36853,
+      "sha256": "55534334e921503a8dbf58acfe8f12dd56471c75a6e71d7d61e4123a9b2bcbc3"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/validate.ts",
+      "byteLength": 10076,
+      "sha256": "31936b93ee73ec2728a142d0721df6a2086b3844823ffa7964e9068a258cd580"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/validate.test.ts",
+      "byteLength": 4816,
+      "sha256": "c5335aab5e6cd58e7e4923d9fdbca8f8b91444b62bc1e0a1084f607e3c1dc3d3"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/tsconfig.json",
+      "byteLength": 90,
+      "sha256": "6ffbad4a2fed250859c38b8b239e7d0cd43330c778bacbc5dba718375e88a260"
+    }
+  ],
+  "sourcePinsMatch": true,
+  "hostExecuted": false,
+  "referenceBuilt": false,
+  "nativeOrGpuExecuted": false,
+  "trainingReady": false
+}

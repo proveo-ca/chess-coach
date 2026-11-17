@@ -1,0 +1,57 @@
+{
+  "status": "PASS_CURRENT_CAMPAIGN_SOURCE_BYTES_MATCH_HISTORICAL_VERIFICATION",
+  "scope": "LOCAL_SOURCE_HASH_BINDING_NOT_TRAINING_CAMPAIGN_EXECUTION",
+  "historicalRuntimeReceipt": {
+    "path": "artifacts/training-functional/checks/delivery-2/runtime/receipt.json",
+    "sha256": "ca76e223a175e3e741f63e67641d40ccd1ca5f638da95d85c3ca95e107645ccd"
+  },
+  "historicalSourceVerification": {
+    "path": "artifacts/training-functional/qualification-delivery-1/final-verification.json",
+    "sha256": "1c9934a0eae85363b175ce3266f42bc65fcc3cc074e16ebc7095998f851e2178",
+    "totalTests": 920,
+    "gates": 12,
+    "typechecks": 3
+  },
+  "files": [
+    {
+      "path": "packages/runtime/src/training-campaign.ts",
+      "byteLength": 8766,
+      "sha256": "92d0362057bf386fb7713a6929a429a89e97e5998e9921b0e9b790823772d5db"
+    },
+    {
+      "path": "packages/runtime/src/training-coordinator.ts",
+      "byteLength": 9497,
+      "sha256": "29ffc66842cb8588d4c3c5c419b5cf19b18ea780ffde82c35435001a3f5ea5ec"
+    },
+    {
+      "path": "packages/runtime/src/fixed-attempt.ts",
+      "byteLength": 5485,
+      "sha256": "217a47bb57c3e8adbe7d24d15e9f511bab713a141758f7efe6a6f697b37b0b14"
+    },
+    {
+      "path": "packages/runtime/tests/training-campaign.test.ts",
+      "byteLength": 20952,
+      "sha256": "4fa9a7717e9ec4436b0bfc4989d8e1de75655dc1944a382bf832444ffe7c91be"
+    },
+    {
+      "path": "packages/runtime/tests/training-coordinator.test.ts",
+      "byteLength": 8759,
+      "sha256": "7e4dd2cb7fe32fc9f15733126229d81df079357af34c5b00d4c5be2a25178073"
+    }
+  ],
+  "operationalEvidence": "User-returned two-attempt production R4 factory/coordinator qualification, separately byte-bound and cross-checked",
+  "masters": [
+    101,
+    102,
+    103,
+    104,
+    105
+  ],
+  "verifiedAttemptsPerMaster": 1000,
+  "theseCountsDescribeTheSourceContractNotCompletedTraining": true,
+  "trainingCampaignRunExecuted": false,
+  "finalizeOperationallyExecuted": false,
+  "explicitFunctionalAcceptance": "PENDING",
+  "trainingExecutionAuthorized": false,
+  "trainingReady": false
+}

@@ -1,0 +1,52 @@
+{
+  "scope": "READ_ONLY_SOURCE_INTAKE_AND_APPROVED_EXPORT_REVIEWS_NOT_HOST_ATTESTATION",
+  "intake": [
+    {
+      "agent": "adversarial-reviewer",
+      "session": "ses_e158f9ccfffemYMoC24R3Xy3oz",
+      "ready": true,
+      "findings": [],
+      "excluded": "Then-pending spec edits"
+    },
+    {
+      "agent": "security-reviewer",
+      "session": "ses_e158f9cceffeFyxihO1Eyk9kYW",
+      "ready": true,
+      "risk": "low",
+      "findings": []
+    }
+  ],
+  "export": [
+    {
+      "agent": "devops",
+      "session": "ses_e15878cecffeUHNNcGslMW5dvj",
+      "ready": true,
+      "findings": [
+        {
+          "severity": "LOW",
+          "description": "Invalid UTF8 fixture should place its invalid byte inside otherwise valid JSON",
+          "resolution": "CLOSED: invalid byte now appears inside a JSON string; final checks-4 passes"
+        }
+      ]
+    },
+    {
+      "agent": "adversarial-reviewer",
+      "session": "ses_e158f9ccfffemYMoC24R3Xy3oz",
+      "ready": true,
+      "findings": []
+    },
+    {
+      "agent": "security-reviewer",
+      "session": "ses_e158f9cceffeFyxihO1Eyk9kYW",
+      "ready": true,
+      "risk": "low",
+      "findings": []
+    }
+  ],
+  "verification": {
+    "path": "artifacts/training-functional/qualification-result-1/checks-4/receipt.json",
+    "byteLength": 7579,
+    "sha256": "2a96ba5495c033e1d516a3116485be7298aa480a50a1198278fa0e95e88b8191"
+  },
+  "hardwareQualificationOrAcceptanceClaimed": false
+}

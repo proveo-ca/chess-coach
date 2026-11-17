@@ -1,0 +1,199 @@
+{
+  "status": "PASS_BYTE_BOUND_RETAINED_READBACK_PENDING_EXPLICIT_FUNCTIONAL_ACCEPTANCE",
+  "scope": "LOCAL_USER_TRANSFERRED_ARTIFACT_AND_CROSS_DOCUMENT_VERIFICATION_NOT_NATIVE_REPLAY",
+  "publicationCommit": "e821b5169f29b191b8418763508bd54292774aef",
+  "export": {
+    "path": "artifacts/training-functional/qualification-result-1/returned-2/export.json",
+    "byteLength": 262703,
+    "sha256": "fea1c2807458c3f51698e7e2c38e1c3b15367ae8ef337cf5e057b9e8fc3b0103"
+  },
+  "intake": {
+    "path": "artifacts/training-functional/qualification-result-1/returned-2/intake-receipt.json",
+    "byteLength": 3204,
+    "sha256": "f5603ed0664aa6a129df15540bc1afd2bcbbcb8c13ecd10dfd4fb71b65f170e1"
+  },
+  "retainedFiles": [
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/operator-report.json",
+      "byteLength": 34157,
+      "sha256": "13889168a5c9f77885a95460237edbb766abcf1ad9448ea7769133a050bf663a"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/canonical.json",
+      "byteLength": 36742,
+      "sha256": "d5e5f86bc94e232fbfa897b69b1f7595596bdd2e3bca8336f61d7a37756cf484"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/r4.json",
+      "byteLength": 20265,
+      "sha256": "af939100a853ba93c14d3313858110a679ae10e46aba7e52679b495c21f07cbc"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/functional-evidence.json",
+      "byteLength": 1631,
+      "sha256": "17cdc9a7c30792104bb3bdecbedd9a289d2e31be30e1c9714ec5175d4e184eb1"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/preparation-receipt.json",
+      "byteLength": 1921,
+      "sha256": "20f2b4620ef665698a8b7bfffc9fb10ac784491541bc531aa682e7f666a47fd7"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/input-manifest.json",
+      "byteLength": 143938,
+      "sha256": "7bc8885b4ee97be1d4935aa4dcc994275ea41e2e368b144e29be1b598b53ae51"
+    }
+  ],
+  "operatorObservation": {
+    "path": "artifacts/training-functional/qualification-result-1/returned-2/operator-observation.json",
+    "byteLength": 3216,
+    "sha256": "b75baf82b8dfd5eeaa5b9cd3dd4a88fdb889fc2c6271072ceae4c08964bfc332"
+  },
+  "readbackObservation": {
+    "path": "artifacts/training-functional/qualification-result-1/returned-2/readback-observation-2.json",
+    "byteLength": 5353,
+    "sha256": "18d29393b585ac9b4c98d6b2f0f0e4d6bc8fa8e89c63d8fa8f5d5b0aac3e0929"
+  },
+  "verification": {
+    "path": "artifacts/training-functional/qualification-result-1/checks-6/receipt.json",
+    "byteLength": 12178,
+    "sha256": "c165d7bf00453f96c1cf548763b450126f0249a029f67f2216b5bdcf04edc640"
+  },
+  "reviews": {
+    "path": "artifacts/training-functional/qualification-result-1/returned-2/reviews-2.json",
+    "byteLength": 1100,
+    "sha256": "ff1aa51c5cb6fd7fb2ca5172037d2b88eb5073f0053349343133fb03c3c795cd"
+  },
+  "campaignSourceBinding": {
+    "path": "artifacts/training-functional/qualification-result-1/returned-2/campaign-source-binding.json",
+    "byteLength": 2078,
+    "sha256": "a6ab8a55defce21cd05d2ba5a11d7c55d83fd78aa1e5fd296cd9d5c64df0e02d"
+  },
+  "preservation": {
+    "path": "artifacts/training-functional/qualification-result-1/returned-2/preservation.json",
+    "byteLength": 1219,
+    "sha256": "4daae6a5a2a46f284a495a3146e05cb016b21c5cbd47bca9e59cff16dce6e472"
+  },
+  "acceptanceCandidate": {
+    "path": "artifacts/training-functional/qualification-result-1/returned-2/acceptance-candidate.json",
+    "byteLength": 3685,
+    "sha256": "4e71d03b8aa17e2a2bca046152241ad0593a867f2a35f3d0eb2301fe930a8bdd"
+  },
+  "source": {
+    "path": "artifacts/training-functional/qualification-result-1/readback.ts",
+    "byteLength": 20487,
+    "sha256": "d77fff06bae985440d491a4b1160949fe839e1c0afa0ce7e9cd5898958738490"
+  },
+  "tests": {
+    "path": "artifacts/training-functional/qualification-result-1/readback.test.ts",
+    "byteLength": 7557,
+    "sha256": "9983ce091731fc0c254853c97f3fb51367703a8555cb3c54a0cb97bc674238d4"
+  },
+  "testCount": 77,
+  "assertions": 172,
+  "strictTypecheckPassed": true,
+  "staticSpecsPassed": true,
+  "nativePlantUmlRendered": false,
+  "renderSkipReason": "Java and remote-theme access remain outside the Bun/TypeScript-or-Rust task scope",
+  "summary": {
+    "canonical": {
+      "exchanges": 14,
+      "boundaries": 3,
+      "naturalFinishes": 2,
+      "executionLabel": "REAL"
+    },
+    "attempts": [
+      {
+        "id": "r4-m101-a0000",
+        "samples": 3,
+        "historyRef": {
+          "byteLength": 26409,
+          "sha256": "ae34111c7b7afc5477c9ce3e84e2e4c53ab926f28fd755f6b31b824f51e8578e"
+        },
+        "journalRef": {
+          "byteLength": 243957,
+          "sha256": "9509fd04d2922b2c675460e5961c64f267c888795fd038afd9a07a4ed8132748",
+          "lastRecordOrdinal": 17
+        },
+        "proposalRef": {
+          "byteLength": 582144,
+          "sha256": "c6593ae5d0fe110a98f2a178d2728a79d2ea6460243729e03f0d6201200b56bd"
+        },
+        "parameterSha256": "86faec091ae426a46ee5158753c6c189d569f214c0f47ebc69dd8ba22e58587d",
+        "nonzeroPolicyGradient": true
+      },
+      {
+        "id": "r4-m101-a0001",
+        "samples": 7,
+        "historyRef": {
+          "byteLength": 85693,
+          "sha256": "7dedd6ec5e7c40ef3f66189b22b5d770a1e2aec152e1d9eab405c85bdb6a8ca5"
+        },
+        "journalRef": {
+          "byteLength": 1065400,
+          "sha256": "c0d8bdedb7ceebeb3330d8f937755d88bda20b33fdb21bcfef8433412b7adf61",
+          "lastRecordOrdinal": 65
+        },
+        "proposalRef": {
+          "byteLength": 582144,
+          "sha256": "7e8f29a657141644ec3b08ba8505192a04c81ace13485eab5a659a0a761ed47b"
+        },
+        "parameterSha256": "83bc70c275cbd8fba32e438379e5c3317704c8faeb3d5c009d8a4df63631cccc",
+        "nonzeroPolicyGradient": false
+      }
+    ],
+    "native": {
+      "events": 88,
+      "rawJsonBytes": 81186672,
+      "serializedBytes": 81197302,
+      "ports": 4,
+      "naturalFinishes": 4,
+      "scoredReplies": 10
+    },
+    "nonzeroPGUpdates": 1,
+    "physicalInventory": {
+      "sourceRows": 948,
+      "codeRows": 108,
+      "zodRows": 840,
+      "declaredBytes": 6790467,
+      "referenceRows": 9
+    },
+    "finalCounters": {
+      "started": 2,
+      "verifiedCompleted": 2,
+      "eligibleCompleted": 2,
+      "updates": 2,
+      "nonzeroPGUpdates": 1,
+      "baselineCount": 2,
+      "baselineSum": -2
+    }
+  },
+  "priorManualTranscription": {
+    "preserved": true,
+    "queryEntries": 93,
+    "resolution": "ORIGINAL_RETAINED_OPERATOR_HAS_85; LOCAL_MANUAL_COPY_ERROR_NOT_HOST_FAILURE"
+  },
+  "priorCheckerGeneration": {
+    "preserved": true,
+    "path": "artifacts/training-functional/qualification-result-1/returned-2/readback-observation-1.json",
+    "mediumFinding": "HASH_ONLY_MODEL_HANDOFF_REFERENCES",
+    "closedBy": "Full reference hash-and-size joins and three new length-tamper tests"
+  },
+  "limits": {
+    "independentHostAttestation": false,
+    "physicalPayloadRehashed": false,
+    "modelPayloadRehashed": false,
+    "historyJournalPayloadReplayed": false,
+    "nativeTraceReplayed": false,
+    "retainedDatabaseReopened": false,
+    "trainingCampaignRunOrFinalizeExecuted": false
+  },
+  "functionalAcceptance": "PENDING_EXPLICIT_EXECUTOR_DECISION",
+  "trainingExecutionAuthorized": false,
+  "trainingExecuted": false,
+  "qualificationRerun": false,
+  "otherHostFilesRead": false,
+  "commitOrPushPerformed": false,
+  "qualified": false,
+  "trainingReady": false
+}

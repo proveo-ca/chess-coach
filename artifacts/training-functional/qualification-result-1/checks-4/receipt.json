@@ -1,0 +1,210 @@
+{
+  "scope": "LOCAL_INTAKE_EXPORT_FIXTURE_TESTS_STRICT_TYPES_AND_STATIC_SPECS_ONLY",
+  "verificationStatus": "PASS",
+  "exportAuthority": "Executor selected Prepare JSON export (Recommended); prepare command only, user runs it",
+  "results": [
+    {
+      "name": "tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "30000",
+        "artifacts/training-functional/qualification-result-1/validate.test.ts",
+        "artifacts/training-functional/qualification-result-1/export-command.test.ts"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 683.721757,
+      "stdout": {
+        "path": "artifacts/training-functional/qualification-result-1/checks-4/tests.stdout",
+        "byteLength": 28,
+        "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/qualification-result-1/checks-4/tests.stderr",
+        "byteLength": 2767,
+        "sha256": "0f402e195bff0dbef0a2267556bf12bf10291ad24ad287a660f5c040a28e6992"
+      },
+      "summary": [
+        " 37 pass",
+        " 0 fail",
+        " 90 expect() calls",
+        "Ran 37 tests across 2 files. [659.00ms]"
+      ]
+    },
+    {
+      "name": "types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/qualification-result-1/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 5101.657450000001,
+      "stdout": {
+        "path": "artifacts/training-functional/qualification-result-1/checks-4/types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/qualification-result-1/checks-4/types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "summary": []
+    },
+    {
+      "name": "specs",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "artifacts/training-functional/check-specs.ts"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 27.009361999999996,
+      "stdout": {
+        "path": "artifacts/training-functional/qualification-result-1/checks-4/specs.stdout",
+        "byteLength": 2136,
+        "sha256": "a09898f9e6b07d3744db0d67c1f11bb51f6c19f9295fc7a73fdd6ce774133513"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/qualification-result-1/checks-4/specs.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "summary": []
+    }
+  ],
+  "sourcePinsBefore": [
+    {
+      "path": "artifacts/training-functional/qualification-result-1/bootstrap.json",
+      "byteLength": 6141,
+      "sha256": "4278758382c751a5881bf477b1c4eb2b7230a6f8c52a5125da9bd8e469a50216"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/operator-transcription-1-unverified.json",
+      "byteLength": 36853,
+      "sha256": "55534334e921503a8dbf58acfe8f12dd56471c75a6e71d7d61e4123a9b2bcbc3"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/validate.ts",
+      "byteLength": 10076,
+      "sha256": "31936b93ee73ec2728a142d0721df6a2086b3844823ffa7964e9068a258cd580"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/validate.test.ts",
+      "byteLength": 4824,
+      "sha256": "0cd4a1c11d97830066199620b373ec37c63d52cc30db53d33d11ad300f1f0e58"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/tsconfig.json",
+      "byteLength": 118,
+      "sha256": "e57785320eb586eb548119fbf6309d05911efa6228735da56d9b23d71ea1c348"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/export-command.sh",
+      "byteLength": 3102,
+      "sha256": "98032d7675d191091be12dd454668e43a2e9efd8fcfcbbec1c244b0105bfaefd"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/export-command.test.ts",
+      "byteLength": 5203,
+      "sha256": "c22e39a45391f41c43a0b23d0f6b73e2813379d4eb2cb6dcb7b227ed205e6dcc"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/README.md",
+      "byteLength": 3750,
+      "sha256": "b59292e6e1f248f94921c4dfdf2c598963fd5d49797c0fb47203d7b71766364c"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 170221,
+      "sha256": "193f4fb0eff5718098cdf5921738832bcf900663f9b5dda1cf008d84cfdce88c"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 131389,
+      "sha256": "6d9913c3c750009e7e66a712b8146f647439a390dee9cd99d31b0ff56972524e"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 53976,
+      "sha256": "93eaa492415daaffaa1a06289174a4bb6526a87393b5f3e2c12d0d73b2e999f6"
+    }
+  ],
+  "sourcePinsAfter": [
+    {
+      "path": "artifacts/training-functional/qualification-result-1/bootstrap.json",
+      "byteLength": 6141,
+      "sha256": "4278758382c751a5881bf477b1c4eb2b7230a6f8c52a5125da9bd8e469a50216"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/operator-transcription-1-unverified.json",
+      "byteLength": 36853,
+      "sha256": "55534334e921503a8dbf58acfe8f12dd56471c75a6e71d7d61e4123a9b2bcbc3"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/validate.ts",
+      "byteLength": 10076,
+      "sha256": "31936b93ee73ec2728a142d0721df6a2086b3844823ffa7964e9068a258cd580"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/validate.test.ts",
+      "byteLength": 4824,
+      "sha256": "0cd4a1c11d97830066199620b373ec37c63d52cc30db53d33d11ad300f1f0e58"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/tsconfig.json",
+      "byteLength": 118,
+      "sha256": "e57785320eb586eb548119fbf6309d05911efa6228735da56d9b23d71ea1c348"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/export-command.sh",
+      "byteLength": 3102,
+      "sha256": "98032d7675d191091be12dd454668e43a2e9efd8fcfcbbec1c244b0105bfaefd"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/export-command.test.ts",
+      "byteLength": 5203,
+      "sha256": "c22e39a45391f41c43a0b23d0f6b73e2813379d4eb2cb6dcb7b227ed205e6dcc"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/README.md",
+      "byteLength": 3750,
+      "sha256": "b59292e6e1f248f94921c4dfdf2c598963fd5d49797c0fb47203d7b71766364c"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 170221,
+      "sha256": "193f4fb0eff5718098cdf5921738832bcf900663f9b5dda1cf008d84cfdce88c"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 131389,
+      "sha256": "6d9913c3c750009e7e66a712b8146f647439a390dee9cd99d31b0ff56972524e"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 53976,
+      "sha256": "93eaa492415daaffaa1a06289174a4bb6526a87393b5f3e2c12d0d73b2e999f6"
+    }
+  ],
+  "sourcePinsMatch": true,
+  "actualHostCommandExecuted": false,
+  "actualHostFilesRead": false,
+  "actualHostExportCreated": false,
+  "qualificationRerun": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false,
+  "qualified": false,
+  "trainingReady": false
+}

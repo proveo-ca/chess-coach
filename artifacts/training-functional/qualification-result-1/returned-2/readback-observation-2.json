@@ -1,0 +1,190 @@
+{
+  "status": "PASS_RETAINED_READBACK_CONSISTENCY_NOT_FULL_REPLAY",
+  "scope": "LOCAL_CHECKS_OF_USER_TRANSFERRED_RETAINED_DOCUMENTS",
+  "checks": [
+    {
+      "id": "bounded-json-documents",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "operator-and-bootstrap-consistency",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "immutable-source3-document-pins",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "manifest-fourteen-bindings-and-nine-reference-rows",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "manifest-source-and-dependency-inventory",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "preparation-manifest-and-builder-join",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "canonical-real-status-and-original-timing",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "canonical-both-boundaries-and-completion-digests",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "canonical-fourteen-exchanges-two-natural-finishes",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "functional-summary-and-native-counts",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "r4-status-initial-state-and-config-refs",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "r4-attempt-state-proof-and-model-handoffs",
+      "status": "PASS",
+      "error": null
+    }
+  ],
+  "summary": {
+    "canonical": {
+      "exchanges": 14,
+      "boundaries": 3,
+      "naturalFinishes": 2,
+      "executionLabel": "REAL"
+    },
+    "attempts": [
+      {
+        "id": "r4-m101-a0000",
+        "samples": 3,
+        "historyRef": {
+          "byteLength": 26409,
+          "sha256": "ae34111c7b7afc5477c9ce3e84e2e4c53ab926f28fd755f6b31b824f51e8578e"
+        },
+        "journalRef": {
+          "byteLength": 243957,
+          "sha256": "9509fd04d2922b2c675460e5961c64f267c888795fd038afd9a07a4ed8132748",
+          "lastRecordOrdinal": 17
+        },
+        "proposalRef": {
+          "byteLength": 582144,
+          "sha256": "c6593ae5d0fe110a98f2a178d2728a79d2ea6460243729e03f0d6201200b56bd"
+        },
+        "parameterSha256": "86faec091ae426a46ee5158753c6c189d569f214c0f47ebc69dd8ba22e58587d",
+        "nonzeroPolicyGradient": true
+      },
+      {
+        "id": "r4-m101-a0001",
+        "samples": 7,
+        "historyRef": {
+          "byteLength": 85693,
+          "sha256": "7dedd6ec5e7c40ef3f66189b22b5d770a1e2aec152e1d9eab405c85bdb6a8ca5"
+        },
+        "journalRef": {
+          "byteLength": 1065400,
+          "sha256": "c0d8bdedb7ceebeb3330d8f937755d88bda20b33fdb21bcfef8433412b7adf61",
+          "lastRecordOrdinal": 65
+        },
+        "proposalRef": {
+          "byteLength": 582144,
+          "sha256": "7e8f29a657141644ec3b08ba8505192a04c81ace13485eab5a659a0a761ed47b"
+        },
+        "parameterSha256": "83bc70c275cbd8fba32e438379e5c3317704c8faeb3d5c009d8a4df63631cccc",
+        "nonzeroPolicyGradient": false
+      }
+    ],
+    "native": {
+      "events": 88,
+      "rawJsonBytes": 81186672,
+      "serializedBytes": 81197302,
+      "ports": 4,
+      "naturalFinishes": 4,
+      "scoredReplies": 10
+    },
+    "nonzeroPGUpdates": 1,
+    "physicalInventory": {
+      "sourceRows": 948,
+      "codeRows": 108,
+      "zodRows": 840,
+      "declaredBytes": 6790467,
+      "referenceRows": 9
+    },
+    "finalCounters": {
+      "started": 2,
+      "verifiedCompleted": 2,
+      "eligibleCompleted": 2,
+      "updates": 2,
+      "nonzeroPGUpdates": 1,
+      "baselineCount": 2,
+      "baselineSum": -2
+    }
+  },
+  "inputRefs": {
+    "bootstrap": {
+      "byteLength": 6141,
+      "sha256": "4278758382c751a5881bf477b1c4eb2b7230a6f8c52a5125da9bd8e469a50216"
+    },
+    "operator": {
+      "byteLength": 34157,
+      "sha256": "13889168a5c9f77885a95460237edbb766abcf1ad9448ea7769133a050bf663a"
+    },
+    "canonical": {
+      "byteLength": 36742,
+      "sha256": "d5e5f86bc94e232fbfa897b69b1f7595596bdd2e3bca8336f61d7a37756cf484"
+    },
+    "r4": {
+      "byteLength": 20265,
+      "sha256": "af939100a853ba93c14d3313858110a679ae10e46aba7e52679b495c21f07cbc"
+    },
+    "functional": {
+      "byteLength": 1631,
+      "sha256": "17cdc9a7c30792104bb3bdecbedd9a289d2e31be30e1c9714ec5175d4e184eb1"
+    },
+    "preparation": {
+      "byteLength": 1921,
+      "sha256": "20f2b4620ef665698a8b7bfffc9fb10ac784491541bc531aa682e7f666a47fd7"
+    },
+    "manifest": {
+      "byteLength": 143938,
+      "sha256": "7bc8885b4ee97be1d4935aa4dcc994275ea41e2e368b144e29be1b598b53ae51"
+    },
+    "sourceManifest": {
+      "byteLength": 20258,
+      "sha256": "9820e6bfb34f5891117379b207cfd193330d5bd1efbf6c8d36f6ff6e0328836b"
+    },
+    "bindingDocuments": {
+      "byteLength": 5087,
+      "sha256": "5cd45f5cad1b5f08e07a54cbfd68834ff00eda4f0d6c40f02922bac07d3ca7fe"
+    }
+  },
+  "limits": {
+    "independentHostAttestation": false,
+    "physicalPayloadRehashed": false,
+    "modelPayloadRehashed": false,
+    "historyJournalPayloadReplayed": false,
+    "nativeTraceReplayed": false,
+    "retainedDatabaseReopened": false,
+    "trainingCampaignRunOrFinalizeExecuted": false
+  },
+  "functionalAcceptance": "PENDING_EXPLICIT_EXECUTOR_DECISION",
+  "trainingExecutionAuthorized": false,
+  "qualified": false,
+  "trainingReady": false
+}

@@ -1,0 +1,117 @@
+{
+  "status": "PASS_LOCAL_TRANSCRIPTION_CONSISTENCY_ONLY",
+  "scope": "USER_REPORTED_JSON_TRANSCRIPTION_NOT_DIRECT_HOST_CAPTURE",
+  "checks": [
+    {
+      "id": "bootstrap-json",
+      "status": "PASS"
+    },
+    {
+      "id": "operator-json",
+      "status": "PASS"
+    },
+    {
+      "id": "bootstrap-identity-and-scope",
+      "status": "PASS"
+    },
+    {
+      "id": "bootstrap-manifest-reference",
+      "status": "PASS"
+    },
+    {
+      "id": "bootstrap-preparation-reference",
+      "status": "PASS"
+    },
+    {
+      "id": "bootstrap-fixed-argv",
+      "status": "PASS"
+    },
+    {
+      "id": "bootstrap-lifecycles-and-log-references",
+      "status": "PASS"
+    },
+    {
+      "id": "bootstrap-head-output-reference",
+      "status": "PASS"
+    },
+    {
+      "id": "bootstrap-nonrenewing-budget-declarations",
+      "status": "PASS"
+    },
+    {
+      "id": "operator-scope-and-lifecycle",
+      "status": "PASS"
+    },
+    {
+      "id": "operator-original-envelope",
+      "status": "PASS"
+    },
+    {
+      "id": "operator-complete-query-accounting",
+      "status": "PASS"
+    },
+    {
+      "id": "transcribed-monitor-count-fits-elapsed",
+      "status": "PASS"
+    },
+    {
+      "id": "operator-natural-command-results-and-bounds",
+      "status": "PASS"
+    },
+    {
+      "id": "gpu-argv-and-reported-free-memory",
+      "status": "PASS"
+    },
+    {
+      "id": "docker-exact-owned-argv-and-output",
+      "status": "PASS"
+    },
+    {
+      "id": "worker-reported-functional-summary",
+      "status": "PASS"
+    },
+    {
+      "id": "container-reported-natural-state-and-duration",
+      "status": "PASS"
+    }
+  ],
+  "files": {
+    "bootstrap": {
+      "byteLength": 6141,
+      "sha256": "4278758382c751a5881bf477b1c4eb2b7230a6f8c52a5125da9bd8e469a50216"
+    },
+    "operatorTranscription": {
+      "byteLength": 34157,
+      "sha256": "13889168a5c9f77885a95460237edbb766abcf1ad9448ea7769133a050bf663a"
+    }
+  },
+  "reported": {
+    "queries": 85,
+    "elapsedMs": 171757.908033,
+    "referenceBuilds": 6,
+    "inputManifest": {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/qualification-inputs/input-manifest.json",
+      "byteLength": 143938,
+      "sha256": "7bc8885b4ee97be1d4935aa4dcc994275ea41e2e368b144e29be1b598b53ae51"
+    },
+    "preparationReceipt": {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-delivery-1/preparation-receipt.json",
+      "byteLength": 1921,
+      "sha256": "20f2b4620ef665698a8b7bfffc9fb10ac784491541bc531aa682e7f666a47fd7"
+    }
+  },
+  "transcribed": {
+    "queryEntries": 85,
+    "dockerEntries": 4
+  },
+  "actualHostFilesRead": false,
+  "reportedFileDigestsVerifiedAgainstHostBytes": false,
+  "perQueryTimingVerified": false,
+  "discrepancyAttribution": "UNRESOLVED_TRANSCRIPTION_FIDELITY_NOT_A_HOST_FAILURE_FINDING",
+  "functionalAcceptance": "PENDING",
+  "qualified": false,
+  "trainingReady": false,
+  "supersedesLocalTranscriptionAssessment": "artifacts/training-functional/qualification-result-1/observation-1.json",
+  "priorProvisionalTranscriptionRetained": true,
+  "priorMismatchAttributedToHost": false
+}

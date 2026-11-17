@@ -805,6 +805,7 @@
         "artifacts/training-functional/reference-inputs/**",
         "artifacts/training-functional/host-facts-1/**",
         "artifacts/training-functional/qualification-packet-1/**",
+        "artifacts/training-functional/qualification-result-1/**",
         "packages/runtime/src/fixed-attempt.ts",
         "Cargo.toml",
         "crates/learning/Cargo.toml",

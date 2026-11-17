@@ -1,0 +1,56 @@
+{
+  "scope": "USER_REPORTED_EXPORT_METADATA_AND_PROOF_NOT_VERIFIED_LOCAL_EXPORT_BYTES",
+  "publicationCommit": "e821b5169f29b191b8418763508bd54292774aef",
+  "reportedExport": {
+    "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-json-export-1.json",
+    "byteLength": 262703,
+    "sha256": "fea1c2807458c3f51698e7e2c38e1c3b15367ae8ef337cf5e057b9e8fc3b0103",
+    "files": 6,
+    "sourceBytes": 238654
+  },
+  "reportedFiles": [
+    {"name": "operator-report.json", "byteLength": 34157, "sha256": "13889168a5c9f77885a95460237edbb766abcf1ad9448ea7769133a050bf663a"},
+    {"name": "canonical.json", "byteLength": 36742, "sha256": "d5e5f86bc94e232fbfa897b69b1f7595596bdd2e3bca8336f61d7a37756cf484"},
+    {"name": "r4.json", "byteLength": 20265, "sha256": "af939100a853ba93c14d3313858110a679ae10e46aba7e52679b495c21f07cbc"},
+    {"name": "functional-evidence.json", "byteLength": 1631, "sha256": "17cdc9a7c30792104bb3bdecbedd9a289d2e31be30e1c9714ec5175d4e184eb1"},
+    {"name": "preparation-receipt.json", "byteLength": 1921, "sha256": "20f2b4620ef665698a8b7bfffc9fb10ac784491541bc531aa682e7f666a47fd7"},
+    {"name": "input-manifest.json", "byteLength": 143938, "sha256": "7bc8885b4ee97be1d4935aa4dcc994275ea41e2e368b144e29be1b598b53ae51"}
+  ],
+  "reportedFunctionalProof": {
+    "canonicalExecution": "REAL",
+    "canonicalExchanges": 14,
+    "canonicalBoundaries": 3,
+    "canonicalNaturalFinishes": 2,
+    "verifiedR4Attempts": 2,
+    "attemptSampleCounts": [3, 7],
+    "nativeEvents": 88,
+    "nativeRawJsonBytes": 81186672,
+    "nativeSerializedBytes": 81197302,
+    "nativePorts": 4,
+    "nativeNaturalFinishes": 4,
+    "nativeScoredReplies": 10,
+    "nonzeroPGUpdates": 1,
+    "initialRecordSha256": "bb0d9bb48441eab920a737a303205bd4edcb5f05195ac4941abca855d30af01b",
+    "firstProposalSha256": "c6593ae5d0fe110a98f2a178d2728a79d2ea6460243729e03f0d6201200b56bd",
+    "secondAttemptInputSha256": "c6593ae5d0fe110a98f2a178d2728a79d2ea6460243729e03f0d6201200b56bd",
+    "finalRecordSha256": "7e8f29a657141644ec3b08ba8505192a04c81ace13485eab5a659a0a761ed47b"
+  },
+  "approvedRead": {
+    "decision": "Executor selected Read export only (Recommended)",
+    "attempts": 1,
+    "sourceOpened": false,
+    "sourceBytesRead": 0,
+    "result": "ENOENT_EXPORT_NOT_VISIBLE_IN_AGENT_FILESYSTEM",
+    "receipt": "artifacts/training-functional/qualification-result-1/returned-1/intake-receipt.json",
+    "remainingAllowance": 0,
+    "otherHostFilesRead": false
+  },
+  "exactExportBytesVerified": false,
+  "manualTranscriptionRepairedOrAccepted": false,
+  "functionalAcceptance": "PENDING",
+  "qualificationRerun": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false,
+  "qualified": false,
+  "trainingReady": false
+}
