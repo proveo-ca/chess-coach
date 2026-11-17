@@ -1,0 +1,40 @@
+
+packages/contracts/tests/initialization.test.ts:
+(pass) w: canonical recipient comes from current vision with no invented history [13.80ms]
+(pass) b: canonical recipient comes from current vision with no invented history [3.71ms]
+(pass) initial producer returns detached frozen recipients and stays out of model-facing root exports [2.31ms]
+
+packages/contracts/tests/game-session.test.ts:
+(pass) actual canonical recipients start with the approved opening and no income grant [21.10ms]
+(pass) explicit banks debit deployment once, grant settlement income once and survive omitted core stored fields [33.26ms]
+(pass) paid basis survives promotion and retires independently of replacement value [28.73ms]
+(pass) birth followed by immediate mine loss is paid destruction rather than waste [10.98ms]
+(pass) suppressed F deployment pays once and records unmaterialized waste after a terminal C chip [15.14ms]
+(pass) terminal opening chips preserve explicit banks without a planning or mineral grant [4.28ms]
+(pass) both-seat staging rejects invalid side, extra fields and insufficient minerals without partial commit [7.39ms]
+(pass) recipient references use accepted own ordinals rather than combined native action sequences [11.15ms]
+(pass) source-bound deterministic replay rejects gaps and conflicts and accepts identical repeats without new facts [25.76ms]
+
+packages/contracts/tests/recipient-codec.test.ts:
+(pass) public standard batch codec rejects private fields, cross-recipient IDs and event gaps [10.19ms]
+
+packages/contracts/tests/recipient-privacy.test.ts:
+(pass) hidden-prefix Hoverbike twins keep actual target facts but identical acting-recipient bytes [19.21ms]
+(pass) retired-enemy-siege discovery step differences do not change recipient bytes [18.30ms]
+(pass) an incidental moved Battleship from a speculative Tank prefix stays private [9.83ms]
+(pass) hidden paid replacement identities do not change consumed target or enemy paid lower bounds [15.66ms]
+(pass) consumed casualty memory clears before mine death and hidden F p replacement [9.99ms]
+(pass) consumed casualty memory clears before mine death and hidden F n replacement [10.02ms]
+(pass) a later crush does not restore the consumed dead target to memory [6.84ms]
+(pass) nonacting recipient receives own loss but no consumed enemy target or incidental enemy loss [8.16ms]
+(pass) positive stationary-siege and failed-victim-guard probes emit no public target [13.64ms]
+(pass) dead C-wave vision source cannot witness later fire-and-forget enemy loss [12.18ms]
+(pass) public recipient event numbering never includes private query or hidden-effect ordinals [6.95ms]
+
+packages/contracts/tests/shared-engine.e2e.test.ts:
+(pass) product and GameSession share B/C/F physics, host banks and private lineage across multiple turns [97.76ms]
+
+ 25 pass
+ 0 fail
+ 328 expect() calls
+Ran 25 tests across 5 files. [514.00ms]

@@ -1,0 +1,13 @@
+{
+  "scope": "READ_ONLY_FINAL_CHECKER_SOURCE_REVIEW_NOT_HARDWARE_QUALIFICATION",
+  "reviewerSession": "ses_e171894a8ffeK9hxuiham6iTTo",
+  "files": ["artifacts/training-functional/qualification-evidence.ts", "artifacts/training-functional/qualification-evidence.test.ts"],
+  "reportedReadyToMerge": true,
+  "reportedRisk": "low",
+  "findings": [],
+  "reviewerConclusion": "[Inference] No in-scope findings against the unchanged request contracts and accepted read-only semantics",
+  "testsRerunByReviewer": false,
+  "hardwareQualificationClaimed": false,
+  "publicationAuthorized": false,
+  "trainingReady": false
+}

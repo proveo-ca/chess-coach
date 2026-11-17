@@ -1,0 +1,61 @@
+
+artifacts/training-functional/qualification-bootstrap.e2e.test.ts:
+393 |   expect(env.commands).toHaveLength(1); expect(result.referenceBuilds).toBe(6);
+394 | });
+395 | test("MOCK readable readonly installed Zod preserves bytes and normalizes only fresh copies to 0644", async () => {
+396 |   const env = worker(), installed = [["package.json", 0o444], ["index.js", 0o444], ["v4/index.js", 0o555]] as const;
+397 |   const before = installed.map(([path, mode]) => { env.nodes.get(`${ZOD}/${path}`)!.mode = mode; return Uint8Array.from(env.nodes.get(`${ZOD}/${path}`)!.data!); });
+398 |   const result = await env.run(); expect(result.failures).toEqual([]); expect(result.status).toBe("PASS");
+                                                                ^
+error: expect(received).toEqual(expected)
+
+- []
++ [
++   "Error: Bootstrap: ZOD_FILE",
++ ]
+
+- Expected  - 1
++ Received  + 3
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/qualification-bootstrap.e2e.test.ts:398:59)
+(fail) MOCK readable readonly installed Zod preserves bytes and normalizes only fresh copies to 0644 [3.21ms]
+473 |     umask: next => { events.push(`umask:${next.toString(8)}`); const old = mask; mask = next; return old; },
+474 |     spawn: actual => { expect(actual).toBe(request); events.push(`spawn:${mask.toString(8)}`); env.seedDir(S);
+475 |       env.seed(`${S}/git-regular.ts`, data, 0o666 & ~mask); env.seed(`${S}/git-executable.ts`, data, 0o777 & ~mask);
+476 |       void Promise.resolve().then(() => { deferredMask = mask; }); return child.handle; },
+477 |   });
+478 |   expect(spawned).toBe(child.handle); expect(mask).toBe(0o077); expect(events).toEqual(["umask:22", "spawn:22", "umask:77"]); expect(env.nodes.get(D)!.mode).toBe(0o700);
+                                                                                     ^
+error: expect(received).toEqual(expected)
+
+  [
+-   "umask:22",
+-   "spawn:22",
+-   "umask:77",
++   "spawn:77",
+  ]
+
+- Expected  - 3
++ Received  + 1
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/qualification-bootstrap.e2e.test.ts:478:80)
+(fail) MOCK Git spawn inherits 0022 only synchronously and creates strict modes inside private fresh source [0.74ms]
+485 | });
+486 | test("MOCK Git spawn restores the original umask synchronously after an exception", () => {
+487 |   const child = childHarness(), request = { ...child.request, argv: ["git", "init", S] };
+488 |   for (const original of [0o077, 0o027]) { let mask = original; const calls: number[] = [], failure = new Error("MOCK_GIT_SPAWN_FAILED");
+489 |     expect(() => spawnBootstrapChild(request, { umask: next => { calls.push(next); const old = mask; mask = next; return old; },
+490 |       spawn: actual => { expect(actual).toBe(request); expect(mask).toBe(0o022); throw failure; } })).toThrow(failure);
+                                                                                                            ^
+error: expect(received).toThrow(expected)
+
+Expected message: "MOCK_GIT_SPAWN_FAILED"
+Received message: "expect(received).toBe(expected)\n\nExpected: 18\nReceived: 63\n"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/qualification-bootstrap.e2e.test.ts:490:103)
+(fail) MOCK Git spawn restores the original umask synchronously after an exception [0.26ms]
+
+ 99 pass
+ 3 fail
+ 2143 expect() calls
+Ran 102 tests across 1 file. [205.00ms]

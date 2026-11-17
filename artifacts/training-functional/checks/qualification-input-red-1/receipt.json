@@ -1,0 +1,12 @@
+{
+  "scope": "RED_STATIC_PARSER_SHEBANG_REGRESSION",
+  "command": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./artifacts/training-functional/qualification-input-documents.test.ts"
+  ],
+  "exitCode": 1,
+  "sourceOrHostOrNativeEvaluated": false
+}

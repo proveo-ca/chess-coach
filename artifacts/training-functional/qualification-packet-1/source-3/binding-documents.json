@@ -1,0 +1,134 @@
+{
+  "scope": "FOURTEEN_ACTUAL_DOCUMENT_REFS_NOT_STAGED_NOT_EXECUTION_AUTHORITY",
+  "documents": [
+    {
+      "role": "source",
+      "source": {
+        "path": "artifacts/training-functional/qualification-packet-1/source-3/source-manifest.json",
+        "byteLength": 20258,
+        "sha256": "9820e6bfb34f5891117379b207cfd193330d5bd1efbf6c8d36f6ff6e0328836b"
+      },
+      "futurePath": "/app/qualification-inputs/source.bin"
+    },
+    {
+      "role": "tests",
+      "source": {
+        "path": "artifacts/training-functional/qualification-packet-1/source-3/verification.json",
+        "byteLength": 15082,
+        "sha256": "5edf5fa735abbf8be5b38c7389a580199d947e7b845ce3a2a31ecbcc43a45f75"
+      },
+      "futurePath": "/app/qualification-inputs/tests.bin"
+    },
+    {
+      "role": "closure",
+      "source": {
+        "path": "artifacts/training-functional/reference-prep-2/selected-reference.json",
+        "byteLength": 103663,
+        "sha256": "09cd6b6dd97fd1b3984b71b5f0d3f540e21b38285897062148e16c0e388fc45a"
+      },
+      "futurePath": "/app/qualification-inputs/closure.bin"
+    },
+    {
+      "role": "dependencyLock",
+      "source": {
+        "path": "pnpm-lock.yaml",
+        "byteLength": 315006,
+        "sha256": "0dc70cedcc188b938415b04b4625adfff643b28e7b795a0100ea1ea34303f551"
+      },
+      "futurePath": "/app/qualification-inputs/dependencyLock.bin"
+    },
+    {
+      "role": "image",
+      "source": {
+        "path": "artifacts/training-functional/qualification-packet-1/source-3/image-observation.json",
+        "byteLength": 1704,
+        "sha256": "13a9f9b66299f63f9eb557a104ec02d4bc533bd5d0d58acc3aa23e1df92ba358"
+      },
+      "futurePath": "/app/qualification-inputs/image.bin"
+    },
+    {
+      "role": "runtimeConfiguration",
+      "source": {
+        "path": "artifacts/training-functional/qualification-packet-1/source-3/runtime-configuration.json",
+        "byteLength": 1131,
+        "sha256": "3bc2a838363fcd194421eb930170325f1bdec641634608cdba3e6c6743284b05"
+      },
+      "futurePath": "/app/qualification-inputs/runtimeConfiguration.bin"
+    },
+    {
+      "role": "coreRules",
+      "source": {
+        "path": "artifacts/training-functional/qualification-packet-1/source-3/core-rules.json",
+        "byteLength": 9504,
+        "sha256": "b0c6674122ccb4ec3f113bc9f815701f8c0d77a6e254ebdba568977a85e51211"
+      },
+      "futurePath": "/app/qualification-inputs/coreRules.bin"
+    },
+    {
+      "role": "strategicSource",
+      "source": {
+        "path": "artifacts/training-functional/scratch/reference-prep-2/bundles/packages/starchess-arena/src/players/strategic.ts",
+        "byteLength": 115300,
+        "sha256": "f48eb1a6016202272d609f373718c33ca2f4dba13b7d9ebe7499be4960b36499"
+      },
+      "futurePath": "/app/qualification-inputs/strategicSource.bin"
+    },
+    {
+      "role": "corpusManifest",
+      "source": {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/inputs/reference/_spec/corpora/ml-adjutant-corpus.manifest.json",
+        "byteLength": 7309,
+        "sha256": "31ac6f865340a95f8e85c2c1577aaea0aada87feb92a37637cda90aee288cc3f"
+      },
+      "futurePath": "/app/qualification-inputs/corpusManifest.bin"
+    },
+    {
+      "role": "corpusSource",
+      "source": {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/inputs/reference/starchess-match-history-20260929-203446.json",
+        "byteLength": 664540,
+        "sha256": "e6770cb032aa76dc05432c7a49e61c4905d1a1f7b859aa860a090821213e7ae6"
+      },
+      "futurePath": "/app/qualification-inputs/corpusSource.bin"
+    },
+    {
+      "role": "recipe",
+      "source": {
+        "path": "artifacts/training-functional/qualification-packet-1/plan.json",
+        "byteLength": 5858,
+        "sha256": "d9d53903cb9db66e86aafcaad41e543a4c6a8ae31cb62d00928fa33878a4364f"
+      },
+      "futurePath": "/app/qualification-inputs/recipe.bin"
+    },
+    {
+      "role": "featureLayout",
+      "source": {
+        "path": "schemas/feature-layout.json",
+        "byteLength": 1399,
+        "sha256": "bca25ea10220001845ad8a5f419f32baf250073b150c9bbe78f17a75c7c08f74"
+      },
+      "futurePath": "/app/qualification-inputs/featureLayout.bin"
+    },
+    {
+      "role": "fixtureManifest",
+      "source": {
+        "path": "packages/runtime/tests/fixtures/native-reference-proof.json",
+        "byteLength": 524,
+        "sha256": "e3b9ae93b32829d7825a246849bc8937016737581e9d10150f94753d1b9294a7"
+      },
+      "futurePath": "/app/qualification-inputs/fixtureManifest.bin"
+    },
+    {
+      "role": "hostConfiguration",
+      "source": {
+        "path": "artifacts/training-functional/host-facts-1/operator-result-1.json",
+        "byteLength": 8104,
+        "sha256": "4128e7b587c40da0073c99ff86ab6711981ffc69423a74e4d41fd8870432bfd7"
+      },
+      "futurePath": "/app/qualification-inputs/hostConfiguration.bin"
+    }
+  ],
+  "inputPayloadsCopied": false,
+  "referenceBundlesPublished": false,
+  "trainingReady": false
+}

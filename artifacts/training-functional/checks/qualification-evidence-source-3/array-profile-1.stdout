@@ -1,0 +1,7 @@
+{"name":"json-parse","elapsedMs":65.313366,"length":1162752}
+{"name":"inline-number-loop","elapsedMs":2.913080000000008,"length":1162752}
+{"name":"freeze-json-array","elapsedMs":1024.460699,"length":1162752}
+{"name":"Array.from","elapsedMs":154.6399100000001,"length":1162752}
+{"name":"freeze-Array.from","elapsedMs":994.1852260000003,"length":1162752}
+{"name":"push-copy","elapsedMs":106.08206399999972,"length":1162752}
+{"name":"freeze-pushed","elapsedMs":978.8246449999997,"length":1162752}

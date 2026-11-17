@@ -1,0 +1,16 @@
+
+artifacts/training-functional/qualification-input-documents.test.ts:
+(pass) source inspection walks literal local/workspace imports without evaluating them [3.00ms]
+(pass) wildcard workspace exports resolve only their selected source member [0.95ms]
+(pass) JSON imports remain byte-hashed inputs without evaluation [0.74ms]
+(pass) source inspection rejects missing imports instead of claiming a closure [0.73ms]
+(pass) source inspection rejects unexpected external packages without installation [0.82ms]
+(pass) source inspection records captured-reference imports as separately pending payloads [0.68ms]
+(pass) source inspection rejects a selected symlink rather than following an external tree [0.66ms]
+(pass) source inspection rejects escaping entries and malformed workspace package metadata [0.80ms]
+(pass) document preparation rejects unsafe generations before reading or writing payloads [0.61ms]
+
+ 9 pass
+ 0 fail
+ 23 expect() calls
+Ran 9 tests across 1 file. [22.00ms]

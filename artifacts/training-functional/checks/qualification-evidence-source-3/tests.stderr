@@ -1,0 +1,19 @@
+
+artifacts/training-functional/qualification-evidence.test.ts:
+2399 |     };
+2400 | });
+2401 | function handleReadonlyResult(payload) {
+2402 |     // A repeat visit hands back a node that is still being built; freezing it here would make the rest of its keys fail to assign.
+2403 |     if (!payload.memo)
+2404 |         payload.value = Object.freeze(payload.value);
+                                      ^
+TypeError: Attempting to store non-configurable property on a typed array at index: 0
+      at handleReadonlyResult (/home/gu1lty/Projects/proveo/chess-coach-integration/node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/schemas.js:2404:32)
+      at <anonymous> (file:///home/gu1lty/Projects/proveo/chess-coach-integration/node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/doc.js:161:39)
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach-integration/node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/schemas.js:1215:23)
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach-integration/node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/schemas.js:2394:43)
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach-integration/node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/schemas.js:112:38)
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach-integration/node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/parse.js:43:32)
+      at scoreParity (/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/qualification-evidence.test.ts:323:28)
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/qualification-evidence.test.ts:333:3)
+(fail) fast score parser matches strict values rejection 5 [1.06ms]

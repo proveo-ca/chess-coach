@@ -1,0 +1,9 @@
+{
+  "scope": "LOCAL_READ_ONLY_POST_PUBLICATION_CHECK_FAILURE_NOT_PUSH_FAILURE",
+  "error": "A Git read exited128 under an env-i launcher retaining only PATH",
+  "pushCompletedBeforeThisCheck": true,
+  "commit": "6a77f4c637f1d44260d5787c57a57b34fbffd754",
+  "additionalPushOrCommitPerformed": false,
+  "verificationWillUseNormalExistingGitAuthenticationContext": true,
+  "hostQueriesExecuted": 0
+}

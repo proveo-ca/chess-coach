@@ -1,0 +1,9 @@
+{
+  "scope": "READ_ONLY_BOOTSTRAP_SOURCE_REVIEW_NOT_HARDWARE_QUALIFICATION",
+  "reviewerSession": "ses_e1718eb55ffe05HZkAbP0jRyUr",
+  "reportedReadyToMerge": false,
+  "findings": [{"severity": "MEDIUM", "path": "artifacts/training-functional/qualification-bootstrap.ts", "line": 240, "description": "Readable regular PNPM files with mode 0444 fail the Zod mode allowlist", "resolution": "PENDING_SOURCE_CORRECTION"}],
+  "priorVerification": "delivery-1: all twelve categories and 913 tests passed before this review; not final publication acceptance",
+  "publicationPerformed": false,
+  "trainingReady": false
+}

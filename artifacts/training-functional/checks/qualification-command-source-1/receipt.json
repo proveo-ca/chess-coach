@@ -1,0 +1,16 @@
+{
+  "scope": "LOCAL_BASH_PARSE_AND_FAKE_CURL_BUN_COMMAND_TESTS_ONLY",
+  "command": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./artifacts/training-functional/qualification-command.test.ts"
+  ],
+  "exitCode": 0,
+  "elapsedMs": 222.037519,
+  "realNetworkOrGitInvoked": false,
+  "downloadedBootstrapEvaluated": false,
+  "hostOrNativeOrGpuExecuted": false,
+  "trainingReady": false
+}

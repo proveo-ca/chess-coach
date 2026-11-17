@@ -1,0 +1,34 @@
+
+artifacts/training-functional/host-facts.test.ts:
+(pass) fixed eleven groups bind exact argv, paths, environment and inferred CPU layout [0.23ms]
+(pass) complete mocked observations remain UNKNOWN availability and emit bounded named facts [1.66ms]
+(pass) pure HOST context guard rejects integration root, aliases and failed canonicalization [0.75ms]
+(pass) missing optional metadata does not suppress independent groups or assert GPU startup failure [0.31ms]
+(pass) pure bounded zod parsing rejects null, arrays, missing keys, invalid JSON and non-zod objects [0.28ms]
+(pass) initial origin includes adapter setup and context instead of renewing the phase [0.22ms]
+(pass) new commands use the remaining original phase and cleanup reserve [0.25ms]
+(pass) unresolved async context cannot indefinitely await the query phase [0.20ms]
+(pass) unresolved query cleanup returns uncertainty instead of FULL and permits later groups [0.33ms]
+(pass) regressing monotonic clock stops queries and cannot become FULL [0.26ms]
+(pass) deadline includes final serialization observation [0.32ms]
+(pass) unreaped, missing EOF, timeout, absent ownership or nonzero exit can never be FULL [0.97ms]
+(pass) raw truncation makes observations PARTIAL and keeps actual child exit/EOF/reap facts [0.19ms]
+(pass) escaped final JSON cap drops data, preserves ownership, counts newline and reports PARTIAL [11.44ms]
+(pass) errors are bounded and runner emits exactly one JSON document with nonzero partial exit [0.86ms]
+(pass) FULL runner exits zero and emits a single bounded JSON document [0.21ms]
+(pass) runner bounds blocked output by the original hard deadline without a second emission [0.26ms]
+(pass) production JSON facts count every input byte even when parsing rejects the input [13.70ms]
+(pass) entry guard accepts only explicit eval argv with --run and remains inert for imports [0.06ms]
+(pass) literal published source parses as Bun TypeScript eval and stays inert without explicit run [33.00ms]
+(pass) literal eval accepts appended mocked collector without any factual HOST calls [12.97ms]
+(pass) explicit eval main rejects mocked wrong HOST before spawn and emits one JSON only [13.33ms]
+(pass) production command adapter captures mocked exact argv/env and distinguishes configuration Id [12.09ms]
+(pass) production command adapter bounded mocked stream captures truncation without unbounded text reads [12.17ms]
+(pass) production ordinary watchdog never waits indefinitely for mocked child exit or pipe EOF [12.83ms]
+(pass) late mocked child exit cannot rewrite an already returned cleanup observation [12.37ms]
+(pass) source adapter stays standalone, metadata-only and bounded without environment reads or writes [0.35ms]
+
+ 27 pass
+ 0 fail
+ 195 expect() calls
+Ran 27 tests across 1 file. [151.00ms]

@@ -1,0 +1,24 @@
+{
+  "scope": "CHECKER_ONLY_PRODUCER_HASH_CORRECTIONS_NOT_NATIVE_QUALIFICATION",
+  "originalReview": "artifacts/training-functional/qualification-packet-1/adversarial-review-2.json",
+  "followup": "artifacts/training-functional/qualification-packet-1/settlement-followup-1.json",
+  "status": "CORRECTIONS_REVIEWED_FRESH_CONSOLIDATED_VERIFICATION_PENDING",
+  "retainedRecordHash": "Validate the original retained record, then hash its original property order exactly as the game producer does",
+  "opponentSnapshotHash": "Hash nativeSnapshotShape.parse(snapshot) exactly as StrategicDriver does; no raw-order fallback",
+  "runtimeProducersModified": false,
+  "redEvidence": [
+    "artifacts/training-functional/checks/qualification-evidence-source-4/red-2.stderr",
+    "artifacts/training-functional/checks/qualification-evidence-source-5/red.stderr"
+  ],
+  "greenEvidence": "artifacts/training-functional/checks/qualification-evidence-source-5/tests-final.stderr",
+  "tests": 267,
+  "assertions": 1495,
+  "elapsedSeconds": 104.60,
+  "strictArtifactTypes": "PASS",
+  "adversarialReview": "artifacts/training-functional/qualification-packet-1/adversarial-review-3.json",
+  "securityReview": "artifacts/training-functional/qualification-packet-1/security-review-3.json",
+  "source2AcceptedAsFinal": false,
+  "nativeOrHostOrGpuExecuted": false,
+  "publicationAuthorized": false,
+  "trainingReady": false
+}

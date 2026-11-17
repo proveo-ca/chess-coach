@@ -30,7 +30,9 @@ const scan = (patterns: string[]) => {
 };
 const sourcePatterns = ["Cargo.toml", "Cargo.lock", "crates/*/Cargo.toml", "crates/**/*.rs", "packages/contracts/src/**/*.ts",
   "packages/policy/src/**/*.ts", "packages/runtime/src/**/*.ts", "packages/runtime/tests/*.ts", "packages/starchess-core/src/**/*.ts",
-  "artifacts/training-functional/*.ts", "artifacts/training-functional/{plan,tsconfig,input-status}.json", "tsconfig*.json", "pnpm-lock.yaml", "schemas/*.json"];
+  "artifacts/training-functional/*.ts", "artifacts/training-functional/{plan,tsconfig,input-status}.json", "artifacts/training-functional/qualification-packet-1/plan.json",
+  "artifacts/training-functional/qualification-packet-1/source-*/{source-manifest,core-rules,image-observation,runtime-configuration}.json",
+  "artifacts/training-functional/qualification-delivery-1/{plan.json,command-template.sh}", "tsconfig*.json", "pnpm-lock.yaml", "schemas/*.json"];
 const protectedFiles = () => {
   const result = Bun.spawnSync(["git", "--no-pager", "--no-optional-locks", "ls-files", "-z", "--", "_work", "artifacts/engine-layout", "artifacts/engine-consolidation", "artifacts/integration/mainline-1"],
     { cwd: root, env: { PATH: "/usr/local/bin:/usr/bin:/bin", GIT_NO_LAZY_FETCH: "1" }, stdout: "pipe", stderr: "pipe", timeout: 10_000 });
@@ -44,7 +46,11 @@ const commands: Record<string, string[]> = {
     "./artifacts/training-functional/native-comment-bridge.test.ts", "./artifacts/training-functional/qualification.test.ts"],
   runtime: ["test", ...pureRuntime.map(name => `./packages/runtime/tests/${name}.test.ts`)],
   contracts: ["test", ...["initialization", "game-session", "recipient-codec", "recipient-privacy", "shared-engine.e2e"].map(name => `./packages/contracts/tests/${name}.test.ts`)],
-  r4: ["test", "--timeout", "30000", "./artifacts/training-functional/r4-observation.test.ts"],
+  r4: ["test", "--timeout", "30000", "./artifacts/training-functional/r4-observation.test.ts", "./artifacts/training-functional/qualification-adapters.test.ts",
+    "./artifacts/training-functional/qualification-adapter-launch.test.ts",
+    "./artifacts/training-functional/qualification-packet.test.ts", "./artifacts/training-functional/qualification-evidence.test.ts",
+    "./artifacts/training-functional/qualification-operator.e2e.test.ts", "./artifacts/training-functional/qualification-input-documents.test.ts",
+    "./artifacts/training-functional/qualification-bootstrap.e2e.test.ts", "./artifacts/training-functional/qualification-command.test.ts"],
   reference: ["test", "--timeout", "30000", "./artifacts/training-functional/reference-retry.test.ts", "./artifacts/training-functional/jssha-archive.test.ts"],
   "host-facts": ["test", "--timeout", "30000", "./artifacts/training-functional/host-facts.test.ts"],
   "source-types": ["node_modules/typescript/bin/tsc", "--noEmit", "-p", "tsconfig.json"],

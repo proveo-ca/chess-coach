@@ -1,0 +1,4 @@
+bun test v1.4.0 (34cbb9a40)
+QUALIFICATION_EVIDENCE_SOURCE_5_MEASURE {"name":"actual-strategic-post-settlement","elapsedMs":408.8336369999961,"status":"FAIL_RETAINED_FUNCTIONAL_EVIDENCE"}
+QUALIFICATION_EVIDENCE_SOURCE_5_OPPONENT {"rawDigest":"5b1602dec4a623582f7ec6a66e3444e2a32194d163d08086f54c5e9944482108","normalizedDigest":"d206472ebc9a957e2311c1009c392ca3b184bded63db13c6386b4e0b1fbe0737","actualStrategicJournalDigest":"d206472ebc9a957e2311c1009c392ca3b184bded63db13c6386b4e0b1fbe0737","failures":["r4-m101-a0001:OPPONENT_CONTEXT"]}
+QUALIFICATION_EVIDENCE_SOURCE_5_PROFILE {"scope":"SYNTHETIC_SOURCE_ONLY","cache":"NONE","profiles":[{"name":"actual-strategic-post-settlement","elapsedMs":408.8336369999961,"status":"FAIL_RETAINED_FUNCTIONAL_EVIDENCE"}]}

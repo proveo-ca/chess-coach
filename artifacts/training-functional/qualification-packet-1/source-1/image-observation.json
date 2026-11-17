@@ -1,0 +1,58 @@
+{
+  "scope": "USER_REPORTED_DOCKER_CONFIGURATION_ID_NOT_REGISTRY_MANIFEST_VERIFICATION",
+  "source": {
+    "path": "artifacts/training-functional/host-facts-1/operator-result-1.json",
+    "byteLength": 8104,
+    "sha256": "4128e7b587c40da0073c99ff86ab6711981ffc69423a74e4d41fd8870432bfd7"
+  },
+  "result": {
+    "ok": true,
+    "child": {
+      "spawned": true,
+      "exited": true,
+      "reaped": true,
+      "exitCode": 0,
+      "signalCode": null,
+      "stdoutEOF": true,
+      "stderrEOF": true,
+      "killRequested": false,
+      "timedOut": false
+    },
+    "data": {
+      "stdout": "\"sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb\"\n",
+      "stderr": "",
+      "streams": [
+        {
+          "observedBytes": 74,
+          "retainedBytes": 74,
+          "truncated": false,
+          "eof": true
+        },
+        {
+          "observedBytes": 0,
+          "retainedBytes": 0,
+          "truncated": false,
+          "eof": true
+        }
+      ],
+      "requestedRef": "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+      "observedConfigId": "sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+      "idMeaning": "DOCKER_IMAGE_CONFIGURATION_ID_NOT_REGISTRY_MANIFEST_DIGEST"
+    },
+    "rawBytes": 74,
+    "retainedBytes": 74,
+    "truncated": false,
+    "name": "docker-image",
+    "status": "OK",
+    "target": [
+      "docker",
+      "--host=unix:///var/run/docker.sock",
+      "image",
+      "inspect",
+      "--format",
+      "{{json .Id}}",
+      "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb"
+    ]
+  },
+  "trainingReady": false
+}

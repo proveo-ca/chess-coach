@@ -1,0 +1,28 @@
+
+artifacts/training-functional/qualification-input-documents.test.ts:
+(pass) source inspection walks literal local/workspace imports without evaluating them [3.77ms]
+(pass) wildcard workspace exports resolve only their selected source member [1.06ms]
+(pass) JSON imports remain byte-hashed inputs without evaluation [0.86ms]
+(pass) source inspection rejects missing imports instead of claiming a closure [0.81ms]
+(pass) source inspection rejects unexpected external packages without installation [1.07ms]
+(pass) source inspection records captured-reference imports as separately pending payloads [0.76ms]
+(pass) source inspection rejects a selected symlink rather than following an external tree [0.60ms]
+(pass) source inspection rejects escaping entries and malformed workspace package metadata [0.85ms]
+(pass) document preparation rejects unsafe generations before reading or writing payloads [0.73ms]
+46 |     if (selected.has(path)) continue;
+47 |     const bytes = read(base, path, 4 * 1024 * 1024);
+48 |     if (selected.size >= 1024 || (total += bytes.length) > 32 * 1024 * 1024) throw new Error("Qualification inputs: SOURCE_BOUND");
+49 |     selected.set(path, { path, byteLength: bytes.length, sha256: sha(bytes) });
+50 |     if (path.endsWith(".json")) { JSON.parse(bytes.toString()); continue; }
+51 |     for (const item of new Bun.Transpiler({ loader: path.endsWith(".tsx") ? "tsx" : "ts" }).scanImports(bytes)) {
+                                                                                                 ^
+BuildMessage: Unexpected #!/usr/local/bin/bun
+      at inspectQualificationSource (/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/qualification-input-documents.ts:51:93)
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/qualification-input-documents.test.ts:65:18)
+(fail) source inspection hashes exact adapter bytes while parsing past its known shebang [1.07ms]
+(pass) source inspection does not generally remove arbitrary executable headers [0.74ms]
+
+ 10 pass
+ 1 fail
+ 24 expect() calls
+Ran 11 tests across 1 file. [28.00ms]

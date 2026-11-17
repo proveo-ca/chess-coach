@@ -1,0 +1,82 @@
+{
+  "purpose": "Publish the verified qualification packet and prepare one fresh-workspace offline-build handoff command",
+  "classification": ["non-trivial", "infrastructure", "backend", "spec-impacting", "publication"],
+  "decisionSource": "Executor selected Publish + offline build (Recommended) after requesting a download/fetch-and-run command",
+  "baseCommit": "6a77f4c637f1d44260d5787c57a57b34fbffd754",
+  "architectureConsult": "ses_e1604087dffefOO5N1eFUYywNs",
+  "devopsConsult": "ses_e160360a1ffek04aCBDs3247Ru",
+  "publicationGrant": {
+    "normalCommits": 1,
+    "pushes": 1,
+    "remoteBranch": "feat-ml-adjuntant-ii",
+    "existingPr": 51,
+    "baseBranch": "main",
+    "forcePush": false,
+    "amend": false,
+    "automaticRetry": false,
+    "separateFromConsumedPriorPublication": true
+  },
+  "assistantAuthority": "SOURCE_PREPARATION_BOUNDED_LOCAL_MOCK_VERIFICATION_AND_ONE_CHECKED_COMMIT_PUSH",
+  "assistantExcluded": ["HOST queries or execution", "containers", "native or GPU execution/JIT", "actual reference builds or evaluation", "actual HOST acquisition or staging", "dependency installation", "training", "another PR", "compiled-bundle publication"],
+  "futureUserCommand": {
+    "flow": ["Fetch the new immutable published commit into a fresh task workspace", "Reconstruct pinned reference inputs from published files", "Perform exactly six offline Bun reference builds", "Stage unchanged qualification source, existing physical Zod and fourteen bound documents", "Run the existing bounded qualification operator"],
+    "packageInstallation": false,
+    "registryAcquisition": false,
+    "nativeRebuild": false,
+    "trainingCampaign": false,
+    "ordinaryGpuMainsEnabled": false,
+    "originalCheckoutSwitchOrOverwrite": false,
+    "automaticRetryOrAdoption": false
+  },
+  "verifiedPublicationPreflight": {
+    "localBranch": "integrate/starchess-ml-main",
+    "localHead": "6a77f4c637f1d44260d5787c57a57b34fbffd754",
+    "remoteBranchHead": "6a77f4c637f1d44260d5787c57a57b34fbffd754",
+    "pr": {"number": 51, "state": "OPEN", "headRefName": "feat-ml-adjuntant-ii", "baseRefName": "main"},
+    "repositoryVisibility": "PUBLIC",
+    "configuredHooksPath": null,
+    "defaultHookDirectoryContainsSamplesOnly": true,
+    "originalCheckoutModifiedByPreflight": false
+  },
+  "acceptedBootstrapContract": {
+    "module": "artifacts/training-functional/qualification-bootstrap.ts",
+    "staticImports": "BUILTINS_ONLY",
+    "download": {"maximumMs": 60000, "retries": 0, "exclusiveSiblingLauncher": true, "verifySha256BeforeEvaluation": true},
+    "git": {"operations": 4, "originalBudgetMs": 120000, "freshSourceOnly": true, "childCreationMask": "0022 for Git child creation only; restore the parent's private mask immediately", "steps": ["init", "depth-one no-tags fetch of immutable commit", "detached checkout", "exact HEAD check"]},
+    "preparation": {"originalBudgetMs": 240000, "includes": ["reference reconstruction", "six offline builds", "physical Zod copy", "source and fourteen document staging", "readback and evidence"], "outerWorkerWatchdog": true},
+    "operator": {"separateBashExec": true, "existingBudgetMs": 800000, "bootstrapWrapperOrNewTimer": false},
+    "shell": "Bash -c with a single-quoted body containing no interior single quotes; directly pasteable from Fish",
+    "partialEvidence": "RETAIN_WITHOUT_DELETE_RETRY_OR_ADOPTION"
+  },
+  "physicalDependencyCopy": {"source": "Existing regular readable Zod4.6.7 files, including read-only installed files", "destinationFileMode": "0644 in fresh inputs only", "sourcePermissionsModified": false},
+  "workerGeneration": {
+    "directory": "artifacts/training-functional/qualification-packet-1/source-3",
+    "executionFiles": 108,
+    "executionBytes": 641523,
+    "sourceManifestSha256": "9820e6bfb34f5891117379b207cfd193330d5bd1efbf6c8d36f6ff6e0328836b",
+    "verificationSha256": "5edf5fa735abbf8be5b38c7389a580199d947e7b845ce3a2a31ecbcc43a45f75",
+    "bindingDocumentsSha256": "5cd45f5cad1b5f08e07a54cbfd68834ff00eda4f0d6c40f02922bac07d3ca7fe",
+    "historicalTests": 811,
+    "gates": 12,
+    "strictTypechecks": 3,
+    "immutable": true
+  },
+  "referenceReconstruction": {
+    "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+    "applicationFiles": 427,
+    "corpusFiles": 2,
+    "retainedDependencyFiles": 6,
+    "totalFiles": 435,
+    "totalBytes": 4635549,
+    "offlineBuilds": 6,
+    "bundleBytes": 939123,
+    "resolvedInputs": 95,
+    "selectedReferenceSha256": "09cd6b6dd97fd1b3984b71b5f0d3f540e21b38285897062148e16c0e388fc45a",
+    "oldOperationalReferenceRetryInvoked": false,
+    "generatedBundlesRemainIgnored": true
+  },
+  "preservation": "Retain the protected original checkout's five dirty files, source-1/source-2/source-3 generations, historical receipts, Source23/SourceIdentity3/seal6, caches, partial workspaces, halted LLVM work, and the unused failed full1 writable cache",
+  "numericalContracts": "Unchanged F64/all4670/eps1e-6/atol1e-8/rtol1e-5/distinctC12/masters101..105/GPUv1master101ordinal0; ordinary GPU mains remain off",
+  "hardening": "All security/privacy/isolation/custody/strict-stop/escape/crash/full-assurance work remains after all planned training and validated results",
+  "trainingReady": false
+}

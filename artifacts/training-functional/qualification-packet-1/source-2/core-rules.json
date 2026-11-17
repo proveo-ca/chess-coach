@@ -1,0 +1,256 @@
+{
+  "scope": "CURRENT_EXECUTION_RULE_SOURCE_MEMBERS_NOT_COMPLETE_PRODUCT_RULE_COVERAGE",
+  "files": [
+    {
+      "path": "packages/contracts/src/game-session.ts",
+      "byteLength": 10357,
+      "sha256": "797d7b35465fef380b73c913e6777b20dedee9a10f1ae2cd6e90dab9a83bb07f"
+    },
+    {
+      "path": "packages/starchess-core/src/board/classicFen.ts",
+      "byteLength": 339,
+      "sha256": "b005f66aa7e878b4c5db0e0fce7caa31f15a7d1bb052a2fdc485616d888e3adc"
+    },
+    {
+      "path": "packages/starchess-core/src/board/mine-contact.ts",
+      "byteLength": 2369,
+      "sha256": "16cdde5417ed37568ca9aac64fffb7c6fa58c35fd76a93726a05192aace0086f"
+    },
+    {
+      "path": "packages/starchess-core/src/board/mines.ts",
+      "byteLength": 3834,
+      "sha256": "1c9082d89051e6ffdfba71c97b709f7d33cced372cf149c02c84bffebbd31fff"
+    },
+    {
+      "path": "packages/starchess-core/src/board/move-timing.ts",
+      "byteLength": 3822,
+      "sha256": "4009773b2d47deeb83cceaab502af5692e5de0e4254d053166374043d9b8ba69"
+    },
+    {
+      "path": "packages/starchess-core/src/board/moves.ts",
+      "byteLength": 10469,
+      "sha256": "2479c4eed2fca89a1a1de08d210c2fa1cd0b40c22a330ebdf8c48b6069c57df6"
+    },
+    {
+      "path": "packages/starchess-core/src/board/placement.ts",
+      "byteLength": 7285,
+      "sha256": "083952137e3b5cd829494140edb5b995efe7941f227e30bcd303698bb7475544"
+    },
+    {
+      "path": "packages/starchess-core/src/board/ray-scan.ts",
+      "byteLength": 2149,
+      "sha256": "46c3fc691517e50c13969c5b45d998c4e5b76670556b39f7a8007f3ef995a418"
+    },
+    {
+      "path": "packages/starchess-core/src/board/siege.ts",
+      "byteLength": 1071,
+      "sha256": "eb57a7d6715067681cab6da2872840f8f9935ec2cccbc9badf78e73f9bebb452"
+    },
+    {
+      "path": "packages/starchess-core/src/board/vision.ts",
+      "byteLength": 10114,
+      "sha256": "6e6def04466f3eee6dbd4cdfe0599c8da8255282e34e42ff0d55f6e4533c516c"
+    },
+    {
+      "path": "packages/starchess-core/src/commands/queue-action.ts",
+      "byteLength": 7351,
+      "sha256": "6e493f3bcaa7de70b7c7b5e7398385e007ebcf138dbec8abbf844e2b6277b94d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/board.ts",
+      "byteLength": 381,
+      "sha256": "ddac9d5352ecd1d3494b3c6129998cbf61cee14c3dbf42652b5c9fea17e5b85c"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/causal-events.ts",
+      "byteLength": 24503,
+      "sha256": "116fe05325b3e5287ce058d8bf73588318024c979c122d066189c4dd39144624"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/causal-producer.ts",
+      "byteLength": 1300,
+      "sha256": "f7f5e9225ef8785d6eddaa1d89634514652de4d6ad0937a9031e095749506d97"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/charon.ts",
+      "byteLength": 170,
+      "sha256": "860bef6bc8a249576c0ba50eff6e49cdb4dd7f8c0a1d4dad9ef090d5d31516d6"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/classical-resolution.ts",
+      "byteLength": 1769,
+      "sha256": "652c7787052870b31571e85a9e8d949cb54a1ba78aa28e6823eddcd71bbc190d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/constants.ts",
+      "byteLength": 300,
+      "sha256": "8d40aef2d7b98ff3a998e7ab7d0dc2eafc404a046b9ccc9695d2dc013489e390"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/economy.ts",
+      "byteLength": 260,
+      "sha256": "c0f1fc790bc351324fd1d6a43b617701032afe2a25d86ba03ea26ddc79acba32"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/index.ts",
+      "byteLength": 1287,
+      "sha256": "59804e608176d5eacd4589cbdb7fd966d19d4a88c48a188db388553f7ee7a9f4"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/initialization.ts",
+      "byteLength": 1536,
+      "sha256": "b835651978b742dc96b749dad934f5e758a2adade75d56511ae274887f45a330"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/mine-contact.ts",
+      "byteLength": 215,
+      "sha256": "37c97e4c119bf0bcdcdb0a7df3f4de012d0dfc21f7703e3623af83c795354dc8"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/mines.ts",
+      "byteLength": 213,
+      "sha256": "3fda1228b2d0fda3b065bb4f8969961eee99781ae951378944e41a94f25ad9a1"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/move-timing.ts",
+      "byteLength": 243,
+      "sha256": "abd7e82fb2761429e2d0f56bd77a3add7fb66b3c11ff5911e3fe7c9a183bed3d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/moves.ts",
+      "byteLength": 287,
+      "sha256": "eb26f1f1ab2c17f16202b4bcd08f127d834c5aecd32e79e8bb9e720338373eb5"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/native-classical.ts",
+      "byteLength": 8275,
+      "sha256": "246ec95a8277fb4468df7aa10569a0e36c55a0d983b175baebabea52d8cad173"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/outcome.ts",
+      "byteLength": 126,
+      "sha256": "7f2cbeeed979b8d9f5a97f55173e2c4000479350b2b9f0cbdd5edbe2a7a4c0f6"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-intents.ts",
+      "byteLength": 7728,
+      "sha256": "1fb8cb64521add5cd111ae001b9d85603e207485f5f4d1590ead09a9c72e100a"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-order.ts",
+      "byteLength": 2200,
+      "sha256": "0636b6ae52c94c841d42dd0b5baad82846d283ffa95a6987cf06a9dfbe554c1d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-specials.ts",
+      "byteLength": 242,
+      "sha256": "fd90584ec2b755a2be2cd724860fe0489186c2c84e882254235ece9ed57177e8"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-action.ts",
+      "byteLength": 915,
+      "sha256": "a8fade891926e99a330f3009d9dcf8e248a96281a54272f3e36af7e30fd0af11"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-contract.ts",
+      "byteLength": 123,
+      "sha256": "e6c4c3d4ba563903c0c3beacd637cc59bb8d7f46186e5264e594d04c134724dd"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-validation.ts",
+      "byteLength": 4529,
+      "sha256": "802ae995610f453e79d6e88eef386b9c856a94b77276b153d317c4f03678e24b"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/ray-scan.ts",
+      "byteLength": 177,
+      "sha256": "ffd5f7a3bf24694e84d9f421620e3898bb10bda62c61cdaa9a186611c49797ae"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/resolve.ts",
+      "byteLength": 877,
+      "sha256": "e58af101b6e1a1b5a94567de5484ce346e5a605cf6f1ec21239661dd73fe4e09"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/specials.ts",
+      "byteLength": 192,
+      "sha256": "cf5c83e811458b7a68f6ca88da450c499c6675f84c8cb466a1d7393af12f55a7"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/types.ts",
+      "byteLength": 355,
+      "sha256": "1f3ec1b3b203837432bfd0b5847f833dc05ce03decf3a739850116154ceb9f17"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/vision.ts",
+      "byteLength": 330,
+      "sha256": "f65e344d5e36e293a69dea3184cdabcbe24c08816b69bc182d0f2a38f89ba411"
+    },
+    {
+      "path": "packages/starchess-core/src/outcome.ts",
+      "byteLength": 1177,
+      "sha256": "0413b7e440087b08fb66275dbb83b3e7f5adc34af5dbf3e6e09049c6855fb217"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/resolve-turn.ts",
+      "byteLength": 46101,
+      "sha256": "169f4e5726f66cfd24a1a5a4a5832f8eaba05ee2c63dd10f0619358eb77757b8"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/submit-turn.ts",
+      "byteLength": 39066,
+      "sha256": "d5e3325ea985a4c19b784c90b1955d740068a26d0bc38a37d9a5d2de41b62f06"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/constants.ts",
+      "byteLength": 2062,
+      "sha256": "66acdcc1abc05197fbe3ae9df57a0efe4acea88c6ada78e4db9590f3343b6ff7"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/economy.ts",
+      "byteLength": 3611,
+      "sha256": "6fed53b09bf42f75fc6f9621f40361d99a072a551c6dbc76a29977211c99d579"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/adjacent.ts",
+      "byteLength": 3694,
+      "sha256": "96a671566e971bfbbe80aa64205fa04f7ef1b6a23ef2cf337b321945b2d5e540"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+      "byteLength": 5451,
+      "sha256": "b2c8af310fe33f83a18eb3e5e53b41734c147e5f62440d9422b2e757b376c4e4"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/registry.ts",
+      "byteLength": 1212,
+      "sha256": "0965a88ac773afe43ca72915d2ddccac4cc84c31f58121a1514f6511de8f6b5d"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/stimStep.ts",
+      "byteLength": 1421,
+      "sha256": "fbe990595fe42e41aad17460eb76b3a3f134672144a867a52ee618034f4069a1"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/validation.ts",
+      "byteLength": 13598,
+      "sha256": "a18e038feb83f3b15f4f9309e33101b23dac2080155af46ac51474f09c0a064c"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/codec.ts",
+      "byteLength": 20029,
+      "sha256": "74ab468ff05e53e419a5fe151ebcc266cf89c4c9b3789731a8d9e89e954be3eb"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/index.ts",
+      "byteLength": 733,
+      "sha256": "6fe29e70afd2d6c615a31379174d24de2d011e42d52c693f0ea7954a1cfa64ad"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/legacyKinds.ts",
+      "byteLength": 1828,
+      "sha256": "263e4ba87bdeaccf41d18e3c0495430f2b6b0af332ff374f707e2df7babc030b"
+    }
+  ],
+  "trainingReady": false
+}

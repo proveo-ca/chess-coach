@@ -1,0 +1,32 @@
+{
+  "scope": "SOURCE_ONLY_MOCKED_PERMISSION_REGRESSIONS",
+  "stage": "RED",
+  "status": "EXPECTED_FAIL",
+  "argv": ["/usr/local/bin/bun", "--no-env-file", "--no-install", "test", "--timeout", "30000", "./artifacts/training-functional/qualification-bootstrap.e2e.test.ts"],
+  "exitCode": 1,
+  "passed": 99,
+  "failed": 3,
+  "assertions": 2143,
+  "reportedElapsedMs": 205,
+  "measuredElapsedMs": 211.02775300000002,
+  "stdout": "red.stdout",
+  "stderr": "red.stderr",
+  "implementationState": "Pass-through spawn seam scaffold; production spawn and the original Zod mode guard remained unchanged",
+  "failures": [
+    "Readable readonly installed Zod rejected with ZOD_FILE",
+    "Mock Git child inherited 0077 rather than temporary 0022",
+    "Mock Git exception path lacked temporary 0022"
+  ],
+  "sourcePins": [
+    { "path": "artifacts/training-functional/qualification-bootstrap.ts", "byteLength": 38511, "sha256": "2454719c5d8df7594e4876c5aeb2d901993f0209ff12f5fdcbc9ff3b5fc1f087" },
+    { "path": "artifacts/training-functional/qualification-bootstrap.e2e.test.ts", "byteLength": 62504, "sha256": "1142d1f09c3a2a47d17bb9beb88aa7404fe8caff335872bf5e37bd78862b2fee" }
+  ],
+  "bootstrapFilesystem": "Injected in-memory mocks",
+  "bootstrapProcessesAndUmask": "Injected synchronous mocks; no real spawn or process umask call",
+  "operationalBootstrapInvoked": false,
+  "referenceBuilt": false,
+  "nativeExecuted": false,
+  "gpuQueried": false,
+  "qualified": false,
+  "trainingReady": false
+}

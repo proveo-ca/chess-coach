@@ -1,0 +1,51 @@
+{
+  "scope": "SOURCE_ONLY_MOCKED_OPERATOR_WORKER_FOLLOWUP_VERIFICATION",
+  "status": "PASS",
+  "previousEvidence": "../qualification-operator-source-1/verification.json",
+  "previousEvidenceModifiedByThisFollowup": false,
+  "commands": [
+    {
+      "argv": ["/usr/local/bin/bun", "--no-env-file", "--no-install", "test", "--timeout", "30000", "./artifacts/training-functional/qualification-operator.e2e.test.ts"],
+      "exitCode": 0,
+      "tests": 40,
+      "assertions": 1836,
+      "output": "tests.log",
+      "outputCapture": "Shell tool combined output transcribed without stream classification"
+    },
+    {
+      "argv": ["/usr/local/bin/bun", "--no-env-file", "--no-install", "node_modules/typescript/bin/tsc", "--noEmit", "--skipLibCheck", "false", "-p", "artifacts/training-functional/tsconfig.json"],
+      "exitCode": 0,
+      "stdout": "types.stdout",
+      "stderr": "types.stderr",
+      "output": "No output"
+    }
+  ],
+  "workerIOAddition": "writeChunks(path: string, chunks: Iterable<Uint8Array>): Promise<void>",
+  "workerReportAddition": "nativeTrace: COMPLETE | INCOMPLETE_EVIDENCE",
+  "limits": {
+    "serializedNativeTraceBytes": 1073741824,
+    "nativeEvents": 800,
+    "preparationIncludingConstructorsMs": 10000,
+    "readbackAndAllReceiptsMs": 20000,
+    "inputManifestMetadataBytes": 8388608,
+    "bindingDocumentBytes": 8388608,
+    "aggregateBindingDocumentBytes": 16777216,
+    "sourceBytes": 134217728,
+    "outerMs": 800000,
+    "gpuQueries": 401
+  },
+  "runtimeIO": "Injected in-memory mocks; chunk writer tests mock filesystem metadata and file handles; command tests mock spawn, process.kill and timers",
+  "boundaryAllocations": "Tiny serialized events and numeric one-GiB boundary checks; no one-GiB trace allocation",
+  "referenceHashFixtures": "Synthetic in-memory byte arrays with explicitly mocked SHA256 pins; no compiled reference read or evaluation",
+  "operatorModeInvoked": false,
+  "workerModeInvoked": false,
+  "nativeExecuted": false,
+  "hostExecuted": false,
+  "containerExecuted": false,
+  "referenceBuilt": false,
+  "referenceEvaluated": false,
+  "inputsCopiedOrStaged": false,
+  "trainingExecuted": false,
+  "qualified": false,
+  "trainingReady": false
+}

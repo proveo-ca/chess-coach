@@ -1,0 +1,11 @@
+{
+  "scope": "LOCAL_STATIC_IMPORT_INSPECTION_FAILURE_NOT_HOST_OR_NATIVE_EXECUTION",
+  "command": "qualification-input-documents.ts source source-1",
+  "error": "Bun.Transpiler.scanImports rejected the known native-adapter shebang",
+  "sourceFilesCopiedOrEvaluated": false,
+  "sourceSnapshotWritten": false,
+  "correction": "Hash the complete original adapter bytes; omit only the known first-line shebang from the static parser input for the two exact adapter paths",
+  "frozenInspectorChanged": false,
+  "hostOrNativeExecuted": false,
+  "trainingReady": false
+}

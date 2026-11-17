@@ -1,0 +1,119 @@
+{
+  "status": "VALIDATED_USER_REPORTED_FACTS_NOT_INDEPENDENT_HOST_QUALIFICATION",
+  "source": {
+    "path": "artifacts/training-functional/host-facts-1/operator-result-1.json",
+    "bytes": 8104,
+    "sha256": "4128e7b587c40da0073c99ff86ab6711981ffc69423a74e4d41fd8870432bfd7",
+    "provenance": "USER_PASTED_JSON_RECONSTRUCTION_NOT_DIRECT_HOST_CAPTURE"
+  },
+  "reportedStatus": "PARTIAL",
+  "reportedElapsedMs": 98.516012,
+  "reportedQueryGroups": 11,
+  "reportedOkGroups": 10,
+  "onlyFailedGroup": "runtime-zod-packages",
+  "missingPath": "/home/gu1lty/Projects/proveo/chess-coach/node_modules/zod/package.json",
+  "zodFoundAt": [
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/packages/contracts/node_modules/zod/package.json",
+      "version": "4.6.7"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/node_modules/.pnpm/zod@4.6.7/node_modules/zod/package.json",
+      "version": "4.6.7"
+    }
+  ],
+  "cachedBunVersion": "1.4.0",
+  "namedMetadataPresent": [
+    {
+      "name": "cached-bun-metadata",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun",
+      "realpath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun",
+      "file": true,
+      "directory": false,
+      "size": "80761952",
+      "mode": 33261,
+      "readable": true,
+      "executable": true
+    },
+    {
+      "name": "policy-score-metadata",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-score",
+      "realpath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-score",
+      "file": true,
+      "directory": false,
+      "size": "152001728",
+      "mode": 33261,
+      "readable": true,
+      "executable": true
+    },
+    {
+      "name": "policy-channel-metadata",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-channel",
+      "realpath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-channel",
+      "file": true,
+      "directory": false,
+      "size": "155205160",
+      "mode": 33261,
+      "readable": true,
+      "executable": true
+    },
+    {
+      "name": "cpu-initializer-metadata",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-cpu39-1/native/target-cpu/x86_64-unknown-linux-gnu/release/policy-initialize",
+      "realpath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-cpu39-1/native/target-cpu/x86_64-unknown-linux-gnu/release/policy-initialize",
+      "file": true,
+      "directory": false,
+      "size": "6311784",
+      "mode": 33261,
+      "readable": true,
+      "executable": true
+    },
+    {
+      "name": "llvm-root-metadata",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-build/llvm",
+      "realpath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-build/llvm",
+      "file": false,
+      "directory": true,
+      "size": "26",
+      "mode": 16877,
+      "readable": true,
+      "executable": true
+    },
+    {
+      "name": "cuda-root-metadata",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-runtime/rootfs/usr/local/cuda",
+      "realpath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-runtime/rootfs/usr/local/cuda",
+      "file": false,
+      "directory": true,
+      "size": "8",
+      "mode": 16877,
+      "readable": true,
+      "executable": true
+    }
+  ],
+  "gpu": {
+    "uuid": "GPU-713c95e0-6952-a576-794b-9ef1fb527ff0",
+    "freeMiB": 7733,
+    "totalMiB": 8192,
+    "snapshotOnly": true,
+    "reserved": false
+  },
+  "disk": {
+    "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs",
+    "freeBytes": "168927711232",
+    "totalBytes": "996914757632",
+    "reservation": false,
+    "freeGiB": 157.32619094848633
+  },
+  "originalPartialResultReclassifiedAsFull": false,
+  "missingTopLevelAliasAloneEstablishesMissingDependency": false,
+  "reinstallationAuthorized": false,
+  "factsRetryConsumed": 1,
+  "factsRetriesRemaining": 0,
+  "assistantExecutedHostQuery": false,
+  "additionalHostOperationAuthorized": false,
+  "additionalCommitOrPushAuthorized": false,
+  "canonicalBothQualified": false,
+  "nativeR4Qualified": false,
+  "trainingReady": false
+}

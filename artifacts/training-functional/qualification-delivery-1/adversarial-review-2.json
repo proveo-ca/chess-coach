@@ -1,0 +1,13 @@
+{
+  "scope": "READ_ONLY_BOOTSTRAP_PERMISSION_FIX_REVIEW_NOT_HARDWARE_QUALIFICATION",
+  "reviewerSession": "ses_e1718eb55ffe05HZkAbP0jRyUr",
+  "reportedReadyToMerge": true,
+  "priorFindingsClosed": true,
+  "findings": [],
+  "reviewerConclusion": "Zod mode rejection and Git umask mismatch are closed; no new concrete findings",
+  "sourceSha256": "e22505c5e3c492c25a6068089116a69dd70b398f3536629c8e8433a6eefbb968",
+  "testSha256": "1142d1f09c3a2a47d17bb9beb88aa7404fe8caff335872bf5e37bd78862b2fee",
+  "hardwareQualificationClaimed": false,
+  "publicationPerformed": false,
+  "trainingReady": false
+}

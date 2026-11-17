@@ -1,0 +1,47 @@
+{
+  "scope": "SOURCE_ONLY_MOCKED_READBACK_RECEIPT_BUDGET_FOLLOWUP",
+  "status": "PASS",
+  "previousEvidenceModifiedByThisFollowup": false,
+  "commands": [
+    {
+      "argv": ["/usr/local/bin/bun", "--no-env-file", "--no-install", "test", "--timeout", "30000", "./artifacts/training-functional/qualification-operator.e2e.test.ts"],
+      "exitCode": 0,
+      "tests": 40,
+      "assertions": 1838,
+      "output": "tests.log",
+      "outputCapture": "Shell tool combined output transcribed without stream classification"
+    },
+    {
+      "argv": ["/usr/local/bin/bun", "--no-env-file", "--no-install", "node_modules/typescript/bin/tsc", "--noEmit", "--skipLibCheck", "false", "-p", "artifacts/training-functional/tsconfig.json"],
+      "exitCode": 0,
+      "stdout": "types.stdout",
+      "stderr": "types.stderr",
+      "output": "No output"
+    }
+  ],
+  "changedProductionConstant": {
+    "export": "QUALIFICATION_LIMITS.readbackAndReceiptMs",
+    "value": 60000
+  },
+  "deadlineSemantics": "One original readback/output deadline after settled R4 and close; no renewal; fresh bounded receipt phase on early canonical failure",
+  "boundaryCoverage": "Thirty-second checker output proceeds; exact sixty-second expiration fails; blocked writes terminate through the same alarm",
+  "unchangedLimits": {
+    "serializedNativeTraceBytes": 1073741824,
+    "nativeEvents": 800,
+    "outerMs": 800000,
+    "gpuQueries": 401,
+    "dockerCommands": 7,
+    "preparationIncludingConstructorsMs": 10000
+  },
+  "runtimeIO": "Injected in-memory mocks; filesystem writer, child processes, signals and timers mocked in focused implementation tests",
+  "operatorModeInvoked": false,
+  "workerModeInvoked": false,
+  "nativeExecuted": false,
+  "hostExecuted": false,
+  "containerExecuted": false,
+  "referenceEvaluated": false,
+  "inputsCopiedOrStaged": false,
+  "trainingExecuted": false,
+  "qualified": false,
+  "trainingReady": false
+}

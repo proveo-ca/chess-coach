@@ -1,0 +1,30 @@
+{
+  "status": "PASS_LOCAL_RETAINED_VERSION_FLAG_AND_ARGV_SEMANTICS",
+  "scope": "SYNTHETIC_LOCAL_BUN_SOURCE_ONLY_NO_OPERATIONAL_BOOTSTRAP",
+  "command": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/scratch/qualification-bun-context-KHNaiZ/probe.ts",
+    "prepare",
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  ],
+  "observed": {
+    "scope": "SYNTHETIC_LOCAL_BUN_CLI_CONTEXT_ONLY",
+    "version": "1.4.0",
+    "flags": [
+      "--no-env-file",
+      "--no-install"
+    ],
+    "args": [
+      "prepare",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "entrypoint": "/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/scratch/qualification-bun-context-KHNaiZ/probe.ts"
+  },
+  "hostExecuted": false,
+  "gitExecuted": false,
+  "bootstrapInvoked": false,
+  "referenceBuilt": false,
+  "nativeOrGpuExecuted": false
+}

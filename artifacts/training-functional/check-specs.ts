@@ -5,7 +5,7 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../../", import.meta.url));
-const paths = ["_spec/checkpoint-runtime.puml", "_spec/runtime-protocol.puml"];
+const paths = ["_spec/checkpoint-runtime.puml", "_spec/runtime-protocol.puml", "_spec/qualification-bootstrap.puml"];
 const indexPath = "_spec/.spec-index.json";
 const index = JSON.parse(readFileSync(resolve(root, indexPath), "utf8")) as { specs: { spec: string; covers: string[] }[] };
 const rows = paths.map(path => {
@@ -34,7 +34,9 @@ const sources = ["packages/runtime/src/training-campaign.ts", "packages/runtime/
   "packages/runtime/tests/training-campaign.test.ts", "packages/runtime/tests/training-coordinator.test.ts", "packages/runtime/tests/repository-scratch.ts",
   ...new Bun.Glob("artifacts/training-functional/*.ts").scanSync({ cwd: root, onlyFiles: true, followSymlinks: false })];
 for (const path of sources) {
-  const header = readFileSync(resolve(root, path), "utf8").split("\n")[0]!;
+  const lines = readFileSync(resolve(root, path), "utf8").split("\n");
+  const adapters = ["artifacts/training-functional/qualification-policy-score.ts", "artifacts/training-functional/qualification-policy-channel.ts"];
+  const header = adapters.includes(path) && lines[0] === "#!/usr/local/bin/bun" ? lines[1]! : lines[0]!;
   if (!header.startsWith("// SPEC: ")) throw new Error(`Spec check: POINTER:${path}`);
   for (const pointer of header.slice("// SPEC: ".length).split(", ")) if (!existsSync(resolve(root, pointer))) throw new Error(`Spec check: MISSING_SPEC:${path}`);
 }

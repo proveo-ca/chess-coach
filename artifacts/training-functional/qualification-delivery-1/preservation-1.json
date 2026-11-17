@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "scope": "READ_ONLY_BOOTSTRAP_PUBLICATION_PRESERVATION_NOT_HARDWARE_QUALIFICATION",
+  "originalDirtySourceFilesUnchanged": 5,
+  "failedGenerationFilesUnchanged": 25,
+  "flatDependencyFilesUnchanged": 6,
+  "flatDependencyBytes": 113300,
+  "immutableSource3Documents": [
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/source-manifest.json",
+      "sha256": "9820e6bfb34f5891117379b207cfd193330d5bd1efbf6c8d36f6ff6e0328836b"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/verification.json",
+      "sha256": "5edf5fa735abbf8be5b38c7389a580199d947e7b845ce3a2a31ecbcc43a45f75"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/binding-documents.json",
+      "sha256": "5cd45f5cad1b5f08e07a54cbfd68834ff00eda4f0d6c40f02922bac07d3ca7fe"
+    }
+  ],
+  "source3ExecutionFiles": 108,
+  "source3ExecutionBytes": 641523,
+  "allSource3ExecutionPinsMatch": true,
+  "nativeBridge": "PASS_EXACT_SIX_SPEC_POINTER_DELTAS_ONLY",
+  "byteIdenticalNativeMembers": 59,
+  "specInverseNativeMembers": 6,
+  "historicalAcceptanceSha256": "b12bf0da43401b1858a3b3f1c3be9820d8030b6f07329e9448239886c5911e70",
+  "hostOrNativeOrGpuExecuted": false,
+  "referenceBuiltOrEvaluated": false,
+  "trainingReady": false
+}

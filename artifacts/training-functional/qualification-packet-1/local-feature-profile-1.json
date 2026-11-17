@@ -1,0 +1,9 @@
+{
+  "scope": "LOCAL_PURE_CURRENT_ENGINE_FEATURE_PROFILE_NO_REFERENCE_OR_NATIVE_EXECUTION",
+  "candidateRows": 512,
+  "featureValues": 1162752,
+  "enumerationMs": 82.64845300000002,
+  "featureEncodingMs": 15.58431299999998,
+  "hostOrNativeOrGpuExecuted": false,
+  "trainingReady": false
+}

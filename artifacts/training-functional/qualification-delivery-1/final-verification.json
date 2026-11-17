@@ -1,0 +1,531 @@
+{
+  "status": "PASS_CHECKED_PUBLICATION_CANDIDATE_SOURCE_ONLY",
+  "scope": "BOOTSTRAP_COMMAND_AND_UNCHANGED_WORKER_NOT_HOST_PREPARATION_OR_QUALIFICATION",
+  "baseCommit": "6a77f4c637f1d44260d5787c57a57b34fbffd754",
+  "gates": 12,
+  "typechecks": 3,
+  "totalTests": 920,
+  "counts": {
+    "focused": 65,
+    "runtime": 62,
+    "contracts": 25,
+    "r4": 553,
+    "reference": 180,
+    "host-facts": 27,
+    "workspace": 8
+  },
+  "totalAssertions": 66725,
+  "currentSourcePins": 358,
+  "currentSourcePinsSha256": "32a114d6e7e4e4a812cc916266a10874b8f82573197b3838282699ada6ab1f3c",
+  "allCurrentVerificationPinsMatch": true,
+  "unchangedCommandTimeoutMs": 240000,
+  "bootstrap": {
+    "path": "artifacts/training-functional/qualification-bootstrap.ts",
+    "byteLength": 38668,
+    "sha256": "e22505c5e3c492c25a6068089116a69dd70b398f3536629c8e8433a6eefbb968"
+  },
+  "bootstrapTests": {
+    "path": "artifacts/training-functional/qualification-bootstrap.e2e.test.ts",
+    "byteLength": 62504,
+    "sha256": "1142d1f09c3a2a47d17bb9beb88aa7404fe8caff335872bf5e37bd78862b2fee"
+  },
+  "commandTests": {
+    "path": "artifacts/training-functional/qualification-command.test.ts",
+    "byteLength": 6725,
+    "sha256": "edb64e75ce63602188caa02175906ee2e1c7ab97543255166e7f404e6529894b"
+  },
+  "commandTemplate": {
+    "path": "artifacts/training-functional/qualification-delivery-1/command-template.sh",
+    "byteLength": 1394,
+    "sha256": "f1e7f5f03be49fb50a5ec74f7c45063813b5397aee6009d7ae00bc252fba06c8"
+  },
+  "receipts": [
+    {
+      "check": "focused",
+      "receipt": {
+        "path": "artifacts/training-functional/checks/delivery-2/focused/receipt.json",
+        "byteLength": 163657,
+        "sha256": "75d85e18a58a15493dcfb9af2ab1d15e8ff382fd5cdcb80db33985295b60cc1f"
+      },
+      "elapsedSeconds": 19.413509192,
+      "tests": 65,
+      "assertions": 45342
+    },
+    {
+      "check": "runtime",
+      "receipt": {
+        "path": "artifacts/training-functional/checks/delivery-2/runtime/receipt.json",
+        "byteLength": 163842,
+        "sha256": "ca76e223a175e3e741f63e67641d40ccd1ca5f638da95d85c3ca95e107645ccd"
+      },
+      "elapsedSeconds": 74.77511383299999,
+      "tests": 62,
+      "assertions": 12399
+    },
+    {
+      "check": "contracts",
+      "receipt": {
+        "path": "artifacts/training-functional/checks/delivery-2/contracts/receipt.json",
+        "byteLength": 163669,
+        "sha256": "1114dff33f0a597e7dbad779df456bd8f3f4a6e68e7ce82f7ffe6bd3209a5ccb"
+      },
+      "elapsedSeconds": 0.586814445,
+      "tests": 25,
+      "assertions": 328
+    },
+    {
+      "check": "r4",
+      "receipt": {
+        "path": "artifacts/training-functional/checks/delivery-2/r4/receipt.json",
+        "byteLength": 164045,
+        "sha256": "7360f1b62642dce4ad99c5001da0f16199bfeed1fc8d00892c8c91419ca6aec9"
+      },
+      "elapsedSeconds": 124.174871463,
+      "tests": 553,
+      "assertions": 6974
+    },
+    {
+      "check": "reference",
+      "receipt": {
+        "path": "artifacts/training-functional/checks/delivery-2/reference/receipt.json",
+        "byteLength": 163541,
+        "sha256": "7a5f617153418004c29d5f6ecf95f217c57645a7855688877d308835701e645d"
+      },
+      "elapsedSeconds": 0.21237708600000002,
+      "tests": 180,
+      "assertions": 345
+    },
+    {
+      "check": "host-facts",
+      "receipt": {
+        "path": "artifacts/training-functional/checks/delivery-2/host-facts/receipt.json",
+        "byteLength": 163468,
+        "sha256": "9e111ae7b15a5cfbc94d14514d8bcd9466d699e6fe3a5efaa3f6cc647fe6b7d6"
+      },
+      "elapsedSeconds": 0.161054138,
+      "tests": 27,
+      "assertions": 195
+    },
+    {
+      "check": "source-types",
+      "receipt": {
+        "path": "artifacts/training-functional/checks/delivery-2/source-types/receipt.json",
+        "byteLength": 163463,
+        "sha256": "35def9ca29864e6e05ccb5c2d4d1ccb64d95db1788b161c61c03cd44596bd216"
+      },
+      "elapsedSeconds": 4.8814438970000005,
+      "tests": null,
+      "assertions": 0
+    },
+    {
+      "check": "test-types",
+      "receipt": {
+        "path": "artifacts/training-functional/checks/delivery-2/test-types/receipt.json",
+        "byteLength": 163460,
+        "sha256": "f0e5f683a1416cf4d267ed228ddddeafcef772c6991e46884234e2c7bd1d76b2"
+      },
+      "elapsedSeconds": 6.086533743,
+      "tests": null,
+      "assertions": 0
+    },
+    {
+      "check": "task-types",
+      "receipt": {
+        "path": "artifacts/training-functional/checks/delivery-2/task-types/receipt.json",
+        "byteLength": 163491,
+        "sha256": "0156f9b10cc4ef9d1716ef6abca27d0c9b6ac003d57d9c5ecc42d128b5f1a5da"
+      },
+      "elapsedSeconds": 5.9239956199999995,
+      "tests": null,
+      "assertions": 0
+    },
+    {
+      "check": "workspace",
+      "receipt": {
+        "path": "artifacts/training-functional/checks/delivery-2/workspace/receipt.json",
+        "byteLength": 163432,
+        "sha256": "74df4c69340cf7524e6e58e196e087cdecfe612f8196cbe53af728fe2a39615e"
+      },
+      "elapsedSeconds": 0.032867827,
+      "tests": 8,
+      "assertions": 1142
+    },
+    {
+      "check": "preservation",
+      "receipt": {
+        "path": "artifacts/training-functional/checks/delivery-2/preservation/receipt.json",
+        "byteLength": 163579,
+        "sha256": "5a7c8ed524a243f3d29f6fb1b3248775b8b9b2bd1915b506727372750a4c5a74"
+      },
+      "elapsedSeconds": 0.20504379699999997,
+      "tests": null,
+      "assertions": 0
+    },
+    {
+      "check": "specs",
+      "receipt": {
+        "path": "artifacts/training-functional/checks/delivery-final-spec/specs/receipt.json",
+        "byteLength": 163417,
+        "sha256": "3034b28e4085eff452cc85d87713fc37ba9ce7c25dcabb3b1375af382d84a35e"
+      },
+      "elapsedSeconds": 0.034275852,
+      "tests": null,
+      "assertions": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/focused/command.stdout",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/focused/command.stderr",
+      "byteLength": 6533,
+      "sha256": "f1bab3537ae3e18fd03a54a0668319f2fd584fc0165531825173021f569b23bf"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/runtime/command.stdout",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/runtime/command.stderr",
+      "byteLength": 6462,
+      "sha256": "eca082952826795b95fdbf2598bc30263e799f253d62dfbfc5792dc1eeab1781"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/contracts/command.stdout",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/contracts/command.stderr",
+      "byteLength": 2885,
+      "sha256": "4ff3600cdfa333fcb7620a6e719ed10a98aaea7723d3256a29c097c8de348e9c"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/r4/command.stdout",
+      "byteLength": 2751,
+      "sha256": "88679f5b590e3dd946e23ca7640088a3ba3d2e629939c48207333adf0b09ce87"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/r4/command.stderr",
+      "byteLength": 46112,
+      "sha256": "470a641116c3f63fc571fafdc5eafae21bc5167276d1696b59cad9df95b03f29"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/reference/command.stdout",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/reference/command.stderr",
+      "byteLength": 17976,
+      "sha256": "d26a0caa63faa835c0b068e6ba02ae5d0fc1d285bd8d6eecda466de3353e0b5a"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/host-facts/command.stdout",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/host-facts/command.stderr",
+      "byteLength": 2787,
+      "sha256": "d01ca4f11c6cea9e62caff03ef53da77ffe9434a71e437c675c0762b5aa044da"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/source-types/command.stdout",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/source-types/command.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/test-types/command.stdout",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/test-types/command.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/task-types/command.stdout",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/task-types/command.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/workspace/command.stdout",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-2/workspace/command.stderr",
+      "byteLength": 724,
+      "sha256": "57065ae6e6d50930af76012afccaa6730180073912f0d7f5fa136c80851d7f20"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-final-spec/specs/command.stdout",
+      "byteLength": 2078,
+      "sha256": "f3c045a37e4bfed2203e4b1ae6604facbd3bbe908a5c15a7c78d8227bf1676ca"
+    },
+    {
+      "path": "artifacts/training-functional/checks/delivery-final-spec/specs/command.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "reviews": [
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/command-review-1.json",
+      "byteLength": 374,
+      "sha256": "f44ef1a339014ba14fc635dd3a09a7943495ad045a7e2e0a051cfda7ab278ce5"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/adversarial-review-2.json",
+      "byteLength": 598,
+      "sha256": "f336d075b8adf2058e08a4b087545159f3fec5ac26e78e13e0b25222427e53bb"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/security-review-2.json",
+      "byteLength": 692,
+      "sha256": "704d39a0a28ebb4a17fd73febf7d9a047cc18527c09effdc74c2be373d4bdc33"
+    }
+  ],
+  "componentEvidence": [
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-2/receipt.json",
+      "byteLength": 4950,
+      "sha256": "9bef8d00119a356c366338794c68e559c8aec975c4db46d48c2e13be3520e850"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-2/red-receipt.json",
+      "byteLength": 1494,
+      "sha256": "c006699eed3017f94617112b374a96018813edd6bc72b490488b6af7d572797f"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-2/tests.stdout",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-2/tests.stderr",
+      "byteLength": 80,
+      "sha256": "c132482b59a5b8a4a402e7ba227af5b57b01c474380ef66228f42206d116be7c"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-2/types.stdout",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-bootstrap-source-2/types.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "supportingSourceInputs": [
+    {
+      "path": "tooling/build-reference.ts",
+      "byteLength": 3519,
+      "sha256": "41885a3bb70f4b86e131bd3176a65fe7aefe724846db961ea6c070b4f6537054"
+    },
+    {
+      "path": "tooling/reference-entrypoints.json",
+      "byteLength": 478,
+      "sha256": "4fb9727741bb4778d260be6e6d14c3b9e38bbfd5751f49d7262273a83b5d5396"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep-2/input-manifest.json",
+      "byteLength": 128630,
+      "sha256": "51b6e846ec9c9e0fa645b4f309a667e5a95842306f8f610a06123b2cf9af97d7"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep-2/selected-reference.json",
+      "byteLength": 103663,
+      "sha256": "09cd6b6dd97fd1b3984b71b5f0d3f540e21b38285897062148e16c0e388fc45a"
+    },
+    {
+      "path": "artifacts/training-functional/reference-inputs/manifest.json",
+      "byteLength": 2293,
+      "sha256": "0566a770b0cf430d5bbad8198e48b894fc06d794c3a82cd7afe715c4c9e3e608"
+    },
+    {
+      "path": "artifacts/training-functional/reference-inputs/fflate-package.json",
+      "byteLength": 3543,
+      "sha256": "5922d8150b307bc0e4e441491c779c45379e9913d348848fca8d5cf02db4d134"
+    },
+    {
+      "path": "artifacts/training-functional/reference-inputs/fflate-esm-index.mjs",
+      "byteLength": 91765,
+      "sha256": "8d75534a30a0580608e1271c13d70943ed4cd3589fddff7b1197748036a5116e"
+    },
+    {
+      "path": "artifacts/training-functional/reference-inputs/fflate-LICENSE",
+      "byteLength": 1069,
+      "sha256": "0a1df3a083d0c010560aa342e87959c8c1070e6fd54545741f083f22d0c8b551"
+    },
+    {
+      "path": "artifacts/training-functional/reference-inputs/jssha-package.json",
+      "byteLength": 5351,
+      "sha256": "a4813aab26cb4626fe638a9c8557c3601f3a59d4b67749b73f52c7b9f41a7951"
+    },
+    {
+      "path": "artifacts/training-functional/reference-inputs/jssha-dist-sha256.mjs",
+      "byteLength": 10033,
+      "sha256": "4911466b7ab8e64e1030977aa3b07050d964d957d9e3abfa6a32d9097bde2e50"
+    },
+    {
+      "path": "artifacts/training-functional/reference-inputs/jssha-LICENSE",
+      "byteLength": 1539,
+      "sha256": "9a5fa7f7df7e9fac895f3a5d553e6a68d32e27cd7ac4d62c50588ab68dc619ab"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/input-manifest.json",
+      "byteLength": 130490,
+      "sha256": "bb03f45257fae1d8ca11710b53547936c3042380188ab10117b704b692d39fb0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/materialization.json",
+      "byteLength": 708505,
+      "sha256": "2b13f0daad567013823ea2859a0107818ee9b09766347c2190ec3dfe47949506"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/check.json",
+      "byteLength": 3274,
+      "sha256": "acca1e84beb0ebfacf3fb0a7967ffe5d16552861b0da98a4f7e6b4367cee9c63"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/input-manifest.json",
+      "byteLength": 3820,
+      "sha256": "25c53eae03508b523fc36a962984c4aad23a0f0784b6c71123ac6e320f335460"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/materialization.json",
+      "byteLength": 5184,
+      "sha256": "b95bbe9c1568d8169c91d6ce3cb174afceab37ab65f973f66fbc62bb32f4841b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/check.json",
+      "byteLength": 3797,
+      "sha256": "663a17aafd8b3ee4eb2db83e0c58e2074b113c6b99e07fa96d3d6e6733d86f8d"
+    }
+  ],
+  "immutableWorker": {
+    "sourceGeneration": "source-3",
+    "files": 108,
+    "bytes": 641523,
+    "historicalTests": 811,
+    "documents": [
+      {
+        "path": "artifacts/training-functional/qualification-packet-1/source-3/source-manifest.json",
+        "byteLength": 20258,
+        "sha256": "9820e6bfb34f5891117379b207cfd193330d5bd1efbf6c8d36f6ff6e0328836b"
+      },
+      {
+        "path": "artifacts/training-functional/qualification-packet-1/source-3/verification.json",
+        "byteLength": 15082,
+        "sha256": "5edf5fa735abbf8be5b38c7389a580199d947e7b845ce3a2a31ecbcc43a45f75"
+      },
+      {
+        "path": "artifacts/training-functional/qualification-packet-1/source-3/binding-documents.json",
+        "byteLength": 5087,
+        "sha256": "5cd45f5cad1b5f08e07a54cbfd68834ff00eda4f0d6c40f02922bac07d3ca7fe"
+      }
+    ],
+    "allExecutionPinsMatch": true,
+    "oldDocumentPinsDescribeTheirHistoricalSnapshot": true,
+    "bootstrapOutsideWorkerClosure": true
+  },
+  "auxiliaryEvidence": [
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/preservation-1.json",
+      "byteLength": 1324,
+      "sha256": "954da0c7b14c81fd86b07c7cdd2c91c9e4154bc1e971329f00b537d8116cdd51"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/production-input-audit-1.json",
+      "byteLength": 866,
+      "sha256": "5669f8f497eaa5cdfdffc6da9ea9f88c9a218eac0afd8d00117ab6f1acd6cbf1"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/local-bun-context-1.json",
+      "byteLength": 971,
+      "sha256": "3754cbca91df28ff7b8b08535c1f44d44398316cc6356b191bf827944da3881b"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/local-child-umask-1.json",
+      "byteLength": 693,
+      "sha256": "57af3e0d97e0336a7d26255dad814e34f5606de49e6cae3cd08c353022ad6331"
+    }
+  ],
+  "documentPins": [
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 163044,
+      "sha256": "b13ab0137feff806924d522ddb5bb54fb120d03871ba323ae343e76e0e1cdc64"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 131323,
+      "sha256": "e46af787cdc70b7d6de6530e477876cd6d81f99709d5da3ec1b9032ff63c9866"
+    },
+    {
+      "path": "_spec/qualification-bootstrap.puml",
+      "byteLength": 22015,
+      "sha256": "55690743085f7c0c73f32f991cb7ae7bfddb6a37b560fc4daba7ae80732503d6"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 53909,
+      "sha256": "39fab9d263cc89afa59482551d4621207094ed2cf0fb9603f2892e22e2f236fa"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/README.md",
+      "byteLength": 4101,
+      "sha256": "4910ef03201d95f6c2629aa51ecc271dafe0d382e68bfe5093def15f95a9fa45"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/plan.json",
+      "byteLength": 5245,
+      "sha256": "8c5a461539e79a8baff33a3ac224619debc6dd6ce887efbbd6376251f35eb1c9"
+    }
+  ],
+  "plantUml": {
+    "rendered": false,
+    "skipReason": "Native PlantUML requires Java and remote theme access outside the Bun/TypeScript-or-Rust-only task scope"
+  },
+  "historicalGenerations": {
+    "delivery1": "913_PASS_TESTS_WITH_KNOWN_PERMISSION_ISSUES_NOT_FINAL_ACCEPTANCE",
+    "qualificationSource3": "IMMUTABLE_WORKER_ONLY_811_TESTS_NOT_BOOTSTRAP_PROOF"
+  },
+  "publication": {
+    "authorizedNormalCommits": 1,
+    "authorizedPushes": 1,
+    "targetBranch": "feat-ml-adjuntant-ii",
+    "pr": 51,
+    "base": "main",
+    "performed": false,
+    "postPublicationRecord": "LOCAL_AFTER_CHECKED_PUSH_NO_AMEND_OR_SECOND_COMMIT"
+  },
+  "assistantHostExecuted": false,
+  "sourceAcquisitionPerformed": false,
+  "inputsStaged": false,
+  "referenceBuilt": false,
+  "referenceEvaluated": false,
+  "nativeExecuted": false,
+  "gpuExecuted": false,
+  "trainingExecuted": false,
+  "qualified": false,
+  "trainingReady": false
+}

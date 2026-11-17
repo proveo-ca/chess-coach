@@ -1,0 +1,14 @@
+{
+  "scope": "READ_ONLY_PRODUCER_HASH_CORRECTION_REVIEW_NOT_HARDWARE_QUALIFICATION",
+  "reviewerSession": "ses_e171894a8ffeK9hxuiham6iTTo",
+  "reportedReadyToMerge": true,
+  "reportedRisk": "low",
+  "findings": [],
+  "reviewerConclusion": "[Inference] Both digest representations match their producers without fallback; existing validation and linkage guards remain",
+  "sourceSha256": "684ce9c6a640d38cf957da2e57f97073837e428c8046b0799735b81ebbc66fe4",
+  "testSha256": "8fa9d249a040683c5f2ab9eea8e4a3e89b3d3e6701027ebbb72cf62ffd293e9c",
+  "testsRerunByReviewer": false,
+  "hardwareQualificationClaimed": false,
+  "publicationAuthorized": false,
+  "trainingReady": false
+}

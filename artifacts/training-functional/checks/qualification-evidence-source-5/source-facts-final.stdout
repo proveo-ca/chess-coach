@@ -1,0 +1,93 @@
+{
+  "scope": "SOURCE_ONLY_EXACT_STRATEGIC_PRODUCER_DIGEST_CORRECTION_NOT_RUNTIME_QUALIFICATION",
+  "unchanged": [
+    {
+      "path": "artifacts/training-functional/qualification-evidence.test.ts",
+      "equalBeforeAfter": true
+    },
+    {
+      "path": "packages/runtime/src/strategic.ts",
+      "equalBeforeAfter": true
+    },
+    {
+      "path": "packages/contracts/src/resolution.ts",
+      "equalBeforeAfter": true
+    },
+    {
+      "path": "packages/contracts/src/game-session.ts",
+      "equalBeforeAfter": true
+    }
+  ],
+  "files": [
+    {
+      "path": "artifacts/training-functional/qualification-evidence.ts",
+      "byteLength": 54762,
+      "sha256": "684ce9c6a640d38cf957da2e57f97073837e428c8046b0799735b81ebbc66fe4"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-evidence.test.ts",
+      "byteLength": 65811,
+      "sha256": "8fa9d249a040683c5f2ab9eea8e4a3e89b3d3e6701027ebbb72cf62ffd293e9c"
+    },
+    {
+      "path": "packages/runtime/src/strategic.ts",
+      "byteLength": 10385,
+      "sha256": "c5d748fe9ccc7787c32a20cc29820b80bfba3fa6c9f585aaeb2d56c24094e9cf"
+    },
+    {
+      "path": "packages/contracts/src/resolution.ts",
+      "byteLength": 4532,
+      "sha256": "af02d9f13f69d359784d9a201c32b6dae0a5b15bd2d0dec00c31358fb45f1ef1"
+    },
+    {
+      "path": "packages/contracts/src/game-session.ts",
+      "byteLength": 10357,
+      "sha256": "797d7b35465fef380b73c913e6777b20dedee9a10f1ae2cd6e90dab9a83bb07f"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/source-facts-red.stdout",
+      "byteLength": 1902,
+      "sha256": "72e58a26a17f97921e0cba67a90a8d440e6de4ce564b333bddfacefba94a85be"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/red.stdout",
+      "byteLength": 760,
+      "sha256": "c07ccaa146950a3e4357dc28e486cc44bd552eb3ec02f0f377cead828e64229e"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/red.stderr",
+      "byteLength": 1335,
+      "sha256": "ee97f170bae559edfe7128fb9453497ac65f8e615616dc3f4a1065c22ff3dbd9"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/green-focused.stdout",
+      "byteLength": 1497,
+      "sha256": "60ce0673186dbf579c56da2e3a567b941966360d30a692a323d5905fe82e7805"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/green-focused.stderr",
+      "byteLength": 156,
+      "sha256": "d83eedfcd30613bb35592f2cad8ed008bb4b8db3b693291b85af0a73bcb55e2a"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/tests-final.stdout",
+      "byteLength": 2753,
+      "sha256": "8ff3640dd4cc2d216477e344c712c866478fb1532ee64f7bbaefded5a8d849d1"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/tests-final.stderr",
+      "byteLength": 142,
+      "sha256": "99583ed8739307fe8ea397a063abd78b4f2a6ca1949d188c3a08e7d06954a116"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/typecheck-final.stdout",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-5/typecheck-final.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+
+artifacts/training-functional/qualification-evidence.test.ts:
+273 |     expect(packet.readback.attempts[1]!.completion.sampledDecisions).toBe(2);
+274 |     expect(JSON.parse(Buffer.from(packet.readback.attempts[1]!.artifacts.history).toString()).length).toBe(4);
+275 |     const result = profileCheck("successful-live-settlement", packet);
+276 |     console.log("QUALIFICATION_EVIDENCE_SOURCE_4_SETTLEMENT " + JSON.stringify({ rawSnapshotKeys: keys, normalizedSnapshotKeys: Object.keys(normalized.snapshot),
+277 |       rawSha256: sha(rawJson), normalizedSha256: sha(normalizedJson), retainedSha256: transition.session.history.at(-1), failures: result.failures }));
+278 |     expect(result.failures).toEqual([]); expect(result.status).toBe("PASS_RETAINED_FUNCTIONAL_EVIDENCE");
+                                  ^
+error: expect(received).toEqual(expected)
+
+- []
++ [
++   "r4-m101-a0001:JOURNAL_NATIVE_PREFIX",
++ ]
+
+- Expected  - 1
++ Received  + 3
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/qualification-evidence.test.ts:278:29)
+(fail) successful settlement evidence > actual successful live settlement preserves retained raw record order [333.24ms]
+
+ 0 pass
+ 260 filtered out
+ 1 fail
+ 13 expect() calls
+Ran 1 test across 1 file. [42.64s]

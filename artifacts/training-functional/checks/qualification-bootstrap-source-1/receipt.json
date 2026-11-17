@@ -1,0 +1,92 @@
+{
+  "scope": "SOURCE_ONLY_MOCKED_BOOTSTRAP_NOT_PREPARATION_OR_QUALIFICATION",
+  "status": "PASS",
+  "runtime": "Bun 1.4.0 (34cbb9a40)",
+  "commands": [
+    {
+      "argv": ["/usr/local/bin/bun", "--no-env-file", "--no-install", "test", "--timeout", "30000", "./artifacts/training-functional/qualification-bootstrap.e2e.test.ts"],
+      "exitCode": 0,
+      "tests": 95,
+      "assertions": 2012,
+      "reportedElapsedMs": 220,
+      "measuredElapsedMs": 229.746834,
+      "stdout": "tests.stdout",
+      "stderr": "tests.stderr"
+    },
+    {
+      "argv": ["/usr/local/bin/bun", "--no-env-file", "--no-install", "node_modules/typescript/bin/tsc", "--noEmit", "--skipLibCheck", "false", "-p", "artifacts/training-functional/tsconfig.json"],
+      "exitCode": 0,
+      "strict": true,
+      "skipLibCheck": false,
+      "measuredElapsedMs": 5280.107878,
+      "stdout": "types.stdout",
+      "stderr": "types.stderr"
+    }
+  ],
+  "streamCapture": "Bun.spawnSync pipe bytes decoded as UTF-8 and retained in their original stdout/stderr streams",
+  "sourcePins": [
+    {
+      "path": "artifacts/training-functional/qualification-bootstrap.ts",
+      "byteLength": 38323,
+      "sha256": "8f1a61c4e9041b3c4b9a72cda46a238ee9a1a319fbcd369e6bf0ecd2f1732e69",
+      "lines": 330
+    },
+    {
+      "path": "artifacts/training-functional/qualification-bootstrap.e2e.test.ts",
+      "byteLength": 56305,
+      "sha256": "2c1f06c2e4fd6ec38f11bbfc8fc556475f2216dda1539f78c3de97a8d42745c5",
+      "lines": 483
+    }
+  ],
+  "staticImports": ["node:crypto", "node:fs", "node:path", "node:url"],
+  "staticImportInspection": "Bun.Transpiler.scanImports on the new bootstrap source; four builtin static imports and no relative static imports",
+  "mocking": {
+    "bootstrapFilesystem": "in-memory injected IO",
+    "bootstrapCommands": "injected command results",
+    "moduleHelpers": "injected pure helper implementations over in-memory bytes",
+    "clockAndTimers": "injected monotonic clock and manually fired alarms",
+    "BunSpawnCalls": 0,
+    "BunSpawnSyncCalls": 0,
+    "fetchCalls": 0,
+    "hashes": "real SHA-256 and Git blob SHA-1; small synthetic contracts do not replace production pins"
+  },
+  "productionBounds": {
+    "gitMs": 120000,
+    "preparationMs": 240000,
+    "cleanupMs": 5000,
+    "executionFiles": 108,
+    "executionBytes": 641523,
+    "referenceInputFiles": 435,
+    "referenceInputBytes": 4635549,
+    "referenceOutputFiles": 6,
+    "uniqueReferenceInputHashes": 95,
+    "requiredReferencePayloadFiles": 9,
+    "requiredReferencePayloadBytes": 1714635,
+    "physicalAppFilesMaximum": 4096,
+    "physicalAppBytesMaximum": 134217728,
+    "fileBytesMaximum": 16777216
+  },
+  "workerSupervision": "The parent supervises one detached preparation-worker group; the builder remains inside that group; nonzero child exit triggers group cleanup for detached commands",
+  "developmentHistory": {
+    "initialFocusedRun": "88 pass, 1 fail: corrected a mock argv suffix expectation",
+    "initialTypecheck": "Rejected unused test types and the fetch spy's callable typing",
+    "followupFocusedRun": "89 pass, 0 fail before adding six boundary regressions",
+    "historicalResultsAreFinalVerification": false
+  },
+  "operationalBootstrapInvoked": false,
+  "operatorInvoked": false,
+  "sourceAcquisitionPerformed": false,
+  "inputsCopiedOrStaged": false,
+  "referenceBuilt": false,
+  "referenceEvaluated": false,
+  "nativeExecuted": false,
+  "gpuQueried": false,
+  "containerExecuted": false,
+  "installationPerformed": false,
+  "trainingExecuted": false,
+  "gitWritesPerformed": false,
+  "commitOrPushPerformed": false,
+  "qualified": false,
+  "trainingReady": false,
+  "remainingLeadGates": ["read-only adversarial and security review", "full registered verification suite", "one approved commit/push", "published commit and launcher hash substitution in the future user command"]
+}

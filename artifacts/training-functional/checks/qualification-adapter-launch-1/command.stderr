@@ -1,0 +1,9 @@
+
+artifacts/training-functional/qualification-adapter-launch.test.ts:
+(pass) local Bun parses the extensionless score adapter and preserves argv without native execution [7.75ms]
+(pass) local Bun parses the extensionless channel adapter and preserves argv without native execution [6.31ms]
+
+ 2 pass
+ 0 fail
+ 8 expect() calls
+Ran 2 tests across 1 file. [27.00ms]

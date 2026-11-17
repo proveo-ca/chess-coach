@@ -1,0 +1,7 @@
+artifacts/training-functional/qualification-evidence.test.ts(20,43): error TS6196: 'QualificationReadback' is declared but never used.
+artifacts/training-functional/qualification-evidence.test.ts(24,63): error TS2345: Argument of type '() => never' is not assignable to parameter of type 'typeof fetch'.
+  Property 'preconnect' is missing in type '() => never' but required in type 'typeof fetch'.
+artifacts/training-functional/qualification-evidence.test.ts(102,106): error TS2540: Cannot assign to 'json' because it is a read-only property.
+artifacts/training-functional/qualification-evidence.test.ts(213,71): error TS2540: Cannot assign to 'json' because it is a read-only property.
+artifacts/training-functional/qualification-evidence.test.ts(230,123): error TS2339: Property 'receivedNs' does not exist on type 'Readonly<{ kind: "request"; attemptId: string; channel: "a" | "b"; json: string; }> | Readonly<{ kind: "reply"; attemptId: string; channel: "a" | "b"; json: string; receivedNs: bigint; }>'.
+  Property 'receivedNs' does not exist on type 'Readonly<{ kind: "request"; attemptId: string; channel: "a" | "b"; json: string; }>'.

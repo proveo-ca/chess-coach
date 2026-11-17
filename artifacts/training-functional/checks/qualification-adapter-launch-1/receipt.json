@@ -1,0 +1,12 @@
+{
+  "scope": "SYNTHETIC_LOCAL_BUN_EXTENSIONLESS_SYNTAX_AND_ARGV_ONLY_NATIVE_MAIN_REMOVED",
+  "command": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./artifacts/training-functional/qualification-adapter-launch.test.ts"
+  ],
+  "exitCode": 0,
+  "hostOrNativeExecuted": false
+}

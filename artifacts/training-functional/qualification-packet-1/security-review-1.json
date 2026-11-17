@@ -1,0 +1,12 @@
+{
+  "scope": "READ_ONLY_SCOPED_SOURCE_REVIEW_NOT_HARDWARE_QUALIFICATION",
+  "reviewerSession": "ses_e171894a8ffeK9hxuiham6iTTo",
+  "reportedReadyToMerge": true,
+  "reportedRisk": "low",
+  "findings": [],
+  "reviewerConclusion": "[Inference] No in-scope security regressions found in the named stable files",
+  "excluded": ["qualification-evidence.ts", "qualification-evidence.test.ts", "actual HOST/native/GPU execution", "deferred hardening"],
+  "testsRerunByReviewer": false,
+  "publicationAuthorized": false,
+  "trainingReady": false
+}

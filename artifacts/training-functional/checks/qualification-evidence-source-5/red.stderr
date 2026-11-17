@@ -1,0 +1,27 @@
+
+artifacts/training-functional/qualification-evidence.test.ts:
+317 |     expect(journal.snapshotDigest).toBe(normalizedDigest); expect(journal.snapshotDigest).not.toBe(rawDigest);
+318 |     expect(journal.opponentBefore.drawCount).toBe(1); expect(journal.opponentAfter.drawCount).toBe(2);
+319 |     expect(journal.actions).toEqual([]); expect(journal.reportedMinSpend).toBe(0);
+320 |     const result = profileCheck("actual-strategic-post-settlement", packet);
+321 |     console.log("QUALIFICATION_EVIDENCE_SOURCE_5_OPPONENT " + JSON.stringify({ rawDigest, normalizedDigest, actualStrategicJournalDigest: journal.snapshotDigest, failures: result.failures }));
+322 |     expect(result.failures).toEqual([]); expect(result.status).toBe("PASS_RETAINED_FUNCTIONAL_EVIDENCE"); expect(result.qualified).toBe(false);
+                                  ^
+error: expect(received).toEqual(expected)
+
+- []
++ [
++   "r4-m101-a0001:OPPONENT_CONTEXT",
++ ]
+
+- Expected  - 1
++ Received  + 3
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/qualification-evidence.test.ts:322:29)
+(fail) successful settlement evidence > actual StrategicDriver post-settlement digest matches its normalized snapshot [410.68ms]
+
+ 0 pass
+ 266 filtered out
+ 1 fail
+ 9 expect() calls
+Ran 1 test across 1 file. [42.21s]

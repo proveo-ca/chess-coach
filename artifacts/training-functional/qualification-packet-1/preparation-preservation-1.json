@@ -1,0 +1,14 @@
+{
+  "scope": "READ_ONLY_PREPARATION_PRESERVATION_NOT_CURRENT_DELTA_VERIFICATION",
+  "status": "PASS",
+  "failedGenerationFilesUnchanged": 25,
+  "upstreamSourceAndLicenseFilesUnchanged": 6,
+  "originalCheckoutSourceFilesUnchanged": 5,
+  "nativeBridge": "PASS_EXACT_SIX_SPEC_POINTER_DELTAS_ONLY",
+  "byteIdenticalNativeMembers": 59,
+  "exactSpecInverseNativeMembers": 6,
+  "priorSourceAcceptanceSha256": "b12bf0da43401b1858a3b3f1c3be9820d8030b6f07329e9448239886c5911e70",
+  "nativeOrHostOrGpuExecuted": false,
+  "newCommitOrPushPerformed": false,
+  "trainingReady": false
+}

@@ -1,0 +1,34 @@
+{
+  "scope": "SOURCE_ONLY_MOCKED_OPERATOR_AND_WORKER_VERIFICATION",
+  "status": "PASS",
+  "commands": [
+    {
+      "argv": ["/usr/local/bin/bun", "--no-env-file", "--no-install", "test", "--timeout", "30000", "./artifacts/training-functional/qualification-operator.e2e.test.ts"],
+      "exitCode": 0,
+      "tests": 28,
+      "assertions": 738,
+      "output": "tests.log",
+      "outputCapture": "Shell tool combined output transcribed without stream classification"
+    },
+    {
+      "argv": ["/usr/local/bin/bun", "--no-env-file", "--no-install", "node_modules/typescript/bin/tsc", "--noEmit", "--skipLibCheck", "false", "-p", "artifacts/training-functional/tsconfig.json"],
+      "exitCode": 0,
+      "stdout": "types.stdout",
+      "stderr": "types.stderr",
+      "output": "No output"
+    }
+  ],
+  "runtimeIO": "Injected in-memory mocks; bounded-command tests also mock Bun.spawn, process.kill and timers",
+  "referenceHashFixtures": "Synthetic in-memory byte arrays with explicitly mocked SHA256 pins; no compiled reference read or evaluation",
+  "operatorModeInvoked": false,
+  "workerModeInvoked": false,
+  "nativeExecuted": false,
+  "hostExecuted": false,
+  "containerExecuted": false,
+  "referenceBuilt": false,
+  "referenceEvaluated": false,
+  "inputsCopiedOrStaged": false,
+  "trainingExecuted": false,
+  "qualified": false,
+  "trainingReady": false
+}

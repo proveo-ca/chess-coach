@@ -1,0 +1,78 @@
+{
+  "scope": "FRESH_CORRECTED_SOURCE3_CONSOLIDATED_VERIFICATION_NOT_HARDWARE_QUALIFICATION",
+  "elapsedMs": 118587.137703,
+  "results": [
+    {
+      "check": "contracts",
+      "exitCode": 0,
+      "stdout": "Executor: {\"check\":\"contracts\",\"status\":\"PASS\",\"exitCode\":0,\"failure\":null,\"details\":null,\"sourcePinsMatch\":true}",
+      "stderr": ""
+    },
+    {
+      "check": "focused",
+      "exitCode": 0,
+      "stdout": "Executor: {\"check\":\"focused\",\"status\":\"PASS\",\"exitCode\":0,\"failure\":null,\"details\":null,\"sourcePinsMatch\":true}",
+      "stderr": ""
+    },
+    {
+      "check": "reference",
+      "exitCode": 0,
+      "stdout": "Executor: {\"check\":\"reference\",\"status\":\"PASS\",\"exitCode\":0,\"failure\":null,\"details\":null,\"sourcePinsMatch\":true}",
+      "stderr": ""
+    },
+    {
+      "check": "host-facts",
+      "exitCode": 0,
+      "stdout": "Executor: {\"check\":\"host-facts\",\"status\":\"PASS\",\"exitCode\":0,\"failure\":null,\"details\":null,\"sourcePinsMatch\":true}",
+      "stderr": ""
+    },
+    {
+      "check": "source-types",
+      "exitCode": 0,
+      "stdout": "Executor: {\"check\":\"source-types\",\"status\":\"PASS\",\"exitCode\":0,\"failure\":null,\"details\":null,\"sourcePinsMatch\":true}",
+      "stderr": ""
+    },
+    {
+      "check": "test-types",
+      "exitCode": 0,
+      "stdout": "Executor: {\"check\":\"test-types\",\"status\":\"PASS\",\"exitCode\":0,\"failure\":null,\"details\":null,\"sourcePinsMatch\":true}",
+      "stderr": ""
+    },
+    {
+      "check": "task-types",
+      "exitCode": 0,
+      "stdout": "Executor: {\"check\":\"task-types\",\"status\":\"PASS\",\"exitCode\":0,\"failure\":null,\"details\":null,\"sourcePinsMatch\":true}",
+      "stderr": ""
+    },
+    {
+      "check": "workspace",
+      "exitCode": 0,
+      "stdout": "Executor: {\"check\":\"workspace\",\"status\":\"PASS\",\"exitCode\":0,\"failure\":null,\"details\":null,\"sourcePinsMatch\":true}",
+      "stderr": ""
+    },
+    {
+      "check": "preservation",
+      "exitCode": 0,
+      "stdout": "Executor: {\"check\":\"preservation\",\"status\":\"PASS\",\"exitCode\":0,\"failure\":null,\"details\":{\"historicalFilesUnchanged\":6431,\"baselineSha256\":\"b121bd3597a06a1d7f2ba51ca7b1f602055ccad469a54e3428966ea8d6471dd9\",\"nativeBridge\":\"PASS_EXACT_SIX_SPEC_POINTER_DELTAS_ONLY\",\"byteIdenticalNativeMembers\":59,\"specPointerOnlyNativeMembers\":6},\"sourcePinsMatch\":true}",
+      "stderr": ""
+    },
+    {
+      "check": "specs",
+      "exitCode": 0,
+      "stdout": "Executor: {\"check\":\"specs\",\"status\":\"PASS\",\"exitCode\":0,\"failure\":null,\"details\":null,\"sourcePinsMatch\":true}",
+      "stderr": ""
+    },
+    {
+      "check": "runtime",
+      "exitCode": 0,
+      "stdout": "Executor: {\"check\":\"runtime\",\"status\":\"PASS\",\"exitCode\":0,\"failure\":null,\"details\":null,\"sourcePinsMatch\":true}",
+      "stderr": ""
+    },
+    {
+      "check": "r4",
+      "exitCode": 0,
+      "stdout": "Executor: {\"check\":\"r4\",\"status\":\"PASS\",\"exitCode\":0,\"failure\":null,\"details\":null,\"sourcePinsMatch\":true}",
+      "stderr": ""
+    }
+  ]
+}
