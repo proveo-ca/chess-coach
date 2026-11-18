@@ -1,0 +1,59 @@
+{
+  "status": "SOURCE_COMPLETE_READ_ONLY_ACCESS_INSPECTION_PUBLICATION_PENDING",
+  "authorization": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/authorization.json",
+    "byteLength": 1938,
+    "sha256": "6ffeaffc0997691ddd023479a08f16a24d77353aaa5447655d520e9a9c704f60"
+  },
+  "handoff": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/handoff.json",
+    "byteLength": 6689,
+    "sha256": "6984df87c4497bbe135d2932710f303bdddcb93b832704422a9edeab6ae2d69d"
+  },
+  "verification": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/verification.json",
+    "byteLength": 7925,
+    "sha256": "dabf05273a9b986418ad43e58f23b784e47d877a4ced630ff9967656c1093cd8"
+  },
+  "reviews": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/reviews.json",
+    "byteLength": 3448,
+    "sha256": "7bb0529144741c6ff96e9ef3da3378e748f756294a0cb54e1267be9ddc70ea74"
+  },
+  "freshTests": 17,
+  "assertions": 85,
+  "strictTypechecks": 1,
+  "staticSpecsPassed": true,
+  "packet2SourcePinsUnchanged": 199,
+  "packet2Completion": {
+    "path": "artifacts/training-functional/full-training-packet-2/completion.json",
+    "byteLength": 13260,
+    "sha256": "23b5e67c58d644d8398ffbf70df0557dabede08e62a5658a7b5e32480ae30d4b"
+  },
+  "packet2TestsNotRerunOrDoubleCounted": true,
+  "specOwner": "_spec/runtime-protocol.puml",
+  "specNoOpJudgment": "ses_e148b6cb3ffeX7YUk8TaX0d222",
+  "architect": "ses_e1497c1f5ffeGhugdYDu4UHOx1",
+  "publicationPreflight": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/git-preflight.json",
+    "byteLength": 2026,
+    "sha256": "5c36a131a7826db0afa5e8b1b87983c0d0dc4eef4ad76610d7c38536ff49f64d"
+  },
+  "source": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/preflight.ts",
+    "byteLength": 11900,
+    "sha256": "39e43d84f61f2d43467a26457d2f55231362b15c41e0259ade2eeae5064fb7f6"
+  },
+  "renderer": {
+    "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+    "byteLength": 4355,
+    "sha256": "faf0c74bf328a0e2b67cbbb070caeb396ea3f17d7d2435d81c8f7bcc8de0ef69"
+  },
+  "hostActor": "Executor_USER_ONLY_AFTER_CHECKED_PUBLICATION",
+  "commitPerformed": false,
+  "pushPerformed": false,
+  "hostInspectionExecuted": false,
+  "permissionOrSelinuxRepairAuthorized": false,
+  "hostPreparationAuthorized": false,
+  "trainingExecutionAuthorized": false
+}

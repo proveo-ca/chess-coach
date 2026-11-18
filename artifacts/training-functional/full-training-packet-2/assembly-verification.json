@@ -1,0 +1,49 @@
+{
+  "status": "PASS_ASSEMBLED_V2_PACKET_PINS_MEMBERSHIP_POLICY_AND_PRESERVATION",
+  "request": {
+    "path": "artifacts/training-functional/full-training-packet-2/request.json",
+    "byteLength": 7712,
+    "sha256": "70ba4aadc079cab314cf9dd6f4dc2354ab3c1739e035131b1b067302241b0322"
+  },
+  "verification": {
+    "path": "artifacts/training-functional/full-training-packet-2/verification.json",
+    "byteLength": 104975,
+    "sha256": "515f293ddd351dd434d2a2b656c8e0b8d64f5bb52ceb0dc9f1656ad5ec4b85bb"
+  },
+  "preservation": {
+    "path": "artifacts/training-functional/full-training-packet-2/preservation.json",
+    "byteLength": 48445,
+    "sha256": "d536aa12267d6722e2a742947400276a461f055c065dc0c674df6382f32038f3"
+  },
+  "preservedWorkerSourceFiles": 112,
+  "unchangedPacket1Files": 58,
+  "workerDeltas": [
+    {
+      "path": "artifacts/training-functional/campaign-operator.ts",
+      "byteLength": 37004,
+      "sha256": "6c2ed0ff6ac81b016b7b03fac50738c1141a62dd17d547596404974e6a578e2d"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-plan.ts",
+      "byteLength": 8366,
+      "sha256": "cb8ca484bc452b91ce4cf874d159367285d59d8a4b30c35e86da1cac35e88118"
+    }
+  ],
+  "executionFiles": 112,
+  "physicalSourceRows": 952,
+  "retainedDependencyRows": 840,
+  "bindingRoles": 14,
+  "replacedBindingRoles": 4,
+  "unchangedBindingRoles": 10,
+  "referenceRows": 9,
+  "allLocalExecutionAndDocumentBytesRehashed": true,
+  "retainedHostDependencyAndReferencePayloadsRehashed": false,
+  "rootsHostChecked": false,
+  "entryAllocationGuaranteed": false,
+  "directoryUsabilityVerified": false,
+  "selinuxCompatibilityVerified": false,
+  "hostPreparationExecuted": false,
+  "trainingExecuted": false,
+  "trainingExecutionAuthorized": false,
+  "publicationPerformed": false
+}

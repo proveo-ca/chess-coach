@@ -1,0 +1,3 @@
+bun test v1.4.0 (34cbb9a40)
+CAMPAIGN_EVIDENCE_SYNTHETIC_STREAM {"buildMs":7847.690782999999,"validationMs":37735.040070999996,"attempts":5000,"checkpoints":45,"reportBytes":4923,"closeCalls":1,"payloadPeak":5,"generated":5000,"nativeExecuted":false}
+CAMPAIGN_EVIDENCE_SQLITE_CAPACITY {"scope":"SYNTHETIC_SQLITE_CAPACITY_ONLY","elapsedMs":10955.717734999984,"byteLength":42917888,"pages":10478,"pageSize":4096,"maxPages":16384,"masters":5,"attempts":5000,"checkpoints":50,"recordBytes":582144,"nativeExecuted":false,"fullPipelineExecuted":false}

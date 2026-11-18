@@ -1,0 +1,100 @@
+{
+  "status": "PASS_RETURNED_RECHECK_BINDINGS_REPLAY_ARITHMETIC_PRIOR_RETENTION_AND_SCOPED_STRICT_TYPES",
+  "scope": "LOCAL_USER_PASTED_METADATA_VALIDATION_NOT_HOST_ATTESTATION_OR_RULE_REPLACEMENT",
+  "observation": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/observation.json",
+    "byteLength": 6284,
+    "sha256": "993a500011ea486e870851d32f35a11e6eaaef8926ac9dde544977baae5b9722"
+  },
+  "source": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/intake.ts",
+    "byteLength": 8273,
+    "sha256": "3489a84a1a14d2f95baf2208ce37c8462468e281608580b0d326661d45829b16"
+  },
+  "tsconfig": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/tsconfig.json",
+    "byteLength": 66,
+    "sha256": "54046e4758bc7c277cb90e4a4c743bf8d842ad4b4a8169c9a66ece4516296da8"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "artifacts/training-functional/campaign-volume-preflight-1/returned-2/intake.ts"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/intake.stdout",
+        "byteLength": 437,
+        "sha256": "c095213d60bf381715243cd03c51d5d71a887d32152457e2b68a1c10cf3e0e8f"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/intake.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/campaign-volume-preflight-1/returned-2/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "trackedChangeChecks": [
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "diff",
+        "--name-only",
+        "-z"
+      ],
+      "exitCode": 0,
+      "trackedChanges": 0
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "diff",
+        "--cached",
+        "--name-only",
+        "-z"
+      ],
+      "exitCode": 0,
+      "trackedChanges": 0
+    }
+  ],
+  "priorObservationPreserved": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-1/observation.json",
+    "byteLength": 5763,
+    "sha256": "513477ec262d1c35933e52849e2accddc4f92ea80a23ba90edab906fcf3c4a87"
+  },
+  "newTestCohortClaimed": false,
+  "hostCommandsExecuted": false,
+  "publicationPerformed": false,
+  "admissionRulesChanged": false,
+  "permissionOrSelinuxChangesPerformed": false,
+  "trainingExecuted": false
+}

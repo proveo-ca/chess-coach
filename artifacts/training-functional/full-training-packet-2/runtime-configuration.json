@@ -1,0 +1,139 @@
+{
+  "version": "chess-coach.campaign-runtime-configuration.v2",
+  "budget": {
+    "workMs": 1555200000,
+    "validationMs": 43200000,
+    "cleanupMs": 600000,
+    "inactivityMs": 600000,
+    "workspaceBytes": 274877906944,
+    "minimumFreeBytes": 283467841536
+  },
+  "resources": {
+    "cpus": 2,
+    "memoryBytes": 8589934592,
+    "swapBytes": 0,
+    "gpuAdmissionMiB": 3072,
+    "gpuRunningMiB": 2048
+  },
+  "limits": {
+    "queryMs": 1000,
+    "intervalMs": 2000,
+    "maxAgeMs": 4000,
+    "queryCapacity": 799202,
+    "workspaceCheckMs": 60000,
+    "reportBytes": 1048576,
+    "progressBytes": 4096,
+    "telemetryBytes": 1073741824,
+    "dockerCommands": 7
+  },
+  "storageAdmission": {
+    "perAttemptBytes": 35659776,
+    "privatePipelineBytes": 178511781888,
+    "combinedPayloadBytes": 182806749184,
+    "requiredUsableBytes": 191396683776,
+    "requiredFreeEntries": 835600,
+    "configuredPrivateCeilingBytes": 214748364800
+  },
+  "entryPolicy": "BTRFS_DYNAMIC_ACKNOWLEDGED",
+  "unknownEntryAcceptanceProvesCapacity": false,
+  "clock": "ORIGINAL_SYSTEM_MONOTONIC_ORIGIN_BEFORE_PREFLIGHT",
+  "progress": "ONLY_VERIFIED_COMPLETIONS_OR_VALIDATION_PROGRESS_RESET_INACTIVITY",
+  "root": "/var/lib/chess-coach/training-volume-1/training-campaign-2",
+  "mounts": [
+    {
+      "source": "/var/lib/chess-coach/training-volume-1/training-campaign-inputs-2/app",
+      "target": "/app",
+      "readonly": true
+    },
+    {
+      "source": "/var/lib/chess-coach/training-volume-1/training-campaign-inputs-2/reference",
+      "target": "/app/reference",
+      "readonly": true
+    },
+    {
+      "source": "/var/lib/chess-coach/training-volume-1/training-campaign-inputs-2/qualification-inputs",
+      "target": "/app/qualification-inputs",
+      "readonly": true
+    },
+    {
+      "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun",
+      "target": "/usr/local/bin/bun",
+      "readonly": true
+    },
+    {
+      "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-score",
+      "target": "/opt/retained-gpu/policy-score",
+      "readonly": true
+    },
+    {
+      "source": "/var/lib/chess-coach/training-volume-1/training-campaign-inputs-2/app/artifacts/training-functional/qualification-policy-score.ts",
+      "target": "/usr/local/bin/policy-score",
+      "readonly": true
+    },
+    {
+      "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-channel",
+      "target": "/opt/retained-gpu/policy-channel",
+      "readonly": true
+    },
+    {
+      "source": "/var/lib/chess-coach/training-volume-1/training-campaign-inputs-2/app/artifacts/training-functional/qualification-policy-channel.ts",
+      "target": "/usr/local/bin/policy-channel",
+      "readonly": true
+    },
+    {
+      "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-cpu39-1/native/target-cpu/x86_64-unknown-linux-gnu/release/policy-initialize",
+      "target": "/usr/local/bin/policy-initialize",
+      "readonly": true
+    },
+    {
+      "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-build/llvm",
+      "target": "/opt/tracel-data/tracel/tracel-llvm-23.1.0-4",
+      "readonly": true
+    },
+    {
+      "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-runtime/rootfs/usr/local/cuda",
+      "target": "/usr/local/cuda",
+      "readonly": true
+    },
+    {
+      "source": "/var/lib/chess-coach/training-volume-1/training-campaign-2/state",
+      "target": "/state",
+      "readonly": false
+    },
+    {
+      "source": "/var/lib/chess-coach/training-volume-1/training-campaign-2/tmp",
+      "target": "/tmp",
+      "readonly": false
+    },
+    {
+      "source": "/var/lib/chess-coach/training-volume-1/training-campaign-2/home",
+      "target": "/scratch/home",
+      "readonly": false
+    },
+    {
+      "source": "/var/lib/chess-coach/training-volume-1/training-campaign-2/evidence",
+      "target": "/evidence",
+      "readonly": false
+    }
+  ],
+  "hostAdmission": "CURRENT_STATFS_ON_SELECTED_HOST_PARENT_BEFORE_ROOT_CREATE_GPU_OR_DOCKER",
+  "workerAdmission": "CURRENT_STATFS_ON_STATE_BEFORE_CORPUS_FACTORY_OR_COORDINATOR",
+  "workerMode": "worker-v2",
+  "operatorMode": "operator-v2",
+  "byteAdmissionRequiredAtBothLocations": true,
+  "currentVolumeEvidence": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/observation.json",
+    "byteLength": 6284,
+    "sha256": "993a500011ea486e870851d32f35a11e6eaaef8926ac9dde544977baae5b9722"
+  },
+  "decision": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/proceed-decision-1.json",
+    "byteLength": 1276,
+    "sha256": "507d6db2fd65b1257e66eb84b26a25e3c5eeb0e3220948f5d3a85e823894807d"
+  },
+  "retainedHostConfigurationRole": "HISTORICAL_QUALIFICATION_BINDING_NOT_CURRENT_VOLUME_OR_ACCESS_ATTESTATION",
+  "rootsHostChecked": false,
+  "directoryUsabilityVerified": false,
+  "selinuxCompatibilityVerified": false,
+  "trainingExecutionAuthorized": false
+}

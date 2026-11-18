@@ -14,6 +14,8 @@ export const CAMPAIGN_ADDITIONS = Object.freeze(["packages/runtime/src/training-
   "artifacts/training-functional/campaign-plan.ts", CAMPAIGN_ENTRY, "artifacts/training-functional/campaign-evidence.ts"]);
 export const FULL_CAMPAIGN_SCOPE = "FULL_FIVE_MASTER_TRAINING_NOT_GPUV1_EXTENSION";
 export const CAMPAIGN_PACKET = "artifacts/training-functional/full-training-packet-1";
+export const CAMPAIGN_PACKET_V2 = "artifacts/training-functional/full-training-packet-2";
+export const CAMPAIGN_STORAGE_ROOT = "/var/lib/chess-coach/training-volume-1";
 export const READINESS_COMMIT = "dad29306a83268aeed720b7e9b8311a6d9d941e1";
 export function campaignCheck(value: unknown, code: string): asserts value { if (!value) throw new Error(`Campaign packet: ${code}`); }
 export function checkCampaignBudget(budget: CampaignBudget): CampaignBudget {
@@ -24,14 +26,16 @@ export function checkCampaignBudget(budget: CampaignBudget): CampaignBudget {
   campaignCheck(budget.workspaceBytes >= storageAdmissionBound().requiredUsableBytes && budget.minimumFreeBytes >= budget.workspaceBytes + 8 * GIB, "BUDGET_STORAGE");
   return Object.freeze({ ...budget });
 }
-export function campaignPlan(budget: CampaignBudget | null) {
-  const old = qualificationPlan(), base = `${old.host}/_work/gpu-owner-recovery/runs`, root = `${base}/training-campaign-1`, inputs = `${base}/training-campaign-inputs-1`;
+export function campaignPlan(budget: CampaignBudget | null, generation: 1 | 2 = 1) {
+  campaignCheck(generation === 1 || generation === 2, "CAMPAIGN_GENERATION");
+  const old = qualificationPlan(), base = generation === 1 ? `${old.host}/_work/gpu-owner-recovery/runs` : CAMPAIGN_STORAGE_ROOT,
+    root = `${base}/training-campaign-${generation}`, inputs = `${base}/training-campaign-inputs-${generation}`;
   const selected = budget === null ? null : checkCampaignBudget(budget);
   const mounts = old.mounts.map(m => ({ ...m, source: m.source.startsWith(old.inputs) ? inputs + m.source.slice(old.inputs.length) :
     m.source.startsWith(old.root + "/") ? root + m.source.slice(old.root.length) : m.source }));
-  return { version: "chess-coach.training-campaign-plan.v1", scope: "SOURCE_ONLY_FULL_TRAINING_PACKET", readinessCommit: READINESS_COMMIT,
+  const plan = { version: "chess-coach.training-campaign-plan.v1", scope: "SOURCE_ONLY_FULL_TRAINING_PACKET", readinessCommit: READINESS_COMMIT,
     host: old.host, cachedBun: old.cachedBun, root, inputs, source: `${inputs}/app`, reference: `${inputs}/reference`, documents: `${inputs}/qualification-inputs`,
-    delivery: `${base}/training-campaign-delivery-1`, entrypoint: CAMPAIGN_ENTRY, image: old.image, gpu: old.gpu, mounts,
+    delivery: `${base}/training-campaign-delivery-${generation}`, entrypoint: CAMPAIGN_ENTRY, image: old.image, gpu: old.gpu, mounts,
     roots: "PROPOSED_NOT_HOST_CHECKED_MUST_BE_ABSENT_EXCLUSIVE_CREATE_NO_ADOPTION_OR_RETRY",
     retainedPreparedInputs: old.inputs, preparation: "FUTURE_APPROVAL_COPY_RETAINED_INPUTS_READONLY_EXTEND_SOURCE_AND_FOUR_DOCUMENTS_NO_BUILDS_OR_ACQUISITION",
     requiredSourceAdditions: [...CAMPAIGN_ADDITIONS], replacedDocumentRoles: ["source", "tests", "runtimeConfiguration", "recipe"],
@@ -46,6 +50,7 @@ export function campaignPlan(budget: CampaignBudget | null) {
     progress: "ONLY_VERIFIED_COMPLETIONS_OR_VALIDATION_PROGRESS_RESET_INACTIVITY",
     trainingExecutionAuthorized: false, publicationAuthorized: false, technicalTrainingReady: true,
     deferredHardening: "AFTER_ALL_PLANNED_TRAINING_AND_VALIDATED_RESULTS" } as const;
+  return generation === 1 ? plan : { ...plan, version: "chess-coach.training-campaign-plan.v2", entryPolicy: "BTRFS_DYNAMIC_ACKNOWLEDGED" } as const;
 }
 export type CampaignPlan = ReturnType<typeof campaignPlan>;
 export type CampaignInvocation = { originMs: number; workDeadlineMs: number; validationDeadlineMs: number; cleanupDeadlineMs: number };

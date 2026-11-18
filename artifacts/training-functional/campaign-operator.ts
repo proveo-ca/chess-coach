@@ -28,25 +28,55 @@ function json<T>(bytes: Uint8Array, cap = MIB): T {
   return JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)) as T;
 }
 function clean(r: CommandResult): boolean { return r.exitCode === 0 && r.signal === null && r.exited && r.reaped && r.stdoutEOF && r.stderrEOF && !r.forced && r.error === null; }
-export type CampaignRequest = { version: "chess-coach.training-campaign-request.v1"; plan: CampaignPlan; preparedInputManifest: ByteRef;
+export type CampaignRequest = { version: "chess-coach.training-campaign-request.v1" | "chess-coach.training-campaign-request.v2"; plan: CampaignPlan; preparedInputManifest: ByteRef;
   sourceManifest: ByteRef; bindingDocuments: ByteRef; verification: ByteRef; trainingExecutionAuthorized: false; publicationAuthorized: false };
 export function decodeCampaignRequest(bytes: Uint8Array): CampaignRequest {
   const request = json<CampaignRequest>(bytes);
-  check(request.version === "chess-coach.training-campaign-request.v1" && request.trainingExecutionAuthorized === false && request.publicationAuthorized === false &&
-    request.plan?.budget && same(request.plan, campaignPlan(request.plan.budget)), "REQUEST_PLAN");
+  check(request && typeof request === "object" && !Array.isArray(request) && Object.keys(request).sort().join() ===
+    ["version", "plan", "preparedInputManifest", "sourceManifest", "bindingDocuments", "verification", "trainingExecutionAuthorized", "publicationAuthorized"].sort().join(), "REQUEST_SCHEMA");
+  const generation = request.version === "chess-coach.training-campaign-request.v2" ? 2 : 1;
+  check((request.version === "chess-coach.training-campaign-request.v1" || request.version === "chess-coach.training-campaign-request.v2") &&
+    request.trainingExecutionAuthorized === false && request.publicationAuthorized === false && request.plan?.budget &&
+    same(request.plan, campaignPlan(request.plan.budget, generation)), "REQUEST_PLAN");
   for (const key of ["preparedInputManifest", "sourceManifest", "bindingDocuments", "verification"] as const) byteRefShape.parse(request[key]);
   return request;
 }
 export type CampaignProgress = { version: "chess-coach.campaign-progress.v1"; phase: "work" | "validation"; completed: number };
 type BaseIO = Pick<OperatorIO, "now" | "alarm" | "context" | "read" | "write" | "command" | "alias"> & {
-  execution: "MOCK" | "NATIVE"; validateInputs: typeof validateCampaignInputs };
+  execution: "MOCK" | "NATIVE"; validateInputs: typeof validateCampaignInputs; capacity(path: string): Promise<CampaignCapacity> };
 export type CampaignWorkerIO = BaseIO & { loadCorpus(): Promise<RecordedCorpus>; loadStrategic(): Promise<StrategicApi>;
   createCoordinator(root: string, bindings: TrainingBindings): CampaignCoordinator;
   createFactory(corpus: RecordedCorpus, strategic: StrategicApi): { create: AttemptSetup };
   progress(value: CampaignProgress): void; openReadback(root: string): CampaignReadback; validate: typeof validateCampaignResult };
-export type CampaignOperatorIO = OperatorIO & Pick<BaseIO, "validateInputs"> & { execution: "MOCK" | "NATIVE";
-  capacity(path: string): Promise<{ usableBytes: number; freeEntries: number }>; usage(path: string, deadlineMs: number): Promise<number>;
+export type CampaignOperatorIO = OperatorIO & Pick<BaseIO, "validateInputs" | "capacity"> & { execution: "MOCK" | "NATIVE";
+  usage(path: string, deadlineMs: number): Promise<number>;
   telemetry(value: { ordinal: number; observedMs: number; freeMiB: number }): void; closeTelemetry(): void };
+export type CampaignCapacity = { type: bigint; bsize: bigint; bavail: bigint; files: bigint; ffree: bigint };
+const CAPACITY_KEYS = ["type", "bsize", "bavail", "files", "ffree"] as const;
+export function assessCampaignStorage(plan: CampaignPlan, capacity: CampaignCapacity) {
+  check(plan.budget && capacity && CAPACITY_KEYS.every(key => typeof capacity[key] === "bigint"), "CAPACITY_SCHEMA");
+  const usableBytes = capacity.bsize > 0n && capacity.bavail >= 0n ? capacity.bsize * capacity.bavail : null;
+  const freeEntries = capacity.files >= 0n && capacity.ffree >= 0n && !(capacity.files === 0n && capacity.ffree === 0n) ? capacity.ffree : null;
+  const bytesSufficient = usableBytes === null ? null : usableBytes >= BigInt(plan.budget.minimumFreeBytes);
+  const entriesSufficient = freeEntries === null ? null : freeEntries >= BigInt(plan.storageAdmission.requiredFreeEntries);
+  const policy = plan.version === "chess-coach.training-campaign-plan.v2" ? plan.entryPolicy : "FIXED_COUNTER";
+  const policyAcceptedUnknownEntries = bytesSufficient === true && policy === "BTRFS_DYNAMIC_ACKNOWLEDGED" &&
+    capacity.type === 0x9123683en && capacity.files === 0n && capacity.ffree === 0n;
+  return { version: "chess-coach.campaign-storage-admission.v1", policy,
+    raw: { type: String(capacity.type), bsize: String(capacity.bsize), bavail: String(capacity.bavail), files: String(capacity.files), ffree: String(capacity.ffree) },
+    usableBytes: usableBytes?.toString() ?? null, requiredUsableBytes: String(plan.budget.minimumFreeBytes),
+    freeEntries: freeEntries?.toString() ?? null, requiredFreeEntries: String(plan.storageAdmission.requiredFreeEntries),
+    bytesSufficient, entriesSufficient, entryCapacityVerified: entriesSufficient === true, policyAcceptedUnknownEntries,
+    entryAdmissionBasis: entriesSufficient === true ? "REPORTED_FREE_ENTRIES" : policyAcceptedUnknownEntries ? "ACKNOWLEDGED_BTRFS_ZERO_COUNTERS" : "NOT_ADMITTED",
+    admitted: bytesSufficient === true && (entriesSufficient === true || policyAcceptedUnknownEntries) } as const;
+}
+export type CampaignStorageAdmission = ReturnType<typeof assessCampaignStorage>;
+function checkWorkerStorageAdmission(plan: CampaignPlan, admission: CampaignStorageAdmission | undefined): void {
+  check(admission && admission.raw, "WORKER_STORAGE_ADMISSION"); const capacity = {} as CampaignCapacity;
+  for (const key of CAPACITY_KEYS) { const value = admission.raw[key];
+    check(typeof value === "string" && /^-?(?:0|[1-9][0-9]{0,19})$/.test(value), "WORKER_STORAGE_COUNTER"); capacity[key] = BigInt(value); }
+  const expected = assessCampaignStorage(plan, capacity); check(expected.admitted && same(expected, admission), "WORKER_STORAGE_ADMISSION");
+}
 function monotonic(io: Pick<BaseIO, "now">) {
   let last = -1, failed = false;
   return () => { try { const value = io.now(); check(!failed && Number.isFinite(value) && value >= 0 && value >= last, "CLOCK"); last = value; return value; }
@@ -66,18 +96,21 @@ export async function validateCampaignInputs(request: CampaignRequest, io: Pick<
   check(same(ref(documentBytes), request.bindingDocuments), "DOCUMENT_MANIFEST_REF");
   check(same(json<{ documents: unknown }>(documentBytes).documents, manifest.documents), "DOCUMENT_MANIFEST_MEMBERSHIP");
   const source = json<{ fileCount: number; files: PreparedInputManifest["source"] }>(await io.read(`${roots.documents}/source.bin`, MIB));
-  check(source.fileCount === 112 && source.files.length === 112 && new Set(source.files.map(r => r.path)).size === 112 &&
+  const expectedSourceFiles = 108 + CAMPAIGN_ADDITIONS.length;
+  check(source.fileCount === expectedSourceFiles && source.files.length === expectedSourceFiles && new Set(source.files.map(r => r.path)).size === expectedSourceFiles &&
     CAMPAIGN_ADDITIONS.every(path => source.files.some(r => r.path === path)), "CAMPAIGN_SOURCE_CLOSURE");
   const code = manifest.source.filter(r => !r.path.startsWith("node_modules/zod/"));
-  check(code.length === 112 && source.files.every(row => code.some(r => same(r, row))), "CAMPAIGN_PHYSICAL_SOURCE");
-  const runtime = json<{ budget: unknown; resources: unknown; limits: unknown }>(await io.read(`${roots.documents}/runtimeConfiguration.bin`, MIB));
+  check(code.length === expectedSourceFiles && source.files.every(row => code.some(r => same(r, row))), "CAMPAIGN_PHYSICAL_SOURCE");
+  const runtime = json<{ version?: unknown; budget: unknown; resources: unknown; limits: unknown; entryPolicy?: unknown; root?: unknown; mounts?: unknown }>(await io.read(`${roots.documents}/runtimeConfiguration.bin`, MIB));
   const recipe = json<{ plan: unknown }>(await io.read(`${roots.documents}/recipe.bin`, MIB));
   check(same(runtime.budget, request.plan.budget) && same(runtime.resources, request.plan.resources) && same(runtime.limits, request.plan.limits) && same(recipe.plan, request.plan), "CAMPAIGN_RUNTIME_DOCUMENTS");
+  if (request.plan.version === "chess-coach.training-campaign-plan.v2") check(runtime.version === "chess-coach.campaign-runtime-configuration.v2" &&
+    runtime.entryPolicy === request.plan.entryPolicy && runtime.root === request.plan.root && same(runtime.mounts, request.plan.mounts), "CAMPAIGN_RUNTIME_POLICY");
   return bindings;
 }
 export type CampaignWorkerReport = { scope: "FULL_CAMPAIGN_WORKER"; execution: "MOCK" | "NATIVE"; status: "PASS" | "FAIL";
   failures: string[]; verifiedAttempts: number; finalizationCalls: number; closeCalls: number;
-  validation: CampaignEvidence | null; trainingExecuted: boolean };
+  validation: CampaignEvidence | null; trainingExecuted: boolean; storageAdmission?: CampaignStorageAdmission };
 export async function runCampaignWorker(launch: { requestBytes: Uint8Array; approval: CampaignApproval | null; invocation: CampaignInvocation }, io: CampaignWorkerIO): Promise<CampaignWorkerReport> {
   const report: CampaignWorkerReport = { scope: "FULL_CAMPAIGN_WORKER", execution: io.execution, status: "FAIL", failures: [], verifiedAttempts: 0,
     finalizationCalls: 0, closeCalls: 0, validation: null, trainingExecuted: false };
@@ -92,6 +125,10 @@ export async function runCampaignWorker(launch: { requestBytes: Uint8Array; appr
     const context = await within(io, now, preparationEnd, () => io.context());
     check(context.cwd === "/app" && context.realpath === "/app" && context.executable === "/usr/local/bin/bun" && context.entrypoint === `/app/${CAMPAIGN_ENTRY}`, "WORKER_CONTEXT");
     const bindings = await within(io, now, preparationEnd, () => io.validateInputs(request, io, { app: "/app", reference: "/app/reference", documents: "/app/qualification-inputs" })); acquired = true;
+    if (plan.version === "chess-coach.training-campaign-plan.v2") {
+      report.storageAdmission = assessCampaignStorage(plan, await within(io, now, preparationEnd, () => io.capacity("/state")));
+      check(report.storageAdmission.admitted, "WORKER_STORAGE_ADMISSION");
+    }
     const [corpus, strategic] = await within(io, now, Math.min(now() + 10000, workEnd), () => Promise.all([io.loadCorpus(), io.loadStrategic()]));
     const factory = io.createFactory(corpus, strategic); coordinator = io.createCoordinator("/state/run", bindings);
     const owned = coordinator;
@@ -138,11 +175,11 @@ export function campaignDockerCreate(plan: CampaignPlan): string[] {
   return [...DOCKER, "create", "--pull=never", "--platform=linux/amd64", "--network=none", "--cpus=2", "--memory=8g", "--memory-swap=8g", "--user=1000:1000", "--runtime=nvidia", `--gpus=device=${plan.gpu}`,
     "--workdir=/app", "--env=PATH=/usr/local/bin:/usr/bin:/bin", "--env=HOME=/scratch/home", "--env=TMPDIR=/tmp", "--env=RAYON_NUM_THREADS=2", "--env=BUN_RUNTIME_TRANSPILER_CACHE_PATH=0",
     ...plan.mounts.flatMap(m => ["--mount", `type=bind,src=${m.source},dst=${m.target}${m.readonly ? ",readonly" : ""}`]), plan.image,
-    "/usr/local/bin/bun", "--no-env-file", "--no-install", `/app/${CAMPAIGN_ENTRY}`, "worker"];
+    "/usr/local/bin/bun", "--no-env-file", "--no-install", `/app/${CAMPAIGN_ENTRY}`, plan.version === "chess-coach.training-campaign-plan.v2" ? "worker-v2" : "worker"];
 }
 export type CampaignOperatorReport = { scope: "FULL_CAMPAIGN_OPERATOR"; execution: "MOCK" | "NATIVE"; status: "PASS" | "FAIL"; failures: string[];
   invocation: CampaignInvocation | null; cid: string | null; aborted: boolean; cleanup: "NOT_ACQUIRED" | "UNCONFIRMED" | "REMOVED";
-  queries: number; minimumFreeMiB: number | null; dockerCommands: number; progress: { work: number; validation: number }; trainingExecuted: boolean };
+  queries: number; minimumFreeMiB: number | null; dockerCommands: number; progress: { work: number; validation: number }; trainingExecuted: boolean; storageAdmission?: CampaignStorageAdmission };
 export async function runCampaignOperator(launch: { requestBytes: Uint8Array; approval: CampaignApproval | null }, io: CampaignOperatorIO): Promise<CampaignOperatorReport> {
   const report: CampaignOperatorReport = { scope: "FULL_CAMPAIGN_OPERATOR", execution: io.execution, status: "FAIL", failures: [], invocation: null, cid: null,
     aborted: false, cleanup: "NOT_ACQUIRED", queries: 0, minimumFreeMiB: null, dockerCommands: 0, progress: { work: 0, validation: 0 }, trainingExecuted: false };
@@ -168,8 +205,9 @@ export async function runCampaignOperator(launch: { requestBytes: Uint8Array; ap
     check(context.cwd === plan.host && context.realpath === plan.host && context.executable === plan.cachedBun && context.entrypoint === `${plan.source}/${CAMPAIGN_ENTRY}`, "OPERATOR_CONTEXT");
     await within(io, now, preparationEnd, async () => {
       await io.absent(p.root); await io.validateInputs(request, io, { app: p.source, reference: p.reference, documents: p.documents });
-      const capacity = await io.capacity(dirname(p.root));
-      check(capacity.usableBytes >= budget.minimumFreeBytes && capacity.freeEntries >= p.storageAdmission.requiredFreeEntries, "STORAGE_ADMISSION");
+      const admission = assessCampaignStorage(p, await io.capacity(dirname(p.root)));
+      if (p.version === "chess-coach.training-campaign-plan.v2") report.storageAdmission = admission;
+      check(admission.admitted, "STORAGE_ADMISSION");
       for (const mount of p.mounts.filter(m => m.readonly)) await io.requirePath(mount.source,
         [p.cachedBun, "policy-score", "policy-channel", "policy-initialize", "qualification-policy-score.ts", "qualification-policy-channel.ts"].some(s => mount.source.endsWith(s)) ? "executable" : "directory");
     });
@@ -231,7 +269,9 @@ export async function runCampaignOperator(launch: { requestBytes: Uint8Array; ap
         const worker = json<CampaignWorkerReport>(await within(io, now, Math.min(now() + 5000, end - 6000),
           () => io.read(`${plan!.root}/evidence/campaign-worker.json`, MIB)));
         check(worker.scope === "FULL_CAMPAIGN_WORKER" && worker.execution === io.execution && worker.status === "PASS" && worker.failures.length === 0 &&
-          worker.verifiedAttempts === 5000 && worker.finalizationCalls === 1 && worker.closeCalls === 1 && worker.validation?.status === "PASS_CAMPAIGN_RETAINED_RESULT_VALIDATION", "WORKER_RESULT"); report.status = "PASS";
+          worker.verifiedAttempts === 5000 && worker.finalizationCalls === 1 && worker.closeCalls === 1 && worker.validation?.status === "PASS_CAMPAIGN_RETAINED_RESULT_VALIDATION", "WORKER_RESULT");
+        if (plan!.version === "chess-coach.training-campaign-plan.v2") checkWorkerStorageAdmission(plan!, worker.storageAdmission);
+        report.status = "PASS";
       } catch (error) { report.aborted = true; report.failures.push(String(error).slice(0, 4096)); await stop(); }
       try { check(clean(await command([...DOCKER, "rm", report.cid], Math.min(now() + 5000, end - 1000), end)), "REMOVE"); report.cleanup = "REMOVED"; }
       catch (error) { report.failures.push(String(error).slice(0, 4096)); }
@@ -302,11 +342,15 @@ function productionIO(plan: CampaignPlan): CampaignOperatorIO {
     absent: async path => { await parents(path); try { await fs.lstat(path); } catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return; throw error; } throw new Error("Campaign packet: ROOT_EXISTS"); },
     mkdir: async path => { await parents(path); await fs.mkdir(path, { mode: 0o700 }); },
     requirePath: async (path, kind) => { await parents(path); const s = await fs.lstat(path); check(!s.isSymbolicLink() && (kind === "directory" ? s.isDirectory() : s.isFile() && (s.mode & 0o111) !== 0), "RETAINED_PATH"); },
-    capacity: async path => { const s = await fs.statfs(path, { bigint: true }); return { usableBytes: Number(s.bavail * s.bsize), freeEntries: Number(s.ffree) }; },
+    capacity: campaignCapacity,
     usage: (root, deadline) => campaignWorkspaceUsage(root, plan.budget!.workspaceBytes, deadline, () => Number(process.hrtime.bigint()) / 1000000),
     telemetry: value => { telemetry ??= openCampaignTelemetry(`${plan.root}/evidence/gpu-telemetry.ndjson`, plan.limits!.telemetryBytes); telemetry.append(value); },
     closeTelemetry: () => { telemetry?.close(); },
   };
+}
+export async function campaignCapacity(path: string): Promise<CampaignCapacity> {
+  const value = await fs.statfs(path, { bigint: true });
+  return { type: value.type, bsize: value.bsize, bavail: value.bavail, files: value.files, ffree: value.ffree };
 }
 async function productionWorkerIO(plan: CampaignPlan): Promise<CampaignWorkerIO> {
   const [{ FixedAttemptFactory }, { TrainingCoordinator }, { loadCapturedCorpus }, { loadCapturedStrategicApi }] = await Promise.all([
@@ -317,19 +361,22 @@ async function productionWorkerIO(plan: CampaignPlan): Promise<CampaignWorkerIO>
       writeFileSync(temporary, encode(value), { flag: "wx", mode: 0o600 }); renameSync(temporary, path); },
     openReadback: openCampaignReadback, validate: validateCampaignResult };
 }
-export function campaignMode(main: boolean, args: readonly string[]): "plan" | "operator" | "worker" | null {
-  return main && args.length === 1 && ["plan", "operator", "worker"].includes(args[0]!) ? args[0] as "plan" | "operator" | "worker" : null;
+export type CampaignMode = "plan" | "operator" | "worker" | "plan-v2" | "operator-v2" | "worker-v2";
+export function campaignMode(main: boolean, args: readonly string[]): CampaignMode | null {
+  return main && args.length === 1 && ["plan", "operator", "worker", "plan-v2", "operator-v2", "worker-v2"].includes(args[0]!) ? args[0] as CampaignMode : null;
 }
 if (import.meta.main) {
   try {
-    const mode = campaignMode(true, Bun.argv.slice(2)), plan = campaignPlan(SELECTED_CAMPAIGN_BUDGET);
-    if (mode === "plan") console.log("Executor: " + JSON.stringify(plan));
-    else if (mode === "operator" || mode === "worker") {
-      const documents = mode === "operator" ? plan.documents : "/app/qualification-inputs", requestBytes = await read(`${documents}/campaign-request.json`, MIB);
+    const mode = campaignMode(true, Bun.argv.slice(2)), generation = mode?.endsWith("-v2") ? 2 : 1, plan = campaignPlan(SELECTED_CAMPAIGN_BUDGET, generation);
+    if (mode === "plan" || mode === "plan-v2") console.log("Executor: " + JSON.stringify(plan));
+    else if (mode === "operator" || mode === "worker" || mode === "operator-v2" || mode === "worker-v2") {
+      const host = mode === "operator" || mode === "operator-v2", documents = host ? plan.documents : "/app/qualification-inputs";
+      const requestBytes = await read(`${documents}/campaign-request.json`, MIB);
+      check(decodeCampaignRequest(requestBytes).plan.version === plan.version, "CLI_GENERATION");
       const approval = json<CampaignApproval>(await read(`${documents}/execution-approval.json`, 4096));
-      const report = mode === "operator" ? await runCampaignOperator({ requestBytes, approval }, productionIO(plan)) :
+      const report = host ? await runCampaignOperator({ requestBytes, approval }, productionIO(plan)) :
         await runCampaignWorker({ requestBytes, approval, invocation: json<CampaignInvocation>(await read("/evidence/invocation.json", 4096)) }, await productionWorkerIO(plan));
       console.log("Executor: " + JSON.stringify(report)); process.exitCode = report.status === "PASS" ? 0 : 1;
-    } else { console.error("Executor: usage: campaign-operator.ts plan|operator|worker"); process.exitCode = 2; }
+    } else { console.error("Executor: usage: campaign-operator.ts plan|operator|worker|plan-v2|operator-v2|worker-v2"); process.exitCode = 2; }
   } catch (error) { console.error("Executor: " + String(error)); process.exitCode = 1; }
 }

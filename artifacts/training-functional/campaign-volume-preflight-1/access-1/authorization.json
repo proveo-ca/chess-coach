@@ -1,0 +1,42 @@
+{
+  "status": "EXECUTOR_EXPLICIT_PUBLISH_AND_READ_ONLY_HOST_INSPECTION_AUTHORIZATION",
+  "date": "2026-11-18",
+  "origin": "EXECUTOR_INTERACTIVE_SELECTION_AFTER_PACKET2_SOURCE_COMPLETION",
+  "selected": "Publish + inspect (Recommended)",
+  "acceptedDescription": "Authorize one checked normal commit/non-force push to existing PR51, then a USER-run read-only HOST check of access/SELinux, proposed-root absence, and retained inputs/tools. No HOST writes, repairs, preparation, or training.",
+  "publication": {
+    "normalCommits": 1,
+    "nonForcePushes": 1,
+    "localBranch": "integrate/starchess-ml-main",
+    "remoteBranch": "feat-ml-adjuntant-ii",
+    "pullRequest": "https://github.com/proveo-ca/chess-coach/pull/51",
+    "baseBranch": "main",
+    "expectedPreviousHead": "5b47be42b0378198750992b1547915b43f9cea99",
+    "amendAuthorized": false,
+    "forcePushAuthorized": false,
+    "newPullRequestAuthorized": false,
+    "automaticRetryAuthorized": false,
+    "priorConsumedGrantsReused": false
+  },
+  "inspection": {
+    "actor": "Executor_USER_RUN_HOST_COMMAND_ONLY_AFTER_CHECKED_PUBLICATION",
+    "hostStoragePrefix": "/var/lib/chess-coach/training-volume-1",
+    "scope": [
+      "DIRECTORY_SEARCH_ACCESS_IDENTITY_AND_SELINUX_METADATA",
+      "THREE_PACKET2_PROPOSED_ROOTS_ABSENCE_ONLY_ENOENT_MEANS_ABSENT",
+      "BOUNDED_RETAINED_INPUT_AND_TOOL_METADATA_AFTER_REPORTED_CLEANUP"
+    ],
+    "repeatIdenticalInodeQuery": false,
+    "writeProbeAuthorized": false,
+    "agentMayExecuteHostCommand": false
+  },
+  "protectedOriginalCheckoutMayBeSwitchedOrEdited": false,
+  "permissionOrSelinuxRepairAuthorized": false,
+  "hostPreparationAuthorized": false,
+  "nativeGpuContainerExecutionAuthorized": false,
+  "acquisitionInstallationOrReferenceBuildAuthorized": false,
+  "trainingExecutionAuthorized": false,
+  "commitPerformedAtIssuance": false,
+  "pushPerformedAtIssuance": false,
+  "hostInspectionPerformedAtIssuance": false
+}

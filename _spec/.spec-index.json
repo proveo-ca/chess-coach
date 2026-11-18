@@ -807,6 +807,7 @@
         "artifacts/training-functional/qualification-packet-1/**",
         "artifacts/training-functional/qualification-result-1/**",
         "artifacts/training-functional/full-training-packet-1/**",
+        "artifacts/training-functional/full-training-packet-2/**",
         "artifacts/training-functional/campaign-handoff-1/**",
         "artifacts/training-functional/campaign-volume-preflight-1/**",
         "packages/runtime/src/fixed-attempt.ts",
@@ -840,7 +841,11 @@
         "packages/runtime/tests/training-store.test.ts",
         "packages/runtime/tests/repository-scratch.ts",
         "packages/runtime/tests/training-fixture.ts",
-        "artifacts/training-functional/full-training-packet-1/**"
+        "artifacts/training-functional/full-training-packet-1/**",
+        "artifacts/training-functional/full-training-packet-2/**",
+        "artifacts/training-functional/campaign-plan.ts",
+        "artifacts/training-functional/campaign-operator.ts",
+        "artifacts/training-functional/campaign-evidence.test.ts"
       ],
       "fingerprint": null
     },

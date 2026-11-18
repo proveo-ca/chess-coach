@@ -1,0 +1,89 @@
+{
+  "status": "READY_SOURCE_ONLY_READ_ONLY_ACCESS_INSPECTION_NO_FINDINGS",
+  "sourcePins": [
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 162528,
+      "sha256": "64bce2cfb13d6fc251ff39abdad4f0e570fcfb9822e8b2951843630e2c90ab73"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+      "byteLength": 4355,
+      "sha256": "faf0c74bf328a0e2b67cbbb070caeb396ea3f17d7d2435d81c8f7bcc8de0ef69"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/HOST.md",
+      "byteLength": 2577,
+      "sha256": "46686e0d79b243a01936a4133482e303eca0f065b934f4aa60a51e6b3de858d7"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/authorization.json",
+      "byteLength": 1938,
+      "sha256": "6ffeaffc0997691ddd023479a08f16a24d77353aaa5447655d520e9a9c704f60"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/handoff.json",
+      "byteLength": 6689,
+      "sha256": "6984df87c4497bbe135d2932710f303bdddcb93b832704422a9edeab6ae2d69d"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/preflight.test.ts",
+      "byteLength": 13991,
+      "sha256": "ffb27b4c20f6e1e1fae30cc92aa29b952a1054ef9379d60e033690015be04206"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/preflight.ts",
+      "byteLength": 11900,
+      "sha256": "39e43d84f61f2d43467a26457d2f55231362b15c41e0259ade2eeae5064fb7f6"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/render-command.ts",
+      "byteLength": 114,
+      "sha256": "bacdc5666de41e9c7eb4ef76bd9cb58bdc7b7431c9cd446aede0784f5effc84e"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/tsconfig.json",
+      "byteLength": 64,
+      "sha256": "d242d0c4b0be55d2546f568a8c710dec92b90839cd5781fc49f2c346b22dbdd5"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/completion.json",
+      "byteLength": 13260,
+      "sha256": "23b5e67c58d644d8398ffbf70df0557dabede08e62a5658a7b5e32480ae30d4b"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/request.json",
+      "byteLength": 7712,
+      "sha256": "70ba4aadc079cab314cf9dd6f4dc2354ab3c1739e035131b1b067302241b0322"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/verification.json",
+      "byteLength": 104975,
+      "sha256": "515f293ddd351dd434d2a2b656c8e0b8d64f5bb52ceb0dc9f1656ad5ec4b85bb"
+    }
+  ],
+  "verification": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/verification.json",
+    "byteLength": 7925,
+    "sha256": "dabf05273a9b986418ad43e58f23b784e47d877a4ced630ff9967656c1093cd8"
+  },
+  "adversarial": {
+    "session": "ses_e13cec8ceffeJawweBlY6Q7ARW",
+    "readyToMerge": true,
+    "findings": [],
+    "retainedTests": 17,
+    "assertions": 85
+  },
+  "security": {
+    "session": "ses_e13cec8cdffeMey2qinnF3eDQ6",
+    "readyToMerge": true,
+    "findings": [],
+    "risk": "LOW",
+    "condition": "ISSUED_LITERAL_COMMAND_MUST_BIND_CHECKED_PUBLICATION_AND_REVIEWED_SOURCE_PLAN_HASHES"
+  },
+  "reviewersExecutedCommands": false,
+  "hostInspectionExecuted": false,
+  "hostPreparationExecuted": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false
+}

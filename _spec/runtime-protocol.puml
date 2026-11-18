@@ -1,5 +1,5 @@
 @startuml runtime_protocol
-' purpose: retained qualification, full-campaign ownership and separate read-only USER HOST metadata checks including the selected volume
+' purpose: versioned campaign storage admission, preserved packet generations and unchanged full-campaign ownership
 ' covers: _work/gpu-owner-recovery/runs/host-canonical-r4-source-1/**
 ' covers: artifacts/training-functional/*.ts
 ' covers: artifacts/training-functional/plan.json
@@ -12,6 +12,7 @@
 ' covers: artifacts/training-functional/qualification-packet-1/**
 ' covers: artifacts/training-functional/qualification-result-1/**
 ' covers: artifacts/training-functional/full-training-packet-1/**
+' covers: artifacts/training-functional/full-training-packet-2/**
 ' covers: artifacts/training-functional/campaign-handoff-1/**
 ' covers: artifacts/training-functional/campaign-volume-preflight-1/**
 ' covers: packages/runtime/src/fixed-attempt.ts
@@ -21,12 +22,16 @@
 ' covers: crates/learning/src/lib.rs
 ' covers: crates/learning/src/model.rs
 ' covers: crates/learning/tests/model.rs
-' CURRENT 2026-11-17: SELECTED_HOST_VOLUME_METADATA_PENDING_SOURCE_ONLY. V=artifacts/training-functional/campaign-volume-preflight-1; V/handoff.json applies standing continue-until-decision-or-required-HOST-verification authority to the newly confirmed path: ONE fresh normal commit+nonforce push to existing feat-ml-adjuntant-ii/PR51/main BEFORE literal USER command, PENDING. Prior c60a45e1588fabf16c76da7127e160b17147dcf7 grant stays spent; no amend/force/automatic retry/new PR/training.
-' current completion: P=artifacts/training-functional/full-training-packet-1; P/completion.json EXISTS/167 represented tests=39fresh+90/38 pin-carried/2strictTSC/static/four HIGH CLOSED/source+metadata READY. Preserve ALL P/worker112/14bindings/original108+14 bytes;139 verification pins including4 specs remain ISSUANCE, not current authority-spec pins. Fresh SUPPLEMENTAL verification only; no P rewrite/reassembly.
-' current HOST boundary: H=artifacts/training-functional/campaign-handoff-1; H/returned-1 retains USER-pasted old-root BLOCKED intake and Executor's mounted report for HOST /var/lib/chess-coach/training-volume-1 -> coding SBX proveo-opencode-11c4aed0:/mnt/training rw. Local168235544576B/entries UNKNOWN is CODING_SBX_NOT_HOST_ATTESTATION, not HOST failure/filesystem/capacity/SELinux proof; nominal mount is not disk-allocation evidence. No discovery helper implemented. V imports INERT/OUTSIDE worker112/request; fixed HOST_VOLUME lstat kind-mode-uid-gid THEN statfs ONLY for directory leaf; raw decimal BigInt counters/type;283467841536B/835600 entries;zero-zero entries UNKNOWN;comparisons true/false/null;2s/5s cooperative, not kernel cancellation.
-' current transport: frozen H/render-command.ts unchanged; old FrozenPlan supplies budget/request context ONLY, old paths NOT probed. V source hash722595e63962f0321fe83594a40f516d89660062bc7045047df29e737553f240; Fish-safe clean-env Bash/cd /absolute retained Bun1.4.0/no-env-file/no-install/cache0/compressed+raw SHA BEFORE built-in TS/dataURL import/stdout metadata only. Checked publication precedes LOCAL actualOID command/receipt OUTSIDE commit; assistant never executes HOST command.
-' current precedence: later checked supplemental verification/publication receipts supersede pending issuance fields; ALL older CURRENT/pending/false/LOCAL labels retain issuance scope. Selected-volume HOST facts and new tests/strict TSC/static remain PENDING; functional acceptance true/training unauthorized/unexecuted/P-H1-worker112-request-completion-checkpoint lifetime-GPUv1-mainsOFF unchanged. No content reads/HOST writes/spawn/network/discovery/SELinux changes/cleanup/relocation/preparation/native/GPU/Docker/build/install/train; PASS proves no quota/reservation/write-search/container/SELinux/tool usability. Root relocation needs actual HOST facts then a fresh immutable packet LATER; ALL hardening LAST. No commands/agents/HOST/network/Git writes here; PlantUML SKIP, Java/remote theme outside Bun/TypeScript-or-Rust scope.
-' see: _spec/readiness.md#campaign-handoff-2026-11-17
+' CURRENT 2026-11-18: SOURCE_ONLY_PACKET2_TOOLING_IMPLEMENTED_CLOSEOUT_CONDITIONAL. V=artifacts/training-functional/campaign-volume-preflight-1; V/returned-2/proceed-decision-1.json records post-research "We should be safe to proceed then, assume the disk bytes needed to be available" as SOURCE/tests/specs/fresh P2 only. Research was NOT approval. Retained USER report386035548160B>264GiB/type2435016766/files0/ffree0 gives unknown entries, not capacity reservation/independent HOST attestation; mode0644 uid0 gid0 search/access remains a separate decision after SOURCE closeout. No repeated identical counter query or permission/SELinux/HOST-preparation/native/GPU/Docker/acquisition/install/build/train approval.
+' current policy: campaignPlan(budget,generation=1) default v1 EXACT packet1/no entryPolicy/CAMPAIGN_PACKET unchanged. Explicit v2 plan/request and plan-v2/operator-v2/worker-v2 bind BTRFS_DYNAMIC_ACKNOWLEDGED and /var/lib/chess-coach/training-volume-1/{training-campaign-delivery-2,training-campaign-inputs-2,training-campaign-2}; canonical generation dispatch rejects mixed/extra fields. V2 runtimeConfiguration binds policy/root/mounts plus unchanged budget/resources/limits/recipe.plan; modes do not grant execution.
+' current admission: shared bigint statfs type/bsize/bavail/files/ffree; live bytes>=283467841536 always required. 835600 remains planning/known-free-counter comparison bound, NOT campaign-wide runtime entry cap/reserve formula. ONLY explicit v2 policy+Btrfs0x9123683E+files0/ffree0+bytesPASS accepts uncertainty: freeEntries:null/entriesSufficient:null/entryCapacityVerified:false/policyAcceptedUnknownEntries:true/basis ACKNOWLEDGED_BTRFS_ZERO_COUNTERS. Other unknowns/known shortages fail. HOST dirname(root) before mkdir/GPU/Docker; v2-only worker /state AFTER input validation BEFORE corpus/factory/coordinator; parent recomputes all worker raw-counter admission fields and requires admitted+deep equality. V1 worker/lifetime unchanged.
+' current preservation/proof: P1=artifacts/training-functional/full-training-packet-1; P2=artifacts/training-functional/full-training-packet-2. All58 P1 files/old112 Git5b recoverability/2 worker+2 test archives remain unchanged. Separate original90-test archive SHA768182e11dfa08eeec0816a39bc6cfa066fe818f07b0c5d56e0589f7f1e25234 +test-harness-adjustment.json allow ONLY3 test-callsite arguments30000->60000 at252/260/300; fifth ROOT delta, still ONLY2 WORKER deltas, no assertion/runtime/physics change. New current pins include4 test helpers/package exports/local Zod-TS manifests; retain130/139 old pins with5 declared root deltas+4 spec exclusions, not all139 unchanged. All cohorts rerun FRESH/carried0; 600000 process cap is local evidence-cohort verification, not runtime600s inactivity. checks1 remains FAIL/sourcePinsMatch at issuance/53+13+2+38 PASS/3TSC-static-preservation PASS/evidence86PASS4 explicit wall-timeouts/no semantic assertion failures; no fresh90 PASS claimed.
+' current tooling/output: P2 assemble/verify-source/verify are implemented; prepare-metadata emitted ONLY plan/runtime/storage-assessment for the real packet, not final bound leaves. createPacketDirectory validates relative P2 scope/physical REPOSITORY/lstat non-symlink ancestor directories+realpath; ONLY P2 descendants mkdir nonrecursive0700, files wx0600, checks directory exclusive. Reject linked output ancestors before outside descendants; no OS/concurrent-attacker full-custody guarantee. Assembly-tests4 19PASS86assertions/lead-reported tooling-types4 PASS; P2/reviews-2.json pins16 code-test-tooling-metadata-README files/BOTH SOURCE READY/all4 findings CLOSED/no new findings, CONDITIONAL fresh full PASS+matching final pins, not execution authority. Review1/earlier tests remain historical; checks2/full PASS/final bind/assembly not claimed.
+' current receipt contract: validateSourceReceipt checks EXACT10 command/name/argv/timeout/exit0/stdout-stderr pins; reparses EACH5 cohort's single pass/fail/assertion/Ran-total footer with fail0 and reconciles aggregates/carried0/3TSC/static/Bun version/cohort paths. CLI rejects lone --bind. Current pin coverage includes executed check-specs.ts/ALL3 diagrams/root artifact *.ts/coordinator.test plus4 helpers/exports/local manifests; old130/139 +5root/4spec exclusions remain distinct. Only later checked source verification/actual assembly+verifier/final-verification/completion establish closeout; no promised future PASS/spec rewrite/self-hash cycle.
+' SOURCE closeout CONTRACT: established ONLY by checked current source/spec pins/ALL5 fresh test cohorts including90+38/carried0/no historical double-count/3strictTSC/static/P1 preservation/closed findings from BOTH reviews/actual assembler+verifier membership112/952/840/14roles4changed10same/9refs/ONLY2 worker deltas. Real verification/manifests/request/assembly/assembly-verification/final-verification/completion byte references must join actual evidence; these final leaves are not emitted at this issuance. Later checked records alone establish closeout; issued failed/pending leaves remain history. Archives/metadata helpers stay OUTSIDE worker112; retained dependency/reference pins are metadata, NOT current HOST payload/capacity/usability proof. P1 requestb322/completion2e15/original108+14/840deps/nineRefs/native history immutable.
+' current precedence: ALL older CURRENT/pending/false/LOCAL statements retain issuance scope. Preserve18d/<=12h/10min/600s/256GiBsoft/191396683776 estimator/264GiBmin/2CPU8GiB/no swap/GPU3-2GiB/F64-C12-tolerances/masters101..105/5000/ONE factory-coordinator/finalize-close/GPUv1/mainsOFF. Functional acceptance true/training unauthorized; fresh digest-bound FULL_FIVE_MASTER_TRAINING_NOT_GPUV1_EXTENSION execution approval still required. Conditional publication ONLY before a genuinely new required USER HOST verification command: ONE fresh normal commit/nonforce push existing feat-ml-adjuntant-ii/PR51/main; old5b grant spent/no amend-force-autoRetry-newPR/no fresh publication claim. ALL hardening LAST; no commands/agents/network/HOST/Git writes here; PlantUML SKIP, Java/remote theme outside Bun/TypeScript-or-Rust scope.
+' research: artifacts/training-functional/campaign-volume-preflight-1/returned-2/permissions-inode-research.json records official Btrfs dynamic inode allocation and Sterba's intentional-zero explanation; no fixed free-entry proof, metadata reserve formula or installed HOST-kernel attestation.
+' see: _spec/readiness.md#full-training-packet-2-2026-11-18
 ' HISTORICAL PACKET-PREPARATION ISSUANCE 2026-11-17: PUBLISHED_FUNCTIONAL_READINESS_SOURCE_ONLY_FULL_TRAINING_PACKET_PREPARATION. LOCAL qualification-result-1/publication-1/post-publication.json records PASS/HEAD=remote=existing PR51 head dad29306a83268aeed720b7e9b8311a6d9d941e1/feat-ml-adjuntant-ii/base main/normal commit1+nonforce push1/grant CONSUMED; no amend/second publication. Acceptance9207B/SHA832754f33b6d06dc45cb795ee92718c92a2b9bab1e84a743416f6f91d435f0c2 and historical completion/raw/runtime flags remain unchanged; technical readiness accepted, actual TrainingCampaign.run/finalize/full5000 NOT executed.
 ' current packet P=artifacts/training-functional/full-training-packet-1; P/plan.json records explicit SOURCE_ONLY 18-day envelope selection, NOT capacity confirmation/execution permission. Original monotonic origin BEFORE preflight fixes work18days/validation<=12h/cleanup10min; early validation never earns >12h. Writable256GiB SOFT/initial free264GiB/835600 free entries/600s without verified-attempt or validation progress; telemetry cannot reset inactivity. Fixed2CPU/8GiB/no extra swap/GPU3GiB admission2GiB running; actual HOST capacity and proposed delivery-input-run roots UNVERIFIED.
 ' current implementation goals: campaign-plan.ts pure projection/imports INERT; campaign-operator.ts wraps actual unchanged TrainingCampaign with ONE persistent coordinator+factory, CPU initialRecord101..105, forwarded verified progress not a replacement5000-loop; campaign owns finalize/close ONCE. checkpoint-runtime.puml owns lifetime semantics. campaign-evidence.ts runs AFTER close using read-only private.sqlite<=64MiB/sequential iterators/bounded per-attempt payloads, no qualification raw-trace or query array; validate exact5000/counters/history/model handoffs/global journal across masters/checkpoints/five VALID masters/primary101 and actual {experiment,ref}, including packet-49/attempt-final-artifacts/000015-experiment-proposal.bin. No native-score rescore, numerical proof promotion or new learning-quality thresholds.
@@ -218,7 +223,7 @@ participant "node:fs/promises\nstatfs + exact lstat only" as HMETA
 participant "campaign-volume-preflight-1/preflight.ts\ninert inspect; fixed HOST_VOLUME" as VINSPECT <<app>>
 participant "/var/lib/chess-coach/training-volume-1\nselected HOST leaf; not /mnt/training" as VOLUME <<host>>
 
-group Required selected-volume HOST metadata - fresh publication and USER inspection pending
+group Historical selected-volume metadata contract - published5b; returned USER report; not a repeat-query grant
   HLEAD ARROW_MAIN HRENDER : AFTER fresh checks +checked normal commit/nonforce PR51 push: V source/old context/actual OID
   HRENDER --> HLEAD : literal command; lead keeps LOCAL command/receipt outside its commit
   HLEAD ARROW_MAIN HUSER : ONE future HOST metadata command; no relocation or training command
@@ -331,6 +336,7 @@ actor "Future full-campaign operator\ntraining not approved; metadata handoff se
 participant "artifacts/training-functional/campaign-plan.ts\npure plan and original invocation" as CPLAN
 participant "artifacts/training-functional/campaign-operator.ts\nparent; ordinary owned-CID monitor" as CPARENT
 participant "artifacts/training-functional/campaign-operator.ts\nworker; forwarded verified progress" as CWORKER
+participant "artifacts/training-functional/campaign-operator.ts\ncampaignCapacity + assessCampaignStorage" as CSTORAGE <<app>>
 participant "packages/runtime/src/training-campaign.ts\nunchanged TrainingCampaign.run" as CCAMPAIGN
 participant "packages/runtime/src/training-coordinator.ts\nONE persistent full-campaign coordinator" as CCOORD
 participant "packages/runtime/src/fixed-attempt.ts\nONE full-campaign FixedAttemptFactory" as CFACTORY
@@ -339,8 +345,41 @@ database "bun:sqlite\nread-only private.sqlite AFTER campaign close" as CSQLITE
 
 actor "Local source preparer\nno HOST or execution permission" as CPREP
 participant "artifacts/training-functional/full-training-packet-1/assemble.ts\nlocal metadata only; OUTSIDE worker112" as CASSEMBLE
+participant "artifacts/training-functional/full-training-packet-2/preserve.ts\nold worker recoverability; OUTSIDE worker112" as CPRESERVE <<app>>
+participant "artifacts/training-functional/full-training-packet-2\nverify-source.ts / assemble.ts / verify.ts" as CPACKET2 <<app>>
 
-group Retained completed local packet assembly contract - SOURCE ONLY; not HOST preparation
+group Packet2 preservation boundary - baseline/check recorded; SOURCE closeout conditional
+  CPREP ARROW_MAIN CPRESERVE : BEFORE root edits: verify112 Git5b rows; archive2 worker+2 tests; pin58 P1 files
+  CPRESERVE --> CPREP : all P1 files unchanged; old112 recoverable from Git/archives, NOT all112 current live-unchanged
+end
+
+group Packet2 SOURCE closeout contract - implemented tooling is not acceptance
+  CPREP ARROW_MAIN CPRESERVE : every output/check directory: relative P2 scope +physical repository/ancestor lstat-realpath checks
+  CPRESERVE --> CPREP : ONLY P2 nonrecursive0700 directories; check root must be fresh; files wx0600; linked ancestors reject
+  CPREP ARROW_MAIN CPACKET2 : ALL5 cohorts fresh including90/38 +3 strict TSC/static/P1 preservation; no carried tests
+  CPACKET2 -> CPACKET2 : pin checker/ALL3 diagrams/root TS/coordinator tests/4helpers/exports/local manifests; old130/139 +5root/4spec
+  CPACKET2 -> CPACKET2 : validate EXACT10 name/argv/timeout/exit0/stream pins; CLI --bind requires label
+  CPACKET2 -> CPACKET2 : reparse5 unique stderr footers pass/fail/assertions/Ran; fail0; reconcile totals/carry0/3TSC/static/version/paths
+  alt fresh source receipt PASS and all pins still current
+    CPACKET2 -> CPACKET2 : exclusively bind verification.json; rehash all current pins BEFORE assembly writes
+    CPREP ARROW_MAIN CPACKET2 : actual assembly THEN assembled verification; no HOST preparation
+    CPACKET2 -> CPACKET2 : prove112/952/840/14roles4changed10same/9refs; ONLY2 worker deltas; original108+14 preserved
+    CPACKET2 --> CPREP : actual assembled-verifier result/manifests/request joins; HOST payload/capacity not attested
+    CPREP -> CPREP : accept closeout ONLY with BOTH reviews closed +checked final-verification/completion binding actual leaves
+  else source tests or current-pin checks fail or remain pending
+    CPACKET2 --> CPREP : closeout NOT established; keep issued failed/pending records; no overwrite or assumed PASS
+  end
+end
+
+note over CPRESERVE
+  Ancestor checks reject linked output paths
+  before new directories can escape the packet
+  boundary. These checks do not establish
+  protection against concurrent pathname
+  replacement by an attacker.
+end note
+
+group Retained packet1 assembly contract - historical issuance; not packet2 assembly or HOST preparation
   CPREP -> CASSEMBLE : local metadata invocation; no HOST/process/network calls
   CASSEMBLE -> CASSEMBLE : require verification PASS/sourcePinsMatch; rehash every current pin BEFORE writes
   CASSEMBLE -> CASSEMBLE : rehash immutable108 source +14 original document files locally
@@ -350,21 +389,45 @@ group Retained completed local packet assembly contract - SOURCE ONLY; not HOST 
   CASSEMBLE --> CPREP : assembly.json +completion.json record checked SOURCE success at issuance pins, not new spec pins
 end
 
-group Completed SOURCE-ONLY full-training packet contract - no approved or performed training
-  COP -> CPLAN : inert plan projection; selected18days/12h/10min, not HOST capacity or permission
-  CPLAN --> COP : request plan only; no execution approval; GPUv1 and mains unchanged
+group SOURCE v1/v2 campaign contract - packet2 closeout conditional; no approved or performed training
+  COP -> CPLAN : inert plan(defaultv1) or plan-v2; selected18days/12h/10min, not execution permission
+  CPLAN --> COP : default v1 EXACT P1; v2 explicit policy/new volume roots; CLI grants no approval
+  COP -> CPARENT : decode exact request v1-v2; reconstruct canonical plan; reject mixed/extra fields BEFORE approval/I/O
   alt matching future human request-SHA/full-five-master approval absent
     COP -> CPARENT : operational modes reject; CLI/readiness/budget cannot authorize execution
   else future exact request and FULL_FIVE_MASTER_TRAINING_NOT_GPUV1_EXTENSION approved
     COP -> CPARENT : original monotonic origin BEFORE preflight; fresh proposed roots, no adoption/retry
-    CPARENT -> CPARENT : verify112-code/14-role/9-reference/840-Zod bindings; free264GiB +835600 entries
-    CPARENT -> CPARENT : runtimeConfiguration budget/resources/limits + recipe.plan == approved request.plan
+    CPARENT -> CPARENT : verify112-code/14-role/9-reference/840-Zod bindings
+    CPARENT -> CPARENT : runtimeConfiguration budget/resources/limits + recipe.plan match; v2 also policy/root/mounts
+    CPARENT ARROW_MAIN CSTORAGE : HOST dirname(root) bigint statfs BEFORE mkdir/GPU/Docker; live bytes>=264GiB ALWAYS
+    alt live bytes pass and reported free entries>=835600
+      CSTORAGE --> CPARENT : admitted; entryCapacityVerified:true; basis REPORTED_FREE_ENTRIES
+    else live bytes pass AND v2 explicit BTRFS_DYNAMIC_ACKNOWLEDGED AND Btrfs magic AND files0/ffree0
+      CSTORAGE --> CPARENT : admitted; freeEntries:null/entriesSufficient:null; entryCapacityVerified:false
+      CSTORAGE --> CPARENT : policyAcceptedUnknownEntries:true; basis ACKNOWLEDGED_BTRFS_ZERO_COUNTERS
+    else bytes fail/unknown, other unknown entries, or known entry shortage
+      break reject storage admission before side effects
+        CSTORAGE --> CPARENT : not admitted; no mkdir/GPU/Docker/campaign owners
+      end
+    end
+note over CSTORAGE
+  Unknown entry counts remain unverified under
+  this explicit policy, never proved sufficient.
+  Live bytes must still meet the bound;
+  other unknown counts and shortages reject.
+end note
     CPARENT -> CPARENT : BEFORE create/start: open retained telemetry FD with O_EXCL|O_NOFOLLOW
     CPARENT -> CWORKER : ONE fixed pullnever/networknone container;2CPU/8GiB/no extra swap; RO inputs
     CPARENT -> CPARENT : GPU3GiB admission/2GiB running; compact telemetry via writeSync(retained FD) ONLY
     CPARENT -> CPARENT : 256GiB SOFT workspace;600s verified/validation inactivity; original outer cutoffs
     CPARENT -> CPARENT : ignore only transient child/nonroot ENOENT; missing root/permission errors fail
     CPARENT -> CPARENT : progress ctime-only exception: opened regular inode nlink0; same size/mtime/full bytes
+    CWORKER -> CWORKER : validate bound inputs; v2 policy/root/mounts must match runtime documents
+    opt v2 worker only; v1 worker unchanged
+      CWORKER ARROW_MAIN CSTORAGE : bigint capacity(/state) AFTER input validation, BEFORE corpus/factory/coordinator
+      CSTORAGE --> CWORKER : same admission/uncertainty fields; failed admission rejects before owners
+    end
+    CWORKER -> CWORKER : load corpus/strategic only after applicable storage admission
     CWORKER -> CFACTORY : construct ONE factory; retain same create callback throughout
     CWORKER -> CCOORD : construct ONE persistent coordinator; wrapper only forwards progress
     CWORKER -> CCAMPAIGN : run actual class ONCE; no replacement loop or shortened campaign
@@ -382,6 +445,10 @@ group Completed SOURCE-ONLY full-training packet contract - no approved or perfo
     CWORKER --> CPARENT : bounded worker result; failures preserve partial evidence without retry
     CPARENT -> CPARENT : inspect only owned CID under original cleanup cutoff
     CPARENT -> CPARENT : final report await cutoff=min(now+5000ms,originalEnd-6000ms); reserve CID removal
+    opt v2 worker report
+      CPARENT ARROW_MAIN CSTORAGE : parse raw decimal counters; recompute full expected worker admission
+      CSTORAGE --> CPARENT : require admitted AND deep equality of entire storageAdmission; never trust a claimed boolean
+    end
     CPARENT -> CPARENT : remove only owned CID before original end; outer deadline reserves10min cleanup
     CPARENT -> CPARENT : finally after CID cleanup: fsync/check telemetry inode identity; close FD even on failure
     CPARENT --> COP : retained result or partial failure; ordinary watchdog, not strict-stop assurance
@@ -585,8 +652,8 @@ end note
 ' publication freeze/staging contract: exact content manifest Q/cohort.json members bind path/classification/length/SHA256/Git blob/mode; THREE named controls Q/cohort.json,Q/paths.nul,Q/freeze-observation.json are outside recursive content-table/selfhash. paths.nul contains ALL content+THREE controls. Staged check requires exact NUL path-set/stage0 modes/raw Git blobs+SHA256 AND current live bytes for EVERY content/control member, with attrs rechecked. Whitespace ONLY SEVEN specs+TWO Q sources; never reformat pinned inputs/historical streams. Stage-check/post-freeze/post-publication receipts/actual committed pins/consumption/operator command stay OUTSIDE cohort/may remain untracked/NO second commit-amend-selfref.
 ' publication preflight CURRENT: lead reports all applicable filter/text/eol/working-tree-encoding UNSPECIFIED/core.hooksPath UNSET/named commit-push hooks ABSENT; exact staged cohort must recheck them. APPROVED bounded fixed-HTTPS ls-remote completed: Q/remote-preflight.stdout exact refs/heads/feat-ml-adjuntant-ii-continuation-2b24d9c5a at6fdc92c7eb90eb625e6d54c6a448009d5db34423/stderr0/exit0. This read-only Git publication query is NOT manual source API GET or operational attempt; source public access still UNVERIFIED/sourceGET0/manual grants UNUSED. Whole-cohort review/freeze/NUL staged-byte gate remains PENDING/NOT frozen-staged/index mutation0/commit0/push0/publication allowance UNUSED. No verified final total from prior DevOps report; no original-feature integration. Literal Fish delivery ONLY/no execution after actual checked publication; projection hands back to lead before freeze/no later spec edits in this pass.
 legend bottom
-  CURRENT: selected HOST /var/lib/chess-coach/training-volume-1 reported mounted at coding SBX /mnt/training; SBX metadata is NOT HOST capacity/failure/filesystem/SELinux proof or disk allocation. V reads ONLY fixed HOST leaf lstat then directory-only statfs; old plan is budget/request context, not probe targets. Raw BigInt counters/zero-zero entries UNKNOWN/true-false-null comparisons/283467841536B/835600 entries/cooperative2s-5s. Selected-volume HOST facts remain PENDING.
-  Fresh conditional normal commit1/nonforce push1 to existing feat-ml-adjuntant-ii/PR51/main precedes USER command; prior c60 grant stays spent/no amend-force-autoRetry-newPR. Frozen H1 renderer/P/worker112/request/completion/lifetime unchanged; fresh tests/strict TSC/static and supplemental pins pending, old pins remain issuance. ActualOID/command stay LOCAL outside commit. Metadata PASS proves no quota/reservation/write-search/container/SELinux/tool usability; no relocation/preparation/train, future relocation needs HOST facts+fresh immutable packet. Functional acceptance true/training unauthorized; all older CURRENT/pending/false/LOCAL labels retain issuance scope; ALL hardening LAST.
+  CURRENT 2026-11-18: post-research proceed approves SOURCE policy/tests/specs/fresh P2 only; earlier research was not approval. V2 explicit Btrfs files0/ffree0 policy accepts unknown entries without proving capacity; live264GiB byte checks remain mandatory. 835600 is planning/known-counter comparison, not a campaign-wide entry cap/reserve formula. HOST dirname(root) and v2 worker /state admit before owners; parent recomputes full worker admission. Default v1/worker/lifetime unchanged; request/CLI/runtime documents bind generation/policy/roots.
+  P1 all58/old112 recovery/2 worker+2 test archives unchanged; separate90-test archive adds fifth ROOT delta via ONLY3 local timeout arguments, not a worker delta or runtime600s bypass. Current guard130/139 +5root/4spec exclusions; ALL5 cohorts FRESH/carried0 with checker/ALL3 diagrams/root TS/coordinator tests/4helpers/exports/local manifests pinned. checks1 stays FAIL; assembler4 19PASS86assertions/BOTH SOURCE reviews READY/all4 findings CLOSED are conditional fresh full PASS+final pins, not final acceptance. Exact10 command/stream-pin checks +5 reparsed footer counts/aggregates precede binding. Closeout ONLY when checked current pins/3TSC/static/preservation/matching reviews/actual112-952-840-14-4-10-9 assembler+verifier and final byte-bound leaves agree; final bind/assembly leaves not emitted at issuance. Later checked records establish closeout without rewriting history/self-hash cycles. No HOST/preparation/train grant;0644/root-owned access decision follows SOURCE closeout; publication conditional only before necessary NEW HOST verification/no spent5b reuse; functional acceptance true/training unauthorized; ALL hardening LAST.
   CURRENT: Executor explicitly ACCEPTED the fixed functional inventory on retained two-attempt native qualification + preserved campaign source/test proof. Technical trainingReady:true; trainingExecutionAuthorized:false; fullAssuranceQualified:false.
   Fresh publication-1 grants ONE checked normal commit/non-force push, UNUSED at source issuance; old grants/facts retry stay spent. Checked publication precedes SOURCE_ONLY full-training packet preparation, budget UNSET; execution exclusions remain unchanged, with no training or second publication authorized. Older CURRENT/pending/PROSPECTIVE/no-authority/LOCAL-uncommitted/no-next-plan labels retain prior issuance scope; only a later checked LOCAL post-publication receipt supersedes publication/local status. Fresh verification pending; raw/runtime flags unchanged; no TrainingCampaign.run/finalize/5000 completion claim; hardening LAST after all planned training and validated results.
   CURRENT: QUALIFICATION_DELIVERY_SOURCE_VERIFIED_PUBLICATION_PENDING /SOURCE_ONLY/trainingReady:false. Bootstrap source2 102/2208/strict TSC+command7/35; delivery-2 ALL12PASS/920tests/3 types/SAME358 matching source pins per lead. Both review2 READY/no findings/security LOW/static-only close both permission findings; source1 bootstrap95/delivery1 913/review1 MEDIUM stay known-bug history. Completion conditions: final static ->checked final-verification with final static replacing old specs ->source/staged-byte freeze ->ONE normal existing-PR51 commit/push ->LOCAL post-publication/literal command outside commit. Written/checked conditional records supersede committed pending conditions; no selfref/amend/second commit. New commit1+push1 unconsumed at source acceptance/prior6a grant spent. Source3 worker108/14 documents/historical811/Git120s/preparation240s/separate operator800s/numerical contracts unchanged; no actual compatibility/HOST-native qualification/training readiness. ALL hardening follows ALL planned training+validated results.

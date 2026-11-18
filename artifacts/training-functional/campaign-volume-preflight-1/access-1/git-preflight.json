@@ -1,0 +1,59 @@
+{
+  "status": "PASS_FRESH_PUBLICATION_HEAD_BRANCH_CANONICAL_REMOTE_PR_EMPTY_INDEX_AND_HOOK_PREFLIGHT",
+  "baseCommit": "5b47be42b0378198750992b1547915b43f9cea99",
+  "localBranch": "integrate/starchess-ml-main",
+  "remoteUrl": "https://github.com/proveo-ca/chess-coach.git",
+  "pushUrl": "https://github.com/proveo-ca/chess-coach.git",
+  "targetRef": "refs/heads/feat-ml-adjuntant-ii",
+  "pullRequest": {
+    "baseRefName": "main",
+    "headRefName": "feat-ml-adjuntant-ii",
+    "headRefOid": "5b47be42b0378198750992b1547915b43f9cea99",
+    "state": "OPEN",
+    "url": "https://github.com/proveo-ca/chess-coach/pull/51"
+  },
+  "prEvidence": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/pr-preflight.stdout",
+    "byteLength": 188,
+    "sha256": "88b243ccbdd8a7f825e2071ab541115d84a81740980f3a3d41f8d5fa73ec81d4"
+  },
+  "remoteEvidence": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/remote-preflight.stdout",
+    "byteLength": 73,
+    "sha256": "26d296ac36a8076e3194df8864052a116c9a170ade8ccd9b82a470bdbd4a9b80"
+  },
+  "initialIndexEmpty": true,
+  "customHooksPath": "UNSET",
+  "namedCommitPushHooks": [
+    {
+      "name": "pre-commit",
+      "present": false
+    },
+    {
+      "name": "prepare-commit-msg",
+      "present": false
+    },
+    {
+      "name": "commit-msg",
+      "present": false
+    },
+    {
+      "name": "post-commit",
+      "present": false
+    },
+    {
+      "name": "pre-push",
+      "present": false
+    }
+  ],
+  "authorization": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/authorization.json",
+    "byteLength": 1938,
+    "sha256": "6ffeaffc0997691ddd023479a08f16a24d77353aaa5447655d520e9a9c704f60"
+  },
+  "priorAttempt": "GIT_PREFLIGHT_CHECK_FAILED_EXPECTED_HTTPS_STRING_BEFORE_ANY_GIT_WRITE_CANONICAL_EXISTING_GITHUB_SSH_NOW_EXPLICITLY_VALIDATED_WITHOUT_CONFIG_CHANGE",
+  "commitPerformed": false,
+  "pushPerformed": false,
+  "hostInspectionExecuted": false,
+  "trainingExecuted": false
+}

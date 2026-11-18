@@ -1,0 +1,60 @@
+{
+  "scope": "READ_ONLY_SOURCE_REVIEW_BEFORE_FINAL_VERIFICATION_AND_ASSEMBLY",
+  "adversarial": {
+    "session": "ses_e13cec8ceffeJawweBlY6Q7ARW",
+    "readyToMerge": false,
+    "findings": [
+      {
+        "severity": "MEDIUM",
+        "file": "artifacts/training-functional/full-training-packet-2/verify-source.ts",
+        "reviewedSnapshotLine": 79,
+        "finding": "Binding did not reconcile cohort counts or aggregate totals with retained stderr"
+      },
+      {
+        "severity": "MEDIUM",
+        "file": "artifacts/training-functional/full-training-packet-2/assemble.ts",
+        "reviewedSnapshotLine": 23,
+        "finding": "Verification coverage omitted the executed static checker and qualification-bootstrap diagram"
+      },
+      {
+        "severity": "MEDIUM",
+        "file": "artifacts/training-functional/full-training-packet-2/preserve.ts",
+        "reviewedSnapshotLine": 35,
+        "finding": "Recursive output-parent creation followed symlinked ancestors outside packet2"
+      },
+      {
+        "severity": "LOW",
+        "file": "artifacts/training-functional/full-training-packet-2/verify-source.ts",
+        "reviewedSnapshotLine": 95,
+        "finding": "A lone bind flag could coerce a missing label to the string undefined"
+      }
+    ]
+  },
+  "security": {
+    "session": "ses_e13cec8cdffeMey2qinnF3eDQ6",
+    "readyToMerge": false,
+    "findings": [
+      {
+        "severity": "MEDIUM",
+        "category": "CWE-59",
+        "file": "artifacts/training-functional/full-training-packet-2/preserve.ts",
+        "reviewedSnapshotLines": "33-36",
+        "finding": "Symlinked output ancestors could redirect creation outside packet2 despite exclusive writes"
+      }
+    ]
+  },
+  "firstSecurityRereview": {
+    "readyForSourceOnlyConditionalFreshPassAndFinalPins": true,
+    "ancestorFindingClosed": true,
+    "newFindings": [],
+    "laterReceiptBindingAndCoverageEditsRequireFinalRereview": true
+  },
+  "firstFreshVerification": {
+    "path": "artifacts/training-functional/full-training-packet-2/checks-1/receipt.json",
+    "status": "FAIL_FOUR_SYNTHETIC_TEST_TIMEOUTS_RETAINED_NOT_SUPERSEDED_BY_SOURCE_REVIEW"
+  },
+  "finalSourceReviewAndFreshVerificationRequired": true,
+  "hostPreparationExecuted": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false
+}

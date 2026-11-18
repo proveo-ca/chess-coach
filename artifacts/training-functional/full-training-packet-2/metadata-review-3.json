@@ -1,0 +1,56 @@
+{
+  "status": "READY_TO_HANDOFF_SOURCE_ONLY_FINAL_RECEIPT_ACCEPTED_COMPLETION_MAY_BIND_EXISTING_BYTES",
+  "initialReviewStatus": "READY_CONDITIONAL_MATCHING_CLOSEOUT_RECORDS_AND_FINAL_PINS",
+  "reviewer": "devops",
+  "session": "ses_e1497c1edffeVxf6tFoIjlUzz0",
+  "scope": "RECEIPT_BASED_ASSEMBLED_PACKET_AND_HANDOFF_REVIEW_NO_COMMANDS_RERUN",
+  "readyToHandoffSourceOnly": true,
+  "findings": [],
+  "sourceEditsRequested": false,
+  "finalReceiptAssessment": {
+    "freshPassAndFinalPinConditionsDischarged": true,
+    "checkedSourcePins": 199,
+    "checkedReviewPins": 16,
+    "finalVerification": {
+      "path": "artifacts/training-functional/full-training-packet-2/final-verification.json",
+      "byteLength": 3636,
+      "sha256": "0237fc5a0dfb5a01ba882d579a8f562e085e6a722c043edd5734339a76daea94"
+    },
+    "noFurtherSourceWorkRequested": true
+  },
+  "reviewedRequest": {
+    "path": "artifacts/training-functional/full-training-packet-2/request.json",
+    "byteLength": 7712,
+    "sha256": "70ba4aadc079cab314cf9dd6f4dc2354ab3c1739e035131b1b067302241b0322"
+  },
+  "reviewedCounts": {
+    "freshTests": 202,
+    "assertions": 47342,
+    "failures": 0,
+    "strictTypechecks": 3,
+    "executionFiles": 112,
+    "physicalRows": 952,
+    "dependencyRows": 840,
+    "bindingRoles": 14,
+    "replacedRoles": 4,
+    "unchangedRoles": 10,
+    "referenceRows": 9
+  },
+  "conditions": [
+    "CHECKED_FINAL_VERIFICATION_AND_COMPLETION_BIND_EXISTING_ASSEMBLED_ARTIFACTS_AND_REVIEW_PINS",
+    "FINAL_SOURCE_SPEC_AND_BOUND_ARTIFACT_PINS_REMAIN_UNCHANGED",
+    "EXCLUDE_SCRATCH_AND_GENERATED_FIXTURES_FROM_ANY_EVENTUAL_PUBLICATION_COHORT"
+  ],
+  "nextBoundary": "SEPARATE_HOST_DIRECTORY_SEARCH_OWNERSHIP_AND_RETAINED_INPUT_TOOL_METADATA_DECISION_NOT_IDENTICAL_INODE_QUERY",
+  "hostCapacityReservationOrUsabilityAttested": false,
+  "directoryUsabilityVerified": false,
+  "selinuxCompatibilityVerified": false,
+  "nativePlantUmlRendered": false,
+  "hostPreparationAuthorized": false,
+  "permissionOrSelinuxRepairAuthorized": false,
+  "trainingExecutionAuthorized": false,
+  "publicationAuthorized": false,
+  "hostPreparationExecuted": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false
+}

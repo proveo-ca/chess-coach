@@ -2,7 +2,7 @@
 import { expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { campaignInvocation, campaignPlan, checkCampaignApproval, checkCampaignBudget, checkCampaignInvocation,
-  extendCampaignSource, CAMPAIGN_ADDITIONS, FULL_CAMPAIGN_SCOPE, SELECTED_CAMPAIGN_BUDGET } from "./campaign-plan";
+  extendCampaignSource, CAMPAIGN_ADDITIONS, CAMPAIGN_PACKET, CAMPAIGN_PACKET_V2, CAMPAIGN_STORAGE_ROOT, FULL_CAMPAIGN_SCOPE, SELECTED_CAMPAIGN_BUDGET } from "./campaign-plan";
 import type { CampaignApproval } from "./campaign-plan";
 
 test("selected 18-day envelope is explicit, inert and separate from occupied qualification roots", () => {
@@ -14,6 +14,28 @@ test("selected 18-day envelope is explicit, inert and separate from occupied qua
   expect(plan.limits!.queryCapacity).toBeGreaterThan(401); expect(plan.root).not.toContain("qualification");
   expect(plan.mounts.filter(m => !m.readonly).every(m => m.source.startsWith(plan.root + "/"))).toBe(true);
   expect(plan.mounts.some(m => m.source.includes("full1"))).toBe(false); expect(plan.ordinaryGpuMains).toBe("UNCHANGED_OFF");
+});
+test("default generation remains exactly the immutable packet1 plan", () => {
+  const retained = JSON.parse(readFileSync(new URL("./full-training-packet-1/plan.json", import.meta.url), "utf8")).plan;
+  expect(campaignPlan(SELECTED_CAMPAIGN_BUDGET)).toEqual(retained);
+  expect(campaignPlan(SELECTED_CAMPAIGN_BUDGET, 1)).toEqual(retained);
+  expect("entryPolicy" in campaignPlan(SELECTED_CAMPAIGN_BUDGET)).toBe(false);
+  expect(CAMPAIGN_PACKET).toBe("artifacts/training-functional/full-training-packet-1");
+  expect(CAMPAIGN_PACKET_V2).toBe("artifacts/training-functional/full-training-packet-2");
+});
+test("generation2 binds only the selected HOST volume and acknowledged dynamic-counter policy", () => {
+  const old = campaignPlan(SELECTED_CAMPAIGN_BUDGET), plan = campaignPlan(SELECTED_CAMPAIGN_BUDGET, 2);
+  expect(plan.version).toBe("chess-coach.training-campaign-plan.v2");
+  expect("entryPolicy" in plan && plan.entryPolicy).toBe("BTRFS_DYNAMIC_ACKNOWLEDGED");
+  expect([plan.delivery, plan.inputs, plan.root]).toEqual(["training-campaign-delivery-2", "training-campaign-inputs-2", "training-campaign-2"].map(name => `${CAMPAIGN_STORAGE_ROOT}/${name}`));
+  expect(plan.mounts.filter(m => !m.readonly).every(m => m.source.startsWith(plan.root + "/"))).toBe(true);
+  expect(plan.mounts.filter(m => m.source.includes("/cache/"))).toEqual(old.mounts.filter(m => m.source.includes("/cache/")));
+  expect(plan.retainedPreparedInputs).toBe(old.retainedPreparedInputs); expect(plan.budget).toEqual(old.budget);
+  expect(plan.resources).toEqual(old.resources); expect(plan.numeric).toEqual(old.numeric); expect(plan.campaign).toEqual(old.campaign);
+  expect(plan.storageAdmission).toEqual(old.storageAdmission); expect(plan.storageAdmission.requiredFreeEntries).toBe(835600);
+  expect(plan.storageAdmission.requiredUsableBytes).toBe(191396683776); expect(plan.trainingExecutionAuthorized).toBe(false);
+  expect(JSON.stringify(plan)).not.toContain("/mnt/training");
+  expect(() => campaignPlan(SELECTED_CAMPAIGN_BUDGET, 3 as 1)).toThrow("CAMPAIGN_GENERATION");
 });
 test("an unset budget cannot produce invocation deadlines", () => {
   const plan = campaignPlan(null); expect(plan.budget).toBeNull(); expect(plan.limits).toBeNull();

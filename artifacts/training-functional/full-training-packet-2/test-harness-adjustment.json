@@ -1,0 +1,34 @@
+{
+  "status": "PASS_EXACT_THREE_SYNTHETIC_TEST_TIMEOUT_ARGUMENT_DELTAS_ONLY",
+  "original": {
+    "path": "artifacts/training-functional/full-training-packet-2/preserved-test-harness/campaign-evidence.test.ts.source",
+    "byteLength": 41369,
+    "sha256": "768182e11dfa08eeec0816a39bc6cfa066fe818f07b0c5d56e0589f7f1e25234"
+  },
+  "current": {
+    "path": "artifacts/training-functional/campaign-evidence.test.ts",
+    "byteLength": 41369,
+    "sha256": "afe57ffa68eb1708df901ad7c0ca2697d66fcf1f31d54f8160fa90e0146df5ec"
+  },
+  "changes": [
+    {
+      "line": 252,
+      "before": "}, 30000);",
+      "after": "}, 60000);"
+    },
+    {
+      "line": 260,
+      "before": "test(\"close failure overturns an otherwise successful result\", () => { fail({ throwClose: true }, \"close:SYNTHETIC_CLOSE_FAILURE\"); }, 30000);",
+      "after": "test(\"close failure overturns an otherwise successful result\", () => { fail({ throwClose: true }, \"close:SYNTHETIC_CLOSE_FAILURE\"); }, 60000);"
+    },
+    {
+      "line": 300,
+      "before": "] satisfies [string, Options, string][]) test(`rejects ${name}`, () => { fail(options, code); }, 30000);",
+      "after": "] satisfies [string, Options, string][]) test(`rejects ${name}`, () => { fail(options, code); }, 60000);"
+    }
+  ],
+  "assertionBodiesChanged": false,
+  "runtimeSourceChanged": false,
+  "campaignRuntimeLimitsChanged": false,
+  "nativeOrHostOperationsExecuted": false
+}

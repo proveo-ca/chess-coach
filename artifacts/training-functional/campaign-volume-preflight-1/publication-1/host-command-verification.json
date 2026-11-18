@@ -1,0 +1,32 @@
+{
+  "status": "PASS_CHECKED_OID_RAW_AND_READABLE_COMMAND_SYNTAX_AND_EXACT_INTERPRETER_ARGV",
+  "publicationCommit": "5b47be42b0378198750992b1547915b43f9cea99",
+  "rawCommand": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/publication-1/HOST-command.sh",
+    "byteLength": 5904,
+    "sha256": "c008c1a16825003144313d9a117318931f4b610f5a267165c9dd81ad2e65dade"
+  },
+  "readableCommand": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/publication-1/HOST-command-readable.sh",
+    "byteLength": 5912,
+    "sha256": "7464bbc5bd8d91d29b28409950a18ad0a138859ab9b9c353fecf5f618841c213"
+  },
+  "source": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/preflight.ts",
+    "byteLength": 5916,
+    "sha256": "722595e63962f0321fe83594a40f516d89660062bc7045047df29e737553f240"
+  },
+  "renderer": {
+    "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+    "byteLength": 4355,
+    "sha256": "faf0c74bf328a0e2b67cbbb070caeb396ea3f17d7d2435d81c8f7bcc8de0ef69"
+  },
+  "planSha256": "ecb0990ccd3c9e76a57385b14c075150e37d6f5df423f62103139ff15562e0c1",
+  "actualHostTarget": "/var/lib/chess-coach/training-volume-1",
+  "maximumRenderedLineBytes": 1201,
+  "captureMethod": "REPOSITORY_LOCAL_EXECUTABLE_REPLACES_ONLY_B_ASSIGNMENT_NEVER_EVALUATES_INSPECTOR_PROGRAM",
+  "capturedArgumentBytesSha256": "5ea932bd60b1a0e0daeb98f8ce7b4afb1daa8f3c4acf01fa3c7b4138fa926cb2",
+  "actualHostCommandExecuted": false,
+  "hostFactsCollected": false,
+  "trainingExecuted": false
+}

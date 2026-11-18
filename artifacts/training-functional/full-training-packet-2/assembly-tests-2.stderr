@@ -1,0 +1,20 @@
+
+artifacts/training-functional/full-training-packet-2/assemble.test.ts:
+(pass) source-only metadata retains the observation, explicit uncertainty and separate access boundary [2.02ms]
+(pass) assembly extends exactly 108 execution rows and retains 840 dependency rows and nine references [63.19ms]
+(pass) assembly replaces four binding roles and preserves the other ten role payloads byte-for-byte [47.34ms]
+(pass) assembled v2 request joins all four current byte references without granting execution [39.06ms]
+(pass) verification rejects missing, duplicate, reordered and extra source coverage before writes [35.28ms]
+(pass) verification rejects failed status, unequal before/after pins and current source drift [35.88ms]
+(pass) assembly rejects mutated qualification members even under newly matching verification pins [20.07ms]
+(pass) assembly rejects unbound v2 recipe and runtime policy mutations [60.31ms]
+(pass) repeat assembly uses exclusive writes and cannot overwrite an assembled generation [54.10ms]
+(pass) the local writer enforces packet2 scope and rejects existing files without truncation [2.38ms]
+(pass) bounded assembly IO rejects traversal, absolute paths, malformed UTF8 and oversized input [15.51ms]
+(pass) assembled verification proves exactly two worker deltas and preserves packet1 [634.23ms]
+(pass) assembled verification rejects mutated request joins and physical row metadata [1703.09ms]
+
+ 13 pass
+ 0 fail
+ 58 expect() calls
+Ran 13 tests across 1 file. [3.25s]

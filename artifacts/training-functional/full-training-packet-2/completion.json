@@ -1,0 +1,356 @@
+{
+  "status": "UPGRADE_COMPLETE_SOURCE_ONLY_BTRFS_V2_FULL_TRAINING_PACKET",
+  "scope": "PREPARED_ASSEMBLED_REVIEWED_AND_VERIFIED_LOCAL_SOURCE_METADATA_NOT_HOST_PREPARATION_OR_TRAINING",
+  "date": "2026-11-18",
+  "packet": {
+    "path": "artifacts/training-functional/full-training-packet-2",
+    "status": "LOCAL_UNCOMMITTED_UNPUBLISHED",
+    "request": {
+      "path": "artifacts/training-functional/full-training-packet-2/request.json",
+      "byteLength": 7712,
+      "sha256": "70ba4aadc079cab314cf9dd6f4dc2354ab3c1739e035131b1b067302241b0322"
+    },
+    "sourceManifest": {
+      "path": "artifacts/training-functional/full-training-packet-2/source-manifest.json",
+      "byteLength": 20642,
+      "sha256": "bb19b82535c418b3dd682ec914771fbccff424b797721d19f749629edd255bca"
+    },
+    "bindingDocuments": {
+      "path": "artifacts/training-functional/full-training-packet-2/binding-documents.json",
+      "byteLength": 5007,
+      "sha256": "b5e76b4e9b86d5dc31ee9a36fc20b6e62f53979b057ed3813d0ca50cf3c1b7fb"
+    },
+    "inputManifest": {
+      "path": "artifacts/training-functional/full-training-packet-2/input-manifest.json",
+      "byteLength": 178219,
+      "sha256": "bcd6fc92a4a72fedba89a400d1abe4c419e53bd38fac76b84ddb0681cb47486e"
+    },
+    "plan": {
+      "path": "artifacts/training-functional/full-training-packet-2/plan.json",
+      "byteLength": 7954,
+      "sha256": "c600b9111725bf7510b07081c09208c6658972832b1e65d77f900655b119d2cc"
+    },
+    "runtimeConfiguration": {
+      "path": "artifacts/training-functional/full-training-packet-2/runtime-configuration.json",
+      "byteLength": 5298,
+      "sha256": "5dd6bfb8c7561a8fce55c8da1d8e6ea87232e035fe5ef134341cfc96c26f6415"
+    },
+    "storageAssessment": {
+      "path": "artifacts/training-functional/full-training-packet-2/storage-assessment.json",
+      "byteLength": 1689,
+      "sha256": "5741e7e56cd18daf014556570bb27fcbfbe8d1b5b7780343905c30fe492c545b"
+    }
+  },
+  "sourceVerification": {
+    "path": "artifacts/training-functional/full-training-packet-2/verification.json",
+    "byteLength": 104975,
+    "sha256": "515f293ddd351dd434d2a2b656c8e0b8d64f5bb52ceb0dc9f1656ad5ec4b85bb"
+  },
+  "finalVerification": {
+    "path": "artifacts/training-functional/full-training-packet-2/final-verification.json",
+    "byteLength": 3636,
+    "sha256": "0237fc5a0dfb5a01ba882d579a8f562e085e6a722c043edd5734339a76daea94"
+  },
+  "assembly": {
+    "path": "artifacts/training-functional/full-training-packet-2/assembly.json",
+    "byteLength": 1487,
+    "sha256": "cc54621e7ecaa71b421a0a6a69829d04d9369a7c41b1f18f4838be695dc34b07"
+  },
+  "assemblyVerification": {
+    "path": "artifacts/training-functional/full-training-packet-2/assembly-verification.json",
+    "byteLength": 1785,
+    "sha256": "0cf282773e45d993d15770d84d674dc800891f47bb6e78ebc10d04b25f48c5cc"
+  },
+  "sourceReviews": {
+    "path": "artifacts/training-functional/full-training-packet-2/reviews-2.json",
+    "byteLength": 4358,
+    "sha256": "26f87f6860bcf2f27b255be439b663b930794de0d8a4ef04284662b92cf20adc"
+  },
+  "metadataReview": {
+    "path": "artifacts/training-functional/full-training-packet-2/metadata-review-3.json",
+    "byteLength": 2197,
+    "sha256": "7f29cbb0e085cf46cc2fb56bc5d0844b8480c353c38b7d662a0d60e917735b99"
+  },
+  "preservation": {
+    "path": "artifacts/training-functional/full-training-packet-2/preservation.json",
+    "byteLength": 48445,
+    "sha256": "d536aa12267d6722e2a742947400276a461f055c065dc0c674df6382f32038f3"
+  },
+  "testHarnessPreservation": {
+    "path": "artifacts/training-functional/full-training-packet-2/test-harness-preservation.json",
+    "byteLength": 1389,
+    "sha256": "53f14edd73017fc85a75aab0b941886d8c564ee3102a3512d6147d0bdd2d0739"
+  },
+  "exactTestHarnessAdjustment": {
+    "path": "artifacts/training-functional/full-training-packet-2/test-harness-adjustment.json",
+    "byteLength": 1428,
+    "sha256": "29e42f5dff3ddf5102cd4e404d9148405aba114b995598d1cae8167696bc0db0"
+  },
+  "documentation": {
+    "path": "artifacts/training-functional/full-training-packet-2/README.md",
+    "byteLength": 7231,
+    "sha256": "fc79823422cb1623f06e68802ab638a12afce39551fc85274d851724123c2dde"
+  },
+  "tests": [
+    {
+      "paths": [
+        "artifacts/training-functional/campaign-plan.test.ts",
+        "artifacts/training-functional/campaign-operator.e2e.test.ts"
+      ],
+      "count": 53,
+      "assertions": 1050,
+      "generation": "checks-2",
+      "fresh": true,
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/policy-tests.stderr",
+        "byteLength": 5142,
+        "sha256": "0f8bcbdf132f4822ae26a00f75788c612114a081ed8d71ad09b9735246710bc3"
+      }
+    },
+    {
+      "paths": [
+        "artifacts/training-functional/full-training-packet-2/assemble.test.ts"
+      ],
+      "count": 19,
+      "assertions": 86,
+      "generation": "checks-2",
+      "fresh": true,
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/assembly-tests.stderr",
+        "byteLength": 2094,
+        "sha256": "eaed467068be85b9b508fe8c160431a3366902aac0dbf49ef6055fddbce4ef6f"
+      }
+    },
+    {
+      "paths": [
+        "packages/runtime/tests/storage-bounds.test.ts"
+      ],
+      "count": 2,
+      "assertions": 11,
+      "generation": "checks-2",
+      "fresh": true,
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/storage-tests.stderr",
+        "byteLength": 361,
+        "sha256": "ffb9a068a7000c00e4ccb0f370a07a773bf03bbbe57b055723801bcff22451a8"
+      }
+    },
+    {
+      "paths": [
+        "artifacts/training-functional/campaign-evidence.test.ts"
+      ],
+      "count": 90,
+      "assertions": 978,
+      "generation": "checks-2",
+      "fresh": true,
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/evidence-tests.stderr",
+        "byteLength": 5359,
+        "sha256": "81a0677be47aad7efee3ad230b79bfbd2a1e2b6e4714112801689dab19753f2a"
+      }
+    },
+    {
+      "paths": [
+        "packages/runtime/tests/training-campaign.test.ts"
+      ],
+      "count": 38,
+      "assertions": 45217,
+      "generation": "checks-2",
+      "fresh": true,
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/campaign-tests.stderr",
+        "byteLength": 3661,
+        "sha256": "a992665b9a8e7963d32d7f04ce450685059cf36d21b1bc87553ede8660863615"
+      }
+    }
+  ],
+  "testFiles": [
+    {
+      "path": "artifacts/training-functional/campaign-plan.test.ts",
+      "byteLength": 6558,
+      "sha256": "1078dbbc43de0bbe0513533c04f62d5c5ebb5c4c96f1e87221deb9ffddec1b62",
+      "purpose": "Exact legacy v1 preservation and selected v2 envelope"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-operator.e2e.test.ts",
+      "byteLength": 37599,
+      "sha256": "76a182c1a071ec3e48eca0f053ba39ebb8cdc8ebd26bcbfae5c7c81515f8f095",
+      "purpose": "MOCK serial campaign ownership, HOST and worker admission, approval and deadline regressions"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/assemble.test.ts",
+      "byteLength": 16953,
+      "sha256": "273923cc3ff83894d54f4a7157f9c152c178016c54abd23a234976e30720eaa5",
+      "purpose": "Assembly, receipt reconciliation, exact coverage, mutation rejection, physical confinement and exclusive writes"
+    },
+    {
+      "path": "packages/runtime/tests/storage-bounds.test.ts",
+      "byteLength": 1562,
+      "sha256": "21c3318761932fd8d2a53eafe8ddd01a51709ba4052dc25dd8270001c4a25176",
+      "purpose": "Unchanged estimator, planning entry bound and packet ceilings"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-evidence.test.ts",
+      "byteLength": 41369,
+      "sha256": "afe57ffa68eb1708df901ad7c0ca2697d66fcf1f31d54f8160fa90e0146df5ec",
+      "purpose": "Fresh synthetic retained-result readback, tamper rejection and bounded repository-local SQLite capacity"
+    },
+    {
+      "path": "packages/runtime/tests/training-campaign.test.ts",
+      "byteLength": 20952,
+      "sha256": "4fa9a7717e9ec4436b0bfc4989d8e1de75655dc1944a382bf832444ffe7c91be",
+      "purpose": "Fresh persistent serial campaign lifetime, final validity, one finalization and one close"
+    }
+  ],
+  "freshTestCount": 202,
+  "assertions": 47342,
+  "strictTypechecks": 3,
+  "carriedTestCount": 0,
+  "historicalTestsDoubleCounted": false,
+  "checkedSourcePins": 199,
+  "sourceAndReviewPinsMatch": true,
+  "allFourSourceReviewFindingsClosed": true,
+  "metadataFindings": [],
+  "specs": [
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 162528,
+      "sha256": "64bce2cfb13d6fc251ff39abdad4f0e570fcfb9822e8b2951843630e2c90ab73"
+    },
+    {
+      "path": "_spec/checkpoint-runtime.puml",
+      "byteLength": 17649,
+      "sha256": "7e7df6d8b20586c3319689f44b59c3db64bb910fce05afc50d1933d0acecef79"
+    }
+  ],
+  "staticSpecsPassed": true,
+  "nativePlantUmlRendered": false,
+  "nativePlantUmlSkipReason": "Java and remote-theme access remain outside Bun/TypeScript-or-Rust scope",
+  "executionFiles": 112,
+  "physicalSourceRows": 952,
+  "retainedDependencyRows": 840,
+  "bindingRoles": 14,
+  "replacedBindingRoles": 4,
+  "unchangedBindingRoles": 10,
+  "referenceRows": 9,
+  "workerDeltas": [
+    {
+      "path": "artifacts/training-functional/campaign-operator.ts",
+      "byteLength": 37004,
+      "sha256": "6c2ed0ff6ac81b016b7b03fac50738c1141a62dd17d547596404974e6a578e2d"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-plan.ts",
+      "byteLength": 8366,
+      "sha256": "cb8ca484bc452b91ce4cf874d159367285d59d8a4b30c35e86da1cac35e88118"
+    }
+  ],
+  "declaredRootDeltas": [
+    {
+      "path": "artifacts/training-functional/campaign-plan.ts",
+      "byteLength": 8366,
+      "sha256": "cb8ca484bc452b91ce4cf874d159367285d59d8a4b30c35e86da1cac35e88118"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-operator.ts",
+      "byteLength": 37004,
+      "sha256": "6c2ed0ff6ac81b016b7b03fac50738c1141a62dd17d547596404974e6a578e2d"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-plan.test.ts",
+      "byteLength": 6558,
+      "sha256": "1078dbbc43de0bbe0513533c04f62d5c5ebb5c4c96f1e87221deb9ffddec1b62"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-operator.e2e.test.ts",
+      "byteLength": 37599,
+      "sha256": "76a182c1a071ec3e48eca0f053ba39ebb8cdc8ebd26bcbfae5c7c81515f8f095"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-evidence.test.ts",
+      "byteLength": 41369,
+      "sha256": "afe57ffa68eb1708df901ad7c0ca2697d66fcf1f31d54f8160fa90e0146df5ec"
+    }
+  ],
+  "unchangedPriorSourcePins": 130,
+  "priorPinCount": 139,
+  "unchangedPacket1Files": 58,
+  "oldWorkerMembersRecoverable": 112,
+  "selectedBudget": {
+    "workMs": 1555200000,
+    "validationMs": 43200000,
+    "cleanupMs": 600000,
+    "inactivityMs": 600000,
+    "workspaceBytes": 274877906944,
+    "minimumFreeBytes": 283467841536
+  },
+  "resources": {
+    "cpus": 2,
+    "memoryBytes": 8589934592,
+    "swapBytes": 0,
+    "gpuAdmissionMiB": 3072,
+    "gpuRunningMiB": 2048
+  },
+  "numeric": {
+    "precision": "F64",
+    "finiteDifferenceCoordinates": 4670,
+    "eps": 0.000001,
+    "atol": 1e-8,
+    "rtol": 0.00001,
+    "c12": "DISTINCT_ASSERTIONS_UNCHANGED"
+  },
+  "campaign": {
+    "masters": [
+      101,
+      102,
+      103,
+      104,
+      105
+    ],
+    "verifiedPerMaster": 1000,
+    "attempts": 5000,
+    "coordinators": 1,
+    "factories": 1,
+    "finalizations": 1,
+    "closes": 1,
+    "primaryMaster": 101
+  },
+  "storagePolicy": {
+    "entryPolicy": "BTRFS_DYNAMIC_ACKNOWLEDGED",
+    "retainedAvailableBytesForPlanning": "386035548160",
+    "requiredLiveUsableBytes": "283467841536",
+    "freeEntries": null,
+    "entriesSufficient": null,
+    "entryCapacityVerified": false,
+    "policyAcceptedUnknownEntriesForRetainedReport": true,
+    "runtimeByteChecksRetained": true,
+    "hostBytesReserved": false,
+    "entryAllocationGuaranteed": false,
+    "entryPlanningBoundIsGlobalRuntimeCap": false
+  },
+  "sourceControl": {
+    "localHead": "5b47be42b0378198750992b1547915b43f9cea99",
+    "localBranch": "integrate/starchess-ml-main",
+    "targetBranch": "feat-ml-adjuntant-ii",
+    "pullRequest": "https://github.com/proveo-ca/chess-coach/pull/51",
+    "baseBranch": "main",
+    "newCommitOrPushPerformed": false,
+    "currentRemoteQueried": false,
+    "priorPublicationGrantsReusable": false
+  },
+  "nextDecision": "CURRENT_EXPLICIT_PUBLICATION_AND_NEW_READ_ONLY_HOST_ACCESS_ROOT_ABSENCE_RETAINED_INPUT_TOOL_METADATA_SCOPE_OR_HOLD_NO_IDENTICAL_INODE_QUERY",
+  "directoryUsabilityVerified": false,
+  "selinuxCompatibilityVerified": false,
+  "retainedHostPayloadsAfterCleanupReverified": false,
+  "rootsHostChecked": false,
+  "hostPreparationExecuted": false,
+  "permissionOrSelinuxRepairAuthorized": false,
+  "nativeGpuContainerOrHostOperationsExecuted": false,
+  "trainingExecuted": false,
+  "plannedFullCampaignExecuted": false,
+  "trainingExecutionAuthorized": false,
+  "fullAssuranceQualified": false,
+  "deferredHardening": "AFTER_ALL_PLANNED_TRAINING_AND_VALIDATED_RESULTS",
+  "publicationPerformed": false,
+  "publicationAuthorized": false
+}

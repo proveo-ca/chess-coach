@@ -1,0 +1,22 @@
+{
+  "status": "EXECUTOR_REPORTED_HOST_SPACE_FREED_AND_REQUESTED_METADATA_RECHECK",
+  "origin": "EXECUTOR_TYPED_STORAGE_DECISION_RESPONSE",
+  "message": "i just freed space in the host; ready to try again",
+  "hostPath": "/var/lib/chess-coach/training-volume-1",
+  "cleanupTargetsReported": false,
+  "reportedCleanupIndependentlyVerified": false,
+  "retainedHostToolsOrArtifactsAfterUserCleanupReverified": false,
+  "requestedRecheck": "EXACT_UNCHANGED_ALREADY_PUBLISHED_SELECTED_VOLUME_METADATA_PAYLOAD",
+  "payloadPublicationCommit": "5b47be42b0378198750992b1547915b43f9cea99",
+  "payloadSourceSha256": "722595e63962f0321fe83594a40f516d89660062bc7045047df29e737553f240",
+  "automaticOperationalRetry": false,
+  "priorPublicationGrantRenewed": false,
+  "newPublicationPerformed": false,
+  "additionalCleanupAuthorized": false,
+  "permissionRepairAuthorized": false,
+  "selinuxChangesAuthorized": false,
+  "admissionRulesChanged": false,
+  "hostCommandsExecutedByAgent": false,
+  "trainingExecutionAuthorized": false,
+  "trainingExecuted": false
+}

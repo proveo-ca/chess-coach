@@ -1,0 +1,152 @@
+{
+  "status": "PASS_LOCAL_INTAKE_VALIDATION_BYTE_ADMISSION_PASSES_ENTRY_CONTRACT_DECISION_PENDING",
+  "scope": "USER_PASTED_JSON_NOT_RAW_HOST_CAPTURE_OR_INDEPENDENT_ATTESTATION",
+  "provenance": {
+    "origin": "EXPLICIT_USER_REQUESTED_RECHECK_AFTER_REPORTED_HOST_CLEANUP_JSON_SAVED_WITH_FINAL_LF",
+    "userReport": {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/user-report.json",
+      "byteLength": 1311,
+      "sha256": "ae2b7fc871bbcfb898b677b59689ea99b8519910b4afea9931f65bd469ee57e4"
+    },
+    "source": {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/intake.ts",
+      "byteLength": 8273,
+      "sha256": "3489a84a1a14d2f95baf2208ce37c8462468e281608580b0d326661d45829b16"
+    },
+    "publicationCommit": "5b47be42b0378198750992b1547915b43f9cea99",
+    "publicationReceipt": {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/publication-1/post-publication.json",
+      "byteLength": 3104,
+      "sha256": "908abe99e1e1f6319021ed8a30d9e491976dd6f4cf4663080033d8935589e272"
+    },
+    "publicationReceiptIsHistorical": true,
+    "currentRemoteQueried": false,
+    "independentlyCollectedHostFacts": false,
+    "priorObservation": {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-1/observation.json",
+      "byteLength": 5763,
+      "sha256": "513477ec262d1c35933e52849e2accddc4f92ea80a23ba90edab906fcf3c4a87"
+    }
+  },
+  "validation": {
+    "publishedSourcePlanRequestAndTargetBindingsMatch": true,
+    "frozenCommitBytesMatch": true,
+    "injectedMetadataInterpretationMatchesEntireReport": true,
+    "immutablePinsBefore": [
+      {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/handoff.json",
+        "byteLength": 6433,
+        "sha256": "f09da975670615e1ee1ceb1d38146f2a89f4b7a0a90d7993f88b5d672e30b4e3"
+      },
+      {
+        "path": "artifacts/training-functional/full-training-packet-1/plan.json",
+        "byteLength": 8774,
+        "sha256": "a5e676864f99b15ff8c1ecf5f33a5dc6198c11ef6e674db81116d09b2af5df86"
+      },
+      {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/preflight.ts",
+        "byteLength": 5916,
+        "sha256": "722595e63962f0321fe83594a40f516d89660062bc7045047df29e737553f240"
+      },
+      {
+        "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+        "byteLength": 4355,
+        "sha256": "faf0c74bf328a0e2b67cbbb070caeb396ea3f17d7d2435d81c8f7bcc8de0ef69"
+      },
+      {
+        "path": "artifacts/training-functional/full-training-packet-1/request.json",
+        "byteLength": 8142,
+        "sha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331"
+      },
+      {
+        "path": "artifacts/training-functional/full-training-packet-1/completion.json",
+        "byteLength": 7322,
+        "sha256": "2e1513ee58d43cc4ec82f28422fc9b5a8150941d5191f2a4c2be626688f64d98"
+      }
+    ],
+    "immutablePinsAfter": [
+      {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/handoff.json",
+        "byteLength": 6433,
+        "sha256": "f09da975670615e1ee1ceb1d38146f2a89f4b7a0a90d7993f88b5d672e30b4e3"
+      },
+      {
+        "path": "artifacts/training-functional/full-training-packet-1/plan.json",
+        "byteLength": 8774,
+        "sha256": "a5e676864f99b15ff8c1ecf5f33a5dc6198c11ef6e674db81116d09b2af5df86"
+      },
+      {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/preflight.ts",
+        "byteLength": 5916,
+        "sha256": "722595e63962f0321fe83594a40f516d89660062bc7045047df29e737553f240"
+      },
+      {
+        "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+        "byteLength": 4355,
+        "sha256": "faf0c74bf328a0e2b67cbbb070caeb396ea3f17d7d2435d81c8f7bcc8de0ef69"
+      },
+      {
+        "path": "artifacts/training-functional/full-training-packet-1/request.json",
+        "byteLength": 8142,
+        "sha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331"
+      },
+      {
+        "path": "artifacts/training-functional/full-training-packet-1/completion.json",
+        "byteLength": 7322,
+        "sha256": "2e1513ee58d43cc4ec82f28422fc9b5a8150941d5191f2a4c2be626688f64d98"
+      }
+    ]
+  },
+  "admission": {
+    "status": "BLOCKED_METADATA_PRECONDITIONS",
+    "failures": [
+      "FREE_ENTRIES_UNKNOWN"
+    ],
+    "reportedAvailableBytes": "386035548160",
+    "requiredAvailableBytes": "283467841536",
+    "bytesSufficient": true,
+    "availableMarginBytes": "102567706624",
+    "reportedAvailableGiBApprox": "359.52",
+    "requiredAvailableGiB": "264",
+    "availableMarginGiBApprox": "95.52",
+    "reportedAvailabilityIncreaseBytes": "217790980096",
+    "freeEntries": null,
+    "entriesSufficient": null,
+    "freeEntriesMeaning": "UNKNOWN_NOT_ZERO",
+    "requiredFreeEntries": "835600",
+    "entryRuleReplacedOrWaived": false
+  },
+  "filesystem": {
+    "reportedType": "2435016766",
+    "magic": "0x9123683e",
+    "mappedName": "BTRFS_SUPER_MAGIC",
+    "magicReference": "https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/linux/magic.h",
+    "upstreamStatfsReference": "https://raw.githubusercontent.com/torvalds/linux/master/fs/btrfs/super.c",
+    "observedUpstreamBtrfsStatfsAssignsFileOrFreeEntryCounters": false,
+    "hostKernelVersionVerified": false,
+    "fixedFreeEntryCapacityProved": false
+  },
+  "permissions": {
+    "reportedOwnerUid": "0",
+    "reportedOwnerGid": "0",
+    "reportedModeOctal": "0644",
+    "directorySearchModeBitsPresent": false,
+    "effectiveDirectoryUsabilityVerified": false,
+    "selinuxCompatibilityVerified": false,
+    "permissionsOrLabelsChanged": false
+  },
+  "nextBoundary": "EXPLICIT_FILESYSTEM_ENTRY_ADMISSION_CONTRACT_DECISION_NOT_REPEATED_IDENTICAL_STATFS_QUERY",
+  "effects": {
+    "hostCommandsExecuted": false,
+    "hostPreparationExecuted": false,
+    "campaignRootsRelocated": false,
+    "additionalCleanupAuthorized": false,
+    "nativeGpuDockerCommandsExecuted": false,
+    "trainingExecuted": false,
+    "readinessFlagsChanged": false,
+    "admissionRulesChanged": false,
+    "packetChanged": false,
+    "publicationPerformed": false,
+    "trainingExecutionAuthorized": false
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "status": "EXECUTOR_POST_RESEARCH_PROCEED_INSTRUCTION_SOURCE_ONLY_SCOPE",
+  "date": "2026-11-18",
+  "origin": "EXECUTOR_MESSAGE_AFTER_BTRFS_PERMISSIONS_RESEARCH",
+  "message": "We should be safe to proceed then, assume the disk bytes needed to be available",
+  "appliedScope": {
+    "identifiedBtrfsZeroZeroCounterCompatibility": true,
+    "sourceTestsSpecsAndFreshPacketPreparation": true,
+    "hostStoragePrefix": "/var/lib/chess-coach/training-volume-1",
+    "newPacketGeneration": "full-training-packet-2",
+    "planningAvailableBytesFromRetainedReport": "386035548160",
+    "runtimeMinimumUsableBytesRetained": "283467841536",
+    "runtimeByteChecksBypassed": false,
+    "planningRequiredFreeEntriesRetained": "835600",
+    "planningBoundClaimedAsEnforcedGlobalEntryCap": false,
+    "rawUnknownEntryCapacityBecomesVerified": false,
+    "unknownCountersOnOtherFilesystemsAccepted": false
+  },
+  "oldPacketsRequestsReceiptsAndSourceHistoryPreserved": true,
+  "permissionRepairAuthorized": false,
+  "selinuxPolicyOrLabelChangesAuthorized": false,
+  "hostPreparationAuthorized": false,
+  "additionalCleanupAuthorized": false,
+  "trainingExecutionAuthorized": false,
+  "hostOperationsExecutedByAgent": false,
+  "publicationPerformed": false,
+  "trainingExecuted": false
+}

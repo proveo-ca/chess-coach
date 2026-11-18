@@ -249,7 +249,7 @@ test("streams 5000 SYNTHETIC attempts with zero-PG changed proposals and delayed
   expect(Buffer.byteLength(JSON.stringify(output))).toBeLessThan(1024 * 1024);
   console.log("CAMPAIGN_EVIDENCE_SYNTHETIC_STREAM " + JSON.stringify({ buildMs: base.buildMs, validationMs: performance.now() - started,
     attempts: output.attempts, checkpoints: output.masters.reduce((sum, row) => sum + row.checkpoints, 0), reportBytes: Buffer.byteLength(JSON.stringify(output)), ...env.counts(), nativeExecuted: false }));
-}, 30000);
+}, 60000);
 for (const fault of ["SYNTHETIC_PROGRESS_FAILURE", "DEADLINE"]) test(`closes exactly once and returns bounded FAIL when progress throws ${fault}`, () => {
   const env = reader(), progress: number[] = [];
   const output = validateCampaignResult(base.result, env.reader, expectedBindings, count => { progress.push(count); if (count === 3) throw new Error(fault); });
@@ -257,7 +257,7 @@ for (const fault of ["SYNTHETIC_PROGRESS_FAILURE", "DEADLINE"]) test(`closes exa
   expect(output.status).toBe("FAIL_CAMPAIGN_RETAINED_RESULT_VALIDATION"); expect(env.counts().closeCalls).toBe(1);
   expect(Buffer.byteLength(JSON.stringify(output))).toBeLessThan(1024 * 1024);
 });
-test("close failure overturns an otherwise successful result", () => { fail({ throwClose: true }, "close:SYNTHETIC_CLOSE_FAILURE"); }, 30000);
+test("close failure overturns an otherwise successful result", () => { fail({ throwClose: true }, "close:SYNTHETIC_CLOSE_FAILURE"); }, 60000);
 test("both validation and close failures remain explicit", () => {
   const output = fail({ control: value => { value.aborted = 1; }, throwClose: true });
   expect(output.failures).toEqual(["control:CONTROL_UNSETTLED", "close:SYNTHETIC_CLOSE_FAILURE"]);
@@ -297,7 +297,7 @@ for (const [name, options, code] of [
   ["master state counters", { master: (row: MasterRow) => { const state = JSON.parse(row.state); state.counters.baselineSum++; row.state = JSON.stringify(state); } }, "MASTER_STATE"],
   ["master record", { master: (row: MasterRow) => { row.record[0]! ^= 1; } }, "MODEL_HASH"],
   ["master config", { master: (row: MasterRow) => { row.config = JSON.stringify(syntheticRecord("SYNTHETIC-OTHER").config); } }, "MODEL_HASH"],
-] satisfies [string, Options, string][]) test(`rejects ${name}`, () => { fail(options, code); }, 30000);
+] satisfies [string, Options, string][]) test(`rejects ${name}`, () => { fail(options, code); }, 60000);
 
 for (const [name, change, code, ordinal] of [
   ["attempt identity", (value: Step) => { value.row.id = "wrong"; }, "ATTEMPT_ROSTER_STATUS", 0],

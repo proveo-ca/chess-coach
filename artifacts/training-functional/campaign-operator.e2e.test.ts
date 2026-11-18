@@ -11,10 +11,10 @@ import { bindings, byteRef, syntheticRecord } from "../../packages/runtime/tests
 import { repositoryScratch } from "../../packages/runtime/tests/repository-scratch";
 import type { CommandLimits, CommandResult } from "./qualification-operator";
 import { campaignInvocation, campaignPlan, CAMPAIGN_ENTRY, FULL_CAMPAIGN_SCOPE, SELECTED_CAMPAIGN_BUDGET } from "./campaign-plan";
-import type { CampaignApproval } from "./campaign-plan";
-import { campaignDockerCreate, campaignMode, campaignWorkspaceUsage, decodeCampaignRequest, openCampaignTelemetry, readCampaignProgress,
+import type { CampaignApproval, CampaignPlan } from "./campaign-plan";
+import { assessCampaignStorage, campaignCapacity, campaignDockerCreate, campaignMode, campaignWorkspaceUsage, decodeCampaignRequest, openCampaignTelemetry, readCampaignProgress,
   runCampaignOperator, runCampaignWorker, validateCampaignInputs } from "./campaign-operator";
-import type { CampaignOperatorIO, CampaignProgress, CampaignRequest, CampaignWorkerIO, CampaignWorkerReport } from "./campaign-operator";
+import type { CampaignCapacity, CampaignOperatorIO, CampaignProgress, CampaignRequest, CampaignWorkerIO, CampaignWorkerReport } from "./campaign-operator";
 import type { CampaignEvidence, CampaignReadback } from "./campaign-evidence";
 
 const spawn = spyOn(Bun, "spawn").mockImplementation(() => { throw new Error("FORBIDDEN_REAL_PROCESS"); });
@@ -34,22 +34,34 @@ function deferred<T>() { let resolve!: (value: T) => void; const promise = new P
 const evidence = { status: "PASS_CAMPAIGN_RETAINED_RESULT_VALIDATION", attempts: 5000, nativeScoresReplayed: false, failures: [] } as unknown as CampaignEvidence;
 const workerReport: CampaignWorkerReport = { scope: "FULL_CAMPAIGN_WORKER", execution: "MOCK", status: "PASS", failures: [], verifiedAttempts: 5000,
   finalizationCalls: 1, closeCalls: 1, validation: evidence, trainingExecuted: false };
-function operator() {
+const volumePlan = campaignPlan(SELECTED_CAMPAIGN_BUDGET, 2);
+function capacityFor(selectedPlan: CampaignPlan): CampaignCapacity {
+  return { type: selectedPlan.version === "chess-coach.training-campaign-plan.v2" ? 0x9123683en : 0xef53n, bsize: 4096n,
+    bavail: BigInt(selectedPlan.budget!.minimumFreeBytes) / 4096n, files: selectedPlan.version === "chess-coach.training-campaign-plan.v2" ? 0n : 1000000n,
+    ffree: selectedPlan.version === "chess-coach.training-campaign-plan.v2" ? 0n : BigInt(selectedPlan.storageAdmission.requiredFreeEntries) };
+}
+function launchFor(selectedPlan: CampaignPlan) {
+  const selectedRequest: CampaignRequest = { ...request, version: selectedPlan.version === "chess-coach.training-campaign-plan.v2" ? "chess-coach.training-campaign-request.v2" : request.version, plan: selectedPlan };
+  const bytes = encode(selectedRequest); return { requestBytes: bytes, approval: { ...approval, packetSha256: ref(bytes).sha256 } };
+}
+function operator(selectedPlan: CampaignPlan = plan) {
   let time = 0, hold = false, gpuCount = 0;
   const started = deferred<void>(), running = deferred<CommandResult>(), commands: { argv: readonly string[]; limits: CommandLimits }[] = [];
   const writes = new Map<string, Uint8Array>(), dirs: string[] = [], waits: { ms: number; resolve: () => void }[] = [], telemetry: unknown[] = [];
   const alarms: { fire: () => void; cancelled: boolean }[] = [];
-  let gpu: (ordinal: number) => CommandResult | Promise<CommandResult> = () => pass(Buffer.from(`${plan.gpu}, 4096\n`));
+  const capacityPaths: string[] = [], capacity = capacityFor(selectedPlan);
+  let returnedWorker: CampaignWorkerReport = { ...workerReport, ...(selectedPlan.version === "chess-coach.training-campaign-plan.v2" ? { storageAdmission: assessCampaignStorage(selectedPlan, capacity) } : {}) };
+  let gpu: (ordinal: number) => CommandResult | Promise<CommandResult> = () => pass(Buffer.from(`${selectedPlan.gpu}, 4096\n`));
   let docker: (verb: string) => CommandResult | undefined = () => undefined;
   let progress: CampaignProgress = { version: "chess-coach.campaign-progress.v1", phase: "work", completed: 0 };
   const io: CampaignOperatorIO = {
     execution: "MOCK", now: () => time, alarm: (_ms, fire) => { const alarm = { fire, cancelled: false }; alarms.push(alarm); return () => { alarm.cancelled = true; }; },
     wait: ms => new Promise(resolve => { waits.push({ ms, resolve }); }),
-    context: async () => ({ cwd: plan.host, realpath: plan.host, executable: plan.cachedBun, entrypoint: `${plan.source}/${CAMPAIGN_ENTRY}` }),
-    read: async path => path.endsWith("campaign-worker.json") ? encode(workerReport) : path.endsWith("progress.json") ? encode(progress) : (() => { throw new Error("UNEXPECTED_READ"); })(),
+    context: async () => ({ cwd: selectedPlan.host, realpath: selectedPlan.host, executable: selectedPlan.cachedBun, entrypoint: `${selectedPlan.source}/${CAMPAIGN_ENTRY}` }),
+    read: async path => path.endsWith("campaign-worker.json") ? encode(returnedWorker) : path.endsWith("progress.json") ? encode(progress) : (() => { throw new Error("UNEXPECTED_READ"); })(),
     write: async (path, bytes) => { if (writes.has(path)) throw new Error("EXCLUSIVE_CREATE"); writes.set(path, bytes); },
     validateInputs: async () => bindings(), alias: async () => {}, absent: async () => {}, mkdir: async path => { dirs.push(path); }, requirePath: async () => {},
-    capacity: async () => ({ usableBytes: plan.budget!.minimumFreeBytes, freeEntries: plan.storageAdmission.requiredFreeEntries }),
+    capacity: async path => { capacityPaths.push(path); return capacity; },
     usage: async () => 0, telemetry: value => { telemetry.push(value); }, closeTelemetry: () => {},
     command: async (argv, limits) => {
       commands.push({ argv, limits }); if (argv[0] === "nvidia-smi") return gpu(gpuCount++);
@@ -61,7 +73,8 @@ function operator() {
       return pass();
     },
   };
-  return { io, commands, dirs, writes, telemetry, started: started.promise, hold: () => { hold = true; }, finish: () => running.resolve(pass()),
+  return { io, commands, dirs, writes, telemetry, capacityPaths, capacity, started: started.promise, hold: () => { hold = true; }, finish: () => running.resolve(pass()),
+    setWorkerReport: (value: CampaignWorkerReport) => { returnedWorker = value; },
     setGPU: (fn: typeof gpu) => { gpu = fn; }, setDocker: (fn: typeof docker) => { docker = fn; }, setTime: (ms: number) => { time = ms; },
     expireIO: () => { const alarm = alarms.filter(a => !a.cancelled).at(-1); expect(alarm).toBeDefined(); alarm!.fire(); },
     progress: (value: Partial<CampaignProgress>) => { progress = { ...progress, ...value }; },
@@ -81,17 +94,19 @@ function states(master: number) {
   }
   checkTrainingState(state); cached.set(master, result); return result;
 }
-function worker() {
+function worker(selectedPlan: CampaignPlan = plan) {
   const calls: { master: number; id: string; factory: AttemptSetup }[] = [], initializers: string[][] = [], progress: CampaignProgress[] = [], writes = new Map<string, Uint8Array>();
   let coordinators = 0, factories = 0, closes = 0, finalizes = 0, readbacks = 0, validations = 0, time = 0;
+  const capacityPaths: string[] = [], events: string[] = [], capacity = capacityFor(selectedPlan);
   const create: AttemptSetup = () => { throw new Error("MOCK_NEVER_EXECUTES_NATIVE"); };
   const artifacts = ([101, 102, 103, 104, 105] as const).map(master => ({ master, artifactRef: byteRef(`artifact-${master}`) }));
   const io: CampaignWorkerIO = { execution: "MOCK", now: () => time, alarm: () => () => {}, alias: async () => {}, validateInputs: async () => bindings(),
     context: async () => ({ cwd: "/app", realpath: "/app", executable: "/usr/local/bin/bun", entrypoint: `/app/${CAMPAIGN_ENTRY}` }),
     read: async () => { throw new Error("UNEXPECTED_READ"); }, write: async (path, bytes) => { writes.set(path, bytes); },
-    command: async argv => { initializers.push([...argv]); return pass(selected.record); }, loadCorpus: async () => ({}) as Recorded<CampaignWorkerIO["loadCorpus"]>,
-    loadStrategic: async () => ({}) as Recorded<CampaignWorkerIO["loadStrategic"]>,
-    createFactory: () => { factories++; return { create }; }, createCoordinator: () => { coordinators++; return {
+    capacity: async path => { capacityPaths.push(path); events.push("capacity"); return capacity; },
+    command: async argv => { initializers.push([...argv]); return pass(selected.record); }, loadCorpus: async () => { events.push("corpus"); return {} as Recorded<CampaignWorkerIO["loadCorpus"]>; },
+    loadStrategic: async () => { events.push("strategic"); return {} as Recorded<CampaignWorkerIO["loadStrategic"]>; },
+    createFactory: () => { events.push("factory"); factories++; return { create }; }, createCoordinator: () => { events.push("coordinator"); coordinators++; return {
       initializeMaster: master => states(master)[0]!, runAttempt: async (master, id, _timing, factory) => { calls.push({ master, id, factory }); return states(master)[Number(id.slice(-4)) + 1]!; },
       finalize: () => { finalizes++; return { experiment: { version: "chess-coach.training-experiment.v1", status: "COMPLETE", artifacts, primaryMaster: 101, primaryArtifactRef: artifacts[0]!.artifactRef }, ref: byteRef("experiment") }; },
       close: () => { closes++; },
@@ -99,7 +114,7 @@ function worker() {
     openReadback: () => { expect(closes).toBe(1); readbacks++; return {} as CampaignReadback; },
     validate: (_result, _reader, _bindings, onProgress) => { expect(closes).toBe(1); validations++; onProgress?.(5000); return evidence; },
   };
-  return { io, calls, create, progress, writes, initializers, setTime: (value: number) => { time = value; },
+  return { io, calls, create, progress, writes, initializers, capacityPaths, capacity, events, setTime: (value: number) => { time = value; },
     counts: () => ({ coordinators, factories, closes, finalizes, readbacks, validations }) };
 }
 type Recorded<F extends (...args: never[]) => unknown> = Awaited<ReturnType<F>>;
@@ -173,7 +188,8 @@ test("MOCK natural completion uses the original selected deadlines and a compact
 test("MOCK existing roots and insufficient bytes/inodes reject before GPU, Docker or root creation", async () => {
   for (const mode of ["existing", "bytes", "entries"]) { const env = operator();
     if (mode === "existing") env.io.absent = async () => { throw new Error("ROOT_EXISTS"); };
-    else env.io.capacity = async () => ({ usableBytes: mode === "bytes" ? 1 : plan.budget!.minimumFreeBytes, freeEntries: mode === "entries" ? 1 : plan.storageAdmission.requiredFreeEntries });
+    else env.io.capacity = async () => ({ ...capacityFor(plan), bavail: mode === "bytes" ? 1n : BigInt(plan.budget!.minimumFreeBytes) / 4096n,
+      ffree: mode === "entries" ? 1n : BigInt(plan.storageAdmission.requiredFreeEntries) });
     const report = await runCampaignOperator(launch, env.io); expect(report.status).toBe("FAIL"); expect(env.commands).toHaveLength(0); expect(env.dirs).toHaveLength(0);
   }
 });
@@ -275,4 +291,117 @@ test("MOCK unknown create output never grants container ownership", async () => 
   const env = operator(); env.setDocker(verb => verb === "create" ? pass(Buffer.from("unknown")) : undefined);
   const report = await runCampaignOperator(launch, env.io); expect(report.status).toBe("FAIL"); expect(report.cid).toBeNull();
   expect(env.commands.filter(c => c.argv[0] === "docker").map(c => c.argv[2])).toEqual(["create"]);
+});
+test("v1 requests round-trip while mixed generations and unbound policy mutations reject", () => {
+  const retained = readFileSync(new URL("./full-training-packet-1/request.json", import.meta.url));
+  expect(decodeCampaignRequest(retained).plan).toEqual(plan);
+  const next = JSON.parse(Buffer.from(launchFor(volumePlan).requestBytes).toString());
+  expect(decodeCampaignRequest(encode(next)).plan).toEqual(volumePlan);
+  for (const changed of [
+    { ...next, version: "chess-coach.training-campaign-request.v1" },
+    { ...request, version: "chess-coach.training-campaign-request.v2" },
+    { ...next, plan: { ...next.plan, entryPolicy: "FIXED_COUNTER" } },
+    { ...request, plan: { ...request.plan, entryPolicy: "BTRFS_DYNAMIC_ACKNOWLEDGED" } },
+    { ...next, plan: { ...next.plan, root: "/mnt/training/training-campaign-2" } },
+    { ...next, entryPolicy: "BTRFS_DYNAMIC_ACKNOWLEDGED" },
+  ]) expect(() => decodeCampaignRequest(encode(changed))).toThrow();
+  delete next.plan.entryPolicy; expect(() => decodeCampaignRequest(encode(next))).toThrow("REQUEST_PLAN");
+});
+test("only explicit v2 Btrfs zero/zero policy accepts unknown entries without claiming capacity proof", () => {
+  const raw = capacityFor(volumePlan), accepted = assessCampaignStorage(volumePlan, raw);
+  expect(accepted).toMatchObject({ admitted: true, bytesSufficient: true, entriesSufficient: null, freeEntries: null,
+    entryCapacityVerified: false, policyAcceptedUnknownEntries: true, entryAdmissionBasis: "ACKNOWLEDGED_BTRFS_ZERO_COUNTERS" });
+  expect(accepted.raw).toMatchObject({ type: "2435016766", files: "0", ffree: "0" });
+  expect(accepted.requiredUsableBytes).toBe("283467841536"); expect(accepted.requiredFreeEntries).toBe("835600");
+  expect(assessCampaignStorage(plan, raw)).toMatchObject({ admitted: false, policy: "FIXED_COUNTER", entriesSufficient: null, policyAcceptedUnknownEntries: false });
+  expect(assessCampaignStorage(volumePlan, capacityFor(plan))).toMatchObject({ admitted: true, entryCapacityVerified: true,
+    policyAcceptedUnknownEntries: false, entryAdmissionBasis: "REPORTED_FREE_ENTRIES" });
+  expect(() => encode(accepted)).not.toThrow();
+});
+test("unknown other filesystems, negative counters and known insufficient entries never inherit the exception", () => {
+  const raw = capacityFor(volumePlan);
+  for (const patch of [{ type: 0xef53n }, { type: 0x65735546n }, { type: 0n }, { ffree: -1n }, { files: -1n },
+    { files: 1000000n, ffree: 0n }, { files: 1000000n, ffree: 835599n }]) {
+    const result = assessCampaignStorage(volumePlan, { ...raw, ...patch });
+    expect(result.admitted).toBe(false); expect(result.policyAcceptedUnknownEntries).toBe(false);
+  }
+});
+test("Btrfs acknowledgement cannot bypass failed or unavailable byte admission", () => {
+  const raw = capacityFor(volumePlan);
+  for (const patch of [{ bavail: raw.bavail - 1n }, { bavail: -1n }, { bsize: 0n }]) {
+    const result = assessCampaignStorage(volumePlan, { ...raw, ...patch });
+    expect(result.admitted).toBe(false); expect(result.policyAcceptedUnknownEntries).toBe(false);
+  }
+  const large = assessCampaignStorage(volumePlan, { ...raw, bavail: 9007199254740993n });
+  expect(large.usableBytes).toBe(String(9007199254740993n * raw.bsize)); expect(large.admitted).toBe(true);
+});
+test("the shared production adapter requests bigint statistics and preserves all raw capacity fields", async () => {
+  const path = repositoryScratch("campaign-capacity-"), capacity = capacityFor(volumePlan);
+  const observed = spyOn(fileIO, "statfs").mockImplementation((async (target: unknown, options: unknown) => {
+    expect(target).toBe(path); expect(options).toEqual({ bigint: true }); return { ...capacity, blocks: 100000000n, bfree: 100000000n };
+  }) as typeof fileIO.statfs);
+  try { expect(await campaignCapacity(path)).toEqual(capacity); }
+  finally { observed.mockRestore(); }
+});
+test("MOCK v2 HOST admission uses the selected volume, records uncertainty and launches only worker-v2", async () => {
+  const env = operator(volumePlan), report = await runCampaignOperator(launchFor(volumePlan), env.io);
+  expect(report.failures).toEqual([]); expect(report.status).toBe("PASS"); expect(report.trainingExecuted).toBe(false);
+  expect(env.capacityPaths).toEqual(["/var/lib/chess-coach/training-volume-1"]); expect(env.dirs[0]).toBe(volumePlan.root);
+  expect(report.storageAdmission).toMatchObject({ admitted: true, freeEntries: null, entriesSufficient: null,
+    entryCapacityVerified: false, policyAcceptedUnknownEntries: true });
+  expect(env.commands.find(c => c.argv[2] === "create")!.argv.at(-1)).toBe("worker-v2");
+  expect(encode(report).byteLength).toBeLessThan(4096);
+});
+test("MOCK v2 HOST rejection happens before GPU, Docker or writable-root creation", async () => {
+  for (const patch of [{ type: 0xef53n }, { files: 1000000n, ffree: 0n }, { bavail: 1n }]) {
+    const env = operator(volumePlan); Object.assign(env.capacity, patch);
+    const report = await runCampaignOperator(launchFor(volumePlan), env.io);
+    expect(report.status).toBe("FAIL"); expect(report.failures.join()).toContain("STORAGE_ADMISSION");
+    expect(env.commands).toHaveLength(0); expect(env.dirs).toHaveLength(0);
+  }
+});
+test("MOCK v2 container checks /state before corpus, factory and coordinator creation", async () => {
+  const env = worker(volumePlan), report = await runCampaignWorker({ ...launchFor(volumePlan), invocation: campaignInvocation(volumePlan, 0) }, env.io);
+  expect(report.status).toBe("PASS"); expect(report.failures).toEqual([]); expect(report.trainingExecuted).toBe(false);
+  expect(env.capacityPaths).toEqual(["/state"]); expect(env.events.slice(0, 5)).toEqual(["capacity", "corpus", "strategic", "factory", "coordinator"]);
+  expect(report.storageAdmission).toMatchObject({ admitted: true, entryCapacityVerified: false, entriesSufficient: null, policyAcceptedUnknownEntries: true });
+  expect(env.calls).toHaveLength(5000); expect(env.counts()).toEqual({ coordinators: 1, factories: 1, closes: 1, finalizes: 1, readbacks: 1, validations: 1 });
+}, 30000);
+test("MOCK failed container byte or entry admission creates no corpus factory or owner", async () => {
+  for (const patch of [{ type: 0x65735546n }, { files: 1000000n, ffree: 1n }, { bavail: 1n }]) {
+    const env = worker(volumePlan); Object.assign(env.capacity, patch);
+    const report = await runCampaignWorker({ ...launchFor(volumePlan), invocation: campaignInvocation(volumePlan, 0) }, env.io);
+    expect(report.status).toBe("FAIL"); expect(report.failures.join()).toContain("WORKER_STORAGE_ADMISSION");
+    expect(env.events).toEqual(["capacity"]); expect(env.initializers).toHaveLength(0); expect(env.counts().coordinators).toBe(0);
+  }
+});
+test("MOCK container capacity IO uses the original startup deadline without renewal", async () => {
+  const env = worker(volumePlan), reading = deferred<void>(), alarms: { fire: () => void; cancelled: boolean }[] = [];
+  env.io.alarm = (_ms, fire) => { const alarm = { fire, cancelled: false }; alarms.push(alarm); return () => { alarm.cancelled = true; }; };
+  env.io.capacity = async () => { reading.resolve(); return new Promise<CampaignCapacity>(() => {}); };
+  const pending = runCampaignWorker({ ...launchFor(volumePlan), invocation: campaignInvocation(volumePlan, 0) }, env.io);
+  await reading.promise; env.setTime(volumePlan.budget!.inactivityMs); alarms.filter(a => !a.cancelled).at(-1)!.fire();
+  const report = await pending; expect(report.status).toBe("FAIL"); expect(report.failures.join()).toContain("DEADLINE");
+  expect(env.initializers).toHaveLength(0); expect(env.counts().factories).toBe(0);
+});
+test("MOCK v2 parent requires matching recomputed worker admission, not a claimed boolean", async () => {
+  const good = assessCampaignStorage(volumePlan, capacityFor(volumePlan));
+  for (const storageAdmission of [undefined, { ...good, raw: { ...good.raw, type: "61267" } },
+    { ...good, entryCapacityVerified: true }, { ...good, raw: { ...good.raw, bavail: "1" } }]) {
+    const env = operator(volumePlan); env.setWorkerReport({ ...workerReport, storageAdmission });
+    const report = await runCampaignOperator(launchFor(volumePlan), env.io);
+    expect(report.status).toBe("FAIL"); expect(report.failures.join()).toContain("WORKER_STORAGE_ADMISSION");
+    expect(env.commands.filter(c => c.argv[2] === "rm")).toHaveLength(1);
+  }
+});
+test("MOCK v2 CLI modes and readiness still grant zero execution without approval", async () => {
+  expect(campaignMode(true, ["plan-v2"])).toBe("plan-v2"); expect(campaignMode(true, ["operator-v2"])).toBe("operator-v2");
+  expect(campaignMode(false, ["worker-v2"])).toBeNull(); expect(campaignMode(true, ["operator-v2", "--approved"])).toBeNull();
+  const host = operator(volumePlan), child = worker(volumePlan); let contexts = 0;
+  host.io.context = child.io.context = async () => { contexts++; throw new Error("UNEXPECTED_CONTEXT"); };
+  const next = launchFor(volumePlan);
+  expect((await runCampaignOperator({ ...next, approval: null }, host.io)).status).toBe("FAIL");
+  expect((await runCampaignWorker({ ...next, approval: null, invocation: campaignInvocation(volumePlan, 0) }, child.io)).status).toBe("FAIL");
+  expect(contexts).toBe(0); expect(host.capacityPaths).toEqual([]); expect(child.capacityPaths).toEqual([]);
+  expect(host.commands).toHaveLength(0); expect(child.calls).toHaveLength(0); expect(spawn).not.toHaveBeenCalled(); expect(spawnSync).not.toHaveBeenCalled();
 });

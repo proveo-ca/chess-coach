@@ -1,0 +1,98 @@
+{
+  "status": "PASS_FINAL_V2_SOURCE_PINS_REVIEWS_ASSEMBLY_AND_STATIC_NOT_HOST",
+  "scope": "LOCAL_SOURCE_AND_METADATA_ONLY_NO_NATIVE_OR_OPERATIONAL_EXECUTION",
+  "sourcePinsBeforeAfterMatch": true,
+  "checkedSourcePinCount": 199,
+  "sourceVerification": {
+    "path": "artifacts/training-functional/full-training-packet-2/verification.json",
+    "byteLength": 104975,
+    "sha256": "515f293ddd351dd434d2a2b656c8e0b8d64f5bb52ceb0dc9f1656ad5ec4b85bb"
+  },
+  "sourceReceipt": {
+    "path": "artifacts/training-functional/full-training-packet-2/checks-2/receipt.json",
+    "byteLength": 111698,
+    "sha256": "eea378d4f41e0941dda0542c23ed1fe56c4d63797305cc77634a038c7aa77b37"
+  },
+  "sourceReviews": {
+    "path": "artifacts/training-functional/full-training-packet-2/reviews-2.json",
+    "byteLength": 4358,
+    "sha256": "26f87f6860bcf2f27b255be439b663b930794de0d8a4ef04284662b92cf20adc"
+  },
+  "checkedReviewPinCount": 16,
+  "sourceReviewFreshPassAndPinConditionsSatisfied": true,
+  "assembly": {
+    "path": "artifacts/training-functional/full-training-packet-2/assembly.json",
+    "byteLength": 1487,
+    "sha256": "cc54621e7ecaa71b421a0a6a69829d04d9369a7c41b1f18f4838be695dc34b07"
+  },
+  "assemblyVerification": {
+    "path": "artifacts/training-functional/full-training-packet-2/assembly-verification.json",
+    "byteLength": 1785,
+    "sha256": "0cf282773e45d993d15770d84d674dc800891f47bb6e78ebc10d04b25f48c5cc"
+  },
+  "request": {
+    "path": "artifacts/training-functional/full-training-packet-2/request.json",
+    "byteLength": 7712,
+    "sha256": "70ba4aadc079cab314cf9dd6f4dc2354ab3c1739e035131b1b067302241b0322"
+  },
+  "staticCommand": {
+    "argv": [
+      "/usr/local/bin/bun",
+      "--no-env-file",
+      "--no-install",
+      "artifacts/training-functional/check-specs.ts"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "path": "artifacts/training-functional/full-training-packet-2/final-specs.stdout",
+      "byteLength": 2645,
+      "sha256": "cb4c0586b813730b7101dd6781ff0c4e40403cf4a3180fbc1ac542eff57e77db"
+    },
+    "stderr": {
+      "path": "artifacts/training-functional/full-training-packet-2/final-specs.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "freshTestCount": 202,
+  "freshAssertions": 47342,
+  "strictTypechecks": 3,
+  "carriedTestCount": 0,
+  "staticSpecsPassed": true,
+  "unchangedPacket1Files": 58,
+  "oldWorkerMembersRecoverable": 112,
+  "actualAssemblyCounts": {
+    "executionFiles": 112,
+    "physicalRows": 952,
+    "dependencies": 840,
+    "roles": 14,
+    "replacedRoles": 4,
+    "unchangedRoles": 10,
+    "references": 9
+  },
+  "workerDeltas": [
+    {
+      "path": "artifacts/training-functional/campaign-operator.ts",
+      "byteLength": 37004,
+      "sha256": "6c2ed0ff6ac81b016b7b03fac50738c1141a62dd17d547596404974e6a578e2d"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-plan.ts",
+      "byteLength": 8366,
+      "sha256": "cb8ca484bc452b91ce4cf874d159367285d59d8a4b30c35e86da1cac35e88118"
+    }
+  ],
+  "nativePlantUmlRendered": false,
+  "nativePlantUmlSkipReason": "Java and remote-theme access remain outside Bun/TypeScript-or-Rust scope",
+  "finalArtifactMetadataReviewSeparate": true,
+  "directoryUsabilityVerified": false,
+  "selinuxCompatibilityVerified": false,
+  "retainedHostPayloadsAfterCleanupReverified": false,
+  "rootsHostChecked": false,
+  "hostPreparationExecuted": false,
+  "nativeGpuContainerOrHostOperationsExecuted": false,
+  "trainingExecuted": false,
+  "trainingExecutionAuthorized": false,
+  "publicationPerformed": false,
+  "publicationAuthorized": false
+}

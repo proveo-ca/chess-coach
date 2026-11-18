@@ -1,0 +1,1 @@
+Executor: {"status":"PASS_READ_ONLY_ACCESS_SOURCE_TESTS_STRICT_TYPES_STATIC_AND_FROZEN_PACKET2","results":[{"name":"tests-2","exitCode":0},{"name":"types-2","exitCode":0},{"name":"specs-1","exitCode":0}],"packet2FrozenSourcePinCount":199}
