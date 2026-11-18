@@ -1,0 +1,64 @@
+{
+  "status": "PASS_CHECKED_PUBLICATION_AND_LITERAL_ONE_SHOT_USER_HOST_PROBE_READY",
+  "commit": "5f2a1e8fb35116e41ad4a4b048c0e161c81ea41c",
+  "parent": "19d19a58483b2e83abf1db420a6aaca1018b4966",
+  "pr": {
+    "baseRefName": "main",
+    "headRefName": "feat-ml-adjuntant-ii",
+    "headRefOid": "5f2a1e8fb35116e41ad4a4b048c0e161c81ea41c",
+    "isCrossRepository": false,
+    "state": "OPEN",
+    "url": "https://github.com/proveo-ca/chess-coach/pull/51"
+  },
+  "normalCommits": 1,
+  "nonForcePushes": 1,
+  "grantConsumed": true,
+  "stageAndCommitAudit": {
+    "changedPaths": 23,
+    "pinnedBlobs": 25,
+    "candidateManifestSha256": "702efd253cf77d0f3540ff433afd240ef21ce7aca496c83dcb42a0072bc7611e",
+    "stagedAndCommittedBytesMatched": true
+  },
+  "verification": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/verification-2/verification.json",
+    "byteLength": 8576,
+    "sha256": "33c478db09994ab852d44d439d7293ca7db464681229eb44dddc4bc161e26666"
+  },
+  "remoteEvidence": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/publication-1/post-remote.stdout",
+    "byteLength": 73,
+    "sha256": "b7125d822f12a835700c19d8195a1aaf2baa4c16b1443a99dedb65fa70ee9902"
+  },
+  "prEvidence": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/publication-1/post-pr.stdout",
+    "byteLength": 214,
+    "sha256": "401df9b09b34891109168817c4e26d458527dbce755c403b80b887f703a4d305"
+  },
+  "publishedBlobs": [
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/probe.ts",
+      "byteLength": 14857,
+      "sha256": "794e930cf1e3e049e2b989c9c718d0732a56c8c405dd2d557d52a049fde26032",
+      "gitBlob": "6d7b03a9751e984c42e86a2ce2d8a54fd4a47155",
+      "remoteContentMatched": true
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/render-command.ts",
+      "byteLength": 716,
+      "sha256": "f6550313279226f59a4b8945c1c79bee14071b84e04649d4d0c13f3d73f825f2",
+      "gitBlob": "21e1f7a6ac3b40da802fbcd47b0e6abf7df6d918",
+      "remoteContentMatched": true
+    }
+  ],
+  "launcher": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/publication-1/HOST-probe.sh",
+    "byteLength": 20228,
+    "sha256": "eba2ceb524b06388097bf850ab6e355338d127c7930c2f0f4bb10183b947378e"
+  },
+  "outerAndInnerBashSyntaxPassed": true,
+  "decodedLauncherMatchedPublishedProbe": true,
+  "hostProbeExecutedByAgent": false,
+  "hostProbeResultKnown": false,
+  "preparationExecuted": false,
+  "trainingExecuted": false
+}
