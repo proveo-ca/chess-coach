@@ -1,0 +1,11 @@
+{
+  "scope": "NEWLY_REMOTE_REACHABLE_CONTINUATION_BLOBS_HIGH_CONFIDENCE_INDICATORS",
+  "base": "f6bce72a2cd10f66acf77162166a1d03fc87cd13",
+  "tip": "1f279852549086759518d6359597867bc9297c20",
+  "objects": 1705,
+  "blobs": 1324,
+  "bytesRead": 40634153,
+  "findings": [],
+  "secretValuesRecorded": false,
+  "completePrivacyAudit": false
+}

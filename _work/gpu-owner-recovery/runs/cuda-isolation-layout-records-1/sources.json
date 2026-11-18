@@ -1,0 +1,18 @@
+[
+  {
+    "path": "_work/gpu-owner-recovery/cuda-isolation-layout-source-review.json",
+    "sha256": "a33b2f942feed6431721393724273743929ed47643c8c9363d307036966e9bc8"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/cuda-llvm-request.json",
+    "sha256": "ad2134c4d60991491eb6b285b000dbeafb89e542c42fdd2ee9b6f5fa277ddda1"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/closure.json",
+    "sha256": "2138bfe7d4be54b2c8bcf6e51d46218b90de1a94d9ccbe38dab53db9ac8495dd"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/cuda-isolation-probe-2-classification.json",
+    "sha256": "8ced1767388dc9152809bbaba422fad3151f26afa67084c22e637ac51d0c20fa"
+  }
+]

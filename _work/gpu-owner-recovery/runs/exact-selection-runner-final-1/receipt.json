@@ -1,0 +1,35 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "exact-selection-runner-final-1",
+  "stage": "runner",
+  "sourceManifestSha256": "10f8ba1c56acc9582f4beb6b6a0cbd96a5c95d4bd5171396040d30f80556c2ad",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./_work/gpu-owner-recovery/verify.test.ts",
+    "./_work/gpu-owner-recovery/audit-lock.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 1301,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/exact-selection-runner-final-1/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/exact-selection-runner-final-1/command.stderr",
+    "bytes": 1301,
+    "sha256": "f043413bcd9e3f8ea1200bd8a05b24242850673f5e4b7f74f447187a529d808a"
+  },
+  "sourceCount": 16,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

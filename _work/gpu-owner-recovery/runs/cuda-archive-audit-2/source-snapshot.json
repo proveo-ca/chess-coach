@@ -1,0 +1,161 @@
+{
+  "captureTiming": "BEFORE_ACTUAL_PASSIVE_AUDIT_INVOCATION",
+  "files": [
+    {
+      "path": "_work/gpu-owner-recovery/cuda-continuation.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/00.source",
+      "bytes": 15049,
+      "sha256": "66da6653188442f1d748b76eec79e963df5150798c5ffa7ad78f5eec1a481b8f"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-continuation.test.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/01.source",
+      "bytes": 15471,
+      "sha256": "b210b8f80ffbface5127f83acdb1db28a884da699a3605014d6fbb5a6c56d059"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-acquire.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/02.source",
+      "bytes": 20419,
+      "sha256": "a618bf3ed499fe1ced411d01dafb744ecdc6ca8d33f49752463e4e9b6f45e72b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-acquire.test.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/03.source",
+      "bytes": 20790,
+      "sha256": "3e05372830e14ccdc190541a0032d50a0d52f8b527b9532d809f5f4620145843"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-acquire-mise.toml",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/04.source",
+      "bytes": 347,
+      "sha256": "445e50bd984abe069094e80bb7f082fa16a461b44af0686d4dc0b4567a05ab10"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/provision.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/05.source",
+      "bytes": 5667,
+      "sha256": "446bafb616dce8f642216268cb10d6c30e1e485b45428b8c83295358964a8efb"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/verify.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/06.source",
+      "bytes": 12014,
+      "sha256": "6aa838d9c9bfde9083d89b0a7dbea906023fb4c695de68d896856d94a5dccd29"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/verify.test.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/07.source",
+      "bytes": 12575,
+      "sha256": "5db948e287fadf123170c14f5a2958b0f1c38f8f153a86d85419584ce1f16972"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/08.source",
+      "bytes": 910,
+      "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/tsconfig.json",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/09.source",
+      "bytes": 105,
+      "sha256": "e70ffa726d5b3b004982a4705b17b778c4326fe9964b9ce76e006ed1310c793d"
+    },
+    {
+      "path": "tsconfig.json",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/10.source",
+      "bytes": 376,
+      "sha256": "a0cf0b388c7327624fa7f91061dbf4ee4280e9f27d095740399fe5c83682e913"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-isolation.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/11.source",
+      "bytes": 14528,
+      "sha256": "3231f42ebbcf01ac0b1f6f5217ed53233f9359d657eb3e7d55ccd447a802735c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-isolation.test.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/12.source",
+      "bytes": 22296,
+      "sha256": "53f812ec50c62e92f506e3323c224cb9852be2801d7c4259f79b481a566fa9ea"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-mise.toml",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/13.source",
+      "bytes": 174,
+      "sha256": "b1d2fa6a92bb740b11ad15cc81e7c421c1ebc5393b5138fd50b61c6e16710102"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/mise.toml",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/14.source",
+      "bytes": 116,
+      "sha256": "09b27b21573e66a53fb59c29feb97b15a8b0887384b21b09fac8599d8ecb5df8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-archive.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/15.source",
+      "bytes": 41364,
+      "sha256": "ef5749fb90361e69f9b50a6c0a1c288b5d2a63f49e4db91523760bfc8134ea9b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-archive.test.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/16.source",
+      "bytes": 39052,
+      "sha256": "f8fa8294f85e99874b87c0f254803d6d02a006ffeacb9d8a9620c705b4e1a4fc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-archive-mise.toml",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/17.source",
+      "bytes": 175,
+      "sha256": "5a1975fc552264f42f70d3e613ccff010416d495a1f93d8482822621e3525dbc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-tar.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/18.source",
+      "bytes": 16897,
+      "sha256": "9fa860c4e226a5fcf261055cc1958ae460269530cc3ee1dfd8dec910b7030e60"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-tar.test.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/19.source",
+      "bytes": 25571,
+      "sha256": "5bcd41c0d71ae9d398de0e4272ff59b6c3a2d6626d1815dfb72eee5a011053e7"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-elf.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/20.source",
+      "bytes": 9244,
+      "sha256": "eaf1c5803e3685ab1fceceb7fd29cb29863665fb41978a3fe776c24aaaa4c297"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-elf.test.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/21.source",
+      "bytes": 14958,
+      "sha256": "f04d13e3005a57a1b1530c2159b4b6c6ae90bbcc65d2bc55f2d4f46c2438f1e5"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/fixtures/cuda-tar-cases.json",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/22.source",
+      "bytes": 3498,
+      "sha256": "d9ed3b7ca08501243e2a0201e3b4906897c79b028745874993891b57a5e540a9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-bun-snapshot.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/23.source",
+      "bytes": 49639,
+      "sha256": "eb6c0fb384ed51a82fe351841bae8208279869293da7d9a426ffbc07444d92f2"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/24.source",
+      "bytes": 65525,
+      "sha256": "5d5fb2fbdce25b597fe9ee6453d53c2d2b9f1f644e70e792b4677a7da89e2234"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-bun-snapshot-mise.toml",
+      "snapshot": "_work/gpu-owner-recovery/runs/cuda-archive-audit-2/source-snapshot/25.source",
+      "bytes": 181,
+      "sha256": "d98c92e613ae497d451bf1dff1a7c26ac525ef2ced8299c49baf21a5f00331d7"
+    }
+  ]
+}

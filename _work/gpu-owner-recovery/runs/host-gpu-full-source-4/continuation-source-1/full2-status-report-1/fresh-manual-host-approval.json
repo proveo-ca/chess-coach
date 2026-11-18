@@ -1,0 +1,52 @@
+{
+  "version": "chess-coach.gpu-full-fresh-manual-host-approval.v1",
+  "status": "APPROVED_ONE_NEW_MANUAL_OPERATOR_HOST_FULL_TWO_ATTEMPT_UNOBSERVED",
+  "grantId": "full2-manual-grant-1",
+  "authorizationSource": "EXECUTOR_SELECTED_FRESH_FULL_2_RECOMMENDED_AFTER_REPORTED_STATUS_AND_HOST_GIT_LOG",
+  "executor": "OPERATOR_HOST_ONLY_NEVER_CODING",
+  "request": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/fresh-manual-host-request.json",
+    "bytes": 2825,
+    "sha256": "78db7a2d4dcbe86fbb3587a719c2a5a403cd242fff5fc205a7f1af09fd201c4a"
+  },
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command.fish",
+    "bytes": 56981,
+    "sha256": "8705a79ab07681a82531c411f200cee7a82d015ee3a401d3be617919abf7e210"
+  },
+  "originalRequest": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command-request.json",
+    "sha256": "cd8120322c11cd1107a07d1cab883933d1327b1e06ba463d930f23d51a6ab4bf"
+  },
+  "manualExecution": {
+    "cwd": "/home/gu1lty/Projects/proveo/chess-coach",
+    "argv": ["fish", "--no-config", "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command.fish"]
+  },
+  "runId": "host-gpu-full-2",
+  "unchangedOriginalRequestBoundsAndOperations": true,
+  "maximumHostInvocations": 1,
+  "remainingHostInvocations": 1,
+  "hostInvocationObserved": false,
+  "anyAttemptConsumesNewAllowanceIncludingPreflightFailure": true,
+  "maximumManualInvocationTextDeliveries": 1,
+  "manualInvocationTextDeliveryApproved": true,
+  "hostExecutionApproved": true,
+  "gpuExecutionApproved": true,
+  "kernelJitExecutionApproved": true,
+  "freshEmbeddedTextScratchEvidenceJitWritesApproved": true,
+  "ownedContainerCleanupApproved": true,
+  "retainedInputsRemainReadOnly": true,
+  "priorFailedWorkspacesAndEvidenceRetained": true,
+  "previousFull2ExecutionOutcome": "UNKNOWN",
+  "previousFull2HostInvocationsRemaining": 0,
+  "previousStatusQueriesRemaining": 0,
+  "automaticTerminalSubmissionAuthorized": false,
+  "automaticRetryAuthorized": false,
+  "nativeCompilationApproved": false,
+  "acquisitionOrInstallationApproved": false,
+  "retainedInputCopyingOrMutationApproved": false,
+  "codingHostNativeGpuOrJitExecutionApproved": false,
+  "gitOperationsApproved": false,
+  "experimentTrainingApproved": false,
+  "trainingReady": false
+}

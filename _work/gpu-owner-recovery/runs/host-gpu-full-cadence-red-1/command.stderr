@@ -1,0 +1,48 @@
+
+_work/gpu-owner-recovery/qualification/host-full/driver.test.ts:
+277 |   h.clock.time = 0.25; h.hooks.test = () => native.promise;
+278 |   h.hooks.query = async index => { if (index === 1) h.clock.time += 7.125; return { stdout: csv() }; };
+279 |   h.io.schedule = (delay, callback) => { requested.push(delay); return h.clock.schedule(Math.max(1, Math.floor(delay)), callback); };
+280 |   const execution = executeFull(p, h.io); await flush(); await h.clock.advance(2001.25);
+281 |   native.resolve({ stdout: summary }); const receipt = await execution;
+282 |   expect(receipt.failure).toBeNull(); expect(receipt.status).toBe("PASS_GPU_FULL_TESTS_ONLY"); expect(receipt.telemetry.queries).toHaveLength(2);
+                                ^
+error: expect(received).toBeNull()
+
+Received: "Error: TELEMETRY_QUERY_CADENCE"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/qualification/host-full/driver.test.ts:282:27)
+(fail) early timer from fractional delay truncation cannot start telemetry before cadence [6.71ms]
+295 |     if (h.clock.count()) await h.clock.wakeNextAt(time);
+296 |     counts.push(h.commands.filter(command => command.argv[0] === "nvidia-smi").length); timers.push(h.clock.count());
+297 |   }
+298 |   if (h.clock.count()) await h.clock.wakeNextAt(2000.25);
+299 |   native.resolve({ stdout: summary }); const receipt = await execution;
+300 |   expect(receipt.failure).toBeNull(); expect(receipt.status).toBe("PASS_GPU_FULL_TESTS_ONLY"); expect(counts).toEqual([1, 1, 1]); expect(timers).toEqual([1, 1, 1]);
+                                ^
+error: expect(received).toBeNull()
+
+Received: "Error: TELEMETRY_QUERY_CADENCE"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/qualification/host-full/driver.test.ts:300:27)
+(fail) early timer callbacks recheck cadence repeatedly and permit the exact boundary [1.14ms]
+309 |   h.io.schedule = (delay, callback) => { requested.push(delay); return h.clock.schedule(delay, callback); };
+310 |   const execution = executeFull(p, h.io); await flush(); await h.clock.advance(3000);
+311 |   const beforeRelease = requested.length, pendingTimers = h.clock.count();
+312 |   journal.resolve(); await flush(); await h.clock.advance(3001); native.resolve({ stdout: summary });
+313 |   const receipt = await execution;
+314 |   expect(receipt.status).toBe("PASS_GPU_FULL_TESTS_ONLY"); expect(beforeRelease).toBeLessThanOrEqual(3); expect(pendingTimers).toBe(1);
+                                                                                       ^
+error: expect(received).toBeLessThanOrEqual(expected)
+
+Expected: <= 3
+Received: 1003
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/qualification/host-full/driver.test.ts:314:82)
+(fail) pending sample journal keeps a bounded liveness timer without one-millisecond polling [10.89ms]
+
+ 0 pass
+ 25 filtered out
+ 3 fail
+ 10 expect() calls
+Ran 3 tests across 1 file. [39.00ms]

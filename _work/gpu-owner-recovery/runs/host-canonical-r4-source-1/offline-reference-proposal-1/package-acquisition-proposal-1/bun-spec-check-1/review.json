@@ -1,0 +1,8 @@
+{
+  "status": "NOT_READY_SPEC_PROJECTION",
+  "adversarial": {"session":"ses_e2e582911ffe8NNgAwLpEKFv0k","readyToMerge":false,"findings":[{"severity":"MEDIUM","path":"_spec/gate-closure.md","line":832,"code":"CURRENT_CHECKLIST_THREE_REVIEWS_AND_MISSING_EXECUTION_BINDING"}]},
+  "checkerPassDoesNotOverrideReview": true,
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

@@ -1,0 +1,32 @@
+{
+  "version": "chess-coach.llvm-request-validation.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "-e",
+    "\nimport { readFileSync } from 'node:fs';\nimport { createHash } from 'node:crypto';\nconst load=path=>JSON.parse(readFileSync(path,'utf8'));\nconst hash=bytes=>createHash('sha256').update(bytes).digest('hex');\nconst request=load('_work/gpu-owner-recovery/cuda-llvm-request.json'),known=load(request.publicMetadata),selection=load(request.selectedGraph),prior=load('_work/gpu-owner-recovery/cuda-input-request.json');\nif(request.authorityGranted!==false||request.implementationPrepared!==false||request.artifacts.length!==2||request.compileTargets.some(argv=>!argv.includes('--no-run')||!argv.includes('--locked')||!argv.includes('--offline')))throw Error('UNAPPROVED_REQUEST_BOUNDARY');\nif(request.artifacts[0].sha256!==known.llvm.archive.sha256||request.artifacts[0].byteLength!==45439652||request.artifacts[1].sha256!==known.llvm.checksumSidecar.releaseApiSha256||request.artifacts[1].byteLength!==297)throw Error('EXACT_LLVM_IDENTITIES_REQUIRED');\nif(request.originalToolConfigurationMustRemainUnchanged!== '_work/gpu-owner-recovery/mise.toml'||request.taskConfiguration===request.originalToolConfigurationMustRemainUnchanged)throw Error('SEPARATE_TASKS_CONFIGURATION_REQUIRED');\nif(prior.status!=='COMPLETED_APPROVED_ACQUISITION_AND_METADATA_RETRY'||prior.authorization.grantStatus!=='CONSUMED_SUCCESS'||prior.futureAcquisitionFromThisGrantAuthorized!==false)throw Error('FFT_GRANT_NOT_CONSUMED');\nconst artifact=prior.requestedArtifacts[0],archive=readFileSync(artifact.destination);\nif(archive.length!==artifact.byteLength||hash(archive)!==artifact.sha256)throw Error('FFT_CACHE_IDENTITY');\nfor(const path of [prior.acquisitionReceipt,prior.metadataRetryReceipt]){\n const receipt=load(path);if(receipt.status!=='PASS'||receipt.trainingReady!==false)throw Error('PHASE_ONE_RESULT');\n for(const stream of receipt.streams){const bytes=readFileSync(stream.path);if(hash(bytes)!==stream.sha256||bytes.length!==stream.bytes)throw Error('STREAM_IDENTITY');}\n if(receipt.sources){for(const source of receipt.sources){if(hash(readFileSync(source.path))!==source.sha256)throw Error('WORKSPACE_INPUT_CHANGED');}}\n}\nconst metadataBytes=readFileSync('_work/gpu-owner-recovery/runs/readiness-real-cuda-metadata-2/command.stdout'),metadata=JSON.parse(metadataBytes);\nif(hash(metadataBytes)!==selection.metadataSha256||metadata.packages.length!==572||selection.resolveNodeCount!==metadata.resolve.nodes.length||selection.cubeclCppFeatureSelected!==false)throw Error('ACTUAL_SELECTED_GRAPH_MISMATCH');\nconsole.log(JSON.stringify({status:'PASS',fftArchiveBytesAndHashMatch:true,phaseOneAcquisitionAndOfflineMetadataPass:true,workspaceInputsUnchanged:true,selectedMetadataPackages:metadata.packages.length,llvmRequestGranted:false,llvmImplementationPrepared:false,cudaCompilationPerformed:false,trainingReady:false},null,2));\n"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 319,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "stream": "stdout",
+      "path": "_work/gpu-owner-recovery/runs/readiness-llvm-request-validation-1/command.stdout",
+      "bytes": 319,
+      "sha256": "96d6eb75737b5e76ac449092d0accc910cbceac1479b4c76ae6717c67e7beae9"
+    },
+    {
+      "stream": "stderr",
+      "path": "_work/gpu-owner-recovery/runs/readiness-llvm-request-validation-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

@@ -1,0 +1,9 @@
+{
+  "status": "NORMAL_COMMIT_ATTEMPT_REGISTERED",
+  "request": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/publication-request.json",
+  "parentCommit": "25bcfb61ddde6849d10e61536266b5e2f50c5598",
+  "stagedMembers": 244,
+  "normalCommitInvocationsConsumed": 1,
+  "automaticRetryAuthorized": false,
+  "trainingReady": false
+}

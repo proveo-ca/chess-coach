@@ -1,0 +1,10 @@
+artifacts/training-functional/qualification-result-1/validate.test.ts(43,20): error TS6133: 'b' is declared but its value is never read.
+artifacts/training-functional/qualification-result-1/validate.test.ts(44,31): error TS6133: 'b' is declared but its value is never read.
+artifacts/training-functional/qualification-result-1/validate.test.ts(45,22): error TS6133: 'b' is declared but its value is never read.
+artifacts/training-functional/qualification-result-1/validate.test.ts(46,18): error TS6133: 'b' is declared but its value is never read.
+artifacts/training-functional/qualification-result-1/validate.test.ts(47,29): error TS6133: 'b' is declared but its value is never read.
+artifacts/training-functional/qualification-result-1/validate.test.ts(48,31): error TS6133: 'b' is declared but its value is never read.
+artifacts/training-functional/qualification-result-1/validate.test.ts(49,26): error TS6133: 'b' is declared but its value is never read.
+artifacts/training-functional/qualification-result-1/validate.test.ts(50,28): error TS6133: 'b' is declared but its value is never read.
+artifacts/training-functional/qualification-result-1/validate.test.ts(51,32): error TS6133: 'b' is declared but its value is never read.
+artifacts/training-functional/qualification-result-1/validate.test.ts(53,18): error TS6133: 'b' is declared but its value is never read.

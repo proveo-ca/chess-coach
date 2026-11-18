@@ -1,0 +1,7 @@
+_work/gpu-owner-recovery/cuda-acquire.ts(327,7): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(input: string | Request | URL, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Object literal may only specify known properties, and 'proxy' does not exist in type 'RequestInit'.
+  Overload 2 of 3, '(input: string | Request | URL, init?: BunFetchRequestInit | undefined): Promise<Response>', gave the following error.
+    Type 'false' is not assignable to type 'string | URL | { url: string | URL; headers?: HeadersInit | undefined; } | undefined'.
+  Overload 3 of 3, '(input: RequestInfo | URL, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Object literal may only specify known properties, and 'proxy' does not exist in type 'RequestInit'.

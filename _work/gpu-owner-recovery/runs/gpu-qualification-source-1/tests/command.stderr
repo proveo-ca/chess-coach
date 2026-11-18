@@ -1,0 +1,39 @@
+
+packages/runtime/tests/gpu-recipe.test.ts:
+(pass) GPU recipe opts into the package feature without changing the CPU recipe [0.46ms]
+(pass) prepared LLVM activates only the pinned optional host build dependency [3.67ms]
+(pass) CUDA bindings require an explicit supported encoded version before Cargo [0.22ms]
+(pass) prepared LLVM uses the bundler location without fabricating its cache marker [0.13ms]
+(pass) prepared builder and runtime inputs precede application outputs [0.10ms]
+(pass) GPU and CPU recipes retain the same pinned stages and registered application copies [0.51ms]
+(pass) recipe steps cannot silently provision missing compiler inputs [0.13ms]
+(pass) GPU feature selection leaves CPU master initialization and GPU failure semantics unchanged [0.17ms]
+(pass) unselected prepared inputs and static checks cannot become GPU qualification [0.05ms]
+
+packages/runtime/tests/gpu-qualification.test.ts:
+(pass) GPU plans reuse all six exact fixtures with the feasibility pair first [0.71ms]
+(pass) CPU coverage preserves all 39 tests including valid zero-test harnesses [0.45ms]
+(pass) CPU and GPU artifacts cannot substitute for one another [0.49ms]
+(pass) artifact admission requires successful builds and complete unique harness coverage [0.15ms]
+(pass) only compiler artifacts select executables, never build-script output [0.14ms]
+(pass) compiled policy subprocess paths must survive unchanged [0.11ms]
+(pass) zero-match, ignored-only and duplicate summaries cannot pass GPU qualification [0.18ms]
+(pass) GPU execution uses exact ignored selectors serially without automatic full escalation [0.37ms]
+(pass) failure or timeout stops the campaign without retry or later tests [0.30ms]
+(pass) missing campaign budgets fail and the cleanup reserve cannot fund another test [0.22ms]
+(pass) the CPU runner checks each frozen count rather than treating zero aggregate as regression [0.21ms]
+(pass) source selectors, coordinate counts and CPU coverage match the unchanged Rust fixtures [0.71ms]
+(pass) qualification recipe builds tests without execution and preserves separated absolute paths [0.25ms]
+(pass) the input packet leaves operations, unresolved inputs and training unapproved [0.18ms]
+
+_work/gpu-owner-recovery/prepared-llvm/verify.test.ts:
+(pass) graph checks bind Cargo and rustc from the same pinned toolchain [0.08ms]
+(pass) Cargo without its paired rustc cannot activate graph checks [0.02ms]
+(pass) unversioned tool availability cannot substitute for a pinned toolchain [0.01ms]
+(pass) unavailable Cargo produces no selected graph environment [0.02ms]
+(pass) graph toolchain selection leaves the static-check environment unchanged [0.03ms]
+
+ 28 pass
+ 0 fail
+ 201 expect() calls
+Ran 28 tests across 3 files. [31.00ms]

@@ -1,0 +1,14 @@
+{
+  "status": "READY_APPROVED_EXPLICIT_TEXT_PUBLICATION_PREPARATION",
+  "adversarialSession": "ses_e2fb4bad6ffeZo2vxm6KkikmFp",
+  "verdict": "READY_TO_MERGE_YES",
+  "initialFinding": {"severity":"LOW","issue":"The initial cohort byte check excluded the two generated control files.","resolution":"Serialize both controls before writing and include their bytes in the 16 MiB check."},
+  "remainingFindings": [],
+  "approvedMaximumNormalCommits": 1,
+  "approvedMaximumHttpsPushes": 1,
+  "commitOrPushAttemptedYet": false,
+  "activeGitHooksFound": false,
+  "gitHookBypassAuthorized": false,
+  "nativeProjectOrHostExecutionAuthorizedInCoding": false,
+  "trainingReady": false
+}

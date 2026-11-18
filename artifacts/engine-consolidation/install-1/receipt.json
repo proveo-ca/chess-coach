@@ -1,0 +1,89 @@
+{
+  "status": "PASS",
+  "command": [
+    "/usr/local/bin/node",
+    "/usr/local/share/npm-global/lib/node_modules/pnpm/bin/pnpm.cjs",
+    "--filter=chess-coach",
+    "--filter=@chess-coach/starchess...",
+    "--filter=@chess-coach/starchess-arena...",
+    "--filter=@chess-coach/runtime...",
+    "--filter=@chess-coach/game-core...",
+    "--filter=@chess-coach/server...",
+    "install",
+    "--frozen-lockfile",
+    "--ignore-scripts",
+    "--store-dir=.pnpm-store",
+    "--cache-dir=.cache/pnpm",
+    "--reporter=append-only",
+    "--registry=https://registry.npmjs.org"
+  ],
+  "exitCode": 0,
+  "error": null,
+  "elapsedSeconds": 8.605801529018208,
+  "sourcePinsBefore": [
+    {
+      "path": "package.json",
+      "sha256": "e77aa0da28728252ffb186cb4d4ca8326ec345d3ae87da2741be4f03a0cdd49b"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "9ebc65f7a7fcb05e5bc014d0ddd041994ece9f7a4401b60deacdc963c5b1f643"
+    },
+    {
+      "path": "packages/starchess-core/package.json",
+      "sha256": "d7e607c4395fc5d7319af675d7f3786d7c2f7638d9e899ba6b96483d90f9dd77"
+    },
+    {
+      "path": "packages/game-core/package.json",
+      "sha256": "9613b41d47a69e884d6f3849f0d2be14be57f2d90d3bfeb65916830889049e0f"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "sha256": "6c9b0e4c564724f8a9c41516a43c2b595926c0fb7fa8f7220899ce491a323b54"
+    },
+    {
+      "path": "packages/policy/package.json",
+      "sha256": "45701d6d205c403bf8fa3e4b27c66bbc06f5b7fbb7ae9642a39b33b6dad89d3d"
+    },
+    {
+      "path": "packages/runtime/package.json",
+      "sha256": "8fe8c8418d4f84966d5b0b7d2465341ee87e4b0b661b1a652f39165940303ee1"
+    }
+  ],
+  "sourcePinsAfter": [
+    {
+      "path": "package.json",
+      "sha256": "e77aa0da28728252ffb186cb4d4ca8326ec345d3ae87da2741be4f03a0cdd49b"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "9ebc65f7a7fcb05e5bc014d0ddd041994ece9f7a4401b60deacdc963c5b1f643"
+    },
+    {
+      "path": "packages/starchess-core/package.json",
+      "sha256": "d7e607c4395fc5d7319af675d7f3786d7c2f7638d9e899ba6b96483d90f9dd77"
+    },
+    {
+      "path": "packages/game-core/package.json",
+      "sha256": "9613b41d47a69e884d6f3849f0d2be14be57f2d90d3bfeb65916830889049e0f"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "sha256": "6c9b0e4c564724f8a9c41516a43c2b595926c0fb7fa8f7220899ce491a323b54"
+    },
+    {
+      "path": "packages/policy/package.json",
+      "sha256": "45701d6d205c403bf8fa3e4b27c66bbc06f5b7fbb7ae9642a39b33b6dad89d3d"
+    },
+    {
+      "path": "packages/runtime/package.json",
+      "sha256": "8fe8c8418d4f84966d5b0b7d2465341ee87e4b0b661b1a652f39165940303ee1"
+    }
+  ],
+  "manifestsAndLockUnchanged": true,
+  "lifecycleScriptsEnabled": false,
+  "anonymousConfiguration": true,
+  "registry": "https://registry.npmjs.org",
+  "nativeBuilds": false,
+  "trainingPerformed": false
+}

@@ -1,0 +1,29 @@
+{
+  "status": "PASS_REVIEWED_GPU_FEASIBILITY_SOURCE_FOUR_RECORDS_ONLY",
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/receipt.json",
+    "sha256": "cf632c5896bd5d46b453a67aeb87d2f0bd735b252960c7eca6917cee802d6f60"
+  },
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/host-command.fish",
+    "bytes": 49023,
+    "sha256": "c690e8b0261e6bf09e834a41394369f694393ec6c60e18aa31b0375110f00054"
+  },
+  "sourceHashesChecked": 327,
+  "protectedSourceHashesChecked": 307,
+  "evidenceFilesChecked": 24,
+  "wrapperTests": 48,
+  "wrapperAssertions": 322,
+  "qualificationTests": 41,
+  "typechecks": 4,
+  "persistedPureMockE2eCases": 4,
+  "remainingHostInvocationsAuthorized": 0,
+  "hostExecutionAuthorized": false,
+  "copyingOrStagingAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "kernelJitCompilationAuthorized": false,
+  "publicationAuthorized": false,
+  "trainingAuthorized": false,
+  "originalHostArtifactBytesRehashed": false,
+  "trainingReady": false
+}

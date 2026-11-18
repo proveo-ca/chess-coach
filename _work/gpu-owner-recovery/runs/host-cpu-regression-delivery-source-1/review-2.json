@@ -1,0 +1,22 @@
+{
+  "status": "READY_CPU39_SCRIPT_DELIVERY_SOURCE_ONLY_ALL_SCOPED_REVIEWS_ACCEPTED",
+  "sourceProof": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/receipt.json",
+  "priorFindings": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/review-1.json",
+  "adversarial": {"session":"ses_e2fb4bad6ffeZo2vxm6KkikmFp","verdict":"READY_TO_MERGE_YES","findings":[]},
+  "security": {"session":"ses_e2fb4bac6ffe3oqIaM1dWF2rmH","verdict":"READY_TO_MERGE_YES_SOURCE_ONLY","findings":[]},
+  "devops": {"session":"ses_e2fd5fc9affeLdBUzjh85zAq3g","verdict":"READY_YES_SCOPED_SOURCE_ONLY","findings":[]},
+  "localTests": 6,
+  "localAssertions": 45,
+  "passingStages": 6,
+  "publishedCanonicalBinding": {"bytes":104604,"sha256":"02f358d0abc05a9ab1081f8512abdf455257ec69c69a74361ac5a5a5fa52f1b8","gitBlobSha":"6d4837cd8aaa80f4c73aedbaedd17aea7ea11264"},
+  "bindingIsPreparedNotPublishedYet": true,
+  "committedBlobByteCheckAndSuccessfulPublicationRequiredBeforeHandoff": true,
+  "sourceDeliveryAndCpuAreSeparateTimedPhases": true,
+  "strictEndToEnd4232SecondClaim": false,
+  "actualHostExecuted": false,
+  "downloadsPerformed": false,
+  "fetchingApproved": false,
+  "publicationApproved": false,
+  "experimentTrainingApproved": false,
+  "trainingReady": false
+}

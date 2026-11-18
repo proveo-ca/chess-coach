@@ -1,0 +1,10 @@
+packages/runtime/tests/gpu-policy-conformance.test.ts(53,84): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(expected: string): void', gave the following error.
+    Argument of type 'unknown' is not assignable to parameter of type 'string'.
+  Overload 2 of 2, '(expected: string): void', gave the following error.
+    Argument of type 'unknown' is not assignable to parameter of type 'string'.
+packages/runtime/tests/gpu-policy.test.ts(286,49): error TS2352: Conversion of type 'object' to type 'bigint' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+packages/runtime/tests/gpu-policy.test.ts(287,33): error TS2352: Conversion of type 'object' to type 'bigint' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+packages/runtime/tests/gpu-policy.test.ts(290,40): error TS2352: Conversion of type 'object' to type 'bigint' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+packages/runtime/tests/gpu-policy.test.ts(290,84): error TS2352: Conversion of type 'object' to type 'bigint' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+packages/runtime/tests/gpu-policy.test.ts(290,126): error TS2352: Conversion of type 'object' to type 'bigint' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.

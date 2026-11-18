@@ -1,0 +1,34 @@
+{
+  "status": "ONE_APPROVED_OPERATOR_HOST_TERMINAL_SUBMISSION_ATTEMPT_REGISTERED",
+  "approval": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/terminal-execution-approval.json",
+    "sha256": "1cada1adb31b0f6c279823bdbe1e2f1a7ec87fb67208b5d820a289b34a4b6cc6"
+  },
+  "terminal": "pty_persistent_4248932387136641",
+  "commandText": "fish --no-config _work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command.fish",
+  "script": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command.fish",
+    "bytes": 56981,
+    "sha256": "8705a79ab07681a82531c411f200cee7a82d015ee3a401d3be617919abf7e210"
+  },
+  "adversarialReview": {
+    "session": "ses_e32caef5fffeRXOyJXJwswlBcR",
+    "verdict": "READY_TO_MERGE_YES"
+  },
+  "securityReview": {
+    "session": "ses_e32caef63ffeYUsYlJPTThlNkm",
+    "verdict": "READY_SCOPED_ONE_SHOT_DISPATCH_ONLY"
+  },
+  "maximumTerminalSubmissions": 1,
+  "existingOperatorHostInvocationsConsumed": 1,
+  "remainingExistingOperatorHostInvocations": 0,
+  "automaticRetryAuthorized": false,
+  "terminalSubmissionResponseReceived": false,
+  "actualScriptInvocationObserved": null,
+  "gpuExecutionAttempted": null,
+  "testExecutionAttempted": null,
+  "testsExecuted": null,
+  "codingHostOperationsPerformed": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

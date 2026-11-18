@@ -1,0 +1,28 @@
+{
+  "stage": "recipe",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./packages/runtime/tests/gpu-recipe.test.ts"
+  ],
+  "timeoutMs": 30000,
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 834,
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-2/recipe/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-2/recipe/command.stderr",
+      "bytes": 834,
+      "sha256": "76b2931bf4e9ea81f56d192c768e4309def81c0ef644814e7d047de4c980e16b"
+    }
+  ]
+}

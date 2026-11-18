@@ -1,0 +1,47 @@
+{
+  "version": "chess-coach.reference-prep.v1",
+  "scope": "REFERENCE_PREPARATION_NOT_FUNCTIONAL_QUALIFICATION",
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "bunVersion": "1.4.0",
+  "status": "FAIL",
+  "attempt": {
+    "id": "99b56f61-0690-4e6d-8724-c3d27190b3dd",
+    "pid": 852192,
+    "started": "2026-11-16T23:18:34.748Z",
+    "automaticRetry": false
+  },
+  "phases": [
+    {
+      "mode": "acquire-worker",
+      "budgetMs": 120000,
+      "durationMs": 173,
+      "exitCode": 1,
+      "signalCode": null,
+      "reason": null,
+      "stdoutBytes": 96,
+      "stderrBytes": 17,
+      "stdoutEOF": true,
+      "stderrEOF": true,
+      "status": "FAIL"
+    }
+  ],
+  "proofs": [
+    {
+      "path": "acquire-worker.stdout",
+      "sha256": "98203c84c858a61f06b053f1c25ee4b6ea99017a9be889a2f10b8d55f375e179",
+      "bytes": 96
+    },
+    {
+      "path": "acquire-worker.stderr",
+      "sha256": "631e95f108b81c2bfe7df94d3043faf41716f0abaff83a110ed9f19f2eb8cd9e",
+      "bytes": 17
+    }
+  ],
+  "planSha256": "74b3ae8df07d9a7c215f99aecc46f9defd68005b7a04d102d7e11c85d6fbb059",
+  "error": "Error: acquire-worker-failed",
+  "operationRoot": "artifacts/training-functional/scratch/reference-prep-1",
+  "actualGetRequests": null,
+  "referenceCodeEvaluated": false,
+  "trainingReady": false,
+  "strictEscapedProcessAssurance": false
+}

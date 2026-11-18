@@ -1,0 +1,62 @@
+{
+  "version": "chess-coach.gpu-full-source-publication-request.v1",
+  "status": "AWAITING_FRESH_ONE_NORMAL_COMMIT_AND_FIXED_HTTPS_PUSH_APPROVAL",
+  "parentCommit": "3d35125bdcf27542e6a0ad266a9ed118f9d14658",
+  "branch": "feat-ml-adjuntant-ii",
+  "destination": "https://github.com/proveo-ca/chess-coach.git",
+  "membership": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/publication-envelope.json",
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/receipt.json",
+    "bytes": 69849,
+    "sha256": "b3c6f85338b295e466fa2edb9625e36b89b84f977e97be492bfa7d6b931b9683"
+  },
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command.fish",
+    "bytes": 56981,
+    "sha256": "8705a79ab07681a82531c411f200cee7a82d015ee3a401d3be617919abf7e210"
+  },
+  "hostApproval": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command-approval.json",
+    "bytes": 5201,
+    "sha256": "4065ab7a48d5d1afd9f724a91206483cd6bc5fd61ad269f03e03c52183a67b6d"
+  },
+  "preparationSelection": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/publication-preparation-selection.json",
+    "bytes": 1006,
+    "sha256": "d36fa8adb6552671f70da2a8ef7e94a7e7f1d231d449351327694b7523959385"
+  },
+  "commitArgv": [
+    "git",
+    "commit",
+    "-m",
+    "Fix full-six F64 GPU telemetry cadence handoff"
+  ],
+  "pushArgvTemplate": [
+    "git",
+    "push",
+    "--porcelain",
+    "--no-follow-tags",
+    "--recurse-submodules=no",
+    "https://github.com/proveo-ca/chess-coach.git",
+    "<VERIFIED_NEW_COMMIT>:refs/heads/feat-ml-adjuntant-ii"
+  ],
+  "normalCommitInvocationsRequested": 1,
+  "fixedHttpsPushInvocationsRequested": 1,
+  "gitStagingApproved": false,
+  "normalCommitApproved": false,
+  "httpsPushApproved": false,
+  "publicationApproved": false,
+  "existingInheritedIdentityAndAuthenticationOnly": true,
+  "forceAmendOrHookBypassAuthorized": false,
+  "newCredentialsOrTransportChangesAuthorized": false,
+  "compiledBinariesOrDependencyCachesAuthorized": false,
+  "sourceOrNativeCompilationAuthorized": false,
+  "codingHostOrGpuExecutionAuthorized": false,
+  "newOrRenewedHostInvocationsAuthorized": 0,
+  "existingOperatorHostInvocationsRemaining": 1,
+  "hostInvocationObserved": false,
+  "manualCommandTextDeliveryApproved": false,
+  "automaticRetryAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

@@ -1,0 +1,40 @@
+{
+  "scope": "PRE_FIX_SOURCE_AND_GENUINE_RED_REGRESSION_ONLY",
+  "files": [
+    {
+      "path": "artifacts/training-functional/qualification-evidence.ts",
+      "byteLength": 54645,
+      "sha256": "55dd89577183eddecced460eb2666c2074c54676504bd016293bc9449ecd58b8"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-evidence.test.ts",
+      "byteLength": 61001,
+      "sha256": "651ead906d8f9e67e7ae5283dcb76d3133617df6a00ed084f277245efe2937c0"
+    },
+    {
+      "path": "packages/contracts/src/game-session.ts",
+      "byteLength": 10357,
+      "sha256": "797d7b35465fef380b73c913e6777b20dedee9a10f1ae2cd6e90dab9a83bb07f"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/red-2.stdout",
+      "byteLength": 932,
+      "sha256": "8e52a3673b621337bef0c3471100cbfd0a9f24a155a38200296aaefde5c2a02a"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/red-2.stderr",
+      "byteLength": 1302,
+      "sha256": "fc3666de613fa122916a8e9603df7944ce898cfcbf4dbe115e57605bfbcd2b8e"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/typecheck-red-2.stdout",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-4/typecheck-red-2.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

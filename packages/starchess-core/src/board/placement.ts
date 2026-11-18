@@ -179,6 +179,8 @@ export const findCC = (
  * Command Center deploys its units ring-adjacent, a spawn next to the enemy Command Center stacks a
  * second checker for 2 HP/turn.
  */
+export type CCCheck = { color: StarChessColor; piece: ScPiece["type"]; from: Square; to: Square };
+
 export const collectLegalCCChecks = (
   placement: string,
   opts?: {

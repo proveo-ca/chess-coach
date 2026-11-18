@@ -1,0 +1,24 @@
+{
+  "status": "READY_CURRENT_RETRY_DOCS_AND_RECORDS_ONLY_AWAIT_OPERATOR_VERIFICATION",
+  "reviewer": "ses_e344b3677ffeTWBSkwYLAQeILD",
+  "verdict": "READY_TO_MERGE_YES",
+  "remainingFindings": [],
+  "closeout": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-closeout-1.json",
+    "sha256": "a97a662d582541facf314287cdfcb3758876fe2f180a41d4abaaace0bf99e57b"
+  },
+  "approval": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-approval-1.json",
+    "sha256": "79e605b7dc999597206d1642260ccf4b098c0de3a7cde65dd84e100b1412fcff"
+  },
+  "sourceHashesChecked": 347,
+  "currentDocHashesChecked": 12,
+  "orderedDiagramIndexMatches": 9,
+  "verificationStreamsChecked": 10,
+  "existingFreshRetryApprovalUnchanged": true,
+  "freshRetryInvocationObserved": false,
+  "additionalHostInvocationsAuthorized": 0,
+  "publicationAuthorized": false,
+  "codingHostOperationsPerformed": false,
+  "trainingReady": false
+}

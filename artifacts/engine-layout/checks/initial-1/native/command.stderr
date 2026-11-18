@@ -1,0 +1,267 @@
+$ bun --no-env-file --no-install test ./tests/native
+
+tests/native/classical-resolution.test.ts:
+(pass) pass preserves the initialized board and does not mutate its input [1.73ms]
+(pass) public classical resolution rejects unsupported native-double shapes [0.38ms]
+(pass) visible mutual captures retire the whole attack wave before movement [0.82ms]
+(pass) unseen departing Hoverbikes swap instead of inventing capture witnesses [0.35ms]
+(pass) simultaneous Marine arrival destroys both movers [0.52ms]
+(pass) two moving Command Centers cancel contact without unit destruction [0.09ms]
+(pass) a Command Center takes a simultaneously arriving nonCC mover [0.57ms]
+(pass) a later slider stops short of an already landed Command Center [0.42ms]
+(pass) landing mine death cancels a later potential mover contact [0.36ms]
+(pass) only surviving last-rank Marine arrivals promote to n [0.25ms]
+(pass) only surviving last-rank Marine arrivals promote to b [0.10ms]
+(pass) only surviving last-rank Marine arrivals promote to r [0.18ms]
+(pass) only surviving last-rank Marine arrivals promote to q [0.16ms]
+(pass) sieged visible empty fire shells without moving and unseen empty fire fizzles [0.20ms]
+(pass) Marine empty diagonal mine clearing requires current target visibility [0.20ms]
+(pass) pending CC rays hit blockers and clear every mine on a consumed tile [0.24ms]
+(pass) pending shots execute White before Black even when both lives reach zero [0.07ms]
+(pass) deferred path capture verifies live actor and victim descriptors [0.18ms]
+(pass) deferred CC shot refuses an occupied stop square before changing lives [0.14ms]
+
+tests/native/moves.test.ts:
+(pass) native classical moves > retains w Marine double band from d1 [0.33ms]
+(pass) native classical moves > retains w Marine double band from d2 [0.01ms]
+(pass) native classical moves > retains w Marine double band from d3
+(pass) native classical moves > retains b Marine double band from d8
+(pass) native classical moves > retains b Marine double band from d7
+(pass) native classical moves > retains b Marine double band from d6
+(pass) native classical moves > keeps Marine diagonals capture-only except hostile mine targets [0.14ms]
+(pass) native classical moves > denies forward captures and blocked double steps [0.10ms]
+(pass) native classical moves > marks last-rank w Marine moves for promotion [0.08ms]
+(pass) native classical moves > marks last-rank b Marine moves for promotion
+(pass) native classical moves > lists sieged fire missions through blockers without relocation [0.41ms]
+(pass) native classical moves > marks hostile mines on sieged empty fire targets [0.06ms]
+(pass) native classical moves > flags CC-target intents as dropped at resolution rather than captures [0.24ms]
+(pass) native classical moves > keeps shape-only intents separate from occupancy legality [0.15ms]
+
+tests/native/canonical-resolution.test.ts:
+(pass) matches canonical schedules, mover contacts, mine effects, Charon targets and ray discoveries [470.93ms]
+
+tests/native/native-classical.test.ts:
+(pass) canonical own classical dependency fold > keeps insertion and resulting actor/siege contexts separate [0.91ms]
+(pass) canonical own classical dependency fold > requires a genuine one-step B with matching transfer identity for w [0.25ms]
+(pass) canonical own classical dependency fold > requires a genuine one-step B with matching transfer identity for b [0.03ms]
+(pass) canonical own classical dependency fold > refuses the projected double after an injected two-rank B [0.34ms]
+(pass) canonical own classical dependency fold > uses heads-first dependencies instead of kind sorting or insertion order [0.30ms]
+(pass) canonical own classical dependency fold > preserves cycles and excludes a mover's own origin from head blocking [0.18ms]
+(pass) canonical own classical dependency fold > uses fresh birth identities and preserves relocation type and identity [0.18ms]
+(pass) canonical own classical dependency fold > retains replacement and origin-refill restrictions [0.17ms]
+(pass) canonical own classical dependency fold > toggles siege only for the current own Tank [0.21ms]
+(pass) canonical own classical dependency fold > retains lawful held-promotion drops despite replacement by p [0.09ms]
+(pass) canonical own classical dependency fold > retains lawful held-promotion drops despite replacement by n [0.06ms]
+(pass) canonical own classical dependency fold > retains lawful held-promotion drops despite replacement by b [0.05ms]
+(pass) canonical own classical dependency fold > retains lawful held-promotion drops despite replacement by r [0.04ms]
+(pass) canonical own classical dependency fold > retains lawful held-promotion drops despite replacement by q [0.06ms]
+(pass) canonical own classical dependency fold > promotes immediately without replacing identity [0.11ms]
+(pass) canonical own classical dependency fold > ignores forbidden simulator fields and opponent actions without mutating inputs [0.32ms]
+(pass) canonical own classical dependency fold > preserves invalid insertion diagnostics after a later actor replacement [0.17ms]
+
+tests/native/collision-primitives.e2e.test.ts:
+(pass) a chased mine's landing death prevents a later mover contact [0.06ms]
+
+tests/native/causal-parity.test.ts:
+(pass) journal sink preserves every canonical full-turn outcome for variant 0 [3506.62ms]
+(pass) journal sink preserves every canonical full-turn outcome for variant 1 [3429.71ms]
+(pass) journal sink preserves every canonical full-turn outcome for variant 2 [3468.79ms]
+(pass) journal sink preserves every canonical full-turn outcome for variant 3 [3933.31ms]
+(pass) journal sink preserves every canonical full-turn outcome for variant 4 [2508.26ms]
+
+tests/native/canonical-exports.test.ts:
+(pass) canonical public modules own the native API without a legacy package dependency [5.99ms]
+(pass) unobserved product and native entrypoints do not load a causal producer implementation [12.62ms]
+
+tests/native/canonical.test.ts:
+(pass) matches canonical move, fog and shape fingerprints across the board corpus [74.56ms]
+
+tests/native/turn-resolution.e2e.test.ts:
+(pass) both seats submit to one common opened board and settle through actual B/C/F kernels [0.96ms]
+
+tests/native/queue-action.test.ts:
+(pass) canonical authoritative queue edits > charges each side independently, keeps C free and never mutates its source [0.68ms]
+(pass) canonical authoritative queue edits > rejects insufficient gas, duplicate classicals and repeated special origins [0.33ms]
+(pass) canonical authoritative queue edits > rejects nonplanning phases, missing removals and invalid CC baselines [0.27ms]
+(pass) canonical authoritative queue edits > refunds removed specials without reindexing or exceeding income [0.30ms]
+(pass) canonical authoritative queue edits > rejects removal of a birth needed by the remaining classical actor [0.21ms]
+(pass) canonical authoritative queue edits > does not erase invalid insertion rules with a later replacement or toggle [0.20ms]
+(pass) canonical authoritative queue edits > validates special geometry, promotion, mine state and siege dependencies [0.25ms]
+(pass) canonical authoritative queue edits > gas invariants reject accumulation and overspend independently of edit checks [0.15ms]
+
+tests/native/resolution-primitives.test.ts:
+(pass) ordered mine contact > keeps empty and own-only paths inert in attack mode [0.05ms]
+(pass) ordered mine contact > keeps empty and own-only paths inert in walk mode
+(pass) ordered mine contact > keeps empty and own-only paths inert in arrive mode
+(pass) ordered mine contact > keeps empty and own-only paths inert in walkThenAttack mode
+(pass) ordered mine contact > clears an attacked mine and chases a walker to landing [0.07ms]
+(pass) ordered mine contact > walk-then-attack clears only a landing mine and triggers an intermediate mine [0.03ms]
+(pass) ordered mine contact > CCs clear mines in attack mode [0.01ms]
+(pass) ordered mine contact > CCs clear mines in walk mode
+(pass) ordered mine contact > CCs clear mines in arrive mode
+(pass) ordered mine contact > CCs clear mines in walkThenAttack mode
+(pass) ordered mine contact > preserves native first-mine selection and removes all identities on the spent tile [0.05ms]
+(pass) simultaneous travel timing > retains p travel and airborne rules [0.03ms]
+(pass) simultaneous travel timing > retains n travel and airborne rules
+(pass) simultaneous travel timing > retains b travel and airborne rules
+(pass) simultaneous travel timing > retains r travel and airborne rules
+(pass) simultaneous travel timing > retains q travel and airborne rules
+(pass) simultaneous travel timing > retains k travel and airborne rules
+(pass) simultaneous travel timing > airborne movers occupy only landing while ground movers traverse ray tiles [0.03ms]
+(pass) simultaneous travel timing > reports the first holder and a lower-named head-on swap tile [0.03ms]
+(pass) simultaneous travel timing > keeps landing deaths present at contact tick but absent from later collisions [0.03ms]
+(pass) causal ray discovery prerequisites > records exact first discovery, stop-before and evaluated path taps [0.37ms]
+(pass) causal ray discovery prerequisites > stops at the first adjacent blocker and avoids querying later contacts [0.08ms]
+(pass) Charon strike primitives > ignores nonships but respects first allied or enemy ship screens [0.08ms]
+(pass) Charon strike primitives > bound paid side can fire after the actor disappears while planning requires a Mecha [0.03ms]
+(pass) Charon strike primitives > removes only the chosen ship and preserves fizzle ray edges [0.04ms]
+
+tests/native/canonical-planning.test.ts:
+(pass) matches canonical native-dependency and append fingerprints across both sides [696.59ms]
+
+tests/native/canonical-queue.test.ts:
+(pass) matches canonical queue acceptance, refusal, gas and removal fingerprints [585.22ms]
+
+tests/native/economy.test.ts:
+(pass) canonical economy > retains locked caps, opening banks and costs [0.12ms]
+(pass) canonical economy > preserves turn 0 income and clock [0.06ms]
+(pass) canonical economy > preserves turn 1 income and clock
+(pass) canonical economy > preserves turn 10 income and clock
+(pass) canonical economy > preserves turn 11 income and clock
+(pass) canonical economy > preserves turn 20 income and clock
+(pass) canonical economy > preserves turn 21 income and clock
+(pass) canonical economy > preserves turn 45 income and clock
+(pass) canonical economy > adds turn income without mutating the bank [0.09ms]
+(pass) canonical economy > caps both stored banks [0.02ms]
+(pass) canonical economy > estimates missing stored banks from advanced turns [0.19ms]
+(pass) canonical economy > counts deployed material consistently across board representations [0.54ms]
+(pass) canonical economy > retains deploy gas and actor [0.03ms]
+(pass) canonical economy > retains stimStep gas and actor
+(pass) canonical economy > retains spiderMine gas and actor
+(pass) canonical economy > retains charonMissiles gas and actor
+(pass) canonical economy > retains siegeMode gas and actor
+(pass) canonical economy > retains tacticalJump gas and actor
+(pass) canonical economy > debits only unqueued same-side overlay specials [0.12ms]
+(pass) canonical economy > clamps overlay gas at zero [0.02ms]
+
+tests/native/mines.test.ts:
+(pass) canonical mine geometry > enumerates ordered exclusive intermediates and rejects non-rays [0.06ms]
+(pass) canonical mine geometry > exempts Hoverbike leaps and Command Centers from mine path contact [0.04ms]
+(pass) canonical mine geometry > packs sorted side-local mines and parses recognized coordinates [0.42ms]
+(pass) canonical mine geometry > retains the actual three-mine per-side cap [0.11ms]
+
+tests/native/initialization.test.ts:
+(pass) canonical initialization matches the exact reference snapshot without a grant [0.09ms]
+(pass) w: public opening seeds endowed identities, not payments [0.27ms]
+(pass) b: public opening seeds endowed identities, not payments [0.12ms]
+(pass) canonical game calls own independent nested state and identity records [0.09ms]
+
+tests/native/turn-resolution.test.ts:
+(pass) canonical init, open and pass settlement use actual kernels without changing input banks [0.37ms]
+(pass) B Marine transfer preserves positional double eligibility without public override flags [0.69ms]
+(pass) a held B mine follows the Marine to its true classical destination [0.32ms]
+(pass) blocked rewrite settles the held mine at the B arrival instead of inventing a continuation [0.35ms]
+(pass) F Marine step follows its own classical actor and holds a landing mine through the final hop [0.35ms]
+(pass) F-before-C authored order retains the canonical unpromoted last-rank Marine [0.18ms]
+(pass) F deployment anchors on the same Command Center's actual classical result [0.32ms]
+(pass) paid F Charon remains fire-and-forget after the Mecha dies [0.29ms]
+(pass) B siege fires in place and F siege follows its own moved Tank [0.46ms]
+(pass) two B jumps onto one initially empty tile destroy both ships [0.42ms]
+(pass) F mines migrate only with the arming Hoverbike's own classical action [0.57ms]
+(pass) terminal turn-open chips advance once without a planning queue or hidden grant [0.44ms]
+
+tests/native/canonical-classical.test.ts:
+(pass) classical phase matches canonical reference for d3 / d5 [1329.74ms]
+(pass) classical phase matches canonical reference for c3 / f6 [1238.43ms]
+(pass) classical phase matches canonical reference for d4 / e4 [1352.51ms]
+(pass) classical phase matches canonical reference for c7 / f2 [1043.09ms]
+(pass) classical phase matches canonical reference for a7 / h2 [671.29ms]
+(pass) classical phase matches canonical reference for b2 / g7 [1013.91ms]
+
+tests/native/planning.e2e.test.ts:
+(pass) public planning primitives hide an unseen blocker without consulting it for intent shape [0.91ms]
+
+tests/native/planning-intents.test.ts:
+(pass) canonical recipient append constraints > classifies known action {"kind":"classical","timing":"C","color":"w","from":"a1","to":"a8"} [0.10ms]
+(pass) canonical recipient append constraints > classifies known action {"kind":"classical","timing":"C","color":"w","from":"d2","to":"e3"}
+(pass) canonical recipient append constraints > classifies known action {"kind":"stimStep","timing":"B","color":"w","from":"d2","to":"d3"} [0.01ms]
+(pass) canonical recipient append constraints > classifies known action {"kind":"deploy","timing":"B","color":"w","from":"e1","to":"f2","unit":"p"} [0.02ms]
+(pass) canonical recipient append constraints > classifies known action {"kind":"stimStep","timing":"B","color":"w","from":"a1","to":"d3"}
+(pass) canonical recipient append constraints > classifies known action {"kind":"stimStep","timing":"B","color":"b","from":"d2","to":"d3"}
+(pass) canonical recipient append constraints > classifies known action {"kind":"stimStep","timing":"B","color":"w","from":"d2","to":"d4"} [0.03ms]
+(pass) canonical recipient append constraints > classifies known action {"kind":"deploy","timing":"B","color":"w","from":"e1","to":"h8","unit":"p"}
+(pass) canonical recipient append constraints > classifies known action {"kind":"tacticalJump","timing":"B","color":"w","from":"d1","to":"d1"}
+(pass) canonical recipient append constraints > classifies known action {"kind":"tacticalJump","timing":"B","color":"w","from":"d1","to":"a1"}
+(pass) canonical recipient append constraints > classifies known action {"kind":"spiderMine","timing":"B","color":"w","from":"b1","to":"b2"}
+(pass) canonical recipient append constraints > keeps unknown paths and target occupancy outside classical shape eligibility [0.09ms]
+(pass) canonical recipient append constraints > allows deployment crushing except on Command Centers [0.04ms]
+(pass) canonical recipient append constraints > projects F deploys around the CC landing but leaves B at its origin [0.07ms]
+(pass) canonical recipient append constraints > distinguishes vacated B origins, reserved transit and matching gas pairs [0.09ms]
+(pass) canonical recipient append constraints > finds prior B births and transfers only for own classical actors [0.14ms]
+(pass) canonical recipient append constraints > enforces one C and one special per original actor [0.05ms]
+(pass) canonical recipient append constraints > enforces promotion fields and excludes deferred F promotion [0.05ms]
+(pass) canonical recipient append constraints > applies mine cap and F anchors without requiring a known Charon victim [0.09ms]
+(pass) canonical recipient append constraints > denies sieged fire at own mines but permits unsieged targeting [0.05ms]
+(pass) canonical recipient append constraints > rewrites only genuine forward Marine-band and matching warp structures [0.10ms]
+
+tests/native/vision.test.ts:
+(pass) canonical cumulative fog > retains k central vision shape [0.07ms]
+(pass) canonical cumulative fog > retains p central vision shape [0.01ms]
+(pass) canonical cumulative fog > retains n central vision shape
+(pass) canonical cumulative fog > retains b central vision shape
+(pass) canonical cumulative fog > retains r central vision shape
+(pass) canonical cumulative fog > retains q central vision shape [0.02ms]
+(pass) canonical cumulative fog > mirrors Marine vision and clips board edges [0.04ms]
+(pass) canonical cumulative fog > expands siege vision without occupancy blocking [0.06ms]
+(pass) canonical cumulative fog > keeps Mecha BattleShip pings dark until cumulative friendly vision lights them [0.04ms]
+(pass) canonical cumulative fog > lets only own mines light their tile and leaves an empty army in fog [0.03ms]
+(pass) canonical cumulative fog > uses cumulative side visibility and explicit shot reveals [0.14ms]
+(pass) canonical cumulative fog > records the first intermediate path reveal without mutating occupancy [0.14ms]
+
+tests/native/board.test.ts:
+(pass) canonical board geometry > round-trips all 64 coordinates and rejects off-board coordinates [0.10ms]
+(pass) canonical board geometry > round-trips canonical placement 8/8/8/8/8/8/8/8 [0.06ms]
+(pass) canonical board geometry > round-trips canonical placement rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR [0.02ms]
+(pass) canonical board geometry > round-trips canonical placement 4k3/8/3r4/8/2R5/8/8/4K3
+(pass) canonical board geometry > reports invalid placement rank count and occupied overflow [0.07ms]
+(pass) canonical board geometry > finds both Command Centers and tanks [0.08ms]
+(pass) canonical board geometry > uses directional Marine attacks rather than forward movement [0.07ms]
+(pass) canonical board geometry > stops sliding rays at occupancy but permits attacking the blocker square [0.03ms]
+(pass) canonical board geometry > keeps leaps independent of blockers and excludes self-attacks [0.04ms]
+(pass) canonical board geometry > retains mutual adjacent Command Center attacks [0.14ms]
+(pass) canonical board geometry > uses attacking-side visibility and stable checker ordering [0.59ms]
+
+tests/native/outcome.test.ts:
+(pass) canonical terminal outcomes > resolves CC lives 0:0 [0.05ms]
+(pass) canonical terminal outcomes > resolves CC lives -1:0
+(pass) canonical terminal outcomes > resolves CC lives 0:3
+(pass) canonical terminal outcomes > resolves CC lives 3:0
+(pass) canonical terminal outcomes > keeps unequal surviving lives nonterminal before the cap [0.02ms]
+(pass) canonical terminal outcomes > compares surviving CC lives at turn 45 [0.02ms]
+(pass) canonical terminal outcomes > compares surviving CC lives at turn 46
+
+tests/native/canonical-turn.test.ts:
+(pass) full canonical begin/admission/settlement matches variant 0 [756.91ms]
+(pass) full canonical begin/admission/settlement matches variant 1 [757.13ms]
+(pass) full canonical begin/admission/settlement matches variant 2 [731.96ms]
+(pass) full canonical begin/admission/settlement matches variant 3 [766.75ms]
+(pass) full canonical begin/admission/settlement matches variant 4 [461.53ms]
+
+tests/native/causal-events.test.ts:
+(pass) journaled init/open/pass retains private identities and returns detached successors [1.60ms]
+(pass) birth, immediate mine death and native mine multiplicity retain distinct actual identities [1.37ms]
+(pass) promotion preserves the Marine identity through B and C transformations [1.25ms]
+(pass) mutual casualties share the same live preimage and both recipients retain their witnesses [0.82ms]
+(pass) starting snapshot checks reject substituted placement, ordered mines, native siege and turn [0.55ms]
+(pass) failed, nested and out-of-group mutations cannot publish a successor [0.32ms]
+(pass) collector rejects final drift and cannot be reused after successful completion [0.32ms]
+(pass) successful native guard retains evaluation and applied target identities without imposing equality [0.81ms]
+(pass) stationary CC-shot consumption needs a group-bound no-op move and cannot repeat [0.44ms]
+(pass) stationary CC-shot consumption rejects wrong actor origins and substituted actors [0.35ms]
+(pass) stationary CC-shot consumption retains damage sequence, target and movement guards [0.40ms]
+(pass) capture consumption still requires actual movement even with a no-op move proof [0.20ms]
+
+ 211 pass
+ 0 fail
+ 12465 expect() calls
+Ran 211 tests across 25 files. [28.93s]

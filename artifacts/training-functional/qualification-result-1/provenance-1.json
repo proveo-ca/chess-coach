@@ -1,0 +1,123 @@
+{
+  "scope": "USER_PASTED_JSON_RECONSTRUCTION_NOT_DIRECT_HOST_CAPTURE",
+  "classification": [
+    "contained",
+    "backend",
+    "spec-impacting",
+    "local-evidence-intake"
+  ],
+  "architectConsult": "ses_e159cf5d7ffelxRFfSMD11SK0e",
+  "backendConsult": "ses_e159bcdf3ffen5z4JLluKCShS3",
+  "publicationCommit": "e821b5169f29b191b8418763508bd54292774aef",
+  "captures": [
+    {
+      "path": "artifacts/training-functional/qualification-result-1/bootstrap.json",
+      "byteLength": 6141,
+      "sha256": "4278758382c751a5881bf477b1c4eb2b7230a6f8c52a5125da9bd8e469a50216",
+      "fidelity": "MANUAL_FIRST_JSON_TRANSCRIPTION",
+      "excludedPrefix": "Executor: ",
+      "finalLFAdded": true,
+      "originalTerminalBytesVerified": false
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/operator-transcription-1-unverified.json",
+      "byteLength": 36853,
+      "sha256": "55534334e921503a8dbf58acfe8f12dd56471c75a6e71d7d61e4123a9b2bcbc3",
+      "fidelity": "PROVISIONAL_MANUAL_TRANSCRIPTION_NOT_ACCEPTED_AS_EXACT",
+      "declaredQueries": 85,
+      "transcribedQueryEntries": 93,
+      "discrepancyAttribution": "UNRESOLVED_LOCAL_TRANSCRIPTION_FIDELITY_NOT_HOST_FAILURE",
+      "requiresExistingOriginalOperatorReport": true
+    }
+  ],
+  "localHashScope": "LOCAL_FILES_ONLY_NOT_ORIGINAL_STDOUT_OR_HOST_FILES",
+  "reportedFileReferences": [
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-delivery-1/preparation-receipt.json",
+      "byteLength": 1921,
+      "sha256": "20f2b4620ef665698a8b7bfffc9fb10ac784491541bc531aa682e7f666a47fd7"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/qualification-inputs/input-manifest.json",
+      "byteLength": 143938,
+      "sha256": "7bc8885b4ee97be1d4935aa4dcc994275ea41e2e368b144e29be1b598b53ae51"
+    }
+  ],
+  "reportedFileReferencesVerifiedAgainstActualBytes": false,
+  "reportedOutcome": {
+    "bootstrap": "PASS_SIX_OFFLINE_REFERENCE_BUILDS",
+    "qualification": "PASS",
+    "canonical": "PASS",
+    "r4": "PASS",
+    "functional": "PASS_RETAINED_FUNCTIONAL_EVIDENCE",
+    "nativeTrace": "COMPLETE",
+    "container": "NATURAL_EXIT0_NO_OOM_OR_ERROR_REMOVED",
+    "elapsedMs": 171757.908033
+  },
+  "observation": {
+    "path": "artifacts/training-functional/qualification-result-1/observation-1.json",
+    "byteLength": 3002,
+    "sha256": "ca9b26a4af7679ad3d72079e34e35a333f63021f479c180e8f69ffdee1407ea3"
+  },
+  "sourceContracts": {
+    "path": "artifacts/training-functional/qualification-result-1/contract-bindings-1.json",
+    "byteLength": 2732,
+    "sha256": "f84169e40904f23ce691e40c88c33795194e4ffe3a483fb9a34366ba389167de"
+  },
+  "verification": {
+    "path": "artifacts/training-functional/qualification-result-1/checks-2/receipt.json",
+    "byteLength": 4365,
+    "sha256": "82e9b8f8f55d59938a9551e5ae05c057e0feac01de3df0fe7d8fcdce64fbd1e7"
+  },
+  "requestedReadback": [
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-1/evidence/operator-report.json",
+      "maxBytes": 1048576,
+      "kind": "EXISTING_JSON_ONLY_NO_REEXECUTION"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-1/evidence/canonical.json",
+      "maxBytes": 1048576,
+      "kind": "EXISTING_JSON_ONLY_NO_REEXECUTION"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-1/evidence/r4.json",
+      "maxBytes": 1048576,
+      "kind": "EXISTING_JSON_ONLY_NO_REEXECUTION"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-1/evidence/functional-evidence.json",
+      "maxBytes": 1048576,
+      "kind": "EXISTING_JSON_ONLY_NO_REEXECUTION"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-delivery-1/preparation-receipt.json",
+      "maxBytes": 1048576,
+      "kind": "EXISTING_JSON_ONLY_NO_REEXECUTION"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/qualification-inputs/input-manifest.json",
+      "maxBytes": 1048576,
+      "kind": "EXISTING_JSON_ONLY_NO_REEXECUTION"
+    }
+  ],
+  "pending": [
+    "Resolve operator transcript fidelity against the retained original",
+    "Validate retained preparation and input-manifest bytes against their reported pins",
+    "Inspect REAL canonical, BOTH, close and R4 functional proof",
+    "Resolve campaign-wiring operational qualification using the accepted fixed inventory",
+    "Obtain explicit functional acceptance",
+    "Obtain separate approval before planned training"
+  ],
+  "newGatesAdded": [],
+  "deferredHardening": "ALL_AFTER_ALL_PLANNED_TRAINING_AND_VALIDATED_RESULTS",
+  "publicationAllowancesRemaining": 0,
+  "hostFactsRetryRemaining": 0,
+  "assistantHostFilesRead": false,
+  "assistantHostOrNativeOrGpuExecuted": false,
+  "actualReferenceBuildsByAssistant": 0,
+  "trainingExecuted": false,
+  "commitOrPushPerformed": false,
+  "qualified": false,
+  "trainingReady": false
+}

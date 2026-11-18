@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "include": [
+    "../reference-retry.ts",
+    "../reference-retry.test.ts",
+    "../jssha-archive.ts",
+    "../jssha-archive.test.ts",
+    "./verify-source.ts"
+  ]
+}

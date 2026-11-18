@@ -1,0 +1,11 @@
+
+> @chess-coach/starchess@0.0.1 typecheck /home/gu1lty/Projects/proveo/chess-coach-integration/apps/starchess
+> tsgo -b --noEmit
+
+../../packages/starchess-core/src/engine/planning-intents.ts(126,84): error TS2345: Argument of type 'readonly ScActionInput[]' is not assignable to parameter of type 'readonly ScAction[]'.
+  Type 'ScActionInput' is not assignable to type 'ScAction'.
+    Type 'Omit<{ timing: "B" | "F"; kind: ScSpecialKind; color: StarChessColor; from: "a1" | "a2" | "a3" | "a4" | "a5" | "a6" | "a7" | "a8" | "b1" | "b2" | "b3" | "b4" | ... 51 more ... | "h8"; to?: "a1" | ... 63 more ... | undefined; unit?: SpawnPiece | undefined; promotion?: SpawnPiece | undefined; seq: number; }, "seq">' is not assignable to type 'ScAction'.
+      Property 'seq' is missing in type 'Omit<{ timing: "B" | "F"; kind: ScSpecialKind; color: StarChessColor; from: "a1" | "a2" | "a3" | "a4" | "a5" | "a6" | "a7" | "a8" | "b1" | "b2" | "b3" | "b4" | ... 51 more ... | "h8"; to?: "a1" | ... 63 more ... | undefined; unit?: SpawnPiece | undefined; promotion?: SpawnPiece | undefined; seq: number; }, "seq">' but required in type '{ timing: "B" | "F"; kind: ScSpecialKind; color: StarChessColor; from: "a1" | "a2" | "a3" | "a4" | "a5" | "a6" | "a7" | "a8" | "b1" | "b2" | "b3" | "b4" | ... 51 more ... | "h8"; to?: "a1" | ... 63 more ... | undefined; unit?: SpawnPiece | undefined; promotion?: SpawnPiece | undefined; seq: number; }'.
+/home/gu1lty/Projects/proveo/chess-coach-integration/apps/starchess:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @chess-coach/starchess@0.0.1 typecheck: `tsgo -b --noEmit`
+Exit status 1

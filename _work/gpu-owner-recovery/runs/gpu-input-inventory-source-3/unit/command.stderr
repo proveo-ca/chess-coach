@@ -1,0 +1,15 @@
+
+_work/gpu-owner-recovery/qualification/input-inventory.test.ts:
+(pass) the bounded walker records metadata and apparent bytes without following links [1.01ms]
+(pass) entry and output exhaustion preserve bounded incomplete observations [0.29ms]
+(pass) metadata failures preserve prior records without declaring broken LLVM [0.17ms]
+(pass) invalid sizes and non-direct entries cannot escape the accounting boundary [0.20ms]
+(pass) the fixed request separates lead metadata permission from operator host permission [0.37ms]
+(pass) host inspection uses one pull and one combined bounded image/container worker [0.33ms]
+(pass) host tool inspection reports each failure, unresolved C++ libraries and cleanup separately [0.14ms]
+(pass) host receipt failures cannot turn into success and syntax attempts track launched stages [0.18ms]
+
+ 8 pass
+ 0 fail
+ 64 expect() calls
+Ran 8 tests across 1 file. [17.00ms]

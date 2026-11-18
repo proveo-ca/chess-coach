@@ -1,0 +1,24 @@
+
+_work/gpu-owner-recovery/verify.test.ts:
+(pass) Bun test commands select exact repository files rather than discovering fixture clones [0.29ms]
+(pass) CUDA archive tool manifests retain exact parsers, root dispatcher, fixtures and acquisition snapshots [4.85ms]
+(pass) CUDA acquisition tool manifests retain exact tests, orchestration, grant and predecessor proof [3.94ms]
+(pass) CUDA isolation tool manifests retain the wrapper, exact test, task configuration and grant [3.09ms]
+(pass) every source manifest includes the executed supervisor and pinned reference metadata [10.68ms]
+(pass) repository runner retains bounded successful output and exact exit [38.73ms]
+(pass) repository runner preserves nonzero exits without success substitution [20.90ms]
+(pass) repository runner kills its bounded stalled synthetic child [34.55ms]
+(pass) repository runner retains group custody after a command exits with inherited pipes open [201.70ms]
+(pass) repository runner rejects supervisor loss after a successful command exit [230.26ms]
+(pass) repository command supervisor terminates its anchored group on runner disconnect [22.79ms]
+(pass) repository runner rejects stdout overflow and preserves only the bounded prefix [69.69ms]
+(pass) repository runner rejects stderr overflow and preserves only the bounded prefix [63.09ms]
+(pass) repository runner refuses paths outside the repository work root [0.30ms]
+
+_work/gpu-owner-recovery/audit-lock.test.ts:
+(pass) lock audit authenticates the original baseline despite checksum-substituting replacement refs [249.89ms]
+
+ 15 pass
+ 0 fail
+ 216 expect() calls
+Ran 15 tests across 2 files. [975.00ms]

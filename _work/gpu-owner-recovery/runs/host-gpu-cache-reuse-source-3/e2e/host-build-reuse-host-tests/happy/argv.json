@@ -1,0 +1,124 @@
+{
+  "scope": "SOURCE_ONLY_MOCK_NOT_HOST_EVIDENCE",
+  "actualDockerProcesses": 0,
+  "actualNativeProcesses": 0,
+  "actualDocker": 0,
+  "actualNative": 0,
+  "gpuExecuted": false,
+  "hostEvidence": false,
+  "dockerCliCompatibilityValidated": false,
+  "nativeCliCompatibilityValidated": false,
+  "calls": [
+    {
+      "id": "worker-create",
+      "argv": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "create",
+        "--pull=never",
+        "--platform=linux/amd64",
+        "--network=none",
+        "--cpus=2",
+        "--memory=8g",
+        "--memory-swap=8g",
+        "--user=1001:1002",
+        "--cidfile=/source-only-mock/new-evidence/worker.cid",
+        "--label=chess-coach.native-build=host-gpu-native-build-2",
+        "--workdir=/build/native",
+        "--entrypoint=/usr/local/bin/bun",
+        "--mount",
+        "type=bind,source=/source-only-mock/received/context,target=/received,readonly",
+        "--mount",
+        "type=bind,source=/source-only-mock/new-workspace/native,target=/build/native",
+        "--mount",
+        "type=bind,source=/source-only-mock/retained/cargo-home,target=/capture/cargo-home",
+        "--mount",
+        "type=bind,source=/source-only-mock/retained/native/target-gpu,target=/build/native/target-gpu",
+        "--mount",
+        "type=bind,source=/source-only-mock/received/context/gpu-build/llvm,target=/opt/tracel-data/tracel/tracel-llvm-23.1.0-4,readonly",
+        "--mount",
+        "type=bind,source=/source-only-mock/retained/bun,target=/usr/local/bin/bun,readonly",
+        "--mount",
+        "type=bind,source=/source-only-mock/new-evidence,target=/evidence,readonly",
+        "--mount",
+        "type=bind,source=/source-only-mock/new-evidence/native,target=/build/native/_work/gpu-owner-recovery/runs/host-gpu-native-build-2",
+        "--env",
+        "CARGO_HOME=/capture/cargo-home",
+        "--env",
+        "CARGO_TARGET_DIR=/build/native/target-gpu",
+        "--env",
+        "CARGO_BUILD_JOBS=2",
+        "--env",
+        "RAYON_NUM_THREADS=2",
+        "--env",
+        "XDG_DATA_HOME=/opt/tracel-data",
+        "--env",
+        "CUDARC_CUDA_VERSION=13000",
+        "--env",
+        "CARGO_NET_OFFLINE=true",
+        "--env",
+        "CARGO_NET_RETRY=0",
+        "--env",
+        "RUSTUP_AUTO_INSTALL=0",
+        "--env",
+        "HOME=/build/native/_work/gpu-owner-recovery/scratch/home",
+        "--env",
+        "TMPDIR=/build/native/_work/gpu-owner-recovery/scratch/tmp",
+        "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+        "--no-env-file",
+        "--no-install",
+        "/evidence/build-driver.mjs"
+      ],
+      "timeoutMs": 120000,
+      "at": 0
+    },
+    {
+      "id": "worker-start",
+      "argv": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "start",
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ],
+      "timeoutMs": 120000,
+      "at": 11
+    },
+    {
+      "id": "worker-logs",
+      "argv": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "logs",
+        "--follow",
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ],
+      "timeoutMs": 3600000,
+      "at": 22
+    },
+    {
+      "id": "worker-state",
+      "argv": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "container",
+        "inspect",
+        "--format",
+        "{{json .State}}",
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ],
+      "timeoutMs": 10000,
+      "at": 33
+    },
+    {
+      "id": "worker-remove",
+      "argv": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "rm",
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ],
+      "timeoutMs": 20000,
+      "at": 44
+    }
+  ]
+}

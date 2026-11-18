@@ -1,0 +1,25 @@
+{
+  "status": "PASS_LOCAL_FAKE_GIT_CHILD_UMASK_AND_PARENT_RESTORATION",
+  "scope": "SYNTHETIC_LOCAL_BUN_PROCESS_ONLY_NOT_BOOTSTRAP_OR_GIT_EXECUTION",
+  "command": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/scratch/qualification-mask-probe-83OnOG/probe.ts"
+  ],
+  "observed": {
+    "restored": 63,
+    "child": {
+      "scope": "FAKE_GIT_ONLY",
+      "mask": 18,
+      "regularMode": 420,
+      "executableMode": 493
+    },
+    "stderr": "",
+    "exitCode": 0
+  },
+  "actualGitExecuted": false,
+  "hostExecuted": false,
+  "referenceBuilt": false,
+  "nativeOrGpuExecuted": false
+}

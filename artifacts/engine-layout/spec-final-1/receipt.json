@@ -1,0 +1,71 @@
+{
+  "status": "PASS",
+  "runtime": "Bun",
+  "coverageAndNoteBounds": true,
+  "retiredActiveCoverage": false,
+  "documentPins": [
+    {
+      "path": "_spec/engine-consolidation.puml",
+      "mode": 420,
+      "sha256": "34a72c26198574f8a2e8a5a2ce9f77a9fa723cdf516da14b1a0ef3601eb34785",
+      "sizeBytes": 9064
+    },
+    {
+      "path": "_spec/ml-runtime-architecture.puml",
+      "mode": 420,
+      "sha256": "82902823265f5d44b83ed5c5c076347fe30c429983d10dcf970d9bdd78ef8e16",
+      "sizeBytes": 5292
+    },
+    {
+      "path": "_spec/game-core.puml",
+      "mode": 420,
+      "sha256": "2fc99a7e11bd38cee163c3ee9c4b66c4cf46f59dbd5a6bc6e4b3d36c240ca7f1",
+      "sizeBytes": 2317
+    },
+    {
+      "path": "_spec/causal-journal.puml",
+      "mode": 420,
+      "sha256": "c6fb7990ad270817de718647b1b91177d83c89e06e96278f68dd1e30eba550cc",
+      "sizeBytes": 3435
+    },
+    {
+      "path": "_spec/turn-resolution.puml",
+      "mode": 420,
+      "sha256": "40baf4f86f03415926b8568d24483d9469b18f6f31241728efb44d314c04c23d",
+      "sizeBytes": 2414
+    },
+    {
+      "path": "_spec/classical-resolution.puml",
+      "mode": 420,
+      "sha256": "b69509172c78f1b0970344e32d6d75487d634cc53da7da11b4481f85aa72900e",
+      "sizeBytes": 2110
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "mode": 420,
+      "sha256": "cbc1f6e5f57266f115c7ff16b3eb3741ec8b2ada52102fc9b692cc153965e37a",
+      "sizeBytes": 52159
+    },
+    {
+      "path": "_spec/architecture.md",
+      "mode": 420,
+      "sha256": "11d85fa75a0ddcff2eb2c652325082b98af1b19ca33b98fe46ae1df32c9cc2cf",
+      "sizeBytes": 20354
+    },
+    {
+      "path": "_spec/verification.md",
+      "mode": 420,
+      "sha256": "a1ecbb6b6e063e4fd3e6ba44971984d085feee3db0929c48fd7ffaa4633c284f",
+      "sizeBytes": 90792
+    },
+    {
+      "path": "README.md",
+      "mode": 420,
+      "sha256": "a8ee4a6a6bf5ad9c768ccc04a57dad4dd612a5e837e11076fd2e3e66ad82a302",
+      "sizeBytes": 15619
+    }
+  ],
+  "postDocumentWorkspaceTests": 8,
+  "diagramRenderingSkipped": true,
+  "skipReason": "Bun-only task scope; full remote PlantUML theme remains unverified"
+}

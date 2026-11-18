@@ -1,0 +1,12 @@
+{
+  "status": "READY_PREPARATION_PACKET_ONLY",
+  "session": "ses_e2e4b1ef3ffeptPhqouftYEoBl",
+  "verification": "../package-acquisition-bun-source2/freshverification-5/receipt.json",
+  "readyToMerge": true,
+  "remainingFindings": [],
+  "fullCaptureCallerOrDeliveryIntegrationQualified": false,
+  "operationalPermissionGranted": false,
+  "newAcquisitionOrManualHandoffGrantIssued": false,
+  "publicationAuthorityGrantedByReview": false,
+  "trainingReady": false
+}

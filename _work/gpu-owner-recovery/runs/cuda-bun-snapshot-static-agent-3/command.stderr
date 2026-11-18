@@ -1,0 +1,24 @@
+
+_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+43 | export const predecessorPaths = proofPaths;
+44 | const acceptanceFlags = ["staticUnitTestsPassed", "staticTypesPassed", "adversarialSourceAccepted", "securitySourceAccepted", "devopsSourceAccepted"] as const;
+45 | const outerBootstrapTrust = "EXISTING_C1_BUN_AND_MISE_BOOTSTRAP_ASSUMPTION_RETAINED_NOT_AUTHENTICATED_BY_GUEST_SNAPSHOT";
+46 | const encode = (value: string): Uint8Array => new TextEncoder().encode(value);
+47 | const parse = (bytes: Uint8Array): unknown => JSON.parse(new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes));
+48 | function need(condition: unknown, code: string): asserts condition { if (!condition) throw Error(code); }
+                                                                                                ^
+error: UNTRUSTED_SNAPSHOT_ANCESTOR
+      at need (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.ts:48:92)
+      at ancestors (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.ts:180:5)
+      at async readSmall (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.ts:216:33)
+      at async <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:16:143)
+-------------------------------
+
+
+ 0 pass
+ 1 fail
+ 1 error
+Ran 1 test across 1 file. [24.00ms]

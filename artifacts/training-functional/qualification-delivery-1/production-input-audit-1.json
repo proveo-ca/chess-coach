@@ -1,0 +1,32 @@
+{
+  "scope": "READ_ONLY_PUBLISHED_INPUT_MAPPING_AND_PRODUCTION_CONSTANTS_NOT_PREPARATION_OR_BUILD",
+  "status": "PASS",
+  "groups": [
+    {
+      "kind": "local-inputs-1",
+      "files": 427,
+      "bytes": 3850400
+    },
+    {
+      "kind": "corpus-inputs-1",
+      "files": 2,
+      "bytes": 671849
+    }
+  ],
+  "flatFiles": 6,
+  "mappedFiles": 435,
+  "mappedBytes": 4635549,
+  "expectedBundleFiles": 6,
+  "expectedBundleBytes": 939123,
+  "expectedUniqueResolvedInputs": 95,
+  "source3ExecutionFiles": 108,
+  "source3ExecutionBytes": 641523,
+  "allProductionMetadataPinsMatch": true,
+  "allCapturedAndFlatSourcePinsAndModesMatch": true,
+  "original429GitBlobIdentitiesMatch": true,
+  "physicalHostZodInspected": false,
+  "sourceAcquisitionOrStagingPerformed": false,
+  "referenceBuiltOrEvaluated": false,
+  "nativeOrGpuExecuted": false,
+  "trainingReady": false
+}

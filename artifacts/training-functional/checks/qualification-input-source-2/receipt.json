@@ -1,0 +1,14 @@
+{
+  "scope": "LOCAL_STATIC_SOURCE_INPUT_INSPECTION_AND_GENERATION_TESTS_ONLY",
+  "command": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./artifacts/training-functional/qualification-input-documents.test.ts"
+  ],
+  "exitCode": 0,
+  "sourceEvaluated": false,
+  "hostOrNativeExecuted": false,
+  "trainingReady": false
+}

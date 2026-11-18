@@ -1,0 +1,11 @@
+14 |   const manifestBytes = await readFile(directory + '/sources.json');
+15 |   if (hash(manifestBytes) !== receipt.sourceManifestSha256) throw Error('MANIFEST_HASH:' + run);
+16 |   const sources = JSON.parse(manifestBytes);
+17 |   if (sources.length !== receipt.sourceCount) throw Error('SOURCE_COUNT:' + run);
+18 |   for (const source of sources) {
+19 |     if (source.path.startsWith('/') || source.path.split('/').includes('..') || hash(await readFile(source.path)) !== source.sha256) throw Error('CURRENT_SOURCE_MISMATCH:' + run + ':' + source.path);
+                                                                                                                                                ^
+error: CURRENT_SOURCE_MISMATCH:security-rust-baseline-packet-3:packages/runtime/tests/reference-bundles.test.ts
+      at /home/gu1lty/Projects/proveo/chess-coach/[eval]:19:140
+
+Bun v1.4.0 (Linux x64)

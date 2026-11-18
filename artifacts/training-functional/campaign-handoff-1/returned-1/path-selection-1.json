@@ -1,0 +1,29 @@
+{
+  "status": "PATH_NAMES_SELECTED_AWAITING_EXECUTOR_CONFIRMATION",
+  "origin": "EXECUTOR_REQUEST_TO_CHOOSE_AND_RECORD_VAR_OR_TMP_PATHS_THEN_WAIT",
+  "hostDirectory": "/var/lib/chess-coach/training-volume-1",
+  "runningSandboxName": "proveo-opencode-11c4aed0",
+  "sandboxIdentitySource": "EXECUTOR_SUPPLIED_NOT_INDEPENDENTLY_VERIFIED",
+  "sandboxMountTarget": "/mnt/training",
+  "mountMode": "rw",
+  "storageClass": "PERSISTENT_VAR_NOT_TEMPORARY_TMP",
+  "selectedPathsVerified": false,
+  "hostCapacityVerified": false,
+  "freeEntryAdmissionVerified": false,
+  "minimumUsableBytes": "283467841536",
+  "minimumFreeEntries": "835600",
+  "selinux": {
+    "disableEnforcement": false,
+    "labelOrPolicyChangesPerformed": false,
+    "compatibilityVerified": false
+  },
+  "existingCampaignPlanChanged": false,
+  "immutablePacketChanged": false,
+  "campaignRootsRelocated": false,
+  "hostProvisioningExecutedByAgent": false,
+  "hostMountExecutedByAgent": false,
+  "cleanupExecuted": false,
+  "publicationPerformed": false,
+  "trainingExecuted": false,
+  "nextAction": "WAIT_FOR_EXECUTOR_CONFIRMATION"
+}

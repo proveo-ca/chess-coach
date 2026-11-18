@@ -1,0 +1,41 @@
+{
+  "version": "chess-coach.gpu-functional-base-image-metadata.v1",
+  "scope": "PUBLIC_DOCKER_HUB_MANIFEST_AND_CONFIG_METADATA_ONLY",
+  "registry": "https://registry-1.docker.io",
+  "images": [
+    {
+      "reference": "docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038",
+      "manifestUrl": "https://registry-1.docker.io/v2/oven/bun/manifests/sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038",
+      "manifestHttpStatus": 200,
+      "manifestDigestHeader": "sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "platform": "linux/amd64",
+      "layerCount": 7,
+      "compressedLayerBytes": 89195521,
+      "configDigest": "sha256:4bb1bd8ae2d620c285a765a09425aeac85caf16e4031105169f33ff72096f829",
+      "declaredVersion": "1.4.0",
+      "versionDeclaration": "org.opencontainers.image.version",
+      "declaredRevision": "34cbb9a40b4bd1bd767d134a7065e66c2432a676",
+      "actualImageVersionExecuted": false
+    },
+    {
+      "reference": "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+      "manifestUrl": "https://registry-1.docker.io/v2/library/rust/manifests/sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+      "manifestHttpStatus": 200,
+      "manifestDigestHeader": "sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "platform": "linux/amd64",
+      "layerCount": 5,
+      "compressedLayerBytes": 563746315,
+      "configDigest": "sha256:d617f1b5c2a18778ba357ba0528e973bd24992b0dd18000dfbca059f4a15ebda",
+      "declaredVersion": "1.95.0",
+      "versionDeclaration": "RUST_VERSION environment variable",
+      "actualImageVersionExecuted": false
+    }
+  ],
+  "compressedLayerSizesAreExtractedDiskSizes": false,
+  "layerPayloadsFetched": false,
+  "imagePullPerformed": false,
+  "containerCreated": false,
+  "trainingReady": false
+}

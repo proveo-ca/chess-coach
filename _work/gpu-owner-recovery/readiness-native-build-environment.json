@@ -1,0 +1,61 @@
+{
+  "version": "chess-coach.coding-realm-native-file-metadata.v1",
+  "scope": "EXISTING_CODING_REALM_FILES_ONLY_NOT_OPERATOR_HOST",
+  "method": "READ_ONLY_FILE_IDENTITIES_NO_EXECUTABLE_INVOCATIONS",
+  "files": [
+    {
+      "path": "/usr/bin/bwrap",
+      "physicalPath": "/usr/bin/bwrap",
+      "byteLength": 80424,
+      "sha256": "0abea81db798ebf6b4742ac0664802d97521547a353c2a0dbdc21d76cbbfd2c0",
+      "mode": 493,
+      "executable": true
+    },
+    {
+      "path": "/usr/bin/true",
+      "physicalPath": "/usr/bin/gnutrue",
+      "byteLength": 35288,
+      "sha256": "7d659da07aad1d5d1ed79e9f2822d24d2dea47ceec4c7e2e71718a177dc20b4b",
+      "mode": 493,
+      "executable": true
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "physicalPath": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "byteLength": 2186512,
+      "sha256": "a3947513a02831ec692ebf13053c07614882ab54a2101fb91a1b15724062ed0c",
+      "mode": 493,
+      "executable": true
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "physicalPath": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "byteLength": 254864,
+      "sha256": "c5e80a563850d6ab5c2f2482e4202d9c1b71fbf44854b8c399e63527202c64e1",
+      "mode": 493,
+      "executable": true
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6",
+      "physicalPath": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+      "byteLength": 2735712,
+      "sha256": "5bb0d21308f123b6ad46c6f35b42cedfcb8d6d439a53aa3dae04d880aaffdde3",
+      "mode": 420,
+      "executable": false
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "physicalPath": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "byteLength": 187120,
+      "sha256": "9d339ecb409578d6a5d587e6c537a8f9589b8a13fefba30d167433a4b5758bee",
+      "mode": 420,
+      "executable": false
+    }
+  ],
+  "namespaceCapabilityProbed": false,
+  "llvmCodeExecuted": false,
+  "compilerInvoked": false,
+  "gnuCppAbiQualified": false,
+  "operatorHostQualified": false,
+  "trainingReady": false
+}

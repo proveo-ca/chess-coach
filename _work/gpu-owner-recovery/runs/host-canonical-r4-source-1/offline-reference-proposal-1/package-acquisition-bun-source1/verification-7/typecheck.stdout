@@ -1,0 +1,22 @@
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.test.ts(765,32): error TS18048: 'worker' is possibly 'undefined'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.test.ts(767,15): error TS18048: 'worker' is possibly 'undefined'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.test.ts(768,36): error TS18048: 'worker' is possibly 'undefined'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.test.ts(833,35): error TS2322: Type 'number | undefined' is not assignable to type 'Json'.
+  Type 'undefined' is not assignable to type 'Json'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.test.ts(833,97): error TS18048: 'supervisor' is possibly 'undefined'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.test.ts(833,156): error TS18048: 'supervisor' is possibly 'undefined'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.test.ts(834,3): error TS2322: Type '{ clockDomain: string; observedMonoMs: number | undefined; operationDeadlineMonoMs: number; observedExceeded: false; }' is not assignable to type 'Json'.
+  Type '{ clockDomain: string; observedMonoMs: number | undefined; operationDeadlineMonoMs: number; observedExceeded: false; }' is not assignable to type 'null'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.test.ts(834,130): error TS18048: 'supervisor' is possibly 'undefined'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.test.ts(835,3): error TS2322: Type '{ clockDomain: string | number | boolean | Json[] | { [key: string]: Json; }; workerStartMonoMs: number | undefined; requestStartsMonoMs: (number | undefined)[]; }' is not assignable to type 'Json'.
+  Types of property 'requestStartsMonoMs' are incompatible.
+    Type '(number | undefined)[]' is not assignable to type 'Json | undefined'.
+      Type '(number | undefined)[]' is not assignable to type 'Json[]'.
+        Type 'number | undefined' is not assignable to type 'Json'.
+          Type 'undefined' is not assignable to type 'Json'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.test.ts(835,131): error TS18048: 'worker' is possibly 'undefined'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.test.ts(836,81): error TS18048: 'outer' is possibly 'undefined'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.test.ts(837,77): error TS2345: Argument of type '{ startedMonoMs: number | undefined; completionObservedMonoMs: number; exitCode: number | null; stdoutEof: boolean; stderrEof: boolean; stderrBytes: number; clockDomain: string; timedOut: boolean; }' is not assignable to parameter of type 'OuterWitness'.
+  Types of property 'startedMonoMs' are incompatible.
+    Type 'number | undefined' is not assignable to type 'number'.
+      Type 'undefined' is not assignable to type 'number'.

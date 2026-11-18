@@ -1,0 +1,89 @@
+{
+  "version": "chess-coach.cuda-bun-compatibility-request.v1",
+  "status": "APPROVED_SYNTHETIC_DIAGNOSTIC_SOURCE_GATES_PENDING",
+  "authorityGranted": true,
+  "authorization": {
+    "source": "EXECUTOR_SELECTED_SYNTHETIC_DIAGNOSTICS_RECOMMENDED",
+    "scope": "PINNED_PRIVATE_BUN_THREE_CASE_SYNTHETIC_DIAGNOSTICS_ONLY",
+    "grantStatus": "APPROVED_NOT_EXECUTED",
+    "firstUnexpectedActualFailureStopsSequence": true
+  },
+  "phase": "SYNTHETIC_DIAGNOSTIC_SOURCE_GATES_PENDING",
+  "selectedOption": "Synthetic diagnostics (Recommended)",
+  "haltedFullRequest": {
+    "path": "_work/gpu-owner-recovery/cuda-llvm-request.json",
+    "snapshot": "_work/gpu-owner-recovery/runs/cuda-bun-compatibility-1/llvm-request-halted.json",
+    "sha256": "e0b54ee82895a3da613e92e764ccd7db2c10f2001e95241543b36f49b6f1cc63",
+    "authorityGranted": false
+  },
+  "caseOrder": ["startup", "parser", "xz"],
+  "dependencyChain": "startup -> parser -> xz",
+  "limits": {
+    "maximumCases": 3,
+    "maximumInvocationsPerCase": 1,
+    "wholeSuiteDeadlineMs": 30000,
+    "stdoutBytesPerCase": 65536,
+    "stderrBytesPerCase": 65536,
+    "xzDecompressionMemoryBytes": 268435456,
+    "automaticRetryAllowed": false,
+    "perCaseDeadlineRenewalAllowed": false
+  },
+  "privateBun": {
+    "path": "_work/gpu-owner-recovery/cache/native-audit-bun-1/bun",
+    "byteLength": 80761952,
+    "sha256": "33d56b070be6a9e3da0ab013038b43d1645d0534ca811ecdba4472599117eb4b",
+    "uid": 1000,
+    "directoryMode": "0700",
+    "executableMode": "0500",
+    "captureReceipt": "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-1/capture.json"
+  },
+  "syntheticFixture": {
+    "manifest": "_work/gpu-owner-recovery/fixtures/cuda-bun-compatibility.json",
+    "prefix": "tracel-llvm-23.1.0-4",
+    "tarBytes": 1536,
+    "xzBytes": 1592,
+    "regularFileBytes": 0,
+    "explicitEntries": 1,
+    "sourceOnlyPreparation": true,
+    "nativeCompressorInvocationAllowed": false
+  },
+  "outcomes": [
+    "COMPATIBLE",
+    "BUN_ABORT_DIAGNOSTIC_OBSERVED",
+    "SKIPPED_DEPENDENCY",
+    "UNEXPECTED_FAILURE"
+  ],
+  "knownAbortObservation": {
+    "bunVersion": "1.4.0",
+    "panicText": "panic(main thread): abort() called",
+    "stdoutMustBeEmpty": true,
+    "exitMustBeNonzero": true,
+    "countsAsCompatibilityPass": false,
+    "dependentCasesMustBeSkipped": true
+  },
+  "isolationPolicy": "UNCHANGED_RESTRICTED_NATIVE_AUDIT_ROOT_WITH_REAL_ARCHIVE_REMOVED",
+  "outerBootstrapTrust": "EXISTING_C1_BUN_AND_MISE_BOOTSTRAP_ASSUMPTION_RETAINED_NOT_AUTHENTICATED_BY_GUEST_SNAPSHOT",
+  "taskConfiguration": "_work/gpu-owner-recovery/cuda-bun-compatibility-mise.toml",
+  "newSourceTestsTypesAndSecurityAdversarialDevopsReviewsRequired": true,
+  "independentOutsidePinRequiredBeforeOperationalImportsOrMise": true,
+  "realArchiveReadRehashOrMountAuthorized": false,
+  "realArchiveRetryAuthorized": false,
+  "fullPipelineRenewalAuthorized": false,
+  "privateBunRecaptureAuthorized": false,
+  "newToolsDownloadsOrRuntimeUpgradesAuthorized": false,
+  "nativeHelperCompilationAuthorized": false,
+  "workspaceCargoLockBackendOrPrecisionChangesAuthorized": false,
+  "isolationRuntimeFlagOrEnvironmentExpansionAuthorized": false,
+  "procPidNamespaceSessionNetworkOrDeviceExpansionAuthorized": false,
+  "credentialSocketOrParentEscapeExposureAuthorized": false,
+  "ptraceAuthorized": false,
+  "extractionOrLlvmExecutionAuthorized": false,
+  "modelTestBinaryOrGpuExecutionAuthorized": false,
+  "hostDockerImageOrProductionOperationsAuthorized": false,
+  "crashReportVisitUploadOrPublicationAuthorized": false,
+  "trainingAuthorized": false,
+  "diagnosticComplete": false,
+  "compatibilityPassed": false,
+  "archiveAuditPassed": false,
+  "trainingReady": false
+}

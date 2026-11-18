@@ -1,0 +1,195 @@
+{
+  "status": "PASS_LOCAL_HOST_HANDOFF_AND_CAMPAIGN_SOURCE_TESTS_TYPES",
+  "scope": "MOCK_METADATA_AND_SANDBOX_COMMAND_TRANSPORT_NOT_HOST_VERIFICATION",
+  "sourcePinsBefore": [
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/preflight.ts",
+      "byteLength": 8262,
+      "sha256": "c7e599332531b6d940f323a69768ec70a0e1a0e2b87cd5a632275afb59057559"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/preflight.test.ts",
+      "byteLength": 11091,
+      "sha256": "ac48fc948c3f28fd6aa054a2386a4487b0d4dbf042c1358aa82c8874a3e4bdef"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+      "byteLength": 4295,
+      "sha256": "33fbcceae27d94e38eb3768e85b84f9755b912694651ba00ee29265ed41b3e4f"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/tsconfig.json",
+      "byteLength": 61,
+      "sha256": "3884c64fe86cacd8a33dd016dbb843b3bbb6c625090eda74ed06a9a58a13d92c"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/HOST.md",
+      "byteLength": 1692,
+      "sha256": "bcc44672c4774679f02e7fd5ffc6d73340269f405fa7c2c101a535ccc0dc0919"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/handoff.json",
+      "byteLength": 6063,
+      "sha256": "9b38eb2dfb1933c1cc2fa82f492cf2e0c75036a5fc75492c08eb59bd1df3fe19"
+    }
+  ],
+  "sourcePinsAfter": [
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/preflight.ts",
+      "byteLength": 8262,
+      "sha256": "c7e599332531b6d940f323a69768ec70a0e1a0e2b87cd5a632275afb59057559"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/preflight.test.ts",
+      "byteLength": 11091,
+      "sha256": "ac48fc948c3f28fd6aa054a2386a4487b0d4dbf042c1358aa82c8874a3e4bdef"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+      "byteLength": 4295,
+      "sha256": "33fbcceae27d94e38eb3768e85b84f9755b912694651ba00ee29265ed41b3e4f"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/tsconfig.json",
+      "byteLength": 61,
+      "sha256": "3884c64fe86cacd8a33dd016dbb843b3bbb6c625090eda74ed06a9a58a13d92c"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/HOST.md",
+      "byteLength": 1692,
+      "sha256": "bcc44672c4774679f02e7fd5ffc6d73340269f405fa7c2c101a535ccc0dc0919"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/handoff.json",
+      "byteLength": 6063,
+      "sha256": "9b38eb2dfb1933c1cc2fa82f492cf2e0c75036a5fc75492c08eb59bd1df3fe19"
+    }
+  ],
+  "sourcePinsMatch": true,
+  "results": [
+    {
+      "name": "helper-tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "30000",
+        "artifacts/training-functional/campaign-handoff-1/preflight.test.ts"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 394.55953100000005,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-2/helper-tests.stdout",
+        "byteLength": 28,
+        "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-2/helper-tests.stderr",
+        "byteLength": 1666,
+        "sha256": "8927c111d44c07ca58ca3ff0c2de4e758374aba4ce0b4be40da3864c1ba6b16e"
+      },
+      "summary": [
+        " 16 pass",
+        " 0 fail",
+        " 86 expect() calls",
+        "Ran 16 tests across 1 file. [376.00ms]"
+      ]
+    },
+    {
+      "name": "campaign-tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "30000",
+        "artifacts/training-functional/campaign-plan.test.ts",
+        "artifacts/training-functional/campaign-operator.e2e.test.ts"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 2966.0531039999996,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-2/campaign-tests.stdout",
+        "byteLength": 28,
+        "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-2/campaign-tests.stderr",
+        "byteLength": 3741,
+        "sha256": "8eb37f3d85c71d35d202a8777d58f317cba4775b7b5b76eb2440dd8516cc6072"
+      },
+      "summary": [
+        " 39 pass",
+        " 0 fail",
+        " 914 expect() calls",
+        "Ran 39 tests across 2 files. [2.94s]"
+      ]
+    },
+    {
+      "name": "root-types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 6151.728697999999,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-2/root-types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-2/root-types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "summary": []
+    },
+    {
+      "name": "helper-types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/campaign-handoff-1/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 4511.155962000001,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-2/helper-types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-handoff-1/checks-2/helper-types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "summary": []
+    }
+  ],
+  "priorGeneration": "checks-1 preserves fixture unused declarations and typed gzip input diagnostic; checks-2 uses explicit Uint8Array copy and cleaned tests",
+  "unchangedCarriedTests": {
+    "evidence": 90,
+    "existingCampaign": 38,
+    "notRerunOrDoubleCounted": true
+  },
+  "actualHostMetadataCollected": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false
+}

@@ -1,0 +1,579 @@
+{
+  "status": "PASS",
+  "scope": "READ_ONLY_AUTHENTICATED_PRIVATE_BUN_NATIVE_CLOSURE_AND_EXACT_INPUT_BYTES_NOT_AUDIT_EXECUTION",
+  "pinnedReviewSha256": "dacf7e484328711b65f72d48ee6cba4808164fd6ce9ddb7bf3366868486f173c",
+  "pinnedRequestSha256": "a968cc2761869c8634a3cc929f2b1d21a7804f7128bd1fb6b045f76598fbd9f1",
+  "rootPlan": {
+    "version": "chess-coach.cuda-archive-root-plan.v1",
+    "files": [
+      {
+        "guest": "/audit/cuda-tar.ts",
+        "file": {
+          "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-tar.ts",
+          "identity": {
+            "device": "65088",
+            "inode": "1739484",
+            "bytes": 16897,
+            "mode": 33188,
+            "uid": 1000,
+            "links": 1,
+            "mtime": "1794163882253686799",
+            "ctime": "1794163882253686799"
+          },
+          "sha256": "9fa860c4e226a5fcf261055cc1958ae460269530cc3ee1dfd8dec910b7030e60"
+        }
+      },
+      {
+        "guest": "/inputs/llvm.tar.xz",
+        "file": {
+          "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/home/.cache/tracel/tracel-llvm-23.1.0-4-linux-x64.tar.xz",
+          "identity": {
+            "device": "65088",
+            "inode": "3029511",
+            "bytes": 45439652,
+            "mode": 33024,
+            "uid": 1000,
+            "links": 2,
+            "mtime": "1794159022501705338",
+            "ctime": "1794159022576441971"
+          },
+          "sha256": "c394bb1b10ac785f16d3d92d688a9343ba869f720e9cf9ca3f1abf2f401f165f"
+        }
+      },
+      {
+        "guest": "/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+        "file": {
+          "source": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "identity": {
+            "device": "57",
+            "inode": "45573688",
+            "bytes": 254864,
+            "mode": 33261,
+            "uid": 0,
+            "links": 1,
+            "mtime": "1784741087000000000",
+            "ctime": "1784741087000000000"
+          },
+          "sha256": "c5e80a563850d6ab5c2f2482e4202d9c1b71fbf44854b8c399e63527202c64e1",
+          "elf": {
+            "interpreter": null,
+            "needed": [],
+            "soname": "ld-linux-x86-64.so.2"
+          }
+        }
+      },
+      {
+        "guest": "/lib/x86_64-linux-gnu/libc.so.6",
+        "file": {
+          "source": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "identity": {
+            "device": "57",
+            "inode": "45578368",
+            "bytes": 2186512,
+            "mode": 33261,
+            "uid": 0,
+            "links": 1,
+            "mtime": "1784741087000000000",
+            "ctime": "1784741087000000000"
+          },
+          "sha256": "a3947513a02831ec692ebf13053c07614882ab54a2101fb91a1b15724062ed0c",
+          "elf": {
+            "interpreter": "/lib64/ld-linux-x86-64.so.2",
+            "needed": [
+              "ld-linux-x86-64.so.2"
+            ],
+            "soname": "libc.so.6"
+          }
+        }
+      },
+      {
+        "guest": "/lib/x86_64-linux-gnu/libdl.so.2",
+        "file": {
+          "source": "/usr/lib/x86_64-linux-gnu/libdl.so.2",
+          "identity": {
+            "device": "57",
+            "inode": "45585390",
+            "bytes": 14408,
+            "mode": 33188,
+            "uid": 0,
+            "links": 1,
+            "mtime": "1784741087000000000",
+            "ctime": "1784741087000000000"
+          },
+          "sha256": "7d293f8361fcead4f9691561adc0413f724f3607b959abe0d4fb243072956079",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "soname": "libdl.so.2"
+          }
+        }
+      },
+      {
+        "guest": "/lib/x86_64-linux-gnu/liblzma.so.5",
+        "file": {
+          "source": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3",
+          "identity": {
+            "device": "56",
+            "inode": "5976",
+            "bytes": 215448,
+            "mode": 33188,
+            "uid": 0,
+            "links": 1,
+            "mtime": "1791561255000000000",
+            "ctime": "1791561255000000000"
+          },
+          "sha256": "515749273a91ca5e3b273b4025dc2c1f8827f90005baea0ab85ffb594e74f72f",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "soname": "liblzma.so.5"
+          }
+        }
+      },
+      {
+        "guest": "/lib/x86_64-linux-gnu/libm.so.6",
+        "file": {
+          "source": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "identity": {
+            "device": "57",
+            "inode": "45590461",
+            "bytes": 1198376,
+            "mode": 33188,
+            "uid": 0,
+            "links": 1,
+            "mtime": "1784741087000000000",
+            "ctime": "1784741087000000000"
+          },
+          "sha256": "beea4eeacfcfa2cd96011b959a826c97cf4a774017e214f6a34d7eea3d49cd88",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-x86-64.so.2"
+            ],
+            "soname": "libm.so.6"
+          }
+        }
+      },
+      {
+        "guest": "/lib/x86_64-linux-gnu/libpthread.so.0",
+        "file": {
+          "source": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+          "identity": {
+            "device": "57",
+            "inode": "45587823",
+            "bytes": 14408,
+            "mode": 33188,
+            "uid": 0,
+            "links": 1,
+            "mtime": "1784741087000000000",
+            "ctime": "1784741087000000000"
+          },
+          "sha256": "f93acb6e78dcf0213c8a85f922d21916249148e24de426079c40b6304c42085d",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "soname": "libpthread.so.0"
+          }
+        }
+      },
+      {
+        "guest": "/lib64/ld-linux-x86-64.so.2",
+        "file": {
+          "source": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "identity": {
+            "device": "57",
+            "inode": "45573688",
+            "bytes": 254864,
+            "mode": 33261,
+            "uid": 0,
+            "links": 1,
+            "mtime": "1784741087000000000",
+            "ctime": "1784741087000000000"
+          },
+          "sha256": "c5e80a563850d6ab5c2f2482e4202d9c1b71fbf44854b8c399e63527202c64e1",
+          "elf": {
+            "interpreter": null,
+            "needed": [],
+            "soname": "ld-linux-x86-64.so.2"
+          }
+        }
+      },
+      {
+        "guest": "/usr/bin/xz",
+        "file": {
+          "source": "/usr/bin/xz",
+          "identity": {
+            "device": "56",
+            "inode": "5928",
+            "bytes": 101392,
+            "mode": 33261,
+            "uid": 0,
+            "links": 1,
+            "mtime": "1791561255000000000",
+            "ctime": "1791561255000000000"
+          },
+          "sha256": "1f6ca26fd33066c9d5b95e58a0d9e2f5789cb18fd5741518574113b37ea1934d",
+          "elf": {
+            "interpreter": "/lib64/ld-linux-x86-64.so.2",
+            "needed": [
+              "liblzma.so.5",
+              "libc.so.6"
+            ],
+            "soname": null
+          }
+        }
+      },
+      {
+        "guest": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+        "file": {
+          "source": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "identity": {
+            "device": "57",
+            "inode": "45573688",
+            "bytes": 254864,
+            "mode": 33261,
+            "uid": 0,
+            "links": 1,
+            "mtime": "1784741087000000000",
+            "ctime": "1784741087000000000"
+          },
+          "sha256": "c5e80a563850d6ab5c2f2482e4202d9c1b71fbf44854b8c399e63527202c64e1",
+          "elf": {
+            "interpreter": null,
+            "needed": [],
+            "soname": "ld-linux-x86-64.so.2"
+          }
+        }
+      },
+      {
+        "guest": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+        "file": {
+          "source": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "identity": {
+            "device": "57",
+            "inode": "45578368",
+            "bytes": 2186512,
+            "mode": 33261,
+            "uid": 0,
+            "links": 1,
+            "mtime": "1784741087000000000",
+            "ctime": "1784741087000000000"
+          },
+          "sha256": "a3947513a02831ec692ebf13053c07614882ab54a2101fb91a1b15724062ed0c",
+          "elf": {
+            "interpreter": "/lib64/ld-linux-x86-64.so.2",
+            "needed": [
+              "ld-linux-x86-64.so.2"
+            ],
+            "soname": "libc.so.6"
+          }
+        }
+      },
+      {
+        "guest": "/usr/lib/x86_64-linux-gnu/libdl.so.2",
+        "file": {
+          "source": "/usr/lib/x86_64-linux-gnu/libdl.so.2",
+          "identity": {
+            "device": "57",
+            "inode": "45585390",
+            "bytes": 14408,
+            "mode": 33188,
+            "uid": 0,
+            "links": 1,
+            "mtime": "1784741087000000000",
+            "ctime": "1784741087000000000"
+          },
+          "sha256": "7d293f8361fcead4f9691561adc0413f724f3607b959abe0d4fb243072956079",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "soname": "libdl.so.2"
+          }
+        }
+      },
+      {
+        "guest": "/usr/lib/x86_64-linux-gnu/liblzma.so.5",
+        "file": {
+          "source": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3",
+          "identity": {
+            "device": "56",
+            "inode": "5976",
+            "bytes": 215448,
+            "mode": 33188,
+            "uid": 0,
+            "links": 1,
+            "mtime": "1791561255000000000",
+            "ctime": "1791561255000000000"
+          },
+          "sha256": "515749273a91ca5e3b273b4025dc2c1f8827f90005baea0ab85ffb594e74f72f",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "soname": "liblzma.so.5"
+          }
+        }
+      },
+      {
+        "guest": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+        "file": {
+          "source": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "identity": {
+            "device": "57",
+            "inode": "45590461",
+            "bytes": 1198376,
+            "mode": 33188,
+            "uid": 0,
+            "links": 1,
+            "mtime": "1784741087000000000",
+            "ctime": "1784741087000000000"
+          },
+          "sha256": "beea4eeacfcfa2cd96011b959a826c97cf4a774017e214f6a34d7eea3d49cd88",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-x86-64.so.2"
+            ],
+            "soname": "libm.so.6"
+          }
+        }
+      },
+      {
+        "guest": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+        "file": {
+          "source": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+          "identity": {
+            "device": "57",
+            "inode": "45587823",
+            "bytes": 14408,
+            "mode": 33188,
+            "uid": 0,
+            "links": 1,
+            "mtime": "1784741087000000000",
+            "ctime": "1784741087000000000"
+          },
+          "sha256": "f93acb6e78dcf0213c8a85f922d21916249148e24de426079c40b6304c42085d",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "soname": "libpthread.so.0"
+          }
+        }
+      },
+      {
+        "guest": "/usr/local/bin/bun",
+        "file": {
+          "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/native-audit-bun-1/bun",
+          "identity": {
+            "device": "65088",
+            "inode": "1739544",
+            "bytes": 80761952,
+            "mode": 33088,
+            "uid": 1000,
+            "links": 2,
+            "mtime": "1794167107883718864",
+            "ctime": "1794167108039718864"
+          },
+          "sha256": "33d56b070be6a9e3da0ab013038b43d1645d0534ca811ecdba4472599117eb4b",
+          "elf": {
+            "interpreter": "/lib64/ld-linux-x86-64.so.2",
+            "needed": [
+              "libc.so.6",
+              "ld-linux-x86-64.so.2",
+              "libpthread.so.0",
+              "libdl.so.2",
+              "libm.so.6"
+            ],
+            "soname": null
+          }
+        }
+      }
+    ],
+    "launcher": {
+      "source": "/usr/bin/bwrap",
+      "identity": {
+        "device": "57",
+        "inode": "12198738",
+        "bytes": 80424,
+        "mode": 33261,
+        "uid": 0,
+        "links": 1,
+        "mtime": "1777407450000000000",
+        "ctime": "1777407450000000000"
+      },
+      "sha256": "0abea81db798ebf6b4742ac0664802d97521547a353c2a0dbdc21d76cbbfd2c0"
+    },
+    "inputs": [
+      {
+        "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/home/.cache/tracel/tracel-llvm-23.1.0-4-linux-x64.tar.xz",
+        "identity": {
+          "device": "65088",
+          "inode": "3029511",
+          "bytes": 45439652,
+          "mode": 33024,
+          "uid": 1000,
+          "links": 2,
+          "mtime": "1794159022501705338",
+          "ctime": "1794159022576441971"
+        },
+        "sha256": "c394bb1b10ac785f16d3d92d688a9343ba869f720e9cf9ca3f1abf2f401f165f"
+      },
+      {
+        "source": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/home/.cache/tracel/tracel-llvm-23.1.0-4-linux-x64.checksums.json",
+        "identity": {
+          "device": "65088",
+          "inode": "3029513",
+          "bytes": 297,
+          "mode": 33024,
+          "uid": 1000,
+          "links": 2,
+          "mtime": "1794159067141705167",
+          "ctime": "1794159067146895768"
+        },
+        "sha256": "57780b96c702d2ac595c52da61961549450648b8d18f5b81b7a1d06afa83682d"
+      }
+    ],
+    "scratch": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/scratch/cuda-archive-audit-2",
+    "evidenceRoot": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/cuda-archive-audit-2",
+    "nativeBinding": "C1_PATH_BIND_AFTER_FD_CLOSE_NOT_ATOMIC_MOUNT_CUSTODY",
+    "custodyQualified": false
+  },
+  "argv": [
+    "/usr/bin/bwrap",
+    "--unshare-user",
+    "--unshare-net",
+    "--die-with-parent",
+    "--clearenv",
+    "--cap-drop",
+    "ALL",
+    "--chdir",
+    "/",
+    "--dir",
+    "/audit",
+    "--dir",
+    "/inputs",
+    "--dir",
+    "/lib",
+    "--dir",
+    "/lib64",
+    "--dir",
+    "/output",
+    "--dir",
+    "/proc",
+    "--dir",
+    "/usr",
+    "--dir",
+    "/lib/x86_64-linux-gnu",
+    "--dir",
+    "/usr/bin",
+    "--dir",
+    "/usr/lib",
+    "--dir",
+    "/usr/local",
+    "--dir",
+    "/usr/lib/x86_64-linux-gnu",
+    "--dir",
+    "/usr/local/bin",
+    "--dev",
+    "/dev",
+    "--remount-ro",
+    "/dev",
+    "--ro-bind",
+    "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-tar.ts",
+    "/audit/cuda-tar.ts",
+    "--ro-bind",
+    "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/home/.cache/tracel/tracel-llvm-23.1.0-4-linux-x64.tar.xz",
+    "/inputs/llvm.tar.xz",
+    "--ro-bind",
+    "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+    "/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+    "--ro-bind",
+    "/usr/lib/x86_64-linux-gnu/libc.so.6",
+    "/lib/x86_64-linux-gnu/libc.so.6",
+    "--ro-bind",
+    "/usr/lib/x86_64-linux-gnu/libdl.so.2",
+    "/lib/x86_64-linux-gnu/libdl.so.2",
+    "--ro-bind",
+    "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3",
+    "/lib/x86_64-linux-gnu/liblzma.so.5",
+    "--ro-bind",
+    "/usr/lib/x86_64-linux-gnu/libm.so.6",
+    "/lib/x86_64-linux-gnu/libm.so.6",
+    "--ro-bind",
+    "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+    "/lib/x86_64-linux-gnu/libpthread.so.0",
+    "--ro-bind",
+    "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+    "/lib64/ld-linux-x86-64.so.2",
+    "--ro-bind",
+    "/usr/bin/xz",
+    "/usr/bin/xz",
+    "--ro-bind",
+    "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+    "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+    "--ro-bind",
+    "/usr/lib/x86_64-linux-gnu/libc.so.6",
+    "/usr/lib/x86_64-linux-gnu/libc.so.6",
+    "--ro-bind",
+    "/usr/lib/x86_64-linux-gnu/libdl.so.2",
+    "/usr/lib/x86_64-linux-gnu/libdl.so.2",
+    "--ro-bind",
+    "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3",
+    "/usr/lib/x86_64-linux-gnu/liblzma.so.5",
+    "--ro-bind",
+    "/usr/lib/x86_64-linux-gnu/libm.so.6",
+    "/usr/lib/x86_64-linux-gnu/libm.so.6",
+    "--ro-bind",
+    "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+    "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+    "--ro-bind",
+    "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/native-audit-bun-1/bun",
+    "/usr/local/bin/bun",
+    "--bind",
+    "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/scratch/cuda-archive-audit-2",
+    "/output",
+    "--setenv",
+    "PATH",
+    "/usr/local/bin:/usr/bin:/bin",
+    "--setenv",
+    "LANG",
+    "C.UTF-8",
+    "--setenv",
+    "LC_ALL",
+    "C.UTF-8",
+    "--setenv",
+    "TZ",
+    "UTC",
+    "--remount-ro",
+    "/",
+    "--",
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "-e",
+    "\nimport { auditTar } from '/audit/cuda-tar.ts';\nimport { constants } from 'node:fs';\nimport { open } from 'node:fs/promises';\nimport { createHash } from 'node:crypto';\nconst child = Bun.spawn(['/usr/bin/xz','--decompress','--stdout','--threads=1','--memlimit-decompress=256MiB','--','/inputs/llvm.tar.xz'],\n  {cwd:'/',env:{\"PATH\":\"/usr/local/bin:/usr/bin:/bin\",\"LANG\":\"C.UTF-8\",\"LC_ALL\":\"C.UTF-8\",\"TZ\":\"UTC\"},stdin:'ignore',stdout:'pipe',stderr:'pipe',detached:false});\ntry {\n  const inventory = await (async function runXZAudit(child, audit, report = () => {}) {\n  let failed = !1, first, stdoutEOF = !1, stderrEOF = !1, stderrLength = 0;\n  const retained = [], stop = (error) => {\n    if (!failed) {\n      failed = !0;\n      first = error;\n    }\n    try {\n      child.kill();\n    } catch {}\n  }, stderr = (async () => {\n    try {\n      for await (const chunk of child.stderr) {\n        if (!(chunk instanceof Uint8Array))\n          throw Error(\"XZ_STDERR_INVALID\");\n        const keep = Math.min(chunk.byteLength, Math.max(0, 65536 - stderrLength));\n        if (keep)\n          retained.push(chunk.slice(0, keep));\n        stderrLength = Math.min(65537, stderrLength + chunk.byteLength);\n        if (stderrLength > 65536)\n          stop(Error(\"XZ_STDERR_LIMIT\"));\n      }\n      stderrEOF = !0;\n    } catch (error) {\n      stop(error);\n    }\n  })(), exit = child.exited.then((code) => {\n    if (code !== 0)\n      stop(Error(\"XZ_EXIT_NONZERO\"));\n  }, () => {\n    stop(Error(\"XZ_REAP_FAILED\"));\n  });\n  let inventory;\n  try {\n    inventory = await audit(async function* () {\n      for await (const bytes of child.stdout) {\n        if (!(bytes instanceof Uint8Array))\n          throw Error(\"XZ_STDOUT_INVALID\");\n        yield bytes;\n      }\n      stdoutEOF = !0;\n    }());\n    if (!stdoutEOF)\n      stop(Error(\"XZ_STDOUT_NOT_EOF\"));\n  } catch (error) {\n    stop(error);\n  }\n  await Promise.all([stderr, exit]);\n  if (!stderrEOF && !failed)\n    stop(Error(\"XZ_STDERR_NOT_EOF\"));\n  if (failed) {\n    const bytes = new Uint8Array(Math.min(stderrLength, 65536));\n    let offset = 0;\n    for (const chunk of retained) {\n      bytes.set(chunk, offset);\n      offset += chunk.byteLength;\n    }\n    try {\n      report(bytes);\n    } catch {}\n    throw first;\n  }\n  return inventory;\n})({stdout:child.stdout,stderr:child.stderr,exited:child.exited,kill:()=>child.kill('SIGKILL')},auditTar,bytes=>process.stderr.write(bytes));\n  const encoded = JSON.stringify(inventory), inventorySha256 = createHash('sha256').update(encoded).digest('hex');\n  const bytes = new TextEncoder().encode(JSON.stringify({version:'chess-coach.cuda-archive-child-output.v1',inventorySha256,inventory}));\n  if (bytes.byteLength > 33554432) throw Error('INVENTORY_BYTE_LIMIT');\n  const handle = await open('/output/inventory.json',constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);\n  try { await handle.writeFile(bytes); await handle.sync(); } finally { await handle.close(); }\n} catch (error) { console.error('ARCHIVE_CHILD_FAILED:'+(function archiveFailureCode(error) {\n  const message = error instanceof Error ? error.message : typeof error === \"string\" ? error : \"\";\n  if (message.startsWith(\"Invalid ELF: \"))\n    return \"NATIVE_ELF_METADATA_REJECTED\";\n  return /^[A-Z][A-Z0-9_]{0,127}$/.test(message) ? message : \"ARCHIVE_AUDIT_FAILED\";\n})(error)); process.exitCode=1; }\n"
+  ],
+  "privateSnapshotMatchesCommittedIdentity": true,
+  "quarantineLaunched": false,
+  "privateSnapshotExecuted": false,
+  "decompressionPerformed": false,
+  "extractionPerformed": false,
+  "llvmCodeExecuted": false,
+  "buildIsolationQualified": false,
+  "custodyQualified": false,
+  "cudaCompilationEstablished": false,
+  "trainingReady": false
+}

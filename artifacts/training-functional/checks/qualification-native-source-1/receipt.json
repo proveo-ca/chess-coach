@@ -1,0 +1,65 @@
+{
+  "scope": "SOURCE_ONLY_BUN_MOCK_TESTS_AND_STRICT_TYPES",
+  "nativeExecuted": false,
+  "hostExecuted": false,
+  "containerExecuted": false,
+  "gpuExecuted": false,
+  "trainingExecuted": false,
+  "qualified": false,
+  "maximumOutputBytesPerStream": 262144,
+  "results": [
+    {
+      "name": "focused",
+      "command": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "10000",
+        "./artifacts/training-functional/qualification-adapters.test.ts",
+        "./artifacts/training-functional/qualification-packet.test.ts"
+      ],
+      "exitCode": 0,
+      "signalCode": null,
+      "stdoutBytes": 28,
+      "stderrBytes": 4011
+    },
+    {
+      "name": "task-types",
+      "command": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/tsconfig.json"
+      ],
+      "exitCode": 2,
+      "signalCode": null,
+      "stdoutBytes": 3147,
+      "stderrBytes": 0
+    },
+    {
+      "name": "source-types",
+      "command": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "tsconfig.json"
+      ],
+      "exitCode": 0,
+      "signalCode": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0
+    }
+  ]
+}

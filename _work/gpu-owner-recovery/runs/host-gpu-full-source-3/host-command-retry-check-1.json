@@ -1,0 +1,37 @@
+{
+  "status": "PASS_FRESH_RETRY_APPROVAL_AND_UNCHANGED_PUBLISHED_COMMAND_BINDINGS_ONLY",
+  "approval": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-approval-1.json",
+    "sha256": "79e605b7dc999597206d1642260ccf4b098c0de3a7cde65dd84e100b1412fcff"
+  },
+  "priorApprovalUnchanged": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-approval.json",
+    "sha256": "3be5e0f26e602928af6c41127a53cf41516c04c1dc84fb266a5e713a2b427e76"
+  },
+  "consumptionObservation": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-launch-observation-1/observation.json",
+    "sha256": "9c25a35d83296a7573548ea3868f88f96eda0f4346de2ca14f9585eb00ce3f15"
+  },
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command.fish",
+    "bytes": 56775,
+    "sha256": "83919afa384f09b2f597d8c8d3e6eeee108fc47c68aaf32c3a2fba2fc0b50666"
+  },
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/receipt.json",
+    "sha256": "62d0fad77fc9538673ef0d69b2bdade57fc320dacb1168ea31564e4e61e5f7a5"
+  },
+  "launchArgv": [
+    "fish",
+    "--no-config",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command.fish"
+  ],
+  "sourceHashesChecked": 347,
+  "priorAllowanceConservativelyClosed": true,
+  "freshOperatorHostInvocationsIssued": 1,
+  "freshHostInvocationObserved": false,
+  "newCommitOrPushNeeded": false,
+  "publicationAuthorized": false,
+  "codingHostOperationsPerformed": false,
+  "trainingReady": false
+}

@@ -1,0 +1,18 @@
+{
+  "version": "chess-coach.cuda-isolation-source-review.v1",
+  "staticUnitTestsPassed": true,
+  "staticTypesPassed": true,
+  "adversarialSourceAccepted": true,
+  "securitySourceAccepted": true,
+  "requestSha256": "2882f02baf9054e1890d58f4c984d3adc49fbbf0fad2ee5359312759a17a64c5",
+  "files": {
+    "_work/gpu-owner-recovery/cuda-isolation.ts": "3231f42ebbcf01ac0b1f6f5217ed53233f9359d657eb3e7d55ccd447a802735c",
+    "_work/gpu-owner-recovery/cuda-isolation.test.ts": "53f812ec50c62e92f506e3323c224cb9852be2801d7c4259f79b481a566fa9ea",
+    "_work/gpu-owner-recovery/cuda-mise.toml": "b1d2fa6a92bb740b11ad15cc81e7c421c1ebc5393b5138fd50b61c6e16710102",
+    "_work/gpu-owner-recovery/provision.ts": "446bafb616dce8f642216268cb10d6c30e1e485b45428b8c83295358964a8efb",
+    "_work/gpu-owner-recovery/verify.ts": "49623db0d908c1d0591084f0fae4861698f2b776536ada70fb8686bf843f9b56",
+    "_work/gpu-owner-recovery/command-supervisor.ts": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6",
+    "_work/gpu-owner-recovery/tsconfig.json": "e70ffa726d5b3b004982a4705b17b778c4326fe9964b9ce76e006ed1310c793d",
+    "tsconfig.json": "a0cf0b388c7327624fa7f91061dbf4ee4280e9f27d095740399fe5c83682e913"
+  }
+}

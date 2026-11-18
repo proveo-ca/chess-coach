@@ -1,0 +1,46 @@
+
+artifacts/training-functional/qualification-result-1/export-command.test.ts:
+(pass) literal export command parses and contains only bounded builtin file operations [3.81ms]
+(pass) synthetic byte pins export six exact texts without changing inputs [22.83ms]
+(pass) an existing export is never overwritten [24.76ms]
+(pass) rejects oversized input before writing an export [22.14ms]
+(pass) rejects malformed JSON before writing an export [24.06ms]
+(pass) rejects BOM stripping before writing an export [23.27ms]
+(pass) rejects invalid UTF8 before writing an export [22.47ms]
+(pass) rejects symlink input before writing an export [20.10ms]
+(pass) rejects mismatched reported pin before writing an export [25.75ms]
+
+artifacts/training-functional/qualification-result-1/validate.test.ts:
+(pass) provisional transcription retains its inconsistency without blaming HOST [1.84ms]
+(pass) synthetic coherent reports pass local checks but never confer acceptance [1.21ms]
+(pass) rejects wrong publication without executing commands [1.00ms]
+(pass) rejects unqualified bootstrap scope without executing commands [0.73ms]
+(pass) rejects missing offline build without executing commands [0.72ms]
+(pass) rejects wrong manifest path without executing commands [0.65ms]
+(pass) rejects malformed manifest digest without executing commands [0.70ms]
+(pass) rejects wrong preparation path without executing commands [0.67ms]
+(pass) rejects wrong Git cwd without executing commands [0.75ms]
+(pass) rejects wrong fetch pin without executing commands [3.62ms]
+(pass) rejects renewed Git budget without executing commands [0.57ms]
+(pass) rejects wrong HEAD digest without executing commands [0.56ms]
+(pass) rejects forced preparation without executing commands [0.68ms]
+(pass) rejects missing EOF without executing commands [0.47ms]
+(pass) rejects extra Docker operation without executing commands [0.71ms]
+(pass) rejects changed mount without executing commands [0.50ms]
+(pass) rejects wrong GPU without executing commands [0.47ms]
+(pass) rejects low admission memory without executing commands [0.48ms]
+(pass) rejects renewed outer deadline without executing commands [0.36ms]
+(pass) rejects invalid elapsed without executing commands [0.34ms]
+(pass) rejects unremoved container without executing commands [0.39ms]
+(pass) rejects worker readiness bypass without executing commands [0.52ms]
+(pass) rejects OOM state without executing commands [0.47ms]
+(pass) rejects malformed report null [0.34ms]
+(pass) rejects malformed report [] [0.34ms]
+(pass) rejects malformed report {} [0.32ms]
+(pass) rejects malformed report not-json [0.29ms]
+(pass) the publication pin and retained input bytes remain unchanged [0.14ms]
+
+ 37 pass
+ 0 fail
+ 90 expect() calls
+Ran 37 tests across 2 files. [659.00ms]

@@ -1,0 +1,5 @@
+{"version":"chess-coach.gpu-full-event.v1","runId":"host-gpu-full-1","sequence":1,"kind":"guard-start"}
+{"uuid":"GPU-713c95e0-6952-a576-794b-9ef1fb527ff0","freeBytes":3221225472,"totalBytes":8589934592,"queryStartedMs":0,"query":1,"version":"chess-coach.gpu-full-event.v1","runId":"host-gpu-full-1","sequence":2,"kind":"sample"}
+{"id":"cuda_f64_nonzero_native_scores_round_trip","version":"chess-coach.gpu-full-event.v1","runId":"host-gpu-full-1","sequence":3,"kind":"attempt-start"}
+{"reason":"Error: TELEMETRY_RUNNING_HEADROOM","version":"chess-coach.gpu-full-event.v1","runId":"host-gpu-full-1","sequence":4,"kind":"abort"}
+{"id":"cuda_f64_nonzero_native_scores_round_trip","status":"FAIL","accepted":false,"version":"chess-coach.gpu-full-event.v1","runId":"host-gpu-full-1","sequence":5,"kind":"attempt-finish"}

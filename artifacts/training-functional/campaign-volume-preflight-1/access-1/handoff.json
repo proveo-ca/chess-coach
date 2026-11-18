@@ -1,0 +1,157 @@
+{
+  "version": "chess-coach.campaign-host-access-handoff.v1",
+  "status": "SOURCE_ONLY_READ_ONLY_ACCESS_INSPECTION_AWAITING_CHECKED_PUBLICATION",
+  "authorization": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/authorization.json",
+    "byteLength": 1938,
+    "sha256": "6ffeaffc0997691ddd023479a08f16a24d77353aaa5447655d520e9a9c704f60"
+  },
+  "source": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/preflight.ts",
+    "byteLength": 11900,
+    "sha256": "39e43d84f61f2d43467a26457d2f55231362b15c41e0259ade2eeae5064fb7f6"
+  },
+  "renderer": {
+    "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+    "byteLength": 4355,
+    "sha256": "faf0c74bf328a0e2b67cbbb070caeb396ea3f17d7d2435d81c8f7bcc8de0ef69"
+  },
+  "rendererReexport": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/render-command.ts",
+    "byteLength": 114,
+    "sha256": "bacdc5666de41e9c7eb4ef76bd9cb58bdc7b7431c9cd446aede0784f5effc84e"
+  },
+  "plan": {
+    "version": "chess-coach.campaign-host-preflight.v1",
+    "host": "/home/gu1lty/Projects/proveo/chess-coach",
+    "cachedBun": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun",
+    "runsParent": "/var/lib/chess-coach/training-volume-1",
+    "requestSha256": "70ba4aadc079cab314cf9dd6f4dc2354ab3c1739e035131b1b067302241b0322",
+    "minimumUsableBytes": "283467841536",
+    "minimumFreeEntries": "835600",
+    "freshRoots": [
+      "/var/lib/chess-coach/training-volume-1/training-campaign-delivery-2",
+      "/var/lib/chess-coach/training-volume-1/training-campaign-inputs-2",
+      "/var/lib/chess-coach/training-volume-1/training-campaign-2"
+    ],
+    "retained": [
+      {
+        "path": "/var/lib/chess-coach/training-volume-1",
+        "kind": "directory"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/app",
+        "kind": "directory"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/reference",
+        "kind": "directory"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/qualification-inputs",
+        "kind": "directory"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/app/artifacts/training-functional/qualification-policy-score.ts",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/app/artifacts/training-functional/qualification-policy-channel.ts",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-score",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-channel",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-cpu39-1/native/target-cpu/x86_64-unknown-linux-gnu/release/policy-initialize",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-build/llvm",
+        "kind": "directory"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-runtime/rootfs/usr/local/cuda",
+        "kind": "directory"
+      }
+    ],
+    "inspection": "READ_ONLY_ACCESS_METADATA_V1",
+    "completionSha256": "23b5e67c58d644d8398ffbf70df0557dabede08e62a5658a7b5e32480ae30d4b"
+  },
+  "packet2Request": {
+    "path": "artifacts/training-functional/full-training-packet-2/request.json",
+    "byteLength": 7712,
+    "sha256": "70ba4aadc079cab314cf9dd6f4dc2354ab3c1739e035131b1b067302241b0322"
+  },
+  "packet2Completion": {
+    "path": "artifacts/training-functional/full-training-packet-2/completion.json",
+    "byteLength": 13260,
+    "sha256": "23b5e67c58d644d8398ffbf70df0557dabede08e62a5658a7b5e32480ae30d4b"
+  },
+  "packet2FinalVerification": {
+    "path": "artifacts/training-functional/full-training-packet-2/final-verification.json",
+    "byteLength": 3636,
+    "sha256": "0237fc5a0dfb5a01ba882d579a8f562e085e6a722c043edd5734339a76daea94"
+  },
+  "packet2FrozenSourcePinsStillMatch": true,
+  "coverageOwner": "_spec/runtime-protocol.puml",
+  "coverageJudgment": {
+    "session": "ses_e148b6cb3ffeX7YUk8TaX0d222",
+    "decision": "EXISTING_CAMPAIGN_VOLUME_PREFLIGHT_PARENT_GLOB_COVERS_ACCESS_NESTED_SOURCE_NO_SPEC_EDIT_NEEDED"
+  },
+  "architect": {
+    "session": "ses_e1497c1f5ffeGhugdYDu4UHOx1",
+    "decision": "CONDITIONAL_GO_FIXED_READ_ONLY_METADATA_ONLY"
+  },
+  "allowedOperations": [
+    "PROCESS_IDENTITY_APIS",
+    "LSTAT_REALPATH_AND_CALLER_ACCESS_FIXED_ALLOWLIST",
+    "READ_TWO_BOUNDED_SELINUX_METADATA_VIRTUAL_FILES",
+    "ONE_FIXED_ABSOLUTE_LS_ZD_METADATA_QUERY_ON_OBSERVED_ALLOWLIST_TARGETS"
+  ],
+  "forbiddenOperations": [
+    "STATFS_OR_IDENTICAL_INODE_QUERY",
+    "WRITE_PROBE",
+    "RETAINED_PAYLOAD_CONTENT_READ_OR_DIRECTORY_TRAVERSAL",
+    "PERMISSION_OR_SELINUX_REPAIR",
+    "HOST_PREPARATION",
+    "RETAINED_NATIVE_GPU_DOCKER_EXECUTION",
+    "ACQUISITION_INSTALLATION_REFERENCE_BUILD_OR_TRAINING"
+  ],
+  "limits": {
+    "inspectionMs": 30000,
+    "observationMs": 1000,
+    "lsMs": 1000,
+    "contextBytes": 1024,
+    "labelStdoutBytes": 8192,
+    "labelStderrBytes": 8192,
+    "reportBytes": 32768,
+    "sourceBytes": 16384,
+    "planBytes": 16384
+  },
+  "publication": {
+    "normalCommits": 1,
+    "nonForcePushes": 1,
+    "expectedPreviousHead": "5b47be42b0378198750992b1547915b43f9cea99",
+    "targetRef": "refs/heads/feat-ml-adjuntant-ii",
+    "pullRequest": 51,
+    "baseBranch": "main",
+    "performed": false
+  },
+  "hostActor": "Executor_USER_ONLY_AFTER_CHECKED_PUBLICATION",
+  "futureContainerAccessVerified": false,
+  "selinuxCompatibilityVerified": false,
+  "hostInspectionExecuted": false,
+  "hostPreparationExecuted": false,
+  "trainingExecuted": false,
+  "trainingExecutionAuthorized": false
+}

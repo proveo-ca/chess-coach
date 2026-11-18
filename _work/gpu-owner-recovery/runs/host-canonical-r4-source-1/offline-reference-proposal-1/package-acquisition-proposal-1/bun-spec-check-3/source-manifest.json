@@ -1,0 +1,42 @@
+[
+  {
+    "path": "_spec/.spec-index.json",
+    "bytes": 25730,
+    "sha256": "4ef1cf6d48830137601ade8ff4c2a90575e3d90e79f4ee9ecfd1f259ded61fac"
+  },
+  {
+    "path": "_spec/runtime-protocol.puml",
+    "bytes": 33077,
+    "sha256": "29848c805beac0925b6051c55c5cbac12f123c6f58d5ab9a24221e693a065acc"
+  },
+  {
+    "path": "_spec/gpu-qualification.puml",
+    "bytes": 97583,
+    "sha256": "b1f9e84de10e0212fe057a868557367dbdcd824231f6bd009ae272ce25e58425"
+  },
+  {
+    "path": "_spec/gpu-full-qualification.puml",
+    "bytes": 48557,
+    "sha256": "3d7044cbad6f1ddf20dea90d64289788ba8113826d173f1aba5ba38c98943db3"
+  },
+  {
+    "path": "_spec/gpu-readiness.md",
+    "bytes": 317197,
+    "sha256": "f22bb889d3e4062abc31b60b241dcd2311491bc99599dfc02e391df72f2d7871"
+  },
+  {
+    "path": "_spec/gate-closure.md",
+    "bytes": 232103,
+    "sha256": "97733910bced970bdad4c89ad0b71473a20afb707eed4e7191dcd47046de5ad6"
+  },
+  {
+    "path": "_spec/readiness.md",
+    "bytes": 81494,
+    "sha256": "75df48ae4cb58fbd759db214c054917962b86e28a4a79c87d73a1362e5f2599d"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/bun-spec-check.ts",
+    "bytes": 5644,
+    "sha256": "abc772959f3e7502dc8971f0030d0fdfbe638dffac439c336e30cf3cf429ae58"
+  }
+]

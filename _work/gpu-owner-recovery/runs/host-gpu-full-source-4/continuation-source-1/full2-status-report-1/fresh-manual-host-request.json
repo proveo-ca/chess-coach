@@ -1,0 +1,68 @@
+{
+  "version": "chess-coach.gpu-full-fresh-manual-host-request.v1",
+  "status": "AWAITING_EXPLICIT_FRESH_APPROVAL",
+  "executor": "OPERATOR_HOST_ONLY_NEVER_CODING",
+  "runId": "host-gpu-full-2",
+  "latestStatusObservation": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/observation.json",
+  "previousFull2ExecutionOutcome": "UNKNOWN",
+  "previousFull2HostInvocationsRemaining": 0,
+  "previousStatusQueriesRemaining": 0,
+  "originalRequest": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command-request.json",
+    "sha256": "cd8120322c11cd1107a07d1cab883933d1327b1e06ba463d930f23d51a6ab4bf"
+  },
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command.fish",
+    "bytes": 56981,
+    "sha256": "8705a79ab07681a82531c411f200cee7a82d015ee3a401d3be617919abf7e210"
+  },
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/receipt.json",
+    "sha256": "b3c6f85338b295e466fa2edb9625e36b89b84f977e97be492bfa7d6b931b9683"
+  },
+  "manualExecution": {
+    "cwd": "/home/gu1lty/Projects/proveo/chess-coach",
+    "argv": ["fish", "--no-config", "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command.fish"]
+  },
+  "requested": {
+    "maximumManualInvocationTextDeliveries": 1,
+    "maximumHostInvocations": 1,
+    "maximumContainers": 1,
+    "maximumDockerOperations": 7,
+    "unchangedOriginalRequestBoundsAndOperations": true,
+    "freshRootRefusalUnchanged": true,
+    "anyAttemptConsumesNewAllowanceIncludingPreflightFailure": true,
+    "exactGpuTests": 6,
+    "finiteDifferenceCoordinates": 4670,
+    "overallMs": 1080000,
+    "cpus": 2,
+    "memoryBytes": 8589934592,
+    "memoryPlusSwapBytes": 8589934592,
+    "runtimeLlvmNvptxCudaKernelJit": true,
+    "freshEmbeddedTextScratchEvidenceJitWrites": true,
+    "ownedContainerCleanup": true,
+    "maximumPrintedReceiptBytes": 2097152
+  },
+  "freshWritableRoots": [
+    "_work/gpu-owner-recovery/cache/host-gpu-full-2",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-2"
+  ],
+  "retainedInputsRemainReadOnly": true,
+  "priorFailedWorkspacesAndEvidenceRetained": true,
+  "newSourceGenerationRequested": false,
+  "commandRegenerationRequested": false,
+  "manualInvocationTextDeliveryApproved": false,
+  "hostExecutionApproved": false,
+  "gpuExecutionApproved": false,
+  "kernelJitExecutionApproved": false,
+  "remainingApprovedHostInvocations": 0,
+  "automaticTerminalSubmissionAuthorized": false,
+  "automaticRetryAuthorized": false,
+  "nativeCompilationApproved": false,
+  "acquisitionOrInstallationApproved": false,
+  "retainedInputCopyingOrMutationApproved": false,
+  "codingHostNativeGpuOrJitExecutionApproved": false,
+  "gitOperationsApproved": false,
+  "experimentTrainingApproved": false,
+  "trainingReady": false
+}

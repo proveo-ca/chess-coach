@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "commit": "3d35125bdcf27542e6a0ad266a9ed118f9d14658",
+  "branch": "feat-ml-adjuntant-ii",
+  "destination": "https://github.com/proveo-ca/chess-coach.git",
+  "members": 302,
+  "argv": [
+    "git",
+    "cat-file",
+    "blob",
+    "3d35125bdcf27542e6a0ad266a9ed118f9d14658:_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command.fish"
+  ],
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 56775,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-actions/committed-command/command.stdout",
+      "bytes": 56775,
+      "sha256": "83919afa384f09b2f597d8c8d3e6eeee108fc47c68aaf32c3a2fba2fc0b50666"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-actions/committed-command/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command.fish",
+    "bytes": 56775,
+    "sha256": "83919afa384f09b2f597d8c8d3e6eeee108fc47c68aaf32c3a2fba2fc0b50666"
+  },
+  "normalCommitInvocationsConsumed": 1,
+  "fixedHttpsPushInvocationsConsumed": 1,
+  "remainingNormalCommits": 0,
+  "remainingHttpsPushes": 0,
+  "postActionReceiptsLocalUncommitted": true,
+  "hostAllowanceNotRenewed": true,
+  "hostInvocationObserved": false,
+  "codingHostOperationsPerformed": false,
+  "trainingReady": false
+}

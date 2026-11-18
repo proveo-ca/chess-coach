@@ -1,0 +1,21 @@
+{
+  "scope": "READ_ONLY_PRODUCER_HASH_CORRECTION_REVIEW_NOT_HARDWARE_QUALIFICATION",
+  "reviewerSession": "ses_e1718eb55ffe05HZkAbP0jRyUr",
+  "reportedReadyToMerge": true,
+  "originalHighClosed": true,
+  "findings": [],
+  "reviewerConclusion": "Both hash fixes match their producer contracts; no new findings",
+  "source": {
+    "path": "artifacts/training-functional/qualification-evidence.ts",
+    "byteLength": 54762,
+    "sha256": "684ce9c6a640d38cf957da2e57f97073837e428c8046b0799735b81ebbc66fe4"
+  },
+  "tests": {
+    "path": "artifacts/training-functional/qualification-evidence.test.ts",
+    "byteLength": 65811,
+    "sha256": "8fa9d249a040683c5f2ab9eea8e4a3e89b3d3e6701027ebbb72cf62ffd293e9c"
+  },
+  "freshConsolidatedVerification": "PENDING_SOURCE3",
+  "publicationAuthorized": false,
+  "trainingReady": false
+}

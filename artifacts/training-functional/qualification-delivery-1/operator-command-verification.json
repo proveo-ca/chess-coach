@@ -1,0 +1,25 @@
+{
+  "status": "PASS_BASH_SYNTAX_LITERAL_PIN_AND_PUBLISHED_BOOTSTRAP_BYTE_MATCH_NO_EXECUTION",
+  "command": {
+    "path": "artifacts/training-functional/qualification-delivery-1/operator-command.sh",
+    "bytes": 1462,
+    "sha256": "29c90513c2d8df0938d82b846b1dc035bef671842213caff810cb612dcde1de5"
+  },
+  "source": {
+    "path": "artifacts/training-functional/qualification-bootstrap.ts",
+    "bytes": 38668,
+    "sha256": "e22505c5e3c492c25a6068089116a69dd70b398f3536629c8e8433a6eefbb968",
+    "url": "https://raw.githubusercontent.com/proveo-ca/chess-coach/e821b5169f29b191b8418763508bd54292774aef/artifacts/training-functional/qualification-bootstrap.ts"
+  },
+  "publicationCommit": "e821b5169f29b191b8418763508bd54292774aef",
+  "syntaxExitCode": 0,
+  "template": {
+    "path": "artifacts/training-functional/qualification-delivery-1/command-template.sh",
+    "sha256": "f1e7f5f03be49fb50a5ec74f7c45063813b5397aee6009d7ae00bc252fba06c8"
+  },
+  "mockedCommandEvidence": "artifacts/training-functional/checks/qualification-command-source-1/receipt.json",
+  "downloadedSourceEvaluated": false,
+  "actualBootstrapOrOperatorInvoked": false,
+  "hostOrNativeOrGpuExecuted": false,
+  "trainingReady": false
+}

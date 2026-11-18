@@ -6,3 +6,5 @@ allowBuilds:
   esbuild: true
   nx: true
   workerd: true
+overrides:
+  'bun-types>@types/node': 26.6.6

@@ -1,0 +1,12 @@
+
+_work/gpu-owner-recovery/prepared-llvm/verify.test.ts:
+(pass) graph checks bind Cargo and rustc from the same pinned toolchain [0.09ms]
+(pass) Cargo without its paired rustc cannot activate graph checks [0.02ms]
+(pass) unversioned tool availability cannot substitute for a pinned toolchain [0.01ms]
+(pass) unavailable Cargo produces no selected graph environment [0.02ms]
+(pass) graph toolchain selection leaves the static-check environment unchanged [0.07ms]
+
+ 5 pass
+ 0 fail
+ 12 expect() calls
+Ran 5 tests across 1 file. [13.00ms]

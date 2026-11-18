@@ -1,0 +1,70 @@
+{
+  "status": "PASS_LOCAL_PUBLISHED_CONTRACT_AND_IMMUTABLE_WORKER_BINDING",
+  "scope": "LOCAL_GIT_OBJECTS_AND_REPO_FILES_ONLY_NOT_HOST_EXECUTION_OR_LIVE_REMOTE_VERIFICATION",
+  "publicationCommit": "e821b5169f29b191b8418763508bd54292774aef",
+  "contracts": [
+    {
+      "path": "artifacts/training-functional/qualification-bootstrap.ts",
+      "byteLength": 38668,
+      "sha256": "e22505c5e3c492c25a6068089116a69dd70b398f3536629c8e8433a6eefbb968",
+      "matchesLocalPublishedCommit": true
+    },
+    {
+      "path": "artifacts/training-functional/qualification-operator.ts",
+      "byteLength": 37727,
+      "sha256": "f8a4ec4db0b765bfde06016a4cdd663d33a57d85e6b0d8bcf785883e27ef603f",
+      "matchesLocalPublishedCommit": true
+    },
+    {
+      "path": "artifacts/training-functional/qualification-evidence.ts",
+      "byteLength": 54762,
+      "sha256": "684ce9c6a640d38cf957da2e57f97073837e428c8046b0799735b81ebbc66fe4",
+      "matchesLocalPublishedCommit": true
+    },
+    {
+      "path": "artifacts/training-functional/qualification.ts",
+      "byteLength": 2144,
+      "sha256": "e2893a4b19927390d2c2deb7369e3d445c87dd2060ceb1193b7082daee5014c2",
+      "matchesLocalPublishedCommit": true
+    },
+    {
+      "path": "artifacts/training-functional/r4-observation.ts",
+      "byteLength": 11964,
+      "sha256": "9df9bbfaccbc01d77a625b5962b0dd636c563f7bb0318160e2de89d34b6812e9",
+      "matchesLocalPublishedCommit": true
+    },
+    {
+      "path": "packages/runtime/src/training-campaign.ts",
+      "byteLength": 8766,
+      "sha256": "92d0362057bf386fb7713a6929a429a89e97e5998e9921b0e9b790823772d5db",
+      "matchesLocalPublishedCommit": true
+    },
+    {
+      "path": "packages/runtime/src/training-coordinator.ts",
+      "byteLength": 9497,
+      "sha256": "29ffc66842cb8588d4c3c5c419b5cf19b18ea780ffde82c35435001a3f5ea5ec",
+      "matchesLocalPublishedCommit": true
+    },
+    {
+      "path": "packages/runtime/src/fixed-attempt.ts",
+      "byteLength": 5485,
+      "sha256": "217a47bb57c3e8adbe7d24d15e9f511bab713a141758f7efe6a6f697b37b0b14",
+      "matchesLocalPublishedCommit": true
+    }
+  ],
+  "source3": {
+    "path": "artifacts/training-functional/qualification-packet-1/source-3/source-manifest.json",
+    "byteLength": 20258,
+    "sha256": "9820e6bfb34f5891117379b207cfd193330d5bd1efbf6c8d36f6ff6e0328836b",
+    "executionFiles": 108,
+    "executionBytes": 641523,
+    "allExecutionPinsMatch": true
+  },
+  "historicalVerification": "920 tests and source3 811 remain historical; neither was rerun for report intake",
+  "assistantHostFilesRead": false,
+  "originalCheckoutTouched": false,
+  "nativeOrGpuExecuted": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false,
+  "trainingReady": false
+}

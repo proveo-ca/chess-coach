@@ -1,0 +1,65 @@
+{
+  "version": "chess-coach.offline-diagram.v1",
+  "argv": [
+    "/opt/jre/bin/java",
+    "-Djava.io.tmpdir=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/tmp",
+    "-Djava.awt.headless=true",
+    "-jar",
+    "/opt/plantuml.jar",
+    "-charset",
+    "UTF-8",
+    "-tsvg",
+    "-nometadata",
+    "-failfast2",
+    "-o",
+    "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/scratch/source-accepted-diagrams-2",
+    "/home/gu1lty/Projects/proveo/chess-coach/_spec/gpu-owner.puml",
+    "/home/gu1lty/Projects/proveo/chess-coach/_spec/gpu-cooperative-policy.puml",
+    "/home/gu1lty/Projects/proveo/chess-coach/_spec/reference/object-graph-authentication.puml"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "sources": [
+    {
+      "path": "_spec/gpu-owner.puml",
+      "sha256": "1cd594925c26cd3d53741331ea07af8c097ae7caa909d15a22711f625ddbf067"
+    },
+    {
+      "path": "_spec/gpu-cooperative-policy.puml",
+      "sha256": "d330a9ec2313d0e13705c24067b4091d4f823f224bb004034c53aaf4c18e97e1"
+    },
+    {
+      "path": "_spec/reference/object-graph-authentication.puml",
+      "sha256": "44da9a49fb005c269130a7e6dd70c0a099d5f3a12608cf3357461cdc16d88602"
+    }
+  ],
+  "sourceChanged": false,
+  "outputs": [
+    {
+      "path": "_work/gpu-owner-recovery/scratch/source-accepted-diagrams-2/gpu_cooperative_policy_reconstruction.svg",
+      "byteLength": 31003,
+      "sha256": "ddcb37a0a9f7cefcf0a35125bf916f4147ef31e53042cd04f36103a0431c2a0a",
+      "validSvg": true
+    },
+    {
+      "path": "_work/gpu-owner-recovery/scratch/source-accepted-diagrams-2/gpu_owner_reconstruction.svg",
+      "byteLength": 63311,
+      "sha256": "3dbf2efe8679c187c88fd05f3fc78dbfc01b8e8dba473300405b6e51876bad8f",
+      "validSvg": true
+    },
+    {
+      "path": "_work/gpu-owner-recovery/scratch/source-accepted-diagrams-2/reference_object_graph_authentication.svg",
+      "byteLength": 32448,
+      "sha256": "71f0bd8548cae7b832dc7c15a48efe6a60df65f6c22de8f8f49a2e156bfcfeac",
+      "validSvg": true
+    }
+  ],
+  "offline": true,
+  "securityProfile": "SANDBOX",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

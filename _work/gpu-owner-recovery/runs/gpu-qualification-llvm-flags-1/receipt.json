@@ -1,0 +1,151 @@
+{
+  "version": "chess-coach.gpu-qualification-llvm-flags.v1",
+  "status": "PASS_FLAGS_ONLY",
+  "failure": null,
+  "sourceChanged": false,
+  "results": [
+    {
+      "query": "--cxxflags",
+      "argv": [
+        "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/bin/llvm-config",
+        "--link-static",
+        "--cxxflags"
+      ],
+      "deadlineMs": 10000,
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 249,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-llvm-flags-1/cxxflags/command.stdout",
+          "bytes": 249,
+          "sha256": "b0fcde627b361e67b860ef37f042c3b5949f11a3cf16dd4da1efc90fb9ea353b"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-llvm-flags-1/cxxflags/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "query": "--includedir",
+      "argv": [
+        "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/bin/llvm-config",
+        "--link-static",
+        "--includedir"
+      ],
+      "deadlineMs": 10000,
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 108,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-llvm-flags-1/includedir/command.stdout",
+          "bytes": 108,
+          "sha256": "1204c4ef5e7834b1195358c5a7b2e09368ab6735361bdde0db6e27028b32bb5b"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-llvm-flags-1/includedir/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "query": "--libdir",
+      "argv": [
+        "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/bin/llvm-config",
+        "--link-static",
+        "--libdir"
+      ],
+      "deadlineMs": 10000,
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 104,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-llvm-flags-1/libdir/command.stdout",
+          "bytes": 104,
+          "sha256": "7b4d47347a222816ef2803dc055b58cd734465bd0c8cd201244f93d4d6140936"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-llvm-flags-1/libdir/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "query": "--libs",
+      "argv": [
+        "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/bin/llvm-config",
+        "--link-static",
+        "--libs"
+      ],
+      "deadlineMs": 10000,
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 1956,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-llvm-flags-1/libs/command.stdout",
+          "bytes": 1956,
+          "sha256": "f6b52190b01d9ea96fcbbab6c3c2b7178266121dcc7081b51324107726b43988"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-llvm-flags-1/libs/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "query": "--system-libs",
+      "argv": [
+        "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/bin/llvm-config",
+        "--link-static",
+        "--system-libs"
+      ],
+      "deadlineMs": 10000,
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 14,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-llvm-flags-1/system-libs/command.stdout",
+          "bytes": 14,
+          "sha256": "1c998ace53fdcebd4e6836bc2f9d50b481b0aa38c2625f9c73fd75c0234f820e"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/gpu-qualification-llvm-flags-1/system-libs/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "invocationsConsumed": 5,
+  "remainingInvocations": 0,
+  "automaticRetryAuthorized": false,
+  "batchClosed": true,
+  "prefixModified": false,
+  "prefixSelected": false,
+  "prefixCopied": false,
+  "versionQueryRepeated": false,
+  "compilationPerformed": false,
+  "downloadsPerformed": false,
+  "imageOperationPerformed": false,
+  "hostGpuOperationPerformed": false,
+  "trainingReady": false
+}

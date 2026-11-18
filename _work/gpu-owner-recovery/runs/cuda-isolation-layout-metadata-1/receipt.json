@@ -1,0 +1,33 @@
+{
+  "version": "chess-coach.cuda-native-layout-readonly-diagnosis.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "-e",
+    "\nimport { constants } from 'node:fs';\nimport { open, readFile, realpath } from 'node:fs/promises';\nimport { createHash } from 'node:crypto';\nconst hash=bytes=>createHash('sha256').update(bytes).digest('hex');\nconst previous=JSON.parse(await readFile('_work/gpu-owner-recovery/readiness-native-build-environment.json','utf8')),files=[];\nfor(const guest of ['/usr/bin/true','/usr/lib/x86_64-linux-gnu/libc.so.6','/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2']){\n const path=await realpath(guest),handle=await open(path,constants.O_RDONLY|constants.O_NOFOLLOW);\n try{\n  const before=await handle.stat({bigint:true});\n  if(!before.isFile()||before.size<=0n||before.size>16777216n)throw Error('BOUNDED_REGULAR_NATIVE_FILE_REQUIRED');\n  const bytes=await handle.readFile(),after=await handle.stat({bigint:true});\n  if(BigInt(bytes.length)!==before.size||before.dev!==after.dev||before.ino!==after.ino||before.size!==after.size||before.mtimeNs!==after.mtimeNs||before.ctimeNs!==after.ctimeNs)throw Error('NATIVE_FILE_CHANGED');\n  const digest=hash(bytes),old=previous.files.find(item=>item.path===guest);\n  if(!old||old.physicalPath!==path||old.sha256!==digest||old.byteLength!==bytes.length)throw Error('PRE_ATTEMPT_METADATA_CHANGED');\n  files.push({guest,physicalPath:path,regularFile:true,device:String(before.dev),inode:String(before.ino),uid:Number(before.uid),mode:Number(before.mode),byteLength:bytes.length,sha256:digest,preAttemptIdentityMatches:true});\n }finally{await handle.close();}\n}\nif(files[0].physicalPath!=='/usr/bin/gnutrue')throw Error('OBSERVED_EXACT_ALIAS_REQUIRED');\nconsole.log(JSON.stringify({status:'PASS',method:'READ_ONLY_FD_METADATA_AND_BYTES_NO_NATIVE_EXECUTABLE_INVOCATIONS',files,oldTruePhysicalPredicateAccepted:false,rejectionExplanation:'The old guard required the physical true path to equal /usr/bin/true; the observed canonical target is /usr/bin/gnutrue.',pathCustody:'VALIDATED_FD_READING_THEN_C1_PATH_BIND_NOT_ATOMIC_FD_MOUNTING',namespaceCommandAttempted:false,namespaceSupportDetermined:false,llvmCodeExecuted:false,trainingReady:false},null,2));\n"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 1689,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "stream": "stdout",
+      "path": "_work/gpu-owner-recovery/runs/cuda-isolation-layout-metadata-1/command.stdout",
+      "bytes": 1689,
+      "sha256": "555973a5ef324d97d503a736511bbff2a9b1479d12485212e17be3f2f37c7e2c"
+    },
+    {
+      "stream": "stderr",
+      "path": "_work/gpu-owner-recovery/runs/cuda-isolation-layout-metadata-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "miseInvoked": false,
+  "namespaceCommandAttempted": false,
+  "llvmCodeExecuted": false,
+  "trainingReady": false
+}

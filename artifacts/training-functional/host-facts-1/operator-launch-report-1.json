@@ -1,0 +1,19 @@
+{
+  "scope": "LOCAL_POST_PUBLICATION_OPERATOR_REPORT_AND_FRESH_RETRY_APPROVAL",
+  "publishedCommit": "6a77f4c637f1d44260d5787c57a57b34fbffd754",
+  "reportedOutput": "bun: a fast bundler, transpiler, JavaScript Runtime and package manager for web software; legacy CLI help",
+  "factsJsonReceived": false,
+  "pathBunVersion": "UNKNOWN_NOT_REPORTED",
+  "diagnosis": "INFERENCE_FROM_HELP_TEXT_PATH_BUN_DOES_NOT_SUPPORT_THE_LAUNCHER_FLAGS",
+  "actualQueryExecution": "NOT_ESTABLISHED_FROM_THE_REPORTED_HELP_OUTPUT",
+  "freshDecision": "Executor selected Retry retained Bun (Recommended)",
+  "freshOperatorRetryAuthorized": 1,
+  "sourceDownloadsAuthorizedForRetry": 1,
+  "retryInterpreter": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun",
+  "publishedScriptAndHashUnchanged": true,
+  "installOrUpgradeAuthorized": false,
+  "nativeGpuOrTrainingAuthorized": false,
+  "additionalPublicationAuthorized": false,
+  "assistantExecutedHostQuery": false,
+  "trainingReady": false
+}

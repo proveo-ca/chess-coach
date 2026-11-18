@@ -1,0 +1,94 @@
+[
+  {
+    "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+    "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/provision.ts",
+    "sha256": "446bafb616dce8f642216268cb10d6c30e1e485b45428b8c83295358964a8efb"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/qualification/host-receive/bootstrap.test.ts",
+    "sha256": "5e7429f801b07743b537164e31c68f45a026feb9836610fec606908e355a5278"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/qualification/host-receive/bootstrap.ts",
+    "sha256": "bbe4944a74d0370312bc1f73255ad9dc3955ab7b5243898966c0ece631b213f8"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/qualification/host-receive/plan.json",
+    "sha256": "75d22be966414677c89cec408988c1ca75976592d1e14d653cf8feaaea6fede1"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/qualification/host-receive/receive.test.ts",
+    "sha256": "e770733b1fded533822941073677eb77a6896c5edaf11138f5e0cf1d7573b232"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/qualification/host-receive/receive.ts",
+    "sha256": "091a431757ef83710a95156816e085cb1ed36b632e4923c9632695ffe821bafa"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/qualification/host-toolchain/plan.json",
+    "sha256": "57cdc18f36a79f44924a8be5c1644a060e47a794ad38979dc8fb7ff58471dacf"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/qualification/host-toolchain/render.test.ts",
+    "sha256": "6f23e0778b3e834576ad9ef43bd96b9fa94809230687ce1e95baf19e7128e1de"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/qualification/host-toolchain/render.ts",
+    "sha256": "96fec3f4dc836e647fc18606359d3fa7c765bacace452fb2f1376c85fbb5bfe8"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/qualification/host-toolchain/tsconfig.json",
+    "sha256": "7af34d8a7ec258615dcf3ac5c137d5aaf7cce4dc771e11fe28ba154990f8884f"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/qualification/runtime-request.json",
+    "sha256": "9552cfd1096fdc2484b63d5d1e85c510e6ee767589cf95e38c82622993132ed8"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-feasibility-inputs-1/context-manifest.json",
+    "sha256": "64e8c6f2ea895fb8fac1821d48fc5b39a93122e8fdb5f35c4f8fbcd6494c7838"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-feasibility-inputs-1/preparation.json",
+    "sha256": "fd5eaf5e9e24440e75d7e26f05b43545a1f7c9069e61c755b6afe30ee14903e3"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/outcome-check.json",
+    "sha256": "657973da20f3d8bf2c869569ea0d50d92b361478de82913bb9f8af3a29633279"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-input-receive-observation-1/observation.json",
+    "sha256": "b40a4b0e5bc92691818f96ac26369410def8f61d587267160efaa41e90d1b817"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-input-receive-observation-1/operator-paste.txt",
+    "sha256": "279fef888d2241ee365146763f50fb3a95dd6ea5a9e26473428e4ff32e86aadf"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-input-receive-observation-1/verify-report.ts",
+    "sha256": "bd2659af042ff72d8b37f3159a792ba904855231960ec4054a9cb5f4129544e5"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-toolchain-align-source-1/verify.ts",
+    "sha256": "106de842011c0e75a03bf30dc1ecb414b13ac1d03ceafb405e2cc92d323b682a"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.ts",
+    "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58"
+  },
+  {
+    "path": "mise.toml",
+    "sha256": "d8f7c2e137514c6cd051fff8972bed14dd1039bc8d00454aa27db6add83168d7"
+  },
+  {
+    "path": "package.json",
+    "sha256": "eec978d7f787b0bbdc1eba99d15d8972a0d2751fb5e0078d821b5cf09004cbae"
+  },
+  {
+    "path": "tsconfig.json",
+    "sha256": "a0cf0b388c7327624fa7f91061dbf4ee4280e9f27d095740399fe5c83682e913"
+  }
+]

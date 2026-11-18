@@ -1,0 +1,4 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["./validate.ts", "./validate.test.ts", "./export-command.test.ts", "./readback.ts", "./readback.test.ts"]
+}

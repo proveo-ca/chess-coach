@@ -1,0 +1,6 @@
+{"stage":"00-trust","argv":["/usr/local/bin/mise","trust","/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-archive-mise.toml"]}
+{"stage":"00-trust","argv":["/usr/local/bin/mise","trust","/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-archive-mise.toml"],"exitCode":0,"signalCode":null,"failure":null}
+{"stage":"01-config","argv":["/usr/local/bin/mise","config","ls","--json"]}
+{"stage":"01-config","argv":["/usr/local/bin/mise","config","ls","--json"],"exitCode":0,"signalCode":null,"failure":null}
+{"stage":"02-audit","argv":["/usr/local/bin/mise","run","--raw","cuda:audit-llvm-archive"]}
+{"exitCode":1,"failedStage":"02-audit","completedStages":["00-trust","01-config"]}

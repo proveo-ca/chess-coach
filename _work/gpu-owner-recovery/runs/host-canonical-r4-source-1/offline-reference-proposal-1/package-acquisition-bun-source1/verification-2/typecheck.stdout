@@ -1,0 +1,5 @@
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.ts(312,49): error TS2345: Argument of type '4096' is not assignable to parameter of type '65536'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.ts(406,34): error TS2345: Argument of type '4096' is not assignable to parameter of type '65536'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/capture.ts(584,162): error TS2345: Argument of type 'number' is not assignable to parameter of type '65536'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/verify.ts(47,58): error TS2345: Argument of type 'number' is not assignable to parameter of type '65536'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1/verify.ts(47,124): error TS2345: Argument of type 'number' is not assignable to parameter of type '65536'.

@@ -1,0 +1,9 @@
+Error response from daemon: No such image: rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb
+rust_inspect_exit=1
+bun_inspect_exit=0 bun=linux/amd64 sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038
+nvidia-smi=/usr/bin/nvidia-smi
+name, uuid, driver_version, memory.total [MiB], memory.free [MiB]
+NVIDIA GeForce RTX 3070 Laptop GPU, GPU-713c95e0-6952-a576-794b-9ef1fb527ff0, 615.78.08, 8192 MiB, 7742 MiB
+No devices were found
+ccb4eea1008855df75383447e27e4d02dddc8852d0a9f2c537b6b0e692c18f3c
+query_exit=6 cleanup_exit=0 evidence=_work/gpu-owner-recovery/runs/host-visibility-A2lyzIc2

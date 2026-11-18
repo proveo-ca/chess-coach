@@ -1,0 +1,63 @@
+{
+  "version": "chess-coach.host-canonical-r4-source.v1",
+  "spec": "_spec/runtime-protocol.puml",
+  "classification": ["non-trivial", "backend", "spec-impacting", "source-only"],
+  "operation": "native-proof",
+  "learningOperation": false,
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "bunVersion": "1.4.0",
+  "referenceEntrypointMetadata": "tooling/reference-entrypoints.json",
+  "referenceEntries": [
+    "packages/starchess-arena/src/challenge/admission.ts",
+    "packages/starchess-arena/src/challenge/corpus.ts",
+    "packages/starchess-arena/src/challenge/r3Session.ts",
+    "packages/starchess-arena/src/players/strategic.ts",
+    "packages/starchess-arena/src/run/bank.ts",
+    "packages/starchess-core/src/index.ts"
+  ],
+  "referenceProofImports": [
+    "/app/reference/packages/starchess-core/src/index.ts",
+    "/app/reference/packages/starchess-arena/src/challenge/r3Session.ts",
+    "/app/reference/packages/starchess-arena/src/challenge/admission.ts",
+    "/app/reference/packages/starchess-arena/src/run/bank.ts"
+  ],
+  "existingReferenceBuilder": "tooling/build-reference.ts",
+  "referenceBuilderInvoked": false,
+  "referenceInputDelivery": "REFERENCE_INPUT_DELIVERY_UNSELECTED",
+  "futureOperatorChoices": [
+    "Approve bounded offline preparation from named existing pinned Git and selected installed packages without a network fallback",
+    "Supply prepared reference inputs with pin and output metadata",
+    "Defer reference input delivery"
+  ],
+  "hostExecutionApproved": false,
+  "referenceCaptureApproved": false,
+  "referenceBuildApproved": false,
+  "referenceStageApproved": false,
+  "referenceAcquisitionApproved": false,
+  "trainingExecuted": false,
+  "trainingReady": false,
+  "qualifications": {
+    "canonical": false,
+    "both": false,
+    "independentReference": false,
+    "close": false,
+    "r4": false,
+    "wiring": false
+  },
+  "localVerification": {
+    "execution": "INJECTED_MOCKS_ONLY",
+    "peerImplementation": "CURRENT_DRIVER_USED_FOR_BOTH_MOCK_PORTS",
+    "r4Scope": "SELECTED_PURE_CONTRACT_CASES_ONLY",
+    "commands": ["explicit canonical.test.ts + r4.test.ts", "strict tsc --noEmit"],
+    "workDeadlineFromOriginalOriginNs": "10000000000",
+    "cleanupDeadlineFromOriginalOriginNs": "300000000000"
+  },
+  "preserved": [
+    "frozen347/327/native65",
+    "CPU adapter three files",
+    "GPU wrappers and both disabled GPU mains",
+    "GPU v1 master101 ordinal0",
+    "CPU FlexF64 all4670 eps1e-6 atol1e-8 rtol1e-5 C12",
+    "master101..105 experiment semantics"
+  ]
+}

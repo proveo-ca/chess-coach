@@ -1,0 +1,42 @@
+{
+  "status": "PASS_OPERATOR_REPORTED_RECEIVE2_RECORDS_WITH_LIST_DISCREPANCY",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/operator-paste.txt",
+      "sha256": "23566e7a36d728fc8a288cc461fc83785fb03456849ede7c9442320aa6cb1b8f"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/observation.json",
+      "sha256": "ea25598dc3d36ac40f2b0e05cafcc4c8336683b96f33da45ad16f234b7e8d6d1"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-input-receive-observation-2/verify-report.ts",
+      "sha256": "09cbdf18fdd60f889fa7c5bcca83d50355f894b738e74664fe2f9f7a6f1d9202"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/request.json",
+      "sha256": "6fca5f08bef419d5211269a115308710bf566bc07bef8148c0af68a04375a01a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-2/handoff.json",
+      "sha256": "9f68a39e593cb5376126b1d635094c68b347500061866cdee6f0294985f85d13"
+    }
+  ],
+  "reportedReceiptSha256": "0b69f939f90df417d0b7f0430c4e8b99dace8286cc045d5b17866f59d6778fc3",
+  "discrepancy": {
+    "reportedOnly": [
+      "ntapi@0.3.1"
+    ],
+    "preparedOnly": [
+      "ntapi@0.4.3"
+    ]
+  },
+  "reportedArtifactMetadataCount": 8,
+  "actualHostArtifactBytesRehashed": false,
+  "reportedFactsAccepted": true,
+  "originalHostFilesReceived": false,
+  "remainingHostInvocations": 0,
+  "sourcePublicationPerformed": false,
+  "hostOrNativeOrGpuOperationsPerformed": false,
+  "trainingReady": false
+}

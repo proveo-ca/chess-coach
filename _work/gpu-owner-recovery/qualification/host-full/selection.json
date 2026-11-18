@@ -1,0 +1,15 @@
+{
+  "version": "chess-coach.gpu-full-source-selection.v1",
+  "status": "SELECTED_18_MINUTE_FULL_CAMPAIGN_SOURCE_PREPARATION_ONLY",
+  "authorizationSource": "EXECUTOR_SELECTED_18_MIN_FULL_RECOMMENDED_IN_HOST_COMMAND_BOUNDS_PROMPT",
+  "sourcePreparationSelected": true,
+  "selectedProposal": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/next-source-planning-proposals.json",
+  "hostExecutionApproved": false,
+  "stagingOrCopyingApproved": false,
+  "gpuExecutionApproved": false,
+  "kernelJitCompilationApproved": false,
+  "publicationApproved": false,
+  "trainingApproved": false,
+  "automaticRetryAuthorized": false,
+  "trainingReady": false
+}

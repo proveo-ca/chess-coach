@@ -1,0 +1,12 @@
+
+_work/gpu-owner-recovery/tests/gpu-runtime-lookup.test.ts:
+(pass) runtime lookup declares only four bounded Docker metadata commands [0.44ms]
+(pass) context inspection follows successful single-context resolution [0.06ms]
+(pass) path checks do not execute NVIDIA tools or attribute client paths to the daemon [0.08ms]
+(pass) the operator observation consumes both grants without claiming missing host evidence [0.13ms]
+(pass) the failed packet and original syntax-bound artifacts remain byte unchanged [0.55ms]
+
+ 5 pass
+ 0 fail
+ 53 expect() calls
+Ran 5 tests across 1 file. [12.00ms]

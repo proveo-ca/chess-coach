@@ -1,0 +1,35 @@
+{
+  "status": "READY_ISSUED_OPERATOR_HOST_FULL_HANDOFF_CURRENT_DOCS_AND_RECORDS_ONLY",
+  "reviewer": "ses_e36649e3affeJjY53mEb5Dxjo5",
+  "verdict": "READY_TO_MERGE_YES",
+  "remainingFindings": [],
+  "issuedCheck": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/issued-approval-check.json",
+    "sha256": "336983d765f0c222509ffb0db9fd318e7794f852e8bb677288bc1d5e09199d90"
+  },
+  "approval": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-approval.json",
+    "sha256": "3be5e0f26e602928af6c41127a53cf41516c04c1dc84fb266a5e713a2b427e76"
+  },
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command.fish",
+    "bytes": 56775,
+    "sha256": "83919afa384f09b2f597d8c8d3e6eeee108fc47c68aaf32c3a2fba2fc0b50666"
+  },
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/receipt.json",
+    "sha256": "62d0fad77fc9538673ef0d69b2bdade57fc320dacb1168ea31564e4e61e5f7a5"
+  },
+  "currentDocHashesChecked": 12,
+  "orderedDiagramIndexMatches": 9,
+  "currentSourceHashesChecked": 347,
+  "protectedFeasibilitySourcesChecked": 327,
+  "postReviewVerificationStreamsChecked": 10,
+  "operatorHostInvocationsRemainingAtIssuance": 1,
+  "hostInvocationObserved": false,
+  "codingHostOperationsPerformed": false,
+  "automaticRetryAuthorized": false,
+  "publicationApproved": false,
+  "experimentTrainingApproved": false,
+  "trainingReady": false
+}

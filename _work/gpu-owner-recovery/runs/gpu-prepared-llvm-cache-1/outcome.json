@@ -1,0 +1,33 @@
+{
+  "version": "chess-coach.gpu-functional-cargo-cache-outcome.v1",
+  "status": "LOCKED_CACHE_FETCH_AND_THREE_OFFLINE_FEATURE_TREES_PASSED_NO_COMPILATION",
+  "executionReceipt": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-cache-1/receipt.json",
+  "graphReceipt": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-local-6/receipt.json",
+  "fetchInvocationsConsumed": 1,
+  "remainingFetchInvocations": 0,
+  "approvedRegistryEntries": 671,
+  "reportedDownloadMessages": 568,
+  "reportedPackageVersionsWithinManifest": true,
+  "allRegistryEntriesClaimedDownloaded": false,
+  "lockSha256": "77f674cc26a01f26558fd99c45bdcd5566017be05833fce1d39cae98cda05955",
+  "lockUnchanged": true,
+  "staticTests": 14,
+  "staticAssertions": 109,
+  "typecheckProjects": 4,
+  "featureTreeModesPassed": [
+    "prepared",
+    "ordinary-cuda",
+    "cpu"
+  ],
+  "featureTreeOnly": true,
+  "compiledHostDependencyCouplingQualified": false,
+  "cpuRegressionTestsRun": false,
+  "compilerPrefixSelectedOrStaged": false,
+  "compilationPerformed": false,
+  "llvmBundleOperationPerformed": false,
+  "imageOperationPerformed": false,
+  "hostGpuOperationPerformed": false,
+  "trainingReady": false,
+  "automaticRetryAuthorized": false,
+  "furtherAcquisitionAuthorized": false
+}

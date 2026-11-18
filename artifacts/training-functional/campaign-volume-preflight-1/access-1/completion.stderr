@@ -1,0 +1,16 @@
+17 | type Preservation = { version: string; baseCommit: string; sourceManifest: Pin; packet1Files: Pin[]; workerSource: Preserved[];
+18 |   changedCandidates: { original: Pin; archive: Pin }[]; scope: string; hostPreparationExecuted: false; trainingExecuted: false };
+19 | export function ensure(value: unknown, code: string): asserts value { if (!value) throw new Error(`Packet2: ${code}`); }
+20 | export function sha(bytes: Uint8Array): string { return createHash("sha256").update(bytes).digest("hex"); }
+21 | function relative(path: string): string {
+22 |   ensure(/^[a-zA-Z0-9_./-]+$/.test(path) && !path.startsWith("/") && path.split("/").every(p => p && p !== "." && p !== ".."), "RELATIVE_PATH");
+                                                       ^
+TypeError: path.startsWith is not a function. (In 'path.startsWith("/")', 'path.startsWith' is undefined)
+      at relative (/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/full-training-packet-2/preserve.ts:22:51)
+      at readBytes (/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/full-training-packet-2/preserve.ts:26:36)
+      at pin (/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/full-training-packet-2/preserve.ts:30:56)
+      at assertPin (/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/full-training-packet-2/preserve.ts:33:18)
+      at forEach (1:11)
+      at /home/gu1lty/Projects/proveo/chess-coach-integration/[eval]:1:769
+
+Bun v1.4.0 (Linux x64)

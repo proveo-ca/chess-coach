@@ -1,0 +1,17 @@
+[90mstderr[2m | src/__tests__/matchSessionStore.test.ts[2m > [22m[2mmatchSessionStore[2m > [22m[2mrejects corrupt / incomplete blobs
+[22m[39mFailed to load StarChess match session SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+    at JSON.parse (<anonymous>)
+    at loadMatchSession [90m(/home/gu1lty/Projects/proveo/chess-coach-integration/apps/starchess/[39msrc/store/matchSessionStore.ts:62:25[90m)[39m
+    at [90m/home/gu1lty/Projects/proveo/chess-coach-integration/apps/starchess/[39msrc/__tests__/matchSessionStore.test.ts:35:12
+    at file:///home/gu1lty/Projects/proveo/chess-coach-integration/node_modules/[4m.pnpm[24m/@vitest+runner@4.1.10/node_modules/[4m@vitest/runner[24m/dist/chunk-artifact.js:302:11
+    at file:///home/gu1lty/Projects/proveo/chess-coach-integration/node_modules/[4m.pnpm[24m/@vitest+runner@4.1.10/node_modules/[4m@vitest/runner[24m/dist/chunk-artifact.js:1903:26
+    at file:///home/gu1lty/Projects/proveo/chess-coach-integration/node_modules/[4m.pnpm[24m/@vitest+runner@4.1.10/node_modules/[4m@vitest/runner[24m/dist/chunk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///home/gu1lty/Projects/proveo/chess-coach-integration/node_modules/[4m.pnpm[24m/@vitest+runner@4.1.10/node_modules/[4m@vitest/runner[24m/dist/chunk-artifact.js:2323:10)
+    at file:///home/gu1lty/Projects/proveo/chess-coach-integration/node_modules/[4m.pnpm[24m/@vitest+runner@4.1.10/node_modules/[4m@vitest/runner[24m/dist/chunk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+
+[90mstderr[2m | src/__tests__/tutorial/tutorialHud.test.tsx[2m > [22m[2mking-attack-3 tutorial HUD[2m > [22m[2mfinal lesson renders the full match HUD like /single
+[22m[39mcomputations created outside a `createRoot` or `render` will never be disposed
+
+Not implemented: Window's scrollTo() method

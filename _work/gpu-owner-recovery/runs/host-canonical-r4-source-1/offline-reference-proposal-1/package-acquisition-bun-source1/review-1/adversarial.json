@@ -1,0 +1,16 @@
+{
+  "status": "NOT_READY_IMPLEMENTATION_SOURCE_ONLY",
+  "session": "ses_e2e4b1ef3ffeptPhqouftYEoBl",
+  "verification": "verification-3/receipt.json",
+  "readOnly": true,
+  "findings": [
+    {"severity":"HIGH","path":"capture.ts","line":146,"code":"BOOTSTRAP_REQUIRES_SPEC_INSTEAD_OF_BACKEND_REVIEW"},
+    {"severity":"HIGH","path":"capture.ts","line":520,"code":"ATTEMPT_CAN_BE_CONSUMED_BEFORE_OFFLINE_EXECUTION_ELIGIBILITY_GATES"},
+    {"severity":"HIGH","path":"capture.ts","line":556,"code":"PERSISTED_PASS_CAN_PRECEDE_DURABILITY_FAILURE_OR_DEADLINE_OVERRUN"},
+    {"severity":"MEDIUM","path":"capture.ts","line":60,"code":"DEEP_EQUALITY_CAN_MATCH_INHERITED_INSTEAD_OF_OWN_KEYS"},
+    {"severity":"MEDIUM","path":"capture.ts","line":168,"code":"TAR_NUMERIC_OR_PAX_LENGTH_ACCEPTS_NONCANONICAL_BYTE_ENCODINGS"}
+  ],
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

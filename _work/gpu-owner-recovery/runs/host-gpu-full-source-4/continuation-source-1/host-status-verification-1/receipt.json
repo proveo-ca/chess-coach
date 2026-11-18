@@ -1,0 +1,116 @@
+{
+  "status": "FAIL_HOST_STATUS_SOURCE_VERIFICATION",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status.fish",
+      "sha256": "8378d847f4727cda71c35ce742f7844a3b80a93d165d8d0e97d0adee3aaaad3a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status.test.ts",
+      "sha256": "513e85fde8cdf2e2354e294d7577878e5cbc8c00bebb56d40ebf39dfd441aa46"
+    },
+    {
+      "path": "_spec/gate-closure.md",
+      "sha256": "eec293107156724649558a5d606b044fd1d42b614a18bb66b6e0acbf6f030a88"
+    }
+  ],
+  "results": [
+    {
+      "id": "unit",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "./_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status.test.ts"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 28,
+      "stderrBytes": 324,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status-verification-1/unit/command.stdout",
+          "bytes": 28,
+          "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status-verification-1/unit/command.stderr",
+          "bytes": 324,
+          "sha256": "ef74101fc53293e6f22c9553d8895096a4da2eae3ac900bd0a4e71d225ea9c71"
+        }
+      ]
+    },
+    {
+      "id": "types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "--noEmit",
+        "--strict",
+        "--noUnusedLocals",
+        "--noUnusedParameters",
+        "--target",
+        "ES2022",
+        "--module",
+        "ESNext",
+        "--moduleResolution",
+        "Bundler",
+        "--types",
+        "bun",
+        "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status.test.ts"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status-verification-1/types/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status-verification-1/types/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "fish-syntax",
+      "argv": [
+        "fish",
+        "--no-config",
+        "--no-execute",
+        "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status.fish"
+      ],
+      "status": "FAIL",
+      "exitCode": 1,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 397,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status-verification-1/fish-syntax/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status-verification-1/fish-syntax/command.stderr",
+          "bytes": 397,
+          "sha256": "89241b5d90689a43a5ea492ec3948a30e8c121c3ae7f1d3528926795b0ddae69"
+        }
+      ]
+    }
+  ],
+  "hostCommandExecuted": false,
+  "dockerMetadataQueriesPerformed": 0,
+  "gpuWorkPerformed": false,
+  "filesDeleted": 0,
+  "trainingReady": false
+}

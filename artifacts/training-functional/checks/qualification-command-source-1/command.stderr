@@ -1,0 +1,14 @@
+
+artifacts/training-functional/qualification-command.test.ts:
+(pass) template parses as Bash and uses one Fish-compatible quoted command body [1.53ms]
+(pass) unrendered command fails before download or interpreter evaluation [2.74ms]
+(pass) rendered command hashes bytes before preparation and separately execs the operator [70.51ms]
+(pass) hash mismatch retains the download and prevents preparation and operator execution [45.61ms]
+(pass) preparation failure prevents operator execution without deleting the launcher [64.62ms]
+(pass) download failure prevents evaluation and retains its prefix without retry [16.18ms]
+(pass) existing launcher is not overwritten and no download starts [2.75ms]
+
+ 7 pass
+ 0 fail
+ 35 expect() calls
+Ran 7 tests across 1 file. [219.00ms]

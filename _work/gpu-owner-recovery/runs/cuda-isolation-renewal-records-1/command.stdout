@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "staticTests": 15,
+  "staticAssertions": 255,
+  "runnerTests": 13,
+  "runnerAssertions": 89,
+  "types": "PASS",
+  "implementationHashesUnchanged": true,
+  "requestDelta": "SOURCE_CORRECTION_REVIEW_METADATA_ONLY",
+  "originalReviewAndFailureStreamsPreserved": true,
+  "runnableV2BindingPresent": false,
+  "llvmArtifactFilesPresent": false,
+  "executionAuthorized": false,
+  "namespaceSupportDetermined": false,
+  "trainingReady": false
+}

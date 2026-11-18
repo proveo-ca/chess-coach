@@ -1,0 +1,10 @@
+{
+  "status": "OWN_FAILED_RUN_MOVED_INTO_REPOSITORY",
+  "destination": "_work/gpu-owner-recovery/runs/runner-parse-correction",
+  "removedEmptyDirectories": [
+    "scratch/tmp",
+    "runs"
+  ],
+  "originalFailedReceiptPreserved": true,
+  "trainingReady": false
+}

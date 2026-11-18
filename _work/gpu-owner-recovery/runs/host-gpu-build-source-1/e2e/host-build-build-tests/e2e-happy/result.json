@@ -1,0 +1,252 @@
+{
+  "scope": "SOURCE_ONLY_MOCK_NOT_HOST_EVIDENCE",
+  "actualDockerProcesses": 0,
+  "actualNativeProcesses": 0,
+  "gpuExecuted": false,
+  "dockerCliCompatibilityValidated": false,
+  "nativeCliCompatibilityValidated": false,
+  "hostEvidence": false,
+  "result": {
+    "version": "chess-coach.owned-container-native-build.v1",
+    "status": "PASS_HOST_GPU_NATIVE_BUILD_ONLY",
+    "failure": null,
+    "cleanupFailures": [],
+    "method": "OWNED_DOCKER_CONTAINER_NATIVE_BUILD_ONLY_NOT_QUALIFICATION_IMAGE_BUILD",
+    "requestedResources": {
+      "cpus": 2,
+      "memoryBytes": 8589934592,
+      "memoryPlusSwapBytes": 8589934592,
+      "cargoJobs": 2,
+      "rayonThreads": 2,
+      "uidGid": "CURRENT_OPERATOR_NUMERIC_UID_GID"
+    },
+    "limits": {
+      "overallMs": 4200000,
+      "normalOperationsMs": 4020000,
+      "nativeWorkMs": 3600000,
+      "cleanupMs": 120000,
+      "receiptReserveMs": 60000,
+      "dockerCommandMs": 120000,
+      "minimumFreeBytes": 68719476736,
+      "minimumRunningFreeBytes": 17179869184,
+      "workspaceSoftBytes": 34359738368,
+      "stagingBytes": 536870912,
+      "stagingFiles": 3800,
+      "bunPostCopyBytes": 134217728,
+      "supervisedStreamBytes": 4194304,
+      "hostDockerStreamsBytes": 75497472,
+      "nativeStreamsBytes": 41943040,
+      "canonicalLogCopiesBytes": 16777216,
+      "hostReceiptBytes": 2097152
+    },
+    "ids": {
+      "donor": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "worker": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "state": {
+      "Running": false,
+      "ExitCode": 0,
+      "OOMKilled": false
+    },
+    "nativeReceipt": {
+      "status": "PASS_NATIVE_COMPILATION_ONLY",
+      "compilationAttempts": 2,
+      "sourceChanged": false
+    },
+    "artifacts": [
+      {
+        "executable": "/build/native/target-gpu/mock-0",
+        "path": "/source-only-mock/workspace/native/target-gpu/mock-0",
+        "bytes": 1,
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      {
+        "executable": "/build/native/target-gpu/mock-1",
+        "path": "/source-only-mock/workspace/native/target-gpu/mock-1",
+        "bytes": 2,
+        "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      {
+        "executable": "/build/native/target-gpu/mock-2",
+        "path": "/source-only-mock/workspace/native/target-gpu/mock-2",
+        "bytes": 3,
+        "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      {
+        "executable": "/build/native/target-gpu/mock-3",
+        "path": "/source-only-mock/workspace/native/target-gpu/mock-3",
+        "bytes": 4,
+        "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+      },
+      {
+        "executable": "/build/native/target-gpu/mock-4",
+        "path": "/source-only-mock/workspace/native/target-gpu/mock-4",
+        "bytes": 5,
+        "sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+      }
+    ],
+    "results": [
+      {
+        "id": "donor-create",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "create",
+          "--pull=never",
+          "--platform=linux/amd64",
+          "--network=none",
+          "--cidfile=/source-only-mock/evidence/donor.cid",
+          "--label=chess-coach.native-build=host-gpu-native-build-1",
+          "docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038"
+        ],
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "stdout": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n"
+      },
+      {
+        "id": "bun-copy",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "cp",
+          "-L",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:/usr/local/bin/bun",
+          "/source-only-mock/workspace/bun"
+        ],
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "stdout": ""
+      },
+      {
+        "id": "worker-create",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "create",
+          "--pull=never",
+          "--platform=linux/amd64",
+          "--network=none",
+          "--cpus=2",
+          "--memory=8g",
+          "--memory-swap=8g",
+          "--user=1001:1002",
+          "--cidfile=/source-only-mock/evidence/worker.cid",
+          "--label=chess-coach.native-build=host-gpu-native-build-1",
+          "--workdir=/build/native",
+          "--entrypoint=/usr/local/bin/bun",
+          "--mount",
+          "type=bind,source=/source-only-mock/context,target=/received,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/workspace/native,target=/build/native",
+          "--mount",
+          "type=bind,source=/source-only-mock/workspace/cargo-home,target=/capture/cargo-home",
+          "--mount",
+          "type=bind,source=/source-only-mock/context/gpu-build/llvm,target=/opt/tracel-data/tracel/tracel-llvm-23.1.0-4,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/workspace/bun,target=/usr/local/bin/bun,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/evidence,target=/evidence,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/evidence/native,target=/build/native/_work/gpu-owner-recovery/runs/host-gpu-native-build-1",
+          "--env",
+          "CARGO_HOME=/capture/cargo-home",
+          "--env",
+          "CARGO_TARGET_DIR=/build/native/target-gpu",
+          "--env",
+          "CARGO_BUILD_JOBS=2",
+          "--env",
+          "RAYON_NUM_THREADS=2",
+          "--env",
+          "XDG_DATA_HOME=/opt/tracel-data",
+          "--env",
+          "CUDARC_CUDA_VERSION=13000",
+          "--env",
+          "CARGO_NET_OFFLINE=true",
+          "--env",
+          "CARGO_NET_RETRY=0",
+          "--env",
+          "RUSTUP_AUTO_INSTALL=0",
+          "--env",
+          "HOME=/build/native/_work/gpu-owner-recovery/scratch/home",
+          "--env",
+          "TMPDIR=/build/native/_work/gpu-owner-recovery/scratch/tmp",
+          "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+          "--no-env-file",
+          "--no-install",
+          "/evidence/build-driver.mjs"
+        ],
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "stdout": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\n"
+      },
+      {
+        "id": "worker-attach",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "start",
+          "--attach",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "stdout": ""
+      },
+      {
+        "id": "worker-state",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "container",
+          "inspect",
+          "--format",
+          "{{json .State}}",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "stdout": "{\"Running\":false,\"ExitCode\":0,\"OOMKilled\":false}"
+      },
+      {
+        "id": "worker-remove",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "rm",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "stdout": ""
+      },
+      {
+        "id": "donor-remove",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "rm",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "stdout": ""
+      }
+    ],
+    "elapsedMs": 77,
+    "hostInvocationsConsumed": 1,
+    "remainingHostInvocations": 0,
+    "automaticRetryAuthorized": false,
+    "qualificationImageBuilt": false,
+    "testsExecuted": false,
+    "gpuDevicesRequested": false,
+    "gpuExecuted": false,
+    "trainingReady": false
+  }
+}

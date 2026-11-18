@@ -5,7 +5,7 @@
  * // SPEC: _spec/packages/starchess-core/sc-moves.puml, _spec/packages/starchess-core/gas-phase-vacancy.puml
  */
 
-import type { Square } from "chess.js";
+import type { Square } from "../model/square";
 
 import {
   attacksSquare,

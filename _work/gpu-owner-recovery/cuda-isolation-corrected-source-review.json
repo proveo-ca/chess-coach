@@ -1,0 +1,79 @@
+{
+  "version": "chess-coach.cuda-isolation-corrected-source-acceptance.v1",
+  "status": "NONRUNNABLE_SOURCE_ACCEPTANCE_FOR_RENEWAL_REQUEST_ONLY",
+  "scope": "CORRECTED_TRUST_FIRST_STAGE_CONSUMER_AND_INERT_PROBE_SOURCE_ONLY",
+  "runnableBinding": false,
+  "executionAuthorized": false,
+  "reviews": [
+    {
+      "role": "security-reviewer",
+      "sessionId": "ses_e4439a2c0ffeTD6G2gSAPqPEyM",
+      "verdict": "READY_FOR_RENEWAL_REQUEST",
+      "readOnly": true,
+      "reviewerExecutedCommands": false,
+      "remainingFindings": 0,
+      "acceptanceScope": "SOURCE_ONLY_NOT_OPERATIONAL_APPROVAL"
+    },
+    {
+      "role": "adversarial-reviewer",
+      "sessionId": "ses_e4439a2b6ffeD4aw7uSogI27Fg",
+      "verdict": "READY_FOR_EXACT_RENEWAL_REQUEST",
+      "readOnly": true,
+      "reviewerExecutedCommands": false,
+      "remainingFindings": 0,
+      "acceptanceScope": "SOURCE_QUALITY_ONLY_NOT_EXECUTION_AUTHORITY"
+    }
+  ],
+  "resolvedFindings": [
+    "Treat any non-null, non-undefined stage failure, including the empty string, as a first failure.",
+    "Construct a halted test fixture without assuming that the live request remains halted."
+  ],
+  "evidence": {
+    "sourceManifestSha256AtVerification": "1804c2b86a347280c1f836e2ea0f3da1004f23e6e044cab3e7c42287c3a41e0a",
+    "requestSha256AtVerification": "9c19393de26eca9b2544f2daae9179a08dda5a58c87eeb895b04086947fa578e",
+    "staticTests": {
+      "receipt": "_work/gpu-owner-recovery/runs/cuda-isolation-order-static-final-2/receipt.json",
+      "tests": 15,
+      "assertions": 255,
+      "sourceChanged": false
+    },
+    "runnerTests": {
+      "receipt": "_work/gpu-owner-recovery/runs/cuda-isolation-order-runner-final-2/receipt.json",
+      "tests": 13,
+      "assertions": 89,
+      "sourceChanged": false
+    },
+    "types": {
+      "receipt": "_work/gpu-owner-recovery/runs/cuda-isolation-order-types-final-2/receipt.json",
+      "status": "PASS",
+      "sourceChanged": false
+    },
+    "requestBeforeRecordReconciliation": "_work/gpu-owner-recovery/runs/cuda-isolation-renewal-records-1/request-before.json"
+  },
+  "reviewedImplementationFiles": {
+    "_work/gpu-owner-recovery/cuda-isolation.ts": "b3f2624f22e3cd1eb0f0c7ead33c6d853503ce106b49085ed17e6d394a602602",
+    "_work/gpu-owner-recovery/cuda-isolation.test.ts": "fb357b94354cf0b8fe407512c6366c20e66a96cae32bfa78459ba293db353423",
+    "_work/gpu-owner-recovery/cuda-mise.toml": "b1d2fa6a92bb740b11ad15cc81e7c421c1ebc5393b5138fd50b61c6e16710102",
+    "_work/gpu-owner-recovery/provision.ts": "446bafb616dce8f642216268cb10d6c30e1e485b45428b8c83295358964a8efb",
+    "_work/gpu-owner-recovery/verify.ts": "49623db0d908c1d0591084f0fae4861698f2b776536ada70fb8686bf843f9b56",
+    "_work/gpu-owner-recovery/verify.test.ts": "a0d44c8a50915b10c59c7f2fe9927aa7f6ea344660201ca775b0269da0989414",
+    "_work/gpu-owner-recovery/command-supervisor.ts": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6",
+    "_work/gpu-owner-recovery/tsconfig.json": "e70ffa726d5b3b004982a4705b17b778c4326fe9964b9ce76e006ed1310c793d",
+    "tsconfig.json": "a0cf0b388c7327624fa7f91061dbf4ee4280e9f27d095740399fe5c83682e913"
+  },
+  "preservedOriginalReviewRecord": "_work/gpu-owner-recovery/cuda-isolation-reviewed.json",
+  "preservedOriginalReviewSha256": "094327f153dd33d59aaa4127fdf91733ae932a36ccfcafb944ff92cbe82fd849",
+  "preservedFailedAttempt": "_work/gpu-owner-recovery/runs/cuda-isolation-probe-1/receipt.json",
+  "failedAttemptClassification": "_work/gpu-owner-recovery/cuda-isolation-probe-1-classification.json",
+  "futureFixedRunnableBinding": "_work/gpu-owner-recovery/cuda-isolation-reviewed-v2.json",
+  "freshExecutorRenewalRequired": true,
+  "independentOutsidePinnedGateRequiredBeforeOperationalImportOrMise": true,
+  "oneOutsideDeadlineMs": 30000,
+  "firstActualFailureStopsSequence": true,
+  "automaticRetryAllowed": false,
+  "namespaceSupportDetermined": false,
+  "buildIsolationQualified": false,
+  "custodyQualified": false,
+  "cudaCompilationEstablished": false,
+  "trainingReady": false
+}

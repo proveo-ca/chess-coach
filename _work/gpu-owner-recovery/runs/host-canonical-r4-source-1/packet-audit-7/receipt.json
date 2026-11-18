@@ -1,0 +1,177 @@
+{
+  "status": "FAIL_LOCAL_PACKET_RECONCILIATION",
+  "failure": "AssertionError: ",
+  "bindings": [
+    {
+      "path": "_spec/.spec-index.json",
+      "bytes": 25730,
+      "sha256": "4ef1cf6d48830137601ade8ff4c2a90575e3d90e79f4ee9ecfd1f259ded61fac"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "bytes": 27373,
+      "sha256": "4a558dd0751195ae06ad83e1123f85815921898014ee9bc9fb6cb2dce5a5a792"
+    },
+    {
+      "path": "_spec/gpu-qualification.puml",
+      "bytes": 94006,
+      "sha256": "07b1743980f5c4d7e4dea8681f8008446450811e552ada9ed7da10e7681a3532"
+    },
+    {
+      "path": "_spec/gpu-full-qualification.puml",
+      "bytes": 45118,
+      "sha256": "1754f7068e5f12aee329f24eeeaa59e262826cff3974a65cc4a57283a554f5ea"
+    },
+    {
+      "path": "_spec/gpu-readiness.md",
+      "bytes": 310450,
+      "sha256": "82a60503ba2cf6a8e6d6536ad799b6e3cfd02c30a66b337afbd8a2db5603ba82"
+    },
+    {
+      "path": "_spec/gate-closure.md",
+      "bytes": 227351,
+      "sha256": "e83c623699c3b84e5c7c4a378e486f5ab0fe90b2d945e42b9b0ad5ad95acf339"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "bytes": 76988,
+      "sha256": "3349e914e8c17001f31d6861440b338e87fdc9ada45ae6d07033349f88fc989a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/plan.json",
+      "bytes": 2537,
+      "sha256": "96cf8bdbfb101f094711425df7eb0ca4ad5adbce696a0e9a4d77152f768aeeeb"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/canonical.ts",
+      "bytes": 9816,
+      "sha256": "301d8e9e42bfcef4782efa0a188c570e1f035f165296deb8fba6f07f57d5d74c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/canonical.test.ts",
+      "bytes": 22536,
+      "sha256": "32227ff4470b3f08ec04706d1f2bfc5dc04e353811203e468b785b3ba3a89a57"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/r4.test.ts",
+      "bytes": 6785,
+      "sha256": "cb55f59e07c9fa2d537a7f4c0c91f435b5f8f01cd73a082984c49d64bba4c653"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verify.ts",
+      "bytes": 9374,
+      "sha256": "cf3415bcd062ebd9e512cce0b4b4643f8f59133bc3bbfab8552ee4b59910e708"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/tsconfig.json",
+      "bytes": 213,
+      "sha256": "cfb2bae14ef240a76395b70f1a442426b9a70c2805b35a711fa23263461c6d20"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/packet-audit.py",
+      "bytes": 24898,
+      "sha256": "9d1e1146ea0af17eedd06b70135e266c488f6353646b71eaa6b70a0ea88caad2"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/review-1.json",
+      "bytes": 1469,
+      "sha256": "f4c46c31b725b4395eb12fd95676b226ecfc27d6b72b42e4e4209289dd4c496a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/review-2.json",
+      "bytes": 1973,
+      "sha256": "49c418155e0e41b2dcffa784613c70f3ce6fc0e612dc8e37ffcec4f39eafe9e6"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/cpu39-pass-report-1/review.json",
+      "bytes": 1359,
+      "sha256": "a6fc9da0698404f3c618aeeb771594978b88a3f7a7899251fab4e66977175460"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/cpu39-pass-report-1/observation.json",
+      "bytes": 6934,
+      "sha256": "8f156733cf96e288b6b26ef2ef15fc5d8ce2a0ad0fe2becd883d54cf590102ef"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/cpu39-pass-report-1/reported-receipt.json",
+      "bytes": 62473,
+      "sha256": "73a0def3e002f1e5e80c08f66509e6bc83c377a3980e59c68335a7bf6d263dd0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/cpu39-pass-report-1/operator-summary.txt",
+      "bytes": 157,
+      "sha256": "8588c6953135cda20580782dc91be91a02e6f8759f1191bd240a0ca8827ac945"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/reference-delivery-decision.json",
+      "bytes": 1428,
+      "sha256": "333de911651b8336d0032ae4399054dd4c7b90899077e3db7aa5d5002df938cb"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/review-1.json",
+      "bytes": 1486,
+      "sha256": "50be4fe09410530840af5ac1c7c8f3a0755f51dae73395e235997db06885d200"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/review-1.json",
+      "bytes": 1516,
+      "sha256": "1b9c6f58ca7f290afc687ee30c81467d50cb241bf29ec54ae4b738a395bfc01b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/request.json",
+      "bytes": 1697,
+      "sha256": "2eb3c9727f788f9c95f0f2650ee89bbd94a5eb5ed289db67d91226e978140b70"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/plan.json",
+      "bytes": 3716,
+      "sha256": "8ecfce5156322da42fb852cd071a6091b96187e19a88226bec68295936505f6c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/review-1.json",
+      "bytes": 1218,
+      "sha256": "430fb42ceba1a7396ed4dac8d445ace03927d6da11e053866d45d37ce53230cc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-redelivery-execution-1/publication-and-redelivery-result.json",
+      "bytes": 1938,
+      "sha256": "fba1638afd0dc21fa1f153e13b987dfa751a86abd37e0c16d43870ae98ec35ee"
+    }
+  ],
+  "checks": {
+    "frozenSourceBindings": [
+      347,
+      327,
+      65
+    ],
+    "canonicalSourceOnly": {
+      "generation": 4,
+      "tests": 46,
+      "assertions": 367,
+      "sourceBindings": 92,
+      "reviewsReady": 3
+    },
+    "historicalCanonicalProofsPreserved": [
+      "FAIL",
+      "FAIL",
+      "PRE_CORRECTION_PASS"
+    ],
+    "cpuReportAnomalyPreserved": [
+      192,
+      179,
+      179
+    ],
+    "diagramIndexMatches": 3,
+    "diagramVerification": "LOCAL_DELIMITERS_AND_COVERAGE_ONLY_NOT_RENDERED_REMOTE_INCLUDE_NOT_FETCHED"
+  },
+  "cacheOrArchivePayloadAccessed": false,
+  "rawCaptureBytesModified": false,
+  "gitMutationPerformed": false,
+  "nativeHostGpuOrReferenceExecuted": false,
+  "publicationAuthorized": false,
+  "experimentTrainingAuthorized": false,
+  "referenceInputDelivery": "PARTIAL_LOCAL_SOURCE_AND_CORPUS_MATERIALIZED_PACKAGES_MISSING",
+  "authorizedLocalReferenceInputsMaterialized": true,
+  "referenceBundlingPerformed": false,
+  "trainingReady": false
+}

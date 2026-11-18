@@ -1,0 +1,11 @@
+free-before_EXIT=0
+install_EXIT=0
+bun_EXIT=0
+rustc_EXIT=0
+cargo_EXIT=0
+free-after_EXIT=0
+1.4.0
+rustc 1.95.0 (59807616e 2026-04-14)
+cargo 1.95.0 (f2d3ce0bd 2026-03-21)
+PASS_HOST_TOOLCHAIN_ALIGNMENT_ONLY
+HOST_TOOLCHAIN_EXIT=0

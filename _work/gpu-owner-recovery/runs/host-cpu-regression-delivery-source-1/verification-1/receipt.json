@@ -1,0 +1,222 @@
+{
+  "status": "PASS_DELIVERY_SOURCE_TESTS_AND_TYPES_ONLY",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/delivery.ts",
+      "sha256": "80d2d88a6c059ebde4bceb9527fbbf621d41cca5d09599a3c6b778d3c6a2ec20"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/delivery.test.ts",
+      "sha256": "246d98f86c02047e77c6aadf0f1ecc5898971cdbb82a57b9173eb8de28f411c5"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/canonical-host-command.fish",
+      "sha256": "02f358d0abc05a9ab1081f8512abdf455257ec69c69a74361ac5a5a5fa52f1b8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/receipt.json",
+      "sha256": "a875dce053e2931de32d83e65841d49305540eab13d9f8308a48ff72d65bdeec"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "a0cf0b388c7327624fa7f91061dbf4ee4280e9f27d095740399fe5c83682e913"
+    },
+    {
+      "path": "tsconfig.tests.json",
+      "sha256": "cd3c40e355f36ea26bd9079e25bbd127a30399f5606bf5f9211e237fe750b5a9"
+    },
+    {
+      "path": "package.json",
+      "sha256": "eec978d7f787b0bbdc1eba99d15d8972a0d2751fb5e0078d821b5cf09004cbae"
+    }
+  ],
+  "sourceChanged": false,
+  "results": [
+    {
+      "id": "unit",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "./_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/delivery.test.ts"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 28,
+      "stderrBytes": 749,
+      "streams": [
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/unit/command.stdout",
+          "bytes": 28,
+          "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+        },
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/unit/command.stderr",
+          "bytes": 749,
+          "sha256": "eb0e80cc3bdba3ba79a132379cc602b29fcd27532238e163910de6f7055c9d13"
+        }
+      ]
+    },
+    {
+      "id": "types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "--noEmit",
+        "--strict",
+        "--noUnusedLocals",
+        "--noUnusedParameters",
+        "--target",
+        "ES2022",
+        "--module",
+        "ESNext",
+        "--moduleResolution",
+        "Bundler",
+        "--types",
+        "bun",
+        "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/delivery.ts",
+        "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/delivery.test.ts"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/types/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/types/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "fish-launch-syntax",
+      "argv": [
+        "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-fish-shell-fish-shell/4.9.3/fish",
+        "--no-config",
+        "--no-execute",
+        "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/host-command.fish"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/fish-launch-syntax/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/fish-launch-syntax/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "fish-body-syntax",
+      "argv": [
+        "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-fish-shell-fish-shell/4.9.3/fish",
+        "--no-config",
+        "--no-execute",
+        "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/delivery-body.fish"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/fish-body-syntax/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/fish-body-syntax/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "runtime-types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "-p",
+        "tsconfig.json"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/runtime-types/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/runtime-types/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "runtime-test-types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "-p",
+        "tsconfig.tests.json"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/runtime-test-types/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/runtime-test-types/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "binding": {
+    "gitBlobSha": "6d4837cd8aaa80f4c73aedbaedd17aea7ea11264",
+    "bytes": 104604,
+    "sha256": "02f358d0abc05a9ab1081f8512abdf455257ec69c69a74361ac5a5a5fa52f1b8"
+  },
+  "fishSyntaxChecked": true,
+  "fishParser": "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-fish-shell-fish-shell/4.9.3/fish",
+  "downloadsPerformed": false,
+  "actualHostExecuted": false,
+  "publicationPerformed": false,
+  "trainingReady": false
+}

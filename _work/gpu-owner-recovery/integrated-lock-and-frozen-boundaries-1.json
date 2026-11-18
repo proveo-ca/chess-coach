@@ -1,0 +1,156 @@
+{
+  "kind": "EXACT_RECOVERED_LOCK_DELTA_AUDIT",
+  "baselineCommit": "c04a8da9468f7d443bd27d73a08c0bd7ee0e9d20",
+  "addedLocalPackage": "chess-coach-gpu-owner",
+  "addedRegistryPackage": "cubek-fft@0.3.1",
+  "changedDependencyLists": {
+    "burn-linalg": [
+      "burn-cubecl"
+    ],
+    "burn-signal": [
+      "burn-cubecl"
+    ],
+    "burn-vision": [
+      "burn-cubecl",
+      "cubecl"
+    ],
+    "cubek": [
+      "cubek-fft"
+    ]
+  },
+  "allExistingVersionsAndChecksumsUnchanged": true,
+  "allOtherPackageBlocksUnchanged": true,
+  "rootWorkspaceDelta": "OWNER_MEMBERSHIP_ONLY",
+  "frozenSources": [
+    {
+      "path": "bun.lock",
+      "sha256": "493ec125a40b8f9a247df9c5a347d1176e721d1fad54875cba9938639457bf1a"
+    },
+    {
+      "path": "crates/host-facts/Cargo.toml",
+      "sha256": "852c6df40e26aff5ac82e347db1f7cc4fdebb069a54095a8a92fb714183f64c8"
+    },
+    {
+      "path": "crates/host-facts/src/cgroup.rs",
+      "sha256": "c8adac710d8ffb805917ea330f34cfbfc32d7674bad761d54c00eb1c4456d484"
+    },
+    {
+      "path": "crates/host-facts/src/http.rs",
+      "sha256": "46e034bf976d7266a8e22ad60747cda95b35a2876b4da5fb8c44dfb3dab6f858"
+    },
+    {
+      "path": "crates/host-facts/src/lib.rs",
+      "sha256": "193700f9c3d3286c4af5202e955813702f65f0d44163de491c2523faeb6054f8"
+    },
+    {
+      "path": "crates/host-facts/src/main.rs",
+      "sha256": "d70817dc0139c1a6b3da357ba9834a2ce451fd06d090f777c1ab2cf37f302668"
+    },
+    {
+      "path": "crates/host-facts/src/projection.rs",
+      "sha256": "dd7a6f81b4b294dc5233c3d8a6b868a41d70520c922a6ca41379c8c003573323"
+    },
+    {
+      "path": "crates/host-facts/src/socket.rs",
+      "sha256": "208ef13bcd7274364f6f4690550566ea0c549a48cccaddd1343cdcd1186f63d1"
+    },
+    {
+      "path": "crates/host-facts/tests/cli.rs",
+      "sha256": "96e9323f84a378cb8be3cb33a4473702f26d009f1ec8d1a984bf0594f88fd569"
+    },
+    {
+      "path": "crates/host-facts/tests/recipe.rs",
+      "sha256": "8d5c9aee1eb2de0e916d32ff04597b6722d13ec255d4da8d95abbca2fa4ce97e"
+    },
+    {
+      "path": "package.json",
+      "sha256": "eec978d7f787b0bbdc1eba99d15d8972a0d2751fb5e0078d821b5cf09004cbae"
+    },
+    {
+      "path": "packages/contracts/src/episode.ts",
+      "sha256": "ae8c21913bf58d1688f4136bab05c6b55ad051a2dc39b5640c6d94ab603ee370"
+    },
+    {
+      "path": "packages/contracts/src/training-state.ts",
+      "sha256": "e17d980ca2bc03566bf43cf75869862c81fa3d6f9febcfc52044669242d7b5ff"
+    },
+    {
+      "path": "packages/runtime/src/job.ts",
+      "sha256": "bea66950267f27d02fd91e9c35fc2cde914637506a63a39e33b251f71de8da09"
+    },
+    {
+      "path": "tooling/runtime/Dockerfile",
+      "sha256": "be60c72b74cfb64c79daa4827ba48e3a52845bc83bf1a1aa4e0e9376440aaeb9"
+    },
+    {
+      "path": "tooling/runtime/backing_inventory.py",
+      "sha256": "f152b73b03a301af8089e88186a034f5a097b5fd2fb0d395e2744ee000dc2338"
+    },
+    {
+      "path": "tooling/runtime/evidence.py",
+      "sha256": "32aab5faeaa8cfd42775c15e153389c40440fd2556d269b9d1f07a5e8a9eddd8"
+    },
+    {
+      "path": "tooling/runtime/host-facts-artifact.json",
+      "sha256": "8e795855c33b71ad4d6b7f2fc6b53b091cb53ad8e1970829c015d6628d9d293d"
+    },
+    {
+      "path": "tooling/runtime/host_inventory.py",
+      "sha256": "d46e3b853a9ef1fb8c075034fb2a8006a3e56937732f430d256a776dc19ed2cb"
+    },
+    {
+      "path": "tooling/runtime/host_preflight.py",
+      "sha256": "b4a0bb81f50b8e483aa15deef6eaab729060270265a55b5e16b5733b6e1da84e"
+    },
+    {
+      "path": "tooling/runtime/host_view.py",
+      "sha256": "96071e345eb9c16e8458db5be04f1c8a2fb9e046c01e9811bae9939013e55473"
+    },
+    {
+      "path": "tooling/runtime/state_mount.py",
+      "sha256": "cfea85b61ee845aacda1dbfcc665b2f158b160f165365f3b242fc47de34fc702"
+    },
+    {
+      "path": "tooling/runtime/supervise.py",
+      "sha256": "797df27ba9dbfceccd855cda7c285b281199c15531100b1b19c977a44a34439b"
+    },
+    {
+      "path": "tooling/runtime/tests/test_backing_inventory.py",
+      "sha256": "56eb6a7752cde18e1961eb0cf0a0788820f7489e8ecf30ac6e36186ff81af0a9"
+    },
+    {
+      "path": "tooling/runtime/tests/test_evidence.py",
+      "sha256": "d78d85230facf8f4a6decccdcfdc9eb13b4a545781b4af35b847b26280433499"
+    },
+    {
+      "path": "tooling/runtime/tests/test_host_admission.py",
+      "sha256": "f7615c82109df0b8dcd7ecac3f43c074d5e1c70f29146692aaf6b8961c035a24"
+    },
+    {
+      "path": "tooling/runtime/tests/test_host_inventory.py",
+      "sha256": "98c976696b85a5408acacf6d901dd01e5e60c975e3c0e0f0aed7a07ac8a15312"
+    },
+    {
+      "path": "tooling/runtime/tests/test_host_preflight.py",
+      "sha256": "0accbb367eb6611a1249467598e15ad3feeda618bc743ba62c1623dc38d895f1"
+    },
+    {
+      "path": "tooling/runtime/tests/test_host_view.py",
+      "sha256": "693aa8dea21e1d874480b79864617b5f49f29fd760a86d72f0b1b28aa8b6c83e"
+    },
+    {
+      "path": "tooling/runtime/tests/test_recipe.py",
+      "sha256": "8fb18bb349398a3401ca9589d56d2fe018c03621bc6f1176415449582838e575"
+    },
+    {
+      "path": "tooling/runtime/tests/test_state_mount.py",
+      "sha256": "deeb0c2cd282fe04d11041569187dde914f7cbe51302eb24ff73bbcd30190550"
+    },
+    {
+      "path": "tooling/runtime/tests/test_supervise.py",
+      "sha256": "c6eda8cff4ded559ee6eb46d1971602812219348afbaf40ba9b4c23b84c67e24"
+    }
+  ],
+  "lockSha256": "b2852cbabb1fcedc29146c33a9323eb04401005afa4cb3c8e5de89e16ae66555",
+  "trainingReady": false
+}

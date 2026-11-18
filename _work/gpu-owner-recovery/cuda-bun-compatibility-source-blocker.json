@@ -1,0 +1,62 @@
+{
+  "version": "chess-coach.cuda-bun-compatibility-source-review-blocker.v1",
+  "status": "BLOCKED_BEFORE_DIAGNOSTIC_INVOCATION",
+  "decisionRequired": "SELECT_READ_ONLY_CANCELLATION_CUSTODY_DESIGN_OR_KEEP_DIAGNOSTICS_BLOCKED",
+  "scope": "SOURCE_REVIEW_ONLY_NOT_AN_ACTUAL_DIAGNOSTIC_FAILURE",
+  "diagnosticRequest": "_work/gpu-owner-recovery/cuda-bun-compatibility-request.json",
+  "diagnosticRequestSha256": "3e2164b0fc9e1d092d519928a2e4a7b0e085cd5eccdb6ed49245d6d8a43f880a",
+  "haltedFullRequest": "_work/gpu-owner-recovery/cuda-llvm-request.json",
+  "haltedFullRequestSha256": "e0b54ee82895a3da613e92e764ccd7db2c10f2001e95241543b36f49b6f1cc63",
+  "staticVerification": {
+    "status": "PASS",
+    "sourceChanged": false,
+    "sourceInputs": 242,
+    "diagnosticTests": 23,
+    "diagnosticAssertions": 4161,
+    "receipts": [
+      "_work/gpu-owner-recovery/runs/cuda-bun-compat-static-parent-2/receipt.json",
+      "_work/gpu-owner-recovery/runs/cuda-bun-compat-types-parent-2/receipt.json",
+      "_work/gpu-owner-recovery/runs/cuda-bun-compat-archive-parent-2/receipt.json",
+      "_work/gpu-owner-recovery/runs/cuda-bun-compat-snapshot-parent-2/receipt.json",
+      "_work/gpu-owner-recovery/runs/cuda-bun-compat-runner-parent-2/receipt.json",
+      "_work/gpu-owner-recovery/runs/cuda-bun-compat-acquire-parent-2/receipt.json",
+      "_work/gpu-owner-recovery/runs/cuda-bun-compat-isolation-parent-2/receipt.json"
+    ]
+  },
+  "reviews": [
+    { "role": "security-reviewer", "sessionId": "ses_e42f5a797ffexhsS7I21efHNfy", "sourceAcceptedConditionalOnAllReviews": true },
+    { "role": "adversarial-reviewer", "sessionId": "ses_e42ead667ffeBjPE85tlAd2Kzc", "sourceAcceptedConditionalOnAllReviews": true },
+    { "role": "devops", "sessionId": "ses_e43032d2effeZfYLV6rBy5HQUM", "sourceAccepted": false }
+  ],
+  "blockingFinding": {
+    "severity": "HIGH",
+    "file": "_work/gpu-owner-recovery/verify.ts",
+    "code": "SUPERVISOR_LOSS_SETS_REAPED_BEFORE_GROUP_CANCELLATION",
+    "impact": "The group-kill guard skips descendants after supervisor loss; the existing regression checks failure and latency but not descendant termination.",
+    "existingRunnerFunctionChangedForThisFinding": false,
+    "newRepairAuthorityRequired": true
+  },
+  "additionalFinding": {
+    "severity": "LOW",
+    "file": "_work/gpu-owner-recovery/cuda-bun-compatibility-invoke.ts",
+    "code": "TERMINAL_SUMMARY_OMITS_DIAGNOSTIC_AND_COMPATIBILITY_CLASSIFICATIONS"
+  },
+  "architectureAdvisory": {
+    "sessionId": "ses_e43068215ffeuugrCoynxn0LkH",
+    "scope": "READ_ONLY_DESIGN_NOT_AN_EXECUTED_CUSTODY_TEST",
+    "ownedGroupIdentityAfterSupervisorReapEstablished": false,
+    "numericPgidReuseConcernResolved": false,
+    "guardRemovalOrCallbackReorderingAcceptedAsRepair": false,
+    "recommendedNextScope": "READ_ONLY_FEASIBILITY_DESIGN_USING_EXISTING_PRIMITIVES_NO_EDITS_OR_PROBES",
+    "separateRepairAndTestAuthorizationRequiredAfterFeasibleDesign": true,
+    "newLifecycleMachineryOrWeakerCustodyRequiresSeparateDecision": true
+  },
+  "devopsSourceAccepted": false,
+  "newBindingCreated": false,
+  "diagnosticInvocationPerformed": false,
+  "diagnosticCasesLaunched": 0,
+  "diagnosticGrantConsumed": false,
+  "realArchiveReadRehashOrMountPerformed": false,
+  "fullArchivePipelineAuthorityGranted": false,
+  "trainingReady": false
+}

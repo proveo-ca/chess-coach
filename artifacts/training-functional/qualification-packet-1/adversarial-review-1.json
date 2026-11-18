@@ -1,0 +1,10 @@
+{
+  "scope": "READ_ONLY_SCOPED_SOURCE_REVIEW_NOT_HARDWARE_QUALIFICATION",
+  "reviewerSession": "ses_e1718eb55ffe05HZkAbP0jRyUr",
+  "reportedReadyToMerge": true,
+  "findings": [],
+  "reviewerConclusion": "No concrete findings in the scoped source",
+  "excluded": ["qualification-evidence.ts", "qualification-evidence.test.ts", "actual HOST/native/GPU execution"],
+  "publicationAuthorized": false,
+  "trainingReady": false
+}

@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "staticTests": 16,
+  "staticAssertions": 276,
+  "runnerTests": 13,
+  "runnerAssertions": 89,
+  "types": "PASS",
+  "currentImplementationHashesMatch": true,
+  "requestDelta": "NATIVE_LAYOUT_REVIEW_METADATA_ONLY",
+  "bothFailedAttemptsAndReviewBindingsPreserved": true,
+  "approvedRequestReconstruction": "RECONSTRUCTED_FROM_PRIOR_HALT_SNAPSHOT_AND_MATCHED_ACTUAL_ATTEMPT_PIN_NOT_ORIGINAL_CAPTURE",
+  "approvedRequestSha256": "28356e2dd638956c800ea275173a6664ebd71bf6ae067e10bb4e51685c65ad10",
+  "runnableV3BindingPresent": false,
+  "llvmArtifactFilesPresent": false,
+  "executionAuthorized": false,
+  "namespaceSupportDetermined": false,
+  "trainingReady": false
+}

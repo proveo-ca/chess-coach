@@ -1,0 +1,23 @@
+@startuml policy_io
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Numeric TypeScript / Burn process boundary
+component "TypeScript recipient planning\n2271-coordinate state/action encoder" as ACTOR <<app>>
+component "Zod request contract\nfeature version + 1..512 candidate rows" as REQUEST <<app>>
+component "policy-score CONFIG_JSON NATIVE_RECORD\none JSON request through stdin EOF" as PROCESS <<app>>
+component "Serde + FeatureBatch validation" as VALIDATE <<app>>
+component "Frozen Burn F64 inference model" as MODEL <<app>>
+database "Burn-native checkpoint\nSHA-256 = modelId" as RECORD <<db>>
+component "Standard JSON model configuration\nfeature version + dimensions + record SHA-256" as CONFIG <<app>>
+ACTOR --> REQUEST
+REQUEST --> PROCESS : numeric values only; max 8 MiB
+PROCESS --> VALIDATE
+RECORD --> MODEL
+CONFIG --> PROCESS : validate configuration and record binding
+VALIDATE --> MODEL : modelId must match record bytes
+MODEL --> ACTOR : JSON logits + requestId + modelId
+note bottom of PROCESS
+  Native record <= 1 MiB; no training or checkpoint writes.
+  A one-shot scorer grants no renewed meter or deadline.
+  Host admission, episode supervision and feature semantics remain pending.
+end note
+@enduml

@@ -1,0 +1,53 @@
+{
+  "version": "chess-coach.input-inventory-integrity.v1",
+  "status": "PASS_CAPTURED_RECORDS_ONLY",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/receipt.json",
+      "sha256": "85e79e5a8e8eaba7a96ccbf1640084cbf01692dd428372b1616ca2408a24b40e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/outcome.json",
+      "sha256": "387253a52f9586622fec7e26cab45b4edb4d29e18f807cd1e84d44b0411f6aca"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/verify-records.ts",
+      "sha256": "f12e7ed9c3c053dd0e8161bfcf4bc31645c46822e9ef4494b290f7416a086aa3"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-input-inventory-source-3/receipt.json",
+      "sha256": "f7aa2593f421b30782a50e31ffd28768e2f59252bcf45e15e22161fb0ba6efc2"
+    },
+    {
+      "path": "_spec/gpu-qualification.puml",
+      "sha256": "e2cc9b34bcba28d33752ba01796c7671e7c38b545eb71c8b5f829d41bc23f22e"
+    },
+    {
+      "path": "_spec/gpu-build.puml",
+      "sha256": "ba5b5ce2107c734e4b313313c1f1164bfc7c5f8fd19b1acc2dfdc50e7f5f482b"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "sha256": "944fe45ebf6915751f3c248ae4b06299393d448ec71e7d8d97c9984ea9061a19"
+    },
+    {
+      "path": "_spec/gpu-readiness.md",
+      "sha256": "570cc6c744e7fb6054703d1374115de755cc95cd49cc4a987ceb1553f479e11f"
+    },
+    {
+      "path": "_spec/gate-closure.md",
+      "sha256": "472dcd1b99f94138c08de2c0fe3f20d2bd31ea30610839585bb70b1cce41cc58"
+    }
+  ],
+  "metadataRecordsChecked": 2684,
+  "streamHashesChecked": 8,
+  "inventorySourceHashesChecked": 4,
+  "helperSourceHashesChecked": 11,
+  "unchangedQualificationSourceHashesChecked": 277,
+  "diagramIndexMatches": 2,
+  "payloadsReadFromPrefix": false,
+  "llvmQueriesRepeated": false,
+  "metadataInventoryRepeated": false,
+  "operatorHostPacketExecuted": false,
+  "trainingReady": false
+}

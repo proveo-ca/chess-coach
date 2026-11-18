@@ -1,0 +1,98 @@
+
+_work/gpu-owner-recovery/qualification/transfer/archive.test.ts:
+(pass) parseTarListing with pure GNU tar listing fixtures > records regular files, directories, symlinks, hardlinks, and other types [0.59ms]
+(pass) parseTarListing with pure GNU tar listing fixtures > preserves literal spaces, wildcard characters, and a standard ./ prefix [0.05ms]
+(pass) parseTarListing with pure GNU tar listing fixtures > allows an empty inventory but not blank inventory rows [0.15ms]
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects duplicate literal and equivalent ./ names [0.10ms]
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects unsafe or escaped name "/absolute/libdevice.10.bc" [0.05ms]
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects unsafe or escaped name "../libdevice.10.bc" [0.03ms]
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects unsafe or escaped name "libnvvm-linux-x86_64-13.0.48-archive/../libdevice.10.bc"
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects unsafe or escaped name "libnvvm-linux-x86_64-13.0.48-archive//libdevice.10.bc" [0.01ms]
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects unsafe or escaped name "libnvvm-linux-x86_64-13.0.48-archive/./libdevice.10.bc" [0.04ms]
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects unsafe or escaped name "libnvvm-linux-x86_64-13.0.48-archive/libdevice.10.bc/"
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects unsafe or escaped name "libnvvm-linux-x86_64-13.0.48-archive/bad\\name"
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects unsafe or escaped name "libnvvm-linux-x86_64-13.0.48-archive/escaped\\040name"
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects unsafe or escaped name "libnvvm-linux-x86_64-13.0.48-archive/escaped\\nname" [0.11ms]
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects unsafe or escaped name "libnvvm-linux-x86_64-13.0.48-archive/tab\tname"
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects unsafe or escaped name "libnvvm-linux-x86_64-13.0.48-archive/nul\u0000name" [0.03ms]
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects an unexpected listing row "-rw-r--r-- 1000/1000        -1 2026-10-15 12:34 libnvvm-linux-x86_64-13.0.48-archive/nvvm/libdevice/libdevice.10.bc" [0.04ms]
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects an unexpected listing row "-rw-r--r-- 1000/1000       1.5 2026-10-15 12:34 libnvvm-linux-x86_64-13.0.48-archive/nvvm/libdevice/libdevice.10.bc"
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects an unexpected listing row "-rw-r--r-- 1000/1000 9007199254740992 2026-10-15 12:34 libnvvm-linux-x86_64-13.0.48-archive/nvvm/libdevice/libdevice.10.bc" [0.01ms]
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects an unexpected listing row "-rw-r--r-- user/group        32 2026-10-15 12:34 libnvvm-linux-x86_64-13.0.48-archive/nvvm/libdevice/libdevice.10.bc"
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects an unexpected listing row "-rw-r--r-- 1000/1000        32 Oct 15 2026 12:34 libnvvm-linux-x86_64-13.0.48-archive/nvvm/libdevice/libdevice.10.bc"
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects an unexpected listing row "-rw-r--r-- 1000/1000        32 2026-10-15 25:34 libnvvm-linux-x86_64-13.0.48-archive/nvvm/libdevice/libdevice.10.bc"
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects an unexpected listing row "invalid 1000/1000        32 2026-10-15 12:34 libnvvm-linux-x86_64-13.0.48-archive/nvvm/libdevice/libdevice.10.bc"
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects an unexpected listing row "-rw-r--r-- 1000/1000        32 2026-10-15 12:34 libnvvm-linux-x86_64-13.0.48-archive/nvvm/libdevice/libdevice.10.bc\r" [0.01ms]
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects an unexpected listing row "lrwxrwxrwx 1000/1000         0 2026-10-15 12:34 libnvvm-linux-x86_64-13.0.48-archive/alias"
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects an unexpected listing row "lrwxrwxrwx 1000/1000         0 2026-10-15 12:34 libnvvm-linux-x86_64-13.0.48-archive/alias -> "
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects an unexpected listing row "lrwxrwxrwx 1000/1000         0 2026-10-15 12:34 libnvvm-linux-x86_64-13.0.48-archive/alias -> target -> another"
+(pass) parseTarListing with pure GNU tar listing fixtures > rejects an unexpected listing row "hrw-r--r-- 1000/1000         0 2026-10-15 12:34 libnvvm-linux-x86_64-13.0.48-archive/alias"
+(pass) selectLibdevice with pure member fixtures > returns only the unique bitcode and case-insensitive vendor license basenames [0.27ms]
+(pass) selectLibdevice with pure member fixtures > requires a bitcode member [0.06ms]
+(pass) selectLibdevice with pure member fixtures > rejects multiple matching bitcode basenames even when a match is nonregular [0.09ms]
+(pass) selectLibdevice with pure member fixtures > rejects directory bitcode [0.07ms]
+(pass) selectLibdevice with pure member fixtures > rejects symlink bitcode [0.01ms]
+(pass) selectLibdevice with pure member fixtures > rejects hardlink bitcode
+(pass) selectLibdevice with pure member fixtures > rejects other bitcode [0.01ms]
+(pass) selectLibdevice with pure member fixtures > rejects bitcode size 0 [0.06ms]
+(pass) selectLibdevice with pure member fixtures > rejects bitcode size -1 [0.02ms]
+(pass) selectLibdevice with pure member fixtures > rejects bitcode size 1.5 [0.03ms]
+(pass) selectLibdevice with pure member fixtures > rejects bitcode size null
+(pass) selectLibdevice with pure member fixtures > rejects bitcode size null
+(pass) selectLibdevice with pure member fixtures > rejects bitcode size 2097153 [0.01ms]
+(pass) selectLibdevice with pure member fixtures > requires at least one vendor license [0.12ms]
+(pass) selectLibdevice with pure member fixtures > rejects a directory license even alongside a regular license [0.13ms]
+(pass) selectLibdevice with pure member fixtures > rejects a symlink license even alongside a regular license [0.04ms]
+(pass) selectLibdevice with pure member fixtures > rejects a hardlink license even alongside a regular license [0.04ms]
+(pass) selectLibdevice with pure member fixtures > rejects a other license even alongside a regular license [0.01ms]
+(pass) selectLibdevice with pure member fixtures > rejects license size 0 [0.05ms]
+(pass) selectLibdevice with pure member fixtures > rejects license size -1 [0.01ms]
+(pass) selectLibdevice with pure member fixtures > rejects license size 1.5 [0.01ms]
+(pass) selectLibdevice with pure member fixtures > rejects license size null
+(pass) selectLibdevice with pure member fixtures > rejects license size null [0.04ms]
+(pass) selectLibdevice with pure member fixtures > rejects license size 1048577 [0.02ms]
+(pass) selectLibdevice with pure member fixtures > enforces the combined license byte cap [0.11ms]
+(pass) selectLibdevice with pure member fixtures > keeps exact member names selected from a listing [0.14ms]
+
+_work/gpu-owner-recovery/qualification/transfer/prepare.test.ts:
+(pass) byte budgets stop before exceeding the approved aggregate [0.14ms]
+(pass) context mapping preserves schema and crate paths while relocating tools together [0.15ms]
+(pass) new native source names cannot enter a preparation from an older source gate [0.12ms]
+(pass) sparse registry keys preserve Cargo's public registry layout [0.08ms]
+(pass) frozen registry validation rejects altered providers, versions and checksums [12.06ms]
+(pass) LLVM staging uses only the complete retained tree and recorded links [7.36ms]
+(pass) fresh transfer authority excludes host work, retries and credential changes [0.32ms]
+
+_work/gpu-owner-recovery/qualification/transfer/publish.test.ts:
+(pass) publishes exactly one commit, push, draft, and two assets on one shrinking budget [2.23ms]
+(pass) either repository visibility permits the approved draft [0.52ms]
+(pass) directory URLs with a trailing slash preserve the fixed asset root [0.21ms]
+(pass) auth failure and missing push permission stop before commit without auth setup [0.71ms]
+(pass) branch, fetch origin, push origin, and multiple URLs fail closed [0.32ms]
+(pass) SSH repository metadata never selects SSH network transport [0.33ms]
+(pass) URL rewrite inspection rejects applicable fetch and push rewrites without retaining raw values [0.36ms]
+(pass) transport guards stop before mutation and recheck after hooks within the same deadline [0.55ms]
+(pass) prepared-native reuse binds both original hashes and the fresh publisher gate [1.10ms]
+(pass) empty staged index and invalid bundle paths stop before commit [0.18ms]
+(pass) commit and push failures retain attempts and stop before release [0.26ms]
+(pass) a pre-existing tag must be absent or resolve to the exact pushed commit [0.55ms]
+(pass) commit timeout or capture failure records an unknown rather than negative outcome [0.15ms]
+(pass) thrown mutation invocations consume their attempt before stopping [0.56ms]
+(pass) post-hook frozen mutations stop before push or publication [0.31ms]
+(pass) hook changes to branch, origin, or HEAD stop further mutations [0.35ms]
+(pass) manifest creation happens after the exact push and rejects changed assets [0.42ms]
+(pass) non-draft, wrong tag, or wrong target response stops without upload or repair [0.34ms]
+(pass) failed release creation never retries or uploads [0.14ms]
+(pass) second upload failure retains the first uploaded asset and release [3.69ms]
+(pass) each pre-upload and final read must still identify the exact draft [0.60ms]
+(pass) asset verification rejects wrong sizes, available digests, and extra names [0.65ms]
+(pass) asset names must equal the approved basenames rather than path suffixes [0.60ms]
+(pass) an API without asset digests records missing hash verification explicitly [0.22ms]
+(pass) the whole deadline stops before the next command rather than restarting [0.28ms]
+(pass) callback time consumes the same budget and invalid clocks stop closed [0.21ms]
+(pass) malformed command JSON fails before any later mutation [0.16ms]
+
+ 87 pass
+ 0 fail
+ 422 expect() calls
+Ran 87 tests across 3 files. [64.00ms]

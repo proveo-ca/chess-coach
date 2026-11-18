@@ -1,0 +1,27 @@
+{
+  "version": "chess-coach.source-review.v1",
+  "reviewer": "adversarial-reviewer",
+  "sessionId": "ses_e4633f9c4ffem033a7XZ2viOY1",
+  "scope": "RECONSTRUCTED_RUST_OWNER_TYPESCRIPT_CUDA_LEAF_AND_RECOVERY_TOOLING_SOURCE_ONLY",
+  "baselineCommit": "c04a8da9468f7d443bd27d73a08c0bd7ee0e9d20",
+  "sourcePackets": [
+    "_work/gpu-owner-recovery/runs/security-rust-baseline-packet-3/receipt.json",
+    "_work/gpu-owner-recovery/runs/security-typescript-baseline-packet-5/receipt.json"
+  ],
+  "readOnly": true,
+  "reviewerExecutedCommands": false,
+  "finalResponse": [
+    "Object-ancestry and lazy-fetch findings are cleared; prior clearances stand.",
+    "New or remaining findings: none in the reviewed scope.",
+    "Reviewed current source and retained 25-guard/194-assertion PASS plus typecheck records; executed no commands.",
+    "Full legacy Bun, C14, and operational qualification remain open.",
+    "READY TO MERGE: yes"
+  ],
+  "remainingFindingsInScope": 0,
+  "finalVerdict": "READY_TO_MERGE_REVIEWED_SOURCE_ONLY_PACKET_5",
+  "fullLegacyBunAcceptance": false,
+  "fullC14Acceptance": false,
+  "actualGpuF64C12Acceptance": false,
+  "operationalAcceptance": false,
+  "trainingReady": false
+}

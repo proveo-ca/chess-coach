@@ -1,0 +1,22 @@
+{
+  "version": "chess-coach.qualification-inherited-identity-source-review.v1",
+  "status": "ACCEPTED_WITHIN_FRESH_IDENTITY_PUBLICATION_REQUEST_ONLY",
+  "sourceReceipt": "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-6/receipt.json",
+  "activeRequest": "_work/gpu-owner-recovery/qualification/transfer/identity-publication-request.json",
+  "adversarial": { "session": "ses_e3cea2a1cffeBacqiaDdQkXxlq", "verdict": "READY_SOURCE_ONLY" },
+  "devops": { "session": "ses_e3ec46b44ffe7CbnV5rwv23shT", "verdict": "READY_INHERITED_IDENTITY_PUBLICATION_ONLY" },
+  "security": { "session": "ses_e3cea2a12ffe9TMeXvXBhDE8n7", "verdict": "SCOPED_PREEXEC_READY" },
+  "helperTests": 89,
+  "helperAssertions": 438,
+  "qualificationTests": 37,
+  "qualificationAssertions": 280,
+  "passingTypechecks": 4,
+  "frozenSourceHashes": 316,
+  "priorAttemptsClosed": true,
+  "thirdAttemptExecuted": false,
+  "identityValueOrGitConfigurationChangesAuthorized": false,
+  "downloadCopyRepackOrPreparationReplayAuthorized": false,
+  "operatorDownloadOrBuildOrGpuExecutionAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

@@ -1,0 +1,4 @@
+# SPEC: _spec/recovery.md
+[tasks."cuda:diagnose-bun-root"]
+dir = "../.."
+run = "/usr/local/bin/bun --no-env-file --no-install _work/gpu-owner-recovery/cuda-bun-compatibility.ts diagnose"

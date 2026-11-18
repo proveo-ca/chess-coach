@@ -1,0 +1,13 @@
+{
+  "version": "chess-coach.host-receive-source-publication-review.v1",
+  "status": "READY_WITHIN_APPROVED_SINGLE_SOURCE_PUBLICATION_ONLY",
+  "request": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/request.json",
+  "adversarial": { "session": "ses_e3c122320ffdrHp4JsMATl2iN7", "verdict": "READY", "commandOutcomeCaptureFindingResolved": true },
+  "devops": { "session": "ses_e3ec46b44ffe7CbnV5rwv23shT", "verdict": "READY_SINGLE_SOURCE_PUBLICATION" },
+  "security": { "session": "ses_e3cea2a12ffe9TMeXvXBhDE8n7", "verdict": "SCOPED_SOURCE_PUBLICATION_READY" },
+  "publicationTaskScriptVerification": { "strictStandaloneTypecheck": "PASS", "stdout": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/types.stdout", "stderr": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/types.stderr" },
+  "receiverSourceProof": "_work/gpu-owner-recovery/runs/host-input-receive-source-2/receipt.json",
+  "receiverHelperSha256": "091a431757ef83710a95156816e085cb1ed36b632e4923c9632695ffe821bafa",
+  "operatorHostExecuted": false,
+  "trainingReady": false
+}

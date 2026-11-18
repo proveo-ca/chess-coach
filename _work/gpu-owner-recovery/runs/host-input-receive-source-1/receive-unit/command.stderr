@@ -1,0 +1,40 @@
+
+_work/gpu-owner-recovery/qualification/host-receive/receive.test.ts:
+(pass) host proposal matches exact retained draft asset metadata without authorizing operations [0.42ms]
+(pass) manifest binds the original 65 source inputs and honest offline-build limitations [31.60ms]
+(pass) native paths preserve schema placement and move tool dependencies together [0.21ms]
+(pass) altered source commits, bundle identities and native hashes stop validation [50.18ms]
+(pass) manifest rejects duplicate paths, unsupported entry kinds and altered LLVM links [12.33ms]
+(pass) standard tar listing matches manifest entries plus five explicit roots [109.45ms]
+(pass) one host invocation downloads manifest first, then lists, extracts and verifies once [26.78ms]
+(pass) asset digest failure consumes only attempted downloads and never extracts [28.36ms]
+(pass) wrong manifest and member inventory stop before any extraction [27.96ms]
+(pass) failures preserve attempted stages without automatic retry [96.79ms]
+(pass) download and extraction phases share their respective shrinking deadlines [45.67ms]
+(pass) context totals cannot turn an incomplete receive into PASS [24.50ms]
+(pass) receiver stays standalone and contains no installation, compiler or GPU entrypoint [0.44ms]
+
+_work/gpu-owner-recovery/qualification/host-receive/bootstrap.test.ts:
+(pass) renders one deterministic fish command with canonical shell single-quote escapes [0.35ms]
+(pass) rejects every non-full commit before returning a command [0.11ms]
+(pass) rejects every non-full helper digest before returning a command [0.07ms]
+(pass) accepts full hexadecimal pins without silently substituting a revision or digest [0.10ms]
+(pass) sets only the ephemeral non-installing non-interactive environment [0.15ms]
+(pass) requires only existing tools and leaves the receiver's tar unused by the bootstrap [0.09ms]
+(pass) takes exclusive ownership of just the bootstrap directory before writing any file [0.12ms]
+(pass) retains separate bootstrap stdout and stderr labels without claiming a host pass [0.08ms]
+(pass) checks exact Bun 1.4.0 and records its immediate exit before any fetch [0.07ms]
+(pass) fetches exactly one plaintext helper from the fixed repository at the full source commit [0.09ms]
+(pass) captures the fetch status immediately and stops on failure without removing partial source [0.07ms]
+(pass) applies the 128 KiB source soft limit after the bounded fetch and before hashing or execution [0.07ms]
+(pass) uses the supplied hash, captures both pipeline stages immediately, and fails closed [0.09ms]
+(pass) executes only the verified helper directly with the exact two receiver arguments [0.10ms]
+(pass) retains receiver stdout, stderr, status and its exact receipt path [0.07ms]
+(pass) host syntax checking precedes execution under the same outer deadline [0.04ms]
+(pass) leaves receiver cache and evidence creation to the receiver [0.08ms]
+(pass) does not install, authenticate, alter repositories, publish, or build host artifacts [0.15ms]
+
+ 31 pass
+ 0 fail
+ 280 expect() calls
+Ran 31 tests across 2 files. [480.00ms]

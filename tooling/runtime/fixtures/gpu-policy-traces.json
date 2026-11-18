@@ -1,0 +1,301 @@
+{
+  "version": "chess-coach.gpu-policy-conformance.v1",
+  "cases": [
+    {
+      "name": "threshold_equality_and_refresh", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "admit", "nextCheckNs": "100" } },
+        { "method": "check", "nowNs": "99", "expected": { "kind": "continue", "nextCheckNs": "100" } },
+        { "method": "observe", "nowNs": "99", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "500", "totalBytes": "2000", "observedBoottimeNs": "99" }, "expected": { "kind": "continue", "nextCheckNs": "199" } },
+        { "method": "check", "nowNs": "198", "expected": { "kind": "continue", "nextCheckNs": "199" } },
+        { "method": "observe", "nowNs": "198", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "500", "totalBytes": "2000", "observedBoottimeNs": "198" }, "expected": { "kind": "continue", "nextCheckNs": "298" } }
+      ]
+    },
+    {
+      "name": "startup_headroom_terminal_first", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "999", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "reject", "reason": "HEADROOM" } },
+        { "method": "admit", "nowNs": "1", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "2000", "totalBytes": "2000", "observedBoottimeNs": "1" }, "expected": { "kind": "terminal", "reason": "HEADROOM" } },
+        { "method": "check", "nowNs": "-1", "expected": { "kind": "terminal", "reason": "HEADROOM" } }
+      ]
+    },
+    {
+      "name": "configuration_failure_before_origin_clock_and_method", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200", "extra": true },
+      "originalS0Ns": "-1",
+      "calls": [
+        { "method": "check", "nowNs": "-1", "expected": { "kind": "reject", "reason": "CONFIGURATION" } },
+        { "method": "observe", "nowNs": null, "sample": null, "expected": { "kind": "terminal", "reason": "CONFIGURATION" } }
+      ]
+    },
+    {
+      "name": "origin_too_late_for_cleanup", "group": "range",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "9223371736854775808",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": null, "expected": { "kind": "reject", "reason": "ORIGIN" } },
+        { "method": "check", "nowNs": "9223371736854775808", "expected": { "kind": "terminal", "reason": "ORIGIN" } }
+      ]
+    },
+    {
+      "name": "clock_rollback_before_repeated_admit", "group": "clock",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "10", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "10" }, "expected": { "kind": "admit", "nextCheckNs": "110" } },
+        { "method": "admit", "nowNs": "9", "sample": null, "expected": { "kind": "abort-owned", "reason": "CLOCK", "cleanupDeadlineNs": "300000000000" } },
+        { "method": "observe", "nowNs": "11", "sample": null, "expected": { "kind": "terminal", "reason": "CLOCK" } }
+      ]
+    },
+    {
+      "name": "cadence_equality_before_replacement", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "admit", "nextCheckNs": "100" } },
+        { "method": "observe", "nowNs": "100", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "2000", "totalBytes": "2000", "observedBoottimeNs": "100" }, "expected": { "kind": "abort-owned", "reason": "MISSED_SAMPLE", "cleanupDeadlineNs": "300000000000" } },
+        { "method": "check", "nowNs": "101", "expected": { "kind": "terminal", "reason": "MISSED_SAMPLE" } }
+      ]
+    },
+    {
+      "name": "age_equality_before_cadence", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "100" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "admit", "nextCheckNs": "100" } },
+        { "method": "observe", "nowNs": "100", "sample": null, "expected": { "kind": "abort-owned", "reason": "STALE_SAMPLE", "cleanupDeadlineNs": "300000000000" } }
+      ]
+    },
+    {
+      "name": "work_equality_before_old_expiry_and_sample", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "297000000000", "maxSampleAgeNs": "297000000000" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "admit", "nextCheckNs": "297000000000" } },
+        { "method": "observe", "nowNs": "297000000000", "sample": null, "expected": { "kind": "abort-owned", "reason": "WORK_DEADLINE", "cleanupDeadlineNs": "300000000000" } },
+        { "method": "check", "nowNs": "300000000000", "expected": { "kind": "terminal", "reason": "WORK_DEADLINE" } }
+      ]
+    },
+    {
+      "name": "device_before_sample_time", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-00000000-0000-0000-0000-000000000000", "freeBytes": "-1", "totalBytes": "0", "observedBoottimeNs": "1" }, "expected": { "kind": "reject", "reason": "TELEMETRY" } }
+      ]
+    },
+    {
+      "name": "repeated_sample_order_before_capacity", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "10", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "10" }, "expected": { "kind": "admit", "nextCheckNs": "110" } },
+        { "method": "observe", "nowNs": "11", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "999", "totalBytes": "0", "observedBoottimeNs": "10" }, "expected": { "kind": "abort-owned", "reason": "TELEMETRY", "cleanupDeadlineNs": "300000000000" } }
+      ]
+    },
+    {
+      "name": "i64_latest_origin_wide_add_before_clamp", "group": "range",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "9223372036854775807", "maxSampleAgeNs": "9223372036854775807" },
+      "originalS0Ns": "9223371736854775807",
+      "calls": [
+        { "method": "admit", "nowNs": "9223371736854775807", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "9223371736854775807" }, "expected": { "kind": "admit", "nextCheckNs": "9223372033854775807" } },
+        { "method": "check", "nowNs": "9223372033854775806", "expected": { "kind": "continue", "nextCheckNs": "9223372033854775807" } },
+        { "method": "check", "nowNs": "9223372033854775807", "expected": { "kind": "abort-owned", "reason": "WORK_DEADLINE", "cleanupDeadlineNs": "9223372036854775807" } }
+      ]
+    },
+    {
+      "name": "raw_number_is_not_bigint", "group": "range",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": 100, "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": null, "expected": { "kind": "reject", "reason": "CONFIGURATION" } }
+      ]
+    },
+    {
+      "name": "cold_deadline_equality_before_telemetry", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "10000000000", "sample": null, "expected": { "kind": "reject", "reason": "COLD_DEADLINE" } },
+        { "method": "admit", "nowNs": "0", "sample": null, "expected": { "kind": "terminal", "reason": "COLD_DEADLINE" } }
+      ]
+    },
+    {
+      "name": "cold_deadline_last_nanosecond", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "9999999999", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "9999999999" }, "expected": { "kind": "admit", "nextCheckNs": "10000000099" } },
+        { "method": "observe", "nowNs": "10000000000", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "500", "totalBytes": "2000", "observedBoottimeNs": "10000000000" }, "expected": { "kind": "continue", "nextCheckNs": "10000000100" } },
+        { "method": "check", "nowNs": "297000000000", "expected": { "kind": "abort-owned", "reason": "WORK_DEADLINE", "cleanupDeadlineNs": "300000000000" } }
+      ]
+    },
+    {
+      "name": "awaiting_observe_and_terminal", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "observe", "nowNs": "0", "sample": null, "expected": { "kind": "reject", "reason": "NOT_ADMITTED" } },
+        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "terminal", "reason": "NOT_ADMITTED" } }
+      ]
+    },
+    {
+      "name": "awaiting_check_before_cold_deadline", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "check", "nowNs": "10000000000", "expected": { "kind": "reject", "reason": "NOT_ADMITTED" } }
+      ]
+    },
+    {
+      "name": "repeated_admit_before_deadline_and_sample", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "admit", "nextCheckNs": "100" } },
+        { "method": "check", "nowNs": "0", "expected": { "kind": "continue", "nextCheckNs": "100" } },
+        { "method": "admit", "nowNs": "297000000000", "sample": null, "expected": { "kind": "abort-owned", "reason": "ALREADY_ADMITTED", "cleanupDeadlineNs": "300000000000" } }
+      ]
+    },
+    {
+      "name": "sample_time_before_capacity", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "-1", "totalBytes": "0", "observedBoottimeNs": "1" }, "expected": { "kind": "reject", "reason": "TELEMETRY" } }
+      ]
+    },
+    {
+      "name": "capacity_before_staleness", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "200", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "2001", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "reject", "reason": "TELEMETRY" } }
+      ]
+    },
+    {
+      "name": "stale_before_cadence_and_headroom", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "200", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "0", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "reject", "reason": "STALE_SAMPLE" } }
+      ]
+    },
+    {
+      "name": "missed_before_headroom", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "100", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "0", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "reject", "reason": "MISSED_SAMPLE" } }
+      ]
+    },
+    {
+      "name": "stable_total_before_headroom", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "admit", "nextCheckNs": "100" } },
+        { "method": "observe", "nowNs": "1", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "0", "totalBytes": "2001", "observedBoottimeNs": "1" }, "expected": { "kind": "abort-owned", "reason": "CAPACITY", "cleanupDeadlineNs": "300000000000" } }
+      ]
+    },
+    {
+      "name": "startup_threshold_exceeds_total", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "999", "totalBytes": "999", "observedBoottimeNs": "0" }, "expected": { "kind": "reject", "reason": "CAPACITY" } }
+      ]
+    },
+    {
+      "name": "malformed_telemetry_before_device", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": { "uuid": "wrong", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0", "extra": "1" }, "expected": { "kind": "reject", "reason": "TELEMETRY" } }
+      ]
+    },
+    {
+      "name": "running_headroom_abort_once_and_terminal_no_revival", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "admit", "nextCheckNs": "100" } },
+        { "method": "observe", "nowNs": "1", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "499", "totalBytes": "2000", "observedBoottimeNs": "1" }, "expected": { "kind": "abort-owned", "reason": "HEADROOM", "cleanupDeadlineNs": "300000000000" } },
+        { "method": "admit", "nowNs": "-1", "sample": null, "expected": { "kind": "terminal", "reason": "HEADROOM" } },
+        { "method": "observe", "nowNs": "2", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "2000", "totalBytes": "2000", "observedBoottimeNs": "2" }, "expected": { "kind": "terminal", "reason": "HEADROOM" } },
+        { "method": "check", "nowNs": null, "expected": { "kind": "terminal", "reason": "HEADROOM" } }
+      ]
+    },
+    {
+      "name": "uuid_case_sensitive", "group": "policy",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789ABC", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "reject", "reason": "DEVICE" } }
+      ]
+    },
+    {
+      "name": "configuration_i64_out_of_range", "group": "range",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "9223372036854775808", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": null, "expected": { "kind": "reject", "reason": "CONFIGURATION" } }
+      ]
+    },
+    {
+      "name": "configuration_zero_duration_and_threshold", "group": "range",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "0", "runningStopBelowFreeBytes": "0", "samplePeriodNs": "0", "maxSampleAgeNs": "0" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "check", "nowNs": "0", "expected": { "kind": "reject", "reason": "CONFIGURATION" } }
+      ]
+    },
+    {
+      "name": "sample_capacity_i64_out_of_range", "group": "range",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "9223372036854775808", "observedBoottimeNs": "0" }, "expected": { "kind": "reject", "reason": "TELEMETRY" } }
+      ]
+    },
+    {
+      "name": "raw_sample_number_is_not_bigint", "group": "range",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": 1000, "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "reject", "reason": "TELEMETRY" } }
+      ]
+    },
+    {
+      "name": "now_before_origin_and_method", "group": "clock",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "100",
+      "calls": [
+        { "method": "check", "nowNs": "99", "expected": { "kind": "reject", "reason": "CLOCK" } },
+        { "method": "admit", "nowNs": "100", "sample": null, "expected": { "kind": "terminal", "reason": "CLOCK" } }
+      ]
+    },
+    {
+      "name": "sample_before_origin", "group": "clock",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "100",
+      "calls": [
+        { "method": "admit", "nowNs": "100", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "99" }, "expected": { "kind": "reject", "reason": "SAMPLE_TIME" } }
+      ]
+    },
+    {
+      "name": "now_out_of_i64_range_after_admission", "group": "clock",
+      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
+      "originalS0Ns": "0",
+      "calls": [
+        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "admit", "nextCheckNs": "100" } },
+        { "method": "check", "nowNs": "9223372036854775808", "expected": { "kind": "abort-owned", "reason": "CLOCK", "cleanupDeadlineNs": "300000000000" } },
+        { "method": "check", "nowNs": "0", "expected": { "kind": "terminal", "reason": "CLOCK" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+// SPEC: _spec/recovery.md
+import { expect, test } from "bun:test";
+import { mkdirSync, mkdtempSync, readFileSync, statSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { runBounded, sourceFilePaths, verificationArgv } from "./verify";
+
+const scratch = fileURLToPath(new URL("./scratch/runner-", import.meta.url));
+mkdirSync(fileURLToPath(new URL("./scratch", import.meta.url)), { recursive: true, mode: 0o700 });
+const directory = () => mkdtempSync(scratch);
+
+test("Bun test commands select exact repository files rather than discovering fixture clones", () => {
+  for (const stage of ["runner", "policy", "bridge", "reference-guards", "cuda-isolation", "cuda-acquire", "cuda-archive", "cuda-bun-snapshot"]) {
+    const selectors = verificationArgv(stage).filter(value => value.endsWith(".test.ts"));
+    expect(selectors.length).toBeGreaterThan(0);
+    for (const selector of selectors) expect(selector.startsWith("./")).toBe(true);
+    if (stage === "cuda-isolation") expect(selectors).toEqual(["./_work/gpu-owner-recovery/cuda-isolation.test.ts"]);
+    if (stage === "cuda-acquire") expect(selectors).toEqual(["./_work/gpu-owner-recovery/cuda-continuation.test.ts", "./_work/gpu-owner-recovery/cuda-acquire.test.ts"]);
+    if (stage === "cuda-archive") expect(selectors).toEqual(["./_work/gpu-owner-recovery/cuda-tar.test.ts", "./_work/gpu-owner-recovery/cuda-elf.test.ts", "./_work/gpu-owner-recovery/cuda-archive.test.ts"]);
+    if (stage === "cuda-bun-snapshot") expect(selectors).toEqual(["./_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts"]);
+  }
+});
+
+test("private Bun capture manifests retain the exact source, configuration and authenticated pre-renewal packet", async () => {
+  for (const stage of ["cuda-bun-snapshot", "cuda-archive", "runner", "typecheck-tools"]) {
+    const paths = await sourceFilePaths(stage);
+    for (const path of ["cuda-bun-snapshot.ts", "cuda-bun-snapshot.test.ts", "cuda-bun-snapshot-mise.toml",
+      "cuda-archive-reviewed.json", "cuda-archive-plan-1-classification.json", "runs/cuda-bun-snapshot-1/request-before-renewal.json",
+      "runs/cuda-archive-plan-1/receipt.json", "runs/cuda-archive-plan-1/command.stdout", "runs/cuda-archive-plan-1/command.stderr",
+      "runs/cuda-archive-plan-1/authenticated-request-retained-after-plan.json", "runs/cuda-archive-plan-1/source-snapshot.json",
+      "runs/cuda-archive-plan-1/source-snapshot/00.source", "runs/cuda-archive-plan-1/source-snapshot/22.source",
+      "runs/cuda-archive-plan-1/ancestor-metadata.json"]) expect(paths).toContain(`_work/gpu-owner-recovery/${path}`);
+    for (const path of ["cuda-bun-snapshot-reviewed.json", "runs/cuda-bun-snapshot-1/approved-request.json", "runs/cuda-bun-snapshot-1/source-review.json",
+      "runs/cuda-bun-snapshot-1/receipt.json", "runs/cuda-bun-snapshot-1/capture.json", "runs/cuda-bun-snapshot-1/verification.json",
+      "runs/cuda-bun-snapshot-1/.operation", "runs/cuda-bun-snapshot-1/command.stdout", "runs/cuda-bun-snapshot-1/command.stderr",
+      "runs/cuda-bun-snapshot-1/source-snapshot.json", "runs/cuda-bun-snapshot-1/source-snapshot/00.source",
+      "runs/cuda-bun-snapshot-1/source-snapshot/17.source"]) expect(paths).toContain(`_work/gpu-owner-recovery/${path}`);
+  }
+});
+
+test("CUDA archive tool manifests retain exact parsers, root dispatcher, fixtures and acquisition snapshots", async () => {
+  for (const stage of ["cuda-archive", "runner", "typecheck-tools"]) {
+    const paths = await sourceFilePaths(stage);
+    for (const path of ["_work/gpu-owner-recovery/cuda-tar.ts", "_work/gpu-owner-recovery/cuda-tar.test.ts",
+      "_work/gpu-owner-recovery/cuda-elf.ts", "_work/gpu-owner-recovery/cuda-elf.test.ts", "_work/gpu-owner-recovery/cuda-archive.ts",
+      "_work/gpu-owner-recovery/cuda-archive.test.ts", "_work/gpu-owner-recovery/cuda-archive-mise.toml",
+      "_work/gpu-owner-recovery/fixtures/cuda-tar-cases.json", "_work/gpu-owner-recovery/cuda-acquire-reviewed.json", "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/receipt.json",
+      "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/approved-request.json", "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/source-review.json",
+      "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/source-snapshot.json", "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/source-snapshot/00.source",
+      "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/archive/receipt.json", "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/archive/artifact.json",
+      "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/checksums/receipt.json", "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/checksums/artifact.json",
+      "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/archive/command.stdout", "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/archive/command.stderr",
+      "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/checksums/command.stdout", "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/checksums/command.stderr"]) expect(paths).toContain(path);
+  }
+});
+
+test("CUDA acquisition tool manifests retain exact tests, orchestration, grant and predecessor proof", async () => {
+  for (const stage of ["cuda-acquire", "runner", "typecheck-tools"]) {
+    const paths = await sourceFilePaths(stage);
+    for (const path of ["_work/gpu-owner-recovery/cuda-continuation.ts", "_work/gpu-owner-recovery/cuda-continuation.test.ts",
+      "_work/gpu-owner-recovery/cuda-acquire.ts", "_work/gpu-owner-recovery/cuda-acquire.test.ts", "_work/gpu-owner-recovery/cuda-acquire-mise.toml",
+      "_work/gpu-owner-recovery/cuda-llvm-request.json", "_work/gpu-owner-recovery/cuda-isolation-reviewed-v3.json",
+      "_work/gpu-owner-recovery/cuda-isolation-probe-3-classification.json", "_work/gpu-owner-recovery/runs/cuda-isolation-probe-3/receipt.json",
+      "_work/gpu-owner-recovery/runs/cuda-isolation-probe-3/approved-request.json", "_work/gpu-owner-recovery/runs/cuda-isolation-probe-3/command.stdout",
+      "_work/gpu-owner-recovery/runs/cuda-isolation-probe-3/command.stderr"]) expect(paths).toContain(path);
+  }
+});
+
+test("CUDA isolation tool manifests retain the wrapper, exact test, task configuration and grant", async () => {
+  for (const stage of ["cuda-isolation", "runner", "typecheck-tools"]) {
+    const paths = await sourceFilePaths(stage);
+    for (const path of ["_work/gpu-owner-recovery/cuda-isolation.ts", "_work/gpu-owner-recovery/cuda-isolation.test.ts",
+      "_work/gpu-owner-recovery/cuda-mise.toml", "_work/gpu-owner-recovery/cuda-llvm-request.json"]) expect(paths).toContain(path);
+  }
+});
+
+test("every source manifest includes the executed supervisor and pinned reference metadata", async () => {
+  for (const stage of ["runner", "typecheck-tools", "typecheck-source", "typecheck-tests", "policy", "bridge", "reference-guards", "review-ts", "review-rust", "cuda-isolation", "cuda-acquire", "cuda-archive", "cuda-bun-snapshot"]) {
+    const paths = await sourceFilePaths(stage);
+    expect(paths).toContain("_work/gpu-owner-recovery/command-supervisor.ts");
+    expect(paths).toContain("tooling/reference-entrypoints.json");
+    expect(paths).toContain("tsconfig.json");
+  }
+});
+
+test("repository runner retains bounded successful output and exact exit", async () => {
+  const root = directory();
+  const result = await runBounded([process.execPath, "-e", "console.log('synthetic-recovery'); console.error('bounded-error-stream')"], root, 5_000);
+  expect(result.status).toBe("PASS");
+  expect(result.exitCode).toBe(0);
+  expect(readFileSync(`${root}/command.stdout`, "utf8")).toBe("synthetic-recovery\n");
+  expect(readFileSync(`${root}/command.stderr`, "utf8")).toBe("bounded-error-stream\n");
+});
+
+test("repository runner preserves nonzero exits without success substitution", async () => {
+  const result = await runBounded([process.execPath, "-e", "process.exit(7)"], directory(), 5_000);
+  expect(result.status).toBe("FAIL");
+  expect(result.exitCode).toBe(7);
+});
+
+test("repository runner kills its bounded stalled synthetic child", async () => {
+  const result = await runBounded([process.execPath, "-e", "setInterval(()=>{},1000)"], directory(), 30);
+  expect(result.status).toBe("FAIL");
+  expect(result.failure).toBe("COMMAND_DEADLINE");
+});
+
+test("repository runner retains group custody after a command exits with inherited pipes open", async () => {
+  const root = directory(), started = performance.now();
+  const source = `Bun.spawn([process.execPath, '--no-env-file', '--no-install', '-e', 'setInterval(() => {}, 1000)'], { stdin: 'ignore', stdout: 'inherit', stderr: 'inherit' }); process.exit(0);`;
+  const result = await runBounded([process.execPath, "--no-env-file", "--no-install", "-e", source], root, 200);
+  expect(result.status).toBe("FAIL");
+  expect(result.failure).toBe("COMMAND_DEADLINE");
+  expect(performance.now() - started).toBeLessThan(1_500);
+});
+
+test("repository runner rejects supervisor loss after a successful command exit", async () => {
+  const started = performance.now();
+  const source = `const descendant = 'setTimeout(() => process.kill(' + process.ppid + ', "SIGKILL"), 200); setTimeout(() => process.exit(0), 1500);'; Bun.spawn([process.execPath, '--no-env-file', '--no-install', '-e', descendant], { stdin: 'ignore', stdout: 'inherit', stderr: 'inherit' }); process.exit(0);`;
+  const result = await runBounded([process.execPath, "--no-env-file", "--no-install", "-e", source], directory(), 5_000);
+  expect(result.status).toBe("FAIL");
+  expect(result.failure).toBe("COMMAND_SUPERVISOR_EXIT");
+  expect(performance.now() - started).toBeLessThan(1_200);
+});
+
+test("repository command supervisor terminates its anchored group on runner disconnect", async () => {
+  const root = directory(), environment = { LANG: "C", LC_ALL: "C", TZ: "UTC", HOME: root, TMPDIR: root };
+  const child = Bun.spawn([process.execPath, "--no-env-file", "--no-install", fileURLToPath(new URL("./command-supervisor.ts", import.meta.url))], {
+    cwd: root, env: environment, stdin: "ignore", stdout: "pipe", stderr: "pipe", detached: true, ipc() {},
+  });
+  let reaped = false;
+  const exit = child.exited.then(code => { reaped = true; return code; });
+  const timer = setTimeout(() => { if (!reaped) process.kill(-child.pid, "SIGKILL"); }, 2_000);
+  const reader = child.stdout.getReader();
+  try {
+    const source = `const descendant = Bun.spawn([process.execPath, '--no-env-file', '--no-install', '-e', 'setInterval(() => {}, 1000)'], { stdin: 'ignore', stdout: 'inherit', stderr: 'inherit' }); console.log(JSON.stringify({ commandPid: process.pid, descendantPid: descendant.pid })); setInterval(() => {}, 1000);`;
+    child.send({ argv: [process.execPath, "--no-env-file", "--no-install", "-e", source], cwd: root, environment });
+    const ready = await reader.read();
+    expect(ready.done).toBe(false);
+    const pids = JSON.parse(new TextDecoder().decode(ready.value)) as { commandPid: number; descendantPid: number };
+    const started = performance.now();
+    child.disconnect();
+    expect(await exit).not.toBe(0);
+    while (!(await reader.read()).done) {}
+    await new Response(child.stderr).arrayBuffer();
+    expect(performance.now() - started).toBeLessThan(1_200);
+    for (const pid of [pids.commandPid, pids.descendantPid]) {
+      let state = "absent";
+      try { const stat = readFileSync(`/proc/${pid}/stat`, "utf8"); state = stat.slice(stat.lastIndexOf(")") + 2, stat.lastIndexOf(")") + 3); }
+      catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
+      expect(["absent", "Z"]).toContain(state);
+    }
+  } finally {
+    clearTimeout(timer);
+    if (!reaped) process.kill(-child.pid, "SIGKILL");
+    await exit;
+    reader.releaseLock();
+  }
+});
+
+for (const stream of ["stdout", "stderr"] as const) {
+  test(`repository runner rejects ${stream} overflow and preserves only the bounded prefix`, async () => {
+    const root = directory();
+    const result = await runBounded([process.execPath, "-e", `process.${stream}.write('x'.repeat(9*1024*1024))`], root, 5_000);
+    expect(result.status).toBe("FAIL");
+    expect(result.failure).toBe("COMMAND_OUTPUT_BOUND");
+    expect(statSync(`${root}/command.${stream}`).size).toBe(4 * 1024 * 1024);
+    expect(result[stream === "stdout" ? "stdoutBytes" : "stderrBytes"]).toBeGreaterThan(4 * 1024 * 1024);
+  });
+}
+
+test("repository runner refuses paths outside the repository work root", async () => {
+  await expect(runBounded([process.execPath, "-e", "throw Error('must not launch')"], "/nonexistent-external-recovery", 100)).rejects.toThrow("RECOVERY_RUN_CONTEXT");
+});

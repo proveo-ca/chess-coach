@@ -1,0 +1,37 @@
+@startuml classical_resolution
+' purpose: shared classical physics and the two approved mutation-guard corrections
+' covers: packages/starchess-core/src/engine/classical-resolution.ts
+' covers: packages/starchess-core/src/resolve/resolve-turn.ts
+' covers: packages/starchess-core/src/resolve/submit-turn.ts
+' covers: packages/starchess-core/src/__tests__/engine-consolidation.test.ts
+' details: _spec/classical-resolution.md, _spec/game-core.md
+' consolidation goal: _spec/engine-consolidation.puml
+' status: approved consolidation target; final source alignment and fresh verification pending
+title Classical settlement · shared mutation kernel target
+participant "resolve/submit-turn.ts\nproduct or native-admitted turn" as TURN <<app>>
+participant "resolve/resolve-turn.ts\nresolveTurnKernel" as KERNEL <<app>>
+participant "board/vision.ts / ray-scan.ts\nshared discovery geometry" as VISION <<app>>
+participant "engine/causal-types.ts\noptional ResolutionEffects" as EFFECTS <<app>>
+
+TURN -> KERNEL : physical plans + board + visibility
+KERNEL -> KERNEL : capture common initial board
+KERNEL -> VISION : evaluate ordered attack / approach rules
+VISION --> KERNEL : private discovery result
+KERNEL -> KERNEL : retire direct casualties + staged ordered mines
+KERNEL -> KERNEL : timed occupant / quiet contacts; landing + chase mines
+KERNEL -> KERNEL : apply deferred path attacks to guarded live operands
+KERNEL -> KERNEL : delayed departures / swaps; synchronize phase3 mines
+KERNEL -> KERNEL : promote only surviving own Marine arrivals
+opt Effects supplied for this game
+  KERNEL -> EFFECTS : emit at actual mutation sites, not final-state diff
+end
+KERNEL --> TURN : attack / move / path snapshots + consequences
+
+note over TURN,KERNEL
+  Promotion validates the live own Marine rather
+  than trusting the queued destination alone.
+  Delayed swaps also update phase-three mines
+  after each contact, so final results cannot
+  resurrect a spent mine.
+end note
+@enduml

@@ -1,0 +1,9 @@
+{
+  "status": "READY_FAILURE_RECORDS_ONLY",
+  "session": "ses_e2e582911ffe8NNgAwLpEKFv0k",
+  "readyToMerge": true,
+  "remainingFindings": [],
+  "retryAuthorityRemaining": false,
+  "acquisitionSuccessEstablished": false,
+  "trainingReady": false
+}

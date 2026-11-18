@@ -1,0 +1,6 @@
+artifacts/training-functional/campaign-handoff-1/preflight.test.ts(3,36): error TS6133: 'mkdirSync' is declared but its value is never read.
+artifacts/training-functional/campaign-handoff-1/preflight.test.ts(13,54): error TS6133: 'host' is declared but its value is never read.
+artifacts/training-functional/campaign-handoff-1/render-command.ts(24,79): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'string | ArrayBuffer | Uint8Array<ArrayBuffer>'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'Uint8Array<ArrayBuffer>'.
+    Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+      Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.

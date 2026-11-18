@@ -1,0 +1,13 @@
+{
+  "status": "NOT_READY_IMPLEMENTATION_SOURCE_ONLY",
+  "session": "ses_e2e4b1ef3ffdEFzyU31y2Xzl0Z",
+  "verification": "verification-4/receipt.json",
+  "risk": "MEDIUM",
+  "readOnly": true,
+  "priorFindingsCleared": true,
+  "findings": [{"severity":"MEDIUM","path":"capture.ts","lines":[637,644],"code":"INTERRUPTION_DURING_COMPLETION_CAN_LEAVE_EXIT_ZERO"}],
+  "deferredHardeningRemainsDeferred": true,
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

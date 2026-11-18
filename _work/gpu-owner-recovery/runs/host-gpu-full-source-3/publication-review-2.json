@@ -1,0 +1,37 @@
+{
+  "status": "READY_TO_PUBLISH_EXACT_BOUNDED_TEXT_GENERATION",
+  "generation": 2,
+  "check": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-check-2.json",
+    "sha256": "e0f4566d6db14bce0b8e3b3ec8a43cdab4a315fb4008c9ad81e1f0c056e9d32f",
+    "mode": "100644"
+  },
+  "validation": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-validation-2.json",
+    "sha256": "a535f608ffd86320cfaa218bf64bb3194b51ddd3863ad168e188aa991d60cf06",
+    "mode": "100644"
+  },
+  "adversarial": {
+    "session": "ses_e3469ff83ffe1aOsoViQ9YjEUw",
+    "verdict": "READY_TO_MERGE_YES",
+    "closedFindings": [
+      "EXACT_CURRENT_REVIEW_CHECK_IDENTITY",
+      "REVIEWED_MODE_STABILITY"
+    ],
+    "remainingFindings": []
+  },
+  "security": {
+    "session": "ses_e3469ff7cffeFhz6ZQTmVwVxy5",
+    "verdict": "READY_GENERATION_TWO_PUBLICATION_ONLY",
+    "remainingFindings": [],
+    "risk": "low"
+  },
+  "strictTypecheckPassed": true,
+  "pureTests": 6,
+  "pureAssertions": 31,
+  "normalCommitInvocations": 0,
+  "httpsPushInvocations": 0,
+  "hostAllowanceNotRenewed": true,
+  "codingHostOperationsPerformed": false,
+  "trainingReady": false
+}

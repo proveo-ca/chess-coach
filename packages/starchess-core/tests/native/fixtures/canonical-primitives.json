@@ -1,0 +1,10 @@
+{
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "boards": 1536,
+  "shapeQueries": 49152,
+  "sha256": {
+    "moves": "19447baa060eef4b9f370cce6553b17424afe7ae6298974c786ab3ac9615134e",
+    "vision": "0ab48e50a1e89f965496c334f2ef374498dada145246cf84702dcd9c52c17776",
+    "shapes": "806b9c43ed5fc8036b71a486f548fc6ecb5268003ebf455bcc1c0e63acaa30bd"
+  }
+}

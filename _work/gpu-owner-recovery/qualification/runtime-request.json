@@ -1,0 +1,20 @@
+{
+  "version": "chess-coach.qualification-runtime-source-request.v1",
+  "status": "APPROVED_QUALIFICATION_SOURCE_PACKAGING_ONLY",
+  "authorizationSource": "EXECUTOR_SELECTED_RUST_BASE_PLUS_BUN_RECOMMENDED",
+  "runtimeStrategy": "SAME_PINNED_RUST_BASE_PLUS_PINNED_BUN_INTERPRETER",
+  "rustImage": "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+  "bunImage": "docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038",
+  "interpreterSource": "/usr/local/bin/bun",
+  "expectedExecutableVersions": { "rustc": "1.95.0", "cargo": "1.95.0", "bun": "1.4.0" },
+  "builderOverlayCandidate": "NONE_BASE_PROVIDED_TOOLS",
+  "runtimeOverlayCandidate": "LIBDEVICE_ONLY_NO_BLIND_GNU_LIBRARY_TRANSPLANT",
+  "productionRecipesChangeAuthorized": false,
+  "numericalSemanticsChangeAuthorized": false,
+  "downloadAuthorized": false,
+  "copyingOrStagingAuthorized": false,
+  "imageOperationAuthorized": false,
+  "compilationAuthorized": false,
+  "hostGpuExecutionAuthorized": false,
+  "trainingAuthorized": false
+}

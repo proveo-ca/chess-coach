@@ -1,0 +1,36 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "authenticated-git-objects-1",
+  "stage": "reference-guards",
+  "sourceManifestSha256": "f359081260b2dff474417f658e72f720f541a1f3dcf8e89ed364fa7cd1220dd7",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./packages/runtime/tests/reference-bundles.test.ts",
+    "--test-name-pattern",
+    "reference source guard"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 2703,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/authenticated-git-objects-1/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/authenticated-git-objects-1/command.stderr",
+    "bytes": 2703,
+    "sha256": "2a47f7fc9e4a6290ba7b84d300146b36a540c874f934a9df03867e9e63a17412"
+  },
+  "sourceCount": 197,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

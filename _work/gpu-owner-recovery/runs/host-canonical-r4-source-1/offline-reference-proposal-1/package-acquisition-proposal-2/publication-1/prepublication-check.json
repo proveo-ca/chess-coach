@@ -1,0 +1,32 @@
+{
+  "version": "chess-coach.r2-prepublication-source-check.v1",
+  "status": "PASS_SEALED_PACKET_CURRENT_TWELVE_VERDICTS_AND_HTTPS_BASELINE",
+  "packet": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/source-packet1.json",
+    "bytes": 1138673,
+    "sha256": "71c508291f29e76cf03bde1219b8514a1376f7b729ee10b49cf386428715238b",
+    "gitBlobOid": "5e7c87c066e93cddd8958c6ebf23e2af059fefa3"
+  },
+  "memberCount": 48,
+  "reviewPaths": [
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/backend.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/devops.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/adversarial.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/capture/security.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/backend.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/devops.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/adversarial.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-2/caller/security.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/backend.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/devops.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/adversarial.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/implementation-review-4/delivery/security.json"
+  ],
+  "strongPostcheckSha256": "604cbe129da32587520e3ece910757288111605ac2dfadec8207708594ab6720",
+  "remoteBaselineVerified": "6fdc92c7eb90eb625e6d54c6a448009d5db34423\trefs/heads/feat-ml-adjuntant-ii-continuation-2b24d9c5a",
+  "normalCommitsConsumed": 0,
+  "httpsPushesConsumed": 0,
+  "manualAttemptsConsumed": 0,
+  "sourcePublicAccessibilityVerified": false,
+  "trainingReady": false
+}

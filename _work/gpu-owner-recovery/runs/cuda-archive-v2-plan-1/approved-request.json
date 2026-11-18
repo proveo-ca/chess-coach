@@ -1,0 +1,257 @@
+{
+  "version": "chess-coach.cuda-llvm-development-request.v1",
+  "status": "APPROVED_SEQUENCE_IN_PROGRESS_AFTER_PRIVATE_BUN_CAPTURE",
+  "objective": "REAL_SOURCE_CUDA_FEATURE_NO_RUN_COMPILATION_ONLY",
+  "authorityGranted": true,
+  "authorization": {
+    "source": "EXECUTOR_SELECTED_RENEW_FULL_SCOPE_AFTER_GNU_TRUE_LAYOUT_CORRECTION",
+    "scope": "EXACT_TWO_LLVM_FILES_GATED_LOCAL_PROVISIONING_AND_TWO_ISOLATED_NO_RUN_TARGETS_ONLY",
+    "grantStatus": "APPROVED_SEQUENCE_IN_PROGRESS",
+    "firstActualFailureStopsSequence": true
+  },
+  "phase": "PRIVATE_BUN_CAPTURED_ARCHIVE_V2_SOURCE_GATES_PENDING",
+  "nativeBunSnapshotResult": {
+    "status": "PASS",
+    "outsideReceipt": "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-1/receipt.json",
+    "captureReceipt": "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-1/capture.json",
+    "verification": "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-1/verification.json",
+    "approvedRequestCapture": "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-1/approved-request.json",
+    "sourceReview": "_work/gpu-owner-recovery/cuda-bun-snapshot-reviewed.json",
+    "sourceSnapshot": "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-1/source-snapshot.json",
+    "privateSnapshotExecuted": false
+  },
+  "nativeBunSnapshotRenewal": {
+    "selectedOption": "Private Bun snapshot (Recommended)",
+    "previousHaltedRequestCapture": "_work/gpu-owner-recovery/runs/cuda-bun-snapshot-1/request-before-renewal.json",
+    "previousHaltedRequestSha256": "51d56812426992f2ad9e85980a35630fe620220a5fb562d7af20b009e1c3eb82",
+    "remainingApprovedPipelineRenewed": true,
+    "completedDownloadsMayRepeat": false,
+    "oneOutsideSnapshotDeadlineMs": 30000,
+    "firstActualFailureStopsSequence": true
+  },
+  "nativeBunSnapshot": {
+    "grantStatus": "CONSUMED_SUCCESS",
+    "source": "/usr/local/bin/bun",
+    "byteLength": 80761952,
+    "sha256": "33d56b070be6a9e3da0ab013038b43d1645d0534ca811ecdba4472599117eb4b",
+    "destination": "_work/gpu-owner-recovery/cache/native-audit-bun-1/bun",
+    "directoryMode": "0700",
+    "executableMode": "0500",
+    "sourceReadException": {
+      "path": "/usr/local/bin",
+      "uid": 1001,
+      "gid": 1001,
+      "mode": "0755",
+      "scope": "PINNED_BYTE_CAPTURE_READ_ONLY_NEVER_EXECUTABLE_BINDING"
+    },
+    "outerBootstrapTrust": "EXISTING_C1_BUN_AND_MISE_BOOTSTRAP_ASSUMPTION_RETAINED_NOT_AUTHENTICATED_BY_GUEST_SNAPSHOT",
+    "taskConfiguration": "_work/gpu-owner-recovery/cuda-bun-snapshot-mise.toml"
+  },
+  "archiveRootPlanFailure": {
+    "receipt": "_work/gpu-owner-recovery/runs/cuda-archive-plan-1/receipt.json",
+    "classification": "_work/gpu-owner-recovery/cuda-archive-plan-1-classification.json",
+    "failureCode": "UNTRUSTED_FILE_ANCESTOR",
+    "rejectedAncestor": "/usr/local/bin",
+    "observedOwnerUid": 1001,
+    "currentUid": 1000,
+    "nativeAuditLaunched": false,
+    "automaticRetryPerformed": false,
+    "trustPolicyDecisionRequired": true
+  },
+  "acquisitionResult": {
+    "status": "PASS",
+    "receipt": "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/receipt.json",
+    "approvedRequestCapture": "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/approved-request.json",
+    "reviewRecord": "_work/gpu-owner-recovery/cuda-acquire-reviewed.json",
+    "verifiedArtifacts": 2,
+    "extractionPerformed": false,
+    "llvmCodeExecuted": false,
+    "cudaCompilationEstablished": false
+  },
+  "historicalFirstAttemptReceipt": "_work/gpu-owner-recovery/runs/cuda-isolation-probe-1/receipt.json",
+  "historicalFirstAttemptClassification": "_work/gpu-owner-recovery/cuda-isolation-probe-1-classification.json",
+  "historicalSecondAttemptReceipt": "_work/gpu-owner-recovery/runs/cuda-isolation-probe-2/receipt.json",
+  "historicalSecondAttemptClassification": "_work/gpu-owner-recovery/cuda-isolation-probe-2-classification.json",
+  "actualAttemptReceipt": "_work/gpu-owner-recovery/runs/cuda-isolation-probe-3/receipt.json",
+  "actualAttemptClassification": "_work/gpu-owner-recovery/cuda-isolation-probe-3-classification.json",
+  "inertProbe": {
+    "status": "PASS",
+    "receipt": "_work/gpu-owner-recovery/runs/cuda-isolation-probe-3/receipt.json",
+    "inertNamespaceLaunchEstablished": true,
+    "fullBuildIsolationQualified": false,
+    "custodyQualified": false,
+    "cudaCompilationEstablished": false
+  },
+  "renewedExecutorDecisionRequired": false,
+  "layoutRenewal": {
+    "selectedOption": "Renew full scope (Recommended)",
+    "scopeUnchanged": true,
+    "priorHaltedRequestSnapshot": "_work/gpu-owner-recovery/runs/cuda-isolation-probe-3/request-before-renewal.json",
+    "priorHaltedRequestSha256": "ad2134c4d60991491eb6b285b000dbeafb89e542c42fdd2ee9b6f5fa277ddda1",
+    "inertProbeFirst": true,
+    "firstActualFailureStopsSequence": true
+  },
+  "renewal": {
+    "selectedOption": "Renew full scope (Recommended)",
+    "scopeUnchanged": true,
+    "priorHaltedRequestSnapshot": "_work/gpu-owner-recovery/runs/cuda-isolation-probe-2/request-before-renewal.json",
+    "priorHaltedRequestSha256": "51c1e8f3436dfae1c2040b8e33788784050f2718d7dba5164bbfe0464a3481f8",
+    "inertProbeFirst": true,
+    "firstActualFailureStopsSequence": true
+  },
+  "sourceCorrection": {
+    "status": "SOURCE_ACCEPTED_FOR_EXACT_RENEWAL_REQUEST_ONLY",
+    "acceptanceRecord": "_work/gpu-owner-recovery/cuda-isolation-corrected-source-review.json",
+    "architectSessionId": "ses_e44a8dd59ffeY3WhDkxuWCCTCJ",
+    "proposedRestartOrder": [
+      "INDEPENDENT_PINNED_REQUEST_SOURCE_AND_CONFIGURATION_HASH_GATE",
+      "TRUST_ONLY_THE_EXACT_AUTHENTICATED_TASK_CONFIGURATION",
+      "DISCOVER_AND_REQUIRE_ONLY_THAT_CONFIGURATION",
+      "RUN_THE_FIXED_INERT_NAMESPACE_TASK"
+    ],
+    "stagePlanAndConsumer": "_work/gpu-owner-recovery/cuda-isolation.ts",
+    "nextFixedReviewRecord": "_work/gpu-owner-recovery/cuda-isolation-reviewed-v2.json",
+    "originalReviewRecordPreserved": "_work/gpu-owner-recovery/cuda-isolation-reviewed.json",
+    "actualRetryAuthorized": false,
+    "namespaceSupportDetermined": false,
+    "documentation": "https://mise.jdx.dev/tasks/task-configuration.html"
+  },
+  "nativeLayoutCorrection": {
+    "status": "SOURCE_ACCEPTED_FOR_EXACT_LAYOUT_RENEWAL_REQUEST_ONLY",
+    "acceptanceRecord": "_work/gpu-owner-recovery/cuda-isolation-layout-source-review.json",
+    "architectSessionId": "ses_e44a8dd59ffeY3WhDkxuWCCTCJ",
+    "observedGuestPath": "/usr/bin/true",
+    "observedPhysicalPath": "/usr/bin/gnutrue",
+    "allowedPhysicalPaths": ["/usr/bin/true", "/usr/bin/gnutrue"],
+    "guestCommandUnchanged": "/usr/bin/true",
+    "nextFixedReviewRecord": "_work/gpu-owner-recovery/cuda-isolation-reviewed-v3.json",
+    "previousReviewRecordsPreserved": [
+      "_work/gpu-owner-recovery/cuda-isolation-reviewed.json",
+      "_work/gpu-owner-recovery/cuda-isolation-reviewed-v2.json"
+    ],
+    "actualRetryAuthorized": false,
+    "namespaceSupportDetermined": false
+  },
+  "approvedSchedulingRefinement": {
+    "architectSessionId": "ses_e44a8dd59ffeY3WhDkxuWCCTCJ",
+    "inertNamespaceProbeBeforeDownloads": true,
+    "additionalHumanAuthorityRequiredForReorder": false
+  },
+  "implementationPrepared": false,
+  "executionGate": "STATIC_TESTS_TYPES_ADVERSARIAL_AND_SECURITY_REVIEW_BEFORE_OPERATIONS",
+  "requestScopeReviews": [
+    {
+      "role": "devops",
+      "sessionId": "ses_e44a58336ffePB4MyFlISk7KQC",
+      "verdict": "READY_TO_ASK_EXACT_APPROVAL_CONTRACT_ONLY",
+      "readOnly": true,
+      "blockingOrHighFindings": 0
+    },
+    {
+      "role": "security-reviewer",
+      "sessionId": "ses_e446cc71bffe8FQ4wI5tJkHACJ",
+      "verdict": "READY_TO_ASK_REQUEST_SOURCE_PLAN_ONLY",
+      "readOnly": true,
+      "blockingOrHighFindings": 0
+    }
+  ],
+  "prerequisiteMetadata": "_work/gpu-owner-recovery/runs/readiness-real-cuda-metadata-2/receipt.json",
+  "selectedGraph": "_work/gpu-owner-recovery/readiness-cuda-selection.json",
+  "publicMetadata": "_work/gpu-owner-recovery/cuda-compiler-input-metadata.json",
+  "artifacts": [
+    {
+      "name": "tracel-llvm-23.1.0-4-linux-x64.tar.xz",
+      "url": "https://github.com/tracel-ai/tracel-llvm/releases/download/v23.1.0-4/linux-x64.tar.xz",
+      "byteLength": 45439652,
+      "sha256": "c394bb1b10ac785f16d3d92d688a9343ba869f720e9cf9ca3f1abf2f401f165f",
+      "destination": "_work/gpu-owner-recovery/cache/home/.cache/tracel/tracel-llvm-23.1.0-4-linux-x64.tar.xz"
+    },
+    {
+      "name": "tracel-llvm-23.1.0-4-linux-x64.checksums.json",
+      "url": "https://github.com/tracel-ai/tracel-llvm/releases/download/v23.1.0-4/linux-x64.checksums.json",
+      "byteLength": 297,
+      "sha256": "57780b96c702d2ac595c52da61961549450648b8d18f5b81b7a1d06afa83682d",
+      "destination": "_work/gpu-owner-recovery/cache/home/.cache/tracel/tracel-llvm-23.1.0-4-linux-x64.checksums.json"
+    }
+  ],
+  "publisherRegularFileContentSha256": "d1b44f818d17fd882d938a625017b31234fc8b726c190b2a5c324e2be3551bbf",
+  "requestedExecutionLimits": {
+    "downloadDeadlineMsPerArtifact": 120000,
+    "maximumRedirects": 3,
+    "allowedHttpsHosts": ["github.com", "release-assets.githubusercontent.com"],
+    "namespaceAndCustodyPreflightDeadlineMs": 30000,
+    "compileDeadlineMsPerTarget": 600000,
+    "cargoJobs": 2,
+    "stopSequenceAtFirstFailure": true,
+    "automaticRetryAllowed": false
+  },
+  "requestedActionsAfterApproval": [
+    "Implement and review the closed Bun wrapper and static/synthetic tests before invoking it.",
+    "Use a separate reviewed tasks-only cuda-mise.toml for orchestration; preserve the original minimal tool configuration and its installation guard.",
+    "Download only the two exact files, verify their lengths and independent hashes, and place them exclusively in the repository-local cache without overwriting conflicts.",
+    "Audit archive paths and links before allowing extraction into the single expected repository-local LLVM prefix.",
+    "Refuse an unexplained pre-existing LLVM prefix; allow reuse only with recorded installation provenance and fresh content/link/mode checks.",
+    "Preflight an inert local namespace with required network isolation, then verify bounded timeout, descendant-pipe and supervisor-disconnect custody under the same configuration.",
+    "Run the first actual-source Cargo --no-run target only after isolation and custody checks pass.",
+    "Let the unchanged upstream bundler perform authenticated extraction and genuine sentinel creation; authorize its rollback only for the prefix newly created by this attempt.",
+    "Independently verify installed content, excluding exactly the separately validated generated sentinel from the publisher regular-file hash, before the second target.",
+    "Record every result, source/input identity, command stream and first failure without renewing any operational budget."
+  ],
+  "taskConfiguration": "_work/gpu-owner-recovery/cuda-mise.toml",
+  "acquisitionTaskConfiguration": "_work/gpu-owner-recovery/cuda-acquire-mise.toml",
+  "archiveAuditTaskConfiguration": "_work/gpu-owner-recovery/cuda-archive-mise.toml",
+  "miseIsolation": {
+    "orchestrationOnly": true,
+    "newToolsPluginsHooksOrTaskDependenciesAllowed": false,
+    "automaticInstallationAllowed": false,
+    "rootProjectConfigurationRemainsUntrusted": true,
+    "originalMinimalInstallationGuardMustRemainUnchanged": true,
+    "reviewedTaskConfigurationAndWrapperHashesRequired": true
+  },
+  "originalToolConfigurationMustRemainUnchanged": "_work/gpu-owner-recovery/mise.toml",
+  "installedPrefix": "_work/gpu-owner-recovery/cache/xdg/data/tracel/tracel-llvm-23.1.0-4",
+  "llvmExecutablesMayRunOnlyInsideApprovedLocalIsolation": true,
+  "buildIsolation": {
+    "existingTool": "/usr/bin/bwrap",
+    "userAndNetworkNamespacesRequired": true,
+    "readOnlySourceLocksToolchainsAndSeededArtifacts": true,
+    "writableLocations": [
+      "_work/gpu-owner-recovery/cache",
+      "_work/gpu-owner-recovery/scratch",
+      "target/gpu-owner-recovery"
+    ],
+    "seededArtifactFilesRemainReadOnlyWithinWritableCache": true,
+    "privateMinimalDevWithoutGpuDevices": true,
+    "daemonSocketsCredentialsAndNonessentialInheritedFdsForbidden": true,
+    "parentProcRootAndFdEscapePathsForbidden": true,
+    "newSessionOrPidNamespaceFlagsForbidden": true,
+    "existingOutsideProcessGroupAnchorRequired": true,
+    "networkEnabledFallbackAllowed": false,
+    "unsupportedIsolationOrCustodyOutcome": "FAIL_CLOSED"
+  },
+  "buildEnvironment": {
+    "CARGO_NET_OFFLINE": "true",
+    "TRACEL_LLVM_BUNDLER_SKIP_CHECKSUM_DOWNLOAD": "1",
+    "DOCS_RS": null,
+    "compiler": "EXISTING_PINNED_RUST_1_95_0_AND_ZIG_0_15_2_DRIVERS_ONLY"
+  },
+  "compileTargets": [
+    ["cargo", "test", "--locked", "--offline", "--jobs", "2", "-p", "chess-coach-learning", "--features", "gpu-cuda", "--test", "finite_difference", "--no-run"],
+    ["cargo", "test", "--locked", "--offline", "--jobs", "2", "-p", "chess-coach-policy-io", "--features", "gpu-cuda", "--test", "gpu", "--bins", "--no-run"]
+  ],
+  "otherDownloadsOrNewToolsAuthorized": false,
+  "libdeviceReacquisitionAuthorized": false,
+  "nvidiaRuntimeOrDriverAcquisitionAuthorized": false,
+  "gccOrAlternativeCompilerAcquisitionAuthorized": false,
+  "dependencySourceOrLockModificationAuthorized": false,
+  "testBinaryOrModelExecutionAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "hostDockerImageOrProductionOperationsAuthorized": false,
+  "normalDispatcherEnablementAuthorized": false,
+  "trainingAuthorized": false,
+  "publicationAuthorized": false,
+  "namespaceSupportQualified": false,
+  "gnuCppAbiQualified": false,
+  "actualCudaCompilationEstablished": false,
+  "trainingReady": false
+}

@@ -1,0 +1,29 @@
+{
+  "status": "READY_SOURCE_ONLY_CANONICAL_R4_PREPARATION_REVIEW_CORRECTIONS_CLEARED",
+  "verification": {"path":"_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verification-4/receipt.json","sha256":"cc60f48b51e483ad6e68e86ac376d515f3bb79beb70d67f0fce3aa93463ee18a","tests":46,"assertions":367,"passingStages":2,"strictTypesPassed":true,"unchangedSourceBindings":92},
+  "correctedSources": [
+    {"path":"_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/canonical.ts","sha256":"301d8e9e42bfcef4782efa0a188c570e1f035f165296deb8fba6f07f57d5d74c"},
+    {"path":"_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/canonical.test.ts","sha256":"32227ff4470b3f08ec04706d1f2bfc5dc04e353811203e468b785b3ba3a89a57"}
+  ],
+  "adversarial": {"session":"ses_e2f247d13ffenjZlL6CuQhdljw","verdict":"READY_SOURCE_ONLY_YES","remainingFindings":[]},
+  "security": {"session":"ses_e2f247d06ffeS1GOoQBBcOzqNU","verdict":"READY_SOURCE_ONLY_YES","remainingFindings":[],"risk":"LOW_SCOPED_SOURCE_ONLY"},
+  "backend": {"session":"ses_e2f475807ffefzBxoh8cFi1KZM","verdict":"READY_SOURCE_ONLY_YES","remainingFindings":[]},
+  "clearedFindings": ["INVALID_SUPPLIED_FACTORY_REAL_MOCK_MISCLASSIFICATION","REFERENCE_ACQUISITION_AFTER_ORIGINAL_WORK_DEADLINE"],
+  "verification1And2FailuresAndPreCorrectionVerification3PassRetained": true,
+  "firstPassReview1Retained": true,
+  "mockPeers": "CURRENT_DRIVER_USED_FOR_BOTH_MOCK_PORTS",
+  "actualHostExecuted": false,
+  "actualProcessTransportInstantiated": false,
+  "nativeOrGpuExecuted": false,
+  "referenceCapturedBuiltStagedOrAcquired": false,
+  "referenceInputDelivery": "REFERENCE_INPUT_DELIVERY_UNSELECTED",
+  "canonicalQualified": false,
+  "bothQualified": false,
+  "independentReferenceQualified": false,
+  "closeQualified": false,
+  "integratedR4Qualified": false,
+  "operationalWiringQualified": false,
+  "newExecutionOrPublicationAuthorityGranted": false,
+  "experimentTrainingAuthorized": false,
+  "trainingReady": false
+}

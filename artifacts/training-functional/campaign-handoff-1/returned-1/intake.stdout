@@ -1,0 +1,1 @@
+Executor: {"status":"PASS_LOCAL_INTAKE_VALIDATION_REPORTED_HOST_STORAGE_BLOCKED","source":{"path":"artifacts/training-functional/campaign-handoff-1/returned-1/user-report.json","byteLength":4367,"sha256":"847218cbc9b435d879172bd8a1e80161391ac40b6064d4c852bbe6cf4710587a"},"shortfallBytes":"115110285312","shortfallGiBApprox":"107.20","freeEntries":"UNKNOWN_NOT_ZERO"}

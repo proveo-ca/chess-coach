@@ -1,0 +1,29 @@
+{
+  "status": "PASS_LOCAL_BASE_REMOTE_PR_EMPTY_INDEX_AND_UNTRANSFORMED_ATTRIBUTES",
+  "head": "e821b5169f29b191b8418763508bd54292774aef",
+  "branch": "integrate/starchess-ml-main",
+  "remote": {
+    "ref": "refs/heads/feat-ml-adjuntant-ii",
+    "oid": "e821b5169f29b191b8418763508bd54292774aef"
+  },
+  "pr": {
+    "baseRefName": "main",
+    "headRefName": "feat-ml-adjuntant-ii",
+    "headRefOid": "e821b5169f29b191b8418763508bd54292774aef",
+    "number": 51,
+    "state": "OPEN",
+    "url": "https://github.com/proveo-ca/chess-coach/pull/51"
+  },
+  "stagedPaths": 0,
+  "attributeFileCount": 98,
+  "attributes": [
+    "filter",
+    "text",
+    "eol",
+    "working-tree-encoding"
+  ],
+  "attributeValues": "ALL_UNSPECIFIED",
+  "scope": "PUBLICATION_GIT_METADATA_ONLY_NOT_PROTECTED_CHECKOUT_SOURCE_OR_RUNTIME",
+  "commitPerformed": false,
+  "pushPerformed": false
+}

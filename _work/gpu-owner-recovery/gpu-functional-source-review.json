@@ -1,0 +1,60 @@
+{
+  "version": "chess-coach.gpu-functional-source-review.v1",
+  "status": "SOURCE_WIRING_ACCEPTED_HOST_METADATA_REQUIRED",
+  "scope": "OPT_IN_GPU_RECIPE_AND_LOCAL_RECIPE_TYPES_DEFAULT_CPU_VERIFICATION_ONLY",
+  "currentReceipt": "_work/gpu-owner-recovery/runs/gpu-functional-local-3/receipt.json",
+  "sourceManifestSha256": "3e5b58c02eeab08783051e087c57381dc0059605c2de6b07fac70e240bf09d45",
+  "sourceCount": 273,
+  "sourceChanged": false,
+  "localEvidence": {
+    "recipeTests": 8,
+    "recipeAssertions": 83,
+    "typescriptProjects": ["tsconfig.json", "tsconfig.tests.json", "_work/gpu-owner-recovery/tsconfig.json"],
+    "cpuLearningPolicyTests": 39,
+    "cpuFiniteDifferenceCoordinates": 4670,
+    "cpuRecipeTests": 2,
+    "allSixStagesPassed": true
+  },
+  "reviews": {
+    "adversarial": {
+      "sessionId": "ses_e41c7de65ffeoZasZ0WZCK0Pil",
+      "verdict": "READY_TO_MERGE_SOURCE_WIRING_ONLY",
+      "remainingFindings": 0
+    },
+    "devops": {
+      "sessionId": "ses_e43032d2effeZfYLV6rBy5HQUM",
+      "verdict": "READY_TO_MERGE_SOURCE_WIRING_ONLY",
+      "lowCorrectionsVerifiedByCurrentReceipt": ["VERIFIER_TYPECHECK_INCLUDED", "BUILDER_OVERLAY_PRECEDES_LLVM_ASSERTION"]
+    },
+    "security": {
+      "sessionId": "ses_e42f5a797ffexhsS7I21efHNfy",
+      "verdict": "SOURCE_ONLY_READY_CONDITIONED_ON_RUN_3_PASS",
+      "conditionSatisfied": true,
+      "legacyCancellationFinding": "HIGH_OPEN_DEFERRED_UNTIL_AFTER_COMPLETED_PLANNED_TRAINING"
+    }
+  },
+  "preservedHistory": [
+    "_work/gpu-owner-recovery/runs/gpu-functional-local-1/receipt.json",
+    "_work/gpu-owner-recovery/runs/gpu-functional-local-2/receipt.json"
+  ],
+  "knownFunctionalGaps": [
+    "PREPARED_LLVM_BUILDER_AND_RUNTIME_INPUTS_UNSELECTED",
+    "EXPLICIT_CUDA_BINDING_VERSION_REQUIRES_ACTUAL_HOST_COMPATIBILITY_FACTS",
+    "IMAGE_BUILD_AND_GPU_F64_C12_QUALIFICATION_NOT_PERFORMED",
+    "RECIPE_ENTRYPOINT_REMAINS_NATIVE_PROOF_AND_GPU_TRAINING_MAINS_REMAIN_DISABLED"
+  ],
+  "nextRequiredHostVerification": {
+    "scope": "OPERATOR_GPU_DRIVER_AND_DOCKER_RUNTIME_METADATA_ONLY",
+    "commands": [
+      "nvidia-smi --query-gpu=name,uuid,driver_version,memory.total,memory.free --format=csv",
+      "docker info --format '{{.OSType}}/{{.Architecture}} {{json .Runtimes}}'"
+    ],
+    "operatorCommandProposalsOnly": true,
+    "commandsRunByAgent": false
+  },
+  "fullPipelineAuthorityRenewed": false,
+  "imageBuilt": false,
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

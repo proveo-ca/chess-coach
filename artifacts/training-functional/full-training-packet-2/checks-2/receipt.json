@@ -1,0 +1,2988 @@
+{
+  "status": "PASS_SOURCE_ONLY_V2_TESTS_TYPES_STATIC_PRESERVATION",
+  "scope": "LOCAL_BUN_MOCKS_SYNTHETIC_RETAINED_RESULTS_TYPES_STATIC_AND_LOCAL_GIT_PRESERVATION_NOT_NATIVE_TRAINING",
+  "sourcePinsBefore": [
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 54566,
+      "sha256": "84d8c65842cdf4a513035c7d04e1f6683d91b35cfd74e6b52ec6c2dc698b11fc"
+    },
+    {
+      "path": "_spec/checkpoint-runtime.puml",
+      "byteLength": 17649,
+      "sha256": "7e7df6d8b20586c3319689f44b59c3db64bb910fce05afc50d1933d0acecef79"
+    },
+    {
+      "path": "_spec/qualification-bootstrap.puml",
+      "byteLength": 22015,
+      "sha256": "55690743085f7c0c73f32f991cb7ae7bfddb6a37b560fc4daba7ae80732503d6"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 188549,
+      "sha256": "9c30f908aed71943b43afaff233d879bb76aae083adbba3ad5d262ac05d02b4a"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 162528,
+      "sha256": "64bce2cfb13d6fc251ff39abdad4f0e570fcfb9822e8b2951843630e2c90ab73"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/canonical.ts",
+      "byteLength": 9816,
+      "sha256": "301d8e9e42bfcef4782efa0a188c570e1f035f165296deb8fba6f07f57d5d74c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/inputs/reference/_spec/corpora/ml-adjutant-corpus.manifest.json",
+      "byteLength": 7309,
+      "sha256": "31ac6f865340a95f8e85c2c1577aaea0aada87feb92a37637cda90aee288cc3f"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/inputs/reference/starchess-match-history-20260929-203446.json",
+      "byteLength": 664540,
+      "sha256": "e6770cb032aa76dc05432c7a49e61c4905d1a1f7b859aa860a090821213e7ae6"
+    },
+    {
+      "path": "artifacts/training-functional/audit-staged-publication.ts",
+      "byteLength": 7539,
+      "sha256": "200fac512a84cd7d5b5e4256b8f54c3878e33c5b8cdb9baf3ef5b68ad8075bd3"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-evidence.test.ts",
+      "byteLength": 41369,
+      "sha256": "afe57ffa68eb1708df901ad7c0ca2697d66fcf1f31d54f8160fa90e0146df5ec"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-evidence.ts",
+      "byteLength": 38934,
+      "sha256": "25fb22018e45f15d0d7df05e772fe98c2c932fc94220827bfae9d45ee707be71"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-operator.e2e.test.ts",
+      "byteLength": 37599,
+      "sha256": "76a182c1a071ec3e48eca0f053ba39ebb8cdc8ebd26bcbfae5c7c81515f8f095"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-operator.ts",
+      "byteLength": 37004,
+      "sha256": "6c2ed0ff6ac81b016b7b03fac50738c1141a62dd17d547596404974e6a578e2d"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-plan.test.ts",
+      "byteLength": 6558,
+      "sha256": "1078dbbc43de0bbe0513533c04f62d5c5ebb5c4c96f1e87221deb9ffddec1b62"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-plan.ts",
+      "byteLength": 8366,
+      "sha256": "cb8ca484bc452b91ce4cf874d159367285d59d8a4b30c35e86da1cac35e88118"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/observation.json",
+      "byteLength": 6284,
+      "sha256": "993a500011ea486e870851d32f35a11e6eaaef8926ac9dde544977baae5b9722"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/proceed-decision-1.json",
+      "byteLength": 1276,
+      "sha256": "507d6db2fd65b1257e66eb84b26a25e3c5eeb0e3220948f5d3a85e823894807d"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/user-report.json",
+      "byteLength": 1311,
+      "sha256": "ae2b7fc871bbcfb898b677b59689ea99b8519910b4afea9931f65bd469ee57e4"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/verification.json",
+      "byteLength": 3293,
+      "sha256": "4661ec430f5239051f7a0e03b89d1e1cadc463b178512302910451f56ae6dccc"
+    },
+    {
+      "path": "artifacts/training-functional/check-specs.ts",
+      "byteLength": 3458,
+      "sha256": "bd87403c6658e5cd6af53a5fc02d9326f1f949e9ef2be21f1c350918e1ea33e5"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/assemble.ts",
+      "byteLength": 5604,
+      "sha256": "8b99384f49ad0d4bd021b2cf32d51931671e4fcde64bf7c6a505c5afaa163925"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-2/receipt.json",
+      "byteLength": 57227,
+      "sha256": "902a168d73d59e756320a32d4a1e486361b3ea15217f2d9f196cb17e7ea2f443"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/plan.json",
+      "byteLength": 8774,
+      "sha256": "a5e676864f99b15ff8c1ecf5f33a5dc6198c11ef6e674db81116d09b2af5df86"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/README.md",
+      "byteLength": 5572,
+      "sha256": "fcba5eb26e9a18f1fcafc0b8942877bad775a4d2f69c2e074ec03bf84cbb2d56"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/runtime-configuration.json",
+      "byteLength": 4567,
+      "sha256": "1fe8b18f21470b6a3f459d418fc9f8d0809e960679ba76f76ddc695bc10665ef"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/tsconfig.json",
+      "byteLength": 68,
+      "sha256": "346311494eb223ffd34eaf0cc49d744791e74d0afba231dcfd17efce9db8e552"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/verification.json",
+      "byteLength": 56472,
+      "sha256": "132b2120494e8851408128aa26f206c47ad7172ab6fae6260a918d799ec0b80d"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/assemble.test.ts",
+      "byteLength": 16953,
+      "sha256": "273923cc3ff83894d54f4a7157f9c152c178016c54abd23a234976e30720eaa5"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/assemble.ts",
+      "byteLength": 8717,
+      "sha256": "06c04dbb86985415cb9515ae094e13cef32a58aff0b65745119b283763d0c021"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/plan.json",
+      "byteLength": 7954,
+      "sha256": "c600b9111725bf7510b07081c09208c6658972832b1e65d77f900655b119d2cc"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/prepare-metadata.ts",
+      "byteLength": 4319,
+      "sha256": "09c422fa19f8690c69185fd69def1f2ba8bbf465bf3666ec50af7dc3bb826696"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/preservation.json",
+      "byteLength": 48445,
+      "sha256": "d536aa12267d6722e2a742947400276a461f055c065dc0c674df6382f32038f3"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/preserve.ts",
+      "byteLength": 10669,
+      "sha256": "582f2deff8fdf031c518ad93d6c0fd09032791b213a25bd3fb8035e9e9cb8e5f"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/preserved-test-harness/campaign-evidence.test.ts.source",
+      "byteLength": 41369,
+      "sha256": "768182e11dfa08eeec0816a39bc6cfa066fe818f07b0c5d56e0589f7f1e25234"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/runtime-configuration.json",
+      "byteLength": 5298,
+      "sha256": "5dd6bfb8c7561a8fce55c8da1d8e6ea87232e035fe5ef134341cfc96c26f6415"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/storage-assessment.json",
+      "byteLength": 1689,
+      "sha256": "5741e7e56cd18daf014556570bb27fcbfbe8d1b5b7780343905c30fe492c545b"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/test-harness-adjustment.json",
+      "byteLength": 1428,
+      "sha256": "29e42f5dff3ddf5102cd4e404d9148405aba114b995598d1cae8167696bc0db0"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/test-harness-preservation.json",
+      "byteLength": 1389,
+      "sha256": "53f14edd73017fc85a75aab0b941886d8c564ee3102a3512d6147d0bdd2d0739"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/tsconfig.json",
+      "byteLength": 61,
+      "sha256": "3884c64fe86cacd8a33dd016dbb843b3bbb6c625090eda74ed06a9a58a13d92c"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/verify-source.ts",
+      "byteLength": 11258,
+      "sha256": "e554b7e7e5484d932dec62b5995e2bbbfb304280b3e346ad60cbfeed192a7c1a"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/verify.ts",
+      "byteLength": 5548,
+      "sha256": "860c16e4ccbfbd3b5fc159ad1b6161d08c294a26bbdd8ac8b2c4e6b238d2dd23"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts-1/operator-result-1.json",
+      "byteLength": 8104,
+      "sha256": "4128e7b587c40da0073c99ff86ab6711981ffc69423a74e4d41fd8870432bfd7"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts.test.ts",
+      "byteLength": 21568,
+      "sha256": "590de759e5147b1b792a9c2b09b6fb7f4b9c97ad96240521757307e9c948f27c"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts.ts",
+      "byteLength": 16483,
+      "sha256": "d1d82ba1bcb07a52412755cc183965519586705076ce6e46829c5657afcc16aa"
+    },
+    {
+      "path": "artifacts/training-functional/jssha-archive.test.ts",
+      "byteLength": 18643,
+      "sha256": "28876a8996326924639951a5b844d23c38f4606dd7dae8a68a007c86cf4dee47"
+    },
+    {
+      "path": "artifacts/training-functional/jssha-archive.ts",
+      "byteLength": 8028,
+      "sha256": "9455a03bb9cf77cb0c0a35f432cce62b4941d48e587f99389cc18a77fc38eb9e"
+    },
+    {
+      "path": "artifacts/training-functional/native-comment-bridge.test.ts",
+      "byteLength": 2448,
+      "sha256": "55bf43115a05361162e2011101174a9871ddf9b8b07928e85f88dd98fee67263"
+    },
+    {
+      "path": "artifacts/training-functional/native-comment-bridge.ts",
+      "byteLength": 3952,
+      "sha256": "2aeee1a02f2015ff5e5b41a185fd33d98c8fe5fd4882f7ce0e93d213ae27db29"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-adapter-launch.test.ts",
+      "byteLength": 1526,
+      "sha256": "b79d4bfd16f2b9676fb3a141bc8b53685025ac3616b83452b8de2d331636c1e6"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-adapters.test.ts",
+      "byteLength": 9230,
+      "sha256": "9a30b794992c49894d1acacb97a0b7ea810418fc81b58db5a3560064553d79a4"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-bootstrap.e2e.test.ts",
+      "byteLength": 62504,
+      "sha256": "1142d1f09c3a2a47d17bb9beb88aa7404fe8caff335872bf5e37bd78862b2fee"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-bootstrap.ts",
+      "byteLength": 38668,
+      "sha256": "e22505c5e3c492c25a6068089116a69dd70b398f3536629c8e8433a6eefbb968"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-command.test.ts",
+      "byteLength": 6725,
+      "sha256": "edb64e75ce63602188caa02175906ee2e1c7ab97543255166e7f404e6529894b"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-evidence.test.ts",
+      "byteLength": 65811,
+      "sha256": "8fa9d249a040683c5f2ab9eea8e4a3e89b3d3e6701027ebbb72cf62ffd293e9c"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-evidence.ts",
+      "byteLength": 54762,
+      "sha256": "684ce9c6a640d38cf957da2e57f97073837e428c8046b0799735b81ebbc66fe4"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-input-documents.test.ts",
+      "byteLength": 5250,
+      "sha256": "c1489172d073cb45c46744695c53b63d47e5812384ec3b615670d72486f9a736"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-input-documents.ts",
+      "byteLength": 10272,
+      "sha256": "4aacf75ad46812c18b152ed5994c862571dd74a69193a50678d69f48319f2345"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-operator.e2e.test.ts",
+      "byteLength": 47878,
+      "sha256": "511a043bf6957659cb9c2c2f517a5a95e7fbc472fe3e23802fe1773a28b7c997"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-operator.ts",
+      "byteLength": 37727,
+      "sha256": "f8a4ec4db0b765bfde06016a4cdd663d33a57d85e6b0d8bcf785883e27ef603f"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/plan.json",
+      "byteLength": 5858,
+      "sha256": "d9d53903cb9db66e86aafcaad41e543a4c6a8ae31cb62d00928fa33878a4364f"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/core-rules.json",
+      "byteLength": 9504,
+      "sha256": "b0c6674122ccb4ec3f113bc9f815701f8c0d77a6e254ebdba568977a85e51211"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/image-observation.json",
+      "byteLength": 1704,
+      "sha256": "13a9f9b66299f63f9eb557a104ec02d4bc533bd5d0d58acc3aa23e1df92ba358"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/runtime-configuration.json",
+      "byteLength": 1131,
+      "sha256": "3bc2a838363fcd194421eb930170325f1bdec641634608cdba3e6c6743284b05"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/source-manifest.json",
+      "byteLength": 20258,
+      "sha256": "9820e6bfb34f5891117379b207cfd193330d5bd1efbf6c8d36f6ff6e0328836b"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/verification.json",
+      "byteLength": 15082,
+      "sha256": "5edf5fa735abbf8be5b38c7389a580199d947e7b845ce3a2a31ecbcc43a45f75"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet.test.ts",
+      "byteLength": 18789,
+      "sha256": "21f8cbc866db9e78a23b0f2c206c8d4b8bdb0b2a3dff096c627806b7d9817c97"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-policy-channel.ts",
+      "byteLength": 3779,
+      "sha256": "ea9871209c344b894e4b9bd72b19e3508decc2a7a1f12e9ec7720239f122504e"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-policy-score.ts",
+      "byteLength": 3777,
+      "sha256": "5e6740635cbeeafaba07ae200a18f9848fc90e9d6351e6e3d74736f3a4ef21ea"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/input-manifest.json",
+      "byteLength": 143938,
+      "sha256": "7bc8885b4ee97be1d4935aa4dcc994275ea41e2e368b144e29be1b598b53ae51"
+    },
+    {
+      "path": "artifacts/training-functional/qualification.test.ts",
+      "byteLength": 6690,
+      "sha256": "33e5d289985ba9ffbc4273380e169dd1b89bcb1394a2ffeb2f9f33e4a17f479d"
+    },
+    {
+      "path": "artifacts/training-functional/qualification.ts",
+      "byteLength": 2144,
+      "sha256": "e2893a4b19927390d2c2deb7369e3d445c87dd2060ceb1193b7082daee5014c2"
+    },
+    {
+      "path": "artifacts/training-functional/r4-observation.test.ts",
+      "byteLength": 36167,
+      "sha256": "56dcf78f5d8d3ca0eab132d6f61a4dd6a21d940afd69cc0417c0afff958b1e25"
+    },
+    {
+      "path": "artifacts/training-functional/r4-observation.ts",
+      "byteLength": 11964,
+      "sha256": "9df9bbfaccbc01d77a625b5962b0dd636c563f7bb0318160e2de89d34b6812e9"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep-2/selected-reference.json",
+      "byteLength": 103663,
+      "sha256": "09cd6b6dd97fd1b3984b71b5f0d3f540e21b38285897062148e16c0e388fc45a"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep.test.ts",
+      "byteLength": 17177,
+      "sha256": "e5a2ad16291c02c3dd398f2fe94c6369fd6647e2f6127c9f86532c0287c03287"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep.ts",
+      "byteLength": 27394,
+      "sha256": "49599141613de07469176a848cc6745077cda89ecfce2fec7daed0354c14f5a2"
+    },
+    {
+      "path": "artifacts/training-functional/reference-retry.test.ts",
+      "byteLength": 19429,
+      "sha256": "d3a03e6dd949a14da19e45696ad1aff1d0735c8477e6853af195a996d3e8a1ca"
+    },
+    {
+      "path": "artifacts/training-functional/reference-retry.ts",
+      "byteLength": 27463,
+      "sha256": "ce19c0c7e54034119713d22ffa5c227c657187add45d3bea2919767251a182a1"
+    },
+    {
+      "path": "artifacts/training-functional/render-host-command.ts",
+      "byteLength": 2823,
+      "sha256": "89ff21ad5dc5c0bf00502af761ff997bde350955b714c4df45479d63ba7001be"
+    },
+    {
+      "path": "artifacts/training-functional/retain-reference-inputs.ts",
+      "byteLength": 3403,
+      "sha256": "3144338170d14b6c92a8a95fc476bc4a375520d245a10082dd672ed1b7934a67"
+    },
+    {
+      "path": "artifacts/training-functional/run-check.ts",
+      "byteLength": 8661,
+      "sha256": "a60c9680a0118a6ed3fb6fc724217cc5cbc61712e1966997f0b1ecdef0b989c8"
+    },
+    {
+      "path": "artifacts/training-functional/scratch/reference-prep-2/bundles/packages/starchess-arena/src/players/strategic.ts",
+      "byteLength": 115300,
+      "sha256": "f48eb1a6016202272d609f373718c33ca2f4dba13b7d9ebe7499be4960b36499"
+    },
+    {
+      "path": "artifacts/training-functional/tsconfig.json",
+      "byteLength": 145,
+      "sha256": "64e66b484c47a3d87257ec9884e45fc1c2181e6ada8cf31b89de4bdf5d1df046"
+    },
+    {
+      "path": "node_modules/typescript/package.json",
+      "byteLength": 3620,
+      "sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    },
+    {
+      "path": "packages/contracts/node_modules/zod/package.json",
+      "byteLength": 4142,
+      "sha256": "c2d190d9ee4e0bdb60332aaa2130a6a98d65ddb903fe1d29248b15de57832c45"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "byteLength": 573,
+      "sha256": "45256c8150abd20e4183744809f6f123c395fc3a63c195d8e2e00f96a016835b"
+    },
+    {
+      "path": "packages/contracts/src/candidate.ts",
+      "byteLength": 1921,
+      "sha256": "01422c6e5b8f289cd387e3cf488363c810277db5aae7117cd7354b7b14c8af1e"
+    },
+    {
+      "path": "packages/contracts/src/causal-journal.ts",
+      "byteLength": 14428,
+      "sha256": "ad86bff14c051e98a35adae057a1be8ab2363ac6c253cec245200a9eca5a5c2f"
+    },
+    {
+      "path": "packages/contracts/src/episode.ts",
+      "byteLength": 2612,
+      "sha256": "ae8c21913bf58d1688f4136bab05c6b55ad051a2dc39b5640c6d94ab603ee370"
+    },
+    {
+      "path": "packages/contracts/src/game-session.ts",
+      "byteLength": 10357,
+      "sha256": "797d7b35465fef380b73c913e6777b20dedee9a10f1ae2cd6e90dab9a83bb07f"
+    },
+    {
+      "path": "packages/contracts/src/index.ts",
+      "byteLength": 1200,
+      "sha256": "989ccb211f8be99a88787832fa082a5f129ef52682c2087ae1b584fbda2baab3"
+    },
+    {
+      "path": "packages/contracts/src/inference.ts",
+      "byteLength": 1979,
+      "sha256": "c8212f109e8027bfecd6202c0edb58a4c201bbbdd74a4ede18ba2102314663ec"
+    },
+    {
+      "path": "packages/contracts/src/learning-channel.ts",
+      "byteLength": 2486,
+      "sha256": "01abdbf580e2c9cd5cc2a718a52284b58b32bda24f901f44321490fb8e444982"
+    },
+    {
+      "path": "packages/contracts/src/match.ts",
+      "byteLength": 4415,
+      "sha256": "fd13cf6822e37fc14d220576c6568cbfaa586fed481b089307dc702145ba5d30"
+    },
+    {
+      "path": "packages/contracts/src/native-intents.ts",
+      "byteLength": 1389,
+      "sha256": "cbb8f024001fac6c8f682fbb42677d19dc922c0a7ea317285ea480f914a8fe37"
+    },
+    {
+      "path": "packages/contracts/src/native-protocol.ts",
+      "byteLength": 3947,
+      "sha256": "df684ebaacdff2d6472d6f47c067d1850aae0db39826618c3118cbc03b9b9560"
+    },
+    {
+      "path": "packages/contracts/src/recipient-codec.ts",
+      "byteLength": 4082,
+      "sha256": "75cb4a7b83ca9e9e1970754e6fcffec9067a4ee8be37f704eb1c8ce7fbde8447"
+    },
+    {
+      "path": "packages/contracts/src/recipient.ts",
+      "byteLength": 16399,
+      "sha256": "950744bac63d7d44b92dcb8fdc0122f2c3ad4f933198e27aff8702bafefbe7fb"
+    },
+    {
+      "path": "packages/contracts/src/resolution.ts",
+      "byteLength": 4532,
+      "sha256": "af02d9f13f69d359784d9a201c32b6dae0a5b15bd2d0dec00c31358fb45f1ef1"
+    },
+    {
+      "path": "packages/contracts/src/semantics.ts",
+      "byteLength": 8430,
+      "sha256": "cbc1217a2cfee44d68c216d5c9a173965d301247c73835990a58e0c321ae5690"
+    },
+    {
+      "path": "packages/contracts/src/shape.ts",
+      "byteLength": 3459,
+      "sha256": "74c7a52ca90949da256e07ad4e6f7581c53834ba9abdc45cd4b7f51150a269d1"
+    },
+    {
+      "path": "packages/contracts/src/training-artifact.ts",
+      "byteLength": 1542,
+      "sha256": "0203e6183d543b5fa54ee7c62887bc74cfcd62cb7bc6f3a9b17adbeb1a7d56af"
+    },
+    {
+      "path": "packages/contracts/src/training-state.ts",
+      "byteLength": 4119,
+      "sha256": "e17d980ca2bc03566bf43cf75869862c81fa3d6f9febcfc52044669242d7b5ff"
+    },
+    {
+      "path": "packages/policy/package.json",
+      "byteLength": 256,
+      "sha256": "fd05bb61308dafa50773ddae5315321294ac6189f6ce97d91b4e513f51beaf51"
+    },
+    {
+      "path": "packages/policy/src/candidates.ts",
+      "byteLength": 9552,
+      "sha256": "8ee944b2c26f8cf60e07181b07b04dfa41494c200df2f935487bf661d156f99f"
+    },
+    {
+      "path": "packages/policy/src/index.ts",
+      "byteLength": 5043,
+      "sha256": "96adc38377d7dfafe35e2594a2a94f72cbdc1caf6ebbc1785c5318ffe086a094"
+    },
+    {
+      "path": "packages/runtime/package.json",
+      "byteLength": 319,
+      "sha256": "8fe8c8418d4f84966d5b0b7d2465341ee87e4b0b661b1a652f39165940303ee1"
+    },
+    {
+      "path": "packages/runtime/src/corpus.ts",
+      "byteLength": 5320,
+      "sha256": "6ab7fc22ed51977b63178988496059621cc83df8f62adc6066a47639b84c09b9"
+    },
+    {
+      "path": "packages/runtime/src/current-driver.ts",
+      "byteLength": 1184,
+      "sha256": "7049fabb4b39e285acf5c10dc2e9a84c072f37e4794bc4ef52f4b1dcae13fba4"
+    },
+    {
+      "path": "packages/runtime/src/curriculum.ts",
+      "byteLength": 4646,
+      "sha256": "2621c4a99d94f92eb61357375822038e5d3e288d9f0a4c6af05dc9b8425253d4"
+    },
+    {
+      "path": "packages/runtime/src/fixed-attempt.ts",
+      "byteLength": 5485,
+      "sha256": "217a47bb57c3e8adbe7d24d15e9f511bab713a141758f7efe6a6f697b37b0b14"
+    },
+    {
+      "path": "packages/runtime/src/framing.ts",
+      "byteLength": 1985,
+      "sha256": "344d03a78e94dce87c3b958d02f7499e7927b25388830d3062dfdfc00655f026"
+    },
+    {
+      "path": "packages/runtime/src/frozen-scorer.ts",
+      "byteLength": 3566,
+      "sha256": "9e5f051b9487b53f34259075298ea9f65b905ed3f6ef895a20a1a3d31b58c72e"
+    },
+    {
+      "path": "packages/runtime/src/game-worker.ts",
+      "byteLength": 353,
+      "sha256": "d7ec081fe81c1f3ef1c5257a840305c5d2be821378d106a28ea3a801b9ddd7ab"
+    },
+    {
+      "path": "packages/runtime/src/job.ts",
+      "byteLength": 4762,
+      "sha256": "bea66950267f27d02fd91e9c35fc2cde914637506a63a39e33b251f71de8da09"
+    },
+    {
+      "path": "packages/runtime/src/learner-pair.ts",
+      "byteLength": 3034,
+      "sha256": "fe75719f6dcdcb3a4a621c2aeba284cfbabca9e6b6f84d43d7457693666e3d26"
+    },
+    {
+      "path": "packages/runtime/src/match-process.ts",
+      "byteLength": 7100,
+      "sha256": "5960e488179b87b7fe2eb2df0c371518771c837a632f5844024d905d97731e18"
+    },
+    {
+      "path": "packages/runtime/src/match-session.ts",
+      "byteLength": 21583,
+      "sha256": "6dbcd36fe4fda9aa6495617a9ee3ea5558e44bfc6ec9d2ecd7986852db2b051f"
+    },
+    {
+      "path": "packages/runtime/src/match-state.ts",
+      "byteLength": 2075,
+      "sha256": "b1b04f78dc57fbaef24bdd515bb03a1ef0c98932c199ecb444cbb7f7c015e02c"
+    },
+    {
+      "path": "packages/runtime/src/match-worker-main.ts",
+      "byteLength": 2093,
+      "sha256": "7fbfda7c1898ae904990e8e4184780a36cca62069b5c4710ac4dd7082dfe198e"
+    },
+    {
+      "path": "packages/runtime/src/match-worker.ts",
+      "byteLength": 10498,
+      "sha256": "7333ae7a643441f0a6d254db853315b8431fe558e03e410468a9ad3977c4cbb4"
+    },
+    {
+      "path": "packages/runtime/src/model-inputs.ts",
+      "byteLength": 1491,
+      "sha256": "5ca0cbe0196a7c481255b0989e52c95c1f95d7f0e66c7c0d4e3b7979b27f5927"
+    },
+    {
+      "path": "packages/runtime/src/native-learner.ts",
+      "byteLength": 7892,
+      "sha256": "bd42911e886b352a97e1aea22552dd596d79ba2d55d490e35267a637d215340c"
+    },
+    {
+      "path": "packages/runtime/src/native-session.ts",
+      "byteLength": 9263,
+      "sha256": "fce16d1d955745308ebc0eca8c3ed8133531b96b34d579110777464dc9280076"
+    },
+    {
+      "path": "packages/runtime/src/policy-session.ts",
+      "byteLength": 10688,
+      "sha256": "bf66312f05965de4461219068912f68cecfdc4e1037749fd73bc4eba2a3e6479"
+    },
+    {
+      "path": "packages/runtime/src/private-state.ts",
+      "byteLength": 5741,
+      "sha256": "c129175e1e6f6a0ef4df2e0e8f0a9843b7087770064cde3c44b6ea8936bd4999"
+    },
+    {
+      "path": "packages/runtime/src/process-transport.ts",
+      "byteLength": 5657,
+      "sha256": "bb8dde00851642d2b2faaa00909092e35e5676b093aebb652b1088daba34cac1"
+    },
+    {
+      "path": "packages/runtime/src/reference-driver.ts",
+      "byteLength": 8759,
+      "sha256": "f9623f1ec68354139140ee142f1ac280d2995e81dbd8eaef77b3bde57aef8f30"
+    },
+    {
+      "path": "packages/runtime/src/reference-worker.ts",
+      "byteLength": 398,
+      "sha256": "db1438a09e0dd5c28c8bfa2c1fd5789bce00914ad217dcfb3bdd606b1703163f"
+    },
+    {
+      "path": "packages/runtime/src/rng.ts",
+      "byteLength": 1900,
+      "sha256": "1e2311763946768b7d1323b4717a203699ea057c88525a66a764465ad2fa5f5a"
+    },
+    {
+      "path": "packages/runtime/src/storage-bounds.ts",
+      "byteLength": 1412,
+      "sha256": "f86f351c51d09529d751564b85aa3d150283c2ae5a09c7f632de12a84b5a1d38"
+    },
+    {
+      "path": "packages/runtime/src/strategic.ts",
+      "byteLength": 10385,
+      "sha256": "c5d748fe9ccc7787c32a20cc29820b80bfba3fa6c9f585aaeb2d56c24094e9cf"
+    },
+    {
+      "path": "packages/runtime/src/training-campaign.ts",
+      "byteLength": 8766,
+      "sha256": "92d0362057bf386fb7713a6929a429a89e97e5998e9921b0e9b790823772d5db"
+    },
+    {
+      "path": "packages/runtime/src/training-coordinator.ts",
+      "byteLength": 9497,
+      "sha256": "29ffc66842cb8588d4c3c5c419b5cf19b18ea780ffde82c35435001a3f5ea5ec"
+    },
+    {
+      "path": "packages/runtime/src/training-store.ts",
+      "byteLength": 13190,
+      "sha256": "9ed0b2a9457a3e92c3c8b69d70fa5ad83783d7bef6e7e4ec4d5ee39513ae3b42"
+    },
+    {
+      "path": "packages/runtime/src/worker-loop.ts",
+      "byteLength": 1080,
+      "sha256": "afd57b55b54a2f982e882f3337ce1d2468f066bf94c61f09ba8a1d6249d4347f"
+    },
+    {
+      "path": "packages/runtime/src/worker.ts",
+      "byteLength": 4384,
+      "sha256": "0c6fab7a35bb5be6f99eb62fc02b3c6f2309cc110cb48bbbbfbb2111dfc5d830"
+    },
+    {
+      "path": "packages/runtime/tests/fixture.ts",
+      "byteLength": 2038,
+      "sha256": "bea76570d542cb5c580aada7f9c5589f6913e7b2c5768bbc34dfaa40f88ec5ad"
+    },
+    {
+      "path": "packages/runtime/tests/fixtures/native-reference-proof.json",
+      "byteLength": 524,
+      "sha256": "e3b9ae93b32829d7825a246849bc8937016737581e9d10150f94753d1b9294a7"
+    },
+    {
+      "path": "packages/runtime/tests/match-fixture.ts",
+      "byteLength": 6737,
+      "sha256": "d4a2bdafb8c2f6a1bf87673e4300d8cec9109d7ee29d254b83dfb960a306e384"
+    },
+    {
+      "path": "packages/runtime/tests/repository-scratch.ts",
+      "byteLength": 545,
+      "sha256": "b9f51235fdffbaf671c3df83c0b03a70c3fb578470a48e85dcf08344bf8f60dd"
+    },
+    {
+      "path": "packages/runtime/tests/storage-bounds.test.ts",
+      "byteLength": 1562,
+      "sha256": "21c3318761932fd8d2a53eafe8ddd01a51709ba4052dc25dd8270001c4a25176"
+    },
+    {
+      "path": "packages/runtime/tests/training-campaign.test.ts",
+      "byteLength": 20952,
+      "sha256": "4fa9a7717e9ec4436b0bfc4989d8e1de75655dc1944a382bf832444ffe7c91be"
+    },
+    {
+      "path": "packages/runtime/tests/training-coordinator.test.ts",
+      "byteLength": 8759,
+      "sha256": "7e4dd2cb7fe32fc9f15733126229d81df079357af34c5b00d4c5be2a25178073"
+    },
+    {
+      "path": "packages/runtime/tests/training-fixture.ts",
+      "byteLength": 2510,
+      "sha256": "8995676cd85fd953a74b9239e7923563f89caeffc2718ea96ba4336dd12ee91d"
+    },
+    {
+      "path": "packages/starchess-core/package.json",
+      "byteLength": 694,
+      "sha256": "6b56f6154c2f896ea0ab34d1535c27b78d5e5398793e054a35068532cbae6887"
+    },
+    {
+      "path": "packages/starchess-core/src/board/classicFen.ts",
+      "byteLength": 339,
+      "sha256": "b005f66aa7e878b4c5db0e0fce7caa31f15a7d1bb052a2fdc485616d888e3adc"
+    },
+    {
+      "path": "packages/starchess-core/src/board/mine-contact.ts",
+      "byteLength": 2369,
+      "sha256": "16cdde5417ed37568ca9aac64fffb7c6fa58c35fd76a93726a05192aace0086f"
+    },
+    {
+      "path": "packages/starchess-core/src/board/mines.ts",
+      "byteLength": 3834,
+      "sha256": "1c9082d89051e6ffdfba71c97b709f7d33cced372cf149c02c84bffebbd31fff"
+    },
+    {
+      "path": "packages/starchess-core/src/board/move-timing.ts",
+      "byteLength": 3822,
+      "sha256": "4009773b2d47deeb83cceaab502af5692e5de0e4254d053166374043d9b8ba69"
+    },
+    {
+      "path": "packages/starchess-core/src/board/moves.ts",
+      "byteLength": 10469,
+      "sha256": "2479c4eed2fca89a1a1de08d210c2fa1cd0b40c22a330ebdf8c48b6069c57df6"
+    },
+    {
+      "path": "packages/starchess-core/src/board/placement.ts",
+      "byteLength": 7285,
+      "sha256": "083952137e3b5cd829494140edb5b995efe7941f227e30bcd303698bb7475544"
+    },
+    {
+      "path": "packages/starchess-core/src/board/ray-scan.ts",
+      "byteLength": 2149,
+      "sha256": "46c3fc691517e50c13969c5b45d998c4e5b76670556b39f7a8007f3ef995a418"
+    },
+    {
+      "path": "packages/starchess-core/src/board/siege.ts",
+      "byteLength": 1071,
+      "sha256": "eb57a7d6715067681cab6da2872840f8f9935ec2cccbc9badf78e73f9bebb452"
+    },
+    {
+      "path": "packages/starchess-core/src/board/vision.ts",
+      "byteLength": 10114,
+      "sha256": "6e6def04466f3eee6dbd4cdfe0599c8da8255282e34e42ff0d55f6e4533c516c"
+    },
+    {
+      "path": "packages/starchess-core/src/commands/queue-action.ts",
+      "byteLength": 7351,
+      "sha256": "6e493f3bcaa7de70b7c7b5e7398385e007ebcf138dbec8abbf844e2b6277b94d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/board.ts",
+      "byteLength": 381,
+      "sha256": "ddac9d5352ecd1d3494b3c6129998cbf61cee14c3dbf42652b5c9fea17e5b85c"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/causal-events.ts",
+      "byteLength": 24503,
+      "sha256": "116fe05325b3e5287ce058d8bf73588318024c979c122d066189c4dd39144624"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/causal-producer.ts",
+      "byteLength": 1300,
+      "sha256": "f7f5e9225ef8785d6eddaa1d89634514652de4d6ad0937a9031e095749506d97"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/charon.ts",
+      "byteLength": 170,
+      "sha256": "860bef6bc8a249576c0ba50eff6e49cdb4dd7f8c0a1d4dad9ef090d5d31516d6"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/classical-resolution.ts",
+      "byteLength": 1769,
+      "sha256": "652c7787052870b31571e85a9e8d949cb54a1ba78aa28e6823eddcd71bbc190d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/constants.ts",
+      "byteLength": 300,
+      "sha256": "8d40aef2d7b98ff3a998e7ab7d0dc2eafc404a046b9ccc9695d2dc013489e390"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/economy.ts",
+      "byteLength": 260,
+      "sha256": "c0f1fc790bc351324fd1d6a43b617701032afe2a25d86ba03ea26ddc79acba32"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/index.ts",
+      "byteLength": 1287,
+      "sha256": "59804e608176d5eacd4589cbdb7fd966d19d4a88c48a188db388553f7ee7a9f4"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/initialization.ts",
+      "byteLength": 1536,
+      "sha256": "b835651978b742dc96b749dad934f5e758a2adade75d56511ae274887f45a330"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/mine-contact.ts",
+      "byteLength": 215,
+      "sha256": "37c97e4c119bf0bcdcdb0a7df3f4de012d0dfc21f7703e3623af83c795354dc8"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/mines.ts",
+      "byteLength": 213,
+      "sha256": "3fda1228b2d0fda3b065bb4f8969961eee99781ae951378944e41a94f25ad9a1"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/move-timing.ts",
+      "byteLength": 243,
+      "sha256": "abd7e82fb2761429e2d0f56bd77a3add7fb66b3c11ff5911e3fe7c9a183bed3d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/moves.ts",
+      "byteLength": 287,
+      "sha256": "eb26f1f1ab2c17f16202b4bcd08f127d834c5aecd32e79e8bb9e720338373eb5"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/native-classical.ts",
+      "byteLength": 8275,
+      "sha256": "246ec95a8277fb4468df7aa10569a0e36c55a0d983b175baebabea52d8cad173"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/outcome.ts",
+      "byteLength": 126,
+      "sha256": "7f2cbeeed979b8d9f5a97f55173e2c4000479350b2b9f0cbdd5edbe2a7a4c0f6"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-intents.ts",
+      "byteLength": 7728,
+      "sha256": "1fb8cb64521add5cd111ae001b9d85603e207485f5f4d1590ead09a9c72e100a"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-order.ts",
+      "byteLength": 2200,
+      "sha256": "0636b6ae52c94c841d42dd0b5baad82846d283ffa95a6987cf06a9dfbe554c1d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-specials.ts",
+      "byteLength": 242,
+      "sha256": "fd90584ec2b755a2be2cd724860fe0489186c2c84e882254235ece9ed57177e8"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-action.ts",
+      "byteLength": 915,
+      "sha256": "a8fade891926e99a330f3009d9dcf8e248a96281a54272f3e36af7e30fd0af11"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-contract.ts",
+      "byteLength": 123,
+      "sha256": "e6c4c3d4ba563903c0c3beacd637cc59bb8d7f46186e5264e594d04c134724dd"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-validation.ts",
+      "byteLength": 4529,
+      "sha256": "802ae995610f453e79d6e88eef386b9c856a94b77276b153d317c4f03678e24b"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/ray-scan.ts",
+      "byteLength": 177,
+      "sha256": "ffd5f7a3bf24694e84d9f421620e3898bb10bda62c61cdaa9a186611c49797ae"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/resolve.ts",
+      "byteLength": 877,
+      "sha256": "e58af101b6e1a1b5a94567de5484ce346e5a605cf6f1ec21239661dd73fe4e09"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/specials.ts",
+      "byteLength": 192,
+      "sha256": "cf5c83e811458b7a68f6ca88da450c499c6675f84c8cb466a1d7393af12f55a7"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/types.ts",
+      "byteLength": 355,
+      "sha256": "1f3ec1b3b203837432bfd0b5847f833dc05ce03decf3a739850116154ceb9f17"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/vision.ts",
+      "byteLength": 330,
+      "sha256": "f65e344d5e36e293a69dea3184cdabcbe24c08816b69bc182d0f2a38f89ba411"
+    },
+    {
+      "path": "packages/starchess-core/src/outcome.ts",
+      "byteLength": 1177,
+      "sha256": "0413b7e440087b08fb66275dbb83b3e7f5adc34af5dbf3e6e09049c6855fb217"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/resolve-turn.ts",
+      "byteLength": 46101,
+      "sha256": "169f4e5726f66cfd24a1a5a4a5832f8eaba05ee2c63dd10f0619358eb77757b8"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/submit-turn.ts",
+      "byteLength": 39066,
+      "sha256": "d5e3325ea985a4c19b784c90b1955d740068a26d0bc38a37d9a5d2de41b62f06"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/constants.ts",
+      "byteLength": 2062,
+      "sha256": "66acdcc1abc05197fbe3ae9df57a0efe4acea88c6ada78e4db9590f3343b6ff7"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/economy.ts",
+      "byteLength": 3611,
+      "sha256": "6fed53b09bf42f75fc6f9621f40361d99a072a551c6dbc76a29977211c99d579"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/adjacent.ts",
+      "byteLength": 3694,
+      "sha256": "96a671566e971bfbbe80aa64205fa04f7ef1b6a23ef2cf337b321945b2d5e540"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+      "byteLength": 5451,
+      "sha256": "b2c8af310fe33f83a18eb3e5e53b41734c147e5f62440d9422b2e757b376c4e4"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/registry.ts",
+      "byteLength": 1212,
+      "sha256": "0965a88ac773afe43ca72915d2ddccac4cc84c31f58121a1514f6511de8f6b5d"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/stimStep.ts",
+      "byteLength": 1421,
+      "sha256": "fbe990595fe42e41aad17460eb76b3a3f134672144a867a52ee618034f4069a1"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/validation.ts",
+      "byteLength": 13598,
+      "sha256": "a18e038feb83f3b15f4f9309e33101b23dac2080155af46ac51474f09c0a064c"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/codec.ts",
+      "byteLength": 20029,
+      "sha256": "74ab468ff05e53e419a5fe151ebcc266cf89c4c9b3789731a8d9e89e954be3eb"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/index.ts",
+      "byteLength": 733,
+      "sha256": "6fe29e70afd2d6c615a31379174d24de2d011e42d52c693f0ea7954a1cfa64ad"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/legacyKinds.ts",
+      "byteLength": 1828,
+      "sha256": "263e4ba87bdeaccf41d18e3c0495430f2b6b0af332ff374f707e2df7babc030b"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "byteLength": 315006,
+      "sha256": "0dc70cedcc188b938415b04b4625adfff643b28e7b795a0100ea1ea34303f551"
+    },
+    {
+      "path": "schemas/feature-layout.json",
+      "byteLength": 1399,
+      "sha256": "bca25ea10220001845ad8a5f419f32baf250073b150c9bbe78f17a75c7c08f74"
+    },
+    {
+      "path": "tsconfig.json",
+      "byteLength": 493,
+      "sha256": "7fc5cd6510ef19ff9ec20e39e76f14f5bc97aa71f6bf5508062a84951e1c561e"
+    },
+    {
+      "path": "tsconfig.tests.json",
+      "byteLength": 377,
+      "sha256": "7f0eda964089e3723c0cb05bacd89a8613979af1f8c66c7ce14250bb32eaaade"
+    }
+  ],
+  "sourcePinsAfter": [
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 54566,
+      "sha256": "84d8c65842cdf4a513035c7d04e1f6683d91b35cfd74e6b52ec6c2dc698b11fc"
+    },
+    {
+      "path": "_spec/checkpoint-runtime.puml",
+      "byteLength": 17649,
+      "sha256": "7e7df6d8b20586c3319689f44b59c3db64bb910fce05afc50d1933d0acecef79"
+    },
+    {
+      "path": "_spec/qualification-bootstrap.puml",
+      "byteLength": 22015,
+      "sha256": "55690743085f7c0c73f32f991cb7ae7bfddb6a37b560fc4daba7ae80732503d6"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 188549,
+      "sha256": "9c30f908aed71943b43afaff233d879bb76aae083adbba3ad5d262ac05d02b4a"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 162528,
+      "sha256": "64bce2cfb13d6fc251ff39abdad4f0e570fcfb9822e8b2951843630e2c90ab73"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/canonical.ts",
+      "byteLength": 9816,
+      "sha256": "301d8e9e42bfcef4782efa0a188c570e1f035f165296deb8fba6f07f57d5d74c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/inputs/reference/_spec/corpora/ml-adjutant-corpus.manifest.json",
+      "byteLength": 7309,
+      "sha256": "31ac6f865340a95f8e85c2c1577aaea0aada87feb92a37637cda90aee288cc3f"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/inputs/reference/starchess-match-history-20260929-203446.json",
+      "byteLength": 664540,
+      "sha256": "e6770cb032aa76dc05432c7a49e61c4905d1a1f7b859aa860a090821213e7ae6"
+    },
+    {
+      "path": "artifacts/training-functional/audit-staged-publication.ts",
+      "byteLength": 7539,
+      "sha256": "200fac512a84cd7d5b5e4256b8f54c3878e33c5b8cdb9baf3ef5b68ad8075bd3"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-evidence.test.ts",
+      "byteLength": 41369,
+      "sha256": "afe57ffa68eb1708df901ad7c0ca2697d66fcf1f31d54f8160fa90e0146df5ec"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-evidence.ts",
+      "byteLength": 38934,
+      "sha256": "25fb22018e45f15d0d7df05e772fe98c2c932fc94220827bfae9d45ee707be71"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-operator.e2e.test.ts",
+      "byteLength": 37599,
+      "sha256": "76a182c1a071ec3e48eca0f053ba39ebb8cdc8ebd26bcbfae5c7c81515f8f095"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-operator.ts",
+      "byteLength": 37004,
+      "sha256": "6c2ed0ff6ac81b016b7b03fac50738c1141a62dd17d547596404974e6a578e2d"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-plan.test.ts",
+      "byteLength": 6558,
+      "sha256": "1078dbbc43de0bbe0513533c04f62d5c5ebb5c4c96f1e87221deb9ffddec1b62"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-plan.ts",
+      "byteLength": 8366,
+      "sha256": "cb8ca484bc452b91ce4cf874d159367285d59d8a4b30c35e86da1cac35e88118"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/observation.json",
+      "byteLength": 6284,
+      "sha256": "993a500011ea486e870851d32f35a11e6eaaef8926ac9dde544977baae5b9722"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/proceed-decision-1.json",
+      "byteLength": 1276,
+      "sha256": "507d6db2fd65b1257e66eb84b26a25e3c5eeb0e3220948f5d3a85e823894807d"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/user-report.json",
+      "byteLength": 1311,
+      "sha256": "ae2b7fc871bbcfb898b677b59689ea99b8519910b4afea9931f65bd469ee57e4"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/verification.json",
+      "byteLength": 3293,
+      "sha256": "4661ec430f5239051f7a0e03b89d1e1cadc463b178512302910451f56ae6dccc"
+    },
+    {
+      "path": "artifacts/training-functional/check-specs.ts",
+      "byteLength": 3458,
+      "sha256": "bd87403c6658e5cd6af53a5fc02d9326f1f949e9ef2be21f1c350918e1ea33e5"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/assemble.ts",
+      "byteLength": 5604,
+      "sha256": "8b99384f49ad0d4bd021b2cf32d51931671e4fcde64bf7c6a505c5afaa163925"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-2/receipt.json",
+      "byteLength": 57227,
+      "sha256": "902a168d73d59e756320a32d4a1e486361b3ea15217f2d9f196cb17e7ea2f443"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/plan.json",
+      "byteLength": 8774,
+      "sha256": "a5e676864f99b15ff8c1ecf5f33a5dc6198c11ef6e674db81116d09b2af5df86"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/README.md",
+      "byteLength": 5572,
+      "sha256": "fcba5eb26e9a18f1fcafc0b8942877bad775a4d2f69c2e074ec03bf84cbb2d56"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/runtime-configuration.json",
+      "byteLength": 4567,
+      "sha256": "1fe8b18f21470b6a3f459d418fc9f8d0809e960679ba76f76ddc695bc10665ef"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/tsconfig.json",
+      "byteLength": 68,
+      "sha256": "346311494eb223ffd34eaf0cc49d744791e74d0afba231dcfd17efce9db8e552"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/verification.json",
+      "byteLength": 56472,
+      "sha256": "132b2120494e8851408128aa26f206c47ad7172ab6fae6260a918d799ec0b80d"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/assemble.test.ts",
+      "byteLength": 16953,
+      "sha256": "273923cc3ff83894d54f4a7157f9c152c178016c54abd23a234976e30720eaa5"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/assemble.ts",
+      "byteLength": 8717,
+      "sha256": "06c04dbb86985415cb9515ae094e13cef32a58aff0b65745119b283763d0c021"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/plan.json",
+      "byteLength": 7954,
+      "sha256": "c600b9111725bf7510b07081c09208c6658972832b1e65d77f900655b119d2cc"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/prepare-metadata.ts",
+      "byteLength": 4319,
+      "sha256": "09c422fa19f8690c69185fd69def1f2ba8bbf465bf3666ec50af7dc3bb826696"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/preservation.json",
+      "byteLength": 48445,
+      "sha256": "d536aa12267d6722e2a742947400276a461f055c065dc0c674df6382f32038f3"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/preserve.ts",
+      "byteLength": 10669,
+      "sha256": "582f2deff8fdf031c518ad93d6c0fd09032791b213a25bd3fb8035e9e9cb8e5f"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/preserved-test-harness/campaign-evidence.test.ts.source",
+      "byteLength": 41369,
+      "sha256": "768182e11dfa08eeec0816a39bc6cfa066fe818f07b0c5d56e0589f7f1e25234"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/runtime-configuration.json",
+      "byteLength": 5298,
+      "sha256": "5dd6bfb8c7561a8fce55c8da1d8e6ea87232e035fe5ef134341cfc96c26f6415"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/storage-assessment.json",
+      "byteLength": 1689,
+      "sha256": "5741e7e56cd18daf014556570bb27fcbfbe8d1b5b7780343905c30fe492c545b"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/test-harness-adjustment.json",
+      "byteLength": 1428,
+      "sha256": "29e42f5dff3ddf5102cd4e404d9148405aba114b995598d1cae8167696bc0db0"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/test-harness-preservation.json",
+      "byteLength": 1389,
+      "sha256": "53f14edd73017fc85a75aab0b941886d8c564ee3102a3512d6147d0bdd2d0739"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/tsconfig.json",
+      "byteLength": 61,
+      "sha256": "3884c64fe86cacd8a33dd016dbb843b3bbb6c625090eda74ed06a9a58a13d92c"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/verify-source.ts",
+      "byteLength": 11258,
+      "sha256": "e554b7e7e5484d932dec62b5995e2bbbfb304280b3e346ad60cbfeed192a7c1a"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/verify.ts",
+      "byteLength": 5548,
+      "sha256": "860c16e4ccbfbd3b5fc159ad1b6161d08c294a26bbdd8ac8b2c4e6b238d2dd23"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts-1/operator-result-1.json",
+      "byteLength": 8104,
+      "sha256": "4128e7b587c40da0073c99ff86ab6711981ffc69423a74e4d41fd8870432bfd7"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts.test.ts",
+      "byteLength": 21568,
+      "sha256": "590de759e5147b1b792a9c2b09b6fb7f4b9c97ad96240521757307e9c948f27c"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts.ts",
+      "byteLength": 16483,
+      "sha256": "d1d82ba1bcb07a52412755cc183965519586705076ce6e46829c5657afcc16aa"
+    },
+    {
+      "path": "artifacts/training-functional/jssha-archive.test.ts",
+      "byteLength": 18643,
+      "sha256": "28876a8996326924639951a5b844d23c38f4606dd7dae8a68a007c86cf4dee47"
+    },
+    {
+      "path": "artifacts/training-functional/jssha-archive.ts",
+      "byteLength": 8028,
+      "sha256": "9455a03bb9cf77cb0c0a35f432cce62b4941d48e587f99389cc18a77fc38eb9e"
+    },
+    {
+      "path": "artifacts/training-functional/native-comment-bridge.test.ts",
+      "byteLength": 2448,
+      "sha256": "55bf43115a05361162e2011101174a9871ddf9b8b07928e85f88dd98fee67263"
+    },
+    {
+      "path": "artifacts/training-functional/native-comment-bridge.ts",
+      "byteLength": 3952,
+      "sha256": "2aeee1a02f2015ff5e5b41a185fd33d98c8fe5fd4882f7ce0e93d213ae27db29"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-adapter-launch.test.ts",
+      "byteLength": 1526,
+      "sha256": "b79d4bfd16f2b9676fb3a141bc8b53685025ac3616b83452b8de2d331636c1e6"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-adapters.test.ts",
+      "byteLength": 9230,
+      "sha256": "9a30b794992c49894d1acacb97a0b7ea810418fc81b58db5a3560064553d79a4"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-bootstrap.e2e.test.ts",
+      "byteLength": 62504,
+      "sha256": "1142d1f09c3a2a47d17bb9beb88aa7404fe8caff335872bf5e37bd78862b2fee"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-bootstrap.ts",
+      "byteLength": 38668,
+      "sha256": "e22505c5e3c492c25a6068089116a69dd70b398f3536629c8e8433a6eefbb968"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-command.test.ts",
+      "byteLength": 6725,
+      "sha256": "edb64e75ce63602188caa02175906ee2e1c7ab97543255166e7f404e6529894b"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-evidence.test.ts",
+      "byteLength": 65811,
+      "sha256": "8fa9d249a040683c5f2ab9eea8e4a3e89b3d3e6701027ebbb72cf62ffd293e9c"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-evidence.ts",
+      "byteLength": 54762,
+      "sha256": "684ce9c6a640d38cf957da2e57f97073837e428c8046b0799735b81ebbc66fe4"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-input-documents.test.ts",
+      "byteLength": 5250,
+      "sha256": "c1489172d073cb45c46744695c53b63d47e5812384ec3b615670d72486f9a736"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-input-documents.ts",
+      "byteLength": 10272,
+      "sha256": "4aacf75ad46812c18b152ed5994c862571dd74a69193a50678d69f48319f2345"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-operator.e2e.test.ts",
+      "byteLength": 47878,
+      "sha256": "511a043bf6957659cb9c2c2f517a5a95e7fbc472fe3e23802fe1773a28b7c997"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-operator.ts",
+      "byteLength": 37727,
+      "sha256": "f8a4ec4db0b765bfde06016a4cdd663d33a57d85e6b0d8bcf785883e27ef603f"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/plan.json",
+      "byteLength": 5858,
+      "sha256": "d9d53903cb9db66e86aafcaad41e543a4c6a8ae31cb62d00928fa33878a4364f"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/core-rules.json",
+      "byteLength": 9504,
+      "sha256": "b0c6674122ccb4ec3f113bc9f815701f8c0d77a6e254ebdba568977a85e51211"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/image-observation.json",
+      "byteLength": 1704,
+      "sha256": "13a9f9b66299f63f9eb557a104ec02d4bc533bd5d0d58acc3aa23e1df92ba358"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/runtime-configuration.json",
+      "byteLength": 1131,
+      "sha256": "3bc2a838363fcd194421eb930170325f1bdec641634608cdba3e6c6743284b05"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/source-manifest.json",
+      "byteLength": 20258,
+      "sha256": "9820e6bfb34f5891117379b207cfd193330d5bd1efbf6c8d36f6ff6e0328836b"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/verification.json",
+      "byteLength": 15082,
+      "sha256": "5edf5fa735abbf8be5b38c7389a580199d947e7b845ce3a2a31ecbcc43a45f75"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet.test.ts",
+      "byteLength": 18789,
+      "sha256": "21f8cbc866db9e78a23b0f2c206c8d4b8bdb0b2a3dff096c627806b7d9817c97"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-policy-channel.ts",
+      "byteLength": 3779,
+      "sha256": "ea9871209c344b894e4b9bd72b19e3508decc2a7a1f12e9ec7720239f122504e"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-policy-score.ts",
+      "byteLength": 3777,
+      "sha256": "5e6740635cbeeafaba07ae200a18f9848fc90e9d6351e6e3d74736f3a4ef21ea"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/input-manifest.json",
+      "byteLength": 143938,
+      "sha256": "7bc8885b4ee97be1d4935aa4dcc994275ea41e2e368b144e29be1b598b53ae51"
+    },
+    {
+      "path": "artifacts/training-functional/qualification.test.ts",
+      "byteLength": 6690,
+      "sha256": "33e5d289985ba9ffbc4273380e169dd1b89bcb1394a2ffeb2f9f33e4a17f479d"
+    },
+    {
+      "path": "artifacts/training-functional/qualification.ts",
+      "byteLength": 2144,
+      "sha256": "e2893a4b19927390d2c2deb7369e3d445c87dd2060ceb1193b7082daee5014c2"
+    },
+    {
+      "path": "artifacts/training-functional/r4-observation.test.ts",
+      "byteLength": 36167,
+      "sha256": "56dcf78f5d8d3ca0eab132d6f61a4dd6a21d940afd69cc0417c0afff958b1e25"
+    },
+    {
+      "path": "artifacts/training-functional/r4-observation.ts",
+      "byteLength": 11964,
+      "sha256": "9df9bbfaccbc01d77a625b5962b0dd636c563f7bb0318160e2de89d34b6812e9"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep-2/selected-reference.json",
+      "byteLength": 103663,
+      "sha256": "09cd6b6dd97fd1b3984b71b5f0d3f540e21b38285897062148e16c0e388fc45a"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep.test.ts",
+      "byteLength": 17177,
+      "sha256": "e5a2ad16291c02c3dd398f2fe94c6369fd6647e2f6127c9f86532c0287c03287"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep.ts",
+      "byteLength": 27394,
+      "sha256": "49599141613de07469176a848cc6745077cda89ecfce2fec7daed0354c14f5a2"
+    },
+    {
+      "path": "artifacts/training-functional/reference-retry.test.ts",
+      "byteLength": 19429,
+      "sha256": "d3a03e6dd949a14da19e45696ad1aff1d0735c8477e6853af195a996d3e8a1ca"
+    },
+    {
+      "path": "artifacts/training-functional/reference-retry.ts",
+      "byteLength": 27463,
+      "sha256": "ce19c0c7e54034119713d22ffa5c227c657187add45d3bea2919767251a182a1"
+    },
+    {
+      "path": "artifacts/training-functional/render-host-command.ts",
+      "byteLength": 2823,
+      "sha256": "89ff21ad5dc5c0bf00502af761ff997bde350955b714c4df45479d63ba7001be"
+    },
+    {
+      "path": "artifacts/training-functional/retain-reference-inputs.ts",
+      "byteLength": 3403,
+      "sha256": "3144338170d14b6c92a8a95fc476bc4a375520d245a10082dd672ed1b7934a67"
+    },
+    {
+      "path": "artifacts/training-functional/run-check.ts",
+      "byteLength": 8661,
+      "sha256": "a60c9680a0118a6ed3fb6fc724217cc5cbc61712e1966997f0b1ecdef0b989c8"
+    },
+    {
+      "path": "artifacts/training-functional/scratch/reference-prep-2/bundles/packages/starchess-arena/src/players/strategic.ts",
+      "byteLength": 115300,
+      "sha256": "f48eb1a6016202272d609f373718c33ca2f4dba13b7d9ebe7499be4960b36499"
+    },
+    {
+      "path": "artifacts/training-functional/tsconfig.json",
+      "byteLength": 145,
+      "sha256": "64e66b484c47a3d87257ec9884e45fc1c2181e6ada8cf31b89de4bdf5d1df046"
+    },
+    {
+      "path": "node_modules/typescript/package.json",
+      "byteLength": 3620,
+      "sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    },
+    {
+      "path": "packages/contracts/node_modules/zod/package.json",
+      "byteLength": 4142,
+      "sha256": "c2d190d9ee4e0bdb60332aaa2130a6a98d65ddb903fe1d29248b15de57832c45"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "byteLength": 573,
+      "sha256": "45256c8150abd20e4183744809f6f123c395fc3a63c195d8e2e00f96a016835b"
+    },
+    {
+      "path": "packages/contracts/src/candidate.ts",
+      "byteLength": 1921,
+      "sha256": "01422c6e5b8f289cd387e3cf488363c810277db5aae7117cd7354b7b14c8af1e"
+    },
+    {
+      "path": "packages/contracts/src/causal-journal.ts",
+      "byteLength": 14428,
+      "sha256": "ad86bff14c051e98a35adae057a1be8ab2363ac6c253cec245200a9eca5a5c2f"
+    },
+    {
+      "path": "packages/contracts/src/episode.ts",
+      "byteLength": 2612,
+      "sha256": "ae8c21913bf58d1688f4136bab05c6b55ad051a2dc39b5640c6d94ab603ee370"
+    },
+    {
+      "path": "packages/contracts/src/game-session.ts",
+      "byteLength": 10357,
+      "sha256": "797d7b35465fef380b73c913e6777b20dedee9a10f1ae2cd6e90dab9a83bb07f"
+    },
+    {
+      "path": "packages/contracts/src/index.ts",
+      "byteLength": 1200,
+      "sha256": "989ccb211f8be99a88787832fa082a5f129ef52682c2087ae1b584fbda2baab3"
+    },
+    {
+      "path": "packages/contracts/src/inference.ts",
+      "byteLength": 1979,
+      "sha256": "c8212f109e8027bfecd6202c0edb58a4c201bbbdd74a4ede18ba2102314663ec"
+    },
+    {
+      "path": "packages/contracts/src/learning-channel.ts",
+      "byteLength": 2486,
+      "sha256": "01abdbf580e2c9cd5cc2a718a52284b58b32bda24f901f44321490fb8e444982"
+    },
+    {
+      "path": "packages/contracts/src/match.ts",
+      "byteLength": 4415,
+      "sha256": "fd13cf6822e37fc14d220576c6568cbfaa586fed481b089307dc702145ba5d30"
+    },
+    {
+      "path": "packages/contracts/src/native-intents.ts",
+      "byteLength": 1389,
+      "sha256": "cbb8f024001fac6c8f682fbb42677d19dc922c0a7ea317285ea480f914a8fe37"
+    },
+    {
+      "path": "packages/contracts/src/native-protocol.ts",
+      "byteLength": 3947,
+      "sha256": "df684ebaacdff2d6472d6f47c067d1850aae0db39826618c3118cbc03b9b9560"
+    },
+    {
+      "path": "packages/contracts/src/recipient-codec.ts",
+      "byteLength": 4082,
+      "sha256": "75cb4a7b83ca9e9e1970754e6fcffec9067a4ee8be37f704eb1c8ce7fbde8447"
+    },
+    {
+      "path": "packages/contracts/src/recipient.ts",
+      "byteLength": 16399,
+      "sha256": "950744bac63d7d44b92dcb8fdc0122f2c3ad4f933198e27aff8702bafefbe7fb"
+    },
+    {
+      "path": "packages/contracts/src/resolution.ts",
+      "byteLength": 4532,
+      "sha256": "af02d9f13f69d359784d9a201c32b6dae0a5b15bd2d0dec00c31358fb45f1ef1"
+    },
+    {
+      "path": "packages/contracts/src/semantics.ts",
+      "byteLength": 8430,
+      "sha256": "cbc1217a2cfee44d68c216d5c9a173965d301247c73835990a58e0c321ae5690"
+    },
+    {
+      "path": "packages/contracts/src/shape.ts",
+      "byteLength": 3459,
+      "sha256": "74c7a52ca90949da256e07ad4e6f7581c53834ba9abdc45cd4b7f51150a269d1"
+    },
+    {
+      "path": "packages/contracts/src/training-artifact.ts",
+      "byteLength": 1542,
+      "sha256": "0203e6183d543b5fa54ee7c62887bc74cfcd62cb7bc6f3a9b17adbeb1a7d56af"
+    },
+    {
+      "path": "packages/contracts/src/training-state.ts",
+      "byteLength": 4119,
+      "sha256": "e17d980ca2bc03566bf43cf75869862c81fa3d6f9febcfc52044669242d7b5ff"
+    },
+    {
+      "path": "packages/policy/package.json",
+      "byteLength": 256,
+      "sha256": "fd05bb61308dafa50773ddae5315321294ac6189f6ce97d91b4e513f51beaf51"
+    },
+    {
+      "path": "packages/policy/src/candidates.ts",
+      "byteLength": 9552,
+      "sha256": "8ee944b2c26f8cf60e07181b07b04dfa41494c200df2f935487bf661d156f99f"
+    },
+    {
+      "path": "packages/policy/src/index.ts",
+      "byteLength": 5043,
+      "sha256": "96adc38377d7dfafe35e2594a2a94f72cbdc1caf6ebbc1785c5318ffe086a094"
+    },
+    {
+      "path": "packages/runtime/package.json",
+      "byteLength": 319,
+      "sha256": "8fe8c8418d4f84966d5b0b7d2465341ee87e4b0b661b1a652f39165940303ee1"
+    },
+    {
+      "path": "packages/runtime/src/corpus.ts",
+      "byteLength": 5320,
+      "sha256": "6ab7fc22ed51977b63178988496059621cc83df8f62adc6066a47639b84c09b9"
+    },
+    {
+      "path": "packages/runtime/src/current-driver.ts",
+      "byteLength": 1184,
+      "sha256": "7049fabb4b39e285acf5c10dc2e9a84c072f37e4794bc4ef52f4b1dcae13fba4"
+    },
+    {
+      "path": "packages/runtime/src/curriculum.ts",
+      "byteLength": 4646,
+      "sha256": "2621c4a99d94f92eb61357375822038e5d3e288d9f0a4c6af05dc9b8425253d4"
+    },
+    {
+      "path": "packages/runtime/src/fixed-attempt.ts",
+      "byteLength": 5485,
+      "sha256": "217a47bb57c3e8adbe7d24d15e9f511bab713a141758f7efe6a6f697b37b0b14"
+    },
+    {
+      "path": "packages/runtime/src/framing.ts",
+      "byteLength": 1985,
+      "sha256": "344d03a78e94dce87c3b958d02f7499e7927b25388830d3062dfdfc00655f026"
+    },
+    {
+      "path": "packages/runtime/src/frozen-scorer.ts",
+      "byteLength": 3566,
+      "sha256": "9e5f051b9487b53f34259075298ea9f65b905ed3f6ef895a20a1a3d31b58c72e"
+    },
+    {
+      "path": "packages/runtime/src/game-worker.ts",
+      "byteLength": 353,
+      "sha256": "d7ec081fe81c1f3ef1c5257a840305c5d2be821378d106a28ea3a801b9ddd7ab"
+    },
+    {
+      "path": "packages/runtime/src/job.ts",
+      "byteLength": 4762,
+      "sha256": "bea66950267f27d02fd91e9c35fc2cde914637506a63a39e33b251f71de8da09"
+    },
+    {
+      "path": "packages/runtime/src/learner-pair.ts",
+      "byteLength": 3034,
+      "sha256": "fe75719f6dcdcb3a4a621c2aeba284cfbabca9e6b6f84d43d7457693666e3d26"
+    },
+    {
+      "path": "packages/runtime/src/match-process.ts",
+      "byteLength": 7100,
+      "sha256": "5960e488179b87b7fe2eb2df0c371518771c837a632f5844024d905d97731e18"
+    },
+    {
+      "path": "packages/runtime/src/match-session.ts",
+      "byteLength": 21583,
+      "sha256": "6dbcd36fe4fda9aa6495617a9ee3ea5558e44bfc6ec9d2ecd7986852db2b051f"
+    },
+    {
+      "path": "packages/runtime/src/match-state.ts",
+      "byteLength": 2075,
+      "sha256": "b1b04f78dc57fbaef24bdd515bb03a1ef0c98932c199ecb444cbb7f7c015e02c"
+    },
+    {
+      "path": "packages/runtime/src/match-worker-main.ts",
+      "byteLength": 2093,
+      "sha256": "7fbfda7c1898ae904990e8e4184780a36cca62069b5c4710ac4dd7082dfe198e"
+    },
+    {
+      "path": "packages/runtime/src/match-worker.ts",
+      "byteLength": 10498,
+      "sha256": "7333ae7a643441f0a6d254db853315b8431fe558e03e410468a9ad3977c4cbb4"
+    },
+    {
+      "path": "packages/runtime/src/model-inputs.ts",
+      "byteLength": 1491,
+      "sha256": "5ca0cbe0196a7c481255b0989e52c95c1f95d7f0e66c7c0d4e3b7979b27f5927"
+    },
+    {
+      "path": "packages/runtime/src/native-learner.ts",
+      "byteLength": 7892,
+      "sha256": "bd42911e886b352a97e1aea22552dd596d79ba2d55d490e35267a637d215340c"
+    },
+    {
+      "path": "packages/runtime/src/native-session.ts",
+      "byteLength": 9263,
+      "sha256": "fce16d1d955745308ebc0eca8c3ed8133531b96b34d579110777464dc9280076"
+    },
+    {
+      "path": "packages/runtime/src/policy-session.ts",
+      "byteLength": 10688,
+      "sha256": "bf66312f05965de4461219068912f68cecfdc4e1037749fd73bc4eba2a3e6479"
+    },
+    {
+      "path": "packages/runtime/src/private-state.ts",
+      "byteLength": 5741,
+      "sha256": "c129175e1e6f6a0ef4df2e0e8f0a9843b7087770064cde3c44b6ea8936bd4999"
+    },
+    {
+      "path": "packages/runtime/src/process-transport.ts",
+      "byteLength": 5657,
+      "sha256": "bb8dde00851642d2b2faaa00909092e35e5676b093aebb652b1088daba34cac1"
+    },
+    {
+      "path": "packages/runtime/src/reference-driver.ts",
+      "byteLength": 8759,
+      "sha256": "f9623f1ec68354139140ee142f1ac280d2995e81dbd8eaef77b3bde57aef8f30"
+    },
+    {
+      "path": "packages/runtime/src/reference-worker.ts",
+      "byteLength": 398,
+      "sha256": "db1438a09e0dd5c28c8bfa2c1fd5789bce00914ad217dcfb3bdd606b1703163f"
+    },
+    {
+      "path": "packages/runtime/src/rng.ts",
+      "byteLength": 1900,
+      "sha256": "1e2311763946768b7d1323b4717a203699ea057c88525a66a764465ad2fa5f5a"
+    },
+    {
+      "path": "packages/runtime/src/storage-bounds.ts",
+      "byteLength": 1412,
+      "sha256": "f86f351c51d09529d751564b85aa3d150283c2ae5a09c7f632de12a84b5a1d38"
+    },
+    {
+      "path": "packages/runtime/src/strategic.ts",
+      "byteLength": 10385,
+      "sha256": "c5d748fe9ccc7787c32a20cc29820b80bfba3fa6c9f585aaeb2d56c24094e9cf"
+    },
+    {
+      "path": "packages/runtime/src/training-campaign.ts",
+      "byteLength": 8766,
+      "sha256": "92d0362057bf386fb7713a6929a429a89e97e5998e9921b0e9b790823772d5db"
+    },
+    {
+      "path": "packages/runtime/src/training-coordinator.ts",
+      "byteLength": 9497,
+      "sha256": "29ffc66842cb8588d4c3c5c419b5cf19b18ea780ffde82c35435001a3f5ea5ec"
+    },
+    {
+      "path": "packages/runtime/src/training-store.ts",
+      "byteLength": 13190,
+      "sha256": "9ed0b2a9457a3e92c3c8b69d70fa5ad83783d7bef6e7e4ec4d5ee39513ae3b42"
+    },
+    {
+      "path": "packages/runtime/src/worker-loop.ts",
+      "byteLength": 1080,
+      "sha256": "afd57b55b54a2f982e882f3337ce1d2468f066bf94c61f09ba8a1d6249d4347f"
+    },
+    {
+      "path": "packages/runtime/src/worker.ts",
+      "byteLength": 4384,
+      "sha256": "0c6fab7a35bb5be6f99eb62fc02b3c6f2309cc110cb48bbbbfbb2111dfc5d830"
+    },
+    {
+      "path": "packages/runtime/tests/fixture.ts",
+      "byteLength": 2038,
+      "sha256": "bea76570d542cb5c580aada7f9c5589f6913e7b2c5768bbc34dfaa40f88ec5ad"
+    },
+    {
+      "path": "packages/runtime/tests/fixtures/native-reference-proof.json",
+      "byteLength": 524,
+      "sha256": "e3b9ae93b32829d7825a246849bc8937016737581e9d10150f94753d1b9294a7"
+    },
+    {
+      "path": "packages/runtime/tests/match-fixture.ts",
+      "byteLength": 6737,
+      "sha256": "d4a2bdafb8c2f6a1bf87673e4300d8cec9109d7ee29d254b83dfb960a306e384"
+    },
+    {
+      "path": "packages/runtime/tests/repository-scratch.ts",
+      "byteLength": 545,
+      "sha256": "b9f51235fdffbaf671c3df83c0b03a70c3fb578470a48e85dcf08344bf8f60dd"
+    },
+    {
+      "path": "packages/runtime/tests/storage-bounds.test.ts",
+      "byteLength": 1562,
+      "sha256": "21c3318761932fd8d2a53eafe8ddd01a51709ba4052dc25dd8270001c4a25176"
+    },
+    {
+      "path": "packages/runtime/tests/training-campaign.test.ts",
+      "byteLength": 20952,
+      "sha256": "4fa9a7717e9ec4436b0bfc4989d8e1de75655dc1944a382bf832444ffe7c91be"
+    },
+    {
+      "path": "packages/runtime/tests/training-coordinator.test.ts",
+      "byteLength": 8759,
+      "sha256": "7e4dd2cb7fe32fc9f15733126229d81df079357af34c5b00d4c5be2a25178073"
+    },
+    {
+      "path": "packages/runtime/tests/training-fixture.ts",
+      "byteLength": 2510,
+      "sha256": "8995676cd85fd953a74b9239e7923563f89caeffc2718ea96ba4336dd12ee91d"
+    },
+    {
+      "path": "packages/starchess-core/package.json",
+      "byteLength": 694,
+      "sha256": "6b56f6154c2f896ea0ab34d1535c27b78d5e5398793e054a35068532cbae6887"
+    },
+    {
+      "path": "packages/starchess-core/src/board/classicFen.ts",
+      "byteLength": 339,
+      "sha256": "b005f66aa7e878b4c5db0e0fce7caa31f15a7d1bb052a2fdc485616d888e3adc"
+    },
+    {
+      "path": "packages/starchess-core/src/board/mine-contact.ts",
+      "byteLength": 2369,
+      "sha256": "16cdde5417ed37568ca9aac64fffb7c6fa58c35fd76a93726a05192aace0086f"
+    },
+    {
+      "path": "packages/starchess-core/src/board/mines.ts",
+      "byteLength": 3834,
+      "sha256": "1c9082d89051e6ffdfba71c97b709f7d33cced372cf149c02c84bffebbd31fff"
+    },
+    {
+      "path": "packages/starchess-core/src/board/move-timing.ts",
+      "byteLength": 3822,
+      "sha256": "4009773b2d47deeb83cceaab502af5692e5de0e4254d053166374043d9b8ba69"
+    },
+    {
+      "path": "packages/starchess-core/src/board/moves.ts",
+      "byteLength": 10469,
+      "sha256": "2479c4eed2fca89a1a1de08d210c2fa1cd0b40c22a330ebdf8c48b6069c57df6"
+    },
+    {
+      "path": "packages/starchess-core/src/board/placement.ts",
+      "byteLength": 7285,
+      "sha256": "083952137e3b5cd829494140edb5b995efe7941f227e30bcd303698bb7475544"
+    },
+    {
+      "path": "packages/starchess-core/src/board/ray-scan.ts",
+      "byteLength": 2149,
+      "sha256": "46c3fc691517e50c13969c5b45d998c4e5b76670556b39f7a8007f3ef995a418"
+    },
+    {
+      "path": "packages/starchess-core/src/board/siege.ts",
+      "byteLength": 1071,
+      "sha256": "eb57a7d6715067681cab6da2872840f8f9935ec2cccbc9badf78e73f9bebb452"
+    },
+    {
+      "path": "packages/starchess-core/src/board/vision.ts",
+      "byteLength": 10114,
+      "sha256": "6e6def04466f3eee6dbd4cdfe0599c8da8255282e34e42ff0d55f6e4533c516c"
+    },
+    {
+      "path": "packages/starchess-core/src/commands/queue-action.ts",
+      "byteLength": 7351,
+      "sha256": "6e493f3bcaa7de70b7c7b5e7398385e007ebcf138dbec8abbf844e2b6277b94d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/board.ts",
+      "byteLength": 381,
+      "sha256": "ddac9d5352ecd1d3494b3c6129998cbf61cee14c3dbf42652b5c9fea17e5b85c"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/causal-events.ts",
+      "byteLength": 24503,
+      "sha256": "116fe05325b3e5287ce058d8bf73588318024c979c122d066189c4dd39144624"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/causal-producer.ts",
+      "byteLength": 1300,
+      "sha256": "f7f5e9225ef8785d6eddaa1d89634514652de4d6ad0937a9031e095749506d97"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/charon.ts",
+      "byteLength": 170,
+      "sha256": "860bef6bc8a249576c0ba50eff6e49cdb4dd7f8c0a1d4dad9ef090d5d31516d6"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/classical-resolution.ts",
+      "byteLength": 1769,
+      "sha256": "652c7787052870b31571e85a9e8d949cb54a1ba78aa28e6823eddcd71bbc190d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/constants.ts",
+      "byteLength": 300,
+      "sha256": "8d40aef2d7b98ff3a998e7ab7d0dc2eafc404a046b9ccc9695d2dc013489e390"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/economy.ts",
+      "byteLength": 260,
+      "sha256": "c0f1fc790bc351324fd1d6a43b617701032afe2a25d86ba03ea26ddc79acba32"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/index.ts",
+      "byteLength": 1287,
+      "sha256": "59804e608176d5eacd4589cbdb7fd966d19d4a88c48a188db388553f7ee7a9f4"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/initialization.ts",
+      "byteLength": 1536,
+      "sha256": "b835651978b742dc96b749dad934f5e758a2adade75d56511ae274887f45a330"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/mine-contact.ts",
+      "byteLength": 215,
+      "sha256": "37c97e4c119bf0bcdcdb0a7df3f4de012d0dfc21f7703e3623af83c795354dc8"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/mines.ts",
+      "byteLength": 213,
+      "sha256": "3fda1228b2d0fda3b065bb4f8969961eee99781ae951378944e41a94f25ad9a1"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/move-timing.ts",
+      "byteLength": 243,
+      "sha256": "abd7e82fb2761429e2d0f56bd77a3add7fb66b3c11ff5911e3fe7c9a183bed3d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/moves.ts",
+      "byteLength": 287,
+      "sha256": "eb26f1f1ab2c17f16202b4bcd08f127d834c5aecd32e79e8bb9e720338373eb5"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/native-classical.ts",
+      "byteLength": 8275,
+      "sha256": "246ec95a8277fb4468df7aa10569a0e36c55a0d983b175baebabea52d8cad173"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/outcome.ts",
+      "byteLength": 126,
+      "sha256": "7f2cbeeed979b8d9f5a97f55173e2c4000479350b2b9f0cbdd5edbe2a7a4c0f6"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-intents.ts",
+      "byteLength": 7728,
+      "sha256": "1fb8cb64521add5cd111ae001b9d85603e207485f5f4d1590ead09a9c72e100a"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-order.ts",
+      "byteLength": 2200,
+      "sha256": "0636b6ae52c94c841d42dd0b5baad82846d283ffa95a6987cf06a9dfbe554c1d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-specials.ts",
+      "byteLength": 242,
+      "sha256": "fd90584ec2b755a2be2cd724860fe0489186c2c84e882254235ece9ed57177e8"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-action.ts",
+      "byteLength": 915,
+      "sha256": "a8fade891926e99a330f3009d9dcf8e248a96281a54272f3e36af7e30fd0af11"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-contract.ts",
+      "byteLength": 123,
+      "sha256": "e6c4c3d4ba563903c0c3beacd637cc59bb8d7f46186e5264e594d04c134724dd"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-validation.ts",
+      "byteLength": 4529,
+      "sha256": "802ae995610f453e79d6e88eef386b9c856a94b77276b153d317c4f03678e24b"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/ray-scan.ts",
+      "byteLength": 177,
+      "sha256": "ffd5f7a3bf24694e84d9f421620e3898bb10bda62c61cdaa9a186611c49797ae"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/resolve.ts",
+      "byteLength": 877,
+      "sha256": "e58af101b6e1a1b5a94567de5484ce346e5a605cf6f1ec21239661dd73fe4e09"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/specials.ts",
+      "byteLength": 192,
+      "sha256": "cf5c83e811458b7a68f6ca88da450c499c6675f84c8cb466a1d7393af12f55a7"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/types.ts",
+      "byteLength": 355,
+      "sha256": "1f3ec1b3b203837432bfd0b5847f833dc05ce03decf3a739850116154ceb9f17"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/vision.ts",
+      "byteLength": 330,
+      "sha256": "f65e344d5e36e293a69dea3184cdabcbe24c08816b69bc182d0f2a38f89ba411"
+    },
+    {
+      "path": "packages/starchess-core/src/outcome.ts",
+      "byteLength": 1177,
+      "sha256": "0413b7e440087b08fb66275dbb83b3e7f5adc34af5dbf3e6e09049c6855fb217"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/resolve-turn.ts",
+      "byteLength": 46101,
+      "sha256": "169f4e5726f66cfd24a1a5a4a5832f8eaba05ee2c63dd10f0619358eb77757b8"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/submit-turn.ts",
+      "byteLength": 39066,
+      "sha256": "d5e3325ea985a4c19b784c90b1955d740068a26d0bc38a37d9a5d2de41b62f06"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/constants.ts",
+      "byteLength": 2062,
+      "sha256": "66acdcc1abc05197fbe3ae9df57a0efe4acea88c6ada78e4db9590f3343b6ff7"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/economy.ts",
+      "byteLength": 3611,
+      "sha256": "6fed53b09bf42f75fc6f9621f40361d99a072a551c6dbc76a29977211c99d579"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/adjacent.ts",
+      "byteLength": 3694,
+      "sha256": "96a671566e971bfbbe80aa64205fa04f7ef1b6a23ef2cf337b321945b2d5e540"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+      "byteLength": 5451,
+      "sha256": "b2c8af310fe33f83a18eb3e5e53b41734c147e5f62440d9422b2e757b376c4e4"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/registry.ts",
+      "byteLength": 1212,
+      "sha256": "0965a88ac773afe43ca72915d2ddccac4cc84c31f58121a1514f6511de8f6b5d"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/stimStep.ts",
+      "byteLength": 1421,
+      "sha256": "fbe990595fe42e41aad17460eb76b3a3f134672144a867a52ee618034f4069a1"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/validation.ts",
+      "byteLength": 13598,
+      "sha256": "a18e038feb83f3b15f4f9309e33101b23dac2080155af46ac51474f09c0a064c"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/codec.ts",
+      "byteLength": 20029,
+      "sha256": "74ab468ff05e53e419a5fe151ebcc266cf89c4c9b3789731a8d9e89e954be3eb"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/index.ts",
+      "byteLength": 733,
+      "sha256": "6fe29e70afd2d6c615a31379174d24de2d011e42d52c693f0ea7954a1cfa64ad"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/legacyKinds.ts",
+      "byteLength": 1828,
+      "sha256": "263e4ba87bdeaccf41d18e3c0495430f2b6b0af332ff374f707e2df7babc030b"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "byteLength": 315006,
+      "sha256": "0dc70cedcc188b938415b04b4625adfff643b28e7b795a0100ea1ea34303f551"
+    },
+    {
+      "path": "schemas/feature-layout.json",
+      "byteLength": 1399,
+      "sha256": "bca25ea10220001845ad8a5f419f32baf250073b150c9bbe78f17a75c7c08f74"
+    },
+    {
+      "path": "tsconfig.json",
+      "byteLength": 493,
+      "sha256": "7fc5cd6510ef19ff9ec20e39e76f14f5bc97aa71f6bf5508062a84951e1c561e"
+    },
+    {
+      "path": "tsconfig.tests.json",
+      "byteLength": 377,
+      "sha256": "7f0eda964089e3723c0cb05bacd89a8613979af1f8c66c7ce14250bb32eaaade"
+    }
+  ],
+  "sourcePinsMatch": true,
+  "results": [
+    {
+      "name": "policy-tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "30000",
+        "artifacts/training-functional/campaign-plan.test.ts",
+        "artifacts/training-functional/campaign-operator.e2e.test.ts"
+      ],
+      "timeoutMs": 90000,
+      "exitCode": 0,
+      "elapsedMs": 5718.088123,
+      "stdout": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/policy-tests.stdout",
+        "byteLength": 28,
+        "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/policy-tests.stderr",
+        "byteLength": 5142,
+        "sha256": "0f8bcbdf132f4822ae26a00f75788c612114a081ed8d71ad09b9735246710bc3"
+      },
+      "tests": {
+        "pass": 53,
+        "fail": 0,
+        "assertions": 1050
+      }
+    },
+    {
+      "name": "assembly-tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "30000",
+        "artifacts/training-functional/full-training-packet-2/assemble.test.ts"
+      ],
+      "timeoutMs": 90000,
+      "exitCode": 0,
+      "elapsedMs": 1956.2724819999994,
+      "stdout": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/assembly-tests.stdout",
+        "byteLength": 28,
+        "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/assembly-tests.stderr",
+        "byteLength": 2094,
+        "sha256": "eaed467068be85b9b508fe8c160431a3366902aac0dbf49ef6055fddbce4ef6f"
+      },
+      "tests": {
+        "pass": 19,
+        "fail": 0,
+        "assertions": 86
+      }
+    },
+    {
+      "name": "storage-tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "30000",
+        "packages/runtime/tests/storage-bounds.test.ts"
+      ],
+      "timeoutMs": 60000,
+      "exitCode": 0,
+      "elapsedMs": 342.0938219999998,
+      "stdout": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/storage-tests.stdout",
+        "byteLength": 28,
+        "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/storage-tests.stderr",
+        "byteLength": 361,
+        "sha256": "ffb9a068a7000c00e4ccb0f370a07a773bf03bbbe57b055723801bcff22451a8"
+      },
+      "tests": {
+        "pass": 2,
+        "fail": 0,
+        "assertions": 11
+      }
+    },
+    {
+      "name": "evidence-tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "30000",
+        "artifacts/training-functional/campaign-evidence.test.ts"
+      ],
+      "timeoutMs": 600000,
+      "exitCode": 0,
+      "elapsedMs": 173245.009199,
+      "stdout": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/evidence-tests.stdout",
+        "byteLength": 526,
+        "sha256": "678dfe47dd7e0fbb3d317b9d28bae2ff44dbfe4cedd890356cb5693e61ea6bfe"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/evidence-tests.stderr",
+        "byteLength": 5359,
+        "sha256": "81a0677be47aad7efee3ad230b79bfbd2a1e2b6e4714112801689dab19753f2a"
+      },
+      "tests": {
+        "pass": 90,
+        "fail": 0,
+        "assertions": 978
+      }
+    },
+    {
+      "name": "campaign-tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "30000",
+        "packages/runtime/tests/training-campaign.test.ts"
+      ],
+      "timeoutMs": 90000,
+      "exitCode": 0,
+      "elapsedMs": 17599.830363000015,
+      "stdout": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/campaign-tests.stdout",
+        "byteLength": 28,
+        "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/campaign-tests.stderr",
+        "byteLength": 3661,
+        "sha256": "a992665b9a8e7963d32d7f04ce450685059cf36d21b1bc87553ede8660863615"
+      },
+      "tests": {
+        "pass": 38,
+        "fail": 0,
+        "assertions": 45217
+      }
+    },
+    {
+      "name": "root-types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "tsconfig.json"
+      ],
+      "timeoutMs": 90000,
+      "exitCode": 0,
+      "elapsedMs": 5240.599088999996,
+      "stdout": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/root-types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/root-types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "tests": null
+    },
+    {
+      "name": "artifact-types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/tsconfig.json"
+      ],
+      "timeoutMs": 90000,
+      "exitCode": 0,
+      "elapsedMs": 6433.2809000000125,
+      "stdout": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/artifact-types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/artifact-types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "tests": null
+    },
+    {
+      "name": "packet-types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/full-training-packet-2/tsconfig.json"
+      ],
+      "timeoutMs": 90000,
+      "exitCode": 0,
+      "elapsedMs": 5116.4105839999975,
+      "stdout": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/packet-types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/packet-types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "tests": null
+    },
+    {
+      "name": "specs",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "artifacts/training-functional/check-specs.ts"
+      ],
+      "timeoutMs": 60000,
+      "exitCode": 0,
+      "elapsedMs": 22.28501699998742,
+      "stdout": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/specs.stdout",
+        "byteLength": 2645,
+        "sha256": "cb4c0586b813730b7101dd6781ff0c4e40403cf4a3180fbc1ac542eff57e77db"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/specs.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "tests": null
+    },
+    {
+      "name": "preservation",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "artifacts/training-functional/full-training-packet-2/preserve.ts",
+        "--check"
+      ],
+      "timeoutMs": 60000,
+      "exitCode": 0,
+      "elapsedMs": 142.279515000002,
+      "stdout": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/preservation.stdout",
+        "byteLength": 205,
+        "sha256": "9977a29e6206616fec5628130e6c82a834af6a15a84761e5cc0ca1e4001e732b"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/full-training-packet-2/checks-2/preservation.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "tests": null
+    }
+  ],
+  "freshTestCount": 202,
+  "freshAssertions": 47342,
+  "strictTypechecks": 3,
+  "staticSpecsPassed": true,
+  "freshTestCohorts": [
+    "artifacts/training-functional/campaign-plan.test.ts",
+    "artifacts/training-functional/campaign-operator.e2e.test.ts",
+    "artifacts/training-functional/full-training-packet-2/assemble.test.ts",
+    "packages/runtime/tests/storage-bounds.test.ts",
+    "artifacts/training-functional/campaign-evidence.test.ts",
+    "packages/runtime/tests/training-campaign.test.ts"
+  ],
+  "carriedTestCount": 0,
+  "declaredChangesFromPacket1": [
+    {
+      "path": "artifacts/training-functional/campaign-plan.ts",
+      "byteLength": 8366,
+      "sha256": "cb8ca484bc452b91ce4cf874d159367285d59d8a4b30c35e86da1cac35e88118"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-operator.ts",
+      "byteLength": 37004,
+      "sha256": "6c2ed0ff6ac81b016b7b03fac50738c1141a62dd17d547596404974e6a578e2d"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-plan.test.ts",
+      "byteLength": 6558,
+      "sha256": "1078dbbc43de0bbe0513533c04f62d5c5ebb5c4c96f1e87221deb9ffddec1b62"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-operator.e2e.test.ts",
+      "byteLength": 37599,
+      "sha256": "76a182c1a071ec3e48eca0f053ba39ebb8cdc8ebd26bcbfae5c7c81515f8f095"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-evidence.test.ts",
+      "byteLength": 41369,
+      "sha256": "afe57ffa68eb1708df901ad7c0ca2697d66fcf1f31d54f8160fa90e0146df5ec"
+    }
+  ],
+  "unchangedPriorSourcePins": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/canonical.ts",
+      "byteLength": 9816,
+      "sha256": "301d8e9e42bfcef4782efa0a188c570e1f035f165296deb8fba6f07f57d5d74c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/inputs/reference/_spec/corpora/ml-adjutant-corpus.manifest.json",
+      "byteLength": 7309,
+      "sha256": "31ac6f865340a95f8e85c2c1577aaea0aada87feb92a37637cda90aee288cc3f"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/inputs/reference/starchess-match-history-20260929-203446.json",
+      "byteLength": 664540,
+      "sha256": "e6770cb032aa76dc05432c7a49e61c4905d1a1f7b859aa860a090821213e7ae6"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-evidence.ts",
+      "byteLength": 38934,
+      "sha256": "25fb22018e45f15d0d7df05e772fe98c2c932fc94220827bfae9d45ee707be71"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/assemble.ts",
+      "byteLength": 5604,
+      "sha256": "8b99384f49ad0d4bd021b2cf32d51931671e4fcde64bf7c6a505c5afaa163925"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/plan.json",
+      "byteLength": 8774,
+      "sha256": "a5e676864f99b15ff8c1ecf5f33a5dc6198c11ef6e674db81116d09b2af5df86"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/README.md",
+      "byteLength": 5572,
+      "sha256": "fcba5eb26e9a18f1fcafc0b8942877bad775a4d2f69c2e074ec03bf84cbb2d56"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/runtime-configuration.json",
+      "byteLength": 4567,
+      "sha256": "1fe8b18f21470b6a3f459d418fc9f8d0809e960679ba76f76ddc695bc10665ef"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/tsconfig.json",
+      "byteLength": 68,
+      "sha256": "346311494eb223ffd34eaf0cc49d744791e74d0afba231dcfd17efce9db8e552"
+    },
+    {
+      "path": "artifacts/training-functional/host-facts-1/operator-result-1.json",
+      "byteLength": 8104,
+      "sha256": "4128e7b587c40da0073c99ff86ab6711981ffc69423a74e4d41fd8870432bfd7"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-evidence.ts",
+      "byteLength": 54762,
+      "sha256": "684ce9c6a640d38cf957da2e57f97073837e428c8046b0799735b81ebbc66fe4"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-operator.ts",
+      "byteLength": 37727,
+      "sha256": "f8a4ec4db0b765bfde06016a4cdd663d33a57d85e6b0d8bcf785883e27ef603f"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/plan.json",
+      "byteLength": 5858,
+      "sha256": "d9d53903cb9db66e86aafcaad41e543a4c6a8ae31cb62d00928fa33878a4364f"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/core-rules.json",
+      "byteLength": 9504,
+      "sha256": "b0c6674122ccb4ec3f113bc9f815701f8c0d77a6e254ebdba568977a85e51211"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/image-observation.json",
+      "byteLength": 1704,
+      "sha256": "13a9f9b66299f63f9eb557a104ec02d4bc533bd5d0d58acc3aa23e1df92ba358"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/runtime-configuration.json",
+      "byteLength": 1131,
+      "sha256": "3bc2a838363fcd194421eb930170325f1bdec641634608cdba3e6c6743284b05"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/source-manifest.json",
+      "byteLength": 20258,
+      "sha256": "9820e6bfb34f5891117379b207cfd193330d5bd1efbf6c8d36f6ff6e0328836b"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/verification.json",
+      "byteLength": 15082,
+      "sha256": "5edf5fa735abbf8be5b38c7389a580199d947e7b845ce3a2a31ecbcc43a45f75"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-policy-channel.ts",
+      "byteLength": 3779,
+      "sha256": "ea9871209c344b894e4b9bd72b19e3508decc2a7a1f12e9ec7720239f122504e"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-policy-score.ts",
+      "byteLength": 3777,
+      "sha256": "5e6740635cbeeafaba07ae200a18f9848fc90e9d6351e6e3d74736f3a4ef21ea"
+    },
+    {
+      "path": "artifacts/training-functional/qualification.ts",
+      "byteLength": 2144,
+      "sha256": "e2893a4b19927390d2c2deb7369e3d445c87dd2060ceb1193b7082daee5014c2"
+    },
+    {
+      "path": "artifacts/training-functional/r4-observation.ts",
+      "byteLength": 11964,
+      "sha256": "9df9bbfaccbc01d77a625b5962b0dd636c563f7bb0318160e2de89d34b6812e9"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep-2/selected-reference.json",
+      "byteLength": 103663,
+      "sha256": "09cd6b6dd97fd1b3984b71b5f0d3f540e21b38285897062148e16c0e388fc45a"
+    },
+    {
+      "path": "artifacts/training-functional/scratch/reference-prep-2/bundles/packages/starchess-arena/src/players/strategic.ts",
+      "byteLength": 115300,
+      "sha256": "f48eb1a6016202272d609f373718c33ca2f4dba13b7d9ebe7499be4960b36499"
+    },
+    {
+      "path": "artifacts/training-functional/tsconfig.json",
+      "byteLength": 145,
+      "sha256": "64e66b484c47a3d87257ec9884e45fc1c2181e6ada8cf31b89de4bdf5d1df046"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "byteLength": 573,
+      "sha256": "45256c8150abd20e4183744809f6f123c395fc3a63c195d8e2e00f96a016835b"
+    },
+    {
+      "path": "packages/contracts/src/candidate.ts",
+      "byteLength": 1921,
+      "sha256": "01422c6e5b8f289cd387e3cf488363c810277db5aae7117cd7354b7b14c8af1e"
+    },
+    {
+      "path": "packages/contracts/src/causal-journal.ts",
+      "byteLength": 14428,
+      "sha256": "ad86bff14c051e98a35adae057a1be8ab2363ac6c253cec245200a9eca5a5c2f"
+    },
+    {
+      "path": "packages/contracts/src/episode.ts",
+      "byteLength": 2612,
+      "sha256": "ae8c21913bf58d1688f4136bab05c6b55ad051a2dc39b5640c6d94ab603ee370"
+    },
+    {
+      "path": "packages/contracts/src/game-session.ts",
+      "byteLength": 10357,
+      "sha256": "797d7b35465fef380b73c913e6777b20dedee9a10f1ae2cd6e90dab9a83bb07f"
+    },
+    {
+      "path": "packages/contracts/src/index.ts",
+      "byteLength": 1200,
+      "sha256": "989ccb211f8be99a88787832fa082a5f129ef52682c2087ae1b584fbda2baab3"
+    },
+    {
+      "path": "packages/contracts/src/inference.ts",
+      "byteLength": 1979,
+      "sha256": "c8212f109e8027bfecd6202c0edb58a4c201bbbdd74a4ede18ba2102314663ec"
+    },
+    {
+      "path": "packages/contracts/src/learning-channel.ts",
+      "byteLength": 2486,
+      "sha256": "01abdbf580e2c9cd5cc2a718a52284b58b32bda24f901f44321490fb8e444982"
+    },
+    {
+      "path": "packages/contracts/src/match.ts",
+      "byteLength": 4415,
+      "sha256": "fd13cf6822e37fc14d220576c6568cbfaa586fed481b089307dc702145ba5d30"
+    },
+    {
+      "path": "packages/contracts/src/native-intents.ts",
+      "byteLength": 1389,
+      "sha256": "cbb8f024001fac6c8f682fbb42677d19dc922c0a7ea317285ea480f914a8fe37"
+    },
+    {
+      "path": "packages/contracts/src/native-protocol.ts",
+      "byteLength": 3947,
+      "sha256": "df684ebaacdff2d6472d6f47c067d1850aae0db39826618c3118cbc03b9b9560"
+    },
+    {
+      "path": "packages/contracts/src/recipient-codec.ts",
+      "byteLength": 4082,
+      "sha256": "75cb4a7b83ca9e9e1970754e6fcffec9067a4ee8be37f704eb1c8ce7fbde8447"
+    },
+    {
+      "path": "packages/contracts/src/recipient.ts",
+      "byteLength": 16399,
+      "sha256": "950744bac63d7d44b92dcb8fdc0122f2c3ad4f933198e27aff8702bafefbe7fb"
+    },
+    {
+      "path": "packages/contracts/src/resolution.ts",
+      "byteLength": 4532,
+      "sha256": "af02d9f13f69d359784d9a201c32b6dae0a5b15bd2d0dec00c31358fb45f1ef1"
+    },
+    {
+      "path": "packages/contracts/src/semantics.ts",
+      "byteLength": 8430,
+      "sha256": "cbc1217a2cfee44d68c216d5c9a173965d301247c73835990a58e0c321ae5690"
+    },
+    {
+      "path": "packages/contracts/src/shape.ts",
+      "byteLength": 3459,
+      "sha256": "74c7a52ca90949da256e07ad4e6f7581c53834ba9abdc45cd4b7f51150a269d1"
+    },
+    {
+      "path": "packages/contracts/src/training-artifact.ts",
+      "byteLength": 1542,
+      "sha256": "0203e6183d543b5fa54ee7c62887bc74cfcd62cb7bc6f3a9b17adbeb1a7d56af"
+    },
+    {
+      "path": "packages/contracts/src/training-state.ts",
+      "byteLength": 4119,
+      "sha256": "e17d980ca2bc03566bf43cf75869862c81fa3d6f9febcfc52044669242d7b5ff"
+    },
+    {
+      "path": "packages/policy/package.json",
+      "byteLength": 256,
+      "sha256": "fd05bb61308dafa50773ddae5315321294ac6189f6ce97d91b4e513f51beaf51"
+    },
+    {
+      "path": "packages/policy/src/candidates.ts",
+      "byteLength": 9552,
+      "sha256": "8ee944b2c26f8cf60e07181b07b04dfa41494c200df2f935487bf661d156f99f"
+    },
+    {
+      "path": "packages/policy/src/index.ts",
+      "byteLength": 5043,
+      "sha256": "96adc38377d7dfafe35e2594a2a94f72cbdc1caf6ebbc1785c5318ffe086a094"
+    },
+    {
+      "path": "packages/runtime/src/corpus.ts",
+      "byteLength": 5320,
+      "sha256": "6ab7fc22ed51977b63178988496059621cc83df8f62adc6066a47639b84c09b9"
+    },
+    {
+      "path": "packages/runtime/src/current-driver.ts",
+      "byteLength": 1184,
+      "sha256": "7049fabb4b39e285acf5c10dc2e9a84c072f37e4794bc4ef52f4b1dcae13fba4"
+    },
+    {
+      "path": "packages/runtime/src/curriculum.ts",
+      "byteLength": 4646,
+      "sha256": "2621c4a99d94f92eb61357375822038e5d3e288d9f0a4c6af05dc9b8425253d4"
+    },
+    {
+      "path": "packages/runtime/src/fixed-attempt.ts",
+      "byteLength": 5485,
+      "sha256": "217a47bb57c3e8adbe7d24d15e9f511bab713a141758f7efe6a6f697b37b0b14"
+    },
+    {
+      "path": "packages/runtime/src/framing.ts",
+      "byteLength": 1985,
+      "sha256": "344d03a78e94dce87c3b958d02f7499e7927b25388830d3062dfdfc00655f026"
+    },
+    {
+      "path": "packages/runtime/src/frozen-scorer.ts",
+      "byteLength": 3566,
+      "sha256": "9e5f051b9487b53f34259075298ea9f65b905ed3f6ef895a20a1a3d31b58c72e"
+    },
+    {
+      "path": "packages/runtime/src/game-worker.ts",
+      "byteLength": 353,
+      "sha256": "d7ec081fe81c1f3ef1c5257a840305c5d2be821378d106a28ea3a801b9ddd7ab"
+    },
+    {
+      "path": "packages/runtime/src/job.ts",
+      "byteLength": 4762,
+      "sha256": "bea66950267f27d02fd91e9c35fc2cde914637506a63a39e33b251f71de8da09"
+    },
+    {
+      "path": "packages/runtime/src/learner-pair.ts",
+      "byteLength": 3034,
+      "sha256": "fe75719f6dcdcb3a4a621c2aeba284cfbabca9e6b6f84d43d7457693666e3d26"
+    },
+    {
+      "path": "packages/runtime/src/match-process.ts",
+      "byteLength": 7100,
+      "sha256": "5960e488179b87b7fe2eb2df0c371518771c837a632f5844024d905d97731e18"
+    },
+    {
+      "path": "packages/runtime/src/match-session.ts",
+      "byteLength": 21583,
+      "sha256": "6dbcd36fe4fda9aa6495617a9ee3ea5558e44bfc6ec9d2ecd7986852db2b051f"
+    },
+    {
+      "path": "packages/runtime/src/match-state.ts",
+      "byteLength": 2075,
+      "sha256": "b1b04f78dc57fbaef24bdd515bb03a1ef0c98932c199ecb444cbb7f7c015e02c"
+    },
+    {
+      "path": "packages/runtime/src/match-worker-main.ts",
+      "byteLength": 2093,
+      "sha256": "7fbfda7c1898ae904990e8e4184780a36cca62069b5c4710ac4dd7082dfe198e"
+    },
+    {
+      "path": "packages/runtime/src/match-worker.ts",
+      "byteLength": 10498,
+      "sha256": "7333ae7a643441f0a6d254db853315b8431fe558e03e410468a9ad3977c4cbb4"
+    },
+    {
+      "path": "packages/runtime/src/model-inputs.ts",
+      "byteLength": 1491,
+      "sha256": "5ca0cbe0196a7c481255b0989e52c95c1f95d7f0e66c7c0d4e3b7979b27f5927"
+    },
+    {
+      "path": "packages/runtime/src/native-learner.ts",
+      "byteLength": 7892,
+      "sha256": "bd42911e886b352a97e1aea22552dd596d79ba2d55d490e35267a637d215340c"
+    },
+    {
+      "path": "packages/runtime/src/native-session.ts",
+      "byteLength": 9263,
+      "sha256": "fce16d1d955745308ebc0eca8c3ed8133531b96b34d579110777464dc9280076"
+    },
+    {
+      "path": "packages/runtime/src/policy-session.ts",
+      "byteLength": 10688,
+      "sha256": "bf66312f05965de4461219068912f68cecfdc4e1037749fd73bc4eba2a3e6479"
+    },
+    {
+      "path": "packages/runtime/src/private-state.ts",
+      "byteLength": 5741,
+      "sha256": "c129175e1e6f6a0ef4df2e0e8f0a9843b7087770064cde3c44b6ea8936bd4999"
+    },
+    {
+      "path": "packages/runtime/src/process-transport.ts",
+      "byteLength": 5657,
+      "sha256": "bb8dde00851642d2b2faaa00909092e35e5676b093aebb652b1088daba34cac1"
+    },
+    {
+      "path": "packages/runtime/src/reference-driver.ts",
+      "byteLength": 8759,
+      "sha256": "f9623f1ec68354139140ee142f1ac280d2995e81dbd8eaef77b3bde57aef8f30"
+    },
+    {
+      "path": "packages/runtime/src/reference-worker.ts",
+      "byteLength": 398,
+      "sha256": "db1438a09e0dd5c28c8bfa2c1fd5789bce00914ad217dcfb3bdd606b1703163f"
+    },
+    {
+      "path": "packages/runtime/src/rng.ts",
+      "byteLength": 1900,
+      "sha256": "1e2311763946768b7d1323b4717a203699ea057c88525a66a764465ad2fa5f5a"
+    },
+    {
+      "path": "packages/runtime/src/storage-bounds.ts",
+      "byteLength": 1412,
+      "sha256": "f86f351c51d09529d751564b85aa3d150283c2ae5a09c7f632de12a84b5a1d38"
+    },
+    {
+      "path": "packages/runtime/src/strategic.ts",
+      "byteLength": 10385,
+      "sha256": "c5d748fe9ccc7787c32a20cc29820b80bfba3fa6c9f585aaeb2d56c24094e9cf"
+    },
+    {
+      "path": "packages/runtime/src/training-campaign.ts",
+      "byteLength": 8766,
+      "sha256": "92d0362057bf386fb7713a6929a429a89e97e5998e9921b0e9b790823772d5db"
+    },
+    {
+      "path": "packages/runtime/src/training-coordinator.ts",
+      "byteLength": 9497,
+      "sha256": "29ffc66842cb8588d4c3c5c419b5cf19b18ea780ffde82c35435001a3f5ea5ec"
+    },
+    {
+      "path": "packages/runtime/src/training-store.ts",
+      "byteLength": 13190,
+      "sha256": "9ed0b2a9457a3e92c3c8b69d70fa5ad83783d7bef6e7e4ec4d5ee39513ae3b42"
+    },
+    {
+      "path": "packages/runtime/src/worker-loop.ts",
+      "byteLength": 1080,
+      "sha256": "afd57b55b54a2f982e882f3337ce1d2468f066bf94c61f09ba8a1d6249d4347f"
+    },
+    {
+      "path": "packages/runtime/src/worker.ts",
+      "byteLength": 4384,
+      "sha256": "0c6fab7a35bb5be6f99eb62fc02b3c6f2309cc110cb48bbbbfbb2111dfc5d830"
+    },
+    {
+      "path": "packages/runtime/tests/fixtures/native-reference-proof.json",
+      "byteLength": 524,
+      "sha256": "e3b9ae93b32829d7825a246849bc8937016737581e9d10150f94753d1b9294a7"
+    },
+    {
+      "path": "packages/runtime/tests/training-campaign.test.ts",
+      "byteLength": 20952,
+      "sha256": "4fa9a7717e9ec4436b0bfc4989d8e1de75655dc1944a382bf832444ffe7c91be"
+    },
+    {
+      "path": "packages/starchess-core/package.json",
+      "byteLength": 694,
+      "sha256": "6b56f6154c2f896ea0ab34d1535c27b78d5e5398793e054a35068532cbae6887"
+    },
+    {
+      "path": "packages/starchess-core/src/board/classicFen.ts",
+      "byteLength": 339,
+      "sha256": "b005f66aa7e878b4c5db0e0fce7caa31f15a7d1bb052a2fdc485616d888e3adc"
+    },
+    {
+      "path": "packages/starchess-core/src/board/mine-contact.ts",
+      "byteLength": 2369,
+      "sha256": "16cdde5417ed37568ca9aac64fffb7c6fa58c35fd76a93726a05192aace0086f"
+    },
+    {
+      "path": "packages/starchess-core/src/board/mines.ts",
+      "byteLength": 3834,
+      "sha256": "1c9082d89051e6ffdfba71c97b709f7d33cced372cf149c02c84bffebbd31fff"
+    },
+    {
+      "path": "packages/starchess-core/src/board/move-timing.ts",
+      "byteLength": 3822,
+      "sha256": "4009773b2d47deeb83cceaab502af5692e5de0e4254d053166374043d9b8ba69"
+    },
+    {
+      "path": "packages/starchess-core/src/board/moves.ts",
+      "byteLength": 10469,
+      "sha256": "2479c4eed2fca89a1a1de08d210c2fa1cd0b40c22a330ebdf8c48b6069c57df6"
+    },
+    {
+      "path": "packages/starchess-core/src/board/placement.ts",
+      "byteLength": 7285,
+      "sha256": "083952137e3b5cd829494140edb5b995efe7941f227e30bcd303698bb7475544"
+    },
+    {
+      "path": "packages/starchess-core/src/board/ray-scan.ts",
+      "byteLength": 2149,
+      "sha256": "46c3fc691517e50c13969c5b45d998c4e5b76670556b39f7a8007f3ef995a418"
+    },
+    {
+      "path": "packages/starchess-core/src/board/siege.ts",
+      "byteLength": 1071,
+      "sha256": "eb57a7d6715067681cab6da2872840f8f9935ec2cccbc9badf78e73f9bebb452"
+    },
+    {
+      "path": "packages/starchess-core/src/board/vision.ts",
+      "byteLength": 10114,
+      "sha256": "6e6def04466f3eee6dbd4cdfe0599c8da8255282e34e42ff0d55f6e4533c516c"
+    },
+    {
+      "path": "packages/starchess-core/src/commands/queue-action.ts",
+      "byteLength": 7351,
+      "sha256": "6e493f3bcaa7de70b7c7b5e7398385e007ebcf138dbec8abbf844e2b6277b94d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/board.ts",
+      "byteLength": 381,
+      "sha256": "ddac9d5352ecd1d3494b3c6129998cbf61cee14c3dbf42652b5c9fea17e5b85c"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/causal-events.ts",
+      "byteLength": 24503,
+      "sha256": "116fe05325b3e5287ce058d8bf73588318024c979c122d066189c4dd39144624"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/causal-producer.ts",
+      "byteLength": 1300,
+      "sha256": "f7f5e9225ef8785d6eddaa1d89634514652de4d6ad0937a9031e095749506d97"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/charon.ts",
+      "byteLength": 170,
+      "sha256": "860bef6bc8a249576c0ba50eff6e49cdb4dd7f8c0a1d4dad9ef090d5d31516d6"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/classical-resolution.ts",
+      "byteLength": 1769,
+      "sha256": "652c7787052870b31571e85a9e8d949cb54a1ba78aa28e6823eddcd71bbc190d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/constants.ts",
+      "byteLength": 300,
+      "sha256": "8d40aef2d7b98ff3a998e7ab7d0dc2eafc404a046b9ccc9695d2dc013489e390"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/economy.ts",
+      "byteLength": 260,
+      "sha256": "c0f1fc790bc351324fd1d6a43b617701032afe2a25d86ba03ea26ddc79acba32"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/index.ts",
+      "byteLength": 1287,
+      "sha256": "59804e608176d5eacd4589cbdb7fd966d19d4a88c48a188db388553f7ee7a9f4"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/initialization.ts",
+      "byteLength": 1536,
+      "sha256": "b835651978b742dc96b749dad934f5e758a2adade75d56511ae274887f45a330"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/mine-contact.ts",
+      "byteLength": 215,
+      "sha256": "37c97e4c119bf0bcdcdb0a7df3f4de012d0dfc21f7703e3623af83c795354dc8"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/mines.ts",
+      "byteLength": 213,
+      "sha256": "3fda1228b2d0fda3b065bb4f8969961eee99781ae951378944e41a94f25ad9a1"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/move-timing.ts",
+      "byteLength": 243,
+      "sha256": "abd7e82fb2761429e2d0f56bd77a3add7fb66b3c11ff5911e3fe7c9a183bed3d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/moves.ts",
+      "byteLength": 287,
+      "sha256": "eb26f1f1ab2c17f16202b4bcd08f127d834c5aecd32e79e8bb9e720338373eb5"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/native-classical.ts",
+      "byteLength": 8275,
+      "sha256": "246ec95a8277fb4468df7aa10569a0e36c55a0d983b175baebabea52d8cad173"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/outcome.ts",
+      "byteLength": 126,
+      "sha256": "7f2cbeeed979b8d9f5a97f55173e2c4000479350b2b9f0cbdd5edbe2a7a4c0f6"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-intents.ts",
+      "byteLength": 7728,
+      "sha256": "1fb8cb64521add5cd111ae001b9d85603e207485f5f4d1590ead09a9c72e100a"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-order.ts",
+      "byteLength": 2200,
+      "sha256": "0636b6ae52c94c841d42dd0b5baad82846d283ffa95a6987cf06a9dfbe554c1d"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-specials.ts",
+      "byteLength": 242,
+      "sha256": "fd90584ec2b755a2be2cd724860fe0489186c2c84e882254235ece9ed57177e8"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-action.ts",
+      "byteLength": 915,
+      "sha256": "a8fade891926e99a330f3009d9dcf8e248a96281a54272f3e36af7e30fd0af11"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-contract.ts",
+      "byteLength": 123,
+      "sha256": "e6c4c3d4ba563903c0c3beacd637cc59bb8d7f46186e5264e594d04c134724dd"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-validation.ts",
+      "byteLength": 4529,
+      "sha256": "802ae995610f453e79d6e88eef386b9c856a94b77276b153d317c4f03678e24b"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/ray-scan.ts",
+      "byteLength": 177,
+      "sha256": "ffd5f7a3bf24694e84d9f421620e3898bb10bda62c61cdaa9a186611c49797ae"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/resolve.ts",
+      "byteLength": 877,
+      "sha256": "e58af101b6e1a1b5a94567de5484ce346e5a605cf6f1ec21239661dd73fe4e09"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/specials.ts",
+      "byteLength": 192,
+      "sha256": "cf5c83e811458b7a68f6ca88da450c499c6675f84c8cb466a1d7393af12f55a7"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/types.ts",
+      "byteLength": 355,
+      "sha256": "1f3ec1b3b203837432bfd0b5847f833dc05ce03decf3a739850116154ceb9f17"
+    },
+    {
+      "path": "packages/starchess-core/src/engine/vision.ts",
+      "byteLength": 330,
+      "sha256": "f65e344d5e36e293a69dea3184cdabcbe24c08816b69bc182d0f2a38f89ba411"
+    },
+    {
+      "path": "packages/starchess-core/src/outcome.ts",
+      "byteLength": 1177,
+      "sha256": "0413b7e440087b08fb66275dbb83b3e7f5adc34af5dbf3e6e09049c6855fb217"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/resolve-turn.ts",
+      "byteLength": 46101,
+      "sha256": "169f4e5726f66cfd24a1a5a4a5832f8eaba05ee2c63dd10f0619358eb77757b8"
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/submit-turn.ts",
+      "byteLength": 39066,
+      "sha256": "d5e3325ea985a4c19b784c90b1955d740068a26d0bc38a37d9a5d2de41b62f06"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/constants.ts",
+      "byteLength": 2062,
+      "sha256": "66acdcc1abc05197fbe3ae9df57a0efe4acea88c6ada78e4db9590f3343b6ff7"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/economy.ts",
+      "byteLength": 3611,
+      "sha256": "6fed53b09bf42f75fc6f9621f40361d99a072a551c6dbc76a29977211c99d579"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/adjacent.ts",
+      "byteLength": 3694,
+      "sha256": "96a671566e971bfbbe80aa64205fa04f7ef1b6a23ef2cf337b321945b2d5e540"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+      "byteLength": 5451,
+      "sha256": "b2c8af310fe33f83a18eb3e5e53b41734c147e5f62440d9422b2e757b376c4e4"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/registry.ts",
+      "byteLength": 1212,
+      "sha256": "0965a88ac773afe43ca72915d2ddccac4cc84c31f58121a1514f6511de8f6b5d"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/stimStep.ts",
+      "byteLength": 1421,
+      "sha256": "fbe990595fe42e41aad17460eb76b3a3f134672144a867a52ee618034f4069a1"
+    },
+    {
+      "path": "packages/starchess-core/src/rules/validation.ts",
+      "byteLength": 13598,
+      "sha256": "a18e038feb83f3b15f4f9309e33101b23dac2080155af46ac51474f09c0a064c"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/codec.ts",
+      "byteLength": 20029,
+      "sha256": "74ab468ff05e53e419a5fe151ebcc266cf89c4c9b3789731a8d9e89e954be3eb"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/index.ts",
+      "byteLength": 733,
+      "sha256": "6fe29e70afd2d6c615a31379174d24de2d011e42d52c693f0ea7954a1cfa64ad"
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/legacyKinds.ts",
+      "byteLength": 1828,
+      "sha256": "263e4ba87bdeaccf41d18e3c0495430f2b6b0af332ff374f707e2df7babc030b"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "byteLength": 315006,
+      "sha256": "0dc70cedcc188b938415b04b4625adfff643b28e7b795a0100ea1ea34303f551"
+    },
+    {
+      "path": "schemas/feature-layout.json",
+      "byteLength": 1399,
+      "sha256": "bca25ea10220001845ad8a5f419f32baf250073b150c9bbe78f17a75c7c08f74"
+    }
+  ],
+  "excludedPriorSpecPaths": [
+    "_spec/.spec-index.json",
+    "_spec/checkpoint-runtime.puml",
+    "_spec/readiness.md",
+    "_spec/runtime-protocol.puml"
+  ],
+  "bunVersion": "1.4.0",
+  "nativePlantUmlRendered": false,
+  "nativePlantUmlSkipReason": "Java and remote-theme access remain outside Bun/TypeScript-or-Rust scope",
+  "hostPreparationExecuted": false,
+  "nativeGpuContainerOrHostOperationsExecuted": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false
+}

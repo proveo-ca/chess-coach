@@ -1,0 +1,70 @@
+@startuml causal_journal
+' purpose: host-only causal collection from shared-kernel mutation sites
+' covers: packages/starchess-core/src/engine/causal-*.ts
+' covers: packages/starchess-core/src/resolve/submit-turn.ts
+' covers: packages/starchess-core/src/resolve/resolve-turn.ts
+' covers: packages/starchess-core/src/board/vision.ts
+' covers: packages/starchess-core/src/board/ray-scan.ts
+' covers: packages/contracts/src/causal-journal.ts
+' covers: packages/contracts/tests/causal-journal.test.ts
+' covers: packages/starchess-core/tests/native/causal-events.test.ts
+' covers: packages/starchess-core/tests/native/causal-parity.test.ts
+' details: _spec/causal-journal.md
+' consolidation goal: _spec/engine-consolidation.puml
+' status: shared implementation unchanged; native test relocation complete; 14/14 fresh layout Bun checks PASS; native/runtime/training qualifications remain separate
+' stationary CC-shot details: _spec/causal-journal.md
+' codec boundary: serialized consistency is separate from private producer proof and source-bound replay authority
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Causal journal · shared mutation kernel, layout Bun checks passed
+participant "contracts/src/game-session.ts\nGameSession" as SESSION <<app>>
+participant "engine/causal-producer.ts\nhost wrapper" as PRODUCER <<app>>
+participant "engine/resolve.ts\nnative admission facade" as NATIVE <<app>>
+participant "resolve/submit-turn.ts\nresolve/resolve-turn.ts" as KERNEL <<app>>
+participant "engine/causal-events.ts\nprivate CausalJournal" as JOURNAL <<app>>
+
+SESSION -> PRODUCER : beginWithJournal / endWithJournal
+PRODUCER -> JOURNAL : create per-call collector; assertSnapshot
+PRODUCER -> NATIVE : begin / end with optional effects
+NATIVE -> KERNEL : same physical kernel as product
+loop Each logical mutation group
+  KERNEL -> JOURNAL : bind actual operands; capture live preimage
+  KERNEL -> KERNEL : apply actual physical mutation
+  KERNEL -> JOURNAL : stable unit / mine IDs; action sequence
+  opt Successful deferred target application
+    KERNEL -> JOURNAL : consume actual live target
+    JOURNAL -> JOURNAL : attach target fact before casualty clearing
+  end
+  JOURNAL -> JOURNAL : emit changed recipient cells
+end
+KERNEL --> NATIVE : physical result + timeline
+NATIVE --> PRODUCER : same result with or without sink
+PRODUCER -> JOURNAL : finish; check final physical snapshot
+PRODUCER --> SESSION : state.v1 + journal.v1 + physical result
+SESSION -> SESSION : validate bounded JSON / Zod journal
+SESSION -> SESSION : stage both recipient successors before commit
+
+note over KERNEL,JOURNAL
+  Each group captures live sight before removing
+  casualties and mines in their native order.
+  A deferred discovery grants a target fact only
+  when the actual live operation succeeds.
+end note
+note over JOURNAL
+  Stationary CC shots need evidence from the same
+  group for actor identity, action and actual
+  damage. Otherwise the movement exception admits
+  forged consumption, while captures still require
+  actual movement.
+end note
+note over SESSION,PRODUCER
+  Private data, not runtime authority.
+  No F9 or training-readiness claim.
+end note
+note over SESSION
+  Step one alone cannot waive movement without
+  matching ray geometry, identities, damage and
+  prior cells. The codec checks wire consistency,
+  not private producer proof or source-bound
+  replay authority.
+end note
+@enduml

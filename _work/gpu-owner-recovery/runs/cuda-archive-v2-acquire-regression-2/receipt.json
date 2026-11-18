@@ -1,0 +1,35 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "cuda-archive-v2-acquire-regression-2",
+  "stage": "cuda-acquire",
+  "sourceManifestSha256": "f7d3bed722df485aa5e82081ef85ebb2fcfb19511ef29b876d8ccb14073d2446",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./_work/gpu-owner-recovery/cuda-continuation.test.ts",
+    "./_work/gpu-owner-recovery/cuda-acquire.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 3207,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-archive-v2-acquire-regression-2/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-archive-v2-acquire-regression-2/command.stderr",
+    "bytes": 3207,
+    "sha256": "901915d4c817c9700dba5ddbd26fdafa3adb4f9867c84d38adcf665d784673f4"
+  },
+  "sourceCount": 180,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

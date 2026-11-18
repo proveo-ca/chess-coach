@@ -1,0 +1,31 @@
+{
+  "status": "PASS_EXACT_FROZEN_STAGED_BLOBS_WORKTREE_MODES_AND_CREDENTIAL_GATE",
+  "baseCommit": "dad29306a83268aeed720b7e9b8311a6d9d941e1",
+  "targetRef": "refs/heads/feat-ml-adjuntant-ii",
+  "pullRequest": {
+    "baseRefName": "main",
+    "headRefName": "feat-ml-adjuntant-ii",
+    "headRefOid": "dad29306a83268aeed720b7e9b8311a6d9d941e1",
+    "number": 51,
+    "state": "OPEN",
+    "url": "https://github.com/proveo-ca/chess-coach/pull/51"
+  },
+  "fileCount": 116,
+  "totalBytes": 1256459,
+  "freezeSha256": "e6284f93be06f60c72b30e54f00733df9b3152ac160bcaa044adc46c571e9ff0",
+  "allHashesModesBlobIdsAndLiveBytesMatch": true,
+  "credentialCandidates": 0,
+  "attributeValues": "ALL_UNSPECIFIED",
+  "scopedSourceWhitespace": "PASS_RAW_EVIDENCE_PRESERVED",
+  "hooks": "CUSTOM_PATH_UNSET_NAMED_COMMIT_PUSH_HOOKS_ABSENT",
+  "reviews": {
+    "adversarial": "READY",
+    "security": "READY_LOW",
+    "devops": "CONDITIONAL_GATE_SATISFIED"
+  },
+  "historicalNulException": "artifacts/training-functional/qualification-result-1/publication-1/paths.nul",
+  "actualHostMetadataCollected": false,
+  "trainingExecuted": false,
+  "commitPerformed": false,
+  "pushPerformed": false
+}

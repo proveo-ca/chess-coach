@@ -1,0 +1,145 @@
+chess-coach-gpu-owner v0.1.0 (/home/gu1lty/Projects/proveo/chess-coach/crates/gpu-owner)
+├── rustix feature "default"
+│   ├── rustix v1.1.6
+│   │   ├── bitflags v2.13.2
+│   │   ├── linux-raw-sys feature "auxvec"
+│   │   │   └── linux-raw-sys v0.12.1
+│   │   ├── linux-raw-sys feature "elf"
+│   │   │   └── linux-raw-sys v0.12.1
+│   │   ├── linux-raw-sys feature "errno"
+│   │   │   └── linux-raw-sys v0.12.1
+│   │   ├── linux-raw-sys feature "general"
+│   │   │   └── linux-raw-sys v0.12.1
+│   │   ├── linux-raw-sys feature "ioctl"
+│   │   │   └── linux-raw-sys v0.12.1
+│   │   └── linux-raw-sys feature "no_std"
+│   │       └── linux-raw-sys v0.12.1
+│   └── rustix feature "std"
+│       ├── rustix v1.1.6 (*)
+│       ├── rustix feature "alloc"
+│       │   └── rustix v1.1.6 (*)
+│       └── bitflags feature "std"
+│           └── bitflags v2.13.2
+├── rustix feature "event"
+│   └── rustix v1.1.6 (*)
+├── rustix feature "fs"
+│   └── rustix v1.1.6 (*)
+├── rustix feature "process"
+│   ├── rustix v1.1.6 (*)
+│   └── linux-raw-sys feature "prctl"
+│       └── linux-raw-sys v0.12.1
+├── rustix feature "time"
+│   └── rustix v1.1.6 (*)
+├── serde feature "default"
+│   ├── serde v1.0.229
+│   │   ├── serde_core feature "result"
+│   │   │   └── serde_core v1.0.229
+│   │   └── serde_derive feature "default"
+│   │       └── serde_derive v1.0.229 (proc-macro)
+│   │           ├── proc-macro2 feature "proc-macro"
+│   │           │   └── proc-macro2 v1.0.107
+│   │           │       └── unicode-ident feature "default"
+│   │           │           └── unicode-ident v1.0.27
+│   │           ├── quote feature "proc-macro"
+│   │           │   ├── quote v1.0.47
+│   │           │   │   └── proc-macro2 v1.0.107 (*)
+│   │           │   └── proc-macro2 feature "proc-macro" (*)
+│   │           ├── syn feature "clone-impls"
+│   │           │   └── syn v3.0.9
+│   │           │       ├── proc-macro2 v1.0.107 (*)
+│   │           │       ├── quote v1.0.47 (*)
+│   │           │       └── unicode-ident feature "default" (*)
+│   │           ├── syn feature "derive"
+│   │           │   └── syn v3.0.9 (*)
+│   │           ├── syn feature "parsing"
+│   │           │   └── syn v3.0.9 (*)
+│   │           ├── syn feature "printing"
+│   │           │   └── syn v3.0.9 (*)
+│   │           └── syn feature "proc-macro"
+│   │               ├── syn v3.0.9 (*)
+│   │               ├── proc-macro2 feature "proc-macro" (*)
+│   │               └── quote feature "proc-macro" (*)
+│   └── serde feature "std"
+│       ├── serde v1.0.229 (*)
+│       └── serde_core feature "std"
+│           └── serde_core v1.0.229
+├── serde feature "derive"
+│   ├── serde v1.0.229 (*)
+│   └── serde feature "serde_derive"
+│       └── serde v1.0.229 (*)
+├── serde_json feature "default"
+│   ├── serde_json v1.0.154
+│   │   ├── memchr v2.8.3
+│   │   ├── serde_core v1.0.229
+│   │   ├── itoa feature "default"
+│   │   │   └── itoa v1.0.18
+│   │   └── zmij feature "default"
+│   │       └── zmij v1.0.23
+│   └── serde_json feature "std"
+│       ├── serde_json v1.0.154 (*)
+│       ├── serde_core feature "std" (*)
+│       └── memchr feature "std"
+│           ├── memchr v2.8.3
+│           └── memchr feature "alloc"
+│               └── memchr v2.8.3
+├── serde_json feature "float_roundtrip"
+│   └── serde_json v1.0.154 (*)
+├── serde_json feature "raw_value"
+│   └── serde_json v1.0.154 (*)
+└── sha2 feature "default"
+    ├── sha2 v0.10.9
+    │   ├── cfg-if feature "default"
+    │   │   └── cfg-if v1.0.5
+    │   ├── cpufeatures feature "default"
+    │   │   └── cpufeatures v0.2.17
+    │   └── digest feature "default"
+    │       ├── digest v0.10.7
+    │       │   ├── block-buffer feature "default"
+    │       │   │   └── block-buffer v0.10.4
+    │       │   │       └── generic-array feature "default"
+    │       │   │           └── generic-array v0.14.7
+    │       │   │               └── typenum feature "default"
+    │       │   │                   └── typenum v1.20.1
+    │       │   │               [build-dependencies]
+    │       │   │               └── version_check feature "default"
+    │       │   │                   └── version_check v0.9.5
+    │       │   └── crypto-common feature "default"
+    │       │       └── crypto-common v0.1.7
+    │       │           ├── generic-array feature "default" (*)
+    │       │           ├── generic-array feature "more_lengths"
+    │       │           │   └── generic-array v0.14.7 (*)
+    │       │           └── typenum feature "default" (*)
+    │       └── digest feature "core-api"
+    │           ├── digest v0.10.7 (*)
+    │           └── digest feature "block-buffer"
+    │               └── digest v0.10.7 (*)
+    └── sha2 feature "std"
+        ├── sha2 v0.10.9 (*)
+        └── digest feature "std"
+            ├── digest v0.10.7 (*)
+            ├── digest feature "alloc"
+            │   └── digest v0.10.7 (*)
+            └── crypto-common feature "std"
+                └── crypto-common v0.1.7 (*)
+[dev-dependencies]
+└── tempfile feature "default"
+    ├── tempfile v3.27.0
+    │   ├── getrandom v0.4.3
+    │   │   ├── libc v0.2.191
+    │   │   └── cfg-if feature "default" (*)
+    │   ├── rustix feature "default" (*)
+    │   ├── rustix feature "fs" (*)
+    │   ├── fastrand feature "default"
+    │   │   ├── fastrand v2.5.0
+    │   │   └── fastrand feature "std"
+    │   │       ├── fastrand v2.5.0
+    │   │       └── fastrand feature "alloc"
+    │   │           └── fastrand v2.5.0
+    │   └── once_cell feature "std"
+    │       ├── once_cell v1.21.4
+    │       └── once_cell feature "alloc"
+    │           ├── once_cell v1.21.4
+    │           └── once_cell feature "race"
+    │               └── once_cell v1.21.4
+    └── tempfile feature "getrandom"
+        └── tempfile v3.27.0 (*)

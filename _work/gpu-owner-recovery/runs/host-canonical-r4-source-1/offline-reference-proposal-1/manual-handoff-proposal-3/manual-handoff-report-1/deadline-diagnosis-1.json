@@ -1,0 +1,55 @@
+{
+  "version": "chess-coach.h3-offline-deadline-diagnosis.v1",
+  "nonAuthorizing": true,
+  "evidenceScope": "REPORT_PLUS_FROZEN_SOURCE_ANALYSIS",
+  "consultations": {
+    "architect": "ses_e2561a1d8ffeJv2lKAYisgaw9Q",
+    "backend": "ses_e255f2c65ffdbDWu4rNLjWtDFM"
+  },
+  "reportedFailure": "absolute-deadline",
+  "reportedSupervisorSnapshot": {
+    "clockDomain": "9b591592089a9c33907150fd2f68cdea:supervisor:1684053",
+    "observedMonoMs": 30177,
+    "workDeadlineMonoMs": 108026,
+    "operationDeadlineMonoMs": 120026,
+    "operationDeadlineExceeded": false
+  },
+  "reportedOuterElapsedMs": 30245,
+  "reportedOuterTimedOut": false,
+  "sourceEstablished": [
+    {"location":"S3/capture.ts:554-575","fact":"URL_START sets a supervisor-local 30000ms protocol window; RESPONSE_COMPLETED keeps that window; only accepted URL_DONE restores the work deadline."},
+    {"location":"S3/capture.ts:650-655,759-762","fact":"Reading or accepting a frame uses the active protocol deadline and can throw absolute-deadline."},
+    {"location":"S3/capture.ts:616-620","fact":"The worker derives a separate local cutoff from requestStartMonoMs plus the ACK duration; no absolute cross-process timestamp is transferred."},
+    {"location":"S3/capture.ts:478-492,996-1001","fact":"RESPONSE_COMPLETED follows body iteration, writes, and digests but precedes SRI verification, file synchronization, archive inspection, and URL_DONE."},
+    {"location":"S3/capture.ts:514-517,577","fact":"The supervisor synchronously persists accepted protocol frames and synchronizes the journal."},
+    {"location":"S3/capture.ts:933,956","fact":"Both worker EOF receipt fields derive from whole-supervision success, not independent EOF observations."},
+    {"location":"S3/capture.ts:683,712-738","fact":"The worker wrapper retains exit code but not the exit event signal; cleanup can report reaped with null exit code."}
+  ],
+  "inference": {
+    "label": "[Inference]",
+    "conclusion": "The failure fits the supervisor's first-URL protocol window rather than its 120-second operation cutoff.",
+    "exactBlockingInstruction": "UNRESOLVED",
+    "networkSlownessEstablished": false,
+    "archiveIntegrityFailureEstablished": false,
+    "workerExitSignalEstablished": false
+  },
+  "remainingExistingEvidence": {
+    "kind": "BOUNDED_READ_ONLY_EXISTING_JOURNAL_REPORT",
+    "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/acquisition-execution-1/events.jsonl",
+    "maximumContentBytes": 16384,
+    "reportTypeSizeReadErrorAndTruncation": true,
+    "followSymlinksOrReadNonregularFiles": false,
+    "usefulFields": ["URL_START.ordinal","URL_START.attemptId","URL_START.clockDomain","URL_START.acceptedMonoMs","URL_START.getDeadline","subsequent frame order and ordinal","TERMINAL_CANDIDATE.failure","TERMINAL_CANDIDATE.deadlineSnapshot"],
+    "canEstablishExactSupervisorUrlCutoffAndAcceptedOrdering": true,
+    "canIdentifyExactPostResponseWorkerInstruction": false,
+    "originalHostCaptureOrCustodyRequirementAdded": false,
+    "priorPublishedCommandCommit": "66dd53098f95d0a78872655957a8c318ee47f2a7",
+    "newScriptOrPublicationRequiredForExistingFileRead": false
+  },
+  "clockDomainsComparedAcrossProcesses": false,
+  "source23Helpers2Seal6SevenRecordsOrAuthorityChanged": false,
+  "retryReplayAdoptionRetargetingCleanupSignalsOrAcquisitionAuthorized": false,
+  "newAllowancesAdded": 0,
+  "actualHostNetworkNativeGpuLlvmReferenceAssemblyOrTrainingPerformed": false,
+  "trainingReady": false
+}

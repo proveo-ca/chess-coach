@@ -1,0 +1,27 @@
+{
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "source": "packages/starchess-core/src/ai/context/rng.ts",
+  "drawsPerRoot": 256,
+  "roots": [
+    { "master": 101, "label": "selection", "root": 1276529301, "drawsSha256": "8104c2837a1b8f570f57fc42dfa9a843666b4834c6e159f4958200f207ffcbcf" },
+    { "master": 101, "label": "environment-settlement", "root": 1949353878, "drawsSha256": "049d7ba2a2a73c543cae8e184305885b94999bdd9c0af1595cfe25225b89c131" },
+    { "master": 101, "label": "policy-sampling", "root": 2266951485, "drawsSha256": "3b3b7cf01fc0cd5141f56aaae18ce388e85f908e5bfccc94a239f62d68a1cba5" },
+    { "master": 101, "label": "opponent", "root": 1119376862, "drawsSha256": "aa2e06ed72aaccd0b2624aa81d60b2939644465a9d8e8a3f51f3438ec4dd84aa" },
+    { "master": 102, "label": "selection", "root": 91681389, "drawsSha256": "f940b14c3a9355e26b86d64bea01c45e43fb849aa32fd4005578539c49aecf06" },
+    { "master": 102, "label": "environment-settlement", "root": 3108774928, "drawsSha256": "70088253a353a3cfb57d73f000f206488c2bf8b51e8bcbc919816789051c9799" },
+    { "master": 102, "label": "policy-sampling", "root": 1378752773, "drawsSha256": "f035539c341542a66e54f7255d1790d17ea1224b3bcaf16e08d8ec47c5dd1532" },
+    { "master": 102, "label": "opponent", "root": 3857561526, "drawsSha256": "643b92c186e55c86228b4ea237bd43a99edebe1215ea336622ccdf53b24228a9" },
+    { "master": 103, "label": "selection", "root": 602806824, "drawsSha256": "e9258342262a5e57c23d999aa5245bbdf855b3765f0c6285d7553d0e4356d555" },
+    { "master": 103, "label": "environment-settlement", "root": 2351410946, "drawsSha256": "9b39e109cdbb7f7b7513950f3e1245eb6360a26d858805dbff7ea1e2572e497d" },
+    { "master": 103, "label": "policy-sampling", "root": 3834944829, "drawsSha256": "29fe2a3c4455370ad979cfbce0442e48337534bd99047bf95906270649cf35c8" },
+    { "master": 103, "label": "opponent", "root": 50290268, "drawsSha256": "c777a82adc80c83132eaac4e783b31661d74102662bece6d4e697207efdc9063" },
+    { "master": 104, "label": "selection", "root": 1351897442, "drawsSha256": "73a80fbd3ba92c875e653ceee1865825bfcdc0022e7e078e623cd3959a60cb65" },
+    { "master": 104, "label": "environment-settlement", "root": 128242215, "drawsSha256": "2377d94578cdfe035aa439681967d14d77eaff171325e6ce009a5a729df7b9b6" },
+    { "master": 104, "label": "policy-sampling", "root": 1528732283, "drawsSha256": "61695f614c1a382de8bbb3f59cff59f351ce70a04e9e6608c0a477d2ce7acef1" },
+    { "master": 104, "label": "opponent", "root": 1701135153, "drawsSha256": "682e9a0bd843daae108a5abe1e072e4dbcf1a4288399d211a8ee56971aea9198" },
+    { "master": 105, "label": "selection", "root": 1329859636, "drawsSha256": "9aec6d0a329fc69f8aa985c0c3aacce830e88673bc69f8bdd74c79b4eaa08faf" },
+    { "master": 105, "label": "environment-settlement", "root": 4225537466, "drawsSha256": "25a23e138e7ed94b8f398be70c83be074851d5ffcd0d78023c12bc879a6c828d" },
+    { "master": 105, "label": "policy-sampling", "root": 2279243351, "drawsSha256": "a4abd036e17164bfa4167d817b819ac4f178f1ae56eafb65638c265d1d03115a" },
+    { "master": 105, "label": "opponent", "root": 2518328623, "drawsSha256": "baa7166987f84a5521386aab60b189c910b3be0470ba29257f11ea7813ccc3b3" }
+  ]
+}

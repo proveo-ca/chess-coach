@@ -1,0 +1,18 @@
+@startuml representation
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Versioned recipient observation / candidate encoding
+component "Validated recipient observation\ncurrent + remembered facts; ever-lit history" as OBS <<app>>
+component "26 x 64 player-relative board planes\n15 normalized resource/economic scalars" as STATE <<app>>
+component "0..4 ordered candidate actions\n148 categorical/coordinate values per slot" as ACTION <<app>>
+component "2271 F64 values per candidate\n1679 state + 592 action" as FEATURES <<app>>
+component "Burn Linear(2271,32) -> ReLU -> Linear(32,1)\nseeded hidden; zero output head" as MODEL <<app>>
+OBS --> STATE
+STATE --> FEATURES
+ACTION --> FEATURES
+FEATURES --> MODEL
+note bottom of FEATURES
+  No unseen enemy bank or hidden simulator state.
+  Inactive action slots have explicit presence=0.
+  Feature version must match model configuration.
+end note
+@enduml

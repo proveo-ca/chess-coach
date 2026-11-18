@@ -1,0 +1,6 @@
+bun test v1.4.0 (34cbb9a40)
+QUALIFICATION_EVIDENCE_SOURCE_3_MEASURE {"name":"positive-zero-logits","elapsedMs":3646.032070000001,"status":"PASS_RETAINED_FUNCTIONAL_EVIDENCE"}
+QUALIFICATION_EVIDENCE_SOURCE_3_MEASURE {"name":"model-handoff","elapsedMs":7018.281941000001,"status":"PASS_RETAINED_FUNCTIONAL_EVIDENCE"}
+QUALIFICATION_EVIDENCE_SOURCE_3_MEASURE {"name":"late-negative-final-state","elapsedMs":3407.567781000005,"status":"FAIL_RETAINED_FUNCTIONAL_EVIDENCE"}
+QUALIFICATION_EVIDENCE_SOURCE_3_MEASURE {"name":"512-row-request","frameBytes":2379691,"rows":512,"values":1162752,"jsonParseMs":20.304942999995546,"schemaParseMs":995.8756040000007,"fastDecodeMs":891.7734169999967,"legacyResponseDecodeMs":994.5608959999954}
+QUALIFICATION_EVIDENCE_SOURCE_3_PROFILE {"scope":"SYNTHETIC_SOURCE_ONLY","cache":"NONE","profiles":[{"name":"positive-zero-logits","elapsedMs":3646.032070000001,"status":"PASS_RETAINED_FUNCTIONAL_EVIDENCE"},{"name":"model-handoff","elapsedMs":7018.281941000001,"status":"PASS_RETAINED_FUNCTIONAL_EVIDENCE"},{"name":"late-negative-final-state","elapsedMs":3407.567781000005,"status":"FAIL_RETAINED_FUNCTIONAL_EVIDENCE"},{"name":"512-row-request","frameBytes":2379691,"rows":512,"values":1162752,"jsonParseMs":20.304942999995546,"schemaParseMs":995.8756040000007,"fastDecodeMs":891.7734169999967,"legacyResponseDecodeMs":994.5608959999954}]}

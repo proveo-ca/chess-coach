@@ -1,0 +1,96 @@
+{
+  "scope": "SOURCE_ONLY_MOCK_NOT_HOST_EVIDENCE",
+  "actualDockerProcesses": 0,
+  "actualNativeProcesses": 0,
+  "gpuExecuted": false,
+  "dockerCliCompatibilityValidated": false,
+  "nativeCliCompatibilityValidated": false,
+  "hostEvidence": false,
+  "result": {
+    "version": "chess-coach.owned-container-native-build.v1",
+    "status": "FAIL_HOST_GPU_NATIVE_BUILD_ONLY",
+    "failure": "DOCKER_OPERATION_FAILED:donor-create",
+    "cleanupFailures": [],
+    "method": "OWNED_DOCKER_CONTAINER_NATIVE_BUILD_ONLY_NOT_QUALIFICATION_IMAGE_BUILD",
+    "requestedResources": {
+      "cpus": 2,
+      "memoryBytes": 8589934592,
+      "memoryPlusSwapBytes": 8589934592,
+      "cargoJobs": 2,
+      "rayonThreads": 2,
+      "uidGid": "CURRENT_OPERATOR_NUMERIC_UID_GID"
+    },
+    "limits": {
+      "overallMs": 4200000,
+      "normalOperationsMs": 4020000,
+      "nativeWorkMs": 3600000,
+      "cleanupMs": 120000,
+      "receiptReserveMs": 60000,
+      "dockerCommandMs": 120000,
+      "minimumFreeBytes": 68719476736,
+      "minimumRunningFreeBytes": 17179869184,
+      "workspaceSoftBytes": 34359738368,
+      "stagingBytes": 536870912,
+      "stagingFiles": 3800,
+      "bunPostCopyBytes": 134217728,
+      "supervisedStreamBytes": 4194304,
+      "hostDockerStreamsBytes": 75497472,
+      "nativeStreamsBytes": 41943040,
+      "canonicalLogCopiesBytes": 16777216,
+      "hostReceiptBytes": 2097152
+    },
+    "ids": {
+      "donor": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "worker": null
+    },
+    "state": null,
+    "nativeReceipt": {
+      "status": "PASS_NATIVE_COMPILATION_ONLY",
+      "compilationAttempts": 2,
+      "sourceChanged": false
+    },
+    "artifacts": [],
+    "results": [
+      {
+        "id": "donor-create",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "create",
+          "--pull=never",
+          "--platform=linux/amd64",
+          "--network=none",
+          "--cidfile=/source-only-mock/evidence/donor.cid",
+          "--label=chess-coach.native-build=host-gpu-native-build-1",
+          "docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038"
+        ],
+        "status": "FAIL",
+        "exitCode": 125,
+        "failure": "DOCKER_OPERATION_FAILED:donor-create",
+        "stdout": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n"
+      },
+      {
+        "id": "donor-remove",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "rm",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "stdout": ""
+      }
+    ],
+    "elapsedMs": 22,
+    "hostInvocationsConsumed": 1,
+    "remainingHostInvocations": 0,
+    "automaticRetryAuthorized": false,
+    "qualificationImageBuilt": false,
+    "testsExecuted": false,
+    "gpuDevicesRequested": false,
+    "gpuExecuted": false,
+    "trainingReady": false
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "version": "chess-coach.review-corrections.v1",
+  "status": "REVIEWED_SOURCE_ACCEPTED_OPERATIONAL_QUALIFICATION_OPEN",
+  "sourceBaseline": "c04a8da9468f7d443bd27d73a08c0bd7ee0e9d20",
+  "findings": [
+    { "id": "cleanup-start-release", "severity": "HIGH", "control": "Cleanup never writes or closes queued stdin and excludes stdin POLLOUT.", "test": "crates/gpu-owner/tests/lifecycle.rs" },
+    { "id": "cleanup-fault-propagation", "severity": "MEDIUM", "control": "New cleanup drain faults reach cleanup_errors while teardown continues.", "test": "crates/gpu-owner/tests/adapters.rs" },
+    { "id": "evidence-state-exposure", "severity": "HIGH", "control": "Reject equal or nested evidence roots within job-writable state before filesystem effects.", "test": "crates/gpu-owner/tests/contracts.rs" },
+    { "id": "manufactured-natural-eof", "severity": "HIGH", "control": "Distinguish bounded drain exhaustion and mark EOF-dependent group termination forced before reaping.", "test": "crates/gpu-owner/tests/adapters.rs" },
+    { "id": "intermediate-cgroup-substitution", "severity": "HIGH", "control": "Pin all intermediate ancestors and the leaf and reject changed custody.", "test": "crates/gpu-owner/tests/observation.rs" },
+    { "id": "state-path-substitution", "severity": "HIGH", "control": "Recheck state/config path identities before work and start delivery without blocking state-independent cleanup.", "test": "crates/gpu-owner/tests/lifecycle.rs" },
+    { "id": "reference-subdirectory", "severity": "MEDIUM", "control": "Require the exact canonical Git top-level root.", "test": "packages/runtime/tests/reference-bundles.test.ts" },
+    { "id": "reference-clean-filter", "severity": "MEDIUM", "control": "Authenticate physical blob bytes and all consumed bundle inputs against the original pinned tree.", "test": "packages/runtime/tests/reference-bundles.test.ts" },
+    { "id": "audit-replacement-refs", "severity": "MEDIUM", "control": "Read the original baseline with replacement objects disabled.", "test": "_work/gpu-owner-recovery/audit-lock.test.ts" },
+    { "id": "omitted-manifest-dependencies", "severity": "MEDIUM", "control": "Include the executed supervisor and pinned reference JSON in every source manifest.", "test": "_work/gpu-owner-recovery/verify.test.ts" },
+    { "id": "literal-negative-zero", "severity": "LOW", "control": "Decode only exact numeric -0 as integer zero without altering original bytes or accepting fractional/exponent integer tokens.", "test": "crates/gpu-owner/tests/wire.rs" },
+    { "id": "reference-filter-execution", "severity": "MEDIUM", "control": "Replace validator Git diffs with exact original-tree versus stage-0 index comparison.", "test": "packages/runtime/tests/reference-bundles.test.ts", "status": "CLEARED_CURRENT_PACKET_5" },
+    { "id": "reference-object-ancestry", "severity": "MEDIUM", "control": "Authenticate raw commit and every tree body against the independently pinned object chain before deriving inventory.", "test": "packages/runtime/tests/reference-bundles.test.ts", "status": "CLEARED_CURRENT_PACKET_5" },
+    { "id": "reference-lazy-object-fetch", "severity": "MEDIUM", "control": "Disable lazy fetching and reject missing required objects without invoking promisor helpers.", "test": "packages/runtime/tests/reference-bundles.test.ts", "status": "CLEARED_CURRENT_PACKET_5" }
+  ],
+  "additionalCorrections": [
+    "Final-component absence requires the held leaf to be unlinked under a stable ancestor chain.",
+    "Select the actual frozen policy-initialize.rs and require its audit inclusion.",
+    "Use exact ./ Bun test file selectors and sparse audit fixtures to prevent clone discovery."
+  ],
+  "sourcePackets": [
+    "_work/gpu-owner-recovery/runs/security-rust-baseline-packet-3/receipt.json",
+    "_work/gpu-owner-recovery/runs/security-typescript-baseline-packet-5/receipt.json"
+  ],
+  "verificationReceipts": [
+    "_work/gpu-owner-recovery/runs/corrected-source-owner-final-2/receipt.json",
+    "_work/gpu-owner-recovery/runs/corrected-source-clippy-final-2/receipt.json",
+    "_work/gpu-owner-recovery/runs/corrected-source-format-final-2/receipt.json",
+    "_work/gpu-owner-recovery/runs/exact-selection-runner-final-1/receipt.json",
+    "_work/gpu-owner-recovery/runs/authenticated-git-objects-1/receipt.json",
+    "_work/gpu-owner-recovery/runs/authenticated-git-objects-types-1/receipt.json"
+  ],
+  "actualCgroupfsLinkCountQualification": "PENDING",
+  "allListedSourceFindingsCleared": true,
+  "currentReviewRecords": [
+    "_work/gpu-owner-recovery/security-rust-review.json",
+    "_work/gpu-owner-recovery/security-typescript-authenticated-review.json",
+    "_work/gpu-owner-recovery/backend-integer-review.json",
+    "_work/gpu-owner-recovery/adversarial-final-review.json"
+  ],
+  "atomicDockerBindResolutionClaimed": false,
+  "operationalAcceptance": false,
+  "trainingReady": false
+}

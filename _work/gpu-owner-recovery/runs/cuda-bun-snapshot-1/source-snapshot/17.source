@@ -1,0 +1,4 @@
+# SPEC: _spec/recovery.md
+[tasks."cuda:capture-audit-bun"]
+dir = "../.."
+run = "/usr/local/bin/bun --no-env-file --no-install _work/gpu-owner-recovery/cuda-bun-snapshot.ts capture"

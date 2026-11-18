@@ -10,14 +10,14 @@ export type SpecialRegistryEntry = {
   actorHint?: StarChessPiece;
 };
 
-export const SPECIAL_REGISTRY: Record<ScSpecialKind, SpecialRegistryEntry> = {
-  deploy: { gasCost: SPECIAL_ENERGY_COST, actorHint: "k" },
-  stimStep: { gasCost: SPECIAL_ENERGY_COST, actorHint: "p" },
-  spiderMine: { gasCost: SPECIAL_ENERGY_COST, actorHint: "n" },
-  charonMissiles: { gasCost: MECHA_CHARON_GAS_COST, actorHint: "b" },
-  siegeMode: { gasCost: SPECIAL_ENERGY_COST, actorHint: "r" },
-  tacticalJump: { gasCost: TACTICAL_JUMP_GAS_COST, actorHint: "q" },
-};
+export const SPECIAL_REGISTRY: Record<ScSpecialKind, SpecialRegistryEntry> = Object.freeze({
+  deploy: Object.freeze({ gasCost: SPECIAL_ENERGY_COST, actorHint: "k" }),
+  stimStep: Object.freeze({ gasCost: SPECIAL_ENERGY_COST, actorHint: "p" }),
+  spiderMine: Object.freeze({ gasCost: SPECIAL_ENERGY_COST, actorHint: "n" }),
+  charonMissiles: Object.freeze({ gasCost: MECHA_CHARON_GAS_COST, actorHint: "b" }),
+  siegeMode: Object.freeze({ gasCost: SPECIAL_ENERGY_COST, actorHint: "r" }),
+  tacticalJump: Object.freeze({ gasCost: TACTICAL_JUMP_GAS_COST, actorHint: "q" }),
+});
 
 /** Gas burned when queueing a special (Charon = 2, Tactical Jump = 3). */
 export const specialGasCost = (kind: ScSpecialKind | SpecialKind): number =>

@@ -1,0 +1,103 @@
+{
+  "status": "PASS_LOCAL_SELECTED_VOLUME_RETURN_INTAKE_AND_SCOPED_STRICT_TYPES",
+  "scope": "LOCAL_BINDING_REPLAY_ARITHMETIC_AND_TYPECHECK_NOT_INDEPENDENT_HOST_FACTS",
+  "observation": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-1/observation.json",
+    "byteLength": 5763,
+    "sha256": "513477ec262d1c35933e52849e2accddc4f92ea80a23ba90edab906fcf3c4a87"
+  },
+  "source": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-1/intake.ts",
+    "byteLength": 7777,
+    "sha256": "c087fb684dfc96ba64c341ee32461e13ec22a40b5a55053ab3c673a43227c8d5"
+  },
+  "tsconfig": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-1/tsconfig.json",
+    "byteLength": 66,
+    "sha256": "54046e4758bc7c277cb90e4a4c743bf8d842ad4b4a8169c9a66ece4516296da8"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "artifacts/training-functional/campaign-volume-preflight-1/returned-1/intake.ts"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-1/intake.stdout",
+        "byteLength": 450,
+        "sha256": "84c07aa3017ea27d5a8c9f140beff928af188cd9887ac364d40731672ab65e5e"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-1/intake.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/campaign-volume-preflight-1/returned-1/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-1/types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-1/types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "trackedDiffChecks": [
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "diff",
+        "--name-only",
+        "-z"
+      ],
+      "exitCode": 0,
+      "trackedChanges": 0
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "diff",
+        "--cached",
+        "--name-only",
+        "-z"
+      ],
+      "exitCode": 0,
+      "trackedChanges": 0
+    }
+  ],
+  "filesystemMapping": {
+    "symbol": "BTRFS_SUPER_MAGIC",
+    "hex": "0x9123683e",
+    "decimal": "2435016766",
+    "reference": "https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/linux/magic.h",
+    "evidenceMethod": "OFFICIAL_HEADER_FETCH_NOT_LOCAL_OR_HOST_HEADER_INSPECTION",
+    "inodeRuleWaived": false
+  },
+  "newTestCohortClaimed": false,
+  "hostCommandsExecuted": false,
+  "publicationPerformed": false,
+  "cleanupAuthorized": false,
+  "admissionRulesChanged": false,
+  "trainingExecuted": false
+}

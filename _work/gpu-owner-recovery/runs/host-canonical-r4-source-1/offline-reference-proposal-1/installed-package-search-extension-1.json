@@ -1,0 +1,18 @@
+{
+  "status": "NO_SELECTED_PACKAGES_FOUND_IN_ADDITIONAL_BOUNDED_SYSTEM_LOCATIONS",
+  "provenance": "READ_ONLY_LOCAL_DEVOPS_DISCOVERY_REPORT_NOT_RAW_CAPTURE_BYTES",
+  "session": "ses_e2f3a8747ffeb4lnwJXASkIIi2",
+  "selectedVersions": {"fflate":"0.8.3","jssha":"3.3.2"},
+  "searched": [
+    {"root":"/usr/local/lib/node_modules","observation":"EXISTS_COREPACK_AND_NPM_ONLY_NO_SELECTED_PACKAGES_IN_BOUNDED_DIRECT_NESTED_SCOPED_BUN_PNPM_LAYOUTS"},
+    {"root":"/usr/lib/node_modules","observation":"ABSENT"},
+    {"root":"/opt/proveo/node_modules","observation":"ABSENT"},
+    {"root":"/opt/opencode/node_modules","observation":"ABSENT"}
+  ],
+  "absenceEverywhereEstablished": false,
+  "sourcePayloadCopied": false,
+  "archivePayloadAccessed": false,
+  "networkAcquisitionPerformed": false,
+  "installationPerformed": false,
+  "trainingReady": false
+}

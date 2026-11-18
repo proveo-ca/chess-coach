@@ -1,0 +1,24 @@
+{
+  "status": "PASS_APPROVED_HOST_BUILD_ONLY_HANDOFF_RECORDS",
+  "request": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-build-handoff-1/request.json",
+    "sha256": "2bc942e41485b966da82a3c9cf4df19c13b9321d516616d3df3d6f935940925c"
+  },
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-build-source-5/receipt.json",
+    "sha256": "c8e1048dcf8640371398ece6cfc0b3f33559ee2d3c21f185d2ff4c85d79983d6"
+  },
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-build-source-5/host-command.fish",
+    "bytes": 40054,
+    "sha256": "50123eaff0efebb93f7c03210afd765c0ddb02273c08b7ac63a262e37dcd962e"
+  },
+  "sourceHashesChecked": 283,
+  "diagramIndexMatches": 6,
+  "remainingOperatorInvocations": 1,
+  "hostInvocationObserved": false,
+  "localFishSyntaxValidated": false,
+  "actualHostDockerOrNativeOperationsPerformed": false,
+  "gitPublicationPerformed": false,
+  "trainingReady": false
+}

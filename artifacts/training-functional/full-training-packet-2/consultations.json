@@ -1,0 +1,28 @@
+{
+  "scope": "SOURCE_ONLY_V2_BTRFS_COMPATIBILITY_AND_IMMUTABLE_PACKET_PREPARATION",
+  "architect": {
+    "session": "ses_e1497c1f5ffeGhugdYDu4UHOx1",
+    "decision": "GO_SOURCE_ONLY",
+    "contract": "DEFAULT_V1_EXACT_NARROW_EXPLICIT_V2_BTRFS_ZERO_ZERO_WITH_LIVE_BYTE_ADMISSION_HOST_AND_WORKER"
+  },
+  "devops": {
+    "session": "ses_e1497c1edffeVxf6tFoIjlUzz0",
+    "decision": "CONDITIONAL_GO_SOURCE_ONLY",
+    "contract": "PRESERVE_OLD_112_RECOVERABLE_BYTES_AND_ALL_PACKET1_FILES_ASSEMBLE_ONLY_PACKET2_NO_HOST_PREPARATION"
+  },
+  "backendCarriedEvidenceInspection": {
+    "session": "ses_e13d534e1ffe12juJem9j1VOcf",
+    "finding": "HISTORICAL_SOURCE_PIN_LIST_OMITS_FOUR_TEST_HELPERS",
+    "leadDisposition": "RERUN_BOTH_90_AND_38_TEST_COHORTS_LOCALLY_PIN_HELPERS_AND_CARRY_ZERO_HISTORICAL_TESTS",
+    "newOperationalAuthority": false
+  },
+  "initialSpecKeeper": {
+    "session": "ses_e148b6cb3ffeX7YUk8TaX0d222",
+    "decision": "IN_SYNC_SOURCE_CONTRACTS_CLOSEOUT_CONDITIONAL",
+    "sourceProseMigrated": false,
+    "nativePlantUmlRendered": false
+  },
+  "hostPreparationExecuted": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false
+}

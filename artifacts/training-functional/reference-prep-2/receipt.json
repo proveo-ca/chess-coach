@@ -1,0 +1,80 @@
+{
+  "version": "chess-coach.reference-prep.v1",
+  "scope": "REFERENCE_PREPARATION_NOT_FUNCTIONAL_QUALIFICATION",
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "bunVersion": "1.4.0",
+  "status": "PASS",
+  "attempt": {
+    "id": "458f8e1b-8162-47b2-95e8-708395d7b46e",
+    "pid": 855600,
+    "started": "2026-11-16T23:46:21.112Z",
+    "automaticRetry": false
+  },
+  "phases": [
+    {
+      "mode": "acquire-worker",
+      "budgetMs": 120000,
+      "durationMs": 163,
+      "exitCode": 0,
+      "signalCode": null,
+      "reason": null,
+      "stdoutBytes": 96,
+      "stderrBytes": 0,
+      "stdoutEOF": true,
+      "stderrEOF": true,
+      "status": "PASS"
+    },
+    {
+      "mode": "build-worker",
+      "budgetMs": 240000,
+      "durationMs": 336,
+      "exitCode": 0,
+      "signalCode": null,
+      "reason": null,
+      "stdoutBytes": 77038,
+      "stderrBytes": 0,
+      "stdoutEOF": true,
+      "stderrEOF": true,
+      "status": "PASS"
+    }
+  ],
+  "proofs": [
+    {
+      "path": "input-manifest.json",
+      "sha256": "51b6e846ec9c9e0fa645b4f309a667e5a95842306f8f610a06123b2cf9af97d7",
+      "bytes": 128630
+    },
+    {
+      "path": "selected-reference.json",
+      "sha256": "09cd6b6dd97fd1b3984b71b5f0d3f540e21b38285897062148e16c0e388fc45a",
+      "bytes": 103663
+    },
+    {
+      "path": "acquire-worker.stdout",
+      "sha256": "98203c84c858a61f06b053f1c25ee4b6ea99017a9be889a2f10b8d55f375e179",
+      "bytes": 96
+    },
+    {
+      "path": "acquire-worker.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build-worker.stdout",
+      "sha256": "280d297d3dc384ddf96886f8fded84d2e0791fcf1081e98b5c98a22b355b57cb",
+      "bytes": 77038
+    },
+    {
+      "path": "build-worker.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "planSha256": "ed7fda05a3eaf448bd4a37a6f19767ea742b0ab4c61124d3b25eaf4094eacf6e",
+  "error": null,
+  "operationRoot": "artifacts/training-functional/scratch/reference-prep-2",
+  "actualGetRequests": 1,
+  "referenceCodeEvaluated": false,
+  "trainingReady": false,
+  "strictEscapedProcessAssurance": false
+}

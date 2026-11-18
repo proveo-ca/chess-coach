@@ -1,0 +1,13 @@
+{
+  "version": "chess-coach.recovery-environment.v1",
+  "bun": { "path": "/usr/local/bin/bun", "observedVersion": "1.4.0" },
+  "typescript": { "installedPackageVersion": "5.9.3", "directEntrypoint": "node_modules/typescript/lib/_tsc.js" },
+  "rust": { "requiredVersion": "1.95.0", "initialPathLookup": "NOT_FOUND", "currentStatus": "PROVISIONED_REPOSITORY_LOCAL", "identityReceipt": "_work/gpu-owner-recovery/runs/rust-1950-identity/receipt.json" },
+  "cpuLinker": { "tool": "zig", "version": "0.15.2", "receipt": "_work/gpu-owner-recovery/runs/mise-zig-cpu-linker/receipt.json", "changesCudaCompilerRoute": false },
+  "mise": { "rootProjectConfiguration": "UNTRUSTED_UNCHANGED", "trustedConfig": "_work/gpu-owner-recovery/mise.toml", "isolationReceipt": "_work/gpu-owner-recovery/runs/mise-isolation-inspection/receipt.json" },
+  "newToolchainOrDependencyAcquisitionPerformed": true,
+  "acquisitionAuthority": "_work/gpu-owner-recovery/provision-approval.json",
+  "defaultCpuInputs": "_work/gpu-owner-recovery/runs/cpu-locked-inputs-restored/receipt.json",
+  "ownerInputs": "_work/gpu-owner-recovery/runs/rust-core-check-2/receipt.json",
+  "trainingReady": false
+}

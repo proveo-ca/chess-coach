@@ -1,0 +1,13 @@
+
+packages/runtime/tests/reference-bundles.test.ts:
+(pass) reference source guard requires an explicit absolute exact-pin root [10.07ms]
+(pass) reference source guard rejects tracked modifications before and after staging [937.89ms]
+(pass) reference source guard rejects tracked modifications hidden by --assume-unchanged [527.49ms]
+(pass) reference source guard rejects tracked modifications hidden by --skip-worktree [922.07ms]
+(pass) reference source guard rejects source substitutions hidden by Git replacement refs [918.48ms]
+
+ 5 pass
+ 1 filtered out
+ 0 fail
+ 34 expect() calls
+Ran 5 tests across 1 file. [3.86s]

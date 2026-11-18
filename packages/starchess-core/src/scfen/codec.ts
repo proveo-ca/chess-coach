@@ -5,7 +5,7 @@
  * Wire / tickets: STARCHESS_FEN.md
  */
 
-import type { Square } from "chess.js";
+import type { Square } from "../model/square";
 
 import { toClassicFen } from "../board/classicFen";
 import { energyForTurn } from "../rules/constants";

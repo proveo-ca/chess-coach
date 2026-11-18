@@ -1,0 +1,564 @@
+// SPEC: _spec/gpu-full-qualification.puml
+import { expect, test } from "bun:test";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { isAbsolute, relative, resolve } from "node:path";
+import * as frozen from "../../../../tooling/runtime/qualification";
+import type { CommandResult } from "../../verify";
+import { digest, fullPaths, fullPlan, fullSelectors, fullSteps, type FullPlan } from "./plan";
+import { executeFull, fullEnvironment, type DriverEvent, type FullDriverIO } from "./driver";
+import { progressWatchdog } from "./watchdog";
+
+const p = await fullPlan();
+const manifestBytes = await readFile("_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/native-source-manifest.json");
+const manifest = JSON.parse(manifestBytes.toString());
+const helperBytes = new Map<string, Uint8Array>(await Promise.all(p.existingHelpers.map(async helper => [`/build/native/${helper.path}`, await readFile(helper.path)] as const)));
+const qualificationBytes = await readFile("tooling/runtime/qualification.ts");
+const pass = { status: "PASS" as const, exitCode: 0, failure: null, stdoutBytes: 0, stderrBytes: 0 };
+const summary = "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out\n";
+const csv = (free = 3072) => `${p.selectedUuid}, ${free}, 8192\n`;
+type Qualification = Awaited<ReturnType<FullDriverIO["loadQualification"]>>;
+
+function deferred<T>() {
+  let resolve!: (value: T) => void, reject!: (reason: unknown) => void;
+  const promise = new Promise<T>((yes, no) => { resolve = yes; reject = no; });
+  return { promise, resolve, reject };
+}
+async function flush() { for (let index = 0; index < 100; index++) await Promise.resolve(); }
+class Clock {
+  time = 0;
+  private next = 0;
+  private timers = new Map<number, { at: number; callback: () => void }>();
+  now = () => this.time;
+  schedule = (delay: number, callback: () => void) => {
+    const id = ++this.next;
+    this.timers.set(id, { at: this.time + delay, callback });
+    return () => { this.timers.delete(id); };
+  };
+  async advance(time: number) {
+    await flush();
+    for (;;) {
+      const due = [...this.timers.entries()].filter(([, timer]) => timer.at <= time).sort((a, b) => a[1].at - b[1].at)[0];
+      if (!due) break;
+      this.time = due[1].at; this.timers.delete(due[0]); due[1].callback(); await flush();
+    }
+    this.time = time; await flush();
+  }
+  async wakeNextAt(time: number) {
+    await flush();
+    const next = [...this.timers.entries()].sort((a, b) => a[1].at - b[1].at)[0];
+    if (!next) throw Error("MOCK_TIMER_REQUIRED");
+    this.time = time; this.timers.delete(next[0]); next[1].callback(); await flush();
+  }
+  count() { return this.timers.size; }
+}
+type Reply = { stdout: string; stderr?: string; result?: CommandResult };
+function harness(plan: FullPlan = p) {
+  const clock = new Clock(), events: DriverEvent[] = [], order: string[] = [], commands: { argv: string[]; timeout: number; directory: string; environment: Record<string, string> }[] = [];
+  const captures = new Map<string, Uint8Array>(), paths = plan.artifacts.map(binding => binding.executable);
+  const executable = (name: string) => paths.find(path => path.split("/").at(-1)!.startsWith(name))!;
+  const artifact = (owner: string, name: string, kind: string, isTest: boolean, path: string) => ({ reason: "compiler-artifact",
+    package_id: `path+file:///build/native/crates/${owner}#chess-coach-${owner}@0.1.0`, features: ["gpu-cuda", "gpu-prepared-llvm"],
+    executable: path, target: { name, kind: [kind] }, profile: { test: isTest } });
+  const logs = {
+    learning: [artifact("learning", "finite_difference", "test", true, executable("finite_difference-")), { reason: "build-finished", success: true }],
+    policy: [artifact("policy-io", "gpu", "test", true, executable("gpu-")), ...["policy-score", "policy-channel", "policy-initialize"]
+      .map(name => artifact("policy-io", name, "bin", false, executable(name))), { reason: "build-finished", success: true }],
+  };
+  let queryCount = 0, testCount = 0, inventoryCount = 0, activeWrites = 0, maxWrites = 0;
+  const hooks = {
+    query: async (_index: number): Promise<Reply> => ({ stdout: csv() }),
+    test: async (_index: number): Promise<Reply> => ({ stdout: summary }),
+    append: async (_event: DriverEvent) => {},
+    inventory: async (_index: number) => structuredClone(manifest),
+    capture: async (_path: string) => {},
+    hash: async (_path: string) => {},
+    mkdir: async (_path: string) => {},
+    qualification: (value: Qualification): Qualification => value,
+  };
+  const io: FullDriverIO = {
+    now: clock.now, budgetMs: plan.limits.nativeWorkMs, schedule: clock.schedule,
+    async readFile(path) {
+      order.push(`read:${path}`);
+      if (path === "/build/native/qualification/source-manifest.json") return manifestBytes;
+      if (helperBytes.has(path)) return helperBytes.get(path)!;
+      if (path === "/build/native/tooling/runtime/qualification.ts") return qualificationBytes;
+      if (path === "/build/native/qualification/gpu-learning.stdout") return Buffer.from(logs.learning.map(row => JSON.stringify(row)).join("\n"));
+      if (path === "/build/native/qualification/gpu-policy.stdout") return Buffer.from(logs.policy.map(row => JSON.stringify(row)).join("\n"));
+      throw Error("UNEXPECTED_MOCK_READ:" + path);
+    },
+    async hashExecutable(path, _expected, check) {
+      check(); order.push(`hash:${path}`); await hooks.hash(path); check();
+      const binding = plan.artifacts.find(entry => entry.executable === path)!;
+      return { bytes: binding.bytes, sha256: binding.sha256 };
+    },
+    async loadQualification() {
+      order.push("load:qualification");
+      return hooks.qualification({ ...frozen, async sourceInventory(root) {
+        expect(root).toBe("/build/native"); order.push("inventory"); return hooks.inventory(++inventoryCount);
+      } });
+    },
+    async createCaptureDirectory(path) { order.push(`mkdir:${path}`); await hooks.mkdir(path); },
+    async runCommand(argv, directory, timeout, environment) {
+      commands.push({ argv: [...argv], directory, timeout, environment }); order.push(`execute:${argv[0]}`);
+      const reply = argv[0] === "nvidia-smi" ? await hooks.query(++queryCount) : await hooks.test(++testCount);
+      captures.set(`${directory}/command.stdout`, Buffer.from(reply.stdout));
+      captures.set(`${directory}/command.stderr`, Buffer.from(reply.stderr ?? ""));
+      return { ...pass, stdoutBytes: Buffer.byteLength(reply.stdout), stderrBytes: Buffer.byteLength(reply.stderr ?? ""), ...reply.result };
+    },
+    async readCapture(path) { await hooks.capture(path); const bytes = captures.get(path); if (!bytes) throw Error("MISSING_MOCK_CAPTURE"); return bytes; },
+    async appendJournal(line) {
+      activeWrites++; maxWrites = Math.max(maxWrites, activeWrites);
+      try { const event = JSON.parse(line); await hooks.append(event); events.push(event); order.push(`event:${event.kind}:${event.id ?? ""}`); }
+      finally { activeWrites--; }
+    },
+  };
+  return { io, hooks, clock, events, order, commands, captures, logs, maxWrites: () => maxWrites };
+}
+
+test("pure mocked full campaign reruns the first pair and executes all six original exact selectors", async () => {
+  expect(digest(manifestBytes)).toBe(p.sourceManifestSha256);
+  expect(fullSelectors).toEqual(frozen.gpuSelectors);
+  const h = harness(), receipt = await executeFull(p, h.io), steps = fullSteps(p);
+  expect(receipt.version).toBe("chess-coach.gpu-full-driver.v1");
+  expect(receipt.status).toBe("PASS_GPU_FULL_TESTS_ONLY");
+  expect(receipt.results).toHaveLength(6); expect(receipt.artifacts).toHaveLength(5);
+  expect(receipt.qualificationResults.map(result => [result.id, result.accepted])).toEqual(fullSelectors.map(id => [id, true]));
+  expect(receipt.sourceStabilityChecked).toBe(true); expect(receipt.sourceChanged).toBe(false);
+  expect(h.order.slice(0, 5).every(entry => entry.startsWith("hash:"))).toBe(true);
+  expect(h.order.indexOf("inventory")).toBeLessThan(h.order.indexOf("execute:nvidia-smi"));
+  const native = h.commands.filter(command => command.argv[0] !== "nvidia-smi");
+  expect(native.map(command => command.argv[1])).toEqual([...fullSelectors]);
+  expect(native.map(command => command.argv[0])).toEqual(steps.map(step => step.executable));
+  expect(native.map(command => command.timeout)).toEqual(Array(6).fill(120000));
+  for (const [index, attempt] of receipt.results.entries()) {
+    expect(attempt.argv).toEqual([steps[index]!.executable, fullSelectors[index]!, "--exact", "--ignored", "--test-threads=1", "--nocapture", "--color=never"]);
+    expect(h.order.indexOf(`event:attempt-start:${attempt.id}`)).toBeLessThan(h.order.indexOf(`mkdir:${attempt.captureDirectory}`));
+    expect(attempt.commandResult).toMatchObject({ status: "PASS", exitCode: 0, failure: null }); expect(attempt.streams).toHaveLength(2); expect(attempt.captureFailures).toEqual([]);
+  }
+  expect(h.events.map(event => String(event.kind))).toEqual(["guard-start", "sample", ...fullSelectors.flatMap(() => ["attempt-start", "attempt-finish"]), "done"]);
+  expect(h.events.map(event => event.sequence)).toEqual(Array.from({ length: 15 }, (_, index) => index + 1));
+  expect(h.events.every(event => event.version === "chess-coach.gpu-full-event.v1" && event.runId === "host-gpu-full-2")).toBe(true);
+  expect(h.events[1]).toMatchObject({ uuid: p.selectedUuid, freeBytes: 3221225472, totalBytes: 8589934592, queryStartedMs: 0, query: 1 });
+  expect(receipt.telemetry.queries[0]!.streams![0]!.sha256).toBe(digest(Buffer.from(csv())));
+  expect(receipt.trainingReady || receipt.fullAssuranceQualified || receipt.operationalTelemetryQualified || receipt.canonicalBothQualified || receipt.integratedR4Qualified || receipt.trainingExecuted).toBe(false);
+  const { acceptInner } = await import("./host");
+  expect(() => acceptInner(p, receipt)).not.toThrow();
+  expect(h.maxWrites()).toBe(1); expect(h.clock.count()).toBe(0);
+});
+
+test("full selector routing does not depend on admitted artifact order", async () => {
+  const shuffled = structuredClone(p); shuffled.artifacts.reverse();
+  const h = harness(shuffled), receipt = await executeFull(shuffled, h.io);
+  expect(receipt.status).toBe("PASS_GPU_FULL_TESTS_ONLY");
+  expect(receipt.results.map(result => result.argv[0])).toEqual(fullSteps(p).map(step => step.executable));
+});
+
+test("explicit child environment preserves only inherited LD_LIBRARY_PATH for policy subprocess inheritance", async () => {
+  const env = fullEnvironment(p, "/container/driver/lib");
+  expect(env).toEqual({ HOME: "/scratch/home", TMPDIR: "/scratch/tmp", CUDA_CACHE_PATH: "/scratch/cuda-cache", XDG_CACHE_HOME: "/scratch/cache",
+    XDG_DATA_HOME: "/opt/tracel-data", CUDA_PATH: "/usr/local/cuda", CUDA_VISIBLE_DEVICES: "0", NVIDIA_VISIBLE_DEVICES: p.selectedUuid,
+    RAYON_NUM_THREADS: "2", RUST_TEST_THREADS: "1", PATH: "/usr/local/nvidia/bin:/usr/local/bin:/usr/bin:/bin", LANG: "C.UTF-8", LC_ALL: "C.UTF-8", TZ: "UTC", LD_LIBRARY_PATH: "/container/driver/lib" });
+  expect(fullEnvironment(p)).not.toHaveProperty("LD_LIBRARY_PATH");
+  const h = harness(); h.io.inheritedLdLibraryPath = "/container/driver/lib";
+  expect((await executeFull(p, h.io)).status).toBe("PASS_GPU_FULL_TESTS_ONLY");
+  expect(h.commands.every(command => JSON.stringify(command.environment) === JSON.stringify(env))).toBe(true);
+  expect(h.commands.at(-1)!.argv[1]).toBe(fullSelectors[5]);
+});
+
+test("receipt keeps bounded summaries and hashes full raw native captures", async () => {
+  const h = harness(), stdout = "native diagnostic\n".repeat(8192) + summary;
+  h.hooks.test = async () => ({ stdout });
+  const receipt = await executeFull(p, h.io);
+  expect(receipt.status).toBe("PASS_GPU_FULL_TESTS_ONLY"); expect(JSON.stringify(receipt).length).toBeLessThan(50000);
+  expect(receipt.results[0]!.streams![0]).toMatchObject({ bytes: Buffer.byteLength(stdout), sha256: digest(Buffer.from(stdout)) });
+  expect(receipt.qualificationResults[0]!.stdoutSummaries).toEqual([summary.trim()]);
+});
+
+test("empty, filtered, ignored, failed or duplicated summaries never count as an accepted selector", async () => {
+  for (const stdout of ["", summary.replace("1 passed", "0 passed"), summary.replace("0 ignored", "1 ignored"), summary.replace("0 failed", "1 failed"), summary + summary,
+    summary + "test result: FAILED. 0 passed; 1 failed; 0 ignored\n"]) {
+    const h = harness(); h.hooks.test = async () => ({ stdout });
+    const receipt = await executeFull(p, h.io);
+    expect(receipt.status).toBe("FAIL_GPU_FULL_TESTS_ONLY"); expect(receipt.results).toHaveLength(1);
+    expect(receipt.sourceStabilityChecked).toBe(true); expect(h.events.some(event => event.kind === "done")).toBe(false);
+  }
+});
+
+test("each failed step including both finite differences and C12 retains its command and stops the full campaign", async () => {
+  for (let bad = 1; bad <= 6; bad++) {
+    const h = harness();
+    h.hooks.test = async index => index === bad
+      ? { stdout: "partial output", stderr: `failure ${bad}`, result: { ...pass, status: "FAIL", exitCode: 6, failure: `NATIVE_STEP_${bad}_FAILED` } }
+      : { stdout: summary };
+    const receipt = await executeFull(p, h.io), attempt = receipt.results.at(-1)!;
+    expect(receipt.status).toBe("FAIL_GPU_FULL_TESTS_ONLY"); expect(receipt.results).toHaveLength(bad);
+    expect(attempt.id).toBe(fullSelectors[bad - 1]); expect(attempt.failure).toBe(`NATIVE_STEP_${bad}_FAILED`);
+    expect(attempt.commandResult).toMatchObject({ status: "FAIL", exitCode: 6, failure: `NATIVE_STEP_${bad}_FAILED` });
+    expect(attempt.streams![1]!.sha256).toBe(digest(Buffer.from(`failure ${bad}`)));
+    expect(receipt.sourceStabilityChecked).toBe(true); expect(receipt.sourceChanged).toBe(false);
+    expect(h.commands.filter(command => command.argv[0] !== "nvidia-smi")).toHaveLength(bad);
+    expect(h.events.some(event => event.kind === "done")).toBe(false);
+  }
+});
+
+test("artifact and preflight phase failures issue no telemetry or test command and leave sources unknown", async () => {
+  for (const mode of ["hash", "deadline"]) {
+    const h = harness();
+    h.hooks.hash = async () => { if (mode === "hash") throw Error("HASH_FAILURE"); h.clock.time = 120000; };
+    const receipt = await executeFull(p, h.io);
+    expect(receipt.status).toBe("FAIL_GPU_FULL_TESTS_ONLY"); expect(h.commands).toHaveLength(0);
+    expect(receipt.sourceStabilityChecked).toBe(false); expect(receipt.sourceChanged).toBeNull();
+  }
+  const h = harness(), read = h.io.readFile;
+  h.io.readFile = async path => { const bytes = await read(path); h.clock.time = 120000; return bytes; };
+  expect((await executeFull(p, h.io)).failure).toContain("DRIVER_DEADLINE"); expect(h.commands).toHaveLength(0);
+});
+
+test("full-2 rejects consumed full-1 identifiers before artifact or command admission", async () => {
+  const prior = structuredClone(p); prior.runId = "host-gpu-full-1"; prior.grant = "--approved-host-gpu-full-1";
+  const h = harness(prior), receipt = await executeFull(prior, h.io);
+  expect(receipt.failure).toContain("FIXED_FULL_CONTEXT_REQUIRED"); expect(h.commands).toHaveLength(0);
+  expect(h.order.some(entry => entry.startsWith("hash:"))).toBe(false); expect(receipt.sourceStabilityChecked).toBe(false);
+});
+
+test("source inventory or parsed artifact path mismatch cannot start telemetry", async () => {
+  const h = harness(); h.hooks.inventory = async () => [];
+  expect((await executeFull(p, h.io)).status).toBe("FAIL_GPU_FULL_TESTS_ONLY"); expect(h.commands).toHaveLength(0);
+  const other = harness(), read = other.io.readFile;
+  other.io.readFile = async path => path.endsWith("gpu-learning.stdout")
+    ? Buffer.from(Buffer.from(await read(path)).toString().replace("finite_difference-f3db0ac172c2e4d6", "finite_difference-other")) : read(path);
+  expect((await executeFull(p, other.io)).failure).toContain("FIVE_PARSED_ARTIFACT_PATHS_REQUIRED"); expect(other.commands).toHaveLength(0);
+});
+
+test("the original full planner must return six selectors with the explicit learning and policy mapping", async () => {
+  for (const mode of ["pair", "wrong-binary", "order", "selector", "count"]) {
+    const h = harness(); h.hooks.qualification = value => ({ ...value, qualificationPlan(modeArg, campaign, artifacts) {
+      expect(modeArg).toBe("gpu"); expect(campaign).toBe("full");
+      const steps = value.qualificationPlan(modeArg, campaign, artifacts);
+      if (mode === "pair") return steps.slice(0, 2);
+      if (mode === "wrong-binary") steps[2]!.executable = steps[0]!.executable;
+      if (mode === "order") [steps[2], steps[3]] = [steps[3]!, steps[2]!];
+      if (mode === "selector") steps[5]!.selector = steps[4]!.id;
+      if (mode === "count") steps[3]!.count = 2;
+      return steps;
+    } });
+    expect((await executeFull(p, h.io)).failure).toContain("EXACT_FULL_SELECTOR_EXECUTABLE_MAPPING_REQUIRED"); expect(h.commands).toHaveLength(0);
+  }
+  const h = harness(), learning = h.logs.learning[0] as { executable: string }, policy = h.logs.policy[0] as { executable: string };
+  [learning.executable, policy.executable] = [policy.executable, learning.executable];
+  expect((await executeFull(p, h.io)).failure).toContain("EXACT_FULL_SELECTOR_EXECUTABLE_MAPPING_REQUIRED"); expect(h.commands).toHaveLength(0);
+});
+
+test("the driver rejects altered callback argv and a two-result completion from the original executor", async () => {
+  const changed = harness(); changed.hooks.qualification = value => ({ ...value, executeQualification(steps, limits, io) {
+    return value.executeQualification(steps, limits, { ...io, run: (step, argv, timeout) => io.run(step, [...argv, "--skip"], timeout) });
+  } });
+  expect((await executeFull(p, changed.io)).failure).toContain("EXACT_FULL_ATTEMPT_ARGV_REQUIRED");
+  expect(changed.commands.filter(command => command.argv[0] !== "nvidia-smi")).toHaveLength(0);
+  for (const mode of ["run-pair", "return-pair"]) {
+    const h = harness(); h.hooks.qualification = value => ({ ...value, async executeQualification(steps, limits, io) {
+      const outcome = await value.executeQualification(mode === "run-pair" ? steps.slice(0, 2) : steps, limits, io);
+      return { ...outcome, results: outcome.results.slice(0, 2) };
+    } });
+    const receipt = await executeFull(p, h.io);
+    expect(receipt.status).toBe("FAIL_GPU_FULL_TESTS_ONLY"); expect(receipt.failure).toContain("EXACT_FULL_SIX_NOT_ACCEPTED");
+    expect(receipt.results).toHaveLength(mode === "run-pair" ? 2 : 6); expect(h.events.some(event => event.kind === "done")).toBe(false);
+  }
+});
+
+test("low headroom aborts while a native test remains pending without pretending to cancel it", async () => {
+  const h = harness(), native = deferred<Reply>(); h.hooks.test = () => native.promise;
+  h.hooks.query = async index => ({ stdout: csv(index === 1 ? 3072 : 2047) });
+  let settled = false;
+  const execution = executeFull(p, h.io).then(receipt => { settled = true; return receipt; });
+  await flush(); expect(h.commands).toHaveLength(2); await h.clock.advance(2000);
+  expect(h.events.find(event => event.kind === "abort")!.reason).toContain("TELEMETRY_RUNNING_HEADROOM");
+  expect(settled).toBe(false); native.resolve({ stdout: summary });
+  const receipt = await execution;
+  expect(receipt.status).toBe("FAIL_GPU_FULL_TESTS_ONLY"); expect(receipt.results).toHaveLength(1);
+  expect(h.events.some(event => event.kind === "done")).toBe(false);
+});
+
+test("early timer from fractional delay truncation cannot start telemetry before cadence", async () => {
+  const h = harness(), native = deferred<Reply>(), requested: number[] = [];
+  h.clock.time = 0.25; h.hooks.test = () => native.promise;
+  h.hooks.query = async index => { if (index === 1) h.clock.time += 7.125; return { stdout: csv() }; };
+  h.io.schedule = (delay, callback) => { requested.push(delay); return h.clock.schedule(Math.max(1, Math.floor(delay)), callback); };
+  const execution = executeFull(p, h.io); await flush(); await h.clock.advance(2001.25);
+  native.resolve({ stdout: summary }); const receipt = await execution;
+  expect(receipt.failure).toBeNull(); expect(receipt.status).toBe("PASS_GPU_FULL_TESTS_ONLY"); expect(receipt.telemetry.queries).toHaveLength(2);
+  const starts = receipt.telemetry.queries.map(query => query.queryStartedMs);
+  expect(starts[1]! - starts[0]!).toBeGreaterThanOrEqual(2000);
+  expect(requested.every(delay => Number.isInteger(delay) && delay >= 1)).toBe(true);
+  expect(h.clock.count()).toBe(0);
+});
+
+test("early timer callbacks recheck cadence repeatedly and permit the exact boundary", async () => {
+  const h = harness(), native = deferred<Reply>(), counts: number[] = [], timers: number[] = [], requested: number[] = [];
+  h.clock.time = 0.25; h.hooks.test = () => native.promise;
+  h.io.schedule = (delay, callback) => { requested.push(delay); return h.clock.schedule(delay, callback); };
+  const execution = executeFull(p, h.io); await flush();
+  for (const time of [1999.75, 1999.875, 2000.249999]) {
+    if (h.clock.count()) await h.clock.wakeNextAt(time);
+    counts.push(h.commands.filter(command => command.argv[0] === "nvidia-smi").length); timers.push(h.clock.count());
+  }
+  if (h.clock.count()) await h.clock.wakeNextAt(2000.25);
+  native.resolve({ stdout: summary }); const receipt = await execution;
+  expect(receipt.failure).toBeNull(); expect(receipt.status).toBe("PASS_GPU_FULL_TESTS_ONLY"); expect(counts).toEqual([1, 1, 1]); expect(timers).toEqual([1, 1, 1]);
+  expect(receipt.telemetry.queries.map(query => query.queryStartedMs)).toEqual([0.25, 2000.25]);
+  expect(requested.every(delay => Number.isInteger(delay) && delay >= 1)).toBe(true); expect(h.clock.count()).toBe(0);
+});
+
+test("pending sample journal keeps a bounded liveness timer without one-millisecond polling", async () => {
+  const h = harness(), journal = deferred<void>(), native = deferred<Reply>(), requested: number[] = [];
+  h.hooks.append = event => event.kind === "sample" && event.query === 1 ? journal.promise : Promise.resolve();
+  h.hooks.test = () => native.promise;
+  h.io.schedule = (delay, callback) => { requested.push(delay); return h.clock.schedule(delay, callback); };
+  const execution = executeFull(p, h.io); await flush(); await h.clock.advance(3000);
+  const beforeRelease = requested.length, pendingTimers = h.clock.count();
+  journal.resolve(); await flush(); await h.clock.advance(3001); native.resolve({ stdout: summary });
+  const receipt = await execution;
+  expect(receipt.status).toBe("PASS_GPU_FULL_TESTS_ONLY"); expect(beforeRelease).toBeLessThanOrEqual(3); expect(pendingTimers).toBe(1);
+  expect(receipt.telemetry.queries.map(query => query.queryStartedMs)).toEqual([0, 3001]); expect(h.clock.count()).toBe(0);
+});
+
+test("late telemetry wake does not launch a catch-up burst during a long native wait", async () => {
+  const h = harness(), native = deferred<Reply>(); h.clock.time = 0.125; h.hooks.test = () => native.promise;
+  const execution = executeFull(p, h.io); await flush(); await h.clock.wakeNextAt(3500.125);
+  await h.clock.advance(4500.125); const duringWait = h.commands.filter(command => command.argv[0] === "nvidia-smi").length;
+  await h.clock.advance(5500.125); native.resolve({ stdout: summary }); const receipt = await execution;
+  expect(receipt.status).toBe("PASS_GPU_FULL_TESTS_ONLY"); expect(duringWait).toBe(2);
+  expect(receipt.telemetry.queries.map(query => query.queryStartedMs)).toEqual([0.125, 3500.125, 5500.125]); expect(h.clock.count()).toBe(0);
+});
+
+test("held sample journal still fails at the exact stale boundary without dispatching native work", async () => {
+  const h = harness(), journal = deferred<void>();
+  h.hooks.append = event => event.kind === "sample" && event.query === 1 ? journal.promise : Promise.resolve();
+  const execution = executeFull(p, h.io); await flush(); await h.clock.advance(4000); journal.resolve();
+  const receipt = await execution;
+  expect(receipt.failure).toContain("TELEMETRY_SAMPLE_STALE"); expect(receipt.results).toHaveLength(0);
+  expect(h.commands).toHaveLength(1); expect(h.clock.count()).toBe(0);
+});
+
+test("early wake at the exact pending-query timeout does not overlap or prematurely expire it", async () => {
+  const h = harness(), native = deferred<Reply>(), query = deferred<Reply>(); h.hooks.test = () => native.promise;
+  h.hooks.query = index => index === 1 ? Promise.resolve({ stdout: csv() }) : query.promise;
+  const execution = executeFull(p, h.io); await flush(); await h.clock.advance(2000); await h.clock.wakeNextAt(3000);
+  const expiredAtEquality = h.events.some(event => event.kind === "abort");
+  await h.clock.advance(3001); native.resolve({ stdout: summary }); query.resolve({ stdout: csv() });
+  const receipt = await execution;
+  expect(expiredAtEquality).toBe(false); expect(receipt.failure).toContain("TELEMETRY_QUERY_DEADLINE");
+  expect(receipt.telemetry.queries).toHaveLength(2); expect(h.clock.count()).toBe(0);
+});
+
+test("an early phase-deadline wake cannot start an ineligible replacement or mask deadline expiry", async () => {
+  const h = harness(), native = deferred<Reply>(), postcheck = deferred<void>(), entered = deferred<void>();
+  const clipped = structuredClone(p); clipped.limits.driverFinalizationMs = 500;
+  h.hooks.test = () => native.promise;
+  h.hooks.inventory = async index => { if (index === 2) { entered.resolve(); await postcheck.promise; } return structuredClone(manifest); };
+  const execution = executeFull(clipped, h.io); await flush(); native.resolve({ stdout: summary }); await entered.promise;
+  await h.clock.wakeNextAt(499.999); const queriesBeforeDeadline = h.commands.filter(command => command.argv[0] === "nvidia-smi").length;
+  await h.clock.wakeNextAt(500); postcheck.resolve(); const receipt = await execution;
+  expect(queriesBeforeDeadline).toBe(1); expect(receipt.failure).toContain("DRIVER_DEADLINE");
+  expect(receipt.telemetry.queries).toHaveLength(1); expect(h.clock.count()).toBe(0);
+});
+
+test("last fractional-millisecond directory work crossing the driver cutoff dispatches no expired query", async () => {
+  const h = harness(), native = deferred<Reply>(); h.clock.time = 0.25; h.io.budgetMs = 2000.75; h.hooks.test = () => native.promise;
+  h.hooks.mkdir = async path => { if (path.endsWith("telemetry-0002")) h.clock.time = 2001; };
+  const execution = executeFull(p, h.io); await flush(); await h.clock.wakeNextAt(2000.999);
+  native.resolve({ stdout: summary }); const receipt = await execution;
+  expect(receipt.failure).toContain("DRIVER_DEADLINE"); expect(h.commands.filter(command => command.argv[0] === "nvidia-smi")).toHaveLength(1);
+  expect(h.commands.every(command => command.timeout > 0)).toBe(true); expect(h.clock.count()).toBe(0);
+});
+
+test("query deadline latches while both pending operations remain uncancelled", async () => {
+  const h = harness(), native = deferred<Reply>(), query = deferred<Reply>(); h.hooks.test = () => native.promise;
+  h.hooks.query = index => index === 1 ? Promise.resolve({ stdout: csv() }) : query.promise;
+  let settled = false;
+  const execution = executeFull(p, h.io).then(receipt => { settled = true; return receipt; });
+  await flush(); await h.clock.advance(3001);
+  expect(h.events.find(event => event.kind === "abort")!.reason).toContain("TELEMETRY_QUERY_DEADLINE"); expect(settled).toBe(false);
+  native.resolve({ stdout: summary }); await flush(); expect(settled).toBe(false); query.resolve({ stdout: csv() });
+  const receipt = await execution;
+  expect(receipt.status).toBe("FAIL_GPU_FULL_TESTS_ONLY"); expect(receipt.telemetry.samples).toHaveLength(1);
+  expect(h.commands.filter(command => command.argv[0] === "nvidia-smi")).toHaveLength(2);
+});
+
+test("late initial and replacement samples cannot refresh a deadline-expired guard", async () => {
+  const initial = harness(); initial.hooks.query = async () => { initial.clock.time = 1001; return { stdout: csv() }; };
+  const rejected = await executeFull(p, initial.io);
+  expect(rejected.failure).toContain("TELEMETRY_QUERY_DEADLINE"); expect(rejected.telemetry.samples).toHaveLength(0); expect(rejected.results).toHaveLength(0);
+  const h = harness(), native = deferred<Reply>(), query = deferred<Reply>(); h.hooks.test = () => native.promise;
+  h.hooks.query = index => index === 1 ? Promise.resolve({ stdout: csv() }) : query.promise;
+  const execution = executeFull(p, h.io); await flush(); await h.clock.advance(2000);
+  h.clock.time = 4000; query.resolve({ stdout: csv() }); await flush(); native.resolve({ stdout: summary });
+  const receipt = await execution;
+  expect(receipt.failure).toContain("TELEMETRY_SAMPLE_STALE"); expect(receipt.telemetry.samples).toHaveLength(1);
+  expect(receipt.results).toHaveLength(1); expect(h.events.some(event => event.kind === "done")).toBe(false);
+});
+
+test("failed telemetry preserves the primary result and raw stderr and admits no tests", async () => {
+  const h = harness(); h.hooks.query = async () => ({ stdout: "", stderr: "query unavailable", result: { ...pass, status: "FAIL", exitCode: 9, failure: "QUERY_FAILURE" } });
+  const receipt = await executeFull(p, h.io);
+  expect(receipt.failure).toContain("QUERY_FAILURE"); expect(receipt.results).toHaveLength(0);
+  expect(receipt.telemetry.queries[0]!.commandResult).toMatchObject({ status: "FAIL", exitCode: 9, failure: "QUERY_FAILURE" });
+  expect(receipt.telemetry.queries[0]!.streams![1]!.sha256).toBe(digest(Buffer.from("query unavailable")));
+});
+
+test("serialized journal write failure and byte overflow cannot yield PASS", async () => {
+  const h = harness(), gate = deferred<void>(); h.hooks.append = event => event.kind === "sample" ? gate.promise : Promise.resolve();
+  const execution = executeFull(p, h.io); await flush(); expect(h.commands).toHaveLength(1); expect(h.maxWrites()).toBe(1);
+  gate.reject(Error("JOURNAL_WRITE_FAILURE")); const receipt = await execution;
+  expect(receipt.status).toBe("FAIL_GPU_FULL_TESTS_ONLY"); expect(receipt.results).toHaveLength(0);
+  expect(receipt.telemetry.events.writeFailed).toBe(true); expect(h.events.some(event => event.kind === "done")).toBe(false); expect(h.maxWrites()).toBe(1);
+  const small = structuredClone(p); small.limits.journalBytes = 10;
+  const overflow = harness(small), failed = await executeFull(small, overflow.io);
+  expect(failed.failure).toContain("JOURNAL_BYTE_BOUND"); expect(overflow.commands).toHaveLength(0);
+});
+
+test("capture errors retain primary PASS or FAIL commandResult and partial output at finite-difference and C12 steps", async () => {
+  for (const bad of [3, 6]) for (const original of [pass, { ...pass, status: "FAIL" as const, exitCode: 6, failure: "PRIMARY_NATIVE_FAILURE" }]) {
+    const h = harness();
+    h.hooks.test = async index => index === bad ? { stdout: "partial native output", stderr: "partial error", result: original } : { stdout: summary };
+    h.hooks.capture = async path => { if (path.includes(fullSelectors[bad - 1]!) && path.endsWith("stderr")) throw Error("CAPTURE_FAILURE"); };
+    const receipt = await executeFull(p, h.io), attempt = receipt.results.at(-1)!;
+    expect(receipt.status).toBe("FAIL_GPU_FULL_TESTS_ONLY"); expect(receipt.results).toHaveLength(bad);
+    expect(attempt.commandResult).toEqual(original); expect(attempt.exitCode).toBe(original.exitCode);
+    expect(attempt.failure).toContain(original.failure ?? "CAPTURE_FAILURE"); expect(attempt.streams).toHaveLength(1);
+    expect(attempt.captureFailures![0]).toContain("CAPTURE_FAILURE"); expect(receipt.sourceStabilityChecked).toBe(true);
+    expect(h.events.some(event => event.kind === "done")).toBe(false);
+  }
+});
+
+test("a capture-directory failure retains the started attempt ledger without executing the failed step", async () => {
+  const h = harness(); h.hooks.mkdir = async path => { if (path.endsWith(fullSelectors[3])) throw Error("CAPTURE_DIRECTORY_FAILURE"); };
+  const receipt = await executeFull(p, h.io);
+  expect(receipt.status).toBe("FAIL_GPU_FULL_TESTS_ONLY"); expect(receipt.results).toHaveLength(4);
+  expect(receipt.results[3]!.failure).toContain("CAPTURE_DIRECTORY_FAILURE"); expect(receipt.results[3]!.commandResult).toBeUndefined();
+  expect(h.commands.filter(command => command.argv[0] !== "nvidia-smi")).toHaveLength(3);
+  expect(receipt.sourceStabilityChecked).toBe(true);
+});
+
+test("first-step journal and directory failures retain registration without claiming native execution", async () => {
+  const { testExecutionFacts } = await import("./host");
+  for (const phase of ["journal", "directory"]) {
+    const h = harness();
+    if (phase === "journal") h.hooks.append = async event => { if (event.kind === "attempt-start") throw Error("FIRST_STEP_JOURNAL_FAILURE"); };
+    else h.hooks.mkdir = async path => { if (path.endsWith(fullSelectors[0])) throw Error("FIRST_STEP_DIRECTORY_FAILURE"); };
+    const receipt = await executeFull(p, h.io);
+    expect(receipt.status).toBe("FAIL_GPU_FULL_TESTS_ONLY"); expect(receipt.results).toHaveLength(1);
+    expect(receipt.results[0]!.attempted).toBe(true); expect(receipt.results[0]!.commandInvoked).toBe(false);
+    expect(h.commands.filter(command => command.argv[0] !== "nvidia-smi")).toHaveLength(0);
+    expect(testExecutionFacts(receipt)).toEqual({ testExecutionAttempted: false, testsExecuted: false });
+  }
+});
+
+test("a throwing native runner records invocation without inventing an observed execution result", async () => {
+  const { testExecutionFacts } = await import("./host"), h = harness();
+  h.hooks.test = async () => { throw Error("NATIVE_RUNNER_THROW"); };
+  const receipt = await executeFull(p, h.io);
+  expect(receipt.results[0]!.commandInvoked).toBe(true); expect(receipt.results[0]!.commandResult).toBeUndefined();
+  expect(testExecutionFacts(receipt)).toEqual({ testExecutionAttempted: true, testsExecuted: null });
+});
+
+test("guard drain failure after six apparent passing results prevents completion", async () => {
+  const h = harness(), query = deferred<Reply>(), postcheck = deferred<void>();
+  h.hooks.query = index => index === 1 ? Promise.resolve({ stdout: csv() }) : query.promise;
+  h.hooks.test = async index => { if (index === 6) await h.clock.advance(2000); return { stdout: summary }; };
+  h.hooks.inventory = async index => { if (index === 2) postcheck.resolve(); return structuredClone(manifest); };
+  let settled = false;
+  const execution = executeFull(p, h.io).then(receipt => { settled = true; return receipt; });
+  await postcheck.promise; await flush(); expect(h.events.filter(event => event.kind === "attempt-finish")).toHaveLength(6);
+  expect(settled).toBe(false); expect(h.events.some(event => event.kind === "done")).toBe(false);
+  query.resolve({ stdout: "malformed" }); const receipt = await execution;
+  expect(receipt.qualificationResults.every(result => result.accepted)).toBe(true);
+  expect(receipt.status).toBe("FAIL_GPU_FULL_TESTS_ONLY"); expect(h.clock.count()).toBe(0);
+});
+
+test("source postcheck failure remains unknown and source mutation prevents done", async () => {
+  for (const mode of ["error", "changed"]) {
+    const h = harness(); h.hooks.inventory = async index => {
+      if (index === 1) return structuredClone(manifest);
+      if (mode === "error") throw Error("SOURCE_CHECK_UNAVAILABLE"); return manifest.slice(1);
+    };
+    const receipt = await executeFull(p, h.io);
+    expect(receipt.status).toBe("FAIL_GPU_FULL_TESTS_ONLY"); expect(h.events.some(event => event.kind === "done")).toBe(false);
+    expect(receipt.sourceStabilityChecked).toBe(mode === "changed"); expect(receipt.sourceChanged).toBe(mode === "changed" ? true : null);
+  }
+});
+
+test("finalization deadline aborts a pending source postcheck without inventing cancellation", async () => {
+  const h = harness(), postcheck = deferred<typeof manifest>(), entered = deferred<void>();
+  h.hooks.inventory = index => { if (index === 1) return Promise.resolve(structuredClone(manifest)); entered.resolve(); return postcheck.promise; };
+  let settled = false;
+  const execution = executeFull(p, h.io).then(receipt => { settled = true; return receipt; });
+  await entered.promise; await h.clock.advance(20000);
+  expect(h.events.find(event => event.kind === "abort")!.reason).toContain("DRIVER_DEADLINE"); expect(settled).toBe(false);
+  postcheck.resolve(structuredClone(manifest)); const receipt = await execution;
+  expect(receipt.status).toBe("FAIL_GPU_FULL_TESTS_ONLY"); expect(receipt.sourceChanged).toBeNull(); expect(h.events.some(event => event.kind === "done")).toBe(false);
+});
+
+test("the clipped native-work deadline and invalid budgets cannot borrow finalization time", async () => {
+  for (const budgetMs of [0, NaN, -1]) {
+    const h = harness(); h.io.budgetMs = budgetMs;
+    expect((await executeFull(p, h.io)).failure).toContain("DRIVER_DEADLINE"); expect(h.commands).toHaveLength(0);
+  }
+  const h = harness(); h.io.budgetMs = 500;
+  h.hooks.test = async () => { h.clock.time = 500; return { stdout: summary }; };
+  const receipt = await executeFull(p, h.io);
+  expect(receipt.failure).toContain("DRIVER_DEADLINE"); expect(receipt.results).toHaveLength(1);
+  expect(h.commands[1]!.timeout).toBe(500); expect(h.events.some(event => event.kind === "done")).toBe(false);
+});
+
+test("source-only import leaves the Bun-property-gated container adapter inert before any I/O", async () => {
+  const source = await readFile(new URL("./driver.ts", import.meta.url), "utf8"), entry = source.slice(source.indexOf("export async function runFullDriver("));
+  expect(source).not.toContain("import.meta.main"); expect(source).not.toContain("Bun.version(");
+  expect(entry).toContain('Bun.version === "1.4.0" && process.cwd() === "/build/native"');
+  expect(entry.indexOf("PINNED_ORIGINAL_CONTAINER_CONTEXT_REQUIRED")).toBeLessThan(entry.indexOf('readFile("/evidence/deadline.json"'));
+  expect(source).toContain('const originalHelperPath = "/build/native/_work/gpu-owner-recovery/verify.ts"');
+  expect(source).toContain('const originalQualificationPath = "/build/native/tooling/runtime/qualification.ts"');
+  expect(entry).toContain("deadline.normalDeadlineEpoch - Date.now() - 20000");
+  const h = harness(); await executeFull(p, h.io);
+  expect(h.commands.every(command => command.argv[0] === "nvidia-smi" || p.artifacts.some(binding => binding.executable === command.argv[0]))).toBe(true);
+  expect(h.commands.every(command => command.directory.startsWith(`/build/native/_work/gpu-owner-recovery/runs/${p.runId}/`))).toBe(true);
+});
+
+test("connected pure mock driver watchdog requests owned HOST stop while a test is pending", async () => {
+  const { executeFullHost } = await import("./host");
+  const h = harness(), native = deferred<Reply>(), calls: { id: string; argv: string[] }[] = [], owned = "d".repeat(64);
+  let saved: string | null = null, inner: Awaited<ReturnType<typeof executeFull>> | null = null, journal = "";
+  let abort: (reason: string) => Promise<void> = async () => {};
+  const monitor = progressWatchdog(p, h.clock.now), append = h.io.appendJournal;
+  h.io.appendJournal = async line => {
+    await append(line); journal += line;
+    try { monitor.read(journal); } catch (error) { await abort(String(error)); }
+  };
+  h.hooks.test = () => native.promise;
+  h.hooks.query = async index => ({ stdout: csv(index === 1 ? 3072 : 2047) });
+  const outer = await executeFullHost(p, fullPaths("/source-only-mock", p), 1000, 1000, {
+    now: h.clock.now, recover: async () => saved, innerReceipt: async () => inner,
+    watch: request => { abort = request; return { close: async () => ({ guardComplete: false }) }; },
+    run: async (id, argv) => {
+      calls.push({ id, argv }); if (id === "worker-create") saved = owned;
+      if (id === "worker-stop") native.resolve({ stdout: "MOCK_OWNED_CONTAINER_TERMINATED", result: { ...pass, status: "FAIL", exitCode: 137, failure: "MOCK_OWNED_STOP" } });
+      if (id === "worker-logs") { const executing = executeFull(p, h.io); await flush(); await h.clock.advance(2000); inner = await executing; }
+      return { status: "PASS", exitCode: 0, failure: null, stdout: id === "worker-state" ? JSON.stringify({ Running: false, ExitCode: 137, OOMKilled: false }) : "" };
+    },
+  });
+  expect(outer.status).toBe("FAIL_HOST_GPU_FULL_ONLY"); expect(outer.failure).toContain("TELEMETRY_RUNNING_HEADROOM");
+  expect(calls.map(row => row.id)).toEqual(["worker-create", "worker-start", "worker-logs", "worker-stop", "worker-state", "worker-remove"]);
+  expect(h.commands.filter(row => row.argv[0] !== "nvidia-smi")).toHaveLength(1); expect(outer.innerReceipt.status).toBe("FAIL_GPU_FULL_TESTS_ONLY");
+  expect(outer.innerReceipt).toBe(inner);
+  expect(outer.innerReceipt).toMatchObject({ version: "chess-coach.gpu-full-driver.v1", runId: p.runId, sourceCheckFailure: null });
+  for (const row of calls.filter(row => row.id !== "worker-create")) expect(row.argv.at(-1)).toBe(owned);
+  const base = process.env.HOST_FULL_TEST_EVIDENCE;
+  if (base) {
+    const directory = resolve(base, "connected-driver-watchdog"), scope = "SOURCE_ONLY_PURE_MOCK_E2E_NOT_HOST_GPU_EVIDENCE", name = relative(resolve("_work/gpu-owner-recovery/runs"), directory);
+    if (isAbsolute(name) || name.startsWith("..") || !name.includes("source-")) throw Error("REPOSITORY_SOURCE_FIXTURE_REQUIRED");
+    await mkdir(directory);
+    await writeFile(directory + "/receipt.json", JSON.stringify({ scope, actualDockerProcesses: 0, actualNativeProcesses: 0, gpuExecuted: false, result: outer }, null, 2) + "\n", { flag: "wx" });
+    await writeFile(directory + "/events.ndjson", journal, { flag: "wx" });
+    await writeFile(directory + "/argv.json", JSON.stringify({ scope, actualDockerProcesses: 0, actualNativeProcesses: 0, gpuExecuted: false, calls }, null, 2) + "\n", { flag: "wx" });
+  }
+});

@@ -1,0 +1,31 @@
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-bootstrap.ts(347,114): error TS2339: Property 'complete' does not exist on type 'never'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-bootstrap.ts(348,158): error TS2339: Property 'complete' does not exist on type 'never'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery-bootstrap.ts(392,109): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(options: string | URL | RequestOptions, callback?: ((res: IncomingMessage) => void) | undefined): ClientRequest', gave the following error.
+    Argument of type '(response: ResponseLike) => void' is not assignable to parameter of type '(res: IncomingMessage) => void'.
+      Types of parameters 'response' and 'res' are incompatible.
+        Type 'IncomingMessage' is not assignable to type 'ResponseLike' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+          Type 'IncomingMessage' is not assignable to type '{ statusCode?: number; complete: boolean; readableEnded: boolean; destroyed: boolean; destroy(): unknown; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+            Types of property 'statusCode' are incompatible.
+              Type 'number | undefined' is not assignable to type 'number'.
+                Type 'undefined' is not assignable to type 'number'.
+  Overload 2 of 2, '(url: string | URL, options: RequestOptions, callback?: ((res: IncomingMessage) => void) | undefined): ClientRequest', gave the following error.
+    Argument of type 'RequestOptions' is not assignable to parameter of type 'string | URL'.
+      Type 'RequestOptions' is missing the following properties from type 'URL': hash, host, href, origin, and 6 more.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.test.ts(58,51): error TS2339: Property 'emit' does not exist on type '{ destroyed: boolean; destroy(): void; }'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.test.ts(59,102): error TS2339: Property 'emit' does not exist on type '{ destroyed: boolean; destroy(): void; }'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.test.ts(75,69): error TS2339: Property 'emit' does not exist on type '{ destroyed: boolean; writableFinished: boolean; destroy(): void; end(): void; }'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.test.ts(80,16): error TS2339: Property 'emit' does not exist on type '{ destroyed: boolean; writableFinished: boolean; destroy(): void; end(): void; }'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.test.ts(81,43): error TS2339: Property 'emit' does not exist on type '{ destroyed: boolean; writableFinished: boolean; destroy(): void; end(): void; }'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.test.ts(83,113): error TS2339: Property 'emit' does not exist on type '{ destroyed: boolean; writableFinished: boolean; destroy(): void; end(): void; } | (EventEmitter<any> & { destroyed: boolean; destroy(): void; })'.
+  Property 'emit' does not exist on type '{ destroyed: boolean; writableFinished: boolean; destroy(): void; end(): void; }'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.test.ts(337,49): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(expected: null | undefined): void', gave the following error.
+    Argument of type '200' is not assignable to parameter of type 'null | undefined'.
+  Overload 2 of 2, '(expected: null | undefined): void', gave the following error.
+    Argument of type '200' is not assignable to parameter of type 'null | undefined'.
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.test.ts(343,138): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(expected: null | undefined): void', gave the following error.
+    Argument of type '200' is not assignable to parameter of type 'null | undefined'.
+  Overload 2 of 2, '(expected: null | undefined): void', gave the following error.
+    Argument of type '200' is not assignable to parameter of type 'null | undefined'.

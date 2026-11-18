@@ -1,0 +1,24 @@
+{
+  "status": "READY_SOURCE_THREE_CURRENT_DOCS_RECORDS_AND_FRESH_EXACT_HOST_DECISION_ONLY",
+  "reviewer": "ses_e36649e3affeJjY53mEb5Dxjo5",
+  "verdict": "READY_TO_MERGE_YES",
+  "remainingFindings": [],
+  "closeout": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/final-docs-and-source-check.json",
+    "sha256": "635183f5673d9c34e0b5e15c74e44b8335e761a63b406e6cad3c389b5babda24"
+  },
+  "currentCommand": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command.fish",
+    "bytes": 56775,
+    "sha256": "83919afa384f09b2f597d8c8d3e6eeee108fc47c68aaf32c3a2fba2fc0b50666"
+  },
+  "orderedDiagramIndexMatches": 9,
+  "currentDocHashesChecked": 12,
+  "protectedFeasibilitySourcesChecked": 327,
+  "currentFullSourceHashesChecked": 347,
+  "allCurrentChangesLocalUncommitted": true,
+  "hostExecutionAuthorized": false,
+  "publicationAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

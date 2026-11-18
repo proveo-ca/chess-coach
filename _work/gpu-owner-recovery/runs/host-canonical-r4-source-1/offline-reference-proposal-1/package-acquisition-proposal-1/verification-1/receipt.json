@@ -1,0 +1,59 @@
+{
+  "status": "PASS_UNAPPROVED_PACKAGE_ACQUISITION_PROPOSAL_RECORDS",
+  "failure": null,
+  "bindings": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/request.json",
+      "bytes": 1697,
+      "sha256": "2eb3c9727f788f9c95f0f2650ee89bbd94a5eb5ed289db67d91226e978140b70"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/plan.json",
+      "bytes": 3716,
+      "sha256": "8ecfce5156322da42fb852cd071a6091b96187e19a88226bec68295936505f6c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/verification-1/check.py",
+      "bytes": 9839,
+      "sha256": "c99aa9bf9e2d6eca97704657a31457b63321895d4c668e8e6828b99cb1093f74"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/check.json",
+      "bytes": 3274,
+      "sha256": "acca1e84beb0ebfacf3fb0a7967ffe5d16552861b0da98a4f7e6b4367cee9c63"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/inputs/reference/pnpm-lock.yaml",
+      "bytes": 313664,
+      "sha256": "1d05ed3d8de5a94873f26a2fb51b88c080704d2e90bf942f9f0bb2ce75a504e0"
+    }
+  ],
+  "negativeCasesRejected": [
+    "acquisition-authority",
+    "attempt-budget",
+    "get-count",
+    "archive-byte-cap",
+    "archive-git-exclusion",
+    "new-resolver",
+    "reference-build",
+    "wrong-url",
+    "wrong-integrity",
+    "outside-destination",
+    "unverified-contact-claim",
+    "wildcard-license",
+    "package-execution"
+  ],
+  "freshSerializeReparseComparisons": [
+    "request.json",
+    "plan.json"
+  ],
+  "scope": "JSON_RECORDS_PINNED_LOCK_METADATA_AND_PYTHON_SYNTAX_ONLY",
+  "urlContacted": false,
+  "networkAcquisitionPerformed": false,
+  "archiveExtractionPerformed": false,
+  "packageCodeExecuted": false,
+  "hostNativeGpuOrTrainingExecuted": false,
+  "publicationPerformed": false,
+  "newAuthorityGranted": false,
+  "trainingReady": false
+}

@@ -1,0 +1,59 @@
+{
+  "version": "chess-coach.cuda-tar-module-verification.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./_work/gpu-owner-recovery/cuda-tar.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 4039,
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/cuda-tar.ts",
+      "sha256": "414e579f89e79038bb7fc1a3c9ac0a5f52ca89a3e1cc0590e8861a99a133cf64"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-tar.test.ts",
+      "sha256": "4b7e8d0042fd65bcc828d8daea11e02d9a57d10ce891ca1c498cf68027ef5fcb"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/fixtures/cuda-tar-cases.json",
+      "sha256": "d9ed3b7ca08501243e2a0201e3b4906897c79b028745874993891b57a5e540a9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/verify.ts",
+      "sha256": "00205057b14e144b22e4524ecf866766ace4bb21ae2c7d4bdc146a5dda5e2fd9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+      "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+    }
+  ],
+  "sourceChanged": false,
+  "streams": [
+    {
+      "stream": "stdout",
+      "path": "_work/gpu-owner-recovery/runs/cuda-tar-static-parent-3/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "stream": "stderr",
+      "path": "_work/gpu-owner-recovery/runs/cuda-tar-static-parent-3/command.stderr",
+      "bytes": 4039,
+      "sha256": "7fc1f69b12ba4ddf6fd38a8c285c605e0045503950a6b1999f5e97222f755762"
+    }
+  ],
+  "scope": "PURE_SYNTHETIC_TAR_MODULE_ONLY_NOT_GLOBAL_TOOL_TYPECHECK_OR_RELEASE_COMPATIBILITY",
+  "nativeExecutableInvocations": 0,
+  "realArchiveRead": false,
+  "decompressionPerformed": false,
+  "extractionPerformed": false,
+  "llvmCodeExecuted": false,
+  "trainingReady": false
+}

@@ -1,0 +1,14 @@
+{
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "schedules": 49152,
+  "contacts": 294912,
+  "mines": 98304,
+  "charon": 98304,
+  "rays": 13824,
+  "sha256": {
+    "timing": "62164d42ed350352c742036049dff3db560f93a9cfa90fd0e9af579830f90011",
+    "mines": "f4855c375b80419420b033d5a265b1afd54c39b45dcf23f269c5e62dc890ed41",
+    "charon": "bd6e7bc0d878b3804b6423b2fa1558b35504fec80b942bbd98374d2f65105a08",
+    "rays": "ac9395089c525d61d2427ad4467b03fdecc84ec62b9d475b849ae04e3e5519b9"
+  }
+}

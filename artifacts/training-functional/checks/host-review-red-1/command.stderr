@@ -1,0 +1,68 @@
+
+artifacts/training-functional/host-facts.test.ts:
+(pass) fixed eleven groups bind exact argv, paths, environment and inferred CPU layout [0.29ms]
+(pass) complete mocked observations remain UNKNOWN availability and emit bounded named facts [2.24ms]
+(pass) pure HOST context guard rejects integration root, aliases and failed canonicalization [1.08ms]
+(pass) missing optional metadata does not suppress independent groups or assert GPU startup failure [0.32ms]
+(pass) pure bounded zod parsing rejects null, arrays, missing keys, invalid JSON and non-zod objects [0.26ms]
+(pass) initial origin includes adapter setup and context instead of renewing the phase [0.25ms]
+(pass) new commands use the remaining original phase and cleanup reserve [0.31ms]
+(pass) unresolved async context cannot indefinitely await the query phase [0.23ms]
+(pass) unresolved query cleanup returns uncertainty instead of FULL and permits later groups [0.39ms]
+(pass) regressing monotonic clock stops queries and cannot become FULL [0.30ms]
+(pass) deadline includes final serialization observation [0.42ms]
+(pass) unreaped, missing EOF, timeout, absent ownership or nonzero exit can never be FULL [1.36ms]
+(pass) raw truncation makes observations PARTIAL and keeps actual child exit/EOF/reap facts [0.27ms]
+(pass) escaped final JSON cap drops data, preserves ownership, counts newline and reports PARTIAL [22.20ms]
+(pass) errors are bounded and runner emits exactly one JSON document with nonzero partial exit [0.77ms]
+(pass) FULL runner exits zero and emits a single bounded JSON document [0.26ms]
+(fail) runner bounds blocked output by the original hard deadline without a second emission [1000.00ms]
+  ^ this test timed out after 1000ms.
+21 | async function evaluate(tail = "", prefix = "", args: string[] = []) {
+22 |   const proc = Bun.spawn([process.execPath, "--no-env-file", "--no-install", "--eval", `${prefix}\n${await source()}\n${tail}`, ...args], {
+23 |     cwd: new URL("../../", import.meta.url).pathname, env: { ...CHILD_ENV }, stdin: "ignore", stdout: "pipe", stderr: "pipe",
+24 |   });
+25 |   const [exit, stdout, stderr] = await Promise.all([proc.exited, new Response(proc.stdout).text(), new Response(proc.stderr).text()]);
+26 |   expect(stderr).toBe(""); expect(exit).toBe(0); return stdout;
+                      ^
+error: expect(received).toBe(expected)
+
+- ""
++ "172 | }
++ 173 | 
++ 174 | 
++ 175 |     const invalidBytes=Buffer.from("not JSON"), validBytes=Buffer.from(JSON.stringify({name:"zod",version:"4.6.7",ignored:"x".repeat(100)}));
++ 176 |     let selectedBytes=validBytes;
++ 177 |     stat=async()=>({isFile:()=>true});
++           ^
++ TypeError: Attempted to assign to readonly property.
++       at /home/gu1lty/Projects/proveo/chess-coach-integration/[eval]:177:5
++ 
++ Bun v1.4.0 (Linux x64)
++ "
+
+- Expected  - 1
++ Received  + 12
+
+      at evaluate (/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/host-facts.test.ts:26:18)
+      at async <anonymous> (/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/host-facts.test.ts:180:35)
+(fail) production JSON facts count every input byte even when parsing rejects the input [14.79ms]
+(pass) entry guard accepts only explicit eval argv with --run and remains inert for imports [0.07ms]
+(pass) literal published source parses as Bun TypeScript eval and stays inert without explicit run [32.69ms]
+(pass) literal eval accepts appended mocked collector without any factual HOST calls [11.72ms]
+(pass) explicit eval main rejects mocked wrong HOST before spawn and emits one JSON only [12.81ms]
+(pass) production command adapter captures mocked exact argv/env and distinguishes configuration Id [13.57ms]
+(pass) production command adapter bounded mocked stream captures truncation without unbounded text reads [14.94ms]
+(pass) production ordinary watchdog never waits indefinitely for mocked child exit or pipe EOF [12.95ms]
+(pass) late mocked child exit cannot rewrite an already returned cleanup observation [18.85ms]
+(pass) source adapter stays standalone, metadata-only and bounded without environment reads or writes [0.37ms]
+
+2 tests failed:
+(fail) runner bounds blocked output by the original hard deadline without a second emission [1000.00ms]
+  ^ this test timed out after 1000ms.
+(fail) production JSON facts count every input byte even when parsing rejects the input [14.79ms]
+
+ 25 pass
+ 2 fail
+ 187 expect() calls
+Ran 27 tests across 1 file. [1174.00ms]

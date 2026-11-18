@@ -1,0 +1,22 @@
+@startuml initialization
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Canonical initialization - source prerequisite, not F9 proof
+start
+:Create detached canonical turn-0 snapshot;
+:Seed stable opening unit identities,
+paid basis 0 and combat replacement 4 per side;
+:Keep banks 3, gas 1 and empty queues;
+:Select recipient side;
+:Compute actual geometric vision;
+:Produce authorized cells, current sightings,
+own lineage and zero paid/loss ledger;
+:Validate through bounded standard JSON / Zod;
+:Consume initial observation in candidate / feature tests;
+note right
+  Host-only producer subpath.
+  No inferred historical income or payments.
+  No fabricated fogged opening sightings.
+  No session, native proof or training grant.
+end note
+stop
+@enduml

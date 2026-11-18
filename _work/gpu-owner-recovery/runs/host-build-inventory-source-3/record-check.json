@@ -1,0 +1,21 @@
+{
+  "status": "PASS_HOST_METADATA_SOURCE_AND_COMMAND_RECORDS_ONLY",
+  "sourcesChecked": 288,
+  "verificationStreamsChecked": 12,
+  "mockedE2eStreamsChecked": 32,
+  "diagramIndexMatches": 5,
+  "sourceProofSha256": "8deb36f92441c96724ffb84451c7b195da31eafba4d3992d016d8a05deb76af6",
+  "commandSha256": "c13e8a9a878b0192480d0dd13f71da603f53455e8bdb520c0de3e7416cc7b7f4",
+  "receiveDiscrepancyRetained": {
+    "reportedOnly": [
+      "ntapi@0.3.1"
+    ],
+    "preparedOnly": [
+      "ntapi@0.4.3"
+    ]
+  },
+  "localFishSyntaxValidated": false,
+  "hostQueriesPerformed": false,
+  "hostExecutionApproved": false,
+  "trainingReady": false
+}

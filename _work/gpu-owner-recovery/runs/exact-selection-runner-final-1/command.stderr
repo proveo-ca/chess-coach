@@ -1,0 +1,21 @@
+
+_work/gpu-owner-recovery/verify.test.ts:
+(pass) Bun test commands select exact repository files rather than discovering fixture clones [0.17ms]
+(pass) every source manifest includes the executed supervisor and pinned reference metadata [7.31ms]
+(pass) repository runner retains bounded successful output and exact exit [26.76ms]
+(pass) repository runner preserves nonzero exits without success substitution [22.71ms]
+(pass) repository runner kills its bounded stalled synthetic child [31.94ms]
+(pass) repository runner retains group custody after a command exits with inherited pipes open [204.25ms]
+(pass) repository runner rejects supervisor loss after a successful command exit [222.32ms]
+(pass) repository command supervisor terminates its anchored group on runner disconnect [17.08ms]
+(pass) repository runner rejects stdout overflow and preserves only the bounded prefix [59.11ms]
+(pass) repository runner rejects stderr overflow and preserves only the bounded prefix [63.70ms]
+(pass) repository runner refuses paths outside the repository work root [0.20ms]
+
+_work/gpu-owner-recovery/audit-lock.test.ts:
+(pass) lock audit authenticates the original baseline despite checksum-substituting replacement refs [249.43ms]
+
+ 12 pass
+ 0 fail
+ 72 expect() calls
+Ran 12 tests across 2 files. [925.00ms]

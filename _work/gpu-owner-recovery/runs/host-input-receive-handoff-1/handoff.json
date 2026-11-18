@@ -1,0 +1,16 @@
+{
+  "status": "READY_FOR_ONE_APPROVED_OPERATOR_INVOCATION",
+  "helperSourceCommit": "33b29dd095a3582a02861cef0f155e675a6721cc",
+  "assetSourceCommit": "f3e277dbbf33c0aa69172cca1890792656d4cd09",
+  "helper": {
+    "path": "_work/gpu-owner-recovery/qualification/host-receive/receive.ts",
+    "bytes": 17994,
+    "sha256": "091a431757ef83710a95156816e085cb1ed36b632e4923c9632695ffe821bafa"
+  },
+  "command": "_work/gpu-owner-recovery/runs/host-input-receive-handoff-1/host-command.fish",
+  "commandSha256": "8def4344fb3179ed0c6fc3d7275c9c644da2ae6dd61eb9950c749dba3af7eb76",
+  "expectedReceipt": "_work/gpu-owner-recovery/runs/host-input-receive-1/receipt.json",
+  "expectedStatus": "PASS_HOST_RECEIVE_AND_EXTRACT_ONLY",
+  "operatorHostExecutedByCodingAgent": false,
+  "trainingReady": false
+}

@@ -1,0 +1,62 @@
+{
+  "scope": "USER_TRANSFERRED_SANDBOX_EXPORT_LOCAL_BYTE_VERIFICATION_NOT_INDEPENDENT_HOST_ATTESTATION",
+  "decision": "Executor requested sbx copy to sandbox /tmp and confirmed copied",
+  "source": "/tmp/training-qualification-json-export-1.json",
+  "expectedBytes": 262703,
+  "expectedSha256": "fea1c2807458c3f51698e7e2c38e1c3b15367ae8ef337cf5e057b9e8fc3b0103",
+  "sourceOpenAttempts": 1,
+  "sourceOpened": true,
+  "sourceBytesRead": 262703,
+  "status": "PASS_EXACT_EXPORT_AND_SIX_EXTRACTED_BYTE_REFS",
+  "failure": null,
+  "export": {
+    "path": "artifacts/training-functional/qualification-result-1/returned-2/export.json",
+    "byteLength": 262703,
+    "sha256": "fea1c2807458c3f51698e7e2c38e1c3b15367ae8ef337cf5e057b9e8fc3b0103"
+  },
+  "files": [
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/operator-report.json",
+      "byteLength": 34157,
+      "sha256": "13889168a5c9f77885a95460237edbb766abcf1ad9448ea7769133a050bf663a",
+      "sourcePath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-1/evidence/operator-report.json"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/canonical.json",
+      "byteLength": 36742,
+      "sha256": "d5e5f86bc94e232fbfa897b69b1f7595596bdd2e3bca8336f61d7a37756cf484",
+      "sourcePath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-1/evidence/canonical.json"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/r4.json",
+      "byteLength": 20265,
+      "sha256": "af939100a853ba93c14d3313858110a679ae10e46aba7e52679b495c21f07cbc",
+      "sourcePath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-1/evidence/r4.json"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/functional-evidence.json",
+      "byteLength": 1631,
+      "sha256": "17cdc9a7c30792104bb3bdecbedd9a289d2e31be30e1c9714ec5175d4e184eb1",
+      "sourcePath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-1/evidence/functional-evidence.json"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/preparation-receipt.json",
+      "byteLength": 1921,
+      "sha256": "20f2b4620ef665698a8b7bfffc9fb10ac784491541bc531aa682e7f666a47fd7",
+      "sourcePath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-delivery-1/preparation-receipt.json"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/input-manifest.json",
+      "byteLength": 143938,
+      "sha256": "7bc8885b4ee97be1d4935aa4dcc994275ea41e2e368b144e29be1b598b53ae51",
+      "sourcePath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/qualification-inputs/input-manifest.json"
+    }
+  ],
+  "otherHostFilesRead": false,
+  "hostCommandsExecuted": false,
+  "nativeOrGpuExecuted": false,
+  "trainingExecuted": false,
+  "commitOrPushPerformed": false,
+  "qualified": false,
+  "trainingReady": false
+}

@@ -1,0 +1,75 @@
+{
+  "version": "chess-coach.cuda-development-input-request.v1",
+  "status": "COMPLETED_APPROVED_ACQUISITION_AND_METADATA_RETRY",
+  "objective": "ADVANCE_TO_REAL_SOURCE_CUDA_FEATURE_COMPILATION_WITHOUT_GPU_EXECUTION",
+  "phase": "UNBLOCK_ACTUAL_OFFLINE_CARGO_METADATA_FIRST",
+  "observedBlockerReceipt": "_work/gpu-owner-recovery/runs/readiness-real-cuda-metadata-1/receipt.json",
+  "observedBlocker": "Cargo refused to download cubek-fft v0.3.1 because --offline was specified.",
+  "sourceKind": "ACTUAL_WORKSPACE_NOT_SURROGATE",
+  "acquisitionAuthorized": true,
+  "authorization": {
+    "source": "EXECUTOR_SELECTED_AUTHORIZE_EXACT_DOWNLOAD",
+    "grantStatus": "CONSUMED_SUCCESS",
+    "scope": "SINGLE_PINNED_CUBEK_FFT_ARCHIVE_VALIDATION_CACHE_PLACEMENT_AND_OFFLINE_METADATA_RETRY_ONLY",
+    "additionalDownloadsAuthorized": false,
+    "compilationAuthorized": false,
+    "buildScriptExecutionAuthorized": false
+  },
+  "recordReview": {
+    "sessionId": "ses_e449a9522ffeXCHj1s8rfrZ8pM",
+    "readOnly": true,
+    "blockingOrHighRecordOverclaims": 0,
+    "verdict": "READY_TO_ASK_EXACT_INPUT_PERMISSION_ONLY"
+  },
+  "requestedArtifacts": [
+    {
+      "kind": "CARGO_REGISTRY_SOURCE_ARCHIVE",
+      "name": "cubek-fft",
+      "version": "0.3.1",
+      "url": "https://static.crates.io/crates/cubek-fft/cubek-fft-0.3.1.crate",
+      "byteLength": 56719,
+      "sha256": "48451902f1d21d3eb88cadc17a8a7aeb3b582f17484a68e650f44efe74688b73",
+      "checksumAuthority": "UNCHANGED_CARGO_LOCK",
+      "publicMetadataUrl": "https://crates.io/api/v1/crates/cubek-fft/0.3.1",
+      "publicMetadataMatchesLock": true,
+      "destination": "_work/gpu-owner-recovery/cache/cargo/registry/cache/index.crates.io-1949cf8c6b5b557f/cubek-fft-0.3.1.crate"
+    }
+  ],
+  "requestedActionsAfterApproval": [
+    "Download only the exact allowlisted source archive without credentials or redirects to other origins.",
+    "Verify exact byte length and independently pinned SHA-256 before cache placement.",
+    "Reuse an existing destination only if its bytes match; never overwrite conflicting bytes.",
+    "Retry real-workspace cargo metadata with --locked --offline and the same gpu-cuda feature selection.",
+    "Retain bounded repository-owned manifests, receipts and original command streams."
+  ],
+  "metadataRetry": [
+    "cargo", "metadata", "--manifest-path", "Cargo.toml", "--locked", "--offline",
+    "--format-version", "1", "--filter-platform", "x86_64-unknown-linux-gnu",
+    "--features", "chess-coach-policy-io/gpu-cuda"
+  ],
+  "otherCrateAcquisitionAuthorized": false,
+  "llvmOrNvidiaAcquisitionAuthorized": false,
+  "libdeviceReacquisitionAuthorized": false,
+  "cudaCompilationAuthorizedByThisRequest": false,
+  "dependencyBuildScriptExecutionAuthorizedByThisRequest": false,
+  "gpuExecutionAuthorized": false,
+  "hostOrContainerOperationsAuthorized": false,
+  "imageBuildAuthorized": false,
+  "publicationAuthorized": false,
+  "trainingAuthorized": false,
+  "completeCompilerClosureEstablished": false,
+  "acquisitionReceipt": "_work/gpu-owner-recovery/runs/cubek-fft-exact-acquisition-1/receipt.json",
+  "metadataRetryReceipt": "_work/gpu-owner-recovery/runs/readiness-real-cuda-metadata-2/receipt.json",
+  "selectedGraph": "_work/gpu-owner-recovery/readiness-cuda-selection.json",
+  "futureAcquisitionFromThisGrantAuthorized": false,
+  "laterInputFacts": {
+    "cubeclLlvm": "0.11.3",
+    "tracelLlvmBundler": "23.1.0-4",
+    "llvmSys": "231.0.2",
+    "cudarc": "0.19.10",
+    "libdeviceIsLoadedByNvptxAtKernelCompilationTime": true,
+    "cargoOfflineDoesNotConstrainArbitraryBuildScriptNetworkAccess": true,
+    "futureCompilerProvisioningRequiresASeparateExactManifest": true
+  },
+  "trainingReady": false
+}

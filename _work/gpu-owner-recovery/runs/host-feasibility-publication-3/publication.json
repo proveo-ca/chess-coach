@@ -1,0 +1,404 @@
+{
+  "version": "chess-coach.qualification-input-publication.v1",
+  "status": "PASS",
+  "failure": null,
+  "failedStep": null,
+  "elapsedMs": 21178.921619,
+  "attempts": {
+    "commit": 1,
+    "push": 1,
+    "createRelease": 1,
+    "upload": 2,
+    "validateFrozen": 3,
+    "commitManifest": 1,
+    "checkTransport": 4,
+    "checkOrigin": 6,
+    "checkIdentity": 1
+  },
+  "operations": [
+    {
+      "step": "branch",
+      "kind": "command",
+      "timeoutMs": 599999,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "origin-fetch",
+      "kind": "callback",
+      "timeoutMs": 599983,
+      "status": "PASS"
+    },
+    {
+      "step": "origin-push",
+      "kind": "callback",
+      "timeoutMs": 599975,
+      "status": "PASS"
+    },
+    {
+      "step": "https-transport-preflight",
+      "kind": "callback",
+      "timeoutMs": 599973,
+      "status": "PASS"
+    },
+    {
+      "step": "identity-preflight",
+      "kind": "callback",
+      "timeoutMs": 599969,
+      "status": "PASS"
+    },
+    {
+      "step": "permission",
+      "kind": "command",
+      "timeoutMs": 599967,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/gh",
+        "api",
+        "repos/proveo-ca/chess-coach",
+        "--jq",
+        "{full_name,private,permissions}"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "index",
+      "kind": "command",
+      "timeoutMs": 599345,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "diff",
+        "--cached",
+        "--name-only",
+        "--"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "freeze-before-commit",
+      "kind": "callback",
+      "timeoutMs": 599331,
+      "status": "PASS"
+    },
+    {
+      "step": "commit",
+      "kind": "command",
+      "timeoutMs": 599198,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "commit",
+        "-m",
+        "chore: prepare host feasibility inputs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "head",
+      "kind": "command",
+      "timeoutMs": 599161,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "rev-parse",
+        "--verify",
+        "HEAD"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "freeze-after-commit",
+      "kind": "callback",
+      "timeoutMs": 599148,
+      "status": "PASS"
+    },
+    {
+      "step": "branch-before-push",
+      "kind": "command",
+      "timeoutMs": 598639,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "origin-fetch-before-push",
+      "kind": "callback",
+      "timeoutMs": 598624,
+      "status": "PASS"
+    },
+    {
+      "step": "origin-push-before-push",
+      "kind": "callback",
+      "timeoutMs": 598623,
+      "status": "PASS"
+    },
+    {
+      "step": "https-transport-before-push",
+      "kind": "callback",
+      "timeoutMs": 598622,
+      "status": "PASS"
+    },
+    {
+      "step": "push",
+      "kind": "command",
+      "timeoutMs": 598621,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "push",
+        "https://github.com/proveo-ca/chess-coach.git",
+        "f3e277dbbf33c0aa69172cca1890792656d4cd09:refs/heads/feat-ml-adjuntant-ii"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "head-after-push",
+      "kind": "command",
+      "timeoutMs": 596454,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "rev-parse",
+        "--verify",
+        "HEAD"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "branch-before-publication",
+      "kind": "command",
+      "timeoutMs": 596443,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "origin-fetch-before-publication",
+      "kind": "callback",
+      "timeoutMs": 596430,
+      "status": "PASS"
+    },
+    {
+      "step": "origin-push-before-publication",
+      "kind": "callback",
+      "timeoutMs": 596429,
+      "status": "PASS"
+    },
+    {
+      "step": "freeze-before-publication",
+      "kind": "callback",
+      "timeoutMs": 596428,
+      "status": "PASS"
+    },
+    {
+      "step": "manifest",
+      "kind": "callback",
+      "timeoutMs": 595928,
+      "status": "PASS"
+    },
+    {
+      "step": "https-transport-tag-before-create",
+      "kind": "callback",
+      "timeoutMs": 595804,
+      "status": "PASS"
+    },
+    {
+      "step": "tag-before-create",
+      "kind": "command",
+      "timeoutMs": 595802,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "ls-remote",
+        "--tags",
+        "https://github.com/proveo-ca/chess-coach.git",
+        "refs/tags/gpu-feasibility-inputs-20261110-1",
+        "refs/tags/gpu-feasibility-inputs-20261110-1^{}"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "release-create",
+      "kind": "command",
+      "timeoutMs": 595474,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/gh",
+        "api",
+        "--method",
+        "POST",
+        "repos/proveo-ca/chess-coach/releases",
+        "-f",
+        "tag_name=gpu-feasibility-inputs-20261110-1",
+        "-f",
+        "target_commitish=f3e277dbbf33c0aa69172cca1890792656d4cd09",
+        "-F",
+        "draft=true",
+        "-f",
+        "name=gpu-feasibility-inputs-20261110-1"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "release-before-upload-1",
+      "kind": "command",
+      "timeoutMs": 594919,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/gh",
+        "api",
+        "repos/proveo-ca/chess-coach/releases/439935095"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "upload-1",
+      "kind": "command",
+      "timeoutMs": 594711,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/gh",
+        "release",
+        "upload",
+        "gpu-feasibility-inputs-20261110-1",
+        "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-feasibility-inputs-1/host-feasibility-inputs-1.tar.gz",
+        "--repo",
+        "proveo-ca/chess-coach"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "release-before-upload-2",
+      "kind": "command",
+      "timeoutMs": 581083,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/gh",
+        "api",
+        "repos/proveo-ca/chess-coach/releases/439935095"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "upload-2",
+      "kind": "command",
+      "timeoutMs": 580781,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/gh",
+        "release",
+        "upload",
+        "gpu-feasibility-inputs-20261110-1",
+        "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-feasibility-inputs-1/host-feasibility-inputs-1.manifest.json",
+        "--repo",
+        "proveo-ca/chess-coach"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "release-final",
+      "kind": "command",
+      "timeoutMs": 579422,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/gh",
+        "api",
+        "repos/proveo-ca/chess-coach/releases/439935095"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "https-transport-tag-final",
+      "kind": "callback",
+      "timeoutMs": 579125,
+      "status": "PASS"
+    },
+    {
+      "step": "tag-final",
+      "kind": "command",
+      "timeoutMs": 579124,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "ls-remote",
+        "--tags",
+        "https://github.com/proveo-ca/chess-coach.git",
+        "refs/tags/gpu-feasibility-inputs-20261110-1",
+        "refs/tags/gpu-feasibility-inputs-20261110-1^{}"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "transportChecks": [
+    {
+      "allowed": true,
+      "rules": 0,
+      "failure": null
+    },
+    {
+      "allowed": true,
+      "rules": 0,
+      "failure": null
+    },
+    {
+      "allowed": true,
+      "rules": 0,
+      "failure": null
+    },
+    {
+      "allowed": true,
+      "rules": 0,
+      "failure": null
+    }
+  ],
+  "commitSucceeded": true,
+  "sourceCommit": "f3e277dbbf33c0aa69172cca1890792656d4cd09",
+  "pushedCommit": "f3e277dbbf33c0aa69172cca1890792656d4cd09",
+  "releaseId": 439935095,
+  "releaseDraft": true,
+  "assets": [
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-feasibility-inputs-1/host-feasibility-inputs-1.tar.gz",
+      "bytes": 140694281,
+      "sha256": "9001bfeb88ce5433138d5f0fd23b3c7ab0590cc0bd47900cc1c0a1d6923c65f7"
+    },
+    {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-feasibility-inputs-1/host-feasibility-inputs-1.manifest.json",
+      "bytes": 868843,
+      "sha256": "2676780f2b932d0453fef05ad39581152f47efeaea11ae22b9079875fece1829"
+    }
+  ],
+  "uploadedAssets": [
+    "host-feasibility-inputs-1.tar.gz",
+    "host-feasibility-inputs-1.manifest.json"
+  ],
+  "verifiedAssets": [
+    {
+      "name": "host-feasibility-inputs-1.manifest.json",
+      "bytes": 868843,
+      "sha256": "2676780f2b932d0453fef05ad39581152f47efeaea11ae22b9079875fece1829"
+    },
+    {
+      "name": "host-feasibility-inputs-1.tar.gz",
+      "bytes": 140694281,
+      "sha256": "9001bfeb88ce5433138d5f0fd23b3c7ab0590cc0bd47900cc1c0a1d6923c65f7"
+    }
+  ],
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

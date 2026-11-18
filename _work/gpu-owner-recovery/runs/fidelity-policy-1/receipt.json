@@ -1,0 +1,35 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "fidelity-policy-1",
+  "stage": "policy",
+  "sourceManifestSha256": "d61d3a1203bea175f25e3d43ab6b497764c6d940b602b7c979451dcec8e96225",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "packages/runtime/tests/gpu-policy.test.ts",
+    "packages/runtime/tests/gpu-policy-conformance.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 27434,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/fidelity-policy-1/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/fidelity-policy-1/command.stderr",
+    "bytes": 27434,
+    "sha256": "e676b6b4fd035b6f05f2484cc67fd569e3200e89477f3ea9d594ba43031f2640"
+  },
+  "sourceCount": 194,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

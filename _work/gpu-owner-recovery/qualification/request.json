@@ -1,0 +1,23 @@
+{
+  "version": "chess-coach.gpu-qualification-preparation-request.v1",
+  "status": "APPROVED_SOURCE_PREPARATION_AND_ONE_FIVE_QUERY_LLVM_BATCH",
+  "authorizationSource": "EXECUTOR_SELECTED_PREPARE_PLUS_QUERY_RECOMMENDED",
+  "sourcePreparationAuthorized": true,
+  "llvmExecutable": "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4/bin/llvm-config",
+  "llvmQueries": ["--cxxflags", "--includedir", "--libdir", "--libs", "--system-libs"],
+  "llvmQueryCommonArgument": "--link-static",
+  "maximumQueryInvocations": 5,
+  "queryDeadlineMs": 10000,
+  "stopOnFirstFailure": true,
+  "automaticRetryAuthorized": false,
+  "versionQueryAuthorized": false,
+  "downloadAuthorized": false,
+  "installationAuthorized": false,
+  "prefixModificationAuthorized": false,
+  "prefixSelectionAuthorized": false,
+  "copyingOrStagingAuthorized": false,
+  "compilationAuthorized": false,
+  "imageOperationAuthorized": false,
+  "hostGpuOperationAuthorized": false,
+  "trainingAuthorized": false
+}

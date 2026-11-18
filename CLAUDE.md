@@ -17,6 +17,7 @@ When you add, rename, or remove a component, hook, store, or service:
 | File | Covers |
 |---|---|
 | `_spec/architecture.puml` | Top-level system architecture |
+| `_spec/ml-runtime-architecture.puml` | ML runtime boundaries: `packages/{game-core,contracts,policy,runtime}`, `crates/learning`, `crates/policy-io`, host GPU job |
 | `_spec/components.puml` | Full-stack architecture: UI ↔ Bun server (desktop) / in-browser workers (web); runtime modes (desktop / web-full / web-no-llm) |
 | `_spec/sequence.puml` | Move, hint, and advice request flows (end-to-end) |
 | `_spec/summary.md` | High-level overview |

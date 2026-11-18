@@ -1,0 +1,63 @@
+{
+  "version": "chess-coach.r2-publication-checker-verification.v1",
+  "status": "PASS_THIRTY_TESTS_STRICT_TYPES_THREE_READY_REVIEWS_AND_REMOTE_BASELINE",
+  "sources": {
+    "verify-publication.ts": "8615956059a7c13d46407fa1621606926fcf752f2b9d4321549b0ebd2d5a2c52",
+    "verify-publication.test.ts": "faa75d25106f947b8a3ce40198e29a663566280f333c1dc7dfdc5c69af1405a4"
+  },
+  "testsPassed": 30,
+  "testsFailed": 0,
+  "assertions": 47,
+  "strictTypecheckExitCode": 0,
+  "streamIdentities": [
+    {
+      "path": "tests2.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "tests2.stderr",
+      "bytes": 76,
+      "sha256": "dbd26f275ed83d0b9a21ce11f6dfc3b9b56885c938258f821dfa38090ef6beea"
+    },
+    {
+      "path": "tests2-exit.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "types2.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "types2.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "types2-exit.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "remote-preflight.stdout",
+      "bytes": 96,
+      "sha256": "1c45f711f90722b27d64d46d586d22bff16bf81ebec17d713a3238b0ffc9b5bf"
+    },
+    {
+      "path": "remote-preflight.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "remote-preflight-exit.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    }
+  ],
+  "freezeAndStagedByteVerificationPending": true,
+  "commitOrPushPerformed": false,
+  "manualExecutionPerformed": false,
+  "trainingReady": false
+}

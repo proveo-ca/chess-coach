@@ -1,0 +1,113 @@
+{
+  "status": "FAIL_SOURCE_ONLY",
+  "results": [
+    {
+      "name": "tests",
+      "command": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "30000",
+        "./artifacts/training-functional/reference-prep.test.ts"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "types",
+      "command": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "-p",
+        "artifacts/training-functional/reference-prep-1/tsconfig.json"
+      ],
+      "exitCode": 2
+    }
+  ],
+  "sourcePinsBefore": [
+    {
+      "path": "artifacts/training-functional/reference-prep.ts",
+      "byteLength": 27394,
+      "sha256": "49599141613de07469176a848cc6745077cda89ecfce2fec7daed0354c14f5a2"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep.test.ts",
+      "byteLength": 17177,
+      "sha256": "e5a2ad16291c02c3dd398f2fe94c6369fd6647e2f6127c9f86532c0287c03287"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep-1/plan.json",
+      "byteLength": 2714,
+      "sha256": "74b3ae8df07d9a7c215f99aecc46f9defd68005b7a04d102d7e11c85d6fbb059"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep-1/tsconfig.json",
+      "byteLength": 142,
+      "sha256": "ca1c96f46b434ca4b2e2859b76cb9de3759550d6258b3c43cb4d30e3d56ec281"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep-1/verify-source.ts",
+      "byteLength": 2980,
+      "sha256": "feef4c2903dd08b724ffa2c491d8dc4365d5d4cd31cbbff1130568f5adbbc94f"
+    },
+    {
+      "path": "tooling/build-reference.ts",
+      "byteLength": 3519,
+      "sha256": "41885a3bb70f4b86e131bd3176a65fe7aefe724846db961ea6c070b4f6537054"
+    },
+    {
+      "path": "tooling/reference-entrypoints.json",
+      "byteLength": 478,
+      "sha256": "4fb9727741bb4778d260be6e6d14c3b9e38bbfd5751f49d7262273a83b5d5396"
+    }
+  ],
+  "sourcePinsAfter": [
+    {
+      "path": "artifacts/training-functional/reference-prep.ts",
+      "byteLength": 27394,
+      "sha256": "49599141613de07469176a848cc6745077cda89ecfce2fec7daed0354c14f5a2"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep.test.ts",
+      "byteLength": 17177,
+      "sha256": "e5a2ad16291c02c3dd398f2fe94c6369fd6647e2f6127c9f86532c0287c03287"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep-1/plan.json",
+      "byteLength": 2714,
+      "sha256": "74b3ae8df07d9a7c215f99aecc46f9defd68005b7a04d102d7e11c85d6fbb059"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep-1/tsconfig.json",
+      "byteLength": 142,
+      "sha256": "ca1c96f46b434ca4b2e2859b76cb9de3759550d6258b3c43cb4d30e3d56ec281"
+    },
+    {
+      "path": "artifacts/training-functional/reference-prep-1/verify-source.ts",
+      "byteLength": 2980,
+      "sha256": "feef4c2903dd08b724ffa2c491d8dc4365d5d4cd31cbbff1130568f5adbbc94f"
+    },
+    {
+      "path": "tooling/build-reference.ts",
+      "byteLength": 3519,
+      "sha256": "41885a3bb70f4b86e131bd3176a65fe7aefe724846db961ea6c070b4f6537054"
+    },
+    {
+      "path": "tooling/reference-entrypoints.json",
+      "byteLength": 478,
+      "sha256": "4fb9727741bb4778d260be6e6d14c3b9e38bbfd5751f49d7262273a83b5d5396"
+    }
+  ],
+  "sourcePinsMatch": true,
+  "networkOperations": 0,
+  "referenceBuilds": 0,
+  "nativeExecuted": false,
+  "hostExecuted": false,
+  "gpuExecuted": false,
+  "trainingExecuted": false,
+  "trainingReady": false
+}

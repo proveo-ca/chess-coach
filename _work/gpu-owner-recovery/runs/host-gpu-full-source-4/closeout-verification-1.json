@@ -1,0 +1,32 @@
+{
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/verify-closeout.ts",
+    "closeout-1"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 75,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/closeout-execution-1/command.stdout",
+      "bytes": 75,
+      "sha256": "a3a1e25652e7e114bb2759e45a9940414a7bd3438035b5b249296f03bf143e2d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/closeout-execution-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "checkerReview": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/closeout-checker-review.json",
+    "sha256": "590ae658bdd4aff038ec6646fe03787806d2b3bea533c99bf18a48011eab71e5"
+  },
+  "codingHostOperationsPerformed": false,
+  "trainingReady": false
+}

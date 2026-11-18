@@ -1,0 +1,13 @@
+{
+  "version": "chess-coach.input-inventory-source-failure.v1",
+  "status": "FAIL_FISH_PATH_RESOLVED_TO_MISE_SHIM_BEFORE_SYNTAX_CHECK",
+  "actualReceipt": "_work/gpu-owner-recovery/runs/gpu-input-inventory-source-1/receipt.json",
+  "syntaxCommandAttempted": true,
+  "fishSyntaxEstablished": false,
+  "reportedError": "mise ERROR Config files in /home/gu1lty/Projects/proveo/chess-coach/mise.toml are not trusted.",
+  "miseTrustOrInstallationPerformed": false,
+  "llvmInventoryInvocationsConsumed": 0,
+  "hostPacketExecuted": false,
+  "correction": "USE_THE_EXISTING_DIRECT_FISH_4_9_3_PATH_FROM_THE_PRIOR_SYNTAX_VERIFIER_WITHOUT_MISE_DISCOVERY_OR_INSTALLATION",
+  "trainingReady": false
+}

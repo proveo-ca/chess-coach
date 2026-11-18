@@ -1,0 +1,147 @@
+@startuml qualification_bootstrap
+' purpose: pinned qualification delivery and offline preparation before the existing operator owns execution
+' covers: artifacts/training-functional/qualification-bootstrap.ts
+' covers: artifacts/training-functional/qualification-bootstrap.e2e.test.ts
+' covers: artifacts/training-functional/qualification-command.test.ts
+' covers: artifacts/training-functional/qualification-delivery-1/**
+' status: QUALIFICATION_DELIVERY_SOURCE_VERIFIED_PUBLICATION_PENDING / SOURCE_ONLY / trainingReady:false. Corrected delivery source2 bootstrap102 tests/2208 assertions/strict TSC PASS; command7/35; fresh delivery-2 ALL12PASS/920tests/3 strict types. Both review2 verdicts READY/no findings close the two permission findings. Final static alignment, final-verification record, explicit source/staged-byte freeze and checked publication remain completion conditions, not completed publication or HOST/native qualification.
+' authority: artifacts/training-functional/qualification-delivery-1/plan.json records Executor's Publish + offline build selection. Architect ses_e1604087dffefOO5N1eFUYywNs GO and DevOps ses_e160360a1ffek04aCBDs3247Ru advisory preceded code per the lead; the architect follow-up accepts explicit Bash with zero interior single quotes, not a Fish heredoc.
+' publication: NOT PERFORMED; ONE NEW normal commit + ONE push remain unconsumed for existing feat-ml-adjuntant-ii / PR51 OPEN / main; no force, amend, new PR, automatic retry, or renewal of the consumed prior grant. Plan preflight records local integrate/starchess-ml-main and matching local/remote base 6a77f4c637f1d44260d5787c57a57b34fbffd754; this spec pass performs no Git or remote check. Checked publication precedes literal command delivery.
+' permission reviews CLOSED: artifacts/training-functional/qualification-delivery-1/adversarial-review-2.json and security-review-2.json both READY/source-only/no findings; security LOW/static-only/no reviewer test rerun. Their source/test pins match the corrected source2 receipt below. Retain review1 READY:no/two MEDIUM findings, source1 bootstrap95/2012 and delivery-1 ALL12PASS/913tests as known-bug history, never final acceptance.
+' accepted permission correction: retain outer Bash umask077/private L/operator posture. Temporarily set umask0022 ONLY synchronously around Bun.spawn for each Git child in fresh D/source; restore prior parent077 immediately in finally, including spawn errors, without an intervening await. Worker/builder/all non-Git child masks and strict captured435 source-mode guards remain unchanged; no HOST chmod/repair/install or new hardening framework.
+' corrected source2 proof: artifacts/training-functional/checks/qualification-bootstrap-source-2/receipt.json binds qualification-bootstrap.ts38668B/SHA256 e22505c5e3c492c25a6068089116a69dd70b398f3536629c8e8433a6eefbb968 and qualification-bootstrap.e2e.test.ts62504B/SHA256 1142d1f09c3a2a47d17bb9beb88aa7404fe8caff335872bf5e37bd78862b2fee. GREEN102/2208/reported219ms/strict TSC5.390133791s verifies spawnBootstrapChild's Git inheritance/immediate exact prior-mask restoration/error/non-Git behavior, readable0444/0555 Zod/fresh0644 copies/read failures/non-regular rejection/unchanged strict execution and reference modes. All operational I/O is injected; Bun spawn/fetch/actual bootstrap/native calls0.
+' fresh source cohort: artifacts/training-functional/checks/delivery-2/summary.json ALL12PASS/exit0/failure:null/sourcePinsMatch:true. Lead checked all12 receipts: SAME358 selected verification pins/equal across receipts/matching current source. Focused65/runtime62/contracts25/R4 553/reference180/HOSTfacts27/workspace8=920; R4 553 already includes bootstrap102+command7, not extra tests. Three strict types PASS; R4 elapsed124.174871s/runtime74.7751s below unchanged240s command cap. Its static PASS names its recorded spec bytes; final static below covers this alignment.
+' read-only supporting evidence: artifacts/training-functional/qualification-delivery-1/production-input-audit-1.json PASS rechecks actual435 mapped source files4635549B,429 Git-blob identities, metadata/pins/modes and source3; physical HOST Zod NOT inspected, no preparation/copy/build/HOST. local-child-umask-1.json is an actual LOCAL synthetic Bun/FAKE-git child probe:0022 ->0644/0755, parent077 restored; no actual Git/bootstrap/native/acquisition/build/HOST. local-bun-context-1.json proves LOCAL Bun1.4 flags/prepare argv only; command7/35 uses fake curl/Bun/no source evaluation.
+' current preservation: delivery-2 preserves6431 historical files/native59 direct+6 exact SPEC inverses; artifacts/training-functional/qualification-delivery-1/preservation-1.json PASS checks originaldirty5/failed25/flat6 totaling113300B/source3 manifest-verification-binding/code pins/prior acceptance b12bf0da43401b1858a3b3f1c3be9820d8030b6f07329e9448239886c5911e70. Source3 worker108 files641523B/14 role-byte pins/historical811/12/3 remains immutable and separately scoped.
+' assistant scope: source preparation, bounded local MOCK verification, and the lead's checked publication only. No actual HOST/native/GPU/container/reference evaluation/build/acquisition/staging/install/training runs here. Local bootstrap tests inject ALL I/O; command tests use stubs only.
+' roots: H=/home/gu1lty/Projects/proveo/chess-coach; B=H/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun (retained Bun1.4.0, never PATH Bun); L=H/_work/gpu-owner-recovery/runs/training-qualification-launcher-1.ts.
+' roots: D=H/_work/gpu-owner-recovery/runs/training-qualification-delivery-1; S=D/source; I=H/_work/gpu-owner-recovery/runs/training-qualification-inputs-1; R=H/_work/gpu-owner-recovery/runs/training-qualification-1. D, I, R and therefore S must initially be absent; no adoption, deletion, repair, retry, or global stop.
+' bootstrap API: built-in-only static imports, inert on import; qualificationBootstrapPlan() returns the fixed plan; prepareQualification(publishedCommit, io) accepts injected I/O. Real filesystem/child adapters exist only behind explicit future CLI prepare <40hexcommit> and its internal prepare-worker mode; no operator, Docker, nvidia, or policy-native invocation belongs to bootstrap.
+' source generation: Q=artifacts/training-functional/qualification-packet-1; Q/source-3 remains immutable:108 files/641523B/source manifest SHA256 9820e6bfb34f5891117379b207cfd193330d5bd1efbf6c8d36f6ff6e0328836b; historical verification 811 tests/12 gates/3 strict types SHA256 5edf5fa735abbf8be5b38c7389a580199d947e7b845ce3a2a31ecbcc43a45f75; binding-documents SHA256 5cd45f5cad1b5f08e07a54cbfd68834ff00eda4f0d6c40f02922bac07d3ca7fe. Bootstrap stays outside I/app and the source-3 execution closure; new delivery verification covers it separately, without rewriting source-3 or claiming its 811 tests cover bootstrap.
+' reference reconstruction: P=_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1. Published P/local-inputs-1 supplies427 captured application files; P/corpus-inputs-1 supplies2 corpus files; artifacts/training-functional/reference-inputs/manifest.json maps6 flat source/license files113300B to their physical package paths. All435 files4635549B retain reference b4b241481fb12de4a7344e6dba8eda775af57675 and their original bytes/notices.
+' helper boundary: after fetch, dynamic imports of pure mapInputRows/validateRow/verifyReference from fresh S are allowed. Never invoke reference-retry operational modes, change frozen helper APIs, substitute current packages, read ignored compiled scratch, reuse the failed full1 writable cache, or resume LLVM work.
+' output pins: SIX outputs939123B /95 resolved inputs; newly generated selected-reference.json103663B MUST hash to 09cd6b6dd97fd1b3984b71b5f0d3f540e21b38285897062148e16c0e388fc45a. Mismatch fails with no fallback. I/reference has EXACT9 rows1714635B:6 bundles+2 corpus files+selected metadata; retain licenses and build metafiles under fresh D, never publish compiled bundles or evaluate them during preparation.
+' physical dependency: copy existing H/node_modules/.pnpm/zod@4.6.7/node_modules/zod into fresh I/app/node_modules/zod. Accept regular readable bounded source files, including0444; unreadable files fail. Normalize ONLY fresh copied Zod files to0644, never chmod HOST originals. Complete app payload, including source108 and actual Zod files, stays within4096 files/128MiB total/16MiB per file; measure the file count, never invent it. No install, registry request, npm/archive rerun, or original-root alias repair.
+' completion conditions: lead runs fresh delivery-final-spec static validation, then writes artifacts/training-functional/qualification-delivery-1/final-verification.json binding the12 fresh delivery-2 receipts with final static replacing its earlier specs receipt, bootstrap/module/test/template/docs hashes, builder/input data, preservation, both review2 records and immutable source3 worker. Once written and checked, that conditional record supersedes this snapshot's pending final-verification condition; it carries no self-hash or current publication OID.
+' publication completion conditions: after final verification, freeze the explicit delta and read back exact staged index/blob/working bytes; ONE normal commit from integrate/starchess-ml-main then ONE push HEAD to existing feat-ml-adjuntant-ii/PR51/main, without force/amend/newPR. After checked publication, create LOCAL qualification-delivery-1/post-publication.json and operator-command.sh with actual immutable OID/literal bootstrap SHA e22505c5e3c492c25a6068089116a69dd70b398f3536629c8e8433a6eefbb968. The checked local publication record supersedes this committed publication-pending snapshot; command/result stay outside the publication commit, without self-reference, another commit or amend. Source3/Git120s/preparation240s/separate operator800s/constants stay unchanged; ALL hardening remains after ALL planned training and validated results.
+' binding documents: retain Q/source-3/binding-documents.json bytes and all14 role-byte pins. closure comes from NEW verified build metadata; strategicSource comes from the NEW verified strategic bundle, NOT its declarative ignored scratch pathname in the old manifest; other12 roles come from pinned S paths. Do not rewrite any source-1/source-2/source-3 record or protected original-checkout dirty file.
+' receipt boundary: future preparation output contains scope OFFLINE_PREPARATION_NOT_QUALIFICATION, status, publicationCommit, inputManifest byte reference, referenceBuilds verified6, qualified:false and trainingReady:false. No source READY flag bypass, self-hash, or future current publication OID in a tracked record; the rendered command and post-publication observation remain separate from the publication commit.
+' see: _spec/runtime-protocol.puml (unchanged operator/worker/evidence ownership and original800s envelope)
+' see: _spec/readiness.md#qualification-delivery-2026-11-17 (current authority, pending verification, and preserved history)
+' readability: note over PARENT (import boundary) / FK10.8; note over PARENT,WORKER (watchdog boundary) / FK12.6. Two sentences per note; hand-counted syllables and computed Flesch-Kincaid formula on plain bodies.
+' validation: local template absent; standing human fetch-and-commit request remains deferred, not a new gate. No shell, agents, network, HOST, Git writes, Java, builds or tests in this spec pass. Lead owns delivery-final-spec and conditional final-verification/publication records; coverage/index/fingerprint:null and existing notes remain unchanged. Native PlantUML render SKIP: Java/remote-theme access remain outside scope; static checks are not rendering.
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Qualification bootstrap source verified - publication pending
+
+actor "Executor\nfuture USER invocation only" as USER <<host>>
+participant "Bash\nexplicit bash -c body" as BASH <<host>>
+participant "github.com/proveo-ca/chess-coach\nimmutable raw source + literal Git remote" as PUBLISHED <<cloud>>
+participant "qualification-bootstrap.ts\nL prepare <40hexcommit>; parent" as PARENT <<app>>
+participant "qualification-bootstrap.ts\ninternal prepare-worker" as WORKER <<async>>
+participant "tooling/build-reference.ts\nunchanged offline Bun builder" as BUILDER <<app>>
+database "D + S + I\nfresh delivery, checkout, and inputs" as STAGE <<db>>
+participant "qualification-operator.ts\nstaged inert helpers only" as HELPERS <<app>>
+participant "qualification-operator.ts\nexisting operator mode" as OPERATOR <<app>>
+participant "FAIL\nretain partial logs and workspaces" as FAILED <<error>>
+
+group Future USER download - final verification, source freeze and checked publication required first
+  USER ARROW_MAIN BASH : bash -c single-quoted body; ZERO interior single quotes; no Fish heredoc
+  BASH ARROW_MAIN BASH : retain umask077/private L; define H, B, L; reject unrendered placeholders BEFORE curl
+  BASH ARROW_CLOUD PUBLISHED : curl raw NEW_IMMUTABLE_COMMIT/artifacts/training-functional/qualification-bootstrap.ts
+  PUBLISHED ARROW_CLOUD BASH : exclusive L via Bash noclobber redirect; max60s / retry0; retain any partial file
+  BASH ARROW_MAIN BASH : retained B + built-in node:crypto verify literal BOOTSTRAP_SHA over downloaded bytes
+  break download, exclusivity, placeholder, or digest failure
+    BASH ARROW_ERROR FAILED : stop before evaluating L; no retry or fallback
+  end
+  BASH ARROW_MAIN PARENT : cd H; B --no-env-file --no-install L prepare NEW_IMMUTABLE_COMMIT
+end
+
+note over PARENT
+Importing the bootstrap starts no work, so local
+tests exercise source preparation through mocks.
+Its own checks preserve the accepted worker
+generation without claiming native readiness.
+end note
+
+group Acquisition - ONE original120s budget, including preflight and claim
+  PARENT ARROW_MAIN PARENT : validate fixed HOST context and lowercase40hex publicationCommit
+  PARENT ARROW_MAIN STAGE : require D, I, R absent; claim D exclusively; S=D/source is new
+  PARENT ARROW_MAIN PARENT : EACH Git Bun.spawn ONLY: synchronous umask0022; finally restore parent077 immediately, even on error
+  PARENT ARROW_MAIN STAGE : Git1: git init S
+  PARENT ARROW_CLOUD PUBLISHED : Git2 in S: fetch --depth=1 --no-tags https://github.com/proveo-ca/chess-coach.git COMMIT
+  PUBLISHED ARROW_CLOUD PARENT : bounded fetch result; never use or switch dirty H checkout
+  PARENT ARROW_MAIN STAGE : Git3 in S: checkout --detach FETCH_HEAD
+  PARENT ARROW_MAIN STAGE : Git4 in S: rev-parse HEAD; require exact COMMIT equality
+  PARENT ARROW_MAIN PARENT : four Git operations only; require exit0/reap/stream EOF within SAME120s
+  PARENT ARROW_MAIN PARENT : worker/builder/non-Git masks unchanged; no broad chmod or relaxed captured-source guards
+  break acquisition failure or original deadline exhausted
+    PARENT ARROW_ERROR FAILED : preserve D, S and logs; do not stage, adopt, delete, or retry
+  end
+end
+
+group Preparation - ONE original240s budget includes startup, copies, builds, readback and output
+  PARENT ARROW_QUEUE WORKER : start internal prepare-worker; ordinary parent watchdog guards synchronous work
+  WORKER ARROW_MAIN WORKER : require fresh absolute reference source/output under D; load fetched pure helpers only
+  WORKER ARROW_MAIN STAGE : reconstruct427 captured app +2 corpus +6 flat source/license files
+  WORKER ARROW_MAIN WORKER : verify435 files4635549B at b4b24148...; strict source-mode checks/bytes/notices unchanged
+  WORKER ARROW_MAIN BUILDER : retained B --no-env-file --no-install S/tooling/build-reference.ts ABS_SOURCE ABS_OUTPUT
+  loop EXACT six existing entrypoints; <=30s each within original240s
+    BUILDER ARROW_MAIN BUILDER : Bun build --target=bun --reject-unresolved; no module evaluation or install
+    BUILDER ARROW_MAIN STAGE : retain bundle + metafile; all resolved realpaths remain inside fresh physical source
+  end
+  BUILDER ARROW_MAIN STAGE : write fresh selected-reference.json; retain licenses and all metafiles under D
+  WORKER ARROW_MAIN WORKER : verifyReference:6 outputs939123B /95 inputs /metadata103663B /exact09cd6b6d... SHA
+  break build, closure, byte-pin, or deadline mismatch
+    WORKER ARROW_ERROR FAILED : fail without fallback, package substitution, old scratch, or another build attempt
+  end
+  WORKER ARROW_MAIN STAGE : create exclusive I; I/reference EXACT9 rows1714635B from NEW outputs+corpus+metadata
+  WORKER ARROW_MAIN STAGE : I/app from pinned S:source-3 EXACT108 execution files641523B; bootstrap excluded
+  WORKER ARROW_MAIN WORKER : read regular bounded HOST Zod4.6.7 files, including0444; reject unreadable files
+  WORKER ARROW_MAIN STAGE : copy Zod into I/app/node_modules/zod as0644; no HOST chmod; app<=4096 files/128MiB/16MiB each
+  WORKER ARROW_MAIN STAGE : three fresh @chess-coach aliases -> contracts, policy, starchess-core packages
+  WORKER ARROW_MAIN STAGE : set0755 ONLY on copied score/channel adapters; preserve their source bytes
+  WORKER ARROW_MAIN STAGE : empty I/app/reference + I/app/qualification-inputs nested RO mountpoints
+  WORKER ARROW_MAIN WORKER : leave R absent; do not precreate /state/run or /tmp/episode-model
+  WORKER ARROW_MAIN STAGE : copy14 bound role bytes:NEW metadata closure +NEW strategic bundle +12 pinned S documents
+  WORKER ARROW_MAIN WORKER : match immutable source-3 binding manifest; never read its ignored strategic scratch path
+  WORKER ARROW_MAIN HELPERS : ONLY AFTER Zod+aliases: dynamic import I/app/.../qualification-operator.ts
+  WORKER ARROW_MAIN HELPERS : qualificationInputManifest(bindingDocuments, actualPhysicalSourceRows)
+  HELPERS ARROW_MAIN WORKER : source108 +actual Zod rows /EXACT9 references /14 unchanged document refs
+  WORKER ARROW_MAIN STAGE : write I/qualification-inputs/input-manifest.json exclusively; retain byte reference
+  WORKER ARROW_MAIN HELPERS : validateQualificationInputs(staged roots); no dependency-free S/operator import
+  HELPERS ARROW_MAIN WORKER : physical hashes, Zod version, reference membership and14 binding roles validated
+  WORKER ARROW_MAIN STAGE : read back staged bytes and preparation evidence under SAME240s cutoff
+  WORKER ARROW_QUEUE PARENT : preparation result +inputManifest ref; qualified:false / trainingReady:false
+  PARENT ARROW_MAIN PARENT : require worker exit0, reap, stdoutEOF, stderrEOF, output and readback before240s
+  break worker, validation, completion, or original preparation deadline failure
+    PARENT ARROW_ERROR FAILED : retain partial evidence/workspaces; ordinary owned cleanup only; no automatic rerun
+  end
+  PARENT ARROW_MAIN BASH : PASS /OFFLINE_PREPARATION_NOT_QUALIFICATION /publicationCommit /referenceBuilds verified6
+end
+
+note over PARENT,WORKER
+The parent monitors an isolated worker because
+synchronous copies and builds can block timers.
+Its original deadline includes checked output,
+but cannot guarantee strict OS termination.
+end note
+
+group Separate future Bash handoff - bootstrap NEVER launches qualification
+  BASH ARROW_MAIN OPERATOR : only after preparation PASS: exec B I/app/artifacts/training-functional/qualification-operator.ts operator
+  OPERATOR ARROW_MAIN OPERATOR : unchanged original800s BEFORE startup query; no bootstrap timer or subprocess wrapper
+  OPERATOR ARROW_MAIN OPERATOR : existing ONE container /2CPU/8GiB/selected UUID/<=401 queries; no campaign
+  OPERATOR ARROW_MAIN OPERATOR : original60s settled receipt;800 events/1GiB trace;2GiB soft workspace cap
+end
+
+legend bottom
+  CURRENT: QUALIFICATION_DELIVERY_SOURCE_VERIFIED_PUBLICATION_PENDING /SOURCE_ONLY/trainingReady:false. Corrected source2 bootstrap102/2208/strict TSC +command7/35; delivery-2 ALL12PASS/920tests/3 types/SAME358 matching source pins per lead. Both review2 READY/no findings/security LOW/static-only; original two MEDIUM findings CLOSED. Source1 bootstrap95 and delivery-1 913 remain known-bug history, not final acceptance. Publication NOT PERFORMED/new commit1+push1 unconsumed.
+  COMPLETION CONDITIONS: delivery-final-spec ->checked final-verification.json with final static replacing old specs receipt ->explicit source/staged-byte freeze ->one normal commit+push to existing PR51/main ->LOCAL checked post-publication.json and literal operator-command.sh outside that commit. Those conditional records supersede the committed pending conditions when written and checked; no self-reference, second commit or amend.
+  Keep outer077/private launcher/operator; Git-spawn-only0022/finally restoration; normalize only fresh Zod copies0644; captured435 mode checks strict. Read-only435-input audit and synthetic LOCAL fake-git/flag probes prove their narrow scopes, not HOST Zod availability, actual acquisition, offline builds or native compatibility.
+  This sequence describes what the future USER command performs. Assistant-side tests inject I/O; this spec pass executes no HOST/native/GPU/container/build/acquisition/staging/install/reference evaluation/training.
+  Source-3 remains immutable historical811/12/3 proof with its producer-matching hash fixes and review3 verdicts; new bootstrap verification is separate, never a replacement tests-role document.
+  Preparation PASS is OFFLINE_PREPARATION_NOT_QUALIFICATION /qualified:false /trainingReady:false. It does not attest native compatibility or bypass the existing operator's physical input checks.
+  All phase bounds are original, ordinary watchdog bounds, not strict escaped-process/OS assurances or an end-to-end command guarantee. No new operator ownership, security/custody framework, or training gate.
+  Preserve source-1/2/3, original five dirty files, historical receipts/partials/caches, failed full1 and halted LLVM; preserve F64/all4670/eps1e-6/atol1e-8/rtol1e-5/distinctC12/CPU Flex/masters101..105/GPUv1 master101 ordinal0/both GPU mains OFF.
+  Complete ALL planned training and validated results BEFORE ALL hardening, as already accepted. Native PlantUML render SKIP; lead final static validation covers these final diagram bytes, not rendering.
+endlegend
+@enduml

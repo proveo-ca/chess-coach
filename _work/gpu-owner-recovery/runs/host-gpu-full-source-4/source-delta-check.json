@@ -1,0 +1,26 @@
+{
+  "status": "PASS_SCOPED_FOUR_FILE_CADENCE_AND_FRESH_IDENTITY_CORRECTION_ONLY",
+  "priorProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/receipt.json",
+    "sha256": "62d0fad77fc9538673ef0d69b2bdade57fc320dacb1168ea31564e4e61e5f7a5"
+  },
+  "changed": [
+    "_work/gpu-owner-recovery/qualification/host-full/driver.test.ts",
+    "_work/gpu-owner-recovery/qualification/host-full/driver.ts",
+    "_work/gpu-owner-recovery/qualification/host-full/plan.test.ts",
+    "_work/gpu-owner-recovery/qualification/host-full/plan.ts"
+  ],
+  "unchangedPriorInputs": 343,
+  "currentSourceHashesChecked": 347,
+  "protectedFeasibilitySources": 327,
+  "guardUnchanged": true,
+  "numericalAndNativeInputsUnchanged": true,
+  "priorProofsRequestsCommandsAndFailedCapturesRetained": true,
+  "newRunId": "host-gpu-full-2",
+  "newWorkspace": "_work/gpu-owner-recovery/cache/host-gpu-full-2",
+  "newEvidence": "_work/gpu-owner-recovery/runs/host-gpu-full-2",
+  "hostExecutionAuthorized": false,
+  "copyingOrStagingAuthorized": false,
+  "publicationAuthorized": false,
+  "trainingReady": false
+}

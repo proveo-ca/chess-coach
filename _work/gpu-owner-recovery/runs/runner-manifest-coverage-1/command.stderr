@@ -1,0 +1,17 @@
+
+_work/gpu-owner-recovery/verify.test.ts:
+(pass) every source manifest includes the executed supervisor and pinned reference metadata [11.25ms]
+(pass) repository runner retains bounded successful output and exact exit [83.02ms]
+(pass) repository runner preserves nonzero exits without success substitution [63.09ms]
+(pass) repository runner kills its bounded stalled synthetic child [44.56ms]
+(pass) repository runner retains group custody after a command exits with inherited pipes open [209.92ms]
+(pass) repository runner rejects supervisor loss after a successful command exit [292.04ms]
+(pass) repository command supervisor terminates its anchored group on runner disconnect [37.91ms]
+(pass) repository runner rejects stdout overflow and preserves only the bounded prefix [120.10ms]
+(pass) repository runner rejects stderr overflow and preserves only the bounded prefix [159.48ms]
+(pass) repository runner refuses paths outside the repository work root [0.25ms]
+
+ 10 pass
+ 0 fail
+ 46 expect() calls
+Ran 10 tests across 1 file. [1.59s]

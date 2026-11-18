@@ -1,0 +1,221 @@
+@startuml gpu_feasibility
+' purpose: reported F64 feasibility pair acceptance, consumed authority and selected full-campaign source-preparation handoff
+' covers: _work/gpu-owner-recovery/qualification/host-feasibility/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-feasibility-source-1/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-feasibility-source-2/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-feasibility-source-3/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-feasibility-parent-source-check-1/**
+' covers: _work/gpu-owner-recovery/runs/host-gpu-feasibility-parent-source-check-2/**
+' status: REPORTED_PAIR_PASS_CONSUMED / observationStatus:OPERATOR_REPORTED_PASS_GPU_F64_FEASIBILITY_PAIR_AUTHORITY_CONSUMED / remainingHostInvocations:0 / hostInvocationReported:true / publicationStatus:PASS_SOURCE_FOUR_NORMAL_COMMIT_AND_FIXED_HTTPS_PUSH / remainingNormalCommits:0 / remainingHttpsPushes:0 / fullSourceStatus:SOURCE_ONLY_PASS / fullSourceCandidate:SOURCE4 / fullSourceReviews:READY_SOURCE4_AND_UNAPPROVED_FULL2_REQUEST_ONLY / fullHostStatus:HOST_ONLY_APPROVED_ONE_UNOBSERVED_DELIVERY_PENDING / fullHostRemaining:1 / fullHostInvocationObserved:false / priorFull1RetryRemaining:0 / full2Decision:APPROVE_HOST_ONLY / fullDeliveryPublicationDecision:PENDING / issuedDocsCloseout:PENDING / feasibilityReplayAuthorized:false / newPublicationAuthorized:false / trainingReady:false
+' see: _spec/gpu-host-build-reuse.puml
+' see: _spec/gpu-qualification.puml
+' see: _spec/gpu-full-qualification.puml
+' see: _spec/gpu-cooperative-policy.puml
+' see: _spec/gpu-readiness.md#current-gpu-feasibility
+' see: _spec/gate-closure.md#current-gpu-feasibility
+' classification: contained reported evidence/spec-impacting docs projection ONLY. Feasibility source-4/frozen327 stay unchanged/SOURCE-ONLY; its separate observation supplies functional report evidence. _spec/gpu-full-qualification.puml owns full1 retry CONSUMED0 and full source4 SOURCE_ONLY_PASS/PRE_APPROVAL READY reviews. Separate full2 HOST-only1 approved/unobserved; delivery/publication unapproved, issued-doc closeout pending. This pass performs no coding/HOST/native/GPU operation.
+' coverage: actual source namespace, source-1/2/3/4, parent-source-check-1/2 and the new normalized observation-1 root only. No future full source/proof root or original HOST/cache/evidence/archive path is covered. This diagram alone owns feasibility-observation-1; gpu-host-build-reuse.puml alone owns native-build observation-2. Frozen327/old307/native65/qualification/helpers/Rust/Dockerfiles/proofs/requests remain unchanged.
+' implemented source layers: selection.json and source/plan/proposal/proof/review false fields remain IMMUTABLE_PRE_APPROVAL_SNAPSHOTS. Original issued HOST remaining1/unobserved and publication APPROVED_PENDING fields also stay immutable; separate observation/publication results now consume both allowances to0, with no replay authority. plan/guard/driver/watchdog/host/runtime/render/verify/verify-records/tsconfig and six plan/guard/driver/host/watchdog/render.test.ts files stay unchanged; no runtime.test.ts claim.
+' current source proof: _work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/receipt.json PASS_GPU_FEASIBILITY_SOURCE_ONLY/327 hashes/sourceChanged:false/six PASS stages:48 feasibility tests/322 assertions +41 existing qualification/regression tests/296 assertions +four strict TSC. Proof SHAcf632c5896bd5d46b453a67aeb87d2f0bd735b252960c7eca6917cee802d6f60. Scope BUN_STATIC_AND_PURE_MOCK_E2E_NOT_HOST_GPU_NATIVE_OR_JIT_EXECUTION; no coding Docker/native/HOST/GPU/JIT/binary execution or artifact-byte rehash.
+' current packet check: source-4/record-check.json PASS_GPU_FEASIBILITY_SOURCE_PACKET_RECORDS_ONLY checks327 input hashes/12 verification stream hashes/3 programs/full regenerated49023-byte command+plan/8 MOCK fixture JSON hashes; records-verification.json PASS/SOURCE_PACKET_RECORDS_ONLY. Command SHAc690e8b0261e6bf09e834a41394369f694393ec6c60e18aa31b0375110f00054. All draft/proposal operational flags remain false, regardless of reviewed command/grant argument bytes.
+' current source reviews: actual source-4/review.json READY_GPU_FEASIBILITY_SOURCE_FOUR_EXACT_APPROVAL_DECISION_ONLY. Adversarial ses_e36649e3affeJjY53mEb5Dxjo5 READY_TO_MERGE_YES/no findings; security ses_e3845fff1ffeE092hXAV6pfhiW READY_SOURCE_FOUR_EXACT_COMMAND_DECISION_ONLY/no findings/risk low/no hardening gate; DevOps ses_e384ffa7bffecNc429YDN25STS READY_SOURCE4_FOR_FRESH_EXACT_HOST_DECISION_ONLY/no delta findings. All three earlier functional findings remain closed; architecture accepted pre-implementation. No HOST/GPU/JIT/test/stage/hash/publication/training authority follows.
+' source-4 delta: ONLY driver.ts/driver.test.ts changed after reviewed source-3. runFeasibilityDriver requires Bun.version==='1.4.0' AND cwd==='/build/native' before any container work; the inert-adapter test adds one expectation. HOST Mise/Bun property guard already existed. This adds no file SHA/custody/native version query/acquisition/installation/hardening prerequisite.
+' completed prior checkpoints: source-4/final-docs-and-source-check-2.json PASS and docs-closeout-review.json READY retain their pre-approval generations, including HEAD25bc. Issued approval checks/reviews/publication handoffs verify only their bound generations, not this wording or newer full-source work. Full-source3 DOCS closeout/final adversarial READY/post-review check completed PRE_APPROVAL; lead's fresh issued-approval/hash/9-index/12-doc check remains future. Current observation/docs/new full-source and post-publication metadata remain LOCAL_UNCOMMITTED; no new publication grant follows.
+' prior fresh local checkpoint (PRE_SELECTION, Executor-reported): HEAD250d438685d2fc7560b0e31439f282bb2c145888/12 observation inputs/327 frozen sources/six saved local streams and792 MiB soft-cap arithmetic confirmed; the original unselected proposal authority:false stays immutable. The later selected state lives separately in host-full/selection.json, with every execution/staging/publication/training approval still false. Neither checkpoint verifies full implementation or later doc/index closeout; separate issued full HOST authority lives only in the full owner.
+' current observation: actual _work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/ contains reported-receipt.json/operator-summary.txt/observation.json/contract.ts/verify-report.ts/verify-report.test.ts/verification/record-check.json/review.json. Reported PASS_HOST_GPU_FEASIBILITY_ONLY +PASS_GPU_FEASIBILITY_TESTS_ONLY +HOST_GPU_FEASIBILITY_EXIT=0 accepts the two unchanged exact F64 score/record-roundtrip and direct-SGD/backward/reload tests, each1 passed/0 failed/0 ignored/exit0, durations0.81s/1.55s. SourceStabilityChecked:true/sourceChanged:false/sourceCheckFailure:null/full65 manifest7e; all five artifact metadata rows match expected path/size/SHA lineage. Functional REPORT acceptance, not independent HOST-byte verification or a custody gate.
+' current guard/cleanup report: guardComplete:true; two same-container UUID713c95e0-6952-a576-794b-9ef1fb527ff0 CSV queries PASS0, total8192 MiB/free7740 and7582 MiB, ordinary3/2 GiB/2s query-start/1s query/4s-age profile. Journal reports8 events/1476 bytes/SHAb7cf001762c0080b757f56aae50823bce66fd7629b218b6600d039b7e3caa17d METADATA ONLY. All five COMPLETE Docker argv report PASS0; worker378bd2c222a0d09a6da39c77531b1857d49f48432dafb7a0237fa19273110847 removed/exited0/OOMKilled:false/cleanupFailures:[]. Inner3407.88992ms/outer4514.140361ms. No original raw CSV/journal bytes received or replayed; no cold-JIT/full-telemetry/strict-stop/full-assurance qualification follows.
+' current local record verification: observation-1/verification.json PASS_GPU_FEASIBILITY_OBSERVATION_RECORDS_ONLY/three stages:26 Bun record-mutation tests/28 assertions/one strict TSC +record-check.json PASS_OPERATOR_REPORTED_GPU_F64_FEASIBILITY_RECORDS_ONLY. Checker binds12 local inputs/327 frozen source4 hashes/2 test argv/2 query argv/5 COMPLETE Docker argv/28 capture metadata rows/18 unique paths/5 artifact metadata rows; two reported scalar samples modeled through the pure functional guard ONLY. Local verification streams are not original HOST captures. Original HOST files/artifact bytes unreceived/not rehashed in coding; actual operator command bytes independently unverified/operatorSourceCommit:null.
+' current record reviews: observation-1/review.json adversarial ses_e36649e3affeJjY53mEb5Dxjo5 READY_TO_MERGE_YES/no findings; security ses_e3845fff1ffeE092hXAV6pfhiW READY_RECORDS_AND_SOURCE_PLANNING_DECISION_ONLY/no findings/low/no new gate. Architect ses_e36783826ffetiRNpE54VUigWv and DevOps ses_e384ffa7bffecNc429YDN25STS accepted the additive full-campaign SOURCE_PLANNING boundary before full-wrapper code. Acceptance covers functional report/records and the next source-planning decision, not full qualification or execution authority.
+' consumed authority: HOST feasibility1 is now CONSUMED1/1/remaining0/no retry. Original source-4/host-command-approval.json remaining1/unobserved fields and source/plan/proof/review false fields remain immutable issued/pre-approval snapshots, not live authority. Actual source-4/publication-result.json PASS_SOURCE_FOUR_NORMAL_COMMIT_AND_FIXED_HTTPS_PUSH records250d438685d2fc7560b0e31439f282bb2c145888/branch feat-ml-adjuntant-ii/244 text entries/normal commit1+fixed HTTPS push1 CONSUMED0. Its publication-request APPROVED_PENDING fields remain the issued snapshot, not a pending/current grant. publication-result.json/publication-actions are separate post-publication LOCAL_UNCOMMITTED metadata, not retroactively committed into250d. Native-build2/pub25bc remain separately consumed0. No new authority follows from these consumed grants; separate full HOST1 renews none of them. Retain all prior/partial work.
+' historical issued bindings: command49023 bytes/SHAc690e8b0261e6bf09e834a41394369f694393ec6c60e18aa31b0375110f00054; source proof SHAcf632c5896bd5d46b453a67aeb87d2f0bd735b252960c7eca6917cee802d6f60; plan5932 bytes/SHA104f3ece4ae325beed3b53035f108a72342ee347c76fbdc613da0436405ff132; HOST request3483 bytes/SHAfbdbdf94fa605dc325cd1e617fce05a4228d5b93faf5b2dbeb8e56568c0ded1d. Then-issued scopes were exact RO inputs/fresh embedded TEXT-scratch-evidence-JIT/same-container telemetry/two tests/owned-CID cleanup and separate one normal commit+fixed HTTPS push to https://github.com/proveo-ca/chess-coach.git from parent25bc. Those handoff/delivery flows below are HISTORY, never instructions to rerun/publish.
+' current full source boundary: _spec/gpu-full-qualification.puml owns full1 retry CONSUMED0 and full source4 SOURCE_ONLY_PASS/PRE_APPROVAL READY reviews. Separate full2 HOST-only1 approved/unobserved; delivery/publication unapproved, issued-doc closeout pending. No execution occurred; no coding/training authority or accepted full numerical/C12/CPU39/canonical/R4 evidence. Frozen327/old wrapper/qualification/Rust/Dockerfiles/math/CPU Flex/masters stay unchanged.
+' approved full contract, NOT verified runtime behaviour: unchanged qualificationPlan('gpu','full') selects six exact tests: repeat the pair, active2335+inactive2335 coordinates (4670, eps1e-6/atol1e-8/rtol1e-5), C12 redundant channels, policy subprocess agreement/reload. Steps3/4 use learning finite-difference harness; others policy; preserve absolute policy-channel binary/env. Compiled scratch /build/native/_work/gpu-owner-recovery/scratch AND /scratch share one fresh HOST scratch directory, counted ONCE. Only the separate issued full approval grants bounded OPERATOR mount/write authority.
+' approved exact full bounds, runtime unobserved:120000ms/test;750000ms loop INCLUDING30000ms reserve; driver890s=120+750+20; HOST1080s=960 normal+90 cleanup+30 receipt, driver clipped to normal remaining MINUS20s. Same2 CPU/8 GiB/no extra swap/3-2 GiB/2s query-start/1s query/4s stale;400 queries/journal1 MiB. Workspace+evidence SOFT4 GiB/free8 initial4 running;3248 MiB native+56 Docker=3304 MiB leaves792 MiB, NOT fit guarantee. Cap may fail; no deletion/bypass/quota/reservation. All hardening after ALL planned training and validated results.
+' persisted PURE MOCK e2e: source-4/e2e/happy, journal-abort, late-watchdog-failure and connected-driver-watchdog. The connected case invokes the actual new executeFeasibility engine with injected IO, serializes its journal into progressWatchdog, and drives the owned HOST controller's MOCK stop while a test promise remains pending. This is connected source logic, not an actual container/test binary/GPU run.
+' retained local failures: parent-source-check-1 FAIL/19 pass/one fragile whole-file first-try assertion; source-specific assertion fix led to parent-source-check-2 PASS/20. source-1 FAIL_GPU_FEASIBILITY_SOURCE_ONLY at final types-3/stage6, despite46 feasibility tests/302 assertions +41 regression/296 +three prior type stages PASS; Map template-key inference/failure:null tuple typing required annotations/test generics only. Original failed receipts/captures stay unchanged; source-2 uses the SAME command bytes.
+' scoped worker history: actual _work/gpu-owner-recovery/runs/host-feasibility-driver-worker-source-3/tests.stdout and tests.stderr are the reported22-pass worker captures. Other worker roots are neither assumed nor newly covered.
+' retained source-2: PASS/327 hashes/47 tests314 assertions +41 regression296 +four TSC/48862-byte command, proof SHA3f2d134bfedc2df7f09442968eb4dd8a15a7de09a4ab11f651ac44bd09b6de1f/command SHAd77ae430a9b392c7e77d4a47d05af2a9d86fbc4b82c217a81a7f4a823ae67511 remain immutable PRE_PHASE_END_CAPTURE_FIX history. Its review retains earlier READY/later MEDIUM/currentSourceAcceptance:false, not current source acceptance.
+' retained source-3: PASS/327 hashes/48 tests321 assertions +41 regression296 +four TSC/48963-byte command, proof SHAe2900956610d70828ce53fa128eeaa7b2c6e035665a4ac90ab4ff272660f86d2/command SHA633c17f628566cdf0cd06d49ec59fb918c7b1b8e74b9b458810c2b462ee85e08 remain unchanged. Existing source-3/supersession.json records HISTORICAL_PRE_INNER_BUN_PROPERTY_GUARD and preserves its original proof/review, not current source-4 acceptance.
+' earlier three functional corrections remain closed in source-4: HIGH malformed inner.results could discard the operation ledger; array admission/unknown:null execution facts retain gpuExecutionAttempted/results. MEDIUM capture reads could discard raw supervisor facts; captureDockerResult preserves primary cause/partial streams/captureFailures, tested for PASS0/FAIL125. Late MEDIUM phase-end fix changed only host.ts/host.test.ts in source-3: retain facts THEN check io.now()<phaseDeadline after I/O; create at480s blocks start/removal after570s retains raw PASS0 but fails cleanup. Source-4's separate delta is the inner Bun property only; protected307/native65 stay unchanged.
+' unchanged imports: tooling/runtime/qualification.ts exports readArtifacts/qualificationPlan/executeQualification/recordAttempt/sourceInventory; _work/gpu-owner-recovery/verify.ts exports runBounded and resolves root/supervisor from import.meta.url. Use DYNAMIC ORIGINAL-PATH imports, never old module main(), a bundled supervisor copy, or a rewritten qualification runner.
+' native binding: full65 corrected source manifest SHA-2567e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec; five executable path/size/hash rows from native observation-2 match the new feasibility report's admitted metadata. The checker verifies reported lineage, not original artifact bytes in coding.
+' historical feasibility mounts: build2 source/native+logs RO at /build/native; build1 target RO at /build/native/target-gpu, preserving five executable paths; Bun1 RO at /usr/local/bin/bun; prepared LLVM RO at /opt/tracel-data/tracel/tracel-llvm-23.1.0-4; CUDA subtree RO at /usr/local/cuda, ONLY libdevice+LICENSE known. Fresh scratch/evidence/JIT RW, no Cargo-home/source copy/rebuild/acquisition/fallback/image. Consumed attempt only, no new mount grant.
+' capture context contract: original recovery-root overlay remains required by runBounded; /evidence alone fails admission. Fresh scratch/new writable paths must not make source/target writable. These describe the old implemented wrapper/consumed invocation, not current access authority or a full-wrapper implementation.
+' historical feasibility runtime: unchanged pinned docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb; Bun1.4;2 CPU/8 GiB memory and memory+swap/no extra swap/current UID:GID/network none/pull never; --runtime=nvidia/exact GPU UUID713c95e0-6952-a576-794b-9ef1fb527ff0/ordinal0/compute,utility. Grant now consumed; source selection/proof/report alone permit no new invocation.
+' exact reported test pair: cuda_f64_nonzero_native_scores_round_trip; cuda_f64_direct_sgd_changes_policy_parameters. Unchanged qualificationPlan('gpu','feasibility') selected executable+selector+--exact --ignored --test-threads=1 --nocapture --color=never; each report has exit0/PASS/one summary/1 passed/0 failed/0 ignored, never empty/filtered-only acceptance.
+' guard query: nvidia-smi --id=GPU-713c95e0-6952-a576-794b-9ef1fb527ff0 --query-gpu=uuid,memory.free,memory.total --format=csv,noheader,nounits; SAME future test container, no Docker exec or standalone visibility probe. Require exactly one row/three cells/exact UUID/integer MiB/positive stable total/0<=free<=total. Startup free>=3072 MiB; running free<2048 MiB aborts.
+' guard timing: selected 2s QUERY-START cadence/1s query bound/4s sample age; at most one query in flight/150 queries maximum. After initialization, age>=4s fails BEFORE accepting a replacement, so a late success cannot clear stale failure. Driver uses local performance age; watchdog.ts measures journal progress on HOST's own monotonic clock without comparing performance epochs or claiming BOOTTIME/physical-stop assurance. Journal maximum1 MiB.
+' journal: bounded SERIALIZED append to fresh events.ndjson, with seq/runId and guard-start/sample/attempt-start/attempt-finish/abort/done frames. Register and append attempt-start BEFORE each test; retain result before auxiliary capture failure. First guard/journal failure latches and blocks PASS. HOST validates the current run/ordered progress; no unbounded journal or silently dropped append failure.
+' watchdog phases: preflight remains bounded before GPU queries; guard-start arms sample liveness. HOST polls fresh journal every250ms; abort or4s without valid sample progress requests stop of ONLY captured validated owned CID. Defer stop while Docker start is pending; no Promise.race pretend-cancellation, cancellation API invented for runBounded, foreign PID kill, or telemetry exec.
+' implemented feasibility budgets, unchanged/history:120000ms/test,270000ms total INCLUDING30000ms cleanup reserve; HOST600s=480s normal+90s cleanup+30s receipt; driver<=410s=120 preflight+270 campaign+20 final, clipped to HOST normal MINUS20s. The bridge bounds adapter time; guard/watchdog use independent clocks, not shared performance epochs/BOOTTIME assurance. The separate full proposal above changes neither this code nor the consumed packet.
+' acceptance contract: BOTH exact tests/source checked unchanged/no guard-journal failure/terminal ExitCode0/OOMKilled:false/owned removal/cleanupFailures:[]/PASS receipt AND zero HOST marker. New normalized report satisfies functional report acceptance. Post-I/O phase checks preserve raw facts at normal480s/cleanup570s without borrowing receipt reserve; unknown/missing/failed results never synthesize PASS or permit retry. This is not raw-journal replay/full telemetry verification.
+' verified source scope: plan/render tests cover literal UUID/pins/resources/RO-RW mounts/original dynamic imports/capture-root layout/false approvals. Guard tests cover malformed CSV/integer/headroom/total boundaries, stale equality before replacement, cadence/single flight/query cap and clock regression. Driver tests use injected source/artifact IO, exact selectors/counts, attempt-start ordering, primary capture retention, journal failures/overflow, guard drain and unknown/mutated source postchecks; no actual HOST files or binaries are read.
+' verified source scope: host/watchdog tests cover five normal/seven maximum MOCK operations, abort/lost progress, start-pending stop deferral, owned CID validation, stop/kill/removal/cleanup failures, late journal drain, malformed inner results/unknown execution, capture-read preservation and post-I/O normal/cleanup cutoff failures. These Bun/static/pure MOCK/type results and scoped source reviews establish neither effective Docker/NVIDIA/native/JIT compatibility nor execution authority.
+' invariant boundary: distinct functional headroom cooperation, NOT VRAM reservation or qualification of strict pure-policy10/297/300 leases/goals; those remain unchanged/unqualified. Visibility-probe-2 FAIL/exit6 remains preserved. No full4670/C12/CPU39/BOTH/reference/close/R4/training/full-assurance PASS. F64 tolerances/CPU Flex/master initialization/disabled dispatch/trainingReady:false unchanged; ALL security/privacy/isolation hardening follows ALL planned training and validated results.
+' template: local template absent; existing repository conventions retained, no fetch/command/render/agent operation. No TestSpecNotesFitTheBox/specNotesEnforced implementation exists in the inspected source; this docs-only task changes no tests.
+' readability: manual words/sentences/syllables, markup absent; retained HELPERS28/2/49 FK10.5; HOST cancellation25/2/48 FK11.9; HOST,DRIVER clocks25/2/46 FK11.0; HOST receipt26/2/50 FK12.2; RUNTIME capture26/2/50 FK12.2. New HOST phase27/2/48 FK10.7. Each reasoning note has four lines, none wider than50 columns.
+title Reported F64 pair PASS/CONSUMED - full1 cadence abort/consumed, source4 candidate
+
+actor Executor as EXECUTOR
+actor "Operator HOST ONLY\nnever coding" as OPERATOR
+participant "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/host-command-approval.json" as APPROVAL
+participant "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/publication-request.json" as PUBLICATION
+participant "Parent publication handoff\nordinary commit + fixed HTTPS push, CONSUMED" as PUBLISHER
+participant "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/publication-result.json" as PUBRESULT
+participant "_work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/reported-receipt.json" as OBS
+participant "_work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/verify-report.ts" as RECORDS
+participant "host-full/selection.json\nnew selected-source state, NO execution grant" as FULLSELECTION
+participant "host-feasibility/selection.json\nsource-only selection / operations false" as SELECTION
+participant "host-feasibility/plan.ts\nfeasibilityPlan / pure bindings" as PLAN
+participant "host-feasibility/render.ts + verify.ts\nverify-records.ts / source-4 static+MOCK proof" as SOURCE
+participant "host-feasibility/runtime.ts\nrunFeasibilityHost / captureDockerResult" as RUNTIME
+participant "host-feasibility/host.ts\nexecuteFeasibilityHost / acceptInner" as HOST
+participant "Docker CLI\nconsumed captured owned CID contract" as DOCKER
+participant "host-feasibility/driver.ts\nexecuteFeasibility / runFeasibilityDriver" as DRIVER
+participant "tooling/runtime/qualification.ts\nEXISTING named exports, no main" as QUAL
+participant "verify.ts + command-supervisor.ts\nEXISTING original URL context" as HELPERS
+participant "host-feasibility/guard.ts\nmakeProgressGuard / telemetryArgv" as GUARD
+participant "host-feasibility/watchdog.ts\nprogressWatchdog / HOST-local clock" as WATCHDOG
+participant "events.ndjson\nreported metadata, raw bytes unreceived" as JOURNAL
+
+group CURRENT reported pair PASS/CONSUMED - full1 retry consumed, full2 HOST-only1 approved/delivery pending
+  OPERATOR -> OBS : full normalized receipt/summary: PASS_HOST_GPU_FEASIBILITY_ONLY\nPASS_GPU_FEASIBILITY_TESTS_ONLY +HOST_GPU_FEASIBILITY_EXIT=0\nexact pair each1 pass/0 fail/0 ignored,0.81s/1.55s; source7e unchanged/5 artifacts admitted
+  OBS -> RECORDS :2 test argv/2 query argv/5 COMPLETE Docker argv\n28 capture metadata rows/18 unique paths/5 artifact rows; journal8 events/1476 bytes METADATA ONLY
+  RECORDS -> GUARD : model2 reported scalar samples through PURE guard only\nUUID713c/8192 MiB total/free7740,7582; no original CSV/journal replay
+  RECORDS --> EXECUTOR : verification PASS3 stages/26 tests28 assertions/1 strict TSC/record-check PASS\n12 input hashes/327 frozen source4 hashes; review adversarial READY/security READY low/no new gate
+  OBS --> EXECUTOR : functional report accepted; guardComplete:true/five Docker PASS0/owned removal\nexited0/OOMKilled:false/cleanupFailures:[]; inner3407.88992ms/outer4514.140361ms\noriginal HOST bytes/actual command unverified/operatorSourceCommit:null, not coldJIT/full telemetry/strict-stop assurance
+  EXECUTOR -> APPROVAL : HOST feasibility1 now CONSUMED1/1/remaining0/no retry\noriginal remaining1/unobserved fields stay immutable ISSUED snapshots, not live authority
+  PUBRESULT --> EXECUTOR : PASS publication250d438685d2fc7560b0e31439f282bb2c145888\nbranch feat-ml-adjuntant-ii/244 text entries/normal commit1+HTTPS push1 CONSUMED0\npublication request APPROVED_PENDING stays issued history; result/actions are post-publication LOCAL_UNCOMMITTED metadata
+  EXECUTOR -> FULLSELECTION :18-min full source preparation selected, LOCAL SOURCE/PURE-MOCK/STATIC ONLY\nactual selection fields unchanged; all execution/stage/pub/train approvals false
+  EXECUTOR -> EXECUTOR : full owner: full1 retry CONSUMED0/source4 SOURCE_ONLY_PASS; full2 HOST-only1 approved/unobserved\ndelivery/publication unapproved; feasibility/pub0 unchanged\nno coding/train authority or accepted full qualification evidence
+end
+
+group HISTORICAL source-4 static+MOCK proof and decision-only reviews, PRE_APPROVAL snapshots
+  EXECUTOR -> SELECTION : earlier SOURCE_PREPARATION_SELECTED_NO_OPERATIONAL_AUTHORITY\n17 source files/6 test files; original false approval fields stay immutable
+  SELECTION -> PLAN : additive host-feasibility namespace ONLY\nold307/helper/qualification/Rust/Dockerfile/proof/request bytes unchanged
+  PLAN -> SOURCE : actual source-4 frozen327-input generation/sourceChanged:false\n48 feasibility tests/322 assertions +41 regression/296 +4 strict TSC, six PASS stages
+  SOURCE --> EXECUTOR : source-4 proof/packet record-check/records-verification PASS; exact-decision reviews READY\n12 stream hashes/3 programs/regenerated49023-byte command+plan/8 MOCK JSON hashes\nsource-2 PRE_PHASE_END_CAPTURE_FIX/source-3 PRE_INNER_BUN_PROPERTY_GUARD; no execution approval
+  SOURCE -> DRIVER : connected-driver-watchdog PURE MOCK fixture invokes actual executeFeasibility\ninjected artifacts/source/commands only, no HOST/native/GPU/JIT process
+  DRIVER -> WATCHDOG : actual serialized driver journal fed to progressWatchdog in MOCK\nabort reaches owned HOST controller while a test promise remains pending
+  WATCHDOG -> HOST : MOCK owned-stop callback, captured fixture CID only
+  HOST --> SOURCE : four persisted PURE MOCK e2e, including connected driver/watchdog/owned controller\nsource-4 reviews keep all3 findings closed; no Docker/native/GPU/JIT process launched
+  SOURCE --> EXECUTOR : pre-approval check-2 PASS and docs-closeout-review READY/no findings\nthese snapshots do not verify later authority wording or themselves grant execution
+end
+
+group HISTORICAL issued handoff - both allowances now CONSUMED, never replay/delivery instructions
+  EXECUTOR -> APPROVAL : selected Approve HOST Recommended for exact source-4 packet\nOPERATOR_HOST_ONLY_NEVER_CODING; any attempt consumes allowance, including preflight failure
+  APPROVAL --> OPERATOR : ONE whole unchanged49023-byte literal command, not an assumed HOST file\ncommand SHAc690e8b0261e6bf09e834a41394369f694393ec6c60e18aa31b0375110f00054\nproof SHAcf632c5896bd5d46b453a67aeb87d2f0bd735b252960c7eca6917cee802d6f60
+  EXECUTOR -> PUBLICATION : then-issued commit & push, THEN literal-command delivery order\nHOST request then recorded1/unobserved; publication:false retained its own scope, now both allowances consumed
+  PUBLICATION -> PUBLISHER : ONE ordinary commit + ONE fixed HTTPS push, parent25bc\nhttps://github.com/proveo-ca/chess-coach.git / feat-ml-adjuntant-ii\nverified source/evidence/obs2/matching docs/bounded publication records; no binaries/cache
+  PUBLISHER --> EXECUTOR : then-bound publication checks preceded actual250d commit/push\nexisting identity/auth only; no force/amend/hook bypass/new credentials; not current-doc verification
+  SOURCE --> OPERATOR : historical whole49023-byte literal delivery, never an assumed HOST file/fetch\nexisting checkout/helpers/Cargo.lock required; no current delivery/run allowance
+  OPERATOR -> OPERATOR : historical one-attempt rule consumed even on preflight failure\nreported PASS now received; preserve prior/partial evidence, no retry/deletion
+end
+
+group HISTORICAL implemented single-attempt contract - reported PASS, CONSUMED, never a new run grant
+  OPERATOR -> RUNTIME : then-approved exact literal packet, NOT source selection\n600s HOST budget; embedded plan/driver TEXT and fresh scratch/evidence/JIT only\nno commit/push/install/acquisition/source-Cargo rebuild/image build-pull/retained-cache writes
+  RUNTIME -> HOST : fixed plan and remaining normal duration\nnew scratch/evidence/JIT RW; source2/target1/Bun1/LLVM/CUDA RO
+  HOST -> DOCKER : ONE create fixed pinned Rust worker, --runtime=nvidia\nexact UUID/ordinal0/compute,utility; 2 CPU/8 GiB/no extra swap\nnetwork none/pull never/current UID; no Cargo-home/rebuild/image
+  HOST -> HOST : capture/validate owned CID; set startPending BEFORE admission\ninstall local journal watchdog, no comparison with driver clock
+  RUNTIME -> HOST : captureDockerResult retains raw supervisorResult/exit/primary failure\nauxiliary captureFailures/partial streams remain separate, even for original PASS0
+
+note over RUNTIME
+  Capture failures must retain the supervisor's
+  result, because output reads can fail afterward.
+  Secondary errors cannot replace the primary
+  cause or discard streams that remain available.
+end note
+  HOST -> HOST : each operation retains io.run/capture/supervisor facts BEFORE phase check\nrequire io.now()<phaseDeadline after I/O: normal480s, cleanup570s\nlate create blocks start; late removal keeps raw PASS0 but fails cleanup
+
+note over HOST
+  Operation acceptance checks the phase clock
+  after capture, because reads can exhaust time.
+  Raw supervisor results remain separate from
+  the failure caused by a late operation return.
+end note
+  HOST -> DOCKER : ONE separate start CID, never start --attach
+  HOST -> HOST : settle startPending; retained failure defers then owns cleanup\nabort/journal failure cannot authorize a foreign CID or PID kill
+  HOST -> DOCKER : ONE logs --follow CID; watchdog observes local journal bind\nno Docker exec, separate probe or additional telemetry operation
+  DOCKER -> DRIVER : original RO /build/native + RO target-gpu executables\nfresh inner runs overlay at existing recovery context; scratch/JIT RW
+  DRIVER -> DRIVER : before ANY container work require Bun.version==='1.4.0' AND cwd==='/build/native'\nordinary pinned tool property, not a file SHA/native version query or custody gate
+  DRIVER -> QUAL : DYNAMIC original-path import of named exports ONLY\nreadArtifacts/qualificationPlan/executeQualification/recordAttempt/sourceInventory
+  DRIVER -> HELPERS : DYNAMIC original-path runBounded import\nsupervisor path remains import.meta-derived; no bundled old helper/main
+
+note over HELPERS
+  Original imports keep the helper at its source
+  path, because capture admission uses that root.
+  Bundled copies would move the supervisor path
+  and break the existing recovery context.
+end note
+
+  DRIVER -> QUAL : preflight <=120s: full65 sourceInventory == corrected7e manifest\nread retained learning/policy logs; hash ALL5 artifacts against build2 reported metadata\ncomplete BEFORE any GPU query/test; no LLVM native version query
+  DRIVER -> QUAL : qualificationPlan('gpu','feasibility')\nEXACT unchanged nonzero-roundtrip + direct-SGD/backward/reload pair
+  DRIVER -> JOURNAL : bounded serialized guard-start(seq,runId)\narm HOST sample-liveness only after bounded preflight
+  DRIVER -> GUARD : same-container UUID/free/total CSV query, bound1s\nstrict single row/integer MiB/stable total; startup >=3072 MiB
+  GUARD --> DRIVER : first accepted sample OR latched failure\nno test starts without startup headroom and a valid journal
+  DRIVER -> JOURNAL : serialized sample(seq,runId) or abort\nappend error/overflow blocks PASS; preserve first failure
+
+note over HOST,DRIVER
+  Each observer uses its own local clock,
+  because shared epochs are not established.
+  Journal samples coordinate the two observers
+  without asserting a physical stop deadline.
+end note
+
+  par driver-local guard throughout active work
+    loop 2s QUERY-START cadence / at most one query in flight
+      DRIVER -> GUARD : same-container query <=1s; running abort below2048 MiB\nrequire previous accepted sample age <4s BEFORE replacement
+      GUARD --> DRIVER : accepted sample OR first failure latched\nlate success never resets stale/abort state
+      DRIVER -> JOURNAL : bounded serialized sample/abort, seq + runId
+    end
+  else exact two-test campaign, no source/Cargo recompilation; runtime kernel JIT permitted
+    DRIVER -> QUAL : executeQualification:120s/test,270s loop INCLUDING30s cleanup reserve
+    loop exact two selected test steps only while guard and journal remain valid
+      DRIVER -> JOURNAL : append attempt-start(seq,runId,selector) BEFORE test invocation
+      DRIVER -> QUAL : recordAttempt registers attempt before runBounded\nselector --exact --ignored --test-threads=1 --nocapture --color=never
+      QUAL -> HELPERS : runBounded(existing executable argv, fresh inner capture path)\noriginal context below /build/native/_work/gpu-owner-recovery/runs
+      HELPERS --> DRIVER : retain result before auxiliary capture/attempt-finish\nrequire exit0/PASS/one summary/1 passed/0 failed/0 ignored
+      DRIVER -> JOURNAL : bounded serialized attempt-finish; capture/journal fault blocks PASS
+    end
+  else HOST-local watcher, every250ms
+    HOST -> WATCHDOG : runtime.journalWatcher reads fresh bounded journal\nprogressWatchdog validates runId/sequence/prefix and HOST-local progress
+    opt abort or4s without valid sample progress, journal failure, or HOST deadline
+      HOST -> HOST : latch failure; stop request waits for startPending to settle
+      HOST -> DOCKER : ONE stop ONLY captured validated owned CID\nconditional ONE kill ONLY if owned stop fails
+    end
+  end
+
+note over HOST
+  An aborted promise cannot stop native work,
+  because the helper exposes no cancel method.
+  Guard failure therefore requires container
+  termination, not an unawaited test promise.
+end note
+
+  DRIVER -> QUAL : finalization <=20s: source checked unchanged after work\nunknown/failed check or guard/journal failure prevents PASS
+  DRIVER -> JOURNAL : bounded serialized done only for truthful final outcome
+  DRIVER --> RUNTIME : inner receipt if reachable; stop may leave it absent\nretain partials, no synthetic PASS/retry; driver<=410s clipped to HOST normal MINUS20s
+  HOST -> HOST : acceptInner validates arrays before admission\nmalformed results retain operation ledger/gpuExecutionAttempted; testsExecuted stays unknown:null
+
+note over HOST
+  Receipt checks must preserve the operation
+  ledger when malformed results prevent admission.
+  A secondary exception cannot erase cleanup facts
+  or convert unknown test execution to false.
+end note
+  HOST -> DOCKER : ONE terminal state inspect; ExitCode0/OOMKilled:false required
+  HOST -> HOST : close/drain watchdog before final owned cleanup\nno late callback can upgrade acceptance
+  HOST -> DOCKER : ONE remove captured owned CID; cleanupFailures:[] required\nretain raw result/capture THEN enforce cleanup cutoff570s, not receipt reserve
+  HOST --> RUNTIME : 5 normal Docker operations /7 maximum with failure stop+kill\nBOTH tests accepted + checked unchanged source + no guard/journal/cleanup failure
+  RUNTIME --> OPERATOR : functional acceptance contract required PASS receipt AND HOST_GPU_FEASIBILITY_EXIT=0\nnow supplied by normalized operator report, not original HOST bytes; retain partials/no retry/trainingReady:false
+end
+
+legend bottom
+  CURRENT REPORTED_PAIR_PASS_CONSUMED. Actual observation-1 normalized report supplies PASS_HOST_GPU_FEASIBILITY_ONLY/PASS_GPU_FEASIBILITY_TESTS_ONLY/HOST_GPU_FEASIBILITY_EXIT=0, exact two F64 tests each1/0/0, source7e checked unchanged/all5 artifact metadata admitted, guardComplete:true/two samples/five Docker PASS0/owned cleanup. Accept functional REPORT scope, not original HOST-byte rehash, raw CSV/journal replay, coldJIT/full telemetry/strict-stop/full assurance. Local records verification PASS26 tests28 assertions/one strict TSC/current record-check12 inputs/327 hashes/2 test+2 query+5 complete Docker argv/28 rows18 paths/5 artifact metadata; adversarial/security READY records/source-planning only, low/no new gate.
+  HOST feasibility CONSUMED1/1/remaining0/no retry. Publication-result PASS250d438685d2fc7560b0e31439f282bb2c145888/244 text entries/branch feat-ml-adjuntant-ii/commit1+HTTPS push1 CONSUMED0; result/actions are post-publication LOCAL_UNCOMMITTED metadata. Original issued HOST remaining1/unobserved/publication APPROVED_PENDING and source/proof false fields remain immutable snapshots, not live authority. Those consumed grants supply no new authority. Source4 frozen327 proof stays SOURCE-ONLY; new observation is the separate reported functional evidence. Old native-build2/pub25bc/failed probes/history stay preserved, no retry/deletion/custody gauntlet/trainingReady:false.
+  CURRENT full pointer: gpu-full-qualification.puml owns full1 retry CONSUMED0, full source4 SOURCE_ONLY_PASS and PRE_APPROVAL READY reviews. Separate full2 HOST-only1 approved/unobserved; delivery/publication unapproved, issued-doc closeout pending. No execution occurred; no coding/train authority or accepted full qualification evidence. Original snapshots/old grants0 and feasibility-only coverage stay unchanged. Six selectors/numerics/harness/scratch/bounds/frozen327/math/CPU/master/strict10-297-300 unchanged/unqualified, trainingReady:false. ALL hardening follows ALL planned training and validated results.
+  Headroom samples offer ordinary cooperation on the shared GPU, not allocation/reservation or full operational telemetry. This guard does not weaken or qualify strict pure-policy10/297/300, add500ms/BOOTTIME lease gates, or establish strict physical-stop/security/privacy/isolation assurance. ALL such hardening follows ALL planned training and validated results; no old LLVM archive/payload access.
+endlegend
+@enduml

@@ -1,0 +1,13 @@
+{
+  "version": "chess-coach.reference-bundles.v1",
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "bunVersion": "1.4.0",
+  "entries": [
+    "packages/starchess-arena/src/challenge/admission.ts",
+    "packages/starchess-arena/src/challenge/corpus.ts",
+    "packages/starchess-arena/src/challenge/r3Session.ts",
+    "packages/starchess-arena/src/players/strategic.ts",
+    "packages/starchess-arena/src/run/bank.ts",
+    "packages/starchess-core/src/index.ts"
+  ]
+}

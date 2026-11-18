@@ -1,0 +1,25 @@
+
+_work/gpu-owner-recovery/tests/gpu-runtime-lookup.test.ts:
+11 | test("runtime lookup declares only four bounded Docker metadata commands", () => {
+12 |   const calls = [...script.matchAll(/timeout --kill-after=3s 10s docker ([^\n]+)/g)].map(match => match[1]!);
+13 |   expect(calls).toHaveLength(4);
+14 |   expect(calls.map(call => call.split(" --")[0])).toEqual(["version", "info", "context show)", "context inspect"]);
+15 |   expect(script.match(/\bdocker\b/g)).toHaveLength(5);
+16 |   expect(script).not.toMatch(/\b(run|pull|build|install|sudo|restart|nvidia-smi)\b/);
+                          ^
+error: expect(received).not.toMatch(expected)
+
+Expected substring or pattern: not /\b(run|pull|build|install|sudo|restart|nvidia-smi)\b/
+Received: "# SPEC: _spec/gpu-build.puml\nbegin\n    printf 'scope=READ_ONLY_CLIENT_ENDPOINT_AND_SHELL_MACHINE_PATHS\\n'\n    for variable in DOCKER_HOST DOCKER_CONTEXT\n        if set -q $variable\n            printf '%s=%s\\n' \"$variable\" \"$$variable\"\n        else\n            printf '%s=<unset>\\n' \"$variable\"\n        end\n    end\n\n    timeout --kill-after=3s 10s docker version --format 'client={{.Client.Version}}/{{.Client.Os}}/{{.Client.Arch}} {{if .Server}}server={{.Server.Version}}/{{.Server.Os}}/{{.Server.Arch}}{{else}}server=unavailable{{end}}'\n    printf 'docker_version_exit=%s\\n' \"$status\"\n    timeout --kill-after=3s 10s docker info --format 'serverOS={{.OperatingSystem}} osType={{.OSType}} architecture={{.Architecture}} defaultRuntime={{.DefaultRuntime}} runtimes={{json .Runtimes}}'\n    printf 'docker_info_exit=%s\\n' \"$status\"\n    set -l context (timeout --kill-after=3s 10s docker context show)\n    set -l context_exit $status\n    printf 'context_show_exit=%s context=%s\\n' \"$context_exit\" \"$context\"\n    if test \"$context_exit\" -eq 0; and test (count $context) -eq 1; and test -n \"$context\"\n        timeout --kill-after=3s 10s docker context inspect --format 'context={{.Name}} contextEndpoint={{.Endpoints.docker.Host}}' -- \"$context\"\n        printf 'context_inspect_exit=%s\\n' \"$status\"\n    end\n\n    printf 'shell_machine_os_release:\\n'\n    if test -r /etc/os-release\n        cat /etc/os-release\n    else\n        printf '/etc/os-release=<unavailable>\\n'\n    end\n    for tool in nvidia-container-runtime nvidia-container-runtime-hook nvidia-container-cli nvidia-ctk runc\n        set -l resolved (command -s -- \"$tool\")\n        set -l lookup_exit $status\n        printf 'shell_path_lookup tool=%s exit=%s path=%s\\n' \"$tool\" \"$lookup_exit\" \"$resolved\"\n        for directory in /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin /bin /sbin\n            set -l candidate \"$directory/$tool\"\n            if test -e \"$candidate\"; or test -L \"$candidate\"\n                set -l executable false\n                if test -x \"$candidate\"\n                    set executable true\n                end\n                printf 'shell_machine_candidate=%s executable=%s\\n' \"$candidate\" \"$executable\"\n            end\n        end\n    end\n    printf 'client_endpoint_and_shell_paths_do_not_prove_daemon_host_or_daemon_containerd_PATH=true\\n'\nend\n"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/tests/gpu-runtime-lookup.test.ts:16:22)
+(fail) runtime lookup declares only four bounded Docker metadata commands [1.06ms]
+(pass) context inspection follows successful single-context resolution [0.08ms]
+(pass) path checks do not execute NVIDIA tools or attribute client paths to the daemon [0.06ms]
+(pass) the operator observation consumes both grants without claiming missing host evidence [0.10ms]
+(pass) the failed packet and original syntax-bound artifacts remain byte unchanged [0.48ms]
+
+ 4 pass
+ 1 fail
+ 50 expect() calls
+Ran 5 tests across 1 file. [24.00ms]

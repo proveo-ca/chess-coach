@@ -1,0 +1,32 @@
+{
+  "status": "PASS_EXPECTED_RED_STATIC_RECORD_REGRESSION",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./packages/runtime/tests/gpu-policy-record.test.ts"
+  ],
+  "result": {
+    "status": "FAIL",
+    "exitCode": 1,
+    "failure": null,
+    "stdoutBytes": 28,
+    "stderrBytes": 1152
+  },
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-diagnostic-1/red-regression/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-diagnostic-1/red-regression/command.stderr",
+      "bytes": 1152,
+      "sha256": "20d93bf29b05556d14097b809ef4b3fdd54680e6713665443ca5c8394b5cdda9"
+    }
+  ],
+  "scope": "BUN_SOURCE_ASSERTIONS_NOT_RUST_COMPILATION_OR_GPU",
+  "nativeCompilationPerformed": false,
+  "trainingReady": false
+}

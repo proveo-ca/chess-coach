@@ -1,0 +1,28 @@
+{
+  "version": "chess-coach.gpu-full-launch-observation.v1",
+  "status": "REPORTED_FISH_FILE_READ_FAILURE_PRIOR_ALLOWANCE_CONSERVATIVELY_CLOSED",
+  "provenance": "SEMANTICALLY_NORMALIZED_OPERATOR_TERMINAL_REPORT_NOT_ORIGINAL_HOST_CAPTURE",
+  "reportedLauncherArgv": [
+    "fish",
+    "--no-config",
+    "./host-gpu-full-1.fish"
+  ],
+  "reportedLauncherExitCode": null,
+  "reportedFailure": "NO_SUCH_SCRIPT_FILE_OS_ERROR_2",
+  "reportedApprovedScriptLoaded": false,
+  "qualificationReceiptReceived": false,
+  "fullGpuCampaignObserved": false,
+  "priorIssuedApproval": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-approval.json",
+    "sha256": "3be5e0f26e602928af6c41127a53cf41516c04c1dc84fb266a5e713a2b427e76"
+  },
+  "priorHostLaunchAllowanceDisposition": "CONSERVATIVELY_CONSUMED_FOR_REPORTED_LAUNCH_ATTEMPT_UNDER_ANY_ATTEMPT_RULE",
+  "priorHostInvocationsConsumed": 1,
+  "priorHostInvocationsRemaining": 0,
+  "automaticRetryAuthorized": false,
+  "reportedGitPullAlreadyUpToDate": true,
+  "operatorSourceCommitIndependentlyVerified": false,
+  "originalHostFilesReceived": false,
+  "codingHostOperationsPerformed": false,
+  "trainingReady": false
+}

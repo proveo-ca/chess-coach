@@ -1,0 +1,35 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "cuda-bun-compat-acquire-parent-2",
+  "stage": "cuda-acquire",
+  "sourceManifestSha256": "d8d5bc5fcebd95d9163bbc13e53af1abf55d611dfe7ae11e7a87d18af39925f8",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./_work/gpu-owner-recovery/cuda-continuation.test.ts",
+    "./_work/gpu-owner-recovery/cuda-acquire.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 3208,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-bun-compat-acquire-parent-2/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-bun-compat-acquire-parent-2/command.stderr",
+    "bytes": 3208,
+    "sha256": "22e72eaf6850b523b6cfe9064f67afc982d02ed5026424897098c5dd2e942613"
+  },
+  "sourceCount": 242,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

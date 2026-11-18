@@ -1,0 +1,17 @@
+
+_work/gpu-owner-recovery/qualification/host-toolchain/render.test.ts:
+(pass) alignment preserves repository pins and the selected Rust components and target [0.74ms]
+(pass) the command is fixed, one-line and round-trips its nested Fish literals [1.13ms]
+(pass) one explicit install and three exact pinned queries form the whole tool alignment [0.62ms]
+(pass) version comparisons accept exact stable tokens and reject precision or suffix drift [0.16ms]
+(pass) Mise auto-install stays disabled outside the explicit install operation [0.44ms]
+(pass) runtime-config and ordinary free-space checks precede installation [0.37ms]
+(pass) surviving parent preserves exit and streams under the grace-inclusive worker deadline [0.38ms]
+(pass) host Fish syntax check precedes operations without claiming coding-side parsing [0.32ms]
+(pass) success is alignment only and cannot replay the failed receiver or run workloads [0.47ms]
+(pass) the proposal grants no installation or retry until the actual host-command decision [0.18ms]
+
+ 10 pass
+ 0 fail
+ 91 expect() calls
+Ran 10 tests across 1 file. [10.00ms]

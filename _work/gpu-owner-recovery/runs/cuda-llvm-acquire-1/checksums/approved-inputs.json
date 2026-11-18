@@ -1,0 +1,30 @@
+{
+  "pinnedReviewSha256": "7e163891ae6e9cde0a77ea2608d5c25129add3edbfda078ee2c2619be3850f3f",
+  "pinnedRequestSha256": "6b8aae0c45ac959e555675c3f5a7908968fb999b55d16daba833c81fca5cb346",
+  "files": {
+    "_work/gpu-owner-recovery/cuda-continuation.ts": "66da6653188442f1d748b76eec79e963df5150798c5ffa7ad78f5eec1a481b8f",
+    "_work/gpu-owner-recovery/cuda-continuation.test.ts": "a066c9ac1ee5c736168c2dc704321c29db369c068943270ddbffc39ef2e729f6",
+    "_work/gpu-owner-recovery/cuda-acquire.ts": "a618bf3ed499fe1ced411d01dafb744ecdc6ca8d33f49752463e4e9b6f45e72b",
+    "_work/gpu-owner-recovery/cuda-acquire.test.ts": "3e05372830e14ccdc190541a0032d50a0d52f8b527b9532d809f5f4620145843",
+    "_work/gpu-owner-recovery/cuda-acquire-mise.toml": "445e50bd984abe069094e80bb7f082fa16a461b44af0686d4dc0b4567a05ab10",
+    "_work/gpu-owner-recovery/provision.ts": "446bafb616dce8f642216268cb10d6c30e1e485b45428b8c83295358964a8efb",
+    "_work/gpu-owner-recovery/verify.ts": "b30bbd5606c50bb8117ebefb1dc56ee73471895f85d9927f90aed4aff59def0f",
+    "_work/gpu-owner-recovery/verify.test.ts": "c6f4277db0892e0170da6d1045cca99c887340c16eb2f6a12058f0546fd43cc8",
+    "_work/gpu-owner-recovery/command-supervisor.ts": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6",
+    "_work/gpu-owner-recovery/tsconfig.json": "e70ffa726d5b3b004982a4705b17b778c4326fe9964b9ce76e006ed1310c793d",
+    "tsconfig.json": "a0cf0b388c7327624fa7f91061dbf4ee4280e9f27d095740399fe5c83682e913",
+    "_work/gpu-owner-recovery/cuda-isolation.ts": "3231f42ebbcf01ac0b1f6f5217ed53233f9359d657eb3e7d55ccd447a802735c",
+    "_work/gpu-owner-recovery/cuda-isolation.test.ts": "53f812ec50c62e92f506e3323c224cb9852be2801d7c4259f79b481a566fa9ea",
+    "_work/gpu-owner-recovery/cuda-mise.toml": "b1d2fa6a92bb740b11ad15cc81e7c421c1ebc5393b5138fd50b61c6e16710102",
+    "_work/gpu-owner-recovery/mise.toml": "09b27b21573e66a53fb59c29feb97b15a8b0887384b21b09fac8599d8ecb5df8"
+  },
+  "predecessorProofs": {
+    "_work/gpu-owner-recovery/runs/cuda-isolation-probe-3/approved-request.json": "2882f02baf9054e1890d58f4c984d3adc49fbbf0fad2ee5359312759a17a64c5",
+    "_work/gpu-owner-recovery/cuda-isolation-reviewed-v3.json": "509d75b8bdda611f8059307368a043130b34a75179cb72c31ae3ba28a8257f94",
+    "_work/gpu-owner-recovery/runs/cuda-isolation-probe-3/receipt.json": "ad10f0f0a2f8d83940cccdc2a17832e32cc79f6e8df9962752983a1a189a16de",
+    "_work/gpu-owner-recovery/cuda-isolation-probe-3-classification.json": "ce013b7f8a2f1d1d6574530d6d74f1b01901cae8efbc3567cb097c1136a98759",
+    "_work/gpu-owner-recovery/runs/cuda-isolation-probe-3/command.stdout": "62f891ad39613ffd3a20af2e104fbd780020182076ed7d41741392354de6ebc1",
+    "_work/gpu-owner-recovery/runs/cuda-isolation-probe-3/command.stderr": "a9ab5f2216858bb56a0a8925fd25fdb20d121c8603d40fdd950457d35d6bfdf9"
+  },
+  "precedingOutsideReceipt": "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/archive/receipt.json"
+}

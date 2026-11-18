@@ -1,0 +1,20 @@
+@startuml learning
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Burn-owned episodic policy objective
+component "Validated candidate FeatureBatch\n2271 F64 coordinates; 1..512 rows" as FEATURES <<app>>
+component "0..64 sampled decisions\nselected index + frozen baseline + return" as EPISODE <<app>>
+component "PolicyModel\nBurn Linear -> ReLU -> Linear\n2271 -> 32 -> 1" as MODEL <<app>>
+component "Burn log_softmax + tensor objective" as LOSS <<app>>
+component "Burn autodiff + SGD\nsynthetic regression tests" as UPDATE <<app>>
+FEATURES --> EPISODE
+FEATURES --> MODEL
+EPISODE --> LOSS
+MODEL --> LOSS
+LOSS --> UPDATE
+note bottom of LOSS
+  A = return - frozen_baseline
+  J = -A * sum(log p(selected)) + L2/2 * ||weights||^2
+  Empty episodes produce no objective or regularization step.
+  No handwritten derivatives or game-data training run.
+end note
+@enduml

@@ -1,0 +1,52 @@
+{
+  "status": "PASS_SIX_RETAINED_SOURCE_AND_LICENSE_FILES",
+  "files": [
+    {
+      "source": "node_modules/fflate/package.json",
+      "path": "artifacts/training-functional/reference-inputs/fflate-package.json",
+      "bytes": 3543,
+      "sourceMode": "100644",
+      "sha256": "5922d8150b307bc0e4e441491c779c45379e9913d348848fca8d5cf02db4d134"
+    },
+    {
+      "source": "node_modules/fflate/esm/index.mjs",
+      "path": "artifacts/training-functional/reference-inputs/fflate-esm-index.mjs",
+      "bytes": 91765,
+      "sourceMode": "100644",
+      "sha256": "8d75534a30a0580608e1271c13d70943ed4cd3589fddff7b1197748036a5116e"
+    },
+    {
+      "source": "node_modules/fflate/LICENSE",
+      "path": "artifacts/training-functional/reference-inputs/fflate-LICENSE",
+      "bytes": 1069,
+      "sourceMode": "100644",
+      "sha256": "0a1df3a083d0c010560aa342e87959c8c1070e6fd54545741f083f22d0c8b551"
+    },
+    {
+      "source": "node_modules/jssha/package.json",
+      "path": "artifacts/training-functional/reference-inputs/jssha-package.json",
+      "bytes": 5351,
+      "sourceMode": "100644",
+      "sha256": "a4813aab26cb4626fe638a9c8557c3601f3a59d4b67749b73f52c7b9f41a7951"
+    },
+    {
+      "source": "node_modules/jssha/dist/sha256.mjs",
+      "path": "artifacts/training-functional/reference-inputs/jssha-dist-sha256.mjs",
+      "bytes": 10033,
+      "sourceMode": "100644",
+      "sha256": "4911466b7ab8e64e1030977aa3b07050d964d957d9e3abfa6a32d9097bde2e50"
+    },
+    {
+      "source": "node_modules/jssha/LICENSE",
+      "path": "artifacts/training-functional/reference-inputs/jssha-LICENSE",
+      "bytes": 1539,
+      "sourceMode": "100644",
+      "sha256": "9a5fa7f7df7e9fac895f3a5d553e6a68d32e27cd7ac4d62c50588ab68dc619ab"
+    }
+  ],
+  "bytes": 113300,
+  "networkOperations": 0,
+  "packageCodeExecuted": false,
+  "referenceBuilds": 0,
+  "trainingReady": false
+}

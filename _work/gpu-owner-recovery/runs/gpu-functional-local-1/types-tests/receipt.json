@@ -1,0 +1,29 @@
+{
+  "stage": "types-tests",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "node_modules/typescript/lib/_tsc.js",
+    "-p",
+    "tsconfig.tests.json"
+  ],
+  "timeoutMs": 120000,
+  "status": "FAIL",
+  "exitCode": 2,
+  "failure": null,
+  "stdoutBytes": 351,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-1/types-tests/command.stdout",
+      "bytes": 351,
+      "sha256": "d1a31771e2844ba3a9c994c6c9cf5bad18134c038c98c1d992bb4ca4e9adf53f"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-1/types-tests/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

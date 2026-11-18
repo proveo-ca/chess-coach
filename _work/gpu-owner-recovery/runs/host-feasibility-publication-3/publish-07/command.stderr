@@ -1,0 +1,6 @@
+remote: 
+remote: GitHub found 166 vulnerabilities on proveo-ca/chess-coach's default branch (9 critical, 75 high, 62 moderate, 20 low). To find out more, visit:        
+remote:      https://github.com/proveo-ca/chess-coach/security/dependabot        
+remote: 
+To https://github.com/proveo-ca/chess-coach.git
+   d3bb6bcc6..f3e277dbb  f3e277dbbf33c0aa69172cca1890792656d4cd09 -> feat-ml-adjuntant-ii

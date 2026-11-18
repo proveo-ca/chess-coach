@@ -1,0 +1,17 @@
+{
+  "status": "EXECUTOR_PERMISSION_COMMAND_REFERENCE_RECORDED_NOT_EXECUTED_BY_AGENT",
+  "origin": "EXECUTOR_MESSAGE",
+  "message": "The permissions are sudo chmod 644 /var/lib/chess-coach/training-volume-1 for reference",
+  "reportedCommand": ["sudo", "chmod", "644", "/var/lib/chess-coach/training-volume-1"],
+  "reportedModeOctal": "0644",
+  "reportedModeDecimal": 420,
+  "matchesReturnedMetadataMode": true,
+  "directorySearchModeBitsPresent": false,
+  "actualHostCommandIndependentlyVerified": false,
+  "permissionChangeExecutedByAgent": false,
+  "permissionRepairAuthorized": false,
+  "selinuxPolicyOrLabelsChanged": false,
+  "capacityBlockResolved": false,
+  "inodeAdmissionChanged": false,
+  "trainingExecuted": false
+}

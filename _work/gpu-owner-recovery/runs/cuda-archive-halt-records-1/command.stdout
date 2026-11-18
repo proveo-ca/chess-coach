@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "scope": "HALT_RECORD_AND_IMMUTABLE_SOURCE_EVIDENCE_ONLY",
+  "historicalArchiveSource": {
+    "tests": 159,
+    "assertions": 713,
+    "types": "PASS"
+  },
+  "historicalRegressions": {
+    "runner": [
+      15,
+      216
+    ],
+    "acquisition": [
+      28,
+      522
+    ],
+    "isolation": [
+      16,
+      276
+    ]
+  },
+  "sourcePacketFiles": 23,
+  "retainedRequestTiming": "POST_PLAN_RETENTION_MATCHED_PRE_EXECUTION_PIN_NOT_ORIGINAL_CAPTURE",
+  "failedReadOnlyPlanPreserved": true,
+  "ancestorGuardRejectedAcceptedPolicy": true,
+  "authorityGranted": false,
+  "renewalRequired": true,
+  "nativeAuditLaunched": false,
+  "ownershipOrTrustChanged": false,
+  "extractionPerformed": false,
+  "llvmCodeExecuted": false,
+  "trainingReady": false
+}

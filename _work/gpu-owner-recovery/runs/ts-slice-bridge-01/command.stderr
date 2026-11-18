@@ -1,0 +1,32 @@
+
+packages/contracts/tests/gpu-job.test.ts:
+(pass) GPU closed boundary > accepts exact input and outer identities without control frames [15.25ms]
+(pass) GPU closed boundary > binds original input bytes, all model identities and nested closed fields [3.02ms]
+(pass) GPU closed boundary > rejects recursively escaped duplicate keys, malformed JSON and resource excess [6.24ms]
+(pass) GPU original descriptor token commitment > accepts outer formatting and decoded escaped property names [3.85ms]
+(pass) GPU original descriptor token commitment > rejects inside-token whitespace, reordering and Unicode escapes despite refreshed enclosing hashes [2.14ms]
+(pass) GPU original descriptor token commitment > rejects escaped descriptor duplicates in the same bounded parse [0.65ms]
+(pass) GPU original descriptor token commitment > checks complete state, RNG prefixes, histories and fresh first-attempt binding [5.86ms]
+
+packages/runtime/tests/gpu-job.test.ts:
+(pass) GPU job EOF admission > boot and a complete queued frame remain inert until actual EOF [370.06ms]
+(pass) GPU job EOF admission > delayed duplicates and trailing bytes fail before any embedded or model effect [13.92ms]
+(pass) GPU job EOF admission > requires one complete LF frame with valid UTF-8 and bounded bytes [23.86ms]
+(pass) GPU job EOF admission > missing EOF exhausts the boot budget without embedded parsing [3.39ms]
+(pass) GPU job EOF admission > rejects hash, model, schema and session corruption before loaders or storage [19.63ms]
+(pass) GPU job EOF admission > record length/hash and NOFOLLOW reject before corpus or state effects [9.25ms]
+(pass) GPU job EOF admission > initial state and independently derived descriptor reject before factory construction [21.96ms]
+(pass) GPU job EOF admission > keeps owner elapsed plus boot delay and rejects a backwards local clock [4.49ms]
+(pass) GPU job EOF admission > bounds loaders and boot emission before state creation [7.29ms]
+(pass) GPU job EOF admission > ordinary exported main and direct source dispatch stay disabled [217.39ms]
+
+packages/runtime/tests/fixed-attempt-gpu-owner.test.ts:
+(pass) GPU owner real fixed attempt connection > fixture driver calls the real loop, commits SQLite once, closes/reaps three children and releases scratch [545.12ms]
+(pass) GPU owner real fixed attempt connection > copies trusted factory layout and preserves historical two-argument defaults [202.66ms]
+(pass) GPU owner real fixed attempt connection > late startup emission aborts all owned children and releases real factory scratch [165.93ms]
+(pass) GPU owner real fixed attempt connection > callback errors and late callback completion stay before first accept and use existing cleanup [19.91ms]
+
+ 21 pass
+ 0 fail
+ 299 expect() calls
+Ran 21 tests across 3 files. [2.00s]

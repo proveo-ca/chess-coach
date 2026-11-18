@@ -1,0 +1,25 @@
+{
+  "version": "chess-coach.host-facts-artifact.v1",
+  "filename": "host-docker-runtime-facts-linux-x86_64-musl",
+  "sha256": "67541b7b2fb0388cd7bfefedfb69fcc74a7cca2e34cdf7f937fea15d2880538a",
+  "byteLength": 674400,
+  "target": "x86_64-unknown-linux-musl",
+  "rustVersion": "1.95.0",
+  "reportVersion": "chess-coach.host-docker-runtime-facts.v2",
+  "elf": {
+    "class": 64,
+    "machine": "x86_64",
+    "interpreter": null,
+    "neededLibraries": [],
+    "rpath": null,
+    "runpath": null
+  },
+  "scope": "METADATA_ONLY_NOT_RUNTIME_QUALIFICATION",
+  "deploymentQualified": false,
+  "runtimeAdmissionQualified": false,
+  "gpuQualification": "NOT_QUALIFIED",
+  "hostExecutionAuthorized": false,
+  "provisioningAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

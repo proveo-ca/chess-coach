@@ -1,0 +1,116 @@
+{
+  "scope": "SOURCE_ONLY_MOCKED_BOOTSTRAP_PERMISSION_FOLLOWUP",
+  "stage": "GREEN",
+  "status": "PASS",
+  "runtime": "Bun 1.4.0 (34cbb9a40)",
+  "redEvidence": "red-receipt.json",
+  "historicalEvidence": {
+    "source1": "artifacts/training-functional/checks/qualification-bootstrap-source-1/receipt.json",
+    "priorRecordsModified": false,
+    "priorPassingResultsAreAcceptanceOfTheseFixes": false
+  },
+  "commands": [
+    {
+      "argv": ["/usr/local/bin/bun", "--no-env-file", "--no-install", "test", "--timeout", "30000", "./artifacts/training-functional/qualification-bootstrap.e2e.test.ts"],
+      "exitCode": 0,
+      "tests": 102,
+      "assertions": 2208,
+      "reportedElapsedMs": 219,
+      "measuredElapsedMs": 224.62837199999998,
+      "stdout": "tests.stdout",
+      "stderr": "tests.stderr"
+    },
+    {
+      "argv": ["/usr/local/bin/bun", "--no-env-file", "--no-install", "node_modules/typescript/bin/tsc", "--noEmit", "--skipLibCheck", "false", "-p", "artifacts/training-functional/tsconfig.json"],
+      "exitCode": 0,
+      "strict": true,
+      "skipLibCheck": false,
+      "measuredElapsedMs": 5390.133791,
+      "stdout": "types.stdout",
+      "stderr": "types.stderr"
+    }
+  ],
+  "streamCapture": "Bun.spawnSync pipe bytes decoded as UTF-8 and retained in their original stdout/stderr streams",
+  "sourcePins": [
+    {
+      "path": "artifacts/training-functional/qualification-bootstrap.ts",
+      "byteLength": 38668,
+      "sha256": "e22505c5e3c492c25a6068089116a69dd70b398f3536629c8e8433a6eefbb968",
+      "lines": 335
+    },
+    {
+      "path": "artifacts/training-functional/qualification-bootstrap.e2e.test.ts",
+      "byteLength": 62504,
+      "sha256": "1142d1f09c3a2a47d17bb9beb88aa7404fe8caff335872bf5e37bd78862b2fee",
+      "lines": 548
+    }
+  ],
+  "staticImports": ["node:crypto", "node:fs", "node:path", "node:url"],
+  "staticImportInspection": "Bun.Transpiler.scanImports on the bootstrap source",
+  "permissionFixes": {
+    "export": "spawnBootstrapChild",
+    "signature": "spawnBootstrapChild(request: CommandRequest, io: { umask(mask: number): number; spawn(request: CommandRequest): ChildHandle }): ChildHandle",
+    "gitCondition": "request.argv[0] === \"git\"",
+    "gitTemporaryUmask": "0022",
+    "restore": "Synchronous finally around the existing Bun.spawn block; no await",
+    "nonGit": "Worker and builder inherit 0077 without any umask call",
+    "zodSource": "Regular bounded readable files; read errors fail",
+    "zodCopyMode": "0644 for every fresh copied file",
+    "hostZodModesChanged": false,
+    "capturedReferenceModeChecksChanged": false,
+    "executionSourceModeChecksChanged": false,
+    "outerCommandUmaskChanged": false
+  },
+  "addedRegressions": [
+    "Synchronous Git spawn inherits 0022, creates mocked regular 0644 and executable 0755 files inside private fresh source, and restores 0077 before queued asynchronous work",
+    "Git spawn exceptions restore the exact original 0077 or 0027 mask",
+    "Worker and builder leave 0077 untouched on success and exception",
+    "Readonly physical Zod package.json and index.js at 0444 plus nested file at 0555 retain source bytes and modes while fresh copies use 0644",
+    "Zod read errors at a regular 0644 source fail before operator module loading",
+    "Non-regular Zod entries fail",
+    "Readonly or umask-restricted execution-source and captured-reference modes still fail strict checks"
+  ],
+  "unchangedContracts": {
+    "gitOperations": 4,
+    "gitMs": 120000,
+    "preparationMs": 240000,
+    "cleanupMs": 5000,
+    "operatorOwnershipChanged": false,
+    "executionSourceFiles": 108,
+    "executionSourceBytes": 641523,
+    "capturedReferenceFiles": 435,
+    "capturedReferenceBytes": 4635549,
+    "requiredReferencePayloadFiles": 9,
+    "referenceOutputFiles": 6,
+    "physicalAppFilesMaximum": 4096,
+    "physicalAppBytesMaximum": 134217728,
+    "fileBytesMaximum": 16777216,
+    "cliProtocol": "B --no-env-file --no-install L prepare LOWERCASE_40_HEX_PUBLICATION_COMMIT"
+  },
+  "mocking": {
+    "filesystem": "Injected in-memory IO",
+    "spawnAndUmask": "Injected synchronous callbacks",
+    "moduleHelpers": "Injected pure helpers over in-memory bytes",
+    "clockAndTimers": "Injected clock and manually fired alarms",
+    "BunSpawnCalls": 0,
+    "BunSpawnSyncCalls": 0,
+    "fetchCalls": 0,
+    "hashes": "Real SHA-256 and Git blob SHA-1"
+  },
+  "operationalBootstrapInvoked": false,
+  "operatorInvoked": false,
+  "sourceAcquisitionPerformed": false,
+  "inputsCopiedOrStaged": false,
+  "referenceBuilt": false,
+  "referenceEvaluated": false,
+  "nativeExecuted": false,
+  "gpuQueried": false,
+  "containerExecuted": false,
+  "installationPerformed": false,
+  "trainingExecuted": false,
+  "gitWritesPerformed": false,
+  "commitOrPushPerformed": false,
+  "qualified": false,
+  "trainingReady": false,
+  "remainingLeadGates": ["fresh full delivery-2 verification", "read-only adversarial and security re-review"]
+}

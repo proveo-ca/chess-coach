@@ -1,5 +1,5 @@
-// SPEC: _spec/packages/starchess-core/resolve.puml, _spec/packages/starchess-core/overview.puml, _spec/packages/starchess-core/resolve-turn-activity.puml, _spec/packages/starchess-core/mine-contact.puml, _spec/apps/starchess/core/turn/resolve-pipeline.puml, _spec/packages/starchess-core/gas-phase-vacancy.puml, _spec/packages/starchess-core/move-timing.puml
-import type { Square } from "chess.js";
+// SPEC: _spec/packages/starchess-core/resolve.puml, _spec/packages/starchess-core/overview.puml, _spec/packages/starchess-core/resolve-turn-activity.puml, _spec/packages/starchess-core/mine-contact.puml, _spec/apps/starchess/core/turn/resolve-pipeline.puml, _spec/packages/starchess-core/gas-phase-vacancy.puml, _spec/packages/starchess-core/move-timing.puml, _spec/engine-consolidation.puml
+import type { Square } from "../model/square";
 
 import {
   mapToPlacement,
@@ -23,7 +23,8 @@ import type {
 } from "../model/types";
 import { scanRay, type RayContact } from "../board/ray-scan";
 import { moverContact, timedMover, type MoverContact } from "../board/move-timing";
-import { pathRevealSteps } from "../board/vision";
+import { pathRevealStepsKernel } from "../board/vision";
+import type { EngineMineId, ResolutionEffects } from "../engine/causal-types";
 
 export type { ClassicalPlan };
 
@@ -139,6 +140,8 @@ export type ResolveTurnResult = {
   pendingCCShotsArmed: ScPendingCCShot[];
 };
 
+export type ResolveBoard = ResolveTurnResult["afterAll"];
+
 const clampLives = (n: number) => Math.max(0, Math.min(3, Math.floor(n)));
 
 export type PathRevealSnap = {
@@ -152,6 +155,9 @@ export type PathRevealApply = PathRevealSnap & { fired: boolean };
 export const applyPathRevealAttack = (
   snap: PathRevealSnap,
   a: ResolveAttack,
+  effects?: ResolutionEffects,
+  actionSeq: number | null = null,
+  discoveryOrdinal?: number,
 ): PathRevealApply => {
   if (a.kind !== "capture" || !a.pathRevealFrom) return { ...snap, fired: false };
   const map = placementToMap(snap.placement);
@@ -163,6 +169,12 @@ export const applyPathRevealAttack = (
   if (!occ || occ.color !== a.victim.color || occ.type !== a.victim.piece) {
     return { ...snap, fired: false };
   }
+  effects?.bindBoard(map);
+  const span = effects?.group("C-path", () => {
+    effects.destroy(occ, actionSeq);
+    effects.move(actor, a.pathRevealFrom!, a.to, actionSeq);
+  });
+  if (effects && discoveryOrdinal !== undefined) effects.consume(discoveryOrdinal, span ?? null, actor, occ, "capture");
   map.delete(a.pathRevealFrom);
   map.delete(a.to);
   map.set(a.to, actor);
@@ -177,6 +189,9 @@ export const applyPathRevealAttack = (
 export const applyPathRevealCCShot = (
   snap: PathRevealSnap & { ccLives: Record<StarChessColor, number> },
   a: Extract<ResolveAttack, { kind: "ccShot" }>,
+  effects?: ResolutionEffects,
+  actionSeq: number | null = null,
+  discoveryOrdinal?: number,
 ): PathRevealApply & { ccLives: Record<StarChessColor, number> } => {
   if (!a.pathRevealFrom || a.stopAt == null) {
     return { ...snap, ccLives: { ...snap.ccLives }, fired: false };
@@ -190,6 +205,7 @@ export const applyPathRevealCCShot = (
   if (!commandCenter || commandCenter.type !== "k" || commandCenter.color === a.color) {
     return { ...snap, ccLives: { ...snap.ccLives }, fired: false };
   }
+  effects?.bindBoard(map);
   if (a.stopAt !== a.pathRevealFrom) {
     if (map.has(a.stopAt)) {
       return { ...snap, ccLives: { ...snap.ccLives }, fired: false };
@@ -202,6 +218,11 @@ export const applyPathRevealCCShot = (
     b: clampLives(snap.ccLives.b),
   };
   ccLives[a.target] = clampLives(ccLives[a.target] - 1);
+  const span = effects?.group("C-path", () => {
+    effects.move(actor, a.pathRevealFrom!, a.stopAt!, actionSeq);
+    effects.damage(a.target, ccLives[a.target], actionSeq);
+  });
+  if (effects && discoveryOrdinal !== undefined) effects.consume(discoveryOrdinal, span ?? null, actor, commandCenter, "cc-shot");
   return {
     placement: mapToPlacement(map),
     mines: [...snap.mines],
@@ -264,13 +285,14 @@ export const applyPendingCCShots = (input: {
   ccLives: Record<StarChessColor, number>;
   pending: readonly ScPendingCCShot[];
   mines?: readonly ScMine[];
-}): {
+}, effects?: ResolutionEffects): {
   placement: string;
   ccLives: Record<StarChessColor, number>;
   mines: ScMine[];
   attacks: ResolveAttack[];
 } => {
   const map = placementToMap(input.placement);
+  effects?.bindBoard(map);
   const lives = {
     w: clampLives(input.ccLives.w),
     b: clampLives(input.ccLives.b),
@@ -288,6 +310,7 @@ export const applyPendingCCShots = (input: {
     piece: ScPiece["type"],
   ): StarChessColor | undefined => {
     const hit = mineContact({ mines, color, piece, squares: [at], mode: "attack" });
+    effects?.mineContact(hit, null, mines);
     mines = withoutMine(mines, hit);
     return hit.kind === "cleared" ? hit.mineColor : undefined;
   };
@@ -308,7 +331,12 @@ export const applyPendingCCShots = (input: {
     if (blocker) {
       const victim = map.get(blocker)!;
       map.delete(blocker);
-      const mineColor = clearOnCapture(blocker, shot.color, actor.type);
+      let mineColor: StarChessColor | undefined;
+      if (effects) effects.group("turn-open", () => {
+        effects.destroy(victim, null);
+        mineColor = clearOnCapture(blocker, shot.color, actor.type);
+      });
+      else mineColor = clearOnCapture(blocker, shot.color, actor.type);
       attacks.push({
         kind: "capture",
         piece: actor.type,
@@ -326,6 +354,7 @@ export const applyPendingCCShots = (input: {
     const hit = shot.color === "w" ? "b" : "w";
     const livesAfter = clampLives(lives[hit] - 1);
     lives[hit] = livesAfter;
+    effects?.group("turn-open", () => effects.damage(hit, livesAfter, null));
     attacks.push({
       kind: "ccShot",
       piece: actor.type,
@@ -390,8 +419,32 @@ export const clearDepartedGhost = (
   }
 };
 
-export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
+export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => resolveTurnKernel(input);
+
+export const resolveTurnKernel = (
+  input: ResolveTurnInput, effects?: ResolutionEffects,
+  sources: Readonly<Record<StarChessColor, number | null>> = { w: null, b: null },
+): ResolveTurnResult => {
   const start = placementToMap(input.placement);
+  effects?.bindBoard(start);
+  const queryBase = effects?.capture();
+  const seqFor = (plan: Pick<ClassicalPlan, "color">): number | null => sources[plan.color];
+  const scanQueries = new Map<ClassicalPlan, number>();
+  const approachQueries = new Map<ResolveAttack, number>();
+  const waveVictims = new Map<Square, { piece: ScPiece; seq: number | null }>();
+  const removedMines: { ids: EngineMineId[]; seq: number | null }[] = [];
+  const pendingMineIds = new Set<EngineMineId>();
+  const rememberMine = (hit: MineContact, seq: number | null): void => {
+    if (!effects || hit.kind === "inert") return;
+    const ids = effects.mineRemovalIds(mines, hit, effects.mineOrder.filter(id => !pendingMineIds.has(id)));
+    ids.forEach(id => pendingMineIds.add(id));
+    removedMines.push({ ids, seq });
+  };
+  const flushMines = (): void => {
+    for (const removal of removedMines) effects?.mineRemove(removal.ids, removal.seq);
+    removedMines.length = 0;
+    pendingMineIds.clear();
+  };
   const lives = {
     w: clampLives(input.ccLives.w),
     b: clampLives(input.ccLives.b),
@@ -421,10 +474,17 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     piece: ScPiece["type"],
   ): StarChessColor | undefined => {
     const hit = mineContact({ mines, color, piece, squares: [at], mode: "attack" });
+    rememberMine(hit, sources[color]);
     mines = withoutMine(mines, hit);
     return hit.kind === "cleared" ? hit.mineColor : undefined;
   };
 
+  const queryFor = (plan: ClassicalPlan, target: Square, site: "scan-ray" | "reveal-to") => effects?.discovery({
+    actionSeq: seqFor(plan)!, side: plan.color, site, base: queryBase!, from: plan.from, to: plan.to, target,
+    modeSource: input.pathVisionOpts?.tankModeFor ? "native-sieged-set" : "default-tank",
+    siegedSquares: input.siegedTanks ?? [], mineInputProvided: input.pathVisionOpts?.mines !== undefined,
+    mines: input.pathVisionOpts?.mines ?? [],
+  });
   const scanFor = (plan: ClassicalPlan) =>
     scanRay({
       board: start,
@@ -434,6 +494,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       color: plan.color,
       canSee,
       visionOpts: input.pathVisionOpts,
+    }, target => {
+      const query = queryFor(plan, target, "scan-ray");
+      if (query) scanQueries.set(plan, query.ordinal);
+      return query;
     });
 
   type PlanContext = {
@@ -491,10 +555,12 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         };
         (out.fogged ? moveCollisions : attacks).push(hit);
         deadSquares.add(out.at);
+        waveVictims.set(out.at, { piece: start.get(out.at)!, seq: seqFor(plan) });
         occupy.push({ ...plan, to: out.at });
         return;
       }
       case "mineClear":
+        rememberMine({ kind: "cleared", at: out.at, mineColor: out.mineColor }, seqFor(plan));
         attacks.push({
           kind: "mineBlast",
           piece: actor.type,
@@ -517,6 +583,12 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         return;
       case "approach":
         pathRevealPending.push(out.shot);
+        if (effects) {
+          const ordinal = scanQueries.get(plan);
+          if (ordinal === undefined) throw new Error("Causal journal: MISSING_DISCOVERY");
+          approachQueries.set(out.shot, ordinal);
+          effects.deferred(ordinal);
+        }
         if (out.shot.kind === "capture" || out.shot.kind === "ccShot") {
           delayed.push(plan);
         }
@@ -551,15 +623,19 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     return { kind: "capture", at: c.at, victim: c.occ };
   };
 
-  const revealTo = (ctx: PlanContext, target: Square): number | null =>
-    pathRevealSteps(
+  const revealTo = (ctx: PlanContext, target: Square): number | null => {
+    const query = queryFor(ctx.plan, target, "reveal-to");
+    if (query) scanQueries.set(ctx.plan, query.ordinal);
+    return pathRevealStepsKernel(
       input.placement,
       ctx.plan.from,
       ctx.plan.to,
       ctx.plan.color,
       target,
       input.pathVisionOpts,
+      query,
     );
+  };
 
   const RULES: readonly PlanRule[] = [
     {
@@ -785,6 +861,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   }
 
   const mid = new Map(start);
+  effects?.group("C-attack", () => {
+    for (const victim of waveVictims.values()) effects.destroy(victim.piece, victim.seq);
+    flushMines();
+  });
   for (const sqDead of deadSquares) mid.delete(sqDead);
 
   const afterAttack = {
@@ -866,11 +946,15 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           mode: "walk",
         });
 
-  const land = (landing: Landing) => {
+  const land = (landing: Landing, rammed?: ScPiece) => {
     const { plan, piece, dest } = landing;
     const occ = board.get(dest);
     if (occ && occ.color !== plan.color && occ.type !== "k") {
       if (destinationsWritten.has(dest)) {
+        effects?.group("C-move", () => {
+          effects.destroy(occ, seqFor(plan));
+          effects.destroy(piece, sources[occ.color]);
+        });
         moveCollisions.push({
           kind: "capture",
           piece: piece.type,
@@ -922,6 +1006,13 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
 
     const trip = walkContact(landing);
 
+    effects?.group("C-move", () => {
+      if (rammed) effects.destroy(rammed, seqFor(plan));
+      if (occ && occ.color !== plan.color && occ.type !== "k") effects.destroy(occ, seqFor(plan));
+      effects.move(piece, plan.from, dest, seqFor(plan));
+      flushMines();
+    });
+
     board.delete(plan.from);
     board.set(dest, piece);
     destinationsWritten.add(dest);
@@ -947,6 +1038,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     }
 
     if (trip.kind === "detonated") {
+      effects?.group("C-move", () => {
+        effects.destroy(piece, seqFor(plan));
+        effects.mineContact(trip, seqFor(plan), mines);
+      });
       mineTriggers.push({
         kind: "mineBlast",
         piece: piece.type,
@@ -980,6 +1075,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   };
 
   const collide = (a: Landing, b: Landing, contact: MoverContact) => {
+    effects?.group("C-move", () => {
+      effects.destroy(a.piece, seqFor(b.plan));
+      effects.destroy(b.piece, seqFor(a.plan));
+    });
     const [rammer, held] = contact.first === "a" ? [b, a] : [a, b];
     const at = contact.at;
     moveCollisions.push(
@@ -1033,7 +1132,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       from: other.plan.from,
       to: at,
     });
-    land(cc);
+    land(cc, other.piece);
   };
 
   const moveWave = (wave: readonly (readonly [ClassicalPlan, RelocateMode])[]) => {
@@ -1090,11 +1189,18 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     const trip = approachMineContact(a, phase3.mines);
     if (trip.kind === "inert") return undefined;
     if (trip.kind === "cleared") {
+      effects?.group("C-path", () => effects.mineContact(trip, sources[a.color], phase3.mines));
       // Fired upon, so the mover lands alive and only the mine is spent.
       phase3 = { ...phase3, mines: withoutMine(phase3.mines, trip) };
       return trip.mineColor;
     }
     const board = placementToMap(phase3.placement);
+    effects?.bindBoard(board);
+    effects?.group("C-path", () => {
+      const victim = board.get(trip.at);
+      if (victim) effects.destroy(victim, sources[a.color]);
+      effects.mineContact(trip, sources[a.color], phase3.mines);
+    });
     board.delete(trip.at);
     phase3 = {
       placement: mapToPlacement(board),
@@ -1119,7 +1225,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     if ((input.siegedTanks ?? []).includes(a.pathRevealFrom)) continue;
     if (destinationsWritten.has(a.pathRevealFrom)) continue;
     if (a.kind === "capture") {
-      const applied = applyPathRevealAttack(phase3, a);
+      const applied = applyPathRevealAttack(phase3, a, effects, sources[a.color], approachQueries.get(a));
       if (!applied.fired) continue;
       firedFrom.add(a.pathRevealFrom!);
       phase3 = {
@@ -1131,7 +1237,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       pathRevealAttacks.push(approachMine ? { ...a, mineColor: approachMine } : a);
       continue;
     }
-    const applied = applyPathRevealCCShot(phase3, a);
+    const applied = applyPathRevealCCShot(phase3, a, effects, sources[a.color], approachQueries.get(a));
     if (!applied.fired) continue;
     phase3 = {
       placement: applied.placement,
@@ -1157,6 +1263,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   for (const plan of orderedDelayed) {
     if (firedFrom.has(plan.from)) continue;
     const pmap = placementToMap(phase3.placement);
+    effects?.bindBoard(pmap);
     if (!isActorAnchored(board, pmap, plan)) continue;
     if (isApproachOwnedDestination(board, pmap, plan)) continue;
     clearDepartedGhost(board, pmap, plan);
@@ -1172,6 +1279,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       const actorA = livePiece;
       const actorB = board.get(cross.from);
       if (!actorB || actorB.color !== cross.color) continue;
+      effects?.group("C-move", () => {
+        effects.move(actorA, plan.from, cross.from, seqFor(plan));
+        effects.move(actorB, cross.from, plan.from, seqFor(cross));
+      });
       board.delete(plan.from);
       board.delete(cross.from);
       board.set(cross.from, actorA);
@@ -1196,6 +1307,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           mode: "walk",
         });
         if (trip.kind !== "detonated") continue;
+        effects?.group("C-move", () => {
+          effects.destroy(actor, sources[color]);
+          effects.mineContact(trip, sources[color], mines);
+        });
         board.delete(to);
         pmap.delete(to);
         mines = withoutMine(mines, trip);
@@ -1210,7 +1325,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           ...(trip.chaseFrom ? { chaseFrom: trip.chaseFrom } : {}),
         });
       }
-      phase3 = { ...phase3, placement: mapToPlacement(pmap) };
+      phase3 = { ...phase3, placement: mapToPlacement(pmap), mines: [...mines] };
       firedFrom.add(plan.from);
       firedFrom.add(cross.from);
       continue;
@@ -1263,11 +1378,13 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   };
 
   const promoBoard = placementToMap(phase3.placement);
+  effects?.bindBoard(promoBoard);
   const promotions: ResolvePromotion[] = [];
   for (const promo of pendingPromos) {
     if (moversDead.has(promo.at)) continue;
     const landed = promoBoard.get(promo.at);
     if (!landed || landed.type !== "p" || landed.color !== promo.color) continue;
+    effects?.group("C-promotion", () => effects.transform(landed, promo.unit, sources[promo.color]));
     promoBoard.set(promo.at, { type: promo.unit, color: promo.color });
     promotions.push(promo);
   }

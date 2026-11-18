@@ -1,0 +1,35 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "cuda-isolation-layout-renew-runner-1",
+  "stage": "runner",
+  "sourceManifestSha256": "1838481afa58a359f5df49c8dfbe95c1f1563ba8ed23ad4d51d21c5e12deb88e",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./_work/gpu-owner-recovery/verify.test.ts",
+    "./_work/gpu-owner-recovery/audit-lock.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 1408,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-isolation-layout-renew-runner-1/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-isolation-layout-renew-runner-1/command.stderr",
+    "bytes": 1408,
+    "sha256": "08e56e4383bee36c09f576609fabac59b1e4df28ac4137a11ead66c504908f5b"
+  },
+  "sourceCount": 21,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

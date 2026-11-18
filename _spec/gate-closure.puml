@@ -1,0 +1,51 @@
+@startuml gate_closure
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+' purpose: planned training-first phase order with full assurance last
+' covers: _spec/gate-closure.md
+' status: PLANNED priority accepted 2026-11-09; trainingReady:false
+' see: _spec/readiness.md
+' see: _spec/recovery.md
+title Training first - security / privacy / isolation LAST
+start
+:Accepted priority 2026-11-09;
+note right
+  Complete planned training and validate results
+  before security, privacy and isolation hardening.
+  The plan grants no operations or acceptance,
+  so the halted pipeline and its failed audit
+  remain unchanged.
+end note
+:0 - One bounded upfront dependency/blocker inventory:
+dependency, current evidence, genuine functional blocker,
+required proof and separate approval;
+:Accept and freeze functional gates;
+:Route new security/privacy/isolation requirements to LAST;
+:1 - Supported runtime/toolchain and actual GPU feasibility:
+selected host-backed shared-GPU Docker container;
+:Determine whether the path needs old isolated diagnostics;
+:2 - Functional canonical init / BOTH / independent reference /
+orderly close, EOF and reap;
+:Verify integrated R4 game / model / economic correctness;
+:Keep existing functional tests, recipient facts and eligibility,
+retain bounded resources, original clocks, ordinary receipts
+and cooperative ceilings for the host's in-use 8 GB GPU;
+:3 - Actual GPU F64 scoring / backward / SGD / reload,
+all 4,670 coordinates: eps=1e-6, atol=1e-8, rtol=1e-5,
+exact C12 digests, unchanged CPU Flex and master init;
+:Apply required AGENTS implementation reviews per slice:
+functional correctness plus explicit deferred assurance backlog;
+:4 - Explicitly accept frozen functional readiness evidence:
+functional acceptance is not full-assurance Gate0/F9/R4 PASS;
+:Obtain separate explicit training-execution grant;
+:COMPLETE PLANNED TRAINING AND VALIDATE RESULTS;
+:LAST - Separately scope and approve ALL security/privacy
+hardening, isolation and custody/provenance qualification,
+strict stop / escape / dual-crash / native-helper assurance;
+:Seek final full-assurance acceptance only on actual evidence:
+historical findings and Gate0/F9/R4 remain OPEN until accepted;
+note right
+  Reported: 0/3 diagnostics; no binding.
+  Full pipeline halted; trainingReady:false.
+end note
+stop
+@enduml

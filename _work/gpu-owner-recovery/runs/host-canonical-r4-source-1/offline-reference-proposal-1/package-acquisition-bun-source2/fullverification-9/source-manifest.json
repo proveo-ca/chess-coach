@@ -1,0 +1,23 @@
+{
+  "sourceHashes": {
+    "capture.ts": "0a2a08b38758c9e8e59a240aba3902ef23d43da65ac7644ebc7c5b8792273e10",
+    "capture.test.ts": "8ef9aa480564ff0c93ba9434082f9d75f94bdb27108f5fd3680b67abdc869a73",
+    "capture-full.test.ts": "85268411235586ed4b84fdd1a585d687ed495e17c65150db485fa8ad9b4aa236",
+    "root-context.ts": "bc540101a8699c2bd9e5b075342bd3776e6d9ee579a641a6a1757ac640a6dd7f",
+    "root-context.test.ts": "7caef259ee7ba34c8cfda01b6a060996d7d436bfd7fe4fd3c72a93f8bcd4da0f",
+    "cache-parent.ts": "62db5298937cf1c752a76b39f42fa19876e36e637d9d21dba6de323de347b27c",
+    "cache-parent.test.ts": "83d8e91683140c35de498a9457060f47ec00b94ef59c9d83e47593456c24205f",
+    "cache-parent-adapter.ts": "bc3df6e27bdc9a48164e8926a06d09c1ea9d104c3ffa1b19051dc2422b1a1d45",
+    "cache-parent-adapter.test.ts": "da10f7ce4bc74fa30200fd17f277fc72d5f58d8e847f7ee7c75edc4a10a5748d",
+    "verify.ts": "3c0e5494e7c1eea2883d071f6f53c2ee1ced065d9c0a8257db429fa738403e5e",
+    "tsconfig.json": "0083541937af45cc505e9bde2afc99ece5af54fe1855060d20c498bc01488391",
+    ".gitignore": "91317cffd2ef9526d9d0ba70fcefa8499556f916a21327cb5492407dd679db0d"
+  },
+  "bindings": {
+    "request": "c0288e1e34e24d2f7a81e12ee1967ffafbd2768b4c2a5bc2ba15826b6384ff3f",
+    "plan": "7f6a90ca105d6a7c5a45951b508d4a1ecdd5e217625d1cefe08da23557847405",
+    "approval": "4e68d36f8076e213744364cf4cd5f793ef3dbffda6157b93070edf2ffc282d3f",
+    "lock": "1d05ed3d8de5a94873f26a2fb51b88c080704d2e90bf942f9f0bb2ce75a504e0"
+  },
+  "choiceSha256": "4e68d36f8076e213744364cf4cd5f793ef3dbffda6157b93070edf2ffc282d3f"
+}

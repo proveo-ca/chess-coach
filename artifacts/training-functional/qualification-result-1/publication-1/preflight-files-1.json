@@ -1,0 +1,523 @@
+{
+  "status": "PASS_BOUNDED_OWNED_SOURCE_EVIDENCE_SCAN",
+  "scope": "CURRENT_READINESS_AND_SIX_HISTORICAL_DELIVERY_FILES_NOT_FULL_PRIVACY_HARDENING",
+  "files": [
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/cohort-freeze-1.json",
+      "mode": "100644",
+      "byteLength": 94791,
+      "sha256": "8b47619fabf5d5f15c11be8852b2d4b7d1cf9470cf5f0e103e82ea8a57398ec6"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/operator-command-verification.json",
+      "mode": "100644",
+      "byteLength": 1205,
+      "sha256": "a987cd8d5bf3a84c9c127ad0de0fd489cdbfae155ae1bdbb3371a72cbcb3498b"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/operator-command.sh",
+      "mode": "100644",
+      "byteLength": 1462,
+      "sha256": "29c90513c2d8df0938d82b846b1dc035bef671842213caff810cb612dcde1de5"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/post-publication-check-1.json",
+      "mode": "100644",
+      "byteLength": 44276,
+      "sha256": "20bbc180b168e27785fa18aded3f91c73a8211b1559b84104d40a9108f1db848"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/post-publication.json",
+      "mode": "100644",
+      "byteLength": 221729,
+      "sha256": "8f841357229ae1e3c4ed533aa2ed931e9356c44a8c8ccad643aced99c788756f"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-delivery-1/stage-audit-1.json",
+      "mode": "100644",
+      "byteLength": 138068,
+      "sha256": "2dbf2bcb25dab464b5eb166646df2c0f8ffd6ef60dc29f573496af2f99738d71"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/README.md",
+      "mode": "100644",
+      "byteLength": 5494,
+      "sha256": "1dbdfa153d1d44bc888c1d7ed2dc673880869defe8a54cebc93888bd05f59be2"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/acceptance-review-1.json",
+      "mode": "100644",
+      "byteLength": 754,
+      "sha256": "128b32cb099959f2be7d59818d86d5cd042f715ca6cd6bd092c6fba9b3ebbffc"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/bootstrap.json",
+      "mode": "100644",
+      "byteLength": 6141,
+      "sha256": "4278758382c751a5881bf477b1c4eb2b7230a6f8c52a5125da9bd8e469a50216"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-1/receipt.json",
+      "mode": "100644",
+      "byteLength": 5448,
+      "sha256": "762241d396de2547e389932b29ede1c1be94bae19885806c5a8beabb7947b6af"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-1/tests.stderr",
+      "mode": "100644",
+      "byteLength": 2057,
+      "sha256": "ade51da98bae10fe68ae8f062fd65ddcef4295e2b68732e3245c82e0c13130de"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-1/tests.stdout",
+      "mode": "100644",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-1/types.stderr",
+      "mode": "100644",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-1/types.stdout",
+      "mode": "100644",
+      "byteLength": 1370,
+      "sha256": "97026005807350e5d1397cbbebd00e0d18a2b366f927393c1f58656ec2b4553d"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-2/receipt.json",
+      "mode": "100644",
+      "byteLength": 4365,
+      "sha256": "82e9b8f8f55d59938a9551e5ae05c057e0feac01de3df0fe7d8fcdce64fbd1e7"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-2/tests.stderr",
+      "mode": "100644",
+      "byteLength": 2055,
+      "sha256": "082c603c7c2cae5f27e975cce772221bf8339330382589ba8ec6d33a2a471cbe"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-2/tests.stdout",
+      "mode": "100644",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-2/types.stderr",
+      "mode": "100644",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-2/types.stdout",
+      "mode": "100644",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-3/receipt.json",
+      "mode": "100644",
+      "byteLength": 7572,
+      "sha256": "612d3e17fa34b913780164ff7f40581f31d9a71b6bf08c68dc062f16e64c1f5b"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-3/specs.stderr",
+      "mode": "100644",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-3/specs.stdout",
+      "mode": "100644",
+      "byteLength": 2136,
+      "sha256": "a09898f9e6b07d3744db0d67c1f11bb51f6c19f9295fc7a73fdd6ce774133513"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-3/tests.stderr",
+      "mode": "100644",
+      "byteLength": 2640,
+      "sha256": "ec4af6478513b3bd178f30bd8eb9a6fc82768013596146c0fba4277837f9ca57"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-3/tests.stdout",
+      "mode": "100644",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-3/types.stderr",
+      "mode": "100644",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-3/types.stdout",
+      "mode": "100644",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-4/receipt.json",
+      "mode": "100644",
+      "byteLength": 7579,
+      "sha256": "2a96ba5495c033e1d516a3116485be7298aa480a50a1198278fa0e95e88b8191"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-4/specs.stderr",
+      "mode": "100644",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-4/specs.stdout",
+      "mode": "100644",
+      "byteLength": 2136,
+      "sha256": "a09898f9e6b07d3744db0d67c1f11bb51f6c19f9295fc7a73fdd6ce774133513"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-4/tests.stderr",
+      "mode": "100644",
+      "byteLength": 2767,
+      "sha256": "0f402e195bff0dbef0a2267556bf12bf10291ad24ad287a660f5c040a28e6992"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-4/tests.stdout",
+      "mode": "100644",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-4/types.stderr",
+      "mode": "100644",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-4/types.stdout",
+      "mode": "100644",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-5/receipt.json",
+      "mode": "100644",
+      "byteLength": 9390,
+      "sha256": "05e1b9b47fd606a18ce4ebad3dd235034740b8362c488cac6a5540d7dcc140f9"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-5/tests.stderr",
+      "mode": "100644",
+      "byteLength": 5846,
+      "sha256": "2e72a7902c327fc5ad2e5cfa46a392dea641bedcd97f213a85ca07e9e748d33e"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-5/tests.stdout",
+      "mode": "100644",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-5/types.stderr",
+      "mode": "100644",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-5/types.stdout",
+      "mode": "100644",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-6/receipt.json",
+      "mode": "100644",
+      "byteLength": 12178,
+      "sha256": "c165d7bf00453f96c1cf548763b450126f0249a029f67f2216b5bdcf04edc640"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-6/specs.stderr",
+      "mode": "100644",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-6/specs.stdout",
+      "mode": "100644",
+      "byteLength": 2136,
+      "sha256": "a09898f9e6b07d3744db0d67c1f11bb51f6c19f9295fc7a73fdd6ce774133513"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-6/tests.stderr",
+      "mode": "100644",
+      "byteLength": 6123,
+      "sha256": "590d7c54110ffe8aaf25a9a042087f61cb49f3171accaade5127b005dd7de0b5"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-6/tests.stdout",
+      "mode": "100644",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-6/types.stderr",
+      "mode": "100644",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-6/types.stdout",
+      "mode": "100644",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-7/receipt.json",
+      "mode": "100644",
+      "byteLength": 3355,
+      "sha256": "2d51d8b6cca9350ed46e6315180d8dd5884974ad48dc5ef745774008df77aa94"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-7/specs.stderr",
+      "mode": "100644",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/checks-7/specs.stdout",
+      "mode": "100644",
+      "byteLength": 2136,
+      "sha256": "3b2b85ce06f08bea96bb3404c09da215aa1712673bc84a9cfbeb5308f460314d"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/completion.json",
+      "mode": "100644",
+      "byteLength": 5022,
+      "sha256": "75363ee9fb56ea26e121395187ec7eb3cce40a827c9c5014009f11f4b2915c36"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/contract-bindings-1.json",
+      "mode": "100644",
+      "byteLength": 2732,
+      "sha256": "f84169e40904f23ce691e40c88c33795194e4ffe3a483fb9a34366ba389167de"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/export-command.sh",
+      "mode": "100644",
+      "byteLength": 3102,
+      "sha256": "98032d7675d191091be12dd454668e43a2e9efd8fcfcbbec1c244b0105bfaefd"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/export-command.test.ts",
+      "mode": "100644",
+      "byteLength": 5203,
+      "sha256": "c22e39a45391f41c43a0b23d0f6b73e2813379d4eb2cb6dcb7b227ed205e6dcc"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/export-preparation-1.json",
+      "mode": "100644",
+      "byteLength": 2894,
+      "sha256": "64ae3e86bef6d35b1ec18f87aa49b3f72c5b561315d52e475251c06ea029cb58"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/functional-acceptance-1.json",
+      "mode": "100644",
+      "byteLength": 9207,
+      "sha256": "832754f33b6d06dc45cb795ee92718c92a2b9bab1e84a743416f6f91d435f0c2"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/observation-1.json",
+      "mode": "100644",
+      "byteLength": 3002,
+      "sha256": "ca9b26a4af7679ad3d72079e34e35a333f63021f479c180e8f69ffdee1407ea3"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/operator-transcription-1-unverified.json",
+      "mode": "100644",
+      "byteLength": 36853,
+      "sha256": "55534334e921503a8dbf58acfe8f12dd56471c75a6e71d7d61e4123a9b2bcbc3"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/provenance-1.json",
+      "mode": "100644",
+      "byteLength": 5271,
+      "sha256": "fc1dbe73bbb9612fa3a977db4ed674c1aa7bcf8704062274b37c64ceeafbc488"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/publication-1/plan.json",
+      "mode": "100644",
+      "byteLength": 3836,
+      "sha256": "c841c628a84514b9f80c174dd6d67ba2b4e7f14ee910ae4e05b3b579b6173b9b"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/publication-1/preflight-observation-1.json",
+      "mode": "100644",
+      "byteLength": 2814,
+      "sha256": "a62d46ad0059a100f6101f40b0a4dd5c333355864fb9181b2d37cf702aa6a144"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/readback.test.ts",
+      "mode": "100644",
+      "byteLength": 7557,
+      "sha256": "9983ce091731fc0c254853c97f3fb51367703a8555cb3c54a0cb97bc674238d4"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/readback.ts",
+      "mode": "100644",
+      "byteLength": 20487,
+      "sha256": "d77fff06bae985440d491a4b1160949fe839e1c0afa0ce7e9cd5898958738490"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-1/intake-receipt.json",
+      "mode": "100644",
+      "byteLength": 948,
+      "sha256": "eefa98a508ec3778e7107251165ce0b96ad1679c6400b682584b4d0b2905d9b8"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-1/metadata-check.json",
+      "mode": "100644",
+      "byteLength": 527,
+      "sha256": "45ae7b744aafe04afd9acee351b95e7dec302863434073c94c935609b4d60646"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-1/user-reported-export.json",
+      "mode": "100644",
+      "byteLength": 2773,
+      "sha256": "d22b273b8a082b1329a0f4e5f96fda8326352865facf59bac2ca46e2164a9f92"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/acceptance-candidate.json",
+      "mode": "100644",
+      "byteLength": 3685,
+      "sha256": "4e71d03b8aa17e2a2bca046152241ad0593a867f2a35f3d0eb2301fe930a8bdd"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/adversarial-review-1.json",
+      "mode": "100644",
+      "byteLength": 681,
+      "sha256": "7919521f887c77823d446390543630e498de2ba9f995e0aa8dfc14d086f7b9fd"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/campaign-source-binding.json",
+      "mode": "100644",
+      "byteLength": 2078,
+      "sha256": "a6ab8a55defce21cd05d2ba5a11d7c55d83fd78aa1e5fd296cd9d5c64df0e02d"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/canonical.json",
+      "mode": "100644",
+      "byteLength": 36742,
+      "sha256": "d5e5f86bc94e232fbfa897b69b1f7595596bdd2e3bca8336f61d7a37756cf484"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/export.json",
+      "mode": "100644",
+      "byteLength": 262703,
+      "sha256": "fea1c2807458c3f51698e7e2c38e1c3b15367ae8ef337cf5e057b9e8fc3b0103"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/final-verification.json",
+      "mode": "100644",
+      "byteLength": 7579,
+      "sha256": "12950111132c94ff41e612b7040be8362f94af9322ec77e0915d425847d577e4"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/functional-evidence.json",
+      "mode": "100644",
+      "byteLength": 1631,
+      "sha256": "17cdc9a7c30792104bb3bdecbedd9a289d2e31be30e1c9714ec5175d4e184eb1"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/input-manifest.json",
+      "mode": "100644",
+      "byteLength": 143938,
+      "sha256": "7bc8885b4ee97be1d4935aa4dcc994275ea41e2e368b144e29be1b598b53ae51"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/intake-receipt.json",
+      "mode": "100644",
+      "byteLength": 3204,
+      "sha256": "f5603ed0664aa6a129df15540bc1afd2bcbbcb8c13ecd10dfd4fb71b65f170e1"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/operator-observation.json",
+      "mode": "100644",
+      "byteLength": 3216,
+      "sha256": "b75baf82b8dfd5eeaa5b9cd3dd4a88fdb889fc2c6271072ceae4c08964bfc332"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/operator-report.json",
+      "mode": "100644",
+      "byteLength": 34157,
+      "sha256": "13889168a5c9f77885a95460237edbb766abcf1ad9448ea7769133a050bf663a"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/preparation-receipt.json",
+      "mode": "100644",
+      "byteLength": 1921,
+      "sha256": "20f2b4620ef665698a8b7bfffc9fb10ac784491541bc531aa682e7f666a47fd7"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/preservation.json",
+      "mode": "100644",
+      "byteLength": 1219,
+      "sha256": "4daae6a5a2a46f284a495a3146e05cb016b21c5cbd47bca9e59cff16dce6e472"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/r4.json",
+      "mode": "100644",
+      "byteLength": 20265,
+      "sha256": "af939100a853ba93c14d3313858110a679ae10e46aba7e52679b495c21f07cbc"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/readback-observation-1.json",
+      "mode": "100644",
+      "byteLength": 5353,
+      "sha256": "18d29393b585ac9b4c98d6b2f0f0e4d6bc8fa8e89c63d8fa8f5d5b0aac3e0929"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/readback-observation-2.json",
+      "mode": "100644",
+      "byteLength": 5353,
+      "sha256": "18d29393b585ac9b4c98d6b2f0f0e4d6bc8fa8e89c63d8fa8f5d5b0aac3e0929"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/reviews-2.json",
+      "mode": "100644",
+      "byteLength": 1100,
+      "sha256": "ff1aa51c5cb6fd7fb2ca5172037d2b88eb5073f0053349343133fb03c3c795cd"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/reviews-1.json",
+      "mode": "100644",
+      "byteLength": 1457,
+      "sha256": "89bf4a8c374cef20befca1d88f0154d159101aeaa03807fa23bed1454fd5c91d"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/tsconfig.json",
+      "mode": "100644",
+      "byteLength": 157,
+      "sha256": "d028c2d5b0c1bfda05e18ddd1d9f902af870fcc10c024ca03da5b01e14dcf5ea"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/validate.test.ts",
+      "mode": "100644",
+      "byteLength": 4824,
+      "sha256": "0cd4a1c11d97830066199620b373ec37c63d52cc30db53d33d11ad300f1f0e58"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/validate.ts",
+      "mode": "100644",
+      "byteLength": 10076,
+      "sha256": "31936b93ee73ec2728a142d0721df6a2086b3844823ffa7964e9068a258cd580"
+    }
+  ],
+  "fileCount": 85,
+  "totalBytes": 1258944,
+  "credentialCandidates": [],
+  "embeddedExportTextScanned": true,
+  "symlinksOrBinaryPayloads": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false
+}

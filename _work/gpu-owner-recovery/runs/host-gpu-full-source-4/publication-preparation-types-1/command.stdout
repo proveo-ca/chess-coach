@@ -1,0 +1,2 @@
+_work/gpu-owner-recovery/runs/host-gpu-full-source-4/publication-preparation.ts(48,94): error TS7034: Variable 'results' implicitly has type 'any[]' in some locations where its type cannot be determined.
+_work/gpu-owner-recovery/runs/host-gpu-full-source-4/publication-preparation.ts(78,97): error TS7005: Variable 'results' implicitly has an 'any[]' type.

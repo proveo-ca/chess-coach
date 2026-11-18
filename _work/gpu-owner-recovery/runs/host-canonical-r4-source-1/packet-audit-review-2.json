@@ -1,0 +1,15 @@
+{
+  "status": "AUDIT2_PASS_RETAINED_ONE_PROJECTION_SCOPE_FINDING_REMAINS",
+  "adversarialSession": "ses_e2f12cf9fffeWm7bfMxFM6pEbv",
+  "securitySession": "ses_e2f107c20ffeGuXaZZmtaRXsMg",
+  "securityReady": true,
+  "adversarialReady": false,
+  "clearedFirstPassFindings": [1, 2, 3, 5],
+  "remainingFinding": {"severity":"MEDIUM","issue":"An unrelated CPU-delivery review2 claim can satisfy a document-wide canonical review2 regex."},
+  "audit2Receipt": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/packet-audit-2/receipt.json",
+  "audit1FailureRetained": true,
+  "audit1FailureScope": "FALSE_NEGATIVE_DOC_SELECTION_AND_LEXICAL_CHECKS_NOT_RUNTIME_TEST_FAILURE",
+  "fullSpecDiffReviewStillPending": true,
+  "primaryCanonicalVerification4AndReview2Unaffected": true,
+  "trainingReady": false
+}

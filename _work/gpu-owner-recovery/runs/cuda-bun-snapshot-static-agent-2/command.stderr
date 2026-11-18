@@ -1,0 +1,38 @@
+
+_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:
+(pass) snapshot wire identities, immutable halted transition and source/proof membership stay closed [7.21ms]
+(pass) renewal helper rejects any baseline scope, denial, unknown-field or non-JSON mutation [1.41ms]
+(pass) only the exact capture selector reaches any input or filesystem operation [3.04ms]
+(pass) halted, probe-only, missing, consumed, advanced or broadened requests reject before claim [52.35ms]
+(pass) review flags, hash, exact key membership and every current source fixture gate precede effects [28.10ms]
+(pass) all 69 historical proof and source-packet byte mutations reject even after rebinding their new hash [164.75ms]
+(pass) failed-plan flags and the exact UID-1001 guard diagnosis cannot become kernel or native evidence [13.00ms]
+(pass) held-FD capture orders source close, stage sync/chmod/sync/close, fresh verification and PASS-last hardlinks [27.36ms]
+(pass) public capture cannot override the fixed 80,761,952-byte production identity with a small fixture [4.28ms]
+(pass) source reads enforce undersize, pre-write overrun and digest limits without retaining unbounded data [10.87ms]
+(pass) zero or invalid partial writes fail instead of looping, with both owned descriptors closed [7.88ms]
+(pass) only the source capture read admits exactly canonical /usr/local/bin UID/GID 1001 mode 0755 [29.25ms]
+(pass) source must be canonical root-owned regular 0755 with the exact length before pending opens [29.88ms]
+(pass) source FD, pathname and original ancestor identity changes fail before sealing or publication [13.89ms]
+(pass) operation, source, write, sync, chmod, close, reopen, publication and final verification failures never publish PASS [134.02ms]
+(pass) first failure survives source and stage cleanup errors, including an empty-string first failure [24.80ms]
+(pass) existing attempt directories, identical destinations, operation markers and consumed successful captures never replay [17.11ms]
+(pass) an independently appearing final path rejects exclusive publication even with identical bytes [7.77ms]
+(pass) cache, outside-created run and destination ancestors require canonical private current-UID placement without the capture exception [24.46ms]
+(pass) staged mode, inode, owner, byte and ancestor mutations block hardlink publication [19.27ms]
+(pass) post-verification pending replacement and changed fresh authority block publication [13.52ms]
+(pass) final fresh hash, mode, link identity, FD/path and ancestor checks precede evidence creation [34.70ms]
+(pass) a false two-copy link adapter cannot satisfy the same-inode publication contract [6.18ms]
+(pass) small proof adapter handles exact bounded regular inputs with no source-ancestor exception [7.27ms]
+(pass) small proof adapter enforces FD/path, overrun, changing ancestors and first close-failure ordering [4.06ms]
+(pass) readSnapshotInputs uses the fixed complete binding lists through the bounded read-only adapter [28.28ms]
+(pass) snapshot tasks-only config requires exact raw TOML and the private environment changes only the filename [0.50ms]
+(pass) Mise's exported consumer gates exact-leaf trust, sole discovery and only the fixed capture task [0.83ms]
+(pass) every Mise failure, including empty failure text, stops without discovery, capture, retries or fallback [1.25ms]
+(pass) Mise discovery rejects ambient configs, tools, malformed and extra results before capture [0.66ms]
+(pass) snapshot source has no native child, network, archive imports, general installer, retries, timers or cleanup [0.53ms]
+
+ 31 pass
+ 0 fail
+ 709 expect() calls
+Ran 31 tests across 1 file. [740.00ms]

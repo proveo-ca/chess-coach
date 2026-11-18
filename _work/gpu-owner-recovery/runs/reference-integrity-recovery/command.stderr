@@ -1,0 +1,25 @@
+
+packages/runtime/tests/reference-bundles.test.ts:
+47 |   return root;
+48 | }
+49 | 
+50 | test("reference source guard requires an explicit absolute exact-pin root", () => {
+51 |   for (const value of [undefined, "", "."]) expect(() => pinnedReferenceRoot(value)).toThrow("EXPLICIT_ABSOLUTE_ROOT_REQUIRED");
+52 |   expect(() => pinnedReferenceRoot(workspace)).toThrow("PIN_MISMATCH");
+                                                    ^
+error: expect(received).toThrow(expected)
+
+Expected substring: "PIN_MISMATCH"
+Received message: "Reference source: CANONICAL_ROOT_REQUIRED"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/packages/runtime/tests/reference-bundles.test.ts:52:48)
+(fail) reference source guard requires an explicit absolute exact-pin root [0.51ms]
+(pass) reference source guard rejects tracked modifications before and after staging [902.95ms]
+(pass) reference source guard rejects tracked modifications hidden by --assume-unchanged [668.07ms]
+(pass) reference source guard rejects tracked modifications hidden by --skip-worktree [832.54ms]
+
+ 3 pass
+ 1 filtered out
+ 1 fail
+ 24 expect() calls
+Ran 4 tests across 1 file. [2.71s]

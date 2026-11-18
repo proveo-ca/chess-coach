@@ -1,0 +1,8 @@
+{
+  "extends": "../tsconfig.json",
+  "include": [
+    "../reference-prep.ts",
+    "../reference-prep.test.ts",
+    "./verify-source.ts"
+  ]
+}

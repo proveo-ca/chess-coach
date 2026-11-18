@@ -1,0 +1,25 @@
+@startuml turn_planning
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Recipient-local queue eligibility primitives
+component "Known recipient board + own mines / siege" as KNOWN <<app>>
+component "Ordered own action prefix" as PREFIX <<app>>
+component "Known append constraints\nactor / shape / timing / vacancy" as APPEND <<app>>
+component "Heads-first B dependency order\nstructural C rewrite" as ORDER <<app>>
+component "Own-unit dependency fold\ninsertion and resulting contexts" as FOLD <<app>>
+component "Live / native-drop eligibility\nindependent insertion diagnostic" as RESULT <<app>>
+component "Authoritative queue edits\nshape / dependency checks + gas debit/refund" as EDIT <<app>>
+KNOWN --> APPEND
+PREFIX --> APPEND
+PREFIX --> ORDER
+ORDER --> FOLD
+KNOWN --> FOLD : own units only
+FOLD --> RESULT
+RESULT --> EDIT : validate before publishing edits
+note bottom of RESULT
+  Do not query hidden simulator occupancy or enemy queues.
+  Local transfer tags do not replace economic lineage IDs.
+  Recipient helpers do not read simulator state.
+  Authoritative edits consume trusted full snapshots.
+  Neither boundary resolves turns or authenticates observations.
+end note
+@enduml

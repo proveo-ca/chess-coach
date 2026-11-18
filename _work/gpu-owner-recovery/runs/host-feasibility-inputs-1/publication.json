@@ -1,0 +1,54 @@
+{
+  "version": "chess-coach.qualification-input-publication.v1",
+  "status": "FAIL",
+  "failure": "PUBLICATION_ORIGIN_MISMATCH",
+  "failedStep": "origin-fetch",
+  "elapsedMs": 31.820182000000003,
+  "attempts": {
+    "commit": 0,
+    "push": 0,
+    "createRelease": 0,
+    "upload": 0,
+    "validateFrozen": 0,
+    "commitManifest": 0
+  },
+  "operations": [
+    {
+      "step": "branch",
+      "kind": "command",
+      "timeoutMs": 599999,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "origin-fetch",
+      "kind": "command",
+      "timeoutMs": 599983,
+      "status": "FAIL",
+      "argv": [
+        "/usr/bin/git",
+        "remote",
+        "get-url",
+        "--all",
+        "origin"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "commitSucceeded": false,
+  "sourceCommit": null,
+  "pushedCommit": null,
+  "releaseId": null,
+  "releaseDraft": null,
+  "assets": [],
+  "uploadedAssets": [],
+  "verifiedAssets": [],
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

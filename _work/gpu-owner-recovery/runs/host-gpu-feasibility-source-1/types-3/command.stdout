@@ -1,0 +1,24 @@
+_work/gpu-owner-recovery/qualification/host-feasibility/driver.test.ts(74,27): error TS2345: Argument of type 'string' is not assignable to parameter of type '`/build/native/${string}`'.
+_work/gpu-owner-recovery/qualification/host-feasibility/driver.test.ts(74,57): error TS2345: Argument of type 'string' is not assignable to parameter of type '`/build/native/${string}`'.
+_work/gpu-owner-recovery/qualification/host-feasibility/driver.test.ts(177,69): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(expected: null): void', gave the following error.
+    Argument of type '"FIVE_PARSED_ARTIFACT_PATHS_REQUIRED"' is not assignable to parameter of type 'null'.
+  Overload 2 of 2, '(expected: null): void', gave the following error.
+    Argument of type '"FIVE_PARSED_ARTIFACT_PATHS_REQUIRED"' is not assignable to parameter of type 'null'.
+_work/gpu-owner-recovery/qualification/host-feasibility/driver.test.ts(214,37): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(expected: null): void', gave the following error.
+    Argument of type '"QUERY_FAILURE"' is not assignable to parameter of type 'null'.
+  Overload 2 of 2, '(expected: null): void', gave the following error.
+    Argument of type '"QUERY_FAILURE"' is not assignable to parameter of type 'null'.
+_work/gpu-owner-recovery/qualification/host-feasibility/driver.test.ts(229,36): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(expected: null): void', gave the following error.
+    Argument of type '"JOURNAL_BYTE_BOUND"' is not assignable to parameter of type 'null'.
+  Overload 2 of 2, '(expected: null): void', gave the following error.
+    Argument of type '"JOURNAL_BYTE_BOUND"' is not assignable to parameter of type 'null'.
+_work/gpu-owner-recovery/qualification/host-feasibility/plan.test.ts(10,40): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(expected: readonly ["cuda_f64_nonzero_native_scores_round_trip", "cuda_f64_direct_sgd_changes_policy_parameters"]): void', gave the following error.
+    Argument of type '("cuda_f64_nonzero_native_scores_round_trip" | "cuda_f64_direct_sgd_changes_policy_parameters" | "cuda_feature_complete_sweep_for_active_relu_checks_2335_coordinates" | "cuda_feature_complete_sweep_for_inactive_relu_checks_2335_coordinates" | "cuda_f64_redundant_learning_channels_agree_and_reload" | "cuda_f64_policy...' is not assignable to parameter of type 'readonly ["cuda_f64_nonzero_native_scores_round_trip", "cuda_f64_direct_sgd_changes_policy_parameters"]'.
+      Target requires 2 element(s) but source may have fewer.
+  Overload 2 of 2, '(expected: NoInfer<readonly ["cuda_f64_nonzero_native_scores_round_trip", "cuda_f64_direct_sgd_changes_policy_parameters"]>): void', gave the following error.
+    Argument of type '("cuda_f64_nonzero_native_scores_round_trip" | "cuda_f64_direct_sgd_changes_policy_parameters" | "cuda_feature_complete_sweep_for_active_relu_checks_2335_coordinates" | "cuda_feature_complete_sweep_for_inactive_relu_checks_2335_coordinates" | "cuda_f64_redundant_learning_channels_agree_and_reload" | "cuda_f64_policy...' is not assignable to parameter of type 'readonly ["cuda_f64_nonzero_native_scores_round_trip", "cuda_f64_direct_sgd_changes_policy_parameters"]'.
+      Target requires 2 element(s) but source may have fewer.

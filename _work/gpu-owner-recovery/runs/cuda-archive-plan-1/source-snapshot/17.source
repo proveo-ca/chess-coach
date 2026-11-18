@@ -1,0 +1,4 @@
+# SPEC: _spec/recovery.md
+[tasks."cuda:audit-llvm-archive"]
+dir = "../.."
+run = "/usr/local/bin/bun --no-env-file --no-install _work/gpu-owner-recovery/cuda-archive.ts audit"

@@ -1,0 +1,29 @@
+{
+  "status": "PASS_LOCAL_RETURNED_BYTES_AND_IMMUTABLE_SOURCE_PRESERVATION",
+  "scope": "LOCAL_REPOSITORY_ONLY_NOT_OTHER_HOST_FILE_ACCESS",
+  "byteBoundReturnedFiles": 7,
+  "source3ExecutionFiles": 108,
+  "source3ExecutionBytes": 641523,
+  "immutableSource3Documents": [
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/source-manifest.json",
+      "sha256": "9820e6bfb34f5891117379b207cfd193330d5bd1efbf6c8d36f6ff6e0328836b"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/verification.json",
+      "sha256": "5edf5fa735abbf8be5b38c7389a580199d947e7b845ce3a2a31ecbcc43a45f75"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/binding-documents.json",
+      "sha256": "5cd45f5cad1b5f08e07a54cbfd68834ff00eda4f0d6c40f02922bac07d3ca7fe"
+    }
+  ],
+  "historicalAcceptanceSha256": "b12bf0da43401b1858a3b3f1c3be9820d8030b6f07329e9448239886c5911e70",
+  "originalTranscriptionsUnchanged": true,
+  "failedHostReadReceiptRetained": true,
+  "protectedOriginalHostCheckoutInspected": false,
+  "nativeOrGpuExecuted": false,
+  "trainingExecuted": false,
+  "commitOrPushPerformed": false,
+  "trainingReady": false
+}

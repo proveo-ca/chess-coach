@@ -1,0 +1,11 @@
+ M _spec/.spec-index.json
+ M _spec/gate-closure.md
+ M _spec/gpu-build.puml
+ M _spec/gpu-host-build-inventory.puml
+ M _spec/gpu-host-build-reuse.puml
+ M _spec/gpu-host-build.puml
+ M _spec/gpu-host-receive.puml
+ M _spec/gpu-input-transfer.puml
+ M _spec/gpu-qualification.puml
+ M _spec/gpu-readiness.md
+?? _work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/

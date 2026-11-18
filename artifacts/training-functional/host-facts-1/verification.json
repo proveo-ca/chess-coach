@@ -1,0 +1,198 @@
+{
+  "status": "PASS_FINAL_PUBLICATION_CANDIDATE_SOURCE_NOT_HOST_QUALIFICATION",
+  "scope": "FRESH_PUBLICATION_GENERATION_WITH_OPERATOR_ONLY_HOST_FACTS",
+  "baselineCommit": "b7d4eae58288bfbac3b5f947f524b2342b1b9fa3",
+  "gates": 12,
+  "typechecks": 3,
+  "counts": {
+    "focused": 65,
+    "runtime": 62,
+    "contracts": 25,
+    "r4": 93,
+    "reference": 180,
+    "host-facts": 27,
+    "workspace": 8
+  },
+  "totalTests": 460,
+  "currentSourcePins": 329,
+  "receipts": [
+    {
+      "path": "artifacts/training-functional/checks/publication-3/focused/receipt.json",
+      "kind": "file",
+      "sizeBytes": 149121,
+      "mode": 420,
+      "sha256": "c1be519d391db1421b19b059ee8cbdb0d96f88e9d0098c67b5d42bad5fad83a4"
+    },
+    {
+      "path": "artifacts/training-functional/checks/publication-3/runtime/receipt.json",
+      "kind": "file",
+      "sizeBytes": 149294,
+      "mode": 420,
+      "sha256": "3b8e0242b5de489e308a482066f31d23fd90186ab1fb5f149181586a8d32915b"
+    },
+    {
+      "path": "artifacts/training-functional/checks/publication-3/contracts/receipt.json",
+      "kind": "file",
+      "sizeBytes": 149126,
+      "mode": 420,
+      "sha256": "9ea9db1bf7a4022d2b44a667d77d6977ad59683820c88bfdace90a21aa8880a7"
+    },
+    {
+      "path": "artifacts/training-functional/checks/publication-3/r4/receipt.json",
+      "kind": "file",
+      "sizeBytes": 148930,
+      "mode": 420,
+      "sha256": "d641cdad7c086df6377f331ff902583fa80e533fe6c7bb009f2c37921023a8b5"
+    },
+    {
+      "path": "artifacts/training-functional/checks/publication-3/reference/receipt.json",
+      "kind": "file",
+      "sizeBytes": 148991,
+      "mode": 420,
+      "sha256": "a499106d782d054d0bd7406ad8a69e899d700802cd49a1b3b4bdb1059033cd15"
+    },
+    {
+      "path": "artifacts/training-functional/checks/publication-3/host-facts/receipt.json",
+      "kind": "file",
+      "sizeBytes": 148926,
+      "mode": 420,
+      "sha256": "0730cc17b1270fe761334ff7750614a5f9fc22b4fd31698773ac4af6007637ae"
+    },
+    {
+      "path": "artifacts/training-functional/checks/publication-3/source-types/receipt.json",
+      "kind": "file",
+      "sizeBytes": 148914,
+      "mode": 420,
+      "sha256": "36dd894d125e8d04e3cca66b281215040ab149da10c2671981659b9db67c4a65"
+    },
+    {
+      "path": "artifacts/training-functional/checks/publication-3/test-types/receipt.json",
+      "kind": "file",
+      "sizeBytes": 148918,
+      "mode": 420,
+      "sha256": "ce1ab895a4431316b8fab7ff210e7c2b40fcbe9b72d617484a15ceb4d45bb8b5"
+    },
+    {
+      "path": "artifacts/training-functional/checks/publication-3/task-types/receipt.json",
+      "kind": "file",
+      "sizeBytes": 148942,
+      "mode": 420,
+      "sha256": "ea84b2287449b741ff9353b48f541f7875662bddf2bb3beb85614e367e246696"
+    },
+    {
+      "path": "artifacts/training-functional/checks/publication-3/workspace/receipt.json",
+      "kind": "file",
+      "sizeBytes": 148890,
+      "mode": 420,
+      "sha256": "2de5ad875166edb9ea2884a3f27ce0c71ec608fdaba7411690d936c26e86a592"
+    },
+    {
+      "path": "artifacts/training-functional/checks/publication-3/preservation/receipt.json",
+      "kind": "file",
+      "sizeBytes": 149037,
+      "mode": 420,
+      "sha256": "818c2b021d2923cc953898308a71698f138f80a101b75ac6627ffee4a6d469de"
+    },
+    {
+      "path": "artifacts/training-functional/checks/publication-3/specs/receipt.json",
+      "kind": "file",
+      "sizeBytes": 148874,
+      "mode": 420,
+      "sha256": "23198c1407235133c0a8c39cbe8d324dc0e053f392d108d311384d6e59e1939d"
+    }
+  ],
+  "documentPins": [
+    {
+      "path": "_spec/readiness.md",
+      "kind": "file",
+      "sizeBytes": 132650,
+      "mode": 420,
+      "sha256": "a305a6f9e1b7177200b806624c78cba1b83c802233fce42821a4b76e2a397f24"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "kind": "file",
+      "sizeBytes": 99740,
+      "mode": 420,
+      "sha256": "c3284e057bb2e6be31ed16ef4e2e832d913029e86a4277810a89338df02b04d2"
+    },
+    {
+      "path": "_spec/checkpoint-runtime.puml",
+      "kind": "file",
+      "sizeBytes": 9689,
+      "mode": 420,
+      "sha256": "66622454f51c611c054d6884637bb5a05ee92666a2bcb8506bcbe18c66326006"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "kind": "file",
+      "sizeBytes": 53391,
+      "mode": 420,
+      "sha256": "d99dc82f7982fe8f4ae6c93f6cac2b530394dbd785912eb9b3d8ac8b55843320"
+    }
+  ],
+  "operatorCommand": {
+    "path": "artifacts/training-functional/host-facts-1/operator-command-2.sh",
+    "kind": "file",
+    "sizeBytes": 16589,
+    "mode": 420,
+    "sha256": "cf566b4f55a1d00fe835918b4e97388fba1e5ddf7c5e15e7d568103da6d7da6e"
+  },
+  "operatorSource": {
+    "path": "artifacts/training-functional/host-facts.ts",
+    "kind": "file",
+    "sizeBytes": 16483,
+    "mode": 420,
+    "sha256": "d1d82ba1bcb07a52412755cc183965519586705076ce6e46829c5657afcc16aa"
+  },
+  "commandVerification": {
+    "path": "artifacts/training-functional/host-facts-1/command-verification-2.json",
+    "kind": "file",
+    "sizeBytes": 759,
+    "mode": 420,
+    "sha256": "fa07d9702d65ec43107723d6b7e5eca9f5af32e1847420e238f7b50f054048bb"
+  },
+  "retainedInputs": {
+    "files": 6,
+    "bytes": 113300,
+    "manifest": {
+      "path": "artifacts/training-functional/reference-inputs/manifest.json",
+      "kind": "file",
+      "sizeBytes": 2293,
+      "mode": 420,
+      "sha256": "0566a770b0cf430d5bbad8198e48b894fc06d794c3a82cd7afe715c4c9e3e608"
+    },
+    "verification": {
+      "path": "artifacts/training-functional/reference-inputs/verification.json",
+      "kind": "file",
+      "sizeBytes": 1887,
+      "mode": 420,
+      "sha256": "9f6de37083b154fd34e66d48eb9adfd58d628df4ecf23990ce797b31b99d3fb5"
+    }
+  },
+  "reviews": {
+    "path": "artifacts/training-functional/host-facts-1/reviews.json",
+    "kind": "file",
+    "sizeBytes": 1635,
+    "mode": 420,
+    "sha256": "623915abaa7cd7dd30a4658fd4ec44dd16a5c7b14ab62a72ef38461d498c4552"
+  },
+  "priorAcceptance": {
+    "path": "artifacts/training-functional/source-acceptance-2.json",
+    "kind": "file",
+    "sizeBytes": 7011,
+    "mode": 420,
+    "sha256": "b12bf0da43401b1858a3b3f1c3be9820d8030b6f07329e9448239886c5911e70"
+  },
+  "historicalTrackedFilesUnchanged": 6431,
+  "failedGenerationFilesUnchanged": 25,
+  "plantUmlRendered": false,
+  "renderSkipReason": "Java and remote theme access are outside Bun/TypeScript-or-Rust-only scope; static spec checks passed",
+  "publicationAtRecordCreation": "PENDING_ONE_APPROVED_COMMIT_AND_PUSH",
+  "operatorQueryAtRecordCreation": "NOT_RUN_ASSISTANT_MUST_NOT_EXECUTE",
+  "nativeExecuted": false,
+  "hostQueriesExecuted": 0,
+  "gpuExecuted": false,
+  "trainingExecuted": false,
+  "trainingReady": false
+}

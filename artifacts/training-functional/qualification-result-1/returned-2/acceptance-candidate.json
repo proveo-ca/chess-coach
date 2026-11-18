@@ -1,0 +1,47 @@
+{
+  "status": "PENDING_EXPLICIT_FUNCTIONAL_ACCEPTANCE",
+  "fixedInventory": "artifacts/training-functional/plan.json",
+  "evidenceBasis": "Byte-bound user-transferred retained qualification documents plus unchanged historically verified campaign source",
+  "export": {
+    "path": "artifacts/training-functional/qualification-result-1/returned-2/export.json",
+    "byteLength": 262703,
+    "sha256": "fea1c2807458c3f51698e7e2c38e1c3b15367ae8ef337cf5e057b9e8fc3b0103"
+  },
+  "readbackObservation": "artifacts/training-functional/qualification-result-1/returned-2/readback-observation-2.json",
+  "campaignSourceBinding": "artifacts/training-functional/qualification-result-1/returned-2/campaign-source-binding.json",
+  "inventoryEvidence": [
+    {"id": "numerical-components", "basis": "Preserved accepted GPU full-six and CPU39 component evidence; unchanged native59+6 bridge; no numerical rerun or metadata-scope promotion"},
+    {"id": "reference-inputs", "basis": "Retained six-build preparation PASS, exact preparation/manifest byte references, fourteen document bindings and nine pinned reference rows"},
+    {"id": "canonical-lifecycle", "basis": "REAL canonical receipt, fourteen exchanges, three schema-parsed BOTH boundaries with matching digest/commit joins, two natural finishes"},
+    {"id": "integrated-r4", "basis": "Retained original checker PASS, two verified attempts, ten scored replies, four natural finishes, proposal/model handoff and one nonzero-PG update; local cross-document consistency passed"},
+    {"id": "campaign-wiring", "basis": "Two-attempt production factory/coordinator qualification plus preserved source/test proof for serial masters101..105, exactly1000 verified attempts each and existing final validity", "closure": "REQUIRES_EXPLICIT_BOUNDED_ACCEPTANCE"},
+    {"id": "functional-acceptance", "closure": "PENDING_EXECUTOR_DECISION"}
+  ],
+  "proposedAcceptance": "I accept the retained two-attempt master-101 operational qualification, together with the preserved campaign source/test proof, as sufficient functional qualification for this fixed inventory's persistent coordinator/factory, serial masters101..105, 1000-verified-per-master rule, and existing final-validity wiring. Close the inventory on that explicitly bounded evidence basis. This does not attest an executed 5000-attempt campaign or operational execution of TrainingCampaign.run()/finalize(). Raw reports remain unchanged. This acceptance does not authorize training execution.",
+  "readinessIfExplicitlyAccepted": "Record technical trainingReady:true in a new acceptance record and readiness documentation only; never edit raw observation flags",
+  "limits": [
+    "User-transferred evidence is not independent HOST attestation",
+    "Local checks do not replay the absent native trace, models, database, histories or journals",
+    "Manifest rows are metadata, not a fresh rehash of HOST physical payloads",
+    "TrainingCampaign.run(), finalization and the full planned campaign have not executed"
+  ],
+  "frozenContracts": {
+    "precision": "F64",
+    "finiteDifferenceCoordinates": 4670,
+    "eps": 0.000001,
+    "atol": 0.00000001,
+    "rtol": 0.00001,
+    "c12": "Distinct scoring, backward, SGD and reload assertions remain unchanged",
+    "masters": [101, 102, 103, 104, 105],
+    "verifiedAttemptsPerMaster": 1000,
+    "gpuV1": "master101/ordinal0",
+    "ordinaryGpuMains": "UNCHANGED_OFF"
+  },
+  "deferredHardening": "ALL_AFTER_ALL_PLANNED_TRAINING_AND_VALIDATED_RESULTS",
+  "newReadinessGates": [],
+  "trainingExecutionAuthorized": false,
+  "trainingExecuted": false,
+  "publicationAuthorized": false,
+  "rawEvidenceFlagsChanged": false,
+  "trainingReady": false
+}

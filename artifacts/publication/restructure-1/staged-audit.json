@@ -1,0 +1,28 @@
+{
+  "branch": "integrate/starchess-ml-main",
+  "head": "f6bce72a2cd10f66acf77162166a1d03fc87cd13",
+  "mergeParent": "1f279852549086759518d6359597867bc9297c20",
+  "destination": "origin/refs/heads/feat-ml-adjuntant-ii",
+  "existingPR": 51,
+  "publicationScope": "USER_APPROVED_FULL_INTEGRATION",
+  "stagedCandidateFiles": 2593,
+  "groups": {
+    "PLAN.md": 1,
+    "README.md": 1,
+    "_spec": 22,
+    "_work": 2154,
+    "artifacts": 296,
+    "package.json": 1,
+    "packages": 114,
+    "pnpm-lock.yaml": 1,
+    "tooling": 1,
+    "tsconfig.json": 1,
+    "tsconfig.tests.json": 1
+  },
+  "verifiedCurrentSourcePins": 318,
+  "tests": 1664,
+  "verificationGates": 14,
+  "acceptanceSha256": "d962331e6db11d489a97062168acb7a2a37ee324153e0b6dafd6e88dd915484b",
+  "scan": "artifacts/publication/restructure-1/secret-scan.json",
+  "forcePush": false
+}

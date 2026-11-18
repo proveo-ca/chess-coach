@@ -1,0 +1,87 @@
+{
+  "status": "PASS_POLICY_RECORD_CORRECTION_SOURCE_RECORDS_ONLY",
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/receipt.json",
+    "sha256": "f6ad2e71ef29f1f324ebbfe97b5875e99b50bb7909232380b2c5737a9c3b0511"
+  },
+  "sourceHashesChecked": 291,
+  "verificationStreamsChecked": 16,
+  "generation": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/native-source-manifest.json",
+    "sha256": "7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec",
+    "nativeInputs": 65,
+    "changedPaths": [
+      "crates/policy-io/tests/gpu.rs"
+    ],
+    "previousManifestSha256": "9141aaefa2fab3f3a812aeabec4bdfdd818415333f9e5cba6d5ef822dac90863"
+  },
+  "mockedLifecycleFiles": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/e2e/host-build-build-tests/e2e-happy/fixture-scope.json",
+      "bytes": 249,
+      "sha256": "d6382bb0ea8a0ec2e4a613ba0f8158160764b35be9fefcd1ac536939c9a47bac"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/e2e/host-build-build-tests/e2e-happy/result.json",
+      "bytes": 9421,
+      "sha256": "e4a922c8847ef0cb97a08870d1069b8a1d4ba365d75fa7dbd7ee771f59514b05"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/e2e/host-build-build-tests/e2e-happy/argv.json",
+      "bytes": 4760,
+      "sha256": "d84e6b7f197c0ec7613f2b0d6c85463914df89acf68604b1b8abd211347e19aa"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/e2e/host-build-build-tests/e2e-happy/effects.json",
+      "bytes": 1511,
+      "sha256": "605367351f680cc47b915888cc62c840bea1b6245c6e1ac9e9b74bf7faa0a1bf"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/e2e/host-build-build-tests/e2e-native-failure/fixture-scope.json",
+      "bytes": 249,
+      "sha256": "d6382bb0ea8a0ec2e4a613ba0f8158160764b35be9fefcd1ac536939c9a47bac"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/e2e/host-build-build-tests/e2e-native-failure/result.json",
+      "bytes": 8705,
+      "sha256": "db5466c8959c09232cb13bcd1bcf7a6a8d6b732d243a3aab56d578ca4114b086"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/e2e/host-build-build-tests/e2e-native-failure/argv.json",
+      "bytes": 5042,
+      "sha256": "924e1a6c305de299802772a76af17f3b942b5c25405657755a4717ec37fc7569"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/e2e/host-build-build-tests/e2e-native-failure/effects.json",
+      "bytes": 1494,
+      "sha256": "f814b8935eef04b90b5b5cfa140cbf89972e3d49d7d0086a2f9a4dcb7d0e8ff4"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/e2e/host-build-build-tests/e2e-cleanup-failure/fixture-scope.json",
+      "bytes": 249,
+      "sha256": "d6382bb0ea8a0ec2e4a613ba0f8158160764b35be9fefcd1ac536939c9a47bac"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/e2e/host-build-build-tests/e2e-cleanup-failure/result.json",
+      "bytes": 9586,
+      "sha256": "3431334e3e2daebd897d87dd250575c5afb5023c4d524a1a48706a17cf63e4b9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/e2e/host-build-build-tests/e2e-cleanup-failure/argv.json",
+      "bytes": 4760,
+      "sha256": "d84e6b7f197c0ec7613f2b0d6c85463914df89acf68604b1b8abd211347e19aa"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/e2e/host-build-build-tests/e2e-cleanup-failure/effects.json",
+      "bytes": 1511,
+      "sha256": "605367351f680cc47b915888cc62c840bea1b6245c6e1ac9e9b74bf7faa0a1bf"
+    }
+  ],
+  "originalHostLogDigestsIndependentlyVerified": false,
+  "nativeCompilationPerformed": false,
+  "hostExecutionAuthorized": false,
+  "copyingOrStagingAuthorized": false,
+  "publicationAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "trainingReady": false
+}

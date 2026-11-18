@@ -1,0 +1,17 @@
+{
+  "status": "NOT_READY_PREPUBLICATION_CONTROL_BINDING_FINDINGS",
+  "check": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-check.json",
+  "adversarial": {
+    "session": "ses_e3469ff83ffe1aOsoViQ9YjEUw",
+    "verdict": "READY_TO_MERGE_NO",
+    "findings": [
+      { "severity": "HIGH", "finding": "The READY review must bind the current publication check, not another valid check." },
+      { "severity": "MEDIUM", "finding": "Reviewed file modes must remain unchanged before envelope freezing." }
+    ]
+  },
+  "security": { "session": "ses_e3469ff7cffeFhz6ZQTmVwVxy5", "verdict": "READY_GENERATION_ONE_SCOPE_ONLY", "remainingFindings": [] },
+  "normalCommitInvocations": 0,
+  "httpsPushInvocations": 0,
+  "codingHostOperationsPerformed": false,
+  "trainingReady": false
+}

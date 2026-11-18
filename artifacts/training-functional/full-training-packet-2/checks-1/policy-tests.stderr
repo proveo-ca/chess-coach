@@ -1,0 +1,62 @@
+
+artifacts/training-functional/campaign-plan.test.ts:
+(pass) selected 18-day envelope is explicit, inert and separate from occupied qualification roots [1.01ms]
+(pass) default generation remains exactly the immutable packet1 plan [1.15ms]
+(pass) generation2 binds only the selected HOST volume and acknowledged dynamic-counter policy [0.34ms]
+(pass) an unset budget cannot produce invocation deadlines [0.12ms]
+(pass) rejects incompatible envelope {"workMs":800000,"inactivityMs":800001} [0.03ms]
+(pass) rejects incompatible envelope {"cleanupMs":1}
+(pass) rejects incompatible envelope {"inactivityMs":300000}
+(pass) rejects incompatible envelope {"workMs":null}
+(pass) rejects incompatible envelope {"workspaceBytes":2147483648}
+(pass) rejects incompatible envelope {"minimumFreeBytes":274877906944}
+(pass) rejects incompatible envelope {"validationMs":1} [0.01ms]
+(pass) rejects incompatible envelope {"workMs":2147483647} [0.01ms]
+(pass) one origin fixes work, validation and cleanup deadlines without renewal [0.13ms]
+(pass) no CLI mode, readiness flag, stale approval or GPUv1 grant substitutes for fresh campaign approval [0.19ms]
+(pass) new closure extends, never mutates, immutable 108-file qualification generation [1.33ms]
+
+artifacts/training-functional/campaign-operator.e2e.test.ts:
+(pass) MOCK imports and plan remain inert; CLI arguments do not grant execution [2.15ms]
+(pass) MOCK unapproved operator and worker perform zero IO [3.43ms]
+(pass) MOCK inherited container controls use only fresh writable roots and readonly retained caches [0.52ms]
+(pass) MOCK one actual campaign class drives 5000 serial attempts, five CPU initializers and one close/finalize [3563.25ms]
+(pass) MOCK factory/coordinator constructor failure never starts the campaign or closes an unreturned owner [0.78ms]
+(pass) MOCK campaign constructor failure closes the acquired coordinator exactly once [0.68ms]
+(pass) MOCK failed initializer closes once without attempts or result validation [0.42ms]
+(pass) MOCK first-attempt failure preserves one-close/no-finalization ownership [0.52ms]
+(pass) MOCK a renewed invocation fails before context, initializer or owner creation [0.18ms]
+(pass) MOCK changed prepared bytes fail before qualification input evaluation [1.01ms]
+(pass) MOCK natural completion uses the original selected deadlines and a compact report [2.50ms]
+(pass) MOCK existing roots and insufficient bytes/inodes reject before GPU, Docker or root creation [4.36ms]
+(pass) MOCK GPU failure stops only the newly owned CID and preserves the original deadline [1.08ms]
+(pass) MOCK telemetry never renews inactivity without verified or validation progress [7.09ms]
+(pass) MOCK increasing verified progress, then validation progress, renews only inactivity [1.45ms]
+(pass) MOCK compact monitoring passes the old 401-query qualification cap without renewing outer deadlines [10.92ms]
+(pass) MOCK a late monitoring failure remains a failure after natural container exit [0.84ms]
+(pass) MOCK soft workspace excess fails without adopting another root or container [1.10ms]
+(pass) MOCK stalled progress IO cannot suspend GPU staleness and inactivity monitoring [0.69ms]
+(pass) MOCK stalled workspace IO fails within one check interval rather than the multi-day outer envelope [0.43ms]
+(pass) MOCK final worker-report IO expires while leaving time for owned CID removal [0.47ms]
+(pass) MOCK telemetry opens before container creation and closes once after owned cleanup [0.50ms]
+(pass) repository-local telemetry symlink replacement cannot redirect retained-descriptor writes [1.79ms]
+(pass) repository-local progress accepts a stable old snapshot across atomic replacement [4.01ms]
+(pass) repository-local workspace traversal tolerates removed scratch entries and directories [1.12ms]
+(pass) MOCK unknown create output never grants container ownership [0.52ms]
+(pass) v1 requests round-trip while mixed generations and unbound policy mutations reject [1.12ms]
+(pass) only explicit v2 Btrfs zero/zero policy accepts unknown entries without claiming capacity proof [0.14ms]
+(pass) unknown other filesystems, negative counters and known insufficient entries never inherit the exception [0.08ms]
+(pass) Btrfs acknowledgement cannot bypass failed or unavailable byte admission [0.09ms]
+(pass) the shared production adapter requests bigint statistics and preserves all raw capacity fields [0.28ms]
+(pass) MOCK v2 HOST admission uses the selected volume, records uncertainty and launches only worker-v2 [0.79ms]
+(pass) MOCK v2 HOST rejection happens before GPU, Docker or writable-root creation [1.04ms]
+(pass) MOCK v2 container checks /state before corpus, factory and coordinator creation [2989.62ms]
+(pass) MOCK failed container byte or entry admission creates no corpus factory or owner [1.64ms]
+(pass) MOCK container capacity IO uses the original startup deadline without renewal [0.95ms]
+(pass) MOCK v2 parent requires matching recomputed worker admission, not a claimed boolean [3.47ms]
+(pass) MOCK v2 CLI modes and readiness still grant zero execution without approval [0.73ms]
+
+ 53 pass
+ 0 fail
+ 1050 expect() calls
+Ran 53 tests across 2 files. [7.18s]

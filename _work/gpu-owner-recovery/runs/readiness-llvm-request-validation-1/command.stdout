@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "fftArchiveBytesAndHashMatch": true,
+  "phaseOneAcquisitionAndOfflineMetadataPass": true,
+  "workspaceInputsUnchanged": true,
+  "selectedMetadataPackages": 572,
+  "llvmRequestGranted": false,
+  "llvmImplementationPrepared": false,
+  "cudaCompilationPerformed": false,
+  "trainingReady": false
+}

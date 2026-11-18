@@ -1,0 +1,2 @@
+{"status":"PASS_HOST_GPU_FEASIBILITY_ONLY","failure":null,"receipt":"_work/gpu-owner-recovery/runs/host-gpu-feasibility-1/receipt.json","trainingReady":false}
+HOST_GPU_FEASIBILITY_EXIT=0

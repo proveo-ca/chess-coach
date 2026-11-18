@@ -1,0 +1,25 @@
+{
+  "version": "chess-coach.cuda-isolation-review-provenance.v1",
+  "reviewRecord": "_work/gpu-owner-recovery/cuda-isolation-reviewed.json",
+  "reviewRecordSha256": "094327f153dd33d59aaa4127fdf91733ae932a36ccfcafb944ff92cbe82fd849",
+  "securitySessionId": "ses_e4439a2c0ffeTD6G2gSAPqPEyM",
+  "adversarialSessionId": "ses_e4439a2b6ffeD4aw7uSogI27Fg",
+  "securityVerdict": "READY_TO_RUN_SINGLE_INERT_PROBE_CONDITIONAL_ON_OUTSIDE_GATE",
+  "adversarialVerdict": "READY_TO_RUN_SINGLE_INERT_PROBE_CONDITIONAL_ON_OUTSIDE_GATE",
+  "staticTests": {
+    "tests": 10,
+    "assertions": 178,
+    "receipt": "_work/gpu-owner-recovery/runs/cuda-isolation-static-parent-2/receipt.json"
+  },
+  "runnerTests": {
+    "tests": 13,
+    "assertions": 89,
+    "receipt": "_work/gpu-owner-recovery/runs/cuda-isolation-runner-parent-2/receipt.json"
+  },
+  "typesReceipt": "_work/gpu-owner-recovery/runs/cuda-isolation-types-parent-2/receipt.json",
+  "actualNamespaceExecutionPerformed": false,
+  "buildIsolationQualified": false,
+  "custodyQualified": false,
+  "cudaCompilationEstablished": false,
+  "trainingReady": false
+}

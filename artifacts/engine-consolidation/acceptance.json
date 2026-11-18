@@ -1,0 +1,122 @@
+{
+  "status": "ENGINE_CONSOLIDATION_APPLIED_VERIFIED",
+  "branch": "integrate/starchess-ml-main",
+  "canonicalPackage": "@chess-coach/starchess-core",
+  "singleProductMutationKernel": true,
+  "compatibilityOnlyGameCoreModules": 27,
+  "productAPIsPreserved": true,
+  "admissionFacades": "product permissive; ML native dependency validation; shared physics",
+  "approvedFixes": [
+    "live-own-Marine promotion",
+    "delayed-swap consumed-mine synchronization"
+  ],
+  "journalParityCorrection": "stationary CC-shot private producer proof and narrow wire-v1 codec consistency",
+  "verification": {
+    "runtime": "Bun",
+    "gates": 13,
+    "totalTests": 1664,
+    "counts": {
+      "core": 432,
+      "arena": 24,
+      "app": 790,
+      "ml": 410,
+      "workspace": 8
+    },
+    "typechecks": 7,
+    "appDependencyBoundary": "PASS",
+    "currentSourcePins": 339,
+    "receipts": [
+      {
+        "path": "artifacts/engine-consolidation/checks/bun-final-2/core/receipt.json",
+        "sha256": "4e51e8e529561af2545205bcc0bebad31db8ffc1c91dbee349d23d77269e700f",
+        "sizeBytes": 126266
+      },
+      {
+        "path": "artifacts/engine-consolidation/checks/bun-final-2/arena/receipt.json",
+        "sha256": "f961644b0e0077c37a4673bccb172f306a6f3fd9b42368d73dd6a071119d42d8",
+        "sizeBytes": 126268
+      },
+      {
+        "path": "artifacts/engine-consolidation/checks/bun-final-2/ml/receipt.json",
+        "sha256": "6bc244e8b0085b585655dae46e1075fa2dfeef7d650a62e5cac8000423dacee0",
+        "sizeBytes": 127276
+      },
+      {
+        "path": "artifacts/engine-consolidation/checks/bun-final-2/ml-source-types/receipt.json",
+        "sha256": "fc922a869728a04b515b9a24a4b871573522957543224cbb6e91bcc2eb8ceff9",
+        "sizeBytes": 126241
+      },
+      {
+        "path": "artifacts/engine-consolidation/checks/bun-final-2/ml-test-types/receipt.json",
+        "sha256": "602d95c86db64b408d437c67e58bf725327f39d643391141f151a0f61688e2b6",
+        "sizeBytes": 126245
+      },
+      {
+        "path": "artifacts/engine-consolidation/checks/bun-final-2/core-types/receipt.json",
+        "sha256": "c153aad3646afbaf7b3b9bdc751a8c5760ef33c6eafabf423fd32fb463d83c1b",
+        "sizeBytes": 126258
+      },
+      {
+        "path": "artifacts/engine-consolidation/checks/bun-final-2/core-test-types/receipt.json",
+        "sha256": "198974963d65c81f9a681baad86167881a7b6b24793f97c590bb158332daf153",
+        "sizeBytes": 126281
+      },
+      {
+        "path": "artifacts/engine-consolidation/checks/bun-final-2/arena-types/receipt.json",
+        "sha256": "de9cc1ecf47b7edc9c9bb209ba4e7b506371e6b019777d8f31e433b9171faa05",
+        "sizeBytes": 126260
+      },
+      {
+        "path": "artifacts/engine-consolidation/checks/bun-final-2/server-types/receipt.json",
+        "sha256": "865bce3969c3abdf8ecfc111569714e78fc5136087fd6ac930a3af56b7cea35d",
+        "sizeBytes": 126248
+      },
+      {
+        "path": "artifacts/engine-consolidation/checks/bun-final-2/app-types/receipt.json",
+        "sha256": "93341e774e08ccf1d96cc6cf15957706b223c7598629d51d6332d52359a01e73",
+        "sizeBytes": 126250
+      },
+      {
+        "path": "artifacts/engine-consolidation/checks/bun-final-2/app-boundaries/receipt.json",
+        "sha256": "a47a5b24237a48dfa0977f2185ee03247c8176a59175c1a4f33d5e0eb0fa3c96",
+        "sizeBytes": 126330
+      },
+      {
+        "path": "artifacts/engine-consolidation/checks/bun-final-2/workspace/receipt.json",
+        "sha256": "bbf18289b419dc02dd26ea6bdf4dee0c0a04a2031bdfceb724f46f5d27c5bc77",
+        "sizeBytes": 126223
+      },
+      {
+        "path": "artifacts/engine-consolidation/checks/bun-final-2/app/receipt.json",
+        "sha256": "562090f9871e61596819db2dcd54e91e33ee423f011c465d106223d986d7fccc",
+        "sizeBytes": 126262
+      }
+    ],
+    "postDocumentSpecCheck": {
+      "path": "artifacts/engine-consolidation/spec-bun-3/receipt.json",
+      "sha256": "6e1f90aea1907625fba4ea13c3c222739e789a2d7893da7fe89bd4cd1dab1d88",
+      "sizeBytes": 2680
+    }
+  },
+  "reviews": {
+    "path": "artifacts/engine-consolidation/reviews.json",
+    "sha256": "242de34096d2063b893e7e3d563408a68139ae135c57c2a4e770a11b95c290c6",
+    "sizeBytes": 427
+  },
+  "frozenRustAndFeatureSchemaUnchanged": true,
+  "externalPackageGraphUnchanged": true,
+  "ownedPythonEntrypointsReplaced": true,
+  "historicalPythonEvidenceReused": false,
+  "sourceAcquisitionPerformed": false,
+  "rustBuilds": 0,
+  "trainingPerformed": false,
+  "trainingReady": false,
+  "pushed": false,
+  "committed": false,
+  "pullRequestsCreatedOrClosed": 0,
+  "originalCheckoutTouched": false,
+  "unverified": [
+    "full-theme native diagram rendering",
+    "native scorer/learner and game-data training qualification"
+  ]
+}

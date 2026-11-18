@@ -1,0 +1,67 @@
+{
+  "status": "PASS_BUN_TRANSITION_PRESERVATION_BASELINE_ONLY",
+  "proof": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/bun-transition-baseline-1/proof.ts",
+    "bytes": 6119,
+    "sha256": "fbb51b39ca6372dd263bfc9049659adb90a4b0f494c8f005bf607a767fc838ce"
+  },
+  "issuedBindings": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/request.json",
+      "bytes": 1697,
+      "sha256": "2eb3c9727f788f9c95f0f2650ee89bbd94a5eb5ed289db67d91226e978140b70"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/plan.json",
+      "bytes": 3716,
+      "sha256": "8ecfce5156322da42fb852cd071a6091b96187e19a88226bec68295936505f6c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/approval1.json",
+      "bytes": 2150,
+      "sha256": "62af17fc6199b5537c3488c10680b9269baf170a05a322facfdfad3737fea945"
+    }
+  ],
+  "implementationChoice": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/implementation-choice1.json",
+    "bytes": 1545,
+    "sha256": "beb5b76fd0688799e3ea0143205b33caaf5b976b99909ce79721d5bfb47f43bf"
+  },
+  "preservedPythonFiles": {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/bun-transition-baseline-1/source-manifest.json",
+    "bytes": 2078,
+    "sha256": "0eeb94d76c688b3a83b7b35e2085a86fdc99c0bc5c532be7aece1fab26f46eab"
+  },
+  "historicalPythonVerification": {
+    "tests": 85,
+    "negativeCases": 104,
+    "currentSourceDiffers": [
+      "capture.py"
+    ],
+    "notBunVerification": true
+  },
+  "unchangedBindings": {
+    "frozen347": 347,
+    "frozen327": 327,
+    "native65": 65,
+    "canonical92": 92
+  },
+  "selectedSourceAndCorpusPayloadsRehashed": {
+    "files": 429,
+    "bytes": 4522249,
+    "assembledRuntimeRoot": false
+  },
+  "absentProductionRoots": [
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/acquisition-execution-1",
+    "_work/gpu-owner-recovery/cache/reference-package-inputs-1",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1"
+  ],
+  "actualAcquisitionInvoked": false,
+  "actualNetworkInvoked": false,
+  "archiveOrCachePayloadRead": false,
+  "preservedPythonExecuted": false,
+  "nativeHostGpuReferenceOrTrainingExecuted": false,
+  "publicationPerformed": false,
+  "existingApprovalConsumedOrRenewed": false,
+  "trainingReady": false
+}

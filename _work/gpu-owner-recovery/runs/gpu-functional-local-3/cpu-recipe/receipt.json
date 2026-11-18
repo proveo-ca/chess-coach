@@ -1,0 +1,33 @@
+{
+  "stage": "cpu-recipe",
+  "argv": [
+    "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/rustup/toolchains/1.95.0-x86_64-unknown-linux-gnu/bin/cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "--jobs",
+    "2",
+    "-p",
+    "chess-coach-host-facts",
+    "--test",
+    "recipe"
+  ],
+  "timeoutMs": 120000,
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 278,
+  "stderrBytes": 153,
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-3/cpu-recipe/command.stdout",
+      "bytes": 278,
+      "sha256": "beb87b717aebe234ef6f6fb5b6d549a3206a7206591d1a2f9f4f3cbf194d635a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-functional-local-3/cpu-recipe/command.stderr",
+      "bytes": 153,
+      "sha256": "747fd681305cda92eeda4b6931532b5510d3f55be90c9947ec305cde017d6f0a"
+    }
+  ]
+}

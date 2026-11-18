@@ -1,0 +1,71 @@
+{
+  "status": "PASS_SELECTED_VOLUME_SOURCE_ONLY_COMMIT_REMOTE_EXISTING_PR_AND_LITERAL_HOST_COMMAND",
+  "head": "5b47be42b0378198750992b1547915b43f9cea99",
+  "parent": "c60a45e1588fabf16c76da7127e160b17147dcf7",
+  "remote": {
+    "ref": "refs/heads/feat-ml-adjuntant-ii",
+    "oid": "5b47be42b0378198750992b1547915b43f9cea99"
+  },
+  "pullRequest": {
+    "baseRefName": "main",
+    "headRefName": "feat-ml-adjuntant-ii",
+    "headRefOid": "5b47be42b0378198750992b1547915b43f9cea99",
+    "number": 51,
+    "state": "OPEN",
+    "url": "https://github.com/proveo-ca/chess-coach/pull/51"
+  },
+  "freeze": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/publication-1/freeze.json",
+    "byteLength": 17176,
+    "sha256": "fc2b53426f2d4e840693beee2b39a015b46fcc01e32209fbaa9798688c8ba56a"
+  },
+  "stageAudit": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/publication-1/stage-audit.json",
+    "byteLength": 1297,
+    "sha256": "f29e5561a06b53c03e441e97961052b5669dcdbbd32ffde7e54cef4bdee33ff5"
+  },
+  "commitStdout": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/publication-1/commit.stdout",
+    "byteLength": 4712,
+    "sha256": "8ffc757bc05990b95328740676b73401172e4e4992234ad7b4fa95bca35670e2"
+  },
+  "commitStderr": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/publication-1/commit.stderr",
+    "byteLength": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "pushStdout": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/publication-1/push.stdout",
+    "byteLength": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "pushStderr": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/publication-1/push.stderr",
+    "byteLength": 362,
+    "sha256": "db6ef16f90712ad0d75a4bc3bf18d52b5a8094a12f1cb92c298e1efbf65dc131"
+  },
+  "commandVerification": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/publication-1/host-command-verification.json",
+    "byteLength": 1549,
+    "sha256": "6f7e3a5bb73627496cd83c7dc541e9d86258f86986f11ac7946211fbd2c72bf8"
+  },
+  "hostCommand": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/publication-1/HOST-command-readable.sh",
+    "byteLength": 5912,
+    "sha256": "7464bbc5bd8d91d29b28409950a18ad0a138859ab9b9c353fecf5f618841c213"
+  },
+  "normalCommitsPerformed": 1,
+  "nonForcePushesPerformed": 1,
+  "newScopedConditionalPublicationGrant": "CONSUMED",
+  "oldGrantReused": false,
+  "amendForceRetryNewPullRequestOrMergePerformed": false,
+  "indexClean": true,
+  "trackedWorktreeClean": true,
+  "scope": "LOCAL_POST_PUBLICATION_CONTROL_OUTSIDE_COMMIT_NO_SELF_REFERENCE",
+  "requiredNextAction": "EXECUTOR_RUN_EXACT_SINGLE_PATH_METADATA_COMMAND_ON_HOST_NOT_CODING_SBX_AND_RETURN_JSON_EVEN_IF_BLOCKED",
+  "actualSelectedVolumeHostFactsCollected": false,
+  "hostPreparationExecuted": false,
+  "campaignRootsRelocated": false,
+  "trainingExecuted": false,
+  "trainingExecutionAuthorized": false
+}

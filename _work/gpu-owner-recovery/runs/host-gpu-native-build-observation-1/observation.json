@@ -1,0 +1,33 @@
+{
+  "version": "chess-coach.host-native-build-observation.v1",
+  "status": "OPERATOR_REPORTED_FAIL_HOST_GPU_NATIVE_BUILD_ONLY",
+  "provenance": "SEMANTICALLY_NORMALIZED_COMPLETE_OPERATOR_JSON_AND_SUMMARY_NOT_ORIGINAL_HOST_BYTES",
+  "request": "_work/gpu-owner-recovery/runs/host-gpu-build-handoff-1/request.json",
+  "reportedReceipt": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/reported-receipt.json",
+  "reportedHostExitCode": 1,
+  "reportedHostInvocationsConsumed": 1,
+  "remainingHostInvocations": 0,
+  "automaticRetryAuthorized": false,
+  "originalHostFilesReceived": false,
+  "actualOperatorCommandBytesIndependentlyVerified": false,
+  "reportedHostNativeCompilationPerformed": true,
+  "reportedLearningCompilationPassed": true,
+  "reportedPolicyCompilationPassed": false,
+  "reportedSourceStabilityChecked": true,
+  "reportedSourceChanged": false,
+  "reportedOwnedContainerCleanupPassed": true,
+  "reportedArtifactAdmissionReached": false,
+  "compilerDiagnosticContentsReceived": false,
+  "compilerFailureCause": null,
+  "hostPolicyDiagnosticsRequested": [
+    "_work/gpu-owner-recovery/runs/host-gpu-native-build-1/native/gpu-policy/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-gpu-native-build-1/native/gpu-policy/command.stdout"
+  ],
+  "partialHostWorkspaceAndCacheRetentionRequired": true,
+  "newHostReadsAuthorized": false,
+  "newStagingOrBuildAuthorized": false,
+  "newPublicationAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

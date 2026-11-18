@@ -1,0 +1,21 @@
+{
+  "status": "READY_FOR_INTAKE_RETENTION_ENTRY_POLICY_DECISION_PENDING",
+  "scope": ["user-report.json", "intake.ts", "tsconfig.json", "observation.json", "intake.stdout", "intake.stderr", "types.stdout", "types.stderr"],
+  "adversarial": {
+    "session": "ses_e141ae246ffe66k5Mi0tlAT4vX",
+    "readyForIntake": true,
+    "findings": []
+  },
+  "security": {
+    "session": "ses_e141ae23bffeFAKfJlI8oOhKqO",
+    "readyForIntakeOnly": true,
+    "highOrBlockerFindings": [],
+    "risk": "low"
+  },
+  "entryPolicyExceptionApproved": false,
+  "admissionRulesChanged": false,
+  "permissionsOrSelinuxChanged": false,
+  "hostPreparationExecuted": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false
+}

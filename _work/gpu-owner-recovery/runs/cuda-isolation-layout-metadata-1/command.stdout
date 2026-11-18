@@ -1,0 +1,49 @@
+{
+  "status": "PASS",
+  "method": "READ_ONLY_FD_METADATA_AND_BYTES_NO_NATIVE_EXECUTABLE_INVOCATIONS",
+  "files": [
+    {
+      "guest": "/usr/bin/true",
+      "physicalPath": "/usr/bin/gnutrue",
+      "regularFile": true,
+      "device": "57",
+      "inode": "12199707",
+      "uid": 0,
+      "mode": 33261,
+      "byteLength": 35288,
+      "sha256": "7d659da07aad1d5d1ed79e9f2822d24d2dea47ceec4c7e2e71718a177dc20b4b",
+      "preAttemptIdentityMatches": true
+    },
+    {
+      "guest": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "physicalPath": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "regularFile": true,
+      "device": "57",
+      "inode": "45578368",
+      "uid": 0,
+      "mode": 33261,
+      "byteLength": 2186512,
+      "sha256": "a3947513a02831ec692ebf13053c07614882ab54a2101fb91a1b15724062ed0c",
+      "preAttemptIdentityMatches": true
+    },
+    {
+      "guest": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "physicalPath": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "regularFile": true,
+      "device": "57",
+      "inode": "45573688",
+      "uid": 0,
+      "mode": 33261,
+      "byteLength": 254864,
+      "sha256": "c5e80a563850d6ab5c2f2482e4202d9c1b71fbf44854b8c399e63527202c64e1",
+      "preAttemptIdentityMatches": true
+    }
+  ],
+  "oldTruePhysicalPredicateAccepted": false,
+  "rejectionExplanation": "The old guard required the physical true path to equal /usr/bin/true; the observed canonical target is /usr/bin/gnutrue.",
+  "pathCustody": "VALIDATED_FD_READING_THEN_C1_PATH_BIND_NOT_ATOMIC_FD_MOUNTING",
+  "namespaceCommandAttempted": false,
+  "namespaceSupportDetermined": false,
+  "llvmCodeExecuted": false,
+  "trainingReady": false
+}

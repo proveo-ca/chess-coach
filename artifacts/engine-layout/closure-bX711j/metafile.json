@@ -1,0 +1,3516 @@
+{
+  "inputs": {
+    "packages/runtime/src/game-worker.ts": {
+      "bytes": 353,
+      "imports": [
+        {
+          "path": "packages/runtime/src/current-driver.ts",
+          "kind": "import-statement",
+          "original": "./current-driver"
+        },
+        {
+          "path": "packages/runtime/src/worker-loop.ts",
+          "kind": "import-statement",
+          "original": "./worker-loop"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/runtime/src/current-driver.ts": {
+      "bytes": 1184,
+      "imports": [
+        {
+          "path": "packages/contracts/src/game-session.ts",
+          "kind": "import-statement",
+          "original": "../../contracts/src/game-session"
+        },
+        {
+          "path": "packages/contracts/src/native-protocol.ts",
+          "kind": "import-statement",
+          "original": "../../contracts/src/native-protocol"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/runtime/src/worker-loop.ts": {
+      "bytes": 1080,
+      "imports": [
+        {
+          "path": "packages/contracts/src/native-protocol.ts",
+          "kind": "import-statement",
+          "original": "../../contracts/src/native-protocol"
+        },
+        {
+          "path": "packages/runtime/src/worker.ts",
+          "kind": "import-statement",
+          "original": "./worker"
+        },
+        {
+          "path": "packages/runtime/src/framing.ts",
+          "kind": "import-statement",
+          "original": "./framing"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/contracts/src/game-session.ts": {
+      "bytes": 10357,
+      "imports": [
+        {
+          "path": "crypto",
+          "kind": "import-statement",
+          "original": "node:crypto",
+          "external": true
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/index.js",
+          "kind": "import-statement",
+          "original": "zod"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/index.ts",
+          "kind": "import-statement",
+          "original": "@chess-coach/starchess-core/engine"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/causal-producer.ts",
+          "kind": "import-statement",
+          "original": "@chess-coach/starchess-core/causal-producer"
+        },
+        {
+          "path": "packages/contracts/src/native-intents.ts",
+          "kind": "import-statement",
+          "original": "./native-intents"
+        },
+        {
+          "path": "packages/contracts/src/causal-journal.ts",
+          "kind": "import-statement",
+          "original": "./causal-journal"
+        },
+        {
+          "path": "packages/contracts/src/recipient.ts",
+          "kind": "import-statement",
+          "original": "./recipient"
+        },
+        {
+          "path": "packages/contracts/src/recipient-codec.ts",
+          "kind": "import-statement",
+          "original": "./recipient-codec"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/contracts/src/native-protocol.ts": {
+      "bytes": 3947,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/index.js",
+          "kind": "import-statement",
+          "original": "zod"
+        },
+        {
+          "path": "packages/contracts/src/native-intents.ts",
+          "kind": "import-statement",
+          "original": "./native-intents"
+        },
+        {
+          "path": "packages/contracts/src/recipient-codec.ts",
+          "kind": "import-statement",
+          "original": "./recipient-codec"
+        },
+        {
+          "path": "packages/contracts/src/resolution.ts",
+          "kind": "import-statement",
+          "original": "./resolution"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/runtime/src/framing.ts": {
+      "bytes": 1985,
+      "imports": [
+      ],
+      "format": "esm"
+    },
+    "packages/runtime/src/worker.ts": {
+      "bytes": 4384,
+      "imports": [
+        {
+          "path": "crypto",
+          "kind": "import-statement",
+          "original": "node:crypto",
+          "external": true
+        },
+        {
+          "path": "packages/contracts/src/native-protocol.ts",
+          "kind": "import-statement",
+          "original": "../../contracts/src/native-protocol"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/contracts/src/recipient-codec.ts": {
+      "bytes": 4082,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/index.js",
+          "kind": "import-statement",
+          "original": "zod"
+        },
+        {
+          "path": "packages/contracts/src/shape.ts",
+          "kind": "import-statement",
+          "original": "./shape"
+        },
+        {
+          "path": "packages/contracts/src/index.ts",
+          "kind": "import-statement",
+          "original": "./index"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/index.js": {
+      "bytes": 422,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/external.js",
+          "kind": "import-statement",
+          "original": "./v4/classic/external.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/external.js",
+          "kind": "import-statement",
+          "original": "./v4/classic/external.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/contracts/src/resolution.ts": {
+      "bytes": 4532,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/index.js",
+          "kind": "import-statement",
+          "original": "zod"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/contracts/src/native-intents.ts": {
+      "bytes": 1389,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/index.js",
+          "kind": "import-statement",
+          "original": "zod"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/contracts/src/recipient.ts": {
+      "bytes": 16399,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/engine/index.ts",
+          "kind": "import-statement",
+          "original": "@chess-coach/starchess-core/engine"
+        },
+        {
+          "path": "packages/contracts/src/index.ts",
+          "kind": "import-statement",
+          "original": "./index"
+        },
+        {
+          "path": "packages/contracts/src/causal-journal.ts",
+          "kind": "import-statement",
+          "original": "./causal-journal"
+        },
+        {
+          "path": "packages/contracts/src/recipient-codec.ts",
+          "kind": "import-statement",
+          "original": "./recipient-codec"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/index.ts": {
+      "bytes": 1287,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/engine/types.ts",
+          "kind": "import-statement",
+          "original": "./types"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/constants.ts",
+          "kind": "import-statement",
+          "original": "./constants"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/board.ts",
+          "kind": "import-statement",
+          "original": "./board"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/specials.ts",
+          "kind": "import-statement",
+          "original": "./specials"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/economy.ts",
+          "kind": "import-statement",
+          "original": "./economy"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/outcome.ts",
+          "kind": "import-statement",
+          "original": "./outcome"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/mines.ts",
+          "kind": "import-statement",
+          "original": "./mines"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/moves.ts",
+          "kind": "import-statement",
+          "original": "./moves"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/vision.ts",
+          "kind": "import-statement",
+          "original": "./vision"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/planning-order.ts",
+          "kind": "import-statement",
+          "original": "./planning-order"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/native-classical.ts",
+          "kind": "import-statement",
+          "original": "./native-classical"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/planning-specials.ts",
+          "kind": "import-statement",
+          "original": "./planning-specials"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/planning-intents.ts",
+          "kind": "import-statement",
+          "original": "./planning-intents"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/queue-contract.ts",
+          "kind": "import-statement",
+          "original": "./queue-contract"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/queue-validation.ts",
+          "kind": "import-statement",
+          "original": "./queue-validation"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/queue-action.ts",
+          "kind": "import-statement",
+          "original": "./queue-action"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/mine-contact.ts",
+          "kind": "import-statement",
+          "original": "./mine-contact"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/move-timing.ts",
+          "kind": "import-statement",
+          "original": "./move-timing"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/ray-scan.ts",
+          "kind": "import-statement",
+          "original": "./ray-scan"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/charon.ts",
+          "kind": "import-statement",
+          "original": "./charon"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/initialization.ts",
+          "kind": "import-statement",
+          "original": "./initialization"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/classical-resolution.ts",
+          "kind": "import-statement",
+          "original": "./classical-resolution"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/resolve.ts",
+          "kind": "import-statement",
+          "original": "./resolve"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/causal-producer.ts": {
+      "bytes": 1300,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/engine/causal-events.ts",
+          "kind": "import-statement",
+          "original": "./causal-events"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/resolve.ts",
+          "kind": "import-statement",
+          "original": "./resolve"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/causal-events.ts",
+          "kind": "import-statement",
+          "original": "./causal-events"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/contracts/src/causal-journal.ts": {
+      "bytes": 14428,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/index.js",
+          "kind": "import-statement",
+          "original": "zod"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/mines.ts",
+          "kind": "import-statement",
+          "original": "@chess-coach/starchess-core/engine/mines"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/external.js": {
+      "bytes": 1101,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/index.js",
+          "kind": "import-statement",
+          "original": "../core/index.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/schemas.js",
+          "kind": "import-statement",
+          "original": "./schemas.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/checks.js",
+          "kind": "import-statement",
+          "original": "./checks.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/errors.js",
+          "kind": "import-statement",
+          "original": "./errors.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/parse.js",
+          "kind": "import-statement",
+          "original": "./parse.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/compat.js",
+          "kind": "import-statement",
+          "original": "./compat.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/index.js",
+          "kind": "import-statement",
+          "original": "../core/index.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/json-schema-processors.js",
+          "kind": "import-statement",
+          "original": "../core/json-schema-processors.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/from-json-schema.js",
+          "kind": "import-statement",
+          "original": "./from-json-schema.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/deep-partial.js",
+          "kind": "import-statement",
+          "original": "./deep-partial.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/in-out.js",
+          "kind": "import-statement",
+          "original": "./in-out.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/index.js",
+          "kind": "import-statement",
+          "original": "../locales/index.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/iso.js",
+          "kind": "import-statement",
+          "original": "./iso.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/iso.js",
+          "kind": "import-statement",
+          "original": "./iso.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/coerce.js",
+          "kind": "import-statement",
+          "original": "./coerce.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/causal-events.ts": {
+      "bytes": 24503,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/engine/board.ts",
+          "kind": "import-statement",
+          "original": "./board"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/vision.ts",
+          "kind": "import-statement",
+          "original": "./vision"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/resolve.ts": {
+      "bytes": 877,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/resolve/submit-turn.ts",
+          "kind": "import-statement",
+          "original": "../resolve/submit-turn"
+        },
+        {
+          "path": "packages/starchess-core/src/resolve/submit-turn.ts",
+          "kind": "import-statement",
+          "original": "../resolve/submit-turn"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/vision.ts": {
+      "bytes": 330,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/vision.ts",
+          "kind": "import-statement",
+          "original": "../board/vision"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/constants.ts": {
+      "bytes": 300,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/rules/constants.ts",
+          "kind": "import-statement",
+          "original": "../rules/constants"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/initialization.ts": {
+      "bytes": 1536,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/engine/board.ts",
+          "kind": "import-statement",
+          "original": "./board"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/constants.ts",
+          "kind": "import-statement",
+          "original": "./constants"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/economy.ts",
+          "kind": "import-statement",
+          "original": "./economy"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/classical-resolution.ts": {
+      "bytes": 1769,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/placement.ts",
+          "kind": "import-statement",
+          "original": "../board/placement"
+        },
+        {
+          "path": "packages/starchess-core/src/board/moves.ts",
+          "kind": "import-statement",
+          "original": "../board/moves"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/validation.ts",
+          "kind": "import-statement",
+          "original": "../rules/validation"
+        },
+        {
+          "path": "packages/starchess-core/src/resolve/resolve-turn.ts",
+          "kind": "import-statement",
+          "original": "../resolve/resolve-turn"
+        },
+        {
+          "path": "packages/starchess-core/src/resolve/resolve-turn.ts",
+          "kind": "import-statement",
+          "original": "../resolve/resolve-turn"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/planning-order.ts": {
+      "bytes": 2200,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/engine/board.ts",
+          "kind": "import-statement",
+          "original": "./board"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/moves.ts",
+          "kind": "import-statement",
+          "original": "./moves"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/queue-validation.ts": {
+      "bytes": 4529,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/engine/board.ts",
+          "kind": "import-statement",
+          "original": "./board"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/validation.ts",
+          "kind": "import-statement",
+          "original": "../rules/validation"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/validation.ts",
+          "kind": "import-statement",
+          "original": "../rules/validation"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/mines.ts",
+          "kind": "import-statement",
+          "original": "./mines"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/native-classical.ts",
+          "kind": "import-statement",
+          "original": "./native-classical"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/planning-intents.ts",
+          "kind": "import-statement",
+          "original": "./planning-intents"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/charon.ts": {
+      "bytes": 170,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+          "kind": "import-statement",
+          "original": "../rules/specials/mechaCharon"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/mine-contact.ts": {
+      "bytes": 215,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/mine-contact.ts",
+          "kind": "import-statement",
+          "original": "../board/mine-contact"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/mines.ts": {
+      "bytes": 213,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/mines.ts",
+          "kind": "import-statement",
+          "original": "../board/mines"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/move-timing.ts": {
+      "bytes": 243,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/move-timing.ts",
+          "kind": "import-statement",
+          "original": "../board/move-timing"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/board.ts": {
+      "bytes": 381,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/placement.ts",
+          "kind": "import-statement",
+          "original": "../board/placement"
+        },
+        {
+          "path": "packages/starchess-core/src/scfen/codec.ts",
+          "kind": "import-statement",
+          "original": "../scfen/codec"
+        },
+        {
+          "path": "packages/starchess-core/src/board/classicFen.ts",
+          "kind": "import-statement",
+          "original": "../board/classicFen"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/moves.ts": {
+      "bytes": 287,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/rules/specials/stimStep.ts",
+          "kind": "import-statement",
+          "original": "../rules/specials/stimStep"
+        },
+        {
+          "path": "packages/starchess-core/src/board/moves.ts",
+          "kind": "import-statement",
+          "original": "../board/moves"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/queue-contract.ts": {
+      "bytes": 123,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/scfen/codec.ts",
+          "kind": "import-statement",
+          "original": "../scfen/codec"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/economy.ts": {
+      "bytes": 260,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/rules/economy.ts",
+          "kind": "import-statement",
+          "original": "../rules/economy"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/outcome.ts": {
+      "bytes": 126,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/outcome.ts",
+          "kind": "import-statement",
+          "original": "../outcome"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/planning-specials.ts": {
+      "bytes": 242,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/siege.ts",
+          "kind": "import-statement",
+          "original": "../board/siege"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+          "kind": "import-statement",
+          "original": "../rules/specials/mechaCharon"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/specials/adjacent.ts",
+          "kind": "import-statement",
+          "original": "../rules/specials/adjacent"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/types.ts": {
+      "bytes": 355,
+      "imports": [
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/specials.ts": {
+      "bytes": 192,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/rules/specials/registry.ts",
+          "kind": "import-statement",
+          "original": "../rules/specials/registry"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/native-classical.ts": {
+      "bytes": 8275,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/engine/board.ts",
+          "kind": "import-statement",
+          "original": "./board"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/moves.ts",
+          "kind": "import-statement",
+          "original": "./moves"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/planning-order.ts",
+          "kind": "import-statement",
+          "original": "./planning-order"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/planning-intents.ts": {
+      "bytes": 7728,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/engine/mines.ts",
+          "kind": "import-statement",
+          "original": "./mines"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/moves.ts",
+          "kind": "import-statement",
+          "original": "./moves"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/planning-specials.ts",
+          "kind": "import-statement",
+          "original": "./planning-specials"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/queue-action.ts": {
+      "bytes": 915,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/commands/queue-action.ts",
+          "kind": "import-statement",
+          "original": "../commands/queue-action"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/queue-validation.ts",
+          "kind": "import-statement",
+          "original": "./queue-validation"
+        },
+        {
+          "path": "packages/starchess-core/src/commands/queue-action.ts",
+          "kind": "import-statement",
+          "original": "../commands/queue-action"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/engine/ray-scan.ts": {
+      "bytes": 177,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/ray-scan.ts",
+          "kind": "import-statement",
+          "original": "../board/ray-scan"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/contracts/src/shape.ts": {
+      "bytes": 3459,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/index.js",
+          "kind": "import-statement",
+          "original": "zod"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/contracts/src/index.ts": {
+      "bytes": 1200,
+      "imports": [
+        {
+          "path": "packages/contracts/src/shape.ts",
+          "kind": "import-statement",
+          "original": "./shape"
+        },
+        {
+          "path": "packages/contracts/src/semantics.ts",
+          "kind": "import-statement",
+          "original": "./semantics"
+        },
+        {
+          "path": "packages/contracts/src/shape.ts",
+          "kind": "import-statement",
+          "original": "./shape"
+        },
+        {
+          "path": "packages/contracts/src/inference.ts",
+          "kind": "import-statement",
+          "original": "./inference"
+        },
+        {
+          "path": "packages/contracts/src/candidate.ts",
+          "kind": "import-statement",
+          "original": "./candidate"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/errors.js": {
+      "bytes": 2532,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/index.js",
+          "kind": "import-statement",
+          "original": "../core/index.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/index.js",
+          "kind": "import-statement",
+          "original": "../core/index.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/deep-partial.js": {
+      "bytes": 543,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/visit.js",
+          "kind": "import-statement",
+          "original": "../core/visit.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/schemas.js",
+          "kind": "import-statement",
+          "original": "./schemas.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/schemas.js": {
+      "bytes": 53354,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/index.js",
+          "kind": "import-statement",
+          "original": "../core/index.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/index.js",
+          "kind": "import-statement",
+          "original": "../core/index.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/json-schema-processors.js",
+          "kind": "import-statement",
+          "original": "../core/json-schema-processors.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js",
+          "kind": "import-statement",
+          "original": "../core/regexes.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/to-json-schema.js",
+          "kind": "import-statement",
+          "original": "../core/to-json-schema.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/en.js",
+          "kind": "import-statement",
+          "original": "../locales/en.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/checks.js",
+          "kind": "import-statement",
+          "original": "./checks.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/parse.js",
+          "kind": "import-statement",
+          "original": "./parse.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/json-schema-processors.js": {
+      "bytes": 34985,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js",
+          "kind": "import-statement",
+          "original": "./regexes.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/schemas.js",
+          "kind": "import-statement",
+          "original": "./schemas.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/to-json-schema.js",
+          "kind": "import-statement",
+          "original": "./to-json-schema.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "./util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/coerce.js": {
+      "bytes": 550,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/index.js",
+          "kind": "import-statement",
+          "original": "../core/index.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/schemas.js",
+          "kind": "import-statement",
+          "original": "./schemas.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/in-out.js": {
+      "bytes": 2190,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/visit.js",
+          "kind": "import-statement",
+          "original": "../core/visit.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/schemas.js",
+          "kind": "import-statement",
+          "original": "./schemas.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/from-json-schema.js": {
+      "bytes": 38171,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/registries.js",
+          "kind": "import-statement",
+          "original": "../core/registries.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/checks.js",
+          "kind": "import-statement",
+          "original": "./checks.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/iso.js",
+          "kind": "import-statement",
+          "original": "./iso.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/schemas.js",
+          "kind": "import-statement",
+          "original": "./schemas.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/compat.js": {
+      "bytes": 1090,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/index.js",
+          "kind": "import-statement",
+          "original": "../core/index.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/index.js",
+          "kind": "import-statement",
+          "original": "../core/index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/parse.js": {
+      "bytes": 1057,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/index.js",
+          "kind": "import-statement",
+          "original": "../core/index.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/errors.js",
+          "kind": "import-statement",
+          "original": "./errors.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/index.js",
+          "kind": "import-statement",
+          "original": "../core/index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/iso.js": {
+      "bytes": 556,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/index.js",
+          "kind": "import-statement",
+          "original": "../core/index.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/schemas.js",
+          "kind": "import-statement",
+          "original": "./schemas.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/schemas.js",
+          "kind": "import-statement",
+          "original": "./schemas.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/index.js": {
+      "bytes": 2607,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ar.js",
+          "kind": "import-statement",
+          "original": "./ar.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/az.js",
+          "kind": "import-statement",
+          "original": "./az.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/be.js",
+          "kind": "import-statement",
+          "original": "./be.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/bg.js",
+          "kind": "import-statement",
+          "original": "./bg.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/bn.js",
+          "kind": "import-statement",
+          "original": "./bn.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ca.js",
+          "kind": "import-statement",
+          "original": "./ca.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ckb.js",
+          "kind": "import-statement",
+          "original": "./ckb.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/cs.js",
+          "kind": "import-statement",
+          "original": "./cs.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/da.js",
+          "kind": "import-statement",
+          "original": "./da.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/de.js",
+          "kind": "import-statement",
+          "original": "./de.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/el.js",
+          "kind": "import-statement",
+          "original": "./el.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/en.js",
+          "kind": "import-statement",
+          "original": "./en.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/eo.js",
+          "kind": "import-statement",
+          "original": "./eo.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/es.js",
+          "kind": "import-statement",
+          "original": "./es.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/fa.js",
+          "kind": "import-statement",
+          "original": "./fa.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/fi.js",
+          "kind": "import-statement",
+          "original": "./fi.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/fr.js",
+          "kind": "import-statement",
+          "original": "./fr.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/fr-CA.js",
+          "kind": "import-statement",
+          "original": "./fr-CA.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/gu.js",
+          "kind": "import-statement",
+          "original": "./gu.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/he.js",
+          "kind": "import-statement",
+          "original": "./he.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/hi.js",
+          "kind": "import-statement",
+          "original": "./hi.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/hr.js",
+          "kind": "import-statement",
+          "original": "./hr.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/hu.js",
+          "kind": "import-statement",
+          "original": "./hu.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/hy.js",
+          "kind": "import-statement",
+          "original": "./hy.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/id.js",
+          "kind": "import-statement",
+          "original": "./id.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/is.js",
+          "kind": "import-statement",
+          "original": "./is.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/it.js",
+          "kind": "import-statement",
+          "original": "./it.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ja.js",
+          "kind": "import-statement",
+          "original": "./ja.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ka.js",
+          "kind": "import-statement",
+          "original": "./ka.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/kh.js",
+          "kind": "import-statement",
+          "original": "./kh.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/km.js",
+          "kind": "import-statement",
+          "original": "./km.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/kn.js",
+          "kind": "import-statement",
+          "original": "./kn.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ko.js",
+          "kind": "import-statement",
+          "original": "./ko.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/lt.js",
+          "kind": "import-statement",
+          "original": "./lt.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/mk.js",
+          "kind": "import-statement",
+          "original": "./mk.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ms.js",
+          "kind": "import-statement",
+          "original": "./ms.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ne.js",
+          "kind": "import-statement",
+          "original": "./ne.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/nl.js",
+          "kind": "import-statement",
+          "original": "./nl.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/nn.js",
+          "kind": "import-statement",
+          "original": "./nn.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/no.js",
+          "kind": "import-statement",
+          "original": "./no.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ota.js",
+          "kind": "import-statement",
+          "original": "./ota.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ps.js",
+          "kind": "import-statement",
+          "original": "./ps.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/pl.js",
+          "kind": "import-statement",
+          "original": "./pl.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/pt.js",
+          "kind": "import-statement",
+          "original": "./pt.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/pt-BR.js",
+          "kind": "import-statement",
+          "original": "./pt-BR.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ro.js",
+          "kind": "import-statement",
+          "original": "./ro.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ru.js",
+          "kind": "import-statement",
+          "original": "./ru.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/sk.js",
+          "kind": "import-statement",
+          "original": "./sk.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/sl.js",
+          "kind": "import-statement",
+          "original": "./sl.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/sv.js",
+          "kind": "import-statement",
+          "original": "./sv.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ta.js",
+          "kind": "import-statement",
+          "original": "./ta.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/tg.js",
+          "kind": "import-statement",
+          "original": "./tg.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/th.js",
+          "kind": "import-statement",
+          "original": "./th.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/tk.js",
+          "kind": "import-statement",
+          "original": "./tk.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/tr.js",
+          "kind": "import-statement",
+          "original": "./tr.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ua.js",
+          "kind": "import-statement",
+          "original": "./ua.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/uk.js",
+          "kind": "import-statement",
+          "original": "./uk.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ur.js",
+          "kind": "import-statement",
+          "original": "./ur.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/uz.js",
+          "kind": "import-statement",
+          "original": "./uz.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/vi.js",
+          "kind": "import-statement",
+          "original": "./vi.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/zh-CN.js",
+          "kind": "import-statement",
+          "original": "./zh-CN.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/zh-TW.js",
+          "kind": "import-statement",
+          "original": "./zh-TW.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/yo.js",
+          "kind": "import-statement",
+          "original": "./yo.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/index.js": {
+      "bytes": 690,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/core.js",
+          "kind": "import-statement",
+          "original": "./core.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/parse.js",
+          "kind": "import-statement",
+          "original": "./parse.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/errors.js",
+          "kind": "import-statement",
+          "original": "./errors.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/schemas.js",
+          "kind": "import-statement",
+          "original": "./schemas.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/memoizer.js",
+          "kind": "import-statement",
+          "original": "./memoizer.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/checks.js",
+          "kind": "import-statement",
+          "original": "./checks.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/versions.js",
+          "kind": "import-statement",
+          "original": "./versions.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "./util.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "./util.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js",
+          "kind": "import-statement",
+          "original": "./regexes.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/index.js",
+          "kind": "import-statement",
+          "original": "../locales/index.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/registries.js",
+          "kind": "import-statement",
+          "original": "./registries.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/doc.js",
+          "kind": "import-statement",
+          "original": "./doc.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/compile.js",
+          "kind": "import-statement",
+          "original": "./compile.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/api.js",
+          "kind": "import-statement",
+          "original": "./api.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/to-json-schema.js",
+          "kind": "import-statement",
+          "original": "./to-json-schema.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/json-schema-processors.js",
+          "kind": "import-statement",
+          "original": "./json-schema-processors.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/json-schema-generator.js",
+          "kind": "import-statement",
+          "original": "./json-schema-generator.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/json-schema.js",
+          "kind": "import-statement",
+          "original": "./json-schema.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/checks.js": {
+      "bytes": 690,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/index.js",
+          "kind": "import-statement",
+          "original": "../core/index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/resolve/submit-turn.ts": {
+      "bytes": 39066,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/placement.ts",
+          "kind": "import-statement",
+          "original": "../board/placement"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/constants.ts",
+          "kind": "import-statement",
+          "original": "../rules/constants"
+        },
+        {
+          "path": "packages/starchess-core/src/board/mines.ts",
+          "kind": "import-statement",
+          "original": "../board/mines"
+        },
+        {
+          "path": "packages/starchess-core/src/board/mine-contact.ts",
+          "kind": "import-statement",
+          "original": "../board/mine-contact"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+          "kind": "import-statement",
+          "original": "../rules/specials/mechaCharon"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/specials/stimStep.ts",
+          "kind": "import-statement",
+          "original": "../rules/specials/stimStep"
+        },
+        {
+          "path": "packages/starchess-core/src/resolve/resolve-turn.ts",
+          "kind": "import-statement",
+          "original": "./resolve-turn"
+        },
+        {
+          "path": "packages/starchess-core/src/board/vision.ts",
+          "kind": "import-statement",
+          "original": "../board/vision"
+        },
+        {
+          "path": "packages/starchess-core/src/scfen/codec.ts",
+          "kind": "import-statement",
+          "original": "../scfen/codec"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/planning-order.ts",
+          "kind": "import-statement",
+          "original": "../engine/planning-order"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/native-classical.ts",
+          "kind": "import-statement",
+          "original": "../engine/native-classical"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/queue-validation.ts",
+          "kind": "import-statement",
+          "original": "../engine/queue-validation"
+        },
+        {
+          "path": "packages/starchess-core/src/scfen/codec.ts",
+          "kind": "import-statement",
+          "original": "../scfen/codec"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/classical-resolution.ts",
+          "kind": "import-statement",
+          "original": "../engine/classical-resolution"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/planning-order.ts",
+          "kind": "import-statement",
+          "original": "../engine/planning-order"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/board/vision.ts": {
+      "bytes": 10114,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/placement.ts",
+          "kind": "import-statement",
+          "original": "./placement"
+        },
+        {
+          "path": "packages/starchess-core/src/board/mines.ts",
+          "kind": "import-statement",
+          "original": "./mines"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/board/ray-scan.ts": {
+      "bytes": 2149,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/mines.ts",
+          "kind": "import-statement",
+          "original": "./mines"
+        },
+        {
+          "path": "packages/starchess-core/src/board/vision.ts",
+          "kind": "import-statement",
+          "original": "./vision"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/board/mine-contact.ts": {
+      "bytes": 2369,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/mines.ts",
+          "kind": "import-statement",
+          "original": "./mines"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/rules/specials/mechaCharon.ts": {
+      "bytes": 5451,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/placement.ts",
+          "kind": "import-statement",
+          "original": "../../board/placement"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/constants.ts",
+          "kind": "import-statement",
+          "original": "../constants"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/resolve/resolve-turn.ts": {
+      "bytes": 46101,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/placement.ts",
+          "kind": "import-statement",
+          "original": "../board/placement"
+        },
+        {
+          "path": "packages/starchess-core/src/board/mines.ts",
+          "kind": "import-statement",
+          "original": "../board/mines"
+        },
+        {
+          "path": "packages/starchess-core/src/board/mine-contact.ts",
+          "kind": "import-statement",
+          "original": "../board/mine-contact"
+        },
+        {
+          "path": "packages/starchess-core/src/board/ray-scan.ts",
+          "kind": "import-statement",
+          "original": "../board/ray-scan"
+        },
+        {
+          "path": "packages/starchess-core/src/board/move-timing.ts",
+          "kind": "import-statement",
+          "original": "../board/move-timing"
+        },
+        {
+          "path": "packages/starchess-core/src/board/vision.ts",
+          "kind": "import-statement",
+          "original": "../board/vision"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/board/placement.ts": {
+      "bytes": 7285,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/classicFen.ts",
+          "kind": "import-statement",
+          "original": "./classicFen"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/board/moves.ts": {
+      "bytes": 10469,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/placement.ts",
+          "kind": "import-statement",
+          "original": "./placement"
+        },
+        {
+          "path": "packages/starchess-core/src/board/mines.ts",
+          "kind": "import-statement",
+          "original": "./mines"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/specials/stimStep.ts",
+          "kind": "import-statement",
+          "original": "../rules/specials/stimStep"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/rules/validation.ts": {
+      "bytes": 13598,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/placement.ts",
+          "kind": "import-statement",
+          "original": "../board/placement"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+          "kind": "import-statement",
+          "original": "./specials/mechaCharon"
+        },
+        {
+          "path": "packages/starchess-core/src/board/mines.ts",
+          "kind": "import-statement",
+          "original": "../board/mines"
+        },
+        {
+          "path": "packages/starchess-core/src/board/siege.ts",
+          "kind": "import-statement",
+          "original": "../board/siege"
+        },
+        {
+          "path": "packages/starchess-core/src/scfen/codec.ts",
+          "kind": "import-statement",
+          "original": "../scfen/codec"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/specials/adjacent.ts",
+          "kind": "import-statement",
+          "original": "./specials/adjacent"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/specials/stimStep.ts",
+          "kind": "import-statement",
+          "original": "./specials/stimStep"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/planning-intents.ts",
+          "kind": "import-statement",
+          "original": "../engine/planning-intents"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/planning-intents.ts",
+          "kind": "import-statement",
+          "original": "../engine/planning-intents"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/rules/constants.ts": {
+      "bytes": 2062,
+      "imports": [
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/commands/queue-action.ts": {
+      "bytes": 7351,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/scfen/index.ts",
+          "kind": "import-statement",
+          "original": "../scfen"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/validation.ts",
+          "kind": "import-statement",
+          "original": "../rules/validation"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/contracts/src/inference.ts": {
+      "bytes": 1979,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/index.js",
+          "kind": "import-statement",
+          "original": "zod"
+        },
+        {
+          "path": "schemas/feature-layout.json",
+          "kind": "import-statement",
+          "original": "../../../schemas/feature-layout.json",
+          "with": { "type": "json" }
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/contracts/src/candidate.ts": {
+      "bytes": 1921,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/index.js",
+          "kind": "import-statement",
+          "original": "zod"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/contracts/src/semantics.ts": {
+      "bytes": 8430,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/engine/constants.ts",
+          "kind": "import-statement",
+          "original": "@chess-coach/starchess-core/engine/constants"
+        },
+        {
+          "path": "packages/starchess-core/src/engine/board.ts",
+          "kind": "import-statement",
+          "original": "@chess-coach/starchess-core/engine/board"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/rules/economy.ts": {
+      "bytes": 3611,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/placement.ts",
+          "kind": "import-statement",
+          "original": "../board/placement"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/constants.ts",
+          "kind": "import-statement",
+          "original": "./constants"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/specials/registry.ts",
+          "kind": "import-statement",
+          "original": "./specials/registry"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/board/classicFen.ts": {
+      "bytes": 339,
+      "imports": [
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/scfen/codec.ts": {
+      "bytes": 20029,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/classicFen.ts",
+          "kind": "import-statement",
+          "original": "../board/classicFen"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/constants.ts",
+          "kind": "import-statement",
+          "original": "../rules/constants"
+        },
+        {
+          "path": "packages/starchess-core/src/board/mines.ts",
+          "kind": "import-statement",
+          "original": "../board/mines"
+        },
+        {
+          "path": "packages/starchess-core/src/rules/specials/registry.ts",
+          "kind": "import-statement",
+          "original": "../rules/specials/registry"
+        },
+        {
+          "path": "packages/starchess-core/src/scfen/legacyKinds.ts",
+          "kind": "import-statement",
+          "original": "./legacyKinds"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/rules/specials/stimStep.ts": {
+      "bytes": 1421,
+      "imports": [
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/board/move-timing.ts": {
+      "bytes": 3822,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/mines.ts",
+          "kind": "import-statement",
+          "original": "./mines"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/board/siege.ts": {
+      "bytes": 1071,
+      "imports": [
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/rules/specials/adjacent.ts": {
+      "bytes": 3694,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/placement.ts",
+          "kind": "import-statement",
+          "original": "../../board/placement"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/rules/specials/registry.ts": {
+      "bytes": 1212,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/rules/constants.ts",
+          "kind": "import-statement",
+          "original": "../constants"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/outcome.ts": {
+      "bytes": 1177,
+      "imports": [
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/board/mines.ts": {
+      "bytes": 3834,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/board/placement.ts",
+          "kind": "import-statement",
+          "original": "./placement"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js": {
+      "bytes": 34840,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/core.js",
+          "kind": "import-statement",
+          "original": "./core.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/sv.js": {
+      "bytes": 4841,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/sl.js": {
+      "bytes": 4756,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ru.js": {
+      "bytes": 7095,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/sk.js": {
+      "bytes": 4949,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/en.js": {
+      "bytes": 5302,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/el.js": {
+      "bytes": 5701,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/tk.js": {
+      "bytes": 4458,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/zh-TW.js": {
+      "bytes": 4672,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ka.js": {
+      "bytes": 6527,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/eo.js": {
+      "bytes": 4784,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/no.js": {
+      "bytes": 4693,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ua.js": {
+      "bytes": 111,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/uk.js",
+          "kind": "import-statement",
+          "original": "./uk.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/tg.js": {
+      "bytes": 5647,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/he.js": {
+      "bytes": 12411,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/id.js": {
+      "bytes": 4759,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/bg.js": {
+      "bytes": 6029,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ta.js": {
+      "bytes": 6688,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ro.js": {
+      "bytes": 4883,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/hu.js": {
+      "bytes": 4871,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/kh.js": {
+      "bytes": 111,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/km.js",
+          "kind": "import-statement",
+          "original": "./km.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/it.js": {
+      "bytes": 4775,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ms.js": {
+      "bytes": 4674,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/es.js": {
+      "bytes": 5591,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ne.js": {
+      "bytes": 5819,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/bn.js": {
+      "bytes": 5757,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/da.js": {
+      "bytes": 4987,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/hy.js": {
+      "bytes": 6720,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ota.js": {
+      "bytes": 4723,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ps.js": {
+      "bytes": 5123,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/pt.js": {
+      "bytes": 7024,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/is.js": {
+      "bytes": 4822,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/tr.js": {
+      "bytes": 4642,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ckb.js": {
+      "bytes": 5948,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/de.js": {
+      "bytes": 4774,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ca.js": {
+      "bytes": 4908,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/th.js": {
+      "bytes": 6563,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/hr.js": {
+      "bytes": 5184,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/pt-BR.js": {
+      "bytes": 7024,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/vi.js": {
+      "bytes": 4967,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/az.js": {
+      "bytes": 4703,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/cs.js": {
+      "bytes": 4953,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ko.js": {
+      "bytes": 5109,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/fr.js": {
+      "bytes": 5414,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/fr-CA.js": {
+      "bytes": 4749,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/be.js": {
+      "bytes": 6998,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/uk.js": {
+      "bytes": 5665,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/mk.js": {
+      "bytes": 5399,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/nl.js": {
+      "bytes": 4939,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/fi.js": {
+      "bytes": 5007,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/km.js": {
+      "bytes": 6509,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/lt.js": {
+      "bytes": 8223,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/pl.js": {
+      "bytes": 5150,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/uz.js": {
+      "bytes": 4844,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/gu.js": {
+      "bytes": 5930,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/zh-CN.js": {
+      "bytes": 4622,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/kn.js": {
+      "bytes": 6512,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ur.js": {
+      "bytes": 5491,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ar.js": {
+      "bytes": 5404,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/fa.js": {
+      "bytes": 5343,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ja.js": {
+      "bytes": 5054,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/nn.js": {
+      "bytes": 4678,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/yo.js": {
+      "bytes": 4847,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/hi.js": {
+      "bytes": 5940,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "../core/util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js": {
+      "bytes": 11818,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "./util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/schemas.js": {
+      "bytes": 107291,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/checks.js",
+          "kind": "import-statement",
+          "original": "./checks.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/core.js",
+          "kind": "import-statement",
+          "original": "./core.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/doc.js",
+          "kind": "import-statement",
+          "original": "./doc.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/parse.js",
+          "kind": "import-statement",
+          "original": "./parse.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js",
+          "kind": "import-statement",
+          "original": "./regexes.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "./util.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/versions.js",
+          "kind": "import-statement",
+          "original": "./versions.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "./util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/parse.js": {
+      "bytes": 8267,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/core.js",
+          "kind": "import-statement",
+          "original": "./core.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/errors.js",
+          "kind": "import-statement",
+          "original": "./errors.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "./util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/json-schema.js": {
+      "bytes": 11,
+      "imports": [
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/compile.js": {
+      "bytes": 92003,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/core.js",
+          "kind": "import-statement",
+          "original": "./core.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/doc.js",
+          "kind": "import-statement",
+          "original": "./doc.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/memoizer.js",
+          "kind": "import-statement",
+          "original": "./memoizer.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js",
+          "kind": "import-statement",
+          "original": "./regexes.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/schemas.js",
+          "kind": "import-statement",
+          "original": "./schemas.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "./util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/json-schema-generator.js": {
+      "bytes": 3857,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/json-schema-processors.js",
+          "kind": "import-statement",
+          "original": "./json-schema-processors.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/to-json-schema.js",
+          "kind": "import-statement",
+          "original": "./to-json-schema.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/errors.js": {
+      "bytes": 10871,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/core.js",
+          "kind": "import-statement",
+          "original": "./core.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "./util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/core.js": {
+      "bytes": 6642,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "./util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/checks.js": {
+      "bytes": 19491,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/core.js",
+          "kind": "import-statement",
+          "original": "./core.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js",
+          "kind": "import-statement",
+          "original": "./regexes.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "./util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/registries.js": {
+      "bytes": 1540,
+      "imports": [
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/api.js": {
+      "bytes": 28953,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/checks.js",
+          "kind": "import-statement",
+          "original": "./checks.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/registries.js",
+          "kind": "import-statement",
+          "original": "./registries.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/schemas.js",
+          "kind": "import-statement",
+          "original": "./schemas.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "./util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/doc.js": {
+      "bytes": 1290,
+      "imports": [
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/versions.js": {
+      "bytes": 70,
+      "imports": [
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/memoizer.js": {
+      "bytes": 12517,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "./util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/to-json-schema.js": {
+      "bytes": 29029,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/registries.js",
+          "kind": "import-statement",
+          "original": "./registries.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "./util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/scfen/index.ts": {
+      "bytes": 733,
+      "imports": [
+        {
+          "path": "packages/starchess-core/src/scfen/codec.ts",
+          "kind": "import-statement",
+          "original": "./codec"
+        },
+        {
+          "path": "packages/starchess-core/src/scfen/legacyKinds.ts",
+          "kind": "import-statement",
+          "original": "./legacyKinds"
+        }
+      ],
+      "format": "esm"
+    },
+    "packages/starchess-core/src/scfen/legacyKinds.ts": {
+      "bytes": 1828,
+      "imports": [
+      ],
+      "format": "esm"
+    },
+    "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/visit.js": {
+      "bytes": 6643,
+      "imports": [
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/schemas.js",
+          "kind": "import-statement",
+          "original": "./schemas.js"
+        },
+        {
+          "path": "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js",
+          "kind": "import-statement",
+          "original": "./util.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "schemas/feature-layout.json": {
+      "bytes": 1399,
+      "imports": [
+      ],
+      "format": "json"
+    }
+  },
+  "outputs": {
+    "./audit-only.js": {
+      "bytes": 963534,
+      "inputs": {
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js": {
+          "bytesInOutput": 25017
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/core.js": {
+          "bytesInOutput": 3282
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/errors.js": {
+          "bytesInOutput": 6376
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/parse.js": {
+          "bytesInOutput": 5958
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js": {
+          "bytesInOutput": 9210
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/checks.js": {
+          "bytesInOutput": 14480
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/doc.js": {
+          "bytesInOutput": 1026
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/versions.js": {
+          "bytesInOutput": 54
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/schemas.js": {
+          "bytesInOutput": 78207
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/memoizer.js": {
+          "bytesInOutput": 7239
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ar.js": {
+          "bytesInOutput": 7477
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/az.js": {
+          "bytesInOutput": 4530
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/be.js": {
+          "bytesInOutput": 9257
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/bg.js": {
+          "bytesInOutput": 8261
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/bn.js": {
+          "bytesInOutput": 6795
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ca.js": {
+          "bytesInOutput": 4250
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ckb.js": {
+          "bytesInOutput": 7786
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/cs.js": {
+          "bytesInOutput": 4647
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/da.js": {
+          "bytesInOutput": 4330
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/de.js": {
+          "bytesInOutput": 4173
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/el.js": {
+          "bytesInOutput": 8290
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/en.js": {
+          "bytesInOutput": 4385
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/eo.js": {
+          "bytesInOutput": 4204
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/es.js": {
+          "bytesInOutput": 4927
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/fa.js": {
+          "bytesInOutput": 7070
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/fi.js": {
+          "bytesInOutput": 4416
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/fr.js": {
+          "bytesInOutput": 4806
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/fr-CA.js": {
+          "bytesInOutput": 4182
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/gu.js": {
+          "bytesInOutput": 7138
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/he.js": {
+          "bytesInOutput": 13514
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/hi.js": {
+          "bytesInOutput": 7248
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/hr.js": {
+          "bytesInOutput": 4545
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/hu.js": {
+          "bytesInOutput": 4444
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/hy.js": {
+          "bytesInOutput": 8730
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/id.js": {
+          "bytesInOutput": 4126
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/is.js": {
+          "bytesInOutput": 4321
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/it.js": {
+          "bytesInOutput": 4135
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ja.js": {
+          "bytesInOutput": 5603
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ka.js": {
+          "bytesInOutput": 8311
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/km.js": {
+          "bytesInOutput": 8414
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/kh.js": {
+          "bytesInOutput": 49
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/kn.js": {
+          "bytesInOutput": 7839
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ko.js": {
+          "bytesInOutput": 5344
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/lt.js": {
+          "bytesInOutput": 7327
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/mk.js": {
+          "bytesInOutput": 7430
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ms.js": {
+          "bytesInOutput": 4036
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ne.js": {
+          "bytesInOutput": 6962
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/nl.js": {
+          "bytesInOutput": 4286
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/nn.js": {
+          "bytesInOutput": 4073
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/no.js": {
+          "bytesInOutput": 4090
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ota.js": {
+          "bytesInOutput": 4349
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ps.js": {
+          "bytesInOutput": 6422
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/pl.js": {
+          "bytesInOutput": 4825
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/pt.js": {
+          "bytesInOutput": 6308
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/pt-BR.js": {
+          "bytesInOutput": 6303
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ro.js": {
+          "bytesInOutput": 4467
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ru.js": {
+          "bytesInOutput": 9549
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/sk.js": {
+          "bytesInOutput": 4607
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/sl.js": {
+          "bytesInOutput": 4195
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/sv.js": {
+          "bytesInOutput": 4280
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ta.js": {
+          "bytesInOutput": 8654
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/tg.js": {
+          "bytesInOutput": 7824
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/th.js": {
+          "bytesInOutput": 8501
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/tk.js": {
+          "bytesInOutput": 3969
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/tr.js": {
+          "bytesInOutput": 4267
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/uk.js": {
+          "bytesInOutput": 8292
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ua.js": {
+          "bytesInOutput": 49
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/ur.js": {
+          "bytesInOutput": 7766
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/uz.js": {
+          "bytesInOutput": 4311
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/vi.js": {
+          "bytesInOutput": 4877
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/zh-CN.js": {
+          "bytesInOutput": 4693
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/zh-TW.js": {
+          "bytesInOutput": 4805
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/yo.js": {
+          "bytesInOutput": 4966
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/locales/index.js": {
+          "bytesInOutput": 1593
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/registries.js": {
+          "bytesInOutput": 1242
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/compile.js": {
+          "bytesInOutput": 58699
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/api.js": {
+          "bytesInOutput": 20691
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/to-json-schema.js": {
+          "bytesInOutput": 17263
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/json-schema-processors.js": {
+          "bytesInOutput": 25178
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/json-schema-generator.js": {
+          "bytesInOutput": 1692
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/json-schema.js": {
+          "bytesInOutput": 30
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/index.js": {
+          "bytesInOutput": 10313
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/checks.js": {
+          "bytesInOutput": 891
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/errors.js": {
+          "bytesInOutput": 1565
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/parse.js": {
+          "bytesInOutput": 736
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/schemas.js": {
+          "bytesInOutput": 47561
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/compat.js": {
+          "bytesInOutput": 624
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/iso.js": {
+          "bytesInOutput": 581
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/from-json-schema.js": {
+          "bytesInOutput": 25152
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/visit.js": {
+          "bytesInOutput": 4668
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/deep-partial.js": {
+          "bytesInOutput": 223
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/in-out.js": {
+          "bytesInOutput": 785
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/coerce.js": {
+          "bytesInOutput": 540
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/external.js": {
+          "bytesInOutput": 7564
+        },
+        "node_modules/.pnpm/zod@4.6.7/node_modules/zod/index.js": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/engine/types.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/rules/constants.ts": {
+          "bytesInOutput": 441
+        },
+        "packages/starchess-core/src/engine/constants.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/board/classicFen.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/board/placement.ts": {
+          "bytesInOutput": 3632
+        },
+        "packages/starchess-core/src/board/mines.ts": {
+          "bytesInOutput": 1313
+        },
+        "packages/starchess-core/src/rules/specials/registry.ts": {
+          "bytesInOutput": 607
+        },
+        "packages/starchess-core/src/scfen/legacyKinds.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/scfen/codec.ts": {
+          "bytesInOutput": 1516
+        },
+        "packages/starchess-core/src/engine/board.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/engine/specials.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/rules/economy.ts": {
+          "bytesInOutput": 290
+        },
+        "packages/starchess-core/src/engine/economy.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/outcome.ts": {
+          "bytesInOutput": 547
+        },
+        "packages/starchess-core/src/engine/outcome.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/engine/mines.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/rules/specials/stimStep.ts": {
+          "bytesInOutput": 367
+        },
+        "packages/starchess-core/src/board/moves.ts": {
+          "bytesInOutput": 1351
+        },
+        "packages/starchess-core/src/engine/moves.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/board/vision.ts": {
+          "bytesInOutput": 4711
+        },
+        "packages/starchess-core/src/engine/vision.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/engine/planning-order.ts": {
+          "bytesInOutput": 1809
+        },
+        "packages/starchess-core/src/engine/native-classical.ts": {
+          "bytesInOutput": 6227
+        },
+        "packages/starchess-core/src/board/siege.ts": {
+          "bytesInOutput": 278
+        },
+        "packages/starchess-core/src/rules/specials/mechaCharon.ts": {
+          "bytesInOutput": 1657
+        },
+        "packages/starchess-core/src/rules/specials/adjacent.ts": {
+          "bytesInOutput": 1373
+        },
+        "packages/starchess-core/src/engine/planning-specials.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/engine/planning-intents.ts": {
+          "bytesInOutput": 595
+        },
+        "packages/starchess-core/src/engine/queue-contract.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/rules/validation.ts": {
+          "bytesInOutput": 8764
+        },
+        "packages/starchess-core/src/engine/queue-validation.ts": {
+          "bytesInOutput": 3405
+        },
+        "packages/starchess-core/src/scfen/index.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/commands/queue-action.ts": {
+          "bytesInOutput": 2139
+        },
+        "packages/starchess-core/src/engine/queue-action.ts": {
+          "bytesInOutput": 115
+        },
+        "packages/starchess-core/src/board/mine-contact.ts": {
+          "bytesInOutput": 981
+        },
+        "packages/starchess-core/src/engine/mine-contact.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/board/move-timing.ts": {
+          "bytesInOutput": 1708
+        },
+        "packages/starchess-core/src/engine/move-timing.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/board/ray-scan.ts": {
+          "bytesInOutput": 846
+        },
+        "packages/starchess-core/src/engine/ray-scan.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/engine/charon.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/engine/initialization.ts": {
+          "bytesInOutput": 844
+        },
+        "packages/starchess-core/src/resolve/resolve-turn.ts": {
+          "bytesInOutput": 36068
+        },
+        "packages/starchess-core/src/engine/classical-resolution.ts": {
+          "bytesInOutput": 626
+        },
+        "packages/starchess-core/src/resolve/submit-turn.ts": {
+          "bytesInOutput": 28993
+        },
+        "packages/starchess-core/src/engine/resolve.ts": {
+          "bytesInOutput": 106
+        },
+        "packages/starchess-core/src/engine/index.ts": {
+          "bytesInOutput": 0
+        },
+        "packages/starchess-core/src/engine/causal-events.ts": {
+          "bytesInOutput": 22018
+        },
+        "packages/starchess-core/src/engine/causal-producer.ts": {
+          "bytesInOutput": 526
+        },
+        "packages/contracts/src/native-intents.ts": {
+          "bytesInOutput": 1481
+        },
+        "packages/contracts/src/causal-journal.ts": {
+          "bytesInOutput": 15599
+        },
+        "packages/contracts/src/shape.ts": {
+          "bytesInOutput": 4330
+        },
+        "packages/contracts/src/semantics.ts": {
+          "bytesInOutput": 8177
+        },
+        "schemas/feature-layout.json": {
+          "bytesInOutput": 1523
+        },
+        "packages/contracts/src/inference.ts": {
+          "bytesInOutput": 1010
+        },
+        "packages/contracts/src/candidate.ts": {
+          "bytesInOutput": 1738
+        },
+        "packages/contracts/src/index.ts": {
+          "bytesInOutput": 483
+        },
+        "packages/contracts/src/recipient-codec.ts": {
+          "bytesInOutput": 4529
+        },
+        "packages/contracts/src/recipient.ts": {
+          "bytesInOutput": 14306
+        },
+        "packages/contracts/src/game-session.ts": {
+          "bytesInOutput": 8153
+        },
+        "packages/contracts/src/resolution.ts": {
+          "bytesInOutput": 5798
+        },
+        "packages/contracts/src/native-protocol.ts": {
+          "bytesInOutput": 3644
+        },
+        "packages/runtime/src/current-driver.ts": {
+          "bytesInOutput": 743
+        },
+        "packages/runtime/src/worker.ts": {
+          "bytesInOutput": 3677
+        },
+        "packages/runtime/src/framing.ts": {
+          "bytesInOutput": 1943
+        },
+        "packages/runtime/src/worker-loop.ts": {
+          "bytesInOutput": 695
+        },
+        "packages/runtime/src/game-worker.ts": {
+          "bytesInOutput": 207
+        }
+      },
+      "imports": [
+      ],
+      "exports": [],
+      "entryPoint": "packages/runtime/src/game-worker.ts"
+    }
+  }
+}

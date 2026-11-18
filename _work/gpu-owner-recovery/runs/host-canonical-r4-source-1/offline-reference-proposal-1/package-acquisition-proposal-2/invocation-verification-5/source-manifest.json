@@ -1,0 +1,26 @@
+{
+  "caller": {
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.ts": "c307f222997e3a72f3b00360aee7c08494ba8841b1be6e75ee9f7a1fcf0b612d",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.test.ts": "05b749b8f8565c1260bba0498b0cddac60316a351169057b1d5ff76d56255fb7",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun.tsconfig.json": "475349522320904b0f41ec6fa19b785ddccfe51f97bc5b36c0c123bcf9eee56a",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/invoke-approved-bun-verify.ts": "7267eec08409c36a6c5bb75352b2419646f19bc2d60d22e229487f18fed988d7"
+  },
+  "source": {
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.ts": "bd6a1214171c833639bf0d363e107f0cd1346f890e26b3d2d32447271335b6af",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture.test.ts": "8ef9aa480564ff0c93ba9434082f9d75f94bdb27108f5fd3680b67abdc869a73",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/capture-full.test.ts": "fc534d5156a9dec15eea9843b053d5cf6abe2b384fb661214206af98fb330a2f",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/root-context.ts": "bc540101a8699c2bd9e5b075342bd3776e6d9ee579a641a6a1757ac640a6dd7f",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/root-context.test.ts": "7caef259ee7ba34c8cfda01b6a060996d7d436bfd7fe4fd3c72a93f8bcd4da0f",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent.ts": "62db5298937cf1c752a76b39f42fa19876e36e637d9d21dba6de323de347b27c",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent.test.ts": "83d8e91683140c35de498a9457060f47ec00b94ef59c9d83e47593456c24205f",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent-adapter.ts": "bc3df6e27bdc9a48164e8926a06d09c1ea9d104c3ffa1b19051dc2422b1a1d45",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/cache-parent-adapter.test.ts": "da10f7ce4bc74fa30200fd17f277fc72d5f58d8e847f7ee7c75edc4a10a5748d",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/verify.ts": "52c9e3ddcd005b63a1a928227efdc676c749abb7bd9a72eb3d1feeae78ea44bd",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/tsconfig.json": "0083541937af45cc505e9bde2afc99ece5af54fe1855060d20c498bc01488391",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source2/.gitignore": "91317cffd2ef9526d9d0ba70fcefa8499556f916a21327cb5492407dd679db0d"
+  },
+  "observer": {
+    "_work/gpu-owner-recovery/verify.ts": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58",
+    "_work/gpu-owner-recovery/command-supervisor.ts": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+  }
+}

@@ -1,0 +1,61 @@
+
+packages/runtime/tests/gpu-policy-conformance.test.ts:
+(pass) shared fixture has 33 unique closed traces with the portable v1 schema [0.51ms]
+(pass) portable conversion preserves raw numbers, invalid values, and unknown fields [0.19ms]
+(pass) shared policy: threshold_equality_and_refresh [0.67ms]
+(pass) shared policy: startup_headroom_terminal_first [0.10ms]
+(pass) shared policy: configuration_failure_before_origin_clock_and_method [0.02ms]
+(pass) shared range: origin_too_late_for_cleanup [0.05ms]
+(pass) shared clock: clock_rollback_before_repeated_admit [0.09ms]
+(pass) shared policy: cadence_equality_before_replacement [0.03ms]
+(pass) shared policy: age_equality_before_cadence [0.03ms]
+(pass) shared policy: work_equality_before_old_expiry_and_sample [0.04ms]
+(pass) shared policy: device_before_sample_time [0.03ms]
+(pass) shared policy: repeated_sample_order_before_capacity [0.07ms]
+(pass) shared range: i64_latest_origin_wide_add_before_clamp [0.19ms]
+(pass) shared range: raw_number_is_not_bigint [0.05ms]
+(pass) shared policy: cold_deadline_equality_before_telemetry [0.04ms]
+(pass) shared policy: cold_deadline_last_nanosecond [0.07ms]
+(pass) shared policy: awaiting_observe_and_terminal [0.05ms]
+(pass) shared policy: awaiting_check_before_cold_deadline [0.05ms]
+(pass) shared policy: repeated_admit_before_deadline_and_sample [0.13ms]
+(pass) shared policy: sample_time_before_capacity [0.03ms]
+(pass) shared policy: capacity_before_staleness [0.02ms]
+(pass) shared policy: stale_before_cadence_and_headroom [0.04ms]
+(pass) shared policy: missed_before_headroom [0.03ms]
+(pass) shared policy: stable_total_before_headroom [0.05ms]
+(pass) shared policy: startup_threshold_exceeds_total [0.02ms]
+(pass) shared policy: malformed_telemetry_before_device [0.02ms]
+(pass) shared policy: running_headroom_abort_once_and_terminal_no_revival [0.08ms]
+(pass) shared policy: uuid_case_sensitive [0.03ms]
+(pass) shared range: configuration_i64_out_of_range [0.02ms]
+(pass) shared range: configuration_zero_duration_and_threshold [0.03ms]
+(pass) shared range: sample_capacity_i64_out_of_range [0.03ms]
+(pass) shared range: raw_sample_number_is_not_bigint [0.02ms]
+(pass) shared clock: now_before_origin_and_method [0.03ms]
+(pass) shared clock: sample_before_origin [0.06ms]
+(pass) shared clock: now_out_of_i64_range_after_admission [0.06ms]
+
+packages/runtime/tests/gpu-policy.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+59 | }
+60 | 
+61 | test.each([
+62 |   { startupMinFreeBytes: 0n }, { runningStopBelowFreeBytes: 0n }, { samplePeriodNs: 0n }, { maxSampleAgeNs: 0n },
+63 |   { runningStopBelowFreeBytes: 1001n }, { samplePeriodNs: 201n },
+64 | ])("configuration rejects zero and inconsistent positive bounds: %j", overrides => {
+      ^
+TypeError: JSON.stringify cannot serialize BigInt.
+      at /home/gu1lty/Projects/proveo/chess-coach/packages/runtime/tests/gpu-policy.test.ts:64:2
+-------------------------------
+
+
+1 tests failed:
+
+ 35 pass
+ 1 fail
+ 1 error
+ 639 expect() calls
+Ran 36 tests across 2 files. [156.00ms]

@@ -1,0 +1,26 @@
+@startuml learning_runtime
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Frozen MLP episode - supported Burn accumulation
+start
+:Bind frozen model, baseline and validated F64 device;
+while (Another trusted ACKed decision?) is (yes)
+  :Compute finite selected log probability through Burn;
+  :Differentiate negative log probability on unchanged model;
+  :Accumulate and finite-check Burn parameter gradients;
+  :Release candidate tensors / backward graph;
+endwhile (no)
+if (Verified eligible completion with samples?) then (yes)
+  :Scale accumulated gradient by frozen advantage;
+  :Differentiate L2 once through Burn;
+  :Combine through Burn and propose one SGD step;
+  :Finite-check complete proposal before atomic commit;
+else (no)
+  :Discard buffers without PG / L2 / baseline insertion;
+endif
+note right
+  C7: 2,335 coordinates per active/inactive fixture.
+  eps=1e-6; atol=1e-8; rtol=1e-5.
+  No claim of all-parameter coverage or training authorization.
+end note
+stop
+@enduml

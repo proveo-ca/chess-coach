@@ -1,0 +1,73 @@
+{
+  "mode": "inspect",
+  "success": true,
+  "results": [
+    {
+      "step": "_work/gpu-owner-recovery/runs/mise-isolation-inspection/00",
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 32,
+      "stderrBytes": 206
+    },
+    {
+      "step": "_work/gpu-owner-recovery/runs/mise-isolation-inspection/01",
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 5640,
+      "stderrBytes": 0
+    },
+    {
+      "step": "_work/gpu-owner-recovery/runs/mise-isolation-inspection/02",
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 3154,
+      "stderrBytes": 0
+    },
+    {
+      "step": "_work/gpu-owner-recovery/runs/mise-isolation-inspection/03",
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 89
+    },
+    {
+      "step": "_work/gpu-owner-recovery/runs/mise-isolation-inspection/04",
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 137,
+      "stderrBytes": 0
+    },
+    {
+      "step": "_work/gpu-owner-recovery/runs/mise-isolation-inspection/05",
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 79,
+      "stderrBytes": 0
+    },
+    {
+      "step": "_work/gpu-owner-recovery/runs/mise-isolation-inspection/06",
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 78,
+      "stderrBytes": 0
+    },
+    {
+      "step": "_work/gpu-owner-recovery/runs/mise-isolation-inspection/07",
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 25,
+      "stderrBytes": 0
+    }
+  ],
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

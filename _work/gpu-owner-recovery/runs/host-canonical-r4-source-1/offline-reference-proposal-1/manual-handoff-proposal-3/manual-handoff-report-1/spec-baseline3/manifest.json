@@ -1,0 +1,359 @@
+{
+  "version": "chess-coach.h3-acquisition-report-baseline.v1",
+  "nonAuthorizing": true,
+  "goals": [
+    {
+      "originalPath": "_spec/manual-handoff-implementation-3.puml",
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/spec-baseline3/spec-goal.puml",
+      "bytes": 219596,
+      "sha256": "a30186aa6d0f2a19f04bb3d6221ee30111c5b34b00a8cbbf39c40a8d5ead26c8",
+      "gitBlobOid": "118911fb0cfb1e12a7e1545032ee36844194a2ee"
+    },
+    {
+      "originalPath": "_spec/.spec-index.json",
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/spec-baseline3/spec-index.json",
+      "bytes": 38758,
+      "sha256": "1c413294063a5a563f72e8fd365b4f620d43d6d1d6cedda84078053e35cd9378",
+      "gitBlobOid": "5cff577d8e11422fb604d53b702ed4c02fa12757"
+    },
+    {
+      "originalPath": "_spec/runtime-protocol.puml",
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/spec-baseline3/runtime-discovery.puml",
+      "bytes": 67940,
+      "sha256": "7cae64bfb4c5a626b95b78a9eb6bde4c22883f0128626b09990edf6650c50e87",
+      "gitBlobOid": "f10c4dece48f72c3ef27cd9a4ebbf6c7ab82490b"
+    }
+  ],
+  "preserved": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/operator-console.report.txt",
+      "bytes": 2046,
+      "sha256": "cba49cbbfb34bd67fdccf8cddf982e79804a1ef790f1a1e69d3e7786963708b0",
+      "gitBlobOid": "0d8eacdc8ad3af6da9e813a1f7cd4bd34df02604"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/operator-report.json",
+      "bytes": 2852,
+      "sha256": "60d0ea1b4eaf844cf19658f34538d86b1a8721c230564ed33692401108b624b8",
+      "gitBlobOid": "ad5d1f470e26f6a621ee1e86849f72be61cd0330"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/consumption.json",
+      "bytes": 1616,
+      "sha256": "644a516027d177a52ddfa1fe2b354e320864229c65ab71af780bb6d29da15dc7",
+      "gitBlobOid": "c2235e56c1985e65f01a61b5eb1ffbcfe225bb9e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/report-validation1.json",
+      "bytes": 2152,
+      "sha256": "cbb1146400b8fdae5372f453ffe4fea67a6f74ad4b3a12ec03c34c6305ebfa69",
+      "gitBlobOid": "b5733767f0b1b8c18bd3f12d8899e859dd579c75"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/triage-plan1.json",
+      "bytes": 3052,
+      "sha256": "1653235e43c41f0c1f6ecba6425e29f7dd6dc514d8cfce292d39fc3b1c217432",
+      "gitBlobOid": "dd2112d8ae0272ec15f7c2895eb64d3f47e50b95"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/validate-report1.ts",
+      "bytes": 6156,
+      "sha256": "b8e1ad330ee3d0d0a02ed195372a7f49551d2e7f520d39fc7951fec0117b25c8",
+      "gitBlobOid": "4b1e9c0c1b7902ccf0c017cadb17d711853c75da"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/private-outcome.report.json",
+      "bytes": 3189,
+      "sha256": "3293b30e2506c53aae6170ddbdeb4b15f690fe01d5f0f22406666d8e341e8c28",
+      "gitBlobOid": "0cf457975dad769f83a379c46dcda2bfc31675cd"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/diagnostic-report-1.json",
+      "bytes": 2619,
+      "sha256": "dcb82951054aeb12e8eb738252505d3f4595822bd68cbfb314ceb468079c947d",
+      "gitBlobOid": "f1fbf79abfab512265b6efbe74c3352fe3e10dfc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/consumption-clarification-1.json",
+      "bytes": 1424,
+      "sha256": "bb100503c74de1ee7faa0c6568f6915dcddc77a2270a389306a37db40f73abfc",
+      "gitBlobOid": "4c1a70dcf3d2e35e832a1ee9c3547d1686098c95"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/validate-diagnostic1.ts",
+      "bytes": 6752,
+      "sha256": "865d191dfc34baff1024ace8a6ec3c6556e8e7a87ce13d130f57564f3c331f2a",
+      "gitBlobOid": "a58bba5f97a93e5bc8296c01f1eb051935b5d67c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/diagnostic-validation1.json",
+      "bytes": 2806,
+      "sha256": "8dfe0bbd7cddba6cc48ebb83bc967d272c49cd06a35f413512a2077f4ef9ddf2",
+      "gitBlobOid": "5d0666530f682ee584a65075440ff7bd77a44dd0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source3/capture.ts",
+      "bytes": 84121,
+      "sha256": "570d3be7da0428521260c4f15733e93495eb09a6d12bb077634106d1359b92d9",
+      "gitBlobOid": "0c0871df9f8659ba860219d34d5e7b8c7ab92c18"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source3/capture.test.ts",
+      "bytes": 103493,
+      "sha256": "a639ba1103e9dd041ed02055785ff6f8a8c7a8ce7b81380ffb68d563014be021",
+      "gitBlobOid": "e761cf48ff3fe3745b4098664585cb09e437d91e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source3/capture-full.test.ts",
+      "bytes": 29084,
+      "sha256": "6db8469b171f6227d5ac7507ec3884b81ccd82b0848178a48a1e64d9048edec3",
+      "gitBlobOid": "52d929410d10694ef586bd9556fa62f8ba84c4ea"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source3/root-context.ts",
+      "bytes": 2464,
+      "sha256": "3f2715121d77141749915a7e9a4dc6d445b5e4630056f581de27f96364f176df",
+      "gitBlobOid": "1c3383d052d4891e881eee6277a5dc3bad1fef9d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source3/root-context.test.ts",
+      "bytes": 2103,
+      "sha256": "f3e36a58bc864bafcade7a2b210cb6372e0843347acbc5a86636005708a60252",
+      "gitBlobOid": "dd2c97032496234d3a0b878768e64b84906f9588"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source3/cache-parent.ts",
+      "bytes": 4052,
+      "sha256": "62db5298937cf1c752a76b39f42fa19876e36e637d9d21dba6de323de347b27c",
+      "gitBlobOid": "3608c74f46e1b406b5e8a82df3b1e15fefc26f12"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source3/cache-parent.test.ts",
+      "bytes": 53554,
+      "sha256": "83d8e91683140c35de498a9457060f47ec00b94ef59c9d83e47593456c24205f",
+      "gitBlobOid": "f5479ed43ecc8044c7a3452e6afbb1edf41517c0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source3/cache-parent-adapter.ts",
+      "bytes": 5786,
+      "sha256": "b443bd99c1961dc493fb7e33835391fec8373af73cd9aa1eafb66790261c0623",
+      "gitBlobOid": "46e20c29d7d8afdc0ddee130a06cade7360e6299"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source3/cache-parent-adapter.test.ts",
+      "bytes": 5557,
+      "sha256": "32391b054f47e22ae5936aa22e4a25ce07c853de6e1f27c4b5dc9e3c1a4abfe9",
+      "gitBlobOid": "80fd35c5ddc896f6062a1899eb56d7d50ebd094d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source3/verify.ts",
+      "bytes": 27019,
+      "sha256": "1c391e3eb2e01f7dc5641df5bb43a57c2eab0ab13c523a432a67c487b1f65f72",
+      "gitBlobOid": "aaaa3b17ebe310f193d5e22cc21ab6723d1722eb"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source3/tsconfig.json",
+      "bytes": 770,
+      "sha256": "0083541937af45cc505e9bde2afc99ece5af54fe1855060d20c498bc01488391",
+      "gitBlobOid": "8164ae3f16af5d02ddf81fe5d51ab21c8a178c65"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source3/.gitignore",
+      "bytes": 163,
+      "sha256": "91317cffd2ef9526d9d0ba70fcefa8499556f916a21327cb5492407dd679db0d",
+      "gitBlobOid": "ad8f5186f6079bce278d4a4a0b3b78032da89c49"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/invoke-approved-bun.ts",
+      "bytes": 11790,
+      "sha256": "a199bc84f9da248414fb7ea34b760e6d326fa888afff104cc35ed3e0c95d20ef",
+      "gitBlobOid": "250a0093837ce46433efdf384493d7c772c8bb9a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/invoke-approved-bun.test.ts",
+      "bytes": 48424,
+      "sha256": "6f2ea8af56d7bc6761d1a9f2fc000f634803a5fe6867c503124b56d9f48970f5",
+      "gitBlobOid": "686a66693ab46e699f28f8c2943b31c97d03ddb1"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/invoke-approved-bun.tsconfig.json",
+      "bytes": 645,
+      "sha256": "475349522320904b0f41ec6fa19b785ddccfe51f97bc5b36c0c123bcf9eee56a",
+      "gitBlobOid": "31be4a7c97408bfbe9a2cf75c851162ee588c99b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/invoke-approved-bun-verify.ts",
+      "bytes": 2498,
+      "sha256": "eb1e869c2a1225eadb0cbae82cb148da6fc4fc9302dc43da9e4f8ccdba4ce1c4",
+      "gitBlobOid": "2de272a96aacd0d45aa4dd843947e35ee9c0b90a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/verify.ts",
+      "bytes": 12723,
+      "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58",
+      "gitBlobOid": "108936008e2e2fe62e046227f21f47de263986b9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+      "bytes": 910,
+      "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6",
+      "gitBlobOid": "e436672b6d5775e16f34f65408b397a2312fe231"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-bootstrap.ts",
+      "bytes": 83982,
+      "sha256": "1e615287c481946283015a362f8ea4c4ce3dffaa86c26f6ddf73808fe346928a",
+      "gitBlobOid": "6f477a69cfcb29dda1222e8081367c4aef269341"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-contract3.json",
+      "bytes": 7541,
+      "sha256": "1e235f93028fd40425b31c7bf7245152570f22732f260ffd11e3e606390ed120",
+      "gitBlobOid": "8d6982c78696ba4b6dbc935d5b3ad7927a511b67"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-packet.ts",
+      "bytes": 3381,
+      "sha256": "4b3232f701c2681a340c1d72f448a873a9c8f0803169f65757dfedf0f4b1297c",
+      "gitBlobOid": "5cf2332618caa996bc64f6e09265d2ffecd45e87"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-render.ts",
+      "bytes": 22190,
+      "sha256": "e753bd42330a2aa1159210d3a0f541f6196483e4bebc31995159c65bfee4ca3b",
+      "gitBlobOid": "f3d920cd8b1ec62c8157ecd8b3a47ee9448696d2"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-verify.ts",
+      "bytes": 18109,
+      "sha256": "ea36b6bc262e75edfc6d3096478c8f9a6377dad0d6b68d08bddd162a818b3f1f",
+      "gitBlobOid": "6f6d5f8680273f8e7d07c161d2d47c9c06975ad1"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery.test.ts",
+      "bytes": 64331,
+      "sha256": "6a06915bdc0d3ccb4a604e1d4ae28d8e2b2fdb39eacc5685016d0fc0044fa8b1",
+      "gitBlobOid": "3b3a2dc7e1d9f2730774edf75a7b8630b77712dc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery.tsconfig.json",
+      "bytes": 580,
+      "sha256": "e661d19127ec2cd1d202eb94412d733aa92d4ae15e308711be44648f593fceaa",
+      "gitBlobOid": "dcd517b97787308f82f0251993bd4e81bf13338c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/seal-ready-packet.ts",
+      "bytes": 22573,
+      "sha256": "8c96c4a1b77b6a5e0a23a6e48de47427830c3c7d185719368782d6f17c1f457f",
+      "gitBlobOid": "08ba6377709f86f6574acc312658b26a7fbd8067"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/seal-ready-packet.test.ts",
+      "bytes": 11013,
+      "sha256": "5b0ef4bb453b7d0eb8566e8c4cdc21fbf2476f2ec2229ab1de491e57d8609df8",
+      "gitBlobOid": "9491adf629227dfff75a26e12eb1aad5b8fa0611"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/seal-ready-packet-emit.ts",
+      "bytes": 17366,
+      "sha256": "2c0a2ef09ea1a6808174ec563782f9781af66b6bfc3a149fd1c4caada3f27da0",
+      "gitBlobOid": "9f9e223fcf54ca1c4d34251e0e42ca482a11c08c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/seal-ready-packet-emit.test.ts",
+      "bytes": 34755,
+      "sha256": "7141109c6e12050ef2c84494db8034254e3db4416910304798459bc652af23e4",
+      "gitBlobOid": "f9caa8c72398413103f9492c9a5026782e5afbd9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/seal-ready-packet-verify.ts",
+      "bytes": 30123,
+      "sha256": "a6a44f8a8cfc13f04a43dd59278f0e3bc47acde992b8c1fcd6d6346c6d0edac8",
+      "gitBlobOid": "64d07f42afb27485a4c4b99e15afc56cdbebe251"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/seal-ready-packet.tsconfig.json",
+      "bytes": 616,
+      "sha256": "fd5bb35e67e972c19b09ed2ff2db4c5fca8fa868db0a5bb353772cce2cc6b911",
+      "gitBlobOid": "74a3af9acf0bc338874dfea894924dbbcd0dce34"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source3/execution-binding3.json",
+      "bytes": 16531,
+      "sha256": "f5a2dd1946213fbe42760db14011ccc6afab5909e659016d47b72f369a3a266c",
+      "gitBlobOid": "a977988ab7c40d3e3846c08989ba529f1a089a96"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/invocation-ready3.json",
+      "bytes": 4552,
+      "sha256": "499cd2f22c554dd7349498cc4bdc101650489500c723822ad375457260699246",
+      "gitBlobOid": "34c362fb61e8eeae1d18060bcb85e780ebba3868"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source3/capture-eligibility-reads3.json",
+      "bytes": 25223,
+      "sha256": "8c33b5709244be8bfa2a3b5af212ec6a10b34a6e2c0514164902652c4567ba07",
+      "gitBlobOid": "fbdb14dcd24aac060ac464aadb102f0bfb997640"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/caller-eligibility-reads3.json",
+      "bytes": 25222,
+      "sha256": "1e15b5dfafd3bd42f79c77b4f3e0d2d3ed14ea534efad384b271d2e772ef8fb0",
+      "gitBlobOid": "738a748fe4b5a532c394dfc37f6d3d2491068dd3"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-eligibility-reads3.json",
+      "bytes": 32566,
+      "sha256": "e9b00ea5955e2ce68b6ee0305e9c6ce7e8cb7ddd2c514ea773f18442608fc10e",
+      "gitBlobOid": "936d94c2520a4aac9ac4caeabb6a026a30717b74"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-release3.json",
+      "bytes": 7948,
+      "sha256": "e2554d0be844be62348c7f26c168f26da63da287697aaa17a131fc76087d6645",
+      "gitBlobOid": "2dcb96000babd9845a5961c86162401c932661b5"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/source12-derivation3.json",
+      "bytes": 42993,
+      "sha256": "f653ac92de82c5597f9016096f27b14316c1337e6667ca16966dae4a7454fc24",
+      "gitBlobOid": "0a6c01d3b9406e66e43fc0ccd214727182b749ae"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/approval3.json",
+      "bytes": 9693,
+      "sha256": "5e8edc68ad5936cc9d919a9adb7030536ecf0da854b263c170ebec08a06cc121",
+      "gitBlobOid": "9f1ff20b38e7c838ba559d8de1a4301ca9e379ed"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/delivery-observation-correction3.json",
+      "bytes": 10698,
+      "sha256": "1717e27a9e3d35e904e4e1d56a46876dc81512bde0fe0aa6297bb7beb4fc562e",
+      "gitBlobOid": "b79cbc102e3f8b6640faa1c51c54f22f6537f80e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/source-packet3.json",
+      "bytes": 1706461,
+      "sha256": "d8eaf0522fb00d81839be9a2c0ec80d67bcece498e2bf587edbf4c117b737f06",
+      "gitBlobOid": "d3fc4bba5cab9201dde25b59390691d5e9ab59a2"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/operator-command3.fish",
+      "bytes": 107403,
+      "sha256": "f5210a83b04d934321d967a12c0ce916ec47ec47f1e110051d1f732e29db731f",
+      "gitBlobOid": "9e2b3f0d4730aa6111521b85d3eb950bc88365f2"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/packet-publication3.json",
+      "bytes": 2094,
+      "sha256": "be3fb2a353cffe0576f7543511ba49f9c507c32c24f8ad16c19d66820f72c76d",
+      "gitBlobOid": "35c1c880f81581704d969905518005c2d262913e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/command-publication3.json",
+      "bytes": 2434,
+      "sha256": "54b426e547334397e75cd3e5c68fcd3e5be3f1005b16321d9207414926789ed0",
+      "gitBlobOid": "a2c2edd7e87cf106dc1fd04bc1e30abaa0d2464d"
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
+/**
+ * Survival — keeping the Command Center (and the BattleShip) alive.
+ *
+ * Owns the absolute weights: nothing the other strategies can offer outranks
+ * a Command Center (CC) that stays off a chip-capable ray. Also owns the Tactical Jump escape
+ * and the "walk out of fire" defence for ordinary units.
+ */
+
+import type { Square } from "chess.js";
+
+import { attacksSquare, isSquareAttackedBy } from "../../board/placement";
+import { hostileMineOn } from "../../board/mine-contact";
+import type { AdjutantCtx, Candidate, MoveEval } from "../context";
+import { FILES, centerScore, chebyshev, isSafeSquare, rankOf } from "../context";
+import { asCandidate, type Strategy } from "./types";
+
+/** Absolute — never posture-scaled. */
+export const CC_SAFETY = 10_000;
+export const BATTLESHIP_ESCAPE = 8_000;
+/**
+ * Spawn a unit then capture the back-rank / checking threat with that same unit.
+ * Above mere Command Center (CC) flee — material win + survival (deploy + attack).
+ */
+export const DEPLOY_ATTACK_SURVIVAL = CC_SAFETY + 3_500;
+/**
+ * Step the Command Center (CC) off its back rank when a file-tank (or similar) threatens check.
+ * Below deploy+attack; above quiet development.
+ */
+export const BACKRANK_ESCAPE = 4_500;
+/** Flee a threatened non-battleship to a safe square (defend). */
+export const DEFEND_UNIT = 1_800;
+/** Visible enemy battleship — prefer safe Command Center (CC) moves / flee over hanging. */
+export const BATTLESHIP_THREAT_CC = 1_500;
+/** Tactical Jump that lands the BattleShip onto, or beside, the enemy Command Center (CC). */
+export const TACTICAL_JUMP_CHECK_CC = 2_000;
+
+/** Tactical Jump — prioritise escaping fire to a safe square, then closing on the enemy Command Center (CC). */
+const tacticalJumps = (ctx: AdjutantCtx): Candidate[] => {
+  const { map, snap, us, enemy, enemyCC, weights } = ctx;
+  const out: Candidate[] = [];
+
+  for (const [from, piece] of map) {
+    if (piece.color !== us || piece.type !== "q") continue;
+    const underFire = isSquareAttackedBy(map, from, enemy);
+    const probe = new Map(map);
+    probe.delete(from);
+    for (let f = 0; f < 8; f += 1) {
+      for (let r = 1; r <= 8; r += 1) {
+        const to = `${FILES[f]}${r}` as Square;
+        if (map.has(to)) continue;
+        // Mined tiles stay legal landings, but the jump is no attack — a hostile
+        // mine detonates on arrival and takes the BattleShip with it.
+        if (hostileMineOn(snap.mines, us, to)) continue;
+        let score = weights.center * centerScore(to);
+        if (underFire) {
+          score += isSafeSquare(map, to, enemy)
+            ? BATTLESHIP_ESCAPE
+            : -BATTLESHIP_ESCAPE * 0.5;
+        } else if (isSafeSquare(map, to, enemy)) {
+          score += weights.trade;
+        }
+        if (enemyCC) {
+          probe.set(to, { type: "q", color: us });
+          const checks = attacksSquare(probe, to, enemyCC);
+          probe.delete(to);
+          if (checks || chebyshev(to, enemyCC) === 1) score += TACTICAL_JUMP_CHECK_CC;
+        }
+        out.push(
+          asCandidate({ timing: "B", kind: "tacticalJump", color: us, from, to }, score),
+        );
+      }
+    }
+  }
+  return out;
+};
+
+const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
+  const { move, piece, isCCMove } = ev;
+  const { commandCenter, ccThreatened, tactical, us, weights, vision } = ctx;
+  let s = 0;
+
+  if (isCCMove) {
+    // Evaluate the destination on the POST-move board: the Command Center (CC) itself can be
+    // the piece blocking the checking ray, so sliding along that ray looks safe
+    // on the pre-move map but stays in check.
+    const destSafe = ev.destSafe();
+    if (ccThreatened) {
+      // Repositioning, not capturing — capturing with the Command Center (CC) when threatened
+      // is demoted; the preferred defense is deploying adjacent to eliminate.
+      if (move.capture) {
+        s += destSafe ? CC_SAFETY * 0.3 : -CC_SAFETY;
+      } else {
+        s += CC_SAFETY * (destSafe ? 1 : -1);
+      }
+    } else if (!destSafe) {
+      // No intrinsic value in strolling an unthreatened Command Center (CC): an idle bonus here
+      // would outrank every real action. Only punish walking into fire.
+      s -= CC_SAFETY;
+    }
+    // Visible enemy battleship — protect the Command Center (CC) (flee to safety / avoid hang).
+    if (vision.enemyBattleShipVisible) {
+      s += destSafe
+        ? BATTLESHIP_THREAT_CC * (ccThreatened ? 2 : 1)
+        : -BATTLESHIP_THREAT_CC;
+    }
+    // Enemy can check next hop — prefer leaving the hot square / staying safe.
+    if (tactical.enemyThreatensCheck && destSafe) s += BATTLESHIP_THREAT_CC * 0.35;
+    // Back-rank cheese: step to the rank in front (e.g. e8→e7) when threatened.
+    if (destSafe && (ccThreatened || tactical.enemyThreatensCheck)) {
+      const backRank = us === "b" ? 8 : 1;
+      const frontRank = us === "b" ? 7 : 2;
+      if (rankOf(move.from) === backRank && rankOf(move.to) === frontRank) {
+        s += BACKRANK_ESCAPE;
+      }
+    }
+    return s;
+  }
+
+  // Engagement — already in range of an enemy unit: attack vs defend.
+  if (tactical.enemyAttacks(move.from)) {
+    if (ev.destSafe()) {
+      // Battleship that can be saved — defend (classical flee; warp scored above).
+      s += piece.type === "q" ? BATTLESHIP_ESCAPE * 0.4 : DEFEND_UNIT;
+    } else if (!move.capture) {
+      // Walking from fire into fire — worse than hanging still.
+      s -= DEFEND_UNIT * 0.5;
+    }
+  }
+
+  // Cheap Command Center (CC)-centred shelter: a square beside the CC keeps a Marine protected.
+  if (piece.type === "p" && chebyshev(move.to, commandCenter) <= 1) {
+    s += weights.trade;
+  }
+
+  return s;
+};
+
+export const survival: Strategy = {
+  id: "survival",
+  generate: tacticalJumps,
+  score,
+};

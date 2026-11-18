@@ -1,0 +1,13 @@
+{
+  "status": "READY_SOURCE_ONLY_FULL_CLOCK_SCOPE",
+  "session": "ses_e2e5a7bf7ffeszqAmNJvPwNoUX",
+  "verification": "verification-8/receipt.json",
+  "readOnly": true,
+  "previousClockHighCleared": true,
+  "remainingFindings": [],
+  "callerReviewed": false,
+  "operationalReadinessGranted": false,
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

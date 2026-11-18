@@ -1,0 +1,67 @@
+{
+  "scope": "FROZEN_REGRESSION_CHECKS_ONLY_NOT_FULL_WRAPPER_PROOF",
+  "status": "PASS",
+  "results": [
+    {
+      "id": "frozen-feasibility",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "./_work/gpu-owner-recovery/qualification/host-feasibility/"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 28,
+      "stderrBytes": 4703,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-full-regression-source-1/frozen-feasibility/command.stdout",
+          "bytes": 28,
+          "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-full-regression-source-1/frozen-feasibility/command.stderr",
+          "bytes": 4703,
+          "sha256": "30c3a2b9e638d261d78cb64081082e7729fd24caa904312a600231cb61216c6a"
+        }
+      ]
+    },
+    {
+      "id": "qualification",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "./packages/runtime/tests/gpu-policy-record.test.ts",
+        "./packages/runtime/tests/gpu-recipe.test.ts",
+        "./packages/runtime/tests/gpu-qualification.test.ts",
+        "./_work/gpu-owner-recovery/prepared-llvm/verify.test.ts"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 28,
+      "stderrBytes": 4050,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-full-regression-source-1/qualification/command.stdout",
+          "bytes": 28,
+          "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-full-regression-source-1/qualification/command.stderr",
+          "bytes": 4050,
+          "sha256": "41ec2e3d5130ecbf2b6e3ad912ad0df9347b0c6d83e40117bf19f6084ccc4b2a"
+        }
+      ]
+    }
+  ],
+  "hostOperationsPerformed": false,
+  "nativeProcessesExecuted": 0,
+  "gpuExecuted": false,
+  "trainingReady": false
+}

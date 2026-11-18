@@ -1,0 +1,6 @@
+bun test v1.4.0 (34cbb9a40)
+QUALIFICATION_EVIDENCE_SOURCE_3_MEASURE {"name":"positive-zero-logits","elapsedMs":271.66253300000244,"status":"PASS_RETAINED_FUNCTIONAL_EVIDENCE"}
+QUALIFICATION_EVIDENCE_SOURCE_3_MEASURE {"name":"model-handoff","elapsedMs":470.9400660000101,"status":"PASS_RETAINED_FUNCTIONAL_EVIDENCE"}
+QUALIFICATION_EVIDENCE_SOURCE_3_MEASURE {"name":"late-negative-final-state","elapsedMs":236.73128999999608,"status":"FAIL_RETAINED_FUNCTIONAL_EVIDENCE"}
+QUALIFICATION_EVIDENCE_SOURCE_3_MEASURE {"name":"512-row-request","frameBytes":2379691,"rows":512,"values":1162752,"jsonParseMs":18.52162300000782,"schemaParseMs":1376.939194000006,"frozenExportDecodeMs":1152.194141,"legacyResponseDecodeMs":1193.605534000002}
+QUALIFICATION_EVIDENCE_SOURCE_3_PROFILE {"scope":"SYNTHETIC_SOURCE_ONLY","cache":"NONE","profiles":[{"name":"positive-zero-logits","elapsedMs":271.66253300000244,"status":"PASS_RETAINED_FUNCTIONAL_EVIDENCE"},{"name":"model-handoff","elapsedMs":470.9400660000101,"status":"PASS_RETAINED_FUNCTIONAL_EVIDENCE"},{"name":"late-negative-final-state","elapsedMs":236.73128999999608,"status":"FAIL_RETAINED_FUNCTIONAL_EVIDENCE"},{"name":"512-row-request","frameBytes":2379691,"rows":512,"values":1162752,"jsonParseMs":18.52162300000782,"schemaParseMs":1376.939194000006,"frozenExportDecodeMs":1152.194141,"legacyResponseDecodeMs":1193.605534000002}]}

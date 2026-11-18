@@ -1,0 +1,10 @@
+   Compiling chess-coach-gpu-owner v0.1.0 (/home/gu1lty/Projects/proveo/chess-coach/crates/gpu-owner)
+    Finished `test` profile [unoptimized] target(s) in 2.62s
+     Running unittests src/lib.rs (target/gpu-owner-recovery/debug/deps/chess_coach_gpu_owner-7d32901ac38c29b4)
+     Running unittests src/main.rs (target/gpu-owner-recovery/debug/deps/host_gpu_owner-e430803eec516b2f)
+     Running tests/adapters.rs (target/gpu-owner-recovery/debug/deps/adapters-f56368fb7551972f)
+     Running tests/cli.rs (target/gpu-owner-recovery/debug/deps/cli-7a2494d03640579f)
+     Running tests/conformance.rs (target/gpu-owner-recovery/debug/deps/conformance-ad8878aca91d0e8b)
+     Running tests/contracts.rs (target/gpu-owner-recovery/debug/deps/contracts-23d055b03d46f180)
+     Running tests/lifecycle.rs (target/gpu-owner-recovery/debug/deps/lifecycle-1188d423751c378e)
+     Running tests/wire.rs (target/gpu-owner-recovery/debug/deps/wire-5ab60a0d5ce153a8)

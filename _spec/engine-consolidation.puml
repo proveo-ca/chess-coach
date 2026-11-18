@@ -1,0 +1,165 @@
+@startuml engine_consolidation
+' purpose: single StarChess physics kernel, distinct admission facades and canonical native regression ownership
+' covers: packages/starchess-core/src/engine/**
+' covers: packages/starchess-core/src/index.ts
+' covers: packages/starchess-core/src/commands/queue-action.ts
+' covers: packages/starchess-core/src/resolve/submit-turn.ts
+' covers: packages/starchess-core/src/resolve/resolve-turn.ts
+' covers: packages/starchess-core/src/board/vision.ts
+' covers: packages/starchess-core/src/board/ray-scan.ts
+' covers: packages/starchess-core/src/board/siege.ts
+' covers: packages/starchess-core/src/model/square.ts
+' covers: packages/starchess-core/src/__tests__/engine-consolidation.test.ts
+' covers: packages/starchess-core/tsconfig.integration-tests.json
+' covers: packages/starchess-core/tests/native/**
+' covers: packages/starchess-core/package.json
+' covers: package.json
+' covers: tsconfig.json
+' covers: tsconfig.tests.json
+' covers: packages/contracts/package.json
+' covers: packages/policy/package.json
+' covers: tooling/tests/workspace-integration.test.ts
+' covers: artifacts/engine-layout/run_check.ts
+' covers: packages/contracts/tests/shared-engine.e2e.test.ts
+' covers: packages/contracts/tests/causal-journal.test.ts
+' covers: packages/contracts/src/game-session.ts
+' covers: packages/contracts/src/causal-journal.ts
+' covers: packages/policy/src/**
+' covers: packages/policy/tests/source-boundary.test.ts
+' status: test relocation and shim retirement complete; 14/14 fresh layout Bun checks PASS; native/runtime/training qualifications remain separate
+' related: _spec/ml-runtime-architecture.puml, _spec/game-core.puml, _spec/causal-journal.puml
+' related: _spec/turn-planning.puml, _spec/classical-resolution.puml, _spec/turn-resolution.puml
+' preserved: SCFEN, SAN, packed replay, AI/helpers and app-facing resolution events remain product contracts
+' preserved: afterPending, afterB, bMoves, fMoves and EndScTurnResult retain their timeline meanings
+' preserved: causal-state.v1 and causal-journal.v1 retain identity, grouping and target-consumption semantics
+' fixes: live own-Marine promotion guard; delayed-swap mine removal synchronized into phase3
+' input contract: board/siege.ts accepts readonly ScActionInput[]; its helpers read intent fields without requiring sequence numbers
+' journal-only correction: group-bound stationary CC-shot consumption; no physical-rule, synthetic movement-event or v1 wire change
+' codec-only correction: narrow stationary CC-shot wire consistency; returnedStep=1 alone is insufficient and parsing never replaces private producer proof or source-bound replay
+' layout: remove 27 game-core forwards and its private package manifest; no second runtime workspace or kernel
+' layout: retain all 37 corpus files (25 tests, 5 helpers, 7 JSON fixtures); compatibility-exports.test.ts becomes canonical-exports.test.ts
+' preservation: all 153 starchess-core/src files remain byte-identical to the lead baseline; source SPEC pointers stay untouched
+' preservation: seven fixture files retain exact bytes/modes and historical source fields; frozen evidence is not relocated or rewritten
+' verification: fresh layout run passes 1664 tests, seven strict TypeScript gates, app boundaries and layout preservation; no native execution or training grant
+' verification evidence: artifacts/engine-layout/checks/final-1/summary.json; all 14 checks exit 0 with sourcePinsMatch true
+' historical verification evidence: artifacts/engine-consolidation/checks/bun-final-2/summary.json; scope and limits in _spec/architecture.md
+' rendering: skipped under Bun/Rust-only scope; full remote-theme/native PlantUML rendering remains unverified
+' verification runner: artifacts/engine-layout/run_check.ts; lead-owned receipts must postdate final layout edits
+' verification baseline: artifacts/engine-layout/baseline-1.json is the pre-edit comparison, not post-edit PASS evidence
+' verification command: bun test packages/starchess-core/tests/native; package test:native stays separate from product Vitest src/__tests__
+' verification config: packages/starchess-core/tsconfig.integration-tests.json checks the consolidation suite separately from the product source config
+' verification tools: task verification uses Bun or Rust only; no Python invocation; this source-only pass grants no native execution
+' template: local template absent; human must fetch and commit once when separately permitted
+' note register: bottom of TESTS FK 11.9 (33 words, 59 syllables, 2 sentences); bottom of POLICY FK 10.5 (34 words, 56 syllables, 2 sentences)
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title One physics kernel, canonical native tests · layout Bun checks passed
+left to right direction
+
+component "apps/starchess" as UI <<app>>
+component "packages/contracts/src/game-session.ts\nGameSession" as SESSION <<app>>
+component "packages/policy/src\nrecipient-local candidates + 2271 features" as POLICY <<app>>
+
+package "packages/starchess-core" {
+  component "src/index.ts\nSCFEN / SAN / replay / AI / helpers" as ROOT <<app>>
+  component "src/commands/queue-action.ts\nproduct incoming-action admission" as PRODUCT <<app>>
+  component "src/engine/index.ts\nqueue-validation.ts / resolve.ts\nnative ML admission facade" as NATIVE <<app>>
+  component "src/resolve/submit-turn.ts\nsrc/resolve/resolve-turn.ts\nshared B / C / F mutation kernel" as KERNEL <<app>>
+  component "src/board/vision.ts / ray-scan.ts\nsrc/model/square.ts\nshared geometry + types" as GEOMETRY <<app>>
+  component "src/engine/causal-types.ts\nconstructor-free ResolutionEffects" as EFFECTS <<app>>
+  component "src/engine/causal-producer.ts\nhost-only begin / end wrappers" as PRODUCER <<app>>
+  component "src/engine/causal-events.ts\nprivate per-game CausalJournal" as JOURNAL <<app>>
+  component "tests/native\nretained native admission + physics corpus" as TESTS <<app>>
+}
+
+UI ARROW_MAIN ROOT : existing product API
+ROOT ARROW_MAIN PRODUCT : soft incoming actions
+ROOT ARROW_MAIN KERNEL : product begin / end / resolve
+SESSION ARROW_MAIN NATIVE : native queue admission
+SESSION ARROW_MAIN PRODUCER : journaled begin / end
+NATIVE ARROW_MAIN KERNEL : dependency-checked actions
+PRODUCER ARROW_MAIN NATIVE : same native validation contract
+PRODUCER ARROW_MAIN JOURNAL : create per-call collector
+JOURNAL ..> EFFECTS : implements sink contract
+KERNEL ARROW_OPTIONAL EFFECTS : optional per-game sink
+KERNEL ARROW_MAIN GEOMETRY : shared physical rules
+TESTS ..> NATIVE : canonical exports + native rules
+TESTS ..> PRODUCER : explicit journal parity cases
+POLICY ARROW_OPTIONAL NATIVE : pure rules / planning only
+SESSION ARROW_MAIN POLICY : recipient observations via runtime
+
+note bottom of PRODUCT
+  Product queues accept soft incoming actions
+  without applying the ML contract for classical
+  dependencies. That difference controls
+  admission only, so both paths still use the
+  same board geometry and physical rules.
+end note
+
+note top of NATIVE
+  Native validation checks classical dependencies
+  before the shared kernel resolves an accepted
+  queue. Journaling cannot select this contract,
+  because adding a sink must not change which
+  actions the engine accepts.
+end note
+
+note bottom of EFFECTS
+  Each mutation group captures live vision before
+  units die or ordered mines leave the board.
+  This common preimage preserves causal witnesses
+  that final snapshots cannot justify after their
+  vision source disappears.
+end note
+
+note right of JOURNAL
+  Deferred discovery records only the target
+  consumed by a successful live operation.
+  Mine order and stable IDs survive board
+  reparsing, while each requested deploy
+  distinguishes no birth from immediate death.
+end note
+
+note top of KERNEL
+  A promotion requires a surviving Marine of the
+  action's own color at the destination.
+  A stale queued promotion must not transform an
+  enemy replacement or another unit.
+end note
+
+note bottom of KERNEL
+  Delayed swaps synchronize mine removals into
+  the phase-three snapshot after each actual
+  contact. Otherwise a detonated mine survives in
+  the final snapshot despite its recorded
+  destruction.
+end note
+
+note bottom of TESTS
+  Native tests bind imports to the canonical
+  engine, not a retired forwarding workspace.
+  Both pure entrypoints must exclude the host
+  producer from their dependency graphs, since
+  only host sessions own the private collector.
+end note
+
+note top of SESSION
+  The session owns banks and paid receipts
+  outside the physics kernel rather than
+  inferring costs from survivors. Policy sees
+  recipient-local observations, and its source
+  closure must exclude the private host producer.
+end note
+
+note bottom of GEOMETRY
+  Local Square union.
+  Product vision keeps { fen() }.
+end note
+
+note bottom of POLICY
+  Past Bun receipts bind the original
+  consolidation source, not the relocated suite.
+  Fresh checks must bind the final source and
+  test paths, without granting runtime approval
+  or permission to train on actual game data.
+end note
+@enduml

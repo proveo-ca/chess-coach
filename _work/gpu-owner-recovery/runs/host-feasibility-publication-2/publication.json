@@ -1,0 +1,114 @@
+{
+  "version": "chess-coach.qualification-input-publication.v1",
+  "status": "FAIL",
+  "failure": "PUBLICATION_COMMAND_FAILED",
+  "failedStep": "commit",
+  "elapsedMs": 838.463473,
+  "attempts": {
+    "commit": 1,
+    "push": 0,
+    "createRelease": 0,
+    "upload": 0,
+    "validateFrozen": 1,
+    "commitManifest": 0,
+    "checkTransport": 1,
+    "checkOrigin": 2
+  },
+  "operations": [
+    {
+      "step": "branch",
+      "kind": "command",
+      "timeoutMs": 599999,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "origin-fetch",
+      "kind": "callback",
+      "timeoutMs": 599981,
+      "status": "PASS"
+    },
+    {
+      "step": "origin-push",
+      "kind": "callback",
+      "timeoutMs": 599975,
+      "status": "PASS"
+    },
+    {
+      "step": "https-transport-preflight",
+      "kind": "callback",
+      "timeoutMs": 599974,
+      "status": "PASS"
+    },
+    {
+      "step": "permission",
+      "kind": "command",
+      "timeoutMs": 599970,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/gh",
+        "api",
+        "repos/proveo-ca/chess-coach",
+        "--jq",
+        "{full_name,private,permissions}"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "index",
+      "kind": "command",
+      "timeoutMs": 599342,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "diff",
+        "--cached",
+        "--name-only",
+        "--"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "freeze-before-commit",
+      "kind": "callback",
+      "timeoutMs": 599327,
+      "status": "PASS"
+    },
+    {
+      "step": "commit",
+      "kind": "command",
+      "timeoutMs": 599188,
+      "status": "FAIL",
+      "argv": [
+        "/usr/bin/git",
+        "commit",
+        "-m",
+        "chore: prepare host feasibility inputs"
+      ],
+      "exitCode": 128
+    }
+  ],
+  "transportChecks": [
+    {
+      "allowed": true,
+      "rules": 0,
+      "failure": null
+    }
+  ],
+  "commitSucceeded": null,
+  "sourceCommit": null,
+  "pushedCommit": null,
+  "releaseId": null,
+  "releaseDraft": null,
+  "assets": [],
+  "uploadedAssets": [],
+  "verifiedAssets": [],
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

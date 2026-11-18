@@ -1,0 +1,45 @@
+{
+  "status": "PASS_FRESH_RECEIPT_COMMIT_PUSH_BEFORE_EXACT_TEXT_REDELIVERY",
+  "grantId": "cpu39-receipt-publication-and-text-redelivery-1",
+  "commit": "6fdc92c7eb90eb625e6d54c6a448009d5db34423",
+  "parent": "b6827cdc40305d641aff717f38cf85bfdfe326aa",
+  "publishedPaths": 17,
+  "destinationRef": "refs/heads/feat-ml-adjuntant-ii-continuation-2b24d9c5a",
+  "normalCommitsConsumed": 1,
+  "remainingNormalCommits": 0,
+  "httpsPushesConsumed": 1,
+  "remainingHttpsPushes": 0,
+  "exactTextRedeliveryAttemptsConsumed": 1,
+  "remainingExactTextRedeliveries": 0,
+  "commitExitCode": 0,
+  "pushExitCode": 0,
+  "bothCommittedRawCommandBindingsVerified": true,
+  "sourceOrCanonicalScriptChanged": false,
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-redelivery-execution-1/commit.stdout",
+      "bytes": 2258,
+      "sha256": "eddbbf57efe2871ebdc003480f4fc6e06fbbf5217ec5bbee4f315ad6ebba95f3"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-redelivery-execution-1/commit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-redelivery-execution-1/push.stdout",
+      "bytes": 136,
+      "sha256": "efbc09b3a667e1ade23827595808ae8809240573bb26a906d784da077127faa2"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-redelivery-execution-1/push.stderr",
+      "bytes": 260,
+      "sha256": "aeb2c7fac9f62cc5479ca092a9de0091f5353b5dee7d15ac64632ae1c9ab2c10"
+    }
+  ],
+  "operatorHostOutcome": "UNOBSERVED",
+  "hostAttemptOrRetryRenewed": false,
+  "redeliveryWarning": "ONLY_RUN_IF_THE_APPROVED_HOST_ATTEMPT_HAS_NOT_ALREADY_BEEN_ATTEMPTED",
+  "codingHostExecuted": false,
+  "trainingReady": false
+}

@@ -1,0 +1,10 @@
+
+artifacts/training-functional/qualification-evidence.test.ts:
+(fail) SYNTHETIC zero-logit packet passes retained functional checks without qualification or native attestation [5071.01ms]
+  ^ this test timed out after 5000ms.
+(fail) paired records may serialize differently when parameter digest and proposal semantics match [5242.17ms]
+  ^ this test timed out after 5000ms.
+(fail) rejects retained R4 RNG [5055.37ms]
+  ^ this test timed out after 5000ms.
+(fail) rejects retained R4 serialized ref [5137.47ms]
+  ^ this test timed out after 5000ms.

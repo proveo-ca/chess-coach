@@ -1,0 +1,93 @@
+{
+  "status": "PASS_OPERATOR_REPORTED_NATIVE_BUILD_TWO_RECORDS_ONLY",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/reported-receipt.json",
+      "sha256": "fffd2add2bb7d104b69ac844984df9dc32b83df8db061d2d803e0adbf6ee193d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/operator-summary.txt",
+      "sha256": "706f35ea37060a4e14d609f4eac7b99f5a07bdfa48936ad7f33d549293bc049f"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/observation.json",
+      "sha256": "39ee45e357bb7504b0ef9d99ba455d8eef9703085f2c6b7e69a157fe213fa9c6"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/contract.ts",
+      "sha256": "b031cefae9cc6c43badc3b473ec42b0e4251bf7b63e736bdaaedae673407a295"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/verify-report.test.ts",
+      "sha256": "27ae9bb74ee78e13fbe127bebfec75069bebe30aed7186e126a735b93fcb5a01"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-2/verify-report.ts",
+      "sha256": "bbe03fb73e2f91368e4191e6d1b5e6818c4eea5af802999c6aa056762b9244cd"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-build-handoff-2/request.json",
+      "sha256": "471051f5b6f1282a5d05795e955063afe86e1c72733f052a3f229f645a43bfd5"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/plan.json",
+      "sha256": "b7e1aca188deb6b365968ee359ae12a72281394d1365b319897e12827a9e63b0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/receipt.json",
+      "sha256": "268a7750faeca4c349769e62b67276fe16a3d5f9347f3d2448f45bfccbed5c5e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/host-command.fish",
+      "sha256": "47cdea246668505ef6b2fe682900c7735adf59f388cbfcfde3abb20a306559c4"
+    }
+  ],
+  "reportedHostBuildStatus": "PASS_HOST_GPU_NATIVE_BUILD_ONLY",
+  "reportedHostExitCode": 0,
+  "reportedNativeCommands": 5,
+  "reportedCargoCompilationsPassed": 2,
+  "reportedDockerOperations": 5,
+  "reportedCaptureMetadataRows": 20,
+  "reportedArtifactsAdmitted": [
+    {
+      "executable": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/finite_difference-f3db0ac172c2e4d6",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/finite_difference-f3db0ac172c2e4d6",
+      "bytes": 154335984,
+      "sha256": "1fab1e69af8a4f9acf2af7b649e6bc1c24c5506c34e294de9fda043dbec57750"
+    },
+    {
+      "executable": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/gpu-1c80603e75bb2c83",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/gpu-1c80603e75bb2c83",
+      "bytes": 156637512,
+      "sha256": "9091cb81c4caa234b356e0edb357843a260130d9d7a6d66ee2ee4d563c714f9f"
+    },
+    {
+      "executable": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-channel",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-channel",
+      "bytes": 155205160,
+      "sha256": "ce126693630543a220eef3689fc8dfef24b38e5f93e24550e451b54956528688"
+    },
+    {
+      "executable": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-initialize",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-initialize",
+      "bytes": 151302720,
+      "sha256": "95c806fe1db205bde5fda1d38104bdcf45333051f35fb07744b4d5d5bb33d5de"
+    },
+    {
+      "executable": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-score",
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-score",
+      "bytes": 152001728,
+      "sha256": "fc1b0f6f303ffa7c2198d8698ea7e8115c3c160ae01107138e09f784e9e21607"
+    }
+  ],
+  "reportedNativeElapsedMs": 16200.1312,
+  "reportedHostElapsedMs": 18384.74729,
+  "reportedCleanupFailures": 0,
+  "hostInvocationsRemaining": 0,
+  "originalHostArtifactBytesRehashed": false,
+  "codingHostDockerOrNativeOperationsPerformed": false,
+  "gpuExecuted": false,
+  "newGpuOrJitExecutionAuthorized": false,
+  "newPublicationAuthorized": false,
+  "trainingReady": false
+}

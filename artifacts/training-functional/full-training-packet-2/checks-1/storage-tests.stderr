@@ -1,0 +1,9 @@
+
+packages/runtime/tests/storage-bounds.test.ts:
+(pass) fixed pipeline write bound is below a literal 200 GB disk without pretending the disk is allocated [0.28ms]
+(pass) declared audit record ceiling covers all native, permit and ACK stages without truncating retained evidence [0.02ms]
+
+ 2 pass
+ 0 fail
+ 11 expect() calls
+Ran 2 tests across 1 file. [427.00ms]

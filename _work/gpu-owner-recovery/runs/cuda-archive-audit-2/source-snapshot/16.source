@@ -1,0 +1,347 @@
+// SPEC: _spec/recovery.md
+import { expect, test } from "bun:test";
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import { repository } from "./provision";
+import { artifactIdentities, reviewedFiles as acquisitionFiles, predecessorPaths as inertPaths, sha256 } from "./cuda-continuation";
+import { completedSnapshotPins, completedSnapshotProofPaths, snapshotIdentity, snapshotPaths } from "./cuda-bun-snapshot";
+import { archiveAuditArgv, archiveAuditCLI, archiveAuditEnvironment, archiveAuditStagePlan, archiveAuditTaskConfiguration, archiveChildEnvironment,
+  archiveFailureCode, archiveTestOnly, auditLimits, bindingPath, bindingVersion, FIXED_TRUSTED_CHILD_PROGRAM, predecessorPaths, reviewedFiles, runArchiveAuditMiseStages,
+  validateArchiveContinuation, validateArchiveMiseDiscovery, validateArchivePlanSnapshot, validateArchiveTaskConfiguration } from "./cuda-archive";
+import type { ArchiveContinuationInputs, AuditedFile, TrustedArchiveIO, XZProcess } from "./cuda-archive";
+
+const base = "_work/gpu-owner-recovery/", acquisition = `${base}runs/cuda-llvm-acquire-1/`, prefix = "tracel-llvm-23.1.0-4";
+const captureRoot = `${base}runs/cuda-bun-snapshot-1/`, privateBun = resolve(repository, snapshotIdentity.destination);
+const bytes = (value: unknown) => new TextEncoder().encode(JSON.stringify(value)), text = (value: string) => new TextEncoder().encode(value);
+const json = (value: Uint8Array) => JSON.parse(new TextDecoder().decode(value));
+const copy = <T>(value: T): T => structuredClone(value);
+const configuration = text('# SPEC: _spec/recovery.md\n[tasks."cuda:audit-llvm-archive"]\ndir = "../.."\nrun = "/usr/local/bin/bun --no-env-file --no-install _work/gpu-owner-recovery/cuda-archive.ts audit"\n');
+function seal(input: ArchiveContinuationInputs): ArchiveContinuationInputs {
+  return { ...input, binding: { version: bindingVersion, staticUnitTestsPassed: true, staticTypesPassed: true, adversarialSourceAccepted: true,
+    securitySourceAccepted: true, devopsSourceAccepted: true, requestSha256: sha256(input.requestBytes),
+    files: Object.fromEntries(reviewedFiles.map(path => [path, sha256(input.evidence.files[path]!)])),
+    predecessorProofs: Object.fromEntries(predecessorPaths.map(path => [path, sha256(input.evidence.predecessorProofs[path]!)])) } };
+}
+export async function archiveContinuationFixture(): Promise<ArchiveContinuationInputs> {
+  const predecessorProofs = Object.fromEntries(await Promise.all(predecessorPaths.map(async path => [path, new Uint8Array(await readFile(resolve(repository, path)))])));
+  const files = Object.fromEntries(reviewedFiles.map(path => [path, text(`fixture source:${path}`)]));
+  for (const path of [`${base}cuda-isolation.ts`, `${base}cuda-isolation.test.ts`, `${base}cuda-mise.toml`, `${base}provision.ts`, `${base}mise.toml`])
+    files[path] = predecessorProofs[`${acquisition}source-snapshot/${String(acquisitionFiles.indexOf(path as typeof acquisitionFiles[number])).padStart(2, "0")}.source`]!;
+  files[archiveAuditTaskConfiguration] = configuration;
+  const approved = json(predecessorProofs[`${captureRoot}approved-request.json`]!);
+  const requestBytes = bytes({ ...approved, status: "APPROVED_SEQUENCE_IN_PROGRESS_AFTER_PRIVATE_BUN_CAPTURE", phase: "PRIVATE_BUN_CAPTURED_ARCHIVE_V2_SOURCE_GATES_PENDING",
+    nativeBunSnapshot: { ...approved.nativeBunSnapshot, grantStatus: "CONSUMED_SUCCESS" }, nativeBunSnapshotResult: { status: "PASS", outsideReceipt: `${captureRoot}receipt.json`,
+      captureReceipt: snapshotPaths.capture, verification: `${captureRoot}verification.json`, approvedRequestCapture: `${captureRoot}approved-request.json`,
+      sourceReview: snapshotPaths.binding, sourceSnapshot: `${captureRoot}source-snapshot.json`, privateSnapshotExecuted: false } });
+  return seal({ requestBytes, binding: null, evidence: { files, predecessorProofs } });
+}
+const file = (source: string, sha = "a".repeat(64), size = 100, elf = true): AuditedFile => ({ source, sha256: sha,
+  identity: { device: "1", inode: source, bytes: size, mode: 0o100755, uid: process.getuid!(), links: 1, mtime: "1", ctime: "1" },
+  ...(elf ? { elf: { interpreter: null, needed: [], soname: null } } : {}) });
+function planIO(input?: ArchiveContinuationInputs) {
+  const natives = new Map<string, AuditedFile>();
+  for (const name of ["/usr/bin/bwrap", "/usr/bin/xz"]) natives.set(name, file(name));
+  const bun = file(privateBun, snapshotIdentity.sha256, snapshotIdentity.byteLength);
+  const committed = input ? json(input.evidence.predecessorProofs[snapshotPaths.capture]!).finalIdentity : { ...bun.identity, mode: 0o100500, links: 2 };
+  natives.set("/usr/local/bin/bun", { ...bun, identity: { device: committed.device, inode: committed.inode, bytes: committed.bytes, mode: committed.mode,
+    uid: committed.uid, links: committed.links, mtime: committed.mtime, ctime: committed.ctime } });
+  const loader = file("/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2"), lib = file("/usr/lib/x86_64-linux-gnu/libc.so.6");
+  for (const root of ["/usr/lib/x86_64-linux-gnu", "/lib/x86_64-linux-gnu"]) { natives.set(`${root}/libc.so.6`, lib); natives.set(`${root}/ld-linux-x86-64.so.2`, loader); }
+  natives.set("/lib64/ld-linux-x86-64.so.2", loader);
+  for (const name of ["/usr/local/bin/bun", "/usr/bin/xz"]) natives.set(name, { ...natives.get(name)!, elf: { interpreter: "/lib64/ld-linux-x86-64.so.2", needed: ["libc.so.6"], soname: null } });
+  const payloads = new Map<string, AuditedFile>();
+  for (const identity of Object.values(artifactIdentities)) { const path = resolve(repository, identity.destination); payloads.set(path, file(path, identity.sha256, identity.byteLength, false)); }
+  const tar = resolve(repository, `${base}cuda-tar.ts`); payloads.set(tar, file(tar, sha256(input?.evidence.files[`${base}cuda-tar.ts`] ?? text("tar source")), 100, false));
+  return { natives, payloads, io: { native: async (logical: string) => natives.get(logical) ?? null, payload: async (path: string) => payloads.get(path)! } };
+}
+const inventory = () => ({ version: 1, prefix, entries: [{ path: `${prefix}/bin/clang`, type: "file", mode: 0o755, size: 3, sha256: sha256(text("abc")) }],
+  totals: { decompressedBytes: 2048, headerCount: 3, extensionBytes: 0, fileBytes: 3, count: 1 } });
+const output = (value: unknown = inventory()) => bytes({ version: "chess-coach.cuda-archive-child-output.v1", inventorySha256: sha256(bytes(value)), inventory: value });
+function processFixture(chunks = [text("tar")], stderr = [new Uint8Array()], exit = 0) {
+  const events: string[] = [];
+  const stream = async function* (values: Uint8Array[], label: string) { for (const chunk of values) { events.push(label); yield chunk; } events.push(`${label}:EOF`); };
+  const child: XZProcess = { stdout: stream(chunks, "stdout"), stderr: stream(stderr, "stderr"), exited: Promise.resolve(exit).then(code => { events.push("reaped"); return code; }), kill: () => { events.push("kill"); } };
+  return { child, events };
+}
+const consume = async (chunks: AsyncIterable<Uint8Array>) => { for await (const _chunk of chunks) {} return inventory(); };
+
+test("immutable completed capture accepts only the exact post-capture v2 continuation and complete source binding", async () => {
+  const input = await archiveContinuationFixture(); expect(() => validateArchiveContinuation(input)).not.toThrow();
+  expect(bindingPath).toBe(`${base}cuda-archive-reviewed-v2.json`); expect(bindingVersion).toBe("chess-coach.cuda-archive-audit-source-review.v2");
+  expect(reviewedFiles).toHaveLength(26); expect(new Set(reviewedFiles).size).toBe(26); expect(reviewedFiles).toContain(`${base}fixtures/cuda-tar-cases.json`);
+  expect(predecessorPaths).toEqual(completedSnapshotProofPaths); expect(predecessorPaths).toHaveLength(97); expect(new Set(predecessorPaths).size).toBe(97);
+  const oldProofs = [...inertPaths, `${acquisition}approved-request.json`, `${base}cuda-acquire-reviewed.json`, `${acquisition}source-review.json`, `${acquisition}receipt.json`, `${acquisition}source-snapshot.json`,
+    ...["archive", "checksums"].flatMap(leaf => ["receipt.json", "artifact.json", "command.stdout", "command.stderr", ".operation"].map(name => `${acquisition}${leaf}/${name}`)),
+    ...acquisitionFiles.map((_, i) => `${acquisition}source-snapshot/${String(i).padStart(2, "0")}.source`)];
+  expect(oldProofs).toHaveLength(36); for (const path of oldProofs) expect(predecessorPaths).toContain(path);
+  expect(sha256(input.evidence.predecessorProofs[`${captureRoot}approved-request.json`]!)).toBe(completedSnapshotPins.approvedRequest);
+  expect(sha256(input.evidence.predecessorProofs[`${captureRoot}source-review.json`]!)).toBe(completedSnapshotPins.review);
+  for (const [key, value] of [["status", "HALTED"], ["phase", "AUDIT_CONSUMED"], ["authorityGranted", false], ["renewedExecutorDecisionRequired", true],
+    ["trainingAuthorized", true], ["extra", false]] as const) {
+    const request = json(input.requestBytes); request[key] = value;
+    expect(() => validateArchiveContinuation(seal({ ...input, requestBytes: bytes(request) }))).toThrow();
+  }
+  for (const change of [(r: any) => { r.authorization.scope = "REVIEWED_INERT_ISOLATION_PROBE_ONLY"; }, (r: any) => { r.authorization.grantStatus = "APPROVED_NOT_EXECUTED"; },
+    (r: any) => { r.artifacts[0].sha256 = "a".repeat(64); }, (r: any) => { r.requestedExecutionLimits.automaticRetryAllowed = true; },
+    (r: any) => { r.acquisitionResult.extractionPerformed = true; }, (r: any) => { delete r.archiveAuditTaskConfiguration; },
+    (r: any) => { r.nativeBunSnapshot.grantStatus = "APPROVED_NOT_EXECUTED"; }, (r: any) => { r.nativeBunSnapshotResult.privateSnapshotExecuted = true; },
+    (r: any) => { r.nativeBunSnapshotRenewal.completedDownloadsMayRepeat = true; }, (r: any) => { r.nativeBunSnapshotResult.extra = false; }]) {
+    const request = json(input.requestBytes); change(request); expect(() => validateArchiveContinuation(seal({ ...input, requestBytes: bytes(request) }))).toThrow();
+  }
+  for (const key of ["staticUnitTestsPassed", "staticTypesPassed", "securitySourceAccepted", "adversarialSourceAccepted", "devopsSourceAccepted", "requestSha256"]) {
+    const bad = copy(input); (bad.binding as any)[key] = false; expect(() => validateArchiveContinuation(bad)).toThrow();
+  }
+  const missing = copy(input); delete (missing.evidence.files as Record<string, Uint8Array>)[`${base}cuda-elf.ts`]; expect(() => validateArchiveContinuation(missing)).toThrow();
+  const changedFixture = copy(input);
+  (changedFixture.evidence.files as Record<string, Uint8Array>)[`${base}fixtures/cuda-tar-cases.json`] = text("changed fixture");
+  expect(() => validateArchiveContinuation(changedFixture)).toThrow("ARCHIVE_BINDING_HASH_MISMATCH");
+});
+test("proof, frozen-source, raw-stream, ledger and saved-byte corruption cannot inherit historical PASS", async () => {
+  const input = await archiveContinuationFixture();
+  for (const path of [`${acquisition}approved-request.json`, `${acquisition}source-review.json`, `${acquisition}source-snapshot/06.source`, `${acquisition}archive/command.stdout`,
+    `${acquisition}checksums/command.stderr`, `${acquisition}archive/.operation`, `${acquisition}source-snapshot.json`, `${acquisition}receipt.json`, `${acquisition}archive/artifact.json`, `${acquisition}checksums/receipt.json`]) {
+    const bad = copy(input), original = bad.evidence.predecessorProofs[path]!;
+    (bad.evidence.predecessorProofs as Record<string, Uint8Array>)[path] = path.endsWith(".json") ? bytes({ ...json(original), status: "FAIL" }) : text("changed");
+    expect(() => validateArchiveContinuation(seal(bad))).toThrow();
+  }
+  for (const path of [`${base}provision.ts`, `${base}mise.toml`, `${base}cuda-mise.toml`]) {
+    const bad = copy(input); (bad.evidence.files as Record<string, Uint8Array>)[path] = text("changed"); expect(() => validateArchiveContinuation(seal(bad))).toThrow();
+  }
+  const extra = copy(input); (extra.evidence.predecessorProofs as Record<string, Uint8Array>)["latest/receipt.json"] = text("{}"); expect(() => validateArchiveContinuation(extra)).toThrow();
+});
+test("v2 requires the completed capture's exact saved-source packet, marker, streams and receipts", async () => {
+  const input = await archiveContinuationFixture();
+  expect(input.evidence.predecessorProofs[`${base}runs/cuda-archive-plan-1/command.stdout`]!.byteLength).toBe(0);
+  for (const path of [`${captureRoot}approved-request.json`, snapshotPaths.binding, `${captureRoot}source-review.json`, `${captureRoot}source-snapshot.json`,
+    `${captureRoot}source-snapshot/15.source`, `${captureRoot}source-snapshot/16.source`, `${captureRoot}receipt.json`, snapshotPaths.capture,
+    `${captureRoot}verification.json`, snapshotPaths.operation, `${captureRoot}command.stdout`, `${captureRoot}command.stderr`]) {
+    const bad = copy(input), original = bad.evidence.predecessorProofs[path]!;
+    (bad.evidence.predecessorProofs as Record<string, Uint8Array>)[path] = path.endsWith(".json") ? bytes({ ...json(original), status: "FAIL" }) : text("changed");
+    expect(() => validateArchiveContinuation(seal(bad))).toThrow();
+  }
+  for (const mutate of [(r: any) => { r.finalIdentity.mode = 0o100755; }, (r: any) => { r.finalIdentity.uid = 0; },
+    (r: any) => { r.finalIdentity.links = 1; }, (r: any) => { r.sha256 = "0".repeat(64); }, (r: any) => { r.destination = "/usr/local/bin/bun"; }]) {
+    const bad = copy(input), capture = json(bad.evidence.predecessorProofs[snapshotPaths.capture]!); mutate(capture);
+    (bad.evidence.predecessorProofs as Record<string, Uint8Array>)[snapshotPaths.capture] = bytes(capture); expect(() => validateArchiveContinuation(seal(bad))).toThrow();
+  }
+  const oldVersion = copy(input); (oldVersion.binding as any).version = "chess-coach.cuda-archive-audit-source-review.v1"; expect(() => validateArchiveContinuation(oldVersion)).toThrow();
+  for (const path of [`${base}cuda-bun-snapshot.ts`, `${base}cuda-bun-snapshot.test.ts`, snapshotPaths.taskConfiguration]) {
+    const bad = copy(input); delete (bad.evidence.files as Record<string, Uint8Array>)[path]; expect(() => validateArchiveContinuation(bad)).toThrow("ARCHIVE_BINDING_MEMBERSHIP_REQUIRED");
+  }
+  const missing = copy(input); delete (missing.evidence.predecessorProofs as Record<string, Uint8Array>)[snapshotPaths.capture]; expect(() => validateArchiveContinuation(missing)).toThrow("ARCHIVE_BINDING_MEMBERSHIP_REQUIRED");
+});
+test("passive fake-ELF planning closes aliases and produces explicit read-only mounts with one private output", async () => {
+  const fake = planIO(), plan = await archiveTestOnly.makePlan(fake.io), argv = archiveAuditArgv(plan), control = argv.slice(0, argv.indexOf("--"));
+  expect(plan.custodyQualified).toBe(false); expect(plan.nativeBinding).toContain("NOT_ATOMIC");
+  for (const required of ["--unshare-user", "--unshare-net", "--die-with-parent", "--clearenv", "--cap-drop", "ALL", "--chdir", "/"]) expect(control).toContain(required);
+  for (const forbidden of ["--proc", "--unshare-pid", "--new-session", "--unshare-net-try", "--share-net", repository, "/run", "/home", "/etc", "/dev/dri", "/dev/nvidia0"]) expect(control).not.toContain(forbidden);
+  expect(control.filter(arg => arg === "--bind")).toHaveLength(1); expect(control.slice(control.indexOf("--bind") + 1, control.indexOf("--bind") + 3)).toEqual([plan.scratch, "/output"]);
+  expect(plan.scratch).not.toBe(plan.evidenceRoot); expect(control.slice(control.indexOf("--dev"), control.indexOf("--dev") + 4)).toEqual(["--dev", "/dev", "--remount-ro", "/dev"]);
+  expect(control.slice(-2)).toEqual(["--remount-ro", "/"]); expect(control).toContain("/proc");
+  expect(plan.files.some(file => file.guest === "/lib64/ld-linux-x86-64.so.2")).toBe(true);
+  for (const root of ["/usr/lib/x86_64-linux-gnu", "/lib/x86_64-linux-gnu"]) expect(plan.files.some(file => file.guest === `${root}/libc.so.6`)).toBe(true);
+  expect(Object.keys(archiveChildEnvironment()).sort()).toEqual(["LANG", "LC_ALL", "PATH", "TZ"]);
+  const bun = plan.files.filter(mount => mount.guest === "/usr/local/bin/bun"); expect(bun).toHaveLength(1); expect(bun[0]!.file.source).toBe(privateBun);
+  expect(plan.scratch).toBe(resolve(repository, `${base}scratch/cuda-archive-audit-2`)); expect(plan.evidenceRoot).toBe(resolve(repository, `${base}runs/cuda-archive-audit-2`));
+  expect(argv.slice(-6)).toEqual(["--", "/usr/local/bin/bun", "--no-env-file", "--no-install", "-e", FIXED_TRUSTED_CHILD_PROGRAM]);
+  const legacy = argv.map(arg => arg === privateBun ? "/usr/local/bin/bun" : arg === plan.scratch ? resolve(repository, `${base}scratch/cuda-archive-audit-1`) : arg);
+  expect(argv.filter((arg, i) => arg !== legacy[i])).toEqual([privateBun, plan.scratch]);
+  await expect(archiveTestOnly.makePlan({ ...fake.io, payload: async path => ({ ...await fake.io.payload(path), sha256: "0".repeat(64) }) })).rejects.toThrow("FRESH_EXACT_CACHE_BYTES_REQUIRED");
+});
+test("private Bun physical routing never looks up the original executable, including missing and corrupt candidates", async () => {
+  const fake = planIO(), candidate = fake.natives.get("/usr/local/bin/bun")!, events: string[] = [];
+  const io = { realpath: async (path: string) => { events.push(`realpath:${path}`); return path; },
+    directory: async (path: string) => { events.push(`lstat:${path}`); return { mode: 0o40700, uid: process.getuid!(), directory: true, symlink: false }; },
+    read: async (path: string, inspect: boolean) => { events.push(`open:${path}:${inspect}`); return candidate; } };
+  for (let pass = 0; pass < 2; pass++) expect(await archiveTestOnly.readNative("/usr/local/bin/bun", io)).toEqual(candidate);
+  expect(events.filter(event => event === `open:${privateBun}:true`)).toHaveLength(2);
+  const missing = Object.assign(Error("missing"), { code: "ENOENT" });
+  expect(await archiveTestOnly.readNative("/usr/local/bin/bun", { ...io, realpath: async path => { events.push(`missing:${path}`); if (path === privateBun) throw missing; return path; } })).toBeNull();
+  expect(await archiveTestOnly.readNative("/usr/local/bin/bun", { ...io, read: async path => { events.push(`missing-open:${path}`); throw missing; } })).toBeNull();
+  await expect(archiveTestOnly.readNative("/usr/local/bin/bun", { ...io, read: async path => { events.push(`bad-open:${path}`); return { ...candidate, sha256: "0".repeat(64) }; } })).rejects.toThrow("FRESH_PRIVATE_BUN_REQUIRED");
+  for (const stat of [{ mode: 0o40755 }, { uid: 0 }, { uid: 1001 }, { directory: false }, { symlink: true }])
+    await expect(archiveTestOnly.readNative("/usr/local/bin/bun", { ...io, directory: async () => ({ mode: 0o40700, uid: process.getuid!(), directory: true, symlink: false, ...stat }) })).rejects.toThrow("PRIVATE_BUN_DIRECTORY_REQUIRED");
+  await expect(archiveTestOnly.readNative("/usr/local/bin/bun", { ...io, realpath: async path => path === privateBun ? "/usr/local/bin/bun" : path })).rejects.toThrow("CANONICAL_PRIVATE_BUN_REQUIRED");
+  expect(events.filter(event => event.includes("/usr/local/bin"))).toEqual([]);
+});
+test("both plan and argv reject widened private-source identity or owner policy", async () => {
+  const fake = planIO(), correct = fake.natives.get("/usr/local/bin/bun")!, plan = await archiveTestOnly.makePlan(fake.io);
+  const bad = [{ ...correct, source: "/usr/local/bin/bun" }, { ...correct, source: `${privateBun}.other` }, { ...correct, sha256: "0".repeat(64) },
+    ...[{ uid: 0 }, { uid: 1001 }, { mode: 0o100755 }, { mode: 0o120500 }, { bytes: snapshotIdentity.byteLength - 1 }, { links: 1 }].map(patch => ({ ...correct, identity: { ...correct.identity, ...patch } }))];
+  for (const candidate of bad) {
+    await expect(archiveTestOnly.makePlan({ ...fake.io, native: async logical => logical === "/usr/local/bin/bun" ? candidate : fake.io.native(logical) })).rejects.toThrow();
+    expect(() => archiveAuditArgv({ ...plan, files: plan.files.map(mount => mount.guest === "/usr/local/bin/bun" ? { ...mount, file: candidate } : mount) })).toThrow();
+  }
+  for (const logical of ["/usr/bin/xz", "/usr/lib/x86_64-linux-gnu/libc.so.6", "/lib/x86_64-linux-gnu/libc.so.6"])
+    await expect(archiveTestOnly.makePlan({ ...fake.io, native: async name => { const found = await fake.io.native(name); return name === logical && found ? { ...found, identity: { ...found.identity, uid: 1001 } } : found; } })).rejects.toThrow("NATIVE_IDENTITY_REJECTED");
+});
+test("planned Bun must match the committed capture inode and timestamps before claim or launch", async () => {
+  const input = await archiveContinuationFixture(), capture = validateArchiveContinuation(input), plan = await archiveTestOnly.makePlan(planIO(input).io);
+  expect(() => validateArchivePlanSnapshot(plan, capture)).not.toThrow();
+  for (const patch of [{ device: "different-device" }, { inode: "replacement-inode" }, { mtime: "changed-mtime" }, { ctime: "changed-ctime" }]) {
+    const changed = { ...plan, files: plan.files.map(mount => mount.guest === "/usr/local/bin/bun" ? { ...mount, file: { ...mount.file, identity: { ...mount.file.identity, ...patch } } } : mount) };
+    expect(() => validateArchivePlanSnapshot(changed, capture)).toThrow("PLANNED_BUN_CAPTURE_IDENTITY_REQUIRED");
+    const effects: string[] = [];
+    await expect(archiveAuditCLI(["audit"], { readContinuation: async () => input, plan: async () => changed, claim: async () => { effects.push("claim"); },
+      launch: async () => { effects.push("launch"); return 0; }, output: async () => output(), revalidate: async () => { effects.push("revalidate"); }, commit: async () => { effects.push("commit"); } })).rejects.toThrow("PLANNED_BUN_CAPTURE_IDENTITY_REQUIRED");
+    expect(effects).toEqual([]);
+  }
+  const replaced = { ...plan, files: plan.files.map(mount => mount.guest === "/usr/local/bin/bun" ? { ...mount, file: { ...mount.file, identity: { ...mount.file.identity, inode: "later-replacement" } } } : mount) };
+  let gates = 0, published = false;
+  await expect(archiveAuditCLI(["audit"], { readContinuation: async () => input, plan: async () => plan, claim: async () => {}, launch: async () => 0,
+    output: async () => output(), revalidate: async () => { if (++gates === 2) validateArchivePlanSnapshot(replaced, capture); }, commit: async () => { published = true; } })).rejects.toThrow("PLANNED_BUN_CAPTURE_IDENTITY_REQUIRED");
+  expect(gates).toBe(2); expect(published).toBe(false);
+});
+test("missing, ambiguous, injected-loader and untrusted native metadata fail without cache or host lookup fallback", async () => {
+  for (const mutation of [(f: ReturnType<typeof planIO>) => { f.natives.delete("/lib64/ld-linux-x86-64.so.2"); },
+    (f: ReturnType<typeof planIO>) => { f.natives.set("/lib/x86_64-linux-gnu/libc.so.6", file("/lib/x86_64-linux-gnu/other.so.6")); },
+    (f: ReturnType<typeof planIO>) => { f.natives.set("/usr/local/bin/bun", { ...f.natives.get("/usr/local/bin/bun")!, elf: { interpreter: "/tmp/loader", needed: [], soname: null } }); },
+    (f: ReturnType<typeof planIO>) => { const bun = f.natives.get("/usr/local/bin/bun")!; f.natives.set("/usr/local/bin/bun", { ...bun, elf: { ...bun.elf!, needed: ["../lib.so"] } }); },
+    (f: ReturnType<typeof planIO>) => { const bun = f.natives.get("/usr/local/bin/bun")!; f.natives.set("/usr/local/bin/bun", { ...bun, elf: { ...bun.elf!, runpath: "/tmp" } as any }); },
+    (f: ReturnType<typeof planIO>) => { const bun = f.natives.get("/usr/local/bin/bun")!; f.natives.set("/usr/local/bin/bun", { ...bun, identity: { ...bun.identity, mode: 0o100777 } }); }]) {
+    const fake = planIO(); mutation(fake); await expect(archiveTestOnly.makePlan(fake.io)).rejects.toThrow();
+  }
+  const plan = await archiveTestOnly.makePlan(planIO().io);
+  for (const altered of [{ ...plan, scratch: plan.evidenceRoot }, { ...plan, files: [...plan.files, { guest: "/etc/passwd", file: file("/etc/passwd") }] },
+    { ...plan, files: plan.files.map(mount => mount.guest === "/usr/bin/xz" ? { ...mount, file: file("/tmp/xz") } : mount) }]) expect(() => archiveAuditArgv(altered)).toThrow();
+});
+test("XZ success requires parser stdout EOF, concurrent stderr EOF and zero actual reap", async () => {
+  const success = processFixture(); expect(await archiveTestOnly.runXZAudit(success.child, consume)).toEqual(inventory()); expect(success.events).toContain("reaped"); expect(success.events).not.toContain("kill");
+  for (const [fake, audit, expected] of [[processFixture([], [], 7), consume, "XZ_EXIT_NONZERO"], [processFixture(), async () => inventory(), "XZ_STDOUT_NOT_EOF"],
+    [processFixture(), async () => { throw Error("TRUNCATED_TAR"); }, "TRUNCATED_TAR"], [processFixture([], [new Uint8Array(65537)]), consume, "XZ_STDERR_LIMIT"]] as const) {
+    let prefixLength = 0; await expect(archiveTestOnly.runXZAudit(fake.child, audit, prefix => { prefixLength = prefix.byteLength; })).rejects.toThrow(expected);
+    expect(fake.events).toContain("kill"); expect(fake.events).toContain("reaped"); expect(fake.events).toContain("stderr:EOF"); expect(prefixLength).toBeLessThanOrEqual(65536);
+  }
+  const fake = processFixture(); let reaped = false;
+  const child = { ...fake.child, exited: Promise.resolve(0).then(code => { reaped = true; return code; }) };
+  try { await archiveTestOnly.runXZAudit(child, async () => { throw ""; }); throw Error("MISSING_FAILURE"); } catch (error) { expect(error).toBe(""); }
+  expect(reaped).toBe(true);
+});
+test("parser failure kills immediately but cannot settle before actual reap and stderr EOF", async () => {
+  let releaseExit!: (code: number) => void, releaseStderr!: () => void, killed = 0, settled = false;
+  const exit = new Promise<number>(resolve => { releaseExit = resolve; }), drain = new Promise<void>(resolve => { releaseStderr = resolve; });
+  const child: XZProcess = { stdout: (async function* () { yield text("truncated"); })(), stderr: (async function* () { await drain; yield text("diagnostic"); })(), exited: exit,
+    kill: () => { killed++; throw Error("KILL_SECONDARY_ERROR"); } };
+  const pending = archiveTestOnly.runXZAudit(child, async () => { throw ""; }, () => { throw Error("REPORT_SECONDARY_ERROR"); }).then(
+    () => { settled = true; throw Error("MISSING_FAILURE"); }, error => { settled = true; expect(error).toBe(""); });
+  await Promise.resolve(); await Promise.resolve(); expect(killed).toBeGreaterThan(0); expect(settled).toBe(false);
+  releaseExit(137); await Promise.resolve(); expect(settled).toBe(false); releaseStderr(); await pending; expect(settled).toBe(true);
+  const fake = processFixture(); await expect(archiveTestOnly.runXZAudit({ ...fake.child, stdout: (async function* () { throw Error("TRUNCATED_STDOUT"); })() }, consume)).rejects.toThrow("TRUNCATED_STDOUT");
+});
+test("bounded output validation rejects kind, size, UTF-8, digest, prefix and path corruption", () => {
+  expect(archiveTestOnly.validateOutput(output()).inventorySha256).toBe(sha256(bytes(inventory())));
+  expect(() => archiveTestOnly.validateOutput(output({ ...inventory(), totals: { ...inventory().totals, decompressedBytes: 2049 } }))).not.toThrow();
+  for (const data of [new Uint8Array(), new Uint8Array([255]), new Uint8Array([239, 187, 191, ...output()]), bytes({ ...json(output()), inventorySha256: "0".repeat(64) }), output({ ...inventory(), prefix: "wrong" }),
+    output({ ...inventory(), entries: [{ ...inventory().entries[0], path: `${prefix}/../escape` }] }), output({ ...inventory(), entries: [{ ...inventory().entries[0], sha256: null }] }),
+    output({ ...inventory(), totals: { ...inventory().totals, fileBytes: 4 } }), output({ ...inventory(), entries: Array(65537).fill(inventory().entries[0]) })]) expect(() => archiveTestOnly.validateOutput(data)).toThrow();
+  const data = output(), plan = resolve(repository, `${base}scratch/cuda-archive-audit-2/inventory.json`), good = file(plan, sha256(data), data.byteLength, false);
+  const owned = { ...good, identity: { ...good.identity, mode: 0o100600 } }; expect(archiveTestOnly.validateOutputFile(owned, data)).toBe(data);
+  for (const bad of [{ ...owned, identity: { ...owned.identity, mode: 0o120600 } }, { ...owned, identity: { ...owned.identity, bytes: data.byteLength + 1 } },
+    { ...owned, sha256: "0".repeat(64) }, { ...owned, identity: { ...owned.identity, mode: 0o100644 } }]) expect(() => archiveTestOnly.validateOutputFile(bad, data)).toThrow();
+});
+test("self-hashed output must retain the parser's link graph and byte-accounting invariants", async () => {
+  const regular = inventory().entries[0]!;
+  const symlink = (name: string, target: string) => ({ path: `${prefix}/${name}`, type: "symlink", mode: 0o777, size: 0, target });
+  const invalid = [
+    [regular, symlink("alias", "/outside")],
+    [regular, symlink("alias", "../outside")],
+    [regular, symlink("alias", "missing")],
+    [regular, { ...regular, path: `${regular.path}/child` }],
+    [symlink("dir", "bin"), { ...regular, path: `${prefix}/dir/child` }],
+    [symlink("a", "b"), symlink("b", "a")],
+    [regular, { ...symlink("hard", `${prefix}/alias`), type: "hardlink", mode: 0o644 }, symlink("alias", "bin/clang")],
+  ];
+  for (const entries of invalid) {
+    const value = { ...inventory(), entries, totals: { ...inventory().totals, count: entries.length, headerCount: entries.length + 2, decompressedBytes: 16384 } };
+    expect(() => archiveTestOnly.validateOutput(output(value))).toThrow();
+  }
+  for (const extensionBytes of [1, 4096]) expect(() => archiveTestOnly.validateOutput(output({ ...inventory(),
+    totals: { ...inventory().totals, extensionBytes } }))).toThrow("INVENTORY_TOTALS_REQUIRED");
+  for (const totals of [
+    { ...inventory().totals, extensionBytes: 1, decompressedBytes: 2049 },
+    { ...inventory().totals, headerCount: 4, extensionBytes: 65537, decompressedBytes: 131072 },
+    { ...inventory().totals, headerCount: 5, extensionBytes: 1, decompressedBytes: 4096 },
+    { ...inventory().totals, headerCount: 4, extensionBytes: 1, decompressedBytes: 2561 },
+  ]) expect(() => archiveTestOnly.validateOutput(output({ ...inventory(), totals }))).toThrow("INVENTORY_TOTALS_REQUIRED");
+  expect(() => archiveTestOnly.validateOutput(output({ ...inventory(), totals: { ...inventory().totals,
+    headerCount: 4, extensionBytes: 1, decompressedBytes: 3072 } }))).not.toThrow();
+  for (const type of [["symlink"], ["file"], ["directory"], ["hardlink"], {}, null, 1]) {
+    expect(() => archiveTestOnly.validateOutput(output({ ...inventory(), entries: [
+      { path: `${prefix}/alias`, type, mode: 0o644, size: 0, target: "/outside" },
+    ], totals: { ...inventory().totals, fileBytes: 0 } }))).toThrow("INVENTORY_ENTRY_METADATA_REQUIRED");
+  }
+  const good = { ...inventory(), entries: [regular, symlink("alias", "bin/clang")],
+    totals: { ...inventory().totals, count: 2, headerCount: 4, decompressedBytes: 2560 } };
+  expect(() => archiveTestOnly.validateOutput(output(good))).not.toThrow();
+  const input = await archiveContinuationFixture(), plan = await archiveTestOnly.makePlan(planIO(input).io);
+  let published = false;
+  await expect(archiveAuditCLI(["audit"], { readContinuation: async () => input, plan: async () => plan, claim: async () => {},
+    launch: async () => 0, output: async () => output({ ...good, entries: [regular, symlink("alias", "/outside")] }),
+    revalidate: async () => {}, commit: async () => { published = true; } })).rejects.toThrow();
+  expect(published).toBe(false);
+});
+test("an outside-created receipt directory uses an exclusive operation marker rather than recreation", async () => {
+  const events: string[] = [];
+  const io = { validateRoot: async () => { events.push("existing-private-root"); },
+    writeMarker: async () => { events.push("exclusive-marker"); }, createScratch: async () => { events.push("exclusive-scratch"); } };
+  await archiveTestOnly.claimArchiveOperation(io);
+  expect(events).toEqual(["existing-private-root", "exclusive-marker", "exclusive-scratch"]);
+  for (const failed of ["validateRoot", "writeMarker"] as const) {
+    events.length = 0;
+    await expect(archiveTestOnly.claimArchiveOperation({ ...io, [failed]: async () => { throw Error("CLAIM_REJECTED"); } })).rejects.toThrow("CLAIM_REJECTED");
+    expect(events).not.toContain("exclusive-scratch");
+    if (failed === "validateRoot") expect(events).not.toContain("exclusive-marker");
+  }
+});
+test("stable audit failure codes retain parser classification without arbitrary error text", () => {
+  expect(archiveFailureCode(Error("TAR_GLOBAL_AFTER_LOCAL_EXTENSION"))).toBe("TAR_GLOBAL_AFTER_LOCAL_EXTENSION");
+  expect(archiveFailureCode(Error("XZ_EXIT_NONZERO"))).toBe("XZ_EXIT_NONZERO");
+  expect(archiveFailureCode(Error("Invalid ELF: loader directive"))).toBe("NATIVE_ELF_METADATA_REJECTED");
+  expect(archiveFailureCode(Error("/private/path?token=secret"))).toBe("ARCHIVE_AUDIT_FAILED");
+});
+test("exclusive publication follows write-sync-close and preserves the first failure even when it is empty", async () => {
+  for (const fault of [null, "write", "sync", "close"] as const) {
+    const events: string[] = [], io = { openStage: async () => Object.fromEntries(["write", "sync", "close"].map(name => [name, async () => { events.push(name); if (fault === name) throw ""; }])) as any,
+      publish: async () => { events.push("publish"); } };
+    if (fault === null) { await archiveTestOnly.commitInventory(output(), io); expect(events).toEqual(["write", "sync", "close", "publish"]); }
+    else { try { await archiveTestOnly.commitInventory(output(), io); throw Error("MISSING_FAILURE"); } catch (error) { expect(error).toBe(""); } expect(events).not.toContain("publish"); expect(events).toContain("close"); }
+  }
+  await expect(archiveTestOnly.commitInventory(output(), { openStage: async () => ({ write: async () => { throw Error("FIRST_WRITE_ERROR"); },
+    sync: async () => { throw Error("MUST_NOT_SYNC"); }, close: async () => { throw Error("SECOND_CLOSE_ERROR"); } }), publish: async () => { throw Error("MUST_NOT_PUBLISH"); } })).rejects.toThrow("FIRST_WRITE_ERROR");
+});
+test("closed wrapper validates continuation and root identities before claim, launch or publication", async () => {
+  const input = await archiveContinuationFixture(), plan = await archiveTestOnly.makePlan(planIO(input).io), events: string[] = [];
+  const io: TrustedArchiveIO = { readContinuation: async () => { events.push("read"); return input; }, plan: async () => { events.push("plan"); return plan; },
+    claim: async () => { events.push("claim"); }, launch: async () => { events.push("launch"); return 0; }, output: async () => { events.push("output"); return output(); },
+    revalidate: async () => { events.push("gate"); }, commit: async () => { events.push("publish"); } };
+  for (const args of [[], ["--help"], ["audit", "extra"], ["child"], ["/tmp/a"]]) await expect(archiveAuditCLI(args, io)).rejects.toThrow("CLOSED_ARCHIVE_AUDIT_CLI_REQUIRED"); expect(events).toEqual([]);
+  const result = await archiveAuditCLI(["audit"], io); expect(result.scope).toBe("STRUCTURAL_ARCHIVE_ONLY");
+  for (const key of ["extractionPerformed", "llvmCodeExecuted", "buildIsolationQualified", "custodyQualified", "cudaCompilationEstablished", "actualHostExecuted", "cudaGpuCodeExecuted", "trainingReady"] as const) expect(result[key]).toBe(false);
+  expect(events).toEqual(["read", "plan", "gate", "claim", "launch", "output", "gate", "publish"]);
+  events.length = 0; const rejected = copy(input); (rejected.binding as any).securitySourceAccepted = false;
+  await expect(archiveAuditCLI(["audit"], { ...io, readContinuation: async () => rejected })).rejects.toThrow(); expect(events).toEqual([]);
+  await expect(archiveAuditCLI(["audit"], { ...io, revalidate: async () => { throw Error("STALE_ROOT"); } })).rejects.toThrow("STALE_ROOT"); expect(events).not.toContain("claim");
+  events.length = 0; await expect(archiveAuditCLI(["audit"], { ...io, claim: async () => { throw Error("REPLAY"); } })).rejects.toThrow("REPLAY"); expect(events).not.toContain("launch");
+  events.length = 0; await expect(archiveAuditCLI(["audit"], { ...io, launch: async () => 1 })).rejects.toThrow("ARCHIVE_QUARANTINE_FAILED"); expect(events).not.toContain("output"); expect(events).not.toContain("publish");
+  events.length = 0; await expect(archiveAuditCLI(["audit"], { ...io, output: async () => new Uint8Array([255]) })).rejects.toThrow(); expect(events).not.toContain("publish");
+});
+test("one exact tasks-only Mise configuration and outside gates preserve first-failure ordering", async () => {
+  validateArchiveTaskConfiguration(configuration); expect(await readFile(resolve(repository, archiveAuditTaskConfiguration), "utf8")).toBe(new TextDecoder().decode(configuration));
+  expect(archiveAuditEnvironment().MISE_OVERRIDE_CONFIG_FILENAMES).toBe("cuda-archive-mise.toml"); expect(archiveAuditStagePlan().map(stage => stage.name)).toEqual(["00-trust", "01-config", "02-audit"]);
+  const discovery = bytes([{ path: resolve(repository, archiveAuditTaskConfiguration), tools: [] }]); validateArchiveMiseDiscovery(discovery);
+  for (const config of [new Uint8Array(), text('[tools]\nbun="latest"'), text(new TextDecoder().decode(configuration) + '\n[env]\nEVIL="1"')]) expect(() => validateArchiveTaskConfiguration(config)).toThrow();
+  for (const bad of [bytes([]), bytes([{}, {}]), bytes([{ path: "/tmp/other" }]), bytes([{ path: resolve(repository, archiveAuditTaskConfiguration), tools: ["bun"] }])]) expect(() => validateArchiveMiseDiscovery(bad)).toThrow();
+  for (const failure of [null, ""] as const) {
+    const events: string[] = [], result = await runArchiveAuditMiseStages({ verifyOutsideGate: async () => { events.push("gate"); }, readTaskConfiguration: async () => { events.push("config"); return configuration; },
+      run: async stage => { events.push(stage.name); return { exitCode: 0, stdout: discovery, failure }; } });
+    expect(result.exitCode).toBe(failure === null ? 0 : 1); expect(events).toEqual(failure === null ? ["gate", "config", "00-trust", "gate", "gate", "config", "01-config", "gate", "gate", "config", "02-audit", "gate"] : ["gate", "config", "00-trust"]);
+  }
+});
+test("trusted child source runs only fixed XZ inside the quarantine and never publishes preliminary PASS", async () => {
+  expect(FIXED_TRUSTED_CHILD_PROGRAM).toContain("'/usr/bin/xz','--decompress','--stdout','--threads=1','--memlimit-decompress=256MiB','--','/inputs/llvm.tar.xz'");
+  expect(FIXED_TRUSTED_CHILD_PROGRAM).toContain("'/audit/cuda-tar.ts'"); expect(FIXED_TRUSTED_CHILD_PROGRAM).not.toContain('"PASS"');
+  const source = await readFile(resolve(repository, `${base}cuda-archive.ts`), "utf8");
+  expect(source).not.toContain("sourceReadException"); expect(source).not.toContain("1001");
+  for (const forbidden of [/\brunBounded\s*\(/, /\bset(?:Timeout|Interval)\s*\(/, /\bfetch\s*\(/, /\b(?:rm|unlink|rename)\s*\(/, /process\.env/, /--unshare-pid|--new-session|ld\.so\.cache/]) expect(source).not.toMatch(forbidden);
+  expect(source).toContain("constants.O_NOFOLLOW"); expect(source).toContain("constants.O_EXCL"); expect(auditLimits.wholeInvocationMs).toBe(30000);
+});

@@ -1,0 +1,4 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Checking chess-coach-gpu-owner v0.1.0 (/home/gu1lty/Projects/proveo/chess-coach/crates/gpu-owner)
+    Finished `dev` profile [unoptimized] target(s) in 5.37s

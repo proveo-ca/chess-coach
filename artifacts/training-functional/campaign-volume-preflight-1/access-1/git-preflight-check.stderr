@@ -1,0 +1,12 @@
+14 | export const HARNESS_ARCHIVE = `${PACKET2}/preserved-test-harness/campaign-evidence.test.ts.source`;
+15 | export type Pin = { path: string; byteLength: number; sha256: string };
+16 | type Preserved = Pin & { gitBlob: string | null; gitMatches: boolean; archive: Pin | null };
+17 | type Preservation = { version: string; baseCommit: string; sourceManifest: Pin; packet1Files: Pin[]; workerSource: Preserved[];
+18 |   changedCandidates: { original: Pin; archive: Pin }[]; scope: string; hostPreparationExecuted: false; trainingExecuted: false };
+19 | export function ensure(value: unknown, code: string): asserts value { if (!value) throw new Error(`Packet2: ${code}`); }
+                                                                                                 ^
+error: Packet2: EXPECTED_PLAIN_REMOTE
+      at ensure (/home/gu1lty/Projects/proveo/chess-coach-integration/artifacts/training-functional/full-training-packet-2/preserve.ts:19:93)
+      at /home/gu1lty/Projects/proveo/chess-coach-integration/[eval]:1:1001
+
+Bun v1.4.0 (Linux x64)

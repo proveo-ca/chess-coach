@@ -1,0 +1,7 @@
+_work/gpu-owner-recovery/cuda-isolation.test.ts(140,75): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(expected: { exitCode: number; failedStage: "00-trust" | "01-config" | "02-inert-probe"; failure: string | null; completedStages: ("00-trust" | "01-config" | "02-inert-probe")[]; inertProbePassed: boolean; buildIsolationQualified: boolean; custodyQualified: boolean; cudaCompilationEstablished: boolean; trainingReady: boolean; } | { ...; }): void', gave the following error.
+    Type 'string[]' is not assignable to type '("00-trust" | "01-config" | "02-inert-probe")[]'.
+      Type 'string' is not assignable to type '"00-trust" | "01-config" | "02-inert-probe"'.
+  Overload 2 of 2, '(expected: NoInfer<{ exitCode: number; failedStage: "00-trust" | "01-config" | "02-inert-probe"; failure: string | null; completedStages: ("00-trust" | "01-config" | "02-inert-probe")[]; inertProbePassed: boolean; buildIsolationQualified: boolean; custodyQualified: boolean; cudaCompilationEstablished: boolean; trainingReady: boolean; } | { ...; }>): void', gave the following error.
+    Type 'string[]' is not assignable to type '("00-trust" | "01-config" | "02-inert-probe")[]'.
+      Type 'string' is not assignable to type '"00-trust" | "01-config" | "02-inert-probe"'.

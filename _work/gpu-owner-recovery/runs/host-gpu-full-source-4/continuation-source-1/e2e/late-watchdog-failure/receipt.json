@@ -1,0 +1,450 @@
+{
+  "scope": "SOURCE_ONLY_PURE_MOCK_E2E_NOT_HOST_GPU_EVIDENCE",
+  "actualDockerProcesses": 0,
+  "actualNativeProcesses": 0,
+  "gpuExecuted": false,
+  "result": {
+    "version": "chess-coach.owned-gpu-full.v1",
+    "status": "FAIL_HOST_GPU_FULL_ONLY",
+    "failure": "Error: MOCK_LATE_JOURNAL_FAILURE",
+    "cleanupFailures": [],
+    "ids": {
+      "worker": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "state": {
+      "Running": false,
+      "ExitCode": 0,
+      "OOMKilled": false
+    },
+    "innerReceipt": {
+      "version": "chess-coach.gpu-full-driver.v1",
+      "runId": "host-gpu-full-2",
+      "status": "PASS_GPU_FULL_TESTS_ONLY",
+      "failure": null,
+      "sourceStabilityChecked": true,
+      "sourceChanged": false,
+      "sourceCheckFailure": null,
+      "sourceManifestSha256": "7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec",
+      "artifacts": [
+        {
+          "executable": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/finite_difference-f3db0ac172c2e4d6",
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/finite_difference-f3db0ac172c2e4d6",
+          "bytes": 154335984,
+          "sha256": "1fab1e69af8a4f9acf2af7b649e6bc1c24c5506c34e294de9fda043dbec57750"
+        },
+        {
+          "executable": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/gpu-1c80603e75bb2c83",
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/gpu-1c80603e75bb2c83",
+          "bytes": 156637512,
+          "sha256": "9091cb81c4caa234b356e0edb357843a260130d9d7a6d66ee2ee4d563c714f9f"
+        },
+        {
+          "executable": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-channel",
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-channel",
+          "bytes": 155205160,
+          "sha256": "ce126693630543a220eef3689fc8dfef24b38e5f93e24550e451b54956528688"
+        },
+        {
+          "executable": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-initialize",
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-initialize",
+          "bytes": 151302720,
+          "sha256": "95c806fe1db205bde5fda1d38104bdcf45333051f35fb07744b4d5d5bb33d5de"
+        },
+        {
+          "executable": "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-score",
+          "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-score",
+          "bytes": 152001728,
+          "sha256": "fc1b0f6f303ffa7c2198d8698ea7e8115c3c160ae01107138e09f784e9e21607"
+        }
+      ],
+      "results": [
+        {
+          "id": "cuda_f64_nonzero_native_scores_round_trip",
+          "attempted": true,
+          "commandInvoked": true,
+          "commandResult": {
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null
+          },
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "argv": [
+            "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/gpu-1c80603e75bb2c83",
+            "cuda_f64_nonzero_native_scores_round_trip",
+            "--exact",
+            "--ignored",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ]
+        },
+        {
+          "id": "cuda_f64_direct_sgd_changes_policy_parameters",
+          "attempted": true,
+          "commandInvoked": true,
+          "commandResult": {
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null
+          },
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "argv": [
+            "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/gpu-1c80603e75bb2c83",
+            "cuda_f64_direct_sgd_changes_policy_parameters",
+            "--exact",
+            "--ignored",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ]
+        },
+        {
+          "id": "cuda_feature_complete_sweep_for_active_relu_checks_2335_coordinates",
+          "attempted": true,
+          "commandInvoked": true,
+          "commandResult": {
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null
+          },
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "argv": [
+            "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/finite_difference-f3db0ac172c2e4d6",
+            "cuda_feature_complete_sweep_for_active_relu_checks_2335_coordinates",
+            "--exact",
+            "--ignored",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ]
+        },
+        {
+          "id": "cuda_feature_complete_sweep_for_inactive_relu_checks_2335_coordinates",
+          "attempted": true,
+          "commandInvoked": true,
+          "commandResult": {
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null
+          },
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "argv": [
+            "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/finite_difference-f3db0ac172c2e4d6",
+            "cuda_feature_complete_sweep_for_inactive_relu_checks_2335_coordinates",
+            "--exact",
+            "--ignored",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ]
+        },
+        {
+          "id": "cuda_f64_redundant_learning_channels_agree_and_reload",
+          "attempted": true,
+          "commandInvoked": true,
+          "commandResult": {
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null
+          },
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "argv": [
+            "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/gpu-1c80603e75bb2c83",
+            "cuda_f64_redundant_learning_channels_agree_and_reload",
+            "--exact",
+            "--ignored",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ]
+        },
+        {
+          "id": "cuda_f64_policy_channel_subprocesses_agree_and_reload",
+          "attempted": true,
+          "commandInvoked": true,
+          "commandResult": {
+            "status": "PASS",
+            "exitCode": 0,
+            "failure": null
+          },
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "argv": [
+            "/build/native/target-gpu/x86_64-unknown-linux-gnu/release/deps/gpu-1c80603e75bb2c83",
+            "cuda_f64_policy_channel_subprocesses_agree_and_reload",
+            "--exact",
+            "--ignored",
+            "--test-threads=1",
+            "--nocapture",
+            "--color=never"
+          ]
+        }
+      ],
+      "qualificationResults": [
+        {
+          "id": "cuda_f64_nonzero_native_scores_round_trip",
+          "accepted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdoutSummaries": [
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured"
+          ]
+        },
+        {
+          "id": "cuda_f64_direct_sgd_changes_policy_parameters",
+          "accepted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdoutSummaries": [
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured"
+          ]
+        },
+        {
+          "id": "cuda_feature_complete_sweep_for_active_relu_checks_2335_coordinates",
+          "accepted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdoutSummaries": [
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured"
+          ]
+        },
+        {
+          "id": "cuda_feature_complete_sweep_for_inactive_relu_checks_2335_coordinates",
+          "accepted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdoutSummaries": [
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured"
+          ]
+        },
+        {
+          "id": "cuda_f64_redundant_learning_channels_agree_and_reload",
+          "accepted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdoutSummaries": [
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured"
+          ]
+        },
+        {
+          "id": "cuda_f64_policy_channel_subprocesses_agree_and_reload",
+          "accepted": true,
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null,
+          "stdoutSummaries": [
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured"
+          ]
+        }
+      ],
+      "trainingReady": false,
+      "canonicalBothQualified": false,
+      "integratedR4Qualified": false,
+      "operationalTelemetryQualified": false,
+      "fullAssuranceQualified": false,
+      "trainingExecuted": false
+    },
+    "guardComplete": false,
+    "results": [
+      {
+        "id": "worker-create",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "create",
+          "--pull=never",
+          "--platform=linux/amd64",
+          "--network=none",
+          "--cpus=2",
+          "--memory=8g",
+          "--memory-swap=8g",
+          "--user=1000:1000",
+          "--runtime=nvidia",
+          "--gpus=device=GPU-713c95e0-6952-a576-794b-9ef1fb527ff0",
+          "--cidfile=/source-only-mock/_work/gpu-owner-recovery/runs/host-gpu-full-2/worker.cid",
+          "--label=chess-coach.gpu-full=host-gpu-full-2",
+          "--workdir=/build/native",
+          "--entrypoint=/usr/local/bin/bun",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-gpu-native-build-2/native,target=/build/native,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu,target=/build/native/target-gpu,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun,target=/usr/local/bin/bun,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-build/llvm,target=/opt/tracel-data/tracel/tracel-llvm-23.1.0-4,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-runtime/rootfs/usr/local/cuda,target=/usr/local/cuda,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/runs/host-gpu-full-2,target=/evidence,readonly",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/runs/host-gpu-full-2/inner,target=/evidence/inner",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/runs/host-gpu-full-2/inner-runs,target=/build/native/_work/gpu-owner-recovery/runs",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-gpu-full-2/scratch,target=/scratch",
+          "--mount",
+          "type=bind,source=/source-only-mock/_work/gpu-owner-recovery/cache/host-gpu-full-2/scratch,target=/build/native/_work/gpu-owner-recovery/scratch",
+          "--env",
+          "NVIDIA_VISIBLE_DEVICES=GPU-713c95e0-6952-a576-794b-9ef1fb527ff0",
+          "--env",
+          "NVIDIA_DRIVER_CAPABILITIES=compute,utility",
+          "--env",
+          "CUDA_VISIBLE_DEVICES=0",
+          "--env",
+          "CUDA_PATH=/usr/local/cuda",
+          "--env",
+          "XDG_DATA_HOME=/opt/tracel-data",
+          "--env",
+          "HOME=/scratch/home",
+          "--env",
+          "TMPDIR=/scratch/tmp",
+          "--env",
+          "CUDA_CACHE_PATH=/scratch/cuda-cache",
+          "--env",
+          "XDG_CACHE_HOME=/scratch/cache",
+          "--env",
+          "RAYON_NUM_THREADS=2",
+          "--env",
+          "RUST_TEST_THREADS=1",
+          "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+          "--no-env-file",
+          "--no-install",
+          "/evidence/driver.mjs"
+        ],
+        "timeoutMs": 20000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-start",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "start",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "timeoutMs": 20000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-logs",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "logs",
+          "--follow",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "timeoutMs": 890000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-state",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "container",
+          "inspect",
+          "--format",
+          "{{json .State}}",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "timeoutMs": 10000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-stop",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "stop",
+          "--time=2",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "timeoutMs": 10000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      },
+      {
+        "id": "worker-remove",
+        "argv": [
+          "docker",
+          "--host=unix:///var/run/docker.sock",
+          "rm",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "timeoutMs": 15000,
+        "status": "PASS",
+        "exitCode": 0,
+        "failure": null,
+        "supervisorResult": {
+          "status": "PASS",
+          "exitCode": 0,
+          "failure": null
+        }
+      }
+    ],
+    "elapsedMs": 30,
+    "gpuExecutionAttempted": true,
+    "testExecutionAttempted": true,
+    "testsExecuted": true,
+    "hostInvocationsConsumed": 1,
+    "remainingHostInvocations": 0,
+    "automaticRetryAuthorized": false,
+    "trainingReady": false,
+    "qualificationImageBuilt": false,
+    "fullAssuranceQualified": false,
+    "operationalTelemetryQualified": false,
+    "trainingExecuted": false
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "version": "chess-coach.publication-outcome-spec-record-check.v1",
+  "status": "PASS_OUTCOME_SPEC_INDEX_AND_WHITESPACE_ONLY",
+  "sources": [
+    {
+      "path": "_spec/gpu-input-transfer.puml",
+      "sha256": "04be28bcd94b28687b8454c00c71fc51cd0b75202eed75d2cc8dbe625de0bac5"
+    },
+    {
+      "path": "_spec/gpu-qualification.puml",
+      "sha256": "01bcba9bb3cdc60150ae10c3ee98fab733850962d709c157d96a178997b4da56"
+    },
+    {
+      "path": "_spec/gpu-build.puml",
+      "sha256": "7a70496fc486fd03787e7f48a5560cdf832056d8287f852ee371a026cd4673e4"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "sha256": "2798ab193adbde2a01af6e65183e8a6cf611470e4596b8e79f68511ef9296d30"
+    },
+    {
+      "path": "_spec/gpu-readiness.md",
+      "sha256": "423cf7ef34b5cb8c5a40638aad14906a8bc303549daee94470a83acfe579c370"
+    },
+    {
+      "path": "_spec/gate-closure.md",
+      "sha256": "93f868a0a4f64236cbd78f806f4f413ceada951f9209aa18838cf1273c8b32bd"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-feasibility-publication-3/verify-specs.ts",
+      "sha256": "3491c447673146143b35846ef63b5c8146d5e42340b9e72cf6b52d33f082df1b"
+    }
+  ],
+  "diagramsMatched": 3,
+  "sourceCommit": "f3e277dbbf33c0aa69172cca1890792656d4cd09",
+  "postPublicationRecordsCommitted": false,
+  "additionalCommitOrPushPerformed": false,
+  "hostOrGpuExecuted": false,
+  "trainingReady": false
+}

@@ -1,0 +1,42 @@
+{
+  "status": "PASS_REPORTED_STATUS_ONLY_FULL2_ABSENT_AT_QUERY",
+  "provenance": "USER_PASTED_COMPLETE_STATUS_OUTPUT_NOT_ORIGINAL_HOST_BYTES",
+  "report": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/reported-status.txt",
+  "reported": {
+    "workspaceAbsent": true,
+    "evidenceAbsent": true,
+    "matchingContainerRows": 0,
+    "receiptAbsent": true,
+    "dockerQueryExit": 0,
+    "statusMarkerExit": 0
+  },
+  "queryTimestamp": null,
+  "operatorReportedCheckout": {
+    "provenance": "SEPARATE_USER_PASTED_HOST_GIT_LOG_NOT_INDEPENDENT_HOST_QUERY",
+    "branch": "feat-ml-adjuntant-ii",
+    "commit": "f6bce72a2cd10f66acf77162166a1d03fc87cd13"
+  },
+  "deliveredStatusCommand": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status-command.fish",
+    "bytes": 1940,
+    "sha256": "79c2aa96b1944d629d70d5aa669999070a0c02c45b65a526ebd348e0db49fb47"
+  },
+  "actualHostCommandBytesIndependentlyVerified": false,
+  "statusGrantConsumption": {
+    "approval": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/host-status-approval.json",
+    "reportedInvocations": 1,
+    "remainingInvocations": 0
+  },
+  "previousFull2TerminalObservation": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/terminal-submission-observation.json",
+  "previousFull2ExecutionOutcome": "UNKNOWN",
+  "previousFull2HostExitCode": null,
+  "previousFull2GpuExecutionAttempted": null,
+  "previousFull2TestsExecuted": null,
+  "previousFull2GrantRemaining": 0,
+  "newHostInvocationsAuthorized": 0,
+  "automaticRetryAuthorized": false,
+  "nativeCompilationOrGpuExecutionPerformedByThisCheck": false,
+  "fullSixQualified": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

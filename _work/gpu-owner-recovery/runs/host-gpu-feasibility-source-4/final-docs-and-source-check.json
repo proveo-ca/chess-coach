@@ -1,0 +1,179 @@
+{
+  "status": "PASS_GPU_FEASIBILITY_SOURCE_FOUR_DOCS_AND_RECORDS_ONLY",
+  "sources": [
+    {
+      "path": "_spec/gpu-feasibility.puml",
+      "sha256": "d9a50c57ee24d74a5381e345e14f3b2256659a765f4a57e931b85b9705ff1061"
+    },
+    {
+      "path": "_spec/gpu-host-build-reuse.puml",
+      "sha256": "b01bbe814c8fc18e3f3d560a3c0f318c5041e851fb0ff2d5cc1a568a09d7f4e5"
+    },
+    {
+      "path": "_spec/gpu-host-build.puml",
+      "sha256": "14a891dc9a35937f54ad252c747c4bd5b6f78bcd8797b7a8ec2f84c3e33e833a"
+    },
+    {
+      "path": "_spec/gpu-host-build-inventory.puml",
+      "sha256": "8f3cea4c9525cea1d329cd5bd78401eb41185a80d5abcb56d5e552f854f3a012"
+    },
+    {
+      "path": "_spec/gpu-build.puml",
+      "sha256": "d954872ee21e98ac2cf2f9afa1723197ec1f31fced2b8119a07e12ccc7601f62"
+    },
+    {
+      "path": "_spec/gpu-qualification.puml",
+      "sha256": "c3a90d1820b2c61d2d8c52386cfafd446c9919252d2a3e5ec638917c4e96f946"
+    },
+    {
+      "path": "_spec/gpu-input-transfer.puml",
+      "sha256": "c4acfaa79f0928c64d0e1ad8dbbc19abeeebe43f02e26b9f94c1bd4969073a63"
+    },
+    {
+      "path": "_spec/gpu-host-receive.puml",
+      "sha256": "820a23d127ba20fc17d272e2912483aafff814349c71bbe56e9c35c16bfebed8"
+    },
+    {
+      "path": "_spec/gpu-readiness.md",
+      "sha256": "74df16d145c25289a2da4ef1eec61814c6d5ab33afbdd40becc6406bf97d0e67"
+    },
+    {
+      "path": "_spec/gate-closure.md",
+      "sha256": "0756a002ce69a2e352766d8f6c784f7a6f54360e9f7cadb45a9386cde1ac8b9a"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "sha256": "718b2e2f79ce7d0da6b735f9966d0fbab54eb9225025fc10ca7bb8a4ee1ecfa0"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/receipt.json",
+      "sha256": "cf632c5896bd5d46b453a67aeb87d2f0bd735b252960c7eca6917cee802d6f60"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/record-check.json",
+      "sha256": "22f15b2bbf4b5ef09909dd2c3eb7b6f5cc0a4d601a1a14cae822b1d89ae443a7"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/review.json",
+      "sha256": "3203101e2ae0dc3a537ca11b4c5efe2b6136ad80e5c37d81be79cf0f960b99f1"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/approval-proposal.json",
+      "sha256": "63dc8f66d109a46d88c4f4b3a6e439ccccb9306e2fc3e8b9cf4e10545695c1e4"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/records-verification.json",
+      "sha256": "042e6b66e9810c82140eb1b5be41dd98d2d9ae3cfd3203b5b3e1f528e9ca05c9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/post-review-source-check.json",
+      "sha256": "42c9a7f5754744ee3a3f1bd4bc925a4a3b52dace8aefe4aa2c73468131054111"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/non-spec-publication-audit.json",
+      "sha256": "26ce70e01597f3ab00442a0495cc2ea9f00d146cb698b8d1bd300f11a3b33cf3"
+    }
+  ],
+  "results": [
+    {
+      "id": "git-head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 41,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/final-checks/git-head/command.stdout",
+          "bytes": 41,
+          "sha256": "b80e785a954371e47acfdbec23434a7d0baeea1128b36d69d4142a8821aad893"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/final-checks/git-head/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "spec-whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "_spec"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/final-checks/spec-whitespace/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/final-checks/spec-whitespace/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "working-scope",
+      "argv": [
+        "git",
+        "status",
+        "--short",
+        "--untracked-files=normal"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 1092,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/final-checks/working-scope/command.stdout",
+          "bytes": 1092,
+          "sha256": "1f407e6ed70e89ef1620e37842c14181456caaea0dba52c0f740fb018d31ef87"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/final-checks/working-scope/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "sourceHashesChecked": 327,
+  "protectedBaselineSources": 307,
+  "nativeManifestMembers": 65,
+  "evidenceFileHashesChecked": 24,
+  "orderedDiagramIndexMatches": 8,
+  "observationTwoOwnerCount": 1,
+  "docHashes": 11,
+  "newHandwrittenSourceAndDocWhitespaceClean": true,
+  "head": "25bcfb61ddde6849d10e61536266b5e2f50c5598",
+  "pumlRenderingPerformed": false,
+  "verificationScope": "STATIC_SOURCE_TYPES_PURE_MOCK_E2E_AND_ORDERED_SPEC_INDEX_ONLY",
+  "remainingHostInvocationsAuthorized": 0,
+  "hostExecutionAuthorized": false,
+  "copyingOrStagingAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "kernelJitCompilationAuthorized": false,
+  "publicationAuthorized": false,
+  "trainingAuthorized": false,
+  "originalHostArtifactBytesRehashed": false,
+  "trainingReady": false
+}

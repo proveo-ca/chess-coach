@@ -1,0 +1,17 @@
+docker_info_exit=0
+context_show_exit=0 context=default
+context=default contextEndpoint=unix:///var/run/docker.sock
+context_inspect_exit=0
+nvidia-container-toolkit-1.20.1-1.x86_64
+nvidia-container-toolkit-base-1.20.1-1.x86_64
+libnvidia-container-tools-1.20.1-1.x86_64
+libnvidia-container1-1.20.1-1.x86_64
+rpm_packages_exit=0
+nvidia-container-toolkit-base-1.20.1-1.x86_64
+ctk_package_owner_exit=0
+shell_path_lookup tool=nvidia-container-runtime exit=0 path=/usr/bin/nvidia-container-runtime
+shell_path_lookup tool=nvidia-container-runtime-hook exit=0 path=/usr/bin/nvidia-container-runtime-hook
+shell_path_lookup tool=nvidia-container-cli exit=0 path=/usr/bin/nvidia-container-cli
+shell_path_lookup tool=nvidia-cdi-hook exit=0 path=/usr/bin/nvidia-cdi-hook
+shell_path_lookup tool=nvidia-ctk exit=0 path=/usr/bin/nvidia-ctk
+shell_path_lookup tool=runc exit=0 path=/usr/bin/runc

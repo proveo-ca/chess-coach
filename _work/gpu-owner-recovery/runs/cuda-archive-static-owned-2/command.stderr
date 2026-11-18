@@ -1,0 +1,18 @@
+
+_work/gpu-owner-recovery/cuda-archive.test.ts:
+(pass) immutable approved acquisition fixture accepts only the exact post-acquisition continuation and complete source binding [35.46ms]
+(pass) proof, frozen-source, raw-stream, ledger and saved-byte corruption cannot inherit historical PASS [22.17ms]
+(pass) passive fake-ELF planning closes aliases and produces explicit read-only mounts with one private output [2.12ms]
+(pass) missing, ambiguous, injected-loader and untrusted native metadata fail without cache or host lookup fallback [0.96ms]
+(pass) XZ success requires parser stdout EOF, concurrent stderr EOF and zero actual reap [1.22ms]
+(pass) parser failure kills immediately but cannot settle before actual reap and stderr EOF [0.31ms]
+(pass) bounded output validation rejects kind, size, UTF-8, digest, prefix and path corruption [109.34ms]
+(pass) exclusive publication follows write-sync-close and preserves the first failure even when it is empty [0.61ms]
+(pass) closed wrapper validates continuation and root identities before claim, launch or publication [11.90ms]
+(pass) one exact tasks-only Mise configuration and outside gates preserve first-failure ordering [0.85ms]
+(pass) trusted child source runs only fixed XZ inside the quarantine and never publishes preliminary PASS [0.40ms]
+
+ 11 pass
+ 0 fail
+ 187 expect() calls
+Ran 11 tests across 1 file. [203.00ms]

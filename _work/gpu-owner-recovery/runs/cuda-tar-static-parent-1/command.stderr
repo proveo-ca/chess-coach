@@ -1,0 +1,21 @@
+
+_work/gpu-owner-recovery/cuda-tar.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+342 |   expect((await auditTar(stream(tarLimits.headerCount - 2)))).totals.headerCount).toBe(tarLimits.headerCount);
+                                                                                      ^
+error: Expected ";" but found ")"
+    at /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-tar.test.ts:342:81
+
+342 |   expect((await auditTar(stream(tarLimits.headerCount - 2)))).totals.headerCount).toBe(tarLimits.headerCount);
+                                                                                       ^
+error: Unexpected .
+    at /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-tar.test.ts:342:82
+-------------------------------
+
+
+ 0 pass
+ 1 fail
+ 1 error
+Ran 1 test across 1 file. [4.00ms]

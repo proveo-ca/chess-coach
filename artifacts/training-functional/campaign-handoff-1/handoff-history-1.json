@@ -1,0 +1,133 @@
+{
+  "version": "chess-coach.campaign-host-handoff.v1",
+  "status": "SOURCE_VERIFIED_BOUNDARY_PREPARATION_PUBLICATION_PENDING",
+  "authorization": "Executor: invalid stop; only stop when a decision is necessary or a command must be run in the host for verification (with a commit & push prior).",
+  "publication": {
+    "normalCommits": 1,
+    "nonForcePushes": 1,
+    "targetRef": "refs/heads/feat-ml-adjuntant-ii",
+    "pullRequest": 51,
+    "baseBranch": "main",
+    "force": false,
+    "amend": false,
+    "automaticRetry": false,
+    "oldConsumedGrantsRenewed": false
+  },
+  "source": {
+    "path": "artifacts/training-functional/campaign-handoff-1/preflight.ts",
+    "byteLength": 8262,
+    "sha256": "c7e599332531b6d940f323a69768ec70a0e1a0e2b87cd5a632275afb59057559"
+  },
+  "renderer": {
+    "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+    "byteLength": 4278,
+    "sha256": "911ed880467c2b265a9100eb20105ea5122f89db0b8e9f10fe69de8fe82d6c8a"
+  },
+  "packetCompletion": {
+    "path": "artifacts/training-functional/full-training-packet-1/completion.json",
+    "byteLength": 7322,
+    "sha256": "2e1513ee58d43cc4ec82f28422fc9b5a8150941d5191f2a4c2be626688f64d98"
+  },
+  "packetRequest": {
+    "path": "artifacts/training-functional/full-training-packet-1/request.json",
+    "byteLength": 8142,
+    "sha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331"
+  },
+  "plan": {
+    "version": "chess-coach.campaign-host-preflight.v1",
+    "host": "/home/gu1lty/Projects/proveo/chess-coach",
+    "cachedBun": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun",
+    "runsParent": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs",
+    "requestSha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331",
+    "minimumUsableBytes": "283467841536",
+    "minimumFreeEntries": "835600",
+    "freshRoots": [
+      "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-delivery-1",
+      "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-inputs-1",
+      "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-campaign-1"
+    ],
+    "retained": [
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs",
+        "kind": "directory"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/app",
+        "kind": "directory"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/reference",
+        "kind": "directory"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/qualification-inputs",
+        "kind": "directory"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/app/artifacts/training-functional/qualification-policy-score.ts",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/training-qualification-inputs-1/app/artifacts/training-functional/qualification-policy-channel.ts",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-score",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu/x86_64-unknown-linux-gnu/release/policy-channel",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-cpu39-1/native/target-cpu/x86_64-unknown-linux-gnu/release/policy-initialize",
+        "kind": "executable"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-build/llvm",
+        "kind": "directory"
+      },
+      {
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-runtime/rootfs/usr/local/cuda",
+        "kind": "directory"
+      }
+    ]
+  },
+  "hostOperations": "USER_RUN_FILESYSTEM_METADATA_ONLY_AFTER_CHECKED_PUBLICATION",
+  "allowedGroups": [
+    "statfs existing runs parent",
+    "lstat three proposed fresh roots",
+    "lstat exact retained tool and input paths"
+  ],
+  "forbidden": [
+    "content reads",
+    "writes",
+    "copy or preparation",
+    "subprocesses inside inspector",
+    "network",
+    "Docker",
+    "GPU or native programs",
+    "installation",
+    "reference builds",
+    "training"
+  ],
+  "flags": {
+    "trainingExecutionAuthorized": false,
+    "trainingExecuted": false,
+    "hostPreparationAuthorized": false
+  },
+  "oldPacketMetadataAndWorker112Changed": false,
+  "scopeLimits": [
+    "exposed free entries do not prove quotas",
+    "free-space observations are not reservations",
+    "tool kind/mode does not prove usability",
+    "no retained input payload validation",
+    "no independent HOST attestation"
+  ],
+  "delivery": "Fish-compatible explicit Bash; clean environment and neutral cwd; retained Bun1.4.0; source/plan hashes checked before built-in TS transpilation/import; stdout only; no source download or HOST file creation",
+  "postPublication": "Insert actual checked OID into LOCAL final command and receipt only; do not amend committed metadata"
+}

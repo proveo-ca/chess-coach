@@ -1,0 +1,66 @@
+{
+  "version": "chess-coach.cuda-archive-audit-source-review-provenance.v2",
+  "scope": "ONE_PASSIVE_STRUCTURAL_ARCHIVE_AUDIT_USING_COMMITTED_PRIVATE_BUN",
+  "reviewRecord": "_work/gpu-owner-recovery/cuda-archive-reviewed-v2.json",
+  "reviewRecordSha256": "dacf7e484328711b65f72d48ee6cba4808164fd6ce9ddb7bf3366868486f173c",
+  "requestSha256": "a968cc2761869c8634a3cc929f2b1d21a7804f7128bd1fb6b045f76598fbd9f1",
+  "sourceManifestSha256": "f7d3bed722df485aa5e82081ef85ebb2fcfb19511ef29b876d8ccb14073d2446",
+  "reviews": [
+    {
+      "role": "security-reviewer",
+      "sessionId": "ses_e4439a2c0ffeTD6G2gSAPqPEyM",
+      "verdict": "READY_FOR_SINGLE_PRIVATE_BUN_PASSIVE_ARCHIVE_AUDIT",
+      "scope": "SOURCE_ONLY_CONDITIONAL_ON_OUTSIDE_PIN_PLAN_AND_30_SECOND_ENVELOPE",
+      "remainingFindings": 0
+    },
+    {
+      "role": "adversarial-reviewer",
+      "sessionId": "ses_e4439a2b6ffeD4aw7uSogI27Fg",
+      "verdict": "READY_FOR_SINGLE_PRIVATE_BUN_PASSIVE_ARCHIVE_AUDIT",
+      "scope": "SOURCE_ONLY_CONDITIONAL_ON_OUTSIDE_PIN_PLAN_AND_30_SECOND_ENVELOPE",
+      "remainingFindings": 0
+    },
+    {
+      "role": "devops",
+      "sessionId": "ses_e44a58336ffePB4MyFlISk7KQC",
+      "verdict": "READY_FOR_SINGLE_PRIVATE_BUN_PASSIVE_ARCHIVE_AUDIT",
+      "scope": "SOURCE_ONLY_CONDITIONAL_ON_OUTSIDE_PIN_PLAN_AND_30_SECOND_ENVELOPE",
+      "remainingFindings": 0
+    }
+  ],
+  "staticReceipts": [
+    "_work/gpu-owner-recovery/runs/cuda-archive-v2-snapshot-parent-2/receipt.json",
+    "_work/gpu-owner-recovery/runs/cuda-archive-v2-static-parent-2/receipt.json",
+    "_work/gpu-owner-recovery/runs/cuda-archive-v2-types-parent-2/receipt.json",
+    "_work/gpu-owner-recovery/runs/cuda-archive-v2-runner-parent-2/receipt.json",
+    "_work/gpu-owner-recovery/runs/cuda-archive-v2-acquire-regression-2/receipt.json",
+    "_work/gpu-owner-recovery/runs/cuda-archive-v2-isolation-regression-2/receipt.json"
+  ],
+  "snapshotTests": {
+    "tests": 46,
+    "assertions": 1065
+  },
+  "archiveTests": {
+    "tests": 163,
+    "assertions": 842
+  },
+  "runnerTests": {
+    "tests": 16,
+    "assertions": 326
+  },
+  "types": "PASS",
+  "sourceCount": 26,
+  "predecessorProofCount": 97,
+  "oneOutsideDeadlineMs": 30000,
+  "firstActualFailureStopsSequence": true,
+  "completedSnapshotReviewSha256": "780a907710d5a934c5f02414db2bedfb91d56d7cc97fd6badf6015bfcf8f58ce",
+  "actualAuditPerformed": false,
+  "privateSnapshotExecuted": false,
+  "outerBootstrapTrustRetained": true,
+  "extractionPerformed": false,
+  "llvmCodeExecuted": false,
+  "buildIsolationQualified": false,
+  "custodyQualified": false,
+  "cudaCompilationEstablished": false,
+  "trainingReady": false
+}

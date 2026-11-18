@@ -1,0 +1,11 @@
+{
+  "scope": "SOURCE_ONLY_MOCK_NOT_HOST_EVIDENCE",
+  "actualDockerProcesses": 0,
+  "actualNativeProcesses": 0,
+  "actualDocker": 0,
+  "actualNative": 0,
+  "gpuExecuted": false,
+  "hostEvidence": false,
+  "dockerCliCompatibilityValidated": false,
+  "nativeCliCompatibilityValidated": false
+}

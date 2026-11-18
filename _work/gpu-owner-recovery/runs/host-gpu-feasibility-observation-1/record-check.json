@@ -1,0 +1,88 @@
+{
+  "status": "PASS_OPERATOR_REPORTED_GPU_F64_FEASIBILITY_RECORDS_ONLY",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/operator-summary.txt",
+      "sha256": "4c82399560ed332bbc83e4e534b66d73eac026b38a54292997b68511906a3a07"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/reported-receipt.json",
+      "sha256": "54385dcc114825ee21322d904720ec740021cd495392e529cb9595ed0248a48e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/observation.json",
+      "sha256": "93c5b2fe6476d3b32859fac1ff66a29efb65d430fe9da880a081f886b976386e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/contract.ts",
+      "sha256": "9fbccd615be491e90046a4ccc3894d421925fbfacdae515706baf0321c9d4396"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/verify-report.test.ts",
+      "sha256": "acec021ce17f76a19ec9bfc0f0e343fa40d8b58c3857b4c59bca68c6745a39b3"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-observation-1/verify-report.ts",
+      "sha256": "9889dc9a40381dddcb2be44be4f4e58084107876755d9c9df119bc5cc56166dc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/host-command-approval.json",
+      "sha256": "fbdbdf94fa605dc325cd1e617fce05a4228d5b93faf5b2dbeb8e56568c0ded1d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/plan.json",
+      "sha256": "104f3ece4ae325beed3b53035f108a72342ee347c76fbdc613da0436405ff132"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/host-command.fish",
+      "sha256": "c690e8b0261e6bf09e834a41394369f694393ec6c60e18aa31b0375110f00054"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/receipt.json",
+      "sha256": "cf632c5896bd5d46b453a67aeb87d2f0bd735b252960c7eca6917cee802d6f60"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/publication-result.json",
+      "sha256": "9f755db86cd67e98c7671e47ba7a743625f419974fd81e20e97498d0ee4f845f"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/issued-approval-check.json",
+      "sha256": "df4d158204a40b6231e82505871d2d2a69d016c8f11829025b280832b6ff327e"
+    }
+  ],
+  "protectedSourceHashesChecked": 327,
+  "reportedHostExitCode": 0,
+  "reportedExactTestsPassed": 2,
+  "reportedNativeArgvChecked": 2,
+  "reportedTelemetryArgvChecked": 2,
+  "reportedCompleteDockerArgvChecked": 5,
+  "reportedCaptureMetadataRows": 28,
+  "reportedUniqueCapturePaths": 18,
+  "reportedArtifactMetadataEntries": 5,
+  "reportedSamplesCheckedAgainstFunctionalGuard": 2,
+  "reportedFreeMemoryMiB": [
+    7740,
+    7582
+  ],
+  "reportedJournalMetadata": {
+    "path": "/evidence/inner/events.ndjson",
+    "bytes": 1476,
+    "sha256": "b7cf001762c0080b757f56aae50823bce66fd7629b218b6600d039b7e3caa17d",
+    "attemptedBytes": 1476,
+    "writeFailed": false,
+    "count": 8,
+    "lastSequence": 8
+  },
+  "reportedHostElapsedMs": 4514.140361,
+  "reportedInnerElapsedMs": 3407.88992,
+  "hostInvocationsRemaining": 0,
+  "publicationInvocationsRemaining": 0,
+  "originalHostFilesReceived": false,
+  "originalHostArtifactBytesRehashedInCoding": false,
+  "originalHostJournalBytesVerified": false,
+  "actualOperatorCommandBytesIndependentlyVerified": false,
+  "codingHostDockerOrNativeGpuOperationsPerformed": false,
+  "newGpuOrJitExecutionAuthorized": false,
+  "newPublicationAuthorized": false,
+  "trainingReady": false
+}

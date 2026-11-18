@@ -1,0 +1,14 @@
+[
+  {
+    "path": "_spec/gpu-owner.puml",
+    "sha256": "1cd594925c26cd3d53741331ea07af8c097ae7caa909d15a22711f625ddbf067"
+  },
+  {
+    "path": "_spec/gpu-cooperative-policy.puml",
+    "sha256": "d330a9ec2313d0e13705c24067b4091d4f823f224bb004034c53aaf4c18e97e1"
+  },
+  {
+    "path": "_spec/reference/object-graph-authentication.puml",
+    "sha256": "44da9a49fb005c269130a7e6dd70c0a099d5f3a12608cf3357461cdc16d88602"
+  }
+]

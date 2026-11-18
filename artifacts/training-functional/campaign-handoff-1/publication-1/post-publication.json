@@ -1,0 +1,69 @@
+{
+  "status": "PASS_SOURCE_PACKET_HANDOFF_COMMIT_REMOTE_EXISTING_PR_AND_LITERAL_COMMAND",
+  "head": "c60a45e1588fabf16c76da7127e160b17147dcf7",
+  "parent": "dad29306a83268aeed720b7e9b8311a6d9d941e1",
+  "remote": {
+    "ref": "refs/heads/feat-ml-adjuntant-ii",
+    "oid": "c60a45e1588fabf16c76da7127e160b17147dcf7"
+  },
+  "pullRequest": {
+    "baseRefName": "main",
+    "headRefName": "feat-ml-adjuntant-ii",
+    "headRefOid": "c60a45e1588fabf16c76da7127e160b17147dcf7",
+    "number": 51,
+    "state": "OPEN",
+    "url": "https://github.com/proveo-ca/chess-coach/pull/51"
+  },
+  "freeze": {
+    "path": "artifacts/training-functional/campaign-handoff-1/publication-1/freeze.json",
+    "byteLength": 35850,
+    "sha256": "e6284f93be06f60c72b30e54f00733df9b3152ac160bcaa044adc46c571e9ff0"
+  },
+  "stageAudit": {
+    "path": "artifacts/training-functional/campaign-handoff-1/publication-1/stage-audit.json",
+    "byteLength": 1174,
+    "sha256": "1e6460eae8274954b66f0e24145608366ea26aa8dea57138ebd9a3b37f878753"
+  },
+  "commitStdout": {
+    "path": "artifacts/training-functional/campaign-handoff-1/publication-1/commit.stdout",
+    "byteLength": 10778,
+    "sha256": "272ca8e1b9b2d0c71d6e600bd1b59f620172a87c418bffe7fc4f7f6d6f700c44"
+  },
+  "commitStderr": {
+    "path": "artifacts/training-functional/campaign-handoff-1/publication-1/commit.stderr",
+    "byteLength": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "pushStdout": {
+    "path": "artifacts/training-functional/campaign-handoff-1/publication-1/push.stdout",
+    "byteLength": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "pushStderr": {
+    "path": "artifacts/training-functional/campaign-handoff-1/publication-1/push.stderr",
+    "byteLength": 362,
+    "sha256": "95e2da651a10c65b1a2cfc60370915873e5b598eccee3a8d471eb0a6347ec8d4"
+  },
+  "hostCommand": {
+    "path": "artifacts/training-functional/campaign-handoff-1/publication-1/HOST-command.sh",
+    "byteLength": 6572,
+    "sha256": "ecb22877df86530a4d7e35cf0e0e4a6c734208b201ac346802909298e858a37e"
+  },
+  "commandVerification": {
+    "path": "artifacts/training-functional/campaign-handoff-1/publication-1/host-command-verification.json",
+    "byteLength": 789,
+    "sha256": "857e9596fe85ebf046b9e005e0b60500eb399c8f036103a512156d05f9cc97ba"
+  },
+  "normalCommitsPerformed": 1,
+  "nonForcePushesPerformed": 1,
+  "freshConditionalPublicationGrant": "CONSUMED",
+  "amendForceRetryOrAnotherPublicationPerformed": false,
+  "merged": false,
+  "indexClean": true,
+  "requiredNextAction": "USER_RUN_EXACT_READONLY_HOST_METADATA_COMMAND_AND_RETURN_JSON",
+  "actualHostMetadataCollected": false,
+  "hostPreparationExecuted": false,
+  "trainingExecuted": false,
+  "trainingExecutionAuthorized": false,
+  "scope": "LOCAL_POST_PUBLICATION_AND_COMMAND_RECEIPT_OUTSIDE_COMMIT_NO_SELF_REFERENCE"
+}

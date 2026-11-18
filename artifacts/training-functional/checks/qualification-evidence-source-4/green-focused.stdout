@@ -1,0 +1,4 @@
+bun test v1.4.0 (34cbb9a40)
+QUALIFICATION_EVIDENCE_SOURCE_4_MEASURE {"name":"successful-live-settlement","elapsedMs":409.27044600000227,"status":"PASS_RETAINED_FUNCTIONAL_EVIDENCE"}
+QUALIFICATION_EVIDENCE_SOURCE_4_SETTLEMENT {"rawSnapshotKeys":["placement","turn","ccLives","phase","gas","gasIncome","queue","stored"],"normalizedSnapshotKeys":["placement","turn","ccLives","phase","gas","gasIncome","stored","queue"],"rawSha256":"c71be7e23dcdc25ba07674edbd770222a1c65515e2ef324dd723c03073caa36a","normalizedSha256":"0afd8476ba7d223e29bbf53b7c0d606bb109aac4c3e9e6b660b03124642f1545","retainedSha256":"c71be7e23dcdc25ba07674edbd770222a1c65515e2ef324dd723c03073caa36a","failures":[]}
+QUALIFICATION_EVIDENCE_SOURCE_4_PROFILE {"scope":"SYNTHETIC_SOURCE_ONLY","cache":"NONE","profiles":[{"name":"successful-live-settlement","elapsedMs":409.27044600000227,"status":"PASS_RETAINED_FUNCTIONAL_EVIDENCE"}]}

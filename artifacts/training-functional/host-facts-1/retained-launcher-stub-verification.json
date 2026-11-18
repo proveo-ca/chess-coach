@@ -1,0 +1,8 @@
+{
+  "status": "PASS_EXPORTED_BASH_FUNCTION_FORWARDS_EXACT_PUBLISHED_SOURCE_WITH_STUB_ONLY",
+  "publishedScriptSha256": "cf566b4f55a1d00fe835918b4e97388fba1e5ddf7c5e15e7d568103da6d7da6e",
+  "retainedHostBunExecuted": false,
+  "hostFactsSourceEvaluated": false,
+  "hostQueriesExecuted": 0,
+  "additionalCommitOrPushPerformed": false
+}

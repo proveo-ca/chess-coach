@@ -1,0 +1,16 @@
+{
+  "status": "NOT_READY_IMPLEMENTATION_SOURCE_ONLY_FULL_CLOCK_SCOPE",
+  "session": "ses_e2e4b1ef3ffeptPhqouftYEoBl",
+  "verification": "verification-8/receipt.json",
+  "readOnly": true,
+  "priorFindingsRemainCleared": true,
+  "findings": [
+    {"severity":"HIGH","path":"capture.ts","line":514,"code":"SWALLOWED_CLEANUP_CLOCK_FAILURE_CAN_RETAIN_OPERATIONAL_PASS_ELIGIBILITY"},
+    {"severity":"HIGH","path":"capture.ts","line":515,"code":"CLOCK_FAILURE_BETWEEN_CLEANUP_AVAILABILITY_AND_CUTOFF_CAN_SKIP_TERMINATION"}
+  ],
+  "callerReviewed": false,
+  "operationalReadinessGranted": false,
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

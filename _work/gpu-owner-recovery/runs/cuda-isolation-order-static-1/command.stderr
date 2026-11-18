@@ -1,0 +1,22 @@
+
+_work/gpu-owner-recovery/cuda-isolation.test.ts:
+(pass) fixed bwrap argv exposes only three regular files in a fresh minimal root [0.62ms]
+(pass) unsupported physical layouts and invalid file identities fail at the filesystem layer [0.40ms]
+(pass) unknown CLI arguments fail before review reads, filesystem inspection or spawn [0.31ms]
+(pass) the exact grant authorizes only the preflight-first slice [1.89ms]
+(pass) halted, consumed, renewal-required and missing approval cannot reuse a reviewed source generation [0.78ms]
+(pass) the closed Mise plan trusts only the reviewed task file before paranoid discovery and task execution [1.08ms]
+(pass) the Mise consumer stops on the first stage failure without skipping forward or retrying [0.94ms]
+(pass) the Mise consumer rejects malformed, extra or tool-bearing discovery before task execution [0.84ms]
+(pass) outside gates and authenticated tasks-only TOML guard every Mise stage [0.64ms]
+(pass) review acceptance requires every boolean and exact current request and source bytes [1.90ms]
+(pass) a missing or mismatched review stops before any binary inspection or spawn [0.47ms]
+(pass) probe awaits the actual exit in the existing process group and reports only inert success [0.48ms]
+(pass) spawn errors and exact nonzero exits never become no-op success or trigger retries [2.16ms]
+(pass) mise is tasks-only with a fixed Bun command and preserves the entire private provisioning environment [0.33ms]
+(pass) the implementation has no native-operation dispatch, nested supervisor, timer, retry or ambient environment [2.08ms]
+
+ 15 pass
+ 0 fail
+ 251 expect() calls
+Ran 15 tests across 1 file. [32.00ms]

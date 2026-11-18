@@ -1,0 +1,10 @@
+{
+  "stage": "02-capture",
+  "argv": [
+    "/usr/local/bin/mise",
+    "run",
+    "--raw",
+    "cuda:capture-audit-bun"
+  ],
+  "exitCode": 0
+}

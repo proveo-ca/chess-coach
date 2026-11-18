@@ -1,0 +1,29 @@
+{
+  "originalPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/source-emission-1/postcheck.ts",
+  "snapshotPath": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/source-emission-1/postcheck-source-snapshot-3.ts",
+  "bytes": 12647,
+  "sha256": "54bec186d9013c39f955377974ff78b43f2a5be05c841e8e0a05fde342bdebdd",
+  "metadata": {
+    "dev": "65088",
+    "ino": "3158022",
+    "mode": "33188",
+    "size": "12647",
+    "mtimeNs": "1794560731425799525",
+    "ctimeNs": "1794560731425799525"
+  },
+  "failedReadOnlyPostcheck": {
+    "postcheck3.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "postcheck3.stderr": {
+      "bytes": 1528,
+      "sha256": "d150048b2be7a9430b99c03ba3765606044e7b436226716173e5d7760e6e3d50"
+    },
+    "postcheck3-exit-code.txt": {
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    }
+  },
+  "sourceEmitterRerun": false
+}

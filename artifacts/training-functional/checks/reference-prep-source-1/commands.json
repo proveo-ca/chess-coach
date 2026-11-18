@@ -1,0 +1,12 @@
+{
+  "scope": "SYNTHETIC_SOURCE_VERIFICATION_ONLY",
+  "tests": "bun --no-env-file --no-install test artifacts/training-functional/reference-prep.test.ts",
+  "strictTypes": "bun --no-env-file --no-install node_modules/typescript/bin/tsc --noEmit --strict --noUnusedLocals --noUnusedParameters --target ES2022 --module ESNext --moduleResolution Bundler --allowImportingTsExtensions --types bun artifacts/training-functional/reference-prep.ts artifacts/training-functional/reference-prep.test.ts",
+  "actualOperationalModesInvoked": [],
+  "actualGETRequests": 0,
+  "actualReferenceAssembly": false,
+  "actualReferenceBuild": false,
+  "packageEvaluation": false,
+  "nativeHostGpuTraining": false,
+  "trainingReady": false
+}

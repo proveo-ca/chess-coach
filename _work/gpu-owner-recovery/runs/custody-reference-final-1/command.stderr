@@ -1,0 +1,30 @@
+
+packages/runtime/tests/reference-bundles.test.ts:
+(pass) reference source guard requires an explicit absolute exact-pin root [27.29ms]
+(pass) reference source guard rejects a canonical tracked subdirectory with untracked entrypoints before building [1068.77ms]
+(pass) reference source guard rejects tracked modifications before and after staging [1485.99ms]
+(pass) reference source guard rejects tracked modifications hidden by --assume-unchanged [1031.68ms]
+(pass) reference source guard rejects tracked modifications hidden by --skip-worktree [1136.89ms]
+(pass) reference source guard rejects source substitutions hidden by Git replacement refs [791.92ms]
+(pass) reference source guard authenticates physical bytes hidden by a synthetic clean filter [1210.37ms]
+(pass) reference source guard rejects a physical symlink replacing tracked package.json [733.33ms]
+(pass) reference source guard rejects a physical symlink replacing tracked packages [726.51ms]
+(pass) reference source guard rejects populated submodule source [735.76ms]
+(pass) reference source guard rejects untracked bundle input metadata even with identical tracked bytes [1062.81ms]
+(pass) reference source guard requires original bundle input size, digest, paths, and selected entry coverage [2227.19ms]
+(pass) reference source guard reauthenticates physical inputs after inventory capture [776.66ms]
+
+_work/gpu-owner-recovery/scratch/audit-objects-6o5lDV/packages/runtime/tests/reference-bundles.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find package 'zod' from '/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/scratch/audit-objects-6o5lDV/packages/runtime/src/corpus.ts'
+-------------------------------
+
+
+ 13 pass
+ 1 filtered out
+ 1 fail
+ 1 error
+ 88 expect() calls
+Ran 14 tests across 2 files. [13.82s]

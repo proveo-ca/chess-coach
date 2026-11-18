@@ -1,0 +1,13 @@
+
+_work/gpu-owner-recovery/runs/host-gpu-full-source-4/publication-preparation.test.ts:
+(pass) generation four fixes parent, branch, destination and sixteen source-document members [0.38ms]
+(pass) candidate scope admits actual text history without caches binaries or unrelated source [0.11ms]
+(pass) self metadata and later action receipts remain local while prior action history stays eligible [0.06ms]
+(pass) bounded text validation rejects binary invalid UTF-8 and oversize content [4.69ms]
+(pass) read-only discovery compares HEAD and exposes no write or publication subcommand [0.07ms]
+(pass) fixed HTTPS push template accepts only a full commit SHA and never a transport fallback [1.77ms]
+
+ 6 pass
+ 0 fail
+ 55 expect() calls
+Ran 6 tests across 1 file. [31.00ms]

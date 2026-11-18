@@ -1,0 +1,24 @@
+
+artifacts/training-functional/campaign-volume-preflight-1/access-1/preflight.test.ts:
+(pass) frozen access plan exactly projects packet2 targets and binds its completion without mutating them [1.22ms]
+(pass) MOCK observation remains caller-only, read-only and separate from container readiness or capacity [2.70ms]
+(pass) proposed roots distinguish ENOENT from permission errors and existing directories [2.11ms]
+(pass) reported root-owned 0644 metadata never substitutes for caller search access [0.66ms]
+(pass) ancestor links, incorrect kinds, unknown access and missing retained tools remain blocking observations [0.49ms]
+(pass) malformed frozen allowlists reject before all metadata operations [0.30ms]
+(pass) metadata errors remain bounded codes rather than exception text or fabricated observations [1.69ms]
+(pass) missing SELinux facilities stay unknown and do not become compatibility proof [0.48ms]
+(pass) SELinux reads and label output reject oversized or invalid bytes without parsing payloads [1.01ms]
+(pass) metadata deadline does not renew or start later operations [0.46ms]
+(pass) an observation timeout remains unknown with one cancellation and no operation retry [0.46ms]
+(pass) transpiled embedded source imports only builtin modules and remains inert under process/network denial [3.37ms]
+(pass) production adapters reject every path outside their fixed read-only target sets [0.65ms]
+(pass) the sole production subprocess has fixed ls metadata argv, environment, output and time bounds [0.19ms]
+(pass) label target lists never include unobserved missing paths [0.48ms]
+(pass) rendered delivery checks compressed and decoded hashes before import and passes shell syntax [6.78ms]
+(pass) corrupted delivery stops at transport authentication before evaluating embedded HOST metadata [22.96ms]
+
+ 17 pass
+ 0 fail
+ 85 expect() calls
+Ran 17 tests across 1 file. [386.00ms]

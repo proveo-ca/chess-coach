@@ -1,0 +1,11 @@
+{
+  "scope": "READ_ONLY_RECHECK_LAUNCHER_PARSE_FAILURE_NOT_PREPARATION_FAILURE",
+  "exitCode": 1,
+  "error": "Bun inline launcher parse error from a mismatched string delimiter",
+  "referenceRetryVerifyInvoked": false,
+  "networkRequests": 0,
+  "referenceBuilds": 0,
+  "operationalReceiptChanged": false,
+  "operationalPreparationStatus": "PASS",
+  "trainingReady": false
+}

@@ -1,0 +1,25 @@
+{
+  "mode": "list",
+  "success": true,
+  "results": [
+    {
+      "step": "_work/gpu-owner-recovery/runs/provisioned-tools-final-custody/00",
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 137,
+      "stderrBytes": 0
+    },
+    {
+      "step": "_work/gpu-owner-recovery/runs/provisioned-tools-final-custody/01",
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 777,
+      "stderrBytes": 0
+    }
+  ],
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

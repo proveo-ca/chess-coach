@@ -1,0 +1,11 @@
+{
+  "status": "SELECTED_DIRECTION_DIFF_REVIEW_ONE_AUDIT_SCOPE_CORRECTION_REQUIRED",
+  "adversarialSession": "ses_e2f12cf9fffeWm7bfMxFM6pEbv",
+  "ready": false,
+  "finding": {"severity":"MEDIUM","path":"packet-audit.py","issue":"A co-located proposal READY_DIRECTION_ONLY claim can satisfy the canonical source-review regex after the canonical review generation changes."},
+  "audit4PassRetainedAsPreCorrectionProof": true,
+  "proposalVerification2AndReview2Unaffected": true,
+  "primaryCanonicalVerification4AndReview2Unaffected": true,
+  "newAuthorityGranted": false,
+  "trainingReady": false
+}

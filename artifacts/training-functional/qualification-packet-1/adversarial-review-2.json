@@ -1,0 +1,20 @@
+{
+  "scope": "READ_ONLY_FINAL_CHECKER_SOURCE_REVIEW_NOT_HARDWARE_QUALIFICATION",
+  "reviewerSession": "ses_e1718eb55ffe05HZkAbP0jRyUr",
+  "reportedReadyToMerge": false,
+  "findings": [
+    {
+      "severity": "HIGH",
+      "path": "artifacts/training-functional/qualification-evidence.ts",
+      "line": 438,
+      "code": "JOURNAL_NATIVE_PREFIX",
+      "description": "Schema parsing reorders snapshot stored/queue fields before hashing; successful settlements retain the original snapshot order and fail the checker",
+      "resolution": "PENDING_CHECKER_ONLY_CORRECTION_AND_SETTLEMENT_REGRESSION"
+    }
+  ],
+  "successfulPriorVerification": "checks/qualification-2: 798 tests and twelve PASS categories do not accept this known-bug source generation",
+  "testsRerunByReviewer": false,
+  "hardwareQualificationClaimed": false,
+  "publicationAuthorized": false,
+  "trainingReady": false
+}

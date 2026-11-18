@@ -1,0 +1,17 @@
+{
+  "version": "chess-coach.input-inventory-record-review.v1",
+  "status": "ACCEPTED_SOURCE_AND_RETAINED_METADATA_RECORDS_ONLY",
+  "executionReceipt": "_work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/receipt.json",
+  "sourceReceipt": "_work/gpu-owner-recovery/runs/gpu-input-inventory-source-3/receipt.json",
+  "integrityReceipt": "_work/gpu-owner-recovery/runs/gpu-qualification-input-inventory-1/integrity-check.json",
+  "adversarial": { "session": "ses_e3db08ecaffe7JpgpwIKHCgyMl", "verdict": "READY_METADATA_RECORDS_ONLY" },
+  "security": { "session": "ses_e3db08ecaffd8jrnYUsS9UQS84", "verdict": "READY_SOURCE_AND_RETAINED_METADATA_WITHIN_EXACT_SCOPE" },
+  "codingMetadataAuthority": "CONSUMED_ONE_ZERO_REMAINING",
+  "operatorHostAuthority": "APPROVED_NOT_EXECUTED_BY_AGENT_ONE_PULL_ONE_CONTAINER_ONLY",
+  "sourceTransferOrPublishingAuthorized": false,
+  "stagingQualified": false,
+  "buildQualified": false,
+  "gpuQualified": false,
+  "trainingReady": false,
+  "fullAssuranceFindingsClosed": false
+}

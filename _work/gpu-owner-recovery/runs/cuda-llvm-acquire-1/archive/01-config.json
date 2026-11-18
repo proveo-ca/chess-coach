@@ -1,0 +1,12 @@
+{
+  "stage": "01-config",
+  "argv": [
+    "/usr/local/bin/mise",
+    "config",
+    "ls",
+    "--json"
+  ],
+  "exitCode": 0,
+  "signalCode": null,
+  "failure": null
+}

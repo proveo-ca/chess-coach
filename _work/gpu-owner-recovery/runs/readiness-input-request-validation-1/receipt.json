@@ -1,0 +1,32 @@
+{
+  "version": "chess-coach.readiness-input-request-validation.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "-e",
+    "\nimport { readFileSync } from 'node:fs';\nimport { createHash } from 'node:crypto';\nconst hash=bytes=>createHash('sha256').update(bytes).digest('hex');\nconst request=JSON.parse(readFileSync('_work/gpu-owner-recovery/cuda-input-request.json','utf8'));\nconst closure=JSON.parse(readFileSync('_work/gpu-owner-recovery/closure.json','utf8'));\nconst metadata=JSON.parse(readFileSync(request.observedBlockerReceipt,'utf8'));\nconst lock=Bun.TOML.parse(readFileSync('Cargo.lock','utf8'));\nconst exact=lock.package.find(item=>item.name==='cubek-fft'&&item.version==='0.3.1');\nif(!exact||request.requestedArtifacts.length!==1)throw Error('EXACT_ONE_LOCKED_INPUT_REQUIRED');\nconst artifact=request.requestedArtifacts[0];\nif(artifact.sha256!==exact.checksum||artifact.byteLength!==56719||artifact.url!=='https://static.crates.io/crates/cubek-fft/cubek-fft-0.3.1.crate')throw Error('REQUEST_IDENTITY_MISMATCH');\nif(request.acquisitionAuthorized!==false||request.cudaCompilationAuthorizedByThisRequest!==false||request.dependencyBuildScriptExecutionAuthorizedByThisRequest!==false||request.hostOrContainerOperationsAuthorized!==false||request.trainingReady!==false)throw Error('AUTHORITY_BROADENED');\nif(metadata.status!=='FAIL'||metadata.sourceChanged!==false||metadata.sourceKind!=='ACTUAL_WORKSPACE_NOT_SURROGATE'||metadata.compilationPerformed!==false||metadata.buildScriptsExecuted!==false||!metadata.argv.includes('--locked')||!metadata.argv.includes('--offline'))throw Error('ACTUAL_OFFLINE_FAILURE_REQUIRED');\nfor(const source of metadata.sources){if(hash(readFileSync(source.path))!==source.sha256)throw Error('METADATA_INPUT_CHANGED:'+source.path);}\nfor(const stream of metadata.streams){const bytes=readFileSync(stream.path);if(hash(bytes)!==stream.sha256||bytes.length!==stream.bytes)throw Error('FAILED_STREAM_CHANGED');}\nif(closure.sourceHandoffIsTerminal!==false||closure.overarchingObjective!=='trainingReady:true'||closure.newOperationalOrAcquisitionAuthorityGranted!==false)throw Error('PREMATURE_TERMINAL_SCOPE');\nconsole.log(JSON.stringify({status:'PASS',exactInput:{name:artifact.name,version:artifact.version,byteLength:artifact.byteLength,sha256:artifact.sha256},actualOfflineMetadataFailurePreserved:true,lockAndSourceInputsUnchanged:true,sourceHandoffIsTerminal:false,acquisitionAuthorized:false,trainingReady:false},null,2));\n"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 386,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "stream": "stdout",
+      "path": "_work/gpu-owner-recovery/runs/readiness-input-request-validation-1/command.stdout",
+      "bytes": 386,
+      "sha256": "f423b3898418dc829df2fa82daa452fd63ba5e103630c6f5c72baea85536fb83"
+    },
+    {
+      "stream": "stderr",
+      "path": "_work/gpu-owner-recovery/runs/readiness-input-request-validation-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

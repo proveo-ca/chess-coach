@@ -1,0 +1,76 @@
+{
+  "status": "READY_SOURCE_ONLY_ALL_FOUR_HIGH_FINDINGS_CLOSED",
+  "scope": "READ_ONLY_CORRECTED_SOURCE_PACKET_REVIEW_NOT_HARDWARE_OR_EXECUTION_AUTHORITY",
+  "source": [
+    {
+      "path": "artifacts/training-functional/campaign-plan.ts",
+      "byteLength": 7857,
+      "sha256": "364bc16215013c5f7325857beb88125935b393e89b7f0db533bad68bd13b76d9"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-plan.test.ts",
+      "byteLength": 4437,
+      "sha256": "8e2b06d6003c25e4e6381ec4ddbe89ec6559db7dbeea3b3b1b887f5edfec19d5"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-operator.ts",
+      "byteLength": 32121,
+      "sha256": "b73a92e01aca66246bc0953199e13fc02ec86d770aece410fa99ef3db9d840f7"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-operator.e2e.test.ts",
+      "byteLength": 26273,
+      "sha256": "e097c5b3a4667278427b4051b2659478e5e9031c4a09ba10d756e59c171ae532"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-evidence.ts",
+      "byteLength": 38934,
+      "sha256": "25fb22018e45f15d0d7df05e772fe98c2c932fc94220827bfae9d45ee707be71"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-evidence.test.ts",
+      "byteLength": 41369,
+      "sha256": "768182e11dfa08eeec0816a39bc6cfa066fe818f07b0c5d56e0589f7f1e25234"
+    }
+  ],
+  "assembler": {
+    "path": "artifacts/training-functional/full-training-packet-1/assemble.ts",
+    "byteLength": 5604,
+    "sha256": "8b99384f49ad0d4bd021b2cf32d51931671e4fcde64bf7c6a505c5afaa163925"
+  },
+  "previousReview": {
+    "path": "artifacts/training-functional/full-training-packet-1/review-1.json",
+    "byteLength": 1579,
+    "sha256": "63d926817bbf08188449bc684da7fd1d1f67206feda2fde47496e50ab36528fd"
+  },
+  "verificationGeneration": {
+    "path": "artifacts/training-functional/full-training-packet-1/checks-4/receipt.json",
+    "byteLength": 54820,
+    "sha256": "21ac8e609e24bb945c839e3e623fe9ed689a0784d2387eff33e6959a033a3b86"
+  },
+  "staticGeneration": {
+    "path": "artifacts/training-functional/full-training-packet-1/checks-4/static-receipt.json",
+    "byteLength": 2290,
+    "sha256": "fa4dcb1b6d5eb2bbbe0e43ce46b37a5c402a2c2f30adc4ff28ececd65a99de62"
+  },
+  "adversarial": {
+    "session": "ses_e14c2804fffeSvkBpEWrOVdMsE",
+    "ready": true,
+    "closedHighFindings": 3,
+    "findings": []
+  },
+  "security": {
+    "session": "ses_e14c28048ffe5JaIfZxfKHAW06",
+    "ready": true,
+    "closedHighFindings": 1,
+    "risk": "low",
+    "findings": []
+  },
+  "devops": {
+    "session": "ses_e14f65c65ffeT3ojCy0PwM2WyJ",
+    "decision": "GO_SOURCE_ONLY",
+    "findings": []
+  },
+  "trainingExecutionAuthorized": false,
+  "publicationAuthorized": false
+}

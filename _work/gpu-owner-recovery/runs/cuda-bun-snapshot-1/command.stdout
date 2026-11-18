@@ -1,0 +1,6 @@
+{"stage":"00-trust","argv":["/usr/local/bin/mise","trust","/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot-mise.toml"]}
+{"stage":"00-trust","argv":["/usr/local/bin/mise","trust","/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot-mise.toml"],"exitCode":0,"signalCode":null,"failure":null}
+{"stage":"01-config","argv":["/usr/local/bin/mise","config","ls","--json"]}
+{"stage":"01-config","argv":["/usr/local/bin/mise","config","ls","--json"],"exitCode":0,"signalCode":null,"failure":null}
+{"stage":"02-capture","argv":["/usr/local/bin/mise","run","--raw","cuda:capture-audit-bun"]}
+{"exitCode":0,"failedStage":null,"completedStages":["00-trust","01-config","02-capture"]}

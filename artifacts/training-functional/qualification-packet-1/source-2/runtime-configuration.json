@@ -1,0 +1,32 @@
+{
+  "scope": "PROPOSED_CONFIGURATION_NOT_EXECUTION",
+  "plan": {
+    "path": "artifacts/training-functional/qualification-packet-1/plan.json",
+    "byteLength": 5858,
+    "sha256": "d9d53903cb9db66e86aafcaad41e543a4c6a8ae31cb62d00928fa33878a4364f"
+  },
+  "implementations": [
+    {
+      "path": "artifacts/training-functional/qualification-evidence.ts",
+      "byteLength": 54645,
+      "sha256": "55dd89577183eddecced460eb2666c2074c54676504bd016293bc9449ecd58b8"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-operator.ts",
+      "byteLength": 37727,
+      "sha256": "f8a4ec4db0b765bfde06016a4cdd663d33a57d85e6b0d8bcf785883e27ef603f"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-policy-channel.ts",
+      "byteLength": 3779,
+      "sha256": "ea9871209c344b894e4b9bd72b19e3508decc2a7a1f12e9ec7720239f122504e"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-policy-score.ts",
+      "byteLength": 3777,
+      "sha256": "5e6740635cbeeafaba07ae200a18f9848fc90e9d6351e6e3d74736f3a4ef21ea"
+    }
+  ],
+  "executionAuthorized": false,
+  "trainingReady": false
+}

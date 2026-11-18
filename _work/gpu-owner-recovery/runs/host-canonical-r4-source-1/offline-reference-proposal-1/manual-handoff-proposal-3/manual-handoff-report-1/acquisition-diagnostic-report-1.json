@@ -1,0 +1,77 @@
+{
+  "version": "chess-coach.h3-acquisition-diagnostic-report.v1",
+  "evidenceScope": "REPORT",
+  "nonAuthorizing": true,
+  "originalsAreHostByteCaptures": false,
+  "reportSource": "GENUINE_EXECUTOR_MESSAGE",
+  "artifacts": [
+    {
+      "role": "observation",
+      "reportedPath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/reference-package-handoff-3/snapshot/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/acquisition-invocation-1/observation.json",
+      "reportedBytes": 21494,
+      "reportedType": "regular file",
+      "representation": "RECONSTRUCTED_FROM_REPORTED_FIELDS_AND_MATCHING_FROZEN_METADATA",
+      "originalHostByteCapture": false,
+      "localReconstruction": {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/observation.report.json",
+        "bytes": 21494,
+        "sha256": "0a73854d02448b3c3644dacd5a9ea654cea1e95164a1973f3dc099b7c854445a",
+        "gitBlobOid": "847d97299c2af4e39f26cf501724aebfb666e1d4"
+      }
+    },
+    {
+      "role": "attempt",
+      "reportedPath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/acquisition-execution-1/attempt.json",
+      "reportedBytes": 353,
+      "reportedType": "regular file",
+      "representation": "RECONSTRUCTED_FROM_REPORTED_FIELDS_AND_MATCHING_FROZEN_METADATA",
+      "originalHostByteCapture": false,
+      "localReconstruction": {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/attempt.report.json",
+        "bytes": 353,
+        "sha256": "e431cb391f3f1c068cd5092e37db3959c9182ce4cef0ac137d3f68b7e09923e1",
+        "gitBlobOid": "87934acf1d9c8de46d5e2ac2a9c4a3d0f29b4094"
+      }
+    },
+    {
+      "role": "receipt",
+      "reportedPath": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/acquisition-execution-1/consumption-receipt.json",
+      "reportedBytes": 17825,
+      "reportedType": "regular file",
+      "representation": "RECONSTRUCTED_FROM_REPORTED_FIELDS_AND_MATCHING_FROZEN_METADATA",
+      "originalHostByteCapture": false,
+      "localReconstruction": {
+        "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/receipt.report.json",
+        "bytes": 17825,
+        "sha256": "7e030044a024fb973b359448847396b651b44a284d9556126bae46c8419dfe48",
+        "gitBlobOid": "67a25ccd6457ee76a9453106634d21f95c2b0f7e"
+      }
+    }
+  ],
+  "reconstructionMetadata": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source3/execution-binding3.json",
+      "bytes": 16531,
+      "sha256": "f5a2dd1946213fbe42760db14011ccc6afab5909e659016d47b72f369a3a266c",
+      "gitBlobOid": "a977988ab7c40d3e3846c08989ba529f1a089a96"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/invocation-ready3.json",
+      "bytes": 4552,
+      "sha256": "499cd2f22c554dd7349498cc4bdc101650489500c723822ad375457260699246",
+      "gitBlobOid": "34c362fb61e8eeae1d18060bcb85e780ebba3868"
+    }
+  ],
+  "reportedObserverReceiptSha256": "7e030044a024fb973b359448847396b651b44a284d9556126bae46c8419dfe48",
+  "receiptReconstructionMatchesReportedObserverHash": true,
+  "observationAndAttemptOriginalHostHashesReported": false,
+  "supplements": [
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/operator-report.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/diagnostic-report-1.json",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/manual-handoff-proposal-3/manual-handoff-report-1/consumption-clarification-1.json"
+  ],
+  "newAllowancesAdded": 0,
+  "actualHostOrAcquisitionExecutedByReconstruction": false,
+  "executionReadinessClaimed": false,
+  "trainingReady": false
+}

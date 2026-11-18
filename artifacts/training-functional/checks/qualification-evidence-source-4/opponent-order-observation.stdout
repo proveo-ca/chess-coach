@@ -1,0 +1,28 @@
+{
+  "scope": "READ_ONLY_SYNTHETIC_STRATEGIC_DIGEST_ORDER_OBSERVATION_NOT_NATIVE_QUALIFICATION",
+  "rawKeys": [
+    "placement",
+    "turn",
+    "ccLives",
+    "phase",
+    "gas",
+    "gasIncome",
+    "queue",
+    "stored"
+  ],
+  "normalizedKeys": [
+    "placement",
+    "turn",
+    "ccLives",
+    "phase",
+    "gas",
+    "gasIncome",
+    "stored",
+    "queue"
+  ],
+  "actualStrategicJournalDigest": "d206472ebc9a957e2311c1009c392ca3b184bded63db13c6386b4e0b1fbe0737",
+  "checkerRawExpectedDigest": "5b1602dec4a623582f7ec6a66e3444e2a32194d163d08086f54c5e9944482108",
+  "normalizedDigest": "d206472ebc9a957e2311c1009c392ca3b184bded63db13c6386b4e0b1fbe0737",
+  "matchesChecker": false,
+  "matchesNormalized": true
+}

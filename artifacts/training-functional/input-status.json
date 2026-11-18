@@ -1,0 +1,41 @@
+{
+  "scope": "NAMED_INSTALLED_PACKAGE_METADATA_AND_EXISTING_PARTIAL_INPUT_RECORDS_ONLY",
+  "baselineCommit": "b7d4eae58288bfbac3b5f947f524b2342b1b9fa3",
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "fflate": {
+    "version": "0.8.3",
+    "packageJson": "node_modules/.pnpm/fflate@0.8.3/node_modules/fflate/package.json",
+    "status": "INSTALLED_METADATA_OBSERVED",
+    "selectedEntry": "esm/index.mjs",
+    "packagePayloadIntegrityVerified": false,
+    "packageFilesCopied": 0
+  },
+  "jssha": {
+    "version": "3.3.2",
+    "status": "ABSENT_AT_FOUR_CHECKED_PACKAGE_JSON_PATHS",
+    "checkedPaths": [
+      "node_modules/.pnpm/jssha@3.3.2/node_modules/jssha/package.json",
+      "node_modules/jssha/package.json",
+      "packages/starchess-arena/node_modules/jssha/package.json",
+      "/home/gu1lty/Projects/proveo/chess-coach/node_modules/jssha/package.json"
+    ],
+    "globalAbsenceEstablished": false,
+    "selectedEntry": "dist/sha256.mjs",
+    "historicalLockIntegrity": "sha512-0RhFxzijV4W0qTXa97D5b6twAWXX7SEOpw8qzAZyZ+oeGOP9e84PnDSLjl7SBB1vBQ+chSUwsZR06i1AzA+nEA=="
+  },
+  "partialPinnedInputs": {
+    "applicationFiles": 427,
+    "corpusFiles": 2,
+    "aggregateBytes": 4522249,
+    "scope": "EXISTING_RECORDED_PARTIAL_ASSETS_NOT_REHASHED_BY_THIS_METADATA_AUDIT",
+    "assembledReferenceSourceRoot": false,
+    "selectedBundleCount": 0
+  },
+  "packageCodeImported": false,
+  "sourceAcquisitionPerformed": false,
+  "dependencyInstallationPerformed": false,
+  "referenceBuildPerformed": false,
+  "hostOrGpuOperationPerformed": false,
+  "oldGrantRenewed": false,
+  "trainingReady": false
+}

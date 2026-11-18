@@ -1,0 +1,116 @@
+{
+  "version": "chess-coach.owned-container-build-approval-proposal.v1",
+  "status": "AWAITING_EXPLICIT_HOST_BUILD_METHOD_AND_NATIVE_EXECUTION_APPROVAL",
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-build-source-5/receipt.json",
+    "sha256": "c8e1048dcf8640371398ece6cfc0b3f33559ee2d3c21f185d2ff4c85d79983d6"
+  },
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-build-source-5/host-command.fish",
+    "bytes": 40054,
+    "sha256": "50123eaff0efebb93f7c03210afd765c0ddb02273c08b7ac63a262e37dcd962e"
+  },
+  "plan": {
+    "version": "chess-coach.owned-container-native-build-proposal.v1",
+    "status": "SOURCE_ONLY_AWAITING_EXPLICIT_BUILD_METHOD_AND_HOST_APPROVAL",
+    "method": "OWNED_DOCKER_CONTAINER_NATIVE_BUILD_ONLY_NOT_QUALIFICATION_IMAGE_BUILD",
+    "runId": "host-gpu-native-build-1",
+    "grant": "--approved-host-gpu-native-build-1",
+    "context": "_work/gpu-owner-recovery/cache/host-receive-2/context",
+    "workspace": "_work/gpu-owner-recovery/cache/host-gpu-native-build-1",
+    "evidence": "_work/gpu-owner-recovery/runs/host-gpu-native-build-1",
+    "engine": "unix:///var/run/docker.sock",
+    "rustImage": "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb",
+    "bunImage": "docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038",
+    "sourceManifestSha256": "9141aaefa2fab3f3a812aeabec4bdfdd818415333f9e5cba6d5ef822dac90863",
+    "existingHelpers": [
+      {
+        "path": "_work/gpu-owner-recovery/verify.ts",
+        "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58"
+      },
+      {
+        "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+        "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+      }
+    ],
+    "cudaBindingTrial": "13000",
+    "resources": {
+      "cpus": 2,
+      "memoryBytes": 8589934592,
+      "memoryPlusSwapBytes": 8589934592,
+      "cargoJobs": 2,
+      "rayonThreads": 2,
+      "uidGid": "CURRENT_OPERATOR_NUMERIC_UID_GID"
+    },
+    "limits": {
+      "overallMs": 4200000,
+      "normalOperationsMs": 4020000,
+      "nativeWorkMs": 3600000,
+      "cleanupMs": 120000,
+      "receiptReserveMs": 60000,
+      "dockerCommandMs": 120000,
+      "artifactValidationMs": 120000,
+      "minimumFreeBytes": 68719476736,
+      "minimumRunningFreeBytes": 17179869184,
+      "workspaceSoftBytes": 34359738368,
+      "stagingBytes": 536870912,
+      "stagingFiles": 3800,
+      "bunPostCopyBytes": 134217728,
+      "supervisedStreamBytes": 4194304,
+      "hostDockerStreamsBytes": 83886080,
+      "nativeStreamsBytes": 41943040,
+      "canonicalLogCopiesBytes": 16777216,
+      "hostReceiptBytes": 2097152
+    },
+    "maximums": {
+      "donorCreates": 1,
+      "donorStarts": 0,
+      "bunCopies": 1,
+      "workerCreates": 1,
+      "workerStarts": 1,
+      "workerLogFollows": 1,
+      "terminalInspections": 1,
+      "workerStops": 1,
+      "workerKills": 1,
+      "containerRemovals": 2,
+      "dockerOperations": 10,
+      "cargoCompilations": 2
+    },
+    "hostExecutionApproved": false,
+    "stagingAndNativeCompilationApproved": false,
+    "qualificationImageBuildAuthorized": false,
+    "sharedBuilderModificationAuthorized": false,
+    "imagePullOrDependencyFetchAuthorized": false,
+    "gpuExecutionAuthorized": false,
+    "trainingAuthorized": false,
+    "automaticRetryAuthorized": false,
+    "sourcePublicationRequired": false,
+    "helperDownloads": 0,
+    "trainingReady": false
+  },
+  "helperDependencyPaths": [
+    {
+      "path": "_work/gpu-owner-recovery/verify.ts",
+      "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+      "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+    }
+  ],
+  "maximumHostInvocations": 1,
+  "approvalIncludesIfSelected": [
+    "OWNED_CONTAINER_METHOD_INSTEAD_OF_SHARED_BUILDKIT",
+    "ONE_NEVER_STARTED_BUN_DONOR_AND_ONE_BUN_INTERPRETER_COPY",
+    "FRESH_NATIVE_AND_CARGO_STAGING",
+    "ONE_RESOURCE_CAPPED_RUST_WORKER_START_AND_LOG_FOLLOW",
+    "THREE_NATIVE_VERSION_GUARDS_AND_TWO_OFFLINE_CARGO_COMPILATIONS_WITH_BUILD_SCRIPTS",
+    "ONLY_OWNED_CONTAINER_STOP_KILL_INSPECT_AND_REMOVAL"
+  ],
+  "hostExecutionApproved": false,
+  "sourcePublicationApproved": false,
+  "qualificationImageBuilt": false,
+  "gpuExecutionAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

@@ -1,0 +1,30 @@
+{
+  "scope": "READ_ONLY_FINAL_LOCAL_READBACK_SOURCE_REVIEW_NOT_FUNCTIONAL_ACCEPTANCE",
+  "source": {
+    "path": "artifacts/training-functional/qualification-result-1/readback.ts",
+    "byteLength": 20487,
+    "sha256": "d77fff06bae985440d491a4b1160949fe839e1c0afa0ce7e9cd5898958738490"
+  },
+  "tests": {
+    "path": "artifacts/training-functional/qualification-result-1/readback.test.ts",
+    "byteLength": 7557,
+    "sha256": "9983ce091731fc0c254853c97f3fb51367703a8555cb3c54a0cb97bc674238d4"
+  },
+  "adversarial": {
+    "session": "ses_e158f9ccfffemYMoC24R3Xy3oz",
+    "ready": true,
+    "priorMediumClosed": true,
+    "findings": [],
+    "conclusion": "Complete model reference hash-and-size joins close the finding"
+  },
+  "security": {
+    "session": "ses_e158f9cceffeFyxihO1Eyk9kYW",
+    "ready": true,
+    "risk": "low",
+    "findings": [],
+    "conclusion": "Source-only review remains valid after full model-reference joins"
+  },
+  "architect": "ses_e159cf5d7ffelxRFfSMD11SK0e",
+  "backend": "ses_e159bcdf3ffen5z4JLluKCShS3",
+  "hardwareAttestationOrFunctionalAcceptanceConferred": false
+}

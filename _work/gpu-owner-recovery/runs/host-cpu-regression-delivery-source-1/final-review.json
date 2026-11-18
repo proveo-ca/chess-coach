@@ -1,0 +1,21 @@
+{
+  "status": "READY_REVIEWED_SOURCE_PACKET_AWAITING_FRESH_EXECUTOR_APPROVAL",
+  "finalAdversarialSession": "ses_e2fb4bad6ffeZo2vxm6KkikmFp",
+  "finalAdversarialVerdict": "READY_TO_MERGE_YES",
+  "findings": [],
+  "cpuReviews": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/review-3.json",
+  "deliveryReviews": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/review-2.json",
+  "freshReconciliation": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-2/receipt.json",
+  "earlierReconciliationRetained": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-1/receipt.json",
+  "gpuReportReview": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/review.json",
+  "specKeeperSession": "ses_e31d50d0cffeX1Se3gx1OHPCv8",
+  "specKeeperStatus": "IN_SYNC_NO_SOURCE_PROSE_MIGRATION",
+  "campaignRequest": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/campaign-request.json",
+  "frozenRepositorySourceCountsVerified": [347,327,65],
+  "passingVerificationStageCounts": {"cpu":6,"delivery":6,"gpuReport":3},
+  "actualHostExecuted": false,
+  "publicationPerformed": false,
+  "downloadsPerformed": false,
+  "freshHostPublicationOrFetchApprovalGranted": false,
+  "trainingReady": false
+}

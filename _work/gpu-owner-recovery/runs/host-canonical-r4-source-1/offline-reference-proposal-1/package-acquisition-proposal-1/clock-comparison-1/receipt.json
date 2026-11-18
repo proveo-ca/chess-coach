@@ -1,0 +1,28 @@
+{
+  "status": "FAIL_PINNED_BUN_CROSS_PROCESS_CLOCK_COMPARISON",
+  "failure": "Error: cross-process-hrtime-origin-mismatch",
+  "sourceSha256": "ed1afe7ca2aadaa8b4e242eea9fa79f2d5fe1465f47c17f3be0d54dd92c4e7be",
+  "childSource": "process.stdout.write(JSON.stringify({pid:process.pid,ppid:process.ppid,bun:process.versions.bun,execPath:process.execPath,clockNs:process.hrtime.bigint().toString()})+'\\n')",
+  "samples": [
+    {
+      "index": 0,
+      "beforeNs": "15175249",
+      "child": {
+        "pid": 90465,
+        "ppid": 90459,
+        "bun": "1.4.0",
+        "execPath": "/usr/local/bin/bun",
+        "clockNs": "12541550"
+      },
+      "afterNs": "30827677",
+      "childInsideParentBracket": false
+    }
+  ],
+  "scope": "OBSERVED_LOCAL_PINNED_BUN_HRTIME_COMPARABILITY_NOT_A_UNIVERSAL_RUNTIME_GUARANTEE",
+  "actualCaptureEntryOrWorkerInvoked": false,
+  "actualGetRequests": 0,
+  "productionRootsTouched": false,
+  "nativeHostGpuOrReferenceExecuted": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

@@ -1,0 +1,48 @@
+{
+  "status": "FAIL",
+  "scope": "SOURCE_ONLY_DETERMINISTIC_MOCK_TIMERS_NOT_HOST_OR_BUN_TIMER_PROOF",
+  "inputs": [
+    {
+      "path": "_work/gpu-owner-recovery/qualification/host-full/driver.ts",
+      "sha256": "2f01ce35eedcd7d71a6198c1f1c4ac14cc0707bb0da6e46b2dcd63c4020c9415"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/host-full/driver.test.ts",
+      "sha256": "f37fb5d6d8b86a49fcaf358138b6bb14ec3d7619f838abb91b8c226a1851f2ab"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/host-feasibility/guard.ts",
+      "sha256": "a9631a18c6dafb75cb82d41d45d745157e38199fa7201c9555dc96dd440fa1ba"
+    }
+  ],
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./_work/gpu-owner-recovery/qualification/host-full/driver.test.ts",
+    "--test-name-pattern",
+    "early timer|pending sample journal"
+  ],
+  "exitCode": 1,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 2991,
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-cadence-red-1/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-cadence-red-1/command.stderr",
+      "bytes": 2991,
+      "sha256": "3428fffdfe04cacc0c794ca42d93af511a76426ca3298c0e1d7a569a34db29d5"
+    }
+  ],
+  "actualDockerProcesses": 0,
+  "actualNativeProcesses": 0,
+  "gpuExecuted": false,
+  "hostExecutionAuthorized": false,
+  "trainingReady": false
+}

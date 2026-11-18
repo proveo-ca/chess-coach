@@ -1,0 +1,17 @@
+{
+  "scope": "READ_ONLY_ACCEPTANCE_RECORD_AND_CURRENT_DOCUMENTATION_CONSISTENCY",
+  "reviewerSession": "ses_e158f9ccfffemYMoC24R3Xy3oz",
+  "reportedReadyToMerge": true,
+  "findings": [],
+  "reviewerConclusion": "No scoped findings; no additional acceptance or execution authority implied",
+  "acceptance": {
+    "path": "artifacts/training-functional/qualification-result-1/functional-acceptance-1.json",
+    "byteLength": 9207,
+    "sha256": "832754f33b6d06dc45cb795ee92718c92a2b9bab1e84a743416f6f91d435f0c2"
+  },
+  "finalDocumentationVerification": {
+    "path": "artifacts/training-functional/qualification-result-1/checks-7/receipt.json",
+    "byteLength": 3355,
+    "sha256": "2d51d8b6cca9350ed46e6315180d8dd5884974ad48dc5ef745774008df77aa94"
+  }
+}

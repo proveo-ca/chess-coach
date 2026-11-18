@@ -1,0 +1,47 @@
+{
+  "status": "PASS_PUBLICATION_INPUT_IDENTITIES_AND_TRACKED_SCOPE_ONLY",
+  "checks": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command.fish",
+      "bytes": 56981,
+      "sha256": "8705a79ab07681a82531c411f200cee7a82d015ee3a401d3be617919abf7e210"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/receipt.json",
+      "bytes": 69849,
+      "sha256": "b3c6f85338b295e466fa2edb9625e36b89b84f977e97be492bfa7d6b931b9683"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/receipt.json",
+      "bytes": 65032,
+      "sha256": "cf632c5896bd5d46b453a67aeb87d2f0bd735b252960c7eca6917cee802d6f60"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-policy-record-correction-source-2/native-source-manifest.json",
+      "bytes": 8956,
+      "sha256": "7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command-approval.json",
+      "bytes": 5201,
+      "sha256": "4065ab7a48d5d1afd9f724a91206483cd6bc5fd61ad269f03e03c52183a67b6d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/fresh-manual-host-approval.json",
+      "bytes": 2361,
+      "sha256": "7030c3b743a98c9c8a5d03a0450361907c67343cd3b7ec80809682fa676012fe"
+    }
+  ],
+  "trackedChanges": [
+    "_spec/gate-closure.md",
+    "_spec/gpu-full-qualification.puml",
+    "_spec/gpu-readiness.md"
+  ],
+  "frozenManifestMembersRehashed": false,
+  "remainingManualInvocationTextDeliveries": 0,
+  "hostExecutionResultReceived": false,
+  "gitMutationOperationsPerformed": false,
+  "nativeCompilationGpuOrJitExecuted": false,
+  "filesDeleted": 0,
+  "trainingReady": false
+}

@@ -1,0 +1,75 @@
+=== policy stderr ===
+   Compiling serde_json v1.0.154
+   Compiling generic-array v0.14.7
+   Compiling typenum v1.20.1
+   Compiling cubecl-environment v0.11.3
+   Compiling cubecl-common v0.11.3
+   Compiling cubecl-ir v0.11.3
+   Compiling burn-std v0.22.1
+   Compiling text_placeholder v0.5.1
+   Compiling burn-pack v0.22.1
+   Compiling safetensors v0.8.0
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.7
+   Compiling digest v0.10.7
+   Compiling cpufeatures v0.2.17
+   Compiling sha2 v0.10.9
+   Compiling cubecl-monitoring v0.11.3
+   Compiling cubecl-runtime v0.11.3
+   Compiling cubecl-core v0.11.3
+   Compiling cubecl-opt v0.11.3
+   Compiling cubecl-cpp v0.11.3
+   Compiling cubecl-llvm v0.11.3
+   Compiling cubecl-server v0.11.3
+   Compiling cubecl-cuda v0.11.3
+   Compiling cubecl-std v0.11.3
+   Compiling cubecl v0.11.3
+   Compiling cubek-tile v0.3.1
+   Compiling cubek-std v0.3.1
+   Compiling cubek-matmul v0.3.1
+   Compiling burn-backend v0.22.1
+   Compiling cubek-convolution v0.3.1
+   Compiling cubek-attention v0.3.1
+   Compiling burn-ir v0.22.1
+   Compiling cubek-random v0.3.1
+   Compiling cubek-reduce v0.3.1
+   Compiling cubek-interpolate v0.3.1
+   Compiling cubek-quant v0.3.1
+   Compiling cubek-pool v0.3.1
+   Compiling cubek v0.3.1
+   Compiling burn-cubecl v0.22.1
+   Compiling burn-flex v0.22.1
+   Compiling burn-autodiff v0.22.1
+   Compiling burn-dispatch v0.22.1
+   Compiling burn-tensor v0.22.1
+   Compiling burn-cuda v0.22.1
+   Compiling burn-core v0.22.1
+   Compiling burn-linalg v0.22.1
+   Compiling burn-nn v0.22.1
+   Compiling burn-store v0.22.1
+   Compiling burn-optim v0.22.1
+   Compiling burn v0.22.0
+   Compiling chess-coach-learning v0.1.0 (/build/native/crates/learning)
+   Compiling chess-coach-policy-io v0.1.0 (/build/native/crates/policy-io)
+error: could not compile `chess-coach-policy-io` (test "gpu") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+
+=== Cargo errors ===
+error[E0277]: the trait bound `burn::tensor::Bytes: AsRef<[u8]>` is not satisfied
+   --> crates/policy-io/tests/gpu.rs:345:30
+    |
+345 |     fs::write(&record_path, &record).unwrap();
+    |     ---------                ^^^^^^ the trait `AsRef<[u8]>` is not implemented for `burn::tensor::Bytes`
+    |     |
+    |     required by a bound introduced by this call
+    |
+    = note: required for `&burn::tensor::Bytes` to implement `AsRef<[u8]>`
+note: required by a bound in `std::fs::write`
+   --> /rustc/59807616e1fa2540724bfbac14d7976d7e4a3860/library/std/src/fs.rs:420:0
+help: consider dereferencing here
+    |
+345 |     fs::write(&record_path, &*record).unwrap();
+    |                              +
+
+
+ERROR_RECORDS=1

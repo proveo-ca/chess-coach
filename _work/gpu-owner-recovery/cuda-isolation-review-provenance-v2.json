@@ -1,0 +1,23 @@
+{
+  "version": "chess-coach.cuda-isolation-renewed-review-provenance.v1",
+  "scope": "SINGLE_INERT_PROBE_ONLY_NOT_BUILD_OR_CUSTODY_QUALIFICATION",
+  "reviewRecord": "_work/gpu-owner-recovery/cuda-isolation-reviewed-v2.json",
+  "reviewRecordSha256": "96558dad450d33eca000c12e7ecce4ccec094d7cdeec05401e7c90a2ab248412",
+  "requestSha256": "28356e2dd638956c800ea275173a6664ebd71bf6ae067e10bb4e51685c65ad10",
+  "executorSelection": "Renew full scope (Recommended)",
+  "sourceAcceptance": "_work/gpu-owner-recovery/cuda-isolation-corrected-source-review.json",
+  "sourceAcceptanceSha256": "405d4a8ce1d01eeff4c48fef873560a3e04d13dbd534fc7c1af686a83bda77b6",
+  "securitySessionId": "ses_e4439a2c0ffeTD6G2gSAPqPEyM",
+  "adversarialSessionId": "ses_e4439a2b6ffeD4aw7uSogI27Fg",
+  "renewedStaticReceipts": [
+    "_work/gpu-owner-recovery/runs/cuda-isolation-renewed-static-1/receipt.json",
+    "_work/gpu-owner-recovery/runs/cuda-isolation-renewed-types-1/receipt.json",
+    "_work/gpu-owner-recovery/runs/cuda-isolation-renewed-runner-1/receipt.json"
+  ],
+  "originalReviewPreserved": true,
+  "actualNamespaceCommandAttempted": false,
+  "buildIsolationQualified": false,
+  "custodyQualified": false,
+  "cudaCompilationEstablished": false,
+  "trainingReady": false
+}

@@ -1,0 +1,103 @@
+{
+  "version": "pinned-corpus-sidecar-manifest.v1",
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "gitRoot": "/home/gu1lty/Projects/proveo/chess-coach",
+  "sourceRoot": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/inputs/reference",
+  "sourceClassification": "GIT_REPORTED_PINNED_TWO_FILE_CORPUS_SIDECAR_NOT_ASSEMBLED_RUNTIME_TREE",
+  "entries": [
+    {
+      "path": "_spec/corpora/ml-adjutant-corpus.manifest.json",
+      "mode": "100644",
+      "gitBlobOid": "44e043d45e83c363213f01d91bb79207d130c839",
+      "bytes": 7309,
+      "origin": "pinned-git",
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    },
+    {
+      "path": "starchess-match-history-20260929-203446.json",
+      "mode": "100644",
+      "gitBlobOid": "f24680e5b26ebb742de846ec6a73bbeab379e827",
+      "bytes": 664540,
+      "origin": "pinned-git",
+      "reference": "b4b241481fb12de4a7344e6dba8eda775af57675"
+    }
+  ],
+  "usage": {
+    "sealedFiles": 427,
+    "sealedBytes": 3850400,
+    "sidecarFiles": 2,
+    "sidecarBytes": 671849,
+    "aggregateFiles": 429,
+    "aggregateBytes": 4522249
+  },
+  "limits": {
+    "inputFiles": 4096,
+    "inputBytes": 134217728,
+    "individualInputBytes": 16777216,
+    "discoveryMetadataBytes": 8388608
+  },
+  "documents": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-scope-addendum-1.json",
+      "bytes": 1558,
+      "sha256": "978cfb801f4e61f07ccee6450a17b49618730c69f188884a77a8f6213d4c10a0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-discovery-1.json",
+      "bytes": 800,
+      "sha256": "be14a897b535a6d7125670ad3905b4950e684bf9fd6a483f0c52002fca27e4c1"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/input-manifest.json",
+      "bytes": 130490,
+      "sha256": "bb03f45257fae1d8ca11710b53547936c3042380188ab10117b704b692d39fb0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/materialization.json",
+      "bytes": 708505,
+      "sha256": "2b13f0daad567013823ea2859a0107818ee9b09766347c2190ec3dfe47949506"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/local-inputs-1/check.json",
+      "bytes": 3274,
+      "sha256": "acca1e84beb0ebfacf3fb0a7967ffe5d16552861b0da98a4f7e6b4367cee9c63"
+    }
+  ],
+  "sealedApplicationSourceSha256": "eeef9552914021a71018ffbd6f81a0c8b2afc56926ae45efd28dd5c0cfcf5bf7",
+  "missingPackages": [
+    {
+      "name": "fflate",
+      "version": "0.8.3",
+      "selectedRuntimeFile": "esm/index.mjs",
+      "installedRoot": null
+    },
+    {
+      "name": "jssha",
+      "version": "3.3.2",
+      "selectedRuntimeFile": "dist/sha256.mjs",
+      "installedRoot": null
+    }
+  ],
+  "fullC14GuardExecuted": false,
+  "fullTreeAncestryAuthenticated": false,
+  "selectedBundleClosureEstablished": false,
+  "completeOfflineInput": false,
+  "referenceBundlingApproved": false,
+  "referenceQualificationPassed": false,
+  "nativeQualificationPassed": false,
+  "referenceCodeExecuted": false,
+  "nativeOrGpuExecuted": false,
+  "dependencyAcquisitionPerformed": false,
+  "installationPerformed": false,
+  "networkOperations": 0,
+  "gitMutations": 0,
+  "commitOrPushPerformed": false,
+  "trainingReady": false,
+  "oneAssembledRuntimeTreeEstablished": false,
+  "corpusRolloutsExecuted": false,
+  "corpusAuditExecuted": false,
+  "sealedApplicationFilesRehashedBySidecar": false,
+  "installedPackageFilesCopied": 0,
+  "installedPackageStatus": "MISSING_IN_BOUNDED_LOCAL_SEARCH",
+  "packageAbsenceEverywhereEstablished": false
+}

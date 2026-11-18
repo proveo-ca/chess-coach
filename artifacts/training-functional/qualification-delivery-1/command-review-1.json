@@ -1,0 +1,10 @@
+{
+  "scope": "READ_ONLY_STABLE_COMMAND_COMPONENT_REVIEW_NOT_HARDWARE_QUALIFICATION",
+  "reviewerSession": "ses_e1718eb55ffe05HZkAbP0jRyUr",
+  "reportedReadyToMerge": true,
+  "findings": [],
+  "reviewerConclusion": "No concrete findings in the stable command component",
+  "bootstrapReviewAndFinalVerification": "PENDING",
+  "hostExecuted": false,
+  "trainingReady": false
+}

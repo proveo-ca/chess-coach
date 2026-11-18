@@ -1,0 +1,32 @@
+{
+  "status": "APPROVED_ONE_NORMAL_COMMIT_AND_ONE_EXISTING_CONTINUATION_BRANCH_HTTPS_PUSH",
+  "authorizationSource": "EXECUTOR_REQUIRED_COMMIT_AND_PUSH_BEFORE_ANY_FURTHER_HOST_VERIFICATION_HANDOFF",
+  "grantId": "status-report-publication-1",
+  "parentCommit": "2b24d9c5ab4a3904d792e93c83e0715a862ab3ea",
+  "localBranch": "feat-ml-adjuntant-ii",
+  "destination": "https://github.com/proveo-ca/chess-coach.git",
+  "destinationRef": "refs/heads/feat-ml-adjuntant-ii-continuation-2b24d9c5a",
+  "expectedDestinationCommit": "2b24d9c5ab4a3904d792e93c83e0715a862ab3ea",
+  "commitMessage": "Record HOST full2 status and fresh manual qualification grant",
+  "scope": {
+    "specFiles": ["_spec/gate-closure.md", "_spec/gpu-full-qualification.puml", "_spec/gpu-readiness.md"],
+    "recordRoot": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-status-report-1/",
+    "regularTextFilesOnly": true,
+    "cachesAndBinariesExcluded": true
+  },
+  "maximumNormalCommits": 1,
+  "remainingNormalCommitsAtIssuance": 1,
+  "maximumHttpsPushes": 1,
+  "remainingHttpsPushesAtIssuance": 1,
+  "applicableInheritedIdentityAndAuthenticationOnly": true,
+  "originalRemoteFeatureBranchUpdateApproved": false,
+  "mergeOrRebaseApproved": false,
+  "forceAmendOrHookBypassApproved": false,
+  "automaticRetryAuthorized": false,
+  "hostInvocationOrDeliveryAllowanceRenewed": false,
+  "nativeCompilationOrGpuExecutionApprovedByThisGrant": false,
+  "installationOrCopyingApproved": false,
+  "filesDeleted": 0,
+  "experimentTrainingApproved": false,
+  "trainingReady": false
+}

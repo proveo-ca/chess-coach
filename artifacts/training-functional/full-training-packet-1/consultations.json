@@ -1,0 +1,12 @@
+{
+  "scope": "SOURCE_ONLY_FULL_TRAINING_PACKET_PREPARATION",
+  "architect": { "session": "ses_e14f6bdb8ffear1vHQrKQCxcoW", "decision": "GO", "basis": "Reuse one existing campaign/coordinator/factory; separate bounded validation and fresh execution inputs; do not execute or publish again" },
+  "backend": { "session": "ses_e14eec8c0ffea3I3dCUGOqmnvb", "basis": "Actual experiment/ref and artifact layout, sequential readback, global journal, checkpoint semantics, unchanged SQLite admission and declared metrics" },
+  "implementationDelegate": { "session": "ses_e14e534c6ffeXfn5qb9iDGLWfZ", "files": ["artifacts/training-functional/campaign-evidence.ts", "artifacts/training-functional/campaign-evidence.test.ts"], "scope": "Bun/TypeScript synthetic validation and repository-local SQLite only" },
+  "specKeeper": { "session": "ses_e14d7a62dffeTqrKRDaltSqdWo", "scope": "Existing runtime/checkpoint diagrams, coverage index and current readiness scope" },
+  "budgetDecision": { "selectedOption": "18-day envelope (Recommended)", "sourceOnly": true, "hostCapacityConfirmed": false, "executionApproved": false },
+  "initialReview": "artifacts/training-functional/full-training-packet-1/review-1.json",
+  "finalReview": "REQUIRES_CORRECTED_SOURCE_RECHECK",
+  "trainingExecutionAuthorized": false,
+  "publicationAuthorized": false
+}

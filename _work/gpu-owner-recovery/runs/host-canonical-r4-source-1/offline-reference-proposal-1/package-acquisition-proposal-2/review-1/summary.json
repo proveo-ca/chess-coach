@@ -1,0 +1,29 @@
+{
+  "status": "READY_PREPARATION_PACKET_ONLY_FRESH_COMPOSITE_APPROVAL_PENDING",
+  "verification": "../package-acquisition-bun-source2/freshverification-5/receipt.json",
+  "recordedTestsPassed": 305,
+  "recordedTestsFailed": 0,
+  "recordedStrictTypecheckExitCode": 0,
+  "preservedHistoricalRecords": 352,
+  "reviewers": {
+    "backend": {"session":"ses_e2e5a7bfaffeXVaGBozd4pJB26","status":"READY_PREPARATION_PACKET_ONLY"},
+    "devops": {"session":"ses_e2e5a7bf7ffeszqAmNJvPwNoUX","status":"READY_PREPARATION_PACKET_ONLY"},
+    "adversarial": {"session":"ses_e2e4b1ef3ffeptPhqouftYEoBl","status":"READY_PREPARATION_PACKET_ONLY"},
+    "security": {"session":"ses_e2e4b1ef3ffdEFzyU31y2Xzl0Z","status":"READY_PREPARATION_PACKET_ONLY"}
+  },
+  "requiredFreshApprovalRecordBindings": {
+    "request.json": "c0288e1e34e24d2f7a81e12ee1967ffafbd2768b4c2a5bc2ba15826b6384ff3f",
+    "plan.json": "7f6a90ca105d6a7c5a45951b508d4a1ecdd5e217625d1cefe08da23557847405",
+    "manual-handoff-request1.json": "47d63b8cb446cdc8a83323788c9106cdb82437992e7bd3a88f55821aa6bde52b",
+    "manual-handoff-plan1.json": "4297e4f1b763b5aa152b88a7a3e288a19cafc85331cbed2d776f38d043f8817a"
+  },
+  "remainingFindings": [],
+  "freshAcquisitionOrManualHandoffApprovalIssued": false,
+  "fullImplementationOrExecutionReadinessClaimed": false,
+  "publicationAlreadyPerformed": false,
+  "manualCommandAlreadyDelivered": false,
+  "assistantActualRetryExecutionApproved": false,
+  "currentLiveAcquisitionGrant": 0,
+  "currentAuthorizedManualHandoffAttempts": 0,
+  "trainingReady": false
+}

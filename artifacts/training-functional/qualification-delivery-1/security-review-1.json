@@ -1,0 +1,10 @@
+{
+  "scope": "READ_ONLY_BOOTSTRAP_COMMAND_REVIEW_NOT_HARDWARE_QUALIFICATION",
+  "reviewerSession": "ses_e171894a8ffeK9hxuiham6iTTo",
+  "reportedReadyToMerge": false,
+  "reportedRisk": "medium",
+  "findings": [{"severity": "MEDIUM", "category": "CWE-732", "path": "artifacts/training-functional/qualification-delivery-1/command-template.sh", "line": 5, "description": "Inherited umask 077 creates private Git checkout modes that fail expected 0644/0755 validation", "resolution": "PENDING_FRESH_GIT_CHILD_MODE_CORRECTION"}],
+  "testsRerunByReviewer": false,
+  "publicationPerformed": false,
+  "trainingReady": false
+}

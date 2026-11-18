@@ -1,0 +1,1260 @@
+{
+  "version": "chess-coach.packet2-packet1-preservation.v1",
+  "baseCommit": "5b47be42b0378198750992b1547915b43f9cea99",
+  "sourceManifest": {
+    "path": "artifacts/training-functional/full-training-packet-1/source-manifest.json",
+    "byteLength": 20642,
+    "sha256": "be01645f51edeacacdb54908100766bad580fcd6c0d1da37b2f00d44e268dd51"
+  },
+  "packet1Files": [
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/assemble.ts",
+      "byteLength": 5604,
+      "sha256": "8b99384f49ad0d4bd021b2cf32d51931671e4fcde64bf7c6a505c5afaa163925"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/assembly-verification.json",
+      "byteLength": 2448,
+      "sha256": "57e1ff8cfa6bb68e02a4f1c826fb635b6740aecc164e82ad242781d5611bb238"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/assembly.json",
+      "byteLength": 1446,
+      "sha256": "89d5775d7895bea5a12a88e4aca0a9f6b73713c8566aacbf0eeb2aa66a24a0d9"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/binding-documents.json",
+      "byteLength": 5006,
+      "sha256": "990875a2422d1901733a44f61408cb3e510929be98769d3e46a2c45c8a320c1d"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-1/assembly-types.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-1/assembly-types.stdout",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-1/specs.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-1/specs.stdout",
+      "byteLength": 2252,
+      "sha256": "d0ecdc6094c00ce5d03d4ee7ac37a9b15b06ba2f55e54e28d0247b8834a6e308"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-1/static-receipt.json",
+      "byteLength": 8349,
+      "sha256": "9e61cb1119b0e7253b622d269cb2f2712befc1772e987c7c9ab49fb1aabdf5ab"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-1/types.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-1/types.stdout",
+      "byteLength": 1796,
+      "sha256": "9ecea9bdb9080d0dc13bf4713621a58d402c1735acb7effacb296cea0510e13a"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-2/assembly-types.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-2/assembly-types.stdout",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-2/campaign-tests.stderr",
+      "byteLength": 8309,
+      "sha256": "56f9de60305ba72be5b2cc38df3394ba64a1d75bdd120817f60599474f166e9a"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-2/campaign-tests.stdout",
+      "byteLength": 531,
+      "sha256": "84648aee884840436dad608daa71914331ad44fbd6450bdba59e086bd4bddb1a"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-2/existing-campaign-tests.stderr",
+      "byteLength": 3661,
+      "sha256": "1532788e2ca13c1f60256bcd2c5621c1005b8e3b3b7e9f9993c2b0e6299e40ec"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-2/existing-campaign-tests.stdout",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-2/receipt.json",
+      "byteLength": 57227,
+      "sha256": "902a168d73d59e756320a32d4a1e486361b3ea15217f2d9f196cb17e7ea2f443"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-2/specs.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-2/specs.stdout",
+      "byteLength": 2252,
+      "sha256": "d0ecdc6094c00ce5d03d4ee7ac37a9b15b06ba2f55e54e28d0247b8834a6e308"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-2/types.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-2/types.stdout",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-3/assembly-types.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-3/assembly-types.stdout",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-3/operator-tests.stderr",
+      "byteLength": 3233,
+      "sha256": "70fae2afb9746b0279cdbb4be993712f25ff06a75af59718ae9eb9cc7ef4c42f"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-3/operator-tests.stdout",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-3/receipt.json",
+      "byteLength": 56406,
+      "sha256": "3725717efbb02f15a7e58ddcf66fbd5a533775be61a17735840e8b565f1366eb"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-3/specs.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-3/specs.stdout",
+      "byteLength": 2252,
+      "sha256": "d0ecdc6094c00ce5d03d4ee7ac37a9b15b06ba2f55e54e28d0247b8834a6e308"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-3/types.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-3/types.stdout",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-4/assembly-types.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-4/assembly-types.stdout",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-4/final-specs.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-4/final-specs.stdout",
+      "byteLength": 2252,
+      "sha256": "6ae0897b344be74f9b90079db1a54e7a667ce99c8f5e81e4904051b9c96fb79a"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-4/operator-tests.stderr",
+      "byteLength": 3732,
+      "sha256": "1b8b4ca8348ba65629ffca6e6640cef7975eeb24c427f5a3767900c6cfbbbf8f"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-4/operator-tests.stdout",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-4/receipt.json",
+      "byteLength": 54820,
+      "sha256": "21ac8e609e24bb945c839e3e623fe9ed689a0784d2387eff33e6959a033a3b86"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-4/specs.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-4/specs.stdout",
+      "byteLength": 2252,
+      "sha256": "6ae0897b344be74f9b90079db1a54e7a667ce99c8f5e81e4904051b9c96fb79a"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-4/static-receipt.json",
+      "byteLength": 2290,
+      "sha256": "fa4dcb1b6d5eb2bbbe0e43ce46b37a5c402a2c2f30adc4ff28ececd65a99de62"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-4/types.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-4/types.stdout",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/completion.json",
+      "byteLength": 7322,
+      "sha256": "2e1513ee58d43cc4ec82f28422fc9b5a8150941d5191f2a4c2be626688f64d98"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/consultations.json",
+      "byteLength": 1329,
+      "sha256": "9f7ccaaee69db729bfd805fc918a7af574f2053bf061f33636b4355f4941663a"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/final-verification.json",
+      "byteLength": 1875,
+      "sha256": "03b15e8b7d8e0fbc31739d73b201b56ed1f1f688e43e055b8f18e979d94bf8c4"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/input-manifest.json",
+      "byteLength": 178218,
+      "sha256": "5974678c3835dde421e94f58b754dbe436817c23a8816d94b37e607eeaa5f503"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/metadata-review-3.json",
+      "byteLength": 971,
+      "sha256": "bde5dcd8e8715d273a6690716d0aca09fad66b60cad0045023d3b0d7865a2ed8"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/plan.json",
+      "byteLength": 8774,
+      "sha256": "a5e676864f99b15ff8c1ecf5f33a5dc6198c11ef6e674db81116d09b2af5df86"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/preservation.json",
+      "byteLength": 1395,
+      "sha256": "e7c28e06d027ae2a8bdd153da0cb6ee54433a73344fd3b42f5d6bc95772a9505"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/README.md",
+      "byteLength": 5572,
+      "sha256": "fcba5eb26e9a18f1fcafc0b8942877bad775a4d2f69c2e074ec03bf84cbb2d56"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/request.json",
+      "byteLength": 8142,
+      "sha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/review-1.json",
+      "byteLength": 1579,
+      "sha256": "63d926817bbf08188449bc684da7fd1d1f67206feda2fde47496e50ab36528fd"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/reviews-2.json",
+      "byteLength": 2704,
+      "sha256": "01e27e97a42b82496045c2904381f1c8af942b4bd451b7a2191bddc52e684ed1"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/runtime-configuration.json",
+      "byteLength": 4567,
+      "sha256": "1fe8b18f21470b6a3f459d418fc9f8d0809e960679ba76f76ddc695bc10665ef"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/source-manifest.json",
+      "byteLength": 20642,
+      "sha256": "be01645f51edeacacdb54908100766bad580fcd6c0d1da37b2f00d44e268dd51"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/tsconfig.json",
+      "byteLength": 68,
+      "sha256": "346311494eb223ffd34eaf0cc49d744791e74d0afba231dcfd17efce9db8e552"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-1/verification.json",
+      "byteLength": 56472,
+      "sha256": "132b2120494e8851408128aa26f206c47ad7172ab6fae6260a918d799ec0b80d"
+    }
+  ],
+  "workerSource": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/canonical.ts",
+      "byteLength": 9816,
+      "sha256": "301d8e9e42bfcef4782efa0a188c570e1f035f165296deb8fba6f07f57d5d74c",
+      "gitBlob": "ba1f5ea616f1b1f151d9323a46ee8a36c704ca71",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "artifacts/training-functional/campaign-evidence.ts",
+      "byteLength": 38934,
+      "sha256": "25fb22018e45f15d0d7df05e772fe98c2c932fc94220827bfae9d45ee707be71",
+      "gitBlob": "c54d413e5e440c521430849348c0293af4b8a9a6",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "artifacts/training-functional/campaign-operator.ts",
+      "byteLength": 32121,
+      "sha256": "b73a92e01aca66246bc0953199e13fc02ec86d770aece410fa99ef3db9d840f7",
+      "gitBlob": "d04041175270c0449c1fb8e6b93b744ec0a8b2c2",
+      "gitMatches": true,
+      "archive": {
+        "path": "artifacts/training-functional/full-training-packet-2/preserved-packet-1/artifacts/training-functional/campaign-operator.ts.source",
+        "byteLength": 32121,
+        "sha256": "b73a92e01aca66246bc0953199e13fc02ec86d770aece410fa99ef3db9d840f7"
+      }
+    },
+    {
+      "path": "artifacts/training-functional/campaign-plan.ts",
+      "byteLength": 7857,
+      "sha256": "364bc16215013c5f7325857beb88125935b393e89b7f0db533bad68bd13b76d9",
+      "gitBlob": "910d9dea1048a03cf63b09fae9f843ac9cc3d358",
+      "gitMatches": true,
+      "archive": {
+        "path": "artifacts/training-functional/full-training-packet-2/preserved-packet-1/artifacts/training-functional/campaign-plan.ts.source",
+        "byteLength": 7857,
+        "sha256": "364bc16215013c5f7325857beb88125935b393e89b7f0db533bad68bd13b76d9"
+      }
+    },
+    {
+      "path": "artifacts/training-functional/qualification-evidence.ts",
+      "byteLength": 54762,
+      "sha256": "684ce9c6a640d38cf957da2e57f97073837e428c8046b0799735b81ebbc66fe4",
+      "gitBlob": "cdfd3fb1c97f38f90ac9d347fb5686bf3d2ca641",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "artifacts/training-functional/qualification-operator.ts",
+      "byteLength": 37727,
+      "sha256": "f8a4ec4db0b765bfde06016a4cdd663d33a57d85e6b0d8bcf785883e27ef603f",
+      "gitBlob": "be1a0c15e8b1da185dc71913a37bfb7f2bb091f4",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "artifacts/training-functional/qualification-policy-channel.ts",
+      "byteLength": 3779,
+      "sha256": "ea9871209c344b894e4b9bd72b19e3508decc2a7a1f12e9ec7720239f122504e",
+      "gitBlob": "dcf10950660a5adc99314ba7a0927efe410d0841",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "artifacts/training-functional/qualification-policy-score.ts",
+      "byteLength": 3777,
+      "sha256": "5e6740635cbeeafaba07ae200a18f9848fc90e9d6351e6e3d74736f3a4ef21ea",
+      "gitBlob": "13cebceb2ee3c88e276a12174790693be80051b6",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "artifacts/training-functional/qualification.ts",
+      "byteLength": 2144,
+      "sha256": "e2893a4b19927390d2c2deb7369e3d445c87dd2060ceb1193b7082daee5014c2",
+      "gitBlob": "3c53ca01599dadb78a0416f9c9dd8d57556d3084",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "artifacts/training-functional/r4-observation.ts",
+      "byteLength": 11964,
+      "sha256": "9df9bbfaccbc01d77a625b5962b0dd636c563f7bb0318160e2de89d34b6812e9",
+      "gitBlob": "026e4d558ef1c2279333a5d21705c6792f82ed0e",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "byteLength": 573,
+      "sha256": "45256c8150abd20e4183744809f6f123c395fc3a63c195d8e2e00f96a016835b",
+      "gitBlob": "ada1d4871a8d19b5e31b99c8c5dd220470a885ca",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/src/candidate.ts",
+      "byteLength": 1921,
+      "sha256": "01422c6e5b8f289cd387e3cf488363c810277db5aae7117cd7354b7b14c8af1e",
+      "gitBlob": "4853430c393c71d7334f3e4360aad3e894514538",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/src/causal-journal.ts",
+      "byteLength": 14428,
+      "sha256": "ad86bff14c051e98a35adae057a1be8ab2363ac6c253cec245200a9eca5a5c2f",
+      "gitBlob": "81d85a66d0133c7295274154030fa65bbe38a28e",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/src/episode.ts",
+      "byteLength": 2612,
+      "sha256": "ae8c21913bf58d1688f4136bab05c6b55ad051a2dc39b5640c6d94ab603ee370",
+      "gitBlob": "3371be78730fdaa6a1e054d7313d50bef3a3076f",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/src/game-session.ts",
+      "byteLength": 10357,
+      "sha256": "797d7b35465fef380b73c913e6777b20dedee9a10f1ae2cd6e90dab9a83bb07f",
+      "gitBlob": "2c80983e436121f20f551a83812b31efe41f38a4",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/src/index.ts",
+      "byteLength": 1200,
+      "sha256": "989ccb211f8be99a88787832fa082a5f129ef52682c2087ae1b584fbda2baab3",
+      "gitBlob": "35cff6d9f3e4e2848e7790807edc11fb8ffd41af",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/src/inference.ts",
+      "byteLength": 1979,
+      "sha256": "c8212f109e8027bfecd6202c0edb58a4c201bbbdd74a4ede18ba2102314663ec",
+      "gitBlob": "810a1d48d5f63e1a2da8b2cab882b5a08eb19a11",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/src/learning-channel.ts",
+      "byteLength": 2486,
+      "sha256": "01abdbf580e2c9cd5cc2a718a52284b58b32bda24f901f44321490fb8e444982",
+      "gitBlob": "7157c3c249e80bc7d2bbadd1393e2cb4ce01612b",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/src/match.ts",
+      "byteLength": 4415,
+      "sha256": "fd13cf6822e37fc14d220576c6568cbfaa586fed481b089307dc702145ba5d30",
+      "gitBlob": "44b53e155195c8fa1dd04718e0715a934e751352",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/src/native-intents.ts",
+      "byteLength": 1389,
+      "sha256": "cbb8f024001fac6c8f682fbb42677d19dc922c0a7ea317285ea480f914a8fe37",
+      "gitBlob": "e2662f385da1f6fe2182b30a548d761fc9947eec",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/src/native-protocol.ts",
+      "byteLength": 3947,
+      "sha256": "df684ebaacdff2d6472d6f47c067d1850aae0db39826618c3118cbc03b9b9560",
+      "gitBlob": "8fa4fdf05dad34a5922078045764934044d9d05e",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/src/recipient-codec.ts",
+      "byteLength": 4082,
+      "sha256": "75cb4a7b83ca9e9e1970754e6fcffec9067a4ee8be37f704eb1c8ce7fbde8447",
+      "gitBlob": "358bde9cc12754827ac9d641104c66ccfff3b39c",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/src/recipient.ts",
+      "byteLength": 16399,
+      "sha256": "950744bac63d7d44b92dcb8fdc0122f2c3ad4f933198e27aff8702bafefbe7fb",
+      "gitBlob": "5f96000353db66822246a1359d507737f84d408e",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/src/resolution.ts",
+      "byteLength": 4532,
+      "sha256": "af02d9f13f69d359784d9a201c32b6dae0a5b15bd2d0dec00c31358fb45f1ef1",
+      "gitBlob": "3c047d3d9ebcb3a31527be5af4dd97878c940712",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/src/semantics.ts",
+      "byteLength": 8430,
+      "sha256": "cbc1217a2cfee44d68c216d5c9a173965d301247c73835990a58e0c321ae5690",
+      "gitBlob": "69fe42d7662bcbb928d778dce7a99d0a311596d4",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/src/shape.ts",
+      "byteLength": 3459,
+      "sha256": "74c7a52ca90949da256e07ad4e6f7581c53834ba9abdc45cd4b7f51150a269d1",
+      "gitBlob": "f5e75a1ea914cf85c35eccb325ce4349e8764270",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/src/training-artifact.ts",
+      "byteLength": 1542,
+      "sha256": "0203e6183d543b5fa54ee7c62887bc74cfcd62cb7bc6f3a9b17adbeb1a7d56af",
+      "gitBlob": "8371df1f9ac0253ba34d1aa949c95e8a7c540c58",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/contracts/src/training-state.ts",
+      "byteLength": 4119,
+      "sha256": "e17d980ca2bc03566bf43cf75869862c81fa3d6f9febcfc52044669242d7b5ff",
+      "gitBlob": "96cb705db1dbead47cdcc85b3f85032053fd39ea",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/policy/package.json",
+      "byteLength": 256,
+      "sha256": "fd05bb61308dafa50773ddae5315321294ac6189f6ce97d91b4e513f51beaf51",
+      "gitBlob": "ba9592f94b214e9aef8a868b089b5da36e5120c8",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/policy/src/candidates.ts",
+      "byteLength": 9552,
+      "sha256": "8ee944b2c26f8cf60e07181b07b04dfa41494c200df2f935487bf661d156f99f",
+      "gitBlob": "7420515e14bc0883be476a5b3477a16e1a785609",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/policy/src/index.ts",
+      "byteLength": 5043,
+      "sha256": "96adc38377d7dfafe35e2594a2a94f72cbdc1caf6ebbc1785c5318ffe086a094",
+      "gitBlob": "8b317e79b157f0aeb24636e08ee4ff3c03f5545b",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/corpus.ts",
+      "byteLength": 5320,
+      "sha256": "6ab7fc22ed51977b63178988496059621cc83df8f62adc6066a47639b84c09b9",
+      "gitBlob": "c5b6df07eb89149ae27ff391faaef9106dd16f7d",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/current-driver.ts",
+      "byteLength": 1184,
+      "sha256": "7049fabb4b39e285acf5c10dc2e9a84c072f37e4794bc4ef52f4b1dcae13fba4",
+      "gitBlob": "9f1c3b0d880ad8faed52a8faea0f4e2dabf59468",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/curriculum.ts",
+      "byteLength": 4646,
+      "sha256": "2621c4a99d94f92eb61357375822038e5d3e288d9f0a4c6af05dc9b8425253d4",
+      "gitBlob": "588ea432014fb592d1a871a787f2b408a7216f58",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/fixed-attempt.ts",
+      "byteLength": 5485,
+      "sha256": "217a47bb57c3e8adbe7d24d15e9f511bab713a141758f7efe6a6f697b37b0b14",
+      "gitBlob": "09b158b8f5f0ec48486aba589b1b49daf1b418ea",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/framing.ts",
+      "byteLength": 1985,
+      "sha256": "344d03a78e94dce87c3b958d02f7499e7927b25388830d3062dfdfc00655f026",
+      "gitBlob": "b981e61034a93da514de231aa96d6b0f24d28ede",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/frozen-scorer.ts",
+      "byteLength": 3566,
+      "sha256": "9e5f051b9487b53f34259075298ea9f65b905ed3f6ef895a20a1a3d31b58c72e",
+      "gitBlob": "c4c133fc8ea55dab59801c54e5f9067773be02c3",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/game-worker.ts",
+      "byteLength": 353,
+      "sha256": "d7ec081fe81c1f3ef1c5257a840305c5d2be821378d106a28ea3a801b9ddd7ab",
+      "gitBlob": "73fe75abecf40006ef6d7b85dfa9d1683af50817",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/job.ts",
+      "byteLength": 4762,
+      "sha256": "bea66950267f27d02fd91e9c35fc2cde914637506a63a39e33b251f71de8da09",
+      "gitBlob": "b85814d5b8db0de146c4bff7290e7e85bfc1e583",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/learner-pair.ts",
+      "byteLength": 3034,
+      "sha256": "fe75719f6dcdcb3a4a621c2aeba284cfbabca9e6b6f84d43d7457693666e3d26",
+      "gitBlob": "0021312adcf683cf48fbaf84616d01e8e6652aa7",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/match-process.ts",
+      "byteLength": 7100,
+      "sha256": "5960e488179b87b7fe2eb2df0c371518771c837a632f5844024d905d97731e18",
+      "gitBlob": "2eb7e15b2997239255fe3bb2ba0aaf9de2f523dd",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/match-session.ts",
+      "byteLength": 21583,
+      "sha256": "6dbcd36fe4fda9aa6495617a9ee3ea5558e44bfc6ec9d2ecd7986852db2b051f",
+      "gitBlob": "9176ea24d2327568e5b4904839bf55c6b48a02d0",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/match-state.ts",
+      "byteLength": 2075,
+      "sha256": "b1b04f78dc57fbaef24bdd515bb03a1ef0c98932c199ecb444cbb7f7c015e02c",
+      "gitBlob": "9a099dbc50bd0cbae146df20b74f82c586e2c684",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/match-worker-main.ts",
+      "byteLength": 2093,
+      "sha256": "7fbfda7c1898ae904990e8e4184780a36cca62069b5c4710ac4dd7082dfe198e",
+      "gitBlob": "a91d22eb92f49123b3d560be4177574a840a790d",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/match-worker.ts",
+      "byteLength": 10498,
+      "sha256": "7333ae7a643441f0a6d254db853315b8431fe558e03e410468a9ad3977c4cbb4",
+      "gitBlob": "c683aee11a392ac17a376f9239d1d7daff832fdf",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/model-inputs.ts",
+      "byteLength": 1491,
+      "sha256": "5ca0cbe0196a7c481255b0989e52c95c1f95d7f0e66c7c0d4e3b7979b27f5927",
+      "gitBlob": "565379e81ea7d6ff55f9b778794120956934f3c7",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/native-learner.ts",
+      "byteLength": 7892,
+      "sha256": "bd42911e886b352a97e1aea22552dd596d79ba2d55d490e35267a637d215340c",
+      "gitBlob": "429b13860236301729d48d4fb4728c87b338f8a7",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/native-session.ts",
+      "byteLength": 9263,
+      "sha256": "fce16d1d955745308ebc0eca8c3ed8133531b96b34d579110777464dc9280076",
+      "gitBlob": "b58ef1248e06a0c7f1bdab8860773fe0f017355f",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/policy-session.ts",
+      "byteLength": 10688,
+      "sha256": "bf66312f05965de4461219068912f68cecfdc4e1037749fd73bc4eba2a3e6479",
+      "gitBlob": "c801e94fd2a3782c7363a2d20d78bb6d9193f52a",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/private-state.ts",
+      "byteLength": 5741,
+      "sha256": "c129175e1e6f6a0ef4df2e0e8f0a9843b7087770064cde3c44b6ea8936bd4999",
+      "gitBlob": "b855d56d71543d668d0c5184fba2c7080657259c",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/process-transport.ts",
+      "byteLength": 5657,
+      "sha256": "bb8dde00851642d2b2faaa00909092e35e5676b093aebb652b1088daba34cac1",
+      "gitBlob": "ac1c1950471fffc51fc13c21112a48ad7bb6443f",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/reference-driver.ts",
+      "byteLength": 8759,
+      "sha256": "f9623f1ec68354139140ee142f1ac280d2995e81dbd8eaef77b3bde57aef8f30",
+      "gitBlob": "8a201c36106d493b637592e9f319e5393326636c",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/reference-worker.ts",
+      "byteLength": 398,
+      "sha256": "db1438a09e0dd5c28c8bfa2c1fd5789bce00914ad217dcfb3bdd606b1703163f",
+      "gitBlob": "59e24d098cf353766b3d37d1f217b841cb279e9d",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/rng.ts",
+      "byteLength": 1900,
+      "sha256": "1e2311763946768b7d1323b4717a203699ea057c88525a66a764465ad2fa5f5a",
+      "gitBlob": "a198432d9dc0c26e775d9c8e1d912659c4855c7e",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/storage-bounds.ts",
+      "byteLength": 1412,
+      "sha256": "f86f351c51d09529d751564b85aa3d150283c2ae5a09c7f632de12a84b5a1d38",
+      "gitBlob": "4fdaf8eeffed724e068c19471b1680a61e4838b8",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/strategic.ts",
+      "byteLength": 10385,
+      "sha256": "c5d748fe9ccc7787c32a20cc29820b80bfba3fa6c9f585aaeb2d56c24094e9cf",
+      "gitBlob": "cb3436b02c9f2b3c65a7a17b4ef9209db360f787",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/training-campaign.ts",
+      "byteLength": 8766,
+      "sha256": "92d0362057bf386fb7713a6929a429a89e97e5998e9921b0e9b790823772d5db",
+      "gitBlob": "115d9617812866f3d11ca9cb6428f7a747992d06",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/training-coordinator.ts",
+      "byteLength": 9497,
+      "sha256": "29ffc66842cb8588d4c3c5c419b5cf19b18ea780ffde82c35435001a3f5ea5ec",
+      "gitBlob": "e2192805ab19e6226992ed5d67591d232dd1d91c",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/training-store.ts",
+      "byteLength": 13190,
+      "sha256": "9ed0b2a9457a3e92c3c8b69d70fa5ad83783d7bef6e7e4ec4d5ee39513ae3b42",
+      "gitBlob": "8c7825dc111f95cbe7d3b41a85585dfb3a47f8b4",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/worker-loop.ts",
+      "byteLength": 1080,
+      "sha256": "afd57b55b54a2f982e882f3337ce1d2468f066bf94c61f09ba8a1d6249d4347f",
+      "gitBlob": "ad4605d182788efa92da6d07a8b100a202779631",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/runtime/src/worker.ts",
+      "byteLength": 4384,
+      "sha256": "0c6fab7a35bb5be6f99eb62fc02b3c6f2309cc110cb48bbbbfbb2111dfc5d830",
+      "gitBlob": "02270e63d05c67df79dce61cacb678ff6cb86156",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/package.json",
+      "byteLength": 694,
+      "sha256": "6b56f6154c2f896ea0ab34d1535c27b78d5e5398793e054a35068532cbae6887",
+      "gitBlob": "b092bd4fe0f78288a7013e45173665a56f74be0c",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/board/classicFen.ts",
+      "byteLength": 339,
+      "sha256": "b005f66aa7e878b4c5db0e0fce7caa31f15a7d1bb052a2fdc485616d888e3adc",
+      "gitBlob": "189711c7ef61d508a1bed195190e364099bcf25b",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/board/mine-contact.ts",
+      "byteLength": 2369,
+      "sha256": "16cdde5417ed37568ca9aac64fffb7c6fa58c35fd76a93726a05192aace0086f",
+      "gitBlob": "2b5a3ad72a005a610b4813d78d2f08b0c9671d05",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/board/mines.ts",
+      "byteLength": 3834,
+      "sha256": "1c9082d89051e6ffdfba71c97b709f7d33cced372cf149c02c84bffebbd31fff",
+      "gitBlob": "284da34f891ad11d7ef351c7c8de197e0ac0d597",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/board/move-timing.ts",
+      "byteLength": 3822,
+      "sha256": "4009773b2d47deeb83cceaab502af5692e5de0e4254d053166374043d9b8ba69",
+      "gitBlob": "42b17b9b0e6ca4fa17a3af8ad8110f3f53425214",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/board/moves.ts",
+      "byteLength": 10469,
+      "sha256": "2479c4eed2fca89a1a1de08d210c2fa1cd0b40c22a330ebdf8c48b6069c57df6",
+      "gitBlob": "3a670516a07941c61f1f98bd245b7ee3519f7f24",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/board/placement.ts",
+      "byteLength": 7285,
+      "sha256": "083952137e3b5cd829494140edb5b995efe7941f227e30bcd303698bb7475544",
+      "gitBlob": "a47e6c414d4fca5ac82408f2650bcae5c9d2c6b5",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/board/ray-scan.ts",
+      "byteLength": 2149,
+      "sha256": "46c3fc691517e50c13969c5b45d998c4e5b76670556b39f7a8007f3ef995a418",
+      "gitBlob": "53a21ce359f7cfcf4d8e4086a19fb07778e03aae",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/board/siege.ts",
+      "byteLength": 1071,
+      "sha256": "eb57a7d6715067681cab6da2872840f8f9935ec2cccbc9badf78e73f9bebb452",
+      "gitBlob": "99a8cac7f806fe2d3bbce292fa361997d5d87d4a",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/board/vision.ts",
+      "byteLength": 10114,
+      "sha256": "6e6def04466f3eee6dbd4cdfe0599c8da8255282e34e42ff0d55f6e4533c516c",
+      "gitBlob": "95e2025d2dc00c1809b2bb1898a50fab2f1b2030",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/commands/queue-action.ts",
+      "byteLength": 7351,
+      "sha256": "6e493f3bcaa7de70b7c7b5e7398385e007ebcf138dbec8abbf844e2b6277b94d",
+      "gitBlob": "d06b842805aa377198c12a9983d3856842bd5d68",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/board.ts",
+      "byteLength": 381,
+      "sha256": "ddac9d5352ecd1d3494b3c6129998cbf61cee14c3dbf42652b5c9fea17e5b85c",
+      "gitBlob": "c08829007f0ab599d9e76df88cfefc7cce74951e",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/causal-events.ts",
+      "byteLength": 24503,
+      "sha256": "116fe05325b3e5287ce058d8bf73588318024c979c122d066189c4dd39144624",
+      "gitBlob": "9174699fe4f953fad0a4d72b6a5f07c13b221c3c",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/causal-producer.ts",
+      "byteLength": 1300,
+      "sha256": "f7f5e9225ef8785d6eddaa1d89634514652de4d6ad0937a9031e095749506d97",
+      "gitBlob": "6b9ac90755c458c7c1e00a2ff50296db5196e42a",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/charon.ts",
+      "byteLength": 170,
+      "sha256": "860bef6bc8a249576c0ba50eff6e49cdb4dd7f8c0a1d4dad9ef090d5d31516d6",
+      "gitBlob": "dac6147e0ac5a55dac16799a3bdf96e26d6099ef",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/classical-resolution.ts",
+      "byteLength": 1769,
+      "sha256": "652c7787052870b31571e85a9e8d949cb54a1ba78aa28e6823eddcd71bbc190d",
+      "gitBlob": "52095caef1ec14cb52f7a18409ab87a7f3482e28",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/constants.ts",
+      "byteLength": 300,
+      "sha256": "8d40aef2d7b98ff3a998e7ab7d0dc2eafc404a046b9ccc9695d2dc013489e390",
+      "gitBlob": "e8b0b319ea7dd38f09df1e85181f2009416c55fc",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/economy.ts",
+      "byteLength": 260,
+      "sha256": "c0f1fc790bc351324fd1d6a43b617701032afe2a25d86ba03ea26ddc79acba32",
+      "gitBlob": "88eeed5e14f79b3ef8870e08f48b6ea9f4ca512c",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/index.ts",
+      "byteLength": 1287,
+      "sha256": "59804e608176d5eacd4589cbdb7fd966d19d4a88c48a188db388553f7ee7a9f4",
+      "gitBlob": "dec0d03e8672b292b0d4390bb35506818d5deff5",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/initialization.ts",
+      "byteLength": 1536,
+      "sha256": "b835651978b742dc96b749dad934f5e758a2adade75d56511ae274887f45a330",
+      "gitBlob": "afd704e567f35661a5363a6915b63021d5077cf9",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/mine-contact.ts",
+      "byteLength": 215,
+      "sha256": "37c97e4c119bf0bcdcdb0a7df3f4de012d0dfc21f7703e3623af83c795354dc8",
+      "gitBlob": "bfc1ca43b3d2b2c415c97e4efd03527ca1b0098f",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/mines.ts",
+      "byteLength": 213,
+      "sha256": "3fda1228b2d0fda3b065bb4f8969961eee99781ae951378944e41a94f25ad9a1",
+      "gitBlob": "c5b2c10adaa688643b2cfbda850aa8a7fd271e0f",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/move-timing.ts",
+      "byteLength": 243,
+      "sha256": "abd7e82fb2761429e2d0f56bd77a3add7fb66b3c11ff5911e3fe7c9a183bed3d",
+      "gitBlob": "d46b924fc0a77a0b1ea08f2657b7cb019bda577c",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/moves.ts",
+      "byteLength": 287,
+      "sha256": "eb26f1f1ab2c17f16202b4bcd08f127d834c5aecd32e79e8bb9e720338373eb5",
+      "gitBlob": "0d1ac724003cb15cfdacb53d2011119b3101064a",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/native-classical.ts",
+      "byteLength": 8275,
+      "sha256": "246ec95a8277fb4468df7aa10569a0e36c55a0d983b175baebabea52d8cad173",
+      "gitBlob": "ba1955857549dbcd48a4bba14f1a4e9d3735970d",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/outcome.ts",
+      "byteLength": 126,
+      "sha256": "7f2cbeeed979b8d9f5a97f55173e2c4000479350b2b9f0cbdd5edbe2a7a4c0f6",
+      "gitBlob": "055ddd2fb8ac57fcff0829909d9062d1ec0b9228",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-intents.ts",
+      "byteLength": 7728,
+      "sha256": "1fb8cb64521add5cd111ae001b9d85603e207485f5f4d1590ead09a9c72e100a",
+      "gitBlob": "6569f8ff906a318116bb847488fa9997b71d2e0d",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-order.ts",
+      "byteLength": 2200,
+      "sha256": "0636b6ae52c94c841d42dd0b5baad82846d283ffa95a6987cf06a9dfbe554c1d",
+      "gitBlob": "d0a610956dbe9d7fb0f2318a4d01b88ac8c1e004",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/planning-specials.ts",
+      "byteLength": 242,
+      "sha256": "fd90584ec2b755a2be2cd724860fe0489186c2c84e882254235ece9ed57177e8",
+      "gitBlob": "b471b28d2b19004c2acf58a7f1614e15f21e74fd",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-action.ts",
+      "byteLength": 915,
+      "sha256": "a8fade891926e99a330f3009d9dcf8e248a96281a54272f3e36af7e30fd0af11",
+      "gitBlob": "09217d153884101e2abf0417946ab0ddbb7e97f1",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-contract.ts",
+      "byteLength": 123,
+      "sha256": "e6c4c3d4ba563903c0c3beacd637cc59bb8d7f46186e5264e594d04c134724dd",
+      "gitBlob": "20469263dc457760141f1e8f168137d894d9527e",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/queue-validation.ts",
+      "byteLength": 4529,
+      "sha256": "802ae995610f453e79d6e88eef386b9c856a94b77276b153d317c4f03678e24b",
+      "gitBlob": "cedbdde2d55d82ae8d7a47d87873e2f1129a4aea",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/ray-scan.ts",
+      "byteLength": 177,
+      "sha256": "ffd5f7a3bf24694e84d9f421620e3898bb10bda62c61cdaa9a186611c49797ae",
+      "gitBlob": "b6e79b40511e28c517b17886f32301cc8e34ef68",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/resolve.ts",
+      "byteLength": 877,
+      "sha256": "e58af101b6e1a1b5a94567de5484ce346e5a605cf6f1ec21239661dd73fe4e09",
+      "gitBlob": "2b0c0c4bc6b968bcc57750b8b8491f46b3f8e25c",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/specials.ts",
+      "byteLength": 192,
+      "sha256": "cf5c83e811458b7a68f6ca88da450c499c6675f84c8cb466a1d7393af12f55a7",
+      "gitBlob": "0eda24a2fc6a179b7aa5ed5acd4cffbb741fbffe",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/types.ts",
+      "byteLength": 355,
+      "sha256": "1f3ec1b3b203837432bfd0b5847f833dc05ce03decf3a739850116154ceb9f17",
+      "gitBlob": "d47bf8137b231cb0d439689613434349265e79dd",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/engine/vision.ts",
+      "byteLength": 330,
+      "sha256": "f65e344d5e36e293a69dea3184cdabcbe24c08816b69bc182d0f2a38f89ba411",
+      "gitBlob": "a8cdc9cd35ade40afeb8342ed39aed5a3dacff85",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/outcome.ts",
+      "byteLength": 1177,
+      "sha256": "0413b7e440087b08fb66275dbb83b3e7f5adc34af5dbf3e6e09049c6855fb217",
+      "gitBlob": "fa20f274595bd7b502a6a14a7ab20c95571affb6",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/resolve-turn.ts",
+      "byteLength": 46101,
+      "sha256": "169f4e5726f66cfd24a1a5a4a5832f8eaba05ee2c63dd10f0619358eb77757b8",
+      "gitBlob": "debb85c4b931375d1c87ed1404ad05d79794e792",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/resolve/submit-turn.ts",
+      "byteLength": 39066,
+      "sha256": "d5e3325ea985a4c19b784c90b1955d740068a26d0bc38a37d9a5d2de41b62f06",
+      "gitBlob": "d63b99d3fc6901598f1c5a78ac08627945852490",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/rules/constants.ts",
+      "byteLength": 2062,
+      "sha256": "66acdcc1abc05197fbe3ae9df57a0efe4acea88c6ada78e4db9590f3343b6ff7",
+      "gitBlob": "2d9d7900805a9875d9d46005b82c1b50811d2230",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/rules/economy.ts",
+      "byteLength": 3611,
+      "sha256": "6fed53b09bf42f75fc6f9621f40361d99a072a551c6dbc76a29977211c99d579",
+      "gitBlob": "e3195b1ed7f6aa184e5831ae73209751fc3892d0",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/adjacent.ts",
+      "byteLength": 3694,
+      "sha256": "96a671566e971bfbbe80aa64205fa04f7ef1b6a23ef2cf337b321945b2d5e540",
+      "gitBlob": "dde0711b13d5c9daf78e6a398a1777c66ca4bfed",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+      "byteLength": 5451,
+      "sha256": "b2c8af310fe33f83a18eb3e5e53b41734c147e5f62440d9422b2e757b376c4e4",
+      "gitBlob": "3e9f1eb841e3578ace0ca495e1fcdf57af6faf56",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/registry.ts",
+      "byteLength": 1212,
+      "sha256": "0965a88ac773afe43ca72915d2ddccac4cc84c31f58121a1514f6511de8f6b5d",
+      "gitBlob": "77c8c75c0549e59c03e2936967371fbda6b3b449",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/rules/specials/stimStep.ts",
+      "byteLength": 1421,
+      "sha256": "fbe990595fe42e41aad17460eb76b3a3f134672144a867a52ee618034f4069a1",
+      "gitBlob": "6a80564f3ee86917b48473951221e3d6e0936cf6",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/rules/validation.ts",
+      "byteLength": 13598,
+      "sha256": "a18e038feb83f3b15f4f9309e33101b23dac2080155af46ac51474f09c0a064c",
+      "gitBlob": "85f8c43ee268316849280631f7f993e5fa01bad2",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/codec.ts",
+      "byteLength": 20029,
+      "sha256": "74ab468ff05e53e419a5fe151ebcc266cf89c4c9b3789731a8d9e89e954be3eb",
+      "gitBlob": "01579588777cd2e4bd58b5a0965de3ee3448fbeb",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/index.ts",
+      "byteLength": 733,
+      "sha256": "6fe29e70afd2d6c615a31379174d24de2d011e42d52c693f0ea7954a1cfa64ad",
+      "gitBlob": "18afc94ca5b93d24557489a399aeacf715a679d3",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "packages/starchess-core/src/scfen/legacyKinds.ts",
+      "byteLength": 1828,
+      "sha256": "263e4ba87bdeaccf41d18e3c0495430f2b6b0af332ff374f707e2df7babc030b",
+      "gitBlob": "fc48e0f2db4081388111d4217ca09a3cd8ce744b",
+      "gitMatches": true,
+      "archive": null
+    },
+    {
+      "path": "schemas/feature-layout.json",
+      "byteLength": 1399,
+      "sha256": "bca25ea10220001845ad8a5f419f32baf250073b150c9bbe78f17a75c7c08f74",
+      "gitBlob": "a16eb4e8a05c4acb0467f906877b8c393a71f9ef",
+      "gitMatches": true,
+      "archive": null
+    }
+  ],
+  "changedCandidates": [
+    {
+      "original": {
+        "path": "artifacts/training-functional/campaign-plan.ts",
+        "byteLength": 7857,
+        "sha256": "364bc16215013c5f7325857beb88125935b393e89b7f0db533bad68bd13b76d9"
+      },
+      "archive": {
+        "path": "artifacts/training-functional/full-training-packet-2/preserved-packet-1/artifacts/training-functional/campaign-plan.ts.source",
+        "byteLength": 7857,
+        "sha256": "364bc16215013c5f7325857beb88125935b393e89b7f0db533bad68bd13b76d9"
+      }
+    },
+    {
+      "original": {
+        "path": "artifacts/training-functional/campaign-operator.ts",
+        "byteLength": 32121,
+        "sha256": "b73a92e01aca66246bc0953199e13fc02ec86d770aece410fa99ef3db9d840f7"
+      },
+      "archive": {
+        "path": "artifacts/training-functional/full-training-packet-2/preserved-packet-1/artifacts/training-functional/campaign-operator.ts.source",
+        "byteLength": 32121,
+        "sha256": "b73a92e01aca66246bc0953199e13fc02ec86d770aece410fa99ef3db9d840f7"
+      }
+    },
+    {
+      "original": {
+        "path": "artifacts/training-functional/campaign-plan.test.ts",
+        "byteLength": 4437,
+        "sha256": "8e2b06d6003c25e4e6381ec4ddbe89ec6559db7dbeea3b3b1b887f5edfec19d5"
+      },
+      "archive": {
+        "path": "artifacts/training-functional/full-training-packet-2/preserved-packet-1/artifacts/training-functional/campaign-plan.test.ts.source",
+        "byteLength": 4437,
+        "sha256": "8e2b06d6003c25e4e6381ec4ddbe89ec6559db7dbeea3b3b1b887f5edfec19d5"
+      }
+    },
+    {
+      "original": {
+        "path": "artifacts/training-functional/campaign-operator.e2e.test.ts",
+        "byteLength": 26273,
+        "sha256": "e097c5b3a4667278427b4051b2659478e5e9031c4a09ba10d756e59c171ae532"
+      },
+      "archive": {
+        "path": "artifacts/training-functional/full-training-packet-2/preserved-packet-1/artifacts/training-functional/campaign-operator.e2e.test.ts.source",
+        "byteLength": 26273,
+        "sha256": "e097c5b3a4667278427b4051b2659478e5e9031c4a09ba10d756e59c171ae532"
+      }
+    }
+  ],
+  "scope": "OLD_112_WORKER_BYTES_RECOVERABLE_FROM_VERIFIED_GIT_OR_EXACT_ARCHIVE_DEPENDENCY_AND_HOST_USABILITY_NOT_ATTESTED",
+  "hostPreparationExecuted": false,
+  "trainingExecuted": false
+}

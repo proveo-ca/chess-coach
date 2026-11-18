@@ -1,0 +1,42 @@
+{
+  "status": "UNSELECTED_FULL_NUMERICAL_C12_SOURCE_PREPARATION_PROPOSALS",
+  "sourceNamespace": "_work/gpu-owner-recovery/qualification/host-full/",
+  "recommended": {
+    "label": "18-minute full campaign",
+    "campaign": "qualificationPlan(gpu,full)",
+    "selectors": [
+      "cuda_f64_nonzero_native_scores_round_trip",
+      "cuda_f64_direct_sgd_changes_policy_parameters",
+      "cuda_feature_complete_sweep_for_active_relu_checks_2335_coordinates",
+      "cuda_feature_complete_sweep_for_inactive_relu_checks_2335_coordinates",
+      "cuda_f64_redundant_learning_channels_agree_and_reload",
+      "cuda_f64_policy_channel_subprocesses_agree_and_reload"
+    ],
+    "perInvocationAcceptance": { "passed": 1, "failed": 0, "ignored": 0 },
+    "reuseEarlierTestResultsInsteadOfRunningFullCampaign": false,
+    "testLoopLimits": { "perTestMs": 120000, "totalMs": 750000, "cleanupReserveMs": 30000 },
+    "driverLimits": { "preflightMs": 120000, "totalMs": 890000, "finalizationMs": 20000, "hostNormalAcceptanceReserveMs": 20000 },
+    "hostLimits": { "normalOperationsMs": 960000, "cleanupMs": 90000, "receiptReserveMs": 30000, "overallMs": 1080000, "maximumDockerOperations": 7 },
+    "resources": { "cpus": 2, "memoryBytes": 8589934592, "memoryPlusSwapBytes": 8589934592 },
+    "selectedUuid": "GPU-713c95e0-6952-a576-794b-9ef1fb527ff0",
+    "guard": { "startupMinFreeBytes": 3221225472, "runningStopBelowFreeBytes": 2147483648, "sampleIntervalMs": 2000, "queryTimeoutMs": 1000, "maxSampleAgeMs": 4000, "maximumTelemetryQueries": 400 },
+    "diskLimits": { "workspaceAndEvidenceSoftBytes": 4294967296, "minimumFreeBytes": 8589934592, "minimumRunningFreeBytes": 4294967296 },
+    "maximumNativeCaptureBytes": 3405774848,
+    "maximumDockerCaptureBytes": 58720256,
+    "freshScratchGuestAliases": ["/scratch", "/build/native/_work/gpu-owner-recovery/scratch"],
+    "countHostScratchDirectoryOnce": true,
+    "stepSpecificExecutableAcceptanceRequired": true,
+    "retainedSourceTargetBunLlvmCudaReadOnly": true,
+    "reuseFirstAttemptWritableJitCache": false,
+    "fullCampaignRuntimeAndDiskFitQualified": false
+  },
+  "alternatives": ["Revise timing, headroom or disk limits before implementation", "Defer full-campaign source preparation"],
+  "sourcePreparationSelected": false,
+  "hostExecutionAuthorized": false,
+  "copyingOrStagingAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "kernelJitExecutionAuthorized": false,
+  "publicationAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

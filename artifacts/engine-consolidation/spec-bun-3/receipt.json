@@ -1,0 +1,82 @@
+{
+  "status": "PASS",
+  "runtime": "Bun",
+  "documentPins": [
+    {
+      "path": "_spec/engine-consolidation.puml",
+      "sha256": "f4c99ed96a9c8ca888db8949ecc7fd35523153e655c169c5a68aeaaf33bc27ac",
+      "sizeBytes": 7790
+    },
+    {
+      "path": "_spec/ml-runtime-architecture.puml",
+      "sha256": "e944c304c4e58be1ee46ca5d2cdde74fa39d550a8167d13f5f9e73b485e84b30",
+      "sizeBytes": 4743
+    },
+    {
+      "path": "_spec/game-core.puml",
+      "sha256": "b31d389b70c264eb394b4fe248a4c7c95cc4056b546680adabd7a3fff513876e",
+      "sizeBytes": 2042
+    },
+    {
+      "path": "_spec/causal-journal.puml",
+      "sha256": "4e3e664dc7f680ea68d24c36dfd040c271885685bf545737fe997e46c16e09db",
+      "sizeBytes": 3322
+    },
+    {
+      "path": "_spec/turn-resolution.puml",
+      "sha256": "40baf4f86f03415926b8568d24483d9469b18f6f31241728efb44d314c04c23d",
+      "sizeBytes": 2414
+    },
+    {
+      "path": "_spec/classical-resolution.puml",
+      "sha256": "b69509172c78f1b0970344e32d6d75487d634cc53da7da11b4481f85aa72900e",
+      "sizeBytes": 2110
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "sha256": "640a498ab072e84525ca302ce740a743e28222e55b04b49738c2d0ed03a43309",
+      "sizeBytes": 51707
+    },
+    {
+      "path": "_spec/architecture.md",
+      "sha256": "a64835bfdd4ae348353d5703013b0c27f09f743f9f9fe6085eabd64bd441e6dc",
+      "sizeBytes": 16407
+    },
+    {
+      "path": "_spec/game-core.md",
+      "sha256": "e9a35f5247c5f03039798de58c8cfa7bd3f068a4474771ef6a66ffea87db3806",
+      "sizeBytes": 10192
+    },
+    {
+      "path": "_spec/causal-journal.md",
+      "sha256": "b185be367753fa3ce43dad114fe3cff2d651b9c5de53d99702869f48f13c59c9",
+      "sizeBytes": 14055
+    },
+    {
+      "path": "_spec/turn-resolution.md",
+      "sha256": "90ceb139af68d5d4821c426367ee826d55d832e65e2df29391dad48bb8ef24c4",
+      "sizeBytes": 3794
+    },
+    {
+      "path": "_spec/classical-resolution.md",
+      "sha256": "9fb848532b0db37cc88e8d6e026ee2a0acabb075a8ba9d838cc9abfc14790a04",
+      "sizeBytes": 4083
+    },
+    {
+      "path": "README.md",
+      "sha256": "ad745fe1402b47bf9ab70a00cd6e00e3b710a5517d7a1cf451cbcec6ff2fc43a",
+      "sizeBytes": 15426
+    },
+    {
+      "path": "PLAN.md",
+      "sha256": "ba6e6fd63dc8e1ab89f429731287472c7dc0e40c589a209b94fcc713055b7b1a",
+      "sizeBytes": 14645
+    }
+  ],
+  "scopedCoverageAndNoteBounds": true,
+  "postDocumentWorkspaceTests": 8,
+  "externalPackageGraphSha256": "ceaaac5b756bb98fd3bb904219c909981c2169a5c941c465ffcc807975dc1590",
+  "rustAndFeatureSchemaUnchanged": true,
+  "nativeDiagramRenderingSkipped": true,
+  "skipReason": "Bun/Rust-only task steering; full remote theme remains unverified"
+}

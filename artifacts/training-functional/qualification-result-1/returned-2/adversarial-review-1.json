@@ -1,0 +1,16 @@
+{
+  "scope": "READ_ONLY_LOCAL_READBACK_SOURCE_REVIEW_NOT_FUNCTIONAL_ACCEPTANCE",
+  "reviewerSession": "ses_e158f9ccfffemYMoC24R3Xy3oz",
+  "reportedReadyToMerge": false,
+  "findings": [
+    {
+      "severity": "MEDIUM",
+      "path": "artifacts/training-functional/qualification-result-1/readback.ts",
+      "line": 156,
+      "description": "Model handoff checked hashes but did not join recordRef.byteLength against the initial/proposal reference",
+      "resolutionAtReview": "PENDING"
+    }
+  ],
+  "priorVerification": "checks-5 and readback-observation-1 retain the initial checker generation; neither accepts contradictory model-reference lengths",
+  "trainingReady": false
+}

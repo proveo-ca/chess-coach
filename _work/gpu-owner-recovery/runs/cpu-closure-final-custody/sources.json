@@ -1,0 +1,174 @@
+[
+  {
+    "path": "Cargo.lock",
+    "sha256": "b2852cbabb1fcedc29146c33a9323eb04401005afa4cb3c8e5de89e16ae66555"
+  },
+  {
+    "path": "Cargo.toml",
+    "sha256": "553b6e3cf5a8d30f53f19bf6623332d4d6c5df69099d5f2a51ae9260f07b74bc"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/audit-lock.ts",
+    "sha256": "1b618be3d4471c54eba82b15e1a29f37a3c41d2b5a0606bd2272d92203767482"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/cargo.ts",
+    "sha256": "249a7ae258ae455f04761858501b32274d95ad6600c3bb0bc501b5d2567f11c9"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+    "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/compiler-driver.ts",
+    "sha256": "bfa3cd2f8bd12d5a0466914eb74d33ff749b727d46e3a9057a11950d5e62885c"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/diagrams.ts",
+    "sha256": "529160a222254997c139be99783b8e819255e1408185119b7480493e7e5aba7a"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/mise.toml",
+    "sha256": "09b27b21573e66a53fb59c29feb97b15a8b0887384b21b09fac8599d8ecb5df8"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/provision.ts",
+    "sha256": "6e5e20904ca08c192c62fa42a4dc70313f5460330918d607e411fd503fb94979"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/recover-runner-output.ts",
+    "sha256": "9970188819bf6024fc5733e01b319eca0bf81064015c681bd617528e16377b51"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.test.ts",
+    "sha256": "fce51ec2828d7373509bcdb256826c1e6b73646e4da98b4452ecf9f9c6298da5"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.ts",
+    "sha256": "afd7733b712c5bdf465b38f7f3f0965f3ff83f3032282b7acede56d150114d67"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/zig-ar.ts",
+    "sha256": "b2ae0f3ed032f1db45c2cc31e072f31033a642c23ca928083cab39499145d6a0"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/zig-cc.ts",
+    "sha256": "af9a8708d2acf0052f61acab96f23fe4b9c47ae0396622b5a11a05173ea6e28a"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/zig-cxx.ts",
+    "sha256": "f4205337b3d55f50b91dd618c38ebb063e093d1af514da7f3b981d93eb469ce7"
+  },
+  {
+    "path": "crates/gpu-owner/Cargo.toml",
+    "sha256": "ceb98a71e3a5c16c1c3f6d5035843b8441995339b5d49f62340b395540b2c3aa"
+  },
+  {
+    "path": "crates/host-facts/Cargo.toml",
+    "sha256": "852c6df40e26aff5ac82e347db1f7cc4fdebb069a54095a8a92fb714183f64c8"
+  },
+  {
+    "path": "crates/learning/Cargo.toml",
+    "sha256": "018a19c5bb0dd4a43660c3add3062bb52bdc5c40c79c27de4248c841460f2abf"
+  },
+  {
+    "path": "crates/learning/src/accumulation.rs",
+    "sha256": "54f9ad68942e1e47253dcc69250904e0e02f02645442a594bc2fc3fb7da5fb02"
+  },
+  {
+    "path": "crates/learning/src/batch.rs",
+    "sha256": "69bbf5ffa44b5f0bc5488827c53a7e6178bec928ab1afb2258cfe41f14b693ea"
+  },
+  {
+    "path": "crates/learning/src/episode.rs",
+    "sha256": "e5f89405c0582b2307004cdd1941f17fa571cc8d97088a8b9c66269862c5d99b"
+  },
+  {
+    "path": "crates/learning/src/lib.rs",
+    "sha256": "088b073209e23d4e36e7fef03d974fc60f4d645f0d6c674ad44d3407703a42c9"
+  },
+  {
+    "path": "crates/learning/src/model.rs",
+    "sha256": "d44db1ad8e155afc3ecfbd52e7b56807bb029e6dfe0e8ef6593236d1a3f651e4"
+  },
+  {
+    "path": "crates/learning/tests/accumulation.rs",
+    "sha256": "0682e892d60625413ae9d82eac98d534fe1a9e83f82a6b60ce45c0495656c56e"
+  },
+  {
+    "path": "crates/learning/tests/common/mod.rs",
+    "sha256": "f56b0811cabe5ff453e85d6acad699b519305b0a7900c80471e1c02cff2eb493"
+  },
+  {
+    "path": "crates/learning/tests/context.rs",
+    "sha256": "15309553796ea4875563c4d73fb4888c7a9740f28a269e3cb8be0b5883e3db9e"
+  },
+  {
+    "path": "crates/learning/tests/episode.rs",
+    "sha256": "0d9a51484207063ab9a3ae072d631ce306bd46fa25821314feae9777bfc8a8f1"
+  },
+  {
+    "path": "crates/learning/tests/finite_difference.rs",
+    "sha256": "701a56b8d88677b578393b06d7d47f0ebb1f7df56690ba990e362bdb5776c696"
+  },
+  {
+    "path": "crates/learning/tests/initialization.rs",
+    "sha256": "0a1ebc7bf0f84f567432b0fbfdf60849acb691c35c06fb14969a04eb48920c56"
+  },
+  {
+    "path": "crates/learning/tests/model.rs",
+    "sha256": "48a0f3742b7f40f2a47f764848f99ec392f71f3eece175300cbc053171a1c5e2"
+  },
+  {
+    "path": "crates/policy-io/Cargo.toml",
+    "sha256": "c9e25c2541e835906fcad2da53d2d9a9588007b32d41895e85d66599d6bdce56"
+  },
+  {
+    "path": "crates/policy-io/examples/initial-record.rs",
+    "sha256": "44cb4727be3007a0cc0a97176d5c1efd2c255ea8909a2cb1e82c31192bb7238c"
+  },
+  {
+    "path": "crates/policy-io/src/bin/policy-channel.rs",
+    "sha256": "45e3652ec19ea28f021377d1d020d5b6cdbc9bf1f2d02235425410ad2d48e993"
+  },
+  {
+    "path": "crates/policy-io/src/bin/policy-initialize.rs",
+    "sha256": "1024cb2f47bcb5cf494be6da0016ca583342346544a3eb20ca52bf19a001fdf2"
+  },
+  {
+    "path": "crates/policy-io/src/bin/policy-score.rs",
+    "sha256": "6d2cb5f6264b7e05b3e6a05bf35ced608e4426d0947d3db07286e23cbe52f613"
+  },
+  {
+    "path": "crates/policy-io/src/channel.rs",
+    "sha256": "0e2c054c42c7c5549982fc4b1b7f27b2427e8dbffb187ac6917364e78433703e"
+  },
+  {
+    "path": "crates/policy-io/src/device.rs",
+    "sha256": "edf458da0efed270cc53a081d9d7a270cbe8c8e9ba1a77503cd9899e6a5ed9ae"
+  },
+  {
+    "path": "crates/policy-io/src/lib.rs",
+    "sha256": "ac9010eaa10a5526534e7d89c0b8b2e3f147a7e2e85e0831f9f4138d9bf3a839"
+  },
+  {
+    "path": "crates/policy-io/tests/channel.rs",
+    "sha256": "5e0feaf08e69efd2557718d6214e22cc064d3a429007cc6eee6acf5bbd20dc63"
+  },
+  {
+    "path": "crates/policy-io/tests/f32.rs",
+    "sha256": "baf6a9720b5033149d1aac099de4571a2cca3116d2560c2367eb5ee4562902ea"
+  },
+  {
+    "path": "crates/policy-io/tests/gpu.rs",
+    "sha256": "b1cb7ebe67ec15cb198db413ad5ad03d883aa07e408e78afbb9d6d8e9dc5f9ce"
+  },
+  {
+    "path": "crates/policy-io/tests/initialize.rs",
+    "sha256": "fc939d34b4e443e389b00f01d6609248da8a5195a7722cab5e27954bb7be6c15"
+  },
+  {
+    "path": "crates/policy-io/tests/score.rs",
+    "sha256": "0f04e838805314de0591f5a73919af1e802c6dacad21b364e6adb594b2c7b5b5"
+  }
+]

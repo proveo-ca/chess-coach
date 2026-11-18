@@ -1,0 +1,23 @@
+{
+  "status": "READY_FOR_EVIDENCE_RETENTION_AND_EXECUTOR_CAPACITY_DECISION",
+  "scope": ["user-report.json", "intake.ts", "tsconfig.json", "observation.json", "intake.stdout", "intake.stderr", "types.stdout", "types.stderr"],
+  "adversarial": {
+    "session": "ses_e142b9e51ffeM9rYY2kxtvjJnX",
+    "ready": true,
+    "findings": []
+  },
+  "security": {
+    "session": "ses_e142b9e43ffelFvjSJ26add9P3",
+    "readyForIntakeOnly": true,
+    "highOrBlockerFindings": [],
+    "risk": "low"
+  },
+  "devops": {
+    "session": "ses_e1497c1edffeVxf6tFoIjlUzz0",
+    "nextBoundary": "ACTUAL_BACKING_CAPACITY_ROUTE_NOT_ANOTHER_IDENTICAL_HOST_QUERY"
+  },
+  "admissionRulesChanged": false,
+  "hostOperationsExecuted": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false
+}

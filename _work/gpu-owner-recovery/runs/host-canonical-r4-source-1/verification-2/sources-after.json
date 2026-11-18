@@ -1,0 +1,462 @@
+[
+  {
+    "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+    "bytes": 910,
+    "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/canonical.test.ts",
+    "bytes": 17115,
+    "sha256": "5f5172f0e68ad3b02de684bcfe0523cb9a32bf4cdb617dcd9e6244527a3bbb19"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/canonical.ts",
+    "bytes": 9181,
+    "sha256": "4968b1e403997ae0992ebf2df8c1e8c2bb383a52b53140b2a1711cee75991738"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/plan.json",
+    "bytes": 2537,
+    "sha256": "96cf8bdbfb101f094711425df7eb0ca4ad5adbce696a0e9a4d77152f768aeeeb"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/r4.test.ts",
+    "bytes": 6785,
+    "sha256": "cb55f59e07c9fa2d537a7f4c0c91f435b5f8f01cd73a082984c49d64bba4c653"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/tsconfig.json",
+    "bytes": 213,
+    "sha256": "cfb2bae14ef240a76395b70f1a442426b9a70c2805b35a711fa23263461c6d20"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verify.ts",
+    "bytes": 9374,
+    "sha256": "cf3415bcd062ebd9e512cce0b4b4643f8f59133bc3bbfab8552ee4b59910e708"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.ts",
+    "bytes": 12723,
+    "sha256": "9831b75035a5d832c6d86608b7d561821ee1a4c6dec8d2a7ecd31fbca55d5f58"
+  },
+  {
+    "path": "bun.lock",
+    "bytes": 2469,
+    "sha256": "493ec125a40b8f9a247df9c5a347d1176e721d1fad54875cba9938639457bf1a"
+  },
+  {
+    "path": "node_modules/@types/bun/package.json",
+    "bytes": 1596,
+    "sha256": "7fe2d0d1b7e8b8603827820c2c56cbd15979be31fc77c3ab79ea0c30022a8bfb"
+  },
+  {
+    "path": "node_modules/typescript/lib/_tsc.js",
+    "bytes": 6213092,
+    "sha256": "e8f349eabd48486bdb2bf9dc1a00c89d58297270c54b745838879e2859194419"
+  },
+  {
+    "path": "node_modules/typescript/lib/typescript.js",
+    "bytes": 9112572,
+    "sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675"
+  },
+  {
+    "path": "node_modules/typescript/package.json",
+    "bytes": 3620,
+    "sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+  },
+  {
+    "path": "package.json",
+    "bytes": 422,
+    "sha256": "eec978d7f787b0bbdc1eba99d15d8972a0d2751fb5e0078d821b5cf09004cbae"
+  },
+  {
+    "path": "packages/contracts/node_modules/zod/package.json",
+    "bytes": 4142,
+    "sha256": "c2d190d9ee4e0bdb60332aaa2130a6a98d65ddb903fe1d29248b15de57832c45"
+  },
+  {
+    "path": "packages/contracts/package.json",
+    "bytes": 568,
+    "sha256": "f61d507130bf97e8808b8e3458684072fbd94d42434c769ee7ce171d30bd4489"
+  },
+  {
+    "path": "packages/contracts/src/candidate.ts",
+    "bytes": 1921,
+    "sha256": "01422c6e5b8f289cd387e3cf488363c810277db5aae7117cd7354b7b14c8af1e"
+  },
+  {
+    "path": "packages/contracts/src/causal-journal.ts",
+    "bytes": 12078,
+    "sha256": "ac44add7e33739b1fb4bcb06a11cad0459fef547e7afa57b1a94f3153dc202a6"
+  },
+  {
+    "path": "packages/contracts/src/episode.ts",
+    "bytes": 2612,
+    "sha256": "ae8c21913bf58d1688f4136bab05c6b55ad051a2dc39b5640c6d94ab603ee370"
+  },
+  {
+    "path": "packages/contracts/src/game-session.ts",
+    "bytes": 10428,
+    "sha256": "c36fbe1c2c4385b767818e5fc2714b25d2d8ef2d0a3b686fb73602e0b6496459"
+  },
+  {
+    "path": "packages/contracts/src/index.ts",
+    "bytes": 1200,
+    "sha256": "989ccb211f8be99a88787832fa082a5f129ef52682c2087ae1b584fbda2baab3"
+  },
+  {
+    "path": "packages/contracts/src/inference.ts",
+    "bytes": 1979,
+    "sha256": "c8212f109e8027bfecd6202c0edb58a4c201bbbdd74a4ede18ba2102314663ec"
+  },
+  {
+    "path": "packages/contracts/src/learning-channel.ts",
+    "bytes": 2486,
+    "sha256": "01abdbf580e2c9cd5cc2a718a52284b58b32bda24f901f44321490fb8e444982"
+  },
+  {
+    "path": "packages/contracts/src/match.ts",
+    "bytes": 4415,
+    "sha256": "fd13cf6822e37fc14d220576c6568cbfaa586fed481b089307dc702145ba5d30"
+  },
+  {
+    "path": "packages/contracts/src/native-intents.ts",
+    "bytes": 1389,
+    "sha256": "cbb8f024001fac6c8f682fbb42677d19dc922c0a7ea317285ea480f914a8fe37"
+  },
+  {
+    "path": "packages/contracts/src/native-protocol.ts",
+    "bytes": 3947,
+    "sha256": "df684ebaacdff2d6472d6f47c067d1850aae0db39826618c3118cbc03b9b9560"
+  },
+  {
+    "path": "packages/contracts/src/recipient-codec.ts",
+    "bytes": 4082,
+    "sha256": "75cb4a7b83ca9e9e1970754e6fcffec9067a4ee8be37f704eb1c8ce7fbde8447"
+  },
+  {
+    "path": "packages/contracts/src/recipient.ts",
+    "bytes": 16367,
+    "sha256": "c530aedb31621933a697fb68a9c0e5d3fdf419990954ca026fde0ac709ee8341"
+  },
+  {
+    "path": "packages/contracts/src/resolution.ts",
+    "bytes": 4532,
+    "sha256": "af02d9f13f69d359784d9a201c32b6dae0a5b15bd2d0dec00c31358fb45f1ef1"
+  },
+  {
+    "path": "packages/contracts/src/semantics.ts",
+    "bytes": 8400,
+    "sha256": "f12269697d9280a2134aa013250bc8c6c9a9076cd2966d86559e6429561cb0fd"
+  },
+  {
+    "path": "packages/contracts/src/shape.ts",
+    "bytes": 3459,
+    "sha256": "74c7a52ca90949da256e07ad4e6f7581c53834ba9abdc45cd4b7f51150a269d1"
+  },
+  {
+    "path": "packages/contracts/src/training-state.ts",
+    "bytes": 4119,
+    "sha256": "e17d980ca2bc03566bf43cf75869862c81fa3d6f9febcfc52044669242d7b5ff"
+  },
+  {
+    "path": "packages/contracts/tests/causal-fixture.ts",
+    "bytes": 1317,
+    "sha256": "8f71fd5863b03c150e8d721dd930b4ae90e05da8764a5c5f9be9cfe2fc823044"
+  },
+  {
+    "path": "packages/contracts/tests/recipient-fixture.ts",
+    "bytes": 1658,
+    "sha256": "5d50b5d6cad8b08afa5d085d859b3a8b1acb40f95bac316aeb12281092dd84e1"
+  },
+  {
+    "path": "packages/game-core/package.json",
+    "bytes": 199,
+    "sha256": "badeb80caae5aa5d89516dbceb78825294f5c6303da3d0d30fb716a0fbd8727e"
+  },
+  {
+    "path": "packages/game-core/src/board.ts",
+    "bytes": 5381,
+    "sha256": "853ae876825871b738962688a3118754d0a7b97d9d4f54c9004e03467d5e704e"
+  },
+  {
+    "path": "packages/game-core/src/causal-events.ts",
+    "bytes": 23389,
+    "sha256": "ead2c04a80d285a91537351209740890f0238942ceec5f9d75fe67565144f808"
+  },
+  {
+    "path": "packages/game-core/src/causal-producer.ts",
+    "bytes": 1267,
+    "sha256": "267281d9fffd767923d1fd3d5583d3851c8d3ad9b0906f7ee16fac9fa184a004"
+  },
+  {
+    "path": "packages/game-core/src/causal-types.ts",
+    "bytes": 5291,
+    "sha256": "291b19587b4e483b25f2d5f77c9389c6b535a23faede2360aecb46a00063a40f"
+  },
+  {
+    "path": "packages/game-core/src/charon.ts",
+    "bytes": 2582,
+    "sha256": "21e2fefdc9f60d430fa7edde904670c48d861e2f916b4eb55ed540117529b0bd"
+  },
+  {
+    "path": "packages/game-core/src/classical-resolution.ts",
+    "bytes": 38755,
+    "sha256": "4a4ca52edc01f7e49234da60c38ac8f93b389f5399c53bf2806a65995c78a46a"
+  },
+  {
+    "path": "packages/game-core/src/constants.ts",
+    "bytes": 890,
+    "sha256": "09cd3758add018120976887fa89dc0b456b8373db1474c7712949bea030e8fb3"
+  },
+  {
+    "path": "packages/game-core/src/economy.ts",
+    "bytes": 2328,
+    "sha256": "6db58a067bbd1f2c79c56a68da338368ffbd2bc718e53d110481da3b27f55b3f"
+  },
+  {
+    "path": "packages/game-core/src/index.ts",
+    "bytes": 1254,
+    "sha256": "ae3b112c5745b2944791d86120392a9a6b70d4ec15a17a23311d0e7505cb8393"
+  },
+  {
+    "path": "packages/game-core/src/initialization.ts",
+    "bytes": 1503,
+    "sha256": "2fd4b7717071849089e7479739f76a8c999a3de306fd6f4294aa868bb3eaf7de"
+  },
+  {
+    "path": "packages/game-core/src/mine-contact.ts",
+    "bytes": 1723,
+    "sha256": "2da58eafae69b1e4df5b6321c9f9575d416322532c3548390a4b267e0f7a58da"
+  },
+  {
+    "path": "packages/game-core/src/mines.ts",
+    "bytes": 2563,
+    "sha256": "74edb4e0c7cd7952292aa3eff2bb8235ff21c4f27d65b52d26a172bc4498f2ca"
+  },
+  {
+    "path": "packages/game-core/src/move-timing.ts",
+    "bytes": 2389,
+    "sha256": "5e0da4fd7c37f5524ca5138a09f34c8d9e6deb38be05e2f6d6d7497fa701bf7a"
+  },
+  {
+    "path": "packages/game-core/src/moves.ts",
+    "bytes": 5877,
+    "sha256": "1ea3e9c63837986f6ecc6d82a38eb2a2eb7d3d68a02f4003a38ab55416b94739"
+  },
+  {
+    "path": "packages/game-core/src/native-classical.ts",
+    "bytes": 8242,
+    "sha256": "cdaed916e386fa3d4ef37996f469edf39af46c0e7a5da3230491194b6b1c045b"
+  },
+  {
+    "path": "packages/game-core/src/outcome.ts",
+    "bytes": 850,
+    "sha256": "029090d69966f7c5f28315b5cc64779c5164d2b3f19345fd3826f0da344a518e"
+  },
+  {
+    "path": "packages/game-core/src/planning-intents.ts",
+    "bytes": 7695,
+    "sha256": "7afa1dcdf57aeafffcdfcc44d84a51313a026c0d886f85658b52d4e7f616eab6"
+  },
+  {
+    "path": "packages/game-core/src/planning-order.ts",
+    "bytes": 2167,
+    "sha256": "cd81e87043aa8bb30349254be110da60f843e06725c63dccfaa3e290c15ad184"
+  },
+  {
+    "path": "packages/game-core/src/planning-specials.ts",
+    "bytes": 2340,
+    "sha256": "6391cb1211d4e1fd65af8065cccafbf0854b2d468f87d57e7ec0c101cd2723db"
+  },
+  {
+    "path": "packages/game-core/src/queue-action.ts",
+    "bytes": 3845,
+    "sha256": "87c0ca1e14caff3067ae2b524fbdb789a97573599149ae25001c8b5ba74b3583"
+  },
+  {
+    "path": "packages/game-core/src/queue-contract.ts",
+    "bytes": 2485,
+    "sha256": "4a5e7da9d48c0788c61cc6efccb8a85106fc4ff9e8c61caad833eed5ad06c3f9"
+  },
+  {
+    "path": "packages/game-core/src/queue-validation.ts",
+    "bytes": 9483,
+    "sha256": "0cea8a571e5ee58eb519e2ce818a67fcde6a21b2d9ef1fb460d7464b42b28e79"
+  },
+  {
+    "path": "packages/game-core/src/ray-scan.ts",
+    "bytes": 1868,
+    "sha256": "950acb6b34b30d9607a2a92787389c0cc7b085a8270f5491b0e72ac66a644ca1"
+  },
+  {
+    "path": "packages/game-core/src/resolve.ts",
+    "bytes": 30668,
+    "sha256": "2d28904751219fbe87c7f4782be95f6b310c35663d3e5673089e20c9b7afbe0d"
+  },
+  {
+    "path": "packages/game-core/src/specials.ts",
+    "bytes": 998,
+    "sha256": "8f0d53523391aa0e5fd645dee96013a579df209815b035b71c50c5f40363b5c6"
+  },
+  {
+    "path": "packages/game-core/src/types.ts",
+    "bytes": 1823,
+    "sha256": "bcfd79f980a3f3742e1baef9a6fce5c6bfbd49371d11de8ddff7de17968135a0"
+  },
+  {
+    "path": "packages/game-core/src/vision.ts",
+    "bytes": 5122,
+    "sha256": "4500ac17987052b49d6297e0e4e2363e26a2e6668bba67c7ecccb24488881a79"
+  },
+  {
+    "path": "packages/policy/package.json",
+    "bytes": 251,
+    "sha256": "9dc5df8c1b6bd164f49ddfb2f78af5a0bf178d6f08ed4db03d8320759c4bbbc9"
+  },
+  {
+    "path": "packages/policy/src/candidates.ts",
+    "bytes": 9528,
+    "sha256": "d3f037cce2e0315352b97ef4c153c389dfacce999a8bfa0a213a2a941f0970d6"
+  },
+  {
+    "path": "packages/policy/src/index.ts",
+    "bytes": 5031,
+    "sha256": "3363494140713609b571bc8e1ca6894f757a69113440e28ee24b492f6532459d"
+  },
+  {
+    "path": "packages/runtime/package.json",
+    "bytes": 314,
+    "sha256": "ee0727412a356449673b9201088daf1380118e87f020ec0bf5f8aaaee55f7b43"
+  },
+  {
+    "path": "packages/runtime/src/corpus.ts",
+    "bytes": 5320,
+    "sha256": "6ab7fc22ed51977b63178988496059621cc83df8f62adc6066a47639b84c09b9"
+  },
+  {
+    "path": "packages/runtime/src/current-driver.ts",
+    "bytes": 1184,
+    "sha256": "7049fabb4b39e285acf5c10dc2e9a84c072f37e4794bc4ef52f4b1dcae13fba4"
+  },
+  {
+    "path": "packages/runtime/src/curriculum.ts",
+    "bytes": 4646,
+    "sha256": "2621c4a99d94f92eb61357375822038e5d3e288d9f0a4c6af05dc9b8425253d4"
+  },
+  {
+    "path": "packages/runtime/src/framing.ts",
+    "bytes": 1985,
+    "sha256": "344d03a78e94dce87c3b958d02f7499e7927b25388830d3062dfdfc00655f026"
+  },
+  {
+    "path": "packages/runtime/src/job.ts",
+    "bytes": 4762,
+    "sha256": "bea66950267f27d02fd91e9c35fc2cde914637506a63a39e33b251f71de8da09"
+  },
+  {
+    "path": "packages/runtime/src/learner-pair.ts",
+    "bytes": 3034,
+    "sha256": "fe75719f6dcdcb3a4a621c2aeba284cfbabca9e6b6f84d43d7457693666e3d26"
+  },
+  {
+    "path": "packages/runtime/src/match-session.ts",
+    "bytes": 21583,
+    "sha256": "6dbcd36fe4fda9aa6495617a9ee3ea5558e44bfc6ec9d2ecd7986852db2b051f"
+  },
+  {
+    "path": "packages/runtime/src/match-state.ts",
+    "bytes": 2063,
+    "sha256": "cf1665ffaadedff7e352f0195d6040641191abbb481e034f4f8dd2df4f703eef"
+  },
+  {
+    "path": "packages/runtime/src/match-worker.ts",
+    "bytes": 10498,
+    "sha256": "7333ae7a643441f0a6d254db853315b8431fe558e03e410468a9ad3977c4cbb4"
+  },
+  {
+    "path": "packages/runtime/src/native-learner.ts",
+    "bytes": 7892,
+    "sha256": "bd42911e886b352a97e1aea22552dd596d79ba2d55d490e35267a637d215340c"
+  },
+  {
+    "path": "packages/runtime/src/native-session.ts",
+    "bytes": 9251,
+    "sha256": "004db7d129c5f74a92fabbe419b1b1e021b0cb2326c56e6bc3ee96bb042d7db0"
+  },
+  {
+    "path": "packages/runtime/src/policy-session.ts",
+    "bytes": 10676,
+    "sha256": "ad815f7e744dc21cc99275ff3fd1d57787d725826f7f03a2b8be8a12b74ee42c"
+  },
+  {
+    "path": "packages/runtime/src/process-transport.ts",
+    "bytes": 5657,
+    "sha256": "bb8dde00851642d2b2faaa00909092e35e5676b093aebb652b1088daba34cac1"
+  },
+  {
+    "path": "packages/runtime/src/reference-driver.ts",
+    "bytes": 8759,
+    "sha256": "f9623f1ec68354139140ee142f1ac280d2995e81dbd8eaef77b3bde57aef8f30"
+  },
+  {
+    "path": "packages/runtime/src/rng.ts",
+    "bytes": 1900,
+    "sha256": "1e2311763946768b7d1323b4717a203699ea057c88525a66a764465ad2fa5f5a"
+  },
+  {
+    "path": "packages/runtime/src/strategic.ts",
+    "bytes": 10361,
+    "sha256": "cce7360158ab894894e181b255e1e8fad53cdc2f4b76f6702375a7d8297b98d4"
+  },
+  {
+    "path": "packages/runtime/src/training-store.ts",
+    "bytes": 13190,
+    "sha256": "9ed0b2a9457a3e92c3c8b69d70fa5ad83783d7bef6e7e4ec4d5ee39513ae3b42"
+  },
+  {
+    "path": "packages/runtime/src/worker.ts",
+    "bytes": 4384,
+    "sha256": "0c6fab7a35bb5be6f99eb62fc02b3c6f2309cc110cb48bbbbfbb2111dfc5d830"
+  },
+  {
+    "path": "packages/runtime/tests/fixture.ts",
+    "bytes": 2038,
+    "sha256": "bea76570d542cb5c580aada7f9c5589f6913e7b2c5768bbc34dfaa40f88ec5ad"
+  },
+  {
+    "path": "packages/runtime/tests/fixtures/native-reference-proof.json",
+    "bytes": 524,
+    "sha256": "e3b9ae93b32829d7825a246849bc8937016737581e9d10150f94753d1b9294a7"
+  },
+  {
+    "path": "packages/runtime/tests/match-fixture.ts",
+    "bytes": 6737,
+    "sha256": "d4a2bdafb8c2f6a1bf87673e4300d8cec9109d7ee29d254b83dfb960a306e384"
+  },
+  {
+    "path": "packages/runtime/tests/training-fixture.ts",
+    "bytes": 2514,
+    "sha256": "838ba0b637ff98307ac8b28ea367cfa46a961924b517687640820e3d01dcc9d6"
+  },
+  {
+    "path": "schemas/feature-layout.json",
+    "bytes": 1399,
+    "sha256": "bca25ea10220001845ad8a5f419f32baf250073b150c9bbe78f17a75c7c08f74"
+  },
+  {
+    "path": "tooling/build-reference.ts",
+    "bytes": 3519,
+    "sha256": "41885a3bb70f4b86e131bd3176a65fe7aefe724846db961ea6c070b4f6537054"
+  },
+  {
+    "path": "tooling/reference-entrypoints.json",
+    "bytes": 478,
+    "sha256": "4fb9727741bb4778d260be6e6d14c3b9e38bbfd5751f49d7262273a83b5d5396"
+  },
+  {
+    "path": "tsconfig.json",
+    "bytes": 376,
+    "sha256": "a0cf0b388c7327624fa7f91061dbf4ee4280e9f27d095740399fe5c83682e913"
+  }
+]

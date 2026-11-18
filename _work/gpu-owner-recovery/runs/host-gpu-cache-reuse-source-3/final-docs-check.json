@@ -1,0 +1,67 @@
+{
+  "status": "PASS_APPROVED_CACHE_REUSE_SPEC_AND_HANDOFF_BINDINGS_ONLY",
+  "sources": [
+    {
+      "path": "_spec/gpu-host-build-reuse.puml",
+      "sha256": "8efd7a66dd4e52f7cedb87425e77f85e0dd443f306d91e82e3cdb0c43a1eb5a5"
+    },
+    {
+      "path": "_spec/gpu-host-build.puml",
+      "sha256": "ddbedb6883d999cb7aed85d4e2202bdf066e30ede68767a1a3c55191be98660e"
+    },
+    {
+      "path": "_spec/gpu-host-build-inventory.puml",
+      "sha256": "16e1fcc44e0dee204143502f1a14aa56454b676e2906a7186d882ee6ffd9afdb"
+    },
+    {
+      "path": "_spec/gpu-build.puml",
+      "sha256": "3b08a41877b173cd72da06b975b874eadef1481cd1f4476fd6869917dc659a5d"
+    },
+    {
+      "path": "_spec/gpu-qualification.puml",
+      "sha256": "1772bd47bef4c9736fb0a73886d5f061486675b11d63f510025913619b9734de"
+    },
+    {
+      "path": "_spec/gpu-input-transfer.puml",
+      "sha256": "b09cd7fae8cce7f759530ef78edcc49dfbece54d5475c7ecf868261c5187761f"
+    },
+    {
+      "path": "_spec/gpu-host-receive.puml",
+      "sha256": "ffd5092e34a065e5042185309a916553ea8803f57a6caed44c1704b71d8c2b23"
+    },
+    {
+      "path": "_spec/gpu-readiness.md",
+      "sha256": "211dc9cc63e1dfcefe00c611cc82e72b59a12c62824ae5afef55b82a2cc64998"
+    },
+    {
+      "path": "_spec/gate-closure.md",
+      "sha256": "991b70f0d5c0260fc4a314621e2b660045315c2e2d6fa9dfdcce56062c7cb348"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "sha256": "cd93ab44a8d2291db6689734803b26f3a73fa5a3707f3d830e45258b53b1daaf"
+    }
+  ],
+  "orderedDiagramIndexMatches": 7,
+  "exactHandoffTwoCoverageOwner": "_spec/gpu-host-build-reuse.puml",
+  "request": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-build-handoff-2/request.json",
+    "sha256": "471051f5b6f1282a5d05795e955063afe86e1c72733f052a3f229f645a43bfd5"
+  },
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/receipt.json",
+    "sha256": "268a7750faeca4c349769e62b67276fe16a3d5f9347f3d2448f45bfccbed5c5e"
+  },
+  "sourceHashesChecked": 307,
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/host-command.fish",
+    "bytes": 76732,
+    "sha256": "47cdea246668505ef6b2fe682900c7735adf59f388cbfcfde3abb20a306559c4"
+  },
+  "remainingOperatorHostInvocations": 1,
+  "hostInvocationObserved": false,
+  "sourcePublicationApproved": true,
+  "sourcePublicationPerformed": false,
+  "codingHostDockerOrNativeOperationsPerformed": false,
+  "trainingReady": false
+}

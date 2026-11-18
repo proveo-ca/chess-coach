@@ -1,0 +1,9 @@
+{
+  "kind": "RECONSTRUCTION_FAILURE_RETAINED",
+  "failure": "The first reconstructed runner resolved one parent directory above the repository",
+  "correction": "Resolve exactly two parent levels from this script and verify package identity and repository cwd before writes",
+  "affectedRun": "runner-parse-correction",
+  "affectedExternalRoot": "../_work/gpu-owner-recovery",
+  "status": "RECOVERY_OF_OWN_OUTPUTS_PENDING",
+  "trainingReady": false
+}

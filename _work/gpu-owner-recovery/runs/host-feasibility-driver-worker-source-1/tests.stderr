@@ -1,0 +1,21 @@
+
+_work/gpu-owner-recovery/qualification/host-feasibility/driver.test.ts:
+235 |   h.hooks.query = index => index === 1 ? Promise.resolve({ stdout: csv() }) : query.promise;
+236 |   h.hooks.test = async index => { if (index === 2) await h.clock.advance(2000); return { stdout: summary }; };
+237 |   let settled = false;
+238 |   const execution = executeFeasibility(p, h.io).then(receipt => { settled = true; return receipt; });
+239 |   await flush();
+240 |   expect(h.events.filter(event => event.kind === "attempt-finish")).toHaveLength(2);
+                                                                          ^
+error: expect(received).toHaveLength(expected)
+
+Expected length: 2
+Received length: 1
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/qualification/host-feasibility/driver.test.ts:240:69)
+(fail) guard drain failure after two apparent PASS results prevents done [0.99ms]
+
+ 19 pass
+ 1 fail
+ 153 expect() calls
+Ran 20 tests across 2 files. [34.00ms]

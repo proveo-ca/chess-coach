@@ -1,0 +1,8 @@
+# SPEC: _spec/recovery.md
+[tasks."cuda:acquire-llvm-archive"]
+dir = "../.."
+run = "/usr/local/bin/bun --no-env-file --no-install _work/gpu-owner-recovery/cuda-acquire.ts llvm-archive"
+
+[tasks."cuda:acquire-llvm-checksums"]
+dir = "../.."
+run = "/usr/local/bin/bun --no-env-file --no-install _work/gpu-owner-recovery/cuda-acquire.ts llvm-checksums"

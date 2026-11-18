@@ -1,0 +1,280 @@
+{
+  "status": "PASS_SOURCE_ONLY_SELECTED_HOST_VOLUME_PREFLIGHT_READY_FOR_CHECKED_PUBLICATION",
+  "scope": "LOCAL_INJECTED_METADATA_TESTS_TYPES_STATIC_PINS_AND_REVIEW_NOT_SELECTED_VOLUME_HOST_FACTS",
+  "baseCommit": "c60a45e1588fabf16c76da7127e160b17147dcf7",
+  "sourcePins": [
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/preflight.ts",
+      "byteLength": 5916,
+      "sha256": "722595e63962f0321fe83594a40f516d89660062bc7045047df29e737553f240"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/preflight.test.ts",
+      "byteLength": 9165,
+      "sha256": "d1ab3ad23a2f228cd55899d96b637ff610cdf44e76f7764fca79570a56dd3e95"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/tsconfig.json",
+      "byteLength": 61,
+      "sha256": "3884c64fe86cacd8a33dd016dbb843b3bbb6c625090eda74ed06a9a58a13d92c"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/HOST.md",
+      "byteLength": 2151,
+      "sha256": "b1d33f2aaeeb2d56045b431b507d5a0eccfc456c83cca65a6c9a6961aa4e190e"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/handoff.json",
+      "byteLength": 6433,
+      "sha256": "f09da975670615e1ee1ceb1d38146f2a89f4b7a0a90d7993f88b5d672e30b4e3"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+      "byteLength": 4355,
+      "sha256": "faf0c74bf328a0e2b67cbbb070caeb396ea3f17d7d2435d81c8f7bcc8de0ef69"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 183208,
+      "sha256": "2d54e2a06d9a5d5cb055a20fadae8692d4c2a2700ae39ebb1608e37d83276dd0"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 153969,
+      "sha256": "273ba9400c2bddbd73713557db98d4ca1f7a93a8dc985e160f4cd393674c8164"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 54245,
+      "sha256": "3e75461e64345a65547aea1b0195043aca40a047304c079c797b69c3009e47f9"
+    }
+  ],
+  "commands": [
+    {
+      "name": "volume-tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "30000",
+        "artifacts/training-functional/campaign-volume-preflight-1/preflight.test.ts"
+      ],
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/tests.stdout",
+        "byteLength": 28,
+        "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/tests.stderr",
+        "byteLength": 1527,
+        "sha256": "880596188edcbe8768e058b81948de00b4c7879d57ed5eed7915a7268618da23"
+      },
+      "tests": 16,
+      "assertions": 81,
+      "exitCode": 0
+    },
+    {
+      "name": "retained-renderer-tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "30000",
+        "artifacts/training-functional/campaign-handoff-1/preflight.test.ts"
+      ],
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/renderer-tests.stdout",
+        "byteLength": 28,
+        "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/renderer-tests.stderr",
+        "byteLength": 1755,
+        "sha256": "7d637e37131b0aaaa5c0f071b5bcae8578e7f6b32ca2ce12f4d6707fbc69eeeb"
+      },
+      "tests": 17,
+      "assertions": 88,
+      "exitCode": 0
+    },
+    {
+      "name": "volume-types",
+      "project": "artifacts/training-functional/campaign-volume-preflight-1/tsconfig.json",
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/campaign-volume-preflight-1/tsconfig.json"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "intake-types",
+      "project": "artifacts/training-functional/campaign-handoff-1/returned-1/tsconfig.json",
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/intake-types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/intake-types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/campaign-handoff-1/returned-1/tsconfig.json"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "root-types",
+      "project": "artifacts/training-functional/tsconfig.json",
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/root-types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/root-types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/tsconfig.json"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "static-specs",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "artifacts/training-functional/check-specs.ts"
+      ],
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/specs.stdout",
+        "byteLength": 2369,
+        "sha256": "6871c431823d9efbb3acfe43a4988731b9c21b08bdc01e0470091f6b8256a76f"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/specs.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exitCode": 0
+    }
+  ],
+  "freshTests": 33,
+  "freshAssertions": 169,
+  "strictTypechecks": 3,
+  "staticSpecsPassed": true,
+  "nativePlantUmlRendered": false,
+  "renderSkipReason": "Java and remote theme remain outside Bun/TypeScript-or-Rust scope",
+  "reviews": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/reviews.json",
+    "byteLength": 1981,
+    "sha256": "76220ecf6fd197e9c39d9872823b598f2ad23a56ec9d3e651b96cb7bb3624209"
+  },
+  "immutableVerification": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/immutable-verification.json",
+    "byteLength": 1496,
+    "sha256": "3c3753b4ae4ee14bbdd2bfbbfac3ce62cb4655b1b73e57b4546b6396ea696de9"
+  },
+  "specDeltas": [
+    {
+      "issuance": {
+        "path": "_spec/.spec-index.json",
+        "byteLength": 54173,
+        "sha256": "19fbbbf52332d08095c2c674f152026ca37a9a7a983a759c009c74c995d54e00"
+      },
+      "current": {
+        "path": "_spec/.spec-index.json",
+        "byteLength": 54245,
+        "sha256": "3e75461e64345a65547aea1b0195043aca40a047304c079c797b69c3009e47f9"
+      },
+      "changed": true
+    },
+    {
+      "issuance": {
+        "path": "_spec/checkpoint-runtime.puml",
+        "byteLength": 13324,
+        "sha256": "d36a91aebeca20b95bc4325580c4056f523f429f4ef7d2c466e439c81b17bc99"
+      },
+      "current": {
+        "path": "_spec/checkpoint-runtime.puml",
+        "byteLength": 13324,
+        "sha256": "d36a91aebeca20b95bc4325580c4056f523f429f4ef7d2c466e439c81b17bc99"
+      },
+      "changed": false
+    },
+    {
+      "issuance": {
+        "path": "_spec/readiness.md",
+        "byteLength": 182993,
+        "sha256": "0a3f5a09b44025af37cf72f0b1bb74febf8dce773169139f68ddbb8e0c0f6e58"
+      },
+      "current": {
+        "path": "_spec/readiness.md",
+        "byteLength": 183208,
+        "sha256": "2d54e2a06d9a5d5cb055a20fadae8692d4c2a2700ae39ebb1608e37d83276dd0"
+      },
+      "changed": true
+    },
+    {
+      "issuance": {
+        "path": "_spec/runtime-protocol.puml",
+        "byteLength": 151192,
+        "sha256": "23d0bcb67bf139a2e722e12f26b33176ce7ab629a8022f9500f4d94acda54634"
+      },
+      "current": {
+        "path": "_spec/runtime-protocol.puml",
+        "byteLength": 153969,
+        "sha256": "273ba9400c2bddbd73713557db98d4ca1f7a93a8dc985e160f4cd393674c8164"
+      },
+      "changed": true
+    }
+  ],
+  "oldWorker112AndBindings14Unchanged": true,
+  "oldCampaignPlanAndRequestUnchanged": true,
+  "noExistingTestCohortRerunOrPromoted": true,
+  "remainingGate": "EXACT_OWNED_COHORT_CREDENTIAL_STAGE_BLOB_MODE_ATTRIBUTES_REMOTE_PR_AND_HOOK_CHECKS",
+  "actualSelectedVolumeHostFactsCollected": false,
+  "hostPreparationExecuted": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false
+}

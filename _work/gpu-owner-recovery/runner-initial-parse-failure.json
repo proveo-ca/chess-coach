@@ -1,0 +1,9 @@
+{
+  "kind": "RECONSTRUCTION_FAILURE_RETAINED",
+  "command": ["/usr/local/bin/bun", "--no-env-file", "--no-install", "_work/gpu-owner-recovery/verify.ts", "runner", "runner-initial"],
+  "exitCode": 1,
+  "failure": "Extra closing parenthesis in the reconstructed source-manifest check prevented parsing",
+  "commandLaunched": false,
+  "historicalResultsReused": false,
+  "trainingReady": false
+}

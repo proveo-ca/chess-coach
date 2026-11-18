@@ -1,0 +1,38 @@
+[
+  {
+    "path": "_work/gpu-owner-recovery/cuda-archive.ts",
+    "sha256": "7db4aa4aedcf0dfcbf40bada5f58691d13a4e15895f7c278876bc04460ed9177"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/cuda-archive.test.ts",
+    "sha256": "fda04d5dcaa4ddf1757d27cce93d0f029dc18ec28f973677065c994ec21cdd9f"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/cuda-archive-mise.toml",
+    "sha256": "5a1975fc552264f42f70d3e613ccff010416d495a1f93d8482822621e3525dbc"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/cuda-continuation.ts",
+    "sha256": "66da6653188442f1d748b76eec79e963df5150798c5ffa7ad78f5eec1a481b8f"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/provision.ts",
+    "sha256": "446bafb616dce8f642216268cb10d6c30e1e485b45428b8c83295358964a8efb"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/verify.ts",
+    "sha256": "00205057b14e144b22e4524ecf866766ace4bb21ae2c7d4bdc146a5dda5e2fd9"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/command-supervisor.ts",
+    "sha256": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/tsconfig.json",
+    "sha256": "e70ffa726d5b3b004982a4705b17b778c4326fe9964b9ce76e006ed1310c793d"
+  },
+  {
+    "path": "tsconfig.json",
+    "sha256": "a0cf0b388c7327624fa7f91061dbf4ee4280e9f27d095740399fe5c83682e913"
+  }
+]

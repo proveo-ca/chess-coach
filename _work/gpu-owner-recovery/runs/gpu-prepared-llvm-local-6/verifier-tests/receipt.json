@@ -1,0 +1,42 @@
+{
+  "name": "verifier-tests",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./_work/gpu-owner-recovery/prepared-llvm/verify.test.ts"
+  ],
+  "timeoutMs": 30000,
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 534,
+  "environment": {
+    "PATH": "/usr/local/bin:/usr/bin:/bin",
+    "HOME": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/gpu-prepared-llvm-local-6/home",
+    "TMPDIR": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/gpu-prepared-llvm-local-6/tmp",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "NO_COLOR": "1",
+    "MISE_AUTO_INSTALL": "false",
+    "MISE_TASK_RUN_AUTO_INSTALL": "false",
+    "RUSTUP_AUTO_INSTALL": "0",
+    "RUSTUP_HOME": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/rustup",
+    "CARGO_HOME": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/cargo",
+    "CARGO_NET_OFFLINE": "true"
+  },
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-local-6/verifier-tests/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-prepared-llvm-local-6/verifier-tests/command.stderr",
+      "bytes": 534,
+      "sha256": "34e085d419076b25f01a4daefdfee11de80406a4e8f100dc5239cc651c0b4807"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "version": "chess-coach.host-alignment-report-record-check.v1",
+  "status": "PASS_OPERATOR_REPORTED_ALIGNMENT_RECORDS_ONLY",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/operator-paste.txt",
+      "sha256": "72938b29cff461fa04b7f5abe7ec589b7951d83d2caa95a32490100b7c255d7c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/observation.json",
+      "sha256": "e1b7d9a28424ee4216e8d585cd93350b1f7a5c72e23a9a8f94d721e089ceda6d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/verify-report.ts",
+      "sha256": "b43a0917de88432351450c404880e74da0dab536c8662c3c1569b00b4f094f6e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-toolchain-align-handoff-1/request.json",
+      "sha256": "abaaf26677f7d6d155ecf5a08de2fdbc284abdf805fef545bfd8a5764390a05a"
+    }
+  ],
+  "reportedVersionFactsAccepted": true,
+  "originalHostFilesReceived": false,
+  "componentOrTargetAvailabilityIndependentlyVerified": false,
+  "hostOrGpuOperationsPerformed": false,
+  "trainingReady": false
+}

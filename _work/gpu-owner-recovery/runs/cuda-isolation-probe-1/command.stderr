@@ -1,0 +1,5 @@
+mise ERROR error parsing config file: /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-mise.toml
+mise ERROR Config files in /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-mise.toml are not trusted.
+Trust them with `mise trust`. See https://mise.jdx.dev/cli/trust.html for more information.
+mise ERROR Version: 2026.9.1 linux-x64 (2026-09-02)
+mise ERROR Run with --verbose or MISE_VERBOSE=1 for more information

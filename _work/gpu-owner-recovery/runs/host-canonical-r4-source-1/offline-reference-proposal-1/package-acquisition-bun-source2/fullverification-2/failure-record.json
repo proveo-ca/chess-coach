@@ -1,0 +1,13 @@
+{
+  "version": "chess-coach.r2-retained-initial-verification-failure.v1",
+  "status": "FAIL_OFFLINE_ONLY",
+  "phase": "INITIAL_READCHECKS_BEFORE_TESTS",
+  "observedError": "record-source-only-no-cache-or-fixtures",
+  "sourceSnapshotWasNotCapturedBeforeFailure": true,
+  "historicalFailureNotReconstructedSuccess": true,
+  "testsExecuted": false,
+  "productionEntryInvoked": false,
+  "productionWorkerInvoked": false,
+  "actualGetRequests": 0,
+  "executionReadinessClaimed": false
+}

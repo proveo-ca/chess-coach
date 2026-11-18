@@ -1,0 +1,17 @@
+{
+  "version": "chess-coach.qualification-rust-runtime-source-review.v1",
+  "status": "ACCEPTED_SOURCE_AND_REPORTED_DETAILS_RECORDS_ONLY",
+  "sourceReceipt": "_work/gpu-owner-recovery/runs/gpu-qualification-source-4/receipt.json",
+  "detailsCheck": "_work/gpu-owner-recovery/runs/host-builder-inputs-1/details-check.json",
+  "adversarial": { "session": "ses_e3d3207aaffeOtr0N2gxuZrBqk", "verdict": "READY_SOURCE_AND_DATA_ONLY" },
+  "security": { "session": "ses_e3d3207a8ffeCPrY4qAD7PsrCt", "verdict": "NO_SCOPED_FINDINGS_SOURCE_ONLY" },
+  "devops": { "session": "ses_e3ec46b44ffe7CbnV5rwv23shT", "verdict": "READY_SOURCE_ONLY", "productionRecipeStaticBindingFindingResolved": true },
+  "runtimePackagingSourceSelected": true,
+  "inputTransportSelected": false,
+  "payloadAcquisitionHashingCopyOrStagingAuthorized": false,
+  "sourceCommitPushOrAssetPublicationAuthorized": false,
+  "hostBuildOrGpuExecutionAuthorized": false,
+  "nativeLinkingOrGpuQualified": false,
+  "trainingReady": false,
+  "fullAssuranceFindingsClosed": false
+}

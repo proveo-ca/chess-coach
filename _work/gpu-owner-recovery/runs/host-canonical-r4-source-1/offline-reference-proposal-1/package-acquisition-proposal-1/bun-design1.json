@@ -1,0 +1,31 @@
+{
+  "status": "ACCEPTED_BUN_DESIGN_ONLY_IMPLEMENTATION_GATES_PENDING",
+  "architect": {"session":"ses_e2f47580affedkCSE0PvqFHby6","decision":"ACCEPT_BUN_REVISION"},
+  "backendDesignChecklist": {"session":"ses_e2e5a7bfaffeXVaGBozd4pJB26","activeImplementationInspected":false,"implementationReadinessGranted":false},
+  "devopsDesignChecklist": {"session":"ses_e2e5a7bf7ffeszqAmNJvPwNoUX","activeImplementationInspected":false,"implementationReadinessGranted":false},
+  "sourceRoot": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-bun-source1",
+  "implementationFiles": ["capture.ts","capture.test.ts","verify.ts","tsconfig.json"],
+  "runtime": {"executable":"/usr/local/bin/bun","version":"1.4.0","flags":["--no-env-file","--no-install"],"newDependencies":0},
+  "transport": "NODE_HTTPS_DIRECT_RAW_IDENTITY_NO_REDIRECT_RETRY_OR_CREDENTIALS",
+  "archiveApproach": "NODE_ZLIB_BOUNDED_GUNZIP_THEN_NARROW_PHYSICAL_USTAR_PAX_GNU_SELECTED_MEMBER_READER",
+  "bunArchiveFileMapInsufficientForPhysicalDuplicateTypeAndOriginProof": true,
+  "genericArchiveExtractionPermitted": false,
+  "supervisorProtocol": [
+    "EXCLUSIVE_COMBINED_CLAIM_BEFORE_OPERATIONAL_PREFLIGHT",
+    "ONE_FIXED_OWNED_WORKER_AND_BOUND_INPUT_IDENTITIES",
+    "URL_START_DURABLY_PERSISTED_BEFORE_ACK_BEFORE_DNS_OR_HTTPS",
+    "OBSERVED_HTTPS_INVOCATION_RECORDED_SEPARATELY_UNKNOWN_REMAINS_NULL",
+    "SERIAL_URL_COMPLETION_WITHOUT_RETRY",
+    "SHA512_BEFORE_INFLATION_AND_EXACT_SELECTED_OUTPUTS",
+    "DONE_PLUS_EXIT_ZERO_PIPE_COMPLETION_HASHES_AND_FINAL_BINDINGS_REQUIRED"
+  ],
+  "deadlineContract": {"getMs":30000,"wholeOperationMs":120000,"cleanupAndFinalizationInsideWholeBudget":true,"unconfirmedOrOverdueReapingNeverPasses":true,"unconditionalBoundedKernelIoOrDurabilityClaimed":false},
+  "implementationGateOrder": ["FRESH_OFFLINE_BUN_TESTS","STRICT_EXISTING_TYPESCRIPT_CHECK","BACKEND_IMPLEMENTATION_REVIEW","DEVOPS_IMPLEMENTATION_REVIEW","ADVERSARIAL_IMPLEMENTATION_REVIEW","SECURITY_IMPLEMENTATION_REVIEW","NON_AUTHORIZING_REVIEWED_EXECUTION_BINDING","EXISTING_SINGLE_APPROVED_ATTEMPT"],
+  "stoppedPythonHistoryPreserved": true,
+  "historicalPythonCountsVerifyBun": false,
+  "existingGrant": "reference-two-package-source-acquisition-1",
+  "approvalConsumedOrRenewedByDesign": false,
+  "actualAcquisitionInvokedByDesign": false,
+  "referenceBuildHostPublicationOrTrainingAuthorizedByDesign": false,
+  "trainingReady": false
+}

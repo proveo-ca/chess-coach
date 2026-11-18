@@ -1,0 +1,10 @@
+{
+  "status": "LOCAL_INPUT_AUDIT_EXTENSION_PRELIMINARY_CORRECTION_REQUIRED",
+  "adversarialSession": "ses_e2f12cf9fffeWm7bfMxFM6pEbv",
+  "scope": "PRELIMINARY_STATIC_AUDIT_EXTENSION_ONLY",
+  "ready": false,
+  "finding": {"severity":"MEDIUM","path":"packet-audit.py","issue":"A broad READY prefix can accept a rejecting verdict such as READY_TO_MERGE_NO."},
+  "newAuditHadNotRunAtReview": true,
+  "sourceCorpusAndProposalUnitReviewsUnaffected": true,
+  "trainingReady": false
+}

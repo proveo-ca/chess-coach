@@ -1,0 +1,20 @@
+{
+  "status": "HOST_TERMINAL_WRITE_ACKNOWLEDGED_EXECUTION_OUTCOME_UNOBSERVED",
+  "provenance": "TUI_WRITE_TERMINAL_TOOL_RETURN_NOT_HOST_COMMAND_OUTPUT",
+  "terminal": "pty_persistent_4248932387136641",
+  "toolReturn": "Wrote to terminal pty_persistent_4248932387136641",
+  "commandText": "fish --no-config _work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command.fish",
+  "terminalSubmissionsPerformed": 1,
+  "existingOperatorHostInvocationsConsumed": 1,
+  "remainingExistingOperatorHostInvocations": 0,
+  "hostExitMarkerReceived": false,
+  "hostExitCode": null,
+  "generatedReceiptReceived": false,
+  "gpuExecutionAttempted": null,
+  "testExecutionAttempted": null,
+  "testsExecuted": null,
+  "automaticRetryAuthorized": false,
+  "codingHostNativeGpuOrJitExecutionPerformed": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

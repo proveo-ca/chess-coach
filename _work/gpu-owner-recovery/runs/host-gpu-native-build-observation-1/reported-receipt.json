@@ -1,0 +1,159 @@
+{
+  "version": "chess-coach.owned-container-native-build.v1",
+  "status": "FAIL_HOST_GPU_NATIVE_BUILD_ONLY",
+  "failure": "SUCCESSFUL_NATIVE_COMPILATION_RECEIPT_REQUIRED",
+  "cleanupFailures": [],
+  "method": "OWNED_DOCKER_CONTAINER_NATIVE_BUILD_ONLY_NOT_QUALIFICATION_IMAGE_BUILD",
+  "requestedResources": {"cpus":2,"memoryBytes":8589934592,"memoryPlusSwapBytes":8589934592,"cargoJobs":2,"rayonThreads":2,"uidGid":"CURRENT_OPERATOR_NUMERIC_UID_GID"},
+  "limits": {"overallMs":4200000,"normalOperationsMs":4020000,"nativeWorkMs":3600000,"cleanupMs":120000,"receiptReserveMs":60000,"dockerCommandMs":120000,"artifactValidationMs":120000,"minimumFreeBytes":68719476736,"minimumRunningFreeBytes":17179869184,"workspaceSoftBytes":34359738368,"stagingBytes":536870912,"stagingFiles":3800,"bunPostCopyBytes":134217728,"supervisedStreamBytes":4194304,"hostDockerStreamsBytes":83886080,"nativeStreamsBytes":41943040,"canonicalLogCopiesBytes":16777216,"hostReceiptBytes":2097152},
+  "ids": {"donor":"5e7216ed81ae3a3aa6ffb0a939cf742e21ea1adfbd5e4d73127da49cfa676298","worker":"87035b2cfd0fba509359d7ea76fc298b8c586ada9e96d118115daacceb7dd2c1"},
+  "state": {"Status":"exited","Running":false,"Paused":false,"Restarting":false,"OOMKilled":false,"Dead":false,"Pid":0,"ExitCode":1,"Error":"","StartedAt":"2026-11-10T22:00:31.621387138Z","FinishedAt":"2026-11-10T22:15:53.565780877Z"},
+  "nativeReceipt": {
+    "status": "FAIL_NATIVE_COMPILATION_ONLY",
+    "failure": "NATIVE_COMMAND_FAILED:gpu-policy",
+    "stage": "compilation",
+    "bunVersion": "1.4.0",
+    "staging": {"bytes":99444545,"files":1253},
+    "compilationAttempts": 2,
+    "results": [
+      {
+        "id":"rustc-version","argv":["rustc","--version"],"attempted":true,"status":"PASS",
+        "streams":[
+          {"path":"/build/native/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/rustc-version/command.stdout","bytes":36,"sha256":"f4d034f5660bb49f22bfcba3f3445be67e25b704c193ff421b53863b4faee148"},
+          {"path":"/build/native/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/rustc-version/command.stderr","bytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+        ],
+        "captureFailures":[],"canonicalCopyFailures":[],"exitCode":0,"failure":null,"stdoutBytes":36,"stderrBytes":0
+      },
+      {
+        "id":"cargo-version","argv":["cargo","--version"],"attempted":true,"status":"PASS",
+        "streams":[
+          {"path":"/build/native/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/cargo-version/command.stdout","bytes":36,"sha256":"c10ec31b8c6e6e2693cf65fc1971b41edbc3da1ae7db6f9f3f36c4823f8dcab5"},
+          {"path":"/build/native/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/cargo-version/command.stderr","bytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+        ],
+        "captureFailures":[],"canonicalCopyFailures":[],"exitCode":0,"failure":null,"stdoutBytes":36,"stderrBytes":0
+      },
+      {
+        "id":"llvm-version","argv":["/opt/tracel-data/tracel/tracel-llvm-23.1.0-4/bin/llvm-config","--version"],"attempted":true,"status":"PASS",
+        "streams":[
+          {"path":"/build/native/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/llvm-version/command.stdout","bytes":7,"sha256":"105cea6ab21beabd59f0ce9c72349435c99d6012981875d22aae70494f10dc10"},
+          {"path":"/build/native/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/llvm-version/command.stderr","bytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+        ],
+        "captureFailures":[],"canonicalCopyFailures":[],"exitCode":0,"failure":null,"stdoutBytes":7,"stderrBytes":0
+      },
+      {
+        "id":"gpu-learning","argv":["cargo","test","--release","--target","x86_64-unknown-linux-gnu","--locked","--offline","--jobs","2","-p","chess-coach-learning","--features","gpu-prepared-llvm","--test","finite_difference","--no-run","--message-format=json"],"attempted":true,"status":"PASS",
+        "streams":[
+          {"path":"/build/native/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/gpu-learning/command.stdout","bytes":320088,"sha256":"98b9d5d9b6ad214e3b5f780e94885c82be2879d3ef82167e328597fe783c02d5"},
+          {"path":"/build/native/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/gpu-learning/command.stderr","bytes":9176,"sha256":"b5f39c51b6cb62256ebb5ebfb06746ed96788189219e251c96e57ad3cfd0a63d"}
+        ],
+        "captureFailures":[],"canonicalCopyFailures":[],"exitCode":0,"failure":null,"stdoutBytes":320088,"stderrBytes":9176
+      },
+      {
+        "id":"gpu-policy","argv":["cargo","test","--release","--target","x86_64-unknown-linux-gnu","--locked","--offline","--jobs","2","-p","chess-coach-policy-io","--features","gpu-prepared-llvm","--test","gpu","--no-run","--message-format=json"],"attempted":true,"status":"FAIL",
+        "streams":[
+          {"path":"/build/native/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/gpu-policy/command.stdout","bytes":334214,"sha256":"28819440f6b1ef9b57a061d80197274dd92853649bc1b1fbecb7fce724683ff1"},
+          {"path":"/build/native/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/gpu-policy/command.stderr","bytes":1919,"sha256":"af41c7f5a3f964c289f6ce2a6dc3489e7fc481bab06beaf00be524844c20ab4a"}
+        ],
+        "captureFailures":[],"canonicalCopyFailures":[],"exitCode":101,"failure":null,"stdoutBytes":334214,"stderrBytes":1919
+      }
+    ],
+    "sourceChanged":false,"sourceStabilityChecked":true,"sourceCheckFailure":null,
+    "sourceManifestSha256":"9141aaefa2fab3f3a812aeabec4bdfdd818415333f9e5cba6d5ef822dac90863",
+    "elapsedMs":921820.616072,"qualificationImageBuilt":false,"testsExecuted":false,"gpuExecuted":false,"trainingReady":false
+  },
+  "artifacts": [],
+  "results": [
+    {
+      "id":"donor-create",
+      "argv":["docker","--host=unix:///var/run/docker.sock","create","--pull=never","--platform=linux/amd64","--network=none","--cidfile=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/donor.cid","--label=chess-coach.native-build=host-gpu-native-build-1","docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038"],
+      "status":"PASS","exitCode":0,"failure":null,"stdoutBytes":65,"stderrBytes":0,"supervisorResult":{"status":"PASS","exitCode":0,"failure":null}
+    },
+    {
+      "id":"bun-copy",
+      "argv":["docker","--host=unix:///var/run/docker.sock","cp","-L","5e7216ed81ae3a3aa6ffb0a939cf742e21ea1adfbd5e4d73127da49cfa676298:/usr/local/bin/bun","/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun"],
+      "status":"PASS","exitCode":0,"failure":null,"stdoutBytes":0,"stderrBytes":0,"supervisorResult":{"status":"PASS","exitCode":0,"failure":null}
+    },
+    {
+      "id":"worker-create",
+      "argv":["docker","--host=unix:///var/run/docker.sock","create","--pull=never","--platform=linux/amd64","--network=none","--cpus=2","--memory=8g","--memory-swap=8g","--user=1000:1000","--cidfile=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/worker.cid","--label=chess-coach.native-build=host-gpu-native-build-1","--workdir=/build/native","--entrypoint=/usr/local/bin/bun",
+        "--mount","type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-receive-2/context,target=/received,readonly",
+        "--mount","type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native,target=/build/native",
+        "--mount","type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/cargo-home,target=/capture/cargo-home",
+        "--mount","type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-receive-2/context/gpu-build/llvm,target=/opt/tracel-data/tracel/tracel-llvm-23.1.0-4,readonly",
+        "--mount","type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun,target=/usr/local/bin/bun,readonly",
+        "--mount","type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1,target=/evidence,readonly",
+        "--mount","type=bind,source=/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/native,target=/build/native/_work/gpu-owner-recovery/runs/host-gpu-native-build-1",
+        "--env","CARGO_HOME=/capture/cargo-home","--env","CARGO_TARGET_DIR=/build/native/target-gpu","--env","CARGO_BUILD_JOBS=2","--env","RAYON_NUM_THREADS=2","--env","XDG_DATA_HOME=/opt/tracel-data","--env","CUDARC_CUDA_VERSION=13000","--env","CARGO_NET_OFFLINE=true","--env","CARGO_NET_RETRY=0","--env","RUSTUP_AUTO_INSTALL=0","--env","HOME=/build/native/_work/gpu-owner-recovery/scratch/home","--env","TMPDIR=/build/native/_work/gpu-owner-recovery/scratch/tmp",
+        "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb","--no-env-file","--no-install","/evidence/build-driver.mjs"],
+      "status":"PASS","exitCode":0,"failure":null,"stdoutBytes":65,"stderrBytes":0,"supervisorResult":{"status":"PASS","exitCode":0,"failure":null}
+    },
+    {
+      "id":"worker-start","argv":["docker","--host=unix:///var/run/docker.sock","start","87035b2cfd0fba509359d7ea76fc298b8c586ada9e96d118115daacceb7dd2c1"],
+      "status":"PASS","exitCode":0,"failure":null,"stdoutBytes":65,"stderrBytes":0,"supervisorResult":{"status":"PASS","exitCode":0,"failure":null}
+    },
+    {
+      "id":"worker-logs","argv":["docker","--host=unix:///var/run/docker.sock","logs","--follow","87035b2cfd0fba509359d7ea76fc298b8c586ada9e96d118115daacceb7dd2c1"],
+      "status":"PASS","exitCode":0,"failure":null,"stdoutBytes":224,"stderrBytes":0,"supervisorResult":{"status":"PASS","exitCode":0,"failure":null}
+    },
+    {
+      "id":"worker-stop","argv":["docker","--host=unix:///var/run/docker.sock","stop","--time=10","87035b2cfd0fba509359d7ea76fc298b8c586ada9e96d118115daacceb7dd2c1"],
+      "status":"PASS","exitCode":0,"failure":null,"stdoutBytes":120,"stderrBytes":0,"supervisorResult":{"status":"PASS","exitCode":0,"failure":null}
+    },
+    {
+      "id":"worker-state","argv":["docker","--host=unix:///var/run/docker.sock","container","inspect","--format","{{json .State}}","87035b2cfd0fba509359d7ea76fc298b8c586ada9e96d118115daacceb7dd2c1"],
+      "status":"PASS","exitCode":0,"failure":null,"stdoutBytes":224,"stderrBytes":0,"supervisorResult":{"status":"PASS","exitCode":0,"failure":null}
+    },
+    {
+      "id":"worker-remove","argv":["docker","--host=unix:///var/run/docker.sock","rm","87035b2cfd0fba509359d7ea76fc298b8c586ada9e96d118115daacceb7dd2c1"],
+      "status":"PASS","exitCode":0,"failure":null,"stdoutBytes":65,"stderrBytes":0,"supervisorResult":{"status":"PASS","exitCode":0,"failure":null}
+    },
+    {
+      "id":"donor-remove","argv":["docker","--host=unix:///var/run/docker.sock","rm","5e7216ed81ae3a3aa6ffb0a939cf742e21ea1adfbd5e4d73127da49cfa676298"],
+      "status":"PASS","exitCode":0,"failure":null,"stdoutBytes":65,"stderrBytes":0,"supervisorResult":{"status":"PASS","exitCode":0,"failure":null}
+    }
+  ],
+  "elapsedMs":923501.887534,"hostInvocationsConsumed":1,"remainingHostInvocations":0,"automaticRetryAuthorized":false,
+  "qualificationImageBuilt":false,"testsExecuted":false,"gpuDevicesRequested":false,"gpuExecuted":false,"trainingReady":false,
+  "captures": [
+    {"id":"donor-create","streams":[
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/donor-create/command.stdout","bytes":65,"sha256":"eafc84e1c4f7adcc832f8847e4804c9d4b1a4c19996bba29553348e9080228b8"},
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/donor-create/command.stderr","bytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+    ]},
+    {"id":"bun-copy","streams":[
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/bun-copy/command.stdout","bytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/bun-copy/command.stderr","bytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+    ]},
+    {"id":"worker-create","streams":[
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/worker-create/command.stdout","bytes":65,"sha256":"0087c90cda5cc5ba14250f6a6dd246af3bbfa656e47fbdbe4fff44e269da46d0"},
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/worker-create/command.stderr","bytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+    ]},
+    {"id":"worker-start","streams":[
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/worker-start/command.stdout","bytes":65,"sha256":"0087c90cda5cc5ba14250f6a6dd246af3bbfa656e47fbdbe4fff44e269da46d0"},
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/worker-start/command.stderr","bytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+    ]},
+    {"id":"worker-logs","streams":[
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/worker-logs/command.stdout","bytes":224,"sha256":"f539fd9cc5d5a3b85856af81a851c32b61f996b49adcacdba9b31879e4ae940f"},
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/worker-logs/command.stderr","bytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+    ]},
+    {"id":"worker-stop","streams":[
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/worker-stop/command.stdout","bytes":120,"sha256":"99c0fe9f069346b2503a872f970bdb2939c3a25752da2c40a8bb3dce92859226"},
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/worker-stop/command.stderr","bytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+    ]},
+    {"id":"worker-state","streams":[
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/worker-state/command.stdout","bytes":224,"sha256":"a7a73eda9c913e765de7d00724536cb1d2a1fbd62019617c42844287445a9123"},
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/worker-state/command.stderr","bytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+    ]},
+    {"id":"worker-remove","streams":[
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/worker-remove/command.stdout","bytes":65,"sha256":"0087c90cda5cc5ba14250f6a6dd246af3bbfa656e47fbdbe4fff44e269da46d0"},
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/worker-remove/command.stderr","bytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+    ]},
+    {"id":"donor-remove","streams":[
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/donor-remove/command.stdout","bytes":65,"sha256":"eafc84e1c4f7adcc832f8847e4804c9d4b1a4c19996bba29553348e9080228b8"},
+      {"path":"/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-native-build-1/donor-remove/command.stderr","bytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+    ]}
+  ],
+  "workspace":"_work/gpu-owner-recovery/cache/host-gpu-native-build-1",
+  "evidence":"_work/gpu-owner-recovery/runs/host-gpu-native-build-1",
+  "receiptStatusRequiresZeroHostMarker":true,"workspaceIsFilesystemQuota":false,"dockerWritableLayerIncludedInWorkspaceAccounting":false,
+  "finalizationSignalObserved":false,"bunCopyHasOnlyPostCopySizeCheck":true,"parentDiagnosticsHaveOnlyPostExitSoftSizeCheck":true
+}

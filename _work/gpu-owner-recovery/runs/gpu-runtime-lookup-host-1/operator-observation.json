@@ -1,0 +1,52 @@
+{
+  "version": "chess-coach.gpu-runtime-lookup-host.v1",
+  "status": "OPERATOR_REPORTED_PARTIAL_LOOKUP_REQUIRED_HEADER_FIELDS_MISSING",
+  "provenance": "NORMALIZED_FROM_PARTIAL_OPERATOR_PASTE_NOT_ORIGINAL_MACHINE_CAPTURE",
+  "operatorPaste": "_work/gpu-owner-recovery/runs/gpu-runtime-lookup-host-1/operator-paste.txt",
+  "operatorSourceCommit": null,
+  "exactExecutedPacket": "NOT_ATTESTED_INLINE_HANDOFF_OR_REPOSITORY_SCRIPT",
+  "lookupSource": "_work/gpu-owner-recovery/gpu-runtime-lookup.fish",
+  "docker": {
+    "infoExitCode": 0,
+    "versionExitCode": null,
+    "clientVersion": null,
+    "serverVersion": null,
+    "serverOperatingSystem": null,
+    "defaultRuntime": null,
+    "runtimes": null,
+    "dockerHostOverride": "NOT_SUPPLIED",
+    "dockerContextOverride": "NOT_SUPPLIED",
+    "contextShowExitCode": 0,
+    "reportedContext": "default",
+    "contextInspectExitCode": 0,
+    "reportedContextEndpoint": "unix:///var/run/docker.sock",
+    "effectiveDaemonEndpointEstablished": false,
+    "daemonExecutionHostEstablished": false
+  },
+  "shellMachine": {
+    "osId": "fedora",
+    "osVersionId": "44",
+    "osVariantId": "workstation",
+    "pathLookups": [
+      { "tool": "nvidia-container-runtime", "exitCode": 127, "reportedPath": "" },
+      { "tool": "nvidia-container-runtime-hook", "exitCode": 127, "reportedPath": "" },
+      { "tool": "nvidia-container-cli", "exitCode": 127, "reportedPath": "" },
+      { "tool": "nvidia-ctk", "exitCode": 0, "reportedPath": "/usr/bin/nvidia-ctk" },
+      { "tool": "runc", "exitCode": 0, "reportedPath": "/usr/bin/runc" }
+    ],
+    "reportedExecutableCandidates": ["/usr/bin/nvidia-ctk", "/bin/nvidia-ctk", "/usr/bin/runc", "/bin/runc"],
+    "installedRpmInventory": null,
+    "ctkPackageOwner": null,
+    "nvidiaCdiHookResultSupplied": false,
+    "daemonPathEstablished": false
+  },
+  "missingOutput": ["DOCKER_HOST", "DOCKER_CONTEXT", "docker version fields and exit", "docker info formatted values"],
+  "newContainerOperationAuthorized": false,
+  "imageAcquisitionAuthorized": false,
+  "installationOrConfigurationChangeAuthorized": false,
+  "serviceRestartAuthorized": false,
+  "agentExecutedHostCommands": false,
+  "containerGpuVisibilityEstablished": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

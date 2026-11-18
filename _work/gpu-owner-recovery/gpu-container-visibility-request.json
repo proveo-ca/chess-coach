@@ -1,0 +1,49 @@
+{
+  "version": "chess-coach.gpu-container-visibility-request.v1",
+  "status": "APPROVED_OPERATOR_EXECUTION_PENDING",
+  "authorization": {
+    "source": "EXECUTOR_SELECTED_CACHED_IMAGE_PROBE_RECOMMENDED",
+    "executor": "OPERATOR_HOST_ONLY",
+    "maximumContainersCreated": 1,
+    "automaticRetry": false
+  },
+  "observations": "_work/gpu-owner-recovery/gpu-functional-host-observations.json",
+  "commandPacket": "_work/gpu-owner-recovery/gpu-container-visibility.fish",
+  "images": {
+    "bun": "docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038",
+    "rust": "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb"
+  },
+  "gpuUuid": "GPU-713c95e0-6952-a576-794b-9ef1fb527ff0",
+  "requiredBunPlatform": "linux/amd64",
+  "container": {
+    "runtime": "nvidia",
+    "user": "1000:1000",
+    "driverCapabilities": "compute,utility",
+    "cpuLimit": 2,
+    "memoryLimit": "512m",
+    "pidLimit": 64,
+    "additionalUserMounts": [],
+    "operation": "NVIDIA_SMI_AND_NVML_METADATA_ONLY"
+  },
+  "deadlines": {
+    "inspectSecondsPerImage": 10,
+    "probeSeconds": 30,
+    "cleanupSeconds": 10,
+    "clientKillAfterSeconds": 3,
+    "hardTerminationGuaranteed": false
+  },
+  "cleanup": "FORCE_REMOVE_ONLY_THE_CONTAINER_ID_RECORDED_IN_THIS_ATTEMPTS_FRESH_CIDFILE",
+  "missingBunImage": "STOP_WITHOUT_PULL_OR_SUBSTITUTION",
+  "missingRustImage": "REPORT_FOR_LATER_BUILD_INPUT_SELECTION_WITHOUT_PULL",
+  "evidenceDirectoryTemplate": "_work/gpu-owner-recovery/runs/host-visibility-XXXXXXXX",
+  "imagePullAuthorized": false,
+  "imageBuildAuthorized": false,
+  "llvmArchiveOperationAuthorized": false,
+  "nativeCudaCompilationAuthorized": false,
+  "cudaKernelExecutionAuthorized": false,
+  "hostConfigurationChangeAuthorized": false,
+  "trainingAuthorized": false,
+  "agentExecutedHostCommands": false,
+  "containerGpuVisibilityEstablished": false,
+  "trainingReady": false
+}

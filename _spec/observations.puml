@@ -1,0 +1,20 @@
+@startuml observations
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title New recipient-local observation contract
+component "Actual game + causal journal\ncontinuing recipient producer" as HOST <<app>>
+component "Recipient JSON text\nbounded before parsing" as JSON <<app>>
+component "Zod strict shape + inferred types" as SHAPE <<app>>
+component "Visibility / identity / economic invariants" as DOMAIN <<app>>
+component "Readonly recipient observation" as DTO <<app>>
+component "JSON Schema 2020-12\nshape only" as SCHEMA <<app>>
+HOST --> JSON : recipient projection only
+JSON --> SHAPE : JSON.parse
+SHAPE --> DOMAIN : typed bounded fields
+DOMAIN --> DTO : validated own state + sightings + ledger
+SHAPE --> SCHEMA : Zod native conversion
+note bottom of DTO
+  No V2 byte compatibility or custom canonical serializer.
+  A valid DTO does not authenticate the producer.
+  Supervised native/reference runtime remains pending.
+end note
+@enduml

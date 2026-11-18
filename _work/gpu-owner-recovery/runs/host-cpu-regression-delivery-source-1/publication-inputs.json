@@ -1,0 +1,1217 @@
+{
+  "status": "PREPARED_APPROVED_EXPLICIT_TEXT_PUBLICATION_COHORT",
+  "grantId": "cpu39-manual-grant-1",
+  "paths": [
+    "_spec/.spec-index.json",
+    "_spec/gate-closure.md",
+    "_spec/gpu-full-qualification.puml",
+    "_spec/gpu-qualification.puml",
+    "_spec/gpu-readiness.md",
+    "_spec/readiness.md",
+    "_work/gpu-owner-recovery/qualification/cpu-host-plan.json",
+    "_work/gpu-owner-recovery/qualification/cpu-host.test.ts",
+    "_work/gpu-owner-recovery/qualification/cpu-host.ts",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/approval.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/campaign-request.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/delivery.test.ts",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/delivery.ts",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/final-review.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/fish-availability.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/frozen-inputs-check-1.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-1/receipt.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-1/whitespace.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-1/whitespace.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-2/receipt.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-2/whitespace.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-2/whitespace.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-3/receipt.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-3/whitespace.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-3/whitespace.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check.py",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/prepare-publication.py",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-inputs.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-paths.txt",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-review.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/review-1.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/review-2.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/binding.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/delivery-body.fish",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/fish-body-syntax/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/fish-body-syntax/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/fish-launch-syntax/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/fish-launch-syntax/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/host-command.fish",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/receipt.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/request.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/runtime-test-types/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/runtime-test-types/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/runtime-types/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/runtime-types/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/types/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/types/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/unit/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/unit/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/bindings.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/canonical-host-command.fish",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/driver.mjs",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/frozen-cpu-contract/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/frozen-cpu-contract/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/host.mjs",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock-e2e.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cargo-version/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cargo-version/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cpu-learning/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cpu-learning/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cpu-policy/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cpu-policy/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:lib:chess_coach_learning/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:lib:chess_coach_learning/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:accumulation/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:accumulation/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:context/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:context/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:episode/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:episode/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:finite_difference/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:finite_difference/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:initialization/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:initialization/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:model/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:model/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-channel/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-channel/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-initialize/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-initialize/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-score/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-score/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:lib:chess_coach_policy_io/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:lib:chess_coach_policy_io/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:channel/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:channel/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:f32/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:f32/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:gpu/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:gpu/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:initialize/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:initialize/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:score/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:score/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/rustc-version/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/rustc-version/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/plan.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/receipt.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/request.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/review-1.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/types/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/types/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/unit-and-mock-e2e/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/unit-and-mock-e2e/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/argument-bounds.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/bindings.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/canonical-host-command.fish",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/driver.mjs",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/fish-parent-syntax-only/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/fish-parent-syntax-only/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/fish-syntax-only/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/fish-syntax-only/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/fish-worker-syntax-only/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/fish-worker-syntax-only/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/frozen-cpu-contract/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/frozen-cpu-contract/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/host.mjs",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/large-output-proof.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock-e2e.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock-large-output/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock-large-output/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/cargo-version/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/cargo-version/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/cpu-learning/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/cpu-learning/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/cpu-policy/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/cpu-policy/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:lib:chess_coach_learning/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:lib:chess_coach_learning/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:accumulation/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:accumulation/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:context/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:context/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:episode/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:episode/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:finite_difference/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:finite_difference/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:initialization/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:initialization/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:model/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:model/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:bin:policy-channel/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:bin:policy-channel/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:bin:policy-initialize/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:bin:policy-initialize/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:bin:policy-score/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:bin:policy-score/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:lib:chess_coach_policy_io/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:lib:chess_coach_policy_io/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:channel/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:channel/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:f32/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:f32/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:gpu/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:gpu/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:initialize/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:initialize/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:score/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:score/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/rustc-version/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/rustc-version/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/parent-body.fish",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/plan.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/receipt.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/request.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/review-2.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/review-3.json",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/types/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/types/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/unit-and-mock-e2e/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/unit-and-mock-e2e/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/worker-body.fish",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/observation.json",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/operator-summary.txt",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/records.test.ts",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/records.ts",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/reported-input.json",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/reported-receipt.json",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/review.json",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/receipt.json",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/records/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/records/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/types/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/types/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/unit/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/unit/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-2/receipt.json",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-2/records/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-2/records/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-2/types/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-2/types/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-2/unit/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-2/unit/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-3/receipt.json",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-3/records/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-3/records/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-3/types/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-3/types/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-3/unit/command.stderr",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-3/unit/command.stdout",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verify.ts"
+  ],
+  "bindingsExcludingTheseTwoControlFiles": [
+    {
+      "path": "_spec/.spec-index.json",
+      "bytes": 25549,
+      "sha256": "050645063a722ae1a5563cdc120fb3742eaf9aeab5332dd2bc17fc99c00316e0"
+    },
+    {
+      "path": "_spec/gate-closure.md",
+      "bytes": 210812,
+      "sha256": "0eb6022d75c05634ffd4380e861cddd368674cb5fd2d99dd5e9005b2d68ad006"
+    },
+    {
+      "path": "_spec/gpu-full-qualification.puml",
+      "bytes": 38946,
+      "sha256": "d417199646e755d525a16bd40338561e543a565312aaa326063a5c2b33077482"
+    },
+    {
+      "path": "_spec/gpu-qualification.puml",
+      "bytes": 84505,
+      "sha256": "95f0906eee7f4fbe3623534fdbd458d10af743a9e656679eb6dbd789f614f395"
+    },
+    {
+      "path": "_spec/gpu-readiness.md",
+      "bytes": 288259,
+      "sha256": "b85cdfe317d0e9be529547f03f5c59de5e487dd130e80aca8ad6532c5001c056"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "bytes": 61775,
+      "sha256": "45ff8872a2af08070ade60866a3cad2d5d47bb188d88510a3eac9373427222c3"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/cpu-host-plan.json",
+      "bytes": 4078,
+      "sha256": "41b6334cb5c4d07591f6a8e64a26824c18a4d0d4200e5602d99cbeee8f017758"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/cpu-host.test.ts",
+      "bytes": 35183,
+      "sha256": "51608488e59abfe5e4b9d5d7a87f7949951dd8de1d049e0faa9a26cd1cba3e9f"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/qualification/cpu-host.ts",
+      "bytes": 48063,
+      "sha256": "4a28840ef2d796b6e649d344cdae650ac4d07b262a72c16b84afef9117b397f7"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/approval.json",
+      "bytes": 2981,
+      "sha256": "5e925919b5e3b227a846312b77c4765abf56abb2a3f25519be844b2e4792d9cb"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/campaign-request.json",
+      "bytes": 4148,
+      "sha256": "4b5d86782f35d7ba25e58db61e73cb189f75fc7f5c32436031ae089e1cdf08e9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/delivery.test.ts",
+      "bytes": 3761,
+      "sha256": "246d98f86c02047e77c6aadf0f1ecc5898971cdbb82a57b9173eb8de28f411c5"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/delivery.ts",
+      "bytes": 10238,
+      "sha256": "80d2d88a6c059ebde4bceb9527fbbf621d41cca5d09599a3c6b778d3c6a2ec20"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/final-review.json",
+      "bytes": 1335,
+      "sha256": "1dac508f77c6784aa570962b8eaebd39e7fa555d72e2e5bc4dc71aed0fa14d23"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/fish-availability.json",
+      "bytes": 686,
+      "sha256": "2b7ae22278ff691033f2380e172b76b92f786ed7e9b450a25dc9ac9c8561372c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/frozen-inputs-check-1.json",
+      "bytes": 407,
+      "sha256": "6605e30e234e7846f4ffe1f59bfef6f25a609d4deecc4b2ddf94b0b5255589fa"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-1/receipt.json",
+      "bytes": 2933,
+      "sha256": "55f9cac7830a8bebfa368b49678a07923f00f4fa7468b756cf16756a9dc9a6de"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-1/whitespace.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-1/whitespace.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-2/receipt.json",
+      "bytes": 2933,
+      "sha256": "282200f3508bcf4d9f30cbee1f134356468ae376af6394c5dc57323e63913707"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-2/whitespace.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-2/whitespace.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-3/receipt.json",
+      "bytes": 3128,
+      "sha256": "ec3bff03dc5e995bc2e9d08a5c0df8b6924a381ba60fb7d4e157a3cb5e1e6724"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-3/whitespace.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check-3/whitespace.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/packet-check.py",
+      "bytes": 7278,
+      "sha256": "1cdbc5db6d4e1a223f8678111db009b6318b985ce7874c964893d24b05490b07"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/prepare-publication.py",
+      "bytes": 3594,
+      "sha256": "0dc425137750d0ea0c7c32023d3441d5d8b67e645044692e8dfc3d57fc438b9c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/publication-review.json",
+      "bytes": 674,
+      "sha256": "bb5f1f53a436d6b12cb6d54b444ce3c540f493677e13cea1fedacf333480af87"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/review-1.json",
+      "bytes": 1002,
+      "sha256": "9e6639672edd20611e2ac05c49a5993614e1dc9de4b528d1117dc5386b7ae283"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/review-2.json",
+      "bytes": 1298,
+      "sha256": "0f18a9c266262aae2cd81264f1c589ae5e3937d293e118d5090f75bac69bbeaf"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/binding.json",
+      "bytes": 758,
+      "sha256": "2a2ff82b36136ada51fe43fa2ea5a8ff21b00af0ba5a0524f923789cf78cb8f9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/delivery-body.fish",
+      "bytes": 1769,
+      "sha256": "ffad04fbe80dca35e4fab0db94be02b758b6ef257a572080dcfdc156cf30e110"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/fish-body-syntax/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/fish-body-syntax/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/fish-launch-syntax/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/fish-launch-syntax/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/host-command.fish",
+      "bytes": 2178,
+      "sha256": "869fc770f205bd11389ff61e4f93f1e1dfdb7727d49a33a221e49d2fc351bd9b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/receipt.json",
+      "bytes": 8359,
+      "sha256": "2a1646a6701b6daf16f35f6e8d8d0eda57d4449d6ba54764909bca30ecbb23bf"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/request.json",
+      "bytes": 1551,
+      "sha256": "354e1493ddbe8030f407ef5b11280f8a0533e785a98a49d28acdb5b0b269c0d7"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/runtime-test-types/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/runtime-test-types/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/runtime-types/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/runtime-types/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/types/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/types/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/unit/command.stderr",
+      "bytes": 749,
+      "sha256": "eb0e80cc3bdba3ba79a132379cc602b29fcd27532238e163910de6f7055c9d13"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-delivery-source-1/verification-1/unit/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/bindings.json",
+      "bytes": 2862,
+      "sha256": "6f9f1aea8197e50aaa77fb33e88bd62615e9e2a94440b0963f02422e95e5d423"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/canonical-host-command.fish",
+      "bytes": 109902,
+      "sha256": "89a15595fbf43b7f27046fbbb589a1e7205d0255c39d99834aed288d30102375"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/driver.mjs",
+      "bytes": 46953,
+      "sha256": "6c5098849bf9958fb9894ece5a05e604d50daaae8705afdea20289cd5d45bae1"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/frozen-cpu-contract/command.stderr",
+      "bytes": 869,
+      "sha256": "297fc8da3255c1eee900f94143acdd31148602a98abf3de2c6bda630ec0a265d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/frozen-cpu-contract/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/host.mjs",
+      "bytes": 95711,
+      "sha256": "61f3ff70efe231f9e8caaa7eb5906856b1f09dc75315da39d46a9c7c0b5c2775"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock-e2e.json",
+      "bytes": 104120,
+      "sha256": "2b921fcfec3019a4ca51215418569b1e98243b5c04f8e3cbbff53171a3af69df"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cargo-version/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cargo-version/command.stdout",
+      "bytes": 20,
+      "sha256": "70abb86eac6c1460caaed0307f5b57483e4999a7a0305ae54d0beabfc8b10b05"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cpu-learning/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cpu-learning/command.stdout",
+      "bytes": 2187,
+      "sha256": "ddef81fd06f776d060c77e91f6ca93d9adcd223aeb9dce63bc8ed7a3a9d616a3"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cpu-policy/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/cpu-policy/command.stdout",
+      "bytes": 3699,
+      "sha256": "5afb0ea7064c5912c6ed07ea327a80e9490ef9b6f42117f38f774a6ff4f5e047"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:lib:chess_coach_learning/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:lib:chess_coach_learning/command.stdout",
+      "bytes": 94,
+      "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:accumulation/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:accumulation/command.stdout",
+      "bytes": 94,
+      "sha256": "ff6d06bac77e357835fa47529bda67f4ef19b555373c2624fe46d7fe744ab7dc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:context/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:context/command.stdout",
+      "bytes": 94,
+      "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:episode/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:episode/command.stdout",
+      "bytes": 94,
+      "sha256": "ff6d06bac77e357835fa47529bda67f4ef19b555373c2624fe46d7fe744ab7dc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:finite_difference/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:finite_difference/command.stdout",
+      "bytes": 94,
+      "sha256": "82013fa5ece13932676e7b678c765f584d53461d8473a285d61e1eb9899fa858"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:initialization/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:initialization/command.stdout",
+      "bytes": 94,
+      "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:model/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/learning:test:model/command.stdout",
+      "bytes": 94,
+      "sha256": "ff6d06bac77e357835fa47529bda67f4ef19b555373c2624fe46d7fe744ab7dc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-channel/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-channel/command.stdout",
+      "bytes": 94,
+      "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-initialize/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-initialize/command.stdout",
+      "bytes": 94,
+      "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-score/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:bin:policy-score/command.stdout",
+      "bytes": 94,
+      "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:lib:chess_coach_policy_io/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:lib:chess_coach_policy_io/command.stdout",
+      "bytes": 94,
+      "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:channel/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:channel/command.stdout",
+      "bytes": 94,
+      "sha256": "caba22662dde7033114f5828b7f4c5ca582e25dc0a272cdcfce5068b52143eef"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:f32/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:f32/command.stdout",
+      "bytes": 94,
+      "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:gpu/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:gpu/command.stdout",
+      "bytes": 94,
+      "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:initialize/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:initialize/command.stdout",
+      "bytes": 94,
+      "sha256": "82013fa5ece13932676e7b678c765f584d53461d8473a285d61e1eb9899fa858"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:score/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/policy-io:test:score/command.stdout",
+      "bytes": 94,
+      "sha256": "c8027f44bd097220fac5024d3f72a9bebf7f11bca8db3c8c20cb1aec7b2f971f"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/rustc-version/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/mock/rustc-version/command.stdout",
+      "bytes": 20,
+      "sha256": "111b38f74205ea2884c814be072f3b32d139e2560d3206618f3185f93fcf9bcc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/plan.json",
+      "bytes": 3873,
+      "sha256": "30daa0ed16ecab5c3ae3f9f95f7deea53afecbb1df51be01a6ec54ba7a5d3d61"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/receipt.json",
+      "bytes": 5749,
+      "sha256": "10d0bfa519c9be437aa4aecaa8deb9837ca7ef9863a5486ec23432a9e505dbf7"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/request.json",
+      "bytes": 8169,
+      "sha256": "ca8ff613c842da22194d167c1ec15db56838e2b6e0e2c84f8d9e31b5919f15fc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/review-1.json",
+      "bytes": 2311,
+      "sha256": "733c167295f8b3e85d4dac1ed3933f0c7ad6d41c78764de6f602f7ca232b3356"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/types/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/types/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/unit-and-mock-e2e/command.stderr",
+      "bytes": 2537,
+      "sha256": "85f7346ffd133301a2dbd5e44bf8a1c919a8c3b43363e4644346ed8c5586ed2a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/unit-and-mock-e2e/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/argument-bounds.json",
+      "bytes": 321,
+      "sha256": "680005a7ebca28a6b539c60397baeda3d019f4ddc578a04f509a1ff0f5d746c0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/bindings.json",
+      "bytes": 3564,
+      "sha256": "90fbcde122f0c00e3711ddecf6aeacab4d225eff5695ad3197a645fe5c45eb4b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/canonical-host-command.fish",
+      "bytes": 104604,
+      "sha256": "02f358d0abc05a9ab1081f8512abdf455257ec69c69a74361ac5a5a5fa52f1b8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/driver.mjs",
+      "bytes": 46878,
+      "sha256": "7ebaf9cb05fb9ca2c7b73b192c73f38ac4ce2af78b29d9860e60163caf705a6f"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/fish-parent-syntax-only/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/fish-parent-syntax-only/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/fish-syntax-only/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/fish-syntax-only/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/fish-worker-syntax-only/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/fish-worker-syntax-only/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/frozen-cpu-contract/command.stderr",
+      "bytes": 869,
+      "sha256": "0bd580691f5759cba33147a3e467b1588eeb93368b9c669388993734a4f1bde9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/frozen-cpu-contract/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/host.mjs",
+      "bytes": 94851,
+      "sha256": "aa6d18dfb98327facc1b69482d7e0c242ab9a73b8e9658317fb5515c5bc29b15"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/large-output-proof.json",
+      "bytes": 60005,
+      "sha256": "7aef98f149aa37c6c1588e989659f78cef96ad383d94c4a723b90c8e099bbfb4"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock-e2e.json",
+      "bytes": 115394,
+      "sha256": "74566ce7fd50dbccbaf481968e6e1d686b0cad3afb480c6b179add566cf20ae5"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock-large-output/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock-large-output/command.stdout",
+      "bytes": 4194304,
+      "sha256": "0c19e232c0b7ca2cc1b63c48d18605983f1290f13c4c84f8f55be2bb3b380b6c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/cargo-version/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/cargo-version/command.stdout",
+      "bytes": 20,
+      "sha256": "70abb86eac6c1460caaed0307f5b57483e4999a7a0305ae54d0beabfc8b10b05"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/cpu-learning/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/cpu-learning/command.stdout",
+      "bytes": 2187,
+      "sha256": "ddef81fd06f776d060c77e91f6ca93d9adcd223aeb9dce63bc8ed7a3a9d616a3"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/cpu-policy/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/cpu-policy/command.stdout",
+      "bytes": 3699,
+      "sha256": "5afb0ea7064c5912c6ed07ea327a80e9490ef9b6f42117f38f774a6ff4f5e047"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:lib:chess_coach_learning/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:lib:chess_coach_learning/command.stdout",
+      "bytes": 94,
+      "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:accumulation/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:accumulation/command.stdout",
+      "bytes": 94,
+      "sha256": "ff6d06bac77e357835fa47529bda67f4ef19b555373c2624fe46d7fe744ab7dc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:context/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:context/command.stdout",
+      "bytes": 94,
+      "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:episode/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:episode/command.stdout",
+      "bytes": 94,
+      "sha256": "ff6d06bac77e357835fa47529bda67f4ef19b555373c2624fe46d7fe744ab7dc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:finite_difference/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:finite_difference/command.stdout",
+      "bytes": 94,
+      "sha256": "82013fa5ece13932676e7b678c765f584d53461d8473a285d61e1eb9899fa858"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:initialization/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:initialization/command.stdout",
+      "bytes": 94,
+      "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:model/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/learning:test:model/command.stdout",
+      "bytes": 94,
+      "sha256": "ff6d06bac77e357835fa47529bda67f4ef19b555373c2624fe46d7fe744ab7dc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:bin:policy-channel/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:bin:policy-channel/command.stdout",
+      "bytes": 94,
+      "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:bin:policy-initialize/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:bin:policy-initialize/command.stdout",
+      "bytes": 94,
+      "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:bin:policy-score/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:bin:policy-score/command.stdout",
+      "bytes": 94,
+      "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:lib:chess_coach_policy_io/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:lib:chess_coach_policy_io/command.stdout",
+      "bytes": 94,
+      "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:channel/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:channel/command.stdout",
+      "bytes": 94,
+      "sha256": "caba22662dde7033114f5828b7f4c5ca582e25dc0a272cdcfce5068b52143eef"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:f32/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:f32/command.stdout",
+      "bytes": 94,
+      "sha256": "3d6c7ea047ec7baa0f1d02db0560103e2ae0708fb26b0354a5dbf1f54072ae57"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:gpu/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:gpu/command.stdout",
+      "bytes": 94,
+      "sha256": "7d3e5654fc23cb69827e0f7ba535bd6d28a5666d6b03c13ca650a9e04cfa6246"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:initialize/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:initialize/command.stdout",
+      "bytes": 94,
+      "sha256": "82013fa5ece13932676e7b678c765f584d53461d8473a285d61e1eb9899fa858"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:score/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/policy-io:test:score/command.stdout",
+      "bytes": 94,
+      "sha256": "c8027f44bd097220fac5024d3f72a9bebf7f11bca8db3c8c20cb1aec7b2f971f"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/rustc-version/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/mock/rustc-version/command.stdout",
+      "bytes": 20,
+      "sha256": "111b38f74205ea2884c814be072f3b32d139e2560d3206618f3185f93fcf9bcc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/parent-body.fish",
+      "bytes": 99745,
+      "sha256": "3720f23b61972b77e9c97540956a7de9db270204992e2ade6d655596e62575d9"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/plan.json",
+      "bytes": 4474,
+      "sha256": "fb146d38205f378dccb8e7520c0b134642f8c44effcef2722326d69ed0e2467d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/receipt.json",
+      "bytes": 10311,
+      "sha256": "a875dce053e2931de32d83e65841d49305540eab13d9f8308a48ff72d65bdeec"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/request.json",
+      "bytes": 9544,
+      "sha256": "37f5d9ee4eee08df3a05997ba62758bd97478abb30804c270107e5446fdcf4d3"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/review-2.json",
+      "bytes": 960,
+      "sha256": "8953d1b24660eb3aefa3ae1b254315e11e4d2397951e36b5d2c1adbf01593f68"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/review-3.json",
+      "bytes": 1069,
+      "sha256": "4a0402780f76d2049defef88e804795080a6b2b344fecfc6ddee0e46555a73bd"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/types/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/types/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/unit-and-mock-e2e/command.stderr",
+      "bytes": 3566,
+      "sha256": "573f3a5e4f9da7205b96b80bccc0c666e2608f997766ca0f2a54f2ff5681b692"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/unit-and-mock-e2e/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/worker-body.fish",
+      "bytes": 96593,
+      "sha256": "d3d5609e4fd51f03104fe4ce72a51d13441131e0e2f95daebaa1821a2ad7e1db"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/observation.json",
+      "bytes": 2243,
+      "sha256": "f780b4b94e2f77641f61686fa426185191fc0a9a3db26e018eb1dc8e6ac33900"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/operator-summary.txt",
+      "bytes": 166,
+      "sha256": "dcb167d6df6d4a9e25c294ab7f082f825a17d269a4621b7b42de35a67bd25a9a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/records.test.ts",
+      "bytes": 5574,
+      "sha256": "2cabc07f646d5b76c6cc0478294f31a26bd3d00fc248e82ed344cba52a651df4"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/records.ts",
+      "bytes": 19844,
+      "sha256": "9a6bb292936c83f0d576af69811e550ca5f9838818312faa7b93251c2ad7d736"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/reported-input.json",
+      "bytes": 13809,
+      "sha256": "8707d18449380de93dd46b3cbe429e0cdfd562d7d1499acf6d1b549ccff5f8d8"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/reported-receipt.json",
+      "bytes": 219001,
+      "sha256": "b6b5558c4f8849189e5b2cf01292d5641627547e9db84237d26530683e2666ce"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/review.json",
+      "bytes": 1164,
+      "sha256": "9a8cdaae3087f79ef08984d94efec44c25aea7ba7823b5bea250b290c0c8251c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/receipt.json",
+      "bytes": 4694,
+      "sha256": "7af7fb67e23282e28ff93059267550eb279c0f5eb53027cc45246a0f404f6b4f"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/records/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/records/command.stdout",
+      "bytes": 465,
+      "sha256": "2af53dcd1dc25f9ba85948e5c0791e142d3db1e00d9c1f92c54732bccb08d473"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/types/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/types/command.stdout",
+      "bytes": 612,
+      "sha256": "0b6f430d9648aae6dd592cd540b900f589cfaff589c21dcd6f1d80328547560d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/unit/command.stderr",
+      "bytes": 854,
+      "sha256": "5b139e88a7aa142d5f30561d466b5084f11b0d6b85eebb241f446b4d2ef08d42"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-1/unit/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-2/receipt.json",
+      "bytes": 4719,
+      "sha256": "f3d46cda27f62a5e17c689ec08b98749569a4937718c03c46d0af2e8790570c6"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-2/records/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-2/records/command.stdout",
+      "bytes": 465,
+      "sha256": "2af53dcd1dc25f9ba85948e5c0791e142d3db1e00d9c1f92c54732bccb08d473"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-2/types/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-2/types/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-2/unit/command.stderr",
+      "bytes": 852,
+      "sha256": "5626d1a5968cdf13a842f03edc3a408180b3a85849e77b6e74d2ada27eb7ee1a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-2/unit/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-3/receipt.json",
+      "bytes": 4719,
+      "sha256": "43a0aeede89f35ed8aa4c9d6544a16fe1ff76a4f9a6dcba475ebd0b61554f1cb"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-3/records/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-3/records/command.stdout",
+      "bytes": 465,
+      "sha256": "2af53dcd1dc25f9ba85948e5c0791e142d3db1e00d9c1f92c54732bccb08d473"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-3/types/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-3/types/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-3/unit/command.stderr",
+      "bytes": 852,
+      "sha256": "d02eab17ff14979809352f4a9f4befac1142c625f89c0f82af1e4ddac72cd09b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verification-3/unit/command.stdout",
+      "bytes": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/continuation-source-1/full2-pass-report-1/verify.ts",
+      "bytes": 2837,
+      "sha256": "a6e355842bed30202d792e8f70babdb5583811f060f4417c45ce1060e869a49e"
+    }
+  ],
+  "pathListSha256": "92d3e19c35b84c887d6b25f86c1d83b928fa799c148b053d90ea831f36aabe25",
+  "preservedExcludedRoots": [
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/tmp",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-1/home",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/tmp",
+    "_work/gpu-owner-recovery/runs/host-cpu-regression-source-2/home"
+  ],
+  "fileCount": 201,
+  "boundInputBytes": 6387457,
+  "regularUtf8TextOnly": true,
+  "gitMutationPerformed": false,
+  "hostExecuted": false,
+  "trainingReady": false
+}

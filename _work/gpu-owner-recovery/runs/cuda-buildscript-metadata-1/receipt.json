@@ -1,0 +1,32 @@
+{
+  "version": "chess-coach.cuda-buildscript-metadata.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "-e",
+    "\nimport { readFile } from 'node:fs/promises';\nimport { createHash } from 'node:crypto';\nconst bytes=await readFile('_work/gpu-owner-recovery/runs/readiness-real-cuda-metadata-2/command.stdout');\nconst metadata=JSON.parse(bytes),resolved=new Set(metadata.resolve.nodes.map(node=>node.id)),buildScripts=[];\nfor(const item of metadata.packages){if(!resolved.has(item.id))continue;for(const target of item.targets){if(!target.kind.includes('custom-build'))continue;const source=await readFile(target.src_path);if(source.length>8388608)throw Error('BOUNDED_BUILD_SCRIPT_SOURCE_REQUIRED');buildScripts.push({package:item.name,version:item.version,packageId:item.id,path:target.src_path,bytes:source.length,sha256:createHash('sha256').update(source).digest('hex')});}}\nbuildScripts.sort((a,b)=>a.package.localeCompare(b.package)||a.version.localeCompare(b.version));\nconsole.log(JSON.stringify({status:'PASS',scope:'STANDARD_CARGO_METADATA_RESOLVED_BUILD_SCRIPT_CANDIDATES_NOT_COMPILER_UNIT_DAG',metadataSha256:createHash('sha256').update(bytes).digest('hex'),buildScriptCount:buildScripts.length,buildScripts,buildScriptsExecuted:false,dependencyNativeClosureQualified:false,trainingReady:false},null,2));\n"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 43320,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "stream": "stdout",
+      "path": "_work/gpu-owner-recovery/runs/cuda-buildscript-metadata-1/command.stdout",
+      "bytes": 43320,
+      "sha256": "06e31f963d5f5794eae4267d0802230105e2d74b39d03d7d5e1837640a9f5374"
+    },
+    {
+      "stream": "stderr",
+      "path": "_work/gpu-owner-recovery/runs/cuda-buildscript-metadata-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

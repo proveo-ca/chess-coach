@@ -1,0 +1,33 @@
+
+packages/runtime/tests/reference-bundles.test.ts:
+(pass) reference source guard requires an explicit absolute exact-pin root [7.58ms]
+(pass) reference source guard rejects a canonical tracked subdirectory with untracked entrypoints before building [1529.97ms]
+(pass) reference source guard rejects tracked modifications before and after staging [1318.39ms]
+(pass) reference source guard rejects a staged change after original physical bytes are restored [957.93ms]
+(pass) reference source guard rejects extra staged inputs absent from the original pinned tree [1045.09ms]
+(pass) reference source guard rejects tracked modifications hidden by --assume-unchanged [754.24ms]
+(pass) reference source guard rejects tracked modifications hidden by --skip-worktree [828.26ms]
+(pass) reference source guard rejects source substitutions hidden by Git replacement refs [877.50ms]
+(pass) reference source guard authenticates physical bytes hidden by a synthetic clean filter [681.30ms]
+(pass) reference source guard never executes clean filters for byte-identical tracked files [686.22ms]
+(pass) reference source guard rejects missing pinned objects without invoking a promisor remote [445.66ms]
+(pass) reference source guard rejects a forged raw tree stored under an original subtree OID [556.60ms]
+(pass) reference source guard rejects a forged raw commit stored under the selected pin OID [636.36ms]
+(pass) reference source guard authenticates commit bytes before parsing the root tree header [0.25ms]
+(pass) reference source guard strictly frames and hashes tree batch responses [0.40ms]
+(pass) reference source guard rejects malformed binary tree names, modes, and records [0.26ms]
+(pass) reference source guard instantiates reused authenticated trees at every path without cross-validation caching [426.14ms]
+(pass) reference source guard bounds batch bytes, binary entry counts, and expired graph reads [33.77ms]
+(pass) reference source guard bounds reused-tree expansion and authenticated graph depth [540.74ms]
+(pass) reference source guard rejects a physical symlink replacing tracked package.json [455.06ms]
+(pass) reference source guard rejects a physical symlink replacing tracked packages [480.36ms]
+(pass) reference source guard rejects populated submodule source [449.85ms]
+(pass) reference source guard rejects untracked bundle input metadata even with identical tracked bytes [880.60ms]
+(pass) reference source guard requires original bundle input size, digest, paths, and selected entry coverage [1465.37ms]
+(pass) reference source guard reauthenticates physical inputs after inventory capture [547.76ms]
+
+ 25 pass
+ 1 filtered out
+ 0 fail
+ 194 expect() calls
+Ran 25 tests across 1 file. [15.80s]

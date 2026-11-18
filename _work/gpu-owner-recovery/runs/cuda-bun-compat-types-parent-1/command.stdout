@@ -1,0 +1,36 @@
+_work/gpu-owner-recovery/cuda-archive.test.ts(163,121): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(expected: Readonly<{ guest: string; file: Readonly<{ source: string; identity: Readonly<{ device: string; inode: string; bytes: number; mode: number; uid: number; links: number; mtime: string; ctime: string; }>; sha256: string; elf?: ElfMetadata | undefined; }>; }>[]): void', gave the following error.
+    Argument of type 'readonly Readonly<{ guest: string; file: Readonly<{ source: string; identity: Readonly<{ device: string; inode: string; bytes: number; mode: number; uid: number; links: number; mtime: string; ctime: string; }>; sha256: string; elf?: ElfMetadata | undefined; }>; }>[]' is not assignable to parameter of type 'Readonly<{ guest: string; file: Readonly<{ source: string; identity: Readonly<{ device: string; inode: string; bytes: number; mode: number; uid: number; links: number; mtime: string; ctime: string; }>; sha256: string; elf?: ElfMetadata | undefined; }>; }>[]'.
+      The type 'readonly Readonly<{ guest: string; file: Readonly<{ source: string; identity: Readonly<{ device: string; inode: string; bytes: number; mode: number; uid: number; links: number; mtime: string; ctime: string; }>; sha256: string; elf?: ElfMetadata | undefined; }>; }>[]' is 'readonly' and cannot be assigned to the mutable type 'Readonly<{ guest: string; file: Readonly<{ source: string; identity: Readonly<{ device: string; inode: string; bytes: number; mode: number; uid: number; links: number; mtime: string; ctime: string; }>; sha256: string; elf?: ElfMetadata | undefined; }>; }>[]'.
+  Overload 2 of 2, '(expected: NoInfer<Readonly<{ guest: string; file: Readonly<{ source: string; identity: Readonly<{ device: string; inode: string; bytes: number; mode: number; uid: number; links: number; mtime: string; ctime: string; }>; sha256: string; elf?: ElfMetadata | undefined; }>; }>[]>): void', gave the following error.
+    Argument of type 'readonly Readonly<{ guest: string; file: Readonly<{ source: string; identity: Readonly<{ device: string; inode: string; bytes: number; mode: number; uid: number; links: number; mtime: string; ctime: string; }>; sha256: string; elf?: ElfMetadata | undefined; }>; }>[]' is not assignable to parameter of type 'Readonly<{ guest: string; file: Readonly<{ source: string; identity: Readonly<{ device: string; inode: string; bytes: number; mode: number; uid: number; links: number; mtime: string; ctime: string; }>; sha256: string; elf?: ElfMetadata | undefined; }>; }>[]'.
+      The type 'readonly Readonly<{ guest: string; file: Readonly<{ source: string; identity: Readonly<{ device: string; inode: string; bytes: number; mode: number; uid: number; links: number; mtime: string; ctime: string; }>; sha256: string; elf?: ElfMetadata | undefined; }>; }>[]' is 'readonly' and cannot be assigned to the mutable type 'Readonly<{ guest: string; file: Readonly<{ source: string; identity: Readonly<{ device: string; inode: string; bytes: number; mode: number; uid: number; links: number; mtime: string; ctime: string; }>; sha256: string; elf?: ElfMetadata | undefined; }>; }>[]'.
+_work/gpu-owner-recovery/cuda-bun-compatibility-fixture.test.ts(103,29): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(expected: NonSharedBuffer): void', gave the following error.
+    Argument of type 'Buffer<ArrayBufferLike>' is not assignable to parameter of type 'NonSharedBuffer'.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+  Overload 2 of 2, '(expected: NoInfer<NonSharedBuffer>): void', gave the following error.
+    Argument of type 'Buffer<ArrayBufferLike>' is not assignable to parameter of type 'Buffer<ArrayBuffer>'.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+_work/gpu-owner-recovery/cuda-bun-compatibility-fixture.test.ts(138,52): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(expected: Buffer<ArrayBuffer>): void', gave the following error.
+    Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Buffer<ArrayBuffer>'.
+      Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'Buffer<ArrayBuffer>': write, toJSON, equals, compare, and 66 more.
+  Overload 2 of 2, '(expected: NoInfer<Buffer<ArrayBuffer>>): void', gave the following error.
+    Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Buffer<ArrayBuffer>'.
+      Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'Buffer<ArrayBuffer>': write, toJSON, equals, compare, and 66 more.
+_work/gpu-owner-recovery/cuda-bun-compatibility.test.ts(184,58): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(expected: string[]): void', gave the following error.
+    Argument of type 'readonly string[]' is not assignable to parameter of type 'string[]'.
+      The type 'readonly string[]' is 'readonly' and cannot be assigned to the mutable type 'string[]'.
+  Overload 2 of 2, '(expected: NoInfer<string[]>): void', gave the following error.
+    Argument of type 'readonly string[]' is not assignable to parameter of type 'string[]'.
+      The type 'readonly string[]' is 'readonly' and cannot be assigned to the mutable type 'string[]'.
+_work/gpu-owner-recovery/cuda-bun-compatibility.ts(143,34): error TS2345: Argument of type '536870912' is not assignable to parameter of type '1048576'.
+_work/gpu-owner-recovery/cuda-bun-compatibility.ts(147,24): error TS2345: Argument of type '536870912' is not assignable to parameter of type '1048576'.
+_work/gpu-owner-recovery/cuda-bun-compatibility.ts(186,25): error TS2345: Argument of type '1592' is not assignable to parameter of type '1048576'.
+_work/gpu-owner-recovery/cuda-bun-compatibility.ts(400,21): error TS18046: 'item.streams' is of type 'unknown'.
+_work/gpu-owner-recovery/cuda-bun-compatibility.ts(538,76): error TS2345: Argument of type '1592' is not assignable to parameter of type '1048576'.
+_work/gpu-owner-recovery/cuda-bun-compatibility.ts(548,76): error TS2345: Argument of type '1592' is not assignable to parameter of type '1048576'.

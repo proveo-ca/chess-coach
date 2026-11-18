@@ -1,0 +1,10 @@
+{
+  "status": "FIXED_HTTPS_PUSH_ATTEMPT_REGISTERED",
+  "request": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/publication-request.json",
+  "commit": "250d438685d2fc7560b0e31439f282bb2c145888",
+  "destination": "https://github.com/proveo-ca/chess-coach.git",
+  "branch": "feat-ml-adjuntant-ii",
+  "httpsPushInvocationsConsumed": 1,
+  "automaticRetryAuthorized": false,
+  "trainingReady": false
+}

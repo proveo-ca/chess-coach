@@ -1,0 +1,96 @@
+{
+  "status": "PASS_FINAL_ACCEPTANCE_SCOPE_AND_STATIC_DOCUMENTATION",
+  "scope": "LOCAL_ACCEPTANCE_RECORD_RAW_PRESERVATION_AND_STATIC_VERIFICATION_ONLY",
+  "command": {
+    "argv": [
+      "/usr/local/bin/bun",
+      "--no-env-file",
+      "--no-install",
+      "artifacts/training-functional/check-specs.ts"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 23.66664,
+    "stdout": {
+      "path": "artifacts/training-functional/qualification-result-1/checks-7/specs.stdout",
+      "byteLength": 2136,
+      "sha256": "3b2b85ce06f08bea96bb3404c09da215aa1712673bc84a9cfbeb5308f460314d"
+    },
+    "stderr": {
+      "path": "artifacts/training-functional/qualification-result-1/checks-7/specs.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "sourcePinsBefore": [
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 172818,
+      "sha256": "c8c141c9375e40e6d63ca61e77f9de641aad988999198127fa636f28a51b053f"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 132806,
+      "sha256": "5b2d8014b1a7dce94d077eb582c8e77f02359d0a65e216906ca6f3bf9a773ec4"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 53976,
+      "sha256": "93eaa492415daaffaa1a06289174a4bb6526a87393b5f3e2c12d0d73b2e999f6"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/README.md",
+      "byteLength": 5494,
+      "sha256": "1dbdfa153d1d44bc888c1d7ed2dc673880869defe8a54cebc93888bd05f59be2"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/functional-acceptance-1.json",
+      "byteLength": 9207,
+      "sha256": "832754f33b6d06dc45cb795ee92718c92a2b9bab1e84a743416f6f91d435f0c2"
+    }
+  ],
+  "sourcePinsAfter": [
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 172818,
+      "sha256": "c8c141c9375e40e6d63ca61e77f9de641aad988999198127fa636f28a51b053f"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 132806,
+      "sha256": "5b2d8014b1a7dce94d077eb582c8e77f02359d0a65e216906ca6f3bf9a773ec4"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 53976,
+      "sha256": "93eaa492415daaffaa1a06289174a4bb6526a87393b5f3e2c12d0d73b2e999f6"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/README.md",
+      "byteLength": 5494,
+      "sha256": "1dbdfa153d1d44bc888c1d7ed2dc673880869defe8a54cebc93888bd05f59be2"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/functional-acceptance-1.json",
+      "byteLength": 9207,
+      "sha256": "832754f33b6d06dc45cb795ee92718c92a2b9bab1e84a743416f6f91d435f0c2"
+    }
+  ],
+  "sourcePinsMatch": true,
+  "implementationPinsCarriedForward": 17,
+  "priorTestVerification": {
+    "path": "artifacts/training-functional/qualification-result-1/checks-6/receipt.json",
+    "byteLength": 12178,
+    "sha256": "c165d7bf00453f96c1cf548763b450126f0249a029f67f2216b5bdcf04edc640"
+  },
+  "testCount": 77,
+  "assertions": 172,
+  "testsRerunForDocumentationOnly": false,
+  "allRawTransferredEvidenceUnchanged": true,
+  "explicitFunctionalAcceptance": true,
+  "trainingReady": true,
+  "trainingExecutionAuthorized": false,
+  "trainingExecuted": false,
+  "otherHostFilesRead": false,
+  "qualificationRerun": false,
+  "commitOrPushPerformed": false
+}

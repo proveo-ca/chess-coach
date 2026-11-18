@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "node_modules/typescript/lib/_tsc.js",
+    "--noEmit",
+    "-p",
+    "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/tsconfig.json"
+  ],
+  "timeoutMs": 60000,
+  "cwd": "/home/gu1lty/Projects/proveo/chess-coach",
+  "environment": {
+    "PATH": "/usr/local/bin:/usr/bin:/bin",
+    "HOME": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verification-3/home",
+    "TMPDIR": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verification-3/tmp",
+    "BUN_RUNTIME_TRANSPILER_CACHE_PATH": "0",
+    "NO_COLOR": "1",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "TZ": "UTC",
+    "MISE_AUTO_INSTALL": "false",
+    "MISE_EXEC_AUTO_INSTALL": "false",
+    "MISE_TASK_RUN_AUTO_INSTALL": "false",
+    "CANONICAL_R4_LOCAL_EVIDENCE": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verification-3/e2e"
+  }
+}

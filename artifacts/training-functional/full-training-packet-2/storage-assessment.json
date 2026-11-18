@@ -1,0 +1,46 @@
+{
+  "status": "SOURCE_ONLY_RETAINED_REPORT_POLICY_ASSESSMENT_NOT_LIVE_HOST_ADMISSION",
+  "observedReport": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/user-report.json",
+    "byteLength": 1311,
+    "sha256": "ae2b7fc871bbcfb898b677b59689ea99b8519910b4afea9931f65bd469ee57e4"
+  },
+  "validatedObservation": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/observation.json",
+    "byteLength": 6284,
+    "sha256": "993a500011ea486e870851d32f35a11e6eaaef8926ac9dde544977baae5b9722"
+  },
+  "decision": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/returned-2/proceed-decision-1.json",
+    "byteLength": 1276,
+    "sha256": "507d6db2fd65b1257e66eb84b26a25e3c5eeb0e3220948f5d3a85e823894807d"
+  },
+  "assessment": {
+    "version": "chess-coach.campaign-storage-admission.v1",
+    "policy": "BTRFS_DYNAMIC_ACKNOWLEDGED",
+    "raw": {
+      "type": "2435016766",
+      "bsize": "4096",
+      "bavail": "94246960",
+      "files": "0",
+      "ffree": "0"
+    },
+    "usableBytes": "386035548160",
+    "requiredUsableBytes": "283467841536",
+    "freeEntries": null,
+    "requiredFreeEntries": "835600",
+    "bytesSufficient": true,
+    "entriesSufficient": null,
+    "entryCapacityVerified": false,
+    "policyAcceptedUnknownEntries": true,
+    "entryAdmissionBasis": "ACKNOWLEDGED_BTRFS_ZERO_COUNTERS",
+    "admitted": true
+  },
+  "hostBytesReserved": false,
+  "entryAllocationGuaranteed": false,
+  "directoryUsabilityVerified": false,
+  "selinuxCompatibilityVerified": false,
+  "retainedHostPayloadsAfterCleanupReverified": false,
+  "hostPreparationExecuted": false,
+  "trainingExecuted": false
+}

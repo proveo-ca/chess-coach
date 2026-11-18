@@ -1,0 +1,31 @@
+@startuml match_runtime
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Whole-match child with owner reconstruction and C12 learners
+start
+:Durable STARTED / frozen model, baseline and streams;
+:Child canonical ready; owner independently initializes;
+repeat
+  :Child opens; owner reconstructs native result / recipients / provenance;
+  if (Terminal, exhausted source or actual cap?) then (yes)
+    :Compare owner-derived stop and compact completed prefixes;
+    break
+  endif
+  :Issue first required 10-second permit before writing;
+  :Child prepares only the permitted side from frozen precommit state;
+  :Owner reconstructs candidate or strategic result;
+  :Feed candidate features to both owned learners; ACK exact journal;
+  :Issue next side permit or release one whole-pair admission;
+  :Child settles or reports typed native denial;
+  :Owner reexecutes exact accepted / recorded pair;
+repeat while (Continue?) is (yes)
+:Require child and frozen scorer natural close / EOF / reap;
+:Compare both uncommitted Burn proposals;
+:Require both learner natural close / EOF / reap;
+:Atomically publish completion only through selected private store;
+note right
+  Candidate timeout uses owner clock and owned whole-group cleanup.
+  Finish only the last known ACKed prefix after cleanup.
+  Infrastructure errors abort all without reward or retry.
+end note
+stop
+@enduml

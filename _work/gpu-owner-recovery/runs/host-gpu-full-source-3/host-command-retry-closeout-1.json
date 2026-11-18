@@ -1,0 +1,231 @@
+{
+  "status": "PASS_CURRENT_RETRY_AUTHORITY_DOCS_AND_UNCHANGED_PUBLISHED_RUNTIME_ONLY",
+  "sources": [
+    {
+      "path": "_spec/gpu-feasibility.puml",
+      "sha256": "f28698abc9ae5d903464a5675ad8fdb4a0f7865ecbfaa8e19d0797cca1f02a86"
+    },
+    {
+      "path": "_spec/gpu-host-build-reuse.puml",
+      "sha256": "37391b88576efd5a94d8d82863038e290083534e9c02ba79dc113e65c6a874c6"
+    },
+    {
+      "path": "_spec/gpu-host-build.puml",
+      "sha256": "88a1ce4b2d597c9556dabc3c625d240fc558ef48efc05df11a86ce3e322f86dd"
+    },
+    {
+      "path": "_spec/gpu-host-build-inventory.puml",
+      "sha256": "4afe5f45683eb2db3a9f440e09c928373013138d4232fcf1a1d1aeb2b733ab73"
+    },
+    {
+      "path": "_spec/gpu-build.puml",
+      "sha256": "5a17530834e928b8b22b8a34d66f85ad3b4743056c881e311300e7a2d0e69dbc"
+    },
+    {
+      "path": "_spec/gpu-qualification.puml",
+      "sha256": "2f0bee923ed4b5319b8f2bc67e1a17eaa144ec7b0a6a7df6a689e8c26404613b"
+    },
+    {
+      "path": "_spec/gpu-input-transfer.puml",
+      "sha256": "833645d6937541a6a23d2b75c9b10dd2b47b89016f224ab8600b582461d21a2c"
+    },
+    {
+      "path": "_spec/gpu-host-receive.puml",
+      "sha256": "bf167b40fbae4222a8161bec75d95e5be46a43d3aa02a3af343565b9f584e4ab"
+    },
+    {
+      "path": "_spec/gpu-full-qualification.puml",
+      "sha256": "177ca1eb26bdea6ff483ef89bf2d58ed2db8ab0c908e6b1d2b26b85ee38e3b79"
+    },
+    {
+      "path": "_spec/gpu-readiness.md",
+      "sha256": "84febdb17e9b1d61df78c8cf8f1d9552db0b25c1806fd861df60d2d5b3734b5d"
+    },
+    {
+      "path": "_spec/gate-closure.md",
+      "sha256": "dea4d2e67a33b929f3659926ee7cac42abede7466b41f017524c2c57283445cd"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "sha256": "16a34b59002dfc8e38e0da00da3e8f1f0aab177dbce708037a95ec9a46fa911d"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-approval-1.json",
+      "sha256": "79e605b7dc999597206d1642260ccf4b098c0de3a7cde65dd84e100b1412fcff"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-check-1.json",
+      "sha256": "e4cc83bcd7fb3699f1bb81f6af08b0dddb0a04261a4721ed02c65752e3100d1b"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-review-1.json",
+      "sha256": "8af2d3ef35cde8f4d3048572201e4088a84607dc7f0118732a945d87226a1250"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-approval.json",
+      "sha256": "3be5e0f26e602928af6c41127a53cf41516c04c1dc84fb266a5e713a2b427e76"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-launch-observation-1/observation.json",
+      "sha256": "9c25a35d83296a7573548ea3868f88f96eda0f4346de2ca14f9585eb00ce3f15"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-launch-observation-1/operator-report.txt",
+      "sha256": "7c765b0d865f51aa4bd68f1283eb3d5718f501f690ca55a83f7a1aa337c22a22"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-result.json",
+      "sha256": "c99f8ff6244072a2ea8b7901bdae56086f7dff32080d89f79a7b6fda292dac5a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/verify-retry-closeout-1.ts",
+      "sha256": "f54eee10dee871886a1c7ae7bc5b54408e019ab0dae26748b2673df08ab0c811"
+    }
+  ],
+  "results": [
+    {
+      "id": "types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/lib/_tsc.js",
+        "--noEmit",
+        "--strict",
+        "--noUnusedLocals",
+        "--noUnusedParameters",
+        "--target",
+        "ES2022",
+        "--module",
+        "ESNext",
+        "--moduleResolution",
+        "Bundler",
+        "--resolveJsonModule",
+        "--types",
+        "bun",
+        "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/runs/host-gpu-full-source-3/verify-retry-closeout-1.ts"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-closeout-1/types/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-closeout-1/types/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 41,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-closeout-1/head/command.stdout",
+          "bytes": 41,
+          "sha256": "1b19c861e6145cc80e576bb746d0657fc71dd7b2f47f0ea45b9ff376c274040a"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-closeout-1/head/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "scope",
+      "argv": [
+        "git",
+        "diff",
+        "--name-only"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 79,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-closeout-1/scope/command.stdout",
+          "bytes": 79,
+          "sha256": "beacb2707ebfe003acab5535643d63179bbbdb9b2bd3a5c829bb07c90cedacea"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-closeout-1/scope/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "_spec"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "failure": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streams": [
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-closeout-1/whitespace/command.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-closeout-1/whitespace/command.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "sourceHashesChecked": 347,
+  "protectedFeasibilitySourceHashesChecked": 327,
+  "orderedDiagramIndexMatches": 9,
+  "currentDocHashes": 12,
+  "approval": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-approval-1.json",
+    "sha256": "79e605b7dc999597206d1642260ccf4b098c0de3a7cde65dd84e100b1412fcff"
+  },
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command.fish",
+    "bytes": 56775,
+    "sha256": "83919afa384f09b2f597d8c8d3e6eeee108fc47c68aaf32c3a2fba2fc0b50666"
+  },
+  "launchArgv": [
+    "fish",
+    "--no-config",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command.fish"
+  ],
+  "priorAllowanceConservativelyClosed": true,
+  "freshRetryInvocationObserved": false,
+  "newCommitOrPushNeededForRuntime": false,
+  "codingHostOperationsPerformed": false,
+  "publicationAuthorized": false,
+  "automaticRetryAuthorized": false,
+  "trainingReady": false
+}

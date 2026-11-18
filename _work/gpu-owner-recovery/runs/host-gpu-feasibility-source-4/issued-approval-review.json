@@ -1,0 +1,17 @@
+{
+  "status": "READY_ISSUED_RECORDS_AND_ONE_EXACT_OPERATOR_HOST_HANDOFF_ONLY",
+  "request": { "path": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-4/host-command-approval.json", "bytes": 3483, "sha256": "fbdbdf94fa605dc325cd1e617fce05a4228d5b93faf5b2dbeb8e56568c0ded1d" },
+  "adversarial": { "session": "ses_e36649e3affeJjY53mEb5Dxjo5", "verdict": "READY_TO_MERGE_YES", "remainingFindings": [] },
+  "security": { "session": "ses_e3845fff1ffeE092hXAV6pfhiW", "verdict": "READY_RECORDS_AND_EXACT_OPERATOR_HOST_HANDOFF_ONLY", "remainingFindings": [], "risk": "low" },
+  "maximumHostInvocations": 1,
+  "remainingHostInvocations": 1,
+  "hostInvocationObserved": false,
+  "anyAttemptConsumesAllowanceIncludingPreflightFailure": true,
+  "automaticRetryApproved": false,
+  "preserveAllPriorAndPartialWorkspacesAndEvidence": true,
+  "codingHostNativeOrGpuExecutionApproved": false,
+  "publicationApproved": false,
+  "trainingApproved": false,
+  "actualGpuResultRecorded": false,
+  "trainingReady": false
+}

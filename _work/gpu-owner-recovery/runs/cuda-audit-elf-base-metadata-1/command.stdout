@@ -1,0 +1,60 @@
+{
+  "status": "PASS",
+  "scope": "READ_ONLY_REAL_BASE_INPUT_METADATA_FOR_DEVELOPMENT_NOT_AUDIT_EXECUTION_OR_SOURCE_ACCEPTANCE",
+  "files": [
+    {
+      "logicalPath": "/usr/local/bin/bun",
+      "physicalPath": "/usr/local/bin/bun",
+      "byteLength": 80761952,
+      "parserResult": "PARSED_METADATA",
+      "metadata": {
+        "interpreter": "/lib64/ld-linux-x86-64.so.2",
+        "needed": [
+          "libc.so.6",
+          "ld-linux-x86-64.so.2",
+          "libpthread.so.0",
+          "libdl.so.2",
+          "libm.so.6"
+        ],
+        "soname": null
+      }
+    },
+    {
+      "logicalPath": "/usr/bin/xz",
+      "physicalPath": "/usr/bin/xz",
+      "byteLength": 101392,
+      "parserResult": "PARSED_METADATA",
+      "metadata": {
+        "interpreter": "/lib64/ld-linux-x86-64.so.2",
+        "needed": [
+          "liblzma.so.5",
+          "libc.so.6"
+        ],
+        "soname": null
+      }
+    },
+    {
+      "logicalPath": "/usr/bin/bwrap",
+      "physicalPath": "/usr/bin/bwrap",
+      "byteLength": 80424,
+      "parserResult": "PARSED_METADATA",
+      "metadata": {
+        "interpreter": "/lib64/ld-linux-x86-64.so.2",
+        "needed": [
+          "libselinux.so.1",
+          "libcap.so.2",
+          "libc.so.6"
+        ],
+        "soname": null
+      }
+    }
+  ],
+  "pureModuleStaticVerificationOnly": true,
+  "archiveAuditSourceAccepted": false,
+  "loaderClosureQualified": false,
+  "nativeExecutableInvocations": 0,
+  "decompressionPerformed": false,
+  "extractionPerformed": false,
+  "llvmCodeExecuted": false,
+  "trainingReady": false
+}

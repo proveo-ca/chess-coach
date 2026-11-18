@@ -1,0 +1,35 @@
+{
+  "scope": "READ_ONLY_CORRECTED_SOURCE3_AND_PROTECTED_INPUT_PRESERVATION_NOT_HARDWARE_QUALIFICATION",
+  "status": "PASS",
+  "failedGenerationFilesUnchanged": 25,
+  "upstreamSourceAndLicenseFilesUnchanged": 6,
+  "originalCheckoutSourceFilesUnchanged": 5,
+  "nativeBridge": "PASS_EXACT_SIX_SPEC_POINTER_DELTAS_ONLY",
+  "byteIdenticalNativeMembers": 59,
+  "exactSpecInverseNativeMembers": 6,
+  "priorSourceAcceptanceSha256": "b12bf0da43401b1858a3b3f1c3be9820d8030b6f07329e9448239886c5911e70",
+  "historicalSourceManifestsUnchanged": [
+    {
+      "generation": "source-1",
+      "sha256": "5322853369bd7799c9f4697801ad67bf199b68c71d20d992ce19a520cbe826e1"
+    },
+    {
+      "generation": "source-2",
+      "sha256": "7f4f0c590fc7ba3cc96fa551b89b18e880b6618e2c0dd082cd7d0b5ce550598f"
+    }
+  ],
+  "currentSource": {
+    "path": "artifacts/training-functional/qualification-packet-1/source-3/source-manifest.json",
+    "byteLength": 20258,
+    "sha256": "9820e6bfb34f5891117379b207cfd193330d5bd1efbf6c8d36f6ff6e0328836b",
+    "selectedFiles": 108,
+    "selectedBytes": 641523,
+    "externalDependencies": [
+      "zod"
+    ],
+    "allPinsMatch": true
+  },
+  "nativeOrHostOrGpuExecuted": false,
+  "newCommitOrPushPerformed": false,
+  "trainingReady": false
+}

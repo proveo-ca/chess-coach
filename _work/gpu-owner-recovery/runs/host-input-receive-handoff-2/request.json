@@ -1,0 +1,26 @@
+{
+  "version": "chess-coach.approved-mise-host-receive-run2.v1",
+  "status": "APPROVED_ONE_SOURCE_PUBLICATION_AND_ONE_OPERATOR_RECEIVE_RUN2",
+  "authorizationSource": "EXECUTOR_SELECTED_PUBLISH_PLUS_RECEIVE_2_RECOMMENDED",
+  "approvedProposal": "_work/gpu-owner-recovery/runs/host-input-receive-source-4/host-command-approval.json",
+  "reportedAlignment": "_work/gpu-owner-recovery/runs/host-toolchain-align-observation-1/observation.json",
+  "sourceProof": { "path": "_work/gpu-owner-recovery/runs/host-input-receive-source-4/receipt.json", "sha256": "9a34af7785ff55ee1b52bb7c5d71a7297847d3a3a0a1d0cc49316f1c1fa71efd" },
+  "helper": { "path": "_work/gpu-owner-recovery/qualification/host-receive/receive.ts", "bytes": 18396, "sha256": "ac1cd8afdf8332917d153e871d9400fec1e926eaa4a2380265df646c3f53b6f2" },
+  "sourcePublication": { "maximumCommits": 1, "maximumHttpsPushes": 1, "deadlineMs": 600000, "url": "https://github.com/proveo-ca/chess-coach.git", "branch": "feat-ml-adjuntant-ii" },
+  "operatorCommand": { "maximumInvocations": 1, "maximumHelperDownloads": 1, "maximumAssetDownloads": 2, "maximumExtractions": 1, "totalMs": 900000,
+    "grant": "--approved-host-receive-2", "workspace": "_work/gpu-owner-recovery/cache/host-receive-2", "evidence": "_work/gpu-owner-recovery/runs/host-input-receive-2", "bootstrapEvidence": "_work/gpu-owner-recovery/runs/host-input-bootstrap-2",
+    "execution": { "tool": "mise", "pins": ["core:bun@1.4.0", "core:rust@1.95.0"], "autoInstall": false, "execAutoInstall": false, "taskAutoInstall": false },
+    "limits": { "helperMs": 60000, "downloadsMs": 600000, "extractAndVerifyMs": 180000, "totalMs": 900000, "minimumFreeBytes": 8589934592, "workspaceBytes": 8589934592 }
+  },
+  "sourcePublicationApproved": true,
+  "operatorReceiveApproved": true,
+  "installationOrTrustOrConfigurationChangesAuthorized": false,
+  "automaticRetryOrOverwriteOrDeletionAuthorized": false,
+  "additionalReleaseOrAssetUploadAuthorized": false,
+  "codingPayloadAcquisitionCopyOrRepackAuthorized": false,
+  "imageBuildOrCompilationAuthorized": false,
+  "llvmOrCargoExecutionAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

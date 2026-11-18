@@ -1,0 +1,15 @@
+{
+  "scope": "SOURCE_BYTES_ONLY_NOT_RUNTIME_QUALIFICATION",
+  "files": [
+    {
+      "path": "artifacts/training-functional/qualification-evidence.ts",
+      "byteLength": 50803,
+      "sha256": "2e44ef70e998993a158ae93db31849b9f001f85dbe1f29c39424a17f55836dc5"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-evidence.test.ts",
+      "byteLength": 39399,
+      "sha256": "7b833ae12d711c21a02c25bf7f42d34a0d0c375a5fcf02069207f04adc1b1e55"
+    }
+  ]
+}

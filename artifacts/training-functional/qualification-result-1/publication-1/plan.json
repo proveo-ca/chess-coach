@@ -1,0 +1,65 @@
+{
+  "status": "AUTHORIZED_READINESS_PUBLICATION_THEN_SOURCE_ONLY_TRAINING_PACKET_PREPARATION",
+  "authorization": "Executor: commit & push, then continue with the next phase",
+  "baseCommit": "e821b5169f29b191b8418763508bd54292774aef",
+  "localBranch": "integrate/starchess-ml-main",
+  "targetRef": "refs/heads/feat-ml-adjuntant-ii",
+  "pullRequest": "https://github.com/proveo-ca/chess-coach/pull/51",
+  "baseBranch": "main",
+  "publication": {
+    "normalCommits": 1,
+    "nonForcePushes": 1,
+    "force": false,
+    "amend": false,
+    "newPullRequest": false,
+    "automaticRetry": false,
+    "oldGrantsRenewed": false
+  },
+  "scope": {
+    "tracked": ["_spec/.spec-index.json", "_spec/readiness.md", "_spec/runtime-protocol.puml"],
+    "retainedReadiness": "artifacts/training-functional/qualification-result-1/",
+    "historicalDeliveryFiles": [
+      "artifacts/training-functional/qualification-delivery-1/cohort-freeze-1.json",
+      "artifacts/training-functional/qualification-delivery-1/operator-command-verification.json",
+      "artifacts/training-functional/qualification-delivery-1/operator-command.sh",
+      "artifacts/training-functional/qualification-delivery-1/post-publication-check-1.json",
+      "artifacts/training-functional/qualification-delivery-1/post-publication.json",
+      "artifacts/training-functional/qualification-delivery-1/stage-audit-1.json"
+    ],
+    "localPublicationControlsExcludedFromCommit": [
+      "artifacts/training-functional/qualification-result-1/publication-1/freeze.json",
+      "artifacts/training-functional/qualification-result-1/publication-1/paths.nul",
+      "artifacts/training-functional/qualification-result-1/publication-1/stage-audit.json",
+      "artifacts/training-functional/qualification-result-1/publication-1/commit.stdout",
+      "artifacts/training-functional/qualification-result-1/publication-1/commit.stderr",
+      "artifacts/training-functional/qualification-result-1/publication-1/push.stdout",
+      "artifacts/training-functional/qualification-result-1/publication-1/push.stderr",
+      "artifacts/training-functional/qualification-result-1/publication-1/post-publication.json"
+    ],
+    "excluded": ["phase-two packet", "scratch fixtures", "caches", "dependencies", "binaries", "native traces", "databases", "models", "protected original checkout", "unrelated changes"]
+  },
+  "verification": ["77 focused tests", "strict no-emit TypeScript", "static specs", "current acceptance/completion/input pin checks", "credential scan", "exact staged and worktree byte comparison"],
+  "acceptedReadiness": {
+    "path": "artifacts/training-functional/qualification-result-1/functional-acceptance-1.json",
+    "byteLength": 9207,
+    "sha256": "832754f33b6d06dc45cb795ee92718c92a2b9bab1e84a743416f6f91d435f0c2"
+  },
+  "completion": {
+    "path": "artifacts/training-functional/qualification-result-1/completion.json",
+    "byteLength": 5022,
+    "sha256": "75363ee9fb56ea26e121395187ec7eb3cce40a827c9c5014009f11f4b2915c36"
+  },
+  "supersedes": "Earlier local/uncommitted, no-new-publication and no-next-plan labels retain issuance history; this fresh grant authorizes only the stated publication and subsequent source-only preparation",
+  "postPublication": "A separate local receipt records actual commit/remote/PR checks without amending or committing itself",
+  "nextPhase": {
+    "scope": "SOURCE_ONLY_FULL_TRAINING_PACKET_PREPARATION_AFTER_CHECKED_PUBLICATION",
+    "secondPublicationAuthorized": false,
+    "budgetSelected": false,
+    "trainingExecutionAuthorized": false,
+    "hostNativeGpuContainerBuildAcquisitionInstallAuthorized": false,
+    "immutableQualificationGenerationChanged": false
+  },
+  "trainingReady": true,
+  "rawRuntimeAndHistoricalFlagsChanged": false,
+  "deferredHardening": "ALL_AFTER_ALL_PLANNED_TRAINING_AND_VALIDATED_RESULTS"
+}

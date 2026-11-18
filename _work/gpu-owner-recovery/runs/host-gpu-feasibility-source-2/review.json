@@ -1,0 +1,19 @@
+{
+  "status": "HISTORICAL_PRE_PHASE_END_CAPTURE_FIX_SOURCE_REVIEW",
+  "adversarialInitialVerdict": "READY_TO_MERGE_YES_BEFORE_LATE_PHASE_END_FINDING",
+  "securityVerdict": "NO_FINDINGS_SOURCE_ONLY_LOW_RISK",
+  "devopsVerdict": "READY_FOR_FRESH_EXACT_HOST_DECISION_ONLY",
+  "laterAdversarialFinding": {
+    "severity": "MEDIUM",
+    "path": "_work/gpu-owner-recovery/qualification/host-feasibility/host.ts",
+    "finding": "Operation capture could return after the cleanup cutoff and consume the receipt reserve without preventing PASS",
+    "status": "SUPERSEDED_BY_FRESH_SOURCE_THREE_FIX_AND_REVIEW"
+  },
+  "currentSourceAcceptance": false,
+  "successor": "_work/gpu-owner-recovery/runs/host-gpu-feasibility-source-3/receipt.json",
+  "hostExecutionAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "kernelJitCompilationAuthorized": false,
+  "publicationAuthorized": false,
+  "trainingReady": false
+}

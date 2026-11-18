@@ -1,0 +1,85 @@
+
+packages/runtime/tests/native-session.test.ts:
+(pass) synthetic owned transports verify staged BOTH init/open/pass/close without claiming independent F9 execution [92.67ms]
+(pass) worker stages once, replays only identical most-recent bytes and requires the exact commit [3.87ms]
+(pass) worker rejects pending reentry, conflicting duplicates and request-controlled selectors [12.83ms]
+(pass) coordinator rejects substituted role without publishing either recipient [7.65ms]
+(pass) coordinator rejects substituted sessionId without publishing either recipient [7.02ms]
+(pass) coordinator rejects substituted ordinal without publishing either recipient [7.93ms]
+(pass) coordinator rejects substituted cursor without publishing either recipient [5.01ms]
+(pass) coordinator rejects substituted stagedCursor without publishing either recipient [16.50ms]
+(pass) matching worker claims cannot replace the independently fixed canonical opening [6.10ms]
+(pass) independent comparison rejects changed raw native consequences even if public snapshots agree [20.70ms]
+(pass) failed second commit revokes the attempt without publishing a half-committed BOTH successor [23.99ms]
+(pass) native-proof mode rejects nonpass planning and early close without dispatching policy work [27.31ms]
+(pass) raw receipt at the immutable deadline fails even before a timer callback runs [6.37ms]
+(pass) close reply cannot substitute for successful stdinClosed [31.62ms]
+(pass) close reply cannot substitute for successful stdoutEof [39.17ms]
+(pass) close reply cannot substitute for successful stderrEof [38.41ms]
+(pass) close reply cannot substitute for successful reaped [37.07ms]
+(pass) close reply cannot substitute for successful exitCode [33.99ms]
+(pass) close reply cannot substitute for successful forced [29.00ms]
+(pass) coordinator rejects shared channels and cannot continue an operation after concurrent revocation [3.47ms]
+
+packages/runtime/tests/job.test.ts:
+(pass) native job boot barrier does no game work and releases one fixed synthetic proof only [27.33ms]
+(pass) job rejects worker-selected operations, paths and sessions before creating any process [0.52ms]
+(pass) boot wait consumes the local guard and cannot reset on a start command [0.11ms]
+(pass) incomplete close or cleanup cannot publish a native-proof completion [25.36ms]
+
+packages/runtime/tests/reference.test.ts:
+(pass) current fixed init/open/pass data matches independently executed old-reference source fingerprints [12.32ms]
+(pass) reference proof adapter rejects missing exports instead of using the main resolver as fallback [0.92ms]
+
+packages/runtime/tests/match-session.test.ts:
+(pass) whole child owns a bounded synthetic corpus match and owner proves exhaustion after exact ACK/admission [9491.11ms]
+(pass) truthful zero-window source exhaustion is diagnostic with no model work or invented draws [14.26ms]
+(pass) actual recorded-White native rejection retains the ACKed candidate without substitute play [8898.24ms]
+(pass) whole-match initial tampering aborts without a proposal or completion [15.74ms]
+(pass) whole-match native tampering aborts without a proposal or completion [14.27ms]
+(pass) whole-match candidate tampering aborts without a proposal or completion [7578.22ms]
+(pass) whole-match completion tampering aborts without a proposal or completion [16.50ms]
+(pass) whole-match rng tampering aborts without a proposal or completion [7566.76ms]
+(pass) whole-match replay tampering aborts without a proposal or completion [14.25ms]
+(pass) learner accumulation or natural-close failure cannot publish an eligible result [7516.22ms]
+(pass) terminal and progress classifications derive from actual state/counters rather than a child label [238.66ms]
+(pass) match wire is closed, bounded and excludes worker-selected readiness/paths [12.77ms]
+(pass) White-then-Black permits retain only ACKed choices after owned candidate cutoff [11248.34ms]
+(pass) checked strategic White before a zero-choice candidate cutoff keeps its exact known stream [3668.20ms]
+(pass) deadline opponent cannot be relabeled as an eligible candidate stop [18.44ms]
+(pass) deadline startup cannot be relabeled as an eligible candidate stop [7.44ms]
+(pass) deadline group cannot be relabeled as an eligible candidate stop [3713.94ms]
+(pass) deadline fault cannot be relabeled as an eligible candidate stop [3638.90ms]
+(pass) deadline late-binding cannot be relabeled as an eligible candidate stop [3724.54ms]
+
+packages/runtime/tests/learner-pair.test.ts:
+(pass) synthetic owned learner pair compares uncommitted proposals and closes both naturally [16.85ms]
+(pass) learner pair rejects mismatched parameterSha256 without selecting another result [8.23ms]
+(pass) learner pair rejects mismatched objective without selecting another result [7.50ms]
+(pass) learner pair rejects mismatched sampledDecisions without selecting another result [8.56ms]
+(pass) learner pair rejects mismatched nonzeroPolicyGradient without selecting another result [7.88ms]
+(pass) pair rejects shared transports and incomplete close receipts [0.86ms]
+(pass) concurrent revocation cannot resurrect a pair after pending begin completes [0.22ms]
+
+packages/runtime/tests/curriculum.test.ts:
+(pass) frozen 1000-slot curriculum uses 500 corpus and alternating 250/250 live seats without cap extension [1302.16ms]
+(pass) curriculum rejects forged roots, shuffle order, pending starts and caller mutation [0.70ms]
+
+packages/runtime/tests/training-artifact.test.ts:
+(pass) synthetic final artifact metadata enforces final counts and excludes all private scheduling/RNG fields [1.95ms]
+(pass) formal primary requires all five ordered masters and never falls back to a completed prefix [1.05ms]
+(pass) C15 exactly 5000 scheduled slots map to fifty fixed 100-slot packets [1.43ms]
+
+packages/runtime/tests/rng.test.ts:
+(pass) 20 derived roots are distinct and match frozen reference draw fingerprints [6.46ms]
+(pass) standard JSON restore preserves the next draw and rejects impossible stream prefixes [0.50ms]
+
+packages/runtime/tests/strategic.test.ts:
+(pass) strategic planning waits for permit and exact replay ACK commits only the tentative opponent stream [10.23ms]
+(pass) wrong permit, missing open, first-side mutation and late receipts cannot become opponent ACKs [26.55ms]
+(pass) tampered actions/RNG/spend fail replay and repeated ACK cannot roll back known state [9.17ms]
+
+ 62 pass
+ 0 fail
+ 12399 expect() calls
+Ran 62 tests across 9 files. [69.45s]

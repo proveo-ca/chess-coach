@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "exactInput": {
+    "name": "cubek-fft",
+    "version": "0.3.1",
+    "byteLength": 56719,
+    "sha256": "48451902f1d21d3eb88cadc17a8a7aeb3b582f17484a68e650f44efe74688b73"
+  },
+  "actualOfflineMetadataFailurePreserved": true,
+  "lockAndSourceInputsUnchanged": true,
+  "sourceHandoffIsTerminal": false,
+  "acquisitionAuthorized": false,
+  "trainingReady": false
+}

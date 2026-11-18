@@ -1,0 +1,218 @@
+{
+  "status": "PASS_PROPOSED_ARTIFACT_IGNORE_RULES_ONLY",
+  "failure": null,
+  "planSha256": "8ecfce5156322da42fb852cd071a6091b96187e19a88226bec68295936505f6c",
+  "results": [
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "core.fsmonitor=false",
+        "check-ignore",
+        "--no-index",
+        "--quiet",
+        "--",
+        "_work/gpu-owner-recovery/cache/reference-package-inputs-1/fflate-0.8.3.tgz"
+      ],
+      "exitCode": 0,
+      "path": "_work/gpu-owner-recovery/cache/reference-package-inputs-1/fflate-0.8.3.tgz",
+      "ignored": true,
+      "expectedIgnored": true
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "core.fsmonitor=false",
+        "check-ignore",
+        "--no-index",
+        "--quiet",
+        "--",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/fflate-0.8.3-package.json"
+      ],
+      "exitCode": 1,
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/fflate-0.8.3-package.json",
+      "ignored": false,
+      "expectedIgnored": false
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "core.fsmonitor=false",
+        "check-ignore",
+        "--no-index",
+        "--quiet",
+        "--",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/fflate-0.8.3-esm-index.mjs"
+      ],
+      "exitCode": 1,
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/fflate-0.8.3-esm-index.mjs",
+      "ignored": false,
+      "expectedIgnored": false
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "core.fsmonitor=false",
+        "check-ignore",
+        "--no-index",
+        "--quiet",
+        "--",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/fflate-0.8.3-LICENSE"
+      ],
+      "exitCode": 1,
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/fflate-0.8.3-LICENSE",
+      "ignored": false,
+      "expectedIgnored": false
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "core.fsmonitor=false",
+        "check-ignore",
+        "--no-index",
+        "--quiet",
+        "--",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/fflate-0.8.3-LICENSE.md"
+      ],
+      "exitCode": 1,
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/fflate-0.8.3-LICENSE.md",
+      "ignored": false,
+      "expectedIgnored": false
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "core.fsmonitor=false",
+        "check-ignore",
+        "--no-index",
+        "--quiet",
+        "--",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/fflate-0.8.3-LICENSE.txt"
+      ],
+      "exitCode": 1,
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/fflate-0.8.3-LICENSE.txt",
+      "ignored": false,
+      "expectedIgnored": false
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "core.fsmonitor=false",
+        "check-ignore",
+        "--no-index",
+        "--quiet",
+        "--",
+        "_work/gpu-owner-recovery/cache/reference-package-inputs-1/jssha-3.3.2.tgz"
+      ],
+      "exitCode": 0,
+      "path": "_work/gpu-owner-recovery/cache/reference-package-inputs-1/jssha-3.3.2.tgz",
+      "ignored": true,
+      "expectedIgnored": true
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "core.fsmonitor=false",
+        "check-ignore",
+        "--no-index",
+        "--quiet",
+        "--",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/jssha-3.3.2-package.json"
+      ],
+      "exitCode": 1,
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/jssha-3.3.2-package.json",
+      "ignored": false,
+      "expectedIgnored": false
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "core.fsmonitor=false",
+        "check-ignore",
+        "--no-index",
+        "--quiet",
+        "--",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/jssha-3.3.2-dist-sha256.mjs"
+      ],
+      "exitCode": 1,
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/jssha-3.3.2-dist-sha256.mjs",
+      "ignored": false,
+      "expectedIgnored": false
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "core.fsmonitor=false",
+        "check-ignore",
+        "--no-index",
+        "--quiet",
+        "--",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/jssha-3.3.2-LICENSE"
+      ],
+      "exitCode": 1,
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/jssha-3.3.2-LICENSE",
+      "ignored": false,
+      "expectedIgnored": false
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "core.fsmonitor=false",
+        "check-ignore",
+        "--no-index",
+        "--quiet",
+        "--",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/jssha-3.3.2-LICENSE.md"
+      ],
+      "exitCode": 1,
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/jssha-3.3.2-LICENSE.md",
+      "ignored": false,
+      "expectedIgnored": false
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "core.fsmonitor=false",
+        "check-ignore",
+        "--no-index",
+        "--quiet",
+        "--",
+        "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/jssha-3.3.2-LICENSE.txt"
+      ],
+      "exitCode": 1,
+      "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-inputs-1/files/jssha-3.3.2-LICENSE.txt",
+      "ignored": false,
+      "expectedIgnored": false
+    }
+  ],
+  "scope": "GIT_IGNORE_MATCHES_FOR_PATH_STRINGS_NOT_FILESYSTEM_OPERATION_PREFLIGHT",
+  "operationRootClaimed": false,
+  "artifactDirectoriesCreated": false,
+  "gitMutationPerformed": false,
+  "getRequestsPerformed": 0,
+  "acquisitionAllowanceConsumed": false,
+  "trainingReady": false
+}

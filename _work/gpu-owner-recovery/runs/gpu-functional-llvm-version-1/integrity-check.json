@@ -1,0 +1,36 @@
+{
+  "version": "chess-coach.gpu-functional-llvm-version-integrity.v1",
+  "status": "PASS",
+  "scope": "VERSION_RECEIPT_STREAMS_PROPOSAL_AND_PRIOR_SOURCE_INTEGRITY_ONLY",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/gpu-functional-llvm-version-request.json",
+      "sha256": "f8b7ed44c4f8b7bd0f65c1c1e4c9980d4bdf96efdef478aca8e8cf7ed1a7aaa0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-functional-llvm-version-1/receipt.json",
+      "sha256": "654345b6ec46df4a1bcec7a11ee84ac44afb89761bbe5acaa75364652fe2a728"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-functional-llvm-version-1/command.stdout",
+      "sha256": "105cea6ab21beabd59f0ce9c72349435c99d6012981875d22aae70494f10dc10"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/gpu-functional-llvm-version-1/command.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/gpu-functional-llvm-integration-review.json",
+      "sha256": "a19458679bd161a906e74a4d47e90234af4056626cca6ae93514610366dfa91d"
+    }
+  ],
+  "priorSyntaxLookupInventorySourceHashesChecked": 13,
+  "priorFunctionalSourceHashesChecked": 273,
+  "nativeProbeRepeated": false,
+  "testsRerun": false,
+  "graphVerified": false,
+  "adapterImplemented": false,
+  "compilationPerformed": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

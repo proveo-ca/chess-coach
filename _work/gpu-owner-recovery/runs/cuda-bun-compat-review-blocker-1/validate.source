@@ -1,0 +1,24 @@
+
+import { readFile,lstat } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+const base='_work/gpu-owner-recovery/',hash=bytes=>createHash('sha256').update(bytes).digest('hex'),load=async path=>JSON.parse(await readFile(path,'utf8'));
+const need=(value,code)=>{if(!value)throw Error(code);};
+need(hash(await readFile(base+'cuda-llvm-request.json'))==='e0b54ee82895a3da613e92e764ccd7db2c10f2001e95241543b36f49b6f1cc63'&&hash(await readFile(base+'runs/cuda-bun-compatibility-1/llvm-request-halted.json'))==='e0b54ee82895a3da613e92e764ccd7db2c10f2001e95241543b36f49b6f1cc63','FULL_HALTED_REQUEST_CHANGED');
+need(hash(await readFile(base+'cuda-bun-compatibility-request.json'))==='3e2164b0fc9e1d092d519928a2e4a7b0e085cd5eccdb6ed49245d6d8a43f880a','UNSPENT_DIAGNOSTIC_GRANT_CHANGED');
+const results=[];let manifestSha;
+for(const stage of ['static','types','archive','snapshot','runner','acquire','isolation']){
+ const root=base+'runs/cuda-bun-compat-'+stage+'-parent-2/',receipt=await load(root+'receipt.json'),manifestBytes=await readFile(root+'sources.json');
+ need(receipt.status==='PASS'&&receipt.exitCode===0&&receipt.failure===null&&receipt.sourceChanged===false&&receipt.sourceCount===242&&hash(manifestBytes)===receipt.sourceManifestSha256&&(!manifestSha||manifestSha===receipt.sourceManifestSha256),'UNIFIED_CURRENT_STATIC_PASS_REQUIRED');manifestSha=receipt.sourceManifestSha256;
+ for(const item of JSON.parse(manifestBytes))need(hash(await readFile(item.path))===item.sha256,'CURRENT_STATIC_INPUT_CHANGED:'+item.path);
+ for(const stream of [receipt.stdout,receipt.stderr]){const raw=await readFile(stream.path);need(raw.length===stream.bytes&&hash(raw)===stream.sha256,'STATIC_STREAM_CHANGED');}
+ const stderr=await readFile(root+'command.stderr','utf8'),count=stderr.match(/\n +(\d+) pass\n +0 fail\n +(\d+) expect\(\) calls/);
+ results.push({stage,status:'PASS',tests:count?Number(count[1]):null,assertions:count?Number(count[2]):null});
+}
+const blocker=await load(base+'cuda-bun-compatibility-source-blocker.json'),closure=await load(base+'closure.json');
+need(blocker.devopsSourceAccepted===false&&blocker.newBindingCreated===false&&blocker.diagnosticCasesLaunched===0&&blocker.diagnosticGrantConsumed===false&&blocker.blockingFinding.severity==='HIGH'&&blocker.blockingFinding.newRepairAuthorityRequired===true,'SOURCE_BLOCKER_MUST_REMAIN_ENFORCED');
+need(closure.fullArchivePipelineAuthorityGranted===false&&closure.newOperationalOrAcquisitionAuthorityGranted===false&&closure.diagnosticCasesLaunched===0&&closure.nextDecisionRequest===base+'cuda-bun-compatibility-source-blocker.json','CLOSURE_MUST_KEEP_EXECUTION_BLOCKED');
+for(const path of [base+'cuda-bun-compatibility-reviewed.json',base+'runs/cuda-bun-compatibility-1/.invocation',base+'runs/cuda-bun-compatibility-1/.operation',base+'runs/cuda-bun-compatibility-1/result.json',base+'scratch/cuda-bun-compatibility-1-inputs',base+'scratch/cuda-bun-compatibility-1-output']){
+ try{await lstat(path);throw Error('UNEXPECTED_DIAGNOSTIC_OPERATION_OR_BINDING');}catch(error){if(error.code!=='ENOENT')throw error;}
+}
+need(hash(await readFile(base+'verify.ts'))===hash(await readFile(base+'runs/cuda-bun-compat-review-blocker-1/verify-before.source')),'FROZEN_RUNNER_CHANGED');
+console.log(JSON.stringify({status:'PASS',scope:'READ_ONLY_SOURCE_REVIEW_RECORD_INTEGRITY_NOT_CANCELLATION_QUALIFICATION',sourceManifestSha256:manifestSha,sourceInputs:242,gates:results,devopsSourceAccepted:false,highFindingUnresolved:true,newRepairAuthorityRequired:true,diagnosticCasesLaunched:0,diagnosticGrantConsumed:false,newBindingCreated:false,fullArchivePipelineAuthorityGranted:false,trainingReady:false},null,2));

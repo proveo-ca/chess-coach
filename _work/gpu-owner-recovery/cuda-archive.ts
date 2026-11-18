@@ -1,0 +1,452 @@
+// SPEC: _spec/recovery.md
+import { constants } from "node:fs";
+import type { BigIntStats } from "node:fs";
+import { link, lstat, mkdir, open, realpath } from "node:fs/promises";
+import { dirname, resolve } from "node:path";
+import { environment, repository } from "./provision";
+import { artifactIdentities, reviewedFiles as acquisitionFiles, predecessorPaths as inertPaths, sha256, validateContinuation } from "./cuda-continuation";
+import type { BoundedReadAt, ElfMetadata } from "./cuda-elf";
+import { validateTarEntryGraph } from "./cuda-tar";
+import type { TarEntry } from "./cuda-tar";
+import { completedSnapshotProofPaths, postSnapshotRequest, snapshotIdentity, snapshotPaths, validateSnapshotReceipt } from "./cuda-bun-snapshot";
+
+const base = "_work/gpu-owner-recovery/", acquisition = `${base}runs/cuda-llvm-acquire-1/`;
+export const requestPath = `${base}cuda-llvm-request.json`, bindingPath = `${base}cuda-archive-reviewed-v2.json`;
+export const archiveAuditTaskConfiguration = `${base}cuda-archive-mise.toml`;
+export const bindingVersion = "chess-coach.cuda-archive-audit-source-review.v2";
+export const approvedRequestSha256 = "6b8aae0c45ac959e555675c3f5a7908968fb999b55d16daba833c81fca5cb346";
+export const acquisitionReviewSha256 = "7e163891ae6e9cde0a77ea2608d5c25129add3edbfda078ee2c2619be3850f3f";
+export const reviewedFiles = Object.freeze([...new Set([...acquisitionFiles, `${base}cuda-archive.ts`, `${base}cuda-archive.test.ts`,
+  archiveAuditTaskConfiguration, `${base}cuda-tar.ts`, `${base}cuda-tar.test.ts`, `${base}cuda-elf.ts`, `${base}cuda-elf.test.ts`, `${base}fixtures/cuda-tar-cases.json`,
+  `${base}cuda-bun-snapshot.ts`, `${base}cuda-bun-snapshot.test.ts`, snapshotPaths.taskConfiguration])]);
+const snapshots = acquisitionFiles.map((_, index) => `${acquisition}source-snapshot/${String(index).padStart(2, "0")}.source`);
+export const predecessorPaths = completedSnapshotProofPaths;
+export const auditLimits = Object.freeze({ proofBytes: 1024 * 1024, nativeBytes: 512 * 1024 * 1024, inventoryBytes: 32 * 1024 * 1024,
+  headers: 65536, stderrBytes: 65536, wholeInvocationMs: 30000 });
+const prefix = "tracel-llvm-23.1.0-4", scratch = resolve(repository, `${base}scratch/cuda-archive-audit-2`);
+const evidenceRoot = resolve(repository, `${base}runs/cuda-archive-audit-2`);
+const privateBun = resolve(repository, snapshotIdentity.destination), captureApprovedRequest = `${snapshotPaths.runDirectory}/approved-request.json`;
+const object = (value: unknown): Record<string, unknown> => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw Error("OBJECT_REQUIRED");
+  return value as Record<string, unknown>;
+};
+const canonical = (value: unknown): string => JSON.stringify(value, (_key, item: unknown) => item && typeof item === "object" && !Array.isArray(item)
+  ? Object.fromEntries(Object.entries(item).sort(([a], [b]) => a.localeCompare(b))) : item);
+const same = (a: unknown, b: unknown) => canonical(a) === canonical(b);
+const keys = (value: object, expected: readonly string[]) => same(Object.keys(value).sort(), [...expected].sort());
+const parse = (bytes: Uint8Array): unknown => JSON.parse(new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes));
+const need = (condition: unknown, code: string): void => { if (!condition) throw Error(code); };
+export function archiveFailureCode(error: unknown): string {
+  const message = error instanceof Error ? error.message : typeof error === "string" ? error : "";
+  if (message.startsWith("Invalid ELF: ")) return "NATIVE_ELF_METADATA_REJECTED";
+  return /^[A-Z][A-Z0-9_]{0,127}$/.test(message) ? message : "ARCHIVE_AUDIT_FAILED";
+}
+export type ArchiveContinuationInputs = Readonly<{ requestBytes: Uint8Array; binding: unknown;
+  evidence: Readonly<{ files: Readonly<Record<string, Uint8Array>>; predecessorProofs: Readonly<Record<string, Uint8Array>> }> }>;
+
+export function validateArchiveContinuation(input: ArchiveContinuationInputs): ReturnType<typeof validateSnapshotReceipt> {
+  const review = object(input.binding), files = object(review.files), proofs = object(review.predecessorProofs);
+  const accepted = ["staticUnitTestsPassed", "staticTypesPassed", "adversarialSourceAccepted", "securitySourceAccepted", "devopsSourceAccepted"];
+  need(keys(review, ["version", ...accepted, "requestSha256", "files", "predecessorProofs"]) && review.version === bindingVersion &&
+    accepted.every(key => review[key] === true), "ARCHIVE_SOURCE_ACCEPTANCE_REQUIRED");
+  need(input.requestBytes.byteLength > 0 && input.requestBytes.byteLength <= auditLimits.proofBytes && review.requestSha256 === sha256(input.requestBytes) &&
+    keys(files, reviewedFiles) && keys(input.evidence.files, reviewedFiles) && keys(proofs, predecessorPaths) && keys(input.evidence.predecessorProofs, predecessorPaths), "ARCHIVE_BINDING_MEMBERSHIP_REQUIRED");
+  for (const [paths, hashes, bytes] of [[reviewedFiles, files, input.evidence.files], [predecessorPaths, proofs, input.evidence.predecessorProofs]] as const) {
+    for (const path of paths) need(bytes[path] instanceof Uint8Array && bytes[path]!.byteLength <= auditLimits.proofBytes &&
+      (bytes[path]!.byteLength > 0 || path.endsWith(".stderr") || path.endsWith(".stdout")) && hashes[path] === sha256(bytes[path]!), "ARCHIVE_BINDING_HASH_MISMATCH");
+  }
+  const raw = input.evidence.predecessorProofs, get = (path: string) => object(parse(raw[path]!));
+  const capture = validateSnapshotReceipt(raw);
+  need(same(parse(input.requestBytes), postSnapshotRequest(raw[captureApprovedRequest]!)), "EXACT_ARCHIVE_CONTINUATION_REQUIRED");
+  need(sha256(raw[`${acquisition}approved-request.json`]!) === approvedRequestSha256 &&
+    [ `${base}cuda-acquire-reviewed.json`, `${acquisition}source-review.json` ].every(path => sha256(raw[path]!) === acquisitionReviewSha256), "PINNED_ACQUISITION_REQUIRED");
+  const original = get(`${acquisition}source-review.json`), originalFiles = object(original.files), originalProofs = object(original.predecessorProofs);
+  const saved = Object.fromEntries(acquisitionFiles.map((path, index) => [path, raw[snapshots[index]!]!]));
+  validateContinuation(raw[`${acquisition}approved-request.json`]!, original, { files: saved,
+    predecessorProofs: Object.fromEntries(inertPaths.map(path => [path, raw[path]!])) });
+  need(same(parse(raw[`${acquisition}source-snapshot.json`]!), acquisitionFiles.map((path, index) => ({ path, snapshot: snapshots[index],
+    bytes: saved[path]!.byteLength, sha256: sha256(saved[path]!) }))), "EXACT_SAVED_SOURCE_MANIFEST_REQUIRED");
+  const records = (["llvm-archive", "llvm-checksums"] as const).map((id, index) => {
+    const leaf = index === 0 ? "archive" : "checksums", root = `${acquisition}${leaf}/`, identity = artifactIdentities[id];
+    const receipt = get(`${root}receipt.json`), ledger = get(`${root}artifact.json`);
+    need(same(get(`${root}.operation`), { version: "chess-coach.cuda-artifact-operation.v1", artifact: id, sequence: "cuda-llvm-acquire-1" }), "ACQUISITION_CLAIM_REQUIRED");
+    need(receipt.version === "chess-coach.cuda-exact-artifact-invocation.v1" && receipt.artifact === id && receipt.status === "PASS" && receipt.exitCode === 0 &&
+      receipt.failure === null && receipt.sourceChanged === false && receipt.pinnedRequestSha256 === approvedRequestSha256 && receipt.pinnedReviewSha256 === acquisitionReviewSha256 &&
+      same(receipt.reviewedFiles, originalFiles) && same(receipt.predecessorProofs, originalProofs) && receipt.oneOutsideDeadlineMs === 120000 &&
+      receipt.stageConsumer === "runAcquisitionMiseStages", "PASS_ACQUISITION_INVOCATION_REQUIRED");
+    for (const key of ["extractionPerformed", "llvmCodeExecuted", "cudaCompilationEstablished", "actualHostExecuted", "cudaGpuCodeExecuted", "trainingReady"]) need(receipt[key] === false, "NARROW_ACQUISITION_REQUIRED");
+    const streams = ["stdout", "stderr"].map(stream => ({ stream, path: `${root}command.${stream}`, bytes: raw[`${root}command.${stream}`]!.byteLength,
+      sha256: sha256(raw[`${root}command.${stream}`]!) }));
+    need(same(receipt.streams, streams) && receipt.stdoutBytes === streams[0]!.bytes && receipt.stderrBytes === streams[1]!.bytes, "ACQUISITION_RAW_STREAMS_REQUIRED");
+    need(same(ledger, { version: "chess-coach.cuda-artifact-acquisition.v1", artifact: id, status: "PASS", code: "VERIFIED_EXACT_ARTIFACT",
+      bytes: identity.byteLength, sha256: identity.sha256, cache: ledger.cache, trainingReady: false }) && ["PUBLISHED", "REUSED"].includes(String(ledger.cache)), "PASS_EXACT_ARTIFACT_LEDGER_REQUIRED");
+    return { artifact: id, receipt: `${root}receipt.json`, artifactReceipt: `${root}artifact.json`, cache: identity.destination, byteLength: identity.byteLength, sha256: identity.sha256, status: "PASS" };
+  });
+  need(same(get(`${acquisition}receipt.json`), { version: "chess-coach.cuda-exact-llvm-input-acquisition.v1", scope: "EXACT_TWO_VERIFIED_FILES_ONLY_NOT_EXTRACTION_INSTALLATION_OR_COMPILATION",
+    status: "PASS", reviewRecord: `${base}cuda-acquire-reviewed.json`, reviewSha256: acquisitionReviewSha256, approvedRequestCapture: `${acquisition}approved-request.json`,
+    approvedRequestSha256, sourceSnapshot: `${acquisition}source-snapshot.json`, sourceChangedDuringInvocations: false, artifacts: records,
+    checksumSidecarMatchesApprovedPublisherIdentities: true, extractionPerformed: false, llvmCodeExecuted: false, buildIsolationQualified: false,
+    custodyQualified: false, cudaCompilationEstablished: false, actualHostExecuted: false, cudaGpuCodeExecuted: false, trainingReady: false }), "PASS_AGGREGATE_ACQUISITION_REQUIRED");
+  validateArchiveTaskConfiguration(input.evidence.files[archiveAuditTaskConfiguration]!);
+  for (const path of [`${base}cuda-isolation.ts`, `${base}cuda-isolation.test.ts`, `${base}cuda-mise.toml`, `${base}provision.ts`, `${base}mise.toml`])
+    need(sha256(input.evidence.files[path]!) === originalFiles[path], "FROZEN_PREDECESSOR_SOURCE_CHANGED");
+  return capture;
+}
+
+export type NativeIdentity = Readonly<{ device: string; inode: string; bytes: number; mode: number; uid: number; links: number; mtime: string; ctime: string }>;
+export type AuditedFile = Readonly<{ source: string; identity: NativeIdentity; sha256: string; elf?: ElfMetadata }>;
+const identity = (s: BigIntStats): NativeIdentity => ({ device: String(s.dev), inode: String(s.ino), bytes: Number(s.size), mode: Number(s.mode), uid: Number(s.uid), links: Number(s.nlink), mtime: String(s.mtimeNs), ctime: String(s.ctimeNs) });
+async function trustedAncestors(path: string): Promise<void> {
+  for (let current = dirname(path); ; current = dirname(current)) {
+    const stat = await lstat(current);
+    need(stat.isDirectory() && !stat.isSymbolicLink() && (stat.mode & 0o022) === 0 && [0, process.getuid!()].includes(stat.uid), "UNTRUSTED_FILE_ANCESTOR");
+    if (current === "/") break;
+  }
+}
+async function readAudited(path: string, maximum: number, inspect?: (read: BoundedReadAt, size: bigint) => Promise<ElfMetadata>, small = false): Promise<{ file: AuditedFile; bytes?: Uint8Array }> {
+  await trustedAncestors(path);
+  const handle = await open(path, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
+  try {
+    const before = await handle.stat({ bigint: true }), id = identity(before);
+    need(before.isFile() && before.size >= 0n && before.size <= BigInt(maximum) && (id.mode & 0o022) === 0 && (id.mode & 0o7000) === 0 &&
+      [0, process.getuid!()].includes(id.uid) && same(id, identity(await lstat(path, { bigint: true }))), "BOUNDED_OWNED_REGULAR_FILE_REQUIRED");
+    const { createHash } = await import("node:crypto"), hash = createHash("sha256"), collected: Uint8Array[] = [];
+    let offset = 0;
+    while (true) {
+      const buffer = Buffer.alloc(Math.min(65536, maximum - offset + 1)), result = await handle.read(buffer, 0, buffer.byteLength, offset);
+      if (result.bytesRead === 0) break;
+      need(result.bytesRead <= maximum - offset, "FILE_BYTE_LIMIT");
+      const chunk = buffer.subarray(0, result.bytesRead); hash.update(chunk); if (small) collected.push(chunk); offset += result.bytesRead;
+    }
+    const elf = inspect ? await inspect(async (position, length) => {
+      need(position >= 0n && Number.isSafeInteger(length) && length >= 0 && position + BigInt(length) <= before.size, "NATIVE_READ_BOUNDS");
+      const bytes = Buffer.alloc(length); let count = 0;
+      while (count < length) { const read = await handle.read(bytes, count, length - count, Number(position) + count); need(read.bytesRead > 0, "NATIVE_SHORT_READ"); count += read.bytesRead; }
+      return bytes;
+    }, before.size) : undefined;
+    need(offset === id.bytes && same(id, identity(await handle.stat({ bigint: true }))) && same(id, identity(await lstat(path, { bigint: true }))), "FILE_IDENTITY_CHANGED");
+    return { file: { source: path, identity: id, sha256: hash.digest("hex"), ...(elf ? { elf } : {}) }, ...(small ? { bytes: Buffer.concat(collected) } : {}) };
+  } finally { await handle.close(); }
+}
+async function readFixed(path: string): Promise<Uint8Array> { return (await readAudited(resolve(repository, path), auditLimits.proofBytes, undefined, true)).bytes!; }
+export async function readArchiveContinuationInputs(): Promise<ArchiveContinuationInputs> {
+  const requestBytes = await readFixed(requestPath), binding = parse(await readFixed(bindingPath));
+  const files = Object.fromEntries(await Promise.all(reviewedFiles.map(async path => [path, await readFixed(path)])));
+  const predecessorProofs = Object.fromEntries(await Promise.all(predecessorPaths.map(async path => [path, await readFixed(path)])));
+  return { requestBytes, binding, evidence: { files, predecessorProofs } };
+}
+const roots = ["/usr/lib/x86_64-linux-gnu", "/lib/x86_64-linux-gnu"] as const;
+const executablePaths: Readonly<Record<string, readonly string[]>> = { "/usr/local/bin/bun": [privateBun], "/usr/bin/xz": ["/usr/bin/xz"], "/usr/bin/bwrap": ["/usr/bin/bwrap"] };
+const neededName = (name: unknown): name is string => typeof name === "string" && /^[A-Za-z0-9][A-Za-z0-9_+.-]{0,254}$/.test(name) && name !== "." && name !== "..";
+type PlanIO = Readonly<{ native: (logical: string) => Promise<AuditedFile | null>; payload: (path: string) => Promise<AuditedFile> }>;
+export type ArchiveNativeClosure = Readonly<{ files: readonly Readonly<{ guest: string; file: AuditedFile }>[]; launcher: AuditedFile;
+  nativeBinding: "C1_PATH_BIND_AFTER_FD_CLOSE_NOT_ATOMIC_MOUNT_CUSTODY"; custodyQualified: false }>;
+function validatePrivateBun(file: AuditedFile): void {
+  need(file.source === privateBun && file.identity.mode === 0o100500 && file.identity.uid === process.getuid!() &&
+    file.identity.links === 2 && file.identity.bytes === snapshotIdentity.byteLength && file.sha256 === snapshotIdentity.sha256, "FRESH_PRIVATE_BUN_REQUIRED");
+}
+export type ArchiveAuditPlan = Readonly<{ version: "chess-coach.cuda-archive-root-plan.v1"; files: readonly Readonly<{ guest: string; file: AuditedFile }>[];
+  launcher: AuditedFile; inputs: readonly AuditedFile[]; scratch: string; evidenceRoot: string;
+  nativeBinding: "C1_PATH_BIND_AFTER_FD_CLOSE_NOT_ATOMIC_MOUNT_CUSTODY"; custodyQualified: false }>;
+export function validateArchivePlanSnapshot(plan: Pick<ArchiveAuditPlan, "files">, capture: ReturnType<typeof validateSnapshotReceipt>): void {
+  const matches = plan.files.filter(file => file.guest === "/usr/local/bin/bun"); need(matches.length === 1, "ONE_PRIVATE_BUN_MOUNT_REQUIRED");
+  const file = matches[0]!.file, expected = capture.finalIdentity; validatePrivateBun(file);
+  need(capture.destination === snapshotIdentity.destination && same(file.identity, { device: expected.device, inode: expected.inode, bytes: expected.bytes,
+    mode: expected.mode, uid: expected.uid, links: expected.links, mtime: expected.mtime, ctime: expected.ctime }), "PLANNED_BUN_CAPTURE_IDENTITY_REQUIRED");
+}
+async function makeNativeClosure(io: Pick<PlanIO, "native">): Promise<ArchiveNativeClosure> {
+  const mounts = new Map<string, AuditedFile>(), visited = new Set<string>();
+  const add = (guest: string, file: AuditedFile) => { need(!mounts.has(guest) || same(mounts.get(guest), file), "NATIVE_ALIAS_COLLISION"); mounts.set(guest, file); need(mounts.size <= 512, "NATIVE_MOUNT_LIMIT"); };
+  const valid = (file: AuditedFile) => need(file.identity.bytes > 0 && file.identity.bytes <= auditLimits.nativeBytes && (file.identity.mode & 0o170000) === 0o100000 &&
+    (file.identity.mode & 0o7022) === 0 && [0, process.getuid!()].includes(file.identity.uid) && /^[a-f0-9]{64}$/.test(file.sha256), "NATIVE_IDENTITY_REJECTED");
+  const library = async (logical: string): Promise<AuditedFile> => {
+    const file = await io.native(logical); need(file, "NATIVE_DEPENDENCY_MISSING"); valid(file!);
+    need(roots.some(root => file!.source.startsWith(`${root}/`) && dirname(file!.source) === root), "NATIVE_LIBRARY_REALM_REJECTED"); return file!;
+  };
+  const visit = async (file: AuditedFile): Promise<void> => {
+    if (visited.has(file.source)) return; visited.add(file.source); need(visited.size <= 128, "NATIVE_CLOSURE_LIMIT");
+    const elf = file.elf; need(elf && keys(elf, ["interpreter", "needed", "soname"]) &&
+      (elf.soname === null || neededName(elf.soname)) && Array.isArray(elf.needed) && elf.needed.length <= 64 &&
+      new Set(elf.needed).size === elf.needed.length && elf.needed.every(neededName), "BOUNDED_ELF_METADATA_REQUIRED");
+    if (elf!.interpreter !== null) {
+      const guest = elf!.interpreter;
+      need(typeof guest === "string" && ["/lib64/ld-linux-x86-64.so.2", ...roots.map(root => `${root}/ld-linux-x86-64.so.2`)].includes(guest), "FIXED_INTERPRETER_REQUIRED");
+      const interpreter = await library(guest!); add(guest!, interpreter); await visit(interpreter);
+    }
+    for (const name of elf!.needed) {
+      const matches = await Promise.all(roots.map(async root => ({ guest: `${root}/${name}`, file: await io.native(`${root}/${name}`) })));
+      const available = matches.filter(match => match.file !== null); need(available.length > 0, "NATIVE_DEPENDENCY_MISSING");
+      for (const { file: found } of available) { valid(found!); need(dirname(found!.source) === roots[0] || dirname(found!.source) === roots[1], "NATIVE_LIBRARY_REALM_REJECTED"); }
+      need(available.every(match => same(match.file, available[0]!.file)), "AMBIGUOUS_NATIVE_DEPENDENCY");
+      const dependency = available[0]!.file!; for (const root of roots) add(`${root}/${name}`, dependency); await visit(dependency);
+    }
+  };
+  const native = async (guest: string, traverse: boolean) => {
+    const file = await io.native(guest); need(file && executablePaths[guest]!.includes(file.source), "FIXED_NATIVE_EXECUTABLE_REQUIRED"); valid(file!);
+    if (guest === "/usr/local/bin/bun") validatePrivateBun(file!);
+    need((file!.identity.mode & 0o111) !== 0, "NATIVE_EXECUTABLE_MODE_REQUIRED"); if (traverse) { add(guest, file!); await visit(file!); } return file!;
+  };
+  const launcher = await native("/usr/bin/bwrap", false); await native("/usr/local/bin/bun", true); await native("/usr/bin/xz", true);
+  return { files: [...mounts].sort(([a], [b]) => a.localeCompare(b)).map(([guest, file]) => ({ guest, file })), launcher,
+    nativeBinding: "C1_PATH_BIND_AFTER_FD_CLOSE_NOT_ATOMIC_MOUNT_CUSTODY", custodyQualified: false };
+}
+async function makePlan(io: PlanIO): Promise<ArchiveAuditPlan> {
+  const closure = await makeNativeClosure(io), mounts = new Map(closure.files.map(({ guest, file }) => [guest, file]));
+  const add = (guest: string, file: AuditedFile) => { need(!mounts.has(guest) || same(mounts.get(guest), file), "NATIVE_ALIAS_COLLISION"); mounts.set(guest, file); need(mounts.size <= 512, "NATIVE_MOUNT_LIMIT"); };
+  const inputs: AuditedFile[] = [];
+  for (const id of ["llvm-archive", "llvm-checksums"] as const) {
+    const expected = artifactIdentities[id], file = await io.payload(resolve(repository, expected.destination));
+    need(file.source === resolve(repository, expected.destination) && file.identity.bytes === expected.byteLength && file.sha256 === expected.sha256 &&
+      (file.identity.mode & 0o170000) === 0o100000 && (file.identity.mode & 0o7022) === 0 && [0, process.getuid!()].includes(file.identity.uid), "FRESH_EXACT_CACHE_BYTES_REQUIRED");
+    inputs.push(file); if (id === "llvm-archive") add("/inputs/llvm.tar.xz", file);
+  }
+  const tar = await io.payload(resolve(repository, `${base}cuda-tar.ts`));
+  need(tar.source === resolve(repository, `${base}cuda-tar.ts`) && tar.identity.bytes > 0 && tar.identity.bytes <= auditLimits.proofBytes, "FIXED_TAR_MODULE_REQUIRED"); add("/audit/cuda-tar.ts", tar);
+  return { version: "chess-coach.cuda-archive-root-plan.v1", files: [...mounts].sort(([a], [b]) => a.localeCompare(b)).map(([guest, file]) => ({ guest, file })), launcher: closure.launcher, inputs, scratch, evidenceRoot,
+    nativeBinding: "C1_PATH_BIND_AFTER_FD_CLOSE_NOT_ATOMIC_MOUNT_CUSTODY", custodyQualified: false };
+}
+type NativeReadIO = Readonly<{ realpath: (path: string) => Promise<string>;
+  directory: (path: string) => Promise<Readonly<{ mode: number; uid: number; directory: boolean; symlink: boolean }>>;
+  read: (path: string, inspect: boolean) => Promise<AuditedFile> }>;
+async function readNative(logical: string, io: NativeReadIO): Promise<AuditedFile | null> {
+  try {
+    if (logical === "/usr/local/bin/bun") {
+      const directory = resolve(repository, snapshotPaths.attemptDirectory);
+      const checkDirectory = async () => {
+        const stat = await io.directory(directory);
+        need(dirname(privateBun) === directory && stat.directory && !stat.symlink && stat.mode === 0o40700 && stat.uid === process.getuid!() &&
+          await io.realpath(directory) === directory, "PRIVATE_BUN_DIRECTORY_REQUIRED");
+      };
+      await checkDirectory();
+      need(await io.realpath(privateBun) === privateBun, "CANONICAL_PRIVATE_BUN_REQUIRED");
+      const file = await io.read(privateBun, true); validatePrivateBun(file); await checkDirectory(); return file;
+    }
+    const physical = await io.realpath(logical);
+    need(executablePaths[logical] ? executablePaths[logical]!.includes(physical) : roots.some(root => dirname(physical) === root), "CANONICAL_NATIVE_REALM_REQUIRED");
+    return await io.read(physical, logical !== "/usr/bin/bwrap");
+  } catch (error) { if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") return null; throw error; }
+}
+const nativeReadIO: NativeReadIO = {
+  realpath,
+  async directory(path) { const stat = await lstat(path); return { mode: stat.mode, uid: stat.uid, directory: stat.isDirectory(), symlink: stat.isSymbolicLink() }; },
+  async read(path, inspect) { return (await readAudited(path, auditLimits.nativeBytes, inspect ? (await import("./cuda-elf")).inspectElf : undefined)).file; },
+};
+const nativeIO: PlanIO = {
+  native: logical => readNative(logical, nativeReadIO),
+  async payload(path) { return (await readAudited(path, path.endsWith(".ts") ? auditLimits.proofBytes : auditLimits.nativeBytes)).file; },
+};
+export async function prepareArchiveAuditPlan(): Promise<ArchiveAuditPlan> { return makePlan(nativeIO); }
+export async function prepareArchiveNativeClosure(): Promise<ArchiveNativeClosure> { return makeNativeClosure(nativeIO); }
+export const archiveChildEnvironment = () => ({ PATH: "/usr/local/bin:/usr/bin:/bin", LANG: "C.UTF-8", LC_ALL: "C.UTF-8", TZ: "UTC" });
+export type XZProcess = Readonly<{ stdout: AsyncIterable<Uint8Array>; stderr: AsyncIterable<Uint8Array>; exited: Promise<number>; kill: () => void }>;
+async function runXZAudit(child: XZProcess, audit: (chunks: AsyncIterable<Uint8Array>) => Promise<unknown>, report: (bytes: Uint8Array) => void = () => {}): Promise<unknown> {
+  let failed = false, first: unknown, stdoutEOF = false, stderrEOF = false, stderrLength = 0;
+  const retained: Uint8Array[] = [];
+  const stop = (error: unknown) => { if (!failed) { failed = true; first = error; } try { child.kill(); } catch {} };
+  const stderr = (async () => {
+    try {
+      for await (const chunk of child.stderr) {
+        if (!(chunk instanceof Uint8Array)) throw Error("XZ_STDERR_INVALID");
+        const keep = Math.min(chunk.byteLength, Math.max(0, 65536 - stderrLength)); if (keep) retained.push(chunk.slice(0, keep));
+        stderrLength = Math.min(65537, stderrLength + chunk.byteLength); if (stderrLength > 65536) stop(Error("XZ_STDERR_LIMIT"));
+      }
+      stderrEOF = true;
+    } catch (error) { stop(error); }
+  })();
+  const exit = child.exited.then(code => { if (code !== 0) stop(Error("XZ_EXIT_NONZERO")); }, () => { stop(Error("XZ_REAP_FAILED")); });
+  let inventory: unknown;
+  try {
+    inventory = await audit((async function* () { for await (const bytes of child.stdout) { if (!(bytes instanceof Uint8Array)) throw Error("XZ_STDOUT_INVALID"); yield bytes; } stdoutEOF = true; })());
+    if (!stdoutEOF) stop(Error("XZ_STDOUT_NOT_EOF"));
+  } catch (error) { stop(error); }
+  await Promise.all([stderr, exit]);
+  if (!stderrEOF && !failed) stop(Error("XZ_STDERR_NOT_EOF"));
+  if (failed) {
+    const bytes = new Uint8Array(Math.min(stderrLength, 65536)); let offset = 0; for (const chunk of retained) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+    try { report(bytes); } catch {} throw first;
+  }
+  return inventory;
+}
+export const FIXED_TRUSTED_CHILD_PROGRAM = `
+import { auditTar } from '/audit/cuda-tar.ts';
+import { constants } from 'node:fs';
+import { open } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+const child = Bun.spawn(['/usr/bin/xz','--decompress','--stdout','--threads=1','--memlimit-decompress=256MiB','--','/inputs/llvm.tar.xz'],
+  {cwd:'/',env:${JSON.stringify(archiveChildEnvironment())},stdin:'ignore',stdout:'pipe',stderr:'pipe',detached:false});
+try {
+  const inventory = await (${runXZAudit.toString()})({stdout:child.stdout,stderr:child.stderr,exited:child.exited,kill:()=>child.kill('SIGKILL')},auditTar,bytes=>process.stderr.write(bytes));
+  const encoded = JSON.stringify(inventory), inventorySha256 = createHash('sha256').update(encoded).digest('hex');
+  const bytes = new TextEncoder().encode(JSON.stringify({version:'chess-coach.cuda-archive-child-output.v1',inventorySha256,inventory}));
+  if (bytes.byteLength > 33554432) throw Error('INVENTORY_BYTE_LIMIT');
+  const handle = await open('/output/inventory.json',constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);
+  try { await handle.writeFile(bytes); await handle.sync(); } finally { await handle.close(); }
+} catch (error) { console.error('ARCHIVE_CHILD_FAILED:'+(${archiveFailureCode.toString()})(error)); process.exitCode=1; }
+`;
+export function archiveAuditArgv(plan: ArchiveAuditPlan): string[] {
+  need(plan.version === "chess-coach.cuda-archive-root-plan.v1" && plan.scratch === scratch && plan.evidenceRoot === evidenceRoot && plan.custodyQualified === false &&
+    plan.nativeBinding === "C1_PATH_BIND_AFTER_FD_CLOSE_NOT_ATOMIC_MOUNT_CUSTODY" && plan.launcher.source === "/usr/bin/bwrap", "FIXED_ARCHIVE_PLAN_REQUIRED");
+  const destinations = plan.files.map(file => file.guest), dirs = new Set<string>(["/audit", "/inputs", "/output", "/proc", "/usr", "/usr/bin", "/usr/local", "/usr/local/bin", "/lib", "/lib64", "/usr/lib", ...roots]);
+  need(new Set(destinations).size === destinations.length && ["/usr/local/bin/bun", "/usr/bin/xz", "/inputs/llvm.tar.xz", "/audit/cuda-tar.ts"].every(path => destinations.includes(path)), "EXPLICIT_ARCHIVE_MOUNTS_REQUIRED");
+  for (const { guest, file } of plan.files) {
+    need(["/usr/local/bin/bun", "/usr/bin/xz", "/inputs/llvm.tar.xz", "/audit/cuda-tar.ts", "/lib64/ld-linux-x86-64.so.2"].includes(guest) ||
+      roots.some(root => dirname(guest) === root && neededName(guest.slice(root.length + 1))), "FORBIDDEN_ARCHIVE_MOUNT");
+    need(!dirs.has(guest) && file.source.startsWith("/") && !file.source.includes("\0"), "MOUNT_FILE_REQUIRED");
+    const expected = guest === "/inputs/llvm.tar.xz" ? resolve(repository, artifactIdentities["llvm-archive"].destination) :
+      guest === "/audit/cuda-tar.ts" ? resolve(repository, `${base}cuda-tar.ts`) : null;
+    need(expected ? file.source === expected : executablePaths[guest] ? executablePaths[guest]!.includes(file.source) : roots.includes(dirname(file.source) as typeof roots[number]), "MOUNT_SOURCE_REALM_REQUIRED");
+    need((file.identity.mode & 0o170000) === 0o100000 && (file.identity.mode & 0o7022) === 0 && file.identity.bytes > 0 &&
+      file.identity.bytes <= auditLimits.nativeBytes && [0, process.getuid!()].includes(file.identity.uid) && /^[a-f0-9]{64}$/.test(file.sha256), "MOUNT_FILE_IDENTITY_REQUIRED");
+    if (guest === "/usr/local/bin/bun") validatePrivateBun(file);
+  }
+  return ["/usr/bin/bwrap", "--unshare-user", "--unshare-net", "--die-with-parent", "--clearenv", "--cap-drop", "ALL", "--chdir", "/",
+    ...[...dirs].sort((a, b) => a.split("/").length - b.split("/").length || a.localeCompare(b)).flatMap(path => ["--dir", path]),
+    "--dev", "/dev", "--remount-ro", "/dev", ...plan.files.flatMap(({ guest, file }) => ["--ro-bind", file.source, guest]),
+    "--bind", scratch, "/output", ...Object.entries(archiveChildEnvironment()).flatMap(([key, value]) => ["--setenv", key, value]),
+    "--remount-ro", "/", "--", "/usr/local/bin/bun", "--no-env-file", "--no-install", "-e", FIXED_TRUSTED_CHILD_PROGRAM];
+}
+function validateOutput(bytes: Uint8Array): { inventory: Record<string, unknown>; inventorySha256: string } {
+  need(bytes.byteLength > 0 && bytes.byteLength <= auditLimits.inventoryBytes, "BOUNDED_INVENTORY_REQUIRED");
+  const output = object(parse(bytes)), inventory = object(output.inventory);
+  need(keys(output, ["version", "inventorySha256", "inventory"]) && output.version === "chess-coach.cuda-archive-child-output.v1" &&
+    output.inventorySha256 === sha256(new TextEncoder().encode(JSON.stringify(inventory))), "INVENTORY_DIGEST_REQUIRED");
+  need(keys(inventory, ["version", "prefix", "entries", "totals"]) && inventory.version === 1 && inventory.prefix === prefix &&
+    Array.isArray(inventory.entries) && inventory.entries.length > 0 && inventory.entries.length <= auditLimits.headers, "BOUNDED_PREFIX_INVENTORY_REQUIRED");
+  const paths = new Set<string>(); let total = 0, padded = 0;
+  for (const item of inventory.entries as unknown[]) {
+    const entry = object(item), path = entry.path;
+    need(typeof path === "string" && Buffer.byteLength(path) <= 4096 && path.split("/").length <= 64 && !/[\x00-\x1f\x7f-\x9f\\]/u.test(path) &&
+      path.split("/").every(part => part !== "" && part !== "." && part !== ".." && part !== ".tracel-llvm-installed") &&
+      (path === prefix ? entry.type === "directory" : path.startsWith(`${prefix}/`)) && !paths.has(path), "CANONICAL_INVENTORY_PATH_REQUIRED"); paths.add(path as string);
+    need(typeof entry.type === "string" && ["file", "directory", "symlink", "hardlink"].includes(entry.type) && Number.isInteger(entry.mode) && Number(entry.mode) >= 0 &&
+      Number(entry.mode) <= 0o777 && Number.isSafeInteger(entry.size) && Number(entry.size) >= 0, "INVENTORY_ENTRY_METADATA_REQUIRED");
+    const fields = ["path", "type", "mode", "size", ...(entry.type === "file" ? ["sha256"] : entry.type === "directory" ? [] : ["target"])];
+    const required = entry.type === "directory" ? 0o500 : 0o400;
+    need(keys(entry, fields) && (entry.type === "symlink" || ((Number(entry.mode) & 0o022) === 0 && (Number(entry.mode) & required) === required)), "INVENTORY_ENTRY_FIELDS_REQUIRED");
+    if (entry.type === "file") { need(typeof entry.sha256 === "string" && /^[a-f0-9]{64}$/.test(entry.sha256) && entry.target === undefined, "INVENTORY_FILE_DIGEST_REQUIRED"); total += Number(entry.size); padded += Math.ceil(Number(entry.size) / 512) * 512; }
+    else { need(entry.sha256 === undefined && entry.size === 0, "INVENTORY_NONFILE_SIZE_REQUIRED");
+      if (entry.type !== "directory") need(typeof entry.target === "string" && Buffer.byteLength(entry.target) > 0 && Buffer.byteLength(entry.target) <= 4096 && !/[\x00-\x1f\x7f-\x9f\\]/u.test(entry.target), "INVENTORY_LINK_TARGET_REQUIRED"); }
+    need(total <= auditLimits.nativeBytes, "INVENTORY_CONTENT_LIMIT");
+  }
+  validateTarEntryGraph(inventory.entries as TarEntry[]);
+  const totals = object(inventory.totals);
+  const extensionHeaders = Number(totals.headerCount) - paths.size - 2, extensionBytes = Number(totals.extensionBytes);
+  need(keys(totals, ["decompressedBytes", "headerCount", "extensionBytes", "fileBytes", "count"]) && Object.values(totals).every(value => Number.isSafeInteger(value) && Number(value) >= 0) &&
+    totals.count === paths.size && totals.fileBytes === total && Number(totals.headerCount) >= paths.size + 2 && Number(totals.headerCount) <= auditLimits.headers &&
+    extensionBytes >= extensionHeaders && extensionBytes <= extensionHeaders * 65536 && extensionBytes <= auditLimits.proofBytes &&
+    Number(totals.decompressedBytes) <= auditLimits.nativeBytes && Number(totals.decompressedBytes) >= Number(totals.headerCount) * 512 +
+      padded + Math.max(extensionHeaders, Math.ceil(extensionBytes / 512)) * 512, "INVENTORY_TOTALS_REQUIRED");
+  return { inventory, inventorySha256: output.inventorySha256 as string };
+}
+function validateOutputFile(file: AuditedFile, bytes: Uint8Array): Uint8Array {
+  need(file.source === resolve(scratch, "inventory.json") && (file.identity.mode & 0o170000) === 0o100000 &&
+    file.identity.uid === process.getuid!() && (file.identity.mode & 0o7777) === 0o600 && file.identity.bytes === bytes.byteLength &&
+    bytes.byteLength > 0 && bytes.byteLength <= auditLimits.inventoryBytes && file.sha256 === sha256(bytes), "PRIVATE_OUTPUT_FILE_REQUIRED"); return bytes;
+}
+export type ArchiveCommitIO = Readonly<{ openStage: () => Promise<Readonly<{ write: (bytes: Uint8Array) => Promise<void>; sync: () => Promise<void>; close: () => Promise<void> }>>; publish: () => Promise<void> }>;
+async function commitInventory(bytes: Uint8Array, io: ArchiveCommitIO): Promise<void> {
+  const stage = await io.openStage(); let failed = false, first: unknown;
+  try { await stage.write(bytes); await stage.sync(); } catch (error) { failed = true; first = error; }
+  try { await stage.close(); } catch (error) { if (!failed) { failed = true; first = error; } }
+  if (failed) throw first; await io.publish();
+}
+export type TrustedArchiveIO = Readonly<{ readContinuation: () => Promise<ArchiveContinuationInputs>; plan: () => Promise<ArchiveAuditPlan>;
+  claim: () => Promise<void>; launch: (plan: ArchiveAuditPlan) => Promise<number>; output: () => Promise<Uint8Array>;
+  revalidate: (plan: ArchiveAuditPlan, input: ArchiveContinuationInputs) => Promise<void>; commit: (bytes: Uint8Array) => Promise<void> }>;
+export async function archiveAuditCLI(args: readonly string[], io: TrustedArchiveIO = productionIO) {
+  need(args.length === 1 && args[0] === "audit", "CLOSED_ARCHIVE_AUDIT_CLI_REQUIRED");
+  const input = await io.readContinuation(), capture = validateArchiveContinuation(input);
+  const plan = await io.plan(); validateArchivePlanSnapshot(plan, capture); archiveAuditArgv(plan);
+  need(plan.files.find(file => file.guest === "/audit/cuda-tar.ts")!.file.sha256 === sha256(input.evidence.files[`${base}cuda-tar.ts`]!), "PLANNED_TAR_SOURCE_HASH_REQUIRED");
+  await io.revalidate(plan, input); await io.claim();
+  need(await io.launch(plan) === 0, "ARCHIVE_QUARANTINE_FAILED");
+  const output = validateOutput(await io.output()); await io.revalidate(plan, input);
+  const result = { version: "chess-coach.cuda-structural-archive-audit.v1", status: "PASS", scope: "STRUCTURAL_ARCHIVE_ONLY", requestSha256: sha256(input.requestBytes),
+    sourceReviewCanonicalSha256: sha256(new TextEncoder().encode(canonical(input.binding))), rootPlan: plan, ...output, extractionPerformed: false, llvmCodeExecuted: false,
+    buildIsolationQualified: false, custodyQualified: false, cudaCompilationEstablished: false, actualHostExecuted: false, cudaGpuCodeExecuted: false, trainingReady: false };
+  const bytes = new TextEncoder().encode(JSON.stringify(result) + "\n"); need(bytes.byteLength <= auditLimits.inventoryBytes, "PUBLISHED_INVENTORY_BYTE_LIMIT");
+  await io.commit(bytes); return result;
+}
+async function fixedParents(path: string): Promise<void> {
+  for (const part of [resolve(repository, base), resolve(repository, `${base}runs`), resolve(repository, `${base}scratch`)]) {
+    const stat = await lstat(part); need(stat.isDirectory() && !stat.isSymbolicLink() && stat.uid === process.getuid!() && (stat.mode & 0o022) === 0 && await realpath(part) === part, "PRIVATE_ARCHIVE_PARENT_REQUIRED");
+  }
+  await trustedAncestors(path);
+}
+export type ArchiveClaimIO = Readonly<{ validateRoot: () => Promise<void>; writeMarker: () => Promise<void>; createScratch: () => Promise<void> }>;
+async function claimArchiveOperation(io: ArchiveClaimIO): Promise<void> {
+  await io.validateRoot(); await io.writeMarker(); await io.createScratch();
+}
+const productionIO: TrustedArchiveIO = {
+  readContinuation: readArchiveContinuationInputs, plan: prepareArchiveAuditPlan,
+  claim: () => claimArchiveOperation({
+    async validateRoot() {
+      await fixedParents(evidenceRoot);
+      const stat = await lstat(evidenceRoot);
+      need(stat.isDirectory() && !stat.isSymbolicLink() && stat.uid === process.getuid!() && (stat.mode & 0o7777) === 0o700 &&
+        await realpath(evidenceRoot) === evidenceRoot, "OUTSIDE_OWNED_ARCHIVE_RUN_DIRECTORY_REQUIRED");
+    },
+    async writeMarker() {
+      let handle;
+      try { handle = await open(resolve(evidenceRoot, ".operation"), constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW, 0o600); }
+      catch { throw Error("ARCHIVE_OPERATION_CLAIM_FAILED"); }
+      try { await handle.writeFile('{"version":"chess-coach.cuda-archive-audit-operation.v1","sequence":"cuda-archive-audit-2"}\n'); await handle.sync(); }
+      finally { await handle.close(); }
+    },
+    async createScratch() {
+      await mkdir(scratch, { mode: 0o700 });
+      const stat = await lstat(scratch);
+      need(stat.isDirectory() && !stat.isSymbolicLink() && stat.uid === process.getuid!() && (stat.mode & 0o7777) === 0o700 &&
+        await realpath(scratch) === scratch, "EXCLUSIVE_PRIVATE_ARCHIVE_SCRATCH_REQUIRED");
+    },
+  }),
+  async launch(plan) {
+    const child = Bun.spawn(archiveAuditArgv(plan), { cwd: "/", env: archiveChildEnvironment(), stdin: "ignore", stdout: "inherit", stderr: "inherit", detached: false });
+    return child.exited;
+  },
+  async output() {
+    const read = await readAudited(resolve(scratch, "inventory.json"), auditLimits.inventoryBytes, undefined, true);
+    return validateOutputFile(read.file, read.bytes!);
+  },
+  async revalidate(plan, input) {
+    const current = await readArchiveContinuationInputs(), capture = validateArchiveContinuation(current), fresh = await prepareArchiveAuditPlan();
+    validateArchivePlanSnapshot(fresh, capture);
+    need(sha256(current.requestBytes) === sha256(input.requestBytes) && same(current.binding, input.binding) && same(fresh, plan), "ARCHIVE_INPUT_OR_ROOT_PLAN_CHANGED");
+  },
+  commit: bytes => commitInventory(bytes, {
+    async openStage() { const handle = await open(resolve(evidenceRoot, "inventory.pending.json"), constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW, 0o600);
+      return { write: value => handle.writeFile(value), sync: () => handle.sync(), close: () => handle.close() }; },
+    publish: () => link(resolve(evidenceRoot, "inventory.pending.json"), resolve(evidenceRoot, "inventory.json")),
+  }),
+};
+export const archiveTestOnly = Object.freeze({ makePlan, makeNativeClosure, readNative, runXZAudit, validateOutput, validateOutputFile, commitInventory, claimArchiveOperation });
+export function archiveAuditEnvironment(): Record<string, string> { return { ...environment, MISE_OVERRIDE_CONFIG_FILENAMES: "cuda-archive-mise.toml" }; }
+export function validateArchiveTaskConfiguration(bytes: Uint8Array): void {
+  need(bytes.byteLength > 0 && bytes.byteLength <= 4096 && same(Bun.TOML.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)),
+    { tasks: { "cuda:audit-llvm-archive": { dir: "../..", run: "/usr/local/bin/bun --no-env-file --no-install _work/gpu-owner-recovery/cuda-archive.ts audit" } } }), "EXACT_ARCHIVE_TASK_CONFIGURATION_REQUIRED");
+}
+export type ArchiveMiseStage = Readonly<{ name: "00-trust" | "01-config" | "02-audit"; argv: string[] }>;
+export function archiveAuditStagePlan(): ArchiveMiseStage[] { return [
+  { name: "00-trust", argv: ["/usr/local/bin/mise", "trust", resolve(repository, archiveAuditTaskConfiguration)] },
+  { name: "01-config", argv: ["/usr/local/bin/mise", "config", "ls", "--json"] },
+  { name: "02-audit", argv: ["/usr/local/bin/mise", "run", "--raw", "cuda:audit-llvm-archive"] },
+]; }
+export function validateArchiveMiseDiscovery(bytes: Uint8Array): void {
+  need(bytes.byteLength <= 65536, "SOLE_ARCHIVE_CONFIGURATION_REQUIRED"); const value = parse(bytes);
+  need(Array.isArray(value) && value.length === 1 && object(value[0]).path === resolve(repository, archiveAuditTaskConfiguration) &&
+    (object(value[0]).tools === undefined || same(object(value[0]).tools, [])), "SOLE_ARCHIVE_CONFIGURATION_REQUIRED");
+}
+export async function runArchiveAuditMiseStages(io: Readonly<{ verifyOutsideGate: () => Promise<void>; readTaskConfiguration: () => Promise<Uint8Array>;
+  run: (stage: ArchiveMiseStage) => Promise<{ exitCode: number; stdout: Uint8Array; failure?: string | null }> }>) {
+  const completedStages: ArchiveMiseStage["name"][] = [];
+  for (const stage of archiveAuditStagePlan()) {
+    await io.verifyOutsideGate(); validateArchiveTaskConfiguration(await io.readTaskConfiguration()); const result = await io.run(stage);
+    need(Number.isInteger(result.exitCode) && result.exitCode >= 0 && result.exitCode <= 255, "INVALID_MISE_STAGE_EXIT");
+    if (result.exitCode !== 0 || (result.failure !== undefined && result.failure !== null)) return { exitCode: result.exitCode || 1, failedStage: stage.name, completedStages };
+    if (stage.name === "01-config") validateArchiveMiseDiscovery(result.stdout); await io.verifyOutsideGate(); completedStages.push(stage.name);
+  }
+  return { exitCode: 0, failedStage: null, completedStages };
+}
+if (import.meta.main) {
+  try { await archiveAuditCLI(Bun.argv.slice(2)); } catch (error) { console.error(archiveFailureCode(error)); process.exitCode = 1; }
+}

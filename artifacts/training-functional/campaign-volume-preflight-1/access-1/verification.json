@@ -1,0 +1,206 @@
+{
+  "status": "PASS_READ_ONLY_ACCESS_SOURCE_TESTS_STRICT_TYPES_STATIC_AND_FROZEN_PACKET2",
+  "sourcePinsBefore": [
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 162528,
+      "sha256": "64bce2cfb13d6fc251ff39abdad4f0e570fcfb9822e8b2951843630e2c90ab73"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+      "byteLength": 4355,
+      "sha256": "faf0c74bf328a0e2b67cbbb070caeb396ea3f17d7d2435d81c8f7bcc8de0ef69"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/HOST.md",
+      "byteLength": 2577,
+      "sha256": "46686e0d79b243a01936a4133482e303eca0f065b934f4aa60a51e6b3de858d7"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/authorization.json",
+      "byteLength": 1938,
+      "sha256": "6ffeaffc0997691ddd023479a08f16a24d77353aaa5447655d520e9a9c704f60"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/handoff.json",
+      "byteLength": 6689,
+      "sha256": "6984df87c4497bbe135d2932710f303bdddcb93b832704422a9edeab6ae2d69d"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/preflight.test.ts",
+      "byteLength": 13991,
+      "sha256": "ffb27b4c20f6e1e1fae30cc92aa29b952a1054ef9379d60e033690015be04206"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/preflight.ts",
+      "byteLength": 11900,
+      "sha256": "39e43d84f61f2d43467a26457d2f55231362b15c41e0259ade2eeae5064fb7f6"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/render-command.ts",
+      "byteLength": 114,
+      "sha256": "bacdc5666de41e9c7eb4ef76bd9cb58bdc7b7431c9cd446aede0784f5effc84e"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/tsconfig.json",
+      "byteLength": 64,
+      "sha256": "d242d0c4b0be55d2546f568a8c710dec92b90839cd5781fc49f2c346b22dbdd5"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/completion.json",
+      "byteLength": 13260,
+      "sha256": "23b5e67c58d644d8398ffbf70df0557dabede08e62a5658a7b5e32480ae30d4b"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/request.json",
+      "byteLength": 7712,
+      "sha256": "70ba4aadc079cab314cf9dd6f4dc2354ab3c1739e035131b1b067302241b0322"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/verification.json",
+      "byteLength": 104975,
+      "sha256": "515f293ddd351dd434d2a2b656c8e0b8d64f5bb52ceb0dc9f1656ad5ec4b85bb"
+    }
+  ],
+  "sourcePinsAfter": [
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 162528,
+      "sha256": "64bce2cfb13d6fc251ff39abdad4f0e570fcfb9822e8b2951843630e2c90ab73"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-handoff-1/render-command.ts",
+      "byteLength": 4355,
+      "sha256": "faf0c74bf328a0e2b67cbbb070caeb396ea3f17d7d2435d81c8f7bcc8de0ef69"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/HOST.md",
+      "byteLength": 2577,
+      "sha256": "46686e0d79b243a01936a4133482e303eca0f065b934f4aa60a51e6b3de858d7"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/authorization.json",
+      "byteLength": 1938,
+      "sha256": "6ffeaffc0997691ddd023479a08f16a24d77353aaa5447655d520e9a9c704f60"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/handoff.json",
+      "byteLength": 6689,
+      "sha256": "6984df87c4497bbe135d2932710f303bdddcb93b832704422a9edeab6ae2d69d"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/preflight.test.ts",
+      "byteLength": 13991,
+      "sha256": "ffb27b4c20f6e1e1fae30cc92aa29b952a1054ef9379d60e033690015be04206"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/preflight.ts",
+      "byteLength": 11900,
+      "sha256": "39e43d84f61f2d43467a26457d2f55231362b15c41e0259ade2eeae5064fb7f6"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/render-command.ts",
+      "byteLength": 114,
+      "sha256": "bacdc5666de41e9c7eb4ef76bd9cb58bdc7b7431c9cd446aede0784f5effc84e"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/tsconfig.json",
+      "byteLength": 64,
+      "sha256": "d242d0c4b0be55d2546f568a8c710dec92b90839cd5781fc49f2c346b22dbdd5"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/completion.json",
+      "byteLength": 13260,
+      "sha256": "23b5e67c58d644d8398ffbf70df0557dabede08e62a5658a7b5e32480ae30d4b"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/request.json",
+      "byteLength": 7712,
+      "sha256": "70ba4aadc079cab314cf9dd6f4dc2354ab3c1739e035131b1b067302241b0322"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/verification.json",
+      "byteLength": 104975,
+      "sha256": "515f293ddd351dd434d2a2b656c8e0b8d64f5bb52ceb0dc9f1656ad5ec4b85bb"
+    }
+  ],
+  "sourcePinsMatch": true,
+  "packet2FrozenSourcePinCount": 199,
+  "packet2FrozenSourcePinsUnchanged": true,
+  "results": [
+    {
+      "name": "tests-2",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "10000",
+        "artifacts/training-functional/campaign-volume-preflight-1/access-1/preflight.test.ts"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/tests-2.stdout",
+        "byteLength": 28,
+        "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/tests-2.stderr",
+        "byteLength": 1887,
+        "sha256": "b4b9afd733946772d9fc967fcfa60cbdc0f7844be9fd3ee2459110073b7a73bf"
+      }
+    },
+    {
+      "name": "types-2",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/campaign-volume-preflight-1/access-1/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/types-2.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/types-2.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "specs-1",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "artifacts/training-functional/check-specs.ts"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/specs-1.stdout",
+        "byteLength": 2645,
+        "sha256": "cb4c0586b813730b7101dd6781ff0c4e40403cf4a3180fbc1ac542eff57e77db"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/specs-1.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "localCorruptTransportChildOnly": true,
+  "hostInspectionExecuted": false,
+  "hostPreparationExecuted": false,
+  "nativeGpuContainerOperationsExecuted": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false
+}

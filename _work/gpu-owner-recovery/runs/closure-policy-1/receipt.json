@@ -1,0 +1,35 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "closure-policy-1",
+  "stage": "policy",
+  "sourceManifestSha256": "f359081260b2dff474417f658e72f720f541a1f3dcf8e89ed364fa7cd1220dd7",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./packages/runtime/tests/gpu-policy.test.ts",
+    "./packages/runtime/tests/gpu-policy-conformance.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 27307,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/closure-policy-1/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/closure-policy-1/command.stderr",
+    "bytes": 27307,
+    "sha256": "0c45082b4ec5dfb0a8a2622073033795cd2589c2f77bfd305e0faf9f96a39763"
+  },
+  "sourceCount": 197,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

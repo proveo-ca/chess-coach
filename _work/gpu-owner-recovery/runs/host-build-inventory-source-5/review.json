@@ -1,0 +1,19 @@
+{
+  "status": "READY_FOR_CORRECTION_PUBLICATION_AND_FRESH_HOST2_DECISION",
+  "architecture": { "session": "ses_e39898a35ffeov4v7e8zm7rL25", "verdict": "ACCEPT_PLAIN_INSPECT_PARSER_AND_SEPARATE_RUN2" },
+  "devops": { "session": "ses_e39847a59ffeGm317EAvDa0aJS", "verdict": "READY_NO_BLOCKING_FINDINGS" },
+  "adversarial": { "session": "ses_e39710380ffeaUnNLQd4qcTj2u", "verdict": "READY_TO_MERGE_YES" },
+  "security": { "session": "ses_e3971033effeXIBzUy80U91Rbw", "findings": [], "additionalHardeningPrerequisite": false },
+  "sourceHashes": 298,
+  "inventoryTests": 34,
+  "inventoryAssertions": 302,
+  "mockedQueryE2eCases": 3,
+  "qualificationTests": 37,
+  "qualificationAssertions": 280,
+  "passingTypechecks": 4,
+  "hostRun1ReportedFailureRetained": true,
+  "exactHostRun1StderrDiagnosticEstablished": false,
+  "hostRun2Approved": false,
+  "actualHostQueriesPerformed": false,
+  "trainingReady": false
+}

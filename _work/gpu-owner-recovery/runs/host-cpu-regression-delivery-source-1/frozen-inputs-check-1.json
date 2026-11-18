@@ -1,0 +1,11 @@
+{
+  "status": "PASS_FROZEN_REPOSITORY_SOURCE_HASHES_ONLY",
+  "fullSourceBindingsChecked": 347,
+  "protectedFeasibilitySourceBindingsChecked": 327,
+  "nativeSourceBindingsChecked": 65,
+  "nativeManifestSha256": "7e0aa13c178a77e01526d7fa02189c404c1ce3b44666914665cb9ca63a3521ec",
+  "nativeCommandsExecuted": false,
+  "hostExecuted": false,
+  "cacheOrArchivePayloadAccessed": false,
+  "trainingReady": false
+}

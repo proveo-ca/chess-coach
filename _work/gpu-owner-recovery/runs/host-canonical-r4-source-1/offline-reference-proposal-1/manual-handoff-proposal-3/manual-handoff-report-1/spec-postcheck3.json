@@ -1,0 +1,11 @@
+{
+  "status": "PASS_SPEC_COVERAGE_AND_PRESERVED_GOAL_CONSISTENCY",
+  "spec": {
+    "path": "_spec/manual-handoff-implementation-3.puml",
+    "sha256": "4f923aa98df91f088551d49df0e1db0434f2dfb59467ea38a97bee5496b819eb"
+  },
+  "indexAndRuntimeUnchanged": true,
+  "priorGoalCopiesPreserved": true,
+  "sourceOrOperationalExecution": false,
+  "trainingReady": false
+}

@@ -1,0 +1,36 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "cuda-archive-static-parent-3",
+  "stage": "cuda-archive",
+  "sourceManifestSha256": "57efe7b42f7c33d044179ab20e35e354861a04c1e3ce7456aa7e43bfb05dca44",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./_work/gpu-owner-recovery/cuda-tar.test.ts",
+    "./_work/gpu-owner-recovery/cuda-elf.test.ts",
+    "./_work/gpu-owner-recovery/cuda-archive.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 10912,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-archive-static-parent-3/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-archive-static-parent-3/command.stderr",
+    "bytes": 10912,
+    "sha256": "0c3e82f8b1024a887fe5b3d6a1eed3b99d1ab8e4a79fd1e1785adbe5d0d688fc"
+  },
+  "sourceCount": 107,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

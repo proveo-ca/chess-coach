@@ -1,0 +1,36 @@
+{
+  "version": "chess-coach.cuda-audit-elf-base-metadata.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "-e",
+    "\nimport { constants } from 'node:fs';\nimport { open, readFile, realpath } from 'node:fs/promises';\nimport { createHash } from 'node:crypto';\nconst hash=bytes=>createHash('sha256').update(bytes).digest('hex');\nif(hash(await readFile('_work/gpu-owner-recovery/cuda-elf.ts'))!==\"7abe293976287a0df2aabfdd5f55fc286704defd04e11e73af2bccae24dfa61d\")throw Error('TESTED_ELF_SOURCE_CHANGED');\nconst {inspectElf}=await import('./_work/gpu-owner-recovery/cuda-elf.ts');\nconst files=[];\nfor(const logicalPath of ['/usr/local/bin/bun','/usr/bin/xz','/usr/bin/bwrap']){\n const physicalPath=await realpath(logicalPath),handle=await open(physicalPath,constants.O_RDONLY|constants.O_NOFOLLOW);\n try{\n  const before=await handle.stat({bigint:true});\n  if(!before.isFile()||before.size<=0n||before.size>536870912n)throw Error('BOUNDED_EXISTING_NATIVE_FILE_REQUIRED');\n  let result;\n  try{\n   const metadata=await inspectElf(async(offset,length)=>{if(offset<0n||offset+BigInt(length)>before.size||offset>BigInt(Number.MAX_SAFE_INTEGER))throw Error('READ_BOUNDS');const bytes=Buffer.alloc(length);let read=0;while(read<length){const part=await handle.read(bytes,read,length-read,Number(offset)+read);if(part.bytesRead===0)break;read+=part.bytesRead;}return bytes.subarray(0,read);},before.size);\n   result={parserResult:'PARSED_METADATA',metadata};\n  }catch(error){result={parserResult:'REJECTED_BY_CURRENT_PURE_PARSER',reason:String(error)};}\n  const after=await handle.stat({bigint:true});\n  if(before.dev!==after.dev||before.ino!==after.ino||before.size!==after.size||before.mtimeNs!==after.mtimeNs||before.ctimeNs!==after.ctimeNs)throw Error('NATIVE_INPUT_CHANGED');\n  files.push({logicalPath,physicalPath,byteLength:Number(before.size),...result});\n }finally{await handle.close();}\n}\nconsole.log(JSON.stringify({status:'PASS',scope:'READ_ONLY_REAL_BASE_INPUT_METADATA_FOR_DEVELOPMENT_NOT_AUDIT_EXECUTION_OR_SOURCE_ACCEPTANCE',files,pureModuleStaticVerificationOnly:true,archiveAuditSourceAccepted:false,loaderClosureQualified:false,nativeExecutableInvocations:0,decompressionPerformed:false,extractionPerformed:false,llvmCodeExecuted:false,trainingReady:false},null,2));\n"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 1572,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "stream": "stdout",
+      "path": "_work/gpu-owner-recovery/runs/cuda-audit-elf-base-metadata-1/command.stdout",
+      "bytes": 1572,
+      "sha256": "8594f8260065b161c9a14e4ee3cf71333b276178f3e26645e5097566038dbac9"
+    },
+    {
+      "stream": "stderr",
+      "path": "_work/gpu-owner-recovery/runs/cuda-audit-elf-base-metadata-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "pureModuleSha256": "7abe293976287a0df2aabfdd5f55fc286704defd04e11e73af2bccae24dfa61d",
+  "scope": "READ_ONLY_DEVELOPMENT_INPUT_INSPECTION",
+  "archiveAuditSourceAccepted": false,
+  "nativeExecutableInvocations": 0,
+  "decompressionPerformed": false,
+  "llvmCodeExecuted": false,
+  "trainingReady": false
+}

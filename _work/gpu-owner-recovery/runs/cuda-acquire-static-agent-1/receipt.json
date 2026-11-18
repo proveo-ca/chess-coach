@@ -1,0 +1,35 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "cuda-acquire-static-agent-1",
+  "stage": "cuda-acquire",
+  "sourceManifestSha256": "a1e01ea346cc45af93cf6bd242fce4e7dedc7da242a762c723a0eb186d4e01d3",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "./_work/gpu-owner-recovery/cuda-continuation.test.ts",
+    "./_work/gpu-owner-recovery/cuda-acquire.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 3012,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-acquire-static-agent-1/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/cuda-acquire-static-agent-1/command.stderr",
+    "bytes": 3012,
+    "sha256": "a844b0a916bdee460c14c7cbd908911bd7fb350c2ac2c19fd2fe3a431431059a"
+  },
+  "sourceCount": 44,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

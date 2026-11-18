@@ -1,0 +1,62 @@
+[
+  {
+    "path": "_spec/.spec-index.json",
+    "bytes": 25730,
+    "sha256": "4ef1cf6d48830137601ade8ff4c2a90575e3d90e79f4ee9ecfd1f259ded61fac"
+  },
+  {
+    "path": "_spec/runtime-protocol.puml",
+    "bytes": 36922,
+    "sha256": "ef9eb85528f2da9fe40c7c39f132f7ec14938c50402d80f6cb536d2468092e17"
+  },
+  {
+    "path": "_spec/gpu-qualification.puml",
+    "bytes": 98943,
+    "sha256": "cfed9beeb377485e1a68061318ac0e7775fdc334e42b79206a540e688bf93cb5"
+  },
+  {
+    "path": "_spec/gpu-full-qualification.puml",
+    "bytes": 49914,
+    "sha256": "247858f8791269bc0f3d09a88d43ebbe671aa05664ba369723798db81fd6cbba"
+  },
+  {
+    "path": "_spec/gpu-readiness.md",
+    "bytes": 320416,
+    "sha256": "7f41feeb68db33a64a4a2640fb7ddcb735a9c67ac5d966f4e8e67f3f2cef6f7e"
+  },
+  {
+    "path": "_spec/gate-closure.md",
+    "bytes": 234211,
+    "sha256": "3b31a4a23a2c5d36a8eaabc0b075e601df30a93e42e0226ff6f1d1f2725aa2fa"
+  },
+  {
+    "path": "_spec/readiness.md",
+    "bytes": 83598,
+    "sha256": "7216347c0a52951e2f58e21b7b9eb3863bc23d61095f12851c14443257a2e182"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/bun-spec-check.ts",
+    "bytes": 6478,
+    "sha256": "a4d0eba8a80e7aa07fec0466f219ceef3bd3fe17610fd7eba3e4546877706996"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/bun-clock-selection1.json",
+    "bytes": 1457,
+    "sha256": "1cd6f276d19dbe8d8f6f3a5abab67e2f74ed4435e59dce8528dcb843e95d602a"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/clock-contract-decision1.json",
+    "bytes": 1596,
+    "sha256": "d145d765751dbcc607354de7aeee27af862a629623a5eaad5f8edc4fff876554"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/bun-design3.json",
+    "bytes": 2986,
+    "sha256": "a01043a889b591d186cf13744154fcae51d4fc2fada62bc08bd7bd54496889cd"
+  },
+  {
+    "path": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-1/clock-comparison-1/receipt.json",
+    "bytes": 1032,
+    "sha256": "f5d71f0df9e65bf51ad85581216c2ce50c2b4969af45b0447708bd00f736099c"
+  }
+]

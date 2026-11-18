@@ -1,0 +1,52 @@
+{
+  "version": "chess-coach.host-qualification-input-packet.v1",
+  "status": "SOURCE_PREPARATION_ONLY_UNRESOLVED_INPUTS_NO_HOST_AUTHORITY",
+  "recipe": "tooling/runtime/Dockerfile.gpu-qualification",
+  "targets": ["cpu-qualification", "gpu-qualification"],
+  "productionRecipesChanged": false,
+  "frozenLockSha256": "77f674cc26a01f26558fd99c45bdcd5566017be05833fce1d39cae98cda05955",
+  "context": {
+    "current-native": "Frozen Cargo.toml, Cargo.lock, workspace crates and Rust sources; no target outputs",
+    "cargo-home": "Prepared locked Cargo registry cache; no toolchain installation",
+    "qualification-tools": ["tooling/runtime/qualification.ts", "tooling/runtime/Dockerfile.gpu-qualification", "tooling/runtime/gpu-build-inputs.json", "_work/gpu-owner-recovery/verify.ts", "_work/gpu-owner-recovery/command-supervisor.ts", "qualification/source-manifest.json"],
+    "gpu-build/rootfs": null,
+    "gpu-build/llvm": null,
+    "gpu-runtime/rootfs": null
+  },
+  "llvm": {
+    "candidate": "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4",
+    "flagsReceipt": "_work/gpu-owner-recovery/runs/gpu-qualification-llvm-flags-1/receipt.json",
+    "reportedCxxStandard": "c++17",
+    "reportedGnuCxx11Abi": 1,
+    "reportedStaticSystemLibraries": ["rt", "dl", "m"],
+    "requiredBuilderSelection": ["C/C++17 compiler", "GNU C++ runtime ABI 1", "archiver/linker", "matching libc headers and system libraries"],
+    "selection": null,
+    "relocationQualified": false,
+    "staticLinkQualified": false
+  },
+  "rustImage": { "pin": "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb", "lastOperatorObservation": "ABSENT", "acquisitionApproved": false },
+  "bunImage": { "pin": "docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038", "lastOperatorObservation": "CACHED_NOT_FRESHLY_INSPECTED" },
+  "cuda": { "bindingVersion": null, "libdeviceSource": null, "libdeviceSha256": null, "runtimeLibrarySelection": null, "driverReplacementAllowed": false },
+  "gpu": { "uuid": "GPU-713c95e0-6952-a576-794b-9ef1fb527ff0", "containerOrdinal": 0, "sharing": "COOPERATIVE_NONEXCLUSIVE", "memoryReservationClaimed": false, "selectedPathTelemetryQualified": false },
+  "artifactPaths": { "cpu": "/build/native/target-cpu", "gpu": "/build/native/target-gpu", "writableScratch": "/build/native/_work/gpu-owner-recovery/scratch", "writableEvidence": "/build/native/_work/gpu-owner-recovery/runs" },
+  "numerics": { "dtype": "F64", "finiteDifferenceCoordinates": 4670, "eps": 0.000001, "atol": 0.00000001, "rtol": 0.00001, "initialization": "CPU_FLEX", "masters": [101, 102, 103, 104, 105], "c12": "EXACT_DIGEST_AGREEMENT_NO_TOLERANCE" },
+  "campaignOrder": ["gpu feasibility: score/round-trip then backward/SGD/reload", "gpu full: all six exact ignored tests including all 4670 coordinates and both C12 fixtures", "cpu regression: fixed 39-test default-CPU suite"],
+  "proposedLimitsNotApproved": {
+    "scope": "TEST_LOOP_ONLY_NOT_OVERALL_HOST_INVOCATION",
+    "feasibility": { "perTestMs": 120000, "totalMs": 270000, "cleanupReserveMs": 30000 },
+    "full": { "perTestMs": 900000, "totalMs": 5430000, "cleanupReserveMs": 30000 },
+    "regression": { "perTestMs": 900000, "totalMs": 14430000, "cleanupReserveMs": 30000 },
+    "outputBytesPerStream": 4194304,
+    "build": null,
+    "overallHostInvocationMs": null,
+    "contextBytes": null,
+    "imageDiskBytes": null,
+    "dockerCpuAndMemory": null,
+    "gpuCooperativeCeilingsAndTelemetry": null
+  },
+  "approval": { "acquisition": false, "installation": false, "contextCopyOrStaging": false, "imageBuild": false, "hostExecution": false, "gpuExecution": false, "training": false },
+  "nextApprovalMustResolve": ["Exact input versions/sources/hashes and missing-image acquisition", "LLVM/context transfer path and byte/disk limits", "Builder/runtime dependencies, libdevice and CUDA binding", "Per-build and per-campaign attempt/deadline/resource bounds", "Literal-UUID telemetry and cooperative coexistence observations", "Source manifest and image/artifact identity", "Separate training grant after accepted functional evidence"],
+  "stillOutsideThisQualification": ["Canonical init/BOTH/independent-reference/orderly-close", "Integrated R4 functional evidence", "Training activation and five-master scheduling", "Accepted operational telemetry/coexistence"],
+  "fullAssuranceHardening": "DEFERRED_UNTIL_ALL_PLANNED_TRAINING_COMPLETES_AND_RESULTS_VALIDATE",
+  "trainingReady": false
+}

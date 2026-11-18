@@ -1,0 +1,26 @@
+
+artifacts/training-functional/full-training-packet-2/assemble.test.ts:
+(pass) source-only metadata retains the observation, explicit uncertainty and separate access boundary [1.72ms]
+(pass) assembly extends exactly 108 execution rows and retains 840 dependency rows and nine references [48.28ms]
+(pass) assembly replaces four binding roles and preserves the other ten role payloads byte-for-byte [51.07ms]
+(pass) assembled v2 request joins all four current byte references without granting execution [34.65ms]
+(pass) verification rejects missing, duplicate, reordered and extra source coverage before writes [26.08ms]
+(pass) verification rejects failed status, unequal before/after pins and current source drift [26.41ms]
+(pass) assembly rejects mutated qualification members even under newly matching verification pins [17.72ms]
+(pass) assembly rejects unbound v2 recipe and runtime policy mutations [37.92ms]
+(pass) repeat assembly uses exclusive writes and cannot overwrite an assembled generation [35.70ms]
+(pass) the local writer enforces packet2 scope and rejects existing files without truncation [0.84ms]
+(pass) packet output creation rejects symlinked ancestors before creating any outside descendant [0.40ms]
+(pass) fresh verification permits exactly three archived synthetic timeout arguments and no assertion changes [0.80ms]
+(pass) source coverage includes the executed static checker and all three checked diagrams [0.47ms]
+(pass) receipt binding derives cohort counts and totals from pinned retained stderr [1.64ms]
+(pass) pinned failing or internally contradictory stderr cannot bind a passing cohort [0.22ms]
+(pass) source-verifier CLI rejects missing bind labels and malformed argument shapes [0.13ms]
+(pass) bounded assembly IO rejects traversal, absolute paths, malformed UTF8 and oversized input [12.25ms]
+(pass) assembled verification proves exactly two worker deltas and preserves packet1 [302.15ms]
+(pass) assembled verification rejects mutated request joins and physical row metadata [901.69ms]
+
+ 19 pass
+ 0 fail
+ 86 expect() calls
+Ran 19 tests across 1 file. [1.94s]

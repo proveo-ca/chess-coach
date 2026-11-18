@@ -1,0 +1,33 @@
+{
+  "scope": "HOST_FACTS_SOURCE_RETAINED_INPUTS_AND_EXACT_OPERATOR_COMMAND_NOT_HOST_EXECUTION",
+  "architect": "ses_e19a71b90ffe0M1NtmgBPRS4rf",
+  "adversarial": {
+    "sessionID": "ses_e18ce0441ffeBwm3Gpd5hdEUlL",
+    "ready": true,
+    "clearedFindings": ["HIGH unbounded output emission", "MEDIUM JSON input-byte accounting"],
+    "conditions": ["Fresh consolidated checks pass", "Checked publication precedes operator handoff"]
+  },
+  "security": {
+    "sessionID": "ses_e18c4fdb1ffemK604CwR3d3QqN",
+    "ready": true,
+    "findings": [],
+    "conditions": ["Fresh consolidated checks pass", "Checked publication precedes operator handoff"]
+  },
+  "publicationAudit": {
+    "sessionID": "ses_e18c04e96ffetSTzt4nByug1z2",
+    "ready": true,
+    "clearedFindings": ["Expose rename-source deletions with --no-renames", "Restrict staged JS modules to the two manifest-pinned upstream inputs"],
+    "verification": "artifacts/training-functional/checks/publication-audit-fix-1/task-types/receipt.json"
+  },
+  "regressions": {
+    "initialMockFailurePreserved": "artifacts/training-functional/checks/host-review-red-1",
+    "genuineRed": "artifacts/training-functional/checks/host-review-red-2",
+    "green": "artifacts/training-functional/checks/host-review-green-1",
+    "hostFactsTests": 27
+  },
+  "currentCommand": "artifacts/training-functional/host-facts-1/operator-command-2.sh",
+  "commandVerification": "artifacts/training-functional/host-facts-1/command-verification-2.json",
+  "generationOneCommand": "PRESERVED_PRIOR_GENERATION_NOT_FOR_OPERATOR_EXECUTION",
+  "reviewersExecutedHostQueries": false,
+  "trainingReady": false
+}

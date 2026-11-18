@@ -1,0 +1,23 @@
+{
+  "status": "READY_ASSEMBLED_SOURCE_PACKET_METADATA",
+  "scope": "READ_ONLY_METADATA_CONSISTENCY_NOT_EXECUTION_OR_PUBLICATION_AUTHORITY",
+  "reviewerSession": "ses_e14c2804fffeSvkBpEWrOVdMsE",
+  "ready": true,
+  "findings": [],
+  "conclusion": "No metadata contradictions, false authority or hash-reference cycles",
+  "request": {
+    "path": "artifacts/training-functional/full-training-packet-1/request.json",
+    "byteLength": 8142,
+    "sha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331"
+  },
+  "assemblyVerification": {
+    "path": "artifacts/training-functional/full-training-packet-1/assembly-verification.json",
+    "byteLength": 2448,
+    "sha256": "57e1ff8cfa6bb68e02a4f1c826fb635b6740aecc164e82ad242781d5611bb238"
+  },
+  "sourceReview": {
+    "path": "artifacts/training-functional/full-training-packet-1/reviews-2.json",
+    "byteLength": 2704,
+    "sha256": "01e27e97a42b82496045c2904381f1c8af942b4bd451b7a2191bddc52e684ed1"
+  }
+}

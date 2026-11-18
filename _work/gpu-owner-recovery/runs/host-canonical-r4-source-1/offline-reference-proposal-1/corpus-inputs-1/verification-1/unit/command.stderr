@@ -1,0 +1,30 @@
+
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/corpus-inputs-1/prepare.test.ts:
+(pass) exact corpus scope and bound sealed-source totals > binds immutable documents, pinned entries, and aggregate usage [1.26ms]
+(pass) exact corpus scope and bound sealed-source totals > rejects path, OID, mode, byte count, reference and membership substitutions [5.50ms]
+(pass) exact corpus scope and bound sealed-source totals > keeps the original combined file cap rather than resetting it [0.12ms]
+(pass) exact corpus scope and bound sealed-source totals > keeps the original combined byte cap rather than resetting it [0.06ms]
+(pass) exact corpus scope and bound sealed-source totals > enforces individual file cap and exact two safe regular paths [0.37ms]
+(pass) exact corpus scope and bound sealed-source totals > rejects changed aggregate limits or totals [0.48ms]
+(pass) exact corpus scope and bound sealed-source totals > rejects altered sealed counts or manifest and materialization bindings [0.69ms]
+(pass) exact corpus scope and bound sealed-source totals > rejects widened approval or qualification claims and package-presence claims [0.69ms]
+(pass) exact corpus scope and bound sealed-source totals > bounds metadata before parsing [0.12ms]
+(pass) bounded exclusive corpus-only materialization > persists exact manifest before the first payload read or copy [1.19ms]
+(pass) bounded exclusive corpus-only materialization > uses only unchanged Git blob argv, no fetch, fixed cwd and bounded isolated environment [0.50ms]
+(pass) bounded exclusive corpus-only materialization > copies unchanged bytes only and retains missing packages and false qualifications [0.99ms]
+(pass) bounded exclusive corpus-only materialization > refuses output reuse without overwriting the original manifest or payload [0.50ms]
+(pass) bounded exclusive corpus-only materialization > refuses invalid aggregate usage before any payload or manifest write [0.30ms]
+(pass) bounded exclusive corpus-only materialization > preserves a failed partial copy and its exclusive failure receipt [0.62ms]
+(pass) bounded exclusive corpus-only materialization > rejects wrong blob bytes or sizes before creating the affected file [0.66ms]
+(pass) bounded exclusive corpus-only materialization > enforces the preparation trial deadline before reads or writes [0.24ms]
+(pass) exact sidecar verification > rejects missing corpus inputs [0.49ms]
+(pass) exact sidecar verification > rejects extra files and directories [0.99ms]
+(pass) exact sidecar verification > rejects symlinks and other nonregular inputs [0.93ms]
+(pass) exact sidecar verification > rejects same-length hash mismatch [0.45ms]
+(pass) exact sidecar verification > rejects source-document binding or receipt SHA256 changes [1.60ms]
+(pass) exact sidecar verification > rechecks without overwriting successful prior receipts [0.81ms]
+
+ 23 pass
+ 0 fail
+ 112 expect() calls
+Ran 23 tests across 1 file. [42.00ms]

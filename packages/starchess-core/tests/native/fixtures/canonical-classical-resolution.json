@@ -1,0 +1,12 @@
+{
+  "reference": "b4b241481fb12de4a7344e6dba8eda775af57675",
+  "source": "packages/starchess-core/src/resolve/resolve-turn.ts",
+  "layouts": [
+    { "layout": ["d3", "d5"], "cases": 23700, "sha256": "42d560225fab7eb0f058fa7d2aedd578acaac9e2ad055b21ae210d671332d246" },
+    { "layout": ["c3", "f6"], "cases": 22500, "sha256": "1166f00c830e1fd53205f71741dfbf06f11393a55186c2c311c0b44e9deb8f09" },
+    { "layout": ["d4", "e4"], "cases": 24964, "sha256": "15323aae7cc431ec63341d2c232dff0e755426f42aba7a18cade2334e98a3073" },
+    { "layout": ["c7", "f2"], "cases": 19044, "sha256": "21ead4c7c5406c2d0e545a04f6df098b427dc4dc43d8b62f9e884bc639974d70" },
+    { "layout": ["a7", "h2"], "cases": 13456, "sha256": "48617c979b28e88ba05a70c73be07c41f7ebb579f8be8575d2e8f5a175fb1119" },
+    { "layout": ["b2", "g7"], "cases": 18496, "sha256": "664a4880a9dec38573faa5e9665991bbd72e92dfe8c3b2146541c4a9f156a840" }
+  ]
+}

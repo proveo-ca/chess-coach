@@ -1,0 +1,71 @@
+{
+  "version": "chess-coach.gpu-functional-llvm-integration-review.v1",
+  "scope": "RELEASED_SOURCE_AND_CARGO_RESOLVER_REVIEW_NO_PROJECT_BUILD_GRAPH_PROOF",
+  "versionReceipt": "_work/gpu-owner-recovery/runs/gpu-functional-llvm-version-1/receipt.json",
+  "metadataReceipt": "_work/gpu-owner-recovery/runs/gpu-functional-llvm-prefix-inventory-1/metadata.json",
+  "versions": {
+    "cubeclLlvm": "0.11.3",
+    "bundler": "23.1.0-4",
+    "llvmSys": "231.0.2",
+    "reportedLlvmConfig": "23.1.0",
+    "cargoResolverSourceReviewed": "rust-1.95.0"
+  },
+  "sources": [
+    "https://docs.rs/crate/cubecl-llvm/0.11.3/source/build.rs",
+    "https://docs.rs/crate/tracel-llvm-bundler/23.1.0-4/source/build.rs",
+    "https://docs.rs/crate/tracel-llvm-bundler/23.1.0-4/source/Cargo.toml",
+    "https://docs.rs/crate/tracel-llvm-bundler/23.1.0-4/source/src/config.rs",
+    "https://docs.rs/crate/tracel-llvm-bundler/23.1.0-4/source/src/llvm_sys.rs",
+    "https://docs.rs/crate/llvm-sys/231.0.2/source/build.rs",
+    "https://doc.rust-lang.org/cargo/reference/resolver.html#feature-resolver-version-2",
+    "https://github.com/rust-lang/cargo/blob/rust-1.95.0/src/cargo/core/resolver/features.rs#L629-L668",
+    "https://github.com/rust-lang/cargo/blob/rust-1.95.0/src/cargo/core/resolver/features.rs#L865-L920"
+  ],
+  "findings": {
+    "cubeclGpuShimsUseBundlerPrefix": true,
+    "cubeclCallsBundlerLink": true,
+    "bundlerPrefixUsesFixedXdgSuffix": "tracel/tracel-llvm-23.1.0-4",
+    "absentMarkerNormallyTriggersInstaller": true,
+    "llvmSysPrefixVariableAloneDoesNotRedirectThisChain": true,
+    "skipChecksumDownloadDoesNotSkipArchiveInstallation": true,
+    "publicXtaskFeatureSkipsBundlerInstallation": true,
+    "xtaskSkipLeavesCubeclNativeShimAndLinkCallsIntact": true,
+    "xtaskPrimaryPurpose": "UPSTREAM_XTASK_TOOLING_NOT_DOCUMENTED_EXTERNAL_PREFIX_API",
+    "projectHostFeatureUnificationVerified": false,
+    "localHistoricalDependencySourcePathsAvailable": false,
+    "sourceHttpDocumentsRead": true,
+    "dependencyArchiveAcquired": false
+  },
+  "preferredProposal": {
+    "status": "PROPOSED_NOT_APPROVED_OR_IMPLEMENTED",
+    "mode": "EXPLICIT_PREPARED_OFFLINE_LLVM",
+    "learningFeature": "gpu-prepared-llvm",
+    "learningFeatureEdges": ["gpu-cuda", "dep:tracel-llvm-bundler"],
+    "optionalHostBuildDependency": {
+      "package": "tracel-llvm-bundler",
+      "version": "=23.1.0-4",
+      "features": ["xtask"]
+    },
+    "policyIoFeatureEdges": ["gpu-cuda", "chess-coach-learning/gpu-prepared-llvm"],
+    "fixedPreparedDestination": "/opt/tracel-data/tracel/tracel-llvm-23.1.0-4",
+    "markerAdmission": "REMOVE_ONLY_FOR_EXPLICIT_PREPARED_OFFLINE_MODE_NEVER_FABRICATE",
+    "versionGuard": "RETAIN_23_1_0",
+    "cpuDefaultsAndExistingGpuCudaFeature": "PRESERVE",
+    "backendAndDependencyVersions": "PRESERVE",
+    "hostFeatureActivationAssessment": "SOURCE_DERIVED_INFERENCE_PENDING_PROJECT_GRAPH_VERIFICATION",
+    "extraBuildScriptRequiredByInspectedCargoResolver": false,
+    "noOpBuildScriptAlternative": "OPTIONAL_EXPLICIT_EDGE_WITH_ADDITIONAL_CPU_BUILD_SCRIPT_OVERHEAD",
+    "nativeAndGpuBuildQualification": "NOT_ESTABLISHED"
+  },
+  "prohibitedShortcuts": ["FABRICATED_INSTALL_MARKER", "DOCS_RS_FOR_REAL_BUILD", "MANUALLY_SET_CARGO_FEATURE_XTASK", "LLVM_SYS_231_PREFIX_AS_UNVERIFIED_BYPASS"],
+  "sourceOnlyArchitectSession": "ses_e3eea8cfeffecDxOMiTQwd2chs",
+  "sourceOnlyBackendSession": "ses_e3eb390a0ffevPYsyX7nd2VlAn",
+  "recipeChanged": false,
+  "cargoManifestsChanged": false,
+  "prefixCopiedOrModified": false,
+  "markerCreated": false,
+  "prefixSelected": false,
+  "compilationPerformed": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

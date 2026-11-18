@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication.ts",
+    "publish",
+    "--approved-publication-source-3"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 87936,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-actions/publish-command/command.stdout",
+      "bytes": 87936,
+      "sha256": "cfb364b7b30b31b8763d23a593faa1d6f451c8bb3e6448fe63a2f19ef302023a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-actions/publish-command/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "hostAllowanceNotRenewed": true,
+  "codingHostOperationsPerformed": false,
+  "trainingReady": false
+}

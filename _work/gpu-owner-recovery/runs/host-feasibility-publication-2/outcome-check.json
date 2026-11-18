@@ -1,0 +1,91 @@
+{
+  "version": "chess-coach.https-publication-failure-observation.v1",
+  "status": "PASS_RETAINED_FAILURE_RECORD_CHECK_ONLY",
+  "sources": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-feasibility-publication-2/publication.json",
+      "bytes": 2306,
+      "sha256": "ba999f659a413d6beb7043efea8d881b3d597c6103ef8b65a4f182ce4f27ee00"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-feasibility-publication-2/publication.operation",
+      "bytes": 113,
+      "sha256": "e0091c7d2b24e7a943fdfc33e865ef5db0cfeb10017eab8689a82bc61f7ca664"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-feasibility-publication-2/publish-01/command.stdout",
+      "bytes": 21,
+      "sha256": "3467ae26a897ab942a1376913a429c19c2045ee00c3a1fddb0919214c1fc5841"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-feasibility-publication-2/publish-01/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-feasibility-publication-2/publish-02/command.stdout",
+      "bytes": 137,
+      "sha256": "73b9d0b301c0beabf73f6c436c8a9d804cfebbcbf37f8f9b53d81aad7a46541e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-feasibility-publication-2/publish-02/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-feasibility-publication-2/publish-03/command.stdout",
+      "bytes": 12045,
+      "sha256": "bd08b65fd55be7bbef2c135d069b36c5e2135a390f539fe5b1ceee5c0b53b1e0"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-feasibility-publication-2/publish-03/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-feasibility-publication-2/publish-04/command.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-feasibility-publication-2/publish-04/command.stderr",
+      "bytes": 378,
+      "sha256": "2127a81bc29c891681ce114b81cfc82a19124487200338a429199e9877ae632e"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-feasibility-publication-2/reuse.json",
+      "bytes": 1405,
+      "sha256": "c223c04628a6559f117c9c53b9f9548869425c811ef47732ad53594708e60d20"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-feasibility-publication-2/verify-outcome.ts",
+      "bytes": 3240,
+      "sha256": "42f13e7b3ce236c3696eacd8d22444582a7da1f9ef1cdd8961f4a96c1bf7b7b2"
+    }
+  ],
+  "sourceGate": {
+    "path": "_work/gpu-owner-recovery/runs/gpu-input-transfer-source-5/receipt.json",
+    "sha256": "078270440ee5994c9de26c205451cd2582dd81e2fccd44c55261ab905ac03eb8"
+  },
+  "observedHead": "d3bb6bcc6420f50c559ad7260f968578e20cf725",
+  "headUnchangedFromLastConfirmedPush": true,
+  "historicalReceiptCommitOutcome": null,
+  "observedNewHeadCommitCreated": false,
+  "inheritedIdentityFieldsPresent": {
+    "GIT_AUTHOR_NAME": true,
+    "GIT_AUTHOR_EMAIL": true,
+    "GIT_COMMITTER_NAME": true,
+    "GIT_COMMITTER_EMAIL": true
+  },
+  "identityValuesRecorded": false,
+  "childPublisherForwardsGitIdentityEnvironmentFields": false,
+  "freshPublicationAttemptConsumed": true,
+  "commitInvocationsConsumed": 1,
+  "pushInvocations": 0,
+  "draftCreationInvocations": 0,
+  "uploadInvocations": 0,
+  "retryOrConfigurationChangePerformed": false,
+  "compilationPerformed": false,
+  "hostOrGpuExecuted": false,
+  "trainingReady": false
+}

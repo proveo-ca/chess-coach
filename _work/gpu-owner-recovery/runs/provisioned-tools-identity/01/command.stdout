@@ -1,0 +1,24 @@
+{
+  "rust": [
+    {
+      "version": "1.95.0",
+      "requested_version": "1.95.0",
+      "install_path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/data/installs/rust/1.95.0",
+      "source": {
+        "type": "mise.toml",
+        "path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/mise.toml"
+      },
+      "symlinked_to": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/data/installs/rust/1.95.0",
+      "installed": true,
+      "active": true
+    }
+  ],
+  "zig": [
+    {
+      "version": "0.15.2",
+      "install_path": "/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/mise/data/installs/zig/0.15.2",
+      "installed": true,
+      "active": false
+    }
+  ]
+}

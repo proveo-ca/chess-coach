@@ -1,0 +1,29 @@
+{
+  "status": "PRESERVED_ORIGINAL_90_TEST_HARNESS_BEFORE_LOCAL_TIMEOUT_ONLY_CHANGE",
+  "original": {
+    "path": "artifacts/training-functional/campaign-evidence.test.ts",
+    "byteLength": 41369,
+    "sha256": "768182e11dfa08eeec0816a39bc6cfa066fe818f07b0c5d56e0589f7f1e25234"
+  },
+  "archive": {
+    "path": "artifacts/training-functional/full-training-packet-2/preserved-test-harness/campaign-evidence.test.ts.source",
+    "byteLength": 41369,
+    "sha256": "768182e11dfa08eeec0816a39bc6cfa066fe818f07b0c5d56e0589f7f1e25234"
+  },
+  "originalVerification": {
+    "path": "artifacts/training-functional/full-training-packet-1/verification.json",
+    "byteLength": 56472,
+    "sha256": "132b2120494e8851408128aa26f206c47ad7172ab6fae6260a918d799ec0b80d"
+  },
+  "reason": "FOUR_SYNCHRONOUS_SYNTHETIC_VALIDATIONS_EXCEEDED_EXPLICIT_30000MS_LOCAL_TEST_TIMEOUT_WITHOUT_ASSERTION_FAILURE",
+  "plannedChange": "THREE_TEST_CALLSITE_TIMEOUT_ARGUMENTS_30000_TO_60000_NO_TEST_BODY_OR_RUNTIME_CAMPAIGN_LIMIT_CHANGE",
+  "originalFailingReceipt": {
+    "path": "artifacts/training-functional/full-training-packet-2/checks-1/receipt.json",
+    "byteLength": 98968,
+    "sha256": "e7ab56c0a366e94bfeca6f679f16c553e82323aa2a240c6b2110295d185e2bb6"
+  },
+  "workerBytesChangedByThisAdjustment": false,
+  "campaignRuntimeLimitsChanged": false,
+  "hostPreparationExecuted": false,
+  "trainingExecuted": false
+}

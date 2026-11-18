@@ -5,7 +5,7 @@
  * // SPEC: _spec/packages/starchess-core/sc-moves.puml, _spec/packages/starchess-core/scfen-queue.puml, _spec/packages/starchess-core/gas-phase-vacancy.puml
  */
 
-import type { Square } from "chess.js";
+import type { Square } from "../model/square";
 
 import { placementToMap } from "../board/placement";
 import { charonDiagonalSquares } from "./specials/mechaCharon";
@@ -14,7 +14,10 @@ import { isTankSiegedAfterB } from "../board/siege";
 import { hasExactCCPair } from "../scfen/codec";
 import { spawnCCAnchor } from "./specials/adjacent";
 import { marineSingleTarget } from "./specials/stimStep";
-import type { ScAction, ScActionInput, ScFenSnapshot, StarChessColor } from "../model/types";
+import type { ScAction, ScActionInput, ScFenSnapshot } from "../model/types";
+import { classifyClassicalVacancy, gasPairKey, type ClassicalVacancy } from "../engine/planning-intents";
+export { classifyClassicalVacancy, gasPairKey } from "../engine/planning-intents";
+export type { ClassicalVacancy } from "../engine/planning-intents";
 
 export class ScValidateError extends Error {
   readonly code: "SC_BASELINE_FEN" | "SC_SPECIAL";
@@ -24,32 +27,6 @@ export class ScValidateError extends Error {
     this.name = "ScValidateError";
   }
 }
-
-export type ClassicalVacancy = {
-  bOrigins: ReadonlySet<Square>;
-  transit: ReadonlySet<Square>;
-  gasPairs: ReadonlySet<string>;
-};
-
-export const gasPairKey = (from: Square, to: Square): string => `${from}:${to}`;
-
-export const classifyClassicalVacancy = (
-  actions: readonly ScAction[] | undefined,
-  color: StarChessColor,
-): ClassicalVacancy => {
-  const bOrigins = new Set<Square>();
-  const transit = new Set<Square>();
-  const gasPairs = new Set<string>();
-  for (const a of actions ?? []) {
-    if (a.timing !== "B" || a.color !== color) continue;
-    if (a.kind !== "stimStep" && a.kind !== "tacticalJump") continue;
-    if (!a.to) continue;
-    bOrigins.add(a.from);
-    transit.add(a.to);
-    gasPairs.add(gasPairKey(a.from, a.to));
-  }
-  return { bOrigins, transit, gasPairs };
-};
 
 /** SCFEN placement invariants — not chess.js FEN validation. */
 export const assertBaselineFen = (snap: ScFenSnapshot): void => {

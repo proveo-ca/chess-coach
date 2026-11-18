@@ -1,0 +1,17 @@
+{
+  "version": "chess-coach.host-build-inventory-observation.v2",
+  "status": "OPERATOR_REPORTED_PASS_METADATA_ONLY",
+  "provenance": "SEMANTICALLY_NORMALIZED_COMPLETE_OPERATOR_JSON_AND_SUMMARY_NOT_ORIGINAL_HOST_BYTES",
+  "request": "_work/gpu-owner-recovery/runs/host-build-inventory-handoff-2/request.json",
+  "functionalMetadataFactsAccepted": true,
+  "reportedHostInvocationsConsumed": 1,
+  "remainingHostInvocations": 0,
+  "automaticRetryAuthorized": false,
+  "originalHostFilesReceived": false,
+  "actualOperatorCommandBytesIndependentlyVerified": false,
+  "sharedBuilderFiniteCpuOrMemoryCapsReported": false,
+  "modifyOrStopSharedBuilderAuthorized": false,
+  "imageBuildOrCompilationAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "trainingReady": false
+}

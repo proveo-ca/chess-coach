@@ -1,0 +1,15 @@
+
+tooling/tests/workspace-integration.test.ts:
+(pass) product entrypoints remain present [0.32ms]
+(pass) workspace discovers product and ML packages with internal workspace links [8.72ms]
+(pass) product and ML commands coexist with pinned TypeScript and Bun types [0.30ms]
+(pass) ML typecheck does not replace application configs [0.18ms]
+(pass) Cargo members and Burn pin remain present without executing Rust [0.24ms]
+(pass) shared feature dimensions match Rust bindings [0.32ms]
+(pass) consolidation does not enable GPU training [0.07ms]
+(pass) architecture coverage matches spec headers and existing ROOT-scoped files or nonempty globs [2.36ms]
+
+ 8 pass
+ 0 fail
+ 1142 expect() calls
+Ran 8 tests across 1 file. [22.00ms]

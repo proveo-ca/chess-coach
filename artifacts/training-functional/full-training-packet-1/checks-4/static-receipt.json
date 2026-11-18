@@ -1,0 +1,71 @@
+{
+  "status": "PASS_FINAL_CORRECTED_PACKET_STATIC_SPECS",
+  "command": {
+    "argv": [
+      "/usr/local/bin/bun",
+      "--no-env-file",
+      "--no-install",
+      "artifacts/training-functional/check-specs.ts"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-4/specs.stdout",
+      "byteLength": 2252,
+      "sha256": "6ae0897b344be74f9b90079db1a54e7a667ce99c8f5e81e4904051b9c96fb79a"
+    },
+    "stderr": {
+      "path": "artifacts/training-functional/full-training-packet-1/checks-4/specs.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "sourcePinsBefore": [
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 179927,
+      "sha256": "0d105b533f6840d1173a68124ba83d1dfdd76f88db21f888ba484d58ede9e81e"
+    },
+    {
+      "path": "_spec/checkpoint-runtime.puml",
+      "byteLength": 13324,
+      "sha256": "d36a91aebeca20b95bc4325580c4056f523f429f4ef7d2c466e439c81b17bc99"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 146754,
+      "sha256": "7c547a32c6f985c3f77d1ade6904769298a88012a4e8226b4983142b7f35b3f1"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 54110,
+      "sha256": "de0e2d08599f5df3ea16346be26b7fb7c1cbbc2587aeb49917aa09056a5a61c1"
+    }
+  ],
+  "sourcePinsAfter": [
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 179927,
+      "sha256": "0d105b533f6840d1173a68124ba83d1dfdd76f88db21f888ba484d58ede9e81e"
+    },
+    {
+      "path": "_spec/checkpoint-runtime.puml",
+      "byteLength": 13324,
+      "sha256": "d36a91aebeca20b95bc4325580c4056f523f429f4ef7d2c466e439c81b17bc99"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 146754,
+      "sha256": "7c547a32c6f985c3f77d1ade6904769298a88012a4e8226b4983142b7f35b3f1"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 54110,
+      "sha256": "de0e2d08599f5df3ea16346be26b7fb7c1cbbc2587aeb49917aa09056a5a61c1"
+    }
+  ],
+  "sourcePinsMatch": true,
+  "nativePlantUmlRendered": false,
+  "renderSkipReason": "Java and remote-theme access remain outside Bun/TypeScript-or-Rust scope",
+  "trainingExecuted": false,
+  "publicationPerformed": false
+}

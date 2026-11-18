@@ -1,0 +1,19 @@
+{
+  "status": "PASS_ACTUAL_OID_LITERAL_HOST_COMMAND_GENERATION_AND_SYNTAX_ONLY",
+  "publicationCommit": "c60a45e1588fabf16c76da7127e160b17147dcf7",
+  "command": {
+    "path": "artifacts/training-functional/campaign-handoff-1/publication-1/HOST-command.sh",
+    "byteLength": 6572,
+    "sha256": "ecb22877df86530a4d7e35cf0e0e4a6c734208b201ac346802909298e858a37e"
+  },
+  "source": {
+    "path": "artifacts/training-functional/campaign-handoff-1/preflight.ts",
+    "byteLength": 8262,
+    "sha256": "c7e599332531b6d940f323a69768ec70a0e1a0e2b87cd5a632275afb59057559"
+  },
+  "planRequestSha256": "b322483ef22028f31170983ea6f50cb46c61e8481e86cc4e3db9cca922ca4331",
+  "syntaxOnly": true,
+  "actualHostCommandExecuted": false,
+  "actualHostMetadataCollected": false,
+  "trainingExecuted": false
+}

@@ -1,0 +1,261 @@
+
+_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:
+139 |   expect(sha256(rawProofs[snapshotPaths.haltedRequest]!)).toBe(snapshotPins.haltedRequest);
+140 |   expect(historicalProofPaths).toHaveLength(36); expect(historicalSourcePaths).toHaveLength(23); expect(historicalSnapshotPaths).toHaveLength(23);
+141 |   expect(reviewedFiles).toHaveLength(18); expect(proofPaths).toHaveLength(69); expect(new Set(proofPaths).size).toBe(proofPaths.length);
+142 |   expect(reviewedFiles).toContain("tsconfig.json"); expect(reviewedFiles).toContain(`${"_work/gpu-owner-recovery/"}command-supervisor.ts`);
+143 |   expect(historicalSnapshotPaths.every(path => path.endsWith(".source"))).toBe(true);
+144 |   expect(() => validateSnapshotRenewal(snapshotFixture())).not.toThrow();
+                                                                     ^
+error: expect(received).not.toThrow()
+
+Error name: "Error"
+Error message: "EXACT_ARCHIVE_HALT_DELTA_REQUIRED"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:144:64)
+(fail) snapshot wire identities, immutable halted transition and source/proof membership stay closed [6.24ms]
+(pass) renewal helper rejects any baseline scope, denial, unknown-field or non-JSON mutation [1.39ms]
+(pass) only the exact capture selector reaches any input or filesystem operation [2.88ms]
+(pass) halted, probe-only, missing, consumed, advanced or broadened requests reject before claim [49.52ms]
+(pass) review flags, hash, exact key membership and every current source fixture gate precede effects [30.22ms]
+(pass) all 69 historical proof and source-packet byte mutations reject even after rebinding their new hash [129.66ms]
+(pass) failed-plan flags and the exact UID-1001 guard diagnosis cannot become kernel or native evidence [9.71ms]
+43 | export const predecessorPaths = proofPaths;
+44 | const acceptanceFlags = ["staticUnitTestsPassed", "staticTypesPassed", "adversarialSourceAccepted", "securitySourceAccepted", "devopsSourceAccepted"] as const;
+45 | const outerBootstrapTrust = "EXISTING_C1_BUN_AND_MISE_BOOTSTRAP_ASSUMPTION_RETAINED_NOT_AUTHENTICATED_BY_GUEST_SNAPSHOT";
+46 | const encode = (value: string): Uint8Array => new TextEncoder().encode(value);
+47 | const parse = (bytes: Uint8Array): unknown => JSON.parse(new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes));
+48 | function need(condition: unknown, code: string): asserts condition { if (!condition) throw Error(code); }
+                                                                                                ^
+error: EXACT_ARCHIVE_HALT_DELTA_REQUIRED
+      at need (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.ts:48:92)
+      at validateSnapshotRenewal (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.ts:134:3)
+      at captureEngine (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.ts:280:40)
+      at async <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:226:92)
+(fail) held-FD capture orders source close, stage sync/chmod/sync/close, fresh verification and PASS-last hardlinks [2.36ms]
+249 |   for (const key of ["buildIsolationQualified", "custodyQualified", "llvmCodeExecuted", "cudaCompilationEstablished", "actualHostExecuted", "cudaGpuCodeExecuted", "trainingReady"]) expect(receipt[key]).toBe(false);
+250 |   expect(fake.events.at(-1)).toBe("link:receipt");
+251 | });
+252 | 
+253 | test("public capture cannot override the fixed 80,761,952-byte production identity with a small fixture", async () => {
+254 |   const fake = fakeIO(); await expect(captureBunSnapshot(["capture"], fake.io)).rejects.toThrow("SNAPSHOT_FILE_IDENTITY_REJECTED");
+                                                                                              ^
+error: expect(received).toThrow(expected)
+
+Expected substring: "SNAPSHOT_FILE_IDENTITY_REJECTED"
+Received message: "EXACT_ARCHIVE_HALT_DELTA_REQUIRED"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:254:89)
+(fail) public capture cannot override the fixed 80,761,952-byte production identity with a small fixture [1.95ms]
+256 | });
+257 | 
+258 | test("source reads enforce undersize, pre-write overrun and digest limits without retaining unbounded data", async () => {
+259 |   for (const [data, code] of [["ab", "SOURCE_SNAPSHOT_LENGTH_MISMATCH"], ["abcd", "SOURCE_SNAPSHOT_BYTE_LIMIT"], ["abd", "SOURCE_SNAPSHOT_DIGEST_MISMATCH"]]) {
+260 |     const fake = fakeIO(); fake.get(snapshotPaths.source).data = bytes(data!);
+261 |     await expect(runFake(fake)).rejects.toThrow(code); noPass(fake);
+                                              ^
+error: expect(received).toThrow(expected)
+
+Expected substring: "SOURCE_SNAPSHOT_LENGTH_MISMATCH"
+Received message: "EXACT_ARCHIVE_HALT_DELTA_REQUIRED"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:261:41)
+(fail) source reads enforce undersize, pre-write overrun and digest limits without retaining unbounded data [3.89ms]
+265 |   }
+266 | });
+267 | 
+268 | test("zero or invalid partial writes fail instead of looping, with both owned descriptors closed", async () => {
+269 |   const fake = fakeIO(); fake.setWriteLimit(0);
+270 |   await expect(runFake(fake)).rejects.toThrow("SNAPSHOT_PARTIAL_WRITE_FAILED");
+                                            ^
+error: expect(received).toThrow(expected)
+
+Expected substring: "SNAPSHOT_PARTIAL_WRITE_FAILED"
+Received message: "EXACT_ARCHIVE_HALT_DELTA_REQUIRED"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:270:39)
+(fail) zero or invalid partial writes fail instead of looping, with both owned descriptors closed [2.12ms]
+278 |   await expect(snapshotTestOnly.ancestors(snapshotPaths.source, fake.io)).rejects.toThrow("UNTRUSTED_SNAPSHOT_ANCESTOR");
+279 |   for (const [path, edit] of [
+280 |     ["/usr/local/bin", { gid: 1002 }], ["/usr/local/bin", { uid: 1002 }], ["/usr/local/bin", { mode: 0o40775 }],
+281 |     ["/usr/local/bin", { mode: 0o40750 }], ["/usr/local", { uid: 1001 }], ["/usr", { mode: 0o40777 }], ["/usr/local/bin", { mode: 0o120755 }],
+282 |   ] as const) {
+283 |     const bad = fakeIO(); changeStat(bad, path, edit); await expect(runFake(bad)).rejects.toThrow("UNTRUSTED_SNAPSHOT_ANCESTOR");
+                                                                                                ^
+error: expect(received).toThrow(expected)
+
+Expected substring: "UNTRUSTED_SNAPSHOT_ANCESTOR"
+Received message: "EXACT_ARCHIVE_HALT_DELTA_REQUIRED"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:283:91)
+(fail) only the source capture read admits exactly canonical /usr/local/bin UID/GID 1001 mode 0755 [3.27ms]
+290 | test("source must be canonical root-owned regular 0755 with the exact length before pending opens", async () => {
+291 |   for (const changes of [{ uid: 1000 }, { mode: 0o100775 }, { mode: 0o1004755 }, { mode: 0o40755 }, { mode: 0o120755 }, { bytes: 2 }, { bytes: 4 }]) {
+292 |     const fake = fakeIO(); changeStat(fake, snapshotPaths.source, changes); await expect(runFake(fake)).rejects.toThrow();
+293 |     expect(fake.events).not.toContain("open:pending"); noPass(fake);
+294 |   }
+295 |   const fake = fakeIO(); fake.realPaths.set(snapshotPaths.source, "/other/bun"); await expect(runFake(fake)).rejects.toThrow("SNAPSHOT_FD_PATH_MISMATCH");
+                                                                                                                           ^
+error: expect(received).toThrow(expected)
+
+Expected substring: "SNAPSHOT_FD_PATH_MISMATCH"
+Received message: "EXACT_ARCHIVE_HALT_DELTA_REQUIRED"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:295:118)
+(fail) source must be canonical root-owned regular 0755 with the exact length before pending opens [15.69ms]
+(pass) source FD, pathname and original ancestor identity changes fail before sealing or publication [7.99ms]
+317 |     ["sync:pending", 1], ["chmod:pending:500", 1], ["sync:pending", 2], ["close:pending", 1], ["open:pending", 2],
+318 |     ["read:pending:0", 1], ["close:pending", 2], ["link:final", 1], ["open:final", 1], ["read:final:0", 1], ["close:final", 1],
+319 |     ["open:receipt-stage", 1], ["write:receipt-stage:0", 1], ["sync:receipt-stage", 1], ["close:receipt-stage", 1], ["link:receipt", 1]];
+320 |   for (const [point, occurrence] of points) {
+321 |     const fake = fakeIO(), failure = Error(`FAIL_${point}_${occurrence}`); fake.failAt(point, failure, occurrence);
+322 |     expect(await rejection(runFake(fake))).toBe(failure); noPass(fake);
+                                                 ^
+error: expect(received).toBe(expected)
+
+Expected: 316 |     ["mkdir:attempt", 1], ["open:source", 1], ["open:pending", 1], ["read:source:0", 1], ["write:pending:0", 1], ["close:source", 1],
+317 |     ["sync:pending", 1], ["chmod:pending:500", 1], ["sync:pending", 2], ["close:pending", 1], ["open:pending", 2],
+318 |     ["read:pending:0", 1], ["close:pending", 2], ["link:final", 1], ["open:final", 1], ["read:final:0", 1], ["close:final", 1],
+319 |     ["open:receipt-stage", 1], ["write:receipt-stage:0", 1], ["sync:receipt-stage", 1], ["close:receipt-stage", 1], ["link:receipt", 1]];
+320 |   for (const [point, occurrence] of points) {
+321 |     const fake = fakeIO(), failure = Error(`FAIL_${point}_${occurrence}`); fake.failAt(point, failure, occurrence);
+                                           ^
+error: FAIL_open:operation_1
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:321:38)
+
+Received: 43 | export const predecessorPaths = proofPaths;
+44 | const acceptanceFlags = ["staticUnitTestsPassed", "staticTypesPassed", "adversarialSourceAccepted", "securitySourceAccepted", "devopsSourceAccepted"] as const;
+45 | const outerBootstrapTrust = "EXISTING_C1_BUN_AND_MISE_BOOTSTRAP_ASSUMPTION_RETAINED_NOT_AUTHENTICATED_BY_GUEST_SNAPSHOT";
+46 | const encode = (value: string): Uint8Array => new TextEncoder().encode(value);
+47 | const parse = (bytes: Uint8Array): unknown => JSON.parse(new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes));
+48 | function need(condition: unknown, code: string): asserts condition { if (!condition) throw Error(code); }
+                                                                                                ^
+error: EXACT_ARCHIVE_HALT_DELTA_REQUIRED
+      at need (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.ts:48:92)
+      at validateSnapshotRenewal (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.ts:134:3)
+      at captureEngine (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.ts:280:40)
+      at async rejection (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:50:15)
+      at async <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:322:18)
+
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:322:44)
+(fail) operation, source, write, sync, chmod, close, reopen, publication and final verification failures never publish PASS [3.75ms]
+330 |   for (const failure of [Error("FIRST_WRITE_FAILURE"), "", undefined, null]) {
+331 |     const fake = fakeIO(); fake.setHook(event => {
+332 |       if (event === "write:pending:0") throw failure;
+333 |       if (event === "close:source" || event === "close:pending") throw Error("LATER_CLOSE_FAILURE");
+334 |     });
+335 |     expect(await rejection(runFake(fake))).toBe(failure); noPass(fake);
+                                                 ^
+error: expect(received).toBe(expected)
+
+Expected: 325 |     if (point === "sync:receipt-stage" || point === "close:receipt-stage") expect(fake.events).not.toContain("link:receipt");
+326 |   }
+327 | });
+328 | 
+329 | test("first failure survives source and stage cleanup errors, including an empty-string first failure", async () => {
+330 |   for (const failure of [Error("FIRST_WRITE_FAILURE"), "", undefined, null]) {
+                               ^
+error: FIRST_WRITE_FAILURE
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:330:26)
+
+Received: 43 | export const predecessorPaths = proofPaths;
+44 | const acceptanceFlags = ["staticUnitTestsPassed", "staticTypesPassed", "adversarialSourceAccepted", "securitySourceAccepted", "devopsSourceAccepted"] as const;
+45 | const outerBootstrapTrust = "EXISTING_C1_BUN_AND_MISE_BOOTSTRAP_ASSUMPTION_RETAINED_NOT_AUTHENTICATED_BY_GUEST_SNAPSHOT";
+46 | const encode = (value: string): Uint8Array => new TextEncoder().encode(value);
+47 | const parse = (bytes: Uint8Array): unknown => JSON.parse(new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes));
+48 | function need(condition: unknown, code: string): asserts condition { if (!condition) throw Error(code); }
+                                                                                                ^
+error: EXACT_ARCHIVE_HALT_DELTA_REQUIRED
+      at need (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.ts:48:92)
+      at validateSnapshotRenewal (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.ts:134:3)
+      at captureEngine (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.ts:280:40)
+      at async rejection (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:50:15)
+      at async <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:335:18)
+
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:335:44)
+(fail) first failure survives source and stage cleanup errors, including an empty-string first failure [2.68ms]
+341 | 
+342 | test("existing attempt directories, identical destinations, operation markers and consumed successful captures never replay", async () => {
+343 |   for (const finalPresent of [false, true]) {
+344 |     const fake = fakeIO(); fake.addDirectory(abs(snapshotPaths.attemptDirectory), 0o40700);
+345 |     if (finalPresent) fake.addFile(abs(snapshotPaths.destination), bytes("abc"), 0o100500);
+346 |     await expect(runFake(fake)).rejects.toThrow("EEXIST"); noPass(fake); expect(fake.events).not.toContain("open:source");
+                                              ^
+error: expect(received).toThrow(expected)
+
+Expected substring: "EEXIST"
+Received message: "EXACT_ARCHIVE_HALT_DELTA_REQUIRED"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:346:41)
+(fail) existing attempt directories, identical destinations, operation markers and consumed successful captures never replay [2.19ms]
+351 |   expect(fake.get(abs(snapshotPaths.destination)).data).toEqual(bytes("abc"));
+352 | });
+353 | 
+354 | test("an independently appearing final path rejects exclusive publication even with identical bytes", async () => {
+355 |   const fake = fakeIO(); fake.setHook(event => { if (event === "link:final") fake.addFile(abs(snapshotPaths.destination), bytes("abc"), 0o100500); });
+356 |   await expect(runFake(fake)).rejects.toThrow("EEXIST"); noPass(fake);
+                                            ^
+error: expect(received).toThrow(expected)
+
+Expected substring: "EEXIST"
+Received message: "EXACT_ARCHIVE_HALT_DELTA_REQUIRED"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:356:39)
+(fail) an independently appearing final path rejects exclusive publication even with identical bytes [2.00ms]
+361 |   for (const [path, changes] of [[abs(snapshotPaths.cache), { mode: 0o40755 }], [abs(snapshotPaths.cache), { uid: 0 }],
+362 |     [abs(snapshotPaths.runDirectory), { mode: 0o40750 }], [abs(snapshotPaths.runDirectory), { uid: 1001 }], [abs(`${"_work/gpu-owner-recovery"}`), { uid: 1001 }]] as const) {
+363 |     const fake = fakeIO(); changeStat(fake, path, changes); await expect(runFake(fake)).rejects.toThrow(); noPass(fake);
+364 |     expect(fake.events).not.toContain("open:operation"); expect(fake.events).not.toContain("mkdir:attempt");
+365 |   }
+366 |   const missing = fakeIO(); missing.nodes.delete(abs(snapshotPaths.runDirectory)); await expect(runFake(missing)).rejects.toThrow("ENOENT");
+                                                                                                                                ^
+error: expect(received).toThrow(expected)
+
+Expected substring: "ENOENT"
+Received message: "EXACT_ARCHIVE_HALT_DELTA_REQUIRED"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:366:123)
+(fail) cache, outside-created run and destination ancestors require canonical private current-UID placement without the capture exception [11.75ms]
+(pass) staged mode, inode, owner, byte and ancestor mutations block hardlink publication [10.44ms]
+(pass) post-verification pending replacement and changed fresh authority block publication [3.85ms]
+(pass) final fresh hash, mode, link identity, FD/path and ancestor checks precede evidence creation [11.75ms]
+418 |   const fake = fakeIO(), actual = fake.io.link;
+419 |   const io = { ...fake.io, async link(from: string, to: string) {
+420 |     await actual(from, to);
+421 |     if (to === abs(snapshotPaths.destination)) fake.nodes.set(to, { identity: { ...fake.get(from).identity, inode: "copied" }, data: fake.get(from).data.slice() });
+422 |   } };
+423 |   await expect(snapshotTestOnly.capture(io)).rejects.toThrow("SNAPSHOT_HARDLINK_IDENTITY_REQUIRED"); noPass(fake);
+                                                           ^
+error: expect(received).toThrow(expected)
+
+Expected substring: "SNAPSHOT_HARDLINK_IDENTITY_REQUIRED"
+Received message: "EXACT_ARCHIVE_HALT_DELTA_REQUIRED"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:423:54)
+(fail) a false two-copy link adapter cannot satisfy the same-inode publication contract [3.02ms]
+(pass) small proof adapter handles exact bounded regular inputs with no source-ancestor exception [6.66ms]
+(pass) small proof adapter enforces FD/path, overrun, changing ancestors and first close-failure ordering [5.03ms]
+43 | export const predecessorPaths = proofPaths;
+44 | const acceptanceFlags = ["staticUnitTestsPassed", "staticTypesPassed", "adversarialSourceAccepted", "securitySourceAccepted", "devopsSourceAccepted"] as const;
+45 | const outerBootstrapTrust = "EXISTING_C1_BUN_AND_MISE_BOOTSTRAP_ASSUMPTION_RETAINED_NOT_AUTHENTICATED_BY_GUEST_SNAPSHOT";
+46 | const encode = (value: string): Uint8Array => new TextEncoder().encode(value);
+47 | const parse = (bytes: Uint8Array): unknown => JSON.parse(new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes));
+48 | function need(condition: unknown, code: string): asserts condition { if (!condition) throw Error(code); }
+                                                                                                ^
+error: EXACT_ARCHIVE_HALT_DELTA_REQUIRED
+      at need (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.ts:48:92)
+      at validateSnapshotRenewal (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.ts:134:3)
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cuda-bun-snapshot.test.ts:456:53)
+(fail) readSnapshotInputs uses the fixed complete binding lists through the bounded read-only adapter [33.09ms]
+(pass) snapshot tasks-only config requires exact raw TOML and the private environment changes only the filename [0.65ms]
+(pass) Mise's exported consumer gates exact-leaf trust, sole discovery and only the fixed capture task [0.94ms]
+(pass) every Mise failure, including empty failure text, stops without discovery, capture, retries or fallback [1.11ms]
+(pass) Mise discovery rejects ambient configs, tools, malformed and extra results before capture [0.54ms]
+(pass) snapshot source has no native child, network, archive imports, general installer, retries, timers or cleanup [0.40ms]
+
+ 17 pass
+ 14 fail
+ 479 expect() calls
+Ran 31 tests across 1 file. [388.00ms]

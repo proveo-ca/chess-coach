@@ -1,0 +1,28 @@
+{
+  "status": "RESEARCH_COMPLETE_UPSTREAM_BTRFS_STATFS_COUNTER_BEHAVIOR",
+  "scope": "READ_ONLY_UPSTREAM_SOURCE_NOT_INSTALLED_HOST_KERNEL_ATTESTATION",
+  "references": [
+    {
+      "url": "https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/linux/magic.h",
+      "symbol": "BTRFS_SUPER_MAGIC",
+      "hex": "0x9123683E",
+      "decimal": "2435016766"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/torvalds/linux/master/fs/btrfs/super.c",
+      "function": "btrfs_statfs",
+      "functionFound": true,
+      "assignsFileOrFreeEntryCounters": false,
+      "availableByteAccountingUsesMetadataReserveHeuristics": true
+    }
+  ],
+  "hostKernelVersionVerified": false,
+  "freeEntryCapacityProved": false,
+  "metadataReserveFormulaEstablished": false,
+  "planningRequiredFreeEntries": "835600",
+  "planningBoundIsClaimedAsEnforcedRuntimeEntryCap": false,
+  "existingAdmissionRuleReplacedOrWaived": false,
+  "nextBoundary": "EXECUTOR_ENTRY_POLICY_CHOICE",
+  "hostOperationsExecuted": false,
+  "trainingExecuted": false
+}

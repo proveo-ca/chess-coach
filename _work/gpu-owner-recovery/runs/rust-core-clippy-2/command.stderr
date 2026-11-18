@@ -1,0 +1,23 @@
+    Checking chess-coach-gpu-owner v0.1.0 (/home/gu1lty/Projects/proveo/chess-coach/crates/gpu-owner)
+error: this `if` statement can be collapsed
+  --> crates/gpu-owner/tests/support/mod.rs:71:9
+   |
+71 | /         if std::thread::panicking() {
+72 | |             if let Some(temp) = self.0.take() {
+73 | |                 eprintln!("preserved lifecycle fixture: {}", temp.keep().display());
+74 | |             }
+75 | |         }
+   | |_________^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+   = note: `-D clippy::collapsible-if` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::collapsible_if)]`
+help: collapse nested if block
+   |
+71 ~         if std::thread::panicking()
+72 ~             && let Some(temp) = self.0.take() {
+73 |                 eprintln!("preserved lifecycle fixture: {}", temp.keep().display());
+74 ~             }
+   |
+
+error: could not compile `chess-coach-gpu-owner` (test "lifecycle") due to 1 previous error

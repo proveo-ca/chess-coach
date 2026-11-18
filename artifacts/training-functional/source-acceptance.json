@@ -1,0 +1,175 @@
+{
+  "status": "PASS_FUNCTIONAL_SOURCE_SLICE_ONLY",
+  "baselineCommit": "b7d4eae58288bfbac3b5f947f524b2342b1b9fa3",
+  "decision": {
+    "path": "artifacts/training-functional/plan.json",
+    "kind": "file",
+    "sizeBytes": 3336,
+    "mode": 420,
+    "sha256": "b464a174b03a058764be9c779e3eb12b5a5e5e066a7f4ac574487f68e3fee9c5"
+  },
+  "implementation": {
+    "coordinatorRelease": "Preserve failed-session scratch; invoke release at most once",
+    "campaign": "One-shot serial masters101..105, exactly1000 verified attempts each, existing terminal validity and finalization",
+    "canonicalObserver": "Prepared; injected local tests only",
+    "integratedR4": "BLOCKED_DATA_ONLY_PREPARATION_NOT_EXECUTABLE_QUALIFICATION"
+  },
+  "verification": {
+    "gates": 9,
+    "typechecks": 3,
+    "counts": {
+      "focused": 65,
+      "runtime": 62,
+      "contracts": 25,
+      "workspace": 8
+    },
+    "totalTests": 160,
+    "currentSourcePins": 316,
+    "receipts": [
+      {
+        "path": "artifacts/training-functional/checks/final-2/focused/receipt.json",
+        "kind": "file",
+        "sizeBytes": 143111,
+        "mode": 420,
+        "sha256": "b5f015436fbb803871034cb04aff14a6066a3d19f6fdf1195e9c3b4712f6f348"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-2/runtime/receipt.json",
+        "kind": "file",
+        "sizeBytes": 143296,
+        "mode": 420,
+        "sha256": "dba39511572582047fc52dbf9c3875f4dc1f4037c69a73dde636c40e86ea85f6"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-2/contracts/receipt.json",
+        "kind": "file",
+        "sizeBytes": 143123,
+        "mode": 420,
+        "sha256": "5afcf93fab9485e37311d78ec1e39dfe705f01436ee7b62154e548b0ad62cc63"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-2/source-types/receipt.json",
+        "kind": "file",
+        "sizeBytes": 142910,
+        "mode": 420,
+        "sha256": "78d4e6a80076f833d80d8ead02e4a3494f9943de7f007635701681e185db6aa7"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-2/test-types/receipt.json",
+        "kind": "file",
+        "sizeBytes": 142913,
+        "mode": 420,
+        "sha256": "bdecd145ad7b29650696509a7aa6737a3cd72f198e0bc6756ec53c28e4c0caac"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-2/task-types/receipt.json",
+        "kind": "file",
+        "sizeBytes": 142937,
+        "mode": 420,
+        "sha256": "99b38c834f8ea6b4d262a77dc5d7cb3e241f991c08892f78dec7aa78677c1712"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-2/workspace/receipt.json",
+        "kind": "file",
+        "sizeBytes": 142886,
+        "mode": 420,
+        "sha256": "a3141a73a58c98415cd899505071263841a67d172dd033dd21cd10ffca3b7027"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-2/preservation/receipt.json",
+        "kind": "file",
+        "sizeBytes": 143033,
+        "mode": 420,
+        "sha256": "b24effed6f65dd8fe10d0c18d93f52b403fc8ef986e08c5bc69ec3f817067fc2"
+      },
+      {
+        "path": "artifacts/training-functional/checks/final-2/specs/receipt.json",
+        "kind": "file",
+        "sizeBytes": 142871,
+        "mode": 420,
+        "sha256": "e4898fa0eb299fbc390d5a7ed3bdec55c9a920bed3decf832b5307b1a1500d0a"
+      }
+    ],
+    "postRefreshSpecs": {
+      "path": "artifacts/training-functional/checks/post-docs-1/specs/receipt.json",
+      "kind": "file",
+      "sizeBytes": 142880,
+      "mode": 420,
+      "sha256": "5dff1d33c8d1a940ceacfd6ff3fc774840f22d6a984349df9a25dead65c1aa49"
+    },
+    "nativeCommentBridge": {
+      "path": "artifacts/training-functional/checks/final-2/preservation/native-comment-bridge.json",
+      "kind": "file",
+      "sizeBytes": 19712,
+      "mode": 420,
+      "sha256": "2d09df20f395457f229735a7ef4a27e7b25ab56d889bbc64bd69c40405ff9290"
+    },
+    "historicalTrackedFilesUnchanged": 6431,
+    "priorFailuresPreserved": [
+      "preparation-1",
+      "preparation-2",
+      "preparation-3",
+      "final-1/test-types",
+      "runtime-functional-sol/coordinator-red"
+    ]
+  },
+  "documentPins": [
+    {
+      "path": "_spec/readiness.md",
+      "kind": "file",
+      "sizeBytes": 112419,
+      "mode": 420,
+      "sha256": "3d432e38104deb22a642451f7adf0b502e1d16346abfd081cc04a1b5c0491bc7"
+    },
+    {
+      "path": "_spec/checkpoint-runtime.puml",
+      "kind": "file",
+      "sizeBytes": 8463,
+      "mode": 420,
+      "sha256": "a76619b2655f49d7889d70349ee68e69d20b09e5d229c4378b89ffade8ed0f84"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "kind": "file",
+      "sizeBytes": 75296,
+      "mode": 420,
+      "sha256": "ab646fa8c341baeba3f0e09a3176a1628c7a76b66cec6bc3ef272dace2188aa0"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "kind": "file",
+      "sizeBytes": 53151,
+      "mode": 420,
+      "sha256": "d4e07293629717e6579cee823e2c14e5a0290f8a337eec5a1fb14e5f1f6fde65"
+    }
+  ],
+  "reviews": {
+    "path": "artifacts/training-functional/reviews.json",
+    "kind": "file",
+    "sizeBytes": 1052,
+    "mode": 420,
+    "sha256": "24f2de57a16152d99e07a5040cb707b38f49cf36da276b1b44480e230ad110ab"
+  },
+  "inputStatus": {
+    "path": "artifacts/training-functional/input-status.json",
+    "kind": "file",
+    "sizeBytes": 1614,
+    "mode": 420,
+    "sha256": "de94aefcc6695875743645f11fe5580a94b72c1c4f72acba0c386c55348c4db4"
+  },
+  "outstanding": [
+    "Exact independent-reference package input delivery and six bundle builds",
+    "Actual canonical BOTH independent-reference natural-close qualification",
+    "Executable integrated native R4 qualification",
+    "Selected HOST campaign launch and cooperative GPU qualification",
+    "Explicit functional evidence acceptance"
+  ],
+  "nativeExecuted": false,
+  "hostExecuted": false,
+  "gpuExecuted": false,
+  "referenceBuilt": false,
+  "trainingExecuted": false,
+  "trainingReady": false,
+  "committed": false,
+  "pushed": false
+}

@@ -1,0 +1,232 @@
+{
+  "version": "chess-coach.qualification-input-publication.v1",
+  "publicationScope": "SOURCE_ONLY",
+  "status": "PASS",
+  "failure": null,
+  "failedStep": null,
+  "elapsedMs": 5045.911266,
+  "attempts": {
+    "commit": 1,
+    "push": 1,
+    "createRelease": 0,
+    "upload": 0,
+    "validateFrozen": 3,
+    "commitManifest": 0,
+    "checkTransport": 2,
+    "checkOrigin": 6,
+    "checkIdentity": 1
+  },
+  "operations": [
+    {
+      "step": "branch",
+      "kind": "command",
+      "timeoutMs": 599999,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "origin-fetch",
+      "kind": "callback",
+      "timeoutMs": 599977,
+      "status": "PASS"
+    },
+    {
+      "step": "origin-push",
+      "kind": "callback",
+      "timeoutMs": 599970,
+      "status": "PASS"
+    },
+    {
+      "step": "https-transport-preflight",
+      "kind": "callback",
+      "timeoutMs": 599969,
+      "status": "PASS"
+    },
+    {
+      "step": "identity-preflight",
+      "kind": "callback",
+      "timeoutMs": 599964,
+      "status": "PASS"
+    },
+    {
+      "step": "permission",
+      "kind": "command",
+      "timeoutMs": 599962,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/gh",
+        "api",
+        "repos/proveo-ca/chess-coach",
+        "--jq",
+        "{full_name,private,permissions}"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "index",
+      "kind": "command",
+      "timeoutMs": 599056,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "diff",
+        "--cached",
+        "--name-only",
+        "--"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "freeze-before-commit",
+      "kind": "callback",
+      "timeoutMs": 599038,
+      "status": "PASS"
+    },
+    {
+      "step": "commit",
+      "kind": "command",
+      "timeoutMs": 599025,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "commit",
+        "-m",
+        "chore: prepare host feasibility inputs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "head",
+      "kind": "command",
+      "timeoutMs": 598996,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "rev-parse",
+        "--verify",
+        "HEAD"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "freeze-after-commit",
+      "kind": "callback",
+      "timeoutMs": 598983,
+      "status": "PASS"
+    },
+    {
+      "step": "branch-before-push",
+      "kind": "command",
+      "timeoutMs": 598577,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "origin-fetch-before-push",
+      "kind": "callback",
+      "timeoutMs": 598565,
+      "status": "PASS"
+    },
+    {
+      "step": "origin-push-before-push",
+      "kind": "callback",
+      "timeoutMs": 598563,
+      "status": "PASS"
+    },
+    {
+      "step": "https-transport-before-push",
+      "kind": "callback",
+      "timeoutMs": 598563,
+      "status": "PASS"
+    },
+    {
+      "step": "push",
+      "kind": "command",
+      "timeoutMs": 598562,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "push",
+        "https://github.com/proveo-ca/chess-coach.git",
+        "98749410eda3dcadd7a210d3ddb1ac097a9ba13d:refs/heads/feat-ml-adjuntant-ii"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "head-after-push",
+      "kind": "command",
+      "timeoutMs": 595369,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "rev-parse",
+        "--verify",
+        "HEAD"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "branch-before-publication",
+      "kind": "command",
+      "timeoutMs": 595357,
+      "status": "PASS",
+      "argv": [
+        "/usr/bin/git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0
+    },
+    {
+      "step": "origin-fetch-before-publication",
+      "kind": "callback",
+      "timeoutMs": 595344,
+      "status": "PASS"
+    },
+    {
+      "step": "origin-push-before-publication",
+      "kind": "callback",
+      "timeoutMs": 595343,
+      "status": "PASS"
+    },
+    {
+      "step": "freeze-before-publication",
+      "kind": "callback",
+      "timeoutMs": 595342,
+      "status": "PASS"
+    }
+  ],
+  "transportChecks": [
+    {
+      "allowed": true,
+      "rules": 0,
+      "failure": null
+    },
+    {
+      "allowed": true,
+      "rules": 0,
+      "failure": null
+    }
+  ],
+  "commitSucceeded": true,
+  "sourceCommit": "98749410eda3dcadd7a210d3ddb1ac097a9ba13d",
+  "pushedCommit": "98749410eda3dcadd7a210d3ddb1ac097a9ba13d",
+  "releaseId": null,
+  "releaseDraft": null,
+  "assets": [],
+  "uploadedAssets": [],
+  "verifiedAssets": [],
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

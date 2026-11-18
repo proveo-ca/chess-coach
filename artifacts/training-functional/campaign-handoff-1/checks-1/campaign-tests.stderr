@@ -1,0 +1,48 @@
+
+artifacts/training-functional/campaign-plan.test.ts:
+(pass) selected 18-day envelope is explicit, inert and separate from occupied qualification roots [0.54ms]
+(pass) an unset budget cannot produce invocation deadlines [0.12ms]
+(pass) rejects incompatible envelope {"workMs":800000,"inactivityMs":800001} [0.05ms]
+(pass) rejects incompatible envelope {"cleanupMs":1}
+(pass) rejects incompatible envelope {"inactivityMs":300000} [0.03ms]
+(pass) rejects incompatible envelope {"workMs":null}
+(pass) rejects incompatible envelope {"workspaceBytes":2147483648}
+(pass) rejects incompatible envelope {"minimumFreeBytes":274877906944}
+(pass) rejects incompatible envelope {"validationMs":1}
+(pass) rejects incompatible envelope {"workMs":2147483647} [0.02ms]
+(pass) one origin fixes work, validation and cleanup deadlines without renewal [0.14ms]
+(pass) no CLI mode, readiness flag, stale approval or GPUv1 grant substitutes for fresh campaign approval [0.11ms]
+(pass) new closure extends, never mutates, immutable 108-file qualification generation [1.20ms]
+
+artifacts/training-functional/campaign-operator.e2e.test.ts:
+(pass) MOCK imports and plan remain inert; CLI arguments do not grant execution [1.67ms]
+(pass) MOCK unapproved operator and worker perform zero IO [2.71ms]
+(pass) MOCK inherited container controls use only fresh writable roots and readonly retained caches [0.15ms]
+(pass) MOCK one actual campaign class drives 5000 serial attempts, five CPU initializers and one close/finalize [2426.94ms]
+(pass) MOCK factory/coordinator constructor failure never starts the campaign or closes an unreturned owner [0.74ms]
+(pass) MOCK campaign constructor failure closes the acquired coordinator exactly once [0.61ms]
+(pass) MOCK failed initializer closes once without attempts or result validation [0.39ms]
+(pass) MOCK first-attempt failure preserves one-close/no-finalization ownership [0.46ms]
+(pass) MOCK a renewed invocation fails before context, initializer or owner creation [0.24ms]
+(pass) MOCK changed prepared bytes fail before qualification input evaluation [1.23ms]
+(pass) MOCK natural completion uses the original selected deadlines and a compact report [1.86ms]
+(pass) MOCK existing roots and insufficient bytes/inodes reject before GPU, Docker or root creation [3.11ms]
+(pass) MOCK GPU failure stops only the newly owned CID and preserves the original deadline [0.68ms]
+(pass) MOCK telemetry never renews inactivity without verified or validation progress [4.19ms]
+(pass) MOCK increasing verified progress, then validation progress, renews only inactivity [0.67ms]
+(pass) MOCK compact monitoring passes the old 401-query qualification cap without renewing outer deadlines [4.20ms]
+(pass) MOCK a late monitoring failure remains a failure after natural container exit [0.44ms]
+(pass) MOCK soft workspace excess fails without adopting another root or container [0.36ms]
+(pass) MOCK stalled progress IO cannot suspend GPU staleness and inactivity monitoring [0.44ms]
+(pass) MOCK stalled workspace IO fails within one check interval rather than the multi-day outer envelope [0.32ms]
+(pass) MOCK final worker-report IO expires while leaving time for owned CID removal [0.35ms]
+(pass) MOCK telemetry opens before container creation and closes once after owned cleanup [0.35ms]
+(pass) repository-local telemetry symlink replacement cannot redirect retained-descriptor writes [1.34ms]
+(pass) repository-local progress accepts a stable old snapshot across atomic replacement [3.41ms]
+(pass) repository-local workspace traversal tolerates removed scratch entries and directories [1.05ms]
+(pass) MOCK unknown create output never grants container ownership [0.42ms]
+
+ 39 pass
+ 0 fail
+ 914 expect() calls
+Ran 39 tests across 2 files. [2.87s]

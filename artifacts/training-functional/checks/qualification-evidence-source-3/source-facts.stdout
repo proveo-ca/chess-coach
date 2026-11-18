@@ -1,0 +1,51 @@
+{
+  "scope": "SOURCE_BYTES_AND_LOCAL_VERIFICATION_STREAMS_ONLY_NOT_RUNTIME_QUALIFICATION",
+  "cacheAdded": false,
+  "files": [
+    {
+      "path": "artifacts/training-functional/qualification-evidence.ts",
+      "byteLength": 54645,
+      "sha256": "55dd89577183eddecced460eb2666c2074c54676504bd016293bc9449ecd58b8"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-evidence.test.ts",
+      "byteLength": 53373,
+      "sha256": "22c35657ffdaa1bb857b07ff9745ac16f5c75f9c453604601683d67bda4894ac"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/tests-final.stdout",
+      "byteLength": 1388,
+      "sha256": "931d455295362b5cfd37bc38a76e6ed79acef46e64e2a21b98a6221f76b52c8c"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/tests-final.stderr",
+      "byteLength": 141,
+      "sha256": "850e660573e6ba19930bf2fa12278c2fac61dbbae8b87e8db77ddff4b41bfd81"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/typecheck-final.stdout",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/checks/qualification-evidence-source-3/typecheck-final.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/tsconfig.json",
+      "byteLength": 145,
+      "sha256": "64e66b484c47a3d87257ec9884e45fc1c2181e6ada8cf31b89de4bdf5d1df046"
+    },
+    {
+      "path": "tsconfig.tests.json",
+      "byteLength": 377,
+      "sha256": "7f0eda964089e3723c0cb05bacd89a8613979af1f8c66c7ce14250bb32eaaade"
+    },
+    {
+      "path": "tsconfig.json",
+      "byteLength": 493,
+      "sha256": "7fc5cd6510ef19ff9ec20e39e76f14f5bc97aa71f6bf5508062a84951e1c561e"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "purpose": "Prepare one bounded canonical and two-attempt native R4 operator packet without executing it",
+  "classification": ["non-trivial", "backend", "infrastructure", "spec-impacting", "source-only"],
+  "decisionSource": "Executor selected Prepare qualification packet (Recommended) after receiving HOST facts",
+  "baseCommit": "6a77f4c637f1d44260d5787c57a57b34fbffd754",
+  "architecture": "ses_e17762499ffeQ92N35OOxby7is",
+  "backendAdvisory": "ses_e17762498ffeGNbKYbkyn7GujT",
+  "devopsAdvisory": "ses_e17762492ffeWzSrWQur5wTJoz",
+  "currentAuthority": "SOURCE_PREPARATION_AND_BOUNDED_LOCAL_MOCK_VERIFICATION_ONLY",
+  "hostFacts": {
+    "path": "artifacts/training-functional/host-facts-1/operator-result-1.json",
+    "sha256": "4128e7b587c40da0073c99ff86ab6711981ffc69423a74e4d41fd8870432bfd7",
+    "provenance": "USER_PASTED_JSON_NOT_DIRECT_ASSISTANT_HOST_CAPTURE",
+    "reportedStatus": "PARTIAL",
+    "okGroups": 10,
+    "reportedElapsedMs": 98.516012,
+    "onlyFailedGroup": "runtime-zod-packages",
+    "zod": "Missing root alias only; contracts and pnpm package metadata report4.6.7; no installation requirement inferred",
+    "cachedBun": "1.4.0",
+    "gpuFreeMiB": 7733,
+    "gpuTotalMiB": 8192,
+    "diskFreeBytes": "168927711232",
+    "resourcesReserved": false,
+    "factsRetryConsumed": 1,
+    "factsRetriesRemaining": 0
+  },
+  "sourceSlice": [
+    "Optional passive fourth observation callback on FixedAttemptFactory, preserving existing defaults",
+    "Two task-local builtin-only Bun native adapters with fixed environment and transparent protocol streams",
+    "Retained canonical/native/journal/history/model/SQLite evidence checker",
+    "One operator and worker composition with fixed inputs, bounds, cooperative monitoring, and mocked e2e tests"
+  ],
+  "preservedContracts": {
+    "ordinaryGpuMains": "UNCHANGED_OFF",
+    "gpuV1": "UNCHANGED_MASTER101_ORDINAL0",
+    "campaign": "UNCHANGED_FIVE_MASTERS101_TO105_EXACTLY1000_ATTEMPTS_EACH",
+    "nativeNumerics": "F64; all4670 coordinates; eps1e-6; atol1e-8; rtol1e-5; distinct C12 assertions; CPU Flex initialization unchanged",
+    "nativeBridge": "59 exact current hashes plus six exact SPEC first-line inverses; no native mathematical code change",
+    "rawR4Observation": "COMPOSITION_ONLY_INPUTS_UNQUALIFIED; qualified:false",
+    "zeroLogits": "Allowed by preserved zero-initialized output layer; require finite bound scores and separate nonzero-PG update exercise",
+    "pairedProposals": "Compare existing parameter digest/objective/sample/nonzero-PG semantics, not serialized record byte equality",
+    "transportEnvironments": "Do not change ProcessTransport, MatchProcess, or FrozenScorer environment APIs"
+  },
+  "proposedFutureExecutionOnly": {
+    "authority": "NOT_GRANTED",
+    "automaticRetry": false,
+    "outerMs": 800000,
+    "origin": "Before startup GPU query; includes administration and cleanup without renewal",
+    "canonical": {"workMs": 10000, "originalFailureCleanupMs": 300000, "stopAfterFailure": true},
+    "cpuInitializer": {"master": 101, "invocations": 1, "ms": 10000, "stdoutBytes": 1048576, "stderrBytes": 65536},
+    "preparationMs": 10000,
+    "r4": {"master": 101, "attemptIds": ["r4-m101-a0000", "r4-m101-a0001"], "schedule": ["corpus-black", "live-white"], "startupMs": 10000, "workMs": 297000, "cleanupMs": 300000, "finalizeOrCampaign": false},
+    "readbackAndReceiptMs": 60000,
+    "container": {"count": 1, "image": "docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb", "pull": "never", "network": "none", "cpus": 2, "memoryBytes": 8589934592, "memorySwapBytes": 8589934592, "user": "1000:1000", "gpuUuid": "GPU-713c95e0-6952-a576-794b-9ef1fb527ff0", "maximumDockerOperations": 7},
+    "cooperation": {"startupFreeBytes": 3221225472, "runningFreeBytes": 2147483648, "intervalMs": 2000, "queryMs": 1000, "maximumSampleAgeMs": 4000, "maximumQueries": 401, "vramReserved": false},
+    "nativeTrace": {"maximumEvents": 800, "maximumSerializedBytes": 1073741824, "includesFraming": true, "capacityScope": "PRACTICAL_CAP_NOT_A_GUARANTEE_FOR_EVERY_PROTOCOL_VALID_WORST_CASE", "overflow": "PRESERVE_PREFIX_AND_REPORT_INCOMPLETE_EVIDENCE_NOT_MATHEMATICAL_FAILURE"},
+    "workspaceSoftBytes": 2147483648,
+    "strictEscapedProcessAssurance": false
+  },
+  "delivery": {
+    "status": "PENDING_SEPARATE_EXPLICIT_APPROVAL",
+    "source": "Published base plus reviewed task delta into a fresh task workspace; never overwrite or switch the original dirty checkout",
+    "reference": "Six verified ignored local bundles are not published or delivered to HOST",
+    "referenceChoices": ["Transfer existing six bundles plus corpus/metadata/notices", "Separately approve offline input assembly and six bounded builds", "Hold execution"],
+    "dependencies": "Physical existing zod4.6.7 payload and fresh task-local workspace aliases; no package installation or original-root alias repair",
+    "bindings": "Hash actual bytes of all fourteen existing TrainingBindings document roles; no synthetic fixture labels in production"
+  },
+  "notAuthorized": ["HOST queries or execution", "containers", "native execution or GPU kernels/JIT", "source transfer or acquisition", "reference evaluation or rebuilding", "native builds", "installation", "numerical campaign reruns", "training", "commit", "push", "publication", "reuse of failed full1 writable cache or halted LLVM operations"],
+  "historicalData": "Preserve Source23/SourceIdentity3/seal6 APIs, helpers, all historical receipts and derived records, caches, partial workspaces, both reference-preparation generations, and the original checkout's five dirty files",
+  "hardening": "ALL security/privacy/isolation/custody/strict-stop/escape/crash/full-assurance work remains LAST after all planned training and validated results",
+  "trainingReady": false
+}

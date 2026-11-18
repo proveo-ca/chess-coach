@@ -1,0 +1,393 @@
+
+packages/runtime/tests/gpu-policy-conformance.test.ts:
+(pass) shared fixture has 33 unique closed traces with the portable v1 schema [1.06ms]
+(pass) portable conversion preserves raw numbers, invalid values, and unknown fields [0.44ms]
+(pass) shared policy: threshold_equality_and_refresh [1.55ms]
+(pass) shared policy: startup_headroom_terminal_first [0.18ms]
+(pass) shared policy: configuration_failure_before_origin_clock_and_method [0.05ms]
+(pass) shared range: origin_too_late_for_cleanup [0.04ms]
+(pass) shared clock: clock_rollback_before_repeated_admit [0.09ms]
+(pass) shared policy: cadence_equality_before_replacement [0.06ms]
+(pass) shared policy: age_equality_before_cadence [0.05ms]
+(pass) shared policy: work_equality_before_old_expiry_and_sample [0.05ms]
+(pass) shared policy: device_before_sample_time [0.03ms]
+(pass) shared policy: repeated_sample_order_before_capacity [0.14ms]
+(pass) shared range: i64_latest_origin_wide_add_before_clamp [0.20ms]
+(pass) shared range: raw_number_is_not_bigint [0.07ms]
+(pass) shared policy: cold_deadline_equality_before_telemetry [0.26ms]
+(pass) shared policy: cold_deadline_last_nanosecond [0.24ms]
+(pass) shared policy: awaiting_observe_and_terminal [0.04ms]
+(pass) shared policy: awaiting_check_before_cold_deadline [0.05ms]
+(pass) shared policy: repeated_admit_before_deadline_and_sample [0.06ms]
+(pass) shared policy: sample_time_before_capacity [0.03ms]
+(pass) shared policy: capacity_before_staleness [0.02ms]
+(pass) shared policy: stale_before_cadence_and_headroom [0.02ms]
+(pass) shared policy: missed_before_headroom [0.03ms]
+(pass) shared policy: stable_total_before_headroom [0.06ms]
+(pass) shared policy: startup_threshold_exceeds_total [0.03ms]
+(pass) shared policy: malformed_telemetry_before_device [0.02ms]
+(pass) shared policy: running_headroom_abort_once_and_terminal_no_revival [0.10ms]
+(pass) shared policy: uuid_case_sensitive [0.03ms]
+(pass) shared range: configuration_i64_out_of_range [0.02ms]
+(pass) shared range: configuration_zero_duration_and_threshold [0.04ms]
+(pass) shared range: sample_capacity_i64_out_of_range [0.03ms]
+(pass) shared range: raw_sample_number_is_not_bigint [0.03ms]
+(pass) shared clock: now_before_origin_and_method [0.03ms]
+(pass) shared clock: sample_before_origin [0.04ms]
+(pass) shared clock: now_out_of_i64_range_after_admission [0.08ms]
+
+packages/runtime/tests/gpu-policy.test.ts:
+(pass) configuration rejects exact-object violation: undefined [0.17ms]
+(pass) configuration rejects exact-object violation: null [0.05ms]
+(pass) configuration rejects exact-object violation: number [0.09ms]
+(pass) configuration rejects exact-object violation: bigint [0.01ms]
+(pass) configuration rejects exact-object violation: boolean
+(pass) configuration rejects exact-object violation: string
+(pass) configuration rejects exact-object violation: symbol
+(pass) configuration rejects exact-object violation: function
+(pass) configuration rejects exact-object violation: array
+(pass) configuration rejects exact-object violation: array with fields
+(pass) configuration rejects exact-object violation: date with fields
+(pass) configuration rejects exact-object violation: boxed string with fields
+(pass) configuration rejects exact-object violation: custom prototype
+(pass) configuration rejects exact-object violation: inherited fields
+(pass) configuration rejects exact-object violation: empty [0.02ms]
+(pass) configuration rejects exact-object violation: unknown [0.01ms]
+(pass) configuration rejects exact-object violation: hidden unknown [0.01ms]
+(pass) configuration rejects exact-object violation: symbol key
+(pass) configuration rejects exact-object violation: missing selectedUuid
+(pass) configuration rejects exact-object violation: inherited selectedUuid [0.01ms]
+(pass) configuration rejects exact-object violation: accessor selectedUuid [0.05ms]
+(pass) configuration rejects exact-object violation: setter selectedUuid [0.01ms]
+(pass) configuration rejects exact-object violation: missing startupMinFreeBytes
+(pass) configuration rejects exact-object violation: inherited startupMinFreeBytes
+(pass) configuration rejects exact-object violation: accessor startupMinFreeBytes
+(pass) configuration rejects exact-object violation: setter startupMinFreeBytes
+(pass) configuration rejects exact-object violation: missing runningStopBelowFreeBytes
+(pass) configuration rejects exact-object violation: inherited runningStopBelowFreeBytes
+(pass) configuration rejects exact-object violation: accessor runningStopBelowFreeBytes
+(pass) configuration rejects exact-object violation: setter runningStopBelowFreeBytes
+(pass) configuration rejects exact-object violation: missing samplePeriodNs
+(pass) configuration rejects exact-object violation: inherited samplePeriodNs
+(pass) configuration rejects exact-object violation: accessor samplePeriodNs
+(pass) configuration rejects exact-object violation: setter samplePeriodNs
+(pass) configuration rejects exact-object violation: missing maxSampleAgeNs
+(pass) configuration rejects exact-object violation: inherited maxSampleAgeNs
+(pass) configuration rejects exact-object violation: accessor maxSampleAgeNs
+(pass) configuration rejects exact-object violation: setter maxSampleAgeNs [0.02ms]
+(pass) configuration rejects exact-object violation: null prototype empty
+(pass) configuration rejects exact-object violation: null prototype unknown [0.02ms]
+(pass) configuration rejects exact-object violation: null prototype hidden unknown
+(pass) configuration rejects exact-object violation: null prototype symbol key
+(pass) configuration rejects exact-object violation: null prototype missing selectedUuid
+(pass) configuration rejects exact-object violation: null prototype accessor selectedUuid
+(pass) configuration rejects exact-object violation: null prototype setter selectedUuid
+(pass) configuration rejects exact-object violation: null prototype missing startupMinFreeBytes
+(pass) configuration rejects exact-object violation: null prototype accessor startupMinFreeBytes [0.01ms]
+(pass) configuration rejects exact-object violation: null prototype setter startupMinFreeBytes
+(pass) configuration rejects exact-object violation: null prototype missing runningStopBelowFreeBytes
+(pass) configuration rejects exact-object violation: null prototype accessor runningStopBelowFreeBytes
+(pass) configuration rejects exact-object violation: null prototype setter runningStopBelowFreeBytes
+(pass) configuration rejects exact-object violation: null prototype missing samplePeriodNs
+(pass) configuration rejects exact-object violation: null prototype accessor samplePeriodNs [0.02ms]
+(pass) configuration rejects exact-object violation: null prototype setter samplePeriodNs
+(pass) configuration rejects exact-object violation: null prototype missing maxSampleAgeNs
+(pass) configuration rejects exact-object violation: null prototype accessor maxSampleAgeNs
+(pass) configuration rejects exact-object violation: null prototype setter maxSampleAgeNs
+(pass) telemetry rejects exact-object violation: undefined [0.13ms]
+(pass) telemetry rejects exact-object violation: null [0.05ms]
+(pass) telemetry rejects exact-object violation: number [0.01ms]
+(pass) telemetry rejects exact-object violation: bigint [0.02ms]
+(pass) telemetry rejects exact-object violation: boolean
+(pass) telemetry rejects exact-object violation: string
+(pass) telemetry rejects exact-object violation: symbol
+(pass) telemetry rejects exact-object violation: function
+(pass) telemetry rejects exact-object violation: array
+(pass) telemetry rejects exact-object violation: array with fields [0.01ms]
+(pass) telemetry rejects exact-object violation: date with fields [0.01ms]
+(pass) telemetry rejects exact-object violation: boxed string with fields
+(pass) telemetry rejects exact-object violation: custom prototype [0.01ms]
+(pass) telemetry rejects exact-object violation: inherited fields
+(pass) telemetry rejects exact-object violation: empty
+(pass) telemetry rejects exact-object violation: unknown
+(pass) telemetry rejects exact-object violation: hidden unknown [0.01ms]
+(pass) telemetry rejects exact-object violation: symbol key
+(pass) telemetry rejects exact-object violation: missing uuid
+(pass) telemetry rejects exact-object violation: inherited uuid
+(pass) telemetry rejects exact-object violation: accessor uuid
+(pass) telemetry rejects exact-object violation: setter uuid
+(pass) telemetry rejects exact-object violation: missing freeBytes [0.01ms]
+(pass) telemetry rejects exact-object violation: inherited freeBytes
+(pass) telemetry rejects exact-object violation: accessor freeBytes
+(pass) telemetry rejects exact-object violation: setter freeBytes
+(pass) telemetry rejects exact-object violation: missing totalBytes
+(pass) telemetry rejects exact-object violation: inherited totalBytes
+(pass) telemetry rejects exact-object violation: accessor totalBytes [0.03ms]
+(pass) telemetry rejects exact-object violation: setter totalBytes [0.02ms]
+(pass) telemetry rejects exact-object violation: missing observedBoottimeNs
+(pass) telemetry rejects exact-object violation: inherited observedBoottimeNs
+(pass) telemetry rejects exact-object violation: accessor observedBoottimeNs [0.02ms]
+(pass) telemetry rejects exact-object violation: setter observedBoottimeNs [0.01ms]
+(pass) telemetry rejects exact-object violation: null prototype empty
+(pass) telemetry rejects exact-object violation: null prototype unknown
+(pass) telemetry rejects exact-object violation: null prototype hidden unknown
+(pass) telemetry rejects exact-object violation: null prototype symbol key
+(pass) telemetry rejects exact-object violation: null prototype missing uuid
+(pass) telemetry rejects exact-object violation: null prototype accessor uuid
+(pass) telemetry rejects exact-object violation: null prototype setter uuid [0.01ms]
+(pass) telemetry rejects exact-object violation: null prototype missing freeBytes
+(pass) telemetry rejects exact-object violation: null prototype accessor freeBytes
+(pass) telemetry rejects exact-object violation: null prototype setter freeBytes
+(pass) telemetry rejects exact-object violation: null prototype missing totalBytes [0.02ms]
+(pass) telemetry rejects exact-object violation: null prototype accessor totalBytes [0.02ms]
+(pass) telemetry rejects exact-object violation: null prototype setter totalBytes [0.01ms]
+(pass) telemetry rejects exact-object violation: null prototype missing observedBoottimeNs [0.02ms]
+(pass) telemetry rejects exact-object violation: null prototype accessor observedBoottimeNs
+(pass) telemetry rejects exact-object violation: null prototype setter observedBoottimeNs
+(pass) configuration startupMinFreeBytes rejects invalid integer 0 [0.21ms]
+(pass) configuration startupMinFreeBytes rejects invalid integer 1
+(pass) configuration startupMinFreeBytes rejects invalid integer 2 [0.01ms]
+(pass) configuration startupMinFreeBytes rejects invalid integer 3 [0.01ms]
+(pass) configuration startupMinFreeBytes rejects invalid integer 4
+(pass) configuration startupMinFreeBytes rejects invalid integer 5
+(pass) configuration startupMinFreeBytes rejects invalid integer 6
+(pass) configuration startupMinFreeBytes rejects invalid integer 7
+(pass) configuration startupMinFreeBytes rejects invalid integer 8
+(pass) configuration startupMinFreeBytes rejects invalid integer 9
+(pass) configuration startupMinFreeBytes rejects invalid integer 10
+(pass) configuration startupMinFreeBytes rejects invalid integer 11
+(pass) configuration runningStopBelowFreeBytes rejects invalid integer 0
+(pass) configuration runningStopBelowFreeBytes rejects invalid integer 1
+(pass) configuration runningStopBelowFreeBytes rejects invalid integer 2
+(pass) configuration runningStopBelowFreeBytes rejects invalid integer 3
+(pass) configuration runningStopBelowFreeBytes rejects invalid integer 4
+(pass) configuration runningStopBelowFreeBytes rejects invalid integer 5
+(pass) configuration runningStopBelowFreeBytes rejects invalid integer 6
+(pass) configuration runningStopBelowFreeBytes rejects invalid integer 7
+(pass) configuration runningStopBelowFreeBytes rejects invalid integer 8
+(pass) configuration runningStopBelowFreeBytes rejects invalid integer 9 [0.02ms]
+(pass) configuration runningStopBelowFreeBytes rejects invalid integer 10
+(pass) configuration runningStopBelowFreeBytes rejects invalid integer 11
+(pass) configuration samplePeriodNs rejects invalid integer 0
+(pass) configuration samplePeriodNs rejects invalid integer 1
+(pass) configuration samplePeriodNs rejects invalid integer 2
+(pass) configuration samplePeriodNs rejects invalid integer 3
+(pass) configuration samplePeriodNs rejects invalid integer 4
+(pass) configuration samplePeriodNs rejects invalid integer 5
+(pass) configuration samplePeriodNs rejects invalid integer 6
+(pass) configuration samplePeriodNs rejects invalid integer 7
+(pass) configuration samplePeriodNs rejects invalid integer 8
+(pass) configuration samplePeriodNs rejects invalid integer 9 [0.01ms]
+(pass) configuration samplePeriodNs rejects invalid integer 10
+(pass) configuration samplePeriodNs rejects invalid integer 11
+(pass) configuration maxSampleAgeNs rejects invalid integer 0
+(pass) configuration maxSampleAgeNs rejects invalid integer 1
+(pass) configuration maxSampleAgeNs rejects invalid integer 2
+(pass) configuration maxSampleAgeNs rejects invalid integer 3 [0.02ms]
+(pass) configuration maxSampleAgeNs rejects invalid integer 4 [0.03ms]
+(pass) configuration maxSampleAgeNs rejects invalid integer 5 [0.01ms]
+(pass) configuration maxSampleAgeNs rejects invalid integer 6
+(pass) configuration maxSampleAgeNs rejects invalid integer 7
+(pass) configuration maxSampleAgeNs rejects invalid integer 8
+(pass) configuration maxSampleAgeNs rejects invalid integer 9
+(pass) configuration maxSampleAgeNs rejects invalid integer 10
+(pass) configuration maxSampleAgeNs rejects invalid integer 11
+(pass) configuration rejects zero and inconsistent positive bounds: {
+  startupMinFreeBytes: 0n,
+} [0.05ms]
+(pass) configuration rejects zero and inconsistent positive bounds: {
+  runningStopBelowFreeBytes: 0n,
+} [0.02ms]
+(pass) configuration rejects zero and inconsistent positive bounds: {
+  samplePeriodNs: 0n,
+}
+(pass) configuration rejects zero and inconsistent positive bounds: {
+  maxSampleAgeNs: 0n,
+}
+(pass) configuration rejects zero and inconsistent positive bounds: {
+  runningStopBelowFreeBytes: 1001n,
+}
+(pass) configuration rejects zero and inconsistent positive bounds: {
+  samplePeriodNs: 201n,
+}
+(pass) configuration rejects noncanonical GPU identity: "" [0.04ms]
+(pass) configuration rejects noncanonical GPU identity: "GPU-0" [0.02ms]
+(pass) configuration rejects noncanonical GPU identity: "gpu-12345678-1234-1234-1234-123456789abc"
+(pass) configuration rejects noncanonical GPU identity: "GPU-12345678-1234-1234-1234-123456789ab"
+(pass) configuration rejects noncanonical GPU identity: "GPU-12345678-1234-1234-1234-123456789abc0"
+(pass) configuration rejects noncanonical GPU identity: "GPU-12345678-1234-1234-1234-123456789abc\n"
+(pass) configuration rejects noncanonical GPU identity: " GPU-12345678-1234-1234-1234-123456789abc"
+(pass) configuration rejects noncanonical GPU identity: "GPU-12345678-1234-1234-1234-123456789abg"
+(pass) configuration rejects noncanonical GPU identity: 1
+(pass) configuration rejects noncanonical GPU identity: null
+(pass) UUID accepts hex case without normalization: GPU-12345678-1234-1234-1234-123456789abc [0.14ms]
+(pass) UUID accepts hex case without normalization: GPU-12345678-1234-1234-1234-123456789ABC [0.04ms]
+(pass) UUID accepts hex case without normalization: GPU-aBcDeF12-3456-7890-aBcD-1234567890aB [0.03ms]
+(pass) sample shape rejects noncanonical GPU identity before device comparison: "" [0.04ms]
+(pass) sample shape rejects noncanonical GPU identity before device comparison: "GPU-0"
+(pass) sample shape rejects noncanonical GPU identity before device comparison: "gpu-12345678-1234-1234-1234-123456789abc"
+(pass) sample shape rejects noncanonical GPU identity before device comparison: "GPU-12345678-1234-1234-1234-123456789ab"
+(pass) sample shape rejects noncanonical GPU identity before device comparison: "GPU-12345678-1234-1234-1234-123456789abc0"
+(pass) sample shape rejects noncanonical GPU identity before device comparison: "GPU-12345678-1234-1234-1234-123456789abc\n"
+(pass) sample shape rejects noncanonical GPU identity before device comparison: " GPU-12345678-1234-1234-1234-123456789abc"
+(pass) sample shape rejects noncanonical GPU identity before device comparison: "GPU-12345678-1234-1234-1234-123456789abg"
+(pass) plain null prototype inputs retain valid own data fields [0.11ms]
+(pass) plain frozen inputs retain valid own data fields [0.05ms]
+(pass) plain sealed inputs retain valid own data fields [0.02ms]
+(pass) plain nonenumerable data inputs retain valid own data fields [0.17ms]
+(pass) exact data fields admit and refresh with copied snapshots: ordinary configuration and ordinary samples [0.17ms]
+(pass) exact data fields admit and refresh with copied snapshots: null-prototype configuration and ordinary samples [0.07ms]
+(pass) exact data fields admit and refresh with copied snapshots: ordinary configuration and null-prototype samples [0.02ms]
+(pass) exact data fields admit and refresh with copied snapshots: null-prototype configuration and null-prototype samples [0.03ms]
+(pass) configuration and samples are copied without freezing or retaining caller objects [0.18ms]
+(pass) invalid origin precedes clock and method: undefined [0.07ms]
+(pass) invalid origin precedes clock and method: null [0.02ms]
+(pass) invalid origin precedes clock and method: -1n [0.01ms]
+(pass) invalid origin precedes clock and method: 9223371736854775808n
+(pass) invalid origin precedes clock and method: 9223372036854775808n [0.01ms]
+(pass) invalid origin precedes clock and method: 0
+(pass) invalid origin precedes clock and method: NaN
+(pass) invalid origin precedes clock and method: "0" [0.01ms]
+(pass) invalid origin precedes clock and method: {}
+(pass) invalid now rejects before method or telemetry: undefined [0.06ms]
+(pass) invalid now rejects before method or telemetry: null
+(pass) invalid now rejects before method or telemetry: -1n [0.07ms]
+(pass) invalid now rejects before method or telemetry: 9223372036854775808n
+(pass) invalid now rejects before method or telemetry: 0
+(pass) invalid now rejects before method or telemetry: 0.5 [0.01ms]
+(pass) invalid now rejects before method or telemetry: NaN
+(pass) invalid now rejects before method or telemetry: Infinity
+(pass) invalid now rejects before method or telemetry: "0" [0.01ms]
+(pass) invalid now rejects before method or telemetry: {}
+(pass) invalid now rejects before method or telemetry: BigInt {
+  toString: [Function: toString],
+  toLocaleString: [Function: toLocaleString],
+  valueOf: [Function: valueOf],
+} [0.02ms]
+(pass) running invalid now aborts once: undefined [0.09ms]
+(pass) running invalid now aborts once: null [0.03ms]
+(pass) running invalid now aborts once: -1n [0.02ms]
+(pass) running invalid now aborts once: 9223372036854775808n [0.01ms]
+(pass) running invalid now aborts once: 0 [0.02ms]
+(pass) running invalid now aborts once: 0.5 [0.01ms]
+(pass) running invalid now aborts once: NaN
+(pass) running invalid now aborts once: Infinity
+(pass) running invalid now aborts once: "0" [0.01ms]
+(pass) running invalid now aborts once: {} [0.01ms]
+(pass) running invalid now aborts once: BigInt {
+  toString: [Function: toString],
+  toLocaleString: [Function: toLocaleString],
+  valueOf: [Function: valueOf],
+}
+(pass) sample uuid rejects nonprimitive or wrong type 0 [0.08ms]
+(pass) sample uuid rejects nonprimitive or wrong type 1 [0.02ms]
+(pass) sample uuid rejects nonprimitive or wrong type 2 [0.03ms]
+(pass) sample uuid rejects nonprimitive or wrong type 3
+(pass) sample uuid rejects nonprimitive or wrong type 4
+(pass) sample freeBytes rejects nonprimitive or wrong type 0
+(pass) sample freeBytes rejects nonprimitive or wrong type 1 [0.02ms]
+(pass) sample freeBytes rejects nonprimitive or wrong type 2
+(pass) sample freeBytes rejects nonprimitive or wrong type 3
+(pass) sample freeBytes rejects nonprimitive or wrong type 4
+(pass) sample freeBytes rejects nonprimitive or wrong type 5 [0.02ms]
+(pass) sample freeBytes rejects nonprimitive or wrong type 6
+(pass) sample freeBytes rejects nonprimitive or wrong type 7
+(pass) sample freeBytes rejects nonprimitive or wrong type 8
+(pass) sample totalBytes rejects nonprimitive or wrong type 0
+(pass) sample totalBytes rejects nonprimitive or wrong type 1 [0.02ms]
+(pass) sample totalBytes rejects nonprimitive or wrong type 2
+(pass) sample totalBytes rejects nonprimitive or wrong type 3
+(pass) sample totalBytes rejects nonprimitive or wrong type 4
+(pass) sample totalBytes rejects nonprimitive or wrong type 5
+(pass) sample totalBytes rejects nonprimitive or wrong type 6 [0.02ms]
+(pass) sample totalBytes rejects nonprimitive or wrong type 7
+(pass) sample totalBytes rejects nonprimitive or wrong type 8
+(pass) sample observedBoottimeNs rejects nonprimitive or wrong type 0
+(pass) sample observedBoottimeNs rejects nonprimitive or wrong type 1 [0.02ms]
+(pass) sample observedBoottimeNs rejects nonprimitive or wrong type 2
+(pass) sample observedBoottimeNs rejects nonprimitive or wrong type 3
+(pass) sample observedBoottimeNs rejects nonprimitive or wrong type 4
+(pass) sample observedBoottimeNs rejects nonprimitive or wrong type 5
+(pass) sample observedBoottimeNs rejects nonprimitive or wrong type 6
+(pass) sample observedBoottimeNs rejects nonprimitive or wrong type 7
+(pass) sample observedBoottimeNs rejects nonprimitive or wrong type 8
+(pass) telemetry shape rejects invalid capacity range or consistency: {
+  totalBytes: 0n,
+} [0.08ms]
+(pass) telemetry shape rejects invalid capacity range or consistency: {
+  totalBytes: -1n,
+} [0.01ms]
+(pass) telemetry shape rejects invalid capacity range or consistency: {
+  totalBytes: 9223372036854775808n,
+} [0.01ms]
+(pass) telemetry shape rejects invalid capacity range or consistency: {
+  freeBytes: -1n,
+}
+(pass) telemetry shape rejects invalid capacity range or consistency: {
+  freeBytes: 9223372036854775808n,
+}
+(pass) telemetry shape rejects invalid capacity range or consistency: {
+  freeBytes: 2001n,
+}
+(pass) valid-shaped capacity below startup threshold fails capacity before headroom [0.05ms]
+(pass) telemetry shape rejects out-of-range sample time: -1n [0.04ms]
+(pass) telemetry shape rejects out-of-range sample time: 9223372036854775808n
+(pass) valid-shaped future sample time precedes capacity [0.03ms]
+(pass) awaiting telemetry shape precedes mixed invalidity: negative free before device and future time [0.09ms]
+(pass) awaiting telemetry shape precedes mixed invalidity: free above total before future time [0.15ms]
+(pass) awaiting telemetry shape precedes mixed invalidity: zero total before device [0.03ms]
+(pass) awaiting telemetry shape precedes mixed invalidity: negative total before future time [0.01ms]
+(pass) awaiting telemetry shape precedes mixed invalidity: out-of-i64 total before device
+(pass) awaiting telemetry shape precedes mixed invalidity: out-of-i64 free before future time [0.04ms]
+(pass) awaiting telemetry shape precedes mixed invalidity: negative time before device and threshold capacity [0.01ms]
+(pass) awaiting telemetry shape precedes mixed invalidity: out-of-i64 time before device and threshold capacity
+(pass) awaiting telemetry shape precedes mixed invalidity: malformed UUID before future time and capacity [0.02ms]
+(pass) awaiting telemetry shape precedes mixed invalidity: lowercase prefix before sample order and capacity
+(pass) awaiting telemetry shape precedes mixed invalidity: trailing UUID newline before future time and capacity [0.01ms]
+(pass) awaiting telemetry shape precedes mixed invalidity: invalid capacity before sample order
+(pass) awaiting valid-shaped different device precedes sample time and capacity [0.07ms]
+(pass) running telemetry shape precedes mixed invalidity: negative free before device and future time [0.02ms]
+(pass) running telemetry shape precedes mixed invalidity: free above total before future time [0.04ms]
+(pass) running telemetry shape precedes mixed invalidity: zero total before device [0.01ms]
+(pass) running telemetry shape precedes mixed invalidity: negative total before future time [0.02ms]
+(pass) running telemetry shape precedes mixed invalidity: out-of-i64 total before device [0.02ms]
+(pass) running telemetry shape precedes mixed invalidity: out-of-i64 free before future time
+(pass) running telemetry shape precedes mixed invalidity: negative time before device and threshold capacity [0.01ms]
+(pass) running telemetry shape precedes mixed invalidity: out-of-i64 time before device and threshold capacity [0.02ms]
+(pass) running telemetry shape precedes mixed invalidity: malformed UUID before future time and capacity [0.03ms]
+(pass) running telemetry shape precedes mixed invalidity: lowercase prefix before sample order and capacity [0.01ms]
+(pass) running telemetry shape precedes mixed invalidity: trailing UUID newline before future time and capacity [0.02ms]
+(pass) running telemetry shape precedes mixed invalidity: invalid capacity before sample order
+(pass) running valid-shaped different device precedes sample time and capacity [0.06ms]
+(pass) running valid-shaped future time precedes stable-total capacity [0.07ms]
+(pass) valid-shaped below-origin time precedes capacity [0.04ms]
+(pass) valid-shaped threshold capacity precedes freshness and cadence [0.03ms]
+(pass) minimum positive and maximum signed-i64 capacity boundaries pass [0.07ms]
+(pass) zero free bytes is valid capacity but fails positive headroom [0.04ms]
+(pass) running repeated or regressed sample fails before capacity: 10n [0.06ms]
+(pass) running repeated or regressed sample fails before capacity: 9n [0.04ms]
+(pass) unchanged caller time permits a strictly increasing delayed sample [0.08ms]
+(pass) accepted total cannot change up or down: 1999n [0.06ms]
+(pass) accepted total cannot change up or down: 2001n [0.01ms]
+(pass) old expiry MISSED_SAMPLE at 100 wins over replacement inspection [0.12ms]
+(pass) old expiry STALE_SAMPLE at 100 wins over replacement inspection [0.01ms]
+(pass) old expiry STALE_SAMPLE at 200 wins over replacement inspection [0.02ms]
+(pass) old lease remains authoritative when new sample has a better deadline [0.06ms]
+(pass) absolute deadlines retain the nonzero original origin and wide arithmetic [0.10ms]
+(pass) nonzero-origin cold equality rejects without renewing admission [0.04ms]
+(pass) native Proxy rejection precedes every configuration trap: object [0.13ms]
+(pass) native Proxy rejection precedes every configuration trap: null prototype [0.02ms]
+(pass) native Proxy rejection precedes every configuration trap: array
+(pass) native Proxy rejection precedes every configuration trap: function
+(pass) revoked proxies reject without reflection or exceptions at both boundaries [0.15ms]
+(pass) startup proxy cannot reenter check or admit after rejection [0.14ms]
+(pass) startup getter cannot reenter check or admit after rejection [0.04ms]
+(pass) running proxy cannot consume the only abort action by reentry [0.14ms]
+(pass) running getter cannot consume the only abort action by reentry [0.03ms]
+(pass) terminal state and initial failure never inspect clock or telemetry objects [0.16ms]
+(pass) no bigint or identity validation coerces caller values [0.19ms]
+
+ 352 pass
+ 0 fail
+ 1262 expect() calls
+Ran 352 tests across 2 files. [387.00ms]

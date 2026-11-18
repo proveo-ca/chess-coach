@@ -1,0 +1,40 @@
+{
+  "version": "chess-coach.cuda-exact-llvm-input-acquisition.v1",
+  "scope": "EXACT_TWO_VERIFIED_FILES_ONLY_NOT_EXTRACTION_INSTALLATION_OR_COMPILATION",
+  "status": "PASS",
+  "reviewRecord": "_work/gpu-owner-recovery/cuda-acquire-reviewed.json",
+  "reviewSha256": "7e163891ae6e9cde0a77ea2608d5c25129add3edbfda078ee2c2619be3850f3f",
+  "approvedRequestCapture": "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/approved-request.json",
+  "approvedRequestSha256": "6b8aae0c45ac959e555675c3f5a7908968fb999b55d16daba833c81fca5cb346",
+  "sourceSnapshot": "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/source-snapshot.json",
+  "sourceChangedDuringInvocations": false,
+  "artifacts": [
+    {
+      "artifact": "llvm-archive",
+      "receipt": "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/archive/receipt.json",
+      "artifactReceipt": "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/archive/artifact.json",
+      "cache": "_work/gpu-owner-recovery/cache/home/.cache/tracel/tracel-llvm-23.1.0-4-linux-x64.tar.xz",
+      "byteLength": 45439652,
+      "sha256": "c394bb1b10ac785f16d3d92d688a9343ba869f720e9cf9ca3f1abf2f401f165f",
+      "status": "PASS"
+    },
+    {
+      "artifact": "llvm-checksums",
+      "receipt": "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/checksums/receipt.json",
+      "artifactReceipt": "_work/gpu-owner-recovery/runs/cuda-llvm-acquire-1/checksums/artifact.json",
+      "cache": "_work/gpu-owner-recovery/cache/home/.cache/tracel/tracel-llvm-23.1.0-4-linux-x64.checksums.json",
+      "byteLength": 297,
+      "sha256": "57780b96c702d2ac595c52da61961549450648b8d18f5b81b7a1d06afa83682d",
+      "status": "PASS"
+    }
+  ],
+  "checksumSidecarMatchesApprovedPublisherIdentities": true,
+  "extractionPerformed": false,
+  "llvmCodeExecuted": false,
+  "buildIsolationQualified": false,
+  "custodyQualified": false,
+  "cudaCompilationEstablished": false,
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

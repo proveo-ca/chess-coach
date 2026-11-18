@@ -1,0 +1,10 @@
+{
+  "status": "PASS_EXPLICIT_TEXT_COHORT_ATTRIBUTE_CHECK_ONLY",
+  "pathsChecked": 59,
+  "checkIncludedThisReceiptPath": true,
+  "applicableCleanFilterEncodingOrEolTransformFound": false,
+  "filesStaged": 0,
+  "gitMutationOperationsPerformed": false,
+  "sourceOrHostExecutionPerformed": false,
+  "trainingReady": false
+}

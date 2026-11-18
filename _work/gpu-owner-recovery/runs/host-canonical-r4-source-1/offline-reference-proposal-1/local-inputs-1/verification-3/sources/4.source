@@ -1,0 +1,27 @@
+{
+  "status": "MISSING_IN_BOUNDED_LOCAL_INSTALLED_PACKAGE_SEARCH",
+  "provenance": "READ_ONLY_LOCAL_DEVOPS_DISCOVERY_REPORT_NOT_RAW_CAPTURE_BYTES",
+  "session": "ses_e2f3a8747ffeb4lnwJXASkIIi2",
+  "required": [
+    {"name":"fflate","version":"0.8.3","selectedRuntimeFile":"esm/index.mjs","installedRoot":null},
+    {"name":"jssha","version":"3.3.2","selectedRuntimeFile":"dist/sha256.mjs","installedRoot":null}
+  ],
+  "searched": [
+    {"root":"node_modules","scope":"DIRECT_AND_EXACT_VERSION_BUN_LAYOUTS","matches":0},
+    {"root":"node_modules/.pnpm","observation":"ABSENT"},
+    {"root":"packages/*/node_modules","scope":"DIRECT_AND_EXACT_VERSION_BUN_PNPM_LAYOUTS","matches":0},
+    {"root":"/home/gu1lty/.bun/install/cache","observation":"ABSENT"},
+    {"root":"/home/agent/.bun/install/cache","observation":"TEN_ENTRY_LISTING_NO_SELECTED_PACKAGES"},
+    {"root":"/home/gu1lty/.local/share/pnpm/store","observation":"ABSENT"},
+    {"root":"/home/agent/.local/share/pnpm/store","observation":"ABSENT"},
+    {"root":"/home/gu1lty/.pnpm-store","observation":"ABSENT"},
+    {"root":"/home/agent/.pnpm-store","observation":"ABSENT"}
+  ],
+  "absenceEverywhereEstablished": false,
+  "archivePayloadsAccessed": false,
+  "failedFull1CacheAccessed": false,
+  "haltedLlvmPipelineAccessed": false,
+  "networkAcquisitionPerformed": false,
+  "installationPerformed": false,
+  "trainingReady": false
+}

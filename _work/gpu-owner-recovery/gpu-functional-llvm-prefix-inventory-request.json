@@ -1,0 +1,34 @@
+{
+  "version": "chess-coach.gpu-functional-llvm-prefix-inventory-request.v1",
+  "status": "AUTHORIZED_METADATA_PASS_CONSUMED",
+  "authorization": {
+    "source": "EXECUTOR_SELECTED_EXISTING_LLVM_RECOMMENDED_OPTION_1_AFTER_SCOPE_EXPLANATION",
+    "executor": "CODING_ENVIRONMENT_METADATA_TOOLS_ONLY",
+    "maximumInventoryPasses": 1,
+    "remainingInventoryPasses": 0,
+    "automaticRetry": false
+  },
+  "prefix": "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4",
+  "operation": "FIXED_PATH_LSTAT_AND_BOUNDED_DIRECTORY_NAME_LISTINGS_ONLY",
+  "bounds": {
+    "fixedStatPaths": 13,
+    "directoryReads": 4,
+    "maximumEntriesPerDirectoryRead": 64,
+    "maximumRelativeDepth": 2,
+    "statClientDeadlineSecondsPerInvocation": 10,
+    "statClientKillAfterSeconds": 3,
+    "aggregateDeadlineEnforced": false,
+    "fullTreeInventory": false
+  },
+  "result": "_work/gpu-owner-recovery/runs/gpu-functional-llvm-prefix-inventory-1/metadata.json",
+  "llvmExecutionAuthorized": false,
+  "fileContentReadsAuthorized": false,
+  "copyingAuthorized": false,
+  "archiveByteAccessAuthorized": false,
+  "downloadAuthorized": false,
+  "symlinkTargetTraversalAuthorized": false,
+  "automaticInputSelectionAuthorized": false,
+  "installationOrConfigurationChangeAuthorized": false,
+  "cudaCompilationOrExecutionAuthorized": false,
+  "trainingAuthorized": false
+}

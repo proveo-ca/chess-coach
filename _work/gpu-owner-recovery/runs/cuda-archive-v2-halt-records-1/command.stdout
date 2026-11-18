@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "scope": "HALT_RECORD_AND_EXECUTED_SOURCE_EVIDENCE_ONLY_NOT_OPERATIONAL_RETRY",
+  "historicalSourceGates": {
+    "snapshot": [
+      46,
+      1065
+    ],
+    "archive": [
+      163,
+      842
+    ],
+    "runner": [
+      16,
+      326
+    ],
+    "types": "PASS"
+  },
+  "current26SourcesAnd97ProofsUnchanged": true,
+  "executed26SourceFilesCapturedBeforeInvocation": true,
+  "readOnlyPlanPassPreserved": true,
+  "failedAuditStreamsPreserved": true,
+  "trustAndDiscoveryPassed": true,
+  "privateBunExecutionAndAbortEstablished": true,
+  "xzLaunch": "UNESTABLISHED",
+  "decompression": "UNESTABLISHED",
+  "rootCause": "UNDETERMINED",
+  "inventoryPublished": false,
+  "authorityGranted": false,
+  "freshDecisionRequired": true,
+  "externalReportSubmitted": false,
+  "automaticRetryPerformed": false,
+  "trainingReady": false
+}

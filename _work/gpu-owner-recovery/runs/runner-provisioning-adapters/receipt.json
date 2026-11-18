@@ -1,0 +1,34 @@
+{
+  "version": "chess-coach.recovery-receipt.v1",
+  "runId": "runner-provisioning-adapters",
+  "stage": "runner",
+  "sourceManifestSha256": "5feafb6359f326659b87e2345e96ab12ee264c0049aa14308a06a70bb9e97c3d",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "test",
+    "_work/gpu-owner-recovery/verify.test.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 28,
+  "stderrBytes": 638,
+  "stdout": {
+    "path": "_work/gpu-owner-recovery/runs/runner-provisioning-adapters/command.stdout",
+    "bytes": 28,
+    "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+  },
+  "stderr": {
+    "path": "_work/gpu-owner-recovery/runs/runner-provisioning-adapters/command.stderr",
+    "bytes": 638,
+    "sha256": "17eb27a486e596a91e1b695c7c4c3d35ef68b0f704814527378ea7720bca54a5"
+  },
+  "sourceCount": 11,
+  "sourceChanged": false,
+  "bunVersion": "1.4.0",
+  "actualHostExecuted": false,
+  "cudaGpuCodeExecuted": false,
+  "trainingReady": false
+}

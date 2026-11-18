@@ -1,0 +1,15 @@
+{
+  "scope": "DOCS_DERIVED_TEST_FIXTURES_NOT_HOST_EVIDENCE",
+  "references": [
+    "https://docs.docker.com/reference/cli/docker/buildx/inspect/",
+    "https://github.com/docker/buildx/blob/master/commands/inspect.go"
+  ],
+  "documentedExampleExcerpt": "Name:          elated_tesla\nDriver:        docker-container\nLast Activity: 2022-11-30 12:42:47 +0100 CET\n\nNodes:\nName:           elated_tesla0\nEndpoint:       unix:///var/run/docker.sock\nDriver Options: env.BUILDKIT_STEP_LOG_MAX_SPEED=\"10485760\"\nStatus:         running\nFlags:          --debug\nBuildKit:       v0.10.6\nPlatforms:      linux/arm64*, linux/arm/v7\nLabels:\n org.mobyproject.buildkit.worker.executor: oci\nGC Policy rule#0:\n All: false\n Keep Bytes: 488.3MiB\n",
+  "selectedRunningDerived": "Name:\tselected\nDriver:\tdocker-container\n\nNodes:\nName:\tselected0\nEndpoint:\tdefault\nStatus:\trunning\nBuildKit version:\tv0.example\n",
+  "nestedDeviceDerived": "Name: selected\nDriver: docker-container\nNodes:\nName: selected0\nEndpoint: default\nStatus: running\nDevices:\n Name: nested-device\n Automatically allowed: false\nLabels:\n Name: nested-label\n",
+  "stoppedDerived": "Name: selected\nDriver: docker-container\nNodes:\nName: selected0\nEndpoint: default\nStatus: stopped\n",
+  "nodeErrorDerived": "Name: selected\nDriver: docker-container\nNodes:\nName: selected0\nError: example node unavailable\n",
+  "builderErrorDerived": "Name: selected\nDriver: docker-container\nError: example builder unavailable\n",
+  "emptyNodesDerived": "Name: selected\nDriver: docker-container\nNodes:\n",
+  "multiNodeDerived": "Name: selected\nDriver: docker-container\nNodes:\nName: selected0\nEndpoint: default\nStatus: running\n\nName: selected1\nEndpoint: tcp://example.invalid:2376\nStatus: stopped\n"
+}

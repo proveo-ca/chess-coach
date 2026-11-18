@@ -1,0 +1,137 @@
+@startuml gpu_owner_reconstruction
+' purpose: document corrected owner custody, startup authority, helper EOF and drain-only cleanup
+' covers: crates/gpu-owner/**
+' covers: packages/contracts/src/gpu-job.ts
+' covers: packages/contracts/tests/gpu-job.test.ts
+' covers: packages/runtime/src/gpu-job.ts
+' covers: packages/runtime/tests/gpu-job.test.ts
+' covers: packages/runtime/src/fixed-attempt.ts
+' covers: packages/runtime/src/training-coordinator.ts
+' covers: packages/runtime/src/match-session.ts
+' covers: packages/runtime/tests/fixed-attempt-gpu-owner.test.ts
+' covers: packages/runtime/tests/fixtures/gpu-owner/**
+' status: SOURCE_RECONSTRUCTED / VERIFIED_TEST_SUBSETS / SOURCE_REVIEWS_ACCEPTED_SCOPED / trainingReady:false
+' verification: closure owner 72 and reference 25/194 pass; Rust/TS/backend/adversarial source scopes accepted
+' render: offline render receipts are indexed in _spec/verification.md
+' see: _spec/gpu-owner.md
+' see: _spec/gpu-cooperative-policy.puml
+' see: _spec/recovery.md
+' see: _spec/reference/object-graph-authentication.puml
+title GPU owner - scoped source accepted, operations unqualified
+
+participant "crates/gpu-owner/tests/\nlifecycle.rs (CPU synthetic)" as FIXTURE
+participant "crates/gpu-owner\nrun_once / run_once_with" as OWNER
+participant "crates/gpu-owner/src/\npolicy.rs" as POLICY
+participant "crates/gpu-owner/src/\nprocess.rs / docker.rs / telemetry.rs" as IO
+participant "crates/gpu-owner/src/\nobserve.rs" as OBS
+participant "packages/runtime/src/\ngpu-job.ts" as JOB
+participant "packages/runtime/src/\ntraining-coordinator.ts" as COORD
+
+FIXTURE -> OWNER: RawLaunchRequest: input_manifest + expected_manifest_sha256
+OWNER -> OWNER: Capture BOOTTIME S0 before all request work
+OWNER -> OWNER: Validate original manifest bytes; evidence root outside writable state
+OWNER -> OWNER: Exact numeric -0 becomes integer zero; original bytes / pins unchanged
+OWNER -> OWNER: Reject root equality / descent before registered-file or filesystem effects
+OWNER -> OWNER: Pin executable files and state / anonymous-config directories
+OWNER -> OBS: Read expected outside / aggregate controls under stable roots
+OWNER -> IO: One bounded registered UUID telemetry query
+IO --> OWNER: Exact identity / driver, q0-anchored sample
+OWNER -> POLICY: Validate initial lease before cold deadline
+POLICY --> OWNER: Admit once or latch first rejection
+
+alt initial lease rejected
+  OWNER -> OWNER: Terminal; no launch or clock renewal
+else initial lease admitted
+  OWNER -> OWNER: Recheck state / config custody before working manager commands
+  OWNER -> IO: Create one exact candidate job
+  OWNER -> OWNER: Recheck state / config after create
+  OWNER -> IO: Start / attach exact candidate
+  JOB --> OWNER: boot; no embedded-input work
+  OWNER -> IO: Inspect exact owner / image
+  OWNER -> OBS: Bind once; pin every intermediate ancestor and the owned leaf
+  OBS -> OBS: Validate custody before / after membership and control checks
+  OWNER -> OWNER: Recheck state / config immediately before start delivery
+  OWNER -> JOB: Complete bounded start write, then close stdin
+  note over OWNER, JOB
+    Queued input does not establish admission.
+    Complete transmission and input closure
+    must precede startup acceptance.
+  end note
+  JOB -> JOB: After EOF, pin exact initial state / record / derived descriptor
+  JOB -> COORD: Fresh master 101, ordinal 0; runAttempt once
+  JOB --> OWNER: Bound startup strictly before S0+10s
+  loop before original S0+297s; at most one query
+    OWNER -> IO: Poll manager / attach / query / absolute timer
+    OWNER -> POLICY: Old expiry checks before new telemetry
+    POLICY --> OWNER: Continue or abort-owned once
+  end
+  alt ordinary work completes without failure
+    COORD --> JOB: One proposal; no finalize / retry / resume
+    JOB --> OWNER: Exact proposal bytes; helper completion still requires natural EOF
+    OWNER -> IO: Observe leader exit; bounded nonblocking final drain
+    alt drain quota exhausted
+      IO --> OWNER: Defer kill / reap; no manufactured EOF
+    else stream would block without EOF
+      IO -> IO: Mark forced before owned-group kill, then leader reap
+      IO --> OWNER: Termination-produced EOF never restores naturalClean
+    else EOF observed before termination
+      IO -> IO: Stop owned group before leader reap
+      IO --> OWNER: Natural success only with zero exit and complete start delivery
+    end
+    OWNER -> OWNER: Mirror trainingStateShape + stream-prefix predicates
+    OWNER -> OWNER: Check existing first-attempt / outer bindings and raw descriptor token
+    OWNER -> OWNER: Closed schedule keeps raw fields; Rust rejects fraction / exponent integers
+    OWNER -> OWNER: No master-root derivation or curriculum / learning replay
+  else policy / protocol / storage / deadline failure
+    OWNER -> OWNER: Latch first failure; stop ordinary work
+  end
+  OWNER -> OWNER: Enter internal cleanup mode; retain any first failure
+  OWNER -> IO: Drain / reap only; no stdin POLLOUT, queued writes or cleanup-entry close
+  IO --> OWNER: New pipe / output faults become cleanup_errors; keep draining
+  note over OWNER, IO
+    Evidence failure cannot revoke cleanup.
+    Ownership inspection must still prevent
+    removal after label or image mismatch.
+  end note
+  OWNER -> OWNER: Cleanup is state-independent; guard config before manager CLI
+  alt config custody permits safe manager invocation
+    OWNER -> IO: Keep attach through ownership inspection
+    OWNER -> OBS: Bind once or revalidate existing ancestor / leaf custody
+    alt exact owned labels / token and selected image match
+      OWNER -> IO: Stop owned attach helper without waiting for EOF
+      OWNER -> IO: Remove exact owned ID while draining concurrently
+    else wrong owner / image or ownership remains unproven
+      OWNER -> OWNER: Never remove; preserve failure and cleanup faults
+    end
+  else config path substituted
+    OWNER -> OWNER: Block unsafe CLI; still stop / reap local owned helpers
+  end
+  OWNER -> IO: Stop helper groups, then reap their leaders
+  OWNER -> OBS: gone(): stable roots and all held intermediate ancestors
+  OBS -> OBS: Only final-component ENOENT plus held leaf nlink()==0 permits gone
+  OBS --> OWNER: Rename / substitution is a fault, not removal
+  OWNER -> OWNER: Require namespace removal before S0+300s; held inode may remain alive
+  OWNER -> OWNER: Unknown binding or any retained fault means failure
+end
+OWNER --> FIXTURE: Report: first failure / cleanup faults / proposal / reaps / cgroup_gone
+OWNER --> FIXTURE: origin_ns is decimal; training_ready:false even on synthetic success
+
+legend
+  Connected source accepted within persisted review scopes only.
+  Both ordinary mains remain SOURCE_ONLY_DISABLED.
+  Rust: 72 cases, including 15 lifecycle and 19 observation cases.
+  One Rust case consumes 33 shared traces; one checks 61 wire mutations.
+  Real Rust/Bun job/SQLite/factory with fake manager/query/learners.
+  CPU synthetic fixtures only; no actual Docker/GPU/native policy process.
+  Rust source-security acceptance is persisted under C1 only.
+  Authenticated reference: 25 tests / 194 assertions; one C14 test filtered.
+  Prior reference 16/108 remains PRE_OBJECT_GRAPH_AUTHENTICATION.
+  Rust C1, TypeScript packet-5 and final adversarial source reviews accepted.
+  Scoped integer-contract review accepted; no global lexical JSON parity.
+  Path checks are not atomic Docker bind custody.
+  Actual cgroupfs link-count semantics remain unqualified.
+  Timer expiry wins over simultaneous I/O readiness.
+  Actual inputs and all operational gates remain unset.
+  Diagram rendering grants no execution authority.
+endlegend
+@enduml

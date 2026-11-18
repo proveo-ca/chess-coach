@@ -1,0 +1,7 @@
+{
+  "status": "NORMAL_COMMIT_ATTEMPT_REGISTERED",
+  "request": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-request.json",
+  "parentCommit": "250d438685d2fc7560b0e31439f282bb2c145888",
+  "normalCommitInvocationsConsumed": 1,
+  "automaticRetryAuthorized": false
+}

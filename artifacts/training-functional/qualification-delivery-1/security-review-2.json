@@ -1,0 +1,15 @@
+{
+  "scope": "READ_ONLY_BOOTSTRAP_PERMISSION_FIX_REVIEW_NOT_HARDWARE_QUALIFICATION",
+  "reviewerSession": "ses_e171894a8ffeK9hxuiham6iTTo",
+  "reportedReadyToMerge": true,
+  "reportedRisk": "low",
+  "priorFindingsClosed": true,
+  "findings": [],
+  "reviewerConclusion": "[Inference] Git-only mask handling and fresh-copy Zod normalization close the findings without new in-scope issues",
+  "sourceSha256": "e22505c5e3c492c25a6068089116a69dd70b398f3536629c8e8433a6eefbb968",
+  "testSha256": "1142d1f09c3a2a47d17bb9beb88aa7404fe8caff335872bf5e37bd78862b2fee",
+  "testsRerunByReviewer": false,
+  "hardwareQualificationClaimed": false,
+  "publicationPerformed": false,
+  "trainingReady": false
+}

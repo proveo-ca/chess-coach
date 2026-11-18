@@ -1,0 +1,2059 @@
+baseline: c04a8da9468f7d443bd27d73a08c0bd7ee0e9d20
+scope: STABLE_TYPESCRIPT_GPU_BOUNDARIES
+
+diff --git a/packages/runtime/src/fixed-attempt.ts b/packages/runtime/src/fixed-attempt.ts
+index fc2a7b8ed..a9708ad17 100644
+--- a/packages/runtime/src/fixed-attempt.ts
++++ b/packages/runtime/src/fixed-attempt.ts
+@@ -10,20 +10,23 @@ import type { AttemptSetup } from "./training-coordinator";
+ import { ModelInputs } from "./model-inputs";
+ 
+ export class FixedAttemptFactory {
+-  private readonly root = "/tmp/episode-model";
+-  constructor(private readonly corpus: RecordedCorpus, private readonly strategic: StrategicApi) {
+-    mkdirSync(this.root, { mode: 0o700 });
++  private readonly layout: Readonly<FixedAttemptLayout>;
++  constructor(private readonly corpus: RecordedCorpus, private readonly strategic: StrategicApi | null, layout: FixedAttemptLayout = FIXED_ATTEMPT_LAYOUT) {
++    this.layout = Object.freeze({ ...layout });
++    if (Object.values(this.layout).some(path => !path.startsWith("/") || path.includes("\0"))) throw new Error("Fixed attempt: LAYOUT");
++    mkdirSync(this.layout.scratchRoot, { mode: 0o700 });
+   }
+   readonly create: AttemptSetup = async ({ descriptor, model, timing }) => {
+     const ports: ProcessTransport[] = [];
+     let child: MatchProcess | null = null;
++    let inputs: ModelInputs | null = null;
+     try {
+       if (timing.clockNs() >= timing.startupDeadlineNs || !/^[A-Za-z0-9._:-]{1,32}$/.test(descriptor.attemptId)) throw new Error("Fixed attempt: STARTUP");
+-      const inputs = new ModelInputs(this.root, descriptor.attemptId, model);
++      inputs = new ModelInputs(this.layout.scratchRoot, descriptor.attemptId, model);
+       const { config, record } = inputs;
+       const learner = (suffix: string) => {
+         const sessionId = `${descriptor.attemptId}:learner:${suffix}`;
+-        const port = new ProcessTransport({ runtime: "native", executable: "/usr/local/bin/policy-channel", arguments: [config, record, sessionId], cwd: "/app" },
++        const port = new ProcessTransport({ runtime: "native", executable: this.layout.learnerExecutable, arguments: [config, record, sessionId], cwd: this.layout.cwd },
+           { frameBytes: 8 * 1024 * 1024, stdoutBytes: 64 * 1024 * 1024, stderrBytes: 65536 }, timing.clockNs);
+         ports.push(port);
+         return new NativeLearner(sessionId, descriptor.modelId, port, timing.clockNs, timing.workDeadlineNs, timing.cleanupDeadlineNs);
+@@ -31,14 +34,19 @@ export class FixedAttemptFactory {
+       const first = learner("a"), second = learner("b"), learners = new LearnerPair(first, second);
+       const remaining = timing.workDeadlineNs - timing.clockNs();
+       if (remaining <= 0n) throw new Error("Fixed attempt: WORK_DEADLINE");
+-      child = new MatchProcess({ executable: "/usr/local/bin/bun", entrypoint: "/app/packages/runtime/src/match-worker-main.ts",
+-        arguments: [descriptor.attemptId, descriptor.modelId, String(remaining)], cwd: "/app" }, timing.clockNs, timing.cleanupDeadlineNs);
++      child = new MatchProcess({ executable: this.layout.bunExecutable, entrypoint: this.layout.matchEntrypoint,
++        arguments: [descriptor.attemptId, descriptor.modelId, String(remaining)], cwd: this.layout.cwd }, timing.clockNs, timing.cleanupDeadlineNs);
+       return { transport: child, learners, verifier: first, corpus: this.corpus, strategic: this.strategic, releaseInputs: inputs.release };
+     } catch (error) {
+       const results = await Promise.allSettled([...(child ? [child.terminate(error)] : []), ...ports.map(port => port.terminate(error))]);
+       const failures = results.flatMap(value => value.status === "rejected" ? [value.reason] : []);
++      try { inputs?.release(); } catch (release) { failures.push(release); }
+       if (failures.length) throw new AggregateError([error, ...failures], "Fixed attempt: CLEANUP");
+       throw error;
+     }
+   };
+ }
++
++export type FixedAttemptLayout = Readonly<{ scratchRoot: string; cwd: string; bunExecutable: string; learnerExecutable: string; matchEntrypoint: string }>;
++export const FIXED_ATTEMPT_LAYOUT: FixedAttemptLayout = Object.freeze({ scratchRoot: "/tmp/episode-model", cwd: "/app", bunExecutable: "/usr/local/bin/bun",
++  learnerExecutable: "/usr/local/bin/policy-channel", matchEntrypoint: "/app/packages/runtime/src/match-worker-main.ts" });
+diff --git a/packages/runtime/src/match-session.ts b/packages/runtime/src/match-session.ts
+index 994869536..9176ea24d 100644
+--- a/packages/runtime/src/match-session.ts
++++ b/packages/runtime/src/match-session.ts
+@@ -28,7 +28,7 @@ export interface MatchLearners {
+ }
+ export type MatchClock = { clockNs: () => bigint; originNs: bigint; startupDeadlineNs: bigint; workDeadlineNs: bigint; cleanupDeadlineNs: bigint };
+ export type MatchSessionInputs = MatchClock & { descriptor: AttemptDescriptor; rng: RngState; corpus: RecordedCorpus | null; strategic: StrategicApi | null;
+-  verifier: FrozenScorePort; learners: MatchLearners; transport: OwnedMatchTransport };
++  verifier: FrozenScorePort; learners: MatchLearners; transport: OwnedMatchTransport; onStarted?: () => Promise<void> };
+ export type VerifiedMatchResult = { descriptor: AttemptDescriptor; reason: MatchStop["reason"] | "candidate-deadline"; returnValue: -1 | 0 | 1;
+   sampledDecisions: number; rngAfter: RngState; proposal: PairedProposal; auditJson: string; historyJson: string };
+ const expired = Symbol("owned-match-deadline");
+@@ -220,6 +220,7 @@ export class MatchSession {
+           this.game.snapshot, this.rng.opponent, this.input.strategic, this.input.clockNs, this.input.workDeadlineNs);
+       } else if (this.input.corpus === null) throw new Error("Match session: CORPUS_REQUIRED");
+       this.time(this.input.startupDeadlineNs);
++      if (this.input.onStarted) await this.bounded(this.input.onStarted, this.input.startupDeadlineNs);
+       reply = await this.exchange(this.request("accept"));
+       let deadlineStop = false;
+       while (reply !== null) {
+diff --git a/packages/runtime/src/training-coordinator.ts b/packages/runtime/src/training-coordinator.ts
+index c00ec3fa0..22b5bd6b8 100644
+--- a/packages/runtime/src/training-coordinator.ts
++++ b/packages/runtime/src/training-coordinator.ts
+@@ -10,7 +10,7 @@ import type { TrainingExperiment } from "../../contracts/src/training-artifact";
+ import type { ByteRef } from "../../contracts/src/training-state";
+ import { STORAGE_BOUNDS } from "./storage-bounds";
+ 
+-type OwnedDependencies = Pick<MatchSessionInputs, "transport" | "learners" | "verifier" | "corpus" | "strategic"> & { releaseInputs?: () => void };
++type OwnedDependencies = Pick<MatchSessionInputs, "transport" | "learners" | "verifier" | "corpus" | "strategic" | "onStarted"> & { releaseInputs?: () => void };
+ export type AttemptSetup = (input: { descriptor: AttemptDescriptor; rng: RngState; model: NativeRecord; directory: string; timing: MatchClock }) => OwnedDependencies | Promise<OwnedDependencies>;
+ export function evidencePacket(descriptor: AttemptDescriptor): number { return (descriptor.master - 101) * 10 + Math.floor(descriptor.startedOrdinal / 100); }
+ export class TrainingCoordinator {
+@@ -53,6 +53,7 @@ export class TrainingCoordinator {
+     this.busy = true;
+     let session: MatchSession | null = null;
+     let dependencies: OwnedDependencies | null = null;
++    let inputsReleased = false;
+     const check = () => {
+       if (this.failed || timing.clockNs() < timing.originNs || timing.clockNs() >= timing.workDeadlineNs) throw new Error("Training coordinator: ORIGINAL_DEADLINE");
+     };
+@@ -74,6 +75,7 @@ export class TrainingCoordinator {
+       const result = await session.run();
+       check();
+       dependencies.releaseInputs?.();
++      inputsReleased = true;
+       check();
+       const journalRef = this.state.appendJournal(attemptId, result.auditJson);
+       if (Buffer.byteLength(result.historyJson) > STORAGE_BOUNDS.historyBytes) throw new Error("Training coordinator: HISTORY_BOUND");
+@@ -101,6 +103,9 @@ export class TrainingCoordinator {
+         const cleanup = await Promise.allSettled([dependencies.transport.terminate(error), dependencies.learners.abort(error)]);
+         errors.push(...cleanup.flatMap(value => value.status === "rejected" && value.reason !== error ? [value.reason] : []));
+       }
++      if (dependencies !== null && !inputsReleased) {
++        try { dependencies.releaseInputs?.(); } catch (release) { errors.push(release); }
++      }
+       try { this.stop(error); } catch (storage) { errors.push(storage); }
+       if (errors.length > 1) throw new AggregateError(errors, "Training coordinator: ABORT_ALL");
+       throw error;
+diff --git a/packages/runtime/tests/reference-bundles.test.ts b/packages/runtime/tests/reference-bundles.test.ts
+index d55243417..cc06b6ea5 100644
+--- a/packages/runtime/tests/reference-bundles.test.ts
++++ b/packages/runtime/tests/reference-bundles.test.ts
+@@ -1,6 +1,8 @@
+ // SPEC: _spec/runtime-protocol.puml, _spec/gate-closure.puml
+-import { mkdtempSync, readFileSync } from "node:fs";
++import { mkdirSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
+ import { createHash } from "node:crypto";
++import { isAbsolute, resolve } from "node:path";
++import { fileURLToPath } from "node:url";
+ import { expect, test } from "bun:test";
+ import { buildReferenceBundles } from "../../../tooling/build-reference";
+ import { referenceProofDriver } from "../src/reference-driver";
+@@ -10,9 +12,85 @@ import expected from "./fixtures/reference-sources.json";
+ import { StrategicDriver } from "../src/strategic";
+ import { deriveStream } from "../src/rng";
+ import { initializeGame, openGame } from "../../contracts/src/game-session";
++import selected from "../../../tooling/reference-entrypoints.json";
++
++const workspace = resolve(fileURLToPath(new URL("../../../", import.meta.url)));
++function temporary(label: string) {
++  const root = resolve(workspace, "_work/gpu-owner-recovery/scratch");
++  mkdirSync(root, { recursive: true, mode: 0o700 });
++  return mkdtempSync(resolve(root, label));
++}
++function git(root: string, ...args: string[]) {
++  return Bun.spawnSync(["git", "--no-replace-objects", "--no-optional-locks", "-c", "core.fsmonitor=false", "-c", "core.hooksPath=/dev/null", ...args], {
++    cwd: root, stdin: "ignore", stdout: "pipe", stderr: "pipe", timeout: 10_000,
++    env: { PATH: "/usr/local/bin:/usr/bin:/bin", HOME: "/nonexistent", LANG: "C", GIT_CONFIG_NOSYSTEM: "1" },
++  });
++}
++function pinnedReferenceRoot(value: string | undefined): string {
++  if (!value || !isAbsolute(value)) throw new Error("Reference source: EXPLICIT_ABSOLUTE_ROOT_REQUIRED");
++  const root = realpathSync(value);
++  if (root !== value) throw new Error("Reference source: CANONICAL_ROOT_REQUIRED");
++  const head = git(root, "rev-parse", "HEAD");
++  if (selected.reference !== expected.reference || head.exitCode !== 0 || new TextDecoder().decode(head.stdout).trim() !== selected.reference) throw new Error("Reference source: PIN_MISMATCH");
++  const index = git(root, "ls-files", "-v", "-z", "--"), files = new TextDecoder().decode(index.stdout).split("\0");
++  if (index.exitCode !== 0 || files.pop() !== "" || files.length === 0 || files.some(file => !file.startsWith("H ") || file.length <= 2)) throw new Error("Reference source: TRACKED_SOURCE_CHANGED");
++  for (const args of [["diff", "--no-ext-diff", "--no-textconv", "--quiet", "--"], ["diff", "--cached", "--no-ext-diff", "--no-textconv", "--quiet", "HEAD", "--"]]) {
++    if (git(root, ...args).exitCode !== 0) throw new Error("Reference source: TRACKED_SOURCE_CHANGED");
++  }
++  return root;
++}
++function referenceClone() {
++  const root = temporary("reference-guard-");
++  expect(git(workspace, "clone", "--shared", "--no-checkout", "--", workspace, root).exitCode).toBe(0);
++  expect(git(root, "checkout", "--detach", selected.reference).exitCode).toBe(0);
++  expect(pinnedReferenceRoot(root)).toBe(root);
++  return root;
++}
++
++test("reference source guard requires an explicit absolute exact-pin root", () => {
++  for (const value of [undefined, "", "."]) expect(() => pinnedReferenceRoot(value)).toThrow("EXPLICIT_ABSOLUTE_ROOT_REQUIRED");
++  expect(() => pinnedReferenceRoot(workspace)).toThrow("PIN_MISMATCH");
++});
++
++test("reference source guard rejects tracked modifications before and after staging", () => {
++  const root = referenceClone(), path = resolve(root, "package.json");
++  writeFileSync(path, readFileSync(path, "utf8") + "\n");
++  expect(() => pinnedReferenceRoot(root)).toThrow("TRACKED_SOURCE_CHANGED");
++  expect(git(root, "add", "--", "package.json").exitCode).toBe(0);
++  expect(() => pinnedReferenceRoot(root)).toThrow("TRACKED_SOURCE_CHANGED");
++});
++
++for (const flag of ["--assume-unchanged", "--skip-worktree"]) {
++  test(`reference source guard rejects tracked modifications hidden by ${flag}`, () => {
++    const root = referenceClone(), path = resolve(root, "package.json");
++    expect(git(root, "update-index", flag, "--", "package.json").exitCode).toBe(0);
++    writeFileSync(path, readFileSync(path, "utf8") + "\n");
++    expect(git(root, "diff", "--no-ext-diff", "--no-textconv", "--quiet", "--").exitCode).toBe(0);
++    expect(git(root, "diff", "--cached", "--no-ext-diff", "--no-textconv", "--quiet", "HEAD", "--").exitCode).toBe(0);
++    expect(() => pinnedReferenceRoot(root)).toThrow("TRACKED_SOURCE_CHANGED");
++  });
++}
++
++test("reference source guard rejects source substitutions hidden by Git replacement refs", () => {
++  const root = referenceClone(), path = resolve(root, "package.json"), text = (bytes: Uint8Array) => new TextDecoder().decode(bytes).trim();
++  writeFileSync(path, readFileSync(path, "utf8") + "\n");
++  expect(git(root, "add", "--", "package.json").exitCode).toBe(0);
++  const tree = git(root, "write-tree");
++  expect(tree.exitCode).toBe(0);
++  const replacement = git(root, "-c", "user.name=Synthetic fixture", "-c", "user.email=fixture@example.invalid", "commit-tree", text(tree.stdout), "-p", selected.reference, "-m", "synthetic reference replacement");
++  expect(replacement.exitCode).toBe(0);
++  expect(git(root, "replace", selected.reference, text(replacement.stdout)).exitCode).toBe(0);
++  expect(text(git(root, "rev-parse", "HEAD").stdout)).toBe(selected.reference);
++  const previousCheck = Bun.spawnSync(["git", "--no-optional-locks", "-c", "core.fsmonitor=false", "-c", "core.hooksPath=/dev/null", "diff", "--cached", "--no-ext-diff", "--no-textconv", "--quiet", "HEAD", "--"], {
++    cwd: root, stdin: "ignore", stdout: "pipe", stderr: "pipe", timeout: 10_000,
++    env: { PATH: "/usr/local/bin:/usr/bin:/bin", HOME: "/nonexistent", LANG: "C", GIT_CONFIG_NOSYSTEM: "1" },
++  });
++  expect(previousCheck.exitCode).toBe(0);
++  expect(() => pinnedReferenceRoot(root)).toThrow("TRACKED_SOURCE_CHANGED");
++});
+ 
+ test("C14 standard Bun bundles retain six pinned source APIs and bounded in-process reference fingerprints", async () => {
+-  const source = "/home/gu1lty/Projects/proveo/chess-coach", root = `${mkdtempSync("/tmp/opencode/chess-coach-ii-reference-bundles-")}/reference`;
++  const source = pinnedReferenceRoot(process.env.CHESS_COACH_REFERENCE_ROOT), root = `${temporary("reference-bundles-")}/reference`;
+   const outputs = buildReferenceBundles(source, root);
+   expect(outputs).toHaveLength(6);
+   expect(outputs.every(output => output.inputs.every(input => !input.path.includes("packages/game-core") && !input.path.startsWith("../")))).toBe(true);
+diff --git a/packages/contracts/src/gpu-job.ts b/packages/contracts/src/gpu-job.ts
+new file mode 100644
+index 000000000..be2bc4e0a
+--- /dev/null
++++ b/packages/contracts/src/gpu-job.ts
+@@ -0,0 +1,117 @@
++// SPEC: _spec/gpu-owner.md, _spec/gpu-owner.puml
++import { createHash } from "node:crypto";
++import { z } from "zod";
++import { modelConfigShape } from "./learning-channel";
++import { attemptDescriptorShape, bindingsShape, byteRefShape, trainingStateShape } from "./training-state";
++import type { TrainingState } from "./training-state";
++
++export const GPU_JOB_VERSION = "chess-coach.gpu-job.v1" as const;
++export const MAX_GPU_JOB_FRAME_BYTES = 1048576;
++export const MAX_GPU_JOB_OUTPUT_BYTES = 3 * (MAX_GPU_JOB_FRAME_BYTES + 1);
++export const MAX_GPU_ATTEMPT_INPUT_BYTES = 65536;
++const digest = z.string().regex(/^[a-f0-9]{64}$/), session = z.string().regex(/^[A-Za-z0-9._:-]{1,64}$/);
++const attempt = z.string().regex(/^[A-Za-z0-9._:-]{1,32}$/);
++const elapsed = z.string().regex(/^(0|[1-9][0-9]{0,18})$/).refine(value => BigInt(value) <= 9223372036854775807n);
++const boundedString = (max: number) => z.string().max(max).refine(value => Buffer.byteLength(value) <= max);
++export const gpuJobStartShape = z.strictObject({ version: z.literal(GPU_JOB_VERSION), sessionId: session, operation: z.literal("run-attempt"),
++  attemptId: attempt, inputJson: boundedString(MAX_GPU_ATTEMPT_INPUT_BYTES), inputSha256: digest, ownerElapsedNs: elapsed });
++export const gpuJobReplyShape = z.discriminatedUnion("kind", [
++  z.strictObject({ version: z.literal(GPU_JOB_VERSION), sessionId: session, kind: z.literal("boot") }),
++  z.strictObject({ version: z.literal(GPU_JOB_VERSION), sessionId: session, kind: z.literal("startup"), attemptId: attempt,
++    inputSha256: digest, descriptorSha256: digest, initialModelId: digest }),
++  z.strictObject({ version: z.literal(GPU_JOB_VERSION), sessionId: session, kind: z.literal("attempt-proposal"), attemptId: attempt,
++    inputSha256: digest, descriptorSha256: digest, proposalJson: boundedString(MAX_GPU_JOB_FRAME_BYTES), proposalSha256: digest }),
++]);
++export const gpuAttemptInputShape = z.strictObject({ version: z.literal("chess-coach.gpu-attempt-input.v1"), bindings: bindingsShape,
++  modelConfig: modelConfigShape, recordRef: byteRefShape.extend({ byteLength: z.int().min(1).max(1048576) }),
++  initialStateSha256: digest, expectedDescriptorSha256: digest, initialModelId: digest }).refine(value =>
++    value.modelConfig.recordSha256 === value.recordRef.sha256 && value.initialModelId === value.recordRef.sha256, { message: "GPU input model binding" });
++export type GpuJobStart = z.infer<typeof gpuJobStartShape>;
++export type GpuJobReply = z.infer<typeof gpuJobReplyShape>;
++export type GpuAttemptInput = z.infer<typeof gpuAttemptInputShape>;
++export const gpuJobSha256 = (bytes: string | Uint8Array): string => createHash("sha256").update(bytes).digest("hex");
++
++function closedDocument(json: string, maxBytes: number): { value: unknown; tokens: Map<string, string> } {
++  if (json.length > maxBytes || Buffer.byteLength(json) > maxBytes || Buffer.from(json).toString("utf8") !== json) throw new Error("GPU JSON: BYTE_BOUND_OR_UTF8");
++  let at = 0, nodes = 0;
++  const tokens = new Map<string, string>();
++  const fail = (): never => { throw new Error("GPU JSON: CLOSED_JSON"); };
++  const space = () => { while (at < json.length && " \t\r\n".includes(json[at]!)) at++; };
++  const string = (): string => {
++    const start = at++;
++    while (at < json.length) {
++      const char = json[at++]!;
++      if (char === '"') return JSON.parse(json.slice(start, at)) as string;
++      if (char === "\\") at++;
++    }
++    return fail();
++  };
++  const value = (depth: number): void => {
++    if (depth > 32 || ++nodes > 16384) fail();
++    space();
++    const char = json[at];
++    if (char === "{") {
++      at++; space();
++      const keys = new Set<string>();
++      if (json[at] === "}") { at++; return; }
++      for (;;) {
++        if (json[at] !== '"' || ++nodes > 16384) fail();
++        const key = string();
++        if (keys.has(key)) fail();
++        keys.add(key); space();
++        if (json[at++] !== ":") fail();
++        space(); const start = at;
++        value(depth + 1);
++        if (depth === 0) tokens.set(key, json.slice(start, at));
++        space(); const end = json[at++];
++        if (end === "}") return;
++        if (end !== ",") fail();
++        space();
++      }
++    }
++    if (char === "[") {
++      at++; space();
++      if (json[at] === "]") { at++; return; }
++      for (;;) {
++        value(depth + 1); space(); const end = json[at++];
++        if (end === "]") return;
++        if (end !== ",") fail();
++      }
++    }
++    if (char === '"') { string(); return; }
++    for (const literal of ["true", "false", "null"]) if (json.startsWith(literal, at)) { at += literal.length; return; }
++    const start = at;
++    while (at < json.length && "-+0123456789.eE".includes(json[at]!)) at++;
++    if (at === start) fail();
++    const number: unknown = JSON.parse(json.slice(start, at));
++    if (typeof number !== "number" || !Number.isFinite(number) || Number.isInteger(number) && !Number.isSafeInteger(number)) fail();
++  };
++  value(0); space();
++  if (at !== json.length) fail();
++  return { value: JSON.parse(json) as unknown, tokens };
++}
++export function parseClosedJson(json: string, maxBytes = MAX_GPU_JOB_FRAME_BYTES): unknown { return closedDocument(json, maxBytes).value; }
++export function decodeGpuJobStart(json: string): GpuJobStart { return gpuJobStartShape.parse(parseClosedJson(json)); }
++export function decodeGpuJobReply(json: string): GpuJobReply { return gpuJobReplyShape.parse(parseClosedJson(json)); }
++export function decodeGpuAttemptInput(json: string, expectedSha256?: string): GpuAttemptInput {
++  const parsed = parseClosedJson(json, MAX_GPU_ATTEMPT_INPUT_BYTES);
++  if (expectedSha256 !== undefined && gpuJobSha256(json) !== expectedSha256) throw new Error("GPU input: HASH");
++  return gpuAttemptInputShape.parse(parsed);
++}
++
++export function checkGpuTrainingState(input: unknown): TrainingState {
++  return trainingStateShape.parse(input);
++}
++export const gpuAttemptProposalShape = z.strictObject({ version: z.literal("chess-coach.gpu-attempt-proposal.v1"), descriptor: attemptDescriptorShape,
++  initialModelId: digest, state: trainingStateShape }).superRefine((value, context) => {
++    const { descriptor: d, state: s } = value;
++    if (d.master !== 101 || d.startedOrdinal !== 0 || d.attemptId.length > 32 || d.modelId !== value.initialModelId ||
++      s.master !== 101 || s.counters.started !== 1 || s.counters.verifiedCompleted !== 1) context.addIssue({ code: "custom", message: "GPU proposal binding" });
++  });
++export type GpuAttemptProposal = z.infer<typeof gpuAttemptProposalShape>;
++export function decodeGpuAttemptProposal(json: string, expectedProposalSha256?: string, expectedDescriptorSha256?: string): GpuAttemptProposal {
++  const parsed = closedDocument(json, MAX_GPU_JOB_FRAME_BYTES), token = parsed.tokens.get("descriptor");
++  if (expectedProposalSha256 !== undefined && gpuJobSha256(json) !== expectedProposalSha256) throw new Error("GPU proposal: HASH");
++  if (token === undefined || expectedDescriptorSha256 !== undefined && gpuJobSha256(token) !== expectedDescriptorSha256) throw new Error("GPU proposal: DESCRIPTOR_HASH");
++  return gpuAttemptProposalShape.parse(parsed.value);
++}
+diff --git a/packages/contracts/tests/gpu-job.test.ts b/packages/contracts/tests/gpu-job.test.ts
+new file mode 100644
+index 000000000..eb1055d0c
+--- /dev/null
++++ b/packages/contracts/tests/gpu-job.test.ts
+@@ -0,0 +1,172 @@
++// SPEC: _spec/gpu-owner.md, _spec/gpu-owner.puml
++import { describe, expect, test } from "bun:test";
++import { checkGpuTrainingState, decodeGpuAttemptInput, decodeGpuAttemptProposal, decodeGpuJobReply, decodeGpuJobStart, GPU_JOB_VERSION,
++  gpuJobSha256, MAX_GPU_JOB_OUTPUT_BYTES, parseClosedJson } from "../src/gpu-job";
++import { initialTrainingState, nextAttempt } from "../../runtime/src/curriculum";
++import { bindings, byteRef, syntheticRecord } from "../../runtime/tests/training-fixture";
++import { trainingStateShape } from "../src/training-state";
++
++function fixture() {
++  const model = syntheticRecord("gpu-contract-fixture"), initial = initialTrainingState(101, model.config.recordSha256, bindings());
++  const { descriptor, consumed } = nextAttempt(initial, "attempt-0"), state = structuredClone(consumed);
++  state.counters.verifiedCompleted = 1;
++  state.historyRefs.push(byteRef("history"));
++  state.journalRef = { ...byteRef("journal"), lastRecordOrdinal: 1 };
++  const descriptorJson = JSON.stringify(descriptor), descriptorSha256 = gpuJobSha256(descriptorJson);
++  const input = { version: "chess-coach.gpu-attempt-input.v1" as const, bindings: initial.bindings, modelConfig: model.config,
++    recordRef: { byteLength: model.record.byteLength, sha256: model.config.recordSha256 }, initialStateSha256: gpuJobSha256(JSON.stringify(initial)),
++    expectedDescriptorSha256: descriptorSha256, initialModelId: initial.modelId };
++  const proposal = { version: "chess-coach.gpu-attempt-proposal.v1" as const, descriptor, initialModelId: initial.modelId, state };
++  return { initial, input, descriptor, descriptorJson, descriptorSha256, proposal, state };
++}
++
++describe("GPU closed boundary", () => {
++  test("accepts exact input and outer identities without control frames", () => {
++    const f = fixture(), inputJson = JSON.stringify(f.input), inputSha256 = gpuJobSha256(inputJson);
++    const start = { version: GPU_JOB_VERSION, sessionId: "a._:-9", operation: "run-attempt", attemptId: "attempt-0", inputJson, inputSha256, ownerElapsedNs: "0" };
++    expect(decodeGpuAttemptInput(inputJson, inputSha256)).toEqual(f.input);
++    expect(decodeGpuJobStart(JSON.stringify(start)).attemptId).toBe("attempt-0");
++    expect(decodeGpuJobReply(JSON.stringify({ version: GPU_JOB_VERSION, sessionId: start.sessionId, kind: "boot" })).kind).toBe("boot");
++    expect(MAX_GPU_JOB_OUTPUT_BYTES).toBe(3 * 1048577);
++    for (const ownerElapsedNs of ["00", "+1", "-1", "1.0", "9223372036854775808", "1e3"]) expect(() => decodeGpuJobStart(JSON.stringify({ ...start, ownerElapsedNs }))).toThrow();
++    for (const attemptId of ["", "a".repeat(33), "a/b"]) expect(() => decodeGpuJobStart(JSON.stringify({ ...start, attemptId }))).toThrow();
++    for (const sessionId of ["", "a".repeat(65), "a/b"]) expect(() => decodeGpuJobStart(JSON.stringify({ ...start, sessionId }))).toThrow();
++    for (const kind of ["close", "closed", "retry"]) expect(() => decodeGpuJobReply(JSON.stringify({ version: GPU_JOB_VERSION, sessionId: "a", kind }))).toThrow();
++    expect(() => decodeGpuJobStart(JSON.stringify({ ...start, close: true }))).toThrow();
++    expect(() => decodeGpuJobStart(JSON.stringify({ ...start, inputJson: "é".repeat(32769) }))).toThrow();
++  });
++  test("binds original input bytes, all model identities and nested closed fields", () => {
++    const f = fixture(), json = JSON.stringify(f.input);
++    expect(() => decodeGpuAttemptInput(" " + json, gpuJobSha256(json))).toThrow("HASH");
++    for (const input of [{ ...f.input, initialModelId: "0".repeat(64) }, { ...f.input, recordRef: { ...f.input.recordRef, byteLength: 0 } },
++      { ...f.input, recordRef: { ...f.input.recordRef, byteLength: 1048577 } }, { ...f.input, modelConfig: { ...f.input.modelConfig, recordSha256: "0".repeat(64) } },
++      { ...f.input, bindings: { ...f.input.bindings, unknown: byteRef() } }, { ...f.input, layout: {} }]) expect(() => decodeGpuAttemptInput(JSON.stringify(input))).toThrow();
++  });
++  test("rejects recursively escaped duplicate keys, malformed JSON and resource excess", () => {
++    for (const json of ['{"a":1,"\\u0061":2}', '{"a":{"x":1,"\\u0078":2}}', '[{"a":1,"a":1}]', '{"a":1,}', '[1,]',
++      '{"a":01}', '{"a":NaN}', '{"a":1e999}', '{"a":9007199254740992}', '{"a":"\n"}', '{"a":true} trailing', '\ufeff{}', '"\ud800"']) expect(() => parseClosedJson(json)).toThrow();
++    expect(() => parseClosedJson("[".repeat(34) + "0" + "]".repeat(34))).toThrow();
++    expect(() => parseClosedJson(JSON.stringify(Array(16385).fill(0)))).toThrow();
++    expect(() => parseClosedJson(" ".repeat(1048577))).toThrow();
++    expect(parseClosedJson('{"x":"brace } \\\" ","a":[true,false,null,-1.5e-2]}')).toEqual({ x: 'brace } " ', a: [true, false, null, -0.015] });
++  });
++});
++
++describe("GPU original descriptor token commitment", () => {
++  test("accepts outer formatting and decoded escaped property names", () => {
++    const f = fixture(), json = JSON.stringify(f.proposal);
++    const variants = [json, " \n" + json + "\t", json.replace('"descriptor":', '"\\u0064escriptor" : \n'),
++      `{"state":${JSON.stringify(f.state)},"descriptor": ${f.descriptorJson} ,"initialModelId":"${f.initial.modelId}","version":"chess-coach.gpu-attempt-proposal.v1"}`];
++    for (const proposalJson of variants) expect(decodeGpuAttemptProposal(proposalJson, gpuJobSha256(proposalJson), f.descriptorSha256)).toEqual(f.proposal);
++  });
++  test("rejects inside-token whitespace, reordering and Unicode escapes despite refreshed enclosing hashes", () => {
++    const f = fixture(), json = JSON.stringify(f.proposal);
++    const { version, ...rest } = f.descriptor;
++    const tokens = [JSON.stringify(f.descriptor, null, 1), JSON.stringify({ ...rest, version }), f.descriptorJson.replace('"master"', '"\\u006daster"'),
++      f.descriptorJson.replace("chess-coach.attempt.v1", "chess-coach.attempt.v\\u0031")];
++    for (const token of tokens) {
++      const proposalJson = json.replace(f.descriptorJson, token);
++      expect(() => decodeGpuAttemptProposal(proposalJson, gpuJobSha256(proposalJson), f.descriptorSha256)).toThrow("DESCRIPTOR_HASH");
++      expect(decodeGpuAttemptProposal(proposalJson, gpuJobSha256(proposalJson), gpuJobSha256(token))).toEqual(f.proposal);
++    }
++  });
++  test("rejects escaped descriptor duplicates in the same bounded parse", () => {
++    const f = fixture(), json = JSON.stringify(f.proposal), duplicate = json.replace('"descriptor":', `"\\u0064escriptor":${f.descriptorJson},"descriptor":`);
++    expect(() => decodeGpuAttemptProposal(duplicate, gpuJobSha256(duplicate), f.descriptorSha256)).toThrow("CLOSED_JSON");
++    const nested = json.replace('"master":101', '"master":101,"\\u006daster":101');
++    expect(() => decodeGpuAttemptProposal(nested, gpuJobSha256(nested))).toThrow("CLOSED_JSON");
++    expect(() => decodeGpuAttemptProposal(json, "0".repeat(64), f.descriptorSha256)).toThrow("HASH");
++  });
++  test("accepts opaque alternate RNG roots, valid prefixes and a different corpus permutation", () => {
++    const f = fixture(), proposal = structuredClone(f.proposal), { state } = proposal;
++    for (const [index, label] of (["selection", "environment-settlement", "policy-sampling", "opponent"] as const).entries()) {
++      const stream = state.rng[label];
++      stream.root = (stream.root ^ 0xffffffff) >>> 0;
++      stream.drawCount = label === "environment-settlement" ? 0 : Number.MAX_SAFE_INTEGER - index;
++      stream.state = Number((BigInt(stream.root) + BigInt(stream.drawCount) * 0x6d2b79f5n) & 0xffffffffn);
++    }
++    state.control.corpusPermutation.reverse();
++    state.control.corpusCursor = 18;
++    state.control.corpusEpoch = 999;
++    expect(state.rng.selection.root).not.toBe(f.state.rng.selection.root);
++    expect(state.control.corpusPermutation).not.toEqual(f.state.control.corpusPermutation);
++    expect(checkGpuTrainingState(state)).toEqual(trainingStateShape.parse(state));
++    const json = JSON.stringify(proposal);
++    expect(decodeGpuAttemptProposal(json, gpuJobSha256(json), f.descriptorSha256)).toEqual(proposal);
++  });
++  test("accepts schema-valid descriptor, journal, model and update alternatives without replay", () => {
++    const f = fixture();
++    const changes = [
++      (p: typeof f.proposal) => { p.descriptor.frozenBaseline = 0.5; },
++      (p: typeof f.proposal) => { p.descriptor.schedule = { kind: "live", liveOrdinal: 499, candidateSide: "w" }; },
++      (p: typeof f.proposal) => { p.state.modelId = "0".repeat(64); },
++      (p: typeof f.proposal) => { p.state.control.corpusCursor = 2; },
++      (p: typeof f.proposal) => { p.state.journalRef = null; },
++      (p: typeof f.proposal) => { p.state.journalRef = { ...byteRef(""), lastRecordOrdinal: 0 }; },
++      (p: typeof f.proposal) => { p.state.historyRefs[0]!.byteLength = 0; },
++      (p: typeof f.proposal) => { Object.assign(p.state.counters, { eligibleCompleted: 1, updates: 1, baselineCount: 1, baselineSum: 1 }); },
++    ];
++    for (const change of changes) {
++      const proposal = structuredClone(f.proposal); change(proposal);
++      expect(checkGpuTrainingState(proposal.state)).toEqual(trainingStateShape.parse(proposal.state));
++      const json = JSON.stringify(proposal);
++      expect(decodeGpuAttemptProposal(json, gpuJobSha256(json), gpuJobSha256(JSON.stringify(proposal.descriptor)))).toEqual(proposal);
++    }
++    const pending = structuredClone(f.initial);
++    pending.counters.started = pending.control.scheduleCursor = 5;
++    pending.control.liveOrdinal = 2;
++    pending.journalRef = { ...byteRef("journal"), lastRecordOrdinal: 1 };
++    expect(checkGpuTrainingState(pending)).toEqual(trainingStateShape.parse(pending));
++  });
++  test("retains existing closed state, prefix, counter, history and control predicates", () => {
++    const f = fixture();
++    expect(checkGpuTrainingState(f.initial)).toEqual(f.initial);
++    expect(checkGpuTrainingState(f.state)).toEqual(f.state);
++    const changes = [
++      (p: typeof f.proposal) => { p.state.initializationSeed = 102; },
++      (p: typeof f.proposal) => { p.state.counters.verifiedCompleted = 0; },
++      (p: typeof f.proposal) => { p.state.counters.verifiedCompleted = 2; p.state.historyRefs.push(byteRef("other")); },
++      (p: typeof f.proposal) => { p.state.counters.nonzeroPGUpdates = 1; },
++      (p: typeof f.proposal) => { p.state.counters.updates = 1; },
++      (p: typeof f.proposal) => { p.state.counters.eligibleCompleted = 1; },
++      (p: typeof f.proposal) => { p.state.counters.baselineCount = 1; },
++      (p: typeof f.proposal) => { p.state.counters.baselineSum = 1; },
++      (p: typeof f.proposal) => { p.state.control.scheduleCursor = 2; },
++      (p: typeof f.proposal) => { p.state.control.liveOrdinal = 1; },
++      (p: typeof f.proposal) => { p.state.control.corpusPermutation[0] = p.state.control.corpusPermutation[1]!; },
++      (p: typeof f.proposal) => { p.state.control.dueBucket = 1; },
++      (p: typeof f.proposal) => { p.state.control.fulfilledBucket = 1; },
++      (p: typeof f.proposal) => { p.state.control.corpusCursor = 19; },
++      (p: typeof f.proposal) => { p.state.control.corpusEpoch = 1000; },
++      (p: typeof f.proposal) => { p.state.rng.selection.state++; },
++      (p: typeof f.proposal) => { p.state.rng["policy-sampling"].drawCount++; },
++      (p: typeof f.proposal) => { p.state.rng.opponent.root++; },
++      (p: typeof f.proposal) => { p.state.rng["environment-settlement"].status = "active"; },
++      (p: typeof f.proposal) => { p.state.rng.selection.status = "unused"; },
++      (p: typeof f.proposal) => { p.state.historyRefs = []; },
++      (p: typeof f.proposal) => { Object.assign(p.state.control, { extra: 0 }); },
++    ];
++    for (const change of changes) {
++      const proposal = structuredClone(f.proposal); change(proposal);
++      expect(() => checkGpuTrainingState(proposal.state)).toThrow();
++      expect(() => decodeGpuAttemptProposal(JSON.stringify(proposal))).toThrow();
++    }
++  });
++  test("retains exactly the accepted first-attempt proposal bindings", () => {
++    const f = fixture();
++    const changes = [
++      (p: typeof f.proposal) => { p.descriptor.attemptId = "a".repeat(33); },
++      (p: typeof f.proposal) => { p.descriptor.master = 102; },
++      (p: typeof f.proposal) => { p.descriptor.startedOrdinal = 1; },
++      (p: typeof f.proposal) => { p.descriptor.modelId = "0".repeat(64); },
++      (p: typeof f.proposal) => { p.state.master = p.state.initializationSeed = 102; },
++      (p: typeof f.proposal) => { p.state.counters.started = p.state.control.scheduleCursor = 2; p.state.control.liveOrdinal = 1; },
++      (p: typeof f.proposal) => { p.state.counters.verifiedCompleted = 0; p.state.historyRefs = []; },
++    ];
++    for (const change of changes) {
++      const proposal = structuredClone(f.proposal); change(proposal);
++      const json = JSON.stringify(proposal);
++      expect(() => decodeGpuAttemptProposal(json, gpuJobSha256(json), gpuJobSha256(JSON.stringify(proposal.descriptor)))).toThrow("GPU proposal binding");
++    }
++  });
++});
+diff --git a/packages/runtime/src/gpu-job.ts b/packages/runtime/src/gpu-job.ts
+new file mode 100644
+index 000000000..f9a0002c5
+--- /dev/null
++++ b/packages/runtime/src/gpu-job.ts
+@@ -0,0 +1,146 @@
++// SPEC: _spec/gpu-owner.md, _spec/gpu-owner.puml
++import type {} from "bun";
++import { closeSync, constants, fstatSync, openSync, readSync } from "node:fs";
++import { isAbsolute } from "node:path";
++import { decodeGpuAttemptInput, decodeGpuAttemptProposal, decodeGpuJobReply, decodeGpuJobStart, GPU_JOB_VERSION, gpuJobSha256,
++  MAX_GPU_JOB_FRAME_BYTES, MAX_GPU_JOB_OUTPUT_BYTES } from "../../contracts/src/gpu-job";
++import type { ByteRef } from "../../contracts/src/training-state";
++import { loadCapturedCorpus } from "./corpus";
++import type { RecordedCorpus } from "./corpus";
++import { FIXED_ATTEMPT_LAYOUT, FixedAttemptFactory } from "./fixed-attempt";
++import type { FixedAttemptLayout } from "./fixed-attempt";
++import { loadCapturedStrategicApi } from "./strategic";
++import type { StrategicApi } from "./strategic";
++import { TrainingCoordinator } from "./training-coordinator";
++import type { MatchClock } from "./match-session";
++
++export type GpuJobLayout = Readonly<{ initialRecordPath: string; stateRoot: string; factory: FixedAttemptLayout }>;
++export const GPU_JOB_LAYOUT: GpuJobLayout = Object.freeze({ initialRecordPath: "/app/inputs/master-101/model.bpk", stateRoot: "/state/run", factory: FIXED_ATTEMPT_LAYOUT });
++export type GpuJobOptions = { sessionId: string; input: ReadableStream<Uint8Array>; write: (json: string) => Promise<void>;
++  layout?: GpuJobLayout; clockNs?: () => bigint; loadCorpus?: () => Promise<RecordedCorpus>; loadStrategic?: () => Promise<StrategicApi | null> };
++
++function readRecord(path: string, ref: ByteRef): Uint8Array {
++  if (!isAbsolute(path) || path.includes("\0")) throw new Error("GPU job: RECORD_PATH");
++  const fd = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
++  try {
++    const before = fstatSync(fd, { bigint: true });
++    if (!before.isFile() || before.size !== BigInt(ref.byteLength)) throw new Error("GPU job: RECORD_LENGTH");
++    const bytes = Buffer.alloc(ref.byteLength + 1);
++    let size = 0;
++    while (size < bytes.byteLength) {
++      const count = readSync(fd, bytes, size, bytes.byteLength - size, null);
++      if (count === 0) break;
++      size += count;
++    }
++    const after = fstatSync(fd, { bigint: true });
++    if (size !== ref.byteLength || after.size !== before.size || after.mtimeNs !== before.mtimeNs || after.ctimeNs !== before.ctimeNs ||
++      gpuJobSha256(bytes.subarray(0, size)) !== ref.sha256) throw new Error("GPU job: RECORD_BINDING");
++    return bytes.subarray(0, size);
++  } finally { closeSync(fd); }
++}
++
++export async function runGpuJobLoop(options: GpuJobOptions): Promise<void> {
++  const sourceClock = options.clockNs ?? process.hrtime.bigint;
++  let previous = sourceClock();
++  if (previous < 0n) throw new Error("GPU job: CLOCK");
++  const localBoot = previous;
++  const localNow = () => {
++    const now = sourceClock();
++    if (now < previous || now < 0n) throw new Error("GPU job: CLOCK");
++    previous = now;
++    return now;
++  };
++  if (!/^[A-Za-z0-9._:-]{1,64}$/.test(options.sessionId)) throw new Error("GPU job: SESSION");
++  let clock = () => localNow() - localBoot;
++  const check = (deadline: bigint) => { if (clock() >= deadline) throw new Error("GPU job: DEADLINE"); };
++  const bounded = async <T>(action: () => Promise<T>, deadline: bigint): Promise<T> => {
++    check(deadline);
++    let timer: ReturnType<typeof setTimeout> | undefined;
++    try {
++      const expired = new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error("GPU job: DEADLINE")), Number((deadline - clock() + 999999n) / 1000000n)); });
++      const result = await Promise.race([Promise.resolve().then(action), expired]);
++      check(deadline);
++      return result;
++    } finally { if (timer !== undefined) clearTimeout(timer); }
++  };
++  let outputBytes = 0;
++  const emit = async (value: unknown, deadline: bigint) => {
++    check(deadline);
++    const json = JSON.stringify(value), bytes = Buffer.byteLength(json);
++    if (bytes > MAX_GPU_JOB_FRAME_BYTES || outputBytes + bytes + 1 > MAX_GPU_JOB_OUTPUT_BYTES) throw new Error("GPU job: OUTPUT_BOUND");
++    decodeGpuJobReply(json);
++    outputBytes += bytes + 1;
++    await bounded(() => options.write(json), deadline);
++  };
++  await emit({ version: GPU_JOB_VERSION, sessionId: options.sessionId, kind: "boot" }, 10_000_000_000n);
++  const reader = options.input.getReader(), bytes = Buffer.alloc(MAX_GPU_JOB_FRAME_BYTES + 1);
++  let size = 0, ended = false, eof = false;
++  try {
++    for (;;) {
++      const { value, done } = await bounded(() => reader.read(), 10_000_000_000n);
++      if (done) { eof = true; break; }
++      if (value.byteLength === 0) continue;
++      if (ended) throw new Error("GPU job: TRAILING_INPUT");
++      if (value.byteLength > bytes.byteLength - size) throw new Error("GPU job: INPUT_BOUND");
++      const newline = value.indexOf(10);
++      if (newline !== -1) {
++        if (newline !== value.byteLength - 1) throw new Error("GPU job: TRAILING_INPUT");
++        ended = true;
++      }
++      bytes.set(value, size); size += value.byteLength;
++    }
++  } finally {
++    if (!eof) void reader.cancel().catch(() => {});
++    try { reader.releaseLock(); } catch {}
++  }
++  if (!ended) throw new Error("GPU job: MISSING_LF");
++  const frame = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes.subarray(0, size - 1));
++  const start = decodeGpuJobStart(frame);
++  if (start.sessionId !== options.sessionId) throw new Error("GPU job: SESSION");
++  const ownerElapsed = BigInt(start.ownerElapsedNs);
++  clock = () => ownerElapsed + (localNow() - localBoot);
++  check(10_000_000_000n);
++  const input = decodeGpuAttemptInput(start.inputJson, start.inputSha256);
++  const selectedLayout = options.layout ?? GPU_JOB_LAYOUT;
++  const layout: GpuJobLayout = Object.freeze({ ...selectedLayout, factory: Object.freeze({ ...selectedLayout.factory }) });
++  const record = readRecord(layout.initialRecordPath, input.recordRef);
++  check(10_000_000_000n);
++  const [corpus, strategic] = await bounded(() => Promise.all([(options.loadCorpus ?? loadCapturedCorpus)(),
++    (options.loadStrategic ?? loadCapturedStrategicApi)()]), 10_000_000_000n);
++  check(10_000_000_000n);
++  const coordinator = new TrainingCoordinator(layout.stateRoot, input.bindings);
++  let proposal: unknown;
++  try {
++    const initial = coordinator.initializeMaster(101, { config: input.modelConfig, record });
++    if (gpuJobSha256(JSON.stringify(initial)) !== input.initialStateSha256 || initial.modelId !== input.initialModelId) throw new Error("GPU job: INITIAL_STATE");
++    check(10_000_000_000n);
++    const timing: MatchClock = { clockNs: clock, originNs: 0n, startupDeadlineNs: 10_000_000_000n,
++      workDeadlineNs: 297_000_000_000n, cleanupDeadlineNs: 300_000_000_000n };
++    let descriptorJson: string | null = null;
++    const state = await coordinator.runAttempt(101, start.attemptId, timing, async context => {
++      check(timing.startupDeadlineNs);
++      descriptorJson = JSON.stringify(context.descriptor);
++      if (context.descriptor.master !== 101 || context.descriptor.startedOrdinal !== 0 || context.descriptor.modelId !== input.initialModelId ||
++        context.model.config.recordSha256 !== input.initialModelId || gpuJobSha256(descriptorJson) !== input.expectedDescriptorSha256) throw new Error("GPU job: DESCRIPTOR");
++      const factory = new FixedAttemptFactory(corpus, strategic, layout.factory);
++      const dependencies = await factory.create(context);
++      return { ...dependencies, onStarted: () => emit({ version: GPU_JOB_VERSION, sessionId: options.sessionId, kind: "startup", attemptId: start.attemptId,
++        inputSha256: start.inputSha256, descriptorSha256: input.expectedDescriptorSha256, initialModelId: input.initialModelId }, timing.startupDeadlineNs) };
++    });
++    check(timing.workDeadlineNs);
++    if (descriptorJson === null) throw new Error("GPU job: MISSING_DESCRIPTOR");
++    const proposalJson = `{"version":"chess-coach.gpu-attempt-proposal.v1","descriptor":${descriptorJson},"initialModelId":${JSON.stringify(input.initialModelId)},"state":${JSON.stringify(state)}}`;
++    const proposalSha256 = gpuJobSha256(proposalJson);
++    decodeGpuAttemptProposal(proposalJson, proposalSha256, input.expectedDescriptorSha256);
++    proposal = { version: GPU_JOB_VERSION, sessionId: options.sessionId, kind: "attempt-proposal", attemptId: start.attemptId,
++      inputSha256: start.inputSha256, descriptorSha256: input.expectedDescriptorSha256, proposalJson, proposalSha256 };
++  } finally { coordinator.close(); }
++  await emit(proposal, 297_000_000_000n);
++  check(300_000_000_000n);
++}
++
++export async function gpuJobMain(): Promise<never> { throw new Error("GPU job: SOURCE_ONLY_DISABLED"); }
++if (import.meta.main) {
++  try { await gpuJobMain(); }
++  catch (error) { await Bun.write(Bun.stderr, String(error) + "\n"); process.exitCode = 1; }
++}
+diff --git a/packages/runtime/tests/fixed-attempt-gpu-owner.test.ts b/packages/runtime/tests/fixed-attempt-gpu-owner.test.ts
+new file mode 100644
+index 000000000..4cb58def5
+--- /dev/null
++++ b/packages/runtime/tests/fixed-attempt-gpu-owner.test.ts
+@@ -0,0 +1,124 @@
++// SPEC: _spec/gpu-owner.md, _spec/gpu-owner.puml
++import { describe, expect, test } from "bun:test";
++import { Database } from "bun:sqlite";
++import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
++import { join } from "node:path";
++import { decodeGpuAttemptProposal, decodeGpuJobReply } from "../../contracts/src/gpu-job";
++import { nextAttempt } from "../src/curriculum";
++import { FIXED_ATTEMPT_LAYOUT, FixedAttemptFactory } from "../src/fixed-attempt";
++import { runGpuJobLoop } from "../src/gpu-job";
++import { MatchSession } from "../src/match-session";
++import { matchFixture, syntheticCorpus } from "./match-fixture";
++import { registerGpuOwnerFixture } from "./fixtures/gpu-owner/register";
++import type { GpuOwnerFixture } from "./fixtures/gpu-owner/register";
++import { gpuOwnerTestRoot, inputStream } from "./fixtures/gpu-owner/support";
++
++const jsonFile = (path: string): Record<string, unknown> => JSON.parse(readFileSync(path, "utf8")) as Record<string, unknown>;
++function gone(pid: unknown): void {
++  expect(typeof pid).toBe("number");
++  let code: unknown;
++  try { process.kill(pid as number, 0); } catch (error) { code = (error as NodeJS.ErrnoException).code; }
++  expect(code).toBe("ESRCH");
++}
++function cleanChildren(f: GpuOwnerFixture): void {
++  const root = f.layout.factory.cwd;
++  for (const name of ["learner-a", "learner-b", "match"]) {
++    const receipt = jsonFile(join(root, `${name}.receipt.json`));
++    expect(receipt.stdinEof).toBe(true); gone(receipt.pid);
++  }
++  for (const suffix of ["a", "b"]) {
++    const receipt = jsonFile(join(root, `learner-${suffix}.receipt.json`));
++    expect(receipt.events).toEqual(["begin", "finish", "close"]);
++    expect(receipt.configPath).toBe(join(f.layout.factory.scratchRoot, `attempt-${f.attemptId}`, "config.json"));
++    expect(receipt.recordPath).toBe(join(f.layout.factory.scratchRoot, `attempt-${f.attemptId}`, "model.bpk"));
++  }
++  expect(jsonFile(join(root, "match.receipt.json"))).toMatchObject({ scores: 0, scorerClosed: 1, scorerStopped: 0 });
++  expect(readdirSync(f.layout.factory.scratchRoot)).toEqual([]);
++}
++
++describe("GPU owner real fixed attempt connection", () => {
++  test("fixture driver calls the real loop, commits SQLite once, closes/reaps three children and releases scratch", async () => {
++    const f = registerGpuOwnerFixture(gpuOwnerTestRoot("gpu-driver"));
++    const child = Bun.spawn(["/usr/local/bin/bun", "--no-env-file", "--no-install", f.driverPath, f.sessionId],
++      { cwd: f.layout.factory.cwd, stdin: "pipe", stdout: "pipe", stderr: "pipe", env: { PATH: "/usr/local/bin:/usr/bin:/bin", BUN_RUNTIME_TRANSPILER_CACHE_PATH: "0" } });
++    let timer: ReturnType<typeof setTimeout> | undefined;
++    try {
++      timer = setTimeout(() => child.kill("SIGKILL"), 15000);
++      child.stdin.write(f.startJson + "\n"); await child.stdin.end();
++      const [stdout, stderr, exitCode] = await Promise.all([new Response(child.stdout).text(), new Response(child.stderr).text(), child.exited]);
++      writeFileSync(join(f.layout.factory.cwd, "driver.stdout"), stdout, { flag: "wx", mode: 0o600 });
++      writeFileSync(join(f.layout.factory.cwd, "driver.stderr"), stderr, { flag: "wx", mode: 0o600 });
++      expect(stderr).toBe(""); expect(exitCode).toBe(0); expect(stdout.endsWith("\n")).toBe(true);
++      const replies = stdout.trimEnd().split("\n").map(decodeGpuJobReply);
++      expect(replies.map(reply => reply.kind)).toEqual(["boot", "startup", "attempt-proposal"]);
++      const proposal = replies[2]!;
++      if (proposal.kind !== "attempt-proposal") throw new Error("proposal required");
++      expect(proposal.descriptorSha256).toBe(f.expectedDescriptorSha256);
++      const accepted = decodeGpuAttemptProposal(proposal.proposalJson, proposal.proposalSha256, f.expectedDescriptorSha256);
++      expect(accepted.state.counters).toEqual({ started: 1, verifiedCompleted: 1, eligibleCompleted: 0, updates: 0, nonzeroPGUpdates: 0, baselineCount: 0, baselineSum: 0 });
++      expect(accepted.initialModelId).toBe(f.initialModelId); expect(accepted.state.modelId).toBe(f.initialModelId);
++      const db = new Database(join(f.layout.stateRoot, "private.sqlite"), { readonly: true });
++      try {
++        expect(db.query("SELECT id,ordinal,status FROM attempts").all()).toEqual([{ id: f.attemptId, ordinal: 0, status: "COMPLETED" }]);
++        expect(db.query("SELECT master,pending,status FROM masters").all()).toEqual([{ master: 101, pending: null, status: "active" }]);
++        expect(db.query("SELECT aborted FROM control").get()).toEqual({ aborted: 0 });
++      } finally { db.close(); }
++      cleanChildren(f);
++      const attemptPath = join(f.layout.stateRoot, "packet-00", `attempt-${f.attemptId}`);
++      const journal = readFileSync(join(attemptPath, readdirSync(attemptPath).find(name => name.endsWith("verified-journal.bin"))!), "utf8");
++      const events = journal.trimEnd().split("\n").map(line => JSON.parse(line).event);
++      expect(events.find(event => event.kind === "match-exit").value).toEqual({ stdinClosed: true, stdoutEof: true, stderrEof: true, reaped: true, exitCode: 0, forced: false });
++      expect(events.find(event => event.kind === "learners-closed").value.kind).toBe("diagnostic");
++    } finally { if (timer !== undefined) clearTimeout(timer); if (child.exitCode === null) { child.kill("SIGKILL"); await child.exited; } }
++  }, 20000);
++
++  test("copies trusted factory layout and preserves historical two-argument defaults", async () => {
++    expect(FIXED_ATTEMPT_LAYOUT).toEqual({ scratchRoot: "/tmp/episode-model", cwd: "/app", bunExecutable: "/usr/local/bin/bun",
++      learnerExecutable: "/usr/local/bin/policy-channel", matchEntrypoint: "/app/packages/runtime/src/match-worker-main.ts" });
++    const f = registerGpuOwnerFixture(gpuOwnerTestRoot("gpu-layout")), layout = { ...f.layout.factory }, corpus = syntheticCorpus(0);
++    const factory = new FixedAttemptFactory(corpus, null, layout);
++    layout.learnerExecutable = "/not-the-selected-learner"; layout.matchEntrypoint = "/not-the-selected-match";
++    const timing = { clockNs: () => 0n, originNs: 0n, startupDeadlineNs: 10_000_000_000n, workDeadlineNs: 297_000_000_000n, cleanupDeadlineNs: 300_000_000_000n };
++    const { consumed } = nextAttempt(f.initialState, f.attemptId), model = { config: JSON.parse(f.inputJson).modelConfig, record: readFileSync(f.layout.initialRecordPath) };
++    const dependencies = await factory.create({ descriptor: f.descriptor, rng: consumed.rng, model, directory: f.layout.factory.cwd, timing });
++    let called = 0;
++    try {
++      const session = new MatchSession({ ...dependencies, ...timing, descriptor: f.descriptor, rng: consumed.rng, onStarted: async () => {
++        called++;
++        for (const suffix of ["a", "b"]) expect(JSON.parse(readFileSync(join(f.layout.factory.cwd, `learner-${suffix}.events.json`), "utf8"))).toEqual(["begin"]);
++        expect(existsSync(join(f.layout.factory.cwd, "match.receipt.json"))).toBe(false);
++      } });
++      const result = await session.run(); expect(result.sampledDecisions).toBe(0); expect(called).toBe(1);
++    } finally { dependencies.releaseInputs?.(); }
++    cleanChildren(f);
++  });
++
++  test("late startup emission aborts all owned children and releases real factory scratch", async () => {
++    const f = registerGpuOwnerFixture(gpuOwnerTestRoot("gpu-late-startup")), writes: string[] = [];
++    let now = 0n;
++    await expect(runGpuJobLoop({ sessionId: f.sessionId, layout: f.layout, input: inputStream(f.startJson + "\n"), clockNs: () => now,
++      loadCorpus: async () => syntheticCorpus(0), loadStrategic: async () => null, write: async json => {
++        writes.push(json);
++        if (decodeGpuJobReply(json).kind === "startup") now = 10_000_000_000n;
++      } })).rejects.toThrow();
++    expect(writes.map(json => decodeGpuJobReply(json).kind)).toEqual(["boot", "startup"]);
++    expect(readdirSync(f.layout.factory.scratchRoot)).toEqual([]);
++    for (const name of ["learner-a", "learner-b", "match"]) gone(jsonFile(join(f.layout.factory.cwd, `${name}.started.json`)).pid);
++    const db = new Database(join(f.layout.stateRoot, "private.sqlite"), { readonly: true });
++    try { expect(db.query("SELECT aborted FROM control").get()).toEqual({ aborted: 1 }); expect(db.query("SELECT status FROM attempts").get()).not.toEqual({ status: "COMPLETED" }); }
++    finally { db.close(); }
++  });
++
++  test("callback errors and late callback completion stay before first accept and use existing cleanup", async () => {
++    for (const mode of ["error", "late"] as const) {
++      const f = matchFixture({ windows: 0 }); let calls = 0;
++      const session = new MatchSession({ descriptor: f.descriptor, rng: f.rng, corpus: f.corpus, strategic: null, learners: f.learners,
++        transport: f.transport, verifier: f.verifier, clockNs: () => mode === "late" && calls > 0 ? 10_000_000_000n : 0n,
++        originNs: 0n, startupDeadlineNs: 10_000_000_000n, workDeadlineNs: 297_000_000_000n, cleanupDeadlineNs: 300_000_000_000n,
++        onStarted: async () => { calls++; if (mode === "error") throw new Error("startup callback failed"); } });
++      await expect(session.run()).rejects.toThrow(); expect(calls).toBe(1);
++      expect(f.transport.requests.map(request => request.operation)).toEqual(["start"]);
++      expect(f.learners.begun).toBe(1); expect(f.learners.aborted).toBe(1); expect(f.transport.stopped).toBe(1);
++    }
++  });
++});
+diff --git a/packages/runtime/tests/fixtures/gpu-owner/driver.ts b/packages/runtime/tests/fixtures/gpu-owner/driver.ts
+new file mode 100644
+index 000000000..a460fce36
+--- /dev/null
++++ b/packages/runtime/tests/fixtures/gpu-owner/driver.ts
+@@ -0,0 +1,16 @@
++// SPEC: _spec/gpu-owner.md, _spec/gpu-owner.puml
++import { readFileSync } from "node:fs";
++import { parseClosedJson } from "../../../../contracts/src/gpu-job";
++import { runGpuJobLoop } from "../../../src/gpu-job";
++import { syntheticCorpus } from "../../match-fixture";
++import type { GpuOwnerFixture } from "./register";
++
++if (import.meta.main) {
++  try {
++    const registered = parseClosedJson(readFileSync(`${import.meta.path}.layout.json`, "utf8")) as GpuOwnerFixture;
++    const [sessionId] = Bun.argv.slice(2);
++    if (Bun.argv.length !== 3 || sessionId !== registered.sessionId) throw new Error("GPU fixture driver: SESSION");
++    await runGpuJobLoop({ sessionId, layout: registered.layout, input: Bun.stdin.stream(),
++      write: async json => { await Bun.write(Bun.stdout, json + "\n"); }, loadCorpus: async () => syntheticCorpus(0), loadStrategic: async () => null });
++  } catch (error) { await Bun.write(Bun.stderr, String(error) + "\n"); process.exitCode = 1; }
++}
+diff --git a/packages/runtime/tests/fixtures/gpu-owner/learner.ts b/packages/runtime/tests/fixtures/gpu-owner/learner.ts
+new file mode 100644
+index 000000000..4e19620ba
+--- /dev/null
++++ b/packages/runtime/tests/fixtures/gpu-owner/learner.ts
+@@ -0,0 +1,27 @@
++// SPEC: _spec/gpu-owner.md, _spec/gpu-owner.puml
++import { readFileSync, writeFileSync } from "node:fs";
++import { dirname, join } from "node:path";
++import { gpuJobSha256, parseClosedJson } from "../../../../contracts/src/gpu-job";
++import { learningRequestShape, modelConfigShape } from "../../../../contracts/src/learning-channel";
++import { jsonLines } from "../../../src/framing";
++
++if (import.meta.main) {
++  try {
++    const [configPath, recordPath, sessionId] = Bun.argv.slice(2);
++    if (Bun.argv.length !== 5 || !configPath || !recordPath || !sessionId || !/:[ab]$/.test(sessionId)) throw new Error("GPU fixture learner: ARGUMENTS");
++    const config = modelConfigShape.parse(parseClosedJson(readFileSync(configPath, "utf8"))), record = readFileSync(recordPath);
++    if (gpuJobSha256(record) !== config.recordSha256) throw new Error("GPU fixture learner: RECORD");
++    const events: string[] = [], suffix = sessionId.slice(-1), root = dirname(import.meta.path);
++    writeFileSync(join(root, `learner-${suffix}.started.json`), JSON.stringify({ pid: process.pid, sessionId, configPath, recordPath }) + "\n", { flag: "wx", mode: 0o600 });
++    for await (const frame of jsonLines(Bun.stdin.stream(), 1048576, 3 * 1048577, process.hrtime.bigint, true)) {
++      const request = learningRequestShape.parse(parseClosedJson(frame.json)), expected = ["begin", "finish", "close"][events.length];
++      if (request.sessionId !== sessionId || request.modelId !== config.recordSha256 || request.ordinal !== events.length || request.command.kind !== expected) throw new Error("GPU fixture learner: SEQUENCE");
++      events.push(request.command.kind);
++      writeFileSync(join(root, `learner-${suffix}.events.json`), JSON.stringify(events) + "\n", { mode: 0o600 });
++      const kind = expected === "begin" ? "begun" : expected === "finish" ? "diagnostic" : "closed";
++      await Bun.write(Bun.stdout, JSON.stringify({ version: request.version, sessionId, ordinal: request.ordinal, modelId: request.modelId, result: { kind } }) + "\n");
++    }
++    if (events.join(",") !== "begin,finish,close") throw new Error("GPU fixture learner: MISSING_CLOSE");
++    writeFileSync(join(root, `learner-${suffix}.receipt.json`), JSON.stringify({ pid: process.pid, stdinEof: true, sessionId, configPath, recordPath, events }) + "\n", { flag: "wx", mode: 0o600 });
++  } catch (error) { await Bun.write(Bun.stderr, String(error) + "\n"); process.exitCode = 1; }
++}
+diff --git a/packages/runtime/tests/fixtures/gpu-owner/match.ts b/packages/runtime/tests/fixtures/gpu-owner/match.ts
+new file mode 100644
+index 000000000..6349048aa
+--- /dev/null
++++ b/packages/runtime/tests/fixtures/gpu-owner/match.ts
+@@ -0,0 +1,19 @@
++// SPEC: _spec/gpu-owner.md, _spec/gpu-owner.puml
++import { writeFileSync } from "node:fs";
++import { dirname, join } from "node:path";
++import { MatchWorker } from "../../../src/match-worker";
++import { runMatchWorkerLoop } from "../../../src/match-worker-main";
++import { SyntheticMatchScorer, syntheticCorpus } from "../../match-fixture";
++
++if (import.meta.main) {
++  try {
++    const [attemptId, modelId, remaining] = Bun.argv.slice(2), clock = process.hrtime.bigint;
++    if (Bun.argv.length !== 5 || !attemptId || !modelId || !remaining) throw new Error("GPU fixture match: ARGUMENTS");
++    writeFileSync(join(dirname(import.meta.path), "match.started.json"), JSON.stringify({ pid: process.pid }) + "\n", { flag: "wx", mode: 0o600 });
++    const scorer = new SyntheticMatchScorer(clock);
++    await runMatchWorkerLoop(new MatchWorker(attemptId, { corpus: syntheticCorpus(0), strategic: null, scorer, modelId, clockNs: clock,
++      workDeadlineNs: clock() + BigInt(remaining) }));
++    writeFileSync(join(dirname(import.meta.path), "match.receipt.json"), JSON.stringify({ pid: process.pid, stdinEof: true, scores: scorer.scores,
++      scorerClosed: scorer.closed, scorerStopped: scorer.stopped }) + "\n", { flag: "wx", mode: 0o600 });
++  } catch (error) { await Bun.write(Bun.stderr, String(error) + "\n"); process.exitCode = 1; }
++}
+diff --git a/packages/runtime/tests/fixtures/gpu-owner/register.ts b/packages/runtime/tests/fixtures/gpu-owner/register.ts
+new file mode 100644
+index 000000000..53bc82c63
+--- /dev/null
++++ b/packages/runtime/tests/fixtures/gpu-owner/register.ts
+@@ -0,0 +1,42 @@
++// SPEC: _spec/gpu-owner.md, _spec/gpu-owner.puml
++import { chmodSync, lstatSync, readFileSync, readdirSync, realpathSync, writeFileSync } from "node:fs";
++import { dirname, isAbsolute, join, resolve } from "node:path";
++import { fileURLToPath } from "node:url";
++import { gpuJobSha256, GPU_JOB_VERSION } from "../../../../contracts/src/gpu-job";
++import { initialTrainingState, nextAttempt } from "../../../src/curriculum";
++import type { GpuJobLayout } from "../../../src/gpu-job";
++import { bindings, syntheticRecord } from "../../training-fixture";
++
++export function registerGpuOwnerFixture(existingExclusivePrivateRoot: string, bunExecutable = "/usr/local/bin/bun") {
++  const root = existingExclusivePrivateRoot, stat = lstatSync(root);
++  if (!isAbsolute(root) || realpathSync(root) !== root || !stat.isDirectory() || (stat.mode & 0o077) !== 0 || readdirSync(root).length !== 0 ||
++    !isAbsolute(bunExecutable) || /[\s\0]/.test(bunExecutable)) throw new Error("GPU fixture: EXCLUSIVE_PRIVATE_ROOT_OR_BUN");
++  const here = dirname(fileURLToPath(import.meta.url)), driverPath = join(root, "driver.ts"), layoutPath = `${driverPath}.layout.json`;
++  const sessionId = "gpu-owner-fixture", attemptId = "gpu-attempt-0", model = syntheticRecord("gpu-owner-synthetic-initial-not-a-burn-record");
++  const initialState = initialTrainingState(101, model.config.recordSha256, bindings()), { descriptor } = nextAttempt(initialState, attemptId);
++  const initialModelId = model.config.recordSha256, expectedDescriptorSha256 = gpuJobSha256(JSON.stringify(descriptor));
++  const layout: GpuJobLayout = { initialRecordPath: join(root, "initial-model.bpk"), stateRoot: join(root, "state"), factory: {
++    scratchRoot: join(root, "scratch-model"), cwd: root, bunExecutable, learnerExecutable: join(root, "learner.ts"), matchEntrypoint: join(root, "match.ts") } };
++  const inputJson = JSON.stringify({ version: "chess-coach.gpu-attempt-input.v1", bindings: initialState.bindings, modelConfig: model.config,
++    recordRef: { byteLength: model.record.byteLength, sha256: initialModelId }, initialStateSha256: gpuJobSha256(JSON.stringify(initialState)), expectedDescriptorSha256, initialModelId });
++  const inputSha256 = gpuJobSha256(inputJson);
++  const startJson = JSON.stringify({ version: GPU_JOB_VERSION, sessionId, operation: "run-attempt", attemptId, inputJson, inputSha256, ownerElapsedNs: "0" });
++  for (const name of ["driver.ts", "match.ts", "learner.ts"]) {
++    const original = readFileSync(join(here, name), "utf8");
++    const rewritten = original.replace(/(from\s+")([.][.\w/-]*)(")/g, (_, before: string, path: string, after: string) => `${before}${resolve(here, path)}${after}`);
++    const path = join(root, name);
++    writeFileSync(path, (name === "learner.ts" ? `#!${bunExecutable}\n` : "") + rewritten, { flag: "wx", mode: 0o600 });
++    if (name === "learner.ts") chmodSync(path, 0o700);
++  }
++  writeFileSync(layout.initialRecordPath, model.record, { flag: "wx", mode: 0o400 });
++  const registration = { driverPath, layoutPath, sessionId, attemptId, inputJson, inputSha256, initialModelId, expectedDescriptorSha256,
++    layout, initialState, descriptor, startJson };
++  writeFileSync(layoutPath, JSON.stringify(registration) + "\n", { flag: "wx", mode: 0o600 });
++  return registration;
++}
++export type GpuOwnerFixture = ReturnType<typeof registerGpuOwnerFixture>;
++if (import.meta.main) {
++  const [root, bunExecutable] = Bun.argv.slice(2);
++  if (!root || Bun.argv.length > 4) throw new Error("GPU fixture: ARGUMENTS");
++  console.log(JSON.stringify(registerGpuOwnerFixture(root, bunExecutable)));
++}
+diff --git a/packages/runtime/tests/fixtures/gpu-owner/support.ts b/packages/runtime/tests/fixtures/gpu-owner/support.ts
+new file mode 100644
+index 000000000..48b67afe3
+--- /dev/null
++++ b/packages/runtime/tests/fixtures/gpu-owner/support.ts
+@@ -0,0 +1,12 @@
++// SPEC: _spec/gpu-owner.md, _spec/gpu-owner.puml
++import { mkdirSync, mkdtempSync } from "node:fs";
++import { resolve } from "node:path";
++
++export function gpuOwnerTestRoot(label: string): string {
++  const scratch = resolve(import.meta.dir, "../../../../..", "_work/gpu-owner-recovery/scratch");
++  mkdirSync(scratch, { recursive: true, mode: 0o700 });
++  return mkdtempSync(resolve(scratch, `${label}-`));
++}
++export const inputStream = (bytes: string | Uint8Array): ReadableStream<Uint8Array> => new ReadableStream({ start(controller) {
++  controller.enqueue(typeof bytes === "string" ? new TextEncoder().encode(bytes) : bytes); controller.close();
++} });
+diff --git a/packages/runtime/tests/gpu-job.test.ts b/packages/runtime/tests/gpu-job.test.ts
+new file mode 100644
+index 000000000..4245de1a6
+--- /dev/null
++++ b/packages/runtime/tests/gpu-job.test.ts
+@@ -0,0 +1,130 @@
++// SPEC: _spec/gpu-owner.md, _spec/gpu-owner.puml
++import { describe, expect, test } from "bun:test";
++import { existsSync, readFileSync, symlinkSync, writeFileSync } from "node:fs";
++import { resolve } from "node:path";
++import { decodeGpuAttemptProposal, decodeGpuJobReply, gpuJobSha256 } from "../../contracts/src/gpu-job";
++import { gpuJobMain, runGpuJobLoop } from "../src/gpu-job";
++import { syntheticCorpus } from "./match-fixture";
++import { registerGpuOwnerFixture } from "./fixtures/gpu-owner/register";
++import type { GpuOwnerFixture } from "./fixtures/gpu-owner/register";
++import { gpuOwnerTestRoot, inputStream } from "./fixtures/gpu-owner/support";
++
++function setup() {
++  const fixture = registerGpuOwnerFixture(gpuOwnerTestRoot("gpu-loop")), writes: string[] = [];
++  let loads = 0;
++  const options = { sessionId: fixture.sessionId, layout: fixture.layout, input: inputStream(fixture.startJson + "\n"),
++    write: async (json: string) => { writes.push(json); }, clockNs: () => 0n,
++    loadCorpus: async () => { loads++; return syntheticCorpus(0); }, loadStrategic: async () => { loads++; return null; } };
++  return { fixture, writes, options, loads: () => loads };
++}
++function inert(f: ReturnType<typeof setup>) {
++  expect(f.loads()).toBe(0);
++  expect(existsSync(f.fixture.layout.stateRoot)).toBe(false);
++  expect(existsSync(f.fixture.layout.factory.scratchRoot)).toBe(false);
++  expect(f.writes.map(json => decodeGpuJobReply(json).kind)).toEqual(["boot"]);
++}
++function changedInput(fixture: GpuOwnerFixture, mutate: (input: Record<string, unknown>) => void): string {
++  const input = JSON.parse(fixture.inputJson) as Record<string, unknown>; mutate(input);
++  const inputJson = JSON.stringify(input);
++  return JSON.stringify({ ...JSON.parse(fixture.startJson), inputJson, inputSha256: gpuJobSha256(inputJson) });
++}
++
++describe("GPU job EOF admission", () => {
++  test("boot and a complete queued frame remain inert until actual EOF", async () => {
++    const f = setup(); let controller!: ReadableStreamDefaultController<Uint8Array>;
++    f.options.input = new ReadableStream({ start(value) { controller = value; } });
++    const running = runGpuJobLoop(f.options);
++    controller.enqueue(Buffer.from(f.fixture.startJson + "\n"));
++    await Bun.sleep(5); inert(f);
++    controller.close(); await running;
++    expect(f.writes.map(json => decodeGpuJobReply(json).kind)).toEqual(["boot", "startup", "attempt-proposal"]);
++    const reply = decodeGpuJobReply(f.writes[2]!);
++    if (reply.kind !== "attempt-proposal") throw new Error("proposal required");
++    expect(decodeGpuAttemptProposal(reply.proposalJson, reply.proposalSha256, reply.descriptorSha256).state.counters.updates).toBe(0);
++  });
++  test("delayed duplicates and trailing bytes fail before any embedded or model effect", async () => {
++    for (const trailing of ["\n", "x", "{}\n"]) {
++      const f = setup(); let controller!: ReadableStreamDefaultController<Uint8Array>;
++      f.options.input = new ReadableStream({ start(value) { controller = value; } });
++      const result = runGpuJobLoop(f.options).then(() => null, error => error);
++      controller.enqueue(Buffer.from(f.fixture.startJson + "\n")); await Bun.sleep(2); inert(f);
++      controller.enqueue(Buffer.from(trailing)); controller.close();
++      expect(await result).toBeInstanceOf(Error); inert(f);
++    }
++  });
++  test("requires one complete LF frame with valid UTF-8 and bounded bytes", async () => {
++    for (const bytes of [new Uint8Array(), Buffer.from("{}"), Buffer.from("{}\n{}\n"), Buffer.from([0xc3, 10]),
++      Buffer.from("x".repeat(1048577) + "\n"), Buffer.from("\ufeff{}\n")]) {
++      const f = setup(); f.options.input = inputStream(bytes);
++      await expect(runGpuJobLoop(f.options)).rejects.toThrow(); inert(f);
++    }
++  });
++  test("missing EOF exhausts the boot budget without embedded parsing", async () => {
++    const f = setup(); let now = 0n;
++    f.options.clockNs = () => now;
++    f.options.write = async json => { f.writes.push(json); now = 9_999_000_000n; };
++    f.options.input = new ReadableStream({ start(controller) { controller.enqueue(Buffer.from(f.fixture.startJson + "\n")); } });
++    await expect(runGpuJobLoop(f.options)).rejects.toThrow("DEADLINE"); inert(f);
++  });
++  test("rejects hash, model, schema and session corruption before loaders or storage", async () => {
++    const changes: ((f: GpuOwnerFixture) => string)[] = [
++      f => JSON.stringify({ ...JSON.parse(f.startJson), inputSha256: "0".repeat(64) }),
++      f => JSON.stringify({ ...JSON.parse(f.startJson), sessionId: "wrong" }),
++      f => JSON.stringify({ ...JSON.parse(f.startJson), inputJson: "{}", inputSha256: gpuJobSha256("{}") }),
++      f => changedInput(f, value => { value.initialModelId = "0".repeat(64); }),
++      f => changedInput(f, value => { Object.assign(value.modelConfig as object, { recordSha256: "0".repeat(64) }); }),
++      f => JSON.stringify({ ...JSON.parse(f.startJson), ownerElapsedNs: "01" }),
++      f => JSON.stringify({ ...JSON.parse(f.startJson), operation: "close" }),
++      f => JSON.stringify({ ...JSON.parse(f.startJson), layout: f.layout }),
++    ];
++    for (const change of changes) {
++      const f = setup(); f.options.input = inputStream(change(f.fixture) + "\n");
++      await expect(runGpuJobLoop(f.options)).rejects.toThrow(); inert(f);
++    }
++  });
++  test("record length/hash and NOFOLLOW reject before corpus or state effects", async () => {
++    for (const mode of ["hash", "length", "symlink"] as const) {
++      const f = setup(), path = resolve(f.fixture.layout.factory.cwd, "bad-record");
++      if (mode === "symlink") symlinkSync(f.fixture.layout.initialRecordPath, path);
++      else {
++        const bytes = readFileSync(f.fixture.layout.initialRecordPath);
++        writeFileSync(path, mode === "hash" ? Buffer.alloc(bytes.length, 0) : Buffer.alloc(bytes.length + 1));
++      }
++      f.options.layout = { ...f.options.layout, initialRecordPath: path };
++      await expect(runGpuJobLoop(f.options)).rejects.toThrow(); inert(f);
++    }
++  });
++  test("initial state and independently derived descriptor reject before factory construction", async () => {
++    for (const field of ["initialStateSha256", "expectedDescriptorSha256"]) {
++      const f = setup(); f.options.input = inputStream(changedInput(f.fixture, input => { input[field] = "0".repeat(64); }) + "\n");
++      await expect(runGpuJobLoop(f.options)).rejects.toThrow(field === "initialStateSha256" ? "INITIAL_STATE" : "DESCRIPTOR");
++      expect(f.loads()).toBe(2); expect(existsSync(f.fixture.layout.factory.scratchRoot)).toBe(false);
++      expect(f.writes).toHaveLength(1);
++    }
++  });
++  test("keeps owner elapsed plus boot delay and rejects a backwards local clock", async () => {
++    const f = setup(); let now = 123n;
++    f.options.clockNs = () => now; f.options.write = async json => { f.writes.push(json); now += 8_000_000_000n; };
++    f.options.input = inputStream(JSON.stringify({ ...JSON.parse(f.fixture.startJson), ownerElapsedNs: "3000000000" }) + "\n");
++    await expect(runGpuJobLoop(f.options)).rejects.toThrow("DEADLINE"); inert(f);
++    const b = setup(); let calls = 0; b.options.clockNs = () => calls++ === 0 ? 5n : 4n;
++    await expect(runGpuJobLoop(b.options)).rejects.toThrow("CLOCK"); expect(b.writes).toHaveLength(0);
++  });
++  test("bounds loaders and boot emission before state creation", async () => {
++    const f = setup();
++    f.options.input = inputStream(JSON.stringify({ ...JSON.parse(f.fixture.startJson), ownerElapsedNs: "9999000000" }) + "\n");
++    f.options.loadCorpus = () => new Promise(() => {});
++    await expect(runGpuJobLoop(f.options)).rejects.toThrow("DEADLINE");
++    expect(existsSync(f.fixture.layout.stateRoot)).toBe(false);
++    const b = setup(); let now = 0n; b.options.clockNs = () => now;
++    b.options.write = async json => { b.writes.push(json); now = 10_000_000_000n; };
++    await expect(runGpuJobLoop(b.options)).rejects.toThrow("DEADLINE"); inert(b);
++  });
++  test("ordinary exported main and direct source dispatch stay disabled", async () => {
++    await expect(gpuJobMain()).rejects.toThrow("SOURCE_ONLY_DISABLED");
++    const child = Bun.spawn(["/usr/local/bin/bun", "--no-env-file", "--no-install", resolve(import.meta.dir, "../src/gpu-job.ts"), "fake-session"],
++      { stdin: "ignore", stdout: "pipe", stderr: "pipe", env: { PATH: "/usr/local/bin:/usr/bin:/bin", BUN_RUNTIME_TRANSPILER_CACHE_PATH: "0" } });
++    const [stdout, stderr, code] = await Promise.all([new Response(child.stdout).text(), new Response(child.stderr).text(), child.exited]);
++    expect(stdout).toBe(""); expect(stderr).toContain("SOURCE_ONLY_DISABLED"); expect(code).toBe(1);
++  });
++});
+diff --git a/packages/runtime/tests/gpu-policy-conformance.test.ts b/packages/runtime/tests/gpu-policy-conformance.test.ts
+new file mode 100644
+index 000000000..860c05e48
+--- /dev/null
++++ b/packages/runtime/tests/gpu-policy-conformance.test.ts
+@@ -0,0 +1,90 @@
++// SPEC: _spec/gpu-cooperative-policy.md
++import { expect, test } from "bun:test";
++import { CooperativeGpuPolicy, type GpuPolicyDecision } from "../../../tooling/runtime/gpu-policy";
++import fixture from "../../../tooling/runtime/fixtures/gpu-policy-traces.json";
++
++type TraceCall = {
++  method: "admit" | "observe" | "check";
++  nowNs: unknown;
++  sample?: unknown;
++  expected: Record<string, unknown>;
++};
++type TraceCase = {
++  name: string;
++  group: "policy" | "range" | "clock";
++  configuration: unknown;
++  originalS0Ns: unknown;
++  calls: TraceCall[];
++};
++
++const traces = fixture as unknown as { version: string; cases: TraceCase[] };
++const configurationIntegers = ["startupMinFreeBytes", "runningStopBelowFreeBytes", "samplePeriodNs", "maxSampleAgeNs"];
++const sampleIntegers = ["freeBytes", "totalBytes", "observedBoottimeNs"];
++
++function integer(value: unknown): unknown {
++  return typeof value === "string" && /^-?[0-9]+$/.test(value) ? BigInt(value) : value;
++}
++
++function fields(value: unknown, integers: readonly string[]): unknown {
++  if (typeof value !== "object" || value === null || Array.isArray(value)) return value;
++  return Object.fromEntries(Object.entries(value).map(([key, field]) => [key, integers.includes(key) ? integer(field) : field]));
++}
++
++function project(decision: GpuPolicyDecision): unknown {
++  return JSON.parse(JSON.stringify(decision, (_key, value: unknown) => typeof value === "bigint" ? value.toString() : value));
++}
++
++test("shared fixture has 33 unique closed traces with the portable v1 schema", () => {
++  expect(Object.keys(traces).sort()).toEqual(["cases", "version"]);
++  expect(traces.version).toBe("chess-coach.gpu-policy-conformance.v1");
++  expect(traces.cases).toHaveLength(33);
++  expect(new Set(traces.cases.map(trace => trace.name)).size).toBe(33);
++  expect([...new Set(traces.cases.map(trace => trace.group))].sort()).toEqual(["clock", "policy", "range"]);
++  for (const trace of traces.cases) {
++    expect(Object.keys(trace).sort()).toEqual(["calls", "configuration", "group", "name", "originalS0Ns"]);
++    expect(trace.name).toMatch(/^[a-z][a-z0-9_]+$/);
++    expect(trace.calls.length).toBeGreaterThan(0);
++    for (const call of trace.calls) {
++      expect(Object.keys(call).sort()).toEqual("sample" in call ? ["expected", "method", "nowNs", "sample"] : ["expected", "method", "nowNs"]);
++      expect(["admit", "observe", "check"]).toContain(call.method);
++      const expectedKeys = call.expected.kind === "admit" || call.expected.kind === "continue" ? ["kind", "nextCheckNs"]
++        : call.expected.kind === "abort-owned" ? ["cleanupDeadlineNs", "kind", "reason"] : ["kind", "reason"];
++      expect(Object.keys(call.expected).sort()).toEqual(expectedKeys);
++      const kind = call.expected.kind;
++      if (typeof kind !== "string") throw Error("EXPECTED_DECISION_KIND");
++      expect(["admit", "continue", "reject", "abort-owned", "terminal"]).toContain(kind);
++      for (const key of ["nextCheckNs", "cleanupDeadlineNs"]) if (key in call.expected) expect(call.expected[key]).toMatch(/^[0-9]+$/);
++    }
++  }
++});
++
++test("portable conversion preserves raw numbers, invalid values, and unknown fields", () => {
++  for (const value of [0, -1, 100, null, true, "1.0", "1e2", " 1", "", "0x10", "--1"]) expect(integer(value)).toBe(value);
++  expect(integer("-1")).toBe(-1n);
++  expect(integer("9223372036854775808")).toBe(9_223_372_036_854_775_808n);
++  expect(fields({ freeBytes: "-1", totalBytes: "0", observedBoottimeNs: "9223372036854775808" }, sampleIntegers))
++    .toEqual({ freeBytes: -1n, totalBytes: 0n, observedBoottimeNs: 9_223_372_036_854_775_808n });
++  expect(fields({ freeBytes: "1", totalBytes: 2, observedBoottimeNs: "-1", uuid: "123", extra: "3" }, sampleIntegers))
++    .toEqual({ freeBytes: 1n, totalBytes: 2, observedBoottimeNs: -1n, uuid: "123", extra: "3" });
++  expect(fields(null, sampleIntegers)).toBeNull();
++  expect(fields(["1"], sampleIntegers)).toEqual(["1"]);
++});
++
++for (const trace of traces.cases) {
++  test(`shared ${trace.group}: ${trace.name}`, () => {
++    const policy = new CooperativeGpuPolicy(fields(trace.configuration, configurationIntegers), integer(trace.originalS0Ns) as bigint);
++    let admissions = 0, aborts = 0;
++    for (const call of trace.calls) {
++      const nowNs = integer(call.nowNs) as bigint;
++      const decision = call.method === "check" ? policy.check(nowNs)
++        : policy[call.method](nowNs, fields(call.sample, sampleIntegers));
++      expect(project(decision)).toEqual(call.expected);
++      expect(Object.isFrozen(decision)).toBe(true);
++      if (decision.kind === "admit") admissions++;
++      if (decision.kind === "abort-owned") aborts++;
++    }
++    expect(admissions).toBeLessThanOrEqual(1);
++    expect(aborts).toBeLessThanOrEqual(1);
++    expect(aborts).toBeLessThanOrEqual(admissions);
++  });
++}
+diff --git a/packages/runtime/tests/gpu-policy.test.ts b/packages/runtime/tests/gpu-policy.test.ts
+new file mode 100644
+index 000000000..9f1af8f7d
+--- /dev/null
++++ b/packages/runtime/tests/gpu-policy.test.ts
+@@ -0,0 +1,400 @@
++// SPEC: _spec/gpu-cooperative-policy.md
++import { expect, test } from "bun:test";
++import { CooperativeGpuPolicy, type CooperativePolicy, type GpuPolicyDecision, type GpuPolicyFailure, type GpuSample } from "../../../tooling/runtime/gpu-policy";
++
++const UUID = "GPU-12345678-1234-1234-1234-123456789abc";
++const I64_MAX = 9_223_372_036_854_775_807n;
++const CLEANUP_NS = 300_000_000_000n;
++
++function configuration(overrides: Record<string, unknown> = {}): Record<string, unknown> {
++  return { selectedUuid: UUID, startupMinFreeBytes: 1000n, runningStopBelowFreeBytes: 500n, samplePeriodNs: 100n, maxSampleAgeNs: 200n, ...overrides };
++}
++
++function sample(overrides: Record<string, unknown> = {}): Record<string, unknown> {
++  return { uuid: UUID, freeBytes: 1000n, totalBytes: 2000n, observedBoottimeNs: 0n, ...overrides };
++}
++
++function failure(kind: "reject" | "abort-owned" | "terminal", reason: GpuPolicyFailure, origin = 0n): GpuPolicyDecision {
++  return kind === "abort-owned" ? { kind, reason, cleanupDeadlineNs: origin + CLEANUP_NS } : { kind, reason };
++}
++
++function invalidShapes(base: Record<string, unknown>): [string, unknown][] {
++  const entries: [string, unknown][] = [
++    ["undefined", undefined], ["null", null], ["number", 1], ["bigint", 1n], ["boolean", true], ["string", "object"],
++    ["symbol", Symbol("object")], ["function", () => base], ["array", []], ["array with fields", Object.assign([], base)],
++    ["date with fields", Object.assign(new Date(0), base)], ["boxed string with fields", Object.assign(new String(""), base)],
++    ["custom prototype", Object.assign(Object.create({}), base)],
++    ["inherited fields", Object.create(base)], ["empty", {}], ["unknown", { ...base, extra: true }],
++    ["hidden unknown", Object.defineProperty({ ...base }, "extra", { value: true })], ["symbol key", { ...base, [Symbol("extra")]: true }],
++  ];
++  for (const key of Object.keys(base)) {
++    const missing = { ...base };
++    delete missing[key];
++    entries.push([`missing ${key}`, missing]);
++    entries.push([`inherited ${key}`, Object.assign(Object.create({ [key]: base[key] }), missing)]);
++    entries.push([`accessor ${key}`, Object.defineProperty({ ...base }, key, { get() { throw Error("GETTER_EXECUTED"); } })]);
++    entries.push([`setter ${key}`, Object.defineProperty({ ...base }, key, { set(_value: unknown) { throw Error("SETTER_EXECUTED"); } })]);
++  }
++  for (const [label, input] of [...entries]) {
++    if (typeof input === "object" && input !== null && Object.getPrototypeOf(input) === Object.prototype) {
++      entries.push([`null prototype ${label}`, Object.create(null, Object.getOwnPropertyDescriptors(input))]);
++    }
++  }
++  return entries;
++}
++
++test.each(invalidShapes(configuration()))("configuration rejects exact-object violation: %s", (_name, input) => {
++  const policy = new CooperativeGpuPolicy(input, -1n);
++  expect(policy.admit(-1n, null)).toEqual(failure("reject", "CONFIGURATION"));
++  expect(policy.check(0n)).toEqual(failure("terminal", "CONFIGURATION"));
++});
++
++test.each(invalidShapes(sample()))("telemetry rejects exact-object violation: %s", (_name, input) => {
++  const policy = new CooperativeGpuPolicy(configuration(), 0n);
++  expect(policy.admit(0n, input)).toEqual(failure("reject", "TELEMETRY"));
++  expect(policy.admit(0n, sample())).toEqual(failure("terminal", "TELEMETRY"));
++});
++
++const invalidIntegerValues: unknown[] = [-1n, I64_MAX + 1n, 1, 1.5, NaN, Infinity, "1", null, undefined, true, {}, Object(1n)];
++for (const key of ["startupMinFreeBytes", "runningStopBelowFreeBytes", "samplePeriodNs", "maxSampleAgeNs"]) {
++  test.each(invalidIntegerValues.map((value, index) => [String(index), value] as const))(`configuration ${key} rejects invalid integer %s`, (_name, value) => {
++    const policy = new CooperativeGpuPolicy(configuration({ [key]: value }), 0n);
++    expect(policy.check(0n)).toEqual(failure("reject", "CONFIGURATION"));
++  });
++}
++
++test.each([
++  { startupMinFreeBytes: 0n }, { runningStopBelowFreeBytes: 0n }, { samplePeriodNs: 0n }, { maxSampleAgeNs: 0n },
++  { runningStopBelowFreeBytes: 1001n }, { samplePeriodNs: 201n },
++])("configuration rejects zero and inconsistent positive bounds: %p", overrides => {
++  expect(new CooperativeGpuPolicy(configuration(overrides), 0n).admit(0n, sample())).toEqual(failure("reject", "CONFIGURATION"));
++});
++
++test.each(["", "GPU-0", UUID.toLowerCase(), UUID.slice(0, -1), UUID + "0", UUID + "\n", " " + UUID, UUID.replace("abc", "abg"), 1, null])
++  ("configuration rejects noncanonical GPU identity: %p", selectedUuid => {
++    expect(new CooperativeGpuPolicy(configuration({ selectedUuid }), 0n).admit(0n, sample())).toEqual(failure("reject", "CONFIGURATION"));
++  });
++
++test.each([UUID, UUID.toUpperCase(), "GPU-aBcDeF12-3456-7890-aBcD-1234567890aB"])("UUID accepts hex case without normalization: %s", selectedUuid => {
++  expect(new CooperativeGpuPolicy(configuration({ selectedUuid }), 0n).admit(0n, sample({ uuid: selectedUuid }))).toEqual({ kind: "admit", nextCheckNs: 100n });
++  expect(new CooperativeGpuPolicy(configuration({ selectedUuid }), 0n).admit(0n, sample({ uuid: "GPU-00000000-0000-0000-0000-000000000000" })))
++    .toEqual(failure("reject", "DEVICE"));
++});
++
++test.each(["", "GPU-0", UUID.toLowerCase(), UUID.slice(0, -1), UUID + "0", UUID + "\n", " " + UUID, UUID.replace("abc", "abg")])
++  ("sample shape rejects noncanonical GPU identity before device comparison: %p", uuid => {
++    expect(new CooperativeGpuPolicy(configuration(), 0n).admit(0n, sample({ uuid }))).toEqual(failure("reject", "TELEMETRY"));
++  });
++
++for (const [label, decorate] of [
++  ["null prototype", (value: Record<string, unknown>) => Object.assign(Object.create(null), value)],
++  ["frozen", (value: Record<string, unknown>) => Object.freeze(value)],
++  ["sealed", (value: Record<string, unknown>) => Object.seal(value)],
++  ["nonenumerable data", (value: Record<string, unknown>) => Object.defineProperties({}, Object.fromEntries(Object.entries(value).map(([key, field]) => [key, { value: field }])))]
++] as const) {
++  test(`plain ${label} inputs retain valid own data fields`, () => {
++    const policy = new CooperativeGpuPolicy(decorate(configuration()), 0n);
++    expect(policy.admit(0n, decorate(sample()))).toEqual({ kind: "admit", nextCheckNs: 100n });
++  });
++}
++
++test.each([
++  ["ordinary configuration and ordinary samples", false, false],
++  ["null-prototype configuration and ordinary samples", true, false],
++  ["ordinary configuration and null-prototype samples", false, true],
++  ["null-prototype configuration and null-prototype samples", true, true],
++] as const)("exact data fields admit and refresh with copied snapshots: %s", (_label, nullConfiguration, nullSamples) => {
++  const input = nullConfiguration ? Object.assign(Object.create(null), configuration()) : configuration();
++  const initial = nullSamples ? Object.assign(Object.create(null), sample()) : sample();
++  const policy = new CooperativeGpuPolicy(input, 0n);
++  input.samplePeriodNs = 1n;
++  input.selectedUuid = "wrong";
++  expect(policy.admit(0n, initial)).toEqual({ kind: "admit", nextCheckNs: 100n });
++  initial.observedBoottimeNs = I64_MAX;
++  initial.totalBytes = 0n;
++  const replacement = sample({ freeBytes: 500n, observedBoottimeNs: 99n });
++  const observed = policy.observe(99n, nullSamples ? Object.assign(Object.create(null), replacement) : replacement);
++  expect(observed).toEqual({ kind: "continue", nextCheckNs: 199n });
++  expect(Object.isFrozen(observed)).toBe(true);
++  expect(policy.check(198n)).toEqual({ kind: "continue", nextCheckNs: 199n });
++  expect(policy.check(199n)).toEqual(failure("abort-owned", "MISSED_SAMPLE"));
++});
++
++test("configuration and samples are copied without freezing or retaining caller objects", () => {
++  const input = configuration(), initial = sample();
++  const policy = new CooperativeGpuPolicy(input, 0n);
++  input.selectedUuid = "wrong";
++  input.runningStopBelowFreeBytes = I64_MAX;
++  input.samplePeriodNs = 1n;
++  const admitted = policy.admit(0n, initial);
++  expect(admitted).toEqual({ kind: "admit", nextCheckNs: 100n });
++  initial.totalBytes = 1n;
++  initial.observedBoottimeNs = I64_MAX;
++  expect(policy.check(99n)).toEqual({ kind: "continue", nextCheckNs: 100n });
++  const replacement = sample({ freeBytes: 500n, observedBoottimeNs: 99n });
++  expect(policy.observe(99n, replacement)).toEqual({ kind: "continue", nextCheckNs: 199n });
++  replacement.totalBytes = 1n;
++  replacement.observedBoottimeNs = 0n;
++  expect(policy.check(198n)).toEqual({ kind: "continue", nextCheckNs: 199n });
++  expect(policy.observe(198n, sample({ freeBytes: 500n, observedBoottimeNs: 198n }))).toEqual({ kind: "continue", nextCheckNs: 298n });
++  expect(Object.isFrozen(input)).toBe(false);
++  expect(Object.isFrozen(initial)).toBe(false);
++  expect(Object.isFrozen(replacement)).toBe(false);
++  expect(Object.isFrozen(admitted)).toBe(true);
++  expect(Reflect.set(admitted, "kind", "terminal")).toBe(false);
++});
++
++test.each([undefined, null, -1n, I64_MAX - CLEANUP_NS + 1n, I64_MAX + 1n, 0, NaN, "0", {}])("invalid origin precedes clock and method: %p", origin => {
++  const policy = new CooperativeGpuPolicy(configuration(), origin as bigint);
++  expect(policy.observe(-1n, null)).toEqual(failure("reject", "ORIGIN"));
++  expect(policy.admit(0n, sample())).toEqual(failure("terminal", "ORIGIN"));
++});
++
++test.each([undefined, null, -1n, I64_MAX + 1n, 0, 0.5, NaN, Infinity, "0", {}, Object(0n)])("invalid now rejects before method or telemetry: %p", nowNs => {
++  const policy = new CooperativeGpuPolicy(configuration(), 0n);
++  expect(policy.observe(nowNs as bigint, null)).toEqual(failure("reject", "CLOCK"));
++  expect(policy.check(0n)).toEqual(failure("terminal", "CLOCK"));
++});
++
++test.each([undefined, null, -1n, I64_MAX + 1n, 0, 0.5, NaN, Infinity, "0", {}, Object(0n)])("running invalid now aborts once: %p", nowNs => {
++  const policy = new CooperativeGpuPolicy(configuration(), 0n);
++  expect(policy.admit(0n, sample()).kind).toBe("admit");
++  expect(policy.observe(nowNs as bigint, null)).toEqual(failure("abort-owned", "CLOCK"));
++  expect(policy.observe(1n, sample({ observedBoottimeNs: 1n }))).toEqual(failure("terminal", "CLOCK"));
++});
++
++for (const key of ["uuid", "freeBytes", "totalBytes", "observedBoottimeNs"]) {
++  const values = key === "uuid" ? [null, undefined, 1, {}, Object(UUID)] : [null, undefined, 1, 1.5, NaN, Infinity, "1", {}, Object(1n)];
++  test.each(values.map((value, index) => [String(index), value] as const))(`sample ${key} rejects nonprimitive or wrong type %s`, (_name, value) => {
++    expect(new CooperativeGpuPolicy(configuration(), 0n).admit(0n, sample({ [key]: value }))).toEqual(failure("reject", "TELEMETRY"));
++  });
++}
++
++test.each([
++  { totalBytes: 0n }, { totalBytes: -1n }, { totalBytes: I64_MAX + 1n }, { freeBytes: -1n },
++  { freeBytes: I64_MAX + 1n }, { freeBytes: 2001n },
++])("telemetry shape rejects invalid capacity range or consistency: %p", overrides => {
++  expect(new CooperativeGpuPolicy(configuration(), 0n).admit(0n, sample(overrides))).toEqual(failure("reject", "TELEMETRY"));
++});
++
++test("valid-shaped capacity below startup threshold fails capacity before headroom", () => {
++  expect(new CooperativeGpuPolicy(configuration(), 0n).admit(0n, sample({ freeBytes: 999n, totalBytes: 999n })))
++    .toEqual(failure("reject", "CAPACITY"));
++});
++
++test.each([-1n, I64_MAX + 1n])("telemetry shape rejects out-of-range sample time: %p", observedBoottimeNs => {
++  expect(new CooperativeGpuPolicy(configuration(), 0n).admit(0n, sample({ observedBoottimeNs, totalBytes: 0n })))
++    .toEqual(failure("reject", "TELEMETRY"));
++});
++
++test("valid-shaped future sample time precedes capacity", () => {
++  expect(new CooperativeGpuPolicy(configuration(), 0n).admit(0n, sample({ observedBoottimeNs: 1n, freeBytes: 999n, totalBytes: 999n })))
++    .toEqual(failure("reject", "SAMPLE_TIME"));
++});
++
++const mixedInvalidSamples: [string, Record<string, unknown>][] = [
++  ["negative free before device and future time", { uuid: "GPU-00000000-0000-0000-0000-000000000000", freeBytes: -1n, observedBoottimeNs: 2n }],
++  ["free above total before future time", { freeBytes: 2001n, observedBoottimeNs: 2n }],
++  ["zero total before device", { uuid: "GPU-00000000-0000-0000-0000-000000000000", totalBytes: 0n, freeBytes: 0n, observedBoottimeNs: 1n }],
++  ["negative total before future time", { totalBytes: -1n, freeBytes: 0n, observedBoottimeNs: 2n }],
++  ["out-of-i64 total before device", { uuid: "GPU-00000000-0000-0000-0000-000000000000", totalBytes: I64_MAX + 1n, observedBoottimeNs: 1n }],
++  ["out-of-i64 free before future time", { freeBytes: I64_MAX + 1n, totalBytes: I64_MAX, observedBoottimeNs: 2n }],
++  ["negative time before device and threshold capacity", { uuid: "GPU-00000000-0000-0000-0000-000000000000", observedBoottimeNs: -1n, freeBytes: 999n, totalBytes: 999n }],
++  ["out-of-i64 time before device and threshold capacity", { uuid: "GPU-00000000-0000-0000-0000-000000000000", observedBoottimeNs: I64_MAX + 1n, freeBytes: 999n, totalBytes: 999n }],
++  ["malformed UUID before future time and capacity", { uuid: "wrong", observedBoottimeNs: 2n, freeBytes: 999n, totalBytes: 999n }],
++  ["lowercase prefix before sample order and capacity", { uuid: UUID.toLowerCase(), observedBoottimeNs: 0n, freeBytes: 999n, totalBytes: 999n }],
++  ["trailing UUID newline before future time and capacity", { uuid: UUID + "\n", observedBoottimeNs: 2n, freeBytes: 999n, totalBytes: 999n }],
++  ["invalid capacity before sample order", { freeBytes: 1n, totalBytes: 0n, observedBoottimeNs: 0n }],
++];
++
++for (const state of ["awaiting", "running"] as const) {
++  test.each(mixedInvalidSamples)(`${state} telemetry shape precedes mixed invalidity: %s`, (_label, overrides) => {
++    const policy = new CooperativeGpuPolicy(configuration(), 0n);
++    if (state === "running") expect(policy.admit(0n, sample()).kind).toBe("admit");
++    const decision = state === "running" ? policy.observe(1n, sample(overrides)) : policy.admit(1n, sample(overrides));
++    expect(decision).toEqual(failure(state === "running" ? "abort-owned" : "reject", "TELEMETRY"));
++    expect(policy.admit(0n, sample())).toEqual(failure("terminal", "TELEMETRY"));
++    expect(policy.check(-1n)).toEqual(failure("terminal", "TELEMETRY"));
++  });
++
++  test(`${state} valid-shaped different device precedes sample time and capacity`, () => {
++    const policy = new CooperativeGpuPolicy(configuration(), 0n);
++    if (state === "running") expect(policy.admit(0n, sample()).kind).toBe("admit");
++    const input = sample({ uuid: "GPU-00000000-0000-0000-0000-000000000000", observedBoottimeNs: 2n, freeBytes: 999n, totalBytes: 999n });
++    const decision = state === "running" ? policy.observe(1n, input) : policy.admit(1n, input);
++    expect(decision).toEqual(failure(state === "running" ? "abort-owned" : "reject", "DEVICE"));
++  });
++}
++
++test("running valid-shaped future time precedes stable-total capacity", () => {
++  const policy = new CooperativeGpuPolicy(configuration(), 0n);
++  expect(policy.admit(0n, sample()).kind).toBe("admit");
++  expect(policy.observe(1n, sample({ observedBoottimeNs: 2n, freeBytes: 999n, totalBytes: 999n }))).toEqual(failure("abort-owned", "SAMPLE_TIME"));
++});
++
++test("valid-shaped below-origin time precedes capacity", () => {
++  expect(new CooperativeGpuPolicy(configuration(), 100n).admit(100n, sample({ observedBoottimeNs: 99n, freeBytes: 999n, totalBytes: 999n })))
++    .toEqual(failure("reject", "SAMPLE_TIME"));
++});
++
++test("valid-shaped threshold capacity precedes freshness and cadence", () => {
++  expect(new CooperativeGpuPolicy(configuration(), 0n).admit(200n, sample({ freeBytes: 999n, totalBytes: 999n })))
++    .toEqual(failure("reject", "CAPACITY"));
++});
++
++test("minimum positive and maximum signed-i64 capacity boundaries pass", () => {
++  const minimum: CooperativePolicy = { selectedUuid: UUID, startupMinFreeBytes: 1n, runningStopBelowFreeBytes: 1n, samplePeriodNs: 1n, maxSampleAgeNs: 1n };
++  const initial: GpuSample = { uuid: UUID, freeBytes: 1n, totalBytes: 1n, observedBoottimeNs: 0n };
++  expect(new CooperativeGpuPolicy(minimum, 0n).admit(0n, initial)).toEqual({ kind: "admit", nextCheckNs: 1n });
++  expect(new CooperativeGpuPolicy(configuration({ startupMinFreeBytes: I64_MAX, runningStopBelowFreeBytes: I64_MAX }), 0n)
++    .admit(0n, sample({ freeBytes: I64_MAX, totalBytes: I64_MAX }))).toEqual({ kind: "admit", nextCheckNs: 100n });
++});
++
++test("zero free bytes is valid capacity but fails positive headroom", () => {
++  expect(new CooperativeGpuPolicy(configuration(), 0n).admit(0n, sample({ freeBytes: 0n }))).toEqual(failure("reject", "HEADROOM"));
++});
++
++test.each([10n, 9n])("running repeated or regressed sample fails before capacity: %p", observedBoottimeNs => {
++  const policy = new CooperativeGpuPolicy(configuration(), 0n);
++  expect(policy.admit(10n, sample({ observedBoottimeNs: 10n })).kind).toBe("admit");
++  expect(policy.observe(11n, sample({ observedBoottimeNs, freeBytes: 999n, totalBytes: 999n }))).toEqual(failure("abort-owned", "SAMPLE_ORDER"));
++});
++
++test("unchanged caller time permits a strictly increasing delayed sample", () => {
++  const policy = new CooperativeGpuPolicy(configuration(), 0n);
++  expect(policy.admit(10n, sample()).kind).toBe("admit");
++  expect(policy.observe(10n, sample({ observedBoottimeNs: 1n }))).toEqual({ kind: "continue", nextCheckNs: 101n });
++  expect(policy.check(10n)).toEqual({ kind: "continue", nextCheckNs: 101n });
++  expect(policy.observe(9n, sample({ observedBoottimeNs: 2n }))).toEqual(failure("abort-owned", "CLOCK"));
++});
++
++test.each([1999n, 2001n])("accepted total cannot change up or down: %p", totalBytes => {
++  const policy = new CooperativeGpuPolicy(configuration(), 0n);
++  expect(policy.admit(0n, sample()).kind).toBe("admit");
++  expect(policy.observe(1n, sample({ totalBytes, observedBoottimeNs: 1n }))).toEqual(failure("abort-owned", "CAPACITY"));
++});
++
++for (const [age, at, reason] of [[200n, 100n, "MISSED_SAMPLE"], [100n, 100n, "STALE_SAMPLE"], [200n, 200n, "STALE_SAMPLE"]] as const) {
++  test(`old expiry ${reason} at ${at} wins over replacement inspection`, () => {
++    let traps = 0;
++    const input = new Proxy({}, { getPrototypeOf() { traps++; throw Error("TRAP"); } });
++    const policy = new CooperativeGpuPolicy(configuration({ maxSampleAgeNs: age }), 0n);
++    expect(policy.admit(0n, sample()).kind).toBe("admit");
++    expect(policy.observe(at, input)).toEqual(failure("abort-owned", reason));
++    expect(policy.observe(at, sample({ observedBoottimeNs: at }))).toEqual(failure("terminal", reason));
++    expect(traps).toBe(0);
++  });
++}
++
++test("old lease remains authoritative when new sample has a better deadline", () => {
++  const policy = new CooperativeGpuPolicy(configuration(), 0n);
++  expect(policy.admit(0n, sample()).kind).toBe("admit");
++  expect(policy.observe(100n, sample({ observedBoottimeNs: 100n }))).toEqual(failure("abort-owned", "MISSED_SAMPLE"));
++});
++
++test("absolute deadlines retain the nonzero original origin and wide arithmetic", () => {
++  const origin = I64_MAX - CLEANUP_NS;
++  const policy = new CooperativeGpuPolicy(configuration({ samplePeriodNs: I64_MAX, maxSampleAgeNs: I64_MAX }), origin);
++  expect(policy.admit(origin + 9_999_999_999n, sample({ observedBoottimeNs: origin }))).toEqual({ kind: "admit", nextCheckNs: I64_MAX - 3_000_000_000n });
++  expect(policy.observe(I64_MAX - 3_000_000_001n, sample({ observedBoottimeNs: I64_MAX - 3_000_000_001n })))
++    .toEqual({ kind: "continue", nextCheckNs: I64_MAX - 3_000_000_000n });
++  expect(policy.check(I64_MAX - 3_000_000_000n)).toEqual({ kind: "abort-owned", reason: "WORK_DEADLINE", cleanupDeadlineNs: I64_MAX });
++});
++
++test("nonzero-origin cold equality rejects without renewing admission", () => {
++  const policy = new CooperativeGpuPolicy(configuration(), 99n);
++  expect(policy.admit(10_000_000_099n, null)).toEqual(failure("reject", "COLD_DEADLINE"));
++  expect(policy.admit(99n, sample({ observedBoottimeNs: 99n }))).toEqual(failure("terminal", "COLD_DEADLINE"));
++});
++
++function trapCanary(target: object, onTrap: () => void): object {
++  const hit = () => { onTrap(); throw Error("PROXY_TRAP_EXECUTED"); };
++  return new Proxy(target, { get: hit, getPrototypeOf: hit, ownKeys: hit, getOwnPropertyDescriptor: hit, has: hit,
++    isExtensible: hit, preventExtensions: hit, set: hit, defineProperty: hit, deleteProperty: hit, setPrototypeOf: hit });
++}
++
++test.each(["object", "null prototype", "array", "function"])("native Proxy rejection precedes every configuration trap: %s", shape => {
++  let traps = 0;
++  const target = shape === "array" ? [] : shape === "function" ? () => {}
++    : shape === "null prototype" ? Object.assign(Object.create(null), configuration()) : configuration();
++  const policy = new CooperativeGpuPolicy(trapCanary(target, () => { traps++; }), -1n);
++  expect(policy.admit(-1n, null)).toEqual(failure("reject", "CONFIGURATION"));
++  expect(policy.check(0n)).toEqual(failure("terminal", "CONFIGURATION"));
++  expect(traps).toBe(0);
++});
++
++test("revoked proxies reject without reflection or exceptions at both boundaries", () => {
++  const configProxy = Proxy.revocable(configuration(), {}), sampleProxy = Proxy.revocable(sample(), {});
++  configProxy.revoke(); sampleProxy.revoke();
++  expect(new CooperativeGpuPolicy(configProxy.proxy, 0n).check(0n)).toEqual(failure("reject", "CONFIGURATION"));
++  const policy = new CooperativeGpuPolicy(configuration(), 0n);
++  expect(policy.admit(0n, sampleProxy.proxy)).toEqual(failure("reject", "TELEMETRY"));
++  expect(policy.observe(0n, sampleProxy.proxy)).toEqual(failure("terminal", "TELEMETRY"));
++  const running = new CooperativeGpuPolicy(configuration(), 0n);
++  expect(running.admit(0n, sample()).kind).toBe("admit");
++  expect(running.observe(1n, sampleProxy.proxy)).toEqual(failure("abort-owned", "TELEMETRY"));
++});
++
++test.each(["proxy", "getter"])("startup %s cannot reenter check or admit after rejection", kind => {
++  let invocations = 0;
++  const nested: GpuPolicyDecision[] = [];
++  const policy = new CooperativeGpuPolicy(configuration(), 0n);
++  const reenter = () => {
++    invocations++;
++    nested.push(policy.check(0n));
++    nested.push(policy.admit(0n, sample()));
++  };
++  const input = kind === "proxy" ? trapCanary(sample(), reenter)
++    : Object.defineProperty(sample(), "freeBytes", { get() { reenter(); return 1000n; } });
++  expect(policy.admit(0n, input)).toEqual(failure("reject", "TELEMETRY"));
++  expect(policy.admit(0n, sample())).toEqual(failure("terminal", "TELEMETRY"));
++  expect(policy.check(0n)).toEqual(failure("terminal", "TELEMETRY"));
++  expect(invocations).toBe(0);
++  expect(nested).toEqual([]);
++});
++
++test.each(["proxy", "getter"])("running %s cannot consume the only abort action by reentry", kind => {
++  let invocations = 0;
++  const nested: GpuPolicyDecision[] = [];
++  const policy = new CooperativeGpuPolicy(configuration(), 7n);
++  expect(policy.admit(7n, sample({ observedBoottimeNs: 7n })).kind).toBe("admit");
++  const reenter = () => {
++    invocations++;
++    nested.push(policy.check(107n));
++    nested.push(policy.admit(8n, sample({ observedBoottimeNs: 8n })));
++  };
++  const input = kind === "proxy" ? trapCanary(sample({ observedBoottimeNs: 8n }), reenter)
++    : Object.defineProperty(sample({ observedBoottimeNs: 8n }), "freeBytes", { get() { reenter(); return 1000n; } });
++  const decision = policy.observe(8n, input);
++  expect(decision).toEqual(failure("abort-owned", "TELEMETRY", 7n));
++  expect(Object.isFrozen(decision)).toBe(true);
++  expect(policy.check(8n)).toEqual(failure("terminal", "TELEMETRY"));
++  expect(policy.observe(8n, sample({ observedBoottimeNs: 8n }))).toEqual(failure("terminal", "TELEMETRY"));
++  expect(invocations).toBe(0);
++  expect(nested).toEqual([]);
++});
++
++test("terminal state and initial failure never inspect clock or telemetry objects", () => {
++  let invocations = 0;
++  const hostile = trapCanary({}, () => { invocations++; });
++  const policy = new CooperativeGpuPolicy(null, hostile as unknown as bigint);
++  const rejected = policy.admit(hostile as unknown as bigint, hostile);
++  expect(rejected).toEqual(failure("reject", "CONFIGURATION"));
++  expect(Object.isFrozen(rejected)).toBe(true);
++  for (const decision of [policy.admit(hostile as unknown as bigint, hostile), policy.observe(hostile as unknown as bigint, hostile), policy.check(hostile as unknown as bigint)]) {
++    expect(decision).toEqual(failure("terminal", "CONFIGURATION"));
++    expect(Object.isFrozen(decision)).toBe(true);
++  }
++  expect(invocations).toBe(0);
++});
++
++test("no bigint or identity validation coerces caller values", () => {
++  let invocations = 0;
++  const coercible = { [Symbol.toPrimitive]() { invocations++; throw Error("COERCION"); }, toString() { invocations++; throw Error("COERCION"); } };
++  expect(new CooperativeGpuPolicy(configuration({ startupMinFreeBytes: coercible }), 0n).check(0n)).toEqual(failure("reject", "CONFIGURATION"));
++  expect(new CooperativeGpuPolicy(configuration(), coercible as unknown as bigint).check(0n)).toEqual(failure("reject", "ORIGIN"));
++  expect(new CooperativeGpuPolicy(configuration(), 0n).check(coercible as unknown as bigint)).toEqual(failure("reject", "CLOCK"));
++  expect(new CooperativeGpuPolicy(configuration(), 0n).admit(0n, sample({ uuid: coercible }))).toEqual(failure("reject", "TELEMETRY"));
++  expect(new CooperativeGpuPolicy(configuration(), 0n).admit(0n, sample({ totalBytes: coercible }))).toEqual(failure("reject", "TELEMETRY"));
++  expect(invocations).toBe(0);
++});
+diff --git a/tooling/runtime/fixtures/gpu-policy-traces.json b/tooling/runtime/fixtures/gpu-policy-traces.json
+new file mode 100644
+index 000000000..de4dcbace
+--- /dev/null
++++ b/tooling/runtime/fixtures/gpu-policy-traces.json
+@@ -0,0 +1,301 @@
++{
++  "version": "chess-coach.gpu-policy-conformance.v1",
++  "cases": [
++    {
++      "name": "threshold_equality_and_refresh", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "admit", "nextCheckNs": "100" } },
++        { "method": "check", "nowNs": "99", "expected": { "kind": "continue", "nextCheckNs": "100" } },
++        { "method": "observe", "nowNs": "99", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "500", "totalBytes": "2000", "observedBoottimeNs": "99" }, "expected": { "kind": "continue", "nextCheckNs": "199" } },
++        { "method": "check", "nowNs": "198", "expected": { "kind": "continue", "nextCheckNs": "199" } },
++        { "method": "observe", "nowNs": "198", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "500", "totalBytes": "2000", "observedBoottimeNs": "198" }, "expected": { "kind": "continue", "nextCheckNs": "298" } }
++      ]
++    },
++    {
++      "name": "startup_headroom_terminal_first", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "999", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "reject", "reason": "HEADROOM" } },
++        { "method": "admit", "nowNs": "1", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "2000", "totalBytes": "2000", "observedBoottimeNs": "1" }, "expected": { "kind": "terminal", "reason": "HEADROOM" } },
++        { "method": "check", "nowNs": "-1", "expected": { "kind": "terminal", "reason": "HEADROOM" } }
++      ]
++    },
++    {
++      "name": "configuration_failure_before_origin_clock_and_method", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200", "extra": true },
++      "originalS0Ns": "-1",
++      "calls": [
++        { "method": "check", "nowNs": "-1", "expected": { "kind": "reject", "reason": "CONFIGURATION" } },
++        { "method": "observe", "nowNs": null, "sample": null, "expected": { "kind": "terminal", "reason": "CONFIGURATION" } }
++      ]
++    },
++    {
++      "name": "origin_too_late_for_cleanup", "group": "range",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "9223371736854775808",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": null, "expected": { "kind": "reject", "reason": "ORIGIN" } },
++        { "method": "check", "nowNs": "9223371736854775808", "expected": { "kind": "terminal", "reason": "ORIGIN" } }
++      ]
++    },
++    {
++      "name": "clock_rollback_before_repeated_admit", "group": "clock",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "10", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "10" }, "expected": { "kind": "admit", "nextCheckNs": "110" } },
++        { "method": "admit", "nowNs": "9", "sample": null, "expected": { "kind": "abort-owned", "reason": "CLOCK", "cleanupDeadlineNs": "300000000000" } },
++        { "method": "observe", "nowNs": "11", "sample": null, "expected": { "kind": "terminal", "reason": "CLOCK" } }
++      ]
++    },
++    {
++      "name": "cadence_equality_before_replacement", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "admit", "nextCheckNs": "100" } },
++        { "method": "observe", "nowNs": "100", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "2000", "totalBytes": "2000", "observedBoottimeNs": "100" }, "expected": { "kind": "abort-owned", "reason": "MISSED_SAMPLE", "cleanupDeadlineNs": "300000000000" } },
++        { "method": "check", "nowNs": "101", "expected": { "kind": "terminal", "reason": "MISSED_SAMPLE" } }
++      ]
++    },
++    {
++      "name": "age_equality_before_cadence", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "100" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "admit", "nextCheckNs": "100" } },
++        { "method": "observe", "nowNs": "100", "sample": null, "expected": { "kind": "abort-owned", "reason": "STALE_SAMPLE", "cleanupDeadlineNs": "300000000000" } }
++      ]
++    },
++    {
++      "name": "work_equality_before_old_expiry_and_sample", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "297000000000", "maxSampleAgeNs": "297000000000" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "admit", "nextCheckNs": "297000000000" } },
++        { "method": "observe", "nowNs": "297000000000", "sample": null, "expected": { "kind": "abort-owned", "reason": "WORK_DEADLINE", "cleanupDeadlineNs": "300000000000" } },
++        { "method": "check", "nowNs": "300000000000", "expected": { "kind": "terminal", "reason": "WORK_DEADLINE" } }
++      ]
++    },
++    {
++      "name": "device_before_sample_time", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-00000000-0000-0000-0000-000000000000", "freeBytes": "-1", "totalBytes": "0", "observedBoottimeNs": "1" }, "expected": { "kind": "reject", "reason": "TELEMETRY" } }
++      ]
++    },
++    {
++      "name": "repeated_sample_order_before_capacity", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "10", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "10" }, "expected": { "kind": "admit", "nextCheckNs": "110" } },
++        { "method": "observe", "nowNs": "11", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "999", "totalBytes": "0", "observedBoottimeNs": "10" }, "expected": { "kind": "abort-owned", "reason": "TELEMETRY", "cleanupDeadlineNs": "300000000000" } }
++      ]
++    },
++    {
++      "name": "i64_latest_origin_wide_add_before_clamp", "group": "range",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "9223372036854775807", "maxSampleAgeNs": "9223372036854775807" },
++      "originalS0Ns": "9223371736854775807",
++      "calls": [
++        { "method": "admit", "nowNs": "9223371736854775807", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "9223371736854775807" }, "expected": { "kind": "admit", "nextCheckNs": "9223372033854775807" } },
++        { "method": "check", "nowNs": "9223372033854775806", "expected": { "kind": "continue", "nextCheckNs": "9223372033854775807" } },
++        { "method": "check", "nowNs": "9223372033854775807", "expected": { "kind": "abort-owned", "reason": "WORK_DEADLINE", "cleanupDeadlineNs": "9223372036854775807" } }
++      ]
++    },
++    {
++      "name": "raw_number_is_not_bigint", "group": "range",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": 100, "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": null, "expected": { "kind": "reject", "reason": "CONFIGURATION" } }
++      ]
++    },
++    {
++      "name": "cold_deadline_equality_before_telemetry", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "10000000000", "sample": null, "expected": { "kind": "reject", "reason": "COLD_DEADLINE" } },
++        { "method": "admit", "nowNs": "0", "sample": null, "expected": { "kind": "terminal", "reason": "COLD_DEADLINE" } }
++      ]
++    },
++    {
++      "name": "cold_deadline_last_nanosecond", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "9999999999", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "9999999999" }, "expected": { "kind": "admit", "nextCheckNs": "10000000099" } },
++        { "method": "observe", "nowNs": "10000000000", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "500", "totalBytes": "2000", "observedBoottimeNs": "10000000000" }, "expected": { "kind": "continue", "nextCheckNs": "10000000100" } },
++        { "method": "check", "nowNs": "297000000000", "expected": { "kind": "abort-owned", "reason": "WORK_DEADLINE", "cleanupDeadlineNs": "300000000000" } }
++      ]
++    },
++    {
++      "name": "awaiting_observe_and_terminal", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "observe", "nowNs": "0", "sample": null, "expected": { "kind": "reject", "reason": "NOT_ADMITTED" } },
++        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "terminal", "reason": "NOT_ADMITTED" } }
++      ]
++    },
++    {
++      "name": "awaiting_check_before_cold_deadline", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "check", "nowNs": "10000000000", "expected": { "kind": "reject", "reason": "NOT_ADMITTED" } }
++      ]
++    },
++    {
++      "name": "repeated_admit_before_deadline_and_sample", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "admit", "nextCheckNs": "100" } },
++        { "method": "check", "nowNs": "0", "expected": { "kind": "continue", "nextCheckNs": "100" } },
++        { "method": "admit", "nowNs": "297000000000", "sample": null, "expected": { "kind": "abort-owned", "reason": "ALREADY_ADMITTED", "cleanupDeadlineNs": "300000000000" } }
++      ]
++    },
++    {
++      "name": "sample_time_before_capacity", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "-1", "totalBytes": "0", "observedBoottimeNs": "1" }, "expected": { "kind": "reject", "reason": "TELEMETRY" } }
++      ]
++    },
++    {
++      "name": "capacity_before_staleness", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "200", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "2001", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "reject", "reason": "TELEMETRY" } }
++      ]
++    },
++    {
++      "name": "stale_before_cadence_and_headroom", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "200", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "0", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "reject", "reason": "STALE_SAMPLE" } }
++      ]
++    },
++    {
++      "name": "missed_before_headroom", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "100", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "0", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "reject", "reason": "MISSED_SAMPLE" } }
++      ]
++    },
++    {
++      "name": "stable_total_before_headroom", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "admit", "nextCheckNs": "100" } },
++        { "method": "observe", "nowNs": "1", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "0", "totalBytes": "2001", "observedBoottimeNs": "1" }, "expected": { "kind": "abort-owned", "reason": "CAPACITY", "cleanupDeadlineNs": "300000000000" } }
++      ]
++    },
++    {
++      "name": "startup_threshold_exceeds_total", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "999", "totalBytes": "999", "observedBoottimeNs": "0" }, "expected": { "kind": "reject", "reason": "CAPACITY" } }
++      ]
++    },
++    {
++      "name": "malformed_telemetry_before_device", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": { "uuid": "wrong", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0", "extra": "1" }, "expected": { "kind": "reject", "reason": "TELEMETRY" } }
++      ]
++    },
++    {
++      "name": "running_headroom_abort_once_and_terminal_no_revival", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "admit", "nextCheckNs": "100" } },
++        { "method": "observe", "nowNs": "1", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "499", "totalBytes": "2000", "observedBoottimeNs": "1" }, "expected": { "kind": "abort-owned", "reason": "HEADROOM", "cleanupDeadlineNs": "300000000000" } },
++        { "method": "admit", "nowNs": "-1", "sample": null, "expected": { "kind": "terminal", "reason": "HEADROOM" } },
++        { "method": "observe", "nowNs": "2", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "2000", "totalBytes": "2000", "observedBoottimeNs": "2" }, "expected": { "kind": "terminal", "reason": "HEADROOM" } },
++        { "method": "check", "nowNs": null, "expected": { "kind": "terminal", "reason": "HEADROOM" } }
++      ]
++    },
++    {
++      "name": "uuid_case_sensitive", "group": "policy",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789ABC", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "reject", "reason": "DEVICE" } }
++      ]
++    },
++    {
++      "name": "configuration_i64_out_of_range", "group": "range",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "9223372036854775808", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": null, "expected": { "kind": "reject", "reason": "CONFIGURATION" } }
++      ]
++    },
++    {
++      "name": "configuration_zero_duration_and_threshold", "group": "range",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "0", "runningStopBelowFreeBytes": "0", "samplePeriodNs": "0", "maxSampleAgeNs": "0" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "check", "nowNs": "0", "expected": { "kind": "reject", "reason": "CONFIGURATION" } }
++      ]
++    },
++    {
++      "name": "sample_capacity_i64_out_of_range", "group": "range",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "9223372036854775808", "observedBoottimeNs": "0" }, "expected": { "kind": "reject", "reason": "TELEMETRY" } }
++      ]
++    },
++    {
++      "name": "raw_sample_number_is_not_bigint", "group": "range",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": 1000, "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "reject", "reason": "TELEMETRY" } }
++      ]
++    },
++    {
++      "name": "now_before_origin_and_method", "group": "clock",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "100",
++      "calls": [
++        { "method": "check", "nowNs": "99", "expected": { "kind": "reject", "reason": "CLOCK" } },
++        { "method": "admit", "nowNs": "100", "sample": null, "expected": { "kind": "terminal", "reason": "CLOCK" } }
++      ]
++    },
++    {
++      "name": "sample_before_origin", "group": "clock",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "100",
++      "calls": [
++        { "method": "admit", "nowNs": "100", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "99" }, "expected": { "kind": "reject", "reason": "SAMPLE_TIME" } }
++      ]
++    },
++    {
++      "name": "now_out_of_i64_range_after_admission", "group": "clock",
++      "configuration": { "selectedUuid": "GPU-12345678-1234-1234-1234-123456789abc", "startupMinFreeBytes": "1000", "runningStopBelowFreeBytes": "500", "samplePeriodNs": "100", "maxSampleAgeNs": "200" },
++      "originalS0Ns": "0",
++      "calls": [
++        { "method": "admit", "nowNs": "0", "sample": { "uuid": "GPU-12345678-1234-1234-1234-123456789abc", "freeBytes": "1000", "totalBytes": "2000", "observedBoottimeNs": "0" }, "expected": { "kind": "admit", "nextCheckNs": "100" } },
++        { "method": "check", "nowNs": "9223372036854775808", "expected": { "kind": "abort-owned", "reason": "CLOCK", "cleanupDeadlineNs": "300000000000" } },
++        { "method": "check", "nowNs": "0", "expected": { "kind": "terminal", "reason": "CLOCK" } }
++      ]
++    }
++  ]
++}
+diff --git a/tooling/runtime/gpu-policy.ts b/tooling/runtime/gpu-policy.ts
+new file mode 100644
+index 000000000..1766c5885
+--- /dev/null
++++ b/tooling/runtime/gpu-policy.ts
+@@ -0,0 +1,160 @@
++// SPEC: _spec/gpu-cooperative-policy.md
++import { types } from "node:util";
++
++export type CooperativePolicy = Readonly<{
++  selectedUuid: string;
++  startupMinFreeBytes: bigint;
++  runningStopBelowFreeBytes: bigint;
++  samplePeriodNs: bigint;
++  maxSampleAgeNs: bigint;
++}>;
++
++export type GpuSample = Readonly<{
++  uuid: string;
++  freeBytes: bigint;
++  totalBytes: bigint;
++  observedBoottimeNs: bigint;
++}>;
++
++export type GpuPolicyFailure = "CONFIGURATION" | "ORIGIN" | "CLOCK" | "NOT_ADMITTED" | "ALREADY_ADMITTED"
++  | "COLD_DEADLINE" | "WORK_DEADLINE" | "TELEMETRY" | "DEVICE" | "CAPACITY" | "SAMPLE_TIME"
++  | "SAMPLE_ORDER" | "STALE_SAMPLE" | "MISSED_SAMPLE" | "HEADROOM";
++
++export type GpuPolicyDecision = Readonly<
++  | { kind: "admit" | "continue"; nextCheckNs: bigint }
++  | { kind: "reject" | "terminal"; reason: GpuPolicyFailure }
++  | { kind: "abort-owned"; reason: GpuPolicyFailure; cleanupDeadlineNs: bigint }
++>;
++
++const I64_MAX = 9_223_372_036_854_775_807n;
++const COLD_NS = 10_000_000_000n;
++const WORK_NS = 297_000_000_000n;
++const CLEANUP_NS = 300_000_000_000n;
++const UUID = /^GPU-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
++const CONFIGURATION_KEYS = ["selectedUuid", "startupMinFreeBytes", "runningStopBelowFreeBytes", "samplePeriodNs", "maxSampleAgeNs"];
++const SAMPLE_KEYS = ["uuid", "freeBytes", "totalBytes", "observedBoottimeNs"];
++
++function snapshot(value: unknown, keys: readonly string[]): Readonly<Record<string, unknown>> | undefined {
++  if (types.isProxy(value)) return undefined;
++  if (typeof value !== "object" || value === null || Array.isArray(value)) return undefined;
++  const prototype = Object.getPrototypeOf(value);
++  if (prototype !== Object.prototype && prototype !== null) return undefined;
++  const ownKeys = Reflect.ownKeys(value);
++  if (ownKeys.length !== keys.length || ownKeys.some(key => typeof key !== "string" || !keys.includes(key))) return undefined;
++  const copy: Record<string, unknown> = {};
++  for (const key of keys) {
++    const descriptor = Object.getOwnPropertyDescriptor(value, key);
++    if (!descriptor || !("value" in descriptor)) return undefined;
++    copy[key] = descriptor.value;
++  }
++  return Object.freeze(copy);
++}
++
++function unsignedI64(value: unknown): value is bigint {
++  return typeof value === "bigint" && value >= 0n && value <= I64_MAX;
++}
++
++function configurationSnapshot(value: unknown): CooperativePolicy | undefined {
++  const copy = snapshot(value, CONFIGURATION_KEYS);
++  if (!copy || typeof copy.selectedUuid !== "string" || copy.selectedUuid.length !== 40 || !UUID.test(copy.selectedUuid)
++    || !unsignedI64(copy.startupMinFreeBytes) || !unsignedI64(copy.runningStopBelowFreeBytes)
++    || !unsignedI64(copy.samplePeriodNs) || !unsignedI64(copy.maxSampleAgeNs)
++    || copy.runningStopBelowFreeBytes <= 0n || copy.runningStopBelowFreeBytes > copy.startupMinFreeBytes
++    || copy.samplePeriodNs <= 0n || copy.samplePeriodNs > copy.maxSampleAgeNs) return undefined;
++  return copy as CooperativePolicy;
++}
++
++function sampleSnapshot(value: unknown): GpuSample | undefined {
++  const copy = snapshot(value, SAMPLE_KEYS);
++  if (!copy || typeof copy.uuid !== "string" || copy.uuid.length !== 40 || !UUID.test(copy.uuid)
++    || !unsignedI64(copy.freeBytes) || !unsignedI64(copy.totalBytes) || !unsignedI64(copy.observedBoottimeNs)
++    || copy.totalBytes === 0n || copy.freeBytes > copy.totalBytes) return undefined;
++  return copy as GpuSample;
++}
++
++export class CooperativeGpuPolicy {
++  readonly #configuration: CooperativePolicy | undefined;
++  readonly #originalS0Ns: bigint;
++  readonly #initialFailure: GpuPolicyFailure | undefined;
++  #state: "awaiting" | "running" | "terminal" = "awaiting";
++  #firstFailure: GpuPolicyFailure | undefined;
++  #lastNowNs: bigint | undefined;
++  #sample: GpuSample | undefined;
++
++  constructor(configuration: unknown, originalS0Ns: bigint) {
++    this.#configuration = configurationSnapshot(configuration);
++    this.#originalS0Ns = originalS0Ns;
++    this.#initialFailure = !this.#configuration ? "CONFIGURATION"
++      : !unsignedI64(originalS0Ns) || originalS0Ns > I64_MAX - CLEANUP_NS ? "ORIGIN" : undefined;
++  }
++
++  admit(nowNs: bigint, input: unknown): GpuPolicyDecision {
++    return this.#gate(nowNs, "admit") ?? this.#accept(nowNs, input);
++  }
++
++  observe(nowNs: bigint, input: unknown): GpuPolicyDecision {
++    return this.#gate(nowNs, "observe") ?? this.#accept(nowNs, input);
++  }
++
++  check(nowNs: bigint): GpuPolicyDecision {
++    return this.#gate(nowNs, "check") ?? this.#progress("continue");
++  }
++
++  #fail(reason: GpuPolicyFailure): GpuPolicyDecision {
++    const admitted = this.#state === "running";
++    this.#firstFailure = reason;
++    this.#state = "terminal";
++    return admitted
++      ? Object.freeze({ kind: "abort-owned", reason, cleanupDeadlineNs: this.#originalS0Ns + CLEANUP_NS })
++      : Object.freeze({ kind: "reject", reason });
++  }
++
++  #expiry(nowNs: bigint, sample: GpuSample): GpuPolicyFailure | undefined {
++    if (nowNs >= sample.observedBoottimeNs + this.#configuration!.maxSampleAgeNs) return "STALE_SAMPLE";
++    if (nowNs >= sample.observedBoottimeNs + this.#configuration!.samplePeriodNs) return "MISSED_SAMPLE";
++    return undefined;
++  }
++
++  #gate(nowNs: bigint, method: "admit" | "observe" | "check"): GpuPolicyDecision | undefined {
++    if (this.#state === "terminal") return Object.freeze({ kind: "terminal", reason: this.#firstFailure! });
++    if (this.#initialFailure) return this.#fail(this.#initialFailure);
++    if (!unsignedI64(nowNs) || nowNs < this.#originalS0Ns || (this.#lastNowNs !== undefined && nowNs < this.#lastNowNs)) return this.#fail("CLOCK");
++    this.#lastNowNs = nowNs;
++    if (this.#state === "awaiting") {
++      if (method !== "admit") return this.#fail("NOT_ADMITTED");
++      if (nowNs >= this.#originalS0Ns + COLD_NS) return this.#fail("COLD_DEADLINE");
++    } else {
++      if (method === "admit") return this.#fail("ALREADY_ADMITTED");
++      if (nowNs >= this.#originalS0Ns + WORK_NS) return this.#fail("WORK_DEADLINE");
++      const failure = this.#expiry(nowNs, this.#sample!);
++      if (failure) return this.#fail(failure);
++    }
++    return undefined;
++  }
++
++  #accept(nowNs: bigint, input: unknown): GpuPolicyDecision {
++    const sample = sampleSnapshot(input);
++    if (!sample) return this.#fail("TELEMETRY");
++    const configuration = this.#configuration!;
++    if (sample.uuid !== configuration.selectedUuid) return this.#fail("DEVICE");
++    if (sample.observedBoottimeNs < this.#originalS0Ns || sample.observedBoottimeNs > nowNs) return this.#fail("SAMPLE_TIME");
++    if (this.#sample && sample.observedBoottimeNs <= this.#sample.observedBoottimeNs) return this.#fail("SAMPLE_ORDER");
++    if (configuration.startupMinFreeBytes > sample.totalBytes
++      || (this.#sample && sample.totalBytes !== this.#sample.totalBytes)) return this.#fail("CAPACITY");
++    const failure = this.#expiry(nowNs, sample);
++    if (failure) return this.#fail(failure);
++    const admitting = this.#state === "awaiting";
++    if (sample.freeBytes < (admitting ? configuration.startupMinFreeBytes : configuration.runningStopBelowFreeBytes)) return this.#fail("HEADROOM");
++    this.#sample = sample;
++    this.#state = "running";
++    return this.#progress(admitting ? "admit" : "continue");
++  }
++
++  #progress(kind: "admit" | "continue"): GpuPolicyDecision {
++    const sample = this.#sample!, configuration = this.#configuration!;
++    const deadlines = [sample.observedBoottimeNs + configuration.samplePeriodNs,
++      sample.observedBoottimeNs + configuration.maxSampleAgeNs, this.#originalS0Ns + WORK_NS];
++    const nextCheckNs = deadlines.reduce((minimum, deadline) => deadline < minimum ? deadline : minimum);
++    return Object.freeze({ kind, nextCheckNs });
++  }
++}

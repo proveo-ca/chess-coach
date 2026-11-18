@@ -1,0 +1,10 @@
+{
+  "scope": "LOCAL_PURE_LARGE_MATRIX_SCHEMA_PROFILE_NOT_HOST_OR_NATIVE_EXECUTION",
+  "rows": 512,
+  "featureValues": 1162752,
+  "frameBytes": 2379691,
+  "jsonParseMs": 38.93243899999999,
+  "learningRequestSchemaMs": 1156.169835,
+  "scoreResponseDecodeMs": 1128.4165189999999,
+  "trainingReady": false
+}

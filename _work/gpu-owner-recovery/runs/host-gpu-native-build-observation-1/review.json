@@ -1,0 +1,26 @@
+{
+  "classification": ["CONTAINED", "INFRASTRUCTURE_EVIDENCE_ONLY", "SPEC_IMPACTING"],
+  "status": "READY_FOR_RECORDS_ONLY_DIAGNOSTIC_DECISION",
+  "devops": {"session":"ses_e384ffa7bffecNc429YDN25STS","verdict":"NO_BLOCKER_IN_RECORD_ONLY_PLAN"},
+  "adversarial": {
+    "session":"ses_e3849d24fffeF9A2jxyE1zKENR",
+    "firstPassFinding":"MEDIUM_DOCKER_ARGV_PREFIX_DID_NOT_BIND_OWNED_CONTAINER_IDS",
+    "resolution":"COMPARE_ALL_NINE_COMPLETE_ARGV_TO_UNCHANGED_PURE_SOURCE_CONTRACT_AND_REPORTED_OWNED_IDS",
+    "recheck":"PRIOR_FINDING_CLOSED_NO_REMAINING_FINDINGS_READY_TO_MERGE_YES"
+  },
+  "security": {"session":"ses_e3845fff1ffeE092hXAV6pfhiW","verdict":"NO_SERIALIZATION_OR_AUTHORITY_OVERCLAIM_FINDINGS","risk":"low","scope":"STATIC_RECORD_ONLY_NO_ADDITIONAL_HARDENING_GATE"},
+  "currentRecordCheck": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/record-check-2.json",
+  "currentTypecheck": "_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/typecheck-2.json",
+  "historicalChecks": {
+    "scope":"PRE_REVIEW_CHECKER_SOURCE_CHANGED_NOT_CURRENT_ACCEPTANCE",
+    "records":["_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/record-check.json","_work/gpu-owner-recovery/runs/host-gpu-native-build-observation-1/typecheck.json"]
+  },
+  "reportedBuildAcceptedAsSuccess": false,
+  "originalHostFilesReceived": false,
+  "compilerFailureCauseEstablished": false,
+  "newNativeCompilationOrProductSourceCorrection": false,
+  "codingHostDockerOrNativeOperationsPerformed": false,
+  "newHostReadsOrRetryAuthorized": false,
+  "newPublicationAuthorized": false,
+  "trainingReady": false
+}

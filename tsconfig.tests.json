@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "bun"
+    ]
+  },
+  "include": [
+    "packages/contracts/src",
+    "packages/contracts/tests",
+    "packages/starchess-core/src/engine",
+    "packages/starchess-core/tests/native",
+    "packages/policy/src",
+    "packages/policy/tests",
+    "packages/runtime/src",
+    "packages/runtime/tests"
+  ]
+}

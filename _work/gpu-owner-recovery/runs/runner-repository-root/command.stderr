@@ -1,0 +1,13 @@
+
+_work/gpu-owner-recovery/verify.test.ts:
+(pass) repository runner retains bounded successful output and exact exit [6.59ms]
+(pass) repository runner preserves nonzero exits without success substitution [4.61ms]
+(pass) repository runner kills its bounded stalled synthetic child [31.30ms]
+(pass) repository runner rejects stdout overflow and preserves only the bounded prefix [50.70ms]
+(pass) repository runner rejects stderr overflow and preserves only the bounded prefix [29.29ms]
+(pass) repository runner refuses paths outside the repository work root [0.19ms]
+
+ 6 pass
+ 0 fail
+ 17 expect() calls
+Ran 6 tests across 1 file. [148.00ms]

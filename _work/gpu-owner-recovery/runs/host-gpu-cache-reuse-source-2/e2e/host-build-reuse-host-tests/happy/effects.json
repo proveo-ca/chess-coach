@@ -1,0 +1,49 @@
+{
+  "scope": "SOURCE_ONLY_MOCK_NOT_HOST_EVIDENCE",
+  "actualDockerProcesses": 0,
+  "actualNativeProcesses": 0,
+  "actualDocker": 0,
+  "actualNative": 0,
+  "gpuExecuted": false,
+  "hostEvidence": false,
+  "dockerCliCompatibilityValidated": false,
+  "nativeCliCompatibilityValidated": false,
+  "events": [
+    {
+      "id": "watch"
+    },
+    {
+      "id": "run:worker-create"
+    },
+    {
+      "id": "recover",
+      "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    {
+      "id": "run:worker-start"
+    },
+    {
+      "id": "run:worker-logs"
+    },
+    {
+      "id": "native-receipt"
+    },
+    {
+      "id": "run:worker-state"
+    },
+    {
+      "id": "artifacts",
+      "value": 120000
+    },
+    {
+      "id": "unwatch"
+    },
+    {
+      "id": "recover",
+      "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    {
+      "id": "run:worker-remove"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "version": "chess-coach.h3-acquisition-report-review.v1",
+  "scope": "REPORT_ONLY_NOT_SOURCE_QUALIFICATION_OR_HOST_PASS",
+  "role": "adversarial-reviewer",
+  "sessionId": "ses_e254b7fdcffeJgbQUmjTfAMExO",
+  "readOnly": true,
+  "readyToMerge": true,
+  "findings": [],
+  "verdict": "Additional evidence reviewed with the same REPORT batch; no new findings. READY TO MERGE: yes",
+  "newAuthorityAdded": 0,
+  "trainingReady": false
+}

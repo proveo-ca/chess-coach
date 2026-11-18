@@ -1,0 +1,13 @@
+
+_work/gpu-owner-recovery/prepared-llvm-cache/fetch.test.ts:
+(pass) only the frozen registry identities and checksums enter the cache manifest [0.58ms]
+(pass) nonregistry sources or missing checksums stop before network access [0.39ms]
+(pass) successful cache preparation invokes one fetch and one offline verification [0.11ms]
+(pass) fetch failure preserves a failed result without retries or graph execution [0.07ms]
+(pass) bound source changes stop graph execution after the single fetch [0.07ms]
+(pass) fetch success cannot replace missing offline graph evidence [0.06ms]
+
+ 6 pass
+ 0 fail
+ 16 expect() calls
+Ran 6 tests across 1 file. [17.00ms]

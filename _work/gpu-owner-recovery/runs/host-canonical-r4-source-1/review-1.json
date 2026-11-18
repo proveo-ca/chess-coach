@@ -1,0 +1,19 @@
+{
+  "status": "PRE_REVIEW_SOURCE_PROOF_RETAINED_TASK_LOCAL_CORRECTIONS_REQUIRED",
+  "sourceProof": "_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/verification-3/receipt.json",
+  "adversarialSession": "ses_e2f247d13ffenjZlL6CuQhdljw",
+  "securitySession": "ses_e2f247d06ffeS1GOoQBBcOzqNU",
+  "backendSession": "ses_e2f475807ffefzBxoh8cFi1KZM",
+  "readyToMerge": false,
+  "findings": [
+    {"severity":"HIGH","reviewerSeverities":{"backend":"HIGH","security":"MEDIUM","adversarial":"MEDIUM"},"path":"canonical.ts","lines":[35,36],"issue":"An explicit null factory can select real process construction while the receipt labels execution MOCK.","requiredScope":"Reject supplied non-callable factories before NativeJob construction and classify execution from the same validated branch."},
+    {"severity":"MEDIUM","path":"canonical.ts","lines":[55,120,121,122],"issue":"A first acquisition that consumes the original work budget can still permit the second factory invocation.","requiredScope":"Use the existing absolute work deadline before each factory call and retain returned-port ownership before rejecting late acquisition."}
+  ],
+  "lineNumbersDescribeVerification3Generation": true,
+  "freshSuccessorVerificationRequired": true,
+  "originalVerification1And2FailuresAnd3PassRetained": true,
+  "productionFilesUnchanged": true,
+  "referenceInputDelivery": "REFERENCE_INPUT_DELIVERY_UNSELECTED",
+  "hostExecutionApproved": false,
+  "trainingReady": false
+}

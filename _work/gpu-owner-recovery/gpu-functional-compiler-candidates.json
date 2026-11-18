@@ -1,0 +1,19 @@
+{
+  "version": "chess-coach.gpu-functional-compiler-candidates.v1",
+  "scope": "CODING_REALM_EXISTING_MISE_INSTALL_DIRECTORY_METADATA_ONLY",
+  "candidates": [
+    {
+      "path": "/home/agent/toolchains/linux-amd64/.local/share/mise/installs/github-tracel-ai-tracel-llvm/23.1.0-4",
+      "reportedVersionDirectory": "23.1.0-4",
+      "installationVerified": false,
+      "llvmConfigExecuted": false,
+      "filesCopied": false,
+      "selected": false
+    }
+  ],
+  "archiveAccessPerformed": false,
+  "newAcquisitionPerformed": false,
+  "nativeCudaCompilationPerformed": false,
+  "operatorHostInputsEstablished": false,
+  "trainingReady": false
+}

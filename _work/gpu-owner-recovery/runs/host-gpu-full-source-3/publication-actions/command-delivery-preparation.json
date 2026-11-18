@@ -1,0 +1,19 @@
+{
+  "status": "EXACT_LITERAL_DELIVERY_PREPARED_NOT_EMITTED_BEFORE_PUBLICATION",
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command.fish",
+    "bytes": 56775,
+    "sha256": "83919afa384f09b2f597d8c8d3e6eeee108fc47c68aaf32c3a2fba2fc0b50666"
+  },
+  "markdown": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/publication-actions/command-delivery.md",
+    "bytes": 56967,
+    "sha256": "e2aa601a62dc539f3a9096162bdffe5ac3772a4946f544d2eccc14c712dddb15"
+  },
+  "literalOffset": 92,
+  "literalBytes": 56775,
+  "bodyByteEqualityVerified": true,
+  "commandBodyEmitted": false,
+  "codingHostOperationsPerformed": false,
+  "trainingReady": false
+}

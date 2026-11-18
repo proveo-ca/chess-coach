@@ -1,0 +1,101 @@
+{
+  "version": "chess-coach.cuda-isolation-layout-source-acceptance.v1",
+  "status": "NONRUNNABLE_SOURCE_ACCEPTANCE_FOR_EXACT_LAYOUT_RENEWAL_REQUEST_ONLY",
+  "scope": "EXACT_GNU_TRUE_PHYSICAL_ALIAS_WITH_UNCHANGED_GUEST_COMMAND_AND_ISOLATION",
+  "runnableBinding": false,
+  "executionAuthorized": false,
+  "architectSessionId": "ses_e44a8dd59ffeY3WhDkxuWCCTCJ",
+  "reviews": [
+    {
+      "role": "security-reviewer",
+      "sessionId": "ses_e4439a2c0ffeTD6G2gSAPqPEyM",
+      "verdict": "READY_FOR_EXACT_LAYOUT_RENEWAL_REQUEST",
+      "readOnly": true,
+      "reviewerExecutedCommands": false,
+      "remainingFindings": 0,
+      "acceptanceScope": "SOURCE_ONLY_NOT_EXECUTION_AUTHORITY"
+    },
+    {
+      "role": "adversarial-reviewer",
+      "sessionId": "ses_e4439a2b6ffeD4aw7uSogI27Fg",
+      "verdict": "READY_FOR_EXACT_LAYOUT_RENEWAL_REQUEST",
+      "readOnly": true,
+      "reviewerExecutedCommands": false,
+      "remainingFindings": 0,
+      "acceptanceScope": "SOURCE_ONLY_NOT_EXECUTION_AUTHORITY"
+    },
+    {
+      "role": "devops",
+      "sessionId": "ses_e44a58336ffePB4MyFlISk7KQC",
+      "verdict": "READY_FOR_EXACT_LAYOUT_RENEWAL_REQUEST",
+      "readOnly": true,
+      "reviewerExecutedCommands": false,
+      "remainingFindings": 0,
+      "acceptanceScope": "SOURCE_ONLY_NOT_EXECUTION_AUTHORITY"
+    }
+  ],
+  "evidence": {
+    "sourceManifestSha256AtVerification": "3fa56c30a4b0a7168b44a62c76a15d8caaad6147022c6d564730d09e75dc94ee",
+    "requestSha256AtVerification": "675e93b437934de77a0b4281deb5d9472fa95c24968d281127e1863f2dc015d3",
+    "requestBeforeRecordReconciliation": "_work/gpu-owner-recovery/runs/cuda-isolation-layout-records-1/request-before.json",
+    "staticTests": {
+      "receipt": "_work/gpu-owner-recovery/runs/cuda-isolation-layout-static-1/receipt.json",
+      "tests": 16,
+      "assertions": 276,
+      "sourceChanged": false
+    },
+    "runnerTests": {
+      "receipt": "_work/gpu-owner-recovery/runs/cuda-isolation-layout-runner-1/receipt.json",
+      "tests": 13,
+      "assertions": 89,
+      "sourceChanged": false
+    },
+    "types": {
+      "receipt": "_work/gpu-owner-recovery/runs/cuda-isolation-layout-types-1/receipt.json",
+      "status": "PASS",
+      "sourceChanged": false
+    },
+    "readonlyLayoutDiagnosis": "_work/gpu-owner-recovery/runs/cuda-isolation-layout-metadata-1/receipt.json"
+  },
+  "reviewedImplementationFiles": {
+    "_work/gpu-owner-recovery/cuda-isolation.ts": "3231f42ebbcf01ac0b1f6f5217ed53233f9359d657eb3e7d55ccd447a802735c",
+    "_work/gpu-owner-recovery/cuda-isolation.test.ts": "53f812ec50c62e92f506e3323c224cb9852be2801d7c4259f79b481a566fa9ea",
+    "_work/gpu-owner-recovery/cuda-mise.toml": "b1d2fa6a92bb740b11ad15cc81e7c421c1ebc5393b5138fd50b61c6e16710102",
+    "_work/gpu-owner-recovery/provision.ts": "446bafb616dce8f642216268cb10d6c30e1e485b45428b8c83295358964a8efb",
+    "_work/gpu-owner-recovery/verify.ts": "49623db0d908c1d0591084f0fae4861698f2b776536ada70fb8686bf843f9b56",
+    "_work/gpu-owner-recovery/verify.test.ts": "a0d44c8a50915b10c59c7f2fe9927aa7f6ea344660201ca775b0269da0989414",
+    "_work/gpu-owner-recovery/command-supervisor.ts": "88e56077c3bcddf722f81081a0cb7c6f94d1da106add486dbf13a92d165fb9c6",
+    "_work/gpu-owner-recovery/tsconfig.json": "e70ffa726d5b3b004982a4705b17b778c4326fe9964b9ce76e006ed1310c793d",
+    "tsconfig.json": "a0cf0b388c7327624fa7f91061dbf4ee4280e9f27d095740399fe5c83682e913"
+  },
+  "allowedTruePhysicalPaths": [
+    "/usr/bin/true",
+    "/usr/bin/gnutrue"
+  ],
+  "fixedGuestCommand": "/usr/bin/true",
+  "pathCustody": "VALIDATED_FD_READING_THEN_C1_PATH_BIND_NOT_ATOMIC_FD_MOUNTING",
+  "historicalTrustOrderSourceAcceptance": "_work/gpu-owner-recovery/cuda-isolation-corrected-source-review.json",
+  "preservedReviewRecords": [
+    {
+      "path": "_work/gpu-owner-recovery/cuda-isolation-reviewed.json",
+      "sha256": "094327f153dd33d59aaa4127fdf91733ae932a36ccfcafb944ff92cbe82fd849"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/cuda-isolation-reviewed-v2.json",
+      "sha256": "96558dad450d33eca000c12e7ecce4ccec094d7cdeec05401e7c90a2ab248412"
+    }
+  ],
+  "preservedFailedAttempt": "_work/gpu-owner-recovery/runs/cuda-isolation-probe-2/receipt.json",
+  "failedAttemptClassification": "_work/gpu-owner-recovery/cuda-isolation-probe-2-classification.json",
+  "futureFixedRunnableBinding": "_work/gpu-owner-recovery/cuda-isolation-reviewed-v3.json",
+  "freshExecutorRenewalRequired": true,
+  "independentOutsidePinnedGateRequiredBeforeOperationalImportOrMise": true,
+  "oneOutsideDeadlineMs": 30000,
+  "firstActualFailureStopsSequence": true,
+  "automaticRetryAllowed": false,
+  "namespaceSupportDetermined": false,
+  "buildIsolationQualified": false,
+  "custodyQualified": false,
+  "cudaCompilationEstablished": false,
+  "trainingReady": false
+}

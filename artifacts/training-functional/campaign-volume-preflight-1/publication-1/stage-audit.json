@@ -1,0 +1,33 @@
+{
+  "status": "PASS_EXACT_FROZEN_STAGED_BLOBS_LIVE_MODES_CREDENTIAL_ATTRIBUTES_HOOKS_REMOTE_AND_PR",
+  "baseCommit": "c60a45e1588fabf16c76da7127e160b17147dcf7",
+  "targetRef": "refs/heads/feat-ml-adjuntant-ii",
+  "remoteUrl": "https://github.com/proveo-ca/chess-coach.git",
+  "pushUrl": "https://github.com/proveo-ca/chess-coach.git",
+  "pullRequest": {
+    "baseRefName": "main",
+    "headRefName": "feat-ml-adjuntant-ii",
+    "headRefOid": "c60a45e1588fabf16c76da7127e160b17147dcf7",
+    "number": 51,
+    "state": "OPEN",
+    "url": "https://github.com/proveo-ca/chess-coach/pull/51"
+  },
+  "fileCount": 50,
+  "totalBytes": 550239,
+  "freezeSha256": "fc2b53426f2d4e840693beee2b39a015b46fcc01e32209fbaa9798688c8ba56a",
+  "allBlobIdsModesLengthsHashesAndLiveBytesMatch": true,
+  "credentialCandidates": 0,
+  "workingAndCachedAttributes": "ALL_UNSPECIFIED",
+  "namedCommitPushHooks": "ABSENT_CUSTOM_PATH_UNSET",
+  "sourceWhitespace": "PASS_RAW_HISTORICAL_STREAMS_PRESERVED",
+  "untrackedOnlyDeclaredPublicationControls": true,
+  "reviews": {
+    "adversarial": "READY_ONE_MEDIUM_CORRECTED_NULL_UNKNOWN",
+    "security": "READY_LOW",
+    "devops": "GO_EXACT_GATE_SATISFIED"
+  },
+  "hostOperationsExecuted": false,
+  "trainingExecuted": false,
+  "commitPerformed": false,
+  "pushPerformed": false
+}

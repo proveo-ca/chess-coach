@@ -1,0 +1,18 @@
+{
+  "scope": "READINESS_PUBLICATION_AND_SUBSEQUENT_SOURCE_ONLY_PACKET_PREPARATION",
+  "architect": {
+    "session": "ses_e14f6bdb8ffear1vHQrKQCxcoW",
+    "decision": "GO",
+    "constraints": "One checked readiness publication first; reuse focused verification; prepare the later campaign packet without execution or a second publication; leave resource selection unset"
+  },
+  "devops": {
+    "session": "ses_e14f65c65ffeT3ojCy0PwM2WyJ",
+    "decision": "CONDITIONAL_GO",
+    "constraints": "Explicit owned-file allowlist; fresh focused tests/types/static; preserve evidence bytes; stop on credentials or remote drift; exact staged-blob readback; keep freeze/index-audit/post-publication controls local"
+  },
+  "existingSourceReviews": "artifacts/training-functional/qualification-result-1/returned-2/reviews-2.json",
+  "acceptedReadinessReview": "artifacts/training-functional/qualification-result-1/acceptance-review-1.json",
+  "freshPublicationReview": "PENDING",
+  "trainingExecutionAuthorized": false,
+  "secondPublicationAuthorized": false
+}

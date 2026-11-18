@@ -1,0 +1,312 @@
+{
+  "scope": "CORRECTED_LOCAL_BYTE_BOUND_READBACK_CONSISTENCY_AND_NEGATIVE_TESTS_NOT_NATIVE_REPLAY",
+  "verificationStatus": "PASS",
+  "observationStatus": "PASS_RETAINED_READBACK_CONSISTENCY_NOT_FULL_REPLAY",
+  "results": [
+    {
+      "name": "tests",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "--timeout",
+        "30000",
+        "artifacts/training-functional/qualification-result-1/validate.test.ts",
+        "artifacts/training-functional/qualification-result-1/export-command.test.ts",
+        "artifacts/training-functional/qualification-result-1/readback.test.ts"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 1065.330335,
+      "stdout": {
+        "path": "artifacts/training-functional/qualification-result-1/checks-6/tests.stdout",
+        "byteLength": 28,
+        "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/qualification-result-1/checks-6/tests.stderr",
+        "byteLength": 6123,
+        "sha256": "590d7c54110ffe8aaf25a9a042087f61cb49f3171accaade5127b005dd7de0b5"
+      },
+      "summary": [
+        " 77 pass",
+        " 0 fail",
+        " 172 expect() calls",
+        "Ran 77 tests across 3 files. [1043.00ms]"
+      ]
+    },
+    {
+      "name": "types",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/qualification-result-1/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 4881.745002,
+      "stdout": {
+        "path": "artifacts/training-functional/qualification-result-1/checks-6/types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/qualification-result-1/checks-6/types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "summary": []
+    },
+    {
+      "name": "specs",
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "artifacts/training-functional/check-specs.ts"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 22.923513999999983,
+      "stdout": {
+        "path": "artifacts/training-functional/qualification-result-1/checks-6/specs.stdout",
+        "byteLength": 2136,
+        "sha256": "a09898f9e6b07d3744db0d67c1f11bb51f6c19f9295fc7a73fdd6ce774133513"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/qualification-result-1/checks-6/specs.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "summary": []
+    }
+  ],
+  "sourcePinsBefore": [
+    {
+      "path": "artifacts/training-functional/qualification-result-1/bootstrap.json",
+      "byteLength": 6141,
+      "sha256": "4278758382c751a5881bf477b1c4eb2b7230a6f8c52a5125da9bd8e469a50216"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/operator-report.json",
+      "byteLength": 34157,
+      "sha256": "13889168a5c9f77885a95460237edbb766abcf1ad9448ea7769133a050bf663a"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/canonical.json",
+      "byteLength": 36742,
+      "sha256": "d5e5f86bc94e232fbfa897b69b1f7595596bdd2e3bca8336f61d7a37756cf484"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/r4.json",
+      "byteLength": 20265,
+      "sha256": "af939100a853ba93c14d3313858110a679ae10e46aba7e52679b495c21f07cbc"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/functional-evidence.json",
+      "byteLength": 1631,
+      "sha256": "17cdc9a7c30792104bb3bdecbedd9a289d2e31be30e1c9714ec5175d4e184eb1"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/preparation-receipt.json",
+      "byteLength": 1921,
+      "sha256": "20f2b4620ef665698a8b7bfffc9fb10ac784491541bc531aa682e7f666a47fd7"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/input-manifest.json",
+      "byteLength": 143938,
+      "sha256": "7bc8885b4ee97be1d4935aa4dcc994275ea41e2e368b144e29be1b598b53ae51"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/source-manifest.json",
+      "byteLength": 20258,
+      "sha256": "9820e6bfb34f5891117379b207cfd193330d5bd1efbf6c8d36f6ff6e0328836b"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/binding-documents.json",
+      "byteLength": 5087,
+      "sha256": "5cd45f5cad1b5f08e07a54cbfd68834ff00eda4f0d6c40f02922bac07d3ca7fe"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/validate.ts",
+      "byteLength": 10076,
+      "sha256": "31936b93ee73ec2728a142d0721df6a2086b3844823ffa7964e9068a258cd580"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/validate.test.ts",
+      "byteLength": 4824,
+      "sha256": "0cd4a1c11d97830066199620b373ec37c63d52cc30db53d33d11ad300f1f0e58"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/export-command.sh",
+      "byteLength": 3102,
+      "sha256": "98032d7675d191091be12dd454668e43a2e9efd8fcfcbbec1c244b0105bfaefd"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/export-command.test.ts",
+      "byteLength": 5203,
+      "sha256": "c22e39a45391f41c43a0b23d0f6b73e2813379d4eb2cb6dcb7b227ed205e6dcc"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/readback.ts",
+      "byteLength": 20487,
+      "sha256": "d77fff06bae985440d491a4b1160949fe839e1c0afa0ce7e9cd5898958738490"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/readback.test.ts",
+      "byteLength": 7557,
+      "sha256": "9983ce091731fc0c254853c97f3fb51367703a8555cb3c54a0cb97bc674238d4"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/tsconfig.json",
+      "byteLength": 157,
+      "sha256": "d028c2d5b0c1bfda05e18ddd1d9f902af870fcc10c024ca03da5b01e14dcf5ea"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/README.md",
+      "byteLength": 5267,
+      "sha256": "0122145a04cdadffedba6a49a5df49010cbcf173c1ffe7d2662c6b8efb0858e0"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/acceptance-candidate.json",
+      "byteLength": 3685,
+      "sha256": "4e71d03b8aa17e2a2bca046152241ad0593a867f2a35f3d0eb2301fe930a8bdd"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 171896,
+      "sha256": "1f46bc520ff7ed41578a4e8943eaf42f97294dd4098ee5e2b1edb3cc8de63016"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 131389,
+      "sha256": "6d9913c3c750009e7e66a712b8146f647439a390dee9cd99d31b0ff56972524e"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 53976,
+      "sha256": "93eaa492415daaffaa1a06289174a4bb6526a87393b5f3e2c12d0d73b2e999f6"
+    }
+  ],
+  "sourcePinsAfter": [
+    {
+      "path": "artifacts/training-functional/qualification-result-1/bootstrap.json",
+      "byteLength": 6141,
+      "sha256": "4278758382c751a5881bf477b1c4eb2b7230a6f8c52a5125da9bd8e469a50216"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/operator-report.json",
+      "byteLength": 34157,
+      "sha256": "13889168a5c9f77885a95460237edbb766abcf1ad9448ea7769133a050bf663a"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/canonical.json",
+      "byteLength": 36742,
+      "sha256": "d5e5f86bc94e232fbfa897b69b1f7595596bdd2e3bca8336f61d7a37756cf484"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/r4.json",
+      "byteLength": 20265,
+      "sha256": "af939100a853ba93c14d3313858110a679ae10e46aba7e52679b495c21f07cbc"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/functional-evidence.json",
+      "byteLength": 1631,
+      "sha256": "17cdc9a7c30792104bb3bdecbedd9a289d2e31be30e1c9714ec5175d4e184eb1"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/preparation-receipt.json",
+      "byteLength": 1921,
+      "sha256": "20f2b4620ef665698a8b7bfffc9fb10ac784491541bc531aa682e7f666a47fd7"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/input-manifest.json",
+      "byteLength": 143938,
+      "sha256": "7bc8885b4ee97be1d4935aa4dcc994275ea41e2e368b144e29be1b598b53ae51"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/source-manifest.json",
+      "byteLength": 20258,
+      "sha256": "9820e6bfb34f5891117379b207cfd193330d5bd1efbf6c8d36f6ff6e0328836b"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-packet-1/source-3/binding-documents.json",
+      "byteLength": 5087,
+      "sha256": "5cd45f5cad1b5f08e07a54cbfd68834ff00eda4f0d6c40f02922bac07d3ca7fe"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/validate.ts",
+      "byteLength": 10076,
+      "sha256": "31936b93ee73ec2728a142d0721df6a2086b3844823ffa7964e9068a258cd580"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/validate.test.ts",
+      "byteLength": 4824,
+      "sha256": "0cd4a1c11d97830066199620b373ec37c63d52cc30db53d33d11ad300f1f0e58"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/export-command.sh",
+      "byteLength": 3102,
+      "sha256": "98032d7675d191091be12dd454668e43a2e9efd8fcfcbbec1c244b0105bfaefd"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/export-command.test.ts",
+      "byteLength": 5203,
+      "sha256": "c22e39a45391f41c43a0b23d0f6b73e2813379d4eb2cb6dcb7b227ed205e6dcc"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/readback.ts",
+      "byteLength": 20487,
+      "sha256": "d77fff06bae985440d491a4b1160949fe839e1c0afa0ce7e9cd5898958738490"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/readback.test.ts",
+      "byteLength": 7557,
+      "sha256": "9983ce091731fc0c254853c97f3fb51367703a8555cb3c54a0cb97bc674238d4"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/tsconfig.json",
+      "byteLength": 157,
+      "sha256": "d028c2d5b0c1bfda05e18ddd1d9f902af870fcc10c024ca03da5b01e14dcf5ea"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/README.md",
+      "byteLength": 5267,
+      "sha256": "0122145a04cdadffedba6a49a5df49010cbcf173c1ffe7d2662c6b8efb0858e0"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/returned-2/acceptance-candidate.json",
+      "byteLength": 3685,
+      "sha256": "4e71d03b8aa17e2a2bca046152241ad0593a867f2a35f3d0eb2301fe930a8bdd"
+    },
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 171896,
+      "sha256": "1f46bc520ff7ed41578a4e8943eaf42f97294dd4098ee5e2b1edb3cc8de63016"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 131389,
+      "sha256": "6d9913c3c750009e7e66a712b8146f647439a390dee9cd99d31b0ff56972524e"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 53976,
+      "sha256": "93eaa492415daaffaa1a06289174a4bb6526a87393b5f3e2c12d0d73b2e999f6"
+    }
+  ],
+  "sourcePinsMatch": true,
+  "fix": "Complete initial/proposal model-reference hash-and-size joins, with three length-tamper regressions",
+  "priorVerification": "checks-5 preserves the original 74-test checker generation",
+  "otherHostFilesRead": false,
+  "nativeOrGpuExecuted": false,
+  "qualificationRerun": false,
+  "trainingExecuted": false,
+  "publicationPerformed": false,
+  "qualified": false,
+  "trainingReady": false
+}

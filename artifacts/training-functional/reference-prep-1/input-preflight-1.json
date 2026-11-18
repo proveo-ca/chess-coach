@@ -1,0 +1,31 @@
+{
+  "status": "PASS_READ_ONLY_PINNED_INPUT_PREFLIGHT",
+  "groups": [
+    {
+      "kind": "local-inputs-1",
+      "files": 427,
+      "bytes": 3850400,
+      "metadataSha256": [
+        "bb03f45257fae1d8ca11710b53547936c3042380188ab10117b704b692d39fb0",
+        "2b13f0daad567013823ea2859a0107818ee9b09766347c2190ec3dfe47949506"
+      ]
+    },
+    {
+      "kind": "corpus-inputs-1",
+      "files": 2,
+      "bytes": 671849,
+      "metadataSha256": [
+        "25c53eae03508b523fc36a962984c4aad23a0f0784b6c71123ac6e320f335460",
+        "b95bbe9c1568d8169c91d6ce3cb174afceab37ab65f973f66fbc62bb32f4841b"
+      ]
+    }
+  ],
+  "totalFiles": 429,
+  "totalBytes": 4522249,
+  "operationRootAbsent": true,
+  "networkOperations": 0,
+  "referenceAssemblyPerformed": false,
+  "referenceBuilds": 0,
+  "oldGrantsRenewed": false,
+  "trainingReady": false
+}

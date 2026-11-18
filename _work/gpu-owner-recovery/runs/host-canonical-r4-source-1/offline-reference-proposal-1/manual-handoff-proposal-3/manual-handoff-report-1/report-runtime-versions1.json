@@ -1,0 +1,32 @@
+{
+  "scope": "LOCAL_REPORT_VERIFICATION_TOOLING",
+  "versions": [
+    {
+      "name": "bun",
+      "file": "/usr/local/bin/bun",
+      "args": [
+        "--version"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "1.4.0\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "name": "typescript",
+      "file": "/usr/local/bin/bun",
+      "args": [
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--version"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "Version 5.9.3\n",
+      "stderr": "",
+      "error": null
+    }
+  ]
+}

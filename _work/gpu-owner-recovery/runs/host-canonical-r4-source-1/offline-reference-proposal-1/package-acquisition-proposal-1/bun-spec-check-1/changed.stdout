@@ -1,0 +1,7 @@
+_spec/.spec-index.json
+_spec/gate-closure.md
+_spec/gpu-full-qualification.puml
+_spec/gpu-qualification.puml
+_spec/gpu-readiness.md
+_spec/readiness.md
+_spec/runtime-protocol.puml

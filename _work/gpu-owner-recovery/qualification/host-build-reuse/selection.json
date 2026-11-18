@@ -1,0 +1,13 @@
+{
+  "version": "chess-coach.host-build-cache-strategy.v1",
+  "status": "REUSE_CACHE_SELECTED_FOR_SOURCE_PREPARATION_ONLY",
+  "authorizationSource": "EXECUTOR_SELECTED_REUSE_CACHE_RECOMMENDED",
+  "sourcePreparationSelected": true,
+  "cacheWritesAuthorized": false,
+  "hostExecutionAuthorized": false,
+  "copyingOrStagingAuthorized": false,
+  "publicationAuthorized": false,
+  "gpuExecutionAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

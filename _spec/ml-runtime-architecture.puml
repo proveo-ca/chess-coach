@@ -1,0 +1,96 @@
+@startuml clean_runtime
+' purpose: product and ML ownership in the integrated workspace
+' covers: packages/starchess-core/src/engine/**
+' covers: packages/starchess-core/src/resolve/**
+' covers: packages/starchess-core/tests/native/**
+' covers: packages/starchess-core/package.json
+' covers: packages/contracts/package.json
+' covers: packages/policy/package.json
+' covers: package.json
+' covers: tsconfig.json
+' covers: tsconfig.tests.json
+' covers: packages/contracts/src/game-session.ts
+' covers: tooling/tests/workspace-integration.test.ts
+' covers: _spec/architecture.md
+' covers: crates/learning/Cargo.toml
+' covers: crates/learning/src/batch.rs
+' covers: crates/learning/src/lib.rs
+' covers: crates/learning/src/model.rs
+' covers: crates/learning/tests/model.rs
+' covers: packages/policy/tests/source-boundary.test.ts
+' details: _spec/architecture.md
+' consolidation goal: _spec/engine-consolidation.puml
+' status: test relocation and shim retirement complete; 14/14 fresh layout Bun checks PASS; native/runtime/training qualifications remain separate
+' retired workspace: packages/game-core has no runtime role; historical paths remain provenance, never current source ownership
+' note register: bottom of PRODUCT FK 10.5 (35 words, 57 syllables, 2 sentences)
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Product / ML boundaries · canonical test ownership, layout Bun checks passed
+component "apps/chess\nchess coaching application" as CHESS <<app>>
+component "apps/starchess\nStarChess product application" as UI <<app>>
+component "packages/engine-core\ncommentary + FEN/move helpers" as COMMENTARY <<app>>
+component "packages/starchess-core/src/index.ts\nproduct API + incoming-action admission" as PRODUCT <<app>>
+component "packages/starchess-core/src/engine/index.ts\npure native ML admission + planning" as ENGINE <<app>>
+component "packages/starchess-core/src/resolve\none B/C/F physics kernel" as KERNEL <<app>>
+component "packages/starchess-core/src/engine/causal-producer.ts\nhost-only mutation journal" as PRODUCER <<app>>
+component "packages/starchess-core/tests/native\nBun native regression corpus" as TESTS <<app>>
+component "packages/runtime\nmatch / policy / learner coordination" as RUN <<app>>
+component "packages/contracts/src/game-session.ts\nGameSession" as SESSION <<app>>
+component "packages/contracts/src/recipient.ts\nrecipient-local projection" as RECIPIENT <<app>>
+component "crates/learning\nBurn model + episodic objective" as ML <<app>>
+component "packages/contracts\nZod recipient observation + JSON Schema" as CONTRACT <<app>>
+component "crates/policy-io\nstandard JSON / Serde scoring" as IO <<app>>
+component "packages/policy\nbounded candidates + versioned encoder" as POLICY <<app>>
+database "Burn native model records\nsynthetic round-trip test" as STORE <<db>>
+node "Cargo + Bun\nstandard development tools" as TOOLS <<host>>
+node "Host mise\npreflight / planned seeding + provisioning" as HOST <<host>>
+node "Coding agent sbx\nnot the training target" as SBX <<host>>
+node "Host Docker GPU job\nseparate execution approval" as GPU <<host>>
+HOST ..> GPU : separate provisioning / execution grants
+GPU ..> RUN : F64 learning requirement; not admission
+SBX ..> TOOLS : authorized source / synthetic verification
+CHESS --> COMMENTARY : prompts / validation
+UI --> PRODUCT : game API
+PRODUCT --> KERNEL : product validation contract
+TESTS ..> ENGINE : canonical rules / admission tests
+TESTS ..> PRODUCER : explicit host journal tests
+ENGINE --> KERNEL : native validation contract
+RUN --> SESSION : initialize / open / settle
+SESSION --> ENGINE : native action admission
+SESSION --> PRODUCER : journaled begin / end
+PRODUCER --> ENGINE : native begin / end + optional effects
+SESSION --> RECIPIENT : project each game transition
+PRODUCER ..> RECIPIENT : journal / snapshot through GameSession
+RECIPIENT --> CONTRACT : recipient-local schemas
+RECIPIENT ..> POLICY : recipient-local observation\nthrough packages/runtime
+RUN --> POLICY : enumerate / encode recipient candidates
+POLICY --> CONTRACT : standard validation
+POLICY ..> ENGINE : pure rules / recipient planning
+POLICY ..> IO : 2271 numeric coordinates / candidate\nthrough packages/runtime
+RUN --> IO : frozen scoring / learner sessions
+IO --> ML : frozen model / bounded feature batch
+ML --> STORE : Burn record API
+TOOLS --> ML : build / synthetic tests
+TOOLS --> ENGINE : JavaScript / TypeScript regression checks
+TOOLS --> CONTRACT : strict static + invariant tests
+TOOLS --> IO : native / cross-language e2e
+note bottom of PRODUCT
+  The shared kernel retains distinct contracts for
+  product and native ML action admission.
+  Relocating tests into their canonical workspace
+  must not change which queues each path accepts
+  or grant permission to train on game data.
+end note
+note bottom of RUN
+  Runtime code and synthetic tests do not
+  establish readiness for training on game data.
+  The actual corpus and a production training run
+  still need separate proof and explicit approval.
+end note
+note right of GPU
+  The accepted F64 qualification retains its scope
+  without a fresh GPU run during this source
+  change. Main entrypoints remain disabled, and
+  the frozen numerical records receive no new
+  training authority.
+end note
+@enduml

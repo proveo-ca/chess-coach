@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "./_work/gpu-owner-recovery/runs/host-gpu-full-source-3/verify-retry-closeout-1.ts"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 71,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-closeout-verification-1/command.stdout",
+      "bytes": 71,
+      "sha256": "44907537979c8f78a0df02b56b5832deefb936fefac3c95e7389baa10d29cacc"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-3/host-command-retry-closeout-verification-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "codingHostOperationsPerformed": false,
+  "publicationAuthorized": false,
+  "trainingReady": false
+}

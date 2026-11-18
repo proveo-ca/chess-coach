@@ -1,0 +1,14 @@
+packages/runtime/tests/training-campaign.test.ts(100,35): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(expected: (101 | 102 | 103 | 104 | 105)[]): void', gave the following error.
+    Argument of type 'readonly [101, 102, 103, 104, 105]' is not assignable to parameter of type '(101 | 102 | 103 | 104 | 105)[]'.
+      The type 'readonly [101, 102, 103, 104, 105]' is 'readonly' and cannot be assigned to the mutable type '(101 | 102 | 103 | 104 | 105)[]'.
+  Overload 2 of 2, '(expected: NoInfer<(101 | 102 | 103 | 104 | 105)[]>): void', gave the following error.
+    Argument of type 'readonly [101, 102, 103, 104, 105]' is not assignable to parameter of type '(101 | 102 | 103 | 104 | 105)[]'.
+      The type 'readonly [101, 102, 103, 104, 105]' is 'readonly' and cannot be assigned to the mutable type '(101 | 102 | 103 | 104 | 105)[]'.
+packages/runtime/tests/training-campaign.test.ts(101,57): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(expected: (101 | 102 | 103 | 104 | 105)[]): void', gave the following error.
+    Argument of type 'readonly [101, 102, 103, 104, 105]' is not assignable to parameter of type '(101 | 102 | 103 | 104 | 105)[]'.
+      The type 'readonly [101, 102, 103, 104, 105]' is 'readonly' and cannot be assigned to the mutable type '(101 | 102 | 103 | 104 | 105)[]'.
+  Overload 2 of 2, '(expected: NoInfer<(101 | 102 | 103 | 104 | 105)[]>): void', gave the following error.
+    Argument of type 'readonly [101, 102, 103, 104, 105]' is not assignable to parameter of type '(101 | 102 | 103 | 104 | 105)[]'.
+      The type 'readonly [101, 102, 103, 104, 105]' is 'readonly' and cannot be assigned to the mutable type '(101 | 102 | 103 | 104 | 105)[]'.

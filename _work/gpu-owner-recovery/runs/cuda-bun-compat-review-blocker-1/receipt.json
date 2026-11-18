@@ -1,0 +1,35 @@
+{
+  "version": "chess-coach.cuda-bun-compatibility-source-blocker-record-check.v1",
+  "argv": [
+    "/usr/local/bin/bun",
+    "--no-env-file",
+    "--no-install",
+    "-e",
+    "\nimport { readFile,lstat } from 'node:fs/promises';\nimport { createHash } from 'node:crypto';\nconst base='_work/gpu-owner-recovery/',hash=bytes=>createHash('sha256').update(bytes).digest('hex'),load=async path=>JSON.parse(await readFile(path,'utf8'));\nconst need=(value,code)=>{if(!value)throw Error(code);};\nneed(hash(await readFile(base+'cuda-llvm-request.json'))==='e0b54ee82895a3da613e92e764ccd7db2c10f2001e95241543b36f49b6f1cc63'&&hash(await readFile(base+'runs/cuda-bun-compatibility-1/llvm-request-halted.json'))==='e0b54ee82895a3da613e92e764ccd7db2c10f2001e95241543b36f49b6f1cc63','FULL_HALTED_REQUEST_CHANGED');\nneed(hash(await readFile(base+'cuda-bun-compatibility-request.json'))==='3e2164b0fc9e1d092d519928a2e4a7b0e085cd5eccdb6ed49245d6d8a43f880a','UNSPENT_DIAGNOSTIC_GRANT_CHANGED');\nconst results=[];let manifestSha;\nfor(const stage of ['static','types','archive','snapshot','runner','acquire','isolation']){\n const root=base+'runs/cuda-bun-compat-'+stage+'-parent-2/',receipt=await load(root+'receipt.json'),manifestBytes=await readFile(root+'sources.json');\n need(receipt.status==='PASS'&&receipt.exitCode===0&&receipt.failure===null&&receipt.sourceChanged===false&&receipt.sourceCount===242&&hash(manifestBytes)===receipt.sourceManifestSha256&&(!manifestSha||manifestSha===receipt.sourceManifestSha256),'UNIFIED_CURRENT_STATIC_PASS_REQUIRED');manifestSha=receipt.sourceManifestSha256;\n for(const item of JSON.parse(manifestBytes))need(hash(await readFile(item.path))===item.sha256,'CURRENT_STATIC_INPUT_CHANGED:'+item.path);\n for(const stream of [receipt.stdout,receipt.stderr]){const raw=await readFile(stream.path);need(raw.length===stream.bytes&&hash(raw)===stream.sha256,'STATIC_STREAM_CHANGED');}\n const stderr=await readFile(root+'command.stderr','utf8'),count=stderr.match(/\\n +(\\d+) pass\\n +0 fail\\n +(\\d+) expect\\(\\) calls/);\n results.push({stage,status:'PASS',tests:count?Number(count[1]):null,assertions:count?Number(count[2]):null});\n}\nconst blocker=await load(base+'cuda-bun-compatibility-source-blocker.json'),closure=await load(base+'closure.json');\nneed(blocker.devopsSourceAccepted===false&&blocker.newBindingCreated===false&&blocker.diagnosticCasesLaunched===0&&blocker.diagnosticGrantConsumed===false&&blocker.blockingFinding.severity==='HIGH'&&blocker.blockingFinding.newRepairAuthorityRequired===true,'SOURCE_BLOCKER_MUST_REMAIN_ENFORCED');\nneed(closure.fullArchivePipelineAuthorityGranted===false&&closure.newOperationalOrAcquisitionAuthorityGranted===false&&closure.diagnosticCasesLaunched===0&&closure.nextDecisionRequest===base+'cuda-bun-compatibility-source-blocker.json','CLOSURE_MUST_KEEP_EXECUTION_BLOCKED');\nfor(const path of [base+'cuda-bun-compatibility-reviewed.json',base+'runs/cuda-bun-compatibility-1/.invocation',base+'runs/cuda-bun-compatibility-1/.operation',base+'runs/cuda-bun-compatibility-1/result.json',base+'scratch/cuda-bun-compatibility-1-inputs',base+'scratch/cuda-bun-compatibility-1-output']){\n try{await lstat(path);throw Error('UNEXPECTED_DIAGNOSTIC_OPERATION_OR_BINDING');}catch(error){if(error.code!=='ENOENT')throw error;}\n}\nneed(hash(await readFile(base+'verify.ts'))===hash(await readFile(base+'runs/cuda-bun-compat-review-blocker-1/verify-before.source')),'FROZEN_RUNNER_CHANGED');\nconsole.log(JSON.stringify({status:'PASS',scope:'READ_ONLY_SOURCE_REVIEW_RECORD_INTEGRITY_NOT_CANCELLATION_QUALIFICATION',sourceManifestSha256:manifestSha,sourceInputs:242,gates:results,devopsSourceAccepted:false,highFindingUnresolved:true,newRepairAuthorityRequired:true,diagnosticCasesLaunched:0,diagnosticGrantConsumed:false,newBindingCreated:false,fullArchivePipelineAuthorityGranted:false,trainingReady:false},null,2));\n"
+  ],
+  "status": "PASS",
+  "exitCode": 0,
+  "failure": null,
+  "stdoutBytes": 1266,
+  "stderrBytes": 0,
+  "streams": [
+    {
+      "stream": "stdout",
+      "path": "_work/gpu-owner-recovery/runs/cuda-bun-compat-review-blocker-1/command.stdout",
+      "bytes": 1266,
+      "sha256": "0247b553dabe45864f6ea17778d15fbabd0a48f70d18f2a777e9bbf66eb8f267"
+    },
+    {
+      "stream": "stderr",
+      "path": "_work/gpu-owner-recovery/runs/cuda-bun-compat-review-blocker-1/command.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scope": "LEAF_READ_ONLY_JSON_HASH_CHECK_NO_SUBPROCESS_DESCENDANTS_NOT_A_DIAGNOSTIC_INVOCATION",
+  "existingRunnerCancellationFindingResolved": false,
+  "sourceReviewBlocker": "_work/gpu-owner-recovery/cuda-bun-compatibility-source-blocker.json",
+  "diagnosticCasesLaunched": 0,
+  "fullArchivePipelineAuthorityGranted": false,
+  "trainingReady": false
+}

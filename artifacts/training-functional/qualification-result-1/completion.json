@@ -1,0 +1,117 @@
+{
+  "status": "UPGRADE_COMPLETE_FIXED_FUNCTIONAL_TRAINING_READINESS",
+  "scope": "EXPLICITLY_ACCEPTED_BOUNDED_FUNCTIONAL_INVENTORY_NOT_FULL_TRAINING_OR_HARDENING",
+  "acceptance": {
+    "path": "artifacts/training-functional/qualification-result-1/functional-acceptance-1.json",
+    "byteLength": 9207,
+    "sha256": "832754f33b6d06dc45cb795ee92718c92a2b9bab1e84a743416f6f91d435f0c2"
+  },
+  "verification": {
+    "path": "artifacts/training-functional/qualification-result-1/checks-6/receipt.json",
+    "byteLength": 12178,
+    "sha256": "c165d7bf00453f96c1cf548763b450126f0249a029f67f2216b5bdcf04edc640"
+  },
+  "finalStaticAndAcceptanceVerification": {
+    "path": "artifacts/training-functional/qualification-result-1/checks-7/receipt.json",
+    "byteLength": 3355,
+    "sha256": "2d51d8b6cca9350ed46e6315180d8dd5884974ad48dc5ef745774008df77aa94"
+  },
+  "readback": {
+    "path": "artifacts/training-functional/qualification-result-1/returned-2/readback-observation-2.json",
+    "byteLength": 5353,
+    "sha256": "18d29393b585ac9b4c98d6b2f0f0e4d6bc8fa8e89c63d8fa8f5d5b0aac3e0929"
+  },
+  "byteBoundExport": {
+    "path": "artifacts/training-functional/qualification-result-1/returned-2/export.json",
+    "byteLength": 262703,
+    "sha256": "fea1c2807458c3f51698e7e2c38e1c3b15367ae8ef337cf5e057b9e8fc3b0103"
+  },
+  "sourceReviews": {
+    "path": "artifacts/training-functional/qualification-result-1/returned-2/reviews-2.json",
+    "byteLength": 1100,
+    "sha256": "ff1aa51c5cb6fd7fb2ca5172037d2b88eb5073f0053349343133fb03c3c795cd"
+  },
+  "acceptanceReview": {
+    "path": "artifacts/training-functional/qualification-result-1/acceptance-review-1.json",
+    "byteLength": 754,
+    "sha256": "128b32cb099959f2be7d59818d86d5cd042f715ca6cd6bd092c6fba9b3ebbffc"
+  },
+  "preservation": {
+    "path": "artifacts/training-functional/qualification-result-1/returned-2/preservation.json",
+    "byteLength": 1219,
+    "sha256": "4daae6a5a2a46f284a495a3146e05cb016b21c5cbd47bca9e59cff16dce6e472"
+  },
+  "campaignSourceBinding": {
+    "path": "artifacts/training-functional/qualification-result-1/returned-2/campaign-source-binding.json",
+    "byteLength": 2078,
+    "sha256": "a6ab8a55defce21cd05d2ba5a11d7c55d83fd78aa1e5fd296cd9d5c64df0e02d"
+  },
+  "finalDocumentation": [
+    {
+      "path": "_spec/readiness.md",
+      "byteLength": 172818,
+      "sha256": "c8c141c9375e40e6d63ca61e77f9de641aad988999198127fa636f28a51b053f"
+    },
+    {
+      "path": "_spec/runtime-protocol.puml",
+      "byteLength": 132806,
+      "sha256": "5b2d8014b1a7dce94d077eb582c8e77f02359d0a65e216906ca6f3bf9a773ec4"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "byteLength": 53976,
+      "sha256": "93eaa492415daaffaa1a06289174a4bb6526a87393b5f3e2c12d0d73b2e999f6"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/README.md",
+      "byteLength": 5494,
+      "sha256": "1dbdfa153d1d44bc888c1d7ed2dc673880869defe8a54cebc93888bd05f59be2"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/functional-acceptance-1.json",
+      "byteLength": 9207,
+      "sha256": "832754f33b6d06dc45cb795ee92718c92a2b9bab1e84a743416f6f91d435f0c2"
+    }
+  ],
+  "tests": [
+    {
+      "path": "artifacts/training-functional/qualification-result-1/validate.test.ts",
+      "purpose": "Reported operator/bootstrap consistency and preserved transcription negatives",
+      "byteLength": 4824,
+      "sha256": "0cd4a1c11d97830066199620b373ec37c63d52cc30db53d33d11ad300f1f0e58"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/export-command.test.ts",
+      "purpose": "Bounded synthetic file export and preservation",
+      "byteLength": 5203,
+      "sha256": "c22e39a45391f41c43a0b23d0f6b73e2813379d4eb2cb6dcb7b227ed205e6dcc"
+    },
+    {
+      "path": "artifacts/training-functional/qualification-result-1/readback.test.ts",
+      "purpose": "Byte-bound canonical, R4, model-reference and input-binding relationships",
+      "byteLength": 7557,
+      "sha256": "9983ce091731fc0c254853c97f3fb51367703a8555cb3c54a0cb97bc674238d4"
+    }
+  ],
+  "testCount": 77,
+  "assertions": 172,
+  "strictTypeScriptPassed": true,
+  "staticSpecCheckPassed": true,
+  "nativePlantUmlRendered": false,
+  "nativePlantUmlSkipReason": "Java and remote-theme access remain outside the Bun/TypeScript-or-Rust scope",
+  "historicalVerification": "920/12/3 and worker811 remain preserved historical records; not counted as new test runs",
+  "technicalFunctionalInventoryAccepted": true,
+  "retainedRawAndRuntimeFlagsUnchanged": true,
+  "independentHostAttestation": false,
+  "trainingCampaignRunExecuted": false,
+  "finalizationExecuted": false,
+  "trainingExecutionAuthorized": false,
+  "trainingExecuted": false,
+  "newHostOperationsAuthorized": false,
+  "publicationAuthorized": false,
+  "commitOrPushPerformed": false,
+  "changes": "LOCAL_UNCOMMITTED",
+  "deferredHardening": "ALL_AFTER_ALL_PLANNED_TRAINING_AND_VALIDATED_RESULTS",
+  "fullAssuranceQualified": false,
+  "trainingReady": true
+}

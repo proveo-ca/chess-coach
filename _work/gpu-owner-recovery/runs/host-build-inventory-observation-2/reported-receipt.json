@@ -1,0 +1,55 @@
+{
+  "version": "chess-coach.host-build-inventory.v1",
+  "status": "PASS_METADATA_ONLY",
+  "failure": null,
+  "results": [
+    {"id":"context-name","argv":["docker","context","show"],"exitCode":0,"failure":null},
+    {"id":"context-endpoint","argv":["docker","context","inspect","default","--format","{\"DockerEndpoint\":{{json .Endpoints.docker.Host}}}"],"exitCode":0,"failure":null},
+    {"id":"selected-builder","argv":["docker","buildx","inspect"],"exitCode":0,"failure":null},
+    {"id":"engine","argv":["docker","info","--format","{\"ID\":{{json .ID}},\"ServerVersion\":{{json .ServerVersion}},\"NCPU\":{{json .NCPU}},\"MemTotal\":{{json .MemTotal}},\"DockerRootDir\":{{json .DockerRootDir}},\"CgroupDriver\":{{json .CgroupDriver}},\"CgroupVersion\":{{json .CgroupVersion}}}"],"exitCode":0,"failure":null},
+    {"id":"pinned-images","argv":["docker","image","inspect","docker.io/library/rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb","docker.io/oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038","--format","{\"Id\":{{json .Id}},\"RepoDigests\":{{json .RepoDigests}},\"Os\":{{json .Os}},\"Architecture\":{{json .Architecture}},\"Size\":{{json .Size}}}"],"exitCode":0,"failure":null},
+    {"id":"host-filesystem","argv":["df","-Pk","--","_work/gpu-owner-recovery/cache/host-receive-2/context"],"exitCode":0,"failure":null},
+    {"id":"host-memory","argv":["cat","/proc/meminfo"],"exitCode":0,"failure":null},
+    {"id":"selected-builder-container","argv":["docker","container","inspect","buildx_buildkit_proveo-multiarch0","--format","{\"Id\":{{json .Id}},\"State\":{{json .State.Status}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"CpuQuota\":{{json .HostConfig.CpuQuota}},\"CpuPeriod\":{{json .HostConfig.CpuPeriod}},\"Memory\":{{json .HostConfig.Memory}},\"MemorySwap\":{{json .HostConfig.MemorySwap}},\"CgroupParent\":{{json .HostConfig.CgroupParent}},\"NetworkMode\":{{json .HostConfig.NetworkMode}}}"],"exitCode":0,"failure":null}
+  ],
+  "skipped": [],
+  "metadata": {
+    "contextName": "default",
+    "contextEndpoint": {"DockerEndpoint":"unix:///var/run/docker.sock"},
+    "dockerHostOverridePresent": false,
+    "builder": {"Name":"proveo-multiarch","Driver":"docker-container","Nodes":[{"Name":"proveo-multiarch0","Endpoint":"unix:///var/run/docker.sock","Status":"running"}]},
+    "engine": {"ID":"99e692b6-43bc-4a54-a48a-88b2201fa1d7","ServerVersion":"29.9.2","NCPU":16,"MemTotal":41706151936,"DockerRootDir":"/var/lib/docker","CgroupDriver":"systemd","CgroupVersion":"2"},
+    "images": [
+      {"Id":"sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb","RepoDigests":["rust@sha256:4c2fd73ef19c5ef9d54bee03b06b2839a392604fbfcd578ed948b71b37c1d7fb"],"Os":"linux","Architecture":"amd64","Size":2191335435},
+      {"Id":"sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038","RepoDigests":["oven/bun@sha256:18639686662e5cd8a963ffb967dd130034a2a2d076a52e65dfd4fe18f75cc038"],"Os":"linux","Architecture":"amd64","Size":309607108}
+    ],
+    "hostFilesystem": "Filesystem     1024-blocks      Used Available Capacity Mounted on\n/dev/nvme0n1p3   973549568 799748424 168915672      83% /home\n",
+    "hostMemory": "MemTotal:       40728664 kB\nMemFree:         5961412 kB\nMemAvailable:   27194428 kB\nBuffers:             628 kB\nCached:         21768828 kB\nSwapCached:         4256 kB\nActive:         11424756 kB\nInactive:       19345612 kB\nActive(anon):    7816708 kB\nInactive(anon):  1633808 kB\nActive(file):    3608048 kB\nInactive(file): 17711804 kB\nUnevictable:       94244 kB\nMlocked:            8212 kB\nSwapTotal:       8388604 kB\nSwapFree:        4540364 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:              6208 kB\nWriteback:           624 kB\nAnonPages:       7817984 kB\nMapped:          1159192 kB\nShmem:            449784 kB\nKReclaimable:     811404 kB\nSlab:            1496260 kB\nSReclaimable:     763720 kB\nSUnreclaim:       732540 kB\nKernelStack:       24384 kB\nPageTables:       141340 kB\nSecPageTables:     21356 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    28752936 kB\nCommitted_AS:   18362208 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      181736 kB\nVmallocChunk:          0 kB\nPercpu:            22912 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:    847872 kB\nShmemHugePages:   163840 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nCmaTotal:              0 kB\nCmaFree:               0 kB\nUnaccepted:            0 kB\nBalloon:               0 kB\nGPUActive:             0 kB\nGPUReclaim:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:    30449248 kB\nDirectMap2M:    11163648 kB\nDirectMap1G:     1048576 kB\n",
+    "builderContainer": {"Id":"672c2d1a91724f4699e8403634f05a4d8b19f0fae2a178b9915c49cc805eaa25","State":"running","NanoCpus":0,"CpuQuota":0,"CpuPeriod":0,"Memory":0,"MemorySwap":0,"CgroupParent":"","NetworkMode":"bridge"}
+  },
+  "unknowns": ["EFFECTIVE_WORKER_RESOURCE_ENFORCEMENT","BUILDKIT_CONTENT_STORE_IMAGE_AVAILABILITY","OFFLINE_IMAGE_RESOLUTION","COMPILER_AND_RUNTIME_USABILITY","CANCELLATION_EFFECTIVENESS","HOST_CAPACITY_EQUALS_BUILDER_CAPACITY"],
+  "hostInvocationsConsumed": 1,
+  "remainingHostInvocations": 0,
+  "automaticRetryAuthorized": false,
+  "buildAuthorized": false,
+  "buildPerformed": false,
+  "containerExecutionPerformed": false,
+  "imagePullPerformed": false,
+  "nativeExecuted": false,
+  "gpuExecuted": false,
+  "trainingExecuted": false,
+  "trainingReady": false,
+  "limits": {"maximumQueries":8,"queryTermMs":4000,"queryKillGraceMs":1000,"workerTermMs":55000,"workerKillGraceMs":5000,"overallMs":60000,"perQueryStreamBytes":32768,"allQueryStreamBytes":524288,"receiptBytes":65536,"parentDiagnosticSoftLimitBytes":65536},
+  "endpointScope": "READ_ONLY_METADATA_RPC_TO_EXISTING_SELECTED_DOCKER_AND_BUILDX_ENDPOINTS",
+  "captures": [
+    {"id":"context-name","elapsedMs":15.388481,"streams":[{"path":"_work/gpu-owner-recovery/runs/host-build-inventory-2/context-name.stdout","bytes":8,"seenBytes":8,"sha256":"01666ec060466c14b9fa06c613fbac449163f2a2017558fe16526209ab78c6b0"},{"path":"_work/gpu-owner-recovery/runs/host-build-inventory-2/context-name.stderr","bytes":0,"seenBytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}]},
+    {"id":"context-endpoint","elapsedMs":11.196723999999996,"streams":[{"path":"_work/gpu-owner-recovery/runs/host-build-inventory-2/context-endpoint.stdout","bytes":49,"seenBytes":49,"sha256":"c342a9d1d34cfef0b504c91b618618e2285820e251c013248ff573f8042b6353"},{"path":"_work/gpu-owner-recovery/runs/host-build-inventory-2/context-endpoint.stderr","bytes":0,"seenBytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}]},
+    {"id":"selected-builder","elapsedMs":137.68957899999998,"streams":[{"path":"_work/gpu-owner-recovery/runs/host-build-inventory-2/selected-builder.stdout","bytes":1491,"seenBytes":1491,"sha256":"51a9e035b3a99a78a226f3cc9516a10dbf0c39ac1c91606b539e1ca5f78e254c"},{"path":"_work/gpu-owner-recovery/runs/host-build-inventory-2/selected-builder.stderr","bytes":0,"seenBytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}]},
+    {"id":"engine","elapsedMs":43.463539999999995,"streams":[{"path":"_work/gpu-owner-recovery/runs/host-build-inventory-2/engine.stdout","bytes":183,"seenBytes":183,"sha256":"fb36fcc6957f0be01d096bfc436ea872b93a279e56ade458c4f953fe27baa4a3"},{"path":"_work/gpu-owner-recovery/runs/host-build-inventory-2/engine.stderr","bytes":0,"seenBytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}]},
+    {"id":"pinned-images","elapsedMs":27.069119,"streams":[{"path":"_work/gpu-owner-recovery/runs/host-build-inventory-2/pinned-images.stdout","bytes":463,"seenBytes":463,"sha256":"2d6718b6f05442a217eb1e729daf6eb4256c476a9a43e724ea64628aa9e5d9bc"},{"path":"_work/gpu-owner-recovery/runs/host-build-inventory-2/pinned-images.stderr","bytes":0,"seenBytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}]},
+    {"id":"host-filesystem","elapsedMs":1.6014849999999967,"streams":[{"path":"_work/gpu-owner-recovery/runs/host-build-inventory-2/host-filesystem.stdout","bytes":129,"seenBytes":129,"sha256":"c226f8890d3d6759bc9077d97eaadf10bf7f756d227c6c92af25175b6519fa90"},{"path":"_work/gpu-owner-recovery/runs/host-build-inventory-2/host-filesystem.stderr","bytes":0,"seenBytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}]},
+    {"id":"host-memory","elapsedMs":1.1365830000000017,"streams":[{"path":"_work/gpu-owner-recovery/runs/host-build-inventory-2/host-memory.stdout","bytes":1671,"seenBytes":1671,"sha256":"e4170fcd464c4de95bdb3a4830d544feb0ec3b5a5e7841d8dc202a20617f63c3"},{"path":"_work/gpu-owner-recovery/runs/host-build-inventory-2/host-memory.stderr","bytes":0,"seenBytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}]},
+    {"id":"selected-builder-container","elapsedMs":12.181114999999977,"streams":[{"path":"_work/gpu-owner-recovery/runs/host-build-inventory-2/selected-builder-container.stdout","bytes":199,"seenBytes":199,"sha256":"39bcf2719cac1a08f8219b65a8748ea467b6d7fabb7a6e833ae0bda11fd477ad"},{"path":"_work/gpu-owner-recovery/runs/host-build-inventory-2/selected-builder-container.stderr","bytes":0,"seenBytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}]}
+  ],
+  "parentDiagnosticsHaveOnlyPostExitSoftSizeCheck": true
+}

@@ -1,0 +1,26 @@
+{
+  "version": "chess-coach.host-build-inventory-observation.v1",
+  "status": "OPERATOR_REPORTED_FAIL_METADATA_ONLY",
+  "provenance": "NORMALIZED_OPERATOR_PASTE_NOT_ORIGINAL_HOST_FILES",
+  "paste": "_work/gpu-owner-recovery/runs/host-build-inventory-observation-1/operator-paste.txt",
+  "request": "_work/gpu-owner-recovery/runs/host-build-inventory-handoff-1/request.json",
+  "reportedContextName": "default",
+  "reportedDockerEndpoint": "unix:///var/run/docker.sock",
+  "reportedHostExit": 1,
+  "reportedQueryExits": [0, 0, 125],
+  "reportedHostInvocationsConsumed": 1,
+  "remainingHostInvocations": 0,
+  "automaticRetryAuthorized": false,
+  "confirmedSourceDefect": "BUILDX_INSPECT_HAS_NO_FORMAT_OPTION",
+  "references": [
+    "https://docs.docker.com/reference/cli/docker/buildx/inspect/",
+    "https://github.com/docker/buildx/blob/master/commands/inspect.go"
+  ],
+  "reportedSelectedBuilderStderr": { "bytes": 118, "sha256": "efc09f33c161340d92b67de0d7b3cdf5b7e414f3730315c879d9bfedcacb2353" },
+  "selectedBuilderStderrTextReceived": false,
+  "exactHostDiagnosticEstablished": false,
+  "originalHostFilesReceived": false,
+  "buildOrNativeOrGpuExecutionAuthorized": false,
+  "trainingAuthorized": false,
+  "trainingReady": false
+}

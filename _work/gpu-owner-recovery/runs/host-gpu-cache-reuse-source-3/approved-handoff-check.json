@@ -1,0 +1,29 @@
+{
+  "status": "PASS_APPROVED_CACHE_REUSE_HOST_HANDOFF_RECORDS_ONLY",
+  "request": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-build-handoff-2/request.json",
+    "sha256": "471051f5b6f1282a5d05795e955063afe86e1c72733f052a3f229f645a43bfd5"
+  },
+  "sourceProof": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/receipt.json",
+    "sha256": "268a7750faeca4c349769e62b67276fe16a3d5f9347f3d2448f45bfccbed5c5e"
+  },
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-cache-reuse-source-3/host-command.fish",
+    "bytes": 76732,
+    "sha256": "47cdea246668505ef6b2fe682900c7735adf59f388cbfcfde3abb20a306559c4"
+  },
+  "sourceHashesChecked": 307,
+  "cacheMutationScope": {
+    "cargoHome": "_work/gpu-owner-recovery/cache/host-gpu-native-build-1/cargo-home",
+    "cargoTarget": "_work/gpu-owner-recovery/cache/host-gpu-native-build-1/native/target-gpu"
+  },
+  "retainedBunReadOnly": "_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun",
+  "remainingOperatorHostInvocations": 1,
+  "hostInvocationObserved": false,
+  "sourcePublicationApproved": true,
+  "normalCommitInvocationsRemaining": 1,
+  "httpsPushInvocationsRemaining": 1,
+  "codingHostDockerOrNativeOperationsPerformed": false,
+  "trainingReady": false
+}

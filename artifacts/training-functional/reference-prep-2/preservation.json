@@ -1,0 +1,7 @@
+{
+  "status": "PASS_PRIOR_FAILED_GENERATION_PRESERVED",
+  "files": 25,
+  "failedAttemptStillFailed": true,
+  "oldGetRequestsDuringCheck": 0,
+  "trainingReady": false
+}

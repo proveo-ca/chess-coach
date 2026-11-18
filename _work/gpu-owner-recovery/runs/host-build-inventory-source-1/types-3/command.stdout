@@ -1,0 +1,2 @@
+_work/gpu-owner-recovery/qualification/host-build-inventory/collector.ts(91,40): error TS7034: Variable 'handles' implicitly has type 'any[]' in some locations where its type cannot be determined.
+_work/gpu-owner-recovery/qualification/host-build-inventory/collector.ts(108,36): error TS7005: Variable 'handles' implicitly has an 'any[]' type.

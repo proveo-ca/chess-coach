@@ -1,0 +1,118 @@
+
+_work/gpu-owner-recovery/qualification/host-build-reuse/plan.test.ts:
+(pass) the independent plan binds the unchanged PASS source-2 proof and all 291 repository source hashes [17.37ms]
+(pass) the bound UTF-8 overlay changes only gpu.rs record dereferencing within the same native65 membership [9.33ms]
+(pass) reuse preserves the pinned images, tools, operator resources and offline baseline inputs [0.12ms]
+(pass) only the three exact retained caches resolve into independent fresh workspace and evidence paths [0.18ms]
+(pass) the closed seven-operation budget removes donor creation and Bun copying without adding compilation attempts [0.05ms]
+(pass) deadlines retain 4020+120+60 seconds and reserve native acceptance within the 112-MiB stream budget [0.04ms]
+(pass) source preparation selection grants no cache write, staging, host, publication, retry, GPU or training authority [0.27ms]
+
+_work/gpu-owner-recovery/qualification/host-build-reuse/native.test.ts:
+(pass) the pure overlay writes only the fresh gpu source and manifest, then returns a new verified native65 array [1.44ms]
+(pass) changed old manifests and incomplete, reordered or changed initial inventories fail before writes [2.10ms]
+(pass) a changed old gpu source fails its own binding without touching the manifest or source [0.21ms]
+(pass) every corrected UTF-8, overlay digest, manifest digest and plan-generation mismatch fails closed [1.75ms]
+(pass) arbitrary overlay paths cannot redirect reads or writes into Cargo, target caches or other files [0.40ms]
+(pass) freshly rebound extra edits, reversions and corrections outside the intended function remain forbidden [1.66ms]
+(pass) the corrected generation rejects missing, extra, duplicate, reordered and multiply changed native members [2.06ms]
+(pass) post-write inventory or manifest corruption cannot produce an accepted overlay result [1.20ms]
+(pass) failure on the first permitted write preserves the original source, manifest and attempted-write log [0.56ms]
+(pass) failure on the second permitted write retains the successful source write without cleanup or rollback [0.68ms]
+(pass) the future native entrypoint stages only two fresh source trees and reuses the five compile-only commands [0.63ms]
+(pass) native work clips the common deadline before staging and rechecks stability after catch without replacing primary failure [0.17ms]
+
+_work/gpu-owner-recovery/qualification/host-build-reuse/host.test.ts:
+(pass) the reuse proposal grants no host, retained-cache write, publication, GPU or training authority [0.07ms]
+(pass) the closed packet has seven worst-case operations, five normal operations and exact reserves [0.05ms]
+(pass) source metadata binds the corrected generation and only three retained paths [0.05ms]
+(pass) worker creation fixes resources, all eight mounts and post-image Bun arguments [0.32ms]
+(pass) only safe numeric UID and GID values form the worker identity [0.14ms]
+(pass) each mount rejects relative and comma-injected paths [0.18ms]
+(pass) the worker packet contains no donor, copy, host-path transplant, device or acquisition command [0.20ms]
+(pass) source-only integrated happy fixture retains exactly five Docker operations and five mocked artifacts [2.36ms]
+(pass) source-only failed native fixture preserves its failed compilation receipt and admits no artifacts [0.90ms]
+(pass) source-only cleanup-failure fixture never promotes a successful compilation [0.53ms]
+(pass) failed create independently recovers its saved CID and cleans only that worker [0.23ms]
+(pass) successful create stdout cannot replace a missing saved CID [0.16ms]
+(pass) failed create stdout cannot authorize cleanup without a saved CID [0.17ms]
+(pass) malformed and non-string CID scalars never authorize arbitrary targets [1.01ms]
+(pass) a changed saved CID cannot transfer ownership to a foreign container [0.26ms]
+(pass) CID read errors cannot admit or invent an owned worker [0.15ms]
+(pass) failed create keeps its primary error when independent CID recovery also fails [0.16ms]
+(pass) a watcher failure before admission prevents every normal Docker operation [0.16ms]
+(pass) interruption during creation recovers the CID but never starts the worker [0.23ms]
+(pass) pending successful start defers stop until settlement and never follows logs [0.39ms]
+(pass) pending failed start defers stop until settlement and never follows logs [0.14ms]
+(pass) live log following allows one stop before the follower settles [0.34ms]
+(pass) disk-scan drain and its stop both finish before removal and receipt return [0.39ms]
+(pass) cleanup joins a cached stop even when watcher close does not join it [0.26ms]
+(pass) repeated watcher cancellations preserve the first reason and stop only once [0.21ms]
+(pass) watcher close failure prevents PASS and still cleans ownership [0.21ms]
+(pass) watcher close failure preserves the primary failure and still cleans ownership [0.10ms]
+(pass) a synchronous watcher setup error becomes a failed receipt without Docker work [0.09ms]
+(pass) Docker bad-status cannot pass admission [0.17ms]
+(pass) Docker bad-exit cannot pass admission [0.11ms]
+(pass) Docker failure-at-zero-exit cannot pass admission [0.12ms]
+(pass) COMMAND_DEADLINE preserves raw supervisor cause separately from operation context [0.23ms]
+(pass) COMMAND_OUTPUT_BOUND preserves raw supervisor cause separately from operation context [0.10ms]
+(pass) an IO throw invents no supervisor result and preserves its original stage failure [0.20ms]
+(pass) a full mocked 4-MiB stdout is not duplicated into receipt metadata [7.31ms]
+(pass) stop failure uses one 15-second kill fallback and fits exactly seven operations [0.33ms]
+(pass) stop, kill and remove failures remain separate and never replace the primary failure [0.31ms]
+(pass) worker-start failure keeps its top-level stage code and performs no retries [0.17ms]
+(pass) worker-logs failure keeps its top-level stage code and performs no retries [0.11ms]
+(pass) worker-state failure keeps its top-level stage code and performs no retries [0.09ms]
+(pass) native receipt status, two attempts, unchanged source and checked stability require exact values [1.19ms]
+(pass) native receipt read failure survives the final best-effort recovery attempt [0.15ms]
+(pass) terminal state rejects running, nonzero, OOM, missing fields, scalars and malformed JSON [0.79ms]
+(pass) 4 artifacts cannot satisfy five-artifact admission [0.17ms]
+(pass) 6 artifacts cannot satisfy five-artifact admission [0.07ms]
+(pass) artifact discovery failure preserves its cause and leaves artifacts unadmitted [0.13ms]
+(pass) artifact validation receives only remaining normal time rather than a fresh reserve [0.14ms]
+(pass) artifacts completing at the normal deadline cannot spend cleanup or receipt time [0.16ms]
+(pass) inspection at the normal cutoff admits no artifact work and is never retried [0.14ms]
+(pass) bootstrap time in startedAt cannot reset an expired normal budget [0.09ms]
+(pass) bootstrap time clips each normal Docker timeout without replenishing the window [0.18ms]
+(pass) normal and cleanup deadlines shrink from one origin rather than resetting phase reserves [0.20ms]
+(pass) exhausted cleanup time blocks stop, kill and remove before spending receipt reserve [0.21ms]
+(pass) the closed operation budget blocks over-budget normal work and cleanup attempts [1.47ms]
+(pass) state attempt is recorded before admission so cancellation cannot produce a second inspection [0.20ms]
+(pass) runtime source has no top-level execution and tests never import or call its entry point [0.12ms]
+(pass) runtime source verifies bootstrap epoch, both existing helpers and lock before dynamic supervisor import [0.04ms]
+(pass) runtime source accounts each logical tree once and resolves artifact reads into retained target [0.03ms]
+(pass) runtime source creates only fresh directories and exclusive driver, plan, deadline and receipt files [0.08ms]
+(pass) runtime source guards preflight through receipt write and post-write marker without rewriting the receipt [0.05ms]
+
+_work/gpu-owner-recovery/qualification/host-build-reuse/render.test.ts:
+(pass) both deterministic local bundles parse as JavaScript and retain only normalized Node built-in imports [26.95ms]
+(pass) one complete plan is embedded in the host while the native entrypoint reads the exclusively delivered plan [9.19ms]
+(pass) bundling omits disk-output configuration and excludes old executable entrypoints and donor command paths [0.32ms]
+(pass) nested Fish quoting round-trips the exact inline host, fresh grant and bounded single-argument sources [5.52ms]
+(pass) three disabled Mise auto-install switches precede the exact pinned no-install no-env-file stdin-closed invocation [4.49ms]
+(pass) an exclusive parent evidence directory and common epoch bound Fish syntax and execution to 4080+120 seconds [4.42ms]
+(pass) the parent preserves separate streams, immediate status, post-exit 64-KiB soft caps and one exit marker [3.86ms]
+(pass) rendered executable paths contain no publication, fetching, shared builder, GPU or elevated-permission commands [5.03ms]
+163 |   expect(plan.overlay.correctedUtf8).toBe(corrected); expect(plan.correctedManifest.utf8).toBe(manifest);
+164 |   expect(host).toContain(JSON.stringify(plan));
+165 |   expect(native).not.toContain(JSON.stringify(corrected)); expect(native).not.toContain(JSON.stringify(manifest));
+166 |   expect(plan.existingHelpers).toEqual(base.existingHelpers); expect(plan.existingHelpers).toHaveLength(2);
+167 |   expect(host).toContain("EXISTING_HOST_HELPER_MISMATCH:"); expect(host).toContain("HOST_REPOSITORY_CONTEXT_REQUIRED");
+168 |   expect(native).toMatch(/root\s*\+\s*"\/_work\/gpu-owner-recovery\/verify\.ts"/);
+                       ^
+error: expect(received).toMatch(expected)
+
+Expected substring or pattern: /root\s*\+\s*"\/_work\/gpu-owner-recovery\/verify\.ts"/
+Received: "// @bun\nimport{constants as constants2}from\"fs\";import{copyFile as copyFile2,mkdir as mkdir2,readFile as readFile2,writeFile as writeFile2}from\"fs/promises\";import{createHash}from\"crypto\";import{pathToFileURL}from\"url\";import{constants}from\"fs\";import{copyFile,lstat,mkdir,readFile,readdir,writeFile}from\"fs/promises\";var requireValue=(value,label)=>{if(!value)throw Error(label)};function nativeCommands(){return[{id:\"rustc-version\",argv:[\"rustc\",\"--version\"],version:/^rustc 1\\.95\\.0 /},{id:\"cargo-version\",argv:[\"cargo\",\"--version\"],version:/^cargo 1\\.95\\.0 /},{id:\"llvm-version\",argv:[\"/opt/tracel-data/tracel/tracel-llvm-23.1.0-4/bin/llvm-config\",\"--version\"],version:/^23\\.1\\.0\\s*$/},...[[\"gpu-learning\",\"chess-coach-learning\",\"finite_difference\"],[\"gpu-policy\",\"chess-coach-policy-io\",\"gpu\"]].map(([id,pkg,target])=>({id,argv:[\"cargo\",\"test\",\"--release\",\"--target\",\"x86_64-unknown-linux-gnu\",\"--locked\",\"--offline\",\"--jobs\",\"2\",\"-p\",pkg,\"--features\",\"gpu-prepared-llvm\",\"--test\",target,\"--no-run\",\"--message-format=json\"],version:null}))]}async function stageTree(source,destination,budget,p,remaining){remaining(),await mkdir(destination,{recursive:!0});for(let entry of await readdir(source,{withFileTypes:!0})){remaining();let from=source+\"/\"+entry.name,to=destination+\"/\"+entry.name;if(entry.isDirectory())await stageTree(from,to,budget,p,remaining);else{let stat=await lstat(from);requireValue(stat.isFile(),\"STAGING_REGULAR_FILE_REQUIRED\"),budget.bytes+=stat.size,budget.files++,requireValue(budget.bytes<=p.limits.stagingBytes&&budget.files<=p.limits.stagingFiles,\"STAGING_BUDGET\"),await copyFile(from,to,constants.COPYFILE_EXCL)}}}async function recordNativeCommand(command,attempts,io){let attempt={id:command.id,argv:command.argv,attempted:!0,status:\"STARTED\",streams:[],captureFailures:[],canonicalCopyFailures:[]};attempts.push(attempt);let result;try{result=await io.execute(),Object.assign(attempt,result)}catch(error){throw Object.assign(attempt,{status:\"FAIL\",failure:String(error)}),error}let stdout=\"\";for(let stream of[\"stdout\",\"stderr\"]){let captured;try{captured=await io.capture(stream);let{text,...metadata}=captured;if(attempt.streams.push(metadata),stream===\"stdout\")stdout=text}catch(error){attempt.captureFailures.push(stream+\":\"+String(error));continue}if(!command.version)try{await io.mirror(stream,captured.path)}catch(error){attempt.canonicalCopyFailures.push(stream+\":\"+String(error))}}if(requireValue(result.status===\"PASS\"&&result.exitCode===0&&result.failure===null,\"NATIVE_COMMAND_FAILED:\"+command.id),requireValue(attempt.captureFailures.length===0&&attempt.canonicalCopyFailures.length===0,\"NATIVE_CAPTURE_OR_COPY_FAILED:\"+command.id),command.version)requireValue(command.version.test(stdout),\"NATIVE_VERSION_MISMATCH:\"+command.id)}async function recheckNativeSource(initial,read,remaining){if(initial===null||read===null)return{sourceChanged:null,sourceStabilityChecked:!1,sourceCheckFailure:\"INITIAL_INVENTORY_UNAVAILABLE\"};try{remaining();let after=await read();return remaining(),{sourceChanged:JSON.stringify(initial)!==JSON.stringify(after),sourceStabilityChecked:!0,sourceCheckFailure:null}}catch(error){return{sourceChanged:null,sourceStabilityChecked:!1,sourceCheckFailure:String(error)}}}var nativePath=\"crates/policy-io/tests/gpu.rs\";function assertRecordSliceCorrection(before,after){let start=before.indexOf(\"fn cuda_f64_policy_channel_subprocesses_agree_and_reload() {\"),end=before.indexOf(`\n}`,start);if(start<0||end<0||before.split(\"fn cuda_f64_policy_channel_subprocesses_agree_and_reload() {\").length!==2||before.split(\"fs::write(&record_path, &record).unwrap();\").length!==2||!before.slice(start,end).includes(\"fs::write(&record_path, &record).unwrap();\")||after!==before.replace(\"fs::write(&record_path, &record).unwrap();\",\"fs::write(&record_path, &*record).unwrap();\"))throw Error(\"EXACT_GPU_POLICY_RECORD_SLICE_CORRECTION_REQUIRED\")}function assertNativeGenerationDelta(before,after){if(before.length!==65||after.length!==65||new Set(before.map((row)=>row.path)).size!==65||JSON.stringify(before.map((row)=>row.path))!==JSON.stringify(after.map((row)=>row.path)))throw Error(\"UNCHANGED_NATIVE65_MEMBERSHIP_REQUIRED\");let changed=before.filter((row,index)=>row.sha256!==after[index].sha256).map((row)=>row.path);if(changed.length!==1||changed[0]!==\"crates/policy-io/tests/gpu.rs\")throw Error(\"ONLY_GPU_POLICY_RECORD_SOURCE_MAY_CHANGE\");return changed}var hash=(bytes)=>createHash(\"sha256\").update(bytes).digest(\"hex\"),check=(value,reason)=>{if(!value)throw Error(reason)};async function applyRecordOverlay(p,io){let sourcePath=\"/build/native/\"+nativePath;check(p.overlay.path===nativePath,\"ONLY_GPU_RECORD_OVERLAY_ALLOWED\");let previousBytes=await io.read(\"/build/native/qualification/source-manifest.json\"),before=await io.inventory();check(hash(previousBytes)===p.previousSourceManifestSha256&&JSON.stringify(JSON.parse(Buffer.from(previousBytes).toString()))===JSON.stringify(before),\"ORIGINAL_STAGED_NATIVE_GENERATION_REQUIRED\");let beforeText=Buffer.from(await io.read(sourcePath)).toString(\"utf8\");check(hash(Buffer.from(beforeText))===p.overlay.previousSha256,\"ORIGINAL_GPU_RECORD_SOURCE_REQUIRED\"),check(hash(Buffer.from(p.overlay.correctedUtf8))===p.overlay.correctedSha256&&hash(Buffer.from(p.correctedManifest.utf8))===p.correctedManifest.sha256&&p.correctedManifest.sha256===p.sourceManifestSha256,\"BOUND_CORRECTED_SOURCE_AND_MANIFEST_REQUIRED\"),assertRecordSliceCorrection(beforeText,p.overlay.correctedUtf8);let expected=JSON.parse(p.correctedManifest.utf8);assertNativeGenerationDelta(before,expected),check(expected.find((row)=>row.path===nativePath)?.sha256===p.overlay.correctedSha256,\"OVERLAY_MATCHES_MANIFEST_REQUIRED\"),await io.write(sourcePath,p.overlay.correctedUtf8),await io.write(\"/build/native/qualification/source-manifest.json\",p.correctedManifest.utf8);let after=await io.inventory();return check(JSON.stringify(after)===JSON.stringify(expected)&&hash(await io.read(\"/build/native/qualification/source-manifest.json\"))===p.sourceManifestSha256,\"CORRECTED_STAGED_NATIVE_GENERATION_REQUIRED\"),assertNativeGenerationDelta(before,after),after}async function runReuseNative(p){let directory=\"/build/native/_work/gpu-owner-recovery/runs/\"+p.runId,started=performance.now(),deadline=started,remaining=()=>{let ms=Math.floor(deadline-performance.now()-30000);return check(ms>0,\"NATIVE_BUILD_DEADLINE\"),ms},staging={bytes:0,files:0},results=[],failure=null,stage=\"startup\",compilationAttempts=0,inventory=null,readInventory=null;await mkdir2(directory,{recursive:!0});try{check(process.cwd()===\"/build/native\"&&Bun.version===\"1.4.0\"&&p.runId===\"host-gpu-native-build-2\",\"REUSED_NATIVE_BUN_CONTEXT_REQUIRED\");let normalDeadlineEpoch=JSON.parse(await readFile2(\"/evidence/deadline.json\",\"utf8\")).normalDeadlineEpoch;check(Number.isSafeInteger(normalDeadlineEpoch)&&normalDeadlineEpoch-p.limits.nativeAcceptanceReserveMs>Date.now(),\"NATIVE_HOST_ACCEPTANCE_RESERVE_REQUIRED\"),deadline=Math.min(started+p.limits.nativeWorkMs,performance.now()+normalDeadlineEpoch-p.limits.nativeAcceptanceReserveMs-Date.now()),stage=\"staging\";for(let source of[\"/received/current-native\",\"/received/qualification-tools\"])await stageTree(source,\"/build/native\",staging,p,remaining);for(let name of[\"home\",\"tmp\"])await mkdir2(\"/build/native/_work/gpu-owner-recovery/scratch/\"+name,{recursive:!0});let{runBounded}=await import(pathToFileURL(\"/build/native/_work/gpu-owner-recovery/verify.ts\").href),{sourceInventory}=await import(pathToFileURL(\"/build/native/tooling/runtime/qualification.ts\").href);readInventory=()=>sourceInventory(\"/build/native\"),stage=\"source-overlay\",inventory=await applyRecordOverlay(p,{read:(path)=>readFile2(path),write:(path,text)=>writeFile2(path,text,{flag:\"w\"}),inventory:readInventory});let environment=Object.fromEntries(Object.entries(process.env).filter((row)=>row[1]!==void 0));for(let command of nativeCommands()){stage=command.version?\"version-guard\":\"compilation\";let step=directory+\"/\"+command.id;await mkdir2(step);let ms=Math.min(remaining(),command.version?1e4:p.limits.nativeWorkMs);if(!command.version)compilationAttempts++;await recordNativeCommand(command,results,{execute:()=>runBounded(command.argv,step,ms,{cwd:\"/build/native\",environment}),capture:async(stream)=>{let path=step+\"/command.\"+stream,bytes=await readFile2(path);return{path,bytes:bytes.length,sha256:hash(bytes),text:stream===\"stdout\"?bytes.toString():\"\"}},mirror:(stream,source)=>copyFile2(source,\"/build/native/qualification/\"+command.id+\".\"+stream,constants2.COPYFILE_EXCL)})}remaining()}catch(error){failure=error instanceof Error?error.message:String(error)}let sourceCheck=await recheckNativeSource(inventory,readInventory,remaining);if(sourceCheck.sourceChanged!==!1||!sourceCheck.sourceStabilityChecked)failure??=sourceCheck.sourceChanged?\"NATIVE_SOURCE_CHANGED\":\"NATIVE_SOURCE_STABILITY_UNCHECKED\";if(failure===null)stage=\"complete\";let receipt={status:failure===null?\"PASS_NATIVE_COMPILATION_ONLY\":\"FAIL_NATIVE_COMPILATION_ONLY\",failure,stage,bunVersion:Bun.version,staging,compilationAttempts,results,...sourceCheck,sourceManifestSha256:p.sourceManifestSha256,previousSourceManifestSha256:p.previousSourceManifestSha256,retainedCachesWritable:!0,copiedCargoCache:!1,elapsedMs:performance.now()-started,qualificationImageBuilt:!1,testsExecuted:!1,gpuExecuted:!1,trainingReady:!1};await writeFile2(directory+\"/receipt.json\",JSON.stringify(receipt,null,2)+`\n`,{flag:\"wx\"}),console.log(JSON.stringify({status:receipt.status,failure,receipt:directory+\"/receipt.json\",trainingReady:!1})),process.exitCode=failure===null?0:1}export{applyRecordOverlay,runReuseNative};\n\nawait runReuseNative(JSON.parse(await Bun.file(\"/evidence/plan.json\").text()));"
+
+      at <anonymous> (/home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/qualification/host-build-reuse/render.test.ts:168:18)
+(fail) the delivery binds exact corrected repository bytes while retaining the two existing helpers and Cargo.lock dependency [0.85ms]
+(pass) bounded rendered fixtures persist only under fresh source-only verifier evidence without running any delivery [0.97ms]
+
+1 tests failed:
+(fail) the delivery binds exact corrected repository bytes while retaining the two existing helpers and Cargo.lock dependency [0.85ms]
+
+ 88 pass
+ 1 fail
+ 6440 expect() calls
+Ran 89 tests across 4 files. [208.00ms]

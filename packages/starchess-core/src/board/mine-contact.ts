@@ -1,5 +1,5 @@
 // SPEC: _spec/packages/starchess-core/mine-contact.puml, _spec/packages/starchess-core/resolve.puml
-import type { Square } from "chess.js";
+import type { Square } from "../model/square";
 
 import { mineAt } from "./mines";
 import type { ScMine, StarChessColor, StarChessPiece } from "../model/types";

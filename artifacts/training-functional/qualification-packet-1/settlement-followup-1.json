@@ -1,0 +1,26 @@
+{
+  "scope": "CHECKER_ONLY_FUNCTIONAL_CORRECTIONS_NOT_NATIVE_QUALIFICATION",
+  "originalReview": "artifacts/training-functional/qualification-packet-1/adversarial-review-2.json",
+  "retainedRecordHash": {
+    "correction": "Validate through gameRecordShape but hash the original retained record property order",
+    "evidence": "artifacts/training-functional/checks/qualification-evidence-source-4/",
+    "red": "JOURNAL_NATIVE_PREFIX",
+    "reportedTests": 261,
+    "reportedAssertions": 1449,
+    "reportedElapsedSeconds": 101.86,
+    "reportedStrictArtifactTypes": "PASS"
+  },
+  "remainingMismatch": {
+    "code": "OPPONENT_CONTEXT",
+    "producer": "StrategicDriver hashes nativeSnapshotShape.parse(snapshot)",
+    "checker": "Checker expects raw snapshot property order",
+    "observation": "artifacts/training-functional/checks/qualification-evidence-source-4/opponent-order-observation.stdout",
+    "correction": "Match the unchanged producer's normalized snapshot digest and use the real driver with an injected API in local fixtures",
+    "status": "PENDING_RED_GREEN_AND_FRESH_VERIFICATION"
+  },
+  "source2AcceptedAsFinal": false,
+  "mergeReady": false,
+  "nativeOrHostOrGpuExecuted": false,
+  "publicationAuthorized": false,
+  "trainingReady": false
+}

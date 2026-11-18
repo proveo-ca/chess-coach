@@ -1,0 +1,111 @@
+{
+  "status": "PASS_ISSUED_HOST_ONLY_FULL_TWO_APPROVAL_AND_CURRENT_SPEC_BINDINGS_ONLY",
+  "sources": [
+    {
+      "path": "_spec/gpu-feasibility.puml",
+      "sha256": "e68b950f3f3abc84cd96b9d4aeb5f65ab54dd9dd269ea671f47b0c8a2cdd8fd0"
+    },
+    {
+      "path": "_spec/gpu-host-build-reuse.puml",
+      "sha256": "aceaf8521d527d095b258499efba98f53f81641c82a0214998daed7a44b04c3c"
+    },
+    {
+      "path": "_spec/gpu-host-build.puml",
+      "sha256": "b2db92ee664eafb653e7496e3f5a4807e8cf5f80b7f202395f3d6a67741226fd"
+    },
+    {
+      "path": "_spec/gpu-host-build-inventory.puml",
+      "sha256": "c80b094842bb09bdd2637c5dd6a889ebb11ffeb9c6545341dedf70a6a41904b5"
+    },
+    {
+      "path": "_spec/gpu-build.puml",
+      "sha256": "a3a5f597f6a61eddf0968dd572f18bfbb6dcc92df27cb0a037be7bfbe856a250"
+    },
+    {
+      "path": "_spec/gpu-qualification.puml",
+      "sha256": "dedc983fa5f1825c4c3078c1714f901b5e1db3cc6ccbdb3c0b9989ec6cfbecc0"
+    },
+    {
+      "path": "_spec/gpu-input-transfer.puml",
+      "sha256": "b2835ee283b01784355bf0f3c44226711d2e3b3095b57bc1c9f428fe3efab5be"
+    },
+    {
+      "path": "_spec/gpu-host-receive.puml",
+      "sha256": "26e7c3a3caa4afaadc4f4d248587dec8a5b5c6860ca94ecd86b6a5fb0002e7e8"
+    },
+    {
+      "path": "_spec/gpu-full-qualification.puml",
+      "sha256": "1721cc7e8587bcb74bbcbf25f67d2197bdb887246c49898fb90c37aa0da184b9"
+    },
+    {
+      "path": "_spec/gpu-readiness.md",
+      "sha256": "0b7e57adc338f36dc9d64da2871cbcd8912422df51064f736f1ab737e8ad3421"
+    },
+    {
+      "path": "_spec/gate-closure.md",
+      "sha256": "7bbf6d6266a71f4e14d64d9ee39d4a27cdc29fbb38b6425091e9fcb970942b9f"
+    },
+    {
+      "path": "_spec/.spec-index.json",
+      "sha256": "31013e271bd6201ee9259f03d7da579fa36780c38237919e58af2e3da11daea5"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command-approval.json",
+      "sha256": "4065ab7a48d5d1afd9f724a91206483cd6bc5fd61ad269f03e03c52183a67b6d"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command-request.json",
+      "sha256": "cd8120322c11cd1107a07d1cab883933d1327b1e06ba463d930f23d51a6ab4bf"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/receipt.json",
+      "sha256": "b3c6f85338b295e466fa2edb9625e36b89b84f977e97be492bfa7d6b931b9683"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command.fish",
+      "sha256": "8705a79ab07681a82531c411f200cee7a82d015ee3a401d3be617919abf7e210"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-observation-1/observation.json",
+      "sha256": "2d9b2c4c63b07db038ba9b1e882f5372744fedc8266b9bd653cf75255518e066"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/review.json",
+      "sha256": "ca8fc602aa81a3563173ab41f5725d5d3b02d71f3393773a9e6748af86d919eb"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/docs-closeout-review.json",
+      "sha256": "bf8afb14f26f318050990637d84abdeaaa21ba17c8f2396d0ae81baef460bb5a"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/post-review-check.json",
+      "sha256": "9f42da4854ee28a5abd90a3513a103e69062afecc0c999ba10974d03a8f9b16c"
+    },
+    {
+      "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/verify-issued-approval.ts",
+      "sha256": "24225618fe6efa567e83a0dd0f91f079ca013b061a2177698c360c54d2b4d094"
+    }
+  ],
+  "orderedDiagramIndexMatches": 9,
+  "currentDocHashes": 12,
+  "sourceHashesChecked": 347,
+  "protectedFeasibilitySources": 327,
+  "unchangedPriorInputs": 343,
+  "remainingHostInvocations": 1,
+  "hostInvocationObserved": false,
+  "executor": "OPERATOR_HOST_ONLY_NEVER_CODING",
+  "command": {
+    "path": "_work/gpu-owner-recovery/runs/host-gpu-full-source-4/host-command.fish",
+    "bytes": 56981,
+    "sha256": "8705a79ab07681a82531c411f200cee7a82d015ee3a401d3be617919abf7e210"
+  },
+  "manualCommandTextDeliveryApproved": false,
+  "commandDeliveryOrPublicationAuthorized": false,
+  "publicationApproved": false,
+  "codingHostOperationsPerformed": false,
+  "actualNativeProcesses": 0,
+  "gpuExecuted": false,
+  "trainingReady": false
+}

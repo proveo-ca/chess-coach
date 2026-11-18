@@ -1,0 +1,11 @@
+{
+  "status": "NOT_READY_IMPLEMENTATION_SOURCE_ONLY",
+  "session": "ses_e2e5a7bf7ffeszqAmNJvPwNoUX",
+  "verification": "verification-6/receipt.json",
+  "readOnly": true,
+  "lateInterruptionFindingCleared": true,
+  "findings": [{"severity":"HIGH","path":"capture.ts","lines":[349,353,575,576,665],"code":"CROSS_PROCESS_HRTIME_EPOCHS_ARE_INCOMPARABLE_ON_PINNED_BUN","evidence":"../package-acquisition-proposal-1/clock-comparison-1/receipt.json"}],
+  "actualAcquisitionInvoked": false,
+  "approvalConsumedOrRenewed": false,
+  "trainingReady": false
+}

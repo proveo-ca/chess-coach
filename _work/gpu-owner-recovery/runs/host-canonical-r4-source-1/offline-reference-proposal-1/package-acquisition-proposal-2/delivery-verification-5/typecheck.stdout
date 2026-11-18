@@ -1,0 +1,5 @@
+_work/gpu-owner-recovery/runs/host-canonical-r4-source-1/offline-reference-proposal-1/package-acquisition-proposal-2/delivery.test.ts(256,132): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(expected: null | undefined): void', gave the following error.
+    Argument of type '0' is not assignable to parameter of type 'null | undefined'.
+  Overload 2 of 2, '(expected: null | undefined): void', gave the following error.
+    Argument of type '0' is not assignable to parameter of type 'null | undefined'.

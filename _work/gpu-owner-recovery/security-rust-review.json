@@ -1,0 +1,25 @@
+{
+  "version": "chess-coach.source-review.v1",
+  "reviewer": "security-reviewer",
+  "sessionId": "ses_e462ed1aeffefugdBMBe16ejE1",
+  "scope": "CORRECTED_ISOLATED_RUST_GPU_OWNER_UNDER_C1",
+  "baselineCommit": "c04a8da9468f7d443bd27d73a08c0bd7ee0e9d20",
+  "baselineDiff": "_work/gpu-owner-recovery/runs/security-rust-baseline-packet-3/command.stdout",
+  "sourceManifest": "_work/gpu-owner-recovery/runs/corrected-source-owner-final-2/sources.json",
+  "readOnly": true,
+  "reviewerExecutedCommands": false,
+  "originalFindingsCleared": ["cleanup-start-release", "cleanup-fault-propagation", "evidence-state-exposure"],
+  "additionalReviewedControls": ["natural-eof-custody", "ancestor-and-leaf-custody", "held-leaf-unlink-check", "state-and-config-path-custody", "exact-negative-zero-integer-tokens"],
+  "verificationReceipts": [
+    "_work/gpu-owner-recovery/runs/corrected-source-owner-final-2/receipt.json",
+    "_work/gpu-owner-recovery/runs/corrected-source-clippy-final-2/receipt.json",
+    "_work/gpu-owner-recovery/runs/corrected-source-format-final-2/receipt.json"
+  ],
+  "finalVerdict": "READY_TO_MERGE_RUST_SOURCE_SECURITY_GATE_ONLY",
+  "remainingSourceSecurityFindingsInScope": 0,
+  "typescriptOrHarnessAcceptance": false,
+  "atomicDockerBindResolutionClaimed": false,
+  "actualCgroupfsLinkCountQualification": "PENDING",
+  "operationalAcceptance": false,
+  "trainingReady": false
+}

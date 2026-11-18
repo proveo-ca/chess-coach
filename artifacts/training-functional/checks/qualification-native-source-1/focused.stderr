@@ -1,0 +1,40 @@
+
+artifacts/training-functional/qualification-adapters.test.ts:
+(pass) adapter imports remain inert and source uses only builtins behind the main guard [0.65ms]
+(pass) MOCK /opt/retained-gpu/policy-score > passes exact arguments, fixed environment and inherited descriptors without a normal work timer [0.68ms]
+(pass) MOCK /opt/retained-gpu/policy-score > does not parse, buffer or add a newline to inherited score JSON [0.21ms]
+(pass) MOCK /opt/retained-gpu/policy-score > rejects wrong argument counts and NUL before acquisition without adding path/session rules [0.19ms]
+(pass) MOCK /opt/retained-gpu/policy-score > preserves numeric exit codes and maps signals or uncertain native status to nonzero [0.25ms]
+(pass) MOCK /opt/retained-gpu/policy-score > spawn and exited rejection never report zero and remove registrations [0.30ms]
+(pass) MOCK /opt/retained-gpu/policy-score > latches each abort even when the native child later exits zero [0.56ms]
+(pass) MOCK /opt/retained-gpu/policy-score > forwards once per signal with one original grace cutoff and returns despite uncertain SIGKILL settlement [0.18ms]
+(pass) MOCK /opt/retained-gpu/policy-score > a failed signal delivery still has bounded nonzero settlement [0.11ms]
+(pass) MOCK /opt/retained-gpu/policy-score > an abort during signal registration prevents spawn and cleans its timer [0.08ms]
+(pass) MOCK /opt/retained-gpu/policy-channel > passes exact arguments, fixed environment and inherited descriptors without a normal work timer [0.32ms]
+(pass) MOCK /opt/retained-gpu/policy-channel > does not parse, buffer or add a newline to inherited score JSON [0.02ms]
+(pass) MOCK /opt/retained-gpu/policy-channel > rejects wrong argument counts and NUL before acquisition without adding path/session rules [0.04ms]
+(pass) MOCK /opt/retained-gpu/policy-channel > preserves numeric exit codes and maps signals or uncertain native status to nonzero [0.17ms]
+(pass) MOCK /opt/retained-gpu/policy-channel > spawn and exited rejection never report zero and remove registrations [0.21ms]
+(pass) MOCK /opt/retained-gpu/policy-channel > latches each abort even when the native child later exits zero [0.13ms]
+(pass) MOCK /opt/retained-gpu/policy-channel > forwards once per signal with one original grace cutoff and returns despite uncertain SIGKILL settlement [0.04ms]
+(pass) MOCK /opt/retained-gpu/policy-channel > a failed signal delivery still has bounded nonzero settlement [0.04ms]
+(pass) MOCK /opt/retained-gpu/policy-channel > an abort during signal registration prevents spawn and cleans its timer
+
+artifacts/training-functional/qualification-packet.test.ts:
+(pass) no observer returns the exact owned transport and preserves raw replies, finish receipt and termination promise [0.35ms]
+(pass) tap copies and freezes observations without rewriting bytes, timestamps, return objects or underlying receipts [0.41ms]
+(pass) MOCK learner pair retains both bound proposals and natural exit receipts through the observed ports [38.29ms]
+(pass) observer request failure propagates unchanged through existing learner cleanup [0.37ms]
+(pass) observer reply failure propagates unchanged through existing learner cleanup [0.06ms]
+(pass) observer finish failure propagates unchanged through existing learner cleanup [0.23ms]
+(pass) invalid observer results fail rather than accepting asynchronous observation or replacing transport output [0.22ms]
+(pass) raw exchange and finish failures propagate without fabricating observations [0.13ms]
+(pass) nonfunction observer rejects before layout access, filesystem or process acquisition [6.89ms]
+(pass) MOCK real factory branch observes both channels and passes original deadlines, limits, arguments and environments [25.67ms]
+(pass) MOCK startup failure after raw port acquisition cleans that raw owner and releases model inputs [1.50ms]
+(pass) fixed factory defaults, raw owner registration order and stream limits remain unchanged [0.15ms]
+
+ 31 pass
+ 0 fail
+ 397 expect() calls
+Ran 31 tests across 2 files. [183.00ms]

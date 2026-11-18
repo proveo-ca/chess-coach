@@ -1,0 +1,8 @@
+
+artifacts/training-functional/qualification-evidence.test.ts:
+
+ 13 pass
+ 254 filtered out
+ 0 fail
+ 114 expect() calls
+Ran 13 tests across 1 file. [47.65s]
