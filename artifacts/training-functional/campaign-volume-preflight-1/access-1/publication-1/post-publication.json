@@ -1,0 +1,106 @@
+{
+  "status": "PASS_CHECKED_NORMAL_COMMIT_AND_NONFORCE_PUSH_EXISTING_PR51_USER_READ_ONLY_INSPECTION_READY",
+  "publicationCommit": "2c8a9d8bf45d8f9c86c32cfbb16e86942cd8a87c",
+  "previousCommit": "5b47be42b0378198750992b1547915b43f9cea99",
+  "remoteHead": "2c8a9d8bf45d8f9c86c32cfbb16e86942cd8a87c",
+  "pullRequest": {
+    "baseRefName": "main",
+    "headRefName": "feat-ml-adjuntant-ii",
+    "headRefOid": "2c8a9d8bf45d8f9c86c32cfbb16e86942cd8a87c",
+    "state": "OPEN",
+    "url": "https://github.com/proveo-ca/chess-coach/pull/51"
+  },
+  "baseBranch": "main",
+  "localBranch": "integrate/starchess-ml-main",
+  "normalCommits": 1,
+  "nonForcePushes": 1,
+  "authorization": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/authorization.json",
+    "byteLength": 1938,
+    "sha256": "6ffeaffc0997691ddd023479a08f16a24d77353aaa5447655d520e9a9c704f60"
+  },
+  "normalCommitGrantConsumed": true,
+  "nonForcePushGrantConsumed": true,
+  "priorGrantsReused": false,
+  "amendPerformed": false,
+  "forcePushPerformed": false,
+  "newPullRequestCreated": false,
+  "freeze": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/freeze.json",
+    "byteLength": 71067,
+    "sha256": "98ac97029b28a0f49fcdc28e01735c921c8f11f179d83ed9d161ccbfb69b560e"
+  },
+  "stageAudit": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/stage-audit.json",
+    "byteLength": 3311,
+    "sha256": "7586d0d0ab429e753be5ebc99ec32d5e21c1f977ca1b12ed4afe3f0ad8e82422"
+  },
+  "commitVerification": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/commit-verification.json",
+    "byteLength": 1587,
+    "sha256": "7bcf2c72401a3c5972998aa32a312e31a961ac3bff1e6d24df9732f93bc1de54"
+  },
+  "pushStdout": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/push.stdout",
+    "byteLength": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "pushStderr": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/push.stderr",
+    "byteLength": 362,
+    "sha256": "eacd43c1a643cf9f4896f898e8a96057733af163c751b9e9f1939a29e4a31836"
+  },
+  "remoteEvidence": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/post-remote.stdout",
+    "byteLength": 73,
+    "sha256": "45f947aab6a9dc4adce5183d1aea66e6a70c08822777b1a2be083cce5cf54896"
+  },
+  "prEvidence": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/post-pr.stdout",
+    "byteLength": 188,
+    "sha256": "38041a241b5afe2fadff4b27e009f54be67facf7cd3100abbb293b6a88e7a79f"
+  },
+  "fileCount": 207,
+  "totalBytes": 1592342,
+  "allFrozenLiveBytesStillMatch": true,
+  "packet2FrozenSourcePinsUnchanged": 199,
+  "packet2Completion": {
+    "path": "artifacts/training-functional/full-training-packet-2/completion.json",
+    "byteLength": 13260,
+    "sha256": "23b5e67c58d644d8398ffbf70df0557dabede08e62a5658a7b5e32480ae30d4b"
+  },
+  "accessCompletion": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/completion.json",
+    "byteLength": 2478,
+    "sha256": "dd7648a8ae02c39e8e0e48c960947a6b93a97dbac32926bb8ce0f3435fbfc77e"
+  },
+  "accessVerification": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/verification.json",
+    "byteLength": 7925,
+    "sha256": "dabf05273a9b986418ad43e58f23b784e47d877a4ced630ff9967656c1093cd8"
+  },
+  "accessReviews": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/reviews.json",
+    "byteLength": 3448,
+    "sha256": "7bb0529144741c6ff96e9ef3da3378e748f756294a0cb54e1267be9ddc70ea74"
+  },
+  "issuedCommand": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/HOST-command.sh",
+    "byteLength": 8565,
+    "sha256": "500633ca62fb67b6c0cdf61d7cb0a213d506ac4553e1097c1f1b18a3911ff6f5"
+  },
+  "issuedCommandVerification": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/host-command-verification.json",
+    "byteLength": 1699,
+    "sha256": "7a8787d2abd81f2de7972a399e8c419a2c7ea5609b267258e060ee5101edc812"
+  },
+  "supersedesOnlyPriorPublicationPendingOrLocalIssuanceStatuses": true,
+  "publicationControlsOutsideCurrentCommit": true,
+  "userHostActor": "Executor_ONLY",
+  "hostInspectionExecuted": false,
+  "permissionOrSelinuxRepairAuthorized": false,
+  "hostPreparationAuthorized": false,
+  "hostPreparationExecuted": false,
+  "trainingExecutionAuthorized": false,
+  "trainingExecuted": false
+}

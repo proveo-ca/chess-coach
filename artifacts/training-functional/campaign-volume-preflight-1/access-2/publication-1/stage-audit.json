@@ -1,0 +1,11 @@
+{
+  "status": "PASS_EXACT_STAGED_ADDITIONS_MATCH_FROZEN_BLOBS_AND_LIVE_BYTES",
+  "fileCount": 16,
+  "base": "2c8a9d8bf45d8f9c86c32cfbb16e86942cd8a87c",
+  "freeze": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/publication-1/freeze.json",
+    "byteLength": 5378,
+    "sha256": "ce9bed54e1c6630edd902db44dbc9d771f6245469780df60342826c685781b23"
+  },
+  "whitespacePassed": true
+}

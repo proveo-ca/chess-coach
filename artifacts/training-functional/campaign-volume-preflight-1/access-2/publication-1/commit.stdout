@@ -1,0 +1,18 @@
+[integrate/starchess-ml-main bbc4d137] Prepare owner-only training volume repair and recheck
+ 16 files changed, 396 insertions(+)
+ create mode 100644 artifacts/training-functional/campaign-volume-preflight-1/access-1/returned-1/observation.json
+ create mode 100644 artifacts/training-functional/campaign-volume-preflight-1/access-1/returned-1/user-report.json
+ create mode 100644 artifacts/training-functional/campaign-volume-preflight-1/access-2/HOST.md
+ create mode 100644 artifacts/training-functional/campaign-volume-preflight-1/access-2/authorization.json
+ create mode 100644 artifacts/training-functional/campaign-volume-preflight-1/access-2/recheck.test.ts
+ create mode 100644 artifacts/training-functional/campaign-volume-preflight-1/access-2/recheck.ts
+ create mode 100644 artifacts/training-functional/campaign-volume-preflight-1/access-2/repair.sh
+ create mode 100644 artifacts/training-functional/campaign-volume-preflight-1/access-2/reviews.json
+ create mode 100644 artifacts/training-functional/campaign-volume-preflight-1/access-2/specs-3.stderr
+ create mode 100644 artifacts/training-functional/campaign-volume-preflight-1/access-2/specs-3.stdout
+ create mode 100644 artifacts/training-functional/campaign-volume-preflight-1/access-2/tests-3.stderr
+ create mode 100644 artifacts/training-functional/campaign-volume-preflight-1/access-2/tests-3.stdout
+ create mode 100644 artifacts/training-functional/campaign-volume-preflight-1/access-2/tsconfig.json
+ create mode 100644 artifacts/training-functional/campaign-volume-preflight-1/access-2/types-3.stderr
+ create mode 100644 artifacts/training-functional/campaign-volume-preflight-1/access-2/types-3.stdout
+ create mode 100644 artifacts/training-functional/campaign-volume-preflight-1/access-2/verification-3.json

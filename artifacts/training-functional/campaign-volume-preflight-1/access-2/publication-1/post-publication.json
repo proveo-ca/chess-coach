@@ -1,0 +1,68 @@
+{
+  "status": "PASS_CHECKED_PUBLICATION_AND_LITERAL_USER_HOST_COMMANDS_READY",
+  "commit": "bbc4d1376c08e2c24d7a44250898397daebe3598",
+  "parent": "2c8a9d8bf45d8f9c86c32cfbb16e86942cd8a87c",
+  "pr": {
+    "baseRefName": "main",
+    "headRefName": "feat-ml-adjuntant-ii",
+    "headRefOid": "bbc4d1376c08e2c24d7a44250898397daebe3598",
+    "state": "OPEN",
+    "url": "https://github.com/proveo-ca/chess-coach/pull/51"
+  },
+  "normalCommits": 1,
+  "nonForcePushes": 1,
+  "grantConsumed": true,
+  "freeze": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/publication-1/freeze.json",
+    "byteLength": 5378,
+    "sha256": "ce9bed54e1c6630edd902db44dbc9d771f6245469780df60342826c685781b23"
+  },
+  "stageAudit": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/publication-1/stage-audit.json",
+    "byteLength": 413,
+    "sha256": "4df24f09996d7c80a38253e307b94db77484557e7a90f97d5c3c9538a1c4f04e"
+  },
+  "commitVerification": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/publication-1/commit-verification.json",
+    "byteLength": 693,
+    "sha256": "cbc8ac78de8af60200eafef13d46090b20f5bf0b785e0b17e15027f83e4e575b"
+  },
+  "push": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/publication-1/push.stderr",
+    "byteLength": 362,
+    "sha256": "4e9bf65a38f563b5ca86451b81c0c56fe60412f03035b226dfbe2d0a990cd8fe"
+  },
+  "remoteEvidence": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/publication-1/post-remote.stdout",
+    "byteLength": 73,
+    "sha256": "0d5f6e383b493c6e79961e92d2b3ecc0e1f2aca09deee5381871946e27b6f687"
+  },
+  "prEvidence": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/publication-1/post-pr.stdout",
+    "byteLength": 188,
+    "sha256": "7fd7b95f7bfd9e64e10746500bed6f2567125a3a12de7fcdd7d6b758c5cb4d9e"
+  },
+  "repairCommand": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/repair.sh",
+    "byteLength": 1421,
+    "sha256": "b1e704a8260356a4171a231c6fba04d7fbe57e84254619c10a08fdb367fd7d34"
+  },
+  "renderedRecheckCommand": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/publication-1/HOST-recheck.sh",
+    "byteLength": 5470,
+    "sha256": "eceeda684e4110c9bc69dd88e18257b6a029b4902c613ad9c90900999af94f2f"
+  },
+  "verifiedRecheckSource": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/recheck.ts",
+    "byteLength": 5132,
+    "sha256": "5115255c55506fb2398f1e27a1fc91debd8e49a89d3b59680d5c2178e39c7a41"
+  },
+  "verification": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/verification-3.json",
+    "byteLength": 3544,
+    "sha256": "ed52dba30d94257b87b7641659d96f22e9327b53e78994df55d635c12bab771c"
+  },
+  "allFrozenLiveBytesMatch": true,
+  "hostCommandsExecuted": false,
+  "trainingExecuted": false
+}

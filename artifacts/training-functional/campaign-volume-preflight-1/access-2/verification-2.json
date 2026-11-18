@@ -1,0 +1,87 @@
+{
+  "status": "PASS_LOCAL_ONLY_OWNER_REPAIR_AND_READ_ONLY_RECHECK_VERIFICATION",
+  "base": "2c8a9d8bf45d8f9c86c32cfbb16e86942cd8a87c",
+  "sourceAndAuthority": [
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/repair.sh",
+      "byteLength": 1128,
+      "sha256": "d34155558292da758bcd559b195fe15ef7bf397076d3b23255bdc8bccbf87d88"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/recheck.ts",
+      "byteLength": 4958,
+      "sha256": "7df68b19d5ea8efffc9e3588c0d493a551af7311ebb4b2eb2d370e7472392545"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/recheck.test.ts",
+      "byteLength": 4733,
+      "sha256": "ed58f9ed77ace1a35ffb81656830dffa92424518440624707fa19091c9c7ae46"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/tsconfig.json",
+      "byteLength": 64,
+      "sha256": "d242d0c4b0be55d2546f568a8c710dec92b90839cd5781fc49f2c346b22dbdd5"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/HOST.md",
+      "byteLength": 1318,
+      "sha256": "35bae8b014f0b5b195874f56b50d06b1d0d073f14ec0be067378bd287131d33a"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/authorization.json",
+      "byteLength": 1006,
+      "sha256": "5d105b3afd926dba8bda45a3ea079ba3996491f1ce9de6ba0d66cdfbe4ce8e2c"
+    }
+  ],
+  "supersedes": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/verification.json",
+    "byteLength": 3519,
+    "sha256": "606e05456b5b19cbd53e8c057beb2414db3784f211d26ff194ac1b914b56022a"
+  },
+  "outputs": [
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/tests-2.stdout",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/tests-2.stderr",
+      "byteLength": 758,
+      "sha256": "657eac650c65811494b9883cd2603dc7c146369b53ed7c97d3765eea214d07c0"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/types-2.stdout",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/types-2.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/specs-2.stdout",
+      "byteLength": 2645,
+      "sha256": "cb4c0586b813730b7101dd6781ff0c4e40403cf4a3180fbc1ac542eff57e77db"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/specs-2.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "tests": 6,
+  "assertions": 31,
+  "repairOuterAndNestedShellSyntax": true,
+  "recheckOuterAndNestedShellSyntax": true,
+  "bunStdinMainAndArgvContract": true,
+  "launcher": {
+    "launchPrefix": "env -i PATH=/usr/bin:/bin LC_ALL=C BUN_RUNTIME_TRANSPILER_CACHE_PATH=0 /usr/bin/bash --noprofile --norc -c '\n",
+    "launchLine": "exec /usr/bin/timeout -k 2s 10s /home/gu1lty/Projects/proveo/chess-coach/_work/gpu-owner-recovery/cache/host-gpu-native-build-1/bun --no-env-file --no-install - \"$1\" <<\"BUN_TS\"\n",
+    "terminator": "BUN_TS\n' _ "
+  },
+  "frozenPacketSourcePinsMatch": 199,
+  "nativePlantUmlRendered": false,
+  "hostCommandsExecuted": false,
+  "trainingExecuted": false
+}

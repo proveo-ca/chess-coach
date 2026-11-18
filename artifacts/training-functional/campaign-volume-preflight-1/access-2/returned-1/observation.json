@@ -1,0 +1,67 @@
+{
+  "status": "PASS_LOCAL_INTAKE_OF_REPORTED_REPAIR_AND_READ_ONLY_HOST_RECHECK",
+  "scope": "USER_PASTED_HOST_OUTPUT_AND_INJECTED_LOCAL_REPLAY_NOT_INDEPENDENT_HOST_ATTESTATION",
+  "publicationCommit": "bbc4d1376c08e2c24d7a44250898397daebe3598",
+  "report": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/returned-1/user-report.json",
+    "byteLength": 1124,
+    "sha256": "7df08e39db894b0be0e0e4b77dbeba99a5b888a5d62a15473ba6627aab205169"
+  },
+  "priorBlockedObservation": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/returned-1/observation.json",
+    "byteLength": 3516,
+    "sha256": "ccb592036eb9ab94f45368ff96cb56d0d9afdb1b1b9ae0bb37a7bd60223cb894"
+  },
+  "localPublicationReceipt": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/publication-1/post-publication.json",
+    "byteLength": 2968,
+    "sha256": "ffc2ff529ef01872bd74c4458de35a2e86d5bae0a7c1b5fd867ab040f34bcbe8"
+  },
+  "checkedRepair": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/repair.sh",
+    "byteLength": 1421,
+    "sha256": "b1e704a8260356a4171a231c6fba04d7fbe57e84254619c10a08fdb367fd7d34"
+  },
+  "checkedRecheck": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/publication-1/HOST-recheck.sh",
+    "byteLength": 5470,
+    "sha256": "eceeda684e4110c9bc69dd88e18257b6a029b4902c613ad9c90900999af94f2f"
+  },
+  "userReportedRepairSuccess": true,
+  "committedSourceAndLiteralRecheckMatch": true,
+  "injectedReplayMatchesEntireReport": true,
+  "frozenPacketSourcePinsUnchanged": 199,
+  "hostVolume": {
+    "path": "/var/lib/chess-coach/training-volume-1",
+    "uid": 1000,
+    "gid": 1000,
+    "modeOctal": "0700",
+    "callerReadWriteSearchAccessPassed": true,
+    "parentStableDuringObservation": true,
+    "device": "38",
+    "inode": "45679082"
+  },
+  "proposedRoots": {
+    "absentViaEnoent": [
+      "/var/lib/chess-coach/training-volume-1/training-campaign-delivery-2",
+      "/var/lib/chess-coach/training-volume-1/training-campaign-inputs-2",
+      "/var/lib/chess-coach/training-volume-1/training-campaign-2"
+    ],
+    "absenceReserved": false
+  },
+  "selinux": {
+    "labelObserved": true,
+    "context": "unconfined_u:object_r:var_lib_t:s0",
+    "lastReportedEnforcing": true,
+    "enforcementRechecked": false,
+    "compatibilityVerified": false
+  },
+  "hostCapacityRechecked": false,
+  "retainedPayloadContentsOrNativeUsabilityReverified": false,
+  "containerAccessVerified": false,
+  "hostCommandsExecutedByAgent": false,
+  "hostPreparationExecuted": false,
+  "trainingExecuted": false,
+  "trainingExecutionAuthorized": false,
+  "nextBoundary": "EXPLICIT_SCOPE_FOR_HOST_CONTAINER_ACCESS_VALIDATION_OR_HOST_PREPARATION_NO_RELABEL_OR_TRAINING"
+}

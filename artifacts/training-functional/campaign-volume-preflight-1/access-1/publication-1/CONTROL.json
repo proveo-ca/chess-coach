@@ -1,0 +1,16 @@
+{
+  "scope": "LOCAL_PUBLICATION_CONTROLS_OUTSIDE_THE_CURRENT_COMMIT",
+  "authorization": "artifacts/training-functional/campaign-volume-preflight-1/access-1/authorization.json",
+  "expectedBaseCommit": "5b47be42b0378198750992b1547915b43f9cea99",
+  "normalCommitAllowance": 1,
+  "nonForcePushAllowance": 1,
+  "targetRef": "refs/heads/feat-ml-adjuntant-ii",
+  "pullRequest": 51,
+  "baseBranch": "main",
+  "outsideCurrentCommit": true,
+  "reasonCode": "FREEZE_STAGE_ACTUAL_NEW_OID_AND_ISSUED_LITERAL_COMMAND_HAVE_NO_SELF_HASH_OR_COMMIT_CYCLE",
+  "commitPerformedAtIssuance": false,
+  "pushPerformedAtIssuance": false,
+  "hostInspectionExecuted": false,
+  "trainingExecuted": false
+}

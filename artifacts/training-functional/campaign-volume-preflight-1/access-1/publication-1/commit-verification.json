@@ -1,0 +1,37 @@
+{
+  "status": "PASS_ONE_NORMAL_COMMIT_EXACT_FROZEN_TREE_AND_UNCHANGED_LIVE_SOURCE",
+  "commit": "2c8a9d8bf45d8f9c86c32cfbb16e86942cd8a87c",
+  "parent": "5b47be42b0378198750992b1547915b43f9cea99",
+  "localBranch": "integrate/starchess-ml-main",
+  "fileCount": 207,
+  "totalBytes": 1592342,
+  "freeze": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/freeze.json",
+    "byteLength": 71067,
+    "sha256": "98ac97029b28a0f49fcdc28e01735c921c8f11f179d83ed9d161ccbfb69b560e"
+  },
+  "stageAudit": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/stage-audit.json",
+    "byteLength": 3311,
+    "sha256": "7586d0d0ab429e753be5ebc99ec32d5e21c1f977ca1b12ed4afe3f0ad8e82422"
+  },
+  "commitStdout": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/commit.stdout",
+    "byteLength": 20224,
+    "sha256": "fd1be66ab147c13547e1063fd4eb69b428a8af11aa964cd8c7d91ad68dd12fc9"
+  },
+  "commitStderr": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/commit.stderr",
+    "byteLength": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "allCommittedModesBlobIdsAndLivePinsMatch": true,
+  "trackedWorktreeAndIndexClean": true,
+  "untrackedOnlyCurrentPublicationControls": true,
+  "packet2SourcePinsUnchanged": 199,
+  "normalCommitGrantConsumed": true,
+  "nonForcePushGrantConsumed": false,
+  "pushPerformed": false,
+  "hostInspectionExecuted": false,
+  "trainingExecuted": false
+}

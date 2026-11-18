@@ -1,0 +1,13 @@
+{
+  "status": "EXECUTOR_SELECTED_DISPOSABLE_CONTAINER_ACCESS_PROBE",
+  "selection": "Probe container access (Recommended)",
+  "previousCommit": "bbc4d1376c08e2c24d7a44250898397daebe3598",
+  "previousVolumeObservationSha256": "37c458dfe20502e1b4b9b32c981a2a97fed4682b52e7ed645ae2a6a88ce93f42",
+  "publication": { "normalCommits": 1, "nonForcePushes": 1, "pullRequest": 51, "baseBranch": "main", "targetRef": "refs/heads/feat-ml-adjuntant-ii" },
+  "actor": "Executor on HOST only, after checked publication",
+  "scope": "One offline retained-image container to test UID/GID 1000:1000 file read/write on an exclusively created disposable directory on the selected volume, with SELinux labeling unchanged",
+  "agentMayRunHostCommands": false,
+  "gpuPullRelabelOrSecurityPolicyChangesAuthorized": false,
+  "campaignRootCreationOrPreparationAuthorized": false,
+  "trainingAuthorized": false
+}

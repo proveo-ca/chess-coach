@@ -1,0 +1,43 @@
+{
+  "status": "PASS_ISSUED_LITERAL_COMMAND_COMMIT_SOURCE_PLAN_TRANSPORT_AND_SHELL_SYNTAX",
+  "publicationCommit": "2c8a9d8bf45d8f9c86c32cfbb16e86942cd8a87c",
+  "command": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/HOST-command.sh",
+    "byteLength": 8565,
+    "sha256": "500633ca62fb67b6c0cdf61d7cb0a213d506ac4553e1097c1f1b18a3911ff6f5"
+  },
+  "source": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/preflight.ts",
+    "byteLength": 11900,
+    "sha256": "39e43d84f61f2d43467a26457d2f55231362b15c41e0259ade2eeae5064fb7f6"
+  },
+  "plan": {
+    "byteLength": 2676,
+    "sha256": "e4229738cc4eef76cbe935bed75ca2e9222884b0a7bbca0d9f36cf6431dae04f"
+  },
+  "compressedSource": {
+    "byteLength": 4239,
+    "sha256": "c0f465bb273a9022c223df71040a5b9110be58fcd5dd2b6ae110548f2b0f0280"
+  },
+  "compressedPlan": {
+    "byteLength": 659,
+    "sha256": "6fcdfc2ec286dd5b5c89c074609c7427f58314bded2423eed308b9bd322d371f"
+  },
+  "syntax": {
+    "exitCode": 0,
+    "stdout": {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/command-syntax.stdout",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/command-syntax.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "decodedPayloadsMatchCommittedSourceAndHandoff": true,
+  "authenticationPrecedesImport": true,
+  "hostInspectionExecuted": false,
+  "trainingExecuted": false
+}

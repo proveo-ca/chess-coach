@@ -1,0 +1,17 @@
+{
+  "status": "PASS_ONE_NORMAL_COMMIT_EXACT_FROZEN_TREE",
+  "commit": "bbc4d1376c08e2c24d7a44250898397daebe3598",
+  "parent": "2c8a9d8bf45d8f9c86c32cfbb16e86942cd8a87c",
+  "fileCount": 16,
+  "freeze": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/publication-1/freeze.json",
+    "byteLength": 5378,
+    "sha256": "ce9bed54e1c6630edd902db44dbc9d771f6245469780df60342826c685781b23"
+  },
+  "stageAudit": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/publication-1/stage-audit.json",
+    "byteLength": 413,
+    "sha256": "4df24f09996d7c80a38253e307b94db77484557e7a90f97d5c3c9538a1c4f04e"
+  },
+  "packet2PinsUnchanged": 199
+}

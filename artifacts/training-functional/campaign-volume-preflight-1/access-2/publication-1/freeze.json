@@ -1,0 +1,127 @@
+{
+  "status": "FROZEN_EXACT_ACCESS_2_AND_RETURNED_ACCESS_1_EVIDENCE",
+  "base": "2c8a9d8bf45d8f9c86c32cfbb16e86942cd8a87c",
+  "remote": "2c8a9d8bf45d8f9c86c32cfbb16e86942cd8a87c\trefs/heads/feat-ml-adjuntant-ii",
+  "pr": {
+    "baseRefName": "main",
+    "headRefName": "feat-ml-adjuntant-ii",
+    "headRefOid": "2c8a9d8bf45d8f9c86c32cfbb16e86942cd8a87c",
+    "state": "OPEN",
+    "url": "https://github.com/proveo-ca/chess-coach/pull/51"
+  },
+  "files": [
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/returned-1/observation.json",
+      "byteLength": 3516,
+      "sha256": "ccb592036eb9ab94f45368ff96cb56d0d9afdb1b1b9ae0bb37a7bd60223cb894",
+      "mode": "100644",
+      "blob": "5a497d910dfcbe84fcf845cfd925fbbae3fb26b7"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/returned-1/user-report.json",
+      "byteLength": 7325,
+      "sha256": "635f3d7801c5eeeeb3e4e8ebae1ee0cb0f43e36b2ce2d812d08436951a65a5fb",
+      "mode": "100644",
+      "blob": "9e08ce6e43e5cddb62f661b631db9c9d329d0262"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/HOST.md",
+      "byteLength": 1554,
+      "sha256": "e33021b3a0c688e21a6aefe45644e7c3ed3b311c165e01d393b7be256cd93a2d",
+      "mode": "100644",
+      "blob": "0e5734bf602dc7e1681221273b4816ad7015ed06"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/authorization.json",
+      "byteLength": 1006,
+      "sha256": "5d105b3afd926dba8bda45a3ea079ba3996491f1ce9de6ba0d66cdfbe4ce8e2c",
+      "mode": "100644",
+      "blob": "bea9776725ca5f2c7fbf63af64c9cf0db9876f1b"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/recheck.test.ts",
+      "byteLength": 4891,
+      "sha256": "b860160bb9dfde857512d2b7f251617a6afa4b52749d8a104d171eb683385cfb",
+      "mode": "100644",
+      "blob": "54bc220bdbdf93535a1ac6f064a222ce0a9c1f60"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/recheck.ts",
+      "byteLength": 5132,
+      "sha256": "5115255c55506fb2398f1e27a1fc91debd8e49a89d3b59680d5c2178e39c7a41",
+      "mode": "100644",
+      "blob": "947e9e6b5c656f405996c4d81136d9119cc81a83"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/repair.sh",
+      "byteLength": 1421,
+      "sha256": "b1e704a8260356a4171a231c6fba04d7fbe57e84254619c10a08fdb367fd7d34",
+      "mode": "100644",
+      "blob": "16261a65dd95673be1687b9dd1b83b69d89dc65d"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/reviews.json",
+      "byteLength": 658,
+      "sha256": "9e24ce511f8ba5cff97ba2d9b198ff9d8dbae315afbca4272670873bdcc8e163",
+      "mode": "100644",
+      "blob": "68de9faadfa0bf048bfe11d489d5e4ddeb49afca"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/specs-3.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "100644",
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/specs-3.stdout",
+      "byteLength": 2645,
+      "sha256": "cb4c0586b813730b7101dd6781ff0c4e40403cf4a3180fbc1ac542eff57e77db",
+      "mode": "100644",
+      "blob": "faf8b6f5665d248902316e333fd6ac1f8b428cf9"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/tests-3.stderr",
+      "byteLength": 742,
+      "sha256": "deca12d9651eae13289eefcb3aa5175c66bddbf98c84d436afd0dd3ed99b9ef9",
+      "mode": "100644",
+      "blob": "3675acdb3aec478d5defc3b1aa2c2ea95c72e74a"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/tests-3.stdout",
+      "byteLength": 28,
+      "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94",
+      "mode": "100644",
+      "blob": "5e2bf50d860b7d789a5b5b130aafb9763e6c2c01"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/tsconfig.json",
+      "byteLength": 64,
+      "sha256": "d242d0c4b0be55d2546f568a8c710dec92b90839cd5781fc49f2c346b22dbdd5",
+      "mode": "100644",
+      "blob": "1fcfc7ee75bf61dc86145838dc040e505bd80032"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/types-3.stderr",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "100644",
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/types-3.stdout",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "100644",
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-2/verification-3.json",
+      "byteLength": 3544,
+      "sha256": "ed52dba30d94257b87b7641659d96f22e9327b53e78994df55d635c12bab771c",
+      "mode": "100644",
+      "blob": "38425192f50db990e476ecdae04c3a7de6de550e"
+    }
+  ],
+  "oldPublicationControlsAndEarlierLocalTestDraftsExcluded": true
+}
