@@ -6,10 +6,12 @@ Continue on `feat-ml-adjuntant-ii`, [PR #51](https://github.com/proveo-ca/chess-
 
 - [Disposable probe return](returned-1/user-return.stdout) and [replay receipt](returned-1/observation.json): Docker reported an empty pre-start `ProcessLabel`. The container never started. Cleanup of the container and disposable bind was confirmed in the return. No bind denial or compatibility result was established. **The one-shot probe authorization was consumed. Do not rerun `HOST-probe.sh`.**
 - [Passive HOST diagnostic](daemon-diagnosis-1/HOST.md) and [local verification](daemon-diagnosis-1/verification.json) were published at `74d2cb4716f07d1b84137582a564284d558e6c3b`. The Executor approved a separate one-shot, read-only HOST run. The command was issued; no return had been received when this handoff was written.
-- If the diagnostic already ran or was interrupted, return its `Executor:` line or the terminal error instead of rerunning it. Otherwise, it is the only pending HOST action. It does not invoke Docker, connect to its socket, or prove the live SELinux setting. Leave the service, configuration, and policy unchanged.
+- Only the Executor can confirm whether the diagnostic was attempted. If it ran or was interrupted, return its `Executor:` line or the terminal error instead of rerunning it. If its status is uncertain, stop and resolve that uncertainty first. The diagnostic does not invoke Docker, connect to its socket, or prove the live SELinux setting. Leave the service, configuration, and policy unchanged.
 - Recovery, daemon or label changes, another container attempt, HOST preparation, and training all require a separate decision. Do not create campaign roots or run cleanup.
 
 ## Transfer and run the pending diagnostic
+
+**Proceed only if the Executor confirms the diagnostic has never been attempted.** No recorded return, a missing download, and a successful copy do not establish that.
 
 On HOST, identify the new coding sandbox with `sbx ls`. In the command below replace `SANDBOX_NAME` with that name. The source path assumes the same checkout location inside the new sandbox; use its actual checkout path if different. The checksum binds the file to the published diagnostic. This refuses an existing download rather than overwriting it.
 
@@ -21,7 +23,7 @@ test ! -e "$HOME/Downloads/HOST-daemon-diagnose.ts" &&
     "$HOME/Downloads/HOST-daemon-diagnose.ts"
 ```
 
-After a successful copy, or if the file already exists and the diagnostic has **not** been attempted, verify and run it once on HOST without `sudo`:
+Whether the file was just copied or already existed, verify and run it once on HOST as UID/GID `1000:1000`, without `sudo`, **only after confirming no prior attempt**:
 
 ```sh
 printf '%s  %s\n' \
