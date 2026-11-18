@@ -1,0 +1,113 @@
+{
+  "status": "PASS_LOCAL_ONLY_PASSIVE_DAEMON_DIAGNOSTIC",
+  "base": "90955dadbdfd7ffebf1dca497475f6407335dfd3",
+  "bunVersion": "1.4.0",
+  "sourcePins": [
+    {
+      "path": "_spec/training-daemon-diagnosis.puml",
+      "byteLength": 1660,
+      "sha256": "2c1e0383184d329346105d09bdde86cb64d31dfcfff7b2b9a117ab792dce4ce0"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/daemon-diagnosis-1/diagnose.ts",
+      "byteLength": 9346,
+      "sha256": "4ecc15350fb9b4cb957fbda57a321617305c25d649ba89378c6367db5b2efedd"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/daemon-diagnosis-1/diagnose.test.ts",
+      "byteLength": 5553,
+      "sha256": "8edaf40eb09296ea977e38823e2ca78908d1b54a00b9519046841e9cc5dab911"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/daemon-diagnosis-1/tsconfig.json",
+      "byteLength": 61,
+      "sha256": "3884c64fe86cacd8a33dd016dbb843b3bbb6c625090eda74ed06a9a58a13d92c"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/daemon-diagnosis-1/HOST.md",
+      "byteLength": 1996,
+      "sha256": "50cb189809c197faea7acab185ac638f733f4871c4585aee72eac56caab7b643"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/returned-1/user-return.stdout",
+      "byteLength": 1895,
+      "sha256": "e9b093a98f430a0ab1d860375193e431a568acf1a5ea7b4443ded16ccb337032"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/returned-1/observation.json",
+      "byteLength": 2407,
+      "sha256": "0d0d9d89c5577f2feed43a1457b776aa54474cb8d58e2ad0ee5a6746c278d504"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/returned-1/runtime-choice.md",
+      "byteLength": 2091,
+      "sha256": "2ccf723047ac78d27eac464006aa4931ee9d8ef937189972b3228250cb9e3b2e"
+    }
+  ],
+  "tests": {
+    "argv": [
+      "/usr/local/bin/bun",
+      "--config=/dev/null",
+      "--no-install",
+      "--no-env-file",
+      "test",
+      "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/daemon-diagnosis-1/diagnose.test.ts"
+    ],
+    "pass": 5,
+    "fail": 0,
+    "assertions": 59,
+    "stdout": "bun test v1.4.0 (34cbb9a40)\n",
+    "stderr": "\nartifacts/training-functional/campaign-volume-preflight-1/container-access-1/daemon-diagnosis-1/diagnose.test.ts:\n(pass) reports projected startup and on-disk evidence without claiming daemon behavior [0.76ms]\n(pass) inactive, oversized, duplicate, or unrecognized service samples stop before reading files [0.29ms]\n(pass) rejects unrecognized daemon and arguments without reading configuration or leaking input [0.30ms]\n(pass) custom config is never read and explicit default flags remain distinct [0.44ms]\n(pass) config is evidence only and a changed service discards the sample [0.57ms]\n\n 5 pass\n 0 fail\n 59 expect() calls\nRan 5 tests across 1 file. [107.00ms]\n"
+  },
+  "types": {
+    "argv": [
+      "/usr/local/bin/bun",
+      "--config=/dev/null",
+      "--no-install",
+      "--no-env-file",
+      "node_modules/typescript/bin/tsc",
+      "--noEmit",
+      "--skipLibCheck",
+      "false",
+      "-p",
+      "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/daemon-diagnosis-1/tsconfig.json"
+    ],
+    "pass": true
+  },
+  "specs": {
+    "staticCheck": [
+      "/usr/local/bin/bun",
+      "--config=/dev/null",
+      "--no-install",
+      "--no-env-file",
+      "artifacts/training-functional/check-specs.ts"
+    ],
+    "standaloneStaticPassed": true,
+    "native": [
+      "/usr/local/bin/plantuml",
+      "-checkonly",
+      "_spec/training-daemon-diagnosis.puml"
+    ],
+    "nativeCheckPassed": true,
+    "render": [
+      "/usr/local/bin/plantuml",
+      "-tsvg",
+      "-pipe"
+    ],
+    "nativeSvgRenderedInMemory": true
+  },
+  "launcher": {
+    "bashSyntaxPassed": true,
+    "nonHostGuard": "Executor: {\"status\":\"BLOCKED_DAEMON_DIAGNOSIS\",\"probeSourceCommit\":\"5f2a1e8fb35116e41ad4a4b048c0e161c81ea41c\",\"failedStage\":\"launcher\",\"reason\":\"EXPECTED_HOST_CONTEXT\",\"dockerCliInvoked\":false,\"socketConnected\":false}",
+    "fishExecuted": false
+  },
+  "reportedProbeReplayReceipt": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/returned-1/observation.json",
+    "byteLength": 2407,
+    "sha256": "0d0d9d89c5577f2feed43a1457b776aa54474cb8d58e2ad0ee5a6746c278d504"
+  },
+  "dockerInvoked": false,
+  "hostDiagnosticExecuted": false,
+  "hostProvisioningExecuted": false,
+  "trainingExecuted": false
+}

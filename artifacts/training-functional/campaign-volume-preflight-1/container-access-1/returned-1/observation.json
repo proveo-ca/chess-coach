@@ -1,0 +1,54 @@
+{
+  "status": "PASS_LOCAL_INTAKE_OF_BLOCKED_HOST_CONTAINER_ACCESS_REPORT",
+  "scope": "USER_PASTED_HOST_OUTPUT_AND_INJECTED_LOCAL_REPLAY_NOT_INDEPENDENT_HOST_ATTESTATION",
+  "pins": {
+    "userReturn": {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/returned-1/user-return.stdout",
+      "byteLength": 1895,
+      "sha256": "e9b093a98f430a0ab1d860375193e431a568acf1a5ea7b4443ded16ccb337032"
+    },
+    "priorPublication": {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/publication-1/post-publication.json",
+      "byteLength": 2655,
+      "sha256": "24f69ba2d97a0717642cf2973de8c0a518f75ff4c522df9faa4cb060d73fdfb6"
+    },
+    "launcher": {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/publication-1/HOST-probe.sh",
+      "byteLength": 20228,
+      "sha256": "eba2ceb524b06388097bf850ab6e355338d127c7930c2f0f4bb10183b947378e"
+    },
+    "probe": {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/probe.ts",
+      "byteLength": 14857,
+      "sha256": "794e930cf1e3e049e2b989c9c718d0732a56c8c405dd2d557d52a049fde26032"
+    }
+  },
+  "sourceCommit": "5f2a1e8fb35116e41ad4a4b048c0e161c81ea41c",
+  "deliveryCommit": "90955dadbdfd7ffebf1dca497475f6407335dfd3",
+  "reportedChecksum": "OK",
+  "launcherMatchesPublishedSource": true,
+  "injectedReplayMatchesEntireReport": true,
+  "singleProbeGrantConsumed": true,
+  "hostProbeReported": true,
+  "hostProbeExecutedByAgent": false,
+  "hostProbe": {
+    "status": "BLOCKED_DISPOSABLE_CONTAINER_ACCESS",
+    "blockedStage": "CREATED_CONTAINER_INSPECT_BEFORE_START",
+    "error": "CONTAINER_CONFIGURATION_NOT_CONFIRMED",
+    "retainedImageInspectionReported": true,
+    "reportedConfiguredProcessLabel": "",
+    "containerStartRequested": false,
+    "containerMountIoAttempted": false,
+    "expectedHostContextAtInitialCheck": true,
+    "liveProcessConfinementVerified": false,
+    "cleanupConfirmed": true,
+    "containerRemoved": true,
+    "disposableDirectoryRemoved": true,
+    "selinuxDeniedBindAccessProven": false,
+    "daemonSelinuxSupportKnown": false,
+    "campaignAccessVerified": false,
+    "hostPreparationExecuted": false,
+    "trainingExecuted": false
+  },
+  "nextBoundary": "SEPARATE_APPROVAL_FOR_READ_ONLY_DAEMON_DIAGNOSIS_OR_OTHER_RECOVERY_NO_RETRY_NO_POLICY_CHANGE"
+}

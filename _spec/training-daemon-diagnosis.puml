@@ -1,0 +1,39 @@
+@startuml training-daemon-diagnosis
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+' purpose: Read the running HOST service's startup evidence without contacting Docker.
+' covers: artifacts/training-functional/campaign-volume-preflight-1/container-access-1/daemon-diagnosis-1/**
+
+title Passive HOST Docker startup diagnosis
+actor "Executor" as EXEC <<host>>
+participant "Pinned Bun diagnostic" as CHECK <<host>>
+participant "Systemd and procfs" as OS <<host>>
+database "Default daemon config on disk" as CFG <<db>>
+
+EXEC ARROW_MAIN CHECK : Deliver via sbx cp; verify SHA-256\nRun once on HOST, without sudo
+CHECK ARROW_MAIN OS : Sample active/running docker.service
+break Service sample unavailable or inactive
+  CHECK ARROW_ERROR EXEC : Stop; no retry
+end
+CHECK ARROW_MAIN OS : Read root-owned dockerd arguments\nProject only SELinux and config selection
+break Daemon or arguments not confirmed
+  CHECK ARROW_ERROR EXEC : Stop; no retry
+end
+opt Uses default config path
+  CHECK ARROW_MAIN CFG : Read only the fixed bounded file
+  CFG ARROW_MAIN CHECK : Project boolean or status\nUnavailable does not block final checks
+end
+CHECK ARROW_MAIN OS : Match process start ticks and arguments\nRequire matching service sample
+alt Samples match
+  CHECK ARROW_MAIN EXEC : Report startup evidence only
+else Changed or failed sample
+  CHECK ARROW_ERROR EXEC : Report blocked; no retry
+end
+
+note over CHECK, CFG
+  No Docker CLI or listener connection.
+  No custom config paths, raw args, or JSON.
+  On-disk config is not live config.
+  No effective SELinux or live confinement.
+  No historical or bind-access attestation.
+end note
+@enduml
