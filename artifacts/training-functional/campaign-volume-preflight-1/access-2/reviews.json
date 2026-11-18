@@ -1,0 +1,9 @@
+{
+  "scope": "SOURCE_ONLY_FINAL_ACCESS_2_GUARDS",
+  "adversarial": { "session": "ses_e132da2e7ffdk4sqiyP2sN70Bq", "readyToMerge": true, "remainingSourceBlockers": 0 },
+  "security": { "session": "ses_e132da2e1ffeTjxDkJOM958wqF", "readyToMerge": true, "priorInodeFindingClosed": true, "risk": "LOW" },
+  "spec": { "session": "ses_e132da2e0ffe4l1kFm8i4kf2FN", "status": "IN_SYNC_NO_SPEC_EDIT", "owner": "_spec/runtime-protocol.puml" },
+  "limits": "OPERATOR_MUST_CONFIRM_THE_CURRENT_MOUNT_IS_DEDICATED_AND_NOT_BEING_CHANGED; READ_ONLY_RECHECK_IS_NOT_AN_ATOMIC_SNAPSHOT_OR_CONTAINER_ACCESS_PROOF",
+  "hostCommandsExecuted": false,
+  "trainingExecuted": false
+}

@@ -1,0 +1,95 @@
+{
+  "status": "PASS_LOCAL_INTAKE_OF_BLOCKED_HOST_ACCESS_OBSERVATION",
+  "scope": "USER_PASTED_JSON_VALIDATED_AGAINST_COMMITTED_BYTES_AND_INJECTED_REPLAY_NOT_INDEPENDENT_HOST_ATTESTATION",
+  "publicationCommit": "2c8a9d8bf45d8f9c86c32cfbb16e86942cd8a87c",
+  "report": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/returned-1/user-report.json",
+    "byteLength": 7325,
+    "sha256": "635f3d7801c5eeeeb3e4e8ebae1ee0cb0f43e36b2ce2d812d08436951a65a5fb"
+  },
+  "commandVerification": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/host-command-verification.json",
+    "byteLength": 1699,
+    "sha256": "7a8787d2abd81f2de7972a399e8c419a2c7ea5609b267258e060ee5101edc812"
+  },
+  "publicationReceipt": {
+    "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/publication-1/post-publication.json",
+    "byteLength": 4706,
+    "sha256": "d23c67384553a64bca691b8637dfbab051af00ec5d1683a93cfb425e48896c62"
+  },
+  "publishedSourceAndPlanBindingsMatch": true,
+  "committedAndLivePinsMatch": [
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/handoff.json",
+      "byteLength": 6689,
+      "sha256": "6984df87c4497bbe135d2932710f303bdddcb93b832704422a9edeab6ae2d69d"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/access-1/preflight.ts",
+      "byteLength": 11900,
+      "sha256": "39e43d84f61f2d43467a26457d2f55231362b15c41e0259ade2eeae5064fb7f6"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/request.json",
+      "byteLength": 7712,
+      "sha256": "70ba4aadc079cab314cf9dd6f4dc2354ab3c1739e035131b1b067302241b0322"
+    },
+    {
+      "path": "artifacts/training-functional/full-training-packet-2/completion.json",
+      "byteLength": 13260,
+      "sha256": "23b5e67c58d644d8398ffbf70df0557dabede08e62a5658a7b5e32480ae30d4b"
+    }
+  ],
+  "injectedReplayMatchesEntireReport": true,
+  "hostStatus": "BLOCKED_METADATA_PRECONDITIONS",
+  "failures": [
+    "ANCESTOR_SEARCH_UNKNOWN_OR_DENIED",
+    "VOLUME_CALLER_ACCESS_UNKNOWN_OR_DENIED",
+    "PROPOSED_ROOT_NOT_PROVED_ABSENT"
+  ],
+  "volume": {
+    "path": "/var/lib/chess-coach/training-volume-1",
+    "uid": "0",
+    "gid": "0",
+    "modeOctal": "0644",
+    "callerUid": 1000,
+    "callerGid": 1000,
+    "callerRead": true,
+    "callerWrite": false,
+    "callerSearch": false
+  },
+  "proposedRoots": {
+    "count": 3,
+    "absenceProved": 0,
+    "unknownDueToEacces": 3
+  },
+  "retained": {
+    "count": 11,
+    "metadataAndCallerAccessChecksPass": true,
+    "payloadContentsOrNativeUsabilityReverified": false
+  },
+  "selinux": {
+    "reportedEnforcing": true,
+    "labelsObserved": false,
+    "compatibilityVerified": false,
+    "reportedLabelError": "LABEL_QUERY_EXIT",
+    "labelErrorEstablishesSelinuxDenial": false,
+    "localBunCompatibilityReproduction": {
+      "bunVersion": "1.4.0",
+      "argv": [
+        "/usr/bin/true"
+      ],
+      "exitCode": 0,
+      "signalCode": "undefined",
+      "publishedStrictNullGuardWouldPass": false,
+      "actualHostLsOutcomeKnown": false
+    }
+  },
+  "nextBoundary": "EXPLICIT_NONRECURSIVE_POSIX_VOLUME_ACCESS_DECISION_AND_SEPARATE_READ_ONLY_RECHECK_NO_IDENTICAL_CAPACITY_QUERY",
+  "permissionOrSelinuxChangesExecuted": false,
+  "hostPreparationExecuted": false,
+  "hostInspectionExecutedByAgent": false,
+  "trainingExecutionAuthorized": false,
+  "trainingExecuted": false,
+  "newPublicationPerformed": false
+}

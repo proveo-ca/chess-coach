@@ -1,0 +1,20 @@
+{
+  "status": "EXECUTOR_SELECTED_CONDITIONAL_OWNER_ONLY_REPAIR_AND_PUBLISHED_READ_ONLY_RECHECK",
+  "selection": "Owner-only repair (Recommended)",
+  "observedAtCommit": "2c8a9d8bf45d8f9c86c32cfbb16e86942cd8a87c",
+  "priorObservationSha256": "ccb592036eb9ab94f45368ff96cb56d0d9afdb1b1b9ae0bb37a7bd60223cb894",
+  "scope": {
+    "actor": "Executor only on HOST",
+    "condition": "Executor confirms the volume is dedicated to this campaign",
+    "path": "/var/lib/chess-coach/training-volume-1",
+    "from": "0:0 / 0644",
+    "to": "1000:1000 / 0700",
+    "recursive": false,
+    "postRepair": "Unprivileged read-only check of owner/mode, caller access, three root lookups and volume label metadata"
+  },
+  "publication": { "normalCommits": 1, "nonForcePushes": 1, "pullRequest": 51, "baseBranch": "main", "targetRef": "refs/heads/feat-ml-adjuntant-ii" },
+  "agentMayRunHostCommands": false,
+  "selinuxChangesAuthorized": false,
+  "rootCreationOrPreparationAuthorized": false,
+  "trainingAuthorized": false
+}

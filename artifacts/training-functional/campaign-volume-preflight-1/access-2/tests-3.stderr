@@ -1,0 +1,13 @@
+
+artifacts/training-functional/campaign-volume-preflight-1/access-2/recheck.test.ts:
+(pass) only fixed roots are checked and natural Bun label output is retained for undefined or null signal [1.54ms]
+(pass) observes lookup denial and occupied paths without interpreting them as absent [0.20ms]
+(pass) skips child lookup without confirmed owner/mode and caller access [0.25ms]
+(pass) rejects a different caller or noncanonical volume before child lookups or label query [0.16ms]
+(pass) retains label diagnostics, preserves metadata-only meaning, and rejects oversized output [0.54ms]
+(pass) discards absence and label claims on volume inode or timestamp drift [0.35ms]
+
+ 6 pass
+ 0 fail
+ 38 expect() calls
+Ran 6 tests across 1 file. [444.00ms]
