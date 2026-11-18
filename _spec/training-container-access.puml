@@ -1,0 +1,43 @@
+@startuml training-container-access
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+' purpose: Bound the disposable, user-run HOST bind-access observation.
+' covers: artifacts/training-functional/campaign-volume-preflight-1/container-access-1/**
+
+title One-shot HOST container access preflight
+actor "Executor" as EXEC <<host>>
+participant "Offline HOST probe" as PROBE <<host>>
+participant "Local Docker / retained image / runc" as DOCKER <<host>>
+database "Private disposable bind directory" as BIND <<db>>
+
+EXEC ARROW_MAIN PROBE : Run approved embedded source once\nChecked commit; 75s + 2s kill grace
+PROBE ARROW_MAIN EXEC : Print exact name and path before writes
+PROBE ARROW_MAIN BIND : Check volume identity and label
+PROBE ARROW_MAIN DOCKER : Inspect local image digest for linux/amd64\nReject image-declared volumes
+PROBE ARROW_MAIN BIND : Exclusively create directory and seed
+PROBE ARROW_MAIN DOCKER : Create; no pull, networking or logging\nInspect confinement and bind before start
+DOCKER ARROW_MAIN BIND : Verify pinned device and inode, then\nread seed and create/reopen reply
+PROBE ARROW_MAIN DOCKER : Confirm exit and process label
+PROBE ARROW_MAIN BIND : Verify reply and label checkpoints
+opt Confirmed full container ID
+  PROBE ARROW_MAIN DOCKER : Remove only that ID
+end
+opt Disposable directory created
+  alt Directory pinned AND (no create requested OR removal confirmed)
+    PROBE ARROW_MAIN BIND : Remove owned files via held descriptors\nRemove private directory and confirm absence
+  else Directory not pinned or container removal uncertain
+    PROBE ARROW_ERROR EXEC : Leave directory in place; do not retry
+  end
+end
+alt Access observed and cleanup confirmed
+  PROBE ARROW_MAIN EXEC : PASS for this bind and runc only
+else Blocked or cleanup unconfirmed
+  PROBE ARROW_ERROR EXEC : Report failure and cleanup separately
+end
+
+note over PROBE, DOCKER
+  Client timeout does not cancel daemon work.
+  Enforcement and labels are sampled.
+  No relabel or campaign-root access.
+  No preparation or training authority.
+end note
+@enduml

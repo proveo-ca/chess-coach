@@ -1,0 +1,133 @@
+{
+  "status": "PASS_LOCAL_SOURCE_VERIFICATION_NOT_HOST_OR_PUBLICATION",
+  "draftBase": "19d19a58483b2e83abf1db420a6aaca1018b4966",
+  "bunVersion": "1.4.0",
+  "sourcePins": [
+    {
+      "path": "_spec/training-container-access.puml",
+      "byteLength": 1918,
+      "sha256": "bfd2b0259a57ccf2fdf074e59d14f9c3baed7bca390e2c0936a531ec45f46ad4"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/HOST.md",
+      "byteLength": 2383,
+      "sha256": "6bda3c397d24c45a31b86c1511e3bd5616766b1022a695f11e964abef18003d0"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/authorization.json",
+      "byteLength": 887,
+      "sha256": "3a1313e48ab97113286742e71235a776c8615a86204b33e7ef34d4452a8720d4"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/probe.ts",
+      "byteLength": 14820,
+      "sha256": "4318b8c1c3a214f3ea0f38da47425d22030d39e1e5b0d16bede807ba579b9f8f"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/probe.test.ts",
+      "byteLength": 15007,
+      "sha256": "8615b497538783a89033950663bcaed6781bf5470bf20e5fc73d44eec43d3ed5"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/render-command.ts",
+      "byteLength": 707,
+      "sha256": "9d99d9318726d7bafb68ac5ea279d9cfa57fb1d9eb1a97df90af399a901f879c"
+    },
+    {
+      "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/tsconfig.json",
+      "byteLength": 64,
+      "sha256": "d242d0c4b0be55d2546f568a8c710dec92b90839cd5781fc49f2c346b22dbdd5"
+    }
+  ],
+  "checks": [
+    {
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "test",
+        "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/probe.test.ts"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/tests.stdout",
+        "byteLength": 28,
+        "sha256": "335ab4d3d0d98d4c3b3478fa50c807da6d2740deb186a27fa4aed967dcd71e94"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/tests.stderr",
+        "byteLength": 1804,
+        "sha256": "5abd71f4e4908247134d272a074946d8e272f62ec976f1853b734e5f931fb4c5"
+      }
+    },
+    {
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "false",
+        "-p",
+        "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/types.stdout",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/types.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "argv": [
+        "/usr/local/bin/bun",
+        "--no-env-file",
+        "--no-install",
+        "artifacts/training-functional/check-specs.ts"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/specs.stdout",
+        "byteLength": 2645,
+        "sha256": "cb4c0586b813730b7101dd6781ff0c4e40403cf4a3180fbc1ac542eff57e77db"
+      },
+      "stderr": {
+        "path": "artifacts/training-functional/campaign-volume-preflight-1/container-access-1/specs.stderr",
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "tests": 17,
+  "assertions": 120,
+  "standaloneSpecStaticPassed": true,
+  "nativePlantUmlRendered": false,
+  "launcher": {
+    "bashSyntax": true,
+    "inertConfigRegression": true,
+    "encodedSourceMatchesLocalBytes": true,
+    "fishExecuted": false,
+    "fishSkipReason": "No installed Fish version behind sandbox shim",
+    "publishedBlobJoinPending": true
+  },
+  "packet2": {
+    "matched": 198,
+    "missing": [
+      {
+        "path": "artifacts/training-functional/scratch/reference-prep-2/bundles/packages/starchess-arena/src/players/strategic.ts",
+        "byteLength": 115300,
+        "sha256": "f48eb1a6016202272d609f373718c33ca2f4dba13b7d9ebe7499be4960b36499"
+      }
+    ],
+    "historicalRecordUnmodified": true
+  },
+  "hostProbeExecuted": false,
+  "preparationExecuted": false,
+  "trainingExecuted": false
+}

@@ -1,0 +1,24 @@
+
+artifacts/training-functional/campaign-volume-preflight-1/container-access-1/probe.test.ts:
+(pass) uses the packet2 image and interpreter, one private bind, and pinned offline CPU flags [0.67ms]
+(pass) a success requires attach, exact SELinux process label, host readback, and confirmed cleanup [1.22ms]
+(pass) rejects a malformed nonce before performing any operation [0.11ms]
+(pass) volume mismatch, missing enforcement, or changed context stop before a disposable write [0.64ms]
+(pass) an absent retained image or an image-declared volume blocks before writes [0.22ms]
+(pass) a directory collision is never removed and a different child label blocks container creation [0.19ms]
+(pass) ambiguous create never starts, removes, or adopts a container or removes its pending bind [0.26ms]
+(pass) detects directory replacement before attach and removes only the known container [0.18ms]
+(pass) never starts a container with a mismatched configured process label, logging, privileges, or bind [0.71ms]
+(pass) attach failure, unconfined label, and mismatched inspected state are blocked and clean up the owned ID [0.37ms]
+(pass) reply and final enforcement failures cannot pass [0.31ms]
+(pass) unconfirmed removal preserves the bind and exposes a cleanup error [0.24ms]
+(pass) cleanup checks volume identity and reports a retained directory on cleanup failure [0.31ms]
+(pass) preserves the original probe error separately from later cleanup failures [0.11ms]
+(pass) descriptor-relative cleanup cannot delete files from a symlink replacement [2.33ms]
+(pass) the offline launcher binds the published commit and exact TypeScript bytes [0.52ms]
+(pass) a harmless embedded program runs without a caller-directory Bun preload [112.59ms]
+
+ 17 pass
+ 0 fail
+ 121 expect() calls
+Ran 17 tests across 1 file. [255.00ms]
